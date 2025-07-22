@@ -3,7 +3,6 @@
 import React, { useCallback, useState } from 'react'
 
 import cx from 'classnames'
-import { EuiModal, EuiModalBody } from '@elastic/eui'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   FilterTableIcon,
@@ -27,6 +26,7 @@ import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 
 import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { Modal } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 interface ISwitchType<T> {
@@ -168,18 +168,20 @@ const BrowserSearchPanel = (props: Props) => {
 
   return (
     <div className={styles.content}>
-      {isPopoverOpen && (
-        <EuiModal onClose={hidePopover} className={styles.moduleNotLoaded}>
-          <EuiModalBody className={styles.modalBody}>
-            <ModuleNotLoaded
-              moduleName={RedisDefaultModules.Search}
-              type="browser"
-              id="0"
-              onClose={hidePopover}
-            />
-          </EuiModalBody>
-        </EuiModal>
-      )}
+      <Modal
+        open={isPopoverOpen}
+        onCancel={hidePopover}
+        className={styles.moduleNotLoaded}
+        content={
+          <ModuleNotLoaded
+            moduleName={RedisDefaultModules.Search}
+            type="browser"
+            id="0"
+            onClose={hidePopover}
+          />
+        }
+        title=""
+      />
       <div className={styles.searchWrapper}>
         <OnboardingTour
           options={ONBOARDING_FEATURES.BROWSER_FILTER_SEARCH}

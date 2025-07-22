@@ -83,20 +83,8 @@
 
 .moduleNotLoaded {
   max-width: 520px !important;
-  background-color: var(--separatorColor) !important;
   z-index: 10000 !important;
-
-  :global {
-    .euiModal__closeIcon {
-      background-color: transparent !important;
-      top: 14px;
-      right: 14px;
-    }
-  }
-
-  .modalBody :global(.euiModalBody__overflow) {
-    padding: 0 !important;
-  }
+  background-color: var(--browserTableRowEven) !important;
 }
 
 .iconVector svg {
