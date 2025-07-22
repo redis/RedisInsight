@@ -3,22 +3,15 @@
   height: 34px;
 }
 
-.consentsPopup.consentsPopup {
-  background-color: var(--tableRowHoverColor);
-  border-color: var(--tableRowHoverColor);
+.consentsPopup {
+  background-color: var(--tableRowHoverColor) !important;
+  border-color: var(--tableRowHoverColor) !important;
   :global {
     width: 601px;
     max-width: 94vw;
     border: 1px solid var(--euiColorPrimary) !important;
     max-height: calc(100vh - 60px) !important;
     height: auto;
-
-    .euiModal__closeIcon {
-      display: none;
-    }
-    .euiModal__flex {
-      max-height: calc(100vh - 60px) !important;
-    }
   }
 
   a {
