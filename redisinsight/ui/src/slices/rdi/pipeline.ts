@@ -34,7 +34,7 @@ import successMessages from 'uiSrc/components/notifications/success-messages'
 import { AppDispatch, RootState } from '../store'
 
 export const initialState: IStateRdiPipeline = {
-  loading: false,
+  loading: true,
   error: '',
   data: null,
   config: '',

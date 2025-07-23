@@ -109,7 +109,7 @@ const Navigation = () => {
         <EuiTextColor component="div">Pipeline Management</EuiTextColor>
       </div>
       <div className={styles.tabs} data-testid="rdi-pipeline-tabs">
-        {renderTabs()}
+        {!loading && renderTabs()}
       </div>
     </div>
   )

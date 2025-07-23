@@ -6,9 +6,11 @@ import {
   render,
   fireEvent,
   screen,
+  initialStateDefault,
 } from 'uiSrc/utils/test-utils'
 import {
   getPipeline,
+  rdiPipelineSelector,
   setChangedFile,
   setPipeline,
 } from 'uiSrc/slices/rdi/pipeline'
@@ -35,11 +37,21 @@ jest.mock('uiSrc/telemetry', () => ({
   sendEventTelemetry: jest.fn(),
 }))
 
+jest.mock('uiSrc/slices/rdi/pipeline', () => ({
+  ...jest.requireActual('uiSrc/slices/rdi/pipeline'),
+  rdiPipelineSelector: jest.fn(),
+}))
+
 let store: typeof mockedStore
 beforeEach(() => {
   cleanup()
   store = cloneDeep(mockedStore)
   store.clearActions()
+  ;(rdiPipelineSelector as jest.Mock).mockReturnValue({
+    ...initialStateDefault.rdi.pipeline,
+    loading: false,
+    config: '',
+  })
 })
 
 describe('SourcePipelineDialog', () => {
@@ -94,7 +106,7 @@ describe('SourcePipelineDialog', () => {
     })
   })
 
-  it('should call proper telemetry event after select empty pipeline  option', () => {
+  it('should call proper telemetry event after select empty pipeline option', () => {
     const sendEventTelemetryMock = jest.fn()
     ;(sendEventTelemetry as jest.Mock).mockImplementation(
       () => sendEventTelemetryMock,
@@ -110,5 +122,21 @@ describe('SourcePipelineDialog', () => {
         option: PipelineSourceOptions.FILE,
       },
     })
+  })
+
+  it('should not show dialog when there is deployed pipeline on a server', () => {
+    const sendEventTelemetryMock = jest.fn()
+    ;(sendEventTelemetry as jest.Mock).mockImplementation(
+      () => sendEventTelemetryMock,
+    )
+    ;(rdiPipelineSelector as jest.Mock).mockReturnValue({
+      ...initialStateDefault.rdi.pipeline,
+      loading: false,
+      config: 'deployed config',
+    })
+
+    render(<SourcePipelineDialog />)
+
+    expect(screen.queryByTestId('file-source-pipeline-dialog')).not.toBeInTheDocument()
   })
 })

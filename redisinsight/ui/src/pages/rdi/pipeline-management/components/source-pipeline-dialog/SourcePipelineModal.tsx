@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   EuiIcon,
   EuiModal,
@@ -13,6 +13,7 @@ import { useParams } from 'react-router-dom'
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import {
   fetchRdiPipeline,
+  rdiPipelineSelector,
   setChangedFile,
   setPipeline,
 } from 'uiSrc/slices/rdi/pipeline'
@@ -39,9 +40,19 @@ export enum PipelineSourceOptions {
 
 const SourcePipelineDialog = () => {
   const [isShowDownloadDialog, setIsShowDownloadDialog] = useState(false)
+  const [hasRdiPipelineDeployed, setHasRdiPipelineDeployed] =
+    useState(false)
+
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
 
   const { isOpenDialog } = useSelector(appContextPipelineManagement)
+
+  const { loading: pipelineLoading, config: pipelineConfig } =
+    useSelector(rdiPipelineSelector)
+
+  useEffect(() => {
+    setHasRdiPipelineDeployed(!pipelineLoading && pipelineConfig?.length > 0)
+  }, [pipelineConfig, pipelineLoading])
 
   const dispatch = useDispatch()
 
@@ -95,7 +106,7 @@ const SourcePipelineDialog = () => {
     )
   }
 
-  if (!isOpenDialog) {
+  if (!isOpenDialog || hasRdiPipelineDeployed) {
     return null
   }
 
