@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react'
-import { EuiModal, EuiModalBody } from '@elastic/eui'
 
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -13,6 +12,7 @@ import { cloudSelector } from 'uiSrc/slices/instances/cloud'
 import { OAuthCreateDb, OAuthSignIn } from 'uiSrc/components/oauth/oauth-sso'
 
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { Modal } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 const OAuthSsoDialog = () => {
@@ -36,27 +36,30 @@ const OAuthSsoDialog = () => {
   }
 
   return (
-    <EuiModal
-      onClose={handleClose}
+    <Modal
+      open
+      onCancel={handleClose}
       className={cx(styles.modal, {
         [styles.createDb]: ssoFlow === OAuthSocialAction.Create,
         [styles.signIn]: ssoFlow === OAuthSocialAction.SignIn,
         [styles.import]: ssoFlow === OAuthSocialAction.Import,
       })}
       data-testid="social-oauth-dialog"
-    >
-      <EuiModalBody>
-        {ssoFlow === OAuthSocialAction.Create && (
-          <OAuthCreateDb source={source} />
-        )}
-        {ssoFlow === OAuthSocialAction.SignIn && (
-          <OAuthSignIn source={source} />
-        )}
-        {ssoFlow === OAuthSocialAction.Import && (
-          <OAuthSignIn action={OAuthSocialAction.Import} source={source} />
-        )}
-      </EuiModalBody>
-    </EuiModal>
+      title=""
+      content={
+        <>
+          {ssoFlow === OAuthSocialAction.Create && (
+            <OAuthCreateDb source={source} />
+          )}
+          {ssoFlow === OAuthSocialAction.SignIn && (
+            <OAuthSignIn source={source} />
+          )}
+          {ssoFlow === OAuthSocialAction.Import && (
+            <OAuthSignIn action={OAuthSocialAction.Import} source={source} />
+          )}
+        </>
+      }
+    />
   )
 }
 
