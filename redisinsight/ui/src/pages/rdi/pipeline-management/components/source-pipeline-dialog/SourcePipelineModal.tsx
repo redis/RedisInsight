@@ -1,9 +1,5 @@
 import React, { useState } from 'react'
-import {
-  EuiModal,
-  EuiModalBody,
-  keys,
-} from '@elastic/eui'
+import { keys } from '@elastic/eui'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
@@ -18,11 +14,11 @@ import {
   setPipelineDialogState,
 } from 'uiSrc/slices/app/context'
 import UploadModal from 'uiSrc/pages/rdi/pipeline-management/components/upload-modal/UploadModal'
-import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 
 import { FileChangeType } from 'uiSrc/slices/interfaces'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { Modal } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 export const EMPTY_PIPELINE = {
@@ -99,16 +95,13 @@ const SourcePipelineDialog = () => {
   }
 
   return (
-    <EuiModal
-      className={styles.container}
-      onClose={handleCloseDialog}
-      data-testid="rdi-pipeline-source-dialog"
-    >
-      <EuiModalBody>
+    <Modal
+      open
+      title="Start with your pipeline"
+      width="100%"
+      onCancel={handleCloseDialog}
+      content={
         <div className={styles.content}>
-          <Title size="L" className={styles.title}>
-            Start with your pipeline
-          </Title>
           <div className={styles.actions}>
             <div
               role="button"
@@ -145,8 +138,8 @@ const SourcePipelineDialog = () => {
             </div>
           </div>
         </div>
-      </EuiModalBody>
-    </EuiModal>
+      }
+    />
   )
 }
 
