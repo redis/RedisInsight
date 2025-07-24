@@ -139,4 +139,20 @@ describe('SourcePipelineDialog', () => {
 
     expect(screen.queryByTestId('file-source-pipeline-dialog')).not.toBeInTheDocument()
   })
+
+  it('should not show dialog when config is fetching', () => {
+    const sendEventTelemetryMock = jest.fn()
+    ;(sendEventTelemetry as jest.Mock).mockImplementation(
+      () => sendEventTelemetryMock,
+    )
+    ;(rdiPipelineSelector as jest.Mock).mockReturnValue({
+      ...initialStateDefault.rdi.pipeline,
+      loading: true,
+      config: '',
+    })
+
+    render(<SourcePipelineDialog />)
+
+    expect(screen.queryByTestId('file-source-pipeline-dialog')).not.toBeInTheDocument()
+  })
 })
