@@ -21,7 +21,8 @@ const FormDialog = (props: Props) => {
 
   return (
     <Modal.Compose open={isOpen}>
-      <Modal.Content.Compose
+      <Modal.Content.Compose 
+        persistent
         className={`${styles.modal} ${className}`}
         onCancel={onClose}
       >
