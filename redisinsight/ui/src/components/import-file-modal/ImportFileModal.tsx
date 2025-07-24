@@ -151,13 +151,18 @@ const ImportFileModal = <T,>({
         <Modal.Content.Footer.Compose>
           {isShowForm && (
             <>
-            <Button variant="secondary-invert" onClick={onClose}>
+              <Button
+                variant="secondary-invert"
+                onClick={onClose}
+                data-testid="cancel-btn"
+              >
                 Cancel
               </Button>
               <Button
                 variant="primary"
                 onClick={onSubmit}
                 disabled={isSubmitDisabled}
+                data-testid="submit-btn"
               >
                 {submitBtnText || 'Import'}
               </Button>
