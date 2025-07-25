@@ -7,7 +7,6 @@ import React, {
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { debounce, get, set } from 'lodash'
 import { TreeWalker, TreeWalkerValue, FixedSizeTree as Tree } from 'react-vtree'
-import { EuiImage } from '@elastic/eui'
 import { useDispatch } from 'react-redux'
 
 import { bufferToString, Maybe, Nullable } from 'uiSrc/utils'
@@ -307,7 +306,7 @@ const VirtualTree = (props: Props) => {
                   className={styles.loadingSpinner}
                 />
                 {loadingIcon ? (
-                  <EuiImage
+                  <img
                     className={styles.loadingIcon}
                     src={loadingIcon}
                     alt="loading"

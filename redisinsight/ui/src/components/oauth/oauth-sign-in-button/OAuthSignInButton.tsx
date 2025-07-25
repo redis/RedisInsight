@@ -1,6 +1,4 @@
 import React from 'react'
-import { EuiImage } from '@elastic/eui'
-
 import { OAuthSsoHandlerDialog } from 'uiSrc/components'
 
 import RedisLogo from 'uiSrc/assets/img/logo_small.svg'
@@ -30,7 +28,7 @@ const OAuthSignInButton = (props: Props) => {
           }
           data-testid="cloud-sign-in-btn"
         >
-          <EuiImage className={styles.logo} src={RedisLogo} alt="" />
+          <img className={styles.logo} src={RedisLogo} alt="" />
           <span>Cloud sign in</span>
         </SecondaryButton>
       )}

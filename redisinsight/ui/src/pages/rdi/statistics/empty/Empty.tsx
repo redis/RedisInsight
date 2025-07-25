@@ -1,4 +1,3 @@
-import { EuiImage } from '@elastic/eui'
 import React from 'react'
 import { useHistory } from 'react-router-dom'
 
@@ -21,7 +20,7 @@ const Empty = ({ rdiInstanceId }: Props) => {
   return (
     <Panel>
       <div className={styles.emptyPipelineContainer} data-testid="empty-pipeline">
-        <EuiImage src={EmptyPipelineIcon} alt="empty" size="s" />
+        <img src={EmptyPipelineIcon} alt="empty" size="s" />
         <Spacer size="xl" />
         <Text>No pipeline deployed yet</Text>
         <Text className={styles.subTitle}>

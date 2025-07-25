@@ -1,5 +1,4 @@
 import React from 'react'
-import { EuiImage } from '@elastic/eui'
 import RedisLogo from 'uiSrc/assets/img/logo.svg'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
@@ -10,7 +9,7 @@ import styles from './styles.module.scss'
 
 const OAuthAdvantages = () => (
   <div className={styles.container} data-testid="oauth-advantages">
-    <EuiImage className={styles.logo} src={RedisLogo} alt="" />
+    <img className={styles.logo} src={RedisLogo} alt="" />
     <Title size="S" className={styles.title}>
       Cloud
     </Title>

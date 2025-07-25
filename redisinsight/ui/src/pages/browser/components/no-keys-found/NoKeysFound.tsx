@@ -1,5 +1,4 @@
 import React from 'react'
-import { EuiImage } from '@elastic/eui'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import TelescopeImg from 'uiSrc/assets/img/telescope-dark.svg'
@@ -59,10 +58,10 @@ const NoKeysFound = (props: Props) => {
 
   return (
     <div className={styles.container} data-testid="no-result-found-msg">
-      <EuiImage
+      <img
         className={styles.img}
         src={TelescopeImg}
-        alt="no results image"
+        alt="no results"
       />
       <Spacer />
       <Title className={styles.title} size="S">

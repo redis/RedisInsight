@@ -1,4 +1,3 @@
-import { EuiImage } from '@elastic/eui'
 import React from 'react'
 
 import CakeIcon from 'uiSrc/assets/img/databases/cake.svg'
@@ -22,7 +21,7 @@ const EmptyMessage = ({ onAddInstanceClick }: Props) => (
     className={styles.noResultsContainer}
     data-testid="empty-database-instance-list"
   >
-    <EuiImage src={CakeIcon} className={styles.icon} alt="empty" />
+    <img src={CakeIcon} className={styles.icon} alt="empty" />
     <Text className={styles.text}>No databases yet, let&apos;s add one!</Text>
     <PrimaryButton
       size="m"

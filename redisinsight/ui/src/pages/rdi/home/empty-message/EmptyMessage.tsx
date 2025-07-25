@@ -1,4 +1,3 @@
-import { EuiImage } from '@elastic/eui'
 import React, { useContext } from 'react'
 
 import { EXTERNAL_LINKS, UTM_MEDIUMS } from 'uiSrc/constants/links'
@@ -32,7 +31,7 @@ const EmptyMessage = ({ onAddInstanceClick }: Props) => {
     >
       <Spacer size="xl" />
       <Text className={styles.title}>Redis Data Integration</Text>
-      <EuiImage
+      <img
         src={theme === Theme.Dark ? EmptyListDarkIcon : EmptyListLightIcon}
         className={styles.icon}
         alt="empty"
