@@ -41,7 +41,7 @@ export const PlaygroundPage = () => (
         </li>
       </ul>
     </Col>
-    <Col gap="xl">
+    <Col gap="xl" align="center">
       <Title id="theme" size="XL" style={{ textAlign: 'center' }}>
         Theme
       </Title>
@@ -50,7 +50,6 @@ export const PlaygroundPage = () => (
         Icons
       </Title>
       <Gallery />
-
       <Title
         id="colors"
         size="XL"

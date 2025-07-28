@@ -17,7 +17,7 @@ const ColorItem = ({
       alignItems: 'center',
       backgroundColor: '#aaa',
       opacity: 0.8,
-      padding: 20,
+      padding: 10,
       minWidth: 200,
     }}
   >
@@ -34,7 +34,7 @@ const ColorItem = ({
   </Col>
 )
 const ColorSectionTitle = ({ title }: { title: string }) => (
-  <Title size="L" style={{ textAlign: 'center', marginTop: 30 }}>
+  <Title size="S" style={{ textAlign: 'center', marginTop: 10 }}>
     {title}
   </Title>
 )
