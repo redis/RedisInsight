@@ -72,9 +72,6 @@ const rdiPipelineSlice = createSlice({
     resetPipelineChecked: (state, { payload }: PayloadAction<boolean>) => {
       state.resetChecked = payload
     },
-    setPipeline: (state, { payload }: PayloadAction<IPipeline>) => {
-      state.data = payload
-    },
     getPipeline: (state) => {
       state.loading = true
     },
@@ -227,7 +224,6 @@ export const {
   getPipelineStrategies,
   getPipelineStrategiesSuccess,
   getPipelineStrategiesFailure,
-  setPipeline,
   setPipelineConfig,
   setPipelineJobs,
   setPipelineInitialState,
