@@ -1,5 +1,5 @@
 import React, { HTMLAttributes } from 'react'
-import styled, { keyframes } from 'styled-components'
+import styled, { css, keyframes } from 'styled-components'
 
 const bounce = keyframes`
   0%, 100% {
@@ -11,33 +11,48 @@ const bounce = keyframes`
   }
 `
 
+export const SIZES = ['m', 'l', 'xl'] as const
+
+const logoSizeStyles = {
+  m: css`
+    width: var(--size-m);
+  `,
+  l: css`
+    width: var(--size-l);
+  `,
+  xl: css`
+    width: var(--size-xl);
+  `,
+}
+
+export type RiLoadingLogoSize = (typeof SIZES)[number]
+
+export interface LogoLoadingProps extends HTMLAttributes<HTMLImageElement> {
+  src: string
+  size?: RiLoadingLogoSize
+  bounceSpeed?: number
+  alt?: string
+}
+
 const Wrapper = styled.div`
   display: inline-flex;
   align-items: center;
   justify-content: center;
 `
 
-export interface LogoLoadingProps extends HTMLAttributes<HTMLImageElement> {
-  src: string
-  size?: number
-  bounceSpeed?: number
-  alt?: string
-}
-
 const BouncingLogo = styled.img<
   Omit<LogoLoadingProps, 'size' | 'bounceSpeed'> & {
-    size?: number
+    size?: RiLoadingLogoSize
     bounceSpeed: number
   }
 >`
-  width: ${({ size }) => size}px;
-  height: ${({ size }) => size}px;
+  ${({ size = 'xl' }) => logoSizeStyles[size]};
   animation: ${bounce} ${({ bounceSpeed }) => bounceSpeed}s ease-in-out infinite;
 `
 
 const RiLoadingLogo = ({
   src,
-  size = 30,
+  size = 'xl',
   bounceSpeed = 1,
   alt = 'Loading logo',
 }: LogoLoadingProps) => (
