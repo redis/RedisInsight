@@ -3,6 +3,7 @@ import LoadingContent from './loading-content/LoadingContent'
 import ResizableContainer from './resize/container/ResizableContainer'
 import ResizablePanel from './resize/panel/ResizablePanel'
 import ResizablePanelHandle from './resize/handle/ResizablePanelHandle'
+import RiLoadingLogo from '../display/logo-loading/RiLoadingLogo'
 
 
 export * from './card'
@@ -14,4 +15,5 @@ export {
   ResizablePanel,
   ResizableContainer,
   ResizablePanelHandle,
+  RiLoadingLogo
 }
