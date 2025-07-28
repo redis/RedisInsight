@@ -40,7 +40,7 @@ export interface IndexAttributesListProps {
 }
 
 export const IndexAttributesList = ({ data }: IndexAttributesListProps) => (
-  // @ts-ignore - styled-components typing issue, functionality works correctly
+  // @ts-expect-error - styled-components typing issue: The TypeScript definitions for styled-components
   <StyledIndexAttributesList data-testid="index-attributes-list">
     <Table columns={tableColumns} data={data} />
   </StyledIndexAttributesList>
