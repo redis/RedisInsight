@@ -3,7 +3,6 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { PrimaryButton, SecondaryButton } from 'uiSrc/components/base/forms/buttons'
 import AddKeyFooter from 'uiSrc/pages/browser/components/add-key/AddKeyFooter/AddKeyFooter'
 import { SpacerSize } from 'uiSrc/components/base/layout/spacer/spacer.styles'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
 
 export interface ActionFooterProps {
   cancelText?: string
@@ -15,9 +14,8 @@ export interface ActionFooterProps {
   gap?: SpacerSize
   actionTestId?: string
   cancelTestId?: string
-  cancelClassName?: string
-  actionClassName?: string
   usePortal?: boolean
+  enableFormSubmit?: boolean
 }
 
 export const ActionFooter = ({
@@ -31,26 +29,42 @@ export const ActionFooter = ({
   actionTestId,
   cancelTestId,  
   usePortal = true,
+  enableFormSubmit = true,
 }: ActionFooterProps) => {
   const content = (
     <Row justify="end" gap={gap} style={{ padding: 18 }}>
-      <SecondaryButton
-        onClick={onCancel}
-        data-testid={cancelTestId}
-      >
-        {cancelText}
-      </SecondaryButton>
-      <Spacer size="l" />
-      <PrimaryButton
-        loading={loading}
-        onClick={onAction}
-        disabled={disabled || loading}
-        data-testid={actionTestId}
-      >
-        {actionText}
-      </PrimaryButton>
+      <FlexItem>
+        <SecondaryButton
+          onClick={onCancel}
+          data-testid={cancelTestId}
+        >
+          {cancelText}
+        </SecondaryButton>
+      </FlexItem>
+      <FlexItem>
+        <PrimaryButton
+          type={enableFormSubmit ? 'submit' : 'button'}
+          loading={loading}
+          onClick={onAction}
+          disabled={disabled || loading}
+          data-testid={actionTestId}
+        >
+          {actionText}
+        </PrimaryButton>
+      </FlexItem>
     </Row>
   )
+
+  if (enableFormSubmit) {
+    return (
+      <>
+        <PrimaryButton type="submit" style={{ display: 'none' }}>
+          Submit
+        </PrimaryButton>
+        {usePortal ? <AddKeyFooter>{content}</AddKeyFooter> : content}
+      </>
+    )
+  }
 
   if (usePortal) {
     return <AddKeyFooter>{content}</AddKeyFooter>
