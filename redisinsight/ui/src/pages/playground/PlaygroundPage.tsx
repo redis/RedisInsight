@@ -13,6 +13,8 @@ export const PlaygroundPage = () => (
       // backgroundColor: 'yellow',
       maxWidth: '100%',
       position: 'relative',
+      maxHeight: '100%',
+      overflow: 'auto',
     }}
   >
     <Col
