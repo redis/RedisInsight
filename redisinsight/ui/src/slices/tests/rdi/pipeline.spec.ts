@@ -24,7 +24,6 @@ import reducer, {
   getPipelineStrategiesSuccess,
   getPipelineStrategiesFailure,
   setPipelineSchema,
-  setPipeline,
   setChangedFile,
   setChangedFiles,
   deleteChangedFile,
@@ -95,30 +94,6 @@ describe('rdi pipe slice', () => {
 
       // Act
       const nextState = reducer(initialState, getPipeline())
-
-      // Assert
-      const rootState = Object.assign(initialStateDefault, {
-        rdi: {
-          pipeline: nextState,
-        },
-      })
-      expect(rdiPipelineSelector(rootState)).toEqual(state)
-    })
-  })
-
-  describe('setPipeline', () => {
-    it('should properly set state', () => {
-      // Arrange
-      const state = {
-        ...initialState,
-        data: MOCK_RDI_PIPELINE_DATA,
-      }
-
-      // Act
-      const nextState = reducer(
-        initialState,
-        setPipeline(MOCK_RDI_PIPELINE_DATA),
-      )
 
       // Assert
       const rootState = Object.assign(initialStateDefault, {
