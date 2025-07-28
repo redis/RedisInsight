@@ -14,6 +14,8 @@ export interface ActionFooterProps {
   gap?: SpacerSize
   actionTestId?: string
   cancelTestId?: string
+  cancelClassName?: string
+  actionClassName?: string
   usePortal?: boolean
   enableFormSubmit?: boolean
 }
@@ -27,7 +29,9 @@ export const ActionFooter = ({
   loading = false,
   gap = "m",
   actionTestId,
-  cancelTestId,  
+  cancelTestId,
+  cancelClassName = 'btn-cancel btn-back',
+  actionClassName = 'btn-add',
   usePortal = true,
   enableFormSubmit = true,
 }: ActionFooterProps) => {
@@ -37,6 +41,7 @@ export const ActionFooter = ({
         <SecondaryButton
           onClick={onCancel}
           data-testid={cancelTestId}
+          className={cancelClassName}
         >
           {cancelText}
         </SecondaryButton>
@@ -48,6 +53,7 @@ export const ActionFooter = ({
           onClick={onAction}
           disabled={disabled || loading}
           data-testid={actionTestId}
+          className={actionClassName}
         >
           {actionText}
         </PrimaryButton>
