@@ -5,6 +5,7 @@ import RedisLogo from 'uiSrc/assets/img/logo_small.svg'
 
 import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiImage } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -28,7 +29,7 @@ const OAuthSignInButton = (props: Props) => {
           }
           data-testid="cloud-sign-in-btn"
         >
-          <img className={styles.logo} src={RedisLogo} alt="" />
+          <RiImage className={styles.logo} src={RedisLogo} alt="" />
           <span>Cloud sign in</span>
         </SecondaryButton>
       )}

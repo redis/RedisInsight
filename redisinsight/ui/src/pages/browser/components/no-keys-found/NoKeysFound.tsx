@@ -21,6 +21,7 @@ import { TutorialsIds } from 'uiSrc/constants'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { Title } from 'uiSrc/components/base/text/Title'
+import { RiImage } from 'uiSrc/components/base/display'
 import LoadSampleData from '../load-sample-data'
 
 import styles from './styles.module.scss'
@@ -58,7 +59,7 @@ const NoKeysFound = (props: Props) => {
 
   return (
     <div className={styles.container} data-testid="no-result-found-msg">
-      <img
+      <RiImage
         className={styles.img}
         src={TelescopeImg}
         alt="no results"

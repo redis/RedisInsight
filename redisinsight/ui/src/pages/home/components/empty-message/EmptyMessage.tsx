@@ -10,6 +10,7 @@ import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
 import { Link } from 'uiSrc/components/base/link/Link'
+import { RiImage } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -21,7 +22,7 @@ const EmptyMessage = ({ onAddInstanceClick }: Props) => (
     className={styles.noResultsContainer}
     data-testid="empty-database-instance-list"
   >
-    <img src={CakeIcon} className={styles.icon} alt="empty" />
+    <RiImage src={CakeIcon} className={styles.icon} alt="empty" />
     <Text className={styles.text}>No databases yet, let&apos;s add one!</Text>
     <PrimaryButton
       size="m"

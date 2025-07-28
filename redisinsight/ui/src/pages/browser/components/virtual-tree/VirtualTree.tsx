@@ -20,7 +20,7 @@ import {
 } from 'uiSrc/constants'
 import { RedisResponseBuffer, RedisString } from 'uiSrc/slices/interfaces'
 import { fetchKeysMetadataTree } from 'uiSrc/slices/browser/keys'
-import { Loader, ProgressBarLoader } from 'uiSrc/components/base/display'
+import { Loader, ProgressBarLoader, RiImage } from 'uiSrc/components/base/display'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { GetKeyInfoResponse } from 'apiSrc/modules/browser/keys/dto'
 

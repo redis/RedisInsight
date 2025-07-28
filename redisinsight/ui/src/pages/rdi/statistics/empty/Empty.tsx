@@ -6,6 +6,7 @@ import { Pages } from 'uiSrc/constants'
 import { Text } from 'uiSrc/components/base/text'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiImage } from 'uiSrc/components/base/display'
 import Panel from '../components/panel'
 
 import styles from './styles.module.scss'
@@ -20,7 +21,7 @@ const Empty = ({ rdiInstanceId }: Props) => {
   return (
     <Panel>
       <div className={styles.emptyPipelineContainer} data-testid="empty-pipeline">
-        <img src={EmptyPipelineIcon} alt="empty" size="s" />
+        <RiImage src={EmptyPipelineIcon} alt="empty" size="s" />
         <Spacer size="xl" />
         <Text>No pipeline deployed yet</Text>
         <Text className={styles.subTitle}>

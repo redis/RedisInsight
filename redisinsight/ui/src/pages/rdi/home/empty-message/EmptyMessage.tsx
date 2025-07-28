@@ -13,6 +13,7 @@ import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Link } from 'uiSrc/components/base/link/Link'
+import { RiImage } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 const subTitleText =
@@ -31,7 +32,7 @@ const EmptyMessage = ({ onAddInstanceClick }: Props) => {
     >
       <Spacer size="xl" />
       <Text className={styles.title}>Redis Data Integration</Text>
-      <img
+      <RiImage
         src={theme === Theme.Dark ? EmptyListDarkIcon : EmptyListLightIcon}
         className={styles.icon}
         alt="empty"
