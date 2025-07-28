@@ -1,5 +1,6 @@
+/* eslint-disable sonarjs/no-nested-template-literals */
 import styled, { css } from 'styled-components'
-import React, { InputHTMLAttributes, forwardRef } from 'react'
+import React, { forwardRef, InputHTMLAttributes } from 'react'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
 
@@ -51,41 +52,35 @@ export const FilePickerInput = styled(FilePickerInputBase)`
     cursor: pointer;
   }
 `
-
 const promptLarge = css`
-  height: 128px;
-  padding: 0 24px;
+  min-height: ${({ theme }) => theme.core.space.space800};
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: ${({ theme }) => theme.core.space.space150};
 `
 const promptDefault = css`
   height: 140px;
 `
 
+const promptPadding = css<FilePickerWrapperProps>`
+  padding: ${({ theme, $large }) => {
+    const { space100, space400, space250 } = theme.core.space
+    return $large
+      ? `0 ${space250}`
+      : `${space100} ${space100} ${space100} ${space400}`
+  }};
+`
 export const FilePickerPrompt = styled.div<FilePickerWrapperProps>`
   pointer-events: none;
-  background-repeat: no-repeat;
-  background-size: 0 100%;
-  padding: 12px 12px 12px 40px;
-  transition:
-    box-shadow 150ms ease-in,
-    background-color 150ms ease-in,
-    background-image 150ms ease-in,
-    background-size 150ms ease-in 150ms;
-
-  background-color: var(--browserTableRowEven);
-  border-radius: 4px;
-  box-shadow: none;
-  border: 1px dashed var(--controlsBorderColor);
-  color: var(--htmlColor);
+  border-radius: ${({ theme }) => theme.core.space.space050};
+  border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
+  ${promptPadding}
 
   ${({ $large }) => ($large ? promptLarge : promptDefault)}
 `
 
 export const FilePickerClearButton = styled(EmptyButton)`
   pointer-events: auto; /* Undo the pointer-events: none applied to the enclosing prompt */
-  position: relative; /* Required to sit above hidden input */
 `

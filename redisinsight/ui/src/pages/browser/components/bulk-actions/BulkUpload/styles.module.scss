@@ -20,14 +20,7 @@
 
   .fileDrop {
     :global {
-      .RI-File-Picker__clearButton {
-        margin-top: 8px;
-      }
 
-      .RI-File-Picker__clearButton .euiButtonEmpty__text {
-        color: var(--externalLinkColor) !important;
-        text-transform: lowercase;
-      }
 
       .RI-File-Picker__showDrop .RI-File-Picker__prompt,
       .RI-File-Picker__input:focus + .RI-File-Picker__prompt {

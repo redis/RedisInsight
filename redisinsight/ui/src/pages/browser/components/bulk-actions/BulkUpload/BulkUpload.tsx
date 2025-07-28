@@ -25,7 +25,6 @@ import {
   RiPopover,
   RiTooltip,
 } from 'uiSrc/components'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import {
   PrimaryButton,
   SecondaryButton,
@@ -33,7 +32,7 @@ import {
 import { RefreshIcon } from 'uiSrc/components/base/icons'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { Row } from 'uiSrc/components/base/layout/flex'
+import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -109,8 +108,8 @@ const BulkUpload = (props: Props) => {
   return (
     <div className={styles.container} data-testid="bulk-upload-container">
       {!isCompleted ? (
-        <div className={styles.content}>
-          <Row align="start">
+        <Col gap="l" className={styles.content} align="start">
+          <Row align="start" grow={false}>
             <Text color="subdued">
               Upload the text file with the list of Redis commands
             </Text>
@@ -134,11 +133,9 @@ const BulkUpload = (props: Props) => {
               />
             </RiTooltip>
           </Row>
-          <Spacer size="l" />
           <RiFilePicker
             id="bulk-upload-file-input"
             initialPromptText="Select or drag and drop a file"
-            className={styles.fileDrop}
             isInvalid={isInvalid}
             onChange={onFileChange}
             display="large"
@@ -155,8 +152,7 @@ const BulkUpload = (props: Props) => {
             </ColorText>
           )}
           <UploadWarning />
-          <Spacer size="l" />
-        </div>
+        </Col>
       ) : (
         <BulkActionsInfo
           loading={loading}

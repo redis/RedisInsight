@@ -13,6 +13,7 @@ import {
 } from 'uiSrc/components/base/forms/file-picker/styles'
 import { CommonProps } from 'uiSrc/components/base/theme/types'
 import ProgressBarLoader from 'uiSrc/components/base/display/progress-bar/ProgressBarLoader'
+import { ColorText } from 'uiSrc/components/base/text'
 
 export type RiFilePickerProps = CommonProps &
   Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> & {
@@ -140,7 +141,7 @@ export const RiFilePicker = ({
           size="small"
           onClick={removeFiles}
         >
-          Remove
+          <ColorText color="default">Remove</ColorText>
         </FilePickerClearButton>
       )
     }
@@ -177,7 +178,7 @@ export const RiFilePicker = ({
           color={
             isInvalid ? 'danger500' : disabled ? 'neutral500' : 'primary500'
           }
-          type={isInvalid ? 'ToastDangerIcon' : 'DownloadIcon'}
+          type={isInvalid ? 'ToastDangerIcon' : 'UploadIcon'}
           size={normalFormControl ? 'L' : 'XL'}
           aria-hidden="true"
         />
