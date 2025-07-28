@@ -4,18 +4,19 @@ interface UseLoadDataResult {
   data: string | null
   error: Error | null
   loading: boolean
-  load: () => Promise<void>
+  load: (filePath: string) => Promise<string>
 }
 
-export const useLoadData = (filePath: string): UseLoadDataResult => {
+export const useLoadData = (): UseLoadDataResult => {
   const [data, setData] = useState<string | null>(null)
   const [error, setError] = useState<Error | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
 
-  const load = useCallback(async () => {
+  const load = useCallback(async (filePath: string): Promise<string> => {
     if (!filePath) {
-      setError(new Error('File path is required'))
-      return
+      const err = new Error('File path is required')
+      setError(err)
+      throw err
     }
 
     try {
@@ -29,12 +30,15 @@ export const useLoadData = (filePath: string): UseLoadDataResult => {
 
       const text = await res.text()
       setData(text)
+      return text
     } catch (err) {
-      setError(err instanceof Error ? err : new Error(String(err)))
+      const error = err instanceof Error ? err : new Error(String(err))
+      setError(error)
+      throw error
     } finally {
       setLoading(false)
     }
-  }, [filePath])
+  }, [])
 
   return { data, error, loading, load }
 }

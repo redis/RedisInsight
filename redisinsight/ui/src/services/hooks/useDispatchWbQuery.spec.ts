@@ -32,16 +32,14 @@ describe('useDispatchWbQuery', () => {
     const afterEach = jest.fn()
     const onFail = jest.fn()
 
-    const { result } = renderHook(() =>
-      useDispatchWbQuery({
+    const { result } = renderHook(() => useDispatchWbQuery())
+
+    act(() => {
+      result.current(data, {
         afterAll,
         afterEach,
         onFail,
-      }),
-    )
-
-    act(() => {
-      result.current(data)
+      })
     })
 
     expect(WbResults.sendWbQueryAction).toHaveBeenCalledWith(

@@ -16,10 +16,10 @@ describe('useLoadData', () => {
       text: async () => mockText,
     })
 
-    const { result } = renderHook(() => useLoadData(filePath))
+    const { result } = renderHook(() => useLoadData())
 
     await act(async () => {
-      await result.current.load()
+      await result.current.load(filePath)
     })
 
     expect(global.fetch).toHaveBeenCalledWith(filePath)
@@ -31,10 +31,13 @@ describe('useLoadData', () => {
   it('should set error if fetch fails (network error)', async () => {
     global.fetch = jest.fn().mockRejectedValue(new Error('Fetch failed'))
 
-    const { result } = renderHook(() => useLoadData(filePath))
+    const { result } = renderHook(() => useLoadData())
 
     await act(async () => {
-      await result.current.load()
+      try {
+        await result.current.load(filePath)
+        // eslint-disable-next-line no-empty
+      } catch {}
     })
 
     expect(result.current.data).toBeNull()
@@ -49,10 +52,13 @@ describe('useLoadData', () => {
       statusText: 'Not Found',
     })
 
-    const { result } = renderHook(() => useLoadData(filePath))
+    const { result } = renderHook(() => useLoadData())
 
     await act(async () => {
-      await result.current.load()
+      try {
+        await result.current.load(filePath)
+        // eslint-disable-next-line no-empty
+      } catch {}
     })
 
     expect(result.current.data).toBeNull()
@@ -64,10 +70,13 @@ describe('useLoadData', () => {
   })
 
   it('should set error if filePath is empty', async () => {
-    const { result } = renderHook(() => useLoadData(''))
+    const { result } = renderHook(() => useLoadData())
 
     await act(async () => {
-      await result.current.load()
+      try {
+        await result.current.load('')
+        // eslint-disable-next-line no-empty
+      } catch {}
     })
 
     expect(result.current.data).toBeNull()

@@ -1,16 +1,19 @@
 import { useDispatch } from 'react-redux'
 import { sendWbQueryAction } from 'uiSrc/slices/workbench/wb-results'
 
-interface UseDispatchWbQueryOptions {
+export interface UseDispatchWbQueryOptions {
   afterAll?: () => void
   afterEach?: () => void
   onFail?: () => void
 }
 
-export const useDispatchWbQuery = (options?: UseDispatchWbQueryOptions) => {
+export const useDispatchWbQuery = () => {
   const dispatch = useDispatch()
 
-  return (data: string | null | undefined) => {
+  return (
+    data: string | null | undefined,
+    options?: UseDispatchWbQueryOptions,
+  ) => {
     if (!data) return
 
     dispatch(
