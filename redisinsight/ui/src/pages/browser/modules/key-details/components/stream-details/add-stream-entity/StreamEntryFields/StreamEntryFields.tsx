@@ -166,7 +166,7 @@ const StreamEntryFields = (props: Props) => {
             onClickAdd={addField}
           >
             {(item, index) => (
-              <Row align="center">
+              <Row align="center" gap='m'>
                 <FlexItem className={styles.fieldItemWrapper} grow>
                   <FormField>
                     <EuiFieldText

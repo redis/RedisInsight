@@ -173,7 +173,7 @@ const AddHashFields = (props: Props) => {
           onClickAdd={addField}
         >
           {(item, index) => (
-            <Row align="center">
+            <Row align="center" gap="m">
               <FlexItem grow={2}>
                 <FormField>
                   <EuiFieldText
