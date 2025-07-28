@@ -5,6 +5,7 @@ import svgr from 'vite-plugin-svgr';
 import fixReactVirtualized from 'esbuild-plugin-react-virtualized';
 import { reactClickToComponent } from 'vite-plugin-react-click-to-component';
 import { ViteEjsPlugin } from 'vite-plugin-ejs';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 // import { compression } from 'vite-plugin-compression2'
 import { fileURLToPath, URL } from 'url';
 import path from 'path';
@@ -37,6 +38,17 @@ export default defineConfig({
     svgr({ include: ['**/*.svg?react'] }),
     reactClickToComponent(),
     ViteEjsPlugin(),
+    // Copy public directory contents for Electron builds
+    ...(isElectron ? [
+      viteStaticCopy({
+        targets: [
+          {
+            src: 'public/*',
+            dest: './'
+          }
+        ]
+      })
+    ] : []),
     // Inject app info to window global object via custom plugin
     {
       name: 'app-info',
