@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { CategoryValueList, Section, SectionProps } from '@redis-ui/components'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { CategoryValueListItem } from '@redis-ui/components/dist/Section/components/Header/components/CategoryValueList'
 import { RedisString } from 'uiSrc/slices/interfaces'
-import { bufferToString, formatLongName } from 'uiSrc/utils'
-import { fetchRedisearchInfoAction } from 'uiSrc/slices/browser/redisearch'
-import { IndexInfoDto } from 'apiSrc/modules/browser/redisearch/dto'
+import { bufferToString, formatLongName, stringToBuffer } from 'uiSrc/utils'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import {
+  deleteRedisearchIndexAction,
+  fetchRedisearchInfoAction,
+} from 'uiSrc/slices/browser/redisearch'
+import {
+  IndexInfoDto,
+  IndexDeleteRequestBodyDto,
+} from 'apiSrc/modules/browser/redisearch/dto'
 import { IndexAttributesList, IndexInfoTableData } from './IndexAttributesList'
 
 export interface IndexSectionProps extends Omit<SectionProps, 'label'> {
@@ -15,6 +23,7 @@ export interface IndexSectionProps extends Omit<SectionProps, 'label'> {
 export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
   const dispatch = useDispatch()
   const indexName = bufferToString(index)
+  const { id: instanceId } = useSelector(connectedInstanceSelector)
 
   const [tableData, setTableData] = useState<IndexInfoTableData[]>([])
   const [indexSummaryInfo, setIndexSummaryInfo] = useState<
@@ -32,6 +41,30 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
     )
   }, [indexName, dispatch])
 
+  const handleDelete = () => {
+    // TODO: Replace with confirmation popup once the design is ready
+    // eslint-disable-next-line no-restricted-globals
+    const result = confirm('Are you sure you want to delete this index?')
+
+    if (result) {
+      const data: IndexDeleteRequestBodyDto = {
+        index: stringToBuffer(indexName),
+      }
+
+      dispatch(deleteRedisearchIndexAction(data, onDeletedIndexSuccess))
+    }
+  }
+
+  const onDeletedIndexSuccess = (data: IndexDeleteRequestBodyDto) => {
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_INDEX_DELETED,
+      eventData: {
+        databaseId: instanceId,
+        indexName: data.index,
+      },
+    })
+  }
+
   return (
     <Section
       collapsible
@@ -41,7 +74,7 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
       label={formatLongName(indexName)}
       defaultOpen={false}
       actionButtonText="Delete" // TODO: Replace with an icon of a trash can
-      // onAction={handleDelete} // TODO: Implement delete functionality
+      onAction={handleDelete}
       data-testid={`manage-indexes-list--item--${indexName}`}
       {...rest}
     />

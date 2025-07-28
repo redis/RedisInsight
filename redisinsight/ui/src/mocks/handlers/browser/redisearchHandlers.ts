@@ -28,6 +28,10 @@ const handlers: RestHandler[] = [
     async (_req, res, ctx) =>
       res(ctx.status(200), ctx.json(MOCK_REDISEARCH_INDEX_INFO)),
   ),
+  rest.delete(
+    getMswURL(getUrl(INSTANCE_ID_MOCK, ApiEndpoints.REDISEARCH)),
+    async (_req, res, ctx) => res(ctx.status(204)),
+  ),
 ]
 
 export default handlers
