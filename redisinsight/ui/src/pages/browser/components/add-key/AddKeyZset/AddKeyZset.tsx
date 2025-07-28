@@ -18,14 +18,10 @@ import {
   INITIAL_ZSET_MEMBER_STATE,
   IZsetMemberState,
 } from 'uiSrc/pages/browser/components/add-key/AddKeyZset/interfaces'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { CreateZSetWithExpireDto } from 'apiSrc/modules/browser/z-set/dto'
-import AddKeyFooter from '../AddKeyFooter/AddKeyFooter'
 import { AddZsetFormConfig as config } from '../constants/fields-config'
 
 export interface Props {
@@ -234,38 +230,14 @@ const AddKeyZset = (props: Props) => {
         )}
       </AddMultipleFields>
 
-      <PrimaryButton type="submit" style={{ display: 'none' }}>
-        Submit
-      </PrimaryButton>
-      <AddKeyFooter>
-        <>
-          <Row justify="end" style={{ padding: 18 }}>
-            <FlexItem>
-              <div>
-                <SecondaryButton
-                  onClick={() => onCancel(true)}
-                  className="btn-cancel btn-back"
-                >
-                  Cancel
-                </SecondaryButton>
-              </div>
-            </FlexItem>
-            <FlexItem>
-              <div>
-                <PrimaryButton
-                  className="btn-add"
-                  loading={loading}
-                  onClick={submitData}
-                  disabled={!isFormValid || loading}
-                  data-testid="add-key-zset-btn"
-                >
-                  Add Key
-                </PrimaryButton>
-              </div>
-            </FlexItem>
-          </Row>
-        </>
-      </AddKeyFooter>
+      <ActionFooter
+        onCancel={() => onCancel(true)}
+        onAction={submitData}
+        actionText="Add Key"
+        loading={loading}
+        disabled={!isFormValid}
+        actionTestId="add-key-zset-btn"
+      />
     </form>
   )
 }

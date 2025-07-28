@@ -11,17 +11,13 @@ import { Maybe, stringToBuffer } from 'uiSrc/utils'
 import { addKeyStateSelector, addSetKey } from 'uiSrc/slices/browser/keys'
 
 import AddMultipleFields from 'uiSrc/pages/browser/components/add-multiple-fields'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { CreateSetWithExpireDto } from 'apiSrc/modules/browser/set/dto'
 
 import { INITIAL_SET_MEMBER_STATE, ISetMemberState } from './interfaces'
 import { AddSetFormConfig as config } from '../constants/fields-config'
-import AddKeyFooter from '../AddKeyFooter/AddKeyFooter'
 
 export interface Props {
   keyName: string
@@ -159,34 +155,14 @@ const AddKeySet = (props: Props) => {
           </Row>
         )}
       </AddMultipleFields>
-      <PrimaryButton type="submit" style={{ display: 'none' }}>
-        Submit
-      </PrimaryButton>
-      <AddKeyFooter>
-        <>
-          <Row justify="end" style={{ padding: 18 }}>
-            <FlexItem>
-              <SecondaryButton
-                onClick={() => onCancel(true)}
-                className="btn-cancel btn-back"
-              >
-                Cancel
-              </SecondaryButton>
-            </FlexItem>
-            <FlexItem>
-              <PrimaryButton
-                className="btn-add"
-                loading={loading}
-                onClick={submitData}
-                disabled={!isFormValid || loading}
-                data-testid="add-key-set-btn"
-              >
-                Add Key
-              </PrimaryButton>
-            </FlexItem>
-          </Row>
-        </>
-      </AddKeyFooter>
+      <ActionFooter
+        onCancel={() => onCancel(true)}
+        onAction={submitData}
+        actionText="Add Key"
+        loading={loading}
+        disabled={!isFormValid}
+        actionTestId="add-key-set-btn"
+      />
     </form>
   )
 }

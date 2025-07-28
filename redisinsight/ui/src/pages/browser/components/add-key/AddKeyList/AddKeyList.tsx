@@ -4,15 +4,11 @@ import { EuiFieldText } from '@elastic/eui'
 
 import { Maybe, stringToBuffer } from 'uiSrc/utils'
 import { addKeyStateSelector, addListKey } from 'uiSrc/slices/browser/keys'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import {
   optionsDestinations,
   TAIL_DESTINATION,
 } from 'uiSrc/pages/browser/modules/key-details/components/list-details/add-list-elements/AddListElements'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import {
   CreateListWithExpireDto,
@@ -20,7 +16,6 @@ import {
 } from 'apiSrc/modules/browser/list/dto'
 
 import { AddListFormConfig as config } from '../constants/fields-config'
-import AddKeyFooter from '../AddKeyFooter/AddKeyFooter'
 import AddMultipleFields from '../../add-multiple-fields'
 
 export interface Props {
@@ -114,34 +109,14 @@ const AddKeyList = (props: Props) => {
           />
         )}
       </AddMultipleFields>
-      <PrimaryButton type="submit" style={{ display: 'none' }}>
-        Submit
-      </PrimaryButton>
-      <AddKeyFooter>
-        <>
-          <Row justify="end" style={{ padding: 18 }}>
-            <FlexItem>
-              <SecondaryButton
-                onClick={() => onCancel(true)}
-                className="btn-cancel btn-back"
-              >
-                Cancel
-              </SecondaryButton>
-            </FlexItem>
-            <FlexItem>
-              <PrimaryButton
-                className="btn-add"
-                loading={loading}
-                onClick={submitData}
-                disabled={!isFormValid || loading}
-                data-testid="add-key-list-btn"
-              >
-                Add Key
-              </PrimaryButton>
-            </FlexItem>
-          </Row>
-        </>
-      </AddKeyFooter>
+      <ActionFooter
+        onCancel={() => onCancel(true)}
+        onAction={submitData}
+        actionText="Add Key"
+        loading={loading}
+        disabled={!isFormValid}
+        actionTestId="add-key-list-btn"
+      />
     </form>
   )
 }
