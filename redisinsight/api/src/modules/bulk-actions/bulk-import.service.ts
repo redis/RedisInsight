@@ -19,7 +19,7 @@ import {
   BulkActionType,
 } from 'src/modules/bulk-actions/constants';
 import { BulkActionsAnalytics } from 'src/modules/bulk-actions/bulk-actions.analytics';
-import { UploadImportFileByPathDto } from 'src/modules/bulk-actions/dto/upload-import-file-by-path.dto';
+import { UploadImportFileByPathDto, ImportVectorCollectionDto } from 'src/modules/bulk-actions/dto/upload-import-file-by-path.dto';
 import {
   RedisClient,
   RedisClientCommand,
@@ -278,6 +278,40 @@ export class BulkImportService {
       throw new InternalServerErrorException(
         ERROR_MESSAGES.COMMON_DEFAULT_IMPORT_ERROR,
       );
+    }
+  }
+
+  /**
+   * Import vector collection data
+   * @param clientMetadata
+   * @param dto
+   */
+  public async importVectorCollection(
+    clientMetadata: ClientMetadata,
+    dto: ImportVectorCollectionDto,
+  ): Promise<IBulkActionOverview> {
+    try {
+      const collectionFilePath = join(
+        PATH_CONFIG.dataDir,
+        'vector-collections',
+        dto.collection,
+      );
+
+      if (!(await fs.pathExists(collectionFilePath))) {
+        throw new BadRequestException(
+          `No data file found for collection: ${dto.collection}`,
+        );
+      }
+
+      const fileStream = fs.createReadStream(collectionFilePath);
+      return this.import(clientMetadata, fileStream);
+    } catch (e) {
+      this.logger.error(
+        'Unable to import vector collection data',
+        e,
+        clientMetadata,
+      );
+      throw wrapHttpError(e);
     }
   }
 }

@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BulkImportService } from 'src/modules/bulk-actions/bulk-import.service';
 import {
   mockBulkActionsAnalytics,
+  mockBulkActionOverviewMatcher,
   mockClientMetadata,
   mockClusterRedisClient,
   mockCombinedStream,
@@ -539,6 +540,66 @@ describe('BulkImportService', () => {
         expect(e.message).toEqual('Unable to import default data');
         expect(spy).toHaveBeenCalledTimes(0);
       }
+    });
+  });
+
+  describe('importVectorCollection', () => {
+    it('should import vector collection successfully', async () => {
+      const spy = jest.spyOn(service, 'import');
+      spy.mockResolvedValue(mockBulkActionOverviewMatcher);
+
+      (mockedFs.pathExists as jest.Mock).mockResolvedValue(true);
+      (mockedFs.createReadStream as jest.Mock).mockReturnValue(new Readable());
+
+      const result = await service.importVectorCollection(mockClientMetadata, {
+        collection: 'bikes',
+      });
+
+      expect(mockedFs.pathExists).toHaveBeenCalledWith(
+        expect.stringContaining('vector-collections/bikes'),
+      );
+      expect(mockedFs.createReadStream).toHaveBeenCalledWith(
+        expect.stringContaining('vector-collections/bikes'),
+      );
+      expect(spy).toHaveBeenCalledWith(
+        mockClientMetadata,
+        expect.any(Readable),
+      );
+      expect(result).toEqual(mockBulkActionOverviewMatcher);
+    });
+
+    it('should throw BadRequestException when collection file does not exist', async () => {
+      (mockedFs.pathExists as jest.Mock).mockResolvedValue(false);
+
+      await expect(
+        service.importVectorCollection(mockClientMetadata, {
+          collection: 'nonexistent',
+        }),
+      ).rejects.toThrow('No data file found for collection: nonexistent');
+
+      expect(mockedFs.pathExists).toHaveBeenCalledWith(
+        expect.stringContaining('vector-collections/nonexistent'),
+      );
+    });
+
+    it('should handle import errors', async () => {
+      const spy = jest.spyOn(service, 'import');
+      const importError = new Error('Import failed');
+      spy.mockRejectedValue(importError);
+
+      (mockedFs.pathExists as jest.Mock).mockResolvedValue(true);
+      (mockedFs.createReadStream as jest.Mock).mockReturnValue(new Readable());
+
+      await expect(
+        service.importVectorCollection(mockClientMetadata, {
+          collection: 'bikes',
+        }),
+      ).rejects.toThrow('Import failed');
+
+      expect(spy).toHaveBeenCalledWith(
+        mockClientMetadata,
+        expect.any(Readable),
+      );
     });
   });
 });
