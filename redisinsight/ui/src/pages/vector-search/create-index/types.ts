@@ -8,6 +8,10 @@ export enum SampleDataType {
   CUSTOM_DATA = 'custom_data',
 }
 
+export enum PresetDataType {
+  BIKES = 'bikes',
+}
+
 export type CreateSearchIndexParameters = {
   // Select a database step
   instanceId: string

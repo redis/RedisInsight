@@ -18,6 +18,7 @@ import {
   SampleDataType,
   SearchIndexType,
 } from './types'
+import { useCreateIndex } from './hooks/useCreateIndex'
 
 const stepNextButtonTexts = [
   'Proceed to adding data',
@@ -45,6 +46,8 @@ export const VectorSearchCreateIndex = ({
       tags: [],
     })
 
+  const { run: createIndex, success, loading } = useCreateIndex()
+
   const setParameters = (params: Partial<CreateSearchIndexParameters>) => {
     setCreateSearchIndexParameters((prev) => ({ ...prev, ...params }))
   }
@@ -53,9 +56,7 @@ export const VectorSearchCreateIndex = ({
   const onNextClick = () => {
     const isFinalStep = step === stepContents.length - 1
     if (isFinalStep) {
-      alert(
-        `TODO: trigger index creation for params: ${JSON.stringify(createSearchIndexParameters)}`,
-      )
+      createIndex(createSearchIndexParameters)
       return
     }
 
@@ -63,6 +64,14 @@ export const VectorSearchCreateIndex = ({
   }
   const onBackClick = () => {
     setStep(step - 1)
+  }
+
+  if (loading) {
+    return <>Loading...</>
+  }
+
+  if (success) {
+    return <>Success!</>
   }
 
   return (
