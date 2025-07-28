@@ -9,17 +9,12 @@ import { MonacoJson } from 'uiSrc/components/monaco-editor'
 import UploadFile from 'uiSrc/components/upload-file'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { ColorText } from 'uiSrc/components/base/text'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
+import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import { CreateRejsonRlWithExpireDto } from 'apiSrc/modules/browser/rejson-rl/dto'
 
 import { AddJSONFormConfig as config } from '../constants/fields-config'
 
-import AddKeyFooter from '../AddKeyFooter/AddKeyFooter'
 
 export interface Props {
   keyName: string
@@ -99,38 +94,14 @@ const AddKeyReJSON = (props: Props) => {
         </>
       </FormField>
 
-      <PrimaryButton type="submit" style={{ display: 'none' }}>
-        Submit
-      </PrimaryButton>
-      <AddKeyFooter>
-        <>
-          <Row justify="end" style={{ padding: 18 }}>
-            <FlexItem>
-              <div>
-                <SecondaryButton
-                  onClick={() => onCancel(true)}
-                  className="btn-cancel btn-back"
-                >
-                  <ColorText>Cancel</ColorText>
-                </SecondaryButton>
-              </div>
-            </FlexItem>
-            <FlexItem>
-              <div>
-                <PrimaryButton
-                  className="btn-add"
-                  loading={loading}
-                  onClick={submitData}
-                  disabled={!isFormValid || loading}
-                  data-testid="add-key-json-btn"
-                >
-                  Add Key
-                </PrimaryButton>
-              </div>
-            </FlexItem>
-          </Row>
-        </>
-      </AddKeyFooter>
+      <ActionFooter
+        onCancel={() => onCancel(true)}
+        onAction={submitData}
+        actionText="Add Key"
+        loading={loading}
+        disabled={!isFormValid}
+        actionTestId="add-key-json-btn"
+      />
     </form>
   )
 }

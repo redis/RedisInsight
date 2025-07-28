@@ -22,11 +22,8 @@ import { connectedInstanceOverviewSelector } from 'uiSrc/slices/instances/instan
 import { FeatureFlags } from 'uiSrc/constants'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
+import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import {
   CreateHashWithExpireDto,
   HashFieldDto,
@@ -34,7 +31,6 @@ import {
 
 import { IHashFieldState, INITIAL_HASH_FIELD_STATE } from './interfaces'
 import { AddHashFormConfig as config } from '../constants/fields-config'
-import AddKeyFooter from '../AddKeyFooter/AddKeyFooter'
 
 export interface Props {
   keyName: string
@@ -233,34 +229,14 @@ const AddKeyHash = (props: Props) => {
         )}
       </AddMultipleFields>
 
-      <PrimaryButton type="submit" style={{ display: 'none' }}>
-        Submit
-      </PrimaryButton>
-      <AddKeyFooter>
-        <>
-          <Row justify="end" style={{ padding: 18 }}>
-            <FlexItem>
-              <SecondaryButton
-                onClick={() => onCancel(true)}
-                className="btn-cancel btn-back"
-              >
-                Cancel
-              </SecondaryButton>
-            </FlexItem>
-            <FlexItem>
-              <PrimaryButton
-                className="btn-add"
-                loading={loading}
-                onClick={submitData}
-                disabled={!isFormValid || loading}
-                data-testid="add-key-hash-btn"
-              >
-                Add Key
-              </PrimaryButton>
-            </FlexItem>
-          </Row>
-        </>
-      </AddKeyFooter>
+      <ActionFooter
+        onCancel={() => onCancel(true)}
+        onAction={submitData}
+        actionText="Add Key"
+        loading={loading}
+        disabled={!isFormValid}
+        actionTestId="add-key-hash-btn"
+      />
     </form>
   )
 }
