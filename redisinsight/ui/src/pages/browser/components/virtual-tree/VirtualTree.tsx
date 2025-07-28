@@ -306,7 +306,7 @@ const VirtualTree = (props: Props) => {
                   className={styles.loadingSpinner}
                 />
                 {loadingIcon ? (
-                  <img
+                  <RiImage
                     className={styles.loadingIcon}
                     src={loadingIcon}
                     alt="loading"
