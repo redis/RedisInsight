@@ -1,5 +1,5 @@
 import { RESOURCES_BASE_URL } from 'uiSrc/services/resourcesService'
-import { getFileUrlFromMd } from '../pathUtil'
+import { getFileUrlFromMd, getStaticAssetPath } from '../pathUtil'
 
 jest.mock('unist-util-visit')
 const TUTORIAL_PATH = 'static/custom-tutorials/tutorial-id'
@@ -37,5 +37,41 @@ describe('getFileUrlFromMd', () => {
       const url = getFileUrlFromMd(tc.url, tc.path)
       expect(url).toEqual(tc.result)
     })
+  })
+})
+
+describe('getStaticAssetPath', () => {
+  const originalWindow = global.window
+
+  afterEach(() => {
+    global.window = originalWindow
+  })
+
+  it('should return relative path for Electron environment', () => {
+    global.window = {
+      ...originalWindow,
+      app: { config: { apiPort: '5540' } },
+    } as any
+
+    expect(getStaticAssetPath('/preset-data/bikes.txt')).toBe(
+      './preset-data/bikes.txt',
+    )
+    expect(getStaticAssetPath('preset-data/bikes.txt')).toBe(
+      './preset-data/bikes.txt',
+    )
+  })
+
+  it('should return absolute path for web environment', () => {
+    global.window = {
+      ...originalWindow,
+    } as any
+    delete (global.window as any).app
+
+    expect(getStaticAssetPath('/preset-data/bikes.txt')).toBe(
+      '/preset-data/bikes.txt',
+    )
+    expect(getStaticAssetPath('preset-data/bikes.txt')).toBe(
+      '/preset-data/bikes.txt',
+    )
   })
 })

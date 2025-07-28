@@ -43,3 +43,19 @@ export const getFileUrlFromMd = (nodeUrl: string, mdPath: string): string => {
 
 export const getFileNameFromPath = (path: string): string =>
   path.split('/').pop() || ''
+
+/**
+ * Get the correct path for static assets based on the environment
+ * In Electron, use relative paths; in web, use absolute paths
+ */
+export const getStaticAssetPath = (path: string): string => {
+  const cleanPath = path.startsWith('/') ? path.slice(1) : path
+
+  // window.app is only available in Electron environment
+  const isElectron =
+    typeof window !== 'undefined' &&
+    window.app !== undefined &&
+    window.app !== null
+
+  return isElectron ? `./${cleanPath}` : `/${cleanPath}`
+}
