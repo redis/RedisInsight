@@ -6,6 +6,8 @@ import ResizablePanelHandle from './resize/handle/ResizablePanelHandle'
 
 
 export * from './card'
+export * from './horizontal-spacer'
+export * from './spacer'
 export {
   HorizontalRule,
   LoadingContent,
