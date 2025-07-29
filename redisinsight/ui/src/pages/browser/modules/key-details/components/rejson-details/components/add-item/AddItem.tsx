@@ -115,7 +115,7 @@ const AddItem = (props: Props) => {
                   name="newValue"
                   value={value}
                   placeholder="Enter JSON value"
-                  error={error ?? undefined}
+                  error={error}
                   onChange={value =>
                     setValue(value)
                   }
