@@ -12,7 +12,6 @@ import {
   getMswURL,
 } from 'uiSrc/utils/test-utils'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
-import { MOCK_REDISEARCH_INDEX_INFO } from 'uiSrc/mocks/data/redisearch'
 import Notifications from 'uiSrc/components/notifications'
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import { ApiEndpoints } from 'uiSrc/constants'
@@ -22,6 +21,8 @@ import notificationsReducer from 'uiSrc/slices/app/notifications'
 import appInfoReducer from 'uiSrc/slices/app/info'
 import redisearchReducer from 'uiSrc/slices/browser/redisearch'
 import instancesReducer from 'uiSrc/slices/instances/instances'
+import { indexInfoFactory } from 'uiSrc/mocks/factories/redisearch/IndexInfo.factory'
+import { IndexInfoDto } from 'apiSrc/modules/browser/redisearch/dto'
 import { IndexSection, IndexSectionProps } from './IndexSection'
 
 jest.mock('uiSrc/telemetry', () => ({
@@ -94,6 +95,10 @@ describe('IndexSection', () => {
     jest.clearAllMocks()
   })
 
+  afterEach(() => {
+    mswServer.resetHandlers()
+  })
+
   it('should render', async () => {
     const props: IndexSectionProps = {
       index: 'test-index',
@@ -113,9 +118,18 @@ describe('IndexSection', () => {
   })
 
   it('should display index summary when collapsed', async () => {
+    const mockIndexInfo = indexInfoFactory.build()
     const props: IndexSectionProps = {
-      index: 'test-index',
+      index: mockIndexInfo.index_name,
     }
+
+    // Override the MSW handler to return an error for this test
+    mswServer.use(
+      rest.post<IndexInfoDto>(
+        getMswURL(getUrl(INSTANCE_ID_MOCK, ApiEndpoints.REDISEARCH_INFO)),
+        async (_req, res, ctx) => res(ctx.status(200), ctx.json(mockIndexInfo)),
+      ),
+    )
 
     renderComponent(props)
 
@@ -125,29 +139,25 @@ describe('IndexSection', () => {
     expect(section).toBeInTheDocument()
 
     // Verify index name is formatted correctly
-    const indexName = screen.getByText('test-index')
+    const indexName = screen.getByText(mockIndexInfo.index_name)
     expect(indexName).toBeInTheDocument()
 
     // Verify the index summary info is displayed
     const recordsLabel = screen.getByText('Records')
-    const recordsValue = await screen.findByText(
-      MOCK_REDISEARCH_INDEX_INFO.num_records!,
-    )
+    const recordsValue = await screen.findByText(mockIndexInfo.num_records!)
 
     expect(recordsLabel).toBeInTheDocument()
     expect(recordsValue).toBeInTheDocument()
 
     const termsLabel = screen.getByText('Terms')
-    const termsValue = await screen.findByText(
-      MOCK_REDISEARCH_INDEX_INFO.num_terms!,
-    )
+    const termsValue = await screen.findByText(mockIndexInfo.num_terms!)
 
     expect(termsLabel).toBeInTheDocument()
     expect(termsValue).toBeInTheDocument()
 
     const fieldsLabel = screen.getByText('Fields')
     const fieldsValue = await screen.findByText(
-      MOCK_REDISEARCH_INDEX_INFO.attributes.length.toString(),
+      mockIndexInfo.attributes.length.toString(),
     )
 
     expect(fieldsLabel).toBeInTheDocument()
@@ -155,9 +165,18 @@ describe('IndexSection', () => {
   })
 
   it('should display index attributes when expanded', async () => {
+    const mockIndexInfo = indexInfoFactory.build()
     const props: IndexSectionProps = {
-      index: 'test-index',
+      index: mockIndexInfo.index_name,
     }
+
+    // Override the MSW handler to return an error for this test
+    mswServer.use(
+      rest.post<IndexInfoDto>(
+        getMswURL(getUrl(INSTANCE_ID_MOCK, ApiEndpoints.REDISEARCH_INFO)),
+        async (_req, res, ctx) => res(ctx.status(200), ctx.json(mockIndexInfo)),
+      ),
+    )
 
     const { container } = renderComponent(props)
 
@@ -183,10 +202,10 @@ describe('IndexSection', () => {
     const regularRows = container.querySelectorAll(
       'tr[data-row-type="regular"]',
     )
-    expect(regularRows.length).toBe(9)
+    expect(regularRows.length).toBe(mockIndexInfo.attributes.length)
 
     // Verify their values as well
-    const mockAttribute = MOCK_REDISEARCH_INDEX_INFO.attributes[0]
+    const mockAttribute = mockIndexInfo.attributes[0]
     const attributeValue = await screen.findByText(mockAttribute.attribute)
     const typeValue = await screen.findAllByText(mockAttribute.type)
     const weightValue = await screen.findAllByText(mockAttribute.WEIGHT!)

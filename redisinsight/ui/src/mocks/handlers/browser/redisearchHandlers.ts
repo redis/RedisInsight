@@ -2,7 +2,7 @@ import { rest, RestHandler } from 'msw'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { getMswURL } from 'uiSrc/utils/test-utils'
 import { getUrl, stringToBuffer } from 'uiSrc/utils'
-import { MOCK_REDISEARCH_INDEX_INFO } from 'uiSrc/mocks/data/redisearch'
+import { indexInfoFactory } from 'uiSrc/mocks/factories/redisearch/IndexInfo.factory'
 import {
   IndexInfoDto,
   ListRedisearchIndexesResponse,
@@ -26,7 +26,7 @@ const handlers: RestHandler[] = [
   rest.post<IndexInfoDto>(
     getMswURL(getUrl(INSTANCE_ID_MOCK, ApiEndpoints.REDISEARCH_INFO)),
     async (_req, res, ctx) =>
-      res(ctx.status(200), ctx.json(MOCK_REDISEARCH_INDEX_INFO)),
+      res(ctx.status(200), ctx.json(indexInfoFactory.build())),
   ),
   rest.delete(
     getMswURL(getUrl(INSTANCE_ID_MOCK, ApiEndpoints.REDISEARCH)),
