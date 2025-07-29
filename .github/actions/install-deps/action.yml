@@ -32,6 +32,21 @@ runs:
           echo "⚡ Caching disabled for branch: ${{ github.ref_name }}"
         fi
 
+    - name: Generate cache key
+      if: steps.should-cache.outputs.enabled == 'true'
+      id: cache-key
+      shell: bash
+      run: |
+        if [ "${{ inputs.dir-path }}" = "./" ]; then
+          LOCK_FILE="yarn.lock"
+          PKG_FILE="package.json"
+        else
+          LOCK_FILE="${{ inputs.dir-path }}/yarn.lock"
+          PKG_FILE="${{ inputs.dir-path }}/package.json"
+        fi
+        echo "lock-file=$LOCK_FILE" >> $GITHUB_OUTPUT
+        echo "pkg-file=$PKG_FILE" >> $GITHUB_OUTPUT
+
     - name: Cache Yarn dependencies
       if: steps.should-cache.outputs.enabled == 'true'
       uses: actions/cache@v4
@@ -40,7 +55,7 @@ runs:
           ~/.cache/yarn
           ${{ inputs.dir-path }}/node_modules
           .yarn/cache
-        key: ${{ runner.os }}-yarn-${{ inputs.dir-path }}-${{ hashFiles(format('{0}/yarn.lock', inputs.dir-path), format('{0}/package.json', inputs.dir-path)) }}
+        key: ${{ runner.os }}-yarn-${{ inputs.dir-path }}-${{ hashFiles(steps.cache-key.outputs.lock-file, steps.cache-key.outputs.pkg-file) }}
         restore-keys: |
           ${{ runner.os }}-yarn-${{ inputs.dir-path }}-
           ${{ runner.os }}-yarn-
