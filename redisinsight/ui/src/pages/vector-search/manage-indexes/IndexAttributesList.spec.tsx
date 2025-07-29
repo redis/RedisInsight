@@ -1,30 +1,14 @@
 import React from 'react'
 import { cleanup, render, screen } from 'uiSrc/utils/test-utils'
+import { indexInfoTableDataFactory } from 'uiSrc/mocks/factories/redisearch/IndexInfoTableData.factory'
 import {
   IndexAttributesList,
   IndexAttributesListProps,
 } from './IndexAttributesList'
 
 const renderComponent = (props?: Partial<IndexAttributesListProps>) => {
-  // TODO: Potentially replace this with a factory later
   const defaultProps: IndexAttributesListProps = {
-    data: [
-      {
-        attribute: 'title',
-        type: 'TEXT',
-        weight: '1.0',
-        separator: ',',
-      },
-      {
-        attribute: 'content',
-        type: 'TEXT',
-      },
-      {
-        attribute: 'tags',
-        type: 'TAG',
-        weight: '1.0',
-      },
-    ],
+    data: indexInfoTableDataFactory.buildList(3),
   }
 
   return render(<IndexAttributesList {...defaultProps} {...props} />)
@@ -38,12 +22,10 @@ describe('IndexAttributesList', () => {
   it('should render', () => {
     const props: IndexAttributesListProps = {
       data: [
-        {
-          attribute: 'title',
-          type: 'TEXT',
-          weight: '1.0',
-          separator: ',',
-        },
+        indexInfoTableDataFactory.build(
+          {},
+          { transient: { includeWeight: true, includeSeparator: true } },
+        ),
       ],
     }
 
