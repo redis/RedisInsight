@@ -44,30 +44,30 @@ export default function ChartConfigForm(props: ChartConfigFormProps) {
 
   return (
     <form className="chart-config-form">
-        <div className="chart-form-top">
-          <NewEnumSelect
-            values={Object.keys(GraphMode)}
-            selected={value.mode}
-            onClick={(v) => onChange('mode', v)}
-          />
-          <SwitchInput
-            title="Staircase"
-            checked={value.staircase}
-            onCheckedChange={(checked) => onChange('staircase', checked)}
-          />
-          <SwitchInput
-            title="Fill"
-            checked={value.fill}
-            onCheckedChange={(checked) => onChange('fill', checked)}
-          />
-        </div>
-        <RiAccordion
-          className="chart-form-accordion"
-          collapsible
-          open={moreOptions}
-          onOpenChange={setMoreOptions}
-          label={moreOptions ? 'Less options' : 'More options'}
-          content={        
+      <div className="chart-form-top">
+        <NewEnumSelect
+          values={Object.keys(GraphMode)}
+          selected={value.mode}
+          onClick={(v) => onChange('mode', v)}
+        />
+        <SwitchInput
+          title="Staircase"
+          checked={value.staircase}
+          onCheckedChange={(checked) => onChange('staircase', checked)}
+        />
+        <SwitchInput
+          title="Fill"
+          checked={value.fill}
+          onCheckedChange={(checked) => onChange('fill', checked)}
+        />
+      </div>
+      <RiAccordion
+        className="chart-form-accordion"
+        collapsible
+        open={moreOptions}
+        onOpenChange={setMoreOptions}
+        label={moreOptions ? 'Less options' : 'More options'}
+        content={
           <div className="more-options">
             <section>
               <FormFieldset legend={{ children: 'Title' }}>
@@ -142,8 +142,9 @@ export default function ChartConfigForm(props: ChartConfigFormProps) {
                 />
               )}
             </section>
-          </div>}
-        />
+          </div>
+        }
+      />
     </form>
   )
 }
