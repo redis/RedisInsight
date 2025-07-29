@@ -174,7 +174,9 @@ const ConnectionForm = (props: Props) => {
                       data-testid="connection-form-name-input"
                       placeholder="Enter RDI Alias"
                       maxLength={500}
-                      {...field}
+                      name={field.name}
+                      value={field.value}
+                      onChange={(value) => field.onChange({ target: { name: field.name, value } })}
                     />
                   )}
                 </Field>
@@ -191,7 +193,9 @@ const ConnectionForm = (props: Props) => {
                       data-testid="connection-form-url-input"
                       placeholder="Enter the RDI host IP as: https://[IP-Address]"
                       disabled={!!editInstance}
-                      {...field}
+                      name={field.name}
+                      value={field.value}
+                      onChange={(value) => field.onChange({ target: { name: field.name, value } })}
                     />
                   )}
                 </Field>
@@ -211,7 +215,9 @@ const ConnectionForm = (props: Props) => {
                             data-testid="connection-form-username-input"
                             placeholder="Enter the RDI Redis username"
                             maxLength={500}
-                            {...field}
+                            name={field.name}
+                            value={field.value}
+                            onChange={(value) => field.onChange({ target: { name: field.name, value } })}
                           />
                         )}
                       </Field>
