@@ -1,7 +1,5 @@
 import { useCallback, useState } from 'react'
-import { useLoadData } from 'uiSrc/services/hooks/useLoadData'
-import { getStaticAssetPath } from 'uiSrc/utils/pathUtil'
-import { useDispatchWbQuery } from 'uiSrc/services/hooks/useDispatchWbQuery'
+import { useLoadData, useDispatchWbQuery } from 'uiSrc/services/hooks'
 import { generateFtCreateCommand } from 'uiSrc/utils/index/generateFtCreateCommand'
 import { CreateSearchIndexParameters, PresetDataType } from '../types'
 
@@ -12,40 +10,36 @@ interface UseCreateIndexResult {
   success: boolean
 }
 
-const staticFilePathByPresetDataChoiceMap = {
-  [PresetDataType.BIKES]: getStaticAssetPath('preset-data/bikes.txt'),
+const collectionNameByPresetDataChoiceMap = {
+  [PresetDataType.BIKES]: 'bikes',
 }
 
 export const useCreateIndex = (): UseCreateIndexResult => {
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
-  // TODO: handle data file errors as well
-
-  const dispatchBulkInsert = useDispatchWbQuery()
-  const dispatchCreateIndex = useDispatchWbQuery()
 
   const { load } = useLoadData()
+  const dispatchCreateIndex = useDispatchWbQuery()
 
   const run = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async (_params: CreateSearchIndexParameters) => {
+    async ({ instanceId }: CreateSearchIndexParameters) => {
       setSuccess(false)
       setError(null)
       setLoading(true)
 
       try {
-        const filePath =
-          staticFilePathByPresetDataChoiceMap[PresetDataType.BIKES]
-        const fileData = await load(filePath)
+        const collectionName =
+          collectionNameByPresetDataChoiceMap[PresetDataType.BIKES]
 
-        await new Promise<void>((resolve, reject) => {
-          dispatchBulkInsert(fileData, {
-            afterAll: resolve,
-            onFail: reject,
-          })
-        })
+        if (!instanceId) {
+          throw new Error('Instance ID is required')
+        }
 
+        // Step 1: Load the vector collection data
+        await load(instanceId, collectionName)
+
+        // Step 2: Create the search index
         await new Promise<void>((resolve, reject) => {
           dispatchCreateIndex(generateFtCreateCommand(), {
             afterAll: () => {
@@ -61,7 +55,7 @@ export const useCreateIndex = (): UseCreateIndexResult => {
         setLoading(false)
       }
     },
-    [load, dispatchBulkInsert, dispatchCreateIndex],
+    [load, dispatchCreateIndex],
   )
 
   return {

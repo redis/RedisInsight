@@ -1,44 +1,54 @@
-import { useCallback, useState } from 'react'
+import { useState, useCallback } from 'react'
+import { apiService } from 'uiSrc/services'
+import { getUrl } from 'uiSrc/utils'
+import { IBulkActionOverview } from 'uiSrc/slices/interfaces'
+import { ApiEndpoints } from 'uiSrc/constants'
 
 interface UseLoadDataResult {
-  data: string | null
-  error: Error | null
+  load: (instanceId: string, collection: string) => Promise<IBulkActionOverview>
   loading: boolean
-  load: (filePath: string) => Promise<string>
+  error: Error | null
 }
 
 export const useLoadData = (): UseLoadDataResult => {
-  const [data, setData] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
-  const [loading, setLoading] = useState<boolean>(false)
 
-  const load = useCallback(async (filePath: string): Promise<string> => {
-    if (!filePath) {
-      const err = new Error('File path is required')
-      setError(err)
-      throw err
-    }
-
-    try {
+  const loadData = useCallback(
+    async (
+      instanceId: string,
+      collection: string,
+    ): Promise<IBulkActionOverview> => {
       setLoading(true)
       setError(null)
 
-      const res = await fetch(filePath)
-      if (!res.ok) {
-        throw new Error(`Failed to fetch ${filePath}: ${res.statusText}`)
+      try {
+        const { data } = await apiService.post(
+          getUrl(
+            instanceId,
+            ApiEndpoints.BULK_ACTIONS_IMPORT_VECTOR_COLLECTION,
+          ),
+          { collection },
+        )
+
+        return data
+      } catch (err) {
+        const error =
+          err instanceof Error
+            ? err
+            : new Error('Failed to import vector collection')
+        setError(error)
+        throw error
+      } finally {
+        setLoading(false)
       }
+    },
+    [],
+  )
 
-      const text = await res.text()
-      setData(text)
-      return text
-    } catch (err) {
-      const error = err instanceof Error ? err : new Error(String(err))
-      setError(error)
-      throw error
-    } finally {
-      setLoading(false)
-    }
-  }, [])
-
-  return { data, error, loading, load }
+  return {
+    load: loadData,
+    loading,
+    error,
+  }
 }

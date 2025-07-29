@@ -1,99 +1,97 @@
 import { renderHook, act } from '@testing-library/react-hooks'
-import { useDispatchWbQuery as mockedUseDispatchWbQuery } from 'uiSrc/services/hooks/useDispatchWbQuery'
 import { useCreateIndex } from './useCreateIndex'
 import { SampleDataType, SearchIndexType } from '../types'
 
 const mockLoad = jest.fn()
+const mockDispatch = jest.fn()
 
-jest.mock('uiSrc/services/hooks/useLoadData', () => ({
+jest.mock('uiSrc/services/hooks', () => ({
   useLoadData: () => ({
     load: mockLoad,
   }),
+  useDispatchWbQuery: () => mockDispatch,
 }))
-
-jest.mock('uiSrc/services/hooks/useDispatchWbQuery')
 
 jest.mock('uiSrc/utils/index/generateFtCreateCommand', () => ({
   generateFtCreateCommand: () => 'FT.CREATE idx:bikes_vss ...',
 }))
-
-const mockUseDispatchWbQuery = mockedUseDispatchWbQuery as jest.Mock
 
 describe('useCreateIndex', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
-  it('should complete index creation flow successfully', async () => {
-    mockLoad.mockResolvedValue('HSET bikes:1 ...')
+  const defaultParams = {
+    dataContent: '',
+    usePresetVectorIndex: true,
+    presetVectorIndexName: '',
+    tags: [],
+    instanceId: 'test-instance-id',
+    searchIndexType: SearchIndexType.REDIS_QUERY_ENGINE,
+    sampleDataType: SampleDataType.PRESET_DATA,
+  }
 
-    const bulkDispatch = jest.fn(
-      (_data: string, { afterAll }: { afterAll?: () => void }) => afterAll?.(),
-    )
-    const createDispatch = jest.fn(
-      (_data: string, { afterAll }: { afterAll?: () => void }) => afterAll?.(),
-    )
-
-    mockUseDispatchWbQuery
-      .mockReturnValueOnce(bulkDispatch)
-      .mockReturnValueOnce(createDispatch)
+  it('should complete flow successfully', async () => {
+    mockLoad.mockResolvedValue(undefined)
+    mockDispatch.mockImplementation((_data, { afterAll }) => afterAll?.())
 
     const { result } = renderHook(() => useCreateIndex())
 
-    await act(async () =>
-      result.current.run({
-        dataContent: '',
-        usePresetVectorIndex: true,
-        presetVectorIndexName: '',
-        tags: [],
-        instanceId: '',
-        searchIndexType: SearchIndexType.REDIS_QUERY_ENGINE,
-        sampleDataType: SampleDataType.PRESET_DATA,
-      }),
-    )
+    await act(async () => {
+      await result.current.run(defaultParams)
+    })
+
+    expect(mockLoad).toHaveBeenCalledWith('test-instance-id', 'bikes')
+    expect(mockDispatch).toHaveBeenCalled()
+    expect(result.current.success).toBe(true)
+    expect(result.current.error).toBeNull()
+    expect(result.current.loading).toBe(false)
+  })
+
+  it('should handle error if instanceId is missing', async () => {
+    const { result } = renderHook(() => useCreateIndex())
+
+    await act(async () => {
+      await result.current.run({ ...defaultParams, instanceId: '' })
+    })
+
+    expect(result.current.success).toBe(false)
+    expect(result.current.error?.message).toMatch(/Instance ID is required/)
+    expect(result.current.loading).toBe(false)
+  })
+
+  it('should handle failure in data loading', async () => {
+    const error = new Error('Failed to load')
+    mockLoad.mockRejectedValue(error)
+
+    const { result } = renderHook(() => useCreateIndex())
+
+    await act(async () => {
+      await result.current.run(defaultParams)
+    })
 
     expect(mockLoad).toHaveBeenCalled()
-    expect(bulkDispatch).toHaveBeenCalled()
-    expect(createDispatch).toHaveBeenCalled()
-    expect(result.current.error).toBeNull()
-    expect(result.current.success).toBe(true)
-    expect(result.current.loading).toBe(false)
-  })
-
-  it('should handle load failure', async () => {
-    mockLoad.mockRejectedValue(new Error('Failed to load file'))
-
-    const { result } = renderHook(() => useCreateIndex())
-
-    await act(async () => {
-      await result.current.run({} as any)
-    })
-
-    expect(result.current.error?.message).toBe('Failed to load file')
     expect(result.current.success).toBe(false)
+    expect(result.current.error).toBe(error)
     expect(result.current.loading).toBe(false)
   })
 
-  it('should handle dispatch failure (FT.CREATE)', async () => {
-    mockLoad.mockResolvedValue('HSET bikes:1 valid')
-
-    const bulkDispatch = jest.fn((_data, { afterAll }) => afterAll?.())
-    const createDispatch = jest.fn((_data, { onFail }) => onFail?.())
-
-    mockUseDispatchWbQuery
-      .mockReturnValueOnce(bulkDispatch)
-      .mockReturnValueOnce(createDispatch)
+  it('should handle dispatch failure', async () => {
+    mockLoad.mockResolvedValue(undefined)
+    mockDispatch.mockImplementation((_data, { onFail }) =>
+      onFail?.(new Error('Dispatch failed')),
+    )
 
     const { result } = renderHook(() => useCreateIndex())
 
     await act(async () => {
-      await result.current.run({} as any)
+      await result.current.run(defaultParams)
     })
 
-    expect(bulkDispatch).toHaveBeenCalled()
-    expect(createDispatch).toHaveBeenCalled()
+    expect(mockDispatch).toHaveBeenCalled()
     expect(result.current.success).toBe(false)
     expect(result.current.error).toBeInstanceOf(Error)
+    expect(result.current.error?.message).toBe('Dispatch failed')
     expect(result.current.loading).toBe(false)
   })
 })
