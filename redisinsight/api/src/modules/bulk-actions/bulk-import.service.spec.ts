@@ -561,7 +561,7 @@ describe('BulkImportService', () => {
       (mockedFs.createReadStream as jest.Mock).mockReturnValue(new Readable());
 
       const result = await service.importVectorCollection(mockClientMetadata, {
-        collection: 'bikes',
+        collectionName: 'bikes',
       });
 
       expect(mockedFs.pathExists).toHaveBeenCalledWith(
@@ -577,12 +577,12 @@ describe('BulkImportService', () => {
       expect(result).toEqual(mockBulkActionOverviewMatcher);
     });
 
-    it('should throw BadRequestException when collection file does not exist', async () => {
+    it('should throw BadRequestException when collectionName file does not exist', async () => {
       (mockedFs.pathExists as jest.Mock).mockResolvedValue(false);
 
       await expect(
         service.importVectorCollection(mockClientMetadata, {
-          collection: 'bikes',
+          collectionName: 'bikes',
         }),
       ).rejects.toThrow('No data file found for collection: bikes');
 
@@ -601,7 +601,7 @@ describe('BulkImportService', () => {
 
       await expect(
         service.importVectorCollection(mockClientMetadata, {
-          collection: 'bikes',
+          collectionName: 'bikes',
         }),
       ).rejects.toThrow('Import failed');
 
@@ -611,10 +611,10 @@ describe('BulkImportService', () => {
       );
     });
 
-    it('should throw BadRequestException when collection name is not in allowed list', async () => {
+    it('should throw BadRequestException when collectionName is not in allowed list', async () => {
       await expect(
         service.importVectorCollection(mockClientMetadata, {
-          collection: '../../etc/passwd', // malicious input
+          collectionName: '../../etc/passwd', // malicious input
         }),
       ).rejects.toThrow('Invalid collection name');
     });

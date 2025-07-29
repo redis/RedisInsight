@@ -19,5 +19,5 @@ export class ImportVectorCollectionDto {
   })
   @IsString()
   @IsNotEmpty()
-  collection: string;
+  collectionName: string;
 }

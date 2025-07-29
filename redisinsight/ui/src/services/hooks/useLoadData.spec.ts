@@ -8,7 +8,7 @@ import { useLoadData } from './useLoadData'
 
 describe('useLoadData', () => {
   const instanceId = 'test-instance-id'
-  const collection = 'test-collection'
+  const collectionName = 'test-collection'
 
   beforeEach(() => {
     mswServer.resetHandlers()
@@ -42,7 +42,7 @@ describe('useLoadData', () => {
         ),
         async (req, res, ctx) => {
           const body = await req.json()
-          expect(body).toEqual({ collection })
+          expect(body).toEqual({ collectionName })
           return res(ctx.status(200), ctx.json(mockResponse))
         },
       ),
@@ -52,7 +52,7 @@ describe('useLoadData', () => {
 
     let returnedData
     await act(async () => {
-      returnedData = await result.current.load(instanceId, collection)
+      returnedData = await result.current.load(instanceId, collectionName)
     })
 
     expect(returnedData).toEqual(mockResponse)
@@ -88,7 +88,7 @@ describe('useLoadData', () => {
 
     // Start the request without awaiting
     act(() => {
-      result.current.load(instanceId, collection)
+      result.current.load(instanceId, collectionName)
     })
 
     // Loading should be true while request is pending
@@ -125,7 +125,7 @@ describe('useLoadData', () => {
 
     await act(async () => {
       try {
-        await result.current.load(instanceId, collection)
+        await result.current.load(instanceId, collectionName)
       } catch (err) {
         expect(err).toBeInstanceOf(Error)
       }
@@ -163,7 +163,7 @@ describe('useLoadData', () => {
     // First call fails
     await act(async () => {
       try {
-        await result.current.load(instanceId, collection)
+        await result.current.load(instanceId, collectionName)
       } catch {
         // Expected to fail
       }
@@ -173,7 +173,7 @@ describe('useLoadData', () => {
 
     // Second call succeeds
     await act(async () => {
-      await result.current.load(instanceId, collection)
+      await result.current.load(instanceId, collectionName)
     })
 
     expect(result.current.error).toBeNull()
@@ -246,7 +246,7 @@ describe('useLoadData', () => {
     })
 
     expect(requestBodies).toHaveLength(2)
-    expect(requestBodies[0]).toEqual({ collection: 'bikes' })
-    expect(requestBodies[1]).toEqual({ collection: 'cars' })
+    expect(requestBodies[0]).toEqual({ collectionName: 'bikes' })
+    expect(requestBodies[1]).toEqual({ collectionName: 'cars' })
   })
 })

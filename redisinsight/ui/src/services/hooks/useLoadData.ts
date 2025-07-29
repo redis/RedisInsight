@@ -17,7 +17,7 @@ export const useLoadData = (): UseLoadDataResult => {
   const loadData = useCallback(
     async (
       instanceId: string,
-      collection: string,
+      collectionName: string,
     ): Promise<IBulkActionOverview> => {
       setLoading(true)
       setError(null)
@@ -28,7 +28,7 @@ export const useLoadData = (): UseLoadDataResult => {
             instanceId,
             ApiEndpoints.BULK_ACTIONS_IMPORT_VECTOR_COLLECTION,
           ),
-          { collection },
+          { collectionName },
         )
 
         return data

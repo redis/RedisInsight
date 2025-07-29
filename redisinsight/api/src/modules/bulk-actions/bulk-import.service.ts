@@ -19,7 +19,10 @@ import {
   BulkActionType,
 } from 'src/modules/bulk-actions/constants';
 import { BulkActionsAnalytics } from 'src/modules/bulk-actions/bulk-actions.analytics';
-import { UploadImportFileByPathDto, ImportVectorCollectionDto } from 'src/modules/bulk-actions/dto/upload-import-file-by-path.dto';
+import {
+  UploadImportFileByPathDto,
+  ImportVectorCollectionDto,
+} from 'src/modules/bulk-actions/dto/upload-import-file-by-path.dto';
 import {
   RedisClient,
   RedisClientCommand,
@@ -293,19 +296,19 @@ export class BulkImportService {
     dto: ImportVectorCollectionDto,
   ): Promise<IBulkActionOverview> {
     try {
-      if (!ALLOWED_VECTOR_INDEX_COLLECTIONS.includes(dto.collection)) {
+      if (!ALLOWED_VECTOR_INDEX_COLLECTIONS.includes(dto.collectionName)) {
         throw new BadRequestException('Invalid collection name');
       }
 
       const collectionFilePath = join(
         PATH_CONFIG.dataDir,
         'vector-collections',
-        dto.collection,
+        dto.collectionName,
       );
 
       if (!(await fs.pathExists(collectionFilePath))) {
         throw new BadRequestException(
-          `No data file found for collection: ${dto.collection}`,
+          `No data file found for collection: ${dto.collectionName}`,
         );
       }
 
