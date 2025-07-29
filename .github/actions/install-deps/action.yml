@@ -49,6 +49,7 @@ runs:
 
     - name: Cache Yarn dependencies
       if: steps.should-cache.outputs.enabled == 'true'
+      id: yarn-cache
       uses: actions/cache@v4
       with:
         path: |
@@ -59,6 +60,16 @@ runs:
         restore-keys: |
           ${{ runner.os }}-yarn-${{ inputs.dir-path }}-
           ${{ runner.os }}-yarn-
+
+    - name: Check cache status
+      if: steps.should-cache.outputs.enabled == 'true'
+      shell: bash
+      run: |
+        if [ "${{ steps.yarn-cache.outputs.cache-hit }}" = "true" ]; then
+          echo "🎯 Cache HIT for ${{ inputs.dir-path }} - dependencies restored from cache"
+        else
+          echo "❌ Cache MISS for ${{ inputs.dir-path }} - will install dependencies"
+        fi
 
     - name: Install dependencies
       working-directory: ${{ inputs.dir-path }}
