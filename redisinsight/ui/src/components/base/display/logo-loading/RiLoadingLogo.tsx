@@ -29,8 +29,8 @@ export type RiLoadingLogoSize = (typeof SIZES)[number]
 
 export interface LogoLoadingProps extends HTMLAttributes<HTMLImageElement> {
   src: string
-  size?: RiLoadingLogoSize
-  bounceSpeed?: number
+  $size?: RiLoadingLogoSize
+  $bounceSpeed?: number
   alt?: string
 }
 
@@ -40,24 +40,25 @@ const Wrapper = styled.div`
   justify-content: center;
 `
 
-const BouncingLogo = styled.img<
-  Omit<LogoLoadingProps, 'size' | 'bounceSpeed'> & {
-    size?: RiLoadingLogoSize
-    bounceSpeed: number
-  }
->`
-  ${({ size = 'xl' }) => logoSizeStyles[size]};
-  animation: ${bounce} ${({ bounceSpeed }) => bounceSpeed}s ease-in-out infinite;
+const BouncingLogo = styled.img<LogoLoadingProps>`
+  ${({ $size = 'xl' }) => logoSizeStyles[$size]};
+  animation: ${bounce} ${({ $bounceSpeed }) => $bounceSpeed}s ease-in-out
+    infinite;
 `
 
 const RiLoadingLogo = ({
   src,
-  size = 'xl',
-  bounceSpeed = 1,
+  $size = 'xl',
+  $bounceSpeed = 1,
   alt = 'Loading logo',
 }: LogoLoadingProps) => (
   <Wrapper>
-    <BouncingLogo src={src} size={size} bounceSpeed={bounceSpeed} alt={alt} />
+    <BouncingLogo
+      src={src}
+      $size={$size}
+      $bounceSpeed={$bounceSpeed}
+      alt={alt}
+    />
   </Wrapper>
 )
 
