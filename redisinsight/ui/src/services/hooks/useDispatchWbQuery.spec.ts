@@ -1,28 +1,12 @@
-import { renderHook } from '@testing-library/react-hooks'
 import { act } from '@testing-library/react'
-import { useDispatch } from 'react-redux'
-import * as WbResults from 'uiSrc/slices/workbench/wb-results'
+import { renderHook, mockedStore } from 'uiSrc/utils/test-utils'
 
 import { useDispatchWbQuery } from './useDispatchWbQuery'
 
-jest.mock('react-redux', () => ({
-  useDispatch: jest.fn(),
-}))
-
-jest.mock('uiSrc/slices/workbench/wb-results', () => ({
-  sendWbQueryAction: jest.fn(),
-}))
-
-const mockedUseDispatch = useDispatch as jest.Mock
-
 describe('useDispatchWbQuery', () => {
-  const mockDispatch = jest.fn()
-
   beforeEach(() => {
     jest.clearAllMocks()
-    mockedUseDispatch.mockReturnValue(mockDispatch)
-
-    jest.spyOn(WbResults, 'sendWbQueryAction')
+    mockedStore.clearActions()
   })
 
   it('should dispatch sendWbQueryAction when data is provided', () => {
@@ -33,48 +17,67 @@ describe('useDispatchWbQuery', () => {
     const onFail = jest.fn()
 
     const { result } = renderHook(() => useDispatchWbQuery())
+    const dispatchWbQuery = result.current as ReturnType<
+      typeof useDispatchWbQuery
+    >
 
     act(() => {
-      result.current(data, {
+      dispatchWbQuery(data, {
         afterAll,
         afterEach,
         onFail,
       })
     })
 
-    expect(WbResults.sendWbQueryAction).toHaveBeenCalledWith(
-      data,
-      undefined,
-      undefined,
-      {
-        afterAll,
-        afterEach,
-      },
-      onFail,
+    const actions = mockedStore.getActions()
+
+    expect(actions).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          type: 'workbenchResults/sendWBCommand',
+          payload: expect.objectContaining({
+            commands: [data],
+            commandId: expect.any(String),
+          }),
+        }),
+      ]),
     )
 
-    expect(mockDispatch).toHaveBeenCalledTimes(1)
+    expect(actions).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          type: 'appContext/setDbIndexState',
+          payload: true,
+        }),
+      ]),
+    )
+
+    expect(actions.length).toBeGreaterThanOrEqual(2)
   })
 
   it('should not dispatch if data is null', () => {
     const { result } = renderHook(() => useDispatchWbQuery())
+    const dispatchWbQuery = result.current as ReturnType<
+      typeof useDispatchWbQuery
+    >
 
     act(() => {
-      result.current(null)
+      dispatchWbQuery(null)
     })
 
-    expect(WbResults.sendWbQueryAction).not.toHaveBeenCalled()
-    expect(mockDispatch).not.toHaveBeenCalled()
+    expect(mockedStore.getActions()).toHaveLength(0)
   })
 
   it('should not dispatch if data is undefined', () => {
     const { result } = renderHook(() => useDispatchWbQuery())
+    const dispatchWbQuery = result.current as ReturnType<
+      typeof useDispatchWbQuery
+    >
 
     act(() => {
-      result.current(null)
+      dispatchWbQuery(undefined)
     })
 
-    expect(WbResults.sendWbQueryAction).not.toHaveBeenCalled()
-    expect(mockDispatch).not.toHaveBeenCalled()
+    expect(mockedStore.getActions()).toHaveLength(0)
   })
 })
