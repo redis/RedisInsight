@@ -186,7 +186,7 @@ const AddKeyZset = (props: Props) => {
         onClickAdd={addMember}
       >
         {(item, index) => (
-          <Row align="center">
+          <Row align="center" gap="m">
             <FlexItem grow>
               <FormField>
                 <EuiFieldText
