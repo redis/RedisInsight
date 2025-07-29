@@ -2,6 +2,7 @@ import { LoggerService, Injectable } from '@nestjs/common';
 import { WinstonModule, WinstonModuleOptions } from 'nest-winston';
 import { cloneDeep, isString } from 'lodash';
 import { ClientMetadata, SessionMetadata } from 'src/common/models';
+import { instanceToPlain } from 'class-transformer';
 
 type LogMeta = object;
 
@@ -106,8 +107,8 @@ export class AppLogger implements LoggerService {
       message,
       context,
       error,
-      ...userMetadata,
-      data: optionalParamsCopy?.length ? optionalParamsCopy : undefined,
+      ...instanceToPlain(userMetadata),
+      data: optionalParamsCopy?.length ? instanceToPlain(optionalParamsCopy) : undefined,
     };
   }
 
