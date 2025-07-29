@@ -11,7 +11,7 @@ const PagePlaceholder = () => (
     {riConfig.app.env !== 'development' && (
       <EuiEmptyPrompt
         data-testid="page-placeholder"
-        icon={<RiLoadingLogo src={LogoIcon} />}
+        icon={<RiLoadingLogo src={LogoIcon} $size='XXL'/>}
         titleSize="s"
       />
     )}
