@@ -1,3 +1,5 @@
-import { ButtonGroup } from '@redis-ui/components'
+import { ButtonGroup, ButtonGroupProps } from '@redis-ui/components'
 
 export { ButtonGroup }
+
+export type { ButtonGroupProps }

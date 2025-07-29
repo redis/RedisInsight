@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { EuiFieldText, EuiButtonGroup, EuiButtonGroupProps } from '@elastic/eui'
+import { EuiFieldText } from '@elastic/eui'
 import { SwitchInput } from 'uiSrc/components/base/inputs'
 import { FormFieldset } from 'uiSrc/components/base/forms/fieldset'
 import { AxisScale, GraphMode, ChartConfigFormProps } from './interfaces'
@@ -9,7 +9,10 @@ import {
   TITLE_MAX_LENGTH,
 } from './constants'
 import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
-import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
+import {
+  ButtonGroup,
+  ButtonGroupProps,
+} from 'uiSrc/components/base/forms/button-group/ButtonGroup'
 
 const NewEnumSelect = ({
   select,
@@ -178,6 +181,8 @@ const YAxisConfigForm = ({ value, onChange, label }: any) => (
   </div>
 )
 
+const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
+
 interface EnumSelectProps {
   enumType: any
   inputLabel: string
@@ -187,13 +192,18 @@ const EnumSelect = ({
   enumType,
   inputLabel,
   ...props
-}: EnumSelectProps & EuiButtonGroupProps) => (
-  <EuiButtonGroup
-    legend="form-button"
-    buttonSize="compressed"
-    options={Object.values(enumType).map((v: string) => ({ id: v, label: v }))}
-    onChange={(id) => props.onChange({ target: { value: id } } as any)}
-    idSelected={props.value.toString()}
-    isFullWidth
-  />
+}: EnumSelectProps & ButtonGroupProps) => (
+  <ButtonGroup>
+    {Object.values(enumType).map((v) => (
+      <ButtonGroup.Button
+        isSelected={props.value === v}
+        key={String(v)}
+        onClick={() =>
+          props.onChange?.({ target: { value: String(v) } } as any)
+        }
+      >
+        {capitalize(String(v))}
+      </ButtonGroup.Button>
+    ))}
+  </ButtonGroup>
 )
