@@ -65,7 +65,6 @@ import { ManageTagsModal } from './components/database-manage-tags-modal/ManageT
 
 import './styles.scss'
 import styles from './styles.module.scss'
-import { AppNavigation } from 'uiSrc/components'
 
 enum OpenDialogName {
   AddDatabase = 'add',
@@ -252,7 +251,6 @@ const HomePage = () => {
       <div className={styles.pageWrapper}>
         <Page className={styles.page}>
           <PageBody component="div">
-            <AppNavigation />
             <DatabaseListHeader
               key="instance-controls"
               onAddInstance={handleAddInstance}

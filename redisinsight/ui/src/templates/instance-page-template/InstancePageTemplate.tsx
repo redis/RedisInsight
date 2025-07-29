@@ -14,6 +14,7 @@ import {
   ResizablePanelHandle,
 } from 'uiSrc/components/base/layout'
 import { ImperativePanelGroupHandle } from 'uiSrc/components/base/layout/resize'
+import { AppNavigation } from 'uiSrc/components'
 
 export const firstPanelId = 'main-component'
 export const secondPanelId = 'cli'
@@ -94,6 +95,7 @@ const InstancePageTemplate = (props: Props) => {
   return (
     <>
       <InstanceHeader />
+      <AppNavigation />
       <ResizableContainer
         ref={ref}
         direction="vertical"
