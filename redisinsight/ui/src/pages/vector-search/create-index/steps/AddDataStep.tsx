@@ -64,6 +64,7 @@ const indexDataContent: BoxSelectionOption<SampleDataContent>[] = [
     label: 'AI Assistants',
     text: 'Find products by meaning, not just keywords.',
     icon: DatabaseIcon,
+    disabled: true,
   },
   {
     value: SampleDataContent.CONTENT_RECOMMENDATIONS,

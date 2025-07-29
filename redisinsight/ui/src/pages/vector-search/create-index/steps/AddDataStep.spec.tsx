@@ -130,7 +130,7 @@ describe('AddDataStep', () => {
       })
     })
 
-    it('should call setParameters with AI Assistants when clicked', () => {
+    it('should not call setParameters when AI Assistants (disabled) is clicked', () => {
       render(<AddDataStep {...defaultProps} />)
 
       const aiAssistantsOption = screen
@@ -138,9 +138,8 @@ describe('AddDataStep', () => {
         .closest('div')
       fireEvent.click(aiAssistantsOption!)
 
-      expect(mockSetParameters).toHaveBeenCalledWith({
-        dataContent: SampleDataContent.AI_ASSISTANTS,
-      })
+      // Disabled options should not trigger onClick
+      expect(mockSetParameters).not.toHaveBeenCalled()
     })
 
     it('should not call setParameters when Content Recommendations (disabled) is clicked', () => {
@@ -158,9 +157,9 @@ describe('AddDataStep', () => {
     it('should show "Coming soon" text for disabled options', () => {
       render(<AddDataStep {...defaultProps} />)
 
-      // There should be 2 "Coming soon" texts - one for Vector Set and one for Content Recommendations
+      // There should be 3 "Coming soon" texts - Vector Set, AI Assistants, and Content Recommendations
       const comingSoonTexts = screen.getAllByText('Coming soon')
-      expect(comingSoonTexts).toHaveLength(2)
+      expect(comingSoonTexts).toHaveLength(3)
     })
   })
 
