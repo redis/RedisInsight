@@ -1,5 +1,5 @@
 import React, { HTMLAttributes } from 'react'
-import styled, { css, keyframes } from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 
 const bounce = keyframes`
   0%, 100% {
@@ -11,19 +11,7 @@ const bounce = keyframes`
   }
 `
 
-export const SIZES = ['m', 'l', 'xl'] as const
-
-const logoSizeStyles = {
-  m: css`
-    width: var(--size-m);
-  `,
-  l: css`
-    width: var(--size-l);
-  `,
-  xl: css`
-    width: var(--size-xl);
-  `,
-}
+export const SIZES = ['M', 'L', 'XL', 'XXL'] as const
 
 export type RiLoadingLogoSize = (typeof SIZES)[number]
 
@@ -41,14 +29,15 @@ const Wrapper = styled.div`
 `
 
 const BouncingLogo = styled.img<LogoLoadingProps>`
-  ${({ $size = 'xl' }) => logoSizeStyles[$size]};
+  width: ${({ theme, $size = 'XL' }) =>
+    theme.components.iconButton.sizes[$size].width};
   animation: ${bounce} ${({ $bounceSpeed }) => $bounceSpeed}s ease-in-out
     infinite;
 `
 
 const RiLoadingLogo = ({
   src,
-  $size = 'xl',
+  $size = 'XL',
   $bounceSpeed = 1,
   alt = 'Loading logo',
 }: LogoLoadingProps) => (
