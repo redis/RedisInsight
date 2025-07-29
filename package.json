@@ -223,7 +223,6 @@
     "vite-plugin-electron": "^0.28.6",
     "vite-plugin-electron-renderer": "^0.14.5",
     "vite-plugin-react-click-to-component": "^3.0.0",
-    "vite-plugin-static-copy": "^3.1.1",
     "vite-plugin-svgr": "^4.2.0",
     "webpack": "^5.95.0",
     "webpack-bundle-analyzer": "^4.10.2",
