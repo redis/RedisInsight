@@ -33,7 +33,7 @@ export const TagInputField = ({
           <TextInput
             value={value}
             disabled={disabled}
-            valid={isInvalid}
+            valid={!isInvalid}
             onChange={(value) => onChange(value)}
             onFocusCapture={() => {
               setIsFocused(true)
