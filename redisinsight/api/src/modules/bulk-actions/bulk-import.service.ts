@@ -34,6 +34,8 @@ const BATCH_LIMIT = 10_000;
 const PATH_CONFIG = config.get('dir_path') as Config['dir_path'];
 const SERVER_CONFIG = config.get('server') as Config['server'];
 
+const ALLOWED_VECTOR_INDEX_COLLECTIONS = ['bikes'];
+
 @Injectable()
 export class BulkImportService {
   private logger = new Logger('BulkImportService');
@@ -291,6 +293,10 @@ export class BulkImportService {
     dto: ImportVectorCollectionDto,
   ): Promise<IBulkActionOverview> {
     try {
+      if (!ALLOWED_VECTOR_INDEX_COLLECTIONS.includes(dto.collection)) {
+        throw new BadRequestException('Invalid collection name');
+      }
+
       const collectionFilePath = join(
         PATH_CONFIG.dataDir,
         'vector-collections',

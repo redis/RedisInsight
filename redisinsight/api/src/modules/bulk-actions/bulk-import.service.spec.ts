@@ -544,6 +544,15 @@ describe('BulkImportService', () => {
   });
 
   describe('importVectorCollection', () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    beforeEach(() => {
+      (mockedFs.pathExists as jest.Mock).mockReset();
+      (mockedFs.createReadStream as jest.Mock).mockReset();
+    });
+
     it('should import vector collection successfully', async () => {
       const spy = jest.spyOn(service, 'import');
       spy.mockResolvedValue(mockBulkActionOverviewMatcher);
@@ -573,12 +582,12 @@ describe('BulkImportService', () => {
 
       await expect(
         service.importVectorCollection(mockClientMetadata, {
-          collection: 'nonexistent',
+          collection: 'bikes',
         }),
-      ).rejects.toThrow('No data file found for collection: nonexistent');
+      ).rejects.toThrow('No data file found for collection: bikes');
 
       expect(mockedFs.pathExists).toHaveBeenCalledWith(
-        expect.stringContaining('vector-collections/nonexistent'),
+        expect.stringContaining('vector-collections/bikes'),
       );
     });
 
@@ -600,6 +609,14 @@ describe('BulkImportService', () => {
         mockClientMetadata,
         expect.any(Readable),
       );
+    });
+
+    it('should throw BadRequestException when collection name is not in allowed list', async () => {
+      await expect(
+        service.importVectorCollection(mockClientMetadata, {
+          collection: '../../etc/passwd', // malicious input
+        }),
+      ).rejects.toThrow('Invalid collection name');
     });
   });
 });
