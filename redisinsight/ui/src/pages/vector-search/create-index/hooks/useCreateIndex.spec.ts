@@ -1,6 +1,10 @@
 import { renderHook, act } from '@testing-library/react-hooks'
 import { useCreateIndex } from './useCreateIndex'
-import { SampleDataType, SearchIndexType } from '../types'
+import {
+  CreateSearchIndexParameters,
+  SampleDataType,
+  SearchIndexType,
+} from '../types'
 
 const mockLoad = jest.fn()
 const mockDispatch = jest.fn()
@@ -21,7 +25,7 @@ describe('useCreateIndex', () => {
     jest.clearAllMocks()
   })
 
-  const defaultParams = {
+  const defaultParams: CreateSearchIndexParameters = {
     dataContent: '',
     usePresetVectorIndex: true,
     presetVectorIndexName: '',
