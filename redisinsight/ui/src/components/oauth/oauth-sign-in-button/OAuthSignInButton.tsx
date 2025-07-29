@@ -29,7 +29,7 @@ const OAuthSignInButton = (props: Props) => {
           }
           data-testid="cloud-sign-in-btn"
         >
-          <RiImage className={styles.logo} src={RedisLogo} alt="" />
+          <RiImage className={styles.logo} src={RedisLogo} alt="Redis logo" />
           <span>Cloud sign in</span>
         </SecondaryButton>
       )}

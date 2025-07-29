@@ -27,15 +27,11 @@ export const imageSizeStyles = {
 export type RiImageSize = (typeof SIZES)[number]
 
 export interface RiImageProps extends HTMLAttributes<HTMLImageElement> {
-  size?: RiImageSize
-  src?: string
-  alt?: string
+  $size?: RiImageSize
+  src: string
+  alt: string
 }
 
-export const StyledImage = styled.img<
-  Omit<RiImageProps, 'size'> & {
-    size?: RiImageSize
-  }
->`
-  ${({ size = 'original' }) => imageSizeStyles[size]}
+export const StyledImage = styled.img<RiImageProps>`
+  ${({ $size = 'original' }) => imageSizeStyles[$size]}
 `
