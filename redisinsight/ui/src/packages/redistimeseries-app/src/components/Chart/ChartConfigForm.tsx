@@ -1,10 +1,5 @@
 import React, { useState } from 'react'
-import {
-  EuiFieldText,
-  EuiButtonGroup,
-  EuiAccordion,
-  EuiButtonGroupProps,
-} from '@elastic/eui'
+import { EuiFieldText, EuiButtonGroup, EuiButtonGroupProps } from '@elastic/eui'
 import { SwitchInput } from 'uiSrc/components/base/inputs'
 import { FormFieldset } from 'uiSrc/components/base/forms/fieldset'
 import { AxisScale, GraphMode, ChartConfigFormProps } from './interfaces'
@@ -14,6 +9,7 @@ import {
   TITLE_MAX_LENGTH,
 } from './constants'
 import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
+import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
 
 const NewEnumSelect = ({
   selected,
@@ -41,6 +37,17 @@ export default function ChartConfigForm(props: ChartConfigFormProps) {
   const [moreOptions, setMoreOptions] = useState(false)
 
   const { onChange, value } = props
+
+  const yAxisButtonGroupItems = [
+    {
+      label: 'Left',
+      value: false,
+    },
+    {
+      label: 'Right',
+      value: true,
+    },
+  ]
 
   return (
     <form className="chart-config-form">
@@ -103,23 +110,21 @@ export default function ChartConfigForm(props: ChartConfigFormProps) {
                     {Object.keys(value.keyToY2Axis).map((key) => (
                       <div className="y-axis-2-item">
                         <div>{key}</div>
-                        <EuiButtonGroup
-                          buttonSize="compressed"
-                          options={['left', 'right'].map((v: string) => ({
-                            id: v,
-                            label: v,
-                          }))}
-                          onChange={(id) =>
-                            onChange('keyToY2Axis', {
-                              ...value.keyToY2Axis,
-                              [key]: id === 'right',
-                            })
-                          }
-                          idSelected={
-                            value.keyToY2Axis[key] === true ? 'right' : 'left'
-                          }
-                          isFullWidth
-                        />
+                        <ButtonGroup>
+                          {yAxisButtonGroupItems.map((item) => (
+                            <ButtonGroup.Button
+                              isSelected={value.keyToY2Axis[key] === item.value}
+                              onClick={() =>
+                                onChange('keyToY2Axis', {
+                                  ...value.keyToY2Axis,
+                                  [key]: item.value,
+                                })
+                              }
+                            >
+                              {item.label}
+                            </ButtonGroup.Button>
+                          ))}
+                        </ButtonGroup>
                       </div>
                     ))}
                   </div>
