@@ -15,6 +15,7 @@ import {
 } from './styles'
 import {
   CreateSearchIndexParameters,
+  SampleDataContent,
   SampleDataType,
   SearchIndexType,
 } from './types'
@@ -39,7 +40,7 @@ export const VectorSearchCreateIndex = ({
       instanceId,
       searchIndexType: SearchIndexType.REDIS_QUERY_ENGINE,
       sampleDataType: SampleDataType.PRESET_DATA,
-      dataContent: '',
+      dataContent: SampleDataContent.E_COMMERCE_DISCOVERY,
       usePresetVectorIndex: false,
       presetVectorIndexName: '',
       tags: [],
