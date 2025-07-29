@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { EuiFieldText } from '@elastic/eui'
 
 import { RiTooltip } from 'uiSrc/components'
+import { TextInput } from 'uiSrc/components/base/inputs'
 import { TagSuggestions } from './TagSuggestions'
 
 type TagInputFieldProps = {
@@ -30,11 +30,11 @@ export const TagInputField = ({
     <div>
       <RiTooltip content={errorMessage} position="top">
         <div>
-          <EuiFieldText
+          <TextInput
             value={value}
             disabled={disabled}
-            isInvalid={isInvalid}
-            onChange={(e) => onChange(e.target.value)}
+            valid={isInvalid}
+            onChange={(value) => onChange(value)}
             onFocusCapture={() => {
               setIsFocused(true)
             }}

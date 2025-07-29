@@ -1,5 +1,4 @@
-import React, { ChangeEvent } from 'react'
-import { EuiFieldText } from '@elastic/eui'
+import React from 'react'
 import { FormikProps } from 'formik'
 
 import { MAX_PORT_NUMBER, selectOnFocus, validateField } from 'uiSrc/utils'
@@ -14,6 +13,7 @@ import {
   NumericInput,
   PasswordInput,
   TextArea,
+  TextInput,
 } from 'uiSrc/components/base/inputs'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { RiRadioGroup } from 'uiSrc/components/base/forms/radio-group/RadioGroup'
@@ -67,7 +67,7 @@ const SSHDetails = (props: Props) => {
           <Row gap="m" responsive className={flexGroupClassName}>
             <FlexItem grow className={flexItemClassName}>
               <FormField label="Host*">
-                <EuiFieldText
+                <TextInput
                   name="sshHost"
                   id="sshHost"
                   data-testid="sshHost"
@@ -75,10 +75,10 @@ const SSHDetails = (props: Props) => {
                   maxLength={200}
                   placeholder="Enter SSH Host"
                   value={formik.values.sshHost ?? ''}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  onChange={value => {
                     formik.setFieldValue(
-                      e.target.name,
-                      validateField(e.target.value.trim()),
+                      'sshHost',
+                      validateField(value.trim()),
                     )
                   }}
                 />
@@ -107,7 +107,7 @@ const SSHDetails = (props: Props) => {
           <Row responsive className={flexGroupClassName}>
             <FlexItem grow className={flexItemClassName}>
               <FormField label="Username*">
-                <EuiFieldText
+                <TextInput
                   name="sshUsername"
                   id="sshUsername"
                   data-testid="sshUsername"
@@ -115,10 +115,10 @@ const SSHDetails = (props: Props) => {
                   maxLength={200}
                   placeholder="Enter SSH Username"
                   value={formik.values.sshUsername ?? ''}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  onChange={value => {
                     formik.setFieldValue(
-                      e.target.name,
-                      validateField(e.target.value.trim()),
+                      'sshUsername',
+                      validateField(value.trim()),
                     )
                   }}
                 />

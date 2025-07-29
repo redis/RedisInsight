@@ -1,6 +1,5 @@
-import { EuiFieldText } from '@elastic/eui'
 import cx from 'classnames'
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import InlineItemEditor from 'uiSrc/components/inline-item-editor/InlineItemEditor'
@@ -15,6 +14,7 @@ import { MAX_TTL_NUMBER, validateTTLNumber } from 'uiSrc/utils'
 import { FlexItem, Grid } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { TextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -49,9 +49,7 @@ const KeyDetailsHeaderTTL = ({ onEditTTL }: Props) => {
     setTTLIsEditing(true)
   }
 
-  const onChangeTtl = ({
-    currentTarget: { value },
-  }: ChangeEvent<HTMLInputElement>) => {
+  const onChangeTtl = (value: string) => {
     ttlIsEditing && setTTL(validateTTLNumber(value) || '-1')
   }
 
@@ -115,7 +113,7 @@ const KeyDetailsHeaderTTL = ({ onEditTTL }: Props) => {
                 isLoading={loading}
                 declineOnUnmount={false}
               >
-                <EuiFieldText
+                <TextInput
                   name="ttl"
                   id="ttl"
                   className={cx(

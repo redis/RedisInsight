@@ -1,8 +1,7 @@
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { isEmpty } from 'lodash'
 import { FormikErrors, useFormik } from 'formik'
-import { EuiFieldText } from '@elastic/eui'
 
 import * as keys from 'uiSrc/constants/keys'
 import { MAX_PORT_NUMBER, validateField } from 'uiSrc/utils/validations'
@@ -19,7 +18,7 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { NumericInput, PasswordInput } from 'uiSrc/components/base/inputs'
+import { NumericInput, PasswordInput, TextInput } from 'uiSrc/components/base/inputs'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiTooltip } from 'uiSrc/components'
 
@@ -225,24 +224,26 @@ const ClusterConnectionForm = (props: Props) => {
         <WindowEvent event="keydown" handler={onKeyDown} />
         <Row responsive>
           <FlexItem grow={4}>
-            <FormField label="Cluster Host*">
-              <EuiFieldText
+            <FormField
+              label="Cluster Host*"
+              additionalText={<AppendHostName />}
+            >
+              <TextInput
                 name="host"
                 id="host"
                 data-testid="host"
                 maxLength={200}
                 placeholder="Enter Cluster Host"
                 value={formik.values.host}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                onChange={value => {
                   formik.setFieldValue(
-                    e.target.name,
-                    validateField(e.target.value.trim()),
+                    'host',
+                    validateField(value.trim()),
                   )
                 }}
                 onPaste={(event: React.ClipboardEvent<HTMLInputElement>) =>
                   handlePasteHostName(onHostNamePaste, event)
                 }
-                append={<AppendHostName />}
               />
             </FormField>
           </FlexItem>
@@ -270,11 +271,10 @@ const ClusterConnectionForm = (props: Props) => {
         <Row responsive>
           <FlexItem grow>
             <FormField label="Admin Username*">
-              <EuiFieldText
+              <TextInput
                 name="username"
                 id="username"
                 data-testid="username"
-                fullWidth
                 maxLength={200}
                 placeholder="Enter Admin Username"
                 value={formik.values.username}

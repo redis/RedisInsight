@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import { EuiFieldText } from '@elastic/eui'
 import { useFormik } from 'formik'
 import { FormikErrors } from 'formik/dist/types'
 import { isEmpty } from 'lodash'
 
+import { TextInput } from 'uiSrc/components/base/inputs'
 import { Nullable } from 'uiSrc/utils'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { RiFilePicker, RiTooltip } from 'uiSrc/components'
@@ -93,10 +93,10 @@ const UploadTutorialForm = (props: Props) => {
             />
           </div>
           <div className={styles.hr}>OR</div>
-          <EuiFieldText
+          <TextInput
             placeholder="GitHub link to tutorials"
             value={formik.values.link}
-            onChange={(e) => formik.setFieldValue('link', e.target.value)}
+            onChange={(value) => formik.setFieldValue('link', value)}
             className={styles.input}
             data-testid="tutorial-link-field"
           />

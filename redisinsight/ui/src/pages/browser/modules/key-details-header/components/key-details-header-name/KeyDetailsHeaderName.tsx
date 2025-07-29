@@ -1,7 +1,6 @@
-import { EuiFieldText } from '@elastic/eui'
 import cx from 'classnames'
 import { isNull } from 'lodash'
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import InlineItemEditor from 'uiSrc/components/inline-item-editor/InlineItemEditor'
@@ -32,7 +31,9 @@ import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CopyIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { RiTooltip } from 'uiSrc/components'
+import { TextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -82,9 +83,7 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
     setKeyIsEditing(true)
   }
 
-  const onChangeKey = ({
-    currentTarget: { value },
-  }: ChangeEvent<HTMLInputElement>) => {
+  const onChangeKey = (value: string) => {
     keyIsEditing && setKey(value)
   }
 
@@ -178,27 +177,28 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
                   isLoading={loading}
                   declineOnUnmount={false}
                 >
-                  <EuiFieldText
-                    name="key"
-                    id="key"
-                    inputRef={keyNameRef}
-                    className={cx(styles.keyInput, {
-                      [styles.keyInputEditing]: keyIsEditing,
-                      'input-warning': !keyIsEditable,
-                    })}
-                    placeholder={
-                      AddCommonFieldsFormConfig?.keyName?.placeholder
-                    }
-                    value={key!}
-                    fullWidth={false}
-                    compressed
-                    isLoading={loading}
-                    onChange={onChangeKey}
-                    append={appendKeyEditing()}
-                    readOnly={!keyIsEditing}
-                    autoComplete="off"
-                    data-testid="edit-key-input"
-                  />
+                  <FormField
+                    additionalText={appendKeyEditing()}
+                  >
+                    <TextInput
+                      name="key"
+                      id="key"
+                      ref={keyNameRef}
+                      className={cx(styles.keyInput, {
+                        [styles.keyInputEditing]: keyIsEditing,
+                        'input-warning': !keyIsEditable,
+                      })}
+                      placeholder={
+                        AddCommonFieldsFormConfig?.keyName?.placeholder
+                      }
+                      value={key!}
+                      loading={loading}
+                      onChange={onChangeKey}
+                      readOnly={!keyIsEditing}
+                      autoComplete="off"
+                      data-testid="edit-key-input"
+                    />
+                  </FormField>
                 </InlineItemEditor>
                 <p className={styles.keyHiddenText}>{key}</p>
               </>
