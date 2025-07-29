@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
-import { EuiFieldText, EuiFilePicker } from '@elastic/eui'
+import { EuiFieldText } from '@elastic/eui'
 import { useFormik } from 'formik'
 import { FormikErrors } from 'formik/dist/types'
 import { isEmpty } from 'lodash'
 
 import { Nullable } from 'uiSrc/utils'
 import validationErrors from 'uiSrc/constants/validationErrors'
-import { RiTooltip } from 'uiSrc/components'
+import { RiFilePicker, RiTooltip } from 'uiSrc/components'
 
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import {
@@ -67,9 +67,7 @@ const UploadTutorialForm = (props: Props) => {
     if (errorsArr.length > maxErrorsCount) {
       errorsArr.splice(maxErrorsCount, errorsArr.length, ['...'])
     }
-    return isSubmitDisabled ? (
-      <span>{errorsArr}</span>
-    ) : null
+    return isSubmitDisabled ? <span>{errorsArr}</span> : null
   }
 
   const handleFileChange = (files: FileList | null) => {
@@ -83,7 +81,7 @@ const UploadTutorialForm = (props: Props) => {
         <Spacer size="m" />
         <div>
           <div className={styles.uploadFileWrapper}>
-            <EuiFilePicker
+            <RiFilePicker
               id="import-tutorial"
               initialPromptText="Select or drop a file"
               className={styles.fileDrop}

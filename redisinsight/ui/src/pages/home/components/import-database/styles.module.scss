@@ -10,11 +10,11 @@
   max-width: none !important;
 
   :global {
-    .euiFilePicker__showDrop .euiFilePicker__prompt, .euiFilePicker__input:focus + .euiFilePicker__prompt {
+    .RI-File-Picker__showDrop .RI-File-Picker__prompt, .RI-File-Picker__input:focus + .RI-File-Picker__prompt {
       background-color: var(--browserTableRowEven);
     }
 
-    .euiFilePicker__prompt {
+    .RI-File-Picker__prompt {
       background-color: var(--browserTableRowEven);
       height: 140px;
       border-radius: 4px;
@@ -23,11 +23,11 @@
       color: var(--htmlColor);
     }
 
-    .euiFilePicker {
+    .RI-File-Picker {
       width: 400px;
     }
 
-    .euiFilePicker__clearButton {
+    .RI-File-Picker__clearButton {
       margin-top: 4px;
     }
   }
