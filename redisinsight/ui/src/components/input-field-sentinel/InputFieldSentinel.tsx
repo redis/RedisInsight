@@ -56,7 +56,6 @@ const InputFieldSentinel = (props: Props) => {
       {inputType === SentinelInputFieldType.Text && (
         <TextInput
           {...clearProp}
-          compressed
           value={value}
           onChange={(value) => handleChange(value)}
           data-testid="sentinel-input"

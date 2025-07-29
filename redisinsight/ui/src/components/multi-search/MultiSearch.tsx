@@ -196,7 +196,6 @@ const MultiSearch = (props: Props) => {
             }
             onFocus={() => setIsInputFocus(true)}
             onBlur={() => setIsInputFocus(false)}
-            controlOnly
             ref={inputRef}
             {...rest}
           />
