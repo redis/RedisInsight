@@ -83,7 +83,7 @@ const StreamEntryFields = (props: Props) => {
     removeField(id)
   }
 
-  const handleEntryIdChange = (value) => {
+  const handleEntryIdChange = (value: string) => {
     setEntryID(validateEntryId(value))
   }
 
