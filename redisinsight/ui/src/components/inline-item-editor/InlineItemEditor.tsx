@@ -214,7 +214,7 @@ const InlineItemEditor = (props: Props) => {
                         maxLength={maxLength || undefined}
                         placeholder={placeholder}
                         value={value}
-                        compressed
+// Removed the unsupported `compressed` prop
                         onChange={handleChangeValue}
                         loading={isLoading}
                         valid={!isInvalid}
