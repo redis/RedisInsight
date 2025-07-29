@@ -12,7 +12,7 @@ import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion
 import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
 
 const NewEnumSelect = ({
-  selected,
+  select,
   values,
   onClick,
 }: {
@@ -25,7 +25,7 @@ const NewEnumSelect = ({
       <div
         title={v.charAt(0).toUpperCase() + v.slice(1)}
         onClick={() => onClick(v)}
-        className={`button-point ${selected === v ? 'button-selected' : null}`}
+        className={`button-point ${select === v ? 'button-selected' : null}`}
       >
         {v}
       </div>
@@ -54,7 +54,7 @@ export default function ChartConfigForm(props: ChartConfigFormProps) {
       <div className="chart-form-top">
         <NewEnumSelect
           values={Object.keys(GraphMode)}
-          selected={value.mode}
+          select={value.mode}
           onClick={(v) => onChange('mode', v)}
         />
         <SwitchInput
