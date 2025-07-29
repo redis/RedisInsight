@@ -18,13 +18,36 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: Check if caching should be enabled
+      id: should-cache
+      shell: bash
+      run: |
+        # Enable caching for PR branches: fe/, be/, fe-be/, feature/, bugfix/
+        # Skip caching for: ric/, latest, and other release branches
+        if [[ "${{ github.ref_name }}" =~ ^(fe|be|fe-be|feature|bugfix)/ ]]; then
+          echo "enabled=true" >> $GITHUB_OUTPUT
+          echo "🚀 Caching enabled for branch: ${{ github.ref_name }}"
+        else
+          echo "enabled=false" >> $GITHUB_OUTPUT
+          echo "⚡ Caching disabled for branch: ${{ github.ref_name }}"
+        fi
+
+    - name: Cache Yarn dependencies
+      if: steps.should-cache.outputs.enabled == 'true'
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache/yarn
+          ${{ inputs.dir-path }}/node_modules
+          .yarn/cache
+        key: ${{ runner.os }}-yarn-${{ inputs.dir-path }}-${{ hashFiles(format('{0}/yarn.lock', inputs.dir-path), format('{0}/package.json', inputs.dir-path)) }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-${{ inputs.dir-path }}-
+          ${{ runner.os }}-yarn-
+
     - name: Install dependencies
       working-directory: ${{ inputs.dir-path }}
       shell: bash
-
-      # env:
-      #   SKIP_POSTINSTALL: ${{ inputs.skip-postinstall }}
-      # run: yarn install
       run: |
         # todo: uncomment after build our binaries
         # export npm_config_keytar_binary_host_mirror=${{ inputs.keytar-host-mirror }}
