@@ -30,91 +30,6 @@ div.plotly-notifier {
     margin-bottom: 6px;
   }
 
-  // accordion
-  .euiAccordion__button {
-    font-size: 13px;
-    color: #B5B6C0;
-  }
-  .euiAccordion__buttonReverse .euiAccordion__iconWrapper {
-    display: flex;
-    align-items: center;
-
-    svg {
-      height: 10px;
-      width: 10px;
-    }
-  }
-  .euiAccordion__button:focus .euiAccordion__iconWrapper {
-    animation: unset !important;
-    color: inherit;
-    -webkit-animation: unset !important;
-  }
-
-
-  // toggle button group
-  .euiButtonGroupButton .euiButton__text {
-    text-transform: capitalize;
-  }
-  .euiButtonGroup--compressed .euiButtonGroupButton {
-    height: 30px;
-    width: 66px;
-  }
-  .euiButtonGroupButton.euiButtonGroupButton--text:not([class*=isDisabled]).euiButtonGroupButton-isSelected {
-    background-color: #292F47;
-    color: #8BA2FF;
-    font-size: 13px;
-    padding: 0px;
-    font-weight: normal;
-    border-color: #465282;
-  }
-  .euiButtonGroupButton.euiButtonGroupButton--text:not([class*=isDisabled]).euiButtonGroupButton-isSelected:hover {
-    background-color: #292F47;
-    text-decoration: unset;
-    outline: unset;
-  }
-  .euiButtonGroup--compressed .euiButtonGroup__buttons {
-    label:first-child {
-      border: 1px solid #465282;
-      border-radius: 4px;
-      border-right: 0px;
-      border-top-right-radius: 0px;
-      border-bottom-right-radius: 0px;
-      width: 68px;
-      font-size: 13px;
-    }
-    label:last-child {
-      font-size: 13px;
-      width: 68px;
-      border: 1px solid #465282;
-      border-radius: 4px;
-      border-top-left-radius: 0px;
-      border-bottom-left-radius: 0px;
-    }
-  }
-
-  .euiButtonGroup--compressed .euiButtonGroupButton {
-    padding: 0px;
-  }
-
-  .euiButtonGroupButton.euiButtonGroupButton--text:not([class*=isDisabled]).euiButtonGroupButton-isSelected:focus {
-    background-color: #292F47;
-    text-decoration: unset;
-    outline: unset;
-  }
-  .euiButtonGroupButton.euiButtonGroupButton--text:not([class*=isDisabled]).euiButtonGroupButton-isSelected:focus-within {
-    background-color: #292F47;
-    border-color: #465282;
-    text-decoration: unset;
-    outline: unset;
-  }
-  .euiButtonGroupButton.euiButtonGroupButton--text:not([class*=isDisabled]) {
-    color: var(--wbTextColor);
-    background: black;
-    border-radius: 1px;
-    text-decoration: none;
-  }
-
-
   .rangeslider-mask-min, .rangeslider-mask-max {
     fill: #161617 !important;
     fill-opacity: 1 !important;
@@ -173,75 +88,6 @@ div.plotly-notifier {
     margin-bottom: 6px;
   }
 
-  // toggle button group
-  .euiButtonGroupButton .euiButton__text {
-    text-transform: capitalize;
-  }
-  .euiButtonGroup--compressed .euiButtonGroupButton {
-    height: 30px;
-    width: 66px;
-  }
-  .euiButtonGroupButton.euiButtonGroupButton--text:not([class*=isDisabled]).euiButtonGroupButton-isSelected {
-    background-color: #D7E3FA;
-    color: #3163D8;
-    font-size: 13px;
-    padding: 0px;
-    font-weight: normal;
-    border-color: #243DAC;
-  }
-  .euiButtonGroupButton.euiButtonGroupButton--text:not([class*=isDisabled]).euiButtonGroupButton-isSelected:hover {
-    background-color: #D7E3FA;
-    text-decoration: unset;
-    outline: unset;
-  }
-
-  .euiButtonGroup--compressed .euiButtonGroup__buttons {
-    label:first-child {
-      border: 1px solid #243DAC;
-      border-radius: 4px;
-      border-right: 0px;
-      border-top-right-radius: 0px;
-      border-bottom-right-radius: 0px;
-      width: 68px;
-      font-size: 13px;
-    }
-    label:last-child {
-      font-size: 13px;
-      width: 68px;
-      border: 1px solid #243DAC;
-      border-radius: 4px;
-      border-top-left-radius: 0px;
-      border-bottom-left-radius: 0px;
-    }
-  }
-  .euiButtonGroup--compressed .euiButtonGroupButton {
-    padding: 0px;
-  }
-
-  .euiButtonGroupButton.euiButtonGroupButton--text:not([class*=isDisabled]) {
-    &:focus, &:focus-within, &:hover {
-      background-color: #D7E3FA;
-    }
-  }
-
-  .euiButtonGroupButton.euiButtonGroupButton--text:not([class*=isDisabled]).euiButtonGroupButton-isSelected:focus {
-    background-color: #D7E3FA;
-    text-decoration: unset;
-    outline: unset;
-  }
-  .euiButtonGroupButton.euiButtonGroupButton--text:not([class*=isDisabled]).euiButtonGroupButton-isSelected:focus-within {
-    background-color: #D7E3FA;
-    border-color: #243DAC;
-    text-decoration: unset;
-    outline: unset;
-  }
-  .euiButtonGroupButton.euiButtonGroupButton--text:not([class*=isDisabled]) {
-    background: white;
-    border-radius: 1px;
-    text-decoration: none;
-  }
-
-
   .chart-config-form {
     .more-options {
       section {
@@ -284,9 +130,6 @@ body {
 .y-axis-config  {
   fieldset {
     width: 100%;
-    .euiButtonGroup__buttons label {
-      width: 100%;
-    }
   }
 }
 
