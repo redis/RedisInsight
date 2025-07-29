@@ -110,8 +110,8 @@ const InlineItemEditor = (props: Props) => {
     }, 100)
   }, [])
 
-  const handleChangeValue = (e: ChangeEvent<HTMLInputElement>) => {
-    let newValue = e.target.value
+  const handleChangeValue = (value: string) => {
+    let newValue = value
 
     if (validation) {
       newValue = validation(newValue)
@@ -214,7 +214,6 @@ const InlineItemEditor = (props: Props) => {
                         maxLength={maxLength || undefined}
                         placeholder={placeholder}
                         value={value}
-// Removed the unsupported `compressed` prop
                         onChange={handleChangeValue}
                         loading={isLoading}
                         valid={!isInvalid}

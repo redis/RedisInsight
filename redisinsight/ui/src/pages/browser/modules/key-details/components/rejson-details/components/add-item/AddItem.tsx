@@ -101,7 +101,7 @@ const AddItem = (props: Props) => {
                   <TextInput
                     name="newRootKey"
                     value={key}
-                    error={error}
+                    error={error || undefined}
                     placeholder="Enter JSON key"
                     onChange={value =>
                       setKey(value)
@@ -115,7 +115,7 @@ const AddItem = (props: Props) => {
                   name="newValue"
                   value={value}
                   placeholder="Enter JSON value"
-                  error={error}
+                  error={error || undefined}
                   onChange={value =>
                     setValue(value)
                   }

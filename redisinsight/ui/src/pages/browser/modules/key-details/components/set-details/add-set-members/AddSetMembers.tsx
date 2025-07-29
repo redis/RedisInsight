@@ -147,13 +147,12 @@ const AddSetMembers = (props: Props) => {
               <FlexItem grow>
                 <FormField>
                   <TextInput
-                    fullWidth
                     name={`member-${item.id}`}
                     id={`member-${item.id}`}
                     placeholder={config.member.placeholder}
                     value={item.name}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                      handleMemberChange('name', item.id, e.target.value)
+                    onChange={(value) =>
+                      handleMemberChange('name', item.id, value)
                     }
                     ref={
                       index === members.length - 1 ? lastAddedMemberName : null
