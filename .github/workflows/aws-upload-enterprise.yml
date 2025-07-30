@@ -37,6 +37,54 @@ jobs:
 
       - run: ls -R ./release
 
+      - name: Renaming builds
+        run: |
+          VERSION="${APP_VERSION//./-}"
+          TARGET_DIR=./release
+          PREFIX="Redis-Insight"
+          NEW_PREFIX="Redis-Insight-Enterprise-$VERSION"
+
+          echo "Renaming artifacts. New prefix: $NEW_PREFIX"
+
+          if [[ "$OSTYPE" == "darwin"* ]]; then
+            SED_INPLACE="sed -i.bak"
+          else
+            SED_INPLACE="sed -i"
+          fi
+
+          # Step 1: Rename files in target dir
+          for FILE in "$TARGET_DIR"/"$PREFIX"*; do
+            if [ -f "$FILE" ]; then
+              BASENAME="$(basename "$FILE")"
+              SUFFIX="${BASENAME#"$PREFIX"-}"
+              NEW_NAME="${NEW_PREFIX}-${SUFFIX}"
+              mv "$FILE" "$TARGET_DIR/$NEW_NAME"
+              echo "Renamed: $BASENAME -> $NEW_NAME"
+            fi
+          done
+
+          # Step 2: Replace old filenames in all .yml files
+          for YML_FILE in "$TARGET_DIR"/*.yml; do
+            echo "Scanning: $YML_FILE"
+
+            grep -oE 'Redis-Insight[^[:space:]]+' "$YML_FILE" | sort -u | while read -r OLD_NAME; do
+              if [[ "$OLD_NAME" == "$PREFIX"-* ]]; then
+                SUFFIX="${OLD_NAME#"$PREFIX"-}"
+                NEW_NAME="${NEW_PREFIX}-${SUFFIX}"
+
+                # Escape for sed
+                ESCAPED_OLD=$(printf '%s\n' "$OLD_NAME" | sed -e 's/[\/&]/\\&/g')
+                ESCAPED_NEW=$(printf '%s\n' "$NEW_NAME" | sed -e 's/[\/&]/\\&/g')
+
+                if $SED_INPLACE "s/$ESCAPED_OLD/$ESCAPED_NEW/g" "$YML_FILE"; then
+                  echo "  ✔ Updated: $OLD_NAME -> $NEW_NAME"
+                else
+                  echo "  ✘ ERROR updating: $OLD_NAME -> $NEW_NAME"
+                fi
+              fi
+            done
+          done
+
       - name: Upload builds to s3 bucket dev sub folder
         if: ${{ inputs.environment != 'production' }}
         run: |
