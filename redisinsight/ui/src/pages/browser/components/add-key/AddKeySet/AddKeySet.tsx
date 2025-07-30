@@ -1,12 +1,10 @@
 import React, {
-  ChangeEvent,
   FormEvent,
   useEffect,
   useRef,
   useState,
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { EuiFieldText } from '@elastic/eui'
 import { Maybe, stringToBuffer } from 'uiSrc/utils'
 import { addKeyStateSelector, addSetKey } from 'uiSrc/slices/browser/keys'
 
@@ -14,6 +12,7 @@ import AddMultipleFields from 'uiSrc/pages/browser/components/add-multiple-field
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
+import { TextInput } from 'uiSrc/components/base/inputs'
 import { CreateSetWithExpireDto } from 'apiSrc/modules/browser/set/dto'
 
 import { INITIAL_SET_MEMBER_STATE, ISetMemberState } from './interfaces'
@@ -135,16 +134,15 @@ const AddKeySet = (props: Props) => {
           <Row align="center">
             <FlexItem grow>
               <FormField>
-                <EuiFieldText
-                  fullWidth
+                <TextInput
                   name={`member-${item.id}`}
                   id={`member-${item.id}`}
                   placeholder={config.member.placeholder}
                   value={item.name}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    handleMemberChange('name', item.id, e.target.value)
+                  onChange={(value) =>
+                    handleMemberChange('name', item.id, value)
                   }
-                  inputRef={
+                  ref={
                     index === members.length - 1 ? lastAddedMemberName : null
                   }
                   disabled={loading}

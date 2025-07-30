@@ -1,8 +1,7 @@
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { FormikErrors, useFormik } from 'formik'
 import { isEmpty } from 'lodash'
-import { EuiFieldText } from '@elastic/eui'
 import { useSelector } from 'react-redux'
 
 import * as keys from 'uiSrc/constants/keys'
@@ -26,6 +25,7 @@ import {
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { Text } from 'uiSrc/components/base/text'
 import { RiRadioGroup } from 'uiSrc/components/base/forms/radio-group/RadioGroup'
+import { TextInput } from 'uiSrc/components/base/inputs'
 import { ICloudConnectionSubmit } from '../CloudConnectionFormWrapper'
 
 import styles from '../styles.module.scss'
@@ -189,7 +189,7 @@ const CloudConnectionForm = (props: Props) => {
         <Row responsive>
           <FlexItem>
             <FormField label="API Account Key*">
-              <EuiFieldText
+              <TextInput
                 name="accessKey"
                 id="accessKey"
                 data-testid="access-key"
@@ -197,10 +197,10 @@ const CloudConnectionForm = (props: Props) => {
                 placeholder={fieldDisplayNames.accessKey}
                 value={formik.values.accessKey}
                 autoComplete="off"
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                onChange={value => {
                   formik.setFieldValue(
-                    e.target.name,
-                    validateField(e.target.value.trim()),
+                    'accessKey',
+                    validateField(value.trim()),
                   )
                 }}
               />
@@ -210,7 +210,7 @@ const CloudConnectionForm = (props: Props) => {
         <Row responsive>
           <FlexItem grow>
             <FormField label="API User Key*">
-              <EuiFieldText
+              <TextInput
                 name="secretKey"
                 id="secretKey"
                 data-testid="secret-key"
@@ -218,10 +218,10 @@ const CloudConnectionForm = (props: Props) => {
                 placeholder={fieldDisplayNames.secretKey}
                 value={formik.values.secretKey}
                 autoComplete="off"
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                onChange={value => {
                   formik.setFieldValue(
-                    e.target.name,
-                    validateField(e.target.value.trim()),
+                    'secretKey',
+                    validateField(value.trim()),
                   )
                 }}
               />

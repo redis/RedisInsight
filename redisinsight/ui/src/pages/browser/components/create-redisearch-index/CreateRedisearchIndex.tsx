@@ -1,7 +1,6 @@
-import { EuiFieldText } from '@elastic/eui'
 import { EuiComboBoxOptionOption } from '@elastic/eui/src/components/combo_box/types'
 import cx from 'classnames'
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import Divider from 'uiSrc/components/divider/Divider'
@@ -30,6 +29,7 @@ import { HealthText, Text } from 'uiSrc/components/base/text'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { RiPopover } from 'uiSrc/components/base'
+import { TextInput } from 'uiSrc/components/base/inputs'
 import { CreateRedisearchIndexDto } from 'apiSrc/modules/browser/redisearch/dto'
 
 import { KEY_TYPE_OPTIONS, RedisearchIndexKeyType } from './constants'
@@ -213,13 +213,12 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
             <Row className={styles.row}>
               <FlexItem grow>
                 <FormField label="Index Name">
-                  <EuiFieldText
-                    fullWidth
+                  <TextInput
                     name="Index name"
                     id="index-name"
                     placeholder="Enter Index Name"
                     value={indexName}
-                    onChange={(e) => setIndexName(e.target.value)}
+                    onChange={setIndexName}
                     autoComplete="off"
                     data-testid="index-name"
                   />
@@ -279,20 +278,19 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
                 <Row align="center">
                   <FlexItem grow>
                     <FormField>
-                      <EuiFieldText
-                        fullWidth
+                      <TextInput
                         name={`identifier-${item.id}`}
                         id={`identifier-${item.id}`}
                         placeholder="Enter Identifier"
                         value={item.identifier}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                        onChange={value =>
                           handleFieldChange(
                             'identifier',
                             item.id,
-                            e.target.value,
+                            value,
                           )
                         }
-                        inputRef={
+                        ref={
                           index === fields.length - 1
                             ? lastAddedIdentifier
                             : null

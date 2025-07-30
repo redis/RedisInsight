@@ -1,8 +1,7 @@
-import React, { ChangeEvent } from 'react'
+import React from 'react'
 import { useSelector } from 'react-redux'
 import { FormikProps } from 'formik'
 
-import { EuiFieldText } from '@elastic/eui'
 import { BuildType } from 'uiSrc/constants/env'
 import { SECURITY_FIELD } from 'uiSrc/constants'
 import { appInfoSelector } from 'uiSrc/slices/app/info'
@@ -17,7 +16,7 @@ import { RiTooltip } from 'uiSrc/components'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { NumericInput, PasswordInput } from 'uiSrc/components/base/inputs'
+import { NumericInput, PasswordInput, TextInput } from 'uiSrc/components/base/inputs'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 
 interface IShowFields {
@@ -92,8 +91,7 @@ const DatabaseForm = (props: Props) => {
         <Row gap="m">
           <FlexItem grow>
             <FormField label="Database Alias*">
-              <EuiFieldText
-                fullWidth
+              <TextInput
                 name="name"
                 id="name"
                 data-testid="name"
@@ -113,8 +111,11 @@ const DatabaseForm = (props: Props) => {
         <Row gap="m">
           {showFields.host && (
             <FlexItem grow={4}>
-              <FormField label="Host*">
-                <EuiFieldText
+              <FormField
+                label="Host*"
+                additionalText={<AppendHostName />}
+              >
+                <TextInput
                   autoFocus={autoFocus}
                   name="ip"
                   id="host"
@@ -123,17 +124,16 @@ const DatabaseForm = (props: Props) => {
                   maxLength={200}
                   placeholder="Enter Hostname / IP address / Connection URL"
                   value={formik.values.host ?? ''}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  onChange={value => {
                     formik.setFieldValue(
                       'host',
-                      validateField(e.target.value.trim()),
+                      validateField(value.trim()),
                     )
                   }}
                   onPaste={(event: React.ClipboardEvent<HTMLInputElement>) =>
                     handlePasteHostName(onHostNamePaste, event)
                   }
                   onFocus={selectOnFocus}
-                  append={<AppendHostName />}
                   disabled={isFieldDisabled('host')}
                 />
               </FormField>
@@ -167,11 +167,10 @@ const DatabaseForm = (props: Props) => {
       <Row gap="m">
         <FlexItem grow>
           <FormField label="Username">
-            <EuiFieldText
+            <TextInput
               name="username"
               id="username"
               data-testid="username"
-              fullWidth
               maxLength={200}
               placeholder="Enter Username"
               value={formik.values.username ?? ''}

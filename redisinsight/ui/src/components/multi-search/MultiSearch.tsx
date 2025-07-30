@@ -1,8 +1,8 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
-import { EuiFieldText } from '@elastic/eui'
 
 import * as keys from 'uiSrc/constants/keys'
+import { TextInput } from 'uiSrc/components/base/inputs'
 import { GroupBadge, RiTooltip } from 'uiSrc/components'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 import { Nullable } from 'uiSrc/utils'
@@ -186,18 +186,16 @@ const MultiSearch = (props: Props) => {
               />
             ))}
           </div>
-          <EuiFieldText
+          <TextInput
             className={styles.multiSearchInput}
             placeholder={placeholder}
             value={value}
             onKeyDown={handleKeyDown}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              onChange(e.target.value)
+            onChange={onChange
             }
             onFocus={() => setIsInputFocus(true)}
             onBlur={() => setIsInputFocus(false)}
-            controlOnly
-            inputRef={inputRef}
+            ref={inputRef}
             {...rest}
           />
           {showAutoSuggestions && !!suggestionOptions?.length && (

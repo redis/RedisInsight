@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { EuiFieldText } from '@elastic/eui'
-import { SwitchInput } from 'uiSrc/components/base/inputs'
+
+import { SwitchInput, TextInput } from 'uiSrc/components/base/inputs'
 import { FormFieldset } from 'uiSrc/components/base/forms/fieldset'
 import { AxisScale, GraphMode, ChartConfigFormProps } from './interfaces'
 import {
@@ -15,11 +15,11 @@ import {
 } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
 
 const NewEnumSelect = ({
-  select,
+  selected,
   values,
   onClick,
 }: {
-  select: string
+  selected: string
   values: string[]
   onClick: (v: string) => void
 }) => (
@@ -28,7 +28,7 @@ const NewEnumSelect = ({
       <div
         title={v.charAt(0).toUpperCase() + v.slice(1)}
         onClick={() => onClick(v)}
-        className={`button-point ${select === v ? 'button-selected' : null}`}
+        className={`button-point ${selected === v ? 'button-selected' : null}`}
       >
         {v}
       </div>
@@ -57,7 +57,7 @@ export default function ChartConfigForm(props: ChartConfigFormProps) {
       <div className="chart-form-top">
         <NewEnumSelect
           values={Object.keys(GraphMode)}
-          select={value.mode}
+          selected={value.mode}
           onClick={(v) => onChange('mode', v)}
         />
         <SwitchInput
@@ -81,19 +81,20 @@ export default function ChartConfigForm(props: ChartConfigFormProps) {
           <div className="more-options">
             <section>
               <FormFieldset legend={{ children: 'Title' }}>
-                <EuiFieldText
+                <TextInput
                   placeholder="Title"
                   value={value.title}
-                  onChange={(e) => onChange('title', e.target.value)}
+                  onChange={(value) => onChange('title', value)}
                   aria-label="Title"
                   maxLength={parseInt(TITLE_MAX_LENGTH)}
+
                 />
               </FormFieldset>
               <FormFieldset legend={{ children: 'X axis Label' }}>
-                <EuiFieldText
+                <TextInput
                   placeholder="X axis label"
                   value={value.xlabel}
-                  onChange={(e) => onChange('xlabel', e.target.value)}
+                  onChange={(value) => onChange('xlabel', value)}
                   aria-label="X Label"
                   maxLength={parseInt(X_LABEL_MAX_LENGTH)}
                 />
@@ -160,10 +161,10 @@ export default function ChartConfigForm(props: ChartConfigFormProps) {
 const YAxisConfigForm = ({ value, onChange, label }: any) => (
   <div>
     <FormFieldset legend={{ children: `${label} Label` }}>
-      <EuiFieldText
+      <TextInput
         placeholder="Label"
         value={value.label}
-        onChange={(e) => onChange({ ...value, label: e.target.value })}
+        onChange={(value) => onChange({ ...value, label: value })}
         aria-label="label"
         maxLength={parseInt(Y_LABEL_MAX_LENGTH)}
       />

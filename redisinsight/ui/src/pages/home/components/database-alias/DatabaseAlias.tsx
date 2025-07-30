@@ -1,5 +1,4 @@
-import React, { ChangeEvent, useState, useEffect, useContext } from 'react'
-import { EuiFieldText } from '@elastic/eui'
+import React, { useState, useEffect, useContext } from 'react'
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { toNumber } from 'lodash'
@@ -34,6 +33,8 @@ import { IconButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiTooltip } from 'uiSrc/components'
+import { TextInput } from 'uiSrc/components/base/inputs'
+import { FormField } from 'uiSrc/components/base/forms/FormField'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -77,9 +78,7 @@ const DatabaseAlias = (props: Props) => {
     setIsEditing(true)
   }
 
-  const onChange = ({
-    currentTarget: { value },
-  }: ChangeEvent<HTMLInputElement>) => {
+  const onChange = (value: string) => {
     isEditing && setValue(value)
   }
 
@@ -208,27 +207,28 @@ const DatabaseAlias = (props: Props) => {
                       isDisabled={!value}
                       declineOnUnmount={false}
                     >
-                      <EuiFieldText
-                        name="alias"
-                        id="alias"
-                        className={cx(styles.input)}
-                        placeholder="Enter Database Alias"
-                        value={value}
-                        fullWidth={false}
-                        maxLength={500}
-                        compressed
-                        isLoading={isLoading}
-                        onChange={onChange}
-                        append={
+                      <FormField
+                        additionalText={
                           !isEditing ? (
                             <RiIcon type="EditIcon" color="informative400" />
                           ) : (
                             ''
                           )
                         }
-                        autoComplete="off"
-                        data-testid="alias-input"
-                      />
+                      >
+                        <TextInput
+                          name="alias"
+                          id="alias"
+                          className={cx(styles.input)}
+                          placeholder="Enter Database Alias"
+                          value={value}
+                          maxLength={500}
+                          loading={isLoading}
+                          onChange={value => onChange(value)}
+                          autoComplete="off"
+                          data-testid="alias-input"
+                        />
+                      </FormField>
                     </InlineItemEditor>
                     <p className={styles.hiddenText}>{value}</p>
                   </FlexItem>

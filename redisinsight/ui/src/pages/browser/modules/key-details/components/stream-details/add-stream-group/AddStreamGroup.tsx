@@ -1,6 +1,5 @@
-import { EuiFieldText } from '@elastic/eui'
 import cx from 'classnames'
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
@@ -21,6 +20,7 @@ import {
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiTooltip } from 'uiSrc/components'
+import { TextInput } from 'uiSrc/components/base/inputs'
 import { CreateConsumerGroupsDto } from 'apiSrc/modules/browser/stream/dto'
 
 import styles from './styles.module.scss'
@@ -100,14 +100,13 @@ const AddStreamGroup = (props: Props) => {
               <Row align="start">
                 <FlexItem className={styles.groupNameWrapper} grow>
                   <FormField>
-                    <EuiFieldText
-                      fullWidth
+                    <TextInput
                       name="group-name"
                       id="group-name"
                       placeholder="Enter Group Name*"
                       value={groupName}
-                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                        setGroupName(e.target.value)
+                      onChange={value =>
+                        setGroupName(value)
                       }
                       autoComplete="off"
                       data-testid="group-name-field"
@@ -115,33 +114,33 @@ const AddStreamGroup = (props: Props) => {
                   </FormField>
                 </FlexItem>
                 <FlexItem className={styles.timestampWrapper} grow>
-                  <FormField>
-                    <EuiFieldText
-                      fullWidth
+                  <FormField
+                    additionalText={
+                      <RiTooltip
+                        anchorClassName="inputAppendIcon"
+                        className={styles.entryIdTooltip}
+                        position="left"
+                        title="Enter Valid ID, 0 or $"
+                        content={lastDeliveredIDTooltipText}
+                      >
+                        <RiIcon
+                          type="InfoIcon"
+                          style={{ cursor: 'pointer' }}
+                          data-testid="entry-id-info-icon"
+                        />
+                      </RiTooltip>
+                    }
+                  >
+                    <TextInput
                       name="id"
                       id="id"
                       placeholder="ID*"
                       value={id}
-                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                        setId(validateConsumerGroupId(e.target.value))
+                      onChange={value =>
+                        setId(validateConsumerGroupId(value))
                       }
                       onBlur={() => setIsIdFocused(false)}
                       onFocus={() => setIsIdFocused(true)}
-                      append={
-                        <RiTooltip
-                          anchorClassName="inputAppendIcon"
-                          className={styles.entryIdTooltip}
-                          position="left"
-                          title="Enter Valid ID, 0 or $"
-                          content={lastDeliveredIDTooltipText}
-                        >
-                          <RiIcon
-                            type="InfoIcon"
-                            style={{ cursor: 'pointer' }}
-                            data-testid="entry-id-info-icon"
-                          />
-                        </RiTooltip>
-                      }
                       autoComplete="off"
                       data-testid="id-field"
                     />
