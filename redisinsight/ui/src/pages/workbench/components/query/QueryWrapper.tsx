@@ -18,6 +18,7 @@ export interface Props {
   query: string
   activeMode: RunQueryMode
   resultsMode?: ResultsMode
+  queryProps?: any
   setQuery: (script: string) => void
   setQueryEl: Function
   onKeyDown?: (e: React.KeyboardEvent, script: string) => void
@@ -37,6 +38,7 @@ const QueryWrapper = (props: Props) => {
     onSubmit,
     onQueryChangeMode,
     onChangeGroupMode,
+    queryProps = {},
   } = props
   const { loading: isCommandsLoading } = useSelector(appRedisCommandsSelector)
   const { id: connectedIndstanceId } = useSelector(connectedInstanceSelector)
@@ -79,6 +81,7 @@ const QueryWrapper = (props: Props) => {
       onSubmit={onSubmit}
       onQueryChangeMode={onQueryChangeMode}
       onChangeGroupMode={onChangeGroupMode}
+      {...queryProps}
     />
   )
 }
