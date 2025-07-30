@@ -57,7 +57,7 @@ const InputFieldSentinel = (props: Props) => {
         <TextInput
           {...clearProp}
           value={value}
-          onChange={(value) => handleChange(value)}
+          onChange={handleChange}
           data-testid="sentinel-input"
         />
       )}
