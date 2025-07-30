@@ -103,8 +103,7 @@ const AddItem = (props: Props) => {
                     value={key}
                     error={error || undefined}
                     placeholder="Enter JSON key"
-                    onChange={value =>
-                      setKey(value)
+                    onChange={setKey
                     }
                     data-testid="json-key"
                   />
