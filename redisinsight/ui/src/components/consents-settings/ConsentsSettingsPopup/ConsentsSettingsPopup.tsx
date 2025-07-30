@@ -38,6 +38,7 @@ const ConsentsSettingsPopup = () => {
     <Modal
       open
       persistent
+      width="600px"
       className={styles.consentsPopup}
       data-testid="consents-settings-popup"
       title={
