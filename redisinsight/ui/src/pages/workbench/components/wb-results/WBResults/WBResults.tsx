@@ -24,6 +24,7 @@ export interface Props {
   activeMode: RunQueryMode
   activeResultsMode?: ResultsMode
   scrollDivRef: React.Ref<HTMLDivElement>
+  noResultsPlaceholder?: React.ReactNode
   onQueryReRun: (
     query: string,
     commandId?: Nullable<string>,
@@ -76,10 +77,7 @@ const WBResults = (props: Props) => {
   return (
     <div className={styles.wrapper}>
       {!isResultsLoaded && (
-        <ProgressBarLoader
-          color="primary"
-          data-testid="progress-wb-history"
-        />
+        <ProgressBarLoader color="primary" data-testid="progress-wb-history" />
       )}
       {!!items?.length && (
         <div className={styles.header}>
@@ -152,7 +150,9 @@ const WBResults = (props: Props) => {
               ),
             )
           : null}
-        {isResultsLoaded && !items.length && <WbNoResultsMessage />}
+        {isResultsLoaded &&
+          !items.length &&
+          (props.noResultsPlaceholder ?? <WbNoResultsMessage />)}
       </div>
     </div>
   )
