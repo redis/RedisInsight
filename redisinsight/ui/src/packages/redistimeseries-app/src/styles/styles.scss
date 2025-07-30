@@ -9,27 +9,6 @@ div.plotly-notifier {
   --body-color: white;
   --text-color: #B5B6C0;
 
-  // Text field
-  .euiFieldText {
-    color: #B5B6C0;
-    font-size: 14px;
-    height: 30px;
-    width: 240px;
-
-    &:focus {
-      background-image: unset;
-    }
-  }
-
-  // Text legend
-  .euiFormLegend {
-    font-size: 13px medium;
-    color: #B5B6C0;
-  }
-  .euiFormLegend:not(.euiFormLegend-isHidden) {
-    margin-bottom: 6px;
-  }
-
   .rangeslider-mask-min, .rangeslider-mask-max {
     fill: #161617 !important;
     fill-opacity: 1 !important;
@@ -65,27 +44,6 @@ div.plotly-notifier {
   .rangeslider-mask-min, .rangeslider-mask-max {
     fill: #F6F7F9 !important;
     fill-opacity: 1 !important;
-  }
-
-  // Text field
-  .euiFieldText {
-    color: #415681;
-    font-size: 14px;
-    height: 30px;
-    width: 240px;
-
-    &:focus {
-      background-image: unset;
-    }
-  }
-
-  // Text legend
-  .euiFormLegend {
-    font-size: 13px medium;
-    color: #527298;
-  }
-  .euiFormLegend:not(.euiFormLegend-isHidden) {
-    margin-bottom: 6px;
   }
 
   .chart-config-form {
