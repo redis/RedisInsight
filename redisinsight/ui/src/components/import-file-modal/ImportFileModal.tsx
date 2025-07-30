@@ -1,8 +1,6 @@
 import React from 'react'
-import { EuiFilePicker } from '@elastic/eui'
 
 import { Nullable } from 'uiSrc/utils'
-
 import { RiFilePicker, UploadWarning } from 'uiSrc/components'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { ColorText, Text } from 'uiSrc/components/base/text'
@@ -66,7 +64,7 @@ const ImportFileModal = <T,>({
             <FlexItem>
               {isShowForm && (
                 <>
-                  <EuiFilePicker
+                  <RiFilePicker
                     id="import-file-modal-filepicker"
                     initialPromptText="Select or drag and drop a file"
                     className={styles.fileDrop}
@@ -108,39 +106,15 @@ const ImportFileModal = <T,>({
                   <Text color="subdued">{error}</Text>
                 </div>
               )}
+              {isShowForm && (
+                <div
+                  className={styles.loading}
+                  data-testid="file-loading-indicator"
+                >
+                  <UploadWarning />
+                </div>
+              )}
             </FlexItem>
-            {isShowForm && (
-              <>
-                <RiFilePicker
-                  id="import-file-modal-filepicker"
-                  initialPromptText="Select or drag and drop a file"
-                  className={styles.fileDrop}
-                  isInvalid={isInvalid}
-                  onChange={onFileChange}
-                  display="large"
-                  accept={acceptedFileExtension}
-                  data-testid="import-file-modal-filepicker"
-                  aria-label="Select or drag and drop file"
-                />
-                {isInvalid && (
-                  <ColorText
-                    color="danger"
-                    className={styles.errorFileMsg}
-                    data-testid="input-file-error-msg"
-                  >
-                    {invalidMessage}
-                  </ColorText>
-                )}
-              </>
-            )}
-            {loading && (
-              <div
-                className={styles.loading}
-                data-testid="file-loading-indicator"
-              >
-                <UploadWarning />
-              </div>
-            )}
           </Col>
           {data && (
             <Row justify="center">
