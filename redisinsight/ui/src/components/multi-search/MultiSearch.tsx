@@ -191,8 +191,7 @@ const MultiSearch = (props: Props) => {
             placeholder={placeholder}
             value={value}
             onKeyDown={handleKeyDown}
-            onChange={(value) =>
-              onChange(value)
+            onChange={onChange
             }
             onFocus={() => setIsInputFocus(true)}
             onBlur={() => setIsInputFocus(false)}
