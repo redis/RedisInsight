@@ -38,20 +38,34 @@ runs:
       shell: bash
       run: |
         if [ "${{ inputs.dir-path }}" = "./" ]; then
-          LOCK_FILE="./yarn.lock"
-          PKG_FILE="./package.json"
+          LOCK_FILE="yarn.lock"
+          PKG_FILE="package.json"
         else
           LOCK_FILE="${{ inputs.dir-path }}/yarn.lock"
           PKG_FILE="${{ inputs.dir-path }}/package.json"
         fi
 
+        echo "Debug: Checking files for ${{ inputs.dir-path }}"
+        echo "Debug: PKG_FILE=$PKG_FILE"
+        echo "Debug: LOCK_FILE=$LOCK_FILE"
+        echo "Debug: PWD=$(pwd)"
+        echo "Debug: Files exist check:"
+        ls -la "$PKG_FILE" 2>/dev/null || echo "  $PKG_FILE - NOT FOUND"
+        ls -la "$LOCK_FILE" 2>/dev/null || echo "  $LOCK_FILE - NOT FOUND"
+
         # Generate hash of only the dependency files
-        DEPS_HASH=$(cat "$PKG_FILE" "$LOCK_FILE" 2>/dev/null | sha256sum | cut -d' ' -f1 || echo "no-files")
+        if [ -f "$PKG_FILE" ] && [ -f "$LOCK_FILE" ]; then
+          DEPS_HASH=$(cat "$PKG_FILE" "$LOCK_FILE" | sha256sum | cut -d' ' -f1)
+          echo "Debug: Successfully generated hash from files"
+        else
+          DEPS_HASH="no-files-$(date +%s)"
+          echo "Debug: Files missing, using timestamp-based hash"
+        fi
 
         echo "lock-file=$LOCK_FILE" >> $GITHUB_OUTPUT
         echo "pkg-file=$PKG_FILE" >> $GITHUB_OUTPUT
         echo "deps-hash=$DEPS_HASH" >> $GITHUB_OUTPUT
-        echo "Debug: Generated hash $DEPS_HASH for $PKG_FILE and $LOCK_FILE"
+        echo "Debug: Final hash = $DEPS_HASH"
 
     - name: Cache Yarn dependencies
       if: steps.should-cache.outputs.enabled == 'true'
@@ -88,4 +102,12 @@ runs:
         # export npm_config_keytar_binary_host_mirror=${{ inputs.keytar-host-mirror }}
         # export npm_config_node_sqlite3_binary_host_mirror=${{ inputs.sqlite3-host-mirror }}
 
+        echo "🔧 Installing dependencies in ${{ inputs.dir-path }}"
         yarn install --frozen-lockfile --network-timeout 1000000
+        echo "✅ Dependencies installed successfully"
+
+    - name: Post-install cache info
+      if: steps.should-cache.outputs.enabled == 'true'
+      shell: bash
+      run: |
+        echo "📦 Cache will be saved with key: ${{ runner.os }}-yarn-${{ inputs.dir-path }}-${{ steps.cache-key.outputs.deps-hash }}"
