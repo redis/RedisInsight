@@ -218,7 +218,7 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
                     id="index-name"
                     placeholder="Enter Index Name"
                     value={indexName}
-                    onChange={(value) => setIndexName(value)}
+                    onChange={setIndexName}
                     autoComplete="off"
                     data-testid="index-name"
                   />
