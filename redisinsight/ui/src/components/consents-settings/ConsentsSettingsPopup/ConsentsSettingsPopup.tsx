@@ -39,7 +39,7 @@ const ConsentsSettingsPopup = () => {
       open
       persistent
       width="600px"
-    className={styles.consentsPopup}
+      className={styles.consentsPopup}
       data-testid="consents-settings-popup"
       title={
         <Row justify="between">
