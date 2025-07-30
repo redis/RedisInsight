@@ -3,6 +3,7 @@ import { WinstonModule, WinstonModuleOptions } from 'nest-winston';
 import { cloneDeep, isString } from 'lodash';
 import { ClientMetadata, SessionMetadata } from 'src/common/models';
 import { instanceToPlain } from 'class-transformer';
+import { logDataToPlain } from 'src/utils/logsFormatter';
 
 type LogMeta = object;
 
@@ -108,7 +109,7 @@ export class AppLogger implements LoggerService {
       context,
       error,
       ...instanceToPlain(userMetadata),
-      data: optionalParamsCopy?.length ? instanceToPlain(optionalParamsCopy) : undefined,
+      data: optionalParamsCopy?.length ? logDataToPlain(optionalParamsCopy) : undefined,
     };
   }
 
