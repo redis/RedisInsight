@@ -263,7 +263,9 @@ const RemoveListElements = (props: Props) => {
               </FormField>
             </FlexItem>
             <FlexItem grow style={{ width: '100%' }}>
-              <FormField>
+              <FormField
+                additionalText={!canRemoveMultiple ? InfoBoxPopover() : <></>}
+              >
                 <TextInput
                   name={config.count.name}
                   id={config.count.name}
@@ -275,7 +277,6 @@ const RemoveListElements = (props: Props) => {
                   onChange={handleCountChange}
                   ref={countInput}
                   disabled={!canRemoveMultiple}
-                  append={!canRemoveMultiple ? InfoBoxPopover() : <></>}
                 />
               </FormField>
             </FlexItem>
