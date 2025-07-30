@@ -9,7 +9,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -18,20 +18,28 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'yarn'
-          cache-dependency-path: |
-            yarn.lock
-            redisinsight/yarn.lock
-            redisinsight/api/yarn.lock
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        id: cache-deps
+        with:
+          path: |
+            node_modules
+            redisinsight/node_modules
+            redisinsight/api/node_modules
+            ~/.cache/yarn
+          key: ${{ runner.os }}-deps-${{ hashFiles('yarn.lock', 'redisinsight/yarn.lock', 'redisinsight/api/yarn.lock', 'package.json', 'redisinsight/package.json', 'redisinsight/api/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-deps-
 
       - name: Install dependencies
         run: |
           echo "📦 Installing root dependencies..."
           yarn install --frozen-lockfile
-          
+
           echo "📦 Installing redisinsight dependencies..."
           yarn --cwd redisinsight install --frozen-lockfile
-          
+
           echo "📦 Installing API dependencies..."
           yarn --cwd redisinsight/api install --frozen-lockfile
 
