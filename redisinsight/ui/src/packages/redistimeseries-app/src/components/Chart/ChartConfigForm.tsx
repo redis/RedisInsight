@@ -29,6 +29,7 @@ const NewEnumSelect = ({
         title={v.charAt(0).toUpperCase() + v.slice(1)}
         onClick={() => onClick(v)}
         className={`button-point ${selected === v ? 'button-selected' : null}`}
+        key={v}
       >
         {v}
       </div>
@@ -112,7 +113,7 @@ export default function ChartConfigForm(props: ChartConfigFormProps) {
                 {value.yAxis2 && (
                   <div className="y-axis-2">
                     {Object.keys(value.keyToY2Axis).map((key) => (
-                      <div className="y-axis-2-item">
+                      <div className="y-axis-2-item" key={key}>
                         <div>{key}</div>
                         <ButtonGroup>
                           {yAxisButtonGroupItems.map((item) => (
