@@ -15,7 +15,7 @@ export const SIZES = ['M', 'L', 'XL', 'XXL'] as const
 
 export type RiLoadingLogoSize = (typeof SIZES)[number]
 
-export interface LogoLoadingProps extends HTMLAttributes<HTMLImageElement> {
+export interface RiLoadingLogoProps extends HTMLAttributes<HTMLImageElement> {
   src: string
   $size?: RiLoadingLogoSize
   $bounceSpeed?: number
@@ -28,7 +28,7 @@ const Wrapper = styled.div`
   justify-content: center;
 `
 
-const BouncingLogo = styled.img<LogoLoadingProps>`
+const BouncingLogo = styled.img<RiLoadingLogoProps>`
   width: ${({ theme, $size = 'XL' }) =>
     theme.components.iconButton.sizes[$size].width};
   animation: ${bounce} ${({ $bounceSpeed }) => $bounceSpeed}s ease-in-out
@@ -40,7 +40,7 @@ const RiLoadingLogo = ({
   $size = 'XL',
   $bounceSpeed = 1,
   alt = 'Loading logo',
-}: LogoLoadingProps) => (
+}: RiLoadingLogoProps) => (
   <Wrapper>
     <BouncingLogo
       src={src}
