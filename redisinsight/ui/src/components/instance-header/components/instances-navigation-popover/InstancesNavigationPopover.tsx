@@ -135,7 +135,7 @@ const InstancesNavigationPopover = ({ name }: Props) => {
             className={styles.searchInput}
             icon={Search}
             value={searchFilter}
-            onChange={(value) => handleSearch(value)}
+            onChange={handleSearch}
             data-testid="instances-nav-popover-search"
           />
         </div>
