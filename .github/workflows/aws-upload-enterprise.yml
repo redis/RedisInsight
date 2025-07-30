@@ -39,6 +39,7 @@ jobs:
 
       - name: Renaming builds
         run: |
+          APP_VERSION=$(jq -r '.version' redisinsight/package.json)
           VERSION="${APP_VERSION//./-}"
           TARGET_DIR=./release
           PREFIX="Redis-Insight"
