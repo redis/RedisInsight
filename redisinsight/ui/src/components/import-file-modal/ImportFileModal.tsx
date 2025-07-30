@@ -107,12 +107,9 @@ const ImportFileModal = <T,>({
                 </div>
               )}
               {isShowForm && (
-                <div
-                  className={styles.loading}
-                  data-testid="file-loading-indicator"
-                >
+                <FlexItem grow className={styles.uploadWarningContainer}>
                   <UploadWarning />
-                </div>
+                </FlexItem>
               )}
             </FlexItem>
           </Col>
