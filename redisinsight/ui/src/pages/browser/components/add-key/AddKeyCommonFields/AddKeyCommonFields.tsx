@@ -90,9 +90,7 @@ const AddKeyCommonFields = (props: Props) => {
           id={config.keyName.name}
           value={keyName}
           placeholder={config.keyName.placeholder}
-          onChange={value =>
-            setKeyName(value)
-          }
+          onChange={stKeyName}
           disabled={loading}
           autoComplete="off"
           data-testid="key"
