@@ -4,7 +4,7 @@ import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiPopover } from 'uiSrc/components/base'
-import { SearchInput, TextInput } from 'uiSrc/components/base/inputs'
+import { SearchInput } from 'uiSrc/components/base/inputs'
 import { useFilterTags } from './useFilterTags'
 import styles from './styles.module.scss'
 
