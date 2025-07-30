@@ -41,7 +41,7 @@ export const VectorSearchCreateIndex = ({
       searchIndexType: SearchIndexType.REDIS_QUERY_ENGINE,
       sampleDataType: SampleDataType.PRESET_DATA,
       dataContent: SampleDataContent.E_COMMERCE_DISCOVERY,
-      usePresetVectorIndex: false,
+      usePresetVectorIndex: true,
       presetVectorIndexName: '',
       tags: [],
     })
