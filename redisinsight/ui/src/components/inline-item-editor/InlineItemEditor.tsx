@@ -1,7 +1,6 @@
 import React, { ChangeEvent, Ref, useEffect, useRef, useState } from 'react'
 import { capitalize } from 'lodash'
 import cx from 'classnames'
-import { EuiFieldText } from '@elastic/eui'
 
 import * as keys from 'uiSrc/constants/keys'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
@@ -15,6 +14,7 @@ import {
   IconButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
+import { TextInput } from 'uiSrc/components/base/inputs'
 
 import styles from './styles.module.scss'
 
@@ -110,8 +110,8 @@ const InlineItemEditor = (props: Props) => {
     }, 100)
   }, [])
 
-  const handleChangeValue = (e: ChangeEvent<HTMLInputElement>) => {
-    let newValue = e.target.value
+  const handleChangeValue = (value: string) => {
+    let newValue = value
 
     if (validation) {
       newValue = validation(newValue)
@@ -207,21 +207,19 @@ const InlineItemEditor = (props: Props) => {
                 <FlexItem grow>
                   {children || (
                     <>
-                      <EuiFieldText
+                      <TextInput
                         name={fieldName}
                         id={fieldName}
                         className={cx(styles.field, textFiledClassName)}
                         maxLength={maxLength || undefined}
                         placeholder={placeholder}
                         value={value}
-                        fullWidth={false}
-                        compressed
                         onChange={handleChangeValue}
-                        isLoading={isLoading}
-                        isInvalid={isInvalid}
+                        loading={isLoading}
+                        valid={!isInvalid}
                         data-testid="inline-item-editor"
                         autoComplete={autoComplete}
-                        inputRef={inputRef}
+                        ref={inputRef}
                       />
                       {expandable && (
                         <p className={styles.keyHiddenText}>{value}</p>

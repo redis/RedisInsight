@@ -1,10 +1,10 @@
 import React from 'react'
-import { EuiFieldText } from '@elastic/eui'
 import { FormikProps } from 'formik'
 
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
+import { TextInput } from 'uiSrc/components/base/inputs'
 
 export interface Props {
   flexGroupClassName?: string
@@ -19,8 +19,7 @@ const PrimaryGroupSentinel = (props: Props) => {
       <Row gap="m" responsive className={flexGroupClassName}>
         <FlexItem grow className={flexItemClassName}>
           <FormField label="Database Alias*">
-            <EuiFieldText
-              fullWidth
+            <TextInput
               name="name"
               id="name"
               data-testid="name"
@@ -35,8 +34,7 @@ const PrimaryGroupSentinel = (props: Props) => {
       <Row gap="m" responsive className={flexGroupClassName}>
         <FlexItem grow className={flexItemClassName}>
           <FormField label="Primary Group Name*">
-            <EuiFieldText
-              fullWidth
+            <TextInput
               name="sentinelMasterName"
               id="sentinelMasterName"
               data-testid="primary-group"

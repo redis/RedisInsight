@@ -1,8 +1,5 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-
-import cx from 'classnames'
-import { EuiFieldText } from '@elastic/eui'
 
 import {
   selectedKeyDataSelector,
@@ -25,6 +22,7 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
+import { TextInput } from 'uiSrc/components/base/inputs'
 import { PushElementToListDto } from 'apiSrc/modules/browser/list/dto'
 
 import styles from '../styles.module.scss'
@@ -139,14 +137,13 @@ const AddListElements = (props: Props) => {
           isClearDisabled={isClearDisabled}
         >
           {(item, index) => (
-            <EuiFieldText
-              fullWidth
+            <TextInput
               name={`element-${index}`}
               id={`element-${index}`}
               placeholder={config.element.placeholder}
               value={item}
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                handleElementChange(e.target.value, index)
+              onChange={value =>
+                handleElementChange(value, index)
               }
               data-testid={`element-${index}`}
             />
