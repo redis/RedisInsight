@@ -39,6 +39,7 @@ export function useNavigation() {
   const [activePage, setActivePage] = useState(Pages.home)
 
   const { workspace } = useSelector(appContextSelector)
+
   const { id: connectedInstanceId = '' } = useSelector(
     connectedInstanceSelector,
   )
