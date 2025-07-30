@@ -53,6 +53,8 @@ concurrency:
 jobs:
   changes:
     runs-on: ubuntu-latest
+    # TEMPORARILY DISABLED - testing simple workflow
+    if: false
     outputs:
       frontend: ${{ steps.filter.outputs.frontend }}
       backend: ${{ steps.filter.outputs.backend }}

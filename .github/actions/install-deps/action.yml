@@ -18,16 +18,96 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: Check if caching should be enabled
+      id: should-cache
+      shell: bash
+      run: |
+        # Enable caching for PR branches: fe/, be/, fe-be/, feature/, bugfix/
+        # Skip caching for: ric/, latest, and other release branches
+        if [[ "${{ github.ref_name }}" =~ ^(fe|be|fe-be|feature|bugfix)/ ]]; then
+          echo "enabled=true" >> $GITHUB_OUTPUT
+          echo "🚀 Caching enabled for branch: ${{ github.ref_name }}"
+        else
+          echo "enabled=false" >> $GITHUB_OUTPUT
+          echo "⚡ Caching disabled for branch: ${{ github.ref_name }}"
+        fi
+
+    - name: Generate cache key
+      if: steps.should-cache.outputs.enabled == 'true'
+      id: cache-key
+      shell: bash
+      run: |
+        if [ "${{ inputs.dir-path }}" = "./" ]; then
+          LOCK_FILE="yarn.lock"
+          PKG_FILE="package.json"
+        else
+          LOCK_FILE="${{ inputs.dir-path }}/yarn.lock"
+          PKG_FILE="${{ inputs.dir-path }}/package.json"
+        fi
+
+        echo "Debug: Checking files for ${{ inputs.dir-path }}"
+        echo "Debug: PKG_FILE=$PKG_FILE"
+        echo "Debug: LOCK_FILE=$LOCK_FILE"
+        echo "Debug: PWD=$(pwd)"
+        echo "Debug: Files exist check:"
+        ls -la "$PKG_FILE" 2>/dev/null || echo "  $PKG_FILE - NOT FOUND"
+        ls -la "$LOCK_FILE" 2>/dev/null || echo "  $LOCK_FILE - NOT FOUND"
+
+        # Generate hash of only the dependency files
+        if [ -f "$PKG_FILE" ] && [ -f "$LOCK_FILE" ]; then
+          DEPS_HASH=$(cat "$PKG_FILE" "$LOCK_FILE" | sha256sum | cut -d' ' -f1)
+          echo "Debug: Successfully generated hash from files"
+        else
+          DEPS_HASH="no-files-$(date +%s)"
+          echo "Debug: Files missing, using timestamp-based hash"
+        fi
+
+        echo "lock-file=$LOCK_FILE" >> $GITHUB_OUTPUT
+        echo "pkg-file=$PKG_FILE" >> $GITHUB_OUTPUT
+        echo "deps-hash=$DEPS_HASH" >> $GITHUB_OUTPUT
+        echo "Debug: Final hash = $DEPS_HASH"
+
+    - name: Cache Yarn dependencies
+      if: steps.should-cache.outputs.enabled == 'true'
+      id: yarn-cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache/yarn
+          ${{ inputs.dir-path }}/node_modules
+          .yarn/cache
+        key: ${{ runner.os }}-yarn-${{ inputs.dir-path }}-${{ steps.cache-key.outputs.deps-hash }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-${{ inputs.dir-path }}-
+          ${{ runner.os }}-yarn-
+
+    - name: Check cache status
+      if: steps.should-cache.outputs.enabled == 'true'
+      shell: bash
+      run: |
+        CACHE_HIT="${{ steps.yarn-cache.outputs.cache-hit }}"
+        echo "Debug: cache-hit output = '$CACHE_HIT'"
+        if [ "$CACHE_HIT" = "true" ]; then
+          echo "🎯 Cache HIT for ${{ inputs.dir-path }} - dependencies restored from cache"
+        else
+          echo "❌ Cache MISS for ${{ inputs.dir-path }} - will install dependencies"
+          echo "Cache key: ${{ runner.os }}-yarn-${{ inputs.dir-path }}-${{ steps.cache-key.outputs.deps-hash }}"
+        fi
+
     - name: Install dependencies
       working-directory: ${{ inputs.dir-path }}
       shell: bash
-
-      # env:
-      #   SKIP_POSTINSTALL: ${{ inputs.skip-postinstall }}
-      # run: yarn install
       run: |
         # todo: uncomment after build our binaries
         # export npm_config_keytar_binary_host_mirror=${{ inputs.keytar-host-mirror }}
         # export npm_config_node_sqlite3_binary_host_mirror=${{ inputs.sqlite3-host-mirror }}
 
+        echo "🔧 Installing dependencies in ${{ inputs.dir-path }}"
         yarn install --frozen-lockfile --network-timeout 1000000
+        echo "✅ Dependencies installed successfully"
+
+    - name: Post-install cache info
+      if: steps.should-cache.outputs.enabled == 'true'
+      shell: bash
+      run: |
+        echo "📦 Cache will be saved with key: ${{ runner.os }}-yarn-${{ inputs.dir-path }}-${{ steps.cache-key.outputs.deps-hash }}"

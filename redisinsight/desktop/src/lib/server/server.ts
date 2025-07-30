@@ -7,6 +7,7 @@ import { AuthStrategy } from 'desktopSrc/lib/auth/auth.interface'
 import { AbstractWindowAuthStrategy } from 'apiSrc/modules/auth/window-auth/strategies/abstract.window.auth.strategy'
 import { WindowAuthModule } from '../../../../api/dist/src/modules/auth/window-auth/window-auth.module'
 import { WindowAuthService } from '../../../../api/dist/src/modules/auth/window-auth/window-auth.service'
+// eslint-disable-next-line import/extensions
 import server from '../../../../api/dist/src/main'
 import { getWindows } from '../window'
 

@@ -103,7 +103,6 @@ jobs:
       - name: Post or Update Coverage Summary Comment
         if: ${{ steps.findPr.outputs.number != '' }}
         uses: actions/github-script@v7
-        if: ${{ steps.findPr.outputs.number != '' }}
         with:
           script: |
             const fs = require('fs');

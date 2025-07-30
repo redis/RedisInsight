@@ -83,3 +83,22 @@ runs:
         dir-path: './'
         keytar-host-mirror: ${{ inputs.keytar-host-mirror }}
         sqlite3-host-mirror: ${{ inputs.sqlite3-host-mirror }}
+
+    - name: Check if linting should run
+      id: should-lint
+      shell: bash
+      run: |
+        # Run linting for PR branches: fe/, be/, fe-be/, feature/, bugfix/
+        # Skip linting for: ric/, latest, and other release branches
+        if [[ "${{ github.ref_name }}" =~ ^(fe|be|fe-be|feature|bugfix)/ ]]; then
+          echo "enabled=true" >> $GITHUB_OUTPUT
+          echo "🔍 Linting enabled for branch: ${{ github.ref_name }}"
+        else
+          echo "enabled=false" >> $GITHUB_OUTPUT
+          echo "⚡ Linting skipped for branch: ${{ github.ref_name }}"
+        fi
+
+    - name: Run linting
+      if: steps.should-lint.outputs.enabled == 'true'
+      shell: bash
+      run: yarn lint
