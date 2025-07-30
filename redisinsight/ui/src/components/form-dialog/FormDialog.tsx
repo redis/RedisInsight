@@ -21,12 +21,12 @@ const FormDialog = (props: Props) => {
 
   return (
     <Modal.Compose open={isOpen}>
-      <Modal.Content.Compose 
+      <Modal.Content.Compose
         persistent
         className={`${styles.modal} ${className}`}
         onCancel={onClose}
       >
-        <Modal.Content.Close icon={CancelIcon} onClick={onClose}/>
+        <Modal.Content.Close icon={CancelIcon} onClick={onClose} />
         <Modal.Content.Header.Title>{header}</Modal.Content.Header.Title>
         <Modal.Content.Body content={children} />
         <Modal.Content.Footer.Compose>{footer}</Modal.Content.Footer.Compose>
