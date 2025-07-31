@@ -28,3 +28,17 @@ export const CreateIndexStepScreenWrapper = styled.div`
   padding: ${({ theme }) => theme.core.space.space300};
   border-radius: ${({ theme }) => theme.core.space.space100};
 `
+export const CodeBlocKWrapper = styled.div`
+  overflow: auto;
+  height: 100%;
+  padding: ${({ theme }) => theme.core.space.space300};
+
+  border: 1px solid;
+  border-color: ${({ theme }) => theme.color.dusk200};
+  border-radius: 8px;
+
+  font-size: 11px;
+  background: ${({ theme }) => theme.color.dusk100};
+  word-wrap: break-word;
+  white-space: break-spaces;
+`

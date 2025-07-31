@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { EuiFieldText } from '@elastic/eui'
 import { FlexItem } from 'uiSrc/components/base/layout/flex'
@@ -6,9 +6,12 @@ import { Text } from 'uiSrc/components/base/text'
 import CreateIndexStepWrapper from 'uiSrc/components/new-index/create-index-step'
 import { FieldBoxesGroup } from 'uiSrc/components/new-index/create-index-step/field-boxes-group/FieldBoxesGroup'
 import { VectorSearchBox } from 'uiSrc/components/new-index/create-index-step/field-box/types'
+import { generateFtCreateCommand } from 'uiSrc/utils/index/generateFtCreateCommand'
+import { Button } from 'uiSrc/components/base/forms/buttons'
 
 import { bikesIndexFieldsBoxes } from './config'
 import { CreateIndexStepScreenWrapper, SearchInputWrapper } from './styles'
+import { PreviewCommandDrawer } from './PreviewCommandDrawer'
 import { IStepComponent, StepComponentProps } from '../types'
 
 // eslint-disable-next-line arrow-body-style, @typescript-eslint/no-unused-vars
@@ -21,6 +24,7 @@ export const CreateIndexStep: IStepComponent = ({
   setParameters,
 }: StepComponentProps) => {
   const boxes = useIndexFieldsBoxes(parameters.indexName)
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
   return (
     <CreateIndexStepScreenWrapper>
@@ -54,6 +58,12 @@ export const CreateIndexStep: IStepComponent = ({
           onChange={(value) => setParameters({ indexFields: value })}
         />
       </FlexItem>
+      <Button onClick={() => setIsDrawerOpen(true)}>Command preview</Button>
+      <PreviewCommandDrawer
+        commandContent={generateFtCreateCommand()}
+        isOpen={isDrawerOpen}
+        onOpenChange={setIsDrawerOpen}
+      />
     </CreateIndexStepScreenWrapper>
   )
 }
