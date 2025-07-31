@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
-import { EuiFieldText, EuiForm, keys } from '@elastic/eui'
 import { useSelector } from 'react-redux'
 
+import * as keys from 'uiSrc/constants/keys'
 import { rejsonDataSelector } from 'uiSrc/slices/browser/rejson'
 import { checkExistingPath } from 'uiSrc/utils/rejson'
 import FieldMessage from 'uiSrc/components/field-message/FieldMessage'
@@ -13,6 +13,7 @@ import { FocusTrap } from 'uiSrc/components/base/utils/FocusTrap'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 import { CancelSlimIcon, CheckThinIcon } from 'uiSrc/components/base/icons'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { TextInput } from 'uiSrc/components/base/inputs'
 import ConfirmOverwrite from './ConfirmOverwrite'
 import { isValidJSON, isValidKey, parseJsonData, wrapPath } from '../../utils'
 import { JSONErrors } from '../../constants'
@@ -89,8 +90,7 @@ const AddItem = (props: Props) => {
         <div>
           <WindowEvent event="keydown" handler={(e) => handleOnEsc(e)} />
           <FocusTrap>
-            <EuiForm
-              component="form"
+            <form
               className="relative"
               onSubmit={(e) => handleFormSubmit(e)}
               style={{ display: 'flex' }}
@@ -98,26 +98,25 @@ const AddItem = (props: Props) => {
             >
               {isPair && (
                 <FlexItem grow>
-                  <EuiFieldText
+                  <TextInput
                     name="newRootKey"
                     value={key}
-                    isInvalid={!!error}
+                    error={error || undefined}
                     placeholder="Enter JSON key"
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setKey(e.target.value)
+                    onChange={setKey
                     }
                     data-testid="json-key"
                   />
                 </FlexItem>
               )}
               <FlexItem grow>
-                <EuiFieldText
+                <TextInput
                   name="newValue"
                   value={value}
                   placeholder="Enter JSON value"
-                  isInvalid={!!error}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setValue(e.target.value)
+                  error={error || undefined}
+                  onChange={value =>
+                    setValue(value)
                   }
                   data-testid="json-value"
                 />
@@ -148,7 +147,7 @@ const AddItem = (props: Props) => {
                   />
                 </div>
               </ConfirmOverwrite>
-            </EuiForm>
+            </form>
             {!!error && (
               <div className={cx(styles.errorMessage)}>
                 <FieldMessage

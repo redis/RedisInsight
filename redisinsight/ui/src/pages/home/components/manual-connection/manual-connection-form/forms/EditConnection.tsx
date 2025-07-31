@@ -1,5 +1,4 @@
 import React from 'react'
-import { EuiForm } from '@elastic/eui'
 import { FormikProps } from 'formik'
 import {
   DatabaseForm,
@@ -43,11 +42,11 @@ const EditConnection = (props: Props) => {
   } = props
 
   return (
-    <EuiForm
-      component="form"
+    <form
       onSubmit={formik.handleSubmit}
       data-testid="form"
       onKeyDown={onKeyDown}
+      role="presentation"
     >
       {activeTab === ManualFormTab.General && (
         <>
@@ -102,7 +101,7 @@ const EditConnection = (props: Props) => {
       {activeTab === ManualFormTab.Decompression && (
         <DecompressionAndFormatters formik={formik} />
       )}
-    </EuiForm>
+    </form>
   )
 }
 

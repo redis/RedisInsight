@@ -2,7 +2,8 @@ import { useTheme } from '@redis-ui/styles'
 
 export type CommonProps = {
   className?: string
-  ['data-testid']?: string
+  'aria-label'?: string
+  'data-testid'?: string
 }
 
 export type Theme = ReturnType<typeof useTheme>

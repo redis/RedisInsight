@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { EuiForm } from '@elastic/eui'
 import { useFormik } from 'formik'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
@@ -105,11 +104,7 @@ const AddDatabaseScreen = (props: Props) => {
 
   return (
     <div className="eui-yScroll">
-      <EuiForm
-        component="form"
-        onSubmit={formik.handleSubmit}
-        data-testid="form"
-      >
+      <form onSubmit={formik.handleSubmit} data-testid="form">
         <Row responsive>
           <FlexItem grow>
             <ConnectionUrl
@@ -124,13 +119,7 @@ const AddDatabaseScreen = (props: Props) => {
             <RiTooltip
               position="top"
               anchorClassName="euiToolTip__btn-disabled"
-              content={
-                isInvalid ? (
-                  <span>
-                    {ConnectionUrlError}
-                  </span>
-                ) : null
-              }
+              content={isInvalid ? <span>{ConnectionUrlError}</span> : null}
             >
               <EmptyButton
                 size="small"
@@ -160,13 +149,7 @@ const AddDatabaseScreen = (props: Props) => {
                 <RiTooltip
                   position="top"
                   anchorClassName="euiToolTip__btn-disabled"
-                  content={
-                    isInvalid ? (
-                      <span>
-                        {ConnectionUrlError}
-                      </span>
-                    ) : null
-                  }
+                  content={isInvalid ? <span>{ConnectionUrlError}</span> : null}
                 >
                   <PrimaryButton
                     size="small"
@@ -182,7 +165,7 @@ const AddDatabaseScreen = (props: Props) => {
             </Row>
           </FlexItem>
         </Row>
-      </EuiForm>
+      </form>
       <Spacer />
       <div className={styles.hr}>Or</div>
       <Spacer />

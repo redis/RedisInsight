@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
-import { EuiForm } from '@elastic/eui'
+
 import { TimezoneOption, timezoneOptions } from 'uiSrc/constants'
 import {
   updateUserConfigSettingsAction,
@@ -61,11 +61,7 @@ const TimezoneForm = () => {
   }
 
   return (
-    <EuiForm
-      component="form"
-      onSubmit={formik.handleSubmit}
-      data-testid="format-timezone-form"
-    >
+    <form onSubmit={formik.handleSubmit} data-testid="format-timezone-form">
       <div>
         <RiSelect
           style={{ width: 240 }}
@@ -79,7 +75,7 @@ const TimezoneForm = () => {
           data-test-subj="select-timezone"
         />
       </div>
-    </EuiForm>
+    </form>
   )
 }
 

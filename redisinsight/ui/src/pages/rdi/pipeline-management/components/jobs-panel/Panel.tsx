@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
-import { keys } from '@elastic/eui'
+
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { isArray, upperFirst } from 'lodash'
 
+import * as keys from 'uiSrc/constants/keys'
 import { PipelineJobsTabs } from 'uiSrc/slices/interfaces/rdi'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {

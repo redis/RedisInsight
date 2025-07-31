@@ -28,7 +28,7 @@ describe('ChatForm', () => {
 
     fireEvent.click(screen.getByTestId('ai-submit-message-btn'))
 
-    expect(onSubmit).toBeCalledWith('test')
+    expect(onSubmit).toHaveBeenCalledWith('test')
   })
 
   it('should submit by enter', () => {
@@ -45,7 +45,7 @@ describe('ChatForm', () => {
       key: 'Enter',
     })
 
-    expect(onSubmit).toBeCalledWith('test')
+    expect(onSubmit).toHaveBeenCalledWith('test')
   })
 
   it('should show agreements popover', async () => {
@@ -68,7 +68,7 @@ describe('ChatForm', () => {
     })
     await waitForRiPopoverVisible()
 
-    expect(onSubmit).not.toBeCalled()
+    expect(onSubmit).not.toHaveBeenCalled()
 
     expect(screen.getByTestId('ai-submit-message-btn')).toBeInTheDocument()
 
@@ -76,6 +76,6 @@ describe('ChatForm', () => {
       fireEvent.click(screen.getByTestId('ai-accept-agreements'))
     })
 
-    expect(onSubmit).toBeCalledWith('test')
+    expect(onSubmit).toHaveBeenCalledWith('test')
   })
 })

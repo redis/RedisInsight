@@ -1,20 +1,14 @@
 import React, { FormEvent, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { EuiForm } from '@elastic/eui'
 import { Maybe, stringToBuffer } from 'uiSrc/utils'
 
 import { addKeyStateSelector, addStringKey } from 'uiSrc/slices/browser/keys'
 
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { TextArea } from 'uiSrc/components/base/inputs'
 import { SetStringWithExpireDto } from 'apiSrc/modules/browser/string/dto'
-import AddKeyFooter from '../AddKeyFooter/AddKeyFooter'
 import { AddStringFormConfig as config } from '../constants/fields-config'
 
 export interface Props {
@@ -54,7 +48,7 @@ const AddKeyString = (props: Props) => {
   }
 
   return (
-    <EuiForm component="form" onSubmit={onFormSubmit}>
+    <form onSubmit={onFormSubmit}>
       <FormField label={config.value.label}>
         <TextArea
           name="value"
@@ -66,39 +60,15 @@ const AddKeyString = (props: Props) => {
           data-testid="string-value"
         />
       </FormField>
-      <PrimaryButton type="submit" style={{ display: 'none' }}>
-        Submit
-      </PrimaryButton>
-      <AddKeyFooter>
-        <>
-          <Row justify="end" gap="m" style={{ padding: 18 }}>
-            <FlexItem>
-              <div>
-                <SecondaryButton
-                  onClick={() => onCancel(true)}
-                  className="btn-cancel btn-back"
-                >
-                  Cancel
-                </SecondaryButton>
-              </div>
-            </FlexItem>
-            <FlexItem>
-              <div>
-                <PrimaryButton
-                  className="btn-add"
-                  loading={loading}
-                  onClick={submitData}
-                  disabled={!isFormValid || loading}
-                  data-testid="add-key-string-btn"
-                >
-                  Add Key
-                </PrimaryButton>
-              </div>
-            </FlexItem>
-          </Row>
-        </>
-      </AddKeyFooter>
-    </EuiForm>
+      <ActionFooter
+        onCancel={() => onCancel(true)}
+        onAction={submitData}
+        actionText="Add Key"
+        loading={loading}
+        disabled={!isFormValid}
+        actionTestId="add-key-string-btn"
+      />
+    </form>
   )
 }
 

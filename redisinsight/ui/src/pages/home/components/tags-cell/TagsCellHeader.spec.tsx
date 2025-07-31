@@ -55,7 +55,7 @@ describe('TagsCellHeader', () => {
     fireEvent.click(getByRole('button'))
     await waitForRiPopoverVisible()
 
-    expect(screen.getByRole('search')).toBeInTheDocument()
+    expect(screen.getByTestId('tag-search')).toBeInTheDocument()
   })
 
   it('should filter tags based on search input', async () => {
@@ -66,11 +66,11 @@ describe('TagsCellHeader', () => {
     expect(getByTestId(`${mockTags[0].key}:${mockTags[0].value}`)).toBeVisible()
     expect(getByTestId(`${mockTags[1].key}:${mockTags[1].value}`)).toBeVisible()
 
-    fireEvent.change(getByRole('search'), {
+    fireEvent.change(getByTestId('tag-search'), {
       target: { value: 'version' },
     })
 
-    expect(getByRole('search')).toHaveValue('version')
+    expect(getByTestId('tag-search')).toHaveValue('version')
     try {
       getByTestId(`${mockTags[0].key}:${mockTags[0].value}`)
     } catch (e) {

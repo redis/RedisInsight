@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import cx from 'classnames'
-import { keys } from '@elastic/eui'
 
+import * as keys from 'uiSrc/constants/keys'
 import { SearchInput } from 'uiSrc/components/base/inputs'
 import { Maybe, Nullable } from 'uiSrc/utils'
 import { SearchIcon } from 'uiSrc/components/base/icons'
@@ -14,7 +14,6 @@ export interface Props {
   initialValue?: string
   handleOpenState: (isOpen: boolean) => void
   fieldName: string
-  prependSearchName: string
   onApply?: (value: string) => void
   searchValidation?: Maybe<(value: string) => string>
 }
@@ -45,17 +44,6 @@ const TableColumnSearchTrigger = (props: Props) => {
 
   const handleOpen = () => {
     handleOpenState(true)
-  }
-
-  const handleOnBlur = (e?: React.FocusEvent<HTMLInputElement>) => {
-    const relatedTarget = e?.relatedTarget as HTMLInputElement
-    const target = e?.target as HTMLInputElement
-    if (relatedTarget?.classList.contains('euiFormControlLayoutClearButton')) {
-      return
-    }
-    if (!target.value) {
-      handleOpenState(false)
-    }
   }
 
   const handleApply = (_value: string): void => {

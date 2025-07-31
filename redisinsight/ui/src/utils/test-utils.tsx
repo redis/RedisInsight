@@ -9,6 +9,7 @@ import {
   render as rtlRender,
   renderHook as rtlRenderHook,
   waitFor,
+  screen,
 } from '@testing-library/react'
 
 import { ThemeProvider } from 'styled-components'
@@ -282,6 +283,13 @@ export const waitForRedisUiSelectVisible = async (timeout = 500) => {
 
 export const waitForStack = async (timeout = 0) => {
   await waitFor(() => {}, { timeout })
+}
+
+export const toggleAccordion = async (testId: string) => {
+  const accordion = screen.getByTestId(testId)
+  expect(accordion).toBeInTheDocument()
+  const btn = accordion.querySelector('button')
+  await userEvent.click(btn!)
 }
 
 // mock useHistory

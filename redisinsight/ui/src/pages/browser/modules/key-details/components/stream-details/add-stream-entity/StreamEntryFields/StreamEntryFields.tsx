@@ -1,5 +1,4 @@
-import React, { ChangeEvent, useEffect, useRef } from 'react'
-import { EuiFieldText } from '@elastic/eui'
+import React, { useEffect, useRef } from 'react'
 import cx from 'classnames'
 import { validateEntryId } from 'uiSrc/utils'
 import { INITIAL_STREAM_FIELD_STATE } from 'uiSrc/pages/browser/components/add-key/AddKeyStream/AddKeyStream'
@@ -11,6 +10,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { TextInput } from 'uiSrc/components/base/inputs'
 import styles from '../styles.module.scss'
 
 export interface Props {
@@ -83,8 +83,8 @@ const StreamEntryFields = (props: Props) => {
     removeField(id)
   }
 
-  const handleEntryIdChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setEntryID(validateEntryId(e.target.value))
+  const handleEntryIdChange = (value: string) => {
+    setEntryID(validateEntryId(value))
   }
 
   const handleFieldChange = (formField: string, id: number, value: any) => {
@@ -110,19 +110,10 @@ const StreamEntryFields = (props: Props) => {
   return (
     <div className={cx(styles.container)}>
       <div className={styles.entryIdContainer}>
-        <FormField label={config.entryId.label}>
-          <EuiFieldText
-            inputRef={entryIdRef}
-            fullWidth
-            name={config.entryId.name}
-            id={config.entryId.id}
-            placeholder={config.entryId.placeholder}
-            value={entryID}
-            onChange={handleEntryIdChange}
-            onBlur={onEntryIdBlur}
-            onFocus={() => setIsEntryIdFocused(true)}
-            append={
-              <RiTooltip
+        <FormField
+          label={config.entryId.label}
+          additionalText={
+            <RiTooltip
                 anchorClassName="inputAppendIcon"
                 className={styles.entryIdTooltip}
                 position="left"
@@ -139,8 +130,18 @@ const StreamEntryFields = (props: Props) => {
               >
                 <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
               </RiTooltip>
-            }
-            isInvalid={!!entryIdError}
+          }
+        >
+          <TextInput
+            ref={entryIdRef}
+            name={config.entryId.name}
+            id={config.entryId.id}
+            placeholder={config.entryId.placeholder}
+            value={entryID}
+            onChange={handleEntryIdChange}
+            onBlur={onEntryIdBlur}
+            onFocus={() => setIsEntryIdFocused(true)}
+            valid={!entryIdError}
             autoComplete="off"
             data-testid={config.entryId.id}
           />
@@ -166,19 +167,18 @@ const StreamEntryFields = (props: Props) => {
             onClickAdd={addField}
           >
             {(item, index) => (
-              <Row align="center">
+              <Row align="center" gap='m'>
                 <FlexItem className={styles.fieldItemWrapper} grow>
                   <FormField>
-                    <EuiFieldText
-                      fullWidth
+                    <TextInput
                       name={`fieldName-${item.id}`}
                       id={`fieldName-${item.id}`}
                       placeholder={config.name.placeholder}
                       value={item.name}
-                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                        handleFieldChange('name', item.id, e.target.value)
+                      onChange={value =>
+                        handleFieldChange('name', item.id, value)
                       }
-                      inputRef={
+                      ref={
                         index === fields.length - 1 ? lastAddedFieldName : null
                       }
                       autoComplete="off"
@@ -188,15 +188,14 @@ const StreamEntryFields = (props: Props) => {
                 </FlexItem>
                 <FlexItem className={styles.valueItemWrapper} grow>
                   <FormField>
-                    <EuiFieldText
-                      fullWidth
+                    <TextInput
                       className={styles.fieldValue}
                       name={`fieldValue-${item.id}`}
                       id={`fieldValue-${item.id}`}
                       placeholder={config.value.placeholder}
                       value={item.value}
-                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                        handleFieldChange('value', item.id, e.target.value)
+                      onChange={value =>
+                        handleFieldChange('value', item.id, value)
                       }
                       autoComplete="off"
                       data-testid="field-value"

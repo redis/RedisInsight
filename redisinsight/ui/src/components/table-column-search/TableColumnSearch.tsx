@@ -7,7 +7,6 @@ import styles from './styles.module.scss'
 export interface Props {
   appliedValue: string
   fieldName: string
-  prependSearchName: string
   onApply?: (value: string) => void
   searchValidation?: Maybe<(value: string) => string>
 }

@@ -28,7 +28,7 @@ const AddMultipleFields = <T,>(props: Props<T>) => {
       className={cx('flexItemNoFullWidth', 'inlineFieldsNoSpace', styles.row)}
       grow
     >
-      <Row align="center" gap="s">
+      <Row align="center" gap="m">
         <FlexItem grow>{child}</FlexItem>
         <FlexItem>
           <RiTooltip content="Remove" position="left">

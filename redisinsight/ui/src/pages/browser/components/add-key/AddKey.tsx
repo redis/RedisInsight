@@ -34,6 +34,7 @@ import AddKeySet from './AddKeySet'
 import AddKeyList from './AddKeyList'
 import AddKeyReJSON from './AddKeyReJSON'
 import AddKeyStream from './AddKeyStream'
+import { ContentFields } from './AddKey.styles'
 
 import styles from './styles.module.scss'
 
@@ -147,7 +148,7 @@ const AddKey = (props: Props) => {
             )}
           </FlexItem>
           <div className={cx('eui-yScroll', styles.scrollContainer)}>
-            <div className={styles.contentFields}>
+            <ContentFields>
               <AddKeyCommonFields
                 typeSelected={typeSelected}
                 onChangeType={onChangeType}
@@ -198,7 +199,7 @@ const AddKey = (props: Props) => {
               {typeSelected === KeyTypes.Stream && (
                 <AddKeyStream onCancel={closeAddKeyPanel} {...defaultFields} />
               )}
-            </div>
+            </ContentFields>
           </div>
         </Col>
         <div id="formFooterBar" className="formFooterBar" />

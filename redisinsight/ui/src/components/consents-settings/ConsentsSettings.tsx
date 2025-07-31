@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FormikErrors, useFormik } from 'formik'
 import { isEmpty, forEach } from 'lodash'
-import { EuiForm } from '@elastic/eui'
 import cx from 'classnames'
 
 import { HorizontalRule, RiTooltip } from 'uiSrc/components'
@@ -210,11 +209,7 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
   }
 
   return (
-    <EuiForm
-      component="form"
-      onSubmit={formik.handleSubmit}
-      data-testid="consents-settings-form"
-    >
+    <form onSubmit={formik.handleSubmit} data-testid="consents-settings-form">
       <div className={styles.consentsWrapper}>
         <Spacer size="m" />
         {consents.length > 1 && (
@@ -293,7 +288,8 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
           <HorizontalRule margin="l" className={styles.requiredHR} />
           <Spacer size="m" />
           <Text color="subdued" size="s" className={styles.smallText}>
-            Use of Redis Insight is governed by your signed agreement with Redis, or, if none, by the{' '}
+            Use of Redis Insight is governed by your signed agreement with
+            Redis, or, if none, by the{' '}
             <Link
               target="_blank"
               href="https://redis.io/software-subscription-agreement/?utm_source=redisinsight&utm_medium=app&utm_campaign=EULA"
@@ -344,7 +340,7 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
             <PrimaryButton
               className="btn-add"
               type="submit"
-              onClick={() => { }}
+              onClick={() => {}}
               disabled={submitIsDisabled()}
               icon={submitIsDisabled() ? InfoIcon : undefined}
               data-testid="btn-submit"
@@ -354,7 +350,7 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
           </RiTooltip>
         </FlexItem>
       </Row>
-    </EuiForm>
+    </form>
   )
 }
 

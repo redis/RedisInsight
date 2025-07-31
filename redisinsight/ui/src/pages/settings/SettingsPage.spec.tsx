@@ -1,6 +1,11 @@
 import React from 'react'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { render, userEvent, screen } from 'uiSrc/utils/test-utils'
+import {
+  render,
+  userEvent,
+  screen,
+  toggleAccordion,
+} from 'uiSrc/utils/test-utils'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import SettingsPage from './SettingsPage'
 
@@ -99,10 +104,10 @@ describe('Telemetry', () => {
     sendEventTelemetry.mockReset()
 
     render(<SettingsPage />)
-
+    await toggleAccordion('accordion-workbench-settings')
     await userEvent.click(screen.getByTestId('switch-workbench-cleanup'))
 
-    expect(sendEventTelemetry).toBeCalledWith({
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
       event: TelemetryEvent.SETTINGS_WORKBENCH_EDITOR_CLEAR_CHANGED,
       eventData: {
         currentValue: true,

@@ -1,4 +1,3 @@
-import { EuiFieldText, EuiForm, ToolTipPositions } from '@elastic/eui'
 import {
   Field,
   FieldInputProps,
@@ -25,7 +24,7 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { PasswordInput } from 'uiSrc/components/base/inputs'
+import { PasswordInput, TextInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import ValidationTooltip from './components/ValidationTooltip'
@@ -34,7 +33,7 @@ import styles from './styles.module.scss'
 
 export interface AppendInfoProps
   extends Omit<RiTooltipProps, 'children' | 'delay' | 'position'> {
-  position?: ToolTipPositions
+  position?: RiTooltipProps['position']
 }
 
 export interface ConnectionFormValues {
@@ -166,37 +165,37 @@ const ConnectionForm = (props: Props) => {
     >
       {({ isValid, errors, values }) => (
         <Form className={styles.form}>
-          <EuiForm
-            component="div"
-            className="databasePanelWrapper"
-            data-testid="connection-form"
-          >
+          <div className="databasePanelWrapper" data-testid="connection-form">
             <div className={cx('container relative')}>
               <FormField label="RDI Alias*" className={styles.withoutPadding}>
                 <Field name="name">
                   {({ field }: { field: FieldInputProps<string> }) => (
-                    <EuiFieldText
+                    <TextInput
                       data-testid="connection-form-name-input"
-                      fullWidth
                       placeholder="Enter RDI Alias"
                       maxLength={500}
-                      {...field}
+                      name={field.name}
+                      value={field.value}
+                      onChange={(value) => field.onChange({ target: { name: field.name, value } })}
                     />
                   )}
                 </Field>
               </FormField>
-              <FormField label="URL*">
+              <FormField
+                label="URL*"
+                additionalText={
+                  <AppendInfo content="The RDI machine servers REST API via port 443. Ensure that Redis Insight can access the RDI host over port 443." />
+                }
+              >
                 <Field name="url">
                   {({ field }: { field: FieldInputProps<string> }) => (
-                    <EuiFieldText
+                    <TextInput
                       data-testid="connection-form-url-input"
-                      fullWidth
                       placeholder="Enter the RDI host IP as: https://[IP-Address]"
                       disabled={!!editInstance}
-                      append={
-                        <AppendInfo content="The RDI machine servers REST API via port 443. Ensure that Redis Insight can access the RDI host over port 443." />
-                      }
-                      {...field}
+                      name={field.name}
+                      value={field.value}
+                      onChange={(value) => field.onChange({ target: { name: field.name, value } })}
                     />
                   )}
                 </Field>
@@ -204,18 +203,21 @@ const ConnectionForm = (props: Props) => {
               <FormField>
                 <Row gap="m">
                   <FlexItem grow={1}>
-                    <FormField label="Username">
+                    <FormField
+                      label="Username"
+                      additionalText={
+                        <AppendInfo content="The RDI REST API authentication is using the RDI Redis username and password." />
+                      }
+                    >
                       <Field name="username">
                         {({ field }: { field: FieldInputProps<string> }) => (
-                          <EuiFieldText
+                          <TextInput
                             data-testid="connection-form-username-input"
-                            fullWidth
                             placeholder="Enter the RDI Redis username"
                             maxLength={500}
-                            append={
-                              <AppendInfo content="The RDI REST API authentication is using the RDI Redis username and password." />
-                            }
-                            {...field}
+                            name={field.name}
+                            value={field.value}
+                            onChange={(value) => field.onChange({ target: { name: field.name, value } })}
                           />
                         )}
                       </Field>
@@ -267,7 +269,7 @@ const ConnectionForm = (props: Props) => {
               errors={errors}
               onSubmit={() => handleSubmit(values)}
             />
-          </EuiForm>
+          </div>
         </Form>
       )}
     </Formik>

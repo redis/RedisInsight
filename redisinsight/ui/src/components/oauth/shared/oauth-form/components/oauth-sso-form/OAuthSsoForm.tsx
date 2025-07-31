@@ -1,6 +1,5 @@
 import { isEmpty } from 'lodash'
-import React, { ChangeEvent, useState } from 'react'
-import { EuiFieldText, EuiForm } from '@elastic/eui'
+import React, { useState } from 'react'
 import { FormikErrors, useFormik } from 'formik'
 import { validateEmail, validateField } from 'uiSrc/utils'
 
@@ -12,6 +11,7 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { InfoIcon } from 'uiSrc/components/base/icons'
+import { TextInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import styles from './styles.module.scss'
@@ -89,21 +89,21 @@ const OAuthSsoForm = ({ onBack, onSubmit }: Props) => {
       <Title className={styles.title} size="S">
         Single Sign-On
       </Title>
-      <EuiForm component="form" onSubmit={formik.handleSubmit}>
+      <form onSubmit={formik.handleSubmit}>
         <Row>
           <FlexItem>
             <FormField className={styles.formRaw} label="Email">
-              <EuiFieldText
+              <TextInput
                 name="email"
                 id="sso-email"
                 data-testid="sso-email"
                 maxLength={200}
                 value={formik.values.email}
                 autoComplete="off"
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                onChange={(value) => {
                   formik.setFieldValue(
-                    e.target.name,
-                    validateField(e.target.value.trim()),
+                    'email',
+                    validateField(value.trim()),
                   )
                 }}
               />
@@ -126,7 +126,7 @@ const OAuthSsoForm = ({ onBack, onSubmit }: Props) => {
             <SubmitButton text="Login" disabled={submitIsDisabled()} />
           </FlexItem>
         </Row>
-      </EuiForm>
+      </form>
     </div>
   )
 }
