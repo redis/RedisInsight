@@ -6,7 +6,7 @@ import { Title } from 'uiSrc/components/base/text'
 import { Button, SecondaryButton } from 'uiSrc/components/base/forms/buttons'
 import { ChevronLeftIcon } from 'uiSrc/components/base/icons'
 
-import { stepContents } from './steps'
+import { selectedBikesIndexFields, stepContents } from './steps'
 import {
   CreateIndexContent,
   CreateIndexFooter,
@@ -15,6 +15,8 @@ import {
 } from './styles'
 import {
   CreateSearchIndexParameters,
+  PresetDataType,
+  SampleDataContent,
   SampleDataType,
   SearchIndexType,
 } from './types'
@@ -40,10 +42,10 @@ export const VectorSearchCreateIndex = ({
       instanceId,
       searchIndexType: SearchIndexType.REDIS_QUERY_ENGINE,
       sampleDataType: SampleDataType.PRESET_DATA,
-      dataContent: '',
-      usePresetVectorIndex: false,
-      presetVectorIndexName: '',
-      tags: [],
+      dataContent: SampleDataContent.E_COMMERCE_DISCOVERY,
+      usePresetVectorIndex: true,
+      indexName: PresetDataType.BIKES,
+      indexFields: selectedBikesIndexFields,
     })
 
   const { run: createIndex, success, loading } = useCreateIndex()
@@ -66,10 +68,6 @@ export const VectorSearchCreateIndex = ({
     setStep(step - 1)
   }
 
-  if (loading) {
-    return <>Loading...</>
-  }
-
   if (success) {
     return <>Success!</>
   }
@@ -87,7 +85,10 @@ export const VectorSearchCreateIndex = ({
         </Stepper>
       </CreateIndexHeader>
       <CreateIndexContent direction="column" grow={1}>
-        <StepContent setParameters={setParameters} />
+        <StepContent
+          parameters={createSearchIndexParameters}
+          setParameters={setParameters}
+        />
       </CreateIndexContent>
       <CreateIndexFooter direction="row">
         {showBackButton && (
@@ -100,7 +101,7 @@ export const VectorSearchCreateIndex = ({
           </SecondaryButton>
         )}
         <div />
-        <Button onClick={onNextClick}>{stepNextButtonTexts[step]}</Button>
+        <Button loading={loading} onClick={onNextClick}>{stepNextButtonTexts[step]}</Button>
       </CreateIndexFooter>
     </CreateIndexWrapper>
   )

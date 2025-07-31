@@ -8,6 +8,12 @@ export enum SampleDataType {
   CUSTOM_DATA = 'custom_data',
 }
 
+export enum SampleDataContent {
+  E_COMMERCE_DISCOVERY = 'e-commerce-discovery',
+  AI_ASSISTANTS = 'ai-assistants',
+  CONTENT_RECOMMENDATIONS = 'content-recommendations',
+}
+
 export enum PresetDataType {
   BIKES = 'bikes',
 }
@@ -19,16 +25,17 @@ export type CreateSearchIndexParameters = {
   // Adding data step
   searchIndexType: SearchIndexType
   sampleDataType: SampleDataType
-  dataContent: string
+  dataContent: SampleDataContent
 
   // Create index step
   usePresetVectorIndex: boolean
-  presetVectorIndexName: string
-  tags: string[]
+  indexName: string
+  indexFields: string[]
 }
 
 export type StepComponentProps = {
   setParameters: (params: Partial<CreateSearchIndexParameters>) => void
+  parameters: CreateSearchIndexParameters
 }
 
 export interface IStepComponent {

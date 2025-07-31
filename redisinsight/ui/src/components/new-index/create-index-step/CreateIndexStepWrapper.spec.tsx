@@ -3,11 +3,30 @@ import { cleanup, fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import {
   CreateIndexStepWrapper,
   CreateIndexStepWrapperProps,
+  IndexStepTab,
   VectorIndexTab,
 } from './CreateIndexStepWrapper'
+import { BuildNewIndexTabTrigger } from './build-new-index-tab/BuildNewIndexTabTrigger'
+
+const VECTOR_INDEX_TABS: IndexStepTab[] = [
+  {
+    value: VectorIndexTab.BuildNewIndex,
+    label: <BuildNewIndexTabTrigger />,
+    disabled: true,
+  },
+  {
+    value: VectorIndexTab.UsePresetIndex,
+    label: 'Use preset index',
+    content: (
+      <div data-testid="vector-index-tabs--use-preset-index-content">
+        Use preset index content
+      </div>
+    ),
+  },
+]
 
 const renderComponent = (props?: Partial<CreateIndexStepWrapperProps>) =>
-  render(<CreateIndexStepWrapper {...props} />)
+  render(<CreateIndexStepWrapper tabs={VECTOR_INDEX_TABS} {...props} />)
 
 describe('CreateIndexStepWrapper', () => {
   beforeEach(() => {
@@ -39,10 +58,20 @@ describe('CreateIndexStepWrapper', () => {
         {
           value: VectorIndexTab.BuildNewIndex,
           label: 'Build new index',
+          content: (
+            <div data-testid="vector-index-tabs--build-new-index-content">
+              Build new index content
+            </div>
+          ),
         },
         {
           value: VectorIndexTab.UsePresetIndex,
           label: 'Use preset index',
+          content: (
+            <div data-testid="vector-index-tabs--use-preset-index-content">
+              Use preset index content
+            </div>
+          ),
         },
       ],
     }
