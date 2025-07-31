@@ -1,4 +1,5 @@
 import NavigationMenu from './navigation-menu/NavigationMenu'
+import AppNavigation from './navigation-menu/app-navigation/AppNavigation'
 import PageHeader from './page-header/PageHeader'
 import GroupBadge from './group-badge/GroupBadge'
 import Notifications from './notifications/Notifications'
@@ -48,6 +49,7 @@ export * from './base'
 
 export {
   NavigationMenu,
+  AppNavigation,
   PageHeader,
   GroupBadge,
   Notifications,
