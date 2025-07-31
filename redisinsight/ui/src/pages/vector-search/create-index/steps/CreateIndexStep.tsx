@@ -1,13 +1,17 @@
 import React, { useState } from 'react'
 
 import { EuiFieldText } from '@elastic/eui'
-import { FlexItem } from 'uiSrc/components/base/layout/flex'
+import { FlexGroup, FlexItem } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
-import CreateIndexStepWrapper from 'uiSrc/components/new-index/create-index-step'
+import CreateIndexStepWrapper, {
+  IndexStepTab,
+} from 'uiSrc/components/new-index/create-index-step'
 import { FieldBoxesGroup } from 'uiSrc/components/new-index/create-index-step/field-boxes-group/FieldBoxesGroup'
 import { VectorSearchBox } from 'uiSrc/components/new-index/create-index-step/field-box/types'
 import { generateFtCreateCommand } from 'uiSrc/utils/index/generateFtCreateCommand'
-import { Button } from 'uiSrc/components/base/forms/buttons'
+import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
+import { VectorIndexTab } from 'uiSrc/components/new-index/create-index-step/CreateIndexStepWrapper'
+import { BuildNewIndexTabTrigger } from 'uiSrc/components/new-index/create-index-step/build-new-index-tab/BuildNewIndexTabTrigger'
 
 import { bikesIndexFieldsBoxes } from './config'
 import { CreateIndexStepScreenWrapper, SearchInputWrapper } from './styles'
@@ -26,6 +30,43 @@ export const CreateIndexStep: IStepComponent = ({
   const boxes = useIndexFieldsBoxes(parameters.indexName)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
+  const indexFieldsTabs: IndexStepTab[] = [
+    {
+      value: VectorIndexTab.BuildNewIndex,
+      label: <BuildNewIndexTabTrigger />,
+      disabled: true,
+    },
+    {
+      value: VectorIndexTab.UsePresetIndex,
+      label: 'Use preset index',
+      disabled: false,
+      content: (
+        <>
+          <SearchInputWrapper>
+            <FlexItem direction="column" $gap="s" grow={1}>
+              <Text>Index name</Text>
+              <EuiFieldText
+                disabled
+                placeholder="Search for index"
+                autoComplete="off"
+                value={parameters.indexName}
+                onChange={(event) =>
+                  setParameters({ indexName: event.target.value })
+                }
+                data-testid="search-for-index"
+              />
+            </FlexItem>
+          </SearchInputWrapper>
+          <FieldBoxesGroup
+            boxes={boxes}
+            value={parameters.indexFields}
+            onChange={(value) => setParameters({ indexFields: value })}
+          />
+        </>
+      ),
+    },
+  ]
+
   return (
     <CreateIndexStepScreenWrapper>
       <FlexItem direction="column" $gap="xxl">
@@ -36,29 +77,16 @@ export const CreateIndexStep: IStepComponent = ({
             enables fast, accurate retrieval across your dataset.
           </Text>
         </FlexItem>
-        <CreateIndexStepWrapper />
-        <SearchInputWrapper>
-          <FlexItem direction="column" $gap="s" grow={1}>
-            <Text>Index name</Text>
-            <EuiFieldText
-              disabled
-              placeholder="Search for index"
-              autoComplete="off"
-              value={parameters.indexName}
-              onChange={(event) =>
-                setParameters({ indexName: event.target.value })
-              }
-              data-testid="search-for-index"
-            />
-          </FlexItem>
-        </SearchInputWrapper>
-        <FieldBoxesGroup
-          boxes={boxes}
-          value={parameters.indexFields}
-          onChange={(value) => setParameters({ indexFields: value })}
+        <CreateIndexStepWrapper
+          defaultValue={VectorIndexTab.UsePresetIndex}
+          tabs={indexFieldsTabs}
         />
+        <FlexGroup justify="end">
+          <EmptyButton onClick={() => setIsDrawerOpen(true)}>
+            ► Command preview
+          </EmptyButton>
+        </FlexGroup>
       </FlexItem>
-      <Button onClick={() => setIsDrawerOpen(true)}>Command preview</Button>
       <PreviewCommandDrawer
         commandContent={generateFtCreateCommand()}
         isOpen={isDrawerOpen}

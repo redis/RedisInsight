@@ -1,24 +1,24 @@
 import styled, { css } from 'styled-components'
-import { useTheme } from '@redis-ui/styles'
 import { FlexGroup, FlexItem } from 'uiSrc/components/base/layout/flex'
 
 export const CreateIndexWrapper = styled(FlexGroup)`
-  ${() => css`
-    margin-top: ${useTheme().core.space.space250};
-    margin-bottom: ${useTheme().core.space.space250};
-    background-color: ${useTheme().semantic.color.background.neutral100};
+  ${({ theme }) => css`
+    margin-top: ${theme.core.space.space250};
+    margin-bottom: ${theme.core.space.space250};
+    background-color: ${theme.semantic.color.background.neutral100};
     border-radius: 8px;
   `}
 
   width: 95%;
   margin-left: auto;
   margin-right: auto;
+  overflow: auto;
 `
 
 export const CreateIndexHeader = styled(FlexItem)`
-  ${() => css`
-    padding: ${useTheme().core.space.space300};
-    border-color: ${useTheme().color.dusk200};
+  ${({ theme }) => css`
+    padding: ${theme.core.space.space300};
+    border-color: ${theme.color.dusk200};
   `}
 
   justify-content: space-between;
@@ -28,10 +28,10 @@ export const CreateIndexHeader = styled(FlexItem)`
 `
 
 export const CreateIndexContent = styled(FlexItem)`
-  ${() => css`
-    gap: ${useTheme().core.space.space550};
-    padding: ${useTheme().core.space.space300};
-    border-color: ${useTheme().color.dusk200};
+  ${({ theme }) => css`
+    gap: ${theme.core.space.space550};
+    padding: ${theme.core.space.space300};
+    border-color: ${theme.color.dusk200};
   `}
 
   border-left: 1px solid;
@@ -39,9 +39,9 @@ export const CreateIndexContent = styled(FlexItem)`
 `
 
 export const CreateIndexFooter = styled(FlexItem)`
-  ${() => css`
-    padding: ${useTheme().core.space.space300};
-    border-color: ${useTheme().color.dusk200};
+  ${({ theme }) => css`
+    padding: ${theme.core.space.space300};
+    border-color: ${theme.color.dusk200};
   `}
 
   border: 1px solid;

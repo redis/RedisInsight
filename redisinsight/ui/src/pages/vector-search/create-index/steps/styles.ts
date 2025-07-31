@@ -37,7 +37,6 @@ export const CodeBlocKWrapper = styled.div`
   border-color: ${({ theme }) => theme.color.dusk200};
   border-radius: 8px;
 
-  font-size: 11px;
   background: ${({ theme }) => theme.color.dusk100};
   word-wrap: break-word;
   white-space: break-spaces;

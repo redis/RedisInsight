@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { ButtonGroup, ButtonGroupProps } from '@redis-ui/components'
-import { BuildNewIndexTabTrigger } from './build-new-index-tab/BuildNewIndexTabTrigger'
 import { StyledCreateIndexStepWrapper } from './CreateIndexStepWrapper.styles'
 
 export enum VectorIndexTab {
@@ -8,39 +7,24 @@ export enum VectorIndexTab {
   UsePresetIndex = 'use-preset-index',
 }
 
-interface IndexStepTab {
+export interface IndexStepTab {
   value: VectorIndexTab
   label: React.ReactNode
   disabled?: boolean
+  content?: React.ReactNode
 }
-
-const VECTOR_INDEX_TABS: IndexStepTab[] = [
-  {
-    value: VectorIndexTab.BuildNewIndex,
-    label: <BuildNewIndexTabTrigger />,
-    disabled: true,
-  },
-  {
-    value: VectorIndexTab.UsePresetIndex,
-    label: 'Use preset index',
-  },
-]
-
 export interface CreateIndexStepWrapperProps extends ButtonGroupProps {
-  tabs?: IndexStepTab[]
-  defaultValue?: VectorIndexTab
+  tabs: IndexStepTab[]
 }
 
-export const CreateIndexStepWrapper = (
-  props: Partial<CreateIndexStepWrapperProps>,
-) => {
-  const { tabs = VECTOR_INDEX_TABS, defaultValue, ...rest } = props
+export const CreateIndexStepWrapper = (props: CreateIndexStepWrapperProps) => {
+  const { tabs, ...rest } = props
 
-  const [selectedTab, setSelectedTab] = useState<VectorIndexTab | null>(
-    defaultValue ?? tabs.filter((tab) => !tab.disabled)[0]?.value ?? null,
+  const [selectedTab, setSelectedTab] = useState<IndexStepTab | null>(
+    tabs.filter((tab) => !tab.disabled)[0] ?? null,
   )
 
-  const isTabSelected = (value: VectorIndexTab) => selectedTab === value
+  const isTabSelected = (value: VectorIndexTab) => selectedTab?.value === value
 
   return (
     <StyledCreateIndexStepWrapper>
@@ -49,25 +33,14 @@ export const CreateIndexStepWrapper = (
           <ButtonGroup.Button
             disabled={tab.disabled}
             isSelected={isTabSelected(tab.value)}
-            onClick={() => setSelectedTab(tab.value)}
+            onClick={() => setSelectedTab(tab)}
             key={`vector-index-tab-${tab.value}`}
           >
             {tab.label}
           </ButtonGroup.Button>
         ))}
       </ButtonGroup>
-
-      {selectedTab === VectorIndexTab.BuildNewIndex && (
-        <div data-testid="vector-index-tabs--build-new-index-content">
-          TODO: Add content later
-        </div>
-      )}
-
-      {selectedTab === VectorIndexTab.UsePresetIndex && (
-        <div data-testid="vector-index-tabs--use-preset-index-content">
-          TODO: Add content later
-        </div>
-      )}
+      {selectedTab?.content}
     </StyledCreateIndexStepWrapper>
   )
 }
