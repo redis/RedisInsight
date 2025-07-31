@@ -188,7 +188,11 @@ const OAuthSelectAccountDialog = () => {
         className={styles.container}
         data-testid="oauth-select-account-dialog"
       >
-        <Modal.Content.Close icon={CancelIcon} onClick={handleOnClose} />
+        <Modal.Content.Close
+          icon={CancelIcon}
+          onClick={handleOnClose}
+          data-testid="oauth-select-account-dialog-close-btn"
+        />
         <Modal.Content.Header.Title>
           Connect to Redis Cloud
         </Modal.Content.Header.Title>

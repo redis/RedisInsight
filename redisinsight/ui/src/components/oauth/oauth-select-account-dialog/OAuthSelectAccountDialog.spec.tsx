@@ -98,9 +98,7 @@ describe('OAuthSelectAccountDialog', () => {
 
     const { queryByTestId } = render(<OAuthSelectAccountDialog />)
 
-    const closeEl = queryByTestId('oauth-select-account-dialog')?.querySelector(
-      '.euiModal__closeIcon',
-    )
+    const closeEl = queryByTestId('oauth-select-account-dialog-close-btn')
 
     fireEvent.click(closeEl as HTMLButtonElement)
 

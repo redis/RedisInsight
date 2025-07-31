@@ -45,13 +45,6 @@
     "cloudSso": {
       "flag": true,
       "perc": [[0, 100]],
-      "filters": [
-        {
-          "name": "config.server.buildType",
-          "value": "ELECTRON",
-          "cond": "eq"
-        }
-      ],
       "data": {
         "filterFreePlan": [
           {
@@ -78,14 +71,7 @@
     },
     "cloudSsoRecommendedSettings": {
       "flag": true,
-      "perc": [[0, 100]],
-      "filters": [
-        {
-          "name": "config.server.buildType",
-          "value": "ELECTRON",
-          "cond": "eq"
-        }
-      ]
+      "perc": [[0, 100]]
     },
     "redisModuleFilter": {
       "flag": true,
