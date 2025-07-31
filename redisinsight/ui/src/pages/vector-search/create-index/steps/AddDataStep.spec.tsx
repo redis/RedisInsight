@@ -8,6 +8,7 @@ import {
   SampleDataType,
   SampleDataContent,
   StepComponentProps,
+  PresetDataType,
 } from '../types'
 
 const mockSetParameters = jest.fn()
@@ -19,7 +20,7 @@ const defaultProps: StepComponentProps = {
     sampleDataType: SampleDataType.PRESET_DATA,
     dataContent: SampleDataContent.E_COMMERCE_DISCOVERY,
     usePresetVectorIndex: true,
-    indexName: 'Bikes',
+    indexName: PresetDataType.BIKES,
     indexFields: selectedBikesIndexFields,
   },
   setParameters: mockSetParameters,

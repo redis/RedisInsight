@@ -15,6 +15,7 @@ import {
 } from './styles'
 import {
   CreateSearchIndexParameters,
+  PresetDataType,
   SampleDataContent,
   SampleDataType,
   SearchIndexType,
@@ -43,7 +44,7 @@ export const VectorSearchCreateIndex = ({
       sampleDataType: SampleDataType.PRESET_DATA,
       dataContent: SampleDataContent.E_COMMERCE_DISCOVERY,
       usePresetVectorIndex: true,
-      indexName: 'Bikes',
+      indexName: PresetDataType.BIKES,
       indexFields: selectedBikesIndexFields,
     })
 
@@ -65,10 +66,6 @@ export const VectorSearchCreateIndex = ({
   }
   const onBackClick = () => {
     setStep(step - 1)
-  }
-
-  if (loading) {
-    return <>Loading...</>
   }
 
   if (success) {
@@ -104,7 +101,7 @@ export const VectorSearchCreateIndex = ({
           </SecondaryButton>
         )}
         <div />
-        <Button onClick={onNextClick}>{stepNextButtonTexts[step]}</Button>
+        <Button loading={loading} onClick={onNextClick}>{stepNextButtonTexts[step]}</Button>
       </CreateIndexFooter>
     </CreateIndexWrapper>
   )
