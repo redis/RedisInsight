@@ -1,4 +1,3 @@
-import { EuiForm } from '@elastic/eui'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
@@ -168,7 +167,7 @@ const TemplateForm = (props: Props) => {
     <div className={cx(styles.container)}>
       <Text className={styles.title}>Select a template</Text>
       <Spacer size="s" />
-      <EuiForm component="form">
+      <form>
         <Spacer size="xs" />
         {pipelineTypeOptions?.length > 1 && (
           <FormField className={styles.formRow}>
@@ -198,7 +197,7 @@ const TemplateForm = (props: Props) => {
             </>
           </FormField>
         )}
-      </EuiForm>
+      </form>
       <div className={styles.actions}>
         <SecondaryButton
           onClick={handleCancel}

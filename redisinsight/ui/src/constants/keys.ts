@@ -193,19 +193,41 @@ export enum SearchHistoryMode {
   Redisearch = 'redisearch',
 }
 
+export const ENTER = 'Enter'
+export const SPACE = ' '
+export const ESCAPE = 'Escape'
+export const TAB = 'Tab'
+export const BACKSPACE = 'Backspace'
+export const F2 = 'F2'
+
+export const ALT = 'Alt'
+export const SHIFT = 'Shift'
+export const CTRL = 'Control'
+export const META = 'Meta' // Windows, Command, Option
+
+export const ARROW_DOWN = 'ArrowDown'
+export const ARROW_UP = 'ArrowUp'
+export const ARROW_LEFT = 'ArrowLeft'
+export const ARROW_RIGHT = 'ArrowRight'
+
+export const PAGE_UP = 'PageUp'
+export const PAGE_DOWN = 'PageDown'
+export const END = 'End'
+export const HOME = 'Home'
+
 export enum KeyboardKeys {
-  ENTER = "Enter",
-  SPACE = " ",
-  ESCAPE = "Escape",
-  TAB = "Tab",
-  BACKSPACE = "Backspace",
-  F2 = "F2",
-  ARROW_DOWN = "ArrowDown",
-  ARROW_UP = "ArrowUp",
-  ARROW_LEFT = "ArrowLeft",
-  ARROW_RIGHT = "ArrowRight",
-  PAGE_UP = "PageUp",
-  PAGE_DOWN = "PageDown",
-  END = "End",
-  HOME = "Home"
+  ENTER = 'Enter',
+  SPACE = ' ',
+  ESCAPE = 'Escape',
+  TAB = 'Tab',
+  BACKSPACE = 'Backspace',
+  F2 = 'F2',
+  ARROW_DOWN = 'ArrowDown',
+  ARROW_UP = 'ArrowUp',
+  ARROW_LEFT = 'ArrowLeft',
+  ARROW_RIGHT = 'ArrowRight',
+  PAGE_UP = 'PageUp',
+  PAGE_DOWN = 'PageDown',
+  END = 'End',
+  HOME = 'Home',
 }

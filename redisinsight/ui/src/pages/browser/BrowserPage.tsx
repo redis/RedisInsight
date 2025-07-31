@@ -45,8 +45,14 @@ import { useStateWithContext } from 'uiSrc/services/hooks'
 
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
-import { ResizableContainer, ResizablePanel, ResizablePanelHandle } from 'uiSrc/components/base/layout'
+import {
+  ResizableContainer,
+  ResizablePanel,
+  ResizablePanelHandle,
+} from 'uiSrc/components/base/layout'
 
+import { useAppNavigationActions } from 'uiSrc/contexts/AppNavigationActionsProvider'
+import Actions from 'uiSrc/pages/browser/components/actions/Actions'
 import BrowserSearchPanel from './components/browser-search-panel'
 import BrowserLeftPanel from './components/browser-left-panel'
 import BrowserRightPanel from './components/browser-right-panel'
@@ -113,12 +119,17 @@ const BrowserPage = () => {
 
   const dbName = `${formatLongName(connectedInstanceName, 33, 0, '...')} ${getDbIndex(db)}`
   setTitle(`${dbName} - Browser`)
-
+  const { setActions } = useAppNavigationActions()
   useEffect(() => {
     dispatch(resetErrors())
     updateWindowDimensions()
     globalThis.addEventListener('resize', updateWindowDimensions)
-
+    setActions(
+      <Actions
+        handleAddKeyPanel={handleAddKeyPanel}
+        handleBulkActionsPanel={handleBulkActionsPanel}
+      />,
+    )
     // componentWillUnmount
     return () => {
       globalThis.removeEventListener('resize', updateWindowDimensions)
@@ -301,20 +312,22 @@ const BrowserPage = () => {
           [styles.hidden]: isRightPanelFullScreen,
         })}
       >
-        <BrowserSearchPanel
-          handleAddKeyPanel={handleAddKeyPanel}
-          handleBulkActionsPanel={handleBulkActionsPanel}
-          handleCreateIndexPanel={handleCreateIndexPanel}
-        />
+        <BrowserSearchPanel handleCreateIndexPanel={handleCreateIndexPanel} />
       </div>
       <div className={cx(styles.main)}>
-        <ResizableContainer className={styles.resizableContainer} direction="horizontal" onLayout={onPanelWidthChange}>
+        <ResizableContainer
+          className={styles.resizableContainer}
+          direction="horizontal"
+          onLayout={onPanelWidthChange}
+        >
           <ResizablePanel
             defaultSize={sizes && sizes[0] ? sizes[0] : 50}
             minSize={45}
             id={firstPanelId}
             className={cx({
-              [styles.fullWidth]: arePanelsCollapsed || (isBrowserFullScreen && !isRightPanelOpen)
+              [styles.fullWidth]:
+                arePanelsCollapsed ||
+                (isBrowserFullScreen && !isRightPanelOpen),
             })}
           >
             <BrowserLeftPanel
@@ -333,8 +346,10 @@ const BrowserPage = () => {
             id={secondPanelId}
             className={cx({
               [styles.keyDetailsOpen]: isRightPanelOpen,
-              [styles.fullWidth]: arePanelsCollapsed || (isRightPanelOpen && isBrowserFullScreen),
-              [styles.keyDetails]: arePanelsCollapsed || (isRightPanelOpen && isBrowserFullScreen),
+              [styles.fullWidth]:
+                arePanelsCollapsed || (isRightPanelOpen && isBrowserFullScreen),
+              [styles.keyDetails]:
+                arePanelsCollapsed || (isRightPanelOpen && isBrowserFullScreen),
             })}
           >
             <BrowserRightPanel
@@ -352,7 +367,7 @@ const BrowserPage = () => {
         </ResizableContainer>
       </div>
       <OnboardingStartPopover />
-    </div >
+    </div>
   )
 }
 

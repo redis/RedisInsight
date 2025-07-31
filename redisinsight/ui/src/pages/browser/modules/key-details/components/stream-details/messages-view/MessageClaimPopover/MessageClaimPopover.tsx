@@ -1,7 +1,6 @@
 import React, { useState, useEffect, ChangeEvent } from 'react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { EuiForm } from '@elastic/eui'
 import { useFormik } from 'formik'
 import { orderBy, filter } from 'lodash'
 
@@ -207,7 +206,7 @@ const MessageClaimPopover = (props: Props) => {
       closePopover={() => {}}
       button={consumerOptions.length < 1 ? buttonTooltip : button}
     >
-      <EuiForm>
+      <form>
         <Row responsive gap="m">
           <FlexItem>
             <FormField label="Consumer">
@@ -351,7 +350,7 @@ const MessageClaimPopover = (props: Props) => {
             </PrimaryButton>
           </div>
         </Row>
-      </EuiForm>
+      </form>
     </RiPopover>
   )
 }

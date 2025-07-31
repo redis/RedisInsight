@@ -2,6 +2,7 @@ import React, { ButtonHTMLAttributes, ReactElement } from 'react'
 import cx from 'classnames'
 
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { useInnerText } from 'uiSrc/components/base/utils/hooks/inner-text'
 import {
   ListClassNames,
   ListGroupItemProps,
@@ -9,7 +10,6 @@ import {
   StyledItemInnerButton,
   StyledItemInnerSpan,
   StyledLabel,
-  useInnerText,
 } from './list.styles'
 
 const Item = ({

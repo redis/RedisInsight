@@ -7,7 +7,6 @@ import React, {
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { debounce, get, set } from 'lodash'
 import { TreeWalker, TreeWalkerValue, FixedSizeTree as Tree } from 'react-vtree'
-import { EuiImage } from '@elastic/eui'
 import { useDispatch } from 'react-redux'
 
 import { bufferToString, Maybe, Nullable } from 'uiSrc/utils'
@@ -21,7 +20,7 @@ import {
 } from 'uiSrc/constants'
 import { RedisResponseBuffer, RedisString } from 'uiSrc/slices/interfaces'
 import { fetchKeysMetadataTree } from 'uiSrc/slices/browser/keys'
-import { Loader, ProgressBarLoader } from 'uiSrc/components/base/display'
+import { Loader, ProgressBarLoader, RiImage } from 'uiSrc/components/base/display'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { GetKeyInfoResponse } from 'apiSrc/modules/browser/keys/dto'
 
@@ -307,7 +306,7 @@ const VirtualTree = (props: Props) => {
                   className={styles.loadingSpinner}
                 />
                 {loadingIcon ? (
-                  <EuiImage
+                  <RiImage
                     className={styles.loadingIcon}
                     src={loadingIcon}
                     alt="loading"

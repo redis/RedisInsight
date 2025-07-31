@@ -9,11 +9,7 @@ import {
   cleanup,
 } from 'uiSrc/utils/test-utils'
 import { setConnectedInstanceId } from 'uiSrc/slices/instances/instances'
-import {
-  loadKeys,
-  resetKeyInfo,
-  toggleBrowserFullScreen,
-} from 'uiSrc/slices/browser/keys'
+import { loadKeys, toggleBrowserFullScreen } from 'uiSrc/slices/browser/keys'
 import { resetErrors } from 'uiSrc/slices/app/notifications'
 import {
   setBrowserBulkActionOpen,
@@ -137,36 +133,6 @@ describe('BrowserPage', () => {
     ]
     expect(store.getActions().slice(0, afterRenderActions.length)).toEqual([
       ...afterRenderActions,
-    ])
-  })
-
-  it('should call handleAddKeyPanel', () => {
-    render(<BrowserPage />)
-    const afterRenderActions = [...store.getActions()]
-
-    fireEvent.click(screen.getByTestId('handleAddKeyPanel-btn'))
-
-    const expectedActions = [
-      resetKeyInfo(),
-      toggleBrowserFullScreen(false),
-      setBrowserSelectedKey(null),
-    ]
-    expect(store.getActions()).toEqual([
-      ...afterRenderActions,
-      ...expectedActions,
-    ])
-  })
-
-  it('should call handleBulkActionsPanel', () => {
-    render(<BrowserPage />)
-    const afterRenderActions = [...store.getActions()]
-
-    fireEvent.click(screen.getByTestId('handleBulkActionsPanel-btn'))
-
-    const expectedActions = [resetKeyInfo(), toggleBrowserFullScreen(false)]
-    expect(store.getActions()).toEqual([
-      ...afterRenderActions,
-      ...expectedActions,
     ])
   })
 

@@ -1,10 +1,11 @@
-import { EuiCollapsibleNavGroup } from '@elastic/eui'
 import cx from 'classnames'
 import React, { useState } from 'react'
 
 import { ImportDatabasesData } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { Nullable } from 'uiSrc/utils'
+import { RICollapsibleNavGroup } from 'uiSrc/components/base/display'
+import { Col } from 'uiSrc/components/base/layout/flex'
 import TableResult from '../TableResult'
 
 import styles from './styles.module.scss'
@@ -54,12 +55,12 @@ const ResultsLog = ({ data }: Props) => {
     openedNav === name ? 'open' : 'closed'
 
   return (
-    <>
-      <EuiCollapsibleNavGroup
+    <Col gap="s">
+      <RICollapsibleNavGroup
         title={
           <CollapsibleNavTitle
             title="Fully imported"
-            length={data?.success?.length}
+            length={data?.success?.length ?? 0}
           />
         }
         className={cx(styles.collapsibleNav, ResultsStatus.Success, {
@@ -74,12 +75,12 @@ const ResultsLog = ({ data }: Props) => {
         data-testid={`success-results-${getNavGroupState(ResultsStatus.Success)}`}
       >
         <TableResult data={data?.success ?? []} />
-      </EuiCollapsibleNavGroup>
-      <EuiCollapsibleNavGroup
+      </RICollapsibleNavGroup>
+      <RICollapsibleNavGroup
         title={
           <CollapsibleNavTitle
             title="Partially imported"
-            length={data?.partial?.length}
+            length={data?.partial?.length ?? 0}
           />
         }
         className={cx(styles.collapsibleNav, ResultsStatus.Partial, {
@@ -94,12 +95,12 @@ const ResultsLog = ({ data }: Props) => {
         data-testid={`partial-results-${getNavGroupState(ResultsStatus.Partial)}`}
       >
         <TableResult data={data?.partial ?? []} />
-      </EuiCollapsibleNavGroup>
-      <EuiCollapsibleNavGroup
+      </RICollapsibleNavGroup>
+      <RICollapsibleNavGroup
         title={
           <CollapsibleNavTitle
             title="Failed to import"
-            length={data?.fail?.length}
+            length={data?.fail?.length ?? 0}
           />
         }
         className={cx(styles.collapsibleNav, ResultsStatus.Failed, {
@@ -114,8 +115,8 @@ const ResultsLog = ({ data }: Props) => {
         data-testid={`failed-results-${getNavGroupState(ResultsStatus.Failed)}`}
       >
         <TableResult data={data?.fail ?? []} />
-      </EuiCollapsibleNavGroup>
-    </>
+      </RICollapsibleNavGroup>
+    </Col>
   )
 }
 

@@ -1,6 +1,5 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { EuiFieldText } from '@elastic/eui'
 import { ColorText } from 'uiSrc/components/base/text'
 
 import {
@@ -29,6 +28,7 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { TextInput } from 'uiSrc/components/base/inputs'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import styles from './styles.module.scss'
 
@@ -146,16 +146,15 @@ const AddSetMembers = (props: Props) => {
             <Row align="center">
               <FlexItem grow>
                 <FormField>
-                  <EuiFieldText
-                    fullWidth
+                  <TextInput
                     name={`member-${item.id}`}
                     id={`member-${item.id}`}
                     placeholder={config.member.placeholder}
                     value={item.name}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                      handleMemberChange('name', item.id, e.target.value)
+                    onChange={(value) =>
+                      handleMemberChange('name', item.id, value)
                     }
-                    inputRef={
+                    ref={
                       index === members.length - 1 ? lastAddedMemberName : null
                     }
                     disabled={loading}

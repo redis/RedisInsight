@@ -1,8 +1,8 @@
-import React, { ChangeEvent, useState } from 'react'
-import { EuiForm, keys } from '@elastic/eui'
+import React, { useState } from 'react'
 import cx from 'classnames'
 import jsonValidator from 'json-dup-key-validator'
 
+import * as keys from 'uiSrc/constants/keys'
 import { CancelSlimIcon, CheckThinIcon } from 'uiSrc/components/base/icons'
 import FieldMessage from 'uiSrc/components/field-message/FieldMessage'
 import { Nullable } from 'uiSrc/utils'
@@ -67,8 +67,7 @@ const EditEntireItemAction = (props: Props) => {
           <div>
             <WindowEvent event="keydown" handler={(e) => handleOnEsc(e)} />
             <FocusTrap>
-              <EuiForm
-                component="form"
+              <form
                 className="relative"
                 onSubmit={handleFormSubmit}
                 data-testid="json-entire-form"
@@ -89,25 +88,25 @@ const EditEntireItemAction = (props: Props) => {
                   onCancel={() => setIsConfirmationVisible(false)}
                   onConfirm={confirmApply}
                 >
-                <div className={cx(styles.controls, styles.controlsBottom)}>
-                  <IconButton
-                    icon={CancelSlimIcon}
-                    aria-label="Cancel add"
-                    className={styles.declineBtn}
-                    onClick={onCancel}
-                    data-testid="cancel-edit-btn"
-                  />
-                  <IconButton
-                    icon={CheckThinIcon}
-                    color="primary"
-                    type="submit"
-                    aria-label="Apply"
-                    className={styles.applyBtn}
-                    data-testid="apply-edit-btn"
-                  />
-                </div>
+                  <div className={cx(styles.controls, styles.controlsBottom)}>
+                    <IconButton
+                      icon={CancelSlimIcon}
+                      aria-label="Cancel add"
+                      className={styles.declineBtn}
+                      onClick={onCancel}
+                      data-testid="cancel-edit-btn"
+                    />
+                    <IconButton
+                      icon={CheckThinIcon}
+                      color="primary"
+                      type="submit"
+                      aria-label="Apply"
+                      className={styles.applyBtn}
+                      data-testid="apply-edit-btn"
+                    />
+                  </div>
                 </ConfirmOverwrite>
-              </EuiForm>
+              </form>
               {error && (
                 <div
                   className={cx(

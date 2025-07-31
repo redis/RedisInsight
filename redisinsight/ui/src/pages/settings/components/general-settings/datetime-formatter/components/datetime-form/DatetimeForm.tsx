@@ -1,7 +1,6 @@
-import React, { ChangeEvent, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
-import { EuiFieldText, EuiForm } from '@elastic/eui'
 import { checkDateTimeFormat, formatTimestamp } from 'uiSrc/utils'
 import {
   DATETIME_FORMATTER_DEFAULT,
@@ -23,6 +22,7 @@ import {
   defaultValueRender,
   RiSelect,
 } from 'uiSrc/components/base/forms/select/RiSelect'
+import { TextInput } from 'uiSrc/components/base/inputs'
 
 interface InitialValuesType {
   format: string
@@ -134,8 +134,7 @@ const DatetimeForm = ({ onFormatChange }: Props) => {
     }
   }
 
-  const onCustomFormatChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target
+  const onCustomFormatChange = (value: string) => {
     formik.setFieldValue('customFormat', value)
     formik.setFieldValue('format', value)
     handleFormatCheck(value)
@@ -177,11 +176,7 @@ const DatetimeForm = ({ onFormatChange }: Props) => {
   ]
 
   return (
-    <EuiForm
-      component="form"
-      onSubmit={formik.handleSubmit}
-      data-testid="format-timestamp-form"
-    >
+    <form onSubmit={formik.handleSubmit} data-testid="format-timestamp-form">
       <RiRadioGroup
         items={dateTimeFormatOptions}
         id="datetime-format"
@@ -210,12 +205,12 @@ const DatetimeForm = ({ onFormatChange }: Props) => {
         {formik.values.selectedRadioOption === DatetimeRadioOption.Custom && (
           <>
             <FlexItem grow={false}>
-              <EuiFieldText
+              <TextInput
                 style={{ width: 240 }}
                 id="customFormat"
                 name="customFormat"
                 value={formik.values.customFormat}
-                onChange={(e) => onCustomFormatChange(e)}
+                onChange={(value) => onCustomFormatChange(value)}
                 data-testid="custom-datetime-input"
               />
             </FlexItem>
@@ -240,7 +235,7 @@ const DatetimeForm = ({ onFormatChange }: Props) => {
           </>
         )}
       </Row>
-    </EuiForm>
+    </form>
   )
 }
 

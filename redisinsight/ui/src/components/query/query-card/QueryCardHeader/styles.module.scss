@@ -61,7 +61,7 @@ $marginIcon: 12px;
 }
 
 .time {
-  max-width: 126px;
+  max-width: 134px;
 }
 
 .mode + .mode {
@@ -141,6 +141,7 @@ $marginIcon: 12px;
 .executionTime {
   min-width: 13px;
   width: 13px;
+  display: flex;
 
   @media (min-width: $breakpoint-m) {
     min-width: 92px;

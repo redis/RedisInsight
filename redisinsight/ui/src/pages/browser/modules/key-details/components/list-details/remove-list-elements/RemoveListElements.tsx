@@ -1,8 +1,7 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import { toNumber } from 'lodash'
-import { EuiFieldText } from '@elastic/eui'
 
 import { Text } from 'uiSrc/components/base/text'
 import { KeyTypes } from 'uiSrc/constants'
@@ -43,6 +42,7 @@ import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { RiPopover } from 'uiSrc/components/base'
+import { TextInput } from 'uiSrc/components/base/inputs'
 import { DeleteListElementsDto } from 'apiSrc/modules/browser/list/dto'
 
 import {
@@ -116,8 +116,8 @@ const RemoveListElements = (props: Props) => {
     }
   }, [databaseVersion])
 
-  const handleCountChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setCount(validateCountNumber(e.target.value))
+  const handleCountChange = (value: string) => {
+    setCount(validateCountNumber(value))
   }
 
   const showPopover = () => {
@@ -263,9 +263,10 @@ const RemoveListElements = (props: Props) => {
               </FormField>
             </FlexItem>
             <FlexItem grow style={{ width: '100%' }}>
-              <FormField>
-                <EuiFieldText
-                  fullWidth
+              <FormField
+                additionalText={!canRemoveMultiple ? InfoBoxPopover() : <></>}
+              >
+                <TextInput
                   name={config.count.name}
                   id={config.count.name}
                   maxLength={200}
@@ -273,12 +274,9 @@ const RemoveListElements = (props: Props) => {
                   value={count}
                   data-testid="count-input"
                   autoComplete="off"
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    handleCountChange(e)
-                  }
-                  inputRef={countInput}
+                  onChange={handleCountChange}
+                  ref={countInput}
                   disabled={!canRemoveMultiple}
-                  append={!canRemoveMultiple ? InfoBoxPopover() : <></>}
                 />
               </FormField>
             </FlexItem>

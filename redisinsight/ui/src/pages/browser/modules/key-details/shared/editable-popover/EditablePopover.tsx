@@ -1,8 +1,6 @@
 import React, { FormEvent, useEffect, useState } from 'react'
-
-import { EuiForm } from '@elastic/eui'
-
 import cx from 'classnames'
+
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import {
@@ -112,7 +110,7 @@ const EditablePopover = (props: Props) => {
       icon={btnIconType || EditIcon}
       aria-label="Edit field"
       color="primary"
-      onClick={isDisabledEditButton ? () => { } : handleButtonClick}
+      onClick={isDisabledEditButton ? () => {} : handleButtonClick}
       className={editBtnClassName}
       data-testid={`${prefix}_edit-btn-${field}`}
     />
@@ -137,10 +135,7 @@ const EditablePopover = (props: Props) => {
         >
           {content}
           {isDelayed && (
-            <Loader
-              className={cx(editBtnClassName, styles.spinner)}
-              size="m"
-            />
+            <Loader className={cx(editBtnClassName, styles.spinner)} size="m" />
           )}
           {!isPopoverOpen && isHovering && !isDelayed && button}
         </div>
@@ -148,7 +143,7 @@ const EditablePopover = (props: Props) => {
       data-testid="popover-item-editor"
       onClick={(e) => e.stopPropagation()}
     >
-      <EuiForm component="form" onSubmit={onFormSubmit}>
+      <form onSubmit={onFormSubmit}>
         <div className={styles.content}>{children}</div>
         <Spacer size="s" />
         <Row className={styles.footer} justify="end" gap="m">
@@ -173,7 +168,7 @@ const EditablePopover = (props: Props) => {
             </PrimaryButton>
           </FlexItem>
         </Row>
-      </EuiForm>
+      </form>
     </RiPopover>
   )
 }

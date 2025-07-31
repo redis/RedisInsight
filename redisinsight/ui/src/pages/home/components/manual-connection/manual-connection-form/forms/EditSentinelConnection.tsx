@@ -1,5 +1,4 @@
 import React from 'react'
-import { EuiFieldText, EuiForm } from '@elastic/eui'
 import { FormikProps } from 'formik'
 import {
   PrimaryGroupSentinel,
@@ -17,6 +16,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { Title } from 'uiSrc/components/base/text/Title'
+import { TextInput } from 'uiSrc/components/base/inputs'
 import DecompressionAndFormatters from './DecompressionAndFormatters'
 
 import { ManualFormTab } from '../constants'
@@ -85,8 +85,7 @@ const EditSentinelConnection = (props: Props) => {
       <Row gap="m">
         <FlexItem grow>
           <FormField label="Database Alias*">
-            <EuiFieldText
-              fullWidth
+            <TextInput
               name="name"
               id="name"
               data-testid="name"
@@ -128,11 +127,11 @@ const EditSentinelConnection = (props: Props) => {
   )
 
   return (
-    <EuiForm
-      component="form"
+    <form
       onSubmit={formik.handleSubmit}
       data-testid="form"
       onKeyDown={onKeyDown}
+      role="presentation"
     >
       {activeTab === ManualFormTab.General && (
         <>{isCloneMode ? GeneralFormClodeMode : GeneralFormEditMode}</>
@@ -148,7 +147,7 @@ const EditSentinelConnection = (props: Props) => {
       {activeTab === ManualFormTab.Decompression && (
         <DecompressionAndFormatters formik={formik} />
       )}
-    </EuiForm>
+    </form>
   )
 }
 

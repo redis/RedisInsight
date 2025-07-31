@@ -1,5 +1,4 @@
 import React, { Ref, useRef, useState } from 'react'
-import { EuiForm, keys } from '@elastic/eui'
 
 import cx from 'classnames'
 import { isModifiedEvent } from 'uiSrc/services'
@@ -11,6 +10,7 @@ import { SendIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { TextArea } from 'uiSrc/components/base/inputs'
+import * as keys from 'uiSrc/constants/keys'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -113,13 +113,13 @@ const ChatForm = (props: Props) => {
         }
         className={styles.validationTooltip}
       >
-        <EuiForm
+        <form
           className={cx(styles.wrapper, {
             [styles.isFormDisabled]: validation,
           })}
-          component="form"
           onSubmit={handleSubmitForm}
           onKeyDown={handleKeyDown}
+          role="presentation"
         >
           <TextArea
             ref={textAreaRef}
@@ -163,7 +163,7 @@ const ChatForm = (props: Props) => {
               </PrimaryButton>
             </>
           </RiPopover>
-        </EuiForm>
+        </form>
       </RiTooltip>
       <Text textAlign="center" size="xs" className={styles.agreementText}>
         Verify the accuracy of any information provided by Redis Copilot before

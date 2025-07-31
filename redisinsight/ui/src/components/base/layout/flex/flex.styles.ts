@@ -1,8 +1,7 @@
 import React, { HTMLAttributes, PropsWithChildren, ReactNode } from 'react'
 
 import styled, { css } from 'styled-components'
-import { useTheme } from '@redis-ui/styles'
-import { CommonProps } from 'uiSrc/components/base/theme/types'
+import { CommonProps, Theme } from 'uiSrc/components/base/theme/types'
 
 export const gapSizes = ['none', 'xs', 's', 'm', 'l', 'xl', 'xxl'] as const
 export type GapSizeType = (typeof gapSizes)[number]
@@ -18,22 +17,12 @@ export type GridProps = HTMLAttributes<HTMLDivElement> & {
   responsive?: boolean
 }
 
-type ThemeType = ReturnType<typeof useTheme>
-
 const flexGridStyles = {
   columns: {
-    1: css`
-      grid-template-columns: repeat(1, max-content);
-    `,
-    2: css`
-      grid-template-columns: repeat(2, max-content);
-    `,
-    3: css`
-      grid-template-columns: repeat(3, max-content);
-    `,
-    4: css`
-      grid-template-columns: repeat(4, max-content);
-    `,
+    1: 'repeat(1, max-content)',
+    2: 'repeat(2, max-content)',
+    3: 'repeat(3, max-content)',
+    4: 'repeat(4, max-content)',
   },
   responsive: css`
     @media screen and (max-width: 767px) {
@@ -48,9 +37,9 @@ const flexGridStyles = {
 
 export const StyledGrid = styled.div<GridProps>`
   display: grid;
-  ${({ columns = 1 }) =>
-    columns ? flexGridStyles.columns[columns] : flexGridStyles.columns['1']}
-  ${({ gap = 'none' }) => (gap ? flexGroupStyles.gapSizes[gap] : '')}
+  grid-template-columns: ${({ columns = 1 }) =>
+    flexGridStyles.columns[columns] ?? flexGridStyles.columns['1']};
+  gap: ${({ gap = 'none' }) => flexGroupStyles.gapSizes[gap] ?? '0'};
   ${({ centered = false }) => (centered ? flexGroupStyles.centered : '')}
   ${({ responsive = false }) => (responsive ? flexGridStyles.responsive : '')}
 `
@@ -81,12 +70,6 @@ const flexGroupStyles = {
   wrap: css`
     flex-wrap: wrap;
   `,
-  grow: css`
-    flex-grow: 1;
-  `,
-  noGrow: css`
-    flex-grow: 0;
-  `,
   centered: css`
     justify-content: center;
     align-items: center;
@@ -94,74 +77,44 @@ const flexGroupStyles = {
   gapSizes: {
     none: css``,
     xs: css`
-      gap: ${({ theme }: { theme: ThemeType }) => theme.core.space.space025};
+      ${({ theme }: { theme: Theme }) => theme.core.space.space025};
     `,
     s: css`
-      gap: ${({ theme }: { theme: ThemeType }) => theme.core.space.space050};
+      ${({ theme }: { theme: Theme }) => theme.core.space.space050};
     `,
     m: css`
-      gap: ${({ theme }: { theme: ThemeType }) => theme.core.space.space100};
+      ${({ theme }: { theme: Theme }) => theme.core.space.space100};
     `,
     l: css`
-      gap: ${({ theme }: { theme: ThemeType }) => theme.core.space.space150};
+      ${({ theme }: { theme: Theme }) => theme.core.space.space150};
     `,
     xl: css`
-      gap: ${({ theme }: { theme: ThemeType }) => theme.core.space.space250};
+      ${({ theme }: { theme: Theme }) => theme.core.space.space250};
     `,
     xxl: css`
-      gap: ${({ theme }: { theme: ThemeType }) => theme.core.space.space300};
+      ${({ theme }: { theme: Theme }) => theme.core.space.space300};
     `,
   },
   justify: {
-    center: css`
-      justify-content: center;
-    `,
-    start: css`
-      justify-content: flex-start;
-    `,
-    end: css`
-      justify-content: flex-end;
-    `,
-    between: css`
-      justify-content: space-between;
-    `,
-    around: css`
-      justify-content: space-around;
-    `,
-    evenly: css`
-      justify-content: space-evenly;
-    `,
+    center: 'center',
+    start: 'flex-start',
+    end: 'flex-end',
+    between: 'space-between',
+    around: 'space-around',
+    evenly: 'space-evenly',
   },
   align: {
-    center: css`
-      align-items: center;
-    `,
-    stretch: css`
-      align-items: stretch;
-    `,
-    baseline: css`
-      align-items: baseline;
-    `,
-    start: css`
-      align-items: flex-start;
-    `,
-    end: css`
-      align-items: flex-end;
-    `,
+    center: 'center',
+    stretch: 'stretch',
+    baseline: 'baseline',
+    start: 'flex-start',
+    end: 'flex-end',
   },
   direction: {
-    row: css`
-      flex-direction: row;
-    `,
-    rowReverse: css`
-      flex-direction: row-reverse;
-    `,
-    column: css`
-      flex-direction: column;
-    `,
-    columnReverse: css`
-      flex-direction: column-reverse;
-    `,
+    row: 'row',
+    rowReverse: 'row-reverse',
+    column: 'column',
+    columnReverse: 'column-reverse',
   },
   responsive: css`
     @media screen and (max-width: 767px) {
@@ -208,15 +161,14 @@ type StyledFlexProps = Omit<
 }
 export const StyledFlex = styled.div<StyledFlexProps>`
   display: flex;
-  align-items: stretch;
-  ${({ $grow = true }) =>
-    $grow ? flexGroupStyles.grow : flexGroupStyles.noGrow}
-  ${({ $gap = 'none' }) => ($gap ? flexGroupStyles.gapSizes[$gap] : '')}
-  ${({ $align = 'stretch' }) => ($align ? flexGroupStyles.align[$align] : '')}
-  ${({ $direction = 'row' }) =>
-    $direction ? flexGroupStyles.direction[$direction] : ''}
-  ${({ $justify = 'start' }) =>
-    $justify ? flexGroupStyles.justify[$justify] : ''}
+  flex-grow: ${({ $grow = true }) => ($grow ? 1 : 0)};
+  gap: ${({ $gap = 'none' }) => flexGroupStyles.gapSizes[$gap] ?? '0'};
+  align-items: ${({ $align = 'stretch' }) =>
+    flexGroupStyles.align[$align] ?? 'stretch'};
+  flex-direction: ${({ $direction = 'row' }) =>
+    flexGroupStyles.direction[$direction] ?? 'row'};
+  justify-content: ${({ $justify = 'start' }) =>
+    flexGroupStyles.justify[$justify] ?? 'flex-start'};
   ${({ $centered = false }) => ($centered ? flexGroupStyles.centered : '')}
   ${({ $responsive = false }) =>
     $responsive ? flexGroupStyles.responsive : ''}
@@ -270,60 +222,46 @@ export const flexItemStyles = {
   },
   padding: {
     '0': css`
-      padding: ${({ theme }: { theme: ThemeType }) =>
-        theme.core.space.space000};
+      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space000};
     `,
     '1': css`
-      padding: ${({ theme }: { theme: ThemeType }) =>
-        theme.core.space.space010};
+      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space010};
     `,
     '2': css`
-      padding: ${({ theme }: { theme: ThemeType }) =>
-        theme.core.space.space025};
+      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space025};
     `,
     '3': css`
-      padding: ${({ theme }: { theme: ThemeType }) =>
-        theme.core.space.space050};
+      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space050};
     `,
     '4': css`
-      padding: ${({ theme }: { theme: ThemeType }) =>
-        theme.core.space.space100};
+      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space100};
     `,
     '5': css`
-      padding: ${({ theme }: { theme: ThemeType }) =>
-        theme.core.space.space150};
+      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space150};
     `,
     '6': css`
-      padding: ${({ theme }: { theme: ThemeType }) =>
-        theme.core.space.space200};
+      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space200};
     `,
     '7': css`
-      padding: ${({ theme }: { theme: ThemeType }) =>
-        theme.core.space.space250};
+      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space250};
     `,
     '8': css`
-      padding: ${({ theme }: { theme: ThemeType }) =>
-        theme.core.space.space300};
+      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space300};
     `,
     '9': css`
-      padding: ${({ theme }: { theme: ThemeType }) =>
-        theme.core.space.space400};
+      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space400};
     `,
     '10': css`
-      padding: ${({ theme }: { theme: ThemeType }) =>
-        theme.core.space.space500};
+      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space500};
     `,
     '11': css`
-      padding: ${({ theme }: { theme: ThemeType }) =>
-        theme.core.space.space550};
+      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space550};
     `,
     '12': css`
-      padding: ${({ theme }: { theme: ThemeType }) =>
-        theme.core.space.space600};
+      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space600};
     `,
     '13': css`
-      padding: ${({ theme }: { theme: ThemeType }) =>
-        theme.core.space.space800};
+      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space800};
     `,
   },
 }
@@ -378,23 +316,9 @@ export type FlexItemProps = React.HTMLAttributes<HTMLDivElement> &
 
 export const StyledFlexItem = styled.div<FlexItemProps>`
   display: flex;
-  flex-direction: ${({ $direction = 'column' }) => {
-    if (!dirValues.includes($direction)) {
-      return 'column'
-    }
-    switch ($direction) {
-      case 'row':
-        return 'row'
-      case 'rowReverse':
-        return 'row-reverse'
-      case 'column':
-        return 'column'
-      case 'columnReverse':
-      default:
-        return 'column-reverse'
-    }
-  }};
   ${({ $gap = 'none' }) => ($gap ? flexGroupStyles.gapSizes[$gap] : '')}
+  flex-direction: ${({ $direction = 'column' }) =>
+    flexGroupStyles.direction[$direction] ?? 'column'};
   ${({ grow }) => {
     if (!grow) {
       return flexItemStyles.growZero

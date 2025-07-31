@@ -1,5 +1,4 @@
 import React from 'react'
-import { EuiImage } from '@elastic/eui'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import TelescopeImg from 'uiSrc/assets/img/telescope-dark.svg'
@@ -22,6 +21,7 @@ import { TutorialsIds } from 'uiSrc/constants'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { Title } from 'uiSrc/components/base/text/Title'
+import { RiImage } from 'uiSrc/components/base/display'
 import LoadSampleData from '../load-sample-data'
 
 import styles from './styles.module.scss'
@@ -59,10 +59,10 @@ const NoKeysFound = (props: Props) => {
 
   return (
     <div className={styles.container} data-testid="no-result-found-msg">
-      <EuiImage
+      <RiImage
         className={styles.img}
         src={TelescopeImg}
-        alt="no results image"
+        alt="no results"
       />
       <Spacer />
       <Title className={styles.title} size="S">

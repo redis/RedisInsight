@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import { has } from 'lodash'
-import { EuiForm } from '@elastic/eui'
 
 import { compareConsents } from 'uiSrc/utils'
 import {
@@ -79,11 +78,7 @@ const ConsentsPrivacy = () => {
   }
 
   return (
-    <EuiForm
-      component="form"
-      onSubmit={formik.handleSubmit}
-      data-testid="consents-settings-form"
-    >
+    <form onSubmit={formik.handleSubmit} data-testid="consents-settings-form">
       <div className={styles.consentsWrapper}>
         <Text size="s" className={styles.smallText} color="subdued">
           To optimize your experience, Redis Insight uses third-party tools.
@@ -100,7 +95,7 @@ const ConsentsPrivacy = () => {
           />
         ))}
       </div>
-    </EuiForm>
+    </form>
   )
 }
 
