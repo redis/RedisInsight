@@ -20,7 +20,7 @@ type NavContainerProps = React.ComponentProps<typeof Row> & {
 export const StyledAppNavigationContainer = styled(Row)<NavContainerProps>`
   height: 100%;
   width: auto;
-  max-width: 35%;
+  max-width: 50%;
   &:first-child {
     padding-inline-start: ${({ theme }) => theme.components.appBar.group.gap};
   }
@@ -29,9 +29,7 @@ export const StyledAppNavigationContainer = styled(Row)<NavContainerProps>`
   }
 
   border-bottom: ${({ theme, $borderLess }) =>
-      $borderLess
-        ? 'none'
-        : theme.components.tabs.variants.default.tabsLine.size}
+      $borderLess ? '0' : theme.components.tabs.variants.default.tabsLine.size}
     solid
     ${({ theme }) => theme.components.tabs.variants.default.tabsLine.color};
 `

@@ -99,7 +99,7 @@ const InstancePageTemplate = (props: Props) => {
   return (
     <>
       <InstanceHeader />
-      <AppNavigation actions={actions} />
+      <AppNavigation actions={actions} onChange={() => setActions(null)} />
       <ResizableContainer
         ref={ref}
         direction="vertical"

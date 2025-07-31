@@ -39,9 +39,10 @@ const AppNavigationContainer = ({
 
 export type AppNavigationProps = {
   actions?: ReactNode
+  onChange?: (tabValue: string) => void
 }
 
-const AppNavigation = ({ actions }: AppNavigationProps) => {
+const AppNavigation = ({ actions, onChange }: AppNavigationProps) => {
   const { privateRoutes } = useNavigation()
   const activeTab = privateRoutes.find((route) => route.isActivePage)
   const navTabs: TabInfo[] = privateRoutes.map((route) => ({
@@ -62,6 +63,7 @@ const AppNavigation = ({ actions }: AppNavigationProps) => {
                 (route) => route.pageName === tabValue,
               )
               if (tabNavItem) {
+                onChange?.(tabNavItem.pageName) // remove actions before navigation, displayed page, should set their own actions
                 tabNavItem.onClick()
               }
             }}
