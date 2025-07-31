@@ -6,6 +6,7 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { RiPopover } from 'uiSrc/components/base'
+import { HorizontalSpacer } from 'uiSrc/components/base/layout'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -35,15 +36,18 @@ const AckPopover = (props: Props) => {
       anchorClassName="ackMessagePopover"
       panelClassName={styles.popoverWrapper}
       button={
-        <SecondaryButton
-          size="s"
-          aria-label="Acknowledge pending message"
-          onClick={showPopover}
-          className={styles.ackBtn}
-          data-testid="acknowledge-btn"
-        >
-          ACK
-        </SecondaryButton>
+        <>
+          <SecondaryButton
+            size="s"
+            aria-label="Acknowledge pending message"
+            onClick={showPopover}
+            className={styles.ackBtn}
+            data-testid="acknowledge-btn"
+          >
+            ACK
+          </SecondaryButton>
+          <HorizontalSpacer size="s" />
+        </>
       }
     >
       <div className={styles.popover}>

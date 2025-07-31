@@ -2,11 +2,12 @@ import React from 'react'
 import { cloneDeep } from 'lodash'
 import {
   cleanup,
-  fireEvent,
   mockedStore,
   render,
   screen,
+  userEvent,
   waitFor,
+  waitForRedisUiSelectVisible,
 } from 'uiSrc/utils/test-utils'
 import { DEFAULT_THEME, Theme, THEMES } from 'uiSrc/constants'
 import { TelemetryEvent } from 'uiSrc/telemetry'
@@ -49,7 +50,9 @@ describe('ThemeSettings', () => {
     expect(selectedTheme).not.toBeUndefined()
 
     await waitFor(() => {
-      expect(screen.getByText(selectedTheme?.inputDisplay as string)).toBeInTheDocument()
+      expect(
+        screen.getByText(selectedTheme?.inputDisplay as string),
+      ).toBeInTheDocument()
     })
   })
 
@@ -64,15 +67,16 @@ describe('ThemeSettings', () => {
     }
 
     render(<ThemeSettings />, { store })
-
     const dropdownButton = screen.getByTestId('select-theme')
-    fireEvent.click(dropdownButton)
+    await userEvent.click(dropdownButton)
+
+    await waitForRedisUiSelectVisible()
 
     await waitFor(() => {
       expect(screen.getByText('Light Theme')).toBeInTheDocument()
     })
 
-    fireEvent.click(screen.getByText('Light Theme'))
+    await userEvent.click(screen.getByText('Light Theme'))
 
     expect(updateUserConfigSettingsAction).toHaveBeenCalledWith({
       theme: newTheme,
@@ -97,7 +101,9 @@ describe('ThemeSettings', () => {
     render(<ThemeSettings />, { store })
 
     const dropdownButton = screen.getByTestId('select-theme')
-    fireEvent.click(dropdownButton)
+    await userEvent.click(dropdownButton)
+
+    await waitForRedisUiSelectVisible()
 
     const darkTheme = THEMES.find((theme) => theme.value === Theme.Dark)
 

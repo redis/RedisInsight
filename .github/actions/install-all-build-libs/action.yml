@@ -33,7 +33,7 @@ runs:
     - name: Setup Node
       uses: actions/setup-node@v4.0.4
       with:
-        node-version: '22.11.0'
+        node-version: '22.12.0'
         # disable cache for windows
         # https://github.com/actions/setup-node/issues/975
         cache: ${{ runner.os != 'Windows' && 'yarn' || '' }}

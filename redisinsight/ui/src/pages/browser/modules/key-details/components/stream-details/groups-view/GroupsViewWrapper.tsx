@@ -1,4 +1,3 @@
-import { EuiFieldText } from '@elastic/eui'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
@@ -36,7 +35,9 @@ import EditablePopover from 'uiSrc/pages/browser/modules/key-details/shared/edit
 
 import { FormatedDate, RiTooltip } from 'uiSrc/components'
 import { Text } from 'uiSrc/components/base/text'
+import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { TextInput } from 'uiSrc/components/base/inputs'
 import {
   ConsumerDto,
   ConsumerGroupDto,
@@ -362,20 +363,9 @@ const GroupsViewWrapper = (props: Props) => {
             delay={500}
             editBtnClassName={styles.editBtn}
           >
-            <>
-              <EuiFieldText
-                fullWidth
-                name="id"
-                id="id"
-                placeholder="ID*"
-                value={editValue}
-                onChange={(e: any) =>
-                  setEditValue(validateConsumerGroupId(e.target.value))
-                }
-                onBlur={() => setIsIdFocused(false)}
-                onFocus={() => setIsIdFocused(true)}
-                append={
-                  <RiTooltip
+            <FormField
+              additionalText={
+                <RiTooltip
                     anchorClassName="inputAppendIcon"
                     position="left"
                     title="Enter Valid ID, 0 or $"
@@ -383,7 +373,18 @@ const GroupsViewWrapper = (props: Props) => {
                   >
                     <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
                   </RiTooltip>
+              }
+            >
+              <TextInput
+                name="id"
+                id="id"
+                placeholder="ID*"
+                value={editValue}
+                onChange={value =>
+                  setEditValue(validateConsumerGroupId(value))
                 }
+                onBlur={() => setIsIdFocused(false)}
+                onFocus={() => setIsIdFocused(true)}
                 style={{ width: 240 }}
                 autoComplete="off"
                 data-testid="last-id-field"
@@ -398,7 +399,7 @@ const GroupsViewWrapper = (props: Props) => {
                   {idError}
                 </span>
               )}
-            </>
+            </FormField>
           </EditablePopover>
         )
       },

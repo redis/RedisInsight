@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { NodePublicState } from 'react-vtree/dist/es/Tree'
 import cx from 'classnames'
-import {  keys as ElasticKeys } from '@elastic/eui'
-
 import { useSelector } from 'react-redux'
+
+import * as keys from 'uiSrc/constants/keys'
 import { Maybe } from 'uiSrc/utils'
 import { KeyTypes, ModulesKeyTypes, BrowserColumns } from 'uiSrc/constants'
 import KeyRowTTL from 'uiSrc/pages/browser/components/key-row-ttl'
@@ -91,7 +91,7 @@ const Node = ({
   }
 
   const handleKeyDown = ({ key }: React.KeyboardEvent<HTMLDivElement>) => {
-    if (key === ElasticKeys.SPACE) {
+    if (key === keys.SPACE) {
       handleClick()
     }
   }

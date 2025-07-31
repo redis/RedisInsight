@@ -1,6 +1,5 @@
-import { EuiFieldText, EuiForm } from '@elastic/eui'
 import { toNumber } from 'lodash'
-import React, { ChangeEvent, useState } from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
@@ -35,6 +34,7 @@ import {
   defaultValueRender,
   RiSelect,
 } from 'uiSrc/components/base/forms/select/RiSelect'
+import { TextInput } from 'uiSrc/components/base/inputs'
 import { convertNumberByUnits } from '../../utils'
 import styles from './styles.module.scss'
 
@@ -175,7 +175,7 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
       {connectionType === ConnectionType.Cluster && clusterContent()}
       {connectionType !== ConnectionType.Cluster && (
         <>
-          <EuiForm component="form">
+          <form>
             <FormField
               layout="horizontal"
               className={styles.formRow}
@@ -200,13 +200,13 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
                 className={styles.rowFields}
               >
                 <div className={styles.input}>
-                  <EuiFieldText
+                  <TextInput
                     name="slowerThan"
                     id="slowerThan"
                     value={slowerThan}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    onChange={value => {
                       setSlowerThan(
-                        validateNumber(e.target.value.trim(), -1, Infinity),
+                        validateNumber(value.trim(), -1, Infinity),
                       )
                     }}
                     placeholder={`${convertNumberByUnits(DEFAULT_SLOWLOG_SLOWER_THAN, durationUnit)}`}
@@ -239,14 +239,14 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
             >
               <>
                 <div className={styles.rowFields}>
-                  <EuiFieldText
+                  <TextInput
                     name="maxLen"
                     id="maxLen"
                     className={styles.input}
                     placeholder={`${DEFAULT_SLOWLOG_MAX_LEN}`}
                     value={maxLen}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                      setMaxLen(validateNumber(e.target.value.trim()))
+                    onChange={value => {
+                      setMaxLen(validateNumber(value.trim()))
                     }}
                     autoComplete="off"
                     data-testid="max-len-input"
@@ -255,7 +255,7 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
               </>
             </FormField>
             <Spacer size="m" />
-          </EuiForm>
+          </form>
 
           <Row className={styles.footer}>
             <FlexItem className={styles.helpText}>

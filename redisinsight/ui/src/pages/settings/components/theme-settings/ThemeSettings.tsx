@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { EuiForm, EuiFormRow, EuiSuperSelect, EuiTitle } from '@elastic/eui'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import {
   updateUserConfigSettingsAction,
@@ -9,6 +8,12 @@ import {
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { DEFAULT_THEME, THEMES } from 'uiSrc/constants'
+import {
+  defaultValueRender,
+  RiSelect,
+} from 'uiSrc/components/base/forms/select/RiSelect'
+import { FormField } from 'uiSrc/components/base/forms/FormField'
+import { Title } from 'uiSrc/components/base/text'
 
 const ThemeSettings = () => {
   const dispatch = useDispatch()
@@ -44,23 +49,22 @@ const ThemeSettings = () => {
   }
 
   return (
-    <EuiForm component="form">
-      <EuiTitle size="xs">
-        <h4>Color Theme</h4>
-      </EuiTitle>
+    <form>
+      <Title size="XS">Color Theme</Title>
       <Spacer size="m" />
-      <EuiFormRow label="Specifies the color theme to be used in Redis Insight:">
-        <EuiSuperSelect
+      <FormField label="Specifies the color theme to be used in Redis Insight:">
+        <RiSelect
+          valueRender={defaultValueRender}
           options={options}
-          valueOfSelected={selectedTheme}
+          value={selectedTheme}
           onChange={onChange}
           style={{ marginTop: '12px' }}
           data-test-subj="select-theme"
           data-testid="select-theme"
         />
-      </EuiFormRow>
+      </FormField>
       <Spacer size="xl" />
-    </EuiForm>
+    </form>
   )
 }
 

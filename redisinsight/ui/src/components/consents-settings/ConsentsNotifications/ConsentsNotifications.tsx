@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import { has } from 'lodash'
-import { EuiForm } from '@elastic/eui'
 
 import { compareConsents } from 'uiSrc/utils'
 import {
@@ -89,11 +88,7 @@ const ConsentsNotifications = () => {
   }
 
   return (
-    <EuiForm
-      component="form"
-      onSubmit={formik.handleSubmit}
-      data-testid="consents-settings-form"
-    >
+    <form onSubmit={formik.handleSubmit} data-testid="consents-settings-form">
       <div className={styles.consentsWrapper}>
         <Title size="XS">Notifications</Title>
         {notificationConsents.map((consent: IConsent) => (
@@ -106,7 +101,7 @@ const ConsentsNotifications = () => {
           />
         ))}
       </div>
-    </EuiForm>
+    </form>
   )
 }
 

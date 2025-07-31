@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { EuiFilePicker } from '@elastic/eui'
 import ReactDOM from 'react-dom'
 import {
   fetchInstancesAction,
@@ -10,7 +9,7 @@ import {
 } from 'uiSrc/slices/instances/instances'
 import { Nullable } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { RiTooltip, UploadWarning } from 'uiSrc/components'
+import { RiTooltip, UploadWarning, RiFilePicker } from 'uiSrc/components'
 import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
@@ -179,7 +178,8 @@ const ImportDatabase = (props: Props) => {
                   risk of automatically executing malicious code.
                 </Text>
                 <Spacer />
-                <EuiFilePicker
+
+                <RiFilePicker
                   id="import-file-modal-filepicker"
                   initialPromptText="Select or drag and drop a file"
                   className={styles.fileDrop}

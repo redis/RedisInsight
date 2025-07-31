@@ -1,5 +1,4 @@
 import {
-  EuiFilePicker,
   EuiModal,
   EuiModalBody,
   EuiModalFooter,
@@ -11,7 +10,7 @@ import React from 'react'
 
 import { Nullable } from 'uiSrc/utils'
 
-import { UploadWarning } from 'uiSrc/components'
+import { RiFilePicker, UploadWarning } from 'uiSrc/components'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
   PrimaryButton,
@@ -85,7 +84,7 @@ const ImportFileModal = <T,>({
           <FlexItem>
             {isShowForm && (
               <>
-                <EuiFilePicker
+                <RiFilePicker
                   id="import-file-modal-filepicker"
                   initialPromptText="Select or drag and drop a file"
                   className={styles.fileDrop}

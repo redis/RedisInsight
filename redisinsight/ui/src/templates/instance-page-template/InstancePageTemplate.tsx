@@ -14,6 +14,9 @@ import {
   ResizablePanelHandle,
 } from 'uiSrc/components/base/layout'
 import { ImperativePanelGroupHandle } from 'uiSrc/components/base/layout/resize'
+import { AppNavigation } from 'uiSrc/components'
+import { AppNavigationActionsProvider } from 'uiSrc/contexts/AppNavigationActionsProvider'
+import { Nullable } from 'uiSrc/utils'
 
 export const firstPanelId = 'main-component'
 export const secondPanelId = 'cli'
@@ -91,9 +94,12 @@ const InstancePageTemplate = (props: Props) => {
     }
   }, [isShowBottomGroup])
 
+  const [actions, setActions] = useState<Nullable<React.ReactNode>>(null)
+
   return (
     <>
       <InstanceHeader />
+      <AppNavigation actions={actions} onChange={() => setActions(null)} />
       <ResizableContainer
         ref={ref}
         direction="vertical"
@@ -105,7 +111,14 @@ const InstancePageTemplate = (props: Props) => {
           defaultSize={isShowBottomGroup ? sizes[0] : sizeMain}
           data-testid={firstPanelId}
         >
-          <ExplorePanelTemplate>{children}</ExplorePanelTemplate>
+          <AppNavigationActionsProvider
+            value={{
+              actions,
+              setActions,
+            }}
+          >
+            <ExplorePanelTemplate>{children}</ExplorePanelTemplate>
+          </AppNavigationActionsProvider>
         </ResizablePanel>
         <ResizablePanelHandle
           direction="horizontal"

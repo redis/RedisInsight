@@ -1,6 +1,5 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { EuiFieldText } from '@elastic/eui'
 import { toNumber } from 'lodash'
 import {
   keysSelector,
@@ -30,6 +29,7 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
+import { TextInput } from 'uiSrc/components/base/inputs'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import {
   AddFieldsToHashDto,
@@ -173,20 +173,19 @@ const AddHashFields = (props: Props) => {
           onClickAdd={addField}
         >
           {(item, index) => (
-            <Row align="center">
+            <Row align="center" gap="m">
               <FlexItem grow={2}>
                 <FormField>
-                  <EuiFieldText
-                    fullWidth
+                  <TextInput
                     name={`fieldName-${item.id}`}
                     id={`fieldName-${item.id}`}
                     placeholder="Enter Field"
                     value={item.fieldName}
                     disabled={loading}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                      handleFieldChange('fieldName', item.id, e.target.value)
+                    onChange={value =>
+                      handleFieldChange('fieldName', item.id, value)
                     }
-                    inputRef={
+                    ref={
                       index === fields.length - 1 ? lastAddedFieldName : null
                     }
                     data-testid="hash-field"
@@ -195,15 +194,14 @@ const AddHashFields = (props: Props) => {
               </FlexItem>
               <FlexItem grow={2}>
                 <FormField>
-                  <EuiFieldText
-                    fullWidth
+                  <TextInput
                     name={`fieldValue-${item.id}`}
                     id={`fieldValue-${item.id}`}
                     placeholder="Enter Value"
                     value={item.fieldValue}
                     disabled={loading}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                      handleFieldChange('fieldValue', item.id, e.target.value)
+                    onChange={value =>
+                      handleFieldChange('fieldValue', item.id, value)
                     }
                     data-testid="hash-value"
                   />
@@ -212,18 +210,17 @@ const AddHashFields = (props: Props) => {
               {isExpireFieldsAvailable && (
                 <FlexItem grow={1}>
                   <FormField>
-                    <EuiFieldText
-                      fullWidth
+                    <TextInput
                       name={`fieldTTL-${item.id}`}
                       id={`fieldTTL-${item.id}`}
                       placeholder="Enter TTL"
                       value={item.fieldTTL || ''}
                       disabled={loading}
-                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                      onChange={value =>
                         handleFieldChange(
                           'fieldTTL',
                           item.id,
-                          validateTTLNumberForAddKey(e.target.value),
+                          validateTTLNumberForAddKey(value),
                         )
                       }
                       data-testid="hash-ttl"

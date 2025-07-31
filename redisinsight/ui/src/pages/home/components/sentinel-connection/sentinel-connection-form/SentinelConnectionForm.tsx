@@ -1,9 +1,9 @@
-import { EuiForm, keys } from '@elastic/eui'
 import { FormikErrors, useFormik } from 'formik'
 import { isEmpty, pick } from 'lodash'
 import React, { useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
 
+import * as keys from 'uiSrc/constants/keys'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { fieldDisplayNames } from 'uiSrc/pages/home/constants'
 import { getFormErrors, getSubmitButtonContent } from 'uiSrc/pages/home/utils'
@@ -142,11 +142,11 @@ const SentinelConnectionForm = (props: Props) => {
       <div className="getStartedForm eui-yScroll" ref={formRef}>
         <MessageSentinel />
         <br />
-        <EuiForm
-          component="form"
+        <form
           onSubmit={formik.handleSubmit}
           data-testid="form"
           onKeyDown={onKeyDown}
+          role="presentation"
         >
           <DatabaseForm
             formik={formik}
@@ -164,7 +164,7 @@ const SentinelConnectionForm = (props: Props) => {
             certificates={certificates}
             caCertificates={caCertificates}
           />
-        </EuiForm>
+        </form>
       </div>
       <Footer />
     </div>

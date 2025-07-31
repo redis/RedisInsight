@@ -1,8 +1,8 @@
-import { keys } from '@elastic/eui'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 
+import * as keys from 'uiSrc/constants/keys'
 import MultiSearch from 'uiSrc/components/multi-search/MultiSearch'
 import {
   SCAN_COUNT_DEFAULT,
