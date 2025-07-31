@@ -180,7 +180,7 @@ const BrowserSearchPanel = (props: Props) => {
             onClose={hidePopover}
           />
         }
-        title=""
+        title={null}
       />
       <div className={styles.searchWrapper}>
         <OnboardingTour

@@ -45,7 +45,7 @@ const OAuthSsoDialog = () => {
         [styles.import]: ssoFlow === OAuthSocialAction.Import,
       })}
       data-testid="social-oauth-dialog"
-      title=""
+      title={null}
       content={
         <>
           {ssoFlow === OAuthSocialAction.Create && (
