@@ -97,7 +97,7 @@ const SourcePipelineDialog = () => {
 
   return (
     <Modal.Compose open>
-      <Modal.Content.Compose onCancel={handleCloseDialog}>
+      <Modal.Content.Compose>
         <Modal.Content.Close icon={CancelIcon} onClick={handleCloseDialog} />
         <Modal.Content.Header.Title>
           Start with your pipeline
