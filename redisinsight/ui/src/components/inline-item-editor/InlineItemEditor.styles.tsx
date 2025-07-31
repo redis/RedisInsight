@@ -1,0 +1,155 @@
+import React from 'react'
+import styled, { css } from 'styled-components'
+import { Row } from 'uiSrc/components/base/layout/flex'
+import { Theme } from 'uiSrc/components/base/theme/types'
+import { Props } from 'uiSrc/components/inline-item-editor/InlineItemEditor'
+import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { CancelSlimIcon, CheckThinIcon } from 'uiSrc/components/base/icons'
+
+interface ContainerProps {
+  className?: string
+  children?: React.ReactNode
+}
+
+const RefStyledContainer = React.forwardRef(
+  (
+    { className, children }: ContainerProps,
+    ref?: React.Ref<HTMLDivElement>,
+  ) => (
+    <div className={className} ref={ref}>
+      {children}
+    </div>
+  ),
+)
+
+export const StyledContainer = styled(RefStyledContainer)`
+  max-width: 100%;
+
+  :global(.euiFormControlLayout) {
+    max-width: 100% !important;
+  }
+`
+
+export const IIEContainer = React.forwardRef<
+  HTMLDivElement,
+  {
+    children?: React.ReactNode
+  }
+>(({ children, ...rest }, ref) => (
+  <StyledContainer ref={ref} {...rest}>
+    {children}
+  </StyledContainer>
+))
+
+type ActionsContainerProps = React.ComponentProps<typeof Row> & {
+  $position?: Props['controlsPosition']
+  $design?: Props['controlsDesign']
+}
+
+export const DeclineButton = styled(IconButton).attrs({
+  icon: CancelSlimIcon,
+  'aria-label': 'Cancel editing',
+})`
+  width: 50%;
+  height: 100%;
+
+  &:hover {
+    color: ${({ theme }: { theme: Theme }) =>
+      theme.semantic.color.text.danger500};
+  }
+`
+
+export const ApplyButton = styled(IconButton).attrs({
+  icon: CheckThinIcon,
+  color: 'primary',
+  'aria-label': 'Apply',
+})`
+  height: 100% !important;
+  width: 100% !important;
+
+  &:hover:not([class*='isDisabled']) {
+    color: ${({ theme }: { theme: Theme }) =>
+      theme.semantic.color.text.neutral500};
+  }
+`
+
+const positions = {
+  bottom: css`
+    top: 100%;
+    right: 0;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 3px 3px var(--controlsBoxShadowColor);
+  `,
+  top: css`
+    bottom: 100%;
+    right: 0;
+    border-radius: 10px 10px 0 0;
+    box-shadow: 0 -3px 3px var(--controlsBoxShadowColor);
+  `,
+  right: css`
+    top: 0;
+    left: 100%;
+    border-radius: 0 10px 10px 0;
+    box-shadow: 0 3px 3px var(--controlsBoxShadowColor);
+  `,
+  left: css`
+    top: 0;
+    right: 100%;
+    border-radius: 10px 0 0 10px;
+    box-shadow: 0 3px 3px var(--controlsBoxShadowColor);
+  `,
+  inside: css`
+    top: calc(100% - 35px);
+    right: 7px;
+    border-radius: 0 10px 10px 0;
+    box-shadow: 0 3px 3px var(--controlsBoxShadowColor);
+  `,
+}
+
+const designs = {
+  default: css``,
+  separate: css`
+    border-radius: 0;
+    box-shadow: none;
+    background-color: inherit !important;
+    text-align: right;
+    width: 60px;
+    z-index: 4;
+
+    .popoverWrapper,
+    ${DeclineButton}, ${ApplyButton} {
+      margin: 6px 3px;
+      height: 24px !important;
+      width: 24px !important;
+    }
+
+    ${ApplyButton} {
+      margin-top: 0;
+    }
+
+    svg {
+      width: 18px !important;
+      height: 18px !important;
+    }
+  `,
+}
+
+export const ActionsContainer = styled(Row)<ActionsContainerProps>`
+  position: absolute;
+  background-color: ${({ theme }: { theme: Theme }) =>
+    theme.semantic.color.background.primary200};
+  width: 80px;
+  height: 33px;
+  padding: ${({ theme }: { theme: Theme }) => theme.core.space.space050};
+
+  z-index: 3;
+  ${({ $position }) => positions[$position || 'inside']}
+  ${({ $design }) => designs[$design || 'default']}
+
+  .tooltip,
+  .declineBtn,
+  .popoverWrapper {
+    width: 50% !important;
+    height: 100% !important;
+  }
+`

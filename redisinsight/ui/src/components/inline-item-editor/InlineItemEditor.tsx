@@ -1,5 +1,4 @@
 import React, { ChangeEvent, Ref, useEffect, useRef, useState } from 'react'
-import { capitalize } from 'lodash'
 import cx from 'classnames'
 import { EuiFieldText } from '@elastic/eui'
 
@@ -9,12 +8,14 @@ import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import { WindowEvent } from 'uiSrc/components/base/utils/WindowEvent'
 import { FocusTrap } from 'uiSrc/components/base/utils/FocusTrap'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
-import { CancelSlimIcon, CheckThinIcon } from 'uiSrc/components/base/icons'
-import {
-  DestructiveButton,
-  IconButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { DestructiveButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
+import {
+  ActionsContainer,
+  ApplyButton,
+  DeclineButton,
+  IIEContainer,
+} from './InlineItemEditor.styles'
 
 import styles from './styles.module.scss'
 
@@ -176,12 +177,8 @@ const InlineItemEditor = (props: Props) => {
       }
       data-testid="apply-tooltip"
     >
-      <IconButton
+      <ApplyButton
         size={iconSize ?? 'M'}
-        icon={CheckThinIcon}
-        color="primary"
-        aria-label="Apply"
-        className={cx(styles.btn, styles.applyBtn)}
         disabled={isDisabledApply()}
         onClick={handleApplyClick}
         data-testid="apply-btn"
@@ -195,7 +192,7 @@ const InlineItemEditor = (props: Props) => {
         children
       ) : (
         <OutsideClickDetector onOutsideClick={handleClickOutside}>
-          <div ref={containerEl} className={styles.container}>
+          <IIEContainer ref={containerEl}>
             <WindowEvent event="keydown" handler={handleOnEsc} />
             <FocusTrap disabled={disableFocusTrap}>
               <form
@@ -229,20 +226,18 @@ const InlineItemEditor = (props: Props) => {
                     </>
                   )}
                 </FlexItem>
-                <div
+                <ActionsContainer
+                  $position={controlsPosition}
+                  $design={controlsDesign}
+                  grow={false}
                   className={cx(
                     'inlineItemEditor__controls',
                     styles.controls,
-                    styles[`controls${capitalize(controlsPosition)}`],
-                    styles[`controls${capitalize(controlsDesign)}`],
                     controlsClassName,
                   )}
                 >
-                  <IconButton
+                  <DeclineButton
                     size={iconSize ?? 'M'}
-                    icon={CancelSlimIcon}
-                    aria-label="Cancel editing"
-                    className={cx(styles.btn, styles.declineBtn)}
                     onClick={onDecline}
                     disabled={isLoading}
                     data-testid="cancel-btn"
@@ -289,10 +284,10 @@ const InlineItemEditor = (props: Props) => {
                       </div>
                     </RiPopover>
                   )}
-                </div>
+                </ActionsContainer>
               </form>
             </FocusTrap>
-          </div>
+          </IIEContainer>
         </OutsideClickDetector>
       )}
     </>
