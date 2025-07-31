@@ -102,7 +102,7 @@ const SourcePipelineDialog = () => {
         <Modal.Content.Header.Title>
           Start with your pipeline
         </Modal.Content.Header.Title>
-        <Modal.Content.Body.Compose>
+        <Modal.Content.Body.Compose width="100%">
           <div className={styles.content}>
             <div className={styles.actions}>
               <div
