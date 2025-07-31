@@ -18,8 +18,8 @@ const Spacer = styled.div`
   height: ${({ theme }) => theme.core.space.space100};
 `
 
-const RiEmptyPrompt = ({ body, title, icon }: RiEmptyPromptProps) => (
-  <StyledEmptyPrompt>
+const RiEmptyPrompt = ({ body, title, icon, ...rest }: RiEmptyPromptProps) => (
+  <StyledEmptyPrompt {...rest}>
     {icon}
     {title && (
       <>
