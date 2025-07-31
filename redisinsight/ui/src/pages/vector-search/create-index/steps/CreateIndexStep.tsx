@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 
-import { EuiFieldText } from '@elastic/eui'
 import { FlexGroup, FlexItem } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import CreateIndexStepWrapper, {
@@ -12,6 +11,7 @@ import { generateFtCreateCommand } from 'uiSrc/utils/index/generateFtCreateComma
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { VectorIndexTab } from 'uiSrc/components/new-index/create-index-step/CreateIndexStepWrapper'
 import { BuildNewIndexTabTrigger } from 'uiSrc/components/new-index/create-index-step/build-new-index-tab/BuildNewIndexTabTrigger'
+import { TextInput } from 'uiSrc/components/base/inputs'
 
 import { bikesIndexFieldsBoxes } from './config'
 import { CreateIndexStepScreenWrapper, SearchInputWrapper } from './styles'
@@ -27,7 +27,7 @@ export const CreateIndexStep: IStepComponent = ({
   parameters,
   setParameters,
 }: StepComponentProps) => {
-  const boxes = useIndexFieldsBoxes(parameters.indexName)
+  const indexFieldsBoxes = useIndexFieldsBoxes(parameters.indexName)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
   const indexFieldsTabs: IndexStepTab[] = [
@@ -45,20 +45,18 @@ export const CreateIndexStep: IStepComponent = ({
           <SearchInputWrapper>
             <FlexItem direction="column" $gap="s" grow={1}>
               <Text>Index name</Text>
-              <EuiFieldText
+              <TextInput
                 disabled
                 placeholder="Search for index"
                 autoComplete="off"
                 value={parameters.indexName}
-                onChange={(event) =>
-                  setParameters({ indexName: event.target.value })
-                }
+                onChange={(value) => setParameters({ indexName: value })}
                 data-testid="search-for-index"
               />
             </FlexItem>
           </SearchInputWrapper>
           <FieldBoxesGroup
-            boxes={boxes}
+            boxes={indexFieldsBoxes}
             value={parameters.indexFields}
             onChange={(value) => setParameters({ indexFields: value })}
           />

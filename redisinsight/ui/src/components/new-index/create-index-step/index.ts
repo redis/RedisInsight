@@ -1,4 +1,4 @@
-import { CreateIndexStepWrapper, IndexStepTab } from './CreateIndexStepWrapper'
+import { CreateIndexStepWrapper } from './CreateIndexStepWrapper'
 
+export type { IndexStepTab } from './CreateIndexStepWrapper'
 export default CreateIndexStepWrapper
-export { IndexStepTab }
