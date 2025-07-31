@@ -45,6 +45,7 @@ import {
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Modal } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
+import { CancelIcon } from 'uiSrc/components/base/icons'
 
 interface FormValues {
   accountId: Nullable<string>
@@ -182,14 +183,16 @@ const OAuthSelectAccountDialog = () => {
   }))
 
   return (
-    <Modal
-      open
-      className={styles.container}
-      onCancel={handleOnClose}
-      data-testid="oauth-select-account-dialog"
-      title="Connect to Redis Cloud"
-      content={
-        <>
+    <Modal.Compose open>
+      <Modal.Content.Compose
+        className={styles.container}
+        data-testid="oauth-select-account-dialog"
+      >
+        <Modal.Content.Close icon={CancelIcon} onClick={handleOnClose} />
+        <Modal.Content.Header.Title>
+          Connect to Redis Cloud
+        </Modal.Content.Header.Title>
+        <Modal.Content.Body.Compose>
           <section className={styles.content}>
             <Text className={styles.subTitle}>
               Select an account to connect to:
@@ -227,9 +230,9 @@ const OAuthSelectAccountDialog = () => {
               Select account
             </PrimaryButton>
           </div>
-        </>
-      }
-    />
+        </Modal.Content.Body.Compose>
+      </Modal.Content.Compose>
+    </Modal.Compose>
   )
 }
 

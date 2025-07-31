@@ -158,7 +158,7 @@ const FilterKeyType = ({ modules }: Props) => {
           className={styles.unsupportedInfoModal}
           data-testid="filter-not-available-modal"
           content={<FilterNotAvailable onClose={() => setIsInfoPopoverOpen(false)} />}
-          title=""
+          title={null}
         />
         {!isVersionSupported && (
           <div

@@ -19,6 +19,7 @@ import { Text } from 'uiSrc/components/base/text'
 import { FileChangeType } from 'uiSrc/slices/interfaces'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Modal } from 'uiSrc/components/base/display'
+import { CancelIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 export const EMPTY_PIPELINE = {
@@ -95,51 +96,57 @@ const SourcePipelineDialog = () => {
   }
 
   return (
-    <Modal
-      open
-      title="Start with your pipeline"
-      width="100%"
-      onCancel={handleCloseDialog}
-      content={
-        <div className={styles.content}>
-          <div className={styles.actions}>
-            <div
-              role="button"
-              tabIndex={0}
-              onKeyDown={(event) => onEnter(event, onLoadPipeline)}
-              onClick={onLoadPipeline}
-              className={styles.action}
-              data-testid="server-source-pipeline-dialog"
-            >
-              <RiIcon type="UploadIcon" size="xl" className={styles.icon} />
-              <Text className={styles.text}>Download from server</Text>
-            </div>
-            <div
-              role="button"
-              tabIndex={0}
-              onKeyDown={(event) => onEnter(event, onUploadClick)}
-              onClick={onUploadClick}
-              className={styles.action}
-              data-testid="file-source-pipeline-dialog"
-            >
-              <RiIcon type="ExportIcon" size="xl" className={styles.icon} />
-              <Text className={styles.text}>Upload from file</Text>
-            </div>
-            <div
-              role="button"
-              tabIndex={0}
-              onKeyDown={(event) => onEnter(event, onStartNewPipeline)}
-              onClick={onStartNewPipeline}
-              className={styles.action}
-              data-testid="empty-source-pipeline-dialog"
-            >
-              <RiIcon type="ContractsIcon" size="xl" className={styles.icon} />
-              <Text className={styles.text}>Create new pipeline</Text>
+    <Modal.Compose open>
+      <Modal.Content.Compose onCancel={handleCloseDialog}>
+        <Modal.Content.Close icon={CancelIcon} onClick={handleCloseDialog} />
+        <Modal.Content.Header.Title>
+          Start with your pipeline
+        </Modal.Content.Header.Title>
+        <Modal.Content.Body.Compose>
+          <div className={styles.content}>
+            <div className={styles.actions}>
+              <div
+                role="button"
+                tabIndex={0}
+                onKeyDown={(event) => onEnter(event, onLoadPipeline)}
+                onClick={onLoadPipeline}
+                className={styles.action}
+                data-testid="server-source-pipeline-dialog"
+              >
+                <RiIcon type="UploadIcon" size="xl" className={styles.icon} />
+                <Text className={styles.text}>Download from server</Text>
+              </div>
+              <div
+                role="button"
+                tabIndex={0}
+                onKeyDown={(event) => onEnter(event, onUploadClick)}
+                onClick={onUploadClick}
+                className={styles.action}
+                data-testid="file-source-pipeline-dialog"
+              >
+                <RiIcon type="ExportIcon" size="xl" className={styles.icon} />
+                <Text className={styles.text}>Upload from file</Text>
+              </div>
+              <div
+                role="button"
+                tabIndex={0}
+                onKeyDown={(event) => onEnter(event, onStartNewPipeline)}
+                onClick={onStartNewPipeline}
+                className={styles.action}
+                data-testid="empty-source-pipeline-dialog"
+              >
+                <RiIcon
+                  type="ContractsIcon"
+                  size="xl"
+                  className={styles.icon}
+                />
+                <Text className={styles.text}>Create new pipeline</Text>
+              </div>
             </div>
           </div>
-        </div>
-      }
-    />
+        </Modal.Content.Body.Compose>
+      </Modal.Content.Compose>
+    </Modal.Compose>
   )
 }
 
