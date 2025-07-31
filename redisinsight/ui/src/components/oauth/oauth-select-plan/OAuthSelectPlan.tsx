@@ -26,6 +26,7 @@ import { ColorText, Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { Modal } from 'uiSrc/components/base/display'
+import { CancelIcon } from 'uiSrc/components/base/icons'
 import { CloudSubscriptionPlanResponse } from 'apiSrc/modules/cloud/subscription/dto'
 import { OAuthProvider, OAuthProviders } from './constants'
 import styles from './styles.module.scss'
@@ -171,15 +172,13 @@ const OAuthSelectPlan = () => {
   }
 
   return (
-    <Modal
-      open
-      width="fit-content"
-      className={styles.container}
-      onCancel={handleOnClose}
-      data-testid="oauth-select-plan-dialog"
-      title="Choose a cloud vendor"
-      content={
-        <>
+    <Modal.Compose open>
+      <Modal.Content.Compose className={styles.container} data-testid="oauth-select-plan-dialog">
+        <Modal.Content.Close icon={CancelIcon} onClick={handleOnClose} data-testid="oauth-select-plan-dialog-close-btn" />
+        <Modal.Content.Header.Title>
+          Choose a cloud vendor
+        </Modal.Content.Header.Title>
+        <Modal.Content.Body.Compose width="fit-content">
           <section className={styles.content}>
             <Text className={styles.subTitle}>
               Select a cloud vendor and region to complete the final step
@@ -257,9 +256,9 @@ const OAuthSelectPlan = () => {
               </PrimaryButton>
             </footer>
           </section>
-        </>
-      }
-    />
+        </Modal.Content.Body.Compose>
+      </Modal.Content.Compose>
+    </Modal.Compose>
   )
 }
 

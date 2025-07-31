@@ -44,8 +44,8 @@ import {
 } from 'uiSrc/components/base/forms/radio-group/RadioGroup'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Modal } from 'uiSrc/components/base/display'
-import styles from './styles.module.scss'
 import { CancelIcon } from 'uiSrc/components/base/icons'
+import styles from './styles.module.scss'
 
 interface FormValues {
   accountId: Nullable<string>
