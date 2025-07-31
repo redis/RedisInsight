@@ -1,4 +1,5 @@
 import React from 'react'
+import cx from 'classnames'
 
 import { Nullable } from 'uiSrc/utils'
 import { CancelIcon } from 'uiSrc/components/base/icons'
@@ -23,7 +24,7 @@ const FormDialog = (props: Props) => {
     <Modal.Compose open={isOpen}>
       <Modal.Content.Compose
         persistent
-        className={`${styles.modal} ${className}`}
+        className={cx(styles.modal, className)}
         onCancel={onClose}
       >
         <Modal.Content.Close icon={CancelIcon} onClick={onClose} />
