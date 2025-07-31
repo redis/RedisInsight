@@ -38,8 +38,10 @@ describe('ManageIndexesDrawer', () => {
     // const header = screen.getByText('Manage indexes')
     // expect(header).toBeInTheDocument()
 
-    // TODO: Check the body content, once implemented
     const body = screen.getByTestId('manage-indexes-drawer-body')
     expect(body).toBeInTheDocument()
+
+    const list = screen.getByTestId('manage-indexes-list')
+    expect(list).toBeInTheDocument()
   })
 })

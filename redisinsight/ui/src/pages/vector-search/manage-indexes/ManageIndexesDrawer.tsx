@@ -5,6 +5,7 @@ import {
   DrawerBody,
   DrawerHeader,
 } from 'uiSrc/components/base/layout/drawer'
+import { ManageIndexesList } from './ManageIndexesList'
 
 export interface ManageIndexesDrawerProps extends DrawerProps {}
 
@@ -21,7 +22,7 @@ export const ManageIndexesDrawer = ({
   >
     <DrawerHeader title="Manage indexes" />
     <DrawerBody data-testid="manage-indexes-drawer-body">
-      <p>Manage indexes info will be added later</p>
+      <ManageIndexesList />
     </DrawerBody>
   </Drawer>
 )

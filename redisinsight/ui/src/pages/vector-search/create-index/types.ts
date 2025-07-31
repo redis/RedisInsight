@@ -14,6 +14,10 @@ export enum SampleDataContent {
   CONTENT_RECOMMENDATIONS = 'content-recommendations',
 }
 
+export enum PresetDataType {
+  BIKES = 'bikes',
+}
+
 export type CreateSearchIndexParameters = {
   // Select a database step
   instanceId: string
