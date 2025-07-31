@@ -65,10 +65,9 @@ export const useColorTextStyles = ({ $color }: MapProps = {}) => {
 
 export const StyledLink = styled(RedisUiLink)<MapProps>`
   ${useColorTextStyles};
-
-  text-decoration: underline !important;
+  text-decoration: none !important;
 
   &:hover {
-    text-decoration: none !important;
+    text-decoration: underline !important;
   }
 `
