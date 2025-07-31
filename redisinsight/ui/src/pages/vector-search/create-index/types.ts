@@ -25,12 +25,13 @@ export type CreateSearchIndexParameters = {
 
   // Create index step
   usePresetVectorIndex: boolean
-  presetVectorIndexName: string
-  tags: string[]
+  indexName: string
+  indexFields: string[]
 }
 
 export type StepComponentProps = {
   setParameters: (params: Partial<CreateSearchIndexParameters>) => void
+  parameters: CreateSearchIndexParameters
 }
 
 export interface IStepComponent {

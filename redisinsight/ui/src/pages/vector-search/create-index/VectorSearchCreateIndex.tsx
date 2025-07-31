@@ -6,7 +6,7 @@ import { Title } from 'uiSrc/components/base/text'
 import { Button, SecondaryButton } from 'uiSrc/components/base/forms/buttons'
 import { ChevronLeftIcon } from 'uiSrc/components/base/icons'
 
-import { stepContents } from './steps'
+import { selectedBikesIndexFields, stepContents } from './steps'
 import {
   CreateIndexContent,
   CreateIndexFooter,
@@ -42,8 +42,8 @@ export const VectorSearchCreateIndex = ({
       sampleDataType: SampleDataType.PRESET_DATA,
       dataContent: SampleDataContent.E_COMMERCE_DISCOVERY,
       usePresetVectorIndex: true,
-      presetVectorIndexName: '',
-      tags: [],
+      indexName: 'Bikes',
+      indexFields: selectedBikesIndexFields,
     })
 
   const setParameters = (params: Partial<CreateSearchIndexParameters>) => {
@@ -79,7 +79,10 @@ export const VectorSearchCreateIndex = ({
         </Stepper>
       </CreateIndexHeader>
       <CreateIndexContent direction="column" grow={1}>
-        <StepContent setParameters={setParameters} />
+        <StepContent
+          parameters={createSearchIndexParameters}
+          setParameters={setParameters}
+        />
       </CreateIndexContent>
       <CreateIndexFooter direction="row">
         {showBackButton && (

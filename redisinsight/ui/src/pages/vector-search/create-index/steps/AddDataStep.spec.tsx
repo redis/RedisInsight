@@ -2,6 +2,7 @@ import React from 'react'
 import { render, screen, fireEvent } from 'uiSrc/utils/test-utils'
 
 import { AddDataStep } from './AddDataStep'
+import { selectedBikesIndexFields } from './config'
 import {
   SearchIndexType,
   SampleDataType,
@@ -12,6 +13,15 @@ import {
 const mockSetParameters = jest.fn()
 
 const defaultProps: StepComponentProps = {
+  parameters: {
+    instanceId: '',
+    searchIndexType: SearchIndexType.REDIS_QUERY_ENGINE,
+    sampleDataType: SampleDataType.PRESET_DATA,
+    dataContent: SampleDataContent.E_COMMERCE_DISCOVERY,
+    usePresetVectorIndex: true,
+    indexName: 'Bikes',
+    indexFields: selectedBikesIndexFields,
+  },
   setParameters: mockSetParameters,
 }
 
@@ -97,15 +107,11 @@ describe('AddDataStep', () => {
       expect(mockSetParameters).not.toHaveBeenCalled()
     })
 
-    it('should call setParameters with custom data when selected', () => {
+    it('should expect custom data to be disabled', () => {
       render(<AddDataStep {...defaultProps} />)
 
       const customDataRadio = screen.getByLabelText('Custom data')
-      fireEvent.click(customDataRadio)
-
-      expect(mockSetParameters).toHaveBeenCalledWith({
-        sampleDataType: SampleDataType.CUSTOM_DATA,
-      })
+      expect(customDataRadio).toBeDisabled()
     })
 
     it('should have preset data selected by default', () => {
