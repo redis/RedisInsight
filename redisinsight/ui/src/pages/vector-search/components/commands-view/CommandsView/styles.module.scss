@@ -1,0 +1,43 @@
+.wrapper {
+  flex: 1;
+  height: 100%;
+  width: 100%;
+  background-color: var(--euiColorEmptyShade);
+  border: 1px solid var(--euiColorLightShade);
+
+  display: flex;
+  flex-direction: column;
+
+  position: relative;
+}
+
+.container {
+  @include eui.scrollBar;
+  color: var(--euiTextSubduedColor) !important;
+
+  flex: 1;
+  width: 100%;
+  overflow: auto;
+}
+
+.header {
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 12px;
+
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--tableDarkestBorderColor);
+}
+
+.clearAllBtn {
+  font-size: 14px !important;
+
+  :global {
+    .euiIcon {
+      width: 14px !important;
+      height: 14px !important;
+    }
+  }
+}
