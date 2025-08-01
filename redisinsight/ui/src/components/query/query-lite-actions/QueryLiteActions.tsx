@@ -60,7 +60,7 @@ const QueryLiteActions = (props: Props) => {
         data-testid="run-query-tooltip"
       >
         <Button
-          onClick={onClear}
+          onClick={onSubmit}
           loading={isLoading}
           disabled={isLoading}
           icon={PlayFilledIcon}
