@@ -3,7 +3,7 @@ import { TextButton } from '@redis-ui/components'
 import { ButtonIcon } from 'uiSrc/components/base/forms/buttons/Button'
 import { IconType } from 'uiSrc/components/base/icons'
 import { Row } from '../../layout/flex'
-import { justifyValues } from '../../layout/flex/flex.styles'
+import { FlexProps } from '../../layout/flex/flex.styles'
 
 export type ButtonProps = React.ComponentProps<typeof TextButton> & {
   icon?: IconType
