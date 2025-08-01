@@ -22,8 +22,6 @@ enum BrowserStorageItem {
   dbConfig = 'dbConfig_',
   RunQueryMode = 'RunQueryMode',
   SQRunQueryMode = 'SQRunQueryMode',
-  vectorSearchRunQueryMode = 'vectorSearchRunQueryMode',
-  vectorSearchGroupMode = 'vectorSearchGroupMode',
   wbCleanUp = 'wbCleanUp',
   viewFormat = 'viewFormat',
   wbGroupMode = 'wbGroupMode',

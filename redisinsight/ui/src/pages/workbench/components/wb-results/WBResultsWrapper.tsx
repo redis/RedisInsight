@@ -13,8 +13,6 @@ export interface Props {
   activeMode: RunQueryMode
   activeResultsMode: ResultsMode
   scrollDivRef: React.Ref<HTMLDivElement>
-  noResultsPlaceholder?: React.ReactNode
-  hideFields?: string[]
   onQueryReRun: (
     query: string,
     commandId?: Nullable<string>,
