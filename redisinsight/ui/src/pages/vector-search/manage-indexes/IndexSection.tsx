@@ -14,7 +14,7 @@ import {
   IndexInfoDto,
   IndexDeleteRequestBodyDto,
 } from 'apiSrc/modules/browser/redisearch/dto'
-import { IndexAttributesList, IndexInfoTableData } from './IndexAttributesList'
+import { IndexAttributesList } from './IndexAttributesList'
 
 export interface IndexSectionProps extends Omit<SectionProps, 'label'> {
   index: RedisString
@@ -25,7 +25,7 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
   const indexName = bufferToString(index)
   const { id: instanceId } = useSelector(connectedInstanceSelector)
 
-  const [tableData, setTableData] = useState<IndexInfoTableData[]>([])
+  const [indexInfo, setIndexInfo] = useState<IndexInfoDto>()
   const [indexSummaryInfo, setIndexSummaryInfo] = useState<
     CategoryValueListItem[]
   >(parseIndexSummaryInfo({} as IndexInfoDto))
@@ -35,7 +35,7 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
       fetchRedisearchInfoAction(indexName, (data) => {
         const indexInfo = data as unknown as IndexInfoDto
 
-        setTableData(parseIndexAttributes(indexInfo))
+        setIndexInfo(indexInfo)
         setIndexSummaryInfo(parseIndexSummaryInfo(indexInfo))
       }),
     )
@@ -69,7 +69,7 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
     <Section
       collapsible
       collapsedInfo={<CategoryValueList categoryValueList={indexSummaryInfo} />}
-      content={<IndexAttributesList data={tableData} />}
+      content={<IndexAttributesList indexInfo={indexInfo} />}
       // TODO: Add FieldTag component to list the types of the different fields
       label={formatLongName(indexName)}
       defaultOpen={false}
@@ -106,11 +106,3 @@ const parseIndexSummaryInfo = (
   //   key: 'date',
   // },
 ]
-
-const parseIndexAttributes = (indexInfo: IndexInfoDto): IndexInfoTableData[] =>
-  indexInfo.attributes.map((field) => ({
-    attribute: field.attribute,
-    type: field.type,
-    weight: field.WEIGHT,
-    separator: field.SEPARATOR,
-  }))
