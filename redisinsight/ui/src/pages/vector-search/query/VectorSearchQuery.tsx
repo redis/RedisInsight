@@ -1,20 +1,39 @@
-import React, { Ref, useRef } from 'react'
+import React from 'react'
 import {
   ResizablePanel,
   ResizablePanelHandle,
 } from 'uiSrc/components/base/layout'
 import QueryWrapper from 'uiSrc/pages/workbench/components/query'
 import WBResultsWrapper from 'uiSrc/pages/workbench/components/wb-results'
-import { ResultsMode, RunQueryMode } from 'uiSrc/slices/interfaces'
+import { HIDE_FIELDS } from 'uiSrc/components/query/query-card/QueryCardHeader/QueryCardHeader'
 import {
   StyledNoResultsWrapper,
   StyledResizableContainer,
 } from './VectorSearchQuery.styles'
 import { HeaderActions } from './HeaderActions'
+import { useQuery } from './useQuery'
 import { CreateIndexWrapper } from '../create-index/styles'
 
 export const VectorSearchQuery = () => {
-  const scrollDivRef: Ref<HTMLDivElement> = useRef(null)
+  const {
+    query,
+    setQuery,
+    items,
+    clearing,
+    processing,
+    isResultsLoaded,
+    activeMode,
+    resultsMode,
+    scrollDivRef,
+    onSubmit,
+    onQueryOpen,
+    onQueryDelete,
+    onAllQueriesDelete,
+    onQueryChangeMode,
+    onChangeGroupMode,
+    onQueryReRun,
+    onQueryProfile,
+  } = useQuery()
 
   return (
     <CreateIndexWrapper direction="column" justify="between">
@@ -23,14 +42,14 @@ export const VectorSearchQuery = () => {
       <StyledResizableContainer direction="vertical">
         <ResizablePanel id="top-panel" minSize={30} defaultSize={20}>
           <QueryWrapper
-            query=""
-            activeMode={RunQueryMode.ASCII}
-            resultsMode={ResultsMode.Default}
-            setQuery={() => {}}
+            query={query}
+            activeMode={activeMode}
+            resultsMode={resultsMode}
+            setQuery={setQuery}
             setQueryEl={() => {}}
-            onSubmit={() => {}}
-            onQueryChangeMode={() => {}}
-            onChangeGroupMode={() => {}}
+            onSubmit={onSubmit}
+            onQueryChangeMode={onQueryChangeMode}
+            onChangeGroupMode={onChangeGroupMode}
             queryProps={{ useLiteActions: true }}
           />
         </ResizablePanel>
@@ -47,28 +66,19 @@ export const VectorSearchQuery = () => {
           defaultSize={80}
         >
           <WBResultsWrapper
-            items={[]}
-            clearing={false}
-            processing={false}
-            isResultsLoaded={true}
-            activeMode={RunQueryMode.ASCII}
-            activeResultsMode={ResultsMode.Default}
+            items={items}
+            clearing={clearing}
+            processing={processing}
+            isResultsLoaded={isResultsLoaded}
+            activeMode={activeMode}
+            activeResultsMode={resultsMode}
             scrollDivRef={scrollDivRef}
-            onQueryReRun={() => {
-              console.log('onQueryReRun')
-            }}
-            onQueryProfile={() => {
-              console.log('onQueryProfile')
-            }}
-            onQueryOpen={() => {
-              console.log('onQueryOpen')
-            }}
-            onQueryDelete={() => {
-              console.log('onQueryDelete')
-            }}
-            onAllQueriesDelete={() => {
-              console.log('onAllQueriesDelete')
-            }}
+            hideFields={[HIDE_FIELDS.profiler, HIDE_FIELDS.viewType]}
+            onQueryReRun={onQueryReRun}
+            onQueryProfile={onQueryProfile}
+            onQueryOpen={onQueryOpen}
+            onQueryDelete={onQueryDelete}
+            onAllQueriesDelete={onAllQueriesDelete}
             noResultsPlaceholder={
               <StyledNoResultsWrapper>
                 TODO: Not sure yet what to put here
