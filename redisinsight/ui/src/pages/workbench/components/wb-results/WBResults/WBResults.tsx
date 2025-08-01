@@ -77,9 +77,9 @@ const WBResults = (props: Props) => {
     <div className={styles.wrapper}>
       {!isResultsLoaded && (
         <ProgressBarLoader
-            color="primary"
-            data-testid="progress-wb-history"
-          />
+          color="primary"
+          data-testid="progress-wb-history"
+        />
       )}
       {!!items?.length && (
         <div className={styles.header}>
