@@ -6,7 +6,8 @@ import {
   IndexAttibuteDto,
   IndexInfoDto,
 } from 'apiSrc/modules/browser/redisearch/dto'
-import { INDEX_INFO_SEPARATORS } from './IndexInfoTableData.factory'
+
+export const INDEX_INFO_SEPARATORS: string[] = [',', ';', '|', ':']
 
 // Note: Current data is replica of the sample data, but we can make it more realistic/diverse in the future
 export const indexInfoFactory = Factory.define<IndexInfoDto>(() => ({
@@ -76,21 +77,43 @@ export const indexInfoFactory = Factory.define<IndexInfoDto>(() => ({
   'field statistics': indexInfoFieldStatisticsFactory.buildList(3),
 }))
 
-export const indexInfoAttributeFactory = Factory.define<IndexAttibuteDto>(
-  () => {
-    const name = faker.word.noun()
+type IndexInfoAttributeFactoryTransientParams = {
+  includeWeight?: boolean
+  includeSeparator?: boolean
+  includeNoIndex?: boolean
+}
 
-    return {
-      identifier: `$.${name}`,
-      attribute: name,
-      type: faker.helpers.enumValue(FieldTypes).toString(),
+export const indexInfoAttributeFactory = Factory.define<
+  IndexAttibuteDto,
+  IndexInfoAttributeFactoryTransientParams
+>(({ transientParams }) => {
+  const name = faker.word.noun()
+
+  const {
+    includeWeight = faker.datatype.boolean(),
+    includeSeparator = faker.datatype.boolean(),
+    includeNoIndex = faker.datatype.boolean(),
+  } = transientParams
+
+  return {
+    identifier: `$.${name}`,
+    attribute: name,
+    type: faker.helpers.enumValue(FieldTypes).toString(),
+
+    // Optional fields
+    ...(includeWeight && {
       WEIGHT: faker.number
         .float({ min: 0.1, max: 10, fractionDigits: 1 })
         .toString(),
+    }),
+    ...(includeSeparator && {
       SEPARATOR: faker.helpers.arrayElement(INDEX_INFO_SEPARATORS),
-    }
-  },
-)
+    }),
+    ...(includeNoIndex && {
+      NOINDEX: faker.datatype.boolean(),
+    }),
+  }
+})
 
 export const indexInfoFieldStatisticsFactory =
   Factory.define<FieldStatisticsDto>(() => {

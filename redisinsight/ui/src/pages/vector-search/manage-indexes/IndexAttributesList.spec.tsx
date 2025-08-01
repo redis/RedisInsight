@@ -1,6 +1,9 @@
 import React from 'react'
 import { cleanup, render, screen } from 'uiSrc/utils/test-utils'
-import { indexInfoTableDataFactory } from 'uiSrc/mocks/factories/redisearch/IndexInfoTableData.factory'
+import {
+  indexInfoAttributeFactory,
+  indexInfoFactory,
+} from 'uiSrc/mocks/factories/redisearch/IndexInfo.factory'
 import {
   IndexAttributesList,
   IndexAttributesListProps,
@@ -8,7 +11,7 @@ import {
 
 const renderComponent = (props?: Partial<IndexAttributesListProps>) => {
   const defaultProps: IndexAttributesListProps = {
-    data: indexInfoTableDataFactory.buildList(3),
+    indexInfo: indexInfoFactory.build(),
   }
 
   return render(<IndexAttributesList {...defaultProps} {...props} />)
@@ -21,12 +24,41 @@ describe('IndexAttributesList', () => {
 
   it('should render', () => {
     const props: IndexAttributesListProps = {
-      data: [
-        indexInfoTableDataFactory.build(
-          {},
-          { transient: { includeWeight: true, includeSeparator: true } },
-        ),
-      ],
+      indexInfo: indexInfoFactory.build(),
+    }
+
+    const { container } = renderComponent(props)
+    expect(container).toBeTruthy()
+
+    const list = screen.getByTestId('index-attributes-list')
+    expect(list).toBeInTheDocument()
+
+    const table = screen.getByTestId('index-attributes-list--table')
+    const summaryInfo = screen.getByTestId(
+      'index-attributes-list--summary-info',
+    )
+
+    expect(table).toBeInTheDocument()
+    expect(summaryInfo).toBeInTheDocument()
+  })
+
+  it('should render loader when index info is not provided', () => {
+    renderComponent({ indexInfo: undefined })
+
+    const loader = screen.getByTestId('index-attributes-list--loader')
+    expect(loader).toBeInTheDocument()
+  })
+
+  it('should render index attributes in the table', () => {
+    const mockIndexAttribute = indexInfoAttributeFactory.build(
+      {},
+      { transient: { includeWeight: true, includeNoIndex: true } },
+    )
+
+    const props: IndexAttributesListProps = {
+      indexInfo: indexInfoFactory.build({
+        attributes: [mockIndexAttribute],
+      }),
     }
 
     const { container } = renderComponent(props)
@@ -36,14 +68,67 @@ describe('IndexAttributesList', () => {
     expect(list).toBeInTheDocument()
 
     // Verify data is rendered correctly
-    const attribute = screen.getByText(props.data[0].attribute)
-    const type = screen.getByText(props.data[0].type)
-    const weight = screen.getByText(props.data[0].weight!)
-    const separator = screen.getByText(props.data[0].separator!)
+    const identifier = screen.getByText(mockIndexAttribute.identifier)
+    const attribute = screen.getByText(mockIndexAttribute.attribute)
+    const type = screen.getByText(mockIndexAttribute.type)
+    const weight = screen.getByText(mockIndexAttribute.WEIGHT!)
+    const noIndex = screen.getByTestId('index-attributes-list--noindex-icon')
 
+    expect(identifier).toBeInTheDocument()
     expect(attribute).toBeInTheDocument()
     expect(type).toBeInTheDocument()
     expect(weight).toBeInTheDocument()
-    expect(separator).toBeInTheDocument()
+    expect(noIndex).toBeInTheDocument()
+    expect(noIndex).toHaveAttribute(
+      'data-attribute',
+      mockIndexAttribute.NOINDEX?.toString(),
+    )
+  })
+
+  it('should display index summary info', () => {
+    const mockIndexInfo = indexInfoFactory.build()
+
+    const props: IndexAttributesListProps = {
+      indexInfo: mockIndexInfo,
+    }
+
+    renderComponent(props)
+
+    const summaryInfo = screen.getByTestId(
+      'index-attributes-list--summary-info',
+    )
+    expect(summaryInfo).toBeInTheDocument()
+
+    // Verify Number of documents
+    const numberOfDocumentLabel = screen.getByText(/Number of docs:/)
+    const numberOfDocumentValue = screen.getByText(
+      new RegExp(mockIndexInfo.num_docs),
+    )
+    expect(numberOfDocumentLabel).toBeInTheDocument()
+    expect(numberOfDocumentValue).toBeInTheDocument()
+
+    // Verify Max document ID
+    const maxDocumentIdLabel = screen.getByText(/max/)
+    const maxDocumentIdValue = screen.getByText(
+      new RegExp(mockIndexInfo.max_doc_id!),
+    )
+    expect(maxDocumentIdLabel).toBeInTheDocument()
+    expect(maxDocumentIdValue).toBeInTheDocument()
+
+    // Verify Number of records
+    const numberOfRecordsLabel = screen.getByText(/Number of records:/)
+    const numberOfRecordsValue = screen.getByText(
+      new RegExp(mockIndexInfo.num_records!),
+    )
+    expect(numberOfRecordsLabel).toBeInTheDocument()
+    expect(numberOfRecordsValue).toBeInTheDocument()
+
+    // Verify Number of terms
+    const numberOfTermsLabel = screen.getByText(/Number of terms:/)
+    const numberOfTermsValue = screen.getByText(
+      new RegExp(mockIndexInfo.num_terms!),
+    )
+    expect(numberOfTermsLabel).toBeInTheDocument()
+    expect(numberOfTermsValue).toBeInTheDocument()
   })
 })
