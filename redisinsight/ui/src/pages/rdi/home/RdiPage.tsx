@@ -122,11 +122,11 @@ const RdiPage = () => {
 
   const InstanceList = () =>
     !data.length ? (
-      <Card>
+      <>
         {!loading && !loadingChanging && (
           <EmptyMessage onAddInstanceClick={handleOpenConnectionForm} />
         )}
-      </Card>
+      </>
     ) : (
       <RIResizeObserver onResize={onResize}>
         {(resizeRef) => (
