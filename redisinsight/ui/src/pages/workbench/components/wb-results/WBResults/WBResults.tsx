@@ -25,6 +25,7 @@ export interface Props {
   activeResultsMode?: ResultsMode
   scrollDivRef: React.Ref<HTMLDivElement>
   noResultsPlaceholder?: React.ReactNode
+  hideFields?: string[]
   onQueryReRun: (
     query: string,
     commandId?: Nullable<string>,
@@ -48,6 +49,7 @@ const WBResults = (props: Props) => {
     activeMode,
     activeResultsMode,
     noResultsPlaceholder,
+    hideFields,
     onQueryReRun,
     onQueryProfile,
     onQueryDelete,
@@ -131,6 +133,7 @@ const WBResults = (props: Props) => {
                   activeResultsMode={activeResultsMode}
                   resultsMode={resultsMode}
                   db={db}
+                  hideFields={hideFields}
                   onQueryOpen={() => onQueryOpen(id)}
                   onQueryProfile={(profileType) =>
                     handleQueryProfile(profileType, {
