@@ -1,15 +1,15 @@
 import React from 'react'
 
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
-import { MOCK_VECTOR_SEARCH_BOX } from 'uiSrc/constants/mocks/mock-vector-index-search'
+import { vectorSearchBoxFactory } from 'uiSrc/mocks/factories/redisearch/VectorSearchBox.factory'
 import { FieldBoxesGroup, FieldBoxesGroupProps } from './FieldBoxesGroup'
 
 const renderFieldBoxesGroupComponent = (
   props?: Partial<FieldBoxesGroupProps>,
 ) => {
   const defaultProps: FieldBoxesGroupProps = {
-    boxes: [MOCK_VECTOR_SEARCH_BOX],
-    value: [MOCK_VECTOR_SEARCH_BOX.value],
+    boxes: vectorSearchBoxFactory.buildList(3, { disabled: false }),
+    value: [],
     onChange: jest.fn(),
   }
 
@@ -26,30 +26,44 @@ describe('FieldBoxesGroup', () => {
     expect(fieldBoxesGroup).toBeInTheDocument()
 
     const fieldBoxes = screen.getAllByTestId(/field-box-/)
-    expect(fieldBoxes).toHaveLength(1)
+    expect(fieldBoxes).toHaveLength(3)
   })
 
   it('should call onChange when clicking on a box to select it', () => {
-    const onChangeMock = jest.fn()
-    const value: string[] = []
+    const mockVectorSearchBox = vectorSearchBoxFactory.build({
+      disabled: false,
+    })
 
-    renderFieldBoxesGroupComponent({ value, onChange: onChangeMock })
+    const props: FieldBoxesGroupProps = {
+      boxes: [mockVectorSearchBox],
+      value: [],
+      onChange: jest.fn(),
+    }
 
-    const box = screen.getByTestId(`field-box-${MOCK_VECTOR_SEARCH_BOX.value}`)
+    renderFieldBoxesGroupComponent(props)
+
+    const box = screen.getByTestId(`field-box-${mockVectorSearchBox.value}`)
 
     fireEvent.click(box)
-    expect(onChangeMock).toHaveBeenCalledWith([MOCK_VECTOR_SEARCH_BOX.value])
+    expect(props.onChange).toHaveBeenCalledWith([mockVectorSearchBox.value])
   })
 
   it('should call onChange when clicking on a box to deselect it', () => {
-    const onChangeMock = jest.fn()
-    const value: string[] = [MOCK_VECTOR_SEARCH_BOX.value]
+    const mockVectorSearchBox = vectorSearchBoxFactory.build({
+      disabled: false,
+    })
 
-    renderFieldBoxesGroupComponent({ value, onChange: onChangeMock })
+    const props: FieldBoxesGroupProps = {
+      boxes: [mockVectorSearchBox],
+      value: [mockVectorSearchBox.value],
+      onChange: jest.fn(),
+    }
 
-    const box = screen.getByTestId(`field-box-${MOCK_VECTOR_SEARCH_BOX.value}`)
+    renderFieldBoxesGroupComponent(props)
+
+    const box = screen.getByTestId(`field-box-${mockVectorSearchBox.value}`)
 
     fireEvent.click(box)
-    expect(onChangeMock).toHaveBeenCalledWith([])
+    expect(props.onChange).toHaveBeenCalledWith([])
   })
 })

@@ -1,16 +1,15 @@
 import React from 'react'
 import { BoxSelectionGroup } from '@redis-ui/components'
 
-import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
-import { MOCK_VECTOR_SEARCH_BOX } from 'uiSrc/constants/mocks/mock-vector-index-search'
 import { cleanup, fireEvent, render, screen } from 'uiSrc/utils/test-utils'
+import { vectorSearchBoxFactory } from 'uiSrc/mocks/factories/redisearch/VectorSearchBox.factory'
 
 import { FieldBox, FieldBoxProps } from './FieldBox'
 import { VectorSearchBox } from './types'
 
 const renderFieldBoxComponent = (props?: FieldBoxProps) => {
   const defaultProps: FieldBoxProps = {
-    box: MOCK_VECTOR_SEARCH_BOX,
+    box: vectorSearchBoxFactory.build(),
   }
 
   return render(
@@ -27,14 +26,7 @@ describe('CreateIndexStepWrapper', () => {
 
   it('should render', () => {
     const props: FieldBoxProps = {
-      box: {
-        ...MOCK_VECTOR_SEARCH_BOX,
-        value: 'id',
-        label: 'id',
-        text: 'Unique product identifier',
-        tag: FieldTypes.TAG,
-        disabled: false,
-      },
+      box: vectorSearchBoxFactory.build(),
     }
 
     const { container } = renderFieldBoxComponent(props)
@@ -53,23 +45,31 @@ describe('CreateIndexStepWrapper', () => {
     expect(checkbox).toBeInTheDocument()
   })
 
-  it('should select the box when clicked', () => {
-    renderFieldBoxComponent()
+  it('should select the box when clicked', async () => {
+    const props: FieldBoxProps = {
+      box: vectorSearchBoxFactory.build({
+        disabled: false,
+      }),
+    }
 
+    renderFieldBoxComponent(props)
+
+    // Verify that the checkbox is not checked initially
     const checkbox = screen.getByRole('checkbox')
     expect(checkbox).not.toBeChecked()
 
-    const box = screen.getByTestId(`field-box-${MOCK_VECTOR_SEARCH_BOX.value}`)
+    // Click on the box to select it
+    const box = screen.getByTestId(`field-box-${props.box.value}`)
     fireEvent.click(box)
 
+    // Wait for the checkbox to be checked
     expect(checkbox).toBeChecked()
   })
 
   it('should not select the box when clicked if disabled', () => {
-    const disabledBox: VectorSearchBox = {
-      ...MOCK_VECTOR_SEARCH_BOX,
+    const disabledBox: VectorSearchBox = vectorSearchBoxFactory.build({
       disabled: true,
-    }
+    })
 
     renderFieldBoxComponent({ box: disabledBox })
 
