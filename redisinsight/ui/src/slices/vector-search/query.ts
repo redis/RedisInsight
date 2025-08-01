@@ -30,6 +30,12 @@ import {
 import { WORKBENCH_HISTORY_MAX_LENGTH } from 'uiSrc/pages/workbench/constants'
 import { CommandExecutionStatus } from 'uiSrc/slices/interfaces/cli'
 import { PIPELINE_COUNT_DEFAULT } from 'uiSrc/constants/api'
+import {
+  addCommands,
+  clearCommands,
+  getLocalWbHistory,
+  removeCommand,
+} from 'uiSrc/services/workbenchStorage'
 
 import { AppDispatch, RootState } from '../store'
 
@@ -290,6 +296,42 @@ export const vectorSearchQuerySelector = (state: RootState) =>
 
 export default vectorSearchQuerySlice.reducer
 
+export function fetchVectorSearchHistoryAction(
+  instanceId: string,
+  executionType = CommandExecutionType.Search,
+) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    dispatch(loadVectorSearchHistory())
+
+    try {
+      const state = stateInit()
+      const envDependentFlag =
+        state.app.features.featureFlags.features.envDependent?.flag
+      if (envDependentFlag === false) {
+        const commandsHistory = await getLocalWbHistory(instanceId)
+        if (Array.isArray(commandsHistory)) {
+          dispatch(loadVectorSearchHistorySuccess(reverse(commandsHistory)))
+        } else {
+          dispatch(loadVectorSearchHistorySuccess([]))
+        }
+        return
+      }
+      const { data, status } = await apiService.get<CommandExecution[]>(
+        getUrl(instanceId, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS),
+        { params: { type: executionType } },
+      )
+
+      if (isStatusSuccessful(status)) {
+        dispatch(loadVectorSearchHistorySuccess(data))
+      }
+    } catch (_err) {
+      const error = _err as AxiosError
+      dispatch(addErrorNotification(error as any))
+      dispatch(loadVectorSearchHistoryFailure(error.message))
+    }
+  }
+}
+
 export function sendVectorSearchCommandAction(
   commands: string[],
   multiCommands: string[] = [],
@@ -332,6 +374,11 @@ export function sendVectorSearchCommandAction(
             processing: !!multiCommands?.length,
           }),
         )
+        const envDependentFlag =
+          state.app.features.featureFlags.features.envDependent?.flag
+        if (envDependentFlag === false) {
+          await addCommands(reverse(data))
+        }
         onSuccessAction?.(multiCommands)
       }
     } catch (_err) {
@@ -431,26 +478,63 @@ export function sendVectorSearchQueryAction(
   }
 }
 
-export function deleteVectorSearchCommandAction(commandId: string) {
-  return async (dispatch: AppDispatch) => {
+export function deleteVectorSearchCommandAction(
+  commandId: string,
+  onSuccessAction?: () => void,
+  onFailAction?: () => void,
+) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
     try {
+      const state = stateInit()
+      const { id = '' } = state.connections.instances.connectedInstance
+
+      const envDependentFlag =
+        state.app.features.featureFlags.features.envDependent?.flag
+      if (envDependentFlag === false) {
+        await removeCommand(id, commandId)
+        dispatch(deleteVectorSearchCommandSuccess(commandId))
+        onSuccessAction?.()
+        return
+      }
+
       dispatch(deleteVectorSearchCommandSuccess(commandId))
+      onSuccessAction?.()
     } catch (_err) {
       const error = _err as AxiosError
       dispatch(addErrorNotification(error as any))
+      onFailAction?.()
     }
   }
 }
 
-export function clearVectorSearchResultsAction() {
-  return async (dispatch: AppDispatch) => {
+export function clearVectorSearchResultsAction(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _executionType = CommandExecutionType.Search,
+  onSuccessAction?: () => void,
+  onFailAction?: () => void,
+) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
     try {
+      const state = stateInit()
+      const { id = '' } = state.connections.instances.connectedInstance
+
       dispatch(clearVectorSearchResults())
+      const envDependentFlag =
+        state.app.features.featureFlags.features.envDependent?.flag
+      if (envDependentFlag === false) {
+        await clearCommands(id)
+        dispatch(clearVectorSearchResultsSuccess())
+        onSuccessAction?.()
+        return
+      }
+
       dispatch(clearVectorSearchResultsSuccess())
+      onSuccessAction?.()
     } catch (_err) {
       dispatch(clearVectorSearchResultsFailed())
       const error = _err as AxiosError
       dispatch(addErrorNotification(error as any))
+      onFailAction?.()
     }
   }
 }
