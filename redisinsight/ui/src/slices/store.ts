@@ -38,7 +38,6 @@ import workbenchResultsReducer from './workbench/wb-results'
 import workbenchTutorialsReducer from './workbench/wb-tutorials'
 import workbenchCustomTutorialsReducer from './workbench/wb-custom-tutorials'
 import searchAndQueryReducer from './search/searchAndQuery'
-import vectorSearchQueryReducer from './vector-search/query'
 import contentCreateRedisButtonReducer from './content/create-redis-buttons'
 import contentGuideLinksReducer from './content/guide-links'
 import pubSubReducer from './pubsub/pubsub'
@@ -114,9 +113,6 @@ export const rootReducer = combineReducers({
   }),
   search: combineReducers({
     query: searchAndQueryReducer,
-  }),
-  vectorSearch: combineReducers({
-    query: vectorSearchQueryReducer,
   }),
   content: combineReducers({
     createRedisButtons: contentCreateRedisButtonReducer,
