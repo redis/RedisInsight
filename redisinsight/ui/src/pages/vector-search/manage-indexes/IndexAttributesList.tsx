@@ -1,15 +1,28 @@
 import React from 'react'
 import { ColumnDefinition, Table } from 'uiSrc/components/base/layout/table'
-import { StyledIndexAttributesList } from './IndexAttributesList.styles'
+import { RiIcon } from 'uiSrc/components/base/icons'
+import { Loader } from 'uiSrc/components/base/display'
+import { IndexInfoDto } from 'apiSrc/modules/browser/redisearch/dto'
+import {
+  StyledIndexAttributesList,
+  StyledIndexAttributesTable,
+  StyledIndexSummaryInfo,
+} from './IndexAttributesList.styles'
 
 export interface IndexInfoTableData {
+  identifier: string
   attribute: string
   type: string
   weight?: string
-  separator?: string
+  noindex?: boolean
 }
 
 const tableColumns: ColumnDefinition<IndexInfoTableData>[] = [
+  {
+    header: 'Identifier',
+    id: 'identifier',
+    accessorKey: 'identifier',
+  },
   {
     header: 'Attribute',
     id: 'attribute',
@@ -28,20 +41,59 @@ const tableColumns: ColumnDefinition<IndexInfoTableData>[] = [
     enableSorting: false,
   },
   {
-    header: 'Separator',
-    id: 'separator',
-    accessorKey: 'separator',
+    header: 'Noindex',
+    id: 'noindex',
+    accessorKey: 'noindex',
     enableSorting: false,
+    cell: ({ row }) => (
+      <RiIcon
+        type={row.original.noindex ? 'CheckBoldIcon' : 'CancelIcon'}
+        color={row.original.noindex ? 'primary400' : 'danger500'}
+        data-testid="index-attributes-list--noindex-icon"
+        data-attribute={row.original.noindex}
+      />
+    ),
   },
 ]
 
 export interface IndexAttributesListProps {
-  data: IndexInfoTableData[]
+  indexInfo: IndexInfoDto | undefined
 }
 
-export const IndexAttributesList = ({ data }: IndexAttributesListProps) => (
-  // @ts-expect-error - styled-components typing issue: The TypeScript definitions for styled-components
-  <StyledIndexAttributesList data-testid="index-attributes-list">
-    <Table columns={tableColumns} data={data} />
-  </StyledIndexAttributesList>
-)
+export const IndexAttributesList = ({
+  indexInfo,
+}: IndexAttributesListProps) => {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  const { num_docs, max_doc_id, num_records, num_terms } = indexInfo || {}
+
+  if (!indexInfo) {
+    return <Loader data-testid="index-attributes-list--loader" />
+  }
+
+  return (
+    <StyledIndexAttributesList data-testid="index-attributes-list" as="div">
+      <StyledIndexAttributesTable
+        as="div"
+        data-testid="index-attributes-list--table"
+      >
+        <Table columns={tableColumns} data={parseIndexAttributes(indexInfo)} />
+      </StyledIndexAttributesTable>
+
+      <StyledIndexSummaryInfo>
+        <p data-testid="index-attributes-list--summary-info">
+          Number of docs: {num_docs} (max {max_doc_id}) | Number of records:{' '}
+          {num_records} | Number of terms: {num_terms}
+        </p>
+      </StyledIndexSummaryInfo>
+    </StyledIndexAttributesList>
+  )
+}
+
+const parseIndexAttributes = (indexInfo: IndexInfoDto): IndexInfoTableData[] =>
+  indexInfo.attributes.map((field) => ({
+    identifier: field.identifier,
+    attribute: field.attribute,
+    type: field.type,
+    weight: field.WEIGHT,
+    noindex: field.NOINDEX ?? true,
+  }))
