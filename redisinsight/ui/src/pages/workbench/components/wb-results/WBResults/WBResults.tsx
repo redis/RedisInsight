@@ -24,8 +24,6 @@ export interface Props {
   activeMode: RunQueryMode
   activeResultsMode?: ResultsMode
   scrollDivRef: React.Ref<HTMLDivElement>
-  noResultsPlaceholder?: React.ReactNode
-  hideFields?: string[]
   onQueryReRun: (
     query: string,
     commandId?: Nullable<string>,
@@ -48,8 +46,6 @@ const WBResults = (props: Props) => {
     processing,
     activeMode,
     activeResultsMode,
-    noResultsPlaceholder,
-    hideFields,
     onQueryReRun,
     onQueryProfile,
     onQueryDelete,
@@ -80,7 +76,10 @@ const WBResults = (props: Props) => {
   return (
     <div className={styles.wrapper}>
       {!isResultsLoaded && (
-        <ProgressBarLoader color="primary" data-testid="progress-wb-history" />
+        <ProgressBarLoader
+            color="primary"
+            data-testid="progress-wb-history"
+          />
       )}
       {!!items?.length && (
         <div className={styles.header}>
@@ -133,7 +132,6 @@ const WBResults = (props: Props) => {
                   activeResultsMode={activeResultsMode}
                   resultsMode={resultsMode}
                   db={db}
-                  hideFields={hideFields}
                   onQueryOpen={() => onQueryOpen(id)}
                   onQueryProfile={(profileType) =>
                     handleQueryProfile(profileType, {
@@ -154,9 +152,7 @@ const WBResults = (props: Props) => {
               ),
             )
           : null}
-        {isResultsLoaded &&
-          !items.length &&
-          (noResultsPlaceholder ?? <WbNoResultsMessage />)}
+        {isResultsLoaded && !items.length && <WbNoResultsMessage />}
       </div>
     </div>
   )

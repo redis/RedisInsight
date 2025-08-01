@@ -12,7 +12,7 @@ import {
 import { HeaderActions } from './HeaderActions'
 import { useQuery } from './useQuery'
 import { CreateIndexWrapper } from '../create-index/styles'
-import CommandsViewWrapper from '../components/wb-results'
+import CommandsViewWrapper from '../components/commands-view'
 
 export const VectorSearchQuery = () => {
   const {

@@ -57,7 +57,6 @@ export interface Props {
   isNotStored?: boolean
   executionTime?: number
   db?: number
-  hideFields?: string[]
   onQueryDelete: () => void
   onQueryReRun: () => void
   onQueryOpen: () => void
@@ -226,7 +225,6 @@ const QueryCard = (props: Props) => {
           summaryText={getSummaryText(summary, resultsMode)}
           executionTime={executionTime}
           db={db}
-          hideFields={hideFields}
           toggleOpen={toggleOpen}
           toggleFullScreen={toggleFullScreen}
           setSelectedValue={changeViewTypeSelected}
