@@ -104,7 +104,6 @@ const QueryCard = (props: Props) => {
     isNotStored,
     executionTime,
     db,
-    hideFields,
   } = props
 
   const { visualizations = [] } = useSelector(appPluginsSelector)
