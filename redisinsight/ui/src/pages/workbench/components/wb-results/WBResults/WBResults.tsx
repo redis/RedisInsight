@@ -47,6 +47,7 @@ const WBResults = (props: Props) => {
     processing,
     activeMode,
     activeResultsMode,
+    noResultsPlaceholder,
     onQueryReRun,
     onQueryProfile,
     onQueryDelete,
@@ -152,7 +153,7 @@ const WBResults = (props: Props) => {
           : null}
         {isResultsLoaded &&
           !items.length &&
-          (props.noResultsPlaceholder ?? <WbNoResultsMessage />)}
+          (noResultsPlaceholder ?? <WbNoResultsMessage />)}
       </div>
     </div>
   )
