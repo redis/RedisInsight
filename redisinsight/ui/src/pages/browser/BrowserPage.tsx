@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { isNumber } from 'lodash'
+import { theme } from '@redis-ui/styles'
 import {
   formatLongName,
   getDbIndex,
@@ -329,6 +330,10 @@ const BrowserPage = () => {
                 arePanelsCollapsed ||
                 (isBrowserFullScreen && !isRightPanelOpen),
             })}
+            style={{
+              border: `1px solid ${theme.semantic.color.border.neutral500}`,
+              borderRadius: `8px`,
+            }}
           >
             <BrowserLeftPanel
               selectedKey={selectedKey}
@@ -351,6 +356,10 @@ const BrowserPage = () => {
               [styles.keyDetails]:
                 arePanelsCollapsed || (isRightPanelOpen && isBrowserFullScreen),
             })}
+            style={{
+              border: `1px solid ${theme.semantic.color.border.neutral500}`,
+              borderRadius: `5px`,
+            }}
           >
             <BrowserRightPanel
               arePanelsCollapsed={arePanelsCollapsed}
