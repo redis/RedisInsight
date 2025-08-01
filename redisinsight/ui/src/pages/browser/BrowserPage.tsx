@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { isNumber } from 'lodash'
+import { useTheme } from '@redis-ui/styles'
 import {
   formatLongName,
   getDbIndex,
@@ -72,7 +73,7 @@ const isOneSideMode = (isInsightsOpen: boolean) =>
 
 const BrowserPage = () => {
   const { instanceId } = useParams<{ instanceId: string }>()
-
+  const theme = useTheme()
   const {
     name: connectedInstanceName,
     db = 0,
@@ -330,6 +331,10 @@ const BrowserPage = () => {
                 arePanelsCollapsed ||
                 (isBrowserFullScreen && !isRightPanelOpen),
             })}
+            style={{
+              border: `1px solid ${theme.semantic.color.border.neutral500}`,
+              borderRadius: `8px`,
+            }}
           >
             <UploadModal >{<div>test</div>}</UploadModal>
             <BrowserLeftPanel
@@ -353,6 +358,10 @@ const BrowserPage = () => {
               [styles.keyDetails]:
                 arePanelsCollapsed || (isRightPanelOpen && isBrowserFullScreen),
             })}
+            style={{
+              border: `1px solid ${theme.semantic.color.border.neutral500}`,
+              borderRadius: `5px`,
+            }}
           >
             <BrowserRightPanel
               arePanelsCollapsed={arePanelsCollapsed}

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { useTheme } from '@redis-ui/styles'
 import InstanceHeader from 'uiSrc/components/instance-header'
 import { ExplorePanelTemplate } from 'uiSrc/templates'
 import BottomGroupComponents from 'uiSrc/components/bottom-group-components/BottomGroupComponents'
@@ -12,6 +13,7 @@ import {
   ResizableContainer,
   ResizablePanel,
   ResizablePanelHandle,
+  Spacer,
 } from 'uiSrc/components/base/layout'
 import { ImperativePanelGroupHandle } from 'uiSrc/components/base/layout/resize'
 import { AppNavigation } from 'uiSrc/components'
@@ -51,6 +53,7 @@ const roundUpSizes = (sizes: number[]) => [
 
 const InstancePageTemplate = (props: Props) => {
   const { children } = props
+  const theme = useTheme()
   const [sizes, setSizes] = useState<number[]>(getDefaultSizes())
 
   const { isShowCli, isShowHelper } = useSelector(cliSettingsSelector)
@@ -100,6 +103,7 @@ const InstancePageTemplate = (props: Props) => {
     <>
       <InstanceHeader />
       <AppNavigation actions={actions} onChange={() => setActions(null)} />
+      <Spacer size="m" />
       <ResizableContainer
         ref={ref}
         direction="vertical"
@@ -126,11 +130,15 @@ const InstancePageTemplate = (props: Props) => {
           data-testid="resize-btn-browser-cli"
           style={{ display: isShowBottomGroup ? 'inherit' : 'none' }}
         />
+        <Spacer size="m" />
         <ResizablePanel
           id={secondPanelId}
           defaultSize={isShowBottomGroup ? sizes[1] : sizeBottomCollapsed}
           minSize={isShowBottomGroup ? 20 : 0}
           data-testid={secondPanelId}
+          style={{
+            borderTop: `1px solid ${theme.semantic.color.border.neutral500}`,
+          }}
         >
           <BottomGroupComponents />
         </ResizablePanel>
