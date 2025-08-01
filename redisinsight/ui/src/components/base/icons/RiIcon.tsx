@@ -21,7 +21,6 @@ export type IconComponentProps = Omit<IconProps, 'icon' | 'size'> &
 
 export const RiIcon = ({ type, size, ...props }: IconComponentProps) => {
   const IconType = Icons[type]
-
   if (!IconType) {
     console.warn(`Icon type "${type}" not found, rendering as image`)
     // TODO - 17.06.25 - Replace with icon
