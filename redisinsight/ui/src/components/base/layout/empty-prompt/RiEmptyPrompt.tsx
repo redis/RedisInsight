@@ -1,5 +1,7 @@
 import React, { HTMLAttributes } from 'react'
 import styled from 'styled-components'
+import { useTheme } from '@redis-ui/styles'
+import { Spacer } from '../spacer'
 
 interface RiEmptyPromptProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
   body?: React.ReactNode
@@ -14,26 +16,26 @@ const StyledEmptyPrompt = styled.div`
   margin: auto;
 `
 
-const Spacer = styled.div`
-  height: ${({ theme }) => theme.core.space.space100};
-`
+const RiEmptyPrompt = ({ body, title, icon, ...rest }: RiEmptyPromptProps) => {
+  const theme = useTheme()
 
-const RiEmptyPrompt = ({ body, title, icon, ...rest }: RiEmptyPromptProps) => (
-  <StyledEmptyPrompt {...rest}>
+  return (<StyledEmptyPrompt {...rest}>
     {icon}
     {title && (
       <>
-        <Spacer />
+        <Spacer size={theme.core.space.space100} />
         {title}
       </>
     )}
     {body && (
       <>
-        <Spacer />
+        <Spacer size={theme.core.space.space100} />
         {body}
       </>
     )}
   </StyledEmptyPrompt>
-)
+  )
+}
+  
 
 export default RiEmptyPrompt
