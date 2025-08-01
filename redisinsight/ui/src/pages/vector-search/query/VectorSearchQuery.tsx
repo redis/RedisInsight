@@ -4,7 +4,6 @@ import {
   ResizablePanelHandle,
 } from 'uiSrc/components/base/layout'
 import QueryWrapper from 'uiSrc/pages/workbench/components/query'
-import WBResultsWrapper from 'uiSrc/pages/workbench/components/wb-results'
 import { HIDE_FIELDS } from 'uiSrc/components/query/query-card/QueryCardHeader/QueryCardHeader'
 import {
   StyledNoResultsWrapper,
@@ -13,6 +12,7 @@ import {
 import { HeaderActions } from './HeaderActions'
 import { useQuery } from './useQuery'
 import { CreateIndexWrapper } from '../create-index/styles'
+import CommandsViewWrapper from '../components/wb-results'
 
 export const VectorSearchQuery = () => {
   const {
@@ -40,7 +40,7 @@ export const VectorSearchQuery = () => {
       <HeaderActions />
 
       <StyledResizableContainer direction="vertical">
-        <ResizablePanel id="top-panel" minSize={30} defaultSize={20}>
+        <ResizablePanel id="top-panel" minSize={20} defaultSize={30}>
           <QueryWrapper
             query={query}
             activeMode={activeMode}
@@ -65,7 +65,7 @@ export const VectorSearchQuery = () => {
           maxSize={70}
           defaultSize={80}
         >
-          <WBResultsWrapper
+          <CommandsViewWrapper
             items={items}
             clearing={clearing}
             processing={processing}
