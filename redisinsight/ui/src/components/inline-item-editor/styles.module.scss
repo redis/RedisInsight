@@ -15,15 +15,7 @@
 }
 
 .controls {
-  position: absolute;
-  background-color: var(--euiColorLightestShade);
-  width: 80px;
-  height: 33px;
-
-  z-index: 3;
-
   .tooltip,
-  .declineBtn,
   .popoverWrapper {
     width: 50% !important;
     height: 100% !important;

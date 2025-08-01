@@ -1,6 +1,6 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
-import { Row } from 'uiSrc/components/base/layout/flex'
+import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Theme } from 'uiSrc/components/base/theme/types'
 import { Props } from 'uiSrc/components/inline-item-editor/InlineItemEditor'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
@@ -25,8 +25,12 @@ const RefStyledContainer = React.forwardRef(
 export const StyledContainer = styled(RefStyledContainer)`
   max-width: 100%;
 
-  :global(.euiFormControlLayout) {
+  & .euiFormControlLayout {
     max-width: 100% !important;
+  }
+
+  & .tooltip {
+    display: inline-block;
   }
 `
 
@@ -50,9 +54,6 @@ export const DeclineButton = styled(IconButton).attrs({
   icon: CancelSlimIcon,
   'aria-label': 'Cancel editing',
 })`
-  width: 50%;
-  height: 100%;
-
   &:hover {
     color: ${({ theme }: { theme: Theme }) =>
       theme.semantic.color.text.danger500};
@@ -64,9 +65,7 @@ export const ApplyButton = styled(IconButton).attrs({
   color: 'primary',
   'aria-label': 'Apply',
 })`
-  height: 100% !important;
-  width: 100% !important;
-
+  vertical-align: initial;
   &:hover:not([class*='isDisabled']) {
     color: ${({ theme }: { theme: Theme }) =>
       theme.semantic.color.text.neutral500};
@@ -134,6 +133,13 @@ const designs = {
   `,
 }
 
+export const ActionsWrapper = styled(FlexItem)<{
+  $size?: { width: string; height: string }
+}>`
+  width: ${({ $size }) => $size?.width ?? '24px'} !important;
+  height: ${({ $size }) => $size?.height ?? '24px'} !important;
+`
+
 export const ActionsContainer = styled(Row)<ActionsContainerProps>`
   position: absolute;
   background-color: ${({ theme }: { theme: Theme }) =>
@@ -145,11 +151,4 @@ export const ActionsContainer = styled(Row)<ActionsContainerProps>`
   z-index: 3;
   ${({ $position }) => positions[$position || 'inside']}
   ${({ $design }) => designs[$design || 'default']}
-
-  .tooltip,
-  .declineBtn,
-  .popoverWrapper {
-    width: 50% !important;
-    height: 100% !important;
-  }
 `

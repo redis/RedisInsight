@@ -1,5 +1,6 @@
 import React, { ChangeEvent, Ref, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
+import { useTheme } from '@redis-ui/styles'
 import { EuiFieldText } from '@elastic/eui'
 
 import * as keys from 'uiSrc/constants/keys'
@@ -12,6 +13,7 @@ import { DestructiveButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
 import {
   ActionsContainer,
+  ActionsWrapper,
   ApplyButton,
   DeclineButton,
   IIEContainer,
@@ -92,6 +94,9 @@ const InlineItemEditor = (props: Props) => {
   const [value, setValue] = useState<string>(initialValue)
   const [isError, setIsError] = useState<boolean>(false)
   const [isShowApprovePopover, setIsShowApprovePopover] = useState(false)
+  const theme = useTheme()
+
+  const size = theme.components.iconButton.sizes[iconSize ?? 'M']
 
   const inputRef: Ref<HTMLInputElement> = useRef(null)
 
@@ -165,7 +170,7 @@ const InlineItemEditor = (props: Props) => {
 
   const ApplyBtn = (
     <RiTooltip
-      anchorClassName={styles.tooltip}
+      anchorClassName={cx(styles.tooltip, 'tooltip')}
       position="bottom"
       title={
         (isDisabled && disabledTooltipText?.title) ||
@@ -227,6 +232,8 @@ const InlineItemEditor = (props: Props) => {
                   )}
                 </FlexItem>
                 <ActionsContainer
+                  justify="around"
+                  gap="m"
                   $position={controlsPosition}
                   $design={controlsDesign}
                   grow={false}
@@ -236,53 +243,61 @@ const InlineItemEditor = (props: Props) => {
                     controlsClassName,
                   )}
                 >
-                  <DeclineButton
-                    size={iconSize ?? 'M'}
-                    onClick={onDecline}
-                    disabled={isLoading}
-                    data-testid="cancel-btn"
-                  />
-                  {!approveByValidation && ApplyBtn}
+                  <ActionsWrapper $size={size}>
+                    <DeclineButton
+                      onClick={onDecline}
+                      disabled={isLoading}
+                      data-testid="cancel-btn"
+                    />
+                  </ActionsWrapper>
+                  {!approveByValidation && (
+                    <ActionsWrapper $size={size}>{ApplyBtn}</ActionsWrapper>
+                  )}
                   {approveByValidation && (
-                    <RiPopover
-                      anchorPosition="leftCenter"
-                      isOpen={isShowApprovePopover}
-                      closePopover={() => setIsShowApprovePopover(false)}
-                      anchorClassName={styles.popoverAnchor}
-                      panelClassName={cx(styles.popoverPanel)}
-                      button={ApplyBtn}
-                    >
-                      <div
-                        className={styles.popover}
-                        data-testid="approve-popover"
+                    <ActionsWrapper $size={size}>
+                      <RiPopover
+                        anchorPosition="leftCenter"
+                        isOpen={isShowApprovePopover}
+                        closePopover={() => setIsShowApprovePopover(false)}
+                        anchorClassName={cx(
+                          styles.popoverAnchor,
+                          'popoverAnchor',
+                        )}
+                        panelClassName={cx(styles.popoverPanel)}
+                        button={ApplyBtn}
                       >
-                        <Text size="m" component="div">
-                          {!!approveText?.title && (
-                            <h4>
-                              <b>{approveText?.title}</b>
-                            </h4>
-                          )}
-                          <Text
-                            size="s"
-                            color="subdued"
-                            className={styles.approveText}
-                          >
-                            {approveText?.text}
+                        <div
+                          className={styles.popover}
+                          data-testid="approve-popover"
+                        >
+                          <Text size="m" component="div">
+                            {!!approveText?.title && (
+                              <h4>
+                                <b>{approveText?.title}</b>
+                              </h4>
+                            )}
+                            <Text
+                              size="s"
+                              color="subdued"
+                              className={styles.approveText}
+                            >
+                              {approveText?.text}
+                            </Text>
                           </Text>
-                        </Text>
-                        <div className={styles.popoverFooter}>
-                          <DestructiveButton
-                            aria-label="Save"
-                            className={cx(styles.btn, styles.saveBtn)}
-                            disabled={isDisabledApply()}
-                            onClick={handleFormSubmit}
-                            data-testid="save-btn"
-                          >
-                            Save
-                          </DestructiveButton>
+                          <div className={styles.popoverFooter}>
+                            <DestructiveButton
+                              aria-label="Save"
+                              className={cx(styles.btn, styles.saveBtn)}
+                              disabled={isDisabledApply()}
+                              onClick={handleFormSubmit}
+                              data-testid="save-btn"
+                            >
+                              Save
+                            </DestructiveButton>
+                          </div>
                         </div>
-                      </div>
-                    </RiPopover>
+                      </RiPopover>
+                    </ActionsWrapper>
                   )}
                 </ActionsContainer>
               </form>
