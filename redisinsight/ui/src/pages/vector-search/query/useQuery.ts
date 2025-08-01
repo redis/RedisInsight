@@ -1,5 +1,6 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
 import { Nullable, scrollIntoView } from 'uiSrc/utils'
 import { CodeButtonParams } from 'uiSrc/constants'
 import { RunQueryMode, ResultsMode } from 'uiSrc/slices/interfaces'
@@ -10,10 +11,13 @@ import {
   clearVectorSearchResultsAction,
   changeVectorSearchResultsMode,
   changeVectorSearchActiveRunQueryMode,
+  fetchVectorSearchHistoryAction,
+  resetVectorSearchHistoryItems,
 } from 'uiSrc/slices/vector-search/query'
 
 const useQuery = () => {
   const dispatch = useDispatch()
+  const { instanceId } = useParams<{ instanceId: string }>()
   const scrollDivRef = useRef<HTMLDivElement>(null)
 
   const {
@@ -26,6 +30,14 @@ const useQuery = () => {
   } = useSelector(vectorSearchQuerySelector)
 
   const [query, setQuery] = useState('')
+
+  useEffect(() => {
+    dispatch(fetchVectorSearchHistoryAction(instanceId))
+
+    return () => {
+      dispatch(resetVectorSearchHistoryItems())
+    }
+  }, [])
 
   const handleSubmit = useCallback(
     (
