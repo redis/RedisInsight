@@ -14,6 +14,7 @@ export interface Props {
   activeResultsMode: ResultsMode
   scrollDivRef: React.Ref<HTMLDivElement>
   noResultsPlaceholder?: React.ReactNode
+  hideFields?: string[]
   onQueryReRun: (
     query: string,
     commandId?: Nullable<string>,
