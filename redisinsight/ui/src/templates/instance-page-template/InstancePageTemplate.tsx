@@ -102,6 +102,7 @@ const InstancePageTemplate = (props: Props) => {
     <>
       <InstanceHeader />
       <AppNavigation actions={actions} onChange={() => setActions(null)} />
+      <Spacer size="m" />
       <ResizableContainer
         ref={ref}
         direction="vertical"
