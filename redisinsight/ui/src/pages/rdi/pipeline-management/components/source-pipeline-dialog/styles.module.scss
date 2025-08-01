@@ -8,12 +8,6 @@
   fill: var(--inputPlaceholderColor) !important;
 }
 
-.title {
-  text-align: center;
-  margin: 24px 0;
-  font-size: 28px;
-}
-
 .text {
   color: var(--euiColorPrimaryText);
   font: normal normal normal 14px/17px Graphik, sans-serif !important;
@@ -21,8 +15,8 @@
 }
 
 .actions {
+  margin-top: 2rem;
   display: flex;
-  margin-bottom: 32px;
 
   .action {
     display: flex;

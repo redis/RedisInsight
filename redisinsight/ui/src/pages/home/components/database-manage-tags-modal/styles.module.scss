@@ -1,19 +1,10 @@
 .manageTagsModal {
   position: fixed !important;
-  right: 0;
-  top: 0;
+  right: 0 !important;
   width: 50% !important;
   height: 100% !important;
   max-height: 100% !important;
   overflow-y: auto;
-  z-index: 1000 !important;
-
-  :global {
-    .euiModalFooter {
-      padding: 0 !important;
-      background-color: inherit;
-    }
-  }
 
   .header {
     padding-left: 14px;
@@ -29,7 +20,7 @@
   }
 
   .addTagButton {
-    margin-left: 32px;
+    margin-left: 12px;
     color: var(--euiColorPrimary) !important;
   }
 
@@ -44,7 +35,7 @@
   }
 
   .tagForm {
-    margin: 0px 32px;
+    margin: 20px 12px;
     border: 1px solid var(--separatorColor);
     border-radius: 8px;
 

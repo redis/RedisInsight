@@ -6,6 +6,24 @@ import DatabasePanelDialog, { Props } from './DatabasePanelDialog'
 
 const mockedProps = mock<Props>()
 
+jest.mock('uiSrc/components/base/display', () => {
+  const actual = jest.requireActual('uiSrc/components/base/display')
+
+  return {
+    ...actual,
+    Modal: {
+      ...actual.Modal,
+      Content: {
+        ...actual.Modal.Content,
+        Header: {
+          ...actual.Modal.Content.Header,
+          Title: jest.fn().mockReturnValue(null),
+        },
+      },
+    },
+  }
+})
+
 describe('DatabasePanelDialog', () => {
   it('should render', () => {
     expect(
