@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { isNumber } from 'lodash'
-import { theme } from '@redis-ui/styles'
+import { useTheme } from '@redis-ui/styles'
 import {
   formatLongName,
   getDbIndex,
@@ -72,7 +72,7 @@ const isOneSideMode = (isInsightsOpen: boolean) =>
 
 const BrowserPage = () => {
   const { instanceId } = useParams<{ instanceId: string }>()
-
+  const theme = useTheme()
   const {
     name: connectedInstanceName,
     db = 0,

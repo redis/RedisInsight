@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { theme } from '@redis-ui/styles'
+import { useTheme } from '@redis-ui/styles'
 import InstanceHeader from 'uiSrc/components/instance-header'
 import { ExplorePanelTemplate } from 'uiSrc/templates'
 import BottomGroupComponents from 'uiSrc/components/bottom-group-components/BottomGroupComponents'
@@ -53,6 +53,7 @@ const roundUpSizes = (sizes: number[]) => [
 
 const InstancePageTemplate = (props: Props) => {
   const { children } = props
+  const theme = useTheme()
   const [sizes, setSizes] = useState<number[]>(getDefaultSizes())
 
   const { isShowCli, isShowHelper } = useSelector(cliSettingsSelector)
