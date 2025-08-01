@@ -10,7 +10,7 @@ export type ButtonProps = React.ComponentProps<typeof TextButton> & {
   iconSide?: 'left' | 'right'
   loading?: boolean
   size?: 'small' | 'large' | 'medium'
-  justify?: (typeof justifyValues)[number]
+  justify?: FlexProps['justify']
 }
 export const EmptyButton = ({
   children,
