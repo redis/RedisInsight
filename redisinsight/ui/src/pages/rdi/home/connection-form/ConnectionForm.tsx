@@ -27,6 +27,7 @@ import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { PasswordInput, TextInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { Spacer } from 'uiSrc/components/base/layout'
 import ValidationTooltip from './components/ValidationTooltip'
 
 import styles from './styles.module.scss'
@@ -181,11 +182,12 @@ const ConnectionForm = (props: Props) => {
                   )}
                 </Field>
               </FormField>
+              <Spacer size='s' />
               <FormField
                 label="URL*"
-                additionalText={
-                  <AppendInfo content="The RDI machine servers REST API via port 443. Ensure that Redis Insight can access the RDI host over port 443." />
-                }
+                infoIconProps={{
+                  content: "The RDI machine servers REST API via port 443. Ensure that Redis Insight can access the RDI host over port 443."
+                }}
               >
                 <Field name="url">
                   {({ field }: { field: FieldInputProps<string> }) => (
@@ -200,14 +202,15 @@ const ConnectionForm = (props: Props) => {
                   )}
                 </Field>
               </FormField>
+              <Spacer size='s' />
               <FormField>
                 <Row gap="m">
                   <FlexItem grow={1}>
                     <FormField
                       label="Username"
-                      additionalText={
-                        <AppendInfo content="The RDI REST API authentication is using the RDI Redis username and password." />
-                      }
+                      infoIconProps={{
+                        content: "The RDI REST API authentication is using the RDI Redis username and password."
+                      }}
                     >
                       <Field name="username">
                         {({ field }: { field: FieldInputProps<string> }) => (
@@ -225,12 +228,10 @@ const ConnectionForm = (props: Props) => {
                   </FlexItem>
                   <FlexItem grow={1}>
                     <FormField
-                      label={
-                        <>
-                          Password
-                          <AppendInfo content="The RDI REST API authentication is using the RDI Redis username and password." />
-                        </>
-                      }
+                      infoIconProps={{
+                        content: "The RDI REST API authentication is using the RDI Redis username and password."
+                      }}
+                      label="Password"
                     >
                       <Field name="password">
                         {({
