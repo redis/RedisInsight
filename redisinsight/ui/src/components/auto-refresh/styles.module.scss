@@ -61,10 +61,13 @@
 
     input {
       height: 30px !important;
-      border-radius: 0px !important;
+      border-radius: 0 !important;
       background-color: var(--euiColorLightestShade) !important;
     }
   }
+}
+.popoverWrapperEditing {
+  height: 140px;
 }
 
 .inputContainer {
