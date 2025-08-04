@@ -3,7 +3,7 @@
   align-items: center;
   flex-direction: column;
 
-  max-width: 624px;
+  width: 100%;
 }
 
 .title {
@@ -15,6 +15,7 @@
   font-size: 14px !important;
   margin-top: 34px;
   margin-bottom: 34px;
+  padding: 0 34px;
 }
 
 .icon {

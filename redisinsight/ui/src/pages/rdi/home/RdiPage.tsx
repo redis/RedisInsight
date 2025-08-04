@@ -19,6 +19,7 @@ import HomePageTemplate from 'uiSrc/templates/home-page-template'
 import { setTitle } from 'uiSrc/utils'
 import { Page, PageBody } from 'uiSrc/components/base/layout/page'
 import { RIResizeObserver } from 'uiSrc/components/base/utils'
+import { Card } from 'uiSrc/components/base/layout'
 import { Rdi as RdiInstanceResponse } from 'apiSrc/modules/rdi/models/rdi'
 import EmptyMessage from './empty-message/EmptyMessage'
 import ConnectionForm from './connection-form/ConnectionFormWrapper'
@@ -26,7 +27,6 @@ import RdiHeader from './header/RdiHeader'
 import RdiInstancesListWrapper from './instance-list/RdiInstancesListWrapper'
 
 import styles from './styles.module.scss'
-import { Card } from 'uiSrc/components/base/layout'
 
 const RdiPage = () => {
   const [width, setWidth] = useState(0)
@@ -122,11 +122,11 @@ const RdiPage = () => {
 
   const InstanceList = () =>
     !data.length ? (
-      <Card>
+      <>
         {!loading && !loadingChanging && (
           <EmptyMessage onAddInstanceClick={handleOpenConnectionForm} />
         )}
-      </Card>
+      </>
     ) : (
       <RIResizeObserver onResize={onResize}>
         {(resizeRef) => (

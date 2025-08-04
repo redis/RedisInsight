@@ -1,12 +1,11 @@
 import React from 'react'
-import { EuiFieldText } from '@elastic/eui'
 import { FormikProps } from 'formik'
 
 import { Nullable } from 'uiSrc/utils'
 import { SECURITY_FIELD } from 'uiSrc/constants'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 import { ColorText, Text } from 'uiSrc/components/base/text'
-import { PasswordInput } from 'uiSrc/components/base/inputs'
+import { PasswordInput, TextInput } from 'uiSrc/components/base/inputs'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import styles from '../../styles.module.scss'
@@ -40,14 +39,13 @@ const SentinelMasterDatabase = (props: Props) => {
       <Row gap="m" responsive className={flexGroupClassName}>
         <FlexItem grow className={flexItemClassName}>
           <FormField label="Username">
-            <EuiFieldText
+            <TextInput
               name="sentinelMasterUsername"
               id="sentinelMasterUsername"
-              fullWidth
               maxLength={200}
               placeholder="Enter Username"
               value={formik.values.sentinelMasterUsername ?? ''}
-              onChange={formik.handleChange}
+              onChange={(value) => formik.setFieldValue('sentinelMasterUsername', value)}
               data-testid="sentinel-mater-username"
             />
           </FormField>

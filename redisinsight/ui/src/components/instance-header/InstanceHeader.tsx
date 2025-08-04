@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import cx from 'classnames'
+import { useTheme } from '@redis-ui/styles'
 
 import { FeatureFlags, Pages } from 'uiSrc/constants'
 import { selectOnFocus } from 'uiSrc/utils'
@@ -54,6 +55,7 @@ export interface Props {
 }
 
 const InstanceHeader = ({ onChangeDbIndex }: Props) => {
+  const theme = useTheme()
   const {
     name = '',
     host = '',
@@ -130,7 +132,12 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
   }
 
   return (
-    <div className={cx(styles.container)}>
+    <div
+      className={cx(styles.container)}
+      style={{
+        borderBottom: theme.components.sideBar.collapsed.borderRight,
+      }}
+    >
       <Row
         responsive
         align="center"

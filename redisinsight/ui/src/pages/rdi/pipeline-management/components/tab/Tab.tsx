@@ -46,9 +46,10 @@ const Tab = (props: IProps) => {
 
           {!isValid && (
             <RiIcon
-              type="IndicatorXIcon"
+              type="InfoIcon"
               className="rdi-pipeline-nav__error"
               data-testid="rdi-nav-config-error"
+              color="danger500"
             />
           )}
 

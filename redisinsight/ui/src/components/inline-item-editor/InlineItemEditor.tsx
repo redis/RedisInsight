@@ -1,5 +1,6 @@
 import React, { ChangeEvent, Ref, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
+
 import { useTheme } from '@redis-ui/styles'
 import { EuiFieldText } from '@elastic/eui'
 
@@ -11,6 +12,7 @@ import { FocusTrap } from 'uiSrc/components/base/utils/FocusTrap'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 import { DestructiveButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
+
 import {
   ActionsContainer,
   ActionsWrapper,
@@ -18,6 +20,9 @@ import {
   DeclineButton,
   IIEContainer,
 } from './InlineItemEditor.styles'
+
+import { TextInput } from 'uiSrc/components/base/inputs'
+
 
 import styles from './styles.module.scss'
 
@@ -116,8 +121,8 @@ const InlineItemEditor = (props: Props) => {
     }, 100)
   }, [])
 
-  const handleChangeValue = (e: ChangeEvent<HTMLInputElement>) => {
-    let newValue = e.target.value
+  const handleChangeValue = (value: string) => {
+    let newValue = value
 
     if (validation) {
       newValue = validation(newValue)
@@ -209,21 +214,19 @@ const InlineItemEditor = (props: Props) => {
                 <FlexItem grow>
                   {children || (
                     <>
-                      <EuiFieldText
+                      <TextInput
                         name={fieldName}
                         id={fieldName}
                         className={cx(styles.field, textFiledClassName)}
                         maxLength={maxLength || undefined}
                         placeholder={placeholder}
                         value={value}
-                        fullWidth={false}
-                        compressed
                         onChange={handleChangeValue}
-                        isLoading={isLoading}
-                        isInvalid={isInvalid}
+                        loading={isLoading}
+                        valid={!isInvalid}
                         data-testid="inline-item-editor"
                         autoComplete={autoComplete}
-                        inputRef={inputRef}
+                        ref={inputRef}
                       />
                       {expandable && (
                         <p className={styles.keyHiddenText}>{value}</p>

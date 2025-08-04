@@ -1,9 +1,14 @@
 import React from 'react'
+import styled from 'styled-components'
 import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 
 import { IRdiConnectionResult } from 'uiSrc/slices/interfaces'
 
 import styles from './styles.module.scss'
+
+const PreWrapText = styled.div<React.HTMLAttributes<HTMLDivElement>>`
+  white-space: pre-wrap;
+`
 
 export interface Props {
   data: Array<IRdiConnectionResult>
@@ -32,9 +37,9 @@ const TestConnectionsTable = (props: Props) => {
           original: { target, error },
         },
       }) => (
-        <div data-testid={`table-result-${target}`}>
+        <PreWrapText data-testid={`table-result-${target}`}>
           {error || 'Successful'}
-        </div>
+        </PreWrapText>
       ),
     },
   ]

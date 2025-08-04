@@ -1,7 +1,5 @@
-import { EuiFieldText } from '@elastic/eui'
 import cx from 'classnames'
 import React, {
-  ChangeEvent,
   FormEvent,
   useEffect,
   useRef,
@@ -23,6 +21,7 @@ import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 import { CheckThinIcon } from 'uiSrc/components/base/icons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { TextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 
 const HIDE_BADGE_TIMER = 3000
@@ -88,14 +87,13 @@ const PublishMessage = () => {
         <Row align="center">
           <FlexItem className={styles.channelWrapper} grow>
             <FormField>
-              <EuiFieldText
-                fullWidth
+              <TextInput
                 name="channel"
                 id="channel"
                 placeholder="Enter Channel Name"
                 value={channel}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setChannel(e.target.value)
+                onChange={value =>
+                  setChannel(value)
                 }
                 autoComplete="off"
                 data-testid="field-channel-name"
@@ -105,8 +103,7 @@ const PublishMessage = () => {
           <FlexItem className={styles.messageWrapper} grow>
             <FormField>
               <>
-                <EuiFieldText
-                  fullWidth
+                <TextInput
                   className={cx(styles.messageField, {
                     [styles.showBadge]: isShowBadge,
                   })}
@@ -114,8 +111,8 @@ const PublishMessage = () => {
                   id="message"
                   placeholder="Enter Message"
                   value={message}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    setMessage(e.target.value)
+                  onChange={value =>
+                    setMessage(value)
                   }
                   autoComplete="off"
                   data-testid="field-message"
