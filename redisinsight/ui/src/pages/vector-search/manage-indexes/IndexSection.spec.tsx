@@ -21,7 +21,10 @@ import notificationsReducer from 'uiSrc/slices/app/notifications'
 import appInfoReducer from 'uiSrc/slices/app/info'
 import redisearchReducer from 'uiSrc/slices/browser/redisearch'
 import instancesReducer from 'uiSrc/slices/instances/instances'
-import { indexInfoFactory } from 'uiSrc/mocks/factories/redisearch/IndexInfo.factory'
+import {
+  indexInfoAttributeFactory,
+  indexInfoFactory,
+} from 'uiSrc/mocks/factories/redisearch/IndexInfo.factory'
 import { IndexInfoDto } from 'apiSrc/modules/browser/redisearch/dto'
 import { IndexSection, IndexSectionProps } from './IndexSection'
 
@@ -165,7 +168,13 @@ describe('IndexSection', () => {
   })
 
   it('should display index attributes when expanded', async () => {
-    const mockIndexInfo = indexInfoFactory.build()
+    const mockIndexAttribute = indexInfoAttributeFactory.build(
+      {},
+      { transient: { includeWeight: true, includeNoIndex: true } },
+    )
+    const mockIndexInfo = indexInfoFactory.build({
+      attributes: [mockIndexAttribute],
+    })
     const props: IndexSectionProps = {
       index: mockIndexInfo.index_name,
     }
@@ -188,15 +197,17 @@ describe('IndexSection', () => {
     await userEvent.click(indexName)
 
     // Verify the index attributes are displayed
+    const identifier = await screen.findByText('Identifier')
     const attribute = await screen.findByText('Attribute')
     const type = await screen.findByText('Type')
     const weight = await screen.findByText('Weight')
-    const separator = await screen.findByText('Separator')
+    const noindex = await screen.findByText('Noindex')
 
+    expect(identifier).toBeInTheDocument()
     expect(attribute).toBeInTheDocument()
     expect(type).toBeInTheDocument()
     expect(weight).toBeInTheDocument()
-    expect(separator).toBeInTheDocument()
+    expect(noindex).toBeInTheDocument()
 
     // Verify that data rows are rendered
     const regularRows = container.querySelectorAll(
@@ -205,16 +216,21 @@ describe('IndexSection', () => {
     expect(regularRows.length).toBe(mockIndexInfo.attributes.length)
 
     // Verify their values as well
-    const mockAttribute = mockIndexInfo.attributes[0]
-    const attributeValue = await screen.findByText(mockAttribute.attribute)
-    const typeValue = await screen.findAllByText(mockAttribute.type)
-    const weightValue = await screen.findAllByText(mockAttribute.WEIGHT!)
-    const separatorValue = await screen.findAllByText(mockAttribute.SEPARATOR!)
+    const identifierValue = await screen.findByText(
+      mockIndexAttribute.identifier,
+    )
+    const attributeValue = await screen.findByText(mockIndexAttribute.attribute)
+    const typeValue = await screen.findAllByText(mockIndexAttribute.type)
+    const weightValue = await screen.findAllByText(mockIndexAttribute.WEIGHT!)
+    const noIndexValue = await screen.findAllByTestId(
+      'index-attributes-list--noindex-icon',
+    )
 
+    expect(identifierValue).toBeInTheDocument()
     expect(attributeValue).toBeInTheDocument()
     expect(typeValue[0]).toBeInTheDocument()
     expect(weightValue[0]).toBeInTheDocument()
-    expect(separatorValue[0]).toBeInTheDocument()
+    expect(noIndexValue[0]).toBeInTheDocument()
   })
 
   describe('delete index', () => {
