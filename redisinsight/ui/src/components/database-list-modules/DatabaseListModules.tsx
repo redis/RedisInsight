@@ -10,8 +10,8 @@ import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import { DEFAULT_MODULES_INFO, ModuleInfo } from 'uiSrc/constants/modules'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { ColorText } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiTooltip } from 'uiSrc/components'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
 
 import styles from './styles.module.scss'
@@ -70,7 +70,6 @@ const DatabaseListModules = React.memo((props: Props) => {
       }
     }),
   )
-
   // set count of hidden modules
   if (maxViewModules && newModules.length > maxViewModules + 1) {
     newModules.length = maxViewModules
@@ -83,25 +82,30 @@ const DatabaseListModules = React.memo((props: Props) => {
   }
 
   const Content = sortModules(mainContent).map(
-    ({ icon, content, abbreviation = '' }) => (
-      <div className={styles.tooltipItem} key={content || abbreviation}>
-        {!!icon && <RiIcon type={icon} style={{ marginRight: 10 }} />}
-        {!icon && (
-          <ColorText
-            className={cx(styles.icon, styles.abbr)}
-            style={{ marginRight: 10 }}
-          >
-            {abbreviation}
-          </ColorText>
-        )}
-        {!!content && (
-          <ColorText className={cx(styles.tooltipItemText)}>
-            {content}
-          </ColorText>
-        )}
-        <br />
-      </div>
-    ),
+    ({ icon, content, abbreviation = '' }) => {
+      const hasIcon = !!icon
+      const hasContent = !!content
+      const hasAbbreviation = !!abbreviation
+      return (
+        <div className={styles.tooltipItem} key={content || abbreviation}>
+          {hasIcon && <RiIcon type={icon} />}
+          {!hasIcon && hasAbbreviation && (
+            <ColorText
+              className={cx(styles.icon, styles.abbr)}
+              style={{ marginRight: 10 }}
+            >
+              {abbreviation}
+            </ColorText>
+          )}
+          {hasContent && (
+            <ColorText className={cx(styles.tooltipItemText)}>
+              {content}
+            </ColorText>
+          )}
+          <br />
+        </div>
+      )
+    },
   )
 
   const Module = (

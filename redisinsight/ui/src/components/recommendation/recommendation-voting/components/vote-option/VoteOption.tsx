@@ -106,7 +106,7 @@ const VoteOption = (props: Props) => {
         >
           <IconButton
             disabled={!isAnalyticsEnable}
-            icon={iconType[voteOption] ?? 'default'}
+            icon={iconType[voteOption] ?? 'LikeIcon'}
             className={cx('vote__btn', { selected: vote === voteOption })}
             aria-label="vote useful"
             data-testid={`${voteOption}-vote-btn`}
