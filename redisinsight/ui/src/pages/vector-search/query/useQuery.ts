@@ -256,6 +256,10 @@ const useQuery = () => {
     [query, activeRunQueryMode, resultsMode, instanceId],
   )
 
+  const onSubmit = useCallback(() => {
+    handleSubmit()
+  }, [handleSubmit])
+
   const scrollResults = (inline: ScrollLogicalPosition = 'start') => {
     requestAnimationFrame(() => {
       scrollIntoView(scrollDivRef?.current, {
@@ -364,7 +368,7 @@ const useQuery = () => {
     activeMode: activeRunQueryMode,
     resultsMode,
     scrollDivRef,
-    onSubmit: handleSubmit,
+    onSubmit,
     onQueryOpen: handleQueryOpen,
     onQueryDelete: handleQueryDelete,
     onAllQueriesDelete: handleAllQueriesDelete,
