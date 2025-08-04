@@ -26,11 +26,10 @@ export const VectorSearchScreenHeader = styled(FlexItem)`
 
 export const VectorSearchScreenContent = styled(FlexItem)`
   padding: ${({ theme }) => theme.core.space.space300};
-  border-color: ${({ theme }) => theme.color.dusk200};
   gap: ${({ theme }) => theme.core.space.space550};
-  border-left: 1px solid;
-  border-right: 1px solid;
-  border-bottom: 1px solid;
+  border: 1px solid;
+  border-top: none;
+  border-color: ${({ theme }) => theme.color.dusk200};
 `
 
 export const VectorSearchScreenFooter = styled(FlexItem)`
