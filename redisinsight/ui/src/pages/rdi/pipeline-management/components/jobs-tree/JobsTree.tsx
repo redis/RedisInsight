@@ -159,7 +159,7 @@ const JobsTree = (props: IProps) => {
   const handleToggleAccordion = (isOpen: boolean) =>
     setAccordionState(isOpen ? 'open' : 'closed')
 
-  const jobName = (name: string, isValid: boolean = true) => (
+  const jobName = (name: string, isValid: boolean = true, validationErrors: string[] = []) => (
     <>
       <FlexItem
         grow
@@ -170,11 +170,27 @@ const JobsTree = (props: IProps) => {
         {name}
 
         {!isValid && (
-          <RiIcon
-            type="IndicatorXIcon"
-            className="rdi-pipeline-nav__error"
-            data-testid="rdi-pipeline-nav__error"
-          />
+          <RiTooltip
+            position="right"
+            content={
+              validationErrors?.length && (
+                <Text size="s">
+                  <ul>
+                    {validationErrors.map((err) => (
+                      <li>{err}</li>
+                    ))}
+                  </ul>
+                </Text>
+              )
+            }
+          >
+            <RiIcon
+              type="InfoIcon"
+              className="rdi-pipeline-nav__error"
+              data-testid="rdi-pipeline-nav__error"
+              color="danger500"
+            />
+          </RiTooltip>
         )}
       </FlexItem>
       <FlexItem
@@ -263,6 +279,9 @@ const JobsTree = (props: IProps) => {
       ? jobsValidationErrors[jobName].length === 0
       : true
 
+  const getJobValidionErrors = (jobName: string) =>
+    jobsValidationErrors[jobName] || []
+
   const renderJobsList = (jobs: IRdiPipelineJob[]) =>
     jobs.map(({ name }, idx) => (
       <Row
@@ -300,7 +319,7 @@ const JobsTree = (props: IProps) => {
           </FlexItem>
           {currentJobName === name
             ? jobNameEditor(name, idx)
-            : jobName(name, isJobValid(name))}
+            : jobName(name, isJobValid(name), getJobValidionErrors(name) )}
         </Row>
       </Row>
     ))

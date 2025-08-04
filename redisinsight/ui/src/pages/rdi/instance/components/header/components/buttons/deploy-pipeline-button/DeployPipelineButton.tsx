@@ -36,7 +36,8 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const [resetPipeline, setResetPipeline] = useState(false)
 
-  const { config, jobs, resetChecked } = useSelector(rdiPipelineSelector)
+  const { config, jobs, resetChecked, isPipelineValid } =
+    useSelector(rdiPipelineSelector)
 
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
   const dispatch = useDispatch()
@@ -127,7 +128,14 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
           </PrimaryButton>
         }
       >
-        <Title size="XS">Are you sure you want to deploy the pipeline?</Title>
+        {isPipelineValid ? (
+          <Title size="XS">Are you sure you want to deploy the pipeline?</Title>
+        ) : (
+          <Text color="danger" size="M">
+           <RiIcon type="InfoIcon" size="M" color="danger500" />
+           Your RDI pipeline contains errors. Are you sure you want to continue?
+          </Text>
+        )}
         <Spacer size="s" />
         <Text size="s">
           When deployed, this local configuration will overwrite any existing
