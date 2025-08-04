@@ -5,7 +5,6 @@ import cx from 'classnames'
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { isNumber } from 'lodash'
-
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
 import { PageNames } from 'uiSrc/constants'
 import ConfirmationPopover from 'uiSrc/pages/rdi/components/confirmation-popover/ConfirmationPopover'
@@ -68,6 +67,8 @@ const validateJobName = (
 
   return undefined
 }
+
+
 
 const JobsTree = (props: IProps) => {
   const { onSelectedTab, path, rdiInstanceId, changes = {} } = props
@@ -254,6 +255,11 @@ const JobsTree = (props: IProps) => {
         textFiledClassName={styles.input}
         viewChildrenMode={false}
         disableEmpty
+        styles={{
+          actionsContainer: {
+            width: '64px'
+          }
+        }}
       />
     </FlexItem>
   )

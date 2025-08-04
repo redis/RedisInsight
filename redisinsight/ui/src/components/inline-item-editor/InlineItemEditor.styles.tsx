@@ -5,6 +5,7 @@ import { Theme } from 'uiSrc/components/base/theme/types'
 import { Props } from 'uiSrc/components/inline-item-editor/InlineItemEditor'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CancelSlimIcon, CheckThinIcon } from 'uiSrc/components/base/icons'
+import { TextInput } from '../base/inputs'
 
 interface ContainerProps {
   className?: string
@@ -48,6 +49,8 @@ export const IIEContainer = React.forwardRef<
 type ActionsContainerProps = React.ComponentProps<typeof Row> & {
   $position?: Props['controlsPosition']
   $design?: Props['controlsDesign']
+  $width?: string
+  $height?: string
 }
 
 export const DeclineButton = styled(IconButton).attrs({
@@ -144,11 +147,28 @@ export const ActionsContainer = styled(Row)<ActionsContainerProps>`
   position: absolute;
   background-color: ${({ theme }: { theme: Theme }) =>
     theme.semantic.color.background.primary200};
-  width: 80px;
-  height: 33px;
+  width: ${({ $width }) => $width || '80px'};
+  height: ${({ $height }) => $height || '33px'};
   padding: ${({ theme }: { theme: Theme }) => theme.core.space.space050};
 
   z-index: 3;
   ${({ $position }) => positions[$position || 'inside']}
   ${({ $design }) => designs[$design || 'default']}
+`
+
+
+export const StyledTextInput = styled(TextInput)<{
+  $width?: string
+  $height?: string
+}>`
+  width: ${({ $width }) => $width || 'auto'};
+  height: ${({ $height }) => $height || 'auto'};
+  max-height: ${({ $height }) => $height || 'auto'};
+  min-height: ${({ $height }) => $height || 'auto'};
+
+  // Target the actual input element inside
+  input {
+    width: 100%;
+    height: ${({ $height }) => $height || 'auto'};  
+  }  
 `

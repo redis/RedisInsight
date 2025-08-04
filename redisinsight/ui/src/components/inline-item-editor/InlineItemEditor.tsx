@@ -1,8 +1,7 @@
-import React, { ChangeEvent, Ref, useEffect, useRef, useState } from 'react'
+import React, { Ref, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 
 import { useTheme } from '@redis-ui/styles'
-import { EuiFieldText } from '@elastic/eui'
 
 import * as keys from 'uiSrc/constants/keys'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
@@ -19,9 +18,8 @@ import {
   ApplyButton,
   DeclineButton,
   IIEContainer,
+  StyledTextInput,
 } from './InlineItemEditor.styles'
-
-import { TextInput } from 'uiSrc/components/base/inputs'
 
 
 import styles from './styles.module.scss'
@@ -61,6 +59,20 @@ export interface Props {
   approveByValidation?: (value: string) => boolean
   approveText?: { title: string; text: string }
   textFiledClassName?: string
+  styles?: {
+    inputContainer?: {
+      width?: string,
+      height?: string,
+    }
+    input?: {
+      width?: string,
+      height?: string,
+    }
+    actionsContainer?: {
+      width?: string
+      height?: string
+    }
+  }
 }
 
 const InlineItemEditor = (props: Props) => {
@@ -94,6 +106,7 @@ const InlineItemEditor = (props: Props) => {
     approveByValidation,
     approveText,
     textFiledClassName,
+    styles: customStyles,
   } = props
   const containerEl: Ref<HTMLDivElement> = useRef(null)
   const [value, setValue] = useState<string>(initialValue)
@@ -210,11 +223,16 @@ const InlineItemEditor = (props: Props) => {
                 onSubmit={(e: unknown) =>
                   handleFormSubmit(e as React.MouseEvent<HTMLElement>)
                 }
+                style={{
+                  ...customStyles?.inputContainer
+                }}
               >
                 <FlexItem grow>
                   {children || (
                     <>
-                      <TextInput
+                      <StyledTextInput
+                        $width={customStyles?.input?.width}
+                        $height={customStyles?.input?.height}
                         name={fieldName}
                         id={fieldName}
                         className={cx(styles.field, textFiledClassName)}
@@ -239,6 +257,8 @@ const InlineItemEditor = (props: Props) => {
                   gap="m"
                   $position={controlsPosition}
                   $design={controlsDesign}
+                  $width={customStyles?.actionsContainer?.width}
+                  $height={customStyles?.actionsContainer?.height}
                   grow={false}
                   className={cx(
                     'inlineItemEditor__controls',
