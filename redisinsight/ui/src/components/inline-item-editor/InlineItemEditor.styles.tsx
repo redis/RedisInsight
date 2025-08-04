@@ -5,6 +5,7 @@ import { Theme } from 'uiSrc/components/base/theme/types'
 import { Props } from 'uiSrc/components/inline-item-editor/InlineItemEditor'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CancelSlimIcon, CheckThinIcon } from 'uiSrc/components/base/icons'
+import { TextInput } from '../base/inputs'
 
 interface ContainerProps {
   className?: string
@@ -153,4 +154,21 @@ export const ActionsContainer = styled(Row)<ActionsContainerProps>`
   z-index: 3;
   ${({ $position }) => positions[$position || 'inside']}
   ${({ $design }) => designs[$design || 'default']}
+`
+
+
+export const StyledTextInput = styled(TextInput)<{
+  $width?: string
+  $height?: string
+}>`
+  width: ${({ $width }) => $width || 'auto'};
+  height: ${({ $height }) => $height || 'auto'};
+  max-height: ${({ $height }) => $height || 'auto'};
+  min-height: ${({ $height }) => $height || 'auto'};
+
+  // Target the actual input element inside
+  input {
+    width: 100%;
+    height: ${({ $height }) => $height || 'auto'};  
+  }  
 `

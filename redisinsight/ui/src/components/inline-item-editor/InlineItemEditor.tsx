@@ -11,7 +11,6 @@ import { FocusTrap } from 'uiSrc/components/base/utils/FocusTrap'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 import { DestructiveButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
-import { TextInput } from 'uiSrc/components/base/inputs'
 
 import {
   ActionsContainer,
@@ -19,6 +18,7 @@ import {
   ApplyButton,
   DeclineButton,
   IIEContainer,
+  StyledTextInput,
 } from './InlineItemEditor.styles'
 
 
@@ -60,6 +60,14 @@ export interface Props {
   approveText?: { title: string; text: string }
   textFiledClassName?: string
   styles?: {
+    inputContainer?: {
+      width?: string,
+      height?: string,
+    }
+    input?: {
+      width?: string,
+      height?: string,
+    }
     actionsContainer?: {
       width?: string
       height?: string
@@ -215,11 +223,16 @@ const InlineItemEditor = (props: Props) => {
                 onSubmit={(e: unknown) =>
                   handleFormSubmit(e as React.MouseEvent<HTMLElement>)
                 }
+                style={{
+                  ...customStyles?.inputContainer
+                }}
               >
                 <FlexItem grow>
                   {children || (
                     <>
-                      <TextInput
+                      <StyledTextInput
+                        $width={customStyles?.input?.width}
+                        $height={customStyles?.input?.height}
                         name={fieldName}
                         id={fieldName}
                         className={cx(styles.field, textFiledClassName)}
