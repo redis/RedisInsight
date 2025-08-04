@@ -13,12 +13,15 @@ import { mergeRedisCommandsSpecs } from 'uiSrc/utils/transformers/redisCommands'
 import SEARCH_COMMANDS_SPEC from 'uiSrc/pages/workbench/data/supported_commands.json'
 import styles from './Query/styles.module.scss'
 import Query from './Query'
+import { Props as BaseQueryProps } from './Query/Query'
+
+type QueryProps = Pick<BaseQueryProps, 'useLiteActions'>
 
 export interface Props {
   query: string
   activeMode: RunQueryMode
   resultsMode?: ResultsMode
-  queryProps?: any
+  queryProps?: QueryProps
   setQuery: (script: string) => void
   setQueryEl: Function
   onKeyDown?: (e: React.KeyboardEvent, script: string) => void
