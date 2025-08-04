@@ -98,10 +98,10 @@ const RejsonScalar = (props: JSONScalarProps) => {
                   <InlineItemEditor
                     styles={{
                       inputContainer: {
-                        height: `24px`,
+                        height: `25px`,
                       },
                       input: {
-                        height: `24px !important`
+                        height: `25px`
                       },
                       actionsContainer: {
                         height: `24px`
