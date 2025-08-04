@@ -71,6 +71,7 @@ const DeleteAction = <T extends { id: string; name?: string }>(
       </div>
       <div className={styles.popoverFooter}>
         <DestructiveButton
+          size="small"
           icon={DeleteIcon}
           onClick={() => {
             closePopover()
