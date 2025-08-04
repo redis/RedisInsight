@@ -143,9 +143,7 @@ const useQuery = () => {
     if (restCommands.length > 0) {
       const nextCommands = restCommands[0]
       if (nextCommands?.length) {
-        setTimeout(() => {
-          handleSubmit(nextCommands.join('\n'), undefined, executeParams)
-        }, 100)
+        handleSubmit(nextCommands.join('\n'), undefined, executeParams)
       }
     }
 
