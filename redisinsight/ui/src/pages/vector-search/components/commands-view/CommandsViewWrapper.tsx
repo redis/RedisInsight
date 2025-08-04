@@ -32,6 +32,4 @@ export interface Props {
 
 const CommandsViewWrapper = (props: Props) => <CommandsView {...props} />
 
-export default React.memo(CommandsViewWrapper
-
-)
+export default React.memo(CommandsViewWrapper)
