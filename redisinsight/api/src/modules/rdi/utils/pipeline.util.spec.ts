@@ -40,16 +40,9 @@ describe('convertApiDataToRdiJobs', () => {
     const jobs = [job1, job2] as unknown as [Record<string, any>];
     const result = convertApiDataToRdiJobs(jobs);
     expect(result).toEqual({
-      [job1.name]: { ...job1, name: undefined },
-      [job2.name]: { ...job2, name: undefined },
+      [job1.name]: job1,
+      [job2.name]: job2,
     });
-  });
-
-  it('should remove the name property from each job', () => {
-    const jobs = [job1, job2] as unknown as [Record<string, any>];
-    const result = convertApiDataToRdiJobs(jobs);
-    expect(result.job1.name).toBeUndefined();
-    expect(result.job2.name).toBeUndefined();
   });
 
   it('should ignore jobs without a name property', () => {
@@ -63,7 +56,7 @@ describe('convertApiDataToRdiJobs', () => {
     const jobs = [jobWithoutName, job2] as unknown as [Record<string, any>];
     const result = convertApiDataToRdiJobs(jobs);
     expect(result).toEqual({
-      [job2.name]: { ...job2, name: undefined },
+      [job2.name]: job2,
     });
   });
 });
@@ -88,8 +81,8 @@ describe('convertApiDataToRdiPipeline', () => {
         processors: undefined,
       },
       jobs: {
-        [job1.name]: { ...job1, name: undefined },
-        [job2.name]: { ...job2, name: undefined },
+        [job1.name]: job1,
+        [job2.name]: job2,
       },
     });
 
@@ -142,8 +135,8 @@ describe('convertApiDataToRdiPipeline', () => {
         processors: undefined,
       },
       jobs: {
-        job1: { ...job1, name: undefined },
-        job2: { ...job2, name: undefined },
+        job1: job1,
+        job2: job2,
       },
     });
 

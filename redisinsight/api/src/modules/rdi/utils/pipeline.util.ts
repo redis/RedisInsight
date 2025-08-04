@@ -10,10 +10,7 @@ export const convertApiDataToRdiJobs = (
   if (jobs && isArray(jobs)) {
     jobs.forEach((job) => {
       if (job?.name) {
-        jobsMap[job.name] = {
-          ...job,
-          name: undefined, // do not show name in the config area
-        };
+        jobsMap[job.name] = job;
       }
     });
   }
