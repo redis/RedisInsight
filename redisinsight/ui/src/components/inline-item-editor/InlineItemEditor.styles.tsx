@@ -48,6 +48,8 @@ export const IIEContainer = React.forwardRef<
 type ActionsContainerProps = React.ComponentProps<typeof Row> & {
   $position?: Props['controlsPosition']
   $design?: Props['controlsDesign']
+  $width?: string
+  $height?: string
 }
 
 export const DeclineButton = styled(IconButton).attrs({
@@ -144,8 +146,8 @@ export const ActionsContainer = styled(Row)<ActionsContainerProps>`
   position: absolute;
   background-color: ${({ theme }: { theme: Theme }) =>
     theme.semantic.color.background.primary200};
-  width: 80px;
-  height: 33px;
+  width: ${({ $width }) => $width || '80px'};
+  height: ${({ $height }) => $height || '33px'};
   padding: ${({ theme }: { theme: Theme }) => theme.core.space.space050};
 
   z-index: 3;

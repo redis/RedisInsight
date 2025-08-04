@@ -1,8 +1,7 @@
-import React, { ChangeEvent, Ref, useEffect, useRef, useState } from 'react'
+import React, { Ref, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 
 import { useTheme } from '@redis-ui/styles'
-import { EuiFieldText } from '@elastic/eui'
 
 import * as keys from 'uiSrc/constants/keys'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
@@ -12,6 +11,7 @@ import { FocusTrap } from 'uiSrc/components/base/utils/FocusTrap'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 import { DestructiveButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
+import { TextInput } from 'uiSrc/components/base/inputs'
 
 import {
   ActionsContainer,
@@ -20,8 +20,6 @@ import {
   DeclineButton,
   IIEContainer,
 } from './InlineItemEditor.styles'
-
-import { TextInput } from 'uiSrc/components/base/inputs'
 
 
 import styles from './styles.module.scss'
@@ -61,6 +59,12 @@ export interface Props {
   approveByValidation?: (value: string) => boolean
   approveText?: { title: string; text: string }
   textFiledClassName?: string
+  styles?: {
+    actionsContainer?: {
+      width?: string
+      height?: string
+    }
+  }
 }
 
 const InlineItemEditor = (props: Props) => {
@@ -94,6 +98,7 @@ const InlineItemEditor = (props: Props) => {
     approveByValidation,
     approveText,
     textFiledClassName,
+    styles: customStyles,
   } = props
   const containerEl: Ref<HTMLDivElement> = useRef(null)
   const [value, setValue] = useState<string>(initialValue)
@@ -239,6 +244,8 @@ const InlineItemEditor = (props: Props) => {
                   gap="m"
                   $position={controlsPosition}
                   $design={controlsDesign}
+                  $width={customStyles?.actionsContainer?.width}
+                  $height={customStyles?.actionsContainer?.height}
                   grow={false}
                   className={cx(
                     'inlineItemEditor__controls',
