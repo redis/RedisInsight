@@ -619,6 +619,7 @@ const DatabasesListWrapper = (props: Props) => {
                   <div className="controlsPopoverContent">
                     <div>
                       <EmptyButton
+                        justify="start"
                         icon={EditIcon}
                         className="editInstanceBtn"
                         aria-label="Edit instance"
