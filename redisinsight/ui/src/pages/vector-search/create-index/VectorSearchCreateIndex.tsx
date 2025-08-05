@@ -78,6 +78,9 @@ export const VectorSearchCreateIndex = ({
       case 1:
         collectStartStepTelemetry()
         break
+      case 2:
+        collectIndexInfoStepTelemetry()
+        break
       default:
         // No telemetry for other steps
         break
@@ -89,6 +92,18 @@ export const VectorSearchCreateIndex = ({
       event: TelemetryEvent.VECTOR_SEARCH_ONBOARDING_TRIGGERED,
       eventData: {
         databaseId: instanceId,
+      },
+    })
+  }
+
+  const collectIndexInfoStepTelemetry = (): void => {
+    sendEventTelemetry({
+      event: TelemetryEvent.VECTOR_SEARCH_ONBOARDING_PROCEED_TO_INDEX_INFO,
+      eventData: {
+        databaseId: instanceId,
+        indexType: createSearchIndexParameters.searchIndexType,
+        sampleDataType: createSearchIndexParameters.sampleDataType,
+        dataContent: createSearchIndexParameters.dataContent,
       },
     })
   }
