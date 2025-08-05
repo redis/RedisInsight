@@ -94,11 +94,11 @@ const useQuery = () => {
   )
 
   const handleApiError = useCallback((error: unknown) => {
-    setItems((prevItems) => {
-      const message =
-        error instanceof Error ? error.message : 'Failed to execute command'
+    const message =
+      error instanceof Error ? error.message : 'Failed to execute command'
 
-      return prevItems.map((item) => {
+    setItems((prevItems) =>
+      prevItems.map((item) => {
         if (item.loading) {
           return {
             ...item,
@@ -109,8 +109,8 @@ const useQuery = () => {
           }
         }
         return item
-      })
-    })
+      }),
+    )
     setProcessing(false)
   }, [])
 
