@@ -56,7 +56,15 @@ const Notifications = () => {
 
   const showSuccessToasts = (data: IMessage[]) =>
     data.forEach(({ id = '', title = '', message = '', className, group }) => {
-      riToast(
+      const handleClose = () => {
+        onSubmitNotification(id, group)
+        removeToast(id)
+      }
+      if (toastIdsRef.current.has(id)) {
+        removeToast(id)
+        return
+      }
+      const toastId = riToast(
         {
           className,
           message: title,
@@ -66,15 +74,13 @@ const Notifications = () => {
             primary: {
               closes: true,
               label: 'Ok',
-              onClick: () => {
-                onSubmitNotification(id, group)
-                removeToast(id)
-              },
+              onClick: handleClose,
             },
           },
         },
         { variant: riToast.Variant.Success },
       )
+      toastIdsRef.current.set(id, toastId)
     })
 
   const showErrorsToasts = (errors: IError[]) =>
@@ -87,6 +93,10 @@ const Notifications = () => {
         title = DEFAULT_ERROR_TITLE,
         additionalInfo,
       }) => {
+        if (toastIdsRef.current.has(id)) {
+          removeToast(id)
+          return
+        }
         let toastId: ReturnType<typeof riToast>
         if (ApiEncryptionErrors.includes(name)) {
           toastId = errorMessages.ENCRYPTION(() => removeToast(id), instanceId)
@@ -117,8 +127,12 @@ const Notifications = () => {
   const showInfiniteToasts = (data: InfiniteMessage[]) =>
     data.forEach((message: InfiniteMessage) => {
       const { id, Inner, className = '' } = message
-
-      riToast(
+      if (toastIdsRef.current.has(id)) {
+        removeToast(id)
+        dispatch(removeInfiniteNotification(id))
+        return
+      }
+      const toastId = riToast(
         {
           className: cx(styles.infiniteMessage, className),
           description: Inner,
@@ -153,6 +167,7 @@ const Notifications = () => {
         },
         { variant: riToast.Variant.Notice, autoClose: ONE_HOUR },
       )
+      toastIdsRef.current.set(id, toastId)
     })
 
   useEffect(() => {
