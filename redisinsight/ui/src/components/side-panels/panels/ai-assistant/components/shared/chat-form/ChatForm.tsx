@@ -7,8 +7,8 @@ import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { SendIcon } from 'uiSrc/components/base/icons'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiTextArea } from 'uiSrc/components/base/inputs'
 import * as keys from 'uiSrc/constants/keys'
 import styles from './styles.module.scss'
@@ -99,12 +99,12 @@ const ChatForm = (props: Props) => {
               <div>
                 {validation.title && (
                   <>
-                    <Title size="XS">{validation.title}</Title>
+                    <RiTitle size="XS">{validation.title}</RiTitle>
                     <RiSpacer size="s" />
                   </>
                 )}
                 {validation.content && (
-                  <Text size="xs">{validation.content}</Text>
+                  <RiText size="xs">{validation.content}</RiText>
                 )}
               </div>
               {validation.icon}
@@ -165,10 +165,10 @@ const ChatForm = (props: Props) => {
           </RiPopover>
         </form>
       </RiTooltip>
-      <Text textAlign="center" size="xs" className={styles.agreementText}>
+      <RiText textAlign="center" size="xs" className={styles.agreementText}>
         Verify the accuracy of any information provided by Redis Copilot before
         using it
-      </Text>
+      </RiText>
     </div>
   )
 }

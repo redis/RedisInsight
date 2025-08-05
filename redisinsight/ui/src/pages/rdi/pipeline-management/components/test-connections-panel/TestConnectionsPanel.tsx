@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import TestConnectionsLog from 'uiSrc/pages/rdi/pipeline-management/components/test-connections-log'
 import { rdiTestConnectionsSelector } from 'uiSrc/slices/rdi/testConnections'
 
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiCol, RiFlexItem } from 'uiSrc/components/base/layout'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
@@ -22,7 +22,7 @@ const TestConnectionPanelWrapper = ({
 }: TestConnectionPanelWrapperProps) => (
   <div className={styles.panel} data-testid="test-connection-panel">
     <div className={styles.header}>
-      <Text className={styles.title}>Connection test results</Text>
+      <RiText className={styles.title}>Connection test results</RiText>
       <RiIconButton
         icon={CancelSlimIcon}
         aria-label="close test connections panel"
@@ -48,7 +48,7 @@ const TestConnectionsPanel = (props: Props) => {
       <TestConnectionPanelWrapper onClose={onClose}>
         <RiCol className={styles.content} centered>
           <RiFlexItem>
-            <Text className={styles.loaderText}>Loading results...</Text>
+            <RiText className={styles.loaderText}>Loading results...</RiText>
           </RiFlexItem>
           <RiFlexItem>
             <RiLoader
@@ -66,9 +66,9 @@ const TestConnectionsPanel = (props: Props) => {
   if (!results) {
     return (
       <TestConnectionPanelWrapper onClose={onClose}>
-        <Text className={styles.subtitle}>
+        <RiText className={styles.subtitle}>
           No results found. Please try again.
-        </Text>
+        </RiText>
       </TestConnectionPanelWrapper>
     )
   }
@@ -76,21 +76,21 @@ const TestConnectionsPanel = (props: Props) => {
   return (
     <TestConnectionPanelWrapper onClose={onClose}>
       <div className={styles.content}>
-        <Text
+        <RiText
           className={styles.subtitle}
           style={{ marginTop: 16, marginBottom: 10 }}
         >
           Source connections
-        </Text>
+        </RiText>
 
         <TestConnectionsLog data={results.source} />
 
-        <Text
+        <RiText
           className={styles.subtitle}
           style={{ marginTop: 16, marginBottom: 10 }}
         >
           Target connections
-        </Text>
+        </RiText>
 
         <TestConnectionsLog data={results.target} />
       </div>

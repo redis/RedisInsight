@@ -32,7 +32,7 @@ import {
 import { localStorageService } from 'uiSrc/services'
 import { BrowserStorageItem } from 'uiSrc/constants'
 
-import { OutsideClickDetector } from 'uiSrc/components/base/utils'
+import { RiOutsideClickDetector } from 'uiSrc/components/base/utils'
 import {
   RiEmptyButton,
   RiIconButton,
@@ -40,7 +40,7 @@ import {
 } from 'uiSrc/components/base/forms'
 import { RefreshIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 export const CREATE = 'create'
@@ -101,14 +101,14 @@ const RediSearchIndexesList = (props: Props) => {
     return {
       value: JSON.stringify(index),
       inputDisplay: (
-        <Text component="span" data-test-subj={`mode-option-type-${value}`}>
+        <RiText component="span" data-test-subj={`mode-option-type-${value}`}>
           {value}
-        </Text>
+        </RiText>
       ),
       dropdownDisplay: (
-        <Text component="span" data-test-subj={`mode-option-type-${value}`}>
+        <RiText component="span" data-test-subj={`mode-option-type-${value}`}>
           {value}
-        </Text>
+        </RiText>
       ),
     }
   })
@@ -117,13 +117,13 @@ const RediSearchIndexesList = (props: Props) => {
     value: JSON.stringify(CREATE),
     inputDisplay: <span>CREATE</span>,
     dropdownDisplay: (
-      <Text
+      <RiText
         size="M"
         className={cx(styles.createIndexBtn)}
         data-testid="create-index-btn"
       >
         Create Index
-      </Text>
+      </RiText>
     ),
   })
 
@@ -176,7 +176,7 @@ const RediSearchIndexesList = (props: Props) => {
   }
 
   return (
-    <OutsideClickDetector onOutsideClick={() => setIsSelectOpen(false)}>
+    <RiOutsideClickDetector onOutsideClick={() => setIsSelectOpen(false)}>
       <div className={cx(styles.container)}>
         <div className={styles.select}>
           <RiSelect
@@ -218,7 +218,7 @@ const RediSearchIndexesList = (props: Props) => {
           </RiTooltip>
         </div>
       </div>
-    </OutsideClickDetector>
+    </RiOutsideClickDetector>
   )
 }
 

@@ -36,7 +36,7 @@ import {
 import { openTutorialByPath } from 'uiSrc/slices/panels/sidePanels'
 import { RiFlexItem, RiRow, RiCard } from 'uiSrc/components/base/layout'
 import { RiIconButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
 import { RiLink } from 'uiSrc/components/base/display'
 
@@ -193,7 +193,7 @@ const Recommendation = ({
   }
 
   const recommendationContent = () => (
-    <Text>
+    <RiText>
       {!isUndefined(tutorialId) && (
         <RiSecondaryButton
           filled
@@ -233,7 +233,7 @@ const Recommendation = ({
           />
         </div>
       </FeatureFlagComponent>
-    </Text>
+    </RiText>
   )
 
   const renderButtonContent = (

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiSrc/components/base/text'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiSecondaryButton } from 'uiSrc/components/base/forms'
 
@@ -9,7 +9,7 @@ export interface Props {
 }
 // TODO: use i18n file for texts
 const DefaultErrorContent = ({ text }: Props) => (
-  <ColorText color="danger">{text}</ColorText>
+  <RiColorText color="danger">{text}</RiColorText>
 )
 
 export default DefaultErrorContent

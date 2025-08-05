@@ -32,7 +32,7 @@ import {
 } from 'uiSrc/components/base/layout'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CopyIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { ColorText, Text } from 'uiSrc/components/base/text'
+import { RiColorText, RiText } from 'uiSrc/components/base/text'
 import RedisCloudDatabasesResult from './RedisCloudDatabasesResult'
 
 import styles from './styles.module.scss'
@@ -87,7 +87,7 @@ const RedisCloudDatabasesResultPage = () => {
               anchorClassName="truncateText"
               content={formatLongName(name)}
             >
-              <Text>{cellContent}</Text>
+              <RiText>{cellContent}</RiText>
             </RiTooltip>
           </div>
         )
@@ -119,7 +119,7 @@ const RedisCloudDatabasesResultPage = () => {
               anchorClassName="truncateText"
               content={formatLongName(name)}
             >
-              <Text>{cellContent}</Text>
+              <RiText>{cellContent}</RiText>
             </RiTooltip>
           </div>
         )
@@ -155,7 +155,7 @@ const RedisCloudDatabasesResultPage = () => {
         const text = publicEndpoint
         return (
           <div className="public_endpoint">
-            <Text className="copyPublicEndpointText">{text}</Text>
+            <RiText className="copyPublicEndpointText">{text}</RiText>
             <RiTooltip
               position="right"
               content="Copy"
@@ -211,7 +211,7 @@ const RedisCloudDatabasesResultPage = () => {
         return (
           <>
             {statusAdded === AddRedisDatabaseStatus.Success ? (
-              <Text>{messageAdded}</Text>
+              <RiText>{messageAdded}</RiText>
             ) : (
               <RiTooltip
                 position="left"
@@ -225,12 +225,12 @@ const RedisCloudDatabasesResultPage = () => {
                   </RiFlexItem>
 
                   <RiFlexItem>
-                    <ColorText
+                    <RiColorText
                       color="danger"
                       className="flex-row euiTextAlign--center"
                     >
                       Error
-                    </ColorText>
+                    </RiColorText>
                   </RiFlexItem>
                 </RiRow>
               </RiTooltip>

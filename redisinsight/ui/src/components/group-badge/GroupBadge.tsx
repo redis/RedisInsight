@@ -6,7 +6,7 @@ import { getGroupTypeDisplay } from 'uiSrc/utils'
 
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 
 import styles from './styles.module.scss'
@@ -42,13 +42,13 @@ const GroupBadge = ({
       data-testid={`badge-${type}_${name}`}
     >
       {!compressed && (
-        <Text
+        <RiText
           style={{ color: 'var(--euiTextSubduedColorHover)' }}
           className="text-uppercase"
           size="xs"
         >
           {getGroupTypeDisplay(type)}
-        </Text>
+        </RiText>
       )}
       {onDelete && (
         <RiIconButton

@@ -12,7 +12,7 @@ import {
   FilePickerWrapper,
 } from 'uiSrc/components/base/forms/file-picker/styles'
 import { CommonProps } from 'uiSrc/components/base/theme/types'
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiSrc/components/base/text'
 
 export type RiFilePickerProps = CommonProps &
   Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> & {
@@ -140,7 +140,7 @@ export const RiFilePicker = ({
           size="small"
           onClick={removeFiles}
         >
-          <ColorText color="default">Remove</ColorText>
+          <RiColorText color="default">Remove</RiColorText>
         </FilePickerClearButton>
       )
     }

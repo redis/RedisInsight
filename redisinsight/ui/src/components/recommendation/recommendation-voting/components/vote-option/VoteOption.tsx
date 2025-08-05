@@ -13,7 +13,7 @@ import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { Nullable } from 'uiSrc/utils'
 
 import { RiCol, RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { CancelSlimIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { RiIconButton, RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { RiLink } from 'uiSrc/components/base/display'
@@ -126,12 +126,12 @@ const VoteOption = (props: Props) => {
               </RiFlexItem>
               <RiFlexItem grow>
                 <div>
-                  <Text className={styles.text} data-testid="common-text">
+                  <RiText className={styles.text} data-testid="common-text">
                     Thank you for the feedback.
-                  </Text>
-                  <Text className={styles.text} data-testid="custom-text">
+                  </RiText>
+                  <RiText className={styles.text} data-testid="custom-text">
                     {getVotedText(voteOption)}
-                  </Text>
+                  </RiText>
                 </div>
               </RiFlexItem>
               <RiFlexItem>

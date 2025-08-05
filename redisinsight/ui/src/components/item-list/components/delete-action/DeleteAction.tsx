@@ -7,7 +7,7 @@ import {
 } from 'uiSrc/components/base/forms'
 import { DeleteIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components'
 import styles from '../styles.module.scss'
 
@@ -53,9 +53,9 @@ const DeleteAction = <T extends { id: string; name?: string }>(
       panelPaddingSize="l"
       data-testid="delete-popover"
     >
-      <Text size="m" className={styles.popoverSubTitle}>
+      <RiText size="m" className={styles.popoverSubTitle}>
         {subTitle}
-      </Text>
+      </RiText>
       <div className={styles.boxSection}>
         {selection.map((select) => (
           <RiRow key={select.id} gap="s" className={styles.nameList}>

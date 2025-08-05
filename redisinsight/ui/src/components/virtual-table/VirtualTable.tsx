@@ -18,7 +18,7 @@ import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 
 import { isEqualBuffers, Maybe, Nullable } from 'uiSrc/utils'
 
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { RIResizeObserver } from 'uiSrc/components/base/utils'
 import { RiProgressBarLoader } from 'uiSrc/components/base/display'
@@ -383,14 +383,14 @@ const VirtualTable = (props: IProps) => {
           className={styles.tableRowCell}
           style={{ justifyContent: column.alignment, whiteSpace: 'normal' }}
         >
-          <Text color="subdued" style={{ maxWidth: '100%' }}>
+          <RiText color="subdued" style={{ maxWidth: '100%' }}>
             <div
               style={{ display: 'flex' }}
               className={column.truncateText ? 'truncateText' : ''}
             >
               {cellData}
             </div>
-          </Text>
+          </RiText>
         </div>
       </CellMeasurer>
     )
@@ -436,9 +436,9 @@ const VirtualTable = (props: IProps) => {
               data-testid="score-button"
               style={{ justifyContent: column.alignment }}
             >
-              <Text size="m" className={cellClass}>
+              <RiText size="m" className={cellClass}>
                 <span>{column.label}</span>
-              </Text>
+              </RiText>
             </button>
           </div>
         )}
@@ -454,9 +454,9 @@ const VirtualTable = (props: IProps) => {
                 flex: '1',
               }}
             >
-              <Text size="m" className={cellClass}>
+              <RiText size="m" className={cellClass}>
                 <span>{column.label}</span>
-              </Text>
+              </RiText>
             </div>
             {column.isSearchable && searchRenderer(column)}
           </div>
@@ -499,9 +499,9 @@ const VirtualTable = (props: IProps) => {
     <>
       {noItemsMessage && (
         <div className={styles.placeholder}>
-          <Text textAlign="center" color="subdued" size="m">
+          <RiText textAlign="center" color="subdued" size="m">
             <div>{loading ? 'loading...' : noItemsMessage}</div>
-          </Text>
+          </RiText>
         </div>
       )}
     </>

@@ -24,7 +24,7 @@ import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/In
 
 import { RiIconButton, RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { InfoIcon, CopyIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { ColorText, Text } from 'uiSrc/components/base/text'
+import { RiColorText, RiText } from 'uiSrc/components/base/text'
 import { ColumnDefinition } from 'uiSrc/components/base/layout'
 import { RiLoader } from 'uiSrc/components/base/display'
 import SentinelDatabasesResult from './components'
@@ -121,14 +121,14 @@ const SentinelDatabasesResultPage = () => {
         <div data-testid={`status_${name}_${status}`}>
           {loading && <RiLoader />}
           {!loading && status === AddRedisDatabaseStatus.Success && (
-            <Text>{message}</Text>
+            <RiText>{message}</RiText>
           )}
           {!loading && status !== AddRedisDatabaseStatus.Success && (
             <RiTooltip position="right" title="Error" content={message}>
-              <ColorText color="danger" style={{ cursor: 'pointer' }}>
+              <RiColorText color="danger" style={{ cursor: 'pointer' }}>
                 Error&nbsp;
                 <RiIcon type="ToastDangerIcon" color="danger600" />
-              </ColorText>
+              </RiColorText>
             </RiTooltip>
           )}
         </div>
@@ -188,7 +188,7 @@ const SentinelDatabasesResultPage = () => {
         const text = `${host}:${port}`
         return (
           <div className="host_port">
-            <Text className="copyHostPortText">{text}</Text>
+            <RiText className="copyHostPortText">{text}</RiText>
             <RiTooltip
               position="right"
               content="Copy"

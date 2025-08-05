@@ -21,9 +21,9 @@ import {
 import { FormatedDate, RiTooltip } from 'uiSrc/components'
 import { DEFAULT_DELIMITER } from 'uiSrc/constants'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { HideFor } from 'uiSrc/components/base/utils/ShowHide'
+import { RiHideFor } from 'uiSrc/components/base/utils'
 import { RiPrimaryButton, RiSelect } from 'uiSrc/components/base/forms'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { ShortDatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
 import { AnalysisProgress } from 'apiSrc/modules/database-analysis/models/analysis-progress'
 
@@ -94,13 +94,13 @@ const Header = (props: Props) => {
         {!!items.length && (
           <RiFlexItem>
             <RiRow align="center" wrap>
-              <HideFor sizes={['xs', 's']}>
+              <RiHideFor sizes={['xs', 's']}>
                 <RiFlexItem>
-                  <Text className={styles.text} size="s">
+                  <RiText className={styles.text} size="s">
                     Report generated on:
-                  </Text>
+                  </RiText>
                 </RiFlexItem>
-              </HideFor>
+              </RiHideFor>
               <RiFlexItem grow>
                 <HeaderSelect
                   options={analysisOptions}
@@ -114,7 +114,7 @@ const Header = (props: Props) => {
               </RiFlexItem>
               {!!progress && (
                 <RiFlexItem>
-                  <Text
+                  <RiText
                     className={cx(
                       styles.progress,
                       styles.text,
@@ -123,7 +123,7 @@ const Header = (props: Props) => {
                     size="s"
                     data-testid="bulk-delete-summary"
                   >
-                    <Text
+                    <RiText
                       component="span"
                       color={
                         progress.total === progress.processed
@@ -139,11 +139,11 @@ const Header = (props: Props) => {
                         progress.total,
                         progress.processed,
                       )}
-                    </Text>
+                    </RiText>
                     {` (${numberWithSpaces(progress.processed)}`}/
                     {numberWithSpaces(progress.total)}
                     {' keys) '}
-                  </Text>
+                  </RiText>
                 </RiFlexItem>
               )}
             </RiRow>

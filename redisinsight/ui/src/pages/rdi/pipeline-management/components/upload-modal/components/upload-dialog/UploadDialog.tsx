@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import ImportFileModal from 'uiSrc/components/import-file-modal'
 
 import { RiIcon } from 'uiSrc/components/base/icons'
@@ -55,9 +55,9 @@ const UploadDialog = ({
       }
       submitResults={
         <div className={styles.result} data-testid="result-succeeded">
-          <Text color="subdued">
+          <RiText color="subdued">
             A new pipeline has been successfully uploaded.
-          </Text>
+          </RiText>
         </div>
       }
       loading={loading}
@@ -65,14 +65,14 @@ const UploadDialog = ({
       warning={
         showWarning ? (
           <div className={styles.warning} data-testid="input-file-warning">
-            <Text size="s" color="subdued">
+            <RiText size="s" color="subdued">
               <RiIcon
                 type="ToastDangerIcon"
                 className={styles.alertIcon}
                 size="m"
               />
               {warningMessage}
-            </Text>
+            </RiText>
           </div>
         ) : null
       }

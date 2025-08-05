@@ -15,7 +15,7 @@ import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
 import { RiCol } from 'uiSrc/components/base/layout'
 import { RiTooltip, OnboardingTour } from 'uiSrc/components'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons'
 
 import DeleteTutorialButton from '../DeleteTutorialButton'
@@ -125,7 +125,7 @@ const Group = (props: Props) => {
       defaultOpen={initialIsOpen}
       open={forceState === 'open' || isGroupOpen}
       label={
-        <Text className="group-header" size="m">
+        <RiText className="group-header" size="m">
           {isShowFolder && (
             <RiIcon
               type={isGroupOpen ? 'KnowledgeBaseIcon' : 'FolderIcon'}
@@ -133,7 +133,7 @@ const Group = (props: Props) => {
             />
           )}
           {label}
-        </Text>
+        </RiText>
       }
       onOpenChange={handleOpen}
       style={{

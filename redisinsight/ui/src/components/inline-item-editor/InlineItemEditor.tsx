@@ -6,11 +6,11 @@ import { useTheme } from '@redis-ui/styles'
 import * as keys from 'uiSrc/constants/keys'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { RiFlexItem } from 'uiSrc/components/base/layout'
-import { WindowEvent } from 'uiSrc/components/base/utils/WindowEvent'
-import { FocusTrap } from 'uiSrc/components/base/utils/FocusTrap'
-import { OutsideClickDetector } from 'uiSrc/components/base/utils'
+import { RiWindowEvent } from 'uiSrc/components/base/utils/RiWindowEvent'
+import { RiFocusTrap } from 'uiSrc/components/base/utils/RiFocusTrap'
+import { RiOutsideClickDetector } from 'uiSrc/components/base/utils'
 import { RiDestructiveButton } from 'uiSrc/components/base/forms'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 
 import {
   ActionsContainer,
@@ -213,10 +213,10 @@ const InlineItemEditor = (props: Props) => {
       {viewChildrenMode ? (
         children
       ) : (
-        <OutsideClickDetector onOutsideClick={handleClickOutside}>
+        <RiOutsideClickDetector onOutsideClick={handleClickOutside}>
           <IIEContainer ref={containerEl}>
-            <WindowEvent event="keydown" handler={handleOnEsc} />
-            <FocusTrap disabled={disableFocusTrap}>
+            <RiWindowEvent event="keydown" handler={handleOnEsc} />
+            <RiFocusTrap disabled={disableFocusTrap}>
               <form
                 className="relative"
                 onSubmit={(e: unknown) =>
@@ -292,20 +292,20 @@ const InlineItemEditor = (props: Props) => {
                           className={styles.popover}
                           data-testid="approve-popover"
                         >
-                          <Text size="m" component="div">
+                          <RiText size="m" component="div">
                             {!!approveText?.title && (
                               <h4>
                                 <b>{approveText?.title}</b>
                               </h4>
                             )}
-                            <Text
+                            <RiText
                               size="s"
                               color="subdued"
                               className={styles.approveText}
                             >
                               {approveText?.text}
-                            </Text>
-                          </Text>
+                            </RiText>
+                          </RiText>
                           <div className={styles.popoverFooter}>
                             <RiDestructiveButton
                               aria-label="Save"
@@ -323,9 +323,9 @@ const InlineItemEditor = (props: Props) => {
                   )}
                 </ActionsContainer>
               </form>
-            </FocusTrap>
+            </RiFocusTrap>
           </IIEContainer>
-        </OutsideClickDetector>
+        </RiOutsideClickDetector>
       )}
     </>
   )

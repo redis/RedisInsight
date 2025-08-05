@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import LoadSampleData from 'uiSrc/pages/browser/components/load-sample-data'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiLink } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
@@ -23,13 +23,13 @@ const NoIndexesInitialMessage = (props: Props) => {
 
   return (
     <div data-testid="no-indexes-chat-message">
-      <Text size="xs">Hi!</Text>
-      <Text size="xs">
+      <RiText size="xs">Hi!</RiText>
+      <RiText size="xs">
         I am here to help you get started with data querying. I noticed that you
         have no indexes created.
-      </Text>
+      </RiText>
       <RiSpacer />
-      <Text size="xs">
+      <RiText size="xs">
         Would you like to load the sample data and indexes (from this{' '}
         <RiLink
           color="subdued"
@@ -40,7 +40,7 @@ const NoIndexesInitialMessage = (props: Props) => {
           tutorial
         </RiLink>
         ) to see what Redis Copilot can help you do?
-      </Text>
+      </RiText>
       <RiSpacer />
       <LoadSampleData
         anchorClassName={styles.anchorClassName}

@@ -1,6 +1,6 @@
 import React from 'react'
 import cx from 'classnames'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiLoader } from 'uiSrc/components/base/display'
 
 import { RiIcon } from 'uiSrc/components/base/icons'
@@ -34,15 +34,15 @@ const Tab = (props: IProps) => {
       className={cx(styles.wrapper, className, { [styles.active]: isSelected })}
       data-testid={testID}
     >
-      <Text className="rdi-pipeline-nav__title" size="m">
+      <RiText className="rdi-pipeline-nav__title" size="m">
         {title}
-      </Text>
+      </RiText>
       {fileName ? (
         <div className="rdi-pipeline-nav__file">
           <RiIcon type="ContractsIcon" className="rdi-pipeline-nav__fileIcon" />
-          <Text className={cx('rdi-pipeline-nav__text', { invalid: !isValid })}>
+          <RiText className={cx('rdi-pipeline-nav__text', { invalid: !isValid })}>
             {fileName}
-          </Text>
+          </RiText>
 
           {!isValid && (
             <RiIcon

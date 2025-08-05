@@ -26,7 +26,7 @@ import {
   RiSelect,
 } from 'uiSrc/components/base/forms'
 import { InfoIcon } from 'uiSrc/components/base/icons'
-import { HealthText, Text } from 'uiSrc/components/base/text'
+import { RiHealthText, RiText } from 'uiSrc/components/base/text'
 import { RiLink } from 'uiSrc/components/base/display'
 import { RiPopover } from 'uiSrc/components/base'
 import { RiTextInput } from 'uiSrc/components/base/inputs'
@@ -46,13 +46,13 @@ const keyTypeOptions = KEY_TYPE_OPTIONS.map((item) => {
   return {
     value,
     inputDisplay: (
-      <HealthText
+      <RiHealthText
         color={color}
         style={{ lineHeight: 'inherit' }}
         data-test-subj={value}
       >
         {text}
-      </HealthText>
+      </RiHealthText>
     ),
   }
 })
@@ -263,10 +263,10 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
               colorVariable="separatorColor"
               className={styles.controlsDivider}
             />
-            <Text color="subdued">
+            <RiText color="subdued">
               Identifier
               {IdentifierInfo()}
-            </Text>
+            </RiText>
 
             <AddMultipleFields
               items={fields}

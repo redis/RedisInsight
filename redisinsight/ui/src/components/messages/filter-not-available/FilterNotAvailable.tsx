@@ -16,10 +16,10 @@ import { freeInstancesSelector } from 'uiSrc/slices/instances/instances'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { EXTERNAL_LINKS, UTM_CAMPAINGS } from 'uiSrc/constants/links'
 import { FeatureFlags } from 'uiSrc/constants'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import { RiLink } from 'uiSrc/components/base/display'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
@@ -37,21 +37,21 @@ const FilterNotAvailable = ({ onClose }: { onClose?: () => void }) => {
   return (
     <div className={styles.container}>
       <RiIcon type="RedisDbBlueIcon" size="original" />
-      <Title
+      <RiTitle
         size="M"
         className={styles.title}
         data-testid="filter-not-available-title"
       >
         Upgrade your Redis database to version 6 or above
-      </Title>
-      <Text>Filtering by data type is supported in Redis 6 and above.</Text>
+      </RiTitle>
+      <RiText>Filtering by data type is supported in Redis 6 and above.</RiText>
       <RiSpacer size="m" />
       {!!freeInstances.length && (
         <>
-          <Text color="subdued">
+          <RiText color="subdued">
             Use your free trial all-in-one Redis Cloud database to start
             exploring these capabilities.
-          </Text>
+          </RiText>
           <RiSpacer />
           <OAuthConnectFreeDb
             id={freeInstances[0].id}
@@ -62,10 +62,10 @@ const FilterNotAvailable = ({ onClose }: { onClose?: () => void }) => {
       )}
       {!freeInstances.length && (
         <FeatureFlagComponent name={FeatureFlags.cloudAds}>
-          <Text color="subdued">
+          <RiText color="subdued">
             Create a free trial Redis Stack database that supports filtering and
             extends the core capabilities of your Redis.
-          </Text>
+          </RiText>
           <RiSpacer size="l" />
           <div className={styles.linksWrapper}>
             <OAuthSsoHandlerDialog>

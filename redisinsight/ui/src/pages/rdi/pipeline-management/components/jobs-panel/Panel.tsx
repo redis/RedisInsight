@@ -19,7 +19,7 @@ import DryRunJobTransformations from 'uiSrc/pages/rdi/pipeline-management/compon
 import { createAxiosError, formatLongName, yamlToJson } from 'uiSrc/utils'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import {
   RiFlexItem,
   RiRow,
@@ -133,8 +133,8 @@ const DryRunJobPanel = (props: Props) => {
           createAxiosError({
             message: (
               <>
-                <Text>{`${upperFirst(name)} has an invalid structure.`}</Text>
-                <Text>{msg}</Text>
+                <RiText>{`${upperFirst(name)} has an invalid structure.`}</RiText>
+                <RiText>{msg}</RiText>
               </>
             ),
           }),
@@ -162,16 +162,16 @@ const DryRunJobPanel = (props: Props) => {
       label: (
         <RiTooltip
           content={
-            <Text color="subdued" size="s">
+            <RiText color="subdued" size="s">
               Displays the results of the transformations you defined. The data
               is presented in JSON format.
               <br />
               No data is written to the target database.
-            </Text>
+            </RiText>
           }
           data-testid="transformation-output-tooltip"
         >
-          <Text>Transformation output</Text>
+          <RiText>Transformation output</RiText>
         </RiTooltip>
       ),
       content: null,
@@ -181,16 +181,16 @@ const DryRunJobPanel = (props: Props) => {
       label: (
         <RiTooltip
           content={
-            <Text color="subdued" size="s">
+            <RiText color="subdued" size="s">
               Displays the list of Redis commands that will be generated based
               on your job details.
               <br />
               No data is written to the target database.
-            </Text>
+            </RiText>
           }
           data-testid="job-output-tooltip"
         >
-          <Text>Job output</Text>
+          <RiText>Job output</RiText>
         </RiTooltip>
       ),
       content: null,
@@ -209,7 +209,7 @@ const DryRunJobPanel = (props: Props) => {
     >
       <div className={styles.panelInner}>
         <div className={styles.header}>
-          <Text className={styles.title}>Test transformation logic</Text>
+          <RiText className={styles.title}>Test transformation logic</RiText>
           <div>
             <RiIconButton
               icon={isFullScreen ? ShrinkIcon : ExtendIcon}
@@ -228,11 +228,11 @@ const DryRunJobPanel = (props: Props) => {
           </div>
         </div>
         <div className={styles.body}>
-          <Text className={styles.text}>
+          <RiText className={styles.text}>
             Add input data to test the transformation logic.
-          </Text>
+          </RiText>
           <div className={styles.codeLabel}>
-            <Text>Input</Text>
+            <RiText>Input</RiText>
           </div>
           <MonacoJson
             value={input}

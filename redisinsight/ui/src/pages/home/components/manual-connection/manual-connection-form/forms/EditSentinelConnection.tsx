@@ -15,7 +15,7 @@ import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiFormField } from 'uiSrc/components/base/forms'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import { RiTextInput } from 'uiSrc/components/base/inputs'
 import DecompressionAndFormatters from './DecompressionAndFormatters'
 
@@ -52,7 +52,7 @@ const EditSentinelConnection = (props: Props) => {
         variant="fullWidth"
         className="form__divider"
       />
-      <Title size="XS">Database</Title>
+      <RiTitle size="XS">Database</RiTitle>
       <RiSpacer size="s" />
       <SentinelMasterDatabase
         formik={formik}
@@ -64,7 +64,7 @@ const EditSentinelConnection = (props: Props) => {
         variant="fullWidth"
         className="form__divider"
       />
-      <Title size="XS">Sentinel</Title>
+      <RiTitle size="XS">Sentinel</RiTitle>
       <RiSpacer size="s" />
       <DatabaseForm
         formik={formik}
@@ -104,7 +104,7 @@ const EditSentinelConnection = (props: Props) => {
         variant="fullWidth"
         className="form__divider"
       />
-      <Title size="XS">Database</Title>
+      <RiTitle size="XS">Database</RiTitle>
       <RiSpacer size="s" />
       <SentinelMasterDatabase
         formik={formik}
@@ -116,7 +116,7 @@ const EditSentinelConnection = (props: Props) => {
         variant="fullWidth"
         className="form__divider"
       />
-      <Title size="XS">Sentinel</Title>
+      <RiTitle size="XS">Sentinel</RiTitle>
       <RiSpacer size="s" />
       <DatabaseForm
         formik={formik}

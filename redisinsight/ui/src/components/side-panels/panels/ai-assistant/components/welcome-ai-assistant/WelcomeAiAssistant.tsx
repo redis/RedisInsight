@@ -8,8 +8,8 @@ import { setSSOFlow } from 'uiSrc/slices/instances/cloud'
 import { setOAuthCloudSource } from 'uiSrc/slices/oauth/cloud'
 import OAuthForm from 'uiSrc/components/oauth/shared/oauth-form'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 const WelcomeAiAssistant = () => {
@@ -35,20 +35,20 @@ const WelcomeAiAssistant = () => {
         <OAuthForm action={OAuthSocialAction.SignIn} onClick={handleSsoClick}>
           {(form: React.ReactNode) => (
             <>
-              <Text style={{ lineHeight: '1.35' }}>
+              <RiText style={{ lineHeight: '1.35' }}>
                 Welcome to Redis Copilot.
-              </Text>
+              </RiText>
               <RiSpacer size="s" />
-              <Text style={{ lineHeight: '1.35' }}>
+              <RiText style={{ lineHeight: '1.35' }}>
                 Learn about Redis and explore your data, in a conversational
                 manner.
-              </Text>
+              </RiText>
               <RiSpacer size="s" />
-              <Text style={{ lineHeight: '1.35' }}>
+              <RiText style={{ lineHeight: '1.35' }}>
                 Build faster with Redis Copilot.
-              </Text>
+              </RiText>
               <RiSpacer size="xl" />
-              <Title size="S">Sign in to get started.</Title>
+              <RiTitle size="S">Sign in to get started.</RiTitle>
 
               <RiSpacer size="l" />
               {form}

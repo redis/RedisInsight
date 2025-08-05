@@ -13,7 +13,7 @@ import {
 } from 'uiSrc/components/base/forms'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { RiTextInput } from 'uiSrc/components/base/inputs'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -86,9 +86,9 @@ const OAuthSsoForm = ({ onBack, onSubmit }: Props) => {
 
   return (
     <div className={styles.container} data-testid="oauth-container-sso-form">
-      <Title className={styles.title} size="S">
+      <RiTitle className={styles.title} size="S">
         Single Sign-On
-      </Title>
+      </RiTitle>
       <form onSubmit={formik.handleSubmit}>
         <RiRow>
           <RiFlexItem>

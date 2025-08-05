@@ -17,7 +17,7 @@ import {
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { isEqualPipelineFile, Nullable } from 'uiSrc/utils'
 
-import { ColorText, Text } from 'uiSrc/components/base/text'
+import { RiColorText, RiText } from 'uiSrc/components/base/text'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import {
   DeleteIcon,
@@ -202,9 +202,9 @@ const JobsTree = (props: IProps) => {
           <ConfirmationPopover
             title={`Delete ${name}`}
             body={
-              <Text size="s">
+              <RiText size="s">
                 Changes will not be applied until the pipeline is deployed.
-              </Text>
+              </RiText>
             }
             submitBtn={
               <RiDestructiveButton
@@ -322,13 +322,13 @@ const JobsTree = (props: IProps) => {
         <RiFlexItem grow className="truncateText">
           {'Jobs '}
           {!loading && (
-            <ColorText
+            <RiColorText
               className={styles.jobsCount}
               component="span"
               data-testid="rdi-jobs-count"
             >
               {jobs?.length ? `(${jobs?.length})` : ''}
-            </ColorText>
+            </RiColorText>
           )}
           {loading && (
             <RiLoader

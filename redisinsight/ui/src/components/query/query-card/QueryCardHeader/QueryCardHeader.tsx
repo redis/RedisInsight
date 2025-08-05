@@ -4,7 +4,7 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { findIndex, isNumber } from 'lodash'
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiSrc/components/base/text'
 
 import {
   ChevronDownIcon,
@@ -334,7 +334,7 @@ const QueryCardHeader = (props: Props) => {
       <RiRow align="center" gap="l" style={{ width: '100%' }}>
         <RiFlexItem className={styles.titleWrapper} grow>
           <div className="copy-btn-wrapper">
-            <ColorText
+            <RiColorText
               className={styles.title}
               color="subdued"
               component="div"
@@ -346,7 +346,7 @@ const QueryCardHeader = (props: Props) => {
                 db={db}
                 resultsMode={resultsMode}
               />
-            </ColorText>
+            </RiColorText>
             <RiIconButton
               icon={CopyIcon}
               aria-label="Copy query"
@@ -366,16 +366,16 @@ const QueryCardHeader = (props: Props) => {
               data-testid="command-execution-date-time"
             >
               {!!createdAt && (
-                <ColorText className={styles.timeText} component="div">
+                <RiColorText className={styles.timeText} component="div">
                   <FormatedDate date={createdAt} />
-                </ColorText>
+                </RiColorText>
               )}
             </RiFlexItem>
             <RiFlexItem className={styles.summaryTextWrapper}>
               {!!message && !isOpen && (
-                <ColorText className={styles.summaryText} component="div">
+                <RiColorText className={styles.summaryText} component="div">
                   {truncateText(message, 13)}
-                </ColorText>
+                </RiColorText>
               )}
             </RiFlexItem>
             <RiFlexItem
@@ -396,7 +396,7 @@ const QueryCardHeader = (props: Props) => {
                       data-testid="command-execution-time-icon"
                       className={styles.iconExecutingTime}
                     />
-                    <ColorText
+                    <RiColorText
                       className={cx(
                         styles.summaryText,
                         styles.executionTimeValue,
@@ -404,7 +404,7 @@ const QueryCardHeader = (props: Props) => {
                       data-testid="command-execution-time-value"
                     >
                       {getTruncatedExecutionTimeString(executionTime)}
-                    </ColorText>
+                    </RiColorText>
                   </>
                 </RiTooltip>
               )}
@@ -512,28 +512,28 @@ const QueryCardHeader = (props: Props) => {
                   content={
                     <>
                       {isGroupMode(resultsMode) && (
-                        <ColorText
+                        <RiColorText
                           className={cx(styles.mode)}
                           data-testid="group-mode-tooltip"
                         >
                           <RiIcon type="GroupModeIcon" />
-                        </ColorText>
+                        </RiColorText>
                       )}
                       {isSilentMode(resultsMode) && (
-                        <ColorText
+                        <RiColorText
                           className={cx(styles.mode)}
                           data-testid="silent-mode-tooltip"
                         >
                           <RiIcon type="SilentModeIcon" />
-                        </ColorText>
+                        </RiColorText>
                       )}
                       {isRawMode(mode) && (
-                        <ColorText
+                        <RiColorText
                           className={cx(styles.mode)}
                           data-testid="raw-mode-tooltip"
                         >
                           -r
-                        </ColorText>
+                        </RiColorText>
                       )}
                     </>
                   }

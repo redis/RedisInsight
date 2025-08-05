@@ -14,7 +14,7 @@ import {
 } from 'uiSrc/utils'
 
 import { CommandExecutionStatus } from 'uiSrc/slices/interfaces/cli'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import QueryCardCliDefaultResult from '../QueryCardCliDefaultResult'
 import QueryCardCliGroupResult from '../QueryCardCliGroupResult'
@@ -49,11 +49,11 @@ const QueryCardCliResultWrapper = (props: Props) => {
       {!loading && (
         <div data-testid="query-cli-result" className={cx(styles.content)}>
           {isNotStored && (
-            <Text className={styles.alert} data-testid="query-cli-warning">
+            <RiText className={styles.alert} data-testid="query-cli-warning">
               <RiIcon type="ToastDangerIcon" className={styles.alertIcon} />
               The result is too big to be saved. It will be deleted after the
               application is closed.
-            </Text>
+            </RiText>
           )}
           {isGroupResults(resultsMode) && isArray(result[0]?.response) ? (
             <QueryCardCliGroupResult

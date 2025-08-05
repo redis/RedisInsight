@@ -14,8 +14,8 @@ import {
   RiDestructiveButton,
   RiPrimaryButton,
 } from 'uiSrc/components/base/forms'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiLink } from 'uiSrc/components/base/display'
 import { RiPopover } from 'uiSrc/components/base'
 import UserApiKeysTable from './components/user-api-keys-table'
@@ -52,13 +52,13 @@ const CloudSettings = () => {
 
   return (
     <div className={styles.container}>
-      <Title className={styles.title} size="XS">
+      <RiTitle className={styles.title} size="XS">
         API user keys
-      </Title>
+      </RiTitle>
       <RiSpacer size="s" />
       <RiRow gap="m" responsive>
         <RiFlexItem grow>
-          <Text size="s" className={styles.smallText} color="subdued">
+          <RiText size="s" className={styles.smallText} color="subdued">
             The list of API user keys that are stored locally in Redis Insight.{' '}
             <br />
             API user keys grant programmatic access to Redis Cloud. <br />
@@ -71,7 +71,7 @@ const CloudSettings = () => {
               sign in to Redis Cloud
             </RiLink>
             {' and delete them manually.'}
-          </Text>
+          </RiText>
         </RiFlexItem>
         <RiFlexItem grow={false}>
           <RiPopover
@@ -93,7 +93,7 @@ const CloudSettings = () => {
             }
           >
             <div className={styles.popoverDeleteContainer}>
-              <Text size="m" component="div">
+              <RiText size="m" component="div">
                 <h4>All API user keys will be removed from Redis Insight.</h4>
                 {'To delete API keys from Redis Cloud, '}
                 <RiLink
@@ -105,7 +105,7 @@ const CloudSettings = () => {
                   sign in to Redis Cloud
                 </RiLink>
                 {' and delete them manually.'}
-              </Text>
+              </RiText>
               <RiSpacer />
               <div className={styles.popoverFooter}>
                 <RiDestructiveButton

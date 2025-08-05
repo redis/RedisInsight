@@ -10,7 +10,7 @@ import { CloudSuccessResult } from 'uiSrc/slices/interfaces'
 
 import { Maybe } from 'uiSrc/utils'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import {
   EXTERNAL_LINKS,
   UTM_CAMPAINGS,
@@ -20,7 +20,7 @@ import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import { RiLink, RiLoader } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
@@ -50,10 +50,10 @@ export const INFINITE_MESSAGES = {
             <RiLoader className={cx('infiniteMessage__icon', styles.loading)} />
           </RiFlexItem>
           <RiFlexItem grow>
-            <Title className="infiniteMessage__title">Authenticating…</Title>
-            <Text size="xs">
+            <RiTitle className="infiniteMessage__title">Authenticating…</RiTitle>
+            <RiText size="xs">
               This may take several seconds, but it is totally worth it!
-            </Text>
+            </RiText>
           </RiFlexItem>
         </RiRow>
       </div>
@@ -68,7 +68,7 @@ export const INFINITE_MESSAGES = {
             <RiLoader className={cx('infiniteMessage__icon', styles.loading)} />
           </RiFlexItem>
           <RiFlexItem grow>
-            <Title className="infiniteMessage__title">
+            <RiTitle className="infiniteMessage__title">
               <span>
                 {(step === CloudJobStep.Credentials || !step) &&
                   'Processing Cloud API keys…'}
@@ -79,15 +79,15 @@ export const INFINITE_MESSAGES = {
                 {step === CloudJobStep.Import &&
                   'Importing a free trial Cloud database…'}
               </span>
-            </Title>
-            <Text size="xs">
+            </RiTitle>
+            <RiText size="xs">
               This may take several minutes, but it is totally worth it!
-            </Text>
+            </RiText>
             <RiSpacer size="m" />
-            <Text size="xs">
+            <RiText size="xs">
               You can continue working in Redis Insight, and we will notify you
               once done.
-            </Text>
+            </RiText>
           </RiFlexItem>
         </RiRow>
       </div>
@@ -125,13 +125,13 @@ export const INFINITE_MESSAGES = {
               <RiIcon type="ChampagneIcon" size="original" />
             </RiFlexItem>
             <RiFlexItem grow>
-              <Title className="infiniteMessage__title">Congratulations!</Title>
-              <Text size="xs">
+              <RiTitle className="infiniteMessage__title">Congratulations!</RiTitle>
+              <RiText size="xs">
                 {text}
                 <RiSpacer size="s" />
                 <b>Notice:</b> the database will be deleted after 15 days of
                 inactivity.
-              </Text>
+              </RiText>
               {!!details && (
                 <>
                   <RiSpacer size="m" />
@@ -139,30 +139,30 @@ export const INFINITE_MESSAGES = {
                   <RiSpacer size="m" />
                   <RiRow className={styles.detailsRow} justify="between">
                     <RiFlexItem>
-                      <Text size="xs">Plan</Text>
+                      <RiText size="xs">Plan</RiText>
                     </RiFlexItem>
                     <RiFlexItem data-testid="notification-details-plan">
-                      <Text size="xs">Free</Text>
+                      <RiText size="xs">Free</RiText>
                     </RiFlexItem>
                   </RiRow>
                   <RiRow className={styles.detailsRow} justify="between">
                     <RiFlexItem>
-                      <Text size="xs">Cloud Vendor</Text>
+                      <RiText size="xs">Cloud Vendor</RiText>
                     </RiFlexItem>
                     <RiFlexItem
                       className={styles.vendorLabel}
                       data-testid="notification-details-vendor"
                     >
                       {!!vendor?.icon && <RiIcon type={vendor?.icon} />}
-                      <Text size="xs">{vendor?.label}</Text>
+                      <RiText size="xs">{vendor?.label}</RiText>
                     </RiFlexItem>
                   </RiRow>
                   <RiRow className={styles.detailsRow} justify="between">
                     <RiFlexItem>
-                      <Text size="xs">Region</Text>
+                      <RiText size="xs">Region</RiText>
                     </RiFlexItem>
                     <RiFlexItem data-testid="notification-details-region">
-                      <Text size="xs">{details.region}</Text>
+                      <RiText size="xs">{details.region}</RiText>
                     </RiFlexItem>
                   </RiRow>
                 </>
@@ -201,12 +201,12 @@ export const INFINITE_MESSAGES = {
         }}
         data-testid="database-exists-notification"
       >
-        <Title className="infiniteMessage__title">
+        <RiTitle className="infiniteMessage__title">
           You already have a free trial Redis Cloud subscription.
-        </Title>
-        <Text size="xs">
+        </RiTitle>
+        <RiText size="xs">
           Do you want to import your existing database into Redis Insight?
-        </Text>
+        </RiText>
         <RiSpacer size="m" />
         <RiRow justify="between">
           <RiFlexItem>
@@ -245,10 +245,10 @@ export const INFINITE_MESSAGES = {
         }}
         data-testid="database-import-forbidden-notification"
       >
-        <Title className="infiniteMessage__title">
+        <RiTitle className="infiniteMessage__title">
           Unable to import Cloud database.
-        </Title>
-        <Text size="xs">
+        </RiTitle>
+        <RiText size="xs">
           Adding your Redis Cloud database to Redis Insight is disabled due to a
           setting restricting database connection management.
           <RiSpacer size="m" />
@@ -262,7 +262,7 @@ export const INFINITE_MESSAGES = {
             Redis Cloud
           </RiLink>{' '}
           to check your database.
-        </Text>
+        </RiText>
         <RiSpacer size="m" />
         <RiRow justify="end">
           <RiFlexItem>
@@ -291,13 +291,13 @@ export const INFINITE_MESSAGES = {
         }}
         data-testid="subscription-exists-notification"
       >
-        <Title className="infiniteMessage__title">
+        <RiTitle className="infiniteMessage__title">
           Your subscription does not have a free trial Redis Cloud database.
-        </Title>
-        <Text size="xs">
+        </RiTitle>
+        <RiText size="xs">
           Do you want to create a free trial database in your existing
           subscription?
-        </Text>
+        </RiText>
         <RiSpacer size="m" />
         <RiRow justify="between">
           <RiFlexItem>
@@ -332,12 +332,12 @@ export const INFINITE_MESSAGES = {
             <RiLoader className={cx('infiniteMessage__icon', styles.loading)} />
           </RiFlexItem>
           <RiFlexItem grow>
-            <Title className="infiniteMessage__title">
+            <RiTitle className="infiniteMessage__title">
               Connecting to your database
-            </Title>
-            <Text size="xs">
+            </RiTitle>
+            <RiText size="xs">
               This may take several minutes, but it is totally worth it!
-            </Text>
+            </RiText>
           </RiFlexItem>
         </RiRow>
       </div>
@@ -356,10 +356,10 @@ export const INFINITE_MESSAGES = {
         }}
         data-testid="app-update-available-notification"
       >
-        <Title className="infiniteMessage__title">
+        <RiTitle className="infiniteMessage__title">
           New version is now available
-        </Title>
-        <Text size="s">
+        </RiTitle>
+        <RiText size="s">
           <>
             With Redis Insight
             {` ${version} `}
@@ -367,7 +367,7 @@ export const INFINITE_MESSAGES = {
             <br />
             Restart Redis Insight to install updates.
           </>
-        </Text>
+        </RiText>
         <br />
         <RiPrimaryButton
           size="s"
@@ -398,12 +398,12 @@ export const INFINITE_MESSAGES = {
             <RiIcon type="ChampagneIcon" size="original" />
           </RiFlexItem>
           <RiFlexItem grow>
-            <Title className="infiniteMessage__title">Congratulations!</Title>
-            <Text size="xs">
+            <RiTitle className="infiniteMessage__title">Congratulations!</RiTitle>
+            <RiText size="xs">
               Deployment completed successfully!
               <br />
               Check out the pipeline statistics page.
-            </Text>
+            </RiText>
             <RiSpacer size="m" />
             {/* // TODO remove display none when statistics page will be available */}
             <RiRow style={{ display: 'none' }} justify="end" align="center">

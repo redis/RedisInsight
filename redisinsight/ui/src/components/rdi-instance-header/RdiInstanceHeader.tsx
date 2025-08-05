@@ -14,7 +14,7 @@ import { connectedInstanceSelector } from 'uiSrc/slices/rdi/instances'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { isAnyFeatureEnabled } from 'uiSrc/utils/features'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import InstancesNavigationPopover from '../instance-header/components/instances-navigation-popover'
 import styles from './styles.module.scss'
 
@@ -43,7 +43,7 @@ const RdiInstanceHeader = () => {
         >
           <div>
             <RiTooltip position="bottom" content="My RDI instances">
-              <Text
+              <RiText
                 className={styles.breadCrumbLink}
                 aria-label="My RDI instances"
                 data-testid="my-rdi-instances-btn"
@@ -51,14 +51,14 @@ const RdiInstanceHeader = () => {
                 onKeyDown={goHome}
               >
                 RDI instances
-              </Text>
+              </RiText>
             </RiTooltip>
           </div>
           <div style={{ flex: 1, overflow: 'hidden' }}>
             <div style={{ maxWidth: '100%' }}>
               <RiRow align="center">
                 <RiFlexItem>
-                  <Text className={styles.divider}>&#62;</Text>
+                  <RiText className={styles.divider}>&#62;</RiText>
                 </RiFlexItem>
                 <RiFlexItem grow style={{ overflow: 'hidden' }}>
                   <InstancesNavigationPopover name={name} />

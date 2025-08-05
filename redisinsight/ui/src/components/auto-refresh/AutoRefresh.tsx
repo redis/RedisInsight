@@ -15,7 +15,7 @@ import InlineItemEditor from 'uiSrc/components/inline-item-editor'
 import { localStorageService } from 'uiSrc/services'
 import { BrowserStorageItem } from 'uiSrc/constants'
 import { RiIconButton } from 'uiSrc/components/base/forms'
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiSrc/components/base/text'
 import { RiSwitchInput } from 'uiSrc/components/base/inputs'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import {
@@ -209,7 +209,7 @@ const AutoRefresh = ({
       })}
       data-testid={getDataTestid('auto-refresh-container')}
     >
-      <ColorText className={styles.summary}>
+      <RiColorText className={styles.summary}>
         {displayText && (
           <span data-testid={getDataTestid('refresh-message-label')}>
             {enableAutoRefresh ? 'Auto refresh:' : 'Last refresh:'}
@@ -225,7 +225,7 @@ const AutoRefresh = ({
             {` ${enableAutoRefresh ? refreshRateMessage : refreshMessage}`}
           </span>
         )}
-      </ColorText>
+      </RiColorText>
 
       <RiTooltip
         title={!disabled && 'Last Refresh'}
@@ -281,7 +281,7 @@ const AutoRefresh = ({
         <div className={styles.inputContainer}>
           <div className={styles.inputLabel}>Refresh rate:</div>
           {!editingRate && (
-            <ColorText
+            <RiColorText
               color="subdued"
               className={styles.refreshRateText}
               onClick={() => setEditingRate(true)}
@@ -291,7 +291,7 @@ const AutoRefresh = ({
               <div className={styles.refreshRatePencil}>
                 <RiIcon type="EditIcon" />
               </div>
-            </ColorText>
+            </RiColorText>
           )}
           {editingRate && (
             <>
@@ -310,7 +310,7 @@ const AutoRefresh = ({
                   onApply={(value) => handleApplyAutoRefreshRate(value)}
                 />
               </div>
-              <ColorText color="subdued">{' s'}</ColorText>
+              <RiColorText color="subdued">{' s'}</RiColorText>
             </>
           )}
         </div>

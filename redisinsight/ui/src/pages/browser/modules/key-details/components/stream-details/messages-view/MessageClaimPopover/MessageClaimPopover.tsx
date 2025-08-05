@@ -15,7 +15,7 @@ import {
   getDefaultConsumer,
   ClaimTimeOptions,
 } from 'uiSrc/utils/streamUtils'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import {
@@ -39,21 +39,21 @@ const getConsumersOptions = (consumers: ConsumerDto[]) =>
   consumers.map((consumer) => ({
     value: consumer.name?.viewValue,
     inputDisplay: (
-      <Text
+      <RiText
         size="m"
         className={styles.option}
         data-testid="consumer-option"
         component="div"
       >
-        <Text className={styles.consumerName}>{consumer.name?.viewValue}</Text>
-        <Text
+        <RiText className={styles.consumerName}>{consumer.name?.viewValue}</RiText>
+        <RiText
           size="s"
           className={styles.pendingCount}
           data-testid="pending-count"
         >
           {`pending: ${consumer.pending}`}
-        </Text>
-      </Text>
+        </RiText>
+      </RiText>
     ),
   }))
 

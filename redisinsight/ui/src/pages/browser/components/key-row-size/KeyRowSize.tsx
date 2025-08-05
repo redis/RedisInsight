@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { isUndefined } from 'lodash'
 
 import { RiLoadingContent } from 'uiSrc/components/base/layout'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { Maybe, formatBytes } from 'uiSrc/utils'
 import { RiTooltip } from 'uiSrc/components'
 import styles from './styles.module.scss'
@@ -30,19 +30,19 @@ const KeyRowSize = (props: Props) => {
 
   if (!size) {
     return (
-      <Text
+      <RiText
         color="subdued"
         size="s"
         className={cx(styles.keySize)}
         data-testid={`size-${nameString}`}
       >
         -
-      </Text>
+      </RiText>
     )
   }
   return (
     <>
-      <Text
+      <RiText
         color="subdued"
         size="s"
         className={cx(styles.keySize, 'moveOnHoverKey', {
@@ -65,7 +65,7 @@ const KeyRowSize = (props: Props) => {
             <>{formatBytes(size, 0)}</>
           </RiTooltip>
         </div>
-      </Text>
+      </RiText>
     </>
   )
 }

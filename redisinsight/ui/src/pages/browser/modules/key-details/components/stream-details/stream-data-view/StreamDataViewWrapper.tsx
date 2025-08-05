@@ -37,7 +37,7 @@ import { decompressingBuffer } from 'uiSrc/utils/decompressors'
 
 import { FormattedValue } from 'uiSrc/pages/browser/modules/key-details/shared'
 import { FormatedDate } from 'uiSrc/components'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { StreamEntryDto } from 'apiSrc/modules/browser/stream/dto'
 import StreamDataView from './StreamDataView'
 import styles from './StreamDataView/styles.module.scss'
@@ -280,7 +280,7 @@ const StreamDataViewWrapper = (props: Props) => {
       )
 
       return (
-        <Text
+        <RiText
           size="s"
           style={{ maxWidth: '100%', minHeight: '36px' }}
           component="div"
@@ -303,7 +303,7 @@ const StreamDataViewWrapper = (props: Props) => {
               anchorClassName="streamItem line-clamp-2"
             />
           </div>
-        </Text>
+        </RiText>
       )
     },
   })
@@ -323,7 +323,7 @@ const StreamDataViewWrapper = (props: Props) => {
       return (
         <div style={{ minHeight: '38px' }}>
           {id.length < MAX_VISIBLE_LENGTH_STREAM_TIMESTAMP && (
-            <Text
+            <RiText
               color="subdued"
               size="s"
               style={{ maxWidth: '100%' }}
@@ -340,9 +340,9 @@ const StreamDataViewWrapper = (props: Props) => {
                   <FormatedDate date={timestamp} />
                 )}
               </div>
-            </Text>
+            </RiText>
           )}
-          <Text size="s" style={{ maxWidth: '100%' }} className="truncateText">
+          <RiText size="s" style={{ maxWidth: '100%' }} className="truncateText">
             <div
               className="streamItemId truncateText"
               data-testid={`stream-entry-${id}`}
@@ -350,7 +350,7 @@ const StreamDataViewWrapper = (props: Props) => {
             >
               {id}
             </div>
-          </Text>
+          </RiText>
         </div>
       )
     },

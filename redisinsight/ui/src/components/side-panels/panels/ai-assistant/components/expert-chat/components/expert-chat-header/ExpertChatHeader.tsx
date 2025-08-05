@@ -22,7 +22,7 @@ import { RestartChat } from 'uiSrc/components/side-panels/panels/ai-assistant/co
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiEmptyButton, RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { EraserIcon, LightBulbIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -66,9 +66,9 @@ const ExpertChatHeader = (props: Props) => {
           content={connectedInstanceName}
           anchorClassName={styles.dbName}
         >
-          <Text size="xs" className="truncateText">
+          <RiText size="xs" className="truncateText">
             {connectedInstanceName}
-          </Text>
+          </RiText>
         </RiTooltip>
       ) : (
         <span />
@@ -102,9 +102,9 @@ const ExpertChatHeader = (props: Props) => {
             }
           >
             <>
-              <Text>
+              <RiText>
                 Open relevant tutorials to learn more about search and query.
-              </Text>
+              </RiText>
               <RiSpacer size="s" />
               <RiPrimaryButton
                 size="s"

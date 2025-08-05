@@ -3,7 +3,7 @@ import React from 'react'
 import { Nullable } from 'uiSrc/utils'
 import { RiFilePicker, UploadWarning } from 'uiSrc/components'
 import { RiCol, RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { ColorText, Text } from 'uiSrc/components/base/text'
+import { RiColorText, RiText } from 'uiSrc/components/base/text'
 import { RiLoader, RiModal } from 'uiSrc/components/base/display'
 import { RiIcon, CancelIcon } from 'uiSrc/components/base/icons'
 import { Button } from 'uiSrc/components/base/forms'
@@ -79,13 +79,13 @@ const ImportFileModal = <T,>({
                     aria-label="Select or drag and drop file"
                   />
                   {isInvalid && (
-                    <ColorText
+                    <RiColorText
                       color="danger"
                       className={styles.errorFileMsg}
                       data-testid="input-file-error-msg"
                     >
                       {invalidMessage}
-                    </ColorText>
+                    </RiColorText>
                   )}
                 </>
               )}
@@ -95,18 +95,18 @@ const ImportFileModal = <T,>({
                   data-testid="file-loading-indicator"
                 >
                   <RiLoader size="xl" />
-                  <Text color="subdued" style={{ marginTop: 12 }}>
+                  <RiText color="subdued" style={{ marginTop: 12 }}>
                     Uploading...
-                  </Text>
+                  </RiText>
                 </div>
               )}
               {error && (
                 <div className={styles.result} data-testid="result-failed">
                   <RiIcon type="ToastCancelIcon" size="xxl" color="danger500" />
-                  <Text color="subdued" style={{ marginTop: 16 }}>
+                  <RiText color="subdued" style={{ marginTop: 16 }}>
                     {errorMessage}
-                  </Text>
-                  <Text color="subdued">{error}</Text>
+                  </RiText>
+                  <RiText color="subdued">{error}</RiText>
                 </div>
               )}
               {isShowForm && (

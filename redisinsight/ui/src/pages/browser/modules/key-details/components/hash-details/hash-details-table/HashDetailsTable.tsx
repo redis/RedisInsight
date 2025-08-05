@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { CellMeasurerCache } from 'react-virtualized'
 
 import { isNumber, toNumber } from 'lodash'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { getColumnWidth } from 'uiSrc/components/virtual-grid'
 import { StopPropagation } from 'uiSrc/components/virtual-table'
 import {
@@ -382,7 +382,7 @@ const HashDetailsTable = (props: Props) => {
         )
 
         return (
-          <Text
+          <RiText
             color="subdued"
             size="s"
             style={{ maxWidth: '100%', whiteSpace: 'break-spaces' }}
@@ -403,7 +403,7 @@ const HashDetailsTable = (props: Props) => {
                 tooltipContent={tooltipContent}
               />
             </div>
-          </Text>
+          </RiText>
         )
       },
     },

@@ -9,8 +9,8 @@ import {
   userSettingsSelector,
 } from 'uiSrc/slices/user/user-settings'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiText } from 'uiSrc/components/base/text'
 import ConsentOption from '../ConsentOption'
 import { ConsentCategories, IConsent } from '../ConsentsSettings'
 
@@ -80,11 +80,11 @@ const ConsentsPrivacy = () => {
   return (
     <form onSubmit={formik.handleSubmit} data-testid="consents-settings-form">
       <div className={styles.consentsWrapper}>
-        <Text size="s" className={styles.smallText} color="subdued">
+        <RiText size="s" className={styles.smallText} color="subdued">
           To optimize your experience, Redis Insight uses third-party tools.
-        </Text>
+        </RiText>
         <RiSpacer />
-        <Title size="XS">Usage Data</Title>
+        <RiTitle size="XS">Usage Data</RiTitle>
         {privacyConsents.map((consent: IConsent) => (
           <ConsentOption
             consent={consent}

@@ -39,7 +39,7 @@ export function useWindowEvent<EName extends EventNames>(
  * <WindowEvent event="resize" handler={handleResize} />
  * ```
  */
-export function WindowEvent<EName extends EventNames>({
+export function RiWindowEvent<EName extends EventNames>({
   event,
   handler,
 }: WindowEventProps<EName>) {

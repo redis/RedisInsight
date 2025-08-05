@@ -10,8 +10,8 @@ import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { openTutorialByPath } from 'uiSrc/slices/panels/sidePanels'
 import { findTutorialPath } from 'uiSrc/utils'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
@@ -41,12 +41,12 @@ const ExploreGuides = () => {
 
   return (
     <div data-testid="explore-guides">
-      <Title size="XS">
+      <RiTitle size="XS">
         <span>Here&apos;s a good starting point</span>
-      </Title>
-      <Text>
+      </RiTitle>
+      <RiText>
         Explore the amazing world of Redis Stack with our interactive guides
-      </Text>
+      </RiText>
       <RiSpacer size="xl" />
       {!!data.length && (
         <div className={styles.guides}>

@@ -4,7 +4,7 @@ import AutoSizer from 'react-virtualized-auto-sizer'
 import { useSelector } from 'react-redux'
 
 import { MAX_BULK_ACTION_ERRORS_LENGTH } from 'uiSrc/constants'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { bulkActionsDeleteSummarySelector } from 'uiSrc/slices/browser/bulkActions'
 import styles from './styles.module.scss'
 
@@ -56,11 +56,11 @@ const BulkDeleteContent = () => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <Text className={styles.headerTitle}>Error list</Text>
+        <RiText className={styles.headerTitle}>Error list</RiText>
         {errors.length >= MAX_BULK_ACTION_ERRORS_LENGTH && (
-          <Text className={styles.headerSummary}>
+          <RiText className={styles.headerSummary}>
             last {MAX_BULK_ACTION_ERRORS_LENGTH} errors are shown
-          </Text>
+          </RiText>
         )}
       </div>
       <div className={styles.list}>

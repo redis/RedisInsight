@@ -1,6 +1,6 @@
 import React from 'react'
 import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 
 import { RiIcon } from 'uiSrc/components/base/icons'
@@ -18,9 +18,9 @@ const PatternsInfo = ({ channels }: PatternsInfoProps) => {
 
   return (
     <div className={styles.patternsContainer}>
-      <Text color="subdued" size="s" data-testid="patterns-count">
+      <RiText color="subdued" size="s" data-testid="patterns-count">
         Patterns:&nbsp;{getChannelsCount()}{' '}
-      </Text>
+      </RiText>
       <RiTooltip
         anchorClassName={styles.appendIcon}
         position="right"

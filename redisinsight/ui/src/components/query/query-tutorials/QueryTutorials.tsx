@@ -5,7 +5,7 @@ import { useHistory, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { findTutorialPath } from 'uiSrc/utils'
 import { openTutorialByPath } from 'uiSrc/slices/panels/sidePanels'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import {
   sendEventTelemetry,
@@ -67,7 +67,7 @@ const QueryTutorials = ({ tutorials, source }: Props) => {
 
   return (
     <div className={styles.container}>
-      <Text className={styles.title}>Tutorials:</Text>
+      <RiText className={styles.title}>Tutorials:</RiText>
       {tutorials.map(({ id, title }) => (
         <QueryTutorialsButton
           role="button"

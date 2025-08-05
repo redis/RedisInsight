@@ -5,7 +5,7 @@ import { RiTooltip } from 'uiSrc/components'
 import { StopPropagation } from 'uiSrc/components/virtual-table'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
 
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { EditIcon } from 'uiSrc/components/base/icons'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import styles from './styles.module.scss'
@@ -51,13 +51,13 @@ const EditableInput = (props: Props) => {
         onMouseLeave={() => setIsHovering(false)}
         data-testid={`${testIdPrefix}_content-value-${field}`}
       >
-        <Text
+        <RiText
           color="subdued"
           size="s"
           style={{ maxWidth: '100%', whiteSpace: 'break-spaces' }}
         >
           <div style={{ display: 'flex' }}>{children}</div>
-        </Text>
+        </RiText>
         {isHovering && (
           <RiTooltip
             content={editToolTipContent}

@@ -2,7 +2,7 @@ import React from 'react'
 import cx from 'classnames'
 
 import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import styles from '../../styles.module.scss'
 
@@ -27,13 +27,13 @@ const ConfirmOverwrite = ({
     panelClassName={cx('popoverLikeTooltip')}
     button={children}
   >
-    <Text size="m" style={{ fontWeight: 'bold' }}>
+    <RiText size="m" style={{ fontWeight: 'bold' }}>
       Duplicate JSON key detected
-    </Text>
-    <Text size="s">
+    </RiText>
+    <RiText size="s">
       You already have the same JSON key. If you proceed, a value of the
       existing JSON key will be overwritten.
-    </Text>
+    </RiText>
 
     <div className={styles.confirmDialogActions}>
       <RiSecondaryButton

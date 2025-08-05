@@ -18,7 +18,7 @@ import {
 } from 'uiSrc/constants/recommendations'
 import { FeatureFlagComponent } from 'uiSrc/components'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import PopoverRunAnalyze from '../popover-run-analyze'
 
 import styles from './styles.module.scss'
@@ -53,24 +53,24 @@ const NoRecommendationsScreen = () => {
 
   return (
     <div className={styles.container} data-testid="no-recommendations-screen">
-      <Text className={styles.bigText}>Welcome to</Text>
-      <Text className={styles.hugeText}>Tips!</Text>
-      <Text className={styles.mediumText}>
+      <RiText className={styles.bigText}>Welcome to</RiText>
+      <RiText className={styles.hugeText}>Tips!</RiText>
+      <RiText className={styles.mediumText}>
         Where we help improve your database.
-      </Text>
-      <Text className={cx(styles.text, styles.bigMargin)}>
+      </RiText>
+      <RiText className={cx(styles.text, styles.bigMargin)}>
         New tips appear while you work with your database, including how to
         improve performance and optimize memory usage.
-      </Text>
+      </RiText>
       <WelcomeIcon className={styles.icon} />
       {instanceId ? (
         <FeatureFlagComponent name={FeatureFlags.envDependent}>
-          <Text
+          <RiText
             className={styles.text}
             data-testid="no-recommendations-analyse-text"
           >
             Eager for more tips? Run Database Analysis to get started.
-          </Text>
+          </RiText>
 
           <PopoverRunAnalyze
             isShowPopover={isShowInfo}
@@ -92,12 +92,12 @@ const NoRecommendationsScreen = () => {
           </PopoverRunAnalyze>
         </FeatureFlagComponent>
       ) : (
-        <Text
+        <RiText
           className={styles.text}
           data-testid="no-recommendations-analyse-text"
         >
           Eager for tips? Connect to a database to get started.
-        </Text>
+        </RiText>
       )}
     </div>
   )

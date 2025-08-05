@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiSrc/components/base/text'
 import { removeCapiKeyAction } from 'uiSrc/slices/oauth/cloud'
 import { Pages } from 'uiSrc/constants'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
@@ -45,7 +45,7 @@ const CloudCapiUnAuthorizedErrorContent = ({
 
   return (
     <>
-      <ColorText color="danger">{text}</ColorText>
+      <RiColorText color="danger">{text}</RiColorText>
       <RiSpacer />
       <RiRow justify="end">
         <RiFlexItem>

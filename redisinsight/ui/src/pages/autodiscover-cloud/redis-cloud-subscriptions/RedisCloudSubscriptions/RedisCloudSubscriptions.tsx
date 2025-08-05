@@ -27,8 +27,8 @@ import {
 } from 'uiSrc/components/base/forms'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { RiSearchInput } from 'uiSrc/components/base/inputs'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import styles from '../styles.module.scss'
 
@@ -161,10 +161,10 @@ const RedisCloudSubscriptions = ({
         </RiSecondaryButton>
       }
     >
-      <Text size="m">
+      <RiText size="m">
         Your changes have not been saved.&#10;&#13; Do you want to proceed to
         the list of databases?
-      </Text>
+      </RiText>
       <br />
       <div>
         <RiDestructiveButton
@@ -205,7 +205,7 @@ const RedisCloudSubscriptions = ({
   )
 
   const SummaryText = () => (
-    <Text className={styles.subTitle}>
+    <RiText className={styles.subTitle}>
       <b>Summary: </b>
       {countStatusActive ? (
         <span>
@@ -223,7 +223,7 @@ const RedisCloudSubscriptions = ({
           {countStatusFailed > 1 ? 'subscriptions.' : ' subscription.'}
         </span>
       ) : null}
-    </Text>
+    </RiText>
   )
 
   const Account = () => (
@@ -258,9 +258,9 @@ const RedisCloudSubscriptions = ({
   return (
     <AutodiscoveryPageTemplate>
       <div className="databaseContainer">
-        <Title size="XXL" className={styles.title} data-testid="title">
+        <RiTitle size="XXL" className={styles.title} data-testid="title">
           Redis Cloud Subscriptions
-        </Title>
+        </RiTitle>
 
         <RiRow align="end" gap="s">
           <RiFlexItem grow>
@@ -300,7 +300,7 @@ const RedisCloudSubscriptions = ({
             onRowClick={selectionValue.onSelectionChange}
           />
           {!items.length && (
-            <Text className={styles.noSubscriptions}>{message}</Text>
+            <RiText className={styles.noSubscriptions}>{message}</RiText>
           )}
         </div>
       </div>

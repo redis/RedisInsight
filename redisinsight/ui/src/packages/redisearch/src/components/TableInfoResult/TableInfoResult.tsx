@@ -9,7 +9,7 @@ import {
 } from 'uiSrc/components/base/layout'
 
 import { RiIcon } from 'uiSrc/components/base/icons'
-import { ColorText, Text } from 'uiSrc/components/base/text'
+import { RiColorText, RiText } from 'uiSrc/components/base/text'
 import GroupBadge from '../GroupBadge'
 import { InfoAttributesBoolean } from '../../constants'
 
@@ -62,7 +62,7 @@ const TableInfoResult = React.memo((props: Props) => {
             </div>
           )
         }
-        return <Text>{initValue}</Text>
+        return <RiText>{initValue}</RiText>
       },
     }),
   )
@@ -71,7 +71,7 @@ const TableInfoResult = React.memo((props: Props) => {
     <div>
       {result ? (
         <>
-          <Text className="row" size="s" color="subdued">
+          <RiText className="row" size="s" color="subdued">
             Indexing
             <GroupBadge
               type={result?.index_definition?.key_type?.toLowerCase()}
@@ -81,17 +81,17 @@ const TableInfoResult = React.memo((props: Props) => {
             {result?.index_definition?.prefixes
               ?.map((prefix: any) => `"${prefix}"`)
               .join(',')}
-          </Text>
-          <Text className="row" size="s" color="subdued">
+          </RiText>
+          <RiText className="row" size="s" color="subdued">
             Options:{' '}
             {result?.index_options?.length ? (
-              <ColorText style={{ color: 'var(--euiColorFullShade)' }}>
+              <RiColorText style={{ color: 'var(--euiColorFullShade)' }}>
                 {result?.index_options?.join(', ')}
-              </ColorText>
+              </RiColorText>
             ) : (
               <span className="italic">{noOptionsMessage}</span>
             )}
-          </Text>
+          </RiText>
         </>
       ) : (
         <RiLoadingContent lines={2} />
@@ -101,11 +101,11 @@ const TableInfoResult = React.memo((props: Props) => {
   const Footer = () => (
     <div>
       {result ? (
-        <Text className="row" size="s" color="subdued">
+        <RiText className="row" size="s" color="subdued">
           {`Number of docs: ${result?.num_docs || '0'} (max ${result?.max_doc_id || '0'}) | `}
           {`Number of records: ${result?.num_records || '0'} | `}
           {`Number of terms: ${result?.num_terms || '0'}`}
-        </Text>
+        </RiText>
       ) : (
         <RiLoadingContent lines={1} />
       )}

@@ -37,7 +37,7 @@ export interface OutsideClickDetectorProps {
 // We need the actual event targets to make the correct decisions
 // about user intention. So, consider the down/start and up/end
 // items below as the deconstruction of a click event.
-export const OutsideClickDetector = ({
+export const RiOutsideClickDetector = ({
   children,
   onOutsideClick,
   isDisabled,

@@ -5,7 +5,7 @@ import cx from 'classnames'
 import { StopPropagation } from 'uiSrc/components/virtual-table'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
 import { RiTooltip } from 'uiSrc/components'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { EditIcon } from 'uiSrc/components/base/icons'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { RiTextArea } from 'uiSrc/components/base/inputs'
@@ -93,13 +93,13 @@ const EditableTextArea = (props: Props) => {
         onMouseLeave={() => setIsHovering(false)}
         data-testid={`${testIdPrefix}_content-value-${field}`}
       >
-        <Text
+        <RiText
           color="subdued"
           size="s"
           style={{ maxWidth: '100%', whiteSpace: 'break-spaces' }}
         >
           {children}
-        </Text>
+        </RiText>
         {isHovering && (
           <RiTooltip
             content={editToolTipContent}

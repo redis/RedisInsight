@@ -14,7 +14,7 @@ import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { isAnyFeatureEnabled } from 'uiSrc/utils/features'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { RedisLogoFullIcon } from 'uiSrc/components/base/icons'
 import styles from './PageHeader.module.scss'
@@ -57,9 +57,9 @@ const PageHeader = (props: Props) => {
     <div className={cx(styles.pageHeader, className)}>
       <div className={styles.pageHeaderTop}>
         <div>
-          <Title size="XXL" className={styles.title} data-testid="page-title">
+          <RiTitle size="XXL" className={styles.title} data-testid="page-title">
             <b data-testid="page-header-title">{title}</b>
-          </Title>
+          </RiTitle>
           {subtitle ? <span data-testid="page-subtitle">{subtitle}</span> : ''}
         </div>
         {children ? <>{children}</> : ''}

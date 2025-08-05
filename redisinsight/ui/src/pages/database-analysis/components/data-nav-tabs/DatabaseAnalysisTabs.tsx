@@ -14,7 +14,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { renderOnboardingTourWithChild } from 'uiSrc/utils/onboarding'
 import { recommendationsSelector } from 'uiSrc/slices/recommendations/recommendations'
 import { RiTabs, TabInfo } from 'uiSrc/components/base/layout'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import {
   ShortDatabaseAnalysis,
@@ -47,18 +47,18 @@ const DatabaseAnalysisTabs = (props: Props) => {
   const tabs: TabInfo[] = useMemo(
     () => [
       {
-        label: <Text>Data Summary</Text>,
+        label: <RiText>Data Summary</RiText>,
         value: DatabaseAnalysisViewTab.DataSummary,
         content: <AnalysisDataView />,
       },
       {
         label: renderOnboardingTourWithChild(
-          <Text>
+          <RiText>
             Tips{' '}
             {data?.recommendations?.length
               ? `(${data.recommendations.length})`
               : ''}
-          </Text>,
+          </RiText>,
           {
             options: { ...ONBOARDING_FEATURES.ANALYTICS_RECOMMENDATIONS },
             anchorPosition: 'downLeft',

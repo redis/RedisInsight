@@ -18,8 +18,8 @@ import {
   RiSecondaryButton,
   RiFormField,
 } from 'uiSrc/components/base/forms'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -77,7 +77,7 @@ const SentinelDatabasesResult = ({
   }
 
   const SummaryText = () => (
-    <Text className={styles.subTitle} data-testid="summary">
+    <RiText className={styles.subTitle} data-testid="summary">
       <b>Summary: </b>
       {countSuccessAdded ? (
         <span>
@@ -92,15 +92,15 @@ const SentinelDatabasesResult = ({
           {' primary group(s)'}
         </span>
       ) : null}
-    </Text>
+    </RiText>
   )
 
   return (
     <AutodiscoveryPageTemplate>
       <div className="databaseContainer">
-        <Title size="XXL" className={styles.title} data-testid="title">
+        <RiTitle size="XXL" className={styles.title} data-testid="title">
           Auto-Discover Redis Sentinel Primary Groups
-        </Title>
+        </RiTitle>
 
         <RiRow align="end" gap="s">
           <RiFlexItem grow>
@@ -122,7 +122,7 @@ const SentinelDatabasesResult = ({
         <br />
         <div className="itemList databaseList sentinelDatabaseListResult">
           {!items.length || loading ? (
-            <Text>{message}</Text>
+            <RiText>{message}</RiText>
           ) : (
             <RiTable
               columns={columns}

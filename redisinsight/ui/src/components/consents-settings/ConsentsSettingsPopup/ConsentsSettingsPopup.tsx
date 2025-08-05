@@ -10,7 +10,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiIcon } from 'uiSrc/components/base/icons'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import { RiModal } from 'uiSrc/components/base/display'
 import styles from '../styles.module.scss'
 
@@ -44,9 +44,9 @@ const ConsentsSettingsPopup = () => {
       title={
         <RiRow justify="between">
           <RiFlexItem>
-            <Title size="L" className={styles.consentsPopupTitle}>
+            <RiTitle size="L" className={styles.consentsPopupTitle}>
               EULA and Privacy Settings
-            </Title>
+            </RiTitle>
           </RiFlexItem>
           <RiFlexItem>
             <RiIcon className={styles.redisIcon} type="RedisLogoFullIcon" />

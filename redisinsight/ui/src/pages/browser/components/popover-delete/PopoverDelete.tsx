@@ -10,7 +10,7 @@ import {
   RiEmptyButton,
   RiIconButton,
 } from 'uiSrc/components/base/forms'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -106,15 +106,15 @@ const PopoverDelete = (props: Props) => {
       onClick={(e) => e.stopPropagation()}
     >
       <div className={styles.popover}>
-        <Text size="m" component="div">
+        <RiText size="m" component="div">
           {!!header && (
             <h4>
               <b>{header}</b>
             </h4>
           )}
-          <Text size="s">{text}</Text>
+          <RiText size="s">{text}</RiText>
           {appendInfo}
-        </Text>
+        </RiText>
         <div className={styles.popoverFooter}>
           <RiDestructiveButton
             icon={DeleteIcon}

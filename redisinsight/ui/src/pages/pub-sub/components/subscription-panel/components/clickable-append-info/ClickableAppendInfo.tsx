@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import {
   EXTERNAL_LINKS,
   UTM_CAMPAINGS,
@@ -39,7 +39,7 @@ const ClickableAppendInfo = () => {
       panelPaddingSize="s"
       data-testid="pub-sub-examples"
     >
-      <Text color="subdued" size="s">
+      <RiText color="subdued" size="s">
         Subscribe to one or more channels or patterns by entering them,
         separated by spaces.
         <br />
@@ -53,7 +53,7 @@ const ClickableAppendInfo = () => {
         >
           here.
         </RiLink>
-      </Text>
+      </RiText>
     </RiPopover>
   )
 }

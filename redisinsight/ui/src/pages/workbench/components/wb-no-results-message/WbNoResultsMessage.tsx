@@ -17,8 +17,8 @@ import { RiFlexItem, RiRow, RiCard } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { LightBulbIcon } from 'uiSrc/components/base/icons'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiText } from 'uiSrc/components/base/text'
 
 import styles from './styles.module.scss'
 
@@ -44,18 +44,18 @@ const WbNoResultsMessage = () => {
 
   return (
     <div className={styles.noResults} data-testid="wb_no-results">
-      <Text
+      <RiText
         className={styles.noResultsTitle}
         data-testid="wb_no-results__title"
       >
         No results to display yet
-      </Text>
-      <Title style={{ marginTop: 12, fontSize: 28 }}>
+      </RiText>
+      <RiTitle style={{ marginTop: 12, fontSize: 28 }}>
         This is our advanced CLI
-      </Title>
-      <Title style={{ marginTop: 6, fontSize: 20, lineHeight: 1.2 }}>
+      </RiTitle>
+      <RiTitle style={{ marginTop: 6, fontSize: 20, lineHeight: 1.2 }}>
         for Redis commands.
-      </Title>
+      </RiTitle>
       <RiSpacer />
 
       <RiCard className={styles.noResultsPanel}>
@@ -70,13 +70,13 @@ const WbNoResultsMessage = () => {
             />
           </RiFlexItem>
           <RiFlexItem grow>
-            <Text
+            <RiText
               className={styles.noResultsText}
               data-testid="wb_no-results__summary"
             >
               Try Workbench with our interactive Tutorials to learn how Redis
               can solve your use cases.
-            </Text>
+            </RiText>
             <RiSpacer size="xl" />
             <div>
               <RiPrimaryButton
@@ -89,9 +89,9 @@ const WbNoResultsMessage = () => {
               </RiPrimaryButton>
             </div>
             <RiSpacer size="s" />
-            <Text color="subdued" textAlign="left" size="xs">
+            <RiText color="subdued" textAlign="left" size="xs">
               Or click the icon in the top right corner.
-            </Text>
+            </RiText>
           </RiFlexItem>
         </RiRow>
       </RiCard>

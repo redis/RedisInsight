@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
@@ -36,7 +36,7 @@ const UploadFile = (props: Props) => {
       >
         {/* todo: 'folderOpen', replace with redis-ui once available */}
         <RiIcon className={styles.icon} type="KnowledgeBaseIcon" />
-        <Text className={styles.label}>Upload</Text>
+        <RiText className={styles.label}>Upload</RiText>
         <input
           type="file"
           id={id}

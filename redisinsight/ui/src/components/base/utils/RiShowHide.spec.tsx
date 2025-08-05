@@ -1,13 +1,9 @@
 import React from 'react'
 import { render, screen } from 'uiSrc/utils/test-utils'
 
-import {
-  Breakpoints,
-  HideFor,
-  ShowFor,
-} from 'uiSrc/components/base/utils/ShowHide'
+import { Breakpoints, RiHideFor, RiShowFor } from './ShowHide'
 
-describe('ShowHide', () => {
+describe('RiShowHide', () => {
   beforeAll(() => {
     // @ts-ignore innerWidth might be read only, but we can still override it for the sake of testing
     window.innerWidth = 670
@@ -17,18 +13,18 @@ describe('ShowHide', () => {
     it('should render', () => {
       expect(
         render(
-          <HideFor sizes={['s']}>
+          <RiHideFor sizes={['s']}>
             <span>Child</span>
-          </HideFor>,
+          </RiHideFor>,
         ),
       ).toBeTruthy()
     })
 
     it('hides for matching breakpoints', () => {
       render(
-        <HideFor sizes={['s']}>
+        <RiHideFor sizes={['s']}>
           <span>Child</span>
-        </HideFor>,
+        </RiHideFor>,
       )
 
       expect(screen.queryByText('Child')).not.toBeInTheDocument()
@@ -37,9 +33,9 @@ describe('ShowHide', () => {
     Breakpoints.forEach((size) => {
       it(`${size} is rendered`, () => {
         render(
-          <HideFor sizes={[size]}>
+          <RiHideFor sizes={[size]}>
             <span>Child</span>
-          </HideFor>,
+          </RiHideFor>,
         )
 
         const child = screen.queryByText('Child')
@@ -53,9 +49,9 @@ describe('ShowHide', () => {
 
     it('renders for multiple breakpoints', () => {
       render(
-        <HideFor sizes={['m', 'l']}>
+        <RiHideFor sizes={['m', 'l']}>
           <span>Child</span>
-        </HideFor>,
+        </RiHideFor>,
       )
 
       expect(screen.getByText('Child')).toBeInTheDocument()
@@ -63,9 +59,9 @@ describe('ShowHide', () => {
 
     it('renders for "none"', () => {
       render(
-        <HideFor sizes="none">
+        <RiHideFor sizes="none">
           <span>Child</span>
-        </HideFor>,
+        </RiHideFor>,
       )
 
       expect(screen.queryByText('Child')).toBeInTheDocument()
@@ -73,9 +69,9 @@ describe('ShowHide', () => {
 
     test('never renders for "all"', () => {
       render(
-        <HideFor sizes="all">
+        <RiHideFor sizes="all">
           <span>Child</span>
-        </HideFor>,
+        </RiHideFor>,
       )
 
       expect(screen.queryByText('Child')).not.toBeInTheDocument()
@@ -86,18 +82,18 @@ describe('ShowHide', () => {
     it('should render', () => {
       expect(
         render(
-          <ShowFor sizes={['s']}>
+          <RiShowFor sizes={['s']}>
             <span>Child</span>
-          </ShowFor>,
+          </RiShowFor>,
         ),
       ).toBeTruthy()
     })
 
     it('shows for matching breakpoints', () => {
       render(
-        <ShowFor sizes={['s']}>
+        <RiShowFor sizes={['s']}>
           <span>Child</span>
-        </ShowFor>,
+        </RiShowFor>,
       )
 
       expect(screen.queryByText('Child')).toBeInTheDocument()
@@ -106,9 +102,9 @@ describe('ShowHide', () => {
     Breakpoints.forEach((size) => {
       it(`${size} is rendered`, () => {
         render(
-          <ShowFor sizes={[size]}>
+          <RiShowFor sizes={[size]}>
             <span>Child</span>
-          </ShowFor>,
+          </RiShowFor>,
         )
 
         const child = screen.queryByText('Child')
@@ -122,9 +118,9 @@ describe('ShowHide', () => {
 
     it('renders for multiple breakpoints', () => {
       render(
-        <ShowFor sizes={['s', 'xs']}>
+        <RiShowFor sizes={['s', 'xs']}>
           <span>Child</span>
-        </ShowFor>,
+        </RiShowFor>,
       )
 
       expect(screen.getByText('Child')).toBeInTheDocument()
@@ -132,9 +128,9 @@ describe('ShowHide', () => {
 
     it('never renders for "none"', () => {
       render(
-        <ShowFor sizes="none">
+        <RiShowFor sizes="none">
           <span>Child</span>
-        </ShowFor>,
+        </RiShowFor>,
       )
 
       expect(screen.queryByText('Child')).not.toBeInTheDocument()
@@ -142,9 +138,9 @@ describe('ShowHide', () => {
 
     test('renders for "all"', () => {
       render(
-        <ShowFor sizes="all">
+        <RiShowFor sizes="all">
           <span>Child</span>
-        </ShowFor>,
+        </RiShowFor>,
       )
 
       expect(screen.queryByText('Child')).toBeInTheDocument()

@@ -29,7 +29,7 @@ export interface ShowHideForProps {
   sizes: BreakpointKey[] | 'all' | 'none'
 }
 
-export const HideFor = ({ children, sizes }: ShowHideForProps) => {
+export const RiHideFor = ({ children, sizes }: ShowHideForProps) => {
   const currentBreakpoint = useCurrentBreakpoint()
   const isWithinBreakpointSizes =
     currentBreakpoint && sizes.includes(currentBreakpoint)
@@ -40,7 +40,7 @@ export const HideFor = ({ children, sizes }: ShowHideForProps) => {
   return <>{children}</>
 }
 
-export const ShowFor = ({ children, sizes }: ShowHideForProps) => {
+export const RiShowFor = ({ children, sizes }: ShowHideForProps) => {
   const currentBreakpoint = useCurrentBreakpoint()
   const isWithinBreakpointSizes =
     currentBreakpoint && sizes.includes(currentBreakpoint)

@@ -22,7 +22,7 @@ import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import { Nullable, formatLongName, lastConnectionFormat } from 'uiSrc/utils'
 
 import { setAppContextConnectedRdiInstanceId } from 'uiSrc/slices/app/context'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CopyIcon, EditIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
@@ -159,12 +159,12 @@ const RdiInstancesListWrapper = ({
       sortable: ({ name }) => name?.toLowerCase(),
       width: '30%',
       render: (_, { name, id }) => (
-        <Text
+        <RiText
           data-testid={`rdi-alias-${id}`}
           onClick={() => handleCheckConnectToInstance(id)}
         >
           {name}
-        </Text>
+        </RiText>
       ),
     },
     {
@@ -177,7 +177,7 @@ const RdiInstancesListWrapper = ({
       sortable: ({ url }) => url?.toLowerCase(),
       render: (name: string, { id }) => (
         <div className="url" data-testid="url">
-          <Text className="copyUrlText">{name}</Text>
+          <RiText className="copyUrlText">{name}</RiText>
           <RiTooltip
             position="right"
             content="Copy"

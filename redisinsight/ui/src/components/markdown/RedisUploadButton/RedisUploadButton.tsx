@@ -28,7 +28,7 @@ import {
   ContractsIcon,
   RiIcon,
 } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import { RiLink } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
@@ -133,7 +133,7 @@ const RedisUploadButton = ({ label, path }: Props) => {
         }
       >
         {instanceId ? (
-          <Text
+          <RiText
             color="subdued"
             className={styles.containerPopover}
             data-testid="upload-data-bulk-tooltip"
@@ -168,7 +168,7 @@ const RedisUploadButton = ({ label, path }: Props) => {
                 Execute
               </RiPrimaryButton>
             </div>
-          </Text>
+          </RiText>
         ) : (
           <DatabaseNotOpened />
         )}

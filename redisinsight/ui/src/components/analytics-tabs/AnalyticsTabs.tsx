@@ -19,7 +19,7 @@ import { OnboardingSteps } from 'uiSrc/constants/onboarding'
 import { useConnectionType } from 'uiSrc/components/hooks/useConnectionType'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { RiTabs, TabInfo } from 'uiSrc/components/base/layout'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 
 const AnalyticsTabs = () => {
   const { viewTab } = useSelector(analyticsSettingsSelector)
@@ -46,7 +46,7 @@ const AnalyticsTabs = () => {
         value: AnalyticsViewTab.DatabaseAnalysis,
         content: null,
         label: renderOnboardingTourWithChild(
-          <Text>Database Analysis</Text>,
+          <RiText>Database Analysis</RiText>,
           {
             options: ONBOARDING_FEATURES?.ANALYTICS_DATABASE_ANALYSIS,
             anchorPosition: 'downLeft',
@@ -59,7 +59,7 @@ const AnalyticsTabs = () => {
         value: AnalyticsViewTab.SlowLog,
         content: null,
         label: renderOnboardingTourWithChild(
-          <Text>Slow Log</Text>,
+          <RiText>Slow Log</RiText>,
           {
             options: ONBOARDING_FEATURES?.ANALYTICS_SLOW_LOG,
             anchorPosition: 'downLeft',
@@ -75,7 +75,7 @@ const AnalyticsTabs = () => {
         value: AnalyticsViewTab.ClusterDetails,
         content: null,
         label: renderOnboardingTourWithChild(
-          <Text>Overview</Text>,
+          <RiText>Overview</RiText>,
           {
             options: ONBOARDING_FEATURES?.ANALYTICS_OVERVIEW,
             anchorPosition: 'downLeft',

@@ -14,7 +14,7 @@ import {
   setPipelineDialogState,
 } from 'uiSrc/slices/app/context'
 import UploadModal from 'uiSrc/pages/rdi/pipeline-management/components/upload-modal/UploadModal'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 
 import { FileChangeType } from 'uiSrc/slices/interfaces'
 import { RiIcon , CancelIcon } from 'uiSrc/components/base/icons'
@@ -113,7 +113,7 @@ const SourcePipelineDialog = () => {
                 data-testid="server-source-pipeline-dialog"
               >
                 <RiIcon type="UploadIcon" size="xl" className={styles.icon} />
-                <Text className={styles.text}>Download from server</Text>
+                <RiText className={styles.text}>Download from server</RiText>
               </div>
               <div
                 role="button"
@@ -124,7 +124,7 @@ const SourcePipelineDialog = () => {
                 data-testid="file-source-pipeline-dialog"
               >
                 <RiIcon type="ExportIcon" size="xl" className={styles.icon} />
-                <Text className={styles.text}>Upload from file</Text>
+                <RiText className={styles.text}>Upload from file</RiText>
               </div>
               <div
                 role="button"
@@ -139,7 +139,7 @@ const SourcePipelineDialog = () => {
                   size="xl"
                   className={styles.icon}
                 />
-                <Text className={styles.text}>Create new pipeline</Text>
+                <RiText className={styles.text}>Create new pipeline</RiText>
               </div>
             </div>
           </div>

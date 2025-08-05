@@ -25,7 +25,7 @@ import {
   RiSecondaryButton,
 } from 'uiSrc/components/base/forms'
 import { RefreshIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import BulkDeleteContent from '../BulkDeleteContent'
 import { isProcessedBulkAction } from '../../utils'
@@ -134,7 +134,7 @@ const BulkDeleteFooter = (props: Props) => {
               </RiPrimaryButton>
             }
           >
-            <Text
+            <RiText
               color="subdued"
               className={styles.containerPopover}
               data-testid="bulk-action-tooltip"
@@ -158,7 +158,7 @@ const BulkDeleteFooter = (props: Props) => {
               >
                 Delete
               </RiDestructiveButton>
-            </Text>
+            </RiText>
           </RiPopover>
         )}
         {isProcessedBulkAction(status) && (

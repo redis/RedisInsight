@@ -28,7 +28,7 @@ import {
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { appServerInfoSelector } from 'uiSrc/slices/app/info'
 
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
@@ -358,7 +358,7 @@ const QueryCardCliPlugin = (props: Props) => {
                     style={{ display: 'inline', marginRight: 10 }}
                   />
                 </span>
-                <ColorText color="danger">{error}</ColorText>
+                <RiColorText color="danger">{error}</RiColorText>
               </span>
             </RiFlexItem>
           </div>

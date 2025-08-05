@@ -15,7 +15,7 @@ import { KeyViewType } from 'uiSrc/slices/interfaces/keys'
 import { Nullable } from 'uiSrc/utils'
 import { TextBtn } from 'uiSrc/pages/database-analysis/components/base/TextBtn'
 import { RiSwitchInput } from 'uiSrc/components/base/inputs'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { DatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
 import TopNamespacesTable from './Table'
@@ -65,13 +65,13 @@ const TopNamespace = (props: Props) => {
     return (
       <div className="section" data-testid="top-namespaces-empty">
         <div className="section-title-wrapper">
-          <Title size="M" className="section-title">
+          <RiTitle size="M" className="section-title">
             TOP NAMESPACES
-          </Title>
+          </RiTitle>
         </div>
         <div className="section-content" data-testid="top-namespaces-message">
           <div className={styles.noNamespaceMsg}>
-            <Title size="L">No namespaces to display</Title>
+            <RiTitle size="L">No namespaces to display</RiTitle>
             <p className={styles.noNamespaceParagraph}>
               {'Configure the delimiter in '}
               <RiEmptyButton
@@ -92,9 +92,9 @@ const TopNamespace = (props: Props) => {
   return (
     <div className="section" data-testid="top-namespaces">
       <div className="section-title-wrapper">
-        <Title size="M" className="section-title">
+        <RiTitle size="M" className="section-title">
           TOP NAMESPACES
-        </Title>
+        </RiTitle>
         <TextBtn
           $active={tableView === TableView.MEMORY}
           size="small"

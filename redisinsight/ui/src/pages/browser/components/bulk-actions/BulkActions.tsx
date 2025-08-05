@@ -21,7 +21,7 @@ import { FullScreen, RiTooltip } from 'uiSrc/components'
 import { RiCol, RiFlexItem } from 'uiSrc/components/base/layout'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import BulkUpload from './BulkUpload'
 import BulkDelete from './BulkDelete'
 import BulkActionsTabs from './BulkActionsTabs'
@@ -101,9 +101,9 @@ const BulkActions = (props: Props) => {
     <div className={styles.page}>
       <RiCol justify="center" className={cx(styles.container, 'relative')}>
         <RiFlexItem grow style={{ marginBottom: '16px' }}>
-          <Title size="M" className={styles.title}>
+          <RiTitle size="M" className={styles.title}>
             Bulk Actions
-          </Title>
+          </RiTitle>
           {!arePanelsCollapsed && (
             <FullScreen
               isFullScreen={isFullScreen}

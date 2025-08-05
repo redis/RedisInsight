@@ -8,7 +8,7 @@ import { EXTERNAL_LINKS, UTM_CAMPAINGS } from 'uiSrc/constants/links'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiLink, RiImage } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
@@ -22,7 +22,7 @@ const EmptyMessage = ({ onAddInstanceClick }: Props) => (
     data-testid="empty-database-instance-list"
   >
     <RiImage src={CakeIcon} className={styles.icon} alt="empty" />
-    <Text className={styles.text}>No databases yet, let&apos;s add one!</Text>
+    <RiText className={styles.text}>No databases yet, let&apos;s add one!</RiText>
     <RiPrimaryButton
       size="m"
       onClick={() => {

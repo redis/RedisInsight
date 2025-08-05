@@ -6,7 +6,7 @@ import { OAuthStrategy } from 'uiSrc/slices/interfaces'
 
 import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { RiFlexItem } from 'uiSrc/components/base/layout'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
@@ -73,7 +73,7 @@ const OAuthSocialButtons = (props: Props) => {
           >
             <RiFlexItem direction={inline ? 'row' : 'column'}>
               <RiIcon type={icon as AllIconsType} />
-              <Text className={styles.label}>{text}</Text>
+              <RiText className={styles.label}>{text}</RiText>
             </RiFlexItem>
           </RiEmptyButton>
         </RiTooltip>

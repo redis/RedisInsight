@@ -18,7 +18,7 @@ import { InputFieldSentinel, RiTooltip } from 'uiSrc/components'
 import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/InputFieldSentinel'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CopyIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { ColumnDefinition } from 'uiSrc/components/base/layout'
 import { CreateSentinelDatabaseDto } from 'apiSrc/modules/redis-sentinel/dto/create.sentinel.database.dto'
 
@@ -155,7 +155,7 @@ const SentinelDatabasesPage = () => {
         const text = `${host}:${port}`
         return (
           <div className="host_port">
-            <Text className="copyHostPortText">{text}</Text>
+            <RiText className="copyHostPortText">{text}</RiText>
             <RiTooltip
               position="right"
               content="Copy"

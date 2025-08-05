@@ -30,8 +30,8 @@ import OAuthForm from 'uiSrc/components/oauth/shared/oauth-form'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiText } from 'uiSrc/components/base/text'
 import {
   OAuthAdvantages,
   OAuthAgreement,
@@ -126,10 +126,10 @@ const OAuthCreateDb = (props: Props) => {
             >
               {(form: React.ReactNode) => (
                 <>
-                  <Text className={styles.subTitle}>Get started with</Text>
-                  <Title size="XL" className={styles.title}>
+                  <RiText className={styles.subTitle}>Get started with</RiText>
+                  <RiTitle size="XL" className={styles.title}>
                     Free trial Cloud database
-                  </Title>
+                  </RiTitle>
                   {form}
                   <div>
                     <OAuthRecommendedSettings
@@ -143,15 +143,15 @@ const OAuthCreateDb = (props: Props) => {
             </OAuthForm>
           ) : (
             <>
-              <Text className={styles.subTitle}>Get your</Text>
-              <Title size="XL" className={styles.title}>
+              <RiText className={styles.subTitle}>Get your</RiText>
+              <RiTitle size="XL" className={styles.title}>
                 Free trial Cloud database
-              </Title>
+              </RiTitle>
               <RiSpacer size="xl" />
-              <Text textAlign="center" color="subdued">
+              <RiText textAlign="center" color="subdued">
                 The database will be created automatically and can be changed
                 from Redis Cloud.
-              </Text>
+              </RiText>
               <RiSpacer size="xl" />
               <OAuthRecommendedSettings
                 value={isRecommended}

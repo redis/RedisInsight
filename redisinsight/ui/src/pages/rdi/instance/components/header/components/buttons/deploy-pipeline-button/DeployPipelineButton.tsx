@@ -14,13 +14,13 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { createAxiosError, pipelineToJson } from 'uiSrc/utils'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { rdiErrorMessages } from 'uiSrc/pages/rdi/constants'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { OutsideClickDetector } from 'uiSrc/components/base/utils'
+import { RiOutsideClickDetector } from 'uiSrc/components/base/utils'
 import { RiPrimaryButton, RiCheckbox } from 'uiSrc/components/base/forms'
 import { RiRocketIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
@@ -98,7 +98,7 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
   }
 
   return (
-    <OutsideClickDetector onOutsideClick={handleClosePopover}>
+    <RiOutsideClickDetector onOutsideClick={handleClosePopover}>
       <RiPopover
         closePopover={handleClosePopover}
         ownFocus
@@ -125,17 +125,19 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
           </RiPrimaryButton>
         }
       >
-        <Title size="XS">Are you sure you want to deploy the pipeline?</Title>
+        <RiTitle size="XS">
+          Are you sure you want to deploy the pipeline?
+        </RiTitle>
         <RiSpacer size="s" />
-        <Text size="s">
+        <RiText size="s">
           When deployed, this local configuration will overwrite any existing
           pipeline.
-        </Text>
+        </RiText>
         <RiSpacer size="s" />
-        <Text size="s">
+        <RiText size="s">
           After deployment, consider flushing the target Redis database and
           resetting the pipeline to ensure that all data is reprocessed.
-        </Text>
+        </RiText>
         <RiSpacer size="s" />
         <div className={styles.checkbox}>
           <RiCheckbox
@@ -173,7 +175,7 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
           </RiFlexItem>
         </RiRow>
       </RiPopover>
-    </OutsideClickDetector>
+    </RiOutsideClickDetector>
   )
 }
 

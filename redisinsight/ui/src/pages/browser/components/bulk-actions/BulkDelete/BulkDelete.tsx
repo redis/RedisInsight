@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import { isUndefined } from 'lodash'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import {
   bulkActionsDeleteOverviewSelector,
   bulkActionsDeleteSelector,
@@ -84,12 +84,12 @@ const BulkDelete = (props: Props) => {
           className={styles.placeholder}
           data-testid="bulk-actions-placeholder"
         >
-          <Text color="subdued" className={styles.placeholderTitle}>
+          <RiText color="subdued" className={styles.placeholderTitle}>
             No pattern or key type set
-          </Text>
-          <Text color="subdued" className={styles.placeholderSummary}>
+          </RiText>
+          <RiText color="subdued" className={styles.placeholderSummary}>
             To perform a bulk action, set the pattern or select the key type
-          </Text>
+          </RiText>
         </div>
       )}
     </>

@@ -17,7 +17,7 @@ import {
 } from 'uiSrc/slices/interfaces'
 import AnalyticsTabs from 'uiSrc/components/analytics-tabs'
 import { clusterDetailsSelector } from 'uiSrc/slices/analytics/clusterDetails'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 
 import styles from './styles.module.scss'
@@ -109,10 +109,10 @@ const ClusterDetailsHeader = () => {
               key={label}
               data-testid={`cluster-details-item-${label}`}
             >
-              <Text color="subdued" className={styles.value}>
+              <RiText color="subdued" className={styles.value}>
                 {value}
-              </Text>
-              <Text className={styles.label}>{label}</Text>
+              </RiText>
+              <RiText className={styles.label}>{label}</RiText>
             </div>
           ))}
         </div>

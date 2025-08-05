@@ -11,7 +11,7 @@ import { ICredentialsRedisCluster } from 'uiSrc/slices/interfaces'
 
 import { MessageEnterpriceSoftware } from 'uiSrc/pages/home/components/form/Messages'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { WindowEvent } from 'uiSrc/components/base/utils/WindowEvent'
+import { RiWindowEvent } from 'uiSrc/components/base/utils/RiWindowEvent'
 import {
   RiPrimaryButton,
   RiSecondaryButton,
@@ -224,7 +224,7 @@ const ClusterConnectionForm = (props: Props) => {
       <br />
 
       <form>
-        <WindowEvent event="keydown" handler={onKeyDown} />
+        <RiWindowEvent event="keydown" handler={onKeyDown} />
         <RiRow responsive>
           <RiFlexItem grow={4}>
             <RiFormField

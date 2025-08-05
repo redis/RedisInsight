@@ -34,7 +34,7 @@ import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import EditablePopover from 'uiSrc/pages/browser/modules/key-details/shared/editable-popover'
 
 import { FormatedDate, RiTooltip } from 'uiSrc/components'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiFormField } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { RiTextInput } from 'uiSrc/components/base/inputs'
@@ -221,7 +221,7 @@ const GroupsViewWrapper = (props: Props) => {
         const cellContent = viewName.substring(0, 200)
         const tooltipContent = formatLongName(viewName)
         return (
-          <Text color="subdued" size="s" style={{ maxWidth: '100%' }}>
+          <RiText color="subdued" size="s" style={{ maxWidth: '100%' }}>
             <div
               style={{ display: 'flex' }}
               className="truncateText"
@@ -236,7 +236,7 @@ const GroupsViewWrapper = (props: Props) => {
                 <>{cellContent}</>
               </RiTooltip>
             </div>
-          </Text>
+          </RiText>
         )
       },
     },
@@ -278,7 +278,7 @@ const GroupsViewWrapper = (props: Props) => {
         )
 
         return (
-          <Text size="s" style={{ maxWidth: '100%' }}>
+          <RiText size="s" style={{ maxWidth: '100%' }}>
             <div
               style={{ display: 'flex' }}
               className="truncateText"
@@ -297,7 +297,7 @@ const GroupsViewWrapper = (props: Props) => {
               )}
               {!pending && pending}
             </div>
-          </Text>
+          </RiText>
         )
       },
     },
@@ -323,7 +323,7 @@ const GroupsViewWrapper = (props: Props) => {
           <EditablePopover
             content={
               <div className={styles.editableCell}>
-                <Text
+                <RiText
                   color="subdued"
                   size="s"
                   style={{ maxWidth: '100%' }}
@@ -336,15 +336,15 @@ const GroupsViewWrapper = (props: Props) => {
                   >
                     <FormatedDate date={timestamp} />
                   </div>
-                </Text>
-                <Text size="s" style={{ maxWidth: '100%' }} component="div">
+                </RiText>
+                <RiText size="s" style={{ maxWidth: '100%' }} component="div">
                   <div
                     className="streamItemId"
                     data-testid={`stream-group-id-${id}`}
                   >
                     {id}
                   </div>
-                </Text>
+                </RiText>
               </div>
             }
             field={id}

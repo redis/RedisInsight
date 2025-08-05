@@ -6,7 +6,7 @@ import {
   VariableSizeList as List,
 } from 'react-window'
 
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiSrc/components/base/text'
 import { DEFAULT_ERROR_MESSAGE, getFormatTime } from 'uiSrc/utils'
 
 import styles from 'uiSrc/components/monitor/Monitor/styles.module.scss'
@@ -136,9 +136,9 @@ const MonitorOutputList = (props: Props) => {
           </div>
         )}
         {isError && (
-          <ColorText color="danger">
+          <RiColorText color="danger">
             {message ?? DEFAULT_ERROR_MESSAGE}
-          </ColorText>
+          </RiColorText>
         )}
       </div>
     )

@@ -5,7 +5,7 @@ import { CommandGroup } from 'uiSrc/constants'
 
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiSrc/components/base/text'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 import { RiRow } from 'uiSrc/components/base/layout'
 
@@ -39,13 +39,13 @@ const CHCommandInfo = (props: Props) => {
         style={{ marginRight: '4px' }}
       />
       <GroupBadge type={group} className={styles.groupBadge} />
-      <ColorText
+      <RiColorText
         className={styles.title}
         color="subdued"
         data-testid="cli-helper-title-args"
       >
         {args}
-      </ColorText>
+      </RiColorText>
       {complexity && (
         <RiBadge
           label={complexity}

@@ -32,7 +32,7 @@ import {
 } from 'uiSrc/slices/app/context'
 import { TableTextBtn } from 'uiSrc/pages/database-analysis/components/base/TableTextBtn'
 import { RiTable, ColumnDefinition } from 'uiSrc/components/base/layout'
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiSrc/components/base/text'
 import { NspSummary } from 'apiSrc/modules/database-analysis/models'
 
 import styles from './styles.module.scss'
@@ -120,18 +120,18 @@ const NameSpacesTable = ({
               <GroupBadge type={type.type} />
             </div>
             <div>
-              <ColorText color="subdued" data-testid="usedMemory-value">
+              <RiColorText color="subdued" data-testid="usedMemory-value">
                 {formatNumber} {size}
-              </ColorText>
+              </RiColorText>
             </div>
             <div>
-              <ColorText color="subdued">
+              <RiColorText color="subdued">
                 {extrapolate(
                   type.keys,
                   { extrapolation, apply: isExtrapolated },
                   (val: number) => numberWithSpaces(Math.round(val)),
                 )}
-              </ColorText>
+              </RiColorText>
             </div>
           </div>
         )
@@ -215,12 +215,12 @@ const NameSpacesTable = ({
             content={`${formatValueBytes} B`}
             data-testid="usedMemory-tooltip"
           >
-            <ColorText
+            <RiColorText
               color="subdued"
               data-testid={`nsp-usedMemory-value=${value}`}
             >
               {formatValue} {size}
-            </ColorText>
+            </RiColorText>
           </RiTooltip>
         )
       },
@@ -236,13 +236,13 @@ const NameSpacesTable = ({
         },
       }) => (
         <span data-testid={`keys-value-${value}`}>
-          <ColorText color="subdued">
+          <RiColorText color="subdued">
             {extrapolate(
               value,
               { extrapolation, apply: isExtrapolated },
               (val: number) => numberWithSpaces(Math.round(val)),
             )}
-          </ColorText>
+          </RiColorText>
         </span>
       ),
     },

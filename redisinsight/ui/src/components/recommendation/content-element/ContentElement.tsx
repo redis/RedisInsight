@@ -8,7 +8,7 @@ import { IRecommendationContent } from 'uiSrc/slices/interfaces/recommendations'
 import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { UTM_MEDIUMS } from 'uiSrc/constants/links'
 import { RiSpacer, SpacerSize } from 'uiSrc/components/base/layout/spacer'
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiSrc/components/base/text'
 import { RiLink } from 'uiSrc/components/base/display'
 import InternalLink from '../internal-link'
 import RecommendationBody from '../recommendation-body'
@@ -40,7 +40,7 @@ const ContentElement = (props: Props) => {
   switch (type) {
     case 'paragraph':
       return (
-        <ColorText
+        <RiColorText
           data-testid={`paragraph-${telemetryName}-${idx}`}
           key={`${telemetryName}-${idx}`}
           component="div"
@@ -48,22 +48,22 @@ const ContentElement = (props: Props) => {
           color="subdued"
         >
           {value}
-        </ColorText>
+        </RiColorText>
       )
     case 'code':
       return (
-        <ColorText
+        <RiColorText
           data-testid={`code-${telemetryName}-${idx}`}
           className={cx(styles.code, { [styles.insights]: insights })}
           key={`${telemetryName}-${idx}`}
           color="subdued"
         >
           <code className={cx(styles.span, styles.text)}>{value}</code>
-        </ColorText>
+        </RiColorText>
       )
     case 'span':
       return (
-        <ColorText
+        <RiColorText
           data-testid={`span-${telemetryName}-${idx}`}
           key={`${telemetryName}-${idx}`}
           color="subdued"
@@ -72,7 +72,7 @@ const ContentElement = (props: Props) => {
           })}
         >
           {value}
-        </ColorText>
+        </RiColorText>
       )
     case 'link':
       return (
@@ -126,12 +126,12 @@ const ContentElement = (props: Props) => {
             campaign: telemetryName,
           })}
         >
-          <ColorText
+          <RiColorText
             className={cx(styles.code, { [styles.insights]: insights })}
             color="subdued"
           >
             <code className={cx(styles.span, styles.text)}>{value.name}</code>
-          </ColorText>
+          </RiColorText>
         </RiLink>
       )
     case 'spacer':

@@ -2,6 +2,7 @@ import cx from 'classnames'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import styled from 'styled-components'
 import {
   SCAN_COUNT_DEFAULT,
   SCAN_TREE_COUNT_DEFAULT,
@@ -21,9 +22,9 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { resetBrowserTree } from 'uiSrc/slices/app/context'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { AdditionalRedisModule } from 'uiSrc/slices/interfaces'
-import { OutsideClickDetector } from 'uiSrc/components/base/utils'
-import { HealthText } from 'uiSrc/components/base/text/HealthText'
-import { RiSelect } from 'uiSrc/components/base/forms'
+import { RiOutsideClickDetector } from 'uiSrc/components/base/utils'
+import { RiHealthText } from 'uiSrc/components/base/text/RiHealthText'
+import { RiSelect, defaultValueRender } from 'uiSrc/components/base/forms'
 import { RiModal } from 'uiSrc/components/base/display'
 import { FILTER_KEY_TYPE_OPTIONS } from './constants'
 
@@ -34,6 +35,11 @@ const ALL_KEY_TYPES_VALUE = 'all'
 export interface Props {
   modules?: AdditionalRedisModule[]
 }
+
+const FilterKeyTypeSelect = styled(RiSelect)`
+  height: 100%;
+  border-radius: 0;
+`
 
 const FilterKeyType = ({ modules }: Props) => {
   const [isSelectOpen, setIsSelectOpen] = useState<boolean>(false)
@@ -78,20 +84,20 @@ const FilterKeyType = ({ modules }: Props) => {
     return {
       value,
       inputDisplay: (
-        <HealthText
+        <RiHealthText
           color={color}
           data-test-subj={`filter-option-type-${value}`}
         >
           {text}
-        </HealthText>
+        </RiHealthText>
       ),
       dropdownDisplay: (
-        <HealthText
+        <RiHealthText
           color={color}
           data-test-subj={`filter-option-type-${value}`}
         >
           {text}
-        </HealthText>
+        </RiHealthText>
       ),
       'data-test-subj': `filter-option-type-${value}`,
     }
@@ -143,7 +149,7 @@ const FilterKeyType = ({ modules }: Props) => {
   }
 
   return (
-    <OutsideClickDetector
+    <RiOutsideClickDetector
       onOutsideClick={() => isVersionSupported && setIsSelectOpen(false)}
     >
       <div
@@ -170,22 +176,17 @@ const FilterKeyType = ({ modules }: Props) => {
             data-testid="unsupported-btn-anchor"
           />
         )}
-        <RiSelect
+        <FilterKeyTypeSelect
           disabled={!isVersionSupported}
           options={options}
-          valueRender={({ option, isOptionValue }) => {
-            if (isOptionValue) {
-              return option.inputDisplay
-            }
-            return option.dropdownDisplay
-          }}
+          valueRender={defaultValueRender}
           defaultOpen={isSelectOpen}
           value={typeSelected}
           onChange={(value: string) => onChangeType(value)}
           data-testid="select-filter-key-type"
         />
       </div>
-    </OutsideClickDetector>
+    </RiOutsideClickDetector>
   )
 }
 

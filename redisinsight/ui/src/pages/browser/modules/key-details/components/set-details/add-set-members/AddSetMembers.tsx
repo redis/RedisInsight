@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiSrc/components/base/text'
 
 import {
   selectedKeyDataSelector,
@@ -173,7 +173,7 @@ const AddSetMembers = (props: Props) => {
               onClick={() => closePanel(true)}
               data-testid="cancel-members-btn"
             >
-              <ColorText color="default">Cancel</ColorText>
+              <RiColorText color="default">Cancel</RiColorText>
             </RiSecondaryButton>
           </RiFlexItem>
           <RiFlexItem>

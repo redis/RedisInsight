@@ -23,8 +23,8 @@ import { RiCol, RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import { HealthText } from 'uiSrc/components/base/text/HealthText'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiHealthText } from 'uiSrc/components/base/text/RiHealthText'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import { RiTooltip } from 'uiSrc/components'
 import { ADD_KEY_TYPE_OPTIONS } from './constants/key-type-options'
 import AddKeyHash from './AddKeyHash'
@@ -67,14 +67,14 @@ const AddKey = (props: Props) => {
     return {
       value,
       inputDisplay: (
-        <HealthText
+        <RiHealthText
           color={color}
           style={{ lineHeight: 'inherit' }}
           data-test-subj={value}
           data-testid={value}
         >
           {text}
-        </HealthText>
+        </RiHealthText>
       ),
     }
   })
@@ -131,7 +131,7 @@ const AddKey = (props: Props) => {
       >
         <RiCol justify="center" className={styles.content}>
           <RiFlexItem grow style={{ marginBottom: '36px' }}>
-            <Title size="M">New Key</Title>
+            <RiTitle size="M">New Key</RiTitle>
             {!arePanelsCollapsed && (
               <RiTooltip
                 content="Close"

@@ -27,7 +27,7 @@ import { openTutorialByPath } from 'uiSrc/slices/panels/sidePanels'
 import { findTutorialPath } from 'uiSrc/utils'
 import { RiFlexItem, RiRow, RiCard } from 'uiSrc/components/base/layout'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons'
 
 import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
@@ -148,10 +148,10 @@ const Recommendations = () => {
           className={styles.noRecommendationsIcon}
           data-testid="no=recommendations-icon"
         />
-        <Text className={styles.bigText}>AMAZING JOB!</Text>
-        <Text size="m">No Tips at the moment,</Text>
+        <RiText className={styles.bigText}>AMAZING JOB!</RiText>
+        <RiText size="m">No Tips at the moment,</RiText>
         <br />
-        <Text size="m">keep up the good work!</Text>
+        <RiText size="m">keep up the good work!</RiText>
       </div>
     )
   }

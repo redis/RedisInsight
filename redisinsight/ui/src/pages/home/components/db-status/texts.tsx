@@ -1,10 +1,10 @@
 import React from 'react'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 
 export const CHECK_CLOUD_DATABASE = (
   <>
-    <Title size="XS">Build your app with Redis Cloud</Title>
+    <RiTitle size="XS">Build your app with Redis Cloud</RiTitle>
     <RiSpacer size="s" />
     <div>
       Free trial Cloud DBs auto-delete after 15 days of inactivity.
@@ -18,7 +18,7 @@ export const CHECK_CLOUD_DATABASE = (
 
 export const WARNING_WITH_CAPABILITY = (capability: string) => (
   <>
-    <Title size="XS">Build your app with {capability}</Title>
+    <RiTitle size="XS">Build your app with {capability}</RiTitle>
     <RiSpacer size="s" />
     <div>
       Hey, remember your interest in {capability}?
@@ -33,7 +33,7 @@ export const WARNING_WITH_CAPABILITY = (capability: string) => (
 )
 export const WARNING_WITHOUT_CAPABILITY = (
   <>
-    <Title size="XS">Your free trial Redis Cloud DB is waiting.</Title>
+    <RiTitle size="XS">Your free trial Redis Cloud DB is waiting.</RiTitle>
     <RiSpacer size="s" />
     <div>
       Test ideas and build prototypes.

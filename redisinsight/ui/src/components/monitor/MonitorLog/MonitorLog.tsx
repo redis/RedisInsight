@@ -15,7 +15,7 @@ import { fetchMonitorLog } from 'uiSrc/slices/cli/cli-output'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { RefreshIcon, DownloadIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 const PADDINGS_OUTSIDE = 12
@@ -75,7 +75,7 @@ const MonitorLog = () => {
             }}
             data-testid="download-log-panel"
           >
-            <Text
+            <RiText
               size="xs"
               color="subdued"
               className={styles.time}
@@ -92,7 +92,7 @@ const MonitorLog = () => {
               &nbsp;(
               {duration}
               {width > SMALL_SCREEN_RESOLUTION && ' Running time'})
-            </Text>
+            </RiText>
             <RiRow className={styles.actions} justify="between" align="center">
               <RiFlexItem>
                 {isSaveToFile && (

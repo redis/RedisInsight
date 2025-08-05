@@ -70,7 +70,7 @@ import {
   FormattedValue,
 } from 'uiSrc/pages/browser/modules/key-details/shared'
 import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import {
   AddMembersToZSetDto,
@@ -336,7 +336,7 @@ const ZSetDetailsTable = (props: Props) => {
         )
 
         return (
-          <Text
+          <RiText
             color="subdued"
             size="s"
             component="div"
@@ -357,7 +357,7 @@ const ZSetDetailsTable = (props: Props) => {
                 tooltipContent={tooltipContent}
               />
             </div>
-          </Text>
+          </RiText>
         )
       },
     },

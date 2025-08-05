@@ -6,7 +6,7 @@ import { Vote } from 'uiSrc/constants/recommendations'
 import { Nullable } from 'uiSrc/utils'
 
 import { RiRow } from 'uiSrc/components/base/layout'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import VoteOption from './components/vote-option'
 import styles from './styles.module.scss'
 
@@ -35,9 +35,9 @@ const RecommendationVoting = ({
       gap={live ? 'none' : 'l'}
       data-testid="recommendation-voting"
     >
-      <Text size="m" className={cx({ [styles.highlightText]: live })}>
+      <RiText size="m" className={cx({ [styles.highlightText]: live })}>
         Is this useful?
-      </Text>
+      </RiText>
       <div className="voteContent">
         {Object.values(Vote).map((option) => (
           <VoteOption

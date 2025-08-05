@@ -13,7 +13,7 @@ import {
 } from 'uiSrc/utils'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 // TODO: use i18n file for texts
@@ -208,8 +208,8 @@ export default {
           {fileName ? (
             <>
               <br />
-              <Text color="ghost">Commands executed from file:</Text>
-              <Text color="ghost">{formatLongName(fileName, 34, 5)}</Text>
+              <RiText color="ghost">Commands executed from file:</RiText>
+              <RiText color="ghost">{formatLongName(fileName, 34, 5)}</RiText>
             </>
           ) : null}
         </>
@@ -217,36 +217,36 @@ export default {
       message: (
         <RiRow align="start" className={styles.summary}>
           <RiFlexItem>
-            <Text color="ghost" className={styles.summaryValue}>
+            <RiText color="ghost" className={styles.summaryValue}>
               {numberWithSpaces(processed)}
-            </Text>
-            <Text size="xs" className={styles.summaryLabel}>
+            </RiText>
+            <RiText size="xs" className={styles.summaryLabel}>
               Commands Processed
-            </Text>
+            </RiText>
           </RiFlexItem>
           <RiFlexItem>
-            <Text color="ghost" className={styles.summaryValue}>
+            <RiText color="ghost" className={styles.summaryValue}>
               {numberWithSpaces(succeed)}
-            </Text>
-            <Text size="xs" className={styles.summaryLabel}>
+            </RiText>
+            <RiText size="xs" className={styles.summaryLabel}>
               Success
-            </Text>
+            </RiText>
           </RiFlexItem>
           <RiFlexItem>
-            <Text color="ghost" className={styles.summaryValue}>
+            <RiText color="ghost" className={styles.summaryValue}>
               {numberWithSpaces(failed)}
-            </Text>
-            <Text size="xs" className={styles.summaryLabel}>
+            </RiText>
+            <RiText size="xs" className={styles.summaryLabel}>
               Errors
-            </Text>
+            </RiText>
           </RiFlexItem>
           <RiFlexItem>
-            <Text color="ghost" className={styles.summaryValue}>
+            <RiText color="ghost" className={styles.summaryValue}>
               {millisecondsFormat(data?.duration || 0, 'H:mm:ss.SSS')}
-            </Text>
-            <Text size="xs" className={styles.summaryLabel}>
+            </RiText>
+            <RiText size="xs" className={styles.summaryLabel}>
               Time Taken
-            </Text>
+            </RiText>
           </RiFlexItem>
         </RiRow>
       ),

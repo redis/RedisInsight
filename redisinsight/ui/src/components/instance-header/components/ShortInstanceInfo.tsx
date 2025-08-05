@@ -13,7 +13,7 @@ import { DEFAULT_MODULES_INFO } from 'uiSrc/constants/modules'
 import { Theme } from 'uiSrc/constants'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
 import styles from './styles.module.scss'
@@ -67,11 +67,11 @@ const ShortInstanceInfo = ({ info, databases, modules }: Props) => {
             />
           </RiFlexItem>
           <RiFlexItem grow>
-            <Text size="s">Logical Databases</Text>
-            <Text color="subdued" size="xs">
+            <RiText size="s">Logical Databases</RiText>
+            <RiText color="subdued" size="xs">
               Select logical databases to work with in Browser, Workbench, and
               Database Analysis.
-            </Text>
+            </RiText>
           </RiFlexItem>
         </RiRow>
       )}

@@ -25,7 +25,7 @@ import {
 } from 'uiSrc/components/base/forms'
 import { InfoIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { RiPasswordInput, RiTextInput } from 'uiSrc/components/base/inputs'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import ValidationTooltip from './components/ValidationTooltip'
 
 import styles from './styles.module.scss'
@@ -81,9 +81,9 @@ const ConnectionForm = (props: Props) => {
   useEffect(() => {
     setInitialFormValues(getInitialValues(editInstance))
     setModalHeader(
-      <Title size="M">
+      <RiTitle size="M">
         {editInstance ? 'Edit endpoint' : 'Add RDI endpoint'}
-      </Title>,
+      </RiTitle>,
     )
   }, [editInstance])
 

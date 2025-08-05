@@ -2,12 +2,12 @@
 import styled, { css } from 'styled-components'
 import React, { forwardRef, InputHTMLAttributes } from 'react'
 import { RiEmptyButton } from 'uiSrc/components/base/forms'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 
 type FilePickerWrapperProps = InputHTMLAttributes<HTMLDivElement> & {
   $large?: boolean
 }
-export const FilePickerPromptText = styled(Text)``
+export const FilePickerPromptText = styled(RiText)``
 
 const largeWrapper = css`
   border-radius: 0;

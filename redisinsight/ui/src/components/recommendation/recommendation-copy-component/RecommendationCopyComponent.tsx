@@ -5,7 +5,7 @@ import cx from 'classnames'
 import { bufferToString } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
-import { Text, ColorText } from 'uiSrc/components/base/text'
+import { RiText, RiColorText } from 'uiSrc/components/base/text'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CopyIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
@@ -43,11 +43,11 @@ const RecommendationCopyComponent = ({
 
   return (
     <div className={styles.wrapper}>
-      <Text className={styles.text}>
+      <RiText className={styles.text}>
         Example of a key that may be relevant:
-      </Text>
+      </RiText>
       <div className={styles.keyNameWrapper}>
-        <ColorText
+        <RiColorText
           color="subdued"
           className={cx(styles.keyName, 'truncateText', {
             [styles.dbAnalysis]: !live,
@@ -56,7 +56,7 @@ const RecommendationCopyComponent = ({
           data-testid="recommendation-key-name"
         >
           {formattedName}
-        </ColorText>
+        </RiColorText>
         <RiIconButton
           onClick={handleCopy}
           className={styles.btn}

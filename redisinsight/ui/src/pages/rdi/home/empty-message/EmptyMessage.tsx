@@ -7,7 +7,7 @@ import EmptyListLightIcon from 'uiSrc/assets/img/rdi/empty_list_light.svg'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import { Theme } from 'uiSrc/constants'
 
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
@@ -30,13 +30,13 @@ const EmptyMessage = ({ onAddInstanceClick }: Props) => {
       data-testid="empty-rdi-instance-list"
     >
       <RiSpacer size="xl" />
-      <Text className={styles.title}>Redis Data Integration</Text>
+      <RiText className={styles.title}>Redis Data Integration</RiText>
       <RiImage
         src={theme === Theme.Dark ? EmptyListDarkIcon : EmptyListLightIcon}
         className={styles.icon}
         alt="empty"
       />
-      <Text className={styles.subTitle}>{subTitleText}</Text>
+      <RiText className={styles.subTitle}>{subTitleText}</RiText>
       <RiRow align="center" gap="m" responsive style={{ lineHeight: '20px' }}>
         <RiFlexItem grow>
           <RiPrimaryButton

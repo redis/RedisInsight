@@ -16,7 +16,7 @@ import {
 } from 'uiSrc/telemetry'
 import { getDbIndex } from 'uiSrc/utils'
 import { RiListGroup, RiListItem } from 'uiSrc/components/base/layout'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiLoader } from 'uiSrc/components/base/display'
 import { InstancesTabs } from '../../InstancesNavigationPopover'
 import styles from '../../styles.module.scss'
@@ -136,7 +136,7 @@ const InstancesList = ({
             isDisabled={loading}
             key={instance.id}
             label={
-              <Text
+              <RiText
                 style={{ display: 'flex', alignItems: 'center' }}
                 component="div"
               >
@@ -144,7 +144,7 @@ const InstancesList = ({
                   <RiLoader size="s" className={styles.loading} />
                 )}
                 {instance.name} {getDbIndex(instance.db)}
-              </Text>
+              </RiText>
             }
             onClick={() => {
               setSelected(instance.id)

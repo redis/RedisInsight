@@ -8,7 +8,7 @@ import { RiTooltip } from 'uiSrc/components'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { PlayFilledIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiSrc/components/base/text'
 import { RiSwitchInput } from 'uiSrc/components/base/inputs'
 import MonitorLog from '../MonitorLog'
 import MonitorOutputList from '../MonitorOutputList'
@@ -66,7 +66,7 @@ const Monitor = (props: Props) => {
             />
           </RiFlexItem>
           <RiFlexItem>
-            <ColorText
+            <RiColorText
               color="warning"
               className="warning--light"
               style={{ paddingLeft: 4 }}
@@ -74,7 +74,7 @@ const Monitor = (props: Props) => {
             >
               Running Profiler will decrease throughput, avoid running it in
               production databases.
-            </ColorText>
+            </RiColorText>
           </RiFlexItem>
         </RiRow>
       </div>
@@ -109,13 +109,13 @@ const Monitor = (props: Props) => {
             />
           </RiFlexItem>
           <RiFlexItem grow>
-            <ColorText
+            <RiColorText
               color="danger"
               style={{ paddingLeft: 4 }}
               data-testid="monitor-error-message"
             >
               {error}
-            </ColorText>
+            </RiColorText>
           </RiFlexItem>
         </RiRow>
       </div>

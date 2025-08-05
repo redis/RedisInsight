@@ -8,8 +8,8 @@ import {
   unreadNotificationsAction,
 } from 'uiSrc/slices/app/notifications'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import Notification from './Notification'
 
@@ -55,14 +55,14 @@ const NotificationCenter = () => {
         className={styles.popoverNotificationCenter}
         data-testid="notification-center"
       >
-        <Title size="S" className={styles.title}>
+        <RiTitle size="S" className={styles.title}>
           Notification Center
-        </Title>
+        </RiTitle>
         {!hasNotifications && (
           <div className={styles.noItemsText}>
-            <Text color="subdued" data-testid="no-notifications-text">
+            <RiText color="subdued" data-testid="no-notifications-text">
               No notifications to display.
-            </Text>
+            </RiText>
           </div>
         )}
         {hasNotifications && (

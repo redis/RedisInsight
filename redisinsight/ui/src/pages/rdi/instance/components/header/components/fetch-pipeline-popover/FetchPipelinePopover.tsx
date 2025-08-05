@@ -10,7 +10,7 @@ import {
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import Download from 'uiSrc/pages/rdi/instance/components/download/Download'
 
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { DownloadIcon } from 'uiSrc/components/base/icons'
 import { RiEmptyButton, RiPrimaryButton } from 'uiSrc/components/base/forms'
 import styles from './styles.module.scss'
@@ -48,10 +48,10 @@ const FetchPipelinePopover = ({ onClose }: Props) => {
     <ConfirmationPopover
       title="Download a pipeline from the server"
       body={
-        <Text size="s">
+        <RiText size="s">
           When downloading a new pipeline from the server, it will overwrite the
           existing one displayed in Redis Insight.
-        </Text>
+        </RiText>
       }
       submitBtn={
         <RiPrimaryButton size="s" data-testid="upload-confirm-btn">

@@ -14,7 +14,7 @@ import {
   RiMenuItem,
   RiMenuTrigger,
 } from 'uiSrc/components/base/layout'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -71,11 +71,11 @@ const Pagination = ({
           type="button"
           onClick={toggleMenuOpen}
         >
-          <Text size="S">
+          <RiText size="S">
             <strong
               className={styles.underline}
             >{`${activePage + 1} of ${items.length}`}</strong>
-          </Text>
+          </RiText>
         </button>
       </RiMenuTrigger>
       <RiMenuContent

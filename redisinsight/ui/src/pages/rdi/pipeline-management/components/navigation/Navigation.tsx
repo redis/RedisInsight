@@ -4,7 +4,7 @@ import { useHistory, useLocation, useParams } from 'react-router-dom'
 
 import cx from 'classnames'
 import { RiTooltip } from 'uiSrc/components'
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiSrc/components/base/text'
 import { PageNames, Pages } from 'uiSrc/constants'
 import JobsTree from 'uiSrc/pages/rdi/pipeline-management/components/jobs-tree'
 import Tab from 'uiSrc/pages/rdi/pipeline-management/components/tab'
@@ -106,7 +106,7 @@ const Navigation = () => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.title}>
-        <ColorText component="div">Pipeline Management</ColorText>
+        <RiColorText component="div">Pipeline Management</RiColorText>
       </div>
       <div className={styles.tabs} data-testid="rdi-pipeline-tabs">
         {renderTabs()}

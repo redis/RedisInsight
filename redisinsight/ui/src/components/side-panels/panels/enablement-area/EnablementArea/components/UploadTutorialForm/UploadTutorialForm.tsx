@@ -11,7 +11,7 @@ import { RiFilePicker, RiTooltip } from 'uiSrc/components'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { InfoIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import CreateTutorialLink from '../CreateTutorialLink'
 import styles from './styles.module.scss'
 
@@ -74,7 +74,7 @@ const UploadTutorialForm = (props: Props) => {
   return (
     <div className={styles.outerWrapper}>
       <div className={styles.wrapper} data-testid="upload-tutorial-form">
-        <Text>Add new Tutorial</Text>
+        <RiText>Add new Tutorial</RiText>
         <RiSpacer size="m" />
         <div>
           <div className={styles.uploadFileWrapper}>

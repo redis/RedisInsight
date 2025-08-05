@@ -4,7 +4,7 @@ import cx from 'classnames'
 import * as keys from 'uiSrc/constants/keys'
 import { RiTextInput } from 'uiSrc/components/base/inputs'
 import { GroupBadge, RiTooltip } from 'uiSrc/components'
-import { OutsideClickDetector } from 'uiSrc/components/base/utils'
+import { RiOutsideClickDetector } from 'uiSrc/components/base/utils'
 import { Nullable } from 'uiSrc/utils'
 
 import {
@@ -161,7 +161,7 @@ const MultiSearch = (props: Props) => {
   )
 
   return (
-    <OutsideClickDetector onOutsideClick={exitAutoSuggestions}>
+    <RiOutsideClickDetector onOutsideClick={exitAutoSuggestions}>
       <div
         className={cx(styles.multiSearchWrapper, className)}
         onKeyDown={handleKeyDown}
@@ -306,7 +306,7 @@ const MultiSearch = (props: Props) => {
           {!disableSubmit && SubmitBtn()}
         </div>
       </div>
-    </OutsideClickDetector>
+    </RiOutsideClickDetector>
   )
 }
 

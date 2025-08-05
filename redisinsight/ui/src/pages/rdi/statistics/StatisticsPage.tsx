@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { connectedInstanceSelector } from 'uiSrc/slices/rdi/instances'
 import { getPipelineStatusAction } from 'uiSrc/slices/rdi/pipeline'
 import {
@@ -112,9 +112,9 @@ const StatisticsPage = () => {
   // todo add interface
   if (statisticsResults.status === 'failed') {
     return (
-      <Text style={{ margin: '20px auto' }}>
+      <RiText style={{ margin: '20px auto' }}>
         Unexpected error in your RDI endpoint, please refresh the page
-      </Text>
+      </RiText>
     )
   }
 

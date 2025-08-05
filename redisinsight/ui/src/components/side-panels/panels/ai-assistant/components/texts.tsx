@@ -3,20 +3,20 @@ import React from 'react'
 
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiLink } from 'uiSrc/components/base/display'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 
 export const ASSISTANCE_CHAT_AGREEMENTS = (
   <>
-    <Text size="xs">
+    <RiText size="xs">
       Redis Copilot is powered by OpenAI API and is designed for general
       information only.
-    </Text>
+    </RiText>
     <RiSpacer size="xs" />
-    <Text size="xs">
+    <RiText size="xs">
       Please do not input any personal data or confidential information.
-    </Text>
+    </RiText>
     <RiSpacer size="xs" />
-    <Text size="xs">
+    <RiText size="xs">
       By accessing and/or using Redis Copilot, you acknowledge that you agree to
       the{' '}
       <RiLink
@@ -35,24 +35,24 @@ export const ASSISTANCE_CHAT_AGREEMENTS = (
         Privacy Policy
       </RiLink>
       .
-    </Text>
+    </RiText>
   </>
 )
 
 export const EXPERT_CHAT_AGREEMENTS = (
   <>
-    <Text size="xs">Redis Copilot is powered by OpenAI API.</Text>
+    <RiText size="xs">Redis Copilot is powered by OpenAI API.</RiText>
     <RiSpacer size="xs" />
-    <Text size="xs">
+    <RiText size="xs">
       Please do not include any personal data (except as expressly required for
       the use of Redis Copilot) or confidential information.
-    </Text>
-    <Text size="xs">
+    </RiText>
+    <RiText size="xs">
       Redis Copilot needs access to the information in your database to provide
       you context-aware assistance.
-    </Text>
+    </RiText>
     <RiSpacer size="xs" />
-    <Text size="xs">
+    <RiText size="xs">
       By accepting these terms, you consent to the processing of any information
       included in your database, and you agree to the{' '}
       <RiLink
@@ -71,20 +71,20 @@ export const EXPERT_CHAT_AGREEMENTS = (
         Privacy Policy
       </RiLink>
       .
-    </Text>
+    </RiText>
   </>
 )
 
 export const EXPERT_CHAT_INITIAL_MESSAGE = (
   <>
-    <Text size="xs">Hi!</Text>
-    <Text size="xs">I am here to help you get started with data querying.</Text>
-    <Text size="xs">
+    <RiText size="xs">Hi!</RiText>
+    <RiText size="xs">I am here to help you get started with data querying.</RiText>
+    <RiText size="xs">
       Type <b>/help</b> to get more info on what questions I can answer.
-    </Text>
+    </RiText>
     <RiSpacer />
-    <Text size="xs">
+    <RiText size="xs">
       With <span style={{ color: 'red' }}>&hearts;</span>, your Redis Copilot!
-    </Text>
+    </RiText>
   </>
 )

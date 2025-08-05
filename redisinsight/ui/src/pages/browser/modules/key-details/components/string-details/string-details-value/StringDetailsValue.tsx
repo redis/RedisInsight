@@ -56,7 +56,7 @@ import { IFetchKeyArgs } from 'uiSrc/constants/prop-types/keys'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { DownloadIcon } from 'uiSrc/components/base/icons'
 import { RiSecondaryButton } from 'uiSrc/components/base/forms'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiTextArea } from 'uiSrc/components/base/inputs'
 import { RiTooltip } from 'uiSrc/components'
 import { RiProgressBarLoader } from 'uiSrc/components/base/display'
@@ -232,7 +232,7 @@ const StringDetailsValue = (props: Props) => {
 
   const renderValue = (value: string) => {
     const textEl = (
-      <Text
+      <RiText
         className={styles.stringValue}
         onClick={() => isEditable && setIsEdit(true)}
         style={{ whiteSpace: 'break-spaces' }}
@@ -241,7 +241,7 @@ const StringDetailsValue = (props: Props) => {
         {areaValue !== ''
           ? value
           : !isLoading && <span style={{ fontStyle: 'italic' }}>Empty</span>}
-      </Text>
+      </RiText>
     )
 
     return (

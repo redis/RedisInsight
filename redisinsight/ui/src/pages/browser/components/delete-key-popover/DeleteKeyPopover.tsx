@@ -7,7 +7,7 @@ import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiDestructiveButton, RiIconButton } from 'uiSrc/components/base/forms'
 import { DeleteIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 
 export interface DeleteProps {
@@ -48,12 +48,12 @@ export const DeleteKeyPopover = ({
     onClick={(e) => e.stopPropagation()}
   >
     <>
-      <Text size="m" component="div">
+      <RiText size="m" component="div">
         <h4 style={{ wordBreak: 'break-all' }}>
           <b>{formatLongName(nameString)}</b>
         </h4>
-        <Text size="s">will be deleted.</Text>
-      </Text>
+        <RiText size="s">will be deleted.</RiText>
+      </RiText>
       <RiSpacer size="m" />
       <RiDestructiveButton
         size="small"

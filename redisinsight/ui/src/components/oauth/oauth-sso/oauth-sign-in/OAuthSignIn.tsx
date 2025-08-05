@@ -7,8 +7,8 @@ import { setSSOFlow } from 'uiSrc/slices/instances/cloud'
 import { Nullable } from 'uiSrc/utils'
 
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiText } from 'uiSrc/components/base/text'
 import OAuthForm from '../../shared/oauth-form/OAuthForm'
 import styles from './styles.module.scss'
 
@@ -48,10 +48,10 @@ const OAuthSignIn = (props: Props) => {
           >
             {(form: React.ReactNode) => (
               <>
-                <Text className={styles.subTitle}>Get started with</Text>
-                <Title size="XL" className={styles.title}>
+                <RiText className={styles.subTitle}>Get started with</RiText>
+                <RiTitle size="XL" className={styles.title}>
                   Redis Cloud account
-                </Title>
+                </RiTitle>
                 {form}
                 <OAuthAgreement />
               </>

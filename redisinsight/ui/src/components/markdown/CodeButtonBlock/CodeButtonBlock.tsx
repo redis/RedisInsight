@@ -29,7 +29,7 @@ import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { PlayIcon, CheckBoldIcon, CopyIcon } from 'uiSrc/components/base/icons'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
 
 import { RunConfirmationPopover } from './components'
@@ -160,13 +160,13 @@ const CodeButtonBlock = (props: Props) => {
       <RiRow>
         <RiFlexItem grow>
           {!!label && (
-            <Title
+            <RiTitle
               size="XS"
               className={styles.label}
               data-testid="code-button-block-label"
             >
               {truncateText(label, 86)}
-            </Title>
+            </RiTitle>
           )}
         </RiFlexItem>
         <RiFlexItem className={styles.actions}>

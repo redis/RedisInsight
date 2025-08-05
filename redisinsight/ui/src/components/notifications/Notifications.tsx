@@ -15,7 +15,7 @@ import { DEFAULT_ERROR_MESSAGE } from 'uiSrc/utils'
 import { showOAuthProgress } from 'uiSrc/slices/oauth/cloud'
 import { CustomErrorCodes } from 'uiSrc/constants'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiSrc/components/base/text'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { riToast, RiToaster } from 'uiSrc/components/base/display'
 
@@ -51,7 +51,7 @@ const Notifications = () => {
   }
 
   const getSuccessText = (text: string | JSX.Element | JSX.Element[]) => (
-    <ColorText color="success">{text}</ColorText>
+    <RiColorText color="success">{text}</RiColorText>
   )
 
   const showSuccessToasts = (data: IMessage[]) =>

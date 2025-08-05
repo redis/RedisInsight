@@ -2,7 +2,7 @@ import React from 'react'
 
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
@@ -38,11 +38,11 @@ const PopoverRunAnalyze = (props: Props) => {
         className={styles.popover}
         data-testid="insights-db-analysis-popover"
       >
-        <Text className={styles.popoverTitle}>Run database analysis</Text>
+        <RiText className={styles.popoverTitle}>Run database analysis</RiText>
         <RiSpacer size="xs" />
-        <Text className={styles.popoverContent} color="subdued">
+        <RiText className={styles.popoverContent} color="subdued">
           {popoverContent}
-        </Text>
+        </RiText>
         <RiSpacer size="m" />
         <RiPrimaryButton
           aria-label="Analyze"

@@ -7,8 +7,8 @@ import TelescopeImg from 'uiSrc/assets/img/telescope-dark.svg'
 import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
 
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -22,14 +22,14 @@ const DatabaseNotOpened = (props: Props) => {
   return (
     <div className={styles.wrapper} data-testid="database-not-opened-popover">
       <div>
-        <Title size="S" className={styles.title}>
+        <RiTitle size="S" className={styles.title}>
           Open a database
-        </Title>
+        </RiTitle>
         <RiSpacer size="s" />
         <>
-          <Text color="subdued" size="s">
+          <RiText color="subdued" size="s">
             Open your Redis database, or create a new database to get started.
-          </Text>
+          </RiText>
           <RiSpacer size="s" />
           <OAuthSsoHandlerDialog>
             {(ssoCloudHandlerClick) => (

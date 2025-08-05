@@ -1,14 +1,14 @@
 import React from 'react'
 import cx from 'classnames'
 import { APPLICATION_NAME } from 'uiSrc/constants'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { ExternalLink } from 'uiSrc/components'
 import styles from '../styles.module.scss'
 
 const MessageCloudApiKeys = () => (
-  <Text
+  <RiText
     color="subdued"
     size="s"
     className={styles.message}
@@ -24,11 +24,11 @@ const MessageCloudApiKeys = () => (
     >
       documentation.
     </ExternalLink>
-  </Text>
+  </RiText>
 )
 
 const MessageStandalone = () => (
-  <Text
+  <RiText
     color="subdued"
     size="s"
     className={styles.message}
@@ -45,11 +45,11 @@ const MessageStandalone = () => (
     >
       Learn more here.
     </ExternalLink>
-  </Text>
+  </RiText>
 )
 
 const MessageSentinel = () => (
-  <Text
+  <RiText
     color="subdued"
     size="s"
     className={styles.message}
@@ -67,11 +67,11 @@ const MessageSentinel = () => (
     >
       Learn more here.
     </ExternalLink>
-  </Text>
+  </RiText>
 )
 
 const MessageEnterpriceSoftware = () => (
-  <Text
+  <RiText
     color="subdued"
     size="s"
     className={styles.message}
@@ -89,7 +89,7 @@ const MessageEnterpriceSoftware = () => (
     >
       Learn more here.
     </ExternalLink>
-  </Text>
+  </RiText>
 )
 
 export {

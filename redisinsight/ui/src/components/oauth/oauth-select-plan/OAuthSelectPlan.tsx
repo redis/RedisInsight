@@ -23,7 +23,7 @@ import {
   RiSecondaryButton,
   RiSelect,
 } from 'uiSrc/components/base/forms'
-import { ColorText, Text } from 'uiSrc/components/base/text'
+import { RiColorText, RiText } from 'uiSrc/components/base/text'
 import { RiIcon, CancelIcon } from 'uiSrc/components/base/icons'
 import { RiModal } from 'uiSrc/components/base/display'
 import { CloudSubscriptionPlanResponse } from 'apiSrc/modules/cloud/subscription/dto'
@@ -118,23 +118,23 @@ const OAuthSelectPlan = () => {
       find(rsRegions, { provider })?.regions || []
 
     return (
-      <Text
+      <RiText
         color="subdued"
         size="s"
         data-testid={`option-${region}`}
         data-test-subj={`oauth-region-${region}`}
       >
         {`${countryName} (${cityName})`}
-        <ColorText className={styles.regionName}>{region}</ColorText>
+        <RiColorText className={styles.regionName}>{region}</RiColorText>
         {rsProviderRegions?.includes(region) && (
-          <ColorText
+          <RiColorText
             className={styles.rspreview}
             data-testid={`rs-text-${region}`}
           >
             (Redis 7.2)
-          </ColorText>
+          </RiColorText>
         )}
-      </Text>
+      </RiText>
     )
   }
 
@@ -186,11 +186,11 @@ const OAuthSelectPlan = () => {
         </RiModal.Content.Header.Title>
         <RiModal.Content.Body.Compose width="fit-content">
           <section className={styles.content}>
-            <Text className={styles.subTitle}>
+            <RiText className={styles.subTitle}>
               Select a cloud vendor and region to complete the final step
               towards your free trial Redis database. No credit card is
               required.
-            </Text>
+            </RiText>
             <section className={styles.providers}>
               {OAuthProviders.map(({ icon, id, label }) => {
                 const Icon = () => (
@@ -211,13 +211,13 @@ const OAuthSelectPlan = () => {
                         [styles.activeProvider]: id === providerSelected,
                       })}
                     />
-                    <Text className={styles.providerLabel}>{label}</Text>
+                    <RiText className={styles.providerLabel}>{label}</RiText>
                   </div>
                 )
               })}
             </section>
             <section className={styles.region}>
-              <Text className={styles.regionLabel}>Region</Text>
+              <RiText className={styles.regionLabel}>Region</RiText>
               <RiSelect
                 loading={loading}
                 disabled={loading || !regionOptions.length}
@@ -233,12 +233,12 @@ const OAuthSelectPlan = () => {
                 }}
               />
               {!regionOptions.length && (
-                <Text
+                <RiText
                   className={styles.selectDescription}
                   data-testid="select-region-select-description"
                 >
                   No regions available, try another vendor.
-                </Text>
+                </RiText>
               )}
             </section>
             <footer className={styles.footer}>

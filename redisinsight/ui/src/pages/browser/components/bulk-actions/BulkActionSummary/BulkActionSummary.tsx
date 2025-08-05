@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { millisecondsFormat } from 'uiSrc/utils'
 import { BulkActionsType } from 'uiSrc/constants'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 
 export interface Props {
@@ -19,7 +19,7 @@ export interface Props {
 const SummaryContainer = styled(RiRow)`
   padding-top: 18px;
 `
-const SummaryValue = styled(Text)`
+const SummaryValue = styled(RiText)`
   font-size: 18px !important;
   line-height: 24px;
   font-weight: 500 !important;

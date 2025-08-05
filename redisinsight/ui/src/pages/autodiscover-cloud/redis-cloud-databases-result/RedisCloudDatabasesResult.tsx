@@ -21,8 +21,8 @@ import {
   RiFormField,
 } from 'uiSrc/components/base/forms'
 import { RiSearchInput } from 'uiSrc/components/base/inputs'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -69,7 +69,7 @@ const RedisCloudDatabaseListResult = ({ columns, onBack, onView }: Props) => {
   }
 
   const SummaryText = () => (
-    <Text className={styles.subTitle}>
+    <RiText className={styles.subTitle}>
       <b>Summary: </b>
       {countSuccessAdded ? (
         <span>
@@ -80,15 +80,15 @@ const RedisCloudDatabaseListResult = ({ columns, onBack, onView }: Props) => {
       {countFailAdded ? (
         <span>Failed to add {countFailAdded} database(s).</span>
       ) : null}
-    </Text>
+    </RiText>
   )
 
   return (
     <AutodiscoveryPageTemplate>
       <div className="databaseContainer">
-        <Title size="XXL" className={styles.title} data-testid="title">
+        <RiTitle size="XXL" className={styles.title} data-testid="title">
           Redis Enterprise Databases Added
-        </Title>
+        </RiTitle>
         <Flex align="end" gap="s">
           <RiFlexItem grow>
             <MessageBar opened={!!countSuccessAdded || !!countFailAdded}>
@@ -118,7 +118,7 @@ const RedisCloudDatabaseListResult = ({ columns, onBack, onView }: Props) => {
               },
             ]}
           />
-          {!items.length && <Text>{message}</Text>}
+          {!items.length && <RiText>{message}</RiText>}
         </div>
       </div>
       <RiFlexItem padding={4}>

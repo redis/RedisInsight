@@ -6,7 +6,7 @@ import { ChartData } from 'uiSrc/components/charts/donut-chart/DonutChart'
 import { ModifiedClusterNodes } from 'uiSrc/pages/cluster-details/ClusterDetailsPage'
 import { formatBytes, Nullable } from 'uiSrc/utils'
 import { getPercentage, numberWithSpaces } from 'uiSrc/utils/numbers'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 
 import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
@@ -117,7 +117,7 @@ const ClusterDetailsGraphics = ({
           <div className={styles.chartCenter}>
             <div className={styles.chartTitle} data-testid="donut-title-memory">
               <RiIcon type="MemoryIconIcon" className={styles.icon} size="m" />
-              <Title size="XS">Memory</Title>
+              <RiTitle size="XS">Memory</RiTitle>
             </div>
             <hr className={styles.titleSeparator} />
             <div className={styles.centerCount}>
@@ -135,7 +135,7 @@ const ClusterDetailsGraphics = ({
           <div className={styles.chartCenter}>
             <div className={styles.chartTitle} data-testid="donut-title-keys">
               <RiIcon type="KeyIconIcon" className={styles.icon} size="m" />
-              <Title size="XS">Keys</Title>
+              <RiTitle size="XS">Keys</RiTitle>
             </div>
             <hr className={styles.titleSeparator} />
             <div className={styles.centerCount}>

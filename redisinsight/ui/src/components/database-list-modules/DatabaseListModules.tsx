@@ -9,7 +9,7 @@ import { ThemeContext } from 'uiSrc/contexts/themeContext'
 
 import { DEFAULT_MODULES_INFO, ModuleInfo } from 'uiSrc/constants/modules'
 import { RiIconButton } from 'uiSrc/components/base/forms'
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
@@ -90,17 +90,17 @@ const DatabaseListModules = React.memo((props: Props) => {
         <div className={styles.tooltipItem} key={content || abbreviation}>
           {hasIcon && <RiIcon type={icon} />}
           {!hasIcon && hasAbbreviation && (
-            <ColorText
+            <RiColorText
               className={cx(styles.icon, styles.abbr)}
               style={{ marginRight: 10 }}
             >
               {abbreviation}
-            </ColorText>
+            </RiColorText>
           )}
           {hasContent && (
-            <ColorText className={cx(styles.tooltipItemText)}>
+            <RiColorText className={cx(styles.tooltipItemText)}>
               {content}
-            </ColorText>
+            </RiColorText>
           )}
           <br />
         </div>
@@ -124,7 +124,7 @@ const DatabaseListModules = React.memo((props: Props) => {
           aria-labelledby={`${content}_module`}
         />
       ) : (
-        <ColorText
+        <RiColorText
           className={cx(styles.icon, styles.abbr, {
             [styles.circle]: inCircle,
           })}
@@ -133,7 +133,7 @@ const DatabaseListModules = React.memo((props: Props) => {
           aria-labelledby={`${content}_module`}
         >
           {abbreviation}
-        </ColorText>
+        </RiColorText>
       )}
     </span>
   )

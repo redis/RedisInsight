@@ -17,7 +17,7 @@ import {
 import { getPercentage, numberWithSpaces } from 'uiSrc/utils/numbers'
 
 import { RiSwitchInput } from 'uiSrc/components/base/inputs'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import {
   DatabaseAnalysis,
@@ -171,9 +171,9 @@ const SummaryPerData = ({
       data-testid="summary-per-data"
     >
       <div className="section-title-wrapper">
-        <Title size="M" className="section-title">
+        <RiTitle size="M" className="section-title">
           SUMMARY PER DATA TYPE
-        </Title>
+        </RiTitle>
         {extrapolation !== DEFAULT_EXTRAPOLATION && (
           <RiSwitchInput
             color="subdued"
@@ -211,7 +211,7 @@ const SummaryPerData = ({
                   className={styles.icon}
                   size="m"
                 />
-                <Title size="XS">Memory</Title>
+                <RiTitle size="XS">Memory</RiTitle>
               </div>
               <hr className={styles.titleSeparator} />
               <div
@@ -239,7 +239,7 @@ const SummaryPerData = ({
             <div className={styles.chartCenter}>
               <div className={styles.chartTitle} data-testid="donut-title-keys">
                 <RiIcon type="KeyIconIcon" className={styles.icon} size="m" />
-                <Title size="XS">Keys</Title>
+                <RiTitle size="XS">Keys</RiTitle>
               </div>
               <hr className={styles.titleSeparator} />
               <div

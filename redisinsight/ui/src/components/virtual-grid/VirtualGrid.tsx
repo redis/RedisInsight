@@ -8,7 +8,7 @@ import { VariableSizeGrid as Grid, GridChildComponentProps } from 'react-window'
 import { Maybe, Nullable } from 'uiSrc/utils'
 import { SortOrder } from 'uiSrc/constants'
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { RiProgressBarLoader } from 'uiSrc/components/base/display'
 import { IProps } from './interfaces'
@@ -371,9 +371,9 @@ const VirtualGrid = (props: IProps) => {
         </AutoSizer>
       )}
       {items.length === 1 && (
-        <Text className={styles.noItems} color="subdued">
+        <RiText className={styles.noItems} color="subdued">
           {loading ? loadingMsg : noItemsMessage}
-        </Text>
+        </RiText>
       )}
     </div>
   )

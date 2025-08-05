@@ -15,8 +15,8 @@ import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { InfoIcon } from 'uiSrc/components/base/icons'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiSwitchInput } from 'uiSrc/components/base/inputs'
 import { RiLink } from 'uiSrc/components/base/display'
 import ConsentOption from './ConsentOption'
@@ -224,15 +224,15 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
                   />
                 </RiFlexItem>
                 <RiFlexItem>
-                  <Text className={styles.label}>Use recommended settings</Text>
-                  <Text
+                  <RiText className={styles.label}>Use recommended settings</RiText>
+                  <RiText
                     size="s"
                     className={styles.smallText}
                     color="subdued"
                     style={{ marginTop: '12px' }}
                   >
                     Select to activate all listed options.
-                  </Text>
+                  </RiText>
                 </RiFlexItem>
               </RiRow>
             </RiFlexItem>
@@ -247,13 +247,13 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
         {!!privacyConsents.length && (
           <>
             <RiSpacer />
-            <Title size="M" className={styles.title}>
+            <RiTitle size="M" className={styles.title}>
               Privacy Settings
-            </Title>
+            </RiTitle>
             <RiSpacer size="m" />
-            <Text className={styles.smallText} size="s" color="subdued">
+            <RiText className={styles.smallText} size="s" color="subdued">
               To optimize your experience, Redis Insight uses third-party tools.
-            </Text>
+            </RiText>
             <RiSpacer />
           </>
         )}
@@ -268,9 +268,9 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
         {!!notificationConsents.length && (
           <>
             <RiSpacer size="m" />
-            <Title size="M" className={styles.title}>
+            <RiTitle size="M" className={styles.title}>
               Notifications
-            </Title>
+            </RiTitle>
             <RiSpacer size="m" />
           </>
         )}
@@ -287,7 +287,7 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
         <>
           <RiHorizontalRule margin="l" className={styles.requiredHR} />
           <RiSpacer size="m" />
-          <Text color="subdued" size="s" className={styles.smallText}>
+          <RiText color="subdued" size="s" className={styles.smallText}>
             Use of Redis Insight is governed by your signed agreement with
             Redis, or, if none, by the{' '}
             <RiLink
@@ -303,7 +303,7 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
             >
               Server Side Public License
             </RiLink>
-          </Text>
+          </RiText>
           <RiSpacer size="m" />
         </>
       ) : (

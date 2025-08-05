@@ -2,7 +2,7 @@ import React from 'react'
 import cx from 'classnames'
 
 import { ConnectionType } from 'uiSrc/slices/interfaces'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 
 import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
@@ -22,26 +22,26 @@ const EmptyMessagesList = ({
         [styles.contentCluster]: connectionType === ConnectionType.Cluster,
       })}
     >
-      <Text className={styles.title}>No messages to display</Text>
-      <Text className={styles.summary}>
+      <RiText className={styles.title}>No messages to display</RiText>
+      <RiText className={styles.summary}>
         Subscribe to the Channel to see all the messages published to your
         database
-      </Text>
-      <Text className={styles.alert}>
+      </RiText>
+      <RiText className={styles.alert}>
         <RiIcon type="ToastDangerIcon" className={styles.alertIcon} />
         Running in production may decrease performance and memory available
-      </Text>
+      </RiText>
       {connectionType === ConnectionType.Cluster && isSpublishNotSupported && (
         <>
           <div className={styles.separator} />
-          <Text
+          <RiText
             className={styles.cluster}
             data-testid="empty-messages-list-cluster"
           >
             {'Messages published with '}
             <span className={styles.badge}>SPUBLISH</span>
             {' will not appear in this channel'}
-          </Text>
+          </RiText>
         </>
       )}
     </div>

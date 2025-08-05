@@ -1,9 +1,9 @@
 import React from 'react'
 import { DurationUnits } from 'uiSrc/constants'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import { convertNumberByUnits } from 'uiSrc/pages/slow-log/utils'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 
 import styles from '../styles.module.scss'
 
@@ -18,10 +18,10 @@ const EmptySlowLog = (props: Props) => {
   return (
     <div className={styles.noSlowLogWrapper} data-testid="empty-slow-log">
       <div className={styles.noSlowLogText}>
-        <Title size="M" className={styles.noFoundTitle}>
+        <RiTitle size="M" className={styles.noFoundTitle}>
           No Slow Logs found
-        </Title>
-        <Text color="subdued">
+        </RiTitle>
+        <RiText color="subdued">
           Either no commands exceeding&nbsp;
           {numberWithSpaces(
             convertNumberByUnits(slowlogLogSlowerThan, durationUnit),
@@ -31,7 +31,7 @@ const EmptySlowLog = (props: Props) => {
             ? DurationUnits.mSeconds
             : DurationUnits.microSeconds}
           &nbsp;were found or Slow Log is disabled on the server.
-        </Text>
+        </RiText>
       </div>
     </div>
   )

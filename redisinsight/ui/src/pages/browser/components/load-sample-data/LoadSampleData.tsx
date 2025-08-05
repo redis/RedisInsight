@@ -13,7 +13,7 @@ import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { PlayFilledIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
@@ -70,12 +70,12 @@ const LoadSampleData = (props: Props) => {
           <RiIcon type="ToastDangerIcon" className={styles.popoverIcon} />
         </RiFlexItem>
         <RiFlexItem>
-          <Text>Execute commands in bulk</Text>
+          <RiText>Execute commands in bulk</RiText>
           <RiSpacer size="s" />
-          <Text color="subdued" size="s">
+          <RiText color="subdued" size="s">
             All commands from the file will be automatically executed against
             your database. Avoid executing them in production databases.
-          </Text>
+          </RiText>
           <RiSpacer size="s" />
           <RiRow justify="end">
             <RiFlexItem>

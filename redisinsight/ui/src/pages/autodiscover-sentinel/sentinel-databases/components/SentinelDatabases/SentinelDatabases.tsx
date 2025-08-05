@@ -21,8 +21,8 @@ import {
 } from 'uiSrc/components/base/forms'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { RiSearchInput } from 'uiSrc/components/base/inputs'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import styles from '../../../styles.module.scss'
 
@@ -141,10 +141,10 @@ const SentinelDatabases = ({
         </RiSecondaryButton>
       }
     >
-      <Text size="m">
+      <RiText size="m">
         Your changes have not been saved.&#10;&#13; Do you want to proceed to
         the list of databases?
-      </Text>
+      </RiText>
       <br />
       <div>
         <RiDestructiveButton
@@ -197,17 +197,17 @@ const SentinelDatabases = ({
   return (
     <AutodiscoveryPageTemplate>
       <div className="databaseContainer">
-        <Title size="XXL" className={styles.title} data-testid="title">
+        <RiTitle size="XXL" className={styles.title} data-testid="title">
           Auto-Discover Redis Sentinel Primary Groups
-        </Title>
+        </RiTitle>
 
         <RiRow align="end" gap="s">
           <RiFlexItem grow>
-            <Text color="subdued" className={styles.subTitle} component="span">
+            <RiText color="subdued" className={styles.subTitle} component="span">
               Redis Sentinel instance found. <br />
               Here is a list of primary groups your Sentinel instance is
               managing. Select the primary group(s) you want to add:
-            </Text>
+            </RiText>
           </RiFlexItem>
           <RiFlexItem>
             <RiFormField className={styles.searchForm}>
@@ -234,11 +234,11 @@ const SentinelDatabases = ({
             ]}
             onRowClick={selectionValue.onSelectionChange}
           />
-          {!items.length && <Text color="subdued">{message}</Text>}
+          {!items.length && <RiText color="subdued">{message}</RiText>}
           {!masters.length && (
-            <Text className={styles.notFoundMsg} color="subdued">
+            <RiText className={styles.notFoundMsg} color="subdued">
               {notMastersMsg}
-            </Text>
+            </RiText>
           )}
         </div>
       </div>

@@ -4,7 +4,7 @@ import parse from 'html-react-parser'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiSwitchInput } from 'uiSrc/components/base/inputs'
 
 import { ItemDescription } from './components'
@@ -33,7 +33,7 @@ const ConsentOption = (props: Props) => {
     <RiFlexItem key={consent.agreementName} grow>
       {isSettingsPage && consent.description && (
         <>
-          <Text
+          <RiText
             size="s"
             className={styles.smallText}
             color="subdued"
@@ -43,7 +43,7 @@ const ConsentOption = (props: Props) => {
               description={consent.description}
               withLink={consent.linkToPrivacyPolicy}
             />
-          </Text>
+          </RiText>
           <RiSpacer size="m" />
         </>
       )}
@@ -59,9 +59,9 @@ const ConsentOption = (props: Props) => {
           />
         </RiFlexItem>
         <RiFlexItem>
-          <Text className={styles.smallText}>{parse(consent.label)}</Text>
+          <RiText className={styles.smallText}>{parse(consent.label)}</RiText>
           {!isSettingsPage && consent.description && (
-            <Text
+            <RiText
               size="s"
               className={styles.smallText}
               color="subdued"
@@ -71,7 +71,7 @@ const ConsentOption = (props: Props) => {
                 description={consent.description}
                 withLink={consent.linkToPrivacyPolicy}
               />
-            </Text>
+            </RiText>
           )}
         </RiFlexItem>
       </RiRow>

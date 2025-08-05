@@ -19,9 +19,9 @@ import { FeatureFlagComponent } from 'uiSrc/components'
 import { RiPopover } from 'uiSrc/components/base'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import { SupportIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiLink } from 'uiSrc/components/base/display'
 import {
   RiSideBarItem,
@@ -95,9 +95,9 @@ const HelpMenu = () => {
       button={HelpMenuButton}
     >
       <div className={styles.popover} data-testid="help-center">
-        <Title size="XS" className={styles.helpMenuTitle}>
+        <RiTitle size="XS" className={styles.helpMenuTitle}>
           Help Center
-        </Title>
+        </RiTitle>
         <RiSpacer size="l" />
         <RiRow
           className={styles.helpMenuItems}
@@ -115,27 +115,27 @@ const HelpMenu = () => {
               >
                 <RiIcon type="GithubHelpCenterIcon" size="xxl" />
                 <RiSpacer size="m" />
-                <Text
+                <RiText
                   size="xs"
                   textAlign="center"
                   className={styles.helpMenuText}
                 >
                   Provide <br /> Feedback
-                </Text>
+                </RiText>
               </RiLink>
             </RiFlexItem>
           </FeatureFlagComponent>
           <RiFlexItem className={styles.helpMenuItemRow} grow={4}>
             <div className={styles.helpMenuItemLink}>
               <RiIcon type="KeyboardShortcutsIcon" size="l" />
-              <Text
+              <RiText
                 size="xs"
                 className={styles.helpMenuTextLink}
                 onClick={() => onKeyboardShortcutClick()}
                 data-testid="shortcuts-btn"
               >
                 Keyboard Shortcuts
-              </Text>
+              </RiText>
             </div>
 
             <div className={styles.helpMenuItemLink}>
@@ -154,22 +154,22 @@ const HelpMenu = () => {
                 target="_blank"
                 data-testid="release-notes-btn"
               >
-                <Text size="xs" className={styles.helpMenuTextLink}>
+                <RiText size="xs" className={styles.helpMenuTextLink}>
                   Release Notes
-                </Text>
+                </RiText>
               </RiLink>
             </div>
             <FeatureFlagComponent name={FeatureFlags.envDependent}>
               <div className={styles.helpMenuItemLink}>
                 <RiIcon type="LightBulbIcon" size="l" />
-                <Text
+                <RiText
                   size="xs"
                   className={styles.helpMenuTextLink}
                   onClick={() => onResetOnboardingClick()}
                   data-testid="reset-onboarding-btn"
                 >
                   Reset Onboarding
-                </Text>
+                </RiText>
               </div>
             </FeatureFlagComponent>
           </RiFlexItem>

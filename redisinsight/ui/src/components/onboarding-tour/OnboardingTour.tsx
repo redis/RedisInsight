@@ -14,10 +14,10 @@ import {
   RiPrimaryButton,
   RiSecondaryButton,
 } from 'uiSrc/components/base/forms'
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiSrc/components/base/text'
 import { RiTourStep } from 'uiSrc/components/base/display'
 import { RiCol, RiRow } from 'uiSrc/components/base/layout'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import { Props as OnboardingWrapperProps } from './OnboardingTourWrapper'
 
 import styles from './styles.module.scss'
@@ -100,9 +100,9 @@ const OnboardingTour = (props: Props) => {
           data-testid="close-tour-btn"
         />
       )}
-      <Title size="XS" data-testid="step-title">
+      <RiTitle size="XS" data-testid="step-title">
         {title}
-      </Title>
+      </RiTitle>
     </RiCol>
   )
 
@@ -112,9 +112,9 @@ const OnboardingTour = (props: Props) => {
         {content}
       </div>
       <RiRow className={styles.footer} align="center" justify="between">
-        <ColorText color="subdued" className={styles.stepCount}>
+        <RiColorText color="subdued" className={styles.stepCount}>
           {currentStep} of {totalSteps}
-        </ColorText>
+        </RiColorText>
         <RiRow grow={false} gap="m">
           {currentStep > 1 && (
             <RiSecondaryButton

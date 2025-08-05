@@ -27,7 +27,7 @@ import {
 } from 'uiSrc/components'
 import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { RefreshIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { ColorText, Text } from 'uiSrc/components/base/text'
+import { RiColorText, RiText } from 'uiSrc/components/base/text'
 import { RiCol, RiRow } from 'uiSrc/components/base/layout'
 import styles from './styles.module.scss'
 
@@ -106,16 +106,16 @@ const BulkUpload = (props: Props) => {
       {!isCompleted ? (
         <RiCol gap="l" className={styles.content} align="start">
           <RiRow align="start" grow={false}>
-            <Text color="subdued">
+            <RiText color="subdued">
               Upload the text file with the list of Redis commands
-            </Text>
+            </RiText>
             <RiTooltip
               content={
                 <>
-                  <Text size="xs">SET Key0 Value0</Text>
-                  <Text size="xs">SET Key1 Value1</Text>
-                  <Text size="xs">...</Text>
-                  <Text size="xs">SET KeyN ValueN</Text>
+                  <RiText size="xs">SET Key0 Value0</RiText>
+                  <RiText size="xs">SET Key1 Value1</RiText>
+                  <RiText size="xs">...</RiText>
+                  <RiText size="xs">SET KeyN ValueN</RiText>
                 </>
               }
               data-testid="bulk-upload-tooltip-example"
@@ -139,13 +139,13 @@ const BulkUpload = (props: Props) => {
             aria-label="Select or drag and drop file"
           />
           {isInvalid && (
-            <ColorText
+            <RiColorText
               color="danger"
               className={styles.errorFileMsg}
               data-testid="input-file-error-msg"
             >
               File should not exceed {MAX_MB_FILE} MB
-            </ColorText>
+            </RiColorText>
           )}
           <UploadWarning />
         </RiCol>
@@ -198,7 +198,7 @@ const BulkUpload = (props: Props) => {
               </RiPrimaryButton>
             }
           >
-            <Text
+            <RiText
               color="subdued"
               className={styles.containerPopover}
               data-testid="bulk-action-tooltip"
@@ -219,7 +219,7 @@ const BulkUpload = (props: Props) => {
               >
                 Upload
               </RiPrimaryButton>
-            </Text>
+            </RiText>
           </RiPopover>
         ) : (
           <RiPrimaryButton

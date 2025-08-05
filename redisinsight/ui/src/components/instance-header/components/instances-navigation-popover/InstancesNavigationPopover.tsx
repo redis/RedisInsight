@@ -12,7 +12,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { localStorageService } from 'uiSrc/services'
 import { filterAndSort } from 'uiSrc/utils'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { RiTabs, TabInfo } from 'uiSrc/components/base/layout'
 import { RiPopover } from 'uiSrc/components/base'
@@ -117,7 +117,7 @@ const InstancesNavigationPopover = ({ name }: Props) => {
       isOpen={isPopoverOpen}
       closePopover={() => showPopover()}
       button={
-        <Text
+        <RiText
           className={styles.showPopoverBtn}
           onClick={() => showPopover()}
           data-testid="nav-instance-popover-btn"
@@ -126,7 +126,7 @@ const InstancesNavigationPopover = ({ name }: Props) => {
           <span>
             <RiIcon color="primary500" type="CaretDownIcon" />
           </span>
-        </Text>
+        </RiText>
       }
     >
       <div className={styles.wrapper}>
@@ -161,9 +161,9 @@ const InstancesNavigationPopover = ({ name }: Props) => {
             <RiSpacer size="m" />
             <Divider />
             <div className={styles.footerContainer}>
-              <Text className={styles.homePageLink} onClick={goHome}>
+              <RiText className={styles.homePageLink} onClick={goHome}>
                 {btnLabel}
-              </Text>
+              </RiText>
             </div>
           </div>
         </div>

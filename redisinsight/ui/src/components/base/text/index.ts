@@ -1,4 +1,4 @@
-export { Text } from './Text'
-export { ColorText } from './ColorText'
-export { HealthText } from './HealthText'
-export { Title } from './Title'
+export { RiText } from './RiText'
+export { RiColorText } from './RiColorText'
+export { RiHealthText } from './RiHealthText'
+export { RiTitle } from './RiTitle'

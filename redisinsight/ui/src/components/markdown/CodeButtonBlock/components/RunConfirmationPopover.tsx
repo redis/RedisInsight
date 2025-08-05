@@ -12,8 +12,8 @@ import {
   RiSecondaryButton,
   RiCheckbox,
 } from 'uiSrc/components/base/forms'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiText } from 'uiSrc/components/base/text'
 import styles from '../styles.module.scss'
 
 interface Props {
@@ -49,12 +49,12 @@ const RunConfirmationPopover = ({ onApply }: Props) => {
 
   return (
     <>
-      <Title size="XS">Run commands</Title>
+      <RiTitle size="XS">Run commands</RiTitle>
       <RiSpacer size="s" />
-      <Text size="s">
+      <RiText size="s">
         This tutorial will change data in your database, are you sure you want
         to run commands in this database?
-      </Text>
+      </RiText>
       <RiSpacer size="s" />
       <RiCheckbox
         id="showAgain"

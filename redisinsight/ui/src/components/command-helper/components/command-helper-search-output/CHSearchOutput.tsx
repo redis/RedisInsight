@@ -9,7 +9,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { ColorText, Text } from 'uiSrc/components/base/text'
+import { RiColorText, RiText } from 'uiSrc/components/base/text'
 import { RiLink } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
@@ -45,25 +45,25 @@ const CHSearchOutput = ({ searchedCommands }: Props) => {
         args,
       ).join(' ')
       return (
-        <Text
+        <RiText
           size="s"
           color="subdued"
           className={styles.description}
           data-testid={`cli-helper-output-args-${command}`}
         >
           {argString}
-        </Text>
+        </RiText>
       )
     }
     return (
-      <Text
+      <RiText
         size="s"
         color="subdued"
         className={cx(styles.description, styles.summary)}
         data-testid={`cli-helper-output-summary-${command}`}
       >
         {ALL_REDIS_COMMANDS[command].summary}
-      </Text>
+      </RiText>
     )
   }
 
@@ -74,7 +74,7 @@ const CHSearchOutput = ({ searchedCommands }: Props) => {
           {searchedCommands.map((command: string) => (
             <RiRow gap="m" key={command}>
               <RiFlexItem style={{ flexShrink: 0 }}>
-                <Text
+                <RiText
                   key={command}
                   size="s"
                   data-testid={`cli-helper-output-title-${command}`}
@@ -83,7 +83,7 @@ const CHSearchOutput = ({ searchedCommands }: Props) => {
                   }}
                 >
                   <RiLink className={styles.title}>{command}</RiLink>
-                </Text>
+                </RiText>
               </RiFlexItem>
               <RiFlexItem style={{ flexDirection: 'row', overflow: 'hidden' }}>
                 {renderDescription(command)}
@@ -94,9 +94,9 @@ const CHSearchOutput = ({ searchedCommands }: Props) => {
       )}
       {searchedCommands.length === 0 && (
         <div className={styles.defaultScreen}>
-          <ColorText color="subdued" data-testid="search-cmds-no-results">
+          <RiColorText color="subdued" data-testid="search-cmds-no-results">
             No results found.
-          </ColorText>
+          </RiColorText>
         </div>
       )}
     </>

@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { isNull } from 'lodash'
 import { useSelector } from 'react-redux'
 
-import { Text, ColorText } from 'uiSrc/components/base/text'
+import { RiText, RiColorText } from 'uiSrc/components/base/text'
 
 import { numberWithSpaces, nullableNumberWithSpaces } from 'uiSrc/utils/numbers'
 import { KeyViewType } from 'uiSrc/slices/interfaces/keys'
@@ -54,10 +54,10 @@ const KeysSummary = (props: Props) => {
     <>
       {(!!totalItemsCount || isNull(totalItemsCount)) && (
         <div className={styles.content} data-testid="keys-summary">
-          <Text size="xs" component="div">
+          <RiText size="xs" component="div">
             {!!scanned && (
               <>
-                <ColorText>
+                <RiColorText>
                   <b>
                     {'Results: '}
                     <span data-testid="keys-number-of-results">
@@ -65,7 +65,7 @@ const KeysSummary = (props: Props) => {
                     </span>
                     {'. '}
                   </b>
-                  <ColorText color="subdued">
+                  <RiColorText color="subdued">
                     {'Scanned '}
                     <span data-testid="keys-number-of-scanned">
                       {notAccurateScanned}
@@ -81,8 +81,8 @@ const KeysSummary = (props: Props) => {
                         { [styles.loadingShow]: loading },
                       ])}
                     />
-                  </ColorText>
-                </ColorText>
+                  </RiColorText>
+                </RiColorText>
                 {showScanMore && (
                   <ScanMore
                     withAlert
@@ -99,23 +99,23 @@ const KeysSummary = (props: Props) => {
             )}
 
             {!scanned && (
-              <Text size="xs">
+              <RiText size="xs">
                 <b>
                   {'Total: '}
                   {nullableNumberWithSpaces(totalItemsCount)}
                 </b>
-              </Text>
+              </RiText>
             )}
-          </Text>
+          </RiText>
           {viewType === KeyViewType.Tree && (
             <KeyTreeSettings loading={loading} />
           )}
         </div>
       )}
       {loading && !totalItemsCount && !isNull(totalItemsCount) && (
-        <Text size="xs" data-testid="scanning-text">
+        <RiText size="xs" data-testid="scanning-text">
           Scanning...
-        </Text>
+        </RiText>
       )}
     </>
   )

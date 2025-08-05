@@ -23,9 +23,9 @@ import {
 } from 'uiSrc/components/base/forms'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { Pages } from 'uiSrc/constants'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import { RiSearchInput } from 'uiSrc/components/base/inputs'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import styles from '../styles.module.scss'
 
 export interface Props {
@@ -150,10 +150,10 @@ const RedisCloudDatabasesPage = ({
         </RiSecondaryButton>
       }
     >
-      <Text size="m">
+      <RiText size="m">
         Your changes have not been saved.&#10;&#13; Do you want to proceed to
         the list of databases?
-      </Text>
+      </RiText>
       <br />
       <div>
         <RiDestructiveButton
@@ -194,18 +194,18 @@ const RedisCloudDatabasesPage = ({
   return (
     <AutodiscoveryPageTemplate>
       <div className="databaseContainer">
-        <Title size="XXL" className={styles.title} data-testid="title">
+        <RiTitle size="XXL" className={styles.title} data-testid="title">
           Redis Cloud Databases
-        </Title>
+        </RiTitle>
 
         <RiRow align="end" gap="s">
           <RiFlexItem grow>
-            <Text color="subdued" className={styles.subTitle} component="span">
+            <RiText color="subdued" className={styles.subTitle} component="span">
               These are {items.length > 1 ? 'databases ' : 'database '}
               in your Redis Cloud. Select the
               {items.length > 1 ? ' databases ' : ' database '} that you want to
               add.
-            </Text>
+            </RiText>
           </RiFlexItem>
         </RiRow>
         <RiFlexItem>
@@ -232,7 +232,7 @@ const RedisCloudDatabasesPage = ({
             ]}
             onRowClick={selectionValue.onSelectionChange}
           />
-          {!items.length && <Text>{message}</Text>}
+          {!items.length && <RiText>{message}</RiText>}
         </div>
       </div>
       <RiFlexItem padding={4}>

@@ -20,7 +20,7 @@ import { TutorialsIds } from 'uiSrc/constants'
 
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiEmptyButton } from 'uiSrc/components/base/forms'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import { RiImage } from 'uiSrc/components/base/display'
 import LoadSampleData from '../load-sample-data'
 
@@ -61,9 +61,9 @@ const NoKeysFound = (props: Props) => {
     <div className={styles.container} data-testid="no-result-found-msg">
       <RiImage className={styles.img} src={TelescopeImg} alt="no results" />
       <RiSpacer />
-      <Title className={styles.title} size="S">
+      <RiTitle className={styles.title} size="S">
         Let&apos;s start working
-      </Title>
+      </RiTitle>
       <RiSpacer />
       <div className={styles.actions}>
         <LoadSampleData onSuccess={onSuccessLoadData} />

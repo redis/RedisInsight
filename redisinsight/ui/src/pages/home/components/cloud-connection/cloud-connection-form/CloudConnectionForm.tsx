@@ -15,7 +15,7 @@ import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { OAuthAutodiscovery } from 'uiSrc/components/oauth/oauth-sso'
 import { MessageCloudApiKeys } from 'uiSrc/pages/home/components/form/Messages'
 import { RiCol, RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { WindowEvent } from 'uiSrc/components/base/utils/WindowEvent'
+import { RiWindowEvent } from 'uiSrc/components/base/utils/RiWindowEvent'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import {
@@ -24,7 +24,7 @@ import {
   RiFormField,
   RiRadioGroup,
 } from 'uiSrc/components/base/forms'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiTextInput } from 'uiSrc/components/base/inputs'
 import { ICloudConnectionSubmit } from '../CloudConnectionFormWrapper'
 
@@ -184,7 +184,7 @@ const CloudConnectionForm = (props: Props) => {
     <div className={styles.cloudApi} data-testid="add-db_cloud-api">
       <MessageCloudApiKeys />
       <RiSpacer />
-      <WindowEvent event="keydown" handler={onKeyDown} />
+      <RiWindowEvent event="keydown" handler={onKeyDown} />
       <form onSubmit={formik.handleSubmit}>
         <RiRow responsive>
           <RiFlexItem>
@@ -232,9 +232,9 @@ const CloudConnectionForm = (props: Props) => {
       <FeatureFlagComponent name={FeatureFlags.cloudSso}>
         <RiCol gap="m">
           <RiFlexItem grow>
-            <Text color="subdued" size="s">
+            <RiText color="subdued" size="s">
               Connect with:
-            </Text>
+            </RiText>
           </RiFlexItem>
           <RiFlexItem grow>
             <RiRadioGroup

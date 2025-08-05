@@ -13,7 +13,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { autoFillFormDetails } from 'uiSrc/pages/home/utils'
 
 import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import ClusterConnectionForm from './cluster-connection-form/ClusterConnectionForm'
 
 export interface Props {
@@ -37,7 +37,7 @@ const ClusterConnectionFormWrapper = ({ onClose }: Props) => {
   const { loading, credentials } = useSelector(clusterSelector)
 
   useEffect(() => {
-    setModalHeader(<Title size="M">Redis Software</Title>, true)
+    setModalHeader(<RiTitle size="M">Redis Software</RiTitle>, true)
 
     return () => {
       setModalHeader(null)

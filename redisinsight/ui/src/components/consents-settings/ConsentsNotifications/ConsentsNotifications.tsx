@@ -9,7 +9,7 @@ import {
   userSettingsSelector,
 } from 'uiSrc/slices/user/user-settings'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import ConsentOption from '../ConsentOption'
 import { IConsent, ConsentCategories } from '../ConsentsSettings'
 
@@ -90,7 +90,7 @@ const ConsentsNotifications = () => {
   return (
     <form onSubmit={formik.handleSubmit} data-testid="consents-settings-form">
       <div className={styles.consentsWrapper}>
-        <Title size="XS">Notifications</Title>
+        <RiTitle size="XS">Notifications</RiTitle>
         {notificationConsents.map((consent: IConsent) => (
           <ConsentOption
             consent={consent}

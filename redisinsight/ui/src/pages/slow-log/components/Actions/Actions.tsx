@@ -17,7 +17,7 @@ import {
   RiIconButton,
   RiSecondaryButton,
 } from 'uiSrc/components/base/forms'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 
 import SlowLogConfig from '../SlowLogConfig'
 import styles from './styles.module.scss'
@@ -105,17 +105,17 @@ const Actions = (props: Props) => {
         className={styles.warningIcon}
       />
       <div>
-        <Text size="m" component="div">
+        <RiText size="m" component="div">
           <h4 className={styles.popoverTitle}>
             <b>Clear Slow Log?</b>
           </h4>
-          <Text size="xs" color="subdued">
+          <RiText size="xs" color="subdued">
             Slow Log will be cleared for&nbsp;
             <span className={styles.popoverDBName}>{name}</span>
             <br />
             NOTE: This is server configuration
-          </Text>
-        </Text>
+          </RiText>
+        </RiText>
         <div className={styles.popoverFooter}>
           <RiDestructiveButton
             size="small"

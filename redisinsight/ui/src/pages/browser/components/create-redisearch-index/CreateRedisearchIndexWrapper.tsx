@@ -4,8 +4,8 @@ import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { RiCol, RiFlexItem } from 'uiSrc/components/base/layout'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiLink } from 'uiSrc/components/base/display'
 import { RiTooltip } from 'uiSrc/components'
 import CreateRedisearchIndex from './CreateRedisearchIndex'
@@ -27,9 +27,9 @@ const CreateRedisearchIndexWrapper = ({
     <RiCol justify="center" className={cx(styles.container, 'relative')}>
       <div className={styles.headerWrapper}>
         <RiFlexItem grow style={{ marginBottom: '16px' }}>
-          <Title size="M" className={styles.header}>
+          <RiTitle size="M" className={styles.header}>
             New Index
-          </Title>
+          </RiTitle>
           {!arePanelsCollapsed && (
             <RiTooltip
               content="Close"
@@ -47,7 +47,7 @@ const CreateRedisearchIndexWrapper = ({
           )}
         </RiFlexItem>
         <RiFlexItem grow className={styles.header}>
-          <Text size="s">
+          <RiText size="s">
             Use CLI or Workbench to create more advanced indexes. See more
             details in the{' '}
             <RiLink
@@ -60,7 +60,7 @@ const CreateRedisearchIndexWrapper = ({
             >
               documentation.
             </RiLink>
-          </Text>
+          </RiText>
         </RiFlexItem>
       </div>
       <CreateRedisearchIndex

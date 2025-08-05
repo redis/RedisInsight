@@ -14,8 +14,8 @@ import {
   RiSecondaryButton,
 } from 'uiSrc/components/base/forms'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiText } from 'uiSrc/components/base/text'
 import { VALID_TAG_KEY_REGEX, VALID_TAG_VALUE_REGEX } from './constants'
 import { TagInputField } from './TagInputField'
 import { getInvalidTagErrors } from './utils'
@@ -106,11 +106,11 @@ export const ManageTagsModal = ({
       className={styles.manageTagsModal}
       header={
         <div className={styles.header}>
-          <Title size="M">Manage tags for {instance.name}</Title>
+          <RiTitle size="M">Manage tags for {instance.name}</RiTitle>
           <RiSpacer size="s" />
-          <Text size="s" color="subdued">
+          <RiText size="s" color="subdued">
             Tags are key-value pairs that let you categorize your databases.
-          </Text>
+          </RiText>
         </div>
       }
       footer={
@@ -122,10 +122,10 @@ export const ManageTagsModal = ({
                 color="attention600"
                 size="m"
               />
-              <Text size="m">
+              <RiText size="m">
                 Tag changes in Redis Insight apply locally and are not synced
                 with Redis {isCloudDb ? 'Cloud' : 'Software'}.
-              </Text>
+              </RiText>
             </div>
           )}
           <div className={styles.footer}>

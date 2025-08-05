@@ -22,7 +22,7 @@ import FeatureFlagComponent from 'uiSrc/components/feature-flag-component'
 import { FeatureFlags } from 'uiSrc/constants'
 
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { HideFor, ShowFor } from 'uiSrc/components/base/utils/ShowHide'
+import { RiHideFor, RiShowFor } from 'uiSrc/components/base/utils'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 import {
   CliIcon,
@@ -149,12 +149,12 @@ const BottomGroupMinimized = () => {
           data-testid="user-survey-link"
         >
           <RiIcon type="SurveyIcon" className={styles.surveyIcon} />
-          <HideFor sizes={['xs', 's']}>
+          <RiHideFor sizes={['xs', 's']}>
             <span>Let us know what you think</span>
-          </HideFor>
-          <ShowFor sizes={['xs', 's']}>
+          </RiHideFor>
+          <RiShowFor sizes={['xs', 's']}>
             <span>Survey</span>
-          </ShowFor>
+          </RiShowFor>
         </a>
       </FeatureFlagComponent>
     </div>

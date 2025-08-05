@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 import TemplateForm from 'uiSrc/pages/rdi/pipeline-management/components/template-form'
 import { fetchPipelineStrategies } from 'uiSrc/slices/rdi/pipeline'
 import { RdiPipelineTabs } from 'uiSrc/slices/interfaces'
-import { OutsideClickDetector } from 'uiSrc/components/base/utils'
+import { RiOutsideClickDetector } from 'uiSrc/components/base/utils'
 
 import { RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { RiPopover } from 'uiSrc/components/base'
@@ -44,7 +44,7 @@ const TemplatePopover = (props: Props) => {
   }
 
   return (
-    <OutsideClickDetector onOutsideClick={handleClose}>
+    <RiOutsideClickDetector onOutsideClick={handleClose}>
       <RiPopover
         ownFocus
         anchorPosition="downRight"
@@ -72,7 +72,7 @@ const TemplatePopover = (props: Props) => {
           value={value}
         />
       </RiPopover>
-    </OutsideClickDetector>
+    </RiOutsideClickDetector>
   )
 }
 

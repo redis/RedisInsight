@@ -34,7 +34,7 @@ import {
   RedisInsightLink,
 } from 'uiSrc/components/markdown'
 import { RiEmptyButton } from 'uiSrc/components/base/forms'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { getTutorialSection } from '../../utils'
 import { EmptyPrompt, Pagination, Code } from '..'
 
@@ -193,12 +193,12 @@ const InternalPage = (props: Props) => {
           >
             <div data-testid="explore-capability-popover">
               <RocketIcon className={styles.rocketIcon} />
-              <Text className={styles.popoverTitle}>Explore Redis</Text>
-              <Text className={styles.popoverText}>
+              <RiText className={styles.popoverTitle}>Explore Redis</RiText>
+              <RiText className={styles.popoverText}>
                 {'You expressed interest in learning about the '}
                 <b>{tutorialCapability?.name}</b>. Try this tutorial to get
                 started.
-              </Text>
+              </RiText>
             </div>
           </RiPopover>
         </div>
@@ -206,9 +206,9 @@ const InternalPage = (props: Props) => {
           <RiHorizontalRule margin="xs" />
         </div>
         <div>
-          <Text className={styles.pageTitle} color="default">
+          <RiText className={styles.pageTitle} color="default">
             {title?.toUpperCase()}
-          </Text>
+          </RiText>
         </div>
       </div>
       <div

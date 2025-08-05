@@ -35,7 +35,7 @@ import {
   RiPrimaryButton,
   RiFormField,
 } from 'uiSrc/components/base/forms'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { RiTextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
@@ -237,7 +237,7 @@ const DatabaseAlias = (props: Props) => {
                   </RiFlexItem>
                 </RiGrid>
               ) : (
-                <Text
+                <RiText
                   className={cx(styles.alias, {
                     [styles.aliasEditing]: !isCloneMode,
                   })}
@@ -257,7 +257,7 @@ const DatabaseAlias = (props: Props) => {
                       className={cx(styles.aliasEditIcon)}
                     />
                   )}
-                </Text>
+                </RiText>
               )}
             </RiFlexItem>
           </RiRow>

@@ -7,7 +7,7 @@ import { toggleBrowserFullScreen } from 'uiSrc/slices/browser/keys'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import { RiIconButton } from 'uiSrc/components/base/forms'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import styles from './styles.module.scss'
 
@@ -59,13 +59,13 @@ export const NoKeySelected = (props: Props) => {
       </RiTooltip>
 
       <div className={styles.placeholder}>
-        <Text textAlign="center" color="subdued" size="s">
+        <RiText textAlign="center" color="subdued" size="s">
           {error ? (
             <span data-testid="no-keys-selected-text">{error}</span>
           ) : (
             !!keysLastRefreshTime && <NoKeysSelectedMessage />
           )}
-        </Text>
+        </RiText>
       </div>
     </>
   )

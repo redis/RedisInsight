@@ -22,8 +22,8 @@ import CloudIcon from 'uiSrc/assets/img/oauth/cloud_centered.svg?react'
 import { OAuthSsoHandlerDialog } from 'uiSrc/components'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -73,13 +73,13 @@ const OAuthAutodiscovery = (props: Props) => {
 
     return (
       <div className={styles.container} data-testid="oauth-container-import">
-        <Text className={styles.text} color="subdued">
+        <RiText className={styles.text} color="subdued">
           Use{' '}
           <strong>
             {currentAccountName?.name} #{currentAccountId}
           </strong>{' '}
           account to auto-discover subscriptions and add your databases.
-        </Text>
+        </RiText>
         <RiPrimaryButton
           onClick={handleClickDiscover}
           disabled={isDiscoverDisabled}
@@ -143,17 +143,17 @@ const OAuthAutodiscovery = (props: Props) => {
       >
         {(form: React.ReactNode) => (
           <>
-            <Text className={styles.text} color="subdued">
+            <RiText className={styles.text} color="subdued">
               Discover subscriptions and add your databases. A new Redis Cloud
               account will be created for you if you don’t have one.
-            </Text>
+            </RiText>
             <RiSpacer size="m" />
             <CreateFreeDb />
             <RiSpacer size="xl" />
-            <Text>Get started with</Text>
-            <Title className={styles.title} size="L">
+            <RiText>Get started with</RiText>
+            <RiTitle className={styles.title} size="L">
               Redis Cloud account
-            </Title>
+            </RiTitle>
             <RiSpacer size="xl" />
             {form}
             <RiSpacer size="xxl" />

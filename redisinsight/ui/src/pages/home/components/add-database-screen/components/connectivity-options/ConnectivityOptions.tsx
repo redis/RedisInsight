@@ -15,7 +15,7 @@ import RocketIcon from 'uiSrc/assets/img/oauth/rocket.svg?react'
 import { RiCol, RiFlexItem, RiGrid } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiSecondaryButton } from 'uiSrc/components/base/forms'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 
 import { RiLink } from 'uiSrc/components/base/display'
@@ -71,9 +71,9 @@ const ConnectivityOptions = (props: Props) => {
   return (
     <>
       <section className={styles.cloudSection}>
-        <Title size="XS" className={styles.sectionTitle}>
+        <RiTitle size="XS" className={styles.sectionTitle}>
           Get started with Redis Cloud account
-        </Title>
+        </RiTitle>
         <RiSpacer />
         <RiGrid gap="l" columns={3} responsive>
           <RiFlexItem>
@@ -122,9 +122,9 @@ const ConnectivityOptions = (props: Props) => {
       </section>
       <RiSpacer size="xxl" />
       <section>
-        <Title size="XS" className={styles.sectionTitle}>
+        <RiTitle size="XS" className={styles.sectionTitle}>
           More connectivity options
-        </Title>
+        </RiTitle>
         <RiSpacer />
         <RiGrid gap="l" responsive columns={3}>
           {CONNECTIVITY_OPTIONS.map(({ id, type, title, icon }) => (

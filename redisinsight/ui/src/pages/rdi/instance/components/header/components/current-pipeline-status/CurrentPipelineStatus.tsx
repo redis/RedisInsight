@@ -2,7 +2,7 @@ import React from 'react'
 import { PipelineState } from 'uiSrc/slices/interfaces'
 import { formatLongName, Maybe } from 'uiSrc/utils'
 import { AllIconsType, RiIcon, IconProps } from 'uiSrc/components/base/icons'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import { RiLoader } from 'uiSrc/components/base/display'
 import { RiTooltip } from 'uiSrc/components'
 import styles from './styles.module.scss'
@@ -57,7 +57,7 @@ const CurrentPipelineStatus = ({
 
   return (
     <div className={styles.stateWrapper}>
-      <Title size="XS">Pipeline State:</Title>
+      <RiTitle size="XS">Pipeline State:</RiTitle>
       {headerLoading ? (
         <RiLoader size="m" style={{ marginLeft: '8px' }} />
       ) : (

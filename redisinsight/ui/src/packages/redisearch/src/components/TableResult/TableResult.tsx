@@ -4,7 +4,7 @@ import cx from 'classnames'
 import { flatten, isArray, isEmpty, map, uniq } from 'lodash'
 import { RiTable, ColumnDefinition } from 'uiSrc/components/base/layout'
 
-import { ColorText } from 'uiSrc/components/base/text/ColorText'
+import { RiColorText } from 'uiSrc/components/base/text/RiColorText'
 import { RiIconButton } from 'uiSrc/components/base/forms/buttons'
 import { CopyIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
@@ -83,9 +83,9 @@ const TableResult = React.memo((props: Props) => {
                 content={formatLongName(value.toString())}
               >
                 <div className="copy-btn-wrapper">
-                  <ColorText className={cx('cell', 'test')}>
+                  <RiColorText className={cx('cell', 'test')}>
                     {cellContent}
-                  </ColorText>
+                  </RiColorText>
                   <RiIconButton
                     icon={CopyIcon}
                     aria-label="Copy result"

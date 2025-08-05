@@ -19,7 +19,7 @@ import { FeatureFlags, Pages } from 'uiSrc/constants'
 import { FeatureFlagComponent } from 'uiSrc/components'
 import { RiPopover } from 'uiSrc/components/base'
 import { getConfig } from 'uiSrc/config'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { UserProfileLink, RiLoader } from 'uiSrc/components/base/display'
 import { CloudUser } from 'apiSrc/modules/cloud/user/models'
@@ -134,17 +134,17 @@ const UserProfileBadge = (props: UserProfileBadgeProps) => {
             <FeatureFlagComponent
               name={FeatureFlags.envDependent}
               otherwise={
-                <Text
+                <RiText
                   className={styles.optionTitle}
                   data-testid="profile-title"
                 >
                   Account
-                </Text>
+                </RiText>
               }
             >
-              <Text className={styles.optionTitle} data-testid="profile-title">
+              <RiText className={styles.optionTitle} data-testid="profile-title">
                 Redis Cloud account
-              </Text>
+              </RiText>
             </FeatureFlagComponent>
             <div
               className={styles.accounts}
@@ -163,9 +163,9 @@ const UserProfileBadge = (props: UserProfileBadgeProps) => {
                   onClick={() => handleClickSelectAccount?.(id)}
                   data-testid={`profile-account-${id}${id === currentAccountId ? '-selected' : ''}`}
                 >
-                  <Text className={styles.accountNameId}>
+                  <RiText className={styles.accountNameId}>
                     <span className={styles.accountName}>{name}</span> #{id}
-                  </Text>
+                  </RiText>
                   {id === currentAccountId && (
                     <RiIcon
                       type="CheckThinIcon"
@@ -191,14 +191,14 @@ const UserProfileBadge = (props: UserProfileBadgeProps) => {
                   href={riDesktopLink}
                   data-testid="open-ri-desktop-link"
                 >
-                  <Text>Open in Redis Insight Desktop version</Text>
+                  <RiText>Open in Redis Insight Desktop version</RiText>
                 </UserProfileLink>
                 <UserProfileLink
                   target="_blank"
                   href={riConfig.app.smConsoleRedirect}
                   data-testid="cloud-admin-console-link"
                 >
-                  <Text>Back to Redis Cloud Admin console</Text>
+                  <RiText>Back to Redis Cloud Admin console</RiText>
                   <RiIcon
                     type="CloudIcon"
                     style={{ fill: 'none' }}
@@ -217,7 +217,7 @@ const UserProfileBadge = (props: UserProfileBadgeProps) => {
               onClick={handleClickImport}
               data-testid="profile-import-cloud-databases"
             >
-              <Text className={styles.optionTitle}>Import Cloud databases</Text>
+              <RiText className={styles.optionTitle}>Import Cloud databases</RiText>
               {isImportLoading ? (
                 <RiLoader className={styles.loadingSpinner} size="m" />
               ) : (
@@ -233,13 +233,13 @@ const UserProfileBadge = (props: UserProfileBadgeProps) => {
               data-testid="cloud-console-link"
             >
               <div className={styles.optionTitleWrapper}>
-                <Text className={styles.optionTitle}>Cloud Console</Text>
-                <Text
+                <RiText className={styles.optionTitle}>Cloud Console</RiText>
+                <RiText
                   className={cx('truncateText', styles.accountFullName)}
                   data-testid="account-full-name"
                 >
                   {name}
-                </Text>
+                </RiText>
               </div>
               <RiIcon
                 type="CloudIcon"
@@ -254,7 +254,7 @@ const UserProfileBadge = (props: UserProfileBadgeProps) => {
               onClick={handleClickLogout}
               data-testid="profile-logout"
             >
-              <Text className={styles.optionTitle}>Logout</Text>
+              <RiText className={styles.optionTitle}>Logout</RiText>
               <RiIcon type="ExportIcon" />
             </div>
           </FeatureFlagComponent>

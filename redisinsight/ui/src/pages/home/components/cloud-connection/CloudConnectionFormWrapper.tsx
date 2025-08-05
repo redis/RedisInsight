@@ -12,7 +12,7 @@ import { resetErrors } from 'uiSrc/slices/app/notifications'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import CloudConnectionForm from './cloud-connection-form'
 
 export interface Props {
@@ -33,7 +33,7 @@ const CloudConnectionFormWrapper = ({ onClose }: Props) => {
   const { setModalHeader } = useModalHeader()
 
   useEffect(() => {
-    setModalHeader(<Title size="M">Discover Cloud databases</Title>, true)
+    setModalHeader(<RiTitle size="M">Discover Cloud databases</RiTitle>, true)
 
     return () => {
       setModalHeader(null)

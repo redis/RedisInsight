@@ -11,8 +11,8 @@ import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { OnboardingStepName, OnboardingSteps } from 'uiSrc/constants/onboarding'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiEmptyButton, RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
@@ -54,14 +54,14 @@ const OnboardingStartPopover = () => {
       data-testid="onboarding-start-popover"
       style={{ display: 'none' }}
     >
-      <Title size="S">Take a quick tour of Redis Insight?</Title>
+      <RiTitle size="S">Take a quick tour of Redis Insight?</RiTitle>
       <RiSpacer size="s" />
-      <Text data-testid="onboarding-start-content">
+      <RiText data-testid="onboarding-start-content">
         Hi! Redis Insight has many tools that can help you to optimize the
         development process.
         <br />
         Would you like us to show them to you?
-      </Text>
+      </RiText>
       <div className={styles.onboardingActions}>
         <RiEmptyButton
           onClick={handleSkip}

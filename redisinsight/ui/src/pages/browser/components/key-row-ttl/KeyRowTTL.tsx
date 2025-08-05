@@ -4,7 +4,7 @@ import { isUndefined } from 'lodash'
 
 import { RiTooltip } from 'uiSrc/components'
 import { RiLoadingContent } from 'uiSrc/components/base/layout'
-import { ColorText, Text } from 'uiSrc/components/base/text'
+import { RiColorText, RiText } from 'uiSrc/components/base/text'
 import {
   Maybe,
   truncateNumberToDuration,
@@ -34,7 +34,7 @@ const KeyRowTTL = (props: Props) => {
   }
   if (ttl === -1) {
     return (
-      <ColorText
+      <RiColorText
         className={cx(styles.keyTTL, 'moveOnHoverKey', {
           hide: deletePopoverId === rowId,
         })}
@@ -42,11 +42,11 @@ const KeyRowTTL = (props: Props) => {
         data-testid={`ttl-${nameString}`}
       >
         No limit
-      </ColorText>
+      </RiColorText>
     )
   }
   return (
-    <Text
+    <RiText
       className={cx(styles.keyTTL, 'moveOnHoverKey', {
         hide: deletePopoverId === rowId,
       })}
@@ -74,7 +74,7 @@ const KeyRowTTL = (props: Props) => {
           <>{truncateNumberToFirstUnit(ttl)}</>
         </RiTooltip>
       </div>
-    </Text>
+    </RiText>
   )
 }
 

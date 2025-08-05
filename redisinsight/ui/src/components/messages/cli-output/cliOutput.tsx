@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 import { getRouterLinkProps } from 'uiSrc/services'
 import { getDbIndex } from 'uiSrc/utils'
 import { FeatureFlagComponent } from 'uiSrc/components'
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiSrc/components/base/text'
 import { FeatureFlags } from 'uiSrc/constants/featureFlags'
 import { RiLink } from 'uiSrc/components/base/display'
 import { RiEmptyButton } from 'uiSrc/components/base/forms'
@@ -35,9 +35,9 @@ export const InitOutputText = (
   'Connecting...',
   '\n\n',
   'Pinging Redis server on ',
-  <ColorText color="default" key={Math.random()}>
+  <RiColorText color="default" key={Math.random()}>
     {`${host}:${port}${getDbIndex(dbIndex)}`}
-  </ColorText>,
+  </RiColorText>,
 ]
 
 export const ConnectionSuccessOutputText = [
@@ -71,7 +71,7 @@ export const cliTexts = {
     </div>
   ),
   USE_PSUBSCRIBE_COMMAND: (path: string = '') => (
-    <ColorText color="danger" key={Date.now()} data-testid="user-pub-sub-link">
+    <RiColorText color="danger" key={Date.now()} data-testid="user-pub-sub-link">
       {'Use '}
       <RiLink
         {...getRouterLinkProps(path)}
@@ -81,7 +81,7 @@ export const cliTexts = {
         Pub/Sub
       </RiLink>
       {' to see the messages published to all channels in your database.'}
-    </ColorText>
+    </RiColorText>
   ),
   PSUBSCRIBE_COMMAND: (path: string = '') => (
     <FeatureFlagComponent
@@ -104,7 +104,7 @@ export const cliTexts = {
     </div>
   ),
   USE_PROFILER_TOOL: (onClick: () => void) => (
-    <ColorText color="danger" key={Date.now()}>
+    <RiColorText color="danger" key={Date.now()}>
       {'Use '}
       <RiEmptyButton
         onClick={onClick}
@@ -115,7 +115,7 @@ export const cliTexts = {
         Profiler
       </RiEmptyButton>
       {' tool to see all the requests processed by the server.'}
-    </ColorText>
+    </RiColorText>
   ),
   MONITOR_COMMAND: (onClick: () => void) => (
     <FeatureFlagComponent
@@ -126,7 +126,7 @@ export const cliTexts = {
     </FeatureFlagComponent>
   ),
   USE_PUB_SUB_TOOL: (path: string = '') => (
-    <ColorText color="danger" key={Date.now()} data-testid="user-pub-sub-link">
+    <RiColorText color="danger" key={Date.now()} data-testid="user-pub-sub-link">
       {'Use '}
       <RiLink
         {...getRouterLinkProps(path)}
@@ -136,7 +136,7 @@ export const cliTexts = {
         Pub/Sub
       </RiLink>
       {' tool to subscribe to channels.'}
-    </ColorText>
+    </RiColorText>
   ),
   SUBSCRIBE_COMMAND_CLI: (path: string = '') => (
     <FeatureFlagComponent
@@ -147,7 +147,7 @@ export const cliTexts = {
     </FeatureFlagComponent>
   ),
   HELLO3_COMMAND: () => (
-    <ColorText color="danger" key={Date.now()}>
+    <RiColorText color="danger" key={Date.now()}>
       {'Redis Insight does not support '}
       <RiLink
         href="https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md"
@@ -159,14 +159,14 @@ export const cliTexts = {
         RESP3
       </RiLink>
       {' at the moment, but we are working on it.'}
-    </ColorText>
+    </RiColorText>
   ),
   HELLO3_COMMAND_CLI: () => [cliTexts.HELLO3_COMMAND(), '\n'],
   CLI_ERROR_MESSAGE: (message: string) => [
     '\n',
-    <ColorText color="danger" key={Date.now()}>
+    <RiColorText color="danger" key={Date.now()}>
       {message}
-    </ColorText>,
+    </RiColorText>,
     '\n\n',
   ],
 }

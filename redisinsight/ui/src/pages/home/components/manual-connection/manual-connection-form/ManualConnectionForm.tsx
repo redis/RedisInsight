@@ -31,7 +31,7 @@ import {
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
 import { RiIconButton } from 'uiSrc/components/base/forms'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import { MANUAL_FORM_TABS, ManualFormTab } from './constants'
 import CloneConnection from './components/CloneConnection'
 import FooterActions from './components/FooterActions'
@@ -170,7 +170,7 @@ const ManualConnectionForm = (props: Props) => {
             />
           </RiFlexItem>
           <RiFlexItem grow>
-            <Title size="M">Clone Database</Title>
+            <RiTitle size="M">Clone Database</RiTitle>
           </RiFlexItem>
         </RiRow>,
       )
@@ -178,11 +178,11 @@ const ManualConnectionForm = (props: Props) => {
     }
 
     if (isEditMode) {
-      setModalHeader(<Title size="M">Edit Database</Title>)
+      setModalHeader(<RiTitle size="M">Edit Database</RiTitle>)
       return
     }
 
-    setModalHeader(<Title size="M">Connection Settings</Title>, true)
+    setModalHeader(<RiTitle size="M">Connection Settings</RiTitle>, true)
   }, [isEditMode, isCloneMode])
 
   useEffect(() => {

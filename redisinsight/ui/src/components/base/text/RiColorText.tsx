@@ -1,11 +1,8 @@
 import React from 'react'
 import cn from 'classnames'
-import {
-  ColorTextProps,
-  StyledColorText,
-} from 'uiSrc/components/base/text/text.styles'
+import { ColorTextProps, StyledColorText } from './text.styles'
 
-export const ColorText = ({
+export const RiColorText = ({
   color,
   component = 'span',
   className,

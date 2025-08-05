@@ -29,7 +29,7 @@ import {
 import { RiFlexItem, RiGrid } from 'uiSrc/components/base/layout'
 import { RiIconButton, RiFormField } from 'uiSrc/components/base/forms'
 import { CopyIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { RiTextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
@@ -219,7 +219,7 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
           </RiFlexItem>
         </RiGrid>
       )}
-      <Text
+      <RiText
         className={cx(styles.key, {
           [styles.hidden]: keyIsEditing || keyIsHovering,
         })}
@@ -228,7 +228,7 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
         <b className="truncateText">
           {replaceSpaces(keyProp?.substring(0, 200))}
         </b>
-      </Text>
+      </RiText>
     </RiFlexItem>
   )
 }

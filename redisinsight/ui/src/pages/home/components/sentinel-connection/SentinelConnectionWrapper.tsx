@@ -24,7 +24,7 @@ import {
 import { ADD_NEW, NO_CA_CERT } from 'uiSrc/pages/home/constants'
 import { InstanceType } from 'uiSrc/slices/interfaces'
 import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import SentinelConnectionForm from './sentinel-connection-form'
 
 export interface Props {
@@ -61,7 +61,7 @@ const SentinelConnectionWrapper = (props: Props) => {
     dispatch(fetchCaCerts())
     dispatch(fetchClientCerts())
 
-    setModalHeader(<Title size="M">Redis Sentinel</Title>, true)
+    setModalHeader(<RiTitle size="M">Redis Sentinel</RiTitle>, true)
 
     return () => {
       setModalHeader(null)

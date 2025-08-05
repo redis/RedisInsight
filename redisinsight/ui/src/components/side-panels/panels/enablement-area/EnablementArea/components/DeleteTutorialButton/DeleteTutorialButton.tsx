@@ -4,7 +4,7 @@ import { formatLongName } from 'uiSrc/utils'
 
 import { RiDestructiveButton } from 'uiSrc/components/base/forms'
 import { DeleteIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
@@ -44,12 +44,12 @@ const DeleteTutorialButton = (props: Props) => {
       data-testid={`delete-tutorial-popover-${id}`}
     >
       <div className={styles.popoverDeleteContainer}>
-        <Text size="m" component="div">
+        <RiText size="m" component="div">
           <h4 style={{ wordBreak: 'break-all' }}>
             <b>{formatLongName(label)}</b>
           </h4>
-          <Text size="s">will be deleted.</Text>
-        </Text>
+          <RiText size="s">will be deleted.</RiText>
+        </RiText>
         <div className={styles.popoverFooter}>
           <RiDestructiveButton
             size="s"

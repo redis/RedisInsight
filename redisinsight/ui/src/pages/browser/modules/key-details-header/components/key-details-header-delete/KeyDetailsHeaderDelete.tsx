@@ -17,7 +17,7 @@ import { formatLongName } from 'uiSrc/utils'
 
 import { DeleteIcon } from 'uiSrc/components/base/icons'
 import { RiDestructiveButton, RiIconButton } from 'uiSrc/components/base/forms'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
@@ -77,12 +77,12 @@ const KeyDetailsHeaderDelete = ({ onDelete }: Props) => {
       }
     >
       <div className={styles.popoverDeleteContainer}>
-        <Text size="m" component="div">
+        <RiText size="m" component="div">
           <h4 style={{ wordBreak: 'break-all' }}>
             <b>{tooltipContent}</b>
           </h4>
-          <Text size="s">will be deleted.</Text>
-        </Text>
+          <RiText size="s">will be deleted.</RiText>
+        </RiText>
         <div className={styles.popoverFooter}>
           <RiDestructiveButton
             size="small"

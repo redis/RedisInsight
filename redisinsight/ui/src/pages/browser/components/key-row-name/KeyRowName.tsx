@@ -2,7 +2,7 @@ import React from 'react'
 import { isUndefined } from 'lodash'
 
 import { RiLoadingContent } from 'uiSrc/components/base/layout'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { Maybe, formatLongName, replaceSpaces } from 'uiSrc/utils'
 import styles from './styles.module.scss'
@@ -31,7 +31,7 @@ const KeyRowName = (props: Props) => {
 
   return (
     <div className={styles.keyName}>
-      <Text
+      <RiText
         color="subdued"
         size="s"
         style={{ maxWidth: '100%', display: 'flex' }}
@@ -51,7 +51,7 @@ const KeyRowName = (props: Props) => {
             <>{nameContent}</>
           </RiTooltip>
         </div>
-      </Text>
+      </RiText>
     </div>
   )
 }

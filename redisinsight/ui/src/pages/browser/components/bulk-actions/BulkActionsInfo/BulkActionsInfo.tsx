@@ -7,7 +7,7 @@ import Divider from 'uiSrc/components/divider/Divider'
 import { BulkActionsStatus, KeyTypes } from 'uiSrc/constants'
 import GroupBadge from 'uiSrc/components/group-badge/GroupBadge'
 import { isProcessedBulkAction } from 'uiSrc/pages/browser/components/bulk-actions/utils'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -40,10 +40,10 @@ const BulkActionsInfo = (props: Props) => {
   return (
     <div className={styles.container} data-testid="bulk-actions-info">
       <div className={styles.header}>
-        <Text color="subdued" className={styles.title}>
+        <RiText color="subdued" className={styles.title}>
           {title}
-        </Text>
-        <Text color="subdued" className={styles.subTitle}>
+        </RiText>
+        <RiText color="subdued" className={styles.subTitle}>
           {subTitle}
           {filter && (
             <div
@@ -63,42 +63,42 @@ const BulkActionsInfo = (props: Props) => {
               <span className={styles.match}>{` ${search}`}</span>
             </div>
           )}
-        </Text>
+        </RiText>
         {!isUndefined(status) && !isProcessedBulkAction(status) && (
-          <Text
+          <RiText
             color="subdued"
             className={styles.progress}
             data-testid="bulk-status-progress"
           >
             In progress:
             <span>{` ${getApproximatePercentage(total, scanned)}`}</span>
-          </Text>
+          </RiText>
         )}
         {status === BulkActionsStatus.Aborted && (
-          <Text
+          <RiText
             color="danger"
             className={styles.progress}
             data-testid="bulk-status-stopped"
           >
             Stopped: {getApproximatePercentage(total, scanned)}
-          </Text>
+          </RiText>
         )}
         {status === BulkActionsStatus.Completed && (
-          <Text
+          <RiText
             className={cx(styles.progress, styles.progressCompleted)}
             data-testid="bulk-status-completed"
           >
             Action completed
-          </Text>
+          </RiText>
         )}
         {status === BulkActionsStatus.Disconnected && (
-          <Text
+          <RiText
             color="danger"
             className={styles.progress}
             data-testid="bulk-status-disconnected"
           >
             Connection Lost: {getApproximatePercentage(total, scanned)}
-          </Text>
+          </RiText>
         )}
       </div>
       <Divider colorVariable="separatorColor" className={styles.divider} />

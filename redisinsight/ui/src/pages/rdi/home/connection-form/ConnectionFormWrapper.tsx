@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { FormDialog } from 'uiSrc/components'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import { Nullable } from 'uiSrc/utils'
 import { ModalHeaderProvider } from 'uiSrc/contexts/ModalTitleProvider'
 import ConnectionForm, { Props as ConnectionFormProps } from './ConnectionForm'
@@ -20,7 +20,7 @@ const ConnectionFormWrapper = (props: Props) => {
     <FormDialog
       isOpen={isOpen}
       onClose={onCancel}
-      header={modalHeader ?? <Title size="M">Add endpoint</Title>}
+      header={modalHeader ?? <RiTitle size="M">Add endpoint</RiTitle>}
       footer={<div id="footerDatabaseForm" />}
     >
       <div className={styles.bodyWrapper}>

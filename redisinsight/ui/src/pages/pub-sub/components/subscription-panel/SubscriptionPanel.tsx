@@ -21,7 +21,7 @@ import {
   RiIcon,
 } from 'uiSrc/components/base/icons'
 import { Button, RiIconButton, RiFormField } from 'uiSrc/components/base/forms'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { RiTextInput } from 'uiSrc/components/base/inputs'
 import PatternsInfo from './components/patternsInfo'
@@ -87,9 +87,9 @@ const SubscriptionPanel = () => {
             />
           </RiFlexItem>
           <RiFlexItem>
-            <Text color="subdued" size="s" data-testid="subscribe-status-text">
+            <RiText color="subdued" size="s" data-testid="subscribe-status-text">
               You are {!isSubscribed && 'not'} subscribed
-            </Text>
+            </RiText>
           </RiFlexItem>
           {isSubscribed && (
             <RiFlexItem style={{ marginLeft: 12 }}>
@@ -98,9 +98,9 @@ const SubscriptionPanel = () => {
           )}
           {displayMessages && (
             <RiFlexItem style={{ marginLeft: 12 }}>
-              <Text color="subdued" size="s" data-testid="messages-count">
+              <RiText color="subdued" size="s" data-testid="messages-count">
                 Messages: {count}
-              </Text>
+              </RiText>
             </RiFlexItem>
           )}
         </RiRow>

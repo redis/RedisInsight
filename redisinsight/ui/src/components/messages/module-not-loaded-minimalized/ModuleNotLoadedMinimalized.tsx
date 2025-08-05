@@ -27,8 +27,8 @@ import { FeatureFlags, Pages } from 'uiSrc/constants'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiText } from 'uiSrc/components/base/text'
 import {
   MODULE_CAPABILITY_TEXT_NOT_AVAILABLE,
   MODULE_CAPABILITY_TEXT_NOT_AVAILABLE_ENTERPRISE,
@@ -60,17 +60,17 @@ const ModuleNotLoadedMinimalized = (props: Props) => {
   return (
     <div className={styles.wrapper} data-testid="module-not-loaded-popover">
       <div>
-        <Title size="S" className={styles.title}>
+        <RiTitle size="S" className={styles.title}>
           {moduleText?.title}
-        </Title>
+        </RiTitle>
         <RiSpacer size="s" />
         <FeatureFlagComponent
           name={FeatureFlags.cloudAds}
           otherwise={
             <>
-              <Text color="subdued" size="s">
+              <RiText color="subdued" size="s">
                 {moduleText?.text}
-              </Text>
+              </RiText>
               <RiSpacer size="s" />
               <RiPrimaryButton
                 size="s"
@@ -86,9 +86,9 @@ const ModuleNotLoadedMinimalized = (props: Props) => {
         >
           {!freeDbWithModule ? (
             <>
-              <Text color="subdued" size="s">
+              <RiText color="subdued" size="s">
                 {moduleText?.text}
-              </Text>
+              </RiText>
               <RiSpacer size="s" />
               <OAuthSsoHandlerDialog>
                 {(ssoCloudHandlerClick) => (
@@ -117,10 +117,10 @@ const ModuleNotLoadedMinimalized = (props: Props) => {
             </>
           ) : (
             <>
-              <Text color="subdued" size="s">
+              <RiText color="subdued" size="s">
                 Use your free trial all-in-one Redis Cloud database to start
                 exploring these capabilities.
-              </Text>
+              </RiText>
               <RiSpacer size="s" />
               <OAuthConnectFreeDb
                 id={freeDbWithModule.id}

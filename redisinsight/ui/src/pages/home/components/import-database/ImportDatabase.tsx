@@ -15,8 +15,8 @@ import { RiCol, RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { InfoIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { ColorText, Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiColorText, RiText } from 'uiSrc/components/base/text'
 import { RiLoader } from 'uiSrc/components/base/display'
 import ResultsLog from './components/ResultsLog'
 
@@ -43,7 +43,7 @@ const ImportDatabase = (props: Props) => {
   useEffect(() => {
     setDomReady(true)
 
-    setModalHeader(<Title size="M">Import from file</Title>, true)
+    setModalHeader(<RiTitle size="M">Import from file</RiTitle>, true)
 
     return () => {
       setModalHeader(null)
@@ -168,11 +168,11 @@ const ImportDatabase = (props: Props) => {
           <RiFlexItem grow>
             {isShowForm && (
               <>
-                <Text color="subdued" size="s">
+                <RiText color="subdued" size="s">
                   Use a JSON file to import your database connections. Ensure
                   that you only use files from trusted sources to prevent the
                   risk of automatically executing malicious code.
-                </Text>
+                </RiText>
                 <RiSpacer />
 
                 <RiFilePicker
@@ -186,13 +186,13 @@ const ImportDatabase = (props: Props) => {
                   aria-label="Select or drag and drop file"
                 />
                 {isInvalid && (
-                  <ColorText
+                  <RiColorText
                     color="danger"
                     className={styles.errorFileMsg}
                     data-testid="input-file-error-msg"
                   >
                     {`File should not exceed ${MAX_MB_FILE} MB`}
-                  </ColorText>
+                  </RiColorText>
                 )}
               </>
             )}
@@ -202,18 +202,18 @@ const ImportDatabase = (props: Props) => {
                 data-testid="file-loading-indicator"
               >
                 <RiLoader size="xl" />
-                <Text color="subdued" style={{ marginTop: 12 }}>
+                <RiText color="subdued" style={{ marginTop: 12 }}>
                   Uploading...
-                </Text>
+                </RiText>
               </div>
             )}
             {error && (
               <div className={styles.result} data-testid="result-failed">
                 <RiIcon type="ToastCancelIcon" color="danger600" size="xxl" />
-                <Text color="subdued" style={{ marginTop: 16 }}>
+                <RiText color="subdued" style={{ marginTop: 16 }}>
                   Failed to add database connections
-                </Text>
-                <Text color="subdued">{error}</Text>
+                </RiText>
+                <RiText color="subdued">{error}</RiText>
               </div>
             )}
           </RiFlexItem>

@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { RiCol } from 'uiSrc/components/base/layout'
-import { Title } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text'
 
 interface RiTooltipContentProps {
   title?: React.ReactNode
@@ -10,7 +10,7 @@ interface RiTooltipContentProps {
 
 export const HoverContent = ({ title, content }: RiTooltipContentProps) => (
   <RiCol>
-    {title && <Title size="S">{title}</Title>}
+    {title && <RiTitle size="S">{title}</RiTitle>}
     {content}
   </RiCol>
 )

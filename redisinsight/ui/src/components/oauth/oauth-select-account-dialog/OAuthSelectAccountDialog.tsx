@@ -39,7 +39,7 @@ import {
   RiRadioGroupItemRoot,
   RiRadioGroupRoot,
 } from 'uiSrc/components/base/forms'
-import { ColorText, Text } from 'uiSrc/components/base/text'
+import { RiColorText, RiText } from 'uiSrc/components/base/text'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiModal } from 'uiSrc/components/base/display'
 import { CancelIcon } from 'uiSrc/components/base/icons'
@@ -171,12 +171,12 @@ const OAuthSelectAccountDialog = () => {
   const radios = accounts.map(({ id, name = '' }) => ({
     id: `${id}`,
     label: (
-      <ColorText color="subdued">
+      <RiColorText color="subdued">
         {name}
-        <ColorText color="accent" style={{ paddingLeft: 6 }}>
+        <RiColorText color="accent" style={{ paddingLeft: 6 }}>
           {id}
-        </ColorText>
-      </ColorText>
+        </RiColorText>
+      </RiColorText>
     ),
   }))
 
@@ -196,9 +196,9 @@ const OAuthSelectAccountDialog = () => {
         </RiModal.Content.Header.Title>
         <RiModal.Content.Body.Compose>
           <section className={styles.content}>
-            <Text className={styles.subTitle}>
+            <RiText className={styles.subTitle}>
               Select an account to connect to:
-            </Text>
+            </RiText>
             <RiSpacer size="xl" />
             <RiRadioGroupRoot
               value={formik.values.accountId ?? ''}

@@ -30,7 +30,7 @@ import {
   defaultValueRender,
   RiSelect,
 } from 'uiSrc/components/base/forms'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiCol, RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiTextInput } from 'uiSrc/components/base/inputs'
 import { convertNumberByUnits } from '../../utils'
@@ -119,7 +119,7 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
 
   const clusterContent = () => (
     <>
-      <Text color="subdued" className={styles.clusterText}>
+      <RiText color="subdued" className={styles.clusterText}>
         Each node can have different Slow Log configuration in a clustered
         database.
         <RiSpacer size="s" />
@@ -128,7 +128,7 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
         {' or '}
         <code>CONFIG SET slowlog-max-len</code>
         {' for a specific node in redis-cli to configure it.'}
-      </Text>
+      </RiText>
 
       <RiSpacer size="xs" />
       <RiPrimaryButton

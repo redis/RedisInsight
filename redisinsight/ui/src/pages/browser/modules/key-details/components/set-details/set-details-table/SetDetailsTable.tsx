@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import { CellMeasurerCache } from 'react-virtualized'
 
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RedisResponseBuffer, RedisString } from 'uiSrc/slices/interfaces'
 
 import {
@@ -241,7 +241,7 @@ const SetDetailsTable = (props: Props) => {
         const cellContent = value?.substring?.(0, 200) ?? value
 
         return (
-          <Text
+          <RiText
             component="div"
             color="subdued"
             size="s"
@@ -263,7 +263,7 @@ const SetDetailsTable = (props: Props) => {
                 position="left"
               />
             </div>
-          </Text>
+          </RiText>
         )
       },
     },

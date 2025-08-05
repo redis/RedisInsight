@@ -29,7 +29,7 @@ import { KeyboardShortcut, RiTooltip } from 'uiSrc/components'
 
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiLink, RiLoader } from 'uiSrc/components/base/display'
 import TemplateButton from '../../components/template-button'
 import styles from './styles.module.scss'
@@ -175,7 +175,7 @@ const Job = (props: Props) => {
     <>
       <div className={cx('content', { isSidePanelOpen: isPanelOpen })}>
         <div className="rdi__content-header">
-          <Text className={cx('rdi__title', 'line-clamp-2')}>{name}</Text>
+          <RiText className={cx('rdi__title', 'line-clamp-2')}>{name}</RiText>
           <div className={styles.actionContainer}>
             <RiTooltip
               position="top"
@@ -183,7 +183,7 @@ const Job = (props: Props) => {
               content={
                 KEYBOARD_SHORTCUTS?.rdi?.openDedicatedEditor && (
                   <div className={styles.tooltipContent}>
-                    <Text size="s">{`${KEYBOARD_SHORTCUTS.rdi.openDedicatedEditor?.description}\u00A0\u00A0`}</Text>
+                    <RiText size="s">{`${KEYBOARD_SHORTCUTS.rdi.openDedicatedEditor?.description}\u00A0\u00A0`}</RiText>
                     <KeyboardShortcut
                       separator={KEYBOARD_SHORTCUTS?._separator}
                       items={KEYBOARD_SHORTCUTS.rdi.openDedicatedEditor.keys}
@@ -216,7 +216,7 @@ const Job = (props: Props) => {
             />
           </div>
         </div>
-        <Text className="rdi__text" color="subdued">
+        <RiText className="rdi__text" color="subdued">
           {'Create a job per source table to filter, transform, and '}
           <RiLink
             data-testid="rdi-pipeline-transformation-link"
@@ -229,7 +229,7 @@ const Job = (props: Props) => {
             map data
           </RiLink>
           {' to Redis.'}
-        </Text>
+        </RiText>
         {loading ? (
           <div
             className={cx('rdi__editorWrapper', 'rdi__loading')}

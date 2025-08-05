@@ -18,8 +18,8 @@ import { freeInstancesSelector } from 'uiSrc/slices/instances/instances'
 import { getDbWithModuleLoaded } from 'uiSrc/utils'
 import { useCapability } from 'uiSrc/services'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { ColorText, Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiColorText, RiText } from 'uiSrc/components/base/text'
 import ModuleNotLoadedButton from './ModuleNotLoadedButton'
 import styles from './styles.module.scss'
 
@@ -43,11 +43,11 @@ const MIN_ELEMENT_WIDTH = 1210
 const MAX_ELEMENT_WIDTH = 1440
 
 const renderTitle = (width: number, moduleName?: string) => (
-  <Title size="M" className={styles.title} data-testid="welcome-page-title">
+  <RiTitle size="M" className={styles.title} data-testid="welcome-page-title">
     {`${moduleName?.substring(0, 1).toUpperCase()}${moduleName?.substring(1)} ${[MODULE_TEXT_VIEW.redisgears, MODULE_TEXT_VIEW.bf].includes(moduleName) ? 'are' : 'is'} not available `}
     {width > MAX_ELEMENT_WIDTH && <br />}
     for this database
-  </Title>
+  </RiTitle>
 )
 
 const ListItem = ({ item }: { item: string }) => (
@@ -55,7 +55,7 @@ const ListItem = ({ item }: { item: string }) => (
     <div className={styles.iconWrapper}>
       <CheerIcon className={styles.listIcon} />
     </div>
-    <ColorText className={styles.text}>{item}</ColorText>
+    <RiColorText className={styles.text}>{item}</RiColorText>
   </li>
 )
 
@@ -92,24 +92,24 @@ const ModuleNotLoaded = ({
     (moduleName?: string) => {
       if (!cloudAdsFeature?.flag) {
         return (
-          <Text className={cx(styles.text, styles.marginBottom)}>
+          <RiText className={cx(styles.text, styles.marginBottom)}>
             Open a database with {moduleName}.
-          </Text>
+          </RiText>
         )
       }
 
       return !freeDbWithModule ? (
-        <Text className={cx(styles.text, styles.marginBottom)}>
+        <RiText className={cx(styles.text, styles.marginBottom)}>
           Create a free trial Redis Stack database with {moduleName} which
           extends the core capabilities of your Redis.
-        </Text>
+        </RiText>
       ) : (
-        <Text
+        <RiText
           className={cx(styles.text, styles.marginBottom, styles.textFooter)}
         >
           Use your free trial all-in-one Redis Cloud database to start exploring
           these capabilities.
-        </Text>
+        </RiText>
       )
     },
     [freeDbWithModule],
@@ -139,7 +139,7 @@ const ModuleNotLoaded = ({
           data-testid="module-not-loaded-content"
         >
           {renderTitle(width, MODULE_TEXT_VIEW[moduleName])}
-          <Text className={styles.bigText}>
+          <RiText className={styles.bigText}>
             {CONTENT[moduleName]?.text.map((item: string) =>
               width > MIN_ELEMENT_WIDTH ? (
                 <>
@@ -150,7 +150,7 @@ const ModuleNotLoaded = ({
                 item
               ),
             )}
-          </Text>
+          </RiText>
           <ul
             className={cx(styles.list, {
               [styles.bloomList]: moduleName === RedisDefaultModules.Bloom,
@@ -161,7 +161,7 @@ const ModuleNotLoaded = ({
             ))}
           </ul>
           {!!CONTENT[moduleName]?.additionalText && (
-            <Text
+            <RiText
               className={cx(
                 styles.text,
                 styles.additionalText,
@@ -178,7 +178,7 @@ const ModuleNotLoaded = ({
                   item
                 ),
               )}
-            </Text>
+            </RiText>
           )}
           {renderText(MODULE_TEXT_VIEW[moduleName])}
         </div>

@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 
 import { formatLongName } from 'uiSrc/utils'
-import { OutsideClickDetector } from 'uiSrc/components/base/utils'
+import { RiOutsideClickDetector } from 'uiSrc/components/base/utils'
 
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
@@ -52,7 +52,7 @@ const ConfirmationPopover = (props: Props) => {
   const confirmBtn = React.cloneElement(submitBtn, { onClick: handleConfirm })
 
   return (
-    <OutsideClickDetector onOutsideClick={handleClosePopover}>
+    <RiOutsideClickDetector onOutsideClick={handleClosePopover}>
       <RiPopover
         id="confirmation-popover"
         ownFocus
@@ -68,7 +68,7 @@ const ConfirmationPopover = (props: Props) => {
             <RiIcon type="ToastDangerIcon" className={styles.alertIcon} />
           </RiFlexItem>
           <RiFlexItem className="eui-textNoWrap">
-            <Text>{formatLongName(title, 58, 0, '...')}</Text>
+            <RiText>{formatLongName(title, 58, 0, '...')}</RiText>
           </RiFlexItem>
         </RiRow>
         <RiSpacer size="xs" />
@@ -79,7 +79,7 @@ const ConfirmationPopover = (props: Props) => {
           <RiFlexItem>{confirmBtn}</RiFlexItem>
         </RiRow>
       </RiPopover>
-    </OutsideClickDetector>
+    </RiOutsideClickDetector>
   )
 }
 

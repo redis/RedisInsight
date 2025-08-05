@@ -41,7 +41,7 @@ import UserProfile from 'uiSrc/components/instance-header/components/user-profil
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { EditIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiNumericInput } from 'uiSrc/components/base/inputs'
 import InstancesNavigationPopover from './components/instances-navigation-popover'
 import styles from './styles.module.scss'
@@ -158,7 +158,7 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                       : 'Redis Databases'
                   }
                 >
-                  <Text
+                  <RiText
                     className={styles.breadCrumbLink}
                     aria-label={
                       server?.buildType === BuildType.RedisStack
@@ -170,7 +170,7 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                     onKeyDown={goHome}
                   >
                     Databases
-                  </Text>
+                  </RiText>
                 </RiTooltip>
               </FeatureFlagComponent>
             </div>
@@ -179,7 +179,7 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                 <RiRow align="center">
                   <FeatureFlagComponent name={FeatureFlags.envDependent}>
                     <RiFlexItem>
-                      <Text className={styles.divider}>/</Text>
+                      <RiText className={styles.divider}>/</RiText>
                     </RiFlexItem>
                   </FeatureFlagComponent>
                   {returnUrlBase && returnUrl && (
@@ -194,14 +194,14 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                             position="bottom"
                             content={returnUrlTooltip || returnUrlLabel}
                           >
-                            <Text
+                            <RiText
                               className={styles.breadCrumbLink}
                               aria-label={returnUrlTooltip || returnUrlLabel}
                               onClick={goToReturnUrl}
                               onKeyDown={goToReturnUrl}
                             >
                               &#60; {returnUrlLabel}
-                            </Text>
+                            </RiText>
                           </RiTooltip>
                         </RiFlexItem>
                       }

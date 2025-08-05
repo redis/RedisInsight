@@ -3,7 +3,7 @@ import { RiLink } from 'uiSrc/components/base/display'
 import { RiCol, RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiDestructiveButton } from 'uiSrc/components/base/forms'
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiSrc/components/base/text'
 
 export interface Props {
   message: string
@@ -28,7 +28,7 @@ const RdiDeployErrorContent = (props: Props) => {
 
   return (
     <>
-      <ColorText color="danger">
+      <RiColorText color="danger">
         <RiCol>
           <RiFlexItem>
             <div>Review the error log for details.</div>
@@ -44,7 +44,7 @@ const RdiDeployErrorContent = (props: Props) => {
             </RiLink>
           </RiFlexItem>
         </RiCol>
-      </ColorText>
+      </RiColorText>
 
       <RiSpacer />
       {/* // TODO remove display none when logs column will be available */}

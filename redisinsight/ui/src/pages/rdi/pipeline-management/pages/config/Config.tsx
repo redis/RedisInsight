@@ -33,7 +33,7 @@ import { createAxiosError, isEqualPipelineFile, yamlToJson } from 'uiSrc/utils'
 
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 
 import { RiLink, RiLoader } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
@@ -147,7 +147,7 @@ const Config = () => {
         })}
       >
         <div className="rdi__content-header">
-          <Text className="rdi__title">Target database configuration</Text>
+          <RiText className="rdi__title">Target database configuration</RiText>
           <TemplatePopover
             isPopoverOpen={isPopoverOpen && !isOpenDialog}
             setIsPopoverOpen={setIsPopoverOpen}
@@ -157,7 +157,7 @@ const Config = () => {
             source={RdiPipelineTabs.Config}
           />
         </div>
-        <Text className="rdi__text" color="subdued">
+        <RiText className="rdi__text" color="subdued">
           {'Provide '}
           <RiLink
             data-testid="rdi-pipeline-config-link"
@@ -172,7 +172,7 @@ const Config = () => {
           {
             ' for source and target databases and other collector configurations, such as tables and columns to track.'
           }
-        </Text>
+        </RiText>
         {pipelineLoading ? (
           <div
             className={cx('rdi__editorWrapper', 'rdi__loading')}

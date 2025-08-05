@@ -1,6 +1,6 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 
 import { Pages } from 'uiSrc/constants'
 import { EmptyMessage, Content } from 'uiSrc/pages/database-analysis/constants'
@@ -50,10 +50,10 @@ const EmptyAnalysisMessage = (props: Props) => {
   return (
     <div className={styles.container} data-testid={`empty-analysis-no-${name}`}>
       <div className={styles.content}>
-        <Text className={styles.title}>{title}</Text>
-        <Text className={styles.summary}>
+        <RiText className={styles.title}>{title}</RiText>
+        <RiText className={styles.summary}>
           {text(Pages.workbench(instanceId))}
-        </Text>
+        </RiText>
       </div>
     </div>
   )

@@ -3,8 +3,8 @@ import cx from 'classnames'
 
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
@@ -41,12 +41,12 @@ const RestartChat = (props: Props) => {
       button={extendedButton}
     >
       <>
-        <Title size="S">Restart session</Title>
+        <RiTitle size="S">Restart session</RiTitle>
         <RiSpacer size="s" />
-        <Text size="xs">
+        <RiText size="xs">
           This will delete the current message history and initiate a new
           session.
-        </Text>
+        </RiText>
         <RiSpacer size="s" />
         <RiPrimaryButton
           size="s"

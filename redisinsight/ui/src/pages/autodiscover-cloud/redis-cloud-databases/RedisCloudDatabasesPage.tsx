@@ -32,7 +32,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { oauthCloudUserSelector } from 'uiSrc/slices/oauth/cloud'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CopyIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { ColumnDefinition } from 'uiSrc/components/base/layout'
 import RedisCloudDatabases from './RedisCloudDatabases'
 
@@ -143,7 +143,7 @@ const RedisCloudDatabasesPage = () => {
               anchorClassName="truncateText"
               content={formatLongName(name)}
             >
-              <Text>{cellContent}</Text>
+              <RiText>{cellContent}</RiText>
             </RiTooltip>
           </div>
         )
@@ -182,7 +182,7 @@ const RedisCloudDatabasesPage = () => {
               anchorClassName="truncateText"
               content={formatLongName(name)}
             >
-              <Text>{cellContent}</Text>
+              <RiText>{cellContent}</RiText>
             </RiTooltip>
           </div>
         )
@@ -218,7 +218,7 @@ const RedisCloudDatabasesPage = () => {
         const text = publicEndpoint
         return (
           <div className="public_endpoint">
-            <Text className="copyPublicEndpointText">{text}</Text>
+            <RiText className="copyPublicEndpointText">{text}</RiText>
             <RiTooltip
               position="right"
               content="Copy"

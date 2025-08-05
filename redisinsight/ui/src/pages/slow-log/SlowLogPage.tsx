@@ -33,7 +33,7 @@ import { AnalyticsViewTab } from 'uiSrc/slices/interfaces/analytics'
 
 import { FormatedDate } from 'uiSrc/components'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { defaultValueRender, RiSelect } from 'uiSrc/components/base/forms'
 import { SlowLog } from 'apiSrc/modules/slow-log/models'
 
@@ -149,7 +149,7 @@ const SlowLogPage = () => {
 
         <RiFlexItem>
           {connectionType !== ConnectionType.Cluster && config && (
-            <Text size="xs" color="subdued" data-testid="config-info">
+            <RiText size="xs" color="subdued" data-testid="config-info">
               Execution time:{' '}
               {numberWithSpaces(
                 convertNumberByUnits(slowlogLogSlowerThan, durationUnit),
@@ -159,7 +159,7 @@ const SlowLogPage = () => {
                 ? DurationUnits.mSeconds
                 : DurationUnits.microSeconds}
               , Max length: {numberWithSpaces(slowlogMaxLen)}
-            </Text>
+            </RiText>
           )}
         </RiFlexItem>
       </RiRow>
@@ -175,11 +175,11 @@ const SlowLogPage = () => {
               <RiFlexItem>
                 <RiRow align="center" gap="s">
                   <RiFlexItem>
-                    <Text color="subdued">
+                    <RiText color="subdued">
                       {connectionType === ConnectionType.Cluster
                         ? 'Display per node:'
                         : 'Display up to:'}
-                    </Text>
+                    </RiText>
                   </RiFlexItem>
                   <RiFlexItem>
                     <RiSelect
@@ -193,7 +193,7 @@ const SlowLogPage = () => {
                   </RiFlexItem>
                   {width > HIDE_TIMESTAMP_FROM_WIDTH && (
                     <RiFlexItem style={{ marginLeft: 12 }}>
-                      <Text
+                      <RiText
                         size="xs"
                         color="subdued"
                         data-testid="entries-from-timestamp"
@@ -206,7 +206,7 @@ const SlowLogPage = () => {
                           </>
                         )}
                         )
-                      </Text>
+                      </RiText>
                     </RiFlexItem>
                   )}
                 </RiRow>

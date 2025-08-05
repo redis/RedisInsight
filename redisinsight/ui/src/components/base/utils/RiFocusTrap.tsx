@@ -110,7 +110,7 @@ const defaultProps = {
   gapMode: 'padding',
 } as const
 
-export const FocusTrap = ({
+export const RiFocusTrap = ({
   children,
   clickOutsideDisables = defaultProps.clickOutsideDisables,
   closeOnMouseup,

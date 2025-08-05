@@ -16,7 +16,7 @@ import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
 import { keysSelector } from 'uiSrc/slices/browser/keys'
 import { RiTabs, TabInfo } from 'uiSrc/components/base/layout'
 
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -59,7 +59,7 @@ const BulkActionsTabs = (props: Props) => {
         label: (
           <>
             <EuiIcon type="trash" />
-            <Text>Delete Keys</Text>
+            <RiText>Delete Keys</RiText>
           </>
         ),
         content: null,
@@ -69,7 +69,7 @@ const BulkActionsTabs = (props: Props) => {
         label: (
           <>
             <EuiIcon type={BulkUpload} />
-            <Text>Upload Data</Text>
+            <RiText>Upload Data</RiText>
           </>
         ),
         content: null,

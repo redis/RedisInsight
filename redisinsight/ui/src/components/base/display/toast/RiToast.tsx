@@ -8,7 +8,7 @@ import {
 import styled from 'styled-components'
 import { CommonProps, Theme } from 'uiSrc/components/base/theme/types'
 import { CancelIcon } from 'uiSrc/components/base/icons'
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiSrc/components/base/text'
 
 type RiToastProps = React.ComponentProps<typeof Toast>
 export const RiToast = (props: RiToastProps) => <Toast {...props} />
@@ -36,9 +36,9 @@ export const riToast = (
       color = 'subdued'
     }
     toastContent.message = (
-      <ColorText color={color}>
+      <RiColorText color={color}>
         <StyledMessage>{message}</StyledMessage>
-      </ColorText>
+      </RiColorText>
     )
   } else {
     toastContent.message = message

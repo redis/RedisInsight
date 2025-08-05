@@ -26,7 +26,7 @@ import {
   setShowNoExpiryGroup,
 } from 'uiSrc/slices/analytics/dbAnalysis'
 import { RiSwitchInput } from 'uiSrc/components/base/inputs'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import { DatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
 
 import styles from './styles.module.scss'
@@ -110,9 +110,9 @@ const ExpirationGroupsView = (props: Props) => {
     <div className={cx('section', styles.container)} data-testid="analysis-ttl">
       <div className="section-title-wrapper">
         <div className={styles.titleWrapper}>
-          <Title size="M" className="section-title">
+          <RiTitle size="M" className="section-title">
             MEMORY LIKELY TO BE FREED OVER TIME
-          </Title>
+          </RiTitle>
           {extrapolation !== DEFAULT_EXTRAPOLATION && (
             <RiSwitchInput
               color="subdued"

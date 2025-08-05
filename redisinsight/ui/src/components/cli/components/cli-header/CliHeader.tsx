@@ -15,7 +15,7 @@ import { OnboardingTour } from 'uiSrc/components'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { WindowControlGroup } from 'uiSrc/components/base'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
@@ -71,7 +71,7 @@ const CliHeader = () => {
             anchorPosition="upLeft"
             panelClassName={styles.cliOnboardPanel}
           >
-            <Text>CLI</Text>
+            <RiText>CLI</RiText>
           </OnboardingTour>
         </RiFlexItem>
         <RiFlexItem grow />

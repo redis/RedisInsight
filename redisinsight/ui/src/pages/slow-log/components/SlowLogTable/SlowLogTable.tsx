@@ -12,7 +12,7 @@ import {
 import { convertNumberByUnits } from 'uiSrc/pages/slow-log/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 
 import { FormatedDate, RiTooltip } from 'uiSrc/components'
 import styles from '../styles.module.scss'
@@ -54,14 +54,14 @@ const SlowLogTable = (props: Props) => {
       minWidth: 190,
       isSortable: true,
       render: (timestamp) => (
-        <Text
+        <RiText
           size="s"
           color="subdued"
           data-testid="timestamp-value"
           className={styles.timestampCell}
         >
           <FormatedDate date={timestamp * 1000} />
-        </Text>
+        </RiText>
       ),
     },
     {
@@ -72,9 +72,9 @@ const SlowLogTable = (props: Props) => {
       textAlignment: TableCellTextAlignment.Right,
       alignment: TableCellAlignment.Right,
       render: (duration) => (
-        <Text size="s" color="subdued" data-testid="duration-value">
+        <RiText size="s" color="subdued" data-testid="duration-value">
           {numberWithSpaces(convertNumberByUnits(duration, durationUnit))}
-        </Text>
+        </RiText>
       ),
     },
     {

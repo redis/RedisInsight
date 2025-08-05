@@ -7,9 +7,9 @@ import { CancelSlimIcon, CheckThinIcon } from 'uiSrc/components/base/icons'
 import FieldMessage from 'uiSrc/components/field-message/FieldMessage'
 import { Nullable } from 'uiSrc/utils'
 import { RiFlexItem } from 'uiSrc/components/base/layout'
-import { WindowEvent } from 'uiSrc/components/base/utils/WindowEvent'
-import { FocusTrap } from 'uiSrc/components/base/utils/FocusTrap'
-import { OutsideClickDetector } from 'uiSrc/components/base/utils'
+import { RiWindowEvent } from 'uiSrc/components/base/utils/RiWindowEvent'
+import { RiFocusTrap } from 'uiSrc/components/base/utils/RiFocusTrap'
+import { RiOutsideClickDetector } from 'uiSrc/components/base/utils'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { RiTextArea } from 'uiSrc/components/base/inputs'
 import { isValidJSON } from '../../utils'
@@ -63,10 +63,10 @@ const EditEntireItemAction = (props: Props) => {
   return (
     <div className={styles.row}>
       <div className={styles.fullWidthContainer}>
-        <OutsideClickDetector onOutsideClick={() => onCancel?.()}>
+        <RiOutsideClickDetector onOutsideClick={() => onCancel?.()}>
           <div>
-            <WindowEvent event="keydown" handler={(e) => handleOnEsc(e)} />
-            <FocusTrap>
+            <RiWindowEvent event="keydown" handler={(e) => handleOnEsc(e)} />
+            <RiFocusTrap>
               <form
                 className="relative"
                 onSubmit={handleFormSubmit}
@@ -123,9 +123,9 @@ const EditEntireItemAction = (props: Props) => {
                   </FieldMessage>
                 </div>
               )}
-            </FocusTrap>
+            </RiFocusTrap>
           </div>
-        </OutsideClickDetector>
+        </RiOutsideClickDetector>
       </div>
     </div>
   )

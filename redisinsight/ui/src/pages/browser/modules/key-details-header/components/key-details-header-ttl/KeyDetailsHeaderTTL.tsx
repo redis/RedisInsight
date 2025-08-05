@@ -12,7 +12,7 @@ import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { MAX_TTL_NUMBER, validateTTLNumber } from 'uiSrc/utils'
 
 import { RiFlexItem, RiGrid } from 'uiSrc/components/base/layout'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { RiTextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
@@ -101,9 +101,9 @@ const KeyDetailsHeaderTTL = ({ onEditTTL }: Props) => {
             data-testid="edit-ttl-grid"
           >
             <RiFlexItem>
-              <Text color="subdued" size="s" className={styles.subtitleText}>
+              <RiText color="subdued" size="s" className={styles.subtitleText}>
                 TTL:
-              </Text>
+              </RiText>
             </RiFlexItem>
             <RiFlexItem grow>
               <InlineItemEditor
@@ -137,7 +137,7 @@ const KeyDetailsHeaderTTL = ({ onEditTTL }: Props) => {
             </RiFlexItem>
           </RiGrid>
         )}
-        <Text
+        <RiText
           color="subdued"
           size="s"
           className={cx(styles.subtitleText, {
@@ -149,7 +149,7 @@ const KeyDetailsHeaderTTL = ({ onEditTTL }: Props) => {
           <span className={styles.ttlTextValue}>
             {ttl === '-1' ? 'No limit' : ttl}
           </span>
-        </Text>
+        </RiText>
       </>
     </RiFlexItem>
   )

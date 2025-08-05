@@ -2,7 +2,7 @@ import React from 'react'
 import { matchPath, useHistory, useLocation } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { Pages } from 'uiSrc/constants'
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiSrc/components/base/text'
 import { updateUserConfigSettingsAction } from 'uiSrc/slices/user/user-settings'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
@@ -41,15 +41,15 @@ const EncryptionErrorContent = (props: Props) => {
   }
   return (
     <>
-      <ColorText color="danger">
+      <RiColorText color="danger">
         <b>Check the system keychain or disable encryption to proceed.</b>
-      </ColorText>
+      </RiColorText>
       <RiSpacer />
-      <ColorText color="danger" style={{ fontWeight: 300 }}>
+      <RiColorText color="danger" style={{ fontWeight: 300 }}>
         Disabling encryption will result in storing sensitive information
         locally in plain text. Re-enter database connection information to work
         with databases.
-      </ColorText>
+      </RiColorText>
       <RiSpacer />
       <RiRow justify="end" gap="m">
         <RiFlexItem>

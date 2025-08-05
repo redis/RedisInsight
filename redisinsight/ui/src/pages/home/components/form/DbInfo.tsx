@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { capitalize } from 'lodash'
 import cx from 'classnames'
 
-import { ColorText, Text } from 'uiSrc/components/base/text'
+import { RiColorText, RiText } from 'uiSrc/components/base/text'
 import { DatabaseListModules, RiTooltip } from 'uiSrc/components'
 import { BuildType } from 'uiSrc/constants/env'
 import { appInfoSelector } from 'uiSrc/slices/app/info'
@@ -50,9 +50,9 @@ const DbInfo = (props: Props) => {
         <ul className={styles.endpointsList}>
           {nodes?.map(({ host: eHost, port: ePort }) => (
             <li key={host + port}>
-              <Text>
+              <RiText>
                 {eHost}:{ePort};
-              </Text>
+              </RiText>
             </li>
           ))}
         </ul>
@@ -72,16 +72,16 @@ const DbInfo = (props: Props) => {
       {!isFromCloud && (
         <RiListItem
           label={
-            <Text color="subdued" size="s">
+            <RiText color="subdued" size="s">
               Connection Type:
-              <ColorText
+              <RiColorText
                 color="default"
                 className={styles.dbInfoListValue}
                 data-testid="connection-type"
               >
                 {capitalize(connectionType)}
-              </ColorText>
-            </Text>
+              </RiColorText>
+            </RiText>
           }
         />
       )}
@@ -89,12 +89,12 @@ const DbInfo = (props: Props) => {
       {nameFromProvider && (
         <RiListItem
           label={
-            <Text color="subdued" size="s">
+            <RiText color="subdued" size="s">
               Database Name from Provider:
-              <ColorText color="default" className={styles.dbInfoListValue}>
+              <RiColorText color="default" className={styles.dbInfoListValue}>
                 {nameFromProvider}
-              </ColorText>
-            </Text>
+              </RiColorText>
+            </RiText>
           }
         />
       )}
@@ -102,32 +102,32 @@ const DbInfo = (props: Props) => {
         label={
           <>
             {!!nodes?.length && <AppendEndpoints />}
-            <Text color="subdued" size="s">
+            <RiText color="subdued" size="s">
               Host:
-              <ColorText
+              <RiColorText
                 color="default"
                 className={styles.dbInfoListValue}
                 data-testid="db-info-host"
               >
                 {host}
-              </ColorText>
-            </Text>
+              </RiColorText>
+            </RiText>
           </>
         }
       />
       {(server?.buildType === BuildType.RedisStack || isFromCloud) && (
         <RiListItem
           label={
-            <Text color="subdued" size="s">
+            <RiText color="subdued" size="s">
               Port:
-              <ColorText
+              <RiColorText
                 color="default"
                 className={styles.dbInfoListValue}
                 data-testid="db-info-port"
               >
                 {port}
-              </ColorText>
-            </Text>
+              </RiColorText>
+            </RiText>
           }
         />
       )}
@@ -135,12 +135,12 @@ const DbInfo = (props: Props) => {
       {!!db && (
         <RiListItem
           label={
-            <Text color="subdued" size="s">
+            <RiText color="subdued" size="s">
               Database Index:
-              <ColorText color="default" className={styles.dbInfoListValue}>
+              <RiColorText color="default" className={styles.dbInfoListValue}>
                 {db}
-              </ColorText>
-            </Text>
+              </RiColorText>
+            </RiText>
           }
         />
       )}
@@ -149,15 +149,15 @@ const DbInfo = (props: Props) => {
         <RiListItem
           className={styles.dbInfoModulesLabel}
           label={
-            <Text color="subdued" size="s">
+            <RiText color="subdued" size="s">
               Capabilities:
-              <ColorText
+              <RiColorText
                 color="default"
                 className={cx(styles.dbInfoListValue, styles.dbInfoModules)}
               >
                 <DatabaseListModules modules={modules} />
-              </ColorText>
-            </Text>
+              </RiColorText>
+            </RiText>
           }
         />
       )}

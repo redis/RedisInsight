@@ -23,8 +23,8 @@ import {
   RiSecondaryButton,
   RiFormField,
 } from 'uiSrc/components/base/forms'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 interface Props {
@@ -127,10 +127,10 @@ const RedisClusterDatabases = ({
         </RiSecondaryButton>
       }
     >
-      <Text size="m">
+      <RiText size="m">
         Your changes have not been saved.&#10;&#13; Do you want to proceed to
         the list of databases?
-      </Text>
+      </RiText>
       <br />
       <div>
         <RiDestructiveButton
@@ -147,18 +147,18 @@ const RedisClusterDatabases = ({
   return (
     <AutodiscoveryPageTemplate>
       <div className="databaseContainer">
-        <Title size="M" className={styles.title} data-testid="title">
+        <RiTitle size="M" className={styles.title} data-testid="title">
           Auto-Discover Redis Enterprise Databases
-        </Title>
+        </RiTitle>
         <RiRow align="end" responsive gap="s">
           <RiFlexItem grow>
             {!!items.length && (
-              <Text color="subdued" className={styles.subTitle}>
+              <RiText color="subdued" className={styles.subTitle}>
                 These are the {items.length > 1 ? 'databases ' : 'database '}
                 in your Redis Enterprise Cluster. Select the
                 {items.length > 1 ? ' databases ' : ' database '} that you want
                 to add.
-              </Text>
+              </RiText>
             )}
           </RiFlexItem>
           <RiFlexItem>
@@ -191,7 +191,7 @@ const RedisClusterDatabases = ({
             ]}
           />
           {!items.length && (
-            <Text className={styles.noDatabases}>{message}</Text>
+            <RiText className={styles.noDatabases}>{message}</RiText>
           )}
         </div>
       </div>

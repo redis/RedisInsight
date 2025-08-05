@@ -15,7 +15,7 @@ import { OnboardingTour, RiTooltip } from 'uiSrc/components'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import {
   PlayIcon,
@@ -88,7 +88,7 @@ const MonitorHeader = ({ handleRunMonitor }: Props) => {
             anchorPosition="upLeft"
             panelClassName={styles.profilerOnboardPanel}
           >
-            <Text>Profiler</Text>
+            <RiText>Profiler</RiText>
           </OnboardingTour>
         </RiFlexItem>
         {isStarted && (

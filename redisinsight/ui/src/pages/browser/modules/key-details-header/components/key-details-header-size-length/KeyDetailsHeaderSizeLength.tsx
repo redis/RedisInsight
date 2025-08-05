@@ -12,7 +12,7 @@ import {
 import { formatBytes } from 'uiSrc/utils'
 
 import { RiFlexItem } from 'uiSrc/components/base/layout'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
@@ -31,7 +31,7 @@ const KeyDetailsHeaderSizeLength = ({ width }: Props) => {
     <>
       {size && (
         <RiFlexItem>
-          <Text
+          <RiText
             color="subdued"
             size="s"
             className={styles.subtitleText}
@@ -65,11 +65,11 @@ const KeyDetailsHeaderSizeLength = ({ width }: Props) => {
                 )}
               </>
             </RiTooltip>
-          </Text>
+          </RiText>
         </RiFlexItem>
       )}
       <RiFlexItem>
-        <Text
+        <RiText
           color="subdued"
           size="s"
           className={styles.subtitleText}
@@ -78,7 +78,7 @@ const KeyDetailsHeaderSizeLength = ({ width }: Props) => {
           {LENGTH_NAMING_BY_TYPE[type] ?? 'Length'}
           {': '}
           {length ?? '-'}
-        </Text>
+        </RiText>
       </RiFlexItem>
     </>
   )

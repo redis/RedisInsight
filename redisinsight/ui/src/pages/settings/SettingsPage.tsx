@@ -32,8 +32,8 @@ import {
   RiLoader,
   RiCollapsibleNavGroup,
 } from 'uiSrc/components/base/display'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiText } from 'uiSrc/components/base/text'
 import {
   AdvancedSettings,
   CloudSettings,
@@ -117,10 +117,10 @@ const SettingsPage = () => {
         </div>
       )}
       <RiCallOut className={styles.warning}>
-        <Text size="s" className={styles.smallText}>
+        <RiText size="s" className={styles.smallText}>
           Advanced settings should only be changed if you understand their
           impact.
-        </Text>
+        </RiText>
       </RiCallOut>
       <AdvancedSettings />
     </div>
@@ -130,9 +130,9 @@ const SettingsPage = () => {
     <RiPage className={styles.container}>
       <RiPageBody component="div">
         <RiPageHeader>
-          <Title size="XXL" className={styles.title}>
+          <RiTitle size="XXL" className={styles.title}>
             Settings
-          </Title>
+          </RiTitle>
         </RiPageHeader>
 
         <RiPageContentBody style={{ maxWidth: 792 }}>

@@ -5,8 +5,8 @@ import InlineItemEditor from 'uiSrc/components/inline-item-editor/InlineItemEdit
 
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiNumericInput } from 'uiSrc/components/base/inputs'
 import { EditIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
@@ -58,19 +58,19 @@ const SettingItem = (props: Props) => {
 
   return (
     <>
-      <Title className={styles.title} size="XS">
+      <RiTitle className={styles.title} size="XS">
         {title}
-      </Title>
+      </RiTitle>
       <RiSpacer size="s" />
-      <Text className={styles.smallText} size="s">
+      <RiText className={styles.smallText} size="s">
         {summary}
-      </Text>
+      </RiText>
       <RiSpacer size="m" />
       <RiRow align="center" className={styles.container}>
         <RiFlexItem style={{ marginRight: '4px' }}>
-          <Text size="xs" className={styles.inputLabel}>
+          <RiText size="xs" className={styles.inputLabel}>
             {label}
-          </Text>
+          </RiText>
         </RiFlexItem>
 
         <RiFlexItem
@@ -112,9 +112,9 @@ const SettingItem = (props: Props) => {
               </div>
             </InlineItemEditor>
           ) : (
-            <Text className={styles.value} data-testid={`${testid}-value`}>
+            <RiText className={styles.value} data-testid={`${testid}-value`}>
               {value}
-            </Text>
+            </RiText>
           )}
         </RiFlexItem>
       </RiRow>

@@ -24,7 +24,7 @@ import {
 import { stringDataSelector } from 'uiSrc/slices/browser/string'
 import { isFullStringLoaded } from 'uiSrc/utils'
 import { RiTooltip } from 'uiSrc/components'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import {
   Container,
   ControlsIcon,
@@ -90,13 +90,13 @@ const KeyDetailsHeaderFormatter = (props: Props) => {
           </RiTooltip>
         ),
         dropdownDisplay: (
-          <Text
+          <RiText
             component="span"
             size="s"
             data-test-subj={`format-option-${value}`}
           >
             {text}
-          </Text>
+          </RiText>
         ),
       }),
     )

@@ -20,7 +20,7 @@ import {
   RiSelect,
   defaultValueRender,
 } from 'uiSrc/components/base/forms'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { NO_TEMPLATE_VALUE, NO_OPTIONS, INGEST_OPTION } from './constants'
 
@@ -163,7 +163,7 @@ const TemplateForm = (props: Props) => {
 
   return (
     <div className={cx(styles.container)}>
-      <Text className={styles.title}>Select a template</Text>
+      <RiText className={styles.title}>Select a template</RiText>
       <RiSpacer size="s" />
       <form>
         <RiSpacer size="xs" />

@@ -1,8 +1,8 @@
 import React from 'react'
 import { render, fireEvent } from 'uiSrc/utils/test-utils'
-import { WindowEvent } from './WindowEvent'
+import { RiWindowEvent } from './RiWindowEvent'
 
-describe('WindowEvent', () => {
+describe('RiWindowEvent', () => {
   let windowAddCount = 0
   let windowRemoveCount = 0
   let windowAddEventListener: typeof window.addEventListener
@@ -36,14 +36,16 @@ describe('WindowEvent', () => {
 
   it('should attach handler to window event on mount', () => {
     const handler = () => null
-    render(<WindowEvent event="click" handler={handler} />)
+    render(<RiWindowEvent event="click" handler={handler} />)
     expect(window.addEventListener).toHaveBeenCalledWith('click', handler)
     expect(windowAddCount).toEqual(1)
   })
 
   it('should remove handler on unmount', () => {
     const handler = () => null
-    const { unmount } = render(<WindowEvent event="click" handler={handler} />)
+    const { unmount } = render(
+      <RiWindowEvent event="click" handler={handler} />,
+    )
     unmount()
     expect(window.removeEventListener).toHaveBeenCalledWith('click', handler)
     expect(windowRemoveCount).toEqual(1)
@@ -53,12 +55,12 @@ describe('WindowEvent', () => {
     const handler1 = () => null
     const handler2 = () => null
     const { rerender } = render(
-      <WindowEvent event="click" handler={handler1} />,
+      <RiWindowEvent event="click" handler={handler1} />,
     )
 
     expect(window.addEventListener).toHaveBeenCalledWith('click', handler1)
 
-    rerender(<WindowEvent event="keydown" handler={handler2} />)
+    rerender(<RiWindowEvent event="keydown" handler={handler2} />)
 
     expect(window.removeEventListener).toHaveBeenCalledWith('click', handler1)
     expect(window.addEventListener).toHaveBeenCalledWith('keydown', handler2)
@@ -66,11 +68,17 @@ describe('WindowEvent', () => {
 
   it('should not remove or re-attach handler if update is irrelevant', () => {
     const handler = () => null
-    const { rerender } = render(<WindowEvent event="click" handler={handler} />)
+    const { rerender } = render(
+      <RiWindowEvent event="click" handler={handler} />,
+    )
     expect(windowAddCount).toEqual(1)
 
     rerender(
-      <WindowEvent event="click" handler={handler} data-test-subj="whatever" />,
+      <RiWindowEvent
+        event="click"
+        handler={handler}
+        data-test-subj="whatever"
+      />,
     )
     expect(windowAddCount).toEqual(1)
     expect(windowRemoveCount).toEqual(0)
@@ -80,7 +88,7 @@ describe('WindowEvent', () => {
     window.addEventListener = windowAddEventListener
     window.removeEventListener = windowRemoveEventListener
     const handler = jest.fn()
-    render(<WindowEvent event="click" handler={handler} />)
+    render(<RiWindowEvent event="click" handler={handler} />)
     fireEvent.click(window)
     expect(handler).toHaveBeenCalled()
     expect(handler).toHaveBeenCalledTimes(1)

@@ -7,8 +7,8 @@ import { getConfig } from 'uiSrc/config'
 import Robot from 'uiSrc/assets/img/robot.svg?react'
 import { RiCol, RiFlexItem } from 'uiSrc/components/base/layout'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
@@ -40,12 +40,12 @@ const NotFoundErrorPage = () => {
               />
             </RiFlexItem>
             <RiFlexItem grow>
-              <Title size="XXL">
+              <RiTitle size="XXL">
                 Whoops!
                 <br />
                 This Page Is an Empty Set
-              </Title>
-              <Text component="div">
+              </RiTitle>
+              <RiText component="div">
                 <p
                   className={styles.errorSubtext}
                   style={{ marginBottom: '.8rem' }}
@@ -60,7 +60,7 @@ const NotFoundErrorPage = () => {
                 >
                   Databases page
                 </RiPrimaryButton>
-              </Text>
+              </RiText>
             </RiFlexItem>
           </RiCol>
         </RiFlexItem>

@@ -32,7 +32,7 @@ import {
 } from 'uiSrc/components/base/layout'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CopyIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { ColorText, Text } from 'uiSrc/components/base/text'
+import { RiColorText, RiText } from 'uiSrc/components/base/text'
 import RedisClusterDatabases from './RedisClusterDatabases'
 import RedisClusterDatabasesResult from './RedisClusterDatabasesResult'
 
@@ -97,7 +97,7 @@ const RedisClusterDatabasesPage = () => {
               className={styles.tooltipColumnName}
               content={formatLongName(name)}
             >
-              <Text>{cellContent}</Text>
+              <RiText>{cellContent}</RiText>
             </RiTooltip>
           </div>
         )
@@ -123,7 +123,7 @@ const RedisClusterDatabasesPage = () => {
         return (
           !!dnsName && (
             <div className="host_port">
-              <Text className="copyHostPortText">{text}</Text>
+              <RiText className="copyHostPortText">{text}</RiText>
               <RiTooltip
                 position="right"
                 content="Copy"
@@ -182,7 +182,7 @@ const RedisClusterDatabasesPage = () => {
       return (
         <>
           {statusAdded === AddRedisDatabaseStatus.Success ? (
-            <Text>{messageAdded}</Text>
+            <RiText>{messageAdded}</RiText>
           ) : (
             <RiTooltip position="left" title="Error" content={messageAdded}>
               <RiRow align="center" gap="s">
@@ -191,12 +191,12 @@ const RedisClusterDatabasesPage = () => {
                 </RiFlexItem>
 
                 <RiFlexItem>
-                  <ColorText
+                  <RiColorText
                     color="danger"
                     className="flex-row euiTextAlign--center"
                   >
                     Error
-                  </ColorText>
+                  </RiColorText>
                 </RiFlexItem>
               </RiRow>
             </RiTooltip>

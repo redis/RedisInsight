@@ -3,7 +3,7 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiSrc/components/base/text'
 import { GroupBadge, RiTooltip } from 'uiSrc/components'
 import { Pages } from 'uiSrc/constants'
 import {
@@ -142,20 +142,20 @@ const TopKeysTable = ({
       }) => {
         if (isNil(value)) {
           return (
-            <ColorText
+            <RiColorText
               color="subdued"
               style={{ maxWidth: '100%' }}
               data-testid={`ttl-empty-${value}`}
             >
               -
-            </ColorText>
+            </RiColorText>
           )
         }
         if (value === -1) {
           return (
-            <ColorText color="subdued" data-testid={`ttl-no-limit-${name}`}>
+            <RiColorText color="subdued" data-testid={`ttl-no-limit-${name}`}>
               No limit
-            </ColorText>
+            </RiColorText>
           )
         }
 
@@ -173,9 +173,9 @@ const TopKeysTable = ({
                 </>
               }
             >
-              <ColorText color="subdued">
+              <RiColorText color="subdued">
                 {truncateNumberToFirstUnit(value)}
-              </ColorText>
+              </RiColorText>
             </RiTooltip>
           </span>
         )
@@ -193,13 +193,13 @@ const TopKeysTable = ({
       }) => {
         if (isNil(value)) {
           return (
-            <ColorText
+            <RiColorText
               color="subdued"
               style={{ maxWidth: '100%' }}
               data-testid={`size-empty-${value}`}
             >
               -
-            </ColorText>
+            </RiColorText>
           )
         }
         const [number, size] = formatBytes(value, 3, true)
@@ -219,12 +219,12 @@ const TopKeysTable = ({
             }
             data-testid="usedMemory-tooltip"
           >
-            <ColorText
+            <RiColorText
               color="subdued"
               data-testid={`nsp-usedMemory-value=${value}${isHighlight ? '-highlighted' : ''}`}
             >
               {number} {size}
-            </ColorText>
+            </RiColorText>
           </RiTooltip>
         )
       },
@@ -241,13 +241,13 @@ const TopKeysTable = ({
       }) => {
         if (isNil(value)) {
           return (
-            <ColorText
+            <RiColorText
               color="subdued"
               style={{ maxWidth: '100%' }}
               data-testid={`length-empty-${name}`}
             >
               -
-            </ColorText>
+            </RiColorText>
           )
         }
 
@@ -259,12 +259,12 @@ const TopKeysTable = ({
             }
             data-testid="usedMemory-tooltip"
           >
-            <ColorText
+            <RiColorText
               color="subdued"
               data-testid={`length-value-${name}${isHighlight ? '-highlighted' : ''}`}
             >
               {numberWithSpaces(value)}
-            </ColorText>
+            </RiColorText>
           </RiTooltip>
         )
       },

@@ -21,7 +21,7 @@ import { SortOrder, TEXT_CONSUMER_NAME_TOO_LONG } from 'uiSrc/constants'
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { isTruncatedString } from 'uiSrc/utils'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiFlexItem } from 'uiSrc/components/base/layout'
 import {
   AckPendingEntriesResponse,
@@ -125,7 +125,7 @@ const MessagesViewWrapper = (props: Props) => {
         const timestamp = id?.split('-')?.[0]
         return (
           <RiFlexItem>
-            <Text
+            <RiText
               color="subdued"
               size="s"
               style={{ maxWidth: '100%' }}
@@ -133,15 +133,15 @@ const MessagesViewWrapper = (props: Props) => {
               data-testid={`stream-message-${id}-date`}
             >
               {getFormatTime(timestamp)}
-            </Text>
-            <Text
+            </RiText>
+            <RiText
               size="s"
               className="streamItemId"
               data-testid={`stream-message-${id}`}
               style={{ maxWidth: '100%' }}
             >
               {id}
-            </Text>
+            </RiText>
           </RiFlexItem>
         )
       },
@@ -157,7 +157,7 @@ const MessagesViewWrapper = (props: Props) => {
       render: function Idle(_name: string, { id, idle }: PendingEntryDto) {
         const timestamp = id?.split('-')?.[0]
         return (
-          <Text
+          <RiText
             className="truncateText streamItem"
             color="subdued"
             size="s"
@@ -165,7 +165,7 @@ const MessagesViewWrapper = (props: Props) => {
             style={{ maxWidth: '100%' }}
           >
             {getFormatTime(`${toNumber(timestamp) + idle}`)}
-          </Text>
+          </RiText>
         )
       },
     },

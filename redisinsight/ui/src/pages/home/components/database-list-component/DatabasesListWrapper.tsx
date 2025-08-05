@@ -17,7 +17,7 @@ import React, {
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import AutoSizer from 'react-virtualized-auto-sizer'
-import { Text, ColorText } from 'uiSrc/components/base/text'
+import { RiText, RiColorText } from 'uiSrc/components/base/text'
 
 import {
   MoreactionsIcon,
@@ -376,9 +376,9 @@ const DatabasesListWrapper = (props: Props) => {
         render: function InstanceCell(name: string = '', instance: Instance) {
           if (isCreateCloudDb(instance.id)) {
             return (
-              <Text className={cx(styles.tooltipAnchorColumnName)}>
+              <RiText className={cx(styles.tooltipAnchorColumnName)}>
                 {instance.name}
-              </Text>
+              </RiText>
             )
           }
 
@@ -407,7 +407,7 @@ const DatabasesListWrapper = (props: Props) => {
                 className={styles.tooltipColumnName}
                 content={`${formatLongName(name)} ${getDbIndex(db)}`}
               >
-                <Text
+                <RiText
                   className={styles.tooltipAnchorColumnName}
                   data-testid={`instance-name-${id}`}
                   onClick={(e: React.MouseEvent) =>
@@ -417,15 +417,15 @@ const DatabasesListWrapper = (props: Props) => {
                     handleCheckConnectToInstance(e, instance)
                   }
                 >
-                  <ColorText
+                  <RiColorText
                     className={cx(styles.tooltipColumnNameText, {
                       [styles.withDb]: db,
                     })}
                   >
                     {cellContent}
-                  </ColorText>
-                  <ColorText>{` ${getDbIndex(db)}`}</ColorText>
-                </Text>
+                  </RiColorText>
+                  <RiColorText>{` ${getDbIndex(db)}`}</RiColorText>
+                </RiText>
               </RiTooltip>
             </div>
           )
@@ -449,7 +449,7 @@ const DatabasesListWrapper = (props: Props) => {
           const text = `${name}:${port}`
           return (
             <div className="host_port" data-testid="host-port">
-              <Text className="copyHostPortText">{text}</Text>
+              <RiText className="copyHostPortText">{text}</RiText>
               <RiTooltip
                 position="right"
                 content="Copy"
@@ -518,12 +518,12 @@ const DatabasesListWrapper = (props: Props) => {
                             className={styles.tooltipLogo}
                             data-testid="tooltip-redis-stack-icon"
                           />
-                          <Text
+                          <RiText
                             color="subdued"
                             style={{ marginTop: 4, marginBottom: -4 }}
                           >
                             Includes
-                          </Text>
+                          </RiText>
                         </>
                       ) : undefined
                     }

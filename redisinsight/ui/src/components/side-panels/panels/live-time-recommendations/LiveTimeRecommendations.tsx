@@ -31,7 +31,7 @@ import {
   RiLoadingContent,
   RiTooltip,
 } from 'uiSrc/components'
-import { ColorText, Text } from 'uiSrc/components/base/text'
+import { RiColorText, RiText } from 'uiSrc/components/base/text'
 import { RiCheckbox } from 'uiSrc/components/base/forms'
 
 import { RiIcon } from 'uiSrc/components/base/icons'
@@ -138,7 +138,7 @@ const LiveTimeRecommendations = () => {
   const renderHeader = () => (
     <div className={styles.actions}>
       <div>
-        <ColorText className={styles.boldText}>Our Tips</ColorText>
+        <RiColorText className={styles.boldText}>Our Tips</RiColorText>
         <RiTooltip
           position="bottom"
           className={styles.tooltip}
@@ -218,7 +218,7 @@ const LiveTimeRecommendations = () => {
               size="m"
               type="MessageInfoIcon"
             />
-            <Text className={styles.text}>
+            <RiText className={styles.text}>
               {'Run '}
               <PopoverRunAnalyze
                 isShowPopover={isShowApproveRun}
@@ -239,7 +239,7 @@ const LiveTimeRecommendations = () => {
                 </RiLink>
               </PopoverRunAnalyze>
               {' to get more tips'}
-            </Text>
+            </RiText>
           </div>
         </FeatureFlagComponent>
       )}

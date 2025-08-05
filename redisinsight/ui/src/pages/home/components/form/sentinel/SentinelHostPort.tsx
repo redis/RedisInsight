@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { RiTooltip } from 'uiSrc/components'
-import { ColorText, Text } from 'uiSrc/components/base/text'
+import { RiColorText, RiText } from 'uiSrc/components/base/text'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CopyIcon } from 'uiSrc/components/base/icons'
 import styles from '../../styles.module.scss'
@@ -19,10 +19,10 @@ const SentinelHostPort = (props: Props) => {
   }
 
   return (
-    <Text color="subdued" className={styles.sentinelCollapsedField}>
+    <RiText color="subdued" className={styles.sentinelCollapsedField}>
       Sentinel Host & Port:
       <div className={styles.hostPort}>
-        <ColorText>{`${host}:${port}`}</ColorText>
+        <RiColorText>{`${host}:${port}`}</RiColorText>
         <RiTooltip
           position="right"
           content="Copy"
@@ -36,7 +36,7 @@ const SentinelHostPort = (props: Props) => {
           />
         </RiTooltip>
       </div>
-    </Text>
+    </RiText>
   )
 }
 

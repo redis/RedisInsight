@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import {
   RiDestructiveButton,
   RiSecondaryButton,
@@ -51,11 +51,11 @@ const AckPopover = (props: Props) => {
       }
     >
       <div className={styles.popover}>
-        <Text size="m">
+        <RiText size="m">
           <b>{id}</b>
           <br />
           will be acknowledged and removed from the pending messages list
-        </Text>
+        </RiText>
         <div className={styles.popoverFooter}>
           <RiDestructiveButton
             size="s"

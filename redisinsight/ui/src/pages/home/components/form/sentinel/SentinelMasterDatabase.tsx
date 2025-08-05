@@ -4,7 +4,7 @@ import { FormikProps } from 'formik'
 import { Nullable } from 'uiSrc/utils'
 import { SECURITY_FIELD } from 'uiSrc/constants'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { ColorText, Text } from 'uiSrc/components/base/text'
+import { RiColorText, RiText } from 'uiSrc/components/base/text'
 import { RiPasswordInput, RiTextInput } from 'uiSrc/components/base/inputs'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiFormField } from 'uiSrc/components/base/forms'
@@ -29,12 +29,12 @@ const SentinelMasterDatabase = (props: Props) => {
   return (
     <>
       {!!db && !isCloneMode && (
-        <Text color="subdued" className={styles.sentinelCollapsedField}>
+        <RiText color="subdued" className={styles.sentinelCollapsedField}>
           Database Index:
           <span style={{ paddingLeft: 5 }}>
-            <ColorText>{db}</ColorText>
+            <RiColorText>{db}</RiColorText>
           </span>
-        </Text>
+        </RiText>
       )}
       <RiRow gap="m" responsive className={flexGroupClassName}>
         <RiFlexItem grow className={flexItemClassName}>

@@ -8,8 +8,8 @@ import { IGlobalNotification } from 'uiSrc/slices/interfaces'
 import { truncateText } from 'uiSrc/utils'
 
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { TitleSize, Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { TitleSize, RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiText } from 'uiSrc/components/base/text'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 
 import styles from '../styles.module.scss'
@@ -24,22 +24,22 @@ const Notification = (props: Props) => {
 
   return (
     <>
-      <Title
+      <RiTitle
         size={titleSize}
         className={styles.notificationTitle}
         data-testid="notification-title"
       >
         {notification.title}
-      </Title>
+      </RiTitle>
 
-      <Text
+      <RiText
         size="s"
         color="subdued"
         className={cx('notificationHTMLBody', styles.notificationBody)}
         data-testid="notification-body"
       >
         {parse(notification.body)}
-      </Text>
+      </RiText>
 
       <RiRow
         className={styles.notificationFooter}
@@ -47,9 +47,9 @@ const Notification = (props: Props) => {
         justify="start"
       >
         <RiFlexItem>
-          <Text size="xs" color="subdued" data-testid="notification-date">
+          <RiText size="xs" color="subdued" data-testid="notification-date">
             {format(notification.timestamp * 1000, NOTIFICATION_DATE_FORMAT)}
-          </Text>
+          </RiText>
         </RiFlexItem>
         {notification.category && (
           <RiFlexItem>

@@ -11,7 +11,7 @@ import {
   RiTable,
   ColumnDefinition,
 } from 'uiSrc/components/base/layout'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 
 import { SHORTCUTS, ShortcutGroup, separator } from './schema'
 
@@ -42,9 +42,9 @@ const ShortcutsFlyout = () => {
 
   const ShortcutsTable = ({ name, items }: ShortcutGroup) => (
     <div key={name} data-testid={`shortcuts-table-${name}`}>
-      <Title size="XS" data-test-subj={`shortcuts-section-${name}`}>
+      <RiTitle size="XS" data-test-subj={`shortcuts-section-${name}`}>
         {name}
-      </Title>
+      </RiTitle>
       <RiSpacer size="m" />
       <RiTable columns={tableColumns} data={items} defaultSorting={[]} />
       <RiSpacer size="xl" />

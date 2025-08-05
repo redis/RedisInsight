@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import { toNumber } from 'lodash'
 
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiSrc/components/base/text'
 import { KeyTypes } from 'uiSrc/constants'
 import {
   bufferToString,
@@ -183,26 +183,26 @@ const RemoveListElements = (props: Props) => {
       }
     >
       <div className={styles.popover}>
-        <Text size="m" component="div">
+        <RiText size="m" component="div">
           <h4 style={{ marginTop: 0 }}>
             <b>{count}</b> Element(s)
           </h4>
-          <Text size="s">
+          <RiText size="s">
             will be removed from the {destination.toLowerCase()} of{' '}
             <b>{formatNameShort(bufferToString(selectedKey))}</b>
-          </Text>
+          </RiText>
           {(!length || length <= +count) && (
             <div className={styles.appendInfo}>
               <RiIcon
                 type="ToastDangerIcon"
                 style={{ marginRight: '1rem', marginTop: '4px' }}
               />
-              <Text size="s">
+              <RiText size="s">
                 If you remove all Elements, the whole Key will be deleted.
-              </Text>
+              </RiText>
             </div>
           )}
-        </Text>
+        </RiText>
         <RiSpacer />
         <RiDestructiveButton
           size="small"

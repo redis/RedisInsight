@@ -13,7 +13,7 @@ import {
   RiSelect,
   RiFormField,
 } from 'uiSrc/components/base/forms'
-import { Title } from 'uiSrc/components/base/text'
+import { RiTitle } from 'uiSrc/components/base/text'
 
 const ThemeSettings = () => {
   const dispatch = useDispatch()
@@ -50,7 +50,7 @@ const ThemeSettings = () => {
 
   return (
     <form>
-      <Title size="XS">Color Theme</Title>
+      <RiTitle size="XS">Color Theme</RiTitle>
       <RiSpacer size="m" />
       <RiFormField label="Specifies the color theme to be used in Redis Insight:">
         <RiSelect
