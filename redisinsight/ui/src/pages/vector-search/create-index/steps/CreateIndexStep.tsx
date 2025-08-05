@@ -12,6 +12,7 @@ import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { VectorIndexTab } from 'uiSrc/components/new-index/create-index-step/CreateIndexStepWrapper'
 import { BuildNewIndexTabTrigger } from 'uiSrc/components/new-index/create-index-step/build-new-index-tab/BuildNewIndexTabTrigger'
 import { TextInput } from 'uiSrc/components/base/inputs'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { PlayFilledIcon } from 'uiSrc/components/base/icons'
 import { bikesIndexFieldsBoxes } from './config'
@@ -66,6 +67,16 @@ export const CreateIndexStep: IStepComponent = ({
     },
   ]
 
+  const handlePreviewCommandClick = () => {
+    setIsDrawerOpen(true)
+    sendEventTelemetry({
+      event: TelemetryEvent.VECTOR_SEARCH_ONBOARDING_VIEW_COMMAND_PREVIEW,
+      eventData: {
+        databaseId: parameters.instanceId,
+      },
+    })
+  }
+
   return (
     <CreateIndexStepScreenWrapper>
       <FlexItem direction="column" $gap="xxl">
@@ -83,7 +94,8 @@ export const CreateIndexStep: IStepComponent = ({
         <FlexGroup justify="end">
           <EmptyButton
             icon={PlayFilledIcon}
-            onClick={() => setIsDrawerOpen(true)}
+            onClick={handlePreviewCommandClick}
+            data-testid="preview-command-button"
           >
             Command preview
           </EmptyButton>

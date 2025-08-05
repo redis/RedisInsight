@@ -1,6 +1,7 @@
 import React from 'react'
-import { render, screen } from 'uiSrc/utils/test-utils'
+import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { CreateIndexStep } from './CreateIndexStep'
 import { selectedBikesIndexFields } from './config'
 import {
@@ -10,6 +11,19 @@ import {
   PresetDataType,
   StepComponentProps,
 } from '../types'
+
+// Mock the telemetry module, so we don't send actual telemetry data during tests
+jest.mock('uiSrc/telemetry', () => ({
+  ...jest.requireActual('uiSrc/telemetry'),
+  sendEventTelemetry: jest.fn(),
+}))
+
+// Workaround for @redis-ui/components Title component issue with react-children-utilities
+// TypeError: react_utils.childrenToString is not a function
+jest.mock('uiSrc/components/base/layout/drawer', () => ({
+  ...jest.requireActual('uiSrc/components/base/layout/drawer'),
+  DrawerHeader: jest.fn().mockReturnValue(null),
+}))
 
 const mockSetParameters = jest.fn()
 
@@ -142,9 +156,18 @@ describe('CreateIndexStep', () => {
       render(<CreateIndexStep {...defaultProps} />)
 
       // Verify all 8 field boxes are rendered (from bikesIndexFieldsBoxes config)
-      const fieldLabels = ['id', 'description', 'price', 'price_1', 'name', 'category', 'embedding', 'embedding_1']
+      const fieldLabels = [
+        'id',
+        'description',
+        'price',
+        'price_1',
+        'name',
+        'category',
+        'embedding',
+        'embedding_1',
+      ]
 
-      fieldLabels.forEach(label => {
+      fieldLabels.forEach((label) => {
         expect(screen.getByText(label)).toBeInTheDocument()
       })
     })
@@ -163,6 +186,26 @@ describe('CreateIndexStep', () => {
 
       const commandPreviewButton = screen.getByText('Command preview')
       expect(commandPreviewButton).toBeInTheDocument()
+    })
+  })
+
+  describe('Telemetry', () => {
+    beforeEach(() => {
+      jest.clearAllMocks()
+    })
+
+    it('should send telemetry event when opening the command preview', async () => {
+      render(<CreateIndexStep {...defaultProps} />)
+
+      const commandPreviewButton = screen.getByText('Command preview')
+      expect(commandPreviewButton).toBeInTheDocument()
+
+      fireEvent.click(commandPreviewButton)
+
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.VECTOR_SEARCH_ONBOARDING_VIEW_COMMAND_PREVIEW,
+        eventData: { databaseId: defaultProps.parameters.instanceId },
+      })
     })
   })
 })
