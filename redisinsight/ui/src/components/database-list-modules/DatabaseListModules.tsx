@@ -8,7 +8,7 @@ import { IDatabaseModule, sortModules } from 'uiSrc/utils/modules'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 
 import { DEFAULT_MODULES_INFO, ModuleInfo } from 'uiSrc/constants/modules'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { ColorText } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { RiIcon } from 'uiSrc/components/base/icons'
@@ -116,7 +116,7 @@ const DatabaseListModules = React.memo((props: Props) => {
   ) => (
     <span key={moduleName || abbreviation || content}>
       {icon ? (
-        <IconButton
+        <RiIconButton
           icon={icon}
           className={cx(styles.icon, { [styles.circle]: inCircle })}
           onClick={() => handleCopy(content)}

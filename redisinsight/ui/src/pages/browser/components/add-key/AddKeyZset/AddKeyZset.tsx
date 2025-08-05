@@ -1,9 +1,4 @@
-import React, {
-  FormEvent,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import React, { FormEvent, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toNumber } from 'lodash'
 import { Maybe, stringToBuffer, validateScoreNumber } from 'uiSrc/utils'
@@ -18,7 +13,7 @@ import {
 } from 'uiSrc/pages/browser/components/add-key/AddKeyZset/interfaces'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
+import { RiFormField } from 'uiSrc/components/base/forms'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { CreateZSetWithExpireDto } from 'apiSrc/modules/browser/z-set/dto'
 import { AddZsetFormConfig as config } from '../constants/fields-config'
@@ -187,7 +182,7 @@ const AddKeyZset = (props: Props) => {
         {(item, index) => (
           <Row align="center" gap="m">
             <FlexItem grow>
-              <FormField>
+              <RiFormField>
                 <TextInput
                   name={`member-${item.id}`}
                   id={`member-${item.id}`}
@@ -202,10 +197,10 @@ const AddKeyZset = (props: Props) => {
                   disabled={loading}
                   data-testid="member-name"
                 />
-              </FormField>
+              </RiFormField>
             </FlexItem>
             <FlexItem grow>
-              <FormField>
+              <RiFormField>
                 <TextInput
                   name={`score-${item.id}`}
                   id={`score-${item.id}`}
@@ -221,7 +216,7 @@ const AddKeyZset = (props: Props) => {
                   disabled={loading}
                   data-testid="member-score"
                 />
-              </FormField>
+              </RiFormField>
             </FlexItem>
           </Row>
         )}

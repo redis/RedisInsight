@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
@@ -44,7 +44,7 @@ const PopoverRunAnalyze = (props: Props) => {
           {popoverContent}
         </Text>
         <Spacer size="m" />
-        <PrimaryButton
+        <RiPrimaryButton
           aria-label="Analyze"
           data-testid="approve-insights-db-analysis-btn"
           onClick={onApproveClick}
@@ -52,7 +52,7 @@ const PopoverRunAnalyze = (props: Props) => {
           className={styles.popoverApproveBtn}
         >
           Analyze
-        </PrimaryButton>
+        </RiPrimaryButton>
       </div>
     </RiPopover>
   )

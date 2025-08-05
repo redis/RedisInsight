@@ -6,9 +6,7 @@ import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 import { NONE } from 'uiSrc/pages/home/constants'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
+import { RiCheckbox, RiFormField, RiSelect } from 'uiSrc/components/base/forms'
 import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
 
 export interface Props {
@@ -65,8 +63,8 @@ const DbCompressor = (props: Props) => {
     <>
       <Row gap="m" responsive={false}>
         <FlexItem>
-          <FormField>
-            <Checkbox
+          <RiFormField>
+            <RiCheckbox
               id={id}
               name="showCompressor"
               label="Enable Automatic Data Decompression"
@@ -74,7 +72,7 @@ const DbCompressor = (props: Props) => {
               onChange={handleChangeDbCompressorCheckbox}
               data-testid="showCompressor"
             />
-          </FormField>
+          </RiFormField>
         </FlexItem>
       </Row>
 
@@ -83,7 +81,7 @@ const DbCompressor = (props: Props) => {
           <Spacer />
           <Row gap="m">
             <FlexItem grow>
-              <FormField label="Decompression format">
+              <RiFormField label="Decompression format">
                 <RiSelect
                   name="compressor"
                   placeholder="Decompression format"
@@ -94,7 +92,7 @@ const DbCompressor = (props: Props) => {
                   }}
                   data-testid="select-compressor"
                 />
-              </FormField>
+              </RiFormField>
             </FlexItem>
             <FlexItem grow />
           </Row>

@@ -17,7 +17,7 @@ import {
   ANALYZE_TOOLTIP_MESSAGE,
 } from 'uiSrc/constants/recommendations'
 import { FeatureFlagComponent } from 'uiSrc/components'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
 import PopoverRunAnalyze from '../popover-run-analyze'
 
@@ -82,13 +82,13 @@ const NoRecommendationsScreen = () => {
                 : ANALYZE_TOOLTIP_MESSAGE
             }
           >
-            <PrimaryButton
+            <RiPrimaryButton
               size="s"
               onClick={() => setIsShowInfo(true)}
               data-testid="insights-db-analysis-link"
             >
               Analyze Database
-            </PrimaryButton>
+            </RiPrimaryButton>
           </PopoverRunAnalyze>
         </FeatureFlagComponent>
       ) : (

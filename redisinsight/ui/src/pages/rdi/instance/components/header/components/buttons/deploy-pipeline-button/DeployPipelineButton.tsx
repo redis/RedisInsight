@@ -18,10 +18,9 @@ import { Text } from 'uiSrc/components/base/text'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { RiRocketIcon , RiIcon } from 'uiSrc/components/base/icons'
+import { RiPrimaryButton, RiCheckbox } from 'uiSrc/components/base/forms'
+import { RiRocketIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
@@ -114,7 +113,7 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
           scrollLock: true,
         }}
         button={
-          <PrimaryButton
+          <RiPrimaryButton
             size="s"
             onClick={handleClickDeploy}
             icon={RiRocketIcon}
@@ -123,7 +122,7 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
             data-testid="deploy-rdi-pipeline"
           >
             Deploy Pipeline
-          </PrimaryButton>
+          </RiPrimaryButton>
         }
       >
         <Title size="XS">Are you sure you want to deploy the pipeline?</Title>
@@ -139,7 +138,7 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
         </Text>
         <Spacer size="s" />
         <div className={styles.checkbox}>
-          <Checkbox
+          <RiCheckbox
             id="resetPipeline"
             name="resetPipeline"
             label="Reset"
@@ -162,7 +161,7 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
         </div>
         <Row gap="m" responsive justify="end">
           <FlexItem>
-            <PrimaryButton
+            <RiPrimaryButton
               size="s"
               color="secondary"
               className={styles.popoverBtn}
@@ -170,7 +169,7 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
               data-testid="deploy-confirm-btn"
             >
               Deploy
-            </PrimaryButton>
+            </RiPrimaryButton>
           </FlexItem>
         </Row>
       </RiPopover>

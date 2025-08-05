@@ -7,7 +7,7 @@ import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import { PasswordInput, TextInput } from 'uiSrc/components/base/inputs'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
+import { RiFormField } from 'uiSrc/components/base/forms'
 import styles from '../../styles.module.scss'
 
 export interface Props {
@@ -38,21 +38,23 @@ const SentinelMasterDatabase = (props: Props) => {
       )}
       <Row gap="m" responsive className={flexGroupClassName}>
         <FlexItem grow className={flexItemClassName}>
-          <FormField label="Username">
+          <RiFormField label="Username">
             <TextInput
               name="sentinelMasterUsername"
               id="sentinelMasterUsername"
               maxLength={200}
               placeholder="Enter Username"
               value={formik.values.sentinelMasterUsername ?? ''}
-              onChange={(value) => formik.setFieldValue('sentinelMasterUsername', value)}
+              onChange={(value) =>
+                formik.setFieldValue('sentinelMasterUsername', value)
+              }
               data-testid="sentinel-mater-username"
             />
-          </FormField>
+          </RiFormField>
         </FlexItem>
 
         <FlexItem grow className={flexItemClassName}>
-          <FormField label="Password">
+          <RiFormField label="Password">
             <PasswordInput
               type="password"
               name="sentinelMasterPassword"
@@ -73,7 +75,7 @@ const SentinelMasterDatabase = (props: Props) => {
               }}
               autoComplete="new-password"
             />
-          </FormField>
+          </RiFormField>
         </FlexItem>
       </Row>
     </>

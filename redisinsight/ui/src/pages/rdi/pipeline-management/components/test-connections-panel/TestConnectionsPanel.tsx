@@ -6,7 +6,7 @@ import { rdiTestConnectionsSelector } from 'uiSrc/slices/rdi/testConnections'
 
 import { Text } from 'uiSrc/components/base/text'
 import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import { RiLoader } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
@@ -23,7 +23,7 @@ const TestConnectionPanelWrapper = ({
   <div className={styles.panel} data-testid="test-connection-panel">
     <div className={styles.header}>
       <Text className={styles.title}>Connection test results</Text>
-      <IconButton
+      <RiIconButton
         icon={CancelSlimIcon}
         aria-label="close test connections panel"
         className={styles.closeBtn}

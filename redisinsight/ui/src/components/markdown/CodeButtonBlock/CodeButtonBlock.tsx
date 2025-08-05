@@ -27,7 +27,7 @@ import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { ButtonLang } from 'uiSrc/utils/formatters/markdown/remarkCode'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
+import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { PlayIcon, CheckBoldIcon, CopyIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
@@ -170,7 +170,7 @@ const CodeButtonBlock = (props: Props) => {
           )}
         </FlexItem>
         <FlexItem className={styles.actions}>
-          <EmptyButton
+          <RiEmptyButton
             onClick={handleCopy}
             icon={CopyIcon}
             size="small"
@@ -178,7 +178,7 @@ const CodeButtonBlock = (props: Props) => {
             data-testid={`copy-btn-${label}`}
           >
             Copy
-          </EmptyButton>
+          </RiEmptyButton>
           {!isRunButtonHidden && (
             <RiPopover
               ownFocus
@@ -197,7 +197,7 @@ const CodeButtonBlock = (props: Props) => {
                   }
                   data-testid="run-btn-open-workbench-tooltip"
                 >
-                  <EmptyButton
+                  <RiEmptyButton
                     onClick={handleRunClicked}
                     icon={isRunned ? CheckBoldIcon : PlayIcon}
                     iconSide="right"
@@ -209,7 +209,7 @@ const CodeButtonBlock = (props: Props) => {
                     data-testid={`run-btn-${label}`}
                   >
                     Run
-                  </EmptyButton>
+                  </RiEmptyButton>
                 </RiTooltip>
               }
             >

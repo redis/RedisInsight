@@ -9,12 +9,11 @@ import { MonacoJson } from 'uiSrc/components/monaco-editor'
 import UploadFile from 'uiSrc/components/upload-file'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
+import { RiFormField } from 'uiSrc/components/base/forms'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import { CreateRejsonRlWithExpireDto } from 'apiSrc/modules/browser/rejson-rl/dto'
 
 import { AddJSONFormConfig as config } from '../constants/fields-config'
-
 
 export interface Props {
   keyName: string
@@ -74,7 +73,7 @@ const AddKeyReJSON = (props: Props) => {
 
   return (
     <form onSubmit={onFormSubmit}>
-      <FormField label={config.value.label}>
+      <RiFormField label={config.value.label}>
         <>
           <MonacoJson
             value={ReJSONValue}
@@ -92,7 +91,7 @@ const AddKeyReJSON = (props: Props) => {
             </FlexItem>
           </Row>
         </>
-      </FormField>
+      </RiFormField>
 
       <ActionFooter
         onCancel={() => onCancel(true)}

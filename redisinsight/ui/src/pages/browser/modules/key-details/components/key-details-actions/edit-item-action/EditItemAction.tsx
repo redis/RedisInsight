@@ -2,7 +2,7 @@ import React from 'react'
 import { Nullable } from 'uiSrc/utils'
 
 import { RiTooltip } from 'uiSrc/components'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { EditIcon } from 'uiSrc/components/base/icons'
 import styles from '../styles.module.scss'
 
@@ -21,7 +21,7 @@ const EditItemAction = ({
 }: Props) => (
   <div className={styles.actionBtn}>
     <RiTooltip content={tooltipContent} data-testid="edit-key-value-tooltip">
-      <IconButton
+      <RiIconButton
         disabled={!isEditable}
         icon={EditIcon}
         aria-label={title}

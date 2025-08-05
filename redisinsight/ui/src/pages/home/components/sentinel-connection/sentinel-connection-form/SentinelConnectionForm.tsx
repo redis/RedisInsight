@@ -15,10 +15,7 @@ import {
 } from 'uiSrc/pages/home/components/form'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { InfoIcon } from 'uiSrc/components/base/icons'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { RiTooltip } from 'uiSrc/components'
 
 export interface Props {
@@ -91,7 +88,7 @@ const SentinelConnectionForm = (props: Props) => {
       }
       content={getSubmitButtonContent(errors, submitIsDisabled)}
     >
-      <PrimaryButton
+      <RiPrimaryButton
         size="s"
         type="submit"
         onClick={onClick}
@@ -102,7 +99,7 @@ const SentinelConnectionForm = (props: Props) => {
         style={{ marginLeft: 12 }}
       >
         Discover Database
-      </PrimaryButton>
+      </RiPrimaryButton>
     </RiTooltip>
   )
 
@@ -113,14 +110,14 @@ const SentinelConnectionForm = (props: Props) => {
       return ReactDOM.createPortal(
         <div className="footerAddDatabase">
           {onClose && (
-            <SecondaryButton
+            <RiSecondaryButton
               size="s"
               onClick={onClose}
               className="btn-cancel"
               data-testid="btn-cancel"
             >
               Cancel
-            </SecondaryButton>
+            </RiSecondaryButton>
           )}
           <SubmitButton
             onClick={formik.submitForm}

@@ -6,8 +6,8 @@ import { IMonitorDataPayload } from 'uiSrc/slices/interfaces'
 
 import { RiTooltip } from 'uiSrc/components'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { PlayFilledIcon , RiIcon } from 'uiSrc/components/base/icons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
+import { PlayFilledIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { ColorText } from 'uiSrc/components/base/text'
 import { SwitchInput } from 'uiSrc/components/base/inputs'
 import MonitorLog from '../MonitorLog'
@@ -45,7 +45,7 @@ const Monitor = (props: Props) => {
     <div className={styles.startContainer} data-testid="monitor-not-started">
       <div className={styles.startContent}>
         <RiTooltip content="Start">
-          <IconButton
+          <RiIconButton
             icon={PlayFilledIcon}
             className={styles.startTitleIcon}
             onClick={() => handleRunMonitor(saveLogValue)}

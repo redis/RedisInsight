@@ -31,7 +31,7 @@ import {
 
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { KeyDetailsHeaderName } from './components/key-details-header-name'
 import { KeyDetailsHeaderTTL } from './components/key-details-header-ttl'
 import { KeyDetailsHeaderDelete } from './components/key-details-header-delete'
@@ -155,7 +155,7 @@ const KeyDetailsHeader = ({
                 <FlexItem>
                   {(!arePanelsCollapsed || isFullScreen) && (
                     <RiTooltip content="Close" position="left">
-                      <IconButton
+                      <RiIconButton
                         icon={CancelSlimIcon}
                         aria-label="Close key"
                         className={styles.closeBtn}

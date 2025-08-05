@@ -2,7 +2,7 @@ import React from 'react'
 
 import { FullScreen } from 'uiSrc/components'
 
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
@@ -30,7 +30,7 @@ const Header = (props: Props) => {
         onToggleFullScreen={onToggleFullScreen}
         btnTestId={`fullScreen-${panelName}-btn`}
       />
-      <IconButton
+      <RiIconButton
         icon={CancelSlimIcon}
         aria-label="close insights"
         className={styles.closeBtn}

@@ -23,7 +23,7 @@ import { Nullable, formatLongName, lastConnectionFormat } from 'uiSrc/utils'
 
 import { setAppContextConnectedRdiInstanceId } from 'uiSrc/slices/app/context'
 import { Text } from 'uiSrc/components/base/text'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CopyIcon, EditIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
 import styles from './styles.module.scss'
@@ -183,7 +183,7 @@ const RdiInstancesListWrapper = ({
             content="Copy"
             anchorClassName="copyUrlTooltip"
           >
-            <IconButton
+            <RiIconButton
               size="L"
               icon={CopyIcon}
               aria-label="Copy URL"
@@ -222,7 +222,7 @@ const RdiInstancesListWrapper = ({
       name: '',
       render: (_act: any, instance: RdiInstance) => (
         <>
-          <IconButton
+          <RiIconButton
             icon={EditIcon}
             className="editInstanceBtn"
             aria-label="Edit instance"

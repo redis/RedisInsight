@@ -21,7 +21,7 @@ import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 import { generateHumanMessage } from 'uiSrc/utils/transformers/chatbot'
 
 import { CustomErrorCodes } from 'uiSrc/constants'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
+import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { EraserIcon } from 'uiSrc/components/base/icons'
 import { ASSISTANCE_CHAT_AGREEMENTS } from '../texts'
 import {
@@ -174,7 +174,7 @@ const AssistanceChat = () => {
         <span />
         <RestartChat
           button={
-            <EmptyButton
+            <RiEmptyButton
               disabled={!!inProgressMessage || !messages?.length}
               icon={EraserIcon}
               size="small"

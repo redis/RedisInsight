@@ -33,10 +33,13 @@ import { localStorageService } from 'uiSrc/services'
 import { BrowserStorageItem } from 'uiSrc/constants'
 
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
-import { EmptyButton, IconButton } from 'uiSrc/components/base/forms/buttons'
+import {
+  RiEmptyButton,
+  RiIconButton,
+  RiSelect,
+} from 'uiSrc/components/base/forms'
 import { RefreshIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { Text } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
@@ -203,7 +206,7 @@ const RediSearchIndexesList = (props: Props) => {
         </div>
         <div className={styles.refresh}>
           <RiTooltip content="Refresh Indexes">
-            <IconButton
+            <RiIconButton
               size="S"
               icon={RefreshIcon}
               disabled={loading}
@@ -219,7 +222,7 @@ const RediSearchIndexesList = (props: Props) => {
   )
 }
 
-const Button = styled(EmptyButton)`
+const Button = styled(RiEmptyButton)`
   justify-content: flex-start;
   max-width: 200px;
   padding-left: 1.275rem;

@@ -1,36 +1,36 @@
 import React from 'react'
 import { fireEvent } from '@testing-library/react'
 import { render, screen } from 'uiSrc/utils/test-utils'
-import { Checkbox } from './Checkbox'
+import { RiCheckbox } from './RiCheckbox'
 
 describe('Checkbox', () => {
   it('Should render checkbox', () => {
-    render(<Checkbox label="Checkbox Label" />)
+    render(<RiCheckbox label="Checkbox Label" />)
 
     expect(screen.getByText('Checkbox Label')).toBeInTheDocument()
   })
 
   describe('Checkbox states', () => {
     it('Should render disabled checkbox when disabled prop is passed', () => {
-      render(<Checkbox id="id1" label="Checkbox Label" disabled />)
+      render(<RiCheckbox id="id1" label="Checkbox Label" disabled />)
 
       expect(screen.getByRole('checkbox')).toBeDisabled()
     })
     it('Should render un-checked checkbox when checked prop is passed as false', () => {
-      render(<Checkbox id="id1" label="Checkbox Label" checked={false} />)
+      render(<RiCheckbox id="id1" label="Checkbox Label" checked={false} />)
 
       const checkbox = screen.getByRole('checkbox')
       expect(checkbox).toHaveAttribute('aria-checked', 'false')
     })
     it('Should render checked checkbox when checked prop is passed as true', () => {
-      render(<Checkbox id="id1" label="Checkbox Label" checked />)
+      render(<RiCheckbox id="id1" label="Checkbox Label" checked />)
 
       const checkbox = screen.getByRole('checkbox')
       expect(checkbox).toHaveAttribute('aria-checked', 'true')
     })
     it('Should render indeterminate checkbox when checked prop is passed as indeterminate', () => {
       render(
-        <Checkbox id="id1" label="Checkbox Label" checked="indeterminate" />,
+        <RiCheckbox id="id1" label="Checkbox Label" checked="indeterminate" />,
       )
 
       const checkbox = screen.getByRole('checkbox')
@@ -44,7 +44,7 @@ describe('Checkbox', () => {
       const onChange = jest.fn()
       const onCheckedChange = jest.fn()
       render(
-        <Checkbox
+        <RiCheckbox
           id="id1"
           label="Checkbox Label"
           onChange={onChange}
@@ -69,7 +69,7 @@ describe('Checkbox', () => {
       const onChange = jest.fn()
       const onCheckedChange = jest.fn()
       render(
-        <Checkbox
+        <RiCheckbox
           id="id1"
           label="Checkbox Label"
           onChange={onChange}
@@ -92,7 +92,7 @@ describe('Checkbox', () => {
       expect(onCheckedChange).toHaveBeenCalledWith(false)
     })
     it('Should change state when clicked', () => {
-      render(<Checkbox id="id1" label="Checkbox Label" defaultChecked />)
+      render(<RiCheckbox id="id1" label="Checkbox Label" defaultChecked />)
       const checkbox = screen.getByRole('checkbox')
       expect(checkbox).toHaveAttribute('aria-checked', 'true')
       fireEvent.click(checkbox)

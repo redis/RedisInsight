@@ -13,11 +13,11 @@ import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import {
-  DestructiveButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
+  RiDestructiveButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
+} from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
@@ -114,13 +114,13 @@ const RedisClusterDatabases = ({
       panelClassName={styles.panelCancelBtn}
       panelPaddingSize="l"
       button={
-        <SecondaryButton
+        <RiSecondaryButton
           onClick={showPopover}
           className="btn-cancel"
           data-testid="btn-back"
         >
           Cancel
-        </SecondaryButton>
+        </RiSecondaryButton>
       }
     >
       <Text size="m">
@@ -129,13 +129,13 @@ const RedisClusterDatabases = ({
       </Text>
       <br />
       <div>
-        <DestructiveButton
+        <RiDestructiveButton
           size="s"
           onClick={onClose}
           data-testid="btn-back-proceed"
         >
           Proceed
-        </DestructiveButton>
+        </RiDestructiveButton>
       </div>
     </RiPopover>
   )
@@ -158,14 +158,14 @@ const RedisClusterDatabases = ({
             )}
           </FlexItem>
           <FlexItem>
-            <FormField className={styles.searchForm}>
+            <RiFormField className={styles.searchForm}>
               <SearchInput
                 placeholder="Search..."
                 onChange={onQueryChange}
                 aria-label="Search"
                 data-testid="search"
               />
-            </FormField>
+            </RiFormField>
           </FlexItem>
         </Row>
         <br />
@@ -200,13 +200,13 @@ const RedisClusterDatabases = ({
             styles.footerClusterDatabases,
           )}
         >
-          <SecondaryButton
+          <RiSecondaryButton
             onClick={onBack}
             className="btn-cancel btn-back"
             data-testid="btn-back-to-adding"
           >
             Back to adding databases
-          </SecondaryButton>
+          </RiSecondaryButton>
           <FlexItem direction="row" className={styles.footerButtonsGroup}>
             <CancelButton isPopoverOpen={isPopoverOpen} />
             <RiTooltip
@@ -219,13 +219,11 @@ const RedisClusterDatabases = ({
               }
               content={
                 isSubmitDisabled() ? (
-                  <span>
-                    {validationErrors.NO_DBS_SELECTED}
-                  </span>
+                  <span>{validationErrors.NO_DBS_SELECTED}</span>
                 ) : null
               }
             >
-              <PrimaryButton
+              <RiPrimaryButton
                 size="m"
                 disabled={isSubmitDisabled()}
                 onClick={handleSubmit}
@@ -235,7 +233,7 @@ const RedisClusterDatabases = ({
                 data-testid="btn-add-databases"
               >
                 Add selected Databases
-              </PrimaryButton>
+              </RiPrimaryButton>
             </RiTooltip>
           </FlexItem>
         </Row>

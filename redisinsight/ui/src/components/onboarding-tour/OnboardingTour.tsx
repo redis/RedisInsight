@@ -9,11 +9,11 @@ import {
 } from 'uiSrc/slices/app/features'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import {
-  EmptyButton,
-  IconButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+  RiEmptyButton,
+  RiIconButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+} from 'uiSrc/components/base/forms'
 import { ColorText } from 'uiSrc/components/base/text'
 import { RiTourStep } from 'uiSrc/components/base/display'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
@@ -82,16 +82,16 @@ const OnboardingTour = (props: Props) => {
   const Header = (
     <Col className={styles.header}>
       {!isLastStep ? (
-        <EmptyButton
+        <RiEmptyButton
           onClick={handleSkip}
           className={styles.skipTourBtn}
           size="small"
           data-testid="skip-tour-btn"
         >
           Skip tour
-        </EmptyButton>
+        </RiEmptyButton>
       ) : (
-        <IconButton
+        <RiIconButton
           icon={CancelSlimIcon}
           className={styles.skipTourBtn}
           onClick={handleSkip}
@@ -117,21 +117,21 @@ const OnboardingTour = (props: Props) => {
         </ColorText>
         <Row grow={false} gap="m">
           {currentStep > 1 && (
-            <SecondaryButton
+            <RiSecondaryButton
               onClick={handleClickBack}
               size="s"
               data-testid="back-btn"
             >
               Back
-            </SecondaryButton>
+            </RiSecondaryButton>
           )}
-          <PrimaryButton
+          <RiPrimaryButton
             onClick={handleClickNext}
             size="s"
             data-testid="next-btn"
           >
             {!isLastStep ? 'Next' : 'Take me back'}
-          </PrimaryButton>
+          </RiPrimaryButton>
         </Row>
       </Row>
     </Col>

@@ -1,7 +1,7 @@
-import { Button } from '@redis-ui/components'
 import React from 'react'
+import { Button } from '@redis-ui/components'
 import { LoaderLargeIcon } from 'uiSrc/components/base/icons'
-import { BaseButtonProps } from 'uiSrc/components/base/forms/buttons/button.styles'
+import { BaseButtonProps } from './button.styles'
 
 type ButtonSize = 'small' | 'medium' | 'large'
 type SizeKey = 'small' | 's' | 'medium' | 'm' | 'large' | 'l'

@@ -6,7 +6,7 @@ import { IEnablementAreaItem } from 'uiSrc/slices/interfaces'
 import EnablementAreaContext from 'uiSrc/pages/workbench/contexts/enablementAreaContext'
 
 import { Nullable } from 'uiSrc/utils'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import {
   Menu,
   MenuContent,
@@ -106,7 +106,7 @@ const Pagination = ({
     >
       <div>
         {activePage > 0 && (
-          <PrimaryButton
+          <RiPrimaryButton
             aria-label="Previous page"
             data-testid="enablement-area__prev-page-btn"
             icon={ChevronLeftIcon}
@@ -118,7 +118,7 @@ const Pagination = ({
             })}
           >
             Back
-          </PrimaryButton>
+          </RiPrimaryButton>
         )}
       </div>
       <div>
@@ -126,7 +126,7 @@ const Pagination = ({
       </div>
       <div>
         {activePage < items.length - 1 && (
-          <PrimaryButton
+          <RiPrimaryButton
             aria-label="Next page"
             data-testid="enablement-area__next-page-btn"
             icon={ChevronRightIcon}
@@ -138,7 +138,7 @@ const Pagination = ({
             size={size}
           >
             Next
-          </PrimaryButton>
+          </RiPrimaryButton>
         )}
       </div>
     </div>

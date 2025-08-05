@@ -1,6 +1,6 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 
 export interface Props {
   path: string
@@ -20,13 +20,13 @@ const InternalLink = (props: Props) => {
     onClick?.()
   }
   return (
-    <PrimaryButton
+    <RiPrimaryButton
       size="s"
       onClick={handleClick}
       data-testid={dataTestid || 'internal-link'}
     >
       {text}
-    </PrimaryButton>
+    </RiPrimaryButton>
   )
 }
 

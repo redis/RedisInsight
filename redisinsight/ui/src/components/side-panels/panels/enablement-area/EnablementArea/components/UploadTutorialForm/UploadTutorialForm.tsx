@@ -9,10 +9,7 @@ import validationErrors from 'uiSrc/constants/validationErrors'
 import { RiFilePicker, RiTooltip } from 'uiSrc/components'
 
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import CreateTutorialLink from '../CreateTutorialLink'
@@ -104,13 +101,13 @@ const UploadTutorialForm = (props: Props) => {
           <div className={styles.footer}>
             <CreateTutorialLink />
             <div className={styles.footerButtons}>
-              <SecondaryButton
+              <RiSecondaryButton
                 size="s"
                 onClick={() => onCancel?.()}
                 data-testid="cancel-upload-tutorial-btn"
               >
                 Cancel
-              </SecondaryButton>
+              </RiSecondaryButton>
               <RiTooltip
                 position="top"
                 anchorClassName="euiToolTip__btn-disabled"
@@ -123,7 +120,7 @@ const UploadTutorialForm = (props: Props) => {
                 }
                 content={getSubmitButtonContent(isSubmitDisabled)}
               >
-                <PrimaryButton
+                <RiPrimaryButton
                   className={styles.btnSubmit}
                   size="s"
                   onClick={() => formik.handleSubmit()}
@@ -132,7 +129,7 @@ const UploadTutorialForm = (props: Props) => {
                   data-testid="submit-upload-tutorial-btn"
                 >
                   Submit
-                </PrimaryButton>
+                </RiPrimaryButton>
               </RiTooltip>
             </div>
           </div>

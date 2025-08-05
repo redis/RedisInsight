@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 
 import { formatLongName } from 'uiSrc/utils'
 
-import { DestructiveButton } from 'uiSrc/components/base/forms/buttons'
-import { DeleteIcon , RiIcon } from 'uiSrc/components/base/icons'
+import { RiDestructiveButton } from 'uiSrc/components/base/forms'
+import { DeleteIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
@@ -51,7 +51,7 @@ const DeleteTutorialButton = (props: Props) => {
           <Text size="s">will be deleted.</Text>
         </Text>
         <div className={styles.popoverFooter}>
-          <DestructiveButton
+          <RiDestructiveButton
             size="s"
             icon={DeleteIcon}
             onClick={onDelete}
@@ -59,7 +59,7 @@ const DeleteTutorialButton = (props: Props) => {
             data-testid={`delete-tutorial-${id}`}
           >
             Delete
-          </DestructiveButton>
+          </RiDestructiveButton>
         </div>
       </div>
     </RiPopover>

@@ -35,7 +35,7 @@ import EditablePopover from 'uiSrc/pages/browser/modules/key-details/shared/edit
 
 import { FormatedDate, RiTooltip } from 'uiSrc/components'
 import { Text } from 'uiSrc/components/base/text'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
+import { RiFormField } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import {
@@ -363,16 +363,16 @@ const GroupsViewWrapper = (props: Props) => {
             delay={500}
             editBtnClassName={styles.editBtn}
           >
-            <FormField
+            <RiFormField
               additionalText={
                 <RiTooltip
-                    anchorClassName="inputAppendIcon"
-                    position="left"
-                    title="Enter Valid ID, 0 or $"
-                    content={lastDeliveredIDTooltipText}
-                  >
-                    <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
-                  </RiTooltip>
+                  anchorClassName="inputAppendIcon"
+                  position="left"
+                  title="Enter Valid ID, 0 or $"
+                  content={lastDeliveredIDTooltipText}
+                >
+                  <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
+                </RiTooltip>
               }
             >
               <TextInput
@@ -380,7 +380,7 @@ const GroupsViewWrapper = (props: Props) => {
                 id="id"
                 placeholder="ID*"
                 value={editValue}
-                onChange={value =>
+                onChange={(value) =>
                   setEditValue(validateConsumerGroupId(value))
                 }
                 onBlur={() => setIsIdFocused(false)}
@@ -399,7 +399,7 @@ const GroupsViewWrapper = (props: Props) => {
                   {idError}
                 </span>
               )}
-            </FormField>
+            </RiFormField>
           </EditablePopover>
         )
       },

@@ -10,7 +10,7 @@ import { Theme } from 'uiSrc/constants'
 import { Text } from 'uiSrc/components/base/text'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { RiImage } from 'uiSrc/components/base/display'
@@ -40,13 +40,13 @@ const EmptyMessage = ({ onAddInstanceClick }: Props) => {
       <Text className={styles.subTitle}>{subTitleText}</Text>
       <Row align="center" gap="m" responsive style={{ lineHeight: '20px' }}>
         <FlexItem grow>
-          <PrimaryButton
+          <RiPrimaryButton
             data-testid="empty-rdi-instance-button"
             size="small"
             onClick={onAddInstanceClick}
           >
             + Add RDI Endpoint
-          </PrimaryButton>
+          </RiPrimaryButton>
         </FlexItem>
         or
         <FlexItem grow>

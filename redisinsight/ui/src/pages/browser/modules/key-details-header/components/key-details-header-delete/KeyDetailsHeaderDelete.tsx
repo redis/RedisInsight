@@ -16,10 +16,7 @@ import {
 import { formatLongName } from 'uiSrc/utils'
 
 import { DeleteIcon } from 'uiSrc/components/base/icons'
-import {
-  DestructiveButton,
-  IconButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { RiDestructiveButton, RiIconButton } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
@@ -70,7 +67,7 @@ const KeyDetailsHeaderDelete = ({ onDelete }: Props) => {
       closePopover={closePopoverDelete}
       panelPaddingSize="l"
       button={
-        <IconButton
+        <RiIconButton
           icon={DeleteIcon}
           aria-label="Delete Key"
           className="deleteKeyBtn"
@@ -87,7 +84,7 @@ const KeyDetailsHeaderDelete = ({ onDelete }: Props) => {
           <Text size="s">will be deleted.</Text>
         </Text>
         <div className={styles.popoverFooter}>
-          <DestructiveButton
+          <RiDestructiveButton
             size="small"
             icon={DeleteIcon}
             onClick={() => onDelete(keyBuffer!)}
@@ -95,7 +92,7 @@ const KeyDetailsHeaderDelete = ({ onDelete }: Props) => {
             data-testid="delete-key-confirm-btn"
           >
             Delete
-          </DestructiveButton>
+          </RiDestructiveButton>
         </div>
       </div>
     </RiPopover>

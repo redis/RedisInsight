@@ -24,12 +24,12 @@ import {
 import AddMultipleFields from 'uiSrc/pages/browser/components/add-multiple-fields'
 
 import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
+} from 'uiSrc/components/base/forms'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { TextInput } from 'uiSrc/components/base/inputs'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -145,7 +145,7 @@ const AddSetMembers = (props: Props) => {
           {(item, index) => (
             <Row align="center">
               <FlexItem grow>
-                <FormField>
+                <RiFormField>
                   <TextInput
                     name={`member-${item.id}`}
                     id={`member-${item.id}`}
@@ -160,7 +160,7 @@ const AddSetMembers = (props: Props) => {
                     disabled={loading}
                     data-testid="member-name"
                   />
-                </FormField>
+                </RiFormField>
               </FlexItem>
             </Row>
           )}
@@ -169,22 +169,22 @@ const AddSetMembers = (props: Props) => {
       <>
         <Row justify="end" gap="xl" style={{ padding: 18 }}>
           <FlexItem>
-            <SecondaryButton
+            <RiSecondaryButton
               onClick={() => closePanel(true)}
               data-testid="cancel-members-btn"
             >
               <ColorText color="default">Cancel</ColorText>
-            </SecondaryButton>
+            </RiSecondaryButton>
           </FlexItem>
           <FlexItem>
-            <PrimaryButton
+            <RiPrimaryButton
               disabled={loading}
               loading={loading}
               onClick={submitData}
               data-testid="save-members-btn"
             >
               Save
-            </PrimaryButton>
+            </RiPrimaryButton>
           </FlexItem>
         </Row>
       </>

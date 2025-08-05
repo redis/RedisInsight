@@ -12,7 +12,7 @@ import {
 } from 'uiSrc/slices/browser/rejson'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { getBrackets, isRealArray, isRealObject, wrapPath } from '../utils'
 import { BaseProps, ObjectTypes } from '../interfaces'
 import RejsonDynamicTypes from '../rejson-dynamic-types'
@@ -131,7 +131,7 @@ const RejsonDetails = (props: BaseProps) => {
               )}
             </span>
             {!addRootKVPair && (
-              <IconButton
+              <RiIconButton
                 icon={PlusIcon}
                 size="S"
                 className={styles.buttonStyle}

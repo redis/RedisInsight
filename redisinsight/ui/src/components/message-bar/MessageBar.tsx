@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -24,7 +24,7 @@ const MessageBar = ({ children, opened }: Props) => {
             {children}
           </FlexItem>
           <FlexItem className={styles.cross}>
-            <IconButton
+            <RiIconButton
               icon={CancelSlimIcon}
               aria-label="Close"
               onClick={() => setIsOpen(false)}

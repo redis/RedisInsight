@@ -22,7 +22,7 @@ import { InputFieldSentinel, RiTooltip } from 'uiSrc/components'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/InputFieldSentinel'
 
-import { IconButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton, RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { InfoIcon, CopyIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
@@ -194,7 +194,7 @@ const SentinelDatabasesResultPage = () => {
               content="Copy"
               anchorClassName="copyPublicEndpointTooltip"
             >
-              <IconButton
+              <RiIconButton
                 icon={CopyIcon}
                 aria-label="Copy public endpoint"
                 className="copyPublicEndpointBtn"
@@ -333,7 +333,7 @@ const SentinelDatabasesResultPage = () => {
               title={isDisabled ? validationErrors.REQUIRED_TITLE(1) : null}
               content={isDisabled ? <span>Database Alias</span> : null}
             >
-              <PrimaryButton
+              <RiPrimaryButton
                 size="s"
                 disabled={isDisabled}
                 loading={loading}
@@ -341,7 +341,7 @@ const SentinelDatabasesResultPage = () => {
                 icon={isDisabled ? InfoIcon : undefined}
               >
                 Add Primary Group
-              </PrimaryButton>
+              </RiPrimaryButton>
             </RiTooltip>
           </div>
         )

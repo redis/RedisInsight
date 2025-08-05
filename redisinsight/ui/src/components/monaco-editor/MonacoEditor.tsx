@@ -13,7 +13,7 @@ import { DSL, Theme } from 'uiSrc/constants'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
 import { EditIcon } from 'uiSrc/components/base/icons'
-import { ActionIconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiActionIconButton } from 'uiSrc/components/base/forms'
 import DedicatedEditor from './components/dedicated-editor'
 import styles from './styles.module.scss'
 
@@ -297,7 +297,7 @@ const MonacoEditor = (props: Props) => {
         />
       )}
       {isEditable && readOnly && !isEditing && (
-        <ActionIconButton
+        <RiActionIconButton
           variant="secondary"
           onClick={() => setIsEditing(true)}
           className={styles.editBtn}

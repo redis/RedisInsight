@@ -25,7 +25,7 @@ import { BrowserStorageItem } from 'uiSrc/constants'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 
 import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { RiModal } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
@@ -140,7 +140,7 @@ const BrowserSearchPanel = (props: Props) => {
   }, [])
 
   const SwitchModeBtn = (item: ISwitchType<SearchMode>) => (
-    <IconButton
+    <RiIconButton
       className={item.getClassName()}
       icon={item.getIconType()}
       aria-label={item.ariaLabel}

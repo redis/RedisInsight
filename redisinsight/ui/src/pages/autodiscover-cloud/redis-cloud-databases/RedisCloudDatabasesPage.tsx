@@ -30,7 +30,7 @@ import {
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { oauthCloudUserSelector } from 'uiSrc/slices/oauth/cloud'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CopyIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
@@ -219,8 +219,12 @@ const RedisCloudDatabasesPage = () => {
         return (
           <div className="public_endpoint">
             <Text className="copyPublicEndpointText">{text}</Text>
-            <RiTooltip position="right" content="Copy" anchorClassName="copyPublicEndpointTooltip">
-              <IconButton
+            <RiTooltip
+              position="right"
+              content="Copy"
+              anchorClassName="copyPublicEndpointTooltip"
+            >
+              <RiIconButton
                 icon={CopyIcon}
                 aria-label="Copy public endpoint"
                 className="copyPublicEndpointBtn"

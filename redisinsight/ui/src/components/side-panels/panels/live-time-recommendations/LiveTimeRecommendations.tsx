@@ -32,7 +32,7 @@ import {
   RiTooltip,
 } from 'uiSrc/components'
 import { ColorText, Text } from 'uiSrc/components/base/text'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
+import { RiCheckbox } from 'uiSrc/components/base/forms'
 
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { Link } from 'uiSrc/components/base/link/Link'
@@ -184,7 +184,7 @@ const LiveTimeRecommendations = () => {
       </div>
 
       {isShowHiddenDisplayed && (
-        <Checkbox
+        <RiCheckbox
           id="showHidden"
           name="showHidden"
           label="Show hidden"

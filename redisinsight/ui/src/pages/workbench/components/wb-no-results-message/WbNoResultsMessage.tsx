@@ -15,7 +15,7 @@ import ArrowToGuidesIcon from 'uiSrc/assets/img/workbench/arrow-to-guides.svg?re
 
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { LightBulbIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
@@ -80,14 +80,14 @@ const WbNoResultsMessage = () => {
             </Text>
             <Spacer size="xl" />
             <div>
-              <PrimaryButton
+              <RiPrimaryButton
                 icon={LightBulbIcon}
                 onClick={() => handleOpenInsights()}
                 className={styles.exploreBtn}
                 data-testid="no-results-explore-btn"
               >
                 Explore
-              </PrimaryButton>
+              </RiPrimaryButton>
             </div>
             <Spacer size="s" />
             <Text color="subdued" textAlign="left" size="xs">

@@ -16,7 +16,7 @@ import { Nullable } from 'uiSrc/utils'
 import { TextBtn } from 'uiSrc/pages/database-analysis/components/base/TextBtn'
 import { SwitchInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
+import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { DatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
 import Table from './Table'
 import styles from './styles.module.scss'
@@ -74,18 +74,18 @@ const TopNamespace = (props: Props) => {
             <Title size="L">No namespaces to display</Title>
             <p className={styles.noNamespaceParagraph}>
               {'Configure the delimiter in '}
-              <EmptyButton
+              <RiEmptyButton
                 data-testid="tree-view-page-link"
                 className={styles.treeViewBtn}
                 onClick={handleTreeViewClick}
               >
                 Tree View
-              </EmptyButton>
+              </RiEmptyButton>
               {' to customize the namespaces displayed.'}
             </p>
           </div>
         </div>
-      </div >
+      </div>
     )
   }
 

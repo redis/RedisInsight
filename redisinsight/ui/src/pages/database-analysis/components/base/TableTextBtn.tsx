@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
 import React from 'react'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
+import { RiEmptyButton } from 'uiSrc/components/base/forms'
 
 const expandedStyle = css`
   padding: 0 20px 0 12px;
@@ -16,8 +16,8 @@ const expandedStyle = css`
  *
  * This is how we can implement custom styles
  */
-export const TableTextBtn = styled(EmptyButton)<
-  React.ComponentProps<typeof EmptyButton> & {
+export const TableTextBtn = styled(RiEmptyButton)<
+  React.ComponentProps<typeof RiEmptyButton> & {
     $expanded?: boolean
   }
 >`

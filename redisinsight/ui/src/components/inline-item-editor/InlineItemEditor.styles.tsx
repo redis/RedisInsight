@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Theme } from 'uiSrc/components/base/theme/types'
 import { Props } from 'uiSrc/components/inline-item-editor/InlineItemEditor'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CancelSlimIcon, CheckThinIcon } from 'uiSrc/components/base/icons'
 import { TextInput } from '../base/inputs'
 
@@ -53,7 +53,7 @@ type ActionsContainerProps = React.ComponentProps<typeof Row> & {
   $height?: string
 }
 
-export const DeclineButton = styled(IconButton).attrs({
+export const DeclineButton = styled(RiIconButton).attrs({
   icon: CancelSlimIcon,
   'aria-label': 'Cancel editing',
 })`
@@ -63,7 +63,7 @@ export const DeclineButton = styled(IconButton).attrs({
   }
 `
 
-export const ApplyButton = styled(IconButton).attrs({
+export const ApplyButton = styled(RiIconButton).attrs({
   icon: CheckThinIcon,
   color: 'primary',
   'aria-label': 'Apply',
@@ -156,7 +156,6 @@ export const ActionsContainer = styled(Row)<ActionsContainerProps>`
   ${({ $design }) => designs[$design || 'default']}
 `
 
-
 export const StyledTextInput = styled(TextInput)<{
   $width?: string
   $height?: string
@@ -169,6 +168,6 @@ export const StyledTextInput = styled(TextInput)<{
   // Target the actual input element inside
   input {
     width: 100%;
-    height: ${({ $height }) => $height || 'auto'};  
-  }  
+    height: ${({ $height }) => $height || 'auto'};
+  }
 `

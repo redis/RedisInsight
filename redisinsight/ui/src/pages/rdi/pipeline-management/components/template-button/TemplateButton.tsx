@@ -9,7 +9,7 @@ import {
 } from 'uiSrc/slices/rdi/pipeline'
 import { RiTooltip } from 'uiSrc/components'
 import { RdiPipelineTabs } from 'uiSrc/slices/interfaces'
-import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { getTooltipContent } from '../template-form/TemplateForm'
 import { INGEST_OPTION } from '../template-form/constants'
 import styles from './styles.module.scss'
@@ -51,7 +51,7 @@ const TemplateButton = ({ setFieldValue, value }: TemplateButtonProps) => {
       position="bottom"
       anchorClassName="flex-row"
     >
-      <SecondaryButton
+      <RiSecondaryButton
         inverted
         size="s"
         className={styles.btn}
@@ -62,7 +62,7 @@ const TemplateButton = ({ setFieldValue, value }: TemplateButtonProps) => {
         data-testid="template-btn"
       >
         Insert template
-      </SecondaryButton>
+      </RiSecondaryButton>
     </RiTooltip>
   )
 }

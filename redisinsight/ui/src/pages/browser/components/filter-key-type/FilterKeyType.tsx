@@ -23,7 +23,7 @@ import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { AdditionalRedisModule } from 'uiSrc/slices/interfaces'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 import { HealthText } from 'uiSrc/components/base/text/HealthText'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
+import { RiSelect } from 'uiSrc/components/base/forms'
 import { RiModal } from 'uiSrc/components/base/display'
 import { FILTER_KEY_TYPE_OPTIONS } from './constants'
 

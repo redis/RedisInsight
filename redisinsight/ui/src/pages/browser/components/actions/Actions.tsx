@@ -5,10 +5,7 @@ import {
   sendEventTelemetry,
   TelemetryEvent,
 } from 'uiSrc/telemetry'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import styles from 'uiSrc/pages/browser/components/browser-search-panel/styles.module.scss'
 import { setBulkActionType } from 'uiSrc/slices/browser/bulkActions'
 import { BulkActionsType, FeatureFlags } from 'uiSrc/constants'
@@ -41,20 +38,20 @@ const Actions = ({ handleAddKeyPanel, handleBulkActionsPanel }: Props) => {
   }
 
   const AddKeyBtn = (
-    <PrimaryButton
+    <RiPrimaryButton
       onClick={openAddKeyPanel}
       className={styles.addKey}
       data-testid="btn-add-key"
     >
       + <span className={styles.addKeyText}>Key</span>
-    </PrimaryButton>
+    </RiPrimaryButton>
   )
   const openBulkActions = () => {
     dispatch(setBulkActionType(BulkActionsType.Delete))
     handleBulkActionsPanel(true)
   }
   const BulkActionsBtn = (
-    <SecondaryButton
+    <RiSecondaryButton
       color="secondary"
       icon={BulkActionsIcon}
       onClick={openBulkActions}
@@ -63,7 +60,7 @@ const Actions = ({ handleAddKeyPanel, handleBulkActionsPanel }: Props) => {
       aria-label="bulk actions"
     >
       <span className={styles.bulkActionsText}>Bulk Actions</span>
-    </SecondaryButton>
+    </RiSecondaryButton>
   )
   return (
     <Row

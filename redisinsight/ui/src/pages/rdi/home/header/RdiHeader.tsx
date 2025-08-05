@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { instancesSelector } from 'uiSrc/slices/rdi/instances'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import SearchRdiList from '../search/SearchRdiList'
 
 export interface Props {
@@ -18,12 +18,12 @@ const RdiHeader = ({ onRdiInstanceClick }: Props) => {
     <div className="containerDl">
       <Row className="contentDL" align="center" gap="s">
         <FlexItem>
-          <PrimaryButton
+          <RiPrimaryButton
             onClick={onRdiInstanceClick}
             data-testid="rdi-instance"
           >
             <span>+ Endpoint</span>
-          </PrimaryButton>
+          </RiPrimaryButton>
         </FlexItem>
         {instances.length > 0 && (
           <FlexItem className="searchContainer">

@@ -9,7 +9,7 @@ import {
 } from 'uiSrc/slices/app/notifications'
 import { IGlobalNotification } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import { RiPopover } from 'uiSrc/components/base'
 import Notification from '../Notification'
@@ -106,7 +106,7 @@ const PopoverNotification = () => {
             className={styles.popoverNotification}
             data-testid="notification-popover"
           >
-            <IconButton
+            <RiIconButton
               icon={CancelSlimIcon}
               aria-label="Close notification"
               className={styles.closeBtn}

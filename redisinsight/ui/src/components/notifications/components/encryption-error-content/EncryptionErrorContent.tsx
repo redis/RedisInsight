@@ -6,10 +6,7 @@ import { ColorText } from 'uiSrc/components/base/text'
 import { updateUserConfigSettingsAction } from 'uiSrc/slices/user/user-settings'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  DestructiveButton,
-  EmptyButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { RiDestructiveButton, RiEmptyButton } from 'uiSrc/components/base/forms'
 
 export interface Props {
   onClose?: () => void
@@ -57,24 +54,24 @@ const EncryptionErrorContent = (props: Props) => {
       <Row justify="end" gap="m">
         <FlexItem>
           <div>
-            <DestructiveButton
+            <RiDestructiveButton
               onClick={disableEncryption}
               className="toast-danger-btn euiBorderWidthThick"
               data-testid="toast-action-btn"
             >
               Disable Encryption
-            </DestructiveButton>
+            </RiDestructiveButton>
           </div>
         </FlexItem>
         <FlexItem>
-          <EmptyButton
+          <RiEmptyButton
             variant="destructive"
             onClick={onClose}
             data-testid="toast-cancel-btn"
             className="toast-danger-btn"
           >
             Cancel
-          </EmptyButton>
+          </RiEmptyButton>
         </FlexItem>
       </Row>
     </>

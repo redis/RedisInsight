@@ -1,4 +1,3 @@
-import { EuiIcon } from '@elastic/eui'
 import cx from 'classnames'
 import { map } from 'lodash'
 import React, { useState } from 'react'
@@ -11,6 +10,8 @@ import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { RiTooltip } from 'uiSrc/components'
 
 import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons'
+import type { PropertySort } from 'uiSrc/components/base/theme/types'
+
 import { ModifiedClusterNodes } from '../../ClusterDetailsPage'
 import styles from './styles.module.scss'
 

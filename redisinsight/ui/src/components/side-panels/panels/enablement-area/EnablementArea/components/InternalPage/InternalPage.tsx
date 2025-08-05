@@ -29,7 +29,7 @@ import {
   CloudLink,
   RedisInsightLink,
 } from 'uiSrc/components/markdown'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
+import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
 import { getTutorialSection } from '../../utils'
 import { EmptyPrompt, Pagination, Code } from '..'
@@ -176,14 +176,14 @@ const InternalPage = (props: Props) => {
             closePopover={() => setShowCapabilityPopover(false)}
             button={
               <div className={styles.backButton}>
-                <EmptyButton
+                <RiEmptyButton
                   data-testid="enablement-area__page-close"
                   icon={ChevronLeftIcon}
                   onClick={onClose}
                   aria-label="Back"
                 >
                   {backTitle}
-                </EmptyButton>
+                </RiEmptyButton>
               </div>
             }
           >

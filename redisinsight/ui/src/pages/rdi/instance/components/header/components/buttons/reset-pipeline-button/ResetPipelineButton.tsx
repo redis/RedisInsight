@@ -2,7 +2,7 @@ import React from 'react'
 
 import { RiResetIcon } from 'uiSrc/components/base/icons'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { RiTooltip } from 'uiSrc/components'
 import styles from '../styles.module.scss'
 
@@ -35,7 +35,7 @@ const ResetPipelineButton = ({
     }
     anchorClassName={disabled || loading ? styles.disabled : styles.tooltip}
   >
-    <SecondaryButton
+    <RiSecondaryButton
       aria-label="Reset pipeline button"
       size="s"
       icon={RiResetIcon}
@@ -45,7 +45,7 @@ const ResetPipelineButton = ({
       loading={loading}
     >
       Reset Pipeline
-    </SecondaryButton>
+    </RiSecondaryButton>
   </RiTooltip>
 )
 

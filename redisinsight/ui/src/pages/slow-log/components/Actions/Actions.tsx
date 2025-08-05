@@ -11,12 +11,12 @@ import { Nullable } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { EraserIcon, SettingsIcon , RiIcon } from 'uiSrc/components/base/icons'
+import { EraserIcon, SettingsIcon, RiIcon } from 'uiSrc/components/base/icons'
 import {
-  DestructiveButton,
-  IconButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+  RiDestructiveButton,
+  RiIconButton,
+  RiSecondaryButton,
+} from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
 
 import SlowLogConfig from '../SlowLogConfig'
@@ -117,7 +117,7 @@ const Actions = (props: Props) => {
           </Text>
         </Text>
         <div className={styles.popoverFooter}>
-          <DestructiveButton
+          <RiDestructiveButton
             size="small"
             icon={EraserIcon}
             onClick={() => handleClearClick()}
@@ -125,7 +125,7 @@ const Actions = (props: Props) => {
             data-testid="reset-confirm-btn"
           >
             Clear
-          </DestructiveButton>
+          </RiDestructiveButton>
         </div>
       </div>
     </div>
@@ -155,7 +155,7 @@ const Actions = (props: Props) => {
           closePopover={() => {}}
           panelClassName={cx('popover-without-top-tail', styles.configWrapper)}
           button={
-            <SecondaryButton
+            <RiSecondaryButton
               size="small"
               icon={SettingsIcon}
               aria-label="Configure"
@@ -163,7 +163,7 @@ const Actions = (props: Props) => {
               data-testid="configure-btn"
             >
               Configure
-            </SecondaryButton>
+            </RiSecondaryButton>
           }
         >
           <SlowLogConfig
@@ -186,7 +186,7 @@ const Actions = (props: Props) => {
                 content="Clear Slow Log"
                 anchorClassName={styles.icon}
               >
-                <IconButton
+                <RiIconButton
                   icon={EraserIcon}
                   aria-label="Clear Slow Log"
                   onClick={() => showClearPopover()}

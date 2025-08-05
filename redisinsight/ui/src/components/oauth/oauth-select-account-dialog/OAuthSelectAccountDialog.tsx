@@ -32,16 +32,14 @@ import { CloudJobName, CloudJobStep } from 'uiSrc/electron/constants'
 import { OAuthSocialAction } from 'uiSrc/slices/interfaces'
 
 import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { ColorText, Text } from 'uiSrc/components/base/text'
-import {
+  RiPrimaryButton,
+  RiSecondaryButton,
   RiRadioGroupItemIndicator,
   RiRadioGroupItemLabel,
   RiRadioGroupItemRoot,
   RiRadioGroupRoot,
-} from 'uiSrc/components/base/forms/radio-group/RadioGroup'
+} from 'uiSrc/components/base/forms'
+import { ColorText, Text } from 'uiSrc/components/base/text'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { RiModal } from 'uiSrc/components/base/display'
 import { CancelIcon } from 'uiSrc/components/base/icons'
@@ -215,15 +213,15 @@ const OAuthSelectAccountDialog = () => {
             </RiRadioGroupRoot>
           </section>
           <div className={styles.footer}>
-            <SecondaryButton
+            <RiSecondaryButton
               className={styles.button}
               onClick={handleOnClose}
               data-testid="close-oauth-select-account-dialog"
               aria-labelledby="close oauth select account dialog"
             >
               Cancel
-            </SecondaryButton>
-            <PrimaryButton
+            </RiSecondaryButton>
+            <RiPrimaryButton
               disabled={loading || plansLoadings}
               loading={loading || plansLoadings}
               className={styles.button}
@@ -232,7 +230,7 @@ const OAuthSelectAccountDialog = () => {
               aria-labelledby="submit oauth select account dialog"
             >
               Select account
-            </PrimaryButton>
+            </RiPrimaryButton>
           </div>
         </RiModal.Content.Body.Compose>
       </RiModal.Content.Compose>

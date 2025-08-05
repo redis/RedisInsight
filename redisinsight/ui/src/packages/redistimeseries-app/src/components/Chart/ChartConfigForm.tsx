@@ -1,18 +1,18 @@
 import React, { useState } from 'react'
 
 import { SwitchInput, TextInput } from 'uiSrc/components/base/inputs'
-import { FormFieldset } from 'uiSrc/components/base/forms/fieldset'
+import {
+  RiFormFieldset,
+  RiButtonGroup,
+  ButtonGroupProps,
+} from 'uiSrc/components/base/forms'
+import { RiAccordion } from 'uiSrc/components/base/display'
 import { AxisScale, GraphMode, ChartConfigFormProps } from './interfaces'
 import {
   X_LABEL_MAX_LENGTH,
   Y_LABEL_MAX_LENGTH,
   TITLE_MAX_LENGTH,
 } from './constants'
-import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
-import {
-  ButtonGroup,
-  ButtonGroupProps,
-} from 'uiSrc/components/base/forms/button-group/ButtonGroup'
 
 const NewEnumSelect = ({
   selected,
@@ -81,17 +81,16 @@ export default function ChartConfigForm(props: ChartConfigFormProps) {
         content={
           <div className="more-options">
             <section>
-              <FormFieldset legend={{ children: 'Title' }}>
+              <RiFormFieldset legend={{ children: 'Title' }}>
                 <TextInput
                   placeholder="Title"
                   value={value.title}
                   onChange={(value) => onChange('title', value)}
                   aria-label="Title"
                   maxLength={parseInt(TITLE_MAX_LENGTH)}
-
                 />
-              </FormFieldset>
-              <FormFieldset legend={{ children: 'X axis Label' }}>
+              </RiFormFieldset>
+              <RiFormFieldset legend={{ children: 'X axis Label' }}>
                 <TextInput
                   placeholder="X axis label"
                   value={value.xlabel}
@@ -99,7 +98,7 @@ export default function ChartConfigForm(props: ChartConfigFormProps) {
                   aria-label="X Label"
                   maxLength={parseInt(X_LABEL_MAX_LENGTH)}
                 />
-              </FormFieldset>
+              </RiFormFieldset>
             </section>
             <section>
               <div className="right-y-axis">
@@ -115,9 +114,9 @@ export default function ChartConfigForm(props: ChartConfigFormProps) {
                     {Object.keys(value.keyToY2Axis).map((key) => (
                       <div className="y-axis-2-item" key={key}>
                         <div>{key}</div>
-                        <ButtonGroup>
+                        <RiButtonGroup>
                           {yAxisButtonGroupItems.map((item) => (
-                            <ButtonGroup.Button
+                            <RiButtonGroup.Button
                               isSelected={value.keyToY2Axis[key] === item.value}
                               onClick={() =>
                                 onChange('keyToY2Axis', {
@@ -127,9 +126,9 @@ export default function ChartConfigForm(props: ChartConfigFormProps) {
                               }
                             >
                               {item.label}
-                            </ButtonGroup.Button>
+                            </RiButtonGroup.Button>
                           ))}
-                        </ButtonGroup>
+                        </RiButtonGroup>
                       </div>
                     ))}
                   </div>
@@ -140,7 +139,7 @@ export default function ChartConfigForm(props: ChartConfigFormProps) {
               <YAxisConfigForm
                 label="Left Y Axis"
                 onChange={(v: any) => onChange('yAxisConfig', v)}
-                isLeftYAxis={true}
+                isLeftYAxis
                 value={value.yAxisConfig}
               />
               {value.yAxis2 && (
@@ -161,7 +160,7 @@ export default function ChartConfigForm(props: ChartConfigFormProps) {
 
 const YAxisConfigForm = ({ value, onChange, label }: any) => (
   <div>
-    <FormFieldset legend={{ children: `${label} Label` }}>
+    <RiFormFieldset legend={{ children: `${label} Label` }}>
       <TextInput
         placeholder="Label"
         value={value.label}
@@ -169,8 +168,8 @@ const YAxisConfigForm = ({ value, onChange, label }: any) => (
         aria-label="label"
         maxLength={parseInt(Y_LABEL_MAX_LENGTH)}
       />
-    </FormFieldset>
-    <FormFieldset legend={{ children: `${label} Scale` }}>
+    </RiFormFieldset>
+    <RiFormFieldset legend={{ children: `${label} Scale` }}>
       <EnumSelect
         inputLabel="Scale"
         onChange={(e) =>
@@ -179,7 +178,7 @@ const YAxisConfigForm = ({ value, onChange, label }: any) => (
         value={value.scale}
         enumType={AxisScale}
       />
-    </FormFieldset>
+    </RiFormFieldset>
   </div>
 )
 
@@ -195,9 +194,9 @@ const EnumSelect = ({
   inputLabel,
   ...props
 }: EnumSelectProps & ButtonGroupProps) => (
-  <ButtonGroup>
+  <RiButtonGroup>
     {Object.values(enumType).map((v) => (
-      <ButtonGroup.Button
+      <RiButtonGroup.Button
         isSelected={props.value === v}
         key={String(v)}
         onClick={() =>
@@ -205,7 +204,7 @@ const EnumSelect = ({
         }
       >
         {capitalize(String(v))}
-      </ButtonGroup.Button>
+      </RiButtonGroup.Button>
     ))}
-  </ButtonGroup>
+  </RiButtonGroup>
 )

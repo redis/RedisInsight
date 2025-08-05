@@ -2,9 +2,9 @@ import React from 'react'
 
 import { Text } from 'uiSrc/components/base/text'
 import {
-  DestructiveButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+  RiDestructiveButton,
+  RiSecondaryButton,
+} from 'uiSrc/components/base/forms'
 import { RiPopover } from 'uiSrc/components/base'
 import { HorizontalSpacer } from 'uiSrc/components/base/layout'
 import styles from './styles.module.scss'
@@ -37,7 +37,7 @@ const AckPopover = (props: Props) => {
       panelClassName={styles.popoverWrapper}
       button={
         <>
-          <SecondaryButton
+          <RiSecondaryButton
             size="s"
             aria-label="Acknowledge pending message"
             onClick={showPopover}
@@ -45,7 +45,7 @@ const AckPopover = (props: Props) => {
             data-testid="acknowledge-btn"
           >
             ACK
-          </SecondaryButton>
+          </RiSecondaryButton>
           <HorizontalSpacer size="s" />
         </>
       }
@@ -57,13 +57,13 @@ const AckPopover = (props: Props) => {
           will be acknowledged and removed from the pending messages list
         </Text>
         <div className={styles.popoverFooter}>
-          <DestructiveButton
+          <RiDestructiveButton
             size="s"
             onClick={() => acknowledge(id)}
             data-testid="acknowledge-submit"
           >
             Acknowledge
-          </DestructiveButton>
+          </RiDestructiveButton>
         </div>
       </div>
     </RiPopover>

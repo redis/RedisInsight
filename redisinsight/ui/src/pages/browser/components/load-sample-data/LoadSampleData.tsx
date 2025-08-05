@@ -11,8 +11,8 @@ import {
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { PlayFilledIcon , RiIcon } from 'uiSrc/components/base/icons'
+import { RiPrimaryButton } from 'uiSrc/components/base/forms'
+import { PlayFilledIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
@@ -54,7 +54,7 @@ const LoadSampleData = (props: Props) => {
       panelPaddingSize="none"
       anchorClassName={cx(styles.buttonWrapper, anchorClassName)}
       button={
-        <PrimaryButton
+        <RiPrimaryButton
           onClick={() => setIsConfirmationOpen(true)}
           className={styles.loadDataBtn}
           loading={loading}
@@ -62,7 +62,7 @@ const LoadSampleData = (props: Props) => {
           data-testid="load-sample-data-btn"
         >
           Load sample data
-        </PrimaryButton>
+        </RiPrimaryButton>
       }
     >
       <Row gap="m" responsive={false} style={{ padding: 8 }}>
@@ -79,7 +79,7 @@ const LoadSampleData = (props: Props) => {
           <Spacer size="s" />
           <Row justify="end">
             <FlexItem>
-              <PrimaryButton
+              <RiPrimaryButton
                 size="s"
                 icon={PlayFilledIcon}
                 iconSide="right"
@@ -88,7 +88,7 @@ const LoadSampleData = (props: Props) => {
                 data-testid="load-sample-data-btn-confirm"
               >
                 Execute
-              </PrimaryButton>
+              </RiPrimaryButton>
             </FlexItem>
           </Row>
         </FlexItem>

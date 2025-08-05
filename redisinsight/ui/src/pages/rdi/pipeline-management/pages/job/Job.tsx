@@ -28,10 +28,7 @@ import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { KeyboardShortcut, RiTooltip } from 'uiSrc/components'
 
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { RiLoader } from 'uiSrc/components/base/display'
@@ -197,14 +194,14 @@ const Job = (props: Props) => {
               }
               data-testid="open-dedicated-editor-tooltip"
             >
-              <SecondaryButton
+              <RiSecondaryButton
                 size="s"
                 style={{ marginRight: '16px' }}
                 onClick={() => setShouldOpenDedicatedEditor(true)}
                 data-testid="open-dedicated-editor-btn"
               >
                 SQL and JMESPath Editor
-              </SecondaryButton>
+              </RiSecondaryButton>
             </RiTooltip>
             <TemplateButton
               value={value}
@@ -265,7 +262,7 @@ const Job = (props: Props) => {
         )}
 
         <div className="rdi__actions">
-          <PrimaryButton
+          <RiPrimaryButton
             color="secondary"
             size="s"
             onClick={handleDryRunJob}
@@ -273,7 +270,7 @@ const Job = (props: Props) => {
             data-testid="rdi-job-dry-run"
           >
             Dry Run
-          </PrimaryButton>
+          </RiPrimaryButton>
         </div>
       </div>
       {isPanelOpen && (

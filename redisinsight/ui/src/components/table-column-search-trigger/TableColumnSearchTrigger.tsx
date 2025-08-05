@@ -5,7 +5,7 @@ import * as keys from 'uiSrc/constants/keys'
 import { SearchInput } from 'uiSrc/components/base/inputs'
 import { Maybe, Nullable } from 'uiSrc/utils'
 import { SearchIcon } from 'uiSrc/components/base/icons'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -60,7 +60,7 @@ const TableColumnSearchTrigger = (props: Props) => {
 
   return (
     <div style={{ paddingRight: 10 }}>
-      <IconButton
+      <RiIconButton
         icon={SearchIcon}
         aria-label={`Search ${fieldName}`}
         onClick={handleOpen}

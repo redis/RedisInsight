@@ -13,7 +13,7 @@ import MetricItem, {
 import { useDatabaseOverview } from 'uiSrc/components/database-overview/hooks/useDatabaseOverview'
 
 import { IMetric } from 'uiSrc/components/database-overview/components/OverviewMetrics'
-import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import AutoRefresh from '../auto-refresh'
 import styles from './styles.module.scss'
@@ -58,7 +58,7 @@ const DatabaseOverview = () => {
                   className={styles.upgradeBtnItem}
                   style={{ borderRight: 'none' }}
                 >
-                  <SecondaryButton
+                  <RiSecondaryButton
                     filled={!!usedMemoryPercent && usedMemoryPercent >= 75}
                     className={cx(styles.upgradeBtn)}
                     style={{ fontWeight: '400' }}
@@ -71,7 +71,7 @@ const DatabaseOverview = () => {
                     data-testid="upgrade-ri-db-button"
                   >
                     Upgrade plan
-                  </SecondaryButton>
+                  </RiSecondaryButton>
                 </OverviewItem>
               )}
               {metrics?.map((overviewItem) => (

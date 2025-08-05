@@ -11,9 +11,9 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import {
-  DestructiveButton,
-  PrimaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+  RiDestructiveButton,
+  RiPrimaryButton,
+} from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { Link } from 'uiSrc/components/base/link/Link'
@@ -82,14 +82,14 @@ const CloudSettings = () => {
             panelPaddingSize="l"
             panelClassName={styles.deletePopover}
             button={
-              <PrimaryButton
+              <RiPrimaryButton
                 size="small"
                 onClick={handleClickDelete}
                 disabled={loading || !data?.length}
                 data-testid="delete-key-btn"
               >
                 Remove all API keys
-              </PrimaryButton>
+              </RiPrimaryButton>
             }
           >
             <div className={styles.popoverDeleteContainer}>
@@ -108,7 +108,7 @@ const CloudSettings = () => {
               </Text>
               <Spacer />
               <div className={styles.popoverFooter}>
-                <DestructiveButton
+                <RiDestructiveButton
                   size="small"
                   icon={DeleteIcon}
                   onClick={handleDeleteAllKeys}
@@ -116,7 +116,7 @@ const CloudSettings = () => {
                   data-testid="delete-key-confirm-btn"
                 >
                   Remove all API keys
-                </DestructiveButton>
+                </RiDestructiveButton>
               </div>
             </div>
           </RiPopover>

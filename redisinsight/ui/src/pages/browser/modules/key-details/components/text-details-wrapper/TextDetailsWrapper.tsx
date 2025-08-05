@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react'
 
 import { RiTooltip } from 'uiSrc/components'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
@@ -25,7 +25,7 @@ const TextDetailsWrapper = ({
         position="left"
         anchorClassName={styles.closeRightPanel}
       >
-        <IconButton
+        <RiIconButton
           icon={CancelSlimIcon}
           aria-label="Close key"
           className={styles.closeBtn}

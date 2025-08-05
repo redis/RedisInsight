@@ -24,7 +24,7 @@ import {
 import { formatLongName, Maybe, replaceSpaces, setTitle } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { oauthCloudUserSelector } from 'uiSrc/slices/oauth/cloud'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { ToastDangerIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
@@ -148,7 +148,7 @@ const RedisCloudSubscriptionsPage = () => {
             position="right"
             className={styles.tooltipStatus}
           >
-            <IconButton
+            <RiIconButton
               icon={ToastDangerIcon}
               aria-label="subscription alert"
             />

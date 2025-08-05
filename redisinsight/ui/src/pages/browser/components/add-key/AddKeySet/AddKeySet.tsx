@@ -1,9 +1,4 @@
-import React, {
-  FormEvent,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import React, { FormEvent, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Maybe, stringToBuffer } from 'uiSrc/utils'
 import { addKeyStateSelector, addSetKey } from 'uiSrc/slices/browser/keys'
@@ -11,7 +6,7 @@ import { addKeyStateSelector, addSetKey } from 'uiSrc/slices/browser/keys'
 import AddMultipleFields from 'uiSrc/pages/browser/components/add-multiple-fields'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
+import { RiFormField } from 'uiSrc/components/base/forms'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { CreateSetWithExpireDto } from 'apiSrc/modules/browser/set/dto'
 
@@ -133,7 +128,7 @@ const AddKeySet = (props: Props) => {
         {(item, index) => (
           <Row align="center">
             <FlexItem grow>
-              <FormField>
+              <RiFormField>
                 <TextInput
                   name={`member-${item.id}`}
                   id={`member-${item.id}`}
@@ -148,7 +143,7 @@ const AddKeySet = (props: Props) => {
                   disabled={loading}
                   data-testid="member-name"
                 />
-              </FormField>
+              </RiFormField>
             </FlexItem>
           </Row>
         )}

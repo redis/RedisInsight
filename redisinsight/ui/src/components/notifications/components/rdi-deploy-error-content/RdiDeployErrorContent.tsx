@@ -2,7 +2,7 @@ import React, { useEffect, useMemo } from 'react'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { DestructiveButton } from 'uiSrc/components/base/forms/buttons'
+import { RiDestructiveButton } from 'uiSrc/components/base/forms'
 import { ColorText } from 'uiSrc/components/base/text'
 
 export interface Props {
@@ -50,14 +50,14 @@ const RdiDeployErrorContent = (props: Props) => {
       {/* // TODO remove display none when logs column will be available */}
       <Row style={{ display: 'none' }} justify="end">
         <FlexItem>
-          <DestructiveButton
+          <RiDestructiveButton
             size="s"
             onClick={() => {}}
             className="toast-danger-btn"
             data-testid="see-errors-btn"
           >
             Remove API key
-          </DestructiveButton>
+          </RiDestructiveButton>
         </FlexItem>
       </Row>
     </>

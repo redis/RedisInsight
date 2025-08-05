@@ -13,15 +13,15 @@ import {
   userSettingsConfigSelector,
 } from 'uiSrc/slices/user/user-settings'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { InfoIcon, CheckBoldIcon } from 'uiSrc/components/base/icons'
-import { RiRadioGroup } from 'uiSrc/components/base/forms/radio-group/RadioGroup'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { RiTooltip } from 'uiSrc/components'
 import {
+  RiPrimaryButton,
+  RiRadioGroup,
   defaultValueRender,
   RiSelect,
-} from 'uiSrc/components/base/forms/select/RiSelect'
+} from 'uiSrc/components/base/forms'
+import { InfoIcon, CheckBoldIcon } from 'uiSrc/components/base/icons'
+import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiTooltip } from 'uiSrc/components'
 import { TextInput } from 'uiSrc/components/base/inputs'
 
 interface InitialValuesType {
@@ -221,7 +221,7 @@ const DatetimeForm = ({ onFormatChange }: Props) => {
                 showError ? error || 'This format is not supported' : null
               }
             >
-              <PrimaryButton
+              <RiPrimaryButton
                 aria-label="Save"
                 loading={formik.isSubmitting}
                 onClick={onCustomFormatSubmit}
@@ -230,7 +230,7 @@ const DatetimeForm = ({ onFormatChange }: Props) => {
                 disabled={showError}
               >
                 Save
-              </PrimaryButton>
+              </RiPrimaryButton>
             </RiTooltip>
           </>
         )}

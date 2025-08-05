@@ -14,7 +14,7 @@ import RocketIcon from 'uiSrc/assets/img/oauth/rocket.svg?react'
 
 import { Col, FlexItem, Grid } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 
@@ -77,7 +77,7 @@ const ConnectivityOptions = (props: Props) => {
         <Spacer />
         <Grid gap="l" columns={3} responsive>
           <FlexItem>
-            <SecondaryButton
+            <RiSecondaryButton
               className={styles.typeBtn}
               onClick={() => onClickOption(AddDbType.cloud)}
               data-testid="discover-cloud-btn"
@@ -86,7 +86,7 @@ const ConnectivityOptions = (props: Props) => {
                 <CloudIcon className={styles.btnIcon} />
                 Add databases
               </Col>
-            </SecondaryButton>
+            </RiSecondaryButton>
           </FlexItem>
           <FeatureFlagComponent name={FeatureFlags.cloudAds}>
             <FlexItem>
@@ -129,7 +129,7 @@ const ConnectivityOptions = (props: Props) => {
         <Grid gap="l" responsive columns={3}>
           {CONNECTIVITY_OPTIONS.map(({ id, type, title, icon }) => (
             <FlexItem key={id}>
-              <SecondaryButton
+              <RiSecondaryButton
                 color="secondary"
                 className={cx(styles.typeBtn, styles.small)}
                 onClick={() => onClickOption(type)}
@@ -137,7 +137,7 @@ const ConnectivityOptions = (props: Props) => {
               >
                 {icon?.({ className: styles.btnIcon })}
                 {title}
-              </SecondaryButton>
+              </RiSecondaryButton>
             </FlexItem>
           ))}
         </Grid>

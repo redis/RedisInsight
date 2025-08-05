@@ -10,13 +10,13 @@ import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
 import { Flex, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
+} from 'uiSrc/components/base/forms'
 import { SearchInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import styles from './styles.module.scss'
 
@@ -91,14 +91,14 @@ const RedisCloudDatabaseListResult = ({ columns, onBack, onView }: Props) => {
             </MessageBar>
           </FlexItem>
           <FlexItem>
-            <FormField className={styles.searchForm}>
+            <RiFormField className={styles.searchForm}>
               <SearchInput
                 placeholder="Search..."
                 onChange={onQueryChange}
                 aria-label="Search"
                 data-testid="search"
               />
-            </FormField>
+            </RiFormField>
           </FlexItem>
         </Flex>
         <br />
@@ -118,16 +118,16 @@ const RedisCloudDatabaseListResult = ({ columns, onBack, onView }: Props) => {
       </div>
       <FlexItem padding={4}>
         <Row justify="between">
-          <SecondaryButton
+          <RiSecondaryButton
             onClick={onBack}
             className="btn-cancel btn-back"
             data-testid="btn-back-to-adding"
           >
             Back to adding databases
-          </SecondaryButton>
-          <PrimaryButton onClick={onView} data-testid="btn-view-databases">
+          </RiSecondaryButton>
+          <RiPrimaryButton onClick={onView} data-testid="btn-view-databases">
             View Databases
-          </PrimaryButton>
+          </RiPrimaryButton>
         </Row>
       </FlexItem>
     </AutodiscoveryPageTemplate>

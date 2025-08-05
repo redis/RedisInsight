@@ -22,14 +22,14 @@ import { deleteCaCertificateAction } from 'uiSrc/slices/instances/caCerts'
 import { deleteClientCertAction } from 'uiSrc/slices/instances/clientCerts'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { TextArea, TextInput } from 'uiSrc/components/base/inputs'
 import {
+  RiCheckbox,
+  RiFormField,
   RiSelect,
   SelectValueRender,
   RiSelectOption,
-} from 'uiSrc/components/base/forms/select/RiSelect'
+} from 'uiSrc/components/base/forms'
+import { TextArea, TextInput } from 'uiSrc/components/base/inputs'
 import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
 import styles from '../styles.module.scss'
 
@@ -187,7 +187,7 @@ const TlsDetails = (props: Props) => {
     <>
       <Row gap="m">
         <FlexItem grow={1}>
-          <Checkbox
+          <RiCheckbox
             id={sslId}
             name="tls"
             label="Use TLS"
@@ -203,7 +203,7 @@ const TlsDetails = (props: Props) => {
           <Spacer />
           <Row gap="m">
             <FlexItem grow={1}>
-              <Checkbox
+              <RiCheckbox
                 id={sni}
                 name="sni"
                 label="Use SNI"
@@ -224,14 +224,14 @@ const TlsDetails = (props: Props) => {
               <Spacer />
               <Row gap="m">
                 <FlexItem grow>
-                  <FormField label="Server Name*">
+                  <RiFormField label="Server Name*">
                     <TextInput
                       name="servername"
                       id="servername"
                       maxLength={200}
                       placeholder="Enter Server Name"
                       value={formik.values.servername ?? ''}
-                      onChange={value =>
+                      onChange={(value) =>
                         formik.setFieldValue(
                           'servername',
                           validateField(value.trim()),
@@ -239,7 +239,7 @@ const TlsDetails = (props: Props) => {
                       }
                       data-testid="sni-servername"
                     />
-                  </FormField>
+                  </RiFormField>
                 </FlexItem>
               </Row>
             </>
@@ -250,7 +250,7 @@ const TlsDetails = (props: Props) => {
               grow
               className={cx({ [styles.fullWidth]: formik.values.sni })}
             >
-              <Checkbox
+              <RiCheckbox
                 id={verifyTlsId}
                 name="verifyServerTlsCert"
                 label="Verify TLS Certificate"
@@ -267,7 +267,7 @@ const TlsDetails = (props: Props) => {
           <Spacer />
           <Row gap="m" responsive>
             <FlexItem>
-              <FormField
+              <RiFormField
                 label={`CA Certificate${
                   formik.values.verifyServerTlsCert ? '*' : ''
                 }`}
@@ -286,20 +286,20 @@ const TlsDetails = (props: Props) => {
                   }}
                   data-testid="select-ca-cert"
                 />
-              </FormField>
+              </RiFormField>
             </FlexItem>
 
             {formik.values.tls &&
               formik.values.selectedCaCertName === ADD_NEW_CA_CERT && (
                 <FlexItem grow>
-                  <FormField label="Name*">
+                  <RiFormField label="Name*">
                     <TextInput
                       name="newCaCertName"
                       id="newCaCertName"
                       maxLength={200}
                       placeholder="Enter CA Certificate Name"
                       value={formik.values.newCaCertName ?? ''}
-                      onChange={value =>
+                      onChange={(value) =>
                         formik.setFieldValue(
                           'newCaCertName',
                           validateCertName(value),
@@ -307,7 +307,7 @@ const TlsDetails = (props: Props) => {
                       }
                       data-testid="qa-ca-cert"
                     />
-                  </FormField>
+                  </RiFormField>
                 </FlexItem>
               )}
           </Row>
@@ -316,7 +316,7 @@ const TlsDetails = (props: Props) => {
             formik.values.selectedCaCertName === ADD_NEW_CA_CERT && (
               <Row gap="m" responsive>
                 <FlexItem grow>
-                  <FormField label="Certificate*">
+                  <RiFormField label="Certificate*">
                     <TextArea
                       name="newCaCert"
                       id="newCaCert"
@@ -325,7 +325,7 @@ const TlsDetails = (props: Props) => {
                       placeholder="Enter CA Certificate"
                       data-testid="new-ca-cert"
                     />
-                  </FormField>
+                  </RiFormField>
                 </FlexItem>
               </Row>
             )}
@@ -334,7 +334,7 @@ const TlsDetails = (props: Props) => {
       {formik.values.tls && (
         <Row responsive style={{ margin: '20px 0 20px' }}>
           <FlexItem grow>
-            <Checkbox
+            <RiCheckbox
               id={isTlsAuthId}
               name="tlsClientAuthRequired"
               label="Requires TLS Client Authentication"
@@ -354,7 +354,7 @@ const TlsDetails = (props: Props) => {
         >
           <Row gap="m" responsive>
             <FlexItem grow>
-              <FormField label="Client Certificate*">
+              <RiFormField label="Client Certificate*">
                 <RiSelect
                   placeholder="Select certificate"
                   value={formik.values.selectedTlsClientCertId}
@@ -365,21 +365,21 @@ const TlsDetails = (props: Props) => {
                   }}
                   data-testid="select-cert"
                 />
-              </FormField>
+              </RiFormField>
             </FlexItem>
 
             {formik.values.tls &&
               formik.values.tlsClientAuthRequired &&
               formik.values.selectedTlsClientCertId === 'ADD_NEW' && (
                 <FlexItem grow>
-                  <FormField label="Name*">
+                  <RiFormField label="Name*">
                     <TextInput
                       name="newTlsCertPairName"
                       id="newTlsCertPairName"
                       maxLength={200}
                       placeholder="Enter Client Certificate Name"
                       value={formik.values.newTlsCertPairName ?? ''}
-                      onChange={value =>
+                      onChange={(value) =>
                         formik.setFieldValue(
                           'newTlsCertPairName', // same as the name prop passed a few lines above
                           validateCertName(value),
@@ -387,7 +387,7 @@ const TlsDetails = (props: Props) => {
                       }
                       data-testid="new-tsl-cert-pair-name"
                     />
-                  </FormField>
+                  </RiFormField>
                 </FlexItem>
               )}
           </Row>
@@ -398,7 +398,7 @@ const TlsDetails = (props: Props) => {
               <>
                 <Row gap="m" responsive>
                   <FlexItem grow>
-                    <FormField label="Certificate*">
+                    <RiFormField label="Certificate*">
                       <TextArea
                         name="newTlsClientCert"
                         id="newTlsClientCert"
@@ -408,13 +408,13 @@ const TlsDetails = (props: Props) => {
                         placeholder="Enter Client Certificate"
                         data-testid="new-tls-client-cert"
                       />
-                    </FormField>
+                    </RiFormField>
                   </FlexItem>
                 </Row>
 
                 <Row gap="m" responsive>
                   <FlexItem grow>
-                    <FormField label="Private Key*">
+                    <RiFormField label="Private Key*">
                       <TextArea
                         placeholder="Enter Private Key"
                         name="newTlsClientKey"
@@ -423,7 +423,7 @@ const TlsDetails = (props: Props) => {
                         onChangeCapture={formik.handleChange}
                         data-testid="new-tls-client-cert-key"
                       />
-                    </FormField>
+                    </RiFormField>
                   </FlexItem>
                 </Row>
               </>

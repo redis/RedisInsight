@@ -18,10 +18,7 @@ import {
 } from 'uiSrc/constants/links'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Link } from 'uiSrc/components/base/link/Link'
@@ -177,13 +174,13 @@ export const INFINITE_MESSAGES = {
                   <ExternalLink href={MANAGE_DB_LINK}>Manage DB</ExternalLink>
                 </FlexItem>
                 <FlexItem>
-                  <PrimaryButton
+                  <RiPrimaryButton
                     size="s"
                     onClick={() => onSuccess()}
                     data-testid="notification-connect-db"
                   >
                     Connect
-                  </PrimaryButton>
+                  </RiPrimaryButton>
                 </FlexItem>
               </Row>
             </FlexItem>
@@ -214,23 +211,23 @@ export const INFINITE_MESSAGES = {
         <Spacer size="m" />
         <Row justify="between">
           <FlexItem>
-            <PrimaryButton
+            <RiPrimaryButton
               size="s"
               onClick={() => onSuccess?.()}
               data-testid="import-db-sso-btn"
             >
               Import
-            </PrimaryButton>
+            </RiPrimaryButton>
           </FlexItem>
           <FlexItem>
-            <SecondaryButton
+            <RiSecondaryButton
               size="s"
               className="infiniteMessage__btn"
               onClick={() => onClose?.()}
               data-testid="cancel-import-db-sso-btn"
             >
               Cancel
-            </SecondaryButton>
+            </RiSecondaryButton>
           </FlexItem>
         </Row>
       </div>
@@ -270,13 +267,13 @@ export const INFINITE_MESSAGES = {
         <Spacer size="m" />
         <Row justify="end">
           <FlexItem>
-            <PrimaryButton
+            <RiPrimaryButton
               size="s"
               onClick={() => onClose?.()}
               data-testid="database-import-forbidden-notification-ok-btn"
             >
               Ok
-            </PrimaryButton>
+            </RiPrimaryButton>
           </FlexItem>
         </Row>
       </div>
@@ -305,23 +302,23 @@ export const INFINITE_MESSAGES = {
         <Spacer size="m" />
         <Row justify="between">
           <FlexItem>
-            <PrimaryButton
+            <RiPrimaryButton
               size="s"
               onClick={() => onSuccess?.()}
               data-testid="create-subscription-sso-btn"
             >
               Create
-            </PrimaryButton>
+            </RiPrimaryButton>
           </FlexItem>
           <FlexItem>
-            <SecondaryButton
+            <RiSecondaryButton
               size="s"
               className="infiniteMessage__btn"
               onClick={() => onClose?.()}
               data-testid="cancel-create-subscription-sso-btn"
             >
               Cancel
-            </SecondaryButton>
+            </RiSecondaryButton>
           </FlexItem>
         </Row>
       </div>
@@ -373,13 +370,13 @@ export const INFINITE_MESSAGES = {
           </>
         </Text>
         <br />
-        <PrimaryButton
+        <RiPrimaryButton
           size="s"
           onClick={() => onSuccess?.()}
           data-testid="app-restart-btn"
         >
           Restart
-        </PrimaryButton>
+        </RiPrimaryButton>
       </div>
     ),
   }),
@@ -412,13 +409,13 @@ export const INFINITE_MESSAGES = {
             {/* // TODO remove display none when statistics page will be available */}
             <Row style={{ display: 'none' }} justify="end" align="center">
               <FlexItem>
-                <PrimaryButton
+                <RiPrimaryButton
                   size="s"
                   onClick={() => {}}
                   data-testid="notification-connect-db"
                 >
                   Statistics
-                </PrimaryButton>
+                </RiPrimaryButton>
               </FlexItem>
             </Row>
           </FlexItem>

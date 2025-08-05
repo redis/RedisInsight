@@ -33,13 +33,13 @@ import { AddListFormConfig as config } from 'uiSrc/pages/browser/components/add-
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import {
-  DestructiveButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { DeleteIcon , RiIcon } from 'uiSrc/components/base/icons'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
+  RiDestructiveButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
+  RiSelect,
+} from 'uiSrc/components/base/forms'
+import { DeleteIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { RiPopover } from 'uiSrc/components/base'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { DeleteListElementsDto } from 'apiSrc/modules/browser/list/dto'
@@ -173,13 +173,13 @@ const RemoveListElements = (props: Props) => {
       panelClassName={styles.panelCancelBtn}
       panelPaddingSize="l"
       button={
-        <PrimaryButton
+        <RiPrimaryButton
           onClick={showPopover}
           disabled={!isFormValid}
           data-testid="remove-elements-btn"
         >
           Remove
-        </PrimaryButton>
+        </RiPrimaryButton>
       }
     >
       <div className={styles.popover}>
@@ -204,7 +204,7 @@ const RemoveListElements = (props: Props) => {
           )}
         </Text>
         <Spacer />
-        <DestructiveButton
+        <RiDestructiveButton
           size="small"
           onClick={submitData}
           icon={DeleteIcon}
@@ -212,7 +212,7 @@ const RemoveListElements = (props: Props) => {
           data-testid="remove-submit"
         >
           Remove
-        </DestructiveButton>
+        </RiDestructiveButton>
       </div>
     </RiPopover>
   )
@@ -247,7 +247,7 @@ const RemoveListElements = (props: Props) => {
         <FlexItem grow>
           <Row align="center">
             <FlexItem style={{ minWidth: '220px' }}>
-              <FormField>
+              <RiFormField>
                 <RiSelect
                   style={{
                     height: 43,
@@ -259,10 +259,10 @@ const RemoveListElements = (props: Props) => {
                   }
                   data-testid="destination-select"
                 />
-              </FormField>
+              </RiFormField>
             </FlexItem>
             <FlexItem grow style={{ width: '100%' }}>
-              <FormField
+              <RiFormField
                 additionalText={!canRemoveMultiple ? InfoBoxPopover() : <></>}
               >
                 <TextInput
@@ -277,7 +277,7 @@ const RemoveListElements = (props: Props) => {
                   ref={countInput}
                   disabled={!canRemoveMultiple}
                 />
-              </FormField>
+              </RiFormField>
             </FlexItem>
           </Row>
         </FlexItem>
@@ -286,12 +286,12 @@ const RemoveListElements = (props: Props) => {
         <Row justify="end" gap="xl" style={{ padding: 18 }}>
           <FlexItem>
             <div>
-              <SecondaryButton
+              <RiSecondaryButton
                 onClick={() => closePanel(true)}
                 data-testid="cancel-elements-btn"
               >
                 Cancel
-              </SecondaryButton>
+              </RiSecondaryButton>
             </div>
           </FlexItem>
           <FlexItem>

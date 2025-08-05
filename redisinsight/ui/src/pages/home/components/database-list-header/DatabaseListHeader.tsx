@@ -28,11 +28,11 @@ import {
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiCheckbox,
+} from 'uiSrc/components/base/forms'
 import { ColumnsIcon } from 'uiSrc/components/base/icons'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import SearchDatabasesList from '../search-databases-list'
 
 import styles from './styles.module.scss'
@@ -123,13 +123,13 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
   }
 
   const AddInstanceBtn = () => (
-    <PrimaryButton
+    <RiPrimaryButton
       onClick={handleOnAddDatabase}
       className={styles.addInstanceBtn}
       data-testid="add-redis-database-short"
     >
       <span>+ Add Redis database</span>
-    </PrimaryButton>
+    </RiPrimaryButton>
   )
 
   const CreateBtn = ({ content }: { content: ContentCreateRedis }) => {
@@ -170,7 +170,7 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
 
   const columnCheckboxes = Array.from(COLUMN_FIELD_NAME_MAP.entries()).map(
     ([field, name]) => (
-      <Checkbox
+      <RiCheckbox
         key={`show-${field}`}
         id={`show-${field}`}
         name={`show-${field}`}
@@ -220,7 +220,7 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
                   closePopover={() => setColumnsConfigShown(false)}
                   data-testid="columns-config-popover"
                   button={
-                    <SecondaryButton
+                    <RiSecondaryButton
                       icon={ColumnsIcon}
                       onClick={toggleColumnsConfigVisibility}
                       className={styles.columnsButton}
@@ -228,7 +228,7 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
                       aria-label="columns"
                     >
                       <span>Columns</span>
-                    </SecondaryButton>
+                    </RiSecondaryButton>
                   }
                 >
                   <div

@@ -2,7 +2,7 @@ import React, { InputHTMLAttributes, ReactNode, useRef, useState } from 'react'
 import cx from 'classnames'
 import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
 import { RiProgressBarLoader, RiLoader } from 'uiSrc/components/base/display'
-import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import {
   FilePickerClearButton,
@@ -125,7 +125,7 @@ export const RiFilePicker = ({
   } else if (isOverridingInitialPrompt && !disabled) {
     if (normalFormControl) {
       clearButton = (
-        <SecondaryButton
+        <RiSecondaryButton
           aria-label="Remove selected files"
           className="RI-File-Picker__clearButton"
           onClick={removeFiles}

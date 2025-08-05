@@ -18,7 +18,7 @@ import {
   RedisOnFlashDarkIcon,
   RedisOnFlashLightIcon,
 } from 'uiSrc/components/base/icons'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import styles from './styles.module.scss'
 
 interface Props {
@@ -99,7 +99,7 @@ const DatabaseListOptions = ({ options }: Props) => {
           anchorClassName={styles.tooltip}
         >
           {icon ? (
-            <IconButton
+            <RiIconButton
               icon={icon}
               onClick={() => handleCopy(contentProp)}
               aria-labelledby={`${contentProp}_module`}

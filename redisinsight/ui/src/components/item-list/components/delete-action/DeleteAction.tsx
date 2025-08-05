@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import { formatLongName } from 'uiSrc/utils'
 
 import {
-  DestructiveButton,
-  PrimaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { DeleteIcon , RiIcon } from 'uiSrc/components/base/icons'
+  RiDestructiveButton,
+  RiPrimaryButton,
+} from 'uiSrc/components/base/forms'
+import { DeleteIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components'
@@ -32,7 +32,7 @@ const DeleteAction = <T extends { id: string; name?: string }>(
   }
 
   const deleteBtn = (
-    <PrimaryButton
+    <RiPrimaryButton
       size="small"
       onClick={onButtonClick}
       icon={DeleteIcon}
@@ -40,7 +40,7 @@ const DeleteAction = <T extends { id: string; name?: string }>(
       data-testid="delete-btn"
     >
       Delete
-    </PrimaryButton>
+    </RiPrimaryButton>
   )
 
   return (
@@ -69,7 +69,7 @@ const DeleteAction = <T extends { id: string; name?: string }>(
         ))}
       </div>
       <div className={styles.popoverFooter}>
-        <DestructiveButton
+        <RiDestructiveButton
           size="small"
           icon={DeleteIcon}
           onClick={() => {
@@ -80,7 +80,7 @@ const DeleteAction = <T extends { id: string; name?: string }>(
           data-testid="delete-selected-dbs"
         >
           Delete
-        </DestructiveButton>
+        </RiDestructiveButton>
       </div>
     </RiPopover>
   )

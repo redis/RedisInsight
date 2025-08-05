@@ -16,7 +16,7 @@ import { connectedInstanceOverviewSelector } from 'uiSrc/slices/instances/instan
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import Divider from 'uiSrc/components/divider/Divider'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
+import { RiCheckbox } from 'uiSrc/components/base/forms'
 import AddHashFields from './add-hash-fields/AddHashFields'
 import { HashDetailsTable } from './hash-details-table'
 import { KeyDetailsSubheader } from '../key-details-subheader/KeyDetailsSubheader'
@@ -73,7 +73,7 @@ const HashDetails = (props: Props) => {
     <>
       {isExpireFieldsAvailable && (
         <>
-          <Checkbox
+          <RiCheckbox
             id="showTtl"
             name="showTtl"
             label="Show TTL"

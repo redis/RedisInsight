@@ -8,7 +8,7 @@ import { SaveIcon } from 'uiSrc/components/base/icons'
 import { rdiPipelineSelector } from 'uiSrc/slices/rdi/pipeline'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
+import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import styles from './styles.module.scss'
 
 interface Props {
@@ -44,7 +44,7 @@ const Download = ({ dataTestid, onClose }: Props) => {
   }
 
   return (
-    <EmptyButton
+    <RiEmptyButton
       color="text"
       className={styles.downloadBtn}
       icon={SaveIcon}
@@ -54,7 +54,7 @@ const Download = ({ dataTestid, onClose }: Props) => {
       data-testid={dataTestid || 'download-pipeline-btn'}
     >
       Save to file
-    </EmptyButton>
+    </RiEmptyButton>
   )
 }
 

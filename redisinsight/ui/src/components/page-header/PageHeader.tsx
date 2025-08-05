@@ -15,7 +15,7 @@ import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { isAnyFeatureEnabled } from 'uiSrc/utils/features'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Title } from 'uiSrc/components/base/text/Title'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
+import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { RedisLogoFullIcon } from 'uiSrc/components/base/icons'
 import styles from './PageHeader.module.scss'
 
@@ -87,7 +87,7 @@ const PageHeader = (props: Props) => {
           </Row>
         ) : (
           <div className={styles.pageHeaderLogo}>
-            <EmptyButton
+            <RiEmptyButton
               aria-label="redisinsight"
               onClick={goHome}
               onKeyDown={goHome}

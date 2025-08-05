@@ -23,9 +23,8 @@ import {
 import { IEditorMount } from 'uiSrc/pages/workbench/interfaces'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton, RiSelect } from 'uiSrc/components/base/forms'
 import { CancelSlimIcon, CheckThinIcon } from 'uiSrc/components/base/icons'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import styles from './styles.module.scss'
 
 const LangSelect = styled(RiSelect)`
@@ -313,14 +312,14 @@ const DedicatedEditor = (props: Props) => {
                   />
                 )}
                 <div>
-                  <IconButton
+                  <RiIconButton
                     icon={CancelSlimIcon}
                     aria-label="Cancel editing"
                     className={styles.declineBtn}
                     onClick={() => onCancel(selectedLang.id as DSL)}
                     data-testid="cancel-btn"
                   />
-                  <IconButton
+                  <RiIconButton
                     icon={CheckThinIcon}
                     type="submit"
                     aria-label="Apply"

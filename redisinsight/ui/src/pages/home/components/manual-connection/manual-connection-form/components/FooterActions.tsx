@@ -6,10 +6,10 @@ import { DbConnectionInfo, ISubmitButton } from 'uiSrc/pages/home/interfaces'
 import { SubmitBtnText } from 'uiSrc/pages/home/constants'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
-  EmptyButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+  RiEmptyButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+} from 'uiSrc/components/base/forms'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
 
@@ -49,7 +49,7 @@ const FooterActions = (props: Props) => {
       }
       content={getSubmitButtonContent(errors, submitIsDisabled)}
     >
-      <PrimaryButton
+      <RiPrimaryButton
         size="small"
         type="submit"
         onClick={onClick}
@@ -59,7 +59,7 @@ const FooterActions = (props: Props) => {
         data-testid="btn-submit"
       >
         {text}
-      </PrimaryButton>
+      </RiPrimaryButton>
     </RiTooltip>
   )
 
@@ -76,7 +76,7 @@ const FooterActions = (props: Props) => {
           }
           content={getSubmitButtonContent(errors, submitIsDisable())}
         >
-          <EmptyButton
+          <RiEmptyButton
             size="small"
             className="empty-btn"
             disabled={submitIsDisable()}
@@ -86,14 +86,14 @@ const FooterActions = (props: Props) => {
             data-testid="btn-test-connection"
           >
             Test Connection
-          </EmptyButton>
+          </RiEmptyButton>
         </RiTooltip>
       </FlexItem>
 
       <FlexItem>
         <Row>
           {onClose && (
-            <SecondaryButton
+            <RiSecondaryButton
               size="small"
               onClick={onClose}
               className="btn-cancel"
@@ -101,7 +101,7 @@ const FooterActions = (props: Props) => {
               style={{ marginRight: 12 }}
             >
               Cancel
-            </SecondaryButton>
+            </RiSecondaryButton>
           )}
           <SubmitButton
             onClick={onClickSubmit}

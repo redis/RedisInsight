@@ -13,11 +13,11 @@ import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
+} from 'uiSrc/components/base/forms'
 import { SearchInput } from 'uiSrc/components/base/inputs'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
@@ -97,7 +97,7 @@ const RedisClusterDatabasesResult = ({ columns, onBack, onView }: Props) => {
             </MessageBar>
           </FlexItem>
           <FlexItem>
-            <FormField className={styles.searchForm}>
+            <RiFormField className={styles.searchForm}>
               <SearchInput
                 placeholder="Search..."
                 className={styles.search}
@@ -105,7 +105,7 @@ const RedisClusterDatabasesResult = ({ columns, onBack, onView }: Props) => {
                 aria-label="Search"
                 data-testid="search"
               />
-            </FormField>
+            </RiFormField>
           </FlexItem>
         </Row>
         <br />
@@ -127,20 +127,20 @@ const RedisClusterDatabasesResult = ({ columns, onBack, onView }: Props) => {
       </div>
       <FlexItem className={cx(styles.footer, 'footerAddDatabase')}>
         <Row justify="between">
-          <SecondaryButton
+          <RiSecondaryButton
             onClick={() => onBack(false)}
             className="btn-cancel btn-back"
             data-testid="btn-back-to-adding"
           >
             Back to adding databases
-          </SecondaryButton>
-          <PrimaryButton
+          </RiSecondaryButton>
+          <RiPrimaryButton
             size="m"
             onClick={() => onView(false)}
             data-testid="btn-view-databases"
           >
             View Databases
-          </PrimaryButton>
+          </RiPrimaryButton>
         </Row>
       </FlexItem>
     </AutodiscoveryPageTemplate>

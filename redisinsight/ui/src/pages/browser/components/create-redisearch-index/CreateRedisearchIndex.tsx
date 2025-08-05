@@ -17,17 +17,17 @@ import { getUtmExternalLink } from 'uiSrc/utils/links'
 import AddMultipleFields from 'uiSrc/pages/browser/components/add-multiple-fields'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
-  IconButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { AutoTag } from 'uiSrc/components/base/forms/combo-box/AutoTag'
-import { FormFieldset } from 'uiSrc/components/base/forms/fieldset'
+  RiIconButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
+  RiAutoTag,
+  RiFormFieldset,
+  RiSelect,
+} from 'uiSrc/components/base/forms'
 import { InfoIcon } from 'uiSrc/components/base/icons'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { HealthText, Text } from 'uiSrc/components/base/text'
 import { Link } from 'uiSrc/components/base/link/Link'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { RiPopover } from 'uiSrc/components/base'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { CreateRedisearchIndexDto } from 'apiSrc/modules/browser/redisearch/dto'
@@ -173,7 +173,7 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
       panelClassName={cx('popoverLikeTooltip')}
       closePopover={() => setIsInfoPopoverOpen(false)}
       button={
-        <IconButton
+        <RiIconButton
           icon={InfoIcon}
           id="identifier-info-icon"
           aria-label="identifier info icon"
@@ -212,7 +212,7 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
           <div className={styles.fieldsContainer}>
             <Row className={styles.row}>
               <FlexItem grow>
-                <FormField label="Index Name">
+                <RiFormField label="Index Name">
                   <TextInput
                     name="Index name"
                     id="index-name"
@@ -222,13 +222,13 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
                     autoComplete="off"
                     data-testid="index-name"
                   />
-                </FormField>
+                </RiFormField>
               </FlexItem>
               <FlexItem grow>
-                <FormFieldset
+                <RiFormFieldset
                   legend={{ children: 'Select key type', display: 'hidden' }}
                 >
-                  <FormField label="Key Type*">
+                  <RiFormField label="Key Type*">
                     <RiSelect
                       options={keyTypeOptions}
                       valueRender={({ option }) =>
@@ -240,13 +240,13 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
                       }
                       data-testid="key-type"
                     />
-                  </FormField>
-                </FormFieldset>
+                  </RiFormField>
+                </RiFormFieldset>
               </FlexItem>
             </Row>
             <Row className={styles.row} style={{ maxWidth: '100%' }}>
               <FlexItem grow style={{ minWidth: '100%', maxWidth: '100%' }}>
-                <AutoTag
+                <RiAutoTag
                   label="Key Prefixes"
                   placeholder="Enter Prefix"
                   selectedOptions={prefixes}
@@ -277,18 +277,14 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
               {(item, index) => (
                 <Row align="center">
                   <FlexItem grow>
-                    <FormField>
+                    <RiFormField>
                       <TextInput
                         name={`identifier-${item.id}`}
                         id={`identifier-${item.id}`}
                         placeholder="Enter Identifier"
                         value={item.identifier}
-                        onChange={value =>
-                          handleFieldChange(
-                            'identifier',
-                            item.id,
-                            value,
-                          )
+                        onChange={(value) =>
+                          handleFieldChange('identifier', item.id, value)
                         }
                         ref={
                           index === fields.length - 1
@@ -298,10 +294,10 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
                         autoComplete="off"
                         data-testid={`identifier-${item.id}`}
                       />
-                    </FormField>
+                    </RiFormField>
                   </FlexItem>
                   <FlexItem grow>
-                    <FormField>
+                    <RiFormField>
                       <RiSelect
                         options={fieldTypeOptions}
                         value={item.fieldType}
@@ -310,7 +306,7 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
                         }
                         data-testid={`field-type-${item.id}`}
                       />
-                    </FormField>
+                    </RiFormField>
                   </FlexItem>
                 </Row>
               )}
@@ -321,17 +317,17 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
       <>
         <Row justify="end" gap="m" style={{ padding: 18 }}>
           <FlexItem>
-            <SecondaryButton
+            <RiSecondaryButton
               color="secondary"
               onClick={() => onClosePanel?.()}
               className="btn-cancel btn-back"
               data-testid="create-index-cancel-btn"
             >
               Cancel
-            </SecondaryButton>
+            </RiSecondaryButton>
           </FlexItem>
           <FlexItem>
-            <PrimaryButton
+            <RiPrimaryButton
               size="m"
               loading={loading}
               disabled={loading}
@@ -339,7 +335,7 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
               data-testid="create-index-btn"
             >
               Create Index
-            </PrimaryButton>
+            </RiPrimaryButton>
           </FlexItem>
         </Row>
       </>

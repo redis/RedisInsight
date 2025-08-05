@@ -12,7 +12,7 @@ import Download from 'uiSrc/pages/rdi/instance/components/download/Download'
 
 import { Text } from 'uiSrc/components/base/text'
 import { DownloadIcon } from 'uiSrc/components/base/icons'
-import { EmptyButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiEmptyButton, RiPrimaryButton } from 'uiSrc/components/base/forms'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -54,13 +54,13 @@ const FetchPipelinePopover = ({ onClose }: Props) => {
         </Text>
       }
       submitBtn={
-        <PrimaryButton size="s" data-testid="upload-confirm-btn">
+        <RiPrimaryButton size="s" data-testid="upload-confirm-btn">
           Download from server
-        </PrimaryButton>
+        </RiPrimaryButton>
       }
       onConfirm={handleRefreshClick}
       button={
-        <EmptyButton
+        <RiEmptyButton
           color="text"
           size="small"
           className={styles.downloadBtn}
@@ -70,7 +70,7 @@ const FetchPipelinePopover = ({ onClose }: Props) => {
           data-testid="upload-pipeline-btn"
         >
           Download from server
-        </EmptyButton>
+        </RiEmptyButton>
       }
       onButtonClick={handleRefreshWarning}
       appendAction={<Download />}

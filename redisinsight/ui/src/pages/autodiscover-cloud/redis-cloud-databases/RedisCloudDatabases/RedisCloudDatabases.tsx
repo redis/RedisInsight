@@ -11,16 +11,16 @@ import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import {
-  DestructiveButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+  RiDestructiveButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
+} from 'uiSrc/components/base/forms'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { Pages } from 'uiSrc/constants'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { SearchInput } from 'uiSrc/components/base/inputs'
 import { Text } from 'uiSrc/components/base/text'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import styles from '../styles.module.scss'
 
@@ -137,13 +137,13 @@ const RedisCloudDatabasesPage = ({
       panelClassName={styles.panelCancelBtn}
       panelPaddingSize="l"
       button={
-        <SecondaryButton
+        <RiSecondaryButton
           onClick={showPopover}
           className="btn-cancel"
           data-testid="btn-cancel"
         >
           Cancel
-        </SecondaryButton>
+        </RiSecondaryButton>
       }
     >
       <Text size="m">
@@ -152,13 +152,13 @@ const RedisCloudDatabasesPage = ({
       </Text>
       <br />
       <div>
-        <DestructiveButton
+        <RiDestructiveButton
           size="s"
           onClick={onClose}
           data-testid="btn-cancel-proceed"
         >
           Proceed
-        </DestructiveButton>
+        </RiDestructiveButton>
       </div>
     </RiPopover>
   )
@@ -171,14 +171,10 @@ const RedisCloudDatabasesPage = ({
         isDisabled ? validationErrors.SELECT_AT_LEAST_ONE('database') : null
       }
       content={
-        isDisabled ? (
-          <span>
-            {validationErrors.NO_DBS_SELECTED}
-          </span>
-        ) : null
+        isDisabled ? <span>{validationErrors.NO_DBS_SELECTED}</span> : null
       }
     >
-      <PrimaryButton
+      <RiPrimaryButton
         size="m"
         disabled={isDisabled}
         onClick={handleSubmit}
@@ -187,7 +183,7 @@ const RedisCloudDatabasesPage = ({
         data-testid="btn-add-databases"
       >
         Add selected Databases
-      </PrimaryButton>
+      </RiPrimaryButton>
     </RiTooltip>
   )
 
@@ -209,14 +205,14 @@ const RedisCloudDatabasesPage = ({
           </FlexItem>
         </Row>
         <FlexItem>
-          <FormField className={styles.searchForm}>
+          <RiFormField className={styles.searchForm}>
             <SearchInput
               placeholder="Search..."
               onChange={onQueryChange}
               aria-label="Search"
               data-testid="search"
             />
-          </FormField>
+          </RiFormField>
         </FlexItem>
         <br />
 
@@ -237,13 +233,13 @@ const RedisCloudDatabasesPage = ({
       </div>
       <FlexItem padding={4}>
         <Row justify="between" gap="m">
-          <SecondaryButton
+          <RiSecondaryButton
             onClick={onBack}
             className="btn-cancel btn-back"
             data-testid="btn-back-to-adding"
           >
             Back to adding databases
-          </SecondaryButton>
+          </RiSecondaryButton>
           <div>
             <CancelButton isPopoverOpen={isPopoverOpen} />
             <SubmitButton isDisabled={selection.length < 1} />

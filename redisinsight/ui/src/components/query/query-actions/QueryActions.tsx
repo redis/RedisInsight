@@ -14,7 +14,7 @@ import {
 
 import Divider from 'uiSrc/components/divider/Divider'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
+import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
@@ -62,7 +62,7 @@ const QueryActions = (props: Props) => {
           content="Enables the raw output mode"
           data-testid="change-mode-tooltip"
         >
-          <EmptyButton
+          <RiEmptyButton
             onClick={() => onChangeMode()}
             icon={RawModeIcon}
             disabled={isLoading}
@@ -72,7 +72,7 @@ const QueryActions = (props: Props) => {
             data-testid="btn-change-mode"
           >
             Raw mode
-          </EmptyButton>
+          </RiEmptyButton>
         </RiTooltip>
       )}
       {onChangeGroupMode && (
@@ -88,7 +88,7 @@ const QueryActions = (props: Props) => {
           }
           data-testid="group-results-tooltip"
         >
-          <EmptyButton
+          <RiEmptyButton
             onClick={() => onChangeGroupMode()}
             disabled={isLoading}
             icon={GroupModeIcon}
@@ -98,7 +98,7 @@ const QueryActions = (props: Props) => {
             data-testid="btn-change-group-mode"
           >
             Group results
-          </EmptyButton>
+          </RiEmptyButton>
         </RiTooltip>
       )}
       <Divider
@@ -115,7 +115,7 @@ const QueryActions = (props: Props) => {
         }
         data-testid="run-query-tooltip"
       >
-        <EmptyButton
+        <RiEmptyButton
           onClick={() => {
             onSubmit()
           }}
@@ -127,7 +127,7 @@ const QueryActions = (props: Props) => {
           data-testid="btn-submit"
         >
           Run
-        </EmptyButton>
+        </RiEmptyButton>
       </RiTooltip>
     </div>
   )

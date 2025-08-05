@@ -2,7 +2,7 @@ import React from 'react'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { CopyIcon } from 'uiSrc/components/base/icons'
 
 export interface Props {
@@ -27,7 +27,7 @@ const CloneConnection = (props: Props) => {
     <>
       <Row gap="m" justify="end" style={{ flexGrow: 0 }}>
         <FlexItem>
-          <SecondaryButton
+          <RiSecondaryButton
             size="small"
             icon={CopyIcon}
             aria-label="Clone database"
@@ -35,7 +35,7 @@ const CloneConnection = (props: Props) => {
             onClick={handleClickClone}
           >
             Clone Connection
-          </SecondaryButton>
+          </RiSecondaryButton>
         </FlexItem>
       </Row>
       <Spacer />

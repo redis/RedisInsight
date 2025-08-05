@@ -17,7 +17,7 @@ import {
   OAuthSocialSource,
   RedisDefaultModules,
 } from 'uiSrc/slices/interfaces'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { Link } from 'uiSrc/components/base/link/Link'
 
 export interface IProps {
@@ -74,9 +74,9 @@ const ModuleNotLoadedButton = ({
             }}
             data-testid="get-started-link"
           >
-            <PrimaryButton size="s" className={styles.btnLink}>
+            <RiPrimaryButton size="s" className={styles.btnLink}>
               Redis Databases page
-            </PrimaryButton>
+            </RiPrimaryButton>
           </Link>
         }
       >
@@ -94,17 +94,17 @@ const ModuleNotLoadedButton = ({
                     type === 'browser'
                       ? OAuthSocialSource.BrowserSearch
                       : OAuthSocialSource[
-                      module as keyof typeof OAuthSocialSource
-                      ],
+                          module as keyof typeof OAuthSocialSource
+                        ],
                   action: OAuthSocialAction.Create,
                 })
                 onClose?.()
               }}
               data-testid="get-started-link"
             >
-              <PrimaryButton size="s" className={styles.btnLink}>
+              <RiPrimaryButton size="s" className={styles.btnLink}>
                 Get Started For Free
-              </PrimaryButton>
+              </RiPrimaryButton>
             </Link>
           )}
         </OAuthSsoHandlerDialog>

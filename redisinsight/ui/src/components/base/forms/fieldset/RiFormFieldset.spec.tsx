@@ -1,40 +1,40 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react'
 import { render, screen } from 'uiSrc/utils/test-utils'
-import { FormFieldset, FormFieldsetProps } from './FormFieldset'
+import { RiFormFieldset, RiFormFieldsetProps } from './RiFormFieldset'
 
-const defaultProps: FormFieldsetProps = {
+const defaultProps: RiFormFieldsetProps = {
   children: <div data-testid="fieldset-content">Test content</div>,
 }
 
-describe('FormFieldset', () => {
+describe('RiFormFieldset', () => {
   it('should render', () => {
-    expect(render(<FormFieldset {...defaultProps} />)).toBeTruthy()
+    expect(render(<RiFormFieldset {...defaultProps} />)).toBeTruthy()
   })
 
   it('should render children', () => {
-    render(<FormFieldset {...defaultProps} />)
+    render(<RiFormFieldset {...defaultProps} />)
 
     expect(screen.getByTestId('fieldset-content')).toBeInTheDocument()
     expect(screen.getByText('Test content')).toBeInTheDocument()
   })
 
   it('should render as fieldset element', () => {
-    render(<FormFieldset {...defaultProps} />)
+    render(<RiFormFieldset {...defaultProps} />)
 
     const fieldset = screen.getByRole('group')
     expect(fieldset.tagName).toBe('FIELDSET')
   })
 
   it('should render without legend when legend prop is not provided', () => {
-    render(<FormFieldset {...defaultProps} />)
+    render(<RiFormFieldset {...defaultProps} />)
 
     expect(screen.queryByRole('legend')).not.toBeInTheDocument()
   })
 
   it('should render legend when legend prop is provided', () => {
     render(
-      <FormFieldset {...defaultProps} legend={{ children: 'Test Legend' }} />,
+      <RiFormFieldset {...defaultProps} legend={{ children: 'Test Legend' }} />,
     )
 
     expect(screen.getByText('Test Legend')).toBeInTheDocument()
@@ -46,7 +46,7 @@ describe('FormFieldset', () => {
     )
 
     render(
-      <FormFieldset {...defaultProps} legend={{ children: legendContent }} />,
+      <RiFormFieldset {...defaultProps} legend={{ children: legendContent }} />,
     )
 
     expect(screen.getByTestId('custom-legend')).toBeInTheDocument()
@@ -55,7 +55,7 @@ describe('FormFieldset', () => {
 
   it('should not render legend when display is hidden', () => {
     render(
-      <FormFieldset
+      <RiFormFieldset
         {...defaultProps}
         legend={{
           children: 'Hidden Legend',
@@ -69,7 +69,7 @@ describe('FormFieldset', () => {
 
   it('should render legend when display is visible', () => {
     render(
-      <FormFieldset
+      <RiFormFieldset
         {...defaultProps}
         legend={{
           children: 'Visible Legend',
@@ -83,7 +83,7 @@ describe('FormFieldset', () => {
 
   it('should render legend when display is not specified (defaults to visible)', () => {
     render(
-      <FormFieldset
+      <RiFormFieldset
         {...defaultProps}
         legend={{ children: 'Default Legend' }}
       />,
@@ -94,7 +94,7 @@ describe('FormFieldset', () => {
 
   it('should pass through HTML attributes to fieldset element', () => {
     render(
-      <FormFieldset
+      <RiFormFieldset
         {...defaultProps}
         data-testid="custom-fieldset"
         className="custom-class"
@@ -109,7 +109,7 @@ describe('FormFieldset', () => {
 
   it('should pass through HTML attributes to legend element', () => {
     render(
-      <FormFieldset
+      <RiFormFieldset
         {...defaultProps}
         legend={{
           children: 'Legend with attributes',
@@ -128,11 +128,11 @@ describe('FormFieldset', () => {
 
   it('should handle multiple children', () => {
     render(
-      <FormFieldset>
+      <RiFormFieldset>
         <div data-testid="child-1">Child 1</div>
         <div data-testid="child-2">Child 2</div>
         <input data-testid="input-field" type="text" />
-      </FormFieldset>,
+      </RiFormFieldset>,
     )
 
     expect(screen.getByTestId('child-1')).toBeInTheDocument()
@@ -142,12 +142,12 @@ describe('FormFieldset', () => {
 
   it('should handle form elements as children', () => {
     render(
-      <FormFieldset legend={{ children: 'Form Fields' }}>
+      <RiFormFieldset legend={{ children: 'Form Fields' }}>
         <label htmlFor="name">Name:</label>
         <input id="name" type="text" data-testid="name-input" />
         <label htmlFor="email">Email:</label>
         <input id="email" type="email" data-testid="email-input" />
-      </FormFieldset>,
+      </RiFormFieldset>,
     )
 
     expect(screen.getByText('Form Fields')).toBeInTheDocument()
@@ -158,7 +158,7 @@ describe('FormFieldset', () => {
   })
 
   it('should handle empty children', () => {
-    render(<FormFieldset />)
+    render(<RiFormFieldset />)
 
     const fieldset = screen.getByRole('group')
     expect(fieldset).toBeInTheDocument()
@@ -166,14 +166,14 @@ describe('FormFieldset', () => {
   })
 
   it('should handle null children', () => {
-    render(<FormFieldset>{null}</FormFieldset>)
+    render(<RiFormFieldset>{null}</RiFormFieldset>)
 
     const fieldset = screen.getByRole('group')
     expect(fieldset).toBeInTheDocument()
   })
 
   it('should handle undefined children', () => {
-    render(<FormFieldset>{undefined}</FormFieldset>)
+    render(<RiFormFieldset>{undefined}</RiFormFieldset>)
 
     const fieldset = screen.getByRole('group')
     expect(fieldset).toBeInTheDocument()
@@ -188,7 +188,7 @@ describe('FormFieldset', () => {
     )
 
     render(
-      <FormFieldset {...defaultProps} legend={{ children: complexLegend }} />,
+      <RiFormFieldset {...defaultProps} legend={{ children: complexLegend }} />,
     )
 
     expect(screen.getByText('Important:')).toBeInTheDocument()

@@ -19,7 +19,7 @@ import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
 import { FullScreen, RiTooltip } from 'uiSrc/components'
 
 import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import BulkUpload from './BulkUpload'
@@ -120,7 +120,7 @@ const BulkActions = (props: Props) => {
               position="left"
               anchorClassName={styles.anchorTooltip}
             >
-              <IconButton
+              <RiIconButton
                 icon={CancelSlimIcon}
                 aria-label="Close panel"
                 className={cx(styles.closeBtn, styles.anchorTooltip)}

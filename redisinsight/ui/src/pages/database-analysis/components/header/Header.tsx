@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
 import styled from 'styled-components'
-import { CaretRightIcon , RiIcon } from 'uiSrc/components/base/icons'
+import { CaretRightIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { createNewAnalysis } from 'uiSrc/slices/analytics/dbAnalysis'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { getApproximatePercentage } from 'uiSrc/utils/validations'
@@ -22,9 +22,8 @@ import { FormatedDate, RiTooltip } from 'uiSrc/components'
 import { DEFAULT_DELIMITER } from 'uiSrc/constants'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { HideFor } from 'uiSrc/components/base/utils/ShowHide'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton, RiSelect } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { ShortDatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
 import { AnalysisProgress } from 'apiSrc/modules/database-analysis/models/analysis-progress'
 
@@ -153,7 +152,7 @@ const Header = (props: Props) => {
         <FlexItem>
           <Row align="center">
             <FlexItem grow>
-              <PrimaryButton
+              <RiPrimaryButton
                 aria-label="New reports"
                 data-testid="start-database-analysis-btn"
                 icon={CaretRightIcon}
@@ -162,7 +161,7 @@ const Header = (props: Props) => {
                 onClick={handleClick}
               >
                 New Report
-              </PrimaryButton>
+              </RiPrimaryButton>
             </FlexItem>
             <FlexItem style={{ paddingLeft: 6 }}>
               <RiTooltip

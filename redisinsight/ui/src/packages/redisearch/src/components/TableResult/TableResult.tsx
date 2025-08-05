@@ -5,7 +5,7 @@ import { flatten, isArray, isEmpty, map, uniq } from 'lodash'
 import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 
 import { ColorText } from '../../../../../components/base/text/ColorText'
-import { IconButton } from '../../../../../components/base/forms/buttons'
+import { RiIconButton } from '../../../../../components/base/forms/buttons'
 import { CopyIcon } from '../../../../../components/base/icons'
 import { RiTooltip } from '../../../../../components'
 import { CommandArgument, Command } from '../../constants'
@@ -86,7 +86,7 @@ const TableResult = React.memo((props: Props) => {
                   <ColorText className={cx('cell', 'test')}>
                     {cellContent}
                   </ColorText>
-                  <IconButton
+                  <RiIconButton
                     icon={CopyIcon}
                     aria-label="Copy result"
                     className="copy-near-btn"

@@ -2,7 +2,7 @@ import React from 'react'
 
 import { RiTooltip } from 'uiSrc/components'
 import { ColorText, Text } from 'uiSrc/components/base/text'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CopyIcon } from 'uiSrc/components/base/icons'
 import styles from '../../styles.module.scss'
 
@@ -28,7 +28,7 @@ const SentinelHostPort = (props: Props) => {
           content="Copy"
           anchorClassName="copyHostPortTooltip"
         >
-          <IconButton
+          <RiIconButton
             icon={CopyIcon}
             aria-label="Copy host:port"
             className={styles.copyHostPortBtn}

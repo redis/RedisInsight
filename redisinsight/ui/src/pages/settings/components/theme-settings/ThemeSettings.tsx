@@ -11,8 +11,8 @@ import { DEFAULT_THEME, THEMES } from 'uiSrc/constants'
 import {
   defaultValueRender,
   RiSelect,
-} from 'uiSrc/components/base/forms/select/RiSelect'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
+  RiFormField,
+} from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text'
 
 const ThemeSettings = () => {
@@ -52,7 +52,7 @@ const ThemeSettings = () => {
     <form>
       <Title size="XS">Color Theme</Title>
       <Spacer size="m" />
-      <FormField label="Specifies the color theme to be used in Redis Insight:">
+      <RiFormField label="Specifies the color theme to be used in Redis Insight:">
         <RiSelect
           valueRender={defaultValueRender}
           options={options}
@@ -62,7 +62,7 @@ const ThemeSettings = () => {
           data-test-subj="select-theme"
           data-testid="select-theme"
         />
-      </FormField>
+      </RiFormField>
       <Spacer size="xl" />
     </form>
   )

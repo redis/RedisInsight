@@ -26,7 +26,7 @@ import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import TabsComponent from 'uiSrc/components/base/layout/tabs'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { MANUAL_FORM_TABS, ManualFormTab } from './constants'
@@ -159,7 +159,7 @@ const ManualConnectionForm = (props: Props) => {
       setModalHeader(
         <Row align="center" gap="s">
           <FlexItem>
-            <IconButton
+            <RiIconButton
               onClick={handleClickBackClone}
               icon={ArrowLeftIcon}
               aria-label="back"

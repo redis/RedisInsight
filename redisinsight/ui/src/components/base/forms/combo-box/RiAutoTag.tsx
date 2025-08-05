@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import { CommonProps } from 'uiSrc/components/base/theme/types'
 import { Row } from 'uiSrc/components/base/layout/flex'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 
 export type AutoTagOption<T = string | number | string[] | undefined> = {
   label: string
@@ -62,7 +62,7 @@ const ClearButton = ({
     return null
   }
   return (
-    <IconButton
+    <RiIconButton
       data-test-subj="autoTagClearButton"
       title="Clear"
       style={{
@@ -76,7 +76,7 @@ const ClearButton = ({
   )
 }
 
-export const AutoTag = ({
+export const RiAutoTag = ({
   className,
   isClearable = false,
   placeholder,

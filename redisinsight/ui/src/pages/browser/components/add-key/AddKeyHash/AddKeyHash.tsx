@@ -1,9 +1,4 @@
-import React, {
-  FormEvent,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import React, { FormEvent, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toNumber } from 'lodash'
 import {
@@ -20,7 +15,7 @@ import { connectedInstanceOverviewSelector } from 'uiSrc/slices/instances/instan
 import { FeatureFlags } from 'uiSrc/constants'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
+import { RiFormField } from 'uiSrc/components/base/forms'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import {
@@ -168,7 +163,7 @@ const AddKeyHash = (props: Props) => {
         {(item, index) => (
           <Row align="center" gap="m">
             <FlexItem grow={2}>
-              <FormField>
+              <RiFormField>
                 <TextInput
                   name={`fieldName-${item.id}`}
                   id={`fieldName-${item.id}`}
@@ -178,15 +173,13 @@ const AddKeyHash = (props: Props) => {
                   onChange={(value) =>
                     handleFieldChange('fieldName', item.id, value)
                   }
-                  ref={
-                    index === fields.length - 1 ? lastAddedFieldName : null
-                  }
+                  ref={index === fields.length - 1 ? lastAddedFieldName : null}
                   data-testid="field-name"
                 />
-              </FormField>
+              </RiFormField>
             </FlexItem>
             <FlexItem grow={2}>
-              <FormField>
+              <RiFormField>
                 <TextInput
                   name={`fieldValue-${item.id}`}
                   id={`fieldValue-${item.id}`}
@@ -198,11 +191,11 @@ const AddKeyHash = (props: Props) => {
                   }
                   data-testid="field-value"
                 />
-              </FormField>
+              </RiFormField>
             </FlexItem>
             {isTTLAvailable && (
               <FlexItem grow={1}>
-                <FormField>
+                <RiFormField>
                   <TextInput
                     name={`fieldTTL-${item.id}`}
                     id={`fieldTTL-${item.id}`}
@@ -218,7 +211,7 @@ const AddKeyHash = (props: Props) => {
                     }
                     data-testid="hash-ttl"
                   />
-                </FormField>
+                </RiFormField>
               </FlexItem>
             )}
           </Row>

@@ -1,7 +1,6 @@
 import React, { memo } from 'react'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
+import { RiFormField, RiCheckbox } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { RiPopover } from 'uiSrc/components/base'
 import { SearchInput } from 'uiSrc/components/base/inputs'
@@ -48,20 +47,20 @@ export const TagsCellHeader = memo(() => {
         {/* stop propagation to prevent sorting by column header */}
         {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
         <div style={{ width: 300 }} onClick={(e) => e.stopPropagation()}>
-          <FormField>
+          <RiFormField>
             <SearchInput
               data-testid="tag-search"
               placeholder="Enter tag key or value"
               value={tagSearch}
-              onChange={value => {
+              onChange={(value) => {
                 setTagSearch(value)
               }}
             />
-          </FormField>
+          </RiFormField>
           <Spacer size="m" />
           {Object.keys(groupedTags).map((key) => (
             <div key={key}>
-              <Checkbox
+              <RiCheckbox
                 id={key}
                 className={styles.filterTagLabel}
                 label={key}
@@ -74,7 +73,7 @@ export const TagsCellHeader = memo(() => {
               />
               {groupedTags[key].map((value) => (
                 <div key={value} style={{ margin: '10px 0 0 20px' }}>
-                  <Checkbox
+                  <RiCheckbox
                     id={`${key}:${value}`}
                     className={styles.filterTagLabel}
                     data-testid={`${key}:${value}`}

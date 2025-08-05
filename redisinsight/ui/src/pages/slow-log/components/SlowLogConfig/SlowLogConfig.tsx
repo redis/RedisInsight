@@ -23,17 +23,15 @@ import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { useConnectionType } from 'uiSrc/components/hooks/useConnectionType'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import {
-  EmptyButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { Text } from 'uiSrc/components/base/text'
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import {
+  RiEmptyButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
   defaultValueRender,
   RiSelect,
-} from 'uiSrc/components/base/forms/select/RiSelect'
+} from 'uiSrc/components/base/forms'
+import { Text } from 'uiSrc/components/base/text'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { convertNumberByUnits } from '../../utils'
 import styles from './styles.module.scss'
@@ -133,13 +131,13 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
       </Text>
 
       <Spacer size="xs" />
-      <PrimaryButton
+      <RiPrimaryButton
         className={styles.clusterBtn}
         onClick={closePopover}
         data-testid="slowlog-config-ok-btn"
       >
         Ok
-      </PrimaryButton>
+      </RiPrimaryButton>
     </>
   )
 
@@ -176,7 +174,7 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
       {connectionType !== ConnectionType.Cluster && (
         <>
           <form>
-            <FormField
+            <RiFormField
               layout="horizontal"
               className={styles.formRow}
               label={
@@ -204,10 +202,8 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
                     name="slowerThan"
                     id="slowerThan"
                     value={slowerThan}
-                    onChange={value => {
-                      setSlowerThan(
-                        validateNumber(value.trim(), -1, Infinity),
-                      )
+                    onChange={(value) => {
+                      setSlowerThan(validateNumber(value.trim(), -1, Infinity))
                     }}
                     placeholder={`${convertNumberByUnits(DEFAULT_SLOWLOG_SLOWER_THAN, durationUnit)}`}
                     autoComplete="off"
@@ -223,8 +219,8 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
                   data-test-subj="select-default-unit"
                 />
               </Row>
-            </FormField>
-            <FormField
+            </RiFormField>
+            <RiFormField
               className={styles.formRow}
               layout="horizontal"
               label={<div className={styles.rowLabel}>slowlog-max-len</div>}
@@ -245,7 +241,7 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
                     className={styles.input}
                     placeholder={`${DEFAULT_SLOWLOG_MAX_LEN}`}
                     value={maxLen}
-                    onChange={value => {
+                    onChange={(value) => {
                       setMaxLen(validateNumber(value.trim()))
                     }}
                     autoComplete="off"
@@ -253,7 +249,7 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
                   />
                 </div>
               </>
-            </FormField>
+            </RiFormField>
             <Spacer size="m" />
           </form>
 
@@ -262,26 +258,26 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
               NOTE: This is server configuration
             </FlexItem>
             <Row align="center" gap="m" className={styles.actions}>
-              <EmptyButton
+              <RiEmptyButton
                 size="large"
                 onClick={handleDefault}
                 data-testid="slowlog-config-default-btn"
               >
                 Default
-              </EmptyButton>
-              <SecondaryButton
+              </RiEmptyButton>
+              <RiSecondaryButton
                 onClick={handleCancel}
                 data-testid="slowlog-config-cancel-btn"
               >
                 Cancel
-              </SecondaryButton>
-              <PrimaryButton
+              </RiSecondaryButton>
+              <RiPrimaryButton
                 disabled={disabledApplyBtn()}
                 onClick={handleSave}
                 data-testid="slowlog-config-save-btn"
               >
                 Save
-              </PrimaryButton>
+              </RiPrimaryButton>
             </Row>
           </Row>
         </>

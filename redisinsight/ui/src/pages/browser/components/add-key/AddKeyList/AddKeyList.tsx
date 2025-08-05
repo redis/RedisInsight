@@ -8,7 +8,7 @@ import {
   optionsDestinations,
   TAIL_DESTINATION,
 } from 'uiSrc/pages/browser/modules/key-details/components/list-details/add-list-elements/AddListElements'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
+import { RiSelect } from 'uiSrc/components/base/forms'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import {
   CreateListWithExpireDto,
@@ -101,9 +101,7 @@ const AddKeyList = (props: Props) => {
             placeholder={config.element.placeholder}
             value={item}
             disabled={loading}
-            onChange={value =>
-              handleElementChange(value, index)
-            }
+            onChange={(value) => handleElementChange(value, index)}
             data-testid={`element-${index}`}
           />
         )}

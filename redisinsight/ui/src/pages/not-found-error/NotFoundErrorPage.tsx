@@ -6,7 +6,7 @@ import { FeatureFlags } from 'uiSrc/constants/featureFlags'
 import { getConfig } from 'uiSrc/config'
 import Robot from 'uiSrc/assets/img/robot.svg?react'
 import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons'
@@ -53,13 +53,13 @@ const NotFoundErrorPage = () => {
                   We searched every shard, <br />
                   But couldn&apos;t find the page you&apos;re after.
                 </p>
-                <PrimaryButton
+                <RiPrimaryButton
                   size="s"
                   onClick={onDbButtonClick}
                   data-testid="not-found-db-list-button"
                 >
                   Databases page
-                </PrimaryButton>
+                </RiPrimaryButton>
               </Text>
             </FlexItem>
           </Col>

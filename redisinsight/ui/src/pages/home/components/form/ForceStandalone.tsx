@@ -3,8 +3,7 @@ import { FormikProps } from 'formik'
 
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
+import { RiFormField, RiCheckbox } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
 import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
@@ -49,8 +48,8 @@ const ForceStandalone = (props: Props) => {
   return (
     <Row gap="s">
       <FlexItem>
-        <FormField>
-          <Checkbox
+        <RiFormField>
+          <RiCheckbox
             id={id}
             name="forceStandalone"
             label={<ForceStandaloneLabel />}
@@ -58,7 +57,7 @@ const ForceStandalone = (props: Props) => {
             onChange={handleChangeForceStandaloneCheckbox}
             data-testid="forceStandalone"
           />
-        </FormField>
+        </RiFormField>
       </FlexItem>
     </Row>
   )

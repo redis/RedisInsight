@@ -55,7 +55,7 @@ import { IFetchKeyArgs } from 'uiSrc/constants/prop-types/keys'
 
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { DownloadIcon } from 'uiSrc/components/base/icons'
-import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
 import { TextArea } from 'uiSrc/components/base/inputs'
 import { RiTooltip } from 'uiSrc/components'
@@ -316,19 +316,19 @@ const StringDetailsValue = (props: Props) => {
           <Row justify="between" align="center">
             <FlexItem>
               {!isFullStringLoaded(initialValue?.data?.length, length) && (
-                <SecondaryButton
+                <RiSecondaryButton
                   className={styles.stringFooterBtn}
                   size="small"
                   data-testid="load-all-value-btn"
                   onClick={() => handleLoadAll(key, keyType)}
                 >
                   Load all
-                </SecondaryButton>
+                </RiSecondaryButton>
               )}
             </FlexItem>
             {!isTruncatedValue && (
               <FlexItem>
-                <SecondaryButton
+                <RiSecondaryButton
                   className={styles.stringFooterBtn}
                   size="small"
                   icon={DownloadIcon}
@@ -338,7 +338,7 @@ const StringDetailsValue = (props: Props) => {
                   disabled={isTruncatedValue}
                 >
                   Download
-                </SecondaryButton>
+                </RiSecondaryButton>
               </FlexItem>
             )}
           </Row>

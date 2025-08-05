@@ -1,6 +1,6 @@
 import React from 'react'
 import { RiTooltip } from 'uiSrc/components'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { EditIcon } from 'uiSrc/components/base/icons'
 import { useChangeEditorType } from './useChangeEditorType'
 
@@ -14,7 +14,7 @@ const ChangeEditorTypeButton = () => {
 
   return (
     <RiTooltip content={tooltip} position="right">
-      <IconButton
+      <RiIconButton
         size="S"
         icon={EditIcon}
         onClick={switchEditorType}

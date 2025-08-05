@@ -16,10 +16,10 @@ import { Pages } from 'uiSrc/constants'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import {
-  EmptyButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+  RiEmptyButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+} from 'uiSrc/components/base/forms'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
 import ConnectivityOptions from './components/connectivity-options'
@@ -121,7 +121,7 @@ const AddDatabaseScreen = (props: Props) => {
               anchorClassName="euiToolTip__btn-disabled"
               content={isInvalid ? <span>{ConnectionUrlError}</span> : null}
             >
-              <EmptyButton
+              <RiEmptyButton
                 size="small"
                 className="empty-btn"
                 disabled={!!isInvalid}
@@ -131,19 +131,19 @@ const AddDatabaseScreen = (props: Props) => {
                 data-testid="btn-test-connection"
               >
                 Test Connection
-              </EmptyButton>
+              </RiEmptyButton>
             </RiTooltip>
           </FlexItem>
           <FlexItem>
             <Row responsive gap="l">
               <FlexItem>
-                <SecondaryButton
+                <RiSecondaryButton
                   size="small"
                   onClick={() => handleProceedForm(AddDbType.manual)}
                   data-testid="btn-connection-settings"
                 >
                   Connection Settings
-                </SecondaryButton>
+                </RiSecondaryButton>
               </FlexItem>
               <FlexItem>
                 <RiTooltip
@@ -151,7 +151,7 @@ const AddDatabaseScreen = (props: Props) => {
                   anchorClassName="euiToolTip__btn-disabled"
                   content={isInvalid ? <span>{ConnectionUrlError}</span> : null}
                 >
-                  <PrimaryButton
+                  <RiPrimaryButton
                     size="small"
                     type="submit"
                     disabled={!!isInvalid}
@@ -159,7 +159,7 @@ const AddDatabaseScreen = (props: Props) => {
                     data-testid="btn-submit"
                   >
                     Add Database
-                  </PrimaryButton>
+                  </RiPrimaryButton>
                 </RiTooltip>
               </FlexItem>
             </Row>

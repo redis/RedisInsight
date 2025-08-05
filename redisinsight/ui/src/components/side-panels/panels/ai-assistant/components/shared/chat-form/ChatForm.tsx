@@ -5,7 +5,7 @@ import { isModifiedEvent } from 'uiSrc/services'
 
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { SendIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
@@ -137,7 +137,7 @@ const ChatForm = (props: Props) => {
             panelClassName={cx('popoverLikeTooltip', styles.popover)}
             anchorClassName={styles.popoverAnchor}
             button={
-              <PrimaryButton
+              <RiPrimaryButton
                 size="s"
                 disabled={!value.length || isDisabled}
                 className={styles.submitBtn}
@@ -151,7 +151,7 @@ const ChatForm = (props: Props) => {
             <>
               {agreements}
               <Spacer size="m" />
-              <PrimaryButton
+              <RiPrimaryButton
                 size="s"
                 className={styles.agreementsAccept}
                 onClick={submitMessage}
@@ -160,7 +160,7 @@ const ChatForm = (props: Props) => {
                 data-testid="ai-accept-agreements"
               >
                 I accept
-              </PrimaryButton>
+              </RiPrimaryButton>
             </>
           </RiPopover>
         </form>

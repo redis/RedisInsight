@@ -9,12 +9,12 @@ import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
+} from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import styles from './styles.module.scss'
 
@@ -106,14 +106,14 @@ const SentinelDatabasesResult = ({
           </FlexItem>
         </Row>
         <FlexItem>
-          <FormField className={styles.searchForm}>
+          <RiFormField className={styles.searchForm}>
             <SearchInput
               placeholder="Search..."
               onChange={onQueryChange}
               aria-label="Search"
               data-testid="search"
             />
-          </FormField>
+          </RiFormField>
         </FlexItem>
         <br />
         <div className="itemList databaseList sentinelDatabaseListResult">
@@ -135,20 +135,20 @@ const SentinelDatabasesResult = ({
       </div>
       <FlexItem padding={4}>
         <Row gap="m" justify="between">
-          <SecondaryButton
+          <RiSecondaryButton
             onClick={onBack}
             className="btn-cancel btn-back"
             data-testid="btn-back-to-adding"
           >
             Back to adding databases
-          </SecondaryButton>
-          <PrimaryButton
+          </RiSecondaryButton>
+          <RiPrimaryButton
             size="m"
             onClick={handleViewDatabases}
             data-testid="btn-view-databases"
           >
             View Databases
-          </PrimaryButton>
+          </RiPrimaryButton>
         </Row>
       </FlexItem>
     </AutodiscoveryPageTemplate>

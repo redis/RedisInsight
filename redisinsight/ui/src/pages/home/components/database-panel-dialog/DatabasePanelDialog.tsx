@@ -33,7 +33,7 @@ import { ModalHeaderProvider } from 'uiSrc/contexts/ModalTitleProvider'
 import { Title } from 'uiSrc/components/base/text/Title'
 import ClusterConnectionFormWrapper from 'uiSrc/pages/home/components/cluster-connection'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
@@ -167,7 +167,7 @@ const DatabasePanelDialog = (props: Props) => {
       withBack && content ? (
         <Row align="center" gap="s">
           <FlexItem>
-            <IconButton
+            <RiIconButton
               onClick={handleClickBack}
               icon={ArrowLeftIcon}
               aria-label="back"

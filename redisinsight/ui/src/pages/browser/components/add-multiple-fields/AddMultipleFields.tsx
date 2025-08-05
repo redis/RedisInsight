@@ -4,10 +4,7 @@ import cx from 'classnames'
 import { DeleteIcon, PlusIcon } from 'uiSrc/components/base/icons'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  ActionIconButton,
-  IconButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { RiActionIconButton, RiIconButton } from 'uiSrc/components/base/forms'
 import { RiTooltip } from 'uiSrc/components'
 import styles from './styles.module.scss'
 
@@ -32,7 +29,7 @@ const AddMultipleFields = <T,>(props: Props<T>) => {
         <FlexItem grow>{child}</FlexItem>
         <FlexItem>
           <RiTooltip content="Remove" position="left">
-            <IconButton
+            <RiIconButton
               icon={DeleteIcon}
               disabled={isClearDisabled(item, index)}
               aria-label="Remove Item"
@@ -54,7 +51,7 @@ const AddMultipleFields = <T,>(props: Props<T>) => {
       <Row align="center" justify="end">
         <FlexItem>
           <RiTooltip content="Add" position="left">
-            <ActionIconButton
+            <RiActionIconButton
               variant="secondary"
               icon={PlusIcon}
               aria-label="Add new item"

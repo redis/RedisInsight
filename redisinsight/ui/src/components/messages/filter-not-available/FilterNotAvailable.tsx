@@ -18,7 +18,7 @@ import { EXTERNAL_LINKS, UTM_CAMPAINGS } from 'uiSrc/constants/links'
 import { FeatureFlags } from 'uiSrc/constants'
 import { Text } from 'uiSrc/components/base/text'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { RiIcon } from 'uiSrc/components/base/icons'
@@ -70,7 +70,7 @@ const FilterNotAvailable = ({ onClose }: { onClose?: () => void }) => {
           <div className={styles.linksWrapper}>
             <OAuthSsoHandlerDialog>
               {(ssoCloudHandlerClick) => (
-                <PrimaryButton
+                <RiPrimaryButton
                   onClick={(e) => {
                     ssoCloudHandlerClick(e, {
                       source: OAuthSocialSource.BrowserFiltering,
@@ -82,7 +82,7 @@ const FilterNotAvailable = ({ onClose }: { onClose?: () => void }) => {
                   size="s"
                 >
                   Get Started For Free
-                </PrimaryButton>
+                </RiPrimaryButton>
               )}
             </OAuthSsoHandlerDialog>
             <Spacer size="m" />

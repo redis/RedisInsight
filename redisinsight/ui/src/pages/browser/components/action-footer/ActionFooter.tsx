@@ -1,6 +1,6 @@
 import React from 'react'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { PrimaryButton, SecondaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import AddKeyFooter from 'uiSrc/pages/browser/components/add-key/AddKeyFooter/AddKeyFooter'
 import { SpacerSize } from 'uiSrc/components/base/layout/spacer/spacer.styles'
 
@@ -27,7 +27,7 @@ export const ActionFooter = ({
   onAction,
   disabled = false,
   loading = false,
-  gap = "m",
+  gap = 'm',
   actionTestId,
   cancelTestId,
   cancelClassName = 'btn-cancel btn-back',
@@ -38,16 +38,16 @@ export const ActionFooter = ({
   const content = (
     <Row justify="end" gap={gap} style={{ padding: 18 }}>
       <FlexItem>
-        <SecondaryButton
+        <RiSecondaryButton
           onClick={onCancel}
           data-testid={cancelTestId}
           className={cancelClassName}
         >
           {cancelText}
-        </SecondaryButton>
+        </RiSecondaryButton>
       </FlexItem>
       <FlexItem>
-        <PrimaryButton
+        <RiPrimaryButton
           type={enableFormSubmit ? 'submit' : 'button'}
           loading={loading}
           onClick={onAction}
@@ -56,7 +56,7 @@ export const ActionFooter = ({
           className={actionClassName}
         >
           {actionText}
-        </PrimaryButton>
+        </RiPrimaryButton>
       </FlexItem>
     </Row>
   )
@@ -64,9 +64,9 @@ export const ActionFooter = ({
   if (enableFormSubmit) {
     return (
       <>
-        <PrimaryButton type="submit" style={{ display: 'none' }}>
+        <RiPrimaryButton type="submit" style={{ display: 'none' }}>
           Submit
-        </PrimaryButton>
+        </RiPrimaryButton>
         {usePortal ? <AddKeyFooter>{content}</AddKeyFooter> : content}
       </>
     )
@@ -77,4 +77,4 @@ export const ActionFooter = ({
   }
 
   return content
-} 
+}

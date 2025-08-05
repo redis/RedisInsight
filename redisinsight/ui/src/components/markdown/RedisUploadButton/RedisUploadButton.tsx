@@ -22,11 +22,12 @@ import {
 } from 'uiSrc/services/resourcesService'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { PlayFilledIcon, ContractsIcon , RiIcon } from 'uiSrc/components/base/icons'
+  PlayFilledIcon,
+  ContractsIcon,
+  RiIcon,
+} from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import { Link } from 'uiSrc/components/base/link/Link'
@@ -117,7 +118,7 @@ const RedisUploadButton = ({ label, path }: Props) => {
         anchorClassName={styles.popoverAnchor}
         panelPaddingSize="none"
         button={
-          <SecondaryButton
+          <RiSecondaryButton
             loading={isLoading}
             iconSide="right"
             icon={ContractsIcon}
@@ -128,7 +129,7 @@ const RedisUploadButton = ({ label, path }: Props) => {
             data-testid="upload-data-bulk-btn"
           >
             {truncateText(label, 86)}
-          </SecondaryButton>
+          </RiSecondaryButton>
         }
       >
         {instanceId ? (
@@ -156,7 +157,7 @@ const RedisUploadButton = ({ label, path }: Props) => {
               >
                 Download file
               </Link>
-              <PrimaryButton
+              <RiPrimaryButton
                 size="s"
                 icon={PlayFilledIcon}
                 iconSide="right"
@@ -165,7 +166,7 @@ const RedisUploadButton = ({ label, path }: Props) => {
                 data-testid="upload-data-bulk-apply-btn"
               >
                 Execute
-              </PrimaryButton>
+              </RiPrimaryButton>
             </div>
           </Text>
         ) : (

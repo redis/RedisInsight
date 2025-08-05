@@ -32,7 +32,7 @@ import { appContextPipelineManagement } from 'uiSrc/slices/app/context'
 import { createAxiosError, isEqualPipelineFile, yamlToJson } from 'uiSrc/utils'
 
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
 
 import { Link } from 'uiSrc/components/base/link/Link'
@@ -192,7 +192,7 @@ const Config = () => {
           />
         )}
         <div className="rdi__actions">
-          <PrimaryButton
+          <RiPrimaryButton
             size="s"
             onClick={testConnections}
             loading={testingConnections || pipelineLoading}
@@ -200,7 +200,7 @@ const Config = () => {
             data-testid="rdi-test-connection-btn"
           >
             Test Connection
-          </PrimaryButton>
+          </RiPrimaryButton>
         </div>
       </div>
       {isPanelOpen && <TestConnectionsPanel onClose={handleClosePanel} />}

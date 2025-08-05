@@ -1,10 +1,5 @@
 import cx from 'classnames'
-import React, {
-  FormEvent,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import React, { FormEvent, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import {
@@ -16,10 +11,9 @@ import { publishMessageAction } from 'uiSrc/slices/pubsub/pubsub'
 import { useConnectionType } from 'uiSrc/components/hooks/useConnectionType'
 
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
+import { RiPrimaryButton, RiFormField } from 'uiSrc/components/base/forms'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
-import { CheckThinIcon , RiIcon } from 'uiSrc/components/base/icons'
+import { CheckThinIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 
@@ -85,22 +79,20 @@ const PublishMessage = () => {
       >
         <Row align="center">
           <FlexItem className={styles.channelWrapper} grow>
-            <FormField>
+            <RiFormField>
               <TextInput
                 name="channel"
                 id="channel"
                 placeholder="Enter Channel Name"
                 value={channel}
-                onChange={value =>
-                  setChannel(value)
-                }
+                onChange={(value) => setChannel(value)}
                 autoComplete="off"
                 data-testid="field-channel-name"
               />
-            </FormField>
+            </RiFormField>
           </FlexItem>
           <FlexItem className={styles.messageWrapper} grow>
-            <FormField>
+            <RiFormField>
               <>
                 <TextInput
                   className={cx(styles.messageField, {
@@ -110,9 +102,7 @@ const PublishMessage = () => {
                   id="message"
                   placeholder="Enter Message"
                   value={message}
-                  onChange={value =>
-                    setMessage(value)
-                  }
+                  onChange={(value) => setMessage(value)}
                   autoComplete="off"
                   data-testid="field-message"
                 />
@@ -135,15 +125,15 @@ const PublishMessage = () => {
                   )}
                 </RiBadge>
               </>
-            </FormField>
+            </RiFormField>
           </FlexItem>
         </Row>
       </FlexItem>
       <Row justify="end" style={{ marginTop: 6 }}>
         <FlexItem>
-          <PrimaryButton type="submit" data-testid="publish-message-submit">
+          <RiPrimaryButton type="submit" data-testid="publish-message-submit">
             Publish
-          </PrimaryButton>
+          </RiPrimaryButton>
         </FlexItem>
       </Row>
     </form>

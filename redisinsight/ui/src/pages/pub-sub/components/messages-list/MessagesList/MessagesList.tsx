@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { FormatedDate, RiTooltip } from 'uiSrc/components'
 import { ChevronDownIcon } from 'uiSrc/components/base/icons'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { IMessage } from 'apiSrc/modules/pub-sub/interfaces/message.interface'
 
 import styles from './styles.module.scss'
@@ -166,7 +166,7 @@ const MessagesList = (props: Props) => {
         {Row}
       </List>
       {showAnchor && (
-        <IconButton
+        <RiIconButton
           icon={ChevronDownIcon}
           className={styles.anchorBtn}
           onClick={handleAnchorClick}

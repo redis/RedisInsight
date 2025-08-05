@@ -9,16 +9,16 @@ import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
-  DestructiveButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+  RiDestructiveButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
+} from 'uiSrc/components/base/forms'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { SearchInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import styles from '../../../styles.module.scss'
 
@@ -127,14 +127,14 @@ const SentinelDatabases = ({
       panelClassName={styles.panelCancelBtn}
       panelPaddingSize="l"
       button={
-        <SecondaryButton
+        <RiSecondaryButton
           onClick={showPopover}
           color="secondary"
           className="btn-cancel"
           data-testid="btn-cancel"
         >
           Cancel
-        </SecondaryButton>
+        </RiSecondaryButton>
       }
     >
       <Text size="m">
@@ -143,13 +143,13 @@ const SentinelDatabases = ({
       </Text>
       <br />
       <div>
-        <DestructiveButton
+        <RiDestructiveButton
           size="s"
           onClick={onClose}
           data-testid="btn-cancel-proceed"
         >
           Proceed
-        </DestructiveButton>
+        </RiDestructiveButton>
       </div>
     </RiPopover>
   )
@@ -174,13 +174,9 @@ const SentinelDatabases = ({
         position="top"
         anchorClassName="euiToolTip__btn-disabled"
         title={title}
-        content={
-          isSubmitDisabled() ? (
-            <span>{content}</span>
-          ) : null
-        }
+        content={isSubmitDisabled() ? <span>{content}</span> : null}
       >
-        <PrimaryButton
+        <RiPrimaryButton
           type="submit"
           onClick={onClick}
           disabled={isSubmitDisabled()}
@@ -189,7 +185,7 @@ const SentinelDatabases = ({
           data-testid="btn-add-primary-group"
         >
           Add Primary Group
-        </PrimaryButton>
+        </RiPrimaryButton>
       </RiTooltip>
     )
   }
@@ -210,14 +206,14 @@ const SentinelDatabases = ({
             </Text>
           </FlexItem>
           <FlexItem>
-            <FormField className={styles.searchForm}>
+            <RiFormField className={styles.searchForm}>
               <SearchInput
                 placeholder="Search..."
                 onChange={onQueryChange}
                 aria-label="Search"
                 data-testid="search"
               />
-            </FormField>
+            </RiFormField>
           </FlexItem>
         </Row>
         <br />
@@ -247,13 +243,13 @@ const SentinelDatabases = ({
           justify="between"
           className={cx(styles.footer, 'footerAddDatabase')}
         >
-          <SecondaryButton
+          <RiSecondaryButton
             onClick={onBack}
             className="btn-cancel btn-back"
             data-testid="btn-back-to-adding"
           >
             Back to adding databases
-          </SecondaryButton>
+          </RiSecondaryButton>
           <div>
             <CancelButton isPopoverOpen={isPopoverOpen} />
             <SubmitButton onClick={handleSubmit} />

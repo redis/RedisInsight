@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
-import { ChevronDownIcon, RefreshIcon , RiIcon } from 'uiSrc/components/base/icons'
+import {
+  ChevronDownIcon,
+  RefreshIcon,
+  RiIcon,
+} from 'uiSrc/components/base/icons'
 import {
   errorValidateRefreshRateNumber,
   MIN_REFRESH_RATE,
@@ -10,7 +14,7 @@ import {
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
 import { localStorageService } from 'uiSrc/services'
 import { BrowserStorageItem } from 'uiSrc/constants'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { ColorText } from 'uiSrc/components/base/text'
 import { SwitchInput } from 'uiSrc/components/base/inputs'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
@@ -230,7 +234,7 @@ const AutoRefresh = ({
         content={disabled ? disabledRefreshButtonMessage : refreshMessage}
         data-testid={getDataTestid('refresh-tooltip')}
       >
-        <IconButton
+        <RiIconButton
           size={iconSize}
           icon={RefreshIcon}
           disabled={loading || disabled}
@@ -254,7 +258,7 @@ const AutoRefresh = ({
         })}
         closePopover={closePopover}
         button={
-          <IconButton
+          <RiIconButton
             disabled={disabled}
             size="S"
             icon={ChevronDownIcon}

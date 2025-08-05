@@ -7,7 +7,7 @@ import InlineItemEditor from 'uiSrc/components/inline-item-editor'
 import { RiTooltip } from 'uiSrc/components'
 import { Text } from 'uiSrc/components/base/text'
 import { EditIcon } from 'uiSrc/components/base/icons'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { TextArea } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 
@@ -106,7 +106,7 @@ const EditableTextArea = (props: Props) => {
             anchorClassName={styles.editBtnAnchor}
             data-testid={`${testIdPrefix}_edit-tooltip-${field}`}
           >
-            <IconButton
+            <RiIconButton
               icon={EditIcon}
               aria-label="Edit field"
               className={cx('editFieldBtn', styles.editBtn)}

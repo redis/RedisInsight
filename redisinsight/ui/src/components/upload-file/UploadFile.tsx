@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Text } from 'uiSrc/components/base/text'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
+import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
@@ -28,7 +28,7 @@ const UploadFile = (props: Props) => {
   }
 
   return (
-    <EmptyButton className={styles.emptyBtn}>
+    <RiEmptyButton className={styles.emptyBtn}>
       <label
         htmlFor={id}
         className={styles.uploadBtn}
@@ -51,7 +51,7 @@ const UploadFile = (props: Props) => {
           aria-label="Select file"
         />
       </label>
-    </EmptyButton>
+    </RiEmptyButton>
   )
 }
 

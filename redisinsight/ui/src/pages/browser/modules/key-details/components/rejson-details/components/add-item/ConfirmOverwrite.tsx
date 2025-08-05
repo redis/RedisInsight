@@ -1,10 +1,7 @@
 import React from 'react'
 import cx from 'classnames'
 
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import styles from '../../styles.module.scss'
@@ -39,23 +36,23 @@ const ConfirmOverwrite = ({
     </Text>
 
     <div className={styles.confirmDialogActions}>
-      <SecondaryButton
+      <RiSecondaryButton
         aria-label="Cancel"
         size="small"
         onClick={onCancel}
         data-testid="cancel-confirmation-btn"
       >
         Cancel
-      </SecondaryButton>
+      </RiSecondaryButton>
 
-      <PrimaryButton
+      <RiPrimaryButton
         aria-label="Overwrite"
         size="small"
         onClick={onConfirm}
         data-testid="overwrite-btn"
       >
         Overwrite
-      </PrimaryButton>
+      </RiPrimaryButton>
     </div>
   </RiPopover>
 )

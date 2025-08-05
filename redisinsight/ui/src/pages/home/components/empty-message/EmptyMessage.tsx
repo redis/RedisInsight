@@ -7,7 +7,7 @@ import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { EXTERNAL_LINKS, UTM_CAMPAINGS } from 'uiSrc/constants/links'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { RiImage } from 'uiSrc/components/base/display'
@@ -24,7 +24,7 @@ const EmptyMessage = ({ onAddInstanceClick }: Props) => (
   >
     <RiImage src={CakeIcon} className={styles.icon} alt="empty" />
     <Text className={styles.text}>No databases yet, let&apos;s add one!</Text>
-    <PrimaryButton
+    <RiPrimaryButton
       size="m"
       onClick={() => {
         sendEventTelemetry({
@@ -38,7 +38,7 @@ const EmptyMessage = ({ onAddInstanceClick }: Props) => (
       data-testid="empty-rdi-instance-button"
     >
       + Add Redis database
-    </PrimaryButton>
+    </RiPrimaryButton>
     <OAuthSsoHandlerDialog>
       {(ssoCloudHandlerClick) => (
         <Link

@@ -7,7 +7,7 @@ import { fetchPipelineStrategies } from 'uiSrc/slices/rdi/pipeline'
 import { RdiPipelineTabs } from 'uiSrc/slices/interfaces'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 
-import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
@@ -52,7 +52,7 @@ const TemplatePopover = (props: Props) => {
         closePopover={handleClose}
         panelClassName={styles.popoverWrapper}
         button={
-          <SecondaryButton
+          <RiSecondaryButton
             inverted
             size="s"
             className={styles.btn}
@@ -62,7 +62,7 @@ const TemplatePopover = (props: Props) => {
             data-testid={`template-trigger-${source}`}
           >
             Insert template
-          </SecondaryButton>
+          </RiSecondaryButton>
         }
       >
         <TemplateForm

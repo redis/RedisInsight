@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { oauthCloudPAgreementSelector } from 'uiSrc/slices/oauth/cloud'
 import { OAuthStrategy } from 'uiSrc/slices/interfaces'
 
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
+import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
@@ -60,7 +60,7 @@ const OAuthSocialButtons = (props: Props) => {
           content={agreement ? null : 'Acknowledge the agreement'}
           data-testid={`${label}-tooltip`}
         >
-          <EmptyButton
+          <RiEmptyButton
             disabled={!agreement || disabled}
             className={cx(styles.button, className, {
               [styles.inline]: inline,
@@ -75,7 +75,7 @@ const OAuthSocialButtons = (props: Props) => {
               <RiIcon type={icon as AllIconsType} />
               <Text className={styles.label}>{text}</Text>
             </FlexItem>
-          </EmptyButton>
+          </RiEmptyButton>
         </RiTooltip>
       ))}
     </div>

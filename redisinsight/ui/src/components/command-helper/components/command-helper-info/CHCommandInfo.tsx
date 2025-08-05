@@ -1,10 +1,9 @@
 import React from 'react'
 
-
 import { GroupBadge } from 'uiSrc/components'
 import { CommandGroup } from 'uiSrc/constants'
 
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
 import { ColorText } from 'uiSrc/components/base/text'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
@@ -33,7 +32,7 @@ const CHCommandInfo = (props: Props) => {
       className={styles.container}
       data-testid="cli-helper-title"
     >
-      <IconButton
+      <RiIconButton
         icon={ArrowLeftIcon}
         onClick={onBackClick}
         data-testid="cli-helper-back-to-list-btn"

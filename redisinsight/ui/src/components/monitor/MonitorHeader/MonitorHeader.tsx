@@ -16,13 +16,14 @@ import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import {
   PlayIcon,
   PauseIcon,
   DeleteIcon,
   BannedIcon,
- RiIcon } from 'uiSrc/components/base/icons'
+  RiIcon,
+} from 'uiSrc/components/base/icons'
 import { WindowControlGroup } from 'uiSrc/components/base/shared/WindowControlGroup'
 import styles from './styles.module.scss'
 
@@ -102,7 +103,7 @@ const MonitorHeader = ({ handleRunMonitor }: Props) => {
               }
               anchorClassName="inline-flex"
             >
-              <IconButton
+              <RiIconButton
                 icon={
                   isErrorShown || isResumeLocked
                     ? BannedIcon
@@ -124,7 +125,7 @@ const MonitorHeader = ({ handleRunMonitor }: Props) => {
                 transparent: !isStarted || !items.length,
               })}
             >
-              <IconButton
+              <RiIconButton
                 icon={DeleteIcon}
                 onClick={handleClearMonitor}
                 aria-label="clear profiler"

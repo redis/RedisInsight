@@ -5,17 +5,17 @@ import {
   StyledFieldsetProps,
   StyledLegend,
   StyledLegendProps,
-} from './FormFieldset.styles'
+} from './RiFormFieldset.styles'
 
-export interface FormFieldsetProps extends StyledFieldsetProps {
+export interface RiFormFieldsetProps extends StyledFieldsetProps {
   legend?: StyledLegendProps
 }
 
-export const FormFieldset = ({
+export const RiFormFieldset = ({
   legend,
   children,
   ...props
-}: FormFieldsetProps) => (
+}: RiFormFieldsetProps) => (
   <StyledFieldset {...props}>
     {legend && legend.display !== 'hidden' && <StyledLegend {...legend} />}
     {children}

@@ -3,9 +3,11 @@ import { toNumber } from 'lodash'
 import { MAX_TTL_NUMBER, Maybe, validateTTLNumberForAddKey } from 'uiSrc/utils'
 
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
-import { FormFieldset } from 'uiSrc/components/base/forms/fieldset'
+import {
+  RiFormField,
+  RiFormFieldset,
+  RiSelect,
+} from 'uiSrc/components/base/forms'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { AddCommonFieldsFormConfig as config } from '../constants/fields-config'
@@ -48,10 +50,10 @@ const AddKeyCommonFields = (props: Props) => {
     <div className={styles.wrapper}>
       <Row className={styles.container} gap="m">
         <FlexItem grow>
-          <FormFieldset
+          <RiFormFieldset
             legend={{ children: 'Select key type', display: 'hidden' }}
           >
-            <FormField label="Key Type*">
+            <RiFormField label="Key Type*">
               <RiSelect
                 options={options}
                 valueRender={({ option }): JSX.Element =>
@@ -62,11 +64,11 @@ const AddKeyCommonFields = (props: Props) => {
                 disabled={loading}
                 data-testid="select-key-type"
               />
-            </FormField>
-          </FormFieldset>
+            </RiFormField>
+          </RiFormFieldset>
         </FlexItem>
         <FlexItem grow>
-          <FormField label={config.keyTTL.label}>
+          <RiFormField label={config.keyTTL.label}>
             <TextInput
               name={config.keyTTL.name}
               id={config.keyTTL.name}
@@ -80,11 +82,11 @@ const AddKeyCommonFields = (props: Props) => {
               autoComplete="off"
               data-testid="ttl"
             />
-          </FormField>
+          </RiFormField>
         </FlexItem>
       </Row>
       <Spacer size="m" />
-      <FormField label={config.keyName.label}>
+      <RiFormField label={config.keyName.label}>
         <TextInput
           name={config.keyName.name}
           id={config.keyName.name}
@@ -95,7 +97,7 @@ const AddKeyCommonFields = (props: Props) => {
           autoComplete="off"
           data-testid="key"
         />
-      </FormField>
+      </RiFormField>
     </div>
   )
 }

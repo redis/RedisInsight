@@ -21,7 +21,7 @@ import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import { HealthText } from 'uiSrc/components/base/text/HealthText'
 import { Title } from 'uiSrc/components/base/text/Title'
@@ -138,7 +138,7 @@ const AddKey = (props: Props) => {
                 position="left"
                 anchorClassName={styles.closeKeyTooltip}
               >
-                <IconButton
+                <RiIconButton
                   icon={CancelSlimIcon}
                   aria-label="Close key"
                   className={styles.closeBtn}

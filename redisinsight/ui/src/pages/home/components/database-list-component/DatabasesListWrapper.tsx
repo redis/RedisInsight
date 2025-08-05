@@ -80,7 +80,7 @@ import { CREATE_CLOUD_DB_ID, HELP_LINKS } from 'uiSrc/pages/home/constants'
 import { Tag } from 'uiSrc/slices/interfaces/tag'
 import { FeatureFlagComponent } from 'uiSrc/components'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { EmptyButton, IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiEmptyButton, RiIconButton } from 'uiSrc/components/base/forms'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { RIResizeObserver } from 'uiSrc/components/base/utils'
 
@@ -350,7 +350,7 @@ const DatabasesListWrapper = (props: Props) => {
   })
 
   const controlsButton = (instanceId: string) => (
-    <IconButton
+    <RiIconButton
       icon={MoreactionsIcon}
       aria-label="Controls icon"
       data-testid={`controls-button-${instanceId}`}
@@ -455,7 +455,7 @@ const DatabasesListWrapper = (props: Props) => {
                 content="Copy"
                 anchorClassName="copyHostPortTooltip"
               >
-                <IconButton
+                <RiIconButton
                   icon={CopyIcon}
                   aria-label="Copy host:port"
                   className="copyHostPortBtn"
@@ -585,7 +585,7 @@ const DatabasesListWrapper = (props: Props) => {
             <>
               {databaseManagementFeature?.flag && (
                 <RiTooltip content="Manage Tags">
-                  <IconButton
+                  <RiIconButton
                     icon={TagIcon}
                     className={styles.tagsButton}
                     aria-label="Manage Instance Tags"
@@ -618,7 +618,7 @@ const DatabasesListWrapper = (props: Props) => {
                 >
                   <div className="controlsPopoverContent">
                     <div>
-                      <EmptyButton
+                      <RiEmptyButton
                         justify="start"
                         icon={EditIcon}
                         className="editInstanceBtn"
@@ -627,7 +627,7 @@ const DatabasesListWrapper = (props: Props) => {
                         data-testid={`edit-instance-${instance.id}`}
                       >
                         Edit database
-                      </EmptyButton>
+                      </RiEmptyButton>
                     </div>
                     <div>
                       <PopoverDelete

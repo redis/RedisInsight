@@ -15,8 +15,12 @@ import {
 import { RiTooltip } from 'uiSrc/components'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { NumericInput, PasswordInput, TextInput } from 'uiSrc/components/base/inputs'
+import { RiFormField } from 'uiSrc/components/base/forms'
+import {
+  NumericInput,
+  PasswordInput,
+  TextInput,
+} from 'uiSrc/components/base/inputs'
 import { RiIcon } from 'uiSrc/components/base/icons'
 
 interface IShowFields {
@@ -90,7 +94,7 @@ const DatabaseForm = (props: Props) => {
       {showFields.alias && (
         <Row gap="m">
           <FlexItem grow>
-            <FormField label="Database Alias*">
+            <RiFormField label="Database Alias*">
               <TextInput
                 name="name"
                 id="name"
@@ -102,7 +106,7 @@ const DatabaseForm = (props: Props) => {
                 onChange={formik.handleChange}
                 disabled={isFieldDisabled('alias')}
               />
-            </FormField>
+            </RiFormField>
           </FlexItem>
         </Row>
       )}
@@ -111,10 +115,7 @@ const DatabaseForm = (props: Props) => {
         <Row gap="m">
           {showFields.host && (
             <FlexItem grow={4}>
-              <FormField
-                label="Host*"
-                additionalText={<AppendHostName />}
-              >
+              <RiFormField label="Host*" additionalText={<AppendHostName />}>
                 <TextInput
                   autoFocus={autoFocus}
                   name="ip"
@@ -124,11 +125,8 @@ const DatabaseForm = (props: Props) => {
                   maxLength={200}
                   placeholder="Enter Hostname / IP address / Connection URL"
                   value={formik.values.host ?? ''}
-                  onChange={value => {
-                    formik.setFieldValue(
-                      'host',
-                      validateField(value.trim()),
-                    )
+                  onChange={(value) => {
+                    formik.setFieldValue('host', validateField(value.trim()))
                   }}
                   onPaste={(event: React.ClipboardEvent<HTMLInputElement>) =>
                     handlePasteHostName(onHostNamePaste, event)
@@ -136,12 +134,12 @@ const DatabaseForm = (props: Props) => {
                   onFocus={selectOnFocus}
                   disabled={isFieldDisabled('host')}
                 />
-              </FormField>
+              </RiFormField>
             </FlexItem>
           )}
           {isShowPort && (
             <FlexItem grow={2}>
-              <FormField
+              <RiFormField
                 label="Port*"
                 additionalText={`Should not exceed ${MAX_PORT_NUMBER}.`}
               >
@@ -158,7 +156,7 @@ const DatabaseForm = (props: Props) => {
                   onFocus={selectOnFocus}
                   disabled={isFieldDisabled('port')}
                 />
-              </FormField>
+              </RiFormField>
             </FlexItem>
           )}
         </Row>
@@ -166,7 +164,7 @@ const DatabaseForm = (props: Props) => {
 
       <Row gap="m">
         <FlexItem grow>
-          <FormField label="Username">
+          <RiFormField label="Username">
             <TextInput
               name="username"
               id="username"
@@ -177,11 +175,11 @@ const DatabaseForm = (props: Props) => {
               onChange={formik.handleChange}
               disabled={isFieldDisabled('username')}
             />
-          </FormField>
+          </RiFormField>
         </FlexItem>
 
         <FlexItem grow>
-          <FormField label="Password">
+          <RiFormField label="Password">
             <PasswordInput
               name="password"
               id="password"
@@ -202,14 +200,14 @@ const DatabaseForm = (props: Props) => {
               autoComplete="new-password"
               disabled={isFieldDisabled('password')}
             />
-          </FormField>
+          </RiFormField>
         </FlexItem>
       </Row>
 
       {showFields.timeout && (
         <Row gap="m" responsive>
           <FlexItem grow>
-            <FormField label="Timeout (s)">
+            <RiFormField label="Timeout (s)">
               <NumericInput
                 autoValidate
                 name="timeout"
@@ -223,7 +221,7 @@ const DatabaseForm = (props: Props) => {
                 onFocus={selectOnFocus}
                 disabled={isFieldDisabled('timeout')}
               />
-            </FormField>
+            </RiFormField>
           </FlexItem>
           <FlexItem grow />
         </Row>

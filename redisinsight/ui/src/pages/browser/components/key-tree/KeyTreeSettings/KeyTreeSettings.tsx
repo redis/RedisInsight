@@ -20,16 +20,14 @@ import { comboBoxToArray } from 'uiSrc/utils'
 
 import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
 import {
-  IconButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { SettingsIcon , RiIcon } from 'uiSrc/components/base/icons'
-import {
-  AutoTag,
+  RiIconButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiAutoTag,
   AutoTagOption,
-} from 'uiSrc/components/base/forms/combo-box/AutoTag'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
+  RiSelect,
+} from 'uiSrc/components/base/forms'
+import { SettingsIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
@@ -85,7 +83,7 @@ const KeyTreeSettings = ({ loading }: Props) => {
   }, [treeViewSort, treeViewDelimiter])
 
   const button = (
-    <IconButton
+    <RiIconButton
       icon={SettingsIcon}
       onClick={onButtonClick}
       disabled={loading}
@@ -149,7 +147,7 @@ const KeyTreeSettings = ({ loading }: Props) => {
         <Col gap="s">
           <FlexItem grow className={styles.row} />
           <FlexItem grow className={styles.row}>
-            <AutoTag
+            <RiAutoTag
               layout="horizontal"
               label="Delimiter"
               placeholder=":"
@@ -179,20 +177,20 @@ const KeyTreeSettings = ({ loading }: Props) => {
           </FlexItem>
           <FlexItem className={styles.row}>
             <div className={styles.footer}>
-              <SecondaryButton
+              <RiSecondaryButton
                 size="s"
                 data-testid="tree-view-cancel-btn"
                 onClick={closePopover}
               >
                 Cancel
-              </SecondaryButton>
-              <PrimaryButton
+              </RiSecondaryButton>
+              <RiPrimaryButton
                 size="s"
                 data-testid="tree-view-apply-btn"
                 onClick={handleApply}
               >
                 Apply
-              </PrimaryButton>
+              </RiPrimaryButton>
             </div>
           </FlexItem>
         </Col>

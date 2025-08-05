@@ -16,15 +16,15 @@ import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
-  DestructiveButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+  RiDestructiveButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
+} from 'uiSrc/components/base/forms'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { SearchInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import styles from '../styles.module.scss'
 
@@ -148,13 +148,13 @@ const RedisCloudSubscriptions = ({
       panelClassName={styles.panelCancelBtn}
       panelPaddingSize="l"
       button={
-        <SecondaryButton
+        <RiSecondaryButton
           onClick={showPopover}
           className="btn-cancel"
           data-testid="btn-cancel"
         >
           Cancel
-        </SecondaryButton>
+        </RiSecondaryButton>
       }
     >
       <Text size="m">
@@ -163,13 +163,13 @@ const RedisCloudSubscriptions = ({
       </Text>
       <br />
       <div>
-        <DestructiveButton
+        <RiDestructiveButton
           size="s"
           onClick={onClose}
           data-testid="btn-cancel-proceed"
         >
           Proceed
-        </DestructiveButton>
+        </RiDestructiveButton>
       </div>
     </RiPopover>
   )
@@ -183,13 +183,11 @@ const RedisCloudSubscriptions = ({
       }
       content={
         isDisabled ? (
-          <span>
-            {validationErrors.NO_SUBSCRIPTIONS_CLOUD}
-          </span>
+          <span>{validationErrors.NO_SUBSCRIPTIONS_CLOUD}</span>
         ) : null
       }
     >
-      <PrimaryButton
+      <RiPrimaryButton
         size="m"
         disabled={isDisabled}
         onClick={handleSubmit}
@@ -198,7 +196,7 @@ const RedisCloudSubscriptions = ({
         data-testid="btn-show-databases"
       >
         Show databases
-      </PrimaryButton>
+      </RiPrimaryButton>
     </RiTooltip>
   )
 
@@ -267,7 +265,7 @@ const RedisCloudSubscriptions = ({
             </MessageBar>
           </FlexItem>
           <FlexItem>
-            <FormField className={styles.searchForm}>
+            <RiFormField className={styles.searchForm}>
               <SearchInput
                 placeholder="Search..."
                 className={styles.search}
@@ -275,7 +273,7 @@ const RedisCloudSubscriptions = ({
                 aria-label="Search"
                 data-testid="search"
               />
-            </FormField>
+            </RiFormField>
           </FlexItem>
         </Row>
         <br />
@@ -304,13 +302,13 @@ const RedisCloudSubscriptions = ({
       </div>
       <FlexItem padding={4}>
         <Row gap="m" justify="between">
-          <SecondaryButton
+          <RiSecondaryButton
             onClick={onBack}
             className="btn-cancel btn-back"
             data-testid="btn-back-adding"
           >
             Back to adding databases
-          </SecondaryButton>
+          </RiSecondaryButton>
           <FlexItem direction="row">
             <CancelButton isPopoverOpen={isPopoverOpen} />
             <SubmitButton isDisabled={selection.length < 1} />

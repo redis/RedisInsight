@@ -4,10 +4,7 @@ import { MIDDLE_SCREEN_RESOLUTION } from 'uiSrc/constants'
 import { RiTooltip } from 'uiSrc/components'
 
 import { PlusInCircleIcon } from 'uiSrc/components/base/icons'
-import {
-  IconButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import styles from '../styles.module.scss'
 
 export interface Props {
@@ -30,7 +27,7 @@ const AddItemsAction = ({ width, title, openAddItemPanel }: Props) => (
       })}
     >
       {width > MIDDLE_SCREEN_RESOLUTION ? (
-        <SecondaryButton
+        <RiSecondaryButton
           size="small"
           icon={PlusInCircleIcon}
           aria-label={title}
@@ -38,9 +35,9 @@ const AddItemsAction = ({ width, title, openAddItemPanel }: Props) => (
           data-testid="add-key-value-items-btn"
         >
           {title}
-        </SecondaryButton>
+        </RiSecondaryButton>
       ) : (
-        <IconButton
+        <RiIconButton
           icon={PlusInCircleIcon}
           aria-label={title}
           onClick={openAddItemPanel}

@@ -10,7 +10,7 @@ import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import { WindowEvent } from 'uiSrc/components/base/utils/WindowEvent'
 import { FocusTrap } from 'uiSrc/components/base/utils/FocusTrap'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { TextArea } from 'uiSrc/components/base/inputs'
 import { isValidJSON } from '../../utils'
 import { JSONErrors } from '../../constants'
@@ -89,14 +89,14 @@ const EditEntireItemAction = (props: Props) => {
                   onConfirm={confirmApply}
                 >
                   <div className={cx(styles.controls, styles.controlsBottom)}>
-                    <IconButton
+                    <RiIconButton
                       icon={CancelSlimIcon}
                       aria-label="Cancel add"
                       className={styles.declineBtn}
                       onClick={onCancel}
                       data-testid="cancel-edit-btn"
                     />
-                    <IconButton
+                    <RiIconButton
                       icon={CheckThinIcon}
                       color="primary"
                       type="submit"

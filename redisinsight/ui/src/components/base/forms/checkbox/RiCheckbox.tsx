@@ -37,7 +37,7 @@ const CheckboxLabel = ({ children, ...rest }: CheckboxLabelProps) => {
   )
 }
 
-export const Checkbox = ({
+export const RiCheckbox = ({
   onChange,
   onCheckedChange,
   id,

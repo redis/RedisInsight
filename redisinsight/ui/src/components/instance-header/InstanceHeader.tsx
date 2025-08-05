@@ -39,8 +39,8 @@ import { getConfig } from 'uiSrc/config'
 import { appReturnUrlSelector } from 'uiSrc/slices/app/url-handling'
 import UserProfile from 'uiSrc/components/instance-header/components/user-profile/UserProfile'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
-import { EditIcon , RiIcon } from 'uiSrc/components/base/icons'
+import { RiEmptyButton } from 'uiSrc/components/base/forms'
+import { EditIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { NumericInput } from 'uiSrc/components/base/inputs'
 import InstancesNavigationPopover from './components/instances-navigation-popover'
@@ -247,7 +247,7 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                             </InlineItemEditor>
                           </div>
                         ) : (
-                          <EmptyButton
+                          <RiEmptyButton
                             icon={EditIcon}
                             iconSide="right"
                             onClick={() => setIsDbIndexEditing(true)}
@@ -263,7 +263,7 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                             >
                               db{db || 0}
                             </span>
-                          </EmptyButton>
+                          </RiEmptyButton>
                         )}
                       </div>
                     </FlexItem>

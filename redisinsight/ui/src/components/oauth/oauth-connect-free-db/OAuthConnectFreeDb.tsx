@@ -20,7 +20,7 @@ import { openNewWindowDatabase } from 'uiSrc/utils'
 import { Pages } from 'uiSrc/constants'
 import { setCapability } from 'uiSrc/slices/app/context'
 
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { ExportIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
@@ -85,7 +85,7 @@ const OAuthConnectFreeDb = ({
   }
 
   return (
-    <PrimaryButton
+    <RiPrimaryButton
       size="s"
       icon={ExportIcon}
       disabled={loading}
@@ -95,7 +95,7 @@ const OAuthConnectFreeDb = ({
       data-testid="connect-free-db-btn"
     >
       Launch database
-    </PrimaryButton>
+    </RiPrimaryButton>
   )
 }
 

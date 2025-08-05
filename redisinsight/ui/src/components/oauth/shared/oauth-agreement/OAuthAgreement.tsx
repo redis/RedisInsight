@@ -10,7 +10,7 @@ import {
 } from 'uiSrc/slices/oauth/cloud'
 
 import { enableUserAnalyticsAction } from 'uiSrc/slices/user/user-settings'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
+import { RiCheckbox } from 'uiSrc/components/base/forms'
 import { Link } from 'uiSrc/components/base/link/Link'
 import styles from './styles.module.scss'
 
@@ -34,7 +34,7 @@ const OAuthAgreement = (props: Props) => {
 
   return (
     <div className={cx(styles.wrapper, { [styles.small]: size === 's' })}>
-      <Checkbox
+      <RiCheckbox
         id="ouath-agreement"
         name="agreement"
         label="By signing up, you acknowledge that you agree:"

@@ -2,7 +2,7 @@ import React from 'react'
 import cx from 'classnames'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
@@ -36,7 +36,7 @@ const CreateRedisearchIndexWrapper = ({
               position="left"
               anchorClassName={styles.closeRightPanel}
             >
-              <IconButton
+              <RiIconButton
                 icon={CancelSlimIcon}
                 aria-label="Close panel"
                 className={styles.closeBtn}

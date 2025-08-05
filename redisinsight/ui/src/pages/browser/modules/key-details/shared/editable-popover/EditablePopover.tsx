@@ -4,10 +4,10 @@ import cx from 'classnames'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import {
-  IconButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+  RiIconButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+} from 'uiSrc/components/base/forms'
 import { EditIcon } from 'uiSrc/components/base/icons'
 import { RiLoader } from 'uiSrc/components/base/display'
 import { RiPopover } from 'uiSrc/components/base'
@@ -105,7 +105,7 @@ const EditablePopover = (props: Props) => {
   const isDisabledApply = (): boolean => !!(isLoading || isDisabled)
 
   const button = (
-    <IconButton
+    <RiIconButton
       disabled={isPopoverOpen || isDisabledEditButton}
       icon={btnIconType || EditIcon}
       aria-label="Edit field"
@@ -151,24 +151,24 @@ const EditablePopover = (props: Props) => {
         <Spacer size="s" />
         <Row className={styles.footer} justify="end" gap="m">
           <FlexItem>
-            <SecondaryButton
+            <RiSecondaryButton
               size="s"
               onClick={() => handleDecline()}
               data-testid="cancel-btn"
             >
               Cancel
-            </SecondaryButton>
+            </RiSecondaryButton>
           </FlexItem>
 
           <FlexItem>
-            <PrimaryButton
+            <RiPrimaryButton
               size="s"
               type="submit"
               disabled={isDisabledApply()}
               data-testid="save-btn"
             >
               Save
-            </PrimaryButton>
+            </RiPrimaryButton>
           </FlexItem>
         </Row>
       </form>

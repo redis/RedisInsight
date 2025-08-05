@@ -44,7 +44,7 @@ import OnboardingStartPopover from 'uiSrc/pages/browser/components/onboarding-st
 import { sidePanelsSelector } from 'uiSrc/slices/panels/sidePanels'
 import { useStateWithContext } from 'uiSrc/services/hooks'
 
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
+import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
 import {
   ResizableContainer,
@@ -299,7 +299,7 @@ const BrowserPage = () => {
   return (
     <div className={`browserPage ${styles.container}`}>
       {arePanelsCollapsed && isRightPanelOpen && !isBrowserFullScreen && (
-        <EmptyButton
+        <RiEmptyButton
           icon={ArrowLeftIcon}
           size="small"
           onClick={closePanel}
@@ -307,7 +307,7 @@ const BrowserPage = () => {
           data-testid="back-right-panel-btn"
         >
           Back
-        </EmptyButton>
+        </RiEmptyButton>
       )}
       <div
         className={cx({
@@ -336,7 +336,9 @@ const BrowserPage = () => {
               borderRadius: `8px`,
             }}
           >
-            <UploadModal ><div>test</div></UploadModal>
+            <UploadModal>
+              <div>test</div>
+            </UploadModal>
             <BrowserLeftPanel
               selectedKey={selectedKey}
               selectKey={selectKey}

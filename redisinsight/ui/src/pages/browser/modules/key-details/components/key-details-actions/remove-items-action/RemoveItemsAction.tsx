@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { RiTooltip } from 'uiSrc/components'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { MinusInCircleIcon } from 'uiSrc/components/base/icons'
 import styles from '../styles.module.scss'
 
@@ -12,7 +12,7 @@ export interface Props {
 
 const RemoveItemsAction = ({ title, openRemoveItemPanel }: Props) => (
   <RiTooltip content={title} position="left" anchorClassName={styles.actionBtn}>
-    <IconButton
+    <RiIconButton
       icon={MinusInCircleIcon}
       aria-label={title}
       onClick={openRemoveItemPanel}

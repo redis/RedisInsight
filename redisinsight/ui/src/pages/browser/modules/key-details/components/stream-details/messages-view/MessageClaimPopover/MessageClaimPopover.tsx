@@ -19,14 +19,14 @@ import { Text } from 'uiSrc/components/base/text'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
+  RiCheckbox,
+  RiSelect,
+} from 'uiSrc/components/base/forms'
 import { NumericInput, SwitchInput } from 'uiSrc/components/base/inputs'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import {
   ClaimPendingEntryDto,
   ClaimPendingEntriesResponse,
@@ -170,7 +170,7 @@ const MessageClaimPopover = (props: Props) => {
   }, [consumers, currentConsumerName])
 
   const button = (
-    <SecondaryButton
+    <RiSecondaryButton
       size="s"
       aria-label="Claim pending message"
       onClick={showPopover}
@@ -179,7 +179,7 @@ const MessageClaimPopover = (props: Props) => {
       disabled={consumerOptions.length < 1}
     >
       CLAIM
-    </SecondaryButton>
+    </RiSecondaryButton>
   )
 
   const buttonTooltip = (
@@ -209,7 +209,7 @@ const MessageClaimPopover = (props: Props) => {
       <form>
         <Row responsive gap="m">
           <FlexItem>
-            <FormField label="Consumer">
+            <RiFormField label="Consumer">
               <RiSelect
                 value={formik.values.consumerName}
                 options={consumerOptions}
@@ -221,10 +221,10 @@ const MessageClaimPopover = (props: Props) => {
                 }
                 data-testid="destination-select"
               />
-            </FormField>
+            </RiFormField>
           </FlexItem>
           <FlexItem grow className={styles.relative}>
-            <FormField label="Min Idle Time">
+            <RiFormField label="Min Idle Time">
               <div className={styles.timeWrapper}>
                 <NumericInput
                   autoValidate
@@ -241,7 +241,7 @@ const MessageClaimPopover = (props: Props) => {
                 />
                 <div className={styles.timeUnit}>msec</div>
               </div>
-            </FormField>
+            </RiFormField>
           </FlexItem>
         </Row>
         {isOptionalShow && (
@@ -254,7 +254,7 @@ const MessageClaimPopover = (props: Props) => {
               gap="m"
             >
               <FlexItem grow className={styles.idle}>
-                <FormField label="Idle Time">
+                <RiFormField label="Idle Time">
                   <div className={styles.timeWrapper}>
                     <NumericInput
                       autoValidate
@@ -271,10 +271,10 @@ const MessageClaimPopover = (props: Props) => {
                     />
                     <div className={styles.timeUnit}>msec</div>
                   </div>
-                </FormField>
+                </RiFormField>
               </FlexItem>
               <FlexItem className={styles.timeSelect}>
-                <FormField label="Time">
+                <RiFormField label="Time">
                   <RiSelect
                     value={formik.values.timeOption}
                     options={timeOptions}
@@ -283,10 +283,10 @@ const MessageClaimPopover = (props: Props) => {
                     onChange={handleChangeTimeFormat}
                     data-testid="time-option-select"
                   />
-                </FormField>
+                </RiFormField>
               </FlexItem>
               <FlexItem>
-                <FormField label="Retry Count">
+                <RiFormField label="Retry Count">
                   <NumericInput
                     autoValidate
                     min={0}
@@ -300,11 +300,11 @@ const MessageClaimPopover = (props: Props) => {
                       formik.setFieldValue('retryCount', value)
                     }
                   />
-                </FormField>
+                </RiFormField>
               </FlexItem>
               <FlexItem grow={2}>
-                <FormField className={styles.hiddenLabel} label="Force">
-                  <Checkbox
+                <RiFormField className={styles.hiddenLabel} label="Force">
+                  <RiCheckbox
                     id="force_claim"
                     name="force"
                     label="Force Claim"
@@ -314,7 +314,7 @@ const MessageClaimPopover = (props: Props) => {
                     }}
                     data-testid="force-claim-checkbox"
                   />
-                </FormField>
+                </RiFormField>
               </FlexItem>
             </Row>
           </>
@@ -334,20 +334,20 @@ const MessageClaimPopover = (props: Props) => {
             />
           </FlexItem>
           <div>
-            <SecondaryButton
+            <RiSecondaryButton
               className={styles.footerBtn}
               onClick={handleCancel}
             >
               Cancel
-            </SecondaryButton>
-            <PrimaryButton
+            </RiSecondaryButton>
+            <RiPrimaryButton
               className={styles.footerBtn}
               type="submit"
               onClick={() => formik.handleSubmit()}
               data-testid="btn-submit"
             >
               Claim
-            </PrimaryButton>
+            </RiPrimaryButton>
           </div>
         </Row>
       </form>

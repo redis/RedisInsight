@@ -1,6 +1,6 @@
 import React from 'react'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CancelSlimIcon, MinusIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
 
@@ -27,7 +27,7 @@ export const WindowControlGroup = ({
         position="top"
         anchorClassName="flex-row"
       >
-        <IconButton
+        <RiIconButton
           size="S"
           icon={MinusIcon}
           id={`hide-${id}`}
@@ -43,7 +43,7 @@ export const WindowControlGroup = ({
         position="top"
         anchorClassName="flex-row"
       >
-        <IconButton
+        <RiIconButton
           size="S"
           icon={CancelSlimIcon}
           id={`close-${id}`}

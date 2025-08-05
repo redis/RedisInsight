@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
@@ -36,7 +36,7 @@ const ActionBar = ({
         </FlexItem>
       ))}
       <FlexItem className={styles.cross}>
-        <IconButton
+        <RiIconButton
           icon={CancelSlimIcon}
           aria-label="Cancel selecting"
           onClick={() => onCloseActionBar()}

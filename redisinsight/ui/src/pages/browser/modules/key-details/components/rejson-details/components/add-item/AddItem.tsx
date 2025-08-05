@@ -12,7 +12,7 @@ import { WindowEvent } from 'uiSrc/components/base/utils/WindowEvent'
 import { FocusTrap } from 'uiSrc/components/base/utils/FocusTrap'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 import { CancelSlimIcon, CheckThinIcon } from 'uiSrc/components/base/icons'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import ConfirmOverwrite from './ConfirmOverwrite'
 import { isValidJSON, isValidKey, parseJsonData, wrapPath } from '../../utils'
@@ -103,8 +103,7 @@ const AddItem = (props: Props) => {
                     value={key}
                     error={error || undefined}
                     placeholder="Enter JSON key"
-                    onChange={setKey
-                    }
+                    onChange={setKey}
                     data-testid="json-key"
                   />
                 </FlexItem>
@@ -115,9 +114,7 @@ const AddItem = (props: Props) => {
                   value={value}
                   placeholder="Enter JSON value"
                   error={error || undefined}
-                  onChange={value =>
-                    setValue(value)
-                  }
+                  onChange={(value) => setValue(value)}
                   data-testid="json-value"
                 />
               </FlexItem>
@@ -127,7 +124,7 @@ const AddItem = (props: Props) => {
                 onConfirm={confirmApply}
               >
                 <div className={cx(styles.controls)}>
-                  <IconButton
+                  <RiIconButton
                     size="M"
                     icon={CancelSlimIcon}
                     color="primary"
@@ -136,7 +133,7 @@ const AddItem = (props: Props) => {
                     onClick={() => onCancel?.()}
                   />
 
-                  <IconButton
+                  <RiIconButton
                     size="M"
                     icon={CheckThinIcon}
                     color="primary"

@@ -6,10 +6,10 @@ import { RedisString } from 'uiSrc/slices/interfaces'
 import { isTruncatedString } from 'uiSrc/utils'
 import { TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA } from 'uiSrc/constants'
 import {
-  DestructiveButton,
-  EmptyButton,
-  IconButton,
-} from 'uiSrc/components/base/forms/buttons'
+  RiDestructiveButton,
+  RiEmptyButton,
+  RiIconButton,
+} from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
@@ -63,7 +63,7 @@ const PopoverDelete = (props: Props) => {
   }
 
   const deleteButton = buttonLabel ? (
-    <EmptyButton
+    <RiEmptyButton
       icon={DeleteIcon}
       aria-label="Remove field"
       disabled={isDisabled || updateLoading}
@@ -71,9 +71,9 @@ const PopoverDelete = (props: Props) => {
       data-testid={testid ? `${testid}-icon` : 'remove-icon'}
     >
       {buttonLabel}
-    </EmptyButton>
+    </RiEmptyButton>
   ) : (
-    <IconButton
+    <RiIconButton
       size="M"
       icon={DeleteIcon}
       aria-label="Remove field"
@@ -116,13 +116,13 @@ const PopoverDelete = (props: Props) => {
           {appendInfo}
         </Text>
         <div className={styles.popoverFooter}>
-          <DestructiveButton
+          <RiDestructiveButton
             icon={DeleteIcon}
             onClick={() => handleDeleteItem(itemRaw || item)}
             data-testid={testid || 'remove'}
           >
             Remove
-          </DestructiveButton>
+          </RiDestructiveButton>
         </div>
       </div>
     </RiPopover>

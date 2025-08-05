@@ -6,7 +6,7 @@ import { bufferToString } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { Text, ColorText } from 'uiSrc/components/base/text'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CopyIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
@@ -57,7 +57,7 @@ const RecommendationCopyComponent = ({
         >
           {formattedName}
         </ColorText>
-        <IconButton
+        <RiIconButton
           onClick={handleCopy}
           className={styles.btn}
           icon={CopyIcon}

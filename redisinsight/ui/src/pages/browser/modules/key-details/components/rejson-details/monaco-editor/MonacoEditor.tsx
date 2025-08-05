@@ -9,10 +9,7 @@ import {
   useMonacoValidation,
 } from 'uiSrc/components/monaco-editor'
 import { setReJSONDataAction } from 'uiSrc/slices/browser/rejson'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { BaseProps } from '../interfaces'
 import { useChangeEditorType } from '../../change-editor-type-button'
 
@@ -66,20 +63,20 @@ const MonacoEditor = (props: BaseProps) => {
       />
 
       <EuiFlexItem className={styles.actions}>
-        <SecondaryButton
+        <RiSecondaryButton
           onClick={switchEditorType}
           data-testid="json-data-cancel-btn"
         >
           Close
-        </SecondaryButton>
+        </RiSecondaryButton>
 
-        <PrimaryButton
+        <RiPrimaryButton
           disabled={!isButtonEnabled}
           onClick={submitUpdate}
           data-testid="json-data-update-btn"
         >
           Overwrite Data
-        </PrimaryButton>
+        </RiPrimaryButton>
       </EuiFlexItem>
     </div>
   )

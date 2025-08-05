@@ -9,7 +9,7 @@ import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import { WindowEvent } from 'uiSrc/components/base/utils/WindowEvent'
 import { FocusTrap } from 'uiSrc/components/base/utils/FocusTrap'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
-import { DestructiveButton } from 'uiSrc/components/base/forms/buttons'
+import { RiDestructiveButton } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
 
 import {
@@ -20,7 +20,6 @@ import {
   IIEContainer,
   StyledTextInput,
 } from './InlineItemEditor.styles'
-
 
 import styles from './styles.module.scss'
 
@@ -61,12 +60,12 @@ export interface Props {
   textFiledClassName?: string
   styles?: {
     inputContainer?: {
-      width?: string,
-      height?: string,
+      width?: string
+      height?: string
     }
     input?: {
-      width?: string,
-      height?: string,
+      width?: string
+      height?: string
     }
     actionsContainer?: {
       width?: string
@@ -224,7 +223,7 @@ const InlineItemEditor = (props: Props) => {
                   handleFormSubmit(e as React.MouseEvent<HTMLElement>)
                 }
                 style={{
-                  ...customStyles?.inputContainer
+                  ...customStyles?.inputContainer,
                 }}
               >
                 <FlexItem grow>
@@ -308,7 +307,7 @@ const InlineItemEditor = (props: Props) => {
                             </Text>
                           </Text>
                           <div className={styles.popoverFooter}>
-                            <DestructiveButton
+                            <RiDestructiveButton
                               aria-label="Save"
                               className={cx(styles.btn, styles.saveBtn)}
                               disabled={isDisabledApply()}
@@ -316,7 +315,7 @@ const InlineItemEditor = (props: Props) => {
                               data-testid="save-btn"
                             >
                               Save
-                            </DestructiveButton>
+                            </RiDestructiveButton>
                           </div>
                         </div>
                       </RiPopover>

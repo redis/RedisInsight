@@ -5,7 +5,7 @@ import { FeatureFlagComponent } from 'uiSrc/components'
 import { ColorText } from 'uiSrc/components/base/text'
 import { FeatureFlags } from 'uiSrc/constants/featureFlags'
 import { Link } from 'uiSrc/components/base/link/Link'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
+import { RiEmptyButton } from 'uiSrc/components/base/forms'
 
 export const InitOutputText = (
   host: string = '',
@@ -14,31 +14,31 @@ export const InitOutputText = (
   emptyOutput: boolean,
   onClick: () => void,
 ) => [
-    <Fragment key={Math.random()}>
-      {emptyOutput && (
-        <span className="color-green" key={Math.random()}>
-          {'Try '}
-          <Link
-            onClick={onClick}
-            className="color-green"
-            style={{ fontSize: 'inherit', fontFamily: 'inherit' }}
-            data-test-subj="cli-workbench-page-btn"
-          >
-            Workbench
-          </Link>
-          , our advanced CLI. Check out our Quick Guides to learn more about Redis
-          capabilities.
-        </span>
-      )}
-    </Fragment>,
-    '\n\n',
-    'Connecting...',
-    '\n\n',
-    'Pinging Redis server on ',
-    <ColorText color="default" key={Math.random()}>
-      {`${host}:${port}${getDbIndex(dbIndex)}`}
-    </ColorText>,
-  ]
+  <Fragment key={Math.random()}>
+    {emptyOutput && (
+      <span className="color-green" key={Math.random()}>
+        {'Try '}
+        <Link
+          onClick={onClick}
+          className="color-green"
+          style={{ fontSize: 'inherit', fontFamily: 'inherit' }}
+          data-test-subj="cli-workbench-page-btn"
+        >
+          Workbench
+        </Link>
+        , our advanced CLI. Check out our Quick Guides to learn more about Redis
+        capabilities.
+      </span>
+    )}
+  </Fragment>,
+  '\n\n',
+  'Connecting...',
+  '\n\n',
+  'Pinging Redis server on ',
+  <ColorText color="default" key={Math.random()}>
+    {`${host}:${port}${getDbIndex(dbIndex)}`}
+  </ColorText>,
+]
 
 export const ConnectionSuccessOutputText = [
   '\n',
@@ -106,14 +106,14 @@ export const cliTexts = {
   USE_PROFILER_TOOL: (onClick: () => void) => (
     <ColorText color="danger" key={Date.now()}>
       {'Use '}
-      <EmptyButton
+      <RiEmptyButton
         onClick={onClick}
         className="btnLikeLink"
         color="text"
         data-testid="monitor-btn"
       >
         Profiler
-      </EmptyButton>
+      </RiEmptyButton>
       {' tool to see all the requests processed by the server.'}
     </ColorText>
   ),

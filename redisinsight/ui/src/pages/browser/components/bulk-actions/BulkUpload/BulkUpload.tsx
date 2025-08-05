@@ -25,11 +25,8 @@ import {
   RiPopover,
   RiTooltip,
 } from 'uiSrc/components'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { RefreshIcon , RiIcon } from 'uiSrc/components/base/icons'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
+import { RefreshIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import styles from './styles.module.scss'
@@ -175,13 +172,13 @@ const BulkUpload = (props: Props) => {
         </BulkActionsInfo>
       )}
       <div className={styles.footer}>
-        <SecondaryButton
+        <RiSecondaryButton
           onClick={handleClickCancel}
           className={styles.cancelBtn}
           data-testid="bulk-action-cancel-btn"
         >
           {isProcessedBulkAction(status) ? 'Close' : 'Cancel'}
-        </SecondaryButton>
+        </RiSecondaryButton>
         {!isCompleted ? (
           <RiPopover
             id="bulk-upload-warning-popover"
@@ -191,14 +188,14 @@ const BulkUpload = (props: Props) => {
             panelClassName={styles.panelPopover}
             panelPaddingSize="none"
             button={
-              <PrimaryButton
+              <RiPrimaryButton
                 onClick={handleUploadWarning}
                 disabled={isSubmitDisabled || loading}
                 loading={loading}
                 data-testid="bulk-action-warning-btn"
               >
                 Upload
-              </PrimaryButton>
+              </RiPrimaryButton>
             }
           >
             <Text
@@ -214,25 +211,25 @@ const BulkUpload = (props: Props) => {
                 All commands from the file will be executed against your
                 database.
               </div>
-              <PrimaryButton
+              <RiPrimaryButton
                 size="s"
                 className={styles.uploadApproveBtn}
                 onClick={handleUpload}
                 data-testid="bulk-action-apply-btn"
               >
                 Upload
-              </PrimaryButton>
+              </RiPrimaryButton>
             </Text>
           </RiPopover>
         ) : (
-          <PrimaryButton
+          <RiPrimaryButton
             icon={RefreshIcon}
             color="secondary"
             onClick={onStartAgain}
             data-testid="bulk-action-start-new-btn"
           >
             Start New
-          </PrimaryButton>
+          </RiPrimaryButton>
         )}
       </div>
     </div>

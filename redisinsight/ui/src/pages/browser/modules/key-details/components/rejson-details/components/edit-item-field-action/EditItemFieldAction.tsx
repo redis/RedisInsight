@@ -7,7 +7,7 @@ import {
   createDeleteFieldMessage,
 } from 'uiSrc/utils'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import styles from '../../styles.module.scss'
 
 export interface Props {
@@ -31,7 +31,7 @@ const EditItemFieldAction = ({
 
   return (
     <div className={styles.actionButtons}>
-      <IconButton
+      <RiIconButton
         icon={EditIcon}
         className={styles.jsonButtonStyle}
         onClick={onClickEditEntireItem}

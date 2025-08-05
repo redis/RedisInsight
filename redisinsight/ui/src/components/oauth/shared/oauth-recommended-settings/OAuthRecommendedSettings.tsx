@@ -2,7 +2,7 @@ import React from 'react'
 import { FeatureFlagComponent, RiTooltip } from 'uiSrc/components'
 import { FeatureFlags } from 'uiSrc/constants'
 
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
+import { RiCheckbox } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
@@ -17,7 +17,7 @@ const OAuthRecommendedSettings = (props: Props) => {
   return (
     <FeatureFlagComponent name={FeatureFlags.cloudSsoRecommendedSettings}>
       <div className={styles.recommendedSettings}>
-        <Checkbox
+        <RiCheckbox
           id="ouath-recommended-settings"
           name="recommended-settings"
           label="Use a pre-selected provider and region"

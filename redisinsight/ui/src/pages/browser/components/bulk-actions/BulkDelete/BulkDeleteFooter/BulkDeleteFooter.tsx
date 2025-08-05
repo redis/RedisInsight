@@ -20,11 +20,11 @@ import { getRangeForNumber, BULK_THRESHOLD_BREAKPOINTS } from 'uiSrc/utils'
 
 import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
 import {
-  DestructiveButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { RefreshIcon , RiIcon } from 'uiSrc/components/base/icons'
+  RiDestructiveButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+} from 'uiSrc/components/base/forms'
+import { RefreshIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import BulkDeleteContent from '../BulkDeleteContent'
@@ -97,22 +97,22 @@ const BulkDeleteFooter = (props: Props) => {
       {status && <BulkDeleteContent />}
       <div className={styles.footer}>
         {!loading && (
-          <SecondaryButton
+          <RiSecondaryButton
             onClick={handleCancel}
             className={styles.cancelBtn}
             data-testid="bulk-action-cancel-btn"
           >
             {isProcessedBulkAction(status) ? 'Close' : 'Cancel'}
-          </SecondaryButton>
+          </RiSecondaryButton>
         )}
         {loading && (
-          <SecondaryButton
+          <RiSecondaryButton
             onClick={handleStop}
             className={styles.cancelBtn}
             data-testid="bulk-action-stop-btn"
           >
             Stop
-          </SecondaryButton>
+          </RiSecondaryButton>
         )}
 
         {!isProcessedBulkAction(status) && (
@@ -124,14 +124,14 @@ const BulkDeleteFooter = (props: Props) => {
             panelClassName={styles.panelPopover}
             panelPaddingSize="none"
             button={
-              <PrimaryButton
+              <RiPrimaryButton
                 loading={loading}
                 disabled={loading}
                 onClick={handleDeleteWarning}
                 data-testid="bulk-action-warning-btn"
               >
                 Delete
-              </PrimaryButton>
+              </RiPrimaryButton>
             }
           >
             <Text
@@ -150,25 +150,25 @@ const BulkDeleteFooter = (props: Props) => {
               <div className={styles.popoverItem}>
                 {`All keys with ${filter ? filter?.toUpperCase() : 'all'} key type and selected pattern will be deleted.`}
               </div>
-              <DestructiveButton
+              <RiDestructiveButton
                 size="s"
                 className={styles.deleteApproveBtn}
                 onClick={handleDelete}
                 data-testid="bulk-action-apply-btn"
               >
                 Delete
-              </DestructiveButton>
+              </RiDestructiveButton>
             </Text>
           </RiPopover>
         )}
         {isProcessedBulkAction(status) && (
-          <PrimaryButton
+          <RiPrimaryButton
             icon={RefreshIcon}
             onClick={handleStartNew}
             data-testid="bulk-action-start-again-btn"
           >
             Start New
-          </PrimaryButton>
+          </RiPrimaryButton>
         )}
       </div>
     </div>

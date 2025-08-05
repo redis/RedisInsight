@@ -26,7 +26,7 @@ import { useCapability } from 'uiSrc/services'
 import { FeatureFlags, Pages } from 'uiSrc/constants'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import {
@@ -72,7 +72,7 @@ const ModuleNotLoadedMinimalized = (props: Props) => {
                 {moduleText?.text}
               </Text>
               <Spacer size="s" />
-              <PrimaryButton
+              <RiPrimaryButton
                 size="s"
                 className={styles.btnLink}
                 onClick={() => {
@@ -80,7 +80,7 @@ const ModuleNotLoadedMinimalized = (props: Props) => {
                 }}
               >
                 Redis Databases page
-              </PrimaryButton>
+              </RiPrimaryButton>
             </>
           }
         >

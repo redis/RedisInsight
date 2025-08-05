@@ -2,13 +2,15 @@ import React, { useState } from 'react'
 
 import { formatLongName } from 'uiSrc/utils'
 
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { ExportIcon , RiIcon } from 'uiSrc/components/base/icons'
+import {
+  RiPrimaryButton,
+  RiFormField,
+  RiCheckbox,
+} from 'uiSrc/components/base/forms'
+import { ExportIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 
 import { Text } from 'uiSrc/components/base/text'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { RiPopover } from 'uiSrc/components/base'
 import styles from '../styles.module.scss'
 
@@ -26,7 +28,7 @@ const ExportAction = <T extends { id: string; name?: string }>(
   const [withSecrets, setWithSecrets] = useState(true)
 
   const exportBtn = (
-    <PrimaryButton
+    <RiPrimaryButton
       onClick={() => setIsPopoverOpen((prevState) => !prevState)}
       size="small"
       icon={ExportIcon}
@@ -34,7 +36,7 @@ const ExportAction = <T extends { id: string; name?: string }>(
       data-testid="export-btn"
     >
       Export
-    </PrimaryButton>
+    </RiPrimaryButton>
   )
 
   return (
@@ -62,8 +64,8 @@ const ExportAction = <T extends { id: string; name?: string }>(
           </Row>
         ))}
       </div>
-      <FormField style={{ marginTop: 16 }}>
-        <Checkbox
+      <RiFormField style={{ marginTop: 16 }}>
+        <RiCheckbox
           id="export-passwords"
           name="export-passwords"
           label="Export passwords"
@@ -71,9 +73,9 @@ const ExportAction = <T extends { id: string; name?: string }>(
           onChange={(e) => setWithSecrets(e.target.checked)}
           data-testid="export-passwords"
         />
-      </FormField>
+      </RiFormField>
       <div className={styles.popoverFooter}>
-        <PrimaryButton
+        <RiPrimaryButton
           size="small"
           icon={ExportIcon}
           onClick={() => {
@@ -83,7 +85,7 @@ const ExportAction = <T extends { id: string; name?: string }>(
           data-testid="export-selected-dbs"
         >
           Export
-        </PrimaryButton>
+        </RiPrimaryButton>
       </div>
     </RiPopover>
   )

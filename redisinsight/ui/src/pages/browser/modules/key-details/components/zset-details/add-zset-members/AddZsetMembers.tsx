@@ -21,10 +21,10 @@ import { ISetMemberState } from 'uiSrc/pages/browser/components/add-key/AddKeySe
 
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
+} from 'uiSrc/components/base/forms'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 
@@ -186,13 +186,13 @@ const AddZsetMembers = (props: Props) => {
           {(item, index) => (
             <Row align="center">
               <FlexItem grow>
-                <FormField>
+                <RiFormField>
                   <TextInput
                     name={`member-${item.id}`}
                     id={`member-${item.id}`}
                     placeholder={config.member.placeholder}
                     value={item.name}
-                    onChange={value =>
+                    onChange={(value) =>
                       handleMemberChange('name', item.id, value)
                     }
                     ref={
@@ -201,17 +201,17 @@ const AddZsetMembers = (props: Props) => {
                     disabled={loading}
                     data-testid="member-name"
                   />
-                </FormField>
+                </RiFormField>
               </FlexItem>
               <FlexItem grow>
-                <FormField>
+                <RiFormField>
                   <TextInput
                     name={`score-${item.id}`}
                     id={`score-${item.id}`}
                     maxLength={200}
                     placeholder={config.score.placeholder}
                     value={item.score}
-                    onChange={value =>
+                    onChange={(value) =>
                       handleMemberChange('score', item.id, value)
                     }
                     onBlur={() => {
@@ -220,7 +220,7 @@ const AddZsetMembers = (props: Props) => {
                     disabled={loading}
                     data-testid="member-score"
                   />
-                </FormField>
+                </RiFormField>
               </FlexItem>
             </Row>
           )}
@@ -230,24 +230,24 @@ const AddZsetMembers = (props: Props) => {
         <Row justify="end" gap="l" style={{ padding: 18 }}>
           <FlexItem>
             <div>
-              <SecondaryButton
+              <RiSecondaryButton
                 onClick={() => closePanel(true)}
                 data-testid="cancel-members-btn"
               >
                 Cancel
-              </SecondaryButton>
+              </RiSecondaryButton>
             </div>
           </FlexItem>
           <FlexItem>
             <div>
-              <PrimaryButton
+              <RiPrimaryButton
                 disabled={loading || !isFormValid}
                 loading={loading}
                 onClick={submitData}
                 data-testid="save-members-btn"
               >
                 Save
-              </PrimaryButton>
+              </RiPrimaryButton>
             </div>
           </FlexItem>
         </Row>

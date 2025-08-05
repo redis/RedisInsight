@@ -20,10 +20,7 @@ import {
   TelemetryEvent,
 } from 'uiSrc/telemetry'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { AddStreamEntriesDto } from 'apiSrc/modules/browser/stream/dto'
 
 import StreamEntryFields from './StreamEntryFields/StreamEntryFields'
@@ -145,17 +142,17 @@ const AddStreamEntries = (props: Props) => {
         <Row justify="end" gap="m" style={{ padding: 18 }}>
           <FlexItem>
             <div>
-              <SecondaryButton
+              <RiSecondaryButton
                 onClick={() => closePanel(true)}
                 data-testid="cancel-members-btn"
               >
                 Cancel
-              </SecondaryButton>
+              </RiSecondaryButton>
             </div>
           </FlexItem>
           <FlexItem>
             <div>
-              <PrimaryButton
+              <RiPrimaryButton
                 size="m"
                 color="secondary"
                 onClick={submitData}
@@ -163,7 +160,7 @@ const AddStreamEntries = (props: Props) => {
                 data-testid="save-elements-btn"
               >
                 Save
-              </PrimaryButton>
+              </RiPrimaryButton>
             </div>
           </FlexItem>
         </Row>

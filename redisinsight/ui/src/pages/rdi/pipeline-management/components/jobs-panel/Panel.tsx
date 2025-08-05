@@ -21,7 +21,13 @@ import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 
 import { Text } from 'uiSrc/components/base/text'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { EmptyButton, IconButton } from 'uiSrc/components/base/forms/buttons'
+import {
+  RiEmptyButton,
+  RiIconButton,
+  RiSelect,
+  RiSelectOption,
+  defaultValueRender,
+} from 'uiSrc/components/base/forms'
 import {
   PlayFilledIcon,
   CancelSlimIcon,
@@ -30,11 +36,6 @@ import {
 } from 'uiSrc/components/base/icons'
 import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
 import { RiTooltip } from 'uiSrc/components'
-import {
-  RiSelect,
-  RiSelectOption,
-  defaultValueRender,
-} from 'uiSrc/components/base/forms/select/RiSelect'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -206,14 +207,14 @@ const DryRunJobPanel = (props: Props) => {
         <div className={styles.header}>
           <Text className={styles.title}>Test transformation logic</Text>
           <div>
-            <IconButton
+            <RiIconButton
               icon={isFullScreen ? ShrinkIcon : ExtendIcon}
               aria-label="toggle fullscrenn dry run panel"
               className={styles.fullScreenBtn}
               onClick={handleFullScreen}
               data-testid="fullScreen-dry-run-btn"
             />
-            <IconButton
+            <RiIconButton
               icon={CancelSlimIcon}
               aria-label="close dry run panel"
               className={styles.closeBtn}
@@ -242,7 +243,7 @@ const DryRunJobPanel = (props: Props) => {
                 content={isFormValid ? null : 'Input should have JSON format'}
                 position="top"
               >
-                <EmptyButton
+                <RiEmptyButton
                   onClick={handleDryRun}
                   icon={PlayFilledIcon}
                   iconSide="right"
@@ -253,7 +254,7 @@ const DryRunJobPanel = (props: Props) => {
                   data-testid="dry-run-btn"
                 >
                   Dry run
-                </EmptyButton>
+                </RiEmptyButton>
               </RiTooltip>
             </FlexItem>
           </Row>

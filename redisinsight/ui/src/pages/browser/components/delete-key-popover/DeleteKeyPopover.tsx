@@ -5,10 +5,7 @@ import { KeyTypes, ModulesKeyTypes } from 'uiSrc/constants'
 import { formatLongName } from 'uiSrc/utils'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  DestructiveButton,
-  IconButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { RiDestructiveButton, RiIconButton } from 'uiSrc/components/base/forms'
 import { DeleteIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
@@ -41,7 +38,7 @@ export const DeleteKeyPopover = ({
     closePopover={() => onOpenPopover(-1, type)}
     panelPaddingSize="l"
     button={
-      <IconButton
+      <RiIconButton
         icon={DeleteIcon}
         onClick={() => onOpenPopover(rowId, type)}
         aria-label="Delete Key"
@@ -58,7 +55,7 @@ export const DeleteKeyPopover = ({
         <Text size="s">will be deleted.</Text>
       </Text>
       <Spacer size="m" />
-      <DestructiveButton
+      <RiDestructiveButton
         size="small"
         icon={DeleteIcon}
         disabled={deleting}
@@ -66,7 +63,7 @@ export const DeleteKeyPopover = ({
         data-testid="submit-delete-key"
       >
         Delete
-      </DestructiveButton>
+      </RiDestructiveButton>
     </>
   </RiPopover>
 )

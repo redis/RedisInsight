@@ -5,7 +5,7 @@ import EmptyPipelineIcon from 'uiSrc/assets/img/rdi/empty_pipeline.svg'
 import { Pages } from 'uiSrc/constants'
 import { Text } from 'uiSrc/components/base/text'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { RiImage } from 'uiSrc/components/base/display'
 import Panel from '../components/panel'
 
@@ -20,7 +20,10 @@ const Empty = ({ rdiInstanceId }: Props) => {
 
   return (
     <Panel>
-      <div className={styles.emptyPipelineContainer} data-testid="empty-pipeline">
+      <div
+        className={styles.emptyPipelineContainer}
+        data-testid="empty-pipeline"
+      >
         <RiImage src={EmptyPipelineIcon} alt="empty" $size="s" />
         <Spacer size="xl" />
         <Text>No pipeline deployed yet</Text>
@@ -28,7 +31,7 @@ const Empty = ({ rdiInstanceId }: Props) => {
           Create your first pipeline to get started!
         </Text>
         <Spacer size="l" />
-        <PrimaryButton
+        <RiPrimaryButton
           data-testid="add-pipeline-btn"
           size="s"
           onClick={() => {
@@ -36,7 +39,7 @@ const Empty = ({ rdiInstanceId }: Props) => {
           }}
         >
           Add Pipeline
-        </PrimaryButton>
+        </RiPrimaryButton>
       </div>
     </Panel>
   )

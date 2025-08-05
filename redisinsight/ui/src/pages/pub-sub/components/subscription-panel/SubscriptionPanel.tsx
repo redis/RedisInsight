@@ -17,12 +17,13 @@ import {
   UserIcon,
   IndicatorExcludedIcon,
   DeleteIcon,
- AllIconsType, RiIcon } from 'uiSrc/components/base/icons'
-import { Button, IconButton } from 'uiSrc/components/base/forms/buttons'
+  AllIconsType,
+  RiIcon,
+} from 'uiSrc/components/base/icons'
+import { Button, RiIconButton, RiFormField } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { TextInput } from 'uiSrc/components/base/inputs'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
 import PatternsInfo from './components/patternsInfo'
 import ClickableAppendInfo from './components/clickable-append-info'
 import styles from './styles.module.scss'
@@ -102,17 +103,17 @@ const SubscriptionPanel = () => {
       <FlexItem>
         <Row align="center">
           <FlexItem className={styles.channels}>
-            <FormField additionalText={<ClickableAppendInfo />}>
+            <RiFormField additionalText={<ClickableAppendInfo />}>
               <TextInput
                 value={channels}
                 disabled={isSubscribed}
-                onChange={value => setChannels(value)}
+                onChange={(value) => setChannels(value)}
                 onBlur={onFocusOut}
                 placeholder="Enter Pattern"
                 aria-label="channel names for filtering"
                 data-testid="channels-input"
               />
-            </FormField>
+            </RiFormField>
           </FlexItem>
           <FlexItem>
             <Button
@@ -132,7 +133,7 @@ const SubscriptionPanel = () => {
                 content="Clear Messages"
                 anchorClassName={cx('inline-flex')}
               >
-                <IconButton
+                <RiIconButton
                   icon={DeleteIcon}
                   onClick={onClickClear}
                   aria-label="clear pub sub"

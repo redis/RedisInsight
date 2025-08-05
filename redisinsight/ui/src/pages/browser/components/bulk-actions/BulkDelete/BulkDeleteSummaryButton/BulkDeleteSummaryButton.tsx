@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from 'react'
 import { Maybe } from 'uiSrc/utils'
-import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { DownloadIcon } from 'uiSrc/components/base/icons'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { RedisString } from 'apiSrc/common/constants'
@@ -40,7 +40,7 @@ const BulkDeleteSummaryButton = ({
   )
 
   return (
-    <SecondaryButton
+    <RiSecondaryButton
       color="secondary"
       icon={DownloadIcon}
       iconSide="left"
@@ -50,7 +50,7 @@ const BulkDeleteSummaryButton = ({
       <Link download={getFileName()} href={fileUrl}>
         {children}
       </Link>
-    </SecondaryButton>
+    </RiSecondaryButton>
   )
 }
 

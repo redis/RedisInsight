@@ -14,10 +14,10 @@ import {
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
+} from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
 import { TextInput } from 'uiSrc/components/base/inputs'
@@ -99,22 +99,20 @@ const AddStreamGroup = (props: Props) => {
             <FlexItem grow>
               <Row align="start">
                 <FlexItem className={styles.groupNameWrapper} grow>
-                  <FormField>
+                  <RiFormField>
                     <TextInput
                       name="group-name"
                       id="group-name"
                       placeholder="Enter Group Name*"
                       value={groupName}
-                      onChange={value =>
-                        setGroupName(value)
-                      }
+                      onChange={(value) => setGroupName(value)}
                       autoComplete="off"
                       data-testid="group-name-field"
                     />
-                  </FormField>
+                  </RiFormField>
                 </FlexItem>
                 <FlexItem className={styles.timestampWrapper} grow>
-                  <FormField
+                  <RiFormField
                     additionalText={
                       <RiTooltip
                         anchorClassName="inputAppendIcon"
@@ -136,7 +134,7 @@ const AddStreamGroup = (props: Props) => {
                       id="id"
                       placeholder="ID*"
                       value={id}
-                      onChange={value =>
+                      onChange={(value) =>
                         setId(validateConsumerGroupId(value))
                       }
                       onBlur={() => setIsIdFocused(false)}
@@ -144,7 +142,7 @@ const AddStreamGroup = (props: Props) => {
                       autoComplete="off"
                       data-testid="id-field"
                     />
-                  </FormField>
+                  </RiFormField>
                   {!showIdError && (
                     <span className={styles.idText} data-testid="id-help-text">
                       Timestamp - Sequence Number or $
@@ -165,23 +163,23 @@ const AddStreamGroup = (props: Props) => {
         <Row justify="end" gap="l" style={{ padding: 18 }}>
           <FlexItem>
             <div>
-              <SecondaryButton
+              <RiSecondaryButton
                 onClick={() => closePanel(true)}
                 data-testid="cancel-stream-groups-btn"
               >
                 Cancel
-              </SecondaryButton>
+              </RiSecondaryButton>
             </div>
           </FlexItem>
           <FlexItem>
             <div>
-              <PrimaryButton
+              <RiPrimaryButton
                 onClick={submitData}
                 disabled={!isFormValid}
                 data-testid="save-groups-btn"
               >
                 Save
-              </PrimaryButton>
+              </RiPrimaryButton>
             </div>
           </FlexItem>
         </Row>

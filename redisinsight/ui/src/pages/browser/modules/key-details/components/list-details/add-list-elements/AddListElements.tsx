@@ -18,10 +18,10 @@ import { stringToBuffer } from 'uiSrc/utils'
 import { AddListFormConfig as config } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiSelect,
+} from 'uiSrc/components/base/forms'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { PushElementToListDto } from 'apiSrc/modules/browser/list/dto'
 
@@ -142,9 +142,7 @@ const AddListElements = (props: Props) => {
               id={`element-${index}`}
               placeholder={config.element.placeholder}
               value={item}
-              onChange={value =>
-                handleElementChange(value, index)
-              }
+              onChange={(value) => handleElementChange(value, index)}
               data-testid={`element-${index}`}
             />
           )}
@@ -154,22 +152,22 @@ const AddListElements = (props: Props) => {
         <Row justify="end" gap="m" style={{ padding: 18 }}>
           <FlexItem>
             <div>
-              <SecondaryButton
+              <RiSecondaryButton
                 onClick={() => closePanel(true)}
                 data-testid="cancel-members-btn"
               >
                 Cancel
-              </SecondaryButton>
+              </RiSecondaryButton>
             </div>
           </FlexItem>
           <FlexItem>
             <div>
-              <PrimaryButton
+              <RiPrimaryButton
                 onClick={submitData}
                 data-testid="save-elements-btn"
               >
                 Save
-              </PrimaryButton>
+              </RiPrimaryButton>
             </div>
           </FlexItem>
         </Row>

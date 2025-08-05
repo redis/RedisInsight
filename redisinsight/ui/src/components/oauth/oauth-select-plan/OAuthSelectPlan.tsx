@@ -18,13 +18,13 @@ import { FeatureFlags } from 'uiSrc/constants'
 import { Region } from 'uiSrc/slices/interfaces'
 
 import {
-  EmptyButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+  RiEmptyButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiSelect,
+} from 'uiSrc/components/base/forms'
 import { ColorText, Text } from 'uiSrc/components/base/text'
-import { RiIcon , CancelIcon } from 'uiSrc/components/base/icons'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
+import { RiIcon, CancelIcon } from 'uiSrc/components/base/icons'
 import { RiModal } from 'uiSrc/components/base/display'
 import { CloudSubscriptionPlanResponse } from 'apiSrc/modules/cloud/subscription/dto'
 import { OAuthProvider, OAuthProviders } from './constants'
@@ -203,7 +203,7 @@ const OAuthSelectPlan = () => {
                         <RiIcon type="CheckThinIcon" />
                       </div>
                     )}
-                    <EmptyButton
+                    <RiEmptyButton
                       size="large"
                       icon={Icon}
                       onClick={() => setProviderSelected(id)}
@@ -242,15 +242,15 @@ const OAuthSelectPlan = () => {
               )}
             </section>
             <footer className={styles.footer}>
-              <SecondaryButton
+              <RiSecondaryButton
                 className={styles.button}
                 onClick={handleOnClose}
                 data-testid="close-oauth-select-plan-dialog"
                 aria-labelledby="close oauth select plan dialog"
               >
                 Cancel
-              </SecondaryButton>
-              <PrimaryButton
+              </RiSecondaryButton>
+              <RiPrimaryButton
                 disabled={loading || !planIdSelected}
                 loading={loading}
                 className={styles.button}
@@ -259,7 +259,7 @@ const OAuthSelectPlan = () => {
                 aria-labelledby="submit oauth select plan dialog"
               >
                 Create database
-              </PrimaryButton>
+              </RiPrimaryButton>
             </footer>
           </section>
         </RiModal.Content.Body.Compose>

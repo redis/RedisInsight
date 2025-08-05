@@ -13,12 +13,16 @@ import { MessageEnterpriceSoftware } from 'uiSrc/pages/home/components/form/Mess
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { WindowEvent } from 'uiSrc/components/base/utils/WindowEvent'
 import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { InfoIcon , RiIcon } from 'uiSrc/components/base/icons'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { NumericInput, PasswordInput, TextInput } from 'uiSrc/components/base/inputs'
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
+} from 'uiSrc/components/base/forms'
+import { InfoIcon, RiIcon } from 'uiSrc/components/base/icons'
+import {
+  NumericInput,
+  PasswordInput,
+  TextInput,
+} from 'uiSrc/components/base/inputs'
 import { RiTooltip } from 'uiSrc/components'
 
 export interface Props {
@@ -156,14 +160,14 @@ const ClusterConnectionForm = (props: Props) => {
   )
 
   const CancelButton = ({ onClick }: { onClick: () => void }) => (
-    <SecondaryButton
+    <RiSecondaryButton
       size="s"
       className="btn-cancel"
       onClick={onClick}
       style={{ marginRight: 12 }}
     >
       Cancel
-    </SecondaryButton>
+    </RiSecondaryButton>
   )
 
   const SubmitButton = ({ onClick, submitIsDisabled }: ISubmitButton) => (
@@ -183,7 +187,7 @@ const ClusterConnectionForm = (props: Props) => {
         ) : null
       }
     >
-      <PrimaryButton
+      <RiPrimaryButton
         size="s"
         type="submit"
         onClick={onClick}
@@ -193,7 +197,7 @@ const ClusterConnectionForm = (props: Props) => {
         data-testid="btn-submit"
       >
         Submit
-      </PrimaryButton>
+      </RiPrimaryButton>
     </RiTooltip>
   )
 
@@ -223,7 +227,7 @@ const ClusterConnectionForm = (props: Props) => {
         <WindowEvent event="keydown" handler={onKeyDown} />
         <Row responsive>
           <FlexItem grow={4}>
-            <FormField
+            <RiFormField
               label="Cluster Host*"
               additionalText={<AppendHostName />}
             >
@@ -234,21 +238,18 @@ const ClusterConnectionForm = (props: Props) => {
                 maxLength={200}
                 placeholder="Enter Cluster Host"
                 value={formik.values.host}
-                onChange={value => {
-                  formik.setFieldValue(
-                    'host',
-                    validateField(value.trim()),
-                  )
+                onChange={(value) => {
+                  formik.setFieldValue('host', validateField(value.trim()))
                 }}
                 onPaste={(event: React.ClipboardEvent<HTMLInputElement>) =>
                   handlePasteHostName(onHostNamePaste, event)
                 }
               />
-            </FormField>
+            </RiFormField>
           </FlexItem>
 
           <FlexItem grow={2}>
-            <FormField
+            <RiFormField
               label="Cluster Port*"
               additionalText="Should not exceed 65535."
             >
@@ -263,13 +264,13 @@ const ClusterConnectionForm = (props: Props) => {
                 value={Number(formik.values.port)}
                 onChange={(value) => formik.setFieldValue('port', value)}
               />
-            </FormField>
+            </RiFormField>
           </FlexItem>
         </Row>
 
         <Row responsive>
           <FlexItem grow>
-            <FormField label="Admin Username*">
+            <RiFormField label="Admin Username*">
               <TextInput
                 name="username"
                 id="username"
@@ -279,11 +280,11 @@ const ClusterConnectionForm = (props: Props) => {
                 value={formik.values.username}
                 onChange={formik.handleChange}
               />
-            </FormField>
+            </RiFormField>
           </FlexItem>
 
           <FlexItem grow>
-            <FormField label="Admin Password*">
+            <RiFormField label="Admin Password*">
               <PasswordInput
                 type="dual"
                 name="password"
@@ -295,7 +296,7 @@ const ClusterConnectionForm = (props: Props) => {
                 onChange={formik.handleChange}
                 autoComplete="new-password"
               />
-            </FormField>
+            </RiFormField>
           </FlexItem>
         </Row>
       </form>

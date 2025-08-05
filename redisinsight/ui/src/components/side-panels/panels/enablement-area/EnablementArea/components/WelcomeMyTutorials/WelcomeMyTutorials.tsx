@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { Card } from 'uiSrc/components/base/layout'
 import CreateTutorialLink from '../CreateTutorialLink'
 
@@ -16,14 +16,14 @@ const WelcomeMyTutorials = ({ handleOpenUpload }: Props) => (
       <div className={styles.link}>
         <CreateTutorialLink />
       </div>
-      <PrimaryButton
+      <RiPrimaryButton
         className={styles.btnSubmit}
         size="s"
         onClick={() => handleOpenUpload()}
         data-testid="upload-tutorial-btn"
       >
         + Upload <span className={styles.hideText}>tutorial</span>
-      </PrimaryButton>
+      </RiPrimaryButton>
     </Card>
   </div>
 )

@@ -14,8 +14,8 @@ import { Nullable } from 'uiSrc/utils'
 
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
-import { CancelSlimIcon , RiIcon } from 'uiSrc/components/base/icons'
-import { IconButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { CancelSlimIcon, RiIcon } from 'uiSrc/components/base/icons'
+import { RiIconButton, RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 
@@ -103,7 +103,7 @@ const VoteOption = (props: Props) => {
           position="bottom"
           data-testid={`${voteOption}-vote-tooltip`}
         >
-          <IconButton
+          <RiIconButton
             disabled={!isAnalyticsEnable}
             icon={iconType[voteOption] ?? 'LikeIcon'}
             className={cx('vote__btn', { selected: vote === voteOption })}
@@ -135,7 +135,7 @@ const VoteOption = (props: Props) => {
                 </div>
               </FlexItem>
               <FlexItem>
-                <IconButton
+                <RiIconButton
                   icon={CancelSlimIcon}
                   id="close-voting-popover"
                   aria-label="close popover"
@@ -147,7 +147,7 @@ const VoteOption = (props: Props) => {
             </Row>
           </FlexItem>
           <FlexItem grow>
-            <PrimaryButton
+            <RiPrimaryButton
               aria-label="recommendation feedback"
               data-testid="recommendation-feedback-btn"
               className={styles.feedbackBtn}
@@ -168,7 +168,7 @@ const VoteOption = (props: Props) => {
                 />
                 To Github
               </Link>
-            </PrimaryButton>
+            </RiPrimaryButton>
           </FlexItem>
         </Col>
       </div>

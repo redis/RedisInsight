@@ -13,17 +13,15 @@ import { RdiPipelineTabs } from 'uiSrc/slices/interfaces/rdi'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { Text } from 'uiSrc/components/base/text'
-import { RiTooltip } from 'uiSrc/components'
-import {
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
   RiSelectOption,
   RiSelect,
   defaultValueRender,
-} from 'uiSrc/components/base/forms/select/RiSelect'
+} from 'uiSrc/components/base/forms'
+import { Text } from 'uiSrc/components/base/text'
+import { RiTooltip } from 'uiSrc/components'
 import { NO_TEMPLATE_VALUE, NO_OPTIONS, INGEST_OPTION } from './constants'
 
 import styles from './styles.module.scss'
@@ -170,7 +168,7 @@ const TemplateForm = (props: Props) => {
       <form>
         <Spacer size="xs" />
         {pipelineTypeOptions?.length > 1 && (
-          <FormField className={styles.formRow}>
+          <RiFormField className={styles.formRow}>
             <>
               <div className={styles.rowLabel}>Pipeline type</div>
               <RiSelect
@@ -181,10 +179,10 @@ const TemplateForm = (props: Props) => {
                 data-testid="pipeline-type-select"
               />
             </>
-          </FormField>
+          </RiFormField>
         )}
         {source === RdiPipelineTabs.Config && (
-          <FormField className={styles.formRow}>
+          <RiFormField className={styles.formRow}>
             <>
               <div className={styles.rowLabel}>Database type</div>
               <RiSelect
@@ -195,25 +193,25 @@ const TemplateForm = (props: Props) => {
                 data-testid="db-type-select"
               />
             </>
-          </FormField>
+          </RiFormField>
         )}
       </form>
       <div className={styles.actions}>
-        <SecondaryButton
+        <RiSecondaryButton
           onClick={handleCancel}
           size="s"
           className={styles.btn}
           data-testid="template-cancel-btn"
         >
           Cancel
-        </SecondaryButton>
+        </RiSecondaryButton>
         <RiTooltip
           content={getTooltipContent(value, isNoTemplateOptions)}
           position="bottom"
           className={styles.btn}
           anchorClassName="flex-row"
         >
-          <PrimaryButton
+          <RiPrimaryButton
             disabled={isNoTemplateOptions || !!value}
             onClick={handleApply}
             loading={loading}
@@ -221,7 +219,7 @@ const TemplateForm = (props: Props) => {
             data-testid="template-apply-btn"
           >
             Apply
-          </PrimaryButton>
+          </RiPrimaryButton>
         </RiTooltip>
       </div>
     </div>

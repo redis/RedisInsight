@@ -9,7 +9,7 @@ import { QueryCard } from 'uiSrc/components/query'
 import { CommandExecutionUI } from 'uiSrc/slices/interfaces'
 import { RunQueryMode, ResultsMode } from 'uiSrc/slices/interfaces/workbench'
 
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
+import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { DeleteIcon } from 'uiSrc/components/base/icons'
 import { RiProgressBarLoader } from 'uiSrc/components/base/display'
 import WbNoResultsMessage from '../../wb-no-results-message'
@@ -83,7 +83,7 @@ const WBResults = (props: Props) => {
       )}
       {!!items?.length && (
         <div className={styles.header}>
-          <EmptyButton
+          <RiEmptyButton
             size="small"
             icon={DeleteIcon}
             className={styles.clearAllBtn}
@@ -92,7 +92,7 @@ const WBResults = (props: Props) => {
             data-testid="clear-history-btn"
           >
             Clear Results
-          </EmptyButton>
+          </RiEmptyButton>
         </div>
       )}
       <div className={cx(styles.container)}>

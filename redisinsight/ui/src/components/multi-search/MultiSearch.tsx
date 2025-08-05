@@ -13,10 +13,7 @@ import {
   SwitchIcon,
   RiIcon,
 } from 'uiSrc/components/base/icons'
-import {
-  ActionIconButton,
-  IconButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { RiActionIconButton, RiIconButton } from 'uiSrc/components/base/forms'
 import { RiProgressBarLoader } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
@@ -153,7 +150,7 @@ const MultiSearch = (props: Props) => {
   }
 
   const SubmitBtn = () => (
-    <IconButton
+    <RiIconButton
       icon={SearchIcon}
       aria-label="Search"
       disabled={disableSubmit}
@@ -235,7 +232,7 @@ const MultiSearch = (props: Props) => {
                         >
                           {value}
                         </span>
-                        <IconButton
+                        <RiIconButton
                           className={styles.suggestionRemoveBtn}
                           icon={CancelSlimIcon}
                           color="primary"
@@ -267,7 +264,7 @@ const MultiSearch = (props: Props) => {
           )}
           {(value || !!options.length) && (
             <RiTooltip content="Reset Filters" position="bottom">
-              <ActionIconButton
+              <RiActionIconButton
                 icon={CancelSlimIcon}
                 size="XS"
                 aria-label="Reset Filters"
@@ -283,7 +280,7 @@ const MultiSearch = (props: Props) => {
               content={suggestions?.buttonTooltipTitle}
               position="bottom"
             >
-              <IconButton
+              <RiIconButton
                 icon={SwitchIcon}
                 size="S"
                 aria-label={suggestions?.buttonTooltipTitle}

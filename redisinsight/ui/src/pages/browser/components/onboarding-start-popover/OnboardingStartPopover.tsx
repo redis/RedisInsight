@@ -10,7 +10,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { OnboardingStepName, OnboardingSteps } from 'uiSrc/constants/onboarding'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { EmptyButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiEmptyButton, RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
@@ -63,22 +63,22 @@ const OnboardingStartPopover = () => {
         Would you like us to show them to you?
       </Text>
       <div className={styles.onboardingActions}>
-        <EmptyButton
+        <RiEmptyButton
           onClick={handleSkip}
           className={styles.skipTourBtn}
           size="small"
           data-testid="skip-tour-btn"
         >
           Skip tour
-        </EmptyButton>
-        <PrimaryButton
+        </RiEmptyButton>
+        <RiPrimaryButton
           onClick={handleStart}
           color="secondary"
           size="s"
           data-testid="start-tour-btn"
         >
           Show me around
-        </PrimaryButton>
+        </RiPrimaryButton>
       </div>
     </RiPopover>
   )

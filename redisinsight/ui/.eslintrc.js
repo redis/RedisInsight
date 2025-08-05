@@ -49,6 +49,13 @@ module.exports = {
     'src/packages/common/src/icons/*.js',
   ],
   rules: {
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+      },
+    ],
     radix: 'off',
     semi: ['error', 'always'],
     'no-bitwise': ['error', { allow: ['|'] }],

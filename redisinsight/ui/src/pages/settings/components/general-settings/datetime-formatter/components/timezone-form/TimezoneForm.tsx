@@ -8,10 +8,7 @@ import {
   userSettingsConfigSelector,
 } from 'uiSrc/slices/user/user-settings'
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
-import {
-  defaultValueRender,
-  RiSelect,
-} from 'uiSrc/components/base/forms/select/RiSelect'
+import { defaultValueRender, RiSelect } from 'uiSrc/components/base/forms'
 
 interface InitialValuesType {
   timezone: TimezoneOption

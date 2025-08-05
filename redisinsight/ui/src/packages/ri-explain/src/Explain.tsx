@@ -28,7 +28,7 @@ import {
   findFlatProfile,
 } from './parser'
 import { ExplainNode, ProfileNode } from './Node'
-import { IconButton } from '../../../components/base/forms/buttons'
+import { RiIconButton } from '../../../components/base/forms/buttons'
 
 interface IExplain {
   command: string
@@ -539,7 +539,7 @@ function ExplainDraw({
               },
             ].map((item) => (
               <RiTooltip position="left" content={item.name}>
-                <IconButton
+                <RiIconButton
                   color="text"
                   onClick={item.onClick}
                   icon={item.icon}

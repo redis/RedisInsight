@@ -12,7 +12,7 @@ import {
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { validateNumber } from 'uiSrc/utils'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
+import { RiFormField } from 'uiSrc/components/base/forms'
 import { SwitchInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Link } from 'uiSrc/components/base/link/Link'
@@ -43,14 +43,14 @@ const WorkbenchSettings = () => {
     <>
       <Title size="M">Editor Cleanup</Title>
       <Spacer size="m" />
-      <FormField>
+      <RiFormField>
         <SwitchInput
           checked={cleanup}
           onCheckedChange={onSwitchWbCleanUp}
           title="Clear the Editor after running commands"
           data-testid="switch-workbench-cleanup"
         />
-      </FormField>
+      </RiFormField>
       <Spacer size="xl" />
       <SettingItem
         initValue={batchSize.toString()}

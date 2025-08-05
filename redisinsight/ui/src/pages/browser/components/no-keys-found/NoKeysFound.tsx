@@ -19,7 +19,7 @@ import { SCAN_TREE_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { TutorialsIds } from 'uiSrc/constants'
 
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
+import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { RiImage } from 'uiSrc/components/base/display'
 import LoadSampleData from '../load-sample-data'
@@ -59,11 +59,7 @@ const NoKeysFound = (props: Props) => {
 
   return (
     <div className={styles.container} data-testid="no-result-found-msg">
-      <RiImage
-        className={styles.img}
-        src={TelescopeImg}
-        alt="no results"
-      />
+      <RiImage className={styles.img} src={TelescopeImg} alt="no results" />
       <Spacer />
       <Title className={styles.title} size="S">
         Let&apos;s start working
@@ -71,13 +67,13 @@ const NoKeysFound = (props: Props) => {
       <Spacer />
       <div className={styles.actions}>
         <LoadSampleData onSuccess={onSuccessLoadData} />
-        <EmptyButton
+        <RiEmptyButton
           onClick={() => onAddKeyPanel(true)}
           className={styles.addKey}
           data-testid="add-key-msg-btn"
         >
           + Add key manually
-        </EmptyButton>
+        </RiEmptyButton>
       </div>
     </div>
   )

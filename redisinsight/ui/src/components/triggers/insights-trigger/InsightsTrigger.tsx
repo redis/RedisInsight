@@ -23,7 +23,7 @@ import {
 } from 'uiSrc/telemetry'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { LightBulbIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
 import styles from './styles.module.scss'
@@ -88,7 +88,7 @@ const InsightsTrigger = (props: Props) => {
             : 'Open interactive tutorials to learn more about Redis or Redis Stack capabilities, or use tips to improve your database.'
         }
       >
-        <IconButton
+        <RiIconButton
           size="S"
           className={styles.btn}
           role="button"
@@ -99,7 +99,7 @@ const InsightsTrigger = (props: Props) => {
           {isHighlighted && instanceId && (
             <span className={styles.highlighting} />
           )}
-        </IconButton>
+        </RiIconButton>
       </RiTooltip>
     </div>
   )

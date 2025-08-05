@@ -3,7 +3,7 @@ import cx from 'classnames'
 import UploadModal from 'uiSrc/pages/rdi/pipeline-management/components/upload-modal/UploadModal'
 import Download from 'uiSrc/pages/rdi/instance/components/download'
 import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
-import { EmptyButton, IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiEmptyButton, RiIconButton } from 'uiSrc/components/base/forms'
 import { UploadIcon, MoreactionsIcon } from 'uiSrc/components/base/icons'
 import { RiPopover } from 'uiSrc/components/base'
 import FetchPipelinePopover from '../fetch-pipeline-popover'
@@ -22,7 +22,7 @@ const RdiConfigFileActionMenu = () => {
   }
 
   const button = (
-    <IconButton
+    <RiIconButton
       className={styles.threeDotsBtn}
       role="button"
       icon={MoreactionsIcon}
@@ -49,7 +49,7 @@ const RdiConfigFileActionMenu = () => {
         </FlexItem>
         <FlexItem grow>
           <UploadModal onClose={closePopover}>
-            <EmptyButton
+            <RiEmptyButton
               color="text"
               className={styles.uploadBtn}
               icon={UploadIcon}
@@ -57,7 +57,7 @@ const RdiConfigFileActionMenu = () => {
               data-testid="upload-file-btn"
             >
               Upload from file
-            </EmptyButton>
+            </RiEmptyButton>
           </UploadModal>
         </FlexItem>
         <FlexItem grow>

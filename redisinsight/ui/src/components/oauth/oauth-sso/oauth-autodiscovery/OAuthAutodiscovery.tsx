@@ -21,7 +21,7 @@ import CloudIcon from 'uiSrc/assets/img/oauth/cloud_centered.svg?react'
 
 import { OAuthSsoHandlerDialog } from 'uiSrc/components'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
@@ -80,13 +80,13 @@ const OAuthAutodiscovery = (props: Props) => {
           </strong>{' '}
           account to auto-discover subscriptions and add your databases.
         </Text>
-        <PrimaryButton
+        <RiPrimaryButton
           onClick={handleClickDiscover}
           disabled={isDiscoverDisabled}
           data-testid="oauth-discover-btn"
         >
           Discover
-        </PrimaryButton>
+        </RiPrimaryButton>
       </div>
     )
   }
@@ -113,7 +113,7 @@ const OAuthAutodiscovery = (props: Props) => {
       </div>
       <OAuthSsoHandlerDialog>
         {(ssoCloudHandlerClick) => (
-          <PrimaryButton
+          <RiPrimaryButton
             size="s"
             // todo: choose either href or on click
             // href={getUtmExternalLink(EXTERNAL_LINKS.tryFree, { campaign: '' })}
@@ -127,7 +127,7 @@ const OAuthAutodiscovery = (props: Props) => {
             }}
           >
             Quick start
-          </PrimaryButton>
+          </RiPrimaryButton>
         )}
       </OAuthSsoHandlerDialog>
     </div>

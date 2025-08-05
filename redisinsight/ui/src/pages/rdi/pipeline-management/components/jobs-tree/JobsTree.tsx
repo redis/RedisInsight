@@ -26,10 +26,7 @@ import {
   RiIcon,
 } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
-import {
-  DestructiveButton,
-  IconButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { RiDestructiveButton, RiIconButton } from 'uiSrc/components/base/forms'
 import { RiLoader } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
@@ -187,7 +184,7 @@ const JobsTree = (props: IProps) => {
           position="top"
           anchorClassName="flex-row"
         >
-          <IconButton
+          <RiIconButton
             icon={EditIcon}
             onClick={() => {
               setCurrentJobName(name)
@@ -210,17 +207,17 @@ const JobsTree = (props: IProps) => {
               </Text>
             }
             submitBtn={
-              <DestructiveButton
+              <RiDestructiveButton
                 size="s"
                 color="secondary"
                 data-testid="delete-confirm-btn"
               >
                 Delete
-              </DestructiveButton>
+              </RiDestructiveButton>
             }
             onConfirm={() => handleDeleteClick(name)}
             button={
-              <IconButton
+              <RiIconButton
                 icon={DeleteIcon}
                 aria-label="delete job"
                 data-testid={`delete-job-${name}`}
@@ -357,7 +354,7 @@ const JobsTree = (props: IProps) => {
           position="top"
           anchorClassName="flex-row"
         >
-          <IconButton
+          <RiIconButton
             icon={PlusIcon}
             onClick={() => {
               setAccordionState('open')

@@ -26,8 +26,8 @@ import {
   RiTooltip,
 } from 'uiSrc/components'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CopyIcon , RiIcon } from 'uiSrc/components/base/icons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
+import { CopyIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import RedisCloudDatabasesResult from './RedisCloudDatabasesResult'
@@ -153,8 +153,12 @@ const RedisCloudDatabasesResultPage = () => {
         return (
           <div className="public_endpoint">
             <Text className="copyPublicEndpointText">{text}</Text>
-            <RiTooltip position="right" content="Copy" anchorClassName="copyPublicEndpointTooltip">
-              <IconButton
+            <RiTooltip
+              position="right"
+              content="Copy"
+              anchorClassName="copyPublicEndpointTooltip"
+            >
+              <RiIconButton
                 icon={CopyIcon}
                 aria-label="Copy public endpoint"
                 className="copyPublicEndpointBtn"
@@ -206,7 +210,12 @@ const RedisCloudDatabasesResultPage = () => {
             {statusAdded === AddRedisDatabaseStatus.Success ? (
               <Text>{messageAdded}</Text>
             ) : (
-              <RiTooltip position="left" title="Error" content={messageAdded} anchorClassName="truncateText">
+              <RiTooltip
+                position="left"
+                title="Error"
+                content={messageAdded}
+                anchorClassName="truncateText"
+              >
                 <Row align="center" gap="s">
                   <FlexItem>
                     <RiIcon type="ToastDangerIcon" color="danger600" />

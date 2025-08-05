@@ -8,15 +8,17 @@ import { SshPassType } from 'uiSrc/pages/home/constants'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
+import {
+  RiFormField,
+  RiCheckbox,
+  RiRadioGroup,
+} from 'uiSrc/components/base/forms'
 import {
   NumericInput,
   PasswordInput,
   TextArea,
   TextInput,
 } from 'uiSrc/components/base/inputs'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
-import { RiRadioGroup } from 'uiSrc/components/base/forms/radio-group/RadioGroup'
 import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
 
 export interface Props {
@@ -51,7 +53,7 @@ const SSHDetails = (props: Props) => {
         align={!flexGroupClassName ? 'end' : undefined}
       >
         <FlexItem style={{ width: '230px' }} className={flexItemClassName}>
-          <Checkbox
+          <RiCheckbox
             id={id}
             name="ssh"
             label="Use SSH Tunnel"
@@ -66,7 +68,7 @@ const SSHDetails = (props: Props) => {
         <Col gap="l">
           <Row gap="m" responsive className={flexGroupClassName}>
             <FlexItem grow className={flexItemClassName}>
-              <FormField label="Host*">
+              <RiFormField label="Host*">
                 <TextInput
                   name="sshHost"
                   id="sshHost"
@@ -75,17 +77,14 @@ const SSHDetails = (props: Props) => {
                   maxLength={200}
                   placeholder="Enter SSH Host"
                   value={formik.values.sshHost ?? ''}
-                  onChange={value => {
-                    formik.setFieldValue(
-                      'sshHost',
-                      validateField(value.trim()),
-                    )
+                  onChange={(value) => {
+                    formik.setFieldValue('sshHost', validateField(value.trim()))
                   }}
                 />
-              </FormField>
+              </RiFormField>
             </FlexItem>
             <FlexItem grow className={flexItemClassName}>
-              <FormField
+              <RiFormField
                 label="Port*"
                 additionalText="Should not exceed 65535."
               >
@@ -101,12 +100,12 @@ const SSHDetails = (props: Props) => {
                   onChange={(value) => formik.setFieldValue('sshPort', value)}
                   onFocus={selectOnFocus}
                 />
-              </FormField>
+              </RiFormField>
             </FlexItem>
           </Row>
           <Row responsive className={flexGroupClassName}>
             <FlexItem grow className={flexItemClassName}>
-              <FormField label="Username*">
+              <RiFormField label="Username*">
                 <TextInput
                   name="sshUsername"
                   id="sshUsername"
@@ -115,14 +114,14 @@ const SSHDetails = (props: Props) => {
                   maxLength={200}
                   placeholder="Enter SSH Username"
                   value={formik.values.sshUsername ?? ''}
-                  onChange={value => {
+                  onChange={(value) => {
                     formik.setFieldValue(
                       'sshUsername',
                       validateField(value.trim()),
                     )
                   }}
                 />
-              </FormField>
+              </RiFormField>
             </FlexItem>
           </Row>
           <Row responsive className={flexGroupClassName}>
@@ -141,7 +140,7 @@ const SSHDetails = (props: Props) => {
           {formik.values.sshPassType === SshPassType.Password && (
             <Row responsive className={flexGroupClassName}>
               <FlexItem grow className={flexItemClassName}>
-                <FormField label="Password">
+                <RiFormField label="Password">
                   <PasswordInput
                     name="sshPassword"
                     id="sshPassword"
@@ -161,7 +160,7 @@ const SSHDetails = (props: Props) => {
                     }}
                     autoComplete="new-password"
                   />
-                </FormField>
+                </RiFormField>
               </FlexItem>
             </Row>
           )}
@@ -170,7 +169,7 @@ const SSHDetails = (props: Props) => {
             <Col gap="m">
               <Row responsive className={flexGroupClassName}>
                 <FlexItem grow className={flexItemClassName}>
-                  <FormField label="Private Key*">
+                  <RiFormField label="Private Key*">
                     <TextArea
                       name="sshPrivateKey"
                       id="sshPrivateKey"
@@ -192,12 +191,12 @@ const SSHDetails = (props: Props) => {
                         }
                       }}
                     />
-                  </FormField>
+                  </RiFormField>
                 </FlexItem>
               </Row>
               <Row responsive className={flexGroupClassName}>
                 <FlexItem grow className={flexItemClassName}>
-                  <FormField label="Passphrase">
+                  <RiFormField label="Passphrase">
                     <PasswordInput
                       name="sshPassphrase"
                       id="sshPassphrase"
@@ -217,7 +216,7 @@ const SSHDetails = (props: Props) => {
                       }}
                       autoComplete="new-password"
                     />
-                  </FormField>
+                  </RiFormField>
                 </FlexItem>
               </Row>
             </Col>

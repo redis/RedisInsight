@@ -20,7 +20,7 @@ import {
 import { RestartChat } from 'uiSrc/components/side-panels/panels/ai-assistant/components/shared'
 
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { EmptyButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiEmptyButton, RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { EraserIcon, LightBulbIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
@@ -92,7 +92,7 @@ const ExpertChatHeader = (props: Props) => {
             panelPaddingSize="m"
             closePopover={() => setIsTutorialsPopoverOpen(false)}
             button={
-              <EmptyButton
+              <RiEmptyButton
                 icon={LightBulbIcon}
                 size="small"
                 onClick={() => setIsTutorialsPopoverOpen(true)}
@@ -106,20 +106,20 @@ const ExpertChatHeader = (props: Props) => {
                 Open relevant tutorials to learn more about search and query.
               </Text>
               <Spacer size="s" />
-              <PrimaryButton
+              <RiPrimaryButton
                 size="s"
                 onClick={handleOpenTutorials}
                 className={styles.openTutorialsBtn}
                 data-testid="ai-expert-open-tutorials"
               >
                 Open tutorials
-              </PrimaryButton>
+              </RiPrimaryButton>
             </>
           </RiPopover>
         </RiTooltip>
         <RestartChat
           button={
-            <EmptyButton
+            <RiEmptyButton
               disabled={isClearDisabled}
               icon={EraserIcon}
               size="small"

@@ -16,11 +16,11 @@ import { removeCapiKeyAction } from 'uiSrc/slices/oauth/cloud'
 import { Text } from 'uiSrc/components/base/text'
 
 import {
-  EmptyButton,
-  IconButton,
-  PrimaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { CopyIcon , RiIcon } from 'uiSrc/components/base/icons'
+  RiEmptyButton,
+  RiIconButton,
+  RiPrimaryButton,
+} from 'uiSrc/components/base/forms'
+import { CopyIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
@@ -155,7 +155,7 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
             content="Copy API Key Name"
             anchorClassName={styles.copyBtnAnchor}
           >
-            <IconButton
+            <RiIconButton
               icon={CopyIcon}
               aria-label="Copy API key"
               onClick={() => handleCopy(name || '')}
@@ -207,10 +207,10 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
         <div className={styles.noKeysMessage} data-testid="no-api-keys-message">
           <Title size="XS">
             <RiIcon
-                className={styles.starsIcon}
-                type="StarsIcon"
-                color="attention300"
-              />
+              className={styles.starsIcon}
+              type="StarsIcon"
+              color="attention300"
+            />
             The ultimate Redis starting point
           </Title>
           <Spacer size="s" />
@@ -223,7 +223,7 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
           <div className={styles.actions}>
             <OAuthSsoHandlerDialog>
               {(socialCloudHandlerClick) => (
-                <EmptyButton
+                <RiEmptyButton
                   size="small"
                   color="ghost"
                   className={styles.autodiscoverBtn}
@@ -236,12 +236,12 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
                   data-testid="autodiscover-btn"
                 >
                   Autodiscover
-                </EmptyButton>
+                </RiEmptyButton>
               )}
             </OAuthSsoHandlerDialog>
             <OAuthSsoHandlerDialog>
               {(ssoCloudHandlerClick) => (
-                <PrimaryButton
+                <RiPrimaryButton
                   size="small"
                   onClick={(e: React.MouseEvent) =>
                     ssoCloudHandlerClick(e, {
@@ -252,7 +252,7 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
                   data-testid="create-cloud-db-btn"
                 >
                   Create Redis Cloud database
-                </PrimaryButton>
+                </RiPrimaryButton>
               )}
             </OAuthSsoHandlerDialog>
           </div>

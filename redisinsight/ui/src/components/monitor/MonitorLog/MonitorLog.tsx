@@ -13,11 +13,8 @@ import { downloadFile } from 'uiSrc/utils/dom/downloadFile'
 import { fetchMonitorLog } from 'uiSrc/slices/cli/cli-output'
 
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { RefreshIcon, DownloadIcon , RiIcon } from 'uiSrc/components/base/icons'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
+import { RefreshIcon, DownloadIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
@@ -99,7 +96,7 @@ const MonitorLog = () => {
             <Row className={styles.actions} justify="between" align="center">
               <FlexItem>
                 {isSaveToFile && (
-                  <SecondaryButton
+                  <RiSecondaryButton
                     size="small"
                     icon={DownloadIcon}
                     className={styles.btn}
@@ -109,11 +106,11 @@ const MonitorLog = () => {
                   >
                     {width > SMALL_SCREEN_RESOLUTION && ' Download '}
                     Log
-                  </SecondaryButton>
+                  </RiSecondaryButton>
                 )}
               </FlexItem>
               <FlexItem>
-                <PrimaryButton
+                <RiPrimaryButton
                   size="small"
                   onClick={onResetProfiler}
                   icon={RefreshIcon}
@@ -122,7 +119,7 @@ const MonitorLog = () => {
                 >
                   Reset
                   {width > SMALL_SCREEN_RESOLUTION && ' Profiler'}
-                </PrimaryButton>
+                </RiPrimaryButton>
               </FlexItem>
             </Row>
           </div>

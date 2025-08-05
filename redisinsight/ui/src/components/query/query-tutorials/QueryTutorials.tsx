@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import { findTutorialPath } from 'uiSrc/utils'
 import { openTutorialByPath } from 'uiSrc/slices/panels/sidePanels'
 import { Text } from 'uiSrc/components/base/text'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
+import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import {
   sendEventTelemetry,
   TELEMETRY_EMPTY_VALUE,
@@ -23,7 +23,7 @@ export interface Props {
   source: string
 }
 
-const QueryTutorialsButton = styled(EmptyButton)`
+const QueryTutorialsButton = styled(RiEmptyButton)`
   padding: 4px 8px;
   background-color: var(--browserTableRowEven);
 

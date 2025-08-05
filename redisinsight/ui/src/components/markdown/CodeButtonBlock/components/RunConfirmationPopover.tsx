@@ -8,12 +8,12 @@ import { ConfigDBStorageItem } from 'uiSrc/constants/storage'
 import { FeatureFlagComponent } from 'uiSrc/components'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiCheckbox,
+} from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import styles from '../styles.module.scss'
 
 interface Props {
@@ -56,7 +56,7 @@ const RunConfirmationPopover = ({ onApply }: Props) => {
         to run commands in this database?
       </Text>
       <Spacer size="s" />
-      <Checkbox
+      <RiCheckbox
         id="showAgain"
         name="showAgain"
         label="Don't show again for this database"
@@ -69,23 +69,23 @@ const RunConfirmationPopover = ({ onApply }: Props) => {
       <div className={styles.popoverFooter}>
         <div>
           <FeatureFlagComponent name={FeatureFlags.envDependent}>
-            <SecondaryButton
+            <RiSecondaryButton
               size="s"
               className={styles.popoverBtn}
               onClick={handleChangeDatabase}
               data-testid="tutorial-popover-change-db"
             >
               Change Database
-            </SecondaryButton>
+            </RiSecondaryButton>
           </FeatureFlagComponent>
-          <PrimaryButton
+          <RiPrimaryButton
             size="s"
             className={styles.popoverBtn}
             onClick={handleApply}
             data-testid="tutorial-popover-apply-run"
           >
             Run
-          </PrimaryButton>
+          </RiPrimaryButton>
         </div>
       </div>
     </>

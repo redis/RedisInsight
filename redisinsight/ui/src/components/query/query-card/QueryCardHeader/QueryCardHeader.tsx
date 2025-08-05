@@ -12,7 +12,8 @@ import {
   CopyIcon,
   DeleteIcon,
   PlayIcon,
- RiIcon } from 'uiSrc/components/base/icons'
+  RiIcon,
+} from 'uiSrc/components/base/icons'
 import { Theme } from 'uiSrc/constants'
 import {
   getCommandNameFromQuery,
@@ -47,8 +48,7 @@ import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 import { FormatedDate, FullScreen, RiTooltip } from 'uiSrc/components'
 
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
+import { RiIconButton, RiSelect } from 'uiSrc/components/base/forms'
 import QueryCardTooltip from '../QueryCardTooltip'
 
 import styles from './styles.module.scss'
@@ -347,7 +347,7 @@ const QueryCardHeader = (props: Props) => {
                 resultsMode={resultsMode}
               />
             </ColorText>
-            <IconButton
+            <RiIconButton
               icon={CopyIcon}
               aria-label="Copy query"
               className={cx('copy-btn', styles.copyBtn)}
@@ -469,7 +469,7 @@ const QueryCardHeader = (props: Props) => {
               )}
             </FlexItem>
             <FlexItem className={styles.buttonIcon}>
-              <IconButton
+              <RiIconButton
                 disabled={loading || clearing}
                 icon={DeleteIcon}
                 aria-label="Delete command"
@@ -484,7 +484,7 @@ const QueryCardHeader = (props: Props) => {
                   position="left"
                   anchorClassName={cx(styles.buttonIcon, styles.playIcon)}
                 >
-                  <IconButton
+                  <RiIconButton
                     disabled={emptyCommand}
                     icon={PlayIcon}
                     aria-label="Re-run command"
@@ -497,7 +497,7 @@ const QueryCardHeader = (props: Props) => {
             {!isFullScreen && (
               <FlexItem className={styles.buttonIcon}>
                 {!isSilentModeWithoutError(resultsMode, summary?.fail) && (
-                  <IconButton
+                  <RiIconButton
                     icon={isOpen ? ChevronUpIcon : ChevronDownIcon}
                     aria-label="toggle collapse"
                   />

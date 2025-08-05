@@ -7,7 +7,7 @@ import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 import { cliSettingsSelector } from 'uiSrc/slices/cli/cli-settings'
 import { Text } from 'uiSrc/components/base/text'
 
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
+import { RiSelect } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 

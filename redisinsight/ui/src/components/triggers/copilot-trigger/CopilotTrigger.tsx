@@ -10,7 +10,7 @@ import {
 import { RiTooltip } from 'uiSrc/components'
 import { CopilotIcon } from 'uiSrc/components/base/icons'
 import { SidePanels } from 'uiSrc/slices/interfaces/insights'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
+import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import styles from './styles.module.scss'
 
 const CopilotTrigger = () => {
@@ -29,7 +29,7 @@ const CopilotTrigger = () => {
       })}
     >
       <RiTooltip content="Redis Copilot">
-        <EmptyButton
+        <RiEmptyButton
           className={styles.btn}
           role="button"
           icon={CopilotIcon}

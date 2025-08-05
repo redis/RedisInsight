@@ -26,8 +26,8 @@ import {
 } from 'uiSrc/components'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CopyIcon , RiIcon } from 'uiSrc/components/base/icons'
+import { RiIconButton } from 'uiSrc/components/base/forms'
+import { CopyIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import RedisClusterDatabases from './RedisClusterDatabases'
@@ -126,7 +126,7 @@ const RedisClusterDatabasesPage = () => {
                 content="Copy"
                 anchorClassName="copyHostPortTooltip"
               >
-                <IconButton
+                <RiIconButton
                   icon={CopyIcon}
                   aria-label="Copy host:port"
                   className="copyHostPortBtn"

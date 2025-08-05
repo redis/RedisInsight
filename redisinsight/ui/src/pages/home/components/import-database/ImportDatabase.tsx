@@ -13,10 +13,7 @@ import { RiTooltip, UploadWarning, RiFilePicker } from 'uiSrc/components'
 import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { InfoIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { ColorText, Text } from 'uiSrc/components/base/text'
@@ -101,14 +98,14 @@ const ImportDatabase = (props: Props) => {
     if (error) {
       return ReactDOM.createPortal(
         <div className="footerAddDatabase">
-          <PrimaryButton
+          <RiPrimaryButton
             size="s"
             color="secondary"
             onClick={onClickRetry}
             data-testid="btn-retry"
           >
             Retry
-          </PrimaryButton>
+          </RiPrimaryButton>
         </div>,
         footerEl,
       )
@@ -117,14 +114,14 @@ const ImportDatabase = (props: Props) => {
     if (data) {
       return ReactDOM.createPortal(
         <div className="footerAddDatabase">
-          <PrimaryButton
+          <RiPrimaryButton
             size="s"
             type="submit"
             onClick={handleOnClose}
             data-testid="btn-close"
           >
             Ok
-          </PrimaryButton>
+          </RiPrimaryButton>
         </div>,
         footerEl,
       )
@@ -132,20 +129,20 @@ const ImportDatabase = (props: Props) => {
 
     return ReactDOM.createPortal(
       <div className="footerAddDatabase">
-        <SecondaryButton
+        <RiSecondaryButton
           size="s"
           className="btn-cancel"
           onClick={handleOnClose}
           style={{ marginRight: 12 }}
         >
           Cancel
-        </SecondaryButton>
+        </RiSecondaryButton>
         <RiTooltip
           position="top"
           anchorClassName="euiToolTip__btn-disabled"
           content={isSubmitDisabled ? 'Upload a file' : undefined}
         >
-          <PrimaryButton
+          <RiPrimaryButton
             size="s"
             type="submit"
             onClick={onSubmit}
@@ -155,7 +152,7 @@ const ImportDatabase = (props: Props) => {
             data-testid="btn-submit"
           >
             Submit
-          </PrimaryButton>
+          </RiPrimaryButton>
         </RiTooltip>
       </div>,
       footerEl,

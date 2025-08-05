@@ -30,15 +30,13 @@ import {
   ShowIcon,
   SnoozeIcon,
   StarsIcon,
- RiIcon } from 'uiSrc/components/base/icons'
+  RiIcon,
+} from 'uiSrc/components/base/icons'
 
 import { openTutorialByPath } from 'uiSrc/slices/panels/sidePanels'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Card } from 'uiSrc/components/base/layout'
-import {
-  IconButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { RiIconButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
 import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
 import { Link } from 'uiSrc/components/base/link/Link'
@@ -198,7 +196,7 @@ const Recommendation = ({
   const recommendationContent = () => (
     <Text>
       {!isUndefined(tutorialId) && (
-        <SecondaryButton
+        <RiSecondaryButton
           filled
           icon={StarsIcon}
           iconSide="right"
@@ -207,7 +205,7 @@ const Recommendation = ({
           data-testid={`${name}-to-tutorial-btn`}
         >
           {tutorialId ? 'Start Tutorial' : 'Workbench'}
-        </SecondaryButton>
+        </RiSecondaryButton>
       )}
       <RecommendationBody
         elements={content}
@@ -252,7 +250,7 @@ const Recommendation = ({
             position="top"
             anchorClassName="flex-row"
           >
-            <IconButton
+            <RiIconButton
               icon={SnoozeIcon}
               className={styles.snoozeBtn}
               onClick={handleDelete}
@@ -272,7 +270,7 @@ const Recommendation = ({
             position="top"
             anchorClassName="flex-row"
           >
-            <IconButton
+            <RiIconButton
               icon={hide ? HideIcon : ShowIcon}
               className={styles.hideBtn}
               onClick={toggleHide}

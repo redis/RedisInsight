@@ -5,7 +5,7 @@ import { CustomErrorCodes } from 'uiSrc/constants'
 import { AI_CHAT_ERRORS } from 'uiSrc/constants/apiErrors'
 import ApiStatusCode from 'uiSrc/constants/apiStatusCode'
 
-import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { DeleteIcon } from 'uiSrc/components/base/icons'
 import RestartChat from '../restart-chat'
 
@@ -91,14 +91,14 @@ const ErrorMessage = (props: Props) => {
         <RestartChat
           anchorClassName={styles.restartSessionWrapper}
           button={
-            <SecondaryButton
+            <RiSecondaryButton
               size="s"
               icon={DeleteIcon}
               className={styles.restartSessionBtn}
               data-testid="ai-chat-error-restart-session-btn"
             >
               Restart session
-            </SecondaryButton>
+            </RiSecondaryButton>
           }
           onConfirm={onRestart}
         />

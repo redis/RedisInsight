@@ -38,7 +38,7 @@ import { SidePanels } from 'uiSrc/slices/interfaces/insights'
 
 import { FeatureFlags } from 'uiSrc/constants'
 import { FeatureFlagComponent } from 'uiSrc/components'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
+import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
@@ -186,14 +186,14 @@ const SearchKeyList = () => {
         appendRight={
           searchMode === SearchMode.Redisearch ? (
             <FeatureFlagComponent name={FeatureFlags.databaseChat}>
-              <EmptyButton
+              <RiEmptyButton
                 className={styles.askCopilotBtn}
                 size="small"
                 onClick={handleClickAskCopilot}
                 data-testid="ask-redis-copilot-btn"
               >
                 <RiIcon className={styles.cloudIcon} type="StarsIcon" />
-              </EmptyButton>
+              </RiEmptyButton>
             </FeatureFlagComponent>
           ) : undefined
         }

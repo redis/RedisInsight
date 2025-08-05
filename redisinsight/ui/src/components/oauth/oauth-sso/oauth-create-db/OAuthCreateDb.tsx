@@ -29,7 +29,7 @@ import { Nullable } from 'uiSrc/utils'
 import OAuthForm from 'uiSrc/components/oauth/shared/oauth-form'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import {
@@ -158,12 +158,12 @@ const OAuthCreateDb = (props: Props) => {
                 onChange={handleChangeRecommendedSettings}
               />
               <Spacer />
-              <PrimaryButton
+              <RiPrimaryButton
                 onClick={handleClickCreate}
                 data-testid="oauth-create-db"
               >
                 Create
-              </PrimaryButton>
+              </RiPrimaryButton>
             </>
           )}
         </FlexItem>

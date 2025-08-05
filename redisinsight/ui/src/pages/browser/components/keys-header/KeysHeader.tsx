@@ -9,7 +9,8 @@ import {
   ColumnsIcon,
   EqualIcon,
   FoldersIcon,
- RiIcon } from 'uiSrc/components/base/icons'
+  RiIcon,
+} from 'uiSrc/components/base/icons'
 import KeysSummary from 'uiSrc/components/keys-summary'
 import {
   SCAN_COUNT_DEFAULT,
@@ -53,10 +54,10 @@ import { BrowserColumns, KeyValueFormat } from 'uiSrc/constants'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { setConnectivityError } from 'uiSrc/slices/app/connectivity'
 import {
-  IconButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
+  RiIconButton,
+  RiSecondaryButton,
+  RiCheckbox,
+} from 'uiSrc/components/base/forms'
 import styles from './styles.module.scss'
 
 const HIDE_REFRESH_LABEL_WIDTH = 640
@@ -297,7 +298,7 @@ const KeysHeader = (props: Props) => {
               position="top"
               key={view.tooltipText}
             >
-              <IconButton
+              <RiIconButton
                 size="S"
                 className={view.getClassName()}
                 icon={view.getIconType()}
@@ -369,7 +370,7 @@ const KeysHeader = (props: Props) => {
                     panelClassName={styles.popoverWrapper}
                     closePopover={() => setColumnsConfigShown(false)}
                     button={
-                      <SecondaryButton
+                      <RiSecondaryButton
                         size="small"
                         icon={ColumnsIcon}
                         onClick={toggleColumnsConfigVisibility}
@@ -380,12 +381,12 @@ const KeysHeader = (props: Props) => {
                         <span className={styles.columnsButtonText}>
                           Columns
                         </span>
-                      </SecondaryButton>
+                      </RiSecondaryButton>
                     }
                   >
                     <Row align="center" gap="m">
                       <FlexItem grow>
-                        <Checkbox
+                        <RiCheckbox
                           id="show-key-size"
                           name="show-key-size"
                           label="Key size"
@@ -416,7 +417,7 @@ const KeysHeader = (props: Props) => {
                         </RiTooltip>
                       </FlexItem>
                     </Row>
-                    <Checkbox
+                    <RiCheckbox
                       id="show-ttl"
                       name="show-ttl"
                       label="TTL"

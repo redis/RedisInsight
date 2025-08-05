@@ -26,7 +26,7 @@ import { sortRecommendations } from 'uiSrc/utils/recommendation'
 import { openTutorialByPath } from 'uiSrc/slices/panels/sidePanels'
 import { findTutorialPath } from 'uiSrc/utils'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons'
 
@@ -94,25 +94,29 @@ const Recommendations = () => {
     >
       <FlexItem onClick={onRedisStackClick}>
         {redisStack && (
-            <Link
-              target="_blank"
-              href={EXTERNAL_LINKS.redisStack}
-              className={styles.redisStackLink}
-              data-testid={`${id}-redis-stack-link`}
+          <Link
+            target="_blank"
+            href={EXTERNAL_LINKS.redisStack}
+            className={styles.redisStackLink}
+            data-testid={`${id}-redis-stack-link`}
+          >
+            <RiTooltip
+              content="Redis Stack"
+              position="top"
+              anchorClassName="flex-row"
             >
-              <RiTooltip content="Redis Stack" position="top" anchorClassName="flex-row">
-                <RiIcon
-                  type={
-                    theme === Theme.Dark
-                      ? 'RediStackDarkMinIcon'
-                      : 'RediStackLightMinIcon'
-                  }
-                  className={styles.redisStackIcon}
-                  data-testid={`${id}-redis-stack-icon`}
-                />
-              </RiTooltip>
-            </Link>
-          )}
+              <RiIcon
+                type={
+                  theme === Theme.Dark
+                    ? 'RediStackDarkMinIcon'
+                    : 'RediStackLightMinIcon'
+                }
+                className={styles.redisStackIcon}
+                data-testid={`${id}-redis-stack-icon`}
+              />
+            </RiTooltip>
+          </Link>
+        )}
       </FlexItem>
       <FlexItem>{title}</FlexItem>
     </Row>
@@ -208,13 +212,13 @@ const Recommendations = () => {
                     <RecommendationVoting vote={vote as Vote} name={name} />
                   </FeatureFlagComponent>
                   {tutorialId && (
-                    <PrimaryButton
+                    <RiPrimaryButton
                       size="s"
                       onClick={() => goToTutorial(tutorialId, id)}
                       data-testid={`${id}-to-tutorial-btn`}
                     >
                       Tutorial
-                    </PrimaryButton>
+                    </RiPrimaryButton>
                   )}
                 </div>
               </div>

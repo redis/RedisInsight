@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/no-nested-template-literals */
 import styled, { css } from 'styled-components'
 import React, { forwardRef, InputHTMLAttributes } from 'react'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
+import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
 
 type FilePickerWrapperProps = InputHTMLAttributes<HTMLDivElement> & {
@@ -81,6 +81,6 @@ export const FilePickerPrompt = styled.div<FilePickerWrapperProps>`
   ${({ $large }) => ($large ? promptLarge : promptDefault)}
 `
 
-export const FilePickerClearButton = styled(EmptyButton)`
+export const FilePickerClearButton = styled(RiEmptyButton)`
   pointer-events: auto; /* Undo the pointer-events: none applied to the enclosing prompt */
 `

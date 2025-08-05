@@ -1,13 +1,13 @@
 import styled from 'styled-components'
 import React from 'react'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
+import { RiEmptyButton } from 'uiSrc/components/base/forms'
 /**
  * Text button component
  *
  * This is how we can implement custom styles
  */
-export const TextBtn = styled(EmptyButton)<
-  React.ComponentProps<typeof EmptyButton> & {
+export const TextBtn = styled(RiEmptyButton)<
+  React.ComponentProps<typeof RiEmptyButton> & {
     $active?: boolean
   }
 >`

@@ -6,7 +6,7 @@ import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import { RiLoader, RiModal } from 'uiSrc/components/base/display'
 import { RiIcon, CancelIcon } from 'uiSrc/components/base/icons'
-import { Button } from 'uiSrc/components/base/forms/buttons'
+import { Button } from 'uiSrc/components/base/forms'
 import styles from './styles.module.scss'
 
 export interface Props<T> {

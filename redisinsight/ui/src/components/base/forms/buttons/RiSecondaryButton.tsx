@@ -1,11 +1,8 @@
 import React from 'react'
-import {
-  BaseButtonProps,
-  SecondaryButtonProps,
-} from 'uiSrc/components/base/forms/buttons/button.styles'
-import { BaseButton } from 'uiSrc/components/base/forms/buttons/Button'
+import { BaseButtonProps, SecondaryButtonProps } from './button.styles'
+import { BaseButton } from './Button'
 
-export const SecondaryButton = ({
+export const RiSecondaryButton = ({
   filled = false,
   inverted,
   ...props

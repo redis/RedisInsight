@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useCallback, useMemo, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { PlusIcon , RiIcon } from 'uiSrc/components/base/icons'
+import { PlusIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { ConnectionProvider, Instance } from 'uiSrc/slices/interfaces'
 import { FormDialog } from 'uiSrc/components'
 
@@ -9,10 +9,10 @@ import { updateInstanceAction } from 'uiSrc/slices/instances/instances'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import successMessages from 'uiSrc/components/notifications/success-messages'
 import {
-  EmptyButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+  RiEmptyButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+} from 'uiSrc/components/base/forms'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
@@ -129,16 +129,16 @@ export const ManageTagsModal = ({
             </div>
           )}
           <div className={styles.footer}>
-            <SecondaryButton onClick={onClose} data-testid="close-button">
+            <RiSecondaryButton onClick={onClose} data-testid="close-button">
               Close
-            </SecondaryButton>
-            <PrimaryButton
+            </RiSecondaryButton>
+            <RiPrimaryButton
               onClick={handleSave}
               disabled={isSaveButtonDisabled}
               data-testid="save-tags-button"
             >
               Save tags
-            </PrimaryButton>
+            </RiPrimaryButton>
           </div>
         </>
       }
@@ -187,7 +187,7 @@ export const ManageTagsModal = ({
         </div>
       </div>
       <Spacer size="s" />
-      <EmptyButton
+      <RiEmptyButton
         icon={PlusIcon}
         onClick={handleAddTag}
         size="small"
@@ -195,7 +195,7 @@ export const ManageTagsModal = ({
         data-testid="add-tag-button"
       >
         Add additional tag
-      </EmptyButton>
+      </RiEmptyButton>
     </FormDialog>
   )
 }

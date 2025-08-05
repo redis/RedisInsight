@@ -27,10 +27,9 @@ import {
 } from 'uiSrc/utils'
 
 import { FlexItem, Grid } from 'uiSrc/components/base/layout/flex'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CopyIcon , RiIcon } from 'uiSrc/components/base/icons'
+import { RiIconButton, RiFormField } from 'uiSrc/components/base/forms'
+import { CopyIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { RiTooltip } from 'uiSrc/components'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
@@ -176,9 +175,7 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
                   isLoading={loading}
                   declineOnUnmount={false}
                 >
-                  <FormField
-                    additionalText={appendKeyEditing()}
-                  >
+                  <RiFormField additionalText={appendKeyEditing()}>
                     <TextInput
                       name="key"
                       id="key"
@@ -197,7 +194,7 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
                       autoComplete="off"
                       data-testid="edit-key-input"
                     />
-                  </FormField>
+                  </RiFormField>
                 </InlineItemEditor>
                 <p className={styles.keyHiddenText}>{key}</p>
               </>
@@ -208,7 +205,7 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
                 content="Copy"
                 anchorClassName={styles.copyKey}
               >
-                <IconButton
+                <RiIconButton
                   icon={CopyIcon}
                   id={COPY_KEY_NAME_ICON}
                   aria-label="Copy key name"

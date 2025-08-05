@@ -26,11 +26,11 @@ import {
 } from 'uiSrc/pages/browser/components/add-key/AddKeyHash/interfaces'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
+} from 'uiSrc/components/base/forms'
 import { TextInput } from 'uiSrc/components/base/inputs'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
 import {
   AddFieldsToHashDto,
   HashFieldDto,
@@ -175,14 +175,14 @@ const AddHashFields = (props: Props) => {
           {(item, index) => (
             <Row align="center" gap="m">
               <FlexItem grow={2}>
-                <FormField>
+                <RiFormField>
                   <TextInput
                     name={`fieldName-${item.id}`}
                     id={`fieldName-${item.id}`}
                     placeholder="Enter Field"
                     value={item.fieldName}
                     disabled={loading}
-                    onChange={value =>
+                    onChange={(value) =>
                       handleFieldChange('fieldName', item.id, value)
                     }
                     ref={
@@ -190,33 +190,33 @@ const AddHashFields = (props: Props) => {
                     }
                     data-testid="hash-field"
                   />
-                </FormField>
+                </RiFormField>
               </FlexItem>
               <FlexItem grow={2}>
-                <FormField>
+                <RiFormField>
                   <TextInput
                     name={`fieldValue-${item.id}`}
                     id={`fieldValue-${item.id}`}
                     placeholder="Enter Value"
                     value={item.fieldValue}
                     disabled={loading}
-                    onChange={value =>
+                    onChange={(value) =>
                       handleFieldChange('fieldValue', item.id, value)
                     }
                     data-testid="hash-value"
                   />
-                </FormField>
+                </RiFormField>
               </FlexItem>
               {isExpireFieldsAvailable && (
                 <FlexItem grow={1}>
-                  <FormField>
+                  <RiFormField>
                     <TextInput
                       name={`fieldTTL-${item.id}`}
                       id={`fieldTTL-${item.id}`}
                       placeholder="Enter TTL"
                       value={item.fieldTTL || ''}
                       disabled={loading}
-                      onChange={value =>
+                      onChange={(value) =>
                         handleFieldChange(
                           'fieldTTL',
                           item.id,
@@ -225,7 +225,7 @@ const AddHashFields = (props: Props) => {
                       }
                       data-testid="hash-ttl"
                     />
-                  </FormField>
+                  </RiFormField>
                 </FlexItem>
               )}
             </Row>
@@ -236,24 +236,24 @@ const AddHashFields = (props: Props) => {
         <Row justify="end" gap="m">
           <FlexItem>
             <div>
-              <SecondaryButton
+              <RiSecondaryButton
                 onClick={() => closePanel(true)}
                 data-testid="cancel-fields-btn"
               >
                 Cancel
-              </SecondaryButton>
+              </RiSecondaryButton>
             </div>
           </FlexItem>
           <FlexItem>
             <div>
-              <PrimaryButton
+              <RiPrimaryButton
                 disabled={loading}
                 loading={loading}
                 onClick={submitData}
                 data-testid="save-fields-btn"
               >
                 Save
-              </PrimaryButton>
+              </RiPrimaryButton>
             </div>
           </FlexItem>
         </Row>
