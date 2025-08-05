@@ -24,7 +24,7 @@ import {
   RiFormField,
 } from 'uiSrc/components/base/forms'
 import { InfoIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { PasswordInput, TextInput } from 'uiSrc/components/base/inputs'
+import { RiPasswordInput, RiTextInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Spacer } from 'uiSrc/components/base/layout'
 import ValidationTooltip from './components/ValidationTooltip'
@@ -170,7 +170,7 @@ const ConnectionForm = (props: Props) => {
               <RiFormField label="RDI Alias*" className={styles.withoutPadding}>
                 <Field name="name">
                   {({ field }: { field: FieldInputProps<string> }) => (
-                    <TextInput
+                    <RiTextInput
                       data-testid="connection-form-name-input"
                       placeholder="Enter RDI Alias"
                       maxLength={500}
@@ -193,7 +193,7 @@ const ConnectionForm = (props: Props) => {
               >
                 <Field name="url">
                   {({ field }: { field: FieldInputProps<string> }) => (
-                    <TextInput
+                    <RiTextInput
                       data-testid="connection-form-url-input"
                       placeholder="Enter the RDI host IP as: https://[IP-Address]"
                       disabled={!!editInstance}
@@ -219,7 +219,7 @@ const ConnectionForm = (props: Props) => {
                     >
                       <Field name="username">
                         {({ field }: { field: FieldInputProps<string> }) => (
-                          <TextInput
+                          <RiTextInput
                             data-testid="connection-form-username-input"
                             placeholder="Enter the RDI Redis username"
                             maxLength={500}
@@ -253,7 +253,7 @@ const ConnectionForm = (props: Props) => {
                           form: FormikHelpers<string>
                           meta: FieldMetaProps<string>
                         }) => (
-                          <PasswordInput
+                          <RiPasswordInput
                             data-testid="connection-form-password-input"
                             placeholder="Enter the RDI Redis password"
                             maxLength={500}

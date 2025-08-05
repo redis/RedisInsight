@@ -7,7 +7,7 @@ import { addKeyStateSelector, addStringKey } from 'uiSrc/slices/browser/keys'
 
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import { RiFormField } from 'uiSrc/components/base/forms'
-import { TextArea } from 'uiSrc/components/base/inputs'
+import { RiTextArea } from 'uiSrc/components/base/inputs'
 import { SetStringWithExpireDto } from 'apiSrc/modules/browser/string/dto'
 import { AddStringFormConfig as config } from '../constants/fields-config'
 
@@ -50,7 +50,7 @@ const AddKeyString = (props: Props) => {
   return (
     <form onSubmit={onFormSubmit}>
       <RiFormField label={config.value.label}>
-        <TextArea
+        <RiTextArea
           name="value"
           id="value"
           placeholder={config.value.placeholder}

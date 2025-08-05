@@ -7,7 +7,7 @@ import AddMultipleFields from 'uiSrc/pages/browser/components/add-multiple-field
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { RiFormField } from 'uiSrc/components/base/forms'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 import { CreateSetWithExpireDto } from 'apiSrc/modules/browser/set/dto'
 
 import { INITIAL_SET_MEMBER_STATE, ISetMemberState } from './interfaces'
@@ -129,7 +129,7 @@ const AddKeySet = (props: Props) => {
           <Row align="center">
             <FlexItem grow>
               <RiFormField>
-                <TextInput
+                <RiTextInput
                   name={`member-${item.id}`}
                   id={`member-${item.id}`}
                   placeholder={config.member.placeholder}

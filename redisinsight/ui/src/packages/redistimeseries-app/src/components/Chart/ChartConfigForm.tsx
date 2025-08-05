@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { SwitchInput, TextInput } from 'uiSrc/components/base/inputs'
+import { RiSwitchInput, RiTextInput } from 'uiSrc/components/base/inputs'
 import {
   RiFormFieldset,
   RiButtonGroup,
@@ -61,12 +61,12 @@ export default function ChartConfigForm(props: ChartConfigFormProps) {
           selected={value.mode}
           onClick={(v) => onChange('mode', v)}
         />
-        <SwitchInput
+        <RiSwitchInput
           title="Staircase"
           checked={value.staircase}
           onCheckedChange={(checked) => onChange('staircase', checked)}
         />
-        <SwitchInput
+        <RiSwitchInput
           title="Fill"
           checked={value.fill}
           onCheckedChange={(checked) => onChange('fill', checked)}
@@ -82,7 +82,7 @@ export default function ChartConfigForm(props: ChartConfigFormProps) {
           <div className="more-options">
             <section>
               <RiFormFieldset legend={{ children: 'Title' }}>
-                <TextInput
+                <RiTextInput
                   placeholder="Title"
                   value={value.title}
                   onChange={(value) => onChange('title', value)}
@@ -91,7 +91,7 @@ export default function ChartConfigForm(props: ChartConfigFormProps) {
                 />
               </RiFormFieldset>
               <RiFormFieldset legend={{ children: 'X axis Label' }}>
-                <TextInput
+                <RiTextInput
                   placeholder="X axis label"
                   value={value.xlabel}
                   onChange={(value) => onChange('xlabel', value)}
@@ -103,7 +103,7 @@ export default function ChartConfigForm(props: ChartConfigFormProps) {
             <section>
               <div className="right-y-axis">
                 <div className="switch-wrapper">
-                  <SwitchInput
+                  <RiSwitchInput
                     title="Use Right Y Axis"
                     checked={value.yAxis2}
                     onCheckedChange={(checked) => onChange('yAxis2', checked)}
@@ -161,7 +161,7 @@ export default function ChartConfigForm(props: ChartConfigFormProps) {
 const YAxisConfigForm = ({ value, onChange, label }: any) => (
   <div>
     <RiFormFieldset legend={{ children: `${label} Label` }}>
-      <TextInput
+      <RiTextInput
         placeholder="Label"
         value={value.label}
         onChange={(value) => onChange({ ...value, label: value })}

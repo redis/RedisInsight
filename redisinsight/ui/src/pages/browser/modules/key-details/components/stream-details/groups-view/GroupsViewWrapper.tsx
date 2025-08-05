@@ -37,7 +37,7 @@ import { FormatedDate, RiTooltip } from 'uiSrc/components'
 import { Text } from 'uiSrc/components/base/text'
 import { RiFormField } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 import {
   ConsumerDto,
   ConsumerGroupDto,
@@ -375,7 +375,7 @@ const GroupsViewWrapper = (props: Props) => {
                 </RiTooltip>
               }
             >
-              <TextInput
+              <RiTextInput
                 name="id"
                 id="id"
                 placeholder="ID*"

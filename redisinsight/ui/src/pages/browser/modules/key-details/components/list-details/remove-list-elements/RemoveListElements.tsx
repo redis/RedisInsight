@@ -41,7 +41,7 @@ import {
 } from 'uiSrc/components/base/forms'
 import { DeleteIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { RiPopover } from 'uiSrc/components/base'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 import { DeleteListElementsDto } from 'apiSrc/modules/browser/list/dto'
 
 import {
@@ -265,7 +265,7 @@ const RemoveListElements = (props: Props) => {
               <RiFormField
                 additionalText={!canRemoveMultiple ? InfoBoxPopover() : <></>}
               >
-                <TextInput
+                <RiTextInput
                   name={config.count.name}
                   id={config.count.name}
                   maxLength={200}

@@ -5,7 +5,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 
 import { Text } from 'uiSrc/components/base/text'
-import { SwitchInput } from 'uiSrc/components/base/inputs'
+import { RiSwitchInput } from 'uiSrc/components/base/inputs'
 
 import { ItemDescription } from './components'
 import { IConsent } from '../ConsentsSettings'
@@ -39,14 +39,17 @@ const ConsentOption = (props: Props) => {
             color="subdued"
             style={{ marginTop: '12px' }}
           >
-            <ItemDescription description={consent.description} withLink={consent.linkToPrivacyPolicy} />
+            <ItemDescription
+              description={consent.description}
+              withLink={consent.linkToPrivacyPolicy}
+            />
           </Text>
           <Spacer size="m" />
         </>
       )}
       <Row gap="m">
         <FlexItem>
-          <SwitchInput
+          <RiSwitchInput
             checked={checked}
             onCheckedChange={(checked) =>
               onChangeAgreement(checked, consent.agreementName)
@@ -64,7 +67,10 @@ const ConsentOption = (props: Props) => {
               color="subdued"
               style={{ marginTop: '12px' }}
             >
-              <ItemDescription description={consent.description} withLink={consent.linkToPrivacyPolicy} />
+              <ItemDescription
+                description={consent.description}
+                withLink={consent.linkToPrivacyPolicy}
+              />
             </Text>
           )}
         </FlexItem>

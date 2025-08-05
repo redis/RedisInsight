@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { SearchInput } from 'uiSrc/components/base/inputs'
+import { RiSearchInput } from 'uiSrc/components/base/inputs'
 
 import { sentinelSelector } from 'uiSrc/slices/instances/sentinel'
 import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
@@ -107,7 +107,7 @@ const SentinelDatabasesResult = ({
         </Row>
         <FlexItem>
           <RiFormField className={styles.searchForm}>
-            <SearchInput
+            <RiSearchInput
               placeholder="Search..."
               onChange={onQueryChange}
               aria-label="Search"

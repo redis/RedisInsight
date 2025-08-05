@@ -13,7 +13,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { validateNumber } from 'uiSrc/utils'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { RiFormField } from 'uiSrc/components/base/forms'
-import { SwitchInput } from 'uiSrc/components/base/inputs'
+import { RiSwitchInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Link } from 'uiSrc/components/base/link/Link'
 
@@ -44,7 +44,7 @@ const WorkbenchSettings = () => {
       <Title size="M">Editor Cleanup</Title>
       <Spacer size="m" />
       <RiFormField>
-        <SwitchInput
+        <RiSwitchInput
           checked={cleanup}
           onCheckedChange={onSwitchWbCleanUp}
           title="Clear the Editor after running commands"

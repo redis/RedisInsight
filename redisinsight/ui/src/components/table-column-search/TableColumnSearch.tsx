@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { KeyboardKeys as keys } from 'uiSrc/constants/keys'
 import { Maybe } from 'uiSrc/utils'
-import { SearchInput } from 'uiSrc/components/base/inputs'
+import { RiSearchInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -39,7 +39,7 @@ const TableColumnSearch = (props: Props) => {
 
   return (
     <div className={styles.search}>
-      <SearchInput
+      <RiSearchInput
         onKeyDown={onKeyDown}
         name={fieldName}
         placeholder="Search"

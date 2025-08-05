@@ -29,7 +29,7 @@ import {
   RiFormField,
 } from 'uiSrc/components/base/forms'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -146,7 +146,7 @@ const AddSetMembers = (props: Props) => {
             <Row align="center">
               <FlexItem grow>
                 <RiFormField>
-                  <TextInput
+                  <RiTextInput
                     name={`member-${item.id}`}
                     id={`member-${item.id}`}
                     placeholder={config.member.placeholder}

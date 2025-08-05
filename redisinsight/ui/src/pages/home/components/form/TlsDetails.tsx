@@ -29,7 +29,7 @@ import {
   SelectValueRender,
   RiSelectOption,
 } from 'uiSrc/components/base/forms'
-import { TextArea, TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextArea, RiTextInput } from 'uiSrc/components/base/inputs'
 import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
 import styles from '../styles.module.scss'
 
@@ -225,7 +225,7 @@ const TlsDetails = (props: Props) => {
               <Row gap="m">
                 <FlexItem grow>
                   <RiFormField label="Server Name*">
-                    <TextInput
+                    <RiTextInput
                       name="servername"
                       id="servername"
                       maxLength={200}
@@ -293,7 +293,7 @@ const TlsDetails = (props: Props) => {
               formik.values.selectedCaCertName === ADD_NEW_CA_CERT && (
                 <FlexItem grow>
                   <RiFormField label="Name*">
-                    <TextInput
+                    <RiTextInput
                       name="newCaCertName"
                       id="newCaCertName"
                       maxLength={200}
@@ -317,7 +317,7 @@ const TlsDetails = (props: Props) => {
               <Row gap="m" responsive>
                 <FlexItem grow>
                   <RiFormField label="Certificate*">
-                    <TextArea
+                    <RiTextArea
                       name="newCaCert"
                       id="newCaCert"
                       value={formik.values.newCaCert ?? ''}
@@ -373,7 +373,7 @@ const TlsDetails = (props: Props) => {
               formik.values.selectedTlsClientCertId === 'ADD_NEW' && (
                 <FlexItem grow>
                   <RiFormField label="Name*">
-                    <TextInput
+                    <RiTextInput
                       name="newTlsCertPairName"
                       id="newTlsCertPairName"
                       maxLength={200}
@@ -399,7 +399,7 @@ const TlsDetails = (props: Props) => {
                 <Row gap="m" responsive>
                   <FlexItem grow>
                     <RiFormField label="Certificate*">
-                      <TextArea
+                      <RiTextArea
                         name="newTlsClientCert"
                         id="newTlsClientCert"
                         value={formik.values.newTlsClientCert}
@@ -415,7 +415,7 @@ const TlsDetails = (props: Props) => {
                 <Row gap="m" responsive>
                   <FlexItem grow>
                     <RiFormField label="Private Key*">
-                      <TextArea
+                      <RiTextArea
                         placeholder="Enter Private Key"
                         name="newTlsClientKey"
                         id="newTlsClientKey"

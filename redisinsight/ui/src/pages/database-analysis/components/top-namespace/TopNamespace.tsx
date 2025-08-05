@@ -14,7 +14,7 @@ import { changeKeyViewType } from 'uiSrc/slices/browser/keys'
 import { KeyViewType } from 'uiSrc/slices/interfaces/keys'
 import { Nullable } from 'uiSrc/utils'
 import { TextBtn } from 'uiSrc/pages/database-analysis/components/base/TextBtn'
-import { SwitchInput } from 'uiSrc/components/base/inputs'
+import { RiSwitchInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { DatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
@@ -114,7 +114,7 @@ const TopNamespace = (props: Props) => {
           by Number of Keys
         </TextBtn>
         {extrapolation !== DEFAULT_EXTRAPOLATION && (
-          <SwitchInput
+          <RiSwitchInput
             color="subdued"
             className="switch-extrapolate-results"
             title="Extrapolate results"

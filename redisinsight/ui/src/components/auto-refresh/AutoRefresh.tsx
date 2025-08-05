@@ -16,7 +16,7 @@ import { localStorageService } from 'uiSrc/services'
 import { BrowserStorageItem } from 'uiSrc/constants'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { ColorText } from 'uiSrc/components/base/text'
-import { SwitchInput } from 'uiSrc/components/base/inputs'
+import { RiSwitchInput } from 'uiSrc/components/base/inputs'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import {
   DEFAULT_REFRESH_RATE,
@@ -271,7 +271,7 @@ const AutoRefresh = ({
           />
         }
       >
-        <SwitchInput
+        <RiSwitchInput
           title="Auto Refresh"
           checked={enableAutoRefresh}
           onCheckedChange={onChangeEnableAutoRefresh}

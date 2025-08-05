@@ -15,9 +15,9 @@ import {
 } from 'uiSrc/components/base/forms'
 import {
   NumericInput,
-  PasswordInput,
-  TextArea,
-  TextInput,
+  RiPasswordInput,
+  RiTextArea,
+  RiTextInput,
 } from 'uiSrc/components/base/inputs'
 import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
 
@@ -69,7 +69,7 @@ const SSHDetails = (props: Props) => {
           <Row gap="m" responsive className={flexGroupClassName}>
             <FlexItem grow className={flexItemClassName}>
               <RiFormField label="Host*">
-                <TextInput
+                <RiTextInput
                   name="sshHost"
                   id="sshHost"
                   data-testid="sshHost"
@@ -106,7 +106,7 @@ const SSHDetails = (props: Props) => {
           <Row responsive className={flexGroupClassName}>
             <FlexItem grow className={flexItemClassName}>
               <RiFormField label="Username*">
-                <TextInput
+                <RiTextInput
                   name="sshUsername"
                   id="sshUsername"
                   data-testid="sshUsername"
@@ -141,7 +141,7 @@ const SSHDetails = (props: Props) => {
             <Row responsive className={flexGroupClassName}>
               <FlexItem grow className={flexItemClassName}>
                 <RiFormField label="Password">
-                  <PasswordInput
+                  <RiPasswordInput
                     name="sshPassword"
                     id="sshPassword"
                     data-testid="sshPassword"
@@ -170,7 +170,7 @@ const SSHDetails = (props: Props) => {
               <Row responsive className={flexGroupClassName}>
                 <FlexItem grow className={flexItemClassName}>
                   <RiFormField label="Private Key*">
-                    <TextArea
+                    <RiTextArea
                       name="sshPrivateKey"
                       id="sshPrivateKey"
                       data-testid="sshPrivateKey"
@@ -197,7 +197,7 @@ const SSHDetails = (props: Props) => {
               <Row responsive className={flexGroupClassName}>
                 <FlexItem grow className={flexItemClassName}>
                   <RiFormField label="Passphrase">
-                    <PasswordInput
+                    <RiPasswordInput
                       name="sshPassphrase"
                       id="sshPassphrase"
                       data-testid="sshPassphrase"

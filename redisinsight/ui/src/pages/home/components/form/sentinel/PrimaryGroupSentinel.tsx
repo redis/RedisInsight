@@ -4,7 +4,7 @@ import { FormikProps } from 'formik'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { RiFormField } from 'uiSrc/components/base/forms'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 
 export interface Props {
   flexGroupClassName?: string
@@ -19,7 +19,7 @@ const PrimaryGroupSentinel = (props: Props) => {
       <Row gap="m" responsive className={flexGroupClassName}>
         <FlexItem grow className={flexItemClassName}>
           <RiFormField label="Database Alias*">
-            <TextInput
+            <RiTextInput
               name="name"
               id="name"
               data-testid="name"
@@ -34,7 +34,7 @@ const PrimaryGroupSentinel = (props: Props) => {
       <Row gap="m" responsive className={flexGroupClassName}>
         <FlexItem grow className={flexItemClassName}>
           <RiFormField label="Primary Group Name*">
-            <TextInput
+            <RiTextInput
               name="sentinelMasterName"
               id="sentinelMasterName"
               data-testid="primary-group"

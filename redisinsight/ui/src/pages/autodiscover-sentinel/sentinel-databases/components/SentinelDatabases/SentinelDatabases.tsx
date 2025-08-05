@@ -15,7 +15,7 @@ import {
   RiFormField,
 } from 'uiSrc/components/base/forms'
 import { InfoIcon } from 'uiSrc/components/base/icons'
-import { SearchInput } from 'uiSrc/components/base/inputs'
+import { RiSearchInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
@@ -207,7 +207,7 @@ const SentinelDatabases = ({
           </FlexItem>
           <FlexItem>
             <RiFormField className={styles.searchForm}>
-              <SearchInput
+              <RiSearchInput
                 placeholder="Search..."
                 onChange={onQueryChange}
                 aria-label="Search"

@@ -11,7 +11,7 @@ import { WindowEvent } from 'uiSrc/components/base/utils/WindowEvent'
 import { FocusTrap } from 'uiSrc/components/base/utils/FocusTrap'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 import { RiIconButton } from 'uiSrc/components/base/forms'
-import { TextArea } from 'uiSrc/components/base/inputs'
+import { RiTextArea } from 'uiSrc/components/base/inputs'
 import { isValidJSON } from '../../utils'
 import { JSONErrors } from '../../constants'
 
@@ -74,7 +74,7 @@ const EditEntireItemAction = (props: Props) => {
                 noValidate
               >
                 <FlexItem grow>
-                  <TextArea
+                  <RiTextArea
                     valid={!error}
                     className={styles.fullWidthTextArea}
                     value={value}

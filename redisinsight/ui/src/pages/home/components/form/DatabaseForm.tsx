@@ -18,8 +18,8 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { RiFormField } from 'uiSrc/components/base/forms'
 import {
   NumericInput,
-  PasswordInput,
-  TextInput,
+  RiPasswordInput,
+  RiTextInput,
 } from 'uiSrc/components/base/inputs'
 import { RiIcon } from 'uiSrc/components/base/icons'
 
@@ -95,7 +95,7 @@ const DatabaseForm = (props: Props) => {
         <Row gap="m">
           <FlexItem grow>
             <RiFormField label="Database Alias*">
-              <TextInput
+              <RiTextInput
                 name="name"
                 id="name"
                 data-testid="name"
@@ -116,7 +116,7 @@ const DatabaseForm = (props: Props) => {
           {showFields.host && (
             <FlexItem grow={4}>
               <RiFormField label="Host*" additionalText={<AppendHostName />}>
-                <TextInput
+                <RiTextInput
                   autoFocus={autoFocus}
                   name="ip"
                   id="host"
@@ -165,7 +165,7 @@ const DatabaseForm = (props: Props) => {
       <Row gap="m">
         <FlexItem grow>
           <RiFormField label="Username">
-            <TextInput
+            <RiTextInput
               name="username"
               id="username"
               data-testid="username"
@@ -180,7 +180,7 @@ const DatabaseForm = (props: Props) => {
 
         <FlexItem grow>
           <RiFormField label="Password">
-            <PasswordInput
+            <RiPasswordInput
               name="password"
               id="password"
               data-testid="password"

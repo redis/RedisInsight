@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { SearchInput } from 'uiSrc/components/base/inputs'
+import { RiSearchInput } from 'uiSrc/components/base/inputs'
 import { RdiInstance } from 'uiSrc/slices/interfaces'
 import {
   instancesSelector,
@@ -40,7 +40,7 @@ const SearchRdiList = () => {
   }
 
   return (
-    <SearchInput
+    <RiSearchInput
       placeholder="Endpoint List Search"
       onChange={onQueryChange}
       aria-label="Search rdi instance list"

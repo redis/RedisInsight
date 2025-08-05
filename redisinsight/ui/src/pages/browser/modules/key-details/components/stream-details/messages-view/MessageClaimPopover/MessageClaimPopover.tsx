@@ -25,7 +25,7 @@ import {
   RiCheckbox,
   RiSelect,
 } from 'uiSrc/components/base/forms'
-import { NumericInput, SwitchInput } from 'uiSrc/components/base/inputs'
+import { NumericInput, RiSwitchInput } from 'uiSrc/components/base/inputs'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import {
   ClaimPendingEntryDto,
@@ -326,7 +326,7 @@ const MessageClaimPopover = (props: Props) => {
           align="center"
         >
           <FlexItem>
-            <SwitchInput
+            <RiSwitchInput
               title="Optional Parameters"
               checked={isOptionalShow}
               onCheckedChange={setIsOptionalShow}

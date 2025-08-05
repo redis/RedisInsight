@@ -19,7 +19,7 @@ import {
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { Pages } from 'uiSrc/constants'
 import { Title } from 'uiSrc/components/base/text/Title'
-import { SearchInput } from 'uiSrc/components/base/inputs'
+import { RiSearchInput } from 'uiSrc/components/base/inputs'
 import { Text } from 'uiSrc/components/base/text'
 import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import styles from '../styles.module.scss'
@@ -206,7 +206,7 @@ const RedisCloudDatabasesPage = ({
         </Row>
         <FlexItem>
           <RiFormField className={styles.searchForm}>
-            <SearchInput
+            <RiSearchInput
               placeholder="Search..."
               onChange={onQueryChange}
               aria-label="Search"

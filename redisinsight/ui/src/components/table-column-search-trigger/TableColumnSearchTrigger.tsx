@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import cx from 'classnames'
 
 import * as keys from 'uiSrc/constants/keys'
-import { SearchInput } from 'uiSrc/components/base/inputs'
+import { RiSearchInput } from 'uiSrc/components/base/inputs'
 import { Maybe, Nullable } from 'uiSrc/utils'
 import { SearchIcon } from 'uiSrc/components/base/icons'
 import { RiIconButton } from 'uiSrc/components/base/forms'
@@ -70,7 +70,7 @@ const TableColumnSearchTrigger = (props: Props) => {
         className={cx(styles.search)}
         style={{ display: isOpen ? 'flex' : 'none' }}
       >
-        <SearchInput
+        <RiSearchInput
           onKeyDown={onKeyDown}
           // onBlur={handleOnBlur}
           ref={setInputEl}

@@ -3,7 +3,7 @@ import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { RiFormField, RiCheckbox } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { RiPopover } from 'uiSrc/components/base'
-import { SearchInput } from 'uiSrc/components/base/inputs'
+import { RiSearchInput } from 'uiSrc/components/base/inputs'
 import { useFilterTags } from './useFilterTags'
 import styles from './styles.module.scss'
 
@@ -48,7 +48,7 @@ export const TagsCellHeader = memo(() => {
         {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
         <div style={{ width: 300 }} onClick={(e) => e.stopPropagation()}>
           <RiFormField>
-            <SearchInput
+            <RiSearchInput
               data-testid="tag-search"
               placeholder="Enter tag key or value"
               value={tagSearch}

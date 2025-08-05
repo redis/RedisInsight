@@ -9,7 +9,7 @@ import {
   RiSelect,
 } from 'uiSrc/components/base/forms'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 import { AddCommonFieldsFormConfig as config } from '../constants/fields-config'
 
 import styles from './styles.module.scss'
@@ -69,7 +69,7 @@ const AddKeyCommonFields = (props: Props) => {
         </FlexItem>
         <FlexItem grow>
           <RiFormField label={config.keyTTL.label}>
-            <TextInput
+            <RiTextInput
               name={config.keyTTL.name}
               id={config.keyTTL.name}
               maxLength={200}
@@ -87,7 +87,7 @@ const AddKeyCommonFields = (props: Props) => {
       </Row>
       <Spacer size="m" />
       <RiFormField label={config.keyName.label}>
-        <TextInput
+        <RiTextInput
           name={config.keyName.name}
           id={config.keyName.name}
           value={keyName}

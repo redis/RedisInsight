@@ -14,7 +14,7 @@ import {
   RiSecondaryButton,
   RiFormField,
 } from 'uiSrc/components/base/forms'
-import { SearchInput } from 'uiSrc/components/base/inputs'
+import { RiSearchInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
@@ -92,7 +92,7 @@ const RedisCloudDatabaseListResult = ({ columns, onBack, onView }: Props) => {
           </FlexItem>
           <FlexItem>
             <RiFormField className={styles.searchForm}>
-              <SearchInput
+              <RiSearchInput
                 placeholder="Search..."
                 onChange={onQueryChange}
                 aria-label="Search"

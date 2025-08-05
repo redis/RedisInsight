@@ -14,7 +14,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { RiPrimaryButton, RiFormField } from 'uiSrc/components/base/forms'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 import { CheckThinIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 
 const HIDE_BADGE_TIMER = 3000
@@ -80,7 +80,7 @@ const PublishMessage = () => {
         <Row align="center">
           <FlexItem className={styles.channelWrapper} grow>
             <RiFormField>
-              <TextInput
+              <RiTextInput
                 name="channel"
                 id="channel"
                 placeholder="Enter Channel Name"
@@ -94,7 +94,7 @@ const PublishMessage = () => {
           <FlexItem className={styles.messageWrapper} grow>
             <RiFormField>
               <>
-                <TextInput
+                <RiTextInput
                   className={cx(styles.messageField, {
                     [styles.showBadge]: isShowBadge,
                   })}

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 import { map } from 'lodash'
 import { useSelector } from 'react-redux'
-import { SearchInput } from 'uiSrc/components/base/inputs'
+import { RiSearchInput } from 'uiSrc/components/base/inputs'
 import { Maybe } from 'uiSrc/utils'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { InstanceRedisCluster } from 'uiSrc/slices/interfaces'
@@ -159,7 +159,7 @@ const RedisClusterDatabases = ({
           </FlexItem>
           <FlexItem>
             <RiFormField className={styles.searchForm}>
-              <SearchInput
+              <RiSearchInput
                 placeholder="Search..."
                 onChange={onQueryChange}
                 aria-label="Search"

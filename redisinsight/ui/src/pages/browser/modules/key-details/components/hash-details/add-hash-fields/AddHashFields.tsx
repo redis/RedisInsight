@@ -30,7 +30,7 @@ import {
   RiSecondaryButton,
   RiFormField,
 } from 'uiSrc/components/base/forms'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 import {
   AddFieldsToHashDto,
   HashFieldDto,
@@ -176,7 +176,7 @@ const AddHashFields = (props: Props) => {
             <Row align="center" gap="m">
               <FlexItem grow={2}>
                 <RiFormField>
-                  <TextInput
+                  <RiTextInput
                     name={`fieldName-${item.id}`}
                     id={`fieldName-${item.id}`}
                     placeholder="Enter Field"
@@ -194,7 +194,7 @@ const AddHashFields = (props: Props) => {
               </FlexItem>
               <FlexItem grow={2}>
                 <RiFormField>
-                  <TextInput
+                  <RiTextInput
                     name={`fieldValue-${item.id}`}
                     id={`fieldValue-${item.id}`}
                     placeholder="Enter Value"
@@ -210,7 +210,7 @@ const AddHashFields = (props: Props) => {
               {isExpireFieldsAvailable && (
                 <FlexItem grow={1}>
                   <RiFormField>
-                    <TextInput
+                    <RiTextInput
                       name={`fieldTTL-${item.id}`}
                       id={`fieldTTL-${item.id}`}
                       placeholder="Enter TTL"

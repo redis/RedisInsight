@@ -2,7 +2,11 @@ import { omit } from 'lodash'
 import React, { useState } from 'react'
 import cx from 'classnames'
 import { useDebouncedEffect } from 'uiSrc/services'
-import { NumericInput, PasswordInput, TextInput } from 'uiSrc/components/base/inputs'
+import {
+  NumericInput,
+  RiPasswordInput,
+  RiTextInput,
+} from 'uiSrc/components/base/inputs'
 
 import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
@@ -54,7 +58,7 @@ const InputFieldSentinel = (props: Props) => {
   return (
     <>
       {inputType === SentinelInputFieldType.Text && (
-        <TextInput
+        <RiTextInput
           {...clearProp}
           value={value}
           onChange={handleChange}
@@ -62,7 +66,7 @@ const InputFieldSentinel = (props: Props) => {
         />
       )}
       {inputType === SentinelInputFieldType.Password && (
-        <PasswordInput
+        <RiPasswordInput
           {...clearProp}
           value={value}
           onChange={(value) => handleChange(value)}

@@ -37,7 +37,7 @@ import {
 } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -219,7 +219,7 @@ const DatabaseAlias = (props: Props) => {
                           )
                         }
                       >
-                        <TextInput
+                        <RiTextInput
                           name="alias"
                           id="alias"
                           className={cx(styles.input)}

@@ -25,7 +25,7 @@ import {
   RiSecondaryButton,
   RiFormField,
 } from 'uiSrc/components/base/forms'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -187,7 +187,7 @@ const AddZsetMembers = (props: Props) => {
             <Row align="center">
               <FlexItem grow>
                 <RiFormField>
-                  <TextInput
+                  <RiTextInput
                     name={`member-${item.id}`}
                     id={`member-${item.id}`}
                     placeholder={config.member.placeholder}
@@ -205,7 +205,7 @@ const AddZsetMembers = (props: Props) => {
               </FlexItem>
               <FlexItem grow>
                 <RiFormField>
-                  <TextInput
+                  <RiTextInput
                     name={`score-${item.id}`}
                     id={`score-${item.id}`}
                     maxLength={200}

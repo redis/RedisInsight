@@ -25,7 +25,7 @@ import {
   dbAnalysisReportsSelector,
   setShowNoExpiryGroup,
 } from 'uiSrc/slices/analytics/dbAnalysis'
-import { SwitchInput } from 'uiSrc/components/base/inputs'
+import { RiSwitchInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { DatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
 
@@ -114,7 +114,7 @@ const ExpirationGroupsView = (props: Props) => {
             MEMORY LIKELY TO BE FREED OVER TIME
           </Title>
           {extrapolation !== DEFAULT_EXTRAPOLATION && (
-            <SwitchInput
+            <RiSwitchInput
               color="subdued"
               className="switch-extrapolate-results"
               title="Extrapolate results"
@@ -130,7 +130,7 @@ const ExpirationGroupsView = (props: Props) => {
             />
           )}
         </div>
-        <SwitchInput
+        <RiSwitchInput
           color="subdued"
           className={styles.switch}
           title={'Show "No Expiry"'}

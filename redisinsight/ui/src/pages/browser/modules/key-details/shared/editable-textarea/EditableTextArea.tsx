@@ -8,7 +8,7 @@ import { RiTooltip } from 'uiSrc/components'
 import { Text } from 'uiSrc/components/base/text'
 import { EditIcon } from 'uiSrc/components/base/icons'
 import { RiIconButton } from 'uiSrc/components/base/forms'
-import { TextArea } from 'uiSrc/components/base/inputs'
+import { RiTextArea } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -159,7 +159,7 @@ const EditableTextArea = (props: Props) => {
               approveText={approveText}
               approveByValidation={() => approveByValidation?.(value)}
             >
-              <TextArea
+              <RiTextArea
                 name="value"
                 id="value"
                 placeholder="Enter Value"

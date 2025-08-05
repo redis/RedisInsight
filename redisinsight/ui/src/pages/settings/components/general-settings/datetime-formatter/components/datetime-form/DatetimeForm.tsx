@@ -22,7 +22,7 @@ import {
 import { InfoIcon, CheckBoldIcon } from 'uiSrc/components/base/icons'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { RiTooltip } from 'uiSrc/components'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 
 interface InitialValuesType {
   format: string
@@ -205,7 +205,7 @@ const DatetimeForm = ({ onFormatChange }: Props) => {
         {formik.values.selectedRadioOption === DatetimeRadioOption.Custom && (
           <>
             <FlexItem grow={false}>
-              <TextInput
+              <RiTextInput
                 style={{ width: 240 }}
                 id="customFormat"
                 name="customFormat"

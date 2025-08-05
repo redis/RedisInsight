@@ -31,7 +31,7 @@ import { RiIconButton, RiFormField } from 'uiSrc/components/base/forms'
 import { CopyIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -176,7 +176,7 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
                   declineOnUnmount={false}
                 >
                   <RiFormField additionalText={appendKeyEditing()}>
-                    <TextInput
+                    <RiTextInput
                       name="key"
                       id="key"
                       ref={keyNameRef}

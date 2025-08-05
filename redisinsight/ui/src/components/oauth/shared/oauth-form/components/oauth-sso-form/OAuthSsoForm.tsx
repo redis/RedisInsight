@@ -12,7 +12,7 @@ import {
   RiFormField,
 } from 'uiSrc/components/base/forms'
 import { InfoIcon } from 'uiSrc/components/base/icons'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
 import styles from './styles.module.scss'
 
@@ -93,7 +93,7 @@ const OAuthSsoForm = ({ onBack, onSubmit }: Props) => {
         <Row>
           <FlexItem>
             <RiFormField className={styles.formRaw} label="Email">
-              <TextInput
+              <RiTextInput
                 name="email"
                 id="sso-email"
                 data-testid="sso-email"

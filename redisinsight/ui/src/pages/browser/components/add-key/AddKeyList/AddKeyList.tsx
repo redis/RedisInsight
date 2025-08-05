@@ -9,7 +9,7 @@ import {
   TAIL_DESTINATION,
 } from 'uiSrc/pages/browser/modules/key-details/components/list-details/add-list-elements/AddListElements'
 import { RiSelect } from 'uiSrc/components/base/forms'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 import {
   CreateListWithExpireDto,
   ListElementDestination,
@@ -95,7 +95,7 @@ const AddKeyList = (props: Props) => {
         isClearDisabled={isClearDisabled}
       >
         {(item, index) => (
-          <TextInput
+          <RiTextInput
             name={`element-${index}`}
             id={`element-${index}`}
             placeholder={config.element.placeholder}

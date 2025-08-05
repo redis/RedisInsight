@@ -14,7 +14,7 @@ import {
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { RiFormField } from 'uiSrc/components/base/forms'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 import { CreateZSetWithExpireDto } from 'apiSrc/modules/browser/z-set/dto'
 import { AddZsetFormConfig as config } from '../constants/fields-config'
 
@@ -183,7 +183,7 @@ const AddKeyZset = (props: Props) => {
           <Row align="center" gap="m">
             <FlexItem grow>
               <RiFormField>
-                <TextInput
+                <RiTextInput
                   name={`member-${item.id}`}
                   id={`member-${item.id}`}
                   placeholder={config.member.placeholder}
@@ -201,7 +201,7 @@ const AddKeyZset = (props: Props) => {
             </FlexItem>
             <FlexItem grow>
               <RiFormField>
-                <TextInput
+                <RiTextInput
                   name={`score-${item.id}`}
                   id={`score-${item.id}`}
                   maxLength={200}

@@ -16,7 +16,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { RiFormField } from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text/Title'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 import DecompressionAndFormatters from './DecompressionAndFormatters'
 
 import { ManualFormTab } from '../constants'
@@ -85,7 +85,7 @@ const EditSentinelConnection = (props: Props) => {
       <Row gap="m">
         <FlexItem grow>
           <RiFormField label="Database Alias*">
-            <TextInput
+            <RiTextInput
               name="name"
               id="name"
               data-testid="name"

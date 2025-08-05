@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { RiFormField } from 'uiSrc/components/base/forms'
-import { TextArea } from 'uiSrc/components/base/inputs'
+import { RiTextArea } from 'uiSrc/components/base/inputs'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
 import styles from './styles.module.scss'
@@ -42,7 +42,7 @@ const ConnectionUrl = ({ value, onChange }: Props) => (
       </div>
     }
   >
-    <TextArea
+    <RiTextArea
       name="connectionURL"
       id="connectionURL"
       value={value}

@@ -17,7 +17,7 @@ import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { RiFormField } from 'uiSrc/components/base/forms'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 import {
   CreateHashWithExpireDto,
   HashFieldDto,
@@ -164,7 +164,7 @@ const AddKeyHash = (props: Props) => {
           <Row align="center" gap="m">
             <FlexItem grow={2}>
               <RiFormField>
-                <TextInput
+                <RiTextInput
                   name={`fieldName-${item.id}`}
                   id={`fieldName-${item.id}`}
                   placeholder={config.fieldName.placeholder}
@@ -180,7 +180,7 @@ const AddKeyHash = (props: Props) => {
             </FlexItem>
             <FlexItem grow={2}>
               <RiFormField>
-                <TextInput
+                <RiTextInput
                   name={`fieldValue-${item.id}`}
                   id={`fieldValue-${item.id}`}
                   placeholder={config.fieldValue.placeholder}
@@ -196,7 +196,7 @@ const AddKeyHash = (props: Props) => {
             {isTTLAvailable && (
               <FlexItem grow={1}>
                 <RiFormField>
-                  <TextInput
+                  <RiTextInput
                     name={`fieldTTL-${item.id}`}
                     id={`fieldTTL-${item.id}`}
                     placeholder="Enter TTL"

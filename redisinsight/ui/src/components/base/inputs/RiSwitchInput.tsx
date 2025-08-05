@@ -4,7 +4,7 @@ import { Switch } from '@redis-ui/components'
 
 type SwitchInputProps = Omit<React.ComponentProps<typeof Switch>, 'titleOn'>
 
-const SwitchInput = ({
+export const RiSwitchInput = ({
   style,
   title,
   titleOff,
@@ -20,5 +20,3 @@ const SwitchInput = ({
     }}
   />
 )
-
-export default SwitchInput

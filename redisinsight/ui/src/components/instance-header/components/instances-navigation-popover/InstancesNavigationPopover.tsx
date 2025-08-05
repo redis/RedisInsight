@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 import { instancesSelector as rdiInstancesSelector } from 'uiSrc/slices/rdi/instances'
 import { instancesSelector as dbInstancesSelector } from 'uiSrc/slices/instances/instances'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 import Divider from 'uiSrc/components/divider/Divider'
 import { BrowserStorageItem, DEFAULT_SORT, Pages } from 'uiSrc/constants'
 import Search from 'uiSrc/assets/img/Search.svg'
@@ -131,7 +131,7 @@ const InstancesNavigationPopover = ({ name }: Props) => {
     >
       <div className={styles.wrapper}>
         <div className={styles.searchInputContainer}>
-          <TextInput
+          <RiTextInput
             className={styles.searchInput}
             icon={Search}
             value={searchFilter}

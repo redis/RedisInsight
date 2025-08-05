@@ -25,7 +25,7 @@ import {
   RiRadioGroup,
 } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 import { ICloudConnectionSubmit } from '../CloudConnectionFormWrapper'
 
 import styles from '../styles.module.scss'
@@ -189,7 +189,7 @@ const CloudConnectionForm = (props: Props) => {
         <Row responsive>
           <FlexItem>
             <RiFormField label="API Account Key*">
-              <TextInput
+              <RiTextInput
                 name="accessKey"
                 id="accessKey"
                 data-testid="access-key"
@@ -207,7 +207,7 @@ const CloudConnectionForm = (props: Props) => {
         <Row responsive>
           <FlexItem grow>
             <RiFormField label="API User Key*">
-              <TextInput
+              <RiTextInput
                 name="secretKey"
                 id="secretKey"
                 data-testid="secret-key"

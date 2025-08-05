@@ -20,7 +20,7 @@ import {
 } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 import { CreateConsumerGroupsDto } from 'apiSrc/modules/browser/stream/dto'
 
 import styles from './styles.module.scss'
@@ -100,7 +100,7 @@ const AddStreamGroup = (props: Props) => {
               <Row align="start">
                 <FlexItem className={styles.groupNameWrapper} grow>
                   <RiFormField>
-                    <TextInput
+                    <RiTextInput
                       name="group-name"
                       id="group-name"
                       placeholder="Enter Group Name*"
@@ -129,7 +129,7 @@ const AddStreamGroup = (props: Props) => {
                       </RiTooltip>
                     }
                   >
-                    <TextInput
+                    <RiTextInput
                       name="id"
                       id="id"
                       placeholder="ID*"

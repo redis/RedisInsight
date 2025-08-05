@@ -9,7 +9,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { PlayFilledIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { ColorText } from 'uiSrc/components/base/text'
-import { SwitchInput } from 'uiSrc/components/base/inputs'
+import { RiSwitchInput } from 'uiSrc/components/base/inputs'
 import MonitorLog from '../MonitorLog'
 import MonitorOutputList from '../MonitorOutputList'
 
@@ -85,7 +85,7 @@ const Monitor = (props: Props) => {
           The temporary log file will be automatically rewritten when the Profiler is reset."
           data-testid="save-log-tooltip"
         >
-          <SwitchInput
+          <RiSwitchInput
             title="Save Log"
             checked={saveLogValue}
             onCheckedChange={setSaveLogValue}

@@ -20,8 +20,8 @@ import {
 import { InfoIcon, RiIcon } from 'uiSrc/components/base/icons'
 import {
   NumericInput,
-  PasswordInput,
-  TextInput,
+  RiPasswordInput,
+  RiTextInput,
 } from 'uiSrc/components/base/inputs'
 import { RiTooltip } from 'uiSrc/components'
 
@@ -231,7 +231,7 @@ const ClusterConnectionForm = (props: Props) => {
               label="Cluster Host*"
               additionalText={<AppendHostName />}
             >
-              <TextInput
+              <RiTextInput
                 name="host"
                 id="host"
                 data-testid="host"
@@ -271,7 +271,7 @@ const ClusterConnectionForm = (props: Props) => {
         <Row responsive>
           <FlexItem grow>
             <RiFormField label="Admin Username*">
-              <TextInput
+              <RiTextInput
                 name="username"
                 id="username"
                 data-testid="username"
@@ -285,7 +285,7 @@ const ClusterConnectionForm = (props: Props) => {
 
           <FlexItem grow>
             <RiFormField label="Admin Password*">
-              <PasswordInput
+              <RiPasswordInput
                 type="dual"
                 name="password"
                 id="password"

@@ -42,7 +42,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { EditIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
-import { NumericInput } from 'uiSrc/components/base/inputs'
+import { RiNumericInput } from 'uiSrc/components/base/inputs'
 import InstancesNavigationPopover from './components/instances-navigation-popover'
 import styles from './styles.module.scss'
 
@@ -231,7 +231,7 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                               viewChildrenMode={false}
                               controlsClassName={styles.controls}
                             >
-                              <NumericInput
+                              <RiNumericInput
                                 autoSize
                                 autoValidate
                                 min={0}

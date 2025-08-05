@@ -5,7 +5,7 @@ import { Nullable } from 'uiSrc/utils'
 import { SECURITY_FIELD } from 'uiSrc/constants'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 import { ColorText, Text } from 'uiSrc/components/base/text'
-import { PasswordInput, TextInput } from 'uiSrc/components/base/inputs'
+import { RiPasswordInput, RiTextInput } from 'uiSrc/components/base/inputs'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { RiFormField } from 'uiSrc/components/base/forms'
 import styles from '../../styles.module.scss'
@@ -39,7 +39,7 @@ const SentinelMasterDatabase = (props: Props) => {
       <Row gap="m" responsive className={flexGroupClassName}>
         <FlexItem grow className={flexItemClassName}>
           <RiFormField label="Username">
-            <TextInput
+            <RiTextInput
               name="sentinelMasterUsername"
               id="sentinelMasterUsername"
               maxLength={200}
@@ -55,7 +55,7 @@ const SentinelMasterDatabase = (props: Props) => {
 
         <FlexItem grow className={flexItemClassName}>
           <RiFormField label="Password">
-            <PasswordInput
+            <RiPasswordInput
               type="password"
               name="sentinelMasterPassword"
               id="sentinelMasterPassword"

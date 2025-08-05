@@ -29,7 +29,7 @@ import { InfoIcon } from 'uiSrc/components/base/icons'
 import { HealthText, Text } from 'uiSrc/components/base/text'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { RiPopover } from 'uiSrc/components/base'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 import { CreateRedisearchIndexDto } from 'apiSrc/modules/browser/redisearch/dto'
 
 import { KEY_TYPE_OPTIONS, RedisearchIndexKeyType } from './constants'
@@ -213,7 +213,7 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
             <Row className={styles.row}>
               <FlexItem grow>
                 <RiFormField label="Index Name">
-                  <TextInput
+                  <RiTextInput
                     name="Index name"
                     id="index-name"
                     placeholder="Enter Index Name"
@@ -278,7 +278,7 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
                 <Row align="center">
                   <FlexItem grow>
                     <RiFormField>
-                      <TextInput
+                      <RiTextInput
                         name={`identifier-${item.id}`}
                         id={`identifier-${item.id}`}
                         placeholder="Enter Identifier"

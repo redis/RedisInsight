@@ -9,7 +9,7 @@ import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { SendIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
-import { TextArea } from 'uiSrc/components/base/inputs'
+import { RiTextArea } from 'uiSrc/components/base/inputs'
 import * as keys from 'uiSrc/constants/keys'
 import styles from './styles.module.scss'
 
@@ -121,7 +121,7 @@ const ChatForm = (props: Props) => {
           onKeyDown={handleKeyDown}
           role="presentation"
         >
-          <TextArea
+          <RiTextArea
             ref={textAreaRef}
             placeholder={placeholder || 'Ask me about Redis'}
             value={value}

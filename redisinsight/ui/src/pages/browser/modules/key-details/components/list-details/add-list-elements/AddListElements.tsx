@@ -22,7 +22,7 @@ import {
   RiSecondaryButton,
   RiSelect,
 } from 'uiSrc/components/base/forms'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 import { PushElementToListDto } from 'apiSrc/modules/browser/list/dto'
 
 import styles from '../styles.module.scss'
@@ -137,7 +137,7 @@ const AddListElements = (props: Props) => {
           isClearDisabled={isClearDisabled}
         >
           {(item, index) => (
-            <TextInput
+            <RiTextInput
               name={`element-${index}`}
               id={`element-${index}`}
               placeholder={config.element.placeholder}

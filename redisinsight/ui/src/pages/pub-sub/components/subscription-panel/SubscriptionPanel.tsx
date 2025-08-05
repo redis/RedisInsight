@@ -23,7 +23,7 @@ import {
 import { Button, RiIconButton, RiFormField } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 import PatternsInfo from './components/patternsInfo'
 import ClickableAppendInfo from './components/clickable-append-info'
 import styles from './styles.module.scss'
@@ -104,7 +104,7 @@ const SubscriptionPanel = () => {
         <Row align="center">
           <FlexItem className={styles.channels}>
             <RiFormField additionalText={<ClickableAppendInfo />}>
-              <TextInput
+              <RiTextInput
                 value={channels}
                 disabled={isSubscribed}
                 onChange={(value) => setChannels(value)}

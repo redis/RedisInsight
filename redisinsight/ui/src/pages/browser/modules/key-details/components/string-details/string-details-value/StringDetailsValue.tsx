@@ -57,7 +57,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { DownloadIcon } from 'uiSrc/components/base/icons'
 import { RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
-import { TextArea } from 'uiSrc/components/base/inputs'
+import { RiTextArea } from 'uiSrc/components/base/inputs'
 import { RiTooltip } from 'uiSrc/components'
 import { RiProgressBarLoader } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
@@ -291,7 +291,7 @@ const StringDetailsValue = (props: Props) => {
               )?.isValid
             }
           >
-            <TextArea
+            <RiTextArea
               name="value"
               id="value"
               rows={rows}

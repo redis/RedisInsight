@@ -16,7 +16,7 @@ import {
 } from 'uiSrc/utils'
 import { getPercentage, numberWithSpaces } from 'uiSrc/utils/numbers'
 
-import { SwitchInput } from 'uiSrc/components/base/inputs'
+import { RiSwitchInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import {
@@ -175,7 +175,7 @@ const SummaryPerData = ({
           SUMMARY PER DATA TYPE
         </Title>
         {extrapolation !== DEFAULT_EXTRAPOLATION && (
-          <SwitchInput
+          <RiSwitchInput
             color="subdued"
             className="switch-extrapolate-results"
             title="Extrapolate results"

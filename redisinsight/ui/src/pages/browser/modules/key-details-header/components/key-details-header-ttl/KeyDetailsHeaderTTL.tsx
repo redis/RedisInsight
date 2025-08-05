@@ -14,7 +14,7 @@ import { MAX_TTL_NUMBER, validateTTLNumber } from 'uiSrc/utils'
 import { FlexItem, Grid } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -113,7 +113,7 @@ const KeyDetailsHeaderTTL = ({ onEditTTL }: Props) => {
                 isLoading={loading}
                 declineOnUnmount={false}
               >
-                <TextInput
+                <RiTextInput
                   name="ttl"
                   id="ttl"
                   className={cx(

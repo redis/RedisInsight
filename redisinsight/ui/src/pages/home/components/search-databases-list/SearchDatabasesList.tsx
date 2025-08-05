@@ -9,7 +9,7 @@ import { CONNECTION_TYPE_DISPLAY, Instance } from 'uiSrc/slices/interfaces'
 import { tagsSelector } from 'uiSrc/slices/instances/tags'
 import { lastConnectionFormat } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { SearchInput } from 'uiSrc/components/base/inputs'
+import { RiSearchInput } from 'uiSrc/components/base/inputs'
 
 export const instanceHasTags = (
   instance: Instance,
@@ -75,7 +75,7 @@ const SearchDatabasesList = () => {
   }, [value, selectedTags])
 
   return (
-    <SearchInput
+    <RiSearchInput
       placeholder="Database List Search"
       onChange={(value) => setValue(value.toLowerCase())}
       value={value}

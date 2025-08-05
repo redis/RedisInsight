@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 
 import * as keys from 'uiSrc/constants/keys'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 import { GroupBadge, RiTooltip } from 'uiSrc/components'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 import { Nullable } from 'uiSrc/utils'
@@ -183,7 +183,7 @@ const MultiSearch = (props: Props) => {
               />
             ))}
           </div>
-          <TextInput
+          <RiTextInput
             className={styles.multiSearchInput}
             placeholder={placeholder}
             value={value}

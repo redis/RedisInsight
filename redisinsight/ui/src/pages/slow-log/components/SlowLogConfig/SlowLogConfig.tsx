@@ -32,7 +32,7 @@ import {
 } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 import { convertNumberByUnits } from '../../utils'
 import styles from './styles.module.scss'
 
@@ -198,7 +198,7 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
                 className={styles.rowFields}
               >
                 <div className={styles.input}>
-                  <TextInput
+                  <RiTextInput
                     name="slowerThan"
                     id="slowerThan"
                     value={slowerThan}
@@ -235,7 +235,7 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
             >
               <>
                 <div className={styles.rowFields}>
-                  <TextInput
+                  <RiTextInput
                     name="maxLen"
                     id="maxLen"
                     className={styles.input}

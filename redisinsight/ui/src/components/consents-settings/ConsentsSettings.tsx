@@ -17,7 +17,7 @@ import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
-import { SwitchInput } from 'uiSrc/components/base/inputs'
+import { RiSwitchInput } from 'uiSrc/components/base/inputs'
 import { Link } from 'uiSrc/components/base/link/Link'
 import ConsentOption from './ConsentOption'
 
@@ -217,7 +217,7 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
             <FlexItem>
               <Row gap="m">
                 <FlexItem>
-                  <SwitchInput
+                  <RiSwitchInput
                     checked={isRecommended}
                     onCheckedChange={selectAll}
                     data-testid="switch-option-recommended"

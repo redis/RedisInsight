@@ -10,7 +10,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { RiFormField } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 import styles from '../styles.module.scss'
 
 export interface Props {
@@ -132,7 +132,7 @@ const StreamEntryFields = (props: Props) => {
             </RiTooltip>
           }
         >
-          <TextInput
+          <RiTextInput
             ref={entryIdRef}
             name={config.entryId.name}
             id={config.entryId.id}
@@ -170,7 +170,7 @@ const StreamEntryFields = (props: Props) => {
               <Row align="center" gap="m">
                 <FlexItem className={styles.fieldItemWrapper} grow>
                   <RiFormField>
-                    <TextInput
+                    <RiTextInput
                       name={`fieldName-${item.id}`}
                       id={`fieldName-${item.id}`}
                       placeholder={config.name.placeholder}
@@ -188,7 +188,7 @@ const StreamEntryFields = (props: Props) => {
                 </FlexItem>
                 <FlexItem className={styles.valueItemWrapper} grow>
                   <RiFormField>
-                    <TextInput
+                    <RiTextInput
                       className={styles.fieldValue}
                       name={`fieldValue-${item.id}`}
                       id={`fieldValue-${item.id}`}

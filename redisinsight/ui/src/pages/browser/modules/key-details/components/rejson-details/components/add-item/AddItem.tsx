@@ -13,7 +13,7 @@ import { FocusTrap } from 'uiSrc/components/base/utils/FocusTrap'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 import { CancelSlimIcon, CheckThinIcon } from 'uiSrc/components/base/icons'
 import { RiIconButton } from 'uiSrc/components/base/forms'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiSrc/components/base/inputs'
 import ConfirmOverwrite from './ConfirmOverwrite'
 import { isValidJSON, isValidKey, parseJsonData, wrapPath } from '../../utils'
 import { JSONErrors } from '../../constants'
@@ -98,7 +98,7 @@ const AddItem = (props: Props) => {
             >
               {isPair && (
                 <FlexItem grow>
-                  <TextInput
+                  <RiTextInput
                     name="newRootKey"
                     value={key}
                     error={error || undefined}
@@ -109,7 +109,7 @@ const AddItem = (props: Props) => {
                 </FlexItem>
               )}
               <FlexItem grow>
-                <TextInput
+                <RiTextInput
                   name="newValue"
                   value={value}
                   placeholder="Enter JSON value"

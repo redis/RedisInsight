@@ -5,7 +5,7 @@ import { Theme } from 'uiSrc/components/base/theme/types'
 import { Props } from 'uiSrc/components/inline-item-editor/InlineItemEditor'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CancelSlimIcon, CheckThinIcon } from 'uiSrc/components/base/icons'
-import { TextInput } from '../base/inputs'
+import { RiTextInput } from '../base/inputs'
 
 interface ContainerProps {
   className?: string
@@ -156,7 +156,7 @@ export const ActionsContainer = styled(Row)<ActionsContainerProps>`
   ${({ $design }) => designs[$design || 'default']}
 `
 
-export const StyledTextInput = styled(TextInput)<{
+export const StyledTextInput = styled(RiTextInput)<{
   $width?: string
   $height?: string
 }>`
