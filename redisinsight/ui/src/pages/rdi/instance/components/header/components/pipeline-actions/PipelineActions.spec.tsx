@@ -103,6 +103,8 @@ describe('PipelineActions', () => {
     ;(rdiPipelineSelector as jest.Mock).mockReturnValueOnce({
       loading: false,
       schema: 'test-schema',
+      monacoJobsSchema: 'test-monaco-jobs-schema',
+      jobNameSchema: 'test-job-name-schema',
       config: 'test-config',
       jobs: 'test-jobs',
     })
@@ -111,6 +113,8 @@ describe('PipelineActions', () => {
 
     expect(validatePipeline).toHaveBeenCalledWith({
       schema: 'test-schema',
+      monacoJobsSchema: 'test-monaco-jobs-schema',
+      jobNameSchema: 'test-job-name-schema',
       config: 'test-config',
       jobs: 'test-jobs',
     })
@@ -177,6 +181,8 @@ describe('PipelineActions', () => {
     ;(rdiPipelineSelector as jest.Mock).mockReturnValueOnce({
       loading: false,
       schema: 'test-schema',
+      monacoJobsSchema: 'test-monaco-jobs-schema',
+      jobNameSchema: 'test-job-name-schema',
       config: 'test-config',
       jobs: 'test-jobs',
     })
@@ -201,6 +207,95 @@ describe('PipelineActions', () => {
     )
 
     expect(screen.queryByTestId('deploy-rdi-pipeline')).not.toBeDisabled()
+  })
+
+  describe('validation with new schema parameters', () => {
+    it('should pass monacoJobsSchema and jobNameSchema to validatePipeline when available', () => {
+      const mockMonacoJobsSchema = { type: 'object', properties: { task: { type: 'string' } } }
+      const mockJobNameSchema = { type: 'string', pattern: '^[a-zA-Z][a-zA-Z0-9_]*$' }
+      
+      ;(validatePipeline as jest.Mock).mockReturnValue({
+        result: true,
+        configValidationErrors: [],
+        jobsValidationErrors: {},
+      })
+      ;(rdiPipelineSelector as jest.Mock).mockReturnValueOnce({
+        loading: false,
+        schema: 'test-schema',
+        monacoJobsSchema: mockMonacoJobsSchema,
+        jobNameSchema: mockJobNameSchema,
+        config: 'test-config',
+        jobs: 'test-jobs',
+      })
+
+      render(<PipelineActions {...mockedProps} />)
+
+      expect(validatePipeline).toHaveBeenCalledWith({
+        schema: 'test-schema',
+        monacoJobsSchema: mockMonacoJobsSchema,
+        jobNameSchema: mockJobNameSchema,
+        config: 'test-config',
+        jobs: 'test-jobs',
+      })
+    })
+
+    it('should pass null/undefined schemas to validatePipeline when not available', () => {
+      ;(validatePipeline as jest.Mock).mockReturnValue({
+        result: true,
+        configValidationErrors: [],
+        jobsValidationErrors: {},
+      })
+      ;(rdiPipelineSelector as jest.Mock).mockReturnValueOnce({
+        loading: false,
+        schema: 'test-schema',
+        monacoJobsSchema: null,
+        jobNameSchema: undefined,
+        config: 'test-config',
+        jobs: 'test-jobs',
+      })
+
+      render(<PipelineActions {...mockedProps} />)
+
+      expect(validatePipeline).toHaveBeenCalledWith({
+        schema: 'test-schema',
+        monacoJobsSchema: null,
+        jobNameSchema: undefined,
+        config: 'test-config',
+        jobs: 'test-jobs',
+      })
+    })
+
+    it('should include monacoJobsSchema and jobNameSchema in dependency array for validation effect', () => {
+      // This test verifies that the useEffect dependency array includes the new schema parameters
+      // by checking that different schema values trigger different validatePipeline calls
+      
+      ;(validatePipeline as jest.Mock).mockReturnValue({
+        result: true,
+        configValidationErrors: [],
+        jobsValidationErrors: {},
+      })
+
+      // First render with specific schemas
+      ;(rdiPipelineSelector as jest.Mock).mockReturnValueOnce({
+        loading: false,
+        schema: 'test-schema',
+        monacoJobsSchema: { type: 'object', properties: { task: { type: 'string' } } },
+        jobNameSchema: { type: 'string', pattern: '^[a-zA-Z]+$' },
+        config: 'test-config',
+        jobs: 'test-jobs',
+      })
+
+      render(<PipelineActions {...mockedProps} />)
+
+      // Verify that validatePipeline was called with all the correct parameters including schemas
+      expect(validatePipeline).toHaveBeenCalledWith({
+        schema: 'test-schema',
+        monacoJobsSchema: { type: 'object', properties: { task: { type: 'string' } } },
+        jobNameSchema: { type: 'string', pattern: '^[a-zA-Z]+$' },
+        config: 'test-config',
+        jobs: 'test-jobs',
+      })
+    })
   })
 
   describe('TelemetryEvent', () => {

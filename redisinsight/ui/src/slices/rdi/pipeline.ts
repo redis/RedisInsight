@@ -424,7 +424,7 @@ export function fetchRdiPipelineSchema(
             (val: string) => val !== 'name',
           ),
         }))
-        dispatch(setJobNameSchema(get(data, ['jobs', 'properties', 'name'], '^aaa&')))
+        dispatch(setJobNameSchema(get(data, ['jobs', 'properties', 'name'], null)))
         onSuccessAction?.(data)
       }
     } catch (_err) {

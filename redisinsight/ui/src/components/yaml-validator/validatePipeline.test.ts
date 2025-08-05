@@ -1,6 +1,6 @@
 import { get } from 'lodash'
 import { validatePipeline } from './validatePipeline'
-import { validateYamlSchema } from './validateYamlSchema'
+import { validateYamlSchema, validateSchema } from './validateYamlSchema'
 
 jest.mock('./validateYamlSchema')
 
@@ -31,10 +31,16 @@ describe('validatePipeline', () => {
       valid: true,
       errors: [],
     }))
+    ;(validateSchema as jest.Mock).mockImplementation(() => ({
+      valid: true,
+      errors: [],
+    }))
 
     const result = validatePipeline({
       config: 'name: valid-config',
       schema: mockSchema,
+      monacoJobsSchema: null,
+      jobNameSchema: null,
       jobs: [
         { name: 'Job1', value: 'task: job1' },
         { name: 'Job2', value: 'task: job2' },
@@ -57,10 +63,16 @@ describe('validatePipeline', () => {
         ? { valid: false, errors: ["Missing required property 'name'"] }
         : { valid: true, errors: [] },
     )
+    ;(validateSchema as jest.Mock).mockImplementation(() => ({
+      valid: true,
+      errors: [],
+    }))
 
     const result = validatePipeline({
       config: 'invalid-config-content',
       schema: mockSchema,
+      monacoJobsSchema: null,
+      jobNameSchema: null,
       jobs: [{ name: 'Job1', value: 'task: job1' }],
     })
 
@@ -75,14 +87,20 @@ describe('validatePipeline', () => {
 
   it('should return invalid result when jobs are invalid', () => {
     ;(validateYamlSchema as jest.Mock).mockImplementation((_, schema) =>
-      schema === get(mockSchema, 'jobs', null)
+      schema === null
         ? { valid: false, errors: ["Missing required property 'task'"] }
         : { valid: true, errors: [] },
     )
+    ;(validateSchema as jest.Mock).mockImplementation(() => ({
+      valid: true,
+      errors: [],
+    }))
 
     const result = validatePipeline({
       config: 'name: valid-config',
       schema: mockSchema,
+      monacoJobsSchema: null,
+      jobNameSchema: null,
       jobs: [{ name: 'Job1', value: 'invalid-job-content' }],
     })
 
@@ -100,15 +118,21 @@ describe('validatePipeline', () => {
       if (schema === get(mockSchema, 'config', null)) {
         return { valid: false, errors: ["Missing required property 'name'"] }
       }
-      if (schema === get(mockSchema, 'jobs', null)) {
+      if (schema === null) {
         return { valid: false, errors: ["Missing required property 'task'"] }
       }
       return { valid: true, errors: [] }
     })
+    ;(validateSchema as jest.Mock).mockImplementation(() => ({
+      valid: true,
+      errors: [],
+    }))
 
     const result = validatePipeline({
       config: 'invalid-config-content',
       schema: mockSchema,
+      monacoJobsSchema: null,
+      jobNameSchema: null,
       jobs: [{ name: 'Job1', value: 'invalid-job-content' }],
     })
 
@@ -126,10 +150,16 @@ describe('validatePipeline', () => {
       valid: false,
       errors: ['Duplicate error', 'Duplicate error'], // all the jobs get these errors
     }))
+    ;(validateSchema as jest.Mock).mockImplementation(() => ({
+      valid: true,
+      errors: [],
+    }))
 
     const result = validatePipeline({
       config: 'invalid-config-content',
       schema: mockSchema,
+      monacoJobsSchema: null,
+      jobNameSchema: null,
       jobs: [
         { name: 'Job1', value: 'invalid-job-content' },
         { name: 'Job2', value: 'invalid-job-content' },
@@ -142,6 +172,33 @@ describe('validatePipeline', () => {
       jobsValidationErrors: {
         Job1: ['Duplicate error'],
         Job2: ['Duplicate error'],
+      },
+    })
+  })
+
+  it('should return invalid result when job name validation fails', () => {
+    ;(validateYamlSchema as jest.Mock).mockImplementation(() => ({
+      valid: true,
+      errors: [],
+    }))
+    ;(validateSchema as jest.Mock).mockImplementation(() => ({
+      valid: false,
+      errors: ['Job name: Invalid job name'],
+    }))
+
+    const result = validatePipeline({
+      config: 'name: valid-config',
+      schema: mockSchema,
+      monacoJobsSchema: null,
+      jobNameSchema: { type: 'string', pattern: '^[a-zA-Z]+$' },
+      jobs: [{ name: 'Job-1', value: 'task: job1' }],
+    })
+
+    expect(result).toEqual({
+      result: false,
+      configValidationErrors: [],
+      jobsValidationErrors: {
+        'Job-1': ['Job name: Invalid job name'],
       },
     })
   })
