@@ -1,15 +1,24 @@
 import styled, { css } from 'styled-components'
 import { FlexGroup, FlexItem } from 'uiSrc/components/base/layout/flex'
 
+export const VectorSearchPageWrapper = styled.div`
+  background-color: ${({ theme }) =>
+    theme.semantic?.color.background.neutral100};
+  padding: ${({ theme }) => theme.core?.space.space200};
+
+  display: flex;
+  height: 100%;
+  width: 100%;
+`
+
 export const VectorSearchScreenWrapper = styled(FlexGroup)`
   ${({ theme }) => css`
-    margin-top: ${theme.core?.space.space250};
-    margin-bottom: ${theme.core?.space.space250};
     background-color: ${theme.semantic?.color.background.neutral100};
     border-radius: 8px;
   `}
 
-  width: 95%;
+  width: 100%;
+  height: 100%;
   margin-left: auto;
   margin-right: auto;
   overflow: auto;

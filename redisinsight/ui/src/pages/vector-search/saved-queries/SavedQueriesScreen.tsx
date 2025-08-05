@@ -22,7 +22,7 @@ import {
 
 type SavedQueriesScreenProps = {
   savedIndexes: SavedIndex[]
-  selectedIndex: SavedIndex
+  selectedIndex?: SavedIndex
   onIndexChange: (value: string) => void
   onQueryInsert: (value: string) => void
 }
@@ -47,7 +47,7 @@ export const SavedQueriesScreen = ({
             loading={false}
             disabled={false}
             options={savedIndexes}
-            value={selectedIndex.value}
+            value={selectedIndex?.value}
             data-testid="select-saved-index"
             onChange={onIndexChange}
             valueRender={({ option, isOptionValue }) =>
@@ -64,7 +64,7 @@ export const SavedQueriesScreen = ({
             }
           />
         </VectorSearchSavedQueriesSelectWrapper>
-        {selectedIndex.queries.map((query) => (
+        {selectedIndex?.queries.map((query) => (
           // @ts-expect-error: key prop
           <VectorSearchScreenBlockWrapper key={query.value}>
             <Text>{query.label}</Text>

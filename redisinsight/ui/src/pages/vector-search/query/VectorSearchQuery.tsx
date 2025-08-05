@@ -1,18 +1,36 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
+  ResizableContainer,
   ResizablePanel,
   ResizablePanelHandle,
 } from 'uiSrc/components/base/layout'
 import QueryWrapper from 'uiSrc/pages/workbench/components/query'
 import { HIDE_FIELDS } from 'uiSrc/components/query/query-card/QueryCardHeader/QueryCardHeader'
-import {
-  StyledNoResultsWrapper,
-  StyledResizableContainer,
-} from './VectorSearchQuery.styles'
-import { HeaderActions } from './HeaderActions'
+import { StyledNoResultsWrapper } from './VectorSearchQuery.styles'
 import { useQuery } from './useQuery'
-import { VectorSearchScreenWrapper } from '../styles'
+import { HeaderActions } from './HeaderActions'
 import CommandsViewWrapper from '../components/commands-view'
+import { VectorSearchScreenWrapper } from '../styles'
+import { SavedQueriesScreen } from '../saved-queries/SavedQueriesScreen'
+import { SavedIndex } from '../saved-queries/types'
+import { ManageIndexesDrawer } from '../manage-indexes/ManageIndexesDrawer'
+
+const mockSavedIndexes: SavedIndex[] = [
+  {
+    value: 'idx:bikes_vss',
+    tags: ['tag', 'text', 'vector'],
+    queries: [
+      {
+        label: 'Search for "Nord" bikes ordered by price',
+        value: 'FT.SEARCH idx:bikes_vss "@brand:Nord" SORTBY price ASC',
+      },
+      {
+        label: 'Find road alloy bikes under 20kg',
+        value: 'FT.SEARCH idx:bikes_vss "@material:{alloy} @weight:[0 20]"',
+      },
+    ],
+  },
+]
 
 export const VectorSearchQuery = () => {
   const {
@@ -35,58 +53,98 @@ export const VectorSearchQuery = () => {
     onQueryProfile,
   } = useQuery()
 
+  const [isSavedQueriesOpen, setIsSavedQueriesOpen] = useState<boolean>(false)
+  const [isManageIndexesDrawerOpen, setIsManageIndexesDrawerOpen] =
+    useState<boolean>(false)
+  const [queryIndex, setQueryIndex] = useState(mockSavedIndexes[0].value)
+  const selectedIndex = mockSavedIndexes.find(
+    (index) => index.value === queryIndex,
+  )
+
   return (
     <VectorSearchScreenWrapper direction="column" justify="between">
-      <HeaderActions />
+      <HeaderActions
+        isManageIndexesDrawerOpen={isManageIndexesDrawerOpen}
+        setIsManageIndexesDrawerOpen={setIsManageIndexesDrawerOpen}
+        isSavedQueriesOpen={isSavedQueriesOpen}
+        setIsSavedQueriesOpen={setIsSavedQueriesOpen}
+      />
 
-      <StyledResizableContainer direction="vertical">
-        <ResizablePanel id="top-panel" minSize={20} defaultSize={30}>
-          <QueryWrapper
-            query={query}
-            activeMode={activeMode}
-            resultsMode={resultsMode}
-            setQuery={setQuery}
-            setQueryEl={() => {}}
-            onSubmit={() => onSubmit()}
-            onQueryChangeMode={onQueryChangeMode}
-            onChangeGroupMode={onChangeGroupMode}
-            queryProps={{ useLiteActions: true }}
-          />
+      <ResizableContainer direction="horizontal">
+        <ResizablePanel id="left-panel" minSize={20} defaultSize={30}>
+          <ResizableContainer direction="vertical">
+            <ResizablePanel id="top-panel" minSize={20} defaultSize={30}>
+              <QueryWrapper
+                query={query}
+                activeMode={activeMode}
+                resultsMode={resultsMode}
+                setQuery={setQuery}
+                setQueryEl={() => {}}
+                onSubmit={() => onSubmit()}
+                onQueryChangeMode={onQueryChangeMode}
+                onChangeGroupMode={onChangeGroupMode}
+                queryProps={{ useLiteActions: true }}
+              />
+            </ResizablePanel>
+
+            <ResizablePanelHandle
+              direction="horizontal"
+              data-test-subj="resize-btn-scripting-area-and-results"
+            />
+
+            <ResizablePanel
+              id="bottom-panel"
+              minSize={10}
+              maxSize={70}
+              defaultSize={80}
+            >
+              <CommandsViewWrapper
+                items={items}
+                clearing={clearing}
+                processing={processing}
+                isResultsLoaded={isResultsLoaded}
+                activeMode={activeMode}
+                activeResultsMode={resultsMode}
+                scrollDivRef={scrollDivRef}
+                hideFields={[HIDE_FIELDS.profiler, HIDE_FIELDS.viewType]}
+                onQueryReRun={onQueryReRun}
+                onQueryProfile={onQueryProfile}
+                onQueryOpen={onQueryOpen}
+                onQueryDelete={onQueryDelete}
+                onAllQueriesDelete={onAllQueriesDelete}
+                noResultsPlaceholder={
+                  <StyledNoResultsWrapper>
+                    TODO: Not sure yet what to put here
+                  </StyledNoResultsWrapper>
+                }
+              />
+            </ResizablePanel>
+          </ResizableContainer>
         </ResizablePanel>
 
-        <ResizablePanelHandle
-          direction="horizontal"
-          data-test-subj="resize-btn-scripting-area-and-results"
-        />
+        {isSavedQueriesOpen && (
+          <>
+            <ResizablePanelHandle
+              direction="vertical"
+              data-test-subj="resize-btn-scripting-area-and-results"
+            />
 
-        <ResizablePanel
-          id="bottom-panel"
-          minSize={10}
-          maxSize={70}
-          defaultSize={80}
-        >
-          <CommandsViewWrapper
-            items={items}
-            clearing={clearing}
-            processing={processing}
-            isResultsLoaded={isResultsLoaded}
-            activeMode={activeMode}
-            activeResultsMode={resultsMode}
-            scrollDivRef={scrollDivRef}
-            hideFields={[HIDE_FIELDS.profiler, HIDE_FIELDS.viewType]}
-            onQueryReRun={onQueryReRun}
-            onQueryProfile={onQueryProfile}
-            onQueryOpen={onQueryOpen}
-            onQueryDelete={onQueryDelete}
-            onAllQueriesDelete={onAllQueriesDelete}
-            noResultsPlaceholder={
-              <StyledNoResultsWrapper>
-                TODO: Not sure yet what to put here
-              </StyledNoResultsWrapper>
-            }
-          />
-        </ResizablePanel>
-      </StyledResizableContainer>
+            <ResizablePanel id="right-panel" minSize={20} defaultSize={30}>
+              <SavedQueriesScreen
+                onIndexChange={setQueryIndex}
+                onQueryInsert={setQuery}
+                savedIndexes={mockSavedIndexes}
+                selectedIndex={selectedIndex}
+              />
+            </ResizablePanel>
+          </>
+        )}
+      </ResizableContainer>
+
+      <ManageIndexesDrawer
+        open={isManageIndexesDrawerOpen}
+        onOpenChange={setIsManageIndexesDrawerOpen}
+      />
     </VectorSearchScreenWrapper>
   )
 }
