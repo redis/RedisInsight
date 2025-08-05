@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   ResizablePanel,
   ResizablePanelHandle,
@@ -13,6 +13,25 @@ import { HeaderActions } from './HeaderActions'
 import { useQuery } from './useQuery'
 import CommandsViewWrapper from '../components/commands-view'
 import { VectorSearchScreenWrapper } from '../styles'
+import { SavedQueriesScreen } from '../saved-queries/SavedQueriesScreen'
+import { SavedIndex } from '../saved-queries/types'
+
+const mockSavedIndexes: SavedIndex[] = [
+  {
+    value: 'idx:bikes_vss',
+    tags: ['tag', 'text', 'vector'],
+    queries: [
+      {
+        label: 'Search for "Nord" bikes ordered by price',
+        value: 'FT.SEARCH idx:bikes_vss "@brand:Nord" SORTBY price ASC',
+      },
+      {
+        label: 'Find road alloy bikes under 20kg',
+        value: 'FT.SEARCH idx:bikes_vss "@material:{alloy} @weight:[0 20]"',
+      },
+    ],
+  },
+]
 
 export const VectorSearchQuery = () => {
   const {
@@ -35,58 +54,80 @@ export const VectorSearchQuery = () => {
     onQueryProfile,
   } = useQuery()
 
+  const [queryIndex, setQueryIndex] = useState(mockSavedIndexes[0])
+
+  const handleQueryInsert = (query: string) => {
+    setQuery(query)
+  }
+
   return (
     <VectorSearchScreenWrapper direction="column" justify="between">
       <HeaderActions />
 
-      <StyledResizableContainer direction="vertical">
-        <ResizablePanel id="top-panel" minSize={20} defaultSize={30}>
-          <QueryWrapper
-            query={query}
-            activeMode={activeMode}
-            resultsMode={resultsMode}
-            setQuery={setQuery}
-            setQueryEl={() => {}}
-            onSubmit={() => onSubmit()}
-            onQueryChangeMode={onQueryChangeMode}
-            onChangeGroupMode={onChangeGroupMode}
-            queryProps={{ useLiteActions: true }}
-          />
-        </ResizablePanel>
+      <ResizablePanel id="top-panel-2" minSize={20} defaultSize={30}>
+        <StyledResizableContainer direction="horizontal">
+          <StyledResizableContainer direction="vertical">
+            <ResizablePanel id="top-panel" minSize={20} defaultSize={30}>
+              <QueryWrapper
+                query={query}
+                activeMode={activeMode}
+                resultsMode={resultsMode}
+                setQuery={setQuery}
+                setQueryEl={() => {}}
+                onSubmit={() => onSubmit()}
+                onQueryChangeMode={onQueryChangeMode}
+                onChangeGroupMode={onChangeGroupMode}
+                queryProps={{ useLiteActions: true }}
+              />
+            </ResizablePanel>
 
-        <ResizablePanelHandle
-          direction="horizontal"
-          data-test-subj="resize-btn-scripting-area-and-results"
-        />
+            <ResizablePanelHandle
+              direction="horizontal"
+              data-test-subj="resize-btn-scripting-area-and-results"
+            />
 
-        <ResizablePanel
-          id="bottom-panel"
-          minSize={10}
-          maxSize={70}
-          defaultSize={80}
-        >
-          <CommandsViewWrapper
-            items={items}
-            clearing={clearing}
-            processing={processing}
-            isResultsLoaded={isResultsLoaded}
-            activeMode={activeMode}
-            activeResultsMode={resultsMode}
-            scrollDivRef={scrollDivRef}
-            hideFields={[HIDE_FIELDS.profiler, HIDE_FIELDS.viewType]}
-            onQueryReRun={onQueryReRun}
-            onQueryProfile={onQueryProfile}
-            onQueryOpen={onQueryOpen}
-            onQueryDelete={onQueryDelete}
-            onAllQueriesDelete={onAllQueriesDelete}
-            noResultsPlaceholder={
-              <StyledNoResultsWrapper>
-                TODO: Not sure yet what to put here
-              </StyledNoResultsWrapper>
-            }
+            <ResizablePanel
+              id="bottom-panel"
+              minSize={10}
+              maxSize={70}
+              defaultSize={80}
+            >
+              <CommandsViewWrapper
+                items={items}
+                clearing={clearing}
+                processing={processing}
+                isResultsLoaded={isResultsLoaded}
+                activeMode={activeMode}
+                activeResultsMode={resultsMode}
+                scrollDivRef={scrollDivRef}
+                hideFields={[HIDE_FIELDS.profiler, HIDE_FIELDS.viewType]}
+                onQueryReRun={onQueryReRun}
+                onQueryProfile={onQueryProfile}
+                onQueryOpen={onQueryOpen}
+                onQueryDelete={onQueryDelete}
+                onAllQueriesDelete={onAllQueriesDelete}
+                noResultsPlaceholder={
+                  <StyledNoResultsWrapper>
+                    TODO: Not sure yet what to put here
+                  </StyledNoResultsWrapper>
+                }
+              />
+            </ResizablePanel>
+          </StyledResizableContainer>
+
+          <ResizablePanelHandle
+            direction="vertical"
+            data-test-subj="resize-btn-scripting-area-and-results"
           />
-        </ResizablePanel>
-      </StyledResizableContainer>
+
+          <SavedQueriesScreen
+            onIndexChange={setQueryIndex}
+            onQueryInsert={handleQueryInsert}
+            savedIndexes={mockSavedIndexes}
+            selectedIndex={queryIndex}
+          />
+        </StyledResizableContainer>
+      </ResizablePanel>
     </VectorSearchScreenWrapper>
   )
 }
