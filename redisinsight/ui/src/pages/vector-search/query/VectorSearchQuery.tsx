@@ -11,8 +11,8 @@ import {
 } from './VectorSearchQuery.styles'
 import { HeaderActions } from './HeaderActions'
 import { useQuery } from './useQuery'
-import { CreateIndexWrapper } from '../create-index/styles'
 import CommandsViewWrapper from '../components/commands-view'
+import { VectorSearchScreenWrapper } from '../styles'
 
 export const VectorSearchQuery = () => {
   const {
@@ -36,7 +36,7 @@ export const VectorSearchQuery = () => {
   } = useQuery()
 
   return (
-    <CreateIndexWrapper direction="column" justify="between">
+    <VectorSearchScreenWrapper direction="column" justify="between">
       <HeaderActions />
 
       <StyledResizableContainer direction="vertical">
@@ -87,6 +87,6 @@ export const VectorSearchQuery = () => {
           />
         </ResizablePanel>
       </StyledResizableContainer>
-    </CreateIndexWrapper>
+    </VectorSearchScreenWrapper>
   )
 }
