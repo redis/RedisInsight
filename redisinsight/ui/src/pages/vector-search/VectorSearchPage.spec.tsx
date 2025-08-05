@@ -35,7 +35,14 @@ describe('VectorSearchPage', () => {
       jest.clearAllMocks()
 
       mockUseSelector = jest.spyOn(reactRedux, 'useSelector')
-      mockUseSelector.mockReturnValue(INSTANCES_MOCK[0])
+      mockUseSelector
+        .mockImplementationOnce(() => INSTANCES_MOCK[0]) // connectedInstanceSelector
+        .mockImplementation(() => ({
+          loading: false,
+          spec: {}, // Provide at least an empty object for COMMANDS_SPEC
+          commandsArray: [],
+          commandGroups: [],
+        })) // appRedisCommandsSelector
     })
 
     afterEach(() => {
