@@ -26,11 +26,10 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { PlayFilledIcon, ContractsIcon } from 'uiSrc/components/base/icons'
+import { PlayFilledIcon, ContractsIcon , RiIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import { Link } from 'uiSrc/components/base/link/Link'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 export interface Props {

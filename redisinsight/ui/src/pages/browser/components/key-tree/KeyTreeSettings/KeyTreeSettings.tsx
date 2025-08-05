@@ -24,12 +24,11 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { SettingsIcon } from 'uiSrc/components/base/icons'
+import { SettingsIcon , RiIcon } from 'uiSrc/components/base/icons'
 import {
   AutoTag,
   AutoTagOption,
 } from 'uiSrc/components/base/forms/combo-box/AutoTag'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'

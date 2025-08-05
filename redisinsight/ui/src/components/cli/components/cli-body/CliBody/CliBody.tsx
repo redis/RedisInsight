@@ -1,6 +1,6 @@
 import React, { Ref, useEffect, useRef, useState } from 'react'
-import { KeyboardKeys as keys } from 'uiSrc/constants/keys'
 import { useDispatch, useSelector } from 'react-redux'
+import { KeyboardKeys as keys } from 'uiSrc/constants/keys'
 
 import { Nullable, scrollIntoView } from 'uiSrc/utils'
 import { isModifiedEvent } from 'uiSrc/services'

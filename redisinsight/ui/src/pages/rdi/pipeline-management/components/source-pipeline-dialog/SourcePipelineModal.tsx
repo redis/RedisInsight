@@ -17,9 +17,8 @@ import UploadModal from 'uiSrc/pages/rdi/pipeline-management/components/upload-m
 import { Text } from 'uiSrc/components/base/text'
 
 import { FileChangeType } from 'uiSrc/slices/interfaces'
-import { RiIcon } from 'uiSrc/components/base/icons'
+import { RiIcon , CancelIcon } from 'uiSrc/components/base/icons'
 import { RiModal } from 'uiSrc/components/base/display'
-import { CancelIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 export const EMPTY_PIPELINE = {

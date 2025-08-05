@@ -26,10 +26,13 @@ import {
   PageContentBody,
   PageHeader,
 } from 'uiSrc/components/base/layout/page'
-import { CallOut } from 'uiSrc/components/base/display/call-out/CallOut'
+import {
+  RiCallOut,
+  RiLoader,
+  RiCollapsibleNavGroup,
+} from 'uiSrc/components/base/display'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
-import { Loader, RiCollapsibleNavGroup } from 'uiSrc/components/base/display'
 import { Col } from 'uiSrc/components/base/layout/flex'
 import {
   AdvancedSettings,
@@ -77,7 +80,7 @@ const SettingsPage = () => {
     <div>
       {loading && (
         <div className={styles.cover}>
-          <Loader size="xl" />
+          <RiLoader size="xl" />
         </div>
       )}
       <ConsentsPrivacy />
@@ -88,7 +91,7 @@ const SettingsPage = () => {
     <div>
       {loading && (
         <div className={styles.cover}>
-          <Loader size="xl" />
+          <RiLoader size="xl" />
         </div>
       )}
       <WorkbenchSettings />
@@ -99,7 +102,7 @@ const SettingsPage = () => {
     <div>
       {loading && (
         <div className={styles.cover}>
-          <Loader size="xl" />
+          <RiLoader size="xl" />
         </div>
       )}
       <CloudSettings />
@@ -110,15 +113,15 @@ const SettingsPage = () => {
     <div>
       {loading && (
         <div className={styles.cover}>
-          <Loader size="xl" />
+          <RiLoader size="xl" />
         </div>
       )}
-      <CallOut className={styles.warning}>
+      <RiCallOut className={styles.warning}>
         <Text size="s" className={styles.smallText}>
           Advanced settings should only be changed if you understand their
           impact.
         </Text>
-      </CallOut>
+      </RiCallOut>
       <AdvancedSettings />
     </div>
   )

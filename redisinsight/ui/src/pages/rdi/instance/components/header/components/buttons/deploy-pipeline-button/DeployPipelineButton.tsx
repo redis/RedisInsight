@@ -19,11 +19,10 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { RiRocketIcon } from 'uiSrc/components/base/icons'
+import { RiRocketIcon , RiIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 export interface Props {

@@ -11,7 +11,7 @@ const ThemeComponent = () => {
   const themeContext = useContext(ThemeContext)
   useEffect(() => {
     const handler = (event) => {
-      let theme = localStorageService.get(BrowserStorageItem.theme)
+      const theme = localStorageService.get(BrowserStorageItem.theme)
       if (theme === Theme.System) {
         themeContext.changeTheme(theme)
       }

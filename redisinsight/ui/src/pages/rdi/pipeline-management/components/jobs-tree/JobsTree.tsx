@@ -1,6 +1,4 @@
-import {
-  EuiAccordion,
-} from '@elastic/eui'
+import { EuiAccordion } from '@elastic/eui'
 import cx from 'classnames'
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -21,14 +19,18 @@ import { isEqualPipelineFile, Nullable } from 'uiSrc/utils'
 
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { DeleteIcon, EditIcon, PlusIcon } from 'uiSrc/components/base/icons'
+import {
+  DeleteIcon,
+  EditIcon,
+  PlusIcon,
+  RiIcon,
+} from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
 import {
   DestructiveButton,
   IconButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { RiIcon } from 'uiSrc/components/base/icons'
-import { Loader } from 'uiSrc/components/base/display'
+import { RiLoader } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 export interface IProps {
@@ -67,8 +69,6 @@ const validateJobName = (
 
   return undefined
 }
-
-
 
 const JobsTree = (props: IProps) => {
   const { onSelectedTab, path, rdiInstanceId, changes = {} } = props
@@ -257,8 +257,8 @@ const JobsTree = (props: IProps) => {
         disableEmpty
         styles={{
           actionsContainer: {
-            width: '64px'
-          }
+            width: '64px',
+          },
         }}
       />
     </FlexItem>
@@ -334,7 +334,7 @@ const JobsTree = (props: IProps) => {
             </ColorText>
           )}
           {loading && (
-            <Loader
+            <RiLoader
               data-testid="rdi-nav-jobs-loader"
               className={styles.loader}
             />

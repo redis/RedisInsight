@@ -23,10 +23,9 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { ColorText, Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons'
+import { RiIcon , CancelIcon } from 'uiSrc/components/base/icons'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { RiModal } from 'uiSrc/components/base/display'
-import { CancelIcon } from 'uiSrc/components/base/icons'
 import { CloudSubscriptionPlanResponse } from 'apiSrc/modules/cloud/subscription/dto'
 import { OAuthProvider, OAuthProviders } from './constants'
 import styles from './styles.module.scss'

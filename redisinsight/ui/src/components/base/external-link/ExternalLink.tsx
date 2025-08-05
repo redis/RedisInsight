@@ -1,7 +1,6 @@
 import React from 'react'
 import { EuiLinkProps } from '@elastic/eui/src/components/link/link'
-import { IconProps } from 'uiSrc/components/base/icons'
-import { RiIcon } from 'uiSrc/components/base/icons'
+import { IconProps , RiIcon } from 'uiSrc/components/base/icons'
 import { Link } from 'uiSrc/components/base/link/Link'
 
 export type Props = EuiLinkProps & {

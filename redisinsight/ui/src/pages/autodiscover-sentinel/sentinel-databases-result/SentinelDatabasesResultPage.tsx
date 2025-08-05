@@ -23,11 +23,10 @@ import validationErrors from 'uiSrc/constants/validationErrors'
 import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/InputFieldSentinel'
 
 import { IconButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { InfoIcon, CopyIcon } from 'uiSrc/components/base/icons'
+import { InfoIcon, CopyIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { ColorText, Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
-import { Loader } from 'uiSrc/components/base/display'
+import { RiLoader } from 'uiSrc/components/base/display'
 import SentinelDatabasesResult from './components'
 
 import styles from '../styles.module.scss'
@@ -120,7 +119,7 @@ const SentinelDatabasesResultPage = () => {
         },
       }) => (
         <div data-testid={`status_${name}_${status}`}>
-          {loading && <Loader />}
+          {loading && <RiLoader />}
           {!loading && status === AddRedisDatabaseStatus.Success && (
             <Text>{message}</Text>
           )}

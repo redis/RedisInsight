@@ -11,13 +11,13 @@ import {
   CancelSlimIcon,
   SearchIcon,
   SwitchIcon,
+  RiIcon,
 } from 'uiSrc/components/base/icons'
 import {
   ActionIconButton,
   IconButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { RiIcon } from 'uiSrc/components/base/icons'
-import { ProgressBarLoader } from 'uiSrc/components/base/display'
+import { RiProgressBarLoader } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 interface MultiSearchSuggestion {
@@ -191,8 +191,7 @@ const MultiSearch = (props: Props) => {
             placeholder={placeholder}
             value={value}
             onKeyDown={handleKeyDown}
-            onChange={onChange
-            }
+            onChange={onChange}
             onFocus={() => setIsInputFocus(true)}
             onBlur={() => setIsInputFocus(false)}
             ref={inputRef}
@@ -205,7 +204,7 @@ const MultiSearch = (props: Props) => {
               data-testid="suggestions"
             >
               {suggestions?.loading && (
-                <ProgressBarLoader
+                <RiProgressBarLoader
                   data-testid="progress-suggestions"
                   color="primary"
                 />

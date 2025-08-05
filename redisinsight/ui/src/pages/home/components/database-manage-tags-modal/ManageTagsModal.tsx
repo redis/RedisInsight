@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useCallback, useMemo, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { PlusIcon } from 'uiSrc/components/base/icons'
+import { PlusIcon , RiIcon } from 'uiSrc/components/base/icons'
 import { ConnectionProvider, Instance } from 'uiSrc/slices/interfaces'
 import { FormDialog } from 'uiSrc/components'
 
@@ -16,7 +16,6 @@ import {
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import { VALID_TAG_KEY_REGEX, VALID_TAG_VALUE_REGEX } from './constants'
 import { TagInputField } from './TagInputField'
 import { getInvalidTagErrors } from './utils'

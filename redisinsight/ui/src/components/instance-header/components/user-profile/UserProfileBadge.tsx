@@ -22,7 +22,7 @@ import { getConfig } from 'uiSrc/config'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { UserProfileLink } from 'uiSrc/components/base/link/UserProfileLink'
-import { Loader } from 'uiSrc/components/base/display'
+import { RiLoader } from 'uiSrc/components/base/display'
 import { CloudUser } from 'apiSrc/modules/cloud/user/models'
 import styles from './styles.module.scss'
 
@@ -174,7 +174,7 @@ const UserProfileBadge = (props: UserProfileBadgeProps) => {
                     />
                   )}
                   {id === selectingAccountId && (
-                    <Loader
+                    <RiLoader
                       className={styles.loadingSpinner}
                       size="m"
                       data-testid={`user-profile-selecting-account-${id}`}
@@ -220,7 +220,7 @@ const UserProfileBadge = (props: UserProfileBadgeProps) => {
             >
               <Text className={styles.optionTitle}>Import Cloud databases</Text>
               {isImportLoading ? (
-                <Loader className={styles.loadingSpinner} size="m" />
+                <RiLoader className={styles.loadingSpinner} size="m" />
               ) : (
                 <RiIcon type="DownloadIcon" />
               )}

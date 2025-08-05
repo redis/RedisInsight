@@ -16,10 +16,9 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { InfoIcon } from 'uiSrc/components/base/icons'
+import { InfoIcon , RiIcon } from 'uiSrc/components/base/icons'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { NumericInput, PasswordInput, TextInput } from 'uiSrc/components/base/inputs'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
 
 export interface Props {

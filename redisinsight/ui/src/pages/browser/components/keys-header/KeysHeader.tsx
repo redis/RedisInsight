@@ -9,7 +9,7 @@ import {
   ColumnsIcon,
   EqualIcon,
   FoldersIcon,
-} from 'uiSrc/components/base/icons'
+ RiIcon } from 'uiSrc/components/base/icons'
 import KeysSummary from 'uiSrc/components/keys-summary'
 import {
   SCAN_COUNT_DEFAULT,
@@ -57,7 +57,6 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 const HIDE_REFRESH_LABEL_WIDTH = 640

@@ -36,7 +36,7 @@ import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
 
 import { Link } from 'uiSrc/components/base/link/Link'
-import { Loader } from 'uiSrc/components/base/display'
+import { RiLoader } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 const Config = () => {
@@ -179,7 +179,7 @@ const Config = () => {
             className={cx('rdi__editorWrapper', 'rdi__loading')}
             data-testid="rdi-config-loading"
           >
-            <Loader color="secondary" size="l" loaderText='Loading data...' />
+            <RiLoader color="secondary" size="l" loaderText="Loading data..." />
           </div>
         ) : (
           <MonacoYaml

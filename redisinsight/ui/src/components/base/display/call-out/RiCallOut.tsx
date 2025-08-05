@@ -5,7 +5,7 @@ export type CallOutProps = Omit<React.ComponentProps<typeof Banner>, 'show'> & {
   children: React.ReactNode
 }
 
-export const CallOut = ({ children, ...rest }: CallOutProps) => (
+export const RiCallOut = ({ children, ...rest }: CallOutProps) => (
   <Banner
     {...rest}
     show

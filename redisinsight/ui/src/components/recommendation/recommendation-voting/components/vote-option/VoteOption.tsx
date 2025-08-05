@@ -14,11 +14,10 @@ import { Nullable } from 'uiSrc/utils'
 
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
-import { CancelSlimIcon } from 'uiSrc/components/base/icons'
+import { CancelSlimIcon , RiIcon } from 'uiSrc/components/base/icons'
 import { IconButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { RiIcon } from 'uiSrc/components/base/icons'
 
 import { getVotedText, iconType, voteTooltip } from './utils'
 import styles from './styles.module.scss'

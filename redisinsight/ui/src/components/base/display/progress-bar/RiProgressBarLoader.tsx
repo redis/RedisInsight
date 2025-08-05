@@ -5,7 +5,7 @@ import {
   LoaderContainer,
 } from './progress-bar-loader.styles'
 
-const ProgressBarLoader = ({
+export const RiProgressBarLoader = ({
   className,
   style,
   color,
@@ -15,5 +15,3 @@ const ProgressBarLoader = ({
     <LoaderBar $color={color} />
   </LoaderContainer>
 )
-
-export default ProgressBarLoader

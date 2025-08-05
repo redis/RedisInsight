@@ -17,11 +17,10 @@ import {
   UserIcon,
   IndicatorExcludedIcon,
   DeleteIcon,
-} from 'uiSrc/components/base/icons'
+ AllIconsType, RiIcon } from 'uiSrc/components/base/icons'
 import { Button, IconButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
-import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import PatternsInfo from './components/patternsInfo'

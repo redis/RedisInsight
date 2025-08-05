@@ -1,7 +1,7 @@
 import React from 'react'
 import cx from 'classnames'
 import { Text } from 'uiSrc/components/base/text'
-import { Loader } from 'uiSrc/components/base/display'
+import { RiLoader } from 'uiSrc/components/base/display'
 
 import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
@@ -54,7 +54,7 @@ const Tab = (props: IProps) => {
           )}
 
           {isLoading && (
-            <Loader
+            <RiLoader
               data-testid="rdi-nav-config-loader"
               className={styles.loader}
             />

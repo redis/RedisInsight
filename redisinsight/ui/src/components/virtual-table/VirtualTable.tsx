@@ -21,7 +21,7 @@ import { isEqualBuffers, Maybe, Nullable } from 'uiSrc/utils'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { RIResizeObserver } from 'uiSrc/components/base/utils'
-import { ProgressBarLoader } from 'uiSrc/components/base/display'
+import { RiProgressBarLoader } from 'uiSrc/components/base/display'
 import {
   ColumnWidthSizes,
   IColumnSearchState,
@@ -601,7 +601,7 @@ const VirtualTable = (props: IProps) => {
           data-testid="virtual-table-container"
         >
           {loading && !hideProgress && (
-            <ProgressBarLoader
+            <RiProgressBarLoader
               color="primary"
               data-testid="progress-key-table"
             />

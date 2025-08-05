@@ -35,7 +35,7 @@ const BouncingLogo = styled.img<RiLoadingLogoProps>`
     infinite;
 `
 
-const RiLoadingLogo = ({
+export const RiLoadingLogo = ({
   src,
   $size = 'XL',
   $bounceSpeed = 1,
@@ -50,5 +50,3 @@ const RiLoadingLogo = ({
     />
   </Wrapper>
 )
-
-export default RiLoadingLogo

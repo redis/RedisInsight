@@ -20,14 +20,13 @@ import { RiPopover } from 'uiSrc/components/base'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Title } from 'uiSrc/components/base/text/Title'
-import { SupportIcon } from 'uiSrc/components/base/icons'
+import { SupportIcon , RiIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { Link } from 'uiSrc/components/base/link/Link'
 import {
   SideBarItem,
   SideBarItemIcon,
 } from 'uiSrc/components/base/layout/sidebar'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import navStyles from '../../styles.module.scss'
 import styles from './styles.module.scss'
 

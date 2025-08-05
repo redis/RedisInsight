@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
-import { ChevronDownIcon, RefreshIcon } from 'uiSrc/components/base/icons'
+import { ChevronDownIcon, RefreshIcon , RiIcon } from 'uiSrc/components/base/icons'
 import {
   errorValidateRefreshRateNumber,
   MIN_REFRESH_RATE,
@@ -12,7 +12,6 @@ import { localStorageService } from 'uiSrc/services'
 import { BrowserStorageItem } from 'uiSrc/constants'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { ColorText } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import { SwitchInput } from 'uiSrc/components/base/inputs'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import {

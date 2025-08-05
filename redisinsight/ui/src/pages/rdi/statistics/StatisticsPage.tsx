@@ -18,7 +18,7 @@ import {
 import { formatLongName, Nullable, setTitle } from 'uiSrc/utils'
 import { setLastPageContext } from 'uiSrc/slices/app/context'
 import { PageNames } from 'uiSrc/constants'
-import { Loader } from 'uiSrc/components/base/display'
+import { RiLoader } from 'uiSrc/components/base/display'
 import { IRdiStatistics, RdiPipelineStatus } from 'uiSrc/slices/interfaces'
 
 import Clients from './clients'
@@ -125,7 +125,7 @@ const StatisticsPage = () => {
       <div className={styles.bodyContainer}>
         {pageLoading && (
           <div className={styles.cover}>
-            <Loader size="xl" />
+            <RiLoader size="xl" />
           </div>
         )}
         {!shouldShowStatistics(statisticsResults) ? (

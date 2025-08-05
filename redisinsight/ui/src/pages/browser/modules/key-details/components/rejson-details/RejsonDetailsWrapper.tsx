@@ -25,7 +25,7 @@ import {
 import { stringToBuffer } from 'uiSrc/utils'
 import { IJSONData } from 'uiSrc/pages/browser/modules/key-details/components/rejson-details/interfaces'
 
-import { ProgressBarLoader } from 'uiSrc/components/base/display'
+import { RiProgressBarLoader } from 'uiSrc/components/base/display'
 import RejsonDetails from './rejson-details'
 import MonacoEditor from './monaco-editor'
 import { parseJsonData } from './utils'
@@ -135,7 +135,7 @@ const RejsonDetailsWrapper = (props: Props) => {
         <div className="flex-column" style={{ flex: '1', height: '100%' }}>
           <div data-testid="json-details" className={styles.container}>
             {loading && (
-              <ProgressBarLoader
+              <RiProgressBarLoader
                 color="primary"
                 data-testid="progress-key-json"
               />

@@ -20,7 +20,7 @@ import {
   Item as ListGroupItem,
 } from 'uiSrc/components/base/layout/list'
 import { Text } from 'uiSrc/components/base/text'
-import { Loader } from 'uiSrc/components/base/display'
+import { RiLoader } from 'uiSrc/components/base/display'
 import { InstancesTabs } from '../../InstancesNavigationPopover'
 import styles from '../../styles.module.scss'
 
@@ -144,7 +144,7 @@ const InstancesList = ({
                 component="div"
               >
                 {loading && instance?.id === selected && (
-                  <Loader size="s" className={styles.loading} />
+                  <RiLoader size="s" className={styles.loading} />
                 )}
                 {instance.name} {getDbIndex(instance.db)}
               </Text>

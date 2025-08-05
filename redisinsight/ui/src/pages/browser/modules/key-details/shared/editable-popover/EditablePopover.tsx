@@ -9,7 +9,7 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { EditIcon } from 'uiSrc/components/base/icons'
-import { Loader } from 'uiSrc/components/base/display'
+import { RiLoader } from 'uiSrc/components/base/display'
 import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
@@ -135,7 +135,10 @@ const EditablePopover = (props: Props) => {
         >
           {content}
           {isDelayed && (
-            <Loader className={cx(editBtnClassName, styles.spinner)} size="m" />
+            <RiLoader
+              className={cx(editBtnClassName, styles.spinner)}
+              size="m"
+            />
           )}
           {!isPopoverOpen && isHovering && !isDelayed && button}
         </div>

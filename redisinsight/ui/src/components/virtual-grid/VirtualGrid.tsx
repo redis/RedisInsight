@@ -10,7 +10,7 @@ import { SortOrder } from 'uiSrc/constants'
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons'
-import { ProgressBarLoader } from 'uiSrc/components/base/display'
+import { RiProgressBarLoader } from 'uiSrc/components/base/display'
 import { IProps } from './interfaces'
 import { getColumnWidth, useInnerElementType } from './utils'
 
@@ -309,7 +309,7 @@ const VirtualGrid = (props: IProps) => {
       data-testid="virtual-grid-container"
     >
       {loading && !hideProgress && (
-        <ProgressBarLoader
+        <RiProgressBarLoader
           color="primary"
           className={styles.progress}
           data-testid="progress-entry-list"

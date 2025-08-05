@@ -14,7 +14,7 @@ import {
 } from 'uiSrc/slices/interfaces/aiAssistant'
 import { Nullable, scrollIntoView } from 'uiSrc/utils'
 import { RiIcon } from 'uiSrc/components/base/icons'
-import { Loader } from 'uiSrc/components/base/display'
+import { RiLoader } from 'uiSrc/components/base/display'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
 
 import LoadingMessage from '../loading-message'
@@ -156,7 +156,7 @@ const ChatHistory = (props: Props) => {
   if (isLoading) {
     return (
       <div className={cx(styles.wrapper, styles.loader)}>
-        <Loader size="xl" data-testid="ai-loading-spinner" />
+        <RiLoader size="xl" data-testid="ai-loading-spinner" />
       </div>
     )
   }

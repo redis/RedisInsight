@@ -12,7 +12,7 @@ import {
   CopyIcon,
   DeleteIcon,
   PlayIcon,
-} from 'uiSrc/components/base/icons'
+ RiIcon } from 'uiSrc/components/base/icons'
 import { Theme } from 'uiSrc/constants'
 import {
   getCommandNameFromQuery,
@@ -48,7 +48,6 @@ import { FormatedDate, FullScreen, RiTooltip } from 'uiSrc/components'
 
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import QueryCardTooltip from '../QueryCardTooltip'
 

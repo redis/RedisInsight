@@ -15,7 +15,7 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { ColorText } from 'uiSrc/components/base/text'
-import { TourStep } from 'uiSrc/components/base/display/tour/TourStep'
+import { RiTourStep } from 'uiSrc/components/base/display'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Props as OnboardingWrapperProps } from './OnboardingTourWrapper'
@@ -145,7 +145,7 @@ const OnboardingTour = (props: Props) => {
       })}
       role="presentation"
     >
-      <TourStep
+      <RiTourStep
         content={StepContent}
         open={isOpen}
         minWidth={300}
@@ -159,7 +159,7 @@ const OnboardingTour = (props: Props) => {
         data-testid="onboarding-tour"
       >
         {children}
-      </TourStep>
+      </RiTourStep>
     </div>
   )
 }

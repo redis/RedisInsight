@@ -17,9 +17,8 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { RefreshIcon, DownloadIcon } from 'uiSrc/components/base/icons'
+import { RefreshIcon, DownloadIcon , RiIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 const PADDINGS_OUTSIDE = 12

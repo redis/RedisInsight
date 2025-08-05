@@ -37,9 +37,8 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { DeleteIcon } from 'uiSrc/components/base/icons'
+import { DeleteIcon , RiIcon } from 'uiSrc/components/base/icons'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { RiPopover } from 'uiSrc/components/base'
 import { TextInput } from 'uiSrc/components/base/inputs'

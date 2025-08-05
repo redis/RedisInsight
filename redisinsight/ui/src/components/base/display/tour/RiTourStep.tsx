@@ -57,11 +57,10 @@ const popoverPlacementMap: PopoverPlacementMapType = {
   },
 }
 
-export const TourStep = ({
+export const RiTourStep = ({
   open,
   content,
   title,
-  onClose,
   placement = 'rightUp',
   className = '',
   children,

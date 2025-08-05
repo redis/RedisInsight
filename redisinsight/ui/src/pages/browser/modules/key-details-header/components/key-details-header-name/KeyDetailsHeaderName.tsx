@@ -28,9 +28,8 @@ import {
 
 import { FlexItem, Grid } from 'uiSrc/components/base/layout/flex'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CopyIcon } from 'uiSrc/components/base/icons'
+import { CopyIcon , RiIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { RiTooltip } from 'uiSrc/components'
 import { TextInput } from 'uiSrc/components/base/inputs'

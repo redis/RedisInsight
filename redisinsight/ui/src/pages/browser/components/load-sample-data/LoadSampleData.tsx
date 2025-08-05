@@ -12,10 +12,9 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { PlayFilledIcon } from 'uiSrc/components/base/icons'
+import { PlayFilledIcon , RiIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 export interface Props {

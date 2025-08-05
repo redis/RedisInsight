@@ -4,9 +4,8 @@ import { Nullable } from 'uiSrc/utils'
 import { RiFilePicker, UploadWarning } from 'uiSrc/components'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { ColorText, Text } from 'uiSrc/components/base/text'
-import { Loader, RiModal } from 'uiSrc/components/base/display'
-import { RiIcon } from 'uiSrc/components/base/icons'
-import { CancelIcon } from 'uiSrc/components/base/icons'
+import { RiLoader, RiModal } from 'uiSrc/components/base/display'
+import { RiIcon, CancelIcon } from 'uiSrc/components/base/icons'
 import { Button } from 'uiSrc/components/base/forms/buttons'
 import styles from './styles.module.scss'
 
@@ -95,7 +94,7 @@ const ImportFileModal = <T,>({
                   className={styles.loading}
                   data-testid="file-loading-indicator"
                 >
-                  <Loader size="xl" />
+                  <RiLoader size="xl" />
                   <Text color="subdued" style={{ marginTop: 12 }}>
                     Uploading...
                   </Text>

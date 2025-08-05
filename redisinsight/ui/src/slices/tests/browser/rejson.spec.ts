@@ -8,6 +8,8 @@ import {
   mockStore,
 } from 'uiSrc/utils/test-utils'
 import successMessages from 'uiSrc/components/notifications/success-messages'
+import { EditorType } from 'uiSrc/slices/interfaces'
+import { stringToBuffer } from 'uiSrc/utils'
 import { GetRejsonRlResponseDto } from 'apiSrc/modules/browser/rejson-rl/dto'
 import reducer, {
   initialState,
@@ -36,8 +38,6 @@ import {
   addMessageNotification,
 } from '../../app/notifications'
 import { refreshKeyInfo } from '../../browser/keys'
-import { EditorType } from 'uiSrc/slices/interfaces'
-import { stringToBuffer } from 'uiSrc/utils'
 
 jest.mock('uiSrc/services', () => ({
   ...jest.requireActual('uiSrc/services'),

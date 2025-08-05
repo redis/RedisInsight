@@ -12,7 +12,7 @@ import { Theme } from 'uiSrc/constants'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 
 import { AllIconsType } from 'uiSrc/components/base/icons'
-import { Loader } from 'uiSrc/components/base/display'
+import { RiLoader } from 'uiSrc/components/base/display'
 
 import styles from './styles.module.scss'
 
@@ -92,7 +92,7 @@ function getCpuUsage(
       cpuUsagePercentage === null ? (
         <>
           <div className={styles.calculationWrapper}>
-            <Loader className={styles.spinner} size="m" />
+            <RiLoader className={styles.spinner} size="m" />
             <span className={styles.calculation}>Calculating...</span>
           </div>
         </>

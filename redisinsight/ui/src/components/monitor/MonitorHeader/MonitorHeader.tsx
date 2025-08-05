@@ -22,9 +22,8 @@ import {
   PauseIcon,
   DeleteIcon,
   BannedIcon,
-} from 'uiSrc/components/base/icons'
+ RiIcon } from 'uiSrc/components/base/icons'
 import { WindowControlGroup } from 'uiSrc/components/base/shared/WindowControlGroup'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 export interface Props {

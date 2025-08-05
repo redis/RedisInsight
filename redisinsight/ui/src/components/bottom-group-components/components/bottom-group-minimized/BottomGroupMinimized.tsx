@@ -28,8 +28,7 @@ import {
   CliIcon,
   DocumentationIcon,
   ProfilerIcon,
-} from 'uiSrc/components/base/icons'
-import { RiIcon } from 'uiSrc/components/base/icons'
+ RiIcon } from 'uiSrc/components/base/icons'
 import styles from '../../styles.module.scss'
 
 const BottomGroupMinimized = () => {

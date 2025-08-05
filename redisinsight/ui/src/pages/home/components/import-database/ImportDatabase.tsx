@@ -17,11 +17,10 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { InfoIcon } from 'uiSrc/components/base/icons'
+import { InfoIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { ColorText, Text } from 'uiSrc/components/base/text'
-import { Loader } from 'uiSrc/components/base/display'
-import { RiIcon } from 'uiSrc/components/base/icons'
+import { RiLoader } from 'uiSrc/components/base/display'
 import ResultsLog from './components/ResultsLog'
 
 import styles from './styles.module.scss'
@@ -205,7 +204,7 @@ const ImportDatabase = (props: Props) => {
                 className={styles.loading}
                 data-testid="file-loading-indicator"
               >
-                <Loader size="xl" />
+                <RiLoader size="xl" />
                 <Text color="subdued" style={{ marginTop: 12 }}>
                   Uploading...
                 </Text>

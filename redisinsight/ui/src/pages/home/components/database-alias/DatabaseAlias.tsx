@@ -8,7 +8,7 @@ import {
   ArrowLeftIcon,
   CopyIcon,
   DoubleChevronRightIcon,
-} from 'uiSrc/components/base/icons'
+ RiIcon } from 'uiSrc/components/base/icons'
 import { BuildType } from 'uiSrc/constants/env'
 import { appInfoSelector } from 'uiSrc/slices/app/info'
 import { getDbIndex, Nullable } from 'uiSrc/utils'
@@ -31,7 +31,6 @@ import {
 import { FlexItem, Grid, Row } from 'uiSrc/components/base/layout/flex'
 import { IconButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { FormField } from 'uiSrc/components/base/forms/FormField'

@@ -1,7 +1,7 @@
 import React, { InputHTMLAttributes, ReactNode, useRef, useState } from 'react'
 import cx from 'classnames'
 import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
-import { Loader } from 'uiSrc/components/base/display'
+import { RiProgressBarLoader, RiLoader } from 'uiSrc/components/base/display'
 import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import {
@@ -12,7 +12,6 @@ import {
   FilePickerWrapper,
 } from 'uiSrc/components/base/forms/file-picker/styles'
 import { CommonProps } from 'uiSrc/components/base/theme/types'
-import ProgressBarLoader from 'uiSrc/components/base/display/progress-bar/ProgressBarLoader'
 import { ColorText } from 'uiSrc/components/base/text'
 
 export type RiFilePickerProps = CommonProps &
@@ -118,7 +117,7 @@ export const RiFilePicker = ({
   if (isLoading && normalFormControl) {
     // Override clear button with loading spinner if it is in loading state
     clearButton = (
-      <Loader
+      <RiLoader
         className="RI-File-Picker__loadingSpinner"
         size={compressed ? 's' : 'm'}
       />
@@ -150,7 +149,7 @@ export const RiFilePicker = ({
   }
 
   const loader = !normalFormControl && isLoading && (
-    <ProgressBarLoader color="accent" />
+    <RiProgressBarLoader color="accent" />
   )
   return (
     <FilePickerWrapper className={classes} $large={display === 'large'}>

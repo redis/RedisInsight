@@ -11,14 +11,13 @@ import { Nullable } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { EraserIcon, SettingsIcon } from 'uiSrc/components/base/icons'
+import { EraserIcon, SettingsIcon , RiIcon } from 'uiSrc/components/base/icons'
 import {
   DestructiveButton,
   IconButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons'
 
 import SlowLogConfig from '../SlowLogConfig'
 import styles from './styles.module.scss'

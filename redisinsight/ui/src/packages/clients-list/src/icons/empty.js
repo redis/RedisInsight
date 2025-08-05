@@ -1,10 +1,12 @@
+import * as React from 'react';
+
 function _extends() {
   _extends =
     Object.assign ||
     function (target) {
-      for (var i = 1; i < arguments.length; i++) {
-        var source = arguments[i];
-        for (var key in source) {
+      for (let i = 1; i < arguments.length; i++) {
+        const source = arguments[i];
+        for (const key in source) {
           if (Object.prototype.hasOwnProperty.call(source, key)) {
             target[key] = source[key];
           }
@@ -17,10 +19,10 @@ function _extends() {
 
 function _objectWithoutProperties(source, excluded) {
   if (source == null) return {};
-  var target = _objectWithoutPropertiesLoose(source, excluded);
-  var key, i;
+  const target = _objectWithoutPropertiesLoose(source, excluded);
+  let key; let i;
   if (Object.getOwnPropertySymbols) {
-    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+    const sourceSymbolKeys = Object.getOwnPropertySymbols(source);
     for (i = 0; i < sourceSymbolKeys.length; i++) {
       key = sourceSymbolKeys[i];
       if (excluded.indexOf(key) >= 0) continue;
@@ -33,9 +35,9 @@ function _objectWithoutProperties(source, excluded) {
 
 function _objectWithoutPropertiesLoose(source, excluded) {
   if (source == null) return {};
-  var target = {};
-  var sourceKeys = Object.keys(source);
-  var key, i;
+  const target = {};
+  const sourceKeys = Object.keys(source);
+  let key; let i;
   for (i = 0; i < sourceKeys.length; i++) {
     key = sourceKeys[i];
     if (excluded.indexOf(key) >= 0) continue;
@@ -44,29 +46,25 @@ function _objectWithoutPropertiesLoose(source, excluded) {
   return target;
 }
 
-import * as React from 'react';
-
-var EuiIconEmpty = function EuiIconEmpty(_ref) {
-  var title = _ref.title,
-    titleId = _ref.titleId,
-    props = _objectWithoutProperties(_ref, ['title', 'titleId']);
+const EuiIconEmpty = function EuiIconEmpty(_ref) {
+  const {title} = _ref;
+    const {titleId} = _ref;
+    const props = _objectWithoutProperties(_ref, ['title', 'titleId']);
 
   // For e2e tests. TestCafe is failing for default icons
   try {
     document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 
-    return /*#__PURE__*/ React.createElement(
+    return /* #__PURE__ */ React.createElement(
       'svg',
-      _extends(
-        {
-          width: 16,
+      {
+        width: 16,
           height: 16,
           viewBox: '0 0 16 16',
           xmlns: 'http://www.w3.org/2000/svg',
           'aria-labelledby': titleId,
-        },
-        props,
-      ),
+        ...props,
+      },
     );
   } catch (e) {
     return <span>''</span>;

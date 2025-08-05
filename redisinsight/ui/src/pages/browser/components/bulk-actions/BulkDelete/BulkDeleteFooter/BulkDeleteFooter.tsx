@@ -24,10 +24,9 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { RefreshIcon } from 'uiSrc/components/base/icons'
+import { RefreshIcon , RiIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import BulkDeleteContent from '../BulkDeleteContent'
 import { isProcessedBulkAction } from '../../utils'
 

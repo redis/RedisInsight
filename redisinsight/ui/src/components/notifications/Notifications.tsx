@@ -17,7 +17,7 @@ import { CustomErrorCodes } from 'uiSrc/constants'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { ColorText } from 'uiSrc/components/base/text'
 import { InfoIcon } from 'uiSrc/components/base/icons'
-import { riToast, RiToaster } from 'uiSrc/components/base/display/toast'
+import { riToast, RiToaster } from 'uiSrc/components/base/display'
 
 import errorMessages from './error-messages'
 import { InfiniteMessagesIds } from './components'

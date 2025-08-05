@@ -6,7 +6,7 @@ import { AxiosError } from 'axios'
 import { isTruncatedString } from 'uiSrc/utils'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { AXIOS_ERROR_DISABLED_ACTION_WITH_TRUNCATED_DATA } from 'uiSrc/constants'
-import { Loader } from 'uiSrc/components/base/display'
+import { RiLoader } from 'uiSrc/components/base/display'
 import RejsonDynamicTypes from '../rejson-dynamic-types'
 import { JSONObjectProps, ObjectTypes, REJSONResponse } from '../interfaces'
 import { generatePath, getBrackets, wrapPath } from '../utils'
@@ -110,11 +110,11 @@ const RejsonObject = (props: JSONObjectProps) => {
       setValueOfEntireObject(
         typeof data.data === 'object'
           ? JSON.stringify(
-            data.data,
-            (_key, value) =>
-              typeof value === 'bigint' ? value.toString() : value,
-            4,
-          )
+              data.data,
+              (_key, value) =>
+                typeof value === 'bigint' ? value.toString() : value,
+              4,
+            )
           : data.data,
       )
     })
@@ -208,7 +208,7 @@ const RejsonObject = (props: JSONObjectProps) => {
               style={{ justifyContent: 'flex-end' }}
             >
               <div className={styles.spinner}>
-                <Loader size="m" />
+                <RiLoader size="m" />
               </div>
             </div>
           )}
