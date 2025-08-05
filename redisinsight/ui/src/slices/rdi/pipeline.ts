@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AxiosError } from 'axios'
+import { get, omit } from 'lodash'
 import { apiService } from 'uiSrc/services'
 import {
   addErrorNotification,
@@ -45,6 +46,8 @@ export const initialState: IStateRdiPipeline = {
   jobsValidationErrors: {},
   resetChecked: false,
   schema: null,
+  jobNameSchema: null,
+  monacoJobsSchema: null,
   strategies: {
     loading: false,
     error: '',
@@ -124,6 +127,18 @@ const rdiPipelineSlice = createSlice({
       { payload }: PayloadAction<Nullable<object>>,
     ) => {
       state.schema = payload
+    },
+    setMonacoJobsSchema: (
+      state,
+      { payload }: PayloadAction<Nullable<object>>,
+    ) => {
+      state.monacoJobsSchema = payload
+    },
+    setJobNameSchema: (
+      state,
+      { payload }: PayloadAction<Nullable<object>>,
+    ) => {
+      state.jobNameSchema = payload
     },
     getPipelineStrategies: (state) => {
       state.strategies.loading = true
@@ -221,6 +236,8 @@ export const {
   deployPipelineSuccess,
   deployPipelineFailure,
   setPipelineSchema,
+  setMonacoJobsSchema,
+  setJobNameSchema,
   getPipelineStrategies,
   getPipelineStrategiesSuccess,
   getPipelineStrategiesFailure,
@@ -395,12 +412,19 @@ export function fetchRdiPipelineSchema(
 ) {
   return async (dispatch: AppDispatch) => {
     try {
-      const { data, status } = await apiService.get<IPipeline>(
+      const { data, status } = await apiService.get<Nullable<object>>(
         getRdiUrl(rdiInstanceId, ApiEndpoints.RDI_PIPELINE_SCHEMA),
       )
 
       if (isStatusSuccessful(status)) {
         dispatch(setPipelineSchema(data))
+        dispatch(setMonacoJobsSchema({
+          ...omit(get(data, ['jobs'], {}), ['properties.name']),
+          required: get(data, ['jobs', 'required'], []).filter(
+            (val: string) => val !== 'name',
+          ),
+        }))
+        dispatch(setJobNameSchema(get(data, ['jobs', 'properties', 'name'], '^aaa&')))
         onSuccessAction?.(data)
       }
     } catch (_err) {

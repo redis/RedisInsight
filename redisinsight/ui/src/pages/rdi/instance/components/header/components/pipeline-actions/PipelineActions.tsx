@@ -38,6 +38,8 @@ const PipelineActions = ({ collectorStatus, pipelineStatus }: Props) => {
   const {
     loading: deployLoading,
     schema,
+    monacoJobsSchema,
+    jobNameSchema,
     config,
     jobs,
   } = useSelector(rdiPipelineSelector)
@@ -56,7 +58,13 @@ const PipelineActions = ({ collectorStatus, pipelineStatus }: Props) => {
     }
 
     const { result, configValidationErrors, jobsValidationErrors } =
-      validatePipeline({ schema, config, jobs })
+      validatePipeline({
+        schema,
+        monacoJobsSchema,
+        jobNameSchema,
+        config,
+        jobs,
+      })
 
     dispatch(setConfigValidationErrors(configValidationErrors))
     dispatch(setJobsValidationErrors(jobsValidationErrors))
