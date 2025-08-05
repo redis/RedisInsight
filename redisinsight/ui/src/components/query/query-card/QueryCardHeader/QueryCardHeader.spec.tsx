@@ -12,7 +12,7 @@ import {
 } from 'uiSrc/utils/test-utils'
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
-import QueryCardHeader, { Props } from './QueryCardHeader'
+import QueryCardHeader, { HIDE_FIELDS, Props } from './QueryCardHeader'
 
 const mockedProps = mock<Props>()
 
@@ -34,7 +34,16 @@ jest.mock('uiSrc/services', () => ({
 jest.mock('uiSrc/slices/app/plugins', () => ({
   ...jest.requireActual('uiSrc/slices/app/plugins'),
   appPluginsSelector: jest.fn().mockReturnValue({
-    visualizations: [],
+    visualizations: [
+      {
+        id: '1',
+        uniqId: '1',
+        name: 'test',
+        plugin: '',
+        activationMethod: 'render',
+        matchCommands: ['FT.SEARCH'],
+      }
+    ],
   }),
 }))
 
@@ -78,6 +87,32 @@ describe('QueryCardHeader', () => {
     render(<QueryCardHeader {...instance(mockedProps)} emptyCommand />)
 
     expect(screen.getByTestId('copy-command')).toBeDisabled()
+  })
+
+  it('should hide Profiler button', async () => {
+    render(
+      <QueryCardHeader
+        {...instance(mockedProps)}
+        query="FT.GET something"
+        isOpen
+        hideFields={[HIDE_FIELDS.profiler]}
+      />,
+    )
+
+    expect(screen.queryByTestId('run-profile-type')).not.toBeInTheDocument()
+  })
+
+  it('should hide Change View Type button', async () => {
+    render(
+      <QueryCardHeader
+        {...instance(mockedProps)}
+        query="FT.SEARCH index somethingCool"
+        isOpen
+        hideFields={[HIDE_FIELDS.viewType]}
+      />,
+    )
+
+    expect(screen.queryByTestId('select-view-type')).not.toBeInTheDocument()
   })
 
   it('event telemetry WORKBENCH_COMMAND_COPIED should be call after click on copy btn', async () => {

@@ -4,13 +4,11 @@ import { VectorSearchCreateIndex } from './create-index/VectorSearchCreateIndex'
 import { VectorSearchQuery } from './query/VectorSearchQuery'
 
 export const VectorSearchPage = () => {
-  const hasIndexes = false
+  const hasIndexes = true
 
   if (!hasIndexes) {
     return <VectorSearchCreateIndex />
   }
-
-  // TODO: QueryScreen
 
   return <VectorSearchQuery />
 }
