@@ -27,7 +27,7 @@ import {
 } from 'uiSrc/components/base/forms'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { HealthText, Text } from 'uiSrc/components/base/text'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 import { RiPopover } from 'uiSrc/components/base'
 import { RiTextInput } from 'uiSrc/components/base/inputs'
 import { CreateRedisearchIndexDto } from 'apiSrc/modules/browser/redisearch/dto'
@@ -186,7 +186,7 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
       }
     >
       <>
-        <Link
+        <RiLink
           href={getUtmExternalLink(
             'https://redis.io/commands/ft.create/#SCHEMA',
             {
@@ -196,7 +196,7 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
           target="_blank"
         >
           Declares
-        </Link>
+        </RiLink>
         {' fields to index. '}
         {keyTypeSelected === RedisearchIndexKeyType.HASH
           ? 'Enter a hash field name.'

@@ -35,7 +35,7 @@ import { ColorText, Text } from 'uiSrc/components/base/text'
 import { RiCheckbox } from 'uiSrc/components/base/forms'
 
 import { RiIcon } from 'uiSrc/components/base/icons'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 import Recommendation from './components/recommendation'
 import WelcomeScreen from './components/welcome-screen'
 import PopoverRunAnalyze from './components/popover-run-analyze'
@@ -166,7 +166,7 @@ const LiveTimeRecommendations = () => {
           />
         </RiTooltip>
         <FeatureFlagComponent name={FeatureFlags.envDependent}>
-          <Link
+          <RiLink
             href={EXTERNAL_LINKS.githubRepo}
             target="_blank"
             style={{ marginLeft: 6 }}
@@ -179,7 +179,7 @@ const LiveTimeRecommendations = () => {
               size="s"
               data-testid="github-repo-icon"
             />
-          </Link>
+          </RiLink>
         </FeatureFlagComponent>
       </div>
 
@@ -230,13 +230,13 @@ const LiveTimeRecommendations = () => {
                     : ANALYZE_TOOLTIP_MESSAGE
                 }
               >
-                <Link
+                <RiLink
                   className={styles.link}
                   onClick={() => setIsShowApproveRun(true)}
                   data-testid="footer-db-analysis-link"
                 >
                   Database Analysis
-                </Link>
+                </RiLink>
               </PopoverRunAnalyze>
               {' to get more tips'}
             </Text>

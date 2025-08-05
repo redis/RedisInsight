@@ -11,7 +11,7 @@ import { HELP_LINKS } from 'uiSrc/pages/home/constants'
 import { FeatureFlags } from 'uiSrc/constants'
 import { RiSideBarItem } from 'uiSrc/components/base/layout/sidebar'
 import { SideBarItemIcon } from 'uiSrc/components/base/layout/sidebar/SideBarItemIcon'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 
 const CreateCloud = () => {
   const onCLickLink = (isSSOEnabled: boolean) => {
@@ -29,7 +29,7 @@ const CreateCloud = () => {
     <FeatureFlagComponent name={FeatureFlags.cloudAds}>
       <OAuthSsoHandlerDialog>
         {(ssoCloudHandlerClick, isSSOEnabled) => (
-          <Link
+          <RiLink
             href={getUtmExternalLink(EXTERNAL_LINKS.tryFree, {
               campaign: 'navigation_menu',
             })}
@@ -59,7 +59,7 @@ const CreateCloud = () => {
                 data-testid="cloud-db-icon"
               />
             </RiSideBarItem>
-          </Link>
+          </RiLink>
         )}
       </OAuthSsoHandlerDialog>
     </FeatureFlagComponent>

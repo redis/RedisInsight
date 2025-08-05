@@ -5,7 +5,7 @@ import { isNull } from 'lodash'
 import { getRedirectionPage } from 'uiSrc/utils/routing'
 import DatabaseNotOpened from 'uiSrc/components/messages/database-not-opened'
 
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
@@ -46,7 +46,7 @@ const RedisInsightLink = (props: Props) => {
       panelPaddingSize="m"
       closePopover={() => setIsPopoverOpen(false)}
       button={
-        <Link
+        <RiLink
           color="text"
           href="/"
           onClick={handleLinkClick}
@@ -54,7 +54,7 @@ const RedisInsightLink = (props: Props) => {
           data-testid="redisinsight-link"
         >
           {text}
-        </Link>
+        </RiLink>
       }
     >
       <DatabaseNotOpened />

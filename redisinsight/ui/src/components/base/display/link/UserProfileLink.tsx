@@ -1,8 +1,8 @@
-import styled from "styled-components"
-import { useTheme } from "@redis-ui/styles"
-import { Link } from "./Link"
+import styled from 'styled-components'
+import { useTheme } from '@redis-ui/styles'
+import { RiLink } from './RiLink'
 
-export const UserProfileLink = styled(Link)`
+export const UserProfileLink = styled(RiLink)`
   padding: 8px 12px !important;
   width: 100%;
   color: ${({ theme }: { theme: ReturnType<typeof useTheme> }) =>
@@ -12,7 +12,7 @@ export const UserProfileLink = styled(Link)`
   &:not(:last-child) {
     border-bottom: 1px solid
       ${({ theme }: { theme: ReturnType<typeof useTheme> }) =>
-    theme.color.gray400};
+        theme.color.gray400};
   }
 
   span {

@@ -30,7 +30,7 @@ import {
 } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -150,13 +150,13 @@ const RedisUploadButton = ({ label, path }: Props) => {
             </div>
             <RiSpacer size="m" />
             <div className={styles.popoverActions}>
-              <Link
+              <RiLink
                 onClick={handleDownload}
                 className={styles.link}
                 data-testid="download-redis-upload-file"
               >
                 Download file
-              </Link>
+              </RiLink>
               <RiPrimaryButton
                 size="s"
                 icon={PlayFilledIcon}

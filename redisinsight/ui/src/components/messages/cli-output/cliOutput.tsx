@@ -4,7 +4,7 @@ import { getDbIndex } from 'uiSrc/utils'
 import { FeatureFlagComponent } from 'uiSrc/components'
 import { ColorText } from 'uiSrc/components/base/text'
 import { FeatureFlags } from 'uiSrc/constants/featureFlags'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 import { RiEmptyButton } from 'uiSrc/components/base/forms'
 
 export const InitOutputText = (
@@ -18,14 +18,14 @@ export const InitOutputText = (
     {emptyOutput && (
       <span className="color-green" key={Math.random()}>
         {'Try '}
-        <Link
+        <RiLink
           onClick={onClick}
           className="color-green"
           style={{ fontSize: 'inherit', fontFamily: 'inherit' }}
           data-test-subj="cli-workbench-page-btn"
         >
           Workbench
-        </Link>
+        </RiLink>
         , our advanced CLI. Check out our Quick Guides to learn more about Redis
         capabilities.
       </span>
@@ -73,13 +73,13 @@ export const cliTexts = {
   USE_PSUBSCRIBE_COMMAND: (path: string = '') => (
     <ColorText color="danger" key={Date.now()} data-testid="user-pub-sub-link">
       {'Use '}
-      <Link
+      <RiLink
         {...getRouterLinkProps(path)}
         color="text"
         data-test-subj="pubsub-page-btn"
       >
         Pub/Sub
-      </Link>
+      </RiLink>
       {' to see the messages published to all channels in your database.'}
     </ColorText>
   ),
@@ -128,13 +128,13 @@ export const cliTexts = {
   USE_PUB_SUB_TOOL: (path: string = '') => (
     <ColorText color="danger" key={Date.now()} data-testid="user-pub-sub-link">
       {'Use '}
-      <Link
+      <RiLink
         {...getRouterLinkProps(path)}
         color="text"
         data-test-subj="pubsub-page-btn"
       >
         Pub/Sub
-      </Link>
+      </RiLink>
       {' tool to subscribe to channels.'}
     </ColorText>
   ),
@@ -149,7 +149,7 @@ export const cliTexts = {
   HELLO3_COMMAND: () => (
     <ColorText color="danger" key={Date.now()}>
       {'Redis Insight does not support '}
-      <Link
+      <RiLink
         href="https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md"
         className="btnLikeLink"
         color="text"
@@ -157,7 +157,7 @@ export const cliTexts = {
         data-test-subj="hello3-btn"
       >
         RESP3
-      </Link>
+      </RiLink>
       {' at the moment, but we are working on it.'}
     </ColorText>
   ),

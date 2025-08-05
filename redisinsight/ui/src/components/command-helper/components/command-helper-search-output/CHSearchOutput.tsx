@@ -10,7 +10,7 @@ import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { ColorText, Text } from 'uiSrc/components/base/text'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -82,7 +82,7 @@ const CHSearchOutput = ({ searchedCommands }: Props) => {
                     handleClickCommand(e, command)
                   }}
                 >
-                  <Link className={styles.title}>{command}</Link>
+                  <RiLink className={styles.title}>{command}</RiLink>
                 </Text>
               </RiFlexItem>
               <RiFlexItem style={{ flexDirection: 'row', overflow: 'hidden' }}>

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo } from 'react'
 import { Maybe } from 'uiSrc/utils'
 import { RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { DownloadIcon } from 'uiSrc/components/base/icons'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 import { RedisString } from 'apiSrc/common/constants'
 
 export interface BulkDeleteSummaryButtonProps {
@@ -47,9 +47,9 @@ const BulkDeleteSummaryButton = ({
       data-testid="download-bulk-delete-report"
       {...rest}
     >
-      <Link download={getFileName()} href={fileUrl}>
+      <RiLink download={getFileName()} href={fileUrl}>
         {children}
-      </Link>
+      </RiLink>
     </RiSecondaryButton>
   )
 }

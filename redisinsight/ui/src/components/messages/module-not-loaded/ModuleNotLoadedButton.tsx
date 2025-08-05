@@ -18,7 +18,7 @@ import {
   RedisDefaultModules,
 } from 'uiSrc/slices/interfaces'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 
 export interface IProps {
   moduleName: RedisDefaultModules
@@ -49,7 +49,7 @@ const ModuleNotLoadedButton = ({
 
   return (
     <>
-      <Link
+      <RiLink
         className={cx(styles.text, styles.link)}
         target="_blank"
         href={getUtmExternalLink(CONTENT[moduleName]?.link, {
@@ -58,11 +58,11 @@ const ModuleNotLoadedButton = ({
         data-testid="learn-more-link"
       >
         Learn More
-      </Link>
+      </RiLink>
       <FeatureFlagComponent
         name={FeatureFlags.cloudAds}
         otherwise={
-          <Link
+          <RiLink
             className={styles.link}
             target="_blank"
             href=""
@@ -77,12 +77,12 @@ const ModuleNotLoadedButton = ({
             <RiPrimaryButton size="s" className={styles.btnLink}>
               Redis Databases page
             </RiPrimaryButton>
-          </Link>
+          </RiLink>
         }
       >
         <OAuthSsoHandlerDialog>
           {(ssoCloudHandlerClick) => (
-            <Link
+            <RiLink
               className={styles.link}
               target="_blank"
               href={getUtmExternalLink(EXTERNAL_LINKS.tryFree, {
@@ -105,7 +105,7 @@ const ModuleNotLoadedButton = ({
               <RiPrimaryButton size="s" className={styles.btnLink}>
                 Get Started For Free
               </RiPrimaryButton>
-            </Link>
+            </RiLink>
           )}
         </OAuthSsoHandlerDialog>
       </FeatureFlagComponent>

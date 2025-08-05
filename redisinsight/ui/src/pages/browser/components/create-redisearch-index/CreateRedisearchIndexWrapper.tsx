@@ -6,7 +6,7 @@ import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 import { RiTooltip } from 'uiSrc/components'
 import CreateRedisearchIndex from './CreateRedisearchIndex'
 
@@ -50,7 +50,7 @@ const CreateRedisearchIndexWrapper = ({
           <Text size="s">
             Use CLI or Workbench to create more advanced indexes. See more
             details in the{' '}
-            <Link
+            <RiLink
               color="text"
               href={getUtmExternalLink('https://redis.io/commands/ft.create/', {
                 campaign: 'browser_search',
@@ -59,7 +59,7 @@ const CreateRedisearchIndexWrapper = ({
               target="_blank"
             >
               documentation.
-            </Link>
+            </RiLink>
           </Text>
         </RiFlexItem>
       </div>

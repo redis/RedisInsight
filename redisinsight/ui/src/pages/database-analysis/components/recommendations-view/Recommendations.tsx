@@ -31,7 +31,7 @@ import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons'
 
 import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 
 import styles from './styles.module.scss'
 
@@ -96,7 +96,7 @@ const Recommendations = () => {
     >
       <RiFlexItem onClick={onRedisStackClick}>
         {redisStack && (
-          <Link
+          <RiLink
             target="_blank"
             href={EXTERNAL_LINKS.redisStack}
             className={styles.redisStackLink}
@@ -117,7 +117,7 @@ const Recommendations = () => {
                 data-testid={`${id}-redis-stack-icon`}
               />
             </RiTooltip>
-          </Link>
+          </RiLink>
         )}
       </RiFlexItem>
       <RiFlexItem>{title}</RiFlexItem>

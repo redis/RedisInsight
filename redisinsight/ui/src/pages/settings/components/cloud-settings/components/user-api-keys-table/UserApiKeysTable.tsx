@@ -24,7 +24,7 @@ import { CopyIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { RiTable, ColumnDefinition } from 'uiSrc/components/base/layout'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -173,14 +173,14 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
             text={
               <>
                 {'To delete this API key from Redis Cloud, '}
-                <Link
+                <RiLink
                   target="_blank"
                   color="text"
                   tabIndex={-1}
                   href="https://redis.io/redis-enterprise-cloud/overview/?utm_source=redisinsight&utm_medium=settings&utm_campaign=clear_keys"
                 >
                   sign in to Redis Cloud
-                </Link>
+                </RiLink>
                 {' and delete it manually.'}
               </>
             }

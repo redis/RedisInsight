@@ -35,8 +35,7 @@ import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
 
-import { Link } from 'uiSrc/components/base/link/Link'
-import { RiLoader } from 'uiSrc/components/base/display'
+import { RiLink, RiLoader } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 const Config = () => {
@@ -160,7 +159,7 @@ const Config = () => {
         </div>
         <Text className="rdi__text" color="subdued">
           {'Provide '}
-          <Link
+          <RiLink
             data-testid="rdi-pipeline-config-link"
             target="_blank"
             href={getUtmExternalLink(EXTERNAL_LINKS.rdiPipeline, {
@@ -169,7 +168,7 @@ const Config = () => {
             })}
           >
             connection details
-          </Link>
+          </RiLink>
           {
             ' for source and target databases and other collector configurations, such as tables and columns to track.'
           }

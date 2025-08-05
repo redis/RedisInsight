@@ -38,7 +38,7 @@ import { RiFlexItem, RiRow, RiCard } from 'uiSrc/components/base/layout'
 import { RiIconButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
 import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 
 import styles from './styles.module.scss'
 
@@ -76,7 +76,7 @@ const RecommendationTitle = ({
     >
       {redisStack && (
         <RiFlexItem>
-          <Link
+          <RiLink
             target="_blank"
             href={EXTERNAL_LINKS.redisStack}
             className={styles.redisStackLink}
@@ -97,7 +97,7 @@ const RecommendationTitle = ({
                 data-testid={`${id}-redis-stack-icon`}
               />
             </RiTooltip>
-          </Link>
+          </RiLink>
         </RiFlexItem>
       )}
       <RiFlexItem className="truncateText">{title}</RiFlexItem>

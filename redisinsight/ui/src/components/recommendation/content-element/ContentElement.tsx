@@ -9,7 +9,7 @@ import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { UTM_MEDIUMS } from 'uiSrc/constants/links'
 import { RiSpacer, SpacerSize } from 'uiSrc/components/base/layout/spacer'
 import { ColorText } from 'uiSrc/components/base/text'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 import InternalLink from '../internal-link'
 import RecommendationBody from '../recommendation-body'
 
@@ -76,7 +76,7 @@ const ContentElement = (props: Props) => {
       )
     case 'link':
       return (
-        <Link
+        <RiLink
           key={`${telemetryName}-${idx}`}
           data-testid={`link-${telemetryName}-${idx}`}
           target="_blank"
@@ -87,13 +87,13 @@ const ContentElement = (props: Props) => {
           onClick={() => onLinkClick?.()}
         >
           {value.name}
-        </Link>
+        </RiLink>
       )
     case 'link-sso':
       return (
         <OAuthSsoHandlerDialog>
           {(ssoCloudHandlerClick) => (
-            <Link
+            <RiLink
               key={`${telemetryName}-${idx}`}
               data-testid={`link-sso-${telemetryName}-${idx}`}
               target="_blank"
@@ -109,7 +109,7 @@ const ContentElement = (props: Props) => {
               })}
             >
               {value.name}
-            </Link>
+            </RiLink>
           )}
         </OAuthSsoHandlerDialog>
       )
@@ -117,7 +117,7 @@ const ContentElement = (props: Props) => {
       return <OAuthConnectFreeDb source={telemetryName as OAuthSocialSource} />
     case 'code-link':
       return (
-        <Link
+        <RiLink
           key={`${telemetryName}-${idx}`}
           data-testid={`code-link-${telemetryName}-${idx}`}
           target="_blank"
@@ -132,7 +132,7 @@ const ContentElement = (props: Props) => {
           >
             <code className={cx(styles.span, styles.text)}>{value.name}</code>
           </ColorText>
-        </Link>
+        </RiLink>
       )
     case 'spacer':
       return (

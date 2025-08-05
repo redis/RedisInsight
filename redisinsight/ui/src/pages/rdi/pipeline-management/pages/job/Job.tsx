@@ -30,8 +30,7 @@ import { KeyboardShortcut, RiTooltip } from 'uiSrc/components'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
-import { Link } from 'uiSrc/components/base/link/Link'
-import { RiLoader } from 'uiSrc/components/base/display'
+import { RiLink, RiLoader } from 'uiSrc/components/base/display'
 import TemplateButton from '../../components/template-button'
 import styles from './styles.module.scss'
 
@@ -219,7 +218,7 @@ const Job = (props: Props) => {
         </div>
         <Text className="rdi__text" color="subdued">
           {'Create a job per source table to filter, transform, and '}
-          <Link
+          <RiLink
             data-testid="rdi-pipeline-transformation-link"
             target="_blank"
             href={getUtmExternalLink(EXTERNAL_LINKS.rdiPipelineTransforms, {
@@ -228,7 +227,7 @@ const Job = (props: Props) => {
             })}
           >
             map data
-          </Link>
+          </RiLink>
           {' to Redis.'}
         </Text>
         {loading ? (

@@ -7,7 +7,7 @@ import {
   UTM_MEDIUMS,
 } from 'uiSrc/constants/links'
 import { RiIcon } from 'uiSrc/components/base/icons'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
@@ -44,7 +44,7 @@ const ClickableAppendInfo = () => {
         separated by spaces.
         <br />
         Supported glob-style patterns are described&nbsp;
-        <Link
+        <RiLink
           target="_blank"
           href={getUtmExternalLink(EXTERNAL_LINKS.pubSub, {
             medium: UTM_MEDIUMS.Main,
@@ -52,7 +52,7 @@ const ClickableAppendInfo = () => {
           })}
         >
           here.
-        </Link>
+        </RiLink>
       </Text>
     </RiPopover>
   )

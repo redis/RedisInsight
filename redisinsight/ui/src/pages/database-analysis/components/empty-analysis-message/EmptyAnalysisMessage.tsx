@@ -6,7 +6,7 @@ import { Pages } from 'uiSrc/constants'
 import { EmptyMessage, Content } from 'uiSrc/pages/database-analysis/constants'
 import { getRouterLinkProps } from 'uiSrc/services'
 
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 interface Props {
@@ -22,13 +22,13 @@ const emptyMessageContent: { [key in EmptyMessage]: Content } = {
     title: 'No keys to display',
     text: (path) => (
       <>
-        <Link
+        <RiLink
           {...getRouterLinkProps(path)}
           className={styles.summary}
           data-test-subj="workbench-page-btn"
         >
           Use Workbench Guides and Tutorials
-        </Link>
+        </RiLink>
         {' to quickly load the data.'}
       </>
     ),

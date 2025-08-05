@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 import { Pages } from 'uiSrc/constants'
 import { getRouterLinkProps } from 'uiSrc/services'
 import { render, fireEvent, screen } from 'uiSrc/utils/test-utils'
@@ -9,12 +9,12 @@ describe('getRouterLinkProps', () => {
     const mockOnClick = jest.fn()
 
     render(
-      <Link
+      <RiLink
         {...getRouterLinkProps(Pages.browser, mockOnClick)}
         data-testid="link"
       >
         Text
-      </Link>,
+      </RiLink>,
     )
     fireEvent.click(screen.getByTestId('link'))
 

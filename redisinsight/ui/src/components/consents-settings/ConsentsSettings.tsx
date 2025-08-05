@@ -18,7 +18,7 @@ import { InfoIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { RiSwitchInput } from 'uiSrc/components/base/inputs'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 import ConsentOption from './ConsentOption'
 
 import styles from './styles.module.scss'
@@ -290,19 +290,19 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
           <Text color="subdued" size="s" className={styles.smallText}>
             Use of Redis Insight is governed by your signed agreement with
             Redis, or, if none, by the{' '}
-            <Link
+            <RiLink
               target="_blank"
               href="https://redis.io/software-subscription-agreement/?utm_source=redisinsight&utm_medium=app&utm_campaign=EULA"
             >
               Redis Enterprise Software Subscription Agreement
-            </Link>
+            </RiLink>
             . If no agreement applies, use is subject to the{' '}
-            <Link
+            <RiLink
               target="_blank"
               href="https://github.com/RedisInsight/RedisInsight/blob/main/LICENSE"
             >
               Server Side Public License
-            </Link>
+            </RiLink>
           </Text>
           <RiSpacer size="m" />
         </>

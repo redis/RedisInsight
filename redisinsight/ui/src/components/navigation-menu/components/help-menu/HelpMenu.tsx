@@ -22,7 +22,7 @@ import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { SupportIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 import {
   RiSideBarItem,
   SideBarItemIcon,
@@ -107,7 +107,7 @@ const HelpMenu = () => {
         >
           <FeatureFlagComponent name={FeatureFlags.envDependent}>
             <RiFlexItem grow={2} className={styles.helpMenuItem}>
-              <Link
+              <RiLink
                 className={styles.helpMenuItemLink}
                 href={EXTERNAL_LINKS.githubIssues}
                 target="_blank"
@@ -122,7 +122,7 @@ const HelpMenu = () => {
                 >
                   Provide <br /> Feedback
                 </Text>
-              </Link>
+              </RiLink>
             </RiFlexItem>
           </FeatureFlagComponent>
           <RiFlexItem className={styles.helpMenuItemRow} grow={4}>
@@ -147,7 +147,7 @@ const HelpMenu = () => {
               >
                 <RiIcon type="DocumentationIcon" size="l" />
               </div>
-              <Link
+              <RiLink
                 onClick={onClickReleaseNotes}
                 className={styles.helpMenuTextLink}
                 href={EXTERNAL_LINKS.releaseNotes}
@@ -157,7 +157,7 @@ const HelpMenu = () => {
                 <Text size="xs" className={styles.helpMenuTextLink}>
                   Release Notes
                 </Text>
-              </Link>
+              </RiLink>
             </div>
             <FeatureFlagComponent name={FeatureFlags.envDependent}>
               <div className={styles.helpMenuItemLink}>

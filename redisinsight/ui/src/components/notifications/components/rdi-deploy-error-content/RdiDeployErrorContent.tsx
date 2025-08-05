@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 import { RiCol, RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiDestructiveButton } from 'uiSrc/components/base/forms'
@@ -32,7 +32,7 @@ const RdiDeployErrorContent = (props: Props) => {
         <RiCol>
           <RiFlexItem>
             <div>Review the error log for details.</div>
-            <Link
+            <RiLink
               variant="small"
               isExternalLink
               href={fileUrl}
@@ -41,7 +41,7 @@ const RdiDeployErrorContent = (props: Props) => {
               style={{ marginTop: '10px', paddingLeft: 0 }}
             >
               Download Error Log File
-            </Link>
+            </RiLink>
           </RiFlexItem>
         </RiCol>
       </ColorText>

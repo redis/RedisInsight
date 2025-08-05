@@ -10,5 +10,7 @@ export { RiProgressBarLoader } from './progress-bar/RiProgressBarLoader'
 export { RiToast, riToast } from './toast/RiToast'
 export { RiToaster } from './toast/RiToaster'
 export { RiTourStep } from './tour/RiTourStep'
+export { RiLink } from './link/RiLink'
+export { UserProfileLink } from './link/UserProfileLink'
 
 export type { RiCollapsibleNavGroupProps } from './collapsible-nav-group/RiCollapsibleNavGroup'

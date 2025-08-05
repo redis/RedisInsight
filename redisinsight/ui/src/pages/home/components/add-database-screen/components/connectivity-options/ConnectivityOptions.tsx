@@ -18,7 +18,7 @@ import { RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 import { CONNECTIVITY_OPTIONS } from '../../constants'
 
 import styles from './styles.module.scss'
@@ -28,7 +28,7 @@ export interface Props {
   onClose?: () => void
 }
 
-const NewCloudLink = styled(Link)`
+const NewCloudLink = styled(RiLink)`
   min-width: 160px;
   display: flex;
   align-items: center;

@@ -16,7 +16,7 @@ import { RiCol, RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { Text } from 'uiSrc/components/base/text'
 import { CancelSlimIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { RiIconButton, RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 
 import { getVotedText, iconType, voteTooltip } from './utils'
@@ -153,7 +153,7 @@ const VoteOption = (props: Props) => {
               className={styles.feedbackBtn}
               size="s"
             >
-              <Link
+              <RiLink
                 className={styles.link}
                 href={EXTERNAL_LINKS.recommendationFeedback}
                 target="_blank"
@@ -167,7 +167,7 @@ const VoteOption = (props: Props) => {
                   data-testid="github-repo-icon"
                 />
                 To Github
-              </Link>
+              </RiLink>
             </RiPrimaryButton>
           </RiFlexItem>
         </RiCol>

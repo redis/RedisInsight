@@ -12,8 +12,7 @@ import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
-import { Link } from 'uiSrc/components/base/link/Link'
-import { RiImage } from 'uiSrc/components/base/display'
+import { RiLink, RiImage } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 const subTitleText =
@@ -50,7 +49,7 @@ const EmptyMessage = ({ onAddInstanceClick }: Props) => {
         </RiFlexItem>
         or
         <RiFlexItem grow>
-          <Link
+          <RiLink
             data-testid="empty-rdi-quickstart-button"
             target="_blank"
             href={getUtmExternalLink(EXTERNAL_LINKS.rdiQuickStart, {
@@ -59,7 +58,7 @@ const EmptyMessage = ({ onAddInstanceClick }: Props) => {
             })}
           >
             RDI Quickstart <RiIcon type="ArrowDiagonalIcon" />
-          </Link>
+          </RiLink>
         </RiFlexItem>
       </RiRow>
     </div>

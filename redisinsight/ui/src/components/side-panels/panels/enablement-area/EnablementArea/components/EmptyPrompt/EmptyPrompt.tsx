@@ -2,7 +2,7 @@ import React from 'react'
 
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import { RiIcon } from 'uiSrc/components/base/icons'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 import { RiEmptyPrompt } from 'uiSrc/components/base/layout'
 import styles from './styles.module.scss'
 
@@ -18,7 +18,7 @@ const EmptyPrompt = () => (
           <br />
           <span>
             If the problem persists, please{' '}
-            <Link
+            <RiLink
               color="ghost"
               href={EXTERNAL_LINKS.githubIssues}
               external={false}
@@ -26,7 +26,7 @@ const EmptyPrompt = () => (
               data-testid="contact-us"
             >
               contact us
-            </Link>
+            </RiLink>
             .
           </span>
         </p>

@@ -4,7 +4,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import LoadSampleData from 'uiSrc/pages/browser/components/load-sample-data'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { Text } from 'uiSrc/components/base/text'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -31,14 +31,14 @@ const NoIndexesInitialMessage = (props: Props) => {
       <RiSpacer />
       <Text size="xs">
         Would you like to load the sample data and indexes (from this{' '}
-        <Link
+        <RiLink
           color="subdued"
           className="defaultLink"
           onClick={onClickTutorial}
           data-testid="tutorial-initial-message-link"
         >
           tutorial
-        </Link>
+        </RiLink>
         ) to see what Redis Copilot can help you do?
       </Text>
       <RiSpacer />

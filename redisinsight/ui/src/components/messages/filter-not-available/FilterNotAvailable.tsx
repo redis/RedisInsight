@@ -20,7 +20,7 @@ import { Text } from 'uiSrc/components/base/text'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text/Title'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
@@ -86,7 +86,7 @@ const FilterNotAvailable = ({ onClose }: { onClose?: () => void }) => {
               )}
             </OAuthSsoHandlerDialog>
             <RiSpacer size="m" />
-            <Link
+            <RiLink
               className={styles.link}
               target="_blank"
               color="text"
@@ -94,7 +94,7 @@ const FilterNotAvailable = ({ onClose }: { onClose?: () => void }) => {
               data-testid="learn-more-link"
             >
               Learn More
-            </Link>
+            </RiLink>
           </div>
         </FeatureFlagComponent>
       )}

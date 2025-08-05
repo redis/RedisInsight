@@ -5,7 +5,7 @@ import { goBackFromCommand } from 'uiSrc/slices/cli/cli-settings'
 import { getDocUrlForCommand } from 'uiSrc/utils'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 import CHCommandInfo from '../components/command-helper-info'
 import CHSearchWrapper from '../components/command-helper-search'
 import CHSearchOutput from '../components/command-helper-search-output'
@@ -45,14 +45,14 @@ const CommandHelper = (props: Props) => {
   const readMore = (commandName = '') => {
     const docUrl = getDocUrlForCommand(commandName)
     return (
-      <Link
+      <RiLink
         href={docUrl}
         className={styles.link}
         target="_blank"
         data-testid="read-more"
       >
         Read more
-      </Link>
+      </RiLink>
     )
   }
 

@@ -11,7 +11,7 @@ import {
 
 import { enableUserAnalyticsAction } from 'uiSrc/slices/user/user-settings'
 import { RiCheckbox } from 'uiSrc/components/base/forms'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -46,7 +46,7 @@ const OAuthAgreement = (props: Props) => {
       <ul className={styles.list}>
         <li className={styles.listItem}>
           {'to our '}
-          <Link
+          <RiLink
             color="subdued"
             href="https://redis.io/legal/cloud-tos/?utm_source=redisinsight&utm_medium=main&utm_campaign=main"
             className={styles.link}
@@ -54,9 +54,9 @@ const OAuthAgreement = (props: Props) => {
             data-testid="ouath-agreements-cloud-terms-of-service"
           >
             Cloud Terms of Service
-          </Link>
+          </RiLink>
           {' and '}
-          <Link
+          <RiLink
             color="subdued"
             href="https://redis.io/legal/privacy-policy/?utm_source=redisinsight&utm_medium=main&utm_campaign=main"
             className={styles.link}
@@ -64,7 +64,7 @@ const OAuthAgreement = (props: Props) => {
             data-testid="oauth-agreement-privacy-policy"
           >
             Privacy Policy
-          </Link>
+          </RiLink>
         </li>
         <li className={styles.listItem}>
           that Redis Insight will generate Redis Cloud API account and user

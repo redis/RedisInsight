@@ -9,8 +9,7 @@ import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
-import { Link } from 'uiSrc/components/base/link/Link'
-import { RiImage } from 'uiSrc/components/base/display'
+import { RiLink, RiImage } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -41,7 +40,7 @@ const EmptyMessage = ({ onAddInstanceClick }: Props) => (
     </RiPrimaryButton>
     <OAuthSsoHandlerDialog>
       {(ssoCloudHandlerClick) => (
-        <Link
+        <RiLink
           data-testid="empty-database-cloud-button"
           target="_blank"
           className={styles.link}
@@ -57,7 +56,7 @@ const EmptyMessage = ({ onAddInstanceClick }: Props) => (
           }}
         >
           Create a free trial Cloud database
-        </Link>
+        </RiLink>
       )}
     </OAuthSsoHandlerDialog>
   </div>

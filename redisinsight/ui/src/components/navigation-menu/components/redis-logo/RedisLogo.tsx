@@ -11,7 +11,7 @@ import {
 } from 'uiSrc/components/base/layout/sidebar'
 import { getRouterLinkProps } from 'uiSrc/services'
 import { Pages } from 'uiSrc/constants'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 import LogoSVG from 'uiSrc/assets/img/logo_small.svg?react'
 import styles from '../../styles.module.scss'
 
@@ -32,7 +32,7 @@ export const RedisLogo = ({ isRdiWorkspace }: Props) => {
   }
 
   return (
-    <Link
+    <RiLink
       {...getRouterLinkProps(isRdiWorkspace ? Pages.rdi : Pages.home)}
       data-testid="redis-logo-link"
       style={{ backgroundColor: 'transparent' }}
@@ -51,6 +51,6 @@ export const RedisLogo = ({ isRdiWorkspace }: Props) => {
       >
         <SideBarItemIcon icon={LogoSVG} />
       </RiSideBarItem>
-    </Link>
+    </RiLink>
   )
 }

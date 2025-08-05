@@ -21,8 +21,7 @@ import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
-import { Link } from 'uiSrc/components/base/link/Link'
-import { RiLoader } from 'uiSrc/components/base/display'
+import { RiLink, RiLoader } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 export enum InfiniteMessagesIds {
@@ -254,14 +253,14 @@ export const INFINITE_MESSAGES = {
           setting restricting database connection management.
           <RiSpacer size="m" />
           Log in to{' '}
-          <Link
+          <RiLink
             target="_blank"
             color="text"
             tabIndex={-1}
             href="https://cloud.redis.io/#/databases?utm_source=redisinsight&utm_medium=main&utm_campaign=disabled_db_management"
           >
             Redis Cloud
-          </Link>{' '}
+          </RiLink>{' '}
           to check your database.
         </Text>
         <RiSpacer size="m" />

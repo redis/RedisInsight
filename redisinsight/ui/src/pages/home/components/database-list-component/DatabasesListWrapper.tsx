@@ -81,7 +81,7 @@ import { Tag } from 'uiSrc/slices/interfaces/tag'
 import { FeatureFlagComponent } from 'uiSrc/components'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { RiEmptyButton, RiIconButton } from 'uiSrc/components/base/forms'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 import { RIResizeObserver } from 'uiSrc/components/base/utils'
 
 import DbStatus from '../db-status'
@@ -596,14 +596,14 @@ const DatabasesListWrapper = (props: Props) => {
               )}
               {instance.cloudDetails && (
                 <RiTooltip content="Go to Redis Cloud">
-                  <Link
+                  <RiLink
                     target="_blank"
                     href={EXTERNAL_LINKS.cloudConsole}
                     onClick={handleClickGoToCloud}
                     data-testid={`cloud-link-${instance.id}`}
                   >
                     <RiIcon type="CloudLinkIcon" className={styles.cloudIcon} />
-                  </Link>
+                  </RiLink>
                 </RiTooltip>
               )}
               <FeatureFlagComponent name={FeatureFlags.databaseManagement}>

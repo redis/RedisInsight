@@ -15,7 +15,7 @@ import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiFormField } from 'uiSrc/components/base/forms'
 import { RiSwitchInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 
 const WorkbenchSettings = () => {
   const { cleanup } = useSelector(userSettingsWBSelector)
@@ -63,14 +63,14 @@ const WorkbenchSettings = () => {
         summary={
           <>
             {'Sets the size of a command batch for the '}
-            <Link
+            <RiLink
               href="https://redis.io/docs/latest/develop/use/pipelining/"
               target="_blank"
               data-testid="pipelining-link"
               style={{ padding: 0 }}
             >
               pipeline
-            </Link>
+            </RiLink>
             {' mode in Workbench. 0 or 1 pipelines every command.'}
           </>
         }

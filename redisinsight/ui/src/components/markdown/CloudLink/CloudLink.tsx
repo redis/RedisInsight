@@ -1,7 +1,7 @@
 import React from 'react'
 import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { OAuthSsoHandlerDialog } from 'uiSrc/components'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { RiLink } from 'uiSrc/components/base/display'
 
 export interface Props {
   url: string
@@ -14,7 +14,7 @@ const CloudLink = (props: Props) => {
   return (
     <OAuthSsoHandlerDialog>
       {(ssoCloudHandlerClick) => (
-        <Link
+        <RiLink
           color="text"
           onClick={(e) => {
             ssoCloudHandlerClick(e, {
@@ -27,7 +27,7 @@ const CloudLink = (props: Props) => {
           data-testid="guide-free-database-link"
         >
           {text}
-        </Link>
+        </RiLink>
       )}
     </OAuthSsoHandlerDialog>
   )
