@@ -59,7 +59,6 @@ import BrowserLeftPanel from './components/browser-left-panel'
 import BrowserRightPanel from './components/browser-right-panel'
 
 import styles from './styles.module.scss'
-import UploadModal from '../rdi/pipeline-management/components/upload-modal/UploadModal'
 
 const widthResponsiveSize = 1280
 const widthExplorePanel = 460
@@ -336,7 +335,6 @@ const BrowserPage = () => {
               borderRadius: `8px`,
             }}
           >
-            <UploadModal >{<div>test</div>}</UploadModal>
             <BrowserLeftPanel
               selectedKey={selectedKey}
               selectKey={selectKey}
