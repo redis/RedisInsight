@@ -5,5 +5,5 @@ export * from './layout'
 export { ExternalLink }
 
 export * from './tooltip'
-export * from './popover'
+export * from './display'
 export * from './forms'

@@ -12,5 +12,6 @@ export { RiToaster } from './toast/RiToaster'
 export { RiTourStep } from './tour/RiTourStep'
 export { RiLink } from './link/RiLink'
 export { UserProfileLink } from './link/UserProfileLink'
+export * from './popover'
 
 export type { RiCollapsibleNavGroupProps } from './collapsible-nav-group/RiCollapsibleNavGroup'
