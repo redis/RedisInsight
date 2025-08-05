@@ -47,7 +47,7 @@ export const VectorSearchQuery = () => {
             resultsMode={resultsMode}
             setQuery={setQuery}
             setQueryEl={() => {}}
-            onSubmit={onSubmit}
+            onSubmit={() => onSubmit()}
             onQueryChangeMode={onQueryChangeMode}
             onChangeGroupMode={onChangeGroupMode}
             queryProps={{ useLiteActions: true }}
