@@ -16,7 +16,7 @@ import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { Text } from 'uiSrc/components/base/text'
-import { WindowControlGroup } from 'uiSrc/components/base/shared/WindowControlGroup'
+import { WindowControlGroup } from 'uiSrc/components/base'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 

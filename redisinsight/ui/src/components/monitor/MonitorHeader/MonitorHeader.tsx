@@ -24,7 +24,7 @@ import {
   BannedIcon,
   RiIcon,
 } from 'uiSrc/components/base/icons'
-import { WindowControlGroup } from 'uiSrc/components/base/shared/WindowControlGroup'
+import { WindowControlGroup } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
 export interface Props {
