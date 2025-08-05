@@ -2,19 +2,6 @@
   display: flex;
   align-items: center;
 
-  .recommendedSettingsToolTip {
-    display: inline-flex;
-    margin-left: 4px;
-    margin-bottom: 4px;
-
-    :global {
-      svg {
-        width: 14px;
-        height: 14px;
-      }
-    }
-  }
-
   :global(.euiCheckbox) {
     margin-bottom: 6px;
 

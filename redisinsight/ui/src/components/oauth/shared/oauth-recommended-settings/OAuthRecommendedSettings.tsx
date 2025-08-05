@@ -4,6 +4,7 @@ import { FeatureFlags } from 'uiSrc/constants'
 
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { Spacer } from 'uiSrc/components/base/layout'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -40,6 +41,7 @@ const OAuthRecommendedSettings = (props: Props) => {
           <RiIcon type="InfoIcon" size="s" />
         </RiTooltip>
       </div>
+      <Spacer size="s" />
     </FeatureFlagComponent>
   )
 }
