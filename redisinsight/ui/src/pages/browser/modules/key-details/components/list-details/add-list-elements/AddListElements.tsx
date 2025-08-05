@@ -16,7 +16,7 @@ import {
 import { KeyTypes } from 'uiSrc/constants'
 import { stringToBuffer } from 'uiSrc/utils'
 import { AddListFormConfig as config } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import {
   RiPrimaryButton,
   RiSecondaryButton,
@@ -149,8 +149,8 @@ const AddListElements = (props: Props) => {
         </AddMultipleFields>
       </div>
       <>
-        <Row justify="end" gap="m" style={{ padding: 18 }}>
-          <FlexItem>
+        <RiRow justify="end" gap="m" style={{ padding: 18 }}>
+          <RiFlexItem>
             <div>
               <RiSecondaryButton
                 onClick={() => closePanel(true)}
@@ -159,8 +159,8 @@ const AddListElements = (props: Props) => {
                 Cancel
               </RiSecondaryButton>
             </div>
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <div>
               <RiPrimaryButton
                 onClick={submitData}
@@ -169,8 +169,8 @@ const AddListElements = (props: Props) => {
                 Save
               </RiPrimaryButton>
             </div>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </>
     </>
   )

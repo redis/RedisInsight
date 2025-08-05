@@ -1,6 +1,6 @@
-import Page from './Page'
-import PageBody from './PageBody'
-import PageHeader from './PageHeader'
-import PageContentBody from './PageContentBody'
+import { RiPage } from './RiPage'
+import { RiPageBody } from './RiPageBody'
+import { RiPageHeader } from './RiPageHeader'
+import { RiPageContentBody } from './RiPageContentBody'
 
-export { Page, PageBody, PageHeader, PageContentBody }
+export { RiPage, RiPageBody, RiPageHeader, RiPageContentBody }

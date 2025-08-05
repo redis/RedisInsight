@@ -21,7 +21,7 @@ import {
   getPathToResource,
 } from 'uiSrc/services/resourcesService'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import {
   PlayFilledIcon,
@@ -142,13 +142,13 @@ const RedisUploadButton = ({ label, path }: Props) => {
             <div className={cx(styles.popoverItem, styles.popoverItemTitle)}>
               Execute commands in bulk
             </div>
-            <Spacer size="s" />
+            <RiSpacer size="s" />
             <div className={styles.popoverItem}>
               All commands from the file in your tutorial will be automatically
               executed against your database. Avoid executing them in production
               databases.
             </div>
-            <Spacer size="m" />
+            <RiSpacer size="m" />
             <div className={styles.popoverActions}>
               <Link
                 onClick={handleDownload}

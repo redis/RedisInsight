@@ -19,7 +19,7 @@ import {
 } from 'uiSrc/slices/panels/sidePanels'
 import { RestartChat } from 'uiSrc/components/side-panels/panels/ai-assistant/components/shared'
 
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiEmptyButton, RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { EraserIcon, LightBulbIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
@@ -105,7 +105,7 @@ const ExpertChatHeader = (props: Props) => {
               <Text>
                 Open relevant tutorials to learn more about search and query.
               </Text>
-              <Spacer size="s" />
+              <RiSpacer size="s" />
               <RiPrimaryButton
                 size="s"
                 onClick={handleOpenTutorials}

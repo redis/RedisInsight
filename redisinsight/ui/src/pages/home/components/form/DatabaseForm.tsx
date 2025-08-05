@@ -14,10 +14,10 @@ import {
 } from 'uiSrc/utils'
 import { RiTooltip } from 'uiSrc/components'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiFormField } from 'uiSrc/components/base/forms'
 import {
-  NumericInput,
+  RiNumericInput,
   RiPasswordInput,
   RiTextInput,
 } from 'uiSrc/components/base/inputs'
@@ -92,8 +92,8 @@ const DatabaseForm = (props: Props) => {
   return (
     <>
       {showFields.alias && (
-        <Row gap="m">
-          <FlexItem grow>
+        <RiRow gap="m">
+          <RiFlexItem grow>
             <RiFormField label="Database Alias*">
               <RiTextInput
                 name="name"
@@ -107,14 +107,14 @@ const DatabaseForm = (props: Props) => {
                 disabled={isFieldDisabled('alias')}
               />
             </RiFormField>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       )}
 
       {(showFields.host || isShowPort) && (
-        <Row gap="m">
+        <RiRow gap="m">
           {showFields.host && (
-            <FlexItem grow={4}>
+            <RiFlexItem grow={4}>
               <RiFormField label="Host*" additionalText={<AppendHostName />}>
                 <RiTextInput
                   autoFocus={autoFocus}
@@ -135,15 +135,15 @@ const DatabaseForm = (props: Props) => {
                   disabled={isFieldDisabled('host')}
                 />
               </RiFormField>
-            </FlexItem>
+            </RiFlexItem>
           )}
           {isShowPort && (
-            <FlexItem grow={2}>
+            <RiFlexItem grow={2}>
               <RiFormField
                 label="Port*"
                 additionalText={`Should not exceed ${MAX_PORT_NUMBER}.`}
               >
-                <NumericInput
+                <RiNumericInput
                   autoValidate
                   name="port"
                   id="port"
@@ -157,13 +157,13 @@ const DatabaseForm = (props: Props) => {
                   disabled={isFieldDisabled('port')}
                 />
               </RiFormField>
-            </FlexItem>
+            </RiFlexItem>
           )}
-        </Row>
+        </RiRow>
       )}
 
-      <Row gap="m">
-        <FlexItem grow>
+      <RiRow gap="m">
+        <RiFlexItem grow>
           <RiFormField label="Username">
             <RiTextInput
               name="username"
@@ -176,9 +176,9 @@ const DatabaseForm = (props: Props) => {
               disabled={isFieldDisabled('username')}
             />
           </RiFormField>
-        </FlexItem>
+        </RiFlexItem>
 
-        <FlexItem grow>
+        <RiFlexItem grow>
           <RiFormField label="Password">
             <RiPasswordInput
               name="password"
@@ -201,14 +201,14 @@ const DatabaseForm = (props: Props) => {
               disabled={isFieldDisabled('password')}
             />
           </RiFormField>
-        </FlexItem>
-      </Row>
+        </RiFlexItem>
+      </RiRow>
 
       {showFields.timeout && (
-        <Row gap="m" responsive>
-          <FlexItem grow>
+        <RiRow gap="m" responsive>
+          <RiFlexItem grow>
             <RiFormField label="Timeout (s)">
-              <NumericInput
+              <RiNumericInput
                 autoValidate
                 name="timeout"
                 id="timeout"
@@ -222,9 +222,9 @@ const DatabaseForm = (props: Props) => {
                 disabled={isFieldDisabled('timeout')}
               />
             </RiFormField>
-          </FlexItem>
-          <FlexItem grow />
-        </Row>
+          </RiFlexItem>
+          <RiFlexItem grow />
+        </RiRow>
       )}
     </>
   )

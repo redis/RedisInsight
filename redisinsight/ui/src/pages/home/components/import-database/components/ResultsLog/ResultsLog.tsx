@@ -5,7 +5,7 @@ import { ImportDatabasesData } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { Nullable } from 'uiSrc/utils'
 import { RiCollapsibleNavGroup } from 'uiSrc/components/base/display'
-import { Col } from 'uiSrc/components/base/layout/flex'
+import { RiCol } from 'uiSrc/components/base/layout'
 import TableResult from '../TableResult'
 
 import styles from './styles.module.scss'
@@ -55,7 +55,7 @@ const ResultsLog = ({ data }: Props) => {
     openedNav === name ? 'open' : 'closed'
 
   return (
-    <Col gap="s">
+    <RiCol gap="s">
       <RiCollapsibleNavGroup
         title={
           <CollapsibleNavTitle
@@ -116,7 +116,7 @@ const ResultsLog = ({ data }: Props) => {
       >
         <TableResult data={data?.fail ?? []} />
       </RiCollapsibleNavGroup>
-    </Col>
+    </RiCol>
   )
 }
 

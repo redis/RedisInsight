@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import { useDebouncedEffect } from 'uiSrc/services'
 import {
-  NumericInput,
+  RiNumericInput,
   RiPasswordInput,
   RiTextInput,
 } from 'uiSrc/components/base/inputs'
@@ -74,7 +74,7 @@ const InputFieldSentinel = (props: Props) => {
         />
       )}
       {inputType === SentinelInputFieldType.Number && (
-        <NumericInput
+        <RiNumericInput
           {...clearProp}
           autoValidate
           value={Number(value)}

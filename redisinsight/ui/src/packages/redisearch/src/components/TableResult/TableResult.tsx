@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react'
 import parse from 'html-react-parser'
 import cx from 'classnames'
 import { flatten, isArray, isEmpty, map, uniq } from 'lodash'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { RiTable, ColumnDefinition } from 'uiSrc/components/base/layout'
 
-import { ColorText } from '../../../../../components/base/text/ColorText'
-import { RiIconButton } from '../../../../../components/base/forms/buttons'
-import { CopyIcon } from '../../../../../components/base/icons'
-import { RiTooltip } from '../../../../../components'
+import { ColorText } from 'uiSrc/components/base/text/ColorText'
+import { RiIconButton } from 'uiSrc/components/base/forms/buttons'
+import { CopyIcon } from 'uiSrc/components/base/icons'
+import { RiTooltip } from 'uiSrc/components'
 import { CommandArgument, Command } from '../../constants'
 import { formatLongName, replaceSpaces } from '../../utils'
 
@@ -121,7 +121,7 @@ const TableResult = React.memo((props: Props) => {
       </div>
       {isDataArr && (
         <div data-testid={`query-table-result-${query}`}>
-          <Table columns={columns} data={result ?? []} />
+          <RiTable columns={columns} data={result ?? []} />
         </div>
       )}
       {isDataEl && <div className={cx('resultEl')}>{result}</div>}

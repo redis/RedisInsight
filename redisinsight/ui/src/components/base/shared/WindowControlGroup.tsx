@@ -1,5 +1,5 @@
 import React from 'react'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CancelSlimIcon, MinusIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
@@ -20,8 +20,8 @@ export const WindowControlGroup = ({
   closeContent = 'Close',
   hideContent = 'Minimize',
 }: Props) => (
-  <Row gap="m" justify="end">
-    <FlexItem>
+  <RiRow gap="m" justify="end">
+    <RiFlexItem>
       <RiTooltip
         content={hideContent}
         position="top"
@@ -36,8 +36,8 @@ export const WindowControlGroup = ({
           onClick={onHide}
         />
       </RiTooltip>
-    </FlexItem>
-    <FlexItem>
+    </RiFlexItem>
+    <RiFlexItem>
       <RiTooltip
         content={closeContent}
         position="top"
@@ -52,6 +52,6 @@ export const WindowControlGroup = ({
           onClick={onClose}
         />
       </RiTooltip>
-    </FlexItem>
-  </Row>
+    </RiFlexItem>
+  </RiRow>
 )

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from 'react'
 import { Link } from 'uiSrc/components/base/link/Link'
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiCol, RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiDestructiveButton } from 'uiSrc/components/base/forms'
 import { ColorText } from 'uiSrc/components/base/text'
 
@@ -29,8 +29,8 @@ const RdiDeployErrorContent = (props: Props) => {
   return (
     <>
       <ColorText color="danger">
-        <Col>
-          <FlexItem>
+        <RiCol>
+          <RiFlexItem>
             <div>Review the error log for details.</div>
             <Link
               variant="small"
@@ -42,14 +42,14 @@ const RdiDeployErrorContent = (props: Props) => {
             >
               Download Error Log File
             </Link>
-          </FlexItem>
-        </Col>
+          </RiFlexItem>
+        </RiCol>
       </ColorText>
 
-      <Spacer />
+      <RiSpacer />
       {/* // TODO remove display none when logs column will be available */}
-      <Row style={{ display: 'none' }} justify="end">
-        <FlexItem>
+      <RiRow style={{ display: 'none' }} justify="end">
+        <RiFlexItem>
           <RiDestructiveButton
             size="s"
             onClick={() => {}}
@@ -58,8 +58,8 @@ const RdiDeployErrorContent = (props: Props) => {
           >
             Remove API key
           </RiDestructiveButton>
-        </FlexItem>
-      </Row>
+        </RiFlexItem>
+      </RiRow>
     </>
   )
 }

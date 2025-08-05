@@ -7,7 +7,7 @@ import { TextBtn } from 'uiSrc/pages/database-analysis/components/base/TextBtn'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { DatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
 
-import Table from './Table'
+import TopKeysTable from './Table'
 
 export interface Props {
   data: Nullable<DatabaseAnalysis>
@@ -57,7 +57,7 @@ const TopKeys = ({ data, loading }: Props) => {
       </div>
       <div className="section-content">
         {tableView === TableView.MEMORY && (
-          <Table
+          <TopKeysTable
             data={topKeysMemory}
             defaultSortField="memory"
             delimiter={delimiter}
@@ -65,7 +65,7 @@ const TopKeys = ({ data, loading }: Props) => {
           />
         )}
         {tableView === TableView.KEYS && (
-          <Table
+          <TopKeysTable
             data={topKeysLength}
             defaultSortField="length"
             delimiter={delimiter}

@@ -1,5 +1,5 @@
 import React from 'react'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { PlusInCircleIcon, DeleteIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
@@ -42,8 +42,8 @@ const AddItemsActions = (props: Props) => {
   }
 
   return (
-    <FlexItem style={{ width: 80 }}>
-      <Row responsive gap="m" centered>
+    <RiFlexItem style={{ width: 80 }}>
+      <RiRow responsive gap="m" centered>
         <div
           style={{ width: 60 }}
           className="flex-row space-between action-buttons"
@@ -83,8 +83,8 @@ const AddItemsActions = (props: Props) => {
             </div>
           )}
         </div>
-      </Row>
-    </FlexItem>
+      </RiRow>
+    </RiFlexItem>
   )
 }
 

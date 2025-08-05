@@ -12,8 +12,8 @@ import {
   TlsDetails,
 } from 'uiSrc/pages/home/components/form'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiFormField } from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { RiTextInput } from 'uiSrc/components/base/inputs'
@@ -53,7 +53,7 @@ const EditSentinelConnection = (props: Props) => {
         className="form__divider"
       />
       <Title size="XS">Database</Title>
-      <Spacer size="s" />
+      <RiSpacer size="s" />
       <SentinelMasterDatabase
         formik={formik}
         db={db}
@@ -65,7 +65,7 @@ const EditSentinelConnection = (props: Props) => {
         className="form__divider"
       />
       <Title size="XS">Sentinel</Title>
-      <Spacer size="s" />
+      <RiSpacer size="s" />
       <DatabaseForm
         formik={formik}
         showFields={{ host: true, port: true, alias: false, timeout: false }}
@@ -82,8 +82,8 @@ const EditSentinelConnection = (props: Props) => {
 
   const GeneralFormEditMode = (
     <>
-      <Row gap="m">
-        <FlexItem grow>
+      <RiRow gap="m">
+        <RiFlexItem grow>
           <RiFormField label="Database Alias*">
             <RiTextInput
               name="name"
@@ -96,16 +96,16 @@ const EditSentinelConnection = (props: Props) => {
               onChange={formik.handleChange}
             />
           </RiFormField>
-        </FlexItem>
-      </Row>
-      <Spacer size="s" />
+        </RiFlexItem>
+      </RiRow>
+      <RiSpacer size="s" />
       <Divider
         colorVariable="separatorColor"
         variant="fullWidth"
         className="form__divider"
       />
       <Title size="XS">Database</Title>
-      <Spacer size="s" />
+      <RiSpacer size="s" />
       <SentinelMasterDatabase
         formik={formik}
         db={db}
@@ -117,7 +117,7 @@ const EditSentinelConnection = (props: Props) => {
         className="form__divider"
       />
       <Title size="XS">Sentinel</Title>
-      <Spacer size="s" />
+      <RiSpacer size="s" />
       <DatabaseForm
         formik={formik}
         showFields={{ host: false, port: true, alias: false, timeout: false }}

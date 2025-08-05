@@ -6,7 +6,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { setSSOFlow } from 'uiSrc/slices/instances/cloud'
 import { Nullable } from 'uiSrc/utils'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import OAuthForm from '../../shared/oauth-form/OAuthForm'
@@ -36,11 +36,11 @@ const OAuthSignIn = (props: Props) => {
 
   return (
     <div className={styles.container} data-testid="oauth-container-signIn">
-      <Row>
-        <FlexItem grow className={styles.advantagesContainer}>
+      <RiRow>
+        <RiFlexItem grow className={styles.advantagesContainer}>
           <OAuthAdvantages />
-        </FlexItem>
-        <FlexItem grow className={styles.socialContainer}>
+        </RiFlexItem>
+        <RiFlexItem grow className={styles.socialContainer}>
           <OAuthForm
             onClick={handleSocialButtonClick}
             action={action}
@@ -57,8 +57,8 @@ const OAuthSignIn = (props: Props) => {
               </>
             )}
           </OAuthForm>
-        </FlexItem>
-      </Row>
+        </RiFlexItem>
+      </RiRow>
     </div>
   )
 }

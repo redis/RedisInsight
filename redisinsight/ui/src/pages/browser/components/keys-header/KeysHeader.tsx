@@ -51,7 +51,7 @@ import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { BrowserColumns, KeyValueFormat } from 'uiSrc/constants'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { setConnectivityError } from 'uiSrc/slices/app/connectivity'
 import {
   RiIconButton,
@@ -384,8 +384,8 @@ const KeysHeader = (props: Props) => {
                       </RiSecondaryButton>
                     }
                   >
-                    <Row align="center" gap="m">
-                      <FlexItem grow>
+                    <RiRow align="center" gap="m">
+                      <RiFlexItem grow>
                         <RiCheckbox
                           id="show-key-size"
                           name="show-key-size"
@@ -400,8 +400,8 @@ const KeysHeader = (props: Props) => {
                           data-testid="show-key-size"
                           className={styles.checkbox}
                         />
-                      </FlexItem>
-                      <FlexItem grow>
+                      </RiFlexItem>
+                      <RiFlexItem grow>
                         <RiTooltip
                           content="Hide the key size to avoid performance issues when working with large keys."
                           position="top"
@@ -415,8 +415,8 @@ const KeysHeader = (props: Props) => {
                             data-testid="key-size-info-icon"
                           />
                         </RiTooltip>
-                      </FlexItem>
-                    </Row>
+                      </RiFlexItem>
+                    </RiRow>
                     <RiCheckbox
                       id="show-ttl"
                       name="show-ttl"

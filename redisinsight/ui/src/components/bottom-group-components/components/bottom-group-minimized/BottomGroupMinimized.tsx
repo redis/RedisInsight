@@ -21,14 +21,15 @@ import {
 import FeatureFlagComponent from 'uiSrc/components/feature-flag-component'
 import { FeatureFlags } from 'uiSrc/constants'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { HideFor, ShowFor } from 'uiSrc/components/base/utils/ShowHide'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 import {
   CliIcon,
   DocumentationIcon,
   ProfilerIcon,
- RiIcon } from 'uiSrc/components/base/icons'
+  RiIcon,
+} from 'uiSrc/components/base/icons'
 import styles from '../../styles.module.scss'
 
 const BottomGroupMinimized = () => {
@@ -90,8 +91,8 @@ const BottomGroupMinimized = () => {
 
   return (
     <div className={styles.containerMinimized}>
-      <Row align="center" responsive={false} style={{ height: '100%' }}>
-        <FlexItem
+      <RiRow align="center" responsive={false} style={{ height: '100%' }}>
+        <RiFlexItem
           className={styles.componentBadgeItem}
           onClick={handleExpandCli}
           data-testid="expand-cli"
@@ -105,9 +106,9 @@ const BottomGroupMinimized = () => {
               [styles.active]: isShowCli || cliClientUuid,
             })}
           />
-        </FlexItem>
+        </RiFlexItem>
 
-        <FlexItem
+        <RiFlexItem
           className={styles.componentBadgeItem}
           onClick={handleExpandHelper}
           data-testid="expand-command-helper"
@@ -120,9 +121,9 @@ const BottomGroupMinimized = () => {
             })}
             label="Command Helper"
           />
-        </FlexItem>
+        </RiFlexItem>
         <FeatureFlagComponent name={FeatureFlags.envDependent}>
-          <FlexItem
+          <RiFlexItem
             className={styles.componentBadgeItem}
             onClick={handleExpandMonitor}
             data-testid="expand-monitor"
@@ -135,9 +136,9 @@ const BottomGroupMinimized = () => {
               })}
               label="Profiler"
             />
-          </FlexItem>
+          </RiFlexItem>
         </FeatureFlagComponent>
-      </Row>
+      </RiRow>
       <FeatureFlagComponent name={FeatureFlags.envDependent}>
         <a
           className={styles.surveyLink}

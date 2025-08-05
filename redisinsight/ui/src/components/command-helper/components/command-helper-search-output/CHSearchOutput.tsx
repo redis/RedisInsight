@@ -8,7 +8,7 @@ import { setSearchedCommand } from 'uiSrc/slices/cli/cli-settings'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import { Link } from 'uiSrc/components/base/link/Link'
 import styles from './styles.module.scss'
@@ -72,8 +72,8 @@ const CHSearchOutput = ({ searchedCommands }: Props) => {
       {searchedCommands.length > 0 && (
         <div style={{ width: '100%' }}>
           {searchedCommands.map((command: string) => (
-            <Row gap="m" key={command}>
-              <FlexItem style={{ flexShrink: 0 }}>
+            <RiRow gap="m" key={command}>
+              <RiFlexItem style={{ flexShrink: 0 }}>
                 <Text
                   key={command}
                   size="s"
@@ -82,15 +82,13 @@ const CHSearchOutput = ({ searchedCommands }: Props) => {
                     handleClickCommand(e, command)
                   }}
                 >
-                  <Link className={styles.title}>
-                    {command}
-                  </Link>
+                  <Link className={styles.title}>{command}</Link>
                 </Text>
-              </FlexItem>
-              <FlexItem style={{ flexDirection: 'row', overflow: 'hidden' }}>
+              </RiFlexItem>
+              <RiFlexItem style={{ flexDirection: 'row', overflow: 'hidden' }}>
                 {renderDescription(command)}
-              </FlexItem>
-            </Row>
+              </RiFlexItem>
+            </RiRow>
           ))}
         </div>
       )}

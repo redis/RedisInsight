@@ -18,7 +18,7 @@ import { renderOnboardingTourWithChild } from 'uiSrc/utils/onboarding'
 import { OnboardingSteps } from 'uiSrc/constants/onboarding'
 import { useConnectionType } from 'uiSrc/components/hooks/useConnectionType'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
-import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
+import { RiTabs, TabInfo } from 'uiSrc/components/base/layout'
 import { Text } from 'uiSrc/components/base/text'
 
 const AnalyticsTabs = () => {
@@ -105,7 +105,7 @@ const AnalyticsTabs = () => {
   }
 
   return (
-    <Tabs
+    <RiTabs
       tabs={tabs}
       value={viewTab}
       onChange={handleTabChange}

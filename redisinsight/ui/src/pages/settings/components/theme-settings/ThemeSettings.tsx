@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import {
   updateUserConfigSettingsAction,
   userSettingsSelector,
@@ -51,7 +51,7 @@ const ThemeSettings = () => {
   return (
     <form>
       <Title size="XS">Color Theme</Title>
-      <Spacer size="m" />
+      <RiSpacer size="m" />
       <RiFormField label="Specifies the color theme to be used in Redis Insight:">
         <RiSelect
           valueRender={defaultValueRender}
@@ -63,7 +63,7 @@ const ThemeSettings = () => {
           data-testid="select-theme"
         />
       </RiFormField>
-      <Spacer size="xl" />
+      <RiSpacer size="xl" />
     </form>
   )
 }

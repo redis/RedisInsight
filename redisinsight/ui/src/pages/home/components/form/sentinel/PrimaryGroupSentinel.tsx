@@ -2,7 +2,7 @@ import React from 'react'
 import { FormikProps } from 'formik'
 
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiFormField } from 'uiSrc/components/base/forms'
 import { RiTextInput } from 'uiSrc/components/base/inputs'
 
@@ -16,8 +16,8 @@ const PrimaryGroupSentinel = (props: Props) => {
   const { flexGroupClassName = '', flexItemClassName = '', formik } = props
   return (
     <>
-      <Row gap="m" responsive className={flexGroupClassName}>
-        <FlexItem grow className={flexItemClassName}>
+      <RiRow gap="m" responsive className={flexGroupClassName}>
+        <RiFlexItem grow className={flexItemClassName}>
           <RiFormField label="Database Alias*">
             <RiTextInput
               name="name"
@@ -29,10 +29,10 @@ const PrimaryGroupSentinel = (props: Props) => {
               onChange={formik.handleChange}
             />
           </RiFormField>
-        </FlexItem>
-      </Row>
-      <Row gap="m" responsive className={flexGroupClassName}>
-        <FlexItem grow className={flexItemClassName}>
+        </RiFlexItem>
+      </RiRow>
+      <RiRow gap="m" responsive className={flexGroupClassName}>
+        <RiFlexItem grow className={flexItemClassName}>
           <RiFormField label="Primary Group Name*">
             <RiTextInput
               name="sentinelMasterName"
@@ -45,8 +45,8 @@ const PrimaryGroupSentinel = (props: Props) => {
               disabled
             />
           </RiFormField>
-        </FlexItem>
-      </Row>
+        </RiFlexItem>
+      </RiRow>
     </>
   )
 }

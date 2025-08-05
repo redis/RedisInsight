@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 
 import { RiTooltip } from 'uiSrc/components'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
@@ -33,11 +33,11 @@ const TextDetailsWrapper = ({
           data-testid={getDataTestid('close-key-btn')}
         />
       </RiTooltip>
-      <Row centered>
-        <FlexItem className={styles.textWrapper}>
+      <RiRow centered>
+        <RiFlexItem className={styles.textWrapper}>
           <div>{children}</div>
-        </FlexItem>
-      </Row>
+        </RiFlexItem>
+      </RiRow>
     </div>
   )
 }

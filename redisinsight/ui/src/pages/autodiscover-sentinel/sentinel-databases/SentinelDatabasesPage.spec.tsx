@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen, fireEvent } from 'uiSrc/utils/test-utils'
 
-import { Table } from 'uiSrc/components/base/layout/table'
+import { Table } from 'uiSrc/components/base/layout'
 import SentinelDatabasesPage from './SentinelDatabasesPage'
 import SentinelDatabases from './components'
 import { Props as SentinelDatabasesProps } from './components/SentinelDatabases/SentinelDatabases'

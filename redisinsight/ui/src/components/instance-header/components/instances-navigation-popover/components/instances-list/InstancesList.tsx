@@ -15,10 +15,7 @@ import {
   getRedisInfoSummary,
 } from 'uiSrc/telemetry'
 import { getDbIndex } from 'uiSrc/utils'
-import {
-  Group as ListGroup,
-  Item as ListGroupItem,
-} from 'uiSrc/components/base/layout/list'
+import { RiListGroup, RiListItem } from 'uiSrc/components/base/layout'
 import { Text } from 'uiSrc/components/base/text'
 import { RiLoader } from 'uiSrc/components/base/display'
 import { InstancesTabs } from '../../InstancesNavigationPopover'
@@ -130,9 +127,9 @@ const InstancesList = ({
 
   return (
     <div className={styles.listContainer}>
-      <ListGroup flush maxWidth="none" gap="none">
+      <RiListGroup flush maxWidth="none" gap="none">
         {instances?.map((instance) => (
-          <ListGroupItem
+          <RiListItem
             color="subdued"
             className={styles.item}
             isActive={isInstanceActive(instance.id)}
@@ -156,7 +153,7 @@ const InstancesList = ({
             data-testid={`instance-item-${instance.id}`}
           />
         ))}
-      </ListGroup>
+      </RiListGroup>
     </div>
   )
 }

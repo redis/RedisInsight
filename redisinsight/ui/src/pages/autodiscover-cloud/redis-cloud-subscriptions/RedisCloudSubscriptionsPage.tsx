@@ -27,7 +27,7 @@ import { oauthCloudUserSelector } from 'uiSrc/slices/oauth/cloud'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { ToastDangerIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
-import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { ColumnDefinition } from 'uiSrc/components/base/layout'
 import RedisCloudSubscriptions from './RedisCloudSubscriptions/RedisCloudSubscriptions'
 
 import styles from './styles.module.scss'

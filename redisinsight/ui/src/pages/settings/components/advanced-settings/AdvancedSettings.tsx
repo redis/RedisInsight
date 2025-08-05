@@ -8,7 +8,7 @@ import {
   updateUserConfigSettingsAction,
   userSettingsConfigSelector,
 } from 'uiSrc/slices/user/user-settings'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 
 const AdvancedSettings = () => {
   const { scanThreshold = '' } = useSelector(userSettingsConfigSelector) ?? {}
@@ -38,7 +38,7 @@ const AdvancedSettings = () => {
         placeholder="10 000"
         label="Keys to Scan:"
       />
-      <Spacer size="m" />
+      <RiSpacer size="m" />
     </>
   )
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { LoadingContent } from 'uiSrc/components/base/layout'
+import { RiLoadingContent } from 'uiSrc/components/base/layout'
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 import { RunQueryMode, ResultsMode } from 'uiSrc/slices/interfaces/workbench'
 import {
@@ -60,7 +60,7 @@ const QueryWrapper = (props: Props) => {
   const Placeholder = (
     <div className={styles.containerPlaceholder}>
       <div>
-        <LoadingContent lines={2} className="fluid" />
+        <RiLoadingContent lines={2} className="fluid" />
       </div>
     </div>
   )

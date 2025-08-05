@@ -7,7 +7,7 @@ import { replaceVariables } from 'uiSrc/utils/recommendation'
 import { IRecommendationContent } from 'uiSrc/slices/interfaces/recommendations'
 import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { UTM_MEDIUMS } from 'uiSrc/constants/links'
-import { Spacer, SpacerSize } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer, SpacerSize } from 'uiSrc/components/base/layout/spacer'
 import { ColorText } from 'uiSrc/components/base/text'
 import { Link } from 'uiSrc/components/base/link/Link'
 import InternalLink from '../internal-link'
@@ -136,7 +136,7 @@ const ContentElement = (props: Props) => {
       )
     case 'spacer':
       return (
-        <Spacer
+        <RiSpacer
           data-testid={`spacer-${telemetryName}-${idx}`}
           key={`${telemetryName}-${idx}`}
           size={value as SpacerSize}

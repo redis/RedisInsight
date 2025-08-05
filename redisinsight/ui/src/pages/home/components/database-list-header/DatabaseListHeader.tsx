@@ -25,8 +25,7 @@ import {
   DatabaseListColumn,
   FeatureFlags,
 } from 'uiSrc/constants'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow, RiSpacer } from 'uiSrc/components/base/layout'
 import {
   RiPrimaryButton,
   RiSecondaryButton,
@@ -185,34 +184,34 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
 
   return (
     <div className={styles.containerDl}>
-      <Row
+      <RiRow
         className={styles.contentDL}
         align="center"
         responsive={false}
         gap="s"
       >
-        <FlexItem>
+        <RiFlexItem>
           <FeatureFlagComponent name={FeatureFlags.databaseManagement}>
             <AddInstanceBtn />
           </FeatureFlagComponent>
-        </FlexItem>
+        </RiFlexItem>
         {!loading && !isEmpty(data) && (
-          <FlexItem className={cx(styles.promo)}>
-            <Row align="center" gap="s">
+          <RiFlexItem className={cx(styles.promo)}>
+            <RiRow align="center" gap="s">
               {promoData && (
                 <FeatureFlagComponent name={FeatureFlags.cloudAds}>
-                  <FlexItem>
+                  <RiFlexItem>
                     <CreateBtn content={promoData} />
-                  </FlexItem>
+                  </RiFlexItem>
                 </FeatureFlagComponent>
               )}
-            </Row>
-          </FlexItem>
+            </RiRow>
+          </RiFlexItem>
         )}
         {instances.length > 0 && (
-          <FlexItem grow>
-            <Row justify="end" align="center" gap="s">
-              <FlexItem className={styles.columnsButtonItem}>
+          <RiFlexItem grow>
+            <RiRow justify="end" align="center" gap="s">
+              <RiFlexItem className={styles.columnsButtonItem}>
                 <RiPopover
                   ownFocus={false}
                   anchorPosition="downLeft"
@@ -241,15 +240,15 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
                     {columnCheckboxes}
                   </div>
                 </RiPopover>
-              </FlexItem>
-              <FlexItem>
+              </RiFlexItem>
+              <RiFlexItem>
                 <SearchDatabasesList />
-              </FlexItem>
-            </Row>
-          </FlexItem>
+              </RiFlexItem>
+            </RiRow>
+          </RiFlexItem>
         )}
-      </Row>
-      <Spacer className={styles.spacerDl} />
+      </RiRow>
+      <RiSpacer />
     </div>
   )
 }

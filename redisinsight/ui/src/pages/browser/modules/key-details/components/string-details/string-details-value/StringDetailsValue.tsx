@@ -53,7 +53,7 @@ import { downloadFile } from 'uiSrc/utils/dom/downloadFile'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { IFetchKeyArgs } from 'uiSrc/constants/prop-types/keys'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { DownloadIcon } from 'uiSrc/components/base/icons'
 import { RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
@@ -313,8 +313,8 @@ const StringDetailsValue = (props: Props) => {
 
       {length > MAX_LENGTH && (
         <div className="key-details-footer" key="key-details-footer">
-          <Row justify="between" align="center">
-            <FlexItem>
+          <RiRow justify="between" align="center">
+            <RiFlexItem>
               {!isFullStringLoaded(initialValue?.data?.length, length) && (
                 <RiSecondaryButton
                   className={styles.stringFooterBtn}
@@ -325,9 +325,9 @@ const StringDetailsValue = (props: Props) => {
                   Load all
                 </RiSecondaryButton>
               )}
-            </FlexItem>
+            </RiFlexItem>
             {!isTruncatedValue && (
-              <FlexItem>
+              <RiFlexItem>
                 <RiSecondaryButton
                   className={styles.stringFooterBtn}
                   size="small"
@@ -339,9 +339,9 @@ const StringDetailsValue = (props: Props) => {
                 >
                   Download
                 </RiSecondaryButton>
-              </FlexItem>
+              </RiFlexItem>
             )}
-          </Row>
+          </RiRow>
         </div>
       )}
     </>

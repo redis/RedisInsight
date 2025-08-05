@@ -25,11 +25,14 @@ import {
   RiTooltip,
 } from 'uiSrc/components'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import {
+  RiFlexItem,
+  RiRow,
+  ColumnDefinition,
+} from 'uiSrc/components/base/layout'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CopyIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { ColorText, Text } from 'uiSrc/components/base/text'
-import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import RedisClusterDatabases from './RedisClusterDatabases'
 import RedisClusterDatabasesResult from './RedisClusterDatabasesResult'
 
@@ -182,20 +185,20 @@ const RedisClusterDatabasesPage = () => {
             <Text>{messageAdded}</Text>
           ) : (
             <RiTooltip position="left" title="Error" content={messageAdded}>
-              <Row align="center" gap="s">
-                <FlexItem>
+              <RiRow align="center" gap="s">
+                <RiFlexItem>
                   <RiIcon type="ToastDangerIcon" color="danger600" />
-                </FlexItem>
+                </RiFlexItem>
 
-                <FlexItem>
+                <RiFlexItem>
                   <ColorText
                     color="danger"
                     className="flex-row euiTextAlign--center"
                   >
                     Error
                   </ColorText>
-                </FlexItem>
-              </Row>
+                </RiFlexItem>
+              </RiRow>
             </RiTooltip>
           )}
         </>

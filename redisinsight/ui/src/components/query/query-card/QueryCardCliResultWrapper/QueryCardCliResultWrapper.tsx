@@ -2,7 +2,7 @@ import React from 'react'
 import cx from 'classnames'
 import { isArray } from 'lodash'
 
-import { LoadingContent } from 'uiSrc/components/base/layout'
+import { RiLoadingContent } from 'uiSrc/components/base/layout'
 import { CommandExecutionResult } from 'uiSrc/slices/interfaces'
 import { ResultsMode } from 'uiSrc/slices/interfaces/workbench'
 import {
@@ -84,7 +84,7 @@ const QueryCardCliResultWrapper = (props: Props) => {
       )}
       {loading && (
         <div className={styles.loading} data-testid="query-cli-loader">
-          <LoadingContent lines={1} />
+          <RiLoadingContent lines={1} />
         </div>
       )}
     </div>

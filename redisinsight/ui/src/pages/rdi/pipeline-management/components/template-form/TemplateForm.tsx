@@ -11,7 +11,7 @@ import {
 } from 'uiSrc/slices/rdi/pipeline'
 import { RdiPipelineTabs } from 'uiSrc/slices/interfaces/rdi'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import {
   RiPrimaryButton,
   RiSecondaryButton,
@@ -164,9 +164,9 @@ const TemplateForm = (props: Props) => {
   return (
     <div className={cx(styles.container)}>
       <Text className={styles.title}>Select a template</Text>
-      <Spacer size="s" />
+      <RiSpacer size="s" />
       <form>
-        <Spacer size="xs" />
+        <RiSpacer size="xs" />
         {pipelineTypeOptions?.length > 1 && (
           <RiFormField className={styles.formRow}>
             <>

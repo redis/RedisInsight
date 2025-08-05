@@ -8,13 +8,17 @@ import {
   RedisCloudSubscriptionStatus,
 } from 'uiSrc/slices/interfaces'
 import { Maybe, Nullable } from 'uiSrc/utils'
-import { LoadingContent } from 'uiSrc/components/base/layout'
+import {
+  RiLoadingContent,
+  RiTable,
+  ColumnDefinition,
+  RiFlexItem,
+  RiRow,
+} from 'uiSrc/components/base/layout'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
   RiDestructiveButton,
   RiPrimaryButton,
@@ -227,25 +231,25 @@ const RedisCloudSubscriptions = ({
       <span className={styles.account_item}>
         <span className={styles.account_item_title}>Account ID:&nbsp;</span>
         <span color="subdued" data-testid="account-id">
-          {account?.accountId ?? <LoadingContent lines={1} />}
+          {account?.accountId ?? <RiLoadingContent lines={1} />}
         </span>
       </span>
       <span className={styles.account_item}>
         <span className={styles.account_item_title}>Name:&nbsp;</span>
         <span color="subdued" data-testid="account-name">
-          {account?.accountName ?? <LoadingContent lines={1} />}
+          {account?.accountName ?? <RiLoadingContent lines={1} />}
         </span>
       </span>
       <span className={styles.account_item}>
         <span className={styles.account_item_title}>Owner Name:&nbsp;</span>
         <span color="subdued" data-testid="account-owner-name">
-          {account?.ownerName ?? <LoadingContent lines={1} />}
+          {account?.ownerName ?? <RiLoadingContent lines={1} />}
         </span>
       </span>
       <span className={styles.account_item}>
         <span className={styles.account_item_title}>Owner Email:&nbsp;</span>
         <span color="subdued" data-testid="account-owner-email">
-          {account?.ownerEmail ?? <LoadingContent lines={1} />}
+          {account?.ownerEmail ?? <RiLoadingContent lines={1} />}
         </span>
       </span>
     </>
@@ -258,13 +262,13 @@ const RedisCloudSubscriptions = ({
           Redis Cloud Subscriptions
         </Title>
 
-        <Row align="end" gap="s">
-          <FlexItem grow>
+        <RiRow align="end" gap="s">
+          <RiFlexItem grow>
             <MessageBar opened={countStatusActive + countStatusFailed > 0}>
               <SummaryText />
             </MessageBar>
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <RiFormField className={styles.searchForm}>
               <RiSearchInput
                 placeholder="Search..."
@@ -274,8 +278,8 @@ const RedisCloudSubscriptions = ({
                 data-testid="search"
               />
             </RiFormField>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
         <br />
 
         <div
@@ -284,7 +288,7 @@ const RedisCloudSubscriptions = ({
           <div className={styles.account}>
             <Account />
           </div>
-          <Table
+          <RiTable
             columns={columns}
             data={items}
             defaultSorting={[
@@ -300,8 +304,8 @@ const RedisCloudSubscriptions = ({
           )}
         </div>
       </div>
-      <FlexItem padding={4}>
-        <Row gap="m" justify="between">
+      <RiFlexItem padding={4}>
+        <RiRow gap="m" justify="between">
           <RiSecondaryButton
             onClick={onBack}
             className="btn-cancel btn-back"
@@ -309,12 +313,12 @@ const RedisCloudSubscriptions = ({
           >
             Back to adding databases
           </RiSecondaryButton>
-          <FlexItem direction="row">
+          <RiFlexItem direction="row">
             <CancelButton isPopoverOpen={isPopoverOpen} />
             <SubmitButton isDisabled={selection.length < 1} />
-          </FlexItem>
-        </Row>
-      </FlexItem>
+          </RiFlexItem>
+        </RiRow>
+      </RiFlexItem>
     </AutodiscoveryPageTemplate>
   )
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { IClients } from 'uiSrc/slices/interfaces'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { RiTable, ColumnDefinition } from 'uiSrc/components/base/layout'
 import Accordion from '../components/accordion'
 import Panel from '../components/panel'
 
@@ -87,7 +87,7 @@ const Clients = ({
         onRefreshClicked={onRefreshClicked}
         onChangeAutoRefresh={onChangeAutoRefresh}
       >
-        <Table
+        <RiTable
           columns={columns}
           data={clients}
           defaultSorting={[{ id: 'id', desc: false }]}

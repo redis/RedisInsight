@@ -1,7 +1,7 @@
 import React from 'react'
 import cx from 'classnames'
 
-import { LoadingContent } from 'uiSrc/components/base/layout'
+import { RiLoadingContent } from 'uiSrc/components/base/layout'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -22,7 +22,7 @@ const QueryCardCommonResult = (props: Props) => {
       )}
       {loading && (
         <div className={styles.loading}>
-          <LoadingContent lines={1} />
+          <RiLoadingContent lines={1} />
         </div>
       )}
     </div>

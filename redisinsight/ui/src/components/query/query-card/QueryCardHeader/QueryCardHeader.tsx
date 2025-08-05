@@ -47,7 +47,7 @@ import {
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 import { FormatedDate, FullScreen, RiTooltip } from 'uiSrc/components'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiIconButton, RiSelect } from 'uiSrc/components/base/forms'
 import QueryCardTooltip from '../QueryCardTooltip'
 
@@ -331,8 +331,8 @@ const QueryCardHeader = (props: Props) => {
       data-testid="query-card-open"
       role="button"
     >
-      <Row align="center" gap="l" style={{ width: '100%' }}>
-        <FlexItem className={styles.titleWrapper} grow>
+      <RiRow align="center" gap="l" style={{ width: '100%' }}>
+        <RiFlexItem className={styles.titleWrapper} grow>
           <div className="copy-btn-wrapper">
             <ColorText
               className={styles.title}
@@ -358,10 +358,10 @@ const QueryCardHeader = (props: Props) => {
               data-testid="copy-command"
             />
           </div>
-        </FlexItem>
-        <FlexItem className={styles.controls}>
-          <Row align="center" justify="end" gap="l">
-            <FlexItem
+        </RiFlexItem>
+        <RiFlexItem className={styles.controls}>
+          <RiRow align="center" justify="end" gap="l">
+            <RiFlexItem
               className={styles.time}
               data-testid="command-execution-date-time"
             >
@@ -370,15 +370,15 @@ const QueryCardHeader = (props: Props) => {
                   <FormatedDate date={createdAt} />
                 </ColorText>
               )}
-            </FlexItem>
-            <FlexItem className={styles.summaryTextWrapper}>
+            </RiFlexItem>
+            <RiFlexItem className={styles.summaryTextWrapper}>
               {!!message && !isOpen && (
                 <ColorText className={styles.summaryText} component="div">
                   {truncateText(message, 13)}
                 </ColorText>
               )}
-            </FlexItem>
-            <FlexItem
+            </RiFlexItem>
+            <RiFlexItem
               className={styles.executionTime}
               data-testid="command-execution-time"
             >
@@ -408,8 +408,8 @@ const QueryCardHeader = (props: Props) => {
                   </>
                 </RiTooltip>
               )}
-            </FlexItem>
-            <FlexItem
+            </RiFlexItem>
+            <RiFlexItem
               className={cx(styles.buttonIcon, styles.viewTypeIcon)}
               onClick={onDropDownViewClick}
             >
@@ -433,8 +433,8 @@ const QueryCardHeader = (props: Props) => {
                   </div>
                 </div>
               )}
-            </FlexItem>
-            <FlexItem
+            </RiFlexItem>
+            <RiFlexItem
               className={cx(styles.buttonIcon, styles.viewTypeIcon)}
               onClick={onDropDownViewClick}
             >
@@ -456,8 +456,8 @@ const QueryCardHeader = (props: Props) => {
                   </div>
                 </div>
               )}
-            </FlexItem>
-            <FlexItem
+            </RiFlexItem>
+            <RiFlexItem
               className={styles.buttonIcon}
               onClick={onDropDownViewClick}
             >
@@ -467,8 +467,8 @@ const QueryCardHeader = (props: Props) => {
                   onToggleFullScreen={toggleFullScreen}
                 />
               )}
-            </FlexItem>
-            <FlexItem className={styles.buttonIcon}>
+            </RiFlexItem>
+            <RiFlexItem className={styles.buttonIcon}>
               <RiIconButton
                 disabled={loading || clearing}
                 icon={DeleteIcon}
@@ -476,9 +476,9 @@ const QueryCardHeader = (props: Props) => {
                 data-testid="delete-command"
                 onClick={handleQueryDelete}
               />
-            </FlexItem>
+            </RiFlexItem>
             {!isFullScreen && (
-              <FlexItem className={cx(styles.buttonIcon, styles.playIcon)}>
+              <RiFlexItem className={cx(styles.buttonIcon, styles.playIcon)}>
                 <RiTooltip
                   content="Run again"
                   position="left"
@@ -492,19 +492,19 @@ const QueryCardHeader = (props: Props) => {
                     onClick={handleQueryReRun}
                   />
                 </RiTooltip>
-              </FlexItem>
+              </RiFlexItem>
             )}
             {!isFullScreen && (
-              <FlexItem className={styles.buttonIcon}>
+              <RiFlexItem className={styles.buttonIcon}>
                 {!isSilentModeWithoutError(resultsMode, summary?.fail) && (
                   <RiIconButton
                     icon={isOpen ? ChevronUpIcon : ChevronDownIcon}
                     aria-label="toggle collapse"
                   />
                 )}
-              </FlexItem>
+              </RiFlexItem>
             )}
-            <FlexItem className={styles.buttonIcon}>
+            <RiFlexItem className={styles.buttonIcon}>
               {(isRawMode(mode) || isGroupResults(resultsMode)) && (
                 <RiTooltip
                   className={styles.tooltip}
@@ -547,10 +547,10 @@ const QueryCardHeader = (props: Props) => {
                   />
                 </RiTooltip>
               )}
-            </FlexItem>
-          </Row>
-        </FlexItem>
-      </Row>
+            </RiFlexItem>
+          </RiRow>
+        </RiFlexItem>
+      </RiRow>
     </div>
   )
 }

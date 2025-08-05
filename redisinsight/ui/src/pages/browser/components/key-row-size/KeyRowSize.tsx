@@ -2,7 +2,7 @@ import React from 'react'
 import cx from 'classnames'
 import { isUndefined } from 'lodash'
 
-import { LoadingContent } from 'uiSrc/components/base/layout'
+import { RiLoadingContent } from 'uiSrc/components/base/layout'
 import { Text } from 'uiSrc/components/base/text'
 import { Maybe, formatBytes } from 'uiSrc/utils'
 import { RiTooltip } from 'uiSrc/components'
@@ -20,7 +20,7 @@ const KeyRowSize = (props: Props) => {
 
   if (isUndefined(size)) {
     return (
-      <LoadingContent
+      <RiLoadingContent
         lines={1}
         className={cx(styles.keyInfoLoading, styles.keySize)}
         data-testid={`size-loading_${nameString}`}

@@ -1,8 +1,7 @@
 import styled from 'styled-components'
-import { Row } from 'uiSrc/components/base/layout/flex'
-import Tabs from 'uiSrc/components/base/layout/tabs'
+import { RiRow, RiTabs } from 'uiSrc/components/base/layout'
 
-export const StyledAppNavigation = styled(Row)`
+export const StyledAppNavigation = styled(RiRow)`
   background: ${({ theme }) =>
     theme.components.appBar.variants.default.bgColor};
   color: ${({ theme }) => theme.components.appBar.variants.default.color};
@@ -14,10 +13,10 @@ export const StyledAppNavigation = styled(Row)`
     margin-inline-start: auto;
   }
 `
-type NavContainerProps = React.ComponentProps<typeof Row> & {
+type NavContainerProps = React.ComponentProps<typeof RiRow> & {
   $borderLess?: boolean
 }
-export const StyledAppNavigationContainer = styled(Row)<NavContainerProps>`
+export const StyledAppNavigationContainer = styled(RiRow)<NavContainerProps>`
   height: 100%;
   width: auto;
   max-width: 50%;
@@ -34,6 +33,6 @@ export const StyledAppNavigationContainer = styled(Row)<NavContainerProps>`
     ${({ theme }) => theme.components.tabs.variants.default.tabsLine.color};
 `
 
-export const StyledAppNavTab = styled(Tabs.TabBar.Trigger.Tab)`
+export const StyledAppNavTab = styled(RiTabs.TabBar.Trigger.Tab)`
   padding-bottom: ${({ theme }) => theme.core.space.space200} !important;
 `

@@ -13,7 +13,7 @@ import { FeatureFlagComponent, OAuthUserProfile } from 'uiSrc/components'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { isAnyFeatureEnabled } from 'uiSrc/utils/features'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { RedisLogoFullIcon } from 'uiSrc/components/base/icons'
@@ -64,27 +64,27 @@ const PageHeader = (props: Props) => {
         </div>
         {children ? <>{children}</> : ''}
         {showInsights ? (
-          <Row style={{ flexGrow: 0 }} align="center">
+          <RiRow style={{ flexGrow: 0 }} align="center">
             {isAnyChatAvailable && (
-              <FlexItem style={{ marginRight: 12 }}>
+              <RiFlexItem style={{ marginRight: 12 }}>
                 <CopilotTrigger />
-              </FlexItem>
+              </RiFlexItem>
             )}
-            <FlexItem grow>
+            <RiFlexItem grow>
               <InsightsTrigger source="home page" />
-            </FlexItem>
+            </RiFlexItem>
             <FeatureFlagComponent
               name={[FeatureFlags.cloudSso, FeatureFlags.cloudAds]}
             >
-              <FlexItem
+              <RiFlexItem
                 grow
                 style={{ marginLeft: 16 }}
                 data-testid="o-auth-user-profile"
               >
                 <OAuthUserProfile source={OAuthSocialSource.UserProfile} />
-              </FlexItem>
+              </RiFlexItem>
             </FeatureFlagComponent>
-          </Row>
+          </RiRow>
         ) : (
           <div className={styles.pageHeaderLogo}>
             <RiEmptyButton

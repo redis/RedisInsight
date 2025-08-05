@@ -2,7 +2,7 @@ import React, { ChangeEvent } from 'react'
 import { FormikProps } from 'formik'
 
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiFormField, RiCheckbox } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
@@ -46,8 +46,8 @@ const ForceStandalone = (props: Props) => {
   const id = useGenerateId('', ' over forceStandalone')
 
   return (
-    <Row gap="s">
-      <FlexItem>
+    <RiRow gap="s">
+      <RiFlexItem>
         <RiFormField>
           <RiCheckbox
             id={id}
@@ -58,8 +58,8 @@ const ForceStandalone = (props: Props) => {
             data-testid="forceStandalone"
           />
         </RiFormField>
-      </FlexItem>
-    </Row>
+      </RiFlexItem>
+    </RiRow>
   )
 }
 

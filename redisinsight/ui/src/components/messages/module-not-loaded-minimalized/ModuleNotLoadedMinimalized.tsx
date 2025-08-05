@@ -25,7 +25,7 @@ import {
 import { useCapability } from 'uiSrc/services'
 import { FeatureFlags, Pages } from 'uiSrc/constants'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
@@ -63,7 +63,7 @@ const ModuleNotLoadedMinimalized = (props: Props) => {
         <Title size="S" className={styles.title}>
           {moduleText?.title}
         </Title>
-        <Spacer size="s" />
+        <RiSpacer size="s" />
         <FeatureFlagComponent
           name={FeatureFlags.cloudAds}
           otherwise={
@@ -71,7 +71,7 @@ const ModuleNotLoadedMinimalized = (props: Props) => {
               <Text color="subdued" size="s">
                 {moduleText?.text}
               </Text>
-              <Spacer size="s" />
+              <RiSpacer size="s" />
               <RiPrimaryButton
                 size="s"
                 className={styles.btnLink}
@@ -89,7 +89,7 @@ const ModuleNotLoadedMinimalized = (props: Props) => {
               <Text color="subdued" size="s">
                 {moduleText?.text}
               </Text>
-              <Spacer size="s" />
+              <RiSpacer size="s" />
               <OAuthSsoHandlerDialog>
                 {(ssoCloudHandlerClick) => (
                   <ExternalLink
@@ -121,7 +121,7 @@ const ModuleNotLoadedMinimalized = (props: Props) => {
                 Use your free trial all-in-one Redis Cloud database to start
                 exploring these capabilities.
               </Text>
-              <Spacer size="s" />
+              <RiSpacer size="s" />
               <OAuthConnectFreeDb
                 id={freeDbWithModule.id}
                 source={sourceTutorial}

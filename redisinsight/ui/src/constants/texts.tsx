@@ -1,6 +1,6 @@
 import React from 'react'
 import { Text } from 'uiSrc/components/base/text'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 
 export const NoResultsFoundText = (
   <Text size="m" data-testid="no-result-found-only">
@@ -25,7 +25,7 @@ export const FullScanNoResultsFoundText = (
     <Text size="m" data-test-subj="no-result-found">
       No results found.
     </Text>
-    <Spacer size="m" />
+    <RiSpacer size="m" />
     <Text size="s" data-test-subj="search-advices">
       Check the spelling.
       <br />
@@ -52,7 +52,7 @@ export const lastDeliveredIDTooltipText = (
   <>
     Specify the ID of the last delivered entry in the stream from the new
     group's perspective.
-    <Spacer size="xs" />
+    <RiSpacer size="xs" />
     Otherwise, <b>$</b> represents the ID of the last entry in the stream,&nbsp;
     <b>0</b> fetches the entire stream from the beginning.
   </>

@@ -2,10 +2,10 @@ import React, { ChangeEvent } from 'react'
 import { FormikProps } from 'formik'
 
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiCheckbox, RiFormField } from 'uiSrc/components/base/forms'
-import { NumericInput } from 'uiSrc/components/base/inputs'
+import { RiNumericInput } from 'uiSrc/components/base/inputs'
 import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
 import styles from '../styles.module.scss'
 
@@ -31,8 +31,8 @@ const DbIndex = (props: Props) => {
 
   return (
     <>
-      <Row gap="s">
-        <FlexItem>
+      <RiRow gap="s">
+        <RiFlexItem>
           <RiFormField>
             <RiCheckbox
               id={id}
@@ -43,16 +43,16 @@ const DbIndex = (props: Props) => {
               data-testid="showDb"
             />
           </RiFormField>
-        </FlexItem>
-      </Row>
+        </RiFlexItem>
+      </RiRow>
 
       {formik.values.showDb && (
         <>
-          <Spacer />
-          <Row gap="m" responsive>
-            <FlexItem grow className={styles.dbInput}>
+          <RiSpacer />
+          <RiRow gap="m" responsive>
+            <RiFlexItem grow className={styles.dbInput}>
               <RiFormField label="Database Index">
-                <NumericInput
+                <RiNumericInput
                   autoValidate
                   min={0}
                   name="db"
@@ -63,9 +63,9 @@ const DbIndex = (props: Props) => {
                   onChange={(value) => formik.setFieldValue('db', value)}
                 />
               </RiFormField>
-            </FlexItem>
-            <FlexItem grow />
-          </Row>
+            </RiFlexItem>
+            <RiFlexItem grow />
+          </RiRow>
         </>
       )}
     </>

@@ -3,7 +3,7 @@ import { useHistory, useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
-import Tabs from 'uiSrc/components/base/layout/tabs'
+import { RiTabs } from 'uiSrc/components/base/layout'
 import { tabs } from './constants'
 
 const HomeTabs = () => {
@@ -37,7 +37,7 @@ const HomeTabs = () => {
   }
 
   return (
-    <Tabs
+    <RiTabs
       tabs={filteredTabs}
       value={activeTab.value}
       onChange={onSelectedTabChanged}

@@ -19,7 +19,7 @@ import {
 import { isContainJSONModule, Maybe, stringToBuffer } from 'uiSrc/utils'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiCol, RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
@@ -124,13 +124,13 @@ const AddKey = (props: Props) => {
 
   return (
     <div className={styles.page}>
-      <Row
+      <RiRow
         justify="center"
         className={cx(styles.contentWrapper, 'relative')}
         gap="none"
       >
-        <Col justify="center" className={styles.content}>
-          <FlexItem grow style={{ marginBottom: '36px' }}>
+        <RiCol justify="center" className={styles.content}>
+          <RiFlexItem grow style={{ marginBottom: '36px' }}>
             <Title size="M">New Key</Title>
             {!arePanelsCollapsed && (
               <RiTooltip
@@ -146,7 +146,7 @@ const AddKey = (props: Props) => {
                 />
               </RiTooltip>
             )}
-          </FlexItem>
+          </RiFlexItem>
           <div className={cx('eui-yScroll', styles.scrollContainer)}>
             <ContentFields>
               <AddKeyCommonFields
@@ -201,9 +201,9 @@ const AddKey = (props: Props) => {
               )}
             </ContentFields>
           </div>
-        </Col>
+        </RiCol>
         <div id="formFooterBar" className="formFooterBar" />
-      </Row>
+      </RiRow>
     </div>
   )
 }

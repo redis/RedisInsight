@@ -15,7 +15,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { SortOrder } from 'uiSrc/constants'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
-import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
+import { RiTabs, TabInfo } from 'uiSrc/components/base/layout'
 import { ConsumerGroupDto } from 'apiSrc/modules/browser/stream/dto'
 
 const StreamTabs = () => {
@@ -90,7 +90,7 @@ const StreamTabs = () => {
   }, [viewType, selectedGroupName, selectedConsumerName])
 
   return (
-    <Tabs
+    <RiTabs
       tabs={tabs}
       value={viewType}
       onChange={(id) => onSelectedTabChanged(id as StreamViewType)}

@@ -38,7 +38,7 @@ import {
 } from 'uiSrc/utils'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { TableTextBtn } from 'uiSrc/pages/database-analysis/components/base/TableTextBtn'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { RiTable, ColumnDefinition } from 'uiSrc/components/base/layout'
 import { Key } from 'apiSrc/modules/database-analysis/models/key'
 
 export interface Props {
@@ -273,7 +273,7 @@ const TopKeysTable = ({
 
   return (
     <div data-testid={dataTestid}>
-      <Table
+      <RiTable
         columns={columns}
         data={data}
         defaultSorting={[

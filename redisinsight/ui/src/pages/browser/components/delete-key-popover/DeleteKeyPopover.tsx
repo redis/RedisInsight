@@ -4,7 +4,7 @@ import cx from 'classnames'
 import { KeyTypes, ModulesKeyTypes } from 'uiSrc/constants'
 import { formatLongName } from 'uiSrc/utils'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiDestructiveButton, RiIconButton } from 'uiSrc/components/base/forms'
 import { DeleteIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
@@ -54,7 +54,7 @@ export const DeleteKeyPopover = ({
         </h4>
         <Text size="s">will be deleted.</Text>
       </Text>
-      <Spacer size="m" />
+      <RiSpacer size="m" />
       <RiDestructiveButton
         size="small"
         icon={DeleteIcon}

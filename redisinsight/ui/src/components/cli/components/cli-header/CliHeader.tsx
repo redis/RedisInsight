@@ -14,7 +14,7 @@ import { resetOutputLoading } from 'uiSrc/slices/cli/cli-output'
 import { OnboardingTour } from 'uiSrc/components'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { Text } from 'uiSrc/components/base/text'
 import { WindowControlGroup } from 'uiSrc/components/base/shared/WindowControlGroup'
 import { RiIcon } from 'uiSrc/components/base/icons'
@@ -63,8 +63,8 @@ const CliHeader = () => {
 
   return (
     <div className={styles.container} id="cli-header">
-      <Row justify="between" align="center" style={{ height: '100%' }}>
-        <FlexItem className={styles.title} direction="row">
+      <RiRow justify="between" align="center" style={{ height: '100%' }}>
+        <RiFlexItem className={styles.title} direction="row">
           <RiIcon type="CliIcon" size="M" />
           <OnboardingTour
             options={ONBOARDING_FEATURES.BROWSER_CLI}
@@ -73,14 +73,14 @@ const CliHeader = () => {
           >
             <Text>CLI</Text>
           </OnboardingTour>
-        </FlexItem>
-        <FlexItem grow />
+        </RiFlexItem>
+        <RiFlexItem grow />
         <WindowControlGroup
           onClose={handleCloseCli}
           onHide={handleHideCli}
           id="cli"
         />
-      </Row>
+      </RiRow>
     </div>
   )
 }

@@ -1,8 +1,8 @@
 import React, { FormEvent, useEffect, useState } from 'react'
 import cx from 'classnames'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import {
   RiIconButton,
   RiPrimaryButton,
@@ -148,9 +148,9 @@ const EditablePopover = (props: Props) => {
     >
       <form onSubmit={onFormSubmit}>
         <div className={styles.content}>{children}</div>
-        <Spacer size="s" />
-        <Row className={styles.footer} justify="end" gap="m">
-          <FlexItem>
+        <RiSpacer size="s" />
+        <RiRow className={styles.footer} justify="end" gap="m">
+          <RiFlexItem>
             <RiSecondaryButton
               size="s"
               onClick={() => handleDecline()}
@@ -158,9 +158,9 @@ const EditablePopover = (props: Props) => {
             >
               Cancel
             </RiSecondaryButton>
-          </FlexItem>
+          </RiFlexItem>
 
-          <FlexItem>
+          <RiFlexItem>
             <RiPrimaryButton
               size="s"
               type="submit"
@@ -169,8 +169,8 @@ const EditablePopover = (props: Props) => {
             >
               Save
             </RiPrimaryButton>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </form>
     </RiPopover>
   )

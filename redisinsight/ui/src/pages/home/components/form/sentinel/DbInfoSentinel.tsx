@@ -4,10 +4,7 @@ import { capitalize } from 'lodash'
 import { ConnectionType } from 'uiSrc/slices/interfaces'
 import { Nullable } from 'uiSrc/utils'
 import { ColorText, Text } from 'uiSrc/components/base/text'
-import {
-  Group as ListGroup,
-  Item as ListGroupItem,
-} from 'uiSrc/components/base/layout/list'
+import { RiListGroup, RiListItem } from 'uiSrc/components/base/layout'
 import { SentinelMaster } from 'apiSrc/modules/redis-sentinel/models/sentinel-master'
 import SentinelHostPort from './SentinelHostPort'
 
@@ -24,8 +21,8 @@ export interface Props {
 const DbInfoSentinel = (props: Props) => {
   const { connectionType, nameFromProvider, sentinelMaster, host, port } = props
   return (
-    <ListGroup className={styles.dbInfoGroup} flush>
-      <ListGroupItem
+    <RiListGroup className={styles.dbInfoGroup} flush>
+      <RiListItem
         label={
           <Text color="subdued" size="s">
             Connection Type:
@@ -37,7 +34,7 @@ const DbInfoSentinel = (props: Props) => {
       />
 
       {sentinelMaster?.name && (
-        <ListGroupItem
+        <RiListItem
           label={
             <Text color="subdued" size="s">
               Primary Group Name:
@@ -50,7 +47,7 @@ const DbInfoSentinel = (props: Props) => {
       )}
 
       {nameFromProvider && (
-        <ListGroupItem
+        <RiListItem
           label={
             <Text color="subdued" size="s">
               Database Name from Provider:
@@ -63,7 +60,7 @@ const DbInfoSentinel = (props: Props) => {
       )}
 
       {host && port && <SentinelHostPort host={host} port={port} />}
-    </ListGroup>
+    </RiListGroup>
   )
 }
 

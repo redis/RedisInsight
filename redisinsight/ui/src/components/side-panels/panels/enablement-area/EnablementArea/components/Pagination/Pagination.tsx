@@ -8,12 +8,12 @@ import EnablementAreaContext from 'uiSrc/pages/workbench/contexts/enablementArea
 import { Nullable } from 'uiSrc/utils'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import {
-  Menu,
-  MenuContent,
-  MenuDropdownArrow,
-  MenuItem,
-  MenuTrigger,
-} from 'uiSrc/components/base/layout/menu'
+  RiMenu,
+  RiMenuContent,
+  RiMenuDropdownArrow,
+  RiMenuItem,
+  RiMenuTrigger,
+} from 'uiSrc/components/base/layout'
 import { Text } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
@@ -64,8 +64,8 @@ const Pagination = ({
   }
 
   const PagesControl = () => (
-    <Menu open={isMenuOpen}>
-      <MenuTrigger>
+    <RiMenu open={isMenuOpen}>
+      <RiMenuTrigger>
         <button
           data-testid="enablement-area__toggle-pagination-menu-btn"
           type="button"
@@ -77,14 +77,14 @@ const Pagination = ({
             >{`${activePage + 1} of ${items.length}`}</strong>
           </Text>
         </button>
-      </MenuTrigger>
-      <MenuContent
+      </RiMenuTrigger>
+      <RiMenuContent
         data-testid="enablement-area__pagination-menu"
         placement="top"
         onInteractOutside={() => setMenuOpen(false)}
       >
         {items.map((item, index) => (
-          <MenuItem
+          <RiMenuItem
             data-testid={`menu-item-${index}`}
             key={item.id}
             onClick={() => handleOpenPage(index)}
@@ -92,9 +92,9 @@ const Pagination = ({
             className={cx({ [styles.activeMenuItem]: activePage === index })}
           />
         ))}
-        <MenuDropdownArrow />
-      </MenuContent>
-    </Menu>
+        <RiMenuDropdownArrow />
+      </RiMenuContent>
+    </RiMenu>
   )
 
   const size = compressed ? 'small' : 'medium'

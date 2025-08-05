@@ -25,14 +25,13 @@ import { recommendationsSelector } from 'uiSrc/slices/recommendations/recommenda
 import { sortRecommendations } from 'uiSrc/utils/recommendation'
 import { openTutorialByPath } from 'uiSrc/slices/panels/sidePanels'
 import { findTutorialPath } from 'uiSrc/utils'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow, RiCard } from 'uiSrc/components/base/layout'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons'
 
 import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
 import { Link } from 'uiSrc/components/base/link/Link'
-import { Card } from 'uiSrc/components/base/layout'
 
 import styles from './styles.module.scss'
 
@@ -80,19 +79,22 @@ const Recommendations = () => {
   ) => event.stopPropagation()
 
   const renderButtonContent = (badges: string[], id: string) => (
-    <FlexItem className="recommendation-badges" data-test-subj={`${id}-button`}>
+    <RiFlexItem
+      className="recommendation-badges"
+      data-test-subj={`${id}-button`}
+    >
       <RecommendationBadges badges={badges} />
-    </FlexItem>
+    </RiFlexItem>
   )
   const renderLabel = (redisStack: boolean, title: string, id: string) => (
-    <Row
+    <RiRow
       className={cx(styles.accordionBtn, styles.accordionButton)}
       align="center"
       justify="start"
       gap="m"
       data-test-subj={`${id}-label`}
     >
-      <FlexItem onClick={onRedisStackClick}>
+      <RiFlexItem onClick={onRedisStackClick}>
         {redisStack && (
           <Link
             target="_blank"
@@ -117,9 +119,9 @@ const Recommendations = () => {
             </RiTooltip>
           </Link>
         )}
-      </FlexItem>
-      <FlexItem>{title}</FlexItem>
-    </Row>
+      </RiFlexItem>
+      <RiFlexItem>{title}</RiFlexItem>
+    </RiRow>
   )
 
   if (loading) {
@@ -190,7 +192,7 @@ const Recommendations = () => {
                   onOpenChange={(isOpen) => handleToggle(isOpen, id)}
                   data-testid={`${id}-accordion`}
                 >
-                  <Card className={styles.accordionContent}>
+                  <RiCard className={styles.accordionContent}>
                     <RecommendationBody
                       elements={content}
                       params={params}
@@ -205,7 +207,7 @@ const Recommendations = () => {
                         }
                       />
                     )}
-                  </Card>
+                  </RiCard>
                 </RiAccordion>
                 <div className={styles.footer}>
                   <FeatureFlagComponent name={FeatureFlags.envDependent}>

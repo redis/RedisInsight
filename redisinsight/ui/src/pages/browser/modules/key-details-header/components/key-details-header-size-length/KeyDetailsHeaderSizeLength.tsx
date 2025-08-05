@@ -11,7 +11,7 @@ import {
 } from 'uiSrc/slices/browser/keys'
 import { formatBytes } from 'uiSrc/utils'
 
-import { FlexItem } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem } from 'uiSrc/components/base/layout'
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { RiIcon } from 'uiSrc/components/base/icons'
@@ -30,7 +30,7 @@ const KeyDetailsHeaderSizeLength = ({ width }: Props) => {
   return (
     <>
       {size && (
-        <FlexItem>
+        <RiFlexItem>
           <Text
             color="subdued"
             size="s"
@@ -66,9 +66,9 @@ const KeyDetailsHeaderSizeLength = ({ width }: Props) => {
               </>
             </RiTooltip>
           </Text>
-        </FlexItem>
+        </RiFlexItem>
       )}
-      <FlexItem>
+      <RiFlexItem>
         <Text
           color="subdued"
           size="s"
@@ -79,7 +79,7 @@ const KeyDetailsHeaderSizeLength = ({ width }: Props) => {
           {': '}
           {length ?? '-'}
         </Text>
-      </FlexItem>
+      </RiFlexItem>
     </>
   )
 }

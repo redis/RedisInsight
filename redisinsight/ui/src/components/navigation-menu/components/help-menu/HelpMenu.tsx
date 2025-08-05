@@ -17,14 +17,14 @@ import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { FeatureFlags } from 'uiSrc/constants'
 import { FeatureFlagComponent } from 'uiSrc/components'
 import { RiPopover } from 'uiSrc/components/base'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { Title } from 'uiSrc/components/base/text/Title'
-import { SupportIcon , RiIcon } from 'uiSrc/components/base/icons'
+import { SupportIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { Link } from 'uiSrc/components/base/link/Link'
 import {
-  SideBarItem,
+  RiSideBarItem,
   SideBarItemIcon,
 } from 'uiSrc/components/base/layout/sidebar'
 import navStyles from '../../styles.module.scss'
@@ -69,7 +69,7 @@ const HelpMenu = () => {
   }
 
   const HelpMenuButton = (
-    <SideBarItem
+    <RiSideBarItem
       className={cx({
         [navStyles.navigationButtonNotified]: true,
       })}
@@ -82,7 +82,7 @@ const HelpMenu = () => {
         aria-label="Help Menu"
         data-testid="help-menu-button"
       />
-    </SideBarItem>
+    </RiSideBarItem>
   )
 
   return (
@@ -98,15 +98,15 @@ const HelpMenu = () => {
         <Title size="XS" className={styles.helpMenuTitle}>
           Help Center
         </Title>
-        <Spacer size="l" />
-        <Row
+        <RiSpacer size="l" />
+        <RiRow
           className={styles.helpMenuItems}
           align="center"
           justify="between"
           gap="l"
         >
           <FeatureFlagComponent name={FeatureFlags.envDependent}>
-            <FlexItem grow={2} className={styles.helpMenuItem}>
+            <RiFlexItem grow={2} className={styles.helpMenuItem}>
               <Link
                 className={styles.helpMenuItemLink}
                 href={EXTERNAL_LINKS.githubIssues}
@@ -114,7 +114,7 @@ const HelpMenu = () => {
                 data-testid="submit-bug-btn"
               >
                 <RiIcon type="GithubHelpCenterIcon" size="xxl" />
-                <Spacer size="m" />
+                <RiSpacer size="m" />
                 <Text
                   size="xs"
                   textAlign="center"
@@ -123,9 +123,9 @@ const HelpMenu = () => {
                   Provide <br /> Feedback
                 </Text>
               </Link>
-            </FlexItem>
+            </RiFlexItem>
           </FeatureFlagComponent>
-          <FlexItem className={styles.helpMenuItemRow} grow={4}>
+          <RiFlexItem className={styles.helpMenuItemRow} grow={4}>
             <div className={styles.helpMenuItemLink}>
               <RiIcon type="KeyboardShortcutsIcon" size="l" />
               <Text
@@ -172,8 +172,8 @@ const HelpMenu = () => {
                 </Text>
               </div>
             </FeatureFlagComponent>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </div>
     </RiPopover>
   )

@@ -13,7 +13,7 @@ import {
   MessageSentinel,
   TlsDetails,
 } from 'uiSrc/pages/home/components/form'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { RiTooltip } from 'uiSrc/components'
@@ -155,7 +155,7 @@ const SentinelConnectionForm = (props: Props) => {
             }}
             onHostNamePaste={onHostNamePaste}
           />
-          <Spacer />
+          <RiSpacer />
           <TlsDetails
             formik={formik}
             certificates={certificates}

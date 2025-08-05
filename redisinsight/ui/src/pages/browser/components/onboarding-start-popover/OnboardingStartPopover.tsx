@@ -9,7 +9,7 @@ import {
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { OnboardingStepName, OnboardingSteps } from 'uiSrc/constants/onboarding'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiEmptyButton, RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
@@ -55,7 +55,7 @@ const OnboardingStartPopover = () => {
       style={{ display: 'none' }}
     >
       <Title size="S">Take a quick tour of Redis Insight?</Title>
-      <Spacer size="s" />
+      <RiSpacer size="s" />
       <Text data-testid="onboarding-start-content">
         Hi! Redis Insight has many tools that can help you to optimize the
         development process.

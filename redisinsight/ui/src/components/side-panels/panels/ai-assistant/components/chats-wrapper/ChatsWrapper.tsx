@@ -10,7 +10,7 @@ import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { Maybe } from 'uiSrc/utils'
 import { FeatureFlagComponent } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
+import { RiTabs, TabInfo } from 'uiSrc/components/base/layout'
 import AssistanceChat from '../assistance-chat'
 import ExpertChat from '../expert-chat'
 
@@ -87,7 +87,7 @@ const ChatsWrapper = () => {
   return (
     <div className={styles.wrapper} data-testid="chat-wrapper">
       {chats.length > 1 && (
-        <Tabs
+        <RiTabs
           tabs={tabs}
           value={activeTab}
           onChange={selectTab}

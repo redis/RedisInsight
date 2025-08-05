@@ -13,7 +13,7 @@ import {
 } from 'uiSrc/components/base/icons'
 
 import Divider from 'uiSrc/components/divider/Divider'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
@@ -43,7 +43,7 @@ const QueryActions = (props: Props) => {
       <Text className={styles.tooltipText} size="s">
         {KEYBOARD_SHORTCUTS.workbench.runQuery?.label}:
       </Text>
-      <Spacer size="s" />
+      <RiSpacer size="s" />
       <KeyboardShortcut
         badgeTextClassName={styles.tooltipText}
         separator={KEYBOARD_SHORTCUTS?._separator}

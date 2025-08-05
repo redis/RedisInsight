@@ -6,7 +6,7 @@ import {
   RiSecondaryButton,
 } from 'uiSrc/components/base/forms'
 import { RiPopover } from 'uiSrc/components/base'
-import { HorizontalSpacer } from 'uiSrc/components/base/layout'
+import { RiHorizontalSpacer } from 'uiSrc/components/base/layout'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -46,7 +46,7 @@ const AckPopover = (props: Props) => {
           >
             ACK
           </RiSecondaryButton>
-          <HorizontalSpacer size="s" />
+          <RiHorizontalSpacer size="s" />
         </>
       }
     >

@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 import { CSSProperties, HTMLAttributes } from 'react'
-import { StyledPageHeader } from 'uiSrc/components/base/layout/page/page-heading.styles'
-import { StyledPageBody } from 'uiSrc/components/base/layout/page/page-body.styles'
+import { StyledPageHeader } from './page-heading.styles'
+import { StyledPageBody } from './page-body.styles'
 
 export const PageClassNames = {
   page: 'RI-page',

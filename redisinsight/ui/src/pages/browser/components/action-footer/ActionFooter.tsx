@@ -1,5 +1,5 @@
 import React from 'react'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import AddKeyFooter from 'uiSrc/pages/browser/components/add-key/AddKeyFooter/AddKeyFooter'
 import { SpacerSize } from 'uiSrc/components/base/layout/spacer/spacer.styles'
@@ -36,8 +36,8 @@ export const ActionFooter = ({
   enableFormSubmit = true,
 }: ActionFooterProps) => {
   const content = (
-    <Row justify="end" gap={gap} style={{ padding: 18 }}>
-      <FlexItem>
+    <RiRow justify="end" gap={gap} style={{ padding: 18 }}>
+      <RiFlexItem>
         <RiSecondaryButton
           onClick={onCancel}
           data-testid={cancelTestId}
@@ -45,8 +45,8 @@ export const ActionFooter = ({
         >
           {cancelText}
         </RiSecondaryButton>
-      </FlexItem>
-      <FlexItem>
+      </RiFlexItem>
+      <RiFlexItem>
         <RiPrimaryButton
           type={enableFormSubmit ? 'submit' : 'button'}
           loading={loading}
@@ -57,8 +57,8 @@ export const ActionFooter = ({
         >
           {actionText}
         </RiPrimaryButton>
-      </FlexItem>
-    </Row>
+      </RiFlexItem>
+    </RiRow>
   )
 
   if (enableFormSubmit) {

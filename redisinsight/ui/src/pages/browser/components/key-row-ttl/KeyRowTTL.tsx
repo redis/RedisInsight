@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { isUndefined } from 'lodash'
 
 import { RiTooltip } from 'uiSrc/components'
-import { LoadingContent } from 'uiSrc/components/base/layout'
+import { RiLoadingContent } from 'uiSrc/components/base/layout'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import {
   Maybe,
@@ -25,7 +25,7 @@ const KeyRowTTL = (props: Props) => {
 
   if (isUndefined(ttl)) {
     return (
-      <LoadingContent
+      <RiLoadingContent
         lines={1}
         className={cx(styles.keyInfoLoading, styles.keyTTL)}
         data-testid={`ttl-loading_${nameString}`}

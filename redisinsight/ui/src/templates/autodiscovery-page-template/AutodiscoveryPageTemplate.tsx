@@ -2,7 +2,7 @@ import React from 'react'
 import { PageHeader } from 'uiSrc/components'
 import ExplorePanelTemplate from 'uiSrc/templates/explore-panel/ExplorePanelTemplate'
 
-import { Page, PageBody } from 'uiSrc/components/base/layout/page'
+import { RiPage, RiPageBody } from 'uiSrc/components/base/layout'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -16,11 +16,11 @@ const AutodiscoveryPageTemplate = (props: Props) => {
       <PageHeader title="Redis databases" showInsights />
       <div />
       <ExplorePanelTemplate panelClassName={styles.explorePanel}>
-        <Page className={styles.page}>
-          <PageBody component="div">
+        <RiPage className={styles.page}>
+          <RiPageBody component="div">
             <div className="homePage">{children}</div>
-          </PageBody>
-        </Page>
+          </RiPageBody>
+        </RiPage>
       </ExplorePanelTemplate>
     </>
   )

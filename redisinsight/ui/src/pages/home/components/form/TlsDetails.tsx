@@ -20,8 +20,8 @@ import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { deleteCaCertificateAction } from 'uiSrc/slices/instances/caCerts'
 import { deleteClientCertAction } from 'uiSrc/slices/instances/clientCerts'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import {
   RiCheckbox,
   RiFormField,
@@ -185,8 +185,8 @@ const TlsDetails = (props: Props) => {
   const isTlsAuthId = useGenerateId('', ' is_tls_client_auth_required')
   return (
     <>
-      <Row gap="m">
-        <FlexItem grow={1}>
+      <RiRow gap="m">
+        <RiFlexItem grow={1}>
           <RiCheckbox
             id={sslId}
             name="tls"
@@ -195,14 +195,14 @@ const TlsDetails = (props: Props) => {
             onChange={formik.handleChange}
             data-testid="tls"
           />
-        </FlexItem>
-      </Row>
+        </RiFlexItem>
+      </RiRow>
 
       {formik.values.tls && (
         <>
-          <Spacer />
-          <Row gap="m">
-            <FlexItem grow={1}>
+          <RiSpacer />
+          <RiRow gap="m">
+            <RiFlexItem grow={1}>
               <RiCheckbox
                 id={sni}
                 name="sni"
@@ -217,13 +217,13 @@ const TlsDetails = (props: Props) => {
                 }}
                 data-testid="sni"
               />
-            </FlexItem>
-          </Row>
+            </RiFlexItem>
+          </RiRow>
           {formik.values.sni && (
             <>
-              <Spacer />
-              <Row gap="m">
-                <FlexItem grow>
+              <RiSpacer />
+              <RiRow gap="m">
+                <RiFlexItem grow>
                   <RiFormField label="Server Name*">
                     <RiTextInput
                       name="servername"
@@ -240,13 +240,13 @@ const TlsDetails = (props: Props) => {
                       data-testid="sni-servername"
                     />
                   </RiFormField>
-                </FlexItem>
-              </Row>
+                </RiFlexItem>
+              </RiRow>
             </>
           )}
-          <Spacer />
-          <Row gap="m" responsive>
-            <FlexItem
+          <RiSpacer />
+          <RiRow gap="m" responsive>
+            <RiFlexItem
               grow
               className={cx({ [styles.fullWidth]: formik.values.sni })}
             >
@@ -258,15 +258,15 @@ const TlsDetails = (props: Props) => {
                 onChange={formik.handleChange}
                 data-testid="verify-tls-cert"
               />
-            </FlexItem>
-          </Row>
+            </RiFlexItem>
+          </RiRow>
         </>
       )}
       {formik.values.tls && (
         <div className="boxSection">
-          <Spacer />
-          <Row gap="m" responsive>
-            <FlexItem>
+          <RiSpacer />
+          <RiRow gap="m" responsive>
+            <RiFlexItem>
               <RiFormField
                 label={`CA Certificate${
                   formik.values.verifyServerTlsCert ? '*' : ''
@@ -287,11 +287,11 @@ const TlsDetails = (props: Props) => {
                   data-testid="select-ca-cert"
                 />
               </RiFormField>
-            </FlexItem>
+            </RiFlexItem>
 
             {formik.values.tls &&
               formik.values.selectedCaCertName === ADD_NEW_CA_CERT && (
-                <FlexItem grow>
+                <RiFlexItem grow>
                   <RiFormField label="Name*">
                     <RiTextInput
                       name="newCaCertName"
@@ -308,14 +308,14 @@ const TlsDetails = (props: Props) => {
                       data-testid="qa-ca-cert"
                     />
                   </RiFormField>
-                </FlexItem>
+                </RiFlexItem>
               )}
-          </Row>
+          </RiRow>
 
           {formik.values.tls &&
             formik.values.selectedCaCertName === ADD_NEW_CA_CERT && (
-              <Row gap="m" responsive>
-                <FlexItem grow>
+              <RiRow gap="m" responsive>
+                <RiFlexItem grow>
                   <RiFormField label="Certificate*">
                     <RiTextArea
                       name="newCaCert"
@@ -326,14 +326,14 @@ const TlsDetails = (props: Props) => {
                       data-testid="new-ca-cert"
                     />
                   </RiFormField>
-                </FlexItem>
-              </Row>
+                </RiFlexItem>
+              </RiRow>
             )}
         </div>
       )}
       {formik.values.tls && (
-        <Row responsive style={{ margin: '20px 0 20px' }}>
-          <FlexItem grow>
+        <RiRow responsive style={{ margin: '20px 0 20px' }}>
+          <RiFlexItem grow>
             <RiCheckbox
               id={isTlsAuthId}
               name="tlsClientAuthRequired"
@@ -344,16 +344,16 @@ const TlsDetails = (props: Props) => {
               }
               data-testid="tls-required-checkbox"
             />
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       )}
       {formik.values.tls && formik.values.tlsClientAuthRequired && (
         <div
           className={cx('boxSection', styles.tslBoxSection)}
           style={{ marginTop: 15 }}
         >
-          <Row gap="m" responsive>
-            <FlexItem grow>
+          <RiRow gap="m" responsive>
+            <RiFlexItem grow>
               <RiFormField label="Client Certificate*">
                 <RiSelect
                   placeholder="Select certificate"
@@ -366,12 +366,12 @@ const TlsDetails = (props: Props) => {
                   data-testid="select-cert"
                 />
               </RiFormField>
-            </FlexItem>
+            </RiFlexItem>
 
             {formik.values.tls &&
               formik.values.tlsClientAuthRequired &&
               formik.values.selectedTlsClientCertId === 'ADD_NEW' && (
-                <FlexItem grow>
+                <RiFlexItem grow>
                   <RiFormField label="Name*">
                     <RiTextInput
                       name="newTlsCertPairName"
@@ -388,16 +388,16 @@ const TlsDetails = (props: Props) => {
                       data-testid="new-tsl-cert-pair-name"
                     />
                   </RiFormField>
-                </FlexItem>
+                </RiFlexItem>
               )}
-          </Row>
+          </RiRow>
 
           {formik.values.tls &&
             formik.values.tlsClientAuthRequired &&
             formik.values.selectedTlsClientCertId === 'ADD_NEW' && (
               <>
-                <Row gap="m" responsive>
-                  <FlexItem grow>
+                <RiRow gap="m" responsive>
+                  <RiFlexItem grow>
                     <RiFormField label="Certificate*">
                       <RiTextArea
                         name="newTlsClientCert"
@@ -409,11 +409,11 @@ const TlsDetails = (props: Props) => {
                         data-testid="new-tls-client-cert"
                       />
                     </RiFormField>
-                  </FlexItem>
-                </Row>
+                  </RiFlexItem>
+                </RiRow>
 
-                <Row gap="m" responsive>
-                  <FlexItem grow>
+                <RiRow gap="m" responsive>
+                  <RiFlexItem grow>
                     <RiFormField label="Private Key*">
                       <RiTextArea
                         placeholder="Enter Private Key"
@@ -424,8 +424,8 @@ const TlsDetails = (props: Props) => {
                         data-testid="new-tls-client-cert-key"
                       />
                     </RiFormField>
-                  </FlexItem>
-                </Row>
+                  </RiFlexItem>
+                </RiRow>
               </>
             )}
         </div>

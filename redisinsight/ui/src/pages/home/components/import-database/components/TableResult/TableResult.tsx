@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { RiTable, ColumnDefinition } from 'uiSrc/components/base/layout'
 
 import { ErrorImportResult } from 'uiSrc/slices/interfaces'
 
@@ -76,7 +76,7 @@ const TableResult = (props: Props) => {
 
   return (
     <div className={styles.tableWrapper}>
-      <Table columns={columns} data={data} defaultSorting={[]} />
+      <RiTable columns={columns} data={data} defaultSorting={[]} />
     </div>
   )
 }

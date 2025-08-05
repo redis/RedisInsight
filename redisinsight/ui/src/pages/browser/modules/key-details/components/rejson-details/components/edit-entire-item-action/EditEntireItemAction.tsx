@@ -6,7 +6,7 @@ import * as keys from 'uiSrc/constants/keys'
 import { CancelSlimIcon, CheckThinIcon } from 'uiSrc/components/base/icons'
 import FieldMessage from 'uiSrc/components/field-message/FieldMessage'
 import { Nullable } from 'uiSrc/utils'
-import { FlexItem } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem } from 'uiSrc/components/base/layout'
 import { WindowEvent } from 'uiSrc/components/base/utils/WindowEvent'
 import { FocusTrap } from 'uiSrc/components/base/utils/FocusTrap'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
@@ -73,7 +73,7 @@ const EditEntireItemAction = (props: Props) => {
                 data-testid="json-entire-form"
                 noValidate
               >
-                <FlexItem grow>
+                <RiFlexItem grow>
                   <RiTextArea
                     valid={!error}
                     className={styles.fullWidthTextArea}
@@ -82,7 +82,7 @@ const EditEntireItemAction = (props: Props) => {
                     onChange={setValue}
                     data-testid="json-value"
                   />
-                </FlexItem>
+                </RiFlexItem>
                 <ConfirmOverwrite
                   isOpen={isConfirmationVisible}
                   onCancel={() => setIsConfirmationVisible(false)}

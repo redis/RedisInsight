@@ -11,7 +11,12 @@ import { clusterSelector } from 'uiSrc/slices/instances/cluster'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import {
+  RiFlexItem,
+  RiRow,
+  RiTable,
+  ColumnDefinition,
+} from 'uiSrc/components/base/layout'
 import {
   RiPrimaryButton,
   RiSecondaryButton,
@@ -20,7 +25,6 @@ import {
 import { RiSearchInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -90,13 +94,13 @@ const RedisClusterDatabasesResult = ({ columns, onBack, onView }: Props) => {
             : ' Database '}
           Added
         </Title>
-        <Row align="end" gap="s">
-          <FlexItem grow>
+        <RiRow align="end" gap="s">
+          <RiFlexItem grow>
             <MessageBar opened={!!countSuccessAdded || !!countFailAdded}>
               <SummaryText />
             </MessageBar>
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <RiFormField className={styles.searchForm}>
               <RiSearchInput
                 placeholder="Search..."
@@ -106,11 +110,11 @@ const RedisClusterDatabasesResult = ({ columns, onBack, onView }: Props) => {
                 data-testid="search"
               />
             </RiFormField>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
         <br />
         <div className="itemList databaseList clusterDatabaseListResult">
-          <Table
+          <RiTable
             columns={columns}
             data={items}
             defaultSorting={[
@@ -125,8 +129,8 @@ const RedisClusterDatabasesResult = ({ columns, onBack, onView }: Props) => {
           )}
         </div>
       </div>
-      <FlexItem className={cx(styles.footer, 'footerAddDatabase')}>
-        <Row justify="between">
+      <RiFlexItem className={cx(styles.footer, 'footerAddDatabase')}>
+        <RiRow justify="between">
           <RiSecondaryButton
             onClick={() => onBack(false)}
             className="btn-cancel btn-back"
@@ -141,8 +145,8 @@ const RedisClusterDatabasesResult = ({ columns, onBack, onView }: Props) => {
           >
             View Databases
           </RiPrimaryButton>
-        </Row>
-      </FlexItem>
+        </RiRow>
+      </RiFlexItem>
     </AutodiscoveryPageTemplate>
   )
 }

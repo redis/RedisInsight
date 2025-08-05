@@ -1,6 +1,6 @@
 import React from 'react'
 import { JSONTree } from 'react-json-tree'
-import { Table } from 'uiSrc/components/base/layout/table'
+import { RiTable } from 'uiSrc/components/base/layout'
 
 import { ResultsParser } from './parser'
 import Graph from './Graph'
@@ -38,7 +38,7 @@ export function TableApp(props: { command?: string; data: any }) {
 
   return (
     <div className="table-view">
-      <Table
+      <RiTable
         data={tableData.results}
         columns={tableData.headers.map((h) => ({
           id: h,

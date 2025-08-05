@@ -1,13 +1,13 @@
 import React from 'react'
 import cx from 'classnames'
-import { restrictWidthSize } from 'uiSrc/components/base/layout/page/page.styles'
+import { restrictWidthSize } from './page.styles'
 import {
   PageHeaderClassName,
   PageHeaderProps,
   StyledPageHeader,
 } from './page-heading.styles'
 
-const PageHeader = ({
+export const RiPageHeader = ({
   className,
   style,
   restrictWidth,
@@ -30,5 +30,3 @@ const PageHeader = ({
     $bottomBorder={bottomBorder}
   />
 )
-
-export default PageHeader

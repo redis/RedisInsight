@@ -13,7 +13,7 @@ import {
   RiPrimaryButton,
   RiSecondaryButton,
 } from 'uiSrc/components/base/forms'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { VALID_TAG_KEY_REGEX, VALID_TAG_VALUE_REGEX } from './constants'
@@ -107,7 +107,7 @@ export const ManageTagsModal = ({
       header={
         <div className={styles.header}>
           <Title size="M">Manage tags for {instance.name}</Title>
-          <Spacer size="s" />
+          <RiSpacer size="s" />
           <Text size="s" color="subdued">
             Tags are key-value pairs that let you categorize your databases.
           </Text>
@@ -186,7 +186,7 @@ export const ManageTagsModal = ({
           })}
         </div>
       </div>
-      <Spacer size="s" />
+      <RiSpacer size="s" />
       <RiEmptyButton
         icon={PlusIcon}
         onClick={handleAddTag}

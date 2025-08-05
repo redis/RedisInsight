@@ -1,8 +1,8 @@
 import React from 'react'
 import parse from 'html-react-parser'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 
 import { Text } from 'uiSrc/components/base/text'
 import { RiSwitchInput } from 'uiSrc/components/base/inputs'
@@ -30,7 +30,7 @@ const ConsentOption = (props: Props) => {
   } = props
 
   return (
-    <FlexItem key={consent.agreementName} grow>
+    <RiFlexItem key={consent.agreementName} grow>
       {isSettingsPage && consent.description && (
         <>
           <Text
@@ -44,11 +44,11 @@ const ConsentOption = (props: Props) => {
               withLink={consent.linkToPrivacyPolicy}
             />
           </Text>
-          <Spacer size="m" />
+          <RiSpacer size="m" />
         </>
       )}
-      <Row gap="m">
-        <FlexItem>
+      <RiRow gap="m">
+        <RiFlexItem>
           <RiSwitchInput
             checked={checked}
             onCheckedChange={(checked) =>
@@ -57,8 +57,8 @@ const ConsentOption = (props: Props) => {
             data-testid={`switch-option-${consent.agreementName}`}
             disabled={consent?.disabled}
           />
-        </FlexItem>
-        <FlexItem>
+        </RiFlexItem>
+        <RiFlexItem>
           <Text className={styles.smallText}>{parse(consent.label)}</Text>
           {!isSettingsPage && consent.description && (
             <Text
@@ -73,10 +73,10 @@ const ConsentOption = (props: Props) => {
               />
             </Text>
           )}
-        </FlexItem>
-      </Row>
-      {!withoutSpacer && <Spacer />}
-    </FlexItem>
+        </RiFlexItem>
+      </RiRow>
+      {!withoutSpacer && <RiSpacer />}
+    </RiFlexItem>
   )
 }
 

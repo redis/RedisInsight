@@ -7,7 +7,7 @@ import {
 } from 'uiSrc/slices/app/notifications'
 import { NotificationsIcon } from 'uiSrc/components/base/icons'
 import {
-  SideBarItem,
+  RiSideBarItem,
   SideBarItemIcon,
 } from 'uiSrc/components/base/layout/sidebar'
 import NotificationCenter from './NotificationCenter'
@@ -25,7 +25,7 @@ const NavButton = () => {
   }
 
   const Btn = (
-    <SideBarItem
+    <RiSideBarItem
       tooltipProps={{ text: 'Notification Center', placement: 'right' }}
       onMouseDownCapture={onClickIcon}
       isActive={isCenterOpen}
@@ -35,7 +35,7 @@ const NavButton = () => {
         aria-label="Notification Menu"
         data-testid="notification-menu-button"
       />
-    </SideBarItem>
+    </RiSideBarItem>
   )
 
   return (

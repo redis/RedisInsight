@@ -55,8 +55,7 @@ import { UrlHandlingActions } from 'uiSrc/slices/interfaces/urlHandling'
 import { CREATE_CLOUD_DB_ID } from 'uiSrc/pages/home/constants'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 
-import { Page, PageBody } from 'uiSrc/components/base/layout/page'
-import { Card } from 'uiSrc/components/base/layout'
+import { RiPage, RiPageBody, RiCard } from 'uiSrc/components/base/layout'
 import DatabasesList from './components/database-list-component'
 import DatabaseListHeader from './components/database-list-header'
 import EmptyMessage from './components/empty-message/EmptyMessage'
@@ -249,8 +248,8 @@ const HomePage = () => {
   return (
     <HomePageTemplate>
       <div className={styles.pageWrapper}>
-        <Page className={styles.page}>
-          <PageBody component="div">
+        <RiPage className={styles.page}>
+          <RiPageBody component="div">
             <DatabaseListHeader
               key="instance-controls"
               onAddInstance={handleAddInstance}
@@ -280,9 +279,9 @@ const HomePage = () => {
             )}
             <div key="homePage" className="homePage">
               {!isInstanceExists && !loading && !loadingChanging ? (
-                <Card>
+                <RiCard>
                   <EmptyMessage onAddInstanceClick={handleAddInstance} />
-                </Card>
+                </RiCard>
               ) : (
                 <DatabasesList
                   loading={loading}
@@ -295,8 +294,8 @@ const HomePage = () => {
                 />
               )}
             </div>
-          </PageBody>
-        </Page>
+          </RiPageBody>
+        </RiPage>
       </div>
     </HomePageTemplate>
   )

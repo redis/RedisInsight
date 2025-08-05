@@ -48,7 +48,7 @@ import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
 import {
   ResizableContainer,
-  ResizablePanel,
+  RiResizablePanel,
   ResizablePanelHandle,
 } from 'uiSrc/components/base/layout'
 
@@ -322,7 +322,7 @@ const BrowserPage = () => {
           direction="horizontal"
           onLayout={onPanelWidthChange}
         >
-          <ResizablePanel
+          <RiResizablePanel
             defaultSize={sizes && sizes[0] ? sizes[0] : 50}
             minSize={45}
             id={firstPanelId}
@@ -345,11 +345,11 @@ const BrowserPage = () => {
               removeSelectedKey={handleRemoveSelectedKey}
               handleAddKeyPanel={handleAddKeyPanel}
             />
-          </ResizablePanel>
+          </RiResizablePanel>
           {!arePanelsCollapsed && !isBrowserFullScreen && (
             <ResizablePanelHandle />
           )}
-          <ResizablePanel
+          <RiResizablePanel
             defaultSize={sizes && sizes[1] ? sizes[1] : 50}
             minSize={45}
             id={secondPanelId}
@@ -376,7 +376,7 @@ const BrowserPage = () => {
               handleBulkActionsPanel={handleBulkActionsPanel}
               closeRightPanels={closeRightPanels}
             />
-          </ResizablePanel>
+          </RiResizablePanel>
         </ResizableContainer>
       </div>
       <OnboardingStartPopover />

@@ -2,8 +2,8 @@ import React from 'react'
 import cx from 'classnames'
 
 import { DeleteIcon, PlusIcon } from 'uiSrc/components/base/icons'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiActionIconButton, RiIconButton } from 'uiSrc/components/base/forms'
 import { RiTooltip } from 'uiSrc/components'
 import styles from './styles.module.scss'
@@ -20,14 +20,14 @@ const AddMultipleFields = <T,>(props: Props<T>) => {
   const { items, children, isClearDisabled, onClickRemove, onClickAdd } = props
 
   const renderItem = (child: React.ReactNode, item: T, index?: number) => (
-    <FlexItem
+    <RiFlexItem
       key={index}
       className={cx('flexItemNoFullWidth', 'inlineFieldsNoSpace', styles.row)}
       grow
     >
-      <Row align="center" gap="m">
-        <FlexItem grow>{child}</FlexItem>
-        <FlexItem>
+      <RiRow align="center" gap="m">
+        <RiFlexItem grow>{child}</RiFlexItem>
+        <RiFlexItem>
           <RiTooltip content="Remove" position="left">
             <RiIconButton
               icon={DeleteIcon}
@@ -37,9 +37,9 @@ const AddMultipleFields = <T,>(props: Props<T>) => {
               data-testid="remove-item"
             />
           </RiTooltip>
-        </FlexItem>
-      </Row>
-    </FlexItem>
+        </RiFlexItem>
+      </RiRow>
+    </RiFlexItem>
   )
 
   return (
@@ -47,9 +47,9 @@ const AddMultipleFields = <T,>(props: Props<T>) => {
       {items.map((item, index) =>
         renderItem(children(item, index), item, index),
       )}
-      <Spacer size="s" />
-      <Row align="center" justify="end">
-        <FlexItem>
+      <RiSpacer size="s" />
+      <RiRow align="center" justify="end">
+        <RiFlexItem>
           <RiTooltip content="Add" position="left">
             <RiActionIconButton
               variant="secondary"
@@ -59,8 +59,8 @@ const AddMultipleFields = <T,>(props: Props<T>) => {
               data-testid="add-item"
             />
           </RiTooltip>
-        </FlexItem>
-      </Row>
+        </RiFlexItem>
+      </RiRow>
     </>
   )
 }

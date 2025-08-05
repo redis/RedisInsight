@@ -25,11 +25,14 @@ import {
   DatabaseListOptions,
   RiTooltip,
 } from 'uiSrc/components'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import {
+  RiFlexItem,
+  RiRow,
+  ColumnDefinition,
+} from 'uiSrc/components/base/layout'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CopyIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { ColorText, Text } from 'uiSrc/components/base/text'
-import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import RedisCloudDatabasesResult from './RedisCloudDatabasesResult'
 
 import styles from './styles.module.scss'
@@ -216,20 +219,20 @@ const RedisCloudDatabasesResultPage = () => {
                 content={messageAdded}
                 anchorClassName="truncateText"
               >
-                <Row align="center" gap="s">
-                  <FlexItem>
+                <RiRow align="center" gap="s">
+                  <RiFlexItem>
                     <RiIcon type="ToastDangerIcon" color="danger600" />
-                  </FlexItem>
+                  </RiFlexItem>
 
-                  <FlexItem>
+                  <RiFlexItem>
                     <ColorText
                       color="danger"
                       className="flex-row euiTextAlign--center"
                     >
                       Error
                     </ColorText>
-                  </FlexItem>
-                </Row>
+                  </RiFlexItem>
+                </RiRow>
               </RiTooltip>
             )}
           </>

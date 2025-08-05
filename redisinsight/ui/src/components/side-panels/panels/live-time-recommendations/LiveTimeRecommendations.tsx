@@ -28,7 +28,7 @@ import { comboBoxToArray } from 'uiSrc/utils'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import {
   FeatureFlagComponent,
-  LoadingContent,
+  RiLoadingContent,
   RiTooltip,
 } from 'uiSrc/components'
 import { ColorText, Text } from 'uiSrc/components/base/text'
@@ -205,7 +205,7 @@ const LiveTimeRecommendations = () => {
       </div>
       <div className={styles.body}>
         {loading ? (
-          <LoadingContent className={styles.loading} lines={4} />
+          <RiLoadingContent className={styles.loading} lines={4} />
         ) : (
           renderBody()
         )}

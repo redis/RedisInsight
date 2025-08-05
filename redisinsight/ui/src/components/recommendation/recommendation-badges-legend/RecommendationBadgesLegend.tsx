@@ -1,24 +1,24 @@
 import React from 'react'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { badgesContent } from '../constants'
 import styles from '../styles.module.scss'
 
 const RecommendationBadgesLegend = () => (
-  <Row
+  <RiRow
     data-testid="badges-legend"
     className={styles.badgesLegend}
     justify="end"
   >
     {badgesContent.map(({ id, icon, name }) => (
-      <FlexItem key={id} className={styles.badge}>
+      <RiFlexItem key={id} className={styles.badge}>
         <div className={styles.badgeWrapper}>
           {icon}
           {name}
         </div>
-      </FlexItem>
+      </RiFlexItem>
     ))}
-  </Row>
+  </RiRow>
 )
 
 export default RecommendationBadgesLegend

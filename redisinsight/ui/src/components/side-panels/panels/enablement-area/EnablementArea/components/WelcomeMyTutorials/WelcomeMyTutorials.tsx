@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { Card } from 'uiSrc/components/base/layout'
+import { RiCard } from 'uiSrc/components/base/layout'
 import CreateTutorialLink from '../CreateTutorialLink'
 
 import styles from './styles.module.scss'
@@ -12,7 +12,7 @@ export interface Props {
 
 const WelcomeMyTutorials = ({ handleOpenUpload }: Props) => (
   <div className={styles.wrapper} data-testid="welcome-my-tutorials">
-    <Card className={styles.panel}>
+    <RiCard className={styles.panel}>
       <div className={styles.link}>
         <CreateTutorialLink />
       </div>
@@ -24,7 +24,7 @@ const WelcomeMyTutorials = ({ handleOpenUpload }: Props) => (
       >
         + Upload <span className={styles.hideText}>tutorial</span>
       </RiPrimaryButton>
-    </Card>
+    </RiCard>
   </div>
 )
 

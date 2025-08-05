@@ -12,7 +12,7 @@ import {
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import {
   UserIcon,
   IndicatorExcludedIcon,
@@ -72,37 +72,42 @@ const SubscriptionPanel = () => {
   const displayMessages = count !== 0 || isSubscribed
 
   return (
-    <Row className={styles.container} align="center" justify="between" gap="s">
-      <FlexItem>
-        <Row align="center">
-          <FlexItem className={styles.iconSubscribe}>
+    <RiRow
+      className={styles.container}
+      align="center"
+      justify="between"
+      gap="s"
+    >
+      <RiFlexItem>
+        <RiRow align="center">
+          <RiFlexItem className={styles.iconSubscribe}>
             <RiIcon
               className={styles.iconUser}
               type={isSubscribed ? subscribedIcon : notSubscribedIcon}
             />
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <Text color="subdued" size="s" data-testid="subscribe-status-text">
               You are {!isSubscribed && 'not'} subscribed
             </Text>
-          </FlexItem>
+          </RiFlexItem>
           {isSubscribed && (
-            <FlexItem style={{ marginLeft: 12 }}>
+            <RiFlexItem style={{ marginLeft: 12 }}>
               <PatternsInfo channels={channels} />
-            </FlexItem>
+            </RiFlexItem>
           )}
           {displayMessages && (
-            <FlexItem style={{ marginLeft: 12 }}>
+            <RiFlexItem style={{ marginLeft: 12 }}>
               <Text color="subdued" size="s" data-testid="messages-count">
                 Messages: {count}
               </Text>
-            </FlexItem>
+            </RiFlexItem>
           )}
-        </Row>
-      </FlexItem>
-      <FlexItem>
-        <Row align="center">
-          <FlexItem className={styles.channels}>
+        </RiRow>
+      </RiFlexItem>
+      <RiFlexItem>
+        <RiRow align="center">
+          <RiFlexItem className={styles.channels}>
             <RiFormField additionalText={<ClickableAppendInfo />}>
               <RiTextInput
                 value={channels}
@@ -114,8 +119,8 @@ const SubscriptionPanel = () => {
                 data-testid="channels-input"
               />
             </RiFormField>
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <Button
               variant={isSubscribed ? 'secondary-ghost' : 'primary'}
               size="s"
@@ -126,9 +131,9 @@ const SubscriptionPanel = () => {
             >
               Subscribe
             </Button>
-          </FlexItem>
+          </RiFlexItem>
           {!!messages.length && (
-            <FlexItem style={{ marginLeft: 8 }}>
+            <RiFlexItem style={{ marginLeft: 8 }}>
               <RiTooltip
                 content="Clear Messages"
                 anchorClassName={cx('inline-flex')}
@@ -140,11 +145,11 @@ const SubscriptionPanel = () => {
                   data-testid="clear-pubsub-btn"
                 />
               </RiTooltip>
-            </FlexItem>
+            </RiFlexItem>
           )}
-        </Row>
-      </FlexItem>
-    </Row>
+        </RiRow>
+      </RiFlexItem>
+    </RiRow>
   )
 }
 

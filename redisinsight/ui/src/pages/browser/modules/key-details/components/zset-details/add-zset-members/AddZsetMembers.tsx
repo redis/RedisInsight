@@ -19,7 +19,7 @@ import {
 import AddMultipleFields from 'uiSrc/pages/browser/components/add-multiple-fields'
 import { ISetMemberState } from 'uiSrc/pages/browser/components/add-key/AddKeySet/interfaces'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import {
   RiPrimaryButton,
   RiSecondaryButton,
@@ -184,8 +184,8 @@ const AddZsetMembers = (props: Props) => {
           onClickAdd={addMember}
         >
           {(item, index) => (
-            <Row align="center">
-              <FlexItem grow>
+            <RiRow align="center">
+              <RiFlexItem grow>
                 <RiFormField>
                   <RiTextInput
                     name={`member-${item.id}`}
@@ -202,8 +202,8 @@ const AddZsetMembers = (props: Props) => {
                     data-testid="member-name"
                   />
                 </RiFormField>
-              </FlexItem>
-              <FlexItem grow>
+              </RiFlexItem>
+              <RiFlexItem grow>
                 <RiFormField>
                   <RiTextInput
                     name={`score-${item.id}`}
@@ -221,14 +221,14 @@ const AddZsetMembers = (props: Props) => {
                     data-testid="member-score"
                   />
                 </RiFormField>
-              </FlexItem>
-            </Row>
+              </RiFlexItem>
+            </RiRow>
           )}
         </AddMultipleFields>
       </div>
       <>
-        <Row justify="end" gap="l" style={{ padding: 18 }}>
-          <FlexItem>
+        <RiRow justify="end" gap="l" style={{ padding: 18 }}>
+          <RiFlexItem>
             <div>
               <RiSecondaryButton
                 onClick={() => closePanel(true)}
@@ -237,8 +237,8 @@ const AddZsetMembers = (props: Props) => {
                 Cancel
               </RiSecondaryButton>
             </div>
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <div>
               <RiPrimaryButton
                 disabled={loading || !isFormValid}
@@ -249,8 +249,8 @@ const AddZsetMembers = (props: Props) => {
                 Save
               </RiPrimaryButton>
             </div>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </>
     </>
   )

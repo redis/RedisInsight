@@ -12,7 +12,7 @@ import {
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { Nullable } from 'uiSrc/utils'
 
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiCol, RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { Text } from 'uiSrc/components/base/text'
 import { CancelSlimIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { RiIconButton, RiPrimaryButton } from 'uiSrc/components/base/forms'
@@ -118,13 +118,13 @@ const VoteOption = (props: Props) => {
         className={styles.popoverWrapper}
         data-testid={`${name}-${voteOption}-popover`}
       >
-        <Col align="end">
-          <FlexItem>
-            <Row>
-              <FlexItem>
+        <RiCol align="end">
+          <RiFlexItem>
+            <RiRow>
+              <RiFlexItem>
                 <RiIcon type="PetardIcon" className={styles.petardIcon} />
-              </FlexItem>
-              <FlexItem grow>
+              </RiFlexItem>
+              <RiFlexItem grow>
                 <div>
                   <Text className={styles.text} data-testid="common-text">
                     Thank you for the feedback.
@@ -133,8 +133,8 @@ const VoteOption = (props: Props) => {
                     {getVotedText(voteOption)}
                   </Text>
                 </div>
-              </FlexItem>
-              <FlexItem>
+              </RiFlexItem>
+              <RiFlexItem>
                 <RiIconButton
                   icon={CancelSlimIcon}
                   id="close-voting-popover"
@@ -143,10 +143,10 @@ const VoteOption = (props: Props) => {
                   className={styles.closeBtn}
                   onClick={() => setPopover('')}
                 />
-              </FlexItem>
-            </Row>
-          </FlexItem>
-          <FlexItem grow>
+              </RiFlexItem>
+            </RiRow>
+          </RiFlexItem>
+          <RiFlexItem grow>
             <RiPrimaryButton
               aria-label="recommendation feedback"
               data-testid="recommendation-feedback-btn"
@@ -169,8 +169,8 @@ const VoteOption = (props: Props) => {
                 To Github
               </Link>
             </RiPrimaryButton>
-          </FlexItem>
-        </Col>
+          </RiFlexItem>
+        </RiCol>
       </div>
     </RiPopover>
   )

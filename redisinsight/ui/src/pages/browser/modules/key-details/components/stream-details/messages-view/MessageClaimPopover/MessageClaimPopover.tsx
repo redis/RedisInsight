@@ -16,8 +16,8 @@ import {
   ClaimTimeOptions,
 } from 'uiSrc/utils/streamUtils'
 import { Text } from 'uiSrc/components/base/text'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import {
   RiPrimaryButton,
   RiSecondaryButton,
@@ -25,7 +25,7 @@ import {
   RiCheckbox,
   RiSelect,
 } from 'uiSrc/components/base/forms'
-import { NumericInput, RiSwitchInput } from 'uiSrc/components/base/inputs'
+import { RiNumericInput, RiSwitchInput } from 'uiSrc/components/base/inputs'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import {
   ClaimPendingEntryDto,
@@ -207,8 +207,8 @@ const MessageClaimPopover = (props: Props) => {
       button={consumerOptions.length < 1 ? buttonTooltip : button}
     >
       <form>
-        <Row responsive gap="m">
-          <FlexItem>
+        <RiRow responsive gap="m">
+          <RiFlexItem>
             <RiFormField label="Consumer">
               <RiSelect
                 value={formik.values.consumerName}
@@ -222,11 +222,11 @@ const MessageClaimPopover = (props: Props) => {
                 data-testid="destination-select"
               />
             </RiFormField>
-          </FlexItem>
-          <FlexItem grow className={styles.relative}>
+          </RiFlexItem>
+          <RiFlexItem grow className={styles.relative}>
             <RiFormField label="Min Idle Time">
               <div className={styles.timeWrapper}>
-                <NumericInput
+                <RiNumericInput
                   autoValidate
                   min={0}
                   name="minIdleTime"
@@ -242,21 +242,21 @@ const MessageClaimPopover = (props: Props) => {
                 <div className={styles.timeUnit}>msec</div>
               </div>
             </RiFormField>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
         {isOptionalShow && (
           <>
-            <Spacer size="m" />
-            <Row
+            <RiSpacer size="m" />
+            <RiRow
               className={styles.container}
               align="center"
               justify="between"
               gap="m"
             >
-              <FlexItem grow className={styles.idle}>
+              <RiFlexItem grow className={styles.idle}>
                 <RiFormField label="Idle Time">
                   <div className={styles.timeWrapper}>
-                    <NumericInput
+                    <RiNumericInput
                       autoValidate
                       min={0}
                       name="timeCount"
@@ -272,8 +272,8 @@ const MessageClaimPopover = (props: Props) => {
                     <div className={styles.timeUnit}>msec</div>
                   </div>
                 </RiFormField>
-              </FlexItem>
-              <FlexItem className={styles.timeSelect}>
+              </RiFlexItem>
+              <RiFlexItem className={styles.timeSelect}>
                 <RiFormField label="Time">
                   <RiSelect
                     value={formik.values.timeOption}
@@ -284,10 +284,10 @@ const MessageClaimPopover = (props: Props) => {
                     data-testid="time-option-select"
                   />
                 </RiFormField>
-              </FlexItem>
-              <FlexItem>
+              </RiFlexItem>
+              <RiFlexItem>
                 <RiFormField label="Retry Count">
-                  <NumericInput
+                  <RiNumericInput
                     autoValidate
                     min={0}
                     name="retryCount"
@@ -301,8 +301,8 @@ const MessageClaimPopover = (props: Props) => {
                     }
                   />
                 </RiFormField>
-              </FlexItem>
-              <FlexItem grow={2}>
+              </RiFlexItem>
+              <RiFlexItem grow={2}>
                 <RiFormField className={styles.hiddenLabel} label="Force">
                   <RiCheckbox
                     id="force_claim"
@@ -315,24 +315,24 @@ const MessageClaimPopover = (props: Props) => {
                     data-testid="force-claim-checkbox"
                   />
                 </RiFormField>
-              </FlexItem>
-            </Row>
+              </RiFlexItem>
+            </RiRow>
           </>
         )}
-        <Row
+        <RiRow
           responsive
           className={styles.footer}
           justify="between"
           align="center"
         >
-          <FlexItem>
+          <RiFlexItem>
             <RiSwitchInput
               title="Optional Parameters"
               checked={isOptionalShow}
               onCheckedChange={setIsOptionalShow}
               data-testid="optional-parameters-switcher"
             />
-          </FlexItem>
+          </RiFlexItem>
           <div>
             <RiSecondaryButton
               className={styles.footerBtn}
@@ -349,7 +349,7 @@ const MessageClaimPopover = (props: Props) => {
               Claim
             </RiPrimaryButton>
           </div>
-        </Row>
+        </RiRow>
       </form>
     </RiPopover>
   )

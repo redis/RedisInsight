@@ -13,7 +13,7 @@ import { BulkActionsIcon } from 'uiSrc/components/base/icons'
 import { FeatureFlagComponent } from 'uiSrc/components'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { keysSelector } from 'uiSrc/slices/browser/keys'
-import { Row } from 'uiSrc/components/base/layout/flex'
+import { RiRow } from 'uiSrc/components/base/layout'
 
 export interface Props {
   handleAddKeyPanel: (value: boolean) => void
@@ -63,7 +63,7 @@ const Actions = ({ handleAddKeyPanel, handleBulkActionsPanel }: Props) => {
     </RiSecondaryButton>
   )
   return (
-    <Row
+    <RiRow
       grow={false}
       gap="m"
       style={{
@@ -75,7 +75,7 @@ const Actions = ({ handleAddKeyPanel, handleBulkActionsPanel }: Props) => {
         {BulkActionsBtn}
       </FeatureFlagComponent>
       {AddKeyBtn}
-    </Row>
+    </RiRow>
   )
 }
 

@@ -9,8 +9,8 @@ import { AutoRefresh } from 'uiSrc/components'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { Nullable } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { EraserIcon, SettingsIcon, RiIcon } from 'uiSrc/components/base/icons'
 import {
   RiDestructiveButton,
@@ -132,8 +132,8 @@ const Actions = (props: Props) => {
   )
 
   return (
-    <Row className={styles.actions} gap="s" align="center">
-      <FlexItem grow={5} style={{ alignItems: 'flex-end' }}>
+    <RiRow className={styles.actions} gap="s" align="center">
+      <RiFlexItem grow={5} style={{ alignItems: 'flex-end' }}>
         <AutoRefresh
           postfix="slowlog"
           loading={loading}
@@ -145,8 +145,8 @@ const Actions = (props: Props) => {
           onChangeAutoRefreshRate={handleChangeAutoRefreshRate}
           testid="slowlog"
         />
-      </FlexItem>
-      <FlexItem grow>
+      </RiFlexItem>
+      <RiFlexItem grow>
         <RiPopover
           ownFocus
           anchorPosition="downRight"
@@ -171,9 +171,9 @@ const Actions = (props: Props) => {
             onRefresh={onRefresh}
           />
         </RiPopover>
-      </FlexItem>
+      </RiFlexItem>
       {!isEmptySlowLog && (
-        <FlexItem grow>
+        <RiFlexItem grow>
           <RiPopover
             anchorPosition="leftCenter"
             ownFocus
@@ -197,9 +197,9 @@ const Actions = (props: Props) => {
           >
             {ToolTipContent}
           </RiPopover>
-        </FlexItem>
+        </RiFlexItem>
       )}
-      <FlexItem grow>
+      <RiFlexItem grow>
         <RiTooltip
           title="Slow Log"
           position="bottom"
@@ -208,7 +208,7 @@ const Actions = (props: Props) => {
             <span data-testid="slowlog-tooltip-text">
               Slow Log is a list of slow operations for your Redis instance.
               These can be used to troubleshoot performance issues.
-              <Spacer size="xs" />
+              <RiSpacer size="xs" />
               Each entry in the list displays the command, duration and
               timestamp. Any transaction that exceeds{' '}
               <b>slowlog-log-slower-than</b> {durationUnit} are recorded up to a
@@ -224,8 +224,8 @@ const Actions = (props: Props) => {
             data-testid="slow-log-tooltip-icon"
           />
         </RiTooltip>
-      </FlexItem>
-    </Row>
+      </RiFlexItem>
+    </RiRow>
   )
 }
 

@@ -5,7 +5,7 @@ import AutoSizer from 'react-virtualized-auto-sizer'
 import { IMonitorDataPayload } from 'uiSrc/slices/interfaces'
 
 import { RiTooltip } from 'uiSrc/components'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { PlayFilledIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { ColorText } from 'uiSrc/components/base/text'
@@ -54,8 +54,8 @@ const Monitor = (props: Props) => {
           />
         </RiTooltip>
         <div className={styles.startTitle}>Start Profiler</div>
-        <Row style={{ flexGrow: 0 }}>
-          <FlexItem>
+        <RiRow style={{ flexGrow: 0 }}>
+          <RiFlexItem>
             <RiIcon
               className={cx(styles.iconWarning, 'warning--light')}
               type="ToastDangerIcon"
@@ -64,8 +64,8 @@ const Monitor = (props: Props) => {
               aria-label="alert icon"
               style={{ paddingTop: 2 }}
             />
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <ColorText
               color="warning"
               className="warning--light"
@@ -75,8 +75,8 @@ const Monitor = (props: Props) => {
               Running Profiler will decrease throughput, avoid running it in
               production databases.
             </ColorText>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </div>
       <div className={styles.saveLogContainer} data-testid="save-log-container">
         <RiTooltip
@@ -99,16 +99,16 @@ const Monitor = (props: Props) => {
   const MonitorError = () => (
     <div className={styles.startContainer} data-testid="monitor-error">
       <div className={cx(styles.startContent, styles.startContentError)}>
-        <Row>
-          <FlexItem>
+        <RiRow>
+          <RiFlexItem>
             <RiIcon
               type="BannedIcon"
               size="m"
               color="danger"
               aria-label="no permissions icon"
             />
-          </FlexItem>
-          <FlexItem grow>
+          </RiFlexItem>
+          <RiFlexItem grow>
             <ColorText
               color="danger"
               style={{ paddingLeft: 4 }}
@@ -116,8 +116,8 @@ const Monitor = (props: Props) => {
             >
               {error}
             </ColorText>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </div>
     </div>
   )

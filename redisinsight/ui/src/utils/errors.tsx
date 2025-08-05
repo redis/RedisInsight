@@ -9,7 +9,7 @@ import {
   UTM_CAMPAINGS,
   UTM_MEDIUMS,
 } from 'uiSrc/constants/links'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { getUtmExternalLink } from './links'
 
 export const getRdiValidationMessage = (
@@ -75,9 +75,9 @@ export const parseCustomError = (
         <>
           Authorization server encountered a misconfiguration error and was
           unable to complete your request.
-          <Spacer size="xs" />
+          <RiSpacer size="xs" />
           Try again later.
-          <Spacer size="s" />
+          <RiSpacer size="s" />
           If the issue persists,{' '}
           <a
             href={EXTERNAL_LINKS.githubIssues}
@@ -94,7 +94,7 @@ export const parseCustomError = (
       message = (
         <>
           Unknown authorization request.
-          <Spacer size="s" />
+          <RiSpacer size="s" />
           If the issue persists,{' '}
           <a
             href={EXTERNAL_LINKS.githubIssues}
@@ -111,7 +111,7 @@ export const parseCustomError = (
       message = (
         <>
           An unexpected error occurred.
-          <Spacer size="s" />
+          <RiSpacer size="s" />
           If the issue persists,{' '}
           <a
             href={EXTERNAL_LINKS.githubIssues}
@@ -132,9 +132,9 @@ export const parseCustomError = (
       message = (
         <>
           Your request resulted in an error.
-          <Spacer size="xs" />
+          <RiSpacer size="xs" />
           Try again later.
-          <Spacer size="s" />
+          <RiSpacer size="s" />
           If the issue persists,{' '}
           <a
             href={EXTERNAL_LINKS.githubIssues}
@@ -157,7 +157,7 @@ export const parseCustomError = (
       message = (
         <>
           Try restarting Redis Insight.
-          <Spacer size="s" />
+          <RiSpacer size="s" />
           If the issue persists,{' '}
           <a
             href={EXTERNAL_LINKS.githubIssues}
@@ -175,9 +175,9 @@ export const parseCustomError = (
       message = (
         <>
           Resource requested could not be found.
-          <Spacer size="xs" />
+          <RiSpacer size="xs" />
           Try again later.
-          <Spacer size="s" />
+          <RiSpacer size="s" />
           If the issue persists,{' '}
           <a
             href={EXTERNAL_LINKS.githubIssues}
@@ -197,7 +197,7 @@ export const parseCustomError = (
       message = (
         <>
           Sign in again to continue working with Redis Cloud.
-          <Spacer size="s" />
+          <RiSpacer size="s" />
           If the issue persists,{' '}
           <a
             href={EXTERNAL_LINKS.githubIssues}
@@ -215,9 +215,9 @@ export const parseCustomError = (
       message = (
         <>
           Your Redis Cloud authorization failed.
-          <Spacer size="xs" />
+          <RiSpacer size="xs" />
           Remove the invalid API key from Redis Insight and try again.
-          <Spacer size="s" />
+          <RiSpacer size="s" />
           Open the Settings page to manage Redis Cloud API keys.
         </>
       )
@@ -230,7 +230,7 @@ export const parseCustomError = (
       message = (
         <>
           You already have a free trial Redis Cloud database running.
-          <Spacer size="s" />
+          <RiSpacer size="s" />
           Check out your
           <a
             href={getUtmExternalLink(EXTERNAL_LINKS.cloudConsole, {

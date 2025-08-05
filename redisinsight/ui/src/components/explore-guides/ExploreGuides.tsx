@@ -9,7 +9,7 @@ import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 
 import { openTutorialByPath } from 'uiSrc/slices/panels/sidePanels'
 import { findTutorialPath } from 'uiSrc/utils'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons'
@@ -47,7 +47,7 @@ const ExploreGuides = () => {
       <Text>
         Explore the amazing world of Redis Stack with our interactive guides
       </Text>
-      <Spacer size="xl" />
+      <RiSpacer size="xl" />
       {!!data.length && (
         <div className={styles.guides}>
           {data.map(({ title, tutorialId, icon }) => (

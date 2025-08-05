@@ -6,7 +6,7 @@ import { SECURITY_FIELD } from 'uiSrc/constants'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import { RiPasswordInput, RiTextInput } from 'uiSrc/components/base/inputs'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiFormField } from 'uiSrc/components/base/forms'
 import styles from '../../styles.module.scss'
 
@@ -36,8 +36,8 @@ const SentinelMasterDatabase = (props: Props) => {
           </span>
         </Text>
       )}
-      <Row gap="m" responsive className={flexGroupClassName}>
-        <FlexItem grow className={flexItemClassName}>
+      <RiRow gap="m" responsive className={flexGroupClassName}>
+        <RiFlexItem grow className={flexItemClassName}>
           <RiFormField label="Username">
             <RiTextInput
               name="sentinelMasterUsername"
@@ -51,9 +51,9 @@ const SentinelMasterDatabase = (props: Props) => {
               data-testid="sentinel-mater-username"
             />
           </RiFormField>
-        </FlexItem>
+        </RiFlexItem>
 
-        <FlexItem grow className={flexItemClassName}>
+        <RiFlexItem grow className={flexItemClassName}>
           <RiFormField label="Password">
             <RiPasswordInput
               type="password"
@@ -76,8 +76,8 @@ const SentinelMasterDatabase = (props: Props) => {
               autoComplete="new-password"
             />
           </RiFormField>
-        </FlexItem>
-      </Row>
+        </RiFlexItem>
+      </RiRow>
     </>
   )
 }

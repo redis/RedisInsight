@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { RiTable, ColumnDefinition } from 'uiSrc/components/base/layout'
 
 export interface Props {
   query: string
@@ -29,7 +29,7 @@ const TableView = React.memo(({ result, query }: Props) => {
 
   return (
     <div className={cx('queryResultsContainer', 'container')}>
-      <Table data={result ?? []} columns={columns} paginationEnabled />
+      <RiTable data={result ?? []} columns={columns} paginationEnabled />
       {!result?.length && <span>{noResultMessage}</span>}
     </div>
   )

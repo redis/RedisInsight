@@ -5,9 +5,9 @@ import {
   PageProps,
   restrictWidthSize,
   StyledPage,
-} from 'uiSrc/components/base/layout/page/page.styles'
+} from './page.styles'
 
-const Page = ({
+export const RiPage = ({
   className,
   restrictWidth = false,
   paddingSize = 'm',
@@ -26,5 +26,3 @@ const Page = ({
     style={restrictWidthSize(style, restrictWidth)}
   />
 )
-
-export default Page

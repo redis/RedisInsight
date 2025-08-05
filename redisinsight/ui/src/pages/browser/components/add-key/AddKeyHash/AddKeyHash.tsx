@@ -14,7 +14,7 @@ import { CommandsVersions } from 'uiSrc/constants/commandsVersions'
 import { connectedInstanceOverviewSelector } from 'uiSrc/slices/instances/instances'
 import { FeatureFlags } from 'uiSrc/constants'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiFormField } from 'uiSrc/components/base/forms'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import { RiTextInput } from 'uiSrc/components/base/inputs'
@@ -161,8 +161,8 @@ const AddKeyHash = (props: Props) => {
         onClickAdd={addField}
       >
         {(item, index) => (
-          <Row align="center" gap="m">
-            <FlexItem grow={2}>
+          <RiRow align="center" gap="m">
+            <RiFlexItem grow={2}>
               <RiFormField>
                 <RiTextInput
                   name={`fieldName-${item.id}`}
@@ -177,8 +177,8 @@ const AddKeyHash = (props: Props) => {
                   data-testid="field-name"
                 />
               </RiFormField>
-            </FlexItem>
-            <FlexItem grow={2}>
+            </RiFlexItem>
+            <RiFlexItem grow={2}>
               <RiFormField>
                 <RiTextInput
                   name={`fieldValue-${item.id}`}
@@ -192,9 +192,9 @@ const AddKeyHash = (props: Props) => {
                   data-testid="field-value"
                 />
               </RiFormField>
-            </FlexItem>
+            </RiFlexItem>
             {isTTLAvailable && (
-              <FlexItem grow={1}>
+              <RiFlexItem grow={1}>
                 <RiFormField>
                   <RiTextInput
                     name={`fieldTTL-${item.id}`}
@@ -212,9 +212,9 @@ const AddKeyHash = (props: Props) => {
                     data-testid="hash-ttl"
                   />
                 </RiFormField>
-              </FlexItem>
+              </RiFlexItem>
             )}
-          </Row>
+          </RiRow>
         )}
       </AddMultipleFields>
 

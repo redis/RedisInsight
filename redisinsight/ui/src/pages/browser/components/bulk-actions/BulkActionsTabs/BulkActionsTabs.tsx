@@ -14,7 +14,7 @@ import {
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
 import { keysSelector } from 'uiSrc/slices/browser/keys'
-import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
+import { RiTabs, TabInfo } from 'uiSrc/components/base/layout'
 
 import { Text } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
@@ -79,7 +79,7 @@ const BulkActionsTabs = (props: Props) => {
   )
 
   return (
-    <Tabs
+    <RiTabs
       tabs={tabs}
       value={type ?? undefined}
       onChange={onSelectedTabChanged}

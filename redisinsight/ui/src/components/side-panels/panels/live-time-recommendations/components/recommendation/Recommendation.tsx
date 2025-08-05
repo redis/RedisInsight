@@ -34,8 +34,7 @@ import {
 } from 'uiSrc/components/base/icons'
 
 import { openTutorialByPath } from 'uiSrc/slices/panels/sidePanels'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Card } from 'uiSrc/components/base/layout'
+import { RiFlexItem, RiRow, RiCard } from 'uiSrc/components/base/layout'
 import { RiIconButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
 import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
@@ -66,7 +65,7 @@ const RecommendationTitle = ({
 }) => {
   const { theme } = useContext(ThemeContext)
   return (
-    <Row
+    <RiRow
       align="center"
       justify="start"
       gap="m"
@@ -76,7 +75,7 @@ const RecommendationTitle = ({
       }}
     >
       {redisStack && (
-        <FlexItem>
+        <RiFlexItem>
           <Link
             target="_blank"
             href={EXTERNAL_LINKS.redisStack}
@@ -99,10 +98,10 @@ const RecommendationTitle = ({
               />
             </RiTooltip>
           </Link>
-        </FlexItem>
+        </RiFlexItem>
       )}
-      <FlexItem className="truncateText">{title}</FlexItem>
-    </Row>
+      <RiFlexItem className="truncateText">{title}</RiFlexItem>
+    </RiRow>
   )
 }
 
@@ -238,12 +237,12 @@ const Recommendation = ({
   )
 
   const renderButtonContent = (
-    <Row className={styles.fullWidth} align="center" justify="between">
-      <Row className={styles.fullWidth} align="center">
-        <FlexItem grow className="truncateText">
+    <RiRow className={styles.fullWidth} align="center" justify="between">
+      <RiRow className={styles.fullWidth} align="center">
+        <RiFlexItem grow className="truncateText">
           {title}
-        </FlexItem>
-        <FlexItem>
+        </RiFlexItem>
+        <RiFlexItem>
           <RiTooltip
             title="Snooze tip"
             content="This tip will be removed from the list and displayed again when relevant."
@@ -258,8 +257,8 @@ const Recommendation = ({
               data-testid={`${name}-delete-btn`}
             />
           </RiTooltip>
-        </FlexItem>
-        <FlexItem>
+        </RiFlexItem>
+        <RiFlexItem>
           <RiTooltip
             title={`${hide ? 'Show' : 'Hide'} tip`}
             content={`${
@@ -278,9 +277,9 @@ const Recommendation = ({
               data-testid={`toggle-hide-${name}-btn`}
             />
           </RiTooltip>
-        </FlexItem>
-      </Row>
-    </Row>
+        </RiFlexItem>
+      </RiRow>
+    </RiRow>
   )
 
   if (!(name in recommendationsContent)) {
@@ -306,9 +305,9 @@ const Recommendation = ({
         data-testid={`${name}-accordion`}
         aria-label={`${name}-accordion`}
       >
-        <Card className={styles.accordionContent} color="subdued">
+        <RiCard className={styles.accordionContent} color="subdued">
           {recommendationContent()}
-        </Card>
+        </RiCard>
       </RiAccordion>
     </div>
   )

@@ -4,7 +4,7 @@ import styles from 'uiSrc/components/database-overview/styles.module.scss'
 import { IMetric } from 'uiSrc/components/database-overview/components/OverviewMetrics/OverviewMetrics'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 
 export interface OverviewItemProps {
   children: ReactNode
@@ -18,7 +18,7 @@ export const OverviewItem = ({
   id,
   style,
 }: OverviewItemProps) => (
-  <FlexItem
+  <RiFlexItem
     className={cx(styles.overviewItem, className)}
     key={id}
     data-test-subj={id}
@@ -26,7 +26,7 @@ export const OverviewItem = ({
     style={style}
   >
     {children}
-  </FlexItem>
+  </RiFlexItem>
 )
 
 const MetricItem = (
@@ -43,14 +43,16 @@ const MetricItem = (
         className={styles.tooltip}
         content={tooltipContent}
       >
-        <Row gap="none" responsive={false} align="center" justify="center">
+        <RiRow gap="none" responsive={false} align="center" justify="center">
           {icon && (
-            <FlexItem className={styles.icon}>
+            <RiFlexItem className={styles.icon}>
               <RiIcon size="m" type={icon} className={styles.icon} />
-            </FlexItem>
+            </RiFlexItem>
           )}
-          <FlexItem className={styles.overviewItemContent}>{content}</FlexItem>
-        </Row>
+          <RiFlexItem className={styles.overviewItemContent}>
+            {content}
+          </RiFlexItem>
+        </RiRow>
       </RiTooltip>
     </OverviewItem>
   )

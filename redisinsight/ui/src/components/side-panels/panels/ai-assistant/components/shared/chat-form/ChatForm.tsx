@@ -4,7 +4,7 @@ import cx from 'classnames'
 import { isModifiedEvent } from 'uiSrc/services'
 
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { SendIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
@@ -100,7 +100,7 @@ const ChatForm = (props: Props) => {
                 {validation.title && (
                   <>
                     <Title size="XS">{validation.title}</Title>
-                    <Spacer size="s" />
+                    <RiSpacer size="s" />
                   </>
                 )}
                 {validation.content && (
@@ -150,7 +150,7 @@ const ChatForm = (props: Props) => {
           >
             <>
               {agreements}
-              <Spacer size="m" />
+              <RiSpacer size="m" />
               <RiPrimaryButton
                 size="s"
                 className={styles.agreementsAccept}

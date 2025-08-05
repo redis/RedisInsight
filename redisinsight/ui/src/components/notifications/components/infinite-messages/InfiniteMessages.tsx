@@ -16,8 +16,8 @@ import {
   UTM_CAMPAINGS,
   UTM_MEDIUMS,
 } from 'uiSrc/constants/links'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
@@ -46,17 +46,17 @@ export const INFINITE_MESSAGES = {
     id: InfiniteMessagesIds.oAuthProgress,
     Inner: (
       <div role="presentation" data-testid="authenticating-notification">
-        <Row justify="end">
-          <FlexItem>
+        <RiRow justify="end">
+          <RiFlexItem>
             <RiLoader className={cx('infiniteMessage__icon', styles.loading)} />
-          </FlexItem>
-          <FlexItem grow>
+          </RiFlexItem>
+          <RiFlexItem grow>
             <Title className="infiniteMessage__title">Authenticating…</Title>
             <Text size="xs">
               This may take several seconds, but it is totally worth it!
             </Text>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </div>
     ),
   }),
@@ -64,11 +64,11 @@ export const INFINITE_MESSAGES = {
     id: InfiniteMessagesIds.oAuthProgress,
     Inner: (
       <div role="presentation" data-testid="pending-create-db-notification">
-        <Row justify="end">
-          <FlexItem grow={false}>
+        <RiRow justify="end">
+          <RiFlexItem grow={false}>
             <RiLoader className={cx('infiniteMessage__icon', styles.loading)} />
-          </FlexItem>
-          <FlexItem grow>
+          </RiFlexItem>
+          <RiFlexItem grow>
             <Title className="infiniteMessage__title">
               <span>
                 {(step === CloudJobStep.Credentials || !step) &&
@@ -84,13 +84,13 @@ export const INFINITE_MESSAGES = {
             <Text size="xs">
               This may take several minutes, but it is totally worth it!
             </Text>
-            <Spacer size="m" />
+            <RiSpacer size="m" />
             <Text size="xs">
               You can continue working in Redis Insight, and we will notify you
               once done.
             </Text>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </div>
     ),
   }),
@@ -121,59 +121,59 @@ export const INFINITE_MESSAGES = {
           }}
           data-testid="success-create-db-notification"
         >
-          <Row justify="end">
-            <FlexItem className="infiniteMessage__icon">
+          <RiRow justify="end">
+            <RiFlexItem className="infiniteMessage__icon">
               <RiIcon type="ChampagneIcon" size="original" />
-            </FlexItem>
-            <FlexItem grow>
+            </RiFlexItem>
+            <RiFlexItem grow>
               <Title className="infiniteMessage__title">Congratulations!</Title>
               <Text size="xs">
                 {text}
-                <Spacer size="s" />
+                <RiSpacer size="s" />
                 <b>Notice:</b> the database will be deleted after 15 days of
                 inactivity.
               </Text>
               {!!details && (
                 <>
-                  <Spacer size="m" />
+                  <RiSpacer size="m" />
                   <Divider variant="fullWidth" />
-                  <Spacer size="m" />
-                  <Row className={styles.detailsRow} justify="between">
-                    <FlexItem>
+                  <RiSpacer size="m" />
+                  <RiRow className={styles.detailsRow} justify="between">
+                    <RiFlexItem>
                       <Text size="xs">Plan</Text>
-                    </FlexItem>
-                    <FlexItem data-testid="notification-details-plan">
+                    </RiFlexItem>
+                    <RiFlexItem data-testid="notification-details-plan">
                       <Text size="xs">Free</Text>
-                    </FlexItem>
-                  </Row>
-                  <Row className={styles.detailsRow} justify="between">
-                    <FlexItem>
+                    </RiFlexItem>
+                  </RiRow>
+                  <RiRow className={styles.detailsRow} justify="between">
+                    <RiFlexItem>
                       <Text size="xs">Cloud Vendor</Text>
-                    </FlexItem>
-                    <FlexItem
+                    </RiFlexItem>
+                    <RiFlexItem
                       className={styles.vendorLabel}
                       data-testid="notification-details-vendor"
                     >
                       {!!vendor?.icon && <RiIcon type={vendor?.icon} />}
                       <Text size="xs">{vendor?.label}</Text>
-                    </FlexItem>
-                  </Row>
-                  <Row className={styles.detailsRow} justify="between">
-                    <FlexItem>
+                    </RiFlexItem>
+                  </RiRow>
+                  <RiRow className={styles.detailsRow} justify="between">
+                    <RiFlexItem>
                       <Text size="xs">Region</Text>
-                    </FlexItem>
-                    <FlexItem data-testid="notification-details-region">
+                    </RiFlexItem>
+                    <RiFlexItem data-testid="notification-details-region">
                       <Text size="xs">{details.region}</Text>
-                    </FlexItem>
-                  </Row>
+                    </RiFlexItem>
+                  </RiRow>
                 </>
               )}
-              <Spacer size="m" />
-              <Row justify="between" align="center">
-                <FlexItem>
+              <RiSpacer size="m" />
+              <RiRow justify="between" align="center">
+                <RiFlexItem>
                   <ExternalLink href={MANAGE_DB_LINK}>Manage DB</ExternalLink>
-                </FlexItem>
-                <FlexItem>
+                </RiFlexItem>
+                <RiFlexItem>
                   <RiPrimaryButton
                     size="s"
                     onClick={() => onSuccess()}
@@ -181,10 +181,10 @@ export const INFINITE_MESSAGES = {
                   >
                     Connect
                   </RiPrimaryButton>
-                </FlexItem>
-              </Row>
-            </FlexItem>
-          </Row>
+                </RiFlexItem>
+              </RiRow>
+            </RiFlexItem>
+          </RiRow>
         </div>
       ),
     }
@@ -208,9 +208,9 @@ export const INFINITE_MESSAGES = {
         <Text size="xs">
           Do you want to import your existing database into Redis Insight?
         </Text>
-        <Spacer size="m" />
-        <Row justify="between">
-          <FlexItem>
+        <RiSpacer size="m" />
+        <RiRow justify="between">
+          <RiFlexItem>
             <RiPrimaryButton
               size="s"
               onClick={() => onSuccess?.()}
@@ -218,8 +218,8 @@ export const INFINITE_MESSAGES = {
             >
               Import
             </RiPrimaryButton>
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <RiSecondaryButton
               size="s"
               className="infiniteMessage__btn"
@@ -228,8 +228,8 @@ export const INFINITE_MESSAGES = {
             >
               Cancel
             </RiSecondaryButton>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </div>
     ),
   }),
@@ -252,7 +252,7 @@ export const INFINITE_MESSAGES = {
         <Text size="xs">
           Adding your Redis Cloud database to Redis Insight is disabled due to a
           setting restricting database connection management.
-          <Spacer size="m" />
+          <RiSpacer size="m" />
           Log in to{' '}
           <Link
             target="_blank"
@@ -264,9 +264,9 @@ export const INFINITE_MESSAGES = {
           </Link>{' '}
           to check your database.
         </Text>
-        <Spacer size="m" />
-        <Row justify="end">
-          <FlexItem>
+        <RiSpacer size="m" />
+        <RiRow justify="end">
+          <RiFlexItem>
             <RiPrimaryButton
               size="s"
               onClick={() => onClose?.()}
@@ -274,8 +274,8 @@ export const INFINITE_MESSAGES = {
             >
               Ok
             </RiPrimaryButton>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </div>
     ),
   }),
@@ -299,9 +299,9 @@ export const INFINITE_MESSAGES = {
           Do you want to create a free trial database in your existing
           subscription?
         </Text>
-        <Spacer size="m" />
-        <Row justify="between">
-          <FlexItem>
+        <RiSpacer size="m" />
+        <RiRow justify="between">
+          <RiFlexItem>
             <RiPrimaryButton
               size="s"
               onClick={() => onSuccess?.()}
@@ -309,8 +309,8 @@ export const INFINITE_MESSAGES = {
             >
               Create
             </RiPrimaryButton>
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <RiSecondaryButton
               size="s"
               className="infiniteMessage__btn"
@@ -319,8 +319,8 @@ export const INFINITE_MESSAGES = {
             >
               Cancel
             </RiSecondaryButton>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </div>
     ),
   }),
@@ -328,19 +328,19 @@ export const INFINITE_MESSAGES = {
     id: InfiniteMessagesIds.autoCreateDb,
     Inner: (
       <div role="presentation" data-testid="pending-create-db-notification">
-        <Row justify="end">
-          <FlexItem>
+        <RiRow justify="end">
+          <RiFlexItem>
             <RiLoader className={cx('infiniteMessage__icon', styles.loading)} />
-          </FlexItem>
-          <FlexItem grow>
+          </RiFlexItem>
+          <RiFlexItem grow>
             <Title className="infiniteMessage__title">
               Connecting to your database
             </Title>
             <Text size="xs">
               This may take several minutes, but it is totally worth it!
             </Text>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </div>
     ),
   }),
@@ -394,21 +394,21 @@ export const INFINITE_MESSAGES = {
         }}
         data-testid="success-deploy-pipeline-notification"
       >
-        <Row justify="end">
-          <FlexItem className="infiniteMessage__icon">
+        <RiRow justify="end">
+          <RiFlexItem className="infiniteMessage__icon">
             <RiIcon type="ChampagneIcon" size="original" />
-          </FlexItem>
-          <FlexItem grow>
+          </RiFlexItem>
+          <RiFlexItem grow>
             <Title className="infiniteMessage__title">Congratulations!</Title>
             <Text size="xs">
               Deployment completed successfully!
               <br />
               Check out the pipeline statistics page.
             </Text>
-            <Spacer size="m" />
+            <RiSpacer size="m" />
             {/* // TODO remove display none when statistics page will be available */}
-            <Row style={{ display: 'none' }} justify="end" align="center">
-              <FlexItem>
+            <RiRow style={{ display: 'none' }} justify="end" align="center">
+              <RiFlexItem>
                 <RiPrimaryButton
                   size="s"
                   onClick={() => {}}
@@ -416,10 +416,10 @@ export const INFINITE_MESSAGES = {
                 >
                   Statistics
                 </RiPrimaryButton>
-              </FlexItem>
-            </Row>
-          </FlexItem>
-        </Row>
+              </RiFlexItem>
+            </RiRow>
+          </RiFlexItem>
+        </RiRow>
       </div>
     ),
   }),

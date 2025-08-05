@@ -18,7 +18,7 @@ import {
 } from 'uiSrc/slices/app/context'
 import { comboBoxToArray } from 'uiSrc/utils'
 
-import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
+import { RiCol, RiFlexItem } from 'uiSrc/components/base/layout'
 import {
   RiIconButton,
   RiPrimaryButton,
@@ -144,9 +144,9 @@ const KeyTreeSettings = ({ loading }: Props) => {
         closePopover={closePopover}
         button={button}
       >
-        <Col gap="s">
-          <FlexItem grow className={styles.row} />
-          <FlexItem grow className={styles.row}>
+        <RiCol gap="s">
+          <RiFlexItem grow className={styles.row} />
+          <RiFlexItem grow className={styles.row}>
             <RiAutoTag
               layout="horizontal"
               label="Delimiter"
@@ -160,8 +160,8 @@ const KeyTreeSettings = ({ loading }: Props) => {
               className={styles.combobox}
               data-testid="delimiter-combobox"
             />
-          </FlexItem>
-          <FlexItem className={styles.row}>
+          </RiFlexItem>
+          <RiFlexItem className={styles.row}>
             <div className={styles.label}>
               <RiIcon type="DescendingIcon" className={styles.sortIcon} />
               Sort by
@@ -174,8 +174,8 @@ const KeyTreeSettings = ({ loading }: Props) => {
               onChange={(value: SortOrder) => onChangeSort(value)}
               data-testid="tree-view-sorting-select"
             />
-          </FlexItem>
-          <FlexItem className={styles.row}>
+          </RiFlexItem>
+          <RiFlexItem className={styles.row}>
             <div className={styles.footer}>
               <RiSecondaryButton
                 size="s"
@@ -192,8 +192,8 @@ const KeyTreeSettings = ({ loading }: Props) => {
                 Apply
               </RiPrimaryButton>
             </div>
-          </FlexItem>
-        </Col>
+          </RiFlexItem>
+        </RiCol>
       </RiPopover>
     </div>
   )

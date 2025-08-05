@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { ColorText } from 'uiSrc/components/base/text'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiSecondaryButton } from 'uiSrc/components/base/forms'
 
 export interface Props {

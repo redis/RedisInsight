@@ -43,7 +43,7 @@ import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import { FeatureFlags } from 'uiSrc/constants'
 import { isAnyFeatureEnabled } from 'uiSrc/utils/features'
 
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import styles from './styles.module.scss'
 
 const sendTelemetry = (databaseId: string, step: string, action: string) =>
@@ -86,7 +86,7 @@ const ONBOARDING_FEATURES = {
             This is Browser, where you can see the list of keys in the plain
             List or Tree view, filter them, perform bulk operations, and view
             the values.
-            <Spacer size="xs" />
+            <RiSpacer size="xs" />
             Add a key to your database using a dedicated form.
           </>
         ),
@@ -245,7 +245,7 @@ const ONBOARDING_FEATURES = {
           <>
             Command Helper lets you search and learn more about Redis commands,
             their syntax, and details.
-            <Spacer size="xs" />
+            <RiSpacer size="xs" />
             Run <b>PING</b> in CLI to see how it works.
           </>
         ),
@@ -281,11 +281,11 @@ const ONBOARDING_FEATURES = {
           <>
             Use Profiler to track commands sent against the Redis server in
             real-time.
-            <Spacer size="xs" />
+            <RiSpacer size="xs" />
             Select <b>Start Profiler</b> to stream back every command processed
             by the Redis server. Save the log to download and investigate
             commands.
-            <Spacer size="xs" />
+            <RiSpacer size="xs" />
             <i>Tip: Remember to stop Profiler to avoid throughput decrease.</i>
           </>
         ),
@@ -337,10 +337,10 @@ const ONBOARDING_FEATURES = {
         content: (
           <>
             This is Workbench, our advanced CLI for Redis commands.
-            <Spacer size="xs" />
+            <RiSpacer size="xs" />
             Take advantage of syntax highlighting, intelligent auto-complete,
             and working with commands in editor mode.
-            <Spacer size="xs" />
+            <RiSpacer size="xs" />
             Workbench visualizes complex{' '}
             <a
               href={EXTERNAL_LINKS.redisStack}
@@ -360,12 +360,12 @@ const ONBOARDING_FEATURES = {
             .
             {isString(firstIndex) && (
               <>
-                <Spacer size="s" />
+                <RiSpacer size="s" />
                 {firstIndex ? (
                   <>
                     Run this command to see information and statistics on your
                     index:
-                    <Spacer size="xs" />
+                    <RiSpacer size="xs" />
                     <CodeBlock
                       isCopyable
                       className={styles.pre}
@@ -378,7 +378,7 @@ const ONBOARDING_FEATURES = {
                   <>
                     Run this command to see information and statistics about
                     client connections:
-                    <Spacer size="xs" />
+                    <RiSpacer size="xs" />
                     <CodeBlock
                       isCopyable
                       className={styles.pre}
@@ -457,7 +457,7 @@ const ONBOARDING_FEATURES = {
           <>
             Share your Redis expertise with your team and the wider community by
             building custom Redis Insight tutorials.
-            <Spacer size="xs" />
+            <RiSpacer size="xs" />
             Use our{' '}
             <a
               href={EXTERNAL_LINKS.guidesRepo}
@@ -535,7 +535,7 @@ const ONBOARDING_FEATURES = {
           <>
             Use Database Analysis to get summary of your database and receive
             tips to improve memory usage and performance.
-            <Spacer size="xs" />
+            <RiSpacer size="xs" />
             Run a new report to get an overview of the database and receive tips
             to optimize your database usage.
           </>
@@ -611,7 +611,7 @@ const ONBOARDING_FEATURES = {
         content: (
           <>
             Check Slow Log to troubleshoot performance issues.
-            <Spacer size="xs" />
+            <RiSpacer size="xs" />
             See the list of slow logs in chronological order to debug and trace
             your Redis database. Customize parameters to capture logs.
           </>
@@ -656,7 +656,7 @@ const ONBOARDING_FEATURES = {
           <>
             Use Redis pub/sub to subscribe to channels and post messages to
             channels.
-            <Spacer size="xs" />
+            <RiSpacer size="xs" />
             Subscribe to receive messages from all channels or enter a message
             to post to a specified channel.
           </>
@@ -717,7 +717,7 @@ const ONBOARDING_FEATURES = {
         content: (
           <>
             You are done!
-            <Spacer size="xs" />
+            <RiSpacer size="xs" />
             Take me back to Browser.
           </>
         ),

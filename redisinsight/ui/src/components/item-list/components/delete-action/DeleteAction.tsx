@@ -6,7 +6,7 @@ import {
   RiPrimaryButton,
 } from 'uiSrc/components/base/forms'
 import { DeleteIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components'
 import styles from '../styles.module.scss'
@@ -58,14 +58,14 @@ const DeleteAction = <T extends { id: string; name?: string }>(
       </Text>
       <div className={styles.boxSection}>
         {selection.map((select) => (
-          <Row key={select.id} gap="s" className={styles.nameList}>
-            <FlexItem>
+          <RiRow key={select.id} gap="s" className={styles.nameList}>
+            <RiFlexItem>
               <RiIcon type="CheckThinIcon" />
-            </FlexItem>
-            <FlexItem grow className={styles.nameListText}>
+            </RiFlexItem>
+            <RiFlexItem grow className={styles.nameListText}>
               <span>{formatLongName(select.name)}</span>
-            </FlexItem>
-          </Row>
+            </RiFlexItem>
+          </RiRow>
         ))}
       </div>
       <div className={styles.popoverFooter}>

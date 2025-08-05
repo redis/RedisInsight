@@ -4,7 +4,7 @@ import cn from 'classnames'
 import styled from 'styled-components'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import { CommonProps } from 'uiSrc/components/base/theme/types'
-import { Row } from 'uiSrc/components/base/layout/flex'
+import { RiRow } from 'uiSrc/components/base/layout'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 
 export type AutoTagOption<T = string | number | string[] | undefined> = {
@@ -151,7 +151,7 @@ export const RiAutoTag = ({
         className="RI-auto-tag__container"
         full
       >
-        <Row
+        <RiRow
           gap="s"
           className="RI-auto-tag__selection"
           wrap
@@ -200,13 +200,13 @@ export const RiAutoTag = ({
               isClearable && (tag.length > 0 || selection.length > 0)
             }
           />
-        </Row>
+        </RiRow>
       </StyledWrapper>
     </FormField>
   )
 }
 
-const StyledWrapper = styled(Row)`
+const StyledWrapper = styled(RiRow)`
   position: relative;
   border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral600};
   border-radius: 0.4rem;

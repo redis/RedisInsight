@@ -8,7 +8,13 @@ import { cloudSelector } from 'uiSrc/slices/instances/cloud'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import { Flex, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import {
+  RiFlexGroup as Flex,
+  RiFlexItem,
+  RiRow,
+  RiTable,
+  ColumnDefinition,
+} from 'uiSrc/components/base/layout'
 import {
   RiPrimaryButton,
   RiSecondaryButton,
@@ -17,7 +23,6 @@ import {
 import { RiSearchInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -85,12 +90,12 @@ const RedisCloudDatabaseListResult = ({ columns, onBack, onView }: Props) => {
           Redis Enterprise Databases Added
         </Title>
         <Flex align="end" gap="s">
-          <FlexItem grow>
+          <RiFlexItem grow>
             <MessageBar opened={!!countSuccessAdded || !!countFailAdded}>
               <SummaryText />
             </MessageBar>
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <RiFormField className={styles.searchForm}>
               <RiSearchInput
                 placeholder="Search..."
@@ -99,11 +104,11 @@ const RedisCloudDatabaseListResult = ({ columns, onBack, onView }: Props) => {
                 data-testid="search"
               />
             </RiFormField>
-          </FlexItem>
+          </RiFlexItem>
         </Flex>
         <br />
         <div className="itemList databaseList cloudDatabaseListResult">
-          <Table
+          <RiTable
             columns={columns}
             data={items}
             defaultSorting={[
@@ -116,8 +121,8 @@ const RedisCloudDatabaseListResult = ({ columns, onBack, onView }: Props) => {
           {!items.length && <Text>{message}</Text>}
         </div>
       </div>
-      <FlexItem padding={4}>
-        <Row justify="between">
+      <RiFlexItem padding={4}>
+        <RiRow justify="between">
           <RiSecondaryButton
             onClick={onBack}
             className="btn-cancel btn-back"
@@ -128,8 +133,8 @@ const RedisCloudDatabaseListResult = ({ columns, onBack, onView }: Props) => {
           <RiPrimaryButton onClick={onView} data-testid="btn-view-databases">
             View Databases
           </RiPrimaryButton>
-        </Row>
-      </FlexItem>
+        </RiRow>
+      </RiFlexItem>
     </AutodiscoveryPageTemplate>
   )
 }

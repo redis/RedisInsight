@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import LoadSampleData from 'uiSrc/pages/browser/components/load-sample-data'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { Text } from 'uiSrc/components/base/text'
 import { Link } from 'uiSrc/components/base/link/Link'
 import styles from './styles.module.scss'
@@ -28,7 +28,7 @@ const NoIndexesInitialMessage = (props: Props) => {
         I am here to help you get started with data querying. I noticed that you
         have no indexes created.
       </Text>
-      <Spacer />
+      <RiSpacer />
       <Text size="xs">
         Would you like to load the sample data and indexes (from this{' '}
         <Link
@@ -41,12 +41,12 @@ const NoIndexesInitialMessage = (props: Props) => {
         </Link>
         ) to see what Redis Copilot can help you do?
       </Text>
-      <Spacer />
+      <RiSpacer />
       <LoadSampleData
         anchorClassName={styles.anchorClassName}
         onSuccess={onSuccess}
       />
-      <Spacer />
+      <RiSpacer />
     </div>
   )
 }

@@ -2,8 +2,11 @@ import cx from 'classnames'
 import { map } from 'lodash'
 import React, { useState } from 'react'
 
-import { LoadingContent } from 'uiSrc/components/base/layout'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import {
+  RiLoadingContent,
+  RiTable,
+  ColumnDefinition,
+} from 'uiSrc/components/base/layout'
 import { formatBytes, Nullable } from 'uiSrc/utils'
 import { rgb } from 'uiSrc/utils/colors'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
@@ -225,12 +228,12 @@ const ClusterNodesTable = ({
           className={styles.loading}
           data-testid="primary-nodes-table-loading"
         >
-          <LoadingContent lines={4} />
+          <RiLoadingContent lines={4} />
         </div>
       )}
       {nodes && (
         <div className={styles.tableWrapper} data-testid="primary-nodes-table">
-          <Table
+          <RiTable
             columns={columns}
             data={nodes}
             defaultSorting={[

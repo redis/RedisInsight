@@ -11,8 +11,8 @@ import { Nullable } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { RiTooltip, UploadWarning, RiFilePicker } from 'uiSrc/components'
 import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiCol, RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { InfoIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
@@ -164,8 +164,8 @@ const ImportDatabase = (props: Props) => {
   return (
     <>
       <div className={styles.formWrapper} data-testid="add-db_import">
-        <Col>
-          <FlexItem grow>
+        <RiCol>
+          <RiFlexItem grow>
             {isShowForm && (
               <>
                 <Text color="subdued" size="s">
@@ -173,7 +173,7 @@ const ImportDatabase = (props: Props) => {
                   that you only use files from trusted sources to prevent the
                   risk of automatically executing malicious code.
                 </Text>
-                <Spacer />
+                <RiSpacer />
 
                 <RiFilePicker
                   id="import-file-modal-filepicker"
@@ -216,19 +216,19 @@ const ImportDatabase = (props: Props) => {
                 <Text color="subdued">{error}</Text>
               </div>
             )}
-          </FlexItem>
+          </RiFlexItem>
           {isShowForm && (
-            <FlexItem grow className={styles.uploadWarningContainer}>
+            <RiFlexItem grow className={styles.uploadWarningContainer}>
               <UploadWarning />
-            </FlexItem>
+            </RiFlexItem>
           )}
-        </Col>
+        </RiCol>
         {data && (
-          <Row justify="center">
-            <FlexItem grow style={{ maxWidth: '100%' }}>
+          <RiRow justify="center">
+            <RiFlexItem grow style={{ maxWidth: '100%' }}>
               <ResultsLog data={data} />
-            </FlexItem>
-          </Row>
+            </RiFlexItem>
+          </RiRow>
         )}
       </div>
       <Footer />

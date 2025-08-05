@@ -5,7 +5,7 @@ import { useTheme } from '@redis-ui/styles'
 
 import * as keys from 'uiSrc/constants/keys'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { FlexItem } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem } from 'uiSrc/components/base/layout'
 import { WindowEvent } from 'uiSrc/components/base/utils/WindowEvent'
 import { FocusTrap } from 'uiSrc/components/base/utils/FocusTrap'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
@@ -226,7 +226,7 @@ const InlineItemEditor = (props: Props) => {
                   ...customStyles?.inputContainer,
                 }}
               >
-                <FlexItem grow>
+                <RiFlexItem grow>
                   {children || (
                     <>
                       <StyledTextInput
@@ -250,7 +250,7 @@ const InlineItemEditor = (props: Props) => {
                       )}
                     </>
                   )}
-                </FlexItem>
+                </RiFlexItem>
                 <ActionsContainer
                   justify="around"
                   gap="m"

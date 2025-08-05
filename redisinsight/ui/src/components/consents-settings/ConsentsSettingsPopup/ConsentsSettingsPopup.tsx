@@ -8,7 +8,7 @@ import { Pages } from 'uiSrc/constants'
 import { ConsentsSettings } from 'uiSrc/components'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { RiModal } from 'uiSrc/components/base/display'
@@ -42,16 +42,16 @@ const ConsentsSettingsPopup = () => {
       className={styles.consentsPopup}
       data-testid="consents-settings-popup"
       title={
-        <Row justify="between">
-          <FlexItem>
+        <RiRow justify="between">
+          <RiFlexItem>
             <Title size="L" className={styles.consentsPopupTitle}>
               EULA and Privacy Settings
             </Title>
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <RiIcon className={styles.redisIcon} type="RedisLogoFullIcon" />
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       }
       content={<ConsentsSettings onSubmitted={handleSubmitted} />}
     />

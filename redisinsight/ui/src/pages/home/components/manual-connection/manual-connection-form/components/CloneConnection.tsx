@@ -1,7 +1,7 @@
 import React from 'react'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { CopyIcon } from 'uiSrc/components/base/icons'
 
@@ -25,8 +25,8 @@ const CloneConnection = (props: Props) => {
 
   return (
     <>
-      <Row gap="m" justify="end" style={{ flexGrow: 0 }}>
-        <FlexItem>
+      <RiRow gap="m" justify="end" style={{ flexGrow: 0 }}>
+        <RiFlexItem>
           <RiSecondaryButton
             size="small"
             icon={CopyIcon}
@@ -36,9 +36,9 @@ const CloneConnection = (props: Props) => {
           >
             Clone Connection
           </RiSecondaryButton>
-        </FlexItem>
-      </Row>
-      <Spacer />
+        </RiFlexItem>
+      </RiRow>
+      <RiSpacer />
     </>
   )
 }

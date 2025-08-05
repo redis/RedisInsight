@@ -7,7 +7,7 @@ import {
   EnablementAreaProvider,
   IInternalPage,
 } from 'uiSrc/pages/workbench/contexts/enablementAreaContext'
-import { LoadingContent } from 'uiSrc/components/base/layout'
+import { RiLoadingContent } from 'uiSrc/components/base/layout'
 import {
   ApiEndpoints,
   EAManifestFirstKey,
@@ -198,7 +198,7 @@ const EnablementArea = (props: Props) => {
             data-testid="enablementArea-loader"
             className={cx(styles.innerContainer, styles.innerContainerLoader)}
           >
-            <LoadingContent lines={3} />
+            <RiLoadingContent lines={3} />
           </div>
         ) : (
           <Navigation

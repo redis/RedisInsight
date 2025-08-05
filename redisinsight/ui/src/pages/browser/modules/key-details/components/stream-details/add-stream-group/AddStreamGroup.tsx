@@ -12,7 +12,7 @@ import {
   validateConsumerGroupId,
 } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import {
   RiPrimaryButton,
   RiSecondaryButton,
@@ -91,14 +91,14 @@ const AddStreamGroup = (props: Props) => {
         className={styles.content}
         data-test-subj="add-stream-groups-field-panel"
       >
-        <FlexItem
+        <RiFlexItem
           className={cx('flexItemNoFullWidth', 'inlineFieldsNoSpace')}
           grow
         >
-          <Row>
-            <FlexItem grow>
-              <Row align="start">
-                <FlexItem className={styles.groupNameWrapper} grow>
+          <RiRow>
+            <RiFlexItem grow>
+              <RiRow align="start">
+                <RiFlexItem className={styles.groupNameWrapper} grow>
                   <RiFormField>
                     <RiTextInput
                       name="group-name"
@@ -110,8 +110,8 @@ const AddStreamGroup = (props: Props) => {
                       data-testid="group-name-field"
                     />
                   </RiFormField>
-                </FlexItem>
-                <FlexItem className={styles.timestampWrapper} grow>
+                </RiFlexItem>
+                <RiFlexItem className={styles.timestampWrapper} grow>
                   <RiFormField
                     additionalText={
                       <RiTooltip
@@ -153,15 +153,15 @@ const AddStreamGroup = (props: Props) => {
                       {idError}
                     </span>
                   )}
-                </FlexItem>
-              </Row>
-            </FlexItem>
-          </Row>
-        </FlexItem>
+                </RiFlexItem>
+              </RiRow>
+            </RiFlexItem>
+          </RiRow>
+        </RiFlexItem>
       </div>
       <>
-        <Row justify="end" gap="l" style={{ padding: 18 }}>
-          <FlexItem>
+        <RiRow justify="end" gap="l" style={{ padding: 18 }}>
+          <RiFlexItem>
             <div>
               <RiSecondaryButton
                 onClick={() => closePanel(true)}
@@ -170,8 +170,8 @@ const AddStreamGroup = (props: Props) => {
                 Cancel
               </RiSecondaryButton>
             </div>
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <div>
               <RiPrimaryButton
                 onClick={submitData}
@@ -181,8 +181,8 @@ const AddStreamGroup = (props: Props) => {
                 Save
               </RiPrimaryButton>
             </div>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </>
     </>
   )

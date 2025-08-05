@@ -10,7 +10,7 @@ import validationErrors from 'uiSrc/constants/validationErrors'
 import { ICredentialsRedisCluster } from 'uiSrc/slices/interfaces'
 
 import { MessageEnterpriceSoftware } from 'uiSrc/pages/home/components/form/Messages'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { WindowEvent } from 'uiSrc/components/base/utils/WindowEvent'
 import {
   RiPrimaryButton,
@@ -19,7 +19,7 @@ import {
 } from 'uiSrc/components/base/forms'
 import { InfoIcon, RiIcon } from 'uiSrc/components/base/icons'
 import {
-  NumericInput,
+  RiNumericInput,
   RiPasswordInput,
   RiTextInput,
 } from 'uiSrc/components/base/inputs'
@@ -225,8 +225,8 @@ const ClusterConnectionForm = (props: Props) => {
 
       <form>
         <WindowEvent event="keydown" handler={onKeyDown} />
-        <Row responsive>
-          <FlexItem grow={4}>
+        <RiRow responsive>
+          <RiFlexItem grow={4}>
             <RiFormField
               label="Cluster Host*"
               additionalText={<AppendHostName />}
@@ -246,14 +246,14 @@ const ClusterConnectionForm = (props: Props) => {
                 }
               />
             </RiFormField>
-          </FlexItem>
+          </RiFlexItem>
 
-          <FlexItem grow={2}>
+          <RiFlexItem grow={2}>
             <RiFormField
               label="Cluster Port*"
               additionalText="Should not exceed 65535."
             >
-              <NumericInput
+              <RiNumericInput
                 autoValidate
                 min={0}
                 max={MAX_PORT_NUMBER}
@@ -265,11 +265,11 @@ const ClusterConnectionForm = (props: Props) => {
                 onChange={(value) => formik.setFieldValue('port', value)}
               />
             </RiFormField>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
 
-        <Row responsive>
-          <FlexItem grow>
+        <RiRow responsive>
+          <RiFlexItem grow>
             <RiFormField label="Admin Username*">
               <RiTextInput
                 name="username"
@@ -281,9 +281,9 @@ const ClusterConnectionForm = (props: Props) => {
                 onChange={formik.handleChange}
               />
             </RiFormField>
-          </FlexItem>
+          </RiFlexItem>
 
-          <FlexItem grow>
+          <RiFlexItem grow>
             <RiFormField label="Admin Password*">
               <RiPasswordInput
                 type="dual"
@@ -297,8 +297,8 @@ const ClusterConnectionForm = (props: Props) => {
                 autoComplete="new-password"
               />
             </RiFormField>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </form>
       <Footer />
     </div>

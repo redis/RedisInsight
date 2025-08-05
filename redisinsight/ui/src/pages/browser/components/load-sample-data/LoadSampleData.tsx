@@ -9,8 +9,8 @@ import {
 } from 'uiSrc/slices/browser/bulkActions'
 
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { PlayFilledIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
@@ -65,20 +65,20 @@ const LoadSampleData = (props: Props) => {
         </RiPrimaryButton>
       }
     >
-      <Row gap="m" responsive={false} style={{ padding: 8 }}>
-        <FlexItem>
+      <RiRow gap="m" responsive={false} style={{ padding: 8 }}>
+        <RiFlexItem>
           <RiIcon type="ToastDangerIcon" className={styles.popoverIcon} />
-        </FlexItem>
-        <FlexItem>
+        </RiFlexItem>
+        <RiFlexItem>
           <Text>Execute commands in bulk</Text>
-          <Spacer size="s" />
+          <RiSpacer size="s" />
           <Text color="subdued" size="s">
             All commands from the file will be automatically executed against
             your database. Avoid executing them in production databases.
           </Text>
-          <Spacer size="s" />
-          <Row justify="end">
-            <FlexItem>
+          <RiSpacer size="s" />
+          <RiRow justify="end">
+            <RiFlexItem>
               <RiPrimaryButton
                 size="s"
                 icon={PlayFilledIcon}
@@ -89,10 +89,10 @@ const LoadSampleData = (props: Props) => {
               >
                 Execute
               </RiPrimaryButton>
-            </FlexItem>
-          </Row>
-        </FlexItem>
-      </Row>
+            </RiFlexItem>
+          </RiRow>
+        </RiFlexItem>
+      </RiRow>
     </RiPopover>
   )
 }

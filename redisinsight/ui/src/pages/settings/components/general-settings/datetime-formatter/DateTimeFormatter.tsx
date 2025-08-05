@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux'
 import { formatTimestamp } from 'uiSrc/utils'
 import { DATETIME_FORMATTER_DEFAULT, TimezoneOption } from 'uiSrc/constants'
 import { userSettingsConfigSelector } from 'uiSrc/slices/user/user-settings'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import TimezoneForm from './components/timezone-form/TimezoneForm'
@@ -28,23 +28,23 @@ const DateTimeFormatter = () => {
   return (
     <>
       <Title size="M">Date and Time Format</Title>
-      <Spacer size="m" />
+      <RiSpacer size="m" />
       <Text color="subdued" className={styles.dateTimeSubtitle}>
         Specifies the date and time format to be used in Redis Insight:
       </Text>
-      <Spacer size="m" />
+      <RiSpacer size="m" />
       <DatetimeForm onFormatChange={(newPreview) => setPreview(newPreview)} />
-      <Spacer size="m" />
+      <RiSpacer size="m" />
       <Text className={styles.dateTimeSubtitle} color="subdued">
         Specifies the time zone to be used in Redis Insight:
       </Text>
-      <Spacer size="s" />
+      <RiSpacer size="s" />
       <div>
-        <Row align="center" gap="m" responsive>
-          <FlexItem grow={1}>
+        <RiRow align="center" gap="m" responsive>
+          <RiFlexItem grow={1}>
             <TimezoneForm />
-          </FlexItem>
-          <FlexItem grow={2}>
+          </RiFlexItem>
+          <RiFlexItem grow={2}>
             <div className={styles.previewContainer}>
               <Text className={styles.dateTimeSubtitle} color="subdued">
                 Preview:
@@ -53,10 +53,10 @@ const DateTimeFormatter = () => {
                 {preview}
               </Text>
             </div>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </div>
-      <Spacer />
+      <RiSpacer />
     </>
   )
 }

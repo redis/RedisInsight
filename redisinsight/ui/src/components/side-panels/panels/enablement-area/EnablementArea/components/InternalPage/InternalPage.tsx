@@ -6,7 +6,11 @@ import { useLocation, useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 import { ChevronLeftIcon } from 'uiSrc/components/base/icons'
-import { ExternalLink, HorizontalRule, LoadingContent } from 'uiSrc/components'
+import {
+  ExternalLink,
+  RiHorizontalRule,
+  RiLoadingContent,
+} from 'uiSrc/components'
 import { RiPopover } from 'uiSrc/components/base'
 import { IEnablementAreaItem } from 'uiSrc/slices/interfaces'
 import {
@@ -199,7 +203,7 @@ const InternalPage = (props: Props) => {
           </RiPopover>
         </div>
         <div>
-          <HorizontalRule margin="xs" />
+          <RiHorizontalRule margin="xs" />
         </div>
         <div>
           <Text className={styles.pageTitle} color="default">
@@ -216,7 +220,7 @@ const InternalPage = (props: Props) => {
         data-testid="enablement-area__page"
       >
         {isLoading && (
-          <LoadingContent
+          <RiLoadingContent
             data-testid="enablement-area__page-loader"
             lines={3}
           />

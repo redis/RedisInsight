@@ -19,7 +19,7 @@ import {
   sendEventTelemetry,
   TelemetryEvent,
 } from 'uiSrc/telemetry'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { AddStreamEntriesDto } from 'apiSrc/modules/browser/stream/dto'
 
@@ -139,8 +139,8 @@ const AddStreamEntries = (props: Props) => {
         />
       </div>
       <>
-        <Row justify="end" gap="m" style={{ padding: 18 }}>
-          <FlexItem>
+        <RiRow justify="end" gap="m" style={{ padding: 18 }}>
+          <RiFlexItem>
             <div>
               <RiSecondaryButton
                 onClick={() => closePanel(true)}
@@ -149,8 +149,8 @@ const AddStreamEntries = (props: Props) => {
                 Cancel
               </RiSecondaryButton>
             </div>
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <div>
               <RiPrimaryButton
                 size="m"
@@ -162,8 +162,8 @@ const AddStreamEntries = (props: Props) => {
                 Save
               </RiPrimaryButton>
             </div>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </>
     </>
   )

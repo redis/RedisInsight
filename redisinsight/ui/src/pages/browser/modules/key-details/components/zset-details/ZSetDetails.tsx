@@ -9,7 +9,7 @@ import {
   KeyDetailsHeader,
   KeyDetailsHeaderProps,
 } from 'uiSrc/pages/browser/modules'
-import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
+import { RiCol, RiFlexItem } from 'uiSrc/components/base/layout'
 import { ZSetDetailsTable } from './zset-details-table'
 import AddZsetMembers from './add-zset-members/AddZsetMembers'
 import { AddItemsAction } from '../key-details-actions'
@@ -51,27 +51,27 @@ const ZSetDetails = (props: Props) => {
   )
 
   return (
-    <Col className="fluid relative" justify="between">
+    <RiCol className="fluid relative" justify="between">
       <KeyDetailsHeader {...props} key="key-details-header" />
       <KeyDetailsSubheader keyType={keyType} Actions={Actions} />
-      <FlexItem
+      <RiFlexItem
         grow
         className="key-details-body"
         key="key-details-body"
         style={{ height: 300 }} // a hack to make flex-item grow to fill parent and not overflow
       >
         {!loading && (
-          <FlexItem grow style={{ height: '100%' }}>
+          <RiFlexItem grow style={{ height: '100%' }}>
             <ZSetDetailsTable onRemoveKey={onRemoveKey} />
-          </FlexItem>
+          </RiFlexItem>
         )}
         {isAddItemPanelOpen && (
           <div className={cx('formFooterBar', 'contentActive')}>
             <AddZsetMembers closePanel={closeAddItemPanel} />
           </div>
         )}
-      </FlexItem>
-    </Col>
+      </RiFlexItem>
+    </RiCol>
   )
 }
 

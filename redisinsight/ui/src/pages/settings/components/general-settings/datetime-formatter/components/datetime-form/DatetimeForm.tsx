@@ -20,7 +20,7 @@ import {
   RiSelect,
 } from 'uiSrc/components/base/forms'
 import { InfoIcon, CheckBoldIcon } from 'uiSrc/components/base/icons'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiTooltip } from 'uiSrc/components'
 import { RiTextInput } from 'uiSrc/components/base/inputs'
 
@@ -184,7 +184,7 @@ const DatetimeForm = ({ onFormatChange }: Props) => {
         value={formik.values.selectedRadioOption}
         onChange={(id) => onRadioOptionChange(id)}
       />
-      <Row gap="m" style={{ height: 50 }}>
+      <RiRow gap="m" style={{ height: 50 }}>
         {formik.values.selectedRadioOption === DatetimeRadioOption.Common && (
           <RiSelect
             style={{ width: 240 }}
@@ -204,7 +204,7 @@ const DatetimeForm = ({ onFormatChange }: Props) => {
         )}
         {formik.values.selectedRadioOption === DatetimeRadioOption.Custom && (
           <>
-            <FlexItem grow={false}>
+            <RiFlexItem grow={false}>
               <RiTextInput
                 style={{ width: 240 }}
                 id="customFormat"
@@ -213,7 +213,7 @@ const DatetimeForm = ({ onFormatChange }: Props) => {
                 onChange={(value) => onCustomFormatChange(value)}
                 data-testid="custom-datetime-input"
               />
-            </FlexItem>
+            </RiFlexItem>
             <RiTooltip
               position="top"
               anchorClassName="euiToolTip__btn-disabled"
@@ -234,7 +234,7 @@ const DatetimeForm = ({ onFormatChange }: Props) => {
             </RiTooltip>
           </>
         )}
-      </Row>
+      </RiRow>
     </form>
   )
 }

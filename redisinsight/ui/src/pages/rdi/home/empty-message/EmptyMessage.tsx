@@ -8,8 +8,8 @@ import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import { Theme } from 'uiSrc/constants'
 
 import { Text } from 'uiSrc/components/base/text'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { Link } from 'uiSrc/components/base/link/Link'
@@ -30,7 +30,7 @@ const EmptyMessage = ({ onAddInstanceClick }: Props) => {
       className={styles.noResultsContainer}
       data-testid="empty-rdi-instance-list"
     >
-      <Spacer size="xl" />
+      <RiSpacer size="xl" />
       <Text className={styles.title}>Redis Data Integration</Text>
       <RiImage
         src={theme === Theme.Dark ? EmptyListDarkIcon : EmptyListLightIcon}
@@ -38,8 +38,8 @@ const EmptyMessage = ({ onAddInstanceClick }: Props) => {
         alt="empty"
       />
       <Text className={styles.subTitle}>{subTitleText}</Text>
-      <Row align="center" gap="m" responsive style={{ lineHeight: '20px' }}>
-        <FlexItem grow>
+      <RiRow align="center" gap="m" responsive style={{ lineHeight: '20px' }}>
+        <RiFlexItem grow>
           <RiPrimaryButton
             data-testid="empty-rdi-instance-button"
             size="small"
@@ -47,9 +47,9 @@ const EmptyMessage = ({ onAddInstanceClick }: Props) => {
           >
             + Add RDI Endpoint
           </RiPrimaryButton>
-        </FlexItem>
+        </RiFlexItem>
         or
-        <FlexItem grow>
+        <RiFlexItem grow>
           <Link
             data-testid="empty-rdi-quickstart-button"
             target="_blank"
@@ -60,8 +60,8 @@ const EmptyMessage = ({ onAddInstanceClick }: Props) => {
           >
             RDI Quickstart <RiIcon type="ArrowDiagonalIcon" />
           </Link>
-        </FlexItem>
-      </Row>
+        </RiFlexItem>
+      </RiRow>
     </div>
   )
 }

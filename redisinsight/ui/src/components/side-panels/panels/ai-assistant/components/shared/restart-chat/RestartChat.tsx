@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
 
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
@@ -42,12 +42,12 @@ const RestartChat = (props: Props) => {
     >
       <>
         <Title size="S">Restart session</Title>
-        <Spacer size="s" />
+        <RiSpacer size="s" />
         <Text size="xs">
           This will delete the current message history and initiate a new
           session.
         </Text>
-        <Spacer size="s" />
+        <RiSpacer size="s" />
         <RiPrimaryButton
           size="s"
           onClick={handleConfirm}

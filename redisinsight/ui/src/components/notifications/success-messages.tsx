@@ -12,7 +12,7 @@ import {
   millisecondsFormat,
 } from 'uiSrc/utils'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { Text } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
@@ -215,40 +215,40 @@ export default {
         </>
       ),
       message: (
-        <Row align="start" className={styles.summary}>
-          <FlexItem>
+        <RiRow align="start" className={styles.summary}>
+          <RiFlexItem>
             <Text color="ghost" className={styles.summaryValue}>
               {numberWithSpaces(processed)}
             </Text>
             <Text size="xs" className={styles.summaryLabel}>
               Commands Processed
             </Text>
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <Text color="ghost" className={styles.summaryValue}>
               {numberWithSpaces(succeed)}
             </Text>
             <Text size="xs" className={styles.summaryLabel}>
               Success
             </Text>
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <Text color="ghost" className={styles.summaryValue}>
               {numberWithSpaces(failed)}
             </Text>
             <Text size="xs" className={styles.summaryLabel}>
               Errors
             </Text>
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <Text color="ghost" className={styles.summaryValue}>
               {millisecondsFormat(data?.duration || 0, 'H:mm:ss.SSS')}
             </Text>
             <Text size="xs" className={styles.summaryLabel}>
               Time Taken
             </Text>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       ),
       className: 'dynamic',
     }

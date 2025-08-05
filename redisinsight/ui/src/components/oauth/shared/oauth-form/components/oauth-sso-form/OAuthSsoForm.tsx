@@ -4,8 +4,8 @@ import { FormikErrors, useFormik } from 'formik'
 import { validateEmail, validateField } from 'uiSrc/utils'
 
 import { RiTooltip } from 'uiSrc/components'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import {
   RiPrimaryButton,
   RiSecondaryButton,
@@ -90,8 +90,8 @@ const OAuthSsoForm = ({ onBack, onSubmit }: Props) => {
         Single Sign-On
       </Title>
       <form onSubmit={formik.handleSubmit}>
-        <Row>
-          <FlexItem>
+        <RiRow>
+          <RiFlexItem>
             <RiFormField className={styles.formRaw} label="Email">
               <RiTextInput
                 name="email"
@@ -105,11 +105,11 @@ const OAuthSsoForm = ({ onBack, onSubmit }: Props) => {
                 }}
               />
             </RiFormField>
-          </FlexItem>
-        </Row>
-        <Spacer />
-        <Row justify="end">
-          <FlexItem>
+          </RiFlexItem>
+        </RiRow>
+        <RiSpacer />
+        <RiRow justify="end">
+          <RiFlexItem>
             <RiSecondaryButton
               type="button"
               size="s"
@@ -118,11 +118,11 @@ const OAuthSsoForm = ({ onBack, onSubmit }: Props) => {
             >
               Back
             </RiSecondaryButton>
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <SubmitButton text="Login" disabled={submitIsDisabled()} />
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </form>
     </div>
   )

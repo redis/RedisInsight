@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { IProcessingPerformance } from 'uiSrc/slices/interfaces'
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiCol, RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import Accordion from '../components/accordion'
 import Panel from '../components/panel'
 import VerticalDivider from '../components/vertical-divider'
@@ -17,15 +17,15 @@ const InfoPanel = ({
   value: number
   suffix: string
 }) => (
-  <FlexItem grow className={styles.infoPanel}>
-    <Row gap="m" responsive>
-      <FlexItem grow className={styles.infoLabel}>
+  <RiFlexItem grow className={styles.infoPanel}>
+    <RiRow gap="m" responsive>
+      <RiFlexItem grow className={styles.infoLabel}>
         {label}
-      </FlexItem>
-      <FlexItem className={styles.infoValue}>{value}</FlexItem>
-      <FlexItem className={styles.infoSuffix}>{suffix}</FlexItem>
-    </Row>
-  </FlexItem>
+      </RiFlexItem>
+      <RiFlexItem className={styles.infoValue}>{value}</RiFlexItem>
+      <RiFlexItem className={styles.infoSuffix}>{suffix}</RiFlexItem>
+    </RiRow>
+  </RiFlexItem>
 )
 
 interface Props {
@@ -62,9 +62,9 @@ const ProcessingPerformance = ({
       enableAutoRefreshDefault
     >
       <>
-        <Row responsive gap="s">
-          <FlexItem grow>
-            <Col gap="s">
+        <RiRow responsive gap="s">
+          <RiFlexItem grow>
+            <RiCol gap="s">
               <InfoPanel
                 label="Total batches"
                 value={totalBatches}
@@ -80,11 +80,11 @@ const ProcessingPerformance = ({
                 value={processTimeAvg}
                 suffix="ms"
               />
-            </Col>
-          </FlexItem>
+            </RiCol>
+          </RiFlexItem>
           <VerticalDivider />
-          <FlexItem grow>
-            <Col gap="s">
+          <RiFlexItem grow>
+            <RiCol gap="s">
               <InfoPanel
                 label="ACK time average"
                 value={ackTimeAvg}
@@ -100,19 +100,19 @@ const ProcessingPerformance = ({
                 value={readTimeAvg}
                 suffix="ms"
               />
-            </Col>
-          </FlexItem>
+            </RiCol>
+          </RiFlexItem>
           <VerticalDivider />
-          <FlexItem grow>
-            <Row gap="s" align="start">
+          <RiFlexItem grow>
+            <RiRow gap="s" align="start">
               <InfoPanel
                 label="Total time average"
                 value={totalTimeAvg}
                 suffix="sec"
               />
-            </Row>
-          </FlexItem>
-        </Row>
+            </RiRow>
+          </RiFlexItem>
+        </RiRow>
       </>
     </Accordion>
   </Panel>

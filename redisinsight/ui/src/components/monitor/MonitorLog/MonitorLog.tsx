@@ -12,7 +12,7 @@ import { cutDurationText } from 'uiSrc/utils'
 import { downloadFile } from 'uiSrc/utils/dom/downloadFile'
 import { fetchMonitorLog } from 'uiSrc/slices/cli/cli-output'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { RefreshIcon, DownloadIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
@@ -93,8 +93,8 @@ const MonitorLog = () => {
               {duration}
               {width > SMALL_SCREEN_RESOLUTION && ' Running time'})
             </Text>
-            <Row className={styles.actions} justify="between" align="center">
-              <FlexItem>
+            <RiRow className={styles.actions} justify="between" align="center">
+              <RiFlexItem>
                 {isSaveToFile && (
                   <RiSecondaryButton
                     size="small"
@@ -108,8 +108,8 @@ const MonitorLog = () => {
                     Log
                   </RiSecondaryButton>
                 )}
-              </FlexItem>
-              <FlexItem>
+              </RiFlexItem>
+              <RiFlexItem>
                 <RiPrimaryButton
                   size="small"
                   onClick={onResetProfiler}
@@ -120,8 +120,8 @@ const MonitorLog = () => {
                   Reset
                   {width > SMALL_SCREEN_RESOLUTION && ' Profiler'}
                 </RiPrimaryButton>
-              </FlexItem>
-            </Row>
+              </RiFlexItem>
+            </RiRow>
           </div>
         )}
       </AutoSizer>

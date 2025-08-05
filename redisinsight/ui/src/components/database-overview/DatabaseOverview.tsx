@@ -6,7 +6,7 @@ import {
   DATABASE_OVERVIEW_MINIMUM_REFRESH_INTERVAL,
   DATABASE_OVERVIEW_REFRESH_INTERVAL,
 } from 'uiSrc/constants/browser'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import MetricItem, {
   OverviewItem,
 } from 'uiSrc/components/database-overview/components/OverviewMetrics/MetricItem'
@@ -35,9 +35,9 @@ const DatabaseOverview = () => {
   } = useDatabaseOverview()
 
   return (
-    <Row className={styles.container}>
-      <FlexItem grow key="overview">
-        <Row
+    <RiRow className={styles.container}>
+      <RiFlexItem grow key="overview">
+        <RiRow
           className={cx('flex-row', styles.itemContainer, styles.overview)}
           align="center"
         >
@@ -86,7 +86,7 @@ const DatabaseOverview = () => {
                 data-testid="overview-auto-refresh"
                 id="overview-auto-refresh"
               >
-                <FlexItem className={styles.overviewItemContent}>
+                <RiFlexItem className={styles.overviewItemContent}>
                   <AutoRefresh
                     displayText={false}
                     displayLastRefresh={false}
@@ -105,13 +105,13 @@ const DatabaseOverview = () => {
                     onRefreshClicked={handleRefreshClick}
                     onEnableAutoRefresh={handleEnableAutoRefresh}
                   />
-                </FlexItem>
+                </RiFlexItem>
               </OverviewItem>
             </>
           )}
-        </Row>
-      </FlexItem>
-    </Row>
+        </RiRow>
+      </RiFlexItem>
+    </RiRow>
   )
 }
 
@@ -128,27 +128,27 @@ const getTooltipContent = (metric: IMetric) => {
   return metric.children
     .filter((item) => item.value !== undefined)
     .map((tooltipItem) => (
-      <Row
+      <RiRow
         className={styles.commandsPerSecTip}
         key={tooltipItem.id}
         align="center"
       >
         {tooltipItem.icon && (
-          <FlexItem>
+          <RiFlexItem>
             <RiIcon
               className={styles.moreInfoOverviewIcon}
               size="m"
               type={tooltipItem.icon}
             />
-          </FlexItem>
+          </RiFlexItem>
         )}
-        <FlexItem className={styles.moreInfoOverviewContent} direction="row">
+        <RiFlexItem className={styles.moreInfoOverviewContent} direction="row">
           {tooltipItem.content}
-        </FlexItem>
-        <FlexItem className={styles.moreInfoOverviewTitle}>
+        </RiFlexItem>
+        <RiFlexItem className={styles.moreInfoOverviewTitle}>
           {tooltipItem.title}
-        </FlexItem>
-      </Row>
+        </RiFlexItem>
+      </RiRow>
     ))
 }
 

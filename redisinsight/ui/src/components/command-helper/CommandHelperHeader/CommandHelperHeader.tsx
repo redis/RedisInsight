@@ -11,7 +11,7 @@ import {
 import { OnboardingTour } from 'uiSrc/components'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { Text } from 'uiSrc/components/base/text'
 import { WindowControlGroup } from 'uiSrc/components/base/shared/WindowControlGroup'
 import { RiIcon } from 'uiSrc/components/base/icons'
@@ -44,8 +44,8 @@ const CommandHelperHeader = () => {
 
   return (
     <div className={styles.container} id="command-helper-header">
-      <Row justify="between" align="center" style={{ height: '100%' }}>
-        <FlexItem className={styles.title}>
+      <RiRow justify="between" align="center" style={{ height: '100%' }}>
+        <RiFlexItem className={styles.title}>
           <RiIcon type="DocumentationIcon" size="L" />
           <OnboardingTour
             options={ONBOARDING_FEATURES.BROWSER_COMMAND_HELPER}
@@ -54,15 +54,15 @@ const CommandHelperHeader = () => {
           >
             <Text>Command Helper</Text>
           </OnboardingTour>
-        </FlexItem>
-        <FlexItem grow />
+        </RiFlexItem>
+        <RiFlexItem grow />
         <WindowControlGroup
           onClose={handleCloseHelper}
           onHide={handleHideHelper}
           id="command-helper"
           label="Command Helper"
         />
-      </Row>
+      </RiRow>
     </div>
   )
 }

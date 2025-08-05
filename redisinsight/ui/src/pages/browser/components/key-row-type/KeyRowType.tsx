@@ -2,7 +2,7 @@ import React from 'react'
 import cx from 'classnames'
 
 import { KeyTypes, ModulesKeyTypes } from 'uiSrc/constants'
-import { GroupBadge, LoadingContent } from 'uiSrc/components'
+import { GroupBadge, RiLoadingContent } from 'uiSrc/components'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -16,7 +16,7 @@ const KeyRowType = (props: Props) => {
   return (
     <>
       {!type && (
-        <LoadingContent
+        <RiLoadingContent
           lines={1}
           className={cx(styles.keyInfoLoading, styles.keyType)}
           data-testid={`type-loading_${nameString}`}

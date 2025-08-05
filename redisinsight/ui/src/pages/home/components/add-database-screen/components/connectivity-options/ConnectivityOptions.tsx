@@ -12,8 +12,8 @@ import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import CloudIcon from 'uiSrc/assets/img/oauth/cloud_centered.svg?react'
 import RocketIcon from 'uiSrc/assets/img/oauth/rocket.svg?react'
 
-import { Col, FlexItem, Grid } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiCol, RiFlexItem, RiGrid } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
@@ -74,22 +74,22 @@ const ConnectivityOptions = (props: Props) => {
         <Title size="XS" className={styles.sectionTitle}>
           Get started with Redis Cloud account
         </Title>
-        <Spacer />
-        <Grid gap="l" columns={3} responsive>
-          <FlexItem>
+        <RiSpacer />
+        <RiGrid gap="l" columns={3} responsive>
+          <RiFlexItem>
             <RiSecondaryButton
               className={styles.typeBtn}
               onClick={() => onClickOption(AddDbType.cloud)}
               data-testid="discover-cloud-btn"
             >
-              <Col align="center">
+              <RiCol align="center">
                 <CloudIcon className={styles.btnIcon} />
                 Add databases
-              </Col>
+              </RiCol>
             </RiSecondaryButton>
-          </FlexItem>
+          </RiFlexItem>
           <FeatureFlagComponent name={FeatureFlags.cloudAds}>
-            <FlexItem>
+            <RiFlexItem>
               <OAuthSsoHandlerDialog>
                 {(ssoCloudHandlerClick, isSSOEnabled) => (
                   <NewCloudLink
@@ -108,27 +108,27 @@ const ConnectivityOptions = (props: Props) => {
                     target="_blank"
                   >
                     <RiBadge className="freeBadge" label="Free" />
-                    <Col align="center">
+                    <RiCol align="center">
                       <RocketIcon className="btnIcon" />
                       New database
-                    </Col>
+                    </RiCol>
                   </NewCloudLink>
                 )}
               </OAuthSsoHandlerDialog>
-            </FlexItem>
+            </RiFlexItem>
           </FeatureFlagComponent>
-          <FlexItem grow />
-        </Grid>
+          <RiFlexItem grow />
+        </RiGrid>
       </section>
-      <Spacer size="xxl" />
+      <RiSpacer size="xxl" />
       <section>
         <Title size="XS" className={styles.sectionTitle}>
           More connectivity options
         </Title>
-        <Spacer />
-        <Grid gap="l" responsive columns={3}>
+        <RiSpacer />
+        <RiGrid gap="l" responsive columns={3}>
           {CONNECTIVITY_OPTIONS.map(({ id, type, title, icon }) => (
-            <FlexItem key={id}>
+            <RiFlexItem key={id}>
               <RiSecondaryButton
                 color="secondary"
                 className={cx(styles.typeBtn, styles.small)}
@@ -138,9 +138,9 @@ const ConnectivityOptions = (props: Props) => {
                 {icon?.({ className: styles.btnIcon })}
                 {title}
               </RiSecondaryButton>
-            </FlexItem>
+            </RiFlexItem>
           ))}
-        </Grid>
+        </RiGrid>
       </section>
     </>
   )

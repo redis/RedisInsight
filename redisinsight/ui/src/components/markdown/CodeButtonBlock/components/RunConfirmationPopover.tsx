@@ -6,7 +6,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { setDBConfigStorageField } from 'uiSrc/services'
 import { ConfigDBStorageItem } from 'uiSrc/constants/storage'
 import { FeatureFlagComponent } from 'uiSrc/components'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import {
   RiPrimaryButton,
   RiSecondaryButton,
@@ -50,12 +50,12 @@ const RunConfirmationPopover = ({ onApply }: Props) => {
   return (
     <>
       <Title size="XS">Run commands</Title>
-      <Spacer size="s" />
+      <RiSpacer size="s" />
       <Text size="s">
         This tutorial will change data in your database, are you sure you want
         to run commands in this database?
       </Text>
-      <Spacer size="s" />
+      <RiSpacer size="s" />
       <RiCheckbox
         id="showAgain"
         name="showAgain"

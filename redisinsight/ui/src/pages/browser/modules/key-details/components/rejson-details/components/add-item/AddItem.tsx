@@ -7,7 +7,7 @@ import { rejsonDataSelector } from 'uiSrc/slices/browser/rejson'
 import { checkExistingPath } from 'uiSrc/utils/rejson'
 import FieldMessage from 'uiSrc/components/field-message/FieldMessage'
 import { Nullable } from 'uiSrc/utils'
-import { FlexItem } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem } from 'uiSrc/components/base/layout'
 import { WindowEvent } from 'uiSrc/components/base/utils/WindowEvent'
 import { FocusTrap } from 'uiSrc/components/base/utils/FocusTrap'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
@@ -97,7 +97,7 @@ const AddItem = (props: Props) => {
               noValidate
             >
               {isPair && (
-                <FlexItem grow>
+                <RiFlexItem grow>
                   <RiTextInput
                     name="newRootKey"
                     value={key}
@@ -106,9 +106,9 @@ const AddItem = (props: Props) => {
                     onChange={setKey}
                     data-testid="json-key"
                   />
-                </FlexItem>
+                </RiFlexItem>
               )}
-              <FlexItem grow>
+              <RiFlexItem grow>
                 <RiTextInput
                   name="newValue"
                   value={value}
@@ -117,7 +117,7 @@ const AddItem = (props: Props) => {
                   onChange={(value) => setValue(value)}
                   data-testid="json-value"
                 />
-              </FlexItem>
+              </RiFlexItem>
               <ConfirmOverwrite
                 isOpen={isConfirmationVisible}
                 onCancel={() => setIsConfirmationVisible(false)}

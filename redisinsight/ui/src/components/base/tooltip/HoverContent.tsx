@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Col } from 'uiSrc/components/base/layout/flex'
+import { RiCol } from 'uiSrc/components/base/layout'
 import { Title } from 'uiSrc/components/base/text'
 
 interface RiTooltipContentProps {
@@ -9,8 +9,8 @@ interface RiTooltipContentProps {
 }
 
 export const HoverContent = ({ title, content }: RiTooltipContentProps) => (
-  <Col>
+  <RiCol>
     {title && <Title size="S">{title}</Title>}
     {content}
-  </Col>
+  </RiCol>
 )

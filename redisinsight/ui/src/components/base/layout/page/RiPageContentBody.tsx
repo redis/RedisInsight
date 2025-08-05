@@ -5,9 +5,9 @@ import {
   PageContentBodyProps,
   restrictWidthSize,
   StyledPageContentBody,
-} from 'uiSrc/components/base/layout/page/page.styles'
+} from './page.styles'
 
-const PageContentBody = ({
+export const RiPageContentBody = ({
   restrictWidth = false,
   paddingSize = 'none',
   style,
@@ -26,5 +26,3 @@ const PageContentBody = ({
     />
   )
 }
-
-export default PageContentBody

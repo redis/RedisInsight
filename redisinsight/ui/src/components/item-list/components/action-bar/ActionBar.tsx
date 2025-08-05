@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
@@ -19,7 +19,7 @@ const ActionBar = ({
   onCloseActionBar,
 }: Props) => (
   <div className={styles.inner}>
-    <Row
+    <RiRow
       centered
       className={styles.container}
       gap="l"
@@ -27,23 +27,23 @@ const ActionBar = ({
         left: `calc(${width / 2}px - 156px)`,
       }}
     >
-      <FlexItem className={styles.text}>
+      <RiFlexItem className={styles.text}>
         {`You selected: ${selectionCount} items`}
-      </FlexItem>
+      </RiFlexItem>
       {actions?.map((action, index) => (
-        <FlexItem className={styles.actions} key={`action-${index + 1}`}>
+        <RiFlexItem className={styles.actions} key={`action-${index + 1}`}>
           {action}
-        </FlexItem>
+        </RiFlexItem>
       ))}
-      <FlexItem className={styles.cross}>
+      <RiFlexItem className={styles.cross}>
         <RiIconButton
           icon={CancelSlimIcon}
           aria-label="Cancel selecting"
           onClick={() => onCloseActionBar()}
           data-testid="cancel-selecting"
         />
-      </FlexItem>
-    </Row>
+      </RiFlexItem>
+    </RiRow>
   </div>
 )
 

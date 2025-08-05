@@ -9,7 +9,7 @@ import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { sendEventTelemetry } from 'uiSrc/telemetry'
 import { HELP_LINKS } from 'uiSrc/pages/home/constants'
 import { FeatureFlags } from 'uiSrc/constants'
-import { SideBarItem } from 'uiSrc/components/base/layout/sidebar'
+import { RiSideBarItem } from 'uiSrc/components/base/layout/sidebar'
 import { SideBarItemIcon } from 'uiSrc/components/base/layout/sidebar/SideBarItemIcon'
 import { Link } from 'uiSrc/components/base/link/Link'
 
@@ -36,7 +36,7 @@ const CreateCloud = () => {
             style={{ marginInline: 'auto', backgroundColor: 'transparent' }}
             data-testid="create-cloud-db-link"
           >
-            <SideBarItem
+            <RiSideBarItem
               tooltipProps={{
                 text: 'Create FREE trial Redis Cloud database',
                 placement: 'right',
@@ -58,7 +58,7 @@ const CreateCloud = () => {
                 aria-label="cloud-db-icon"
                 data-testid="cloud-db-icon"
               />
-            </SideBarItem>
+            </RiSideBarItem>
           </Link>
         )}
       </OAuthSsoHandlerDialog>

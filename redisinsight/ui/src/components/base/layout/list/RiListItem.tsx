@@ -12,7 +12,7 @@ import {
   StyledLabel,
 } from './list.styles'
 
-const Item = ({
+export const RiListItem = ({
   size,
   label,
   isActive,
@@ -121,5 +121,3 @@ const Item = ({
     </StyledItem>
   )
 }
-
-export default Item

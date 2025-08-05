@@ -7,7 +7,7 @@ import { RiIconButton } from 'uiSrc/components/base/forms'
 import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
 import { ColorText } from 'uiSrc/components/base/text'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
-import { Row } from 'uiSrc/components/base/layout/flex'
+import { RiRow } from 'uiSrc/components/base/layout'
 
 import styles from './styles.module.scss'
 
@@ -27,7 +27,7 @@ const CHCommandInfo = (props: Props) => {
   } = props
 
   return (
-    <Row
+    <RiRow
       align="center"
       className={styles.container}
       data-testid="cli-helper-title"
@@ -54,7 +54,7 @@ const CHCommandInfo = (props: Props) => {
           data-testid="cli-helper-complexity-short"
         />
       )}
-    </Row>
+    </RiRow>
   )
 }
 

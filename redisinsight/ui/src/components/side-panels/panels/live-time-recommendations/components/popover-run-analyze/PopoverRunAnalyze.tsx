@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
@@ -39,11 +39,11 @@ const PopoverRunAnalyze = (props: Props) => {
         data-testid="insights-db-analysis-popover"
       >
         <Text className={styles.popoverTitle}>Run database analysis</Text>
-        <Spacer size="xs" />
+        <RiSpacer size="xs" />
         <Text className={styles.popoverContent} color="subdued">
           {popoverContent}
         </Text>
-        <Spacer size="m" />
+        <RiSpacer size="m" />
         <RiPrimaryButton
           aria-label="Analyze"
           data-testid="approve-insights-db-analysis-btn"

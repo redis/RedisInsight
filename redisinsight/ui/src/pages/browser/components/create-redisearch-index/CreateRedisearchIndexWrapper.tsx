@@ -1,7 +1,7 @@
 import React from 'react'
 import cx from 'classnames'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
-import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
+import { RiCol, RiFlexItem } from 'uiSrc/components/base/layout'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
@@ -24,9 +24,9 @@ const CreateRedisearchIndexWrapper = ({
   onCreateIndex,
 }: Props) => (
   <div className={styles.page} data-testid="create-index-panel">
-    <Col justify="center" className={cx(styles.container, 'relative')}>
+    <RiCol justify="center" className={cx(styles.container, 'relative')}>
       <div className={styles.headerWrapper}>
-        <FlexItem grow style={{ marginBottom: '16px' }}>
+        <RiFlexItem grow style={{ marginBottom: '16px' }}>
           <Title size="M" className={styles.header}>
             New Index
           </Title>
@@ -45,8 +45,8 @@ const CreateRedisearchIndexWrapper = ({
               />
             </RiTooltip>
           )}
-        </FlexItem>
-        <FlexItem grow className={styles.header}>
+        </RiFlexItem>
+        <RiFlexItem grow className={styles.header}>
           <Text size="s">
             Use CLI or Workbench to create more advanced indexes. See more
             details in the{' '}
@@ -61,13 +61,13 @@ const CreateRedisearchIndexWrapper = ({
               documentation.
             </Link>
           </Text>
-        </FlexItem>
+        </RiFlexItem>
       </div>
       <CreateRedisearchIndex
         onCreateIndex={onCreateIndex}
         onClosePanel={onClosePanel}
       />
-    </Col>
+    </RiCol>
   </div>
 )
 

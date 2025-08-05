@@ -1,6 +1,6 @@
 import { HTMLAttributes } from 'react'
 import styled, { css } from 'styled-components'
-import { PaddingSize } from 'uiSrc/components/base/layout/page/page.styles'
+import { PaddingSize } from './page.styles'
 
 export const PageHeaderClassName = 'RI-page-header'
 export const ALIGN_ITEMS = ['top', 'bottom', 'center', 'stretch'] as const

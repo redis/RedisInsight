@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import cx from 'classnames'
 import { truncateText } from 'uiSrc/utils'
 import EnablementAreaContext from 'uiSrc/pages/workbench/contexts/enablementAreaContext'
-import { Item as ListItem } from 'uiSrc/components/base/layout/list'
+import { RiListItem as ListItem } from 'uiSrc/components/base/layout/list'
 import { RiTooltip } from 'uiSrc/components'
 
 import styles from './styles.module.scss'
@@ -55,7 +55,7 @@ const InternalLink = (props: Props) => {
     </RiTooltip>
   )
   return (
-    <ListItem
+    <RiListItem
       data-testid={`internal-link-${testId}`}
       className={cx(
         styles.link,

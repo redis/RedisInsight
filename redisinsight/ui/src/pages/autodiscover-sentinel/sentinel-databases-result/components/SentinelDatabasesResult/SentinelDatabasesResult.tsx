@@ -7,7 +7,12 @@ import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import {
+  RiFlexItem,
+  RiRow,
+  RiTable,
+  ColumnDefinition,
+} from 'uiSrc/components/base/layout'
 import {
   RiPrimaryButton,
   RiSecondaryButton,
@@ -15,7 +20,6 @@ import {
 } from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -98,14 +102,14 @@ const SentinelDatabasesResult = ({
           Auto-Discover Redis Sentinel Primary Groups
         </Title>
 
-        <Row align="end" gap="s">
-          <FlexItem grow>
+        <RiRow align="end" gap="s">
+          <RiFlexItem grow>
             <MessageBar opened={!!countSuccessAdded || !!countFailAdded}>
               <SummaryText />
             </MessageBar>
-          </FlexItem>
-        </Row>
-        <FlexItem>
+          </RiFlexItem>
+        </RiRow>
+        <RiFlexItem>
           <RiFormField className={styles.searchForm}>
             <RiSearchInput
               placeholder="Search..."
@@ -114,13 +118,13 @@ const SentinelDatabasesResult = ({
               data-testid="search"
             />
           </RiFormField>
-        </FlexItem>
+        </RiFlexItem>
         <br />
         <div className="itemList databaseList sentinelDatabaseListResult">
           {!items.length || loading ? (
             <Text>{message}</Text>
           ) : (
-            <Table
+            <RiTable
               columns={columns}
               data={items}
               defaultSorting={[
@@ -133,8 +137,8 @@ const SentinelDatabasesResult = ({
           )}
         </div>
       </div>
-      <FlexItem padding={4}>
-        <Row gap="m" justify="between">
+      <RiFlexItem padding={4}>
+        <RiRow gap="m" justify="between">
           <RiSecondaryButton
             onClick={onBack}
             className="btn-cancel btn-back"
@@ -149,8 +153,8 @@ const SentinelDatabasesResult = ({
           >
             View Databases
           </RiPrimaryButton>
-        </Row>
-      </FlexItem>
+        </RiRow>
+      </RiFlexItem>
     </AutodiscoveryPageTemplate>
   )
 }

@@ -24,7 +24,7 @@ import {
   IHashFieldState,
   INITIAL_HASH_FIELD_STATE,
 } from 'uiSrc/pages/browser/components/add-key/AddKeyHash/interfaces'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import {
   RiPrimaryButton,
   RiSecondaryButton,
@@ -173,8 +173,8 @@ const AddHashFields = (props: Props) => {
           onClickAdd={addField}
         >
           {(item, index) => (
-            <Row align="center" gap="m">
-              <FlexItem grow={2}>
+            <RiRow align="center" gap="m">
+              <RiFlexItem grow={2}>
                 <RiFormField>
                   <RiTextInput
                     name={`fieldName-${item.id}`}
@@ -191,8 +191,8 @@ const AddHashFields = (props: Props) => {
                     data-testid="hash-field"
                   />
                 </RiFormField>
-              </FlexItem>
-              <FlexItem grow={2}>
+              </RiFlexItem>
+              <RiFlexItem grow={2}>
                 <RiFormField>
                   <RiTextInput
                     name={`fieldValue-${item.id}`}
@@ -206,9 +206,9 @@ const AddHashFields = (props: Props) => {
                     data-testid="hash-value"
                   />
                 </RiFormField>
-              </FlexItem>
+              </RiFlexItem>
               {isExpireFieldsAvailable && (
-                <FlexItem grow={1}>
+                <RiFlexItem grow={1}>
                   <RiFormField>
                     <RiTextInput
                       name={`fieldTTL-${item.id}`}
@@ -226,15 +226,15 @@ const AddHashFields = (props: Props) => {
                       data-testid="hash-ttl"
                     />
                   </RiFormField>
-                </FlexItem>
+                </RiFlexItem>
               )}
-            </Row>
+            </RiRow>
           )}
         </AddMultipleFields>
       </div>
       <>
-        <Row justify="end" gap="m">
-          <FlexItem>
+        <RiRow justify="end" gap="m">
+          <RiFlexItem>
             <div>
               <RiSecondaryButton
                 onClick={() => closePanel(true)}
@@ -243,8 +243,8 @@ const AddHashFields = (props: Props) => {
                 Cancel
               </RiSecondaryButton>
             </div>
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <div>
               <RiPrimaryButton
                 disabled={loading}
@@ -255,8 +255,8 @@ const AddHashFields = (props: Props) => {
                 Save
               </RiPrimaryButton>
             </div>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </>
     </>
   )

@@ -8,7 +8,7 @@ import { addKeyStateSelector, addReJSONKey } from 'uiSrc/slices/browser/keys'
 import { MonacoJson } from 'uiSrc/components/monaco-editor'
 import UploadFile from 'uiSrc/components/upload-file'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiFormField } from 'uiSrc/components/base/forms'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import { CreateRejsonRlWithExpireDto } from 'apiSrc/modules/browser/rejson-rl/dto'
@@ -81,15 +81,15 @@ const AddKeyReJSON = (props: Props) => {
             disabled={loading}
             data-testid="json-value"
           />
-          <Row justify="end">
-            <FlexItem>
+          <RiRow justify="end">
+            <RiFlexItem>
               <UploadFile
                 onClick={onClick}
                 onFileChange={setReJSONValue}
                 accept="application/json, text/plain"
               />
-            </FlexItem>
-          </Row>
+            </RiFlexItem>
+          </RiRow>
         </>
       </RiFormField>
 

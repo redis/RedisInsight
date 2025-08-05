@@ -1,15 +1,19 @@
 import { HTMLAttributes, ReactNode } from 'react'
 import styled from 'styled-components'
-import { CommonProps } from 'uiSrc/components/base/theme/types'
+import { CommonProps, Theme } from 'uiSrc/components/base/theme/types'
 import { theme } from 'uiSrc/components/base/theme'
 
 export const SpacerSizes = ['xs', 's', 'm', 'l', 'xl', 'xxl'] as const
 export type SpacerSize = (typeof SpacerSizes)[number]
 
 // Extract only the spaceXXX keys from the theme
-export type ThemeSpacingKey = Extract<keyof typeof theme.semantic.core.space, `space${string}`>
+export type ThemeSpacingKey = Extract<
+  keyof typeof theme.semantic.core.space,
+  `space${string}`
+>
 // Allow direct theme spacing values
-export type ThemeSpacingValue = typeof theme.semantic.core.space[ThemeSpacingKey]
+export type ThemeSpacingValue =
+  (typeof theme.semantic.core.space)[ThemeSpacingKey]
 
 export type SpacerProps = CommonProps &
   HTMLAttributes<HTMLDivElement> & {
@@ -28,19 +32,21 @@ export const spacerStyles = {
 }
 
 const isThemeSpacingKey = (
-  size: SpacerSize | ThemeSpacingKey | ThemeSpacingValue
-): size is ThemeSpacingKey => typeof size === 'string' && size in theme.semantic.core.space
+  size: SpacerSize | ThemeSpacingKey | ThemeSpacingValue,
+  theme: Theme,
+): size is ThemeSpacingKey => size in theme.core.space
 
 const getSpacingValue = (
-  size: SpacerSize | ThemeSpacingKey | ThemeSpacingValue, 
+  size: SpacerSize | ThemeSpacingKey | ThemeSpacingValue,
+  theme: Theme,
 ): string => {
-  const themeSpacingValues = Object.values(theme.semantic.core.space)
-  if (typeof size === 'string' && themeSpacingValues.includes(size)) {
+  const themeSpacingValues = Object.values(theme.core.space)
+  if (themeSpacingValues.includes(size)) {
     return size
   }
-  
-  if (isThemeSpacingKey(size)) {
-    return theme?.semantic?.core?.space?.[size] || '0'
+
+  if (isThemeSpacingKey(size, theme)) {
+    return theme?.core?.space?.[size] || '0'
   }
 
   return spacerStyles[size as SpacerSize]
@@ -48,5 +54,5 @@ const getSpacingValue = (
 
 export const StyledSpacer = styled.div<SpacerProps>`
   flex-shrink: 0;
-  height: ${({ size = 'l' }) => getSpacingValue(size)};
+  height: ${({ size = 'l', theme }) => getSpacingValue(size, theme)};
 `

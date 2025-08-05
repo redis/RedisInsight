@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import UploadModal from 'uiSrc/pages/rdi/pipeline-management/components/upload-modal/UploadModal'
 import Download from 'uiSrc/pages/rdi/instance/components/download'
-import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
+import { RiCol, RiFlexItem } from 'uiSrc/components/base/layout'
 import { RiEmptyButton, RiIconButton } from 'uiSrc/components/base/forms'
 import { UploadIcon, MoreactionsIcon } from 'uiSrc/components/base/icons'
 import { RiPopover } from 'uiSrc/components/base'
@@ -43,11 +43,11 @@ const RdiConfigFileActionMenu = () => {
       panelPaddingSize="none"
       anchorPosition="upRight"
     >
-      <Col align="start">
-        <FlexItem grow>
+      <RiCol align="start">
+        <RiFlexItem grow>
           <FetchPipelinePopover onClose={closePopover} />
-        </FlexItem>
-        <FlexItem grow>
+        </RiFlexItem>
+        <RiFlexItem grow>
           <UploadModal onClose={closePopover}>
             <RiEmptyButton
               color="text"
@@ -59,11 +59,11 @@ const RdiConfigFileActionMenu = () => {
               Upload from file
             </RiEmptyButton>
           </UploadModal>
-        </FlexItem>
-        <FlexItem grow>
+        </RiFlexItem>
+        <RiFlexItem grow>
           <Download onClose={closePopover} />
-        </FlexItem>
-      </Col>
+        </RiFlexItem>
+      </RiCol>
     </RiPopover>
   )
 }

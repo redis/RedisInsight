@@ -22,7 +22,7 @@ import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { isTruncatedString } from 'uiSrc/utils'
 import { Text } from 'uiSrc/components/base/text'
-import { FlexItem } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem } from 'uiSrc/components/base/layout'
 import {
   AckPendingEntriesResponse,
   PendingEntryDto,
@@ -124,7 +124,7 @@ const MessagesViewWrapper = (props: Props) => {
       render: function Id(_name: string, { id }: PendingEntryDto) {
         const timestamp = id?.split('-')?.[0]
         return (
-          <FlexItem>
+          <RiFlexItem>
             <Text
               color="subdued"
               size="s"
@@ -142,7 +142,7 @@ const MessagesViewWrapper = (props: Props) => {
             >
               {id}
             </Text>
-          </FlexItem>
+          </RiFlexItem>
         )
       },
     },
@@ -186,7 +186,7 @@ const MessagesViewWrapper = (props: Props) => {
       absoluteWidth: actionsWidth,
       render: function Actions(_act: any, { id }: PendingEntryDto) {
         return (
-          <FlexItem direction="row">
+          <RiFlexItem direction="row">
             <MessageAckPopover
               id={id}
               isOpen={openPopover === id + ackPrefix}
@@ -202,7 +202,7 @@ const MessagesViewWrapper = (props: Props) => {
               claimMessage={handleClaimingId}
               handleCancelClaim={handleCancelClaim}
             />
-          </FlexItem>
+          </RiFlexItem>
         )
       },
     },

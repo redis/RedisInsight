@@ -1,7 +1,7 @@
 import { EuiLink } from '@elastic/eui'
 import React from 'react'
 
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { Text } from 'uiSrc/components/base/text'
 
@@ -11,11 +11,11 @@ export const ASSISTANCE_CHAT_AGREEMENTS = (
       Redis Copilot is powered by OpenAI API and is designed for general
       information only.
     </Text>
-    <Spacer size="xs" />
+    <RiSpacer size="xs" />
     <Text size="xs">
       Please do not input any personal data or confidential information.
     </Text>
-    <Spacer size="xs" />
+    <RiSpacer size="xs" />
     <Text size="xs">
       By accessing and/or using Redis Copilot, you acknowledge that you agree to
       the{' '}
@@ -42,7 +42,7 @@ export const ASSISTANCE_CHAT_AGREEMENTS = (
 export const EXPERT_CHAT_AGREEMENTS = (
   <>
     <Text size="xs">Redis Copilot is powered by OpenAI API.</Text>
-    <Spacer size="xs" />
+    <RiSpacer size="xs" />
     <Text size="xs">
       Please do not include any personal data (except as expressly required for
       the use of Redis Copilot) or confidential information.
@@ -51,7 +51,7 @@ export const EXPERT_CHAT_AGREEMENTS = (
       Redis Copilot needs access to the information in your database to provide
       you context-aware assistance.
     </Text>
-    <Spacer size="xs" />
+    <RiSpacer size="xs" />
     <Text size="xs">
       By accepting these terms, you consent to the processing of any information
       included in your database, and you agree to the{' '}
@@ -82,7 +82,7 @@ export const EXPERT_CHAT_INITIAL_MESSAGE = (
     <Text size="xs">
       Type <b>/help</b> to get more info on what questions I can answer.
     </Text>
-    <Spacer />
+    <RiSpacer />
     <Text size="xs">
       With <span style={{ color: 'red' }}>&hearts;</span>, your Redis Copilot!
     </Text>

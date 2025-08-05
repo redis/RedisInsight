@@ -4,7 +4,7 @@ import validationErrors from 'uiSrc/constants/validationErrors'
 import { getSubmitButtonContent } from 'uiSrc/pages/home/utils'
 import { DbConnectionInfo, ISubmitButton } from 'uiSrc/pages/home/interfaces'
 import { SubmitBtnText } from 'uiSrc/pages/home/constants'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import {
   RiEmptyButton,
   RiPrimaryButton,
@@ -64,8 +64,8 @@ const FooterActions = (props: Props) => {
   )
 
   return (
-    <Row justify="between" align="center">
-      <FlexItem className="btn-back">
+    <RiRow justify="between" align="center">
+      <RiFlexItem className="btn-back">
         <RiTooltip
           position="top"
           anchorClassName="euiToolTip__btn-disabled"
@@ -88,10 +88,10 @@ const FooterActions = (props: Props) => {
             Test Connection
           </RiEmptyButton>
         </RiTooltip>
-      </FlexItem>
+      </RiFlexItem>
 
-      <FlexItem>
-        <Row>
+      <RiFlexItem>
+        <RiRow>
           {onClose && (
             <RiSecondaryButton
               size="small"
@@ -108,9 +108,9 @@ const FooterActions = (props: Props) => {
             text={submitButtonText}
             submitIsDisabled={submitIsDisable()}
           />
-        </Row>
-      </FlexItem>
-    </Row>
+        </RiRow>
+      </RiFlexItem>
+    </RiRow>
   )
 }
 

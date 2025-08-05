@@ -25,7 +25,7 @@ import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/In
 import { RiIconButton, RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { InfoIcon, CopyIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { ColorText, Text } from 'uiSrc/components/base/text'
-import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { ColumnDefinition } from 'uiSrc/components/base/layout'
 import { RiLoader } from 'uiSrc/components/base/display'
 import SentinelDatabasesResult from './components'
 

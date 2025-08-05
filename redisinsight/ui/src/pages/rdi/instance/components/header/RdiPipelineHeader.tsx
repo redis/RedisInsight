@@ -7,7 +7,7 @@ import {
   getPipelineStatusAction,
   rdiPipelineStatusSelector,
 } from 'uiSrc/slices/rdi/pipeline'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import CurrentPipelineStatus from './components/current-pipeline-status'
 
 import PipelineActions from './components/pipeline-actions'
@@ -50,23 +50,19 @@ const RdiPipelineHeader = () => {
     : undefined
 
   return (
-    <Row
-      className={styles.wrapper}
-      align="center"
-      justify="between"
-    >
-      <FlexItem grow>
+    <RiRow className={styles.wrapper} align="center" justify="between">
+      <RiFlexItem grow>
         <CurrentPipelineStatus
           pipelineState={pipelineState}
           statusError={statusError}
           headerLoading={headerLoading}
         />
-      </FlexItem>
+      </RiFlexItem>
       <PipelineActions
         collectorStatus={collectorStatus}
         pipelineStatus={pipelineStatus}
       />
-    </Row>
+    </RiRow>
   )
 }
 

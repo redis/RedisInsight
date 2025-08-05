@@ -8,7 +8,7 @@ import {
   IndexRange,
   InfiniteLoader,
   RowMouseEventHandlerParams,
-  Table,
+  Table as ReactVirtualizedTable,
   TableCellProps,
 } from 'react-virtualized'
 import TableColumnSearchTrigger from 'uiSrc/components/table-column-search-trigger/TableColumnSearchTrigger'
@@ -614,7 +614,7 @@ const VirtualTable = (props: IProps) => {
             rowCount={totalItemsCount || undefined}
           >
             {({ onRowsRendered, registerChild }) => (
-              <Table
+              <ReactVirtualizedTable
                 onRowClick={onRowSelect}
                 onRowDoubleClick={() => clearSelectTimeout()}
                 estimatedRowSize={rowHeight}
@@ -687,7 +687,7 @@ const VirtualTable = (props: IProps) => {
                     key={column.id}
                   />
                 ))}
-              </Table>
+              </ReactVirtualizedTable>
             )}
           </InfiniteLoader>
           {!hideFooter && (

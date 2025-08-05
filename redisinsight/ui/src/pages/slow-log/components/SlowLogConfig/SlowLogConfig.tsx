@@ -21,7 +21,7 @@ import {
 import { errorValidateNegativeInteger, validateNumber } from 'uiSrc/utils'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { useConnectionType } from 'uiSrc/components/hooks/useConnectionType'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import {
   RiEmptyButton,
   RiPrimaryButton,
@@ -31,7 +31,7 @@ import {
   RiSelect,
 } from 'uiSrc/components/base/forms'
 import { Text } from 'uiSrc/components/base/text'
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiCol, RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiTextInput } from 'uiSrc/components/base/inputs'
 import { convertNumberByUnits } from '../../utils'
 import styles from './styles.module.scss'
@@ -122,7 +122,7 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
       <Text color="subdued" className={styles.clusterText}>
         Each node can have different Slow Log configuration in a clustered
         database.
-        <Spacer size="s" />
+        <RiSpacer size="s" />
         {'Use '}
         <code>CONFIG SET slowlog-log-slower-than</code>
         {' or '}
@@ -130,7 +130,7 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
         {' for a specific node in redis-cli to configure it.'}
       </Text>
 
-      <Spacer size="xs" />
+      <RiSpacer size="xs" />
       <RiPrimaryButton
         className={styles.clusterBtn}
         onClick={closePopover}
@@ -165,7 +165,7 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
   }
 
   return (
-    <Col
+    <RiCol
       className={cx(styles.container, {
         [styles.containerCluster]: connectionType === ConnectionType.Cluster,
       })}
@@ -191,7 +191,7 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
                 </div>
               }
             >
-              <Row
+              <RiRow
                 grow={false}
                 align="center"
                 justify="start"
@@ -218,7 +218,7 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
                   onChange={onChangeUnit}
                   data-test-subj="select-default-unit"
                 />
-              </Row>
+              </RiRow>
             </RiFormField>
             <RiFormField
               className={styles.formRow}
@@ -250,14 +250,14 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
                 </div>
               </>
             </RiFormField>
-            <Spacer size="m" />
+            <RiSpacer size="m" />
           </form>
 
-          <Row className={styles.footer}>
-            <FlexItem className={styles.helpText}>
+          <RiRow className={styles.footer}>
+            <RiFlexItem className={styles.helpText}>
               NOTE: This is server configuration
-            </FlexItem>
-            <Row align="center" gap="m" className={styles.actions}>
+            </RiFlexItem>
+            <RiRow align="center" gap="m" className={styles.actions}>
               <RiEmptyButton
                 size="large"
                 onClick={handleDefault}
@@ -278,11 +278,11 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
               >
                 Save
               </RiPrimaryButton>
-            </Row>
-          </Row>
+            </RiRow>
+          </RiRow>
         </>
       )}
-    </Col>
+    </RiCol>
   )
 }
 

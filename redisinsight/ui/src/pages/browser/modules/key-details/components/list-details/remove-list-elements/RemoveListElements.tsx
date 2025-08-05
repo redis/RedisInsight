@@ -30,8 +30,8 @@ import {
 } from 'uiSrc/slices/instances/instances'
 
 import { AddListFormConfig as config } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import {
   RiDestructiveButton,
   RiPrimaryButton,
@@ -203,7 +203,7 @@ const RemoveListElements = (props: Props) => {
             </div>
           )}
         </Text>
-        <Spacer />
+        <RiSpacer />
         <RiDestructiveButton
           size="small"
           onClick={submitData}
@@ -244,9 +244,9 @@ const RemoveListElements = (props: Props) => {
   return (
     <>
       <div className={styles.content}>
-        <FlexItem grow>
-          <Row align="center">
-            <FlexItem style={{ minWidth: '220px' }}>
+        <RiFlexItem grow>
+          <RiRow align="center">
+            <RiFlexItem style={{ minWidth: '220px' }}>
               <RiFormField>
                 <RiSelect
                   style={{
@@ -260,8 +260,8 @@ const RemoveListElements = (props: Props) => {
                   data-testid="destination-select"
                 />
               </RiFormField>
-            </FlexItem>
-            <FlexItem grow style={{ width: '100%' }}>
+            </RiFlexItem>
+            <RiFlexItem grow style={{ width: '100%' }}>
               <RiFormField
                 additionalText={!canRemoveMultiple ? InfoBoxPopover() : <></>}
               >
@@ -278,13 +278,13 @@ const RemoveListElements = (props: Props) => {
                   disabled={!canRemoveMultiple}
                 />
               </RiFormField>
-            </FlexItem>
-          </Row>
-        </FlexItem>
+            </RiFlexItem>
+          </RiRow>
+        </RiFlexItem>
       </div>
       <>
-        <Row justify="end" gap="xl" style={{ padding: 18 }}>
-          <FlexItem>
+        <RiRow justify="end" gap="xl" style={{ padding: 18 }}>
+          <RiFlexItem>
             <div>
               <RiSecondaryButton
                 onClick={() => closePanel(true)}
@@ -293,11 +293,11 @@ const RemoveListElements = (props: Props) => {
                 Cancel
               </RiSecondaryButton>
             </div>
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <div>{RemoveButton()}</div>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </>
     </>
   )

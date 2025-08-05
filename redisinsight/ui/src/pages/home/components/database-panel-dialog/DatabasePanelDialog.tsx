@@ -32,7 +32,7 @@ import { FormDialog } from 'uiSrc/components'
 import { ModalHeaderProvider } from 'uiSrc/contexts/ModalTitleProvider'
 import { Title } from 'uiSrc/components/base/text/Title'
 import ClusterConnectionFormWrapper from 'uiSrc/pages/home/components/cluster-connection'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
@@ -165,17 +165,17 @@ const DatabasePanelDialog = (props: Props) => {
   ) => {
     const header =
       withBack && content ? (
-        <Row align="center" gap="s">
-          <FlexItem>
+        <RiRow align="center" gap="s">
+          <RiFlexItem>
             <RiIconButton
               onClick={handleClickBack}
               icon={ArrowLeftIcon}
               aria-label="back"
               data-testid="back-btn"
             />
-          </FlexItem>
-          <FlexItem grow>{content}</FlexItem>
-        </Row>
+          </RiFlexItem>
+          <RiFlexItem grow>{content}</RiFlexItem>
+        </RiRow>
       ) : (
         content
       )

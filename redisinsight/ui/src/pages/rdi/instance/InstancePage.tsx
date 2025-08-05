@@ -21,7 +21,7 @@ import {
 
 import { RdiInstancePageTemplate } from 'uiSrc/templates'
 import { RdiInstanceHeader } from 'uiSrc/components'
-import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
+import { RiCol, RiFlexItem } from 'uiSrc/components/base/layout'
 import InstancePageRouter from './InstancePageRouter'
 import { RdiPipelineHeader } from './components'
 import styles from './styles.module.scss'
@@ -76,17 +76,17 @@ const RdiInstancePage = ({ routes = [] }: Props) => {
   }, [])
 
   return (
-    <Col className={styles.page} gap="none" responsive={false}>
-      <FlexItem>
+    <RiCol className={styles.page} gap="none" responsive={false}>
+      <RiFlexItem>
         <RdiInstanceHeader />
-      </FlexItem>
-      <FlexItem grow={false}>
+      </RiFlexItem>
+      <RiFlexItem grow={false}>
         <RdiPipelineHeader />
-      </FlexItem>
+      </RiFlexItem>
       <RdiInstancePageTemplate>
         <InstancePageRouter routes={routes} />
       </RdiInstancePageTemplate>
-    </Col>
+    </RiCol>
   )
 }
 

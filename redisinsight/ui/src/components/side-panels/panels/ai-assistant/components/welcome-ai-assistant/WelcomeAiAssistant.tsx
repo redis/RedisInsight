@@ -7,7 +7,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { setSSOFlow } from 'uiSrc/slices/instances/cloud'
 import { setOAuthCloudSource } from 'uiSrc/slices/oauth/cloud'
 import OAuthForm from 'uiSrc/components/oauth/shared/oauth-form'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
@@ -38,21 +38,21 @@ const WelcomeAiAssistant = () => {
               <Text style={{ lineHeight: '1.35' }}>
                 Welcome to Redis Copilot.
               </Text>
-              <Spacer size="s" />
+              <RiSpacer size="s" />
               <Text style={{ lineHeight: '1.35' }}>
                 Learn about Redis and explore your data, in a conversational
                 manner.
               </Text>
-              <Spacer size="s" />
+              <RiSpacer size="s" />
               <Text style={{ lineHeight: '1.35' }}>
                 Build faster with Redis Copilot.
               </Text>
-              <Spacer size="xl" />
+              <RiSpacer size="xl" />
               <Title size="S">Sign in to get started.</Title>
 
-              <Spacer size="l" />
+              <RiSpacer size="l" />
               {form}
-              <Spacer />
+              <RiSpacer />
               <div className={styles.agreement}>
                 <OAuthAgreement />
               </div>

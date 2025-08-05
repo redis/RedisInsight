@@ -17,7 +17,7 @@ import { RiTooltip, RiTooltipProps } from 'uiSrc/components'
 import { RdiInstance } from 'uiSrc/slices/interfaces'
 import { getFormUpdates, Nullable } from 'uiSrc/utils'
 import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow, RiSpacer } from 'uiSrc/components/base/layout'
 import {
   RiPrimaryButton,
   RiSecondaryButton,
@@ -26,7 +26,6 @@ import {
 import { InfoIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { RiPasswordInput, RiTextInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
-import { Spacer } from 'uiSrc/components/base/layout'
 import ValidationTooltip from './components/ValidationTooltip'
 
 import styles from './styles.module.scss'
@@ -120,11 +119,11 @@ const ConnectionForm = (props: Props) => {
     if (!footerEl) return null
 
     return ReactDOM.createPortal(
-      <Row className="footerAddDatabase" justify="between">
-        <FlexItem />
-        <FlexItem>
-          <Row gap="m">
-            <FlexItem>
+      <RiRow className="footerAddDatabase" justify="between">
+        <RiFlexItem />
+        <RiFlexItem>
+          <RiRow gap="m">
+            <RiFlexItem>
               <RiSecondaryButton
                 size="s"
                 data-testid="connection-form-cancel-button"
@@ -132,8 +131,8 @@ const ConnectionForm = (props: Props) => {
               >
                 Cancel
               </RiSecondaryButton>
-            </FlexItem>
-            <FlexItem>
+            </RiFlexItem>
+            <RiFlexItem>
               <ValidationTooltip isValid={isValid} errors={errors}>
                 <RiPrimaryButton
                   data-testid="connection-form-add-button"
@@ -147,10 +146,10 @@ const ConnectionForm = (props: Props) => {
                   {editInstance ? 'Apply Changes' : 'Add Endpoint'}
                 </RiPrimaryButton>
               </ValidationTooltip>
-            </FlexItem>
-          </Row>
-        </FlexItem>
-      </Row>,
+            </RiFlexItem>
+          </RiRow>
+        </RiFlexItem>
+      </RiRow>,
       footerEl,
     )
   }
@@ -183,7 +182,7 @@ const ConnectionForm = (props: Props) => {
                   )}
                 </Field>
               </RiFormField>
-              <Spacer size="s" />
+              <RiSpacer size="s" />
               <RiFormField
                 label="URL*"
                 infoIconProps={{
@@ -206,10 +205,10 @@ const ConnectionForm = (props: Props) => {
                   )}
                 </Field>
               </RiFormField>
-              <Spacer size="s" />
+              <RiSpacer size="s" />
               <RiFormField>
-                <Row gap="m">
-                  <FlexItem grow={1}>
+                <RiRow gap="m">
+                  <RiFlexItem grow={1}>
                     <RiFormField
                       label="Username"
                       infoIconProps={{
@@ -234,8 +233,8 @@ const ConnectionForm = (props: Props) => {
                         )}
                       </Field>
                     </RiFormField>
-                  </FlexItem>
-                  <FlexItem grow={1}>
+                  </RiFlexItem>
+                  <RiFlexItem grow={1}>
                     <RiFormField
                       infoIconProps={{
                         content:
@@ -271,8 +270,8 @@ const ConnectionForm = (props: Props) => {
                         )}
                       </Field>
                     </RiFormField>
-                  </FlexItem>
-                </Row>
+                  </RiFlexItem>
+                </RiRow>
               </RiFormField>
             </div>
             <Footer

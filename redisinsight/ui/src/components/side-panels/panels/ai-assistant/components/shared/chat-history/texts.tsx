@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Text } from 'uiSrc/components/base/text'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 
 export const AssistanceChatInitialMessage = (
   <>
@@ -16,7 +16,7 @@ export const AssistanceChatInitialMessage = (
     <Text size="xs">
       Type <b>/help</b> for more info.
     </Text>
-    <Spacer />
+    <RiSpacer />
     <Text size="xs">
       With <span style={{ color: 'red' }}>&hearts;</span>, your Redis Copilot!
     </Text>

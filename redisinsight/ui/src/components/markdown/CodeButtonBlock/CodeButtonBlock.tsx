@@ -25,8 +25,8 @@ import {
 } from 'uiSrc/components/messages'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { ButtonLang } from 'uiSrc/utils/formatters/markdown/remarkCode'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { PlayIcon, CheckBoldIcon, CopyIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
@@ -157,8 +157,8 @@ const CodeButtonBlock = (props: Props) => {
 
   return (
     <div className={styles.wrapper}>
-      <Row>
-        <FlexItem grow>
+      <RiRow>
+        <RiFlexItem grow>
           {!!label && (
             <Title
               size="XS"
@@ -168,8 +168,8 @@ const CodeButtonBlock = (props: Props) => {
               {truncateText(label, 86)}
             </Title>
           )}
-        </FlexItem>
-        <FlexItem className={styles.actions}>
+        </RiFlexItem>
+        <RiFlexItem className={styles.actions}>
           <RiEmptyButton
             onClick={handleCopy}
             icon={CopyIcon}
@@ -216,14 +216,14 @@ const CodeButtonBlock = (props: Props) => {
               {getPopoverMessage()}
             </RiPopover>
           )}
-        </FlexItem>
-      </Row>
+        </RiFlexItem>
+      </RiRow>
       <div className={styles.content} data-testid="code-button-block-content">
         <CodeBlock className={styles.code}>
           {highlightedContent ? parse(highlightedContent) : content}
         </CodeBlock>
       </div>
-      <Spacer size="s" />
+      <RiSpacer size="s" />
     </div>
   )
 }

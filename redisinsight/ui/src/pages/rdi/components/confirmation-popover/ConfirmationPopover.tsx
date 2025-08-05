@@ -3,8 +3,8 @@ import React, { useState } from 'react'
 import { formatLongName } from 'uiSrc/utils'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import { RiIcon } from 'uiSrc/components/base/icons'
@@ -63,21 +63,21 @@ const ConfirmationPopover = (props: Props) => {
         panelClassName={styles.panelPopover}
         button={popoverButton}
       >
-        <Row align="center">
-          <FlexItem>
+        <RiRow align="center">
+          <RiFlexItem>
             <RiIcon type="ToastDangerIcon" className={styles.alertIcon} />
-          </FlexItem>
-          <FlexItem className="eui-textNoWrap">
+          </RiFlexItem>
+          <RiFlexItem className="eui-textNoWrap">
             <Text>{formatLongName(title, 58, 0, '...')}</Text>
-          </FlexItem>
-        </Row>
-        <Spacer size="xs" />
+          </RiFlexItem>
+        </RiRow>
+        <RiSpacer size="xs" />
         {body}
-        <Spacer size="m" />
-        <Row justify={appendAction ? 'between' : 'end'} align="center">
-          <FlexItem>{!!appendAction && appendAction}</FlexItem>
-          <FlexItem>{confirmBtn}</FlexItem>
-        </Row>
+        <RiSpacer size="m" />
+        <RiRow justify={appendAction ? 'between' : 'end'} align="center">
+          <RiFlexItem>{!!appendAction && appendAction}</RiFlexItem>
+          <RiFlexItem>{confirmBtn}</RiFlexItem>
+        </RiRow>
       </RiPopover>
     </OutsideClickDetector>
   )

@@ -8,7 +8,7 @@ import {
   updateUserConfigSettingsAction,
   userSettingsSelector,
 } from 'uiSrc/slices/user/user-settings'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import ConsentOption from '../ConsentOption'
@@ -83,7 +83,7 @@ const ConsentsPrivacy = () => {
         <Text size="s" className={styles.smallText} color="subdued">
           To optimize your experience, Redis Insight uses third-party tools.
         </Text>
-        <Spacer />
+        <RiSpacer />
         <Title size="XS">Usage Data</Title>
         {privacyConsents.map((consent: IConsent) => (
           <ConsentOption

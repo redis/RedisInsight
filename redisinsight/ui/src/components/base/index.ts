@@ -1,7 +1,8 @@
 import ExternalLink from './external-link'
-import { HorizontalRule, LoadingContent } from './layout'
 
-export { ExternalLink, HorizontalRule, LoadingContent }
+export * from './layout'
+
+export { ExternalLink }
 
 export * from './tooltip'
 export * from './popover'

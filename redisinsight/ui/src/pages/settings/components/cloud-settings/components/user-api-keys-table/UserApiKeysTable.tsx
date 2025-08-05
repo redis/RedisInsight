@@ -21,9 +21,9 @@ import {
   RiPrimaryButton,
 } from 'uiSrc/components/base/forms'
 import { CopyIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { Title } from 'uiSrc/components/base/text/Title'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { RiTable, ColumnDefinition } from 'uiSrc/components/base/layout'
 import { Link } from 'uiSrc/components/base/link/Link'
 import styles from './styles.module.scss'
 
@@ -213,13 +213,13 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
             />
             The ultimate Redis starting point
           </Title>
-          <Spacer size="s" />
+          <RiSpacer size="s" />
           <Text size="s" className={styles.smallText} color="subdued">
             Cloud API keys will be created and stored when you connect to Redis
             Cloud to create a free trial Cloud database or autodiscover your
             Cloud database.
           </Text>
-          <Spacer />
+          <RiSpacer />
           <div className={styles.actions}>
             <OAuthSsoHandlerDialog>
               {(socialCloudHandlerClick) => (
@@ -257,13 +257,13 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
             </OAuthSsoHandlerDialog>
           </div>
         </div>
-        <Spacer />
+        <RiSpacer />
       </>
     )
   }
 
   return (
-    <Table
+    <RiTable
       columns={columns}
       data={items}
       defaultSorting={[

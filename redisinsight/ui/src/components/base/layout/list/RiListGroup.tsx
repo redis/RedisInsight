@@ -7,7 +7,7 @@ import {
   StyledGroup,
 } from 'uiSrc/components/base/layout/list/list.styles'
 
-const Group = ({
+export const RiListGroup = ({
   children,
   className,
   style,
@@ -37,5 +37,3 @@ const Group = ({
     </StyledGroup>
   )
 }
-
-export default Group

@@ -3,14 +3,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import { appInfoSelector, setShortcutsFlyoutState } from 'uiSrc/slices/app/info'
 import { KeyboardShortcut } from 'uiSrc/components'
 import { BuildType } from 'uiSrc/constants/env'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import {
-  Drawer,
-  DrawerHeader,
-  DrawerBody,
-} from 'uiSrc/components/base/layout/drawer'
+  RiDrawer,
+  RiDrawerBody,
+  RiDrawerHeader,
+  RiTable,
+  ColumnDefinition,
+} from 'uiSrc/components/base/layout'
 import { Title } from 'uiSrc/components/base/text/Title'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 
 import { SHORTCUTS, ShortcutGroup, separator } from './schema'
 
@@ -44,27 +45,27 @@ const ShortcutsFlyout = () => {
       <Title size="XS" data-test-subj={`shortcuts-section-${name}`}>
         {name}
       </Title>
-      <Spacer size="m" />
-      <Table columns={tableColumns} data={items} defaultSorting={[]} />
-      <Spacer size="xl" />
+      <RiSpacer size="m" />
+      <RiTable columns={tableColumns} data={items} defaultSorting={[]} />
+      <RiSpacer size="xl" />
     </div>
   )
 
   return (
-    <Drawer
+    <RiDrawer
       open={isShortcutsFlyoutOpen}
       onOpenChange={(isOpen) => dispatch(setShortcutsFlyoutState(isOpen))}
       data-test-subj="shortcuts-flyout"
       title="Shortcuts"
     >
-      <DrawerHeader title="Shortcuts" />
-      <DrawerBody>
+      <RiDrawerHeader title="Shortcuts" />
+      <RiDrawerBody>
         {SHORTCUTS.filter(
           ({ excludeFor }) =>
             !excludeFor || !excludeFor.includes(server?.buildType as BuildType),
         ).map(ShortcutsTable)}
-      </DrawerBody>
-    </Drawer>
+      </RiDrawerBody>
+    </RiDrawer>
   )
 }
 

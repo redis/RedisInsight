@@ -5,7 +5,7 @@ import { addKeyStateSelector, addSetKey } from 'uiSrc/slices/browser/keys'
 
 import AddMultipleFields from 'uiSrc/pages/browser/components/add-multiple-fields'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiFormField } from 'uiSrc/components/base/forms'
 import { RiTextInput } from 'uiSrc/components/base/inputs'
 import { CreateSetWithExpireDto } from 'apiSrc/modules/browser/set/dto'
@@ -126,8 +126,8 @@ const AddKeySet = (props: Props) => {
         onClickAdd={addMember}
       >
         {(item, index) => (
-          <Row align="center">
-            <FlexItem grow>
+          <RiRow align="center">
+            <RiFlexItem grow>
               <RiFormField>
                 <RiTextInput
                   name={`member-${item.id}`}
@@ -144,8 +144,8 @@ const AddKeySet = (props: Props) => {
                   data-testid="member-name"
                 />
               </RiFormField>
-            </FlexItem>
-          </Row>
+            </RiFlexItem>
+          </RiRow>
         )}
       </AddMultipleFields>
       <ActionFooter

@@ -26,7 +26,7 @@ import {
   stringToBuffer,
 } from 'uiSrc/utils'
 
-import { FlexItem, Grid } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiGrid } from 'uiSrc/components/base/layout'
 import { RiIconButton, RiFormField } from 'uiSrc/components/base/forms'
 import { CopyIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
@@ -143,7 +143,7 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
     !keyIsEditing ? <RiIcon type="EditIcon" color="informative400" /> : ''
 
   return (
-    <FlexItem
+    <RiFlexItem
       onMouseEnter={onMouseEnterKey}
       onMouseLeave={onMouseLeaveKey}
       onClick={onClickKey}
@@ -154,11 +154,11 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
       data-testid="edit-key-btn"
     >
       {(keyIsEditing || keyIsHovering) && (
-        <Grid
+        <RiGrid
           className={styles.classNameGridComponent}
           data-testid="edit-key-grid"
         >
-          <FlexItem grow className={styles.flexItemKeyInput}>
+          <RiFlexItem grow className={styles.flexItemKeyInput}>
             <RiTooltip
               title="Key Name"
               position="left"
@@ -216,8 +216,8 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
                 />
               </RiTooltip>
             )}
-          </FlexItem>
-        </Grid>
+          </RiFlexItem>
+        </RiGrid>
       )}
       <Text
         className={cx(styles.key, {
@@ -229,7 +229,7 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
           {replaceSpaces(keyProp?.substring(0, 200))}
         </b>
       </Text>
-    </FlexItem>
+    </RiFlexItem>
   )
 }
 

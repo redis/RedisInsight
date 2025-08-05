@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { capitalize } from 'lodash'
 
-import { LoadingContent } from 'uiSrc/components/base/layout'
+import { RiLoadingContent } from 'uiSrc/components/base/layout'
 import {
   truncateNumberToFirstUnit,
   formatLongName,
@@ -95,7 +95,7 @@ const ClusterDetailsHeader = () => {
 
       {loading && !data && (
         <div className={styles.loading} data-testid="cluster-details-loading">
-          <LoadingContent lines={2} />
+          <RiLoadingContent lines={2} />
         </div>
       )}
       {data && (

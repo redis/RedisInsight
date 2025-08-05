@@ -9,10 +9,7 @@ import { BuildType } from 'uiSrc/constants/env'
 import { appInfoSelector } from 'uiSrc/slices/app/info'
 import { ConnectionType } from 'uiSrc/slices/interfaces'
 import { Nullable } from 'uiSrc/utils'
-import {
-  Group as ListGroup,
-  Item as ListGroupItem,
-} from 'uiSrc/components/base/layout/list'
+import { RiListGroup, RiListItem } from 'uiSrc/components/base/layout'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { Endpoint } from 'apiSrc/common/models'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
@@ -71,9 +68,9 @@ const DbInfo = (props: Props) => {
   )
 
   return (
-    <ListGroup className={styles.dbInfoGroup} flush>
+    <RiListGroup className={styles.dbInfoGroup} flush>
       {!isFromCloud && (
-        <ListGroupItem
+        <RiListItem
           label={
             <Text color="subdued" size="s">
               Connection Type:
@@ -90,7 +87,7 @@ const DbInfo = (props: Props) => {
       )}
 
       {nameFromProvider && (
-        <ListGroupItem
+        <RiListItem
           label={
             <Text color="subdued" size="s">
               Database Name from Provider:
@@ -101,7 +98,7 @@ const DbInfo = (props: Props) => {
           }
         />
       )}
-      <ListGroupItem
+      <RiListItem
         label={
           <>
             {!!nodes?.length && <AppendEndpoints />}
@@ -119,7 +116,7 @@ const DbInfo = (props: Props) => {
         }
       />
       {(server?.buildType === BuildType.RedisStack || isFromCloud) && (
-        <ListGroupItem
+        <RiListItem
           label={
             <Text color="subdued" size="s">
               Port:
@@ -136,7 +133,7 @@ const DbInfo = (props: Props) => {
       )}
 
       {!!db && (
-        <ListGroupItem
+        <RiListItem
           label={
             <Text color="subdued" size="s">
               Database Index:
@@ -149,7 +146,7 @@ const DbInfo = (props: Props) => {
       )}
 
       {!!modules?.length && (
-        <ListGroupItem
+        <RiListItem
           className={styles.dbInfoModulesLabel}
           label={
             <Text color="subdued" size="s">
@@ -164,7 +161,7 @@ const DbInfo = (props: Props) => {
           }
         />
       )}
-    </ListGroup>
+    </RiListGroup>
   )
 }
 

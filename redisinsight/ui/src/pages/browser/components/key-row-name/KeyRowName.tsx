@@ -1,7 +1,7 @@
 import React from 'react'
 import { isUndefined } from 'lodash'
 
-import { LoadingContent } from 'uiSrc/components/base/layout'
+import { RiLoadingContent } from 'uiSrc/components/base/layout'
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { Maybe, formatLongName, replaceSpaces } from 'uiSrc/utils'
@@ -17,7 +17,7 @@ const KeyRowName = (props: Props) => {
 
   if (isUndefined(shortName)) {
     return (
-      <LoadingContent
+      <RiLoadingContent
         lines={1}
         className={styles.keyInfoLoading}
         data-testid="name-loading"

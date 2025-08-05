@@ -1,5 +1,5 @@
 import React, { memo } from 'react'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiFormField, RiCheckbox } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { RiPopover } from 'uiSrc/components/base'
@@ -57,7 +57,7 @@ export const TagsCellHeader = memo(() => {
               }}
             />
           </RiFormField>
-          <Spacer size="m" />
+          <RiSpacer size="m" />
           {Object.keys(groupedTags).map((key) => (
             <div key={key}>
               <RiCheckbox

@@ -18,7 +18,7 @@ import { RiSwitchInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { DatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
-import Table from './Table'
+import TopNamespacesTable from './Table'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -129,7 +129,7 @@ const TopNamespace = (props: Props) => {
       </div>
       <div className="section-content">
         {tableView === TableView.MEMORY && (
-          <Table
+          <TopNamespacesTable
             data={data?.topMemoryNsp ?? []}
             defaultSortField="memory"
             delimiter={data?.delimiter ?? ''}
@@ -139,7 +139,7 @@ const TopNamespace = (props: Props) => {
           />
         )}
         {tableView === TableView.KEYS && (
-          <Table
+          <TopNamespacesTable
             data={data?.topKeysNsp ?? []}
             defaultSortField="keys"
             delimiter={data?.delimiter ?? ''}

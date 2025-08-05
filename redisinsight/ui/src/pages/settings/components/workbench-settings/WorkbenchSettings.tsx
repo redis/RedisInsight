@@ -11,7 +11,7 @@ import {
 } from 'uiSrc/slices/user/user-settings'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { validateNumber } from 'uiSrc/utils'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiFormField } from 'uiSrc/components/base/forms'
 import { RiSwitchInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
@@ -42,7 +42,7 @@ const WorkbenchSettings = () => {
   return (
     <>
       <Title size="M">Editor Cleanup</Title>
-      <Spacer size="m" />
+      <RiSpacer size="m" />
       <RiFormField>
         <RiSwitchInput
           checked={cleanup}
@@ -51,7 +51,7 @@ const WorkbenchSettings = () => {
           data-testid="switch-workbench-cleanup"
         />
       </RiFormField>
-      <Spacer size="xl" />
+      <RiSpacer size="xl" />
       <SettingItem
         initValue={batchSize.toString()}
         onApply={handleApplyPipelineCountChanges}

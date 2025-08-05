@@ -5,7 +5,7 @@ import {
   StatisticsConnectionStatus,
 } from 'uiSrc/slices/interfaces'
 import { formatLongName } from 'uiSrc/utils'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { RiTable, ColumnDefinition } from 'uiSrc/components/base/layout'
 import { RiTooltip } from 'uiSrc/components'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import Accordion from '../components/accordion'
@@ -99,7 +99,7 @@ const TargetConnections = ({ data }: Props) => {
         title="Target connections"
         hideAutoRefresh
       >
-        <Table
+        <RiTable
           columns={columns}
           data={connections}
           defaultSorting={[{ id: 'name', desc: false }]}

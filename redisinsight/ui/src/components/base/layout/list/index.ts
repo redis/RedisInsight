@@ -1,4 +1,4 @@
-import Group from './Group'
-import Item from './Item'
+import { RiListGroup } from './RiListGroup'
+import { RiListItem } from './RiListItem'
 
-export { Group, Item }
+export { RiListGroup, RiListItem }

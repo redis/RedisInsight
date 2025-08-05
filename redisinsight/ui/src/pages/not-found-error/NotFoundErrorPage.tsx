@@ -5,7 +5,7 @@ import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { FeatureFlags } from 'uiSrc/constants/featureFlags'
 import { getConfig } from 'uiSrc/config'
 import Robot from 'uiSrc/assets/img/robot.svg?react'
-import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
+import { RiCol, RiFlexItem } from 'uiSrc/components/base/layout'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
@@ -29,17 +29,17 @@ const NotFoundErrorPage = () => {
 
   return (
     <div className={styles.notfoundpage}>
-      <Col align="start" className={styles.notfoundgroup}>
-        <FlexItem grow>
-          <Col align="start" gap="xl">
-            <FlexItem grow>
+      <RiCol align="start" className={styles.notfoundgroup}>
+        <RiFlexItem grow>
+          <RiCol align="start" gap="xl">
+            <RiFlexItem grow>
               <RiIcon
                 className={styles.logoIcon}
                 size="original"
                 type="RedisLogoFullIcon"
               />
-            </FlexItem>
-            <FlexItem grow>
+            </RiFlexItem>
+            <RiFlexItem grow>
               <Title size="XXL">
                 Whoops!
                 <br />
@@ -61,10 +61,10 @@ const NotFoundErrorPage = () => {
                   Databases page
                 </RiPrimaryButton>
               </Text>
-            </FlexItem>
-          </Col>
-        </FlexItem>
-      </Col>
+            </RiFlexItem>
+          </RiCol>
+        </RiFlexItem>
+      </RiCol>
       <div className={styles.robotHolder}>
         <Robot className={styles.robot} />
       </div>

@@ -5,7 +5,7 @@ import TestConnectionsLog from 'uiSrc/pages/rdi/pipeline-management/components/t
 import { rdiTestConnectionsSelector } from 'uiSrc/slices/rdi/testConnections'
 
 import { Text } from 'uiSrc/components/base/text'
-import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
+import { RiCol, RiFlexItem } from 'uiSrc/components/base/layout'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import { RiLoader } from 'uiSrc/components/base/display'
@@ -46,19 +46,19 @@ const TestConnectionsPanel = (props: Props) => {
   if (loading) {
     return (
       <TestConnectionPanelWrapper onClose={onClose}>
-        <Col className={styles.content} centered>
-          <FlexItem>
+        <RiCol className={styles.content} centered>
+          <RiFlexItem>
             <Text className={styles.loaderText}>Loading results...</Text>
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <RiLoader
               data-testid="test-connections-loader"
               className={styles.loaderIcon}
               color="secondary"
               size="xl"
             />
-          </FlexItem>
-        </Col>
+          </RiFlexItem>
+        </RiCol>
       </TestConnectionPanelWrapper>
     )
   }

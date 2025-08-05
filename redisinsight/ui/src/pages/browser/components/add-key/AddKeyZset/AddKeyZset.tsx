@@ -12,7 +12,7 @@ import {
   IZsetMemberState,
 } from 'uiSrc/pages/browser/components/add-key/AddKeyZset/interfaces'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiFormField } from 'uiSrc/components/base/forms'
 import { RiTextInput } from 'uiSrc/components/base/inputs'
 import { CreateZSetWithExpireDto } from 'apiSrc/modules/browser/z-set/dto'
@@ -180,8 +180,8 @@ const AddKeyZset = (props: Props) => {
         onClickAdd={addMember}
       >
         {(item, index) => (
-          <Row align="center" gap="m">
-            <FlexItem grow>
+          <RiRow align="center" gap="m">
+            <RiFlexItem grow>
               <RiFormField>
                 <RiTextInput
                   name={`member-${item.id}`}
@@ -198,8 +198,8 @@ const AddKeyZset = (props: Props) => {
                   data-testid="member-name"
                 />
               </RiFormField>
-            </FlexItem>
-            <FlexItem grow>
+            </RiFlexItem>
+            <RiFlexItem grow>
               <RiFormField>
                 <RiTextInput
                   name={`score-${item.id}`}
@@ -217,8 +217,8 @@ const AddKeyZset = (props: Props) => {
                   data-testid="member-score"
                 />
               </RiFormField>
-            </FlexItem>
-          </Row>
+            </RiFlexItem>
+          </RiRow>
         )}
       </AddMultipleFields>
 

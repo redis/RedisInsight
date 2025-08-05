@@ -6,8 +6,8 @@ import { AddStreamFormConfig as config } from 'uiSrc/pages/browser/components/ad
 import AddMultipleFields from 'uiSrc/pages/browser/components/add-multiple-fields'
 
 import { RiTooltip } from 'uiSrc/components'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiFormField } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { RiTextInput } from 'uiSrc/components/base/inputs'
@@ -122,7 +122,7 @@ const StreamEntryFields = (props: Props) => {
                 <>
                   ID must be a timestamp and sequence number greater than the
                   last ID.
-                  <Spacer size="xs" />
+                  <RiSpacer size="xs" />
                   Otherwise, type * to auto-generate ID based on the database
                   current time.
                 </>
@@ -167,8 +167,8 @@ const StreamEntryFields = (props: Props) => {
             onClickAdd={addField}
           >
             {(item, index) => (
-              <Row align="center" gap="m">
-                <FlexItem className={styles.fieldItemWrapper} grow>
+              <RiRow align="center" gap="m">
+                <RiFlexItem className={styles.fieldItemWrapper} grow>
                   <RiFormField>
                     <RiTextInput
                       name={`fieldName-${item.id}`}
@@ -185,8 +185,8 @@ const StreamEntryFields = (props: Props) => {
                       data-testid="field-name"
                     />
                   </RiFormField>
-                </FlexItem>
-                <FlexItem className={styles.valueItemWrapper} grow>
+                </RiFlexItem>
+                <RiFlexItem className={styles.valueItemWrapper} grow>
                   <RiFormField>
                     <RiTextInput
                       className={styles.fieldValue}
@@ -201,8 +201,8 @@ const StreamEntryFields = (props: Props) => {
                       data-testid="field-value"
                     />
                   </RiFormField>
-                </FlexItem>
-              </Row>
+                </RiFlexItem>
+              </RiRow>
             )}
           </AddMultipleFields>
         </div>

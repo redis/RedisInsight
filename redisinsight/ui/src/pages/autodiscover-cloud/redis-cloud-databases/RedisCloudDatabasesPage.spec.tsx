@@ -1,6 +1,6 @@
 import React from 'react'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
-import { Table } from 'uiSrc/components/base/layout/table'
+import { Table } from 'uiSrc/components/base/layout'
 
 import RedisCloudDatabasesPage from './RedisCloudDatabasesPage'
 import RedisCloudDatabases from './RedisCloudDatabases'

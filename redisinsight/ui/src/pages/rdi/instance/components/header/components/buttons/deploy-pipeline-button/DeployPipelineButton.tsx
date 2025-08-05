@@ -15,8 +15,8 @@ import { createAxiosError, pipelineToJson } from 'uiSrc/utils'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { rdiErrorMessages } from 'uiSrc/pages/rdi/constants'
 import { Text } from 'uiSrc/components/base/text'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 import { RiPrimaryButton, RiCheckbox } from 'uiSrc/components/base/forms'
 import { RiRocketIcon, RiIcon } from 'uiSrc/components/base/icons'
@@ -126,17 +126,17 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
         }
       >
         <Title size="XS">Are you sure you want to deploy the pipeline?</Title>
-        <Spacer size="s" />
+        <RiSpacer size="s" />
         <Text size="s">
           When deployed, this local configuration will overwrite any existing
           pipeline.
         </Text>
-        <Spacer size="s" />
+        <RiSpacer size="s" />
         <Text size="s">
           After deployment, consider flushing the target Redis database and
           resetting the pipeline to ensure that all data is reprocessed.
         </Text>
-        <Spacer size="s" />
+        <RiSpacer size="s" />
         <div className={styles.checkbox}>
           <RiCheckbox
             id="resetPipeline"
@@ -159,8 +159,8 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
             />
           </RiTooltip>
         </div>
-        <Row gap="m" responsive justify="end">
-          <FlexItem>
+        <RiRow gap="m" responsive justify="end">
+          <RiFlexItem>
             <RiPrimaryButton
               size="s"
               color="secondary"
@@ -170,8 +170,8 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
             >
               Deploy
             </RiPrimaryButton>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </RiPopover>
     </OutsideClickDetector>
   )

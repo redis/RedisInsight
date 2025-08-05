@@ -28,7 +28,7 @@ import {
   RiSecondaryButton,
   RiFormField,
 } from 'uiSrc/components/base/forms'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiTextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 
@@ -143,8 +143,8 @@ const AddSetMembers = (props: Props) => {
           onClickAdd={addMember}
         >
           {(item, index) => (
-            <Row align="center">
-              <FlexItem grow>
+            <RiRow align="center">
+              <RiFlexItem grow>
                 <RiFormField>
                   <RiTextInput
                     name={`member-${item.id}`}
@@ -161,22 +161,22 @@ const AddSetMembers = (props: Props) => {
                     data-testid="member-name"
                   />
                 </RiFormField>
-              </FlexItem>
-            </Row>
+              </RiFlexItem>
+            </RiRow>
           )}
         </AddMultipleFields>
       </div>
       <>
-        <Row justify="end" gap="xl" style={{ padding: 18 }}>
-          <FlexItem>
+        <RiRow justify="end" gap="xl" style={{ padding: 18 }}>
+          <RiFlexItem>
             <RiSecondaryButton
               onClick={() => closePanel(true)}
               data-testid="cancel-members-btn"
             >
               <ColorText color="default">Cancel</ColorText>
             </RiSecondaryButton>
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <RiPrimaryButton
               disabled={loading}
               loading={loading}
@@ -185,8 +185,8 @@ const AddSetMembers = (props: Props) => {
             >
               Save
             </RiPrimaryButton>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </>
     </>
   )

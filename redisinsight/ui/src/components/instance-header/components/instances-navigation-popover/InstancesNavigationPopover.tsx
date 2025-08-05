@@ -11,10 +11,10 @@ import { Instance, RdiInstance } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { localStorageService } from 'uiSrc/services'
 import { filterAndSort } from 'uiSrc/utils'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons'
-import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
+import { RiTabs, TabInfo } from 'uiSrc/components/base/layout'
 import { RiPopover } from 'uiSrc/components/base'
 import InstancesList from './components/instances-list'
 import styles from './styles.module.scss'
@@ -141,7 +141,7 @@ const InstancesNavigationPopover = ({ name }: Props) => {
         </div>
         <div>
           <div className={styles.tabsContainer}>
-            <Tabs
+            <RiTabs
               tabs={tabs}
               value={selectedTab}
               // @ts-expect-error type mismatch
@@ -150,7 +150,7 @@ const InstancesNavigationPopover = ({ name }: Props) => {
               data-testid="instances-tabs-testId"
             />
           </div>
-          <Spacer size="m" />
+          <RiSpacer size="m" />
           <InstancesList
             selectedTab={selectedTab}
             filteredDbInstances={filteredDbInstances}
@@ -158,7 +158,7 @@ const InstancesNavigationPopover = ({ name }: Props) => {
             onItemClick={showPopover}
           />
           <div>
-            <Spacer size="m" />
+            <RiSpacer size="m" />
             <Divider />
             <div className={styles.footerContainer}>
               <Text className={styles.homePageLink} onClick={goHome}>

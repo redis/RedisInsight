@@ -14,7 +14,7 @@ import {
   removeDeprecatedModuleCommands,
   checkDeprecatedModuleCommand,
 } from 'uiSrc/utils'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 
 import CommandHelper from './CommandHelper'
@@ -98,16 +98,16 @@ const CommandHelperWrapper = () => {
         ? 'Optional'
         : 'Required'
     return (
-      <Row justify="between" align="center" className={styles.arg} key={i}>
-        <FlexItem>
+      <RiRow justify="between" align="center" className={styles.arg} key={i}>
+        <RiFlexItem>
           <RiBadge
             variant="light"
             className={cn(styles.badge, 'text-capitalize')}
             label={type}
           />
-        </FlexItem>
-        <FlexItem grow>{arg.generatedName}</FlexItem>
-      </Row>
+        </RiFlexItem>
+        <RiFlexItem grow>{arg.generatedName}</RiFlexItem>
+      </RiRow>
     )
   }
 

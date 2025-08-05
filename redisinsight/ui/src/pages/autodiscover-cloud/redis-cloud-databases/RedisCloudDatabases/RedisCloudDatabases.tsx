@@ -8,7 +8,12 @@ import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import {
+  RiFlexItem,
+  RiRow,
+  RiTable,
+  ColumnDefinition,
+} from 'uiSrc/components/base/layout'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import {
   RiDestructiveButton,
@@ -21,7 +26,6 @@ import { Pages } from 'uiSrc/constants'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { RiSearchInput } from 'uiSrc/components/base/inputs'
 import { Text } from 'uiSrc/components/base/text'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import styles from '../styles.module.scss'
 
 export interface Props {
@@ -194,17 +198,17 @@ const RedisCloudDatabasesPage = ({
           Redis Cloud Databases
         </Title>
 
-        <Row align="end" gap="s">
-          <FlexItem grow>
+        <RiRow align="end" gap="s">
+          <RiFlexItem grow>
             <Text color="subdued" className={styles.subTitle} component="span">
               These are {items.length > 1 ? 'databases ' : 'database '}
               in your Redis Cloud. Select the
               {items.length > 1 ? ' databases ' : ' database '} that you want to
               add.
             </Text>
-          </FlexItem>
-        </Row>
-        <FlexItem>
+          </RiFlexItem>
+        </RiRow>
+        <RiFlexItem>
           <RiFormField className={styles.searchForm}>
             <RiSearchInput
               placeholder="Search..."
@@ -213,11 +217,11 @@ const RedisCloudDatabasesPage = ({
               data-testid="search"
             />
           </RiFormField>
-        </FlexItem>
+        </RiFlexItem>
         <br />
 
         <div className="itemList databaseList cloudDatabaseList">
-          <Table
+          <RiTable
             columns={columns}
             data={items}
             defaultSorting={[
@@ -231,8 +235,8 @@ const RedisCloudDatabasesPage = ({
           {!items.length && <Text>{message}</Text>}
         </div>
       </div>
-      <FlexItem padding={4}>
-        <Row justify="between" gap="m">
+      <RiFlexItem padding={4}>
+        <RiRow justify="between" gap="m">
           <RiSecondaryButton
             onClick={onBack}
             className="btn-cancel btn-back"
@@ -244,8 +248,8 @@ const RedisCloudDatabasesPage = ({
             <CancelButton isPopoverOpen={isPopoverOpen} />
             <SubmitButton isDisabled={selection.length < 1} />
           </div>
-        </Row>
-      </FlexItem>
+        </RiRow>
+      </RiFlexItem>
     </AutodiscoveryPageTemplate>
   )
 }

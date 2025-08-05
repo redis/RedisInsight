@@ -13,7 +13,7 @@ import { Nullable } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { renderOnboardingTourWithChild } from 'uiSrc/utils/onboarding'
 import { recommendationsSelector } from 'uiSrc/slices/recommendations/recommendations'
-import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
+import { RiTabs, TabInfo } from 'uiSrc/components/base/layout'
 import { Text } from 'uiSrc/components/base/text'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import {
@@ -122,7 +122,7 @@ const DatabaseAnalysisTabs = (props: Props) => {
   }
 
   return (
-    <Tabs
+    <RiTabs
       tabs={tabs}
       value={viewTab}
       onChange={handleTabChange}

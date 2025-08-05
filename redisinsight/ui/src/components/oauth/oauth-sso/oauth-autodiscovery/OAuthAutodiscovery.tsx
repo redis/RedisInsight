@@ -20,7 +20,7 @@ import OAuthForm from 'uiSrc/components/oauth/shared/oauth-form'
 import CloudIcon from 'uiSrc/assets/img/oauth/cloud_centered.svg?react'
 
 import { OAuthSsoHandlerDialog } from 'uiSrc/components'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
@@ -147,16 +147,16 @@ const OAuthAutodiscovery = (props: Props) => {
               Discover subscriptions and add your databases. A new Redis Cloud
               account will be created for you if you don’t have one.
             </Text>
-            <Spacer size="m" />
+            <RiSpacer size="m" />
             <CreateFreeDb />
-            <Spacer size="xl" />
+            <RiSpacer size="xl" />
             <Text>Get started with</Text>
             <Title className={styles.title} size="L">
               Redis Cloud account
             </Title>
-            <Spacer size="xl" />
+            <RiSpacer size="xl" />
             {form}
-            <Spacer size="xxl" />
+            <RiSpacer size="xxl" />
             <div className={styles.containerAgreement}>
               <OAuthAgreement size="s" />
             </div>

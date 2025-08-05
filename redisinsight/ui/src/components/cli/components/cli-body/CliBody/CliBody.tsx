@@ -11,7 +11,7 @@ import CliInputWrapper from 'uiSrc/components/cli/components/cli-input'
 import { clearOutput, updateCliHistoryStorage } from 'uiSrc/utils/cliHelper'
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -248,8 +248,8 @@ const CliBody = (props: Props) => {
       role="textbox"
       tabIndex={0}
     >
-      <Row justify="between" style={{ height: '100%' }}>
-        <FlexItem grow>
+      <RiRow justify="between" style={{ height: '100%' }}>
+        <RiFlexItem grow>
           <div className={styles.output}>{data}</div>
           {!error && !(loading || settingsLoading) ? (
             <span
@@ -270,8 +270,8 @@ const CliBody = (props: Props) => {
             !error && <span>Executing command...</span>
           )}
           <div ref={scrollDivRef} />
-        </FlexItem>
-      </Row>
+        </RiFlexItem>
+      </RiRow>
     </div>
   )
 }

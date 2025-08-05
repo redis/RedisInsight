@@ -18,7 +18,7 @@ import {
 import { SCAN_TREE_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { TutorialsIds } from 'uiSrc/constants'
 
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { RiImage } from 'uiSrc/components/base/display'
@@ -60,11 +60,11 @@ const NoKeysFound = (props: Props) => {
   return (
     <div className={styles.container} data-testid="no-result-found-msg">
       <RiImage className={styles.img} src={TelescopeImg} alt="no results" />
-      <Spacer />
+      <RiSpacer />
       <Title className={styles.title} size="S">
         Let&apos;s start working
       </Title>
-      <Spacer />
+      <RiSpacer />
       <div className={styles.actions}>
         <LoadSampleData onSuccess={onSuccessLoadData} />
         <RiEmptyButton

@@ -10,8 +10,8 @@ import {
   changeSelectedTab,
   insightsPanelSelector,
 } from 'uiSrc/slices/panels/sidePanels'
-import { OnboardingTour } from 'uiSrc/components'
-import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
+import { OnboardingTour, RiTabs } from 'uiSrc/components'
+import type { TabInfo } from 'uiSrc/components/base/layout'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { recommendationsSelector } from 'uiSrc/slices/recommendations/recommendations'
 import {
@@ -94,7 +94,7 @@ const InsightsPanel = (props: Props) => {
         </div>
       </Header>
       <div className={styles.body}>
-        <Tabs
+        <RiTabs
           tabs={tabs}
           value={tabSelected}
           onChange={handleTabChange}

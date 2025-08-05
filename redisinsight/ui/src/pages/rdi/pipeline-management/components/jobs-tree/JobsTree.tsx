@@ -18,7 +18,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { isEqualPipelineFile, Nullable } from 'uiSrc/utils'
 
 import { ColorText, Text } from 'uiSrc/components/base/text'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import {
   DeleteIcon,
   EditIcon,
@@ -40,12 +40,12 @@ export interface IProps {
 const buildValidationMessage = (text: string) => ({
   title: '',
   content: (
-    <Row align="center" gap="s">
-      <FlexItem>
+    <RiRow align="center" gap="s">
+      <RiFlexItem>
         <RiIcon type="InfoIcon" />
-      </FlexItem>
-      <FlexItem grow>{text}</FlexItem>
-    </Row>
+      </RiFlexItem>
+      <RiFlexItem grow>{text}</RiFlexItem>
+    </RiRow>
   ),
 })
 
@@ -159,7 +159,7 @@ const JobsTree = (props: IProps) => {
 
   const jobName = (name: string, isValid: boolean = true) => (
     <>
-      <FlexItem
+      <RiFlexItem
         grow
         onClick={() => onSelectedTab(name)}
         className={cx(styles.navItem, 'truncateText', { invalid: !isValid })}
@@ -174,8 +174,8 @@ const JobsTree = (props: IProps) => {
             data-testid="rdi-pipeline-nav__error"
           />
         )}
-      </FlexItem>
-      <FlexItem
+      </RiFlexItem>
+      <RiFlexItem
         className={styles.actions}
         data-testid={`rdi-nav-job-actions-${name}`}
       >
@@ -225,12 +225,12 @@ const JobsTree = (props: IProps) => {
             }
           />
         </RiTooltip>
-      </FlexItem>
+      </RiFlexItem>
     </>
   )
 
   const jobNameEditor = (name: string, idx?: number) => (
-    <FlexItem
+    <RiFlexItem
       grow
       className={styles.inputContainer}
       data-testid={`rdi-nav-job-edit-${name}`}
@@ -258,7 +258,7 @@ const JobsTree = (props: IProps) => {
           },
         }}
       />
-    </FlexItem>
+    </RiFlexItem>
   )
 
   const isJobValid = (jobName: string) =>
@@ -268,7 +268,7 @@ const JobsTree = (props: IProps) => {
 
   const renderJobsList = (jobs: IRdiPipelineJob[]) =>
     jobs.map(({ name }, idx) => (
-      <Row
+      <RiRow
         key={name}
         className={cx(styles.fullWidth, styles.job, {
           [styles.active]: path === name,
@@ -293,33 +293,33 @@ const JobsTree = (props: IProps) => {
             </RiTooltip>
           )}
         </div>
-        <Row className={styles.fullWidth} align="center">
-          <FlexItem>
+        <RiRow className={styles.fullWidth} align="center">
+          <RiFlexItem>
             <RiIcon
               type="ContractsIcon"
               className={styles.fileIcon}
               data-test-subj="jobs-folder-icon-close"
             />
-          </FlexItem>
+          </RiFlexItem>
           {currentJobName === name
             ? jobNameEditor(name, idx)
             : jobName(name, isJobValid(name))}
-        </Row>
-      </Row>
+        </RiRow>
+      </RiRow>
     ))
 
   const folder = () => (
-    <Row className={styles.fullWidth} align="center" justify="between">
-      <Row className={styles.fullWidth} align="center">
-        <FlexItem>
+    <RiRow className={styles.fullWidth} align="center" justify="between">
+      <RiRow className={styles.fullWidth} align="center">
+        <RiFlexItem>
           <RiIcon
             type="FolderIcon"
             color={accordionState === 'open' ? 'success300' : 'informative400'}
             className={styles.folderIcon}
             data-test-subj="jobs-folder-icon"
           />
-        </FlexItem>
-        <FlexItem grow className="truncateText">
+        </RiFlexItem>
+        <RiFlexItem grow className="truncateText">
           {'Jobs '}
           {!loading && (
             <ColorText
@@ -336,9 +336,9 @@ const JobsTree = (props: IProps) => {
               className={styles.loader}
             />
           )}
-        </FlexItem>
-      </Row>
-    </Row>
+        </RiFlexItem>
+      </RiRow>
+    </RiRow>
   )
 
   return (
@@ -375,23 +375,23 @@ const JobsTree = (props: IProps) => {
     >
       {/* // TODO confirm with RDI team and put sort in separate component */}
       {isNewJob && (
-        <Row
+        <RiRow
           className={cx(styles.fullWidth, styles.job)}
           align="center"
           justify="between"
           data-testid="new-job-file"
         >
-          <Row className={styles.fullWidth} align="center">
-            <FlexItem>
+          <RiRow className={styles.fullWidth} align="center">
+            <RiFlexItem>
               <RiIcon
                 type="ContractsIcon"
                 className={styles.fileIcon}
                 data-test-subj="jobs-file-icon"
               />
-            </FlexItem>
+            </RiFlexItem>
             {jobNameEditor('')}
-          </Row>
-        </Row>
+          </RiRow>
+        </RiRow>
       )}
       {renderJobsList(jobs ?? [])}
     </EuiAccordion>

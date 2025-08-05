@@ -5,7 +5,7 @@ import { userSettingsConfigSelector } from 'uiSrc/slices/user/user-settings'
 import { Vote } from 'uiSrc/constants/recommendations'
 import { Nullable } from 'uiSrc/utils'
 
-import { Row } from 'uiSrc/components/base/layout/flex'
+import { RiRow } from 'uiSrc/components/base/layout'
 import { Text } from 'uiSrc/components/base/text'
 import VoteOption from './components/vote-option'
 import styles from './styles.module.scss'
@@ -29,7 +29,7 @@ const RecommendationVoting = ({
   const [popover, setPopover] = useState<string>('')
 
   return (
-    <Row
+    <RiRow
       align="center"
       className={cx(styles.votingContainer, containerClass)}
       gap={live ? 'none' : 'l'}
@@ -53,7 +53,7 @@ const RecommendationVoting = ({
           />
         ))}
       </div>
-    </Row>
+    </RiRow>
   )
 }
 

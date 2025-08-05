@@ -9,13 +9,13 @@ import { FeatureFlagComponent } from 'uiSrc/components'
 
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 import {
-  SideBar,
-  SideBarContainer,
-  SideBarDivider,
-  SideBarFooter,
-  SideBarItem,
+  RiSideBar,
+  RiSideBarContainer,
+  RiSideBarDivider,
+  RiSideBarFooter,
+  RiSideBarItem,
   SideBarItemIcon,
-} from 'uiSrc/components/base/layout/sidebar'
+} from 'uiSrc/components/base/layout'
 import { GithubIcon } from 'uiSrc/components/base/icons'
 import { INavigations } from './navigation.types'
 import CreateCloud from './components/create-cloud'
@@ -52,7 +52,7 @@ const NavigationMenu = () => {
             transformOnHover
           >
             <div className={styles.navigationButtonWrapper}>
-              <SideBarItem
+              <RiSideBarItem
                 isActive={nav.isActivePage}
                 onClick={nav.onClick}
                 tooltipProps={{ text: nav.tooltipText, placement: 'right' }}
@@ -62,7 +62,7 @@ const NavigationMenu = () => {
                   aria-label={nav.ariaLabel}
                   data-testid={nav.dataTestId}
                 />
-              </SideBarItem>
+              </RiSideBarItem>
               {nav.isBeta && (
                 <RiBadge className={styles.betaLabel} label="BETA" />
               )}
@@ -96,7 +96,7 @@ const NavigationMenu = () => {
         dotClassName={styles.highlightDot}
         transformOnHover
       >
-        <SideBarItem
+        <RiSideBarItem
           tooltipProps={{ text: nav.tooltipText, placement: 'right' }}
           onClick={nav.onClick}
           isActive={nav.isActivePage}
@@ -107,7 +107,7 @@ const NavigationMenu = () => {
             aria-label={nav.ariaLabel}
             data-testid={nav.dataTestId}
           />
-        </SideBarItem>
+        </RiSideBarItem>
       </HighlightedFeature>
     )
 
@@ -125,13 +125,13 @@ const NavigationMenu = () => {
   }
 
   return (
-    <SideBar
+    <RiSideBar
       isExpanded={false}
       aria-label="Main navigation"
       data-testid="main-navigation-sidebar"
       className={styles.mainNavbar}
     >
-      <SideBarContainer>
+      <RiSideBarContainer>
         <RedisLogo isRdiWorkspace={isRdiWorkspace} />
         {connectedInstanceId &&
           !isRdiWorkspace &&
@@ -139,8 +139,8 @@ const NavigationMenu = () => {
         {connectedRdiInstanceId &&
           isRdiWorkspace &&
           privateRdiRoutes.map(renderNavItem)}
-      </SideBarContainer>
-      <SideBarFooter className={styles.footer}>
+      </RiSideBarContainer>
+      <RiSideBarFooter className={styles.footer}>
         <FeatureFlagComponent name={FeatureFlags.envDependent} enabledByDefault>
           <CreateCloud />
           <NotificationMenu />
@@ -152,13 +152,13 @@ const NavigationMenu = () => {
         {publicRoutes.map(renderPublicNavItem)}
 
         <FeatureFlagComponent name={FeatureFlags.envDependent} enabledByDefault>
-          <SideBarDivider data-testid="github-repo-divider-default" />
-          <SideBarFooter.Link
+          <RiSideBarDivider data-testid="github-repo-divider-default" />
+          <RiSideBarFooter.Link
             data-testid="github-repo-btn"
             href={EXTERNAL_LINKS.githubRepo}
             target="_blank"
           >
-            <SideBarItem
+            <RiSideBarItem
               className={styles.githubNavItem}
               tooltipProps={{
                 text: 'Star us on GitHub',
@@ -170,11 +170,11 @@ const NavigationMenu = () => {
                 aria-label="github-repo-icon"
                 data-testid="github-repo-icon"
               />
-            </SideBarItem>
-          </SideBarFooter.Link>
+            </RiSideBarItem>
+          </RiSideBarFooter.Link>
         </FeatureFlagComponent>
-      </SideBarFooter>
-    </SideBar>
+      </RiSideBarFooter>
+    </RiSideBar>
   )
 }
 

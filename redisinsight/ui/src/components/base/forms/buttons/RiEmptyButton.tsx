@@ -2,8 +2,8 @@ import React from 'react'
 import { TextButton } from '@redis-ui/components'
 import { IconType } from 'uiSrc/components/base/icons'
 
+import { RiRow } from 'uiSrc/components/base/layout'
 import { ButtonIcon } from './Button'
-import { Row } from '../../layout/flex'
 import { FlexProps } from '../../layout/flex/flex.styles'
 
 export type ButtonProps = React.ComponentProps<typeof TextButton> & {
@@ -23,7 +23,7 @@ export const RiEmptyButton = ({
   ...rest
 }: ButtonProps) => (
   <TextButton {...rest}>
-    <Row justify={justify}>
+    <RiRow justify={justify}>
       <ButtonIcon
         buttonSide="left"
         icon={icon}
@@ -39,6 +39,6 @@ export const RiEmptyButton = ({
         loading={loading}
         size={size}
       />
-    </Row>
+    </RiRow>
   </TextButton>
 )

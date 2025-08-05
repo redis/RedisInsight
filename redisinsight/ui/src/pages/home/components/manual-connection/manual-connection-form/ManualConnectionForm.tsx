@@ -23,11 +23,14 @@ import { appInfoSelector } from 'uiSrc/slices/app/info'
 
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import {
+  RiFlexItem,
+  RiRow,
+  RiTabs as TabsComponent,
+} from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
 import { RiIconButton } from 'uiSrc/components/base/forms'
-import TabsComponent from 'uiSrc/components/base/layout/tabs'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { MANUAL_FORM_TABS, ManualFormTab } from './constants'
 import CloneConnection from './components/CloneConnection'
@@ -157,19 +160,19 @@ const ManualConnectionForm = (props: Props) => {
   useEffect(() => {
     if (isCloneMode) {
       setModalHeader(
-        <Row align="center" gap="s">
-          <FlexItem>
+        <RiRow align="center" gap="s">
+          <RiFlexItem>
             <RiIconButton
               onClick={handleClickBackClone}
               icon={ArrowLeftIcon}
               aria-label="back"
               data-testid="back-btn"
             />
-          </FlexItem>
-          <FlexItem grow>
+          </RiFlexItem>
+          <RiFlexItem grow>
             <Title size="M">Clone Database</Title>
-          </FlexItem>
-        </Row>,
+          </RiFlexItem>
+        </RiRow>,
       )
       return
     }
@@ -247,7 +250,7 @@ const ManualConnectionForm = (props: Props) => {
         {!isEditMode && !isFromCloud && (
           <>
             <Tabs />
-            <Spacer />
+            <RiSpacer />
             <div className="eui-yScroll">
               <AddConnection
                 activeTab={activeTab}
@@ -276,11 +279,11 @@ const ManualConnectionForm = (props: Props) => {
                     nodes={nodes}
                     isFromCloud={isFromCloud}
                   />
-                  <Spacer />
+                  <RiSpacer />
                 </>
               )}
               <Tabs />
-              <Spacer />
+              <RiSpacer />
               <div className="eui-yScroll">
                 <EditConnection
                   activeTab={activeTab}
@@ -309,11 +312,11 @@ const ManualConnectionForm = (props: Props) => {
                     host={host}
                     port={port}
                   />
-                  <Spacer />
+                  <RiSpacer />
                 </>
               )}
               <Tabs />
-              <Spacer />
+              <RiSpacer />
               <div className="eui-yScroll">
                 <EditSentinelConnection
                   activeTab={activeTab}

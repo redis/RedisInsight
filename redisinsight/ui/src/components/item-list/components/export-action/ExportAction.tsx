@@ -8,7 +8,7 @@ import {
   RiCheckbox,
 } from 'uiSrc/components/base/forms'
 import { ExportIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
@@ -54,14 +54,14 @@ const ExportAction = <T extends { id: string; name?: string }>(
       </Text>
       <div className={styles.boxSection}>
         {selection.map((select) => (
-          <Row key={select.id} gap="s" className={styles.nameList}>
-            <FlexItem>
+          <RiRow key={select.id} gap="s" className={styles.nameList}>
+            <RiFlexItem>
               <RiIcon type="CheckThinIcon" />
-            </FlexItem>
-            <FlexItem grow className={styles.nameListText}>
+            </RiFlexItem>
+            <RiFlexItem grow className={styles.nameListText}>
               <span>{formatLongName(select.name)}</span>
-            </FlexItem>
-          </Row>
+            </RiFlexItem>
+          </RiRow>
         ))}
       </div>
       <RiFormField style={{ marginTop: 16 }}>

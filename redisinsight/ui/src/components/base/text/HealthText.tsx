@@ -1,7 +1,7 @@
 import React from 'react'
 import { Typography } from '@redis-ui/components'
 import cn from 'classnames'
-import { Row } from 'uiSrc/components/base/layout/flex'
+import { RiRow } from 'uiSrc/components/base/layout'
 import { BodyProps, Indicator } from 'uiSrc/components/base/text/text.styles'
 
 type ColorType = BodyProps['color'] | (string & {})
@@ -15,7 +15,7 @@ export const HealthText = ({
   className,
   ...rest
 }: HealthProps) => (
-  <Row align="center" gap="m" justify="start">
+  <RiRow align="center" gap="m" justify="start">
     <Indicator
       $color={color}
       className={cn(`color__${color}`, 'RI-health-indicator')}
@@ -26,5 +26,5 @@ export const HealthText = ({
       size={size}
       className={cn(className, 'RI-health-text')}
     />
-  </Row>
+  </RiRow>
 )

@@ -17,7 +17,7 @@ import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { EXTERNAL_LINKS, UTM_CAMPAINGS } from 'uiSrc/constants/links'
 import { FeatureFlags } from 'uiSrc/constants'
 import { Text } from 'uiSrc/components/base/text'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Link } from 'uiSrc/components/base/link/Link'
@@ -45,14 +45,14 @@ const FilterNotAvailable = ({ onClose }: { onClose?: () => void }) => {
         Upgrade your Redis database to version 6 or above
       </Title>
       <Text>Filtering by data type is supported in Redis 6 and above.</Text>
-      <Spacer size="m" />
+      <RiSpacer size="m" />
       {!!freeInstances.length && (
         <>
           <Text color="subdued">
             Use your free trial all-in-one Redis Cloud database to start
             exploring these capabilities.
           </Text>
-          <Spacer />
+          <RiSpacer />
           <OAuthConnectFreeDb
             id={freeInstances[0].id}
             source={OAuthSocialSource.BrowserFiltering}
@@ -66,7 +66,7 @@ const FilterNotAvailable = ({ onClose }: { onClose?: () => void }) => {
             Create a free trial Redis Stack database that supports filtering and
             extends the core capabilities of your Redis.
           </Text>
-          <Spacer size="l" />
+          <RiSpacer size="l" />
           <div className={styles.linksWrapper}>
             <OAuthSsoHandlerDialog>
               {(ssoCloudHandlerClick) => (
@@ -85,7 +85,7 @@ const FilterNotAvailable = ({ onClose }: { onClose?: () => void }) => {
                 </RiPrimaryButton>
               )}
             </OAuthSsoHandlerDialog>
-            <Spacer size="m" />
+            <RiSpacer size="m" />
             <Link
               className={styles.link}
               target="_blank"

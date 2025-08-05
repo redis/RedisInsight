@@ -8,8 +8,8 @@ import {
   removeAllCapiKeysAction,
 } from 'uiSrc/slices/oauth/cloud'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import {
   RiDestructiveButton,
   RiPrimaryButton,
@@ -55,9 +55,9 @@ const CloudSettings = () => {
       <Title className={styles.title} size="XS">
         API user keys
       </Title>
-      <Spacer size="s" />
-      <Row gap="m" responsive>
-        <FlexItem grow>
+      <RiSpacer size="s" />
+      <RiRow gap="m" responsive>
+        <RiFlexItem grow>
           <Text size="s" className={styles.smallText} color="subdued">
             The list of API user keys that are stored locally in Redis Insight.{' '}
             <br />
@@ -72,8 +72,8 @@ const CloudSettings = () => {
             </Link>
             {' and delete them manually.'}
           </Text>
-        </FlexItem>
-        <FlexItem grow={false}>
+        </RiFlexItem>
+        <RiFlexItem grow={false}>
           <RiPopover
             anchorPosition="downCenter"
             ownFocus
@@ -106,7 +106,7 @@ const CloudSettings = () => {
                 </Link>
                 {' and delete them manually.'}
               </Text>
-              <Spacer />
+              <RiSpacer />
               <div className={styles.popoverFooter}>
                 <RiDestructiveButton
                   size="small"
@@ -120,9 +120,9 @@ const CloudSettings = () => {
               </div>
             </div>
           </RiPopover>
-        </FlexItem>
-      </Row>
-      <Spacer />
+        </RiFlexItem>
+      </RiRow>
+      <RiSpacer />
       <UserApiKeysTable items={data} loading={loading} />
     </div>
   )

@@ -20,7 +20,12 @@ import { createAxiosError, formatLongName, yamlToJson } from 'uiSrc/utils'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 
 import { Text } from 'uiSrc/components/base/text'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import {
+  RiFlexItem,
+  RiRow,
+  RiTabs,
+  TabInfo,
+} from 'uiSrc/components/base/layout'
 import {
   RiEmptyButton,
   RiIconButton,
@@ -34,7 +39,6 @@ import {
   ExtendIcon,
   ShrinkIcon,
 } from 'uiSrc/components/base/icons'
-import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
 import { RiTooltip } from 'uiSrc/components'
 import styles from './styles.module.scss'
 
@@ -237,8 +241,8 @@ const DryRunJobPanel = (props: Props) => {
             wrapperClassName={styles.inputCode}
             data-testid="input-value"
           />
-          <Row responsive justify="end">
-            <FlexItem>
+          <RiRow responsive justify="end">
+            <RiFlexItem>
               <RiTooltip
                 content={isFormValid ? null : 'Input should have JSON format'}
                 position="top"
@@ -256,8 +260,8 @@ const DryRunJobPanel = (props: Props) => {
                   Dry run
                 </RiEmptyButton>
               </RiTooltip>
-            </FlexItem>
-          </Row>
+            </RiFlexItem>
+          </RiRow>
           <div className={styles.codeLabel}>
             {isSelectAvailable && (
               <RiSelect
@@ -268,7 +272,7 @@ const DryRunJobPanel = (props: Props) => {
                 data-testid="target-select"
               />
             )}
-            <Tabs
+            <RiTabs
               tabs={tabs}
               value={selectedTab}
               onChange={handleTabChange}

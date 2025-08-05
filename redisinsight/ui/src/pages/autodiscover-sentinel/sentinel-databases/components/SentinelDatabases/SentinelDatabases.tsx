@@ -7,7 +7,12 @@ import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import {
+  RiFlexItem,
+  RiRow,
+  RiTable,
+  ColumnDefinition,
+} from 'uiSrc/components/base/layout'
 import {
   RiDestructiveButton,
   RiPrimaryButton,
@@ -19,7 +24,6 @@ import { RiSearchInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import styles from '../../../styles.module.scss'
 
 export interface Props {
@@ -197,15 +201,15 @@ const SentinelDatabases = ({
           Auto-Discover Redis Sentinel Primary Groups
         </Title>
 
-        <Row align="end" gap="s">
-          <FlexItem grow>
+        <RiRow align="end" gap="s">
+          <RiFlexItem grow>
             <Text color="subdued" className={styles.subTitle} component="span">
               Redis Sentinel instance found. <br />
               Here is a list of primary groups your Sentinel instance is
               managing. Select the primary group(s) you want to add:
             </Text>
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <RiFormField className={styles.searchForm}>
               <RiSearchInput
                 placeholder="Search..."
@@ -214,12 +218,12 @@ const SentinelDatabases = ({
                 data-testid="search"
               />
             </RiFormField>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
         <br />
 
         <div className="itemList databaseList sentinelDatabaseList">
-          <Table
+          <RiTable
             columns={columns}
             data={items}
             defaultSorting={[
@@ -238,8 +242,8 @@ const SentinelDatabases = ({
           )}
         </div>
       </div>
-      <FlexItem>
-        <Row
+      <RiFlexItem>
+        <RiRow
           justify="between"
           className={cx(styles.footer, 'footerAddDatabase')}
         >
@@ -254,8 +258,8 @@ const SentinelDatabases = ({
             <CancelButton isPopoverOpen={isPopoverOpen} />
             <SubmitButton onClick={handleSubmit} />
           </div>
-        </Row>
-      </FlexItem>
+        </RiRow>
+      </RiFlexItem>
     </AutodiscoveryPageTemplate>
   )
 }

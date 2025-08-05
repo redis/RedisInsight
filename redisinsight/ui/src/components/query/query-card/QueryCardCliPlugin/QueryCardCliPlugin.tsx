@@ -10,7 +10,7 @@ import {
   formatToText,
   replaceEmptyValue,
 } from 'uiSrc/utils'
-import { LoadingContent } from 'uiSrc/components/base/layout'
+import { RiLoadingContent, RiFlexItem } from 'uiSrc/components/base/layout'
 import { Theme } from 'uiSrc/constants'
 import {
   CommandExecutionResult,
@@ -28,7 +28,6 @@ import {
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { appServerInfoSelector } from 'uiSrc/slices/app/info'
 
-import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import { ColorText } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
@@ -350,7 +349,7 @@ const QueryCardCliPlugin = (props: Props) => {
         />
         {!!error && (
           <div className={styles.container}>
-            <FlexItem grow className="query-card-output-response-fail">
+            <RiFlexItem grow className="query-card-output-response-fail">
               <span data-testid="query-card-no-module-output">
                 <span className={styles.alertIconWrapper}>
                   <RiIcon
@@ -361,12 +360,12 @@ const QueryCardCliPlugin = (props: Props) => {
                 </span>
                 <ColorText color="danger">{error}</ColorText>
               </span>
-            </FlexItem>
+            </RiFlexItem>
           </div>
         )}
         {!isPluginLoaded && (
           <div>
-            <LoadingContent lines={5} />
+            <RiLoadingContent lines={5} />
           </div>
         )}
       </div>

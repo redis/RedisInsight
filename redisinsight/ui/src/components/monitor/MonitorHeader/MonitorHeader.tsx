@@ -14,7 +14,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { OnboardingTour, RiTooltip } from 'uiSrc/components'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import {
@@ -80,8 +80,8 @@ const MonitorHeader = ({ handleRunMonitor }: Props) => {
 
   return (
     <div className={styles.container} data-testid="monitor-header">
-      <Row justify="between" align="center" style={{ height: '100%' }}>
-        <FlexItem className={styles.title}>
+      <RiRow justify="between" align="center" style={{ height: '100%' }}>
+        <RiFlexItem className={styles.title}>
           <RiIcon type="ProfilerIcon" size="m" />
           <OnboardingTour
             options={ONBOARDING_FEATURES.BROWSER_PROFILER}
@@ -90,9 +90,9 @@ const MonitorHeader = ({ handleRunMonitor }: Props) => {
           >
             <Text>Profiler</Text>
           </OnboardingTour>
-        </FlexItem>
+        </RiFlexItem>
         {isStarted && (
-          <FlexItem direction="row" className={styles.actions}>
+          <RiFlexItem direction="row" className={styles.actions}>
             <RiTooltip
               content={
                 isErrorShown || isResumeLocked
@@ -132,15 +132,15 @@ const MonitorHeader = ({ handleRunMonitor }: Props) => {
                 data-testid="clear-monitor"
               />
             </RiTooltip>
-          </FlexItem>
+          </RiFlexItem>
         )}
-        <FlexItem grow />
+        <RiFlexItem grow />
         <WindowControlGroup
           onClose={handleCloseMonitor}
           onHide={handleHideMonitor}
           id="monitor"
         />
-      </Row>
+      </RiRow>
     </div>
   )
 }

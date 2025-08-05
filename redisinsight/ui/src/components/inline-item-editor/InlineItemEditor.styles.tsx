@@ -1,6 +1,6 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { Theme } from 'uiSrc/components/base/theme/types'
 import { Props } from 'uiSrc/components/inline-item-editor/InlineItemEditor'
 import { RiIconButton } from 'uiSrc/components/base/forms'
@@ -46,7 +46,7 @@ export const IIEContainer = React.forwardRef<
   </StyledContainer>
 ))
 
-type ActionsContainerProps = React.ComponentProps<typeof Row> & {
+type ActionsContainerProps = React.ComponentProps<typeof RiRow> & {
   $position?: Props['controlsPosition']
   $design?: Props['controlsDesign']
   $width?: string
@@ -136,14 +136,14 @@ const designs = {
   `,
 }
 
-export const ActionsWrapper = styled(FlexItem)<{
+export const ActionsWrapper = styled(RiFlexItem)<{
   $size?: { width: string; height: string }
 }>`
   width: ${({ $size }) => $size?.width ?? '24px'} !important;
   height: ${({ $size }) => $size?.height ?? '24px'} !important;
 `
 
-export const ActionsContainer = styled(Row)<ActionsContainerProps>`
+export const ActionsContainer = styled(RiRow)<ActionsContainerProps>`
   position: absolute;
   background-color: ${({ theme }: { theme: Theme }) =>
     theme.semantic.color.background.primary200};

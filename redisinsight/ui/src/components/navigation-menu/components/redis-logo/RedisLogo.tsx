@@ -6,7 +6,7 @@ import { BuildType } from 'uiSrc/constants/env'
 import { appInfoSelector } from 'uiSrc/slices/app/info'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import {
-  SideBarItem,
+  RiSideBarItem,
   SideBarItemIcon,
 } from 'uiSrc/components/base/layout/sidebar'
 import { getRouterLinkProps } from 'uiSrc/services'
@@ -37,7 +37,7 @@ export const RedisLogo = ({ isRdiWorkspace }: Props) => {
       data-testid="redis-logo-link"
       style={{ backgroundColor: 'transparent' }}
     >
-      <SideBarItem
+      <RiSideBarItem
         tooltipProps={{
           text:
             server?.buildType === BuildType.RedisStack
@@ -50,7 +50,7 @@ export const RedisLogo = ({ isRdiWorkspace }: Props) => {
         style={{ marginBlock: '2rem', marginInline: 'auto' }}
       >
         <SideBarItemIcon icon={LogoSVG} />
-      </SideBarItem>
+      </RiSideBarItem>
     </Link>
   )
 }

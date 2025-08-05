@@ -16,7 +16,7 @@ import {
 } from 'uiSrc/components/base/forms'
 import { ColorText } from 'uiSrc/components/base/text'
 import { RiTourStep } from 'uiSrc/components/base/display'
-import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import { RiCol, RiRow } from 'uiSrc/components/base/layout'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Props as OnboardingWrapperProps } from './OnboardingTourWrapper'
 
@@ -80,7 +80,7 @@ const OnboardingTour = (props: Props) => {
   }
 
   const Header = (
-    <Col className={styles.header}>
+    <RiCol className={styles.header}>
       {!isLastStep ? (
         <RiEmptyButton
           onClick={handleSkip}
@@ -103,19 +103,19 @@ const OnboardingTour = (props: Props) => {
       <Title size="XS" data-testid="step-title">
         {title}
       </Title>
-    </Col>
+    </RiCol>
   )
 
   const StepContent = (
-    <Col>
+    <RiCol>
       <div className={styles.content} data-testid="step-content">
         {content}
       </div>
-      <Row className={styles.footer} align="center" justify="between">
+      <RiRow className={styles.footer} align="center" justify="between">
         <ColorText color="subdued" className={styles.stepCount}>
           {currentStep} of {totalSteps}
         </ColorText>
-        <Row grow={false} gap="m">
+        <RiRow grow={false} gap="m">
           {currentStep > 1 && (
             <RiSecondaryButton
               onClick={handleClickBack}
@@ -132,9 +132,9 @@ const OnboardingTour = (props: Props) => {
           >
             {!isLastStep ? 'Next' : 'Take me back'}
           </RiPrimaryButton>
-        </Row>
-      </Row>
-    </Col>
+        </RiRow>
+      </RiRow>
+    </RiCol>
   )
 
   return (

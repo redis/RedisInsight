@@ -15,7 +15,7 @@ import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { getFieldTypeOptions } from 'uiSrc/utils/redisearch'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import AddMultipleFields from 'uiSrc/pages/browser/components/add-multiple-fields'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import {
   RiIconButton,
   RiPrimaryButton,
@@ -210,8 +210,8 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
       <div className="eui-yScroll">
         <div className={styles.contentFields}>
           <div className={styles.fieldsContainer}>
-            <Row className={styles.row}>
-              <FlexItem grow>
+            <RiRow className={styles.row}>
+              <RiFlexItem grow>
                 <RiFormField label="Index Name">
                   <RiTextInput
                     name="Index name"
@@ -223,8 +223,8 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
                     data-testid="index-name"
                   />
                 </RiFormField>
-              </FlexItem>
-              <FlexItem grow>
+              </RiFlexItem>
+              <RiFlexItem grow>
                 <RiFormFieldset
                   legend={{ children: 'Select key type', display: 'hidden' }}
                 >
@@ -242,10 +242,10 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
                     />
                   </RiFormField>
                 </RiFormFieldset>
-              </FlexItem>
-            </Row>
-            <Row className={styles.row} style={{ maxWidth: '100%' }}>
-              <FlexItem grow style={{ minWidth: '100%', maxWidth: '100%' }}>
+              </RiFlexItem>
+            </RiRow>
+            <RiRow className={styles.row} style={{ maxWidth: '100%' }}>
+              <RiFlexItem grow style={{ minWidth: '100%', maxWidth: '100%' }}>
                 <RiAutoTag
                   label="Key Prefixes"
                   placeholder="Enter Prefix"
@@ -257,8 +257,8 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
                   className={styles.combobox}
                   data-testid="prefix-combobox"
                 />
-              </FlexItem>
-            </Row>
+              </RiFlexItem>
+            </RiRow>
             <Divider
               colorVariable="separatorColor"
               className={styles.controlsDivider}
@@ -275,8 +275,8 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
               onClickAdd={addField}
             >
               {(item, index) => (
-                <Row align="center">
-                  <FlexItem grow>
+                <RiRow align="center">
+                  <RiFlexItem grow>
                     <RiFormField>
                       <RiTextInput
                         name={`identifier-${item.id}`}
@@ -295,8 +295,8 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
                         data-testid={`identifier-${item.id}`}
                       />
                     </RiFormField>
-                  </FlexItem>
-                  <FlexItem grow>
+                  </RiFlexItem>
+                  <RiFlexItem grow>
                     <RiFormField>
                       <RiSelect
                         options={fieldTypeOptions}
@@ -307,16 +307,16 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
                         data-testid={`field-type-${item.id}`}
                       />
                     </RiFormField>
-                  </FlexItem>
-                </Row>
+                  </RiFlexItem>
+                </RiRow>
               )}
             </AddMultipleFields>
           </div>
         </div>
       </div>
       <>
-        <Row justify="end" gap="m" style={{ padding: 18 }}>
-          <FlexItem>
+        <RiRow justify="end" gap="m" style={{ padding: 18 }}>
+          <RiFlexItem>
             <RiSecondaryButton
               color="secondary"
               onClick={() => onClosePanel?.()}
@@ -325,8 +325,8 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
             >
               Cancel
             </RiSecondaryButton>
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <RiPrimaryButton
               size="m"
               loading={loading}
@@ -336,8 +336,8 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
             >
               Create Index
             </RiPrimaryButton>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </>
     </>
   )

@@ -11,7 +11,7 @@ import {
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { MAX_TTL_NUMBER, validateTTLNumber } from 'uiSrc/utils'
 
-import { FlexItem, Grid } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiGrid } from 'uiSrc/components/base/layout'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { RiTextInput } from 'uiSrc/components/base/inputs'
@@ -84,7 +84,7 @@ const KeyDetailsHeaderTTL = ({ onEditTTL }: Props) => {
     )
 
   return (
-    <FlexItem
+    <RiFlexItem
       onMouseEnter={onMouseEnterTTL}
       onMouseLeave={onMouseLeaveTTL}
       onClick={onClickTTL}
@@ -93,19 +93,19 @@ const KeyDetailsHeaderTTL = ({ onEditTTL }: Props) => {
     >
       <>
         {(ttlIsEditing || ttlIsHovering) && (
-          <Grid
+          <RiGrid
             columns={2}
             responsive={false}
             gap="none"
             className={styles.ttlGridComponent}
             data-testid="edit-ttl-grid"
           >
-            <FlexItem>
+            <RiFlexItem>
               <Text color="subdued" size="s" className={styles.subtitleText}>
                 TTL:
               </Text>
-            </FlexItem>
-            <FlexItem grow>
+            </RiFlexItem>
+            <RiFlexItem grow>
               <InlineItemEditor
                 onApply={() => applyEditTTL()}
                 onDecline={(event) => cancelEditTTl(event)}
@@ -134,8 +134,8 @@ const KeyDetailsHeaderTTL = ({ onEditTTL }: Props) => {
                   data-testid="edit-ttl-input"
                 />
               </InlineItemEditor>
-            </FlexItem>
-          </Grid>
+            </RiFlexItem>
+          </RiGrid>
         )}
         <Text
           color="subdued"
@@ -151,7 +151,7 @@ const KeyDetailsHeaderTTL = ({ onEditTTL }: Props) => {
           </span>
         </Text>
       </>
-    </FlexItem>
+    </RiFlexItem>
   )
 }
 

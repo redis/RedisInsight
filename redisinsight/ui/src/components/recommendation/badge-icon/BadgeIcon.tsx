@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { RiTooltip } from 'uiSrc/components'
-import { FlexItem } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem } from 'uiSrc/components/base/layout'
 import styles from '../styles.module.scss'
 
 export interface Props {
@@ -10,7 +10,7 @@ export interface Props {
   name: string
 }
 const BadgeIcon = ({ id, icon, name }: Props) => (
-  <FlexItem
+  <RiFlexItem
     key={id}
     className={styles.badge}
     data-testid={`recommendation-badge-${id}`}
@@ -20,7 +20,7 @@ const BadgeIcon = ({ id, icon, name }: Props) => (
         {icon}
       </RiTooltip>
     </div>
-  </FlexItem>
+  </RiFlexItem>
 )
 
 export default BadgeIcon

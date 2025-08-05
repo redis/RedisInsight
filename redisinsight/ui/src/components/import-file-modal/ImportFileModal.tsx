@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Nullable } from 'uiSrc/utils'
 import { RiFilePicker, UploadWarning } from 'uiSrc/components'
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiCol, RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import { RiLoader, RiModal } from 'uiSrc/components/base/display'
 import { RiIcon, CancelIcon } from 'uiSrc/components/base/icons'
@@ -62,9 +62,9 @@ const ImportFileModal = <T,>({
           {!data && !error ? title : resultsTitle || 'Import Results'}
         </RiModal.Content.Header.Title>
         <RiModal.Content.Body.Compose className={styles.marginTop2}>
-          <Col align="center">
-            {warning && <FlexItem>{warning}</FlexItem>}
-            <FlexItem>
+          <RiCol align="center">
+            {warning && <RiFlexItem>{warning}</RiFlexItem>}
+            <RiFlexItem>
               {isShowForm && (
                 <>
                   <RiFilePicker
@@ -110,16 +110,16 @@ const ImportFileModal = <T,>({
                 </div>
               )}
               {isShowForm && (
-                <FlexItem grow className={styles.uploadWarningContainer}>
+                <RiFlexItem grow className={styles.uploadWarningContainer}>
                   <UploadWarning />
-                </FlexItem>
+                </RiFlexItem>
               )}
-            </FlexItem>
-          </Col>
+            </RiFlexItem>
+          </RiCol>
           {data && (
-            <Row justify="center">
-              <FlexItem>{submitResults}</FlexItem>
-            </Row>
+            <RiRow justify="center">
+              <RiFlexItem>{submitResults}</RiFlexItem>
+            </RiRow>
           )}
         </RiModal.Content.Body.Compose>
         <RiModal.Content.Footer.Compose>

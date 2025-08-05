@@ -2,13 +2,13 @@ import React from 'react'
 import { toNumber } from 'lodash'
 import { MAX_TTL_NUMBER, Maybe, validateTTLNumberForAddKey } from 'uiSrc/utils'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import {
   RiFormField,
   RiFormFieldset,
   RiSelect,
 } from 'uiSrc/components/base/forms'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiTextInput } from 'uiSrc/components/base/inputs'
 import { AddCommonFieldsFormConfig as config } from '../constants/fields-config'
 
@@ -48,8 +48,8 @@ const AddKeyCommonFields = (props: Props) => {
 
   return (
     <div className={styles.wrapper}>
-      <Row className={styles.container} gap="m">
-        <FlexItem grow>
+      <RiRow className={styles.container} gap="m">
+        <RiFlexItem grow>
           <RiFormFieldset
             legend={{ children: 'Select key type', display: 'hidden' }}
           >
@@ -66,8 +66,8 @@ const AddKeyCommonFields = (props: Props) => {
               />
             </RiFormField>
           </RiFormFieldset>
-        </FlexItem>
-        <FlexItem grow>
+        </RiFlexItem>
+        <RiFlexItem grow>
           <RiFormField label={config.keyTTL.label}>
             <RiTextInput
               name={config.keyTTL.name}
@@ -83,9 +83,9 @@ const AddKeyCommonFields = (props: Props) => {
               data-testid="ttl"
             />
           </RiFormField>
-        </FlexItem>
-      </Row>
-      <Spacer size="m" />
+        </RiFlexItem>
+      </RiRow>
+      <RiSpacer size="m" />
       <RiFormField label={config.keyName.label}>
         <RiTextInput
           name={config.keyName.name}

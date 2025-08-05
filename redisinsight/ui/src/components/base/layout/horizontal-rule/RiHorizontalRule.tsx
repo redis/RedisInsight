@@ -1,12 +1,12 @@
-import classNames from 'classnames'
 import React from 'react'
+import classNames from 'classnames'
 
 import {
   HorizontalRuleProps,
   StyledHorizontalRule,
 } from './horizontal-rule.styles'
 
-const HorizontalRule = ({
+export const RiHorizontalRule = ({
   className,
   size = 'full',
   margin = 'l',
@@ -23,5 +23,3 @@ const HorizontalRule = ({
     />
   )
 }
-
-export default HorizontalRule

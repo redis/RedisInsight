@@ -18,7 +18,7 @@ import {
 import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
 import { FullScreen, RiTooltip } from 'uiSrc/components'
 
-import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
+import { RiCol, RiFlexItem } from 'uiSrc/components/base/layout'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
@@ -99,8 +99,8 @@ const BulkActions = (props: Props) => {
 
   return (
     <div className={styles.page}>
-      <Col justify="center" className={cx(styles.container, 'relative')}>
-        <FlexItem grow style={{ marginBottom: '16px' }}>
+      <RiCol justify="center" className={cx(styles.container, 'relative')}>
+        <RiFlexItem grow style={{ marginBottom: '16px' }}>
           <Title size="M" className={styles.title}>
             Bulk Actions
           </Title>
@@ -129,7 +129,7 @@ const BulkActions = (props: Props) => {
               />
             </RiTooltip>
           )}
-        </FlexItem>
+        </RiFlexItem>
         <div className="eui-yScroll">
           <div
             className={styles.contentActions}
@@ -144,7 +144,7 @@ const BulkActions = (props: Props) => {
             )}
           </div>
         </div>
-      </Col>
+      </RiCol>
     </div>
   )
 }

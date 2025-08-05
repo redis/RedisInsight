@@ -4,8 +4,8 @@ import { FormikProps } from 'formik'
 import { KeyValueCompressor } from 'uiSrc/constants'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 import { NONE } from 'uiSrc/pages/home/constants'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiCheckbox, RiFormField, RiSelect } from 'uiSrc/components/base/forms'
 import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
 
@@ -61,8 +61,8 @@ const DbCompressor = (props: Props) => {
 
   return (
     <>
-      <Row gap="m" responsive={false}>
-        <FlexItem>
+      <RiRow gap="m" responsive={false}>
+        <RiFlexItem>
           <RiFormField>
             <RiCheckbox
               id={id}
@@ -73,14 +73,14 @@ const DbCompressor = (props: Props) => {
               data-testid="showCompressor"
             />
           </RiFormField>
-        </FlexItem>
-      </Row>
+        </RiFlexItem>
+      </RiRow>
 
       {formik.values.showCompressor && (
         <>
-          <Spacer />
-          <Row gap="m">
-            <FlexItem grow>
+          <RiSpacer />
+          <RiRow gap="m">
+            <RiFlexItem grow>
               <RiFormField label="Decompression format">
                 <RiSelect
                   name="compressor"
@@ -93,9 +93,9 @@ const DbCompressor = (props: Props) => {
                   data-testid="select-compressor"
                 />
               </RiFormField>
-            </FlexItem>
-            <FlexItem grow />
-          </Row>
+            </RiFlexItem>
+            <RiFlexItem grow />
+          </RiRow>
         </>
       )}
     </>

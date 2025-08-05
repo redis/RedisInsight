@@ -2,11 +2,14 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 import { toUpper, flatten, isArray, isEmpty, map, uniq } from 'lodash'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import {
+  RiTable,
+  ColumnDefinition,
+  RiLoadingContent,
+} from 'uiSrc/components/base/layout'
 
 import { RiIcon } from 'uiSrc/components/base/icons'
-import { ColorText, Text } from '../../../../../components/base/text'
-import { LoadingContent } from '../../../../../components/base/layout'
+import { ColorText, Text } from 'uiSrc/components/base/text'
 import GroupBadge from '../GroupBadge'
 import { InfoAttributesBoolean } from '../../constants'
 
@@ -91,7 +94,7 @@ const TableInfoResult = React.memo((props: Props) => {
           </Text>
         </>
       ) : (
-        <LoadingContent lines={2} />
+        <RiLoadingContent lines={2} />
       )}
     </div>
   )
@@ -104,7 +107,7 @@ const TableInfoResult = React.memo((props: Props) => {
           {`Number of terms: ${result?.num_terms || '0'}`}
         </Text>
       ) : (
-        <LoadingContent lines={1} />
+        <RiLoadingContent lines={1} />
       )}
     </div>
   )
@@ -118,7 +121,7 @@ const TableInfoResult = React.memo((props: Props) => {
       {isDataArr && (
         <div className="content" data-testid={`query-table-result-${query}`}>
           {Header()}
-          <Table columns={columns} data={items ?? []} />
+          <RiTable columns={columns} data={items ?? []} />
           {Footer()}
         </div>
       )}

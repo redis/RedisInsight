@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 import { isNull } from 'lodash'
 import { KeyboardKeys as keys } from 'uiSrc/constants/keys'
 
-import { LoadingContent } from 'uiSrc/components/base/layout'
+import { RiLoadingContent } from 'uiSrc/components/base/layout'
 import {
   DEFAULT_TEXT_VIEW_TYPE,
   ProfileQueryType,
@@ -276,7 +276,7 @@ const QueryCard = (props: Props) => {
                               />
                             ) : (
                               <div className={styles.loading}>
-                                <LoadingContent
+                                <RiLoadingContent
                                   lines={5}
                                   data-testid="loading-content"
                                 />

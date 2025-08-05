@@ -29,7 +29,7 @@ import {
   resetRdiContext,
   setAppContextInitialState,
 } from 'uiSrc/slices/app/context'
-import { FlexItem, Grid, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiGrid, RiRow } from 'uiSrc/components/base/layout'
 import {
   RiIconButton,
   RiPrimaryButton,
@@ -148,9 +148,9 @@ const DatabaseAlias = (props: Props) => {
 
   return (
     <>
-      <Row responsive={false} justify="start" align="center" gap="s">
+      <RiRow responsive={false} justify="start" align="center" gap="s">
         {isCloneMode && (
-          <FlexItem>
+          <RiFlexItem>
             <RiIconButton
               onClick={handleCloneBack}
               icon={ArrowLeftIcon}
@@ -158,12 +158,12 @@ const DatabaseAlias = (props: Props) => {
               aria-label="back"
               data-testid="back-btn"
             />
-          </FlexItem>
+          </RiFlexItem>
         )}
-        <FlexItem style={{ overflow: isEditing ? 'inherit' : 'hidden' }}>
-          <Row justify="between" gap="s">
+        <RiFlexItem style={{ overflow: isEditing ? 'inherit' : 'hidden' }}>
+          <RiRow justify="between" gap="s">
             {isRediStack && (
-              <FlexItem>
+              <RiFlexItem>
                 <RiTooltip
                   content={
                     <RiIcon
@@ -188,9 +188,9 @@ const DatabaseAlias = (props: Props) => {
                     data-testid="redis-stack-icon"
                   />
                 </RiTooltip>
-              </FlexItem>
+              </RiFlexItem>
             )}
-            <FlexItem
+            <RiFlexItem
               grow
               onClick={setEditMode}
               data-testid="edit-alias-btn"
@@ -200,8 +200,8 @@ const DatabaseAlias = (props: Props) => {
               }}
             >
               {!isCloneMode && (isEditing || isLoading) ? (
-                <Grid responsive className="relative">
-                  <FlexItem grow={1} className="fluid">
+                <RiGrid responsive className="relative">
+                  <RiFlexItem grow={1} className="fluid">
                     <InlineItemEditor
                       onApply={handleApplyChanges}
                       onDecline={handleDeclineChanges}
@@ -234,8 +234,8 @@ const DatabaseAlias = (props: Props) => {
                       </RiFormField>
                     </InlineItemEditor>
                     <p className={styles.hiddenText}>{value}</p>
-                  </FlexItem>
-                </Grid>
+                  </RiFlexItem>
+                </RiGrid>
               ) : (
                 <Text
                   className={cx(styles.alias, {
@@ -259,13 +259,13 @@ const DatabaseAlias = (props: Props) => {
                   )}
                 </Text>
               )}
-            </FlexItem>
-          </Row>
-        </FlexItem>
-      </Row>
+            </RiFlexItem>
+          </RiRow>
+        </RiFlexItem>
+      </RiRow>
       {!isCloneMode && (
-        <Row gap="m" style={{ marginTop: 6, flexGrow: 0 }}>
-          <FlexItem>
+        <RiRow gap="m" style={{ marginTop: 6, flexGrow: 0 }}>
+          <RiFlexItem>
             <RiPrimaryButton
               size="s"
               icon={DoubleChevronRightIcon}
@@ -276,9 +276,9 @@ const DatabaseAlias = (props: Props) => {
             >
               Open
             </RiPrimaryButton>
-          </FlexItem>
+          </RiFlexItem>
           {server?.buildType !== BuildType.RedisStack && (
-            <FlexItem>
+            <RiFlexItem>
               <RiPrimaryButton
                 size="s"
                 icon={CopyIcon}
@@ -289,9 +289,9 @@ const DatabaseAlias = (props: Props) => {
               >
                 Clone
               </RiPrimaryButton>
-            </FlexItem>
+            </RiFlexItem>
           )}
-        </Row>
+        </RiRow>
       )}
     </>
   )

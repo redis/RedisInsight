@@ -19,13 +19,14 @@ import {
 } from 'uiSrc/slices/user/user-settings'
 
 import Divider from 'uiSrc/components/divider/Divider'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import {
-  Page,
-  PageBody,
-  PageContentBody,
-  PageHeader,
-} from 'uiSrc/components/base/layout/page'
+  RiPage,
+  RiPageBody,
+  RiPageContentBody,
+  RiPageHeader,
+  RiCol,
+} from 'uiSrc/components/base/layout'
 import {
   RiCallOut,
   RiLoader,
@@ -33,7 +34,6 @@ import {
 } from 'uiSrc/components/base/display'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
-import { Col } from 'uiSrc/components/base/layout/flex'
 import {
   AdvancedSettings,
   CloudSettings,
@@ -71,7 +71,7 @@ const SettingsPage = () => {
       <ThemeSettings />
       <ConsentsNotifications />
       <Divider colorVariable="separatorColor" />
-      <Spacer />
+      <RiSpacer />
       <DateTimeFormatter />
     </>
   )
@@ -127,16 +127,16 @@ const SettingsPage = () => {
   )
 
   return (
-    <Page className={styles.container}>
-      <PageBody component="div">
-        <PageHeader>
+    <RiPage className={styles.container}>
+      <RiPageBody component="div">
+        <RiPageHeader>
           <Title size="XXL" className={styles.title}>
             Settings
           </Title>
-        </PageHeader>
+        </RiPageHeader>
 
-        <PageContentBody style={{ maxWidth: 792 }}>
-          <Col gap="s">
+        <RiPageContentBody style={{ maxWidth: 792 }}>
+          <RiCol gap="s">
             <RiCollapsibleNavGroup
               isCollapsible
               className={styles.accordion}
@@ -186,10 +186,10 @@ const SettingsPage = () => {
             >
               {AdvancedSettingsGroup()}
             </RiCollapsibleNavGroup>
-          </Col>
-        </PageContentBody>
-      </PageBody>
-    </Page>
+          </RiCol>
+        </RiPageContentBody>
+      </RiPageBody>
+    </RiPage>
   )
 }
 

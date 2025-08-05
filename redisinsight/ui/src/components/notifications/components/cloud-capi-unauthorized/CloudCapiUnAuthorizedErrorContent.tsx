@@ -6,8 +6,8 @@ import { removeCapiKeyAction } from 'uiSrc/slices/oauth/cloud'
 import { Pages } from 'uiSrc/constants'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiDestructiveButton, RiEmptyButton } from 'uiSrc/components/base/forms'
 
 export interface Props {
@@ -46,9 +46,9 @@ const CloudCapiUnAuthorizedErrorContent = ({
   return (
     <>
       <ColorText color="danger">{text}</ColorText>
-      <Spacer />
-      <Row justify="end">
-        <FlexItem>
+      <RiSpacer />
+      <RiRow justify="end">
+        <RiFlexItem>
           <RiEmptyButton
             variant="destructive"
             size="small"
@@ -58,8 +58,8 @@ const CloudCapiUnAuthorizedErrorContent = ({
           >
             Go to Settings
           </RiEmptyButton>
-        </FlexItem>
-        <FlexItem>
+        </RiFlexItem>
+        <RiFlexItem>
           <RiDestructiveButton
             size="s"
             onClick={handleRemoveCapi}
@@ -68,8 +68,8 @@ const CloudCapiUnAuthorizedErrorContent = ({
           >
             Remove API key
           </RiDestructiveButton>
-        </FlexItem>
-      </Row>
+        </RiFlexItem>
+      </RiRow>
     </>
   )
 }

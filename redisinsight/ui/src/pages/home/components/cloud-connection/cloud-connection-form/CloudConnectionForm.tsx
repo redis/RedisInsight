@@ -14,9 +14,9 @@ import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { OAuthAutodiscovery } from 'uiSrc/components/oauth/oauth-sso'
 import { MessageCloudApiKeys } from 'uiSrc/pages/home/components/form/Messages'
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiCol, RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { WindowEvent } from 'uiSrc/components/base/utils/WindowEvent'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import {
   RiPrimaryButton,
@@ -183,11 +183,11 @@ const CloudConnectionForm = (props: Props) => {
   const CloudApiForm = (
     <div className={styles.cloudApi} data-testid="add-db_cloud-api">
       <MessageCloudApiKeys />
-      <Spacer />
+      <RiSpacer />
       <WindowEvent event="keydown" handler={onKeyDown} />
       <form onSubmit={formik.handleSubmit}>
-        <Row responsive>
-          <FlexItem>
+        <RiRow responsive>
+          <RiFlexItem>
             <RiFormField label="API Account Key*">
               <RiTextInput
                 name="accessKey"
@@ -202,10 +202,10 @@ const CloudConnectionForm = (props: Props) => {
                 }}
               />
             </RiFormField>
-          </FlexItem>
-        </Row>
-        <Row responsive>
-          <FlexItem grow>
+          </RiFlexItem>
+        </RiRow>
+        <RiRow responsive>
+          <RiFlexItem grow>
             <RiFormField label="API User Key*">
               <RiTextInput
                 name="secretKey"
@@ -220,8 +220,8 @@ const CloudConnectionForm = (props: Props) => {
                 }}
               />
             </RiFormField>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
         <Footer />
       </form>
     </div>
@@ -230,13 +230,13 @@ const CloudConnectionForm = (props: Props) => {
   return (
     <div className="getStartedForm eui-yScroll">
       <FeatureFlagComponent name={FeatureFlags.cloudSso}>
-        <Col gap="m">
-          <FlexItem grow>
+        <RiCol gap="m">
+          <RiFlexItem grow>
             <Text color="subdued" size="s">
               Connect with:
             </Text>
-          </FlexItem>
-          <FlexItem grow>
+          </RiFlexItem>
+          <RiFlexItem grow>
             <RiRadioGroup
               layout="horizontal"
               items={options}
@@ -244,9 +244,9 @@ const CloudConnectionForm = (props: Props) => {
               onChange={(id) => setType(id as CloudConnectionOptions)}
               data-testid="cloud-options"
             />
-          </FlexItem>
-        </Col>
-        <Spacer size="m" />
+          </RiFlexItem>
+        </RiCol>
+        <RiSpacer size="m" />
       </FeatureFlagComponent>
       {type === CloudConnectionOptions.Account && (
         <OAuthAutodiscovery

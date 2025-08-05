@@ -7,7 +7,7 @@ import { NOTIFICATION_DATE_FORMAT } from 'uiSrc/constants/notifications'
 import { IGlobalNotification } from 'uiSrc/slices/interfaces'
 import { truncateText } from 'uiSrc/utils'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { TitleSize, Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
@@ -41,14 +41,18 @@ const Notification = (props: Props) => {
         {parse(notification.body)}
       </Text>
 
-      <Row className={styles.notificationFooter} align="center" justify="start">
-        <FlexItem>
+      <RiRow
+        className={styles.notificationFooter}
+        align="center"
+        justify="start"
+      >
+        <RiFlexItem>
           <Text size="xs" color="subdued" data-testid="notification-date">
             {format(notification.timestamp * 1000, NOTIFICATION_DATE_FORMAT)}
           </Text>
-        </FlexItem>
+        </RiFlexItem>
         {notification.category && (
-          <FlexItem>
+          <RiFlexItem>
             <RiBadge
               variant="light"
               className={styles.category}
@@ -56,9 +60,9 @@ const Notification = (props: Props) => {
               data-testid="notification-category"
               label={truncateText(notification.category, 32)}
             />
-          </FlexItem>
+          </RiFlexItem>
         )}
-      </Row>
+      </RiRow>
     </>
   )
 }

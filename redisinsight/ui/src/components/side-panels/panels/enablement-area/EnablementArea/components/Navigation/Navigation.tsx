@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { isArray } from 'lodash'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { Group as ListGroup } from 'uiSrc/components/base/layout/list'
+import { RiListGroup } from 'uiSrc/components/base/layout'
 import {
   EnablementAreaComponent,
   IEnablementAreaItem,
@@ -239,7 +239,7 @@ const Navigation = (props: Props) => {
     ))
 
   return (
-    <ListGroup
+    <RiListGroup
       style={{ padding: 5 }}
       gap="m"
       maxWidth="false"
@@ -255,7 +255,7 @@ const Navigation = (props: Props) => {
           getManifestItems(customTutorials),
           PATHS.customTutorials,
         )}
-    </ListGroup>
+    </RiListGroup>
   )
 }
 

@@ -23,8 +23,7 @@ import { sendEventTelemetry } from 'uiSrc/telemetry'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import { contentSelector } from 'uiSrc/slices/content/create-redis-buttons'
 import DatabasePanelDialog from 'uiSrc/pages/home/components/database-panel-dialog'
-import { Page, PageBody } from 'uiSrc/components/base/layout/page'
-import { FlexItem } from 'uiSrc/components/base/layout/flex'
+import { RiPage, RiPageBody, RiFlexItem } from 'uiSrc/components/base/layout'
 
 import './styles.scss'
 import styles from './styles.module.scss'
@@ -115,12 +114,12 @@ const EditConnection = () => {
     <>
       <PageHeader title="Redis Stack" />
       <div />
-      <Page className="homePage redisStackConnection">
-        <PageBody component="div" className={styles.container}>
+      <RiPage className="homePage redisStackConnection">
+        <RiPageBody component="div" className={styles.container}>
           {createDbContent?.cloud && (
-            <FlexItem style={{ margin: '20px 0' }}>
+            <RiFlexItem style={{ margin: '20px 0' }}>
               <CreateCloudBtn content={createDbContent.cloud} />
-            </FlexItem>
+            </RiFlexItem>
           )}
           <div className={styles.formContainer}>
             <div className={styles.form}>
@@ -132,8 +131,8 @@ const EditConnection = () => {
               />
             </div>
           </div>
-        </PageBody>
-      </Page>
+        </RiPageBody>
+      </RiPage>
     </>
   )
 }

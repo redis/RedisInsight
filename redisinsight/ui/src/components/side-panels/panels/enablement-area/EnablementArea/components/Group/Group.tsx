@@ -13,7 +13,7 @@ import { EAItemActions } from 'uiSrc/constants'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 
 import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
-import { Col } from 'uiSrc/components/base/layout/flex'
+import { RiCol } from 'uiSrc/components/base/layout'
 import { RiTooltip, OnboardingTour } from 'uiSrc/components'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons'
@@ -143,7 +143,7 @@ const Group = (props: Props) => {
       className={cx({ withBorder })}
       actions={isShowActions ? actionsContent : null}
     >
-      <Col gap="l">{children}</Col>
+      <RiCol gap="l">{children}</RiCol>
     </RiAccordion>
   )
 }

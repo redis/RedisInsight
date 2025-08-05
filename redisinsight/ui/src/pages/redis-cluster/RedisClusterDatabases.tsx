@@ -10,7 +10,12 @@ import { clusterSelector } from 'uiSrc/slices/instances/cluster'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import {
+  RiFlexItem,
+  RiRow,
+  RiTable,
+  ColumnDefinition,
+} from 'uiSrc/components/base/layout'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import {
   RiDestructiveButton,
@@ -20,7 +25,6 @@ import {
 } from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import styles from './styles.module.scss'
 
 interface Props {
@@ -146,8 +150,8 @@ const RedisClusterDatabases = ({
         <Title size="M" className={styles.title} data-testid="title">
           Auto-Discover Redis Enterprise Databases
         </Title>
-        <Row align="end" responsive gap="s">
-          <FlexItem grow>
+        <RiRow align="end" responsive gap="s">
+          <RiFlexItem grow>
             {!!items.length && (
               <Text color="subdued" className={styles.subTitle}>
                 These are the {items.length > 1 ? 'databases ' : 'database '}
@@ -156,8 +160,8 @@ const RedisClusterDatabases = ({
                 to add.
               </Text>
             )}
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <RiFormField className={styles.searchForm}>
               <RiSearchInput
                 placeholder="Search..."
@@ -166,8 +170,8 @@ const RedisClusterDatabases = ({
                 data-testid="search"
               />
             </RiFormField>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
         <br />
         <div
           className={cx(
@@ -175,7 +179,7 @@ const RedisClusterDatabases = ({
             styles.databaseListWrapper,
           )}
         >
-          <Table
+          <RiTable
             columns={columns}
             data={items}
             onRowClick={selectionValue.onSelectionChange}
@@ -191,8 +195,8 @@ const RedisClusterDatabases = ({
           )}
         </div>
       </div>
-      <FlexItem>
-        <Row
+      <RiFlexItem>
+        <RiRow
           justify="between"
           className={cx(
             styles.footer,
@@ -207,7 +211,7 @@ const RedisClusterDatabases = ({
           >
             Back to adding databases
           </RiSecondaryButton>
-          <FlexItem direction="row" className={styles.footerButtonsGroup}>
+          <RiFlexItem direction="row" className={styles.footerButtonsGroup}>
             <CancelButton isPopoverOpen={isPopoverOpen} />
             <RiTooltip
               position="top"
@@ -235,9 +239,9 @@ const RedisClusterDatabases = ({
                 Add selected Databases
               </RiPrimaryButton>
             </RiTooltip>
-          </FlexItem>
-        </Row>
-      </FlexItem>
+          </RiFlexItem>
+        </RiRow>
+      </RiFlexItem>
     </AutodiscoveryPageTemplate>
   )
 }

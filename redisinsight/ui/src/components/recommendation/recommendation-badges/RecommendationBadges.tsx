@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Row } from 'uiSrc/components/base/layout/flex'
+import { RiRow } from 'uiSrc/components/base/layout'
 import BadgeIcon from '../badge-icon'
 import { badgesContent } from '../constants'
 
@@ -9,14 +9,14 @@ export interface Props {
 }
 
 const RecommendationBadges = ({ badges = [] }: Props) => (
-  <Row align="center" justify="end" gap="m">
+  <RiRow align="center" justify="end" gap="m">
     {badgesContent.map(
       ({ id, name, icon }) =>
         badges.includes(id) && (
           <BadgeIcon key={id} id={id} icon={icon} name={name} />
         ),
     )}
-  </Row>
+  </RiRow>
 )
 
 export default RecommendationBadges

@@ -1,16 +1,13 @@
 import React from 'react'
 import cx from 'classnames'
-import {
-  PageClassNames,
-  restrictWidthSize,
-} from 'uiSrc/components/base/layout/page/page.styles'
+import { PageClassNames, restrictWidthSize } from './page.styles'
 import {
   ComponentTypes,
   PageBodyProps,
   StyledPageBody,
-} from 'uiSrc/components/base/layout/page/page-body.styles'
+} from './page-body.styles'
 
-const PageBody = <T extends ComponentTypes = 'div'>({
+export const RiPageBody = <T extends ComponentTypes = 'div'>({
   component = 'div' as T,
   className,
   restrictWidth,
@@ -27,5 +24,3 @@ const PageBody = <T extends ComponentTypes = 'div'>({
     className={cx(PageClassNames.body, className)}
   />
 )
-
-export default PageBody

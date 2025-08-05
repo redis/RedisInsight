@@ -31,7 +31,7 @@ import {
   setBrowserTreeDelimiter,
 } from 'uiSrc/slices/app/context'
 import { TableTextBtn } from 'uiSrc/pages/database-analysis/components/base/TableTextBtn'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { RiTable, ColumnDefinition } from 'uiSrc/components/base/layout'
 import { ColorText } from 'uiSrc/components/base/text'
 import { NspSummary } from 'apiSrc/modules/database-analysis/models'
 
@@ -250,13 +250,13 @@ const NameSpacesTable = ({
       id: 'expand',
       header: () => null,
       size: 40,
-      cell: ({ row }) => <Table.ExpandRowButton row={row} />,
+      cell: ({ row }) => <RiTable.ExpandRowButton row={row} />,
     },
   ]
 
   return (
     <div data-testid={dataTestid}>
-      <Table
+      <RiTable
         columns={columns}
         data={data ?? []}
         defaultSorting={[

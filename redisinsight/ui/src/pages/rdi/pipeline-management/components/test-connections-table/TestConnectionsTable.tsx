@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { RiTable, ColumnDefinition } from 'uiSrc/components/base/layout'
 
 import { IRdiConnectionResult } from 'uiSrc/slices/interfaces'
 
@@ -48,7 +48,7 @@ const TestConnectionsTable = (props: Props) => {
 
   return (
     <div className={styles.tableWrapper}>
-      <Table
+      <RiTable
         columns={columns}
         data={data ?? []}
         defaultSorting={[]}

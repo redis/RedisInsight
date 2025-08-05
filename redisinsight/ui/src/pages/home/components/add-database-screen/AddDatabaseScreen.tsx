@@ -13,8 +13,8 @@ import {
   testInstanceStandaloneAction,
 } from 'uiSrc/slices/instances/instances'
 import { Pages } from 'uiSrc/constants'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import {
   RiEmptyButton,
   RiPrimaryButton,
@@ -105,17 +105,17 @@ const AddDatabaseScreen = (props: Props) => {
   return (
     <div className="eui-yScroll">
       <form onSubmit={formik.handleSubmit} data-testid="form">
-        <Row responsive>
-          <FlexItem grow>
+        <RiRow responsive>
+          <RiFlexItem grow>
             <ConnectionUrl
               value={formik.values.connectionURL}
               onChange={formik.handleChange}
             />
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
 
-        <Row responsive justify="between" style={{ padding: 4 }}>
-          <FlexItem>
+        <RiRow responsive justify="between" style={{ padding: 4 }}>
+          <RiFlexItem>
             <RiTooltip
               position="top"
               anchorClassName="euiToolTip__btn-disabled"
@@ -133,10 +133,10 @@ const AddDatabaseScreen = (props: Props) => {
                 Test Connection
               </RiEmptyButton>
             </RiTooltip>
-          </FlexItem>
-          <FlexItem>
-            <Row responsive gap="l">
-              <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
+            <RiRow responsive gap="l">
+              <RiFlexItem>
                 <RiSecondaryButton
                   size="small"
                   onClick={() => handleProceedForm(AddDbType.manual)}
@@ -144,8 +144,8 @@ const AddDatabaseScreen = (props: Props) => {
                 >
                   Connection Settings
                 </RiSecondaryButton>
-              </FlexItem>
-              <FlexItem>
+              </RiFlexItem>
+              <RiFlexItem>
                 <RiTooltip
                   position="top"
                   anchorClassName="euiToolTip__btn-disabled"
@@ -161,14 +161,14 @@ const AddDatabaseScreen = (props: Props) => {
                     Add Database
                   </RiPrimaryButton>
                 </RiTooltip>
-              </FlexItem>
-            </Row>
-          </FlexItem>
-        </Row>
+              </RiFlexItem>
+            </RiRow>
+          </RiFlexItem>
+        </RiRow>
       </form>
-      <Spacer />
+      <RiSpacer />
       <div className={styles.hr}>Or</div>
-      <Spacer />
+      <RiSpacer />
       <ConnectivityOptions
         onClickOption={handleProceedForm}
         onClose={onClose}

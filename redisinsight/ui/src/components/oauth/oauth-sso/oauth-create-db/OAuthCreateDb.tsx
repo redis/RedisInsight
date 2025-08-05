@@ -27,8 +27,8 @@ import {
 } from 'uiSrc/slices/instances/cloud'
 import { Nullable } from 'uiSrc/utils'
 import OAuthForm from 'uiSrc/components/oauth/shared/oauth-form'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
@@ -113,11 +113,11 @@ const OAuthCreateDb = (props: Props) => {
 
   return (
     <div className={styles.container} data-testid="oauth-container-create-db">
-      <Row>
-        <FlexItem grow className={styles.advantagesContainer}>
+      <RiRow>
+        <RiFlexItem grow className={styles.advantagesContainer}>
           <OAuthAdvantages />
-        </FlexItem>
-        <FlexItem grow className={styles.socialContainer}>
+        </RiFlexItem>
+        <RiFlexItem grow className={styles.socialContainer}>
           {!data ? (
             <OAuthForm
               className={styles.socialButtons}
@@ -147,17 +147,17 @@ const OAuthCreateDb = (props: Props) => {
               <Title size="XL" className={styles.title}>
                 Free trial Cloud database
               </Title>
-              <Spacer size="xl" />
+              <RiSpacer size="xl" />
               <Text textAlign="center" color="subdued">
                 The database will be created automatically and can be changed
                 from Redis Cloud.
               </Text>
-              <Spacer size="xl" />
+              <RiSpacer size="xl" />
               <OAuthRecommendedSettings
                 value={isRecommended}
                 onChange={handleChangeRecommendedSettings}
               />
-              <Spacer />
+              <RiSpacer />
               <RiPrimaryButton
                 onClick={handleClickCreate}
                 data-testid="oauth-create-db"
@@ -166,8 +166,8 @@ const OAuthCreateDb = (props: Props) => {
               </RiPrimaryButton>
             </>
           )}
-        </FlexItem>
-      </Row>
+        </RiFlexItem>
+      </RiRow>
     </div>
   )
 }

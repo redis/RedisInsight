@@ -40,7 +40,7 @@ import {
   RiRadioGroupRoot,
 } from 'uiSrc/components/base/forms'
 import { ColorText, Text } from 'uiSrc/components/base/text'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiModal } from 'uiSrc/components/base/display'
 import { CancelIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
@@ -199,7 +199,7 @@ const OAuthSelectAccountDialog = () => {
             <Text className={styles.subTitle}>
               Select an account to connect to:
             </Text>
-            <Spacer size="xl" />
+            <RiSpacer size="xl" />
             <RiRadioGroupRoot
               value={formik.values.accountId ?? ''}
               onChange={(id) => handleChangeAccountIdFormat(id)}
