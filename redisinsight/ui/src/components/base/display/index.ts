@@ -13,5 +13,6 @@ export { RiTourStep } from './tour/RiTourStep'
 export { RiLink } from './link/RiLink'
 export { UserProfileLink } from './link/UserProfileLink'
 export * from './popover'
+export * from './tooltip'
 
 export type { RiCollapsibleNavGroupProps } from './collapsible-nav-group/RiCollapsibleNavGroup'

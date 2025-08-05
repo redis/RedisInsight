@@ -4,7 +4,6 @@ export * from './layout'
 
 export { ExternalLink }
 
-export * from './tooltip'
 export * from './display'
 export * from './forms'
 export * from './shared/WindowControlGroup'
