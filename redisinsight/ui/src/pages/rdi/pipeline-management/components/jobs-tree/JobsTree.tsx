@@ -1,6 +1,4 @@
-import {
-  EuiAccordion,
-} from '@elastic/eui'
+import { EuiAccordion } from '@elastic/eui'
 import cx from 'classnames'
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -30,6 +28,7 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Loader } from 'uiSrc/components/base/display'
+import ValidationErrorsList from 'uiSrc/pages/rdi/pipeline-management/components/validation-errors-list/ValidationErrorsList'
 import styles from './styles.module.scss'
 
 export interface IProps {
@@ -159,7 +158,11 @@ const JobsTree = (props: IProps) => {
   const handleToggleAccordion = (isOpen: boolean) =>
     setAccordionState(isOpen ? 'open' : 'closed')
 
-  const jobName = (name: string, isValid: boolean = true, validationErrors: string[] = []) => (
+  const jobName = (
+    name: string,
+    isValid: boolean = true,
+    validationErrors: string[] = [],
+  ) => (
     <>
       <FlexItem
         grow
@@ -173,15 +176,7 @@ const JobsTree = (props: IProps) => {
           <RiTooltip
             position="right"
             content={
-              validationErrors?.length && (
-                <Text size="s">
-                  <ul>
-                    {validationErrors.map((err) => (
-                      <li>{err}</li>
-                    ))}
-                  </ul>
-                </Text>
-              )
+              <ValidationErrorsList validationErrors={validationErrors} />
             }
           >
             <RiIcon
@@ -319,7 +314,7 @@ const JobsTree = (props: IProps) => {
           </FlexItem>
           {currentJobName === name
             ? jobNameEditor(name, idx)
-            : jobName(name, isJobValid(name), getJobValidionErrors(name) )}
+            : jobName(name, isJobValid(name), getJobValidionErrors(name))}
         </Row>
       </Row>
     ))

@@ -22,7 +22,6 @@ import {
   PipelineStatus,
 } from 'uiSrc/slices/interfaces'
 
-import { RiTooltip } from 'uiSrc/components'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import DeployPipelineButton from '../buttons/deploy-pipeline-button'
 import ResetPipelineButton from '../buttons/reset-pipeline-button'

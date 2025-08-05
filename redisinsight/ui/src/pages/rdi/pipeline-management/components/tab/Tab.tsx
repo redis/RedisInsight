@@ -5,6 +5,7 @@ import { Loader } from 'uiSrc/components/base/display'
 
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiTooltip } from 'uiSrc/components'
+import ValidationErrorsList from 'uiSrc/pages/rdi/pipeline-management/components/validation-errors-list/ValidationErrorsList'
 import styles from './styles.module.scss'
 
 export interface IProps {
@@ -51,15 +52,7 @@ const Tab = (props: IProps) => {
             <RiTooltip
               position="right"
               content={
-                validationErrors?.length && (
-                  <Text size="s">
-                    <ul>
-                      {validationErrors.map((err) => (
-                        <li>{err}</li>
-                      ))}
-                    </ul>
-                  </Text>
-                )
+                <ValidationErrorsList validationErrors={validationErrors} />
               }
             >
               <RiIcon
