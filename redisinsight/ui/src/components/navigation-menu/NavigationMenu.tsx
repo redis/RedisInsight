@@ -29,13 +29,11 @@ import styles from './styles.module.scss'
 
 const NavigationMenu = () => {
   const {
-    privateRoutes,
     privateRdiRoutes,
     isRdiWorkspace,
     publicRoutes,
     getAdditionPropsForHighlighting,
     highlightedPages,
-    connectedInstanceId,
     connectedRdiInstanceId,
   } = useNavigation()
 
