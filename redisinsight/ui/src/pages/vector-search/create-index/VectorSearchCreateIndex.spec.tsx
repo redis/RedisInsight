@@ -1,5 +1,12 @@
 import React from 'react'
-import { render, screen, fireEvent } from 'uiSrc/utils/test-utils'
+import {
+  render,
+  screen,
+  fireEvent,
+  initialStateDefault,
+  mockStore,
+} from 'uiSrc/utils/test-utils'
+import { RootState } from 'uiSrc/slices/store'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/analytics/dbAnalysisHistoryHandlers'
 import { VectorSearchCreateIndex } from './VectorSearchCreateIndex'
@@ -11,8 +18,28 @@ jest.mock('uiSrc/telemetry', () => ({
   sendEventTelemetry: jest.fn(),
 }))
 
-const renderVectorSearchCreateIndexComponent = () =>
-  render(<VectorSearchCreateIndex />)
+const renderVectorSearchCreateIndexComponent = () => {
+  const testState: RootState = {
+    ...initialStateDefault,
+    connections: {
+      ...initialStateDefault.connections,
+      instances: {
+        ...initialStateDefault.connections.instances,
+        connectedInstance: {
+          ...initialStateDefault.connections.instances.connectedInstance,
+          id: INSTANCE_ID_MOCK,
+          name: 'test-instance',
+          host: 'localhost',
+          port: 6379,
+          modules: [],
+        },
+      },
+    },
+  }
+  const store = mockStore(testState)
+
+  return render(<VectorSearchCreateIndex />, { store })
+}
 
 describe('VectorSearchCreateIndex', () => {
   beforeEach(() => {
@@ -63,6 +90,26 @@ describe('VectorSearchCreateIndex', () => {
           indexType: SearchIndexType.REDIS_QUERY_ENGINE,
           sampleDataType: SampleDataType.PRESET_DATA,
           dataContent: SampleDataContent.E_COMMERCE_DISCOVERY,
+        },
+      })
+    })
+
+    it('should send telemetry events on create index step', () => {
+      renderVectorSearchCreateIndexComponent()
+
+      // Simulate going to the index info step
+      const buttonNext = screen.getByText('Proceed to index')
+      fireEvent.click(buttonNext)
+
+      // Simulate creating the index
+      const buttonCreateIndex = screen.getByText('Create index')
+      fireEvent.click(buttonCreateIndex)
+
+      expect(sendEventTelemetry).toHaveBeenCalledTimes(3)
+      expect(sendEventTelemetry).toHaveBeenNthCalledWith(3, {
+        event: TelemetryEvent.VECTOR_SEARCH_ONBOARDING_PROCEED_TO_QUERIES,
+        eventData: {
+          databaseId: INSTANCE_ID_MOCK,
         },
       })
     })

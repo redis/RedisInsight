@@ -60,6 +60,7 @@ export const VectorSearchCreateIndex = ({
     const isFinalStep = step === stepContents.length - 1
     if (isFinalStep) {
       createIndex(createSearchIndexParameters)
+      collectCreateIndexStepTelemetry()
       return
     }
 
@@ -80,6 +81,9 @@ export const VectorSearchCreateIndex = ({
         break
       case 2:
         collectIndexInfoStepTelemetry()
+        break
+      case 3:
+        collectCreateIndexStepTelemetry()
         break
       default:
         // No telemetry for other steps
@@ -104,6 +108,15 @@ export const VectorSearchCreateIndex = ({
         indexType: createSearchIndexParameters.searchIndexType,
         sampleDataType: createSearchIndexParameters.sampleDataType,
         dataContent: createSearchIndexParameters.dataContent,
+      },
+    })
+  }
+
+  const collectCreateIndexStepTelemetry = (): void => {
+    sendEventTelemetry({
+      event: TelemetryEvent.VECTOR_SEARCH_ONBOARDING_PROCEED_TO_QUERIES,
+      eventData: {
+        databaseId: instanceId,
       },
     })
   }
