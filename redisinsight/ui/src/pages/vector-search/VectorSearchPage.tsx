@@ -1,4 +1,6 @@
 import React from 'react'
+import { TelemetryPageView } from 'uiSrc/telemetry'
+import { usePageViewTelemetry } from 'uiSrc/telemetry/usePageViewTelemetry'
 
 import { Loader } from 'uiSrc/components/base/display'
 import { VectorSearchCreateIndex } from './create-index/VectorSearchCreateIndex'
@@ -9,6 +11,15 @@ import { useRedisearchListData } from './useRedisearchListData'
 export const VectorSearchPage = () => {
   const { data, loading } = useRedisearchListData()
   const hasIndexes = data.length > 0
+
+  usePageViewTelemetry({
+    page: TelemetryPageView.VECTOR_SEARCH_PAGE,
+  })
+
+  // TODO: Set title, once we know the name of the page
+  // setTitle(
+  //   `${formatLongName(connectedInstanceName, 33, 0, '...')} ${getDbIndex(db)} - Vector Search`,
+  // )
 
   return (
     <VectorSearchPageWrapper>
