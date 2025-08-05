@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { Text } from 'uiSrc/components/base/text'
 import { Loader } from 'uiSrc/components/base/display'
 
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 export interface IProps {

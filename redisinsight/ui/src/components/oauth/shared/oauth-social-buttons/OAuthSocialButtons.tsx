@@ -8,7 +8,7 @@ import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
-import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 export interface Props {

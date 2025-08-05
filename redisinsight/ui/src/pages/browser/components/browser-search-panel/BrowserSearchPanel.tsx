@@ -26,7 +26,7 @@ import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 
 import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { Modal } from 'uiSrc/components/base/display'
+import { RiModal } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 interface ISwitchType<T> {
@@ -168,7 +168,7 @@ const BrowserSearchPanel = (props: Props) => {
 
   return (
     <div className={styles.content}>
-      <Modal
+      <RiModal
         open={isPopoverOpen}
         onCancel={hidePopover}
         className={styles.moduleNotLoaded}

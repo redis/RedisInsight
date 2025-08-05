@@ -4,7 +4,7 @@ import cx from 'classnames'
 import { toUpper, flatten, isArray, isEmpty, map, uniq } from 'lodash'
 import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import { ColorText, Text } from '../../../../../components/base/text'
 import { LoadingContent } from '../../../../../components/base/layout'
 import GroupBadge from '../GroupBadge'

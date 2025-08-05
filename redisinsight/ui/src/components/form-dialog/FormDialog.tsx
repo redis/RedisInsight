@@ -3,7 +3,7 @@ import cx from 'classnames'
 
 import { Nullable } from 'uiSrc/utils'
 import { CancelIcon } from 'uiSrc/components/base/icons'
-import { Modal } from 'uiSrc/components/base/display'
+import { RiModal } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -21,18 +21,20 @@ const FormDialog = (props: Props) => {
   if (!isOpen) return null
 
   return (
-    <Modal.Compose open={isOpen}>
-      <Modal.Content.Compose
+    <RiModal.Compose open={isOpen}>
+      <RiModal.Content.Compose
         persistent
         className={cx(styles.modal, className)}
         onCancel={onClose}
       >
-        <Modal.Content.Close icon={CancelIcon} onClick={onClose} />
-        <Modal.Content.Header.Title>{header}</Modal.Content.Header.Title>
-        <Modal.Content.Body content={children} />
-        <Modal.Content.Footer.Compose>{footer}</Modal.Content.Footer.Compose>
-      </Modal.Content.Compose>
-    </Modal.Compose>
+        <RiModal.Content.Close icon={CancelIcon} onClick={onClose} />
+        <RiModal.Content.Header.Title>{header}</RiModal.Content.Header.Title>
+        <RiModal.Content.Body content={children} />
+        <RiModal.Content.Footer.Compose>
+          {footer}
+        </RiModal.Content.Footer.Compose>
+      </RiModal.Content.Compose>
+    </RiModal.Compose>
   )
 }
 

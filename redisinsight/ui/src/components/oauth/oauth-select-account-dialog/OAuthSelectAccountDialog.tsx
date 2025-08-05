@@ -43,7 +43,7 @@ import {
   RiRadioGroupRoot,
 } from 'uiSrc/components/base/forms/radio-group/RadioGroup'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { Modal } from 'uiSrc/components/base/display'
+import { RiModal } from 'uiSrc/components/base/display'
 import { CancelIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
@@ -183,20 +183,20 @@ const OAuthSelectAccountDialog = () => {
   }))
 
   return (
-    <Modal.Compose open>
-      <Modal.Content.Compose
+    <RiModal.Compose open>
+      <RiModal.Content.Compose
         className={styles.container}
         data-testid="oauth-select-account-dialog"
       >
-        <Modal.Content.Close
+        <RiModal.Content.Close
           icon={CancelIcon}
           onClick={handleOnClose}
           data-testid="oauth-select-account-dialog-close-btn"
         />
-        <Modal.Content.Header.Title>
+        <RiModal.Content.Header.Title>
           Connect to Redis Cloud
-        </Modal.Content.Header.Title>
-        <Modal.Content.Body.Compose>
+        </RiModal.Content.Header.Title>
+        <RiModal.Content.Body.Compose>
           <section className={styles.content}>
             <Text className={styles.subTitle}>
               Select an account to connect to:
@@ -234,9 +234,9 @@ const OAuthSelectAccountDialog = () => {
               Select account
             </PrimaryButton>
           </div>
-        </Modal.Content.Body.Compose>
-      </Modal.Content.Compose>
-    </Modal.Compose>
+        </RiModal.Content.Body.Compose>
+      </RiModal.Content.Compose>
+    </RiModal.Compose>
   )
 }
 

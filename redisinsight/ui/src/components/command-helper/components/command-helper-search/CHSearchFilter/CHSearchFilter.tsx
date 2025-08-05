@@ -8,7 +8,7 @@ import { cliSettingsSelector } from 'uiSrc/slices/cli/cli-settings'
 import { Text } from 'uiSrc/components/base/text'
 
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 export interface Props {

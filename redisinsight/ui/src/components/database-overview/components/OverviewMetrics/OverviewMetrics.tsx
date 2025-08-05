@@ -11,7 +11,7 @@ import {
 import { Theme } from 'uiSrc/constants'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 
-import { AllIconsType } from 'uiSrc/components/base/icons/RiIcon'
+import { AllIconsType } from 'uiSrc/components/base/icons'
 import { Loader } from 'uiSrc/components/base/display'
 
 import styles from './styles.module.scss'

@@ -3,7 +3,7 @@ import React from 'react'
 import { AddDbType } from 'uiSrc/pages/home/constants'
 import ShieldIcon from 'uiSrc/assets/img/shield.svg?react'
 import RedisSoftwareIcon from 'uiSrc/assets/img/redis-software.svg?react'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiIcon } from 'uiSrc/components/base/icons'
 
 export interface Values {
   connectionURL: string

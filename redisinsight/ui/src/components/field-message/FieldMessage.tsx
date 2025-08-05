@@ -3,7 +3,7 @@ import cx from 'classnames'
 
 import { ColorText } from 'uiSrc/components/base/text'
 import { scrollIntoView } from 'uiSrc/utils'
-import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 type Colors =

@@ -4,7 +4,7 @@ import cx from 'classnames'
 import { useDebouncedEffect } from 'uiSrc/services'
 import { NumericInput, PasswordInput, TextInput } from 'uiSrc/components/base/inputs'
 
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 export enum SentinelInputFieldType {

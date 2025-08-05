@@ -29,7 +29,7 @@ import {
   AutoTag,
   AutoTagOption,
 } from 'uiSrc/components/base/forms/combo-box/AutoTag'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'

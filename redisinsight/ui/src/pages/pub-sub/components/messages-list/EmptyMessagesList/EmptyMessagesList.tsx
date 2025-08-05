@@ -4,7 +4,7 @@ import cx from 'classnames'
 import { ConnectionType } from 'uiSrc/slices/interfaces'
 import { Text } from 'uiSrc/components/base/text'
 
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 export interface Props {

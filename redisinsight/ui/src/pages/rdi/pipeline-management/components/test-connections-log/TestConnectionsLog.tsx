@@ -1,7 +1,7 @@
 import cx from 'classnames'
 import React, { useState } from 'react'
 
-import { RICollapsibleNavGroup } from 'uiSrc/components/base/display'
+import { RiCollapsibleNavGroup } from 'uiSrc/components/base/display'
 import { TransformGroupResult } from 'uiSrc/slices/interfaces'
 import TestConnectionsTable from 'uiSrc/pages/rdi/pipeline-management/components/test-connections-table'
 
@@ -67,7 +67,7 @@ const TestConnectionsLog = (props: Props) => {
   const id = `${status}-connections-${getNavGroupState(status)}`
 
   return (
-    <RICollapsibleNavGroup
+    <RiCollapsibleNavGroup
       title={
         <CollapsibleNavTitle
           title={navTitle}
@@ -85,7 +85,7 @@ const TestConnectionsLog = (props: Props) => {
       id={id}
     >
       <TestConnectionsTable data={statusData ?? []} />
-    </RICollapsibleNavGroup>
+    </RiCollapsibleNavGroup>
   )
 }
 

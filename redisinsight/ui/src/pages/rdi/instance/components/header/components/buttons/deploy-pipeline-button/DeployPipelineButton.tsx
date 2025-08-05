@@ -23,7 +23,7 @@ import { RiRocketIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 export interface Props {

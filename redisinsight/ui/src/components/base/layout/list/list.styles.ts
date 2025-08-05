@@ -10,7 +10,7 @@ import {
   Ref,
 } from 'react'
 
-import { AllIconsType } from 'uiSrc/components/base/icons/RiIcon'
+import { AllIconsType } from 'uiSrc/components/base/icons'
 import { IconProps } from 'uiSrc/components/base/icons'
 
 export const ListClassNames = {

@@ -11,7 +11,7 @@ import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { RiTooltip } from 'uiSrc/components'
 
 import { ModifiedClusterNodes } from '../../ClusterDetailsPage'
-import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 const ClusterNodesTable = ({

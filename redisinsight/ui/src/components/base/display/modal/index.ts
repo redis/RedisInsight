@@ -1,1 +1,1 @@
-export { Modal } from '@redis-ui/components'
+export { Modal as RiModal } from '@redis-ui/components'

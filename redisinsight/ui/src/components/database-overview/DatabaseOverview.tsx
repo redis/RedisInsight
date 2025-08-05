@@ -14,7 +14,7 @@ import { useDatabaseOverview } from 'uiSrc/components/database-overview/hooks/us
 
 import { IMetric } from 'uiSrc/components/database-overview/components/OverviewMetrics'
 import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import AutoRefresh from '../auto-refresh'
 import styles from './styles.module.scss'
 

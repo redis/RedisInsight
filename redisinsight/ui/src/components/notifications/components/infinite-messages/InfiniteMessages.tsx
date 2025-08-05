@@ -22,7 +22,7 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { Loader } from 'uiSrc/components/base/display'
@@ -51,9 +51,7 @@ export const INFINITE_MESSAGES = {
       <div role="presentation" data-testid="authenticating-notification">
         <Row justify="end">
           <FlexItem>
-            <Loader
-              className={cx('infiniteMessage__icon', styles.loading)}
-            />
+            <Loader className={cx('infiniteMessage__icon', styles.loading)} />
           </FlexItem>
           <FlexItem grow>
             <Title className="infiniteMessage__title">Authenticating…</Title>
@@ -71,9 +69,7 @@ export const INFINITE_MESSAGES = {
       <div role="presentation" data-testid="pending-create-db-notification">
         <Row justify="end">
           <FlexItem grow={false}>
-            <Loader
-              className={cx('infiniteMessage__icon', styles.loading)}
-            />
+            <Loader className={cx('infiniteMessage__icon', styles.loading)} />
           </FlexItem>
           <FlexItem grow>
             <Title className="infiniteMessage__title">
@@ -337,9 +333,7 @@ export const INFINITE_MESSAGES = {
       <div role="presentation" data-testid="pending-create-db-notification">
         <Row justify="end">
           <FlexItem>
-            <Loader
-              className={cx('infiniteMessage__icon', styles.loading)}
-            />
+            <Loader className={cx('infiniteMessage__icon', styles.loading)} />
           </FlexItem>
           <FlexItem grow>
             <Title className="infiniteMessage__title">
@@ -420,7 +414,7 @@ export const INFINITE_MESSAGES = {
               <FlexItem>
                 <PrimaryButton
                   size="s"
-                  onClick={() => { }}
+                  onClick={() => {}}
                   data-testid="notification-connect-db"
                 >
                   Statistics

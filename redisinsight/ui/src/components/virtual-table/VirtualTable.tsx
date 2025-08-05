@@ -19,7 +19,7 @@ import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { isEqualBuffers, Maybe, Nullable } from 'uiSrc/utils'
 
 import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import { RIResizeObserver } from 'uiSrc/components/base/utils'
 import { ProgressBarLoader } from 'uiSrc/components/base/display'
 import {

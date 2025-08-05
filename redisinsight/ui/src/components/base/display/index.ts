@@ -2,10 +2,12 @@ import Loader from './loader/Loader'
 import ProgressBarLoader from './progress-bar/ProgressBarLoader'
 import RiImage from './image/RiImage'
 import RiLoadingLogo from './loading-logo/RiLoadingLogo'
-import { Modal } from './modal'
 
-export { Loader, ProgressBarLoader, RiImage, RiLoadingLogo, Modal }
+export { Loader, ProgressBarLoader, RiImage, RiLoadingLogo }
 
-export { RICollapsibleNavGroup } from './collapsible-nav-group/RICollapsibleNavGroup'
+export { RiCollapsibleNavGroup } from './collapsible-nav-group/RiCollapsibleNavGroup'
+export { RiAccordion } from './accordion/RiAccordion'
+export { RiBadge } from './badge/RiBadge'
+export { RiModal } from './modal'
 
-export type { RICollapsibleNavGroupProps } from './collapsible-nav-group/RICollapsibleNavGroup'
+export type { RiCollapsibleNavGroupProps } from './collapsible-nav-group/RiCollapsibleNavGroup'

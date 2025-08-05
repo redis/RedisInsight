@@ -5,7 +5,7 @@ import {
   RiAccordionProps,
 } from 'uiSrc/components/base/display/accordion/RiAccordion'
 
-export type RICollapsibleNavGroupProps = Omit<
+export type RiCollapsibleNavGroupProps = Omit<
   RiAccordionProps,
   'collapsible' | 'content' | 'defaultOpen' | 'title' | 'label'
 > & {
@@ -17,7 +17,7 @@ export type RICollapsibleNavGroupProps = Omit<
   onToggle?: (isOpen: boolean) => void
   forceState?: 'open' | 'closed'
 }
-export const RICollapsibleNavGroup = ({
+export const RiCollapsibleNavGroup = ({
   children,
   title,
   isCollapsible = true,
@@ -27,7 +27,7 @@ export const RICollapsibleNavGroup = ({
   forceState,
   open,
   ...rest
-}: RICollapsibleNavGroupProps) => (
+}: RiCollapsibleNavGroupProps) => (
   <RiAccordion
     {...rest}
     collapsible={isCollapsible}

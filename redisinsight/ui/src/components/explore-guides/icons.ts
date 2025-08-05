@@ -1,4 +1,4 @@
-import { AllIconsType } from 'uiSrc/components/base/icons/RiIcon'
+import { AllIconsType } from 'uiSrc/components/base/icons'
 
 const GUIDE_ICONS: Record<string, AllIconsType> = {
   search: 'QuerySearchIcon',

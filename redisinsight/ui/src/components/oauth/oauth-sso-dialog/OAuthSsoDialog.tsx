@@ -12,7 +12,7 @@ import { cloudSelector } from 'uiSrc/slices/instances/cloud'
 import { OAuthCreateDb, OAuthSignIn } from 'uiSrc/components/oauth/oauth-sso'
 
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { Modal } from 'uiSrc/components/base/display'
+import { RiModal } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 const OAuthSsoDialog = () => {
@@ -36,7 +36,7 @@ const OAuthSsoDialog = () => {
   }
 
   return (
-    <Modal
+    <RiModal
       open
       onCancel={handleClose}
       className={cx(styles.modal, {

@@ -27,7 +27,7 @@ import {
   SideBarItem,
   SideBarItemIcon,
 } from 'uiSrc/components/base/layout/sidebar'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import navStyles from '../../styles.module.scss'
 import styles from './styles.module.scss'
 

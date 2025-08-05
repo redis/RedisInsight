@@ -17,8 +17,8 @@ import UploadModal from 'uiSrc/pages/rdi/pipeline-management/components/upload-m
 import { Text } from 'uiSrc/components/base/text'
 
 import { FileChangeType } from 'uiSrc/slices/interfaces'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { Modal } from 'uiSrc/components/base/display'
+import { RiIcon } from 'uiSrc/components/base/icons'
+import { RiModal } from 'uiSrc/components/base/display'
 import { CancelIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
@@ -96,13 +96,13 @@ const SourcePipelineDialog = () => {
   }
 
   return (
-    <Modal.Compose open>
-      <Modal.Content.Compose>
-        <Modal.Content.Close icon={CancelIcon} onClick={handleCloseDialog} />
-        <Modal.Content.Header.Title>
+    <RiModal.Compose open>
+      <RiModal.Content.Compose>
+        <RiModal.Content.Close icon={CancelIcon} onClick={handleCloseDialog} />
+        <RiModal.Content.Header.Title>
           Start with your pipeline
-        </Modal.Content.Header.Title>
-        <Modal.Content.Body.Compose width="100%">
+        </RiModal.Content.Header.Title>
+        <RiModal.Content.Body.Compose width="100%">
           <div className={styles.content}>
             <div className={styles.actions}>
               <div
@@ -144,9 +144,9 @@ const SourcePipelineDialog = () => {
               </div>
             </div>
           </div>
-        </Modal.Content.Body.Compose>
-      </Modal.Content.Compose>
-    </Modal.Compose>
+        </RiModal.Content.Body.Compose>
+      </RiModal.Content.Compose>
+    </RiModal.Compose>
   )
 }
 

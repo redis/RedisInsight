@@ -1,7 +1,7 @@
 import React from 'react'
 import { PipelineState } from 'uiSrc/slices/interfaces'
 import { formatLongName, Maybe } from 'uiSrc/utils'
-import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons'
 import { IconProps } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Loader } from 'uiSrc/components/base/display'

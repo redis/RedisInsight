@@ -9,9 +9,9 @@ import { ConsentsSettings } from 'uiSrc/components'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
-import { Modal } from 'uiSrc/components/base/display'
+import { RiModal } from 'uiSrc/components/base/display'
 import styles from '../styles.module.scss'
 
 const ConsentsSettingsPopup = () => {
@@ -35,7 +35,7 @@ const ConsentsSettingsPopup = () => {
   }, [])
 
   return (
-    <Modal
+    <RiModal
       open
       persistent
       width="600px"

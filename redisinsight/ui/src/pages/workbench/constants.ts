@@ -1,4 +1,4 @@
-import { AllIconsType } from 'uiSrc/components/base/icons/RiIcon'
+import { AllIconsType } from 'uiSrc/components/base/icons'
 
 export const WORKBENCH_HISTORY_WRAPPER_NAME = 'WORKBENCH'
 export const WORKBENCH_HISTORY_MAX_LENGTH = 30

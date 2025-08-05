@@ -11,7 +11,7 @@ import { CloudLink } from 'uiSrc/components/markdown'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import { FeatureFlags } from './featureFlags'
 
 export default {

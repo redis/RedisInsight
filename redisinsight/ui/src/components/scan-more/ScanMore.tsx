@@ -4,7 +4,7 @@ import { isNull } from 'lodash'
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { RiTooltip } from 'uiSrc/components'
 import { Button } from 'uiSrc/components/base/forms/buttons'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 export interface Props {

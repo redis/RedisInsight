@@ -2,7 +2,7 @@ import React from 'react'
 
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import { CallOut } from 'uiSrc/components/base/display/call-out/CallOut'
 import styles from './styles.module.scss'
 

@@ -14,7 +14,7 @@ import { Theme } from 'uiSrc/constants'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
-import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
 import styles from './styles.module.scss'
 

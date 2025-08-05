@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { ImportDatabasesData } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { Nullable } from 'uiSrc/utils'
-import { RICollapsibleNavGroup } from 'uiSrc/components/base/display'
+import { RiCollapsibleNavGroup } from 'uiSrc/components/base/display'
 import { Col } from 'uiSrc/components/base/layout/flex'
 import TableResult from '../TableResult'
 
@@ -56,7 +56,7 @@ const ResultsLog = ({ data }: Props) => {
 
   return (
     <Col gap="s">
-      <RICollapsibleNavGroup
+      <RiCollapsibleNavGroup
         title={
           <CollapsibleNavTitle
             title="Fully imported"
@@ -75,8 +75,8 @@ const ResultsLog = ({ data }: Props) => {
         data-testid={`success-results-${getNavGroupState(ResultsStatus.Success)}`}
       >
         <TableResult data={data?.success ?? []} />
-      </RICollapsibleNavGroup>
-      <RICollapsibleNavGroup
+      </RiCollapsibleNavGroup>
+      <RiCollapsibleNavGroup
         title={
           <CollapsibleNavTitle
             title="Partially imported"
@@ -95,8 +95,8 @@ const ResultsLog = ({ data }: Props) => {
         data-testid={`partial-results-${getNavGroupState(ResultsStatus.Partial)}`}
       >
         <TableResult data={data?.partial ?? []} />
-      </RICollapsibleNavGroup>
-      <RICollapsibleNavGroup
+      </RiCollapsibleNavGroup>
+      <RiCollapsibleNavGroup
         title={
           <CollapsibleNavTitle
             title="Failed to import"
@@ -115,7 +115,7 @@ const ResultsLog = ({ data }: Props) => {
         data-testid={`failed-results-${getNavGroupState(ResultsStatus.Failed)}`}
       >
         <TableResult data={data?.fail ?? []} />
-      </RICollapsibleNavGroup>
+      </RiCollapsibleNavGroup>
     </Col>
   )
 }

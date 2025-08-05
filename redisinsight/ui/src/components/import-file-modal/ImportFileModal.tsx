@@ -4,8 +4,8 @@ import { Nullable } from 'uiSrc/utils'
 import { RiFilePicker, UploadWarning } from 'uiSrc/components'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { ColorText, Text } from 'uiSrc/components/base/text'
-import { Loader, Modal } from 'uiSrc/components/base/display'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { Loader, RiModal } from 'uiSrc/components/base/display'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import { CancelIcon } from 'uiSrc/components/base/icons'
 import { Button } from 'uiSrc/components/base/forms/buttons'
 import styles from './styles.module.scss'
@@ -49,16 +49,20 @@ const ImportFileModal = <T,>({
 }: Props<T>) => {
   const isShowForm = !loading && !data && !error
   return (
-    <Modal.Compose open>
-      <Modal.Content.Compose className={styles.modal}>
-        <Modal.Content.Close icon={CancelIcon} onClick={onClose} data-testid="import-file-modal-close-btn" />
-        <Modal.Content.Header.Title
+    <RiModal.Compose open>
+      <RiModal.Content.Compose className={styles.modal}>
+        <RiModal.Content.Close
+          icon={CancelIcon}
+          onClick={onClose}
+          data-testid="import-file-modal-close-btn"
+        />
+        <RiModal.Content.Header.Title
           data-testid="import-file-modal-title"
           className={styles.marginTop2}
         >
           {!data && !error ? title : resultsTitle || 'Import Results'}
-        </Modal.Content.Header.Title>
-        <Modal.Content.Body.Compose className={styles.marginTop2}>
+        </RiModal.Content.Header.Title>
+        <RiModal.Content.Body.Compose className={styles.marginTop2}>
           <Col align="center">
             {warning && <FlexItem>{warning}</FlexItem>}
             <FlexItem>
@@ -118,8 +122,8 @@ const ImportFileModal = <T,>({
               <FlexItem>{submitResults}</FlexItem>
             </Row>
           )}
-        </Modal.Content.Body.Compose>
-        <Modal.Content.Footer.Compose>
+        </RiModal.Content.Body.Compose>
+        <RiModal.Content.Footer.Compose>
           {isShowForm && (
             <>
               <Button
@@ -144,9 +148,9 @@ const ImportFileModal = <T,>({
               OK
             </Button>
           )}
-        </Modal.Content.Footer.Compose>
-      </Modal.Content.Compose>
-    </Modal.Compose>
+        </RiModal.Content.Footer.Compose>
+      </RiModal.Content.Compose>
+    </RiModal.Compose>
   )
 }
 

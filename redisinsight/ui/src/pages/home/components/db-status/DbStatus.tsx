@@ -13,7 +13,7 @@ import {
   TelemetryEvent,
 } from 'uiSrc/telemetry'
 import { RiTooltip } from 'uiSrc/components'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import {
   CHECK_CLOUD_DATABASE,
   WARNING_WITH_CAPABILITY,

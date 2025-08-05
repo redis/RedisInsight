@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { RiEmptyPrompt } from 'uiSrc/components/base/layout'
 import styles from './styles.module.scss'

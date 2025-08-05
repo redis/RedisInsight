@@ -29,7 +29,7 @@ import {
 import { CallOut } from 'uiSrc/components/base/display/call-out/CallOut'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
-import { Loader, RICollapsibleNavGroup } from 'uiSrc/components/base/display'
+import { Loader, RiCollapsibleNavGroup } from 'uiSrc/components/base/display'
 import { Col } from 'uiSrc/components/base/layout/flex'
 import {
   AdvancedSettings,
@@ -134,7 +134,7 @@ const SettingsPage = () => {
 
         <PageContentBody style={{ maxWidth: 792 }}>
           <Col gap="s">
-            <RICollapsibleNavGroup
+            <RiCollapsibleNavGroup
               isCollapsible
               className={styles.accordion}
               title="General"
@@ -142,8 +142,8 @@ const SettingsPage = () => {
               data-test-subj="accordion-appearance"
             >
               {Appearance()}
-            </RICollapsibleNavGroup>{' '}
-            <RICollapsibleNavGroup
+            </RiCollapsibleNavGroup>{' '}
+            <RiCollapsibleNavGroup
               isCollapsible
               className={styles.accordion}
               title="Privacy"
@@ -151,8 +151,8 @@ const SettingsPage = () => {
               data-test-subj="accordion-privacy-settings"
             >
               {PrivacySettings()}
-            </RICollapsibleNavGroup>
-            <RICollapsibleNavGroup
+            </RiCollapsibleNavGroup>
+            <RiCollapsibleNavGroup
               isCollapsible
               className={styles.accordion}
               title="Workbench"
@@ -162,9 +162,9 @@ const SettingsPage = () => {
               id="accordion-workbench-settings"
             >
               {WorkbenchSettingsGroup()}
-            </RICollapsibleNavGroup>
+            </RiCollapsibleNavGroup>
             <FeatureFlagComponent name={FeatureFlags.cloudSso}>
-              <RICollapsibleNavGroup
+              <RiCollapsibleNavGroup
                 isCollapsible
                 className={cx(styles.accordion, styles.accordionWithSubTitle)}
                 title="Redis Cloud"
@@ -172,9 +172,9 @@ const SettingsPage = () => {
                 data-test-subj="accordion-cloud-settings"
               >
                 {CloudSettingsGroup()}
-              </RICollapsibleNavGroup>
+              </RiCollapsibleNavGroup>
             </FeatureFlagComponent>
-            <RICollapsibleNavGroup
+            <RiCollapsibleNavGroup
               isCollapsible
               className={cx(styles.accordion, styles.accordionWithSubTitle)}
               title="Advanced"
@@ -182,7 +182,7 @@ const SettingsPage = () => {
               data-test-subj="accordion-advanced-settings"
             >
               {AdvancedSettingsGroup()}
-            </RICollapsibleNavGroup>
+            </RiCollapsibleNavGroup>
           </Col>
         </PageContentBody>
       </PageBody>

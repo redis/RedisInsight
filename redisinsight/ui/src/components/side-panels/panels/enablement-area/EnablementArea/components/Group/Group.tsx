@@ -16,7 +16,7 @@ import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion
 import { Col } from 'uiSrc/components/base/layout/flex'
 import { RiTooltip, OnboardingTour } from 'uiSrc/components'
 import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiIcon } from 'uiSrc/components/base/icons'
 
 import DeleteTutorialButton from '../DeleteTutorialButton'
 

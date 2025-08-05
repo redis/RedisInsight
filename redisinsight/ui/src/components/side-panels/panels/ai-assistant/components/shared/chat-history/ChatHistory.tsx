@@ -13,7 +13,7 @@ import {
   AiChatMessageType,
 } from 'uiSrc/slices/interfaces/aiAssistant'
 import { Nullable, scrollIntoView } from 'uiSrc/utils'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import { Loader } from 'uiSrc/components/base/display'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
 

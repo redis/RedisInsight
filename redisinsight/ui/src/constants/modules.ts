@@ -2,7 +2,7 @@ import {
   DATABASE_LIST_MODULES_TEXT,
   RedisDefaultModules,
 } from 'uiSrc/slices/interfaces'
-import { AllIconsType } from 'uiSrc/components/base/icons/RiIcon'
+import { AllIconsType } from 'uiSrc/components/base/icons'
 
 // Define the type for each module info entry
 export interface ModuleInfo {

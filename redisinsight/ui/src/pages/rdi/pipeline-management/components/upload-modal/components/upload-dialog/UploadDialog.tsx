@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Text } from 'uiSrc/components/base/text'
 import ImportFileModal from 'uiSrc/components/import-file-modal'
 
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 export interface Props {

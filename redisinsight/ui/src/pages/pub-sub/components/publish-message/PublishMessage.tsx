@@ -20,7 +20,7 @@ import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 import { CheckThinIcon } from 'uiSrc/components/base/icons'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 

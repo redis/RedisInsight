@@ -7,7 +7,7 @@ import {
 import { formatLongName } from 'uiSrc/utils'
 import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import { RiTooltip } from 'uiSrc/components'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import Accordion from '../components/accordion'
 import Panel from '../components/panel'
 
