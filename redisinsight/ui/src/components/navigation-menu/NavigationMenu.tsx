@@ -133,9 +133,6 @@ const NavigationMenu = () => {
     >
       <SideBarContainer>
         <RedisLogo isRdiWorkspace={isRdiWorkspace} />
-        {connectedInstanceId &&
-          !isRdiWorkspace &&
-          privateRoutes.map(renderNavItem)}
         {connectedRdiInstanceId &&
           isRdiWorkspace &&
           privateRdiRoutes.map(renderNavItem)}
