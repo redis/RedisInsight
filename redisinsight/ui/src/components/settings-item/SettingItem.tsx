@@ -74,8 +74,8 @@ const SettingItem = (props: Props) => {
         </FlexItem>
 
         <FlexItem
-          onMouseEnter={() => setHovering(true)}
-          onMouseLeave={() => setHovering(false)}
+          onMouseEnter={() => !isEditing && setHovering(true)}
+          onMouseLeave={() => !isEditing && setHovering(false)}
           onClick={() => setEditing(true)}
           style={{ width: '200px' }}
         >

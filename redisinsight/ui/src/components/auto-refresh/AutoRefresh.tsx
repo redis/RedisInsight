@@ -250,7 +250,9 @@ const AutoRefresh = ({
         anchorPosition="downRight"
         isOpen={isPopoverOpen}
         anchorClassName={styles.anchorWrapper}
-        panelClassName={cx('popover-without-top-tail', styles.popoverWrapper)}
+        panelClassName={cx('popover-without-top-tail', styles.popoverWrapper, {
+          [styles.popoverWrapperEditing]: editingRate,
+        })}
         closePopover={closePopover}
         button={
           <IconButton

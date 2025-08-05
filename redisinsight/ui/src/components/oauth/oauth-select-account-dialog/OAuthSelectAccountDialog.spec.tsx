@@ -45,6 +45,24 @@ jest.mock('uiSrc/slices/instances/cloud', () => ({
   }),
 }))
 
+jest.mock('uiSrc/components/base/display', () => {
+  const actual = jest.requireActual('uiSrc/components/base/display')
+
+  return {
+    ...actual,
+    Modal: {
+      ...actual.Modal,
+      Content: {
+        ...actual.Modal.Content,
+        Header: {
+          ...actual.Modal.Content.Header,
+          Title: jest.fn().mockReturnValue(null),
+        },
+      },
+    },
+  }
+})
+
 let store: typeof mockedStore
 beforeEach(() => {
   cleanup()
@@ -80,9 +98,7 @@ describe('OAuthSelectAccountDialog', () => {
 
     const { queryByTestId } = render(<OAuthSelectAccountDialog />)
 
-    const closeEl = queryByTestId('oauth-select-account-dialog')?.querySelector(
-      '.euiModal__closeIcon',
-    )
+    const closeEl = queryByTestId('oauth-select-account-dialog-close-btn')
 
     fireEvent.click(closeEl as HTMLButtonElement)
 

@@ -84,7 +84,9 @@ const notificationsSlice = createSlice({
       state.errors.push(error)
     },
     removeError: (state, { payload = '' }: { payload: string }) => {
-      state.errors = state.errors.filter((error) => error.id !== payload)
+      if (state.errors.find((error) => error.id === payload)) {
+        state.errors = state.errors.filter((error) => error.id !== payload)
+      }
     },
     resetErrors: (state) => {
       state.errors = []
@@ -97,10 +99,14 @@ const notificationsSlice = createSlice({
       })
     },
     removeMessage: (state, { payload = '' }: { payload: string }) => {
-      state.messages = state.messages.filter(
-        (message) => message.id !== payload,
-      )
-      state.errors = state.errors.filter((error) => error.id !== payload)
+      if (state.messages.find((message) => message.id === payload)) {
+        state.messages = state.messages.filter(
+          (message) => message.id !== payload,
+        )
+      }
+      if (state.errors.find((error) => error.id === payload)) {
+        state.errors = state.errors.filter((error) => error.id !== payload)
+      }
     },
     resetMessages: (state) => {
       state.messages = []
@@ -166,9 +172,11 @@ const notificationsSlice = createSlice({
       }
     },
     removeInfiniteNotification: (state, { payload }: PayloadAction<string>) => {
-      state.infiniteMessages = state.infiniteMessages.filter(
-        (message) => message.id !== payload,
-      )
+      if (state.infiniteMessages.find((message) => message.id === payload)) {
+        state.infiniteMessages = state.infiniteMessages.filter(
+          (message) => message.id !== payload,
+        )
+      }
     },
   },
 })
