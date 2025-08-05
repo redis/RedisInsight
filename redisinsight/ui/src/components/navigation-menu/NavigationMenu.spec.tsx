@@ -76,7 +76,7 @@ describe('NavigationMenu', () => {
       }))
       render(<NavigationMenu />)
 
-      expect(screen.queryByTestId('browser-page-btn"')).not.toBeInTheDocument()
+      expect(screen.queryByTestId('browser-page-btn')).not.toBeInTheDocument()
     })
 
     it('should render help menu', () => {
@@ -137,7 +137,7 @@ describe('NavigationMenu', () => {
       expect(render(<NavigationMenu />)).toBeTruthy()
     })
 
-    it('should render private routes with instanceId', () => {
+    it('should not render private routes with instanceId', () => {
       ;(appInfoSelector as jest.Mock).mockImplementation(() => ({
         ...mockAppInfoSelector,
         server: {
@@ -146,8 +146,8 @@ describe('NavigationMenu', () => {
       }))
       render(<NavigationMenu />)
 
-      expect(screen.getByTestId('browser-page-btn')).toBeTruthy()
-      expect(screen.getByTestId('workbench-page-btn')).toBeTruthy()
+      expect(screen.queryByTestId('browser-page-btn')).not.toBeInTheDocument()
+      expect(screen.queryByTestId('workbench-page-btn')).not.toBeInTheDocument()
     })
 
     it('should render public routes', () => {
