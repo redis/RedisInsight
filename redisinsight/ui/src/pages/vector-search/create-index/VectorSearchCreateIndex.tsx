@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import { Stepper } from '@redis-ui/components'
@@ -6,6 +6,7 @@ import { Title } from 'uiSrc/components/base/text'
 import { Button, SecondaryButton } from 'uiSrc/components/base/forms/buttons'
 import { ChevronLeftIcon } from 'uiSrc/components/base/icons'
 
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { selectedBikesIndexFields, stepContents } from './steps'
 import {
   CreateSearchIndexParameters,
@@ -66,6 +67,30 @@ export const VectorSearchCreateIndex = ({
   }
   const onBackClick = () => {
     setStep(step - 1)
+  }
+
+  useEffect(() => {
+    collectTelemetry(step)
+  }, [step])
+
+  const collectTelemetry = (step: number): void => {
+    switch (step) {
+      case 1:
+        collectStartStepTelemetry()
+        break
+      default:
+        // No telemetry for other steps
+        break
+    }
+  }
+
+  const collectStartStepTelemetry = (): void => {
+    sendEventTelemetry({
+      event: TelemetryEvent.VECTOR_SEARCH_ONBOARDING_TRIGGERED,
+      eventData: {
+        databaseId: instanceId,
+      },
+    })
   }
 
   if (success) {
