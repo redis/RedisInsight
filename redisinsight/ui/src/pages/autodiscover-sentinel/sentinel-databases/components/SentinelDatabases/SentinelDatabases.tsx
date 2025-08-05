@@ -21,8 +21,7 @@ import {
 } from 'uiSrc/components/base/forms'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { RiSearchInput } from 'uiSrc/components/base/inputs'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import styles from '../../../styles.module.scss'
 
@@ -203,7 +202,11 @@ const SentinelDatabases = ({
 
         <RiRow align="end" gap="s">
           <RiFlexItem grow>
-            <RiText color="subdued" className={styles.subTitle} component="span">
+            <RiText
+              color="subdued"
+              className={styles.subTitle}
+              component="span"
+            >
               Redis Sentinel instance found. <br />
               Here is a list of primary groups your Sentinel instance is
               managing. Select the primary group(s) you want to add:

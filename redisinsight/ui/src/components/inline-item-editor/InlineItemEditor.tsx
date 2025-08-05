@@ -6,9 +6,11 @@ import { useTheme } from '@redis-ui/styles'
 import * as keys from 'uiSrc/constants/keys'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { RiFlexItem } from 'uiSrc/components/base/layout'
-import { RiWindowEvent } from 'uiSrc/components/base/utils/RiWindowEvent'
-import { RiFocusTrap } from 'uiSrc/components/base/utils/RiFocusTrap'
-import { RiOutsideClickDetector } from 'uiSrc/components/base/utils'
+import {
+  RiWindowEvent,
+  RiOutsideClickDetector,
+  RiFocusTrap,
+} from 'uiSrc/components/base/utils'
 import { RiDestructiveButton } from 'uiSrc/components/base/forms'
 import { RiText } from 'uiSrc/components/base/text'
 

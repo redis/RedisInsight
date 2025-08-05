@@ -1,9 +1,6 @@
 import React, { ReactNode } from 'react'
 import cx from 'classnames'
-import {
-  RiAccordion,
-  RiAccordionProps,
-} from 'uiSrc/components/base/display/accordion/RiAccordion'
+import { RiAccordion, RiAccordionProps } from 'uiSrc/components/base/display'
 
 export type RiCollapsibleNavGroupProps = Omit<
   RiAccordionProps,

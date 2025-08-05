@@ -27,8 +27,7 @@ import { FeatureFlags, Pages } from 'uiSrc/constants'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import {
   MODULE_CAPABILITY_TEXT_NOT_AVAILABLE,
   MODULE_CAPABILITY_TEXT_NOT_AVAILABLE_ENTERPRISE,

@@ -1,4 +1,5 @@
 export { RiAccordion } from './accordion/RiAccordion'
+export type { RiAccordionProps } from './accordion/RiAccordion'
 export { RiBadge } from './badge/RiBadge'
 export { RiCallOut } from './call-out/RiCallOut'
 export { RiCollapsibleNavGroup } from './collapsible-nav-group/RiCollapsibleNavGroup'

@@ -31,7 +31,7 @@ import {
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
 import { RiIconButton } from 'uiSrc/components/base/forms'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiTitle } from 'uiSrc/components/base/text'
 import { MANUAL_FORM_TABS, ManualFormTab } from './constants'
 import CloneConnection from './components/CloneConnection'
 import FooterActions from './components/FooterActions'

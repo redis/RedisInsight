@@ -7,7 +7,7 @@ import { NONE } from 'uiSrc/pages/home/constants'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiCheckbox, RiFormField, RiSelect } from 'uiSrc/components/base/forms'
-import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
+import { useGenerateId } from 'uiSrc/components/base/utils'
 
 export interface Props {
   formik: FormikProps<DbConnectionInfo>

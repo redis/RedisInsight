@@ -27,8 +27,7 @@ import {
 } from 'uiSrc/components/base/forms'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { RiSearchInput } from 'uiSrc/components/base/inputs'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import styles from '../styles.module.scss'
 

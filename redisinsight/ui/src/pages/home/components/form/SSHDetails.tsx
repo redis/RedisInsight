@@ -19,7 +19,7 @@ import {
   RiTextArea,
   RiTextInput,
 } from 'uiSrc/components/base/inputs'
-import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
+import { useGenerateId } from 'uiSrc/components/base/utils'
 
 export interface Props {
   flexGroupClassName?: string

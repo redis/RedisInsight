@@ -9,8 +9,7 @@ import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { sendEventTelemetry } from 'uiSrc/telemetry'
 import { HELP_LINKS } from 'uiSrc/pages/home/constants'
 import { FeatureFlags } from 'uiSrc/constants'
-import { RiSideBarItem } from 'uiSrc/components/base/layout/sidebar'
-import { SideBarItemIcon } from 'uiSrc/components/base/layout/sidebar/SideBarItemIcon'
+import { RiSideBarItem, SideBarItemIcon } from 'uiSrc/components/base/layout'
 import { RiLink } from 'uiSrc/components/base/display'
 
 const CreateCloud = () => {

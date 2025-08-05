@@ -20,7 +20,7 @@ import { TutorialsIds } from 'uiSrc/constants'
 
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiEmptyButton } from 'uiSrc/components/base/forms'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiTitle } from 'uiSrc/components/base/text'
 import { RiImage } from 'uiSrc/components/base/display'
 import LoadSampleData from '../load-sample-data'
 

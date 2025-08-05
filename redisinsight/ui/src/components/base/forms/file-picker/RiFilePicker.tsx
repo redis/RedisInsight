@@ -1,18 +1,18 @@
 import React, { InputHTMLAttributes, ReactNode, useRef, useState } from 'react'
 import cx from 'classnames'
-import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
+import { useGenerateId } from 'uiSrc/components/base/utils'
 import { RiProgressBarLoader, RiLoader } from 'uiSrc/components/base/display'
 import { RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
+import { CommonProps } from 'uiSrc/components/base/theme/types'
+import { RiColorText } from 'uiSrc/components/base/text'
 import {
   FilePickerClearButton,
   FilePickerInput,
   FilePickerPrompt,
   FilePickerPromptText,
   FilePickerWrapper,
-} from 'uiSrc/components/base/forms/file-picker/styles'
-import { CommonProps } from 'uiSrc/components/base/theme/types'
-import { RiColorText } from 'uiSrc/components/base/text'
+} from './styles'
 
 export type RiFilePickerProps = CommonProps &
   Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> & {

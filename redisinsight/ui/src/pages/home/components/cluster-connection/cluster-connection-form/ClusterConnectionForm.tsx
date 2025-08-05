@@ -11,7 +11,7 @@ import { ICredentialsRedisCluster } from 'uiSrc/slices/interfaces'
 
 import { MessageEnterpriceSoftware } from 'uiSrc/pages/home/components/form/Messages'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiWindowEvent } from 'uiSrc/components/base/utils/RiWindowEvent'
+import { RiWindowEvent } from 'uiSrc/components/base/utils'
 import {
   RiPrimaryButton,
   RiSecondaryButton,

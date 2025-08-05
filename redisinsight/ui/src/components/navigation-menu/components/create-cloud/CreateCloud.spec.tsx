@@ -9,7 +9,7 @@ import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { sendEventTelemetry } from 'uiSrc/telemetry'
 import { HELP_LINKS } from 'uiSrc/pages/home/constants'
 import * as appFeaturesSlice from 'uiSrc/slices/app/features'
-import { SideBar } from 'uiSrc/components/base/layout/sidebar'
+import { RiSideBar } from 'uiSrc/components/base/layout'
 import CreateCloud from './CreateCloud'
 
 jest.mock('uiSrc/telemetry', () => ({
@@ -38,7 +38,11 @@ beforeEach(() => {
   store.clearActions()
 })
 
-const sideBarWithCreateCloud = <SideBar isExpanded={false}><CreateCloud /></SideBar>
+const sideBarWithCreateCloud = (
+  <RiSideBar isExpanded={false}>
+    <CreateCloud />
+  </RiSideBar>
+)
 
 describe('CreateCloud', () => {
   it('should render', () => {

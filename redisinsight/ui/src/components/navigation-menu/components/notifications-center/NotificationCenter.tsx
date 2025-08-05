@@ -8,8 +8,7 @@ import {
   unreadNotificationsAction,
 } from 'uiSrc/slices/app/notifications'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import Notification from './Notification'
 

@@ -8,8 +8,7 @@ import { setSSOFlow } from 'uiSrc/slices/instances/cloud'
 import { setOAuthCloudSource } from 'uiSrc/slices/oauth/cloud'
 import OAuthForm from 'uiSrc/components/oauth/shared/oauth-form'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 const WelcomeAiAssistant = () => {

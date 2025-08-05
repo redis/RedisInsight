@@ -13,7 +13,7 @@ import {
   OAuthSocialSource,
 } from 'uiSrc/slices/interfaces'
 import { removeCapiKeyAction } from 'uiSrc/slices/oauth/cloud'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiText, RiTitle } from 'uiSrc/components/base/text'
 
 import {
   RiEmptyButton,
@@ -22,7 +22,6 @@ import {
 } from 'uiSrc/components/base/forms'
 import { CopyIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import { RiTable, ColumnDefinition } from 'uiSrc/components/base/layout'
 import { RiLink } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'

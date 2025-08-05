@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { FormDialog } from 'uiSrc/components'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiTitle } from 'uiSrc/components/base/text'
 import { Nullable } from 'uiSrc/utils'
 import { ModalHeaderProvider } from 'uiSrc/contexts/ModalTitleProvider'
 import ConnectionForm, { Props as ConnectionFormProps } from './ConnectionForm'

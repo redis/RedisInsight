@@ -3,7 +3,7 @@ import React from 'react'
 
 import { Tag } from 'uiSrc/slices/interfaces/tag'
 import { RiTooltip } from 'uiSrc/components'
-import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
+import { RiBadge } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 type TagsCellProps = {

@@ -6,7 +6,7 @@ import { CommandGroup } from 'uiSrc/constants'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
 import { RiColorText } from 'uiSrc/components/base/text'
-import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
+import { RiBadge } from 'uiSrc/components/base/display'
 import { RiRow } from 'uiSrc/components/base/layout'
 
 import styles from './styles.module.scss'

@@ -8,9 +8,8 @@ import { IGlobalNotification } from 'uiSrc/slices/interfaces'
 import { truncateText } from 'uiSrc/utils'
 
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { TitleSize, RiTitle } from 'uiSrc/components/base/text/RiTitle'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
+import { TitleSize, RiTitle, RiText } from 'uiSrc/components/base/text'
+import { RiBadge } from 'uiSrc/components/base/display'
 
 import styles from '../styles.module.scss'
 

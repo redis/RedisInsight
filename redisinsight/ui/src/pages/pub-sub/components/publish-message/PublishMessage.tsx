@@ -12,7 +12,7 @@ import { useConnectionType } from 'uiSrc/components/hooks/useConnectionType'
 
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiPrimaryButton, RiFormField } from 'uiSrc/components/base/forms'
-import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
+import { RiBadge } from 'uiSrc/components/base/display'
 import { CheckThinIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { RiTextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'

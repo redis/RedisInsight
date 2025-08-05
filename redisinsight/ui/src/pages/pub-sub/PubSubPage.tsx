@@ -13,7 +13,7 @@ import { formatLongName, getDbIndex, setTitle } from 'uiSrc/utils'
 import { OnboardingTour } from 'uiSrc/components'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { incrementOnboardStepAction } from 'uiSrc/slices/app/features'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiTitle } from 'uiSrc/components/base/text'
 import { OnboardingSteps } from 'uiSrc/constants/onboarding'
 import {
   MessagesListWrapper,

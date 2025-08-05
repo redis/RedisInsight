@@ -6,7 +6,7 @@ import { ChartData } from 'uiSrc/components/charts/donut-chart/DonutChart'
 import { ModifiedClusterNodes } from 'uiSrc/pages/cluster-details/ClusterDetailsPage'
 import { formatBytes, Nullable } from 'uiSrc/utils'
 import { getPercentage, numberWithSpaces } from 'uiSrc/utils/numbers'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiTitle } from 'uiSrc/components/base/text'
 
 import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'

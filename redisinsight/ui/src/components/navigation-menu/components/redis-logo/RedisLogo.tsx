@@ -5,10 +5,7 @@ import { useSelector } from 'react-redux'
 import { BuildType } from 'uiSrc/constants/env'
 import { appInfoSelector } from 'uiSrc/slices/app/info'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
-import {
-  RiSideBarItem,
-  SideBarItemIcon,
-} from 'uiSrc/components/base/layout/sidebar'
+import { RiSideBarItem, SideBarItemIcon } from 'uiSrc/components/base/layout'
 import { getRouterLinkProps } from 'uiSrc/services'
 import { Pages } from 'uiSrc/constants'
 import { RiLink } from 'uiSrc/components/base/display'

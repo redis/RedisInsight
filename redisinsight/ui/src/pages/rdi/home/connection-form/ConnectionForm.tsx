@@ -25,7 +25,7 @@ import {
 } from 'uiSrc/components/base/forms'
 import { InfoIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { RiPasswordInput, RiTextInput } from 'uiSrc/components/base/inputs'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiTitle } from 'uiSrc/components/base/text'
 import ValidationTooltip from './components/ValidationTooltip'
 
 import styles from './styles.module.scss'

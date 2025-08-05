@@ -15,8 +15,7 @@ import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { InfoIcon } from 'uiSrc/components/base/icons'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import { RiSwitchInput } from 'uiSrc/components/base/inputs'
 import { RiLink } from 'uiSrc/components/base/display'
 import ConsentOption from './ConsentOption'
@@ -224,7 +223,9 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
                   />
                 </RiFlexItem>
                 <RiFlexItem>
-                  <RiText className={styles.label}>Use recommended settings</RiText>
+                  <RiText className={styles.label}>
+                    Use recommended settings
+                  </RiText>
                   <RiText
                     size="s"
                     className={styles.smallText}

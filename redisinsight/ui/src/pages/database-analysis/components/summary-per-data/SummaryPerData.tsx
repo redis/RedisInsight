@@ -17,7 +17,7 @@ import {
 import { getPercentage, numberWithSpaces } from 'uiSrc/utils/numbers'
 
 import { RiSwitchInput } from 'uiSrc/components/base/inputs'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiTitle } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import {
   DatabaseAnalysis,

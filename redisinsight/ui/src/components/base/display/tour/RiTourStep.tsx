@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Popover } from '@redis-ui/components'
-import {
-  PopoverPlacementMapType,
-  TourStepProps,
-} from 'uiSrc/components/base/display/tour/types'
-import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
+
+import { useGenerateId } from 'uiSrc/components/base/utils'
+import { PopoverPlacementMapType, TourStepProps } from './types'
 
 const popoverPlacementMap: PopoverPlacementMapType = {
   upCenter: {

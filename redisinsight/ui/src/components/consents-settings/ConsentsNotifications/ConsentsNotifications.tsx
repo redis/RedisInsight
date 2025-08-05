@@ -9,7 +9,7 @@ import {
   userSettingsSelector,
 } from 'uiSrc/slices/user/user-settings'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiTitle } from 'uiSrc/components/base/text'
 import ConsentOption from '../ConsentOption'
 import { IConsent, ConsentCategories } from '../ConsentsSettings'
 

@@ -15,7 +15,7 @@ import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { OAuthAutodiscovery } from 'uiSrc/components/oauth/oauth-sso'
 import { MessageCloudApiKeys } from 'uiSrc/pages/home/components/form/Messages'
 import { RiCol, RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiWindowEvent } from 'uiSrc/components/base/utils/RiWindowEvent'
+import { RiWindowEvent } from 'uiSrc/components/base/utils'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import {

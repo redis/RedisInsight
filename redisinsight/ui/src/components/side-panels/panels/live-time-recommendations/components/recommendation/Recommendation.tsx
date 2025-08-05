@@ -37,8 +37,7 @@ import { openTutorialByPath } from 'uiSrc/slices/panels/sidePanels'
 import { RiFlexItem, RiRow, RiCard } from 'uiSrc/components/base/layout'
 import { RiIconButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { RiText } from 'uiSrc/components/base/text'
-import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
-import { RiLink } from 'uiSrc/components/base/display'
+import { RiAccordion, RiLink } from 'uiSrc/components/base/display'
 
 import styles from './styles.module.scss'
 

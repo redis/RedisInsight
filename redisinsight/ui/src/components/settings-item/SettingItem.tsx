@@ -5,8 +5,7 @@ import InlineItemEditor from 'uiSrc/components/inline-item-editor/InlineItemEdit
 
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import { RiNumericInput } from 'uiSrc/components/base/inputs'
 import { EditIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'

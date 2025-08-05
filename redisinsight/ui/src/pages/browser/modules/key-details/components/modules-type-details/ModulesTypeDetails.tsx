@@ -2,10 +2,9 @@ import React from 'react'
 import { useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
-import { RiText } from 'uiSrc/components/base/text'
+import { RiText, RiTitle } from 'uiSrc/components/base/text'
 import { Pages } from 'uiSrc/constants'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 
 import TextDetailsWrapper from '../text-details-wrapper/TextDetailsWrapper'
 import styles from './styles.module.scss'

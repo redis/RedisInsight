@@ -23,7 +23,7 @@ import { FeatureFlags } from 'uiSrc/constants'
 
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiHideFor, RiShowFor } from 'uiSrc/components/base/utils'
-import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
+import { RiBadge } from 'uiSrc/components/base/display'
 import {
   CliIcon,
   DocumentationIcon,

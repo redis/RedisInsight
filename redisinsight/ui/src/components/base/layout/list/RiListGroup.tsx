@@ -5,7 +5,7 @@ import {
   ListGroupProps,
   MAX_FORM_WIDTH,
   StyledGroup,
-} from 'uiSrc/components/base/layout/list/list.styles'
+} from './list.styles'
 
 export const RiListGroup = ({
   children,

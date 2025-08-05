@@ -1,8 +1,7 @@
 import React from 'react'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiFlexItem, RiRow, SpacerSize } from 'uiSrc/components/base/layout'
 import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import AddKeyFooter from 'uiSrc/pages/browser/components/add-key/AddKeyFooter/AddKeyFooter'
-import { SpacerSize } from 'uiSrc/components/base/layout/spacer/spacer.styles'
 
 export interface ActionFooterProps {
   cancelText?: string

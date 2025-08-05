@@ -17,8 +17,7 @@ import { RiFlexItem, RiRow, RiCard } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import { LightBulbIcon } from 'uiSrc/components/base/icons'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiTitle, RiText } from 'uiSrc/components/base/text'
 
 import styles from './styles.module.scss'
 

@@ -19,7 +19,7 @@ import {
 } from 'uiSrc/slices/app/info'
 
 import { FeatureFlags } from 'uiSrc/constants'
-import { SideBar } from 'uiSrc/components/base/layout/sidebar'
+import { RiSideBar } from 'uiSrc/components/base/layout'
 import HelpMenu from './HelpMenu'
 
 jest.mock('uiSrc/telemetry', () => ({
@@ -41,7 +41,11 @@ beforeEach(() => {
   store.clearActions()
 })
 
-const sideBarWithHelpMenu = <SideBar isExpanded={false}><HelpMenu /></SideBar>
+const sideBarWithHelpMenu = (
+  <RiSideBar isExpanded={false}>
+    <HelpMenu />
+  </RiSideBar>
+)
 
 describe('HelpMenu', () => {
   it('should render', () => {

@@ -23,9 +23,8 @@ import {
 } from 'uiSrc/components/base/forms'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { Pages } from 'uiSrc/constants'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import { RiSearchInput } from 'uiSrc/components/base/inputs'
-import { RiText } from 'uiSrc/components/base/text'
 import styles from '../styles.module.scss'
 
 export interface Props {
@@ -200,7 +199,11 @@ const RedisCloudDatabasesPage = ({
 
         <RiRow align="end" gap="s">
           <RiFlexItem grow>
-            <RiText color="subdued" className={styles.subTitle} component="span">
+            <RiText
+              color="subdued"
+              className={styles.subTitle}
+              component="span"
+            >
               These are {items.length > 1 ? 'databases ' : 'database '}
               in your Redis Cloud. Select the
               {items.length > 1 ? ' databases ' : ' database '} that you want to

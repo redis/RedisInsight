@@ -10,7 +10,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiIcon } from 'uiSrc/components/base/icons'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiTitle } from 'uiSrc/components/base/text'
 import { RiModal } from 'uiSrc/components/base/display'
 import styles from '../styles.module.scss'
 

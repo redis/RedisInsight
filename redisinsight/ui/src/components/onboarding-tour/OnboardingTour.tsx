@@ -14,10 +14,9 @@ import {
   RiPrimaryButton,
   RiSecondaryButton,
 } from 'uiSrc/components/base/forms'
-import { RiColorText } from 'uiSrc/components/base/text'
+import { RiColorText, RiTitle } from 'uiSrc/components/base/text'
 import { RiTourStep } from 'uiSrc/components/base/display'
 import { RiCol, RiRow } from 'uiSrc/components/base/layout'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import { Props as OnboardingWrapperProps } from './OnboardingTourWrapper'
 
 import styles from './styles.module.scss'

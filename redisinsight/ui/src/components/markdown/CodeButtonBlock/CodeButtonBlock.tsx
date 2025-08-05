@@ -29,7 +29,7 @@ import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import { PlayIcon, CheckBoldIcon, CopyIcon } from 'uiSrc/components/base/icons'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiTitle } from 'uiSrc/components/base/text'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
 
 import { RunConfirmationPopover } from './components'

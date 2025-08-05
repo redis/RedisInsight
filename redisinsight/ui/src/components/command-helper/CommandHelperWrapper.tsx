@@ -15,7 +15,7 @@ import {
   checkDeprecatedModuleCommand,
 } from 'uiSrc/utils'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
+import { RiBadge } from 'uiSrc/components/base/display'
 
 import CommandHelper from './CommandHelper'
 import CommandHelperHeader from './CommandHelperHeader'

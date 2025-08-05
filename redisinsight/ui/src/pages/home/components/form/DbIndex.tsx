@@ -6,7 +6,7 @@ import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiCheckbox, RiFormField } from 'uiSrc/components/base/forms'
 import { RiNumericInput } from 'uiSrc/components/base/inputs'
-import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
+import { useGenerateId } from 'uiSrc/components/base/utils'
 import styles from '../styles.module.scss'
 
 export interface Props {

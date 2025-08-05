@@ -7,7 +7,7 @@ import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import { renderOnboardingTourWithChild } from 'uiSrc/utils/onboarding'
 import { FeatureFlagComponent } from 'uiSrc/components'
 
-import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
+import { RiBadge } from 'uiSrc/components/base/display'
 import {
   RiSideBar,
   RiSideBarContainer,

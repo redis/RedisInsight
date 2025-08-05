@@ -1,8 +1,7 @@
 import React from 'react'
 
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import TextDetailsWrapper from '../text-details-wrapper/TextDetailsWrapper'
 
 import styles from './styles.module.scss'

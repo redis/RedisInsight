@@ -4,7 +4,7 @@ import { TableView } from 'uiSrc/pages/database-analysis'
 import { Nullable } from 'uiSrc/utils'
 import { TableLoader } from 'uiSrc/pages/database-analysis/components'
 import { TextBtn } from 'uiSrc/pages/database-analysis/components/base/TextBtn'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiTitle } from 'uiSrc/components/base/text'
 import { DatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
 
 import TopKeysTable from './Table'
@@ -30,7 +30,11 @@ const TopKeys = ({ data, loading }: Props) => {
   return (
     <div className={cx('section')}>
       <div className="section-title-wrapper">
-        <RiTitle size="M" className="section-title" data-testid="top-keys-title">
+        <RiTitle
+          size="M"
+          className="section-title"
+          data-testid="top-keys-title"
+        >
           {topKeysLength.length < MAX_TOP_KEYS &&
           topKeysMemory?.length < MAX_TOP_KEYS
             ? 'TOP KEYS'

@@ -19,9 +19,8 @@ import { FeatureFlagComponent } from 'uiSrc/components'
 import { RiPopover } from 'uiSrc/components/base'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import { SupportIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { RiText } from 'uiSrc/components/base/text'
 import { RiLink } from 'uiSrc/components/base/display'
 import {
   RiSideBarItem,

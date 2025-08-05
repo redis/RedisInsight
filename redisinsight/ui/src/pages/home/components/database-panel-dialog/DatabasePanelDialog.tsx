@@ -30,7 +30,7 @@ import CloudConnectionFormWrapper from 'uiSrc/pages/home/components/cloud-connec
 import ImportDatabase from 'uiSrc/pages/home/components/import-database'
 import { FormDialog } from 'uiSrc/components'
 import { ModalHeaderProvider } from 'uiSrc/contexts/ModalTitleProvider'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiTitle } from 'uiSrc/components/base/text'
 import ClusterConnectionFormWrapper from 'uiSrc/pages/home/components/cluster-connection'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiIconButton } from 'uiSrc/components/base/forms'

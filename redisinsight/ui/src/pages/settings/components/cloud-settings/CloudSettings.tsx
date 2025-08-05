@@ -14,8 +14,7 @@ import {
   RiDestructiveButton,
   RiPrimaryButton,
 } from 'uiSrc/components/base/forms'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import { RiLink } from 'uiSrc/components/base/display'
 import { RiPopover } from 'uiSrc/components/base'
 import UserApiKeysTable from './components/user-api-keys-table'

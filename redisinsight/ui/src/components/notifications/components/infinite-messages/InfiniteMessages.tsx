@@ -10,7 +10,7 @@ import { CloudSuccessResult } from 'uiSrc/slices/interfaces'
 
 import { Maybe } from 'uiSrc/utils'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiText, RiTitle } from 'uiSrc/components/base/text'
 import {
   EXTERNAL_LINKS,
   UTM_CAMPAINGS,
@@ -20,7 +20,6 @@ import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
 import { RiLink, RiLoader } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
@@ -50,7 +49,9 @@ export const INFINITE_MESSAGES = {
             <RiLoader className={cx('infiniteMessage__icon', styles.loading)} />
           </RiFlexItem>
           <RiFlexItem grow>
-            <RiTitle className="infiniteMessage__title">Authenticating…</RiTitle>
+            <RiTitle className="infiniteMessage__title">
+              Authenticating…
+            </RiTitle>
             <RiText size="xs">
               This may take several seconds, but it is totally worth it!
             </RiText>
@@ -125,7 +126,9 @@ export const INFINITE_MESSAGES = {
               <RiIcon type="ChampagneIcon" size="original" />
             </RiFlexItem>
             <RiFlexItem grow>
-              <RiTitle className="infiniteMessage__title">Congratulations!</RiTitle>
+              <RiTitle className="infiniteMessage__title">
+                Congratulations!
+              </RiTitle>
               <RiText size="xs">
                 {text}
                 <RiSpacer size="s" />
@@ -398,7 +401,9 @@ export const INFINITE_MESSAGES = {
             <RiIcon type="ChampagneIcon" size="original" />
           </RiFlexItem>
           <RiFlexItem grow>
-            <RiTitle className="infiniteMessage__title">Congratulations!</RiTitle>
+            <RiTitle className="infiniteMessage__title">
+              Congratulations!
+            </RiTitle>
             <RiText size="xs">
               Deployment completed successfully!
               <br />

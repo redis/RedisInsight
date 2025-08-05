@@ -7,8 +7,7 @@ import { setSSOFlow } from 'uiSrc/slices/instances/cloud'
 import { Nullable } from 'uiSrc/utils'
 
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import OAuthForm from '../../shared/oauth-form/OAuthForm'
 import styles from './styles.module.scss'
 

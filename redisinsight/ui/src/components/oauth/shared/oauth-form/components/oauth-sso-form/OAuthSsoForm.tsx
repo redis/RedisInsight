@@ -13,7 +13,7 @@ import {
 } from 'uiSrc/components/base/forms'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { RiTextInput } from 'uiSrc/components/base/inputs'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiTitle } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 export interface Props {

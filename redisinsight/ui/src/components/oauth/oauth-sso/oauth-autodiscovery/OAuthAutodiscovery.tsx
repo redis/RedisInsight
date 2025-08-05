@@ -22,8 +22,7 @@ import CloudIcon from 'uiSrc/assets/img/oauth/cloud_centered.svg?react'
 import { OAuthSsoHandlerDialog } from 'uiSrc/components'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 export interface Props {

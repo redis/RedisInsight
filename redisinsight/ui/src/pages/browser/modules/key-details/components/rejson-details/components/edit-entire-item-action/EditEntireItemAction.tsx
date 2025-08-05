@@ -7,9 +7,11 @@ import { CancelSlimIcon, CheckThinIcon } from 'uiSrc/components/base/icons'
 import FieldMessage from 'uiSrc/components/field-message/FieldMessage'
 import { Nullable } from 'uiSrc/utils'
 import { RiFlexItem } from 'uiSrc/components/base/layout'
-import { RiWindowEvent } from 'uiSrc/components/base/utils/RiWindowEvent'
-import { RiFocusTrap } from 'uiSrc/components/base/utils/RiFocusTrap'
-import { RiOutsideClickDetector } from 'uiSrc/components/base/utils'
+import {
+  RiWindowEvent,
+  RiFocusTrap,
+  RiOutsideClickDetector,
+} from 'uiSrc/components/base/utils'
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { RiTextArea } from 'uiSrc/components/base/inputs'
 import { isValidJSON } from '../../utils'

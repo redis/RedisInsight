@@ -15,7 +15,7 @@ import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiFormField } from 'uiSrc/components/base/forms'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiTitle } from 'uiSrc/components/base/text'
 import { RiTextInput } from 'uiSrc/components/base/inputs'
 import DecompressionAndFormatters from './DecompressionAndFormatters'
 

@@ -1,7 +1,6 @@
 import React from 'react'
 import RedisLogo from 'uiSrc/assets/img/logo.svg'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { RiImage } from 'uiSrc/components/base/display'
 import { OAUTH_ADVANTAGES_ITEMS } from './constants'

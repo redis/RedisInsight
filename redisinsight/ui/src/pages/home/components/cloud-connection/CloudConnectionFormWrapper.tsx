@@ -12,7 +12,7 @@ import { resetErrors } from 'uiSrc/slices/app/notifications'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiTitle } from 'uiSrc/components/base/text'
 import CloudConnectionForm from './cloud-connection-form'
 
 export interface Props {

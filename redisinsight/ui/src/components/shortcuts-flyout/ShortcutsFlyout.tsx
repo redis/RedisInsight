@@ -11,7 +11,7 @@ import {
   RiTable,
   ColumnDefinition,
 } from 'uiSrc/components/base/layout'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiTitle } from 'uiSrc/components/base/text'
 
 import { SHORTCUTS, ShortcutGroup, separator } from './schema'
 

@@ -15,10 +15,9 @@ import RocketIcon from 'uiSrc/assets/img/oauth/rocket.svg?react'
 import { RiCol, RiFlexItem, RiGrid } from 'uiSrc/components/base/layout'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiSecondaryButton } from 'uiSrc/components/base/forms'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
-import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
+import { RiTitle } from 'uiSrc/components/base/text'
+import { RiBadge, RiLink } from 'uiSrc/components/base/display'
 
-import { RiLink } from 'uiSrc/components/base/display'
 import { CONNECTIVITY_OPTIONS } from '../../constants'
 
 import styles from './styles.module.scss'

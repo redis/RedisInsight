@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react'
 import parse from 'html-react-parser'
 import cx from 'classnames'
 import { flatten, isArray, isEmpty, map, uniq } from 'lodash'
-import { RiTable, ColumnDefinition } from 'uiSrc/components/base/layout'
 
-import { RiColorText } from 'uiSrc/components/base/text/RiColorText'
-import { RiIconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiTable, ColumnDefinition } from 'uiSrc/components/base/layout'
+import { RiColorText } from 'uiSrc/components/base/text'
+import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CopyIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
+
 import { CommandArgument, Command } from '../../constants'
 import { formatLongName, replaceSpaces } from '../../utils'
 

@@ -7,8 +7,7 @@ import TelescopeImg from 'uiSrc/assets/img/telescope-dark.svg'
 import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
 
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 export interface Props {

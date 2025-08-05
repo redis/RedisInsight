@@ -18,8 +18,7 @@ import {
   RiSecondaryButton,
   RiFormField,
 } from 'uiSrc/components/base/forms'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 export interface Props {

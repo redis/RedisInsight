@@ -6,7 +6,7 @@ import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiFormField, RiCheckbox } from 'uiSrc/components/base/forms'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
-import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
+import { useGenerateId } from 'uiSrc/components/base/utils'
 
 export interface Props {
   formik: FormikProps<DbConnectionInfo>

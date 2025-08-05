@@ -26,7 +26,7 @@ import {
   setShowNoExpiryGroup,
 } from 'uiSrc/slices/analytics/dbAnalysis'
 import { RiSwitchInput } from 'uiSrc/components/base/inputs'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiTitle } from 'uiSrc/components/base/text'
 import { DatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
 
 import styles from './styles.module.scss'

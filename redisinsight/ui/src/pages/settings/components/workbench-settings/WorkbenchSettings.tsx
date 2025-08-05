@@ -14,7 +14,7 @@ import { validateNumber } from 'uiSrc/utils'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { RiFormField } from 'uiSrc/components/base/forms'
 import { RiSwitchInput } from 'uiSrc/components/base/inputs'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
+import { RiTitle } from 'uiSrc/components/base/text'
 import { RiLink } from 'uiSrc/components/base/display'
 
 const WorkbenchSettings = () => {

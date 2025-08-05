@@ -3,7 +3,7 @@ import cx from 'classnames'
 
 import { RiIconButton } from 'uiSrc/components/base/forms'
 import { CopyIcon } from 'uiSrc/components/base/icons'
-import { useInnerText } from 'uiSrc/components/base/utils/hooks/inner-text'
+import { useInnerText } from 'uiSrc/components/base/utils'
 import styles from './styles.module.scss'
 
 export interface Props extends HTMLAttributes<HTMLPreElement> {

@@ -12,7 +12,7 @@ import { workbenchCustomTutorialsSelector } from 'uiSrc/slices/workbench/wb-cust
 import { EAItemActions } from 'uiSrc/constants'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 
-import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
+import { RiAccordion } from 'uiSrc/components/base/display'
 import { RiCol } from 'uiSrc/components/base/layout'
 import { RiTooltip, OnboardingTour } from 'uiSrc/components'
 import { RiText } from 'uiSrc/components/base/text'

@@ -9,8 +9,7 @@ import {
   userSettingsSelector,
 } from 'uiSrc/slices/user/user-settings'
 import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiTitle } from 'uiSrc/components/base/text/RiTitle'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import ConsentOption from '../ConsentOption'
 import { ConsentCategories, IConsent } from '../ConsentsSettings'
 
