@@ -1,11 +1,11 @@
 import React from 'react'
 
 import styled from 'styled-components'
+import { RiText } from 'uiBase/text'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { millisecondsFormat } from 'uiSrc/utils'
 import { BulkActionsType } from 'uiSrc/constants'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 
 export interface Props {
   type?: BulkActionsType

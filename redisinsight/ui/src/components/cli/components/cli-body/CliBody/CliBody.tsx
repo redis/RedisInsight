@@ -1,5 +1,6 @@
 import React, { Ref, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
 import { KeyboardKeys as keys } from 'uiSrc/constants/keys'
 
 import { Nullable, scrollIntoView } from 'uiSrc/utils'
@@ -11,7 +12,6 @@ import CliInputWrapper from 'uiSrc/components/cli/components/cli-input'
 import { clearOutput, updateCliHistoryStorage } from 'uiSrc/utils/cliHelper'
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import styles from './styles.module.scss'
 
 export interface Props {

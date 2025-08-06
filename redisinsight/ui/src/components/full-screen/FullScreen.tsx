@@ -1,6 +1,6 @@
 import React from 'react'
-import { ExtendIcon, ShrinkIcon } from 'uiSrc/components/base/icons'
-import { RiIconButton } from 'uiSrc/components/base/forms'
+import { ExtendIcon, ShrinkIcon } from 'uiBase/icons'
+import { RiIconButton } from 'uiBase/forms'
 import { RiTooltip } from 'uiSrc/components'
 
 export interface Props {

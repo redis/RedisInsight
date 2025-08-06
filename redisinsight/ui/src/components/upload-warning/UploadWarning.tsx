@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons'
-import { RiCallOut } from 'uiSrc/components/base/display'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
+import { RiCallOut } from 'uiBase/display'
 import styles from './styles.module.scss'
 
 const UploadWarning = () => (

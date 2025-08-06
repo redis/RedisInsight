@@ -1,13 +1,13 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
+import { CancelSlimIcon } from 'uiBase/icons'
+import { RiIconButton } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
 import ExploreGuides from 'uiSrc/components/explore-guides'
 import { Nullable } from 'uiSrc/utils'
 
 import { toggleBrowserFullScreen } from 'uiSrc/slices/browser/keys'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
-import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import { RiIconButton } from 'uiSrc/components/base/forms'
-import { RiText } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import styles from './styles.module.scss'
 

@@ -2,6 +2,9 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton } from 'uiBase/forms'
+import { RiTitle, RiText } from 'uiBase/text'
 import TelescopeImg from 'uiSrc/assets/img/telescope-dark.svg'
 import {
   OAuthSocialAction,
@@ -25,9 +28,6 @@ import {
 import { useCapability } from 'uiSrc/services'
 import { FeatureFlags, Pages } from 'uiSrc/constants'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import {
   MODULE_CAPABILITY_TEXT_NOT_AVAILABLE,
   MODULE_CAPABILITY_TEXT_NOT_AVAILABLE_ENTERPRISE,

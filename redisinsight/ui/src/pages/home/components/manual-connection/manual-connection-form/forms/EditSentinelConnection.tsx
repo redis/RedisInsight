@@ -1,5 +1,10 @@
 import React from 'react'
 import { FormikProps } from 'formik'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiFormField } from 'uiBase/forms'
+import { RiTitle } from 'uiBase/text'
+import { RiTextInput } from 'uiBase/inputs'
 import {
   PrimaryGroupSentinel,
   SentinelMasterDatabase,
@@ -12,11 +17,6 @@ import {
   TlsDetails,
 } from 'uiSrc/pages/home/components/form'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiFormField } from 'uiSrc/components/base/forms'
-import { RiTitle } from 'uiSrc/components/base/text'
-import { RiTextInput } from 'uiSrc/components/base/inputs'
 import DecompressionAndFormatters from './DecompressionAndFormatters'
 
 import { ManualFormTab } from '../constants'

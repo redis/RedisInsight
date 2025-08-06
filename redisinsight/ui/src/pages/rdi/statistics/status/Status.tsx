@@ -1,7 +1,7 @@
 import React from 'react'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
 import { IRdiPipelineStatus } from 'uiSrc/slices/interfaces'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import Panel from '../components/panel'
 import VerticalDivider from '../components/vertical-divider'
 

@@ -2,6 +2,8 @@ import React from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { RiTable, ColumnDefinition } from 'uiBase/layout'
+import { RiColorText } from 'uiBase/text'
 import {
   extrapolate,
   formatBytes,
@@ -31,8 +33,6 @@ import {
   setBrowserTreeDelimiter,
 } from 'uiSrc/slices/app/context'
 import { TableTextBtn } from 'uiSrc/pages/database-analysis/components/base/TableTextBtn'
-import { RiTable, ColumnDefinition } from 'uiSrc/components/base/layout'
-import { RiColorText } from 'uiSrc/components/base/text'
 import { NspSummary } from 'apiSrc/modules/database-analysis/models'
 
 import styles from './styles.module.scss'

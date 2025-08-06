@@ -1,10 +1,10 @@
 import React from 'react'
 import cx from 'classnames'
+import { PlusInCircleIcon } from 'uiBase/icons'
+import { RiIconButton, RiSecondaryButton } from 'uiBase/forms'
 import { MIDDLE_SCREEN_RESOLUTION } from 'uiSrc/constants'
 import { RiTooltip } from 'uiSrc/components'
 
-import { PlusInCircleIcon } from 'uiSrc/components/base/icons'
-import { RiIconButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import styles from '../styles.module.scss'
 
 export interface Props {

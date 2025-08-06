@@ -3,6 +3,11 @@ import cx from 'classnames'
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { isNumber } from 'lodash'
+import { RiColorText, RiText } from 'uiBase/text'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { DeleteIcon, EditIcon, PlusIcon, RiIcon } from 'uiBase/icons'
+import { RiDestructiveButton, RiIconButton } from 'uiBase/forms'
+import { RiLoader } from 'uiBase/display'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
 import { PageNames } from 'uiSrc/constants'
 import ConfirmationPopover from 'uiSrc/pages/rdi/components/confirmation-popover/ConfirmationPopover'
@@ -17,17 +22,7 @@ import {
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { isEqualPipelineFile, Nullable } from 'uiSrc/utils'
 
-import { RiColorText, RiText } from 'uiSrc/components/base/text'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import {
-  DeleteIcon,
-  EditIcon,
-  PlusIcon,
-  RiIcon,
-} from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
-import { RiDestructiveButton, RiIconButton } from 'uiSrc/components/base/forms'
-import { RiLoader } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 export interface IProps {

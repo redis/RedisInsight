@@ -3,6 +3,10 @@ import { useSelector, useDispatch } from 'react-redux'
 import { isEmpty } from 'lodash'
 import cx from 'classnames'
 
+import { RiPopover } from 'uiBase/index'
+import { RiFlexItem, RiRow, RiSpacer } from 'uiBase/layout'
+import { RiPrimaryButton, RiSecondaryButton, RiCheckbox } from 'uiBase/forms'
+import { ColumnsIcon } from 'uiBase/icons'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   instancesSelector,
@@ -12,7 +16,6 @@ import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import PromoLink from 'uiSrc/components/promo-link/PromoLink'
 
 import { FeatureFlagComponent, OAuthSsoHandlerDialog } from 'uiSrc/components'
-import { RiPopover } from 'uiSrc/components/base'
 import { getPathToResource } from 'uiSrc/services/resourcesService'
 import { ContentCreateRedis } from 'uiSrc/slices/interfaces/content'
 import { HELP_LINKS } from 'uiSrc/pages/home/constants'
@@ -25,13 +28,6 @@ import {
   DatabaseListColumn,
   FeatureFlags,
 } from 'uiSrc/constants'
-import { RiFlexItem, RiRow, RiSpacer } from 'uiSrc/components/base/layout'
-import {
-  RiPrimaryButton,
-  RiSecondaryButton,
-  RiCheckbox,
-} from 'uiSrc/components/base/forms'
-import { ColumnsIcon } from 'uiSrc/components/base/icons'
 import SearchDatabasesList from '../search-databases-list'
 
 import styles from './styles.module.scss'

@@ -12,20 +12,16 @@ import cx from 'classnames'
 import { isNull } from 'lodash'
 
 import ReactDOM from 'react-dom'
+import { RiFlexItem, RiRow, RiSpacer } from 'uiBase/layout'
+import { RiPrimaryButton, RiSecondaryButton, RiFormField } from 'uiBase/forms'
+import { InfoIcon, RiIcon } from 'uiBase/icons'
+import { RiPasswordInput, RiTextInput } from 'uiBase/inputs'
+import { RiTitle } from 'uiBase/text'
 import { SECURITY_FIELD } from 'uiSrc/constants'
 import { RiTooltip, RiTooltipProps } from 'uiSrc/components'
 import { RdiInstance } from 'uiSrc/slices/interfaces'
 import { getFormUpdates, Nullable } from 'uiSrc/utils'
 import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
-import { RiFlexItem, RiRow, RiSpacer } from 'uiSrc/components/base/layout'
-import {
-  RiPrimaryButton,
-  RiSecondaryButton,
-  RiFormField,
-} from 'uiSrc/components/base/forms'
-import { InfoIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { RiPasswordInput, RiTextInput } from 'uiSrc/components/base/inputs'
-import { RiTitle } from 'uiSrc/components/base/text'
 import ValidationTooltip from './components/ValidationTooltip'
 
 import styles from './styles.module.scss'

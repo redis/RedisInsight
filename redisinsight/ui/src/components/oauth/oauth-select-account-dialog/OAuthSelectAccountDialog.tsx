@@ -4,6 +4,18 @@ import { useFormik } from 'formik'
 import { useHistory } from 'react-router-dom'
 
 import {
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiRadioGroupItemIndicator,
+  RiRadioGroupItemLabel,
+  RiRadioGroupItemRoot,
+  RiRadioGroupRoot,
+} from 'uiBase/forms'
+import { RiColorText, RiText } from 'uiBase/text'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiModal } from 'uiBase/display'
+import { CancelIcon } from 'uiBase/icons'
+import {
   activateAccount,
   createFreeDbJob,
   fetchPlans,
@@ -31,18 +43,6 @@ import {
 import { CloudJobName, CloudJobStep } from 'uiSrc/electron/constants'
 import { OAuthSocialAction } from 'uiSrc/slices/interfaces'
 
-import {
-  RiPrimaryButton,
-  RiSecondaryButton,
-  RiRadioGroupItemIndicator,
-  RiRadioGroupItemLabel,
-  RiRadioGroupItemRoot,
-  RiRadioGroupRoot,
-} from 'uiSrc/components/base/forms'
-import { RiColorText, RiText } from 'uiSrc/components/base/text'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiModal } from 'uiSrc/components/base/display'
-import { CancelIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 interface FormValues {

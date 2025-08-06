@@ -1,9 +1,9 @@
 import React from 'react'
+import { RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
 import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
-import { RiText } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 
-import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 export interface PatternsInfoProps {

@@ -1,9 +1,9 @@
 import React from 'react'
 import cx from 'classnames'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiLoader } from 'uiSrc/components/base/display'
+import { RiText } from 'uiBase/text'
+import { RiLoader } from 'uiBase/display'
 
-import { RiIcon } from 'uiSrc/components/base/icons'
+import { RiIcon } from 'uiBase/icons'
 import styles from './styles.module.scss'
 
 export interface IProps {
@@ -40,7 +40,9 @@ const Tab = (props: IProps) => {
       {fileName ? (
         <div className="rdi-pipeline-nav__file">
           <RiIcon type="ContractsIcon" className="rdi-pipeline-nav__fileIcon" />
-          <RiText className={cx('rdi-pipeline-nav__text', { invalid: !isValid })}>
+          <RiText
+            className={cx('rdi-pipeline-nav__text', { invalid: !isValid })}
+          >
             {fileName}
           </RiText>
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import { JSONTree } from 'react-json-tree'
-import { RiTable } from 'uiSrc/components/base/layout'
+import { RiTable } from 'uiBase/layout'
 
 import { ResultsParser } from './parser'
 import Graph from './Graph'

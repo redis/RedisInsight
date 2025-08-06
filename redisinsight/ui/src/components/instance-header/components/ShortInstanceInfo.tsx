@@ -2,6 +2,9 @@ import React, { useContext } from 'react'
 import { capitalize } from 'lodash'
 
 import cx from 'classnames'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
+import { AllIconsType, RiIcon } from 'uiBase/icons'
 import {
   CONNECTION_TYPE_DISPLAY,
   ConnectionType,
@@ -12,9 +15,6 @@ import { getModule, Nullable, truncateText } from 'uiSrc/utils'
 import { DEFAULT_MODULES_INFO } from 'uiSrc/constants/modules'
 import { Theme } from 'uiSrc/constants'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiText } from 'uiSrc/components/base/text'
-import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
 import styles from './styles.module.scss'
 

@@ -1,11 +1,11 @@
 import { set, cloneDeep } from 'lodash'
 import React from 'react'
 import { AxiosError } from 'axios'
+import { RiSpacer } from 'uiBase/layout/spacer'
 import { parseCustomError, getRdiValidationMessage, Maybe } from 'uiSrc/utils'
 import { CustomError } from 'uiSrc/slices/interfaces'
 import { CustomErrorCodes } from 'uiSrc/constants'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 
 const responseData = { response: { data: {}, status: 500 } }
 

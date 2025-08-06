@@ -1,13 +1,13 @@
 import React from 'react'
 import { FormikProps } from 'formik'
 
-import { Nullable } from 'uiSrc/utils'
-import { SECURITY_FIELD } from 'uiSrc/constants'
+import { RiColorText, RiText } from 'uiBase/text'
+import { RiPasswordInput, RiTextInput } from 'uiBase/inputs'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiFormField } from 'uiBase/forms'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { RiColorText, RiText } from 'uiSrc/components/base/text'
-import { RiPasswordInput, RiTextInput } from 'uiSrc/components/base/inputs'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiFormField } from 'uiSrc/components/base/forms'
+import { SECURITY_FIELD } from 'uiSrc/constants'
+import { Nullable } from 'uiSrc/utils'
 import styles from '../../styles.module.scss'
 
 export interface Props {

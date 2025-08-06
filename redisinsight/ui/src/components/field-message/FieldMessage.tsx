@@ -1,9 +1,9 @@
 import React, { Ref, useEffect, useRef } from 'react'
 import cx from 'classnames'
 
-import { RiColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiBase/text'
+import { AllIconsType, RiIcon } from 'uiBase/icons'
 import { scrollIntoView } from 'uiSrc/utils'
-import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 type Colors =

@@ -1,11 +1,11 @@
 import React from 'react'
 import parse from 'html-react-parser'
 
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
 
-import { RiText } from 'uiSrc/components/base/text'
-import { RiSwitchInput } from 'uiSrc/components/base/inputs'
+import { RiText } from 'uiBase/text'
+import { RiSwitchInput } from 'uiBase/inputs'
 
 import { ItemDescription } from './components'
 import { IConsent } from '../ConsentsSettings'

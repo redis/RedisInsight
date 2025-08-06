@@ -3,7 +3,8 @@ import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 
 import cx from 'classnames'
-import { PlusIcon } from 'uiSrc/components/base/icons'
+import { PlusIcon } from 'uiBase/icons'
+import { RiIconButton } from 'uiBase/forms'
 import {
   appendReJSONArrayItemAction,
   fetchVisualisationResults,
@@ -12,7 +13,6 @@ import {
 } from 'uiSrc/slices/browser/rejson'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
-import { RiIconButton } from 'uiSrc/components/base/forms'
 import { getBrackets, isRealArray, isRealObject, wrapPath } from '../utils'
 import { BaseProps, ObjectTypes } from '../interfaces'
 import RejsonDynamicTypes from '../rejson-dynamic-types'

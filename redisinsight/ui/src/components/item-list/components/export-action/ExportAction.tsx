@@ -1,17 +1,12 @@
 import React, { useState } from 'react'
 
+import { RiPrimaryButton, RiFormField, RiCheckbox } from 'uiBase/forms'
+import { ExportIcon, RiIcon } from 'uiBase/icons'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+
+import { RiText } from 'uiBase/text'
+import { RiPopover } from 'uiBase/index'
 import { formatLongName } from 'uiSrc/utils'
-
-import {
-  RiPrimaryButton,
-  RiFormField,
-  RiCheckbox,
-} from 'uiSrc/components/base/forms'
-import { ExportIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-
-import { RiText } from 'uiSrc/components/base/text'
-import { RiPopover } from 'uiSrc/components/base'
 import styles from '../styles.module.scss'
 
 export interface Props<T> {

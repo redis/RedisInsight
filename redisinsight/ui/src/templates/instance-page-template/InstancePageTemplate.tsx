@@ -1,6 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTheme } from '@redis-ui/styles'
+import {
+  ResizableContainer,
+  RiResizablePanel,
+  ResizablePanelHandle,
+  RiSpacer,
+  ImperativePanelGroupHandle,
+} from 'uiBase/layout'
 import InstanceHeader from 'uiSrc/components/instance-header'
 import { ExplorePanelTemplate } from 'uiSrc/templates'
 import BottomGroupComponents from 'uiSrc/components/bottom-group-components/BottomGroupComponents'
@@ -9,13 +16,6 @@ import { monitorSelector } from 'uiSrc/slices/cli/monitor'
 
 import { localStorageService } from 'uiSrc/services'
 import { BrowserStorageItem } from 'uiSrc/constants'
-import {
-  ResizableContainer,
-  RiResizablePanel,
-  ResizablePanelHandle,
-  RiSpacer,
-  ImperativePanelGroupHandle,
-} from 'uiSrc/components/base/layout'
 import { AppNavigation } from 'uiSrc/components'
 import { AppNavigationActionsProvider } from 'uiSrc/contexts/AppNavigationActionsProvider'
 import { Nullable } from 'uiSrc/utils'

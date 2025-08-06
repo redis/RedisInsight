@@ -1,6 +1,9 @@
 import React, { FormEvent, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toNumber } from 'lodash'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiFormField } from 'uiBase/forms'
+import { RiTextInput } from 'uiBase/inputs'
 import {
   isVersionHigherOrEquals,
   Maybe,
@@ -14,10 +17,7 @@ import { CommandsVersions } from 'uiSrc/constants/commandsVersions'
 import { connectedInstanceOverviewSelector } from 'uiSrc/slices/instances/instances'
 import { FeatureFlags } from 'uiSrc/constants'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiFormField } from 'uiSrc/components/base/forms'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
-import { RiTextInput } from 'uiSrc/components/base/inputs'
 import {
   CreateHashWithExpireDto,
   HashFieldDto,

@@ -2,13 +2,13 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
+import { RiOutsideClickDetector } from 'uiBase/utils'
+import { RiSecondaryButton } from 'uiBase/forms'
+import { RiPopover } from 'uiBase/index'
 import TemplateForm from 'uiSrc/pages/rdi/pipeline-management/components/template-form'
 import { fetchPipelineStrategies } from 'uiSrc/slices/rdi/pipeline'
 import { RdiPipelineTabs } from 'uiSrc/slices/interfaces'
-import { RiOutsideClickDetector } from 'uiSrc/components/base/utils'
 
-import { RiSecondaryButton } from 'uiSrc/components/base/forms'
-import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
 export interface Props {

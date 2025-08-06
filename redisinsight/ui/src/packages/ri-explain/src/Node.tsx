@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { RiIcon } from 'uiSrc/components/base/icons'
+import { RiIcon } from 'uiBase/icons'
 import { RiTooltip } from 'uiSrc/components'
 import { TOOLTIP_DELAY_LONG } from 'uiSrc/constants'
 

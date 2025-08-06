@@ -1,12 +1,12 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiText } from 'uiBase/text'
 
+import { RiLink } from 'uiBase/display'
 import { Pages } from 'uiSrc/constants'
 import { EmptyMessage, Content } from 'uiSrc/pages/database-analysis/constants'
 import { getRouterLinkProps } from 'uiSrc/services'
 
-import { RiLink } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 interface Props {

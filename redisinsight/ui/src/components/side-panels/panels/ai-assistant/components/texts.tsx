@@ -1,9 +1,9 @@
 import { EuiLink } from '@elastic/eui'
 import React from 'react'
 
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiLink } from 'uiSrc/components/base/display'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiLink } from 'uiBase/display'
+import { RiText } from 'uiBase/text'
 
 export const ASSISTANCE_CHAT_AGREEMENTS = (
   <>
@@ -78,7 +78,9 @@ export const EXPERT_CHAT_AGREEMENTS = (
 export const EXPERT_CHAT_INITIAL_MESSAGE = (
   <>
     <RiText size="xs">Hi!</RiText>
-    <RiText size="xs">I am here to help you get started with data querying.</RiText>
+    <RiText size="xs">
+      I am here to help you get started with data querying.
+    </RiText>
     <RiText size="xs">
       Type <b>/help</b> to get more info on what questions I can answer.
     </RiText>

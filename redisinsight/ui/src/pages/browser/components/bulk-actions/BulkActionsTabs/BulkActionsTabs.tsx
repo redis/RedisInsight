@@ -2,6 +2,8 @@ import React, { useMemo } from 'react'
 import { EuiIcon } from '@elastic/eui'
 import { useSelector } from 'react-redux'
 
+import { RiTabs, TabInfo } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
 import { BulkActionsType } from 'uiSrc/constants'
 import { selectedBulkActionsSelector } from 'uiSrc/slices/browser/bulkActions'
 import BulkUpload from 'uiSrc/assets/img/icons/bulk-upload.svg?react'
@@ -14,9 +16,7 @@ import {
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
 import { keysSelector } from 'uiSrc/slices/browser/keys'
-import { RiTabs, TabInfo } from 'uiSrc/components/base/layout'
 
-import { RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 export interface Props {

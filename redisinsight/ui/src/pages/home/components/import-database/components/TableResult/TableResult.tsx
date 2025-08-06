@@ -1,5 +1,5 @@
 import React from 'react'
-import { RiTable, ColumnDefinition } from 'uiSrc/components/base/layout'
+import { RiTable, ColumnDefinition } from 'uiBase/layout'
 
 import { ErrorImportResult } from 'uiSrc/slices/interfaces'
 

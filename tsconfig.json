@@ -31,7 +31,8 @@
       "apiSrc/*": ["redisinsight/api/src/*"],
       "src/*": ["redisinsight/api/src/*"],
       "desktopSrc/*": ["redisinsight/desktop/src/*"],
-      "tests/*": ["redisinsight/ui/__tests__/*"]
+      "tests/*": ["redisinsight/ui/__tests__/*"],
+      "uiBase/*": ["redisinsight/ui/src/components/base/*"]
     }
   },
   "include": [

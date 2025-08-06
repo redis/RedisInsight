@@ -1,6 +1,11 @@
 import { toNumber } from 'lodash'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiFormField } from 'uiBase/forms'
+import { RiSwitchInput } from 'uiBase/inputs'
+import { RiTitle } from 'uiBase/text'
+import { RiLink } from 'uiBase/display'
 import { SettingItem } from 'uiSrc/components'
 import { PIPELINE_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import {
@@ -11,11 +16,6 @@ import {
 } from 'uiSrc/slices/user/user-settings'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { validateNumber } from 'uiSrc/utils'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiFormField } from 'uiSrc/components/base/forms'
-import { RiSwitchInput } from 'uiSrc/components/base/inputs'
-import { RiTitle } from 'uiSrc/components/base/text'
-import { RiLink } from 'uiSrc/components/base/display'
 
 const WorkbenchSettings = () => {
   const { cleanup } = useSelector(userSettingsWBSelector)

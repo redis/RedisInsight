@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { RiSecondaryButton } from 'uiSrc/components/base/forms'
-import { RiStopIcon } from 'uiSrc/components/base/icons'
+import { RiSecondaryButton } from 'uiBase/forms'
+import { RiStopIcon } from 'uiBase/icons'
 import { RiTooltip } from 'uiSrc/components'
 import { PipelineButtonProps } from '../reset-pipeline-button/ResetPipelineButton'
 import styles from '../styles.module.scss'

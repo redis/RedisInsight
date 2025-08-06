@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
 import React from 'react'
-import { RiEmptyButton } from 'uiSrc/components/base/forms'
+import { RiEmptyButton } from 'uiBase/forms'
 
 const expandedStyle = css`
   padding: 0 20px 0 12px;

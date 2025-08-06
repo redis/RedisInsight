@@ -1,13 +1,7 @@
 /* eslint-disable react/no-this-in-sfc */
 import React from 'react'
 
-import { FeatureFlags } from 'uiSrc/constants'
-import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
-
-import { renderOnboardingTourWithChild } from 'uiSrc/utils/onboarding'
-import { FeatureFlagComponent } from 'uiSrc/components'
-
-import { RiBadge } from 'uiSrc/components/base/display'
+import { RiBadge } from 'uiBase/display'
 import {
   RiSideBar,
   RiSideBarContainer,
@@ -15,8 +9,14 @@ import {
   RiSideBarFooter,
   RiSideBarItem,
   SideBarItemIcon,
-} from 'uiSrc/components/base/layout'
-import { GithubIcon } from 'uiSrc/components/base/icons'
+} from 'uiBase/layout'
+import { GithubIcon } from 'uiBase/icons'
+import { FeatureFlags } from 'uiSrc/constants'
+import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
+
+import { renderOnboardingTourWithChild } from 'uiSrc/utils/onboarding'
+import { FeatureFlagComponent } from 'uiSrc/components'
+
 import { INavigations } from './navigation.types'
 import CreateCloud from './components/create-cloud'
 import HelpMenu from './components/help-menu/HelpMenu'

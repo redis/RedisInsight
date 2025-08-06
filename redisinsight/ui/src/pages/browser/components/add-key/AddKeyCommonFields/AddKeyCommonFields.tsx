@@ -1,15 +1,11 @@
 import React from 'react'
 import { toNumber } from 'lodash'
-import { MAX_TTL_NUMBER, Maybe, validateTTLNumberForAddKey } from 'uiSrc/utils'
 
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import {
-  RiFormField,
-  RiFormFieldset,
-  RiSelect,
-} from 'uiSrc/components/base/forms'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiTextInput } from 'uiSrc/components/base/inputs'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiFormField, RiFormFieldset, RiSelect } from 'uiBase/forms'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiTextInput } from 'uiBase/inputs'
+import { MAX_TTL_NUMBER, Maybe, validateTTLNumberForAddKey } from 'uiSrc/utils'
 import { AddCommonFieldsFormConfig as config } from '../constants/fields-config'
 
 import styles from './styles.module.scss'

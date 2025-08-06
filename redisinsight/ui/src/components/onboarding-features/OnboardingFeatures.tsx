@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { isString, partialRight } from 'lodash'
+import { RiSpacer } from 'uiBase/layout/spacer'
 import { keysDataSelector } from 'uiSrc/slices/browser/keys'
 import {
   openCli,
@@ -43,7 +44,6 @@ import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import { FeatureFlags } from 'uiSrc/constants'
 import { isAnyFeatureEnabled } from 'uiSrc/utils/features'
 
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import styles from './styles.module.scss'
 
 const sendTelemetry = (databaseId: string, step: string, action: string) =>

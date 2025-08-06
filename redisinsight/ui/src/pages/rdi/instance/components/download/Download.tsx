@@ -4,11 +4,11 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
-import { SaveIcon } from 'uiSrc/components/base/icons'
+import { SaveIcon } from 'uiBase/icons'
+import { RiEmptyButton } from 'uiBase/forms'
 import { rdiPipelineSelector } from 'uiSrc/slices/rdi/pipeline'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
-import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import styles from './styles.module.scss'
 
 interface Props {

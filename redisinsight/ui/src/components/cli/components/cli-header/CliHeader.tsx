@@ -2,6 +2,10 @@ import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
+import { WindowControlGroup } from 'uiBase/index'
+import { RiIcon } from 'uiBase/icons'
 import {
   toggleCli,
   resetCliSettings,
@@ -14,10 +18,6 @@ import { resetOutputLoading } from 'uiSrc/slices/cli/cli-output'
 import { OnboardingTour } from 'uiSrc/components'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiText } from 'uiSrc/components/base/text'
-import { WindowControlGroup } from 'uiSrc/components/base'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 const CliHeader = () => {

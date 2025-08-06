@@ -1,6 +1,6 @@
 import React from 'react'
 import { render } from 'uiSrc/utils/test-utils'
-import { RiHorizontalSpacer } from './ri-horizontal-spacer'
+import { RiHorizontalSpacer } from './RiHorizontalSpacer'
 
 describe('HorizontalSpacer', () => {
   it('should render with different sizes correctly', () => {

@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { defaultValueRender, RiSelect, RiFormField } from 'uiBase/forms'
+import { RiTitle } from 'uiBase/text'
 import {
   updateUserConfigSettingsAction,
   userSettingsSelector,
@@ -8,12 +10,6 @@ import {
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { DEFAULT_THEME, THEMES } from 'uiSrc/constants'
-import {
-  defaultValueRender,
-  RiSelect,
-  RiFormField,
-} from 'uiSrc/components/base/forms'
-import { RiTitle } from 'uiSrc/components/base/text'
 
 const ThemeSettings = () => {
   const dispatch = useDispatch()

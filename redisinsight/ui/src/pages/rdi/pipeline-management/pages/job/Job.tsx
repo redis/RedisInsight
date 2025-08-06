@@ -4,6 +4,9 @@ import { get, throttle } from 'lodash'
 import cx from 'classnames'
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
+import { RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
+import { RiLink, RiLoader } from 'uiBase/display'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { EXTERNAL_LINKS, UTM_MEDIUMS } from 'uiSrc/constants/links'
 import {
@@ -28,9 +31,6 @@ import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { KeyboardShortcut, RiTooltip } from 'uiSrc/components'
 
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
-import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiLink, RiLoader } from 'uiSrc/components/base/display'
 import TemplateButton from '../../components/template-button'
 import styles from './styles.module.scss'
 

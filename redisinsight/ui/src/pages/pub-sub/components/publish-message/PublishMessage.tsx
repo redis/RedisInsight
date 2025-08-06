@@ -2,19 +2,19 @@ import cx from 'classnames'
 import React, { FormEvent, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
+
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiPrimaryButton, RiFormField } from 'uiBase/forms'
+import { RiBadge } from 'uiBase/display'
+import { CheckThinIcon, RiIcon } from 'uiBase/icons'
+import { RiTextInput } from 'uiBase/inputs'
+import { useConnectionType } from 'uiSrc/components/hooks/useConnectionType'
+import { publishMessageAction } from 'uiSrc/slices/pubsub/pubsub'
+import { ConnectionType } from 'uiSrc/slices/interfaces'
 import {
   appContextPubSub,
   setPubSubFieldsContext,
 } from 'uiSrc/slices/app/context'
-import { ConnectionType } from 'uiSrc/slices/interfaces'
-import { publishMessageAction } from 'uiSrc/slices/pubsub/pubsub'
-import { useConnectionType } from 'uiSrc/components/hooks/useConnectionType'
-
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiPrimaryButton, RiFormField } from 'uiSrc/components/base/forms'
-import { RiBadge } from 'uiSrc/components/base/display'
-import { CheckThinIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { RiTextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 
 const HIDE_BADGE_TIMER = 3000

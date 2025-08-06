@@ -3,24 +3,23 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
+import { RiText, RiTitle } from 'uiBase/text'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiOutsideClickDetector } from 'uiBase/utils'
+import { RiPrimaryButton, RiCheckbox } from 'uiBase/forms'
+import { RiRocketIcon, RiIcon } from 'uiBase/icons'
+import { RiPopover, RiTooltip } from 'uiBase/index'
+import { rdiErrorMessages } from 'uiSrc/pages/rdi/constants'
+import { addErrorNotification } from 'uiSrc/slices/app/notifications'
+import { createAxiosError, pipelineToJson } from 'uiSrc/utils'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   deployPipelineAction,
   getPipelineStatusAction,
   rdiPipelineSelector,
   resetPipelineChecked,
 } from 'uiSrc/slices/rdi/pipeline'
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-
-import { createAxiosError, pipelineToJson } from 'uiSrc/utils'
-import { addErrorNotification } from 'uiSrc/slices/app/notifications'
-import { rdiErrorMessages } from 'uiSrc/pages/rdi/constants'
-import { RiText, RiTitle } from 'uiSrc/components/base/text'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiOutsideClickDetector } from 'uiSrc/components/base/utils'
-import { RiPrimaryButton, RiCheckbox } from 'uiSrc/components/base/forms'
-import { RiRocketIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
 export interface Props {

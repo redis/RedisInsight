@@ -4,6 +4,10 @@ import { isString } from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
 
 import styled from 'styled-components'
+import { RiOutsideClickDetector } from 'uiBase/utils'
+import { RiEmptyButton, RiIconButton, RiSelect } from 'uiBase/forms'
+import { RefreshIcon } from 'uiBase/icons'
+import { RiText } from 'uiBase/text'
 import {
   setSelectedIndex,
   redisearchSelector,
@@ -32,15 +36,7 @@ import {
 import { localStorageService } from 'uiSrc/services'
 import { BrowserStorageItem } from 'uiSrc/constants'
 
-import { RiOutsideClickDetector } from 'uiSrc/components/base/utils'
-import {
-  RiEmptyButton,
-  RiIconButton,
-  RiSelect,
-} from 'uiSrc/components/base/forms'
-import { RefreshIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
-import { RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 export const CREATE = 'create'

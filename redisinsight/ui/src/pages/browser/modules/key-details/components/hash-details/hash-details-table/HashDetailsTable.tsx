@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { CellMeasurerCache } from 'react-virtualized'
 
 import { isNumber, toNumber } from 'lodash'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiText } from 'uiBase/text'
 import { getColumnWidth } from 'uiSrc/components/virtual-grid'
 import { StopPropagation } from 'uiSrc/components/virtual-table'
 import {

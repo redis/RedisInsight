@@ -1,25 +1,20 @@
 import React from 'react'
 import { FormikProps } from 'formik'
 
-import { MAX_PORT_NUMBER, selectOnFocus, validateField } from 'uiSrc/utils'
-import { SECURITY_FIELD } from 'uiSrc/constants'
-
-import { SshPassType } from 'uiSrc/pages/home/constants'
-import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-
-import { RiCol, RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import {
-  RiFormField,
-  RiCheckbox,
-  RiRadioGroup,
-} from 'uiSrc/components/base/forms'
+import { RiCol, RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiFormField, RiCheckbox, RiRadioGroup } from 'uiBase/forms'
 import {
   RiNumericInput,
   RiPasswordInput,
   RiTextArea,
   RiTextInput,
-} from 'uiSrc/components/base/inputs'
-import { useGenerateId } from 'uiSrc/components/base/utils'
+} from 'uiBase/inputs'
+import { useGenerateId } from 'uiBase/utils'
+import { MAX_PORT_NUMBER, selectOnFocus, validateField } from 'uiSrc/utils'
+import { SECURITY_FIELD } from 'uiSrc/constants'
+
+import { SshPassType } from 'uiSrc/pages/home/constants'
+import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 
 export interface Props {
   flexGroupClassName?: string

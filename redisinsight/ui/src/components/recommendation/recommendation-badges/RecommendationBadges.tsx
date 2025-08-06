@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { RiRow } from 'uiSrc/components/base/layout'
+import { RiRow } from 'uiBase/layout'
 import BadgeIcon from '../badge-icon'
 import { badgesContent } from '../constants'
 

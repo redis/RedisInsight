@@ -1,6 +1,9 @@
 import React from 'react'
 import cx from 'classnames'
 
+import { RiEmptyButton } from 'uiBase/forms'
+import { DeleteIcon } from 'uiBase/icons'
+import { RiProgressBarLoader } from 'uiBase/display'
 import { CodeButtonParams } from 'uiSrc/constants'
 import { ProfileQueryType } from 'uiSrc/pages/workbench/constants'
 import { generateProfileQueryForCommand } from 'uiSrc/pages/workbench/utils/profile'
@@ -9,9 +12,6 @@ import { QueryCard } from 'uiSrc/components/query'
 import { CommandExecutionUI } from 'uiSrc/slices/interfaces'
 import { RunQueryMode, ResultsMode } from 'uiSrc/slices/interfaces/workbench'
 
-import { RiEmptyButton } from 'uiSrc/components/base/forms'
-import { DeleteIcon } from 'uiSrc/components/base/icons'
-import { RiProgressBarLoader } from 'uiSrc/components/base/display'
 import WbNoResultsMessage from '../../wb-no-results-message'
 
 import styles from './styles.module.scss'

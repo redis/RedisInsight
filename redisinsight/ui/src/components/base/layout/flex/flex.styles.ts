@@ -1,7 +1,7 @@
 import React, { HTMLAttributes, PropsWithChildren, ReactNode } from 'react'
 
 import styled, { css } from 'styled-components'
-import { CommonProps, Theme } from 'uiSrc/components/base/theme/types'
+import { CommonProps, Theme } from 'uiBase/theme/types'
 
 export const gapSizes = ['none', 'xs', 's', 'm', 'l', 'xl', 'xxl'] as const
 export type GapSizeType = (typeof gapSizes)[number]

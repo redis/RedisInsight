@@ -1,10 +1,10 @@
 import React from 'react'
 import { capitalize } from 'lodash'
 
+import { RiColorText, RiText } from 'uiBase/text'
+import { RiListGroup, RiListItem } from 'uiBase/layout'
 import { ConnectionType } from 'uiSrc/slices/interfaces'
 import { Nullable } from 'uiSrc/utils'
-import { RiColorText, RiText } from 'uiSrc/components/base/text'
-import { RiListGroup, RiListItem } from 'uiSrc/components/base/layout'
 import { SentinelMaster } from 'apiSrc/modules/redis-sentinel/models/sentinel-master'
 import SentinelHostPort from './SentinelHostPort'
 

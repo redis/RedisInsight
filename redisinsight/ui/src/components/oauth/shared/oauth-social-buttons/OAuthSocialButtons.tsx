@@ -1,14 +1,14 @@
 import React from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import { oauthCloudPAgreementSelector } from 'uiSrc/slices/oauth/cloud'
-import { OAuthStrategy } from 'uiSrc/slices/interfaces'
 
-import { RiEmptyButton } from 'uiSrc/components/base/forms'
-import { RiFlexItem } from 'uiSrc/components/base/layout'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiEmptyButton } from 'uiBase/forms'
+import { RiFlexItem } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
+import { AllIconsType, RiIcon } from 'uiBase/icons'
 import { RiTooltip } from 'uiSrc/components'
-import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons'
+import { OAuthStrategy } from 'uiSrc/slices/interfaces'
+import { oauthCloudPAgreementSelector } from 'uiSrc/slices/oauth/cloud'
 import styles from './styles.module.scss'
 
 export interface Props {

@@ -1,6 +1,6 @@
 import React from 'react'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiTitle } from 'uiSrc/components/base/text'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiTitle } from 'uiBase/text'
 
 export const CHECK_CLOUD_DATABASE = (
   <>

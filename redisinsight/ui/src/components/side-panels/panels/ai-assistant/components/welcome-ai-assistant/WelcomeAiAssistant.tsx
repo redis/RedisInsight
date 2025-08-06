@@ -1,5 +1,7 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiTitle, RiText } from 'uiBase/text'
 import { OAuthAgreement } from 'uiSrc/components/oauth/shared'
 
 import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
@@ -7,8 +9,6 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { setSSOFlow } from 'uiSrc/slices/instances/cloud'
 import { setOAuthCloudSource } from 'uiSrc/slices/oauth/cloud'
 import OAuthForm from 'uiSrc/components/oauth/shared/oauth-form'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 const WelcomeAiAssistant = () => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { RiLoadingContent } from 'uiSrc/components/base/layout'
+import { RiLoadingContent } from 'uiBase/layout'
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 import { RunQueryMode, ResultsMode } from 'uiSrc/slices/interfaces/workbench'
 import {

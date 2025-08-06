@@ -8,7 +8,7 @@ import {
   useEffect,
   useRef,
 } from 'react'
-import { useGenerateId } from 'uiSrc/components/base/utils'
+import { useGenerateId } from 'uiBase/utils'
 
 export interface RIEvent extends Event {
   riGeneratedBy: string[]

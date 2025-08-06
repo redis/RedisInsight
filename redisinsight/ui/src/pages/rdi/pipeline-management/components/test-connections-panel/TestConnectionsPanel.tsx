@@ -1,14 +1,13 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-import TestConnectionsLog from 'uiSrc/pages/rdi/pipeline-management/components/test-connections-log'
+import { RiText } from 'uiBase/text'
+import { RiCol, RiFlexItem } from 'uiBase/layout'
+import { RiIconButton } from 'uiBase/forms'
+import { CancelSlimIcon } from 'uiBase/icons'
+import { RiLoader } from 'uiBase/display'
 import { rdiTestConnectionsSelector } from 'uiSrc/slices/rdi/testConnections'
-
-import { RiText } from 'uiSrc/components/base/text'
-import { RiCol, RiFlexItem } from 'uiSrc/components/base/layout'
-import { RiIconButton } from 'uiSrc/components/base/forms'
-import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import { RiLoader } from 'uiSrc/components/base/display'
+import TestConnectionsLog from 'uiSrc/pages/rdi/pipeline-management/components/test-connections-log'
 import styles from './styles.module.scss'
 
 interface TestConnectionPanelWrapperProps {

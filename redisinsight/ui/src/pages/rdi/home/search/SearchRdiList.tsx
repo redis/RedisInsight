@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { RiSearchInput } from 'uiSrc/components/base/inputs'
+import { RiSearchInput } from 'uiBase/inputs'
 import { RdiInstance } from 'uiSrc/slices/interfaces'
 import {
   instancesSelector,

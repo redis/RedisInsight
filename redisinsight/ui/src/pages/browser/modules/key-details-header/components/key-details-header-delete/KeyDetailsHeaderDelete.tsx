@@ -1,6 +1,10 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 
+import { DeleteIcon } from 'uiBase/icons'
+import { RiDestructiveButton, RiIconButton } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
+import { RiPopover } from 'uiBase/index'
 import {
   initialKeyInfo,
   keysSelector,
@@ -15,10 +19,6 @@ import {
 } from 'uiSrc/telemetry'
 import { formatLongName } from 'uiSrc/utils'
 
-import { DeleteIcon } from 'uiSrc/components/base/icons'
-import { RiDestructiveButton, RiIconButton } from 'uiSrc/components/base/forms'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
 export interface Props {

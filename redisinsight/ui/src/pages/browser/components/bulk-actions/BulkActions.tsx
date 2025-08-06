@@ -3,6 +3,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 
+import { RiCol, RiFlexItem } from 'uiBase/layout'
+import { RiIconButton } from 'uiBase/forms'
+import { CancelSlimIcon } from 'uiBase/icons'
+import { RiTitle } from 'uiBase/text'
 import {
   selectedBulkActionsSelector,
   setBulkActionsInitialState,
@@ -18,10 +22,6 @@ import {
 import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
 import { FullScreen, RiTooltip } from 'uiSrc/components'
 
-import { RiCol, RiFlexItem } from 'uiSrc/components/base/layout'
-import { RiIconButton } from 'uiSrc/components/base/forms'
-import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import { RiTitle } from 'uiSrc/components/base/text'
 import BulkUpload from './BulkUpload'
 import BulkDelete from './BulkDelete'
 import BulkActionsTabs from './BulkActionsTabs'

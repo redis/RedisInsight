@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import { CellMeasurerCache } from 'react-virtualized'
 
-import { RiText } from 'uiSrc/components/base/text'
+import { RiText } from 'uiBase/text'
 import { RedisResponseBuffer, RedisString } from 'uiSrc/slices/interfaces'
 
 import {

@@ -6,6 +6,8 @@ import ReactMonacoEditor, { monaco as monacoEditor } from 'react-monaco-editor'
 import { Rnd } from 'react-rnd'
 import cx from 'classnames'
 
+import { RiIconButton, RiSelect } from 'uiBase/forms'
+import { CancelSlimIcon, CheckThinIcon } from 'uiBase/icons'
 import {
   decoration,
   getMonacoAction,
@@ -23,8 +25,6 @@ import {
 import { IEditorMount } from 'uiSrc/pages/workbench/interfaces'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 
-import { RiIconButton, RiSelect } from 'uiSrc/components/base/forms'
-import { CancelSlimIcon, CheckThinIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 const LangSelect = styled(RiSelect)`

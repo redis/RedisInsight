@@ -3,7 +3,8 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 
-import { RiColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiBase/text'
+import { RiTable, ColumnDefinition } from 'uiBase/layout'
 import { GroupBadge, RiTooltip } from 'uiSrc/components'
 import { Pages } from 'uiSrc/constants'
 import {
@@ -38,7 +39,6 @@ import {
 } from 'uiSrc/utils'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { TableTextBtn } from 'uiSrc/pages/database-analysis/components/base/TableTextBtn'
-import { RiTable, ColumnDefinition } from 'uiSrc/components/base/layout'
 import { Key } from 'apiSrc/modules/database-analysis/models/key'
 
 export interface Props {

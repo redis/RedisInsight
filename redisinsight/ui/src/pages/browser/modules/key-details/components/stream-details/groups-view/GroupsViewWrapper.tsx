@@ -2,6 +2,10 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
+import { RiText } from 'uiBase/text'
+import { RiFormField } from 'uiBase/forms'
+import { RiIcon } from 'uiBase/icons'
+import { RiTextInput } from 'uiBase/inputs'
 import { lastDeliveredIDTooltipText } from 'uiSrc/constants/texts'
 import {
   selectedKeyDataSelector,
@@ -34,10 +38,6 @@ import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import EditablePopover from 'uiSrc/pages/browser/modules/key-details/shared/editable-popover'
 
 import { FormatedDate, RiTooltip } from 'uiSrc/components'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiFormField } from 'uiSrc/components/base/forms'
-import { RiIcon } from 'uiSrc/components/base/icons'
-import { RiTextInput } from 'uiSrc/components/base/inputs'
 import {
   ConsumerDto,
   ConsumerGroupDto,

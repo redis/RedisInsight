@@ -9,7 +9,11 @@ import {
   CopyIcon,
   DoubleChevronRightIcon,
   RiIcon,
-} from 'uiSrc/components/base/icons'
+} from 'uiBase/icons'
+import { RiFlexItem, RiGrid, RiRow } from 'uiBase/layout'
+import { RiIconButton, RiPrimaryButton, RiFormField } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
+import { RiTextInput } from 'uiBase/inputs'
 import { BuildType } from 'uiSrc/constants/env'
 import { appInfoSelector } from 'uiSrc/slices/app/info'
 import { getDbIndex, Nullable } from 'uiSrc/utils'
@@ -29,15 +33,7 @@ import {
   resetRdiContext,
   setAppContextInitialState,
 } from 'uiSrc/slices/app/context'
-import { RiFlexItem, RiGrid, RiRow } from 'uiSrc/components/base/layout'
-import {
-  RiIconButton,
-  RiPrimaryButton,
-  RiFormField,
-} from 'uiSrc/components/base/forms'
-import { RiText } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
-import { RiTextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 
 export interface Props {

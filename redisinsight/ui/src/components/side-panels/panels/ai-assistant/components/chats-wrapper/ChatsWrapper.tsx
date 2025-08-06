@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { filter } from 'lodash'
+import { RiTabs, TabInfo } from 'uiBase/layout'
 import { aiChatSelector, setSelectedTab } from 'uiSrc/slices/panels/aiAssistant'
 import { AiChatType } from 'uiSrc/slices/interfaces/aiAssistant'
 
@@ -10,7 +11,6 @@ import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { Maybe } from 'uiSrc/utils'
 import { FeatureFlagComponent } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { RiTabs, TabInfo } from 'uiSrc/components/base/layout'
 import AssistanceChat from '../assistance-chat'
 import ExpertChat from '../expert-chat'
 

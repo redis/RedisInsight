@@ -4,6 +4,18 @@ import { FormikErrors, useFormik } from 'formik'
 import { isEmpty } from 'lodash'
 import { useSelector } from 'react-redux'
 
+import { RiCol, RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiWindowEvent } from 'uiBase/utils'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { InfoIcon } from 'uiBase/icons'
+import {
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
+  RiRadioGroup,
+} from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
+import { RiTextInput } from 'uiBase/inputs'
 import * as keys from 'uiSrc/constants/keys'
 import { validateField } from 'uiSrc/utils/validations'
 import validationErrors from 'uiSrc/constants/validationErrors'
@@ -14,18 +26,6 @@ import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { OAuthAutodiscovery } from 'uiSrc/components/oauth/oauth-sso'
 import { MessageCloudApiKeys } from 'uiSrc/pages/home/components/form/Messages'
-import { RiCol, RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiWindowEvent } from 'uiSrc/components/base/utils'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { InfoIcon } from 'uiSrc/components/base/icons'
-import {
-  RiPrimaryButton,
-  RiSecondaryButton,
-  RiFormField,
-  RiRadioGroup,
-} from 'uiSrc/components/base/forms'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiTextInput } from 'uiSrc/components/base/inputs'
 import { ICloudConnectionSubmit } from '../CloudConnectionFormWrapper'
 
 import styles from '../styles.module.scss'

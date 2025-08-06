@@ -1,11 +1,11 @@
 import React from 'react'
+import { RiSecondaryButton } from 'uiBase/forms'
+import { RiImage } from 'uiBase/display'
 import { OAuthSsoHandlerDialog } from 'uiSrc/components'
 
 import RedisLogo from 'uiSrc/assets/img/logo_small.svg'
 
 import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
-import { RiSecondaryButton } from 'uiSrc/components/base/forms'
-import { RiImage } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 export interface Props {

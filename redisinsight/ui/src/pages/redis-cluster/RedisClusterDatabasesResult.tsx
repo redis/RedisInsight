@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 
+import { RiFlexItem, RiRow, RiTable, ColumnDefinition } from 'uiBase/layout'
+import { RiPrimaryButton, RiSecondaryButton, RiFormField } from 'uiBase/forms'
+import { RiSearchInput } from 'uiBase/inputs'
+import { RiTitle, RiText } from 'uiBase/text'
 import {
   AddRedisDatabaseStatus,
   InstanceRedisCluster,
@@ -11,19 +15,6 @@ import { clusterSelector } from 'uiSrc/slices/instances/cluster'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import {
-  RiFlexItem,
-  RiRow,
-  RiTable,
-  ColumnDefinition,
-} from 'uiSrc/components/base/layout'
-import {
-  RiPrimaryButton,
-  RiSecondaryButton,
-  RiFormField,
-} from 'uiSrc/components/base/forms'
-import { RiSearchInput } from 'uiSrc/components/base/inputs'
-import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 export interface Props {

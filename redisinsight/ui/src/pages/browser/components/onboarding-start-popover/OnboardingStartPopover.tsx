@@ -1,5 +1,9 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiEmptyButton, RiPrimaryButton } from 'uiBase/forms'
+import { RiTitle, RiText } from 'uiBase/text'
+import { RiPopover } from 'uiBase/index'
 import {
   appFeatureOnboardingSelector,
   setOnboardNextStep,
@@ -9,10 +13,6 @@ import {
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { OnboardingStepName, OnboardingSteps } from 'uiSrc/constants/onboarding'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiEmptyButton, RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { RiTitle, RiText } from 'uiSrc/components/base/text'
-import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
 const OnboardingStartPopover = () => {

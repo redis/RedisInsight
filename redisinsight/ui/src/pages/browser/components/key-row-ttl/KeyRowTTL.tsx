@@ -2,9 +2,9 @@ import React from 'react'
 import cx from 'classnames'
 import { isUndefined } from 'lodash'
 
+import { RiLoadingContent } from 'uiBase/layout'
+import { RiColorText, RiText } from 'uiBase/text'
 import { RiTooltip } from 'uiSrc/components'
-import { RiLoadingContent } from 'uiSrc/components/base/layout'
-import { RiColorText, RiText } from 'uiSrc/components/base/text'
 import {
   Maybe,
   truncateNumberToDuration,

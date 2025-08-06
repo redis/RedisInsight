@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
+import { RiSearchInput } from 'uiBase/inputs'
 import { cliSettingsSelector } from 'uiSrc/slices/cli/cli-settings'
 
-import { RiSearchInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 
 export interface Props {

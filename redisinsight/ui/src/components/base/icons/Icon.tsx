@@ -2,7 +2,7 @@ import React from 'react'
 import { useTheme } from '@redis-ui/styles'
 import cx from 'classnames'
 import { IconSizeType } from '@redis-ui/icons'
-import { MonochromeIconProps } from 'uiSrc/components/base/icons'
+import { MonochromeIconProps } from 'uiBase/icons'
 
 type BaseIconProps = Omit<MonochromeIconProps, 'color' | 'size'> & {
   icon: React.ComponentType<any>

@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 
+import { RiText } from 'uiBase/text'
+import { RiSelect } from 'uiBase/forms'
+import { RiIcon } from 'uiBase/icons'
 import { GROUP_TYPES_DISPLAY } from 'uiSrc/constants'
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 import { cliSettingsSelector } from 'uiSrc/slices/cli/cli-settings'
-import { RiText } from 'uiSrc/components/base/text'
 
-import { RiSelect } from 'uiSrc/components/base/forms'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 export interface Props {

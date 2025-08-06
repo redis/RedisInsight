@@ -1,7 +1,7 @@
 import cx from 'classnames'
 import React, { useState } from 'react'
 
-import { RiCollapsibleNavGroup } from 'uiSrc/components/base/display'
+import { RiCollapsibleNavGroup } from 'uiBase/display'
 import { TransformGroupResult } from 'uiSrc/slices/interfaces'
 import TestConnectionsTable from 'uiSrc/pages/rdi/pipeline-management/components/test-connections-table'
 

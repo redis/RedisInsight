@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react'
-import { RiTabs, TabInfo, RiRow } from 'uiSrc/components/base/layout'
+import { RiTabs, TabInfo, RiRow } from 'uiBase/layout'
 import {
   StyledAppNavigation,
   StyledAppNavigationContainer,

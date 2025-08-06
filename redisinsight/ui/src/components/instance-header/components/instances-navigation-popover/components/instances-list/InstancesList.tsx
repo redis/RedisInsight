@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
+import { RiListGroup, RiListItem } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
+import { RiLoader } from 'uiBase/display'
 import { checkConnectToRdiInstanceAction } from 'uiSrc/slices/rdi/instances'
 import {
   checkConnectToInstanceAction,
@@ -15,9 +18,6 @@ import {
   getRedisInfoSummary,
 } from 'uiSrc/telemetry'
 import { getDbIndex } from 'uiSrc/utils'
-import { RiListGroup, RiListItem } from 'uiSrc/components/base/layout'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiLoader } from 'uiSrc/components/base/display'
 import { InstancesTabs } from '../../InstancesNavigationPopover'
 import styles from '../../styles.module.scss'
 

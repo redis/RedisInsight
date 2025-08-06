@@ -2,12 +2,12 @@ import React, { ReactElement, useEffect } from 'react'
 import { Provider, useSelector } from 'react-redux'
 
 import { Route, Switch } from 'react-router-dom'
+import { RiPage, RiPageBody } from 'uiBase/layout'
 import { store } from 'uiSrc/slices/store'
 import { appInfoSelector } from 'uiSrc/slices/app/info'
 import { removePagePlaceholder } from 'uiSrc/utils'
 import MonacoLanguages from 'uiSrc/components/monaco-laguages'
 import AppInit from 'uiSrc/components/init/AppInit'
-import { RiPage, RiPageBody } from 'uiSrc/components/base/layout'
 import { Pages, Theme } from './constants'
 import { themeService } from './services'
 import {

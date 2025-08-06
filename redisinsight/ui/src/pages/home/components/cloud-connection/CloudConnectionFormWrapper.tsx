@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 
+import { RiTitle } from 'uiBase/text'
 import { Pages } from 'uiSrc/constants'
 import {
   cloudSelector,
@@ -12,7 +13,6 @@ import { resetErrors } from 'uiSrc/slices/app/notifications'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
-import { RiTitle } from 'uiSrc/components/base/text'
 import CloudConnectionForm from './cloud-connection-form'
 
 export interface Props {

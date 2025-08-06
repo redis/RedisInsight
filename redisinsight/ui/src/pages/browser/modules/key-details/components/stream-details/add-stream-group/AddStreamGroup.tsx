@@ -3,6 +3,10 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiPrimaryButton, RiSecondaryButton, RiFormField } from 'uiBase/forms'
+import { RiIcon } from 'uiBase/icons'
+import { RiTextInput } from 'uiBase/inputs'
 import { lastDeliveredIDTooltipText } from 'uiSrc/constants/texts'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 import { addNewGroupAction } from 'uiSrc/slices/browser/stream'
@@ -12,15 +16,7 @@ import {
   validateConsumerGroupId,
 } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import {
-  RiPrimaryButton,
-  RiSecondaryButton,
-  RiFormField,
-} from 'uiSrc/components/base/forms'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
-import { RiTextInput } from 'uiSrc/components/base/inputs'
 import { CreateConsumerGroupsDto } from 'apiSrc/modules/browser/stream/dto'
 
 import styles from './styles.module.scss'

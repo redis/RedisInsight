@@ -1,13 +1,13 @@
 import React, { FormEvent, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { RiFormField } from 'uiBase/forms'
+import { RiTextArea } from 'uiBase/inputs'
 import { Maybe, stringToBuffer } from 'uiSrc/utils'
 
 import { addKeyStateSelector, addStringKey } from 'uiSrc/slices/browser/keys'
 
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
-import { RiFormField } from 'uiSrc/components/base/forms'
-import { RiTextArea } from 'uiSrc/components/base/inputs'
 import { SetStringWithExpireDto } from 'apiSrc/modules/browser/string/dto'
 import { AddStringFormConfig as config } from '../constants/fields-config'
 

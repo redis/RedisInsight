@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios'
 import { capitalize, isEmpty, isString, isArray, set, isNumber } from 'lodash'
 import React from 'react'
+import { RiSpacer } from 'uiBase/layout/spacer'
 import { CustomErrorCodes } from 'uiSrc/constants'
 import { DEFAULT_ERROR_MESSAGE } from 'uiSrc/utils'
 import { CustomError } from 'uiSrc/slices/interfaces'
@@ -9,7 +10,6 @@ import {
   UTM_CAMPAINGS,
   UTM_MEDIUMS,
 } from 'uiSrc/constants/links'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 import { getUtmExternalLink } from './links'
 
 export const getRdiValidationMessage = (

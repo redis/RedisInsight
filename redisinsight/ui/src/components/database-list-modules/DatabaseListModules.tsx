@@ -2,16 +2,16 @@
 import React, { useContext } from 'react'
 import cx from 'classnames'
 
+import { RiIconButton } from 'uiBase/forms'
+import { RiColorText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
 import { Theme } from 'uiSrc/constants'
 import { getModule, truncateText } from 'uiSrc/utils'
 import { IDatabaseModule, sortModules } from 'uiSrc/utils/modules'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 
 import { DEFAULT_MODULES_INFO, ModuleInfo } from 'uiSrc/constants/modules'
-import { RiIconButton } from 'uiSrc/components/base/forms'
-import { RiColorText } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
 
 import styles from './styles.module.scss'

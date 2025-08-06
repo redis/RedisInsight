@@ -1,9 +1,9 @@
 import React from 'react'
 import cx from 'classnames'
 
+import { CancelIcon } from 'uiBase/icons'
+import { RiModal } from 'uiBase/display'
 import { Nullable } from 'uiSrc/utils'
-import { CancelIcon } from 'uiSrc/components/base/icons'
-import { RiModal } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 export interface Props {

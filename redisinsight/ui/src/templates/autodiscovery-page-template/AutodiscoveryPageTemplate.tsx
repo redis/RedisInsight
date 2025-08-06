@@ -1,8 +1,8 @@
 import React from 'react'
+import { RiPage, RiPageBody } from 'uiBase/layout'
 import { PageHeader } from 'uiSrc/components'
 import ExplorePanelTemplate from 'uiSrc/templates/explore-panel/ExplorePanelTemplate'
 
-import { RiPage, RiPageBody } from 'uiSrc/components/base/layout'
 import styles from './styles.module.scss'
 
 export interface Props {

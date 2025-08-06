@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import {
+  RiFlexGroup as Flex,
+  RiFlexItem,
+  RiRow,
+  RiTable,
+  ColumnDefinition,
+} from 'uiBase/layout'
+import { RiPrimaryButton, RiSecondaryButton, RiFormField } from 'uiBase/forms'
+import { RiSearchInput } from 'uiBase/inputs'
+import { RiTitle, RiText } from 'uiBase/text'
+import {
   InstanceRedisCloud,
   AddRedisDatabaseStatus,
 } from 'uiSrc/slices/interfaces'
@@ -8,20 +18,6 @@ import { cloudSelector } from 'uiSrc/slices/instances/cloud'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import {
-  RiFlexGroup as Flex,
-  RiFlexItem,
-  RiRow,
-  RiTable,
-  ColumnDefinition,
-} from 'uiSrc/components/base/layout'
-import {
-  RiPrimaryButton,
-  RiSecondaryButton,
-  RiFormField,
-} from 'uiSrc/components/base/forms'
-import { RiSearchInput } from 'uiSrc/components/base/inputs'
-import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 export interface Props {

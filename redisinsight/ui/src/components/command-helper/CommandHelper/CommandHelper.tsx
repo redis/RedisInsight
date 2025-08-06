@@ -1,11 +1,11 @@
 import React, { ReactElement } from 'react'
 import { useDispatch } from 'react-redux'
+import { RiColorText, RiText } from 'uiBase/text'
+import { RiLink } from 'uiBase/display'
 import { CommandGroup } from 'uiSrc/constants'
 import { goBackFromCommand } from 'uiSrc/slices/cli/cli-settings'
 import { getDocUrlForCommand } from 'uiSrc/utils'
-import { RiColorText, RiText } from 'uiSrc/components/base/text'
 
-import { RiLink } from 'uiSrc/components/base/display'
 import CHCommandInfo from '../components/command-helper-info'
 import CHSearchWrapper from '../components/command-helper-search'
 import CHSearchOutput from '../components/command-helper-search-output'

@@ -3,6 +3,17 @@ import cx from 'classnames'
 import { FormikProps } from 'formik'
 
 import { useDispatch } from 'react-redux'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import {
+  RiCheckbox,
+  RiFormField,
+  RiSelect,
+  SelectValueRender,
+  RiSelectOption,
+} from 'uiBase/forms'
+import { RiTextArea, RiTextInput } from 'uiBase/inputs'
+import { useGenerateId } from 'uiBase/utils'
 import {
   Nullable,
   truncateText,
@@ -20,17 +31,6 @@ import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { deleteCaCertificateAction } from 'uiSrc/slices/instances/caCerts'
 import { deleteClientCertAction } from 'uiSrc/slices/instances/clientCerts'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  RiCheckbox,
-  RiFormField,
-  RiSelect,
-  SelectValueRender,
-  RiSelectOption,
-} from 'uiSrc/components/base/forms'
-import { RiTextArea, RiTextInput } from 'uiSrc/components/base/inputs'
-import { useGenerateId } from 'uiSrc/components/base/utils'
 import styles from '../styles.module.scss'
 
 const suffix = '_tls_details'

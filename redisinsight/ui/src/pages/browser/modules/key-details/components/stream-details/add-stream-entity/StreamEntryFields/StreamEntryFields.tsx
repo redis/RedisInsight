@@ -1,16 +1,16 @@
 import React, { useEffect, useRef } from 'react'
 import cx from 'classnames'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiFormField } from 'uiBase/forms'
+import { RiIcon } from 'uiBase/icons'
+import { RiTextInput } from 'uiBase/inputs'
 import { validateEntryId } from 'uiSrc/utils'
 import { INITIAL_STREAM_FIELD_STATE } from 'uiSrc/pages/browser/components/add-key/AddKeyStream/AddKeyStream'
 import { AddStreamFormConfig as config } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
 import AddMultipleFields from 'uiSrc/pages/browser/components/add-multiple-fields'
 
 import { RiTooltip } from 'uiSrc/components'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiFormField } from 'uiSrc/components/base/forms'
-import { RiIcon } from 'uiSrc/components/base/icons'
-import { RiTextInput } from 'uiSrc/components/base/inputs'
 import styles from '../styles.module.scss'
 
 export interface Props {

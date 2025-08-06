@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import { RiTabs } from 'uiBase/layout'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
-import { RiTabs } from 'uiSrc/components/base/layout'
 import { tabs } from './constants'
 
 const HomeTabs = () => {

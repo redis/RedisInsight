@@ -1,7 +1,7 @@
 import React from 'react'
 
+import { RiTable } from 'uiBase/layout'
 import { render, fireEvent, screen } from 'uiSrc/utils/test-utils'
-import { Table } from 'uiSrc/components/base/layout'
 
 import RedisCloudDatabasesResultPage from './RedisCloudDatabasesResultPage'
 import RedisCloudDatabasesResult, {
@@ -25,7 +25,7 @@ const mockRedisCloudDatabasesResult = (
       onBack
     </button>
     <div className="itemList">
-      <Table
+      <RiTable
         columns={props.columns}
         data={[]}
         defaultSorting={[{ id: 'name', desc: false }]}

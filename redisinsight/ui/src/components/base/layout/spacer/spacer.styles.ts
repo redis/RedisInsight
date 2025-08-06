@@ -1,7 +1,7 @@
 import { HTMLAttributes, ReactNode } from 'react'
 import styled from 'styled-components'
-import { CommonProps, Theme } from 'uiSrc/components/base/theme/types'
-import { theme } from 'uiSrc/components/base/theme'
+import { CommonProps, Theme } from 'uiBase/theme/types'
+import { theme } from 'uiBase/theme'
 
 export const SpacerSizes = ['xs', 's', 'm', 'l', 'xl', 'xxl'] as const
 export type SpacerSize = (typeof SpacerSizes)[number]

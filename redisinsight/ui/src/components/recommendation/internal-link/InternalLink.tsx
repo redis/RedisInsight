@@ -1,6 +1,6 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
-import { RiPrimaryButton } from 'uiSrc/components/base/forms'
+import { RiPrimaryButton } from 'uiBase/forms'
 
 export interface Props {
   path: string

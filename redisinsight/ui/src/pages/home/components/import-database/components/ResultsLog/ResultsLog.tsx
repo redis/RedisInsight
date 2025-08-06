@@ -1,11 +1,11 @@
 import cx from 'classnames'
 import React, { useState } from 'react'
 
+import { RiCollapsibleNavGroup } from 'uiBase/display'
+import { RiCol } from 'uiBase/layout'
 import { ImportDatabasesData } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { Nullable } from 'uiSrc/utils'
-import { RiCollapsibleNavGroup } from 'uiSrc/components/base/display'
-import { RiCol } from 'uiSrc/components/base/layout'
 import TableResult from '../TableResult'
 
 import styles from './styles.module.scss'

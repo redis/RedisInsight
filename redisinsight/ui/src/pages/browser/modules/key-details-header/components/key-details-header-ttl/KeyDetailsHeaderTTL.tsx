@@ -2,6 +2,10 @@ import cx from 'classnames'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
+import { RiFlexItem, RiGrid } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
+import { RiTextInput } from 'uiBase/inputs'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor/InlineItemEditor'
 import {
   initialKeyInfo,
@@ -11,10 +15,6 @@ import {
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { MAX_TTL_NUMBER, validateTTLNumber } from 'uiSrc/utils'
 
-import { RiFlexItem, RiGrid } from 'uiSrc/components/base/layout'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons'
-import { RiTextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 
 export interface Props {

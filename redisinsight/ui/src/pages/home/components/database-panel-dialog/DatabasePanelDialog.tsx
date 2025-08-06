@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
+import { RiTitle } from 'uiBase/text'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiIconButton } from 'uiBase/forms'
+import { ArrowLeftIcon } from 'uiBase/icons'
 import { Nullable } from 'uiSrc/utils'
 import { UrlHandlingActions } from 'uiSrc/slices/interfaces/urlHandling'
 import { Instance } from 'uiSrc/slices/interfaces'
@@ -30,11 +34,7 @@ import CloudConnectionFormWrapper from 'uiSrc/pages/home/components/cloud-connec
 import ImportDatabase from 'uiSrc/pages/home/components/import-database'
 import { FormDialog } from 'uiSrc/components'
 import { ModalHeaderProvider } from 'uiSrc/contexts/ModalTitleProvider'
-import { RiTitle } from 'uiSrc/components/base/text'
 import ClusterConnectionFormWrapper from 'uiSrc/pages/home/components/cluster-connection'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiIconButton } from 'uiSrc/components/base/forms'
-import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 export interface Props {

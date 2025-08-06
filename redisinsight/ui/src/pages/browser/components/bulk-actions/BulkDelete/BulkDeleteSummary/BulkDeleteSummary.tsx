@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { isUndefined } from 'lodash'
 
+import { RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
 import { numberWithSpaces, nullableNumberWithSpaces } from 'uiSrc/utils/numbers'
 import { keysDataSelector } from 'uiSrc/slices/browser/keys'
 import { getApproximatePercentage } from 'uiSrc/utils/validations'
@@ -10,10 +12,8 @@ import {
   bulkActionsDeleteSummarySelector,
 } from 'uiSrc/slices/browser/bulkActions'
 import BulkActionSummary from 'uiSrc/pages/browser/components/bulk-actions/BulkActionSummary'
-import { RiText } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 
-import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 const BulkDeleteSummary = () => {

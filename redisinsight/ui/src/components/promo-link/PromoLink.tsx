@@ -1,7 +1,7 @@
 import React from 'react'
-import { RiColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiBase/text'
 
-import { RiIcon } from 'uiSrc/components/base/icons'
+import { RiIcon } from 'uiBase/icons'
 import styles from './styles.module.scss'
 
 export interface Props {

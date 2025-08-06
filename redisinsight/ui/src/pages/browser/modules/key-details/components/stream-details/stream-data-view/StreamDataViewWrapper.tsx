@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { last, mergeWith, toNumber } from 'lodash'
+import { RiText } from 'uiBase/text'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
 import {
@@ -37,7 +38,6 @@ import { decompressingBuffer } from 'uiSrc/utils/decompressors'
 
 import { FormattedValue } from 'uiSrc/pages/browser/modules/key-details/shared'
 import { FormatedDate } from 'uiSrc/components'
-import { RiText } from 'uiSrc/components/base/text'
 import { StreamEntryDto } from 'apiSrc/modules/browser/stream/dto'
 import StreamDataView from './StreamDataView'
 import styles from './StreamDataView/styles.module.scss'
@@ -342,7 +342,11 @@ const StreamDataViewWrapper = (props: Props) => {
               </div>
             </RiText>
           )}
-          <RiText size="s" style={{ maxWidth: '100%' }} className="truncateText">
+          <RiText
+            size="s"
+            style={{ maxWidth: '100%' }}
+            className="truncateText"
+          >
             <div
               className="streamItemId truncateText"
               data-testid={`stream-entry-${id}`}

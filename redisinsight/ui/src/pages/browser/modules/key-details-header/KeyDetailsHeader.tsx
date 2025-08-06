@@ -3,6 +3,9 @@ import { isUndefined } from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { CancelSlimIcon } from 'uiBase/icons'
+import { RiIconButton } from 'uiBase/forms'
 import {
   GroupBadge,
   AutoRefresh,
@@ -29,9 +32,6 @@ import {
   TelemetryEvent,
 } from 'uiSrc/telemetry'
 
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import { RiIconButton } from 'uiSrc/components/base/forms'
 import { KeyDetailsHeaderName } from './components/key-details-header-name'
 import { KeyDetailsHeaderTTL } from './components/key-details-header-ttl'
 import { KeyDetailsHeaderDelete } from './components/key-details-header-delete'

@@ -2,7 +2,7 @@ import React from 'react'
 import { useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
-import { RiText, RiTitle } from 'uiSrc/components/base/text'
+import { RiText, RiTitle } from 'uiBase/text'
 import { Pages } from 'uiSrc/constants'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 

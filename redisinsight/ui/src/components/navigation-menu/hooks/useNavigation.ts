@@ -3,6 +3,15 @@ import { last } from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { useEffect, useState } from 'react'
+import {
+  BrowserIcon,
+  PipelineManagementIcon,
+  PipelineStatisticsIcon,
+  PubSubIcon,
+  SlowLogIcon,
+  WorkbenchIcon,
+  SettingsIcon,
+} from 'uiBase/icons'
 import { Props as HighlightedFeatureProps } from 'uiSrc/components/hightlighted-feature/HighlightedFeature'
 import { ANALYTICS_ROUTES } from 'uiSrc/components/main-router/constants/sub-routes'
 import {
@@ -18,15 +27,6 @@ import { Pages, FeatureFlags, PageNames } from 'uiSrc/constants'
 
 import { appContextSelector } from 'uiSrc/slices/app/context'
 import { AppWorkspace } from 'uiSrc/slices/interfaces'
-import {
-  BrowserIcon,
-  PipelineManagementIcon,
-  PipelineStatisticsIcon,
-  PubSubIcon,
-  SlowLogIcon,
-  WorkbenchIcon,
-  SettingsIcon,
-} from 'uiSrc/components/base/icons'
 import { INavigations } from '../navigation.types'
 
 const pubSubPath = `/${PageNames.pubSub}`

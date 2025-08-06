@@ -3,11 +3,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
 import { get } from 'lodash'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
 import {
   getPipelineStatusAction,
   rdiPipelineStatusSelector,
 } from 'uiSrc/slices/rdi/pipeline'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import CurrentPipelineStatus from './components/current-pipeline-status'
 
 import PipelineActions from './components/pipeline-actions'

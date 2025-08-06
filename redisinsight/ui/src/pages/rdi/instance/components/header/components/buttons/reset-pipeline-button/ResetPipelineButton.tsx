@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { RiResetIcon } from 'uiSrc/components/base/icons'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiSecondaryButton } from 'uiSrc/components/base/forms'
+import { RiResetIcon } from 'uiBase/icons'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiSecondaryButton } from 'uiBase/forms'
 import { RiTooltip } from 'uiSrc/components'
 import styles from '../styles.module.scss'
 

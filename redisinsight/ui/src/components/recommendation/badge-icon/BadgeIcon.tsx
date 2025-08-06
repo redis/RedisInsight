@@ -1,7 +1,7 @@
 import React from 'react'
 
+import { RiFlexItem } from 'uiBase/layout'
 import { RiTooltip } from 'uiSrc/components'
-import { RiFlexItem } from 'uiSrc/components/base/layout'
 import styles from '../styles.module.scss'
 
 export interface Props {

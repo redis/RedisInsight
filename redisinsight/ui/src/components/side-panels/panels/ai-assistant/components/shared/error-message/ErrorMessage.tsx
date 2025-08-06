@@ -1,12 +1,12 @@
 import React from 'react'
 
+import { RiSecondaryButton } from 'uiBase/forms'
+import { DeleteIcon } from 'uiBase/icons'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import { CustomErrorCodes } from 'uiSrc/constants'
 import { AI_CHAT_ERRORS } from 'uiSrc/constants/apiErrors'
 import ApiStatusCode from 'uiSrc/constants/apiStatusCode'
 
-import { RiSecondaryButton } from 'uiSrc/components/base/forms'
-import { DeleteIcon } from 'uiSrc/components/base/icons'
 import RestartChat from '../restart-chat'
 
 import styles from './styles.module.scss'

@@ -2,6 +2,8 @@ import React, { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams, useHistory } from 'react-router-dom'
 
+import { RiTabs, TabInfo } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
 import { Pages } from 'uiSrc/constants'
 import { AnalyticsViewTab } from 'uiSrc/slices/interfaces/analytics'
 import {
@@ -18,8 +20,6 @@ import { renderOnboardingTourWithChild } from 'uiSrc/utils/onboarding'
 import { OnboardingSteps } from 'uiSrc/constants/onboarding'
 import { useConnectionType } from 'uiSrc/components/hooks/useConnectionType'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
-import { RiTabs, TabInfo } from 'uiSrc/components/base/layout'
-import { RiText } from 'uiSrc/components/base/text'
 
 const AnalyticsTabs = () => {
   const { viewTab } = useSelector(analyticsSettingsSelector)

@@ -1,21 +1,16 @@
 import React from 'react'
 
 import cx from 'classnames'
+import { GroupModeIcon, PlayFilledIcon, RawModeIcon } from 'uiBase/icons'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiEmptyButton } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
 import { ResultsMode, RunQueryMode } from 'uiSrc/slices/interfaces'
 import { KEYBOARD_SHORTCUTS } from 'uiSrc/constants'
 import { KeyboardShortcut, RiTooltip } from 'uiSrc/components'
 import { isGroupMode } from 'uiSrc/utils'
 
-import {
-  GroupModeIcon,
-  PlayFilledIcon,
-  RawModeIcon,
-} from 'uiSrc/components/base/icons'
-
 import Divider from 'uiSrc/components/divider/Divider'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiEmptyButton } from 'uiSrc/components/base/forms'
-import { RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 export interface Props {

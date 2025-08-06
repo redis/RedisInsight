@@ -1,7 +1,7 @@
 import React from 'react'
 import cx from 'classnames'
+import { RiText } from 'uiBase/text'
 import { APPLICATION_NAME } from 'uiSrc/constants'
-import { RiText } from 'uiSrc/components/base/text'
 
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { ExternalLink } from 'uiSrc/components'

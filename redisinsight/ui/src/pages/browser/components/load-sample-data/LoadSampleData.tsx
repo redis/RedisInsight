@@ -2,19 +2,18 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton } from 'uiBase/forms'
+import { PlayFilledIcon, RiIcon } from 'uiBase/icons'
+import { RiText } from 'uiBase/text'
+import { RiPopover } from 'uiBase/index'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   bulkActionsSelector,
   bulkImportDefaultDataAction,
 } from 'uiSrc/slices/browser/bulkActions'
-
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { PlayFilledIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiPopover } from 'uiSrc/components/base'
+import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import styles from './styles.module.scss'
 
 export interface Props {

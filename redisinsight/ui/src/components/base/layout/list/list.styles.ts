@@ -10,7 +10,7 @@ import {
   Ref,
 } from 'react'
 
-import { AllIconsType , IconProps } from 'uiSrc/components/base/icons'
+import { AllIconsType, IconProps } from 'uiBase/icons'
 
 export const ListClassNames = {
   listItem: 'RI-list-group-item',

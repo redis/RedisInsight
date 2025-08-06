@@ -1,6 +1,8 @@
 import { toNumber } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
 import { entryIdRegex, stringToBuffer } from 'uiSrc/utils'
 import {
   keysSelector,
@@ -19,8 +21,6 @@ import {
   sendEventTelemetry,
   TelemetryEvent,
 } from 'uiSrc/telemetry'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { AddStreamEntriesDto } from 'apiSrc/modules/browser/stream/dto'
 
 import StreamEntryFields from './StreamEntryFields/StreamEntryFields'

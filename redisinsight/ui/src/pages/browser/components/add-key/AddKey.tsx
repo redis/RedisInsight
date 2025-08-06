@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
+import { RiCol, RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiIconButton } from 'uiBase/forms'
+import { CancelSlimIcon } from 'uiBase/icons'
+import { RiHealthText, RiTitle } from 'uiBase/text'
 import Divider from 'uiSrc/components/divider/Divider'
 import { KeyTypes } from 'uiSrc/constants'
 import HelpTexts from 'uiSrc/constants/help-texts'
@@ -19,11 +23,6 @@ import {
 import { isContainJSONModule, Maybe, stringToBuffer } from 'uiSrc/utils'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
-import { RiCol, RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-
-import { RiIconButton } from 'uiSrc/components/base/forms'
-import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import { RiHealthText, RiTitle } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { ADD_KEY_TYPE_OPTIONS } from './constants/key-type-options'
 import AddKeyHash from './AddKeyHash'

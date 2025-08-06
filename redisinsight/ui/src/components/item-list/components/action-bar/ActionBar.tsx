@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiIconButton } from 'uiSrc/components/base/forms'
-import { CancelSlimIcon } from 'uiSrc/components/base/icons'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiIconButton } from 'uiBase/forms'
+import { CancelSlimIcon } from 'uiBase/icons'
 import styles from './styles.module.scss'
 
 export interface Props {

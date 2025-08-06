@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { RiSearchInput } from 'uiBase/inputs'
 import {
   instancesSelector,
   loadInstancesSuccess,
@@ -9,7 +10,6 @@ import { CONNECTION_TYPE_DISPLAY, Instance } from 'uiSrc/slices/interfaces'
 import { tagsSelector } from 'uiSrc/slices/instances/tags'
 import { lastConnectionFormat } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { RiSearchInput } from 'uiSrc/components/base/inputs'
 
 export const instanceHasTags = (
   instance: Instance,

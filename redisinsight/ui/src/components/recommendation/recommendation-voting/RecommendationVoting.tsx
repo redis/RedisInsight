@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
+import { RiRow } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
 import { userSettingsConfigSelector } from 'uiSrc/slices/user/user-settings'
 import { Vote } from 'uiSrc/constants/recommendations'
 import { Nullable } from 'uiSrc/utils'
 
-import { RiRow } from 'uiSrc/components/base/layout'
-import { RiText } from 'uiSrc/components/base/text'
 import VoteOption from './components/vote-option'
 import styles from './styles.module.scss'
 

@@ -2,6 +2,11 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
+import { RiFlexItem, RiRow, RiCard } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton } from 'uiBase/forms'
+import { LightBulbIcon } from 'uiBase/icons'
+import { RiTitle, RiText } from 'uiBase/text'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import {
   changeSelectedTab,
@@ -12,12 +17,6 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import BulbImg from 'uiSrc/assets/img/workbench/bulb.svg'
 import ArrowToGuidesIcon from 'uiSrc/assets/img/workbench/arrow-to-guides.svg?react'
-
-import { RiFlexItem, RiRow, RiCard } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { LightBulbIcon } from 'uiSrc/components/base/icons'
-import { RiTitle, RiText } from 'uiSrc/components/base/text'
 
 import styles from './styles.module.scss'
 

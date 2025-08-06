@@ -1,12 +1,12 @@
 import React from 'react'
 
-import { Nullable } from 'uiSrc/utils'
+import { RiCol, RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiColorText, RiText } from 'uiBase/text'
+import { RiLoader, RiModal } from 'uiBase/display'
+import { RiIcon, CancelIcon } from 'uiBase/icons'
+import { Button } from 'uiBase/forms'
 import { RiFilePicker, UploadWarning } from 'uiSrc/components'
-import { RiCol, RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiColorText, RiText } from 'uiSrc/components/base/text'
-import { RiLoader, RiModal } from 'uiSrc/components/base/display'
-import { RiIcon, CancelIcon } from 'uiSrc/components/base/icons'
-import { Button } from 'uiSrc/components/base/forms'
+import { Nullable } from 'uiSrc/utils'
 import styles from './styles.module.scss'
 
 export interface Props<T> {

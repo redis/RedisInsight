@@ -1,6 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { RiSpacer } from 'uiBase/layout/spacer'
 import { validateCountNumber } from 'uiSrc/utils'
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { SettingItem } from 'uiSrc/components'
@@ -8,7 +9,6 @@ import {
   updateUserConfigSettingsAction,
   userSettingsConfigSelector,
 } from 'uiSrc/slices/user/user-settings'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
 
 const AdvancedSettings = () => {
   const { scanThreshold = '' } = useSelector(userSettingsConfigSelector) ?? {}

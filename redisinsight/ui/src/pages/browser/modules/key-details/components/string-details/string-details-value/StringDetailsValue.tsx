@@ -8,6 +8,12 @@ import React, {
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { DownloadIcon } from 'uiBase/icons'
+import { RiSecondaryButton } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
+import { RiTextArea } from 'uiBase/inputs'
+import { RiProgressBarLoader } from 'uiBase/display'
 import {
   bufferToSerializedFormat,
   bufferToString,
@@ -53,13 +59,7 @@ import { downloadFile } from 'uiSrc/utils/dom/downloadFile'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { IFetchKeyArgs } from 'uiSrc/constants/prop-types/keys'
 
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { DownloadIcon } from 'uiSrc/components/base/icons'
-import { RiSecondaryButton } from 'uiSrc/components/base/forms'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiTextArea } from 'uiSrc/components/base/inputs'
 import { RiTooltip } from 'uiSrc/components'
-import { RiProgressBarLoader } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 const MIN_ROWS = 8

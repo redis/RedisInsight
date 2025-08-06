@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { RiTable, ColumnDefinition } from 'uiSrc/components/base/layout'
+import { RiTable, ColumnDefinition } from 'uiBase/layout'
 
 import { IRdiConnectionResult } from 'uiSrc/slices/interfaces'
 

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { RiLoadingContent } from 'uiSrc/components/base/layout'
+import { RiLoadingContent } from 'uiBase/layout'
 import styles from './styles.module.scss'
 
 const TableLoader = () => (

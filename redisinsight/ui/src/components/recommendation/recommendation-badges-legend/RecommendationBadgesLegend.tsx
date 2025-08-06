@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
 import { badgesContent } from '../constants'
 import styles from '../styles.module.scss'
 

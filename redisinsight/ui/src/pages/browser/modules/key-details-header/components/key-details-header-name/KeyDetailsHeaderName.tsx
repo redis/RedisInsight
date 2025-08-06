@@ -3,6 +3,11 @@ import { isNull } from 'lodash'
 import React, { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 
+import { RiFlexItem, RiGrid } from 'uiBase/layout'
+import { RiIconButton, RiFormField } from 'uiBase/forms'
+import { CopyIcon, RiIcon } from 'uiBase/icons'
+import { RiText } from 'uiBase/text'
+import { RiTextInput } from 'uiBase/inputs'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor/InlineItemEditor'
 import { TEXT_UNPRINTABLE_CHARACTERS } from 'uiSrc/constants'
 import { AddCommonFieldsFormConfig } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
@@ -26,12 +31,7 @@ import {
   stringToBuffer,
 } from 'uiSrc/utils'
 
-import { RiFlexItem, RiGrid } from 'uiSrc/components/base/layout'
-import { RiIconButton, RiFormField } from 'uiSrc/components/base/forms'
-import { CopyIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { RiText } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
-import { RiTextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 
 export interface Props {

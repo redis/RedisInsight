@@ -2,6 +2,8 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { useHistory } from 'react-router-dom'
+import { RiPrimaryButton } from 'uiBase/forms'
+import { RiLink } from 'uiBase/display'
 import {
   FeatureFlags,
   MODULE_NOT_LOADED_CONTENT as CONTENT,
@@ -17,8 +19,6 @@ import {
   OAuthSocialSource,
   RedisDefaultModules,
 } from 'uiSrc/slices/interfaces'
-import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { RiLink } from 'uiSrc/components/base/display'
 
 export interface IProps {
   moduleName: RedisDefaultModules

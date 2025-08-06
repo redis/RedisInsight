@@ -4,6 +4,8 @@ import { debounce, get, set } from 'lodash'
 import { TreeWalker, TreeWalkerValue, FixedSizeTree as Tree } from 'react-vtree'
 import { useDispatch } from 'react-redux'
 
+import { RiLoader, RiProgressBarLoader, RiImage } from 'uiBase/display'
+import { RiIcon } from 'uiBase/icons'
 import { bufferToString, Maybe, Nullable } from 'uiSrc/utils'
 import { useDisposableWebworker } from 'uiSrc/services'
 import { IKeyPropTypes } from 'uiSrc/constants/prop-types/keys'
@@ -15,12 +17,6 @@ import {
 } from 'uiSrc/constants'
 import { RedisResponseBuffer, RedisString } from 'uiSrc/slices/interfaces'
 import { fetchKeysMetadataTree } from 'uiSrc/slices/browser/keys'
-import {
-  RiLoader,
-  RiProgressBarLoader,
-  RiImage,
-} from 'uiSrc/components/base/display'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import { GetKeyInfoResponse } from 'apiSrc/modules/browser/keys/dto'
 
 import { Node } from './components/Node'

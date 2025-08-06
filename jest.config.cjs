@@ -12,6 +12,7 @@ module.exports = {
     '\\.(css|less|sass|scss)$': 'identity-obj-proxy',
     '\\.scss\\?inline$': '<rootDir>/redisinsight/__mocks__/scssRaw.js',
     'uiSrc/(.*)': '<rootDir>/redisinsight/ui/src/$1',
+    'uiBase/(.*)': '<rootDir>/redisinsight/ui/src/components/base/$1',
     '@redislabsdev/redis-ui-components': '@redis-ui/components',
     '@redislabsdev/redis-ui-styles': '@redis-ui/styles',
     '@redislabsdev/redis-ui-icons': '@redis-ui/icons',

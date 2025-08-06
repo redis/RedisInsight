@@ -6,7 +6,7 @@ import {
   VariableSizeList as List,
 } from 'react-window'
 
-import { RiColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiBase/text'
 import { DEFAULT_ERROR_MESSAGE, getFormatTime } from 'uiSrc/utils'
 
 import styles from 'uiSrc/components/monitor/Monitor/styles.module.scss'

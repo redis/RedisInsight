@@ -4,7 +4,7 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { findIndex, isNumber } from 'lodash'
-import { RiColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiBase/text'
 
 import {
   ChevronDownIcon,
@@ -13,7 +13,9 @@ import {
   DeleteIcon,
   PlayIcon,
   RiIcon,
-} from 'uiSrc/components/base/icons'
+} from 'uiBase/icons'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiIconButton, RiSelect } from 'uiBase/forms'
 import { Theme } from 'uiSrc/constants'
 import {
   getCommandNameFromQuery,
@@ -47,8 +49,6 @@ import {
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 import { FormatedDate, FullScreen, RiTooltip } from 'uiSrc/components'
 
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiIconButton, RiSelect } from 'uiSrc/components/base/forms'
 import QueryCardTooltip from '../QueryCardTooltip'
 
 import styles from './styles.module.scss'

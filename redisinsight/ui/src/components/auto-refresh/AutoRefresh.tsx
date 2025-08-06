@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
-import {
-  ChevronDownIcon,
-  RefreshIcon,
-  RiIcon,
-} from 'uiSrc/components/base/icons'
+import { ChevronDownIcon, RefreshIcon, RiIcon } from 'uiBase/icons'
+import { RiIconButton } from 'uiBase/forms'
+import { RiColorText } from 'uiBase/text'
+import { RiSwitchInput } from 'uiBase/inputs'
+import { RiPopover, RiTooltip } from 'uiBase/index'
 import {
   errorValidateRefreshRateNumber,
   MIN_REFRESH_RATE,
@@ -14,10 +14,6 @@ import {
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
 import { localStorageService } from 'uiSrc/services'
 import { BrowserStorageItem } from 'uiSrc/constants'
-import { RiIconButton } from 'uiSrc/components/base/forms'
-import { RiColorText } from 'uiSrc/components/base/text'
-import { RiSwitchInput } from 'uiSrc/components/base/inputs'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import {
   DEFAULT_REFRESH_RATE,
   DURATION_FIRST_REFRESH_TIME,

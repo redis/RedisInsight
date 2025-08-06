@@ -5,6 +5,13 @@ import cx from 'classnames'
 
 import { isNumber } from 'lodash'
 import { useTheme } from '@redis-ui/styles'
+import { RiEmptyButton } from 'uiBase/forms'
+import { ArrowLeftIcon } from 'uiBase/icons'
+import {
+  ResizableContainer,
+  RiResizablePanel,
+  ResizablePanelHandle,
+} from 'uiBase/layout'
 import {
   formatLongName,
   getDbIndex,
@@ -43,14 +50,6 @@ import {
 import OnboardingStartPopover from 'uiSrc/pages/browser/components/onboarding-start-popover'
 import { sidePanelsSelector } from 'uiSrc/slices/panels/sidePanels'
 import { useStateWithContext } from 'uiSrc/services/hooks'
-
-import { RiEmptyButton } from 'uiSrc/components/base/forms'
-import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
-import {
-  ResizableContainer,
-  RiResizablePanel,
-  ResizablePanelHandle,
-} from 'uiSrc/components/base/layout'
 
 import { useAppNavigationActions } from 'uiSrc/contexts/AppNavigationActionsProvider'
 import Actions from 'uiSrc/pages/browser/components/actions/Actions'

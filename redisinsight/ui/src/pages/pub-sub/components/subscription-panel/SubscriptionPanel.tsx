@@ -2,6 +2,17 @@ import cx from 'classnames'
 import React, { useContext, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import {
+  UserIcon,
+  IndicatorExcludedIcon,
+  DeleteIcon,
+  AllIconsType,
+  RiIcon,
+} from 'uiBase/icons'
+import { Button, RiIconButton, RiFormField } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
+import { RiTextInput } from 'uiBase/inputs'
 import { Theme } from 'uiSrc/constants'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import {
@@ -12,18 +23,7 @@ import {
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import {
-  UserIcon,
-  IndicatorExcludedIcon,
-  DeleteIcon,
-  AllIconsType,
-  RiIcon,
-} from 'uiSrc/components/base/icons'
-import { Button, RiIconButton, RiFormField } from 'uiSrc/components/base/forms'
-import { RiText } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
-import { RiTextInput } from 'uiSrc/components/base/inputs'
 import PatternsInfo from './components/patternsInfo'
 import ClickableAppendInfo from './components/clickable-append-info'
 import styles from './styles.module.scss'
@@ -87,7 +87,11 @@ const SubscriptionPanel = () => {
             />
           </RiFlexItem>
           <RiFlexItem>
-            <RiText color="subdued" size="s" data-testid="subscribe-status-text">
+            <RiText
+              color="subdued"
+              size="s"
+              data-testid="subscribe-status-text"
+            >
               You are {!isSubscribed && 'not'} subscribed
             </RiText>
           </RiFlexItem>

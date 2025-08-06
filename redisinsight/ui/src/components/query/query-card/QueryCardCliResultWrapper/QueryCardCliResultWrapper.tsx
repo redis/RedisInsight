@@ -2,7 +2,9 @@ import React from 'react'
 import cx from 'classnames'
 import { isArray } from 'lodash'
 
-import { RiLoadingContent } from 'uiSrc/components/base/layout'
+import { RiLoadingContent } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
 import { CommandExecutionResult } from 'uiSrc/slices/interfaces'
 import { ResultsMode } from 'uiSrc/slices/interfaces/workbench'
 import {
@@ -14,8 +16,6 @@ import {
 } from 'uiSrc/utils'
 
 import { CommandExecutionStatus } from 'uiSrc/slices/interfaces/cli'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import QueryCardCliDefaultResult from '../QueryCardCliDefaultResult'
 import QueryCardCliGroupResult from '../QueryCardCliGroupResult'
 import styles from './styles.module.scss'

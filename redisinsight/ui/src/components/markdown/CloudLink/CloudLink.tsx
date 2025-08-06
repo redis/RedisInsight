@@ -1,7 +1,7 @@
 import React from 'react'
+import { RiLink } from 'uiBase/display'
 import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { OAuthSsoHandlerDialog } from 'uiSrc/components'
-import { RiLink } from 'uiSrc/components/base/display'
 
 export interface Props {
   url: string

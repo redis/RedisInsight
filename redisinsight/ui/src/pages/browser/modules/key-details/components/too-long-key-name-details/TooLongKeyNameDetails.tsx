@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { RiTitle, RiText } from 'uiSrc/components/base/text'
+import { RiTitle, RiText } from 'uiBase/text'
 import TextDetailsWrapper from '../text-details-wrapper/TextDetailsWrapper'
 
 const TooLongKeyNameDetails = ({ onClose }: { onClose: () => void }) => (

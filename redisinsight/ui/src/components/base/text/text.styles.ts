@@ -2,7 +2,7 @@ import React, { HTMLAttributes } from 'react'
 import { useTheme } from '@redis-ui/styles'
 import { Typography } from '@redis-ui/components'
 import styled, { css } from 'styled-components'
-import { CommonProps } from 'uiSrc/components/base/theme/types'
+import { CommonProps } from 'uiBase/theme/types'
 
 export type BodyProps = React.ComponentProps<typeof Typography.Body>
 

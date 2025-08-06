@@ -1,9 +1,9 @@
 import React from 'react'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiSecondaryButton } from 'uiBase/forms'
+import { CopyIcon } from 'uiBase/icons'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiSecondaryButton } from 'uiSrc/components/base/forms'
-import { CopyIcon } from 'uiSrc/components/base/icons'
 
 export interface Props {
   id?: string

@@ -1,20 +1,16 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useCallback, useMemo, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { PlusIcon, RiIcon } from 'uiSrc/components/base/icons'
+import { PlusIcon, RiIcon } from 'uiBase/icons'
+import { RiEmptyButton, RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiTitle, RiText } from 'uiBase/text'
 import { ConnectionProvider, Instance } from 'uiSrc/slices/interfaces'
 import { FormDialog } from 'uiSrc/components'
 
 import { updateInstanceAction } from 'uiSrc/slices/instances/instances'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import successMessages from 'uiSrc/components/notifications/success-messages'
-import {
-  RiEmptyButton,
-  RiPrimaryButton,
-  RiSecondaryButton,
-} from 'uiSrc/components/base/forms'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import { VALID_TAG_KEY_REGEX, VALID_TAG_VALUE_REGEX } from './constants'
 import { TagInputField } from './TagInputField'
 import { getInvalidTagErrors } from './utils'

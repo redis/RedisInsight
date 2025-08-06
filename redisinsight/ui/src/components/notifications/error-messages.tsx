@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { riToast } from 'uiSrc/components/base/display'
-import { InfoIcon, ToastDangerIcon } from 'uiSrc/components/base/icons'
+import { riToast } from 'uiBase/display'
+import { InfoIcon, ToastDangerIcon } from 'uiBase/icons'
 
 import RdiDeployErrorContent from './components/rdi-deploy-error-content'
 import { EncryptionErrorContent, DefaultErrorContent } from './components'

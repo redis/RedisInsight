@@ -4,6 +4,14 @@ import { useParams } from 'react-router-dom'
 import cx from 'classnames'
 
 import {
+  RiDestructiveButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+} from 'uiBase/forms'
+import { RefreshIcon, RiIcon } from 'uiBase/icons'
+import { RiText } from 'uiBase/text'
+import { RiPopover } from 'uiBase/index'
+import {
   bulkActionsDeleteOverviewSelector,
   setBulkDeleteStartAgain,
   toggleBulkDeleteActionTriggered,
@@ -19,14 +27,6 @@ import { BulkActionsType } from 'uiSrc/constants'
 import { getRangeForNumber, BULK_THRESHOLD_BREAKPOINTS } from 'uiSrc/utils'
 
 import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
-import {
-  RiDestructiveButton,
-  RiPrimaryButton,
-  RiSecondaryButton,
-} from 'uiSrc/components/base/forms'
-import { RefreshIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiPopover } from 'uiSrc/components/base'
 import BulkDeleteContent from '../BulkDeleteContent'
 import { isProcessedBulkAction } from '../../utils'
 

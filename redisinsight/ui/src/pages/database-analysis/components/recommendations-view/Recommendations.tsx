@@ -4,6 +4,11 @@ import { useHistory, useParams } from 'react-router-dom'
 import { isNull } from 'lodash'
 import cx from 'classnames'
 
+import { RiFlexItem, RiRow, RiCard } from 'uiBase/layout'
+import { RiPrimaryButton } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
+import { RiAccordion, RiLink } from 'uiBase/display'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import {
   FeatureFlagComponent,
@@ -25,11 +30,6 @@ import { recommendationsSelector } from 'uiSrc/slices/recommendations/recommenda
 import { sortRecommendations } from 'uiSrc/utils/recommendation'
 import { openTutorialByPath } from 'uiSrc/slices/panels/sidePanels'
 import { findTutorialPath } from 'uiSrc/utils'
-import { RiFlexItem, RiRow, RiCard } from 'uiSrc/components/base/layout'
-import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons'
-import { RiAccordion, RiLink } from 'uiSrc/components/base/display'
 
 import styles from './styles.module.scss'
 

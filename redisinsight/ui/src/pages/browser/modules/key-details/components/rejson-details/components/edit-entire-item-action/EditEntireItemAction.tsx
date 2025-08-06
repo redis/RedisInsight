@@ -2,18 +2,18 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import jsonValidator from 'json-dup-key-validator'
 
-import * as keys from 'uiSrc/constants/keys'
-import { CancelSlimIcon, CheckThinIcon } from 'uiSrc/components/base/icons'
-import FieldMessage from 'uiSrc/components/field-message/FieldMessage'
-import { Nullable } from 'uiSrc/utils'
-import { RiFlexItem } from 'uiSrc/components/base/layout'
+import { CancelSlimIcon, CheckThinIcon } from 'uiBase/icons'
+import { RiFlexItem } from 'uiBase/layout'
 import {
   RiWindowEvent,
   RiFocusTrap,
   RiOutsideClickDetector,
-} from 'uiSrc/components/base/utils'
-import { RiIconButton } from 'uiSrc/components/base/forms'
-import { RiTextArea } from 'uiSrc/components/base/inputs'
+} from 'uiBase/utils'
+import { RiIconButton } from 'uiBase/forms'
+import { RiTextArea } from 'uiBase/inputs'
+import { Nullable } from 'uiSrc/utils'
+import FieldMessage from 'uiSrc/components/field-message/FieldMessage'
+import * as keys from 'uiSrc/constants/keys'
 import { isValidJSON } from '../../utils'
 import { JSONErrors } from '../../constants'
 

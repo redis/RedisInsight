@@ -16,6 +16,7 @@ import {
   MOCK_RS_PREVIEW_REGION,
   MOCK_CUSTOM_REGIONS,
 } from 'uiSrc/constants/mocks/mock-sso'
+import { mockModal } from 'uiSrc/mocks/components/modal'
 import OAuthSelectPlan from './OAuthSelectPlan'
 
 jest.mock('uiSrc/telemetry', () => ({
@@ -62,22 +63,10 @@ jest.mock('uiSrc/slices/app/features', () => ({
   }),
 }))
 
-jest.mock('uiSrc/components/base/display', () => {
-  const actual = jest.requireActual('uiSrc/components/base/display')
+jest.mock('uiBase/display', () => {
+  const actual = jest.requireActual('uiBase/display')
 
-  return {
-    ...actual,
-    Modal: {
-      ...actual.Modal,
-      Content: {
-        ...actual.Modal.Content,
-        Header: {
-          ...actual.Modal.Content.Header,
-          Title: jest.fn().mockReturnValue(null),
-        },
-      },
-    },
-  }
+  return mockModal(actual)
 })
 
 let store: typeof mockedStore

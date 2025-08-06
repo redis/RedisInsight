@@ -1,8 +1,8 @@
 import React, { ButtonHTMLAttributes, ReactElement } from 'react'
 import cx from 'classnames'
 
-import { RiIcon } from 'uiSrc/components/base/icons'
-import { useInnerText } from 'uiSrc/components/base/utils'
+import { RiIcon } from 'uiBase/icons'
+import { useInnerText } from 'uiBase/utils'
 import {
   ListClassNames,
   ListGroupItemProps,

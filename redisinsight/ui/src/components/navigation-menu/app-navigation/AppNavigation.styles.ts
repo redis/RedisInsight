@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { RiRow, RiTabs } from 'uiSrc/components/base/layout'
+import { RiRow, RiTabs } from 'uiBase/layout'
 
 export const StyledAppNavigation = styled(RiRow)`
   background: ${({ theme }) =>

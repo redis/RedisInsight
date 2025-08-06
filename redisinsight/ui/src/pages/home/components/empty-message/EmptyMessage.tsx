@@ -1,5 +1,8 @@
 import React from 'react'
 
+import { RiPrimaryButton } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
+import { RiLink, RiImage } from 'uiBase/display'
 import CakeIcon from 'uiSrc/assets/img/databases/cake.svg'
 
 import { OAuthSsoHandlerDialog } from 'uiSrc/components'
@@ -7,9 +10,6 @@ import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { EXTERNAL_LINKS, UTM_CAMPAINGS } from 'uiSrc/constants/links'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
-import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiLink, RiImage } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -22,7 +22,9 @@ const EmptyMessage = ({ onAddInstanceClick }: Props) => (
     data-testid="empty-database-instance-list"
   >
     <RiImage src={CakeIcon} className={styles.icon} alt="empty" />
-    <RiText className={styles.text}>No databases yet, let&apos;s add one!</RiText>
+    <RiText className={styles.text}>
+      No databases yet, let&apos;s add one!
+    </RiText>
     <RiPrimaryButton
       size="m"
       onClick={() => {

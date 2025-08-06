@@ -1,7 +1,7 @@
 import React from 'react'
 import { EuiLinkProps } from '@elastic/eui/src/components/link/link'
-import { IconProps, RiIcon } from 'uiSrc/components/base/icons'
-import { RiLink } from 'uiSrc/components/base/display'
+import { IconProps, RiIcon } from 'uiBase/icons'
+import { RiLink } from 'uiBase/display'
 
 export type Props = EuiLinkProps & {
   href: string

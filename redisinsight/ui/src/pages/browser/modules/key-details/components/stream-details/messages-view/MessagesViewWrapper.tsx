@@ -4,6 +4,8 @@ import { useParams } from 'react-router-dom'
 import { last, toNumber } from 'lodash'
 import cx from 'classnames'
 
+import { RiText } from 'uiBase/text'
+import { RiFlexItem } from 'uiBase/layout'
 import {
   fetchMoreConsumerMessages,
   selectedConsumerSelector,
@@ -21,8 +23,6 @@ import { SortOrder, TEXT_CONSUMER_NAME_TOO_LONG } from 'uiSrc/constants'
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { isTruncatedString } from 'uiSrc/utils'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiFlexItem } from 'uiSrc/components/base/layout'
 import {
   AckPendingEntriesResponse,
   PendingEntryDto,

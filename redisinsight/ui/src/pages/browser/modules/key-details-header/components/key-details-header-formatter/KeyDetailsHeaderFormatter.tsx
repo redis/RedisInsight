@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
+import { RiText } from 'uiBase/text'
 import {
   KeyTypes,
   KeyValueFormat,
@@ -24,7 +25,6 @@ import {
 import { stringDataSelector } from 'uiSrc/slices/browser/string'
 import { isFullStringLoaded } from 'uiSrc/utils'
 import { RiTooltip } from 'uiSrc/components'
-import { RiText } from 'uiSrc/components/base/text'
 import {
   Container,
   ControlsIcon,

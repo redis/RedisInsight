@@ -1,10 +1,10 @@
 import React from 'react'
 import { FormikProps } from 'formik'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiFormField, RiSelect } from 'uiBase/forms'
 import { KeyValueFormat } from 'uiSrc/constants'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiFormField, RiSelect } from 'uiSrc/components/base/forms'
 
 export interface Props {
   formik: FormikProps<DbConnectionInfo>

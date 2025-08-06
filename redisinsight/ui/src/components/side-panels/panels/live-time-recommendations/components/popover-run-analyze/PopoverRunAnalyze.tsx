@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiPopover } from 'uiSrc/components/base'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
+import { RiPopover } from 'uiBase/index'
 import styles from './styles.module.scss'
 
 export interface Props {

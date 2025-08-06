@@ -1,12 +1,12 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
 
-import EmptyPipelineIcon from 'uiSrc/assets/img/rdi/empty_pipeline.svg'
+import { RiText } from 'uiBase/text'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton } from 'uiBase/forms'
+import { RiImage } from 'uiBase/display'
 import { Pages } from 'uiSrc/constants'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { RiImage } from 'uiSrc/components/base/display'
+import EmptyPipelineIcon from 'uiSrc/assets/img/rdi/empty_pipeline.svg'
 import Panel from '../components/panel'
 
 import styles from './styles.module.scss'

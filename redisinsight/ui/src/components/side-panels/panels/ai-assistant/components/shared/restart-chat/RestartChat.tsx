@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
 
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { RiTitle, RiText } from 'uiSrc/components/base/text'
-import { RiPopover } from 'uiSrc/components/base'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton } from 'uiBase/forms'
+import { RiTitle, RiText } from 'uiBase/text'
+import { RiPopover } from 'uiBase/index'
 import styles from './styles.module.scss'
 
 export interface Props {

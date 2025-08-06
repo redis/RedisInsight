@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiPrimaryButton, RiSecondaryButton, RiSelect } from 'uiBase/forms'
+import { RiTextInput } from 'uiBase/inputs'
 import {
   selectedKeyDataSelector,
   keysSelector,
@@ -16,13 +19,6 @@ import {
 import { KeyTypes } from 'uiSrc/constants'
 import { stringToBuffer } from 'uiSrc/utils'
 import { AddListFormConfig as config } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import {
-  RiPrimaryButton,
-  RiSecondaryButton,
-  RiSelect,
-} from 'uiSrc/components/base/forms'
-import { RiTextInput } from 'uiSrc/components/base/inputs'
 import { PushElementToListDto } from 'apiSrc/modules/browser/list/dto'
 
 import styles from '../styles.module.scss'

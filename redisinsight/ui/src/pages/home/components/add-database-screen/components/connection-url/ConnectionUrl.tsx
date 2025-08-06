@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { RiFormField } from 'uiSrc/components/base/forms'
-import { RiTextArea } from 'uiSrc/components/base/inputs'
-import { RiIcon } from 'uiSrc/components/base/icons'
+import { RiFormField } from 'uiBase/forms'
+import { RiTextArea } from 'uiBase/inputs'
+import { RiIcon } from 'uiBase/icons'
 import { RiTooltip } from 'uiSrc/components'
 import styles from './styles.module.scss'
 

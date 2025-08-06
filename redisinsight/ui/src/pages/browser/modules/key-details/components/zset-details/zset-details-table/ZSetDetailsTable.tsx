@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { toNumber, isNumber } from 'lodash'
 import cx from 'classnames'
 import { CellMeasurerCache } from 'react-virtualized'
+import { RiText } from 'uiBase/text'
 import {
   appContextBrowserKeyDetails,
   updateKeyDetailsSizes,
@@ -70,7 +71,6 @@ import {
   FormattedValue,
 } from 'uiSrc/pages/browser/modules/key-details/shared'
 import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
-import { RiText } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import {
   AddMembersToZSetDto,

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
-import { RiTable, ColumnDefinition } from 'uiSrc/components/base/layout'
+import { RiTable, ColumnDefinition } from 'uiBase/layout'
 
 export interface Props {
   query: string

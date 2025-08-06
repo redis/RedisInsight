@@ -1,4 +1,6 @@
 import React from 'react'
+import { RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
 import { FeatureFlagComponent } from 'uiSrc/components'
 import {
   EXTERNAL_LINKS,
@@ -10,8 +12,6 @@ import styles from 'uiSrc/pages/browser/components/popover-delete/styles.module.
 import { CloudLink } from 'uiSrc/components/markdown'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import { FeatureFlags } from './featureFlags'
 
 export default {

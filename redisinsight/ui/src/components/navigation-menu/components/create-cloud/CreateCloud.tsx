@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { RiSideBarItem, SideBarItemIcon } from 'uiBase/layout'
+import { RiLink } from 'uiBase/display'
 import { FeatureFlagComponent, OAuthSsoHandlerDialog } from 'uiSrc/components'
 import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
@@ -9,8 +11,6 @@ import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { sendEventTelemetry } from 'uiSrc/telemetry'
 import { HELP_LINKS } from 'uiSrc/pages/home/constants'
 import { FeatureFlags } from 'uiSrc/constants'
-import { RiSideBarItem, SideBarItemIcon } from 'uiSrc/components/base/layout'
-import { RiLink } from 'uiSrc/components/base/display'
 
 const CreateCloud = () => {
   const onCLickLink = (isSSOEnabled: boolean) => {

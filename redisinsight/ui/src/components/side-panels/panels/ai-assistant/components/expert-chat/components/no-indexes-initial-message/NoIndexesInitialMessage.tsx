@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
 
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiText } from 'uiBase/text'
+import { RiLink } from 'uiBase/display'
 import LoadSampleData from 'uiSrc/pages/browser/components/load-sample-data'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiLink } from 'uiSrc/components/base/display'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import styles from './styles.module.scss'
 
 export interface Props {

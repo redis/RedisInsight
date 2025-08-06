@@ -3,6 +3,7 @@ import React, { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import cx from 'classnames'
+import { RiModal } from 'uiBase/display'
 import {
   oauthCloudSelector,
   setSocialDialogState,
@@ -12,7 +13,6 @@ import { cloudSelector } from 'uiSrc/slices/instances/cloud'
 import { OAuthCreateDb, OAuthSignIn } from 'uiSrc/components/oauth/oauth-sso'
 
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { RiModal } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 const OAuthSsoDialog = () => {

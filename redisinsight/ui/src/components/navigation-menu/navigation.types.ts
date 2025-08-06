@@ -1,4 +1,4 @@
-import { IconType } from 'uiSrc/components/base/forms'
+import { IconType } from 'uiBase/forms'
 import { FeatureFlags } from 'uiSrc/constants'
 
 export interface INavigations {

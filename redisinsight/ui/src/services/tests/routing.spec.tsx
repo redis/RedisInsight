@@ -1,5 +1,5 @@
 import React from 'react'
-import { RiLink } from 'uiSrc/components/base/display'
+import { RiLink } from 'uiBase/display'
 import { Pages } from 'uiSrc/constants'
 import { getRouterLinkProps } from 'uiSrc/services'
 import { render, fireEvent, screen } from 'uiSrc/utils/test-utils'

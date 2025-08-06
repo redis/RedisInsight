@@ -1,10 +1,10 @@
 import React from 'react'
 import cx from 'classnames'
 
-import { ConnectionType } from 'uiSrc/slices/interfaces'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiText } from 'uiBase/text'
 
-import { RiIcon } from 'uiSrc/components/base/icons'
+import { RiIcon } from 'uiBase/icons'
+import { ConnectionType } from 'uiSrc/slices/interfaces'
 import styles from './styles.module.scss'
 
 export interface Props {

@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import { RiEmptyButton } from 'uiBase/forms'
+import { EraserIcon } from 'uiBase/icons'
 import {
   aiAssistantChatSelector,
   askAssistantChatbot,
@@ -21,8 +23,6 @@ import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 import { generateHumanMessage } from 'uiSrc/utils/transformers/chatbot'
 
 import { CustomErrorCodes } from 'uiSrc/constants'
-import { RiEmptyButton } from 'uiSrc/components/base/forms'
-import { EraserIcon } from 'uiSrc/components/base/icons'
 import { ASSISTANCE_CHAT_AGREEMENTS } from '../texts'
 import {
   AssistanceChatInitialMessage,

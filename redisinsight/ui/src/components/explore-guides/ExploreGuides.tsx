@@ -1,6 +1,9 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiTitle, RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
 import { guideLinksSelector } from 'uiSrc/slices/content/guide-links'
 
 import GUIDE_ICONS from 'uiSrc/components/explore-guides/icons'
@@ -9,9 +12,6 @@ import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 
 import { openTutorialByPath } from 'uiSrc/slices/panels/sidePanels'
 import { findTutorialPath } from 'uiSrc/utils'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiTitle, RiText } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 const ExploreGuides = () => {

@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { RiCard } from 'uiSrc/components/base/layout'
+import { RiPrimaryButton } from 'uiBase/forms'
+import { RiCard } from 'uiBase/layout'
 import CreateTutorialLink from '../CreateTutorialLink'
 
 import styles from './styles.module.scss'

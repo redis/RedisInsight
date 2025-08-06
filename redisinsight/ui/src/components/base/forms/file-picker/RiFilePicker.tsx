@@ -1,11 +1,11 @@
 import React, { InputHTMLAttributes, ReactNode, useRef, useState } from 'react'
 import cx from 'classnames'
-import { useGenerateId } from 'uiSrc/components/base/utils'
-import { RiProgressBarLoader, RiLoader } from 'uiSrc/components/base/display'
-import { RiSecondaryButton } from 'uiSrc/components/base/forms'
-import { RiIcon } from 'uiSrc/components/base/icons'
-import { CommonProps } from 'uiSrc/components/base/theme/types'
-import { RiColorText } from 'uiSrc/components/base/text'
+import { useGenerateId } from 'uiBase/utils'
+import { RiProgressBarLoader, RiLoader } from 'uiBase/display'
+import { RiSecondaryButton } from 'uiBase/forms'
+import { RiIcon } from 'uiBase/icons'
+import { CommonProps } from 'uiBase/theme/types'
+import { RiColorText } from 'uiBase/text'
 import {
   FilePickerClearButton,
   FilePickerInput,

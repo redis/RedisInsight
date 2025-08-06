@@ -1,5 +1,6 @@
 import React from 'react'
 import { cloneDeep, set } from 'lodash'
+import { RiSideBar } from 'uiBase/layout'
 import {
   cleanup,
   initialStateDefault,
@@ -8,7 +9,6 @@ import {
   screen,
 } from 'uiSrc/utils/test-utils'
 import { FeatureFlags } from 'uiSrc/constants'
-import { RiSideBar } from 'uiSrc/components/base/layout'
 import { RedisLogo } from './RedisLogo'
 
 beforeEach(() => {

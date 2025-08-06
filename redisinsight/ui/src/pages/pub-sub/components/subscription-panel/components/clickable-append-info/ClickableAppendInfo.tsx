@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
-import { getUtmExternalLink } from 'uiSrc/utils/links'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
+import { RiLink } from 'uiBase/display'
+import { RiPopover } from 'uiBase/index'
 import {
   EXTERNAL_LINKS,
   UTM_CAMPAINGS,
   UTM_MEDIUMS,
 } from 'uiSrc/constants/links'
-import { RiIcon } from 'uiSrc/components/base/icons'
-import { RiLink } from 'uiSrc/components/base/display'
-import { RiPopover } from 'uiSrc/components/base'
+import { getUtmExternalLink } from 'uiSrc/utils/links'
 import styles from './styles.module.scss'
 
 const ClickableAppendInfo = () => {

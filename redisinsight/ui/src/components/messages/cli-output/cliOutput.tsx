@@ -1,11 +1,11 @@
 import React, { Fragment } from 'react'
+import { RiColorText } from 'uiBase/text'
+import { RiLink } from 'uiBase/display'
+import { RiEmptyButton } from 'uiBase/forms'
 import { getRouterLinkProps } from 'uiSrc/services'
 import { getDbIndex } from 'uiSrc/utils'
 import { FeatureFlagComponent } from 'uiSrc/components'
-import { RiColorText } from 'uiSrc/components/base/text'
 import { FeatureFlags } from 'uiSrc/constants/featureFlags'
-import { RiLink } from 'uiSrc/components/base/display'
-import { RiEmptyButton } from 'uiSrc/components/base/forms'
 
 export const InitOutputText = (
   host: string = '',
@@ -71,7 +71,11 @@ export const cliTexts = {
     </div>
   ),
   USE_PSUBSCRIBE_COMMAND: (path: string = '') => (
-    <RiColorText color="danger" key={Date.now()} data-testid="user-pub-sub-link">
+    <RiColorText
+      color="danger"
+      key={Date.now()}
+      data-testid="user-pub-sub-link"
+    >
       {'Use '}
       <RiLink
         {...getRouterLinkProps(path)}
@@ -126,7 +130,11 @@ export const cliTexts = {
     </FeatureFlagComponent>
   ),
   USE_PUB_SUB_TOOL: (path: string = '') => (
-    <RiColorText color="danger" key={Date.now()} data-testid="user-pub-sub-link">
+    <RiColorText
+      color="danger"
+      key={Date.now()}
+      data-testid="user-pub-sub-link"
+    >
       {'Use '}
       <RiLink
         {...getRouterLinkProps(path)}

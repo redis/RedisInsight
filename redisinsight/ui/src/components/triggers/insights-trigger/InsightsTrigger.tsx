@@ -3,6 +3,8 @@ import cx from 'classnames'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useParams } from 'react-router-dom'
+import { RiIconButton } from 'uiBase/forms'
+import { LightBulbIcon } from 'uiBase/icons'
 import {
   changeSelectedTab,
   changeSidePanel,
@@ -23,8 +25,6 @@ import {
 } from 'uiSrc/telemetry'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 
-import { RiIconButton } from 'uiSrc/components/base/forms'
-import { LightBulbIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
 import styles from './styles.module.scss'
 

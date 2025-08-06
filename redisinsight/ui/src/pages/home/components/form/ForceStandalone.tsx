@@ -1,12 +1,12 @@
 import React, { ChangeEvent } from 'react'
 import { FormikProps } from 'formik'
 
-import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiFormField, RiCheckbox } from 'uiSrc/components/base/forms'
-import { RiIcon } from 'uiSrc/components/base/icons'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiFormField, RiCheckbox } from 'uiBase/forms'
+import { RiIcon } from 'uiBase/icons'
+import { useGenerateId } from 'uiBase/utils'
 import { RiTooltip } from 'uiSrc/components'
-import { useGenerateId } from 'uiSrc/components/base/utils'
+import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 
 export interface Props {
   formik: FormikProps<DbConnectionInfo>

@@ -1,7 +1,7 @@
 import React from 'react'
 
+import { RiCol, RiFlexItem, RiRow } from 'uiBase/layout'
 import { IProcessingPerformance } from 'uiSrc/slices/interfaces'
-import { RiCol, RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import Accordion from '../components/accordion'
 import Panel from '../components/panel'
 import VerticalDivider from '../components/vertical-divider'

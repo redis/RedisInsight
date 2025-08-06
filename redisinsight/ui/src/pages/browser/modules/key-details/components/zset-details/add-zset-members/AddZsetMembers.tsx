@@ -2,6 +2,9 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toNumber } from 'lodash'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiPrimaryButton, RiSecondaryButton, RiFormField } from 'uiBase/forms'
+import { RiTextInput } from 'uiBase/inputs'
 import { stringToBuffer, validateScoreNumber } from 'uiSrc/utils'
 import { isNaNConvertedString } from 'uiSrc/utils/numbers'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
@@ -19,13 +22,6 @@ import {
 import AddMultipleFields from 'uiSrc/pages/browser/components/add-multiple-fields'
 import { ISetMemberState } from 'uiSrc/pages/browser/components/add-key/AddKeySet/interfaces'
 
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import {
-  RiPrimaryButton,
-  RiSecondaryButton,
-  RiFormField,
-} from 'uiSrc/components/base/forms'
-import { RiTextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 
 export interface Props {

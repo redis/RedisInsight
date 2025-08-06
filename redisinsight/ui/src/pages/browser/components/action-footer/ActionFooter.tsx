@@ -1,6 +1,6 @@
 import React from 'react'
-import { RiFlexItem, RiRow, SpacerSize } from 'uiSrc/components/base/layout'
-import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
+import { RiFlexItem, RiRow, SpacerSize } from 'uiBase/layout'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
 import AddKeyFooter from 'uiSrc/pages/browser/components/add-key/AddKeyFooter/AddKeyFooter'
 
 export interface ActionFooterProps {

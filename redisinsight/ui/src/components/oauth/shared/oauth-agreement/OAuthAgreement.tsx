@@ -2,6 +2,8 @@ import React, { ChangeEvent } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import cx from 'classnames'
+import { RiCheckbox } from 'uiBase/forms'
+import { RiLink } from 'uiBase/display'
 import { localStorageService } from 'uiSrc/services'
 import { BrowserStorageItem } from 'uiSrc/constants'
 import {
@@ -10,8 +12,6 @@ import {
 } from 'uiSrc/slices/oauth/cloud'
 
 import { enableUserAnalyticsAction } from 'uiSrc/slices/user/user-settings'
-import { RiCheckbox } from 'uiSrc/components/base/forms'
-import { RiLink } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 export interface Props {

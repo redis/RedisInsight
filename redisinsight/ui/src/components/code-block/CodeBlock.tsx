@@ -1,9 +1,9 @@
 import React, { HTMLAttributes, useMemo } from 'react'
 import cx from 'classnames'
 
-import { RiIconButton } from 'uiSrc/components/base/forms'
-import { CopyIcon } from 'uiSrc/components/base/icons'
-import { useInnerText } from 'uiSrc/components/base/utils'
+import { RiIconButton } from 'uiBase/forms'
+import { CopyIcon } from 'uiBase/icons'
+import { useInnerText } from 'uiBase/utils'
 import styles from './styles.module.scss'
 
 export interface Props extends HTMLAttributes<HTMLPreElement> {

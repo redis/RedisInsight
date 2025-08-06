@@ -2,28 +2,23 @@ import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 import { map } from 'lodash'
 import { useSelector } from 'react-redux'
-import { RiSearchInput } from 'uiSrc/components/base/inputs'
-import { Maybe } from 'uiSrc/utils'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { InstanceRedisCluster } from 'uiSrc/slices/interfaces'
-import { clusterSelector } from 'uiSrc/slices/instances/cluster'
-import validationErrors from 'uiSrc/constants/validationErrors'
-import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
-
-import {
-  RiFlexItem,
-  RiRow,
-  RiTable,
-  ColumnDefinition,
-} from 'uiSrc/components/base/layout'
-import { InfoIcon } from 'uiSrc/components/base/icons'
+import { RiSearchInput } from 'uiBase/inputs'
+import { RiPopover, RiTooltip } from 'uiBase/index'
+import { RiFlexItem, RiRow, RiTable, ColumnDefinition } from 'uiBase/layout'
+import { InfoIcon } from 'uiBase/icons'
 import {
   RiDestructiveButton,
   RiPrimaryButton,
   RiSecondaryButton,
   RiFormField,
-} from 'uiSrc/components/base/forms'
-import { RiTitle, RiText } from 'uiSrc/components/base/text'
+} from 'uiBase/forms'
+import { RiTitle, RiText } from 'uiBase/text'
+import { Maybe } from 'uiSrc/utils'
+import { InstanceRedisCluster } from 'uiSrc/slices/interfaces'
+import { clusterSelector } from 'uiSrc/slices/instances/cluster'
+import validationErrors from 'uiSrc/constants/validationErrors'
+import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
+
 import styles from './styles.module.scss'
 
 interface Props {

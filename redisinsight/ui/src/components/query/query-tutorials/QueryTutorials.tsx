@@ -3,10 +3,10 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 import styled from 'styled-components'
+import { RiText } from 'uiBase/text'
+import { RiEmptyButton } from 'uiBase/forms'
 import { findTutorialPath } from 'uiSrc/utils'
 import { openTutorialByPath } from 'uiSrc/slices/panels/sidePanels'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import {
   sendEventTelemetry,
   TELEMETRY_EMPTY_VALUE,

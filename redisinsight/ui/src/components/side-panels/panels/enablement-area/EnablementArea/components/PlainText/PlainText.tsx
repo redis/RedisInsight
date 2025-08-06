@@ -1,5 +1,5 @@
 import React from 'react'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiText } from 'uiBase/text'
 
 export interface Props {
   children: React.ReactElement | string

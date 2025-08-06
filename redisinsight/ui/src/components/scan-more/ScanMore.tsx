@@ -1,10 +1,10 @@
 import React from 'react'
 import { isNull } from 'lodash'
 
+import { Button } from 'uiBase/forms'
+import { RiIcon } from 'uiBase/icons'
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { RiTooltip } from 'uiSrc/components'
-import { Button } from 'uiSrc/components/base/forms'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 export interface Props {

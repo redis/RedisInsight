@@ -1,8 +1,8 @@
 import React from 'react'
 import { TextButton } from '@redis-ui/components'
-import { IconType } from 'uiSrc/components/base/icons'
+import { IconType } from 'uiBase/icons'
 
-import { RiRow } from 'uiSrc/components/base/layout'
+import { RiRow } from 'uiBase/layout'
 import { ButtonIcon } from './Button'
 import { FlexProps } from '../../layout/flex/flex.styles'
 

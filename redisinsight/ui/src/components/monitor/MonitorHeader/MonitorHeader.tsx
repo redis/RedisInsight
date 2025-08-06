@@ -3,6 +3,20 @@ import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
+import { RiIconButton } from 'uiBase/forms'
+import {
+  PlayIcon,
+  PauseIcon,
+  DeleteIcon,
+  BannedIcon,
+  RiIcon,
+} from 'uiBase/icons'
+import { WindowControlGroup } from 'uiBase/index'
+import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
+import { OnboardingTour, RiTooltip } from 'uiSrc/components'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   monitorSelector,
   resetMonitorItems,
@@ -10,21 +24,6 @@ import {
   toggleHideMonitor,
   toggleMonitor,
 } from 'uiSrc/slices/cli/monitor'
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { OnboardingTour, RiTooltip } from 'uiSrc/components'
-import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
-
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiIconButton } from 'uiSrc/components/base/forms'
-import {
-  PlayIcon,
-  PauseIcon,
-  DeleteIcon,
-  BannedIcon,
-  RiIcon,
-} from 'uiSrc/components/base/icons'
-import { WindowControlGroup } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
 export interface Props {

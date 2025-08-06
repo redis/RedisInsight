@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { RiText } from 'uiBase/text'
 import { ITableColumn } from 'uiSrc/components/virtual-table/interfaces'
 import VirtualTable from 'uiSrc/components/virtual-table/VirtualTable'
 import {
@@ -12,7 +13,6 @@ import {
 import { convertNumberByUnits } from 'uiSrc/pages/slow-log/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
-import { RiText } from 'uiSrc/components/base/text'
 
 import { FormatedDate, RiTooltip } from 'uiSrc/components'
 import styles from '../styles.module.scss'

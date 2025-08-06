@@ -3,8 +3,8 @@ import { ListChildComponentProps, VariableSizeList as List } from 'react-window'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { useSelector } from 'react-redux'
 
+import { RiText } from 'uiBase/text'
 import { MAX_BULK_ACTION_ERRORS_LENGTH } from 'uiSrc/constants'
-import { RiText } from 'uiSrc/components/base/text'
 import { bulkActionsDeleteSummarySelector } from 'uiSrc/slices/browser/bulkActions'
 import styles from './styles.module.scss'
 

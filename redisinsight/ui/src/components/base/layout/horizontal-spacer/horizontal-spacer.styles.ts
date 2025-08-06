@@ -1,6 +1,6 @@
 import { HTMLAttributes, ReactNode } from 'react'
 import styled from 'styled-components'
-import { CommonProps } from 'uiSrc/components/base/theme/types'
+import { CommonProps } from 'uiBase/theme/types'
 
 export const HorizontalSpacerSizes = ['xs', 's', 'm', 'l', 'xl', 'xxl'] as const
 export type HorizontalSpacerSize = (typeof HorizontalSpacerSizes)[number]
@@ -23,4 +23,4 @@ export const StyledHorizontalSpacer = styled.div<HorizontalSpacerProps>`
   flex-shrink: 0;
   width: ${({ size = 'l' }) => horizontalSpacerStyles[size]};
   display: inline-block;
-` 
+`

@@ -1,10 +1,10 @@
 import React from 'react'
 import cx from 'classnames'
 
-import { DeleteIcon, PlusIcon } from 'uiSrc/components/base/icons'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiActionIconButton, RiIconButton } from 'uiSrc/components/base/forms'
+import { DeleteIcon, PlusIcon } from 'uiBase/icons'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiActionIconButton, RiIconButton } from 'uiBase/forms'
 import { RiTooltip } from 'uiSrc/components'
 import styles from './styles.module.scss'
 

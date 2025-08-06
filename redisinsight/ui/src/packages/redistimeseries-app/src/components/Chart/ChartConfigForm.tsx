@@ -1,12 +1,8 @@
 import React, { useState } from 'react'
 
-import { RiSwitchInput, RiTextInput } from 'uiSrc/components/base/inputs'
-import {
-  RiFormFieldset,
-  RiButtonGroup,
-  ButtonGroupProps,
-} from 'uiSrc/components/base/forms'
-import { RiAccordion } from 'uiSrc/components/base/display'
+import { RiSwitchInput, RiTextInput } from 'uiBase/inputs'
+import { RiFormFieldset, RiButtonGroup, ButtonGroupProps } from 'uiBase/forms'
+import { RiAccordion } from 'uiBase/display'
 import { AxisScale, GraphMode, ChartConfigFormProps } from './interfaces'
 import {
   X_LABEL_MAX_LENGTH,

@@ -3,6 +3,12 @@ import { format } from 'date-fns'
 import { useDispatch } from 'react-redux'
 import { isNull } from 'lodash'
 
+import { RiText, RiTitle } from 'uiBase/text'
+import { RiEmptyButton, RiIconButton, RiPrimaryButton } from 'uiBase/forms'
+import { CopyIcon, RiIcon } from 'uiBase/icons'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiTable, ColumnDefinition } from 'uiBase/layout'
+import { RiLink } from 'uiBase/display'
 import { formatLongName, Nullable } from 'uiSrc/utils'
 import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
@@ -13,17 +19,7 @@ import {
   OAuthSocialSource,
 } from 'uiSrc/slices/interfaces'
 import { removeCapiKeyAction } from 'uiSrc/slices/oauth/cloud'
-import { RiText, RiTitle } from 'uiSrc/components/base/text'
 
-import {
-  RiEmptyButton,
-  RiIconButton,
-  RiPrimaryButton,
-} from 'uiSrc/components/base/forms'
-import { CopyIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiTable, ColumnDefinition } from 'uiSrc/components/base/layout'
-import { RiLink } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 export interface Props {

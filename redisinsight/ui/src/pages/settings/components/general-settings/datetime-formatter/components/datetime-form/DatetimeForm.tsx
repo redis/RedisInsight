@@ -1,6 +1,15 @@
 import React, { useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
+import {
+  RiPrimaryButton,
+  RiRadioGroup,
+  defaultValueRender,
+  RiSelect,
+} from 'uiBase/forms'
+import { InfoIcon, CheckBoldIcon } from 'uiBase/icons'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiTextInput } from 'uiBase/inputs'
 import { checkDateTimeFormat, formatTimestamp } from 'uiSrc/utils'
 import {
   DATETIME_FORMATTER_DEFAULT,
@@ -13,16 +22,7 @@ import {
   userSettingsConfigSelector,
 } from 'uiSrc/slices/user/user-settings'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import {
-  RiPrimaryButton,
-  RiRadioGroup,
-  defaultValueRender,
-  RiSelect,
-} from 'uiSrc/components/base/forms'
-import { InfoIcon, CheckBoldIcon } from 'uiSrc/components/base/icons'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { RiTooltip } from 'uiSrc/components'
-import { RiTextInput } from 'uiSrc/components/base/inputs'
 
 interface InitialValuesType {
   format: string

@@ -1,7 +1,7 @@
 import React from 'react'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiIconButton } from 'uiSrc/components/base/forms'
-import { PlusInCircleIcon, DeleteIcon } from 'uiSrc/components/base/icons'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiIconButton } from 'uiBase/forms'
+import { PlusInCircleIcon, DeleteIcon } from 'uiBase/icons'
 import { RiTooltip } from 'uiSrc/components'
 
 export interface Props {

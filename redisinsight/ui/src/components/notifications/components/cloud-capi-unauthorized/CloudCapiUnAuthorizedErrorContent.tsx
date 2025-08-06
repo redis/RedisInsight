@@ -1,14 +1,14 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { RiColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiBase/text'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiDestructiveButton, RiEmptyButton } from 'uiBase/forms'
 import { removeCapiKeyAction } from 'uiSrc/slices/oauth/cloud'
 import { Pages } from 'uiSrc/constants'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiDestructiveButton, RiEmptyButton } from 'uiSrc/components/base/forms'
 
 export interface Props {
   resourceId: string

@@ -1,6 +1,6 @@
 import React from 'react'
-import { RiIconButton } from 'uiSrc/components/base/forms'
-import { PlusIcon } from 'uiSrc/components/base/icons'
+import { RiIconButton } from 'uiBase/forms'
+import { PlusIcon } from 'uiBase/icons'
 import { getBrackets } from '../../utils'
 import styles from '../../styles.module.scss'
 

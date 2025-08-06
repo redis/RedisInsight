@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { EditIcon } from 'uiSrc/components/base/icons'
+import { EditIcon } from 'uiBase/icons'
+import { RiIconButton } from 'uiBase/forms'
 import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
 import {
   bufferToString,
@@ -7,7 +8,6 @@ import {
   createDeleteFieldMessage,
 } from 'uiSrc/utils'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
-import { RiIconButton } from 'uiSrc/components/base/forms'
 import styles from '../../styles.module.scss'
 
 export interface Props {

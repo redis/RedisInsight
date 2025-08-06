@@ -2,11 +2,11 @@ import React, { useState } from 'react'
 import { useHistory, useLocation, useParams } from 'react-router-dom'
 import cx from 'classnames'
 import { isNull } from 'lodash'
+import { RiLink } from 'uiBase/display'
+import { RiPopover } from 'uiBase/index'
 import { getRedirectionPage } from 'uiSrc/utils/routing'
 import DatabaseNotOpened from 'uiSrc/components/messages/database-not-opened'
 
-import { RiLink } from 'uiSrc/components/base/display'
-import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
 export interface Props {

@@ -1,6 +1,8 @@
 import React, { FormEvent, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { RiSelect } from 'uiBase/forms'
+import { RiTextInput } from 'uiBase/inputs'
 import { Maybe, stringToBuffer } from 'uiSrc/utils'
 import { addKeyStateSelector, addListKey } from 'uiSrc/slices/browser/keys'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
@@ -8,8 +10,6 @@ import {
   optionsDestinations,
   TAIL_DESTINATION,
 } from 'uiSrc/pages/browser/modules/key-details/components/list-details/add-list-elements/AddListElements'
-import { RiSelect } from 'uiSrc/components/base/forms'
-import { RiTextInput } from 'uiSrc/components/base/inputs'
 import {
   CreateListWithExpireDto,
   ListElementDestination,

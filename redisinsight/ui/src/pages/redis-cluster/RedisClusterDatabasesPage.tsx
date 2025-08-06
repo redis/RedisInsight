@@ -2,6 +2,10 @@ import React from 'react'
 import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { RiFlexItem, RiRow, ColumnDefinition } from 'uiBase/layout'
+import { RiIconButton } from 'uiBase/forms'
+import { CopyIcon, RiIcon } from 'uiBase/icons'
+import { RiColorText, RiText } from 'uiBase/text'
 import { Pages } from 'uiSrc/constants'
 import {
   addInstancesRedisCluster,
@@ -25,14 +29,6 @@ import {
   RiTooltip,
 } from 'uiSrc/components'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import {
-  RiFlexItem,
-  RiRow,
-  ColumnDefinition,
-} from 'uiSrc/components/base/layout'
-import { RiIconButton } from 'uiSrc/components/base/forms'
-import { CopyIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { RiColorText, RiText } from 'uiSrc/components/base/text'
 import RedisClusterDatabases from './RedisClusterDatabases'
 import RedisClusterDatabasesResult from './RedisClusterDatabasesResult'
 

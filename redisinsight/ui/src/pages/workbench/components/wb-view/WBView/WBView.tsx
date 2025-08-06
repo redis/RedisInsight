@@ -5,6 +5,11 @@ import { isEmpty } from 'lodash'
 import { useParams } from 'react-router-dom'
 
 import {
+  ResizableContainer,
+  RiResizablePanel,
+  ResizablePanelHandle,
+} from 'uiBase/layout'
+import {
   Maybe,
   Nullable,
   getParsedParamsInQuery,
@@ -23,11 +28,6 @@ import { userSettingsConfigSelector } from 'uiSrc/slices/user/user-settings'
 import { PIPELINE_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { CodeButtonParams } from 'uiSrc/constants'
 
-import {
-  ResizableContainer,
-  RiResizablePanel,
-  ResizablePanelHandle,
-} from 'uiSrc/components/base/layout'
 import QueryWrapper from '../../query'
 import WBResultsWrapper from '../../wb-results'
 

@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { RiColorText } from 'uiSrc/components/base/text'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiSecondaryButton } from 'uiSrc/components/base/forms'
+import { RiColorText } from 'uiBase/text'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiSecondaryButton } from 'uiBase/forms'
 
 export interface Props {
   text: string | JSX.Element | JSX.Element[]

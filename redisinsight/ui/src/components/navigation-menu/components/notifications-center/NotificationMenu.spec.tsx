@@ -1,12 +1,12 @@
 import { fireEvent } from '@testing-library/react'
 import { cloneDeep } from 'lodash'
 import React from 'react'
+import { RiSideBar } from 'uiBase/layout'
 import {
   notificationCenterSelector,
   setIsCenterOpen,
 } from 'uiSrc/slices/app/notifications'
 import { cleanup, mockedStore, render, screen } from 'uiSrc/utils/test-utils'
-import { RiSideBar } from 'uiSrc/components/base/layout'
 import NotificationMenu from './NotificationMenu'
 
 jest.mock('uiSrc/slices/app/notifications', () => ({

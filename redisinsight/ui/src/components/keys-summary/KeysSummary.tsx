@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { isNull } from 'lodash'
 import { useSelector } from 'react-redux'
 
-import { RiText, RiColorText } from 'uiSrc/components/base/text'
+import { RiText, RiColorText } from 'uiBase/text'
 
 import { numberWithSpaces, nullableNumberWithSpaces } from 'uiSrc/utils/numbers'
 import { KeyViewType } from 'uiSrc/slices/interfaces/keys'

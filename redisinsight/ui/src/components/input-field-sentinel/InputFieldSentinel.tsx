@@ -1,14 +1,10 @@
 import { omit } from 'lodash'
 import React, { useState } from 'react'
 import cx from 'classnames'
-import { useDebouncedEffect } from 'uiSrc/services'
-import {
-  RiNumericInput,
-  RiPasswordInput,
-  RiTextInput,
-} from 'uiSrc/components/base/inputs'
+import { RiNumericInput, RiPasswordInput, RiTextInput } from 'uiBase/inputs'
 
-import { RiIcon } from 'uiSrc/components/base/icons'
+import { RiIcon } from 'uiBase/icons'
+import { useDebouncedEffect } from 'uiSrc/services'
 import styles from './styles.module.scss'
 
 export enum SentinelInputFieldType {

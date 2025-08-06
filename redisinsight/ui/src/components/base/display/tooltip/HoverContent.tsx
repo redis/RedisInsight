@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { RiCol } from 'uiSrc/components/base/layout'
-import { RiTitle } from 'uiSrc/components/base/text'
+import { RiCol } from 'uiBase/layout'
+import { RiTitle } from 'uiBase/text'
 
 interface RiTooltipContentProps {
   title?: React.ReactNode

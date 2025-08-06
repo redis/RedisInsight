@@ -2,6 +2,9 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import { v4 as uuidv4 } from 'uuid'
+import { RiLoadingContent, RiFlexItem } from 'uiBase/layout'
+import { RiColorText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
 import { pluginApi } from 'uiSrc/services/PluginAPI'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import {
@@ -10,7 +13,6 @@ import {
   formatToText,
   replaceEmptyValue,
 } from 'uiSrc/utils'
-import { RiLoadingContent, RiFlexItem } from 'uiSrc/components/base/layout'
 import { Theme } from 'uiSrc/constants'
 import {
   CommandExecutionResult,
@@ -28,8 +30,6 @@ import {
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { appServerInfoSelector } from 'uiSrc/slices/app/info'
 
-import { RiColorText } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 export interface Props {

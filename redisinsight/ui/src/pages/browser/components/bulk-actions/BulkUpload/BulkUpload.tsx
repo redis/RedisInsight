@@ -2,6 +2,10 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import cx from 'classnames'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
+import { RefreshIcon, RiIcon } from 'uiBase/icons'
+import { RiColorText, RiText } from 'uiBase/text'
+import { RiCol, RiRow } from 'uiBase/layout'
 import { Nullable } from 'uiSrc/utils'
 import { BulkActionsStatus, BulkActionsType } from 'uiSrc/constants'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
@@ -25,10 +29,6 @@ import {
   RiPopover,
   RiTooltip,
 } from 'uiSrc/components'
-import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
-import { RefreshIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { RiColorText, RiText } from 'uiSrc/components/base/text'
-import { RiCol, RiRow } from 'uiSrc/components/base/layout'
 import styles from './styles.module.scss'
 
 export interface Props {

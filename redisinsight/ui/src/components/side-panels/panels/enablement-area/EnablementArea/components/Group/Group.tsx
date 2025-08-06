@@ -3,6 +3,10 @@ import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
 
+import { RiAccordion } from 'uiBase/display'
+import { RiCol } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
 import {
   sendEventTelemetry,
   TELEMETRY_EMPTY_VALUE,
@@ -12,11 +16,7 @@ import { workbenchCustomTutorialsSelector } from 'uiSrc/slices/workbench/wb-cust
 import { EAItemActions } from 'uiSrc/constants'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 
-import { RiAccordion } from 'uiSrc/components/base/display'
-import { RiCol } from 'uiSrc/components/base/layout'
 import { RiTooltip, OnboardingTour } from 'uiSrc/components'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons'
 
 import DeleteTutorialButton from '../DeleteTutorialButton'
 

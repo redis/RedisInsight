@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import ReactDOM from 'react-dom'
+import { RiCol, RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
+import { InfoIcon, RiIcon } from 'uiBase/icons'
+import { RiTitle, RiColorText, RiText } from 'uiBase/text'
+import { RiLoader } from 'uiBase/display'
+import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
+import { RiTooltip, UploadWarning, RiFilePicker } from 'uiSrc/components'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { Nullable } from 'uiSrc/utils'
 import {
   fetchInstancesAction,
   importInstancesSelector,
   resetImportInstances,
   uploadInstancesFile,
 } from 'uiSrc/slices/instances/instances'
-import { Nullable } from 'uiSrc/utils'
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { RiTooltip, UploadWarning, RiFilePicker } from 'uiSrc/components'
-import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
-import { RiCol, RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
-import { InfoIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { RiTitle, RiColorText, RiText } from 'uiSrc/components/base/text'
-import { RiLoader } from 'uiSrc/components/base/display'
 import ResultsLog from './components/ResultsLog'
 
 import styles from './styles.module.scss'

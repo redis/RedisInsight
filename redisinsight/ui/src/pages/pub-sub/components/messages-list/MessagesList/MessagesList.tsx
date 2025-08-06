@@ -6,10 +6,10 @@ import {
 } from 'react-window'
 import { useParams } from 'react-router-dom'
 
+import { ChevronDownIcon } from 'uiBase/icons'
+import { RiIconButton } from 'uiBase/forms'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { FormatedDate, RiTooltip } from 'uiSrc/components'
-import { ChevronDownIcon } from 'uiSrc/components/base/icons'
-import { RiIconButton } from 'uiSrc/components/base/forms'
 import { IMessage } from 'apiSrc/modules/pub-sub/interfaces/message.interface'
 
 import styles from './styles.module.scss'

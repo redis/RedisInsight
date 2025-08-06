@@ -3,6 +3,11 @@ import ReactDOM from 'react-dom'
 import { isEmpty } from 'lodash'
 import { FormikErrors, useFormik } from 'formik'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiWindowEvent } from 'uiBase/utils'
+import { RiPrimaryButton, RiSecondaryButton, RiFormField } from 'uiBase/forms'
+import { InfoIcon, RiIcon } from 'uiBase/icons'
+import { RiNumericInput, RiPasswordInput, RiTextInput } from 'uiBase/inputs'
 import * as keys from 'uiSrc/constants/keys'
 import { MAX_PORT_NUMBER, validateField } from 'uiSrc/utils/validations'
 import { handlePasteHostName } from 'uiSrc/utils'
@@ -10,19 +15,6 @@ import validationErrors from 'uiSrc/constants/validationErrors'
 import { ICredentialsRedisCluster } from 'uiSrc/slices/interfaces'
 
 import { MessageEnterpriceSoftware } from 'uiSrc/pages/home/components/form/Messages'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiWindowEvent } from 'uiSrc/components/base/utils'
-import {
-  RiPrimaryButton,
-  RiSecondaryButton,
-  RiFormField,
-} from 'uiSrc/components/base/forms'
-import { InfoIcon, RiIcon } from 'uiSrc/components/base/icons'
-import {
-  RiNumericInput,
-  RiPasswordInput,
-  RiTextInput,
-} from 'uiSrc/components/base/inputs'
 import { RiTooltip } from 'uiSrc/components'
 
 export interface Props {

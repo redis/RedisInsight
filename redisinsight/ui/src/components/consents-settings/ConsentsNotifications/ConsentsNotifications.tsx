@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import { has } from 'lodash'
 
+import { RiTitle } from 'uiBase/text'
 import { compareConsents } from 'uiSrc/utils'
 import {
   updateUserConfigSettingsAction,
   userSettingsSelector,
 } from 'uiSrc/slices/user/user-settings'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { RiTitle } from 'uiSrc/components/base/text'
 import ConsentOption from '../ConsentOption'
 import { IConsent, ConsentCategories } from '../ConsentsSettings'
 

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 
+import { RiTitle } from 'uiBase/text'
 import {
   clusterSelector,
   fetchInstancesRedisCluster,
@@ -13,7 +14,6 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { autoFillFormDetails } from 'uiSrc/pages/home/utils'
 
 import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
-import { RiTitle } from 'uiSrc/components/base/text'
 import ClusterConnectionForm from './cluster-connection-form/ClusterConnectionForm'
 
 export interface Props {

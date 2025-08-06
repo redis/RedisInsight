@@ -1,8 +1,8 @@
 import React from 'react'
 import { isUndefined } from 'lodash'
 
-import { RiLoadingContent } from 'uiSrc/components/base/layout'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiLoadingContent } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
 import { RiTooltip } from 'uiSrc/components'
 import { Maybe, formatLongName, replaceSpaces } from 'uiSrc/utils'
 import styles from './styles.module.scss'

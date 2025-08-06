@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { isUndefined } from 'lodash'
 
+import { RiProgressBarLoader } from 'uiBase/display'
 import {
   fetchReJSON,
   rejsonDataSelector,
@@ -25,7 +26,6 @@ import {
 import { stringToBuffer } from 'uiSrc/utils'
 import { IJSONData } from 'uiSrc/pages/browser/modules/key-details/components/rejson-details/interfaces'
 
-import { RiProgressBarLoader } from 'uiSrc/components/base/display'
 import RejsonDetails from './rejson-details'
 import MonacoEditor from './monaco-editor'
 import { parseJsonData } from './utils'

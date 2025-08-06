@@ -1,24 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { RiSearchInput } from 'uiSrc/components/base/inputs'
+import { RiSearchInput } from 'uiBase/inputs'
 
+import { RiFlexItem, RiRow, RiTable, ColumnDefinition } from 'uiBase/layout'
+import { RiPrimaryButton, RiSecondaryButton, RiFormField } from 'uiBase/forms'
+import { RiTitle, RiText } from 'uiBase/text'
 import { sentinelSelector } from 'uiSrc/slices/instances/sentinel'
 import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import {
-  RiFlexItem,
-  RiRow,
-  RiTable,
-  ColumnDefinition,
-} from 'uiSrc/components/base/layout'
-import {
-  RiPrimaryButton,
-  RiSecondaryButton,
-  RiFormField,
-} from 'uiSrc/components/base/forms'
-import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 export interface Props {

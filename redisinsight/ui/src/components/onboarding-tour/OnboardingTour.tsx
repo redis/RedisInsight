@@ -2,21 +2,21 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import cx from 'classnames'
 
-import {
-  skipOnboarding,
-  setOnboardNextStep,
-  setOnboardPrevStep,
-} from 'uiSrc/slices/app/features'
-import { CancelSlimIcon } from 'uiSrc/components/base/icons'
+import { CancelSlimIcon } from 'uiBase/icons'
 import {
   RiEmptyButton,
   RiIconButton,
   RiPrimaryButton,
   RiSecondaryButton,
-} from 'uiSrc/components/base/forms'
-import { RiColorText, RiTitle } from 'uiSrc/components/base/text'
-import { RiTourStep } from 'uiSrc/components/base/display'
-import { RiCol, RiRow } from 'uiSrc/components/base/layout'
+} from 'uiBase/forms'
+import { RiColorText, RiTitle } from 'uiBase/text'
+import { RiTourStep } from 'uiBase/display'
+import { RiCol, RiRow } from 'uiBase/layout'
+import {
+  skipOnboarding,
+  setOnboardNextStep,
+  setOnboardPrevStep,
+} from 'uiSrc/slices/app/features'
 import { Props as OnboardingWrapperProps } from './OnboardingTourWrapper'
 
 import styles from './styles.module.scss'

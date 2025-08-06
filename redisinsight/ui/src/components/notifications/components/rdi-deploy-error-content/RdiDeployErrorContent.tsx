@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo } from 'react'
-import { RiLink } from 'uiSrc/components/base/display'
-import { RiCol, RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiDestructiveButton } from 'uiSrc/components/base/forms'
-import { RiColorText } from 'uiSrc/components/base/text'
+import { RiLink } from 'uiBase/display'
+import { RiCol, RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiDestructiveButton } from 'uiBase/forms'
+import { RiColorText } from 'uiBase/text'
 
 export interface Props {
   message: string

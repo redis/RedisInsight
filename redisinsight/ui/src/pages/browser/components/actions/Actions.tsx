@@ -1,19 +1,19 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
+import { BulkActionsIcon } from 'uiBase/icons'
+import { RiRow } from 'uiBase/layout'
 import {
   getBasedOnViewTypeEvent,
   sendEventTelemetry,
   TelemetryEvent,
 } from 'uiSrc/telemetry'
-import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import styles from 'uiSrc/pages/browser/components/browser-search-panel/styles.module.scss'
 import { setBulkActionType } from 'uiSrc/slices/browser/bulkActions'
 import { BulkActionsType, FeatureFlags } from 'uiSrc/constants'
-import { BulkActionsIcon } from 'uiSrc/components/base/icons'
 import { FeatureFlagComponent } from 'uiSrc/components'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { keysSelector } from 'uiSrc/slices/browser/keys'
-import { RiRow } from 'uiSrc/components/base/layout'
 
 export interface Props {
   handleAddKeyPanel: (value: boolean) => void

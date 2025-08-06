@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toNumber } from 'lodash'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiPrimaryButton, RiSecondaryButton, RiFormField } from 'uiBase/forms'
+import { RiTextInput } from 'uiBase/inputs'
 import {
   keysSelector,
   selectedKeyDataSelector,
@@ -24,13 +27,6 @@ import {
   IHashFieldState,
   INITIAL_HASH_FIELD_STATE,
 } from 'uiSrc/pages/browser/components/add-key/AddKeyHash/interfaces'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import {
-  RiPrimaryButton,
-  RiSecondaryButton,
-  RiFormField,
-} from 'uiSrc/components/base/forms'
-import { RiTextInput } from 'uiSrc/components/base/inputs'
 import {
   AddFieldsToHashDto,
   HashFieldDto,

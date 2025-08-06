@@ -1,4 +1,4 @@
-import { TabInfo } from 'uiSrc/components/base/layout'
+import { TabInfo } from 'uiBase/layout'
 
 export enum ManualFormTab {
   General = 'general',

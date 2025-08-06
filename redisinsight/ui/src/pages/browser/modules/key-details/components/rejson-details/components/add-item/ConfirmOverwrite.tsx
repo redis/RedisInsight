@@ -1,9 +1,9 @@
 import React from 'react'
 import cx from 'classnames'
 
-import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiPopover } from 'uiSrc/components/base'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
+import { RiPopover } from 'uiBase/index'
 import styles from '../../styles.module.scss'
 
 interface ConfirmOverwriteProps {

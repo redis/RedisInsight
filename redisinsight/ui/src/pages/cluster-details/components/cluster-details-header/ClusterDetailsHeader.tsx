@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { capitalize } from 'lodash'
 
-import { RiLoadingContent } from 'uiSrc/components/base/layout'
+import { RiLoadingContent } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
 import {
   truncateNumberToFirstUnit,
   formatLongName,
@@ -17,7 +18,6 @@ import {
 } from 'uiSrc/slices/interfaces'
 import AnalyticsTabs from 'uiSrc/components/analytics-tabs'
 import { clusterDetailsSelector } from 'uiSrc/slices/analytics/clusterDetails'
-import { RiText } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 
 import styles from './styles.module.scss'

@@ -3,6 +3,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { isNumber } from 'lodash'
 
+import { RiIconButton } from 'uiBase/forms'
+import { ToastDangerIcon } from 'uiBase/icons'
+import { RiText } from 'uiBase/text'
+import { ColumnDefinition } from 'uiBase/layout'
 import { Pages } from 'uiSrc/constants'
 import {
   InstanceRedisCloud,
@@ -24,10 +28,6 @@ import {
 import { formatLongName, Maybe, replaceSpaces, setTitle } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { oauthCloudUserSelector } from 'uiSrc/slices/oauth/cloud'
-import { RiIconButton } from 'uiSrc/components/base/forms'
-import { ToastDangerIcon } from 'uiSrc/components/base/icons'
-import { RiText } from 'uiSrc/components/base/text'
-import { ColumnDefinition } from 'uiSrc/components/base/layout'
 import RedisCloudSubscriptions from './RedisCloudSubscriptions/RedisCloudSubscriptions'
 
 import styles from './styles.module.scss'

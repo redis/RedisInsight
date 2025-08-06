@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 
-import { formatLongName } from 'uiSrc/utils'
-import { RiOutsideClickDetector } from 'uiSrc/components/base/utils'
+import { RiOutsideClickDetector } from 'uiBase/utils'
 
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiPopover } from 'uiSrc/components/base'
-import { RiIcon } from 'uiSrc/components/base/icons'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiText } from 'uiBase/text'
+import { RiPopover } from 'uiBase/index'
+import { RiIcon } from 'uiBase/icons'
+import { formatLongName } from 'uiSrc/utils'
 import styles from './styles.module.scss'
 
 interface Props {

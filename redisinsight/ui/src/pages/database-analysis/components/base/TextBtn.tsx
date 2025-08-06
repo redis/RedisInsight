@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import React from 'react'
-import { RiEmptyButton } from 'uiSrc/components/base/forms'
+import { RiEmptyButton } from 'uiBase/forms'
 /**
  * Text button component
  *

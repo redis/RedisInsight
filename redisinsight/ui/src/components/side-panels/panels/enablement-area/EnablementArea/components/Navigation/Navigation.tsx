@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { isArray } from 'lodash'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { RiListGroup } from 'uiSrc/components/base/layout'
+import { RiListGroup } from 'uiBase/layout'
 import {
   EnablementAreaComponent,
   IEnablementAreaItem,

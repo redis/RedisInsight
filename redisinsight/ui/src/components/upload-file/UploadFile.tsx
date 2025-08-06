@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { RiText } from 'uiSrc/components/base/text'
-import { RiEmptyButton } from 'uiSrc/components/base/forms'
-import { RiIcon } from 'uiSrc/components/base/icons'
+import { RiText } from 'uiBase/text'
+import { RiEmptyButton } from 'uiBase/forms'
+import { RiIcon } from 'uiBase/icons'
 import styles from './styles.module.scss'
 
 export interface Props {

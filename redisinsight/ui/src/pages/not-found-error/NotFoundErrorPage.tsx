@@ -1,14 +1,14 @@
 import React, { useCallback } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import { RiCol, RiFlexItem } from 'uiBase/layout'
+import { RiPrimaryButton } from 'uiBase/forms'
+import { RiTitle, RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { FeatureFlags } from 'uiSrc/constants/featureFlags'
 import { getConfig } from 'uiSrc/config'
 import Robot from 'uiSrc/assets/img/robot.svg?react'
-import { RiCol, RiFlexItem } from 'uiSrc/components/base/layout'
-import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { RiTitle, RiText } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 const NotFoundErrorPage = () => {

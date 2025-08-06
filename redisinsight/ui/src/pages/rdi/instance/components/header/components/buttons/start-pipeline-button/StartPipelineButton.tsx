@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { RiSecondaryButton } from 'uiSrc/components/base/forms'
-import { PlayFilledIcon } from 'uiSrc/components/base/icons'
+import { RiSecondaryButton } from 'uiBase/forms'
+import { PlayFilledIcon } from 'uiBase/icons'
 import { RiTooltip } from 'uiSrc/components'
 import { PipelineButtonProps } from '../reset-pipeline-button/ResetPipelineButton'
 import styles from '../styles.module.scss'

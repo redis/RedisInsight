@@ -3,13 +3,12 @@ import cx from 'classnames'
 import { format } from 'date-fns'
 import parse from 'html-react-parser'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { TitleSize, RiTitle, RiText } from 'uiBase/text'
+import { RiBadge } from 'uiBase/display'
 import { NOTIFICATION_DATE_FORMAT } from 'uiSrc/constants/notifications'
 import { IGlobalNotification } from 'uiSrc/slices/interfaces'
 import { truncateText } from 'uiSrc/utils'
-
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { TitleSize, RiTitle, RiText } from 'uiSrc/components/base/text'
-import { RiBadge } from 'uiSrc/components/base/display'
 
 import styles from '../styles.module.scss'
 

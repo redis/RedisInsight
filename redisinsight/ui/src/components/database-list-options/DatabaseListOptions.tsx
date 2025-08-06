@@ -1,6 +1,13 @@
 import React, { useContext } from 'react'
 import { isString } from 'lodash'
 import { IconType } from '@elastic/eui'
+import {
+  ActiveActiveDarkIcon,
+  ActiveActiveLightIcon,
+  RedisOnFlashDarkIcon,
+  RedisOnFlashLightIcon,
+} from 'uiBase/icons'
+import { RiIconButton } from 'uiBase/forms'
 import { RiTooltip } from 'uiSrc/components'
 
 import {
@@ -12,13 +19,6 @@ import {
 import { Theme } from 'uiSrc/constants'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 
-import {
-  ActiveActiveDarkIcon,
-  ActiveActiveLightIcon,
-  RedisOnFlashDarkIcon,
-  RedisOnFlashLightIcon,
-} from 'uiSrc/components/base/icons'
-import { RiIconButton } from 'uiSrc/components/base/forms'
 import styles from './styles.module.scss'
 
 interface Props {

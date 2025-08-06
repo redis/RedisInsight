@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import { isNull, isNumber } from 'lodash'
 import { CellMeasurerCache } from 'react-virtualized'
+import { RiText } from 'uiBase/text'
 import {
   appContextBrowserKeyDetails,
   updateKeyDetailsSizes,
@@ -71,7 +72,6 @@ import {
   EditableTextArea,
   FormattedValue,
 } from 'uiSrc/pages/browser/modules/key-details/shared'
-import { RiText } from 'uiSrc/components/base/text'
 import {
   SetListElementDto,
   SetListElementResponse,

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
+import { RiText } from 'uiBase/text'
 import {
   setStreamViewType,
   selectedGroupSelector,
@@ -25,7 +26,6 @@ import {
 import { formatLongName, isTruncatedString } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
-import { RiText } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { ConsumerDto } from 'apiSrc/modules/browser/stream/dto'
 import ConsumersView from './ConsumersView'

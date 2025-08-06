@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { Chip, FormField, Input } from '@redis-ui/components'
 import cn from 'classnames'
 import styled from 'styled-components'
-import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import { CommonProps } from 'uiSrc/components/base/theme/types'
-import { RiRow } from 'uiSrc/components/base/layout'
-import { RiIconButton } from 'uiSrc/components/base/forms'
+import { CancelSlimIcon } from 'uiBase/icons'
+import { CommonProps } from 'uiBase/theme/types'
+import { RiRow } from 'uiBase/layout'
+import { RiIconButton } from 'uiBase/forms'
 
 export type AutoTagOption<T = string | number | string[] | undefined> = {
   label: string

@@ -2,12 +2,11 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
 
-import { bufferToString } from 'uiSrc/utils'
+import { RiText, RiColorText } from 'uiBase/text'
+import { RiIconButton } from 'uiBase/forms'
+import { CopyIcon } from 'uiBase/icons'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-
-import { RiText, RiColorText } from 'uiSrc/components/base/text'
-import { RiIconButton } from 'uiSrc/components/base/forms'
-import { CopyIcon } from 'uiSrc/components/base/icons'
+import { bufferToString } from 'uiSrc/utils'
 import styles from './styles.module.scss'
 
 export interface IProps {

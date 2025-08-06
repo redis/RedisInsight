@@ -4,11 +4,9 @@ import React, { useCallback, useState } from 'react'
 
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  FilterTableIcon,
-  IconType,
-  QuerySearchIcon,
-} from 'uiSrc/components/base/icons'
+import { FilterTableIcon, IconType, QuerySearchIcon } from 'uiBase/icons'
+import { RiIconButton } from 'uiBase/forms'
+import { RiModal } from 'uiBase/display'
 import { ModuleNotLoaded, OnboardingTour, RiTooltip } from 'uiSrc/components'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { KeyViewType, SearchMode } from 'uiSrc/slices/interfaces/keys'
@@ -25,8 +23,6 @@ import { BrowserStorageItem } from 'uiSrc/constants'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 
 import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
-import { RiIconButton } from 'uiSrc/components/base/forms'
-import { RiModal } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 interface ISwitchType<T> {

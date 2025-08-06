@@ -2,7 +2,7 @@ import React from 'react'
 import { cloneDeep } from 'lodash'
 import { cleanup, mockedStore, render } from 'uiSrc/utils/test-utils'
 import ShortcutsFlyout from './ShortcutsFlyout'
-import { SHORTCUTS, ShortcutGroup } from './schema'
+import { ShortcutGroup, SHORTCUTS } from './schema'
 
 let store: typeof mockedStore
 beforeEach(() => {
@@ -11,10 +11,14 @@ beforeEach(() => {
   store.clearActions()
 })
 
-jest.mock('uiSrc/components/base/layout/drawer', () => ({
-  ...jest.requireActual('uiSrc/components/base/layout/drawer'),
-  DrawerHeader: jest.fn().mockReturnValue(null),
-}))
+jest.mock('uiBase/layout', () => {
+  const actual = jest.requireActual('uiBase/layout')
+
+  return {
+    ...actual,
+    RiDrawerHeader: jest.fn().mockReturnValue(null),
+  }
+})
 
 const appInfoSlicesPath = 'uiSrc/slices/app/info'
 

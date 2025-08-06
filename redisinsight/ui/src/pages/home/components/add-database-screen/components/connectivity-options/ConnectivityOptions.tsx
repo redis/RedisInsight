@@ -2,6 +2,11 @@ import React from 'react'
 import cx from 'classnames'
 
 import styled from 'styled-components'
+import { RiCol, RiFlexItem, RiGrid } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiSecondaryButton } from 'uiBase/forms'
+import { RiTitle } from 'uiBase/text'
+import { RiBadge, RiLink } from 'uiBase/display'
 import { AddDbType } from 'uiSrc/pages/home/constants'
 import { FeatureFlagComponent, OAuthSsoHandlerDialog } from 'uiSrc/components'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
@@ -11,12 +16,6 @@ import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
 
 import CloudIcon from 'uiSrc/assets/img/oauth/cloud_centered.svg?react'
 import RocketIcon from 'uiSrc/assets/img/oauth/rocket.svg?react'
-
-import { RiCol, RiFlexItem, RiGrid } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiSecondaryButton } from 'uiSrc/components/base/forms'
-import { RiTitle } from 'uiSrc/components/base/text'
-import { RiBadge, RiLink } from 'uiSrc/components/base/display'
 
 import { CONNECTIVITY_OPTIONS } from '../../constants'
 

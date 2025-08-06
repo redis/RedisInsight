@@ -1,7 +1,7 @@
 import React from 'react'
 import { IconButton as RedisUiIconButton } from '@redis-ui/components'
-import * as Icons from 'uiSrc/components/base/icons/iconRegistry'
-import { AllIconsType } from 'uiSrc/components/base/icons'
+import * as Icons from 'uiBase/icons/iconRegistry'
+import { AllIconsType } from 'uiBase/icons'
 
 export type ButtonProps = React.ComponentProps<typeof RedisUiIconButton>
 

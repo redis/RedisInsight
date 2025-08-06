@@ -8,13 +8,13 @@ import React, {
 import cx from 'classnames'
 
 import { throttle } from 'lodash'
+import { RiIcon } from 'uiBase/icons'
+import { RiLoader } from 'uiBase/display'
 import {
   AiChatMessage,
   AiChatMessageType,
 } from 'uiSrc/slices/interfaces/aiAssistant'
 import { Nullable, scrollIntoView } from 'uiSrc/utils'
-import { RiIcon } from 'uiSrc/components/base/icons'
-import { RiLoader } from 'uiSrc/components/base/display'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
 
 import LoadingMessage from '../loading-message'

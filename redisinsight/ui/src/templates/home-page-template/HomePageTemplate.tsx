@@ -1,6 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
+import { RiFlexGroup as Flex, RiFlexItem } from 'uiBase/layout'
 import { ExplorePanelTemplate } from 'uiSrc/templates'
 import HomeTabs from 'uiSrc/components/home-tabs'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
@@ -10,7 +11,6 @@ import { FeatureFlagComponent, OAuthUserProfile } from 'uiSrc/components'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { CopilotTrigger, InsightsTrigger } from 'uiSrc/components/triggers'
 
-import { RiFlexGroup as Flex, RiFlexItem } from 'uiSrc/components/base/layout'
 import styles from './styles.module.scss'
 
 export interface Props {

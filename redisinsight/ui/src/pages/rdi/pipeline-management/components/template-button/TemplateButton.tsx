@@ -2,6 +2,7 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { useParams } from 'react-router-dom'
+import { RiSecondaryButton } from 'uiBase/forms'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   fetchJobTemplate,
@@ -9,7 +10,6 @@ import {
 } from 'uiSrc/slices/rdi/pipeline'
 import { RiTooltip } from 'uiSrc/components'
 import { RdiPipelineTabs } from 'uiSrc/slices/interfaces'
-import { RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { getTooltipContent } from '../template-form/TemplateForm'
 import { INGEST_OPTION } from '../template-form/constants'
 import styles from './styles.module.scss'

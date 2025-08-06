@@ -1,8 +1,8 @@
 import React from 'react'
 
+import { RiIconButton } from 'uiBase/forms'
+import { MinusInCircleIcon } from 'uiBase/icons'
 import { RiTooltip } from 'uiSrc/components'
-import { RiIconButton } from 'uiSrc/components/base/forms'
-import { MinusInCircleIcon } from 'uiSrc/components/base/icons'
 import styles from '../styles.module.scss'
 
 export interface Props {

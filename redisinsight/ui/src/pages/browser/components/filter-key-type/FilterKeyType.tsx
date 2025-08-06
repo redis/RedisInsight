@@ -3,6 +3,10 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
+import { RiOutsideClickDetector } from 'uiBase/utils'
+import { RiHealthText } from 'uiBase/text'
+import { RiSelect, defaultValueRender } from 'uiBase/forms'
+import { RiModal } from 'uiBase/display'
 import {
   SCAN_COUNT_DEFAULT,
   SCAN_TREE_COUNT_DEFAULT,
@@ -22,10 +26,6 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { resetBrowserTree } from 'uiSrc/slices/app/context'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { AdditionalRedisModule } from 'uiSrc/slices/interfaces'
-import { RiOutsideClickDetector } from 'uiSrc/components/base/utils'
-import { RiHealthText } from 'uiSrc/components/base/text'
-import { RiSelect, defaultValueRender } from 'uiSrc/components/base/forms'
-import { RiModal } from 'uiSrc/components/base/display'
 import { FILTER_KEY_TYPE_OPTIONS } from './constants'
 
 import styles from './styles.module.scss'

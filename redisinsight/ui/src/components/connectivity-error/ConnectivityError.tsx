@@ -1,8 +1,8 @@
 import React from 'react'
-import SuspenseLoader from 'uiSrc/components/main-router/components/SuspenseLoader'
 
-import { RiCol, RiFlexItem, RiCard } from 'uiSrc/components/base/layout'
-import { RiPrimaryButton } from 'uiSrc/components/base/forms'
+import { RiCol, RiFlexItem, RiCard } from 'uiBase/layout'
+import { RiPrimaryButton } from 'uiBase/forms'
+import SuspenseLoader from 'uiSrc/components/main-router/components/SuspenseLoader'
 
 export type ConnectivityErrorProps = {
   onRetry?: () => void

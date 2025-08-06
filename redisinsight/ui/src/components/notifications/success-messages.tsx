@@ -1,4 +1,6 @@
 import React from 'react'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import {
   IBulkActionOverview,
@@ -12,8 +14,6 @@ import {
   millisecondsFormat,
 } from 'uiSrc/utils'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 // TODO: use i18n file for texts

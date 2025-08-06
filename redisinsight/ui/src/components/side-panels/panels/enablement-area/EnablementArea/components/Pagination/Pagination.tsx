@@ -1,20 +1,20 @@
 import React, { useContext, useEffect, useState } from 'react'
 import cx from 'classnames'
 import { isNil } from 'lodash'
-import { ChevronLeftIcon, ChevronRightIcon } from 'uiSrc/components/base/icons'
-import { IEnablementAreaItem } from 'uiSrc/slices/interfaces'
-import EnablementAreaContext from 'uiSrc/pages/workbench/contexts/enablementAreaContext'
-
-import { Nullable } from 'uiSrc/utils'
-import { RiPrimaryButton } from 'uiSrc/components/base/forms'
+import { ChevronLeftIcon, ChevronRightIcon } from 'uiBase/icons'
+import { RiPrimaryButton } from 'uiBase/forms'
 import {
   RiMenu,
   RiMenuContent,
   RiMenuDropdownArrow,
   RiMenuItem,
   RiMenuTrigger,
-} from 'uiSrc/components/base/layout'
-import { RiText } from 'uiSrc/components/base/text'
+} from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
+import { IEnablementAreaItem } from 'uiSrc/slices/interfaces'
+import EnablementAreaContext from 'uiSrc/pages/workbench/contexts/enablementAreaContext'
+
+import { Nullable } from 'uiSrc/utils'
 import styles from './styles.module.scss'
 
 export interface Props {

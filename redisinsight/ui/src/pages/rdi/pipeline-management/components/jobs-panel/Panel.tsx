@@ -5,6 +5,21 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { isArray, upperFirst } from 'lodash'
 
+import { RiText } from 'uiBase/text'
+import { RiFlexItem, RiRow, RiTabs, TabInfo } from 'uiBase/layout'
+import {
+  RiEmptyButton,
+  RiIconButton,
+  RiSelect,
+  RiSelectOption,
+  defaultValueRender,
+} from 'uiBase/forms'
+import {
+  PlayFilledIcon,
+  CancelSlimIcon,
+  ExtendIcon,
+  ShrinkIcon,
+} from 'uiBase/icons'
 import * as keys from 'uiSrc/constants/keys'
 import { PipelineJobsTabs } from 'uiSrc/slices/interfaces/rdi'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
@@ -19,26 +34,6 @@ import DryRunJobTransformations from 'uiSrc/pages/rdi/pipeline-management/compon
 import { createAxiosError, formatLongName, yamlToJson } from 'uiSrc/utils'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 
-import { RiText } from 'uiSrc/components/base/text'
-import {
-  RiFlexItem,
-  RiRow,
-  RiTabs,
-  TabInfo,
-} from 'uiSrc/components/base/layout'
-import {
-  RiEmptyButton,
-  RiIconButton,
-  RiSelect,
-  RiSelectOption,
-  defaultValueRender,
-} from 'uiSrc/components/base/forms'
-import {
-  PlayFilledIcon,
-  CancelSlimIcon,
-  ExtendIcon,
-  ShrinkIcon,
-} from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
 import styles from './styles.module.scss'
 

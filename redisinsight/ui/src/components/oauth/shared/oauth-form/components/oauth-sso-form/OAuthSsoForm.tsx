@@ -1,19 +1,15 @@
 import { isEmpty } from 'lodash'
 import React, { useState } from 'react'
 import { FormikErrors, useFormik } from 'formik'
-import { validateEmail, validateField } from 'uiSrc/utils'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton, RiSecondaryButton, RiFormField } from 'uiBase/forms'
+import { InfoIcon } from 'uiBase/icons'
+import { RiTextInput } from 'uiBase/inputs'
+import { RiTitle } from 'uiBase/text'
 import { RiTooltip } from 'uiSrc/components'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  RiPrimaryButton,
-  RiSecondaryButton,
-  RiFormField,
-} from 'uiSrc/components/base/forms'
-import { InfoIcon } from 'uiSrc/components/base/icons'
-import { RiTextInput } from 'uiSrc/components/base/inputs'
-import { RiTitle } from 'uiSrc/components/base/text'
+import { validateEmail, validateField } from 'uiSrc/utils'
 import styles from './styles.module.scss'
 
 export interface Props {

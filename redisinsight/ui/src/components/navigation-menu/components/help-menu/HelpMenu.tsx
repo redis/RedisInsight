@@ -2,6 +2,13 @@ import cx from 'classnames'
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { RiPopover } from 'uiBase/index'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiTitle, RiText } from 'uiBase/text'
+import { SupportIcon, RiIcon } from 'uiBase/icons'
+import { RiLink } from 'uiBase/display'
+import { RiSideBarItem, SideBarItemIcon } from 'uiBase/layout/sidebar'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import { ReleaseNotesSource } from 'uiSrc/constants/telemetry'
 import {
@@ -16,16 +23,6 @@ import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 
 import { FeatureFlags } from 'uiSrc/constants'
 import { FeatureFlagComponent } from 'uiSrc/components'
-import { RiPopover } from 'uiSrc/components/base'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiTitle, RiText } from 'uiSrc/components/base/text'
-import { SupportIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { RiLink } from 'uiSrc/components/base/display'
-import {
-  RiSideBarItem,
-  SideBarItemIcon,
-} from 'uiSrc/components/base/layout/sidebar'
 import navStyles from '../../styles.module.scss'
 import styles from './styles.module.scss'
 

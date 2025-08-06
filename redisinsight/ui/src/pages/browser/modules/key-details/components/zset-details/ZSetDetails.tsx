@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
+import { RiCol, RiFlexItem } from 'uiBase/layout'
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
 import { KeyTypes } from 'uiSrc/constants'
 
@@ -9,7 +10,6 @@ import {
   KeyDetailsHeader,
   KeyDetailsHeaderProps,
 } from 'uiSrc/pages/browser/modules'
-import { RiCol, RiFlexItem } from 'uiSrc/components/base/layout'
 import { ZSetDetailsTable } from './zset-details-table'
 import AddZsetMembers from './add-zset-members/AddZsetMembers'
 import { AddItemsAction } from '../key-details-actions'

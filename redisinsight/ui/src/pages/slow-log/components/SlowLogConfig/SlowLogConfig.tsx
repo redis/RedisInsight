@@ -3,6 +3,18 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import {
+  RiEmptyButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
+  defaultValueRender,
+  RiSelect,
+} from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
+import { RiCol, RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiTextInput } from 'uiBase/inputs'
 import {
   DEFAULT_SLOWLOG_DURATION_UNIT,
   DEFAULT_SLOWLOG_MAX_LEN,
@@ -21,18 +33,6 @@ import {
 import { errorValidateNegativeInteger, validateNumber } from 'uiSrc/utils'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { useConnectionType } from 'uiSrc/components/hooks/useConnectionType'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  RiEmptyButton,
-  RiPrimaryButton,
-  RiSecondaryButton,
-  RiFormField,
-  defaultValueRender,
-  RiSelect,
-} from 'uiSrc/components/base/forms'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiCol, RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiTextInput } from 'uiSrc/components/base/inputs'
 import { convertNumberByUnits } from '../../utils'
 import styles from './styles.module.scss'
 

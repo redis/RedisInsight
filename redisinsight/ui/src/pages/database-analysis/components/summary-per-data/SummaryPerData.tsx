@@ -1,6 +1,9 @@
 import cx from 'classnames'
 import React, { useCallback, useEffect, useState } from 'react'
 
+import { RiSwitchInput } from 'uiBase/inputs'
+import { RiTitle } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
 import { DonutChart } from 'uiSrc/components/charts'
 import { ChartData } from 'uiSrc/components/charts/donut-chart/DonutChart'
 import { GROUP_TYPES_COLORS, GroupTypesColors } from 'uiSrc/constants'
@@ -16,9 +19,6 @@ import {
 } from 'uiSrc/utils'
 import { getPercentage, numberWithSpaces } from 'uiSrc/utils/numbers'
 
-import { RiSwitchInput } from 'uiSrc/components/base/inputs'
-import { RiTitle } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import {
   DatabaseAnalysis,
   SimpleTypeSummary,

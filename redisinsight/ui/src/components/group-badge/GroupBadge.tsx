@@ -1,13 +1,12 @@
 import cx from 'classnames'
 import React from 'react'
 
-import { CommandGroup, KeyTypes, GROUP_TYPES_COLORS } from 'uiSrc/constants'
+import { RiIconButton } from 'uiBase/forms'
+import { CancelSlimIcon } from 'uiBase/icons'
+import { RiText } from 'uiBase/text'
+import { RiBadge } from 'uiBase/display'
 import { getGroupTypeDisplay } from 'uiSrc/utils'
-
-import { RiIconButton } from 'uiSrc/components/base/forms'
-import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiBadge } from 'uiSrc/components/base/display'
+import { CommandGroup, KeyTypes, GROUP_TYPES_COLORS } from 'uiSrc/constants'
 
 import styles from './styles.module.scss'
 

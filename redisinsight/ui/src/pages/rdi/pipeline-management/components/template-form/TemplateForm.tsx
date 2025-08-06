@@ -3,6 +3,16 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
 
+import { RiSpacer } from 'uiBase/layout/spacer'
+import {
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
+  RiSelectOption,
+  RiSelect,
+  defaultValueRender,
+} from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
 import {
   fetchPipelineStrategies,
   fetchJobTemplate,
@@ -11,16 +21,6 @@ import {
 } from 'uiSrc/slices/rdi/pipeline'
 import { RdiPipelineTabs } from 'uiSrc/slices/interfaces/rdi'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  RiPrimaryButton,
-  RiSecondaryButton,
-  RiFormField,
-  RiSelectOption,
-  RiSelect,
-  defaultValueRender,
-} from 'uiSrc/components/base/forms'
-import { RiText } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { NO_TEMPLATE_VALUE, NO_OPTIONS, INGEST_OPTION } from './constants'
 

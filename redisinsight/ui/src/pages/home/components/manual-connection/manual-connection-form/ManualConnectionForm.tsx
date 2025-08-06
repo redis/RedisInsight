@@ -5,6 +5,11 @@ import ReactDOM from 'react-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
 import cx from 'classnames'
+import { RiFlexItem, RiRow, RiTabs as TabsComponent } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { ArrowLeftIcon } from 'uiBase/icons'
+import { RiIconButton } from 'uiBase/forms'
+import { RiTitle } from 'uiBase/text'
 import * as keys from 'uiSrc/constants/keys'
 import { resetInstanceUpdateAction } from 'uiSrc/slices/instances/instances'
 import { ConnectionType } from 'uiSrc/slices/interfaces'
@@ -23,15 +28,6 @@ import { appInfoSelector } from 'uiSrc/slices/app/info'
 
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
-import {
-  RiFlexItem,
-  RiRow,
-  RiTabs as TabsComponent,
-} from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
-import { RiIconButton } from 'uiSrc/components/base/forms'
-import { RiTitle } from 'uiSrc/components/base/text'
 import { MANUAL_FORM_TABS, ManualFormTab } from './constants'
 import CloneConnection from './components/CloneConnection'
 import FooterActions from './components/FooterActions'

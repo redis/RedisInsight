@@ -1,6 +1,8 @@
 import cx from 'classnames'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { RiTitle, RiText } from 'uiBase/text'
+import { RiPopover } from 'uiBase/index'
 import {
   fetchNotificationsAction,
   notificationCenterSelector,
@@ -8,8 +10,6 @@ import {
   unreadNotificationsAction,
 } from 'uiSrc/slices/app/notifications'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { RiTitle, RiText } from 'uiSrc/components/base/text'
-import { RiPopover } from 'uiSrc/components/base'
 import Notification from './Notification'
 
 import styles from './styles.module.scss'

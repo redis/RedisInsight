@@ -1,6 +1,9 @@
 import React, { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
+import { RiColorText } from 'uiBase/text'
+import { InfoIcon } from 'uiBase/icons'
+import { riToast, RiToaster } from 'uiBase/display'
 import {
   errorsSelector,
   infiniteNotificationsSelector,
@@ -15,9 +18,6 @@ import { DEFAULT_ERROR_MESSAGE } from 'uiSrc/utils'
 import { showOAuthProgress } from 'uiSrc/slices/oauth/cloud'
 import { CustomErrorCodes } from 'uiSrc/constants'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { RiColorText } from 'uiSrc/components/base/text'
-import { InfoIcon } from 'uiSrc/components/base/icons'
-import { riToast, RiToaster } from 'uiSrc/components/base/display'
 
 import errorMessages from './error-messages'
 import { InfiniteMessagesIds } from './components'

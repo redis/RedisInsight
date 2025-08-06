@@ -1,6 +1,9 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
+import { RiFlexItem } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
 import {
   LENGTH_NAMING_BY_TYPE,
   MIDDLE_SCREEN_RESOLUTION,
@@ -11,10 +14,7 @@ import {
 } from 'uiSrc/slices/browser/keys'
 import { formatBytes } from 'uiSrc/utils'
 
-import { RiFlexItem } from 'uiSrc/components/base/layout'
-import { RiText } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 export interface Props {

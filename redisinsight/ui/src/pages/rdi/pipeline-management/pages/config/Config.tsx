@@ -4,6 +4,9 @@ import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 import { get, throttle } from 'lodash'
 
+import { RiPrimaryButton } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
+import { RiLink, RiLoader } from 'uiBase/display'
 import {
   sendPageViewTelemetry,
   sendEventTelemetry,
@@ -32,10 +35,7 @@ import { appContextPipelineManagement } from 'uiSrc/slices/app/context'
 import { createAxiosError, isEqualPipelineFile, yamlToJson } from 'uiSrc/utils'
 
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
-import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { RiText } from 'uiSrc/components/base/text'
 
-import { RiLink, RiLoader } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 const Config = () => {

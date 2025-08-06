@@ -10,7 +10,10 @@ import {
   EqualIcon,
   FoldersIcon,
   RiIcon,
-} from 'uiSrc/components/base/icons'
+} from 'uiBase/icons'
+import { RiPopover, RiTooltip } from 'uiBase/index'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiIconButton, RiSecondaryButton, RiCheckbox } from 'uiBase/forms'
 import KeysSummary from 'uiSrc/components/keys-summary'
 import {
   SCAN_COUNT_DEFAULT,
@@ -47,17 +50,10 @@ import {
 import { OnboardingStepName, OnboardingSteps } from 'uiSrc/constants/onboarding'
 import { incrementOnboardStepAction } from 'uiSrc/slices/app/features'
 import { AutoRefresh, OnboardingTour } from 'uiSrc/components'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { BrowserColumns, KeyValueFormat } from 'uiSrc/constants'
 
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import { setConnectivityError } from 'uiSrc/slices/app/connectivity'
-import {
-  RiIconButton,
-  RiSecondaryButton,
-  RiCheckbox,
-} from 'uiSrc/components/base/forms'
 import styles from './styles.module.scss'
 
 const HIDE_REFRESH_LABEL_WIDTH = 640

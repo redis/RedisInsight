@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
 
+import { RiDestructiveButton } from 'uiBase/forms'
+import { DeleteIcon, RiIcon } from 'uiBase/icons'
+import { RiText } from 'uiBase/text'
+import { RiPopover } from 'uiBase/index'
 import { formatLongName } from 'uiSrc/utils'
-
-import { RiDestructiveButton } from 'uiSrc/components/base/forms'
-import { DeleteIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
 export interface Props {

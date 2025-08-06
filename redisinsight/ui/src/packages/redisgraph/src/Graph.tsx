@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react'
 import * as d3 from 'd3'
 import { executeRedisCommand, formatRedisReply } from 'redisinsight-plugin-sdk'
-import { RiSwitchInput } from 'uiSrc/components/base/inputs'
+import { RiSwitchInput } from 'uiBase/inputs'
 import { RiTooltip } from 'uiSrc/components'
 import { TOOLTIP_DELAY_LONG } from 'uiSrc/constants'
 import Graphd3, { IGraphD3 } from './graphd3'

@@ -1,8 +1,8 @@
 /* eslint-disable sonarjs/no-nested-template-literals */
 import styled, { css } from 'styled-components'
 import React, { forwardRef, InputHTMLAttributes } from 'react'
-import { RiEmptyButton } from 'uiSrc/components/base/forms'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiEmptyButton } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
 
 type FilePickerWrapperProps = InputHTMLAttributes<HTMLDivElement> & {
   $large?: boolean

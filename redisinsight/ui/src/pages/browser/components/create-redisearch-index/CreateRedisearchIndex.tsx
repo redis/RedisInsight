@@ -3,6 +3,21 @@ import cx from 'classnames'
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import {
+  RiIconButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
+  RiAutoTag,
+  RiFormFieldset,
+  RiSelect,
+} from 'uiBase/forms'
+import { InfoIcon } from 'uiBase/icons'
+import { RiHealthText, RiText } from 'uiBase/text'
+import { RiLink } from 'uiBase/display'
+import { RiPopover } from 'uiBase/index'
+import { RiTextInput } from 'uiBase/inputs'
 import Divider from 'uiSrc/components/divider/Divider'
 import {
   createIndexStateSelector,
@@ -15,21 +30,6 @@ import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { getFieldTypeOptions } from 'uiSrc/utils/redisearch'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import AddMultipleFields from 'uiSrc/pages/browser/components/add-multiple-fields'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import {
-  RiIconButton,
-  RiPrimaryButton,
-  RiSecondaryButton,
-  RiFormField,
-  RiAutoTag,
-  RiFormFieldset,
-  RiSelect,
-} from 'uiSrc/components/base/forms'
-import { InfoIcon } from 'uiSrc/components/base/icons'
-import { RiHealthText, RiText } from 'uiSrc/components/base/text'
-import { RiLink } from 'uiSrc/components/base/display'
-import { RiPopover } from 'uiSrc/components/base'
-import { RiTextInput } from 'uiSrc/components/base/inputs'
 import { CreateRedisearchIndexDto } from 'apiSrc/modules/browser/redisearch/dto'
 
 import { KEY_TYPE_OPTIONS, RedisearchIndexKeyType } from './constants'

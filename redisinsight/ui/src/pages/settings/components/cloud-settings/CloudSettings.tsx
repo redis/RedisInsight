@@ -1,22 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { DeleteIcon } from 'uiSrc/components/base/icons'
+import { DeleteIcon } from 'uiBase/icons'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiDestructiveButton, RiPrimaryButton } from 'uiBase/forms'
+import { RiTitle, RiText } from 'uiBase/text'
+import { RiLink } from 'uiBase/display'
+import { RiPopover } from 'uiBase/index'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   getCapiKeysAction,
   oauthCapiKeysSelector,
   removeAllCapiKeysAction,
 } from 'uiSrc/slices/oauth/cloud'
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  RiDestructiveButton,
-  RiPrimaryButton,
-} from 'uiSrc/components/base/forms'
-import { RiTitle, RiText } from 'uiSrc/components/base/text'
-import { RiLink } from 'uiSrc/components/base/display'
-import { RiPopover } from 'uiSrc/components/base'
 import UserApiKeysTable from './components/user-api-keys-table'
 
 import styles from './styles.module.scss'

@@ -3,7 +3,19 @@ import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import { toNumber } from 'lodash'
 
-import { RiText } from 'uiSrc/components/base/text'
+import { RiText } from 'uiBase/text'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import {
+  RiDestructiveButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
+  RiSelect,
+} from 'uiBase/forms'
+import { DeleteIcon, RiIcon } from 'uiBase/icons'
+import { RiPopover } from 'uiBase/index'
+import { RiTextInput } from 'uiBase/inputs'
 import { KeyTypes } from 'uiSrc/constants'
 import {
   bufferToString,
@@ -30,18 +42,6 @@ import {
 } from 'uiSrc/slices/instances/instances'
 
 import { AddListFormConfig as config } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  RiDestructiveButton,
-  RiPrimaryButton,
-  RiSecondaryButton,
-  RiFormField,
-  RiSelect,
-} from 'uiSrc/components/base/forms'
-import { DeleteIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { RiPopover } from 'uiSrc/components/base'
-import { RiTextInput } from 'uiSrc/components/base/inputs'
 import { DeleteListElementsDto } from 'apiSrc/modules/browser/list/dto'
 
 import {

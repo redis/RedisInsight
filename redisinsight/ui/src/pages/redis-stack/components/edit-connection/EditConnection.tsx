@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 
+import { RiPage, RiPageBody, RiFlexItem } from 'uiBase/layout'
 import {
   getApiErrorMessage,
   isStatusSuccessful,
@@ -23,7 +24,6 @@ import { sendEventTelemetry } from 'uiSrc/telemetry'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import { contentSelector } from 'uiSrc/slices/content/create-redis-buttons'
 import DatabasePanelDialog from 'uiSrc/pages/home/components/database-panel-dialog'
-import { RiPage, RiPageBody, RiFlexItem } from 'uiSrc/components/base/layout'
 
 import './styles.scss'
 import styles from './styles.module.scss'

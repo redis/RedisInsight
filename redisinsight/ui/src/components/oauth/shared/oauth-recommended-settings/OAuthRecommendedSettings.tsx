@@ -1,9 +1,9 @@
 import React from 'react'
+import { RiCheckbox } from 'uiBase/forms'
+import { RiIcon } from 'uiBase/icons'
 import { FeatureFlagComponent, RiTooltip } from 'uiSrc/components'
 import { FeatureFlags } from 'uiSrc/constants'
 
-import { RiCheckbox } from 'uiSrc/components/base/forms'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 export interface Props {

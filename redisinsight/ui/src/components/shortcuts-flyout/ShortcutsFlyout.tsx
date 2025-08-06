@@ -1,17 +1,17 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { appInfoSelector, setShortcutsFlyoutState } from 'uiSrc/slices/app/info'
-import { KeyboardShortcut } from 'uiSrc/components'
-import { BuildType } from 'uiSrc/constants/env'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiBase/layout/spacer'
 import {
   RiDrawer,
   RiDrawerBody,
   RiDrawerHeader,
   RiTable,
   ColumnDefinition,
-} from 'uiSrc/components/base/layout'
-import { RiTitle } from 'uiSrc/components/base/text'
+} from 'uiBase/layout'
+import { RiTitle } from 'uiBase/text'
+import { appInfoSelector, setShortcutsFlyoutState } from 'uiSrc/slices/app/info'
+import { KeyboardShortcut } from 'uiSrc/components'
+import { BuildType } from 'uiSrc/constants/env'
 
 import { SHORTCUTS, ShortcutGroup, separator } from './schema'
 

@@ -1,10 +1,10 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
+import { RiFlexItem } from 'uiBase/layout'
 import { FeatureFlags } from 'uiSrc/constants'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { OAuthUserProfile } from 'uiSrc/components'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
-import { RiFlexItem } from 'uiSrc/components/base/layout'
 import { CloudUserProfile } from './CloudUserProfile'
 
 const UserProfile = () => {

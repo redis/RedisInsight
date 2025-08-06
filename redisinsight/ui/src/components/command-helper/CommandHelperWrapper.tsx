@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import cn from 'classnames'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiBadge } from 'uiBase/display'
 import { CommandGroup, ICommand, ICommandArgGenerated } from 'uiSrc/constants'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { cliSettingsSelector } from 'uiSrc/slices/cli/cli-settings'
@@ -14,8 +16,6 @@ import {
   removeDeprecatedModuleCommands,
   checkDeprecatedModuleCommand,
 } from 'uiSrc/utils'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiBadge } from 'uiSrc/components/base/display'
 
 import CommandHelper from './CommandHelper'
 import CommandHelperHeader from './CommandHelperHeader'

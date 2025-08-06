@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
-import { RiText } from 'uiSrc/components/base/text'
+import { RiText } from 'uiBase/text'
+import { RiLoader } from 'uiBase/display'
 import { connectedInstanceSelector } from 'uiSrc/slices/rdi/instances'
 import { getPipelineStatusAction } from 'uiSrc/slices/rdi/pipeline'
 import {
@@ -18,7 +19,6 @@ import {
 import { formatLongName, Nullable, setTitle } from 'uiSrc/utils'
 import { setLastPageContext } from 'uiSrc/slices/app/context'
 import { PageNames } from 'uiSrc/constants'
-import { RiLoader } from 'uiSrc/components/base/display'
 import { IRdiStatistics, RdiPipelineStatus } from 'uiSrc/slices/interfaces'
 
 import Clients from './clients'

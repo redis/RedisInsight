@@ -1,7 +1,7 @@
 import React from 'react'
+import { RiIconButton } from 'uiBase/forms'
+import { EditIcon } from 'uiBase/icons'
 import { RiTooltip } from 'uiSrc/components'
-import { RiIconButton } from 'uiSrc/components/base/forms'
-import { EditIcon } from 'uiSrc/components/base/icons'
 import { useChangeEditorType } from './useChangeEditorType'
 
 const ChangeEditorTypeButton = () => {

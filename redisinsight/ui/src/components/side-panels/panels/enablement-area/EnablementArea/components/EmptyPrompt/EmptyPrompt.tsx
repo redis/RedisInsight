@@ -1,9 +1,9 @@
 import React from 'react'
 
+import { RiIcon } from 'uiBase/icons'
+import { RiLink } from 'uiBase/display'
+import { RiEmptyPrompt } from 'uiBase/layout'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
-import { RiIcon } from 'uiSrc/components/base/icons'
-import { RiLink } from 'uiSrc/components/base/display'
-import { RiEmptyPrompt } from 'uiSrc/components/base/layout'
 import styles from './styles.module.scss'
 
 const EmptyPrompt = () => (

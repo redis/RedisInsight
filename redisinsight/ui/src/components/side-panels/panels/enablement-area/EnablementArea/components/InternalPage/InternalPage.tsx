@@ -5,13 +5,15 @@ import { debounce } from 'lodash'
 import { useLocation, useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
-import { ChevronLeftIcon } from 'uiSrc/components/base/icons'
+import { ChevronLeftIcon } from 'uiBase/icons'
+import { RiPopover } from 'uiBase/index'
+import { RiEmptyButton } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
 import {
   ExternalLink,
   RiHorizontalRule,
   RiLoadingContent,
 } from 'uiSrc/components'
-import { RiPopover } from 'uiSrc/components/base'
 import { IEnablementAreaItem } from 'uiSrc/slices/interfaces'
 import {
   sendEventTelemetry,
@@ -33,8 +35,6 @@ import {
   CloudLink,
   RedisInsightLink,
 } from 'uiSrc/components/markdown'
-import { RiEmptyButton } from 'uiSrc/components/base/forms'
-import { RiText } from 'uiSrc/components/base/text'
 import { getTutorialSection } from '../../utils'
 import { EmptyPrompt, Pagination, Code } from '..'
 

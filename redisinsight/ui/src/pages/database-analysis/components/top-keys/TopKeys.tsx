@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
+import { RiTitle } from 'uiBase/text'
 import { TableView } from 'uiSrc/pages/database-analysis'
 import { Nullable } from 'uiSrc/utils'
 import { TableLoader } from 'uiSrc/pages/database-analysis/components'
 import { TextBtn } from 'uiSrc/pages/database-analysis/components/base/TextBtn'
-import { RiTitle } from 'uiSrc/components/base/text'
 import { DatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
 
 import TopKeysTable from './Table'

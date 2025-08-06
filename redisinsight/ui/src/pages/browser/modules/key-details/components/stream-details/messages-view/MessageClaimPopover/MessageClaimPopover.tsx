@@ -4,29 +4,29 @@ import { useParams } from 'react-router-dom'
 import { useFormik } from 'formik'
 import { orderBy, filter } from 'lodash'
 
-import { isTruncatedString, isEqualBuffers } from 'uiSrc/utils'
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import {
-  selectedGroupSelector,
-  selectedConsumerSelector,
-} from 'uiSrc/slices/browser/stream'
-import {
-  prepareDataForClaimRequest,
-  getDefaultConsumer,
-  ClaimTimeOptions,
-} from 'uiSrc/utils/streamUtils'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
+import { RiText } from 'uiBase/text'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
 import {
   RiPrimaryButton,
   RiSecondaryButton,
   RiFormField,
   RiCheckbox,
   RiSelect,
-} from 'uiSrc/components/base/forms'
-import { RiNumericInput, RiSwitchInput } from 'uiSrc/components/base/inputs'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
+} from 'uiBase/forms'
+import { RiNumericInput, RiSwitchInput } from 'uiBase/inputs'
+import { RiPopover, RiTooltip } from 'uiBase/index'
+import {
+  prepareDataForClaimRequest,
+  getDefaultConsumer,
+  ClaimTimeOptions,
+} from 'uiSrc/utils/streamUtils'
+import {
+  selectedGroupSelector,
+  selectedConsumerSelector,
+} from 'uiSrc/slices/browser/stream'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { isTruncatedString, isEqualBuffers } from 'uiSrc/utils'
 import {
   ClaimPendingEntryDto,
   ClaimPendingEntriesResponse,
@@ -45,7 +45,9 @@ const getConsumersOptions = (consumers: ConsumerDto[]) =>
         data-testid="consumer-option"
         component="div"
       >
-        <RiText className={styles.consumerName}>{consumer.name?.viewValue}</RiText>
+        <RiText className={styles.consumerName}>
+          {consumer.name?.viewValue}
+        </RiText>
         <RiText
           size="s"
           className={styles.pendingCount}

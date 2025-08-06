@@ -3,6 +3,9 @@ import { isEmpty, pick } from 'lodash'
 import React, { useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
 
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { InfoIcon } from 'uiBase/icons'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
 import * as keys from 'uiSrc/constants/keys'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { fieldDisplayNames } from 'uiSrc/pages/home/constants'
@@ -13,9 +16,6 @@ import {
   MessageSentinel,
   TlsDetails,
 } from 'uiSrc/pages/home/components/form'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { InfoIcon } from 'uiSrc/components/base/icons'
-import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { RiTooltip } from 'uiSrc/components'
 
 export interface Props {

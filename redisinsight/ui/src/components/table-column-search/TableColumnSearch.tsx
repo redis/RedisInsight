@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
+import { RiSearchInput } from 'uiBase/inputs'
 import { KeyboardKeys as keys } from 'uiSrc/constants/keys'
 import { Maybe } from 'uiSrc/utils'
-import { RiSearchInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 
 export interface Props {

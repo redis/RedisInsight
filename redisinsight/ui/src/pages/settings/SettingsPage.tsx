@@ -3,6 +3,16 @@ import cx from 'classnames'
 
 import { useDispatch, useSelector } from 'react-redux'
 
+import { RiSpacer } from 'uiBase/layout/spacer'
+import {
+  RiPage,
+  RiPageBody,
+  RiPageContentBody,
+  RiPageHeader,
+  RiCol,
+} from 'uiBase/layout'
+import { RiCallOut, RiLoader, RiCollapsibleNavGroup } from 'uiBase/display'
+import { RiTitle, RiText } from 'uiBase/text'
 import { setTitle } from 'uiSrc/utils'
 import { FeatureFlags } from 'uiSrc/constants'
 import { useDebouncedEffect } from 'uiSrc/services'
@@ -19,20 +29,6 @@ import {
 } from 'uiSrc/slices/user/user-settings'
 
 import Divider from 'uiSrc/components/divider/Divider'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  RiPage,
-  RiPageBody,
-  RiPageContentBody,
-  RiPageHeader,
-  RiCol,
-} from 'uiSrc/components/base/layout'
-import {
-  RiCallOut,
-  RiLoader,
-  RiCollapsibleNavGroup,
-} from 'uiSrc/components/base/display'
-import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import {
   AdvancedSettings,
   CloudSettings,

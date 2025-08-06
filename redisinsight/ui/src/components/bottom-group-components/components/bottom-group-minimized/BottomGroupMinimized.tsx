@@ -2,6 +2,10 @@ import React, { useEffect } from 'react'
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiHideFor, RiShowFor } from 'uiBase/utils'
+import { RiBadge } from 'uiBase/display'
+import { CliIcon, DocumentationIcon, ProfilerIcon, RiIcon } from 'uiBase/icons'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 
 import {
@@ -21,15 +25,6 @@ import {
 import FeatureFlagComponent from 'uiSrc/components/feature-flag-component'
 import { FeatureFlags } from 'uiSrc/constants'
 
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiHideFor, RiShowFor } from 'uiSrc/components/base/utils'
-import { RiBadge } from 'uiSrc/components/base/display'
-import {
-  CliIcon,
-  DocumentationIcon,
-  ProfilerIcon,
-  RiIcon,
-} from 'uiSrc/components/base/icons'
 import styles from '../../styles.module.scss'
 
 const BottomGroupMinimized = () => {

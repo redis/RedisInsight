@@ -1,18 +1,14 @@
 import React, { useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton, RiSecondaryButton, RiCheckbox } from 'uiBase/forms'
+import { RiTitle, RiText } from 'uiBase/text'
 import { FeatureFlags, Pages } from 'uiSrc/constants'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { setDBConfigStorageField } from 'uiSrc/services'
 import { ConfigDBStorageItem } from 'uiSrc/constants/storage'
 import { FeatureFlagComponent } from 'uiSrc/components'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  RiPrimaryButton,
-  RiSecondaryButton,
-  RiCheckbox,
-} from 'uiSrc/components/base/forms'
-import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import styles from '../styles.module.scss'
 
 interface Props {

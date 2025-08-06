@@ -1,7 +1,7 @@
 import React from 'react'
 import { Typography } from '@redis-ui/components'
 import cn from 'classnames'
-import { RiRow } from 'uiSrc/components/base/layout'
+import { RiRow } from 'uiBase/layout'
 import { BodyProps, Indicator } from './text.styles'
 
 type ColorType = BodyProps['color'] | (string & {})

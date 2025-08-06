@@ -3,6 +3,11 @@ import { useDispatch } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 import { isUndefined } from 'lodash'
 
+import { HideIcon, ShowIcon, SnoozeIcon, StarsIcon, RiIcon } from 'uiBase/icons'
+import { RiFlexItem, RiRow, RiCard } from 'uiBase/layout'
+import { RiIconButton, RiSecondaryButton } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
+import { RiAccordion, RiLink } from 'uiBase/display'
 import { findTutorialPath, Maybe, Nullable } from 'uiSrc/utils'
 import { FeatureFlags, Pages, Theme } from 'uiSrc/constants'
 import {
@@ -25,19 +30,7 @@ import {
   IRecommendationsStatic,
 } from 'uiSrc/slices/interfaces/recommendations'
 
-import {
-  HideIcon,
-  ShowIcon,
-  SnoozeIcon,
-  StarsIcon,
-  RiIcon,
-} from 'uiSrc/components/base/icons'
-
 import { openTutorialByPath } from 'uiSrc/slices/panels/sidePanels'
-import { RiFlexItem, RiRow, RiCard } from 'uiSrc/components/base/layout'
-import { RiIconButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiAccordion, RiLink } from 'uiSrc/components/base/display'
 
 import styles from './styles.module.scss'
 

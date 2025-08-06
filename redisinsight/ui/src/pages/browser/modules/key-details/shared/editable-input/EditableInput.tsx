@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
 
+import { RiText } from 'uiBase/text'
+import { EditIcon } from 'uiBase/icons'
+import { RiIconButton } from 'uiBase/forms'
 import { RiTooltip } from 'uiSrc/components'
 import { StopPropagation } from 'uiSrc/components/virtual-table'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
 
-import { RiText } from 'uiSrc/components/base/text'
-import { EditIcon } from 'uiSrc/components/base/icons'
-import { RiIconButton } from 'uiSrc/components/base/forms'
 import styles from './styles.module.scss'
 
 export interface Props {

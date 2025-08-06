@@ -1,5 +1,5 @@
+import { TabInfo } from 'uiBase/layout'
 import { FeatureFlags, Pages } from 'uiSrc/constants'
-import { TabInfo } from 'uiSrc/components/base/layout'
 
 type HomeTab = TabInfo & {
   path: string

@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import { has } from 'lodash'
 
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiTitle, RiText } from 'uiBase/text'
 import { compareConsents } from 'uiSrc/utils'
 import {
   updateUserConfigSettingsAction,
   userSettingsSelector,
 } from 'uiSrc/slices/user/user-settings'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import ConsentOption from '../ConsentOption'
 import { ConsentCategories, IConsent } from '../ConsentsSettings'
 

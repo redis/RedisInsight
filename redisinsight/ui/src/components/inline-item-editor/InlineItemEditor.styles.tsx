@@ -1,10 +1,10 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { Theme } from 'uiSrc/components/base/theme/types'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { Theme } from 'uiBase/theme/types'
+import { RiIconButton } from 'uiBase/forms'
+import { CancelSlimIcon, CheckThinIcon } from 'uiBase/icons'
 import { Props } from 'uiSrc/components/inline-item-editor/InlineItemEditor'
-import { RiIconButton } from 'uiSrc/components/base/forms'
-import { CancelSlimIcon, CheckThinIcon } from 'uiSrc/components/base/icons'
 import { RiTextInput } from '../base/inputs'
 
 interface ContainerProps {

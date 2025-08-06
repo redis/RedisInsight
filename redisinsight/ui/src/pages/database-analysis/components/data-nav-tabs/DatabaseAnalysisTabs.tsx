@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react'
 import { isNull } from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
+import { RiTabs, TabInfo } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
 import { EmptyMessage } from 'uiSrc/pages/database-analysis/constants'
 import { EmptyAnalysisMessage } from 'uiSrc/pages/database-analysis/components'
 import {
@@ -13,8 +15,6 @@ import { Nullable } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { renderOnboardingTourWithChild } from 'uiSrc/utils/onboarding'
 import { recommendationsSelector } from 'uiSrc/slices/recommendations/recommendations'
-import { RiTabs, TabInfo } from 'uiSrc/components/base/layout'
-import { RiText } from 'uiSrc/components/base/text'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import {
   ShortDatabaseAnalysis,

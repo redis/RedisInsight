@@ -2,6 +2,7 @@ import React, { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
 import {
   getPipelineStatusAction,
   rdiPipelineActionSelector,
@@ -23,7 +24,6 @@ import {
 } from 'uiSrc/slices/interfaces'
 
 import { RiTooltip } from 'uiSrc/components'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import DeployPipelineButton from '../buttons/deploy-pipeline-button'
 import ResetPipelineButton from '../buttons/reset-pipeline-button'
 import RdiConfigFileActionMenu from '../rdi-config-file-action-menu'

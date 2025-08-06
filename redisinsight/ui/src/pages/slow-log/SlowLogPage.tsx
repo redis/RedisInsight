@@ -4,6 +4,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { AutoSizer } from 'react-virtualized'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
+import { defaultValueRender, RiSelect } from 'uiBase/forms'
 import { DEFAULT_SLOWLOG_MAX_LEN, DurationUnits } from 'uiSrc/constants'
 import { convertNumberByUnits } from 'uiSrc/pages/slow-log/utils'
 import { appContextDbConfig } from 'uiSrc/slices/app/context'
@@ -32,9 +35,6 @@ import {
 import { AnalyticsViewTab } from 'uiSrc/slices/interfaces/analytics'
 
 import { FormatedDate } from 'uiSrc/components'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiText } from 'uiSrc/components/base/text'
-import { defaultValueRender, RiSelect } from 'uiSrc/components/base/forms'
 import { SlowLog } from 'apiSrc/modules/slow-log/models'
 
 import { Actions, EmptySlowLog, SlowLogTable } from './components'

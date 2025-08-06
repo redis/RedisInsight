@@ -1,7 +1,10 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RiColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiBase/text'
 
+import { RiPrimaryButton, RiSecondaryButton, RiFormField } from 'uiBase/forms'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiTextInput } from 'uiBase/inputs'
 import {
   selectedKeyDataSelector,
   keysSelector,
@@ -23,13 +26,6 @@ import {
 } from 'uiSrc/pages/browser/components/add-key/AddKeySet/interfaces'
 import AddMultipleFields from 'uiSrc/pages/browser/components/add-multiple-fields'
 
-import {
-  RiPrimaryButton,
-  RiSecondaryButton,
-  RiFormField,
-} from 'uiSrc/components/base/forms'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiTextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 
 export interface Props {

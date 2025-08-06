@@ -2,6 +2,9 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
+import { RiText } from 'uiBase/text'
+import { DownloadIcon } from 'uiBase/icons'
+import { RiEmptyButton, RiPrimaryButton } from 'uiBase/forms'
 import ConfirmationPopover from 'uiSrc/pages/rdi/components/confirmation-popover/ConfirmationPopover'
 import {
   fetchRdiPipeline,
@@ -10,9 +13,6 @@ import {
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import Download from 'uiSrc/pages/rdi/instance/components/download/Download'
 
-import { RiText } from 'uiSrc/components/base/text'
-import { DownloadIcon } from 'uiSrc/components/base/icons'
-import { RiEmptyButton, RiPrimaryButton } from 'uiSrc/components/base/forms'
 import styles from './styles.module.scss'
 
 export interface Props {

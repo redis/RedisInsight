@@ -3,6 +3,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 import { remove } from 'lodash'
 
+import { RiColorText, RiText } from 'uiBase/text'
+import { RiCheckbox } from 'uiBase/forms'
+import { RiIcon } from 'uiBase/icons'
+import { RiLink } from 'uiBase/display'
 import { FeatureFlags, DEFAULT_DELIMITER, Pages } from 'uiSrc/constants'
 import {
   ANALYZE_CLUSTER_TOOLTIP_MESSAGE,
@@ -31,11 +35,7 @@ import {
   RiLoadingContent,
   RiTooltip,
 } from 'uiSrc/components'
-import { RiColorText, RiText } from 'uiSrc/components/base/text'
-import { RiCheckbox } from 'uiSrc/components/base/forms'
 
-import { RiIcon } from 'uiSrc/components/base/icons'
-import { RiLink } from 'uiSrc/components/base/display'
 import Recommendation from './components/recommendation'
 import WelcomeScreen from './components/welcome-screen'
 import PopoverRunAnalyze from './components/popover-run-analyze'

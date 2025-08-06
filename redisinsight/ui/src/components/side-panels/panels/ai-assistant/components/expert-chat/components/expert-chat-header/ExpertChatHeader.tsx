@@ -4,25 +4,25 @@ import cx from 'classnames'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 
-import {
-  sendEventTelemetry,
-  TELEMETRY_EMPTY_VALUE,
-  TelemetryEvent,
-} from 'uiSrc/telemetry'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { InsightsPanelTabs, SidePanels } from 'uiSrc/slices/interfaces/insights'
+import { RiPopover, RiTooltip } from 'uiBase/index'
+
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiEmptyButton, RiPrimaryButton } from 'uiBase/forms'
+import { EraserIcon, LightBulbIcon } from 'uiBase/icons'
+import { RiText } from 'uiBase/text'
+import { RestartChat } from 'uiSrc/components/side-panels/panels/ai-assistant/components/shared'
 import {
   changeSelectedTab,
   changeSidePanel,
   resetExplorePanelSearch,
   setExplorePanelIsPageOpen,
 } from 'uiSrc/slices/panels/sidePanels'
-import { RestartChat } from 'uiSrc/components/side-panels/panels/ai-assistant/components/shared'
-
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiEmptyButton, RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { EraserIcon, LightBulbIcon } from 'uiSrc/components/base/icons'
-import { RiText } from 'uiSrc/components/base/text'
+import { InsightsPanelTabs, SidePanels } from 'uiSrc/slices/interfaces/insights'
+import {
+  sendEventTelemetry,
+  TELEMETRY_EMPTY_VALUE,
+  TelemetryEvent,
+} from 'uiSrc/telemetry'
 import styles from './styles.module.scss'
 
 export interface Props {

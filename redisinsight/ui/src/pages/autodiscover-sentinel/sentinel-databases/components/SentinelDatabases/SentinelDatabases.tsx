@@ -2,27 +2,21 @@ import React, { useState, useEffect } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 
-import { sentinelSelector } from 'uiSrc/slices/instances/sentinel'
-import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
-import validationErrors from 'uiSrc/constants/validationErrors'
-import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
-
-import {
-  RiFlexItem,
-  RiRow,
-  RiTable,
-  ColumnDefinition,
-} from 'uiSrc/components/base/layout'
+import { RiFlexItem, RiRow, RiTable, ColumnDefinition } from 'uiBase/layout'
 import {
   RiDestructiveButton,
   RiPrimaryButton,
   RiSecondaryButton,
   RiFormField,
-} from 'uiSrc/components/base/forms'
-import { InfoIcon } from 'uiSrc/components/base/icons'
-import { RiSearchInput } from 'uiSrc/components/base/inputs'
-import { RiTitle, RiText } from 'uiSrc/components/base/text'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
+} from 'uiBase/forms'
+import { InfoIcon } from 'uiBase/icons'
+import { RiSearchInput } from 'uiBase/inputs'
+import { RiTitle, RiText } from 'uiBase/text'
+import { RiPopover, RiTooltip } from 'uiBase/index'
+import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
+import validationErrors from 'uiSrc/constants/validationErrors'
+import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
+import { sentinelSelector } from 'uiSrc/slices/instances/sentinel'
 import styles from '../../../styles.module.scss'
 
 export interface Props {

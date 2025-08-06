@@ -2,15 +2,15 @@ import React from 'react'
 import cx from 'classnames'
 
 import { useDispatch, useSelector } from 'react-redux'
+import { CopilotIcon } from 'uiBase/icons'
+import { RiEmptyButton } from 'uiBase/forms'
 import {
   sidePanelsSelector,
   toggleSidePanel,
 } from 'uiSrc/slices/panels/sidePanels'
 
 import { RiTooltip } from 'uiSrc/components'
-import { CopilotIcon } from 'uiSrc/components/base/icons'
 import { SidePanels } from 'uiSrc/slices/interfaces/insights'
-import { RiEmptyButton } from 'uiSrc/components/base/forms'
 import styles from './styles.module.scss'
 
 const CopilotTrigger = () => {

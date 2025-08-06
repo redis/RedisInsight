@@ -1,8 +1,8 @@
 import styled from 'styled-components'
 import { ComponentProps } from 'react'
-import { RiColorText } from 'uiSrc/components/base/text'
-import { RiSelect } from 'uiSrc/components/base/forms'
-import { RiIcon } from 'uiSrc/components/base/icons'
+import { RiColorText } from 'uiBase/text'
+import { RiSelect } from 'uiBase/forms'
+import { RiIcon } from 'uiBase/icons'
 
 type KeyDetailsSelectProps = ComponentProps<typeof RiSelect> & {
   $fullWidth?: boolean

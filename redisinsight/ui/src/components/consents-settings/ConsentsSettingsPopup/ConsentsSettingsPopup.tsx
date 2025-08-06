@@ -2,16 +2,16 @@ import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiIcon } from 'uiBase/icons'
+import { RiTitle } from 'uiBase/text'
+import { RiModal } from 'uiBase/display'
 import { BuildType } from 'uiSrc/constants/env'
 import { appInfoSelector } from 'uiSrc/slices/app/info'
 import { Pages } from 'uiSrc/constants'
 import { ConsentsSettings } from 'uiSrc/components'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiIcon } from 'uiSrc/components/base/icons'
-import { RiTitle } from 'uiSrc/components/base/text'
-import { RiModal } from 'uiSrc/components/base/display'
 import styles from '../styles.module.scss'
 
 const ConsentsSettingsPopup = () => {

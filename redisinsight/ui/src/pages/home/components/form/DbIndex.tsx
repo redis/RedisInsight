@@ -1,12 +1,12 @@
 import React, { ChangeEvent } from 'react'
 import { FormikProps } from 'formik'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiCheckbox, RiFormField } from 'uiBase/forms'
+import { RiNumericInput } from 'uiBase/inputs'
+import { useGenerateId } from 'uiBase/utils'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiCheckbox, RiFormField } from 'uiSrc/components/base/forms'
-import { RiNumericInput } from 'uiSrc/components/base/inputs'
-import { useGenerateId } from 'uiSrc/components/base/utils'
 import styles from '../styles.module.scss'
 
 export interface Props {

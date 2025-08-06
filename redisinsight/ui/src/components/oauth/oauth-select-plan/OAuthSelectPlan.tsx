@@ -4,6 +4,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import {
+  RiEmptyButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiSelect,
+} from 'uiBase/forms'
+import { RiColorText, RiText } from 'uiBase/text'
+import { RiIcon, CancelIcon } from 'uiBase/icons'
+import { RiModal } from 'uiBase/display'
+import {
   createFreeDbJob,
   oauthCloudPlanSelector,
   setIsOpenSelectPlanDialog,
@@ -17,15 +26,6 @@ import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { FeatureFlags } from 'uiSrc/constants'
 import { Region } from 'uiSrc/slices/interfaces'
 
-import {
-  RiEmptyButton,
-  RiPrimaryButton,
-  RiSecondaryButton,
-  RiSelect,
-} from 'uiSrc/components/base/forms'
-import { RiColorText, RiText } from 'uiSrc/components/base/text'
-import { RiIcon, CancelIcon } from 'uiSrc/components/base/icons'
-import { RiModal } from 'uiSrc/components/base/display'
 import { CloudSubscriptionPlanResponse } from 'apiSrc/modules/cloud/subscription/dto'
 import { OAuthProvider, OAuthProviders } from './constants'
 import styles from './styles.module.scss'

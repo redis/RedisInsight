@@ -1,4 +1,4 @@
-import { AllIconsType } from 'uiSrc/components/base/icons'
+import { AllIconsType } from 'uiBase/icons'
 import styles from './styles.module.scss'
 
 export enum OAuthProvider {

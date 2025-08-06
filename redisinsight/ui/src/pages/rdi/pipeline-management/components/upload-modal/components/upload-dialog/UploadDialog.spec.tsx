@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
+import { mockModal } from 'uiSrc/mocks/components/modal'
 import UploadDialog, { Props } from './UploadDialog'
 
 jest.mock('uiSrc/slices/rdi/pipeline', () => ({
@@ -28,22 +29,10 @@ jest.mock('uiSrc/telemetry', () => ({
   sendEventTelemetry: jest.fn(),
 }))
 
-jest.mock('uiSrc/components/base/display', () => {
-  const actual = jest.requireActual('uiSrc/components/base/display')
+jest.mock('uiBase/display', () => {
+  const actual = jest.requireActual('uiBase/display')
 
-  return {
-    ...actual,
-    Modal: {
-      ...actual.Modal,
-      Content: {
-        ...actual.Modal.Content,
-        Header: {
-          ...actual.Modal.Content.Header,
-          Title: jest.fn().mockReturnValue(null),
-        },
-      },
-    },
-  }
+  return mockModal(actual)
 })
 
 const mockedProps: Props = {

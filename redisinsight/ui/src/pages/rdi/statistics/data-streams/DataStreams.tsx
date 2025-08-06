@@ -1,9 +1,9 @@
 import React from 'react'
 
+import { RiTable, ColumnDefinition } from 'uiBase/layout'
 import { IDataStreams } from 'uiSrc/slices/interfaces'
 import { formatLongName } from 'uiSrc/utils'
 import { FormatedDate, RiTooltip } from 'uiSrc/components'
-import { RiTable, ColumnDefinition } from 'uiSrc/components/base/layout'
 import Accordion from '../components/accordion'
 import Panel from '../components/panel'
 

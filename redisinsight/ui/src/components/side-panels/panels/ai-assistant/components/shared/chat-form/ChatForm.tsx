@@ -1,14 +1,14 @@
 import React, { Ref, useRef, useState } from 'react'
 
 import cx from 'classnames'
-import { isModifiedEvent } from 'uiSrc/services'
 
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { SendIcon } from 'uiSrc/components/base/icons'
-import { RiTitle, RiText } from 'uiSrc/components/base/text'
-import { RiTextArea } from 'uiSrc/components/base/inputs'
+import { RiPopover, RiTooltip } from 'uiBase/index'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton } from 'uiBase/forms'
+import { SendIcon } from 'uiBase/icons'
+import { RiTitle, RiText } from 'uiBase/text'
+import { RiTextArea } from 'uiBase/inputs'
+import { isModifiedEvent } from 'uiSrc/services'
 import * as keys from 'uiSrc/constants/keys'
 import styles from './styles.module.scss'
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
 
+import { RiTitle } from 'uiBase/text'
 import {
   fetchMastersSentinelAction,
   sentinelSelector,
@@ -24,7 +25,6 @@ import {
 import { ADD_NEW, NO_CA_CERT } from 'uiSrc/pages/home/constants'
 import { InstanceType } from 'uiSrc/slices/interfaces'
 import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
-import { RiTitle } from 'uiSrc/components/base/text'
 import SentinelConnectionForm from './sentinel-connection-form'
 
 export interface Props {

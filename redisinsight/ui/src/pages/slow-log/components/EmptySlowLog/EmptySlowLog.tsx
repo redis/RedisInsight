@@ -1,6 +1,6 @@
 import React from 'react'
+import { RiTitle, RiText } from 'uiBase/text'
 import { DurationUnits } from 'uiSrc/constants'
-import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import { convertNumberByUnits } from 'uiSrc/pages/slow-log/utils'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 

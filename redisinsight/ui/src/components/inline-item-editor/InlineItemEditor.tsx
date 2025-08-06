@@ -3,16 +3,16 @@ import cx from 'classnames'
 
 import { useTheme } from '@redis-ui/styles'
 
-import * as keys from 'uiSrc/constants/keys'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { RiFlexItem } from 'uiSrc/components/base/layout'
+import { RiPopover, RiTooltip } from 'uiBase/index'
+import { RiFlexItem } from 'uiBase/layout'
 import {
   RiWindowEvent,
   RiOutsideClickDetector,
   RiFocusTrap,
-} from 'uiSrc/components/base/utils'
-import { RiDestructiveButton } from 'uiSrc/components/base/forms'
-import { RiText } from 'uiSrc/components/base/text'
+} from 'uiBase/utils'
+import { RiDestructiveButton } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
+import * as keys from 'uiSrc/constants/keys'
 
 import {
   ActionsContainer,

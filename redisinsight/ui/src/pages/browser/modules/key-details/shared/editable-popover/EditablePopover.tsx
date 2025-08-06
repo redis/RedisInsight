@@ -1,16 +1,12 @@
 import React, { FormEvent, useEffect, useState } from 'react'
 import cx from 'classnames'
 
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  RiIconButton,
-  RiPrimaryButton,
-  RiSecondaryButton,
-} from 'uiSrc/components/base/forms'
-import { EditIcon } from 'uiSrc/components/base/icons'
-import { RiLoader } from 'uiSrc/components/base/display'
-import { RiPopover } from 'uiSrc/components/base'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiIconButton, RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
+import { EditIcon } from 'uiBase/icons'
+import { RiLoader } from 'uiBase/display'
+import { RiPopover } from 'uiBase/index'
 import styles from './styles.module.scss'
 
 export interface Props {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import { isUndefined } from 'lodash'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiText } from 'uiBase/text'
 import {
   bulkActionsDeleteOverviewSelector,
   bulkActionsDeleteSelector,

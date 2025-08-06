@@ -1,12 +1,12 @@
 import React from 'react'
 import { matchPath, useHistory, useLocation } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { Pages } from 'uiSrc/constants'
-import { RiColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiBase/text'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiDestructiveButton, RiEmptyButton } from 'uiBase/forms'
 import { updateUserConfigSettingsAction } from 'uiSrc/slices/user/user-settings'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiDestructiveButton, RiEmptyButton } from 'uiSrc/components/base/forms'
+import { Pages } from 'uiSrc/constants'
 
 export interface Props {
   onClose?: () => void

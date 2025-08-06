@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import cx from 'classnames'
 
-import * as keys from 'uiSrc/constants/keys'
-import { RiSearchInput } from 'uiSrc/components/base/inputs'
+import { RiSearchInput } from 'uiBase/inputs'
+import { SearchIcon } from 'uiBase/icons'
+import { RiIconButton } from 'uiBase/forms'
 import { Maybe, Nullable } from 'uiSrc/utils'
-import { SearchIcon } from 'uiSrc/components/base/icons'
-import { RiIconButton } from 'uiSrc/components/base/forms'
+import * as keys from 'uiSrc/constants/keys'
 import styles from './styles.module.scss'
 
 export interface Props {

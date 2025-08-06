@@ -1,13 +1,12 @@
 import React from 'react'
 
-import { GroupBadge } from 'uiSrc/components'
+import { RiIconButton } from 'uiBase/forms'
+import { ArrowLeftIcon } from 'uiBase/icons'
+import { RiColorText } from 'uiBase/text'
+import { RiBadge } from 'uiBase/display'
+import { RiRow } from 'uiBase/layout'
 import { CommandGroup } from 'uiSrc/constants'
-
-import { RiIconButton } from 'uiSrc/components/base/forms'
-import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
-import { RiColorText } from 'uiSrc/components/base/text'
-import { RiBadge } from 'uiSrc/components/base/display'
-import { RiRow } from 'uiSrc/components/base/layout'
+import { GroupBadge } from 'uiSrc/components'
 
 import styles from './styles.module.scss'
 

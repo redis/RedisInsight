@@ -3,6 +3,9 @@ import { keys } from '@elastic/eui'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
+import { RiText } from 'uiBase/text'
+import { RiIcon, CancelIcon } from 'uiBase/icons'
+import { RiModal } from 'uiBase/display'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   fetchRdiPipeline,
@@ -14,11 +17,8 @@ import {
   setPipelineDialogState,
 } from 'uiSrc/slices/app/context'
 import UploadModal from 'uiSrc/pages/rdi/pipeline-management/components/upload-modal/UploadModal'
-import { RiText } from 'uiSrc/components/base/text'
 
 import { FileChangeType } from 'uiSrc/slices/interfaces'
-import { RiIcon , CancelIcon } from 'uiSrc/components/base/icons'
-import { RiModal } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 export const EMPTY_PIPELINE = {

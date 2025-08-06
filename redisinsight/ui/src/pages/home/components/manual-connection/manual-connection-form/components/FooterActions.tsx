@@ -1,16 +1,12 @@
 import React from 'react'
 import { FormikErrors } from 'formik'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiEmptyButton, RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
+import { InfoIcon } from 'uiBase/icons'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { getSubmitButtonContent } from 'uiSrc/pages/home/utils'
 import { DbConnectionInfo, ISubmitButton } from 'uiSrc/pages/home/interfaces'
 import { SubmitBtnText } from 'uiSrc/pages/home/constants'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import {
-  RiEmptyButton,
-  RiPrimaryButton,
-  RiSecondaryButton,
-} from 'uiSrc/components/base/forms'
-import { InfoIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
 
 export interface Props {

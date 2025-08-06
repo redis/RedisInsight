@@ -2,33 +2,33 @@ import React, { useState, useEffect } from 'react'
 import { map } from 'lodash'
 import cx from 'classnames'
 import {
-  InstanceRedisCloud,
-  RedisCloudAccount,
-  RedisCloudSubscription,
-  RedisCloudSubscriptionStatus,
-} from 'uiSrc/slices/interfaces'
-import { Maybe, Nullable } from 'uiSrc/utils'
-import {
   RiLoadingContent,
   RiTable,
   ColumnDefinition,
   RiFlexItem,
   RiRow,
-} from 'uiSrc/components/base/layout'
-import MessageBar from 'uiSrc/components/message-bar/MessageBar'
-import validationErrors from 'uiSrc/constants/validationErrors'
-import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
+} from 'uiBase/layout'
 
 import {
   RiDestructiveButton,
   RiPrimaryButton,
   RiSecondaryButton,
   RiFormField,
-} from 'uiSrc/components/base/forms'
-import { InfoIcon } from 'uiSrc/components/base/icons'
-import { RiSearchInput } from 'uiSrc/components/base/inputs'
-import { RiTitle, RiText } from 'uiSrc/components/base/text'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
+} from 'uiBase/forms'
+import { InfoIcon } from 'uiBase/icons'
+import { RiSearchInput } from 'uiBase/inputs'
+import { RiTitle, RiText } from 'uiBase/text'
+import { RiPopover, RiTooltip } from 'uiBase/index'
+import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
+import validationErrors from 'uiSrc/constants/validationErrors'
+import MessageBar from 'uiSrc/components/message-bar/MessageBar'
+import { Maybe, Nullable } from 'uiSrc/utils'
+import {
+  InstanceRedisCloud,
+  RedisCloudAccount,
+  RedisCloudSubscription,
+  RedisCloudSubscriptionStatus,
+} from 'uiSrc/slices/interfaces'
 import styles from '../styles.module.scss'
 
 export interface Props {

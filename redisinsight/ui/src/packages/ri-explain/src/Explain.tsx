@@ -5,7 +5,7 @@ import { register } from '@antv/x6-react-shape'
 import Hierarchy from '@antv/hierarchy'
 import { formatRedisReply } from 'redisinsight-plugin-sdk'
 
-import { RiIcon } from 'uiSrc/components/base/icons'
+import { RiIcon } from 'uiBase/icons'
 import { RiTooltip } from 'uiSrc/components'
 
 import {

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 
+import { RiEmptyButton } from 'uiBase/forms'
+import { RiIcon } from 'uiBase/icons'
 import * as keys from 'uiSrc/constants/keys'
 import MultiSearch from 'uiSrc/components/multi-search/MultiSearch'
 import {
@@ -38,8 +40,6 @@ import { SidePanels } from 'uiSrc/slices/interfaces/insights'
 
 import { FeatureFlags } from 'uiSrc/constants'
 import { FeatureFlagComponent } from 'uiSrc/components'
-import { RiEmptyButton } from 'uiSrc/components/base/forms'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 const placeholders = {

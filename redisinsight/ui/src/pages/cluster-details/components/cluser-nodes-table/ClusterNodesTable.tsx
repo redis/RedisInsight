@@ -2,18 +2,13 @@ import cx from 'classnames'
 import { map } from 'lodash'
 import React, { useState } from 'react'
 
-import {
-  RiLoadingContent,
-  RiTable,
-  ColumnDefinition,
-} from 'uiSrc/components/base/layout'
+import { RiLoadingContent, RiTable, ColumnDefinition } from 'uiBase/layout'
+import { AllIconsType, RiIcon } from 'uiBase/icons'
+import type { PropertySort } from 'uiBase/theme/types'
 import { formatBytes, Nullable } from 'uiSrc/utils'
 import { rgb } from 'uiSrc/utils/colors'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { RiTooltip } from 'uiSrc/components'
-
-import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons'
-import type { PropertySort } from 'uiSrc/components/base/theme/types'
 
 import { ModifiedClusterNodes } from '../../ClusterDetailsPage'
 import styles from './styles.module.scss'

@@ -4,12 +4,12 @@ import { EuiFlexItem } from '@elastic/eui'
 import { monaco } from 'react-monaco-editor'
 import JSONbig from 'json-bigint'
 
+import { RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
 import {
   MonacoEditor as Editor,
   useMonacoValidation,
 } from 'uiSrc/components/monaco-editor'
 import { setReJSONDataAction } from 'uiSrc/slices/browser/rejson'
-import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
 import { BaseProps } from '../interfaces'
 import { useChangeEditorType } from '../../change-editor-type-button'
 

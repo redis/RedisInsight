@@ -1,13 +1,13 @@
 import React, { ChangeEvent } from 'react'
 import { FormikProps } from 'formik'
 
-import { KeyValueCompressor } from 'uiSrc/constants'
-import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiCheckbox, RiFormField, RiSelect } from 'uiBase/forms'
+import { useGenerateId } from 'uiBase/utils'
 import { NONE } from 'uiSrc/pages/home/constants'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiCheckbox, RiFormField, RiSelect } from 'uiSrc/components/base/forms'
-import { useGenerateId } from 'uiSrc/components/base/utils'
+import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
+import { KeyValueCompressor } from 'uiSrc/constants'
 
 export interface Props {
   formik: FormikProps<DbConnectionInfo>

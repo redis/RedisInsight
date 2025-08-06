@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo } from 'react'
+import { RiSecondaryButton } from 'uiBase/forms'
+import { DownloadIcon } from 'uiBase/icons'
+import { RiLink } from 'uiBase/display'
 import { Maybe } from 'uiSrc/utils'
-import { RiSecondaryButton } from 'uiSrc/components/base/forms'
-import { DownloadIcon } from 'uiSrc/components/base/icons'
-import { RiLink } from 'uiSrc/components/base/display'
 import { RedisString } from 'apiSrc/common/constants'
 
 export interface BulkDeleteSummaryButtonProps {

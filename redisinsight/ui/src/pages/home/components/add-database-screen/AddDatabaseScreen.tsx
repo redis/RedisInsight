@@ -3,6 +3,10 @@ import { useFormik } from 'formik'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
 import { toNumber } from 'lodash'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiEmptyButton, RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
+import { InfoIcon } from 'uiBase/icons'
 import { Nullable, parseRedisUrl } from 'uiSrc/utils'
 
 import { AddDbType, DEFAULT_TIMEOUT } from 'uiSrc/pages/home/constants'
@@ -13,14 +17,6 @@ import {
   testInstanceStandaloneAction,
 } from 'uiSrc/slices/instances/instances'
 import { Pages } from 'uiSrc/constants'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  RiEmptyButton,
-  RiPrimaryButton,
-  RiSecondaryButton,
-} from 'uiSrc/components/base/forms'
-import { InfoIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
 import ConnectivityOptions from './components/connectivity-options'
 import ConnectionUrl from './components/connection-url'

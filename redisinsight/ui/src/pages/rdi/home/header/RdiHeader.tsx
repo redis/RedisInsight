@@ -1,10 +1,10 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton } from 'uiBase/forms'
 import { instancesSelector } from 'uiSrc/slices/rdi/instances'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiPrimaryButton } from 'uiSrc/components/base/forms'
 import SearchRdiList from '../search/SearchRdiList'
 
 export interface Props {

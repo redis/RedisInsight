@@ -1,5 +1,6 @@
 import React from 'react'
 import { cloneDeep, set } from 'lodash'
+import { RiSideBar } from 'uiBase/layout'
 import {
   render,
   screen,
@@ -19,7 +20,6 @@ import {
 } from 'uiSrc/slices/app/info'
 
 import { FeatureFlags } from 'uiSrc/constants'
-import { RiSideBar } from 'uiSrc/components/base/layout'
 import HelpMenu from './HelpMenu'
 
 jest.mock('uiSrc/telemetry', () => ({

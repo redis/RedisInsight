@@ -2,12 +2,12 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import cx from 'classnames'
+import { RiLoadingContent } from 'uiBase/layout'
 import { IEnablementAreaItem } from 'uiSrc/slices/interfaces'
 import {
   EnablementAreaProvider,
   IInternalPage,
 } from 'uiSrc/pages/workbench/contexts/enablementAreaContext'
-import { RiLoadingContent } from 'uiSrc/components/base/layout'
 import {
   ApiEndpoints,
   EAManifestFirstKey,

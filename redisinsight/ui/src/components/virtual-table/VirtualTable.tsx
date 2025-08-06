@@ -11,6 +11,10 @@ import {
   Table as ReactVirtualizedTable,
   TableCellProps,
 } from 'react-virtualized'
+import { RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
+import { RIResizeObserver } from 'uiBase/utils'
+import { RiProgressBarLoader } from 'uiBase/display'
 import TableColumnSearchTrigger from 'uiSrc/components/table-column-search-trigger/TableColumnSearchTrigger'
 import TableColumnSearch from 'uiSrc/components/table-column-search/TableColumnSearch'
 import { SortOrder } from 'uiSrc/constants'
@@ -18,10 +22,6 @@ import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 
 import { isEqualBuffers, Maybe, Nullable } from 'uiSrc/utils'
 
-import { RiText } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons'
-import { RIResizeObserver } from 'uiSrc/components/base/utils'
-import { RiProgressBarLoader } from 'uiSrc/components/base/display'
 import {
   ColumnWidthSizes,
   IColumnSearchState,

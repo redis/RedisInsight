@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { RiPage, RiPageBody, RiCard } from 'uiBase/layout'
 import {
   clusterSelector,
   resetDataRedisCluster,
@@ -55,7 +56,6 @@ import { UrlHandlingActions } from 'uiSrc/slices/interfaces/urlHandling'
 import { CREATE_CLOUD_DB_ID } from 'uiSrc/pages/home/constants'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 
-import { RiPage, RiPageBody, RiCard } from 'uiSrc/components/base/layout'
 import DatabasesList from './components/database-list-component'
 import DatabaseListHeader from './components/database-list-header'
 import EmptyMessage from './components/empty-message/EmptyMessage'

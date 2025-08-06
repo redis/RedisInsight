@@ -1,20 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 
-import * as keys from 'uiSrc/constants/keys'
-import { RiTextInput } from 'uiSrc/components/base/inputs'
-import { GroupBadge, RiTooltip } from 'uiSrc/components'
-import { RiOutsideClickDetector } from 'uiSrc/components/base/utils'
-import { Nullable } from 'uiSrc/utils'
+import { RiTextInput } from 'uiBase/inputs'
+import { RiOutsideClickDetector } from 'uiBase/utils'
 
-import {
-  CancelSlimIcon,
-  SearchIcon,
-  SwitchIcon,
-  RiIcon,
-} from 'uiSrc/components/base/icons'
-import { RiActionIconButton, RiIconButton } from 'uiSrc/components/base/forms'
-import { RiProgressBarLoader } from 'uiSrc/components/base/display'
+import { CancelSlimIcon, SearchIcon, SwitchIcon, RiIcon } from 'uiBase/icons'
+import { RiActionIconButton, RiIconButton } from 'uiBase/forms'
+import { RiProgressBarLoader } from 'uiBase/display'
+import { Nullable } from 'uiSrc/utils'
+import { GroupBadge, RiTooltip } from 'uiSrc/components'
+import * as keys from 'uiSrc/constants/keys'
 import styles from './styles.module.scss'
 
 interface MultiSearchSuggestion {

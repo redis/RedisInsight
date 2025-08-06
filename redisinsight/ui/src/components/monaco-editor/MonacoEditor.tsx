@@ -3,6 +3,8 @@ import ReactMonacoEditor, { monaco as monacoEditor } from 'react-monaco-editor'
 import cx from 'classnames'
 import { merge } from 'lodash'
 
+import { EditIcon } from 'uiBase/icons'
+import { RiActionIconButton } from 'uiBase/forms'
 import { MonacoThemes, darkTheme, lightTheme } from 'uiSrc/constants/monaco'
 import { Nullable } from 'uiSrc/utils'
 import {
@@ -12,8 +14,6 @@ import {
 import { DSL, Theme } from 'uiSrc/constants'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
-import { EditIcon } from 'uiSrc/components/base/icons'
-import { RiActionIconButton } from 'uiSrc/components/base/forms'
 import DedicatedEditor from './components/dedicated-editor'
 import styles from './styles.module.scss'
 

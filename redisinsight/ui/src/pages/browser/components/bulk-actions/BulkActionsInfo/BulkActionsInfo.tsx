@@ -2,12 +2,12 @@ import React from 'react'
 import { isUndefined } from 'lodash'
 import cx from 'classnames'
 
+import { RiText } from 'uiBase/text'
 import { getApproximatePercentage, Maybe, Nullable } from 'uiSrc/utils'
 import Divider from 'uiSrc/components/divider/Divider'
 import { BulkActionsStatus, KeyTypes } from 'uiSrc/constants'
 import GroupBadge from 'uiSrc/components/group-badge/GroupBadge'
 import { isProcessedBulkAction } from 'uiSrc/pages/browser/components/bulk-actions/utils'
-import { RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 export interface Props {

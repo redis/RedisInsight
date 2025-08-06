@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiColorText, RiText } from 'uiBase/text'
+import { RiLink } from 'uiBase/display'
 import { generateArgsNames } from 'uiSrc/utils'
 import { setSearchedCommand } from 'uiSrc/slices/cli/cli-settings'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiColorText, RiText } from 'uiSrc/components/base/text'
-import { RiLink } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 export interface Props {

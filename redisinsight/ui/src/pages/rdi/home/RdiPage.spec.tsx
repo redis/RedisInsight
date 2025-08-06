@@ -23,6 +23,7 @@ import {
 } from 'uiSrc/utils/test-utils'
 
 import { apiService } from 'uiSrc/services'
+import { mockModal } from 'uiSrc/mocks/components/modal'
 import RdiPage from './RdiPage'
 
 jest.mock('uiSrc/slices/rdi/instances', () => ({
@@ -53,22 +54,10 @@ jest.mock('uiSrc/telemetry', () => ({
   sendEventTelemetry: jest.fn(),
 }))
 
-jest.mock('uiSrc/components/base/display', () => {
-  const actual = jest.requireActual('uiSrc/components/base/display')
+jest.mock('uiBase/display', () => {
+  const actual = jest.requireActual('uiBase/display')
 
-  return {
-    ...actual,
-    Modal: {
-      ...actual.Modal,
-      Content: {
-        ...actual.Modal.Content,
-        Header: {
-          ...actual.Modal.Content.Header,
-          Title: jest.fn().mockReturnValue(null),
-        },
-      },
-    },
-  }
+  return mockModal(actual)
 })
 
 let storeMock: typeof mockedStore

@@ -1,13 +1,13 @@
 import React from 'react'
 
+import { RiTable, ColumnDefinition } from 'uiBase/layout'
+import { RiIcon } from 'uiBase/icons'
 import {
   IConnections,
   StatisticsConnectionStatus,
 } from 'uiSrc/slices/interfaces'
 import { formatLongName } from 'uiSrc/utils'
-import { RiTable, ColumnDefinition } from 'uiSrc/components/base/layout'
 import { RiTooltip } from 'uiSrc/components'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import Accordion from '../components/accordion'
 import Panel from '../components/panel'
 

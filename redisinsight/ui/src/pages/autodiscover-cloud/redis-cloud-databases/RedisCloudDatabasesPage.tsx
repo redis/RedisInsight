@@ -2,6 +2,10 @@ import React, { useEffect, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { RiIconButton } from 'uiBase/forms'
+import { CopyIcon } from 'uiBase/icons'
+import { RiText } from 'uiBase/text'
+import { ColumnDefinition } from 'uiBase/layout'
 import { Pages } from 'uiSrc/constants'
 import {
   addInstancesRedisCloud,
@@ -30,10 +34,6 @@ import {
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { oauthCloudUserSelector } from 'uiSrc/slices/oauth/cloud'
-import { RiIconButton } from 'uiSrc/components/base/forms'
-import { CopyIcon } from 'uiSrc/components/base/icons'
-import { RiText } from 'uiSrc/components/base/text'
-import { ColumnDefinition } from 'uiSrc/components/base/layout'
 import RedisCloudDatabases from './RedisCloudDatabases'
 
 import styles from './styles.module.scss'

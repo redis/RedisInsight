@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { find } from 'lodash'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton } from 'uiBase/forms'
+import { RiTitle, RiText } from 'uiBase/text'
 import { OAuthAgreement } from 'uiSrc/components/oauth/shared'
 import {
   oauthCloudUserSelector,
@@ -20,9 +23,6 @@ import OAuthForm from 'uiSrc/components/oauth/shared/oauth-form'
 import CloudIcon from 'uiSrc/assets/img/oauth/cloud_centered.svg?react'
 
 import { OAuthSsoHandlerDialog } from 'uiSrc/components'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { RiTitle, RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 export interface Props {

@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 import cx from 'classnames'
 
+import { RiPrimaryButton } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
 import { DEFAULT_DELIMITER, FeatureFlags, Pages } from 'uiSrc/constants'
 import { recommendationsSelector } from 'uiSrc/slices/recommendations/recommendations'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
@@ -17,8 +19,6 @@ import {
   ANALYZE_TOOLTIP_MESSAGE,
 } from 'uiSrc/constants/recommendations'
 import { FeatureFlagComponent } from 'uiSrc/components'
-import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { RiText } from 'uiSrc/components/base/text'
 import PopoverRunAnalyze from '../popover-run-analyze'
 
 import styles from './styles.module.scss'

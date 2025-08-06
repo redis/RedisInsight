@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation, useParams } from 'react-router-dom'
+import { RiCol, RiFlexItem } from 'uiBase/layout'
 import {
   appContextSelector,
   resetDatabaseContext,
@@ -21,7 +22,6 @@ import {
 
 import { RdiInstancePageTemplate } from 'uiSrc/templates'
 import { RdiInstanceHeader } from 'uiSrc/components'
-import { RiCol, RiFlexItem } from 'uiSrc/components/base/layout'
 import InstancePageRouter from './InstancePageRouter'
 import { RdiPipelineHeader } from './components'
 import styles from './styles.module.scss'

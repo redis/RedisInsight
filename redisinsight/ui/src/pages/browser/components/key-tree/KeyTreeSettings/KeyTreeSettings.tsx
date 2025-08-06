@@ -4,6 +4,17 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { isEqual } from 'lodash'
 
+import { RiCol, RiFlexItem } from 'uiBase/layout'
+import {
+  RiIconButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiAutoTag,
+  AutoTagOption,
+  RiSelect,
+} from 'uiBase/forms'
+import { SettingsIcon, RiIcon } from 'uiBase/icons'
+import { RiPopover } from 'uiBase/index'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   DEFAULT_DELIMITER,
@@ -18,17 +29,6 @@ import {
 } from 'uiSrc/slices/app/context'
 import { comboBoxToArray } from 'uiSrc/utils'
 
-import { RiCol, RiFlexItem } from 'uiSrc/components/base/layout'
-import {
-  RiIconButton,
-  RiPrimaryButton,
-  RiSecondaryButton,
-  RiAutoTag,
-  AutoTagOption,
-  RiSelect,
-} from 'uiSrc/components/base/forms'
-import { SettingsIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
 export interface Props {

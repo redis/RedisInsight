@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import type { TabInfo } from 'uiBase/layout'
 import { Header } from 'uiSrc/components/side-panels/components'
 import styles from 'uiSrc/components/side-panels/styles.module.scss'
 import { InsightsPanelTabs } from 'uiSrc/slices/interfaces/insights'
@@ -11,7 +12,6 @@ import {
   insightsPanelSelector,
 } from 'uiSrc/slices/panels/sidePanels'
 import { OnboardingTour, RiTabs } from 'uiSrc/components'
-import type { TabInfo } from 'uiSrc/components/base/layout'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { recommendationsSelector } from 'uiSrc/slices/recommendations/recommendations'
 import {

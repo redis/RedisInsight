@@ -3,28 +3,22 @@ import { map, pick } from 'lodash'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 
-import { cloudSelector } from 'uiSrc/slices/instances/cloud'
-import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
-import validationErrors from 'uiSrc/constants/validationErrors'
-import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
-
-import {
-  RiFlexItem,
-  RiRow,
-  RiTable,
-  ColumnDefinition,
-} from 'uiSrc/components/base/layout'
-import { InfoIcon } from 'uiSrc/components/base/icons'
+import { RiFlexItem, RiRow, RiTable, ColumnDefinition } from 'uiBase/layout'
+import { InfoIcon } from 'uiBase/icons'
 import {
   RiDestructiveButton,
   RiPrimaryButton,
   RiSecondaryButton,
   RiFormField,
-} from 'uiSrc/components/base/forms'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
+} from 'uiBase/forms'
+import { RiPopover, RiTooltip } from 'uiBase/index'
+import { RiTitle, RiText } from 'uiBase/text'
+import { RiSearchInput } from 'uiBase/inputs'
 import { Pages } from 'uiSrc/constants'
-import { RiTitle, RiText } from 'uiSrc/components/base/text'
-import { RiSearchInput } from 'uiSrc/components/base/inputs'
+import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
+import validationErrors from 'uiSrc/constants/validationErrors'
+import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
+import { cloudSelector } from 'uiSrc/slices/instances/cloud'
 import styles from '../styles.module.scss'
 
 export interface Props {

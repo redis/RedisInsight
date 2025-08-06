@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen } from 'uiSrc/utils/test-utils'
 
-import { Breakpoints, RiHideFor, RiShowFor } from './ShowHide'
+import { Breakpoints, RiHideFor, RiShowFor } from './RiShowHide'
 
 describe('RiShowHide', () => {
   beforeAll(() => {

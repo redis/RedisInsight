@@ -1,20 +1,20 @@
 import React from 'react'
 import cx from 'classnames'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSecondaryButton } from 'uiBase/forms'
+import { RiIcon } from 'uiBase/icons'
 import { getConfig } from 'uiSrc/config'
 
 import {
   DATABASE_OVERVIEW_MINIMUM_REFRESH_INTERVAL,
   DATABASE_OVERVIEW_REFRESH_INTERVAL,
 } from 'uiSrc/constants/browser'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
 import MetricItem, {
   OverviewItem,
 } from 'uiSrc/components/database-overview/components/OverviewMetrics/MetricItem'
 import { useDatabaseOverview } from 'uiSrc/components/database-overview/hooks/useDatabaseOverview'
 
 import { IMetric } from 'uiSrc/components/database-overview/components/OverviewMetrics'
-import { RiSecondaryButton } from 'uiSrc/components/base/forms'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import AutoRefresh from '../auto-refresh'
 import styles from './styles.module.scss'
 

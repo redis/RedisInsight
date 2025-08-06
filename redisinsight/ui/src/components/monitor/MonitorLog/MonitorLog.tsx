@@ -3,6 +3,10 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
+import { RefreshIcon, DownloadIcon, RiIcon } from 'uiBase/icons'
+import { RiText } from 'uiBase/text'
 import {
   monitorSelector,
   resetProfiler,
@@ -12,10 +16,6 @@ import { cutDurationText } from 'uiSrc/utils'
 import { downloadFile } from 'uiSrc/utils/dom/downloadFile'
 import { fetchMonitorLog } from 'uiSrc/slices/cli/cli-output'
 
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
-import { RefreshIcon, DownloadIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { RiText } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 const PADDINGS_OUTSIDE = 12

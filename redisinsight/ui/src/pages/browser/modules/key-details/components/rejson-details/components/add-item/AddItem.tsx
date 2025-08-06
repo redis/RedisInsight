@@ -2,20 +2,20 @@ import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 
+import { RiFlexItem } from 'uiBase/layout'
+import {
+  RiWindowEvent,
+  RiFocusTrap,
+  RiOutsideClickDetector,
+} from 'uiBase/utils'
+import { CancelSlimIcon, CheckThinIcon } from 'uiBase/icons'
+import { RiIconButton } from 'uiBase/forms'
+import { RiTextInput } from 'uiBase/inputs'
 import * as keys from 'uiSrc/constants/keys'
 import { rejsonDataSelector } from 'uiSrc/slices/browser/rejson'
 import { checkExistingPath } from 'uiSrc/utils/rejson'
 import FieldMessage from 'uiSrc/components/field-message/FieldMessage'
 import { Nullable } from 'uiSrc/utils'
-import { RiFlexItem } from 'uiSrc/components/base/layout'
-import {
-  RiWindowEvent,
-  RiFocusTrap,
-  RiOutsideClickDetector,
-} from 'uiSrc/components/base/utils'
-import { CancelSlimIcon, CheckThinIcon } from 'uiSrc/components/base/icons'
-import { RiIconButton } from 'uiSrc/components/base/forms'
-import { RiTextInput } from 'uiSrc/components/base/inputs'
 import ConfirmOverwrite from './ConfirmOverwrite'
 import { isValidJSON, isValidKey, parseJsonData, wrapPath } from '../../utils'
 import { JSONErrors } from '../../constants'

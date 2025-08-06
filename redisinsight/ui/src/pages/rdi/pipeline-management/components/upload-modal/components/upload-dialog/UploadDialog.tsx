@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 
-import { RiText } from 'uiSrc/components/base/text'
+import { RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
 import ImportFileModal from 'uiSrc/components/import-file-modal'
 
-import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 export interface Props {

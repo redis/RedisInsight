@@ -1,8 +1,14 @@
 import React from 'react'
 import { find } from 'lodash'
 import cx from 'classnames'
+import ExternalLink from 'uiBase/external-link'
+import { RiText, RiTitle } from 'uiBase/text'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
+import { RiIcon } from 'uiBase/icons'
+import { RiLink, RiLoader } from 'uiBase/display'
 import { CloudJobName, CloudJobStep } from 'uiSrc/electron/constants'
-import ExternalLink from 'uiSrc/components/base/external-link'
 import Divider from 'uiSrc/components/divider/Divider'
 import { OAuthProviders } from 'uiSrc/components/oauth/oauth-select-plan/constants'
 
@@ -10,17 +16,11 @@ import { CloudSuccessResult } from 'uiSrc/slices/interfaces'
 
 import { Maybe } from 'uiSrc/utils'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
-import { RiText, RiTitle } from 'uiSrc/components/base/text'
 import {
   EXTERNAL_LINKS,
   UTM_CAMPAINGS,
   UTM_MEDIUMS,
 } from 'uiSrc/constants/links'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
-import { RiIcon } from 'uiSrc/components/base/icons'
-import { RiLink, RiLoader } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 export enum InfiniteMessagesIds {

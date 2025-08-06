@@ -2,6 +2,11 @@ import React from 'react'
 
 import { useSelector } from 'react-redux'
 
+import { RiText, RiTitle } from 'uiBase/text'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton } from 'uiBase/forms'
+import { RiLink } from 'uiBase/display'
+import { RiIcon } from 'uiBase/icons'
 import {
   CloudSsoUtmCampaign,
   OAuthSocialAction,
@@ -16,11 +21,6 @@ import { freeInstancesSelector } from 'uiSrc/slices/instances/instances'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { EXTERNAL_LINKS, UTM_CAMPAINGS } from 'uiSrc/constants/links'
 import { FeatureFlags } from 'uiSrc/constants'
-import { RiText, RiTitle } from 'uiSrc/components/base/text'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { RiLink } from 'uiSrc/components/base/display'
-import { RiIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 const utm = {

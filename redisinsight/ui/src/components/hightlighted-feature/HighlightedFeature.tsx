@@ -2,10 +2,10 @@ import { isString } from 'lodash'
 import { ToolTipPositions } from '@elastic/eui/src/components/tool_tip/tool_tip'
 import cx from 'classnames'
 import React from 'react'
+import { RiBadge } from 'uiBase/display'
 import { FeaturesHighlightingType } from 'uiSrc/constants/featuresHighlighting'
 import { RiTooltip } from 'uiSrc/components'
 
-import { RiBadge } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 export interface Props {

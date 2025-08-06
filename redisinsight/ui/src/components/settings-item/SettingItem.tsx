@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiTitle, RiText } from 'uiBase/text'
+import { RiNumericInput } from 'uiBase/inputs'
+import { EditIcon } from 'uiBase/icons'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor/InlineItemEditor'
-
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiTitle, RiText } from 'uiSrc/components/base/text'
-import { RiNumericInput } from 'uiSrc/components/base/inputs'
-import { EditIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 export interface Props {

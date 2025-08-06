@@ -1,5 +1,11 @@
 import React, { useContext } from 'react'
 
+import { RiText } from 'uiBase/text'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton } from 'uiBase/forms'
+import { RiIcon } from 'uiBase/icons'
+import { RiLink, RiImage } from 'uiBase/display'
 import { EXTERNAL_LINKS, UTM_MEDIUMS } from 'uiSrc/constants/links'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import EmptyListDarkIcon from 'uiSrc/assets/img/rdi/empty_list_dark.svg'
@@ -7,12 +13,6 @@ import EmptyListLightIcon from 'uiSrc/assets/img/rdi/empty_list_light.svg'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import { Theme } from 'uiSrc/constants'
 
-import { RiText } from 'uiSrc/components/base/text'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { RiIcon } from 'uiSrc/components/base/icons'
-import { RiLink, RiImage } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 const subTitleText =

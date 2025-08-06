@@ -1,14 +1,14 @@
 import React from 'react'
 
 import cx from 'classnames'
-import { KeyTypes, ModulesKeyTypes } from 'uiSrc/constants'
-import { formatLongName } from 'uiSrc/utils'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiDestructiveButton, RiIconButton } from 'uiBase/forms'
+import { DeleteIcon } from 'uiBase/icons'
+import { RiText } from 'uiBase/text'
+import { RiPopover } from 'uiBase/index'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiDestructiveButton, RiIconButton } from 'uiSrc/components/base/forms'
-import { DeleteIcon } from 'uiSrc/components/base/icons'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiPopover } from 'uiSrc/components/base'
+import { formatLongName } from 'uiSrc/utils'
+import { KeyTypes, ModulesKeyTypes } from 'uiSrc/constants'
 
 export interface DeleteProps {
   nameString: string

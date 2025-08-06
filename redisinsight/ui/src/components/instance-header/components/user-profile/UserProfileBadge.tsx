@@ -2,6 +2,10 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import { useHistory } from 'react-router-dom'
+import { RiPopover } from 'uiBase/index'
+import { RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
+import { UserProfileLink, RiLoader } from 'uiBase/display'
 import { logoutUserAction } from 'uiSrc/slices/oauth/cloud'
 
 import { buildRedisInsightUrl, getUtmExternalLink } from 'uiSrc/utils/links'
@@ -17,11 +21,7 @@ import {
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { FeatureFlags, Pages } from 'uiSrc/constants'
 import { FeatureFlagComponent } from 'uiSrc/components'
-import { RiPopover } from 'uiSrc/components/base'
 import { getConfig } from 'uiSrc/config'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons'
-import { UserProfileLink, RiLoader } from 'uiSrc/components/base/display'
 import { CloudUser } from 'apiSrc/modules/cloud/user/models'
 import styles from './styles.module.scss'
 
@@ -142,7 +142,10 @@ const UserProfileBadge = (props: UserProfileBadgeProps) => {
                 </RiText>
               }
             >
-              <RiText className={styles.optionTitle} data-testid="profile-title">
+              <RiText
+                className={styles.optionTitle}
+                data-testid="profile-title"
+              >
                 Redis Cloud account
               </RiText>
             </FeatureFlagComponent>
@@ -217,7 +220,9 @@ const UserProfileBadge = (props: UserProfileBadgeProps) => {
               onClick={handleClickImport}
               data-testid="profile-import-cloud-databases"
             >
-              <RiText className={styles.optionTitle}>Import Cloud databases</RiText>
+              <RiText className={styles.optionTitle}>
+                Import Cloud databases
+              </RiText>
               {isImportLoading ? (
                 <RiLoader className={styles.loadingSpinner} size="m" />
               ) : (

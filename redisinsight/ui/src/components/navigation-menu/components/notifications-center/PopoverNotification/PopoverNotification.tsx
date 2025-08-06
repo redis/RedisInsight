@@ -1,6 +1,9 @@
 import cx from 'classnames'
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { RiIconButton } from 'uiBase/forms'
+import { CancelSlimIcon } from 'uiBase/icons'
+import { RiPopover } from 'uiBase/index'
 import {
   notificationCenterSelector,
   setIsCenterOpen,
@@ -9,9 +12,6 @@ import {
 } from 'uiSrc/slices/app/notifications'
 import { IGlobalNotification } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { RiIconButton } from 'uiSrc/components/base/forms'
-import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import { RiPopover } from 'uiSrc/components/base'
 import Notification from '../Notification'
 
 import styles from '../styles.module.scss'

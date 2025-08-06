@@ -3,6 +3,7 @@ import { instance, mock } from 'ts-mockito'
 import { cloneDeep } from 'lodash'
 import { AxiosError } from 'axios'
 
+import { RiText } from 'uiBase/text'
 import {
   cleanup,
   fireEvent,
@@ -10,7 +11,6 @@ import {
   render,
   screen,
 } from 'uiSrc/utils/test-utils'
-import { RiText } from 'uiSrc/components/base/text'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { dryRunJob, rdiDryRunJobSelector } from 'uiSrc/slices/rdi/dryRun'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'

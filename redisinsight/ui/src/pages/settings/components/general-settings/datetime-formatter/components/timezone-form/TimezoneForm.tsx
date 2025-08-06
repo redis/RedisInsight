@@ -2,13 +2,13 @@ import React, { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 
+import { defaultValueRender, RiSelect } from 'uiBase/forms'
 import { TimezoneOption, timezoneOptions } from 'uiSrc/constants'
 import {
   updateUserConfigSettingsAction,
   userSettingsConfigSelector,
 } from 'uiSrc/slices/user/user-settings'
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
-import { defaultValueRender, RiSelect } from 'uiSrc/components/base/forms'
 
 interface InitialValuesType {
   timezone: TimezoneOption

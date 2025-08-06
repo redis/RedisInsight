@@ -1,6 +1,9 @@
 import React, { FormEvent, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toNumber } from 'lodash'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiFormField } from 'uiBase/forms'
+import { RiTextInput } from 'uiBase/inputs'
 import { Maybe, stringToBuffer, validateScoreNumber } from 'uiSrc/utils'
 import { isNaNConvertedString } from 'uiSrc/utils/numbers'
 import { addKeyStateSelector, addZsetKey } from 'uiSrc/slices/browser/keys'
@@ -12,9 +15,6 @@ import {
   IZsetMemberState,
 } from 'uiSrc/pages/browser/components/add-key/AddKeyZset/interfaces'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiFormField } from 'uiSrc/components/base/forms'
-import { RiTextInput } from 'uiSrc/components/base/inputs'
 import { CreateZSetWithExpireDto } from 'apiSrc/modules/browser/z-set/dto'
 import { AddZsetFormConfig as config } from '../constants/fields-config'
 

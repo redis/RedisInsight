@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { isNull, last, toString } from 'lodash'
 import cx from 'classnames'
 
+import { RiProgressBarLoader } from 'uiBase/display'
 import {
   streamSelector,
   streamGroupsSelector,
@@ -22,7 +23,6 @@ import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import RangeFilter from 'uiSrc/components/range-filter'
-import { RiProgressBarLoader } from 'uiSrc/components/base/display'
 import { GetStreamEntriesResponse } from 'apiSrc/modules/browser/stream/dto'
 
 import ConsumersViewWrapper from '../consumers-view'

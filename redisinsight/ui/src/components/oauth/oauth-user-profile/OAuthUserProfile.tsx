@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
+import { RiLoader } from 'uiBase/display'
 import OAuthSignInButton from 'uiSrc/components/oauth/oauth-sign-in-button'
 import {
   activateAccount,
@@ -13,7 +14,6 @@ import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { appInfoSelector } from 'uiSrc/slices/app/info'
 import { PackageType } from 'uiSrc/constants/env'
 import UserProfileBadge from 'uiSrc/components/instance-header/components/user-profile/UserProfileBadge'
-import { RiLoader } from 'uiSrc/components/base/display'
 
 import styles from './styles.module.scss'
 

@@ -1,6 +1,10 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiEmptyButton } from 'uiBase/forms'
+import { RiTitle } from 'uiBase/text'
+import { RiImage } from 'uiBase/display'
 import TelescopeImg from 'uiSrc/assets/img/telescope-dark.svg'
 
 import { findTutorialPath } from 'uiSrc/utils'
@@ -18,10 +22,6 @@ import {
 import { SCAN_TREE_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { TutorialsIds } from 'uiSrc/constants'
 
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiEmptyButton } from 'uiSrc/components/base/forms'
-import { RiTitle } from 'uiSrc/components/base/text'
-import { RiImage } from 'uiSrc/components/base/display'
 import LoadSampleData from '../load-sample-data'
 
 import styles from './styles.module.scss'

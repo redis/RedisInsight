@@ -1,13 +1,10 @@
 import React, { useState } from 'react'
-import { formatLongName } from 'uiSrc/utils'
 
-import {
-  RiDestructiveButton,
-  RiPrimaryButton,
-} from 'uiSrc/components/base/forms'
-import { DeleteIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiText } from 'uiSrc/components/base/text'
+import { RiDestructiveButton, RiPrimaryButton } from 'uiBase/forms'
+import { DeleteIcon, RiIcon } from 'uiBase/icons'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
+import { formatLongName } from 'uiSrc/utils'
 import { RiPopover } from 'uiSrc/components'
 import styles from '../styles.module.scss'
 

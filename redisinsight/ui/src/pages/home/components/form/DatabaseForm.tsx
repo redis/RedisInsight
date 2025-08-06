@@ -2,6 +2,10 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { FormikProps } from 'formik'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiFormField } from 'uiBase/forms'
+import { RiNumericInput, RiPasswordInput, RiTextInput } from 'uiBase/inputs'
+import { RiIcon } from 'uiBase/icons'
 import { BuildType } from 'uiSrc/constants/env'
 import { SECURITY_FIELD } from 'uiSrc/constants'
 import { appInfoSelector } from 'uiSrc/slices/app/info'
@@ -14,14 +18,6 @@ import {
 } from 'uiSrc/utils'
 import { RiTooltip } from 'uiSrc/components'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiFormField } from 'uiSrc/components/base/forms'
-import {
-  RiNumericInput,
-  RiPasswordInput,
-  RiTextInput,
-} from 'uiSrc/components/base/inputs'
-import { RiIcon } from 'uiSrc/components/base/icons'
 
 interface IShowFields {
   alias: boolean

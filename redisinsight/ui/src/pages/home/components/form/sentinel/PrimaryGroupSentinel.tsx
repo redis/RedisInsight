@@ -1,10 +1,10 @@
 import React from 'react'
 import { FormikProps } from 'formik'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiFormField } from 'uiBase/forms'
+import { RiTextInput } from 'uiBase/inputs'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiFormField } from 'uiSrc/components/base/forms'
-import { RiTextInput } from 'uiSrc/components/base/inputs'
 
 export interface Props {
   flexGroupClassName?: string

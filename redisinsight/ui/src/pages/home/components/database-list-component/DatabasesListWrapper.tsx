@@ -17,7 +17,7 @@ import React, {
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import AutoSizer from 'react-virtualized-auto-sizer'
-import { RiText, RiColorText } from 'uiSrc/components/base/text'
+import { RiText, RiColorText } from 'uiBase/text'
 
 import {
   MoreactionsIcon,
@@ -25,7 +25,11 @@ import {
   TagIcon,
   CopyIcon,
   RiIcon,
-} from 'uiSrc/components/base/icons'
+} from 'uiBase/icons'
+import { RiPopover, RiTooltip } from 'uiBase/index'
+import { RiEmptyButton, RiIconButton } from 'uiBase/forms'
+import { RiLink } from 'uiBase/display'
+import { RIResizeObserver } from 'uiBase/utils'
 import DatabaseListModules from 'uiSrc/components/database-list-modules/DatabaseListModules'
 import ItemList from 'uiSrc/components/item-list'
 import {
@@ -79,10 +83,6 @@ import { CREATE_CLOUD_DB_ID, HELP_LINKS } from 'uiSrc/pages/home/constants'
 
 import { Tag } from 'uiSrc/slices/interfaces/tag'
 import { FeatureFlagComponent } from 'uiSrc/components'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { RiEmptyButton, RiIconButton } from 'uiSrc/components/base/forms'
-import { RiLink } from 'uiSrc/components/base/display'
-import { RIResizeObserver } from 'uiSrc/components/base/utils'
 
 import DbStatus from '../db-status'
 import { TagsCell } from '../tags-cell/TagsCell'

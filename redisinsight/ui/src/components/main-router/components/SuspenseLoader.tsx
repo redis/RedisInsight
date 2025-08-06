@@ -1,5 +1,5 @@
 import React from 'react'
-import { RiLoader } from 'uiSrc/components/base/display'
+import { RiLoader } from 'uiBase/display'
 import styles from './loader.module.scss'
 
 const SuspenseLoader = () => (

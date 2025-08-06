@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from '@redis-ui/components'
 import { buttonSizes } from '@redis-ui/components/dist/Button/Button.types'
-import { IconType } from 'uiSrc/components/base/icons'
+import { IconType } from 'uiBase/icons'
 
 export type BaseButtonProps = Omit<
   React.ComponentProps<typeof Button>,

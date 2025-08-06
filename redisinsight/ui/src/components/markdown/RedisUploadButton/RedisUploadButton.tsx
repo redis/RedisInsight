@@ -3,6 +3,12 @@ import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 import { AxiosError } from 'axios'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
+import { PlayFilledIcon, ContractsIcon, RiIcon } from 'uiBase/icons'
+import { RiText } from 'uiBase/text'
+import { RiPopover } from 'uiBase/index'
+import { RiLink } from 'uiBase/display'
 import { truncateText } from 'uiSrc/utils'
 import {
   sendEventTelemetry,
@@ -21,16 +27,6 @@ import {
   getPathToResource,
 } from 'uiSrc/services/resourcesService'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiPrimaryButton, RiSecondaryButton } from 'uiSrc/components/base/forms'
-import {
-  PlayFilledIcon,
-  ContractsIcon,
-  RiIcon,
-} from 'uiSrc/components/base/icons'
-import { RiText } from 'uiSrc/components/base/text'
-import { RiPopover } from 'uiSrc/components/base'
-import { RiLink } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 export interface Props {

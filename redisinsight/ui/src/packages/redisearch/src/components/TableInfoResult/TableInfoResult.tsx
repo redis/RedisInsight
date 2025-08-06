@@ -2,14 +2,10 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 import { toUpper, flatten, isArray, isEmpty, map, uniq } from 'lodash'
-import {
-  RiTable,
-  ColumnDefinition,
-  RiLoadingContent,
-} from 'uiSrc/components/base/layout'
+import { RiTable, ColumnDefinition, RiLoadingContent } from 'uiBase/layout'
 
-import { RiIcon } from 'uiSrc/components/base/icons'
-import { RiColorText, RiText } from 'uiSrc/components/base/text'
+import { RiIcon } from 'uiBase/icons'
+import { RiColorText, RiText } from 'uiBase/text'
 import GroupBadge from '../GroupBadge'
 import { InfoAttributesBoolean } from '../../constants'
 

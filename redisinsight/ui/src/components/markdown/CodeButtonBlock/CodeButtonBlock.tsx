@@ -4,6 +4,12 @@ import { monaco } from 'react-monaco-editor'
 import parse from 'html-react-parser'
 import { useParams } from 'react-router-dom'
 import { find } from 'lodash'
+import { RiPopover, RiTooltip } from 'uiBase/index'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiEmptyButton } from 'uiBase/forms'
+import { PlayIcon, CheckBoldIcon, CopyIcon } from 'uiBase/icons'
+import { RiTitle } from 'uiBase/text'
 import {
   getCommandsForExecution,
   getUnsupportedModulesFromQuery,
@@ -16,7 +22,6 @@ import {
 } from 'uiSrc/constants'
 
 import { CodeBlock } from 'uiSrc/components'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { getDBConfigStorageField } from 'uiSrc/services'
 import { ConfigDBStorageItem } from 'uiSrc/constants/storage'
 import {
@@ -25,11 +30,6 @@ import {
 } from 'uiSrc/components/messages'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { ButtonLang } from 'uiSrc/utils/formatters/markdown/remarkCode'
-import { RiFlexItem, RiRow } from 'uiSrc/components/base/layout'
-import { RiSpacer } from 'uiSrc/components/base/layout/spacer'
-import { RiEmptyButton } from 'uiSrc/components/base/forms'
-import { PlayIcon, CheckBoldIcon, CopyIcon } from 'uiSrc/components/base/icons'
-import { RiTitle } from 'uiSrc/components/base/text'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
 
 import { RunConfirmationPopover } from './components'

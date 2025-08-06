@@ -1,15 +1,12 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { NotificationsIcon } from 'uiBase/icons'
+import { RiSideBarItem, SideBarItemIcon } from 'uiBase/layout/sidebar'
 import {
   notificationCenterSelector,
   setIsCenterOpen,
 } from 'uiSrc/slices/app/notifications'
-import { NotificationsIcon } from 'uiSrc/components/base/icons'
-import {
-  RiSideBarItem,
-  SideBarItemIcon,
-} from 'uiSrc/components/base/layout/sidebar'
 import NotificationCenter from './NotificationCenter'
 import PopoverNotification from './PopoverNotification'
 

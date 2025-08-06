@@ -1,8 +1,8 @@
 import React, { useContext } from 'react'
 import cx from 'classnames'
+import { RiListItem } from 'uiBase/layout/list'
 import { truncateText } from 'uiSrc/utils'
 import EnablementAreaContext from 'uiSrc/pages/workbench/contexts/enablementAreaContext'
-import { RiListItem as ListItem } from 'uiSrc/components/base/layout/list'
 import { RiTooltip } from 'uiSrc/components'
 
 import styles from './styles.module.scss'

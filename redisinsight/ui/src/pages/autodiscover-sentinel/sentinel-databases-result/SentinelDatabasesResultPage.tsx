@@ -3,6 +3,11 @@ import { useHistory } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { RiIconButton, RiPrimaryButton } from 'uiBase/forms'
+import { InfoIcon, CopyIcon, RiIcon } from 'uiBase/icons'
+import { RiColorText, RiText } from 'uiBase/text'
+import { ColumnDefinition } from 'uiBase/layout'
+import { RiLoader } from 'uiBase/display'
 import {
   LoadedSentinel,
   AddRedisDatabaseStatus,
@@ -22,11 +27,6 @@ import { InputFieldSentinel, RiTooltip } from 'uiSrc/components'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/InputFieldSentinel'
 
-import { RiIconButton, RiPrimaryButton } from 'uiSrc/components/base/forms'
-import { InfoIcon, CopyIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { RiColorText, RiText } from 'uiSrc/components/base/text'
-import { ColumnDefinition } from 'uiSrc/components/base/layout'
-import { RiLoader } from 'uiSrc/components/base/display'
 import SentinelDatabasesResult from './components'
 
 import styles from '../styles.module.scss'
