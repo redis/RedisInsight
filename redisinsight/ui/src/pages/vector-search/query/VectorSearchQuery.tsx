@@ -13,7 +13,6 @@ import CommandsViewWrapper from '../components/commands-view'
 import { VectorSearchScreenWrapper } from '../styles'
 import { SavedQueriesScreen } from '../saved-queries/SavedQueriesScreen'
 import { SavedIndex } from '../saved-queries/types'
-import { ManageIndexesDrawer } from '../manage-indexes/ManageIndexesDrawer'
 
 const mockSavedIndexes: SavedIndex[] = [
   {
@@ -140,11 +139,6 @@ export const VectorSearchQuery = () => {
           </>
         )}
       </ResizableContainer>
-
-      <ManageIndexesDrawer
-        open={isManageIndexesDrawerOpen}
-        onOpenChange={setIsManageIndexesDrawerOpen}
-      />
     </VectorSearchScreenWrapper>
   )
 }
