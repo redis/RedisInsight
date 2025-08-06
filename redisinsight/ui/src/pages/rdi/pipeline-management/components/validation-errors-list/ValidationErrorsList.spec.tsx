@@ -1,4 +1,3 @@
-
 import React from 'react'
 import { render, screen } from 'uiSrc/utils/test-utils'
 
@@ -57,7 +56,7 @@ describe('ValidationErrorsList', () => {
 
     const list = screen.getByRole('list')
     expect(list.tagName).toBe('UL')
-    expect(list.parentElement?.tagName).toBe('P') // Text component renders as p tag
+    expect(list.parentElement?.tagName).toBe('DIV')
 
     const listItems = screen.getAllByRole('listitem')
     expect(listItems).toHaveLength(2)
