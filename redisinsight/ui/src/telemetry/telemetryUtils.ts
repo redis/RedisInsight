@@ -14,7 +14,7 @@ import {
   RedisModulesKeyType,
 } from 'uiSrc/telemetry/interfaces'
 import { apiService } from 'uiSrc/services'
-import { store } from 'uiSrc/slices/store-dynamic'
+import { store } from 'uiSrc/slices/store'
 import { getInstanceInfo } from 'uiSrc/services/database/instancesService'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
 import { IRedisModulesSummary, MatchType, RedisModules } from './interfaces'

@@ -56,7 +56,6 @@ import rdiStatisticsReducer from './rdi/statistics'
 import aiAssistantReducer from './panels/aiAssistant'
 import appDbSettingsReducer from './app/db-settings'
 import tagsReducer from './instances/tags'
-import { setStoreRef } from './store-dynamic'
 
 const riConfig = getConfig()
 
@@ -149,7 +148,6 @@ const store = configureStore({
     getDefaultMiddleware({ serializableCheck: false }),
   devTools: riConfig.app.env !== 'production',
 })
-setStoreRef(store)
 
 export { store }
 

@@ -16,7 +16,6 @@ import { ThemeProvider } from 'styled-components'
 import { themeLight } from '@redis-ui/styles'
 import userEvent from '@testing-library/user-event'
 import type { RootState, ReduxStore } from 'uiSrc/slices/store'
-import { setStoreRef } from 'uiSrc/slices/store-dynamic'
 import { initialState as initialStateInstances } from 'uiSrc/slices/instances/instances'
 import { initialState as initialStateTags } from 'uiSrc/slices/instances/tags'
 import { initialState as initialStateCaCerts } from 'uiSrc/slices/instances/caCerts'
@@ -74,6 +73,7 @@ import { initialState as initialStateAppConnectivity } from 'uiSrc/slices/app/co
 import { initialState as initialStateAppDbSettings } from 'uiSrc/slices/app/db-settings'
 import { initialState as initialStateAppInit } from 'uiSrc/slices/app/init'
 import * as appFeaturesSlice from 'uiSrc/slices/app/features'
+import { setStoreRef } from './test-store'
 
 interface Options {
   initialState?: RootState

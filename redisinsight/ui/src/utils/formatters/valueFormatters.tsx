@@ -6,7 +6,7 @@ import { serialize, unserialize } from 'php-serialize'
 import { getData } from 'rawproto'
 import { Parser } from 'pickleparser'
 import JSONBigInt from 'json-bigint'
-import { store } from 'uiSrc/slices/store-dynamic'
+import { store } from 'uiSrc/slices/store'
 
 import JSONViewer from 'uiSrc/components/json-viewer/JSONViewer'
 import {
