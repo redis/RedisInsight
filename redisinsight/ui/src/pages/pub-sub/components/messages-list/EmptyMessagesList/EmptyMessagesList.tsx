@@ -6,6 +6,7 @@ import { Text } from 'uiSrc/components/base/text'
 
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from './styles.module.scss'
+import { Row } from 'uiSrc/components/base/layout/flex'
 
 export interface Props {
   connectionType?: ConnectionType
@@ -27,10 +28,12 @@ const EmptyMessagesList = ({
         Subscribe to the Channel to see all the messages published to your
         database
       </Text>
-      <Text className={styles.alert}>
+      <Row>
         <RiIcon type="ToastDangerIcon" className={styles.alertIcon} />
-        Running in production may decrease performance and memory available
-      </Text>
+        <Text className={styles.alert}>
+          Running in production may decrease performance and memory available
+        </Text>
+      </Row>
       {connectionType === ConnectionType.Cluster && isSpublishNotSupported && (
         <>
           <div className={styles.separator} />
