@@ -109,7 +109,7 @@ const Navigation = () => {
         <ColorText component="div">Pipeline Management</ColorText>
       </div>
       <div className={styles.tabs} data-testid="rdi-pipeline-tabs">
-        {renderTabs()}
+        {!loading && renderTabs()}
       </div>
     </div>
   )

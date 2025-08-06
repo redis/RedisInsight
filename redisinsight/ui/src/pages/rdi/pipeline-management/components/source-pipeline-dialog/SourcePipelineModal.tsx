@@ -6,8 +6,8 @@ import { useParams } from 'react-router-dom'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   fetchRdiPipeline,
+  rdiPipelineSelector,
   setChangedFile,
-  setPipeline,
 } from 'uiSrc/slices/rdi/pipeline'
 import {
   appContextPipelineManagement,
@@ -35,9 +35,20 @@ export enum PipelineSourceOptions {
 
 const SourcePipelineDialog = () => {
   const [isShowDownloadDialog, setIsShowDownloadDialog] = useState(false)
+
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
 
   const { isOpenDialog } = useSelector(appContextPipelineManagement)
+
+  // data is original response from the server converted to config and jobs yaml strings
+  // since by default it is null we can determine if it was fetched and it's content
+  const { data } = useSelector(rdiPipelineSelector)
+
+  useEffect(() => {
+    if (data?.config === '') {
+      dispatch(setPipelineDialogState(true))
+    }
+  }, [data])
 
   const dispatch = useDispatch()
 
@@ -58,14 +69,12 @@ const SourcePipelineDialog = () => {
   }
 
   const onStartNewPipeline = () => {
-    dispatch(setPipeline(EMPTY_PIPELINE))
     onSelect(PipelineSourceOptions.NEW)
     dispatch(setChangedFile({ name: 'config', status: FileChangeType.Added }))
     dispatch(setPipelineDialogState(false))
   }
 
   const handleCloseDialog = () => {
-    dispatch(setPipeline(EMPTY_PIPELINE))
     dispatch(setChangedFile({ name: 'config', status: FileChangeType.Added }))
     dispatch(setPipelineDialogState(false))
   }

@@ -5,7 +5,7 @@ import axios, {
 } from 'axios'
 import { isNumber } from 'lodash'
 import { sessionStorageService } from 'uiSrc/services'
-import { BrowserStorageItem } from 'uiSrc/constants'
+import { BrowserStorageItem, CustomErrorCodes } from 'uiSrc/constants'
 import { CLOUD_AUTH_API_ENDPOINTS, CustomHeaders } from 'uiSrc/constants/api'
 import { store } from 'uiSrc/slices/store'
 import { logoutUserAction } from 'uiSrc/slices/oauth/cloud'
@@ -108,10 +108,17 @@ export const connectivityErrorsInterceptor = (error: AxiosError) => {
     message?: string
     code?: string
     error?: string
+    errorCode?: number
   }
 
   if (isConnectivityError(response?.status, responseData)) {
-    store?.dispatch<any>(setConnectivityError(ApiErrors.ConnectionLost))
+    let message
+
+    if (responseData?.errorCode === CustomErrorCodes.RedisConnectionDefaultUserDisabled) {
+      message = responseData?.message
+    }
+
+    store?.dispatch<any>(setConnectivityError(message || ApiErrors.ConnectionLost))
   }
 
   return Promise.reject(error)

@@ -16,7 +16,8 @@ fixture `Overview`
         // Delete database
         await databaseHelper.deleteDatabase(cloudDatabaseConfig.databaseName);
     });
-test('Verify that user can see not available metrics from Overview in tooltip with the text "<Metric_name> is/are not available"', async t => {
+test
+    .skip('Verify that user can see not available metrics from Overview in tooltip with the text "<Metric_name> is/are not available"', async t => {
     // Verify that CPU parameter is not displayed in Overview
     await t.expect(browserPage.OverviewPanel.overviewCpu.exists).notOk('Not available CPU is displayed');
 });

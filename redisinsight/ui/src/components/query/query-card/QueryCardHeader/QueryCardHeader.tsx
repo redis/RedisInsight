@@ -417,54 +417,50 @@ const QueryCardHeader = (props: Props) => {
                 </RiTooltip>
               )}
             </FlexItem>
-            {!hideFields?.includes(HIDE_FIELDS.profiler) && (
-              <FlexItem
-                className={cx(styles.buttonIcon, styles.viewTypeIcon)}
-                onClick={onDropDownViewClick}
-              >
-                {isOpen && canCommandProfile && !summaryText && (
-                  <div className={styles.dropdownWrapper}>
-                    <div className={styles.dropdown}>
-                      <ProfileSelect
-                        placeholder={profileOptions[0].inputDisplay}
-                        onChange={(value: ProfileQueryType | string) =>
-                          onQueryProfile(value as ProfileQueryType)
+            <FlexItem
+              className={cx(styles.buttonIcon, styles.viewTypeIcon)}
+              onClick={onDropDownViewClick}
+            >
+              {isOpen && canCommandProfile && !summaryText && (
+                <div className={styles.dropdownWrapper}>
+                  <div className={styles.dropdown}>
+                    <ProfileSelect
+                      placeholder={profileOptions[0].inputDisplay}
+                      onChange={(value: ProfileQueryType | string) =>
+                        onQueryProfile(value as ProfileQueryType)
+                      }
+                      options={profileOptions}
+                      data-testid="run-profile-type"
+                      valueRender={({ option, isOptionValue }) => {
+                        if (isOptionValue) {
+                          return option.dropdownDisplay as JSX.Element
                         }
-                        options={profileOptions}
-                        data-testid="run-profile-type"
-                        valueRender={({ option, isOptionValue }) => {
-                          if (isOptionValue) {
-                            return option.dropdownDisplay as JSX.Element
-                          }
-                          return option.inputDisplay as JSX.Element
-                        }}
-                      />
-                    </div>
+                        return option.inputDisplay as JSX.Element
+                      }}
+                    />
                   </div>
-                )}
-              </FlexItem>
-            )}
-            {!hideFields?.includes(HIDE_FIELDS.viewType) && (
-              <FlexItem
-                className={cx(styles.buttonIcon, styles.viewTypeIcon)}
-                onClick={onDropDownViewClick}
-              >
-                {isOpen && options.length > 1 && !summaryText && (
-                  <div className={styles.dropdownWrapper}>
-                    <div className={styles.dropdown}>
-                      <ProfileSelect
-                        options={modifiedOptions}
-                        valueRender={({ option, isOptionValue }) => {
-                          if (isOptionValue) {
-                            return option.dropdownDisplay as JSX.Element
-                          }
-                          return option.inputDisplay as JSX.Element
-                        }}
-                        value={selectedValue}
-                        onChange={(value: string) => onChangeView(value)}
-                        data-testid="select-view-type"
-                      />
-                    </div>
+                </div>
+              )}
+            </FlexItem>
+            <FlexItem
+              className={cx(styles.buttonIcon, styles.viewTypeIcon)}
+              onClick={onDropDownViewClick}
+            >
+              {isOpen && options.length > 1 && !summaryText && (
+                <div className={styles.dropdownWrapper}>
+                  <div className={styles.dropdown}>
+                    <ProfileSelect
+                      options={modifiedOptions}
+                      valueRender={({ option, isOptionValue }) => {
+                        if (isOptionValue) {
+                          return option.dropdownDisplay as JSX.Element
+                        }
+                        return option.inputDisplay as JSX.Element
+                      }}
+                      value={selectedValue}
+                      onChange={(value: string) => onChangeView(value)}
+                      data-testid="select-view-type"
+                    />
                   </div>
                 )}
               </FlexItem>

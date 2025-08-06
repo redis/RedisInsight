@@ -311,7 +311,6 @@ export type FlexItemProps = React.HTMLAttributes<HTMLDivElement> &
     grow?: (typeof VALID_GROW_VALUES)[number]
     $direction?: (typeof dirValues)[number]
     $padding?: (typeof VALID_PADDING_VALUES)[number]
-    $gap?: GapSizeType
   }
 
 export const StyledFlexItem = styled.div<FlexItemProps>`

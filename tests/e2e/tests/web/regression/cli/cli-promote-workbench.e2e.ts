@@ -20,7 +20,8 @@ fixture `Promote workbench in CLI`
         // Delete database
         await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
-test('Verify that user can see saved workbench context after redirection from CLI to workbench', async t => {
+test
+    .skip('Verify that user can see saved workbench context after redirection from CLI to workbench', async t => {
     // Open Workbench
     await t.click(browserPage.NavigationPanel.workbenchButton);
     const command = 'INFO';

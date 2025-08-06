@@ -34,7 +34,7 @@ import successMessages from 'uiSrc/components/notifications/success-messages'
 import { AppDispatch, RootState } from '../store'
 
 export const initialState: IStateRdiPipeline = {
-  loading: false,
+  loading: true,
   error: '',
   data: null,
   config: '',
@@ -71,9 +71,6 @@ const rdiPipelineSlice = createSlice({
     setPipelineInitialState: () => initialState,
     resetPipelineChecked: (state, { payload }: PayloadAction<boolean>) => {
       state.resetChecked = payload
-    },
-    setPipeline: (state, { payload }: PayloadAction<IPipeline>) => {
-      state.data = payload
     },
     getPipeline: (state) => {
       state.loading = true
@@ -227,7 +224,6 @@ export const {
   getPipelineStrategies,
   getPipelineStrategiesSuccess,
   getPipelineStrategiesFailure,
-  setPipeline,
   setPipelineConfig,
   setPipelineJobs,
   setPipelineInitialState,

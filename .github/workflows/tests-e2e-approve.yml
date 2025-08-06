@@ -1,0 +1,15 @@
+name: ✅ E2E Approve
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  e2e-approve:
+    runs-on: ubuntu-latest
+    if: github.event.review.state == 'approved'
+    steps:
+      - name: Add "e2e-approved" Label
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          labels: e2e-approved

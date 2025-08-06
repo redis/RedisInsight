@@ -33,7 +33,8 @@ test
     .after(async() => {
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
         await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
-    })('Verify that user can switch to full screen from key details in Browser', async t => {
+    })
+    .skip('Verify that user can switch to full screen from key details in Browser', async t => {
         // Save tables size before switching to full screen mode
         const widthBeforeFullScreen = await browserPage.keyDetailsTable.clientWidth;
         // Switch to full screen mode

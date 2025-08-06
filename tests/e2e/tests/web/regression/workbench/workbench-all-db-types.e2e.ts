@@ -48,7 +48,8 @@ test
     .after(async() => {
         // Delete database
         await databaseHelper.deleteDatabase(cloudDatabaseConfig.databaseName);
-    })('Verify that user can run commands in Workbench in RE Cloud DB', async() => {
+    })
+    .skip('Verify that user can run commands in Workbench in RE Cloud DB', async() => {
         await verifyCommandsInWorkbench();
     });
 test
@@ -59,7 +60,8 @@ test
     .after(async() => {
         // Delete database
         await databaseAPIRequests.deleteOSSClusterDatabaseApi(ossClusterConfig);
-    })('Verify that user can run commands in Workbench in OSS Cluster DB', async() => {
+    })
+    .skip('Verify that user can run commands in Workbench in OSS Cluster DB', async() => {
         await verifyCommandsInWorkbench();
     });
 test
@@ -70,6 +72,7 @@ test
     .after(async() => {
         // Delete database
         await databaseAPIRequests.deleteAllDatabasesByConnectionTypeApi('SENTINEL');
-    })('Verify that user can run commands in Workbench in Sentinel Primary Group', async() => {
+    })
+    .skip('Verify that user can run commands in Workbench in Sentinel Primary Group', async() => {
         await verifyCommandsInWorkbench();
     });

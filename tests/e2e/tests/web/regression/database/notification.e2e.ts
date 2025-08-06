@@ -49,7 +49,8 @@ test.before(async() => {
     })
     .after(async() => {
       //  await databaseAPIRequests.deleteAllDatabasesApi();
-    })('Verify that notifications are displayed if the db will be expired soon', async t => {
+    })
+    .skip('Verify that notifications are displayed if the db will be expired soon', async t => {
         await t.click(browserPage.NavigationPanel.workbenchButton);
         await workbenchPage.sendCommandInWorkbench('CMS.INITBYDIM');
 

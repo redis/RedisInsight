@@ -137,13 +137,67 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverages-${{ matrix.rte }}
-          path: itest/coverages
+          path: ./itest/coverages
 
-      - name: Send report to Slack
-        if: inputs.report && always()
+      - name: Debug and validate test result XML
+        if: always()
         run: |
-          ITEST_NAME=${{ matrix.rte }} node ./.github/itest-results.js
-          curl -H "Content-type: application/json" --data @itests.report.json -H "Authorization: Bearer $SLACK_TEST_REPORT_KEY" -X POST https://slack.com/api/chat.postMessage
+          echo "=== Checking source coverage directory ==="
+          ls -la ./redisinsight/api/test/test-runs/coverage/ || echo "Source coverage directory doesn't exist"
+
+          echo "=== Checking test result files ==="
+          ls -la ./itest/results/ || echo "Results directory doesn't exist"
+
+          echo "=== Current working directory ==="
+          pwd
+          ls -la .
+
+          XML_FILE="./itest/results/${{ matrix.rte }}.result.xml"
+          SOURCE_XML="./redisinsight/api/test/test-runs/coverage/test-run-result.xml"
+
+          echo "=== Checking source XML file ==="
+          if [ -f "$SOURCE_XML" ]; then
+            echo "✅ Source XML found: $SOURCE_XML"
+            echo "Source file size: $(wc -c < "$SOURCE_XML") bytes"
+          else
+            echo "❌ Source XML not found: $SOURCE_XML"
+          fi
+
+          if [ -f "$XML_FILE" ]; then
+            echo "=== XML file found: $XML_FILE ==="
+            echo "File size: $(wc -c < "$XML_FILE") bytes"
+            echo "Line count: $(wc -l < "$XML_FILE") lines"
+
+            echo "=== First 20 lines of XML ==="
+            head -20 "$XML_FILE"
+
+            echo "=== Last 10 lines of XML ==="
+            tail -10 "$XML_FILE"
+
+            echo "=== Checking XML validity ==="
+            if command -v xmllint >/dev/null 2>&1; then
+              if xmllint --noout "$XML_FILE" 2>/dev/null; then
+                echo "✅ XML is well-formed"
+              else
+                echo "❌ XML is malformed"
+                xmllint --noout "$XML_FILE" 2>&1 || true
+              fi
+            else
+              echo "xmllint not available, skipping XML validation"
+            fi
+
+            echo "=== Basic XML structure check ==="
+            if grep -q "<testsuites" "$XML_FILE" && grep -q "</testsuites>" "$XML_FILE"; then
+              echo "✅ XML has testsuites root element"
+            else
+              echo "❌ XML missing testsuites root element"
+            fi
+
+          else
+            echo "❌ XML file not found: $XML_FILE"
+            echo "Available files in ./itest/results/:"
+            ls -la ./itest/results/ 2>/dev/null || echo "Directory doesn't exist"
+          fi
 
       - name: Generate test results
         uses: dorny/test-reporter@v1
@@ -151,8 +205,8 @@ jobs:
         if: always()
         with:
           name: 'Test results: IT (${{ matrix.rte }}) tests'
-          path: itest/results/*.result.xml
-          reporter: jest-junit
+          path: ./itest/results/*.result.xml
+          reporter: java-junit
           list-tests: 'failed'
           list-suites: 'failed'
           fail-on-error: 'false'

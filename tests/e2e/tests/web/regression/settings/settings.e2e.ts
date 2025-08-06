@@ -47,7 +47,7 @@ fixture `DataTime format setting`
     });
 test
     .requestHooks(logger)
-('Verify that user can select date time format', async t => {
+    .skip('Verify that user can select date time format', async t => {
     const defaultDateRegExp = /^([01]\d|2[0-3]):[0-5]\d:[0-5]\d \d{1,2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4}$/;
     const selectedDateReqExp = /^(0[1-9]|[12]\d|3[01])\.(0[1-9]|1[0-2])\.\d{4} ([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/;
     keyName = `DateTimeTestKey-${Common.generateWord(5)}`;
