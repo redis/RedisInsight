@@ -1,7 +1,7 @@
 import React from 'react'
 import { cleanup, render, screen, userEvent } from 'uiSrc/utils/test-utils'
 
-import { HeaderActions } from './HeaderActions'
+import { HeaderActions, HeaderActionsProps } from './HeaderActions'
 
 // Workaround for @redis-ui/components Title component issue with react-children-utilities
 // TypeError: react_utils.childrenToString is not a function
@@ -10,11 +10,20 @@ jest.mock('uiSrc/components/base/layout/drawer', () => ({
   DrawerHeader: jest.fn().mockReturnValue(null),
 }))
 
-const renderComponent = () => render(<HeaderActions />)
+const mockProps: HeaderActionsProps = {
+  isManageIndexesDrawerOpen: false,
+  setIsManageIndexesDrawerOpen: jest.fn(),
+  isSavedQueriesOpen: false,
+  setIsSavedQueriesOpen: jest.fn(),
+}
 
-describe('ManageIndexesDrawer', () => {
+const renderComponent = (props = mockProps) =>
+  render(<HeaderActions {...props} />)
+
+describe('HeaderActions', () => {
   beforeEach(() => {
     cleanup()
+    jest.clearAllMocks()
   })
 
   it('should render', () => {
@@ -33,21 +42,63 @@ describe('ManageIndexesDrawer', () => {
     expect(manageIndexesButton).toBeInTheDocument()
   })
 
-  it('should open a drawer when "Manage indexes" is clicked', async () => {
-    renderComponent()
+  it('should call setIsSavedQueriesOpen when "Saved queries" is clicked', async () => {
+    const mockSetIsSavedQueriesOpen = jest.fn()
+    renderComponent({
+      ...mockProps,
+      setIsSavedQueriesOpen: mockSetIsSavedQueriesOpen,
+    })
+
+    const savedQueriesButton = screen.getByText('Saved queries')
+    await userEvent.click(savedQueriesButton)
+
+    expect(mockSetIsSavedQueriesOpen).toHaveBeenCalledWith(true)
+  })
+
+  it('should call setIsSavedQueriesOpen with false when "Saved queries" is clicked and isSavedQueriesOpen is true', async () => {
+    const mockSetIsSavedQueriesOpen = jest.fn()
+    renderComponent({
+      ...mockProps,
+      isSavedQueriesOpen: true,
+      setIsSavedQueriesOpen: mockSetIsSavedQueriesOpen,
+    })
+
+    const savedQueriesButton = screen.getByText('Saved queries')
+    await userEvent.click(savedQueriesButton)
+
+    expect(mockSetIsSavedQueriesOpen).toHaveBeenCalledWith(false)
+  })
+
+  it('should call setIsManageIndexesDrawerOpen when "Manage indexes" is clicked', async () => {
+    const mockSetIsManageIndexesDrawerOpen = jest.fn()
+    renderComponent({
+      ...mockProps,
+      setIsManageIndexesDrawerOpen: mockSetIsManageIndexesDrawerOpen,
+    })
 
     const manageIndexesButton = screen.getByText('Manage indexes')
-    expect(manageIndexesButton).toBeInTheDocument()
-
-    // Simulate clicking the "Manage indexes" button
     await userEvent.click(manageIndexesButton)
 
-    // Check if the drawer is opened
+    expect(mockSetIsManageIndexesDrawerOpen).toHaveBeenCalledWith(true)
+  })
+
+  it('should render ManageIndexesDrawer when isManageIndexesDrawerOpen is true', () => {
+    renderComponent({
+      ...mockProps,
+      isManageIndexesDrawerOpen: true,
+    })
+
     const drawer = screen.getByTestId('manage-indexes-drawer')
     expect(drawer).toBeInTheDocument()
+  })
 
-    // Simulate clicking outside the drawer to close it
-    await userEvent.click(document.body, { pointerEventsCheck: 0 })
+  it('should not render ManageIndexesDrawer when isManageIndexesDrawerOpen is false', () => {
+    renderComponent({
+      ...mockProps,
+      isManageIndexesDrawerOpen: false,
+    })
+
+    const drawer = screen.queryByTestId('manage-indexes-drawer')
     expect(drawer).not.toBeInTheDocument()
   })
 })

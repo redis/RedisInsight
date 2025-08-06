@@ -8,12 +8,6 @@ import { ChevronLeftIcon } from 'uiSrc/components/base/icons'
 
 import { selectedBikesIndexFields, stepContents } from './steps'
 import {
-  CreateIndexContent,
-  CreateIndexFooter,
-  CreateIndexHeader,
-  CreateIndexWrapper,
-} from './styles'
-import {
   CreateSearchIndexParameters,
   PresetDataType,
   SampleDataContent,
@@ -21,6 +15,12 @@ import {
   SearchIndexType,
 } from './types'
 import { useCreateIndex } from './hooks/useCreateIndex'
+import {
+  VectorSearchScreenContent,
+  VectorSearchScreenFooter,
+  VectorSearchScreenHeader,
+  VectorSearchScreenWrapper,
+} from '../styles'
 
 const stepNextButtonTexts = [
   'Proceed to adding data',
@@ -73,8 +73,8 @@ export const VectorSearchCreateIndex = ({
   }
 
   return (
-    <CreateIndexWrapper direction="column" justify="between">
-      <CreateIndexHeader direction="row">
+    <VectorSearchScreenWrapper direction="column" justify="between">
+      <VectorSearchScreenHeader direction="row">
         <Title size="M" data-testid="title">
           New vector search
         </Title>
@@ -83,14 +83,14 @@ export const VectorSearchCreateIndex = ({
           <Stepper.Step>Adding data</Stepper.Step>
           <Stepper.Step>Create Index</Stepper.Step>
         </Stepper>
-      </CreateIndexHeader>
-      <CreateIndexContent direction="column" grow={1}>
+      </VectorSearchScreenHeader>
+      <VectorSearchScreenContent direction="column" grow={1}>
         <StepContent
           parameters={createSearchIndexParameters}
           setParameters={setParameters}
         />
-      </CreateIndexContent>
-      <CreateIndexFooter direction="row">
+      </VectorSearchScreenContent>
+      <VectorSearchScreenFooter direction="row">
         {showBackButton && (
           <SecondaryButton
             iconSide="left"
@@ -101,8 +101,10 @@ export const VectorSearchCreateIndex = ({
           </SecondaryButton>
         )}
         <div />
-        <Button loading={loading} onClick={onNextClick}>{stepNextButtonTexts[step]}</Button>
-      </CreateIndexFooter>
-    </CreateIndexWrapper>
+        <Button loading={loading} onClick={onNextClick}>
+          {stepNextButtonTexts[step]}
+        </Button>
+      </VectorSearchScreenFooter>
+    </VectorSearchScreenWrapper>
   )
 }

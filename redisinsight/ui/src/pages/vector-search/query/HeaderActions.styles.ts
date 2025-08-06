@@ -6,6 +6,7 @@ export const StyledHeaderAction = styled(FlexGroup)`
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+  margin-bottom: ${({ theme }) => theme.core.space.space200};
 `
 
 export const StyledTextButton = styled(TextButton)`
