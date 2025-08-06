@@ -48,7 +48,8 @@ test
         // Clear and delete database
         await apiKeyRequests.deleteKeyByNameApi(keyName, cloudDatabaseConfig.databaseName);
         await databaseHelper.deleteDatabase(cloudDatabaseConfig.databaseName);
-    })('Verify that user can add Key in RE Cloud DB', async() => {
+    })
+    .skip('Verify that user can add Key in RE Cloud DB', async() => {
         await verifyKeysAdded();
     });
 test

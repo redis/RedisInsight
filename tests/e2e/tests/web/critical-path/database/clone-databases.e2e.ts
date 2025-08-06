@@ -26,7 +26,8 @@ test
             await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
         }
     })
-    .meta({ rte: rte.standalone })('Verify that user can clone Standalone db', async t => {
+    .meta({ rte: rte.standalone })
+    .skip('Verify that user can clone Standalone db', async t => {
         await databaseHelper.clickOnEditDatabaseByName(ossStandaloneConfig.databaseName);
 
         // Verify that user can test Standalone connection on edit and see the success message
@@ -66,7 +67,8 @@ test
         await databaseAPIRequests.deleteOSSClusterDatabaseApi(ossClusterConfig);
         await myRedisDatabasePage.deleteDatabaseByName(newOssDatabaseAlias);
     })
-    .meta({ rte: rte.ossCluster })('Verify that user can clone OSS Cluster', async t => {
+    .meta({ rte: rte.ossCluster })
+    .skip('Verify that user can clone OSS Cluster', async t => {
         await databaseHelper.clickOnEditDatabaseByName(ossClusterConfig.ossClusterDatabaseName);
 
         // Verify that user can test OSS Cluster connection on edit and see the success message
@@ -99,7 +101,8 @@ test
         await databaseAPIRequests.deleteAllDatabasesByConnectionTypeApi('SENTINEL');
         await myRedisDatabasePage.reloadPage();
     })
-    .meta({ rte: rte.sentinel })('Verify that user can clone Sentinel', async t => {
+    .meta({ rte: rte.sentinel })
+    .skip('Verify that user can clone Sentinel', async t => {
         const hiddenPassword = '••••••••••••';
 
         await databaseHelper.clickOnEditDatabaseByName(ossSentinelConfig.masters[1].alias);

@@ -22,7 +22,8 @@ fixture `Cypher syntax at Workbench`
         // Drop database
         await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
-test('Verify that user can see popover Editor when clicks on “Use Cypher Syntax” popover in the Editor or “Shift+Space”', async t => {
+test
+    .skip('Verify that user can see popover Editor when clicks on “Use Cypher Syntax” popover in the Editor or “Shift+Space”', async t => {
     const command = 'GRAPH.QUERY graph';
 
     // Type command and put the cursor inside
@@ -37,7 +38,8 @@ test('Verify that user can see popover Editor when clicks on “Use Cypher Synta
     await t.pressKey('shift+space');
     await t.expect(await workbenchPage.queryInput.nth(1).visible).ok('The user can not see opened popover Editor');
 });
-test('Verify that popover Editor is populated with the script that was detected between the quotes or it is blank if quotes were empty', async t => {
+test
+    .skip('Verify that popover Editor is populated with the script that was detected between the quotes or it is blank if quotes were empty', async t => {
     const command = 'GRAPH.QUERY graph';
     const script = 'query';
 

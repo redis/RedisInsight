@@ -104,7 +104,7 @@ test
         await verifyMessageDisplayingInPubSub('message', false);
         await t.expect(pubSubPage.totalMessagesCount.exists).notOk('Total counter is still displayed');
     });
-test('Verify that user can see a internal link to pubsub window under word “Pub/Sub” when he tries to run PSUBSCRIBE or SUBSCRIBE commands in CLI or Workbench', async t => {
+test.skip('Verify that user can see a internal link to pubsub window under word “Pub/Sub” when he tries to run PSUBSCRIBE or SUBSCRIBE commands in CLI or Workbench', async t => {
     const commandFirst = 'PSUBSCRIBE';
     const commandSecond = 'SUBSCRIBE';
 

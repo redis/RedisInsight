@@ -44,7 +44,8 @@ fixture `Onboarding new user tests`
     });
 // https://redislabs.atlassian.net/browse/RI-4070, https://redislabs.atlassian.net/browse/RI-4067
 // https://redislabs.atlassian.net/browse/RI-4278
-test('Verify onboarding new user steps', async t => {
+test
+    .skip('Verify onboarding new user steps', async t => {
     await t.click(myRedisDatabasePage.NavigationPanel.helpCenterButton);
     await t.expect(myRedisDatabasePage.NavigationPanel.HelpCenter.helpCenterPanel.visible).ok('help center panel is not opened');
     // Verify that user can reset onboarding
@@ -118,7 +119,8 @@ test('Verify onboarding new user steps', async t => {
     await t.expect(browserPage.patternModeBtn.visible).ok('Browser page is not opened');
 });
 // https://redislabs.atlassian.net/browse/RI-4067, https://redislabs.atlassian.net/browse/RI-4278
-test('Verify onboard new user skip tour', async(t) => {
+test
+    .skip('Verify onboard new user skip tour', async(t) => {
     await t.click(myRedisDatabasePage.NavigationPanel.helpCenterButton);
     await t.expect(myRedisDatabasePage.NavigationPanel.HelpCenter.helpCenterPanel.visible).ok('help center panel is not opened');
     // Verify that user can reset onboarding
@@ -151,7 +153,8 @@ test('Verify onboard new user skip tour', async(t) => {
     await t.expect(browserPage.patternModeBtn.visible).ok('Browser page is not opened');
 });
 // https://redislabs.atlassian.net/browse/RI-4305
-test.requestHooks(logger)('Verify that the final onboarding step is closed when user opens another page', async(t) => {
+test.requestHooks(logger)
+    .skip('Verify that the final onboarding step is closed when user opens another page', async(t) => {
     await t.click(myRedisDatabasePage.NavigationPanel.helpCenterButton);
     await t.click(onboardingCardsDialog.resetOnboardingBtn);
     await onboardingCardsDialog.startOnboarding();

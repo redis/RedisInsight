@@ -123,7 +123,7 @@ export const initialState: StateAppContext = {
   },
   pipelineManagement: {
     lastViewedPage: '',
-    isOpenDialog: true,
+    isOpenDialog: false,
   },
 }
 
@@ -351,7 +351,7 @@ const appContextSlice = createSlice({
     },
     resetPipelineManagement: (state) => {
       state.pipelineManagement.lastViewedPage = ''
-      state.pipelineManagement.isOpenDialog = true
+      state.pipelineManagement.isOpenDialog = false
     },
   },
 })

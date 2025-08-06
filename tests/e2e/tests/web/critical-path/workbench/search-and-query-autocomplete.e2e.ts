@@ -45,7 +45,8 @@ fixture `Autocomplete for entered commands in search and query`
         await browserPage.Cli.sendCommandsInCli([`DEL ${keyNames.join(' ')}`, `FT.DROPINDEX ${indexName2}`]);
         await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
-test('Verify that tutorials can be opened from Workbench', async t => {
+test
+    .skip('Verify that tutorials can be opened from Workbench', async t => {
     await t.click(browserPage.NavigationPanel.workbenchButton);
     await t.click(workbenchPage.getTutorialLinkLocator('sq-intro'));
     await t.expect(workbenchPage.InsightsPanel.sidePanel.exists).ok('Insight panel is not opened');

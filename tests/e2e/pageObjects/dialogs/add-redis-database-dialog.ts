@@ -14,6 +14,7 @@ export class AddRedisDatabaseDialog {
     // BUTTONS
     addDatabaseButton = Selector('[data-testid^=add-redis-database]');
     addRedisDatabaseButton = Selector('[data-testid=btn-submit]');
+    addRedisDatabaseButtonHover = Selector('[data-testid=btn-submit]').parent();
     customSettingsButton = Selector('[data-testid=btn-connection-settings]');
     addAutoDiscoverDatabase = Selector('[data-testid=add-database_tab_software]');
     addCloudDatabaseButton = Selector('[data-testid=create-free-db-btn]');
@@ -27,6 +28,7 @@ export class AddRedisDatabaseDialog {
     cloneDatabaseButton = Selector('[data-testid=clone-db-btn]');
     cancelButton = Selector('[data-testid=btn-cancel]');
     testConnectionBtn = Selector('[data-testid=btn-test-connection]');
+    testConnectionBtnHover = Selector('[data-testid=btn-test-connection]').parent();
     backButton = Selector('[data-testid=back-btn]');
     generalTab = Selector('[data-testid=manual-form-tab-general]');
     securityTab = Selector('[data-testid=manual-form-tab-security]');
@@ -61,14 +63,14 @@ export class AddRedisDatabaseDialog {
     selectCompressor = Selector('[data-testid=select-compressor]', { timeout: 1000 });
     certificateDropdownList = Selector('div.euiSuperSelect__listbox div');
     // CHECKBOXES
-    useSSHCheckbox = Selector('[data-testid=use-ssh]~div', { timeout: 500 });
+    useSSHCheckbox = Selector('[data-testid=use-ssh] ~ label', { timeout: 500 });
     dataCompressorCheckbox = Selector('[data-testid=showCompressor] ~ label');
     requiresTlsClientCheckbox = Selector('[data-testid=tls-required-checkbox]  ~ label');
     useCloudAccount = Selector('#cloud-account').parent();
     useCloudKeys = Selector('#cloud-api-keys').parent();
     // RADIO BUTTONS
-    sshPasswordRadioBtn = Selector('#password~div', { timeout: 500 });
-    sshPrivateKeyRadioBtn = Selector('#privateKey~div', { timeout: 500 });
+    sshPasswordRadioBtn = Selector('[for="password"]', { timeout: 500 });
+    sshPrivateKeyRadioBtn = Selector('[for="privateKey"]', { timeout: 500 });
     cloudOptionsRadioBtn =  Selector('[data-testid=cloud-options]');
     // LABELS
     dataCompressorLabel = Selector('[data-testid=showCompressor] ~ label', { timeout: 1000 });

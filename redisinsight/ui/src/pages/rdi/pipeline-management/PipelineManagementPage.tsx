@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { IRoute, PageNames, Pages } from 'uiSrc/constants'
 import { connectedInstanceSelector } from 'uiSrc/slices/rdi/instances'
 import {
+  fetchRdiPipeline,
   fetchRdiPipelineJobFunctions,
   fetchRdiPipelineSchema,
 } from 'uiSrc/slices/rdi/pipeline'
@@ -43,6 +44,7 @@ const PipelineManagementPage = ({ routes = [] }: Props) => {
   setTitle(`${rdiInstanceName} - Pipeline Management`)
 
   useEffect(() => {
+    dispatch(fetchRdiPipeline(rdiInstanceId))
     dispatch(fetchRdiPipelineSchema(rdiInstanceId))
     dispatch(fetchRdiPipelineJobFunctions(rdiInstanceId))
   }, [])

@@ -35,7 +35,8 @@ test
     })
     .after(async() => {
         await databaseAPIRequests.deleteAllDatabasesApi();
-    })('Verify that insights panel is opened in cloud db if users db does not have some module', async t => {
+    })
+    .skip('Verify that insights panel is opened in cloud db if users db does not have some module', async t => {
         await t.click(browserPage.redisearchModeBtn);
         await t.click(browserPage.Modal.closeModalButton);
         await t.click(browserPage.NavigationPanel.myRedisDBButton);

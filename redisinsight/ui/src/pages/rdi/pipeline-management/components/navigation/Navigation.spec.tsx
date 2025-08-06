@@ -1,7 +1,17 @@
 import React from 'react'
 import reactRouterDom from 'react-router-dom'
-import { render, screen, fireEvent } from 'uiSrc/utils/test-utils'
+import { cloneDeep } from 'lodash'
+import {
+  render,
+  screen,
+  fireEvent,
+  mockedStore,
+  cleanup,
+  initialStateDefault,
+} from 'uiSrc/utils/test-utils'
 
+import { rdiPipelineSelector } from 'uiSrc/slices/rdi/pipeline'
+import { RdiPipelineTabs } from 'uiSrc/slices/interfaces'
 import Navigation from './Navigation'
 
 jest.mock('uiSrc/telemetry', () => ({
@@ -29,12 +39,53 @@ jest.mock('formik', () => ({
   }),
 }))
 
+jest.mock('uiSrc/slices/rdi/pipeline', () => ({
+  ...jest.requireActual('uiSrc/slices/rdi/pipeline'),
+  rdiPipelineSelector: jest.fn(),
+}))
+
+let store: typeof mockedStore
+beforeEach(() => {
+  cleanup()
+  store = cloneDeep(mockedStore)
+  store.clearActions()
+  ;(rdiPipelineSelector as jest.Mock).mockReturnValue(
+    initialStateDefault.rdi.pipeline,
+  )
+})
+
 describe('Navigation', () => {
   it('should render', () => {
     expect(render(<Navigation />)).toBeTruthy()
   })
 
+  it('should not show nav when pipeline is loading', () => {
+    render(<Navigation />)
+
+    expect(
+      screen.queryByTestId(`rdi-nav-btn-${RdiPipelineTabs.Config}`),
+    ).not.toBeInTheDocument()
+  })
+
+  it('should show nav when pipeline is not loading', () => {
+    ;(rdiPipelineSelector as jest.Mock).mockReturnValue({
+      ...initialStateDefault.rdi.pipeline,
+      loading: false,
+    })
+
+    render(<Navigation />)
+
+    expect(
+      screen.queryByTestId(`rdi-nav-btn-${RdiPipelineTabs.Config}`),
+    ).toBeInTheDocument()
+  })
+
   it('should call proper history push after click on tabs', () => {
+    ;(rdiPipelineSelector as jest.Mock).mockReturnValue({
+      ...initialStateDefault.rdi.pipeline,
+      loading: false,
+    })
+
     const pushMock = jest.fn()
     reactRouterDom.useHistory = jest.fn().mockReturnValue({ push: pushMock })
 

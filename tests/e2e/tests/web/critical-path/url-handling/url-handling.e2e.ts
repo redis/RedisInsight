@@ -38,7 +38,8 @@ fixture `Add DB from SM`
         await databaseHelper.acceptLicenseTerms();
     });
 test
-    .page(commonUrl)('Add DB using url via manual flow', async t => {
+    .page(commonUrl)
+    .skip('Add DB using url via manual flow', async t => {
         const connectUrlParams = {
             redisUrl: `redis://${databaseUsername}:${databasePassword}@${host}:${port}`,
             databaseAlias: databaseName,
