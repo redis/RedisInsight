@@ -13,6 +13,7 @@ import { VectorIndexTab } from 'uiSrc/components/new-index/create-index-step/Cre
 import { BuildNewIndexTabTrigger } from 'uiSrc/components/new-index/create-index-step/build-new-index-tab/BuildNewIndexTabTrigger'
 import { TextInput } from 'uiSrc/components/base/inputs'
 
+import { PlayFilledIcon } from 'uiSrc/components/base/icons'
 import { bikesIndexFieldsBoxes } from './config'
 import { CreateIndexStepScreenWrapper, SearchInputWrapper } from './styles'
 import { PreviewCommandDrawer } from './PreviewCommandDrawer'
@@ -80,8 +81,11 @@ export const CreateIndexStep: IStepComponent = ({
           tabs={indexFieldsTabs}
         />
         <FlexGroup justify="end">
-          <EmptyButton onClick={() => setIsDrawerOpen(true)}>
-            ► Command preview
+          <EmptyButton
+            icon={PlayFilledIcon}
+            onClick={() => setIsDrawerOpen(true)}
+          >
+            Command preview
           </EmptyButton>
         </FlexGroup>
       </FlexItem>

@@ -67,14 +67,14 @@ describe('SavedQueriesScreen', () => {
   it('should render insert buttons for each query', () => {
     render(<SavedQueriesScreen {...defaultProps} />)
 
-    const insertButtons = screen.getAllByText('► Insert')
+    const insertButtons = screen.getAllByText('Insert')
     expect(insertButtons).toHaveLength(2) // 2 queries in the selected index
   })
 
   it('should call onQueryInsert when insert button is clicked', () => {
     render(<SavedQueriesScreen {...defaultProps} />)
 
-    const firstInsertButton = screen.getAllByText('► Insert')[0]
+    const firstInsertButton = screen.getAllByText('Insert')[0]
     fireEvent.click(firstInsertButton)
 
     expect(mockOnQueryInsert).toHaveBeenCalledTimes(1)
@@ -86,7 +86,7 @@ describe('SavedQueriesScreen', () => {
   it('should call onQueryInsert with correct query value for second button', () => {
     render(<SavedQueriesScreen {...defaultProps} />)
 
-    const insertButtons = screen.getAllByText('► Insert')
+    const insertButtons = screen.getAllByText('Insert')
 
     // Click second insert button
     fireEvent.click(insertButtons[1])
@@ -117,7 +117,7 @@ describe('SavedQueriesScreen', () => {
 
       expect(screen.getByText('Search for restaurants')).toBeInTheDocument()
 
-      const insertButtons = screen.getAllByText('► Insert')
+      const insertButtons = screen.getAllByText('Insert')
       expect(insertButtons).toHaveLength(1) // 1 query in restaurant index
     })
 
@@ -129,7 +129,7 @@ describe('SavedQueriesScreen', () => {
 
       render(<SavedQueriesScreen {...propsWithRestaurantIndex} />)
 
-      const insertButtons = screen.getAllByText('► Insert')
+      const insertButtons = screen.getAllByText('Insert')
 
       fireEvent.click(insertButtons[0])
       expect(mockOnQueryInsert).toHaveBeenCalledWith(
@@ -154,7 +154,7 @@ describe('SavedQueriesScreen', () => {
 
       render(<SavedQueriesScreen {...propsWithEmptyQueries} />)
 
-      expect(screen.queryByText('► Insert')).not.toBeInTheDocument()
+      expect(screen.queryByText('Insert')).not.toBeInTheDocument()
     })
   })
 })

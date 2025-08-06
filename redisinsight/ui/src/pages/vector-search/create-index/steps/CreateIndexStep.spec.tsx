@@ -64,7 +64,7 @@ describe('CreateIndexStep', () => {
   it('should render the command preview button', () => {
     render(<CreateIndexStep {...defaultProps} />)
 
-    expect(screen.getByText('► Command preview')).toBeInTheDocument()
+    expect(screen.getByText('Command preview')).toBeInTheDocument()
   })
 
   it('should render the tab labels', () => {
@@ -143,7 +143,7 @@ describe('CreateIndexStep', () => {
 
       // Verify all 8 field boxes are rendered (from bikesIndexFieldsBoxes config)
       const fieldLabels = ['id', 'description', 'price', 'price_1', 'name', 'category', 'embedding', 'embedding_1']
-      
+
       fieldLabels.forEach(label => {
         expect(screen.getByText(label)).toBeInTheDocument()
       })
@@ -161,7 +161,7 @@ describe('CreateIndexStep', () => {
     it('should have proper button text', () => {
       render(<CreateIndexStep {...defaultProps} />)
 
-      const commandPreviewButton = screen.getByText('► Command preview')
+      const commandPreviewButton = screen.getByText('Command preview')
       expect(commandPreviewButton).toBeInTheDocument()
     })
   })
