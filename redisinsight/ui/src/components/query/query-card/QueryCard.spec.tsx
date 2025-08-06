@@ -9,6 +9,7 @@ import {
   fireEvent,
   mockedStore,
   render,
+  screen,
 } from 'uiSrc/utils/test-utils'
 import { CommandExecutionStatus } from 'uiSrc/slices/interfaces/cli'
 import QueryCard, { Props, getSummaryText } from './QueryCard'
@@ -207,5 +208,18 @@ describe('QueryCard', () => {
     const queryCliResultEl = queryByTestId('query-cli-result')
 
     expect(queryCliResultEl).toBeInTheDocument()
+  })
+
+  it('should call onQueryCopy callback when the copy button is clicked', () => {
+    const onQueryCopy = jest.fn()
+
+    render(<QueryCard {...instance(mockedProps)} onQueryCopy={onQueryCopy} />)
+
+    const copyButton = screen.getByTestId('copy-command')
+    expect(copyButton).toBeInTheDocument()
+
+    fireEvent.click(copyButton)
+
+    expect(onQueryCopy).toHaveBeenCalled()
   })
 })

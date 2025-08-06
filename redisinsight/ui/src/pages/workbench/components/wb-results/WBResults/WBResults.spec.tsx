@@ -2,8 +2,23 @@ import { cloneDeep } from 'lodash'
 import React from 'react'
 import { instance, mock } from 'ts-mockito'
 import { CommandExecutionUI } from 'uiSrc/slices/interfaces'
-import { cleanup, mockedStore, render, screen } from 'uiSrc/utils/test-utils'
+import {
+  cleanup,
+  fireEvent,
+  mockedStore,
+  render,
+  screen,
+} from 'uiSrc/utils/test-utils'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
+import { CommandExecutionStatus } from 'uiSrc/slices/interfaces/cli'
 import WBResults, { Props } from './WBResults'
+
+// Mock the telemetry module, so we don't send actual telemetry data during tests
+jest.mock('uiSrc/telemetry', () => ({
+  ...jest.requireActual('uiSrc/telemetry'),
+  sendEventTelemetry: jest.fn(),
+}))
 
 const mockedProps = mock<Props>()
 
@@ -55,7 +70,7 @@ describe('WBResults', () => {
         result: [
           {
             response: 'data1',
-            status: 'success',
+            status: CommandExecutionStatus.Success,
           },
         ],
       },
@@ -65,7 +80,7 @@ describe('WBResults', () => {
         result: [
           {
             response: 'data2',
-            status: 'success',
+            status: CommandExecutionStatus.Success,
           },
         ],
       },
@@ -74,5 +89,44 @@ describe('WBResults', () => {
     expect(
       render(<WBResults {...instance(mockedProps)} items={itemsMock} />),
     ).toBeTruthy()
+  })
+
+  it('should collect telemetry on query copy', () => {
+    // TODO: Extract this a a facctory to avoid duplication
+    const itemsMock: CommandExecutionUI[] = [
+      {
+        id: '1',
+        command: 'query1',
+        result: [
+          {
+            response: 'data1',
+            status: CommandExecutionStatus.Success,
+          },
+        ],
+      },
+    ]
+
+    render(
+      <WBResults
+        {...instance(mockedProps)}
+        items={itemsMock}
+        isResultsLoaded={false}
+      />,
+    )
+
+    // Find and click the "Copy" button
+    const copyButton = screen.getByTestId('copy-command')
+    expect(copyButton).toBeInTheDocument()
+
+    fireEvent.click(copyButton)
+
+    // Verify telemetry event was sent
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
+      event: TelemetryEvent.WORKBENCH_COMMAND_COPIED,
+      eventData: {
+        databaseId: INSTANCE_ID_MOCK,
+        command: itemsMock[0].command,
+      },
+    })
   })
 })
