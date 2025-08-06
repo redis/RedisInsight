@@ -1,6 +1,6 @@
 import { createBrowserHistory } from 'history'
 
-import type { RootState, AppDispatch, ReduxStore } from 'uiSrc/slices/store'
+import type { ReduxStore } from 'uiSrc/slices/store'
 
 // Re-export all types and exports from the real store to avoid circular dependencies during tests
 
@@ -16,7 +16,7 @@ export const setStoreRef = (store: ReduxStore) => {
   storeRef = store
 }
 
-const getState = (): RootState => {
+const getState: ReduxStore['getState'] = () => {
   if (!storeRef) {
     throw new Error(
       'Store not initialized. Make sure store-dynamic is imported after store creation.',
@@ -25,7 +25,7 @@ const getState = (): RootState => {
   return storeRef.getState()
 }
 
-const dispatch: AppDispatch = (action: any) => {
+const dispatch: ReduxStore['dispatch'] = (action: any) => {
   if (!storeRef) {
     throw new Error(
       'Store not initialized. Make sure store-dynamic is imported after store creation.',
@@ -34,8 +34,18 @@ const dispatch: AppDispatch = (action: any) => {
   return storeRef.dispatch(action)
 }
 
+const subscribe: ReduxStore['subscribe'] = (listener: () => void) => {
+  if (!storeRef) {
+    throw new Error(
+      'Store not initialized. Make sure store-dynamic is imported after store creation.',
+    )
+  }
+  return storeRef.subscribe(listener)
+}
+
 // Export store object that matches the real store interface
 export const store = {
   getState,
   dispatch,
+  subscribe,
 }
