@@ -2,7 +2,7 @@ import React from 'react'
 import { StyledHeaderAction, StyledTextButton } from './HeaderActions.styles'
 import { ManageIndexesDrawer } from '../manage-indexes/ManageIndexesDrawer'
 
-type HeaderActionsProps = {
+export type HeaderActionsProps = {
   isManageIndexesDrawerOpen: boolean
   setIsManageIndexesDrawerOpen: (value: boolean) => void
   isSavedQueriesOpen: boolean

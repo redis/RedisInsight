@@ -1,7 +1,7 @@
 import React from 'react'
 import { cleanup, render, screen, userEvent } from 'uiSrc/utils/test-utils'
 
-import { HeaderActions } from './HeaderActions'
+import { HeaderActions, HeaderActionsProps } from './HeaderActions'
 
 // Workaround for @redis-ui/components Title component issue with react-children-utilities
 // TypeError: react_utils.childrenToString is not a function
@@ -10,7 +10,7 @@ jest.mock('uiSrc/components/base/layout/drawer', () => ({
   DrawerHeader: jest.fn().mockReturnValue(null),
 }))
 
-const mockProps = {
+const mockProps: HeaderActionsProps = {
   isManageIndexesDrawerOpen: false,
   setIsManageIndexesDrawerOpen: jest.fn(),
   isSavedQueriesOpen: false,
