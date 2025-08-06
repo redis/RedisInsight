@@ -7,6 +7,8 @@ import {
   INSTANCE_ID_MOCK,
   INSTANCES_MOCK,
 } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
+import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import { redisearchListSelector } from 'uiSrc/slices/browser/redisearch'
 import { VectorSearchPage } from './VectorSearchPage'
 
 // Mock the telemetry module, so we don't send actual telemetry data during tests
@@ -35,14 +37,24 @@ describe('VectorSearchPage', () => {
       jest.clearAllMocks()
 
       mockUseSelector = jest.spyOn(reactRedux, 'useSelector')
-      mockUseSelector
-        .mockImplementationOnce(() => INSTANCES_MOCK[0]) // connectedInstanceSelector
-        .mockImplementation(() => ({
+      mockUseSelector.mockImplementation((selector) => {
+        if (selector === connectedInstanceSelector) {
+          return INSTANCES_MOCK[0]
+        }
+        if (selector === redisearchListSelector) {
+          return {
+            loading: false,
+            data: [],
+          }
+        }
+        // Default fallback for other selectors
+        return {
           loading: false,
-          spec: {}, // Provide at least an empty object for COMMANDS_SPEC
+          spec: {},
           commandsArray: [],
           commandGroups: [],
-        })) // appRedisCommandsSelector
+        }
+      })
     })
 
     afterEach(() => {
