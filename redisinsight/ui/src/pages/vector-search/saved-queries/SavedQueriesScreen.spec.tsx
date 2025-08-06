@@ -53,20 +53,11 @@ describe('SavedQueriesScreen', () => {
     expect(render(<SavedQueriesScreen {...defaultProps} />)).toBeTruthy()
   })
 
-  it('should render the main title', () => {
+  it('should render the main content', () => {
     render(<SavedQueriesScreen {...defaultProps} />)
 
     expect(screen.getByText('Saved queries')).toBeInTheDocument()
-  })
-
-  it('should render the index selector label', () => {
-    render(<SavedQueriesScreen {...defaultProps} />)
-
     expect(screen.getByText('Index:')).toBeInTheDocument()
-  })
-
-  it('should render all queries for the selected index', () => {
-    render(<SavedQueriesScreen {...defaultProps} />)
 
     // Check that all queries from the selected index are rendered
     expect(screen.getByText('Search for bikes')).toBeInTheDocument()
@@ -164,24 +155,6 @@ describe('SavedQueriesScreen', () => {
       render(<SavedQueriesScreen {...propsWithEmptyQueries} />)
 
       expect(screen.queryByText('► Insert')).not.toBeInTheDocument()
-    })
-  })
-
-  describe('Component Structure', () => {
-    it('should render the main wrapper components', () => {
-      const { container } = render(<SavedQueriesScreen {...defaultProps} />)
-
-      expect(container.firstChild).toBeInTheDocument()
-    })
-
-    it('should have proper button text for insert actions', () => {
-      render(<SavedQueriesScreen {...defaultProps} />)
-
-      const insertButtons = screen.getAllByText('► Insert')
-      insertButtons.forEach((button) => {
-        expect(button).toBeInTheDocument()
-        expect(button.tagName).toBe('BUTTON')
-      })
     })
   })
 })

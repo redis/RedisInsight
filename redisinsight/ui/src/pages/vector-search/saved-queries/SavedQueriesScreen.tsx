@@ -65,8 +65,7 @@ export const SavedQueriesScreen = ({
           />
         </VectorSearchSavedQueriesSelectWrapper>
         {selectedIndex?.queries.map((query) => (
-          // @ts-expect-error: key prop
-          <VectorSearchScreenBlockWrapper key={query.value}>
+          <VectorSearchScreenBlockWrapper key={query.value} as="div">
             <Text>{query.label}</Text>
             <RightAlignedWrapper>
               <Button
