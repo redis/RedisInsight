@@ -16,6 +16,7 @@ import { ThemeProvider } from 'styled-components'
 import { themeLight } from '@redis-ui/styles'
 import userEvent from '@testing-library/user-event'
 import type { RootState, ReduxStore } from 'uiSrc/slices/store'
+import { setStoreRef } from 'uiSrc/slices/store-dynamic'
 import { initialState as initialStateInstances } from 'uiSrc/slices/instances/instances'
 import { initialState as initialStateTags } from 'uiSrc/slices/instances/tags'
 import { initialState as initialStateCaCerts } from 'uiSrc/slices/instances/caCerts'
@@ -168,6 +169,10 @@ export const mockStore = configureMockStore<RootState>([thunk])
 export const mockedStore = mockStore(initialStateDefault)
 export const mockedStoreFn = () => mockStore(initialStateDefault)
 
+// Set the mock store reference for the dynamic store wrapper
+// This ensures that store-dynamic works correctly in tests
+setStoreRef(mockedStore as any)
+
 // insert root state to the render Component
 const render = (
   ui: JSX.Element,
@@ -178,6 +183,11 @@ const render = (
     ...renderOptions
   }: Options = initialStateDefault,
 ) => {
+  // Set the store reference for the dynamic store wrapper if a custom store is provided
+  if (store !== mockedStore) {
+    setStoreRef(store as any)
+  }
+
   const Wrapper = ({ children }: { children: JSX.Element }) => (
     <ThemeProvider theme={themeLight}>
       <Provider store={store}>{children}</Provider>
@@ -198,6 +208,11 @@ const renderHook = (
     ...renderOptions
   }: Options = initialStateDefault,
 ) => {
+  // Set the store reference for the dynamic store wrapper if a custom store is provided
+  if (store !== mockedStore) {
+    setStoreRef(store as any)
+  }
+
   const Wrapper = ({ children }: { children: JSX.Element }) => (
     <Provider store={store}>{children}</Provider>
   )

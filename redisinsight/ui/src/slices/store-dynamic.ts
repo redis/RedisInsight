@@ -1,23 +1,31 @@
-/* eslint-disable global-require */
 import type { RootState, AppDispatch } from './store'
 
-// Importing store methods dynamically to avoid circular dependencies
+// Lazy reference to avoid circular dependencies
+// The store will be set by the store module itself after it's created
+let storeRef: { getState: () => RootState; dispatch: AppDispatch } | null = null
+
+// This function will be called by the store modules to set the reference
+export const setStoreRef = (store: { getState: () => RootState; dispatch: AppDispatch }) => {
+  storeRef = store
+}
 
 const getState = (): RootState => {
-  const { store } = require('uiSrc/slices/store')
-  return store.getState() as RootState
+  if (!storeRef) {
+    throw new Error('Store not initialized. Make sure store-dynamic is imported after store creation.')
+  }
+  return storeRef.getState()
 }
 
 const dispatch: AppDispatch = (action: any) => {
-  const { store } = require('uiSrc/slices/store')
-  return store.dispatch(action)
+  if (!storeRef) {
+    throw new Error('Store not initialized. Make sure store-dynamic is imported after store creation.')
+  }
+  return storeRef.dispatch(action)
 }
 
-const store = {
+export const store = {
   getState,
   dispatch,
 }
 
-export { store }
-
-export { RootState, AppDispatch }
+export type { RootState, AppDispatch }
