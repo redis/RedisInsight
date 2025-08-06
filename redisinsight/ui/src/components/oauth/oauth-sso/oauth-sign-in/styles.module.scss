@@ -5,7 +5,6 @@
   .advantagesContainer {
     max-width: 320px;
     padding: 0 24px 24px;
-    background-color: var(--cloudSsoAdvantagesBgColor);
   }
 
   .socialContainer {
@@ -21,6 +20,7 @@
 
     .title {
       font-weight: bold;
+      text-align: center;
     }
   }
 

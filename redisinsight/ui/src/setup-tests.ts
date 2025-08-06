@@ -42,3 +42,15 @@ global.ResizeObserver = jest.fn().mockImplementation(() => ({
 
 // we need this since jsdom doesn't support PointerEvent
 window.HTMLElement.prototype.hasPointerCapture = jest.fn()
+
+// Mock window.indexedDB for test environments (jsdom/Node)
+if (!window.indexedDB) {
+  window.indexedDB = {
+    open: jest.fn(() => ({
+      onerror: jest.fn(),
+      onsuccess: jest.fn(),
+      onupgradeneeded: jest.fn(),
+      result: {},
+    })),
+  } as any
+}

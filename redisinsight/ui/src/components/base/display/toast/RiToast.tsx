@@ -17,16 +17,12 @@ const StyledMessage = styled.div<{ theme: Theme }>`
   margin-bottom: ${({ theme }) => theme.core.space.space100};
 `
 
+type RiToastType = ToastContentParams &
+  CommonProps & {
+    onClose?: VoidFunction
+  }
 export const riToast = (
-  {
-    onClose,
-    actions,
-    message,
-    ...content
-  }: ToastContentParams &
-    CommonProps & {
-      onClose?: VoidFunction
-    },
+  { onClose, actions, message, ...content }: RiToastType,
   options?: ToastOptions | undefined,
 ) => {
   const toastContent: ToastContentParams = {

@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react'
-import { EuiModal, EuiModalBody } from '@elastic/eui'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import { useHistory } from 'react-router-dom'
@@ -36,7 +35,6 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { Title } from 'uiSrc/components/base/text/Title'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import {
   RiRadioGroupItemIndicator,
@@ -45,6 +43,8 @@ import {
   RiRadioGroupRoot,
 } from 'uiSrc/components/base/forms/radio-group/RadioGroup'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { Modal } from 'uiSrc/components/base/display'
+import { CancelIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 interface FormValues {
@@ -183,54 +183,60 @@ const OAuthSelectAccountDialog = () => {
   }))
 
   return (
-    <EuiModal
-      className={styles.container}
-      onClose={handleOnClose}
-      data-testid="oauth-select-account-dialog"
-    >
-      <EuiModalBody className={styles.modalBody}>
-        <section className={styles.content}>
-          <Title size="M" className={styles.title}>
-            Connect to Redis Cloud
-          </Title>
-          <Text className={styles.subTitle}>
-            Select an account to connect to:
-          </Text>
-          <Spacer size="xl" />
-          <RiRadioGroupRoot
-            value={formik.values.accountId ?? ''}
-            onChange={(id) => handleChangeAccountIdFormat(id)}
-          >
-            {radios.map(({ id, label }) => (
-              <RiRadioGroupItemRoot value={id} key={id}>
-                <RiRadioGroupItemIndicator />
-                <RiRadioGroupItemLabel>{label}</RiRadioGroupItemLabel>
-              </RiRadioGroupItemRoot>
-            ))}
-          </RiRadioGroupRoot>
-        </section>
-        <div className={styles.footer}>
-          <SecondaryButton
-            className={styles.button}
-            onClick={handleOnClose}
-            data-testid="close-oauth-select-account-dialog"
-            aria-labelledby="close oauth select account dialog"
-          >
-            Cancel
-          </SecondaryButton>
-          <PrimaryButton
-            disabled={loading || plansLoadings}
-            loading={loading || plansLoadings}
-            className={styles.button}
-            onClick={() => formik.handleSubmit()}
-            data-testid="submit-oauth-select-account-dialog"
-            aria-labelledby="submit oauth select account dialog"
-          >
-            Select account
-          </PrimaryButton>
-        </div>
-      </EuiModalBody>
-    </EuiModal>
+    <Modal.Compose open>
+      <Modal.Content.Compose
+        className={styles.container}
+        data-testid="oauth-select-account-dialog"
+      >
+        <Modal.Content.Close
+          icon={CancelIcon}
+          onClick={handleOnClose}
+          data-testid="oauth-select-account-dialog-close-btn"
+        />
+        <Modal.Content.Header.Title>
+          Connect to Redis Cloud
+        </Modal.Content.Header.Title>
+        <Modal.Content.Body.Compose>
+          <section className={styles.content}>
+            <Text className={styles.subTitle}>
+              Select an account to connect to:
+            </Text>
+            <Spacer size="xl" />
+            <RiRadioGroupRoot
+              value={formik.values.accountId ?? ''}
+              onChange={(id) => handleChangeAccountIdFormat(id)}
+            >
+              {radios.map(({ id, label }) => (
+                <RiRadioGroupItemRoot value={id} key={id}>
+                  <RiRadioGroupItemIndicator />
+                  <RiRadioGroupItemLabel>{label}</RiRadioGroupItemLabel>
+                </RiRadioGroupItemRoot>
+              ))}
+            </RiRadioGroupRoot>
+          </section>
+          <div className={styles.footer}>
+            <SecondaryButton
+              className={styles.button}
+              onClick={handleOnClose}
+              data-testid="close-oauth-select-account-dialog"
+              aria-labelledby="close oauth select account dialog"
+            >
+              Cancel
+            </SecondaryButton>
+            <PrimaryButton
+              disabled={loading || plansLoadings}
+              loading={loading || plansLoadings}
+              className={styles.button}
+              onClick={() => formik.handleSubmit()}
+              data-testid="submit-oauth-select-account-dialog"
+              aria-labelledby="submit oauth select account dialog"
+            >
+              Select account
+            </PrimaryButton>
+          </div>
+        </Modal.Content.Body.Compose>
+      </Modal.Content.Compose>
+    </Modal.Compose>
   )
 }
 

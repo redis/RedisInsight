@@ -35,6 +35,24 @@ jest.mock('uiSrc/telemetry', () => ({
   sendEventTelemetry: jest.fn(),
 }))
 
+jest.mock('uiSrc/components/base/display', () => {
+  const actual = jest.requireActual('uiSrc/components/base/display')
+
+  return {
+    ...actual,
+    Modal: {
+      ...actual.Modal,
+      Content: {
+        ...actual.Modal.Content,
+        Header: {
+          ...actual.Modal.Content.Header,
+          Title: jest.fn().mockReturnValue(null),
+        },
+      },
+    },
+  }
+})
+
 let store: typeof mockedStore
 beforeEach(() => {
   cleanup()

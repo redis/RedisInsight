@@ -1,6 +1,7 @@
-import React, { ChangeEvent, Ref, useEffect, useRef, useState } from 'react'
-import { capitalize } from 'lodash'
+import React, { Ref, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
+
+import { useTheme } from '@redis-ui/styles'
 
 import * as keys from 'uiSrc/constants/keys'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
@@ -8,13 +9,19 @@ import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import { WindowEvent } from 'uiSrc/components/base/utils/WindowEvent'
 import { FocusTrap } from 'uiSrc/components/base/utils/FocusTrap'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
-import { CancelSlimIcon, CheckThinIcon } from 'uiSrc/components/base/icons'
-import {
-  DestructiveButton,
-  IconButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { DestructiveButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
 import { TextInput } from 'uiSrc/components/base/inputs'
+
+import {
+  ActionsContainer,
+  ActionsWrapper,
+  ApplyButton,
+  DeclineButton,
+  IIEContainer,
+  StyledTextInput,
+} from './InlineItemEditor.styles'
+
 
 import styles from './styles.module.scss'
 
@@ -53,6 +60,20 @@ export interface Props {
   approveByValidation?: (value: string) => boolean
   approveText?: { title: string; text: string }
   textFiledClassName?: string
+  styles?: {
+    inputContainer?: {
+      width?: string,
+      height?: string,
+    }
+    input?: {
+      width?: string,
+      height?: string,
+    }
+    actionsContainer?: {
+      width?: string
+      height?: string
+    }
+  }
 }
 
 const InlineItemEditor = (props: Props) => {
@@ -86,11 +107,15 @@ const InlineItemEditor = (props: Props) => {
     approveByValidation,
     approveText,
     textFiledClassName,
+    styles: customStyles,
   } = props
   const containerEl: Ref<HTMLDivElement> = useRef(null)
   const [value, setValue] = useState<string>(initialValue)
   const [isError, setIsError] = useState<boolean>(false)
   const [isShowApprovePopover, setIsShowApprovePopover] = useState(false)
+  const theme = useTheme()
+
+  const size = theme.components.iconButton.sizes[iconSize ?? 'M']
 
   const inputRef: Ref<HTMLInputElement> = useRef(null)
 
@@ -164,7 +189,7 @@ const InlineItemEditor = (props: Props) => {
 
   const ApplyBtn = (
     <RiTooltip
-      anchorClassName={styles.tooltip}
+      anchorClassName={cx(styles.tooltip, 'tooltip')}
       position="bottom"
       title={
         (isDisabled && disabledTooltipText?.title) ||
@@ -176,12 +201,8 @@ const InlineItemEditor = (props: Props) => {
       }
       data-testid="apply-tooltip"
     >
-      <IconButton
+      <ApplyButton
         size={iconSize ?? 'M'}
-        icon={CheckThinIcon}
-        color="primary"
-        aria-label="Apply"
-        className={cx(styles.btn, styles.applyBtn)}
         disabled={isDisabledApply()}
         onClick={handleApplyClick}
         data-testid="apply-btn"
@@ -195,7 +216,7 @@ const InlineItemEditor = (props: Props) => {
         children
       ) : (
         <OutsideClickDetector onOutsideClick={handleClickOutside}>
-          <div ref={containerEl} className={styles.container}>
+          <IIEContainer ref={containerEl}>
             <WindowEvent event="keydown" handler={handleOnEsc} />
             <FocusTrap disabled={disableFocusTrap}>
               <form
@@ -203,11 +224,16 @@ const InlineItemEditor = (props: Props) => {
                 onSubmit={(e: unknown) =>
                   handleFormSubmit(e as React.MouseEvent<HTMLElement>)
                 }
+                style={{
+                  ...customStyles?.inputContainer
+                }}
               >
                 <FlexItem grow>
                   {children || (
                     <>
-                      <TextInput
+                      <StyledTextInput
+                        $width={customStyles?.input?.width}
+                        $height={customStyles?.input?.height}
                         name={fieldName}
                         id={fieldName}
                         className={cx(styles.field, textFiledClassName)}
@@ -227,70 +253,80 @@ const InlineItemEditor = (props: Props) => {
                     </>
                   )}
                 </FlexItem>
-                <div
+                <ActionsContainer
+                  justify="around"
+                  gap="m"
+                  $position={controlsPosition}
+                  $design={controlsDesign}
+                  $width={customStyles?.actionsContainer?.width}
+                  $height={customStyles?.actionsContainer?.height}
+                  grow={false}
                   className={cx(
                     'inlineItemEditor__controls',
                     styles.controls,
-                    styles[`controls${capitalize(controlsPosition)}`],
-                    styles[`controls${capitalize(controlsDesign)}`],
                     controlsClassName,
                   )}
                 >
-                  <IconButton
-                    size={iconSize ?? 'M'}
-                    icon={CancelSlimIcon}
-                    aria-label="Cancel editing"
-                    className={cx(styles.btn, styles.declineBtn)}
-                    onClick={onDecline}
-                    disabled={isLoading}
-                    data-testid="cancel-btn"
-                  />
-                  {!approveByValidation && ApplyBtn}
-                  {approveByValidation && (
-                    <RiPopover
-                      anchorPosition="leftCenter"
-                      isOpen={isShowApprovePopover}
-                      closePopover={() => setIsShowApprovePopover(false)}
-                      anchorClassName={styles.popoverAnchor}
-                      panelClassName={cx(styles.popoverPanel)}
-                      button={ApplyBtn}
-                    >
-                      <div
-                        className={styles.popover}
-                        data-testid="approve-popover"
-                      >
-                        <Text size="m" component="div">
-                          {!!approveText?.title && (
-                            <h4>
-                              <b>{approveText?.title}</b>
-                            </h4>
-                          )}
-                          <Text
-                            size="s"
-                            color="subdued"
-                            className={styles.approveText}
-                          >
-                            {approveText?.text}
-                          </Text>
-                        </Text>
-                        <div className={styles.popoverFooter}>
-                          <DestructiveButton
-                            aria-label="Save"
-                            className={cx(styles.btn, styles.saveBtn)}
-                            disabled={isDisabledApply()}
-                            onClick={handleFormSubmit}
-                            data-testid="save-btn"
-                          >
-                            Save
-                          </DestructiveButton>
-                        </div>
-                      </div>
-                    </RiPopover>
+                  <ActionsWrapper $size={size}>
+                    <DeclineButton
+                      onClick={onDecline}
+                      disabled={isLoading}
+                      data-testid="cancel-btn"
+                    />
+                  </ActionsWrapper>
+                  {!approveByValidation && (
+                    <ActionsWrapper $size={size}>{ApplyBtn}</ActionsWrapper>
                   )}
-                </div>
+                  {approveByValidation && (
+                    <ActionsWrapper $size={size}>
+                      <RiPopover
+                        anchorPosition="leftCenter"
+                        isOpen={isShowApprovePopover}
+                        closePopover={() => setIsShowApprovePopover(false)}
+                        anchorClassName={cx(
+                          styles.popoverAnchor,
+                          'popoverAnchor',
+                        )}
+                        panelClassName={cx(styles.popoverPanel)}
+                        button={ApplyBtn}
+                      >
+                        <div
+                          className={styles.popover}
+                          data-testid="approve-popover"
+                        >
+                          <Text size="m" component="div">
+                            {!!approveText?.title && (
+                              <h4>
+                                <b>{approveText?.title}</b>
+                              </h4>
+                            )}
+                            <Text
+                              size="s"
+                              color="subdued"
+                              className={styles.approveText}
+                            >
+                              {approveText?.text}
+                            </Text>
+                          </Text>
+                          <div className={styles.popoverFooter}>
+                            <DestructiveButton
+                              aria-label="Save"
+                              className={cx(styles.btn, styles.saveBtn)}
+                              disabled={isDisabledApply()}
+                              onClick={handleFormSubmit}
+                              data-testid="save-btn"
+                            >
+                              Save
+                            </DestructiveButton>
+                          </div>
+                        </div>
+                      </RiPopover>
+                    </ActionsWrapper>
+                  )}
+                </ActionsContainer>
               </form>
             </FocusTrap>
-          </div>
+          </IIEContainer>
         </OutsideClickDetector>
       )}
     </>

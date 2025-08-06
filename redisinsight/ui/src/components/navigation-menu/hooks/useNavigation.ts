@@ -26,7 +26,6 @@ import {
   SlowLogIcon,
   WorkbenchIcon,
   SettingsIcon,
-  SearchIcon,
 } from 'uiSrc/components/base/icons'
 import { INavigations } from '../navigation.types'
 
@@ -103,16 +102,6 @@ export function useNavigation() {
       isActivePage: activePage === `/${PageNames.workbench}`,
       iconType: WorkbenchIcon,
       onboard: ONBOARDING_FEATURES.WORKBENCH_PAGE,
-    },
-    {
-      tooltipText: 'Vector Search',
-      pageName: PageNames.vectorSearch,
-      ariaLabel: 'Vector Search',
-      onClick: () => handleGoPage(Pages.vectorSearch(connectedInstanceId)),
-      dataTestId: 'vector-search-page-btn',
-      connectedInstanceId,
-      isActivePage: activePage === `/${PageNames.vectorSearch}`,
-      iconType: SearchIcon,
     },
     {
       tooltipText: 'Analysis Tools',

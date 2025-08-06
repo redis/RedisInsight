@@ -104,6 +104,7 @@ export const ManageTagsModal = ({
     <FormDialog
       isOpen
       onClose={onClose}
+      className={styles.manageTagsModal}
       header={
         <div className={styles.header}>
           <Title size="M">Manage tags for {instance.name}</Title>
@@ -142,7 +143,6 @@ export const ManageTagsModal = ({
           </div>
         </>
       }
-      className={styles.manageTagsModal}
     >
       <div className={styles.tagForm}>
         <div className={styles.tagFormHeader}>

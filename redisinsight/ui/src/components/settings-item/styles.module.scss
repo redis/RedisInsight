@@ -1,6 +1,8 @@
 .input {
   height: 31px !important;
   font-family: 'Graphik', sans-serif !important;
+  border-bottom-right-radius: 0 !important;
+  border-top-right-radius: 0 !important;
 }
 
 .inputEditing {
@@ -13,8 +15,7 @@
   align-items: center;
   justify-content: space-between;
   padding-left: 10px;
-  padding-bottom: 5px;
-  
+
   & > * {
     line-height: 3.1rem !important;
   }

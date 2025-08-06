@@ -24,6 +24,7 @@ import {
   EditIcon,
   TagIcon,
   CopyIcon,
+  RiIcon,
 } from 'uiSrc/components/base/icons'
 import DatabaseListModules from 'uiSrc/components/database-list-modules/DatabaseListModules'
 import ItemList from 'uiSrc/components/item-list'
@@ -80,7 +81,6 @@ import { Tag } from 'uiSrc/slices/interfaces/tag'
 import { FeatureFlagComponent } from 'uiSrc/components'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { EmptyButton, IconButton } from 'uiSrc/components/base/forms/buttons'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { RIResizeObserver } from 'uiSrc/components/base/utils'
 
@@ -619,6 +619,7 @@ const DatabasesListWrapper = (props: Props) => {
                   <div className="controlsPopoverContent">
                     <div>
                       <EmptyButton
+                        justify="start"
                         icon={EditIcon}
                         className="editInstanceBtn"
                         aria-label="Edit instance"

@@ -316,7 +316,6 @@ export type FlexItemProps = React.HTMLAttributes<HTMLDivElement> &
 
 export const StyledFlexItem = styled.div<FlexItemProps>`
   display: flex;
-  gap: ${({ $gap = 'none' }) => ($gap ? flexGroupStyles.gapSizes[$gap] : '')};
   flex-direction: ${({ $direction = 'column' }) =>
     flexGroupStyles.direction[$direction] ?? 'column'};
   ${({ grow }) => {
