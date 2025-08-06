@@ -10,16 +10,6 @@ jest.mock('uiSrc/components/base/layout/drawer', () => ({
   DrawerHeader: jest.fn().mockReturnValue(null),
 }))
 
-// Mock the ManageIndexesDrawer component
-jest.mock('../manage-indexes/ManageIndexesDrawer', () => ({
-  ManageIndexesDrawer: ({ open, ...props }: any) =>
-    open ? (
-      <div data-testid="manage-indexes-drawer" {...props}>
-        Manage Indexes Drawer
-      </div>
-    ) : null,
-}))
-
 const mockProps = {
   isManageIndexesDrawerOpen: false,
   setIsManageIndexesDrawerOpen: jest.fn(),
