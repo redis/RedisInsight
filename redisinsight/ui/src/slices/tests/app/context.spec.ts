@@ -748,7 +748,7 @@ describe('slices', () => {
       }
       const state = {
         lastViewedPage: '',
-        isOpenDialog: true,
+        isOpenDialog: false,
       }
 
       // Act

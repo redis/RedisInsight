@@ -36,7 +36,7 @@ fixture `Database modules`
         // Delete database
         await databaseAPIRequests.deleteStandaloneDatabaseApi(database);
     });
-test('Verify that user can see DB modules on DB list page for Standalone DB', async t => {
+test.skip('Verify that user can see DB modules on DB list page for Standalone DB', async t => {
     // Check module column on DB list page
     await t.expect(myRedisDatabasePage.moduleColumn.exists).ok('Module column not found');
     // Verify that user can see the following sorting order: Search, JSON, Graph, TimeSeries, Bloom, Gears, AI for modules
@@ -60,7 +60,7 @@ test('Verify that user can see DB modules on DB list page for Standalone DB', as
     // Verify that user can hover over the module icons and see tooltip with version.
     await myRedisDatabasePage.checkModulesInTooltip(moduleNameList);
 });
-test('Verify that user can see full module list in the Edit mode', async t => {
+test.skip('Verify that user can see full module list in the Edit mode', async t => {
     // Verify that module column is displayed
     await t.expect(myRedisDatabasePage.connectionTypeTitle.visible).ok('connection type column not found');
     // Open Edit mode

@@ -46,6 +46,8 @@ export const clientMetadataParamFactory = (
     db: options?.ignoreDbIndex
       ? undefined
       : req?.headers?.[API_HEADER_DATABASE_INDEX],
+  }, {
+    groups: ['security'],
   });
 
   const errors = validator.validateSync(clientMetadata, {

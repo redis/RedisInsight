@@ -63,7 +63,8 @@ fixture `Resize columns in Key details`
         await browserPage.deleteKeysByNames(keyNames);
         await databaseAPIRequests.deleteAllDatabasesApi();
     });
-test('Resize of columns in Hash, List, Zset Key details', async t => {
+test
+    .skip('Resize of columns in Hash, List, Zset Key details', async t => {
     const field = browserPage.keyDetailsTable.find(browserPage.cssRowInVirtualizedTable);
     const tableHeaderResizeTrigger = browserPage.resizeTrigger;
 

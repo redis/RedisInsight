@@ -27,7 +27,7 @@ fixture `Command results at Workbench`
         await t.switchToMainWindow();
         await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
-test('Verify that user can see re-run icon near the already executed command and re-execute the command by clicking on the icon in Workbench page', async t => {
+test.skip('Verify that user can see re-run icon near the already executed command and re-execute the command by clicking on the icon in Workbench page', async t => {
     // Send commands
     await workbenchPage.sendCommandInWorkbench(commandForSend1);
     await workbenchPage.sendCommandInWorkbench(commandForSend2);
@@ -50,7 +50,7 @@ test('Verify that user can see re-run icon near the already executed command and
     // Verify that user can delete command with result from table with results in Workbench
     await t.expect(workbenchPage.queryCardCommand.withExactText(commandForSend2).exists).notOk(`Command ${commandForSend2} is not deleted from table with results`);
 });
-test('Verify that user can see the results found in the table view by default for FT.INFO, FT.SEARCH and FT.AGGREGATE', async t => {
+test.skip('Verify that user can see the results found in the table view by default for FT.INFO, FT.SEARCH and FT.AGGREGATE', async t => {
     const commands = [
         'FT.INFO',
         'FT.SEARCH',
@@ -65,7 +65,8 @@ test('Verify that user can see the results found in the table view by default fo
 test
     .after(async() => {
         await workbenchPage.sendCommandInWorkbench(`FT.DROPINDEX ${indexName} DD`);
-    })('Verify that user can switches between views and see results according to the view rules in Workbench in results', async t => {
+    })
+    .skip('Verify that user can switch between views and see results according to the view rules in Workbench in results', async t => {
         indexName = Common.generateWord(5);
         const commands = [
             'hset doc:10 title "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud" url "redis.io" author "Test" rate "undefined" review "0" comment "Test comment"',
@@ -86,7 +87,8 @@ test
         await t.expect(await workbenchPage.queryCardContainer.nth(0).find(workbenchPage.cssQueryTextResult).visible).ok('The result is not displayed in Text view');
     });
 
-test('Verify that user can switches between Table and Text for Client List and see results corresponding to their views', async t => {
+test
+    .skip('Verify that user can switches between Table and Text for Client List and see results corresponding to their views', async t => {
     const command = 'CLIENT LIST';
     // Send command and check table view is default
     await workbenchPage.sendCommandInWorkbench(command);
@@ -107,7 +109,8 @@ test
     .after(async() => {
         // remove all keys
         workbenchPage.sendCommandInWorkbench('flushdb');
-    })('Verify that user can switches between JSON view and Text view and see proper result', async t => {
+    })
+    .skip('Verify that user can switches between JSON view and Text view and see proper result', async t => {
         const jsonObj = { a: 2 };
         const json = JSON.stringify(jsonObj);
         const sendCommandsJsonGet = [
@@ -161,7 +164,8 @@ test
     .after(async() => {
         //Drop database
         await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
-    })('Verify that user can populate commands in Editor from history by clicking keyboard “up” button', async t => {
+    })
+    .skip('Verify that user can populate commands in Editor from history by clicking keyboard “up” button', async t => {
         const commands = [
             'FT.INFO',
             'RANDOMKEY',

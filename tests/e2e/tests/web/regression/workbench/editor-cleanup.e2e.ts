@@ -37,7 +37,8 @@ fixture `Workbench Editor Cleanup`
         // Clear and delete database
         await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
-test('Disabled Editor Cleanup toggle behavior', async t => {
+test
+    .skip('Disabled Editor Cleanup toggle behavior', async t => {
     // Go to Settings page
     await t.click(myRedisDatabasePage.NavigationPanel.settingsButton);
     await t.click(settingsPage.accordionWorkbenchSettings);

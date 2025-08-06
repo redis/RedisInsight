@@ -2,6 +2,8 @@ version: "3.4"
 
 services:
   e2e:
+    profiles:
+      - e2e
     build:
       context: .
       dockerfile: e2e.Dockerfile

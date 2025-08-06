@@ -22,15 +22,15 @@ export interface Props {
 
 const ERROR_CODES_WITHOUT_RESTART = [
   CustomErrorCodes.CloudApiUnauthorized,
-  CustomErrorCodes.GeneralAiUnexpectedError,
-  CustomErrorCodes.AiQueryRateLimitRequest,
-  CustomErrorCodes.AiQueryRateLimitToken,
+  CustomErrorCodes.QueryAiInternalServerError,
+  CustomErrorCodes.QueryAiRateLimitRequest,
+  CustomErrorCodes.QueryAiRateLimitToken,
 ]
 
 const ERROR_CODES_WITHOUT_REPORT_ISSUE = [
-  CustomErrorCodes.AiQueryRateLimitRequest,
-  CustomErrorCodes.AiQueryRateLimitToken,
-  CustomErrorCodes.AiQueryRateLimitMaxTokens,
+  CustomErrorCodes.QueryAiRateLimitRequest,
+  CustomErrorCodes.QueryAiRateLimitToken,
+  CustomErrorCodes.QueryAiRateLimitMaxTokens,
 ]
 
 const ErrorMessage = (props: Props) => {
@@ -44,14 +44,14 @@ const ErrorMessage = (props: Props) => {
     const { statusCode, errorCode, details } = error || {}
 
     if (statusCode === ApiStatusCode.Timeout) return AI_CHAT_ERRORS.timeout()
-    if (errorCode === CustomErrorCodes.GeneralAiUnexpectedError)
+    if (errorCode === CustomErrorCodes.QueryAiInternalServerError)
       return AI_CHAT_ERRORS.unexpected()
     if (
-      errorCode === CustomErrorCodes.AiQueryRateLimitRequest ||
-      errorCode === CustomErrorCodes.AiQueryRateLimitToken
+      errorCode === CustomErrorCodes.QueryAiRateLimitRequest ||
+      errorCode === CustomErrorCodes.QueryAiRateLimitToken
     )
       return AI_CHAT_ERRORS.rateLimit(details?.limiterSeconds)
-    if (errorCode === CustomErrorCodes.AiQueryRateLimitMaxTokens)
+    if (errorCode === CustomErrorCodes.QueryAiRateLimitMaxTokens)
       return AI_CHAT_ERRORS.tokenLimit()
 
     return AI_CHAT_ERRORS.default()

@@ -2,6 +2,8 @@ version: "3.4"
 
 services:
   e2e:
+    profiles:
+      - e2e
     build:
       context: .
       dockerfile: e2e.Dockerfile
@@ -37,6 +39,8 @@ services:
 
   # Built image
   app:
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     logging:
       driver: none
     image: redisinsight:amd64
@@ -51,6 +55,8 @@ services:
       - rihomedir:/data
       - tmp:/tmp
       - ./test-data:/test-data
+    ports:
+      - 5540:5540
 
 volumes:
   tmp:

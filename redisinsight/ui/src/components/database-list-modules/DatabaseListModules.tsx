@@ -12,6 +12,8 @@ import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { ColorText } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { RiIcon } from 'uiSrc/components/base/icons'
+import { Row } from 'uiSrc/components/base/layout/flex'
+import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
 
 import styles from './styles.module.scss'
@@ -46,7 +48,11 @@ const DatabaseListModules = React.memo((props: Props) => {
 
   const newModules: IDatabaseModule[] = sortModules(
     modules?.map(({ name: propName, semanticVersion = '', version = '' }) => {
-      const module: ModuleInfo = DEFAULT_MODULES_INFO[propName]
+      const isValidModuleKey = Object.values(RedisDefaultModules).includes(propName as RedisDefaultModules)
+
+      const module: ModuleInfo | undefined = isValidModuleKey
+        ? DEFAULT_MODULES_INFO[propName as RedisDefaultModules]
+        : undefined
       const moduleName = module?.text || propName
 
       const { abbreviation = '', name = moduleName } = getModule(moduleName)
@@ -87,7 +93,12 @@ const DatabaseListModules = React.memo((props: Props) => {
       const hasContent = !!content
       const hasAbbreviation = !!abbreviation
       return (
-        <div className={styles.tooltipItem} key={content || abbreviation}>
+        <Row
+          align="center"
+          gap="m"
+          className={styles.tooltipItem}
+          key={content || abbreviation}
+        >
           {hasIcon && <RiIcon type={icon} />}
           {!hasIcon && hasAbbreviation && (
             <ColorText
@@ -102,8 +113,7 @@ const DatabaseListModules = React.memo((props: Props) => {
               {content}
             </ColorText>
           )}
-          <br />
-        </div>
+        </Row>
       )
     },
   )

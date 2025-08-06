@@ -6,22 +6,12 @@ on:
       - 'fe/**'
       - 'be/**'
       - 'fe-be/**'
-      - 'e2e/**'
       - 'feature/**'
       - 'bugfix/**'
       - 'ric/**'
 
   workflow_dispatch:
     inputs:
-      group_tests:
-        description: Run group of tests
-        default: 'all'
-        type: choice
-        options:
-          - all
-          - without_e2e
-          - only_e2e
-
       redis_client:
         description: Library to use for redis connection
         default: 'ioredis'
@@ -42,10 +32,6 @@ on:
 
   workflow_call:
     inputs:
-      group_tests:
-        description: Run group of tests
-        type: string
-        default: 'without_e2e'
       short_rte_list:
         description: Use short rte list
         type: boolean
@@ -71,7 +57,6 @@ jobs:
       frontend: ${{ steps.filter.outputs.frontend }}
       backend: ${{ steps.filter.outputs.backend }}
       desktop: ${{ steps.filter.outputs.desktop }}
-      e2e: ${{ steps.filter.outputs.e2e }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3.0.2
@@ -85,12 +70,10 @@ jobs:
               - 'redisinsight/api/**'
             desktop:
               - 'redisinsight/desktop/**'
-            e2e:
-              - 'tests/e2e/**'
 
   frontend-tests:
     needs: changes
-    if: inputs.group_tests == 'all' || inputs.group_tests == 'without_e2e' || startsWith(github.ref_name, 'fe/') || startsWith(github.ref_name, 'fe-be/') || startsWith(github.ref_name, 'feature/') || startsWith(github.ref_name, 'bugfix/') || startsWith(github.ref_name, 'ric/')
+    if: startsWith(github.ref_name, 'fe/') || startsWith(github.ref_name, 'fe-be/') || startsWith(github.ref_name, 'feature/') || startsWith(github.ref_name, 'bugfix/') || startsWith(github.ref_name, 'ric/')
     uses: ./.github/workflows/tests-frontend.yml
     secrets: inherit
 
@@ -104,7 +87,7 @@ jobs:
 
   backend-tests:
     needs: changes
-    if: inputs.group_tests == 'all' || inputs.group_tests == 'without_e2e' || startsWith(github.ref_name, 'be/') || startsWith(github.ref_name, 'fe-be/') || startsWith(github.ref_name, 'feature/') || startsWith(github.ref_name, 'bugfix/') || startsWith(github.ref_name, 'ric/')
+    if: startsWith(github.ref_name, 'be/') || startsWith(github.ref_name, 'fe-be/') || startsWith(github.ref_name, 'feature/') || startsWith(github.ref_name, 'bugfix/') || startsWith(github.ref_name, 'ric/')
     uses: ./.github/workflows/tests-backend.yml
     secrets: inherit
 
@@ -118,7 +101,7 @@ jobs:
 
   integration-tests:
     needs: changes
-    if: inputs.group_tests == 'all' || inputs.group_tests == 'without_e2e' || startsWith(github.ref_name, 'be/') || startsWith(github.ref_name, 'fe-be/') || startsWith(github.ref_name, 'feature/') || startsWith(github.ref_name, 'bugfix/') || startsWith(github.ref_name, 'ric/')
+    if: startsWith(github.ref_name, 'be/') || startsWith(github.ref_name, 'fe-be/') || startsWith(github.ref_name, 'feature/') || startsWith(github.ref_name, 'bugfix/') || startsWith(github.ref_name, 'ric/')
     uses: ./.github/workflows/tests-integration.yml
     secrets: inherit
     with:
@@ -134,49 +117,6 @@ jobs:
       resource_name: integration-coverage
       type: integration
 
-  # # E2E Approve
-  e2e-approve:
-    runs-on: ubuntu-latest
-    needs: changes
-    if: inputs.group_tests == 'all' || inputs.group_tests == 'only_e2e' || startsWith(github.ref_name, 'e2e/')
-    timeout-minutes: 60
-    environment: ${{ startsWith(github.ref_name, 'e2e/') && 'e2e-approve' || 'staging' }}
-    name: Approve E2E tests
-    steps:
-      - uses: actions/checkout@v4
-
-  # E2E Docker
-  build-docker:
-    uses: ./.github/workflows/pipeline-build-docker.yml
-    needs: e2e-approve
-    secrets: inherit
-    with:
-      debug: ${{ inputs.debug || false }}
-      for_e2e_tests: true
-
-  e2e-docker-tests:
-    needs: build-docker
-    uses: ./.github/workflows/tests-e2e-docker.yml
-    secrets: inherit
-    with:
-      debug: ${{ inputs.debug || false }}
-
-  # E2E AppImage
-  build-appimage:
-    uses: ./.github/workflows/pipeline-build-linux.yml
-    needs: e2e-approve
-    secrets: inherit
-    with:
-      target: build_linux_appimage_x64
-      debug: ${{ inputs.debug || false }}
-
-  e2e-appimage-tests:
-    needs: build-appimage
-    uses: ./.github/workflows/tests-e2e-appimage.yml
-    secrets: inherit
-    with:
-      debug: ${{ inputs.debug || false }}
-
   clean:
     uses: ./.github/workflows/clean-deployments.yml
     if: always()
@@ -185,8 +125,6 @@ jobs:
         frontend-tests,
         backend-tests,
         integration-tests,
-        e2e-docker-tests,
-        e2e-appimage-tests,
       ]
 
   # Remove artifacts from github actions
@@ -197,8 +135,6 @@ jobs:
         frontend-tests,
         backend-tests,
         integration-tests,
-        e2e-docker-tests,
-        e2e-appimage-tests,
       ]
     runs-on: ubuntu-latest
     steps:

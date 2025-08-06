@@ -1,0 +1,19 @@
+{
+  "all": true,
+  "cwd": "../../",
+  "include": ["redisinsight/ui/src/**/*.{ts,tsx,js,jsx}"],
+  "exclude": [
+    "redisinsight/ui/src/**/*.{test,spec}.{ts,tsx,js,jsx}",
+    "redisinsight/ui/src/**/__tests__/**",
+    "redisinsight/ui/src/**/__mocks__/**",
+    "redisinsight/ui/src/**/*.d.ts",
+    "redisinsight/ui/src/**/node_modules/**"
+  ],
+  "reporter": ["text", "html", "lcov"],
+  "report-dir": "tests/playwright/coverage",
+  "temp-dir": "tests/playwright/.nyc_output",
+  "cache": false,
+  "check-coverage": false,
+  "skip-full": false,
+  "skip-empty": false
+}

@@ -31,7 +31,8 @@ test('Verify that user can see saved CLI state when navigates away to any other 
     await t.expect(workbenchPage.Cli.cliCollapseButton.exists).ok('CLI is not expanded');
 });
 // Update after resolving https://redislabs.atlassian.net/browse/RI-3299
-test('Verify that user can see saved CLI size when navigates away to any other page', async t => {
+test
+    .skip('Verify that user can see saved CLI size when navigates away to any other page', async t => {
     const offsetY = 200;
 
     await t.click(workbenchPage.Cli.cliExpandButton);

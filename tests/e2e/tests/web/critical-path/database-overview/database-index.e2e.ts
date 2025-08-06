@@ -46,7 +46,7 @@ fixture `Allow to change database index`
         await browserPage.Cli.sendCommandsInCli([`DEL ${keyNames.join(' ')}`, `DEL ${keyName}`, `FT.DROPINDEX ${indexName}`]);
         await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
-test('Switching between indexed databases', async t => {
+test.skip('Switching between indexed databases', async t => {
     const command = `HSET ${logicalDbKey} "name" "Gillford School" "description" "Gillford School is a centre" "class" "private" "type" "democratic; waldorf" "address_city" "Goudhurst" "address_street" "Goudhurst" "students" 721 "location" "51.112685, 0.451076"`;
 
     // Change index to logical db

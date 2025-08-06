@@ -16,7 +16,7 @@ interface Props {
 const emptyMessageContent: { [key in EmptyMessage]: Content } = {
   [EmptyMessage.Reports]: {
     title: 'No Reports found',
-    text: () => 'Run "New Analysis" to generate first report.',
+    text: () => 'Click "Analyze" to generate the first report.',
   },
   [EmptyMessage.Keys]: {
     title: 'No keys to display',

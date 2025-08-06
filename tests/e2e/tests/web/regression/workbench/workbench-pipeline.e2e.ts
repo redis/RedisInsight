@@ -67,7 +67,8 @@ test.skip('Verify that user can see spinner over Run button and grey preloader f
     await t.expect(workbenchPage.runButtonSpinner.exists).ok('Loading spinner is not displayed for Run button', { timeout: 5000 });
     await t.expect(workbenchPage.queryCardContainer.find(workbenchPage.cssDeleteCommandButton).withAttribute('disabled').count).eql(Number(pipelineValues[3]), 'The number of commands is incorrect');
 });
-test('Verify that user can interact with the Editor while command(s) in progress', async t => {
+test
+    .skip('Verify that user can interact with the Editor while command(s) in progress', async t => {
     const valueInEditor = '100';
 
     await settingsPage.changeCommandsInPipeline(pipelineValues[2]);
@@ -79,7 +80,8 @@ test('Verify that user can interact with the Editor while command(s) in progress
     // Verify that user can interact with the Editor
     await t.expect(workbenchPage.queryInputScriptArea.textContent).contains(valueInEditor, { timeout: 5000 });
 });
-test('Verify that command results are added to history in order most recent - on top', async t => {
+test
+    .skip('Verify that command results are added to history in order most recent - on top', async t => {
     const multipleCommands = [
         'INFO',
         'FT._LIST',

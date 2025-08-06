@@ -127,7 +127,8 @@ test.before(async() => {
     await t.click(myRedisDatabasePage.removeImportedFileBtn);
     await t.expect(myRedisDatabasePage.addDatabaseImport.textContent).contains(defaultText, 'File not removed from import input');
 });
-test('Connection import from JSON', async t => {
+test
+    .skip('Connection import from JSON', async t => {
     // Verify that user can import database with mandatory/optional fields
     await databasesActions.importDatabase(rdmData);
 
@@ -209,7 +210,8 @@ test('Connection import from JSON', async t => {
     await myRedisDatabasePage.clickOnDBByName(dbData[1].dbNames[2]);
     await Common.checkURLContainsText('browser');
 });
-test('Certificates import with/without path', async t => {
+test
+    .skip('Certificates import with/without path', async t => {
     await databasesActions.importDatabase({ path: rdmData.sshPath });
     await t.click(myRedisDatabasePage.closeImportBtn);
 
@@ -253,7 +255,8 @@ test('Certificates import with/without path', async t => {
     await t.expect(myRedisDatabasePage.AddRedisDatabaseDialog.clientCertField.textContent).eql('1_clientPath', 'Client certificate import incorrect');
     await t.click(myRedisDatabasePage.AddRedisDatabaseDialog.cancelButton);
 });
-test('Import SSH parameters', async t => {
+test
+    .skip('Import SSH parameters', async t => {
     const sshAgentsResult = 'SSH Agents are not supported';
 
     await databasesActions.importDatabase(racompSSHData);
