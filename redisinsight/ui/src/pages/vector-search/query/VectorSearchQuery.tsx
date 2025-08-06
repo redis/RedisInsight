@@ -13,6 +13,8 @@ import CommandsViewWrapper from '../components/commands-view'
 import { VectorSearchScreenWrapper } from '../styles'
 import { SavedQueriesScreen } from '../saved-queries/SavedQueriesScreen'
 import { SavedIndex } from '../saved-queries/types'
+import { useParams } from 'react-router-dom'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 const mockSavedIndexes: SavedIndex[] = [
   {
@@ -51,6 +53,22 @@ export const VectorSearchQuery = () => {
     onQueryReRun,
     onQueryProfile,
   } = useQuery()
+  const { instanceId } = useParams<{ instanceId: string }>()
+
+  const onQuerySubmit = () => {
+    onSubmit()
+    collectTelemetryQueryRun()
+  }
+
+  const collectTelemetryQueryRun = () => {
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_COMMAND_SUBMITTED,
+      eventData: {
+        databaseId: instanceId,
+        commands: [query],
+      },
+    })
+  }
 
   const [isSavedQueriesOpen, setIsSavedQueriesOpen] = useState<boolean>(false)
   const [isManageIndexesDrawerOpen, setIsManageIndexesDrawerOpen] =
@@ -79,7 +97,7 @@ export const VectorSearchQuery = () => {
                 resultsMode={resultsMode}
                 setQuery={setQuery}
                 setQueryEl={() => {}}
-                onSubmit={() => onSubmit()}
+                onSubmit={onQuerySubmit}
                 onQueryChangeMode={onQueryChangeMode}
                 onChangeGroupMode={onChangeGroupMode}
                 queryProps={{ useLiteActions: true }}
