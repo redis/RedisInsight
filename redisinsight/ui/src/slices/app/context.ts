@@ -52,7 +52,7 @@ import {
   RedisResponseBuffer,
   StateAppContext,
 } from '../interfaces'
-import type { AppDispatch, RootState } from '../store'
+import { AppDispatch, RootState } from '../store'
 
 export const initialState: StateAppContext = {
   workspace:

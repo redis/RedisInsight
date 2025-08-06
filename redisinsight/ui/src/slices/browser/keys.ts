@@ -100,7 +100,7 @@ import {
   SearchHistoryItem,
   SearchMode,
 } from '../interfaces/keys'
-import type { AppDispatch, RootState } from '../store'
+import { AppDispatch, RootState } from '../store'
 import { StreamViewType } from '../interfaces/stream'
 import { EditorType, RedisResponseBuffer, RedisString } from '../interfaces'
 

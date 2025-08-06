@@ -28,7 +28,7 @@ import { ExportDatabase } from 'apiSrc/modules/database/models/export-database'
 
 import { fetchMastersSentinelAction } from './sentinel'
 import { fetchTags } from './tags'
-import type { AppDispatch, RootState } from '../store'
+import { AppDispatch, RootState } from '../store'
 import {
   addErrorNotification,
   addInfiniteNotification,
