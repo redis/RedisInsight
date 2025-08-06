@@ -171,7 +171,7 @@ export const mockedStoreFn = () => mockStore(initialStateDefault)
 
 // Set the mock store reference for the dynamic store wrapper
 // This ensures that store-dynamic works correctly in tests
-setStoreRef(mockedStore as any)
+setStoreRef(mockedStore)
 
 // insert root state to the render Component
 const render = (
@@ -183,9 +183,8 @@ const render = (
     ...renderOptions
   }: Options = initialStateDefault,
 ) => {
-  // Set the store reference for the dynamic store wrapper if a custom store is provided
   if (store !== mockedStore) {
-    setStoreRef(store as any)
+    setStoreRef(store)
   }
 
   const Wrapper = ({ children }: { children: JSX.Element }) => (
@@ -208,9 +207,8 @@ const renderHook = (
     ...renderOptions
   }: Options = initialStateDefault,
 ) => {
-  // Set the store reference for the dynamic store wrapper if a custom store is provided
   if (store !== mockedStore) {
-    setStoreRef(store as any)
+    setStoreRef(store)
   }
 
   const Wrapper = ({ children }: { children: JSX.Element }) => (
