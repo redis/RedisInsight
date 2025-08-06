@@ -1,5 +1,5 @@
 import { get } from 'lodash'
-import { store } from 'uiSrc/slices/store'
+import { store } from 'uiSrc/slices/store-dynamic'
 
 // Check is user give access to collect his events
 export const checkIsAnalyticsGranted = (): boolean =>

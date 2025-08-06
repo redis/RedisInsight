@@ -15,7 +15,7 @@ import {
 import { ThemeProvider } from 'styled-components'
 import { themeLight } from '@redis-ui/styles'
 import userEvent from '@testing-library/user-event'
-import { RootState, store as rootStore } from 'uiSrc/slices/store'
+import type { RootState, ReduxStore } from 'uiSrc/slices/store'
 import { initialState as initialStateInstances } from 'uiSrc/slices/instances/instances'
 import { initialState as initialStateTags } from 'uiSrc/slices/instances/tags'
 import { initialState as initialStateCaCerts } from 'uiSrc/slices/instances/caCerts'
@@ -70,12 +70,13 @@ import { initialState as initialStateAiAssistant } from 'uiSrc/slices/panels/aiA
 import { RESOURCES_BASE_URL } from 'uiSrc/services/resourcesService'
 import { apiService } from 'uiSrc/services'
 import { initialState as initialStateAppConnectivity } from 'uiSrc/slices/app/connectivity'
+import { initialState as initialStateAppDbSettings } from 'uiSrc/slices/app/db-settings'
 import { initialState as initialStateAppInit } from 'uiSrc/slices/app/init'
 import * as appFeaturesSlice from 'uiSrc/slices/app/features'
 
 interface Options {
   initialState?: RootState
-  store?: typeof rootStore
+  store?: ReduxStore
   withRouter?: boolean
   [property: string]: any
 }
@@ -94,6 +95,7 @@ const initialStateDefault: RootState = {
     csrf: cloneDeep(initialStateAppCsrfReducer),
     init: cloneDeep(initialStateAppInit),
     connectivity: cloneDeep(initialStateAppConnectivity),
+    dbSettings: cloneDeep(initialStateAppDbSettings),
   },
   connections: {
     instances: cloneDeep(initialStateInstances),

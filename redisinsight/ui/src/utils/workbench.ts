@@ -14,7 +14,7 @@ import {
   RunQueryMode,
 } from 'uiSrc/slices/interfaces'
 import { getVisualizationsByCommand } from 'uiSrc/utils/plugins'
-import { store } from 'uiSrc/slices/store'
+import { store } from 'uiSrc/slices/store-dynamic'
 import { getMonacoLines, isParamsLine } from './monaco'
 import { Maybe, Nullable } from './types'
 

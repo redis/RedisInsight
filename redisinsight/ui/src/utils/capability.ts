@@ -1,5 +1,5 @@
 import { OAuthSocialSource, RedisDefaultModules } from 'uiSrc/slices/interfaces'
-import { store } from 'uiSrc/slices/store'
+import { store } from 'uiSrc/slices/store-dynamic'
 import { Nullable } from 'uiSrc/utils'
 import { findMarkdownPath } from 'uiSrc/utils/workbench'
 
