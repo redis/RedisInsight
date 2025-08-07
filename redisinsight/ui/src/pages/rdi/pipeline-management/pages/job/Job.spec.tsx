@@ -33,7 +33,7 @@ jest.mock('uiSrc/slices/rdi/pipeline', () => ({
   ...jest.requireActual('uiSrc/slices/rdi/pipeline'),
   rdiPipelineSelector: jest.fn().mockReturnValue({
     loading: false,
-    schema: { jobs: { test: {} } },
+    monacoJobsSchema: { jobs: { test: {} } },
     config: `connections:
             target:
               type: redis
@@ -72,7 +72,7 @@ describe('Job', () => {
   it('should not push to config page', () => {
     const rdiPipelineSelectorMock = jest.fn().mockReturnValue({
       loading: false,
-      schema: { jobs: { test: {} } },
+      monacoJobsSchema: { jobs: { test: {} } },
       error: '',
       config: `connections:
       target:
@@ -258,6 +258,7 @@ describe('Job', () => {
   it('should render loading spinner', () => {
     const rdiPipelineSelectorMock = jest.fn().mockReturnValue({
       loading: true,
+      monacoJobsSchema: { jobs: { test: {} } },
     })
     ;(rdiPipelineSelector as jest.Mock).mockImplementation(
       rdiPipelineSelectorMock,
@@ -266,5 +267,145 @@ describe('Job', () => {
     render(<Job {...instance(mockedProps)} />)
 
     expect(screen.getByTestId('rdi-job-loading')).toBeInTheDocument()
+  })
+
+  describe('monacoJobsSchema integration', () => {
+    it('should pass monacoJobsSchema to MonacoYaml when available', () => {
+      const mockMonacoJobsSchema = {
+        type: 'object',
+        properties: {
+          source: { type: 'object' },
+          transform: { type: 'object' },
+          output: { type: 'object' }
+        }
+      }
+
+      const rdiPipelineSelectorMock = jest.fn().mockReturnValue({
+        loading: false,
+        schema: { jobs: { test: {} } },
+        monacoJobsSchema: mockMonacoJobsSchema,
+        config: 'test-config',
+        jobs: [
+          {
+            name: 'testJob',
+            value: 'test-value'
+          }
+        ],
+      })
+      ;(rdiPipelineSelector as jest.Mock).mockImplementation(
+        rdiPipelineSelectorMock,
+      )
+
+      render(<Job {...instance(mockedProps)} name="testJob" value="test-value" />)
+
+      // Verify the component renders and doesn't crash with schema
+      expect(screen.getByTestId('rdi-monaco-job')).toBeInTheDocument()
+      expect(screen.queryByTestId('rdi-job-loading')).not.toBeInTheDocument()
+    })
+
+    it('should handle empty monacoJobsSchema gracefully', () => {
+      const rdiPipelineSelectorMock = jest.fn().mockReturnValue({
+        loading: false,
+        monacoJobsSchema: {},
+        config: 'test-config',
+        jobs: [
+          {
+            name: 'testJob',
+            value: 'test-value'
+          }
+        ],
+      })
+      ;(rdiPipelineSelector as jest.Mock).mockImplementation(
+        rdiPipelineSelectorMock,
+      )
+
+      render(<Job {...instance(mockedProps)} name="testJob" value="test-value" />)
+
+      // Verify the component renders without issues when schema is empty
+      expect(screen.getByTestId('rdi-monaco-job')).toBeInTheDocument()
+      expect(screen.queryByTestId('rdi-job-loading')).not.toBeInTheDocument()
+    })
+
+    it('should handle undefined monacoJobsSchema gracefully', () => {
+      const rdiPipelineSelectorMock = jest.fn().mockReturnValue({
+        loading: false,
+        monacoJobsSchema: undefined,
+        config: 'test-config',
+        jobs: [
+          {
+            name: 'testJob',
+            value: 'test-value'
+          }
+        ],
+      })
+      ;(rdiPipelineSelector as jest.Mock).mockImplementation(
+        rdiPipelineSelectorMock,
+      )
+
+      render(<Job {...instance(mockedProps)} name="testJob" value="test-value" />)
+
+      // Verify the component renders without issues when schema is undefined
+      expect(screen.getByTestId('rdi-monaco-job')).toBeInTheDocument()
+      expect(screen.queryByTestId('rdi-job-loading')).not.toBeInTheDocument()
+    })
+
+    it('should pass complex monacoJobsSchema structure to MonacoYaml', () => {
+      const complexSchema = {
+        type: 'object',
+        properties: {
+          source: {
+            type: 'object',
+            properties: {
+              server_name: { type: 'string' },
+              schema: { type: 'string' },
+              table: { type: 'string' }
+            },
+            required: ['server_name', 'schema', 'table']
+          },
+          transform: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                uses: { type: 'string' },
+                with: { type: 'object' }
+              }
+            }
+          },
+          output: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                uses: { type: 'string' },
+                with: { type: 'object' }
+              }
+            }
+          }
+        },
+        required: ['source']
+      }
+
+      const rdiPipelineSelectorMock = jest.fn().mockReturnValue({
+        loading: false,
+        monacoJobsSchema: complexSchema,
+        config: 'test-config',
+        jobs: [
+          {
+            name: 'complexJob',
+            value: 'source:\n  server_name: test'
+          }
+        ],
+      })
+      ;(rdiPipelineSelector as jest.Mock).mockImplementation(
+        rdiPipelineSelectorMock,
+      )
+
+      render(<Job {...instance(mockedProps)} name="complexJob" value="source:\n  server_name: test" />)
+
+      // Verify the component renders with complex schema structure
+      expect(screen.getByTestId('rdi-monaco-job')).toBeInTheDocument()
+      expect(screen.queryByTestId('rdi-job-loading')).not.toBeInTheDocument()
+    })
   })
 })

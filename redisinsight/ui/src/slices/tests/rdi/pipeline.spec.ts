@@ -50,6 +50,8 @@ import reducer, {
   rdiPipelineActionSelector,
   setPipelineConfig,
   setPipelineJobs,
+  setMonacoJobsSchema,
+  setJobNameSchema,
 } from 'uiSrc/slices/rdi/pipeline'
 import { apiService } from 'uiSrc/services'
 import {
@@ -835,7 +837,7 @@ describe('rdi pipe slice', () => {
     })
 
     describe('fetchRdiPipelineSchema', () => {
-      it('succeed to fetch data', async () => {
+      it('succeed to fetch data with minimal schema', async () => {
         const data = { config: 'string' }
         const responsePayload = { data, status: 200 }
 
@@ -845,7 +847,130 @@ describe('rdi pipe slice', () => {
         await store.dispatch<any>(fetchRdiPipelineSchema('123'))
 
         // Assert
-        const expectedActions = [setPipelineSchema(data)]
+        const expectedActions = [
+          setPipelineSchema(data),
+          setMonacoJobsSchema({ required: [] }),
+          setJobNameSchema(null),
+        ]
+
+        expect(store.getActions()).toEqual(expectedActions)
+      })
+
+      it('succeed to fetch data with complete jobs schema', async () => {
+        const data = {
+          config: 'string',
+          jobs: {
+            type: 'object',
+            properties: {
+              name: {
+                type: 'string',
+                pattern: '^[a-zA-Z][a-zA-Z0-9_]*$'
+              },
+              source: {
+                type: 'object',
+                properties: {
+                  server_name: { type: 'string' },
+                  schema: { type: 'string' },
+                  table: { type: 'string' }
+                }
+              }
+            },
+            required: ['name', 'source']
+          }
+        }
+        const responsePayload = { data, status: 200 }
+
+        apiService.get = jest.fn().mockResolvedValue(responsePayload)
+
+        // Act
+        await store.dispatch<any>(fetchRdiPipelineSchema('123'))
+
+        // Assert
+        const expectedMonacoJobsSchema = {
+          type: 'object',
+          properties: {
+            source: {
+              type: 'object',
+              properties: {
+                server_name: { type: 'string' },
+                schema: { type: 'string' },
+                table: { type: 'string' }
+              }
+            }
+          },
+          required: ['source'] // 'name' is filtered out
+        }
+
+        const expectedJobNameSchema = {
+          type: 'string',
+          pattern: '^[a-zA-Z][a-zA-Z0-9_]*$'
+        }
+
+        const expectedActions = [
+          setPipelineSchema(data),
+          setMonacoJobsSchema(expectedMonacoJobsSchema),
+          setJobNameSchema(expectedJobNameSchema),
+        ]
+
+        expect(store.getActions()).toEqual(expectedActions)
+      })
+
+      it('succeed to fetch data with jobs schema but no name property', async () => {
+        const data = {
+          config: 'string',
+          jobs: {
+            type: 'object',
+            properties: {
+              source: { type: 'object' },
+              transform: { type: 'array' }
+            },
+            required: ['source', 'transform']
+          }
+        }
+        const responsePayload = { data, status: 200 }
+
+        apiService.get = jest.fn().mockResolvedValue(responsePayload)
+
+        // Act
+        await store.dispatch<any>(fetchRdiPipelineSchema('123'))
+
+        // Assert
+        const expectedMonacoJobsSchema = {
+          type: 'object',
+          properties: {
+            source: { type: 'object' },
+            transform: { type: 'array' }
+          },
+          required: ['source', 'transform']
+        }
+
+        const expectedActions = [
+          setPipelineSchema(data),
+          setMonacoJobsSchema(expectedMonacoJobsSchema),
+          setJobNameSchema(null), // default fallback value
+        ]
+
+        expect(store.getActions()).toEqual(expectedActions)
+      })
+
+      it('succeed to fetch data with empty jobs schema', async () => {
+        const data = {
+          config: 'string',
+          jobs: {}
+        }
+        const responsePayload = { data, status: 200 }
+
+        apiService.get = jest.fn().mockResolvedValue(responsePayload)
+
+        // Act
+        await store.dispatch<any>(fetchRdiPipelineSchema('123'))
+
+        // Assert
+        const expectedActions = [
+          setPipelineSchema(data),
+          setMonacoJobsSchema({ required: [] }),
+          setJobNameSchema(null),
+        ]
 
         expect(store.getActions()).toEqual(expectedActions)
       })
