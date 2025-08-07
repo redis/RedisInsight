@@ -136,7 +136,7 @@ const QueryCard = (props: Props) => {
   const toggleFullScreen = () => {
     setIsFullScreen((isFull) => {
       sendEventTelemetry({
-        event: TelemetryEvent.WORKBENCH_RESULTS_IN_FULL_SCREEN,
+        event: TelemetryEvent.SEARCH_RESULTS_IN_FULL_SCREEN,
         eventData: {
           databaseId: instanceId,
           state: isFull ? 'Close' : 'Open',
