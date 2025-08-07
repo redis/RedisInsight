@@ -10,7 +10,6 @@ export enum SampleDataType {
 
 export enum SampleDataContent {
   E_COMMERCE_DISCOVERY = 'e-commerce-discovery',
-  AI_ASSISTANTS = 'ai-assistants',
   CONTENT_RECOMMENDATIONS = 'content-recommendations',
 }
 
