@@ -6,6 +6,7 @@ import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { Button } from 'uiSrc/components/base/forms/buttons'
 import { FieldTag } from 'uiSrc/components/new-index/create-index-step/field-box/FieldTag'
 
+import { PlayFilledIcon } from 'uiSrc/components/base/icons'
 import {
   RightAlignedWrapper,
   TagsWrapper,
@@ -70,9 +71,11 @@ export const SavedQueriesScreen = ({
             <RightAlignedWrapper>
               <Button
                 variant="secondary-invert"
+                icon={PlayFilledIcon}
+                size="s"
                 onClick={() => onQueryInsert(query.value)}
               >
-                ► Insert
+                Insert
               </Button>
             </RightAlignedWrapper>
           </VectorSearchScreenBlockWrapper>
