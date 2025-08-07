@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { get, throttle } from 'lodash'
+import { throttle } from 'lodash'
 import cx from 'classnames'
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
@@ -59,7 +59,7 @@ const Job = (props: Props) => {
   const deployedJobValueRef = useRef<Maybe<string>>(deployedJobValue)
   const jobNameRef = useRef<string>(name)
 
-  const { loading, schema, jobFunctions, jobs } =
+  const { loading, monacoJobsSchema, jobFunctions, jobs } =
     useSelector(rdiPipelineSelector)
 
   useEffect(() => {
@@ -243,7 +243,7 @@ const Job = (props: Props) => {
           </div>
         ) : (
           <MonacoYaml
-            schema={get(schema, 'jobs', null)}
+            schema={monacoJobsSchema}
             value={value}
             onChange={handleChange}
             disabled={loading}
