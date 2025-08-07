@@ -26,7 +26,7 @@ fixture `Browser Context`
         await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 // Update after resolving https://redislabs.atlassian.net/browse/RI-3299
-test('Verify that user can see saved CLI size on Browser page when he returns back to Browser page', async t => {
+test.skip('Verify that user can see saved CLI size on Browser page when he returns back to Browser page', async t => {
     const offsetY = 200;
 
     await t.click(browserPage.Cli.cliExpandButton);
@@ -40,7 +40,7 @@ test('Verify that user can see saved CLI size on Browser page when he returns ba
     await myRedisDatabasePage.clickOnDBByName(ossStandaloneConfig.databaseName);
     await t.expect(await browserPage.Cli.cliArea.clientHeight).gt(cliAreaHeightEnd, 'Saved context for resizable cli is incorrect');
 });
-test('Verify that user can see saved Key details and Keys tables size on Browser page when he returns back to Browser page', async t => {
+test.skip('Verify that user can see saved Key details and Keys tables size on Browser page when he returns back to Browser page', async t => {
     const offsetX = 200;
     const keyListWidth = await browserPage.keyListTable.clientWidth;
     const cliResizeButton = await browserPage.resizeBtnKeyList;

@@ -103,6 +103,7 @@ describe('DatabaseAnalysisHeader', () => {
 
     expect(screen.getByTestId('analysis-progress')).toBeInTheDocument()
   })
+
   it('should call "getDBAnalysis" action be called after click "start-database-analysis-btn"', () => {
     render(<Header {...instance(mockedProps)} />)
     fireEvent.click(screen.getByTestId('start-database-analysis-btn'))
@@ -110,6 +111,7 @@ describe('DatabaseAnalysisHeader', () => {
     const expectedActions = [getDBAnalysis()]
     expect(store.getActions()).toEqual(expectedActions)
   })
+
   it('should send telemetry event after click "new analysis" btn', async () => {
     const sendEventTelemetryMock = jest.fn()
 
@@ -129,6 +131,16 @@ describe('DatabaseAnalysisHeader', () => {
       },
     })
     ;(sendEventTelemetry as jest.Mock).mockRestore()
+  })
+
+  it('should show "Analyze" text on the start analysis button', async () => {
+    render(
+      <Header {...instance(mockedProps)} items={mockReports} progress={mockProgress} />,
+    )
+
+    const analizeButtonId = screen.getByTestId('start-database-analysis-btn')
+    expect(analizeButtonId).toBeInTheDocument()
+    expect(analizeButtonId).toHaveTextContent('Analyze')
   })
 
   it.skip('should call onChangeSelectedAnalysis after change selector', async () => {

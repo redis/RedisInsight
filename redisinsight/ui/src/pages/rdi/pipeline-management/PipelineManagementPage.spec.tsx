@@ -12,6 +12,7 @@ import {
 } from 'uiSrc/slices/app/context'
 import { PageNames, Pages } from 'uiSrc/constants'
 import { MOCK_RDI_PIPELINE_DATA } from 'uiSrc/mocks/data/rdi'
+import { getPipeline } from 'uiSrc/slices/rdi/pipeline'
 import PipelineManagementPage, { Props } from './PipelineManagementPage'
 
 const mockedProps = mock<Props>()
@@ -99,6 +100,7 @@ describe('PipelineManagementPage', () => {
 
     unmount()
     const expectedActions = [
+      getPipeline(),
       setLastPageContext(PageNames.rdiPipelineManagement),
       setLastPipelineManagementPage(Pages.rdiPipelineConfig('rdiInstanceId')),
     ]

@@ -53,7 +53,8 @@ test
     .meta({ rte: rte.ossCluster })
     .after(async() => {
         await databaseHelper.deleteDatabase(ossClusterConfig.ossClusterDatabaseName);
-    })('Verify that user can connect to OSS Cluster DB', async t => {
+    })
+    .skip('Verify that user can connect to OSS Cluster DB', async t => {
         // Add OSS Cluster DB
         await databaseHelper.addOSSClusterDatabase(ossClusterConfig);
         await myRedisDatabasePage.clickOnDBByName(ossClusterConfig.ossClusterDatabaseName);

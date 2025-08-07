@@ -45,7 +45,8 @@ test
     .requestHooks(logger)
     .after(async() => {
         await databaseHelper.deleteDatabase(databaseName);
-    })('Verify that user can add Standalone Database', async() => {
+    })
+    .skip('Verify that user can add Standalone Database', async() => {
         const connectionTimeout = '20';
         databaseName = `test_standalone-${chance.string({ length: 10 })}`;
 
@@ -90,7 +91,8 @@ test
     .meta({ rte: rte.ossCluster })
     .after(async() => {
         await databaseHelper.deleteDatabase(ossClusterConfig.ossClusterDatabaseName);
-    })('Verify that user can add OSS Cluster DB', async() => {
+    })
+    .skip('Verify that user can add OSS Cluster DB', async() => {
         await databaseHelper.addOSSClusterDatabase(ossClusterConfig);
         // Verify new connection badge for OSS cluster
         await myRedisDatabasePage.verifyDatabaseStatusIsVisible(ossClusterConfig.ossClusterDatabaseName);

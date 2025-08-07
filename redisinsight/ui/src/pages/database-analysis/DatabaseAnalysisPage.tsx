@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import styled from 'styled-components'
 
 import {
   dbAnalysisSelector,
@@ -26,6 +27,15 @@ import { formatLongName, getDbIndex, setTitle } from 'uiSrc/utils'
 import Header from './components/header'
 import DatabaseAnalysisTabs from './components/data-nav-tabs'
 import styles from './styles.module.scss'
+
+// Styled component for the main container with theme border
+const MainContainer = styled.div<React.HTMLAttributes<HTMLDivElement>>`
+  border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
+  border-radius: ${({ theme }) => theme.components.semanticContainer.sizes.M.borderRadius};
+  padding: ${({ theme }) => theme.components.semanticContainer.sizes.M.padding};
+  height: 100%;
+  overflow: auto;
+`
 
 const DatabaseAnalysisPage = () => {
   const { viewTab } = useSelector(analyticsSettingsSelector)
@@ -91,7 +101,7 @@ const DatabaseAnalysisPage = () => {
   }
 
   return (
-    <div className={styles.main} data-testid="database-analysis-page">
+    <MainContainer className={styles.main} data-testid="database-analysis-page">
       <Header
         items={reports}
         selectedValue={selectedAnalysis}
@@ -104,7 +114,7 @@ const DatabaseAnalysisPage = () => {
         reports={reports}
         data={data}
       />
-    </div>
+    </MainContainer>
   )
 }
 

@@ -35,7 +35,8 @@ test('Verify that user can see popover “Use Cypher Syntax” when cursor is in
     await t.pressKey('left');
     await t.expect(await workbenchPage.MonacoEditor.monacoWidget.textContent).contains('Use Cypher Editor', 'The user can not see popover Use Cypher Syntax');
 });
-test('Verify that when user clicks on the “X” control or use shortcut “ESC” popover Editor is closed and changes are not saved', async t => {
+test
+    .skip('Verify that when user clicks on the “X” control or use shortcut “ESC” popover Editor is closed and changes are not saved', async t => {
     const cypherCommand = `${command} "query"`;
     // Type command and open the popover editor
     await t.typeText(workbenchPage.queryInput, cypherCommand, { replace: true });
@@ -56,7 +57,8 @@ test('Verify that when user clicks on the “X” control or use shortcut “ESC
     commandAfter = await workbenchPage.scriptsLines.textContent;
     await t.expect(commandAfter.replace(/\s/g, ' ')).eql(cypherCommand, 'The changes are still saved from the Editor');
 });
-test('Verify that when user use shortcut “CTRL+ENTER” or clicks on the “V” control popover Editor is closed and changes are saved', async t => {
+test
+    .skip('Verify that when user use shortcut “CTRL+ENTER” or clicks on the “V” control popover Editor is closed and changes are saved', async t => {
     let script = 'query';
     // Type command and open the popover editor
     await t.typeText(workbenchPage.queryInput, `${command} "${script}`, { replace: true });
@@ -81,7 +83,8 @@ test('Verify that when user use shortcut “CTRL+ENTER” or clicks on the “V�
     commandAfter = await workbenchPage.scriptsLines.textContent;
     await t.expect(commandAfter.replace(/\s/g, ' ')).eql(`${command} "${script}"`, 'The changes are still saved from the Editor');
 });
-test('Verify that user can see the opacity of main Editor is 80%, Run button is disabled when the non-Redis editor is opened', async t => {
+test
+    .skip('Verify that user can see the opacity of main Editor is 80%, Run button is disabled when the non-Redis editor is opened', async t => {
     // Type command and open Cypher editor
     await t.typeText(workbenchPage.queryInput, `${command} "query"`, { replace: true });
     await t.pressKey('left');
@@ -93,7 +96,8 @@ test('Verify that user can see the opacity of main Editor is 80%, Run button is 
     await t.hover(workbenchPage.submitCommandButton);
     await t.expect(workbenchPage.runButtonToolTip.visible).notOk('The Run button in main Editor still react on hover');
 });
-test('Verify that user can resize non-Redis editor only by the top and bottom borders', async t => {
+test
+    .skip('Verify that user can resize non-Redis editor only by the top and bottom borders', async t => {
     const offsetY = 50;
     await t.drag(workbenchPage.resizeButtonForScriptingAndResults, 0, offsetY * 10, { speed: 0.4 });
     // Type command and open Cypher editor

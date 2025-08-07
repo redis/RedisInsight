@@ -2,13 +2,30 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { CloudOauthMisconfigurationException } from 'src/modules/cloud/auth/exceptions';
 import { AxiosError, AxiosHeaders } from 'axios';
 import { mockSessionMetadata } from 'src/__mocks__';
-import { getOriginalErrorCause, sanitizeError, sanitizeErrors } from './logsFormatter';
+import {
+  ClientContext,
+  ClientMetadata,
+  SessionMetadata,
+} from 'src/common/models';
+import {
+  getOriginalErrorCause,
+  logDataToPlain,
+  sanitizeError,
+  sanitizeErrors,
+} from './logsFormatter';
 
 const simpleError = new Error('Original error');
 simpleError['some'] = 'field';
-const errorWithCause = new NotFoundException('Not found', { cause: simpleError });
-const errorWithCauseDepth2 = new BadRequestException('Bad req', { cause: errorWithCause });
-const errorWithCauseDepth3 = new CloudOauthMisconfigurationException('Misconfigured', { cause: errorWithCauseDepth2 });
+const errorWithCause = new NotFoundException('Not found', {
+  cause: simpleError,
+});
+const errorWithCauseDepth2 = new BadRequestException('Bad req', {
+  cause: errorWithCause,
+});
+const errorWithCauseDepth3 = new CloudOauthMisconfigurationException(
+  'Misconfigured',
+  { cause: errorWithCauseDepth2 },
+);
 const axiosError = new AxiosError(
   'Request failed with status code 404',
   'NOT_FOUND',
@@ -31,6 +48,30 @@ const axiosError = new AxiosError(
     },
   },
 );
+
+const mockExtendedClientMetadata = Object.assign(new ClientMetadata(), {
+  databaseId: 'sdb-id',
+  context: ClientContext.Browser,
+  sessionMetadata: Object.assign(new SessionMetadata(), {
+    ...mockSessionMetadata,
+    data: {
+      some: 'data',
+    },
+    requestMetadata: {
+      some: 'meta',
+    },
+  }),
+});
+
+const mockExtendedSessionMetadata = Object.assign(new SessionMetadata(), {
+  ...mockSessionMetadata,
+  data: {
+    some: 'data 2',
+  },
+  requestMetadata: {
+    some: 'meta 2',
+  },
+});
 
 const mockLogData: any = {
   sessionMetadata: mockSessionMetadata,
@@ -56,6 +97,34 @@ const mockLogData: any = {
   ],
 };
 mockLogData.data.push({ circular: mockLogData.data });
+
+const mockUnsafeLog: any = {
+  clientMetadata: mockExtendedClientMetadata,
+  error: errorWithCauseDepth3,
+  data: [
+    errorWithCauseDepth2,
+    {
+      any: [
+        'other',
+        {
+          possible: 'data',
+          with: [
+            'nested',
+            'structure',
+            errorWithCause,
+            {
+              error: simpleError,
+            },
+          ],
+        },
+        mockExtendedSessionMetadata,
+      ],
+    },
+  ],
+};
+mockUnsafeLog.data.push(mockExtendedSessionMetadata);
+mockUnsafeLog.data[1].any[1].circular = mockExtendedClientMetadata;
+mockUnsafeLog.data.push(mockUnsafeLog.data);
 
 describe('logsFormatter', () => {
   describe('getOriginalErrorCause', () => {
@@ -89,7 +158,9 @@ describe('logsFormatter', () => {
     });
 
     it('should return sanitized object with a single original cause for nested errors', () => {
-      expect(sanitizeError(errorWithCauseDepth3, { omitSensitiveData: true })).toEqual({
+      expect(
+        sanitizeError(errorWithCauseDepth3, { omitSensitiveData: true }),
+      ).toEqual({
         type: 'CloudOauthMisconfigurationException',
         message: errorWithCauseDepth3.message,
         cause: {
@@ -170,6 +241,56 @@ describe('logsFormatter', () => {
           {
             circular: '[Circular]',
           },
+        ],
+      });
+    });
+  });
+
+  describe('logDataToPlain', () => {
+    it('should sanitize all errors and replace circular dependencies after safeTransform of the data', () => {
+      const result: any = logDataToPlain(mockUnsafeLog);
+
+      // should return error instances untouched
+      expect(result.error).toBeInstanceOf(CloudOauthMisconfigurationException);
+      expect(result.data[0]).toBeInstanceOf(BadRequestException);
+      expect(result.data[1].any[1].with[2]).toBeInstanceOf(NotFoundException);
+      expect(result.data[1].any[1].with[3].error).toBeInstanceOf(Error);
+
+      // should sanitize sessionMetadata instances and convert them to plain objects
+      expect(result).toEqual({
+        clientMetadata: {
+          ...mockExtendedClientMetadata,
+          sessionMetadata: {
+            ...mockExtendedClientMetadata.sessionMetadata,
+            requestMetadata: undefined,
+          },
+        },
+        error: errorWithCauseDepth3,
+        data: [
+          errorWithCauseDepth2,
+          {
+            any: [
+              'other',
+              {
+                circular: '[Circular]',
+                possible: 'data',
+                with: [
+                  'nested',
+                  'structure',
+                  errorWithCause,
+                  {
+                    error: simpleError,
+                  },
+                ],
+              },
+              {
+                ...mockExtendedSessionMetadata,
+                requestMetadata: undefined,
+              },
+            ],
+          },
+          '[Circular]',
+          '[Circular]',
         ],
       });
     });

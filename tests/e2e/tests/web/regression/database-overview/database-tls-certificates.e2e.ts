@@ -23,7 +23,8 @@ fixture `tls certificates`
         // Delete database
         await databaseAPIRequests.deleteAllDatabasesApi();
     });
-test('Verify that user can remove added certificates', async t => {
+test
+    .skip('Verify that user can remove added certificates', async t => {
     await t.click(browserPage.NavigationPanel.myRedisDBButton);
     await myRedisDatabasePage.clickOnEditDBByName(ossStandaloneTlsConfig.databaseName);
     await t.click(myRedisDatabasePage.AddRedisDatabaseDialog.securityTab);

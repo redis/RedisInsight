@@ -11,6 +11,7 @@ export enum CustomErrorCodes {
   RedisConnectionAuthUnsupported = 10_905,
   RedisConnectionSentinelMasterRequired = 10_906,
   RedisConnectionIncorrectCertificate = 10_907,
+  RedisConnectionDefaultUserDisabled = 10_908,
 
   // Cloud API [11001, 11099]
   CloudApiInternalServerError = 11_000,

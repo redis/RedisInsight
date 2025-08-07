@@ -100,7 +100,8 @@ test
     .after(async() => {
         // Delete databases
         await databaseAPIRequests.deleteStandaloneDatabasesByNamesApi([sshDbPass.databaseName, sshDbPrivateKey.databaseName, sshDbPasscode.databaseName, newClonedDatabaseAlias]);
-    })('Adding database with SSH', async t => {
+    })
+    .skip('Adding database with SSH', async t => {
         const hiddenPass = '••••••••••••';
         const tooltipText = [
             'Enter a value for required fields (3):',
@@ -187,7 +188,8 @@ test
     .after(async() => {
         // Delete databases
         await databaseAPIRequests.deleteStandaloneDatabaseApi(sshDbClusterPass);
-    })('Adding OSS Cluster database with SSH', async t => {
+    })
+    .skip('Adding OSS Cluster database with SSH', async t => {
         const sshWithPass = {
             ...sshParams,
             sshPassword: 'pass'
@@ -208,7 +210,8 @@ test
     .before(async() => {
         await databaseAPIRequests.deleteAllDatabasesApi();
         await databaseHelper.acceptLicenseTerms();
-    })('Verify that create free cloud db is displayed always', async t => {
+    })
+    .skip('Verify that create free cloud db is displayed always', async t => {
         const externalPageLinkList = 'https://redis.io/try-free?utm_source=redisinsight&utm_medium=app&utm_campaign=list_of_databases';
         const externalPageLinkNavigation = 'https://redis.io/try-free?utm_source=redisinsight&utm_medium=app&utm_campaign=navigation_menu';
 

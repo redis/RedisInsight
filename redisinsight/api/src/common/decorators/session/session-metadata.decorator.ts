@@ -24,16 +24,17 @@ export const sessionMetadataFromRequest = (
     'correlationId',
   ]);
   const correlationId = request.res?.locals?.session?.correlationId || uuidv4();
+  const requestMetadata = request.res?.locals?.session?.requestMetadata;
 
   const requestSession = {
     userId,
     data,
     sessionId,
     correlationId,
+    requestMetadata,
   };
 
-  // todo: do not forget to deal with session vs sessionMetadata property
-  const session = plainToInstance(SessionMetadata, requestSession);
+  const session = plainToInstance(SessionMetadata, requestSession, { groups: ['security'] });
 
   const errors = validator.validateSync(session, {
     whitelist: false, // we need this to allow additional fields if needed for flexibility

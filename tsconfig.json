@@ -40,7 +40,8 @@
     "redisinsight/ui/indexElectron.tsx",
     "redisinsight/desktop/**/*",
     "redisinsight/ui/vite-env.d.ts",
-    "jest.config.cjs"
+    "jest.config.cjs",
+    "tests/playwright/**/*"
   ],
   "exclude": [
     "redisinsight/desktop/dll/*",

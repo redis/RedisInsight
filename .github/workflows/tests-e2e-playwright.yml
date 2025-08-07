@@ -1,0 +1,100 @@
+name: Playwright E2E Tests
+on:
+  workflow_call:
+    inputs:
+      debug:
+        description: SSH Debug
+        default: false
+        type: boolean
+env:
+  E2E_CLOUD_DATABASE_USERNAME: ${{ secrets.E2E_CLOUD_DATABASE_USERNAME }}
+  E2E_CLOUD_DATABASE_PASSWORD: ${{ secrets.E2E_CLOUD_DATABASE_PASSWORD }}
+  E2E_CLOUD_API_ACCESS_KEY: ${{ secrets.E2E_CLOUD_API_ACCESS_KEY }}
+  E2E_CLOUD_DATABASE_HOST: ${{ secrets.E2E_CLOUD_DATABASE_HOST }}
+  E2E_CLOUD_DATABASE_PORT: ${{ secrets.E2E_CLOUD_DATABASE_PORT }}
+  E2E_CLOUD_DATABASE_NAME: ${{ secrets.E2E_CLOUD_DATABASE_NAME }}
+  E2E_CLOUD_API_SECRET_KEY: ${{ secrets.E2E_CLOUD_API_SECRET_KEY }}
+
+  E2E_RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
+  RI_ENCRYPTION_KEY: ${{ secrets.RI_ENCRYPTION_KEY }}
+  RI_SERVER_TLS_CERT: ${{ secrets.RI_SERVER_TLS_CERT }}
+  RI_SERVER_TLS_KEY: ${{ secrets.RI_SERVER_TLS_KEY }}
+  TEST_BIG_DB_DUMP: ${{ secrets.TEST_BIG_DB_DUMP }}
+  E2E_VOLUME_PATH: '/usr/src/app'
+
+jobs:
+  e2e-playwright-chromium-docker:
+    name: E2E Playwright Chromium Docker Build Tests
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies for Playwright tests
+        uses: ./.github/actions/install-deps
+        with:
+          dir-path: './tests/playwright'
+
+      - name: Install Playwright Browsers
+        working-directory: ./tests/playwright
+        run: yarn playwright install --with-deps
+
+      - name: Download Docker Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-builds
+          path: ./release
+
+      - name: Load built docker image from workspace
+        run: |
+          docker image load -i ./release/docker/docker-linux-alpine.amd64.tar
+
+      - name: Set up redis test environments
+        run: |
+          TEST_BIG_DB_DUMP=$TEST_BIG_DB_DUMP \
+          docker compose -p e2e-rte \
+          -f tests/e2e/rte.docker-compose.yml \
+          up --detach --force-recreate
+
+      - name: Set up RI docker image
+        run: |
+          E2E_RI_ENCRYPTION_KEY="$E2E_RI_ENCRYPTION_KEY" \
+          RI_SERVER_TLS_CERT="$RI_SERVER_TLS_CERT" \
+          RI_SERVER_TLS_KEY="$RI_SERVER_TLS_KEY" \
+          docker compose -p e2e-ri-docker \
+          -f tests/e2e/docker.web.docker-compose.yml \
+          up --detach --force-recreate
+          sleep 30
+
+      - name: Run Playwright tests
+        timeout-minutes: 80
+        working-directory: ./tests/playwright
+        if: ${{ !cancelled() }}
+        run: |
+          yarn test:chromium:docker
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: |
+            ./tests/playwright/test-results
+            ./tests/playwright/allure-results
+            ./tests/playwright/playwright-report
+          retention-days: 10
+
+      - name: Clean up redis test environments
+        if: always()
+        run: |
+          docker compose -p e2e-rte \
+          -f tests/e2e/rte.docker-compose.yml \
+          down --volumes --remove-orphans
+
+      - name: Clean up RI docker image
+        if: always()
+        run: |
+          docker compose -p e2e-ri-docker \
+          -f tests/e2e/docker.web.docker-compose.yml \
+          down --volumes --remove-orphans

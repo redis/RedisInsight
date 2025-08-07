@@ -1,0 +1,83 @@
+name: ✅ E2E Tests
+
+on:
+  pull_request:
+    types: [labeled]
+
+  workflow_dispatch:
+    inputs:
+      debug:
+        description: Enable SSH Debug (IT and E2E)
+        default: false
+        type: boolean
+
+# Cancel a previous run workflow
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-e2e
+  cancel-in-progress: true
+
+jobs:
+  # E2E Approve
+  e2e-approve:
+    runs-on: ubuntu-latest
+    if: github.event.action == 'labeled' && contains(github.event.label.name, 'e2e-approved') || github.event_name == 'workflow_dispatch'
+    name: Approve E2E tests
+    steps:
+      - name: Add "e2e-approved" Label
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          labels: e2e-approved
+
+  # E2E Docker
+  build-docker:
+    uses: ./.github/workflows/pipeline-build-docker.yml
+    needs: e2e-approve
+    secrets: inherit
+    with:
+      debug: ${{ inputs.debug || false }}
+      for_e2e_tests: true
+
+  e2e-docker-tests:
+    needs: build-docker
+    uses: ./.github/workflows/tests-e2e-docker.yml
+    secrets: inherit
+    with:
+      debug: ${{ inputs.debug || false }}
+
+  tests-e2e-playwright:
+    needs: build-docker
+    uses: ./.github/workflows/tests-e2e-playwright.yml
+    secrets: inherit
+    with:
+      debug: ${{ inputs.debug || false }}
+
+  # E2E AppImage
+  build-appimage:
+    uses: ./.github/workflows/pipeline-build-linux.yml
+    needs: e2e-approve
+    secrets: inherit
+    with:
+      target: build_linux_appimage_x64
+      debug: ${{ inputs.debug || false }}
+
+  e2e-appimage-tests:
+    needs: build-appimage
+    uses: ./.github/workflows/tests-e2e-appimage.yml
+    secrets: inherit
+    with:
+      debug: ${{ inputs.debug || false }}
+
+  clean:
+    uses: ./.github/workflows/clean-deployments.yml
+    if: always()
+    needs: [e2e-docker-tests, e2e-appimage-tests, tests-e2e-playwright]
+
+  # Remove artifacts from github actions
+  remove-artifacts:
+    name: Remove artifacts
+    needs: [e2e-docker-tests, e2e-appimage-tests, tests-e2e-playwright]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove all artifacts
+        uses: ./.github/actions/remove-artifacts

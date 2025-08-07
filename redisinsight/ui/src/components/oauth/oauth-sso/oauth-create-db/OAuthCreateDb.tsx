@@ -127,6 +127,7 @@ const OAuthCreateDb = (props: Props) => {
               {(form: React.ReactNode) => (
                 <>
                   <Text className={styles.subTitle}>Get started with</Text>
+                  <Spacer size="s" />
                   <Title size="XL" className={styles.title}>
                     Free trial Cloud database
                   </Title>
@@ -144,6 +145,7 @@ const OAuthCreateDb = (props: Props) => {
           ) : (
             <>
               <Text className={styles.subTitle}>Get your</Text>
+              <Spacer size="s" />
               <Title size="XL" className={styles.title}>
                 Free trial Cloud database
               </Title>

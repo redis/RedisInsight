@@ -54,37 +54,35 @@ const AppNavigation = ({ actions, onChange }: AppNavigationProps) => {
   return (
     <StyledAppNavigation>
       <AppNavigationContainer />
-      <AppNavigationContainer borderLess grow={false}>
-        <Row align="end">
-          <Tabs.Compose
-            value={activeTab?.pageName}
-            onChange={(tabValue) => {
-              const tabNavItem = privateRoutes.find(
-                (route) => route.pageName === tabValue,
+      <AppNavigationContainer borderLess grow={false} justify="center" style={{ paddingTop: '20px' }}>
+        <Tabs.Compose
+          value={activeTab?.pageName}
+          onChange={(tabValue) => {
+            const tabNavItem = privateRoutes.find(
+              (route) => route.pageName === tabValue,
+            )
+            if (tabNavItem) {
+              onChange?.(tabNavItem.pageName) // remove actions before navigation, displayed page, should set their own actions
+              tabNavItem.onClick()
+            }
+          }}
+        >
+          <Tabs.TabBar.Compose variant="default">
+            {navTabs.map(({ value, label, disabled }, index) => {
+              const key = `${value}-${index}`
+              return (
+                <Tabs.TabBar.Trigger.Compose
+                  value={value}
+                  disabled={disabled}
+                  key={key}
+                >
+                  <StyledAppNavTab>{label ?? value}</StyledAppNavTab>
+                  <Tabs.TabBar.Trigger.Marker />
+                </Tabs.TabBar.Trigger.Compose>
               )
-              if (tabNavItem) {
-                onChange?.(tabNavItem.pageName) // remove actions before navigation, displayed page, should set their own actions
-                tabNavItem.onClick()
-              }
-            }}
-          >
-            <Tabs.TabBar.Compose variant="default">
-              {navTabs.map(({ value, label, disabled }, index) => {
-                const key = `${value}-${index}`
-                return (
-                  <Tabs.TabBar.Trigger.Compose
-                    value={value}
-                    disabled={disabled}
-                    key={key}
-                  >
-                    <StyledAppNavTab>{label ?? value}</StyledAppNavTab>
-                    <Tabs.TabBar.Trigger.Marker />
-                  </Tabs.TabBar.Trigger.Compose>
-                )
-              })}
-            </Tabs.TabBar.Compose>
-          </Tabs.Compose>
-        </Row>
+            })}
+          </Tabs.TabBar.Compose>
+        </Tabs.Compose>
       </AppNavigationContainer>
       <AppNavigationContainer justify="end" align="center">
         {actions}

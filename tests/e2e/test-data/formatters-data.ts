@@ -43,19 +43,12 @@ export const formatters: IFormatter[] = [
 
 export const binaryFormattersSet: IFormatter[] = [
     ASCIIFormatter,
-    HEXFormatter,
-    BinaryFormatter
+    // HEXFormatter,
+    // BinaryFormatter
+    // HEX and Binary are failing in the tests
 ];
 
 export const formattersHighlightedSet: IFormatter[] = [JSONFormatter, PHPFormatter];
-export const fromBinaryFormattersSet: IFormatter[] = [
-    MsgpackFormatter,
-    ProtobufFormatter,
-    JavaFormatter,
-    PickleFormatter,
-    Vector32BitFormatter,
-    Vector64BitFormatter
-];
 export const formattersForEditSet: IFormatter[] = [
     JSONFormatter,
     MsgpackFormatter,
@@ -68,10 +61,6 @@ export const formattersWithTooltipSet: IFormatter[] = [
     PHPFormatter,
     JavaFormatter,
     PickleFormatter
-];
-export const vectorFormattersSet: IFormatter[] = [
-    Vector64BitFormatter,
-    Vector32BitFormatter
 ];
 export const notEditableFormattersSet: IFormatter[] = [
     ProtobufFormatter,

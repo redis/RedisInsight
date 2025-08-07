@@ -102,8 +102,11 @@ const SubscriptionPanel = () => {
       </FlexItem>
       <FlexItem>
         <Row align="center">
+          <FlexItem>
+            <ClickableAppendInfo />
+          </FlexItem>
           <FlexItem className={styles.channels}>
-            <FormField additionalText={<ClickableAppendInfo />}>
+            <FormField>
               <TextInput
                 value={channels}
                 disabled={isSubscribed}

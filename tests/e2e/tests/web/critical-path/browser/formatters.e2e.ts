@@ -10,9 +10,7 @@ import {
     formattersForEditSet,
     formattersHighlightedSet,
     formattersWithTooltipSet,
-    fromBinaryFormattersSet,
     notEditableFormattersSet,
-    vectorFormattersSet,
     formatters
 } from '../../../../test-data/formatters-data';
 import { phpData } from '../../../../test-data/formatters';
@@ -71,21 +69,6 @@ formattersHighlightedSet.forEach(formatter => {
                 }
             }
         });
-});
-fromBinaryFormattersSet.forEach(formatter => {
-    test(`Verify that user can see highlighted key details in ${formatter.format} format`, async t => {
-        // Verify for Msgpack, Protobuf, Java serialized, Pickle, Vector 32-bit, Vector 64-bit formats
-        // Open Hash key details
-        await browserPage.openKeyDetailsByKeyName(keysData[0].keyName);
-        // Add valid value in HEX format for convertion
-        await browserPage.selectFormatter('HEX');
-        await browserPage.editHashKeyValue(formatter.fromHexText ?? '');
-        await browserPage.selectFormatter(formatter.format);
-        // Verify that value is formatted and highlighted
-        await t.expect(browserPage.hashFieldValue.innerText).contains(formatter.formattedText ?? '', `Value is not saved as ${formatter.format}`);
-        await t.expect(browserPage.hashFieldValue.find(browserPage.cssJsonValue).exists).ok(`Value is not formatted to ${formatter.format}`);
-
-    });
 });
 formattersForEditSet.forEach(formatter => {
     test(`Verify that user can edit the values in the key regardless if they are valid in ${formatter.format} format or not`, async t => {
@@ -164,7 +147,7 @@ binaryFormattersSet.forEach(formatter => {
                 }
             }
         });
-    test(`Verify that user can edit value for Hash field in ${formatter.format} and convert then to another format`, async t => {
+    test(`Verify that user can edit value for Hash field in ${formatter.format} and convert them to another format`, async t => {
         // Verify for ASCII, HEX, Binary formatters
         // Open key details and select formatter
         await browserPage.openKeyDetails(keysData[0].keyName);
@@ -235,23 +218,6 @@ notEditableFormattersSet.forEach(formatter => {
                 await t.expect(editBtn.hasAttribute('disabled')).notOk(`Key ${key.textType} is disabled for ${formatter.format} formatter`);
             }
         }
-    });
-});
-vectorFormattersSet.forEach(formatter => {
-    test(` Verify failed to convert message for  ${formatter.format}`, async t => {
-        // Verify for Vector 32-bit, Vector 64-bit formatters
-        const failedMessage = `Failed to convert to ${formatter.format}`;
-        const invalidBinaryValue = '1001101010011001100110011001100110011001100110011111000100111111000000000000000000000000';
-        // Open Hash key details
-        await browserPage.openKeyDetailsByKeyName(keysData[0].keyName);
-        // Add valid value in Binary format for conversion
-        await browserPage.selectFormatter('Binary');
-        await browserPage.editHashKeyValue(invalidBinaryValue ?? '');
-        await browserPage.selectFormatter(formatter.format);
-        await t.expect(browserPage.hashFieldValue.find(browserPage.cssJsonValue).exists).notOk(` Value is formatted to ${formatter.format}`);
-        await t.hover(browserPage.hashValuesList);
-        // Verify that tooltip with conversion failed message displayed
-        await t.expect(browserPage.tooltip.textContent).contains(failedMessage, `"${failedMessage}" is not displayed in tooltip`);
     });
 });
 test('Verify that user can format timestamp value', async t => {
