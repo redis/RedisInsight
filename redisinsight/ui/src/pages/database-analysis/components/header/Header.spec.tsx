@@ -140,7 +140,7 @@ describe('DatabaseAnalysisHeader', () => {
 
     const analizeButtonId = screen.getByTestId('start-database-analysis-btn')
     expect(analizeButtonId).toBeInTheDocument()
-    expect(analizeButtonId).toHaveTextContent('Analyze')
+    expect(analizeButtonId.textContent).toContain('New Report')
   })
 
   it.skip('should call onChangeSelectedAnalysis after change selector', async () => {
