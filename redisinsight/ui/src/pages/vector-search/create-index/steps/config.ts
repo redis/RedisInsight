@@ -2,7 +2,9 @@ import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-ind
 import { VectorSearchBox } from 'uiSrc/components/new-index/create-index-step/field-box/types'
 import { BoxSelectionOption } from 'uiSrc/components/new-index/selection-box/SelectionBox'
 import {
+  BikeIcon,
   DatabaseIcon,
+  PopcornIcon,
   UniversityIcon,
   VectorSearchIcon,
   WandIcon,
@@ -47,20 +49,13 @@ export const indexDataContent: BoxSelectionOption<SampleDataContent>[] = [
     value: SampleDataContent.E_COMMERCE_DISCOVERY,
     label: 'E-commerce Discovery',
     text: 'Find products by meaning, not just keywords.',
-    icon: UniversityIcon, // TODO: bike icon?
-  },
-  {
-    value: SampleDataContent.AI_ASSISTANTS,
-    label: 'AI Assistants',
-    text: 'Find products by meaning, not just keywords.',
-    icon: DatabaseIcon,
-    disabled: true,
+    icon: BikeIcon,
   },
   {
     value: SampleDataContent.CONTENT_RECOMMENDATIONS,
-    label: 'Content Recommendations',
-    text: 'Find products by meaning, not just keywords.',
-    icon: UniversityIcon,
+    label: 'Movie Recommendations',
+    text: 'Suggest movies based on the true meaning of plots or themes.',
+    icon: PopcornIcon,
     disabled: true,
   },
 ]
