@@ -78,6 +78,16 @@ export const VectorSearchQuery = () => {
     (index) => index.value === queryIndex,
   )
 
+  const handleClearResults = () => {
+    onAllQueriesDelete()
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_CLEAR_ALL_RESULTS_CLICKED,
+      eventData: {
+        databaseId: instanceId,
+      },
+    })
+  }
+
   return (
     <VectorSearchScreenWrapper direction="column" justify="between">
       <HeaderActions
@@ -128,7 +138,7 @@ export const VectorSearchQuery = () => {
                 onQueryProfile={onQueryProfile}
                 onQueryOpen={onQueryOpen}
                 onQueryDelete={onQueryDelete}
-                onAllQueriesDelete={onAllQueriesDelete}
+                onAllQueriesDelete={handleClearResults}
                 noResultsPlaceholder={
                   <StyledNoResultsWrapper>
                     TODO: Not sure yet what to put here
