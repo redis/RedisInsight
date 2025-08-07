@@ -199,4 +199,34 @@ describe('QueryCardHeader', () => {
       },
     })
   })
+
+  it('should collect telemetry when clicking on the "delete" button', async () => {
+    const command = 'info'
+    const mockOnQueryDelete = jest.fn()
+
+    render(
+      <QueryCardHeader
+        {...instance(mockedProps)}
+        query={command}
+        isOpen
+        onQueryDelete={mockOnQueryDelete}
+      />,
+    )
+
+    // Simulate clicking the delete button
+    const deleteButton = screen.getByTestId('delete-command')
+    expect(deleteButton).toBeInTheDocument()
+
+    fireEvent.click(deleteButton)
+    expect(mockOnQueryDelete).toHaveBeenCalled()
+
+    // Verify telemetry event is sent
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
+      event: TelemetryEvent.SEARCH_CLEAR_RESULT_CLICKED,
+      eventData: {
+        databaseId: INSTANCE_ID_MOCK,
+        command,
+      },
+    })
+  })
 })
