@@ -1,6 +1,7 @@
 import { Factory } from 'fishery'
 import { faker } from '@faker-js/faker'
 import { CommandExecutionStatus } from 'uiSrc/slices/interfaces/cli'
+import { CommandExecution, CommandExecutionUI } from 'uiSrc/slices/interfaces'
 
 // Note: Types are temporaryly not binded properly due to issues in the Jset setup
 // SyntaxError: redisinsight/api/src/modules/workbench/models/command-execution.ts: Support for the experimental syntax 'decorators' isn't currently enabled (32:3):
@@ -33,3 +34,32 @@ export const commandExecutionResultFactory = Factory.define(() => {
     }),
   }
 })
+
+export const commandExecutionUIFactory = Factory.define<CommandExecutionUI>(
+  () => {
+    const commandExecution = commandExecutionFactory.build() as CommandExecution
+
+    const includeLoading = faker.datatype.boolean()
+    const includeIsOpen = faker.datatype.boolean()
+    const includeError = faker.datatype.boolean()
+    const includeEmptyCommand = faker.datatype.boolean()
+
+    return {
+      ...commandExecution,
+
+      // Optional properties
+      ...(includeLoading && {
+        loading: faker.datatype.boolean(),
+      }),
+      ...(includeIsOpen && {
+        isOpen: faker.datatype.boolean(),
+      }),
+      ...(includeError && {
+        error: faker.lorem.sentence(),
+      }),
+      ...(includeEmptyCommand && {
+        emptyCommand: faker.datatype.boolean(),
+      }),
+    }
+  },
+)

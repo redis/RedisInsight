@@ -1,5 +1,6 @@
 import React from 'react'
 import cx from 'classnames'
+import { useParams } from 'react-router-dom'
 
 import { CodeButtonParams } from 'uiSrc/constants'
 import { ProfileQueryType } from 'uiSrc/pages/workbench/constants'
@@ -7,6 +8,7 @@ import { generateProfileQueryForCommand } from 'uiSrc/pages/workbench/utils/prof
 import { Nullable } from 'uiSrc/utils'
 import { CommandExecutionUI } from 'uiSrc/slices/interfaces'
 import { RunQueryMode, ResultsMode } from 'uiSrc/slices/interfaces/workbench'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { DeleteIcon } from 'uiSrc/components/base/icons'
@@ -56,6 +58,7 @@ const CommandsView = (props: Props) => {
     onQueryOpen,
     scrollDivRef,
   } = props
+  const { instanceId } = useParams<{ instanceId: string }>()
 
   const handleQueryProfile = (
     profileType: ProfileQueryType,
@@ -74,6 +77,16 @@ const CommandsView = (props: Props) => {
         clearEditor: false,
       })
     }
+  }
+
+  const collectTelemetryQueryReRun = (query: string) => {
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_COMMAND_RUN_AGAIN,
+      eventData: {
+        databaseId: instanceId,
+        commands: [query],
+      },
+    })
   }
 
   return (
@@ -141,13 +154,14 @@ const CommandsView = (props: Props) => {
                       resultsMode,
                     })
                   }
-                  onQueryReRun={() =>
+                  onQueryReRun={() => {
                     onQueryReRun(command, null, {
                       mode,
                       results: resultsMode,
                       clearEditor: false,
                     })
-                  }
+                    collectTelemetryQueryReRun(command)
+                  }}
                   onQueryDelete={() => onQueryDelete(id)}
                 />
               ),
