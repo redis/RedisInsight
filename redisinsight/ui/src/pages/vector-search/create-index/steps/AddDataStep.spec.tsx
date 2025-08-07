@@ -61,8 +61,7 @@ describe('AddDataStep', () => {
 
     expect(screen.getByText('Data content')).toBeInTheDocument()
     expect(screen.getByText('E-commerce Discovery')).toBeInTheDocument()
-    expect(screen.getByText('AI Assistants')).toBeInTheDocument()
-    expect(screen.getByText('Content Recommendations')).toBeInTheDocument()
+    expect(screen.getByText('Movie Recommendations')).toBeInTheDocument()
   })
 
   describe('Search Index Type Selection', () => {
@@ -137,25 +136,13 @@ describe('AddDataStep', () => {
       })
     })
 
-    it('should not call setParameters when AI Assistants (disabled) is clicked', () => {
+    it('should not call setParameters when Movie Recommendations (disabled) is clicked', () => {
       render(<AddDataStep {...defaultProps} />)
 
-      const aiAssistantsOption = screen
-        .getByText('AI Assistants')
+      const movieRecommendationsOption = screen
+        .getByText('Movie Recommendations')
         .closest('div')
-      fireEvent.click(aiAssistantsOption!)
-
-      // Disabled options should not trigger onClick
-      expect(mockSetParameters).not.toHaveBeenCalled()
-    })
-
-    it('should not call setParameters when Content Recommendations (disabled) is clicked', () => {
-      render(<AddDataStep {...defaultProps} />)
-
-      const contentRecommendationsOption = screen
-        .getByText('Content Recommendations')
-        .closest('div')
-      fireEvent.click(contentRecommendationsOption!)
+      fireEvent.click(movieRecommendationsOption!)
 
       // Disabled options should not trigger onClick
       expect(mockSetParameters).not.toHaveBeenCalled()
@@ -164,9 +151,9 @@ describe('AddDataStep', () => {
     it('should show "Coming soon" text for disabled options', () => {
       render(<AddDataStep {...defaultProps} />)
 
-      // There should be 3 "Coming soon" texts - Vector Set, AI Assistants, and Content Recommendations
+      // There should be 3 "Coming soon" texts - Vector Set, and Movie Recommendations
       const comingSoonTexts = screen.getAllByText('Coming soon')
-      expect(comingSoonTexts).toHaveLength(3)
+      expect(comingSoonTexts).toHaveLength(2)
     })
   })
 
