@@ -79,16 +79,6 @@ export interface Props {
   onQueryDelete: () => void
   onQueryReRun: () => void
   onQueryProfile: (type: ProfileQueryType) => void
-  onQueryCopy?: ({
-    telemetryEventData,
-  }: {
-    telemetryEventData?: QueryCardHeaderTelemetryEventData
-  }) => void
-}
-
-export interface QueryCardHeaderTelemetryEventData {
-  databaseId: string
-  command: string | undefined
 }
 
 export const HIDE_FIELDS = {
@@ -152,7 +142,6 @@ const QueryCardHeader = (props: Props) => {
     onQueryDelete,
     onQueryReRun,
     onQueryProfile,
-    onQueryCopy,
     db,
     hideFields = [],
   } = props
@@ -184,14 +173,9 @@ const QueryCardHeader = (props: Props) => {
   }
 
   const handleCopy = (event: React.MouseEvent, query: string) => {
+    sendEvent(TelemetryEvent.WORKBENCH_COMMAND_COPIED, query)
     eventStop(event)
     navigator.clipboard?.writeText?.(query)
-    onQueryCopy?.({
-      telemetryEventData: {
-        databaseId: instanceId,
-        command: getCommandNameFromQuery(query, COMMANDS_SPEC),
-      },
-    })
   }
 
   const onDropDownViewClick = (event: React.MouseEvent) => {

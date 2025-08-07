@@ -34,7 +34,6 @@ import { toggleOpenWBResult } from 'uiSrc/slices/workbench/wb-results'
 import QueryCardHeader from './QueryCardHeader'
 import QueryCardCliResultWrapper from './QueryCardCliResultWrapper'
 import QueryCardCliPlugin from './QueryCardCliPlugin'
-import { QueryCardHeaderTelemetryEventData } from './QueryCardHeader/QueryCardHeader'
 import QueryCardCommonResult, {
   CommonErrorResponse,
 } from './QueryCardCommonResult'
@@ -62,11 +61,6 @@ export interface Props {
   onQueryReRun: () => void
   onQueryOpen: () => void
   onQueryProfile: (type: ProfileQueryType) => void
-  onQueryCopy?: ({
-    telemetryEventData,
-  }: {
-    telemetryEventData?: QueryCardHeaderTelemetryEventData
-  }) => void
 }
 
 const getDefaultPlugin = (views: IPluginVisualization[], query: string) =>
@@ -104,7 +98,6 @@ const QueryCard = (props: Props) => {
     onQueryDelete,
     onQueryProfile,
     onQueryReRun,
-    onQueryCopy,
     loading,
     clearing,
     emptyCommand,
@@ -237,7 +230,6 @@ const QueryCard = (props: Props) => {
           onQueryDelete={onQueryDelete}
           onQueryReRun={onQueryReRun}
           onQueryProfile={onQueryProfile}
-          onQueryCopy={onQueryCopy}
         />
         {isOpen && (
           <>

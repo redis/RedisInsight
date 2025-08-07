@@ -42,7 +42,7 @@ jest.mock('uiSrc/slices/app/plugins', () => ({
         plugin: '',
         activationMethod: 'render',
         matchCommands: ['FT.SEARCH'],
-      },
+      }
     ],
   }),
 }))
@@ -115,27 +115,25 @@ describe('QueryCardHeader', () => {
     expect(screen.queryByTestId('select-view-type')).not.toBeInTheDocument()
   })
 
-  it('should call onQueryCopy callback after click on the copy button', async () => {
+  it('event telemetry WORKBENCH_COMMAND_COPIED should be call after click on copy btn', async () => {
     const command = 'info'
-    const onQueryCopy = jest.fn()
-
-    render(
-      <QueryCardHeader
-        {...instance(mockedProps)}
-        query={command}
-        onQueryCopy={onQueryCopy}
-      />,
+    const sendEventTelemetryMock = jest.fn()
+    ;(sendEventTelemetry as jest.Mock).mockImplementation(
+      () => sendEventTelemetryMock,
     )
+    render(<QueryCardHeader {...instance(mockedProps)} query={command} />)
 
     await act(async () => {
       fireEvent.click(screen.getByTestId('copy-command'))
     })
 
-    expect(onQueryCopy).toHaveBeenCalledWith({
-      telemetryEventData: {
-        databaseId: INSTANCE_ID_MOCK,
+    expect(sendEventTelemetry).toBeCalledWith({
+      event: TelemetryEvent.WORKBENCH_COMMAND_COPIED,
+      eventData: {
         command,
+        databaseId: INSTANCE_ID_MOCK,
       },
     })
+    ;(sendEventTelemetry as jest.Mock).mockRestore()
   })
 })

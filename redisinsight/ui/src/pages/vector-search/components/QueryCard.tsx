@@ -30,9 +30,7 @@ import {
 } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
-import QueryCardHeader, {
-  QueryCardHeaderTelemetryEventData,
-} from 'uiSrc/components/query/query-card/QueryCardHeader/QueryCardHeader'
+import QueryCardHeader from 'uiSrc/components/query/query-card/QueryCardHeader/QueryCardHeader'
 import QueryCardCommonResult, {
   CommonErrorResponse,
 } from 'uiSrc/components/query/query-card/QueryCardCommonResult'
@@ -189,17 +187,6 @@ const QueryCard = (props: Props) => {
     )
   }
 
-  const onQueryCopy = ({
-    telemetryEventData,
-  }: {
-    telemetryEventData?: QueryCardHeaderTelemetryEventData
-  }) => {
-    sendEventTelemetry({
-      event: TelemetryEvent.SEARCH_COMMAND_COPIED,
-      eventData: telemetryEventData,
-    })
-  }
-
   return (
     <div
       className={cx(queryStyles.containerWrapper, {
@@ -238,7 +225,6 @@ const QueryCard = (props: Props) => {
           onQueryDelete={onQueryDelete}
           onQueryReRun={onQueryReRun}
           onQueryProfile={onQueryProfile}
-          onQueryCopy={onQueryCopy}
         />
         {isOpen && (
           <>

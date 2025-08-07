@@ -12,9 +12,6 @@ import { RunQueryMode, ResultsMode } from 'uiSrc/slices/interfaces/workbench'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { DeleteIcon } from 'uiSrc/components/base/icons'
 import { ProgressBarLoader } from 'uiSrc/components/base/display'
-import { TelemetryEvent } from 'uiSrc/telemetry/events'
-import { sendEventTelemetry } from 'uiSrc/telemetry'
-import { QueryCardHeaderTelemetryEventData } from 'uiSrc/components/query/query-card/QueryCardHeader/QueryCardHeader'
 import WbNoResultsMessage from '../../wb-no-results-message'
 
 import styles from './styles.module.scss'
@@ -76,21 +73,13 @@ const WBResults = (props: Props) => {
     }
   }
 
-  const handleQueryCopy = ({
-    telemetryEventData,
-  }: {
-    telemetryEventData?: QueryCardHeaderTelemetryEventData
-  }) => {
-    sendEventTelemetry({
-      event: TelemetryEvent.WORKBENCH_COMMAND_COPIED,
-      eventData: telemetryEventData,
-    })
-  }
-
   return (
     <div className={styles.wrapper}>
       {!isResultsLoaded && (
-        <ProgressBarLoader color="primary" data-testid="progress-wb-history" />
+        <ProgressBarLoader
+          color="primary"
+          data-testid="progress-wb-history"
+        />
       )}
       {!!items?.length && (
         <div className={styles.header}>
@@ -159,7 +148,6 @@ const WBResults = (props: Props) => {
                     })
                   }
                   onQueryDelete={() => onQueryDelete(id)}
-                  onQueryCopy={handleQueryCopy}
                 />
               ),
             )
