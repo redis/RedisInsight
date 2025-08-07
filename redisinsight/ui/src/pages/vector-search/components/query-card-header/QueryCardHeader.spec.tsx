@@ -115,7 +115,7 @@ describe('QueryCardHeader', () => {
     expect(screen.queryByTestId('select-view-type')).not.toBeInTheDocument()
   })
 
-  it('event telemetry WORKBENCH_COMMAND_COPIED should be call after click on copy btn', async () => {
+  it('event telemetry SEARCH_COMMAND_COPIED should be call after click on copy btn', async () => {
     const command = 'info'
     const sendEventTelemetryMock = jest.fn()
     ;(sendEventTelemetry as jest.Mock).mockImplementation(
@@ -127,8 +127,8 @@ describe('QueryCardHeader', () => {
       fireEvent.click(screen.getByTestId('copy-command'))
     })
 
-    expect(sendEventTelemetry).toBeCalledWith({
-      event: TelemetryEvent.WORKBENCH_COMMAND_COPIED,
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
+      event: TelemetryEvent.SEARCH_COMMAND_COPIED,
       eventData: {
         command,
         databaseId: INSTANCE_ID_MOCK,

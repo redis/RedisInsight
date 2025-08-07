@@ -180,7 +180,7 @@ const QueryCardHeader = (props: Props) => {
   }
 
   const handleCopy = (event: React.MouseEvent, query: string) => {
-    sendEvent(TelemetryEvent.WORKBENCH_COMMAND_COPIED, query)
+    sendEvent(TelemetryEvent.SEARCH_COMMAND_COPIED, query)
     eventStop(event)
     navigator.clipboard?.writeText?.(query)
   }
