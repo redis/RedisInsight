@@ -1,10 +1,8 @@
 import { DefaultBodyType, MockedRequest, RestHandler } from 'msw'
 
-import redisearch from './redisearchHandlers'
-import bulkActions from './bulkActionsHandlers'
+import commands from './commands'
 
 const handlers: RestHandler<MockedRequest<DefaultBodyType>>[] = [].concat(
-  redisearch,
-  bulkActions,
+  commands,
 )
 export default handlers

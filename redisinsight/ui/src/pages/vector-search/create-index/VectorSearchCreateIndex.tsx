@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import { Stepper } from '@redis-ui/components'
@@ -6,6 +6,7 @@ import { Title } from 'uiSrc/components/base/text'
 import { Button, SecondaryButton } from 'uiSrc/components/base/forms/buttons'
 import { ChevronLeftIcon } from 'uiSrc/components/base/icons'
 
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { selectedBikesIndexFields, stepContents } from './steps'
 import {
   CreateSearchIndexParameters,
@@ -59,6 +60,7 @@ export const VectorSearchCreateIndex = ({
     const isFinalStep = step === stepContents.length - 1
     if (isFinalStep) {
       createIndex(createSearchIndexParameters)
+      collectCreateIndexStepTelemetry()
       return
     }
 
@@ -66,6 +68,57 @@ export const VectorSearchCreateIndex = ({
   }
   const onBackClick = () => {
     setStep(step - 1)
+  }
+
+  useEffect(() => {
+    collectTelemetry(step)
+  }, [step])
+
+  const collectTelemetry = (step: number): void => {
+    switch (step) {
+      case 1:
+        collectStartStepTelemetry()
+        break
+      case 2:
+        collectIndexInfoStepTelemetry()
+        break
+      case 3:
+        collectCreateIndexStepTelemetry()
+        break
+      default:
+        // No telemetry for other steps
+        break
+    }
+  }
+
+  const collectStartStepTelemetry = (): void => {
+    sendEventTelemetry({
+      event: TelemetryEvent.VECTOR_SEARCH_ONBOARDING_TRIGGERED,
+      eventData: {
+        databaseId: instanceId,
+      },
+    })
+  }
+
+  const collectIndexInfoStepTelemetry = (): void => {
+    sendEventTelemetry({
+      event: TelemetryEvent.VECTOR_SEARCH_ONBOARDING_PROCEED_TO_INDEX_INFO,
+      eventData: {
+        databaseId: instanceId,
+        indexType: createSearchIndexParameters.searchIndexType,
+        sampleDataType: createSearchIndexParameters.sampleDataType,
+        dataContent: createSearchIndexParameters.dataContent,
+      },
+    })
+  }
+
+  const collectCreateIndexStepTelemetry = (): void => {
+    sendEventTelemetry({
+      event: TelemetryEvent.VECTOR_SEARCH_ONBOARDING_PROCEED_TO_QUERIES,
+      eventData: {
+        databaseId: instanceId,
+      },
+    })
   }
 
   if (success) {
