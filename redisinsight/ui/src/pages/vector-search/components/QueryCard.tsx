@@ -30,13 +30,13 @@ import {
 } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
-import QueryCardHeader from 'uiSrc/components/query/query-card/QueryCardHeader/QueryCardHeader'
 import QueryCardCommonResult, {
   CommonErrorResponse,
 } from 'uiSrc/components/query/query-card/QueryCardCommonResult'
 import QueryCardCliResultWrapper from 'uiSrc/components/query/query-card/QueryCardCliResultWrapper'
 import QueryCardCliPlugin from 'uiSrc/components/query/query-card/QueryCardCliPlugin'
 import queryStyles from 'uiSrc/components/query/query-card/styles.module.scss'
+import QueryCardHeader from './query-card-header/QueryCardHeader'
 
 export interface Props {
   id: string
