@@ -4,7 +4,8 @@ import { FlexGroup, FlexItem } from 'uiSrc/components/base/layout/flex'
 export const VectorSearchPageWrapper = styled.div`
   background-color: ${({ theme }) =>
     theme.semantic?.color.background.neutral100};
-  padding: ${({ theme }) => theme.core?.space.space200};
+  padding-left: ${({ theme }) => theme.core?.space.space200};
+  padding-right: ${({ theme }) => theme.core?.space.space200};
 
   display: flex;
   height: 100%;

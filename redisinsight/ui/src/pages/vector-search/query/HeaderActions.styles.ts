@@ -6,10 +6,13 @@ export const StyledHeaderAction = styled(FlexGroup)`
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-  margin-bottom: ${({ theme }) => theme.core.space.space200};
+  gap: ${({ theme }) => theme.core.space.space100};
+  margin-bottom: ${({ theme }) => theme.core.space.space100};
 `
 
 export const StyledTextButton = styled(TextButton)`
+  padding: 0px;
+  height: auto;
   color: ${({ theme }) => theme.color.blue400};
   &:hover {
     color: ${({ theme }) => theme.color.blue500};
