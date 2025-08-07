@@ -168,7 +168,7 @@ describe('PipelineActions', () => {
     )
   })
 
-  it('should dispatch validation errors if validation fails', () => {
+  it('should dispatch validation errors if validation fails but still deploy button should be enabled', () => {
     ;(validatePipeline as jest.Mock).mockReturnValue({
       result: false,
       configValidationErrors: ['Missing field'],
@@ -199,6 +199,8 @@ describe('PipelineActions', () => {
         }),
       ]),
     )
+
+    expect(screen.queryByTestId('deploy-rdi-pipeline')).not.toBeDisabled()
   })
 
   describe('TelemetryEvent', () => {

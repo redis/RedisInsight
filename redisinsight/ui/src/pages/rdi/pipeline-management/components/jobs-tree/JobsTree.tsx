@@ -1,6 +1,4 @@
-import {
-  EuiAccordion,
-} from '@elastic/eui'
+import { EuiAccordion } from '@elastic/eui'
 import cx from 'classnames'
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -29,6 +27,7 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Loader } from 'uiSrc/components/base/display'
+import ValidationErrorsList from 'uiSrc/pages/rdi/pipeline-management/components/validation-errors-list/ValidationErrorsList'
 import styles from './styles.module.scss'
 
 export interface IProps {
@@ -160,7 +159,11 @@ const JobsTree = (props: IProps) => {
   const handleToggleAccordion = (isOpen: boolean) =>
     setAccordionState(isOpen ? 'open' : 'closed')
 
-  const jobName = (name: string, isValid: boolean = true) => (
+  const jobName = (
+    name: string,
+    isValid: boolean = true,
+    validationErrors: string[] = [],
+  ) => (
     <>
       <FlexItem
         grow
@@ -171,11 +174,19 @@ const JobsTree = (props: IProps) => {
         {name}
 
         {!isValid && (
-          <RiIcon
-            type="IndicatorXIcon"
-            className="rdi-pipeline-nav__error"
-            data-testid="rdi-pipeline-nav__error"
-          />
+          <RiTooltip
+            position="right"
+            content={
+              <ValidationErrorsList validationErrors={validationErrors} />
+            }
+          >
+            <RiIcon
+              type="InfoIcon"
+              className="rdi-pipeline-nav__error"
+              data-testid="rdi-pipeline-nav__error"
+              color="danger500"
+            />
+          </RiTooltip>
         )}
       </FlexItem>
       <FlexItem
@@ -269,6 +280,9 @@ const JobsTree = (props: IProps) => {
       ? jobsValidationErrors[jobName].length === 0
       : true
 
+  const getJobValidionErrors = (jobName: string) =>
+    jobsValidationErrors[jobName] || []
+
   const renderJobsList = (jobs: IRdiPipelineJob[]) =>
     jobs.map(({ name }, idx) => (
       <Row
@@ -306,7 +320,7 @@ const JobsTree = (props: IProps) => {
           </FlexItem>
           {currentJobName === name
             ? jobNameEditor(name, idx)
-            : jobName(name, isJobValid(name))}
+            : jobName(name, isJobValid(name), getJobValidionErrors(name))}
         </Row>
       </Row>
     ))

@@ -2,6 +2,7 @@
   .navItem {
     cursor: pointer;
     white-space: pre !important;
+    flex-direction: row !important;
 
     &:hover {
       text-decoration: underline;
