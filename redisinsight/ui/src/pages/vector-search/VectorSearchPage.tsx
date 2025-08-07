@@ -10,7 +10,7 @@ import { useRedisearchListData } from './useRedisearchListData'
 
 export const VectorSearchPage = () => {
   const { data, loading } = useRedisearchListData()
-  const hasIndexes = false // data?.length > 0
+  const hasIndexes = data?.length > 0
 
   usePageViewTelemetry({
     page: TelemetryPageView.VECTOR_SEARCH_PAGE,

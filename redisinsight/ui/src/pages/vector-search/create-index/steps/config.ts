@@ -3,9 +3,7 @@ import { VectorSearchBox } from 'uiSrc/components/new-index/create-index-step/fi
 import { BoxSelectionOption } from 'uiSrc/components/new-index/selection-box/SelectionBox'
 import {
   BikeIcon,
-  DatabaseIcon,
   PopcornIcon,
-  UniversityIcon,
   VectorSearchIcon,
   WandIcon,
 } from 'uiSrc/components/base/icons'
