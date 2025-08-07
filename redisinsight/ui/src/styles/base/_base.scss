@@ -1,41 +1,6 @@
 @use "../mixins/_eui";
 $sideBarSize: 60px;
 
-:root {
-  --base: 16px;
-  //2px
-  --size-xxs: calc(var(--base) * 0.125);
-  //4px
-  --size-xs: calc(var(--base) * 0.25);
-  //8px
-  --size-s: calc(var(--base) * 0.5);
-  //12px
-  --size-m: calc(var(--base) * 0.75);
-  //16px
-  --size-base: var(--base);
-  //24px
-  --size-l: calc(var(--base) * 1.5);
-  //32px
-  --size-xl: calc(var(--base) * 2);
-  //40px
-  --size-xxl: calc(var(--base) * 2.5);
-  //48px
-  --size-xxxl: calc(var(--base) * 3);
-  //64px
-  --size-xxxxl: calc(var(--base) * 4);
-
-  // to 574px
-  --bp-xs: 0;
-  // to 767px
-  --bp-s: 575px;
-  // to 991px
-  --bp-m: 768px;
-  // to 1199px
-  --bp-l: 992px;
-  // above 1200px
-  --bp-xl: 1200px;
-}
-
 html {
   letter-spacing: normal !important;
   background-color: var(--euiPageBackgroundColor);

@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from 'react'
+import { GlobalStyle } from 'uiBase/theme'
 import {
   BrowserStorageItem,
   Theme,
@@ -28,7 +29,7 @@ const ThemeComponent = () => {
     }
   }, [])
 
-  return <></>
+  return <GlobalStyle />
 }
 
 export default ThemeComponent
