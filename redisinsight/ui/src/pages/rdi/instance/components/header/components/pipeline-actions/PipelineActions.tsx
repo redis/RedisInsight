@@ -22,7 +22,6 @@ import {
   PipelineStatus,
 } from 'uiSrc/slices/interfaces'
 
-import { RiTooltip } from 'uiSrc/components'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import DeployPipelineButton from '../buttons/deploy-pipeline-button'
 import ResetPipelineButton from '../buttons/reset-pipeline-button'
@@ -38,7 +37,6 @@ export interface Props {
 const PipelineActions = ({ collectorStatus, pipelineStatus }: Props) => {
   const {
     loading: deployLoading,
-    isPipelineValid,
     schema,
     config,
     jobs,
@@ -141,7 +139,6 @@ const PipelineActions = ({ collectorStatus, pipelineStatus }: Props) => {
   const isLoadingBtn = (actionBtn: PipelineAction) =>
     action === actionBtn && actionLoading
   const disabled = deployLoading || actionLoading
-  const isDeployButtonDisabled = disabled || !isPipelineValid
 
   return (
     <Row gap="m" justify="end" align="center">
@@ -168,21 +165,11 @@ const PipelineActions = ({ collectorStatus, pipelineStatus }: Props) => {
         )}
       </FlexItem>
       <FlexItem>
-        <RiTooltip
-          content={
-            isPipelineValid
-              ? ''
-              : 'Please fix the validation errors before deploying'
-          }
-          position="left"
-          anchorClassName="flex-row"
-        >
-          <DeployPipelineButton
-            loading={deployLoading}
-            disabled={isDeployButtonDisabled}
-            onReset={resetPipeline}
-          />
-        </RiTooltip>
+        <DeployPipelineButton
+          loading={deployLoading}
+          disabled={disabled}
+          onReset={resetPipeline}
+        />
       </FlexItem>
       <FlexItem style={{ margin: 0 }}>
         <RdiConfigFileActionMenu />

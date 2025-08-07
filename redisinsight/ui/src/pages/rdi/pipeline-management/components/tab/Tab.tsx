@@ -4,6 +4,8 @@ import { Text } from 'uiSrc/components/base/text'
 import { Loader } from 'uiSrc/components/base/display'
 
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiTooltip } from 'uiSrc/components'
+import ValidationErrorsList from 'uiSrc/pages/rdi/pipeline-management/components/validation-errors-list/ValidationErrorsList'
 import styles from './styles.module.scss'
 
 export interface IProps {
@@ -15,6 +17,7 @@ export interface IProps {
   testID?: string
   isLoading?: boolean
   isValid?: boolean
+  validationErrors?: string[]
 }
 
 const Tab = (props: IProps) => {
@@ -27,6 +30,7 @@ const Tab = (props: IProps) => {
     className,
     isLoading = false,
     isValid = true,
+    validationErrors = [],
   } = props
 
   return (
@@ -45,12 +49,19 @@ const Tab = (props: IProps) => {
           </Text>
 
           {!isValid && (
-            <RiIcon
-              type="InfoIcon"
-              className="rdi-pipeline-nav__error"
-              data-testid="rdi-nav-config-error"
-              color="danger500"
-            />
+            <RiTooltip
+              position="right"
+              content={
+                <ValidationErrorsList validationErrors={validationErrors} />
+              }
+            >
+              <RiIcon
+                type="InfoIcon"
+                className="rdi-pipeline-nav__error"
+                data-testid="rdi-nav-config-error"
+                color="danger500"
+              />
+            </RiTooltip>
           )}
 
           {isLoading && (

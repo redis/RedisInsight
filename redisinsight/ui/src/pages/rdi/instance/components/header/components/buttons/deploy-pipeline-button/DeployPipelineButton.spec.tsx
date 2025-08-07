@@ -8,6 +8,7 @@ import {
   render,
   screen,
 } from 'uiSrc/utils/test-utils'
+import { rdiPipelineSelector } from 'uiSrc/slices/rdi/pipeline'
 import DeployPipelineButton, { Props } from './DeployPipelineButton'
 
 const mockedProps: Props = {
@@ -25,6 +26,7 @@ jest.mock('uiSrc/slices/rdi/pipeline', () => ({
   rdiPipelineSelector: jest.fn().mockReturnValue({
     loading: false,
     config: 'value',
+    isPipelineValid: true,
     jobs: [
       { name: 'job1', value: '1' },
       { name: 'job2', value: '2' },
@@ -88,7 +90,7 @@ describe('DeployPipelineButton', () => {
     })
   })
 
-  it('should open confirmation popover', () => {
+  it('should open confirmation popover with default message', () => {
     render(<DeployPipelineButton {...mockedProps} />)
 
     expect(screen.queryByTestId('deploy-confirm-btn')).not.toBeInTheDocument()
@@ -96,5 +98,35 @@ describe('DeployPipelineButton', () => {
     fireEvent.click(screen.getByTestId('deploy-rdi-pipeline'))
 
     expect(screen.queryByTestId('deploy-confirm-btn')).toBeInTheDocument()
+    expect(
+      screen.queryByText('Are you sure you want to deploy the pipeline?'),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByText(
+        'Your RDI pipeline contains errors. Are you sure you want to continue?',
+      ),
+    ).not.toBeInTheDocument()
+  })
+
+  it('should open confirmation popover with warning message due to validation errors', () => {
+    ;(rdiPipelineSelector as jest.Mock).mockImplementation(() => ({
+      isPipelineValid: false,
+    }))
+
+    render(<DeployPipelineButton {...mockedProps} />)
+
+    expect(screen.queryByTestId('deploy-confirm-btn')).not.toBeInTheDocument()
+
+    fireEvent.click(screen.getByTestId('deploy-rdi-pipeline'))
+
+    expect(screen.queryByTestId('deploy-confirm-btn')).toBeInTheDocument()
+    expect(
+      screen.queryByText('Are you sure you want to deploy the pipeline?'),
+    ).not.toBeInTheDocument()
+    expect(
+      screen.queryByText(
+        'Your RDI pipeline contains errors. Are you sure you want to continue?',
+      ),
+    ).toBeInTheDocument()
   })
 })
