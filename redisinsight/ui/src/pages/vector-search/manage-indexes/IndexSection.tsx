@@ -15,6 +15,17 @@ import {
   IndexDeleteRequestBodyDto,
 } from 'apiSrc/modules/browser/redisearch/dto'
 import { IndexAttributesList } from './IndexAttributesList'
+import { RiPopover } from 'uiSrc/components'
+import { RiIcon, DeleteIcon } from 'uiSrc/components/base/icons'
+import { Button } from 'uiSrc/components/base/forms/buttons'
+
+import {
+  ButtonWrapper,
+  IconAndTitleWrapper,
+  IconWrapper,
+  PopoverContent,
+  Title,
+} from './styles'
 
 export interface IndexSectionProps extends Omit<SectionProps, 'label'> {
   index: RedisString
@@ -23,6 +34,7 @@ export interface IndexSectionProps extends Omit<SectionProps, 'label'> {
 export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
   const dispatch = useDispatch()
   const indexName = bufferToString(index)
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const { id: instanceId } = useSelector(connectedInstanceSelector)
 
   const [indexInfo, setIndexInfo] = useState<IndexInfoDto>()
@@ -42,17 +54,11 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
   }, [indexName, dispatch])
 
   const handleDelete = () => {
-    // TODO: Replace with confirmation popup once the design is ready
-    // eslint-disable-next-line no-restricted-globals
-    const result = confirm('Are you sure you want to delete this index?')
-
-    if (result) {
-      const data: IndexDeleteRequestBodyDto = {
-        index: stringToBuffer(indexName),
-      }
-
-      dispatch(deleteRedisearchIndexAction(data, onDeletedIndexSuccess))
+    const data: IndexDeleteRequestBodyDto = {
+      index: stringToBuffer(indexName),
     }
+
+    dispatch(deleteRedisearchIndexAction(data, onDeletedIndexSuccess))
   }
 
   const onDeletedIndexSuccess = (data: IndexDeleteRequestBodyDto) => {
@@ -65,6 +71,39 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
     })
   }
 
+  const DeleteButton = () => (
+    <RiPopover
+      id="bulk-upload-warning-popover"
+      anchorPosition="upCenter"
+      isOpen={isPopoverOpen}
+      closePopover={() => setIsPopoverOpen(false)}
+      panelPaddingSize="none"
+      button={<DeleteIcon />}
+    >
+      <PopoverContent>
+        <IconAndTitleWrapper>
+          <IconWrapper>
+            <RiIcon color="danger600" type="ToastDangerIcon" />
+          </IconWrapper>
+
+          <Title color="danger">
+            Are you sure you want to delete this index?
+          </Title>
+        </IconAndTitleWrapper>
+
+        <ButtonWrapper>
+          <Button
+            variant="destructive"
+            onClick={handleDelete}
+            data-testid="manage-index-delete-btn"
+          >
+            Delete
+          </Button>
+        </ButtonWrapper>
+      </PopoverContent>
+    </RiPopover>
+  )
+
   return (
     <Section
       collapsible
@@ -73,8 +112,8 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
       // TODO: Add FieldTag component to list the types of the different fields
       label={formatLongName(indexName)}
       defaultOpen={false}
-      actionButtonText="Delete" // TODO: Replace with an icon of a trash can
-      onAction={handleDelete}
+      actionButtonText={<DeleteButton />}
+      onAction={() => setIsPopoverOpen(true)}
       data-testid={`manage-indexes-list--item--${indexName}`}
       {...rest}
     />
