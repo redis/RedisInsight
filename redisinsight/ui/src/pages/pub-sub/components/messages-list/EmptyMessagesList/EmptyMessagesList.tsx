@@ -5,8 +5,8 @@ import { ConnectionType } from 'uiSrc/slices/interfaces'
 import { Text } from 'uiSrc/components/base/text'
 
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { Row } from 'uiSrc/components/base/layout/flex'
 import styles from './styles.module.scss'
+import { Row } from 'uiSrc/components/base/layout/flex'
 
 export interface Props {
   connectionType?: ConnectionType
