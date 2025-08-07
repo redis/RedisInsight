@@ -1,11 +1,6 @@
-.btn {
-  :global(.euiButtonContent .euiButton__text) {
-    font: normal normal normal 12px/18px Graphik, sans-serif !important;
-    letter-spacing: -0.12px;
-  }
-
-  svg {
-    margin-bottom: 2px;
-    margin-right: 6px;
-  }
+.anchor {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: var(--size-s);
 }

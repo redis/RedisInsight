@@ -40,7 +40,6 @@ const ScanMore = ({
         size="s"
         style={style ?? { marginLeft: 25, height: 26 }}
         disabled={loading}
-        className={styles.btn}
         onClick={() =>
           loadMoreItems?.({
             stopIndex: SCAN_COUNT_DEFAULT - 1,
@@ -50,7 +49,11 @@ const ScanMore = ({
         data-testid="scan-more"
       >
         {withAlert && (
-          <RiTooltip content={WARNING_MESSAGE} position="top">
+          <RiTooltip
+            content={WARNING_MESSAGE}
+            position="top"
+            anchorClassName={styles.anchor}
+          >
             <RiIcon type="InfoIcon" />
           </RiTooltip>
         )}
