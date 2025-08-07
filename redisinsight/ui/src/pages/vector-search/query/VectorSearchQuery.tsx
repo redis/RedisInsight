@@ -63,6 +63,17 @@ export const VectorSearchQuery = () => {
     (index) => index.value === queryIndex,
   )
 
+  const handleIndexChange = (value: string) => {
+    setQueryIndex(value)
+
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_SAVED_QUERIES_INDEX_CHANGED,
+      eventData: {
+        databaseId: instanceId,
+      },
+    })
+  }
+
   const handleQueryInsert = (query: string) => {
     setQuery(query)
 
@@ -144,7 +155,7 @@ export const VectorSearchQuery = () => {
 
             <ResizablePanel id="right-panel" minSize={20} defaultSize={30}>
               <SavedQueriesScreen
-                onIndexChange={setQueryIndex}
+                onIndexChange={handleIndexChange}
                 onQueryInsert={handleQueryInsert}
                 savedIndexes={mockSavedIndexes}
                 selectedIndex={selectedIndex}
