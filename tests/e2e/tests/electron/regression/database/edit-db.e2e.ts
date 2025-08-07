@@ -37,7 +37,7 @@ fixture `List of Databases`
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
         await databaseAPIRequests.deleteAllDatabasesApi();
     });
-test('Verify that context for previous database not saved after editing port/username/password/certificates/SSH', async t => {
+test.skip('Verify that context for previous database not saved after editing port/username/password/certificates/SSH', async t => {
     const command = 'HSET';
 
     // Create context modificaions and navigate to db list

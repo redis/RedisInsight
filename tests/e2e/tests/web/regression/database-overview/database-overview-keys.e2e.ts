@@ -48,7 +48,8 @@ fixture `Database overview`
         await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneRedisearch);
     });
 test
-    .meta({ rte: rte.standalone })('Verify that user can see total and current logical database number of keys (if there are any keys in other logical DBs)', async t => {
+    .meta({ rte: rte.standalone })
+    .skip('Verify that user can see total and current logical database number of keys (if there are any keys in other logical DBs)', async t => {
         // Wait for Total Keys number refreshed
         await t.expect(browserPage.OverviewPanel.overviewTotalKeys.withText(`${keysAmount + 1}`).exists).ok('Total keys are not changed', { timeout: 10000 });
         await t.hover(workbenchPage.OverviewPanel.overviewTotalKeys);

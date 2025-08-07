@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { getRedisConnectionException } from 'src/utils';
 import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
 import { DatabaseAnalytics } from 'src/modules/database/database.analytics';
 import { DatabaseService } from 'src/modules/database/database.service';
@@ -11,6 +10,9 @@ import {
   RedisClientFactory,
 } from 'src/modules/redis/redis.client.factory';
 import { RedisClientStorage } from 'src/modules/redis/redis.client.storage';
+import { RedisConnectionFailedException } from 'src/modules/redis/exceptions/connection';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { DatabaseConnectionEvent } from 'src/modules/database/constants/events';
 
 type IsClientConnectingMap = {
   [key: string]: boolean;
@@ -37,6 +39,7 @@ export class DatabaseClientFactory {
     private readonly analytics: DatabaseAnalytics,
     private readonly redisClientStorage: RedisClientStorage,
     private readonly redisClientFactory: RedisClientFactory,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   private async processGetClient(
@@ -155,6 +158,13 @@ export class DatabaseClientFactory {
       return client;
     } catch (error) {
       this.logger.error('Failed to create database client', error);
+
+      if (error instanceof RedisConnectionFailedException) {
+        this.eventEmitter.emit(
+          DatabaseConnectionEvent.DatabaseConnectionFailed,
+          clientMetadata,
+        );
+      }
 
       this.analytics.sendConnectionFailedEvent(
         clientMetadata.sessionMetadata,

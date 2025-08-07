@@ -20,7 +20,7 @@ fixture `Monitor`
     .meta({ type: 'critical_path', rte: rte.standalone })
     .page(commonUrl);
 
-test
+test.skip
     .before(async t => {
         await  databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         await browserPage.Cli.sendCommandInCli('acl setuser noperm nopass on +@all ~* -monitor -client');

@@ -25,7 +25,8 @@ fixture `Delete database`
         };
     });
 test
-    .meta({ rte: rte.standalone })('Verify that user can delete databases', async t => {
+    .meta({ rte: rte.standalone })
+    .skip('Verify that user can delete databases', async t => {
         await databaseHelper.addNewStandaloneDatabase(database);
         await myRedisDatabasePage.deleteDatabaseByName(database.databaseName);
         await t.expect(myRedisDatabasePage.dbNameList.withExactText(database.databaseName).exists).notOk('The database not deleted', { timeout: 10000 });

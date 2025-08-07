@@ -1,15 +1,8 @@
 .infoIcon {
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
   width: 34px;
-  color: var(--iconsDefaultColor) !important;
-  background-color: var(--browserTableRowEven) !important;
 }
 
 .popover {
   max-width: 250px !important;
-  background-color: var(--euiTooltipBackgroundColor) !important;
-  color: var(--euiTooltipTitleTextColor) !important;
   border-radius: 4px;
 }

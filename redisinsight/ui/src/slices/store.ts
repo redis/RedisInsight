@@ -151,5 +151,6 @@ const store = configureStore({
 
 export { store }
 
+export type ReduxStore = typeof store
 export type RootState = ReturnType<typeof rootReducer>
 export type AppDispatch = typeof store.dispatch

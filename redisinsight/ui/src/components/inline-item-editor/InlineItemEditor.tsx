@@ -11,7 +11,6 @@ import { FocusTrap } from 'uiSrc/components/base/utils/FocusTrap'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 import { DestructiveButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
-import { TextInput } from 'uiSrc/components/base/inputs'
 
 import {
   ActionsContainer,

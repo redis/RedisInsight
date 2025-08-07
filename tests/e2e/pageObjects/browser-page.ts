@@ -948,8 +948,14 @@ export class BrowserPage extends InstancePage {
     */
     async selectIndexByName(index: string): Promise<void> {
         const option = Selector(`[data-test-subj="mode-option-type-${index}"]`);
+        const placeholder = Selector('[data-testid="select-index-placeholder"]');
+        const dropdown = Selector('[data-testid="select-search-mode"]');
+
+        // Click placeholder if it exists, otherwise click dropdown
+        const triggerElement = await placeholder.exists ? placeholder : dropdown;
+
         await t
-            .click(this.selectIndexDdn)
+            .click(triggerElement)
             .click(option);
     }
 

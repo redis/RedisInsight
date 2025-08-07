@@ -31,7 +31,6 @@ import {
   setBrowserSelectedKey,
 } from 'uiSrc/slices/app/context'
 import { MOCK_TIMESTAMP } from 'uiSrc/mocks/data/dateNow'
-import { rootReducer } from 'uiSrc/slices/store'
 import {
   setEditorType,
   setIsWithinThreshold,
@@ -46,6 +45,7 @@ import { CreateRejsonRlWithExpireDto } from 'apiSrc/modules/browser/rejson-rl/dt
 import { CreateSetWithExpireDto } from 'apiSrc/modules/browser/set/dto'
 import { CreateZSetWithExpireDto } from 'apiSrc/modules/browser/z-set/dto'
 import { SetStringWithExpireDto } from 'apiSrc/modules/browser/string/dto'
+import { rootReducer } from '../../store'
 import { getString, getStringSuccess } from '../../browser/string'
 import reducer, {
   addHashKey,

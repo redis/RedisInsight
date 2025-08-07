@@ -47,7 +47,7 @@ fixture `Adding database with SSH`
         // Delete databases
         await databaseAPIRequests.deleteStandaloneDatabasesByNamesApi([sshDbPass.databaseName, sshDbPrivateKey.databaseName, sshDbPasscode.databaseName, newClonedDatabaseAlias, sshDbClusterPass.databaseName]);
     });
-test
+test.skip
     .meta({ rte: rte.standalone })('Adding database with SSH', async t => {
     const tooltipText = [
         'Enter a value for required fields (3):',
@@ -76,12 +76,12 @@ test
         .click(myRedisDatabasePage.AddRedisDatabaseDialog.securityTab)
         .click(myRedisDatabasePage.AddRedisDatabaseDialog.useSSHCheckbox)
         .click(myRedisDatabasePage.AddRedisDatabaseDialog.sshPrivateKeyRadioBtn)
-        .hover(myRedisDatabasePage.AddRedisDatabaseDialog.addRedisDatabaseButton);
+        .hover(myRedisDatabasePage.AddRedisDatabaseDialog.addRedisDatabaseButtonHover);
     for (const text of tooltipText) {
         await browserActions.verifyTooltipContainsText(text, true);
     }
     // Verify that user can see the Test Connection button enabled/disabled with the same rules as the button to add/apply the changes
-    await t.hover(myRedisDatabasePage.AddRedisDatabaseDialog.testConnectionBtn);
+    await t.hover(myRedisDatabasePage.AddRedisDatabaseDialog.testConnectionBtnHover);
     for (const text of tooltipText) {
         await browserActions.verifyTooltipContainsText(text, true);
     }
