@@ -14,6 +14,12 @@ import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
 import QueryCardHeader, { HIDE_FIELDS, Props } from './QueryCardHeader'
 
+// Mock the telemetry module, so we don't send actual telemetry data during tests
+jest.mock('uiSrc/telemetry', () => ({
+  ...jest.requireActual('uiSrc/telemetry'),
+  sendEventTelemetry: jest.fn(),
+}))
+
 const mockedProps = mock<Props>()
 
 let store: typeof mockedStore
@@ -21,6 +27,7 @@ beforeEach(() => {
   cleanup()
   store = cloneDeep(mockedStore)
   store.clearActions()
+  jest.clearAllMocks()
 })
 
 jest.mock('uiSrc/services', () => ({
@@ -117,10 +124,7 @@ describe('QueryCardHeader', () => {
 
   it('event telemetry SEARCH_COMMAND_COPIED should be call after click on copy btn', async () => {
     const command = 'info'
-    const sendEventTelemetryMock = jest.fn()
-    ;(sendEventTelemetry as jest.Mock).mockImplementation(
-      () => sendEventTelemetryMock,
-    )
+
     render(<QueryCardHeader {...instance(mockedProps)} query={command} />)
 
     await act(async () => {
@@ -134,6 +138,65 @@ describe('QueryCardHeader', () => {
         databaseId: INSTANCE_ID_MOCK,
       },
     })
-    ;(sendEventTelemetry as jest.Mock).mockRestore()
+  })
+
+  it('should collect telemetry when clicking on the "collapse" button', async () => {
+    const command = 'info'
+    const mockToggleOpen = jest.fn()
+
+    render(
+      <QueryCardHeader
+        {...instance(mockedProps)}
+        query={command}
+        isOpen
+        toggleOpen={mockToggleOpen}
+      />,
+    )
+
+    // Simulate clicking the collapse button
+    const collapseButton = screen.getByTestId('query-card-open')
+    expect(collapseButton).toBeInTheDocument()
+
+    fireEvent.click(collapseButton)
+    expect(mockToggleOpen).toHaveBeenCalled()
+
+    // Verify telemetry event is sent for collapsing
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
+      event: TelemetryEvent.SEARCH_RESULTS_COLLAPSED,
+      eventData: {
+        databaseId: INSTANCE_ID_MOCK,
+        command,
+      },
+    })
+  })
+
+  it('should collect telemetry when clicking on the "un-collapse" button', async () => {
+    const command = 'info'
+    const mockToggleOpen = jest.fn()
+
+    render(
+      <QueryCardHeader
+        {...instance(mockedProps)}
+        query={command}
+        isOpen={false}
+        toggleOpen={mockToggleOpen}
+      />,
+    )
+
+    // Simulate clicking the collapse button
+    const collapseButton = screen.getByTestId('query-card-open')
+    expect(collapseButton).toBeInTheDocument()
+
+    fireEvent.click(collapseButton)
+    expect(mockToggleOpen).toHaveBeenCalled()
+
+    // Verify telemetry event is sent
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
+      event: TelemetryEvent.SEARCH_RESULTS_EXPANDED,
+      eventData: {
+        databaseId: INSTANCE_ID_MOCK,
+        command,
+      },
+    })
   })
 })

@@ -223,8 +223,8 @@ const QueryCardHeader = (props: Props) => {
     ) {
       sendEvent(
         isOpen
-          ? TelemetryEvent.WORKBENCH_RESULTS_COLLAPSED
-          : TelemetryEvent.WORKBENCH_RESULTS_EXPANDED,
+          ? TelemetryEvent.SEARCH_RESULTS_COLLAPSED
+          : TelemetryEvent.SEARCH_RESULTS_EXPANDED,
         query,
       )
     }
