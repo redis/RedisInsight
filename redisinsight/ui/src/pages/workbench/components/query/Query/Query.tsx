@@ -88,6 +88,7 @@ export interface Props {
   onKeyDown?: (e: React.KeyboardEvent, script: string) => void
   onQueryChangeMode: () => void
   onChangeGroupMode: () => void
+  onClear?: () => void
 }
 
 let execHistoryPos: number = 0
@@ -109,6 +110,7 @@ const Query = (props: Props) => {
     setQueryEl = () => {},
     onQueryChangeMode = () => {},
     onChangeGroupMode = () => {},
+    onClear = () => {},
   } = props
   let contribution: Nullable<ISnippetController> = null
   const [isDedicatedEditorOpen, setIsDedicatedEditorOpen] = useState(false)
@@ -479,6 +481,11 @@ const Query = (props: Props) => {
     onSubmit(value)
   }
 
+  const handleClear = () => {
+    setQuery('')
+    onClear?.()
+  }
+
   const handleSuggestions = (
     editor: monacoEditor.editor.IStandaloneCodeEditor,
     command?: Nullable<IMonacoQuery>,
@@ -746,7 +753,7 @@ const Query = (props: Props) => {
             <QueryLiteActions
               isLoading={isLoading}
               onSubmit={handleSubmit}
-              onClear={() => setQuery('')}
+              onClear={handleClear}
             />
           ) : (
             <>

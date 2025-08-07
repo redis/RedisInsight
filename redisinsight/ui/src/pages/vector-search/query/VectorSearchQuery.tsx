@@ -88,6 +88,15 @@ export const VectorSearchQuery = () => {
     })
   }
 
+  const onQueryClear = () => {
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_CLEAR_EDITOR_CLICKED,
+      eventData: {
+        databaseId: instanceId,
+      },
+    })
+  }
+
   return (
     <VectorSearchScreenWrapper direction="column" justify="between">
       <HeaderActions
@@ -110,6 +119,7 @@ export const VectorSearchQuery = () => {
                 onSubmit={onQuerySubmit}
                 onQueryChangeMode={onQueryChangeMode}
                 onChangeGroupMode={onChangeGroupMode}
+                onClear={onQueryClear}
                 queryProps={{ useLiteActions: true }}
               />
             </ResizablePanel>

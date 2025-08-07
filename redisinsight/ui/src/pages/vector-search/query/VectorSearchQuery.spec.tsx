@@ -66,5 +66,21 @@ describe('VectorSearchQuery', () => {
         eventData: { databaseId: INSTANCE_ID_MOCK },
       })
     })
+
+    it('should collect telemetry on query clear', () => {
+      renderVectorSearchQueryComponent()
+
+      // Find and click the "Clear" button
+      const clearButton = screen.getByTestId('btn-clear')
+      expect(clearButton).toBeInTheDocument()
+
+      fireEvent.click(clearButton)
+
+      // Verify telemetry event was sent
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_CLEAR_EDITOR_CLICKED,
+        eventData: { databaseId: INSTANCE_ID_MOCK },
+      })
+    })
   })
 })
