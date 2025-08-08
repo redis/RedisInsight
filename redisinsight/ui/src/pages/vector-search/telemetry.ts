@@ -30,3 +30,14 @@ export const collectChangedSavedQueryIndexTelemetry = ({
     },
   })
 }
+
+export const collectInsertSavedQueryTelemetry = ({
+  instanceId,
+}: CollectTelemetry): void => {
+  sendEventTelemetry({
+    event: TelemetryEvent.SEARCH_SAVED_QUERIES_INSERT_CLICKED,
+    eventData: {
+      databaseId: instanceId,
+    },
+  })
+}

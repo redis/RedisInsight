@@ -14,8 +14,10 @@ import CommandsViewWrapper from '../components/commands-view'
 import { VectorSearchScreenWrapper } from '../styles'
 import { SavedQueriesScreen } from '../saved-queries/SavedQueriesScreen'
 import { SavedIndex } from '../saved-queries/types'
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { collectChangedSavedQueryIndexTelemetry } from '../telemetry'
+import {
+  collectChangedSavedQueryIndexTelemetry,
+  collectInsertSavedQueryTelemetry,
+} from '../telemetry'
 
 const mockSavedIndexes: SavedIndex[] = [
   {
@@ -75,11 +77,8 @@ export const VectorSearchQuery = () => {
   const handleQueryInsert = (query: string) => {
     setQuery(query)
 
-    sendEventTelemetry({
-      event: TelemetryEvent.SEARCH_SAVED_QUERIES_INSERT_CLICKED,
-      eventData: {
-        databaseId: instanceId,
-      },
+    collectInsertSavedQueryTelemetry({
+      instanceId,
     })
   }
 

@@ -1,6 +1,7 @@
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   collectChangedSavedQueryIndexTelemetry,
+  collectInsertSavedQueryTelemetry,
   collectSavedQueriesPanelToggleTelemetry,
 } from './telemetry'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
@@ -60,6 +61,21 @@ describe('telemetry', () => {
 
       expect(sendEventTelemetry).toHaveBeenCalledWith({
         event: TelemetryEvent.SEARCH_SAVED_QUERIES_INDEX_CHANGED,
+        eventData: {
+          databaseId: instanceId,
+        },
+      })
+    })
+  })
+
+  describe('collectInsertSavedQueryTelemetry', () => {
+    it('should collect telemetry for insert saved query', () => {
+      const instanceId = INSTANCE_ID_MOCK
+
+      collectInsertSavedQueryTelemetry({ instanceId })
+
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_SAVED_QUERIES_INSERT_CLICKED,
         eventData: {
           databaseId: instanceId,
         },
