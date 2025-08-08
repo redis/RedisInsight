@@ -5,6 +5,10 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
 import { commandExecutionUIFactory } from 'uiSrc/mocks/factories/workbench/commandExectution.factory'
 import CommandsView, { Props } from './CommandsView'
+import {
+  ViewMode,
+  ViewModeContextProvider,
+} from 'uiSrc/components/query/context/view-mode.context'
 
 // Mock the telemetry module, so we don't send actual telemetry data during tests
 jest.mock('uiSrc/telemetry', () => ({
@@ -27,7 +31,11 @@ const renderCommandsViewComponent = (props?: Partial<Props>) => {
     onQueryProfile: jest.fn(),
   }
 
-  return render(<CommandsView {...defaultProps} {...props} />)
+  return render(
+    <ViewModeContextProvider initialViewMode={ViewMode.VectorSearch}>
+      <CommandsView {...defaultProps} {...props} />
+    </ViewModeContextProvider>,
+  )
 }
 
 describe('CommandsView', () => {
