@@ -75,5 +75,61 @@ describe('VectorSearchQuery', () => {
         eventData: { databaseId: INSTANCE_ID_MOCK },
       })
     })
+
+    it('should collect telemetry on query submit', () => {
+      const mockQuery = faker.lorem.sentence()
+
+      renderVectorSearchQueryComponent()
+
+      // Enter a dummy query
+      const queryInput = screen.getByTestId('monaco')
+      fireEvent.change(queryInput, { target: { value: mockQuery } })
+
+      // Find and click the "Run" button
+      const runQueryButton = screen.getByText('Run')
+      expect(runQueryButton).toBeInTheDocument()
+
+      fireEvent.click(runQueryButton)
+
+      // Verify telemetry event was sent
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_COMMAND_SUBMITTED,
+        eventData: { databaseId: INSTANCE_ID_MOCK, commands: [mockQuery] },
+      })
+    })
+
+    // Note: Enable this test once you implement the other tests and find a way to render the component with items
+    it.skip('should collect telemetry on clear results', () => {
+      // TODO: Find a way to mock the items in the useQuery hook, so we have what to clear
+      renderVectorSearchQueryComponent()
+
+      // Find and click the "Clear Results" button
+      const clearResultsButton = screen.getByText('Clear Results')
+      expect(clearResultsButton).toBeInTheDocument()
+
+      fireEvent.click(clearResultsButton)
+
+      // Verify telemetry event was sent
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_CLEAR_ALL_RESULTS_CLICKED,
+        eventData: { databaseId: INSTANCE_ID_MOCK },
+      })
+    })
+
+    it('should collect telemetry on query clear', () => {
+      renderVectorSearchQueryComponent()
+
+      // Find and click the "Clear" button
+      const clearButton = screen.getByTestId('btn-clear')
+      expect(clearButton).toBeInTheDocument()
+
+      fireEvent.click(clearButton)
+
+      // Verify telemetry event was sent
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_CLEAR_EDITOR_CLICKED,
+        eventData: { databaseId: INSTANCE_ID_MOCK },
+      })
+    })
   })
 })

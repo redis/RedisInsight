@@ -53,6 +53,7 @@ import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import QueryCardTooltip from '../QueryCardTooltip'
 
 import styles from './styles.module.scss'
+import { useViewModeContext, ViewMode } from '../../context/view-mode.context'
 
 export interface Props {
   query: string
@@ -151,6 +152,7 @@ const QueryCardHeader = (props: Props) => {
   const { instanceId = '' } = useParams<{ instanceId: string }>()
 
   const { theme } = useContext(ThemeContext)
+  const { viewMode } = useViewModeContext()
 
   const eventStop = (event: React.MouseEvent) => {
     event.preventDefault()
@@ -173,7 +175,12 @@ const QueryCardHeader = (props: Props) => {
   }
 
   const handleCopy = (event: React.MouseEvent, query: string) => {
-    sendEvent(TelemetryEvent.WORKBENCH_COMMAND_COPIED, query)
+    const telemetryEvent =
+      viewMode === ViewMode.Workbench
+        ? TelemetryEvent.WORKBENCH_COMMAND_COPIED
+        : TelemetryEvent.SEARCH_COMMAND_COPIED
+
+    sendEvent(telemetryEvent, query)
     eventStop(event)
     navigator.clipboard?.writeText?.(query)
   }
@@ -201,7 +208,13 @@ const QueryCardHeader = (props: Props) => {
   const handleQueryDelete = (event: React.MouseEvent) => {
     eventStop(event)
     onQueryDelete()
-    sendEvent(TelemetryEvent.WORKBENCH_CLEAR_RESULT_CLICKED, query)
+
+    const telemetryEvent =
+      viewMode === ViewMode.Workbench
+        ? TelemetryEvent.WORKBENCH_CLEAR_RESULT_CLICKED
+        : TelemetryEvent.SEARCH_CLEAR_RESULT_CLICKED
+
+    sendEvent(telemetryEvent, query)
   }
 
   const handleQueryReRun = (event: React.MouseEvent) => {
@@ -214,12 +227,16 @@ const QueryCardHeader = (props: Props) => {
       !isFullScreen &&
       !isSilentModeWithoutError(resultsMode, summary?.fail)
     ) {
-      sendEvent(
-        isOpen
-          ? TelemetryEvent.WORKBENCH_RESULTS_COLLAPSED
-          : TelemetryEvent.WORKBENCH_RESULTS_EXPANDED,
-        query,
-      )
+      const telemetryEvent =
+        viewMode === ViewMode.Workbench
+          ? isOpen
+            ? TelemetryEvent.WORKBENCH_RESULTS_COLLAPSED
+            : TelemetryEvent.WORKBENCH_RESULTS_EXPANDED
+          : isOpen
+            ? TelemetryEvent.SEARCH_RESULTS_COLLAPSED
+            : TelemetryEvent.SEARCH_RESULTS_EXPANDED
+
+      sendEvent(telemetryEvent, query)
     }
     toggleOpen()
   }

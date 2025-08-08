@@ -28,6 +28,7 @@ export interface Props {
   onSubmit: (value?: string) => void
   onQueryChangeMode: () => void
   onChangeGroupMode: () => void
+  onClear?: () => void
 }
 
 const QueryWrapper = (props: Props) => {
@@ -41,6 +42,7 @@ const QueryWrapper = (props: Props) => {
     onSubmit,
     onQueryChangeMode,
     onChangeGroupMode,
+    onClear,
     queryProps = {},
   } = props
   const { loading: isCommandsLoading } = useSelector(appRedisCommandsSelector)
@@ -84,6 +86,7 @@ const QueryWrapper = (props: Props) => {
       onSubmit={onSubmit}
       onQueryChangeMode={onQueryChangeMode}
       onChangeGroupMode={onChangeGroupMode}
+      onClear={onClear}
       {...queryProps}
     />
   )
