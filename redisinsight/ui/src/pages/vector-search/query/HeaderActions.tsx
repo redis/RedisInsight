@@ -2,7 +2,7 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 import { StyledHeaderAction, StyledTextButton } from './HeaderActions.styles'
 import { ManageIndexesDrawer } from '../manage-indexes/ManageIndexesDrawer'
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { collectSavedQueriesPanelToggleTelemetry } from '../telemetry'
 
 export type HeaderActionsProps = {
   isManageIndexesDrawerOpen: boolean
@@ -22,13 +22,9 @@ export const HeaderActions = ({
   const handleSavedQueriesClick = () => {
     setIsSavedQueriesOpen(!isSavedQueriesOpen)
 
-    sendEventTelemetry({
-      event: isSavedQueriesOpen
-        ? TelemetryEvent.SEARCH_SAVED_QUERIES_PANEL_CLOSED
-        : TelemetryEvent.SEARCH_SAVED_QUERIES_PANEL_OPENED,
-      eventData: {
-        databaseId: instanceId,
-      },
+    collectSavedQueriesPanelToggleTelemetry({
+      instanceId,
+      isSavedQueriesOpen,
     })
   }
 
