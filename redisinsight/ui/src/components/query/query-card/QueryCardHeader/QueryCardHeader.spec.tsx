@@ -221,6 +221,34 @@ describe('QueryCardHeader', () => {
         },
       })
     })
+
+    it('should collect telemetry when clicking on the "delete" button', async () => {
+      const command = 'info'
+      const mockOnQueryDelete = jest.fn()
+
+      renderQueryCardHeaderComponent({
+        ...instance(mockedProps),
+        query: command,
+        isOpen: true,
+        onQueryDelete: mockOnQueryDelete,
+      })
+
+      // Simulate clicking the delete button
+      const deleteButton = screen.getByTestId('delete-command')
+      expect(deleteButton).toBeInTheDocument()
+
+      fireEvent.click(deleteButton)
+      expect(mockOnQueryDelete).toHaveBeenCalled()
+
+      // Verify telemetry event is sent
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.WORKBENCH_CLEAR_RESULT_CLICKED,
+        eventData: {
+          databaseId: INSTANCE_ID_MOCK,
+          command,
+        },
+      })
+    })
   })
 
   describe('Vector Search View Mode', () => {
@@ -304,6 +332,37 @@ describe('QueryCardHeader', () => {
       // Verify telemetry event is sent
       expect(sendEventTelemetry).toHaveBeenCalledWith({
         event: TelemetryEvent.SEARCH_RESULTS_EXPANDED,
+        eventData: {
+          databaseId: INSTANCE_ID_MOCK,
+          command,
+        },
+      })
+    })
+
+    it('should collect telemetry when clicking on the "delete" button', async () => {
+      const command = 'info'
+      const mockOnQueryDelete = jest.fn()
+
+      renderQueryCardHeaderComponent(
+        {
+          ...instance(mockedProps),
+          query: command,
+          isOpen: true,
+          onQueryDelete: mockOnQueryDelete,
+        },
+        ViewMode.VectorSearch,
+      )
+
+      // Simulate clicking the delete button
+      const deleteButton = screen.getByTestId('delete-command')
+      expect(deleteButton).toBeInTheDocument()
+
+      fireEvent.click(deleteButton)
+      expect(mockOnQueryDelete).toHaveBeenCalled()
+
+      // Verify telemetry event is sent
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_CLEAR_RESULT_CLICKED,
         eventData: {
           databaseId: INSTANCE_ID_MOCK,
           command,

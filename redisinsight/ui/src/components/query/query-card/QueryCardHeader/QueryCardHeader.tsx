@@ -208,7 +208,13 @@ const QueryCardHeader = (props: Props) => {
   const handleQueryDelete = (event: React.MouseEvent) => {
     eventStop(event)
     onQueryDelete()
-    sendEvent(TelemetryEvent.WORKBENCH_CLEAR_RESULT_CLICKED, query)
+
+    const telemetryEvent =
+      viewMode === ViewMode.Workbench
+        ? TelemetryEvent.WORKBENCH_CLEAR_RESULT_CLICKED
+        : TelemetryEvent.SEARCH_CLEAR_RESULT_CLICKED
+
+    sendEvent(telemetryEvent, query)
   }
 
   const handleQueryReRun = (event: React.MouseEvent) => {
