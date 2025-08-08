@@ -47,7 +47,7 @@ jest.mock('uiSrc/slices/app/plugins', () => ({
 
 const renderQueryCardComponent = (props: Partial<Props> = {}) => {
   return render(
-    <ViewModeContextProvider initialViewMode={ViewMode.Workbench}>
+    <ViewModeContextProvider viewMode={ViewMode.Workbench}>
       <QueryCard {...instance(mockedProps)} {...props} />
     </ViewModeContextProvider>,
     {

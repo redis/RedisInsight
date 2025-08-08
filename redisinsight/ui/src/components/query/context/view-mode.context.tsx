@@ -7,7 +7,6 @@ export enum ViewMode {
 
 interface ViewModeContextType {
   viewMode: ViewMode
-  setViewMode: (mode: ViewMode) => void
 }
 
 // Create the context
@@ -18,20 +17,15 @@ const ViewModeContext = createContext<ViewModeContextType | undefined>(
 // Props for the provider
 interface ViewModeContextProviderProps {
   children: ReactNode
-  initialViewMode?: ViewMode // Optional prop to set the initial view mode
+  viewMode?: ViewMode // Optional prop to set the initial view mode
 }
 
 // Provider component
 export const ViewModeContextProvider: React.FC<
   ViewModeContextProviderProps
-> = ({
-  children,
-  initialViewMode = ViewMode.Workbench, // Default to Workbench if not provided
-}) => {
-  const [viewMode, setViewMode] = useState<ViewMode>(initialViewMode)
-
+> = ({ children, viewMode = ViewMode.Workbench }) => {
   return (
-    <ViewModeContext.Provider value={{ viewMode, setViewMode }}>
+    <ViewModeContext.Provider value={{ viewMode }}>
       {children}
     </ViewModeContext.Provider>
   )

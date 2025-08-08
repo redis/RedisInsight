@@ -29,7 +29,7 @@ jest.mock('uiSrc/services', () => ({
 
 const renderWBResultsComponent = (props: Partial<Props> = {}) => {
   return render(
-    <ViewModeContextProvider initialViewMode={ViewMode.Workbench}>
+    <ViewModeContextProvider viewMode={ViewMode.Workbench}>
       <WBResults {...instance(mockedProps)} {...props} />
     </ViewModeContextProvider>,
     {

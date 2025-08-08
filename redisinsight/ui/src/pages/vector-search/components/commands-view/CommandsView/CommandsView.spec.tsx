@@ -32,7 +32,7 @@ const renderCommandsViewComponent = (props?: Partial<Props>) => {
   }
 
   return render(
-    <ViewModeContextProvider initialViewMode={ViewMode.VectorSearch}>
+    <ViewModeContextProvider viewMode={ViewMode.VectorSearch}>
       <CommandsView {...defaultProps} {...props} />
     </ViewModeContextProvider>,
   )

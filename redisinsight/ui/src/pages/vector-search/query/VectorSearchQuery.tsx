@@ -91,7 +91,7 @@ export const VectorSearchQuery = () => {
   }
 
   return (
-    <ViewModeContextProvider initialViewMode={ViewMode.VectorSearch}>
+    <ViewModeContextProvider viewMode={ViewMode.VectorSearch}>
       <VectorSearchScreenWrapper direction="column" justify="between">
         <HeaderActions
           isManageIndexesDrawerOpen={isManageIndexesDrawerOpen}

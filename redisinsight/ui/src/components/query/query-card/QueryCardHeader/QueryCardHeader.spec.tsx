@@ -67,7 +67,7 @@ const renderQueryCardHeaderComponent = (
   viewMode: ViewMode = ViewMode.Workbench,
 ) => {
   return render(
-    <ViewModeContextProvider initialViewMode={viewMode}>
+    <ViewModeContextProvider viewMode={viewMode}>
       <QueryCardHeader {...instance(mockedProps)} {...props} />
     </ViewModeContextProvider>,
     {

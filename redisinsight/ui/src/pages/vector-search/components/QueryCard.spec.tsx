@@ -29,7 +29,7 @@ const renderQueryCardComponent = (props?: Partial<Props>) => {
   }
 
   return render(
-    <ViewModeContextProvider initialViewMode={ViewMode.VectorSearch}>
+    <ViewModeContextProvider viewMode={ViewMode.VectorSearch}>
       <QueryCard {...defaultProps} {...props} />
     </ViewModeContextProvider>,
   )

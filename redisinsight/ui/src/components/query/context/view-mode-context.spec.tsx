@@ -1,7 +1,6 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 
-import userEvent from '@testing-library/user-event'
 import {
   useViewModeContext,
   ViewMode,
@@ -10,17 +9,11 @@ import {
 
 // Test component to consume the context
 const TestComponent: React.FC = () => {
-  const { viewMode, setViewMode } = useViewModeContext()
+  const { viewMode } = useViewModeContext()
 
   return (
     <div>
       <p data-testid="view-mode">Current View Mode: {viewMode}</p>
-      <button onClick={() => setViewMode(ViewMode.VectorSearch)}>
-        Set to Vector Search
-      </button>
-      <button onClick={() => setViewMode(ViewMode.Workbench)}>
-        Set to Workbench
-      </button>
     </div>
   )
 }
@@ -38,34 +31,9 @@ describe('ViewModeContext', () => {
     )
   })
 
-  it('allows setting the view mode', async () => {
-    const user = userEvent.setup()
-
-    render(
-      <ViewModeContextProvider>
-        <TestComponent />
-      </ViewModeContextProvider>,
-    )
-
-    const vectorSearchButton = screen.getByText('Set to Vector Search')
-    const workbenchButton = screen.getByText('Set to Workbench')
-
-    // Change to Vector Search
-    await user.click(vectorSearchButton)
-    expect(screen.getByTestId('view-mode')).toHaveTextContent(
-      `Current View Mode: ${ViewMode.VectorSearch}`,
-    )
-
-    // Change back to Workbench
-    await user.click(workbenchButton)
-    expect(screen.getByTestId('view-mode')).toHaveTextContent(
-      `Current View Mode: ${ViewMode.Workbench}`,
-    )
-  })
-
   it('uses the initial view mode if provided', () => {
     render(
-      <ViewModeContextProvider initialViewMode={ViewMode.VectorSearch}>
+      <ViewModeContextProvider viewMode={ViewMode.VectorSearch}>
         <TestComponent />
       </ViewModeContextProvider>,
     )

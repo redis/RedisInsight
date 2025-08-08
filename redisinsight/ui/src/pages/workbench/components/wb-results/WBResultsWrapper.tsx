@@ -33,7 +33,7 @@ export interface Props {
 }
 
 const WBResultsWrapper = (props: Props) => (
-  <ViewModeContextProvider initialViewMode={ViewMode.Workbench}>
+  <ViewModeContextProvider viewMode={ViewMode.Workbench}>
     <WBResults {...props} />
   </ViewModeContextProvider>
 )
