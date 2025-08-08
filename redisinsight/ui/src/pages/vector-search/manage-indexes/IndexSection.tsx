@@ -55,12 +55,11 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
     }
   }
 
-  const onDeletedIndexSuccess = (data: IndexDeleteRequestBodyDto) => {
+  const onDeletedIndexSuccess = () => {
     sendEventTelemetry({
-      event: TelemetryEvent.SEARCH_INDEX_DELETED,
+      event: TelemetryEvent.SEARCH_MANAGE_INDEX_DELETED,
       eventData: {
         databaseId: instanceId,
-        indexName: data.index,
       },
     })
   }
@@ -72,7 +71,6 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
         : TelemetryEvent.SEARCH_MANAGE_INDEX_DETAILS_CLOSED,
       eventData: {
         databaseId: instanceId,
-        indexName: indexName,
       },
     })
   }

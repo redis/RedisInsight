@@ -269,7 +269,6 @@ describe('IndexSection', () => {
       event: TelemetryEvent.SEARCH_MANAGE_INDEX_DETAILS_OPENED,
       eventData: {
         databaseId: INSTANCE_ID_MOCK,
-        indexName: mockIndexInfo.index_name,
       },
     })
 
@@ -288,7 +287,6 @@ describe('IndexSection', () => {
       event: TelemetryEvent.SEARCH_MANAGE_INDEX_DETAILS_CLOSED,
       eventData: {
         databaseId: INSTANCE_ID_MOCK,
-        indexName: mockIndexInfo.index_name,
       },
     })
   })
@@ -331,12 +329,13 @@ describe('IndexSection', () => {
       )
       expect(successNotification).toBeInTheDocument()
 
-      // Verify that telemetry event was sent with correct data
-      expect(telemetryMock).toHaveBeenCalledTimes(1)
-      const telemetryCall = telemetryMock.mock.calls[0][0]
-      expect(telemetryCall.event).toBe(TelemetryEvent.SEARCH_INDEX_DELETED)
-      expect(telemetryCall.eventData.databaseId).toBe(INSTANCE_ID_MOCK)
-      expect(telemetryCall.eventData.indexName).toBeDefined()
+      // Verify the telemetry event is sent
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_MANAGE_INDEX_DELETED,
+        eventData: {
+          databaseId: INSTANCE_ID_MOCK,
+        },
+      })
     })
 
     it('should not delete an index when the deletion is cancelled', async () => {
