@@ -4,6 +4,10 @@ import { CommandExecutionUI } from 'uiSrc/slices/interfaces'
 import { RunQueryMode, ResultsMode } from 'uiSrc/slices/interfaces/workbench'
 import { CodeButtonParams } from 'uiSrc/constants'
 import WBResults from './WBResults'
+import {
+  ViewMode,
+  ViewModeContextProvider,
+} from 'uiSrc/components/query/context/view-mode.context'
 
 export interface Props {
   isResultsLoaded: boolean
@@ -28,6 +32,10 @@ export interface Props {
   ) => void
 }
 
-const WBResultsWrapper = (props: Props) => <WBResults {...props} />
+const WBResultsWrapper = (props: Props) => (
+  <ViewModeContextProvider initialViewMode={ViewMode.Workbench}>
+    <WBResults {...props} />
+  </ViewModeContextProvider>
+)
 
 export default React.memo(WBResultsWrapper)
