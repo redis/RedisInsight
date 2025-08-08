@@ -4,6 +4,11 @@ import { instance, mock } from 'ts-mockito'
 import { CommandExecutionUI } from 'uiSrc/slices/interfaces'
 import { cleanup, mockedStore, render, screen } from 'uiSrc/utils/test-utils'
 import WBResults, { Props } from './WBResults'
+import {
+  ViewMode,
+  ViewModeContextProvider,
+} from 'uiSrc/components/query/context/view-mode.context'
+import { CommandExecutionStatus } from 'uiSrc/slices/interfaces/cli'
 
 const mockedProps = mock<Props>()
 
@@ -22,29 +27,47 @@ jest.mock('uiSrc/services', () => ({
   },
 }))
 
+const renderWBResultsComponent = (props: Partial<Props> = {}) => {
+  return render(
+    <ViewModeContextProvider initialViewMode={ViewMode.Workbench}>
+      <WBResults {...instance(mockedProps)} {...props} />
+    </ViewModeContextProvider>,
+    {
+      store,
+    },
+  )
+}
+
 describe('WBResults', () => {
   it('should render', () => {
-    expect(render(<WBResults {...instance(mockedProps)} />)).toBeTruthy()
+    const { container } = renderWBResultsComponent()
+    expect(container).toBeTruthy()
   })
 
   it('should render NoResults component with empty items', () => {
-    const { getByTestId } = render(
-      <WBResults {...instance(mockedProps)} items={[]} isResultsLoaded />,
-    )
+    const { getByTestId } = renderWBResultsComponent({
+      items: [],
+      isResultsLoaded: true,
+    })
 
     expect(getByTestId('wb_no-results')).toBeInTheDocument()
   })
 
   it('should not render NoResults component with empty items and loading state', () => {
-    render(
-      <WBResults
-        {...instance(mockedProps)}
-        items={[]}
-        isResultsLoaded={false}
-      />,
-    )
+    renderWBResultsComponent({
+      items: [],
+      isResultsLoaded: false,
+    })
 
     expect(screen.queryByTestId('wb_no-results')).not.toBeInTheDocument()
+  })
+
+  it('should render with custom props', () => {
+    renderWBResultsComponent({
+      ...instance(mockedProps),
+      items: [],
+      isResultsLoaded: false,
+    })
   })
 
   it('should render with custom props', () => {
@@ -55,7 +78,7 @@ describe('WBResults', () => {
         result: [
           {
             response: 'data1',
-            status: 'success',
+            status: CommandExecutionStatus.Success,
           },
         ],
       },
@@ -65,14 +88,18 @@ describe('WBResults', () => {
         result: [
           {
             response: 'data2',
-            status: 'success',
+            status: CommandExecutionStatus.Success,
           },
         ],
       },
     ]
 
-    expect(
-      render(<WBResults {...instance(mockedProps)} items={itemsMock} />),
-    ).toBeTruthy()
+    const { container } = renderWBResultsComponent({
+      ...instance(mockedProps),
+      items: itemsMock,
+      isResultsLoaded: true,
+    })
+
+    expect(container).toBeTruthy()
   })
 })
