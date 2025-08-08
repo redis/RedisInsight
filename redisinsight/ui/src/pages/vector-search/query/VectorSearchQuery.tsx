@@ -15,6 +15,7 @@ import { VectorSearchScreenWrapper } from '../styles'
 import { SavedQueriesScreen } from '../saved-queries/SavedQueriesScreen'
 import { SavedIndex } from '../saved-queries/types'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { collectChangedSavedQueryIndexTelemetry } from '../telemetry'
 
 const mockSavedIndexes: SavedIndex[] = [
   {
@@ -66,11 +67,8 @@ export const VectorSearchQuery = () => {
   const handleIndexChange = (value: string) => {
     setQueryIndex(value)
 
-    sendEventTelemetry({
-      event: TelemetryEvent.SEARCH_SAVED_QUERIES_INDEX_CHANGED,
-      eventData: {
-        databaseId: instanceId,
-      },
+    collectChangedSavedQueryIndexTelemetry({
+      instanceId,
     })
   }
 

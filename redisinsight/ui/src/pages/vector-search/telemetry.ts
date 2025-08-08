@@ -19,3 +19,14 @@ export const collectSavedQueriesPanelToggleTelemetry = ({
     },
   })
 }
+
+export const collectChangedSavedQueryIndexTelemetry = ({
+  instanceId,
+}: CollectTelemetry): void => {
+  sendEventTelemetry({
+    event: TelemetryEvent.SEARCH_SAVED_QUERIES_INDEX_CHANGED,
+    eventData: {
+      databaseId: instanceId,
+    },
+  })
+}

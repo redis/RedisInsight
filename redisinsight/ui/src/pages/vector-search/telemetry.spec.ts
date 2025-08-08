@@ -1,5 +1,8 @@
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { collectSavedQueriesPanelToggleTelemetry } from './telemetry'
+import {
+  collectChangedSavedQueryIndexTelemetry,
+  collectSavedQueriesPanelToggleTelemetry,
+} from './telemetry'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
 
 // Mock the telemetry module, so we don't send actual telemetry data during tests
@@ -42,6 +45,21 @@ describe('telemetry', () => {
 
       expect(sendEventTelemetry).toHaveBeenCalledWith({
         event: TelemetryEvent.SEARCH_SAVED_QUERIES_PANEL_CLOSED,
+        eventData: {
+          databaseId: instanceId,
+        },
+      })
+    })
+  })
+
+  describe('collectChangedSavedQueryIndexTelemetry', () => {
+    it('should collect telemetry for changed saved query index', () => {
+      const instanceId = INSTANCE_ID_MOCK
+
+      collectChangedSavedQueryIndexTelemetry({ instanceId })
+
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_SAVED_QUERIES_INDEX_CHANGED,
         eventData: {
           databaseId: instanceId,
         },
