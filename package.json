@@ -99,7 +99,8 @@
     "styled-components": "^5",
     "@elastic/eui/**/prismjs": "~1.30.0",
     "vite/esbuild": "^0.25.0",
-    "react-router-dom/react-router/path-to-regexp": "^1.9.0"
+    "react-router-dom/react-router/path-to-regexp": "^1.9.0",
+    "**/form-data": "^4.0.4"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.23.2",
@@ -245,7 +246,7 @@
     "@stablelib/snappy": "^1.0.2",
     "@types/json-dup-key-validator": "^1.0.2",
     "ajv": "^8.17.1",
-    "axios": "^1.8.4",
+    "axios": "^1.9.0",
     "brotli-dec-wasm": "^2.3.0",
     "buffer": "^6.0.3",
     "classnames": "^2.3.1",
