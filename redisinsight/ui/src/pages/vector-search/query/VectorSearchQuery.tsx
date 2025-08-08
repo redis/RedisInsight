@@ -15,6 +15,7 @@ import { SavedQueriesScreen } from '../saved-queries/SavedQueriesScreen'
 import { SavedIndex } from '../saved-queries/types'
 import { useParams } from 'react-router-dom'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { collectTelemetryQueryRun } from '../telemetry'
 
 const mockSavedIndexes: SavedIndex[] = [
   {
@@ -57,16 +58,9 @@ export const VectorSearchQuery = () => {
 
   const onQuerySubmit = () => {
     onSubmit()
-    collectTelemetryQueryRun()
-  }
-
-  const collectTelemetryQueryRun = () => {
-    sendEventTelemetry({
-      event: TelemetryEvent.SEARCH_COMMAND_SUBMITTED,
-      eventData: {
-        databaseId: instanceId,
-        commands: [query],
-      },
+    collectTelemetryQueryRun({
+      instanceId,
+      query,
     })
   }
 
