@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { CategoryValueListItem } from '@redis-ui/components/dist/Section/components/Header/components/CategoryValueList'
 import { RedisString } from 'uiSrc/slices/interfaces'
 import { bufferToString, formatLongName, stringToBuffer } from 'uiSrc/utils'
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import {
   deleteRedisearchIndexAction,
@@ -15,6 +14,10 @@ import {
   IndexDeleteRequestBodyDto,
 } from 'apiSrc/modules/browser/redisearch/dto'
 import { IndexAttributesList } from './IndexAttributesList'
+import {
+  collectManageIndexesDeleteTelemetry,
+  collectManageIndexesDetailsToggleTelemetry,
+} from '../telemetry'
 
 export interface IndexSectionProps extends Omit<SectionProps, 'label'> {
   index: RedisString
@@ -55,13 +58,16 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
     }
   }
 
-  const onDeletedIndexSuccess = (data: IndexDeleteRequestBodyDto) => {
-    sendEventTelemetry({
-      event: TelemetryEvent.SEARCH_INDEX_DELETED,
-      eventData: {
-        databaseId: instanceId,
-        indexName: data.index,
-      },
+  const onDeletedIndexSuccess = () => {
+    collectManageIndexesDeleteTelemetry({
+      instanceId,
+    })
+  }
+
+  const handleOpenChange = (open: boolean) => {
+    collectManageIndexesDetailsToggleTelemetry({
+      instanceId,
+      isOpen: open,
     })
   }
 
@@ -75,6 +81,7 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
       defaultOpen={false}
       actionButtonText="Delete" // TODO: Replace with an icon of a trash can
       onAction={handleDelete}
+      onOpenChange={handleOpenChange}
       data-testid={`manage-indexes-list--item--${indexName}`}
       {...rest}
     />
