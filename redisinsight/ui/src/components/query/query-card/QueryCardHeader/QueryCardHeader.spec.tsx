@@ -13,6 +13,16 @@ import {
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
 import QueryCardHeader, { HIDE_FIELDS, Props } from './QueryCardHeader'
+import {
+  ViewMode,
+  ViewModeContextProvider,
+} from '../../context/view-mode.context'
+
+// Mock the telemetry module, so we don't send actual telemetry data during tests
+jest.mock('uiSrc/telemetry', () => ({
+  ...jest.requireActual('uiSrc/telemetry'),
+  sendEventTelemetry: jest.fn(),
+}))
 
 const mockedProps = mock<Props>()
 
@@ -42,7 +52,7 @@ jest.mock('uiSrc/slices/app/plugins', () => ({
         plugin: '',
         activationMethod: 'render',
         matchCommands: ['FT.SEARCH'],
-      }
+      },
     ],
   }),
 }))
@@ -51,6 +61,20 @@ jest.mock('uiSrc/telemetry', () => ({
   ...jest.requireActual('uiSrc/telemetry'),
   sendEventTelemetry: jest.fn(),
 }))
+
+const renderQueryCardHeaderComponent = (
+  props: Props,
+  viewMode: ViewMode = ViewMode.Workbench,
+) => {
+  return render(
+    <ViewModeContextProvider initialViewMode={viewMode}>
+      <QueryCardHeader {...instance(mockedProps)} {...props} />
+    </ViewModeContextProvider>,
+    {
+      store,
+    },
+  )
+}
 
 describe('QueryCardHeader', () => {
   it('should render', () => {
@@ -63,15 +87,16 @@ describe('QueryCardHeader', () => {
 
     // sendCliClusterCommandAction.mockImplementation(() => sendCliClusterActionMock);
 
-    expect(render(<QueryCardHeader {...instance(mockedProps)} />)).toBeTruthy()
+    expect(
+      renderQueryCardHeaderComponent({ ...instance(mockedProps) }),
+    ).toBeTruthy()
   })
+
   it('should render tooltip in milliseconds', async () => {
-    render(
-      <QueryCardHeader
-        {...instance(mockedProps)}
-        executionTime={12345678910}
-      />,
-    )
+    renderQueryCardHeaderComponent({
+      ...instance(mockedProps),
+      executionTime: 12345678910,
+    })
 
     await act(async () => {
       fireEvent.focus(screen.getByTestId('command-execution-time-icon'))
@@ -84,56 +109,77 @@ describe('QueryCardHeader', () => {
   })
 
   it('should render disabled copy button', async () => {
-    render(<QueryCardHeader {...instance(mockedProps)} emptyCommand />)
+    renderQueryCardHeaderComponent({
+      ...instance(mockedProps),
+      emptyCommand: true,
+    })
 
     expect(screen.getByTestId('copy-command')).toBeDisabled()
   })
 
   it('should hide Profiler button', async () => {
-    render(
-      <QueryCardHeader
-        {...instance(mockedProps)}
-        query="FT.GET something"
-        isOpen
-        hideFields={[HIDE_FIELDS.profiler]}
-      />,
-    )
+    renderQueryCardHeaderComponent({
+      ...instance(mockedProps),
+      query: 'FT.GET something',
+      isOpen: true,
+      hideFields: [HIDE_FIELDS.profiler],
+    })
 
     expect(screen.queryByTestId('run-profile-type')).not.toBeInTheDocument()
   })
 
   it('should hide Change View Type button', async () => {
-    render(
-      <QueryCardHeader
-        {...instance(mockedProps)}
-        query="FT.SEARCH index somethingCool"
-        isOpen
-        hideFields={[HIDE_FIELDS.viewType]}
-      />,
-    )
+    renderQueryCardHeaderComponent({
+      ...instance(mockedProps),
+      query: 'FT.SEARCH index somethingCool',
+      isOpen: true,
+      hideFields: [HIDE_FIELDS.viewType],
+    })
 
     expect(screen.queryByTestId('select-view-type')).not.toBeInTheDocument()
   })
 
-  it('event telemetry WORKBENCH_COMMAND_COPIED should be call after click on copy btn', async () => {
+  it('should call event telemetry for workbench after click on copy btn', async () => {
     const command = 'info'
-    const sendEventTelemetryMock = jest.fn()
-    ;(sendEventTelemetry as jest.Mock).mockImplementation(
-      () => sendEventTelemetryMock,
-    )
-    render(<QueryCardHeader {...instance(mockedProps)} query={command} />)
+
+    renderQueryCardHeaderComponent({ ...instance(mockedProps), query: command })
 
     await act(async () => {
       fireEvent.click(screen.getByTestId('copy-command'))
     })
 
-    expect(sendEventTelemetry).toBeCalledWith({
+    // Verify telemetry event is sent
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
       event: TelemetryEvent.WORKBENCH_COMMAND_COPIED,
       eventData: {
         command,
         databaseId: INSTANCE_ID_MOCK,
       },
     })
-    ;(sendEventTelemetry as jest.Mock).mockRestore()
+  })
+
+  it('should call event telemetry for vector search after click on copy btn', async () => {
+    const command = 'MOCK_COMMAND'
+
+    renderQueryCardHeaderComponent(
+      {
+        ...instance(mockedProps),
+        query: command,
+      },
+      ViewMode.VectorSearch,
+    )
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('copy-command'))
+    })
+
+    // Verify telemetry event is sent
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
+      event: TelemetryEvent.SEARCH_COMMAND_COPIED,
+      eventData: {
+        command,
+        databaseId: INSTANCE_ID_MOCK,
+      },
+    })
   })
 })
