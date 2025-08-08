@@ -77,14 +77,14 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
     })
   }
 
-  const DeleteButton = () => (
+  const DeleteConfirmationButton = () => (
     <RiPopover
       id="bulk-upload-warning-popover"
-      anchorPosition="upCenter"
       isOpen={isPopoverOpen}
       closePopover={() => setIsPopoverOpen(false)}
       panelPaddingSize="none"
       button={<DeleteIcon />}
+      anchorPosition="downCenter"
     >
       <PopoverContent>
         <IconAndTitleWrapper>
@@ -110,20 +110,36 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
     </RiPopover>
   )
 
+  // TODO: Add FieldTag component to list the types of the different fields
   return (
-    <Section
+    <Section.Compose
       collapsible
       collapsedInfo={<CategoryValueList categoryValueList={indexSummaryInfo} />}
       content={<IndexAttributesList indexInfo={indexInfo} />}
       // TODO: Add FieldTag component to list the types of the different fields
-      label={formatLongName(indexName)}
       defaultOpen={false}
       onOpenChange={handleOpenChange}
-      actionButtonText={<DeleteButton />}
       onAction={() => setIsPopoverOpen(true)}
       data-testid={`manage-indexes-list--item--${indexName}`}
       {...rest}
-    />
+    >
+      <Section.Header.Compose
+        collapsedInfo={
+          <CategoryValueList categoryValueList={indexSummaryInfo} />
+        }
+      >
+        <Section.Header.Group>
+          <Section.Header.Label label={formatLongName(indexName)} />
+        </Section.Header.Group>
+        <Section.Header.Group>
+          <Section.Header.ActionButton onClick={() => setIsPopoverOpen(true)}>
+            <DeleteConfirmationButton />
+          </Section.Header.ActionButton>
+          <Section.Header.CollapseIndicator />
+        </Section.Header.Group>
+      </Section.Header.Compose>
+      <Section.Body content={<IndexAttributesList indexInfo={indexInfo} />} />
+    </Section.Compose>
   )
 }
 
