@@ -17,6 +17,11 @@ export interface TimeSeriesError {
   alt?: string[]
 }
 
+export enum TimeUnit {
+  seconds = 'seconds',
+  milliseconds = 'milliseconds',
+}
+
 export enum GraphMode {
   line = 'line',
   points = 'points',
@@ -34,6 +39,7 @@ export interface YAxisConfig {
 
 export interface ChartConfig {
   mode: GraphMode
+  timeUnit: TimeUnit.seconds
   xlabel: string
   title: string
   staircase: boolean

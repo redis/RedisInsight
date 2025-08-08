@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import { SwitchInput, TextInput } from 'uiSrc/components/base/inputs'
 import { FormFieldset } from 'uiSrc/components/base/forms/fieldset'
-import { AxisScale, GraphMode, ChartConfigFormProps } from './interfaces'
+import {AxisScale, GraphMode, ChartConfigFormProps, TimeUnit} from './interfaces'
 import {
   X_LABEL_MAX_LENGTH,
   Y_LABEL_MAX_LENGTH,
@@ -60,6 +60,11 @@ export default function ChartConfigForm(props: ChartConfigFormProps) {
           values={Object.keys(GraphMode)}
           selected={value.mode}
           onClick={(v) => onChange('mode', v)}
+        />
+        <NewEnumSelect
+          values={Object.keys(TimeUnit)}
+          selected={value.timeUnit}
+          onClick={(v) => onChange('timeUnit', v)}
         />
         <SwitchInput
           title="Staircase"

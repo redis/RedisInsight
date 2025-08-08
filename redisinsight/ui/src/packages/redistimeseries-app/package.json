@@ -12,7 +12,7 @@
   "styles": "./dist/styles.css",
   "main": "./dist/index.js",
   "name": "redistimeseries",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "scripts": {
     "dev": "vite -c ../vite.config.mjs"
   },

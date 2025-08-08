@@ -1,4 +1,4 @@
-import { hexToRGBA } from './utils'
+import { dataPointsTimestamps, hexToRGBA } from './utils'
 
 const hexToRGBATests: [string, string][] = [
   ['#fbafff', 'rgb(251, 175, 255)'],
@@ -15,6 +15,35 @@ describe('hexToRGBA', () => {
     (hex, expected) => {
       const result = hexToRGBA(hex, 0)
       expect(result).toBe(expected)
+    },
+  )
+})
+const dataPointsTimestampsTests: [[number, string][], [number, string][]][] = [
+  // Timestamp in seconds -> converted to ms
+  [[[1690000000, 'point A']], [[1690000000 * 1000, 'point A']]],
+  // Timestamp already in milliseconds -> unchanged
+  [[[1690000000000, 'point B']], [[1690000000000, 'point B']]],
+  // Mixed case: some in seconds, some in milliseconds
+  [
+    [
+      [1690000000, 'A'],
+      [1690000000000, 'B'],
+    ],
+    [
+      [1690000000 * 1000, 'A'],
+      [1690000000000, 'B'],
+    ],
+  ],
+  // Edge case: exactly 10^10 should not be converted (treated as ms)
+  [[[1e10, 'boundary']], [[1e10, 'boundary']]],
+]
+
+describe('dataPointsTimestamps', () => {
+  it.each(dataPointsTimestampsTests)(
+    'should normalize timestamps for input: %j',
+    (input, expected) => {
+      const result = dataPointsTimestamps(input)
+      expect(result).toEqual(expected)
     },
   )
 })

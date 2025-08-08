@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
 import {
-  TimeSeries,
-  YAxisConfig,
-  ChartConfig,
   AxisScale,
+  ChartConfig,
   GraphMode,
+  TimeSeries,
+  TimeUnit,
+  YAxisConfig,
 } from './interfaces'
 import ChartConfigForm from './ChartConfigForm'
 import Chart from './Chart'
+import { normalizeDatapointUnits } from 'uiSrc/packages/redistimeseries-app/src/components/Chart/utils'
 
 enum LAYOUT_STATE {
   INITIAL_STATE,
@@ -30,6 +32,7 @@ export default function ChartResultView(props: ChartResultViewProps) {
 
   const [chartConfig, setChartConfig] = useState<ChartConfig>({
     mode: GraphMode.line,
+    timeUnit: TimeUnit.seconds,
     title: '',
     xlabel: '',
     staircase: false,
@@ -77,7 +80,7 @@ export default function ChartResultView(props: ChartResultViewProps) {
       </div>
       <Chart
         chartConfig={chartConfig}
-        data={props.data}
+        data={normalizeDatapointUnits(props.data, chartConfig.timeUnit)}
         onRelayout={onRelayout}
         onDoubleClick={onDoubleClick}
       />
