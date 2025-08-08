@@ -3,6 +3,7 @@ import {
   ConflictException,
   ForbiddenException,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { when } from 'jest-when';
 import {
@@ -451,6 +452,73 @@ describe('RedisearchService', () => {
       await expect(
         service.getInfo(mockBrowserClientMetadata, { index: 'indexName' }),
       ).rejects.toThrow(InternalServerErrorException);
+    });
+  });
+
+  describe('deleteIndex', () => {
+    it('should delete index for standalone', async () => {
+      const mockIndexName = 'idx:movie';
+      when(standaloneClient.sendCommand)
+        .calledWith(expect.arrayContaining(['FT.DROPINDEX']))
+        .mockResolvedValue(undefined);
+
+      await service.deleteIndex(mockBrowserClientMetadata, {
+        index: mockIndexName,
+      });
+
+      expect(standaloneClient.sendCommand).toHaveBeenCalledWith(
+        ['FT.DROPINDEX', mockIndexName],
+        { replyEncoding: 'utf8' },
+      );
+    });
+
+    it('should delete index for cluster', async () => {
+      const mockIndexName = 'idx:movie';
+      databaseClientFactory.getOrCreateClient = jest
+        .fn()
+        .mockResolvedValue(clusterClient);
+      when(clusterClient.sendCommand)
+        .calledWith(expect.arrayContaining(['FT.DROPINDEX']))
+        .mockResolvedValue(undefined);
+
+      await service.deleteIndex(mockBrowserClientMetadata, {
+        index: mockIndexName,
+      });
+
+      expect(clusterClient.sendCommand).toHaveBeenCalledWith(
+        ['FT.DROPINDEX', mockIndexName],
+        { replyEncoding: 'utf8' },
+      );
+    });
+
+    it('should handle index not found error', async () => {
+      const mockIndexName = 'idx:movie';
+      when(standaloneClient.sendCommand)
+        .calledWith(expect.arrayContaining(['FT.DROPINDEX']))
+        .mockRejectedValue(mockRedisUnknownIndexName);
+
+      try {
+        await service.deleteIndex(mockBrowserClientMetadata, {
+          index: mockIndexName,
+        });
+      } catch (e) {
+        expect(e).toBeInstanceOf(NotFoundException);
+      }
+    });
+
+    it('should handle ACL error', async () => {
+      const mockIndexName = 'idx:movie';
+      when(standaloneClient.sendCommand)
+        .calledWith(expect.arrayContaining(['FT.DROPINDEX']))
+        .mockRejectedValue(mockRedisNoPermError);
+
+      try {
+        await service.deleteIndex(mockBrowserClientMetadata, {
+          index: mockIndexName,
+        });
+      } catch (e) {
+        expect(e).toBeInstanceOf(ForbiddenException);
+      }
     });
   });
 });

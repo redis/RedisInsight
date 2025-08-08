@@ -13,4 +13,5 @@ export enum TelemetryPageView {
   RDI_CONFIG = 'RDI Configuration',
   RDI_JOBS = 'RDI Jobs',
   RDI_STATUS = 'RDI Status',
+  VECTOR_SEARCH_PAGE = 'Vector Search',
 }

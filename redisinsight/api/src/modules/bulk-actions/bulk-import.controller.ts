@@ -18,7 +18,10 @@ import { BulkImportService } from 'src/modules/bulk-actions/bulk-import.service'
 import { ClientMetadataParam } from 'src/common/decorators';
 import { ClientMetadata } from 'src/common/models';
 import { IBulkActionOverview } from 'src/modules/bulk-actions/interfaces/bulk-action-overview.interface';
-import { UploadImportFileByPathDto } from 'src/modules/bulk-actions/dto/upload-import-file-by-path.dto';
+import {
+  UploadImportFileByPathDto,
+  ImportVectorCollectionDto,
+} from 'src/modules/bulk-actions/dto/upload-import-file-by-path.dto';
 
 @UsePipes(new ValidationPipe({ transform: true }))
 @UseInterceptors(ClassSerializerInterceptor)
@@ -84,5 +87,22 @@ export class BulkImportController {
     @ClientMetadataParam() clientMetadata: ClientMetadata,
   ): Promise<IBulkActionOverview> {
     return this.service.importDefaultData(clientMetadata);
+  }
+
+  @Post('/vector-collection')
+  @HttpCode(200)
+  @ApiEndpoint({
+    description: 'Import vector collection data',
+    responses: [
+      {
+        type: Object,
+      },
+    ],
+  })
+  async importVectorCollection(
+    @Body() dto: ImportVectorCollectionDto,
+    @ClientMetadataParam() clientMetadata: ClientMetadata,
+  ): Promise<IBulkActionOverview> {
+    return this.service.importVectorCollection(clientMetadata, dto);
   }
 }

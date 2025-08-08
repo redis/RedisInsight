@@ -2,6 +2,7 @@ import { lazy } from 'react'
 import { IRoute, FeatureFlags, PageNames, Pages } from 'uiSrc/constants'
 import {
   BrowserPage,
+  VectorSearchPage,
   HomePage,
   InstancePage,
   RedisCloudDatabasesPage,
@@ -22,6 +23,7 @@ import COMMON_ROUTES from './commonRoutes'
 import { getRouteIncludedByEnv, LAZY_LOAD } from '../config'
 
 const LazyBrowserPage = lazy(() => import('uiSrc/pages/browser'))
+const LazyVectorSearchPage = lazy(() => import('uiSrc/pages/vector-search'))
 const LazyHomePage = lazy(() => import('uiSrc/pages/home'))
 const LazyWorkbenchPage = lazy(() => import('uiSrc/pages/workbench'))
 const LazyPubSubPage = lazy(() => import('uiSrc/pages/pub-sub'))
@@ -54,6 +56,11 @@ const INSTANCE_ROUTES: IRoute[] = [
     pageName: PageNames.browser,
     path: Pages.browser(':instanceId'),
     component: LAZY_LOAD ? LazyBrowserPage : BrowserPage,
+  },
+  {
+    pageName: PageNames.vectorSearch,
+    path: Pages.vectorSearch(':instanceId'),
+    component: LAZY_LOAD ? LazyVectorSearchPage : VectorSearchPage,
   },
   {
     pageName: PageNames.workbench,

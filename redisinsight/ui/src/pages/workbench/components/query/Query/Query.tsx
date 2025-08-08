@@ -40,7 +40,11 @@ import {
   workbenchResultsSelector,
 } from 'uiSrc/slices/workbench/wb-results'
 import DedicatedEditor from 'uiSrc/components/monaco-editor/components/dedicated-editor'
-import { QueryActions, QueryTutorials } from 'uiSrc/components/query'
+import {
+  QueryActions,
+  QueryTutorials,
+  QueryLiteActions,
+} from 'uiSrc/components/query'
 
 import {
   getRange,
@@ -78,11 +82,13 @@ export interface Props {
   activeMode: RunQueryMode
   resultsMode?: ResultsMode
   setQueryEl: Function
+  useLiteActions?: boolean
   setQuery: (script: string) => void
   onSubmit: (query?: string) => void
   onKeyDown?: (e: React.KeyboardEvent, script: string) => void
   onQueryChangeMode: () => void
   onChangeGroupMode: () => void
+  onClear?: () => void
 }
 
 let execHistoryPos: number = 0
@@ -97,12 +103,14 @@ const Query = (props: Props) => {
     indexes = [],
     activeMode,
     resultsMode,
+    useLiteActions = false,
     setQuery = () => {},
     onKeyDown = () => {},
     onSubmit = () => {},
     setQueryEl = () => {},
     onQueryChangeMode = () => {},
     onChangeGroupMode = () => {},
+    onClear = () => {},
   } = props
   let contribution: Nullable<ISnippetController> = null
   const [isDedicatedEditorOpen, setIsDedicatedEditorOpen] = useState(false)
@@ -473,6 +481,11 @@ const Query = (props: Props) => {
     onSubmit(value)
   }
 
+  const handleClear = () => {
+    setQuery('')
+    onClear?.()
+  }
+
   const handleSuggestions = (
     editor: monacoEditor.editor.IStandaloneCodeEditor,
     command?: Nullable<IMonacoQuery>,
@@ -736,19 +749,29 @@ const Query = (props: Props) => {
           />
         </div>
         <div className={styles.queryFooter}>
-          <QueryTutorials
-            tutorials={TUTORIALS}
-            source="advanced_workbench_editor"
-          />
-          <QueryActions
-            isDisabled={isDedicatedEditorOpen}
-            isLoading={isLoading}
-            activeMode={activeMode}
-            resultsMode={resultsMode}
-            onChangeGroupMode={onChangeGroupMode}
-            onChangeMode={onQueryChangeMode}
-            onSubmit={handleSubmit}
-          />
+          {useLiteActions ? (
+            <QueryLiteActions
+              isLoading={isLoading}
+              onSubmit={handleSubmit}
+              onClear={handleClear}
+            />
+          ) : (
+            <>
+              <QueryTutorials
+                tutorials={TUTORIALS}
+                source="advanced_workbench_editor"
+              />
+              <QueryActions
+                isDisabled={isDedicatedEditorOpen}
+                isLoading={isLoading}
+                activeMode={activeMode}
+                resultsMode={resultsMode}
+                onChangeGroupMode={onChangeGroupMode}
+                onChangeMode={onQueryChangeMode}
+                onSubmit={handleSubmit}
+              />
+            </>
+          )}
         </div>
       </div>
       {isDedicatedEditorOpen && (

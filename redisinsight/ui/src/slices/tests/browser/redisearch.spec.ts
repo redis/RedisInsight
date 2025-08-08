@@ -19,6 +19,7 @@ import { fetchKeys, fetchMoreKeys } from 'uiSrc/slices/browser/keys'
 import { initialState as initialStateInstances } from 'uiSrc/slices/instances/instances'
 import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
 import { MOCK_TIMESTAMP } from 'uiSrc/mocks/data/dateNow'
+import { IndexDeleteRequestBodyDto } from 'apiSrc/modules/browser/redisearch/dto'
 import reducer, {
   initialState,
   loadKeys,
@@ -54,6 +55,7 @@ import reducer, {
   fetchRedisearchHistoryAction,
   deleteRedisearchHistoryAction,
   fetchRedisearchInfoAction,
+  deleteRedisearchIndexAction,
 } from '../../browser/redisearch'
 
 let store: typeof mockedStore
@@ -1390,6 +1392,85 @@ describe('redisearch slice', () => {
 
         // Assert
         expect(onFailed).toBeCalled()
+      })
+    })
+
+    describe('deleteRedisearchIndexAction', () => {
+      const indexName = 'index'
+      const deleteIndexRequestPayload: IndexDeleteRequestBodyDto = {
+        index: indexName,
+      }
+
+      const mockSuccessCallback = jest.fn()
+      const mockErrorCallback = jest.fn()
+
+      beforeEach(() => {
+        store.clearActions()
+        jest.clearAllMocks()
+      })
+
+      it('should delete index successfully', async () => {
+        // Arrange
+        const responsePayload = { status: 204 }
+        const listResponsePayload = {
+          data: REDISEARCH_LIST_DATA_MOCK,
+          status: 200,
+        }
+
+        apiService.delete = jest.fn().mockResolvedValue(responsePayload)
+        apiService.get = jest.fn().mockResolvedValue(listResponsePayload)
+
+        // Act
+        await store.dispatch<any>(
+          deleteRedisearchIndexAction(
+            deleteIndexRequestPayload,
+            mockSuccessCallback,
+            mockErrorCallback,
+          ),
+        )
+
+        // Assert
+        const expectedActions = [
+          addMessageNotification(successMessages.DELETE_INDEX(indexName)),
+          loadList(),
+          loadListSuccess(REDISEARCH_LIST_DATA_MOCK.indexes),
+        ]
+        expect(store.getActions()).toEqual(expectedActions)
+        expect(mockSuccessCallback).toHaveBeenCalled()
+        expect(mockErrorCallback).not.toHaveBeenCalled()
+      })
+
+      it('should fail to delete index', async () => {
+        // Arrange
+        const errorMessage = 'Mock error message'
+        const responsePayload = {
+          response: {
+            status: 500,
+            data: { message: errorMessage },
+          },
+        }
+
+        apiService.delete = jest.fn().mockRejectedValue(responsePayload)
+
+        // Act
+        await store.dispatch<any>(
+          deleteRedisearchIndexAction(
+            deleteIndexRequestPayload,
+            mockSuccessCallback,
+            mockErrorCallback,
+          ),
+        )
+
+        // Assert
+        const expectedActions = [
+          {
+            type: 'notifications/addErrorNotification',
+            payload: responsePayload,
+          },
+        ]
+        expect(store.getActions()).toEqual(expectedActions)
+        expect(mockSuccessCallback).not.toHaveBeenCalled()
+        expect(mockErrorCallback).toHaveBeenCalled()
       })
     })
   })

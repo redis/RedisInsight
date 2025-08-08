@@ -19,7 +19,10 @@ import {
   BulkActionType,
 } from 'src/modules/bulk-actions/constants';
 import { BulkActionsAnalytics } from 'src/modules/bulk-actions/bulk-actions.analytics';
-import { UploadImportFileByPathDto } from 'src/modules/bulk-actions/dto/upload-import-file-by-path.dto';
+import {
+  UploadImportFileByPathDto,
+  ImportVectorCollectionDto,
+} from 'src/modules/bulk-actions/dto/upload-import-file-by-path.dto';
 import {
   RedisClient,
   RedisClientCommand,
@@ -33,6 +36,8 @@ import ERROR_MESSAGES from 'src/constants/error-messages';
 const BATCH_LIMIT = 10_000;
 const PATH_CONFIG = config.get('dir_path') as Config['dir_path'];
 const SERVER_CONFIG = config.get('server') as Config['server'];
+
+const ALLOWED_VECTOR_INDEX_COLLECTIONS = ['bikes'];
 
 @Injectable()
 export class BulkImportService {
@@ -278,6 +283,44 @@ export class BulkImportService {
       throw new InternalServerErrorException(
         ERROR_MESSAGES.COMMON_DEFAULT_IMPORT_ERROR,
       );
+    }
+  }
+
+  /**
+   * Import vector collection data
+   * @param clientMetadata
+   * @param dto
+   */
+  public async importVectorCollection(
+    clientMetadata: ClientMetadata,
+    dto: ImportVectorCollectionDto,
+  ): Promise<IBulkActionOverview> {
+    try {
+      if (!ALLOWED_VECTOR_INDEX_COLLECTIONS.includes(dto.collectionName)) {
+        throw new BadRequestException('Invalid collection name');
+      }
+
+      const collectionFilePath = join(
+        PATH_CONFIG.dataDir,
+        'vector-collections',
+        dto.collectionName,
+      );
+
+      if (!(await fs.pathExists(collectionFilePath))) {
+        throw new BadRequestException(
+          `No data file found for collection: ${dto.collectionName}`,
+        );
+      }
+
+      const fileStream = fs.createReadStream(collectionFilePath);
+      return this.import(clientMetadata, fileStream);
+    } catch (e) {
+      this.logger.error(
+        'Unable to import vector collection data',
+        e,
+        clientMetadata,
+      );
+      throw wrapHttpError(e);
     }
   }
 }

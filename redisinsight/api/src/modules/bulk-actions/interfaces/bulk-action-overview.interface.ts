@@ -11,8 +11,8 @@ export interface IBulkActionOverview {
   databaseId: string;
   duration: number;
   type: BulkActionType;
-  status: BulkActionStatus;
-  filter: IBulkActionFilterOverview;
+  status: BulkActionStatus; // Note: This can be null, according to the API response
+  filter: IBulkActionFilterOverview; // Note: This can be null, according to the API response
   progress: IBulkActionProgressOverview;
   summary: IBulkActionSummaryOverview;
 }

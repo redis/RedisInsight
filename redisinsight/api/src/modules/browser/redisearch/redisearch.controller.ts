@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Post,
@@ -24,6 +25,7 @@ import { RedisearchService } from 'src/modules/browser/redisearch/redisearch.ser
 import { ClientMetadata } from 'src/common/models';
 import { BrowserSerializeInterceptor } from 'src/common/interceptors';
 import { BrowserBaseController } from 'src/modules/browser/browser.base.controller';
+import { IndexDeleteRequestBodyDto } from './dto/index.delete.dto';
 
 @ApiTags('Browser: RediSearch')
 @UseInterceptors(BrowserSerializeInterceptor)
@@ -79,5 +81,15 @@ export class RedisearchController extends BrowserBaseController {
     @Body() dto: IndexInfoRequestBodyDto,
   ): Promise<IndexInfoDto> {
     return await this.service.getInfo(clientMetadata, dto);
+  }
+
+  @Delete('')
+  @HttpCode(204)
+  @ApiOperation({ description: 'Delete index' })
+  async delete(
+    @BrowserClientMetadata() clientMetadata: ClientMetadata,
+    @Body() dto: IndexDeleteRequestBodyDto,
+  ): Promise<void> {
+    return await this.service.deleteIndex(clientMetadata, dto);
   }
 }

@@ -1,7 +1,13 @@
 import { cloneDeep } from 'lodash'
 import React from 'react'
 import { instance, mock } from 'ts-mockito'
-import { cleanup, mockedStore, render } from 'uiSrc/utils/test-utils'
+import {
+  cleanup,
+  fireEvent,
+  mockedStore,
+  render,
+  screen,
+} from 'uiSrc/utils/test-utils'
 import QueryWrapper, { Props } from './QueryWrapper'
 
 const mockedProps = mock<Props>()
@@ -44,5 +50,29 @@ describe('QueryWrapper', () => {
     // sendCliClusterCommandAction.mockImplementation(() => sendCliClusterActionMock);
 
     expect(render(<QueryWrapper {...instance(mockedProps)} />)).toBeTruthy()
+  })
+
+  it('should call onClear callback when clear button is clicked', () => {
+    const props: Props = {
+      ...instance(mockedProps),
+      queryProps: {
+        useLiteActions: true,
+      },
+      query: 'test query',
+      onClear: jest.fn(),
+    }
+
+    render(<QueryWrapper {...props} />)
+
+    // Ensure we start with the query input populated
+    const queryInput = screen.getByTestId('monaco')
+    expect(queryInput).toHaveValue(props.query)
+
+    // Find the clear button and click it
+    const clearButton = screen.getByTestId('btn-clear')
+    fireEvent.click(clearButton)
+
+    // Verify that the onClear function was called and the query input is cleared
+    expect(props.onClear).toHaveBeenCalled()
   })
 })

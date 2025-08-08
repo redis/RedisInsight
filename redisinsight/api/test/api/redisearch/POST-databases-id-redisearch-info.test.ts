@@ -146,11 +146,11 @@ describe('POST /databases/:id/redisearch/info', () => {
         data: {
           index: 'Invalid index',
         },
-        statusCode: 500,
+        statusCode: 404,
         responseBody: {
+          statusCode: 404,
           message: INVALID_INDEX_ERROR_MESSAGE_V1,
-          error: 'Internal Server Error',
-          statusCode: 500,
+          error: 'Not Found',
         },
       },
     ].forEach(mainCheckFn);
@@ -177,11 +177,11 @@ describe('POST /databases/:id/redisearch/info', () => {
         data: {
           index: 'Invalid index',
         },
-        statusCode: 500,
+        statusCode: 404,
         responseBody: {
+          statusCode: 404,
           message: INVALID_INDEX_ERROR_MESSAGE_V2,
-          error: 'Internal Server Error',
-          statusCode: 500,
+          error: 'Not Found',
         },
       },
     ].forEach(mainCheckFn);
@@ -204,11 +204,11 @@ describe('POST /databases/:id/redisearch/info', () => {
         data: {
           index: 'Invalid index',
         },
-        statusCode: 500,
+        statusCode: 404,
         responseBody: {
-          message: INVALID_INDEX_ERROR_MESSAGE_V2,
-          error: 'Internal Server Error',
-          statusCode: 500,
+          statusCode: 404,
+          message: 'Invalid index: no such index',
+          error: 'Not Found',
         },
       },
     ].forEach(mainCheckFn);

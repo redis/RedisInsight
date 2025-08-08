@@ -55,6 +55,14 @@ export class IndexDefinitionDto {
   })
   @Expose()
   default_score: string;
+
+  @ApiProperty({
+    description:
+      'Indicates whether all fields of a JSON document are automatically indexed by RediSearch',
+    type: String,
+  })
+  @Expose()
+  indexes_all?: string;
 }
 
 export class IndexAttibuteDto {

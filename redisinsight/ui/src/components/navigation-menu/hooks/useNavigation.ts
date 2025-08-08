@@ -93,6 +93,16 @@ export function useNavigation() {
       onboard: ONBOARDING_FEATURES.BROWSER_PAGE,
     },
     {
+      tooltipText: 'Search',
+      pageName: PageNames.vectorSearch,
+      ariaLabel: 'Search',
+      onClick: () => handleGoPage(Pages.vectorSearch(connectedInstanceId)),
+      dataTestId: 'vector-search-page-btn',
+      connectedInstanceId,
+      isActivePage: activePage === `/${PageNames.vectorSearch}`,
+      iconType: SlowLogIcon,
+    },
+    {
       tooltipText: 'Workbench',
       pageName: PageNames.workbench,
       ariaLabel: 'Workbench page button',

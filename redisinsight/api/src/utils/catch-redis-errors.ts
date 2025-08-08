@@ -173,7 +173,10 @@ export const catchRedisSearchError = (
     );
   }
 
-  if (error.message?.includes('Unknown index')) {
+  if (
+    error.message?.toLowerCase()?.includes('unknown index') ||
+    error.message?.toLowerCase()?.includes('no such index')
+  ) {
     throw new NotFoundException(error.message);
   }
 

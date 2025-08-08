@@ -91,6 +91,7 @@ module.exports = {
         'sonarjs/no-identical-functions': 'error',
         'sonarjs/prefer-immediate-return': 'error',
         'sonarjs/no-small-switch': 'error',
+        'sonarjs/no-nested-template-literals': 'off',
         'no-console': 'error',
         'import/no-duplicates': 'error',
         'prefer-destructuring': 'error',

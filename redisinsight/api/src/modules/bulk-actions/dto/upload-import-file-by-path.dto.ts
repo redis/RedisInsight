@@ -10,3 +10,14 @@ export class UploadImportFileByPathDto {
   @IsNotEmpty()
   path: string;
 }
+
+export class ImportVectorCollectionDto {
+  @ApiProperty({
+    type: 'string',
+    description: 'Collection name to load vector data',
+    example: 'bikes',
+  })
+  @IsString()
+  @IsNotEmpty()
+  collectionName: string;
+}

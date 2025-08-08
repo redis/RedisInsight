@@ -23,6 +23,7 @@ import { SearchHistoryItem } from 'uiSrc/slices/interfaces/keys'
 import { GetKeysWithDetailsResponse } from 'apiSrc/modules/browser/keys/dto'
 import {
   CreateRedisearchIndexDto,
+  IndexDeleteRequestBodyDto,
   ListRedisearchIndexesResponse,
 } from 'apiSrc/modules/browser/redisearch/dto'
 
@@ -516,6 +517,43 @@ export function createRedisearchIndexAction(
       const errorMessage = getApiErrorMessage(error)
       dispatch(addErrorNotification(error))
       dispatch(createIndexFailure(errorMessage))
+      onFailed?.()
+    }
+  }
+}
+
+export function deleteRedisearchIndexAction(
+  data: IndexDeleteRequestBodyDto,
+  onSuccess?: (data: IndexDeleteRequestBodyDto) => void,
+  onFailed?: () => void,
+) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    try {
+      const state = stateInit()
+      const { encoding } = state.app.info
+      const { status } = await apiService.delete<void>(
+        getUrl(
+          state.connections.instances.connectedInstance?.id,
+          ApiEndpoints.REDISEARCH,
+        ),
+        {
+          data,
+          params: { encoding },
+        },
+      )
+
+      if (isStatusSuccessful(status)) {
+        dispatch(
+          addMessageNotification(
+            successMessages.DELETE_INDEX(bufferToString(data.index as string)),
+          ),
+        )
+        dispatch(fetchRedisearchListAction())
+        onSuccess?.(data)
+      }
+    } catch (_err) {
+      const error = _err as AxiosError
+      dispatch(addErrorNotification(error))
       onFailed?.()
     }
   }
