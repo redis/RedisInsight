@@ -10,6 +10,7 @@ import {
   initialStateDefault,
   userEvent,
   getMswURL,
+  fireEvent,
 } from 'uiSrc/utils/test-utils'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
 import Notifications from 'uiSrc/components/notifications'
@@ -231,6 +232,65 @@ describe('IndexSection', () => {
     expect(typeValue[0]).toBeInTheDocument()
     expect(weightValue[0]).toBeInTheDocument()
     expect(noIndexValue[0]).toBeInTheDocument()
+  })
+
+  it('should send telemetry when expanding and collapsing the section information', async () => {
+    const mockIndexInfo = indexInfoFactory.build()
+    const props: IndexSectionProps = {
+      index: mockIndexInfo.index_name,
+    }
+
+    renderComponent(props)
+
+    const section = screen.getByTestId(
+      `manage-indexes-list--item--${props.index}`,
+    )
+    expect(section).toBeInTheDocument()
+
+    // Verify we start with collapsed section with summary info and no index details
+    const indexSummaryInitial = screen.getByText('Records')
+    const indexDetailsInitial = screen.queryByText('Identifier')
+
+    expect(indexSummaryInitial).toBeInTheDocument()
+    expect(indexDetailsInitial).not.toBeInTheDocument()
+
+    // Click to expand the section
+    const indexName = screen.getByText(mockIndexInfo.index_name)
+    expect(indexName).toBeInTheDocument()
+
+    fireEvent.click(indexName)
+
+    // Verify the index attributes are displayed and
+    const indexDetailsExpanded = await screen.findByText('Identifier')
+    expect(indexDetailsExpanded).toBeInTheDocument()
+
+    // Verify the telemetry event is sent
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
+      event: TelemetryEvent.SEARCH_MANAGE_INDEX_DETAILS_OPENED,
+      eventData: {
+        databaseId: INSTANCE_ID_MOCK,
+        indexName: mockIndexInfo.index_name,
+      },
+    })
+
+    // Click again to collapse the section
+    fireEvent.click(indexName)
+
+    // Verify the index summary info is displayed again
+    const indexSummaryVisible = screen.getByText('Records')
+    const indexDetailsCollapsed = screen.queryByText('Identifier')
+
+    expect(indexSummaryVisible).toBeInTheDocument()
+    expect(indexDetailsCollapsed).not.toBeInTheDocument()
+
+    // Verify the telemetry event is sent
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
+      event: TelemetryEvent.SEARCH_MANAGE_INDEX_DETAILS_CLOSED,
+      eventData: {
+        databaseId: INSTANCE_ID_MOCK,
+        indexName: mockIndexInfo.index_name,
+      },
+    })
   })
 
   describe('delete index', () => {

@@ -65,6 +65,18 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
     })
   }
 
+  const handleOpenChange = (open: boolean) => {
+    sendEventTelemetry({
+      event: open
+        ? TelemetryEvent.SEARCH_MANAGE_INDEX_DETAILS_OPENED
+        : TelemetryEvent.SEARCH_MANAGE_INDEX_DETAILS_CLOSED,
+      eventData: {
+        databaseId: instanceId,
+        indexName: indexName,
+      },
+    })
+  }
+
   return (
     <Section
       collapsible
@@ -75,6 +87,7 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
       defaultOpen={false}
       actionButtonText="Delete" // TODO: Replace with an icon of a trash can
       onAction={handleDelete}
+      onOpenChange={handleOpenChange}
       data-testid={`manage-indexes-list--item--${indexName}`}
       {...rest}
     />
