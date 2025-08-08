@@ -74,6 +74,7 @@ export const SavedQueriesScreen = ({
                 icon={PlayFilledIcon}
                 size="s"
                 onClick={() => onQueryInsert(query.value)}
+                data-testid="btn-insert-query"
               >
                 Insert
               </Button>

@@ -1,13 +1,21 @@
 import React from 'react'
 import { cleanup, render, screen, userEvent } from 'uiSrc/utils/test-utils'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { HeaderActions, HeaderActionsProps } from './HeaderActions'
+import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
 
 // Workaround for @redis-ui/components Title component issue with react-children-utilities
 // TypeError: react_utils.childrenToString is not a function
 jest.mock('uiSrc/components/base/layout/drawer', () => ({
   ...jest.requireActual('uiSrc/components/base/layout/drawer'),
   DrawerHeader: jest.fn().mockReturnValue(null),
+}))
+
+// Mock the telemetry module, so we don't send actual telemetry data during tests
+jest.mock('uiSrc/telemetry', () => ({
+  ...jest.requireActual('uiSrc/telemetry'),
+  sendEventTelemetry: jest.fn(),
 }))
 
 const mockProps: HeaderActionsProps = {
@@ -53,6 +61,14 @@ describe('HeaderActions', () => {
     await userEvent.click(savedQueriesButton)
 
     expect(mockSetIsSavedQueriesOpen).toHaveBeenCalledWith(true)
+
+    // Verify telemetry event is sent
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
+      event: TelemetryEvent.SEARCH_SAVED_QUERIES_PANEL_OPENED,
+      eventData: {
+        databaseId: INSTANCE_ID_MOCK,
+      },
+    })
   })
 
   it('should call setIsSavedQueriesOpen with false when "Saved queries" is clicked and isSavedQueriesOpen is true', async () => {
@@ -67,6 +83,14 @@ describe('HeaderActions', () => {
     await userEvent.click(savedQueriesButton)
 
     expect(mockSetIsSavedQueriesOpen).toHaveBeenCalledWith(false)
+
+    // Verify telemetry event is sent
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
+      event: TelemetryEvent.SEARCH_SAVED_QUERIES_PANEL_CLOSED,
+      eventData: {
+        databaseId: INSTANCE_ID_MOCK,
+      },
+    })
   })
 
   it('should call setIsManageIndexesDrawerOpen when "Manage indexes" is clicked', async () => {

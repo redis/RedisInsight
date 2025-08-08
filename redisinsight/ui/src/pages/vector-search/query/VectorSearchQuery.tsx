@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useParams } from 'react-router-dom'
 import {
   ResizableContainer,
   ResizablePanel,
@@ -13,6 +14,10 @@ import CommandsViewWrapper from '../components/commands-view'
 import { VectorSearchScreenWrapper } from '../styles'
 import { SavedQueriesScreen } from '../saved-queries/SavedQueriesScreen'
 import { SavedIndex } from '../saved-queries/types'
+import {
+  collectChangedSavedQueryIndexTelemetry,
+  collectInsertSavedQueryTelemetry,
+} from '../telemetry'
 
 const mockSavedIndexes: SavedIndex[] = [
   {
@@ -51,6 +56,7 @@ export const VectorSearchQuery = () => {
     onQueryReRun,
     onQueryProfile,
   } = useQuery()
+  const { instanceId } = useParams<{ instanceId: string }>()
 
   const [isSavedQueriesOpen, setIsSavedQueriesOpen] = useState<boolean>(false)
   const [isManageIndexesDrawerOpen, setIsManageIndexesDrawerOpen] =
@@ -59,6 +65,22 @@ export const VectorSearchQuery = () => {
   const selectedIndex = mockSavedIndexes.find(
     (index) => index.value === queryIndex,
   )
+
+  const handleIndexChange = (value: string) => {
+    setQueryIndex(value)
+
+    collectChangedSavedQueryIndexTelemetry({
+      instanceId,
+    })
+  }
+
+  const handleQueryInsert = (query: string) => {
+    setQuery(query)
+
+    collectInsertSavedQueryTelemetry({
+      instanceId,
+    })
+  }
 
   return (
     <VectorSearchScreenWrapper direction="column" justify="between">
@@ -130,8 +152,8 @@ export const VectorSearchQuery = () => {
 
             <ResizablePanel id="right-panel" minSize={20} defaultSize={30}>
               <SavedQueriesScreen
-                onIndexChange={setQueryIndex}
-                onQueryInsert={setQuery}
+                onIndexChange={handleIndexChange}
+                onQueryInsert={handleQueryInsert}
                 savedIndexes={mockSavedIndexes}
                 selectedIndex={selectedIndex}
               />

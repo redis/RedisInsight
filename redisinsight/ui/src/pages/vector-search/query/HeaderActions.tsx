@@ -1,6 +1,8 @@
 import React from 'react'
+import { useParams } from 'react-router-dom'
 import { StyledHeaderAction, StyledTextButton } from './HeaderActions.styles'
 import { ManageIndexesDrawer } from '../manage-indexes/ManageIndexesDrawer'
+import { collectSavedQueriesPanelToggleTelemetry } from '../telemetry'
 
 export type HeaderActionsProps = {
   isManageIndexesDrawerOpen: boolean
@@ -14,23 +16,33 @@ export const HeaderActions = ({
   setIsManageIndexesDrawerOpen,
   isSavedQueriesOpen,
   setIsSavedQueriesOpen,
-}: HeaderActionsProps) => (
-  <>
-    <StyledHeaderAction data-testid="vector-search-header-actions">
-      <StyledTextButton
-        variant="primary"
-        onClick={() => setIsSavedQueriesOpen(!isSavedQueriesOpen)}
-      >
-        Saved queries
-      </StyledTextButton>
-      <StyledTextButton onClick={() => setIsManageIndexesDrawerOpen(true)}>
-        Manage indexes
-      </StyledTextButton>
-    </StyledHeaderAction>
+}: HeaderActionsProps) => {
+  const { instanceId } = useParams<{ instanceId: string }>()
 
-    <ManageIndexesDrawer
-      open={isManageIndexesDrawerOpen}
-      onOpenChange={setIsManageIndexesDrawerOpen}
-    />
-  </>
-)
+  const handleSavedQueriesClick = () => {
+    setIsSavedQueriesOpen(!isSavedQueriesOpen)
+
+    collectSavedQueriesPanelToggleTelemetry({
+      instanceId,
+      isSavedQueriesOpen,
+    })
+  }
+
+  return (
+    <>
+      <StyledHeaderAction data-testid="vector-search-header-actions">
+        <StyledTextButton variant="primary" onClick={handleSavedQueriesClick}>
+          Saved queries
+        </StyledTextButton>
+        <StyledTextButton onClick={() => setIsManageIndexesDrawerOpen(true)}>
+          Manage indexes
+        </StyledTextButton>
+      </StyledHeaderAction>
+
+      <ManageIndexesDrawer
+        open={isManageIndexesDrawerOpen}
+        onOpenChange={setIsManageIndexesDrawerOpen}
+      />
+    </>
+  )
+}
