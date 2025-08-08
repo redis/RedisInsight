@@ -4,6 +4,10 @@ import { RunQueryMode } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
 import QueryCard, { Props } from './QueryCard'
+import {
+  ViewMode,
+  ViewModeContextProvider,
+} from 'uiSrc/components/query/context/view-mode.context'
 
 // Mock the telemetry module, so we don't send actual telemetry data during tests
 jest.mock('uiSrc/telemetry', () => ({
@@ -24,7 +28,11 @@ const renderQueryCardComponent = (props?: Partial<Props>) => {
     onQueryProfile: jest.fn(),
   }
 
-  return render(<QueryCard {...defaultProps} {...props} />)
+  return render(
+    <ViewModeContextProvider initialViewMode={ViewMode.VectorSearch}>
+      <QueryCard {...defaultProps} {...props} />
+    </ViewModeContextProvider>,
+  )
 }
 
 describe('QueryCard', () => {

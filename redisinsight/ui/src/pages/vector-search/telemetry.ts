@@ -51,3 +51,16 @@ export const collectTelemetryQueryClear = ({
     },
   })
 }
+
+export const collectQueryToggleFullScreenTelemetry = ({
+  instanceId,
+  isFullScreen,
+}: CollectTelemetry & { isFullScreen: boolean }) => {
+  sendEventTelemetry({
+    event: TelemetryEvent.SEARCH_RESULTS_IN_FULL_SCREEN,
+    eventData: {
+      databaseId: instanceId,
+      state: isFullScreen ? 'Open' : 'Close',
+    },
+  })
+}

@@ -28,7 +28,6 @@ import {
   CommandExecutionResult,
   IPluginVisualization,
 } from 'uiSrc/slices/interfaces'
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import QueryCardCommonResult, {
   CommonErrorResponse,
@@ -37,6 +36,7 @@ import QueryCardCliResultWrapper from 'uiSrc/components/query/query-card/QueryCa
 import QueryCardCliPlugin from 'uiSrc/components/query/query-card/QueryCardCliPlugin'
 import queryStyles from 'uiSrc/components/query/query-card/styles.module.scss'
 import QueryCardHeader from 'uiSrc/components/query/query-card/QueryCardHeader'
+import { collectQueryToggleFullScreenTelemetry } from '../telemetry'
 
 export interface Props {
   id: string
@@ -135,12 +135,9 @@ const QueryCard = (props: Props) => {
 
   const toggleFullScreen = () => {
     setIsFullScreen((isFull) => {
-      sendEventTelemetry({
-        event: TelemetryEvent.SEARCH_RESULTS_IN_FULL_SCREEN,
-        eventData: {
-          databaseId: instanceId,
-          state: isFull ? 'Close' : 'Open',
-        },
+      collectQueryToggleFullScreenTelemetry({
+        instanceId,
+        isFullScreen: !isFull,
       })
 
       return !isFull

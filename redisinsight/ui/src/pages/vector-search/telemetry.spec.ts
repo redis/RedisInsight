@@ -1,5 +1,6 @@
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
 import {
+  collectQueryToggleFullScreenTelemetry,
   collectTelemetryQueryClear,
   collectTelemetryQueryClearAll,
   collectTelemetryQueryReRun,
@@ -87,6 +88,44 @@ describe('telemetry', () => {
         event: TelemetryEvent.SEARCH_CLEAR_EDITOR_CLICKED,
         eventData: {
           databaseId: instanceId,
+        },
+      })
+    })
+  })
+
+  describe('collectQueryToggleFullScreenTelemetry', () => {
+    it('should collect telemetry for opening full screen', () => {
+      const instanceId = INSTANCE_ID_MOCK
+      const isFullScreen = true
+
+      collectQueryToggleFullScreenTelemetry({
+        instanceId,
+        isFullScreen,
+      })
+
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_RESULTS_IN_FULL_SCREEN,
+        eventData: {
+          databaseId: instanceId,
+          state: 'Open',
+        },
+      })
+    })
+
+    it('should collect telemetry for closing full screen', () => {
+      const instanceId = INSTANCE_ID_MOCK
+      const isFullScreen = false
+
+      collectQueryToggleFullScreenTelemetry({
+        instanceId,
+        isFullScreen,
+      })
+
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_RESULTS_IN_FULL_SCREEN,
+        eventData: {
+          databaseId: instanceId,
+          state: 'Close',
         },
       })
     })
