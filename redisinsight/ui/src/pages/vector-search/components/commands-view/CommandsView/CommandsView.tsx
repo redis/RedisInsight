@@ -8,11 +8,11 @@ import { generateProfileQueryForCommand } from 'uiSrc/pages/workbench/utils/prof
 import { Nullable } from 'uiSrc/utils'
 import { CommandExecutionUI } from 'uiSrc/slices/interfaces'
 import { RunQueryMode, ResultsMode } from 'uiSrc/slices/interfaces/workbench'
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { DeleteIcon } from 'uiSrc/components/base/icons'
 import { ProgressBarLoader } from 'uiSrc/components/base/display'
+import { collectTelemetryQueryReRun } from 'uiSrc/pages/vector-search/telemetry'
 import QueryCard from '../../QueryCard'
 
 import styles from './styles.module.scss'
@@ -77,16 +77,6 @@ const CommandsView = (props: Props) => {
         clearEditor: false,
       })
     }
-  }
-
-  const collectTelemetryQueryReRun = (query: string) => {
-    sendEventTelemetry({
-      event: TelemetryEvent.SEARCH_COMMAND_RUN_AGAIN,
-      eventData: {
-        databaseId: instanceId,
-        commands: [query],
-      },
-    })
   }
 
   return (
@@ -160,7 +150,10 @@ const CommandsView = (props: Props) => {
                       results: resultsMode,
                       clearEditor: false,
                     })
-                    collectTelemetryQueryReRun(command)
+                    collectTelemetryQueryReRun({
+                      instanceId,
+                      query: command,
+                    })
                   }}
                   onQueryDelete={() => onQueryDelete(id)}
                 />
