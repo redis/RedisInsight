@@ -12,6 +12,7 @@ import {
 } from 'uiSrc/utils/test-utils'
 import { CommandExecutionStatus } from 'uiSrc/slices/interfaces/cli'
 import QueryCard, { Props, getSummaryText } from './QueryCard'
+import { ViewMode, ViewModeContextProvider } from '../context/view-mode.context'
 
 const mockedProps = mock<Props>()
 
@@ -44,15 +45,27 @@ jest.mock('uiSrc/slices/app/plugins', () => ({
   }),
 }))
 
+const renderQueryCardComponent = (props: Partial<Props> = {}) => {
+  return render(
+    <ViewModeContextProvider initialViewMode={ViewMode.Workbench}>
+      <QueryCard {...instance(mockedProps)} {...props} />
+    </ViewModeContextProvider>,
+    {
+      store,
+    },
+  )
+}
+
 describe('QueryCard', () => {
   it('should render', () => {
-    expect(render(<QueryCard {...instance(mockedProps)} />)).toBeTruthy()
+    const { container } = renderQueryCardComponent()
+    expect(container).toBeTruthy()
   })
 
   it('Cli result should not in the document before Expand', () => {
     const cliResultTestId = 'query-cli-result'
 
-    const { queryByTestId } = render(<QueryCard {...instance(mockedProps)} />)
+    const { queryByTestId } = renderQueryCardComponent()
 
     const cliResultEl = queryByTestId(cliResultTestId)
     expect(cliResultEl).not.toBeInTheDocument()
@@ -61,9 +74,10 @@ describe('QueryCard', () => {
   it('Cli result should in the document when "isOpen = true"', () => {
     const cliResultTestId = 'query-cli-result'
 
-    const { queryByTestId } = render(
-      <QueryCard {...instance(mockedProps)} isOpen result={mockResult} />,
-    )
+    const { queryByTestId } = renderQueryCardComponent({
+      isOpen: true,
+      result: mockResult,
+    })
 
     const cliResultEl = queryByTestId(cliResultTestId)
 
@@ -73,13 +87,10 @@ describe('QueryCard', () => {
   it('Cli result should not in the document when "isOpen = false"', () => {
     const cliResultTestId = 'query-cli-result'
 
-    const { queryByTestId } = render(
-      <QueryCard
-        {...instance(mockedProps)}
-        isOpen={false}
-        result={mockResult}
-      />,
-    )
+    const { queryByTestId } = renderQueryCardComponent({
+      isOpen: false,
+      result: mockResult,
+    })
 
     const cliResultEl = queryByTestId(cliResultTestId)
 
@@ -89,14 +100,11 @@ describe('QueryCard', () => {
   it('Should be in the document when resultsMode === ResultsMode.GroupMode', () => {
     const cliResultTestId = 'query-cli-result'
 
-    const { queryByTestId } = render(
-      <QueryCard
-        {...instance(mockedProps)}
-        isOpen={false}
-        result={mockResult}
-        resultsMode={ResultsMode.GroupMode}
-      />,
-    )
+    const { queryByTestId } = renderQueryCardComponent({
+      isOpen: false,
+      result: mockResult,
+      resultsMode: ResultsMode.GroupMode,
+    })
 
     const cliResultEl = queryByTestId(cliResultTestId)
 
@@ -107,9 +115,10 @@ describe('QueryCard', () => {
     const cardHeaderTestId = 'query-card-open'
     const mockId = '123'
 
-    const { queryByTestId } = render(
-      <QueryCard {...instance(mockedProps)} id={mockId} result={mockResult} />,
-    )
+    const { queryByTestId } = renderQueryCardComponent({
+      id: mockId,
+      result: mockResult,
+    })
 
     const cardHeaderTestEl = queryByTestId(cardHeaderTestId)
 
@@ -131,15 +140,13 @@ describe('QueryCard', () => {
   })
 
   it('should render QueryCardCliResultWrapper when command is null', () => {
-    const { queryByTestId } = render(
-      <QueryCard
-        {...instance(mockedProps)}
-        resultsMode={ResultsMode.GroupMode}
-        result={null}
-        isOpen
-        command={null}
-      />,
-    )
+    const { queryByTestId } = renderQueryCardComponent({
+      resultsMode: ResultsMode.GroupMode,
+      result: null,
+      isOpen: true,
+      command: null,
+    })
+
     const queryCommonResultEl = queryByTestId('query-common-result-wrapper')
     const queryCliResultEl = queryByTestId('query-cli-result-wrapper')
 
@@ -148,62 +155,53 @@ describe('QueryCard', () => {
   })
 
   it('should render QueryCardCliResult when result reached response size threshold', () => {
-    const { queryByTestId } = render(
-      <QueryCard
-        {...instance(mockedProps)}
-        resultsMode={ResultsMode.GroupMode}
-        result={[
-          {
-            status: CommandExecutionStatus.Success,
-            response: 'Any message about size limit threshold exceeded',
-            sizeLimitExceeded: true,
-          },
-        ]}
-        isOpen
-        command={null}
-      />,
-    )
+    const { queryByTestId } = renderQueryCardComponent({
+      resultsMode: ResultsMode.GroupMode,
+      result: [
+        {
+          status: CommandExecutionStatus.Success,
+          response: 'Any message about size limit threshold exceeded',
+          sizeLimitExceeded: true,
+        },
+      ],
+      isOpen: true,
+      command: null,
+    })
     const queryCliResultEl = queryByTestId('query-cli-result')
 
     expect(queryCliResultEl).toBeInTheDocument()
   })
 
   it('should render properly result when it has pure number', () => {
-    const { getByTestId } = render(
-      <QueryCard
-        {...instance(mockedProps)}
-        resultsMode={ResultsMode.GroupMode}
-        result={[
-          {
-            status: CommandExecutionStatus.Success,
-            response: 1,
-          },
-        ]}
-        isOpen
-        command="del key"
-      />,
-    )
+    const { getByTestId } = renderQueryCardComponent({
+      resultsMode: ResultsMode.GroupMode,
+      result: [
+        {
+          status: CommandExecutionStatus.Success,
+          response: 1,
+        },
+      ],
+      isOpen: true,
+      command: 'del key',
+    })
     const queryCliResultEl = getByTestId('query-cli-result')
 
     expect(queryCliResultEl.textContent).toBe('(integer) 1')
   })
 
   it('should render QueryCardCliResult when result reached response size threshold even w/o flag', () => {
-    const { queryByTestId } = render(
-      <QueryCard
-        {...instance(mockedProps)}
-        resultsMode={ResultsMode.GroupMode}
-        result={[
-          {
-            status: CommandExecutionStatus.Success,
-            response:
-              'Results have been deleted since they exceed 1 MB. Re-run the command to see new results.',
-          },
-        ]}
-        isOpen
-        command={null}
-      />,
-    )
+    const { queryByTestId } = renderQueryCardComponent({
+      resultsMode: ResultsMode.GroupMode,
+      result: [
+        {
+          status: CommandExecutionStatus.Success,
+          response:
+            'Results have been deleted since they exceed 1 MB. Re-run the command to see new results.',
+        },
+      ],
+      isOpen: true,
+      command: null,
+    })
     const queryCliResultEl = queryByTestId('query-cli-result')
 
     expect(queryCliResultEl).toBeInTheDocument()
