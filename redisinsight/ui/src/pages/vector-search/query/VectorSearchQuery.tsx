@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useParams } from 'react-router-dom'
 import {
   ResizableContainer,
   ResizablePanel,
@@ -13,8 +14,9 @@ import CommandsViewWrapper from '../components/commands-view'
 import { VectorSearchScreenWrapper } from '../styles'
 import { SavedQueriesScreen } from '../saved-queries/SavedQueriesScreen'
 import { SavedIndex } from '../saved-queries/types'
-import { useParams } from 'react-router-dom'
 import {
+  collectChangedSavedQueryIndexTelemetry,
+  collectInsertSavedQueryTelemetry,
   collectTelemetryQueryClear,
   collectTelemetryQueryClearAll,
   collectTelemetryQueryRun,
@@ -63,14 +65,6 @@ export const VectorSearchQuery = () => {
   } = useQuery()
   const { instanceId } = useParams<{ instanceId: string }>()
 
-  const onQuerySubmit = () => {
-    onSubmit()
-    collectTelemetryQueryRun({
-      instanceId,
-      query,
-    })
-  }
-
   const [isSavedQueriesOpen, setIsSavedQueriesOpen] = useState<boolean>(false)
   const [isManageIndexesDrawerOpen, setIsManageIndexesDrawerOpen] =
     useState<boolean>(false)
@@ -78,6 +72,14 @@ export const VectorSearchQuery = () => {
   const selectedIndex = mockSavedIndexes.find(
     (index) => index.value === queryIndex,
   )
+
+  const onQuerySubmit = () => {
+    onSubmit()
+    collectTelemetryQueryRun({
+      instanceId,
+      query,
+    })
+  }
 
   const handleClearResults = () => {
     onAllQueriesDelete()
@@ -88,6 +90,22 @@ export const VectorSearchQuery = () => {
 
   const onQueryClear = () => {
     collectTelemetryQueryClear({ instanceId })
+  }
+
+  const handleIndexChange = (value: string) => {
+    setQueryIndex(value)
+
+    collectChangedSavedQueryIndexTelemetry({
+      instanceId,
+    })
+  }
+
+  const handleQueryInsert = (query: string) => {
+    setQuery(query)
+
+    collectInsertSavedQueryTelemetry({
+      instanceId,
+    })
   }
 
   return (
@@ -162,8 +180,8 @@ export const VectorSearchQuery = () => {
 
               <ResizablePanel id="right-panel" minSize={20} defaultSize={30}>
                 <SavedQueriesScreen
-                  onIndexChange={setQueryIndex}
-                  onQueryInsert={setQuery}
+                  onIndexChange={handleIndexChange}
+                  onQueryInsert={handleQueryInsert}
                   savedIndexes={mockSavedIndexes}
                   selectedIndex={selectedIndex}
                 />

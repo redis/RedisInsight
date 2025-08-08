@@ -31,7 +31,9 @@ export const CreateIndexStepScreenWrapper = styled.div`
 export const CodeBlocKWrapper = styled.div`
   overflow: auto;
   height: 100%;
-  padding: ${({ theme }) => theme.core.space.space300};
+  padding: 0;
+  /* TODO: Remove this when <CodeBlock /> can be styled with styled() */
+  padding-top: ${({ theme }) => theme.core.space.space100};
 
   border: 1px solid;
   border-color: ${({ theme }) => theme.color.dusk200};
