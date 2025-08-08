@@ -7,7 +7,10 @@ import {
   DrawerHeader,
 } from 'uiSrc/components/base/layout/drawer'
 import { ManageIndexesList } from './ManageIndexesList'
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import {
+  collectManageIndexesDrawerClosedTelemetry,
+  collectManageIndexesDrawerOpenedTelemetry,
+} from '../telemetry'
 
 export interface ManageIndexesDrawerProps extends DrawerProps {}
 
@@ -19,20 +22,14 @@ export const ManageIndexesDrawer = ({
   const { instanceId } = useParams<{ instanceId: string }>()
 
   const onDrawerDidOpen = () => {
-    sendEventTelemetry({
-      event: TelemetryEvent.SEARCH_MANAGE_INDEXES_DRAWER_OPENED,
-      eventData: {
-        databaseId: instanceId,
-      },
+    collectManageIndexesDrawerOpenedTelemetry({
+      instanceId,
     })
   }
 
   const onDrawerDidClose = () => {
-    sendEventTelemetry({
-      event: TelemetryEvent.SEARCH_MANAGE_INDEXES_DRAWER_CLOSED,
-      eventData: {
-        databaseId: instanceId,
-      },
+    collectManageIndexesDrawerClosedTelemetry({
+      instanceId,
     })
   }
 

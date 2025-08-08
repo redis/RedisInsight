@@ -99,3 +99,25 @@ export const collectCreateIndexStepTelemetry = (instanceId: string): void => {
     },
   })
 }
+
+export const collectManageIndexesDrawerOpenedTelemetry = ({
+  instanceId,
+}: CollectTelemetry): void => {
+  sendEventTelemetry({
+    event: TelemetryEvent.SEARCH_MANAGE_INDEXES_DRAWER_OPENED,
+    eventData: {
+      databaseId: instanceId,
+    },
+  })
+}
+
+export const collectManageIndexesDrawerClosedTelemetry = ({
+  instanceId,
+}: CollectTelemetry): void => {
+  sendEventTelemetry({
+    event: TelemetryEvent.SEARCH_MANAGE_INDEXES_DRAWER_CLOSED,
+    eventData: {
+      databaseId: instanceId,
+    },
+  })
+}
