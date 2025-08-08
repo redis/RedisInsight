@@ -1,5 +1,6 @@
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
 import {
+  collectTelemetryQueryClear,
   collectTelemetryQueryClearAll,
   collectTelemetryQueryReRun,
   collectTelemetryQueryRun,
@@ -67,6 +68,23 @@ describe('telemetry', () => {
 
       expect(sendEventTelemetry).toHaveBeenCalledWith({
         event: TelemetryEvent.SEARCH_CLEAR_ALL_RESULTS_CLICKED,
+        eventData: {
+          databaseId: instanceId,
+        },
+      })
+    })
+  })
+
+  describe('collectTelemetryQueryClear', () => {
+    it('should collect telemetry for clearing a query', () => {
+      const instanceId = INSTANCE_ID_MOCK
+
+      collectTelemetryQueryClear({
+        instanceId,
+      })
+
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_CLEAR_EDITOR_CLICKED,
         eventData: {
           databaseId: instanceId,
         },

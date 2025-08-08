@@ -16,6 +16,7 @@ import { SavedIndex } from '../saved-queries/types'
 import { useParams } from 'react-router-dom'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
+  collectTelemetryQueryClear,
   collectTelemetryQueryClearAll,
   collectTelemetryQueryRun,
 } from '../telemetry'
@@ -83,12 +84,7 @@ export const VectorSearchQuery = () => {
   }
 
   const onQueryClear = () => {
-    sendEventTelemetry({
-      event: TelemetryEvent.SEARCH_CLEAR_EDITOR_CLICKED,
-      eventData: {
-        databaseId: instanceId,
-      },
-    })
+    collectTelemetryQueryClear({ instanceId })
   }
 
   return (
