@@ -10,6 +10,8 @@ import {
   initialStateDefault,
   userEvent,
   getMswURL,
+  waitForRiPopoverVisible,
+  fireEvent,
 } from 'uiSrc/utils/test-utils'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
 import Notifications from 'uiSrc/components/notifications'
@@ -234,36 +236,38 @@ describe('IndexSection', () => {
   })
 
   describe('delete index', () => {
-    let confirmSpy: jest.SpyInstance
     let telemetryMock: jest.Mock
 
     beforeEach(() => {
-      // Mock window.confirm to return true (user confirms deletion)
-      confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(true)
-
       // Mock the telemetry function
       telemetryMock = sendEventTelemetry as jest.Mock
       telemetryMock.mockClear()
     })
 
     afterEach(() => {
-      confirmSpy.mockRestore()
       mswServer.resetHandlers()
     })
 
     it('should delete an index when the delete button is clicked and confirmed', async () => {
       renderComponent()
 
-      const deleteButton = screen.getByText('Delete')
+      // Trigger confirm dialog
+      const deleteButton = screen.getByTestId('manage-index-delete-btn')
       expect(deleteButton).toBeInTheDocument()
+      fireEvent.click(deleteButton)
 
-      // Click the delete button
-      await userEvent.click(deleteButton)
+      // Confirm dialog is visible
+      await waitForRiPopoverVisible()
+      expect(
+        screen.getByText('Are you sure you want to delete this index?'),
+      ).toBeInTheDocument()
 
-      // Verify that confirm was called with the correct message
-      expect(confirmSpy).toHaveBeenCalledWith(
-        'Are you sure you want to delete this index?',
+      // Confirm actual delete
+      const confirmDeleteButton = screen.getByTestId(
+        'manage-index-delete-confirmation-btn',
       )
+      expect(confirmDeleteButton).toBeInTheDocument()
+      fireEvent.click(confirmDeleteButton)
 
       // Wait for the success notification to appear
       const successNotification = await screen.findByText(
@@ -277,30 +281,6 @@ describe('IndexSection', () => {
       expect(telemetryCall.event).toBe(TelemetryEvent.SEARCH_INDEX_DELETED)
       expect(telemetryCall.eventData.databaseId).toBe(INSTANCE_ID_MOCK)
       expect(telemetryCall.eventData.indexName).toBeDefined()
-    })
-
-    it('should not delete an index when the deletion is cancelled', async () => {
-      // Mock window.confirm to return false (user cancels deletion)
-      confirmSpy.mockReturnValueOnce(false)
-
-      renderComponent()
-
-      const deleteButton = screen.getByText('Delete')
-      expect(deleteButton).toBeInTheDocument()
-
-      // Click the delete button
-      await userEvent.click(deleteButton)
-
-      // Verify that confirm was called with the correct message
-      expect(confirmSpy).toHaveBeenCalledWith(
-        'Are you sure you want to delete this index?',
-      )
-
-      // Verify that no API call was made and no notification appears
-      expect(telemetryMock).not.toHaveBeenCalled()
-
-      const successNotification = screen.queryByText('Index has been deleted')
-      expect(successNotification).not.toBeInTheDocument()
     })
 
     it('should handle deletion failure gracefully', async () => {
@@ -322,16 +302,23 @@ describe('IndexSection', () => {
 
       renderComponent()
 
-      const deleteButton = screen.getByText('Delete')
+      // Trigger confirm dialog
+      const deleteButton = screen.getByTestId('manage-index-delete-btn')
       expect(deleteButton).toBeInTheDocument()
+      fireEvent.click(deleteButton)
 
-      // Click the delete button
-      await userEvent.click(deleteButton)
+      // Confirm dialog is visible
+      await waitForRiPopoverVisible()
+      expect(
+        screen.getByText('Are you sure you want to delete this index?'),
+      ).toBeInTheDocument()
 
-      // Verify that confirm was called with the correct message
-      expect(confirmSpy).toHaveBeenCalledWith(
-        'Are you sure you want to delete this index?',
+      // Confirm actual delete
+      const confirmDeleteButton = screen.getByTestId(
+        'manage-index-delete-confirmation-btn',
       )
+      expect(confirmDeleteButton).toBeInTheDocument()
+      fireEvent.click(confirmDeleteButton)
 
       // Wait for the error notification to appear
       const errorNotification = await screen.findByText(
