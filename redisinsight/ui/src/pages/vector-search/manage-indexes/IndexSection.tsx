@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { CategoryValueListItem } from '@redis-ui/components/dist/Section/components/Header/components/CategoryValueList'
 import { RedisString } from 'uiSrc/slices/interfaces'
 import { bufferToString, formatLongName, stringToBuffer } from 'uiSrc/utils'
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import {
   deleteRedisearchIndexAction,
@@ -15,7 +14,10 @@ import {
   IndexDeleteRequestBodyDto,
 } from 'apiSrc/modules/browser/redisearch/dto'
 import { IndexAttributesList } from './IndexAttributesList'
-import { collectManageIndexesDetailsToggleTelemetry } from '../telemetry'
+import {
+  collectManageIndexesDeleteTelemetry,
+  collectManageIndexesDetailsToggleTelemetry,
+} from '../telemetry'
 
 export interface IndexSectionProps extends Omit<SectionProps, 'label'> {
   index: RedisString
@@ -57,11 +59,8 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
   }
 
   const onDeletedIndexSuccess = () => {
-    sendEventTelemetry({
-      event: TelemetryEvent.SEARCH_MANAGE_INDEX_DELETED,
-      eventData: {
-        databaseId: instanceId,
-      },
+    collectManageIndexesDeleteTelemetry({
+      instanceId,
     })
   }
 

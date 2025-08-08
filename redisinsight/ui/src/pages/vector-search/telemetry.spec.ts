@@ -7,6 +7,7 @@ import {
   collectCreateIndexWizardTelemetry,
   collectIndexInfoStepTelemetry,
   collectInsertSavedQueryTelemetry,
+  collectManageIndexesDeleteTelemetry,
   collectManageIndexesDetailsToggleTelemetry,
   collectManageIndexesDrawerClosedTelemetry,
   collectManageIndexesDrawerOpenedTelemetry,
@@ -268,6 +269,19 @@ describe('telemetry', () => {
 
       expect(sendEventTelemetry).toHaveBeenCalledWith({
         event: TelemetryEvent.SEARCH_MANAGE_INDEX_DETAILS_CLOSED,
+        eventData: { databaseId: instanceId },
+      })
+    })
+  })
+
+  describe('collectManageIndexesDeleteTelemetry', () => {
+    it('should collect telemetry for the manage indexes delete', () => {
+      const instanceId = INSTANCE_ID_MOCK
+
+      collectManageIndexesDeleteTelemetry({ instanceId })
+
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_MANAGE_INDEX_DELETED,
         eventData: { databaseId: instanceId },
       })
     })
