@@ -121,3 +121,18 @@ export const collectManageIndexesDrawerClosedTelemetry = ({
     },
   })
 }
+export const collectManageIndexesDetailsToggleTelemetry = ({
+  instanceId,
+  isOpen,
+}: CollectTelemetry & {
+  isOpen: boolean
+}): void => {
+  sendEventTelemetry({
+    event: isOpen
+      ? TelemetryEvent.SEARCH_MANAGE_INDEX_DETAILS_OPENED
+      : TelemetryEvent.SEARCH_MANAGE_INDEX_DETAILS_CLOSED,
+    eventData: {
+      databaseId: instanceId,
+    },
+  })
+}

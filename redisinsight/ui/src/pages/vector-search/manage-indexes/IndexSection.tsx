@@ -15,6 +15,7 @@ import {
   IndexDeleteRequestBodyDto,
 } from 'apiSrc/modules/browser/redisearch/dto'
 import { IndexAttributesList } from './IndexAttributesList'
+import { collectManageIndexesDetailsToggleTelemetry } from '../telemetry'
 
 export interface IndexSectionProps extends Omit<SectionProps, 'label'> {
   index: RedisString
@@ -65,13 +66,9 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
   }
 
   const handleOpenChange = (open: boolean) => {
-    sendEventTelemetry({
-      event: open
-        ? TelemetryEvent.SEARCH_MANAGE_INDEX_DETAILS_OPENED
-        : TelemetryEvent.SEARCH_MANAGE_INDEX_DETAILS_CLOSED,
-      eventData: {
-        databaseId: instanceId,
-      },
+    collectManageIndexesDetailsToggleTelemetry({
+      instanceId,
+      isOpen: open,
     })
   }
 

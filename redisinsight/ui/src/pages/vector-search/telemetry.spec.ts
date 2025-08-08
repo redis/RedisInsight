@@ -7,6 +7,7 @@ import {
   collectCreateIndexWizardTelemetry,
   collectIndexInfoStepTelemetry,
   collectInsertSavedQueryTelemetry,
+  collectManageIndexesDetailsToggleTelemetry,
   collectManageIndexesDrawerClosedTelemetry,
   collectManageIndexesDrawerOpenedTelemetry,
   collectSavedQueriesPanelToggleTelemetry,
@@ -241,6 +242,32 @@ describe('telemetry', () => {
 
       expect(sendEventTelemetry).toHaveBeenCalledWith({
         event: TelemetryEvent.SEARCH_MANAGE_INDEXES_DRAWER_CLOSED,
+        eventData: { databaseId: instanceId },
+      })
+    })
+  })
+
+  describe('collectManageIndexesDetailsToggleTelemetry', () => {
+    it('should collect telemetry for the manage indexes details toggle on open', () => {
+      const instanceId = INSTANCE_ID_MOCK
+      const isOpen = true
+
+      collectManageIndexesDetailsToggleTelemetry({ instanceId, isOpen })
+
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_MANAGE_INDEX_DETAILS_OPENED,
+        eventData: { databaseId: instanceId },
+      })
+    })
+
+    it('should collect telemetry for the manage indexes details toggle on close', () => {
+      const instanceId = INSTANCE_ID_MOCK
+      const isOpen = false
+
+      collectManageIndexesDetailsToggleTelemetry({ instanceId, isOpen })
+
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_MANAGE_INDEX_DETAILS_CLOSED,
         eventData: { databaseId: instanceId },
       })
     })
