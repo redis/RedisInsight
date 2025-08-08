@@ -20,7 +20,7 @@ import {
 } from '../telemetry'
 import { RiPopover } from 'uiSrc/components'
 import { RiIcon, DeleteIcon } from 'uiSrc/components/base/icons'
-import { Button } from 'uiSrc/components/base/forms/buttons'
+import { Button, IconButton } from 'uiSrc/components/base/forms/buttons'
 
 import {
   ButtonWrapper,
@@ -83,7 +83,12 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
       isOpen={isPopoverOpen}
       closePopover={() => setIsPopoverOpen(false)}
       panelPaddingSize="none"
-      button={<DeleteIcon />}
+      button={
+        <IconButton
+          icon={DeleteIcon}
+          data-testid="manage-index-delete-btn"
+        ></IconButton>
+      }
       anchorPosition="downCenter"
     >
       <PopoverContent>
@@ -101,7 +106,7 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
           <Button
             variant="destructive"
             onClick={handleDelete}
-            data-testid="manage-index-delete-btn"
+            data-testid="manage-index-delete-confirmation-btn"
           >
             Delete
           </Button>
