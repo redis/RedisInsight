@@ -42,14 +42,4 @@ describe('ViewModeContext', () => {
       `Current View Mode: ${ViewMode.VectorSearch}`,
     )
   })
-
-  it('throws an error if used outside the provider', () => {
-    const renderWithoutProvider = () => {
-      render(<TestComponent />)
-    }
-
-    expect(renderWithoutProvider).toThrow(
-      'useViewModeContext must be used within a ViewModeContextProvider',
-    )
-  })
 })

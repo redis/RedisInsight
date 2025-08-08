@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useContext, useState } from 'react'
+import React, { createContext, ReactNode, useContext } from 'react'
 
 export enum ViewMode {
   Workbench = 'workbench',
@@ -9,18 +9,16 @@ interface ViewModeContextType {
   viewMode: ViewMode
 }
 
-// Create the context
-const ViewModeContext = createContext<ViewModeContextType | undefined>(
-  undefined,
-)
+const ViewModeContext = createContext<ViewModeContextType>({
+  viewMode: ViewMode.Workbench,
+})
 
 // Props for the provider
 interface ViewModeContextProviderProps {
   children: ReactNode
-  viewMode?: ViewMode // Optional prop to set the initial view mode
+  viewMode?: ViewMode
 }
 
-// Provider component
 export const ViewModeContextProvider: React.FC<
   ViewModeContextProviderProps
 > = ({ children, viewMode = ViewMode.Workbench }) => {
@@ -31,15 +29,5 @@ export const ViewModeContextProvider: React.FC<
   )
 }
 
-// Custom hook to use the ViewModeContext
-export const useViewModeContext = (): ViewModeContextType => {
-  const context = useContext(ViewModeContext)
-
-  if (!context) {
-    throw new Error(
-      'useViewModeContext must be used within a ViewModeContextProvider',
-    )
-  }
-
-  return context
-}
+export const useViewModeContext = (): ViewModeContextType =>
+  useContext(ViewModeContext)
