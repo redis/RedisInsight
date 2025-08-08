@@ -29,3 +29,14 @@ export const collectTelemetryQueryReRun = ({
     },
   })
 }
+
+export const collectTelemetryQueryClearAll = ({
+  instanceId,
+}: CollectTelemetry) => {
+  sendEventTelemetry({
+    event: TelemetryEvent.SEARCH_CLEAR_ALL_RESULTS_CLICKED,
+    eventData: {
+      databaseId: instanceId,
+    },
+  })
+}
