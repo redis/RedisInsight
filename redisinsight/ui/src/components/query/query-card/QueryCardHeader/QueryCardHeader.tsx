@@ -221,12 +221,16 @@ const QueryCardHeader = (props: Props) => {
       !isFullScreen &&
       !isSilentModeWithoutError(resultsMode, summary?.fail)
     ) {
-      sendEvent(
-        isOpen
-          ? TelemetryEvent.WORKBENCH_RESULTS_COLLAPSED
-          : TelemetryEvent.WORKBENCH_RESULTS_EXPANDED,
-        query,
-      )
+      const telemetryEvent =
+        viewMode === ViewMode.Workbench
+          ? isOpen
+            ? TelemetryEvent.WORKBENCH_RESULTS_COLLAPSED
+            : TelemetryEvent.WORKBENCH_RESULTS_EXPANDED
+          : isOpen
+            ? TelemetryEvent.SEARCH_RESULTS_COLLAPSED
+            : TelemetryEvent.SEARCH_RESULTS_EXPANDED
+
+      sendEvent(telemetryEvent, query)
     }
     toggleOpen()
   }

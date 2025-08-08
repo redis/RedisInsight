@@ -77,6 +77,10 @@ const renderQueryCardHeaderComponent = (
 }
 
 describe('QueryCardHeader', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
   it('should render', () => {
     // connectedInstanceSelector.mockImplementation(() => ({
     //   id: '123',
@@ -139,47 +143,172 @@ describe('QueryCardHeader', () => {
     expect(screen.queryByTestId('select-view-type')).not.toBeInTheDocument()
   })
 
-  it('should call event telemetry for workbench after click on copy btn', async () => {
-    const command = 'info'
+  describe('Workbech View Mode', () => {
+    it('should call event telemetry for workbench after click on copy btn', async () => {
+      const command = 'info'
 
-    renderQueryCardHeaderComponent({ ...instance(mockedProps), query: command })
+      renderQueryCardHeaderComponent({
+        ...instance(mockedProps),
+        query: command,
+      })
 
-    await act(async () => {
-      fireEvent.click(screen.getByTestId('copy-command'))
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('copy-command'))
+      })
+
+      // Verify telemetry event is sent
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.WORKBENCH_COMMAND_COPIED,
+        eventData: {
+          command,
+          databaseId: INSTANCE_ID_MOCK,
+        },
+      })
     })
 
-    // Verify telemetry event is sent
-    expect(sendEventTelemetry).toHaveBeenCalledWith({
-      event: TelemetryEvent.WORKBENCH_COMMAND_COPIED,
-      eventData: {
-        command,
-        databaseId: INSTANCE_ID_MOCK,
-      },
+    it('should collect telemetry when clicking on the "collapse" button', async () => {
+      const command = 'info'
+      const mockToggleOpen = jest.fn()
+
+      renderQueryCardHeaderComponent({
+        ...instance(mockedProps),
+        query: command,
+        isOpen: true,
+        toggleOpen: mockToggleOpen,
+      })
+
+      // Simulate clicking the collapse button
+      const collapseButton = screen.getByTestId('query-card-open')
+      expect(collapseButton).toBeInTheDocument()
+
+      fireEvent.click(collapseButton)
+      expect(mockToggleOpen).toHaveBeenCalled()
+
+      // Verify telemetry event is sent for collapsing
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.WORKBENCH_RESULTS_COLLAPSED,
+        eventData: {
+          databaseId: INSTANCE_ID_MOCK,
+          command,
+        },
+      })
+    })
+
+    it('should collect telemetry when clicking on the "un-collapse" button', async () => {
+      const command = 'info'
+      const mockToggleOpen = jest.fn()
+
+      renderQueryCardHeaderComponent({
+        ...instance(mockedProps),
+        query: command,
+        isOpen: false,
+        toggleOpen: mockToggleOpen,
+      })
+
+      // Simulate clicking the collapse button
+      const collapseButton = screen.getByTestId('query-card-open')
+      expect(collapseButton).toBeInTheDocument()
+
+      fireEvent.click(collapseButton)
+      expect(mockToggleOpen).toHaveBeenCalled()
+
+      // Verify telemetry event is sent
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.WORKBENCH_RESULTS_EXPANDED,
+        eventData: {
+          databaseId: INSTANCE_ID_MOCK,
+          command,
+        },
+      })
     })
   })
 
-  it('should call event telemetry for vector search after click on copy btn', async () => {
-    const command = 'MOCK_COMMAND'
+  describe('Vector Search View Mode', () => {
+    it('should call event telemetry for vector search after click on copy btn', async () => {
+      const command = 'MOCK_COMMAND'
 
-    renderQueryCardHeaderComponent(
-      {
-        ...instance(mockedProps),
-        query: command,
-      },
-      ViewMode.VectorSearch,
-    )
+      renderQueryCardHeaderComponent(
+        {
+          ...instance(mockedProps),
+          query: command,
+        },
+        ViewMode.VectorSearch,
+      )
 
-    await act(async () => {
-      fireEvent.click(screen.getByTestId('copy-command'))
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('copy-command'))
+      })
+
+      // Verify telemetry event is sent
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_COMMAND_COPIED,
+        eventData: {
+          command,
+          databaseId: INSTANCE_ID_MOCK,
+        },
+      })
     })
 
-    // Verify telemetry event is sent
-    expect(sendEventTelemetry).toHaveBeenCalledWith({
-      event: TelemetryEvent.SEARCH_COMMAND_COPIED,
-      eventData: {
-        command,
-        databaseId: INSTANCE_ID_MOCK,
-      },
+    it('should collect telemetry when clicking on the "collapse" button', async () => {
+      const command = 'info'
+      const mockToggleOpen = jest.fn()
+
+      renderQueryCardHeaderComponent(
+        {
+          ...instance(mockedProps),
+          query: command,
+          isOpen: true,
+          toggleOpen: mockToggleOpen,
+        },
+        ViewMode.VectorSearch,
+      )
+
+      // Simulate clicking the collapse button
+      const collapseButton = screen.getByTestId('query-card-open')
+      expect(collapseButton).toBeInTheDocument()
+
+      fireEvent.click(collapseButton)
+      expect(mockToggleOpen).toHaveBeenCalled()
+
+      // Verify telemetry event is sent for collapsing
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_RESULTS_COLLAPSED,
+        eventData: {
+          databaseId: INSTANCE_ID_MOCK,
+          command,
+        },
+      })
+    })
+
+    it('should collect telemetry when clicking on the "un-collapse" button', async () => {
+      const command = 'info'
+      const mockToggleOpen = jest.fn()
+
+      renderQueryCardHeaderComponent(
+        {
+          ...instance(mockedProps),
+          query: command,
+          isOpen: false,
+          toggleOpen: mockToggleOpen,
+        },
+        ViewMode.VectorSearch,
+      )
+
+      // Simulate clicking the collapse button
+      const collapseButton = screen.getByTestId('query-card-open')
+      expect(collapseButton).toBeInTheDocument()
+
+      fireEvent.click(collapseButton)
+      expect(mockToggleOpen).toHaveBeenCalled()
+
+      // Verify telemetry event is sent
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_RESULTS_EXPANDED,
+        eventData: {
+          databaseId: INSTANCE_ID_MOCK,
+          command,
+        },
+      })
     })
   })
 })
