@@ -119,21 +119,11 @@ main.euiPageBody {
 :root {
   // todo: take from theme
   --backgroundPrimaryHover: var(--euiPageBackgroundColor);
-  --color-primary: #e8f1ff;
-  --color-primary-text: #006bb4;
-  --color-ghost-text: #fff;
-  --color-text-text: #343741;
-  --color-ghost: rgba(255, 255, 255, 0.1);
-  --color-subdued: #e8f1ff;
   --background-hover: rgba(23 80 186 / 0.04);
   --background-primary-hover: rgba(23 80 186 / 0.04);
-  --border-radius-small: 4px;
-  --border-radius-medium: 6px;
   --font-weight-m: 500;
   --font-size-xs: 12px;
   --font-size-s: 14px;
   --font-size-m: 16px;
   --font-size-l: 18px;
-  --gap-s: var(--size-s);
-  --gap-m: var(--size-m);
 }

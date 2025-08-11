@@ -104,8 +104,8 @@ export const Indicator = styled.div<
     $color: ColorType
   } & CommonProps
 >`
-  width: 0.8rem;
-  height: 0.8rem;
+  width: var(--size-s);
+  height: var(--size-s);
   border-radius: 50%;
   background-color: ${({ $color }) => $color || 'inherit'};
 `
