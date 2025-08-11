@@ -15,13 +15,39 @@ import { Nullable } from 'uiSrc/utils'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import { IconButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 
 import { getVotedText, iconType, voteTooltip } from './utils'
 import styles from './styles.module.scss'
+import styled from 'styled-components'
+import { Theme } from 'uiSrc/components/base/theme/types'
+
+const GitHubLink = styled(Link)`
+  padding: 4px 8px 4px 4px;
+
+  margin-top: 10px;
+  height: 22px !important;
+  background-color: ${({ theme }: { theme: Theme }) =>
+    theme.components.button.variants.primary.normal?.bgColor};
+  color: ${({ theme }: { theme: Theme }) =>
+    theme.components.button.variants.primary.normal?.textColor};
+  &:hover {
+    text-decoration: none !important;
+    background-color: ${({ theme }: { theme: Theme }) =>
+      theme.components.button.variants.primary.hover?.bgColor};
+    color: ${({ theme }: { theme: Theme }) =>
+      theme.components.button.variants.primary.normal?.textColor};
+  }
+
+  & > span {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+`
 
 export interface Props {
   voteOption: Vote
@@ -148,28 +174,22 @@ const VoteOption = (props: Props) => {
             </Row>
           </FlexItem>
           <FlexItem grow>
-            <PrimaryButton
-              aria-label="recommendation feedback"
+            <GitHubLink
               data-testid="recommendation-feedback-btn"
-              className={styles.feedbackBtn}
-              size="s"
+              className={styles.link}
+              href={EXTERNAL_LINKS.recommendationFeedback}
+              target="_blank"
+              data-test-subj="github-repo-link"
             >
-              <Link
-                className={styles.link}
-                href={EXTERNAL_LINKS.recommendationFeedback}
-                target="_blank"
-                data-test-subj="github-repo-link"
-              >
-                <RiIcon
-                  className={styles.githubIcon}
-                  aria-label="redis insight github issues"
-                  type="GithubIcon"
-                  color="informative100"
-                  data-testid="github-repo-icon"
-                />
-                To Github
-              </Link>
-            </PrimaryButton>
+              <RiIcon
+                className={styles.githubIcon}
+                aria-label="redis insight github issues"
+                type="GithubIcon"
+                color="informative100"
+                data-testid="github-repo-icon"
+              />
+              To Github
+            </GitHubLink>
           </FlexItem>
         </Col>
       </div>
