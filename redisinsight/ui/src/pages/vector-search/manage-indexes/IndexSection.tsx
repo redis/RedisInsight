@@ -18,6 +18,7 @@ import {
   collectManageIndexesDeleteTelemetry,
   collectManageIndexesDetailsToggleTelemetry,
 } from '../telemetry'
+import DeleteConfirmationButton from './DeleteConfirmationButton'
 
 export interface IndexSectionProps extends Omit<SectionProps, 'label'> {
   index: RedisString
@@ -26,6 +27,7 @@ export interface IndexSectionProps extends Omit<SectionProps, 'label'> {
 export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
   const dispatch = useDispatch()
   const indexName = bufferToString(index)
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const { id: instanceId } = useSelector(connectedInstanceSelector)
 
   const [indexInfo, setIndexInfo] = useState<IndexInfoDto>()
@@ -45,17 +47,11 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
   }, [indexName, dispatch])
 
   const handleDelete = () => {
-    // TODO: Replace with confirmation popup once the design is ready
-    // eslint-disable-next-line no-restricted-globals
-    const result = confirm('Are you sure you want to delete this index?')
-
-    if (result) {
-      const data: IndexDeleteRequestBodyDto = {
-        index: stringToBuffer(indexName),
-      }
-
-      dispatch(deleteRedisearchIndexAction(data, onDeletedIndexSuccess))
+    const data: IndexDeleteRequestBodyDto = {
+      index: stringToBuffer(indexName),
     }
+
+    dispatch(deleteRedisearchIndexAction(data, onDeletedIndexSuccess))
   }
 
   const onDeletedIndexSuccess = () => {
@@ -71,20 +67,40 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
     })
   }
 
+  // TODO: Add FieldTag component to list the types of the different fields
   return (
-    <Section
+    <Section.Compose
       collapsible
       collapsedInfo={<CategoryValueList categoryValueList={indexSummaryInfo} />}
       content={<IndexAttributesList indexInfo={indexInfo} />}
       // TODO: Add FieldTag component to list the types of the different fields
-      label={formatLongName(indexName)}
       defaultOpen={false}
-      actionButtonText="Delete" // TODO: Replace with an icon of a trash can
-      onAction={handleDelete}
       onOpenChange={handleOpenChange}
+      onAction={() => setIsPopoverOpen(true)}
       data-testid={`manage-indexes-list--item--${indexName}`}
       {...rest}
-    />
+    >
+      <Section.Header.Compose
+        collapsedInfo={
+          <CategoryValueList categoryValueList={indexSummaryInfo} />
+        }
+      >
+        <Section.Header.Group>
+          <Section.Header.Label label={formatLongName(indexName)} />
+        </Section.Header.Group>
+        <Section.Header.Group>
+          <Section.Header.ActionButton onClick={() => setIsPopoverOpen(true)}>
+            <DeleteConfirmationButton
+              isOpen={isPopoverOpen}
+              closePopover={() => setIsPopoverOpen(false)}
+              onConfirm={handleDelete}
+            />
+          </Section.Header.ActionButton>
+          <Section.Header.CollapseIndicator />
+        </Section.Header.Group>
+      </Section.Header.Compose>
+      <Section.Body content={<IndexAttributesList indexInfo={indexInfo} />} />
+    </Section.Compose>
   )
 }
 
