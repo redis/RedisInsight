@@ -18,17 +18,7 @@ import {
   collectManageIndexesDeleteTelemetry,
   collectManageIndexesDetailsToggleTelemetry,
 } from '../telemetry'
-import { RiPopover } from 'uiSrc/components'
-import { RiIcon, DeleteIcon } from 'uiSrc/components/base/icons'
-import { Button, IconButton } from 'uiSrc/components/base/forms/buttons'
-
-import {
-  ButtonWrapper,
-  IconAndTitleWrapper,
-  IconWrapper,
-  PopoverContent,
-  Title,
-} from './styles'
+import DeleteConfirmationButton from './DeleteConfirmationButton'
 
 export interface IndexSectionProps extends Omit<SectionProps, 'label'> {
   index: RedisString
@@ -77,44 +67,6 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
     })
   }
 
-  const DeleteConfirmationButton = () => (
-    <RiPopover
-      id="bulk-upload-warning-popover"
-      isOpen={isPopoverOpen}
-      closePopover={() => setIsPopoverOpen(false)}
-      panelPaddingSize="none"
-      button={
-        <IconButton
-          icon={DeleteIcon}
-          data-testid="manage-index-delete-btn"
-        ></IconButton>
-      }
-      anchorPosition="downCenter"
-    >
-      <PopoverContent>
-        <IconAndTitleWrapper>
-          <IconWrapper>
-            <RiIcon color="danger600" type="ToastDangerIcon" />
-          </IconWrapper>
-
-          <Title color="danger">
-            Are you sure you want to delete this index?
-          </Title>
-        </IconAndTitleWrapper>
-
-        <ButtonWrapper>
-          <Button
-            variant="destructive"
-            onClick={handleDelete}
-            data-testid="manage-index-delete-confirmation-btn"
-          >
-            Delete
-          </Button>
-        </ButtonWrapper>
-      </PopoverContent>
-    </RiPopover>
-  )
-
   // TODO: Add FieldTag component to list the types of the different fields
   return (
     <Section.Compose
@@ -138,7 +90,11 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
         </Section.Header.Group>
         <Section.Header.Group>
           <Section.Header.ActionButton onClick={() => setIsPopoverOpen(true)}>
-            <DeleteConfirmationButton />
+            <DeleteConfirmationButton
+              isOpen={isPopoverOpen}
+              closePopover={() => setIsPopoverOpen(false)}
+              onConfirm={handleDelete}
+            />
           </Section.Header.ActionButton>
           <Section.Header.CollapseIndicator />
         </Section.Header.Group>
