@@ -7,7 +7,6 @@ export const StyledHeaderAction = styled(FlexGroup)`
   flex-direction: row;
   justify-content: flex-end;
   gap: ${({ theme }) => theme.core.space.space100};
-  margin-bottom: ${({ theme }) => theme.core.space.space100};
 `
 
 export const StyledTextButton = styled(TextButton)`
@@ -17,4 +16,8 @@ export const StyledTextButton = styled(TextButton)`
   &:hover {
     color: ${({ theme }) => theme.color.blue500};
   }
+`
+
+export const StyledWrapper = styled(FlexGroup)`
+  margin-bottom: ${({ theme }) => theme.core.space.space100};
 `
