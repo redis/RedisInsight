@@ -163,7 +163,7 @@ export const VectorSearchQuery = () => {
                   onAllQueriesDelete={handleClearResults}
                   noResultsPlaceholder={
                     <StyledNoResultsWrapper>
-                      TODO: Not sure yet what to put here
+                      The calm before the output
                     </StyledNoResultsWrapper>
                   }
                 />
