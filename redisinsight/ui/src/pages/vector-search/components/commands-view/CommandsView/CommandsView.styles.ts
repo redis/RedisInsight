@@ -24,7 +24,6 @@ export const StyledContainer = styled.div`
   width: 100%;
   overflow: auto;
   color: ${({ theme }) => theme.color.gray700};
-  //   @include eui.scrollBar;
 `
 
 export const StyledHeader = styled.div`
