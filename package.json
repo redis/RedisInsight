@@ -99,7 +99,8 @@
     "styled-components": "^5",
     "@elastic/eui/**/prismjs": "~1.30.0",
     "vite/esbuild": "^0.25.0",
-    "react-router-dom/react-router/path-to-regexp": "^1.9.0"
+    "react-router-dom/react-router/path-to-regexp": "^1.9.0",
+    "**/form-data": "^4.0.4"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.23.2",
