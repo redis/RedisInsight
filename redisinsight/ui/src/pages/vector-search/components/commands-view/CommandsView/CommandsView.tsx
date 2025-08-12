@@ -16,6 +16,7 @@ import { collectTelemetryQueryReRun } from 'uiSrc/pages/vector-search/telemetry'
 import QueryCard from '../../QueryCard'
 
 import styles from './styles.module.scss'
+import { StyledContainer, StyledWrapper } from './CommandsView.styles'
 
 export interface Props {
   isResultsLoaded: boolean
@@ -80,7 +81,7 @@ const CommandsView = (props: Props) => {
   }
 
   return (
-    <div className={styles.wrapper}>
+    <StyledWrapper>
       {!isResultsLoaded && (
         <ProgressBarLoader color="primary" data-testid="progress-wb-history" />
       )}
@@ -98,7 +99,7 @@ const CommandsView = (props: Props) => {
           </EmptyButton>
         </div>
       )}
-      <div className={cx(styles.container)}>
+      <StyledContainer>
         <div ref={scrollDivRef} />
         {items?.length
           ? items.map(
@@ -161,8 +162,8 @@ const CommandsView = (props: Props) => {
             )
           : null}
         {isResultsLoaded && !items.length && (noResultsPlaceholder ?? null)}
-      </div>
-    </div>
+      </StyledContainer>
+    </StyledWrapper>
   )
 }
 
