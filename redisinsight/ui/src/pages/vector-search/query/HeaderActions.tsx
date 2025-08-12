@@ -1,8 +1,10 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { StyledHeaderAction } from './HeaderActions.styles'
+
+import { StyledHeaderAction, StyledWrapper } from './HeaderActions.styles'
 import { ManageIndexesDrawer } from '../manage-indexes/ManageIndexesDrawer'
 import { collectSavedQueriesPanelToggleTelemetry } from '../telemetry'
+import { StartWizardButton } from './StartWizardButton'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 
 export type HeaderActionsProps = {
@@ -30,7 +32,9 @@ export const HeaderActions = ({
   }
 
   return (
-    <>
+    <StyledWrapper>
+      <StartWizardButton />
+
       <StyledHeaderAction data-testid="vector-search-header-actions">
         <EmptyButton onClick={handleSavedQueriesClick}>
           Saved queries
@@ -44,6 +48,6 @@ export const HeaderActions = ({
         open={isManageIndexesDrawerOpen}
         onOpenChange={setIsManageIndexesDrawerOpen}
       />
-    </>
+    </StyledWrapper>
   )
 }
