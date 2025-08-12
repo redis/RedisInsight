@@ -1,8 +1,9 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { StyledHeaderAction, StyledTextButton } from './HeaderActions.styles'
+import { StyledHeaderAction } from './HeaderActions.styles'
 import { ManageIndexesDrawer } from '../manage-indexes/ManageIndexesDrawer'
 import { collectSavedQueriesPanelToggleTelemetry } from '../telemetry'
+import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 
 export type HeaderActionsProps = {
   isManageIndexesDrawerOpen: boolean
@@ -31,12 +32,12 @@ export const HeaderActions = ({
   return (
     <>
       <StyledHeaderAction data-testid="vector-search-header-actions">
-        <StyledTextButton variant="primary" onClick={handleSavedQueriesClick}>
+        <EmptyButton onClick={handleSavedQueriesClick}>
           Saved queries
-        </StyledTextButton>
-        <StyledTextButton onClick={() => setIsManageIndexesDrawerOpen(true)}>
+        </EmptyButton>
+        <EmptyButton onClick={() => setIsManageIndexesDrawerOpen(true)}>
           Manage indexes
-        </StyledTextButton>
+        </EmptyButton>
       </StyledHeaderAction>
 
       <ManageIndexesDrawer
