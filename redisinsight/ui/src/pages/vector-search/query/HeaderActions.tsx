@@ -1,13 +1,11 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import {
-  StyledHeaderAction,
-  StyledTextButton,
-  StyledWrapper,
-} from './HeaderActions.styles'
+
+import { StyledHeaderAction, StyledWrapper } from './HeaderActions.styles'
 import { ManageIndexesDrawer } from '../manage-indexes/ManageIndexesDrawer'
 import { collectSavedQueriesPanelToggleTelemetry } from '../telemetry'
 import { StartWizardButton } from './StartWizardButton'
+import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 
 export type HeaderActionsProps = {
   isManageIndexesDrawerOpen: boolean
@@ -38,12 +36,12 @@ export const HeaderActions = ({
       <StartWizardButton />
 
       <StyledHeaderAction data-testid="vector-search-header-actions">
-        <StyledTextButton variant="primary" onClick={handleSavedQueriesClick}>
+        <EmptyButton onClick={handleSavedQueriesClick}>
           Saved queries
-        </StyledTextButton>
-        <StyledTextButton onClick={() => setIsManageIndexesDrawerOpen(true)}>
+        </EmptyButton>
+        <EmptyButton onClick={() => setIsManageIndexesDrawerOpen(true)}>
           Manage indexes
-        </StyledTextButton>
+        </EmptyButton>
       </StyledHeaderAction>
 
       <ManageIndexesDrawer
