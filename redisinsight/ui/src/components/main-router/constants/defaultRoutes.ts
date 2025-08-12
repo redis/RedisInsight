@@ -2,7 +2,7 @@ import { lazy } from 'react'
 import { IRoute, FeatureFlags, PageNames, Pages } from 'uiSrc/constants'
 import {
   BrowserPage,
-  VectorSearchPage,
+  VectorSearchPageRouter,
   HomePage,
   InstancePage,
   RedisCloudDatabasesPage,
@@ -21,9 +21,12 @@ import PipelineManagementPage from 'uiSrc/pages/rdi/pipeline-management'
 import { ANALYTICS_ROUTES, RDI_PIPELINE_MANAGEMENT_ROUTES } from './sub-routes'
 import COMMON_ROUTES from './commonRoutes'
 import { getRouteIncludedByEnv, LAZY_LOAD } from '../config'
+import { VECTOR_SEARCH_ROUTES } from './sub-routes/vectorSearchRoutes'
 
 const LazyBrowserPage = lazy(() => import('uiSrc/pages/browser'))
-const LazyVectorSearchPage = lazy(() => import('uiSrc/pages/vector-search'))
+const LazyVectorSearchPageRouter = lazy(
+  () => import('uiSrc/pages/vector-search/pages/VectorSearchPageRouter'),
+)
 const LazyHomePage = lazy(() => import('uiSrc/pages/home'))
 const LazyWorkbenchPage = lazy(() => import('uiSrc/pages/workbench'))
 const LazyPubSubPage = lazy(() => import('uiSrc/pages/pub-sub'))
@@ -60,7 +63,8 @@ const INSTANCE_ROUTES: IRoute[] = [
   {
     pageName: PageNames.vectorSearch,
     path: Pages.vectorSearch(':instanceId'),
-    component: LAZY_LOAD ? LazyVectorSearchPage : VectorSearchPage,
+    component: LAZY_LOAD ? LazyVectorSearchPageRouter : VectorSearchPageRouter,
+    routes: VECTOR_SEARCH_ROUTES,
   },
   {
     pageName: PageNames.workbench,

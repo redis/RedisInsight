@@ -16,6 +16,7 @@ export interface IRoute {
 export enum PageNames {
   workbench = 'workbench',
   vectorSearch = 'vector-search',
+  vectorSearchCreateIndex = 'create-index',
   browser = 'browser',
   search = 'search',
   slowLog = 'slowlog',
@@ -52,6 +53,8 @@ export const Pages = {
   browser: (instanceId: string) => `/${instanceId}/${PageNames.browser}`,
   vectorSearch: (instanceId: string) =>
     `/${instanceId}/${PageNames.vectorSearch}`,
+  vectorSearchCreateIndex: (instanceId: string) =>
+    `/${instanceId}/${PageNames.vectorSearch}/${PageNames.vectorSearchCreateIndex}`,
   workbench: (instanceId: string) => `/${instanceId}/${PageNames.workbench}`,
   search: (instanceId: string) => `/${instanceId}/${PageNames.search}`,
   pubSub: (instanceId: string) => `/${instanceId}/${PageNames.pubSub}`,
