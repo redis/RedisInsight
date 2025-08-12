@@ -11,7 +11,7 @@ export const StyledWrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
   border-radius: var(--border-radius-medium);
   // HACK: to fix rectangle like view in rounded borders wrapper
-  padding-bottom: ${({ theme }) => theme.core.space.space025};
+  padding-bottom: ${({ theme }) => theme.core.space.space050};
 
   display: flex;
   flex-direction: column;
@@ -24,13 +24,17 @@ export const StyledContainer = styled.div`
   width: 100%;
   overflow: auto;
   color: ${({ theme }) => theme.color.gray700};
+  //   @include eui.scrollBar;
 `
 
-// .container {
-//   @include eui.scrollBar;
-//   color: var(--euiTextSubduedColor) !important;
+export const StyledHeader = styled.div`
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 ${({ theme }) => theme.core.space.space150};
 
-//   flex: 1;
-//   width: 100%;
-//   overflow: auto;
-// }
+  flex-shrink: 0;
+  border-bottom: 1px solid
+    ${({ theme }) => theme.semantic.color.border.neutral500};
+`
