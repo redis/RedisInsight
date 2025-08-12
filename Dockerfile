@@ -6,7 +6,7 @@
 # the best way to minimize the number of node_module restores and build steps
 # while still keeping the final image small.
 
-FROM node:20.14-alpine as build
+FROM node:20.19.4-alpine as build
 
 # update apk repository and install build dependencies
 RUN apk update && apk add --no-cache --virtual .gyp \
@@ -43,7 +43,7 @@ RUN yarn --cwd ./redisinsight/api install --production
 COPY ./redisinsight/api/.yarnclean.prod ./redisinsight/api/.yarnclean
 RUN yarn --cwd ./redisinsight/api autoclean --force
 
-FROM node:20.14-alpine
+FROM node:20.19.4-alpine
 
 # runtime args and environment variables
 ARG NODE_ENV=production
