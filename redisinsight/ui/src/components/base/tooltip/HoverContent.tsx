@@ -9,7 +9,7 @@ interface RiTooltipContentProps {
 }
 
 export const HoverContent = ({ title, content }: RiTooltipContentProps) => (
-  <Col>
+  <Col gap="s">
     {title && <Title size="XS">{title}</Title>}
     {content}
   </Col>
