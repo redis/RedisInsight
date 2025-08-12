@@ -1,4 +1,5 @@
 import React from 'react'
+import reactRouterDom from 'react-router-dom'
 import {
   render,
   screen,
@@ -8,9 +9,15 @@ import {
 } from 'uiSrc/utils/test-utils'
 import { RootState } from 'uiSrc/slices/store'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { Pages } from 'uiSrc/constants'
+import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/analytics/dbAnalysisHistoryHandlers'
-import { VectorSearchCreateIndex } from './VectorSearchCreateIndex'
+import {
+  VectorSearchCreateIndex,
+  VectorSearchCreateIndexProps,
+} from './VectorSearchCreateIndex'
 import { SampleDataContent, SampleDataType, SearchIndexType } from './types'
+import { useCreateIndex } from './hooks/useCreateIndex'
 
 // Mock the telemetry module, so we don't send actual telemetry data during tests
 jest.mock('uiSrc/telemetry', () => ({
@@ -18,7 +25,17 @@ jest.mock('uiSrc/telemetry', () => ({
   sendEventTelemetry: jest.fn(),
 }))
 
-const renderVectorSearchCreateIndexComponent = () => {
+jest.mock('./hooks/useCreateIndex', () => ({
+  useCreateIndex: jest.fn(),
+}))
+
+const mockedUseCreateIndex = useCreateIndex as jest.MockedFunction<
+  typeof useCreateIndex
+>
+
+const renderVectorSearchCreateIndexComponent = (
+  props?: VectorSearchCreateIndexProps,
+) => {
   const testState: RootState = {
     ...initialStateDefault,
     connections: {
@@ -37,19 +54,63 @@ const renderVectorSearchCreateIndexComponent = () => {
     },
   }
   const store = mockStore(testState)
+  const utils = render(<VectorSearchCreateIndex {...props} />, { store })
 
-  return render(<VectorSearchCreateIndex />, { store })
+  return { ...utils, store }
 }
 
 describe('VectorSearchCreateIndex', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    mockedUseCreateIndex.mockReturnValue({
+      run: jest.fn(),
+      loading: false,
+      error: null,
+      success: false,
+    } as any)
   })
 
   it('should render correctly', () => {
     const { container } = renderVectorSearchCreateIndexComponent()
 
     expect(container).toBeInTheDocument()
+  })
+
+  it('should redirect to vector search page after index creation', async () => {
+    const pushMock = jest.fn()
+    reactRouterDom.useHistory = jest.fn().mockReturnValue({ push: pushMock })
+
+    mockedUseCreateIndex.mockReturnValue({
+      run: jest.fn(),
+      loading: false,
+      error: null,
+      success: true,
+    } as any)
+
+    renderVectorSearchCreateIndexComponent({ initialStep: 2 })
+
+    // Effect should dispatch success notification and navigate
+    expect(pushMock).toHaveBeenCalledWith(Pages.vectorSearch(INSTANCE_ID_MOCK))
+  })
+
+  it('should dispatch error notification on error', () => {
+    mockedUseCreateIndex.mockReturnValue({
+      run: jest.fn(),
+      loading: false,
+      error: { message: 'Some error' },
+      success: false,
+    } as any)
+
+    const { store } = renderVectorSearchCreateIndexComponent({
+      initialStep: 2,
+    })
+
+    // Should dispatch addErrorNotification
+    const actions = store?.getActions?.() || []
+    const hasErrorAction = actions.some(
+      (a: any) => a.type === addErrorNotification.type,
+    )
+    expect(hasErrorAction).toBe(true)
   })
 
   describe('Telemetry', () => {

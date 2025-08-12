@@ -9,7 +9,7 @@ import {
 } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { redisearchListSelector } from 'uiSrc/slices/browser/redisearch'
-import { VectorSearchPage } from './VectorSearchPage'
+import VectorSearchPage from './VectorSearchPage'
 
 // Mock the telemetry module, so we don't send actual telemetry data during tests
 jest.mock('uiSrc/telemetry', () => ({

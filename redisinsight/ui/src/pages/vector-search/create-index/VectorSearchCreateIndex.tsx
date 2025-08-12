@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 
 import { Stepper } from '@redis-ui/components'
 import { Title } from 'uiSrc/components/base/text'
@@ -25,6 +26,13 @@ import {
   collectCreateIndexStepTelemetry,
   collectCreateIndexWizardTelemetry,
 } from '../telemetry'
+import { Pages } from 'uiSrc/constants'
+import {
+  addMessageNotification,
+  addErrorNotification,
+} from 'uiSrc/slices/app/notifications'
+import successMessages from 'uiSrc/components/notifications/success-messages'
+import { parseCustomError } from 'uiSrc/utils'
 
 const stepNextButtonTexts = [
   'Proceed to adding data',
@@ -32,13 +40,15 @@ const stepNextButtonTexts = [
   'Create index',
 ]
 
-type VectorSearchCreateIndexProps = {
+export type VectorSearchCreateIndexProps = {
   initialStep?: number
 }
 
 export const VectorSearchCreateIndex = ({
   initialStep = 1,
 }: VectorSearchCreateIndexProps) => {
+  const dispatch = useDispatch()
+  const history = useHistory()
   const { instanceId } = useParams<{ instanceId: string }>()
   const [step, setStep] = useState(initialStep)
   const [createSearchIndexParameters, setCreateSearchIndexParameters] =
@@ -52,7 +62,7 @@ export const VectorSearchCreateIndex = ({
       indexFields: selectedBikesIndexFields,
     })
 
-  const { run: createIndex, success, loading } = useCreateIndex()
+  const { run: createIndex, error, success, loading } = useCreateIndex()
 
   const setParameters = (params: Partial<CreateSearchIndexParameters>) => {
     setCreateSearchIndexParameters((prev) => ({ ...prev, ...params }))
@@ -81,9 +91,15 @@ export const VectorSearchCreateIndex = ({
     })
   }, [step])
 
-  if (success) {
-    return <>Success!</>
-  }
+  useEffect(() => {
+    if (error) {
+      dispatch(addErrorNotification(parseCustomError(error.message) as any))
+    } else if (success) {
+      dispatch(addMessageNotification(successMessages.CREATE_INDEX()))
+
+      history.push(Pages.vectorSearch(instanceId))
+    }
+  }, [success, error])
 
   return (
     <VectorSearchScreenWrapper direction="column" justify="between">
