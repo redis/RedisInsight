@@ -150,7 +150,7 @@ export const ActionsContainer = styled(Row)<ActionsContainerProps>`
   width: ${({ $width }) => $width || '80px'};
   height: ${({ $height }) => $height || '33px'};
   padding: ${({ theme }: { theme: Theme }) => theme.core.space.space050};
-
+  align-items: center;
   z-index: 3;
   ${({ $position }) => positions[$position || 'inside']}
   ${({ $design }) => designs[$design || 'default']}

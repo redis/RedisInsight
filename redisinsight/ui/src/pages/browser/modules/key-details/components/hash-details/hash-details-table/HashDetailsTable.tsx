@@ -575,6 +575,7 @@ const HashDetailsTable = (props: Props) => {
             validation={validateTTLNumber}
             isEditDisabled={isTruncatedFieldName}
             editToolTipContent={editTooltipContent}
+            
           >
             <div className="innerCellAsCell">
               {expire === -1 ? (
