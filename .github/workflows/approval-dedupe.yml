@@ -59,6 +59,9 @@ on:
       prev_conclusion:
         description: If mode == mirror_completed, the conclusion to mirror
         value: ${{ jobs.gate.outputs.prev_conclusion }}
+      prev_run_id:
+        description: If mode == mirror_completed, the prior run id being mirrored
+        value: ${{ jobs.gate.outputs.prev_run_id }}
 
 permissions:
   actions: read
@@ -72,6 +75,7 @@ jobs:
       mode: ${{ steps.check.outputs.mode }}
       target_run_id: ${{ steps.check.outputs.target_run_id }}
       prev_conclusion: ${{ steps.check.outputs.prev_conclusion }}
+      prev_run_id: ${{ steps.check.outputs.prev_run_id }}
     steps:
       - name: Determine mode
         id: check
@@ -117,6 +121,7 @@ jobs:
             if (active) {
               core.setOutput('mode', 'wait')
               core.setOutput('target_run_id', String(active.id))
+              core.setOutput('prev_run_id', String(active.id))
               return
             }
 
@@ -126,6 +131,7 @@ jobs:
             if (completed) {
               core.setOutput('mode', 'mirror_completed')
               core.setOutput('prev_conclusion', completed.conclusion || '')
+              core.setOutput('prev_run_id', String(completed.id))
               return
             }
 
@@ -174,6 +180,7 @@ jobs:
       - name: Mirror result
         run: |
           echo "Previous conclusion: ${{ needs.gate.outputs.prev_conclusion }}"
+          echo "Mirroring workflow run: https://github.com/${{ github.repository }}/actions/runs/${{ needs.gate.outputs.prev_run_id }}"
           if [ "${{ needs.gate.outputs.prev_conclusion }}" != "success" ]; then
             echo "Mirroring failure"
             exit 1
