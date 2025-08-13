@@ -1,14 +1,12 @@
-import { renderHook, act } from '@testing-library/react-hooks'
 import { rest } from 'msw'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { mswServer } from 'uiSrc/mocks/server'
 import { getMswURL } from 'uiSrc/utils/test-utils'
 import { getUrl } from 'uiSrc/utils'
 import { RunQueryMode, ResultsMode } from 'uiSrc/slices/interfaces'
+import executeQuery from './executeQuery'
 
-import { useExecuteQuery } from './useExecuteQuery'
-
-describe('useExecuteQuery', () => {
+describe('executeQuery', () => {
   const instanceId = 'test-instance-id'
   const command = 'FT.CREATE idx:bikes_vss ...'
 
@@ -17,29 +15,15 @@ describe('useExecuteQuery', () => {
     jest.clearAllMocks()
   })
 
-  it('should return empty array and not call API when data is null', async () => {
-    const { result: hookResult } = renderHook(() => useExecuteQuery())
+  it.each([null, undefined])(
+    'returns empty array and does not call API when data is %s',
+    async (data) => {
+      const result = await executeQuery(instanceId, data as any)
+      expect(result).toEqual([])
+    },
+  )
 
-    let result: any
-    await act(async () => {
-      result = await hookResult.current(instanceId, null)
-    })
-
-    expect(result).toEqual([])
-  })
-
-  it('should return empty array and not call API when data is undefined', async () => {
-    const { result: hookResult } = renderHook(() => useExecuteQuery())
-
-    let result: any
-    await act(async () => {
-      result = await hookResult.current(instanceId, undefined)
-    })
-
-    expect(result).toEqual([])
-  })
-
-  it('should call API with correct parameters and return result', async () => {
+  it('calls API with correct parameters and returns result', async () => {
     const mockResponse = [{ id: '1', databaseId: instanceId }]
 
     mswServer.use(
@@ -60,17 +44,11 @@ describe('useExecuteQuery', () => {
       ),
     )
 
-    const { result } = renderHook(() => useExecuteQuery())
-
-    let returned
-    await act(async () => {
-      returned = await result.current(instanceId, command)
-    })
-
+    const returned = await executeQuery(instanceId, command)
     expect(returned).toEqual(mockResponse)
   })
 
-  it('should invoke afterAll callback on success', async () => {
+  it('invokes afterAll callback on success', async () => {
     const mockResponse = [{ id: '1', databaseId: instanceId }]
 
     mswServer.use(
@@ -84,16 +62,12 @@ describe('useExecuteQuery', () => {
 
     const afterAll = jest.fn()
 
-    const { result } = renderHook(() => useExecuteQuery())
-
-    await act(async () => {
-      await result.current(instanceId, command, { afterAll })
-    })
+    await executeQuery(instanceId, command, { afterAll })
 
     expect(afterAll).toHaveBeenCalled()
   })
 
-  it('should invoke onFail and throw on error', async () => {
+  it('invokes onFail and rethrows on error', async () => {
     mswServer.use(
       rest.post(
         getMswURL(
@@ -105,13 +79,9 @@ describe('useExecuteQuery', () => {
 
     const onFail = jest.fn()
 
-    const { result } = renderHook(() => useExecuteQuery())
-
-    await act(async () => {
-      await expect(
-        result.current(instanceId, command, { onFail }),
-      ).rejects.toThrow()
-    })
+    await expect(
+      executeQuery(instanceId, command, { onFail }),
+    ).rejects.toThrow()
 
     expect(onFail).toHaveBeenCalled()
   })

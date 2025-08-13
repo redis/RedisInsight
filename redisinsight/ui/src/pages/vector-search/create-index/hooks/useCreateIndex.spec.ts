@@ -1,21 +1,20 @@
 import { renderHook, act } from '@testing-library/react-hooks'
-import { useCreateIndex } from './useCreateIndex'
+import executeQuery from 'uiSrc/services/executeQuery'
 import {
   CreateSearchIndexParameters,
   SampleDataContent,
   SampleDataType,
   SearchIndexType,
 } from '../types'
+import { useCreateIndex } from './useCreateIndex'
 
 const mockLoad = jest.fn()
-const mockExecute = jest.fn()
 const mockAddCommands = jest.fn()
 
 jest.mock('uiSrc/services/hooks', () => ({
   useLoadData: () => ({
     load: mockLoad,
   }),
-  useExecuteQuery: () => mockExecute,
 }))
 
 jest.mock('uiSrc/services/workbenchStorage', () => ({
@@ -25,6 +24,12 @@ jest.mock('uiSrc/services/workbenchStorage', () => ({
 jest.mock('uiSrc/utils/index/generateFtCreateCommand', () => ({
   generateFtCreateCommand: () => 'FT.CREATE idx:bikes_vss ...',
 }))
+
+jest.mock('uiSrc/services/executeQuery', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}))
+const mockExecute = executeQuery as jest.Mock
 
 describe('useCreateIndex', () => {
   beforeEach(() => {
@@ -52,7 +57,10 @@ describe('useCreateIndex', () => {
     })
 
     expect(mockLoad).toHaveBeenCalledWith('test-instance-id', 'bikes')
-    expect(mockExecute).toHaveBeenCalled()
+    expect(mockExecute).toHaveBeenCalledWith(
+      'test-instance-id',
+      'FT.CREATE idx:bikes_vss ...',
+    )
     expect(mockAddCommands).toHaveBeenCalled()
     expect(result.current.success).toBe(true)
     expect(result.current.error).toBeNull()
@@ -69,6 +77,8 @@ describe('useCreateIndex', () => {
     expect(result.current.success).toBe(false)
     expect(result.current.error?.message).toMatch(/Instance ID is required/)
     expect(result.current.loading).toBe(false)
+    expect(mockLoad).not.toHaveBeenCalled()
+    expect(mockExecute).not.toHaveBeenCalled()
   })
 
   it('should handle failure in data loading', async () => {
@@ -85,6 +95,7 @@ describe('useCreateIndex', () => {
     expect(result.current.success).toBe(false)
     expect(result.current.error).toBe(error)
     expect(result.current.loading).toBe(false)
+    expect(mockExecute).not.toHaveBeenCalled()
   })
 
   it('should handle execution failure', async () => {

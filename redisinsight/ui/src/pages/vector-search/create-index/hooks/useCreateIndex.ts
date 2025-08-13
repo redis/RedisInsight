@@ -1,9 +1,10 @@
 import { useCallback, useState } from 'react'
 import { reverse } from 'lodash'
-import { useLoadData, useExecuteQuery } from 'uiSrc/services/hooks'
+import { useLoadData } from 'uiSrc/services/hooks'
 import { addCommands } from 'uiSrc/services/workbenchStorage'
 import { generateFtCreateCommand } from 'uiSrc/utils/index/generateFtCreateCommand'
 import { CreateSearchIndexParameters, PresetDataType } from '../types'
+import executeQuery from 'uiSrc/services/executeQuery'
 
 interface UseCreateIndexResult {
   run: (params: CreateSearchIndexParameters) => Promise<void>
@@ -22,7 +23,6 @@ export const useCreateIndex = (): UseCreateIndexResult => {
   const [error, setError] = useState<Error | null>(null)
 
   const { load } = useLoadData()
-  const executeQuery = useExecuteQuery()
 
   const run = useCallback(
     async ({ instanceId }: CreateSearchIndexParameters) => {
