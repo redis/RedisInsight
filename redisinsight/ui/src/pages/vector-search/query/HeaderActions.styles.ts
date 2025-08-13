@@ -9,5 +9,6 @@ export const StyledHeaderAction = styled(FlexGroup)`
 `
 
 export const StyledWrapper = styled(FlexGroup)`
+  align-items: center;
   margin-bottom: ${({ theme }) => theme.core.space.space100};
 `
