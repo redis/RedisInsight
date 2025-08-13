@@ -49,7 +49,7 @@ describe('CloudAutodiscoveryAnalytics', () => {
 
       expect(sendEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
-        TelemetryEvents.RECloudSubscriptionsDiscoverySucceed,
+        TelemetryEvents.RedisCloudSubscriptionsDiscoverySucceed,
         {
           numberOfActiveSubscriptions: 2,
           totalNumberOfSubscriptions: 2,
@@ -74,7 +74,7 @@ describe('CloudAutodiscoveryAnalytics', () => {
 
       expect(sendEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
-        TelemetryEvents.RECloudSubscriptionsDiscoverySucceed,
+        TelemetryEvents.RedisCloudSubscriptionsDiscoverySucceed,
         {
           numberOfActiveSubscriptions: 1,
           totalNumberOfSubscriptions: 2,
@@ -101,7 +101,7 @@ describe('CloudAutodiscoveryAnalytics', () => {
       );
       expect(sendEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
-        TelemetryEvents.RECloudSubscriptionsDiscoverySucceed,
+        TelemetryEvents.RedisCloudSubscriptionsDiscoverySucceed,
         {
           numberOfActiveSubscriptions: 0,
           totalNumberOfSubscriptions: 2,
@@ -120,7 +120,7 @@ describe('CloudAutodiscoveryAnalytics', () => {
 
       expect(sendEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
-        TelemetryEvents.RECloudSubscriptionsDiscoverySucceed,
+        TelemetryEvents.RedisCloudSubscriptionsDiscoverySucceed,
         {
           numberOfActiveSubscriptions: 0,
           totalNumberOfSubscriptions: 0,
@@ -139,7 +139,7 @@ describe('CloudAutodiscoveryAnalytics', () => {
 
       expect(sendEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
-        TelemetryEvents.RECloudSubscriptionsDiscoverySucceed,
+        TelemetryEvents.RedisCloudSubscriptionsDiscoverySucceed,
         {
           numberOfActiveSubscriptions: 0,
           totalNumberOfSubscriptions: 0,
@@ -174,7 +174,7 @@ describe('CloudAutodiscoveryAnalytics', () => {
 
       expect(sendFailedEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
-        TelemetryEvents.RECloudSubscriptionsDiscoveryFailed,
+        TelemetryEvents.RedisCloudSubscriptionsDiscoveryFailed,
         httpException,
         {
           type: CloudSubscriptionType.Fixed,
@@ -194,7 +194,7 @@ describe('CloudAutodiscoveryAnalytics', () => {
 
       expect(sendEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
-        TelemetryEvents.RECloudDatabasesDiscoverySucceed,
+        TelemetryEvents.RedisCloudDatabasesDiscoverySucceed,
         {
           numberOfActiveDatabases: 2,
           numberOfFreeDatabases: 1,
@@ -220,7 +220,7 @@ describe('CloudAutodiscoveryAnalytics', () => {
 
       expect(sendEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
-        TelemetryEvents.RECloudDatabasesDiscoverySucceed,
+        TelemetryEvents.RedisCloudDatabasesDiscoverySucceed,
         {
           numberOfActiveDatabases: 1,
           numberOfFreeDatabases: 0,
@@ -245,7 +245,7 @@ describe('CloudAutodiscoveryAnalytics', () => {
 
       expect(sendEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
-        TelemetryEvents.RECloudDatabasesDiscoverySucceed,
+        TelemetryEvents.RedisCloudDatabasesDiscoverySucceed,
         {
           numberOfActiveDatabases: 0,
           numberOfFreeDatabases: 0,
@@ -265,7 +265,7 @@ describe('CloudAutodiscoveryAnalytics', () => {
 
       expect(sendEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
-        TelemetryEvents.RECloudDatabasesDiscoverySucceed,
+        TelemetryEvents.RedisCloudDatabasesDiscoverySucceed,
         {
           numberOfActiveDatabases: 0,
           numberOfFreeDatabases: 0,
@@ -285,7 +285,7 @@ describe('CloudAutodiscoveryAnalytics', () => {
 
       expect(sendEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
-        TelemetryEvents.RECloudDatabasesDiscoverySucceed,
+        TelemetryEvents.RedisCloudDatabasesDiscoverySucceed,
         {
           numberOfActiveDatabases: 0,
           numberOfFreeDatabases: 0,
@@ -320,7 +320,7 @@ describe('CloudAutodiscoveryAnalytics', () => {
 
       expect(sendFailedEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
-        TelemetryEvents.RECloudDatabasesDiscoveryFailed,
+        TelemetryEvents.RedisCloudDatabasesDiscoveryFailed,
         httpException,
         {
           authType: CloudAutodiscoveryAuthType.Credentials,

@@ -30,7 +30,7 @@ export class CloudAutodiscoveryAnalytics extends TelemetryBaseService {
     try {
       this.sendEvent(
         sessionMetadata,
-        TelemetryEvents.RECloudSubscriptionsDiscoverySucceed,
+        TelemetryEvents.RedisCloudSubscriptionsDiscoverySucceed,
         {
           numberOfActiveSubscriptions: subscriptions.filter(
             (sub) => sub.status === CloudSubscriptionStatus.Active,
@@ -53,7 +53,7 @@ export class CloudAutodiscoveryAnalytics extends TelemetryBaseService {
   ) {
     this.sendFailedEvent(
       sessionMetadata,
-      TelemetryEvents.RECloudSubscriptionsDiscoveryFailed,
+      TelemetryEvents.RedisCloudSubscriptionsDiscoveryFailed,
       exception,
       {
         type,
@@ -70,7 +70,7 @@ export class CloudAutodiscoveryAnalytics extends TelemetryBaseService {
     try {
       this.sendEvent(
         sessionMetadata,
-        TelemetryEvents.RECloudDatabasesDiscoverySucceed,
+        TelemetryEvents.RedisCloudDatabasesDiscoverySucceed,
         {
           numberOfActiveDatabases: databases.filter(
             (db) => db.status === CloudDatabaseStatus.Active,
@@ -97,7 +97,7 @@ export class CloudAutodiscoveryAnalytics extends TelemetryBaseService {
   ) {
     this.sendFailedEvent(
       sessionMetadata,
-      TelemetryEvents.RECloudDatabasesDiscoveryFailed,
+      TelemetryEvents.RedisCloudDatabasesDiscoveryFailed,
       exception,
       { authType },
     );
