@@ -1,4 +1,8 @@
 name: ✅ E2E Tests
+run-name: >
+  E2E • ${{ github.event_name == 'pull_request_review'
+    && format('PR #{0} {1}', github.event.pull_request.number, github.event.pull_request.title)
+    || github.ref_name }} • by ${{ github.actor }}
 
 on:
   pull_request_review:
@@ -78,13 +82,25 @@ jobs:
   clean:
     uses: ./.github/workflows/clean-deployments.yml
     if: always() && needs.approval-dedupe.outputs.mode == 'run'
-    needs: [approval-dedupe, e2e-docker-tests, e2e-appimage-tests, tests-e2e-playwright]
+    needs:
+      [
+        approval-dedupe,
+        e2e-docker-tests,
+        e2e-appimage-tests,
+        tests-e2e-playwright,
+      ]
 
   # Remove artifacts from github actions
   remove-artifacts:
     name: Remove artifacts
     if: needs.approval-dedupe.outputs.mode == 'run'
-    needs: [approval-dedupe, e2e-docker-tests, e2e-appimage-tests, tests-e2e-playwright]
+    needs:
+      [
+        approval-dedupe,
+        e2e-docker-tests,
+        e2e-appimage-tests,
+        tests-e2e-playwright,
+      ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
