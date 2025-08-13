@@ -12,7 +12,7 @@
 .container {
   display: flex;
   flex-direction: column;
-  padding: 8px 16px;
+  padding: 16px;
   width: 100%;
   height: 100%;
   word-break: break-word;
@@ -21,6 +21,7 @@
   background-color: var(--rsInputWrapperColor);
   color: var(--euiTextSubduedColor) !important;
   border: 1px solid var(--euiColorLightShade);
+  border-radius: var(--border-radius-medium);
 }
 
 .disabled {
@@ -62,7 +63,7 @@
   align-items: center;
   justify-content: space-between;
 
-  margin-top: 8px;
+  margin-top: 16px;
   flex-shrink: 0;
 }
 

@@ -52,6 +52,8 @@ import UserInCircleSvg from 'uiSrc/assets/img/icons/user_in_circle.svg?react'
 import UserSvg from 'uiSrc/assets/img/icons/user.svg?react'
 import VersionSvg from 'uiSrc/assets/img/icons/version.svg?react'
 import VisTagCloudSvg from 'uiSrc/assets/img/workbench/vis_tag_cloud.svg?react'
+import BikeSvg from 'uiSrc/assets/img/icons/bike.svg?react'
+import PopcornSvg from 'uiSrc/assets/img/icons/popcorn.svg?react'
 
 // Import guides icons
 import ProbabilisticDataSvg from 'uiSrc/assets/img/guides/probabilistic-data.svg?react'
@@ -217,6 +219,8 @@ export const Trigger = createIconComponent(TriggerIcon)
 export const UserInCircle = createIconComponent(UserInCircleSvg)
 export const VersionIcon = createIconComponent(VersionSvg)
 export const VisTagCloudIcon = createIconComponent(VisTagCloudSvg)
+export const BikeIcon = createIconComponent(BikeSvg)
+export const PopcornIcon = createIconComponent(PopcornSvg)
 
 // Guides icons
 export const ProbabilisticDataIcon = createIconComponent(ProbabilisticDataSvg)

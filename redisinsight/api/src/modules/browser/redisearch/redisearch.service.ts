@@ -3,6 +3,7 @@ import {
   ConflictException,
   Injectable,
   Logger,
+  NotFoundException,
 } from '@nestjs/common';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import { catchRedisSearchError } from 'src/utils';
@@ -28,6 +29,7 @@ import {
   RedisClientNodeRole,
 } from 'src/modules/redis/client';
 import { convertIndexInfoReply } from '../utils/redisIndexInfo';
+import { IndexDeleteRequestBodyDto } from './dto/index.delete.dto';
 
 @Injectable()
 export class RedisearchService {
@@ -266,6 +268,36 @@ export class RedisearchService {
       );
 
       throw catchRedisSearchError(e, { searchLimit: dto.limit });
+    }
+  }
+
+  public async deleteIndex(
+    clientMetadata: ClientMetadata,
+    dto: IndexDeleteRequestBodyDto,
+  ): Promise<void> {
+    this.logger.debug('Deleting redisearch index ', clientMetadata);
+
+    try {
+      const { index } = dto;
+      const client: RedisClient =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+
+      await client.sendCommand(['FT.DROPINDEX', index], {
+        replyEncoding: 'utf8',
+      });
+
+      this.logger.debug(
+        'Successfully deleted redisearch index ',
+        clientMetadata,
+      );
+    } catch (error) {
+      this.logger.error(
+        'Failed to delete redisearch index ',
+        error,
+        clientMetadata,
+      );
+
+      throw catchRedisSearchError(error);
     }
   }
 

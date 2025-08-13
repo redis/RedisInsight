@@ -53,6 +53,7 @@ import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import QueryCardTooltip from '../QueryCardTooltip'
 
 import styles from './styles.module.scss'
+import { useViewModeContext, ViewMode } from '../../context/view-mode.context'
 
 export interface Props {
   query: string
@@ -72,12 +73,18 @@ export interface Props {
   executionTime?: number
   emptyCommand?: boolean
   db?: number
+  hideFields?: string[]
   toggleOpen: () => void
   toggleFullScreen: () => void
   setSelectedValue: (type: WBQueryType, value: string) => void
   onQueryDelete: () => void
   onQueryReRun: () => void
   onQueryProfile: (type: ProfileQueryType) => void
+}
+
+export const HIDE_FIELDS = {
+  viewType: 'viewType',
+  profiler: 'profiler',
 }
 
 const getExecutionTimeString = (value: number): string => {
@@ -137,6 +144,7 @@ const QueryCardHeader = (props: Props) => {
     onQueryReRun,
     onQueryProfile,
     db,
+    hideFields = [],
   } = props
 
   const { visualizations = [] } = useSelector(appPluginsSelector)
@@ -144,6 +152,7 @@ const QueryCardHeader = (props: Props) => {
   const { instanceId = '' } = useParams<{ instanceId: string }>()
 
   const { theme } = useContext(ThemeContext)
+  const { viewMode } = useViewModeContext()
 
   const eventStop = (event: React.MouseEvent) => {
     event.preventDefault()
@@ -166,7 +175,12 @@ const QueryCardHeader = (props: Props) => {
   }
 
   const handleCopy = (event: React.MouseEvent, query: string) => {
-    sendEvent(TelemetryEvent.WORKBENCH_COMMAND_COPIED, query)
+    const telemetryEvent =
+      viewMode === ViewMode.Workbench
+        ? TelemetryEvent.WORKBENCH_COMMAND_COPIED
+        : TelemetryEvent.SEARCH_COMMAND_COPIED
+
+    sendEvent(telemetryEvent, query)
     eventStop(event)
     navigator.clipboard?.writeText?.(query)
   }
@@ -194,7 +208,13 @@ const QueryCardHeader = (props: Props) => {
   const handleQueryDelete = (event: React.MouseEvent) => {
     eventStop(event)
     onQueryDelete()
-    sendEvent(TelemetryEvent.WORKBENCH_CLEAR_RESULT_CLICKED, query)
+
+    const telemetryEvent =
+      viewMode === ViewMode.Workbench
+        ? TelemetryEvent.WORKBENCH_CLEAR_RESULT_CLICKED
+        : TelemetryEvent.SEARCH_CLEAR_RESULT_CLICKED
+
+    sendEvent(telemetryEvent, query)
   }
 
   const handleQueryReRun = (event: React.MouseEvent) => {
@@ -207,12 +227,16 @@ const QueryCardHeader = (props: Props) => {
       !isFullScreen &&
       !isSilentModeWithoutError(resultsMode, summary?.fail)
     ) {
-      sendEvent(
-        isOpen
-          ? TelemetryEvent.WORKBENCH_RESULTS_COLLAPSED
-          : TelemetryEvent.WORKBENCH_RESULTS_EXPANDED,
-        query,
-      )
+      const telemetryEvent =
+        viewMode === ViewMode.Workbench
+          ? isOpen
+            ? TelemetryEvent.WORKBENCH_RESULTS_COLLAPSED
+            : TelemetryEvent.WORKBENCH_RESULTS_EXPANDED
+          : isOpen
+            ? TelemetryEvent.SEARCH_RESULTS_COLLAPSED
+            : TelemetryEvent.SEARCH_RESULTS_EXPANDED
+
+      sendEvent(telemetryEvent, query)
     }
     toggleOpen()
   }
@@ -410,54 +434,58 @@ const QueryCardHeader = (props: Props) => {
                 </RiTooltip>
               )}
             </FlexItem>
-            <FlexItem
-              className={cx(styles.buttonIcon, styles.viewTypeIcon)}
-              onClick={onDropDownViewClick}
-            >
-              {isOpen && canCommandProfile && !summaryText && (
-                <div className={styles.dropdownWrapper}>
-                  <div className={styles.dropdown}>
-                    <ProfileSelect
-                      placeholder={profileOptions[0].inputDisplay}
-                      onChange={(value: ProfileQueryType | string) =>
-                        onQueryProfile(value as ProfileQueryType)
-                      }
-                      options={profileOptions}
-                      data-testid="run-profile-type"
-                      valueRender={({ option, isOptionValue }) => {
-                        if (isOptionValue) {
-                          return option.dropdownDisplay as JSX.Element
+            {!hideFields?.includes(HIDE_FIELDS.profiler) && (
+              <FlexItem
+                className={cx(styles.buttonIcon, styles.viewTypeIcon)}
+                onClick={onDropDownViewClick}
+              >
+                {isOpen && canCommandProfile && !summaryText && (
+                  <div className={styles.dropdownWrapper}>
+                    <div className={styles.dropdown}>
+                      <ProfileSelect
+                        placeholder={profileOptions[0].inputDisplay}
+                        onChange={(value: ProfileQueryType | string) =>
+                          onQueryProfile(value as ProfileQueryType)
                         }
-                        return option.inputDisplay as JSX.Element
-                      }}
-                    />
+                        options={profileOptions}
+                        data-testid="run-profile-type"
+                        valueRender={({ option, isOptionValue }) => {
+                          if (isOptionValue) {
+                            return option.dropdownDisplay as JSX.Element
+                          }
+                          return option.inputDisplay as JSX.Element
+                        }}
+                      />
+                    </div>
                   </div>
-                </div>
-              )}
-            </FlexItem>
-            <FlexItem
-              className={cx(styles.buttonIcon, styles.viewTypeIcon)}
-              onClick={onDropDownViewClick}
-            >
-              {isOpen && options.length > 1 && !summaryText && (
-                <div className={styles.dropdownWrapper}>
-                  <div className={styles.dropdown}>
-                    <ProfileSelect
-                      options={modifiedOptions}
-                      valueRender={({ option, isOptionValue }) => {
-                        if (isOptionValue) {
-                          return option.dropdownDisplay as JSX.Element
-                        }
-                        return option.inputDisplay as JSX.Element
-                      }}
-                      value={selectedValue}
-                      onChange={(value: string) => onChangeView(value)}
-                      data-testid="select-view-type"
-                    />
+                )}
+              </FlexItem>
+            )}
+            {!hideFields?.includes(HIDE_FIELDS.viewType) && (
+              <FlexItem
+                className={cx(styles.buttonIcon, styles.viewTypeIcon)}
+                onClick={onDropDownViewClick}
+              >
+                {isOpen && options.length > 1 && !summaryText && (
+                  <div className={styles.dropdownWrapper}>
+                    <div className={styles.dropdown}>
+                      <ProfileSelect
+                        options={modifiedOptions}
+                        valueRender={({ option, isOptionValue }) => {
+                          if (isOptionValue) {
+                            return option.dropdownDisplay as JSX.Element
+                          }
+                          return option.inputDisplay as JSX.Element
+                        }}
+                        value={selectedValue}
+                        onChange={(value: string) => onChangeView(value)}
+                        data-testid="select-view-type"
+                      />
+                    </div>
                   </div>
-                </div>
-              )}
-            </FlexItem>
+                )}
+              </FlexItem>
+            )}
             <FlexItem
               className={styles.buttonIcon}
               onClick={onDropDownViewClick}

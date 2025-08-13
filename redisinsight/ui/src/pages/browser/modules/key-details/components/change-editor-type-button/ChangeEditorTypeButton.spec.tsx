@@ -1,7 +1,6 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
 
-import { userEvent } from 'uiSrc/utils/test-utils'
+import { render, screen, userEvent } from 'uiSrc/utils/test-utils'
 import ChangeEditorTypeButton from './ChangeEditorTypeButton'
 
 const mockSwitchEditorType = jest.fn()

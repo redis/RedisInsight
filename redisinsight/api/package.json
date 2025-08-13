@@ -50,7 +50,8 @@
     "winston-daily-rotate-file/**/file-stream-rotator": "^1.0.0",
     "**/form-data": "^4.0.4",
     "form-data": "^4.0.4",
-    "supertest/**/form-data": "^4.0.4"
+    "supertest/**/form-data": "^4.0.4",
+    "**/multer": "^2.0.2"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.20",
