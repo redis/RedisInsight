@@ -40,7 +40,7 @@ describe('RedisEnterpriseAnalytics', () => {
 
       expect(sendEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
-        TelemetryEvents.REClusterDiscoverySucceed,
+        TelemetryEvents.RedisSoftwareDiscoverySucceed,
         {
           numberOfActiveDatabases: 2,
           totalNumberOfDatabases: 2,
@@ -58,7 +58,7 @@ describe('RedisEnterpriseAnalytics', () => {
 
       expect(sendEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
-        TelemetryEvents.REClusterDiscoverySucceed,
+        TelemetryEvents.RedisSoftwareDiscoverySucceed,
         {
           numberOfActiveDatabases: 1,
           totalNumberOfDatabases: 2,
@@ -79,7 +79,7 @@ describe('RedisEnterpriseAnalytics', () => {
 
       expect(sendEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
-        TelemetryEvents.REClusterDiscoverySucceed,
+        TelemetryEvents.RedisSoftwareDiscoverySucceed,
         {
           numberOfActiveDatabases: 0,
           totalNumberOfDatabases: 2,
@@ -91,7 +91,7 @@ describe('RedisEnterpriseAnalytics', () => {
 
       expect(sendEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
-        TelemetryEvents.REClusterDiscoverySucceed,
+        TelemetryEvents.RedisSoftwareDiscoverySucceed,
         {
           numberOfActiveDatabases: 0,
           totalNumberOfDatabases: 0,
@@ -103,7 +103,7 @@ describe('RedisEnterpriseAnalytics', () => {
 
       expect(sendEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
-        TelemetryEvents.REClusterDiscoverySucceed,
+        TelemetryEvents.RedisSoftwareDiscoverySucceed,
         {
           numberOfActiveDatabases: 0,
           totalNumberOfDatabases: 0,
@@ -129,7 +129,7 @@ describe('RedisEnterpriseAnalytics', () => {
 
       expect(sendFailedEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
-        TelemetryEvents.REClusterDiscoveryFailed,
+        TelemetryEvents.RedisSoftwareDiscoveryFailed,
         httpException,
       );
     });
