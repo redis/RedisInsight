@@ -1,11 +1,12 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
 
-import { StyledHeaderAction, StyledWrapper } from './HeaderActions.styles'
 import { ManageIndexesDrawer } from '../manage-indexes/ManageIndexesDrawer'
 import { collectSavedQueriesPanelToggleTelemetry } from '../telemetry'
 import { StartWizardButton } from './StartWizardButton'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
+import { FlexGroup, Row } from 'uiSrc/components/base/layout/flex'
+import { HorizontalSpacer, Spacer } from 'uiSrc/components/base/layout'
 
 export type HeaderActionsProps = {
   isManageIndexesDrawerOpen: boolean
@@ -32,22 +33,29 @@ export const HeaderActions = ({
   }
 
   return (
-    <StyledWrapper>
-      <StartWizardButton />
+    <>
+      <FlexGroup align="center">
+        <StartWizardButton />
 
-      <StyledHeaderAction data-testid="vector-search-header-actions">
-        <EmptyButton onClick={handleSavedQueriesClick}>
-          Saved queries
-        </EmptyButton>
-        <EmptyButton onClick={() => setIsManageIndexesDrawerOpen(true)}>
-          Manage indexes
-        </EmptyButton>
-      </StyledHeaderAction>
+        <Row justify="end" data-testid="vector-search-header-actions">
+          <EmptyButton onClick={handleSavedQueriesClick}>
+            Saved queries
+          </EmptyButton>
 
-      <ManageIndexesDrawer
-        open={isManageIndexesDrawerOpen}
-        onOpenChange={setIsManageIndexesDrawerOpen}
-      />
-    </StyledWrapper>
+          <HorizontalSpacer size="m" />
+
+          <EmptyButton onClick={() => setIsManageIndexesDrawerOpen(true)}>
+            Manage indexes
+          </EmptyButton>
+        </Row>
+
+        <ManageIndexesDrawer
+          open={isManageIndexesDrawerOpen}
+          onOpenChange={setIsManageIndexesDrawerOpen}
+        />
+      </FlexGroup>
+
+      <Spacer size="m" />
+    </>
   )
 }
