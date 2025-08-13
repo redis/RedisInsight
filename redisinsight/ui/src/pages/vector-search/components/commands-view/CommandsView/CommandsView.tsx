@@ -1,5 +1,4 @@
 import React from 'react'
-import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 
 import { CodeButtonParams } from 'uiSrc/constants'
@@ -15,7 +14,11 @@ import { ProgressBarLoader } from 'uiSrc/components/base/display'
 import { collectTelemetryQueryReRun } from 'uiSrc/pages/vector-search/telemetry'
 import QueryCard from '../../QueryCard'
 
-import styles from './styles.module.scss'
+import {
+  StyledContainer,
+  StyledHeader,
+  StyledWrapper,
+} from './CommandsView.styles'
 
 export interface Props {
   isResultsLoaded: boolean
@@ -80,25 +83,24 @@ const CommandsView = (props: Props) => {
   }
 
   return (
-    <div className={styles.wrapper}>
+    <StyledWrapper>
       {!isResultsLoaded && (
         <ProgressBarLoader color="primary" data-testid="progress-wb-history" />
       )}
       {!!items?.length && (
-        <div className={styles.header}>
+        <StyledHeader>
           <EmptyButton
             size="small"
             icon={DeleteIcon}
-            className={styles.clearAllBtn}
             onClick={() => onAllQueriesDelete?.()}
             disabled={clearing || processing}
             data-testid="clear-history-btn"
           >
             Clear Results
           </EmptyButton>
-        </div>
+        </StyledHeader>
       )}
-      <div className={cx(styles.container)}>
+      <StyledContainer>
         <div ref={scrollDivRef} />
         {items?.length
           ? items.map(
@@ -161,8 +163,8 @@ const CommandsView = (props: Props) => {
             )
           : null}
         {isResultsLoaded && !items.length && (noResultsPlaceholder ?? null)}
-      </div>
-    </div>
+      </StyledContainer>
+    </StyledWrapper>
   )
 }
 
