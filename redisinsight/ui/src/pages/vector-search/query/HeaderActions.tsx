@@ -6,7 +6,7 @@ import { collectSavedQueriesPanelToggleTelemetry } from '../telemetry'
 import { StartWizardButton } from './StartWizardButton'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { FlexGroup, Row } from 'uiSrc/components/base/layout/flex'
-import { HorizontalSpacer, Spacer } from 'uiSrc/components/base/layout'
+import { Spacer } from 'uiSrc/components/base/layout'
 
 export type HeaderActionsProps = {
   isManageIndexesDrawerOpen: boolean
@@ -37,12 +37,10 @@ export const HeaderActions = ({
       <FlexGroup align="center">
         <StartWizardButton />
 
-        <Row justify="end" data-testid="vector-search-header-actions">
+        <Row justify="end" data-testid="vector-search-header-actions" gap="m">
           <EmptyButton onClick={handleSavedQueriesClick}>
             Saved queries
           </EmptyButton>
-
-          <HorizontalSpacer size="m" />
 
           <EmptyButton onClick={() => setIsManageIndexesDrawerOpen(true)}>
             Manage indexes
