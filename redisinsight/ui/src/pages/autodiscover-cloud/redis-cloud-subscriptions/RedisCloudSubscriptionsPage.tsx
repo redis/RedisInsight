@@ -79,7 +79,7 @@ const RedisCloudSubscriptionsPage = () => {
 
   const sendCancelEvent = () => {
     sendEventTelemetry({
-      event: TelemetryEvent.CONFIG_DATABASES_RE_CLOUD_AUTODISCOVERY_CANCELLED,
+      event: TelemetryEvent.CONFIG_DATABASES_REDIS_CLOUD_AUTODISCOVERY_CANCELLED,
     })
   }
 
