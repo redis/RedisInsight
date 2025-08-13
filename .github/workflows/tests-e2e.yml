@@ -29,7 +29,6 @@ jobs:
       require_approval: true
       allow_workflow_dispatch: true
 
-  # E2E Docker
   build-docker:
     needs: approval-dedupe
     if: needs.approval-dedupe.outputs.mode == 'run'
@@ -39,21 +38,6 @@ jobs:
       debug: ${{ inputs.debug || false }}
       for_e2e_tests: true
 
-  e2e-docker-tests:
-    needs: build-docker
-    uses: ./.github/workflows/tests-e2e-docker.yml
-    secrets: inherit
-    with:
-      debug: ${{ inputs.debug || false }}
-
-  tests-e2e-playwright:
-    needs: build-docker
-    uses: ./.github/workflows/tests-e2e-playwright.yml
-    secrets: inherit
-    with:
-      debug: ${{ inputs.debug || false }}
-
-  # E2E AppImage
   build-appimage:
     needs: approval-dedupe
     if: needs.approval-dedupe.outputs.mode == 'run'
@@ -63,8 +47,29 @@ jobs:
       target: build_linux_appimage_x64
       debug: ${{ inputs.debug || false }}
 
+  builds-complete:
+    needs: [build-docker, build-appimage]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Both builds finished
+        run: echo "Docker and AppImage builds completed"
+
+  e2e-docker-tests:
+    needs: builds-complete
+    uses: ./.github/workflows/tests-e2e-docker.yml
+    secrets: inherit
+    with:
+      debug: ${{ inputs.debug || false }}
+
+  tests-e2e-playwright:
+    needs: builds-complete
+    uses: ./.github/workflows/tests-e2e-playwright.yml
+    secrets: inherit
+    with:
+      debug: ${{ inputs.debug || false }}
+
   e2e-appimage-tests:
-    needs: build-appimage
+    needs: builds-complete
     uses: ./.github/workflows/tests-e2e-appimage.yml
     secrets: inherit
     with:
@@ -72,13 +77,14 @@ jobs:
 
   clean:
     uses: ./.github/workflows/clean-deployments.yml
-    if: always()
-    needs: [e2e-docker-tests, e2e-appimage-tests, tests-e2e-playwright]
+    if: always() && needs.approval-dedupe.outputs.mode == 'run'
+    needs: [approval-dedupe, e2e-docker-tests, e2e-appimage-tests, tests-e2e-playwright]
 
   # Remove artifacts from github actions
   remove-artifacts:
     name: Remove artifacts
-    needs: [e2e-docker-tests, e2e-appimage-tests, tests-e2e-playwright]
+    if: needs.approval-dedupe.outputs.mode == 'run'
+    needs: [approval-dedupe, e2e-docker-tests, e2e-appimage-tests, tests-e2e-playwright]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
