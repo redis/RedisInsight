@@ -1,7 +1,10 @@
 import { useCallback, useState } from 'react'
-import { useLoadData, useDispatchWbQuery } from 'uiSrc/services/hooks'
+import { reverse } from 'lodash'
+import { useLoadData } from 'uiSrc/services/hooks'
+import { addCommands } from 'uiSrc/services/workbenchStorage'
 import { generateFtCreateCommand } from 'uiSrc/utils/index/generateFtCreateCommand'
 import { CreateSearchIndexParameters, PresetDataType } from '../types'
+import executeQuery from 'uiSrc/services/executeQuery'
 
 interface UseCreateIndexResult {
   run: (params: CreateSearchIndexParameters) => Promise<void>
@@ -20,7 +23,6 @@ export const useCreateIndex = (): UseCreateIndexResult => {
   const [error, setError] = useState<Error | null>(null)
 
   const { load } = useLoadData()
-  const dispatchCreateIndex = useDispatchWbQuery()
 
   const run = useCallback(
     async ({ instanceId }: CreateSearchIndexParameters) => {
@@ -40,22 +42,22 @@ export const useCreateIndex = (): UseCreateIndexResult => {
         await load(instanceId, collectionName)
 
         // Step 2: Create the search index
-        await new Promise<void>((resolve, reject) => {
-          dispatchCreateIndex(generateFtCreateCommand(), {
-            afterAll: () => {
-              setSuccess(true)
-              resolve()
-            },
-            onFail: reject,
-          })
-        })
+        const cmd = generateFtCreateCommand()
+        const data = await executeQuery(instanceId, cmd)
+
+        // Step 3: Persist results locally so Vector Search history (CommandsView) shows it
+        if (Array.isArray(data) && data.length) {
+          await addCommands(reverse(data))
+        }
+
+        setSuccess(true)
       } catch (e) {
         setError(e instanceof Error ? e : new Error(String(e)))
       } finally {
         setLoading(false)
       }
     },
-    [load, dispatchCreateIndex],
+    [load, executeQuery],
   )
 
   return {
