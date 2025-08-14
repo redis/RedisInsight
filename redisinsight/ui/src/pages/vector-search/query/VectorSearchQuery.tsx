@@ -14,6 +14,7 @@ import CommandsViewWrapper from '../components/commands-view'
 import { VectorSearchScreenWrapper } from '../styles'
 import { SavedQueriesScreen } from '../saved-queries/SavedQueriesScreen'
 import { SavedIndex } from '../saved-queries/types'
+import { PresetDataType } from '../create-index/types'
 import {
   collectChangedSavedQueryIndexTelemetry,
   collectInsertSavedQueryTelemetry,
@@ -28,7 +29,7 @@ import {
 
 const mockSavedIndexes: SavedIndex[] = [
   {
-    value: 'idx:bikes_vss',
+    value: PresetDataType.BIKES,
     tags: ['tag', 'text', 'vector'],
     queries: [
       {
