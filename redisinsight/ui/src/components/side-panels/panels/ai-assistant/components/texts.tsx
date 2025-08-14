@@ -1,4 +1,3 @@
-import { EuiLink } from '@elastic/eui'
 import React from 'react'
 
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
@@ -20,6 +19,7 @@ export const ASSISTANCE_CHAT_AGREEMENTS = (
       By accessing and/or using Redis Copilot, you acknowledge that you agree to
       the{' '}
       <Link
+        variant="small-inline"
         color="subdued"
         target="_blank"
         href="https://redis.io/legal/redis-copilot-terms-of-use/"
@@ -28,6 +28,7 @@ export const ASSISTANCE_CHAT_AGREEMENTS = (
       </Link>{' '}
       and{' '}
       <Link
+        variant="small-inline"
         color="subdued"
         target="_blank"
         href="https://redis.com/legal/privacy-policy/"
@@ -56,6 +57,7 @@ export const EXPERT_CHAT_AGREEMENTS = (
       By accepting these terms, you consent to the processing of any information
       included in your database, and you agree to the{' '}
       <Link
+        variant="small-inline"
         color="subdued"
         target="_blank"
         href="https://redis.io/legal/redis-copilot-terms-of-use/"
@@ -64,6 +66,7 @@ export const EXPERT_CHAT_AGREEMENTS = (
       </Link>{' '}
       and{' '}
       <Link
+        variant="small-inline"
         color="subdued"
         target="_blank"
         href="https://redis.com/legal/privacy-policy/"
