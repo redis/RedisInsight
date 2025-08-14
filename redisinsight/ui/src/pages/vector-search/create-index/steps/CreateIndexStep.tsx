@@ -102,7 +102,9 @@ export const CreateIndexStep: IStepComponent = ({
         </FlexGroup>
       </FlexItem>
       <PreviewCommandDrawer
-        commandContent={generateFtCreateCommand()}
+        commandContent={generateFtCreateCommand({
+          indexName: parameters.indexName,
+        })}
         isOpen={isDrawerOpen}
         onOpenChange={setIsDrawerOpen}
       />
