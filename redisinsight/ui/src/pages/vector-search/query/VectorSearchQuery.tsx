@@ -108,8 +108,6 @@ export const VectorSearchQuery = () => {
     })
   }
 
-  const leftPanelDefault = isSavedQueriesOpen ? 70 : 100
-
   return (
     <ViewModeContextProvider viewMode={ViewMode.VectorSearch}>
       <VectorSearchScreenWrapper direction="column" justify="between">
@@ -125,7 +123,7 @@ export const VectorSearchQuery = () => {
             id="left-panel"
             minSize={20}
             order={1}
-            defaultSize={leftPanelDefault}
+            defaultSize={isSavedQueriesOpen ? 70 : 100}
           >
             <ResizableContainer direction="vertical">
               <ResizablePanel id="top-panel" minSize={10} defaultSize={30}>
