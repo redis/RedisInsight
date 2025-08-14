@@ -28,16 +28,16 @@ import {
 
 const mockSavedIndexes: SavedIndex[] = [
   {
-    value: 'idx:bikes',
+    value: 'idx:bikes_vss',
     tags: ['tag', 'text', 'vector'],
     queries: [
       {
         label: 'Search for "Nord" bikes ordered by price',
-        value: 'FT.SEARCH idx:bikes "@brand:Nord" SORTBY price ASC',
+        value: 'FT.SEARCH idx:bikes_vss "@brand:Nord" SORTBY price ASC',
       },
       {
         label: 'Find road alloy bikes under 20kg',
-        value: 'FT.SEARCH idx:bikes "@material:{alloy} @weight:[0 20]"',
+        value: 'FT.SEARCH idx:bikes_vss "@material:{alloy} @weight:[0 20]"',
       },
     ],
   },

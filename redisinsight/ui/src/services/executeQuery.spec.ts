@@ -8,7 +8,7 @@ import executeQuery from './executeQuery'
 
 describe('executeQuery', () => {
   const instanceId = 'test-instance-id'
-  const command = 'FT.CREATE idx:bikes_vss ...'
+  const command = 'FT.CREATE idx:bikes_vss_vss ...'
 
   beforeEach(() => {
     mswServer.resetHandlers()

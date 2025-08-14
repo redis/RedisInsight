@@ -3,10 +3,10 @@ import { generateFtCreateCommand } from './generateFtCreateCommand'
 describe('generateFtCreateCommand', () => {
   it('returns the expected hardcoded FT.CREATE command', () => {
     const result = generateFtCreateCommand({
-      indexName: 'idx:bikes_vss',
+      indexName: 'idx:bikes_vss_vss',
     })
 
-    expect(result).toBe(`FT.CREATE idx:bikes_vss
+    expect(result).toBe(`FT.CREATE idx:bikes_vss_vss
     ON HASH
         PREFIX 1 "bikes:"
     SCHEMA
