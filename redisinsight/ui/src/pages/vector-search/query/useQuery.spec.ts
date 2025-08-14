@@ -72,7 +72,7 @@ describe('useQuery hook', () => {
   })
 
   it('loads history on mount (error - returns empty array)', async () => {
-    mockedUtils.loadHistoryData.mockRejectedValueOnce(new Error('boom'))
+    mockedUtils.loadHistoryData.mockRejectedValueOnce(new Error('error'))
 
     const { result } = renderHook(() =>
       useQuery(),
@@ -188,6 +188,8 @@ describe('useQuery hook', () => {
   it('onAllQueriesDelete clears all items and toggles clearing flag', async () => {
     mockedUtils.loadHistoryData.mockResolvedValueOnce([
       { id: 'a', loading: false, isOpen: false, error: '' },
+      { id: 'b', loading: false, isOpen: false, error: '' },
+      { id: 'c', loading: false, isOpen: false, error: '' },
     ])
     const { result } = renderHook(() =>
       useQuery(),
