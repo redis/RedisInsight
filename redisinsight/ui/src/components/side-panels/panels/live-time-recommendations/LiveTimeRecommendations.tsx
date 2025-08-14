@@ -194,7 +194,7 @@ const LiveTimeRecommendations = () => {
               className={styles.githubIcon}
               aria-label="redis insight github repository"
               type="GithubIcon"
-              size="s"
+              size="m"
               data-testid="github-repo-icon"
             />
           </a>
