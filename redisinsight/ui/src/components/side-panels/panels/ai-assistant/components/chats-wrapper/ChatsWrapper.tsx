@@ -89,6 +89,7 @@ const ChatsWrapper = () => {
       {chats.length > 1 && (
         <Tabs
           tabs={tabs}
+          className={styles.tabs}
           value={activeTab}
           onChange={selectTab}
           data-testid="ai-tabs"
