@@ -124,6 +124,7 @@ export const VectorSearchQuery = () => {
           <ResizablePanel
             id="left-panel"
             minSize={20}
+            order={1}
             defaultSize={leftPanelDefault}
           >
             <ResizableContainer direction="vertical">
@@ -184,7 +185,12 @@ export const VectorSearchQuery = () => {
                 data-test-subj="resize-btn-scripting-area-and-results"
               />
 
-              <ResizablePanel id="right-panel" minSize={20} defaultSize={30}>
+              <ResizablePanel
+                id="right-panel"
+                order={2}
+                minSize={20}
+                defaultSize={30}
+              >
                 <SavedQueriesScreen
                   onIndexChange={handleIndexChange}
                   onQueryInsert={handleQueryInsert}
