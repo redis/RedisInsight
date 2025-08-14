@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { CreateIndexStep } from './CreateIndexStep'
-import { selectedBikesIndexFields } from './config'
+import { bikesIndexFieldsBoxes, selectedBikesIndexFields } from './config'
 import {
   SearchIndexType,
   SampleDataType,
@@ -93,32 +93,32 @@ describe('CreateIndexStep', () => {
     render(<CreateIndexStep {...defaultProps} />)
 
     // Check for some of the expected field labels from bikesIndexFieldsBoxes
-    expect(screen.getByText('id')).toBeInTheDocument()
-    expect(screen.getByText('description')).toBeInTheDocument()
+    expect(screen.getByText('model')).toBeInTheDocument()
+    expect(screen.getByText('brand')).toBeInTheDocument()
     expect(screen.getByText('price')).toBeInTheDocument()
-    expect(screen.getByText('name')).toBeInTheDocument()
-    expect(screen.getByText('category')).toBeInTheDocument()
-    expect(screen.getByText('embedding')).toBeInTheDocument()
+    expect(screen.getByText('type')).toBeInTheDocument()
+    expect(screen.getByText('material')).toBeInTheDocument()
+    expect(screen.getByText('weight')).toBeInTheDocument()
   })
 
   it('should render field descriptions', () => {
     render(<CreateIndexStep {...defaultProps} />)
 
     // Check for some field descriptions
-    expect(screen.getByText('Unique product identifier')).toBeInTheDocument()
-    expect(screen.getByText('Product description')).toBeInTheDocument()
-    expect(screen.getByText('Product name')).toBeInTheDocument()
-    expect(screen.getByText('Product category')).toBeInTheDocument()
+    expect(screen.getByText('Product model')).toBeInTheDocument()
+    expect(screen.getByText('Product brand')).toBeInTheDocument()
+    expect(screen.getByText('Product price')).toBeInTheDocument()
+    expect(screen.getByText('Product type')).toBeInTheDocument()
   })
 
   it('should render field type tags', () => {
     render(<CreateIndexStep {...defaultProps} />)
 
     // Check for field type tags (these appear as text content)
-    expect(screen.getAllByText('TAG')).toHaveLength(2) // id and category fields
-    expect(screen.getAllByText('TEXT')).toHaveLength(2) // description and name fields
-    expect(screen.getAllByText('NUMERIC')).toHaveLength(2) // price and price_1 fields
-    expect(screen.getAllByText('VECTOR')).toHaveLength(2) // embedding and embedding_1 fields
+    expect(screen.getAllByText('TAG')).toHaveLength(2)
+    expect(screen.getAllByText('TEXT')).toHaveLength(2)
+    expect(screen.getAllByText('NUMERIC')).toHaveLength(2)
+    expect(screen.getAllByText('VECTOR')).toHaveLength(1)
   })
 
   it('should not render the preview command drawer by default', () => {
@@ -155,20 +155,10 @@ describe('CreateIndexStep', () => {
     it('should render with all expected field boxes', () => {
       render(<CreateIndexStep {...defaultProps} />)
 
-      // Verify all 8 field boxes are rendered (from bikesIndexFieldsBoxes config)
-      const fieldLabels = [
-        'id',
-        'description',
-        'price',
-        'price_1',
-        'name',
-        'category',
-        'embedding',
-        'embedding_1',
-      ]
+      const fieldLabels = bikesIndexFieldsBoxes.map((field) => field.value)
 
-      fieldLabels.forEach((label) => {
-        expect(screen.getByText(label)).toBeInTheDocument()
+      fieldLabels.forEach((value) => {
+        expect(screen.getByText(value)).toBeInTheDocument()
       })
     })
   })
