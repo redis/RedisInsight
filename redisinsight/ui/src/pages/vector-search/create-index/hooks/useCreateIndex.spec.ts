@@ -22,7 +22,7 @@ jest.mock('uiSrc/services/workbenchStorage', () => ({
 }))
 
 jest.mock('uiSrc/utils/index/generateFtCreateCommand', () => ({
-  generateFtCreateCommand: () => 'FT.CREATE idx:bikes_vss ...',
+  generateFtCreateCommand: () => 'FT.CREATE idx:bikes ...',
 }))
 
 jest.mock('uiSrc/services/executeQuery', () => ({
@@ -59,7 +59,7 @@ describe('useCreateIndex', () => {
     expect(mockLoad).toHaveBeenCalledWith('test-instance-id', 'bikes')
     expect(mockExecute).toHaveBeenCalledWith(
       'test-instance-id',
-      'FT.CREATE idx:bikes_vss ...',
+      'FT.CREATE idx:bikes ...',
     )
     expect(mockAddCommands).toHaveBeenCalled()
     expect(result.current.success).toBe(true)
