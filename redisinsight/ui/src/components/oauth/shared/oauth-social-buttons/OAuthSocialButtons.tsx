@@ -71,11 +71,9 @@ const OAuthSocialButtons = (props: Props) => {
             data-testid={label}
             aria-labelledby={label}
           >
-            <FlexGroup align="center">
-              <FlexItem direction={inline ? 'row' : 'column'}>
-                <RiIcon type={icon as AllIconsType} />
-                <Text className={styles.label}>{text}</Text>
-              </FlexItem>
+            <FlexGroup direction={inline ? 'row' : 'column'} align="center" justify="center">
+              <RiIcon type={icon as AllIconsType} />
+              <Text className={styles.label}>{text}</Text>
             </FlexGroup>
           </EmptyButton>
         </RiTooltip>
