@@ -65,7 +65,7 @@ export const VectorSearchQuery = () => {
   } = useQuery()
   const { instanceId } = useParams<{ instanceId: string }>()
 
-  const [isSavedQueriesOpen, setIsSavedQueriesOpen] = useState<boolean>(false)
+  const [isSavedQueriesOpen, setIsSavedQueriesOpen] = useState<boolean>(true)
   const [isManageIndexesDrawerOpen, setIsManageIndexesDrawerOpen] =
     useState<boolean>(false)
   const [queryIndex, setQueryIndex] = useState(mockSavedIndexes[0].value)

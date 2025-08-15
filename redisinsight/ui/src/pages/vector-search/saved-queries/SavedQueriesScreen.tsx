@@ -34,7 +34,7 @@ export const SavedQueriesScreen = ({
   onIndexChange,
   onQueryInsert,
 }: SavedQueriesScreenProps) => (
-  <VectorSearchScreenWrapper direction="column">
+  <VectorSearchScreenWrapper direction="column" data-testid='saved-queries-screen'>
     <VectorSearchScreenHeader>
       <Title size="M" data-testid="title">
         Saved queries

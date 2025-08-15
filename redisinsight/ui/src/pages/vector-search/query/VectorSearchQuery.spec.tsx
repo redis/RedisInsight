@@ -26,15 +26,25 @@ describe('VectorSearchQuery', () => {
     expect(container).toBeInTheDocument()
   })
 
+  it('can close the Saved Queries screen', () => {
+    renderVectorSearchQueryComponent()
+
+    // Verify the saved queries screen is open by default
+    const savedQueriesScreen = screen.getByTestId('saved-queries-screen')
+    expect(savedQueriesScreen).toBeInTheDocument()
+
+    // Close the saved queries screen
+    const savedQueriesButton = screen.getAllByText('Saved queries')[0]
+    expect(savedQueriesButton).toBeInTheDocument()
+    fireEvent.click(savedQueriesButton)
+
+    // Verify the saved queries screen is closed
+    expect(savedQueriesScreen).not.toBeInTheDocument()
+  })
+
   describe('Telemetry', () => {
     it('should collect telemetry when inserting a saved query', () => {
       renderVectorSearchQueryComponent()
-
-      // Open the saved queries screen
-      const savedQueriesButton = screen.getByText('Saved queries')
-      expect(savedQueriesButton).toBeInTheDocument()
-
-      fireEvent.click(savedQueriesButton)
 
       // Select a saved query
       const insertQueryButton = screen.getAllByTestId('btn-insert-query')[0]
