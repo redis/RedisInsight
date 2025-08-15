@@ -5,7 +5,7 @@ import { ManageIndexesDrawer } from '../manage-indexes/ManageIndexesDrawer'
 import { collectSavedQueriesPanelToggleTelemetry } from '../telemetry'
 import { StartWizardButton } from './StartWizardButton'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
-import { FlexGroup, Row } from 'uiSrc/components/base/layout/flex'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout'
 
 export type HeaderActionsProps = {
@@ -34,7 +34,7 @@ export const HeaderActions = ({
 
   return (
     <>
-      <FlexGroup align="center">
+      <Row align="center">
         <StartWizardButton />
 
         <Row justify="end" data-testid="vector-search-header-actions" gap="m">
@@ -51,7 +51,7 @@ export const HeaderActions = ({
           open={isManageIndexesDrawerOpen}
           onOpenChange={setIsManageIndexesDrawerOpen}
         />
-      </FlexGroup>
+      </Row>
 
       <Spacer size="m" />
     </>
