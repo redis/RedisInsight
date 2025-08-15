@@ -65,7 +65,7 @@ export const bikesIndexFieldsBoxes: VectorSearchBox[] = [
     value: 'model',
     label: 'model',
     text: 'Product model',
-    tag: FieldTypes.TAG,
+    tag: FieldTypes.TEXT,
     disabled: true,
   },
   {
@@ -86,21 +86,21 @@ export const bikesIndexFieldsBoxes: VectorSearchBox[] = [
     value: 'type',
     label: 'type',
     text: 'Product type',
-    tag: FieldTypes.NUMERIC,
+    tag: FieldTypes.TAG,
     disabled: true,
   },
   {
     value: 'material',
     label: 'material',
     text: 'Product material',
-    tag: FieldTypes.TEXT,
+    tag: FieldTypes.TAG,
     disabled: true,
   },
   {
     value: 'weight',
     label: 'weight',
     text: 'Product weight',
-    tag: FieldTypes.TAG,
+    tag: FieldTypes.NUMERIC,
     disabled: true,
   },
   {
