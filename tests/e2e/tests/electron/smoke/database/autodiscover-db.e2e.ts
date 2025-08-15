@@ -20,7 +20,7 @@ test.skip
     .after(async() => {
         await databaseHelper.deleteDatabase(redisEnterpriseClusterConfig.databaseName);
     })('Verify that user can add database from RE Cluster via auto-discover flow', async() => {
-        await databaseHelper.addNewREClusterDatabase(redisEnterpriseClusterConfig);
+        await databaseHelper.addNewRedisSoftwareDatabase(redisEnterpriseClusterConfig);
         // Verify that user can see an indicator of databases that are added using autodiscovery and not opened yet
         // Verify new connection badge for RE cluster
         await myRedisDatabasePage.verifyDatabaseStatusIsVisible(redisEnterpriseClusterConfig.databaseName);

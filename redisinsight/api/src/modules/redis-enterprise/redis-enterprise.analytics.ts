@@ -12,7 +12,7 @@ export class RedisEnterpriseAnalytics extends TelemetryBaseService {
     super(eventEmitter);
   }
 
-  sendGetREClusterDbsSucceedEvent(
+  sendGetRedisSoftwareDbsSucceedEvent(
     sessionMetadata: SessionMetadata,
     databases: RedisEnterpriseDatabase[] = [],
   ): void {
@@ -32,7 +32,7 @@ export class RedisEnterpriseAnalytics extends TelemetryBaseService {
     }
   }
 
-  sendGetREClusterDbsFailedEvent(
+  sendGetRedisSoftwareDbsFailedEvent(
     sessionMetadata: SessionMetadata,
     exception: HttpException,
   ) {

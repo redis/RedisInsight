@@ -21,7 +21,7 @@ export class CloudAutodiscoveryAnalytics extends TelemetryBaseService {
     super(eventEmitter);
   }
 
-  sendGetRECloudSubsSucceedEvent(
+  sendGetRedisCloudSubsSucceedEvent(
     sessionMetadata: SessionMetadata,
     subscriptions: CloudSubscription[] = [],
     type: CloudSubscriptionType,
@@ -45,7 +45,7 @@ export class CloudAutodiscoveryAnalytics extends TelemetryBaseService {
     }
   }
 
-  sendGetRECloudSubsFailedEvent(
+  sendGetRedisCloudSubsFailedEvent(
     sessionMetadata: SessionMetadata,
     exception: HttpException,
     type: CloudSubscriptionType,
@@ -62,7 +62,7 @@ export class CloudAutodiscoveryAnalytics extends TelemetryBaseService {
     );
   }
 
-  sendGetRECloudDbsSucceedEvent(
+  sendGetRedisCloudDbsSucceedEvent(
     sessionMetadata: SessionMetadata,
     databases: CloudDatabase[] = [],
     authType: CloudAutodiscoveryAuthType,
@@ -90,7 +90,7 @@ export class CloudAutodiscoveryAnalytics extends TelemetryBaseService {
     }
   }
 
-  sendGetRECloudDbsFailedEvent(
+  sendGetRedisCloudDbsFailedEvent(
     sessionMetadata: SessionMetadata,
     exception: HttpException,
     authType: CloudAutodiscoveryAuthType,

@@ -105,7 +105,7 @@ test
     .before(async() => {
         await databaseHelper.acceptLicenseTerms();
         await databaseAPIRequests.addNewStandaloneDatabaseApi(ossStandaloneTlsConfig);
-        await databaseHelper.addRECloudDatabase(cloudDatabaseConfig);
+        await databaseHelper.addRedisCloudDatabase(cloudDatabaseConfig);
         await databaseAPIRequests.discoverSentinelDatabaseApi(ossSentinelConfig);
         await myRedisDatabasePage.reloadPage();
     })

@@ -74,7 +74,7 @@ export class CloudAutodiscoveryService {
     try {
       const subscriptions =
         await this.cloudSubscriptionCapiService.getSubscriptions(authDto, type);
-      this.analytics.sendGetRECloudSubsSucceedEvent(
+      this.analytics.sendGetRedisCloudSubsSucceedEvent(
         sessionMetadata,
         subscriptions,
         type,
@@ -87,7 +87,7 @@ export class CloudAutodiscoveryService {
         sessionMetadata,
         e,
       );
-      this.analytics.sendGetRECloudSubsFailedEvent(
+      this.analytics.sendGetRedisCloudSubsFailedEvent(
         sessionMetadata,
         e,
         type,
@@ -162,7 +162,7 @@ export class CloudAutodiscoveryService {
         }),
       );
 
-      this.analytics.sendGetRECloudDbsSucceedEvent(
+      this.analytics.sendGetRedisCloudDbsSucceedEvent(
         sessionMetadata,
         result,
         authType,
@@ -174,7 +174,7 @@ export class CloudAutodiscoveryService {
         sessionMetadata,
         e,
       );
-      this.analytics.sendGetRECloudDbsFailedEvent(sessionMetadata, e, authType);
+      this.analytics.sendGetRedisCloudDbsFailedEvent(sessionMetadata, e, authType);
 
       throw wrapHttpError(e);
     }

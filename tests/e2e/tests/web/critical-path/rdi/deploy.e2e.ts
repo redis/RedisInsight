@@ -57,7 +57,7 @@ test.after(async() => {
     await rdiApiRequests.deleteAllRdiApi();
 })('Verify that deploy and reset work', async() => {
     await myRedisDatabasePage.setActivePage(RedisOverviewPage.DataBase);
-    await databaseHelper.autodiscoverRECloudDatabase(
+    await databaseHelper.autodiscoverRedisCloudDatabase(
         cloudDatabaseConfig.accessKey,
         cloudDatabaseConfig.secretKey
     );

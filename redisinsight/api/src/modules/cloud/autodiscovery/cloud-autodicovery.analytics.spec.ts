@@ -38,9 +38,9 @@ describe('CloudAutodiscoveryAnalytics', () => {
     );
   });
 
-  describe('sendGetRECloudSubsSucceedEvent', () => {
+  describe('sendGetRedisCloudSubsSucceedEvent', () => {
     it('should emit event with active subscriptions', () => {
-      service.sendGetRECloudSubsSucceedEvent(
+      service.sendGetRedisCloudSubsSucceedEvent(
         mockSessionMetadata,
         [mockCloudSubscription, mockCloudSubscription],
         CloudSubscriptionType.Flexible,
@@ -59,7 +59,7 @@ describe('CloudAutodiscoveryAnalytics', () => {
       );
     });
     it('should emit event with active and not active subscription', () => {
-      service.sendGetRECloudSubsSucceedEvent(
+      service.sendGetRedisCloudSubsSucceedEvent(
         mockSessionMetadata,
         [
           {
@@ -84,7 +84,7 @@ describe('CloudAutodiscoveryAnalytics', () => {
       );
     });
     it('should emit event without active subscriptions', () => {
-      service.sendGetRECloudSubsSucceedEvent(
+      service.sendGetRedisCloudSubsSucceedEvent(
         mockSessionMetadata,
         [
           {
@@ -110,8 +110,8 @@ describe('CloudAutodiscoveryAnalytics', () => {
         },
       );
     });
-    it('should emit GetRECloudSubsSucceedEvent event for empty list', () => {
-      service.sendGetRECloudSubsSucceedEvent(
+    it('should emit GetRedisCloudSubsSucceedEvent event for empty list', () => {
+      service.sendGetRedisCloudSubsSucceedEvent(
         mockSessionMetadata,
         [],
         CloudSubscriptionType.Flexible,
@@ -129,8 +129,8 @@ describe('CloudAutodiscoveryAnalytics', () => {
         },
       );
     });
-    it('should emit GetRECloudSubsSucceedEvent event for undefined input value', () => {
-      service.sendGetRECloudSubsSucceedEvent(
+    it('should emit GetRedisCloudSubsSucceedEvent event for undefined input value', () => {
+      service.sendGetRedisCloudSubsSucceedEvent(
         mockSessionMetadata,
         undefined,
         CloudSubscriptionType.Fixed,
@@ -148,11 +148,11 @@ describe('CloudAutodiscoveryAnalytics', () => {
         },
       );
     });
-    it('should not throw on error when sending GetRECloudSubsSucceedEvent event', () => {
+    it('should not throw on error when sending GetRedisCloudSubsSucceedEvent event', () => {
       const input: any = {};
 
       expect(() =>
-        service.sendGetRECloudSubsSucceedEvent(
+        service.sendGetRedisCloudSubsSucceedEvent(
           mockSessionMetadata,
           input,
           CloudSubscriptionType.Flexible,
@@ -163,9 +163,9 @@ describe('CloudAutodiscoveryAnalytics', () => {
     });
   });
 
-  describe('sendGetRECloudSubsFailedEvent', () => {
-    it('should emit GetRECloudSubsFailedEvent event', () => {
-      service.sendGetRECloudSubsFailedEvent(
+  describe('sendGetRedisCloudSubsFailedEvent', () => {
+    it('should emit GetRedisCloudSubsFailedEvent event', () => {
+      service.sendGetRedisCloudSubsFailedEvent(
         mockSessionMetadata,
         httpException,
         CloudSubscriptionType.Fixed,
@@ -184,9 +184,9 @@ describe('CloudAutodiscoveryAnalytics', () => {
     });
   });
 
-  describe('sendGetRECloudDbsSucceedEvent', () => {
+  describe('sendGetRedisCloudDbsSucceedEvent', () => {
     it('should emit event with active databases', () => {
-      service.sendGetRECloudDbsSucceedEvent(
+      service.sendGetRedisCloudDbsSucceedEvent(
         mockSessionMetadata,
         [mockCloudDatabase, mockCloudDatabaseFixed],
         CloudAutodiscoveryAuthType.Credentials,
@@ -206,7 +206,7 @@ describe('CloudAutodiscoveryAnalytics', () => {
       );
     });
     it('should emit event with active and not active database', () => {
-      service.sendGetRECloudDbsSucceedEvent(
+      service.sendGetRedisCloudDbsSucceedEvent(
         mockSessionMetadata,
         [
           {
@@ -232,7 +232,7 @@ describe('CloudAutodiscoveryAnalytics', () => {
       );
     });
     it('should emit event without active databases', () => {
-      service.sendGetRECloudDbsSucceedEvent(
+      service.sendGetRedisCloudDbsSucceedEvent(
         mockSessionMetadata,
         [
           {
@@ -257,7 +257,7 @@ describe('CloudAutodiscoveryAnalytics', () => {
       );
     });
     it('should emit event for empty list', () => {
-      service.sendGetRECloudDbsSucceedEvent(
+      service.sendGetRedisCloudDbsSucceedEvent(
         mockSessionMetadata,
         [],
         CloudAutodiscoveryAuthType.Credentials,
@@ -277,7 +277,7 @@ describe('CloudAutodiscoveryAnalytics', () => {
       );
     });
     it('should emit event for undefined input value', () => {
-      service.sendGetRECloudDbsSucceedEvent(
+      service.sendGetRedisCloudDbsSucceedEvent(
         mockSessionMetadata,
         undefined,
         CloudAutodiscoveryAuthType.Credentials,
@@ -300,7 +300,7 @@ describe('CloudAutodiscoveryAnalytics', () => {
       const input: any = {};
 
       expect(() =>
-        service.sendGetRECloudDbsSucceedEvent(
+        service.sendGetRedisCloudDbsSucceedEvent(
           mockSessionMetadata,
           input,
           CloudAutodiscoveryAuthType.Credentials,
@@ -310,9 +310,9 @@ describe('CloudAutodiscoveryAnalytics', () => {
     });
   });
 
-  describe('sendGetRECloudDbsFailedEvent', () => {
+  describe('sendGetRedisCloudDbsFailedEvent', () => {
     it('should emit event', () => {
-      service.sendGetRECloudDbsFailedEvent(
+      service.sendGetRedisCloudDbsFailedEvent(
         mockSessionMetadata,
         httpException,
         CloudAutodiscoveryAuthType.Credentials,
