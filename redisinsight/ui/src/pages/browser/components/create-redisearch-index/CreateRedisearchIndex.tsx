@@ -15,8 +15,7 @@ import {
 } from 'uiBase/forms'
 import { InfoIcon } from 'uiBase/icons'
 import { RiHealthText, RiText } from 'uiBase/text'
-import { RiLink } from 'uiBase/display'
-import { RiPopover } from 'uiBase/index'
+import { RiPopover, RiLink } from 'uiBase/display'
 import { RiTextInput } from 'uiBase/inputs'
 import Divider from 'uiSrc/components/divider/Divider'
 import {

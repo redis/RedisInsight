@@ -2,6 +2,7 @@ import {
   Criteria,
   EuiTableFieldDataColumnType,
   PropertySort,
+
 } from '@elastic/eui'
 import cx from 'classnames'
 import { saveAs } from 'file-saver'
@@ -17,8 +18,8 @@ import React, {
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import AutoSizer from 'react-virtualized-auto-sizer'
-import { RiText, RiColorText } from 'uiBase/text'
 
+import { RiText, RiColorText } from 'uiBase/text'
 import {
   MoreactionsIcon,
   EditIcon,
@@ -29,7 +30,6 @@ import {
 import { RiPopover, RiTooltip } from 'uiBase/index'
 import { RiEmptyButton, RiIconButton } from 'uiBase/forms'
 import { RiLink } from 'uiBase/display'
-import { RIResizeObserver } from 'uiBase/utils'
 import DatabaseListModules from 'uiSrc/components/database-list-modules/DatabaseListModules'
 import ItemList from 'uiSrc/components/item-list'
 import {
@@ -89,6 +89,7 @@ import { TagsCell } from '../tags-cell/TagsCell'
 import { TagsCellHeader } from '../tags-cell/TagsCellHeader'
 
 import styles from './styles.module.scss'
+import { RIResizeObserver } from 'uiBase/utils'
 
 export interface Props {
   instances: Instance[]

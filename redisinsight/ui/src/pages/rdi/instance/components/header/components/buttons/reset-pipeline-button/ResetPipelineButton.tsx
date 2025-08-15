@@ -1,9 +1,10 @@
 import React from 'react'
 
 import { RiResetIcon } from 'uiBase/icons'
-import { RiSpacer } from 'uiBase/layout/spacer'
 import { RiSecondaryButton } from 'uiBase/forms'
-import { RiTooltip } from 'uiSrc/components'
+import { RiSpacer } from 'uiBase/layout'
+import { RiTooltip } from 'uiBase/display'
+
 import styles from '../styles.module.scss'
 
 export interface PipelineButtonProps {

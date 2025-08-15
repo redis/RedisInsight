@@ -81,7 +81,7 @@ const TableInfoResult = React.memo((props: Props) => {
           <RiText className="row" size="s" color="subdued">
             Options:{' '}
             {result?.index_options?.length ? (
-              <RiColorText style={{ color: 'var(--euiColorFullShade)' }}>
+              <RiColorText color="accent">
                 {result?.index_options?.join(', ')}
               </RiColorText>
             ) : (

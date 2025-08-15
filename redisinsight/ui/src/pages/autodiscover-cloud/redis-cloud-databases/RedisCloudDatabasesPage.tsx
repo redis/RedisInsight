@@ -6,6 +6,7 @@ import { RiIconButton } from 'uiBase/forms'
 import { CopyIcon } from 'uiBase/icons'
 import { RiText } from 'uiBase/text'
 import { ColumnDefinition } from 'uiBase/layout'
+import { RiTooltip } from 'uiBase/display'
 import { Pages } from 'uiSrc/constants'
 import {
   addInstancesRedisCloud,
@@ -29,7 +30,6 @@ import {
 import {
   DatabaseListModules,
   DatabaseListOptions,
-  RiTooltip,
 } from 'uiSrc/components'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 

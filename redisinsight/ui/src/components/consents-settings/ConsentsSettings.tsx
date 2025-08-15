@@ -10,14 +10,14 @@ import { RiPrimaryButton } from 'uiBase/forms'
 import { InfoIcon } from 'uiBase/icons'
 import { RiTitle, RiText } from 'uiBase/text'
 import { RiSwitchInput } from 'uiBase/inputs'
-import { RiLink } from 'uiBase/display'
+import { RiLink, RiTooltip } from 'uiBase/display'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   updateUserConfigSettingsAction,
   userSettingsSelector,
 } from 'uiSrc/slices/user/user-settings'
 import { compareConsents } from 'uiSrc/utils'
-import { RiHorizontalRule, RiTooltip } from 'uiSrc/components'
+import { RiHorizontalRule } from 'uiSrc/components'
 import ConsentOption from './ConsentOption'
 
 import styles from './styles.module.scss'

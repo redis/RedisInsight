@@ -6,6 +6,7 @@ import { RiFlexItem, RiRow, ColumnDefinition } from 'uiBase/layout'
 import { RiIconButton } from 'uiBase/forms'
 import { CopyIcon, RiIcon } from 'uiBase/icons'
 import { RiColorText, RiText } from 'uiBase/text'
+import { RiTooltip } from 'uiBase/display'
 import { Pages } from 'uiSrc/constants'
 import {
   cloudSelector,
@@ -27,7 +28,6 @@ import {
 import {
   DatabaseListModules,
   DatabaseListOptions,
-  RiTooltip,
 } from 'uiSrc/components'
 import RedisCloudDatabasesResult from './RedisCloudDatabasesResult'
 
@@ -223,7 +223,7 @@ const RedisCloudDatabasesResultPage = () => {
                   <RiFlexItem>
                     <RiColorText
                       color="danger"
-                      className="flex-row euiTextAlign--center"
+                      className="flex-row"
                     >
                       Error
                     </RiColorText>

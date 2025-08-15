@@ -94,8 +94,8 @@ const ModuleNotLoadedButton = ({
                     type === 'browser'
                       ? OAuthSocialSource.BrowserSearch
                       : OAuthSocialSource[
-                          module as keyof typeof OAuthSocialSource
-                        ],
+                      module as keyof typeof OAuthSocialSource
+                      ],
                   action: OAuthSocialAction.Create,
                 })
                 onClose?.()

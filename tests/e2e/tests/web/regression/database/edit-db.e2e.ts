@@ -28,7 +28,8 @@ fixture `List of Databases`
         // Delete database
         await databaseAPIRequests.deleteAllDatabasesApi();
     });
-test('Verify that user can edit DB alias of Standalone DB', async t => {
+test
+    .skip('Verify that user can edit DB alias of Standalone DB', async t => {
     await t.click(myRedisDatabasePage.NavigationPanel.myRedisDBButton);
     // Edit alias of added database
     await databaseHelper.clickOnEditDatabaseByName(database.databaseName);

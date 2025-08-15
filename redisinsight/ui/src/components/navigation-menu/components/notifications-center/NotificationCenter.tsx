@@ -2,7 +2,7 @@ import cx from 'classnames'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RiTitle, RiText } from 'uiBase/text'
-import { RiPopover } from 'uiBase/index'
+import { RiPopover } from 'uiBase/display'
 import {
   fetchNotificationsAction,
   notificationCenterSelector,

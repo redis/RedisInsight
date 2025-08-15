@@ -2,10 +2,11 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import cx from 'classnames'
-import { RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
+import { RiFilePicker, RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
 import { RefreshIcon, RiIcon } from 'uiBase/icons'
 import { RiColorText, RiText } from 'uiBase/text'
 import { RiCol, RiRow } from 'uiBase/layout'
+import { RiTooltip, RiPopover } from 'uiBase/display'
 import { Nullable } from 'uiSrc/utils'
 import { BulkActionsStatus, BulkActionsType } from 'uiSrc/constants'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
@@ -24,10 +25,7 @@ import BulkActionSummary from 'uiSrc/pages/browser/components/bulk-actions/BulkA
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { isProcessedBulkAction } from 'uiSrc/pages/browser/components/bulk-actions/utils'
 import {
-  RiFilePicker,
   UploadWarning,
-  RiPopover,
-  RiTooltip,
 } from 'uiSrc/components'
 import styles from './styles.module.scss'
 

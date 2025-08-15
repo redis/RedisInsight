@@ -13,7 +13,7 @@ import { DownloadIcon } from 'uiBase/icons'
 import { RiSecondaryButton } from 'uiBase/forms'
 import { RiText } from 'uiBase/text'
 import { RiTextArea } from 'uiBase/inputs'
-import { RiProgressBarLoader } from 'uiBase/display'
+import { RiProgressBarLoader,RiTooltip } from 'uiBase/display'
 import {
   bufferToSerializedFormat,
   bufferToString,
@@ -59,7 +59,6 @@ import { downloadFile } from 'uiSrc/utils/dom/downloadFile'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { IFetchKeyArgs } from 'uiSrc/constants/prop-types/keys'
 
-import { RiTooltip } from 'uiSrc/components'
 import styles from './styles.module.scss'
 
 const MIN_ROWS = 8

@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 
 import { RiTextInput } from 'uiBase/inputs'
-import { RiTooltip } from 'uiSrc/components'
 import { TagSuggestions } from './TagSuggestions'
+import { RiTooltip } from 'uiBase/display'
 
 type TagInputFieldProps = {
   value: string

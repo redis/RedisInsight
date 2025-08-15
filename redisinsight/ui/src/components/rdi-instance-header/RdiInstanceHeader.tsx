@@ -4,11 +4,11 @@ import { useHistory } from 'react-router-dom'
 
 import { RiFlexItem, RiRow } from 'uiBase/layout'
 import { RiText } from 'uiBase/text'
+import { RiTooltip } from 'uiBase/display'
 import { CopilotTrigger, InsightsTrigger } from 'uiSrc/components/triggers'
 import {
   FeatureFlagComponent,
   OAuthUserProfile,
-  RiTooltip,
 } from 'uiSrc/components'
 import { FeatureFlags, Pages } from 'uiSrc/constants'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'

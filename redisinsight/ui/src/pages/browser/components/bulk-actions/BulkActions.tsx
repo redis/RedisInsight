@@ -20,12 +20,13 @@ import {
   TelemetryEvent,
 } from 'uiSrc/telemetry'
 import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
-import { FullScreen, RiTooltip } from 'uiSrc/components'
+import { FullScreen } from 'uiSrc/components'
 
 import BulkUpload from './BulkUpload'
 import BulkDelete from './BulkDelete'
 import BulkActionsTabs from './BulkActionsTabs'
 import styles from './styles.module.scss'
+import { RiTooltip } from 'uiBase/tooltip'
 
 export interface Props {
   isFullScreen: boolean

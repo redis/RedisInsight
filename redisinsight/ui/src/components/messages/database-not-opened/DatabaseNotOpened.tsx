@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiSpacer } from 'uiBase/layout'
 import { RiTitle, RiText } from 'uiBase/text'
 import { ExternalLink, OAuthSsoHandlerDialog } from 'uiSrc/components'
 import { getUtmExternalLink } from 'uiSrc/utils/links'

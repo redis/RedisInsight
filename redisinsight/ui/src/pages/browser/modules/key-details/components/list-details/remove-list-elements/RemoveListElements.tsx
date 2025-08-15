@@ -14,7 +14,7 @@ import {
   RiSelect,
 } from 'uiBase/forms'
 import { DeleteIcon, RiIcon } from 'uiBase/icons'
-import { RiPopover } from 'uiBase/index'
+import { RiPopover } from 'uiBase/display'
 import { RiTextInput } from 'uiBase/inputs'
 import { KeyTypes } from 'uiSrc/constants'
 import {

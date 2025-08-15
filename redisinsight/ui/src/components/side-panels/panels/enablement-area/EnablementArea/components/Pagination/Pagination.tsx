@@ -71,10 +71,8 @@ const Pagination = ({
           type="button"
           onClick={toggleMenuOpen}
         >
-          <RiText size="S">
-            <strong
-              className={styles.underline}
-            >{`${activePage + 1} of ${items.length}`}</strong>
+          <RiText size="S" variant="semiBold" className={styles.underline}>
+            {`${activePage + 1} of ${items.length}`}
           </RiText>
         </button>
       </RiMenuTrigger>

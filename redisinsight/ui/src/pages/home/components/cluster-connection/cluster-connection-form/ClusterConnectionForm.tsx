@@ -8,6 +8,7 @@ import { RiWindowEvent } from 'uiBase/utils'
 import { RiPrimaryButton, RiSecondaryButton, RiFormField } from 'uiBase/forms'
 import { InfoIcon, RiIcon } from 'uiBase/icons'
 import { RiNumericInput, RiPasswordInput, RiTextInput } from 'uiBase/inputs'
+import { RiTooltip } from 'uiBase/display'
 import * as keys from 'uiSrc/constants/keys'
 import { MAX_PORT_NUMBER, validateField } from 'uiSrc/utils/validations'
 import { handlePasteHostName } from 'uiSrc/utils'
@@ -15,7 +16,6 @@ import validationErrors from 'uiSrc/constants/validationErrors'
 import { ICredentialsRedisCluster } from 'uiSrc/slices/interfaces'
 
 import { MessageEnterpriceSoftware } from 'uiSrc/pages/home/components/form/Messages'
-import { RiTooltip } from 'uiSrc/components'
 
 export interface Props {
   host: string

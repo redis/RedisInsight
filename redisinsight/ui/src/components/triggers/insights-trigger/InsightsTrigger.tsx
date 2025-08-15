@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useParams } from 'react-router-dom'
 import { RiIconButton } from 'uiBase/forms'
 import { LightBulbIcon } from 'uiBase/icons'
+import { RiTooltip } from 'uiBase/display'
 import {
   changeSelectedTab,
   changeSidePanel,
@@ -25,7 +26,6 @@ import {
 } from 'uiSrc/telemetry'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 
-import { RiTooltip } from 'uiSrc/components'
 import styles from './styles.module.scss'
 
 export interface Props {

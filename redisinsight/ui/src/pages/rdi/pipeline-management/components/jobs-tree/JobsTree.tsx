@@ -7,7 +7,7 @@ import { RiColorText, RiText } from 'uiBase/text'
 import { RiFlexItem, RiRow } from 'uiBase/layout'
 import { DeleteIcon, EditIcon, PlusIcon, RiIcon } from 'uiBase/icons'
 import { RiDestructiveButton, RiIconButton } from 'uiBase/forms'
-import { RiLoader } from 'uiBase/display'
+import { RiLoader, RiTooltip } from 'uiBase/display'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
 import { PageNames } from 'uiSrc/constants'
 import ConfirmationPopover from 'uiSrc/pages/rdi/components/confirmation-popover/ConfirmationPopover'
@@ -22,7 +22,7 @@ import {
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { isEqualPipelineFile, Nullable } from 'uiSrc/utils'
 
-import { RiTooltip } from 'uiSrc/components'
+import ValidationErrorsList from 'uiSrc/pages/rdi/pipeline-management/components/validation-errors-list/ValidationErrorsList'
 import styles from './styles.module.scss'
 
 export interface IProps {
@@ -152,7 +152,11 @@ const JobsTree = (props: IProps) => {
   const handleToggleAccordion = (isOpen: boolean) =>
     setAccordionState(isOpen ? 'open' : 'closed')
 
-  const jobName = (name: string, isValid: boolean = true) => (
+  const jobName = (
+    name: string,
+    isValid: boolean = true,
+    validationErrors: string[] = [],
+  ) => (
     <>
       <RiFlexItem
         grow
@@ -163,11 +167,19 @@ const JobsTree = (props: IProps) => {
         {name}
 
         {!isValid && (
-          <RiIcon
-            type="IndicatorXIcon"
-            className="rdi-pipeline-nav__error"
-            data-testid="rdi-pipeline-nav__error"
-          />
+          <RiTooltip
+            position="right"
+            content={
+              <ValidationErrorsList validationErrors={validationErrors} />
+            }
+          >
+            <RiIcon
+              type="InfoIcon"
+              className="rdi-pipeline-nav__error"
+              data-testid="rdi-pipeline-nav__error"
+              color="danger500"
+            />
+          </RiTooltip>
         )}
       </RiFlexItem>
       <RiFlexItem
@@ -260,6 +272,9 @@ const JobsTree = (props: IProps) => {
     jobsValidationErrors[jobName]
       ? jobsValidationErrors[jobName].length === 0
       : true
+
+  const getJobValidionErrors = (jobName: string) =>
+    jobsValidationErrors[jobName] || []
 
   const renderJobsList = (jobs: IRdiPipelineJob[]) =>
     jobs.map(({ name }, idx) => (

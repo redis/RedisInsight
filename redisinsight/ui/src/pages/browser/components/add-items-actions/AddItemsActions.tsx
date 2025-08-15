@@ -2,7 +2,7 @@ import React from 'react'
 import { RiFlexItem, RiRow } from 'uiBase/layout'
 import { RiIconButton } from 'uiBase/forms'
 import { PlusInCircleIcon, DeleteIcon } from 'uiBase/icons'
-import { RiTooltip } from 'uiSrc/components'
+import { RiTooltip } from 'uiBase/display'
 
 export interface Props {
   id: number

@@ -14,6 +14,7 @@ import {
 } from 'uiBase/forms'
 import { RiTitle, RiText } from 'uiBase/text'
 import { Maybe } from 'uiSrc/utils'
+import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { InstanceRedisCluster } from 'uiSrc/slices/interfaces'
 import { clusterSelector } from 'uiSrc/slices/instances/cluster'
 import validationErrors from 'uiSrc/constants/validationErrors'

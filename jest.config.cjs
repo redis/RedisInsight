@@ -11,6 +11,7 @@ module.exports = {
     '\\.svg': '<rootDir>/redisinsight/__mocks__/svg.js',
     '\\.(css|less|sass|scss)$': 'identity-obj-proxy',
     '\\.scss\\?inline$': '<rootDir>/redisinsight/__mocks__/scssRaw.js',
+    'uiSrc/slices/store$': '<rootDir>/redisinsight/ui/src/utils/test-store.ts',
     'uiSrc/(.*)': '<rootDir>/redisinsight/ui/src/$1',
     'uiBase/(.*)': '<rootDir>/redisinsight/ui/src/components/base/$1',
     '@redislabsdev/redis-ui-components': '@redis-ui/components',

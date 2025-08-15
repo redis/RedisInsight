@@ -9,7 +9,7 @@ import { RiSpacer } from 'uiBase/layout/spacer'
 import { RiOutsideClickDetector } from 'uiBase/utils'
 import { RiPrimaryButton, RiCheckbox } from 'uiBase/forms'
 import { RiRocketIcon, RiIcon } from 'uiBase/icons'
-import { RiPopover, RiTooltip } from 'uiBase/index'
+import { RiPopover, RiTooltip } from 'uiBase/display'
 import { rdiErrorMessages } from 'uiSrc/pages/rdi/constants'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { createAxiosError, pipelineToJson } from 'uiSrc/utils'
@@ -32,7 +32,8 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const [resetPipeline, setResetPipeline] = useState(false)
 
-  const { config, jobs, resetChecked } = useSelector(rdiPipelineSelector)
+  const { config, jobs, resetChecked, isPipelineValid } =
+    useSelector(rdiPipelineSelector)
 
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
   const dispatch = useDispatch()

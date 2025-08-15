@@ -23,7 +23,6 @@ import {
   PipelineStatus,
 } from 'uiSrc/slices/interfaces'
 
-import { RiTooltip } from 'uiSrc/components'
 import DeployPipelineButton from '../buttons/deploy-pipeline-button'
 import ResetPipelineButton from '../buttons/reset-pipeline-button'
 import RdiConfigFileActionMenu from '../rdi-config-file-action-menu'
@@ -38,8 +37,9 @@ export interface Props {
 const PipelineActions = ({ collectorStatus, pipelineStatus }: Props) => {
   const {
     loading: deployLoading,
-    isPipelineValid,
     schema,
+    monacoJobsSchema,
+    jobNameSchema,
     config,
     jobs,
   } = useSelector(rdiPipelineSelector)
@@ -58,7 +58,13 @@ const PipelineActions = ({ collectorStatus, pipelineStatus }: Props) => {
     }
 
     const { result, configValidationErrors, jobsValidationErrors } =
-      validatePipeline({ schema, config, jobs })
+      validatePipeline({
+        schema,
+        monacoJobsSchema,
+        jobNameSchema,
+        config,
+        jobs,
+      })
 
     dispatch(setConfigValidationErrors(configValidationErrors))
     dispatch(setJobsValidationErrors(jobsValidationErrors))
@@ -141,7 +147,6 @@ const PipelineActions = ({ collectorStatus, pipelineStatus }: Props) => {
   const isLoadingBtn = (actionBtn: PipelineAction) =>
     action === actionBtn && actionLoading
   const disabled = deployLoading || actionLoading
-  const isDeployButtonDisabled = disabled || !isPipelineValid
 
   return (
     <RiRow gap="m" justify="end" align="center">

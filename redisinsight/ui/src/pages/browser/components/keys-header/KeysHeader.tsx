@@ -11,7 +11,7 @@ import {
   FoldersIcon,
   RiIcon,
 } from 'uiBase/icons'
-import { RiPopover, RiTooltip } from 'uiBase/index'
+import { RiPopover, RiTooltip } from 'uiBase/display'
 import { RiFlexItem, RiRow } from 'uiBase/layout'
 import { RiIconButton, RiSecondaryButton, RiCheckbox } from 'uiBase/forms'
 import KeysSummary from 'uiSrc/components/keys-summary'

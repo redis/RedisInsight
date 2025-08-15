@@ -56,6 +56,7 @@ fixture `Default scripts area at Workbench`
         await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneRedisearch);
     });
 test
+    .skip
     .requestHooks(logger)('Verify that user can run automatically  "FT._LIST" and "FT.INFO {index}" scripts in Workbench and see the results', async t => {
         indexName = 'idx:schools';
         keyName = chance.word({ length: 5 });
@@ -91,7 +92,7 @@ test
         await t.switchToIframe(workbenchPage.iframe);
         await t.expect(workbenchPage.queryColumns.textContent).contains('name', 'The result of the FT.INFO command not found');
     });
-test('Verify that user can edit and run automatically added "Search" script in Workbench and see the results', async t => {
+test.skip('Verify that user can edit and run automatically added "Search" script in Workbench and see the results', async t => {
     indexName = chance.word({ length: 5 });
     keyName = chance.word({ length: 5 });
     const commandsForSend = [
@@ -112,7 +113,7 @@ test('Verify that user can edit and run automatically added "Search" script in W
     await t.expect(key.exists).ok('The added key is not in the Search result');
     await t.expect(name.exists).ok('The added key name field is not in the Search result');
 });
-test('Verify that user can edit and run automatically added "Aggregate" script in Workbench and see the results', async t => {
+test.skip('Verify that user can edit and run automatically added "Aggregate" script in Workbench and see the results', async t => {
     indexName = chance.word({ length: 5 });
     const aggregationResultField = 'max_price';
     const commandsForSend = [

@@ -7,9 +7,9 @@ import {
   StatisticsConnectionStatus,
 } from 'uiSrc/slices/interfaces'
 import { formatLongName } from 'uiSrc/utils'
-import { RiTooltip } from 'uiSrc/components'
 import Accordion from '../components/accordion'
 import Panel from '../components/panel'
+import { RiTooltip } from 'uiBase/display'
 
 type ConnectionData = {
   name: string

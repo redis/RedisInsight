@@ -85,7 +85,7 @@ const TopNamespace = (props: Props) => {
             </p>
           </div>
         </div>
-      </div>
+      </div >
     )
   }
 

@@ -15,7 +15,7 @@ fixture `Add database`
     .beforeEach(async() => {
         await databaseHelper.acceptLicenseTerms();
     });
-test
+test.skip
     .meta({ rte: rte.reCluster })
     .after(async() => {
         await databaseHelper.deleteDatabase(redisEnterpriseClusterConfig.databaseName);

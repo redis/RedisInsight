@@ -70,12 +70,14 @@ import { initialState as initialStateAiAssistant } from 'uiSrc/slices/panels/aiA
 import { RESOURCES_BASE_URL } from 'uiSrc/services/resourcesService'
 import { apiService } from 'uiSrc/services'
 import { initialState as initialStateAppConnectivity } from 'uiSrc/slices/app/connectivity'
+import { initialState as initialStateAppDbSettings } from 'uiSrc/slices/app/db-settings'
 import { initialState as initialStateAppInit } from 'uiSrc/slices/app/init'
 import * as appFeaturesSlice from 'uiSrc/slices/app/features'
+import { setStoreRef } from './test-store'
 
 interface Options {
   initialState?: RootState
-  store?: typeof rootStore
+  store?: ReduxStore
   withRouter?: boolean
   [property: string]: any
 }
@@ -94,6 +96,7 @@ const initialStateDefault: RootState = {
     csrf: cloneDeep(initialStateAppCsrfReducer),
     init: cloneDeep(initialStateAppInit),
     connectivity: cloneDeep(initialStateAppConnectivity),
+    dbSettings: cloneDeep(initialStateAppDbSettings),
   },
   connections: {
     instances: cloneDeep(initialStateInstances),
@@ -166,6 +169,10 @@ export const mockStore = configureMockStore<RootState>([thunk])
 export const mockedStore = mockStore(initialStateDefault)
 export const mockedStoreFn = () => mockStore(initialStateDefault)
 
+// Set the mock store reference for the dynamic store wrapper
+// This ensures that store-dynamic works correctly in tests
+setStoreRef(mockedStore)
+
 // insert root state to the render Component
 const render = (
   ui: JSX.Element,
@@ -176,6 +183,10 @@ const render = (
     ...renderOptions
   }: Options = initialStateDefault,
 ) => {
+  if (store !== mockedStore) {
+    setStoreRef(store)
+  }
+
   const Wrapper = ({ children }: { children: JSX.Element }) => (
     <ThemeProvider theme={themeLight}>
       <Provider store={store}>{children}</Provider>
@@ -196,6 +207,10 @@ const renderHook = (
     ...renderOptions
   }: Options = initialStateDefault,
 ) => {
+  if (store !== mockedStore) {
+    setStoreRef(store)
+  }
+
   const Wrapper = ({ children }: { children: JSX.Element }) => (
     <Provider store={store}>{children}</Provider>
   )

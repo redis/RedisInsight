@@ -1,9 +1,10 @@
 import React from 'react'
+
 import { RiIconButton } from 'uiBase/forms'
 import { EditIcon } from 'uiBase/icons'
 import { Nullable } from 'uiSrc/utils'
+import { RiTooltip } from 'uiBase/display'
 
-import { RiTooltip } from 'uiSrc/components'
 import styles from '../styles.module.scss'
 
 export interface Props {

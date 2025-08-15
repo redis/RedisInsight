@@ -16,7 +16,7 @@ import {
   MessageSentinel,
   TlsDetails,
 } from 'uiSrc/pages/home/components/form'
-import { RiTooltip } from 'uiSrc/components'
+import { RiTooltip } from 'uiBase/display'
 
 export interface Props {
   loading: boolean

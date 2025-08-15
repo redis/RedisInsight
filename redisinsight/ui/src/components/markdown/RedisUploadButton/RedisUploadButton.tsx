@@ -7,8 +7,7 @@ import { RiSpacer } from 'uiBase/layout/spacer'
 import { RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
 import { PlayFilledIcon, ContractsIcon, RiIcon } from 'uiBase/icons'
 import { RiText } from 'uiBase/text'
-import { RiPopover } from 'uiBase/index'
-import { RiLink } from 'uiBase/display'
+import { RiLink, RiPopover } from 'uiBase/display'
 import { truncateText } from 'uiSrc/utils'
 import {
   sendEventTelemetry,

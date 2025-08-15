@@ -22,7 +22,7 @@ import {
   userSettingsConfigSelector,
 } from 'uiSrc/slices/user/user-settings'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { RiTooltip } from 'uiSrc/components'
+import { RiTooltip } from 'uiBase/display'
 
 interface InitialValuesType {
   format: string

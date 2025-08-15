@@ -71,13 +71,13 @@ import {
   FormattedValue,
 } from 'uiSrc/pages/browser/modules/key-details/shared'
 import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
-import { RiTooltip } from 'uiSrc/components'
 import {
   AddMembersToZSetDto,
   SearchZSetMembersResponse,
 } from 'apiSrc/modules/browser/z-set/dto'
 
 import styles from './styles.module.scss'
+import { RiTooltip } from 'uiBase/display'
 
 const suffix = '_zset'
 const headerHeight = 60

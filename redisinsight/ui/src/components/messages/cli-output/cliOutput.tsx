@@ -18,7 +18,7 @@ export const InitOutputText = (
     {emptyOutput && (
       <span className="color-green" key={Math.random()}>
         {'Try '}
-        <RiLink
+        <RiLink variant="regular-inline"
           onClick={onClick}
           className="color-green"
           style={{ fontSize: 'inherit', fontFamily: 'inherit' }}
@@ -77,7 +77,7 @@ export const cliTexts = {
       data-testid="user-pub-sub-link"
     >
       {'Use '}
-      <RiLink
+      <RiLink variant="regular-inline"
         {...getRouterLinkProps(path)}
         color="text"
         data-test-subj="pubsub-page-btn"

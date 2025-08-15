@@ -77,7 +77,7 @@ const AssistanceChat = () => {
                   ...generateHumanMessage(message),
                   error: {
                     statusCode: 500,
-                    errorCode: CustomErrorCodes.GeneralAiUnexpectedError,
+                    errorCode: CustomErrorCodes.QueryAiInternalServerError,
                   },
                 }),
               )

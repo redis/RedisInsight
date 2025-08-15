@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { isEmpty } from 'lodash'
 import cx from 'classnames'
 
-import { RiPopover } from 'uiBase/index'
+import { RiPopover } from 'uiBase/display'
 import { RiFlexItem, RiRow, RiSpacer } from 'uiBase/layout'
 import { RiPrimaryButton, RiSecondaryButton, RiCheckbox } from 'uiBase/forms'
 import { ColumnsIcon } from 'uiBase/icons'

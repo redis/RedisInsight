@@ -1,6 +1,6 @@
+import React from 'react'
 import { fireEvent } from '@testing-library/react'
 import { cloneDeep } from 'lodash'
-import React from 'react'
 import { RiSideBar } from 'uiBase/layout'
 import {
   notificationCenterSelector,

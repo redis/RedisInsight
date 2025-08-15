@@ -3,12 +3,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import { isNull, isNumber } from 'lodash'
 import { CellMeasurerCache } from 'react-virtualized'
+
 import { RiText } from 'uiBase/text'
+import { RiTooltip } from 'uiBase/display'
 import {
   appContextBrowserKeyDetails,
   updateKeyDetailsSizes,
 } from 'uiSrc/slices/app/context'
-import { RiTooltip } from 'uiSrc/components'
 
 import {
   listSelector,

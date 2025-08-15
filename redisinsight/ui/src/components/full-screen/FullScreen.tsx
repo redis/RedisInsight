@@ -1,7 +1,7 @@
 import React from 'react'
 import { ExtendIcon, ShrinkIcon } from 'uiBase/icons'
 import { RiIconButton } from 'uiBase/forms'
-import { RiTooltip } from 'uiSrc/components'
+import { RiTooltip } from 'uiBase/display'
 
 export interface Props {
   isFullScreen: boolean

@@ -1,10 +1,11 @@
 import React, { useContext } from 'react'
+import styled from "styled-components"
 import { useDispatch } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 import { isUndefined } from 'lodash'
 
 import { HideIcon, ShowIcon, SnoozeIcon, StarsIcon, RiIcon } from 'uiBase/icons'
-import { RiFlexItem, RiRow, RiCard } from 'uiBase/layout'
+import { RiFlexItem, RiRow, RiCard, RiCol } from 'uiBase/layout'
 import { RiIconButton, RiSecondaryButton } from 'uiBase/forms'
 import { RiText } from 'uiBase/text'
 import { RiAccordion, RiLink } from 'uiBase/display'
@@ -46,6 +47,9 @@ export interface IProps {
   recommendationsContent: IRecommendationsStatic
 }
 
+const RecommendationContent = styled(RiCard)`
+  padding: var(--size-m);
+`
 const RecommendationTitle = ({
   redisStack,
   title,
@@ -64,6 +68,7 @@ const RecommendationTitle = ({
       style={{
         maxWidth: '60%',
         textAlign: 'left',
+        overflow: 'hidden',
       }}
     >
       {redisStack && (
@@ -185,7 +190,7 @@ const Recommendation = ({
   }
 
   const recommendationContent = () => (
-    <RiText>
+    <RiCol>
       {!isUndefined(tutorialId) && (
         <RiSecondaryButton
           filled
@@ -225,52 +230,47 @@ const Recommendation = ({
           />
         </div>
       </FeatureFlagComponent>
-    </RiText>
+    </RiCol>
   )
 
   const renderButtonContent = (
-    <RiRow className={styles.fullWidth} align="center" justify="between">
-      <RiRow className={styles.fullWidth} align="center">
-        <RiFlexItem grow className="truncateText">
-          {title}
-        </RiFlexItem>
-        <RiFlexItem>
-          <RiTooltip
-            title="Snooze tip"
-            content="This tip will be removed from the list and displayed again when relevant."
-            position="top"
-            anchorClassName="flex-row"
-          >
-            <RiIconButton
-              icon={SnoozeIcon}
-              className={styles.snoozeBtn}
-              onClick={handleDelete}
-              aria-label="snooze tip"
-              data-testid={`${name}-delete-btn`}
-            />
-          </RiTooltip>
-        </RiFlexItem>
-        <RiFlexItem>
-          <RiTooltip
-            title={`${hide ? 'Show' : 'Hide'} tip`}
-            content={`${
-              hide
-                ? 'This tip will be shown in the list.'
-                : 'This tip will be removed from the list and not displayed again.'
-            }`}
-            position="top"
-            anchorClassName="flex-row"
-          >
-            <RiIconButton
-              icon={hide ? HideIcon : ShowIcon}
-              className={styles.hideBtn}
-              onClick={toggleHide}
-              aria-label="hide/unhide tip"
-              data-testid={`toggle-hide-${name}-btn`}
-            />
-          </RiTooltip>
-        </RiFlexItem>
-      </RiRow>
+    <RiRow className={styles.fullWidth} align="center" gap="s" justify="between">
+      <RiFlexItem>
+        <RiTooltip
+          title="Snooze tip"
+          content="This tip will be removed from the list and displayed again when relevant."
+          position="top"
+          anchorClassName="flex-row"
+        >
+          <RiIconButton
+            icon={SnoozeIcon}
+            className={styles.snoozeBtn}
+            onClick={handleDelete}
+            aria-label="snooze tip"
+            data-testid={`${name}-delete-btn`}
+          />
+        </RiTooltip>
+      </RiFlexItem>
+      <RiFlexItem>
+        <RiTooltip
+          title={`${hide ? 'Show' : 'Hide'} tip`}
+          content={`${
+            hide
+              ? 'This tip will be shown in the list.'
+              : 'This tip will be removed from the list and not displayed again.'
+          }`}
+          position="top"
+          anchorClassName="flex-row"
+        >
+          <RiIconButton
+            icon={hide ? HideIcon : ShowIcon}
+            className={styles.hideBtn}
+            onClick={toggleHide}
+            aria-label="hide/unhide tip"
+            data-testid={`toggle-hide-${name}-btn`}
+          />
+        </RiTooltip>
+      </RiFlexItem>
     </RiRow>
   )
 
@@ -297,9 +297,12 @@ const Recommendation = ({
         data-testid={`${name}-accordion`}
         aria-label={`${name}-accordion`}
       >
-        <RiCard className={styles.accordionContent} color="subdued">
+        <RecommendationContent
+          className={styles.accordionContent}
+          color="subdued"
+        >
           {recommendationContent()}
-        </RiCard>
+        </RecommendationContent>
       </RiAccordion>
     </div>
   )

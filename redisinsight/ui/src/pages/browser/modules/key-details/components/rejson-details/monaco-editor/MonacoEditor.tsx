@@ -1,10 +1,10 @@
 import React, { useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { EuiFlexItem } from '@elastic/eui'
 import { monaco } from 'react-monaco-editor'
 import JSONbig from 'json-bigint'
 
 import { RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
+import { RiFlexItem } from 'uiBase/layout'
 import {
   MonacoEditor as Editor,
   useMonacoValidation,
@@ -62,7 +62,7 @@ const MonacoEditor = (props: BaseProps) => {
         onEditorDidMount={onEditorDidMount}
       />
 
-      <EuiFlexItem className={styles.actions}>
+      <RiFlexItem className={styles.actions}>
         <RiSecondaryButton
           onClick={switchEditorType}
           data-testid="json-data-cancel-btn"
@@ -77,7 +77,7 @@ const MonacoEditor = (props: BaseProps) => {
         >
           Overwrite Data
         </RiPrimaryButton>
-      </EuiFlexItem>
+      </RiFlexItem>
     </div>
   )
 }

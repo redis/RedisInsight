@@ -3,9 +3,9 @@ import styled, { css } from 'styled-components'
 import { RiFlexItem, RiRow } from 'uiBase/layout'
 import { Theme } from 'uiBase/theme/types'
 import { RiIconButton } from 'uiBase/forms'
+import { RiTextInput } from 'uiBase/inputs'
 import { CancelSlimIcon, CheckThinIcon } from 'uiBase/icons'
 import { Props } from 'uiSrc/components/inline-item-editor/InlineItemEditor'
-import { RiTextInput } from '../base/inputs'
 
 interface ContainerProps {
   className?: string
@@ -150,7 +150,7 @@ export const ActionsContainer = styled(RiRow)<ActionsContainerProps>`
   width: ${({ $width }) => $width || '80px'};
   height: ${({ $height }) => $height || '33px'};
   padding: ${({ theme }: { theme: Theme }) => theme.core.space.space050};
-
+  align-items: center;
   z-index: 3;
   ${({ $position }) => positions[$position || 'inside']}
   ${({ $design }) => designs[$design || 'default']}
@@ -168,6 +168,6 @@ export const StyledTextInput = styled(RiTextInput)<{
   // Target the actual input element inside
   input {
     width: 100%;
-    height: ${({ $height }) => $height || 'auto'};
-  }
+    height: ${({ $height }) => $height || 'auto'};  
+  }  
 `

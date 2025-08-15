@@ -18,13 +18,13 @@ import { InfoIcon, RiIcon } from 'uiBase/icons'
 import { RiPasswordInput, RiTextInput } from 'uiBase/inputs'
 import { RiTitle } from 'uiBase/text'
 import { SECURITY_FIELD } from 'uiSrc/constants'
-import { RiTooltip, RiTooltipProps } from 'uiSrc/components'
 import { RdiInstance } from 'uiSrc/slices/interfaces'
 import { getFormUpdates, Nullable } from 'uiSrc/utils'
 import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
 import ValidationTooltip from './components/ValidationTooltip'
 
 import styles from './styles.module.scss'
+import { RiTooltip, RiTooltipProps } from 'uiBase/display'
 
 export interface AppendInfoProps
   extends Omit<RiTooltipProps, 'children' | 'delay' | 'position'> {

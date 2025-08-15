@@ -37,7 +37,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import EditablePopover from 'uiSrc/pages/browser/modules/key-details/shared/editable-popover'
 
-import { FormatedDate, RiTooltip } from 'uiSrc/components'
+import { FormatedDate } from 'uiSrc/components'
 import {
   ConsumerDto,
   ConsumerGroupDto,
@@ -47,6 +47,7 @@ import {
 import GroupsView from './GroupsView'
 
 import styles from './GroupsView/styles.module.scss'
+import { RiTooltip } from 'uiBase/tooltip'
 
 export interface IConsumerGroup extends ConsumerGroupDto {
   editing: boolean

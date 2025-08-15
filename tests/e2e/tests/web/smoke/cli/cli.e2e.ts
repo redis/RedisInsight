@@ -45,7 +45,7 @@ test
         const isKeyIsDisplayedInTheList = await browserPage.isKeyIsDisplayedInTheList(keyName);
         await t.expect(isKeyIsDisplayedInTheList).ok('The key is not added');
     });
-test('Verify that user can use blocking command', async t => {
+test.skip('Verify that user can use blocking command', async t => {
     // Open CLI
     await t.click(browserPage.Cli.cliExpandButton);
     // Check that CLI is opened

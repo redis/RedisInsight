@@ -15,7 +15,7 @@ import {
   RiSelect,
 } from 'uiBase/forms'
 import { RiNumericInput, RiSwitchInput } from 'uiBase/inputs'
-import { RiPopover, RiTooltip } from 'uiBase/index'
+import { RiPopover, RiTooltip } from 'uiBase/display'
 import {
   prepareDataForClaimRequest,
   getDefaultConsumer,

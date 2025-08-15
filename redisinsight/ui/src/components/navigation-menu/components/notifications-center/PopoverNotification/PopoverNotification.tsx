@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RiIconButton } from 'uiBase/forms'
 import { CancelSlimIcon } from 'uiBase/icons'
-import { RiPopover } from 'uiBase/index'
+import { RiPopover } from 'uiBase/display'
 import {
   notificationCenterSelector,
   setIsCenterOpen,

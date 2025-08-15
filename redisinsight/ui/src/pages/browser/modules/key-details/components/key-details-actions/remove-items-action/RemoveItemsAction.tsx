@@ -2,7 +2,7 @@ import React from 'react'
 
 import { RiIconButton } from 'uiBase/forms'
 import { MinusInCircleIcon } from 'uiBase/icons'
-import { RiTooltip } from 'uiSrc/components'
+import { RiTooltip } from 'uiBase/display'
 import styles from '../styles.module.scss'
 
 export interface Props {

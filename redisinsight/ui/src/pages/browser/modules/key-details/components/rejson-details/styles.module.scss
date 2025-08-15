@@ -118,7 +118,6 @@
 }
 
 .row {
-  min-height: 25px;
   position: relative;
   display: flex;
   align-items: center;
@@ -145,10 +144,6 @@
 
   > div, span, button {
     z-index: 1;
-  }
-
-  div {
-    min-height: 25px;
   }
 }
 

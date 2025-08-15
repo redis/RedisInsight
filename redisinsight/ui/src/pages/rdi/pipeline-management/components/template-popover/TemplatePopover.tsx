@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 
 import { RiOutsideClickDetector } from 'uiBase/utils'
 import { RiSecondaryButton } from 'uiBase/forms'
-import { RiPopover } from 'uiBase/index'
+import { RiPopover } from 'uiBase/display'
 import TemplateForm from 'uiSrc/pages/rdi/pipeline-management/components/template-form'
 import { fetchPipelineStrategies } from 'uiSrc/slices/rdi/pipeline'
 import { RdiPipelineTabs } from 'uiSrc/slices/interfaces'

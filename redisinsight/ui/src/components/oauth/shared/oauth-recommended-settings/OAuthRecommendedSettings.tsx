@@ -1,7 +1,7 @@
 import React from 'react'
 import { RiCheckbox } from 'uiBase/forms'
 import { RiIcon } from 'uiBase/icons'
-import { FeatureFlagComponent, RiTooltip } from 'uiSrc/components'
+import { FeatureFlagComponent, RiSpacer, RiTooltip } from 'uiSrc/components'
 import { FeatureFlags } from 'uiSrc/constants'
 
 import styles from './styles.module.scss'
@@ -40,6 +40,7 @@ const OAuthRecommendedSettings = (props: Props) => {
           <RiIcon type="InfoIcon" size="s" />
         </RiTooltip>
       </div>
+      <RiSpacer size="s" />
     </FeatureFlagComponent>
   )
 }

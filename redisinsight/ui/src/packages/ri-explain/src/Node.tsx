@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { RiIcon } from 'uiBase/icons'
-import { RiTooltip } from 'uiSrc/components'
+import { RiTooltip } from 'uiBase/display'
 import { TOOLTIP_DELAY_LONG } from 'uiSrc/constants'
 
 import { EntityInfo, EntityType } from './parser'

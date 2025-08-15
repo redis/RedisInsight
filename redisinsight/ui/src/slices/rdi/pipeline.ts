@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AxiosError } from 'axios'
+import { get, omit } from 'lodash'
 import { apiService } from 'uiSrc/services'
 import {
   addErrorNotification,
@@ -34,7 +35,7 @@ import successMessages from 'uiSrc/components/notifications/success-messages'
 import { AppDispatch, RootState } from '../store'
 
 export const initialState: IStateRdiPipeline = {
-  loading: false,
+  loading: true,
   error: '',
   data: null,
   config: '',
@@ -45,6 +46,8 @@ export const initialState: IStateRdiPipeline = {
   jobsValidationErrors: {},
   resetChecked: false,
   schema: null,
+  jobNameSchema: null,
+  monacoJobsSchema: null,
   strategies: {
     loading: false,
     error: '',
@@ -71,9 +74,6 @@ const rdiPipelineSlice = createSlice({
     setPipelineInitialState: () => initialState,
     resetPipelineChecked: (state, { payload }: PayloadAction<boolean>) => {
       state.resetChecked = payload
-    },
-    setPipeline: (state, { payload }: PayloadAction<IPipeline>) => {
-      state.data = payload
     },
     getPipeline: (state) => {
       state.loading = true
@@ -127,6 +127,18 @@ const rdiPipelineSlice = createSlice({
       { payload }: PayloadAction<Nullable<object>>,
     ) => {
       state.schema = payload
+    },
+    setMonacoJobsSchema: (
+      state,
+      { payload }: PayloadAction<Nullable<object>>,
+    ) => {
+      state.monacoJobsSchema = payload
+    },
+    setJobNameSchema: (
+      state,
+      { payload }: PayloadAction<Nullable<object>>,
+    ) => {
+      state.jobNameSchema = payload
     },
     getPipelineStrategies: (state) => {
       state.strategies.loading = true
@@ -224,10 +236,11 @@ export const {
   deployPipelineSuccess,
   deployPipelineFailure,
   setPipelineSchema,
+  setMonacoJobsSchema,
+  setJobNameSchema,
   getPipelineStrategies,
   getPipelineStrategiesSuccess,
   getPipelineStrategiesFailure,
-  setPipeline,
   setPipelineConfig,
   setPipelineJobs,
   setPipelineInitialState,
@@ -399,12 +412,19 @@ export function fetchRdiPipelineSchema(
 ) {
   return async (dispatch: AppDispatch) => {
     try {
-      const { data, status } = await apiService.get<IPipeline>(
+      const { data, status } = await apiService.get<Nullable<object>>(
         getRdiUrl(rdiInstanceId, ApiEndpoints.RDI_PIPELINE_SCHEMA),
       )
 
       if (isStatusSuccessful(status)) {
         dispatch(setPipelineSchema(data))
+        dispatch(setMonacoJobsSchema({
+          ...omit(get(data, ['jobs'], {}), ['properties.name']),
+          required: get(data, ['jobs', 'required'], []).filter(
+            (val: string) => val !== 'name',
+          ),
+        }))
+        dispatch(setJobNameSchema(get(data, ['jobs', 'properties', 'name'], null)))
         onSuccessAction?.(data)
       }
     } catch (_err) {

@@ -3,9 +3,8 @@ import { isNull } from 'lodash'
 
 import { Button } from 'uiBase/forms'
 import { RiIcon } from 'uiBase/icons'
+import { RiTooltip } from 'uiBase/display'
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
-import { RiTooltip } from 'uiSrc/components'
-import styles from './styles.module.scss'
 
 export interface Props {
   withAlert?: boolean
@@ -40,7 +39,6 @@ const ScanMore = ({
         size="s"
         style={style ?? { marginLeft: 25, height: 26 }}
         disabled={loading}
-        className={styles.btn}
         onClick={() =>
           loadMoreItems?.({
             stopIndex: SCAN_COUNT_DEFAULT - 1,

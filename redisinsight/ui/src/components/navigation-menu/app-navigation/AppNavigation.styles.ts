@@ -1,7 +1,9 @@
 import styled from 'styled-components'
 import { RiRow, RiTabs } from 'uiBase/layout'
 
-export const StyledAppNavigation = styled(RiRow)`
+export const StyledAppNavigation = styled.div`
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   background: ${({ theme }) =>
     theme.components.appBar.variants.default.bgColor};
   color: ${({ theme }) => theme.components.appBar.variants.default.color};
@@ -9,9 +11,7 @@ export const StyledAppNavigation = styled(RiRow)`
   z-index: ${({ theme }) => theme.core.zIndex.zIndex5};
   box-shadow: ${({ theme }) => theme.components.appBar.boxShadow};
   box-sizing: border-box;
-  > div:last-child {
-    margin-inline-start: auto;
-  }
+  align-items: center;
 `
 type NavContainerProps = React.ComponentProps<typeof RiRow> & {
   $borderLess?: boolean

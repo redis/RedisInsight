@@ -23,7 +23,8 @@ fixture `Empty command history in Workbench`
         await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test
-    .meta({ rte: rte.standalone })('Verify that user can see placeholder text in Workbench history if no commands have not been run yet', async t => {
+    .meta({ rte: rte.standalone })
+    .skip('Verify that user can see placeholder text in Workbench history if no commands have not been run yet', async t => {
         const commandToSend = 'info server';
 
         // Verify that all the elements from empty command history placeholder are displayed

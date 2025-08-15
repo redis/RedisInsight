@@ -5,12 +5,12 @@ import { RiSpacer } from 'uiBase/layout/spacer'
 import { RiFormField } from 'uiBase/forms'
 import { RiIcon } from 'uiBase/icons'
 import { RiTextInput } from 'uiBase/inputs'
+import { RiTooltip } from 'uiBase/display'
 import { validateEntryId } from 'uiSrc/utils'
 import { INITIAL_STREAM_FIELD_STATE } from 'uiSrc/pages/browser/components/add-key/AddKeyStream/AddKeyStream'
 import { AddStreamFormConfig as config } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
 import AddMultipleFields from 'uiSrc/pages/browser/components/add-multiple-fields'
 
-import { RiTooltip } from 'uiSrc/components'
 import styles from '../styles.module.scss'
 
 export interface Props {

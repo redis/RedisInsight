@@ -1,8 +1,8 @@
 import React from 'react'
 import { RiText } from 'uiBase/text'
 import { RiIcon } from 'uiBase/icons'
+import { RiTooltip } from 'uiBase/display'
 import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
-import { RiTooltip } from 'uiSrc/components'
 
 import styles from './styles.module.scss'
 

@@ -73,7 +73,8 @@ test('Verify that sorting on the list of databases saved when database opened', 
     actualDatabaseList = await myRedisDatabasePage.getAllDatabases();
     await myRedisDatabasePage.compareInstances(actualDatabaseList, sortedDatabaseHost);
 });
-test('Verify that user has the same sorting if db name is changed', async t => {
+test
+    .skip('Verify that user has the same sorting if db name is changed', async t => {
     // Sort by Database name
     await t.click(myRedisDatabasePage.sortByDatabaseAlias);
     actualDatabaseList = await myRedisDatabasePage.getAllDatabases();

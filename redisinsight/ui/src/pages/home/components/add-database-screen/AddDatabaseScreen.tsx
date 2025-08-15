@@ -17,12 +17,12 @@ import {
   testInstanceStandaloneAction,
 } from 'uiSrc/slices/instances/instances'
 import { Pages } from 'uiSrc/constants'
-import { RiTooltip } from 'uiSrc/components'
 import ConnectivityOptions from './components/connectivity-options'
 import ConnectionUrl from './components/connection-url'
 import { Values } from './constants'
 
 import styles from './styles.module.scss'
+import { RiTooltip } from 'uiBase/display'
 
 export interface Props {
   onSelectOption: (type: AddDbType, db: Nullable<Record<string, any>>) => void

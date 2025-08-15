@@ -6,6 +6,7 @@ import {
   setChangedFile,
   deleteChangedFile,
   setPipelineConfig,
+  getPipelineStrategies,
 } from 'uiSrc/slices/rdi/pipeline'
 import { rdiTestConnectionsSelector } from 'uiSrc/slices/rdi/testConnections'
 import {
@@ -126,6 +127,7 @@ describe('Config', () => {
     fireEvent.change(fieldName, { target: { value: '123' } })
 
     const expectedActions = [
+      getPipelineStrategies(),
       setPipelineConfig('123'),
       deleteChangedFile('config'),
     ]
@@ -149,6 +151,7 @@ describe('Config', () => {
     fireEvent.change(fieldName, { target: { value: '123' } })
 
     const expectedActions = [
+      getPipelineStrategies(),
       setPipelineConfig('123'),
       setChangedFile({ name: 'config', status: FileChangeType.Modified }),
     ]

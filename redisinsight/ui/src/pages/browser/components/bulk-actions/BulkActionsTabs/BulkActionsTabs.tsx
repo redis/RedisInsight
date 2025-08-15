@@ -1,12 +1,10 @@
 import React, { useMemo } from 'react'
-import { EuiIcon } from '@elastic/eui'
 import { useSelector } from 'react-redux'
 
 import { RiTabs, TabInfo } from 'uiBase/layout'
 import { RiText } from 'uiBase/text'
 import { BulkActionsType } from 'uiSrc/constants'
 import { selectedBulkActionsSelector } from 'uiSrc/slices/browser/bulkActions'
-import BulkUpload from 'uiSrc/assets/img/icons/bulk-upload.svg?react'
 
 import {
   getMatchType,
@@ -18,6 +16,7 @@ import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
 import { keysSelector } from 'uiSrc/slices/browser/keys'
 
 import styles from './styles.module.scss'
+import { RiIcon } from 'uiBase/icons'
 
 export interface Props {
   onChangeType: (id: BulkActionsType) => void
@@ -58,7 +57,7 @@ const BulkActionsTabs = (props: Props) => {
         value: BulkActionsType.Delete,
         label: (
           <>
-            <EuiIcon type="trash" />
+            <RiIcon type="DeleteIcon" />
             <RiText>Delete Keys</RiText>
           </>
         ),
@@ -68,7 +67,7 @@ const BulkActionsTabs = (props: Props) => {
         value: BulkActionsType.Upload,
         label: (
           <>
-            <EuiIcon type={BulkUpload} />
+            <RiIcon type={'BulkUploadIcon'} />
             <RiText>Upload Data</RiText>
           </>
         ),

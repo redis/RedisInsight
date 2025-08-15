@@ -1,6 +1,7 @@
 import { IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator';
 import { BadRequestException } from '@nestjs/common';
 import ERROR_MESSAGES from 'src/constants/error-messages';
+import { Expose } from 'class-transformer';
 
 export interface ISessionMetadata {
   userId: string;
@@ -9,21 +10,31 @@ export interface ISessionMetadata {
 }
 
 export class SessionMetadata implements ISessionMetadata {
+  @Expose()
   @IsNotEmpty()
   @IsString()
   userId: string;
 
+  @Expose()
   @IsObject()
   data?: Record<string, any> = {};
 
+  @Expose({ groups: ['security'] })
+  @IsObject()
+  @IsOptional()
+  requestMetadata?: Record<string, any> = {};
+
+  @Expose()
   @IsNotEmpty()
   @IsString()
   sessionId: string;
 
+  @Expose()
   @IsOptional()
   @IsString()
   uniqueId?: string;
 
+  @Expose()
   @IsOptional()
   @IsString()
   correlationId?: string;

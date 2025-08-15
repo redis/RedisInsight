@@ -31,7 +31,7 @@ import {
   stringToBuffer,
 } from 'uiSrc/utils'
 
-import { RiTooltip } from 'uiSrc/components'
+import { RiTooltip } from 'uiBase/display'
 import styles from './styles.module.scss'
 
 export interface Props {

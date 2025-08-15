@@ -2,10 +2,9 @@ import React, { useState } from 'react'
 
 import { RiOutsideClickDetector } from 'uiBase/utils'
 
-import { RiFlexItem, RiRow } from 'uiBase/layout'
-import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiFlexItem, RiRow, RiSpacer } from 'uiBase/layout'
 import { RiText } from 'uiBase/text'
-import { RiPopover } from 'uiBase/index'
+import { RiPopover } from 'uiBase/display'
 import { RiIcon } from 'uiBase/icons'
 import { formatLongName } from 'uiSrc/utils'
 import styles from './styles.module.scss'

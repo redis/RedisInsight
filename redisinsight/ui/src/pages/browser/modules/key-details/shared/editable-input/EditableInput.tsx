@@ -4,7 +4,7 @@ import cx from 'classnames'
 import { RiText } from 'uiBase/text'
 import { EditIcon } from 'uiBase/icons'
 import { RiIconButton } from 'uiBase/forms'
-import { RiTooltip } from 'uiSrc/components'
+import { RiTooltip } from 'uiBase/display'
 import { StopPropagation } from 'uiSrc/components/virtual-table'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
 

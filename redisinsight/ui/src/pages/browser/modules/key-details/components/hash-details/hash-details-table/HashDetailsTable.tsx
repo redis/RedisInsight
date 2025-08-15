@@ -80,7 +80,7 @@ import {
   EditableTextArea,
   FormattedValue,
 } from 'uiSrc/pages/browser/modules/key-details/shared'
-import { RiTooltip } from 'uiSrc/components'
+import { RiTooltip } from 'uiBase/display'
 import {
   AddFieldsToHashDto,
   GetHashFieldsResponse,
@@ -575,6 +575,7 @@ const HashDetailsTable = (props: Props) => {
             validation={validateTTLNumber}
             isEditDisabled={isTruncatedFieldName}
             editToolTipContent={editTooltipContent}
+
           >
             <div className="innerCellAsCell">
               {expire === -1 ? (

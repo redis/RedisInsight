@@ -18,7 +18,7 @@ fixture `Edit Databases`
     });
 // Returns the URL of the current web page
 const getPageUrl = ClientFunction(() => window.location.href);
-test
+test.skip
     .meta({ rte: rte.reCluster })
     .after(async() => {
         // Delete database

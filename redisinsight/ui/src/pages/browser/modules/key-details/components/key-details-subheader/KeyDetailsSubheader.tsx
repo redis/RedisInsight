@@ -1,10 +1,11 @@
 import React, { ReactElement } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
-
 import { isUndefined } from 'lodash'
+
 import { RiFlexItem, RiRow } from 'uiBase/layout'
 import Divider from 'uiSrc/components/divider/Divider'
 import { KeyTypes, ModulesKeyTypes } from 'uiSrc/constants'
+
 import { KeyDetailsHeaderFormatter } from '../../../key-details-header/components/key-details-header-formatter'
 import styles from './styles.module.scss'
 

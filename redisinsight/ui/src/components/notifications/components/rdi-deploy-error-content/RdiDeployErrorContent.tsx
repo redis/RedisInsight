@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo } from 'react'
 import { RiLink } from 'uiBase/display'
-import { RiCol, RiFlexItem, RiRow } from 'uiBase/layout'
-import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiSpacer, RiCol, RiFlexItem, RiRow } from 'uiBase/layout'
 import { RiDestructiveButton } from 'uiBase/forms'
 import { RiColorText } from 'uiBase/text'
 

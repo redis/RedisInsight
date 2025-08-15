@@ -7,12 +7,12 @@ import { RiIconButton } from 'uiBase/forms'
 import { PlayFilledIcon, RiIcon } from 'uiBase/icons'
 import { RiColorText } from 'uiBase/text'
 import { RiSwitchInput } from 'uiBase/inputs'
-import { RiTooltip } from 'uiSrc/components'
 import { IMonitorDataPayload } from 'uiSrc/slices/interfaces'
 import MonitorLog from '../MonitorLog'
 import MonitorOutputList from '../MonitorOutputList'
 
 import styles from './styles.module.scss'
+import { RiTooltip } from 'uiBase/display'
 
 export interface Props {
   items: IMonitorDataPayload[]

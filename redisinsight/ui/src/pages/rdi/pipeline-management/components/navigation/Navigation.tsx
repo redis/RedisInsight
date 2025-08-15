@@ -4,7 +4,7 @@ import { useHistory, useLocation, useParams } from 'react-router-dom'
 
 import cx from 'classnames'
 import { RiColorText } from 'uiBase/text'
-import { RiTooltip } from 'uiSrc/components'
+import { RiTooltip } from 'uiBase/display'
 import { PageNames, Pages } from 'uiSrc/constants'
 import JobsTree from 'uiSrc/pages/rdi/pipeline-management/components/jobs-tree'
 import Tab from 'uiSrc/pages/rdi/pipeline-management/components/tab'
@@ -71,6 +71,7 @@ const Navigation = () => {
           data-testid={`rdi-pipeline-tab-${RdiPipelineTabs.Config}`}
           isLoading={loading}
           isValid={configValidationErrors.length === 0}
+          validationErrors={configValidationErrors}
         >
           <div className={styles.dotWrapper}>
             {!!changes.config && (
@@ -109,7 +110,7 @@ const Navigation = () => {
         <RiColorText component="div">Pipeline Management</RiColorText>
       </div>
       <div className={styles.tabs} data-testid="rdi-pipeline-tabs">
-        {renderTabs()}
+        {!loading && renderTabs()}
       </div>
     </div>
   )

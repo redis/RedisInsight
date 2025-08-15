@@ -1,4 +1,3 @@
-import { EuiLink } from '@elastic/eui'
 import React from 'react'
 
 import { RiSpacer } from 'uiBase/layout/spacer'

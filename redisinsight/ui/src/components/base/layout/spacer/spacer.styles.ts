@@ -46,6 +46,7 @@ const getSpacingValue = (
   return spacerStyles[size as SpacerSize]
 }
 
+
 export const StyledSpacer = styled.div<SpacerProps>`
   flex-shrink: 0;
   height: ${({ size = 'l', theme }) => getSpacingValue(size, theme)};

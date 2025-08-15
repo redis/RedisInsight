@@ -26,11 +26,11 @@ import {
 import { formatLongName, isTruncatedString } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
-import { RiTooltip } from 'uiSrc/components'
 import { ConsumerDto } from 'apiSrc/modules/browser/stream/dto'
 import ConsumersView from './ConsumersView'
 
 import styles from './ConsumersView/styles.module.scss'
+import { RiTooltip } from 'uiBase/display'
 
 const suffix = '_stream_consumer'
 const actionsWidth = 50

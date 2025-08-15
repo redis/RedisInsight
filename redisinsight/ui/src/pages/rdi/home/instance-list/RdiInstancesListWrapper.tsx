@@ -25,8 +25,8 @@ import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import { Nullable, formatLongName, lastConnectionFormat } from 'uiSrc/utils'
 
 import { setAppContextConnectedRdiInstanceId } from 'uiSrc/slices/app/context'
-import { RiTooltip } from 'uiSrc/components'
 import styles from './styles.module.scss'
+import { RiTooltip } from 'uiBase/display'
 
 export interface Props {
   width: number

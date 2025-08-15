@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import styled from 'styled-components'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 import { remove } from 'lodash'
@@ -6,7 +7,7 @@ import { remove } from 'lodash'
 import { RiColorText, RiText } from 'uiBase/text'
 import { RiCheckbox } from 'uiBase/forms'
 import { RiIcon } from 'uiBase/icons'
-import { RiLink } from 'uiBase/display'
+import { RiLink, RiTooltip } from 'uiBase/display'
 import { FeatureFlags, DEFAULT_DELIMITER, Pages } from 'uiSrc/constants'
 import {
   ANALYZE_CLUSTER_TOOLTIP_MESSAGE,
@@ -33,13 +34,29 @@ import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import {
   FeatureFlagComponent,
   RiLoadingContent,
-  RiTooltip,
+  RiRow,
+  RiSpacer,
 } from 'uiSrc/components'
-
 import Recommendation from './components/recommendation'
 import WelcomeScreen from './components/welcome-screen'
 import PopoverRunAnalyze from './components/popover-run-analyze'
 import styles from './styles.module.scss'
+
+const FooterLink = styled.button<{
+  onClick?: () => void;
+  'data-testid'?: string;
+  children?: React.ReactNode;
+}>`
+  font:
+    normal normal 400 12px/14px Graphik,
+    sans-serif !important;
+  padding: 2px 0 0;
+  margin: 0;
+  text-decoration: underline !important;
+  :hover {
+    text-decoration: none !important;
+  }
+`
 
 const LiveTimeRecommendations = () => {
   const { provider, connectionType } = useSelector(connectedInstanceSelector)
@@ -137,25 +154,25 @@ const LiveTimeRecommendations = () => {
 
   const renderHeader = () => (
     <div className={styles.actions}>
-      <div>
+      <RiRow>
         <RiColorText className={styles.boldText}>Our Tips</RiColorText>
         <RiTooltip
           position="bottom"
           className={styles.tooltip}
           anchorClassName={styles.tooltipAnchor}
           content={
-            <>
+            <Text size="s">
               Tips will help you improve your database.
-              <br />
+              <RiSpacer size="s" />
               New tips appear while you work with your database, including how
               to improve performance and optimize memory usage.
               <FeatureFlagComponent name={FeatureFlags.envDependent}>
                 <>
-                  <br />
+                  <RiSpacer size="s" />
                   Eager for more tips? Run Database Analysis to get started.
                 </>
               </FeatureFlagComponent>
-            </>
+            </Text>
           }
         >
           <RiIcon
@@ -166,10 +183,9 @@ const LiveTimeRecommendations = () => {
           />
         </RiTooltip>
         <FeatureFlagComponent name={FeatureFlags.envDependent}>
-          <RiLink
+          <RiLink variant="regular-inline"
             href={EXTERNAL_LINKS.githubRepo}
             target="_blank"
-            style={{ marginLeft: 6 }}
             data-testid="github-repo-btn"
           >
             <RiIcon
@@ -181,7 +197,7 @@ const LiveTimeRecommendations = () => {
             />
           </RiLink>
         </FeatureFlagComponent>
-      </div>
+      </RiRow>
 
       {isShowHiddenDisplayed && (
         <RiCheckbox
@@ -230,13 +246,12 @@ const LiveTimeRecommendations = () => {
                     : ANALYZE_TOOLTIP_MESSAGE
                 }
               >
-                <RiLink
-                  className={styles.link}
+                <FooterLink
                   onClick={() => setIsShowApproveRun(true)}
                   data-testid="footer-db-analysis-link"
                 >
                   Database Analysis
-                </RiLink>
+                </FooterLink>
               </PopoverRunAnalyze>
               {' to get more tips'}
             </RiText>

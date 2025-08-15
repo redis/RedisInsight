@@ -8,7 +8,6 @@ import { ChartData } from 'uiSrc/components/charts/donut-chart/DonutChart'
 import { ModifiedClusterNodes } from 'uiSrc/pages/cluster-details/ClusterDetailsPage'
 import { formatBytes, Nullable } from 'uiSrc/utils'
 import { getPercentage, numberWithSpaces } from 'uiSrc/utils/numbers'
-
 import styles from './styles.module.scss'
 
 const ClusterDetailsGraphics = ({

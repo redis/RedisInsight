@@ -13,6 +13,7 @@ import {
   defaultValueRender,
 } from 'uiBase/forms'
 import { RiText } from 'uiBase/text'
+import { RiTooltip } from 'uiBase/display'
 import {
   fetchPipelineStrategies,
   fetchJobTemplate,
@@ -21,7 +22,6 @@ import {
 } from 'uiSrc/slices/rdi/pipeline'
 import { RdiPipelineTabs } from 'uiSrc/slices/interfaces/rdi'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { RiTooltip } from 'uiSrc/components'
 import { NO_TEMPLATE_VALUE, NO_OPTIONS, INGEST_OPTION } from './constants'
 
 import styles from './styles.module.scss'

@@ -8,7 +8,6 @@ import {
   fetchJobTemplate,
   rdiPipelineStrategiesSelector,
 } from 'uiSrc/slices/rdi/pipeline'
-import { RiTooltip } from 'uiSrc/components'
 import { RdiPipelineTabs } from 'uiSrc/slices/interfaces'
 import { getTooltipContent } from '../template-form/TemplateForm'
 import { INGEST_OPTION } from '../template-form/constants'

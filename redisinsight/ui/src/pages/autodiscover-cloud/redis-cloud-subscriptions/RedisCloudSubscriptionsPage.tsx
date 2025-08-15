@@ -7,6 +7,7 @@ import { RiIconButton } from 'uiBase/forms'
 import { ToastDangerIcon } from 'uiBase/icons'
 import { RiText } from 'uiBase/text'
 import { ColumnDefinition } from 'uiBase/layout'
+import { RiTooltip } from 'uiBase/display'
 import { Pages } from 'uiSrc/constants'
 import {
   InstanceRedisCloud,
@@ -17,7 +18,6 @@ import {
   RedisCloudSubscriptionStatusText,
   RedisCloudSubscriptionTypeText,
 } from 'uiSrc/slices/interfaces'
-import { RiTooltip } from 'uiSrc/components'
 import {
   cloudSelector,
   fetchInstancesRedisCloud,

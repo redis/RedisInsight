@@ -2,9 +2,9 @@ import React from 'react'
 
 import { RiSecondaryButton } from 'uiBase/forms'
 import { RiStopIcon } from 'uiBase/icons'
-import { RiTooltip } from 'uiSrc/components'
 import { PipelineButtonProps } from '../reset-pipeline-button/ResetPipelineButton'
 import styles from '../styles.module.scss'
+import { RiTooltip } from 'uiBase/display'
 
 const StopPipelineButton = ({
   onClick,

@@ -1,6 +1,6 @@
 import React from 'react'
 import { RiText } from 'uiBase/text'
-import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiSpacer } from 'uiBase/layout'
 
 export const NoResultsFoundText = (
   <RiText size="m" data-testid="no-result-found-only">

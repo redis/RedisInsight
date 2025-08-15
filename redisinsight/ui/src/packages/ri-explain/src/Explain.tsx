@@ -6,7 +6,8 @@ import Hierarchy from '@antv/hierarchy'
 import { formatRedisReply } from 'redisinsight-plugin-sdk'
 
 import { RiIcon } from 'uiBase/icons'
-import { RiTooltip } from 'uiSrc/components'
+import { RiTooltip } from 'uiBase/display'
+import { RiIconButton } from 'uiBase/forms'
 
 import {
   EDGE_COLOR_BODY_DARK,
@@ -28,7 +29,6 @@ import {
   findFlatProfile,
 } from './parser'
 import { ExplainNode, ProfileNode } from './Node'
-import { RiIconButton } from '../../../components/base/forms/buttons'
 
 interface IExplain {
   command: string

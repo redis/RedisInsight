@@ -2,8 +2,9 @@ import React from 'react'
 
 import { RiText } from 'uiBase/text'
 import { RiDestructiveButton, RiSecondaryButton } from 'uiBase/forms'
-import { RiPopover } from 'uiBase/index'
+import { RiPopover } from 'uiBase/display'
 import { RiHorizontalSpacer } from 'uiBase/layout'
+
 import styles from './styles.module.scss'
 
 export interface Props {

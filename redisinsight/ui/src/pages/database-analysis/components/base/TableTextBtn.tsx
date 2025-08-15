@@ -1,7 +1,7 @@
-import styled, { css } from 'styled-components'
 import React from 'react'
-import { RiEmptyButton } from 'uiBase/forms'
+import styled, { css } from 'styled-components'
 
+import { RiEmptyButton } from 'uiBase/forms'
 const expandedStyle = css`
   padding: 0 20px 0 12px;
   color: var(--euiTextSubduedColor) !important;

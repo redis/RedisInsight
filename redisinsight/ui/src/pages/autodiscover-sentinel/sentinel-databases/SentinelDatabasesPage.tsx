@@ -7,6 +7,7 @@ import { RiIconButton } from 'uiBase/forms'
 import { CopyIcon, RiIcon } from 'uiBase/icons'
 import { RiText } from 'uiBase/text'
 import { ColumnDefinition } from 'uiBase/layout'
+import { RiTooltip } from 'uiBase/display'
 import { Pages } from 'uiSrc/constants'
 import { setTitle } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
@@ -18,7 +19,7 @@ import {
   updateMastersSentinel,
 } from 'uiSrc/slices/instances/sentinel'
 import { LoadedSentinel, ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
-import { InputFieldSentinel, RiTooltip } from 'uiSrc/components'
+import { InputFieldSentinel } from 'uiSrc/components'
 import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/InputFieldSentinel'
 import { CreateSentinelDatabaseDto } from 'apiSrc/modules/redis-sentinel/dto/create.sentinel.database.dto'
 

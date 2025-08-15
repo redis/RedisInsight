@@ -3,9 +3,9 @@ import React, { useState } from 'react'
 import { RiDestructiveButton, RiPrimaryButton } from 'uiBase/forms'
 import { DeleteIcon, RiIcon } from 'uiBase/icons'
 import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiPopover } from 'uiBase/display'
 import { RiText } from 'uiBase/text'
 import { formatLongName } from 'uiSrc/utils'
-import { RiPopover } from 'uiSrc/components'
 import styles from '../styles.module.scss'
 
 export interface Props<T> {

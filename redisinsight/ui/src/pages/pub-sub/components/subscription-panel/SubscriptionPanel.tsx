@@ -23,10 +23,10 @@ import {
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
-import { RiTooltip } from 'uiSrc/components'
 import PatternsInfo from './components/patternsInfo'
 import ClickableAppendInfo from './components/clickable-append-info'
 import styles from './styles.module.scss'
+import { RiTooltip } from 'uiBase/display'
 
 const SubscriptionPanel = () => {
   const { messages, isSubscribed, subscriptions, loading, count } =

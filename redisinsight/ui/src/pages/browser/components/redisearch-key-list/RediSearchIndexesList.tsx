@@ -1,5 +1,5 @@
-import cx from 'classnames'
 import React, { useEffect, useState } from 'react'
+import cx from 'classnames'
 import { isString } from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -36,7 +36,7 @@ import {
 import { localStorageService } from 'uiSrc/services'
 import { BrowserStorageItem } from 'uiSrc/constants'
 
-import { RiTooltip } from 'uiSrc/components'
+import { RiTooltip } from 'uiBase/display'
 import styles from './styles.module.scss'
 
 export const CREATE = 'create'

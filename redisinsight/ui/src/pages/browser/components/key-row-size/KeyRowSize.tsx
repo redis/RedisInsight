@@ -5,7 +5,7 @@ import { isUndefined } from 'lodash'
 import { RiLoadingContent } from 'uiBase/layout'
 import { RiText } from 'uiBase/text'
 import { Maybe, formatBytes } from 'uiSrc/utils'
-import { RiTooltip } from 'uiSrc/components'
+import { RiTooltip } from 'uiBase/display'
 import styles from './styles.module.scss'
 
 export interface Props {

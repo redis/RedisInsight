@@ -1,12 +1,12 @@
 import React, { useContext } from 'react'
 import cx from 'classnames'
-import { RiListItem } from 'uiBase/layout/list'
+import { RiListItem } from 'uiBase/layout'
 import { truncateText } from 'uiSrc/utils'
 import EnablementAreaContext from 'uiSrc/pages/workbench/contexts/enablementAreaContext'
-import { RiTooltip } from 'uiSrc/components'
 
 import styles from './styles.module.scss'
 import './styles.scss'
+import { RiTooltip } from 'uiBase/display'
 
 export interface Props {
   testId: string

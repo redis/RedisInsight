@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react'
 import * as d3 from 'd3'
 import { executeRedisCommand, formatRedisReply } from 'redisinsight-plugin-sdk'
+import { RiTooltip } from 'uiBase/display'
 import { RiSwitchInput } from 'uiBase/inputs'
-import { RiTooltip } from 'uiSrc/components'
+import { RiIconButton } from 'uiBase/forms'
+import { CancelSlimIcon } from 'uiBase/icons'
 import { TOOLTIP_DELAY_LONG } from 'uiSrc/constants'
 import Graphd3, { IGraphD3 } from './graphd3'
 import { responseParser } from './parser'
@@ -22,8 +24,6 @@ import {
   NODE_COLORS,
   NODE_COLORS_DARK,
 } from './constants'
-import { RiIconButton } from '../../../components/base/forms/buttons'
-import { CancelSlimIcon } from '../../../components/base/icons'
 
 enum EntityType {
   Node = 'Node',

@@ -2,9 +2,9 @@ import React, { CSSProperties, ReactNode } from 'react'
 import cx from 'classnames'
 import { RiIcon } from 'uiBase/icons'
 import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiTooltip } from 'uiBase/display'
 import styles from 'uiSrc/components/database-overview/styles.module.scss'
 import { IMetric } from 'uiSrc/components/database-overview/components/OverviewMetrics/OverviewMetrics'
-import { RiTooltip } from 'uiSrc/components'
 
 export interface OverviewItemProps {
   children: ReactNode

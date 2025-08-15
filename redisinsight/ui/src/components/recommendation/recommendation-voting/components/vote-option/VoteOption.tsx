@@ -5,8 +5,7 @@ import { RiCol, RiFlexItem, RiRow } from 'uiBase/layout'
 import { RiText } from 'uiBase/text'
 import { CancelSlimIcon, RiIcon } from 'uiBase/icons'
 import { RiIconButton, RiPrimaryButton } from 'uiBase/forms'
-import { RiLink } from 'uiBase/display'
-import { RiPopover, RiTooltip } from 'uiBase/index'
+import { RiLink, RiPopover, RiTooltip } from 'uiBase/display'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import { Vote } from 'uiSrc/constants/recommendations'
 import { putRecommendationVote } from 'uiSrc/slices/analytics/dbAnalysis'
@@ -20,6 +19,32 @@ import { Nullable } from 'uiSrc/utils'
 
 import { getVotedText, iconType, voteTooltip } from './utils'
 import styles from './styles.module.scss'
+import styled from 'styled-components'
+import { Theme } from 'uiSrc/components/base/theme/types'
+
+const GitHubLink = styled(RiLink)`
+  padding: 4px 8px 4px 4px;
+
+  margin-top: 10px;
+  height: 22px !important;
+  background-color: ${({ theme }: { theme: Theme }) =>
+    theme.components.button.variants.primary.normal?.bgColor};
+  color: ${({ theme }: { theme: Theme }) =>
+    theme.components.button.variants.primary.normal?.textColor};
+  &:hover {
+    text-decoration: none !important;
+    background-color: ${({ theme }: { theme: Theme }) =>
+      theme.components.button.variants.primary.hover?.bgColor};
+    color: ${({ theme }: { theme: Theme }) =>
+      theme.components.button.variants.primary.normal?.textColor};
+  }
+
+  & > span {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+`
 
 export interface Props {
   voteOption: Vote

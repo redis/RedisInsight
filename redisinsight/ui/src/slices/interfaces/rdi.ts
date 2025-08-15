@@ -185,6 +185,8 @@ export interface IStateRdiPipeline {
   jobsValidationErrors: Record<string, string[]>
   resetChecked: boolean
   schema: Nullable<object>
+  jobNameSchema: Nullable<object>
+  monacoJobsSchema: Nullable<object>
   strategies: IRdiPipelineStrategies
   changes: Record<string, FileChangeType>
   jobFunctions: monacoEditor.languages.CompletionItem[]

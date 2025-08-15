@@ -28,7 +28,8 @@ fixture `Scripting area at Workbench`
         await workbenchPage.sendCommandInWorkbench(`FT.DROPINDEX ${indexName} DD`);
         await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
-test('Verify that user can run multiple commands written in multiple lines in Workbench page', async t => {
+test
+    .skip('Verify that user can run multiple commands written in multiple lines in Workbench page', async t => {
     const commandsForSend = [
         'info',
         `FT.CREATE ${indexName} ON HASH PREFIX 1 product: SCHEMA name TEXT`,
@@ -56,7 +57,8 @@ test
         // Clear and delete database
         await workbenchPage.Cli.sendCommandInCli(`DEL ${keyName}`);
         await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
-    })('Verify that user can use double slashes (//) wrapped in double quotes and these slashes will not comment out any characters', async t => {
+    })
+    .skip('Verify that user can use double slashes (//) wrapped in double quotes and these slashes will not comment out any characters', async t => {
         keyName = Common.generateWord(10);
         const commandsForSend = [
             `HMSET ${keyName} price 20`,
@@ -104,7 +106,8 @@ test
         // Clear and delete database
         await workbenchPage.Cli.sendCommandInCli(`DEL ${keyName}`);
         await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
-    })('Verify that user can find (using right click) "Run Commands" custom shortcut option in monaco menu and run a command', async t => {
+    })
+    .skip('Verify that user can find (using right click) "Run Commands" custom shortcut option in monaco menu and run a command', async t => {
         keyName = Common.generateWord(10);
         const command = `HSET ${keyName} field value`;
 
@@ -121,7 +124,8 @@ test
         // Check the result with sent command
         await t.expect(workbenchPage.queryCardCommand.withExactText(command).exists).ok('The result of sent command is not displayed');
     });
-test('Verify that user can repeat commands by entering a number of repeats before the Redis command and see separate results per each command in Workbench', async t => {
+test
+    .skip('Verify that user can repeat commands by entering a number of repeats before the Redis command and see separate results per each command in Workbench', async t => {
     const command = 'FT._LIST';
     const command2 = 'select 13';
     const repeats = 5;

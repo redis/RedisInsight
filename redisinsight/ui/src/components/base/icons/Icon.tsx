@@ -12,6 +12,7 @@ type BaseIconProps = Omit<MonochromeIconProps, 'color' | 'size'> & {
     | (string & {})
   size?: IconSizeType | null
   isSvg?: boolean
+  style?: React.CSSProperties
 }
 
 const sizesMap = {
@@ -43,6 +44,7 @@ export const Icon = ({
   color = 'primary600',
   size,
   className,
+  style = {},
   ...rest
 }: BaseIconProps) => {
   let sizeValue: number | string | undefined
@@ -73,7 +75,13 @@ export const Icon = ({
     ? svgProps
     : { color, customColor, size, customSize, ...rest }
 
-  return <IconComponent {...props} className={cx(className, 'RI-Icon')} />
+  return (
+    <IconComponent
+      {...props}
+      style={{ ...style, verticalAlign: 'middle' }}
+      className={cx(className, 'RI-Icon')}
+    />
+  )
 }
 
 export type IconProps = Omit<BaseIconProps, 'icon'>

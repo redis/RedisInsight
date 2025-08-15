@@ -2,10 +2,10 @@ import React from 'react'
 import cx from 'classnames'
 
 import { RiText } from 'uiBase/text'
-
 import { RiIcon } from 'uiBase/icons'
 import { ConnectionType } from 'uiSrc/slices/interfaces'
 import styles from './styles.module.scss'
+import { RiRow } from 'uiBase/layout'
 
 export interface Props {
   connectionType?: ConnectionType
@@ -27,10 +27,12 @@ const EmptyMessagesList = ({
         Subscribe to the Channel to see all the messages published to your
         database
       </RiText>
-      <RiText className={styles.alert}>
+      <RiRow>
         <RiIcon type="ToastDangerIcon" className={styles.alertIcon} />
-        Running in production may decrease performance and memory available
-      </RiText>
+        <RiText className={styles.alert}>
+          Running in production may decrease performance and memory available
+        </RiText>
+      </RiRow>
       {connectionType === ConnectionType.Cluster && isSpublishNotSupported && (
         <>
           <div className={styles.separator} />

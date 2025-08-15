@@ -34,8 +34,8 @@ import DryRunJobTransformations from 'uiSrc/pages/rdi/pipeline-management/compon
 import { createAxiosError, formatLongName, yamlToJson } from 'uiSrc/utils'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 
-import { RiTooltip } from 'uiSrc/components'
 import styles from './styles.module.scss'
+import { RiTooltip } from 'uiBase/display'
 
 export interface Props {
   job: string

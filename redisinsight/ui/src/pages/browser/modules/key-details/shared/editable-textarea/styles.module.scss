@@ -19,6 +19,8 @@
 .textAreaControls {
   right: 4px !important;
   bottom: 4px !important;
-  top: auto !important;
   background-color: var(--euiPageBackgroundColor) !important;
+  :nth-child(2) {
+    margin-top: -6px
+  }
 }

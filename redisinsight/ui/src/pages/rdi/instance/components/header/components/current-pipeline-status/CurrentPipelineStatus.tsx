@@ -1,10 +1,9 @@
 import React from 'react'
 import { AllIconsType, RiIcon, IconProps } from 'uiBase/icons'
 import { RiTitle } from 'uiBase/text'
-import { RiLoader } from 'uiBase/display'
+import { RiLoader, RiTooltip } from 'uiBase/display'
 import { formatLongName, Maybe } from 'uiSrc/utils'
 import { PipelineState } from 'uiSrc/slices/interfaces'
-import { RiTooltip } from 'uiSrc/components'
 import styles from './styles.module.scss'
 
 export interface Props {

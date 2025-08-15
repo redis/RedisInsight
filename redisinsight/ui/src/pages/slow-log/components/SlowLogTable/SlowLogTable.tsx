@@ -14,8 +14,9 @@ import { convertNumberByUnits } from 'uiSrc/pages/slow-log/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 
-import { FormatedDate, RiTooltip } from 'uiSrc/components'
+import { FormatedDate } from 'uiSrc/components'
 import styles from '../styles.module.scss'
+import { RiTooltip } from 'uiBase/tooltip'
 
 export const DATE_FORMAT = 'HH:mm:ss d LLL yyyy'
 

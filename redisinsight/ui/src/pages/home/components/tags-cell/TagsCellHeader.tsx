@@ -1,8 +1,9 @@
 import React, { memo } from 'react'
+
 import { RiSpacer } from 'uiBase/layout/spacer'
 import { RiFormField, RiCheckbox } from 'uiBase/forms'
 import { RiIcon } from 'uiBase/icons'
-import { RiPopover } from 'uiBase/index'
+import { RiPopover } from 'uiBase/display'
 import { RiSearchInput } from 'uiBase/inputs'
 import { useFilterTags } from './useFilterTags'
 import styles from './styles.module.scss'

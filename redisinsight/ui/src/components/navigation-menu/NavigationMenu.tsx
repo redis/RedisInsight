@@ -29,13 +29,11 @@ import styles from './styles.module.scss'
 
 const NavigationMenu = () => {
   const {
-    privateRoutes,
     privateRdiRoutes,
     isRdiWorkspace,
     publicRoutes,
     getAdditionPropsForHighlighting,
     highlightedPages,
-    connectedInstanceId,
     connectedRdiInstanceId,
   } = useNavigation()
 
@@ -133,9 +131,6 @@ const NavigationMenu = () => {
     >
       <RiSideBarContainer>
         <RedisLogo isRdiWorkspace={isRdiWorkspace} />
-        {connectedInstanceId &&
-          !isRdiWorkspace &&
-          privateRoutes.map(renderNavItem)}
         {connectedRdiInstanceId &&
           isRdiWorkspace &&
           privateRdiRoutes.map(renderNavItem)}

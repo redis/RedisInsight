@@ -20,34 +20,34 @@ const rediSearchIcons: {
   iconDark: AllIconsType
   iconLight: AllIconsType
 } = {
-  iconDark: 'RedisSearchDarkIcon',
-  iconLight: 'RedisSearchLightIcon',
+  iconDark: 'QuerySearchIcon',
+  iconLight: 'QuerySearchIcon',
 }
 
 export const DEFAULT_MODULES_INFO: ModulesInfoType = {
   [RedisDefaultModules.AI]: {
-    iconDark: 'RedisAIDarkIcon',
-    iconLight: 'RedisAILightIcon',
+    iconDark: 'RedisAiIcon',
+    iconLight: 'RedisAiIcon',
     text: DATABASE_LIST_MODULES_TEXT[RedisDefaultModules.AI],
   },
   [RedisDefaultModules.Bloom]: {
-    iconDark: 'RedisBloomDarkIcon',
-    iconLight: 'RedisBloomLightIcon',
+    iconDark: 'ProbabilisticIcon',
+    iconLight: 'ProbabilisticIcon',
     text: DATABASE_LIST_MODULES_TEXT[RedisDefaultModules.Bloom],
   },
   [RedisDefaultModules.Gears]: {
-    iconDark: 'RedisGearsDarkIcon',
-    iconLight: 'RedisGearsLightIcon',
+    iconDark: 'RedisGearsIcon',
+    iconLight: 'RedisGearsIcon',
     text: DATABASE_LIST_MODULES_TEXT[RedisDefaultModules.Gears],
   },
   [RedisDefaultModules.Graph]: {
-    iconDark: 'RedisGraphDarkIcon',
-    iconLight: 'RedisGraphLightIcon',
+    iconDark: 'RedisGraphIcon',
+    iconLight: 'RedisGraphIcon',
     text: DATABASE_LIST_MODULES_TEXT[RedisDefaultModules.Graph],
   },
   [RedisDefaultModules.RedisGears]: {
-    iconDark: 'RedisGearsDarkIcon',
-    iconLight: 'RedisGearsLightIcon',
+    iconDark: 'RedisGearsIcon',
+    iconLight: 'RedisGearsIcon',
     text: DATABASE_LIST_MODULES_TEXT[RedisDefaultModules.RedisGears],
   },
   [RedisDefaultModules.RedisGears2]: {
@@ -56,8 +56,8 @@ export const DEFAULT_MODULES_INFO: ModulesInfoType = {
     text: DATABASE_LIST_MODULES_TEXT[RedisDefaultModules.RedisGears2],
   },
   [RedisDefaultModules.ReJSON]: {
-    iconDark: 'RedisJSONDarkIcon',
-    iconLight: 'RedisJSONLightIcon',
+    iconDark: 'JsonIcon',
+    iconLight: 'JsonIcon',
     text: DATABASE_LIST_MODULES_TEXT[RedisDefaultModules.ReJSON],
   },
   [RedisDefaultModules.Search]: {
@@ -77,8 +77,8 @@ export const DEFAULT_MODULES_INFO: ModulesInfoType = {
     text: DATABASE_LIST_MODULES_TEXT[RedisDefaultModules.FTL],
   },
   [RedisDefaultModules.TimeSeries]: {
-    iconDark: 'RedisTimeSeriesDarkIcon',
-    iconLight: 'RedisTimeSeriesLightIcon',
+    iconDark: 'TimeSeriesIcon',
+    iconLight: 'TimeSeriesIcon',
     text: DATABASE_LIST_MODULES_TEXT[RedisDefaultModules.TimeSeries],
   },
 }

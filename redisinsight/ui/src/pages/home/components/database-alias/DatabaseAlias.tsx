@@ -33,8 +33,8 @@ import {
   resetRdiContext,
   setAppContextInitialState,
 } from 'uiSrc/slices/app/context'
-import { RiTooltip } from 'uiSrc/components'
 import styles from './styles.module.scss'
+import { RiTooltip } from 'uiBase/display'
 
 export interface Props {
   alias: string

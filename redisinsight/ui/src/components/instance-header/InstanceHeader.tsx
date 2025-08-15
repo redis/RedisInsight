@@ -8,6 +8,7 @@ import { RiFlexItem, RiRow } from 'uiBase/layout'
 import { RiEmptyButton } from 'uiBase/forms'
 import { EditIcon, RiIcon } from 'uiBase/icons'
 import { RiText } from 'uiBase/text'
+import { RiTooltip } from 'uiBase/display'
 import { RiNumericInput } from 'uiBase/inputs'
 import { FeatureFlags, Pages } from 'uiSrc/constants'
 import { selectOnFocus } from 'uiSrc/utils'
@@ -30,7 +31,6 @@ import {
 import {
   DatabaseOverview,
   FeatureFlagComponent,
-  RiTooltip,
 } from 'uiSrc/components'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
 import { CopilotTrigger, InsightsTrigger } from 'uiSrc/components/triggers'

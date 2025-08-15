@@ -3,6 +3,7 @@ import { instance, mock } from 'ts-mockito'
 import { ColumnDefinition } from 'uiBase/layout'
 import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import { cleanup, fireEvent, render, screen } from 'uiSrc/utils/test-utils'
+import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import SentinelDatabases, { Props } from './SentinelDatabases'
 
 const mockedProps = mock<Props>()

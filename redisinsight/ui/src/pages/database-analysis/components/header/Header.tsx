@@ -22,12 +22,13 @@ import {
   ANALYZE_CLUSTER_TOOLTIP_MESSAGE,
   ANALYZE_TOOLTIP_MESSAGE,
 } from 'uiSrc/constants/recommendations'
-import { FormatedDate, RiTooltip } from 'uiSrc/components'
+import { FormatedDate } from 'uiSrc/components'
 import { DEFAULT_DELIMITER } from 'uiSrc/constants'
 import { ShortDatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
 import { AnalysisProgress } from 'apiSrc/modules/database-analysis/models/analysis-progress'
 
 import styles from './styles.module.scss'
+import { RiTooltip } from 'uiBase/tooltip'
 
 const HeaderSelect = styled(RiSelect)`
   border: 0 none;

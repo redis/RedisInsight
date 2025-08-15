@@ -55,7 +55,7 @@ const Job = (props: Props) => {
   const deployedJobValueRef = useRef<Maybe<string>>(deployedJobValue)
   const jobNameRef = useRef<string>(name)
 
-  const { loading, schema, jobFunctions, jobs } =
+  const { loading, monacoJobsSchema, jobFunctions, jobs } =
     useSelector(rdiPipelineSelector)
 
   useEffect(() => {
@@ -239,7 +239,7 @@ const Job = (props: Props) => {
           </div>
         ) : (
           <MonacoYaml
-            schema={get(schema, 'jobs', null)}
+            schema={monacoJobsSchema}
             value={value}
             onChange={handleChange}
             disabled={loading}

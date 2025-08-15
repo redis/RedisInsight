@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import { RiText } from 'uiBase/text'
 import { RiIcon } from 'uiBase/icons'
-import { RiLink } from 'uiBase/display'
-import { RiPopover } from 'uiBase/index'
+import { RiLink, RiPopover } from 'uiBase/display'
 import {
   EXTERNAL_LINKS,
   UTM_CAMPAINGS,

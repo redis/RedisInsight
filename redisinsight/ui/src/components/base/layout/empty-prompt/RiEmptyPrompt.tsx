@@ -44,4 +44,5 @@ export const RiEmptyPrompt = ({
   )
 }
 
+
 export default RiEmptyPrompt

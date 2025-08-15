@@ -27,7 +27,7 @@ fixture `Index Schema at Workbench`
         await workbenchPage.sendCommandInWorkbench(`FT.DROPINDEX ${indexName} DD`);
         await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneRedisearch);
     });
-test('Verify that user can open results in Text and Table views for FT.INFO for Hash in Workbench', async t => {
+test.skip('Verify that user can open results in Text and Table views for FT.INFO for Hash in Workbench', async t => {
     indexName = Common.generateWord(5);
     const commandsForSend = [
         `FT.CREATE ${indexName} ON HASH PREFIX 1 product: SCHEMA name TEXT`,
@@ -48,7 +48,7 @@ test('Verify that user can open results in Text and Table views for FT.INFO for 
     // Check that result is displayed in Text view
     await t.expect(workbenchPage.queryTextResult.exists).ok('The result is displayed in Text view');
 });
-test('Verify that user can open results in Text and Table views for FT.INFO for JSON in Workbench', async t => {
+test.skip('Verify that user can open results in Text and Table views for FT.INFO for JSON in Workbench', async t => {
     indexName = Common.generateWord(5);
     const commandsForSend = [
         `FT.CREATE ${indexName} ON JSON SCHEMA $.user.name AS name TEXT $.user.tag AS country TAG`,

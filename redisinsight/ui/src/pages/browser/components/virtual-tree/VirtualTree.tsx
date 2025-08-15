@@ -64,7 +64,7 @@ const VirtualTree = (props: Props) => {
     onStatusOpen,
     onStatusSelected,
     setConstructingTree,
-    webworkerFn = () => {},
+    webworkerFn = () => { },
     onDeleteClicked,
     onDeleteLeaf,
   } = props

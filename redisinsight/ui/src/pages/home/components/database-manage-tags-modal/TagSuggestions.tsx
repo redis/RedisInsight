@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { EuiSelectable, EuiSelectableOption } from '@elastic/eui'
 import { uniqBy } from 'lodash'
+
 import { RiText } from 'uiBase/text'
 import { tagsSelector } from 'uiSrc/slices/instances/tags'
 import { presetTagSuggestions } from './constants'

@@ -18,7 +18,7 @@ import {
 import { InfoIcon } from 'uiBase/icons'
 import { RiSearchInput } from 'uiBase/inputs'
 import { RiTitle, RiText } from 'uiBase/text'
-import { RiPopover, RiTooltip } from 'uiBase/index'
+import { RiPopover, RiTooltip } from 'uiBase/display'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'

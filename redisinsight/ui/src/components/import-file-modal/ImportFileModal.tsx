@@ -4,9 +4,10 @@ import { RiCol, RiFlexItem, RiRow } from 'uiBase/layout'
 import { RiColorText, RiText } from 'uiBase/text'
 import { RiLoader, RiModal } from 'uiBase/display'
 import { RiIcon, CancelIcon } from 'uiBase/icons'
-import { Button } from 'uiBase/forms'
-import { RiFilePicker, UploadWarning } from 'uiSrc/components'
+import { Button, RiFilePicker } from 'uiBase/forms'
 import { Nullable } from 'uiSrc/utils'
+import { UploadWarning } from 'uiSrc/components'
+
 import styles from './styles.module.scss'
 
 export interface Props<T> {

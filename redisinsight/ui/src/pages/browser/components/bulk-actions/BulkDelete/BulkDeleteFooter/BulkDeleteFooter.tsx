@@ -10,7 +10,7 @@ import {
 } from 'uiBase/forms'
 import { RefreshIcon, RiIcon } from 'uiBase/icons'
 import { RiText } from 'uiBase/text'
-import { RiPopover } from 'uiBase/index'
+import { RiPopover } from 'uiBase/display'
 import {
   bulkActionsDeleteOverviewSelector,
   setBulkDeleteStartAgain,

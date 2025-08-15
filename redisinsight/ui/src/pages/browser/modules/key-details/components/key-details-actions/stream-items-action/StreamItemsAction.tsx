@@ -3,7 +3,7 @@ import cx from 'classnames'
 
 import { PlusInCircleIcon } from 'uiBase/icons'
 import { RiIconButton, RiSecondaryButton } from 'uiBase/forms'
-import { RiTooltip } from 'uiSrc/components'
+import { RiTooltip } from 'uiBase/display'
 import { MIDDLE_SCREEN_RESOLUTION } from 'uiSrc/constants'
 import styles from '../styles.module.scss'
 

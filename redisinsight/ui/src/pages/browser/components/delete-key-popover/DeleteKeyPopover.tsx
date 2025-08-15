@@ -1,11 +1,11 @@
 import React from 'react'
 
 import cx from 'classnames'
-import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiSpacer } from 'uiBase/layout'
 import { RiDestructiveButton, RiIconButton } from 'uiBase/forms'
 import { DeleteIcon } from 'uiBase/icons'
 import { RiText } from 'uiBase/text'
-import { RiPopover } from 'uiBase/index'
+import { RiPopover } from 'uiBase/display'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { formatLongName } from 'uiSrc/utils'
 import { KeyTypes, ModulesKeyTypes } from 'uiSrc/constants'

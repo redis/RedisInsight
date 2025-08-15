@@ -5,8 +5,7 @@ import { RiFlexItem, RiRow } from 'uiBase/layout'
 import { RiSpacer } from 'uiBase/layout/spacer'
 import { RiIconButton, RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
 import { EditIcon } from 'uiBase/icons'
-import { RiLoader } from 'uiBase/display'
-import { RiPopover } from 'uiBase/index'
+import { RiLoader, RiPopover } from 'uiBase/display'
 import styles from './styles.module.scss'
 
 export interface Props {

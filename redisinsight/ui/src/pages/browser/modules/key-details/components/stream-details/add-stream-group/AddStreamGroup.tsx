@@ -7,6 +7,7 @@ import { RiFlexItem, RiRow } from 'uiBase/layout'
 import { RiPrimaryButton, RiSecondaryButton, RiFormField } from 'uiBase/forms'
 import { RiIcon } from 'uiBase/icons'
 import { RiTextInput } from 'uiBase/inputs'
+import { RiTooltip } from 'uiBase/display'
 import { lastDeliveredIDTooltipText } from 'uiSrc/constants/texts'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 import { addNewGroupAction } from 'uiSrc/slices/browser/stream'
@@ -16,7 +17,6 @@ import {
   validateConsumerGroupId,
 } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { RiTooltip } from 'uiSrc/components'
 import { CreateConsumerGroupsDto } from 'apiSrc/modules/browser/stream/dto'
 
 import styles from './styles.module.scss'

@@ -7,7 +7,7 @@ import { RiIconButton, RiPrimaryButton } from 'uiBase/forms'
 import { InfoIcon, CopyIcon, RiIcon } from 'uiBase/icons'
 import { RiColorText, RiText } from 'uiBase/text'
 import { ColumnDefinition } from 'uiBase/layout'
-import { RiLoader } from 'uiBase/display'
+import { RiLoader, RiTooltip } from 'uiBase/display'
 import {
   LoadedSentinel,
   AddRedisDatabaseStatus,
@@ -23,7 +23,7 @@ import {
 import { removeEmpty, setTitle } from 'uiSrc/utils'
 import { ApiStatusCode, Pages } from 'uiSrc/constants'
 import { ApiEncryptionErrors } from 'uiSrc/constants/apiErrors'
-import { InputFieldSentinel, RiTooltip } from 'uiSrc/components'
+import { InputFieldSentinel } from 'uiSrc/components'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/InputFieldSentinel'
 

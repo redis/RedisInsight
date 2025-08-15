@@ -1,7 +1,6 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import { RiText } from 'uiBase/text'
-
 import { RiLink } from 'uiBase/display'
 import { Pages } from 'uiSrc/constants'
 import { EmptyMessage, Content } from 'uiSrc/pages/database-analysis/constants'
@@ -16,7 +15,7 @@ interface Props {
 const emptyMessageContent: { [key in EmptyMessage]: Content } = {
   [EmptyMessage.Reports]: {
     title: 'No Reports found',
-    text: () => 'Run "New Analysis" to generate first report.',
+    text: () => 'Click "Analyze" to generate the first report.',
   },
   [EmptyMessage.Keys]: {
     title: 'No keys to display',

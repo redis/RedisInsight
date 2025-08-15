@@ -4,12 +4,12 @@ import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { CopilotIcon } from 'uiBase/icons'
 import { RiEmptyButton } from 'uiBase/forms'
+import { RiTooltip } from 'uiBase/display'
 import {
   sidePanelsSelector,
   toggleSidePanel,
 } from 'uiSrc/slices/panels/sidePanels'
 
-import { RiTooltip } from 'uiSrc/components'
 import { SidePanels } from 'uiSrc/slices/interfaces/insights'
 import styles from './styles.module.scss'
 

@@ -5,13 +5,15 @@ import cx from 'classnames'
 import { RiIconButton } from 'uiBase/forms'
 import { RiColorText } from 'uiBase/text'
 import { RiIcon } from 'uiBase/icons'
+import { RiRow } from 'uiBase/layout'
 import { Theme } from 'uiSrc/constants'
+import { RiTooltip } from 'uiBase/display'
 import { getModule, truncateText } from 'uiSrc/utils'
 import { IDatabaseModule, sortModules } from 'uiSrc/utils/modules'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 
 import { DEFAULT_MODULES_INFO, ModuleInfo } from 'uiSrc/constants/modules'
-import { RiTooltip } from 'uiSrc/components'
+import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
 
 import styles from './styles.module.scss'
@@ -46,7 +48,11 @@ const DatabaseListModules = React.memo((props: Props) => {
 
   const newModules: IDatabaseModule[] = sortModules(
     modules?.map(({ name: propName, semanticVersion = '', version = '' }) => {
-      const module: ModuleInfo = DEFAULT_MODULES_INFO[propName]
+      const isValidModuleKey = Object.values(RedisDefaultModules).includes(propName as RedisDefaultModules)
+
+      const module: ModuleInfo | undefined = isValidModuleKey
+        ? DEFAULT_MODULES_INFO[propName as RedisDefaultModules]
+        : undefined
       const moduleName = module?.text || propName
 
       const { abbreviation = '', name = moduleName } = getModule(moduleName)
@@ -87,7 +93,12 @@ const DatabaseListModules = React.memo((props: Props) => {
       const hasContent = !!content
       const hasAbbreviation = !!abbreviation
       return (
-        <div className={styles.tooltipItem} key={content || abbreviation}>
+        <RiRow
+          align="center"
+          gap="m"
+          className={styles.tooltipItem}
+          key={content || abbreviation}
+        >
           {hasIcon && <RiIcon type={icon} />}
           {!hasIcon && hasAbbreviation && (
             <RiColorText
@@ -102,8 +113,7 @@ const DatabaseListModules = React.memo((props: Props) => {
               {content}
             </RiColorText>
           )}
-          <br />
-        </div>
+        </RiRow>
       )
     },
   )

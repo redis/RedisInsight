@@ -24,7 +24,7 @@ import {
 } from 'uiSrc/telemetry'
 import { stringDataSelector } from 'uiSrc/slices/browser/string'
 import { isFullStringLoaded } from 'uiSrc/utils'
-import { RiTooltip } from 'uiSrc/components'
+import { RiTooltip } from 'uiBase/display'
 import {
   Container,
   ControlsIcon,

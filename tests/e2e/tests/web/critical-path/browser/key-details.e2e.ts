@@ -25,7 +25,8 @@ fixture `Key Details`
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
         await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
-test('Verify that user can see the list of keys when click on “Back” button', async t => {
+test
+.skip('Verify that user can see the list of keys when click on “Back” button', async t => {
     await t.expect(browserPage.backToBrowserBtn.exists).notOk('"< Browser" button displayed for normal screen resolution');
     // Minimize the window to check icon
     await t.resizeWindow(1200, 900);

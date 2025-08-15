@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import cx from 'classnames'
-import { RiPage, RiPageBody, Card } from 'uiBase/layout'
+import { RiPage, RiPageBody } from 'uiBase/layout'
 import { RIResizeObserver } from 'uiBase/utils'
 import { RdiInstance } from 'uiSrc/slices/interfaces'
 import {

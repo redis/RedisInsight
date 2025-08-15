@@ -110,11 +110,11 @@ const RejsonObject = (props: JSONObjectProps) => {
       setValueOfEntireObject(
         typeof data.data === 'object'
           ? JSON.stringify(
-              data.data,
-              (_key, value) =>
-                typeof value === 'bigint' ? value.toString() : value,
-              4,
-            )
+            data.data,
+            (_key, value) =>
+              typeof value === 'bigint' ? value.toString() : value,
+            4,
+          )
           : data.data,
       )
     })

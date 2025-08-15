@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { DeleteIcon } from 'uiBase/icons'
 import { RiDestructiveButton, RiIconButton } from 'uiBase/forms'
 import { RiText } from 'uiBase/text'
-import { RiPopover } from 'uiBase/index'
+import { RiPopover } from 'uiBase/display'
 import {
   initialKeyInfo,
   keysSelector,

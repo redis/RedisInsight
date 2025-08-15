@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
 
-import { RiAccordion } from 'uiBase/display'
+import { RiTooltip, RiAccordion } from 'uiBase/display'
 import { RiCol } from 'uiBase/layout'
 import { RiText } from 'uiBase/text'
 import { RiIcon } from 'uiBase/icons'
@@ -16,7 +16,7 @@ import { workbenchCustomTutorialsSelector } from 'uiSrc/slices/workbench/wb-cust
 import { EAItemActions } from 'uiSrc/constants'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 
-import { RiTooltip, OnboardingTour } from 'uiSrc/components'
+import {  OnboardingTour } from 'uiSrc/components'
 
 import DeleteTutorialButton from '../DeleteTutorialButton'
 

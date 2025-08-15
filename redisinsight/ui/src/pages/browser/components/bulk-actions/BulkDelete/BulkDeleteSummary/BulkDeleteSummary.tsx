@@ -12,9 +12,9 @@ import {
   bulkActionsDeleteSummarySelector,
 } from 'uiSrc/slices/browser/bulkActions'
 import BulkActionSummary from 'uiSrc/pages/browser/components/bulk-actions/BulkActionSummary'
-import { RiTooltip } from 'uiSrc/components'
 
 import styles from './styles.module.scss'
+import { RiTooltip } from 'uiBase/display'
 
 const BulkDeleteSummary = () => {
   const [title, setTitle] = useState<string>('')

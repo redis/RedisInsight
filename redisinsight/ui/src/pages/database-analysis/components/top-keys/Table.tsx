@@ -1,11 +1,11 @@
-import { isNil } from 'lodash'
 import React from 'react'
+import { isNil } from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 
 import { RiColorText } from 'uiBase/text'
 import { RiTable, ColumnDefinition } from 'uiBase/layout'
-import { GroupBadge, RiTooltip } from 'uiSrc/components'
+import { GroupBadge } from 'uiSrc/components'
 import { Pages } from 'uiSrc/constants'
 import {
   SCAN_COUNT_DEFAULT,
@@ -40,6 +40,7 @@ import {
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { TableTextBtn } from 'uiSrc/pages/database-analysis/components/base/TableTextBtn'
 import { Key } from 'apiSrc/modules/database-analysis/models/key'
+import { RiTooltip } from 'uiBase/tooltip'
 
 export interface Props {
   data: Key[]
