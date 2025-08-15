@@ -1,15 +1,9 @@
-import React, { useCallback } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
+import React from 'react'
 import { CallOut } from 'uiSrc/components/base/display/call-out/CallOut'
-import { Pages } from 'uiSrc/constants'
+import useStartWizard from '../hooks/useStartWizard'
 
 export const StartWizardButton = () => {
-  const history = useHistory()
-  const { instanceId } = useParams<{ instanceId: string }>()
-
-  const startCreateIndexWizard = useCallback(() => {
-    history.push(Pages.vectorSearchCreateIndex(instanceId))
-  }, [history, instanceId])
+  const { start } = useStartWizard()
 
   return (
     <CallOut
@@ -17,7 +11,7 @@ export const StartWizardButton = () => {
       actions={{
         primary: {
           label: 'Get started',
-          onClick: startCreateIndexWizard,
+          onClick: start,
         },
       }}
     >
