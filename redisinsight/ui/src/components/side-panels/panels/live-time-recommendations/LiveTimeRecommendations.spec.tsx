@@ -40,7 +40,7 @@ jest.mock('uiSrc/slices/instances/instances', () => ({
   connectedInstanceSelector: jest.fn().mockReturnValue({
     id: 'instanceId',
     connectionType: 'CLUSTER',
-    provider: 'RE_CLOUD',
+    provider: 'REDIS_CLOUD',
   }),
 }))
 
@@ -153,7 +153,7 @@ describe('LiveTimeRecommendations', () => {
       eventData: {
         databaseId: 'instanceId',
         total: 1,
-        provider: 'RE_CLOUD',
+        provider: 'REDIS_CLOUD',
       },
     })
     sendEventTelemetry.mockRestore()
@@ -182,7 +182,7 @@ describe('LiveTimeRecommendations', () => {
         ),
         total: 2,
         action: 'show',
-        provider: 'RE_CLOUD',
+        provider: 'REDIS_CLOUD',
       },
     })
     sendEventTelemetry.mockRestore()

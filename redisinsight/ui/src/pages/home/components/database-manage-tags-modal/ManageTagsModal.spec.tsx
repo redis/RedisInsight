@@ -35,7 +35,7 @@ const mockInstance: Partial<Instance> = {
       updatedAt: new Date().toISOString(),
     },
   ],
-  provider: 'RE_CLOUD',
+  provider: 'REDIS_CLOUD',
 }
 
 jest.mock('uiSrc/components/base/display', () => {

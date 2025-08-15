@@ -12,14 +12,14 @@ export class RedisEnterpriseAnalytics extends TelemetryBaseService {
     super(eventEmitter);
   }
 
-  sendGetREClusterDbsSucceedEvent(
+  sendGetRedisSoftwareDbsSucceedEvent(
     sessionMetadata: SessionMetadata,
     databases: RedisEnterpriseDatabase[] = [],
   ): void {
     try {
       this.sendEvent(
         sessionMetadata,
-        TelemetryEvents.REClusterDiscoverySucceed,
+        TelemetryEvents.RedisSoftwareDiscoverySucceed,
         {
           numberOfActiveDatabases: databases.filter(
             (db) => db.status === RedisEnterpriseDatabaseStatus.Active,
@@ -32,13 +32,13 @@ export class RedisEnterpriseAnalytics extends TelemetryBaseService {
     }
   }
 
-  sendGetREClusterDbsFailedEvent(
+  sendGetRedisSoftwareDbsFailedEvent(
     sessionMetadata: SessionMetadata,
     exception: HttpException,
   ) {
     this.sendFailedEvent(
       sessionMetadata,
-      TelemetryEvents.REClusterDiscoveryFailed,
+      TelemetryEvents.RedisSoftwareDiscoveryFailed,
       exception,
     );
   }

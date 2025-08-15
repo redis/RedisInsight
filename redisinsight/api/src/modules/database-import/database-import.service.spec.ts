@@ -188,7 +188,7 @@ describe('DatabaseImportService', () => {
         mockSessionMetadata,
         {
           ...mockDatabase,
-          provider: 'RE_CLOUD',
+          provider: 'REDIS_CLOUD',
         },
         0,
       );
@@ -204,7 +204,7 @@ describe('DatabaseImportService', () => {
             'compressor',
             'modules',
           ]),
-          provider: 'RE_CLOUD',
+          provider: 'REDIS_CLOUD',
           new: true,
         },
         false,

@@ -27,7 +27,7 @@ export const getHostingProvider = async (
       PROVIDER_HOST_REGEX.REDISLABS.test(host) ||
       PROVIDER_HOST_REGEX.REDISCLOUD.test(host)
     ) {
-      return HostingProvider.RE_CLOUD;
+      return HostingProvider.REDIS_CLOUD;
     }
     if (PROVIDER_HOST_REGEX.CACHE_AMAZONAWS.test(host)) {
       return HostingProvider.AWS_ELASTICACHE;
@@ -50,7 +50,7 @@ export const getHostingProvider = async (
       ).toLowerCase();
 
       if (hello.includes('/enterprise-managed')) {
-        return HostingProvider.REDIS_ENTERPRISE;
+        return HostingProvider.OTHER_REDIS_MANAGED;
       }
 
       if (hello.includes('google')) {

@@ -24,7 +24,7 @@ export const SUPPORTED_REDIS_MODULES = Object.freeze({
   timeseries: AdditionalRedisModuleName.RedisTimeSeries,
 });
 
-export const RE_CLOUD_MODULES_NAMES = Object.freeze({
+export const REDIS_CLOUD_MODULES_NAMES = Object.freeze({
   RedisAI: AdditionalRedisModuleName.RedisAI,
   RedisGraph: AdditionalRedisModuleName.RedisGraph,
   RedisGears: AdditionalRedisModuleName.RedisGears,
@@ -34,7 +34,7 @@ export const RE_CLOUD_MODULES_NAMES = Object.freeze({
   RedisTimeSeries: AdditionalRedisModuleName.RedisTimeSeries,
 });
 
-export const RE_CLUSTER_MODULES_NAMES = Object.freeze({
+export const REDIS_SOFTWARE_MODULES_NAMES = Object.freeze({
   ai: AdditionalRedisModuleName.RedisAI,
   graph: AdditionalRedisModuleName.RedisGraph,
   gears: AdditionalRedisModuleName.RedisGears,

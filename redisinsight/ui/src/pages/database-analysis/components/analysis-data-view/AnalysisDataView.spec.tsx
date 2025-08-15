@@ -50,7 +50,7 @@ jest.mock('uiSrc/slices/instances/instances', () => ({
   ...jest.requireActual('uiSrc/slices/instances/instances'),
   connectedInstanceSelector: jest.fn().mockReturnValue({
     id: 'instanceId',
-    provider: 'RE_CLOUD',
+    provider: 'REDIS_CLOUD',
   }),
 }))
 
@@ -442,7 +442,7 @@ describe('AnalysisDataView', () => {
           from: !el.checked,
           to: el.checked,
           section,
-          provider: 'RE_CLOUD',
+          provider: 'REDIS_CLOUD',
         },
       })
       sendEventTelemetry.mockRestore()

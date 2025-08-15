@@ -121,7 +121,7 @@ describe('BrowserPage', () => {
     id: 'instanceId',
     name: 'test',
     connectionType: 'CLUSTER',
-    provider: 'RE_CLOUD',
+    provider: 'REDIS_CLOUD',
   }
 
   beforeAll(() => {

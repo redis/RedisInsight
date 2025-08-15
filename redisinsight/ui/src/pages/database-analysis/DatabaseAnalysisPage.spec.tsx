@@ -21,7 +21,7 @@ jest.mock('uiSrc/slices/analytics/dbAnalysis', () => ({
 jest.mock('uiSrc/slices/instances/instances', () => ({
   ...jest.requireActual('uiSrc/slices/instances/instances'),
   connectedInstanceSelector: jest.fn().mockReturnValue({
-    provider: 'RE_CLOUD',
+    provider: 'REDIS_CLOUD',
   }),
 }))
 
@@ -65,7 +65,7 @@ describe('DatabaseAnalysisPage', () => {
       event: TelemetryEvent.DATABASE_ANALYSIS_HISTORY_VIEWED,
       eventData: {
         databaseId: 'instanceId',
-        provider: 'RE_CLOUD',
+        provider: 'REDIS_CLOUD',
       },
     })
 

@@ -34,7 +34,7 @@ fixture `Work with keys in all types of databases`
 test
     .meta({ rte: rte.reCluster })
     .before(async() => {
-        await databaseHelper.acceptLicenseTermsAndAddREClusterDatabase(redisEnterpriseClusterConfig);
+        await databaseHelper.acceptLicenseTermsAndAddRedisSoftwareDatabase(redisEnterpriseClusterConfig);
     })
     .after(async() => {
         // Clear and delete database

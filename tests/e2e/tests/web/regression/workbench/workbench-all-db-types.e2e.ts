@@ -43,7 +43,7 @@ fixture `Work with Workbench in all types of databases`
 test
     .meta({ rte: rte.reCloud })
     .before(async() => {
-        await databaseHelper.acceptLicenseTermsAndAddRECloudDatabase(cloudDatabaseConfig);
+        await databaseHelper.acceptLicenseTermsAndAddRedisCloudDatabase(cloudDatabaseConfig);
     })
     .after(async() => {
         // Delete database

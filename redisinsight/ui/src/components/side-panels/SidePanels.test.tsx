@@ -61,7 +61,7 @@ jest.mock('uiSrc/slices/instances/instances', () => ({
   connectedInstanceSelector: jest.fn().mockReturnValue({
     id: 'instanceId',
     connectionType: 'CLUSTER',
-    provider: 'RE_CLOUD',
+    provider: 'REDIS_CLOUD',
   }),
   connectedInstanceCDSelector: jest.fn().mockReturnValue({
     free: false,
@@ -240,7 +240,7 @@ describe('SidePanels', () => {
       event: TelemetryEvent.INSIGHTS_PANEL_CLOSED,
       eventData: {
         databaseId: 'instanceId',
-        provider: 'RE_CLOUD',
+        provider: 'REDIS_CLOUD',
         page: '/pub-sub',
         tab: 'tips',
       },
