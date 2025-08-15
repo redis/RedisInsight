@@ -112,13 +112,13 @@ $animation-duration: 300ms;
 
 .tabs {
   display: flex;
-  flex: 1;
   flex-shrink: 0 !important;
   overflow: initial !important;
   margin-right: 12px;
   border-bottom: 1px solid var(--separatorColor);
   align-items: center;
   padding: 0 12px;
+  flex-grow: 0;
 }
 
 .assistantHeader {

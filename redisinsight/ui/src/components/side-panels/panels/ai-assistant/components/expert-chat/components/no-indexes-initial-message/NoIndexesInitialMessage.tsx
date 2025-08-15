@@ -32,8 +32,8 @@ const NoIndexesInitialMessage = (props: Props) => {
       <Text size="xs">
         Would you like to load the sample data and indexes (from this{' '}
         <Link
+          variant="small-inline"
           color="subdued"
-          className="defaultLink"
           onClick={onClickTutorial}
           data-testid="tutorial-initial-message-link"
         >

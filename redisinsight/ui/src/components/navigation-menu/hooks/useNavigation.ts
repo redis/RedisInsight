@@ -85,7 +85,7 @@ export function useNavigation() {
 
   const privateRoutes: INavigations[] = [
     {
-      tooltipText: 'Browser',
+      tooltipText: 'Browse',
       pageName: PageNames.browser,
       isActivePage: activePage === `/${PageNames.browser}`,
       ariaLabel: 'Browser page button',
@@ -117,9 +117,9 @@ export function useNavigation() {
       onboard: ONBOARDING_FEATURES.WORKBENCH_PAGE,
     },
     {
-      tooltipText: 'Analysis Tools',
+      tooltipText: 'Analyze',
       pageName: PageNames.analytics,
-      ariaLabel: 'Analysis Tools',
+      ariaLabel: 'Analyze page button',
       onClick: () => handleGoPage(Pages.analytics(connectedInstanceId)),
       dataTestId: 'analytics-page-btn',
       connectedInstanceId,
