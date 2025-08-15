@@ -90,7 +90,12 @@ describe('VectorSearchCreateIndex', () => {
     renderVectorSearchCreateIndexComponent({ initialStep: 2 })
 
     // Effect should dispatch success notification and navigate
-    expect(pushMock).toHaveBeenCalledWith(Pages.vectorSearch(INSTANCE_ID_MOCK))
+    expect(pushMock).toHaveBeenCalledWith(
+      Pages.vectorSearch(INSTANCE_ID_MOCK),
+      {
+        openSavedQueriesPanel: true,
+      },
+    )
   })
 
   it('should dispatch error notification on error', () => {
