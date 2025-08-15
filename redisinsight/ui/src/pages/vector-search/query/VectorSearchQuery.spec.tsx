@@ -4,7 +4,7 @@ import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import { TelemetryEvent } from 'uiSrc/telemetry/events'
 import { sendEventTelemetry } from 'uiSrc/telemetry'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
-import { VectorSearchQuery } from './VectorSearchQuery'
+import { VectorSearchQuery, VectorSearchQueryProps } from './VectorSearchQuery'
 
 // Mock the telemetry module, so we don't send actual telemetry data during tests
 jest.mock('uiSrc/telemetry', () => ({
@@ -12,7 +12,14 @@ jest.mock('uiSrc/telemetry', () => ({
   sendEventTelemetry: jest.fn(),
 }))
 
-const renderVectorSearchQueryComponent = () => render(<VectorSearchQuery />)
+const DEFAULT_PROPS: VectorSearchQueryProps = {
+  instanceId: INSTANCE_ID_MOCK,
+  openSavedQueriesPanel: false,
+}
+
+const renderVectorSearchQueryComponent = (
+  props: VectorSearchQueryProps = DEFAULT_PROPS,
+) => render(<VectorSearchQuery {...props} />)
 
 describe('VectorSearchQuery', () => {
   beforeEach(() => {
@@ -26,8 +33,18 @@ describe('VectorSearchQuery', () => {
     expect(container).toBeInTheDocument()
   })
 
-  it('can close the Saved Queries screen', () => {
+  it('should not render Saved Queries screen by default', () => {
     renderVectorSearchQueryComponent()
+
+    const savedQueriesScreen = screen.queryByTestId('saved-queries-screen')
+    expect(savedQueriesScreen).not.toBeInTheDocument()
+  })
+
+  it('can close the Saved Queries screen', () => {
+    renderVectorSearchQueryComponent({
+      ...DEFAULT_PROPS,
+      openSavedQueriesPanel: true,
+    })
 
     // Verify the saved queries screen is open by default
     const savedQueriesScreen = screen.getByTestId('saved-queries-screen')
@@ -45,6 +62,12 @@ describe('VectorSearchQuery', () => {
   describe('Telemetry', () => {
     it('should collect telemetry when inserting a saved query', () => {
       renderVectorSearchQueryComponent()
+
+      // Open the saved queries screen
+      const savedQueriesButton = screen.getByText('Saved queries')
+      expect(savedQueriesButton).toBeInTheDocument()
+
+      fireEvent.click(savedQueriesButton)
 
       // Select a saved query
       const insertQueryButton = screen.getAllByTestId('btn-insert-query')[0]

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useParams } from 'react-router-dom'
+
 import {
   ResizableContainer,
   ResizablePanel,
@@ -44,7 +44,15 @@ const mockSavedIndexes: SavedIndex[] = [
   },
 ]
 
-export const VectorSearchQuery = () => {
+export type VectorSearchQueryProps = {
+  instanceId: string
+  openSavedQueriesPanel?: boolean
+}
+
+export const VectorSearchQuery = ({
+  instanceId,
+  openSavedQueriesPanel = false,
+}: VectorSearchQueryProps) => {
   const {
     query,
     setQuery,
@@ -64,9 +72,10 @@ export const VectorSearchQuery = () => {
     onQueryReRun,
     onQueryProfile,
   } = useQuery()
-  const { instanceId } = useParams<{ instanceId: string }>()
 
-  const [isSavedQueriesOpen, setIsSavedQueriesOpen] = useState<boolean>(true)
+  const [isSavedQueriesOpen, setIsSavedQueriesOpen] = useState<boolean>(
+    openSavedQueriesPanel,
+  )
   const [isManageIndexesDrawerOpen, setIsManageIndexesDrawerOpen] =
     useState<boolean>(false)
   const [queryIndex, setQueryIndex] = useState(mockSavedIndexes[0].value)

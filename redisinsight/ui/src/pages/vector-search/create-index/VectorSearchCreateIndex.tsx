@@ -97,7 +97,9 @@ export const VectorSearchCreateIndex = ({
     } else if (success) {
       dispatch(addMessageNotification(successMessages.CREATE_INDEX()))
 
-      history.push(Pages.vectorSearch(instanceId))
+      history.push(Pages.vectorSearch(instanceId), {
+        openSavedQueriesPanel: true,
+      })
     }
   }, [success, error])
 
