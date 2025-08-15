@@ -42,7 +42,7 @@ test('Verify that user can add data via CLI in RE Cloud DB', async() => {
     }).skip
     .meta({ rte: rte.reCloud, skipComment: "Unstable in CI, assertion error, needs investigation" })
     .before(async() => {
-        await databaseHelper.acceptLicenseTermsAndAddRECloudDatabase(cloudDatabaseConfig);
+        await databaseHelper.acceptLicenseTermsAndAddRedisCloudDatabase(cloudDatabaseConfig);
     })
     .after(async() => {
         // Clear and delete database

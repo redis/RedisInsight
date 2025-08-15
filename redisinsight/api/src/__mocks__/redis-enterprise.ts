@@ -28,8 +28,8 @@ export const mockAddRedisEnterpriseDatabasesDto = Object.assign(
 );
 
 export const mockRedisEnterpriseAnalytics = jest.fn(() => ({
-  sendGetREClusterDbsSucceedEvent: jest.fn(),
-  sendGetREClusterDbsFailedEvent: jest.fn(),
+  sendGetRedisSoftwareDbsSucceedEvent: jest.fn(),
+  sendGetRedisSoftwareDbsFailedEvent: jest.fn(),
 }));
 
 export const mockRedisEnterpriseService = jest.fn(() => ({
