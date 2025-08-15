@@ -11,19 +11,19 @@ const getHostingProviderTests = [
   { input: '192.12.56.244', output: HostingProvider.UNKNOWN },
   { input: '255.255.56.244', output: HostingProvider.UNKNOWN },
   { input: 'redis', output: HostingProvider.UNKNOWN },
-  { input: 'demo-redislabs.rlrcp.com', output: HostingProvider.RE_CLOUD },
+  { input: 'demo-redislabs.rlrcp.com', output: HostingProvider.REDIS_CLOUD },
   { input: 'memorydb.aws.com', output: HostingProvider.AWS_MEMORYDB },
   {
     input: 'redis-16781.c273.us-east-1-2.ec2.cloud.redislabs.com',
-    output: HostingProvider.RE_CLOUD,
+    output: HostingProvider.REDIS_CLOUD,
   },
   {
     input: 'redis-16781.c273.us-east-1-2.ec2.cloud.redis-cloud.com',
-    output: HostingProvider.RE_CLOUD,
+    output: HostingProvider.REDIS_CLOUD,
   },
   {
     input: 'redis-16781.c273.us-east-1-2.ec2.cloud.rlrcp.com',
-    output: HostingProvider.RE_CLOUD,
+    output: HostingProvider.REDIS_CLOUD,
   },
   {
     input: 'askubuntu.mki5tz.0001.use1.cache.amazonaws.com',
@@ -65,7 +65,7 @@ const getHostingProviderTests = [
       [['name', 'search', 'path', '/enterprise-managed']],
     ],
     info: '# Server\r\n' + 'redis_version: 7.2.0',
-    output: HostingProvider.REDIS_ENTERPRISE,
+    output: HostingProvider.OTHER_REDIS_MANAGED,
   },
   {
     input: 'localhost',

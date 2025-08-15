@@ -226,7 +226,7 @@ describe('DatabaseAnalytics', () => {
       const prev = mockDatabaseWithTlsAuth;
       const cur = {
         ...mockDatabaseWithTlsAuth,
-        provider: HostingProvider.RE_CLUSTER,
+        provider: HostingProvider.REDIS_SOFTWARE,
         tls: undefined,
         verifyServerCert: false,
         caCert: null,
@@ -240,7 +240,7 @@ describe('DatabaseAnalytics', () => {
         {
           databaseId: cur.id,
           connectionType: cur.connectionType,
-          provider: HostingProvider.RE_CLUSTER,
+          provider: HostingProvider.REDIS_SOFTWARE,
           useTLS: 'disabled',
           verifyTLSCertificate: 'disabled',
           useTLSAuthClients: 'disabled',
@@ -271,7 +271,7 @@ describe('DatabaseAnalytics', () => {
       };
       const cur = {
         ...mockDatabaseWithTlsAuth,
-        provider: HostingProvider.RE_CLUSTER,
+        provider: HostingProvider.REDIS_SOFTWARE,
       };
       service.sendInstanceEditedEvent(mockSessionMetadata, prev, cur);
 
@@ -281,7 +281,7 @@ describe('DatabaseAnalytics', () => {
         {
           databaseId: cur.id,
           connectionType: cur.connectionType,
-          provider: HostingProvider.RE_CLUSTER,
+          provider: HostingProvider.REDIS_SOFTWARE,
           useTLS: 'enabled',
           verifyTLSCertificate: 'enabled',
           useTLSAuthClients: 'enabled',
@@ -434,7 +434,7 @@ describe('DatabaseAnalytics', () => {
       const prev = mockDatabaseWithTlsAuth;
       const cur = {
         ...mockDatabaseWithTlsAuth,
-        provider: HostingProvider.RE_CLUSTER,
+        provider: HostingProvider.REDIS_SOFTWARE,
         tls: undefined,
         verifyServerCert: false,
         caCert: null,
@@ -449,7 +449,7 @@ describe('DatabaseAnalytics', () => {
         {
           databaseId: cur.id,
           connectionType: cur.connectionType,
-          provider: HostingProvider.RE_CLUSTER,
+          provider: HostingProvider.REDIS_SOFTWARE,
           useTLS: 'disabled',
           verifyTLSCertificate: 'disabled',
           useTLSAuthClients: 'disabled',
@@ -478,7 +478,7 @@ describe('DatabaseAnalytics', () => {
       const prev = mockDatabaseWithTlsAuth;
       const cur = {
         ...mockDatabase,
-        provider: HostingProvider.RE_CLUSTER,
+        provider: HostingProvider.REDIS_SOFTWARE,
         tls: undefined,
       };
       service.sendInstanceEditedEvent(mockSessionMetadata, prev, cur, false);
