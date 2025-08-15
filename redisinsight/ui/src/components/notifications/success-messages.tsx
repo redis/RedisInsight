@@ -222,10 +222,10 @@ export default {
             </RiText>
             <RiText size="xs" className={styles.summaryLabel}>
               Commands Processed
-            </EuiText>
-          </FlexItem>
-          <FlexItem>
-            <EuiText color="ghost" className={styles.summaryValue}>
+            </RiText>
+          </RiFlexItem>
+          <RiFlexItem>
+            <RiText color="ghost" className={styles.summaryValue}>
               {numberWithSpaces(succeed)}
             </RiText>
             <RiText size="xs" className={styles.summaryLabel}>

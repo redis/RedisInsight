@@ -1,8 +1,11 @@
 import React, { ReactNode } from 'react'
 import cx from 'classnames'
-import { RiAccordion, RiAccordionProps } from 'uiBase/display'
+import {
+  RiAccordion,
+  RiAccordionProps,
+} from 'uiSrc/components/base/display/accordion/RiAccordion'
 
-export type RiCollapsibleNavGroupProps = Omit<
+export type RICollapsibleNavGroupProps = Omit<
   RiAccordionProps,
   'collapsible' | 'content' | 'defaultOpen' | 'title' | 'label'
 > & {
@@ -14,7 +17,7 @@ export type RiCollapsibleNavGroupProps = Omit<
   onToggle?: (isOpen: boolean) => void
   forceState?: 'open' | 'closed'
 }
-export const RiCollapsibleNavGroup = ({
+export const RICollapsibleNavGroup = ({
   children,
   title,
   isCollapsible = true,
@@ -24,7 +27,7 @@ export const RiCollapsibleNavGroup = ({
   forceState,
   open,
   ...rest
-}: RiCollapsibleNavGroupProps) => (
+}: RICollapsibleNavGroupProps) => (
   <RiAccordion
     {...rest}
     collapsible={isCollapsible}
