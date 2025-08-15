@@ -24,7 +24,7 @@ jest.mock('uiSrc/telemetry', () => ({
 jest.mock('uiSrc/slices/instances/instances', () => ({
   ...jest.requireActual('uiSrc/slices/instances/instances'),
   connectedInstanceSelector: jest.fn().mockReturnValue({
-    provider: 'RE_CLOUD',
+    provider: 'REDIS_CLOUD',
   }),
 }))
 
@@ -65,7 +65,7 @@ describe('WbNoResultsMessage', () => {
       event: TelemetryEvent.INSIGHTS_PANEL_OPENED,
       eventData: {
         databaseId: 'instanceId',
-        provider: 'RE_CLOUD',
+        provider: 'REDIS_CLOUD',
         source: 'workbench',
       },
     })

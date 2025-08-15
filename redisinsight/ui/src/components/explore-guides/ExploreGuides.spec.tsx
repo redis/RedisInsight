@@ -19,7 +19,7 @@ jest.mock('uiSrc/slices/content/guide-links', () => ({
 jest.mock('uiSrc/slices/instances/instances', () => ({
   ...jest.requireActual('uiSrc/slices/instances/instances'),
   connectedInstanceSelector: jest.fn().mockReturnValue({
-    provider: 'RE_CLOUD',
+    provider: 'REDIS_CLOUD',
   }),
 }))
 
@@ -92,7 +92,7 @@ describe('ExploreGuides', () => {
       eventData: {
         databaseId: INSTANCE_ID_MOCK,
         tutorialId: 'sq-intro',
-        provider: 'RE_CLOUD',
+        provider: 'REDIS_CLOUD',
         source: 'empty browser',
       },
     })

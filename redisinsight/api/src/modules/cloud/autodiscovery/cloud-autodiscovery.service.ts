@@ -226,7 +226,7 @@ export class CloudAutodiscoveryService {
               name,
               nameFromProvider: name,
               password,
-              provider: HostingProvider.RE_CLOUD,
+              provider: HostingProvider.REDIS_CLOUD,
               cloudDetails: database?.cloudDetails,
               tags,
               timeout: cloudConfig.cloudDatabaseConnectionTimeout,

@@ -64,8 +64,8 @@ export const ManageTagsModal = ({
   )
 
   const isSaveButtonDisabled = !isModified || hasErrors
-  const isCloudDb = instance.provider === ConnectionProvider.RE_CLOUD
-  const isClusterDb = instance.provider === ConnectionProvider.RE_CLUSTER
+  const isCloudDb = instance.provider === ConnectionProvider.REDIS_CLOUD
+  const isClusterDb = instance.provider === ConnectionProvider.REDIS_SOFTWARE
 
   const handleTagChange = useCallback(
     (index: number, key: 'key' | 'value', value: string) => {

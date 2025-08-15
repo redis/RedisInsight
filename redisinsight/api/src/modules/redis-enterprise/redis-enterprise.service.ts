@@ -236,7 +236,7 @@ export class RedisEnterpriseService {
               name,
               nameFromProvider: name,
               password,
-              provider: HostingProvider.RE_CLUSTER,
+              provider: HostingProvider.REDIS_SOFTWARE,
               tags,
             });
             return {

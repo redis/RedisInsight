@@ -14,7 +14,7 @@ export class TryRdiStrategyStrategy extends AbstractRecommendationStrategy {
     connectionType: RedisClientConnectionType;
   }): Promise<IDatabaseRecommendationStrategyData> {
     const isReCLusterOrCluster =
-      data.provider === HostingProvider.RE_CLUSTER ||
+      data.provider === HostingProvider.REDIS_SOFTWARE ||
       data.connectionType === RedisClientConnectionType.CLUSTER;
 
     return { isReached: isReCLusterOrCluster };

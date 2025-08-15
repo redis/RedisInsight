@@ -19,10 +19,10 @@ import { DatabaseSettingsEntity } from 'src/modules/database-settings/entities/d
 import { TagEntity } from 'src/modules/tag/entities/tag.entity';
 
 export enum HostingProvider {
-  RE_CLUSTER = 'RE_CLUSTER',
-  RE_CLOUD = 'RE_CLOUD',
+  REDIS_SOFTWARE = 'REDIS_SOFTWARE',
+  REDIS_CLOUD = 'REDIS_CLOUD',
   REDIS_STACK = 'REDIS_STACK',
-  REDIS_ENTERPRISE = 'REDIS_ENTERPRISE',
+  OTHER_REDIS_MANAGED = 'OTHER_REDIS_MANAGED',
   AZURE_CACHE = 'AZURE_CACHE',
   AZURE_CACHE_REDIS_ENTERPRISE = 'AZURE_CACHE_REDIS_ENTERPRISE',
   REDIS_COMMUNITY_EDITION = 'REDIS_COMMUNITY_EDITION',
