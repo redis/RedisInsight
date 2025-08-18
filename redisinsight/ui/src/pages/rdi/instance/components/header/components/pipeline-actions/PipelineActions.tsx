@@ -173,21 +173,11 @@ const PipelineActions = ({ collectorStatus, pipelineStatus }: Props) => {
         )}
       </RiFlexItem>
       <RiFlexItem>
-        <RiTooltip
-          content={
-            isPipelineValid
-              ? ''
-              : 'Please fix the validation errors before deploying'
-          }
-          position="left"
-          anchorClassName="flex-row"
-        >
-          <DeployPipelineButton
-            loading={deployLoading}
-            disabled={isDeployButtonDisabled}
-            onReset={resetPipeline}
-          />
-        </RiTooltip>
+        <DeployPipelineButton
+          loading={deployLoading}
+          disabled={disabled}
+          onReset={resetPipeline}
+        />
       </RiFlexItem>
       <RiFlexItem style={{ margin: 0 }}>
         <RdiConfigFileActionMenu />

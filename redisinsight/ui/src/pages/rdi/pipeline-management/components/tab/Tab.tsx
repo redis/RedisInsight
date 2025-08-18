@@ -2,6 +2,7 @@ import React from 'react'
 import cx from 'classnames'
 import { RiText } from 'uiBase/text'
 import { RiLoader, RiTooltip } from 'uiBase/display'
+import ValidationErrorsList from 'uiSrc/pages/rdi/pipeline-management/components/validation-errors-list/ValidationErrorsList'
 
 import { RiIcon } from 'uiBase/icons'
 import styles from './styles.module.scss'

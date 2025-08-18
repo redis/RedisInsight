@@ -11,7 +11,6 @@ import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { Maybe } from 'uiSrc/utils'
 import { FeatureFlagComponent } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
 import AssistanceChat from '../assistance-chat'
 import ExpertChat from '../expert-chat'
 

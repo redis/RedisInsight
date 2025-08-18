@@ -1,9 +1,10 @@
 import * as reactRedux from 'react-redux'
-import { renderHook, act } from '@testing-library/react-hooks'
 import { EditorType } from 'uiSrc/slices/interfaces'
 import { FeatureFlags } from 'uiSrc/constants'
 import { stringToBuffer } from 'uiSrc/utils'
 import { useChangeEditorType } from './useChangeEditorType'
+import { renderHook } from 'uiSrc/utils/test-utils'
+import { act } from '@testing-library/react-hooks'
 
 jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),
@@ -66,13 +67,16 @@ describe('useChangeEditorType', () => {
   })
 
   it('should fetch json when type switched', async () => {
-    mockedUseSelector.mockReturnValue({
-      editorType: EditorType.Default,
-    }).mockReturnValue({
-      [FeatureFlags.envDependent]: { flag: false },
-    }).mockReturnValue({
-      name: mockKeyName,
-    })
+    mockedUseSelector
+      .mockReturnValue({
+        editorType: EditorType.Default,
+      })
+      .mockReturnValue({
+        [FeatureFlags.envDependent]: { flag: false },
+      })
+      .mockReturnValue({
+        name: mockKeyName,
+      })
 
     const { result } = renderHook(() => useChangeEditorType())
 
@@ -91,11 +95,13 @@ describe('useChangeEditorType', () => {
   })
 
   it('should not fetch json when there is no selected key', () => {
-    mockedUseSelector.mockReturnValue({
-      editorType: EditorType.Default,
-    }).mockReturnValue({
-      [FeatureFlags.envDependent]: { flag: false },
-    })
+    mockedUseSelector
+      .mockReturnValue({
+        editorType: EditorType.Default,
+      })
+      .mockReturnValue({
+        [FeatureFlags.envDependent]: { flag: false },
+      })
 
     const { result } = renderHook(() => useChangeEditorType())
 

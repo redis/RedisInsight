@@ -46,7 +46,7 @@ const AnalyticsTabs = () => {
         value: AnalyticsViewTab.DatabaseAnalysis,
         content: null,
         label: renderOnboardingTourWithChild(
-          <Text>Database Analysis</Text>,
+          <RiText>Database Analysis</RiText>,
           {
             options: ONBOARDING_FEATURES?.ANALYTICS_DATABASE_ANALYSIS,
             anchorPosition: 'downLeft',
@@ -59,7 +59,7 @@ const AnalyticsTabs = () => {
         value: AnalyticsViewTab.SlowLog,
         content: null,
         label: renderOnboardingTourWithChild(
-          <Text>Slow Log</Text>,
+          <RiText>Slow Log</RiText>,
           {
             options: ONBOARDING_FEATURES?.ANALYTICS_SLOW_LOG,
             anchorPosition: 'downLeft',
@@ -75,7 +75,7 @@ const AnalyticsTabs = () => {
         value: AnalyticsViewTab.ClusterDetails,
         content: null,
         label: renderOnboardingTourWithChild(
-          <Text>Overview</Text>,
+          <RiText>Overview</RiText>,
           {
             options: ONBOARDING_FEATURES?.ANALYTICS_OVERVIEW,
             anchorPosition: 'downLeft',

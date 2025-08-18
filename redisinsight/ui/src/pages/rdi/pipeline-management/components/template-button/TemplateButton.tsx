@@ -12,6 +12,7 @@ import { RdiPipelineTabs } from 'uiSrc/slices/interfaces'
 import { getTooltipContent } from '../template-form/TemplateForm'
 import { INGEST_OPTION } from '../template-form/constants'
 import styles from './styles.module.scss'
+import { RiTooltip } from 'uiBase/display'
 
 export interface TemplateButtonProps {
   value: string

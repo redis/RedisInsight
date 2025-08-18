@@ -32,8 +32,7 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const [resetPipeline, setResetPipeline] = useState(false)
 
-  const { config, jobs, resetChecked, isPipelineValid } =
-    useSelector(rdiPipelineSelector)
+  const { config, jobs, resetChecked } = useSelector(rdiPipelineSelector)
 
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
   const dispatch = useDispatch()
@@ -101,16 +100,11 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
       <RiPopover
         closePopover={handleClosePopover}
         ownFocus
-        initialFocus={false}
-        className={styles.popoverAnchor}
         panelClassName={cx('popoverLikeTooltip', styles.popover)}
         anchorClassName={styles.popoverAnchor}
         anchorPosition="upLeft"
         isOpen={isPopoverOpen}
         panelPaddingSize="m"
-        focusTrapProps={{
-          scrollLock: true,
-        }}
         button={
           <RiPrimaryButton
             size="s"
