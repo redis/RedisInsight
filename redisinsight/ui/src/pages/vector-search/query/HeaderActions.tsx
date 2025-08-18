@@ -1,11 +1,11 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
 
-import { StyledHeaderAction, StyledWrapper } from './HeaderActions.styles'
 import { ManageIndexesDrawer } from '../manage-indexes/ManageIndexesDrawer'
 import { collectSavedQueriesPanelToggleTelemetry } from '../telemetry'
 import { StartWizardButton } from './StartWizardButton'
 import { RiEmptyButton } from 'uiBase/forms'
+import { RiRow, RiSpacer } from 'uiBase/layout'
 
 export type HeaderActionsProps = {
   isManageIndexesDrawerOpen: boolean
@@ -32,22 +32,27 @@ export const HeaderActions = ({
   }
 
   return (
-    <StyledWrapper>
-      <StartWizardButton />
+    <>
+      <RiRow align="center">
+        <StartWizardButton />
 
-      <StyledHeaderAction data-testid="vector-search-header-actions">
-        <RiEmptyButton onClick={handleSavedQueriesClick}>
-          Saved queries
-        </RiEmptyButton>
-        <RiEmptyButton onClick={() => setIsManageIndexesDrawerOpen(true)}>
-          Manage indexes
-        </RiEmptyButton>
-      </StyledHeaderAction>
+        <RiRow justify="end" data-testid="vector-search-header-actions" gap="m">
+          <RiEmptyButton onClick={handleSavedQueriesClick}>
+            Saved queries
+          </RiEmptyButton>
 
-      <ManageIndexesDrawer
-        open={isManageIndexesDrawerOpen}
-        onOpenChange={setIsManageIndexesDrawerOpen}
-      />
-    </StyledWrapper>
+          <RiEmptyButton onClick={() => setIsManageIndexesDrawerOpen(true)}>
+            Manage indexes
+          </RiEmptyButton>
+        </RiRow>
+
+        <ManageIndexesDrawer
+          open={isManageIndexesDrawerOpen}
+          onOpenChange={setIsManageIndexesDrawerOpen}
+        />
+      </RiRow>
+
+      <RiSpacer size="m" />
+    </>
   )
 }
