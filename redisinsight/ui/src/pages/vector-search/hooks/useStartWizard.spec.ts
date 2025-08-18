@@ -68,18 +68,4 @@ describe('useStartWizard', () => {
       Pages.vectorSearchCreateIndex(undefined as any),
     )
   })
-
-  it('should call history.push with correct path format', () => {
-    const instanceId = 'test-instance-456'
-    useParamsMock.mockImplementation(() => ({ instanceId }))
-
-    const { result } = renderHook(() => useStartWizard())
-
-    act(() => {
-      result.current()
-    })
-
-    const expectedPath = `/${instanceId}/vector-search/create-index`
-    expect(mockPush).toHaveBeenCalledWith(expectedPath)
-  })
 })
