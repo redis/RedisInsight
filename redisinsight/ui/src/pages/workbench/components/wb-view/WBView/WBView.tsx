@@ -5,9 +5,9 @@ import { isEmpty } from 'lodash'
 import { useParams } from 'react-router-dom'
 
 import {
-  ResizableContainer,
+  RiResizableContainer,
   RiResizablePanel,
-  ResizablePanelHandle,
+  RiResizablePanelHandle,
 } from 'uiBase/layout'
 import {
   Maybe,
@@ -198,7 +198,7 @@ const WBView = (props: Props) => {
     <div className={cx('workbenchPage', styles.container)}>
       <div className={styles.main}>
         <div className={styles.content}>
-          <ResizableContainer
+          <RiResizableContainer
             onLayout={onVerticalPanelWidthChange}
             direction="vertical"
           >
@@ -220,7 +220,7 @@ const WBView = (props: Props) => {
               />
             </RiResizablePanel>
 
-            <ResizablePanelHandle
+            <RiResizablePanelHandle
               direction="horizontal"
               data-test-subj="resize-btn-scripting-area-and-results"
             />
@@ -247,7 +247,7 @@ const WBView = (props: Props) => {
                 onAllQueriesDelete={onAllQueriesDelete}
               />
             </RiResizablePanel>
-          </ResizableContainer>
+          </RiResizableContainer>
         </div>
       </div>
     </div>

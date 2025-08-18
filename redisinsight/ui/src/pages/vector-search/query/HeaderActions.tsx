@@ -5,7 +5,7 @@ import { StyledHeaderAction, StyledWrapper } from './HeaderActions.styles'
 import { ManageIndexesDrawer } from '../manage-indexes/ManageIndexesDrawer'
 import { collectSavedQueriesPanelToggleTelemetry } from '../telemetry'
 import { StartWizardButton } from './StartWizardButton'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
+import { RiEmptyButton } from 'uiBase/forms'
 
 export type HeaderActionsProps = {
   isManageIndexesDrawerOpen: boolean
@@ -36,12 +36,12 @@ export const HeaderActions = ({
       <StartWizardButton />
 
       <StyledHeaderAction data-testid="vector-search-header-actions">
-        <EmptyButton onClick={handleSavedQueriesClick}>
+        <RiEmptyButton onClick={handleSavedQueriesClick}>
           Saved queries
-        </EmptyButton>
-        <EmptyButton onClick={() => setIsManageIndexesDrawerOpen(true)}>
+        </RiEmptyButton>
+        <RiEmptyButton onClick={() => setIsManageIndexesDrawerOpen(true)}>
           Manage indexes
-        </EmptyButton>
+        </RiEmptyButton>
       </StyledHeaderAction>
 
       <ManageIndexesDrawer

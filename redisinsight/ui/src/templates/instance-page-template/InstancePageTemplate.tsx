@@ -2,9 +2,9 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTheme } from '@redis-ui/styles'
 import {
-  ResizableContainer,
+  RiResizableContainer,
   RiResizablePanel,
-  ResizablePanelHandle,
+  RiResizablePanelHandle,
   RiSpacer,
   ImperativePanelGroupHandle,
 } from 'uiBase/layout'
@@ -104,7 +104,7 @@ const InstancePageTemplate = (props: Props) => {
       <InstanceHeader />
       <AppNavigation actions={actions} onChange={() => setActions(null)} />
       <RiSpacer size="m" />
-      <ResizableContainer
+      <RiResizableContainer
         ref={ref}
         direction="vertical"
         onLayout={onPanelWidthChange}
@@ -124,7 +124,7 @@ const InstancePageTemplate = (props: Props) => {
             <ExplorePanelTemplate>{children}</ExplorePanelTemplate>
           </AppNavigationActionsProvider>
         </RiResizablePanel>
-        <ResizablePanelHandle
+        <RiResizablePanelHandle
           direction="horizontal"
           id="resize-btn-browser-cli"
           data-testid="resize-btn-browser-cli"
@@ -142,7 +142,7 @@ const InstancePageTemplate = (props: Props) => {
         >
           <BottomGroupComponents />
         </RiResizablePanel>
-      </ResizableContainer>
+      </RiResizableContainer>
     </>
   )
 }

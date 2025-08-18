@@ -20,7 +20,7 @@ import { Nullable } from 'uiSrc/utils'
 import { getVotedText, iconType, voteTooltip } from './utils'
 import styles from './styles.module.scss'
 import styled from 'styled-components'
-import { Theme } from 'uiSrc/components/base/theme/types'
+import { Theme } from 'uiBase/theme/types'
 
 const GitHubLink = styled(RiLink)`
   padding: 4px 8px 4px 4px;
@@ -177,8 +177,7 @@ const VoteOption = (props: Props) => {
               className={styles.feedbackBtn}
               size="s"
             >
-              <RiLink
-                className={styles.link}
+              <GitHubLink
                 href={EXTERNAL_LINKS.recommendationFeedback}
                 target="_blank"
                 data-test-subj="github-repo-link"
@@ -191,7 +190,7 @@ const VoteOption = (props: Props) => {
                   data-testid="github-repo-icon"
                 />
                 To Github
-              </RiLink>
+              </GitHubLink>
             </RiPrimaryButton>
           </RiFlexItem>
         </RiCol>

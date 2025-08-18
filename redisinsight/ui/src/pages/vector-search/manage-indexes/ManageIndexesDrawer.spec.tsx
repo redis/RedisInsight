@@ -9,10 +9,14 @@ import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandle
 
 // Workaround for @redis-ui/components Title component issue with react-children-utilities
 // TypeError: react_utils.childrenToString is not a function
-jest.mock('uiSrc/components/base/layout/drawer', () => ({
-  ...jest.requireActual('uiSrc/components/base/layout/drawer'),
-  DrawerHeader: jest.fn().mockReturnValue(null),
-}))
+jest.mock('uiBase/layout', () => {
+  const actual = jest.requireActual('uiBase/layout')
+
+  return {
+    ...actual,
+    RiDrawerHeader: jest.fn().mockReturnValue(null),
+  }
+})
 
 // Mock the telemetry module, so we don't send actual telemetry data during tests
 jest.mock('uiSrc/telemetry', () => ({

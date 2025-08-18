@@ -1,8 +1,6 @@
 import React from 'react'
 
-import { FlexItem } from 'uiSrc/components/base/layout/flex'
-import { Text } from 'uiSrc/components/base/text'
-import { RiRadioGroup } from 'uiSrc/components/base/forms/radio-group/RadioGroup'
+import { RiRadioGroup } from 'uiBase/forms'
 
 import {
   LargeSelectionBox,
@@ -11,13 +9,15 @@ import {
 } from './styles'
 import { indexDataContent, indexType, sampleDatasetOptions } from './config'
 import { IStepComponent, SampleDataType, StepComponentProps } from '../types'
+import { RiFlexItem } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
 
 export const AddDataStep: IStepComponent = ({
   parameters,
   setParameters,
 }: StepComponentProps) => (
   <>
-    <FlexItem direction="column" $gap="m">
+    <RiFlexItem direction="column" $gap="m">
       <StyledBoxSelectionGroup defaultValue={parameters.searchIndexType}>
         {indexType.map((type) => (
           <LargeSelectionBox
@@ -27,9 +27,9 @@ export const AddDataStep: IStepComponent = ({
           />
         ))}
       </StyledBoxSelectionGroup>
-    </FlexItem>
-    <FlexItem direction="column" $gap="m">
-      <Text size="L">Select sample dataset</Text>
+    </RiFlexItem>
+    <RiFlexItem direction="column" $gap="m">
+      <RiText size="L">Select sample dataset</RiText>
       <RiRadioGroup
         items={sampleDatasetOptions}
         layout="horizontal"
@@ -38,9 +38,9 @@ export const AddDataStep: IStepComponent = ({
           setParameters({ sampleDataType: id as SampleDataType })
         }
       />
-    </FlexItem>
-    <FlexItem direction="column" $gap="m">
-      <Text>Data content</Text>
+    </RiFlexItem>
+    <RiFlexItem direction="column" $gap="m">
+      <RiText>Data content</RiText>
       <StyledBoxSelectionGroup defaultValue={parameters.dataContent}>
         {indexDataContent.map((type) => (
           <SmallSelectionBox
@@ -50,6 +50,6 @@ export const AddDataStep: IStepComponent = ({
           />
         ))}
       </StyledBoxSelectionGroup>
-    </FlexItem>
+    </RiFlexItem>
   </>
 )

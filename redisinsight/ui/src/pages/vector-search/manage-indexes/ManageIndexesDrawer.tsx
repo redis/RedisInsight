@@ -1,11 +1,9 @@
 import React from 'react'
 import { DrawerProps } from '@redis-ui/components'
 import { useParams } from 'react-router-dom'
-import {
-  Drawer,
-  DrawerBody,
-  DrawerHeader,
-} from 'uiSrc/components/base/layout/drawer'
+
+import { RiDrawer, RiDrawerBody, RiDrawerHeader } from 'uiBase/layout'
+
 import { ManageIndexesList } from './ManageIndexesList'
 import {
   collectManageIndexesDrawerClosedTelemetry,
@@ -34,7 +32,7 @@ export const ManageIndexesDrawer = ({
   }
 
   return (
-    <Drawer
+    <RiDrawer
       open={open}
       onOpenChange={onOpenChange}
       onDrawerDidOpen={onDrawerDidOpen}
@@ -42,10 +40,10 @@ export const ManageIndexesDrawer = ({
       data-testid="manage-indexes-drawer"
       {...rest}
     >
-      <DrawerHeader title="Manage indexes" />
-      <DrawerBody data-testid="manage-indexes-drawer-body">
+      <RiDrawerHeader title="Manage indexes" />
+      <RiDrawerBody data-testid="manage-indexes-drawer-body">
         <ManageIndexesList />
-      </DrawerBody>
-    </Drawer>
+      </RiDrawerBody>
+    </RiDrawer>
   )
 }

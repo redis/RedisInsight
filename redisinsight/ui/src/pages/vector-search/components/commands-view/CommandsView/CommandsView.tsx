@@ -8,9 +8,6 @@ import { Nullable } from 'uiSrc/utils'
 import { CommandExecutionUI } from 'uiSrc/slices/interfaces'
 import { RunQueryMode, ResultsMode } from 'uiSrc/slices/interfaces/workbench'
 
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
-import { DeleteIcon } from 'uiSrc/components/base/icons'
-import { ProgressBarLoader } from 'uiSrc/components/base/display'
 import { collectTelemetryQueryReRun } from 'uiSrc/pages/vector-search/telemetry'
 import QueryCard from '../../QueryCard'
 
@@ -19,6 +16,9 @@ import {
   StyledHeader,
   StyledWrapper,
 } from './CommandsView.styles'
+import { RiProgressBarLoader } from 'uiBase/display'
+import { RiEmptyButton } from 'uiBase/forms'
+import { DeleteIcon } from 'uiBase/icons'
 
 export interface Props {
   isResultsLoaded: boolean
@@ -85,11 +85,14 @@ const CommandsView = (props: Props) => {
   return (
     <StyledWrapper>
       {!isResultsLoaded && (
-        <ProgressBarLoader color="primary" data-testid="progress-wb-history" />
+        <RiProgressBarLoader
+          color="primary"
+          data-testid="progress-wb-history"
+        />
       )}
       {!!items?.length && (
         <StyledHeader>
-          <EmptyButton
+          <RiEmptyButton
             size="small"
             icon={DeleteIcon}
             onClick={() => onAllQueriesDelete?.()}
@@ -97,7 +100,7 @@ const CommandsView = (props: Props) => {
             data-testid="clear-history-btn"
           >
             Clear Results
-          </EmptyButton>
+          </RiEmptyButton>
         </StyledHeader>
       )}
       <StyledContainer>

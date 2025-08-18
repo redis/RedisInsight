@@ -8,9 +8,9 @@ import { useTheme } from '@redis-ui/styles'
 import { RiEmptyButton } from 'uiBase/forms'
 import { ArrowLeftIcon } from 'uiBase/icons'
 import {
-  ResizableContainer,
+  RiResizableContainer,
   RiResizablePanel,
-  ResizablePanelHandle,
+  RiResizablePanelHandle,
 } from 'uiBase/layout'
 import {
   formatLongName,
@@ -316,7 +316,7 @@ const BrowserPage = () => {
         <BrowserSearchPanel handleCreateIndexPanel={handleCreateIndexPanel} />
       </div>
       <div className={cx(styles.main)}>
-        <ResizableContainer
+        <RiResizableContainer
           className={styles.resizableContainer}
           direction="horizontal"
           onLayout={onPanelWidthChange}
@@ -346,7 +346,7 @@ const BrowserPage = () => {
             />
           </RiResizablePanel>
           {!arePanelsCollapsed && !isBrowserFullScreen && (
-            <ResizablePanelHandle />
+            <RiResizablePanelHandle />
           )}
           <RiResizablePanel
             defaultSize={sizes && sizes[1] ? sizes[1] : 50}
@@ -376,7 +376,7 @@ const BrowserPage = () => {
               closeRightPanels={closeRightPanels}
             />
           </RiResizablePanel>
-        </ResizableContainer>
+        </RiResizableContainer>
       </div>
       <OnboardingStartPopover />
     </div>

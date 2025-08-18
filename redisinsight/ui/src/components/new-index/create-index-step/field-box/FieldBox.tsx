@@ -1,14 +1,14 @@
 import React from 'react'
+// TODO - 18.08.25 - Replace this with local implementations
 import {
   BoxSelectionGroup,
   BoxSelectionGroupItemComposeProps,
   Checkbox,
 } from '@redis-ui/components'
 
-import { EditIcon } from 'uiSrc/components/base/icons'
-import { IconButton } from 'uiSrc/components/base/forms/buttons/IconButton'
-import { Text } from 'uiSrc/components/base/text'
-
+import { RiIconButton } from 'uiBase/forms'
+import { EditIcon } from 'uiBase/icons'
+import { RiText } from 'uiBase/text'
 import {
   BoxContent,
   BoxHeader,
@@ -34,18 +34,18 @@ export const FieldBox = ({ box, ...rest }: FieldBoxProps) => {
 
         <BoxHeaderActions>
           <FieldTag tag={tag} />
-          <IconButton icon={EditIcon} size="XL" disabled={disabled} />
+          <RiIconButton icon={EditIcon} size="XL" disabled={disabled} />
         </BoxHeaderActions>
       </BoxHeader>
       <BoxContent>
-        <Text size="L" variant="semiBold">
+        <RiText size="L" variant="semiBold">
           {label}
-        </Text>
+        </RiText>
 
         {text && (
-          <Text size="L" color="secondary" ellipsis tooltipOnEllipsis>
+          <RiText size="L" color="secondary" ellipsis tooltipOnEllipsis>
             {text}
-          </Text>
+          </RiText>
         )}
       </BoxContent>
     </StyledFieldBox>

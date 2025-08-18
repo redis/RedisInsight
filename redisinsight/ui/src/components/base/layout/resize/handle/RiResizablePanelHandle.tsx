@@ -6,7 +6,7 @@ import {
   StyledPanelResizeHandle,
 } from './resizable-panel-handle.styles'
 
-export const ResizablePanelHandle = ({
+export const RiResizablePanelHandle = ({
   className,
   direction = 'vertical',
   ...rest

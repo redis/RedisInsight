@@ -5,7 +5,6 @@ import { useParams } from 'react-router-dom'
 import { isNull } from 'lodash'
 import { KeyboardKeys as keys } from 'uiSrc/constants/keys'
 
-import { LoadingContent } from 'uiSrc/components/base/layout'
 import {
   DEFAULT_TEXT_VIEW_TYPE,
   ProfileQueryType,
@@ -37,6 +36,7 @@ import QueryCardCliPlugin from 'uiSrc/components/query/query-card/QueryCardCliPl
 import queryStyles from 'uiSrc/components/query/query-card/styles.module.scss'
 import QueryCardHeader from 'uiSrc/components/query/query-card/QueryCardHeader'
 import { collectQueryToggleFullScreenTelemetry } from '../telemetry'
+import { RiLoadingContent } from 'uiBase/layout'
 
 export interface Props {
   id: string
@@ -268,7 +268,7 @@ const QueryCard = (props: Props) => {
                               />
                             ) : (
                               <div className={queryStyles.loading}>
-                                <LoadingContent
+                                <RiLoadingContent
                                   lines={5}
                                   data-testid="loading-content"
                                 />

@@ -3,9 +3,7 @@ import { useHistory, useParams } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 
 import { Stepper } from '@redis-ui/components'
-import { Title } from 'uiSrc/components/base/text'
-import { Button, SecondaryButton } from 'uiSrc/components/base/forms/buttons'
-import { ChevronLeftIcon } from 'uiSrc/components/base/icons'
+import { ChevronLeftIcon } from 'uiBase/icons'
 
 import { selectedBikesIndexFields, stepContents } from './steps'
 import {
@@ -33,6 +31,8 @@ import {
 } from 'uiSrc/slices/app/notifications'
 import successMessages from 'uiSrc/components/notifications/success-messages'
 import { parseCustomError } from 'uiSrc/utils'
+import { RiTitle } from 'uiBase/text'
+import { RiSecondaryButton, Button } from 'uiBase/forms'
 
 const stepNextButtonTexts = [
   'Proceed to adding data',
@@ -106,9 +106,9 @@ export const VectorSearchCreateIndex = ({
   return (
     <VectorSearchScreenWrapper direction="column" justify="between">
       <VectorSearchScreenHeader direction="row">
-        <Title size="M" data-testid="title">
+        <RiTitle size="M" data-testid="title">
           New vector search
-        </Title>
+        </RiTitle>
         <Stepper currentStep={step} title="test">
           <Stepper.Step>Select a database</Stepper.Step>
           <Stepper.Step>Adding data</Stepper.Step>
@@ -123,13 +123,13 @@ export const VectorSearchCreateIndex = ({
       </VectorSearchScreenContent>
       <VectorSearchScreenFooter direction="row">
         {showBackButton && (
-          <SecondaryButton
+          <RiSecondaryButton
             iconSide="left"
             icon={ChevronLeftIcon}
             onClick={onBackClick}
           >
             Back
-          </SecondaryButton>
+          </RiSecondaryButton>
         )}
         <div />
         <Button loading={loading} onClick={onNextClick}>

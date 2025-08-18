@@ -1,12 +1,11 @@
 import React from 'react'
 
-import { Title, Text } from 'uiSrc/components/base/text'
-
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
-import { Button } from 'uiSrc/components/base/forms/buttons'
 import { FieldTag } from 'uiSrc/components/new-index/create-index-step/field-box/FieldTag'
 
-import { PlayFilledIcon } from 'uiSrc/components/base/icons'
+import { RiText, RiTitle } from 'uiBase/text'
+import { RiSecondaryButton, RiSelect } from 'uiBase/forms'
+import { PlayFilledIcon } from 'uiBase/icons'
+
 import {
   RightAlignedWrapper,
   TagsWrapper,
@@ -34,16 +33,19 @@ export const SavedQueriesScreen = ({
   onIndexChange,
   onQueryInsert,
 }: SavedQueriesScreenProps) => (
-  <VectorSearchScreenWrapper direction="column" data-testid='saved-queries-screen'>
+  <VectorSearchScreenWrapper
+    direction="column"
+    data-testid="saved-queries-screen"
+  >
     <VectorSearchScreenHeader>
-      <Title size="M" data-testid="title">
+      <RiTitle size="M" data-testid="title">
         Saved queries
-      </Title>
+      </RiTitle>
     </VectorSearchScreenHeader>
     <VectorSearchScreenFooter grow={1}>
       <VectorSearchSavedQueriesContentWrapper>
         <VectorSearchSavedQueriesSelectWrapper>
-          <Title size="S">Index:</Title>
+          <RiTitle size="S">Index:</RiTitle>
           <RiSelect
             loading={false}
             disabled={false}
@@ -67,17 +69,17 @@ export const SavedQueriesScreen = ({
         </VectorSearchSavedQueriesSelectWrapper>
         {selectedIndex?.queries.map((query) => (
           <VectorSearchScreenBlockWrapper key={query.value} as="div">
-            <Text>{query.label}</Text>
+            <RiText>{query.label}</RiText>
             <RightAlignedWrapper>
-              <Button
-                variant="secondary-invert"
+              <RiSecondaryButton
+                inverted
                 icon={PlayFilledIcon}
                 size="s"
                 onClick={() => onQueryInsert(query.value)}
                 data-testid="btn-insert-query"
               >
                 Insert
-              </Button>
+              </RiSecondaryButton>
             </RightAlignedWrapper>
           </VectorSearchScreenBlockWrapper>
         ))}

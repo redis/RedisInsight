@@ -1,12 +1,7 @@
 import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 import { VectorSearchBox } from 'uiSrc/components/new-index/create-index-step/field-box/types'
 import { BoxSelectionOption } from 'uiSrc/components/new-index/selection-box/SelectionBox'
-import {
-  BikeIcon,
-  PopcornIcon,
-  VectorSearchIcon,
-  WandIcon,
-} from 'uiSrc/components/base/icons'
+import { BikeIcon, PopcornIcon, VectorSearchIcon, WandIcon } from 'uiBase/icons'
 
 import { SearchIndexType, SampleDataType, SampleDataContent } from '../types'
 

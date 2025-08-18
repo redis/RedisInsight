@@ -25,7 +25,6 @@ import {
 import { ADD_NEW, NO_CA_CERT } from 'uiSrc/pages/home/constants'
 import { InstanceType } from 'uiSrc/slices/interfaces'
 import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
-import { Title } from 'uiSrc/components/base/text/Title'
 import SentinelConnectionForm from './sentinel-connection-form'
 
 export interface Props {

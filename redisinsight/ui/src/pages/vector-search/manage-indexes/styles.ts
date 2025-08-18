@@ -1,11 +1,11 @@
 import styled from 'styled-components'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiBase/text'
 
 export const PopoverContent = styled.div`
   padding: ${({ theme }) => theme.core?.space.space200};
 `
 
-export const Title = styled(Text)`
+export const Title = styled(RiText)`
   margin-top: ${({ theme }) => theme.core?.space.space100};
   margin-bottom: ${({ theme }) => theme.core?.space.space100};
   font-weight: bold;

@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { FlexGroup, FlexItem } from 'uiSrc/components/base/layout/flex'
+import { RiFlexGroup, RiFlexItem } from 'uiBase/layout'
 
 export const VectorSearchPageWrapper = styled.div`
   background-color: ${({ theme }) =>
@@ -12,7 +12,7 @@ export const VectorSearchPageWrapper = styled.div`
   width: 100%;
 `
 
-export const VectorSearchScreenWrapper = styled(FlexGroup)`
+export const VectorSearchScreenWrapper = styled(RiFlexGroup)`
   ${({ theme }) => css`
     background-color: ${theme.semantic?.color.background.neutral100};
     border-radius: 8px;
@@ -25,7 +25,7 @@ export const VectorSearchScreenWrapper = styled(FlexGroup)`
   overflow: auto;
 `
 
-export const VectorSearchScreenHeader = styled(FlexItem)`
+export const VectorSearchScreenHeader = styled(RiFlexItem)`
   padding: ${({ theme }) => theme.core?.space.space300};
   justify-content: space-between;
   border: 1px solid;
@@ -34,7 +34,7 @@ export const VectorSearchScreenHeader = styled(FlexItem)`
   border-top-right-radius: 8px;
 `
 
-export const VectorSearchScreenContent = styled(FlexItem)`
+export const VectorSearchScreenContent = styled(RiFlexItem)`
   padding: ${({ theme }) => theme.core?.space.space300};
   gap: ${({ theme }) => theme.core?.space.space550};
   border: 1px solid;
@@ -42,7 +42,7 @@ export const VectorSearchScreenContent = styled(FlexItem)`
   border-color: ${({ theme }) => theme.color?.dusk200};
 `
 
-export const VectorSearchScreenFooter = styled(FlexItem)`
+export const VectorSearchScreenFooter = styled(RiFlexItem)`
   padding: ${({ theme }) => theme.core?.space.space300};
   border: 1px solid;
   border-color: ${({ theme }) => theme.color?.dusk200};

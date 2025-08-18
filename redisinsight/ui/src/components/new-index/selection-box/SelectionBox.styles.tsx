@@ -1,17 +1,17 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Text, Title } from 'uiSrc/components/base/text'
+import { RiText, RiTitle } from 'uiBase/text'
 
 export const StyledBoxContent = styled.div`
   padding: ${({ theme }) => theme.core.space.space200};
   text-align: left;
 `
 
-export const StyledTitle = styled(Title)`
+export const StyledTitle = styled(RiTitle)`
   margin-top: ${({ theme }) => theme.core.space.space050};
 `
 
-export const StyledText = styled(Text)`
+export const StyledText = styled(RiText)`
   margin-top: ${({ theme }) => theme.core.space.space050};
   white-space: normal;
   overflow-wrap: break-word;
@@ -31,6 +31,6 @@ export const StyledDisabledBar = styled.div`
 
 export const DisabledBar = () => (
   <StyledDisabledBar>
-    <Text size="xs">Coming soon</Text>
+    <RiText size="xs">Coming soon</RiText>
   </StyledDisabledBar>
 )

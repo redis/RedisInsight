@@ -7,7 +7,6 @@ import { CustomErrorCodes } from 'uiSrc/constants'
 import { AI_CHAT_ERRORS } from 'uiSrc/constants/apiErrors'
 import ApiStatusCode from 'uiSrc/constants/apiStatusCode'
 
-import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
 import RestartChat from '../restart-chat'
 
 import styles from './styles.module.scss'

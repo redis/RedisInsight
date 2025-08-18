@@ -1,10 +1,5 @@
 import React, { useState } from 'react'
 
-import {
-  ResizableContainer,
-  ResizablePanel,
-  ResizablePanelHandle,
-} from 'uiSrc/components/base/layout'
 import QueryWrapper from 'uiSrc/pages/workbench/components/query'
 import { HIDE_FIELDS } from 'uiSrc/components/query/query-card/QueryCardHeader/QueryCardHeader'
 import { StyledNoResultsWrapper } from './VectorSearchQuery.styles'
@@ -26,6 +21,11 @@ import {
   ViewMode,
   ViewModeContextProvider,
 } from 'uiSrc/components/query/context/view-mode.context'
+import {
+  RiResizableContainer,
+  RiResizablePanelHandle,
+  RiResizablePanel,
+} from 'uiBase/layout'
 
 const mockSavedIndexes: SavedIndex[] = [
   {
@@ -128,15 +128,15 @@ export const VectorSearchQuery = ({
           setIsSavedQueriesOpen={setIsSavedQueriesOpen}
         />
 
-        <ResizableContainer direction="horizontal">
-          <ResizablePanel
+        <RiResizableContainer direction="horizontal">
+          <RiResizablePanel
             id="left-panel"
             minSize={20}
             order={1}
             defaultSize={isSavedQueriesOpen ? 70 : 100}
           >
-            <ResizableContainer direction="vertical">
-              <ResizablePanel id="top-panel" minSize={10} defaultSize={30}>
+            <RiResizableContainer direction="vertical">
+              <RiResizablePanel id="top-panel" minSize={10} defaultSize={30}>
                 <QueryWrapper
                   query={query}
                   activeMode={activeMode}
@@ -149,14 +149,14 @@ export const VectorSearchQuery = ({
                   onClear={onQueryClear}
                   queryProps={{ useLiteActions: true }}
                 />
-              </ResizablePanel>
+              </RiResizablePanel>
 
-              <ResizablePanelHandle
+              <RiResizablePanelHandle
                 direction="horizontal"
                 data-test-subj="resize-btn-scripting-area-and-results"
               />
 
-              <ResizablePanel
+              <RiResizablePanel
                 id="bottom-panel"
                 minSize={10}
                 maxSize={80}
@@ -182,18 +182,18 @@ export const VectorSearchQuery = ({
                     </StyledNoResultsWrapper>
                   }
                 />
-              </ResizablePanel>
-            </ResizableContainer>
-          </ResizablePanel>
+              </RiResizablePanel>
+            </RiResizableContainer>
+          </RiResizablePanel>
 
           {isSavedQueriesOpen && (
             <>
-              <ResizablePanelHandle
+              <RiResizablePanelHandle
                 direction="vertical"
                 data-test-subj="resize-btn-scripting-area-and-results"
               />
 
-              <ResizablePanel
+              <RiResizablePanel
                 id="right-panel"
                 order={2}
                 minSize={20}
@@ -205,10 +205,10 @@ export const VectorSearchQuery = ({
                   savedIndexes={mockSavedIndexes}
                   selectedIndex={selectedIndex}
                 />
-              </ResizablePanel>
+              </RiResizablePanel>
             </>
           )}
-        </ResizableContainer>
+        </RiResizableContainer>
       </VectorSearchScreenWrapper>
     </ViewModeContextProvider>
   )

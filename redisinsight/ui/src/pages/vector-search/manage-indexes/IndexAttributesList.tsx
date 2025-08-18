@@ -1,13 +1,13 @@
 import React from 'react'
-import { ColumnDefinition, Table } from 'uiSrc/components/base/layout/table'
-import { RiIcon } from 'uiSrc/components/base/icons'
-import { Loader } from 'uiSrc/components/base/display'
+import { RiIcon } from 'uiBase/icons'
 import { IndexInfoDto } from 'apiSrc/modules/browser/redisearch/dto'
 import {
   StyledIndexAttributesList,
   StyledIndexAttributesTable,
   StyledIndexSummaryInfo,
 } from './IndexAttributesList.styles'
+import { ColumnDefinition, RiTable } from 'uiBase/layout'
+import { RiLoader } from 'uiBase/display'
 
 export interface IndexInfoTableData {
   identifier: string
@@ -67,7 +67,7 @@ export const IndexAttributesList = ({
   const { num_docs, max_doc_id, num_records, num_terms } = indexInfo || {}
 
   if (!indexInfo) {
-    return <Loader data-testid="index-attributes-list--loader" />
+    return <RiLoader data-testid="index-attributes-list--loader" />
   }
 
   return (
@@ -76,7 +76,10 @@ export const IndexAttributesList = ({
         as="div"
         data-testid="index-attributes-list--table"
       >
-        <Table columns={tableColumns} data={parseIndexAttributes(indexInfo)} />
+        <RiTable
+          columns={tableColumns}
+          data={parseIndexAttributes(indexInfo)}
+        />
       </StyledIndexAttributesTable>
 
       <StyledIndexSummaryInfo>
