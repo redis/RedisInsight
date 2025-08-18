@@ -1,9 +1,9 @@
 import React from 'react'
 import { instance, mock } from 'ts-mockito'
 import { useFormik } from 'formik'
-import { render, screen, fireEvent, act } from 'uiSrc/utils/test-utils'
+import { cleanup, render, screen, fireEvent, act } from 'uiSrc/utils/test-utils'
 import { SECURITY_FIELD } from 'uiSrc/constants/securityField'
-import { KeyValueFormat } from 'uiSrc/constants/keys'
+import { dbConnectionInfoFactory } from 'uiSrc/mocks/factories/database/DbConnectionInfo.factory'
 import DatabaseForm, { Props } from './DatabaseForm'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 
@@ -17,26 +17,13 @@ jest.mock('uiSrc/slices/app/info', () => ({
   }),
 }))
 
-const mockFormikValues: DbConnectionInfo = {
-  id: 'test-id',
-  name: 'Test Database',
-  host: 'localhost',
-  port: '6379',
-  username: 'testuser',
-  password: 'testpass',
-  timeout: '30',
-  selectedCaCertName: 'none',
-  keyNameFormat: KeyValueFormat,
-  modules: [],
-  version: '7.0.0',
-}
-
 const TestWrapper = ({
-  formikValues = mockFormikValues,
+  formikValues,
   ...props
 }: Partial<Props> & { formikValues?: DbConnectionInfo }) => {
+  const defaultFormikValues = formikValues || dbConnectionInfoFactory.build()
   const formik = useFormik({
-    initialValues: formikValues,
+    initialValues: defaultFormikValues,
     onSubmit: jest.fn(),
   })
 
@@ -51,13 +38,25 @@ const TestWrapper = ({
   )
 }
 
+const renderComponent = (
+  props?: Partial<Props>,
+  formikValues?: DbConnectionInfo,
+) => {
+  return render(<TestWrapper {...props} formikValues={formikValues} />)
+}
+
 describe('DatabaseForm', () => {
+  beforeEach(() => {
+    cleanup()
+  })
+
   it('should render', () => {
-    expect(render(<TestWrapper />)).toBeTruthy()
+    const { container } = renderComponent()
+    expect(container).toBeTruthy()
   })
 
   it('should render all fields when showFields is true', () => {
-    render(<TestWrapper />)
+    renderComponent()
 
     expect(screen.getByTestId('name')).toBeInTheDocument()
     expect(screen.getByTestId('host')).toBeInTheDocument()
@@ -68,11 +67,9 @@ describe('DatabaseForm', () => {
   })
 
   it('should hide fields when showFields is false', () => {
-    render(
-      <TestWrapper
-        showFields={{ alias: false, host: false, port: false, timeout: false }}
-      />,
-    )
+    renderComponent({
+      showFields: { alias: false, host: false, port: false, timeout: false },
+    })
 
     expect(screen.queryByTestId('name')).not.toBeInTheDocument()
     expect(screen.queryByTestId('host')).not.toBeInTheDocument()
@@ -84,7 +81,16 @@ describe('DatabaseForm', () => {
   })
 
   it('should display initial values correctly', () => {
-    render(<TestWrapper />)
+    const mockData = dbConnectionInfoFactory.build({
+      name: 'Test Database',
+      host: 'localhost',
+      port: '6379',
+      username: 'testuser',
+      password: 'testpass',
+      timeout: '30',
+    })
+
+    renderComponent({}, mockData)
 
     expect(screen.getByDisplayValue('Test Database')).toBeInTheDocument()
     expect(screen.getByDisplayValue('localhost')).toBeInTheDocument()
@@ -95,7 +101,7 @@ describe('DatabaseForm', () => {
   })
 
   it('should update input values when changed', async () => {
-    render(<TestWrapper />)
+    renderComponent()
 
     const nameInput = screen.getByTestId('name')
     await act(async () => {
@@ -129,7 +135,7 @@ describe('DatabaseForm', () => {
   })
 
   it('should disable fields when in readyOnlyFields', () => {
-    render(<TestWrapper readyOnlyFields={['alias', 'host', 'port']} />)
+    renderComponent({ readyOnlyFields: ['alias', 'host', 'port'] })
 
     expect(screen.getByTestId('name')).toBeDisabled()
     expect(screen.getByTestId('host')).toBeDisabled()
@@ -138,22 +144,16 @@ describe('DatabaseForm', () => {
   })
 
   it('should display SECURITY_FIELD when password is true', () => {
-    const securityFieldValues: DbConnectionInfo = {
-      ...mockFormikValues,
-      password: true,
-    }
-    render(<TestWrapper formikValues={securityFieldValues} />)
+    const securityFieldData = dbConnectionInfoFactory.build({ password: true })
+    renderComponent({}, securityFieldData)
 
     expect(screen.getByDisplayValue(SECURITY_FIELD)).toBeInTheDocument()
   })
 
   // TODO [DA]: this test should be changed as part of RI-7330 as this is not the expected behavior
   it('should clear password field when focused and value shown', async () => {
-    const securityFieldValues: DbConnectionInfo = {
-      ...mockFormikValues,
-      password: true,
-    }
-    render(<TestWrapper formikValues={securityFieldValues} />)
+    const securityFieldData = dbConnectionInfoFactory.build({ password: true })
+    renderComponent({}, securityFieldData)
 
     const passwordInput = screen.getByTestId('password')
     expect(passwordInput).toHaveValue(SECURITY_FIELD)
@@ -166,7 +166,7 @@ describe('DatabaseForm', () => {
   })
 
   it('should set autoFocus on host field when autoFocus is true', () => {
-    render(<TestWrapper autoFocus />)
+    renderComponent({ autoFocus: true })
 
     const hostInput = screen.getByTestId('host')
     expect(hostInput).toEqual(document.activeElement)
@@ -174,7 +174,7 @@ describe('DatabaseForm', () => {
 
   it('should call onHostNamePaste when pasting into host field', () => {
     const mockOnHostNamePaste = jest.fn()
-    render(<TestWrapper onHostNamePaste={mockOnHostNamePaste} />)
+    renderComponent({ onHostNamePaste: mockOnHostNamePaste })
 
     const hostInput = screen.getByTestId('host')
     const pasteEvent = {
@@ -189,7 +189,7 @@ describe('DatabaseForm', () => {
   })
 
   it('should render with correct field labels', () => {
-    render(<TestWrapper />)
+    renderComponent()
 
     expect(screen.getByText('Database Alias*')).toBeInTheDocument()
     expect(screen.getByText('Host*')).toBeInTheDocument()
@@ -200,7 +200,7 @@ describe('DatabaseForm', () => {
   })
 
   it('should render with correct maxLength attributes', () => {
-    render(<TestWrapper />)
+    renderComponent()
 
     expect(screen.getByTestId('name')).toHaveAttribute('maxLength', '500')
     expect(screen.getByTestId('host')).toHaveAttribute('maxLength', '200')
