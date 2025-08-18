@@ -1,15 +1,12 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { NotificationsIcon } from 'uiBase/icons'
+import { RiSideBarItem, SideBarItemIcon } from 'uiBase/layout/sidebar'
 import {
   notificationCenterSelector,
   setIsCenterOpen,
 } from 'uiSrc/slices/app/notifications'
-import { NotificationsIcon } from 'uiSrc/components/base/icons'
-import {
-  SideBarItem,
-  SideBarItemIcon,
-} from 'uiSrc/components/base/layout/sidebar'
 import NotificationCenter from './NotificationCenter'
 import PopoverNotification from './PopoverNotification'
 
@@ -25,7 +22,7 @@ const NavButton = () => {
   }
 
   const Btn = (
-    <SideBarItem
+    <RiSideBarItem
       tooltipProps={{ text: 'Notification Center', placement: 'right' }}
       onMouseDownCapture={onClickIcon}
       isActive={isCenterOpen}
@@ -35,7 +32,7 @@ const NavButton = () => {
         aria-label="Notification Menu"
         data-testid="notification-menu-button"
       />
-    </SideBarItem>
+    </RiSideBarItem>
   )
 
   return (

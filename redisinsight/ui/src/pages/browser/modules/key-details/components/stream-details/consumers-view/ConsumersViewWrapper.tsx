@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
+import { RiText } from 'uiBase/text'
 import {
   setStreamViewType,
   selectedGroupSelector,
@@ -25,12 +26,11 @@ import {
 import { formatLongName, isTruncatedString } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
-import { Text } from 'uiSrc/components/base/text'
-import { RiTooltip } from 'uiSrc/components'
 import { ConsumerDto } from 'apiSrc/modules/browser/stream/dto'
 import ConsumersView from './ConsumersView'
 
 import styles from './ConsumersView/styles.module.scss'
+import { RiTooltip } from 'uiBase/display'
 
 const suffix = '_stream_consumer'
 const actionsWidth = 50
@@ -127,7 +127,7 @@ const ConsumersViewWrapper = (props: Props) => {
         const cellContent = viewName.substring(0, 200)
         const tooltipContent = formatLongName(viewName)
         return (
-          <Text color="subdued" size="s" style={{ maxWidth: '100%' }}>
+          <RiText color="subdued" size="s" style={{ maxWidth: '100%' }}>
             <div
               style={{ display: 'flex' }}
               className="truncateText"
@@ -142,7 +142,7 @@ const ConsumersViewWrapper = (props: Props) => {
                 <>{cellContent}</>
               </RiTooltip>
             </div>
-          </Text>
+          </RiText>
         )
       },
     },

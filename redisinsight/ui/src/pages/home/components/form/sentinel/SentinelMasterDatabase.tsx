@@ -1,13 +1,13 @@
 import React from 'react'
 import { FormikProps } from 'formik'
 
-import { Nullable } from 'uiSrc/utils'
-import { SECURITY_FIELD } from 'uiSrc/constants'
+import { RiColorText, RiText } from 'uiBase/text'
+import { RiPasswordInput, RiTextInput } from 'uiBase/inputs'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiFormField } from 'uiBase/forms'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { ColorText, Text } from 'uiSrc/components/base/text'
-import { PasswordInput, TextInput } from 'uiSrc/components/base/inputs'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
+import { SECURITY_FIELD } from 'uiSrc/constants'
+import { Nullable } from 'uiSrc/utils'
 import styles from '../../styles.module.scss'
 
 export interface Props {
@@ -29,31 +29,33 @@ const SentinelMasterDatabase = (props: Props) => {
   return (
     <>
       {!!db && !isCloneMode && (
-        <Text color="subdued" className={styles.sentinelCollapsedField}>
+        <RiText color="subdued" className={styles.sentinelCollapsedField}>
           Database Index:
           <span style={{ paddingLeft: 5 }}>
-            <ColorText>{db}</ColorText>
+            <RiColorText>{db}</RiColorText>
           </span>
-        </Text>
+        </RiText>
       )}
-      <Row gap="m" responsive className={flexGroupClassName}>
-        <FlexItem grow className={flexItemClassName}>
-          <FormField label="Username">
-            <TextInput
+      <RiRow gap="m" responsive className={flexGroupClassName}>
+        <RiFlexItem grow className={flexItemClassName}>
+          <RiFormField label="Username">
+            <RiTextInput
               name="sentinelMasterUsername"
               id="sentinelMasterUsername"
               maxLength={200}
               placeholder="Enter Username"
               value={formik.values.sentinelMasterUsername ?? ''}
-              onChange={(value) => formik.setFieldValue('sentinelMasterUsername', value)}
+              onChange={(value) =>
+                formik.setFieldValue('sentinelMasterUsername', value)
+              }
               data-testid="sentinel-mater-username"
             />
-          </FormField>
-        </FlexItem>
+          </RiFormField>
+        </RiFlexItem>
 
-        <FlexItem grow className={flexItemClassName}>
-          <FormField label="Password">
-            <PasswordInput
+        <RiFlexItem grow className={flexItemClassName}>
+          <RiFormField label="Password">
+            <RiPasswordInput
               type="password"
               name="sentinelMasterPassword"
               id="sentinelMasterPassword"
@@ -73,9 +75,9 @@ const SentinelMasterDatabase = (props: Props) => {
               }}
               autoComplete="new-password"
             />
-          </FormField>
-        </FlexItem>
-      </Row>
+          </RiFormField>
+        </RiFlexItem>
+      </RiRow>
     </>
   )
 }

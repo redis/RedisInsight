@@ -19,6 +19,7 @@ import {
 } from 'uiSrc/slices/app/context'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { FileChangeType } from 'uiSrc/slices/interfaces'
+import { mockModal } from 'uiSrc/mocks/components/modal'
 import SourcePipelineDialog, {
   PipelineSourceOptions,
 } from './SourcePipelineModal'
@@ -48,22 +49,10 @@ jest.mock('uiSrc/slices/app/context', () => ({
   appContextPipelineManagement: jest.fn(),
 }))
 
-jest.mock('uiSrc/components/base/display', () => {
-  const actual = jest.requireActual('uiSrc/components/base/display')
+jest.mock('uiBase/display', () => {
+  const actual = jest.requireActual('uiBase/display')
 
-  return {
-    ...actual,
-    Modal: {
-      ...actual.Modal,
-      Content: {
-        ...actual.Modal.Content,
-        Header: {
-          ...actual.Modal.Content.Header,
-          Title: jest.fn().mockReturnValue(null),
-        },
-      },
-    },
-  }
+  return mockModal(actual)
 })
 
 let store: typeof mockedStore

@@ -4,7 +4,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
 import styled from 'styled-components'
-import { CaretRightIcon } from 'uiSrc/components/base/icons'
+import { CaretRightIcon, RiIcon } from 'uiBase/icons'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiHideFor } from 'uiBase/utils'
+import { RiPrimaryButton, RiSelect } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
 import { createNewAnalysis } from 'uiSrc/slices/analytics/dbAnalysis'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { getApproximatePercentage } from 'uiSrc/utils/validations'
@@ -18,18 +22,13 @@ import {
   ANALYZE_CLUSTER_TOOLTIP_MESSAGE,
   ANALYZE_TOOLTIP_MESSAGE,
 } from 'uiSrc/constants/recommendations'
-import { FormatedDate, RiTooltip } from 'uiSrc/components'
+import { FormatedDate } from 'uiSrc/components'
 import { DEFAULT_DELIMITER } from 'uiSrc/constants'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { HideFor } from 'uiSrc/components/base/utils/ShowHide'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { Text } from 'uiSrc/components/base/text'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { ShortDatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
 import { AnalysisProgress } from 'apiSrc/modules/database-analysis/models/analysis-progress'
 
 import styles from './styles.module.scss'
+import { RiTooltip } from 'uiBase/tooltip'
 
 const HeaderSelect = styled(RiSelect)`
   border: 0 none;
@@ -88,22 +87,22 @@ const Header = (props: Props) => {
   return (
     <div data-testid="db-analysis-header">
       <AnalyticsTabs />
-      <Row
+      <RiRow
         className={styles.container}
         align="center"
         justify={items.length ? 'between' : 'end'}
       >
         {!!items.length && (
-          <FlexItem>
-            <Row align="center" wrap>
-              <HideFor sizes={['xs', 's']}>
-                <FlexItem>
-                  <Text className={styles.text} size="s">
+          <RiFlexItem>
+            <RiRow align="center" wrap>
+              <RiHideFor sizes={['xs', 's']}>
+                <RiFlexItem>
+                  <RiText className={styles.text} size="s">
                     Report generated on:
-                  </Text>
-                </FlexItem>
-              </HideFor>
-              <FlexItem grow>
+                  </RiText>
+                </RiFlexItem>
+              </RiHideFor>
+              <RiFlexItem grow>
                 <HeaderSelect
                   options={analysisOptions}
                   valueRender={({ option }) =>
@@ -113,10 +112,10 @@ const Header = (props: Props) => {
                   onChange={(value: string) => onChangeSelectedAnalysis(value)}
                   data-testid="select-report"
                 />
-              </FlexItem>
+              </RiFlexItem>
               {!!progress && (
-                <FlexItem>
-                  <Text
+                <RiFlexItem>
+                  <RiText
                     className={cx(
                       styles.progress,
                       styles.text,
@@ -125,7 +124,7 @@ const Header = (props: Props) => {
                     size="s"
                     data-testid="bulk-delete-summary"
                   >
-                    <Text
+                    <RiText
                       component="span"
                       color={
                         progress.total === progress.processed
@@ -141,20 +140,20 @@ const Header = (props: Props) => {
                         progress.total,
                         progress.processed,
                       )}
-                    </Text>
+                    </RiText>
                     {` (${numberWithSpaces(progress.processed)}`}/
                     {numberWithSpaces(progress.total)}
                     {' keys) '}
-                  </Text>
-                </FlexItem>
+                  </RiText>
+                </RiFlexItem>
               )}
-            </Row>
-          </FlexItem>
+            </RiRow>
+          </RiFlexItem>
         )}
-        <FlexItem>
-          <Row align="center">
-            <FlexItem grow>
-              <PrimaryButton
+        <RiFlexItem>
+          <RiRow align="center">
+            <RiFlexItem grow>
+              <RiPrimaryButton
                 aria-label="New reports"
                 data-testid="start-database-analysis-btn"
                 icon={CaretRightIcon}
@@ -163,9 +162,9 @@ const Header = (props: Props) => {
                 onClick={handleClick}
               >
                 New Report
-              </PrimaryButton>
-            </FlexItem>
-            <FlexItem style={{ paddingLeft: 6 }}>
+              </RiPrimaryButton>
+            </RiFlexItem>
+            <RiFlexItem style={{ paddingLeft: 6 }}>
               <RiTooltip
                 position="bottom"
                 anchorClassName={styles.tooltipAnchor}
@@ -185,10 +184,10 @@ const Header = (props: Props) => {
                   data-testid="db-new-reports-icon"
                 />
               </RiTooltip>
-            </FlexItem>
-          </Row>
-        </FlexItem>
-      </Row>
+            </RiFlexItem>
+          </RiRow>
+        </RiFlexItem>
+      </RiRow>
     </div>
   )
 }

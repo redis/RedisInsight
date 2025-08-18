@@ -1,9 +1,8 @@
 /* eslint-disable arrow-body-style */
 import React from 'react'
 
+import { RiBadge, RiTooltip } from 'uiBase/display'
 import { Tag } from 'uiSrc/slices/interfaces/tag'
-import { RiTooltip } from 'uiSrc/components'
-import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 import styles from './styles.module.scss'
 
 type TagsCellProps = {

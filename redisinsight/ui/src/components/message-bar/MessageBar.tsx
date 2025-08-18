@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { CancelSlimIcon } from 'uiBase/icons'
+import { RiIconButton } from 'uiBase/forms'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -19,19 +19,19 @@ const MessageBar = ({ children, opened }: Props) => {
   return isOpen ? (
     <div className={styles.inner}>
       <div className={styles.containerWrapper}>
-        <Row centered className={styles.container} gap="l">
-          <FlexItem grow className={styles.text}>
+        <RiRow centered className={styles.container} gap="l">
+          <RiFlexItem grow className={styles.text}>
             {children}
-          </FlexItem>
-          <FlexItem className={styles.cross}>
-            <IconButton
+          </RiFlexItem>
+          <RiFlexItem className={styles.cross}>
+            <RiIconButton
               icon={CancelSlimIcon}
               aria-label="Close"
               onClick={() => setIsOpen(false)}
               data-testid="close-button"
             />
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </div>
     </div>
   ) : null

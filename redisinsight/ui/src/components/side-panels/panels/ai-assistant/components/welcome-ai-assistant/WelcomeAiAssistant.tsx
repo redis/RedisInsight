@@ -1,5 +1,7 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiTitle, RiText } from 'uiBase/text'
 import { OAuthAgreement } from 'uiSrc/components/oauth/shared'
 
 import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
@@ -7,9 +9,6 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { setSSOFlow } from 'uiSrc/slices/instances/cloud'
 import { setOAuthCloudSource } from 'uiSrc/slices/oauth/cloud'
 import OAuthForm from 'uiSrc/components/oauth/shared/oauth-form'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 const WelcomeAiAssistant = () => {
@@ -35,24 +34,24 @@ const WelcomeAiAssistant = () => {
         <OAuthForm action={OAuthSocialAction.SignIn} onClick={handleSsoClick}>
           {(form: React.ReactNode) => (
             <>
-              <Text style={{ lineHeight: '1.35' }}>
+              <RiText style={{ lineHeight: '1.35' }}>
                 Welcome to Redis Copilot.
-              </Text>
-              <Spacer size="s" />
-              <Text style={{ lineHeight: '1.35' }}>
+              </RiText>
+              <RiSpacer size="s" />
+              <RiText style={{ lineHeight: '1.35' }}>
                 Learn about Redis and explore your data, in a conversational
                 manner.
-              </Text>
-              <Spacer size="s" />
-              <Text style={{ lineHeight: '1.35' }}>
+              </RiText>
+              <RiSpacer size="s" />
+              <RiText style={{ lineHeight: '1.35' }}>
                 Build faster with Redis Copilot.
-              </Text>
-              <Spacer size="xl" />
-              <Title size="S">Sign in to get started.</Title>
+              </RiText>
+              <RiSpacer size="xl" />
+              <RiTitle size="S">Sign in to get started.</RiTitle>
 
-              <Spacer size="l" />
+              <RiSpacer size="l" />
               {form}
-              <Spacer />
+              <RiSpacer />
               <div className={styles.agreement}>
                 <OAuthAgreement />
               </div>

@@ -1,11 +1,11 @@
 import React from 'react'
 import parse from 'html-react-parser'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
 
-import { Text } from 'uiSrc/components/base/text'
-import { SwitchInput } from 'uiSrc/components/base/inputs'
+import { RiText } from 'uiBase/text'
+import { RiSwitchInput } from 'uiBase/inputs'
 
 import { ItemDescription } from './components'
 import { IConsent } from '../ConsentsSettings'
@@ -30,23 +30,26 @@ const ConsentOption = (props: Props) => {
   } = props
 
   return (
-    <FlexItem key={consent.agreementName} grow>
+    <RiFlexItem key={consent.agreementName} grow>
       {isSettingsPage && consent.description && (
         <>
-          <Text
+          <RiText
             size="s"
             className={styles.smallText}
             color="subdued"
             style={{ marginTop: '12px' }}
           >
-            <ItemDescription description={consent.description} withLink={consent.linkToPrivacyPolicy} />
-          </Text>
-          <Spacer size="m" />
+            <ItemDescription
+              description={consent.description}
+              withLink={consent.linkToPrivacyPolicy}
+            />
+          </RiText>
+          <RiSpacer size="m" />
         </>
       )}
-      <Row gap="m">
-        <FlexItem>
-          <SwitchInput
+      <RiRow gap="m">
+        <RiFlexItem>
+          <RiSwitchInput
             checked={checked}
             onCheckedChange={(checked) =>
               onChangeAgreement(checked, consent.agreementName)
@@ -54,23 +57,26 @@ const ConsentOption = (props: Props) => {
             data-testid={`switch-option-${consent.agreementName}`}
             disabled={consent?.disabled}
           />
-        </FlexItem>
-        <FlexItem>
-          <Text className={styles.smallText}>{parse(consent.label)}</Text>
+        </RiFlexItem>
+        <RiFlexItem>
+          <RiText className={styles.smallText}>{parse(consent.label)}</RiText>
           {!isSettingsPage && consent.description && (
-            <Text
+            <RiText
               size="s"
               className={styles.smallText}
               color="subdued"
               style={{ marginTop: '12px' }}
             >
-              <ItemDescription description={consent.description} withLink={consent.linkToPrivacyPolicy} />
-            </Text>
+              <ItemDescription
+                description={consent.description}
+                withLink={consent.linkToPrivacyPolicy}
+              />
+            </RiText>
           )}
-        </FlexItem>
-      </Row>
-      {!withoutSpacer && <Spacer />}
-    </FlexItem>
+        </RiFlexItem>
+      </RiRow>
+      {!withoutSpacer && <RiSpacer />}
+    </RiFlexItem>
   )
 }
 

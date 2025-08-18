@@ -1,6 +1,10 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 
+import { DeleteIcon } from 'uiBase/icons'
+import { RiDestructiveButton, RiIconButton } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
+import { RiPopover } from 'uiBase/display'
 import {
   initialKeyInfo,
   keysSelector,
@@ -15,13 +19,6 @@ import {
 } from 'uiSrc/telemetry'
 import { formatLongName } from 'uiSrc/utils'
 
-import { DeleteIcon } from 'uiSrc/components/base/icons'
-import {
-  DestructiveButton,
-  IconButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { Text } from 'uiSrc/components/base/text'
-import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -70,7 +67,7 @@ const KeyDetailsHeaderDelete = ({ onDelete }: Props) => {
       closePopover={closePopoverDelete}
       panelPaddingSize="l"
       button={
-        <IconButton
+        <RiIconButton
           icon={DeleteIcon}
           aria-label="Delete Key"
           className="deleteKeyBtn"
@@ -80,14 +77,14 @@ const KeyDetailsHeaderDelete = ({ onDelete }: Props) => {
       }
     >
       <div className={styles.popoverDeleteContainer}>
-        <Text size="m" component="div">
+        <RiText size="m" component="div">
           <h4 style={{ wordBreak: 'break-all' }}>
             <b>{tooltipContent}</b>
           </h4>
-          <Text size="s">will be deleted.</Text>
-        </Text>
+          <RiText size="s">will be deleted.</RiText>
+        </RiText>
         <div className={styles.popoverFooter}>
-          <DestructiveButton
+          <RiDestructiveButton
             size="small"
             icon={DeleteIcon}
             onClick={() => onDelete(keyBuffer!)}
@@ -95,7 +92,7 @@ const KeyDetailsHeaderDelete = ({ onDelete }: Props) => {
             data-testid="delete-key-confirm-btn"
           >
             Delete
-          </DestructiveButton>
+          </RiDestructiveButton>
         </div>
       </div>
     </RiPopover>

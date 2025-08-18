@@ -1,10 +1,9 @@
 import React from 'react'
-import { FeatureFlagComponent, RiTooltip } from 'uiSrc/components'
+import { RiCheckbox } from 'uiBase/forms'
+import { RiIcon } from 'uiBase/icons'
+import { FeatureFlagComponent, RiSpacer, RiTooltip } from 'uiSrc/components'
 import { FeatureFlags } from 'uiSrc/constants'
 
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { Spacer } from 'uiSrc/components/base/layout'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -18,7 +17,7 @@ const OAuthRecommendedSettings = (props: Props) => {
   return (
     <FeatureFlagComponent name={FeatureFlags.cloudSsoRecommendedSettings}>
       <div className={styles.recommendedSettings}>
-        <Checkbox
+        <RiCheckbox
           id="ouath-recommended-settings"
           name="recommended-settings"
           label="Use a pre-selected provider and region"
@@ -41,7 +40,7 @@ const OAuthRecommendedSettings = (props: Props) => {
           <RiIcon type="InfoIcon" size="s" />
         </RiTooltip>
       </div>
-      <Spacer size="s" />
+      <RiSpacer size="s" />
     </FeatureFlagComponent>
   )
 }

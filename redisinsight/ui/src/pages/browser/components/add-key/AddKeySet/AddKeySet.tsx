@@ -1,18 +1,13 @@
-import React, {
-  FormEvent,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import React, { FormEvent, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiFormField } from 'uiBase/forms'
+import { RiTextInput } from 'uiBase/inputs'
 import { Maybe, stringToBuffer } from 'uiSrc/utils'
 import { addKeyStateSelector, addSetKey } from 'uiSrc/slices/browser/keys'
 
 import AddMultipleFields from 'uiSrc/pages/browser/components/add-multiple-fields'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { TextInput } from 'uiSrc/components/base/inputs'
 import { CreateSetWithExpireDto } from 'apiSrc/modules/browser/set/dto'
 
 import { INITIAL_SET_MEMBER_STATE, ISetMemberState } from './interfaces'
@@ -131,10 +126,10 @@ const AddKeySet = (props: Props) => {
         onClickAdd={addMember}
       >
         {(item, index) => (
-          <Row align="center">
-            <FlexItem grow>
-              <FormField>
-                <TextInput
+          <RiRow align="center">
+            <RiFlexItem grow>
+              <RiFormField>
+                <RiTextInput
                   name={`member-${item.id}`}
                   id={`member-${item.id}`}
                   placeholder={config.member.placeholder}
@@ -148,9 +143,9 @@ const AddKeySet = (props: Props) => {
                   disabled={loading}
                   data-testid="member-name"
                 />
-              </FormField>
-            </FlexItem>
-          </Row>
+              </RiFormField>
+            </RiFlexItem>
+          </RiRow>
         )}
       </AddMultipleFields>
       <ActionFooter

@@ -2,16 +2,13 @@ import cx from 'classnames'
 import React from 'react'
 import { useSelector } from 'react-redux'
 
+import { RiSideBarItem, SideBarItemIcon } from 'uiBase/layout'
+import { RiLink } from 'uiBase/display'
 import { BuildType } from 'uiSrc/constants/env'
 import { appInfoSelector } from 'uiSrc/slices/app/info'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
-import {
-  SideBarItem,
-  SideBarItemIcon,
-} from 'uiSrc/components/base/layout/sidebar'
 import { getRouterLinkProps } from 'uiSrc/services'
 import { Pages } from 'uiSrc/constants'
-import { Link } from 'uiSrc/components/base/link/Link'
 import LogoSVG from 'uiSrc/assets/img/logo_small.svg?react'
 import styles from '../../styles.module.scss'
 
@@ -32,12 +29,12 @@ export const RedisLogo = ({ isRdiWorkspace }: Props) => {
   }
 
   return (
-    <Link
+    <RiLink
       {...getRouterLinkProps(isRdiWorkspace ? Pages.rdi : Pages.home)}
       data-testid="redis-logo-link"
       style={{ backgroundColor: 'transparent' }}
     >
-      <SideBarItem
+      <RiSideBarItem
         tooltipProps={{
           text:
             server?.buildType === BuildType.RedisStack
@@ -50,7 +47,7 @@ export const RedisLogo = ({ isRdiWorkspace }: Props) => {
         style={{ marginBlock: '2rem', marginInline: 'auto' }}
       >
         <SideBarItemIcon icon={LogoSVG} />
-      </SideBarItem>
-    </Link>
+      </RiSideBarItem>
+    </RiLink>
   )
 }

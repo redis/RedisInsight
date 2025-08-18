@@ -1,10 +1,11 @@
 import React, { ReactElement } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
-
 import { isUndefined } from 'lodash'
+
+import { RiFlexItem, RiRow } from 'uiBase/layout'
 import Divider from 'uiSrc/components/divider/Divider'
 import { KeyTypes, ModulesKeyTypes } from 'uiSrc/constants'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+
 import { KeyDetailsHeaderFormatter } from '../../../key-details-header/components/key-details-header-formatter'
 import styles from './styles.module.scss'
 
@@ -14,16 +15,16 @@ export interface Props {
 }
 
 export const KeyDetailsSubheader = ({ keyType, Actions }: Props) => (
-  <FlexItem className={styles.subheaderContainer}>
+  <RiFlexItem className={styles.subheaderContainer}>
     <AutoSizer disableHeight>
       {({ width = 0 }) => (
         <div style={{ width }}>
-          <Row justify="end" align="center">
+          <RiRow justify="end" align="center">
             {Object.values(KeyTypes).includes(keyType as KeyTypes) && (
               <>
-                <FlexItem className={styles.keyFormatterItem}>
+                <RiFlexItem className={styles.keyFormatterItem}>
                   <KeyDetailsHeaderFormatter width={width} />
-                </FlexItem>
+                </RiFlexItem>
                 <Divider
                   className={styles.divider}
                   colorVariable="separatorColor"
@@ -32,11 +33,11 @@ export const KeyDetailsSubheader = ({ keyType, Actions }: Props) => (
               </>
             )}
             {!isUndefined(Actions) && <Actions width={width} />}
-          </Row>
+          </RiRow>
         </div>
       )}
     </AutoSizer>
-  </FlexItem>
+  </RiFlexItem>
 )
 
 export default KeyDetailsSubheader

@@ -8,6 +8,12 @@ import React, {
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { DownloadIcon } from 'uiBase/icons'
+import { RiSecondaryButton } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
+import { RiTextArea } from 'uiBase/inputs'
+import { RiProgressBarLoader,RiTooltip } from 'uiBase/display'
 import {
   bufferToSerializedFormat,
   bufferToString,
@@ -53,13 +59,6 @@ import { downloadFile } from 'uiSrc/utils/dom/downloadFile'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { IFetchKeyArgs } from 'uiSrc/constants/prop-types/keys'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { DownloadIcon } from 'uiSrc/components/base/icons'
-import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
-import { Text } from 'uiSrc/components/base/text'
-import { TextArea } from 'uiSrc/components/base/inputs'
-import { RiTooltip } from 'uiSrc/components'
-import { ProgressBarLoader } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 const MIN_ROWS = 8
@@ -232,7 +231,7 @@ const StringDetailsValue = (props: Props) => {
 
   const renderValue = (value: string) => {
     const textEl = (
-      <Text
+      <RiText
         className={styles.stringValue}
         onClick={() => isEditable && setIsEdit(true)}
         style={{ whiteSpace: 'break-spaces' }}
@@ -241,7 +240,7 @@ const StringDetailsValue = (props: Props) => {
         {areaValue !== ''
           ? value
           : !isLoading && <span style={{ fontStyle: 'italic' }}>Empty</span>}
-      </Text>
+      </RiText>
     )
 
     return (
@@ -265,7 +264,7 @@ const StringDetailsValue = (props: Props) => {
         data-testid="string-details"
       >
         {isLoading && (
-          <ProgressBarLoader
+          <RiProgressBarLoader
             color="primary"
             data-testid="progress-key-string"
           />
@@ -291,7 +290,7 @@ const StringDetailsValue = (props: Props) => {
               )?.isValid
             }
           >
-            <TextArea
+            <RiTextArea
               name="value"
               id="value"
               rows={rows}
@@ -313,22 +312,22 @@ const StringDetailsValue = (props: Props) => {
 
       {length > MAX_LENGTH && (
         <div className="key-details-footer" key="key-details-footer">
-          <Row justify="between" align="center">
-            <FlexItem>
+          <RiRow justify="between" align="center">
+            <RiFlexItem>
               {!isFullStringLoaded(initialValue?.data?.length, length) && (
-                <SecondaryButton
+                <RiSecondaryButton
                   className={styles.stringFooterBtn}
                   size="small"
                   data-testid="load-all-value-btn"
                   onClick={() => handleLoadAll(key, keyType)}
                 >
                   Load all
-                </SecondaryButton>
+                </RiSecondaryButton>
               )}
-            </FlexItem>
+            </RiFlexItem>
             {!isTruncatedValue && (
-              <FlexItem>
-                <SecondaryButton
+              <RiFlexItem>
+                <RiSecondaryButton
                   className={styles.stringFooterBtn}
                   size="small"
                   icon={DownloadIcon}
@@ -338,10 +337,10 @@ const StringDetailsValue = (props: Props) => {
                   disabled={isTruncatedValue}
                 >
                   Download
-                </SecondaryButton>
-              </FlexItem>
+                </RiSecondaryButton>
+              </RiFlexItem>
             )}
-          </Row>
+          </RiRow>
         </div>
       )}
     </>

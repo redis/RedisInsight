@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
+import { RiSearchInput } from 'uiBase/inputs'
 import { cliSettingsSelector } from 'uiSrc/slices/cli/cli-settings'
 
-import { SearchInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -38,7 +38,7 @@ const CHSearchInput = ({ submitSearch, isLoading = false }: Props) => {
 
   return (
     <div className={styles.container}>
-      <SearchInput
+      <RiSearchInput
         loading={isLoading}
         disabled={isLoading}
         name="search-command"

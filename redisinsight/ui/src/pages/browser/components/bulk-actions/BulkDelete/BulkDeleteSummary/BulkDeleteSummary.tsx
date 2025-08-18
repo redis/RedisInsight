@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { isUndefined } from 'lodash'
 
+import { RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
 import { numberWithSpaces, nullableNumberWithSpaces } from 'uiSrc/utils/numbers'
 import { keysDataSelector } from 'uiSrc/slices/browser/keys'
 import { getApproximatePercentage } from 'uiSrc/utils/validations'
@@ -10,11 +12,9 @@ import {
   bulkActionsDeleteSummarySelector,
 } from 'uiSrc/slices/browser/bulkActions'
 import BulkActionSummary from 'uiSrc/pages/browser/components/bulk-actions/BulkActionSummary'
-import { Text } from 'uiSrc/components/base/text'
-import { RiTooltip } from 'uiSrc/components'
 
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from './styles.module.scss'
+import { RiTooltip } from 'uiBase/display'
 
 const BulkDeleteSummary = () => {
   const [title, setTitle] = useState<string>('')
@@ -41,7 +41,7 @@ const BulkDeleteSummary = () => {
     <div className={styles.container}>
       {isUndefined(status) && (
         <>
-          <Text className={styles.title}>
+          <RiText className={styles.title}>
             <span>{title}</span>
             <RiTooltip
               position="right"
@@ -56,8 +56,8 @@ const BulkDeleteSummary = () => {
                 data-testid="bulk-delete-tooltip"
               />
             </RiTooltip>
-          </Text>
-          <Text
+          </RiText>
+          <RiText
             color="subdued"
             className={styles.summaryApproximate}
             data-testid="bulk-delete-summary"
@@ -65,7 +65,7 @@ const BulkDeleteSummary = () => {
             {`Scanned ${getApproximatePercentage(total, scanned)} `}
             {`(${numberWithSpaces(scanned)}/${nullableNumberWithSpaces(total)}) `}
             {`and found ${numberWithSpaces(keys.length)} keys`}
-          </Text>
+          </RiText>
         </>
       )}
       {!isUndefined(status) && (

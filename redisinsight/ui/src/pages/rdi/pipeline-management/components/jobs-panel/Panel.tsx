@@ -5,6 +5,21 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { isArray, upperFirst } from 'lodash'
 
+import { RiText } from 'uiBase/text'
+import { RiFlexItem, RiRow, RiTabs, TabInfo } from 'uiBase/layout'
+import {
+  RiEmptyButton,
+  RiIconButton,
+  RiSelect,
+  RiSelectOption,
+  defaultValueRender,
+} from 'uiBase/forms'
+import {
+  PlayFilledIcon,
+  CancelSlimIcon,
+  ExtendIcon,
+  ShrinkIcon,
+} from 'uiBase/icons'
 import * as keys from 'uiSrc/constants/keys'
 import { PipelineJobsTabs } from 'uiSrc/slices/interfaces/rdi'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
@@ -19,23 +34,8 @@ import DryRunJobTransformations from 'uiSrc/pages/rdi/pipeline-management/compon
 import { createAxiosError, formatLongName, yamlToJson } from 'uiSrc/utils'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 
-import { Text } from 'uiSrc/components/base/text'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { EmptyButton, IconButton } from 'uiSrc/components/base/forms/buttons'
-import {
-  PlayFilledIcon,
-  CancelSlimIcon,
-  ExtendIcon,
-  ShrinkIcon,
-} from 'uiSrc/components/base/icons'
-import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
-import { RiTooltip } from 'uiSrc/components'
-import {
-  RiSelect,
-  RiSelectOption,
-  defaultValueRender,
-} from 'uiSrc/components/base/forms/select/RiSelect'
 import styles from './styles.module.scss'
+import { RiTooltip } from 'uiBase/display'
 
 export interface Props {
   job: string
@@ -128,8 +128,8 @@ const DryRunJobPanel = (props: Props) => {
           createAxiosError({
             message: (
               <>
-                <Text>{`${upperFirst(name)} has an invalid structure.`}</Text>
-                <Text>{msg}</Text>
+                <RiText>{`${upperFirst(name)} has an invalid structure.`}</RiText>
+                <RiText>{msg}</RiText>
               </>
             ),
           }),
@@ -157,16 +157,16 @@ const DryRunJobPanel = (props: Props) => {
       label: (
         <RiTooltip
           content={
-            <Text color="subdued" size="s">
+            <RiText color="subdued" size="s">
               Displays the results of the transformations you defined. The data
               is presented in JSON format.
               <br />
               No data is written to the target database.
-            </Text>
+            </RiText>
           }
           data-testid="transformation-output-tooltip"
         >
-          <Text>Transformation output</Text>
+          <RiText>Transformation output</RiText>
         </RiTooltip>
       ),
       content: null,
@@ -176,16 +176,16 @@ const DryRunJobPanel = (props: Props) => {
       label: (
         <RiTooltip
           content={
-            <Text color="subdued" size="s">
+            <RiText color="subdued" size="s">
               Displays the list of Redis commands that will be generated based
               on your job details.
               <br />
               No data is written to the target database.
-            </Text>
+            </RiText>
           }
           data-testid="job-output-tooltip"
         >
-          <Text>Job output</Text>
+          <RiText>Job output</RiText>
         </RiTooltip>
       ),
       content: null,
@@ -204,16 +204,16 @@ const DryRunJobPanel = (props: Props) => {
     >
       <div className={styles.panelInner}>
         <div className={styles.header}>
-          <Text className={styles.title}>Test transformation logic</Text>
+          <RiText className={styles.title}>Test transformation logic</RiText>
           <div>
-            <IconButton
+            <RiIconButton
               icon={isFullScreen ? ShrinkIcon : ExtendIcon}
               aria-label="toggle fullscrenn dry run panel"
               className={styles.fullScreenBtn}
               onClick={handleFullScreen}
               data-testid="fullScreen-dry-run-btn"
             />
-            <IconButton
+            <RiIconButton
               icon={CancelSlimIcon}
               aria-label="close dry run panel"
               className={styles.closeBtn}
@@ -223,11 +223,11 @@ const DryRunJobPanel = (props: Props) => {
           </div>
         </div>
         <div className={styles.body}>
-          <Text className={styles.text}>
+          <RiText className={styles.text}>
             Add input data to test the transformation logic.
-          </Text>
+          </RiText>
           <div className={styles.codeLabel}>
-            <Text>Input</Text>
+            <RiText>Input</RiText>
           </div>
           <MonacoJson
             value={input}
@@ -236,13 +236,13 @@ const DryRunJobPanel = (props: Props) => {
             wrapperClassName={styles.inputCode}
             data-testid="input-value"
           />
-          <Row responsive justify="end">
-            <FlexItem>
+          <RiRow responsive justify="end">
+            <RiFlexItem>
               <RiTooltip
                 content={isFormValid ? null : 'Input should have JSON format'}
                 position="top"
               >
-                <EmptyButton
+                <RiEmptyButton
                   onClick={handleDryRun}
                   icon={PlayFilledIcon}
                   iconSide="right"
@@ -253,10 +253,10 @@ const DryRunJobPanel = (props: Props) => {
                   data-testid="dry-run-btn"
                 >
                   Dry run
-                </EmptyButton>
+                </RiEmptyButton>
               </RiTooltip>
-            </FlexItem>
-          </Row>
+            </RiFlexItem>
+          </RiRow>
           <div className={styles.codeLabel}>
             {isSelectAvailable && (
               <RiSelect
@@ -267,7 +267,7 @@ const DryRunJobPanel = (props: Props) => {
                 data-testid="target-select"
               />
             )}
-            <Tabs
+            <RiTabs
               tabs={tabs}
               value={selectedTab}
               onChange={handleTabChange}

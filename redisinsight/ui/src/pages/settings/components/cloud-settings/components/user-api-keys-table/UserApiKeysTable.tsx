@@ -3,6 +3,12 @@ import { format } from 'date-fns'
 import { useDispatch } from 'react-redux'
 import { isNull } from 'lodash'
 
+import { RiText, RiTitle } from 'uiBase/text'
+import { RiEmptyButton, RiIconButton, RiPrimaryButton } from 'uiBase/forms'
+import { CopyIcon, RiIcon } from 'uiBase/icons'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiTable, ColumnDefinition } from 'uiBase/layout'
+import { RiLink } from 'uiBase/display'
 import { formatLongName, Nullable } from 'uiSrc/utils'
 import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
@@ -13,19 +19,7 @@ import {
   OAuthSocialSource,
 } from 'uiSrc/slices/interfaces'
 import { removeCapiKeyAction } from 'uiSrc/slices/oauth/cloud'
-import { Text } from 'uiSrc/components/base/text'
 
-import {
-  EmptyButton,
-  IconButton,
-  PrimaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { CopyIcon } from 'uiSrc/components/base/icons'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
-import { Link } from 'uiSrc/components/base/link/Link'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -156,7 +150,7 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
             content="Copy API Key Name"
             anchorClassName={styles.copyBtnAnchor}
           >
-            <IconButton
+            <RiIconButton
               icon={CopyIcon}
               aria-label="Copy API key"
               onClick={() => handleCopy(name || '')}
@@ -174,14 +168,14 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
             text={
               <>
                 {'To delete this API key from Redis Cloud, '}
-                <Link
+                <RiLink
                   target="_blank"
                   color="text"
                   tabIndex={-1}
                   href="https://redis.io/redis-enterprise-cloud/overview/?utm_source=redisinsight&utm_medium=settings&utm_campaign=clear_keys"
                 >
                   sign in to Redis Cloud
-                </Link>
+                </RiLink>
                 {' and delete it manually.'}
               </>
             }
@@ -206,25 +200,25 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
     return (
       <>
         <div className={styles.noKeysMessage} data-testid="no-api-keys-message">
-          <Title size="XS">
+          <RiTitle size="XS">
             <RiIcon
-                className={styles.starsIcon}
-                type="StarsIcon"
-                color="attention300"
-              />
+              className={styles.starsIcon}
+              type="StarsIcon"
+              color="attention300"
+            />
             The ultimate Redis starting point
-          </Title>
-          <Spacer size="s" />
-          <Text size="s" className={styles.smallText} color="subdued">
+          </RiTitle>
+          <RiSpacer size="s" />
+          <RiText size="s" className={styles.smallText} color="subdued">
             Cloud API keys will be created and stored when you connect to Redis
             Cloud to create a free trial Cloud database or autodiscover your
             Cloud database.
-          </Text>
-          <Spacer />
+          </RiText>
+          <RiSpacer />
           <div className={styles.actions}>
             <OAuthSsoHandlerDialog>
               {(socialCloudHandlerClick) => (
-                <EmptyButton
+                <RiEmptyButton
                   size="small"
                   color="ghost"
                   className={styles.autodiscoverBtn}
@@ -237,12 +231,12 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
                   data-testid="autodiscover-btn"
                 >
                   Autodiscover
-                </EmptyButton>
+                </RiEmptyButton>
               )}
             </OAuthSsoHandlerDialog>
             <OAuthSsoHandlerDialog>
               {(ssoCloudHandlerClick) => (
-                <PrimaryButton
+                <RiPrimaryButton
                   size="small"
                   onClick={(e: React.MouseEvent) =>
                     ssoCloudHandlerClick(e, {
@@ -253,18 +247,18 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
                   data-testid="create-cloud-db-btn"
                 >
                   Create Redis Cloud database
-                </PrimaryButton>
+                </RiPrimaryButton>
               )}
             </OAuthSsoHandlerDialog>
           </div>
         </div>
-        <Spacer />
+        <RiSpacer />
       </>
     )
   }
 
   return (
-    <Table
+    <RiTable
       columns={columns}
       data={items}
       defaultSorting={[

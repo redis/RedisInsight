@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
-import { ChevronDownIcon, RefreshIcon } from 'uiSrc/components/base/icons'
+import { ChevronDownIcon, RefreshIcon, RiIcon } from 'uiBase/icons'
+import { RiIconButton } from 'uiBase/forms'
+import { RiColorText } from 'uiBase/text'
+import { RiSwitchInput } from 'uiBase/inputs'
+import { RiPopover, RiTooltip } from 'uiBase/index'
 import {
   errorValidateRefreshRateNumber,
   MIN_REFRESH_RATE,
@@ -10,11 +14,6 @@ import {
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
 import { localStorageService } from 'uiSrc/services'
 import { BrowserStorageItem } from 'uiSrc/constants'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { ColorText } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { SwitchInput } from 'uiSrc/components/base/inputs'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import {
   DEFAULT_REFRESH_RATE,
   DURATION_FIRST_REFRESH_TIME,
@@ -206,7 +205,7 @@ const AutoRefresh = ({
       })}
       data-testid={getDataTestid('auto-refresh-container')}
     >
-      <ColorText className={styles.summary}>
+      <RiColorText className={styles.summary}>
         {displayText && (
           <span data-testid={getDataTestid('refresh-message-label')}>
             {enableAutoRefresh ? 'Auto refresh:' : 'Last refresh:'}
@@ -222,7 +221,7 @@ const AutoRefresh = ({
             {` ${enableAutoRefresh ? refreshRateMessage : refreshMessage}`}
           </span>
         )}
-      </ColorText>
+      </RiColorText>
 
       <RiTooltip
         title={!disabled && 'Last Refresh'}
@@ -231,7 +230,7 @@ const AutoRefresh = ({
         content={disabled ? disabledRefreshButtonMessage : refreshMessage}
         data-testid={getDataTestid('refresh-tooltip')}
       >
-        <IconButton
+        <RiIconButton
           size={iconSize}
           icon={RefreshIcon}
           disabled={loading || disabled}
@@ -255,7 +254,7 @@ const AutoRefresh = ({
         })}
         closePopover={closePopover}
         button={
-          <IconButton
+          <RiIconButton
             disabled={disabled}
             size="S"
             icon={ChevronDownIcon}
@@ -268,7 +267,7 @@ const AutoRefresh = ({
           />
         }
       >
-        <SwitchInput
+        <RiSwitchInput
           title="Auto Refresh"
           checked={enableAutoRefresh}
           onCheckedChange={onChangeEnableAutoRefresh}
@@ -278,7 +277,7 @@ const AutoRefresh = ({
         <div className={styles.inputContainer}>
           <div className={styles.inputLabel}>Refresh rate:</div>
           {!editingRate && (
-            <ColorText
+            <RiColorText
               color="subdued"
               className={styles.refreshRateText}
               onClick={() => setEditingRate(true)}
@@ -288,7 +287,7 @@ const AutoRefresh = ({
               <div className={styles.refreshRatePencil}>
                 <RiIcon type="EditIcon" />
               </div>
-            </ColorText>
+            </RiColorText>
           )}
           {editingRate && (
             <>
@@ -307,7 +306,7 @@ const AutoRefresh = ({
                   onApply={(value) => handleApplyAutoRefreshRate(value)}
                 />
               </div>
-              <ColorText color="subdued">{' s'}</ColorText>
+              <RiColorText color="subdued">{' s'}</RiColorText>
             </>
           )}
         </div>

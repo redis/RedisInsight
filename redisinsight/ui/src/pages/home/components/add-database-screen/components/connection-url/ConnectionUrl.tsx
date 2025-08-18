@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { TextArea } from 'uiSrc/components/base/inputs'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiFormField } from 'uiBase/forms'
+import { RiTextArea } from 'uiBase/inputs'
+import { RiIcon } from 'uiBase/icons'
 import { RiTooltip } from 'uiSrc/components'
 import styles from './styles.module.scss'
 
@@ -12,7 +12,7 @@ export interface Props {
 }
 
 const ConnectionUrl = ({ value, onChange }: Props) => (
-  <FormField
+  <RiFormField
     label={
       <div className={styles.connectionUrlInfo}>
         <div>Connection URL</div>
@@ -42,7 +42,7 @@ const ConnectionUrl = ({ value, onChange }: Props) => (
       </div>
     }
   >
-    <TextArea
+    <RiTextArea
       name="connectionURL"
       id="connectionURL"
       value={value}
@@ -51,7 +51,7 @@ const ConnectionUrl = ({ value, onChange }: Props) => (
       style={{ height: 88 }}
       data-testid="connection-url"
     />
-  </FormField>
+  </RiFormField>
 )
 
 export default ConnectionUrl

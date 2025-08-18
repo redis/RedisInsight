@@ -1,6 +1,15 @@
 import React, { useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
+import {
+  RiPrimaryButton,
+  RiRadioGroup,
+  defaultValueRender,
+  RiSelect,
+} from 'uiBase/forms'
+import { InfoIcon, CheckBoldIcon } from 'uiBase/icons'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiTextInput } from 'uiBase/inputs'
 import { checkDateTimeFormat, formatTimestamp } from 'uiSrc/utils'
 import {
   DATETIME_FORMATTER_DEFAULT,
@@ -13,16 +22,7 @@ import {
   userSettingsConfigSelector,
 } from 'uiSrc/slices/user/user-settings'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { InfoIcon, CheckBoldIcon } from 'uiSrc/components/base/icons'
-import { RiRadioGroup } from 'uiSrc/components/base/forms/radio-group/RadioGroup'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { RiTooltip } from 'uiSrc/components'
-import {
-  defaultValueRender,
-  RiSelect,
-} from 'uiSrc/components/base/forms/select/RiSelect'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTooltip } from 'uiBase/display'
 
 interface InitialValuesType {
   format: string
@@ -184,7 +184,7 @@ const DatetimeForm = ({ onFormatChange }: Props) => {
         value={formik.values.selectedRadioOption}
         onChange={(id) => onRadioOptionChange(id)}
       />
-      <Row gap="m" style={{ height: 50 }}>
+      <RiRow gap="m" style={{ height: 50 }}>
         {formik.values.selectedRadioOption === DatetimeRadioOption.Common && (
           <RiSelect
             style={{ width: 240 }}
@@ -204,8 +204,8 @@ const DatetimeForm = ({ onFormatChange }: Props) => {
         )}
         {formik.values.selectedRadioOption === DatetimeRadioOption.Custom && (
           <>
-            <FlexItem grow={false}>
-              <TextInput
+            <RiFlexItem grow={false}>
+              <RiTextInput
                 style={{ width: 240 }}
                 id="customFormat"
                 name="customFormat"
@@ -213,7 +213,7 @@ const DatetimeForm = ({ onFormatChange }: Props) => {
                 onChange={(value) => onCustomFormatChange(value)}
                 data-testid="custom-datetime-input"
               />
-            </FlexItem>
+            </RiFlexItem>
             <RiTooltip
               position="top"
               anchorClassName="euiToolTip__btn-disabled"
@@ -221,7 +221,7 @@ const DatetimeForm = ({ onFormatChange }: Props) => {
                 showError ? error || 'This format is not supported' : null
               }
             >
-              <PrimaryButton
+              <RiPrimaryButton
                 aria-label="Save"
                 loading={formik.isSubmitting}
                 onClick={onCustomFormatSubmit}
@@ -230,11 +230,11 @@ const DatetimeForm = ({ onFormatChange }: Props) => {
                 disabled={showError}
               >
                 Save
-              </PrimaryButton>
+              </RiPrimaryButton>
             </RiTooltip>
           </>
         )}
-      </Row>
+      </RiRow>
     </form>
   )
 }

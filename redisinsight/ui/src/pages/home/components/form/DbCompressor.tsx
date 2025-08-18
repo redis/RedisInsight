@@ -1,15 +1,13 @@
 import React, { ChangeEvent } from 'react'
 import { FormikProps } from 'formik'
 
-import { KeyValueCompressor } from 'uiSrc/constants'
-import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiCheckbox, RiFormField, RiSelect } from 'uiBase/forms'
+import { useGenerateId } from 'uiBase/utils'
 import { NONE } from 'uiSrc/pages/home/constants'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
-import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
+import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
+import { KeyValueCompressor } from 'uiSrc/constants'
 
 export interface Props {
   formik: FormikProps<DbConnectionInfo>
@@ -63,10 +61,10 @@ const DbCompressor = (props: Props) => {
 
   return (
     <>
-      <Row gap="m" responsive={false}>
-        <FlexItem>
-          <FormField>
-            <Checkbox
+      <RiRow gap="m" responsive={false}>
+        <RiFlexItem>
+          <RiFormField>
+            <RiCheckbox
               id={id}
               name="showCompressor"
               label="Enable Automatic Data Decompression"
@@ -74,16 +72,16 @@ const DbCompressor = (props: Props) => {
               onChange={handleChangeDbCompressorCheckbox}
               data-testid="showCompressor"
             />
-          </FormField>
-        </FlexItem>
-      </Row>
+          </RiFormField>
+        </RiFlexItem>
+      </RiRow>
 
       {formik.values.showCompressor && (
         <>
-          <Spacer />
-          <Row gap="m">
-            <FlexItem grow>
-              <FormField label="Decompression format">
+          <RiSpacer />
+          <RiRow gap="m">
+            <RiFlexItem grow>
+              <RiFormField label="Decompression format">
                 <RiSelect
                   name="compressor"
                   placeholder="Decompression format"
@@ -94,10 +92,10 @@ const DbCompressor = (props: Props) => {
                   }}
                   data-testid="select-compressor"
                 />
-              </FormField>
-            </FlexItem>
-            <FlexItem grow />
-          </Row>
+              </RiFormField>
+            </RiFlexItem>
+            <RiFlexItem grow />
+          </RiRow>
         </>
       )}
     </>

@@ -1,11 +1,11 @@
 import React from 'react'
-import { PADDING_SIZES } from 'uiSrc/components/base/layout/page/page.styles'
-import Page from 'uiSrc/components/base/layout/page/Page'
 import { render } from 'uiSrc/utils/test-utils'
+import { PADDING_SIZES } from './page.styles'
+import { RiPage } from './RiPage'
 
 describe('RIPage', () => {
   it('is rendered', () => {
-    const { container } = render(<Page />)
+    const { container } = render(<RiPage />)
 
     expect(container.firstChild).toBeTruthy()
   })
@@ -19,7 +19,7 @@ describe('RIPage', () => {
     }
     PADDING_SIZES.forEach((size) => {
       it(`padding '${size}' is rendered`, () => {
-        const { container } = render(<Page paddingSize={size} />)
+        const { container } = render(<RiPage paddingSize={size} />)
         expect(container.firstChild).toHaveStyle(`padding: ${sizes[size]}`)
       })
     })
@@ -27,12 +27,12 @@ describe('RIPage', () => {
 
   describe('grow', () => {
     it(`grow 'true' gives flex-grow: 1`, () => {
-      const { container } = render(<Page grow />)
+      const { container } = render(<RiPage grow />)
 
       expect(container.firstChild).toHaveStyle('flex-grow: 1')
     })
     it(`grow 'false' does not render flex-grow`, () => {
-      const { container } = render(<Page grow={false} />)
+      const { container } = render(<RiPage grow={false} />)
 
       expect(container.firstChild).not.toHaveStyle('flex-grow: 1')
     })
@@ -41,13 +41,13 @@ describe('RIPage', () => {
   describe('direction', () => {
     it(`can be row`, () => {
       const { container } = render(
-        <Page direction="row" restrictWidth style={{ width: '1000px' }} />,
+        <RiPage direction="row" restrictWidth style={{ width: '1000px' }} />,
       )
 
       expect(container.firstChild).toHaveStyle('flex-direction: column')
     })
     it(`can be column`, () => {
-      const { container } = render(<Page direction="column" />)
+      const { container } = render(<RiPage direction="column" />)
 
       expect(container.firstChild).toHaveStyle('flex-direction: column')
     })
@@ -55,20 +55,20 @@ describe('RIPage', () => {
 
   describe('restrict width', () => {
     it('can be set to a default', () => {
-      const { container } = render(<Page restrictWidth />)
+      const { container } = render(<RiPage restrictWidth />)
 
       expect(container.firstChild).toHaveStyle('max-width: 1200px')
     })
 
     it('can be set to a custom number', () => {
-      const { container } = render(<Page restrictWidth={1024} />)
+      const { container } = render(<RiPage restrictWidth={1024} />)
 
       expect(container.firstChild).toHaveStyle('max-width: 1024px')
     })
 
     it('can be set to a custom value and does not override custom style', () => {
       const { container } = render(
-        <Page
+        <RiPage
           restrictWidth="24rem"
           style={{
             color: 'red ',

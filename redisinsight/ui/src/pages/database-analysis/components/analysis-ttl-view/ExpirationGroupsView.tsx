@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
+import { RiSwitchInput } from 'uiBase/inputs'
+import { RiTitle } from 'uiBase/text'
 import {
   DEFAULT_EXTRAPOLATION,
   SectionName,
@@ -25,8 +27,6 @@ import {
   dbAnalysisReportsSelector,
   setShowNoExpiryGroup,
 } from 'uiSrc/slices/analytics/dbAnalysis'
-import { SwitchInput } from 'uiSrc/components/base/inputs'
-import { Title } from 'uiSrc/components/base/text/Title'
 import { DatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
 
 import styles from './styles.module.scss'
@@ -110,11 +110,11 @@ const ExpirationGroupsView = (props: Props) => {
     <div className={cx('section', styles.container)} data-testid="analysis-ttl">
       <div className="section-title-wrapper">
         <div className={styles.titleWrapper}>
-          <Title size="M" className="section-title">
+          <RiTitle size="M" className="section-title">
             MEMORY LIKELY TO BE FREED OVER TIME
-          </Title>
+          </RiTitle>
           {extrapolation !== DEFAULT_EXTRAPOLATION && (
-            <SwitchInput
+            <RiSwitchInput
               color="subdued"
               className="switch-extrapolate-results"
               title="Extrapolate results"
@@ -130,7 +130,7 @@ const ExpirationGroupsView = (props: Props) => {
             />
           )}
         </div>
-        <SwitchInput
+        <RiSwitchInput
           color="subdued"
           className={styles.switch}
           title={'Show "No Expiry"'}

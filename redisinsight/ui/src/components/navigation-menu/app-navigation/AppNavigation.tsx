@@ -1,6 +1,5 @@
 import React, { ReactNode } from 'react'
-import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
-import { Row } from 'uiSrc/components/base/layout/flex'
+import { RiTabs, TabInfo, RiRow } from 'uiBase/layout'
 import {
   StyledAppNavigation,
   StyledAppNavigationContainer,
@@ -12,7 +11,7 @@ type AppNavigationContainerProps = {
   children?: ReactNode
   borderLess?: boolean
 } & Pick<
-  React.ComponentProps<typeof Row>,
+  React.ComponentProps<typeof RiRow>,
   'gap' | 'justify' | 'align' | 'grow' | 'style'
 >
 const AppNavigationContainer = ({
@@ -54,8 +53,13 @@ const AppNavigation = ({ actions, onChange }: AppNavigationProps) => {
   return (
     <StyledAppNavigation>
       <AppNavigationContainer />
-      <AppNavigationContainer borderLess grow={false} justify="center" style={{ paddingTop: '20px' }}>
-        <Tabs.Compose
+      <AppNavigationContainer
+        borderLess
+        grow={false}
+        justify="center"
+        style={{ paddingTop: '20px' }}
+      >
+        <RiTabs.Compose
           value={activeTab?.pageName}
           onChange={(tabValue) => {
             const tabNavItem = privateRoutes.find(
@@ -67,22 +71,22 @@ const AppNavigation = ({ actions, onChange }: AppNavigationProps) => {
             }
           }}
         >
-          <Tabs.TabBar.Compose variant="default">
+          <RiTabs.TabBar.Compose variant="default">
             {navTabs.map(({ value, label, disabled }, index) => {
               const key = `${value}-${index}`
               return (
-                <Tabs.TabBar.Trigger.Compose
+                <RiTabs.TabBar.Trigger.Compose
                   value={value}
                   disabled={disabled}
                   key={key}
                 >
                   <StyledAppNavTab>{label ?? value}</StyledAppNavTab>
-                  <Tabs.TabBar.Trigger.Marker />
-                </Tabs.TabBar.Trigger.Compose>
+                  <RiTabs.TabBar.Trigger.Marker />
+                </RiTabs.TabBar.Trigger.Compose>
               )
             })}
-          </Tabs.TabBar.Compose>
-        </Tabs.Compose>
+          </RiTabs.TabBar.Compose>
+        </RiTabs.Compose>
       </AppNavigationContainer>
       <AppNavigationContainer justify="end" align="center">
         {actions}

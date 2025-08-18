@@ -4,6 +4,17 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { isEqual } from 'lodash'
 
+import { RiCol, RiFlexItem } from 'uiBase/layout'
+import {
+  RiIconButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiAutoTag,
+  AutoTagOption,
+  RiSelect,
+} from 'uiBase/forms'
+import { SettingsIcon, RiIcon } from 'uiBase/icons'
+import { RiPopover } from 'uiBase/index'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   DEFAULT_DELIMITER,
@@ -18,20 +29,6 @@ import {
 } from 'uiSrc/slices/app/context'
 import { comboBoxToArray } from 'uiSrc/utils'
 
-import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
-import {
-  IconButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { SettingsIcon } from 'uiSrc/components/base/icons'
-import {
-  AutoTag,
-  AutoTagOption,
-} from 'uiSrc/components/base/forms/combo-box/AutoTag'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
-import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -86,7 +83,7 @@ const KeyTreeSettings = ({ loading }: Props) => {
   }, [treeViewSort, treeViewDelimiter])
 
   const button = (
-    <IconButton
+    <RiIconButton
       icon={SettingsIcon}
       onClick={onButtonClick}
       disabled={loading}
@@ -147,10 +144,10 @@ const KeyTreeSettings = ({ loading }: Props) => {
         closePopover={closePopover}
         button={button}
       >
-        <Col gap="s">
-          <FlexItem grow className={styles.row} />
-          <FlexItem grow className={styles.row}>
-            <AutoTag
+        <RiCol gap="s">
+          <RiFlexItem grow className={styles.row} />
+          <RiFlexItem grow className={styles.row}>
+            <RiAutoTag
               layout="horizontal"
               label="Delimiter"
               placeholder=":"
@@ -163,8 +160,8 @@ const KeyTreeSettings = ({ loading }: Props) => {
               className={styles.combobox}
               data-testid="delimiter-combobox"
             />
-          </FlexItem>
-          <FlexItem className={styles.row}>
+          </RiFlexItem>
+          <RiFlexItem className={styles.row}>
             <div className={styles.label}>
               <RiIcon type="DescendingIcon" className={styles.sortIcon} />
               Sort by
@@ -177,26 +174,26 @@ const KeyTreeSettings = ({ loading }: Props) => {
               onChange={(value: SortOrder) => onChangeSort(value)}
               data-testid="tree-view-sorting-select"
             />
-          </FlexItem>
-          <FlexItem className={styles.row}>
+          </RiFlexItem>
+          <RiFlexItem className={styles.row}>
             <div className={styles.footer}>
-              <SecondaryButton
+              <RiSecondaryButton
                 size="s"
                 data-testid="tree-view-cancel-btn"
                 onClick={closePopover}
               >
                 Cancel
-              </SecondaryButton>
-              <PrimaryButton
+              </RiSecondaryButton>
+              <RiPrimaryButton
                 size="s"
                 data-testid="tree-view-apply-btn"
                 onClick={handleApply}
               >
                 Apply
-              </PrimaryButton>
+              </RiPrimaryButton>
             </div>
-          </FlexItem>
-        </Col>
+          </RiFlexItem>
+        </RiCol>
       </RiPopover>
     </div>
   )

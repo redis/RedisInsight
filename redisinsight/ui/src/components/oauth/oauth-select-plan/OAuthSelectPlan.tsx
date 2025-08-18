@@ -4,6 +4,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import {
+  RiEmptyButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiSelect,
+} from 'uiBase/forms'
+import { RiColorText, RiText } from 'uiBase/text'
+import { RiIcon, CancelIcon } from 'uiBase/icons'
+import { RiModal } from 'uiBase/display'
+import {
   createFreeDbJob,
   oauthCloudPlanSelector,
   setIsOpenSelectPlanDialog,
@@ -17,16 +26,6 @@ import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { FeatureFlags } from 'uiSrc/constants'
 import { Region } from 'uiSrc/slices/interfaces'
 
-import {
-  EmptyButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { ColorText, Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
-import { Modal } from 'uiSrc/components/base/display'
-import { CancelIcon } from 'uiSrc/components/base/icons'
 import { CloudSubscriptionPlanResponse } from 'apiSrc/modules/cloud/subscription/dto'
 import { OAuthProvider, OAuthProviders } from './constants'
 import styles from './styles.module.scss'
@@ -119,23 +118,23 @@ const OAuthSelectPlan = () => {
       find(rsRegions, { provider })?.regions || []
 
     return (
-      <Text
+      <RiText
         color="subdued"
         size="s"
         data-testid={`option-${region}`}
         data-test-subj={`oauth-region-${region}`}
       >
         {`${countryName} (${cityName})`}
-        <ColorText className={styles.regionName}>{region}</ColorText>
+        <RiColorText className={styles.regionName}>{region}</RiColorText>
         {rsProviderRegions?.includes(region) && (
-          <ColorText
+          <RiColorText
             className={styles.rspreview}
             data-testid={`rs-text-${region}`}
           >
             (Redis 7.2)
-          </ColorText>
+          </RiColorText>
         )}
-      </Text>
+      </RiText>
     )
   }
 
@@ -172,19 +171,26 @@ const OAuthSelectPlan = () => {
   }
 
   return (
-    <Modal.Compose open>
-      <Modal.Content.Compose className={styles.container} data-testid="oauth-select-plan-dialog">
-        <Modal.Content.Close icon={CancelIcon} onClick={handleOnClose} data-testid="oauth-select-plan-dialog-close-btn" />
-        <Modal.Content.Header.Title>
+    <RiModal.Compose open>
+      <RiModal.Content.Compose
+        className={styles.container}
+        data-testid="oauth-select-plan-dialog"
+      >
+        <RiModal.Content.Close
+          icon={CancelIcon}
+          onClick={handleOnClose}
+          data-testid="oauth-select-plan-dialog-close-btn"
+        />
+        <RiModal.Content.Header.Title>
           Choose a cloud vendor
-        </Modal.Content.Header.Title>
-        <Modal.Content.Body.Compose width="fit-content">
+        </RiModal.Content.Header.Title>
+        <RiModal.Content.Body.Compose width="fit-content">
           <section className={styles.content}>
-            <Text className={styles.subTitle}>
+            <RiText className={styles.subTitle}>
               Select a cloud vendor and region to complete the final step
               towards your free trial Redis database. No credit card is
               required.
-            </Text>
+            </RiText>
             <section className={styles.providers}>
               {OAuthProviders.map(({ icon, id, label }) => {
                 const Icon = () => (
@@ -197,7 +203,7 @@ const OAuthSelectPlan = () => {
                         <RiIcon type="CheckThinIcon" />
                       </div>
                     )}
-                    <EmptyButton
+                    <RiEmptyButton
                       size="large"
                       icon={Icon}
                       onClick={() => setProviderSelected(id)}
@@ -205,13 +211,13 @@ const OAuthSelectPlan = () => {
                         [styles.activeProvider]: id === providerSelected,
                       })}
                     />
-                    <Text className={styles.providerLabel}>{label}</Text>
+                    <RiText className={styles.providerLabel}>{label}</RiText>
                   </div>
                 )
               })}
             </section>
             <section className={styles.region}>
-              <Text className={styles.regionLabel}>Region</Text>
+              <RiText className={styles.regionLabel}>Region</RiText>
               <RiSelect
                 loading={loading}
                 disabled={loading || !regionOptions.length}
@@ -227,24 +233,24 @@ const OAuthSelectPlan = () => {
                 }}
               />
               {!regionOptions.length && (
-                <Text
+                <RiText
                   className={styles.selectDescription}
                   data-testid="select-region-select-description"
                 >
                   No regions available, try another vendor.
-                </Text>
+                </RiText>
               )}
             </section>
             <footer className={styles.footer}>
-              <SecondaryButton
+              <RiSecondaryButton
                 className={styles.button}
                 onClick={handleOnClose}
                 data-testid="close-oauth-select-plan-dialog"
                 aria-labelledby="close oauth select plan dialog"
               >
                 Cancel
-              </SecondaryButton>
-              <PrimaryButton
+              </RiSecondaryButton>
+              <RiPrimaryButton
                 disabled={loading || !planIdSelected}
                 loading={loading}
                 className={styles.button}
@@ -253,12 +259,12 @@ const OAuthSelectPlan = () => {
                 aria-labelledby="submit oauth select plan dialog"
               >
                 Create database
-              </PrimaryButton>
+              </RiPrimaryButton>
             </footer>
           </section>
-        </Modal.Content.Body.Compose>
-      </Modal.Content.Compose>
-    </Modal.Compose>
+        </RiModal.Content.Body.Compose>
+      </RiModal.Content.Compose>
+    </RiModal.Compose>
   )
 }
 

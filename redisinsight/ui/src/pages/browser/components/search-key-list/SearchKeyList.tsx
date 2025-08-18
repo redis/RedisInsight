@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 
+import { RiEmptyButton } from 'uiBase/forms'
+import { RiIcon } from 'uiBase/icons'
 import * as keys from 'uiSrc/constants/keys'
 import MultiSearch from 'uiSrc/components/multi-search/MultiSearch'
 import {
@@ -38,8 +40,6 @@ import { SidePanels } from 'uiSrc/slices/interfaces/insights'
 
 import { FeatureFlags } from 'uiSrc/constants'
 import { FeatureFlagComponent } from 'uiSrc/components'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from './styles.module.scss'
 
 const placeholders = {
@@ -186,14 +186,14 @@ const SearchKeyList = () => {
         appendRight={
           searchMode === SearchMode.Redisearch ? (
             <FeatureFlagComponent name={FeatureFlags.databaseChat}>
-              <EmptyButton
+              <RiEmptyButton
                 className={styles.askCopilotBtn}
                 size="small"
                 onClick={handleClickAskCopilot}
                 data-testid="ask-redis-copilot-btn"
               >
                 <RiIcon className={styles.cloudIcon} type="StarsIcon" />
-              </EmptyButton>
+              </RiEmptyButton>
             </FeatureFlagComponent>
           ) : undefined
         }

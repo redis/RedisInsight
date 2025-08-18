@@ -2,6 +2,9 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toNumber } from 'lodash'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiPrimaryButton, RiSecondaryButton, RiFormField } from 'uiBase/forms'
+import { RiTextInput } from 'uiBase/inputs'
 import { stringToBuffer, validateScoreNumber } from 'uiSrc/utils'
 import { isNaNConvertedString } from 'uiSrc/utils/numbers'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
@@ -19,13 +22,6 @@ import {
 import AddMultipleFields from 'uiSrc/pages/browser/components/add-multiple-fields'
 import { ISetMemberState } from 'uiSrc/pages/browser/components/add-key/AddKeySet/interfaces'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { TextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -184,15 +180,15 @@ const AddZsetMembers = (props: Props) => {
           onClickAdd={addMember}
         >
           {(item, index) => (
-            <Row align="center">
-              <FlexItem grow>
-                <FormField>
-                  <TextInput
+            <RiRow align="center">
+              <RiFlexItem grow>
+                <RiFormField>
+                  <RiTextInput
                     name={`member-${item.id}`}
                     id={`member-${item.id}`}
                     placeholder={config.member.placeholder}
                     value={item.name}
-                    onChange={value =>
+                    onChange={(value) =>
                       handleMemberChange('name', item.id, value)
                     }
                     ref={
@@ -201,17 +197,17 @@ const AddZsetMembers = (props: Props) => {
                     disabled={loading}
                     data-testid="member-name"
                   />
-                </FormField>
-              </FlexItem>
-              <FlexItem grow>
-                <FormField>
-                  <TextInput
+                </RiFormField>
+              </RiFlexItem>
+              <RiFlexItem grow>
+                <RiFormField>
+                  <RiTextInput
                     name={`score-${item.id}`}
                     id={`score-${item.id}`}
                     maxLength={200}
                     placeholder={config.score.placeholder}
                     value={item.score}
-                    onChange={value =>
+                    onChange={(value) =>
                       handleMemberChange('score', item.id, value)
                     }
                     onBlur={() => {
@@ -220,37 +216,37 @@ const AddZsetMembers = (props: Props) => {
                     disabled={loading}
                     data-testid="member-score"
                   />
-                </FormField>
-              </FlexItem>
-            </Row>
+                </RiFormField>
+              </RiFlexItem>
+            </RiRow>
           )}
         </AddMultipleFields>
       </div>
       <>
-        <Row justify="end" gap="l" style={{ padding: 18 }}>
-          <FlexItem>
+        <RiRow justify="end" gap="l" style={{ padding: 18 }}>
+          <RiFlexItem>
             <div>
-              <SecondaryButton
+              <RiSecondaryButton
                 onClick={() => closePanel(true)}
                 data-testid="cancel-members-btn"
               >
                 Cancel
-              </SecondaryButton>
+              </RiSecondaryButton>
             </div>
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <div>
-              <PrimaryButton
+              <RiPrimaryButton
                 disabled={loading || !isFormValid}
                 loading={loading}
                 onClick={submitData}
                 data-testid="save-members-btn"
               >
                 Save
-              </PrimaryButton>
+              </RiPrimaryButton>
             </div>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </>
     </>
   )

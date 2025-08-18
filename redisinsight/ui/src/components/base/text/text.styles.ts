@@ -2,7 +2,7 @@ import React, { HTMLAttributes } from 'react'
 import { useTheme } from '@redis-ui/styles'
 import { Typography } from '@redis-ui/components'
 import styled, { css } from 'styled-components'
-import { CommonProps } from 'uiSrc/components/base/theme/types'
+import { CommonProps } from 'uiBase/theme/types'
 
 export type BodyProps = React.ComponentProps<typeof Typography.Body>
 
@@ -104,8 +104,8 @@ export const Indicator = styled.div<
     $color: ColorType
   } & CommonProps
 >`
-  width: 0.8rem;
-  height: 0.8rem;
+  width: var(--size-s);
+  height: var(--size-s);
   border-radius: 50%;
   background-color: ${({ $color }) => $color || 'inherit'};
 `

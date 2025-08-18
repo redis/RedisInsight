@@ -1,24 +1,25 @@
 import React, { useState } from 'react'
 
-import { FlexGroup, FlexItem } from 'uiSrc/components/base/layout/flex'
-import { Text } from 'uiSrc/components/base/text'
 import CreateIndexStepWrapper, {
   IndexStepTab,
 } from 'uiSrc/components/new-index/create-index-step'
 import { FieldBoxesGroup } from 'uiSrc/components/new-index/create-index-step/field-boxes-group/FieldBoxesGroup'
 import { VectorSearchBox } from 'uiSrc/components/new-index/create-index-step/field-box/types'
 import { generateFtCreateCommand } from 'uiSrc/utils/index/generateFtCreateCommand'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { VectorIndexTab } from 'uiSrc/components/new-index/create-index-step/CreateIndexStepWrapper'
 import { BuildNewIndexTabTrigger } from 'uiSrc/components/new-index/create-index-step/build-new-index-tab/BuildNewIndexTabTrigger'
-import { TextInput } from 'uiSrc/components/base/inputs'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
-import { PlayFilledIcon } from 'uiSrc/components/base/icons'
+import { PlayFilledIcon } from 'uiBase/icons'
 import { bikesIndexFieldsBoxes } from './config'
 import { CreateIndexStepScreenWrapper, SearchInputWrapper } from './styles'
 import { PreviewCommandDrawer } from './PreviewCommandDrawer'
 import { IStepComponent, StepComponentProps } from '../types'
+
+import { RiTextInput } from 'uiBase/inputs'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
+import { RiEmptyButton } from 'uiBase/forms'
 
 // eslint-disable-next-line arrow-body-style, @typescript-eslint/no-unused-vars
 const useIndexFieldsBoxes = (_indexName: string): VectorSearchBox[] => {
@@ -45,9 +46,9 @@ export const CreateIndexStep: IStepComponent = ({
       content: (
         <>
           <SearchInputWrapper>
-            <FlexItem direction="column" $gap="s" grow={1}>
-              <Text>Index name</Text>
-              <TextInput
+            <RiFlexItem direction="column" $gap="s" grow={1}>
+              <RiText>Index name</RiText>
+              <RiTextInput
                 disabled
                 placeholder="Search for index"
                 autoComplete="off"
@@ -55,7 +56,7 @@ export const CreateIndexStep: IStepComponent = ({
                 onChange={(value) => setParameters({ indexName: value })}
                 data-testid="search-for-index"
               />
-            </FlexItem>
+            </RiFlexItem>
           </SearchInputWrapper>
           <FieldBoxesGroup
             boxes={indexFieldsBoxes}
@@ -79,28 +80,28 @@ export const CreateIndexStep: IStepComponent = ({
 
   return (
     <CreateIndexStepScreenWrapper>
-      <FlexItem direction="column" $gap="xxl">
-        <FlexItem direction="column" $gap="m">
-          <Text>Vector index</Text>
-          <Text size="S" color="secondary">
+      <RiFlexItem $gap="xxl">
+        <RiFlexItem $gap="m">
+          <RiText>Vector index</RiText>
+          <RiText size="S" color="secondary">
             Indexes tell Redis how to search your data. Creating an index
             enables fast, accurate retrieval across your dataset.
-          </Text>
-        </FlexItem>
+          </RiText>
+        </RiFlexItem>
         <CreateIndexStepWrapper
           defaultValue={VectorIndexTab.UsePresetIndex}
           tabs={indexFieldsTabs}
         />
-        <FlexGroup justify="end">
-          <EmptyButton
+        <RiRow justify="end">
+          <RiEmptyButton
             icon={PlayFilledIcon}
             onClick={handlePreviewCommandClick}
             data-testid="preview-command-button"
           >
             Command preview
-          </EmptyButton>
-        </FlexGroup>
-      </FlexItem>
+          </RiEmptyButton>
+        </RiRow>
+      </RiFlexItem>
       <PreviewCommandDrawer
         commandContent={generateFtCreateCommand({
           indexName: parameters.indexName,

@@ -2,10 +2,10 @@ import React from 'react'
 import cx from 'classnames'
 import { isUndefined } from 'lodash'
 
-import { LoadingContent } from 'uiSrc/components/base/layout'
-import { Text } from 'uiSrc/components/base/text'
+import { RiLoadingContent } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
 import { Maybe, formatBytes } from 'uiSrc/utils'
-import { RiTooltip } from 'uiSrc/components'
+import { RiTooltip } from 'uiBase/display'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -20,7 +20,7 @@ const KeyRowSize = (props: Props) => {
 
   if (isUndefined(size)) {
     return (
-      <LoadingContent
+      <RiLoadingContent
         lines={1}
         className={cx(styles.keyInfoLoading, styles.keySize)}
         data-testid={`size-loading_${nameString}`}
@@ -30,19 +30,19 @@ const KeyRowSize = (props: Props) => {
 
   if (!size) {
     return (
-      <Text
+      <RiText
         color="subdued"
         size="s"
         className={cx(styles.keySize)}
         data-testid={`size-${nameString}`}
       >
         -
-      </Text>
+      </RiText>
     )
   }
   return (
     <>
-      <Text
+      <RiText
         color="subdued"
         size="s"
         className={cx(styles.keySize, 'moveOnHoverKey', {
@@ -65,7 +65,7 @@ const KeyRowSize = (props: Props) => {
             <>{formatBytes(size, 0)}</>
           </RiTooltip>
         </div>
-      </Text>
+      </RiText>
     </>
   )
 }

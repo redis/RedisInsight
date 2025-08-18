@@ -1,14 +1,13 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-import TestConnectionsLog from 'uiSrc/pages/rdi/pipeline-management/components/test-connections-log'
+import { RiText } from 'uiBase/text'
+import { RiCol, RiFlexItem } from 'uiBase/layout'
+import { RiIconButton } from 'uiBase/forms'
+import { CancelSlimIcon } from 'uiBase/icons'
+import { RiLoader } from 'uiBase/display'
 import { rdiTestConnectionsSelector } from 'uiSrc/slices/rdi/testConnections'
-
-import { Text } from 'uiSrc/components/base/text'
-import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import { Loader } from 'uiSrc/components/base/display'
+import TestConnectionsLog from 'uiSrc/pages/rdi/pipeline-management/components/test-connections-log'
 import styles from './styles.module.scss'
 
 interface TestConnectionPanelWrapperProps {
@@ -22,8 +21,8 @@ const TestConnectionPanelWrapper = ({
 }: TestConnectionPanelWrapperProps) => (
   <div className={styles.panel} data-testid="test-connection-panel">
     <div className={styles.header}>
-      <Text className={styles.title}>Connection test results</Text>
-      <IconButton
+      <RiText className={styles.title}>Connection test results</RiText>
+      <RiIconButton
         icon={CancelSlimIcon}
         aria-label="close test connections panel"
         className={styles.closeBtn}
@@ -46,19 +45,19 @@ const TestConnectionsPanel = (props: Props) => {
   if (loading) {
     return (
       <TestConnectionPanelWrapper onClose={onClose}>
-        <Col className={styles.content} centered>
-          <FlexItem>
-            <Text className={styles.loaderText}>Loading results...</Text>
-          </FlexItem>
-          <FlexItem>
-            <Loader
+        <RiCol className={styles.content} centered>
+          <RiFlexItem>
+            <RiText className={styles.loaderText}>Loading results...</RiText>
+          </RiFlexItem>
+          <RiFlexItem>
+            <RiLoader
               data-testid="test-connections-loader"
               className={styles.loaderIcon}
               color="secondary"
               size="xl"
             />
-          </FlexItem>
-        </Col>
+          </RiFlexItem>
+        </RiCol>
       </TestConnectionPanelWrapper>
     )
   }
@@ -66,9 +65,9 @@ const TestConnectionsPanel = (props: Props) => {
   if (!results) {
     return (
       <TestConnectionPanelWrapper onClose={onClose}>
-        <Text className={styles.subtitle}>
+        <RiText className={styles.subtitle}>
           No results found. Please try again.
-        </Text>
+        </RiText>
       </TestConnectionPanelWrapper>
     )
   }
@@ -76,21 +75,21 @@ const TestConnectionsPanel = (props: Props) => {
   return (
     <TestConnectionPanelWrapper onClose={onClose}>
       <div className={styles.content}>
-        <Text
+        <RiText
           className={styles.subtitle}
           style={{ marginTop: 16, marginBottom: 10 }}
         >
           Source connections
-        </Text>
+        </RiText>
 
         <TestConnectionsLog data={results.source} />
 
-        <Text
+        <RiText
           className={styles.subtitle}
           style={{ marginTop: 16, marginBottom: 10 }}
         >
           Target connections
-        </Text>
+        </RiText>
 
         <TestConnectionsLog data={results.target} />
       </div>

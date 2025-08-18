@@ -4,6 +4,18 @@ import { FormikErrors, useFormik } from 'formik'
 import { isEmpty } from 'lodash'
 import { useSelector } from 'react-redux'
 
+import { RiCol, RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiWindowEvent } from 'uiBase/utils'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { InfoIcon } from 'uiBase/icons'
+import {
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
+  RiRadioGroup,
+} from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
+import { RiTextInput } from 'uiBase/inputs'
 import * as keys from 'uiSrc/constants/keys'
 import { validateField } from 'uiSrc/utils/validations'
 import validationErrors from 'uiSrc/constants/validationErrors'
@@ -14,18 +26,6 @@ import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { OAuthAutodiscovery } from 'uiSrc/components/oauth/oauth-sso'
 import { MessageCloudApiKeys } from 'uiSrc/pages/home/components/form/Messages'
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { WindowEvent } from 'uiSrc/components/base/utils/WindowEvent'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { InfoIcon } from 'uiSrc/components/base/icons'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { Text } from 'uiSrc/components/base/text'
-import { RiRadioGroup } from 'uiSrc/components/base/forms/radio-group/RadioGroup'
-import { TextInput } from 'uiSrc/components/base/inputs'
 import { ICloudConnectionSubmit } from '../CloudConnectionFormWrapper'
 
 import styles from '../styles.module.scss'
@@ -120,14 +120,14 @@ const CloudConnectionForm = (props: Props) => {
   }
 
   const CancelButton = ({ onClick }: { onClick: () => void }) => (
-    <SecondaryButton
+    <RiSecondaryButton
       size="s"
       className="btn-cancel"
       onClick={onClick}
       style={{ marginRight: 12 }}
     >
       Cancel
-    </SecondaryButton>
+    </RiSecondaryButton>
   )
 
   const SubmitButton = ({ onClick, submitIsDisabled }: ISubmitButton) => (
@@ -147,7 +147,7 @@ const CloudConnectionForm = (props: Props) => {
         ) : null
       }
     >
-      <PrimaryButton
+      <RiPrimaryButton
         size="s"
         type="submit"
         onClick={onClick}
@@ -157,7 +157,7 @@ const CloudConnectionForm = (props: Props) => {
         data-testid="btn-submit"
       >
         Submit
-      </PrimaryButton>
+      </RiPrimaryButton>
     </RiTooltip>
   )
 
@@ -183,13 +183,13 @@ const CloudConnectionForm = (props: Props) => {
   const CloudApiForm = (
     <div className={styles.cloudApi} data-testid="add-db_cloud-api">
       <MessageCloudApiKeys />
-      <Spacer />
-      <WindowEvent event="keydown" handler={onKeyDown} />
+      <RiSpacer />
+      <RiWindowEvent event="keydown" handler={onKeyDown} />
       <form onSubmit={formik.handleSubmit}>
-        <Row responsive>
-          <FlexItem>
-            <FormField label="API Account Key*">
-              <TextInput
+        <RiRow responsive>
+          <RiFlexItem>
+            <RiFormField label="API Account Key*">
+              <RiTextInput
                 name="accessKey"
                 id="accessKey"
                 data-testid="access-key"
@@ -197,20 +197,17 @@ const CloudConnectionForm = (props: Props) => {
                 placeholder={fieldDisplayNames.accessKey}
                 value={formik.values.accessKey}
                 autoComplete="off"
-                onChange={value => {
-                  formik.setFieldValue(
-                    'accessKey',
-                    validateField(value.trim()),
-                  )
+                onChange={(value) => {
+                  formik.setFieldValue('accessKey', validateField(value.trim()))
                 }}
               />
-            </FormField>
-          </FlexItem>
-        </Row>
-        <Row responsive>
-          <FlexItem grow>
-            <FormField label="API User Key*">
-              <TextInput
+            </RiFormField>
+          </RiFlexItem>
+        </RiRow>
+        <RiRow responsive>
+          <RiFlexItem grow>
+            <RiFormField label="API User Key*">
+              <RiTextInput
                 name="secretKey"
                 id="secretKey"
                 data-testid="secret-key"
@@ -218,16 +215,13 @@ const CloudConnectionForm = (props: Props) => {
                 placeholder={fieldDisplayNames.secretKey}
                 value={formik.values.secretKey}
                 autoComplete="off"
-                onChange={value => {
-                  formik.setFieldValue(
-                    'secretKey',
-                    validateField(value.trim()),
-                  )
+                onChange={(value) => {
+                  formik.setFieldValue('secretKey', validateField(value.trim()))
                 }}
               />
-            </FormField>
-          </FlexItem>
-        </Row>
+            </RiFormField>
+          </RiFlexItem>
+        </RiRow>
         <Footer />
       </form>
     </div>
@@ -236,13 +230,13 @@ const CloudConnectionForm = (props: Props) => {
   return (
     <div className="getStartedForm eui-yScroll">
       <FeatureFlagComponent name={FeatureFlags.cloudSso}>
-        <Col gap="m">
-          <FlexItem grow>
-            <Text color="subdued" size="s">
+        <RiCol gap="m">
+          <RiFlexItem grow>
+            <RiText color="subdued" size="s">
               Connect with:
-            </Text>
-          </FlexItem>
-          <FlexItem grow>
+            </RiText>
+          </RiFlexItem>
+          <RiFlexItem grow>
             <RiRadioGroup
               layout="horizontal"
               items={options}
@@ -250,9 +244,9 @@ const CloudConnectionForm = (props: Props) => {
               onChange={(id) => setType(id as CloudConnectionOptions)}
               data-testid="cloud-options"
             />
-          </FlexItem>
-        </Col>
-        <Spacer size="m" />
+          </RiFlexItem>
+        </RiCol>
+        <RiSpacer size="m" />
       </FeatureFlagComponent>
       {type === CloudConnectionOptions.Account && (
         <OAuthAutodiscovery

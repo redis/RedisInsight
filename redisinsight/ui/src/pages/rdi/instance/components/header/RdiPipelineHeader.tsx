@@ -3,11 +3,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
 import { get } from 'lodash'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
 import {
   getPipelineStatusAction,
   rdiPipelineStatusSelector,
 } from 'uiSrc/slices/rdi/pipeline'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import CurrentPipelineStatus from './components/current-pipeline-status'
 
 import PipelineActions from './components/pipeline-actions'
@@ -50,23 +50,19 @@ const RdiPipelineHeader = () => {
     : undefined
 
   return (
-    <Row
-      className={styles.wrapper}
-      align="center"
-      justify="between"
-    >
-      <FlexItem grow>
+    <RiRow className={styles.wrapper} align="center" justify="between">
+      <RiFlexItem grow>
         <CurrentPipelineStatus
           pipelineState={pipelineState}
           statusError={statusError}
           headerLoading={headerLoading}
         />
-      </FlexItem>
+      </RiFlexItem>
       <PipelineActions
         collectorStatus={collectorStatus}
         pipelineStatus={pipelineStatus}
       />
-    </Row>
+    </RiRow>
   )
 }
 

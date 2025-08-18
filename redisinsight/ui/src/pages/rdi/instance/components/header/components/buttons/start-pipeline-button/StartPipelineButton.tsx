@@ -1,10 +1,10 @@
 import React from 'react'
 
-import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
-import { PlayFilledIcon } from 'uiSrc/components/base/icons'
-import { RiTooltip } from 'uiSrc/components'
+import { RiSecondaryButton } from 'uiBase/forms'
+import { PlayFilledIcon } from 'uiBase/icons'
 import { PipelineButtonProps } from '../reset-pipeline-button/ResetPipelineButton'
 import styles from '../styles.module.scss'
+import { RiTooltip } from 'uiBase/display'
 
 const StartPipelineButton = ({
   onClick,
@@ -15,7 +15,7 @@ const StartPipelineButton = ({
     content="Start the pipeline to resume processing new data arrivals."
     anchorClassName={disabled ? styles.disabled : styles.tooltip}
   >
-    <SecondaryButton
+    <RiSecondaryButton
       aria-label="Start running pipeline"
       size="s"
       icon={PlayFilledIcon}
@@ -25,7 +25,7 @@ const StartPipelineButton = ({
       onClick={onClick}
     >
       Start Pipeline
-    </SecondaryButton>
+    </RiSecondaryButton>
   </RiTooltip>
 )
 

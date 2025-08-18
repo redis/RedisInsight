@@ -1,5 +1,10 @@
 import React from 'react'
 import { FormikProps } from 'formik'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiFormField } from 'uiBase/forms'
+import { RiTitle } from 'uiBase/text'
+import { RiTextInput } from 'uiBase/inputs'
 import {
   PrimaryGroupSentinel,
   SentinelMasterDatabase,
@@ -12,11 +17,6 @@ import {
   TlsDetails,
 } from 'uiSrc/pages/home/components/form'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { TextInput } from 'uiSrc/components/base/inputs'
 import DecompressionAndFormatters from './DecompressionAndFormatters'
 
 import { ManualFormTab } from '../constants'
@@ -52,8 +52,8 @@ const EditSentinelConnection = (props: Props) => {
         variant="fullWidth"
         className="form__divider"
       />
-      <Title size="XS">Database</Title>
-      <Spacer size="s" />
+      <RiTitle size="XS">Database</RiTitle>
+      <RiSpacer size="s" />
       <SentinelMasterDatabase
         formik={formik}
         db={db}
@@ -64,8 +64,8 @@ const EditSentinelConnection = (props: Props) => {
         variant="fullWidth"
         className="form__divider"
       />
-      <Title size="XS">Sentinel</Title>
-      <Spacer size="s" />
+      <RiTitle size="XS">Sentinel</RiTitle>
+      <RiSpacer size="s" />
       <DatabaseForm
         formik={formik}
         showFields={{ host: true, port: true, alias: false, timeout: false }}
@@ -82,10 +82,10 @@ const EditSentinelConnection = (props: Props) => {
 
   const GeneralFormEditMode = (
     <>
-      <Row gap="m">
-        <FlexItem grow>
-          <FormField label="Database Alias*">
-            <TextInput
+      <RiRow gap="m">
+        <RiFlexItem grow>
+          <RiFormField label="Database Alias*">
+            <RiTextInput
               name="name"
               id="name"
               data-testid="name"
@@ -95,17 +95,17 @@ const EditSentinelConnection = (props: Props) => {
               maxLength={500}
               onChange={formik.handleChange}
             />
-          </FormField>
-        </FlexItem>
-      </Row>
-      <Spacer size="s" />
+          </RiFormField>
+        </RiFlexItem>
+      </RiRow>
+      <RiSpacer size="s" />
       <Divider
         colorVariable="separatorColor"
         variant="fullWidth"
         className="form__divider"
       />
-      <Title size="XS">Database</Title>
-      <Spacer size="s" />
+      <RiTitle size="XS">Database</RiTitle>
+      <RiSpacer size="s" />
       <SentinelMasterDatabase
         formik={formik}
         db={db}
@@ -116,8 +116,8 @@ const EditSentinelConnection = (props: Props) => {
         variant="fullWidth"
         className="form__divider"
       />
-      <Title size="XS">Sentinel</Title>
-      <Spacer size="s" />
+      <RiTitle size="XS">Sentinel</RiTitle>
+      <RiSpacer size="s" />
       <DatabaseForm
         formik={formik}
         showFields={{ host: false, port: true, alias: false, timeout: false }}

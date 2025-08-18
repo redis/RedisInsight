@@ -1,13 +1,12 @@
 import React, { ChangeEvent } from 'react'
 import { FormikProps } from 'formik'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiFormField, RiCheckbox } from 'uiBase/forms'
+import { RiIcon } from 'uiBase/icons'
+import { useGenerateId } from 'uiBase/utils'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { RiTooltip } from 'uiSrc/components'
-import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
+import { RiTooltip } from 'uiBase/display'
 
 export interface Props {
   formik: FormikProps<DbConnectionInfo>
@@ -47,10 +46,10 @@ const ForceStandalone = (props: Props) => {
   const id = useGenerateId('', ' over forceStandalone')
 
   return (
-    <Row gap="s">
-      <FlexItem>
-        <FormField>
-          <Checkbox
+    <RiRow gap="s">
+      <RiFlexItem>
+        <RiFormField>
+          <RiCheckbox
             id={id}
             name="forceStandalone"
             label={<ForceStandaloneLabel />}
@@ -58,9 +57,9 @@ const ForceStandalone = (props: Props) => {
             onChange={handleChangeForceStandaloneCheckbox}
             data-testid="forceStandalone"
           />
-        </FormField>
-      </FlexItem>
-    </Row>
+        </RiFormField>
+      </RiFlexItem>
+    </RiRow>
   )
 }
 

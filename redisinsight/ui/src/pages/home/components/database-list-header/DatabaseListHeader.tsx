@@ -3,6 +3,10 @@ import { useSelector, useDispatch } from 'react-redux'
 import { isEmpty } from 'lodash'
 import cx from 'classnames'
 
+import { RiPopover } from 'uiBase/display'
+import { RiFlexItem, RiRow, RiSpacer } from 'uiBase/layout'
+import { RiPrimaryButton, RiSecondaryButton, RiCheckbox } from 'uiBase/forms'
+import { ColumnsIcon } from 'uiBase/icons'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   instancesSelector,
@@ -12,7 +16,6 @@ import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import PromoLink from 'uiSrc/components/promo-link/PromoLink'
 
 import { FeatureFlagComponent, OAuthSsoHandlerDialog } from 'uiSrc/components'
-import { RiPopover } from 'uiSrc/components/base'
 import { getPathToResource } from 'uiSrc/services/resourcesService'
 import { ContentCreateRedis } from 'uiSrc/slices/interfaces/content'
 import { HELP_LINKS } from 'uiSrc/pages/home/constants'
@@ -25,14 +28,6 @@ import {
   DatabaseListColumn,
   FeatureFlags,
 } from 'uiSrc/constants'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { ColumnsIcon } from 'uiSrc/components/base/icons'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import SearchDatabasesList from '../search-databases-list'
 
 import styles from './styles.module.scss'
@@ -123,13 +118,13 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
   }
 
   const AddInstanceBtn = () => (
-    <PrimaryButton
+    <RiPrimaryButton
       onClick={handleOnAddDatabase}
       className={styles.addInstanceBtn}
       data-testid="add-redis-database-short"
     >
       <span>+ Add Redis database</span>
-    </PrimaryButton>
+    </RiPrimaryButton>
   )
 
   const CreateBtn = ({ content }: { content: ContentCreateRedis }) => {
@@ -170,7 +165,7 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
 
   const columnCheckboxes = Array.from(COLUMN_FIELD_NAME_MAP.entries()).map(
     ([field, name]) => (
-      <Checkbox
+      <RiCheckbox
         key={`show-${field}`}
         id={`show-${field}`}
         name={`show-${field}`}
@@ -185,34 +180,34 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
 
   return (
     <div className={styles.containerDl}>
-      <Row
+      <RiRow
         className={styles.contentDL}
         align="center"
         responsive={false}
         gap="s"
       >
-        <FlexItem>
+        <RiFlexItem>
           <FeatureFlagComponent name={FeatureFlags.databaseManagement}>
             <AddInstanceBtn />
           </FeatureFlagComponent>
-        </FlexItem>
+        </RiFlexItem>
         {!loading && !isEmpty(data) && (
-          <FlexItem className={cx(styles.promo)}>
-            <Row align="center" gap="s">
+          <RiFlexItem className={cx(styles.promo)}>
+            <RiRow align="center" gap="s">
               {promoData && (
                 <FeatureFlagComponent name={FeatureFlags.cloudAds}>
-                  <FlexItem>
+                  <RiFlexItem>
                     <CreateBtn content={promoData} />
-                  </FlexItem>
+                  </RiFlexItem>
                 </FeatureFlagComponent>
               )}
-            </Row>
-          </FlexItem>
+            </RiRow>
+          </RiFlexItem>
         )}
         {instances.length > 0 && (
-          <FlexItem grow>
-            <Row justify="end" align="center" gap="s">
-              <FlexItem className={styles.columnsButtonItem}>
+          <RiFlexItem grow>
+            <RiRow justify="end" align="center" gap="s">
+              <RiFlexItem className={styles.columnsButtonItem}>
                 <RiPopover
                   ownFocus={false}
                   anchorPosition="downLeft"
@@ -220,7 +215,7 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
                   closePopover={() => setColumnsConfigShown(false)}
                   data-testid="columns-config-popover"
                   button={
-                    <SecondaryButton
+                    <RiSecondaryButton
                       icon={ColumnsIcon}
                       onClick={toggleColumnsConfigVisibility}
                       className={styles.columnsButton}
@@ -228,7 +223,7 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
                       aria-label="columns"
                     >
                       <span>Columns</span>
-                    </SecondaryButton>
+                    </RiSecondaryButton>
                   }
                 >
                   <div
@@ -241,15 +236,15 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
                     {columnCheckboxes}
                   </div>
                 </RiPopover>
-              </FlexItem>
-              <FlexItem>
+              </RiFlexItem>
+              <RiFlexItem>
                 <SearchDatabasesList />
-              </FlexItem>
-            </Row>
-          </FlexItem>
+              </RiFlexItem>
+            </RiRow>
+          </RiFlexItem>
         )}
-      </Row>
-      <Spacer className={styles.spacerDl} />
+      </RiRow>
+      <RiSpacer />
     </div>
   )
 }

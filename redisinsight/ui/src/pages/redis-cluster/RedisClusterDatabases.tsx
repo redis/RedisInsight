@@ -2,25 +2,23 @@ import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 import { map } from 'lodash'
 import { useSelector } from 'react-redux'
-import { SearchInput } from 'uiSrc/components/base/inputs'
+import { RiSearchInput } from 'uiBase/inputs'
+import { RiPopover, RiTooltip } from 'uiBase/display'
+import { RiFlexItem, RiRow, RiTable, ColumnDefinition } from 'uiBase/layout'
+import { InfoIcon } from 'uiBase/icons'
+import {
+  RiDestructiveButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
+} from 'uiBase/forms'
+import { RiTitle, RiText } from 'uiBase/text'
 import { Maybe } from 'uiSrc/utils'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { InstanceRedisCluster } from 'uiSrc/slices/interfaces'
 import { clusterSelector } from 'uiSrc/slices/instances/cluster'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { InfoIcon } from 'uiSrc/components/base/icons'
-import {
-  DestructiveButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import styles from './styles.module.scss'
 
 interface Props {
@@ -114,28 +112,28 @@ const RedisClusterDatabases = ({
       panelClassName={styles.panelCancelBtn}
       panelPaddingSize="l"
       button={
-        <SecondaryButton
+        <RiSecondaryButton
           onClick={showPopover}
           className="btn-cancel"
           data-testid="btn-back"
         >
           Cancel
-        </SecondaryButton>
+        </RiSecondaryButton>
       }
     >
-      <Text size="m">
+      <RiText size="m">
         Your changes have not been saved.&#10;&#13; Do you want to proceed to
         the list of databases?
-      </Text>
+      </RiText>
       <br />
       <div>
-        <DestructiveButton
+        <RiDestructiveButton
           size="s"
           onClick={onClose}
           data-testid="btn-back-proceed"
         >
           Proceed
-        </DestructiveButton>
+        </RiDestructiveButton>
       </div>
     </RiPopover>
   )
@@ -143,31 +141,31 @@ const RedisClusterDatabases = ({
   return (
     <AutodiscoveryPageTemplate>
       <div className="databaseContainer">
-        <Title size="M" className={styles.title} data-testid="title">
+        <RiTitle size="M" className={styles.title} data-testid="title">
           Auto-Discover Redis Enterprise Databases
-        </Title>
-        <Row align="end" responsive gap="s">
-          <FlexItem grow>
+        </RiTitle>
+        <RiRow align="end" responsive gap="s">
+          <RiFlexItem grow>
             {!!items.length && (
-              <Text color="subdued" className={styles.subTitle}>
+              <RiText color="subdued" className={styles.subTitle}>
                 These are the {items.length > 1 ? 'databases ' : 'database '}
                 in your Redis Enterprise Cluster. Select the
                 {items.length > 1 ? ' databases ' : ' database '} that you want
                 to add.
-              </Text>
+              </RiText>
             )}
-          </FlexItem>
-          <FlexItem>
-            <FormField className={styles.searchForm}>
-              <SearchInput
+          </RiFlexItem>
+          <RiFlexItem>
+            <RiFormField className={styles.searchForm}>
+              <RiSearchInput
                 placeholder="Search..."
                 onChange={onQueryChange}
                 aria-label="Search"
                 data-testid="search"
               />
-            </FormField>
-          </FlexItem>
-        </Row>
+            </RiFormField>
+          </RiFlexItem>
+        </RiRow>
         <br />
         <div
           className={cx(
@@ -175,7 +173,7 @@ const RedisClusterDatabases = ({
             styles.databaseListWrapper,
           )}
         >
-          <Table
+          <RiTable
             columns={columns}
             data={items}
             onRowClick={selectionValue.onSelectionChange}
@@ -187,12 +185,12 @@ const RedisClusterDatabases = ({
             ]}
           />
           {!items.length && (
-            <Text className={styles.noDatabases}>{message}</Text>
+            <RiText className={styles.noDatabases}>{message}</RiText>
           )}
         </div>
       </div>
-      <FlexItem>
-        <Row
+      <RiFlexItem>
+        <RiRow
           justify="between"
           className={cx(
             styles.footer,
@@ -200,14 +198,14 @@ const RedisClusterDatabases = ({
             styles.footerClusterDatabases,
           )}
         >
-          <SecondaryButton
+          <RiSecondaryButton
             onClick={onBack}
             className="btn-cancel btn-back"
             data-testid="btn-back-to-adding"
           >
             Back to adding databases
-          </SecondaryButton>
-          <FlexItem direction="row" className={styles.footerButtonsGroup}>
+          </RiSecondaryButton>
+          <RiFlexItem direction="row" className={styles.footerButtonsGroup}>
             <CancelButton isPopoverOpen={isPopoverOpen} />
             <RiTooltip
               position="top"
@@ -219,13 +217,11 @@ const RedisClusterDatabases = ({
               }
               content={
                 isSubmitDisabled() ? (
-                  <span>
-                    {validationErrors.NO_DBS_SELECTED}
-                  </span>
+                  <span>{validationErrors.NO_DBS_SELECTED}</span>
                 ) : null
               }
             >
-              <PrimaryButton
+              <RiPrimaryButton
                 size="m"
                 disabled={isSubmitDisabled()}
                 onClick={handleSubmit}
@@ -235,11 +231,11 @@ const RedisClusterDatabases = ({
                 data-testid="btn-add-databases"
               >
                 Add selected Databases
-              </PrimaryButton>
+              </RiPrimaryButton>
             </RiTooltip>
-          </FlexItem>
-        </Row>
-      </FlexItem>
+          </RiFlexItem>
+        </RiRow>
+      </RiFlexItem>
     </AutodiscoveryPageTemplate>
   )
 }

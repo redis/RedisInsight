@@ -1,6 +1,11 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react'
 import * as d3 from 'd3'
 import { executeRedisCommand, formatRedisReply } from 'redisinsight-plugin-sdk'
+import { RiTooltip } from 'uiBase/display'
+import { RiSwitchInput } from 'uiBase/inputs'
+import { RiIconButton } from 'uiBase/forms'
+import { CancelSlimIcon } from 'uiBase/icons'
+import { TOOLTIP_DELAY_LONG } from 'uiSrc/constants'
 import Graphd3, { IGraphD3 } from './graphd3'
 import { responseParser } from './parser'
 import {
@@ -19,11 +24,6 @@ import {
   NODE_COLORS,
   NODE_COLORS_DARK,
 } from './constants'
-import { IconButton } from '../../../components/base/forms/buttons'
-import { CancelSlimIcon } from '../../../components/base/icons'
-import { SwitchInput } from 'uiSrc/components/base/inputs'
-import { RiTooltip } from 'uiSrc/components'
-import { TOOLTIP_DELAY_LONG } from 'uiSrc/constants'
 
 enum EntityType {
   Node = 'Node',
@@ -413,7 +413,7 @@ export default function Graph(props: {
           delay={TOOLTIP_DELAY_LONG}
           content="Toggle visibility of automatically fetched relationships"
         >
-          <SwitchInput
+          <RiSwitchInput
             title="All relationships"
             checked={showAutomaticEdges}
             onCheckedChange={() => {
@@ -482,7 +482,7 @@ export default function Graph(props: {
                   {selectedEntity.property}
                 </div>
               )}
-              <IconButton
+              <RiIconButton
                 onClick={() => setSelectedEntity(null)}
                 icon={CancelSlimIcon}
                 aria-label="Close"
@@ -534,7 +534,7 @@ export default function Graph(props: {
           },
         ].map((item) => (
           <RiTooltip position="left" content={item.name}>
-            <IconButton
+            <RiIconButton
               onClick={item.onClick}
               icon={item.icon}
               aria-label={item.name}

@@ -1,15 +1,14 @@
 import React, { Ref, useRef, useState } from 'react'
 
 import cx from 'classnames'
-import { isModifiedEvent } from 'uiSrc/services'
 
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { SendIcon } from 'uiSrc/components/base/icons'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
-import { TextArea } from 'uiSrc/components/base/inputs'
+import { RiPopover, RiTooltip } from 'uiBase/index'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton } from 'uiBase/forms'
+import { SendIcon } from 'uiBase/icons'
+import { RiTitle, RiText } from 'uiBase/text'
+import { RiTextArea } from 'uiBase/inputs'
+import { isModifiedEvent } from 'uiSrc/services'
 import * as keys from 'uiSrc/constants/keys'
 import styles from './styles.module.scss'
 
@@ -99,12 +98,12 @@ const ChatForm = (props: Props) => {
               <div>
                 {validation.title && (
                   <>
-                    <Title size="XS">{validation.title}</Title>
-                    <Spacer size="s" />
+                    <RiTitle size="XS">{validation.title}</RiTitle>
+                    <RiSpacer size="s" />
                   </>
                 )}
                 {validation.content && (
-                  <Text size="xs">{validation.content}</Text>
+                  <RiText size="xs">{validation.content}</RiText>
                 )}
               </div>
               {validation.icon}
@@ -121,7 +120,7 @@ const ChatForm = (props: Props) => {
           onKeyDown={handleKeyDown}
           role="presentation"
         >
-          <TextArea
+          <RiTextArea
             ref={textAreaRef}
             placeholder={placeholder || 'Ask me about Redis'}
             value={value}
@@ -137,7 +136,7 @@ const ChatForm = (props: Props) => {
             panelClassName={cx('popoverLikeTooltip', styles.popover)}
             anchorClassName={styles.popoverAnchor}
             button={
-              <PrimaryButton
+              <RiPrimaryButton
                 size="s"
                 disabled={!value.length || isDisabled}
                 className={styles.submitBtn}
@@ -150,8 +149,8 @@ const ChatForm = (props: Props) => {
           >
             <>
               {agreements}
-              <Spacer size="m" />
-              <PrimaryButton
+              <RiSpacer size="m" />
+              <RiPrimaryButton
                 size="s"
                 className={styles.agreementsAccept}
                 onClick={submitMessage}
@@ -160,15 +159,15 @@ const ChatForm = (props: Props) => {
                 data-testid="ai-accept-agreements"
               >
                 I accept
-              </PrimaryButton>
+              </RiPrimaryButton>
             </>
           </RiPopover>
         </form>
       </RiTooltip>
-      <Text textAlign="center" size="xs" className={styles.agreementText}>
+      <RiText textAlign="center" size="xs" className={styles.agreementText}>
         Verify the accuracy of any information provided by Redis Copilot before
         using it
-      </Text>
+      </RiText>
     </div>
   )
 }

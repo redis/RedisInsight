@@ -2,6 +2,9 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import { v4 as uuidv4 } from 'uuid'
+import { RiLoadingContent, RiFlexItem } from 'uiBase/layout'
+import { RiColorText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
 import { pluginApi } from 'uiSrc/services/PluginAPI'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import {
@@ -10,7 +13,6 @@ import {
   formatToText,
   replaceEmptyValue,
 } from 'uiSrc/utils'
-import { LoadingContent } from 'uiSrc/components/base/layout'
 import { Theme } from 'uiSrc/constants'
 import {
   CommandExecutionResult,
@@ -28,9 +30,6 @@ import {
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { appServerInfoSelector } from 'uiSrc/slices/app/info'
 
-import { FlexItem } from 'uiSrc/components/base/layout/flex'
-import { ColorText } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -350,7 +349,7 @@ const QueryCardCliPlugin = (props: Props) => {
         />
         {!!error && (
           <div className={styles.container}>
-            <FlexItem grow className="query-card-output-response-fail">
+            <RiFlexItem grow className="query-card-output-response-fail">
               <span data-testid="query-card-no-module-output">
                 <span className={styles.alertIconWrapper}>
                   <RiIcon
@@ -359,14 +358,14 @@ const QueryCardCliPlugin = (props: Props) => {
                     style={{ display: 'inline', marginRight: 10 }}
                   />
                 </span>
-                <ColorText color="danger">{error}</ColorText>
+                <RiColorText color="danger">{error}</RiColorText>
               </span>
-            </FlexItem>
+            </RiFlexItem>
           </div>
         )}
         {!isPluginLoaded && (
           <div>
-            <LoadingContent lines={5} />
+            <RiLoadingContent lines={5} />
           </div>
         )}
       </div>

@@ -1,20 +1,20 @@
 import React, { useContext, useEffect, useState } from 'react'
 import cx from 'classnames'
 import { isNil } from 'lodash'
-import { ChevronLeftIcon, ChevronRightIcon } from 'uiSrc/components/base/icons'
+import { ChevronLeftIcon, ChevronRightIcon } from 'uiBase/icons'
+import { RiPrimaryButton } from 'uiBase/forms'
+import {
+  RiMenu,
+  RiMenuContent,
+  RiMenuDropdownArrow,
+  RiMenuItem,
+  RiMenuTrigger,
+} from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
 import { IEnablementAreaItem } from 'uiSrc/slices/interfaces'
 import EnablementAreaContext from 'uiSrc/pages/workbench/contexts/enablementAreaContext'
 
 import { Nullable } from 'uiSrc/utils'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import {
-  Menu,
-  MenuContent,
-  MenuDropdownArrow,
-  MenuItem,
-  MenuTrigger,
-} from 'uiSrc/components/base/layout/menu'
-import { Text } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -64,27 +64,25 @@ const Pagination = ({
   }
 
   const PagesControl = () => (
-    <Menu open={isMenuOpen}>
-      <MenuTrigger>
+    <RiMenu open={isMenuOpen}>
+      <RiMenuTrigger>
         <button
           data-testid="enablement-area__toggle-pagination-menu-btn"
           type="button"
           onClick={toggleMenuOpen}
         >
-          <Text size="S">
-            <strong
-              className={styles.underline}
-            >{`${activePage + 1} of ${items.length}`}</strong>
-          </Text>
+          <RiText size="S" variant="semiBold" className={styles.underline}>
+            {`${activePage + 1} of ${items.length}`}
+          </RiText>
         </button>
-      </MenuTrigger>
-      <MenuContent
+      </RiMenuTrigger>
+      <RiMenuContent
         data-testid="enablement-area__pagination-menu"
         placement="top"
         onInteractOutside={() => setMenuOpen(false)}
       >
         {items.map((item, index) => (
-          <MenuItem
+          <RiMenuItem
             data-testid={`menu-item-${index}`}
             key={item.id}
             onClick={() => handleOpenPage(index)}
@@ -92,9 +90,9 @@ const Pagination = ({
             className={cx({ [styles.activeMenuItem]: activePage === index })}
           />
         ))}
-        <MenuDropdownArrow />
-      </MenuContent>
-    </Menu>
+        <RiMenuDropdownArrow />
+      </RiMenuContent>
+    </RiMenu>
   )
 
   const size = compressed ? 'small' : 'medium'
@@ -106,7 +104,7 @@ const Pagination = ({
     >
       <div>
         {activePage > 0 && (
-          <PrimaryButton
+          <RiPrimaryButton
             aria-label="Previous page"
             data-testid="enablement-area__prev-page-btn"
             icon={ChevronLeftIcon}
@@ -118,7 +116,7 @@ const Pagination = ({
             })}
           >
             Back
-          </PrimaryButton>
+          </RiPrimaryButton>
         )}
       </div>
       <div>
@@ -126,7 +124,7 @@ const Pagination = ({
       </div>
       <div>
         {activePage < items.length - 1 && (
-          <PrimaryButton
+          <RiPrimaryButton
             aria-label="Next page"
             data-testid="enablement-area__next-page-btn"
             icon={ChevronRightIcon}
@@ -138,7 +136,7 @@ const Pagination = ({
             size={size}
           >
             Next
-          </PrimaryButton>
+          </RiPrimaryButton>
         )}
       </div>
     </div>

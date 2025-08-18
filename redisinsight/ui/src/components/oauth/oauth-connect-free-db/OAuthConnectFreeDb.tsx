@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { useLocation } from 'react-router-dom'
 import cx from 'classnames'
+import { RiPrimaryButton } from 'uiBase/forms'
+import { ExportIcon } from 'uiBase/icons'
 import {
   TelemetryEvent,
   getRedisModulesSummary,
@@ -20,8 +22,6 @@ import { openNewWindowDatabase } from 'uiSrc/utils'
 import { Pages } from 'uiSrc/constants'
 import { setCapability } from 'uiSrc/slices/app/context'
 
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { ExportIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 interface Props {
@@ -85,7 +85,7 @@ const OAuthConnectFreeDb = ({
   }
 
   return (
-    <PrimaryButton
+    <RiPrimaryButton
       size="s"
       icon={ExportIcon}
       disabled={loading}
@@ -95,7 +95,7 @@ const OAuthConnectFreeDb = ({
       data-testid="connect-free-db-btn"
     >
       Launch database
-    </PrimaryButton>
+    </RiPrimaryButton>
   )
 }
 

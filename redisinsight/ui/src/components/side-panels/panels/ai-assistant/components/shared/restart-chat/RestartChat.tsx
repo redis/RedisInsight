@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
 
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
-import { RiPopover } from 'uiSrc/components/base'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton } from 'uiBase/forms'
+import { RiTitle, RiText } from 'uiBase/text'
+import { RiPopover } from 'uiBase/display'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -41,21 +40,21 @@ const RestartChat = (props: Props) => {
       button={extendedButton}
     >
       <>
-        <Title size="S">Restart session</Title>
-        <Spacer size="s" />
-        <Text size="xs">
+        <RiTitle size="S">Restart session</RiTitle>
+        <RiSpacer size="s" />
+        <RiText size="xs">
           This will delete the current message history and initiate a new
           session.
-        </Text>
-        <Spacer size="s" />
-        <PrimaryButton
+        </RiText>
+        <RiSpacer size="s" />
+        <RiPrimaryButton
           size="s"
           onClick={handleConfirm}
           className={styles.confirmBtn}
           data-testid="ai-chat-restart-confirm"
         >
           Restart
-        </PrimaryButton>
+        </RiPrimaryButton>
       </>
     </RiPopover>
   )

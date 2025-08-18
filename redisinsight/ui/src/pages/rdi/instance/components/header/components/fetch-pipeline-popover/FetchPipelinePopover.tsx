@@ -2,6 +2,9 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
+import { RiText } from 'uiBase/text'
+import { DownloadIcon } from 'uiBase/icons'
+import { RiEmptyButton, RiPrimaryButton } from 'uiBase/forms'
 import ConfirmationPopover from 'uiSrc/pages/rdi/components/confirmation-popover/ConfirmationPopover'
 import {
   fetchRdiPipeline,
@@ -10,9 +13,6 @@ import {
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import Download from 'uiSrc/pages/rdi/instance/components/download/Download'
 
-import { Text } from 'uiSrc/components/base/text'
-import { DownloadIcon } from 'uiSrc/components/base/icons'
-import { EmptyButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -48,19 +48,19 @@ const FetchPipelinePopover = ({ onClose }: Props) => {
     <ConfirmationPopover
       title="Download a pipeline from the server"
       body={
-        <Text size="s">
+        <RiText size="s">
           When downloading a new pipeline from the server, it will overwrite the
           existing one displayed in Redis Insight.
-        </Text>
+        </RiText>
       }
       submitBtn={
-        <PrimaryButton size="s" data-testid="upload-confirm-btn">
+        <RiPrimaryButton size="s" data-testid="upload-confirm-btn">
           Download from server
-        </PrimaryButton>
+        </RiPrimaryButton>
       }
       onConfirm={handleRefreshClick}
       button={
-        <EmptyButton
+        <RiEmptyButton
           color="text"
           size="small"
           className={styles.downloadBtn}
@@ -70,7 +70,7 @@ const FetchPipelinePopover = ({ onClose }: Props) => {
           data-testid="upload-pipeline-btn"
         >
           Download from server
-        </EmptyButton>
+        </RiEmptyButton>
       }
       onButtonClick={handleRefreshWarning}
       appendAction={<Download />}

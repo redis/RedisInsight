@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
+import { RiTitle } from 'uiBase/text'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiIconButton } from 'uiBase/forms'
+import { ArrowLeftIcon } from 'uiBase/icons'
 import { Nullable } from 'uiSrc/utils'
 import { UrlHandlingActions } from 'uiSrc/slices/interfaces/urlHandling'
 import { Instance } from 'uiSrc/slices/interfaces'
@@ -30,11 +34,7 @@ import CloudConnectionFormWrapper from 'uiSrc/pages/home/components/cloud-connec
 import ImportDatabase from 'uiSrc/pages/home/components/import-database'
 import { FormDialog } from 'uiSrc/components'
 import { ModalHeaderProvider } from 'uiSrc/contexts/ModalTitleProvider'
-import { Title } from 'uiSrc/components/base/text/Title'
 import ClusterConnectionFormWrapper from 'uiSrc/pages/home/components/cluster-connection'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -165,17 +165,17 @@ const DatabasePanelDialog = (props: Props) => {
   ) => {
     const header =
       withBack && content ? (
-        <Row align="center" gap="s">
-          <FlexItem>
-            <IconButton
+        <RiRow align="center" gap="s">
+          <RiFlexItem>
+            <RiIconButton
               onClick={handleClickBack}
               icon={ArrowLeftIcon}
               aria-label="back"
               data-testid="back-btn"
             />
-          </FlexItem>
-          <FlexItem grow>{content}</FlexItem>
-        </Row>
+          </RiFlexItem>
+          <RiFlexItem grow>{content}</RiFlexItem>
+        </RiRow>
       ) : (
         content
       )
@@ -187,7 +187,7 @@ const DatabasePanelDialog = (props: Props) => {
     <FormDialog
       isOpen
       onClose={onClose}
-      header={modalHeader ?? <Title size="M">Add Database</Title>}
+      header={modalHeader ?? <RiTitle size="M">Add Database</RiTitle>}
       footer={<div id="footerDatabaseForm" />}
     >
       <div

@@ -1,16 +1,16 @@
 import React, { useEffect, useRef } from 'react'
 import cx from 'classnames'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiFormField } from 'uiBase/forms'
+import { RiIcon } from 'uiBase/icons'
+import { RiTextInput } from 'uiBase/inputs'
+import { RiTooltip } from 'uiBase/display'
 import { validateEntryId } from 'uiSrc/utils'
 import { INITIAL_STREAM_FIELD_STATE } from 'uiSrc/pages/browser/components/add-key/AddKeyStream/AddKeyStream'
 import { AddStreamFormConfig as config } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
 import AddMultipleFields from 'uiSrc/pages/browser/components/add-multiple-fields'
 
-import { RiTooltip } from 'uiSrc/components'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { TextInput } from 'uiSrc/components/base/inputs'
 import styles from '../styles.module.scss'
 
 export interface Props {
@@ -110,29 +110,29 @@ const StreamEntryFields = (props: Props) => {
   return (
     <div className={cx(styles.container)}>
       <div className={styles.entryIdContainer}>
-        <FormField
+        <RiFormField
           label={config.entryId.label}
           additionalText={
             <RiTooltip
-                anchorClassName="inputAppendIcon"
-                className={styles.entryIdTooltip}
-                position="left"
-                title="Enter Valid ID or *"
-                content={
-                  <>
-                    ID must be a timestamp and sequence number greater than the
-                    last ID.
-                    <Spacer size="xs" />
-                    Otherwise, type * to auto-generate ID based on the database
-                    current time.
-                  </>
-                }
-              >
-                <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
-              </RiTooltip>
+              anchorClassName="inputAppendIcon"
+              className={styles.entryIdTooltip}
+              position="left"
+              title="Enter Valid ID or *"
+              content={
+                <>
+                  ID must be a timestamp and sequence number greater than the
+                  last ID.
+                  <RiSpacer size="xs" />
+                  Otherwise, type * to auto-generate ID based on the database
+                  current time.
+                </>
+              }
+            >
+              <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
+            </RiTooltip>
           }
         >
-          <TextInput
+          <RiTextInput
             ref={entryIdRef}
             name={config.entryId.name}
             id={config.entryId.id}
@@ -145,7 +145,7 @@ const StreamEntryFields = (props: Props) => {
             autoComplete="off"
             data-testid={config.entryId.id}
           />
-        </FormField>
+        </RiFormField>
         {!showEntryError && (
           <span className={styles.timestampText}>
             Timestamp - Sequence Number or *
@@ -167,15 +167,15 @@ const StreamEntryFields = (props: Props) => {
             onClickAdd={addField}
           >
             {(item, index) => (
-              <Row align="center" gap='m'>
-                <FlexItem className={styles.fieldItemWrapper} grow>
-                  <FormField>
-                    <TextInput
+              <RiRow align="center" gap="m">
+                <RiFlexItem className={styles.fieldItemWrapper} grow>
+                  <RiFormField>
+                    <RiTextInput
                       name={`fieldName-${item.id}`}
                       id={`fieldName-${item.id}`}
                       placeholder={config.name.placeholder}
                       value={item.name}
-                      onChange={value =>
+                      onChange={(value) =>
                         handleFieldChange('name', item.id, value)
                       }
                       ref={
@@ -184,25 +184,25 @@ const StreamEntryFields = (props: Props) => {
                       autoComplete="off"
                       data-testid="field-name"
                     />
-                  </FormField>
-                </FlexItem>
-                <FlexItem className={styles.valueItemWrapper} grow>
-                  <FormField>
-                    <TextInput
+                  </RiFormField>
+                </RiFlexItem>
+                <RiFlexItem className={styles.valueItemWrapper} grow>
+                  <RiFormField>
+                    <RiTextInput
                       className={styles.fieldValue}
                       name={`fieldValue-${item.id}`}
                       id={`fieldValue-${item.id}`}
                       placeholder={config.value.placeholder}
                       value={item.value}
-                      onChange={value =>
+                      onChange={(value) =>
                         handleFieldChange('value', item.id, value)
                       }
                       autoComplete="off"
                       data-testid="field-value"
                     />
-                  </FormField>
-                </FlexItem>
-              </Row>
+                  </RiFormField>
+                </RiFlexItem>
+              </RiRow>
             )}
           </AddMultipleFields>
         </div>

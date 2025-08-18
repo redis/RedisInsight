@@ -1,12 +1,11 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { Text } from 'uiSrc/components/base/text'
-
+import { RiText } from 'uiBase/text'
+import { RiLink } from 'uiBase/display'
 import { Pages } from 'uiSrc/constants'
 import { EmptyMessage, Content } from 'uiSrc/pages/database-analysis/constants'
 import { getRouterLinkProps } from 'uiSrc/services'
 
-import { Link } from 'uiSrc/components/base/link/Link'
 import styles from './styles.module.scss'
 
 interface Props {
@@ -22,13 +21,13 @@ const emptyMessageContent: { [key in EmptyMessage]: Content } = {
     title: 'No keys to display',
     text: (path) => (
       <>
-        <Link
+        <RiLink
           {...getRouterLinkProps(path)}
           className={styles.summary}
           data-test-subj="workbench-page-btn"
         >
           Use Workbench Guides and Tutorials
-        </Link>
+        </RiLink>
         {' to quickly load the data.'}
       </>
     ),
@@ -50,10 +49,10 @@ const EmptyAnalysisMessage = (props: Props) => {
   return (
     <div className={styles.container} data-testid={`empty-analysis-no-${name}`}>
       <div className={styles.content}>
-        <Text className={styles.title}>{title}</Text>
-        <Text className={styles.summary}>
+        <RiText className={styles.title}>{title}</RiText>
+        <RiText className={styles.summary}>
           {text(Pages.workbench(instanceId))}
-        </Text>
+        </RiText>
       </div>
     </div>
   )

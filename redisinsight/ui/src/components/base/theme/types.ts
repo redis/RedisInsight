@@ -7,3 +7,11 @@ export type CommonProps = {
 }
 
 export type Theme = ReturnType<typeof useTheme>
+
+const ASC = 'asc'
+const DESC = 'desc'
+export type Direction = typeof ASC | typeof DESC
+export interface PropertySort {
+  field: string
+  direction: Direction
+}

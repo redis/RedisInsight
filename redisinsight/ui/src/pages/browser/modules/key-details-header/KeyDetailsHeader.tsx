@@ -3,11 +3,14 @@ import { isUndefined } from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { CancelSlimIcon } from 'uiBase/icons'
+import { RiIconButton } from 'uiBase/forms'
 import {
   GroupBadge,
   AutoRefresh,
   FullScreen,
-  LoadingContent,
+  RiLoadingContent,
   RiTooltip,
 } from 'uiSrc/components'
 import { HIDE_LAST_REFRESH } from 'uiSrc/constants'
@@ -29,9 +32,6 @@ import {
   TelemetryEvent,
 } from 'uiSrc/telemetry'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { KeyDetailsHeaderName } from './components/key-details-header-name'
 import { KeyDetailsHeaderTTL } from './components/key-details-header-ttl'
 import { KeyDetailsHeaderDelete } from './components/key-details-header-delete'
@@ -126,36 +126,36 @@ const KeyDetailsHeader = ({
   }
 
   return (
-    <FlexItem
+    <RiFlexItem
       className={`key-details-header ${styles.container}`}
       data-testid="key-details-header"
     >
       {loading ? (
         <div>
-          <LoadingContent lines={2} />
+          <RiLoadingContent lines={2} />
         </div>
       ) : (
         <AutoSizer disableHeight>
           {({ width = 0 }) => (
             <div style={{ width }}>
-              <Row gap="s" align="center" className={styles.keyFlexGroup}>
-                <FlexItem>
+              <RiRow gap="s" align="center" className={styles.keyFlexGroup}>
+                <RiFlexItem>
                   <GroupBadge type={type} />
-                </FlexItem>
+                </RiFlexItem>
                 <KeyDetailsHeaderName onEditKey={handleEditKey} />
-                <FlexItem grow />
+                <RiFlexItem grow />
                 {!arePanelsCollapsed && (
-                  <FlexItem style={{ marginRight: '8px' }}>
+                  <RiFlexItem style={{ marginRight: '8px' }}>
                     <FullScreen
                       isFullScreen={isFullScreen}
                       onToggleFullScreen={onToggleFullScreen}
                     />
-                  </FlexItem>
+                  </RiFlexItem>
                 )}
-                <FlexItem>
+                <RiFlexItem>
                   {(!arePanelsCollapsed || isFullScreen) && (
                     <RiTooltip content="Close" position="left">
-                      <IconButton
+                      <RiIconButton
                         icon={CancelSlimIcon}
                         aria-label="Close key"
                         className={styles.closeBtn}
@@ -164,12 +164,12 @@ const KeyDetailsHeader = ({
                       />
                     </RiTooltip>
                   )}
-                </FlexItem>
-              </Row>
-              <Row centered className={styles.groupSecondLine} gap="m">
+                </RiFlexItem>
+              </RiRow>
+              <RiRow centered className={styles.groupSecondLine} gap="m">
                 <KeyDetailsHeaderSizeLength width={width} />
                 <KeyDetailsHeaderTTL onEditTTL={handleEditTTL} />
-                <FlexItem grow>
+                <RiFlexItem grow>
                   <div className={styles.subtitleActionBtns}>
                     <AutoRefresh
                       postfix={type}
@@ -186,13 +186,13 @@ const KeyDetailsHeader = ({
                     {!isUndefined(Actions) && <Actions width={width} />}
                     <KeyDetailsHeaderDelete onDelete={handleDeleteKey} />
                   </div>
-                </FlexItem>
-              </Row>
+                </RiFlexItem>
+              </RiRow>
             </div>
           )}
         </AutoSizer>
       )}
-    </FlexItem>
+    </RiFlexItem>
   )
 }
 

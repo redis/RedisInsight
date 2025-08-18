@@ -1,9 +1,6 @@
 import { ComponentProps, ComponentType, PropsWithChildren } from 'react'
 import styled from 'styled-components'
-import {
-  PaddingSize,
-  pageStyles,
-} from 'uiSrc/components/base/layout/page/page.styles'
+import { PaddingSize, pageStyles } from './page.styles'
 
 export type ComponentTypes = keyof JSX.IntrinsicElements | ComponentType<any>
 export type PageBodyProps<T extends ComponentTypes = 'main'> =

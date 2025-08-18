@@ -2,7 +2,9 @@ import React from 'react'
 import cx from 'classnames'
 import { isArray } from 'lodash'
 
-import { LoadingContent } from 'uiSrc/components/base/layout'
+import { RiLoadingContent } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
 import { CommandExecutionResult } from 'uiSrc/slices/interfaces'
 import { ResultsMode } from 'uiSrc/slices/interfaces/workbench'
 import {
@@ -14,8 +16,6 @@ import {
 } from 'uiSrc/utils'
 
 import { CommandExecutionStatus } from 'uiSrc/slices/interfaces/cli'
-import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import QueryCardCliDefaultResult from '../QueryCardCliDefaultResult'
 import QueryCardCliGroupResult from '../QueryCardCliGroupResult'
 import styles from './styles.module.scss'
@@ -49,11 +49,11 @@ const QueryCardCliResultWrapper = (props: Props) => {
       {!loading && (
         <div data-testid="query-cli-result" className={cx(styles.content)}>
           {isNotStored && (
-            <Text className={styles.alert} data-testid="query-cli-warning">
+            <RiText className={styles.alert} data-testid="query-cli-warning">
               <RiIcon type="ToastDangerIcon" className={styles.alertIcon} />
               The result is too big to be saved. It will be deleted after the
               application is closed.
-            </Text>
+            </RiText>
           )}
           {isGroupResults(resultsMode) && isArray(result[0]?.response) ? (
             <QueryCardCliGroupResult
@@ -84,7 +84,7 @@ const QueryCardCliResultWrapper = (props: Props) => {
       )}
       {loading && (
         <div className={styles.loading} data-testid="query-cli-loader">
-          <LoadingContent lines={1} />
+          <RiLoadingContent lines={1} />
         </div>
       )}
     </div>

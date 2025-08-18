@@ -1,11 +1,9 @@
 import React from 'react'
-import { PipelineState } from 'uiSrc/slices/interfaces'
+import { AllIconsType, RiIcon, IconProps } from 'uiBase/icons'
+import { RiTitle } from 'uiBase/text'
+import { RiLoader, RiTooltip } from 'uiBase/display'
 import { formatLongName, Maybe } from 'uiSrc/utils'
-import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { IconProps } from 'uiSrc/components/base/icons'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Loader } from 'uiSrc/components/base/display'
-import { RiTooltip } from 'uiSrc/components'
+import { PipelineState } from 'uiSrc/slices/interfaces'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -58,9 +56,9 @@ const CurrentPipelineStatus = ({
 
   return (
     <div className={styles.stateWrapper}>
-      <Title size="XS">Pipeline State:</Title>
+      <RiTitle size="XS">Pipeline State:</RiTitle>
       {headerLoading ? (
-        <Loader size="m" style={{ marginLeft: '8px' }} />
+        <RiLoader size="m" style={{ marginLeft: '8px' }} />
       ) : (
         <RiTooltip
           content={errorTooltipContent}

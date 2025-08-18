@@ -1,10 +1,10 @@
 import React from 'react'
 
-import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
-import { RiStopIcon } from 'uiSrc/components/base/icons'
-import { RiTooltip } from 'uiSrc/components'
+import { RiSecondaryButton } from 'uiBase/forms'
+import { RiStopIcon } from 'uiBase/icons'
 import { PipelineButtonProps } from '../reset-pipeline-button/ResetPipelineButton'
 import styles from '../styles.module.scss'
+import { RiTooltip } from 'uiBase/display'
 
 const StopPipelineButton = ({
   onClick,
@@ -15,7 +15,7 @@ const StopPipelineButton = ({
     content="Stop the pipeline to prevent processing of new data arrivals."
     anchorClassName={disabled ? styles.disabled : undefined}
   >
-    <SecondaryButton
+    <RiSecondaryButton
       aria-label="Stop running pipeline"
       size="s"
       loading={loading}
@@ -25,7 +25,7 @@ const StopPipelineButton = ({
       onClick={onClick}
     >
       Stop Pipeline
-    </SecondaryButton>
+    </RiSecondaryButton>
   </RiTooltip>
 )
 

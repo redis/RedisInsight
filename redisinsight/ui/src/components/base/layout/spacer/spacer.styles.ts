@@ -1,15 +1,14 @@
 import { HTMLAttributes, ReactNode } from 'react'
 import styled from 'styled-components'
-import { CommonProps } from 'uiSrc/components/base/theme/types'
-import { theme } from 'uiSrc/components/base/theme'
+import { CommonProps, Theme } from 'uiBase/theme/types'
 
 export const SpacerSizes = ['xs', 's', 'm', 'l', 'xl', 'xxl'] as const
 export type SpacerSize = (typeof SpacerSizes)[number]
 
 // Extract only the spaceXXX keys from the theme
-export type ThemeSpacingKey = Extract<keyof typeof theme.semantic.core.space, `space${string}`>
-// Allow direct theme spacing values
-export type ThemeSpacingValue = typeof theme.semantic.core.space[ThemeSpacingKey]
+export type ThemeSpacingKey = keyof Theme['core']['space'] // Allow direct theme spacing keys
+
+export type ThemeSpacingValue = Theme['core']['space'][ThemeSpacingKey]
 
 export type SpacerProps = CommonProps &
   HTMLAttributes<HTMLDivElement> & {
@@ -18,35 +17,37 @@ export type SpacerProps = CommonProps &
   }
 
 export const spacerStyles = {
-  xs: 'var(--size-xs)',
-  s: 'var(--size-s)',
-  m: 'var(--size-m)',
-  l: 'var(--size-l)',
-  // @see redisinsight/ui/src/styles/base/_base.scss:124
-  xl: 'calc(var(--base) * 2.25)',
-  xxl: 'var(--size-xxl)',
+  xs: 'var(--size-xs)', // 5px
+  s: 'var(--size-s)', // 10px
+  m: 'var(--size-m)', // 15px
+  l: 'var(--size-l)', // 25px
+  xl: 'var(--size-xl)', // 30px
+  xxl: 'var(--size-xxl)', // 40px
 }
 
 const isThemeSpacingKey = (
-  size: SpacerSize | ThemeSpacingKey | ThemeSpacingValue
-): size is ThemeSpacingKey => typeof size === 'string' && size in theme.semantic.core.space
+  size: SpacerSize | ThemeSpacingKey | ThemeSpacingValue,
+  theme: Theme,
+): size is ThemeSpacingKey => size in theme.core.space
 
 const getSpacingValue = (
-  size: SpacerSize | ThemeSpacingKey | ThemeSpacingValue, 
+  size: SpacerSize | ThemeSpacingKey | ThemeSpacingValue,
+  theme: Theme,
 ): string => {
-  const themeSpacingValues = Object.values(theme.semantic.core.space)
-  if (typeof size === 'string' && themeSpacingValues.includes(size)) {
+  const themeSpacingValues = Object.values(theme.core.space)
+  if (themeSpacingValues.includes(size)) {
     return size
   }
-  
-  if (isThemeSpacingKey(size)) {
-    return theme?.semantic?.core?.space?.[size] || '0'
+
+  if (isThemeSpacingKey(size, theme)) {
+    return theme?.core?.space?.[size] || '0'
   }
 
   return spacerStyles[size as SpacerSize]
 }
 
+
 export const StyledSpacer = styled.div<SpacerProps>`
   flex-shrink: 0;
-  height: ${({ size = 'l' }) => getSpacingValue(size)};
+  height: ${({ size = 'l', theme }) => getSpacingValue(size, theme)};
 `

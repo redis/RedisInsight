@@ -1,7 +1,10 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiBase/text'
 
+import { RiPrimaryButton, RiSecondaryButton, RiFormField } from 'uiBase/forms'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiTextInput } from 'uiBase/inputs'
 import {
   selectedKeyDataSelector,
   keysSelector,
@@ -23,13 +26,6 @@ import {
 } from 'uiSrc/pages/browser/components/add-key/AddKeySet/interfaces'
 import AddMultipleFields from 'uiSrc/pages/browser/components/add-multiple-fields'
 
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { TextInput } from 'uiSrc/components/base/inputs'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -143,10 +139,10 @@ const AddSetMembers = (props: Props) => {
           onClickAdd={addMember}
         >
           {(item, index) => (
-            <Row align="center">
-              <FlexItem grow>
-                <FormField>
-                  <TextInput
+            <RiRow align="center">
+              <RiFlexItem grow>
+                <RiFormField>
+                  <RiTextInput
                     name={`member-${item.id}`}
                     id={`member-${item.id}`}
                     placeholder={config.member.placeholder}
@@ -160,33 +156,33 @@ const AddSetMembers = (props: Props) => {
                     disabled={loading}
                     data-testid="member-name"
                   />
-                </FormField>
-              </FlexItem>
-            </Row>
+                </RiFormField>
+              </RiFlexItem>
+            </RiRow>
           )}
         </AddMultipleFields>
       </div>
       <>
-        <Row justify="end" gap="xl" style={{ padding: 18 }}>
-          <FlexItem>
-            <SecondaryButton
+        <RiRow justify="end" gap="xl" style={{ padding: 18 }}>
+          <RiFlexItem>
+            <RiSecondaryButton
               onClick={() => closePanel(true)}
               data-testid="cancel-members-btn"
             >
-              <ColorText color="default">Cancel</ColorText>
-            </SecondaryButton>
-          </FlexItem>
-          <FlexItem>
-            <PrimaryButton
+              <RiColorText color="default">Cancel</RiColorText>
+            </RiSecondaryButton>
+          </RiFlexItem>
+          <RiFlexItem>
+            <RiPrimaryButton
               disabled={loading}
               loading={loading}
               onClick={submitData}
               data-testid="save-members-btn"
             >
               Save
-            </PrimaryButton>
-          </FlexItem>
-        </Row>
+            </RiPrimaryButton>
+          </RiFlexItem>
+        </RiRow>
       </>
     </>
   )

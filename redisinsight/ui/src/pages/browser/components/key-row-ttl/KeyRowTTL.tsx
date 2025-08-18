@@ -2,9 +2,9 @@ import React from 'react'
 import cx from 'classnames'
 import { isUndefined } from 'lodash'
 
+import { RiLoadingContent } from 'uiBase/layout'
+import { RiColorText, RiText } from 'uiBase/text'
 import { RiTooltip } from 'uiSrc/components'
-import { LoadingContent } from 'uiSrc/components/base/layout'
-import { ColorText, Text } from 'uiSrc/components/base/text'
 import {
   Maybe,
   truncateNumberToDuration,
@@ -25,7 +25,7 @@ const KeyRowTTL = (props: Props) => {
 
   if (isUndefined(ttl)) {
     return (
-      <LoadingContent
+      <RiLoadingContent
         lines={1}
         className={cx(styles.keyInfoLoading, styles.keyTTL)}
         data-testid={`ttl-loading_${nameString}`}
@@ -34,7 +34,7 @@ const KeyRowTTL = (props: Props) => {
   }
   if (ttl === -1) {
     return (
-      <ColorText
+      <RiColorText
         className={cx(styles.keyTTL, 'moveOnHoverKey', {
           hide: deletePopoverId === rowId,
         })}
@@ -42,11 +42,11 @@ const KeyRowTTL = (props: Props) => {
         data-testid={`ttl-${nameString}`}
       >
         No limit
-      </ColorText>
+      </RiColorText>
     )
   }
   return (
-    <Text
+    <RiText
       className={cx(styles.keyTTL, 'moveOnHoverKey', {
         hide: deletePopoverId === rowId,
       })}
@@ -74,7 +74,7 @@ const KeyRowTTL = (props: Props) => {
           <>{truncateNumberToFirstUnit(ttl)}</>
         </RiTooltip>
       </div>
-    </Text>
+    </RiText>
   )
 }
 

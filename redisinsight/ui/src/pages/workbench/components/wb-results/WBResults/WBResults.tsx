@@ -1,6 +1,9 @@
 import React from 'react'
 import cx from 'classnames'
 
+import { RiEmptyButton } from 'uiBase/forms'
+import { DeleteIcon } from 'uiBase/icons'
+import { RiProgressBarLoader } from 'uiBase/display'
 import { CodeButtonParams } from 'uiSrc/constants'
 import { ProfileQueryType } from 'uiSrc/pages/workbench/constants'
 import { generateProfileQueryForCommand } from 'uiSrc/pages/workbench/utils/profile'
@@ -9,9 +12,6 @@ import { QueryCard } from 'uiSrc/components/query'
 import { CommandExecutionUI } from 'uiSrc/slices/interfaces'
 import { RunQueryMode, ResultsMode } from 'uiSrc/slices/interfaces/workbench'
 
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
-import { DeleteIcon } from 'uiSrc/components/base/icons'
-import { ProgressBarLoader } from 'uiSrc/components/base/display'
 import WbNoResultsMessage from '../../wb-no-results-message'
 
 import styles from './styles.module.scss'
@@ -76,14 +76,14 @@ const WBResults = (props: Props) => {
   return (
     <div className={styles.wrapper}>
       {!isResultsLoaded && (
-        <ProgressBarLoader
+        <RiProgressBarLoader
           color="primary"
           data-testid="progress-wb-history"
         />
       )}
       {!!items?.length && (
         <div className={styles.header}>
-          <EmptyButton
+          <RiEmptyButton
             size="small"
             icon={DeleteIcon}
             className={styles.clearAllBtn}
@@ -92,7 +92,7 @@ const WBResults = (props: Props) => {
             data-testid="clear-history-btn"
           >
             Clear Results
-          </EmptyButton>
+          </RiEmptyButton>
         </div>
       )}
       <div className={cx(styles.container)}>

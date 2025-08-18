@@ -3,17 +3,14 @@ import { useSelector } from 'react-redux'
 import { capitalize } from 'lodash'
 import cx from 'classnames'
 
-import { ColorText, Text } from 'uiSrc/components/base/text'
+import { RiColorText, RiText } from 'uiBase/text'
+import { RiListGroup, RiListItem } from 'uiBase/layout'
+import { RiIcon } from 'uiBase/icons'
 import { DatabaseListModules, RiTooltip } from 'uiSrc/components'
 import { BuildType } from 'uiSrc/constants/env'
 import { appInfoSelector } from 'uiSrc/slices/app/info'
 import { ConnectionType } from 'uiSrc/slices/interfaces'
 import { Nullable } from 'uiSrc/utils'
-import {
-  Group as ListGroup,
-  Item as ListGroupItem,
-} from 'uiSrc/components/base/layout/list'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Endpoint } from 'apiSrc/common/models'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
 
@@ -53,9 +50,9 @@ const DbInfo = (props: Props) => {
         <ul className={styles.endpointsList}>
           {nodes?.map(({ host: eHost, port: ePort }) => (
             <li key={host + port}>
-              <Text>
+              <RiText>
                 {eHost}:{ePort};
-              </Text>
+              </RiText>
             </li>
           ))}
         </ul>
@@ -71,100 +68,100 @@ const DbInfo = (props: Props) => {
   )
 
   return (
-    <ListGroup className={styles.dbInfoGroup} flush>
+    <RiListGroup className={styles.dbInfoGroup} flush>
       {!isFromCloud && (
-        <ListGroupItem
+        <RiListItem
           label={
-            <Text color="subdued" size="s">
+            <RiText color="subdued" size="s">
               Connection Type:
-              <ColorText
+              <RiColorText
                 color="default"
                 className={styles.dbInfoListValue}
                 data-testid="connection-type"
               >
                 {capitalize(connectionType)}
-              </ColorText>
-            </Text>
+              </RiColorText>
+            </RiText>
           }
         />
       )}
 
       {nameFromProvider && (
-        <ListGroupItem
+        <RiListItem
           label={
-            <Text color="subdued" size="s">
+            <RiText color="subdued" size="s">
               Database Name from Provider:
-              <ColorText color="default" className={styles.dbInfoListValue}>
+              <RiColorText color="default" className={styles.dbInfoListValue}>
                 {nameFromProvider}
-              </ColorText>
-            </Text>
+              </RiColorText>
+            </RiText>
           }
         />
       )}
-      <ListGroupItem
+      <RiListItem
         label={
           <>
             {!!nodes?.length && <AppendEndpoints />}
-            <Text color="subdued" size="s">
+            <RiText color="subdued" size="s">
               Host:
-              <ColorText
+              <RiColorText
                 color="default"
                 className={styles.dbInfoListValue}
                 data-testid="db-info-host"
               >
                 {host}
-              </ColorText>
-            </Text>
+              </RiColorText>
+            </RiText>
           </>
         }
       />
       {(server?.buildType === BuildType.RedisStack || isFromCloud) && (
-        <ListGroupItem
+        <RiListItem
           label={
-            <Text color="subdued" size="s">
+            <RiText color="subdued" size="s">
               Port:
-              <ColorText
+              <RiColorText
                 color="default"
                 className={styles.dbInfoListValue}
                 data-testid="db-info-port"
               >
                 {port}
-              </ColorText>
-            </Text>
+              </RiColorText>
+            </RiText>
           }
         />
       )}
 
       {!!db && (
-        <ListGroupItem
+        <RiListItem
           label={
-            <Text color="subdued" size="s">
+            <RiText color="subdued" size="s">
               Database Index:
-              <ColorText color="default" className={styles.dbInfoListValue}>
+              <RiColorText color="default" className={styles.dbInfoListValue}>
                 {db}
-              </ColorText>
-            </Text>
+              </RiColorText>
+            </RiText>
           }
         />
       )}
 
       {!!modules?.length && (
-        <ListGroupItem
+        <RiListItem
           className={styles.dbInfoModulesLabel}
           label={
-            <Text color="subdued" size="s">
+            <RiText color="subdued" size="s">
               Capabilities:
-              <ColorText
+              <RiColorText
                 color="default"
                 className={cx(styles.dbInfoListValue, styles.dbInfoModules)}
               >
                 <DatabaseListModules modules={modules} />
-              </ColorText>
-            </Text>
+              </RiColorText>
+            </RiText>
           }
         />
       )}
-    </ListGroup>
+    </RiListGroup>
   )
 }
 

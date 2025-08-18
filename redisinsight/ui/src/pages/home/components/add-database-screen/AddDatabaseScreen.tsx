@@ -3,6 +3,10 @@ import { useFormik } from 'formik'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
 import { toNumber } from 'lodash'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiEmptyButton, RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
+import { InfoIcon } from 'uiBase/icons'
 import { Nullable, parseRedisUrl } from 'uiSrc/utils'
 
 import { AddDbType, DEFAULT_TIMEOUT } from 'uiSrc/pages/home/constants'
@@ -13,20 +17,12 @@ import {
   testInstanceStandaloneAction,
 } from 'uiSrc/slices/instances/instances'
 import { Pages } from 'uiSrc/constants'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  EmptyButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { InfoIcon } from 'uiSrc/components/base/icons'
-import { RiTooltip } from 'uiSrc/components'
 import ConnectivityOptions from './components/connectivity-options'
 import ConnectionUrl from './components/connection-url'
 import { Values } from './constants'
 
 import styles from './styles.module.scss'
+import { RiTooltip } from 'uiBase/display'
 
 export interface Props {
   onSelectOption: (type: AddDbType, db: Nullable<Record<string, any>>) => void
@@ -105,23 +101,23 @@ const AddDatabaseScreen = (props: Props) => {
   return (
     <div className="eui-yScroll">
       <form onSubmit={formik.handleSubmit} data-testid="form">
-        <Row responsive>
-          <FlexItem grow>
+        <RiRow responsive>
+          <RiFlexItem grow>
             <ConnectionUrl
               value={formik.values.connectionURL}
               onChange={formik.handleChange}
             />
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
 
-        <Row responsive justify="between" style={{ padding: 4 }}>
-          <FlexItem>
+        <RiRow responsive justify="between" style={{ padding: 4 }}>
+          <RiFlexItem>
             <RiTooltip
               position="top"
               anchorClassName="euiToolTip__btn-disabled"
               content={isInvalid ? <span>{ConnectionUrlError}</span> : null}
             >
-              <EmptyButton
+              <RiEmptyButton
                 size="small"
                 className="empty-btn"
                 disabled={!!isInvalid}
@@ -131,27 +127,27 @@ const AddDatabaseScreen = (props: Props) => {
                 data-testid="btn-test-connection"
               >
                 Test Connection
-              </EmptyButton>
+              </RiEmptyButton>
             </RiTooltip>
-          </FlexItem>
-          <FlexItem>
-            <Row responsive gap="l">
-              <FlexItem>
-                <SecondaryButton
+          </RiFlexItem>
+          <RiFlexItem>
+            <RiRow responsive gap="l">
+              <RiFlexItem>
+                <RiSecondaryButton
                   size="small"
                   onClick={() => handleProceedForm(AddDbType.manual)}
                   data-testid="btn-connection-settings"
                 >
                   Connection Settings
-                </SecondaryButton>
-              </FlexItem>
-              <FlexItem>
+                </RiSecondaryButton>
+              </RiFlexItem>
+              <RiFlexItem>
                 <RiTooltip
                   position="top"
                   anchorClassName="euiToolTip__btn-disabled"
                   content={isInvalid ? <span>{ConnectionUrlError}</span> : null}
                 >
-                  <PrimaryButton
+                  <RiPrimaryButton
                     size="small"
                     type="submit"
                     disabled={!!isInvalid}
@@ -159,16 +155,16 @@ const AddDatabaseScreen = (props: Props) => {
                     data-testid="btn-submit"
                   >
                     Add Database
-                  </PrimaryButton>
+                  </RiPrimaryButton>
                 </RiTooltip>
-              </FlexItem>
-            </Row>
-          </FlexItem>
-        </Row>
+              </RiFlexItem>
+            </RiRow>
+          </RiFlexItem>
+        </RiRow>
       </form>
-      <Spacer />
+      <RiSpacer />
       <div className={styles.hr}>Or</div>
-      <Spacer />
+      <RiSpacer />
       <ConnectivityOptions
         onClickOption={handleProceedForm}
         onClose={onClose}

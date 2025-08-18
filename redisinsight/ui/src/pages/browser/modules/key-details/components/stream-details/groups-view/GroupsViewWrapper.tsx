@@ -2,6 +2,10 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
+import { RiText } from 'uiBase/text'
+import { RiFormField } from 'uiBase/forms'
+import { RiIcon } from 'uiBase/icons'
+import { RiTextInput } from 'uiBase/inputs'
 import { lastDeliveredIDTooltipText } from 'uiSrc/constants/texts'
 import {
   selectedKeyDataSelector,
@@ -33,11 +37,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import EditablePopover from 'uiSrc/pages/browser/modules/key-details/shared/editable-popover'
 
-import { FormatedDate, RiTooltip } from 'uiSrc/components'
-import { Text } from 'uiSrc/components/base/text'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { FormatedDate } from 'uiSrc/components'
 import {
   ConsumerDto,
   ConsumerGroupDto,
@@ -47,6 +47,7 @@ import {
 import GroupsView from './GroupsView'
 
 import styles from './GroupsView/styles.module.scss'
+import { RiTooltip } from 'uiBase/tooltip'
 
 export interface IConsumerGroup extends ConsumerGroupDto {
   editing: boolean
@@ -221,7 +222,7 @@ const GroupsViewWrapper = (props: Props) => {
         const cellContent = viewName.substring(0, 200)
         const tooltipContent = formatLongName(viewName)
         return (
-          <Text color="subdued" size="s" style={{ maxWidth: '100%' }}>
+          <RiText color="subdued" size="s" style={{ maxWidth: '100%' }}>
             <div
               style={{ display: 'flex' }}
               className="truncateText"
@@ -236,7 +237,7 @@ const GroupsViewWrapper = (props: Props) => {
                 <>{cellContent}</>
               </RiTooltip>
             </div>
-          </Text>
+          </RiText>
         )
       },
     },
@@ -278,7 +279,7 @@ const GroupsViewWrapper = (props: Props) => {
         )
 
         return (
-          <Text size="s" style={{ maxWidth: '100%' }}>
+          <RiText size="s" style={{ maxWidth: '100%' }}>
             <div
               style={{ display: 'flex' }}
               className="truncateText"
@@ -297,7 +298,7 @@ const GroupsViewWrapper = (props: Props) => {
               )}
               {!pending && pending}
             </div>
-          </Text>
+          </RiText>
         )
       },
     },
@@ -323,7 +324,7 @@ const GroupsViewWrapper = (props: Props) => {
           <EditablePopover
             content={
               <div className={styles.editableCell}>
-                <Text
+                <RiText
                   color="subdued"
                   size="s"
                   style={{ maxWidth: '100%' }}
@@ -336,15 +337,15 @@ const GroupsViewWrapper = (props: Props) => {
                   >
                     <FormatedDate date={timestamp} />
                   </div>
-                </Text>
-                <Text size="s" style={{ maxWidth: '100%' }} component="div">
+                </RiText>
+                <RiText size="s" style={{ maxWidth: '100%' }} component="div">
                   <div
                     className="streamItemId"
                     data-testid={`stream-group-id-${id}`}
                   >
                     {id}
                   </div>
-                </Text>
+                </RiText>
               </div>
             }
             field={id}
@@ -363,24 +364,24 @@ const GroupsViewWrapper = (props: Props) => {
             delay={500}
             editBtnClassName={styles.editBtn}
           >
-            <FormField
+            <RiFormField
               additionalText={
                 <RiTooltip
-                    anchorClassName="inputAppendIcon"
-                    position="left"
-                    title="Enter Valid ID, 0 or $"
-                    content={lastDeliveredIDTooltipText}
-                  >
-                    <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
-                  </RiTooltip>
+                  anchorClassName="inputAppendIcon"
+                  position="left"
+                  title="Enter Valid ID, 0 or $"
+                  content={lastDeliveredIDTooltipText}
+                >
+                  <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
+                </RiTooltip>
               }
             >
-              <TextInput
+              <RiTextInput
                 name="id"
                 id="id"
                 placeholder="ID*"
                 value={editValue}
-                onChange={value =>
+                onChange={(value) =>
                   setEditValue(validateConsumerGroupId(value))
                 }
                 onBlur={() => setIsIdFocused(false)}
@@ -399,7 +400,7 @@ const GroupsViewWrapper = (props: Props) => {
                   {idError}
                 </span>
               )}
-            </FormField>
+            </RiFormField>
           </EditablePopover>
         )
       },

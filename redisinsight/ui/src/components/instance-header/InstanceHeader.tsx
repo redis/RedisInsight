@@ -4,6 +4,12 @@ import { useHistory } from 'react-router-dom'
 import cx from 'classnames'
 import { useTheme } from '@redis-ui/styles'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiEmptyButton } from 'uiBase/forms'
+import { EditIcon, RiIcon } from 'uiBase/icons'
+import { RiText } from 'uiBase/text'
+import { RiTooltip } from 'uiBase/display'
+import { RiNumericInput } from 'uiBase/inputs'
 import { FeatureFlags, Pages } from 'uiSrc/constants'
 import { selectOnFocus } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
@@ -25,7 +31,6 @@ import {
 import {
   DatabaseOverview,
   FeatureFlagComponent,
-  RiTooltip,
 } from 'uiSrc/components'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
 import { CopilotTrigger, InsightsTrigger } from 'uiSrc/components/triggers'
@@ -38,12 +43,6 @@ import { isAnyFeatureEnabled } from 'uiSrc/utils/features'
 import { getConfig } from 'uiSrc/config'
 import { appReturnUrlSelector } from 'uiSrc/slices/app/url-handling'
 import UserProfile from 'uiSrc/components/instance-header/components/user-profile/UserProfile'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
-import { EditIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
-import { NumericInput } from 'uiSrc/components/base/inputs'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import InstancesNavigationPopover from './components/instances-navigation-popover'
 import styles from './styles.module.scss'
 
@@ -138,13 +137,13 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
         borderBottom: theme.components.sideBar.collapsed.borderRight,
       }}
     >
-      <Row
+      <RiRow
         responsive
         align="center"
         justify="between"
         style={{ height: '100%' }}
       >
-        <FlexItem style={{ overflow: 'hidden' }} grow={false}>
+        <RiFlexItem style={{ overflow: 'hidden' }} grow={false}>
           <div
             className={styles.breadcrumbsContainer}
             data-testid="breadcrumbs-container"
@@ -159,7 +158,7 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                       : 'Redis Databases'
                   }
                 >
-                  <Text
+                  <RiText
                     className={styles.breadCrumbLink}
                     aria-label={
                       server?.buildType === BuildType.RedisStack
@@ -171,23 +170,23 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                     onKeyDown={goHome}
                   >
                     Databases
-                  </Text>
+                  </RiText>
                 </RiTooltip>
               </FeatureFlagComponent>
             </div>
             <div style={{ flex: 1, overflow: 'hidden' }}>
               <div style={{ maxWidth: '100%' }}>
-                <Row align="center">
+                <RiRow align="center">
                   <FeatureFlagComponent name={FeatureFlags.envDependent}>
-                    <FlexItem>
-                      <Text className={styles.divider}>/</Text>
-                    </FlexItem>
+                    <RiFlexItem>
+                      <RiText className={styles.divider}>/</RiText>
+                    </RiFlexItem>
                   </FeatureFlagComponent>
                   {returnUrlBase && returnUrl && (
                     <FeatureFlagComponent
                       name={FeatureFlags.envDependent}
                       otherwise={
-                        <FlexItem
+                        <RiFlexItem
                           style={{ padding: '4px 24px 4px 0' }}
                           data-testid="return-to-sm-item"
                         >
@@ -195,28 +194,28 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                             position="bottom"
                             content={returnUrlTooltip || returnUrlLabel}
                           >
-                            <Text
+                            <RiText
                               className={styles.breadCrumbLink}
                               aria-label={returnUrlTooltip || returnUrlLabel}
                               onClick={goToReturnUrl}
                               onKeyDown={goToReturnUrl}
                             >
                               &#60; {returnUrlLabel}
-                            </Text>
+                            </RiText>
                           </RiTooltip>
-                        </FlexItem>
+                        </RiFlexItem>
                       }
                     />
                   )}
-                  <FlexItem grow style={{ overflow: 'hidden' }}>
+                  <RiFlexItem grow style={{ overflow: 'hidden' }}>
                     {isRedisStack || !envDependentFeature?.flag ? (
                       <b className={styles.dbName}>{name}</b>
                     ) : (
                       <InstancesNavigationPopover name={name} />
                     )}
-                  </FlexItem>
+                  </RiFlexItem>
                   {databases > 1 && (
-                    <FlexItem style={{ padding: '4px 0 4px 12px' }}>
+                    <RiFlexItem style={{ padding: '4px 0 4px 12px' }}>
                       <div
                         style={{
                           display: 'flex',
@@ -232,7 +231,7 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                               viewChildrenMode={false}
                               controlsClassName={styles.controls}
                             >
-                              <NumericInput
+                              <RiNumericInput
                                 autoSize
                                 autoValidate
                                 min={0}
@@ -248,7 +247,7 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                             </InlineItemEditor>
                           </div>
                         ) : (
-                          <EmptyButton
+                          <RiEmptyButton
                             icon={EditIcon}
                             iconSide="right"
                             onClick={() => setIsDbIndexEditing(true)}
@@ -264,12 +263,12 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                             >
                               db{db || 0}
                             </span>
-                          </EmptyButton>
+                          </RiEmptyButton>
                         )}
                       </div>
-                    </FlexItem>
+                    </RiFlexItem>
                   )}
-                  <FlexItem style={{ paddingLeft: 6 }}>
+                  <RiFlexItem style={{ paddingLeft: 6 }}>
                     <RiTooltip
                       position="right"
                       anchorClassName={styles.tooltipAnchor}
@@ -298,33 +297,33 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                         data-testid="db-info-icon"
                       />
                     </RiTooltip>
-                  </FlexItem>
-                </Row>
+                  </RiFlexItem>
+                </RiRow>
               </div>
             </div>
           </div>
-        </FlexItem>
+        </RiFlexItem>
 
-        <FlexItem style={{ textAlign: 'center' }}>
+        <RiFlexItem style={{ textAlign: 'center' }}>
           <DatabaseOverview />
-        </FlexItem>
+        </RiFlexItem>
 
-        <FlexItem>
-          <Row align="center" justify="end">
+        <RiFlexItem>
+          <RiRow align="center" justify="end">
             {isAnyChatAvailable && (
-              <FlexItem style={{ marginLeft: 12 }}>
+              <RiFlexItem style={{ marginLeft: 12 }}>
                 <CopilotTrigger />
-              </FlexItem>
+              </RiFlexItem>
             )}
 
-            <FlexItem style={{ marginLeft: 12 }}>
+            <RiFlexItem style={{ marginLeft: 12 }}>
               <InsightsTrigger />
-            </FlexItem>
+            </RiFlexItem>
 
             <UserProfile />
-          </Row>
-        </FlexItem>
-      </Row>
+          </RiRow>
+        </RiFlexItem>
+      </RiRow>
     </div>
   )
 }

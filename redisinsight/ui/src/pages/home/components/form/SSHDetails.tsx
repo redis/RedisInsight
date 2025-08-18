@@ -1,23 +1,20 @@
 import React from 'react'
 import { FormikProps } from 'formik'
 
+import { RiCol, RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiFormField, RiCheckbox, RiRadioGroup } from 'uiBase/forms'
+import {
+  RiNumericInput,
+  RiPasswordInput,
+  RiTextArea,
+  RiTextInput,
+} from 'uiBase/inputs'
+import { useGenerateId } from 'uiBase/utils'
 import { MAX_PORT_NUMBER, selectOnFocus, validateField } from 'uiSrc/utils'
 import { SECURITY_FIELD } from 'uiSrc/constants'
 
 import { SshPassType } from 'uiSrc/pages/home/constants'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import {
-  NumericInput,
-  PasswordInput,
-  TextArea,
-  TextInput,
-} from 'uiSrc/components/base/inputs'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
-import { RiRadioGroup } from 'uiSrc/components/base/forms/radio-group/RadioGroup'
-import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
 
 export interface Props {
   flexGroupClassName?: string
@@ -45,13 +42,13 @@ const SSHDetails = (props: Props) => {
   const id = useGenerateId('', ' ssh')
 
   return (
-    <Col gap="m">
-      <Row
+    <RiCol gap="m">
+      <RiRow
         className={flexGroupClassName}
         align={!flexGroupClassName ? 'end' : undefined}
       >
-        <FlexItem style={{ width: '230px' }} className={flexItemClassName}>
-          <Checkbox
+        <RiFlexItem style={{ width: '230px' }} className={flexItemClassName}>
+          <RiCheckbox
             id={id}
             name="ssh"
             label="Use SSH Tunnel"
@@ -59,15 +56,15 @@ const SSHDetails = (props: Props) => {
             onChange={formik.handleChange}
             data-testid="use-ssh"
           />
-        </FlexItem>
-      </Row>
+        </RiFlexItem>
+      </RiRow>
 
       {formik.values.ssh && (
-        <Col gap="l">
-          <Row gap="m" responsive className={flexGroupClassName}>
-            <FlexItem grow className={flexItemClassName}>
-              <FormField label="Host*">
-                <TextInput
+        <RiCol gap="l">
+          <RiRow gap="m" responsive className={flexGroupClassName}>
+            <RiFlexItem grow className={flexItemClassName}>
+              <RiFormField label="Host*">
+                <RiTextInput
                   name="sshHost"
                   id="sshHost"
                   data-testid="sshHost"
@@ -75,21 +72,18 @@ const SSHDetails = (props: Props) => {
                   maxLength={200}
                   placeholder="Enter SSH Host"
                   value={formik.values.sshHost ?? ''}
-                  onChange={value => {
-                    formik.setFieldValue(
-                      'sshHost',
-                      validateField(value.trim()),
-                    )
+                  onChange={(value) => {
+                    formik.setFieldValue('sshHost', validateField(value.trim()))
                   }}
                 />
-              </FormField>
-            </FlexItem>
-            <FlexItem grow className={flexItemClassName}>
-              <FormField
+              </RiFormField>
+            </RiFlexItem>
+            <RiFlexItem grow className={flexItemClassName}>
+              <RiFormField
                 label="Port*"
                 additionalText="Should not exceed 65535."
               >
-                <NumericInput
+                <RiNumericInput
                   autoValidate
                   min={0}
                   max={MAX_PORT_NUMBER}
@@ -101,13 +95,13 @@ const SSHDetails = (props: Props) => {
                   onChange={(value) => formik.setFieldValue('sshPort', value)}
                   onFocus={selectOnFocus}
                 />
-              </FormField>
-            </FlexItem>
-          </Row>
-          <Row responsive className={flexGroupClassName}>
-            <FlexItem grow className={flexItemClassName}>
-              <FormField label="Username*">
-                <TextInput
+              </RiFormField>
+            </RiFlexItem>
+          </RiRow>
+          <RiRow responsive className={flexGroupClassName}>
+            <RiFlexItem grow className={flexItemClassName}>
+              <RiFormField label="Username*">
+                <RiTextInput
                   name="sshUsername"
                   id="sshUsername"
                   data-testid="sshUsername"
@@ -115,18 +109,18 @@ const SSHDetails = (props: Props) => {
                   maxLength={200}
                   placeholder="Enter SSH Username"
                   value={formik.values.sshUsername ?? ''}
-                  onChange={value => {
+                  onChange={(value) => {
                     formik.setFieldValue(
                       'sshUsername',
                       validateField(value.trim()),
                     )
                   }}
                 />
-              </FormField>
-            </FlexItem>
-          </Row>
-          <Row responsive className={flexGroupClassName}>
-            <FlexItem grow className={flexItemClassName}>
+              </RiFormField>
+            </RiFlexItem>
+          </RiRow>
+          <RiRow responsive className={flexGroupClassName}>
+            <RiFlexItem grow className={flexItemClassName}>
               <RiRadioGroup
                 id="sshPassType"
                 items={sshPassTypeOptions}
@@ -135,14 +129,14 @@ const SSHDetails = (props: Props) => {
                 onChange={(id) => formik.setFieldValue('sshPassType', id)}
                 data-testid="ssh-pass-type"
               />
-            </FlexItem>
-          </Row>
+            </RiFlexItem>
+          </RiRow>
 
           {formik.values.sshPassType === SshPassType.Password && (
-            <Row responsive className={flexGroupClassName}>
-              <FlexItem grow className={flexItemClassName}>
-                <FormField label="Password">
-                  <PasswordInput
+            <RiRow responsive className={flexGroupClassName}>
+              <RiFlexItem grow className={flexItemClassName}>
+                <RiFormField label="Password">
+                  <RiPasswordInput
                     name="sshPassword"
                     id="sshPassword"
                     data-testid="sshPassword"
@@ -161,17 +155,17 @@ const SSHDetails = (props: Props) => {
                     }}
                     autoComplete="new-password"
                   />
-                </FormField>
-              </FlexItem>
-            </Row>
+                </RiFormField>
+              </RiFlexItem>
+            </RiRow>
           )}
 
           {formik.values.sshPassType === SshPassType.PrivateKey && (
-            <Col gap="m">
-              <Row responsive className={flexGroupClassName}>
-                <FlexItem grow className={flexItemClassName}>
-                  <FormField label="Private Key*">
-                    <TextArea
+            <RiCol gap="m">
+              <RiRow responsive className={flexGroupClassName}>
+                <RiFlexItem grow className={flexItemClassName}>
+                  <RiFormField label="Private Key*">
+                    <RiTextArea
                       name="sshPrivateKey"
                       id="sshPrivateKey"
                       data-testid="sshPrivateKey"
@@ -192,13 +186,13 @@ const SSHDetails = (props: Props) => {
                         }
                       }}
                     />
-                  </FormField>
-                </FlexItem>
-              </Row>
-              <Row responsive className={flexGroupClassName}>
-                <FlexItem grow className={flexItemClassName}>
-                  <FormField label="Passphrase">
-                    <PasswordInput
+                  </RiFormField>
+                </RiFlexItem>
+              </RiRow>
+              <RiRow responsive className={flexGroupClassName}>
+                <RiFlexItem grow className={flexItemClassName}>
+                  <RiFormField label="Passphrase">
+                    <RiPasswordInput
                       name="sshPassphrase"
                       id="sshPassphrase"
                       data-testid="sshPassphrase"
@@ -217,14 +211,14 @@ const SSHDetails = (props: Props) => {
                       }}
                       autoComplete="new-password"
                     />
-                  </FormField>
-                </FlexItem>
-              </Row>
-            </Col>
+                  </RiFormField>
+                </RiFlexItem>
+              </RiRow>
+            </RiCol>
           )}
-        </Col>
+        </RiCol>
       )}
-    </Col>
+    </RiCol>
   )
 }
 

@@ -1,21 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { SearchInput } from 'uiSrc/components/base/inputs'
+import { RiSearchInput } from 'uiBase/inputs'
 
+import { RiFlexItem, RiRow, RiTable, ColumnDefinition } from 'uiBase/layout'
+import { RiPrimaryButton, RiSecondaryButton, RiFormField } from 'uiBase/forms'
+import { RiTitle, RiText } from 'uiBase/text'
 import { sentinelSelector } from 'uiSrc/slices/instances/sentinel'
 import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -73,7 +67,7 @@ const SentinelDatabasesResult = ({
   }
 
   const SummaryText = () => (
-    <Text className={styles.subTitle} data-testid="summary">
+    <RiText className={styles.subTitle} data-testid="summary">
       <b>Summary: </b>
       {countSuccessAdded ? (
         <span>
@@ -88,39 +82,39 @@ const SentinelDatabasesResult = ({
           {' primary group(s)'}
         </span>
       ) : null}
-    </Text>
+    </RiText>
   )
 
   return (
     <AutodiscoveryPageTemplate>
       <div className="databaseContainer">
-        <Title size="XXL" className={styles.title} data-testid="title">
+        <RiTitle size="XXL" className={styles.title} data-testid="title">
           Auto-Discover Redis Sentinel Primary Groups
-        </Title>
+        </RiTitle>
 
-        <Row align="end" gap="s">
-          <FlexItem grow>
+        <RiRow align="end" gap="s">
+          <RiFlexItem grow>
             <MessageBar opened={!!countSuccessAdded || !!countFailAdded}>
               <SummaryText />
             </MessageBar>
-          </FlexItem>
-        </Row>
-        <FlexItem>
-          <FormField className={styles.searchForm}>
-            <SearchInput
+          </RiFlexItem>
+        </RiRow>
+        <RiFlexItem>
+          <RiFormField className={styles.searchForm}>
+            <RiSearchInput
               placeholder="Search..."
               onChange={onQueryChange}
               aria-label="Search"
               data-testid="search"
             />
-          </FormField>
-        </FlexItem>
+          </RiFormField>
+        </RiFlexItem>
         <br />
         <div className="itemList databaseList sentinelDatabaseListResult">
           {!items.length || loading ? (
-            <Text>{message}</Text>
+            <RiText>{message}</RiText>
           ) : (
-            <Table
+            <RiTable
               columns={columns}
               data={items}
               defaultSorting={[
@@ -133,24 +127,24 @@ const SentinelDatabasesResult = ({
           )}
         </div>
       </div>
-      <FlexItem padding={4}>
-        <Row gap="m" justify="between">
-          <SecondaryButton
+      <RiFlexItem padding={4}>
+        <RiRow gap="m" justify="between">
+          <RiSecondaryButton
             onClick={onBack}
             className="btn-cancel btn-back"
             data-testid="btn-back-to-adding"
           >
             Back to adding databases
-          </SecondaryButton>
-          <PrimaryButton
+          </RiSecondaryButton>
+          <RiPrimaryButton
             size="m"
             onClick={handleViewDatabases}
             data-testid="btn-view-databases"
           >
             View Databases
-          </PrimaryButton>
-        </Row>
-      </FlexItem>
+          </RiPrimaryButton>
+        </RiRow>
+      </RiFlexItem>
     </AutodiscoveryPageTemplate>
   )
 }

@@ -1,6 +1,5 @@
 import styled from 'styled-components'
-import { Row } from 'uiSrc/components/base/layout/flex'
-import Tabs from 'uiSrc/components/base/layout/tabs'
+import { RiRow, RiTabs } from 'uiBase/layout'
 
 export const StyledAppNavigation = styled.div`
   display: grid;
@@ -14,12 +13,13 @@ export const StyledAppNavigation = styled.div`
   box-sizing: border-box;
   align-items: center;
 `
-type NavContainerProps = React.ComponentProps<typeof Row> & {
+type NavContainerProps = React.ComponentProps<typeof RiRow> & {
   $borderLess?: boolean
 }
-export const StyledAppNavigationContainer = styled(Row)<NavContainerProps>`
+export const StyledAppNavigationContainer = styled(RiRow)<NavContainerProps>`
   height: 100%;
   width: auto;
+  max-width: 50%;
   &:first-child {
     padding-inline-start: ${({ theme }) => theme.components.appBar.group.gap};
   }
@@ -33,6 +33,6 @@ export const StyledAppNavigationContainer = styled(Row)<NavContainerProps>`
     ${({ theme }) => theme.components.tabs.variants.default.tabsLine.color};
 `
 
-export const StyledAppNavTab = styled(Tabs.TabBar.Trigger.Tab)`
+export const StyledAppNavTab = styled(RiTabs.TabBar.Trigger.Tab)`
   padding-bottom: ${({ theme }) => theme.core.space.space200} !important;
 `

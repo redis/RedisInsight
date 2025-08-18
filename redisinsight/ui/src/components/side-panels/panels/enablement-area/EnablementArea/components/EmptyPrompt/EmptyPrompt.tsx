@@ -1,9 +1,9 @@
 import React from 'react'
 
+import { RiIcon } from 'uiBase/icons'
+import { RiLink } from 'uiBase/display'
+import { RiEmptyPrompt } from 'uiBase/layout'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { Link } from 'uiSrc/components/base/link/Link'
-import { RiEmptyPrompt } from 'uiSrc/components/base/layout'
 import styles from './styles.module.scss'
 
 const EmptyPrompt = () => (
@@ -18,7 +18,7 @@ const EmptyPrompt = () => (
           <br />
           <span>
             If the problem persists, please{' '}
-            <Link
+            <RiLink
               color="ghost"
               href={EXTERNAL_LINKS.githubIssues}
               external={false}
@@ -26,7 +26,7 @@ const EmptyPrompt = () => (
               data-testid="contact-us"
             >
               contact us
-            </Link>
+            </RiLink>
             .
           </span>
         </p>

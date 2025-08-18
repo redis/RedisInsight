@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { find } from 'lodash'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton } from 'uiBase/forms'
+import { RiTitle, RiText } from 'uiBase/text'
 import { OAuthAgreement } from 'uiSrc/components/oauth/shared'
 import {
   oauthCloudUserSelector,
@@ -20,10 +23,6 @@ import OAuthForm from 'uiSrc/components/oauth/shared/oauth-form'
 import CloudIcon from 'uiSrc/assets/img/oauth/cloud_centered.svg?react'
 
 import { OAuthSsoHandlerDialog } from 'uiSrc/components'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -73,20 +72,20 @@ const OAuthAutodiscovery = (props: Props) => {
 
     return (
       <div className={styles.container} data-testid="oauth-container-import">
-        <Text className={styles.text} color="subdued">
+        <RiText className={styles.text} color="subdued">
           Use{' '}
           <strong>
             {currentAccountName?.name} #{currentAccountId}
           </strong>{' '}
           account to auto-discover subscriptions and add your databases.
-        </Text>
-        <PrimaryButton
+        </RiText>
+        <RiPrimaryButton
           onClick={handleClickDiscover}
           disabled={isDiscoverDisabled}
           data-testid="oauth-discover-btn"
         >
           Discover
-        </PrimaryButton>
+        </RiPrimaryButton>
       </div>
     )
   }
@@ -113,7 +112,7 @@ const OAuthAutodiscovery = (props: Props) => {
       </div>
       <OAuthSsoHandlerDialog>
         {(ssoCloudHandlerClick) => (
-          <PrimaryButton
+          <RiPrimaryButton
             size="s"
             // todo: choose either href or on click
             // href={getUtmExternalLink(EXTERNAL_LINKS.tryFree, { campaign: '' })}
@@ -127,7 +126,7 @@ const OAuthAutodiscovery = (props: Props) => {
             }}
           >
             Quick start
-          </PrimaryButton>
+          </RiPrimaryButton>
         )}
       </OAuthSsoHandlerDialog>
     </div>
@@ -143,20 +142,20 @@ const OAuthAutodiscovery = (props: Props) => {
       >
         {(form: React.ReactNode) => (
           <>
-            <Text className={styles.text} color="subdued">
+            <RiText className={styles.text} color="subdued">
               Discover subscriptions and add your databases. A new Redis Cloud
               account will be created for you if you don’t have one.
-            </Text>
-            <Spacer size="m" />
+            </RiText>
+            <RiSpacer size="m" />
             <CreateFreeDb />
-            <Spacer size="xl" />
-            <Text>Get started with</Text>
-            <Title className={styles.title} size="L">
+            <RiSpacer size="xl" />
+            <RiText>Get started with</RiText>
+            <RiTitle className={styles.title} size="L">
               Redis Cloud account
-            </Title>
-            <Spacer size="xl" />
+            </RiTitle>
+            <RiSpacer size="xl" />
             {form}
-            <Spacer size="xxl" />
+            <RiSpacer size="xxl" />
             <div className={styles.containerAgreement}>
               <OAuthAgreement size="s" />
             </div>

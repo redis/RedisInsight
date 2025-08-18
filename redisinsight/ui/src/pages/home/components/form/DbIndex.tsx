@@ -1,13 +1,12 @@
 import React, { ChangeEvent } from 'react'
 import { FormikProps } from 'formik'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiCheckbox, RiFormField } from 'uiBase/forms'
+import { RiNumericInput } from 'uiBase/inputs'
+import { useGenerateId } from 'uiBase/utils'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { NumericInput } from 'uiSrc/components/base/inputs'
-import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
 import styles from '../styles.module.scss'
 
 export interface Props {
@@ -32,10 +31,10 @@ const DbIndex = (props: Props) => {
 
   return (
     <>
-      <Row gap="s">
-        <FlexItem>
-          <FormField>
-            <Checkbox
+      <RiRow gap="s">
+        <RiFlexItem>
+          <RiFormField>
+            <RiCheckbox
               id={id}
               name="showDb"
               label="Select Logical Database"
@@ -43,17 +42,17 @@ const DbIndex = (props: Props) => {
               onChange={handleChangeDbIndexCheckbox}
               data-testid="showDb"
             />
-          </FormField>
-        </FlexItem>
-      </Row>
+          </RiFormField>
+        </RiFlexItem>
+      </RiRow>
 
       {formik.values.showDb && (
         <>
-          <Spacer />
-          <Row gap="m" responsive>
-            <FlexItem grow className={styles.dbInput}>
-              <FormField label="Database Index">
-                <NumericInput
+          <RiSpacer />
+          <RiRow gap="m" responsive>
+            <RiFlexItem grow className={styles.dbInput}>
+              <RiFormField label="Database Index">
+                <RiNumericInput
                   autoValidate
                   min={0}
                   name="db"
@@ -63,10 +62,10 @@ const DbIndex = (props: Props) => {
                   value={Number(formik.values.db)}
                   onChange={(value) => formik.setFieldValue('db', value)}
                 />
-              </FormField>
-            </FlexItem>
-            <FlexItem grow />
-          </Row>
+              </RiFormField>
+            </RiFlexItem>
+            <RiFlexItem grow />
+          </RiRow>
         </>
       )}
     </>

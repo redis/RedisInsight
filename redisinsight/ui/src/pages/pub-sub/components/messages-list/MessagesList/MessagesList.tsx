@@ -6,13 +6,14 @@ import {
 } from 'react-window'
 import { useParams } from 'react-router-dom'
 
+import { ChevronDownIcon } from 'uiBase/icons'
+import { RiIconButton } from 'uiBase/forms'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { FormatedDate, RiTooltip } from 'uiSrc/components'
-import { ChevronDownIcon } from 'uiSrc/components/base/icons'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { FormatedDate } from 'uiSrc/components'
 import { IMessage } from 'apiSrc/modules/pub-sub/interfaces/message.interface'
 
 import styles from './styles.module.scss'
+import { RiTooltip } from 'uiBase/tooltip'
 
 export interface Props {
   items: IMessage[]
@@ -166,7 +167,7 @@ const MessagesList = (props: Props) => {
         {Row}
       </List>
       {showAnchor && (
-        <IconButton
+        <RiIconButton
           icon={ChevronDownIcon}
           className={styles.anchorBtn}
           onClick={handleAnchorClick}

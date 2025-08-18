@@ -1,4 +1,2 @@
-import { Tabs, TabInfo } from '@redis-ui/components'
-
-export default Tabs
-export type { TabInfo }
+export { Tabs as RiTabs } from '@redis-ui/components'
+export type { TabInfo } from '@redis-ui/components'

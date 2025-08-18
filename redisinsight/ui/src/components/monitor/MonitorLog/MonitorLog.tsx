@@ -3,6 +3,10 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
+import { RefreshIcon, DownloadIcon, RiIcon } from 'uiBase/icons'
+import { RiText } from 'uiBase/text'
 import {
   monitorSelector,
   resetProfiler,
@@ -12,14 +16,6 @@ import { cutDurationText } from 'uiSrc/utils'
 import { downloadFile } from 'uiSrc/utils/dom/downloadFile'
 import { fetchMonitorLog } from 'uiSrc/slices/cli/cli-output'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { RefreshIcon, DownloadIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from './styles.module.scss'
 
 const PADDINGS_OUTSIDE = 12
@@ -79,7 +75,7 @@ const MonitorLog = () => {
             }}
             data-testid="download-log-panel"
           >
-            <Text
+            <RiText
               size="xs"
               color="subdued"
               className={styles.time}
@@ -96,11 +92,11 @@ const MonitorLog = () => {
               &nbsp;(
               {duration}
               {width > SMALL_SCREEN_RESOLUTION && ' Running time'})
-            </Text>
-            <Row className={styles.actions} justify="between" align="center">
-              <FlexItem>
+            </RiText>
+            <RiRow className={styles.actions} justify="between" align="center">
+              <RiFlexItem>
                 {isSaveToFile && (
-                  <SecondaryButton
+                  <RiSecondaryButton
                     size="small"
                     icon={DownloadIcon}
                     className={styles.btn}
@@ -110,11 +106,11 @@ const MonitorLog = () => {
                   >
                     {width > SMALL_SCREEN_RESOLUTION && ' Download '}
                     Log
-                  </SecondaryButton>
+                  </RiSecondaryButton>
                 )}
-              </FlexItem>
-              <FlexItem>
-                <PrimaryButton
+              </RiFlexItem>
+              <RiFlexItem>
+                <RiPrimaryButton
                   size="small"
                   onClick={onResetProfiler}
                   icon={RefreshIcon}
@@ -123,9 +119,9 @@ const MonitorLog = () => {
                 >
                   Reset
                   {width > SMALL_SCREEN_RESOLUTION && ' Profiler'}
-                </PrimaryButton>
-              </FlexItem>
-            </Row>
+                </RiPrimaryButton>
+              </RiFlexItem>
+            </RiRow>
           </div>
         )}
       </AutoSizer>

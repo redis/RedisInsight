@@ -1,18 +1,18 @@
 import { SideBar } from '@redis-ui/components'
 import { SideBarItemIcon } from './SideBarItemIcon'
 
-const SideBarHeader = SideBar.Header
-const SideBarContainer = SideBar.ItemsContainer
-const SideBarItem = SideBar.Item
-const SideBarDivider = SideBar.Divider
-const SideBarFooter = SideBar.Footer
+const RiSideBarHeader = SideBar.Header
+const RiSideBarContainer = SideBar.ItemsContainer
+const RiSideBarItem = SideBar.Item
+const RiSideBarDivider = SideBar.Divider
+const RiSideBarFooter = SideBar.Footer
 
 export {
-  SideBar,
-  SideBarHeader,
-  SideBarContainer,
-  SideBarItem,
+  SideBar as RiSideBar,
+  RiSideBarHeader,
+  RiSideBarContainer,
+  RiSideBarItem,
   SideBarItemIcon,
-  SideBarDivider,
-  SideBarFooter,
+  RiSideBarDivider,
+  RiSideBarFooter,
 }

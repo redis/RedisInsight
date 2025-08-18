@@ -1,12 +1,10 @@
 import React, { useState } from 'react'
 
+import { RiDestructiveButton } from 'uiBase/forms'
+import { DeleteIcon, RiIcon } from 'uiBase/icons'
+import { RiText } from 'uiBase/text'
+import { RiPopover } from 'uiBase/index'
 import { formatLongName } from 'uiSrc/utils'
-
-import { DestructiveButton } from 'uiSrc/components/base/forms/buttons'
-import { DeleteIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -45,14 +43,14 @@ const DeleteTutorialButton = (props: Props) => {
       data-testid={`delete-tutorial-popover-${id}`}
     >
       <div className={styles.popoverDeleteContainer}>
-        <Text size="m" component="div">
+        <RiText size="m" component="div">
           <h4 style={{ wordBreak: 'break-all' }}>
             <b>{formatLongName(label)}</b>
           </h4>
-          <Text size="s">will be deleted.</Text>
-        </Text>
+          <RiText size="s">will be deleted.</RiText>
+        </RiText>
         <div className={styles.popoverFooter}>
-          <DestructiveButton
+          <RiDestructiveButton
             size="s"
             icon={DeleteIcon}
             onClick={onDelete}
@@ -60,7 +58,7 @@ const DeleteTutorialButton = (props: Props) => {
             data-testid={`delete-tutorial-${id}`}
           >
             Delete
-          </DestructiveButton>
+          </RiDestructiveButton>
         </div>
       </div>
     </RiPopover>

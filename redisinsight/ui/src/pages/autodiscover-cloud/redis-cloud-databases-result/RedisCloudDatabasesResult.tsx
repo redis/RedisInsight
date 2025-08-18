@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import {
+  RiFlexGroup as Flex,
+  RiFlexItem,
+  RiRow,
+  RiTable,
+  ColumnDefinition,
+} from 'uiBase/layout'
+import { RiPrimaryButton, RiSecondaryButton, RiFormField } from 'uiBase/forms'
+import { RiSearchInput } from 'uiBase/inputs'
+import { RiTitle, RiText } from 'uiBase/text'
+import {
   InstanceRedisCloud,
   AddRedisDatabaseStatus,
 } from 'uiSrc/slices/interfaces'
@@ -8,16 +18,6 @@ import { cloudSelector } from 'uiSrc/slices/instances/cloud'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import { Flex, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { SearchInput } from 'uiSrc/components/base/inputs'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -64,7 +64,7 @@ const RedisCloudDatabaseListResult = ({ columns, onBack, onView }: Props) => {
   }
 
   const SummaryText = () => (
-    <Text className={styles.subTitle}>
+    <RiText className={styles.subTitle}>
       <b>Summary: </b>
       {countSuccessAdded ? (
         <span>
@@ -75,35 +75,35 @@ const RedisCloudDatabaseListResult = ({ columns, onBack, onView }: Props) => {
       {countFailAdded ? (
         <span>Failed to add {countFailAdded} database(s).</span>
       ) : null}
-    </Text>
+    </RiText>
   )
 
   return (
     <AutodiscoveryPageTemplate>
       <div className="databaseContainer">
-        <Title size="XXL" className={styles.title} data-testid="title">
+        <RiTitle size="XXL" className={styles.title} data-testid="title">
           Redis Enterprise Databases Added
-        </Title>
+        </RiTitle>
         <Flex align="end" gap="s">
-          <FlexItem grow>
+          <RiFlexItem grow>
             <MessageBar opened={!!countSuccessAdded || !!countFailAdded}>
               <SummaryText />
             </MessageBar>
-          </FlexItem>
-          <FlexItem>
-            <FormField className={styles.searchForm}>
-              <SearchInput
+          </RiFlexItem>
+          <RiFlexItem>
+            <RiFormField className={styles.searchForm}>
+              <RiSearchInput
                 placeholder="Search..."
                 onChange={onQueryChange}
                 aria-label="Search"
                 data-testid="search"
               />
-            </FormField>
-          </FlexItem>
+            </RiFormField>
+          </RiFlexItem>
         </Flex>
         <br />
         <div className="itemList databaseList cloudDatabaseListResult">
-          <Table
+          <RiTable
             columns={columns}
             data={items}
             defaultSorting={[
@@ -113,23 +113,23 @@ const RedisCloudDatabaseListResult = ({ columns, onBack, onView }: Props) => {
               },
             ]}
           />
-          {!items.length && <Text>{message}</Text>}
+          {!items.length && <RiText>{message}</RiText>}
         </div>
       </div>
-      <FlexItem padding={4}>
-        <Row justify="between">
-          <SecondaryButton
+      <RiFlexItem padding={4}>
+        <RiRow justify="between">
+          <RiSecondaryButton
             onClick={onBack}
             className="btn-cancel btn-back"
             data-testid="btn-back-to-adding"
           >
             Back to adding databases
-          </SecondaryButton>
-          <PrimaryButton onClick={onView} data-testid="btn-view-databases">
+          </RiSecondaryButton>
+          <RiPrimaryButton onClick={onView} data-testid="btn-view-databases">
             View Databases
-          </PrimaryButton>
-        </Row>
-      </FlexItem>
+          </RiPrimaryButton>
+        </RiRow>
+      </RiFlexItem>
     </AutodiscoveryPageTemplate>
   )
 }

@@ -1,8 +1,8 @@
 import React from 'react'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { PlusInCircleIcon, DeleteIcon } from 'uiSrc/components/base/icons'
-import { RiTooltip } from 'uiSrc/components'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiIconButton } from 'uiBase/forms'
+import { PlusInCircleIcon, DeleteIcon } from 'uiBase/icons'
+import { RiTooltip } from 'uiBase/display'
 
 export interface Props {
   id: number
@@ -42,8 +42,8 @@ const AddItemsActions = (props: Props) => {
   }
 
   return (
-    <FlexItem style={{ width: 80 }}>
-      <Row responsive gap="m" centered>
+    <RiFlexItem style={{ width: 80 }}>
+      <RiRow responsive gap="m" centered>
         <div
           style={{ width: 60 }}
           className="flex-row space-between action-buttons"
@@ -55,7 +55,7 @@ const AddItemsActions = (props: Props) => {
                 position="left"
                 anchorClassName={anchorClassName}
               >
-                <IconButton
+                <RiIconButton
                   icon={DeleteIcon}
                   aria-label={length === 1 ? 'Clear Item' : 'Remove Item'}
                   disabled={loading}
@@ -72,7 +72,7 @@ const AddItemsActions = (props: Props) => {
                 position="left"
                 anchorClassName={anchorClassName}
               >
-                <IconButton
+                <RiIconButton
                   icon={PlusInCircleIcon}
                   disabled={loading || addItemIsDisabled}
                   aria-label="Add new item"
@@ -83,8 +83,8 @@ const AddItemsActions = (props: Props) => {
             </div>
           )}
         </div>
-      </Row>
-    </FlexItem>
+      </RiRow>
+    </RiFlexItem>
   )
 }
 

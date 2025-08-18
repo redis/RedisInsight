@@ -3,6 +3,11 @@ import { useHistory } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { RiIconButton, RiPrimaryButton } from 'uiBase/forms'
+import { InfoIcon, CopyIcon, RiIcon } from 'uiBase/icons'
+import { RiColorText, RiText } from 'uiBase/text'
+import { ColumnDefinition } from 'uiBase/layout'
+import { RiLoader, RiTooltip } from 'uiBase/display'
 import {
   LoadedSentinel,
   AddRedisDatabaseStatus,
@@ -18,16 +23,10 @@ import {
 import { removeEmpty, setTitle } from 'uiSrc/utils'
 import { ApiStatusCode, Pages } from 'uiSrc/constants'
 import { ApiEncryptionErrors } from 'uiSrc/constants/apiErrors'
-import { InputFieldSentinel, RiTooltip } from 'uiSrc/components'
+import { InputFieldSentinel } from 'uiSrc/components'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/InputFieldSentinel'
 
-import { IconButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { InfoIcon, CopyIcon } from 'uiSrc/components/base/icons'
-import { ColorText, Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
-import { Loader } from 'uiSrc/components/base/display'
 import SentinelDatabasesResult from './components'
 
 import styles from '../styles.module.scss'
@@ -120,16 +119,16 @@ const SentinelDatabasesResultPage = () => {
         },
       }) => (
         <div data-testid={`status_${name}_${status}`}>
-          {loading && <Loader />}
+          {loading && <RiLoader />}
           {!loading && status === AddRedisDatabaseStatus.Success && (
-            <Text>{message}</Text>
+            <RiText>{message}</RiText>
           )}
           {!loading && status !== AddRedisDatabaseStatus.Success && (
             <RiTooltip position="right" title="Error" content={message}>
-              <ColorText color="danger" style={{ cursor: 'pointer' }}>
+              <RiColorText color="danger" style={{ cursor: 'pointer' }}>
                 Error&nbsp;
                 <RiIcon type="ToastDangerIcon" color="danger600" />
-              </ColorText>
+              </RiColorText>
             </RiTooltip>
           )}
         </div>
@@ -189,13 +188,13 @@ const SentinelDatabasesResultPage = () => {
         const text = `${host}:${port}`
         return (
           <div className="host_port">
-            <Text className="copyHostPortText">{text}</Text>
+            <RiText className="copyHostPortText">{text}</RiText>
             <RiTooltip
               position="right"
               content="Copy"
               anchorClassName="copyPublicEndpointTooltip"
             >
-              <IconButton
+              <RiIconButton
                 icon={CopyIcon}
                 aria-label="Copy public endpoint"
                 className="copyPublicEndpointBtn"
@@ -334,7 +333,7 @@ const SentinelDatabasesResultPage = () => {
               title={isDisabled ? validationErrors.REQUIRED_TITLE(1) : null}
               content={isDisabled ? <span>Database Alias</span> : null}
             >
-              <PrimaryButton
+              <RiPrimaryButton
                 size="s"
                 disabled={isDisabled}
                 loading={loading}
@@ -342,7 +341,7 @@ const SentinelDatabasesResultPage = () => {
                 icon={isDisabled ? InfoIcon : undefined}
               >
                 Add Primary Group
-              </PrimaryButton>
+              </RiPrimaryButton>
             </RiTooltip>
           </div>
         )

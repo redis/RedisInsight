@@ -2,13 +2,13 @@ import React, { ChangeEvent, Ref, useEffect, useRef, useState } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import cx from 'classnames'
 
-import { StopPropagation } from 'uiSrc/components/virtual-table'
+import { RiText } from 'uiBase/text'
+import { EditIcon } from 'uiBase/icons'
+import { RiIconButton } from 'uiBase/forms'
+import { RiTextArea } from 'uiBase/inputs'
+import { RiTooltip } from 'uiBase/display'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
-import { RiTooltip } from 'uiSrc/components'
-import { Text } from 'uiSrc/components/base/text'
-import { EditIcon } from 'uiSrc/components/base/icons'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { TextArea } from 'uiSrc/components/base/inputs'
+import { StopPropagation } from 'uiSrc/components/virtual-table'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -93,20 +93,20 @@ const EditableTextArea = (props: Props) => {
         onMouseLeave={() => setIsHovering(false)}
         data-testid={`${testIdPrefix}_content-value-${field}`}
       >
-        <Text
+        <RiText
           color="subdued"
           size="s"
           style={{ maxWidth: '100%', whiteSpace: 'break-spaces' }}
         >
           {children}
-        </Text>
+        </RiText>
         {isHovering && (
           <RiTooltip
             content={editToolTipContent}
             anchorClassName={styles.editBtnAnchor}
             data-testid={`${testIdPrefix}_edit-tooltip-${field}`}
           >
-            <IconButton
+            <RiIconButton
               icon={EditIcon}
               aria-label="Edit field"
               className={cx('editFieldBtn', styles.editBtn)}
@@ -159,7 +159,7 @@ const EditableTextArea = (props: Props) => {
               approveText={approveText}
               approveByValidation={() => approveByValidation?.(value)}
             >
-              <TextArea
+              <RiTextArea
                 name="value"
                 id="value"
                 placeholder="Enter Value"

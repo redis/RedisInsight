@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiTitle, RiText } from 'uiBase/text'
+import { RiNumericInput } from 'uiBase/inputs'
+import { EditIcon } from 'uiBase/icons'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor/InlineItemEditor'
-
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
-import { NumericInput } from 'uiSrc/components/base/inputs'
-import { EditIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -58,22 +56,22 @@ const SettingItem = (props: Props) => {
 
   return (
     <>
-      <Title className={styles.title} size="XS">
+      <RiTitle className={styles.title} size="XS">
         {title}
-      </Title>
-      <Spacer size="s" />
-      <Text className={styles.smallText} size="s">
+      </RiTitle>
+      <RiSpacer size="s" />
+      <RiText className={styles.smallText} size="s">
         {summary}
-      </Text>
-      <Spacer size="m" />
-      <Row align="center" className={styles.container}>
-        <FlexItem style={{ marginRight: '4px' }}>
-          <Text size="xs" className={styles.inputLabel}>
+      </RiText>
+      <RiSpacer size="m" />
+      <RiRow align="center" className={styles.container}>
+        <RiFlexItem style={{ marginRight: '4px' }}>
+          <RiText size="xs" className={styles.inputLabel}>
             {label}
-          </Text>
-        </FlexItem>
+          </RiText>
+        </RiFlexItem>
 
-        <FlexItem
+        <RiFlexItem
           onMouseEnter={() => !isEditing && setHovering(true)}
           onMouseLeave={() => !isEditing && setHovering(false)}
           onClick={() => setEditing(true)}
@@ -92,7 +90,7 @@ const SettingItem = (props: Props) => {
                   [styles.inputHover]: isHovering,
                 })}
               >
-                <NumericInput
+                <RiNumericInput
                   autoValidate
                   onChange={(value) =>
                     isEditing &&
@@ -112,13 +110,13 @@ const SettingItem = (props: Props) => {
               </div>
             </InlineItemEditor>
           ) : (
-            <Text className={styles.value} data-testid={`${testid}-value`}>
+            <RiText className={styles.value} data-testid={`${testid}-value`}>
               {value}
-            </Text>
+            </RiText>
           )}
-        </FlexItem>
-      </Row>
-      <Spacer size="m" />
+        </RiFlexItem>
+      </RiRow>
+      <RiSpacer size="m" />
     </>
   )
 }

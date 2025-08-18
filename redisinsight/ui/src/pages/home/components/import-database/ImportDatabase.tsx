@@ -1,27 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import ReactDOM from 'react-dom'
+import { RiCol, RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
+import { InfoIcon, RiIcon } from 'uiBase/icons'
+import { RiTitle, RiColorText, RiText } from 'uiBase/text'
+import { RiLoader } from 'uiBase/display'
+import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
+import { RiTooltip, UploadWarning, RiFilePicker } from 'uiSrc/components'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { Nullable } from 'uiSrc/utils'
 import {
   fetchInstancesAction,
   importInstancesSelector,
   resetImportInstances,
   uploadInstancesFile,
 } from 'uiSrc/slices/instances/instances'
-import { Nullable } from 'uiSrc/utils'
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { RiTooltip, UploadWarning, RiFilePicker } from 'uiSrc/components'
-import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { InfoIcon } from 'uiSrc/components/base/icons'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { ColorText, Text } from 'uiSrc/components/base/text'
-import { Loader } from 'uiSrc/components/base/display'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import ResultsLog from './components/ResultsLog'
 
 import styles from './styles.module.scss'
@@ -47,7 +42,7 @@ const ImportDatabase = (props: Props) => {
   useEffect(() => {
     setDomReady(true)
 
-    setModalHeader(<Title size="M">Import from file</Title>, true)
+    setModalHeader(<RiTitle size="M">Import from file</RiTitle>, true)
 
     return () => {
       setModalHeader(null)
@@ -102,14 +97,14 @@ const ImportDatabase = (props: Props) => {
     if (error) {
       return ReactDOM.createPortal(
         <div className="footerAddDatabase">
-          <PrimaryButton
+          <RiPrimaryButton
             size="s"
             color="secondary"
             onClick={onClickRetry}
             data-testid="btn-retry"
           >
             Retry
-          </PrimaryButton>
+          </RiPrimaryButton>
         </div>,
         footerEl,
       )
@@ -118,14 +113,14 @@ const ImportDatabase = (props: Props) => {
     if (data) {
       return ReactDOM.createPortal(
         <div className="footerAddDatabase">
-          <PrimaryButton
+          <RiPrimaryButton
             size="s"
             type="submit"
             onClick={handleOnClose}
             data-testid="btn-close"
           >
             Ok
-          </PrimaryButton>
+          </RiPrimaryButton>
         </div>,
         footerEl,
       )
@@ -133,20 +128,20 @@ const ImportDatabase = (props: Props) => {
 
     return ReactDOM.createPortal(
       <div className="footerAddDatabase">
-        <SecondaryButton
+        <RiSecondaryButton
           size="s"
           className="btn-cancel"
           onClick={handleOnClose}
           style={{ marginRight: 12 }}
         >
           Cancel
-        </SecondaryButton>
+        </RiSecondaryButton>
         <RiTooltip
           position="top"
           anchorClassName="euiToolTip__btn-disabled"
           content={isSubmitDisabled ? 'Upload a file' : undefined}
         >
-          <PrimaryButton
+          <RiPrimaryButton
             size="s"
             type="submit"
             onClick={onSubmit}
@@ -156,7 +151,7 @@ const ImportDatabase = (props: Props) => {
             data-testid="btn-submit"
           >
             Submit
-          </PrimaryButton>
+          </RiPrimaryButton>
         </RiTooltip>
       </div>,
       footerEl,
@@ -168,16 +163,16 @@ const ImportDatabase = (props: Props) => {
   return (
     <>
       <div className={styles.formWrapper} data-testid="add-db_import">
-        <Col>
-          <FlexItem grow>
+        <RiCol>
+          <RiFlexItem grow>
             {isShowForm && (
               <>
-                <Text color="subdued" size="s">
+                <RiText color="subdued" size="s">
                   Use a JSON file to import your database connections. Ensure
                   that you only use files from trusted sources to prevent the
                   risk of automatically executing malicious code.
-                </Text>
-                <Spacer />
+                </RiText>
+                <RiSpacer />
 
                 <RiFilePicker
                   id="import-file-modal-filepicker"
@@ -190,13 +185,13 @@ const ImportDatabase = (props: Props) => {
                   aria-label="Select or drag and drop file"
                 />
                 {isInvalid && (
-                  <ColorText
+                  <RiColorText
                     color="danger"
                     className={styles.errorFileMsg}
                     data-testid="input-file-error-msg"
                   >
                     {`File should not exceed ${MAX_MB_FILE} MB`}
-                  </ColorText>
+                  </RiColorText>
                 )}
               </>
             )}
@@ -205,34 +200,34 @@ const ImportDatabase = (props: Props) => {
                 className={styles.loading}
                 data-testid="file-loading-indicator"
               >
-                <Loader size="xl" />
-                <Text color="subdued" style={{ marginTop: 12 }}>
+                <RiLoader size="xl" />
+                <RiText color="subdued" style={{ marginTop: 12 }}>
                   Uploading...
-                </Text>
+                </RiText>
               </div>
             )}
             {error && (
               <div className={styles.result} data-testid="result-failed">
                 <RiIcon type="ToastCancelIcon" color="danger600" size="xxl" />
-                <Text color="subdued" style={{ marginTop: 16 }}>
+                <RiText color="subdued" style={{ marginTop: 16 }}>
                   Failed to add database connections
-                </Text>
-                <Text color="subdued">{error}</Text>
+                </RiText>
+                <RiText color="subdued">{error}</RiText>
               </div>
             )}
-          </FlexItem>
+          </RiFlexItem>
           {isShowForm && (
-            <FlexItem grow className={styles.uploadWarningContainer}>
+            <RiFlexItem grow className={styles.uploadWarningContainer}>
               <UploadWarning />
-            </FlexItem>
+            </RiFlexItem>
           )}
-        </Col>
+        </RiCol>
         {data && (
-          <Row justify="center">
-            <FlexItem grow style={{ maxWidth: '100%' }}>
+          <RiRow justify="center">
+            <RiFlexItem grow style={{ maxWidth: '100%' }}>
               <ResultsLog data={data} />
-            </FlexItem>
-          </Row>
+            </RiFlexItem>
+          </RiRow>
         )}
       </div>
       <Footer />

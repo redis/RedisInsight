@@ -8,7 +8,12 @@ import {
   ArrowLeftIcon,
   CopyIcon,
   DoubleChevronRightIcon,
-} from 'uiSrc/components/base/icons'
+  RiIcon,
+} from 'uiBase/icons'
+import { RiFlexItem, RiGrid, RiRow } from 'uiBase/layout'
+import { RiIconButton, RiPrimaryButton, RiFormField } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
+import { RiTextInput } from 'uiBase/inputs'
 import { BuildType } from 'uiSrc/constants/env'
 import { appInfoSelector } from 'uiSrc/slices/app/info'
 import { getDbIndex, Nullable } from 'uiSrc/utils'
@@ -28,14 +33,8 @@ import {
   resetRdiContext,
   setAppContextInitialState,
 } from 'uiSrc/slices/app/context'
-import { FlexItem, Grid, Row } from 'uiSrc/components/base/layout/flex'
-import { IconButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { RiTooltip } from 'uiSrc/components'
-import { TextInput } from 'uiSrc/components/base/inputs'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
 import styles from './styles.module.scss'
+import { RiTooltip } from 'uiBase/display'
 
 export interface Props {
   alias: string
@@ -145,22 +144,22 @@ const DatabaseAlias = (props: Props) => {
 
   return (
     <>
-      <Row responsive={false} justify="start" align="center" gap="s">
+      <RiRow responsive={false} justify="start" align="center" gap="s">
         {isCloneMode && (
-          <FlexItem>
-            <IconButton
+          <RiFlexItem>
+            <RiIconButton
               onClick={handleCloneBack}
               icon={ArrowLeftIcon}
               className={styles.iconLeftArrow}
               aria-label="back"
               data-testid="back-btn"
             />
-          </FlexItem>
+          </RiFlexItem>
         )}
-        <FlexItem style={{ overflow: isEditing ? 'inherit' : 'hidden' }}>
-          <Row justify="between" gap="s">
+        <RiFlexItem style={{ overflow: isEditing ? 'inherit' : 'hidden' }}>
+          <RiRow justify="between" gap="s">
             {isRediStack && (
-              <FlexItem>
+              <RiFlexItem>
                 <RiTooltip
                   content={
                     <RiIcon
@@ -185,9 +184,9 @@ const DatabaseAlias = (props: Props) => {
                     data-testid="redis-stack-icon"
                   />
                 </RiTooltip>
-              </FlexItem>
+              </RiFlexItem>
             )}
-            <FlexItem
+            <RiFlexItem
               grow
               onClick={setEditMode}
               data-testid="edit-alias-btn"
@@ -197,8 +196,8 @@ const DatabaseAlias = (props: Props) => {
               }}
             >
               {!isCloneMode && (isEditing || isLoading) ? (
-                <Grid responsive className="relative">
-                  <FlexItem grow={1} className="fluid">
+                <RiGrid responsive className="relative">
+                  <RiFlexItem grow={1} className="fluid">
                     <InlineItemEditor
                       onApply={handleApplyChanges}
                       onDecline={handleDeclineChanges}
@@ -207,7 +206,7 @@ const DatabaseAlias = (props: Props) => {
                       isDisabled={!value}
                       declineOnUnmount={false}
                     >
-                      <FormField
+                      <RiFormField
                         additionalText={
                           !isEditing ? (
                             <RiIcon type="EditIcon" color="informative400" />
@@ -216,7 +215,7 @@ const DatabaseAlias = (props: Props) => {
                           )
                         }
                       >
-                        <TextInput
+                        <RiTextInput
                           name="alias"
                           id="alias"
                           className={cx(styles.input)}
@@ -224,17 +223,17 @@ const DatabaseAlias = (props: Props) => {
                           value={value}
                           maxLength={500}
                           loading={isLoading}
-                          onChange={value => onChange(value)}
+                          onChange={(value) => onChange(value)}
                           autoComplete="off"
                           data-testid="alias-input"
                         />
-                      </FormField>
+                      </RiFormField>
                     </InlineItemEditor>
                     <p className={styles.hiddenText}>{value}</p>
-                  </FlexItem>
-                </Grid>
+                  </RiFlexItem>
+                </RiGrid>
               ) : (
-                <Text
+                <RiText
                   className={cx(styles.alias, {
                     [styles.aliasEditing]: !isCloneMode,
                   })}
@@ -254,16 +253,16 @@ const DatabaseAlias = (props: Props) => {
                       className={cx(styles.aliasEditIcon)}
                     />
                   )}
-                </Text>
+                </RiText>
               )}
-            </FlexItem>
-          </Row>
-        </FlexItem>
-      </Row>
+            </RiFlexItem>
+          </RiRow>
+        </RiFlexItem>
+      </RiRow>
       {!isCloneMode && (
-        <Row gap="m" style={{ marginTop: 6, flexGrow: 0 }}>
-          <FlexItem>
-            <PrimaryButton
+        <RiRow gap="m" style={{ marginTop: 6, flexGrow: 0 }}>
+          <RiFlexItem>
+            <RiPrimaryButton
               size="s"
               icon={DoubleChevronRightIcon}
               aria-label="Connect to database"
@@ -272,11 +271,11 @@ const DatabaseAlias = (props: Props) => {
               onClick={handleOpen}
             >
               Open
-            </PrimaryButton>
-          </FlexItem>
+            </RiPrimaryButton>
+          </RiFlexItem>
           {server?.buildType !== BuildType.RedisStack && (
-            <FlexItem>
-              <PrimaryButton
+            <RiFlexItem>
+              <RiPrimaryButton
                 size="s"
                 icon={CopyIcon}
                 aria-label="Clone database"
@@ -285,10 +284,10 @@ const DatabaseAlias = (props: Props) => {
                 onClick={handleClone}
               >
                 Clone
-              </PrimaryButton>
-            </FlexItem>
+              </RiPrimaryButton>
+            </RiFlexItem>
           )}
-        </Row>
+        </RiRow>
       )}
     </>
   )

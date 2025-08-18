@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
+import styled from 'styled-components'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import styled from 'styled-components'
+import { RiTitle } from 'uiBase/text'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import {
   sendEventTelemetry,
@@ -14,7 +15,6 @@ import { formatLongName, getDbIndex, setTitle } from 'uiSrc/utils'
 import { OnboardingTour } from 'uiSrc/components'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { incrementOnboardStepAction } from 'uiSrc/slices/app/features'
-import { Title } from 'uiSrc/components/base/text/Title'
 import { OnboardingSteps } from 'uiSrc/constants/onboarding'
 import {
   MessagesListWrapper,
@@ -90,9 +90,9 @@ const PubSubPage = () => {
     <MainContainer className={styles.main} data-testid="pub-sub-page">
       <ContentPanel>
         <div className={styles.header}>
-          <Title size="XXL" className={styles.title}>
+          <RiTitle size="XXL" className={styles.title}>
             Pub/Sub
-          </Title>
+          </RiTitle>
           <SubscriptionPanel />
         </div>
         <div className={styles.tableWrapper}>

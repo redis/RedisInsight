@@ -1,6 +1,8 @@
 import cx from 'classnames'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { RiTitle, RiText } from 'uiBase/text'
+import { RiPopover } from 'uiBase/display'
 import {
   fetchNotificationsAction,
   notificationCenterSelector,
@@ -8,9 +10,6 @@ import {
   unreadNotificationsAction,
 } from 'uiSrc/slices/app/notifications'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
-import { RiPopover } from 'uiSrc/components/base'
 import Notification from './Notification'
 
 import styles from './styles.module.scss'
@@ -55,14 +54,14 @@ const NotificationCenter = () => {
         className={styles.popoverNotificationCenter}
         data-testid="notification-center"
       >
-        <Title size="S" className={styles.title}>
+        <RiTitle size="S" className={styles.title}>
           Notification Center
-        </Title>
+        </RiTitle>
         {!hasNotifications && (
           <div className={styles.noItemsText}>
-            <Text color="subdued" data-testid="no-notifications-text">
+            <RiText color="subdued" data-testid="no-notifications-text">
               No notifications to display.
-            </Text>
+            </RiText>
           </div>
         )}
         {hasNotifications && (

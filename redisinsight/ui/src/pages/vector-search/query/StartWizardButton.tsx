@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { CallOut } from 'uiSrc/components/base/display/call-out/CallOut'
 import { Pages } from 'uiSrc/constants'
+import { RiCallOut } from 'uiBase/display'
 
 export const StartWizardButton = () => {
   const history = useHistory()
@@ -12,7 +12,7 @@ export const StartWizardButton = () => {
   }, [history, instanceId])
 
   return (
-    <CallOut
+    <RiCallOut
       variant="success"
       actions={{
         primary: {
@@ -22,6 +22,6 @@ export const StartWizardButton = () => {
       }}
     >
       Power fast, real-time semantic AI search with vector search.
-    </CallOut>
+    </RiCallOut>
   )
 }

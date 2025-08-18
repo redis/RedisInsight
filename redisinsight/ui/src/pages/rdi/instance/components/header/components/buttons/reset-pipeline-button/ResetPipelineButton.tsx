@@ -1,9 +1,10 @@
 import React from 'react'
 
-import { RiResetIcon } from 'uiSrc/components/base/icons'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
-import { RiTooltip } from 'uiSrc/components'
+import { RiResetIcon } from 'uiBase/icons'
+import { RiSecondaryButton } from 'uiBase/forms'
+import { RiSpacer } from 'uiBase/layout'
+import { RiTooltip } from 'uiBase/display'
+
 import styles from '../styles.module.scss'
 
 export interface PipelineButtonProps {
@@ -25,7 +26,7 @@ const ResetPipelineButton = ({
             The pipeline will take a new snapshot of the data and process it,
             then continue tracking changes.
           </p>
-          <Spacer size="m" />
+          <RiSpacer size="m" />
           <p>
             Before resetting the RDI pipeline, consider stopping the pipeline
             and flushing the target Redis database.
@@ -35,7 +36,7 @@ const ResetPipelineButton = ({
     }
     anchorClassName={disabled || loading ? styles.disabled : styles.tooltip}
   >
-    <SecondaryButton
+    <RiSecondaryButton
       aria-label="Reset pipeline button"
       size="s"
       icon={RiResetIcon}
@@ -45,7 +46,7 @@ const ResetPipelineButton = ({
       loading={loading}
     >
       Reset Pipeline
-    </SecondaryButton>
+    </RiSecondaryButton>
   </RiTooltip>
 )
 

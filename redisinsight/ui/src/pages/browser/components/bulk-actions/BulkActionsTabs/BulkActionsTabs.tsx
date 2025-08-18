@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react'
-import { EuiIcon } from '@elastic/eui'
 import { useSelector } from 'react-redux'
 
+import { RiTabs, TabInfo } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
 import { BulkActionsType } from 'uiSrc/constants'
 import { selectedBulkActionsSelector } from 'uiSrc/slices/browser/bulkActions'
-import BulkUpload from 'uiSrc/assets/img/icons/bulk-upload.svg?react'
 
 import {
   getMatchType,
@@ -14,10 +14,9 @@ import {
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
 import { keysSelector } from 'uiSrc/slices/browser/keys'
-import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
 
-import { Text } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
+import { RiIcon } from 'uiBase/icons'
 
 export interface Props {
   onChangeType: (id: BulkActionsType) => void
@@ -58,8 +57,8 @@ const BulkActionsTabs = (props: Props) => {
         value: BulkActionsType.Delete,
         label: (
           <>
-            <EuiIcon type="trash" />
-            <Text>Delete Keys</Text>
+            <RiIcon type="DeleteIcon" />
+            <RiText>Delete Keys</RiText>
           </>
         ),
         content: null,
@@ -68,8 +67,8 @@ const BulkActionsTabs = (props: Props) => {
         value: BulkActionsType.Upload,
         label: (
           <>
-            <EuiIcon type={BulkUpload} />
-            <Text>Upload Data</Text>
+            <RiIcon type={'BulkUploadIcon'} />
+            <RiText>Upload Data</RiText>
           </>
         ),
         content: null,
@@ -79,7 +78,7 @@ const BulkActionsTabs = (props: Props) => {
   )
 
   return (
-    <Tabs
+    <RiTabs
       tabs={tabs}
       value={type ?? undefined}
       onChange={onSelectedTabChanged}

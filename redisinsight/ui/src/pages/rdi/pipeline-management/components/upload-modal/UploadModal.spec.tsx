@@ -23,6 +23,7 @@ import {
 } from 'uiSrc/utils/test-utils'
 import { FileChangeType } from 'uiSrc/slices/interfaces'
 import { validatePipeline } from 'uiSrc/components/yaml-validator'
+import { mockModal } from 'uiSrc/mocks/components/modal'
 import UploadModal from './UploadModal'
 
 jest.mock('uiSrc/slices/rdi/pipeline', () => ({
@@ -80,22 +81,10 @@ beforeEach(() => {
   jest.clearAllMocks()
 })
 
-jest.mock('uiSrc/components/base/display', () => {
-  const actual = jest.requireActual('uiSrc/components/base/display')
+jest.mock('uiBase/display', () => {
+  const actual = jest.requireActual('uiBase/display')
 
-  return {
-    ...actual,
-    Modal: {
-      ...actual.Modal,
-      Content: {
-        ...actual.Modal.Content,
-        Header: {
-          ...actual.Modal.Content.Header,
-          Title: jest.fn().mockReturnValue(null),
-        },
-      },
-    },
-  }
+  return mockModal(actual)
 })
 
 describe('UploadModal', () => {

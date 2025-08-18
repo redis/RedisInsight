@@ -4,6 +4,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { AutoSizer } from 'react-virtualized'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
+import { defaultValueRender, RiSelect } from 'uiBase/forms'
 import { DEFAULT_SLOWLOG_MAX_LEN, DurationUnits } from 'uiSrc/constants'
 import { convertNumberByUnits } from 'uiSrc/pages/slow-log/utils'
 import { appContextDbConfig } from 'uiSrc/slices/app/context'
@@ -32,12 +35,6 @@ import {
 import { AnalyticsViewTab } from 'uiSrc/slices/interfaces/analytics'
 
 import { FormatedDate } from 'uiSrc/components'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Text } from 'uiSrc/components/base/text'
-import {
-  defaultValueRender,
-  RiSelect,
-} from 'uiSrc/components/base/forms/select/RiSelect'
 import { SlowLog } from 'apiSrc/modules/slow-log/models'
 
 import { Actions, EmptySlowLog, SlowLogTable } from './components'
@@ -145,14 +142,14 @@ const SlowLogPage = () => {
 
   return (
     <div className={styles.main} data-testid="slow-log-page">
-      <Row className={styles.header} align="center" justify="between">
-        <FlexItem>
+      <RiRow className={styles.header} align="center" justify="between">
+        <RiFlexItem>
           <AnalyticsTabs />
-        </FlexItem>
+        </RiFlexItem>
 
-        <FlexItem>
+        <RiFlexItem>
           {connectionType !== ConnectionType.Cluster && config && (
-            <Text size="xs" color="subdued" data-testid="config-info">
+            <RiText size="xs" color="subdued" data-testid="config-info">
               Execution time:{' '}
               {numberWithSpaces(
                 convertNumberByUnits(slowlogLogSlowerThan, durationUnit),
@@ -162,29 +159,29 @@ const SlowLogPage = () => {
                 ? DurationUnits.mSeconds
                 : DurationUnits.microSeconds}
               , Max length: {numberWithSpaces(slowlogMaxLen)}
-            </Text>
+            </RiText>
           )}
-        </FlexItem>
-      </Row>
+        </RiFlexItem>
+      </RiRow>
 
       <AutoSizer disableHeight>
         {({ width }) => (
           <div style={{ width }}>
-            <Row
+            <RiRow
               className={styles.actionsLine}
               align="center"
               justify="between"
             >
-              <FlexItem>
-                <Row align="center" gap="s">
-                  <FlexItem>
-                    <Text color="subdued">
+              <RiFlexItem>
+                <RiRow align="center" gap="s">
+                  <RiFlexItem>
+                    <RiText color="subdued">
                       {connectionType === ConnectionType.Cluster
                         ? 'Display per node:'
                         : 'Display up to:'}
-                    </Text>
-                  </FlexItem>
-                  <FlexItem>
+                    </RiText>
+                  </RiFlexItem>
+                  <RiFlexItem>
                     <RiSelect
                       options={countOptions}
                       valueRender={defaultValueRender}
@@ -193,10 +190,10 @@ const SlowLogPage = () => {
                       className={styles.countSelect}
                       data-testid="count-select"
                     />
-                  </FlexItem>
+                  </RiFlexItem>
                   {width > HIDE_TIMESTAMP_FROM_WIDTH && (
-                    <FlexItem style={{ marginLeft: 12 }}>
-                      <Text
+                    <RiFlexItem style={{ marginLeft: 12 }}>
+                      <RiText
                         size="xs"
                         color="subdued"
                         data-testid="entries-from-timestamp"
@@ -209,12 +206,12 @@ const SlowLogPage = () => {
                           </>
                         )}
                         )
-                      </Text>
-                    </FlexItem>
+                      </RiText>
+                    </RiFlexItem>
                   )}
-                </Row>
-              </FlexItem>
-              <FlexItem>
+                </RiRow>
+              </RiFlexItem>
+              <RiFlexItem>
                 <Actions
                   width={width}
                   isEmptySlowLog={isEmptySlowLog}
@@ -222,8 +219,8 @@ const SlowLogPage = () => {
                   onClear={onClearSlowLogs}
                   onRefresh={getSlowLogs}
                 />
-              </FlexItem>
-            </Row>
+              </RiFlexItem>
+            </RiRow>
           </div>
         )}
       </AutoSizer>

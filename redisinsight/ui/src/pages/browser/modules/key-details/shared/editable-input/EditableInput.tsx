@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
 
-import { RiTooltip } from 'uiSrc/components'
+import { RiText } from 'uiBase/text'
+import { EditIcon } from 'uiBase/icons'
+import { RiIconButton } from 'uiBase/forms'
+import { RiTooltip } from 'uiBase/display'
 import { StopPropagation } from 'uiSrc/components/virtual-table'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
 
-import { Text } from 'uiSrc/components/base/text'
-import { EditIcon } from 'uiSrc/components/base/icons'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -51,20 +51,20 @@ const EditableInput = (props: Props) => {
         onMouseLeave={() => setIsHovering(false)}
         data-testid={`${testIdPrefix}_content-value-${field}`}
       >
-        <Text
+        <RiText
           color="subdued"
           size="s"
           style={{ maxWidth: '100%', whiteSpace: 'break-spaces' }}
         >
           <div style={{ display: 'flex' }}>{children}</div>
-        </Text>
+        </RiText>
         {isHovering && (
           <RiTooltip
             content={editToolTipContent}
             anchorClassName={styles.editBtnAnchor}
             data-testid={`${testIdPrefix}_edit-tooltip-${field}`}
           >
-            <IconButton
+            <RiIconButton
               icon={EditIcon}
               aria-label="Edit field"
               className={cx('editFieldBtn', styles.editBtn)}

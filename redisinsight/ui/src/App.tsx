@@ -2,12 +2,12 @@ import React, { ReactElement, useEffect } from 'react'
 import { Provider, useSelector } from 'react-redux'
 
 import { Route, Switch } from 'react-router-dom'
+import { RiPage, RiPageBody } from 'uiBase/layout'
 import { store } from 'uiSrc/slices/store'
 import { appInfoSelector } from 'uiSrc/slices/app/info'
 import { removePagePlaceholder } from 'uiSrc/utils'
 import MonacoLanguages from 'uiSrc/components/monaco-laguages'
 import AppInit from 'uiSrc/components/init/AppInit'
-import { Page, PageBody } from 'uiSrc/components/base/layout/page'
 import { Pages, Theme } from './constants'
 import { themeService } from './services'
 import {
@@ -59,14 +59,14 @@ const App = ({ children }: { children?: ReactElement[] }) => {
           path="*"
           render={() => (
             <>
-              <Page className="main">
+              <RiPage className="main">
                 <GlobalDialogs />
                 <GlobalSubscriptions />
                 <NavigationMenu />
-                <PageBody component="main">
+                <RiPageBody component="main">
                   <MainComponent />
-                </PageBody>
-              </Page>
+                </RiPageBody>
+              </RiPage>
               <Notifications />
               <Config />
               <ShortcutsFlyout />

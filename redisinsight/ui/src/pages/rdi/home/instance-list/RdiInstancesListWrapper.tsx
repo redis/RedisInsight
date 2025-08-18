@@ -8,6 +8,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 
 import cx from 'classnames'
+import { RiText } from 'uiBase/text'
+import { RiIconButton } from 'uiBase/forms'
+import { CopyIcon, EditIcon } from 'uiBase/icons'
 import ItemList from 'uiSrc/components/item-list'
 import { BrowserStorageItem, DEFAULT_SORT, Pages } from 'uiSrc/constants'
 import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
@@ -22,11 +25,8 @@ import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import { Nullable, formatLongName, lastConnectionFormat } from 'uiSrc/utils'
 
 import { setAppContextConnectedRdiInstanceId } from 'uiSrc/slices/app/context'
-import { Text } from 'uiSrc/components/base/text'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CopyIcon, EditIcon } from 'uiSrc/components/base/icons'
-import { RiTooltip } from 'uiSrc/components'
 import styles from './styles.module.scss'
+import { RiTooltip } from 'uiBase/display'
 
 export interface Props {
   width: number
@@ -159,12 +159,12 @@ const RdiInstancesListWrapper = ({
       sortable: ({ name }) => name?.toLowerCase(),
       width: '30%',
       render: (_, { name, id }) => (
-        <Text
+        <RiText
           data-testid={`rdi-alias-${id}`}
           onClick={() => handleCheckConnectToInstance(id)}
         >
           {name}
-        </Text>
+        </RiText>
       ),
     },
     {
@@ -177,13 +177,13 @@ const RdiInstancesListWrapper = ({
       sortable: ({ url }) => url?.toLowerCase(),
       render: (name: string, { id }) => (
         <div className="url" data-testid="url">
-          <Text className="copyUrlText">{name}</Text>
+          <RiText className="copyUrlText">{name}</RiText>
           <RiTooltip
             position="right"
             content="Copy"
             anchorClassName="copyUrlTooltip"
           >
-            <IconButton
+            <RiIconButton
               size="L"
               icon={CopyIcon}
               aria-label="Copy URL"
@@ -222,7 +222,7 @@ const RdiInstancesListWrapper = ({
       name: '',
       render: (_act: any, instance: RdiInstance) => (
         <>
-          <IconButton
+          <RiIconButton
             icon={EditIcon}
             className="editInstanceBtn"
             aria-label="Edit instance"

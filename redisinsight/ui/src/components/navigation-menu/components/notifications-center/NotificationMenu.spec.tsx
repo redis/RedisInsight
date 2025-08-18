@@ -1,12 +1,12 @@
+import React from 'react'
 import { fireEvent } from '@testing-library/react'
 import { cloneDeep } from 'lodash'
-import React from 'react'
+import { RiSideBar } from 'uiBase/layout'
 import {
   notificationCenterSelector,
   setIsCenterOpen,
 } from 'uiSrc/slices/app/notifications'
 import { cleanup, mockedStore, render, screen } from 'uiSrc/utils/test-utils'
-import { SideBar } from 'uiSrc/components/base/layout/sidebar'
 import NotificationMenu from './NotificationMenu'
 
 jest.mock('uiSrc/slices/app/notifications', () => ({
@@ -25,7 +25,11 @@ beforeEach(() => {
   store.clearActions()
 })
 
-const sideBarWithNotificationMenu = <SideBar isExpanded={false}><NotificationMenu /></SideBar>
+const sideBarWithNotificationMenu = (
+  <RiSideBar isExpanded={false}>
+    <NotificationMenu />
+  </RiSideBar>
+)
 
 describe('NotificationMenu', () => {
   it('should render', () => {

@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { capitalize } from 'lodash'
 
-import { LoadingContent } from 'uiSrc/components/base/layout'
+import { RiLoadingContent } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
 import {
   truncateNumberToFirstUnit,
   formatLongName,
@@ -17,8 +18,7 @@ import {
 } from 'uiSrc/slices/interfaces'
 import AnalyticsTabs from 'uiSrc/components/analytics-tabs'
 import { clusterDetailsSelector } from 'uiSrc/slices/analytics/clusterDetails'
-import { Text } from 'uiSrc/components/base/text'
-import { RiTooltip } from 'uiSrc/components'
+import { RiTooltip } from 'uiBase/display'
 
 import styles from './styles.module.scss'
 
@@ -95,7 +95,7 @@ const ClusterDetailsHeader = () => {
 
       {loading && !data && (
         <div className={styles.loading} data-testid="cluster-details-loading">
-          <LoadingContent lines={2} />
+          <RiLoadingContent lines={2} />
         </div>
       )}
       {data && (
@@ -109,10 +109,10 @@ const ClusterDetailsHeader = () => {
               key={label}
               data-testid={`cluster-details-item-${label}`}
             >
-              <Text color="subdued" className={styles.value}>
+              <RiText color="subdued" className={styles.value}>
                 {value}
-              </Text>
-              <Text className={styles.label}>{label}</Text>
+              </RiText>
+              <RiText className={styles.label}>{label}</RiText>
             </div>
           ))}
         </div>

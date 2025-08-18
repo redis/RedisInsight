@@ -2,12 +2,11 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
 
-import { bufferToString } from 'uiSrc/utils'
+import { RiText, RiColorText } from 'uiBase/text'
+import { RiIconButton } from 'uiBase/forms'
+import { CopyIcon } from 'uiBase/icons'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-
-import { Text, ColorText } from 'uiSrc/components/base/text'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CopyIcon } from 'uiSrc/components/base/icons'
+import { bufferToString } from 'uiSrc/utils'
 import styles from './styles.module.scss'
 
 export interface IProps {
@@ -43,11 +42,11 @@ const RecommendationCopyComponent = ({
 
   return (
     <div className={styles.wrapper}>
-      <Text className={styles.text}>
+      <RiText className={styles.text}>
         Example of a key that may be relevant:
-      </Text>
+      </RiText>
       <div className={styles.keyNameWrapper}>
-        <ColorText
+        <RiColorText
           color="subdued"
           className={cx(styles.keyName, 'truncateText', {
             [styles.dbAnalysis]: !live,
@@ -56,8 +55,8 @@ const RecommendationCopyComponent = ({
           data-testid="recommendation-key-name"
         >
           {formattedName}
-        </ColorText>
-        <IconButton
+        </RiColorText>
+        <RiIconButton
           onClick={handleCopy}
           className={styles.btn}
           icon={CopyIcon}

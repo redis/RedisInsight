@@ -1,9 +1,8 @@
 import React, { useEffect, useMemo } from 'react'
-import { Link } from 'uiSrc/components/base/link/Link'
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { DestructiveButton } from 'uiSrc/components/base/forms/buttons'
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiLink } from 'uiBase/display'
+import { RiSpacer, RiCol, RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiDestructiveButton } from 'uiBase/forms'
+import { RiColorText } from 'uiBase/text'
 
 export interface Props {
   message: string
@@ -28,11 +27,11 @@ const RdiDeployErrorContent = (props: Props) => {
 
   return (
     <>
-      <ColorText color="danger">
-        <Col>
-          <FlexItem>
+      <RiColorText color="danger">
+        <RiCol>
+          <RiFlexItem>
             <div>Review the error log for details.</div>
-            <Link
+            <RiLink
               variant="small"
               isExternalLink
               href={fileUrl}
@@ -41,25 +40,25 @@ const RdiDeployErrorContent = (props: Props) => {
               style={{ marginTop: '10px', paddingLeft: 0 }}
             >
               Download Error Log File
-            </Link>
-          </FlexItem>
-        </Col>
-      </ColorText>
+            </RiLink>
+          </RiFlexItem>
+        </RiCol>
+      </RiColorText>
 
-      <Spacer />
+      <RiSpacer />
       {/* // TODO remove display none when logs column will be available */}
-      <Row style={{ display: 'none' }} justify="end">
-        <FlexItem>
-          <DestructiveButton
+      <RiRow style={{ display: 'none' }} justify="end">
+        <RiFlexItem>
+          <RiDestructiveButton
             size="s"
             onClick={() => {}}
             className="toast-danger-btn"
             data-testid="see-errors-btn"
           >
             Remove API key
-          </DestructiveButton>
-        </FlexItem>
-      </Row>
+          </RiDestructiveButton>
+        </RiFlexItem>
+      </RiRow>
     </>
   )
 }

@@ -1,11 +1,9 @@
-import React, {
-  FormEvent,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import React, { FormEvent, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toNumber } from 'lodash'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiFormField } from 'uiBase/forms'
+import { RiTextInput } from 'uiBase/inputs'
 import {
   isVersionHigherOrEquals,
   Maybe,
@@ -19,10 +17,7 @@ import { CommandsVersions } from 'uiSrc/constants/commandsVersions'
 import { connectedInstanceOverviewSelector } from 'uiSrc/slices/instances/instances'
 import { FeatureFlags } from 'uiSrc/constants'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
-import { TextInput } from 'uiSrc/components/base/inputs'
 import {
   CreateHashWithExpireDto,
   HashFieldDto,
@@ -166,10 +161,10 @@ const AddKeyHash = (props: Props) => {
         onClickAdd={addField}
       >
         {(item, index) => (
-          <Row align="center" gap="m">
-            <FlexItem grow={2}>
-              <FormField>
-                <TextInput
+          <RiRow align="center" gap="m">
+            <RiFlexItem grow={2}>
+              <RiFormField>
+                <RiTextInput
                   name={`fieldName-${item.id}`}
                   id={`fieldName-${item.id}`}
                   placeholder={config.fieldName.placeholder}
@@ -178,16 +173,14 @@ const AddKeyHash = (props: Props) => {
                   onChange={(value) =>
                     handleFieldChange('fieldName', item.id, value)
                   }
-                  ref={
-                    index === fields.length - 1 ? lastAddedFieldName : null
-                  }
+                  ref={index === fields.length - 1 ? lastAddedFieldName : null}
                   data-testid="field-name"
                 />
-              </FormField>
-            </FlexItem>
-            <FlexItem grow={2}>
-              <FormField>
-                <TextInput
+              </RiFormField>
+            </RiFlexItem>
+            <RiFlexItem grow={2}>
+              <RiFormField>
+                <RiTextInput
                   name={`fieldValue-${item.id}`}
                   id={`fieldValue-${item.id}`}
                   placeholder={config.fieldValue.placeholder}
@@ -198,12 +191,12 @@ const AddKeyHash = (props: Props) => {
                   }
                   data-testid="field-value"
                 />
-              </FormField>
-            </FlexItem>
+              </RiFormField>
+            </RiFlexItem>
             {isTTLAvailable && (
-              <FlexItem grow={1}>
-                <FormField>
-                  <TextInput
+              <RiFlexItem grow={1}>
+                <RiFormField>
+                  <RiTextInput
                     name={`fieldTTL-${item.id}`}
                     id={`fieldTTL-${item.id}`}
                     placeholder="Enter TTL"
@@ -218,10 +211,10 @@ const AddKeyHash = (props: Props) => {
                     }
                     data-testid="hash-ttl"
                   />
-                </FormField>
-              </FlexItem>
+                </RiFormField>
+              </RiFlexItem>
             )}
-          </Row>
+          </RiRow>
         )}
       </AddMultipleFields>
 

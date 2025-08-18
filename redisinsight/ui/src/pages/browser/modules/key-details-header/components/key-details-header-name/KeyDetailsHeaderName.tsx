@@ -3,6 +3,11 @@ import { isNull } from 'lodash'
 import React, { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 
+import { RiFlexItem, RiGrid } from 'uiBase/layout'
+import { RiIconButton, RiFormField } from 'uiBase/forms'
+import { CopyIcon, RiIcon } from 'uiBase/icons'
+import { RiText } from 'uiBase/text'
+import { RiTextInput } from 'uiBase/inputs'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor/InlineItemEditor'
 import { TEXT_UNPRINTABLE_CHARACTERS } from 'uiSrc/constants'
 import { AddCommonFieldsFormConfig } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
@@ -26,14 +31,7 @@ import {
   stringToBuffer,
 } from 'uiSrc/utils'
 
-import { FlexItem, Grid } from 'uiSrc/components/base/layout/flex'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CopyIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { RiTooltip } from 'uiSrc/components'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTooltip } from 'uiBase/display'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -145,7 +143,7 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
     !keyIsEditing ? <RiIcon type="EditIcon" color="informative400" /> : ''
 
   return (
-    <FlexItem
+    <RiFlexItem
       onMouseEnter={onMouseEnterKey}
       onMouseLeave={onMouseLeaveKey}
       onClick={onClickKey}
@@ -156,11 +154,11 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
       data-testid="edit-key-btn"
     >
       {(keyIsEditing || keyIsHovering) && (
-        <Grid
+        <RiGrid
           className={styles.classNameGridComponent}
           data-testid="edit-key-grid"
         >
-          <FlexItem grow className={styles.flexItemKeyInput}>
+          <RiFlexItem grow className={styles.flexItemKeyInput}>
             <RiTooltip
               title="Key Name"
               position="left"
@@ -177,10 +175,8 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
                   isLoading={loading}
                   declineOnUnmount={false}
                 >
-                  <FormField
-                    additionalText={appendKeyEditing()}
-                  >
-                    <TextInput
+                  <RiFormField additionalText={appendKeyEditing()}>
+                    <RiTextInput
                       name="key"
                       id="key"
                       ref={keyNameRef}
@@ -198,7 +194,7 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
                       autoComplete="off"
                       data-testid="edit-key-input"
                     />
-                  </FormField>
+                  </RiFormField>
                 </InlineItemEditor>
                 <p className={styles.keyHiddenText}>{key}</p>
               </>
@@ -209,7 +205,7 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
                 content="Copy"
                 anchorClassName={styles.copyKey}
               >
-                <IconButton
+                <RiIconButton
                   icon={CopyIcon}
                   id={COPY_KEY_NAME_ICON}
                   aria-label="Copy key name"
@@ -220,10 +216,10 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
                 />
               </RiTooltip>
             )}
-          </FlexItem>
-        </Grid>
+          </RiFlexItem>
+        </RiGrid>
       )}
-      <Text
+      <RiText
         className={cx(styles.key, {
           [styles.hidden]: keyIsEditing || keyIsHovering,
         })}
@@ -232,8 +228,8 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
         <b className="truncateText">
           {replaceSpaces(keyProp?.substring(0, 200))}
         </b>
-      </Text>
-    </FlexItem>
+      </RiText>
+    </RiFlexItem>
   )
 }
 

@@ -3,6 +3,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { isNumber } from 'lodash'
 
+import { RiIconButton } from 'uiBase/forms'
+import { ToastDangerIcon } from 'uiBase/icons'
+import { RiText } from 'uiBase/text'
+import { ColumnDefinition } from 'uiBase/layout'
+import { RiTooltip } from 'uiBase/display'
 import { Pages } from 'uiSrc/constants'
 import {
   InstanceRedisCloud,
@@ -13,7 +18,6 @@ import {
   RedisCloudSubscriptionStatusText,
   RedisCloudSubscriptionTypeText,
 } from 'uiSrc/slices/interfaces'
-import { RiTooltip } from 'uiSrc/components'
 import {
   cloudSelector,
   fetchInstancesRedisCloud,
@@ -24,10 +28,6 @@ import {
 import { formatLongName, Maybe, replaceSpaces, setTitle } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { oauthCloudUserSelector } from 'uiSrc/slices/oauth/cloud'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { ToastDangerIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
-import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import RedisCloudSubscriptions from './RedisCloudSubscriptions/RedisCloudSubscriptions'
 
 import styles from './styles.module.scss'
@@ -148,7 +148,7 @@ const RedisCloudSubscriptionsPage = () => {
             position="right"
             className={styles.tooltipStatus}
           >
-            <IconButton
+            <RiIconButton
               icon={ToastDangerIcon}
               aria-label="subscription alert"
             />
@@ -186,7 +186,7 @@ const RedisCloudSubscriptionsPage = () => {
               className={styles.tooltipColumnName}
               content={formatLongName(name)}
             >
-              <Text>{cellContent}</Text>
+              <RiText>{cellContent}</RiText>
             </RiTooltip>
           </div>
         )

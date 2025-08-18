@@ -1,11 +1,11 @@
 import cx from 'classnames'
 import React, { useState } from 'react'
 
+import { RiCollapsibleNavGroup } from 'uiBase/display'
+import { RiCol } from 'uiBase/layout'
 import { ImportDatabasesData } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { Nullable } from 'uiSrc/utils'
-import { RICollapsibleNavGroup } from 'uiSrc/components/base/display'
-import { Col } from 'uiSrc/components/base/layout/flex'
 import TableResult from '../TableResult'
 
 import styles from './styles.module.scss'
@@ -55,8 +55,8 @@ const ResultsLog = ({ data }: Props) => {
     openedNav === name ? 'open' : 'closed'
 
   return (
-    <Col gap="s">
-      <RICollapsibleNavGroup
+    <RiCol gap="s">
+      <RiCollapsibleNavGroup
         title={
           <CollapsibleNavTitle
             title="Fully imported"
@@ -75,8 +75,8 @@ const ResultsLog = ({ data }: Props) => {
         data-testid={`success-results-${getNavGroupState(ResultsStatus.Success)}`}
       >
         <TableResult data={data?.success ?? []} />
-      </RICollapsibleNavGroup>
-      <RICollapsibleNavGroup
+      </RiCollapsibleNavGroup>
+      <RiCollapsibleNavGroup
         title={
           <CollapsibleNavTitle
             title="Partially imported"
@@ -95,8 +95,8 @@ const ResultsLog = ({ data }: Props) => {
         data-testid={`partial-results-${getNavGroupState(ResultsStatus.Partial)}`}
       >
         <TableResult data={data?.partial ?? []} />
-      </RICollapsibleNavGroup>
-      <RICollapsibleNavGroup
+      </RiCollapsibleNavGroup>
+      <RiCollapsibleNavGroup
         title={
           <CollapsibleNavTitle
             title="Failed to import"
@@ -115,8 +115,8 @@ const ResultsLog = ({ data }: Props) => {
         data-testid={`failed-results-${getNavGroupState(ResultsStatus.Failed)}`}
       >
         <TableResult data={data?.fail ?? []} />
-      </RICollapsibleNavGroup>
-    </Col>
+      </RiCollapsibleNavGroup>
+    </RiCol>
   )
 }
 

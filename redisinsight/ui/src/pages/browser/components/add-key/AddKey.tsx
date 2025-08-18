@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
+import { RiCol, RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiIconButton } from 'uiBase/forms'
+import { CancelSlimIcon } from 'uiBase/icons'
+import { RiHealthText, RiTitle } from 'uiBase/text'
+import { RiTooltip } from 'uiBase/display'
 import Divider from 'uiSrc/components/divider/Divider'
 import { KeyTypes } from 'uiSrc/constants'
 import HelpTexts from 'uiSrc/constants/help-texts'
@@ -19,13 +24,6 @@ import {
 import { isContainJSONModule, Maybe, stringToBuffer } from 'uiSrc/utils'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import { HealthText } from 'uiSrc/components/base/text/HealthText'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { RiTooltip } from 'uiSrc/components'
 import { ADD_KEY_TYPE_OPTIONS } from './constants/key-type-options'
 import AddKeyHash from './AddKeyHash'
 import AddKeyZset from './AddKeyZset'
@@ -67,14 +65,14 @@ const AddKey = (props: Props) => {
     return {
       value,
       inputDisplay: (
-        <HealthText
+        <RiHealthText
           color={color}
           style={{ lineHeight: 'inherit' }}
           data-test-subj={value}
           data-testid={value}
         >
           {text}
-        </HealthText>
+        </RiHealthText>
       ),
     }
   })
@@ -124,21 +122,21 @@ const AddKey = (props: Props) => {
 
   return (
     <div className={styles.page}>
-      <Row
+      <RiRow
         justify="center"
         className={cx(styles.contentWrapper, 'relative')}
         gap="none"
       >
-        <Col justify="center" className={styles.content}>
-          <FlexItem grow style={{ marginBottom: '36px' }}>
-            <Title size="M">New Key</Title>
+        <RiCol justify="center" className={styles.content}>
+          <RiFlexItem grow style={{ marginBottom: '36px' }}>
+            <RiTitle size="M">New Key</RiTitle>
             {!arePanelsCollapsed && (
               <RiTooltip
                 content="Close"
                 position="left"
                 anchorClassName={styles.closeKeyTooltip}
               >
-                <IconButton
+                <RiIconButton
                   icon={CancelSlimIcon}
                   aria-label="Close key"
                   className={styles.closeBtn}
@@ -146,7 +144,7 @@ const AddKey = (props: Props) => {
                 />
               </RiTooltip>
             )}
-          </FlexItem>
+          </RiFlexItem>
           <div className={cx('eui-yScroll', styles.scrollContainer)}>
             <ContentFields>
               <AddKeyCommonFields
@@ -201,9 +199,9 @@ const AddKey = (props: Props) => {
               )}
             </ContentFields>
           </div>
-        </Col>
+        </RiCol>
         <div id="formFooterBar" className="formFooterBar" />
-      </Row>
+      </RiRow>
     </div>
   )
 }

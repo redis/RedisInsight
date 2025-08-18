@@ -5,6 +5,11 @@ import { isEmpty } from 'lodash'
 import { useParams } from 'react-router-dom'
 
 import {
+  RiResizableContainer,
+  RiResizablePanel,
+  RiResizablePanelHandle,
+} from 'uiBase/layout'
+import {
   Maybe,
   Nullable,
   getParsedParamsInQuery,
@@ -23,11 +28,6 @@ import { userSettingsConfigSelector } from 'uiSrc/slices/user/user-settings'
 import { PIPELINE_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { CodeButtonParams } from 'uiSrc/constants'
 
-import {
-  ResizableContainer,
-  ResizablePanel,
-  ResizablePanelHandle,
-} from 'uiSrc/components/base/layout'
 import QueryWrapper from '../../query'
 import WBResultsWrapper from '../../wb-results'
 
@@ -198,11 +198,11 @@ const WBView = (props: Props) => {
     <div className={cx('workbenchPage', styles.container)}>
       <div className={styles.main}>
         <div className={styles.content}>
-          <ResizableContainer
+          <RiResizableContainer
             onLayout={onVerticalPanelWidthChange}
             direction="vertical"
           >
-            <ResizablePanel
+            <RiResizablePanel
               id={verticalPanelIds.firstPanelId}
               minSize={30}
               className={styles.queryPanel}
@@ -218,14 +218,14 @@ const WBView = (props: Props) => {
                 onQueryChangeMode={onQueryChangeMode}
                 onChangeGroupMode={onChangeGroupMode}
               />
-            </ResizablePanel>
+            </RiResizablePanel>
 
-            <ResizablePanelHandle
+            <RiResizablePanelHandle
               direction="horizontal"
               data-test-subj="resize-btn-scripting-area-and-results"
             />
 
-            <ResizablePanel
+            <RiResizablePanel
               id={verticalPanelIds.secondPanelId}
               minSize={10}
               maxSize={70}
@@ -246,8 +246,8 @@ const WBView = (props: Props) => {
                 onQueryDelete={onQueryDelete}
                 onAllQueriesDelete={onAllQueriesDelete}
               />
-            </ResizablePanel>
-          </ResizableContainer>
+            </RiResizablePanel>
+          </RiResizableContainer>
         </div>
       </div>
     </div>

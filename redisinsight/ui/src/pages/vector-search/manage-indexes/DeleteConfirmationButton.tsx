@@ -1,6 +1,8 @@
 import React from 'react'
-import { RiPopover, RiPopoverProps } from 'uiSrc/components'
-import { Button, IconButton } from 'uiSrc/components/base/forms/buttons'
+import { RiPopover, RiPopoverProps } from 'uiBase/display'
+import { RiDestructiveButton, RiIconButton } from 'uiBase/forms'
+import { DeleteIcon, RiIcon } from 'uiBase/icons'
+
 import {
   ButtonWrapper,
   IconAndTitleWrapper,
@@ -8,7 +10,6 @@ import {
   PopoverContent,
   Title,
 } from './styles'
-import { DeleteIcon, RiIcon } from 'uiSrc/components/base/icons'
 
 export type DeleteConfirmationButtonProps = Omit<
   RiPopoverProps,
@@ -27,10 +28,10 @@ const DeleteConfirmationButton = ({
     anchorPosition="downCenter"
     {...rest}
     button={
-      <IconButton
+      <RiIconButton
         icon={DeleteIcon}
         data-testid="manage-index-delete-btn"
-      ></IconButton>
+      ></RiIconButton>
     }
   >
     <PopoverContent>
@@ -45,13 +46,12 @@ const DeleteConfirmationButton = ({
       </IconAndTitleWrapper>
 
       <ButtonWrapper>
-        <Button
-          variant="destructive"
+        <RiDestructiveButton
           onClick={onConfirm}
           data-testid="manage-index-delete-confirmation-btn"
         >
           Delete
-        </Button>
+        </RiDestructiveButton>
       </ButtonWrapper>
     </PopoverContent>
   </RiPopover>

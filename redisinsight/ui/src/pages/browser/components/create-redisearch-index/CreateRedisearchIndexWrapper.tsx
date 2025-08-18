@@ -1,12 +1,11 @@
 import React from 'react'
 import cx from 'classnames'
+import { RiCol, RiFlexItem } from 'uiBase/layout'
+import { RiIconButton } from 'uiBase/forms'
+import { CancelSlimIcon } from 'uiBase/icons'
+import { RiTitle, RiText } from 'uiBase/text'
+import { RiLink } from 'uiBase/display'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
-import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
-import { Link } from 'uiSrc/components/base/link/Link'
 import { RiTooltip } from 'uiSrc/components'
 import CreateRedisearchIndex from './CreateRedisearchIndex'
 
@@ -24,19 +23,19 @@ const CreateRedisearchIndexWrapper = ({
   onCreateIndex,
 }: Props) => (
   <div className={styles.page} data-testid="create-index-panel">
-    <Col justify="center" className={cx(styles.container, 'relative')}>
+    <RiCol justify="center" className={cx(styles.container, 'relative')}>
       <div className={styles.headerWrapper}>
-        <FlexItem grow style={{ marginBottom: '16px' }}>
-          <Title size="M" className={styles.header}>
+        <RiFlexItem grow style={{ marginBottom: '16px' }}>
+          <RiTitle size="M" className={styles.header}>
             New Index
-          </Title>
+          </RiTitle>
           {!arePanelsCollapsed && (
             <RiTooltip
               content="Close"
               position="left"
               anchorClassName={styles.closeRightPanel}
             >
-              <IconButton
+              <RiIconButton
                 icon={CancelSlimIcon}
                 aria-label="Close panel"
                 className={styles.closeBtn}
@@ -45,12 +44,12 @@ const CreateRedisearchIndexWrapper = ({
               />
             </RiTooltip>
           )}
-        </FlexItem>
-        <FlexItem grow className={styles.header}>
-          <Text size="s">
+        </RiFlexItem>
+        <RiFlexItem grow className={styles.header}>
+          <RiText size="s">
             Use CLI or Workbench to create more advanced indexes. See more
             details in the{' '}
-            <Link
+            <RiLink
               color="text"
               href={getUtmExternalLink('https://redis.io/commands/ft.create/', {
                 campaign: 'browser_search',
@@ -59,15 +58,15 @@ const CreateRedisearchIndexWrapper = ({
               target="_blank"
             >
               documentation.
-            </Link>
-          </Text>
-        </FlexItem>
+            </RiLink>
+          </RiText>
+        </RiFlexItem>
       </div>
       <CreateRedisearchIndex
         onCreateIndex={onCreateIndex}
         onClosePanel={onClosePanel}
       />
-    </Col>
+    </RiCol>
   </div>
 )
 

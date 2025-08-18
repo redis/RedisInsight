@@ -2,26 +2,15 @@ import React from 'react'
 import { instance, mock } from 'ts-mockito'
 import { render, screen, fireEvent } from 'uiSrc/utils/test-utils'
 
+import { mockModal } from 'uiSrc/mocks/components/modal'
 import DatabasePanelDialog, { Props } from './DatabasePanelDialog'
 
 const mockedProps = mock<Props>()
 
-jest.mock('uiSrc/components/base/display', () => {
-  const actual = jest.requireActual('uiSrc/components/base/display')
+jest.mock('uiBase/display', () => {
+  const actual = jest.requireActual('uiBase/display')
 
-  return {
-    ...actual,
-    Modal: {
-      ...actual.Modal,
-      Content: {
-        ...actual.Modal.Content,
-        Header: {
-          ...actual.Modal.Content.Header,
-          Title: jest.fn().mockReturnValue(null),
-        },
-      },
-    },
-  }
+  return mockModal(actual)
 })
 
 describe('DatabasePanelDialog', () => {

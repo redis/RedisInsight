@@ -1,13 +1,10 @@
 import React from 'react'
 import { toNumber } from 'lodash'
-import { MAX_TTL_NUMBER, Maybe, validateTTLNumberForAddKey } from 'uiSrc/utils'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
-import { FormFieldset } from 'uiSrc/components/base/forms/fieldset'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiSpacer, RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiFormField, RiFormFieldset, RiSelect } from 'uiBase/forms'
+import { RiTextInput } from 'uiBase/inputs'
+import { MAX_TTL_NUMBER, Maybe, validateTTLNumberForAddKey } from 'uiSrc/utils'
 import { AddCommonFieldsFormConfig as config } from '../constants/fields-config'
 
 import styles from './styles.module.scss'
@@ -46,12 +43,12 @@ const AddKeyCommonFields = (props: Props) => {
 
   return (
     <div className={styles.wrapper}>
-      <Row className={styles.container} gap="m">
-        <FlexItem grow>
-          <FormFieldset
+      <RiRow className={styles.container} gap="m">
+        <RiFlexItem grow>
+          <RiFormFieldset
             legend={{ children: 'Select key type', display: 'hidden' }}
           >
-            <FormField label="Key Type*">
+            <RiFormField label="Key Type*">
               <RiSelect
                 options={options}
                 valueRender={({ option }): JSX.Element =>
@@ -62,12 +59,12 @@ const AddKeyCommonFields = (props: Props) => {
                 disabled={loading}
                 data-testid="select-key-type"
               />
-            </FormField>
-          </FormFieldset>
-        </FlexItem>
-        <FlexItem grow>
-          <FormField label={config.keyTTL.label}>
-            <TextInput
+            </RiFormField>
+          </RiFormFieldset>
+        </RiFlexItem>
+        <RiFlexItem grow>
+          <RiFormField label={config.keyTTL.label}>
+            <RiTextInput
               name={config.keyTTL.name}
               id={config.keyTTL.name}
               maxLength={200}
@@ -80,12 +77,12 @@ const AddKeyCommonFields = (props: Props) => {
               autoComplete="off"
               data-testid="ttl"
             />
-          </FormField>
-        </FlexItem>
-      </Row>
-      <Spacer size="m" />
-      <FormField label={config.keyName.label}>
-        <TextInput
+          </RiFormField>
+        </RiFlexItem>
+      </RiRow>
+      <RiSpacer size="m" />
+      <RiFormField label={config.keyName.label}>
+        <RiTextInput
           name={config.keyName.name}
           id={config.keyName.name}
           value={keyName}
@@ -95,7 +92,7 @@ const AddKeyCommonFields = (props: Props) => {
           autoComplete="off"
           data-testid="key"
         />
-      </FormField>
+      </RiFormField>
     </div>
   )
 }

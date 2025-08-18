@@ -4,6 +4,7 @@ import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import { updateInstanceAction } from 'uiSrc/slices/instances/instances'
 
 import { Instance } from 'uiSrc/slices/interfaces'
+import { mockModal } from 'uiSrc/mocks/components/modal'
 import { ManageTagsModal, ManageTagsModalProps } from './ManageTagsModal'
 
 jest.mock('react-redux', () => ({
@@ -38,22 +39,10 @@ const mockInstance: Partial<Instance> = {
   provider: 'RE_CLOUD',
 }
 
-jest.mock('uiSrc/components/base/display', () => {
-  const actual = jest.requireActual('uiSrc/components/base/display')
+jest.mock('uiBase/display', () => {
+  const actual = jest.requireActual('uiBase/display')
 
-  return {
-    ...actual,
-    Modal: {
-      ...actual.Modal,
-      Content: {
-        ...actual.Modal.Content,
-        Header: {
-          ...actual.Modal.Content.Header,
-          Title: jest.fn().mockReturnValue(null),
-        },
-      },
-    },
-  }
+  return mockModal(actual)
 })
 
 describe('ManageTagsModal', () => {

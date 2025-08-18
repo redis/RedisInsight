@@ -1,9 +1,8 @@
 import React from 'react'
-import SuspenseLoader from 'uiSrc/components/main-router/components/SuspenseLoader'
 
-import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { Card } from 'uiSrc/components/base/layout'
+import { RiCol, RiFlexItem, RiCard } from 'uiBase/layout'
+import { RiPrimaryButton } from 'uiBase/forms'
+import SuspenseLoader from 'uiSrc/components/main-router/components/SuspenseLoader'
 
 export type ConnectivityErrorProps = {
   onRetry?: () => void
@@ -16,21 +15,23 @@ const ConnectivityError = ({
   error,
   onRetry,
 }: ConnectivityErrorProps) => (
-  <Col>
-    <Card>
-      <Col style={{ minHeight: '100vh' }} centered>
+  <RiCol>
+    <RiCard>
+      <RiCol style={{ minHeight: '100vh' }} centered>
         {isLoading && <SuspenseLoader />}
-        <Col centered gap="xl">
-          <FlexItem data-testid="connectivity-error-message">{error}</FlexItem>
+        <RiCol centered gap="xl">
+          <RiFlexItem data-testid="connectivity-error-message">
+            {error}
+          </RiFlexItem>
           {onRetry && (
-            <FlexItem>
-              <PrimaryButton onClick={onRetry}>Retry</PrimaryButton>
-            </FlexItem>
+            <RiFlexItem>
+              <RiPrimaryButton onClick={onRetry}>Retry</RiPrimaryButton>
+            </RiFlexItem>
           )}
-        </Col>
-      </Col>
-    </Card>
-  </Col>
+        </RiCol>
+      </RiCol>
+    </RiCard>
+  </RiCol>
 )
 
 export default ConnectivityError

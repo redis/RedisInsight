@@ -3,6 +3,16 @@ import cx from 'classnames'
 
 import { useDispatch, useSelector } from 'react-redux'
 
+import { RiSpacer } from 'uiBase/layout/spacer'
+import {
+  RiPage,
+  RiPageBody,
+  RiPageContentBody,
+  RiPageHeader,
+  RiCol,
+} from 'uiBase/layout'
+import { RiCallOut, RiLoader, RiCollapsibleNavGroup } from 'uiBase/display'
+import { RiTitle, RiText } from 'uiBase/text'
 import { setTitle } from 'uiSrc/utils'
 import { FeatureFlags } from 'uiSrc/constants'
 import { useDebouncedEffect } from 'uiSrc/services'
@@ -19,18 +29,6 @@ import {
 } from 'uiSrc/slices/user/user-settings'
 
 import Divider from 'uiSrc/components/divider/Divider'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  Page,
-  PageBody,
-  PageContentBody,
-  PageHeader,
-} from 'uiSrc/components/base/layout/page'
-import { CallOut } from 'uiSrc/components/base/display/call-out/CallOut'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
-import { Loader, RICollapsibleNavGroup } from 'uiSrc/components/base/display'
-import { Col } from 'uiSrc/components/base/layout/flex'
 import {
   AdvancedSettings,
   CloudSettings,
@@ -68,7 +66,7 @@ const SettingsPage = () => {
       <ThemeSettings />
       <ConsentsNotifications />
       <Divider colorVariable="separatorColor" />
-      <Spacer />
+      <RiSpacer />
       <DateTimeFormatter />
     </>
   )
@@ -77,7 +75,7 @@ const SettingsPage = () => {
     <div>
       {loading && (
         <div className={styles.cover}>
-          <Loader size="xl" />
+          <RiLoader size="xl" />
         </div>
       )}
       <ConsentsPrivacy />
@@ -88,7 +86,7 @@ const SettingsPage = () => {
     <div>
       {loading && (
         <div className={styles.cover}>
-          <Loader size="xl" />
+          <RiLoader size="xl" />
         </div>
       )}
       <WorkbenchSettings />
@@ -99,7 +97,7 @@ const SettingsPage = () => {
     <div>
       {loading && (
         <div className={styles.cover}>
-          <Loader size="xl" />
+          <RiLoader size="xl" />
         </div>
       )}
       <CloudSettings />
@@ -110,31 +108,31 @@ const SettingsPage = () => {
     <div>
       {loading && (
         <div className={styles.cover}>
-          <Loader size="xl" />
+          <RiLoader size="xl" />
         </div>
       )}
-      <CallOut className={styles.warning}>
-        <Text size="s" className={styles.smallText}>
+      <RiCallOut className={styles.warning}>
+        <RiText size="s" className={styles.smallText}>
           Advanced settings should only be changed if you understand their
           impact.
-        </Text>
-      </CallOut>
+        </RiText>
+      </RiCallOut>
       <AdvancedSettings />
     </div>
   )
 
   return (
-    <Page className={styles.container}>
-      <PageBody component="div">
-        <PageHeader>
-          <Title size="XXL" className={styles.title}>
+    <RiPage className={styles.container}>
+      <RiPageBody component="div">
+        <RiPageHeader>
+          <RiTitle size="XXL" className={styles.title}>
             Settings
-          </Title>
-        </PageHeader>
+          </RiTitle>
+        </RiPageHeader>
 
-        <PageContentBody style={{ maxWidth: 792 }}>
-          <Col gap="s">
-            <RICollapsibleNavGroup
+        <RiPageContentBody style={{ maxWidth: 792 }}>
+          <RiCol gap="s">
+            <RiCollapsibleNavGroup
               isCollapsible
               className={styles.accordion}
               title="General"
@@ -142,8 +140,8 @@ const SettingsPage = () => {
               data-test-subj="accordion-appearance"
             >
               {Appearance()}
-            </RICollapsibleNavGroup>{' '}
-            <RICollapsibleNavGroup
+            </RiCollapsibleNavGroup>{' '}
+            <RiCollapsibleNavGroup
               isCollapsible
               className={styles.accordion}
               title="Privacy"
@@ -151,8 +149,8 @@ const SettingsPage = () => {
               data-test-subj="accordion-privacy-settings"
             >
               {PrivacySettings()}
-            </RICollapsibleNavGroup>
-            <RICollapsibleNavGroup
+            </RiCollapsibleNavGroup>
+            <RiCollapsibleNavGroup
               isCollapsible
               className={styles.accordion}
               title="Workbench"
@@ -162,9 +160,9 @@ const SettingsPage = () => {
               id="accordion-workbench-settings"
             >
               {WorkbenchSettingsGroup()}
-            </RICollapsibleNavGroup>
+            </RiCollapsibleNavGroup>
             <FeatureFlagComponent name={FeatureFlags.cloudSso}>
-              <RICollapsibleNavGroup
+              <RiCollapsibleNavGroup
                 isCollapsible
                 className={cx(styles.accordion, styles.accordionWithSubTitle)}
                 title="Redis Cloud"
@@ -172,9 +170,9 @@ const SettingsPage = () => {
                 data-test-subj="accordion-cloud-settings"
               >
                 {CloudSettingsGroup()}
-              </RICollapsibleNavGroup>
+              </RiCollapsibleNavGroup>
             </FeatureFlagComponent>
-            <RICollapsibleNavGroup
+            <RiCollapsibleNavGroup
               isCollapsible
               className={cx(styles.accordion, styles.accordionWithSubTitle)}
               title="Advanced"
@@ -182,11 +180,11 @@ const SettingsPage = () => {
               data-test-subj="accordion-advanced-settings"
             >
               {AdvancedSettingsGroup()}
-            </RICollapsibleNavGroup>
-          </Col>
-        </PageContentBody>
-      </PageBody>
-    </Page>
+            </RiCollapsibleNavGroup>
+          </RiCol>
+        </RiPageContentBody>
+      </RiPageBody>
+    </RiPage>
   )
 }
 

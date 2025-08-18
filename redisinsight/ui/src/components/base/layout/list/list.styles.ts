@@ -10,8 +10,7 @@ import {
   Ref,
 } from 'react'
 
-import { AllIconsType } from 'uiSrc/components/base/icons/RiIcon'
-import { IconProps } from 'uiSrc/components/base/icons'
+import { AllIconsType, IconProps } from 'uiBase/icons'
 
 export const ListClassNames = {
   listItem: 'RI-list-group-item',
@@ -171,41 +170,41 @@ const listItemStyles = {
   },
   active: {
     primary: css`
-      background-color: var(--color-primary);
+      background-color: var(--color-text-primary);
     `,
     text: css`
-      background-color: var(--color-subdued);
+      background-color: var(--color-text-subdued);
     `,
     subdued: css`
-      background-color: var(--color-subdued);
+      background-color: var(--color-text-subdued);
     `,
     ghost: css`
-      background-color: var(--color-ghost);
+      background-color: var(--color-text-ghost);
     `,
   },
   clickable: {
     primary: css`
       &:hover,
       &:focus-within {
-        background-color: var(--color-subdued);
+        background-color: var(--color-text-subdued);
       }
     `,
     text: css`
       &:hover,
       &:focus-within {
-        background-color: var(--color-subdued);
+        background-color: var(--color-text-subdued);
       }
     `,
     subdued: css`
       &:hover,
       &:focus-within {
-        background-color: var(--color-subdued);
+        background-color: var(--color-text-subdued);
       }
     `,
     ghost: css`
       &:hover,
       &:focus-within {
-        background-color: var(--color-ghost);
+        background-color: var(--color-text-ghost);
       }
     `,
   },
@@ -270,16 +269,16 @@ const listItemInnerStyles = {
   colors: {
     // Colors
     primary: css`
-      color: var(--color-primary-text);
+      color: var(--color-text-primary);
     `,
     text: css`
-      color: var(--color-text-text);
+      color: var(--color-text-default);
     `,
     subdued: css`
-      color: var(--euiTextSubduedColor);
+      color: var(--color-text-subdued);
     `,
     ghost: css`
-      color: var(--color-ghost-text);
+      color: var(--color-text-ghost);
     `,
   },
   variants: {

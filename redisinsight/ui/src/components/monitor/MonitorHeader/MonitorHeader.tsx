@@ -3,6 +3,20 @@ import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
+import { RiIconButton } from 'uiBase/forms'
+import {
+  PlayIcon,
+  PauseIcon,
+  DeleteIcon,
+  BannedIcon,
+  RiIcon,
+} from 'uiBase/icons'
+import { WindowControlGroup } from 'uiBase/index'
+import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
+import { OnboardingTour, RiTooltip } from 'uiSrc/components'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   monitorSelector,
   resetMonitorItems,
@@ -10,21 +24,6 @@ import {
   toggleHideMonitor,
   toggleMonitor,
 } from 'uiSrc/slices/cli/monitor'
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { OnboardingTour, RiTooltip } from 'uiSrc/components'
-import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
-
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Text } from 'uiSrc/components/base/text'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import {
-  PlayIcon,
-  PauseIcon,
-  DeleteIcon,
-  BannedIcon,
-} from 'uiSrc/components/base/icons'
-import { WindowControlGroup } from 'uiSrc/components/base/shared/WindowControlGroup'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -80,19 +79,19 @@ const MonitorHeader = ({ handleRunMonitor }: Props) => {
 
   return (
     <div className={styles.container} data-testid="monitor-header">
-      <Row justify="between" align="center" style={{ height: '100%' }}>
-        <FlexItem className={styles.title}>
+      <RiRow justify="between" align="center" style={{ height: '100%' }}>
+        <RiFlexItem className={styles.title}>
           <RiIcon type="ProfilerIcon" size="m" />
           <OnboardingTour
             options={ONBOARDING_FEATURES.BROWSER_PROFILER}
             anchorPosition="upLeft"
             panelClassName={styles.profilerOnboardPanel}
           >
-            <Text>Profiler</Text>
+            <RiText>Profiler</RiText>
           </OnboardingTour>
-        </FlexItem>
+        </RiFlexItem>
         {isStarted && (
-          <FlexItem direction="row" className={styles.actions}>
+          <RiFlexItem direction="row" className={styles.actions}>
             <RiTooltip
               content={
                 isErrorShown || isResumeLocked
@@ -103,7 +102,7 @@ const MonitorHeader = ({ handleRunMonitor }: Props) => {
               }
               anchorClassName="inline-flex"
             >
-              <IconButton
+              <RiIconButton
                 icon={
                   isErrorShown || isResumeLocked
                     ? BannedIcon
@@ -125,22 +124,22 @@ const MonitorHeader = ({ handleRunMonitor }: Props) => {
                 transparent: !isStarted || !items.length,
               })}
             >
-              <IconButton
+              <RiIconButton
                 icon={DeleteIcon}
                 onClick={handleClearMonitor}
                 aria-label="clear profiler"
                 data-testid="clear-monitor"
               />
             </RiTooltip>
-          </FlexItem>
+          </RiFlexItem>
         )}
-        <FlexItem grow />
+        <RiFlexItem grow />
         <WindowControlGroup
           onClose={handleCloseMonitor}
           onHide={handleHideMonitor}
           id="monitor"
         />
-      </Row>
+      </RiRow>
     </div>
   )
 }

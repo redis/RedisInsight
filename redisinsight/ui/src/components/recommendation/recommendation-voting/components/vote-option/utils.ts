@@ -1,6 +1,6 @@
+import { DislikeIcon, LikeIcon } from 'uiBase/icons'
 import { Vote } from 'uiSrc/constants/recommendations'
 import { Nullable } from 'uiSrc/utils'
-import { DislikeIcon, LikeIcon } from 'uiSrc/components/base/icons'
 
 export const getVotedText = (vote: Nullable<Vote>) =>
   vote === Vote.Like

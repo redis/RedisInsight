@@ -1,16 +1,11 @@
 import React, { FormEvent, useEffect, useState } from 'react'
 import cx from 'classnames'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  IconButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { EditIcon } from 'uiSrc/components/base/icons'
-import { Loader } from 'uiSrc/components/base/display'
-import { RiPopover } from 'uiSrc/components/base'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiIconButton, RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
+import { EditIcon } from 'uiBase/icons'
+import { RiLoader, RiPopover } from 'uiBase/display'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -105,7 +100,7 @@ const EditablePopover = (props: Props) => {
   const isDisabledApply = (): boolean => !!(isLoading || isDisabled)
 
   const button = (
-    <IconButton
+    <RiIconButton
       disabled={isPopoverOpen || isDisabledEditButton}
       icon={btnIconType || EditIcon}
       aria-label="Edit field"
@@ -135,7 +130,10 @@ const EditablePopover = (props: Props) => {
         >
           {content}
           {isDelayed && (
-            <Loader className={cx(editBtnClassName, styles.spinner)} size="m" />
+            <RiLoader
+              className={cx(editBtnClassName, styles.spinner)}
+              size="m"
+            />
           )}
           {!isPopoverOpen && isHovering && !isDelayed && button}
         </div>
@@ -145,29 +143,29 @@ const EditablePopover = (props: Props) => {
     >
       <form onSubmit={onFormSubmit}>
         <div className={styles.content}>{children}</div>
-        <Spacer size="s" />
-        <Row className={styles.footer} justify="end" gap="m">
-          <FlexItem>
-            <SecondaryButton
+        <RiSpacer size="s" />
+        <RiRow className={styles.footer} justify="end" gap="m">
+          <RiFlexItem>
+            <RiSecondaryButton
               size="s"
               onClick={() => handleDecline()}
               data-testid="cancel-btn"
             >
               Cancel
-            </SecondaryButton>
-          </FlexItem>
+            </RiSecondaryButton>
+          </RiFlexItem>
 
-          <FlexItem>
-            <PrimaryButton
+          <RiFlexItem>
+            <RiPrimaryButton
               size="s"
               type="submit"
               disabled={isDisabledApply()}
               data-testid="save-btn"
             >
               Save
-            </PrimaryButton>
-          </FlexItem>
-        </Row>
+            </RiPrimaryButton>
+          </RiFlexItem>
+        </RiRow>
       </form>
     </RiPopover>
   )

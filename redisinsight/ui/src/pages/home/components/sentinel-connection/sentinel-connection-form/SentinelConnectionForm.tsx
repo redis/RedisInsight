@@ -3,6 +3,9 @@ import { isEmpty, pick } from 'lodash'
 import React, { useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
 
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { InfoIcon } from 'uiBase/icons'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
 import * as keys from 'uiSrc/constants/keys'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { fieldDisplayNames } from 'uiSrc/pages/home/constants'
@@ -13,13 +16,7 @@ import {
   MessageSentinel,
   TlsDetails,
 } from 'uiSrc/pages/home/components/form'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { InfoIcon } from 'uiSrc/components/base/icons'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { RiTooltip } from 'uiSrc/components'
+import { RiTooltip } from 'uiBase/display'
 
 export interface Props {
   loading: boolean
@@ -91,7 +88,7 @@ const SentinelConnectionForm = (props: Props) => {
       }
       content={getSubmitButtonContent(errors, submitIsDisabled)}
     >
-      <PrimaryButton
+      <RiPrimaryButton
         size="s"
         type="submit"
         onClick={onClick}
@@ -102,7 +99,7 @@ const SentinelConnectionForm = (props: Props) => {
         style={{ marginLeft: 12 }}
       >
         Discover Database
-      </PrimaryButton>
+      </RiPrimaryButton>
     </RiTooltip>
   )
 
@@ -113,14 +110,14 @@ const SentinelConnectionForm = (props: Props) => {
       return ReactDOM.createPortal(
         <div className="footerAddDatabase">
           {onClose && (
-            <SecondaryButton
+            <RiSecondaryButton
               size="s"
               onClick={onClose}
               className="btn-cancel"
               data-testid="btn-cancel"
             >
               Cancel
-            </SecondaryButton>
+            </RiSecondaryButton>
           )}
           <SubmitButton
             onClick={formik.submitForm}
@@ -158,7 +155,7 @@ const SentinelConnectionForm = (props: Props) => {
             }}
             onHostNamePaste={onHostNamePaste}
           />
-          <Spacer />
+          <RiSpacer />
           <TlsDetails
             formik={formik}
             certificates={certificates}

@@ -2,6 +2,9 @@ import { isNull } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
+import { RiSwitchInput } from 'uiBase/inputs'
+import { RiTitle } from 'uiBase/text'
+import { RiEmptyButton } from 'uiBase/forms'
 import { Pages } from 'uiSrc/constants'
 import {
   DEFAULT_EXTRAPOLATION,
@@ -14,11 +17,8 @@ import { changeKeyViewType } from 'uiSrc/slices/browser/keys'
 import { KeyViewType } from 'uiSrc/slices/interfaces/keys'
 import { Nullable } from 'uiSrc/utils'
 import { TextBtn } from 'uiSrc/pages/database-analysis/components/base/TextBtn'
-import { SwitchInput } from 'uiSrc/components/base/inputs'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { DatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
-import Table from './Table'
+import TopNamespacesTable from './Table'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -65,22 +65,22 @@ const TopNamespace = (props: Props) => {
     return (
       <div className="section" data-testid="top-namespaces-empty">
         <div className="section-title-wrapper">
-          <Title size="M" className="section-title">
+          <RiTitle size="M" className="section-title">
             TOP NAMESPACES
-          </Title>
+          </RiTitle>
         </div>
         <div className="section-content" data-testid="top-namespaces-message">
           <div className={styles.noNamespaceMsg}>
-            <Title size="L">No namespaces to display</Title>
+            <RiTitle size="L">No namespaces to display</RiTitle>
             <p className={styles.noNamespaceParagraph}>
               {'Configure the delimiter in '}
-              <EmptyButton
+              <RiEmptyButton
                 data-testid="tree-view-page-link"
                 className={styles.treeViewBtn}
                 onClick={handleTreeViewClick}
               >
                 Tree View
-              </EmptyButton>
+              </RiEmptyButton>
               {' to customize the namespaces displayed.'}
             </p>
           </div>
@@ -92,9 +92,9 @@ const TopNamespace = (props: Props) => {
   return (
     <div className="section" data-testid="top-namespaces">
       <div className="section-title-wrapper">
-        <Title size="M" className="section-title">
+        <RiTitle size="M" className="section-title">
           TOP NAMESPACES
-        </Title>
+        </RiTitle>
         <TextBtn
           $active={tableView === TableView.MEMORY}
           size="small"
@@ -114,7 +114,7 @@ const TopNamespace = (props: Props) => {
           by Number of Keys
         </TextBtn>
         {extrapolation !== DEFAULT_EXTRAPOLATION && (
-          <SwitchInput
+          <RiSwitchInput
             color="subdued"
             className="switch-extrapolate-results"
             title="Extrapolate results"
@@ -129,7 +129,7 @@ const TopNamespace = (props: Props) => {
       </div>
       <div className="section-content">
         {tableView === TableView.MEMORY && (
-          <Table
+          <TopNamespacesTable
             data={data?.topMemoryNsp ?? []}
             defaultSortField="memory"
             delimiter={data?.delimiter ?? ''}
@@ -139,7 +139,7 @@ const TopNamespace = (props: Props) => {
           />
         )}
         {tableView === TableView.KEYS && (
-          <Table
+          <TopNamespacesTable
             data={data?.topKeysNsp ?? []}
             defaultSortField="keys"
             delimiter={data?.delimiter ?? ''}

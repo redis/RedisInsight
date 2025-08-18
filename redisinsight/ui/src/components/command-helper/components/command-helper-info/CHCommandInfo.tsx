@@ -1,14 +1,12 @@
 import React from 'react'
 
-
-import { GroupBadge } from 'uiSrc/components'
+import { RiIconButton } from 'uiBase/forms'
+import { ArrowLeftIcon } from 'uiBase/icons'
+import { RiColorText } from 'uiBase/text'
+import { RiBadge } from 'uiBase/display'
+import { RiRow } from 'uiBase/layout'
 import { CommandGroup } from 'uiSrc/constants'
-
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
-import { ColorText } from 'uiSrc/components/base/text'
-import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
-import { Row } from 'uiSrc/components/base/layout/flex'
+import { GroupBadge } from 'uiSrc/components'
 
 import styles from './styles.module.scss'
 
@@ -28,25 +26,25 @@ const CHCommandInfo = (props: Props) => {
   } = props
 
   return (
-    <Row
+    <RiRow
       align="center"
       className={styles.container}
       data-testid="cli-helper-title"
     >
-      <IconButton
+      <RiIconButton
         icon={ArrowLeftIcon}
         onClick={onBackClick}
         data-testid="cli-helper-back-to-list-btn"
         style={{ marginRight: '4px' }}
       />
       <GroupBadge type={group} className={styles.groupBadge} />
-      <ColorText
+      <RiColorText
         className={styles.title}
         color="subdued"
         data-testid="cli-helper-title-args"
       >
         {args}
-      </ColorText>
+      </RiColorText>
       {complexity && (
         <RiBadge
           label={complexity}
@@ -55,7 +53,7 @@ const CHCommandInfo = (props: Props) => {
           data-testid="cli-helper-complexity-short"
         />
       )}
-    </Row>
+    </RiRow>
   )
 }
 

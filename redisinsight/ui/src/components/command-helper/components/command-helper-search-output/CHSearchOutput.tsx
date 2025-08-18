@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiColorText, RiText } from 'uiBase/text'
+import { RiLink } from 'uiBase/display'
 import { generateArgsNames } from 'uiSrc/utils'
 import { setSearchedCommand } from 'uiSrc/slices/cli/cli-settings'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { ColorText, Text } from 'uiSrc/components/base/text'
-import { Link } from 'uiSrc/components/base/link/Link'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -45,25 +45,25 @@ const CHSearchOutput = ({ searchedCommands }: Props) => {
         args,
       ).join(' ')
       return (
-        <Text
+        <RiText
           size="s"
           color="subdued"
           className={styles.description}
           data-testid={`cli-helper-output-args-${command}`}
         >
           {argString}
-        </Text>
+        </RiText>
       )
     }
     return (
-      <Text
+      <RiText
         size="s"
         color="subdued"
         className={cx(styles.description, styles.summary)}
         data-testid={`cli-helper-output-summary-${command}`}
       >
         {ALL_REDIS_COMMANDS[command].summary}
-      </Text>
+      </RiText>
     )
   }
 
@@ -72,9 +72,9 @@ const CHSearchOutput = ({ searchedCommands }: Props) => {
       {searchedCommands.length > 0 && (
         <div style={{ width: '100%' }}>
           {searchedCommands.map((command: string) => (
-            <Row gap="m" key={command}>
-              <FlexItem style={{ flexShrink: 0 }}>
-                <Text
+            <RiRow gap="m" key={command}>
+              <RiFlexItem style={{ flexShrink: 0 }}>
+                <RiText
                   key={command}
                   size="s"
                   data-testid={`cli-helper-output-title-${command}`}
@@ -82,23 +82,21 @@ const CHSearchOutput = ({ searchedCommands }: Props) => {
                     handleClickCommand(e, command)
                   }}
                 >
-                  <Link className={styles.title}>
-                    {command}
-                  </Link>
-                </Text>
-              </FlexItem>
-              <FlexItem style={{ flexDirection: 'row', overflow: 'hidden' }}>
+                  <RiLink className={styles.title}>{command}</RiLink>
+                </RiText>
+              </RiFlexItem>
+              <RiFlexItem style={{ flexDirection: 'row', overflow: 'hidden' }}>
                 {renderDescription(command)}
-              </FlexItem>
-            </Row>
+              </RiFlexItem>
+            </RiRow>
           ))}
         </div>
       )}
       {searchedCommands.length === 0 && (
         <div className={styles.defaultScreen}>
-          <ColorText color="subdued" data-testid="search-cmds-no-results">
+          <RiColorText color="subdued" data-testid="search-cmds-no-results">
             No results found.
-          </ColorText>
+          </RiColorText>
         </div>
       )}
     </>

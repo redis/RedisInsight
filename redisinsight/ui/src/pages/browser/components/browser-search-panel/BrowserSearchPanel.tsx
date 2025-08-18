@@ -4,12 +4,10 @@ import React, { useCallback, useState } from 'react'
 
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  FilterTableIcon,
-  IconType,
-  QuerySearchIcon,
-} from 'uiSrc/components/base/icons'
-import { ModuleNotLoaded, OnboardingTour, RiTooltip } from 'uiSrc/components'
+import { FilterTableIcon, IconType, QuerySearchIcon } from 'uiBase/icons'
+import { RiIconButton } from 'uiBase/forms'
+import { RiModal, RiTooltip} from 'uiBase/display'
+import { ModuleNotLoaded, OnboardingTour } from 'uiSrc/components'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { KeyViewType, SearchMode } from 'uiSrc/slices/interfaces/keys'
 import FilterKeyType from 'uiSrc/pages/browser/components/filter-key-type'
@@ -25,8 +23,6 @@ import { BrowserStorageItem } from 'uiSrc/constants'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 
 import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { Modal } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 interface ISwitchType<T> {
@@ -140,7 +136,7 @@ const BrowserSearchPanel = (props: Props) => {
   }, [])
 
   const SwitchModeBtn = (item: ISwitchType<SearchMode>) => (
-    <IconButton
+    <RiIconButton
       className={item.getClassName()}
       icon={item.getIconType()}
       aria-label={item.ariaLabel}
@@ -168,7 +164,7 @@ const BrowserSearchPanel = (props: Props) => {
 
   return (
     <div className={styles.content}>
-      <Modal
+      <RiModal
         open={isPopoverOpen}
         onCancel={hidePopover}
         className={styles.moduleNotLoaded}

@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 
+import { RiFlexItem, RiRow, RiTable, ColumnDefinition } from 'uiBase/layout'
+import { RiPrimaryButton, RiSecondaryButton, RiFormField } from 'uiBase/forms'
+import { RiSearchInput } from 'uiBase/inputs'
+import { RiTitle, RiText } from 'uiBase/text'
 import {
   AddRedisDatabaseStatus,
   InstanceRedisCluster,
@@ -11,16 +15,6 @@ import { clusterSelector } from 'uiSrc/slices/instances/cluster'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { SearchInput } from 'uiSrc/components/base/inputs'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -66,7 +60,7 @@ const RedisClusterDatabasesResult = ({ columns, onBack, onView }: Props) => {
   }
 
   const SummaryText = () => (
-    <Text>
+    <RiText>
       <b>Summary: </b>
       {countSuccessAdded ? (
         <span>
@@ -77,40 +71,40 @@ const RedisClusterDatabasesResult = ({ columns, onBack, onView }: Props) => {
       {countFailAdded ? (
         <span>Failed to add {countFailAdded} database(s).</span>
       ) : null}
-    </Text>
+    </RiText>
   )
 
   return (
     <AutodiscoveryPageTemplate>
       <div className="databaseContainer">
-        <Title size="XXL" className={styles.title} data-testid="title">
+        <RiTitle size="XXL" className={styles.title} data-testid="title">
           Redis Enterprise
           {countSuccessAdded + countFailAdded > 1
             ? ' Databases '
             : ' Database '}
           Added
-        </Title>
-        <Row align="end" gap="s">
-          <FlexItem grow>
+        </RiTitle>
+        <RiRow align="end" gap="s">
+          <RiFlexItem grow>
             <MessageBar opened={!!countSuccessAdded || !!countFailAdded}>
               <SummaryText />
             </MessageBar>
-          </FlexItem>
-          <FlexItem>
-            <FormField className={styles.searchForm}>
-              <SearchInput
+          </RiFlexItem>
+          <RiFlexItem>
+            <RiFormField className={styles.searchForm}>
+              <RiSearchInput
                 placeholder="Search..."
                 className={styles.search}
                 onChange={onQueryChange}
                 aria-label="Search"
                 data-testid="search"
               />
-            </FormField>
-          </FlexItem>
-        </Row>
+            </RiFormField>
+          </RiFlexItem>
+        </RiRow>
         <br />
         <div className="itemList databaseList clusterDatabaseListResult">
-          <Table
+          <RiTable
             columns={columns}
             data={items}
             defaultSorting={[
@@ -121,28 +115,28 @@ const RedisClusterDatabasesResult = ({ columns, onBack, onView }: Props) => {
             ]}
           />
           {!items.length && (
-            <Text className={styles.noDatabases}>{message}</Text>
+            <RiText className={styles.noDatabases}>{message}</RiText>
           )}
         </div>
       </div>
-      <FlexItem className={cx(styles.footer, 'footerAddDatabase')}>
-        <Row justify="between">
-          <SecondaryButton
+      <RiFlexItem className={cx(styles.footer, 'footerAddDatabase')}>
+        <RiRow justify="between">
+          <RiSecondaryButton
             onClick={() => onBack(false)}
             className="btn-cancel btn-back"
             data-testid="btn-back-to-adding"
           >
             Back to adding databases
-          </SecondaryButton>
-          <PrimaryButton
+          </RiSecondaryButton>
+          <RiPrimaryButton
             size="m"
             onClick={() => onView(false)}
             data-testid="btn-view-databases"
           >
             View Databases
-          </PrimaryButton>
-        </Row>
-      </FlexItem>
+          </RiPrimaryButton>
+        </RiRow>
+      </RiFlexItem>
     </AutodiscoveryPageTemplate>
   )
 }

@@ -12,25 +12,19 @@ import cx from 'classnames'
 import { isNull } from 'lodash'
 
 import ReactDOM from 'react-dom'
+import { RiFlexItem, RiRow, RiSpacer } from 'uiBase/layout'
+import { RiPrimaryButton, RiSecondaryButton, RiFormField } from 'uiBase/forms'
+import { InfoIcon, RiIcon } from 'uiBase/icons'
+import { RiPasswordInput, RiTextInput } from 'uiBase/inputs'
+import { RiTitle } from 'uiBase/text'
 import { SECURITY_FIELD } from 'uiSrc/constants'
-import { RiTooltip, RiTooltipProps } from 'uiSrc/components'
 import { RdiInstance } from 'uiSrc/slices/interfaces'
 import { getFormUpdates, Nullable } from 'uiSrc/utils'
 import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { InfoIcon } from 'uiSrc/components/base/icons'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { PasswordInput, TextInput } from 'uiSrc/components/base/inputs'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { Spacer } from 'uiSrc/components/base/layout'
 import ValidationTooltip from './components/ValidationTooltip'
 
 import styles from './styles.module.scss'
+import { RiTooltip, RiTooltipProps } from 'uiBase/display'
 
 export interface AppendInfoProps
   extends Omit<RiTooltipProps, 'children' | 'delay' | 'position'> {
@@ -83,9 +77,9 @@ const ConnectionForm = (props: Props) => {
   useEffect(() => {
     setInitialFormValues(getInitialValues(editInstance))
     setModalHeader(
-      <Title size="M">
+      <RiTitle size="M">
         {editInstance ? 'Edit endpoint' : 'Add RDI endpoint'}
-      </Title>,
+      </RiTitle>,
     )
   }, [editInstance])
 
@@ -121,22 +115,22 @@ const ConnectionForm = (props: Props) => {
     if (!footerEl) return null
 
     return ReactDOM.createPortal(
-      <Row className="footerAddDatabase" justify="between">
-        <FlexItem />
-        <FlexItem>
-          <Row gap="m">
-            <FlexItem>
-              <SecondaryButton
+      <RiRow className="footerAddDatabase" justify="between">
+        <RiFlexItem />
+        <RiFlexItem>
+          <RiRow gap="m">
+            <RiFlexItem>
+              <RiSecondaryButton
                 size="s"
                 data-testid="connection-form-cancel-button"
                 onClick={onCancel}
               >
                 Cancel
-              </SecondaryButton>
-            </FlexItem>
-            <FlexItem>
+              </RiSecondaryButton>
+            </RiFlexItem>
+            <RiFlexItem>
               <ValidationTooltip isValid={isValid} errors={errors}>
-                <PrimaryButton
+                <RiPrimaryButton
                   data-testid="connection-form-add-button"
                   type="submit"
                   size="s"
@@ -146,12 +140,12 @@ const ConnectionForm = (props: Props) => {
                   onClick={onSubmit}
                 >
                   {editInstance ? 'Apply Changes' : 'Add Endpoint'}
-                </PrimaryButton>
+                </RiPrimaryButton>
               </ValidationTooltip>
-            </FlexItem>
-          </Row>
-        </FlexItem>
-      </Row>,
+            </RiFlexItem>
+          </RiRow>
+        </RiFlexItem>
+      </RiRow>,
       footerEl,
     )
   }
@@ -168,68 +162,79 @@ const ConnectionForm = (props: Props) => {
         <Form className={styles.form}>
           <div className="databasePanelWrapper" data-testid="connection-form">
             <div className={cx('container relative')}>
-              <FormField label="RDI Alias*" className={styles.withoutPadding}>
+              <RiFormField label="RDI Alias*" className={styles.withoutPadding}>
                 <Field name="name">
                   {({ field }: { field: FieldInputProps<string> }) => (
-                    <TextInput
+                    <RiTextInput
                       data-testid="connection-form-name-input"
                       placeholder="Enter RDI Alias"
                       maxLength={500}
                       name={field.name}
                       value={field.value}
-                      onChange={(value) => field.onChange({ target: { name: field.name, value } })}
+                      onChange={(value) =>
+                        field.onChange({ target: { name: field.name, value } })
+                      }
                     />
                   )}
                 </Field>
-              </FormField>
-              <Spacer size='s' />
-              <FormField
+              </RiFormField>
+              <RiSpacer size="s" />
+              <RiFormField
                 label="URL*"
                 infoIconProps={{
-                  content: "The RDI machine servers REST API via port 443. Ensure that Redis Insight can access the RDI host over port 443."
+                  content:
+                    'The RDI machine servers REST API via port 443. Ensure that Redis Insight can access the RDI host over port 443.',
                 }}
               >
                 <Field name="url">
                   {({ field }: { field: FieldInputProps<string> }) => (
-                    <TextInput
+                    <RiTextInput
                       data-testid="connection-form-url-input"
                       placeholder="Enter the RDI host IP as: https://[IP-Address]"
                       disabled={!!editInstance}
                       name={field.name}
                       value={field.value}
-                      onChange={(value) => field.onChange({ target: { name: field.name, value } })}
+                      onChange={(value) =>
+                        field.onChange({ target: { name: field.name, value } })
+                      }
                     />
                   )}
                 </Field>
-              </FormField>
-              <Spacer size='s' />
-              <FormField>
-                <Row gap="m">
-                  <FlexItem grow={1}>
-                    <FormField
+              </RiFormField>
+              <RiSpacer size="s" />
+              <RiFormField>
+                <RiRow gap="m">
+                  <RiFlexItem grow={1}>
+                    <RiFormField
                       label="Username"
                       infoIconProps={{
-                        content: "The RDI REST API authentication is using the RDI Redis username and password."
+                        content:
+                          'The RDI REST API authentication is using the RDI Redis username and password.',
                       }}
                     >
                       <Field name="username">
                         {({ field }: { field: FieldInputProps<string> }) => (
-                          <TextInput
+                          <RiTextInput
                             data-testid="connection-form-username-input"
                             placeholder="Enter the RDI Redis username"
                             maxLength={500}
                             name={field.name}
                             value={field.value}
-                            onChange={(value) => field.onChange({ target: { name: field.name, value } })}
+                            onChange={(value) =>
+                              field.onChange({
+                                target: { name: field.name, value },
+                              })
+                            }
                           />
                         )}
                       </Field>
-                    </FormField>
-                  </FlexItem>
-                  <FlexItem grow={1}>
-                    <FormField
+                    </RiFormField>
+                  </RiFlexItem>
+                  <RiFlexItem grow={1}>
+                    <RiFormField
                       infoIconProps={{
-                        content: "The RDI REST API authentication is using the RDI Redis username and password."
+                        content:
+                          'The RDI REST API authentication is using the RDI Redis username and password.',
                       }}
                       label="Password"
                     >
@@ -243,7 +248,7 @@ const ConnectionForm = (props: Props) => {
                           form: FormikHelpers<string>
                           meta: FieldMetaProps<string>
                         }) => (
-                          <PasswordInput
+                          <RiPasswordInput
                             data-testid="connection-form-password-input"
                             placeholder="Enter the RDI Redis password"
                             maxLength={500}
@@ -260,10 +265,10 @@ const ConnectionForm = (props: Props) => {
                           />
                         )}
                       </Field>
-                    </FormField>
-                  </FlexItem>
-                </Row>
-              </FormField>
+                    </RiFormField>
+                  </RiFlexItem>
+                </RiRow>
+              </RiFormField>
             </div>
             <Footer
               isValid={isValid}

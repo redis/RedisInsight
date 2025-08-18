@@ -1,6 +1,6 @@
 import React from 'react'
-import { render } from 'uiSrc/utils/test-utils'
 import { instance, mock } from 'ts-mockito'
+import { render } from 'uiSrc/utils/test-utils'
 import AddKeyStream, { Props } from './AddKeyStream'
 
 const mockedProps = mock<Props>()

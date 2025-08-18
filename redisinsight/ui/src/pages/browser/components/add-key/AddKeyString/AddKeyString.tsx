@@ -1,13 +1,13 @@
 import React, { FormEvent, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { RiFormField } from 'uiBase/forms'
+import { RiTextArea } from 'uiBase/inputs'
 import { Maybe, stringToBuffer } from 'uiSrc/utils'
 
 import { addKeyStateSelector, addStringKey } from 'uiSrc/slices/browser/keys'
 
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { TextArea } from 'uiSrc/components/base/inputs'
 import { SetStringWithExpireDto } from 'apiSrc/modules/browser/string/dto'
 import { AddStringFormConfig as config } from '../constants/fields-config'
 
@@ -49,8 +49,8 @@ const AddKeyString = (props: Props) => {
 
   return (
     <form onSubmit={onFormSubmit}>
-      <FormField label={config.value.label}>
-        <TextArea
+      <RiFormField label={config.value.label}>
+        <RiTextArea
           name="value"
           id="value"
           placeholder={config.value.placeholder}
@@ -59,7 +59,7 @@ const AddKeyString = (props: Props) => {
           disabled={loading}
           data-testid="string-value"
         />
-      </FormField>
+      </RiFormField>
       <ActionFooter
         onCancel={() => onCancel(true)}
         onAction={submitData}

@@ -4,11 +4,11 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
-import { SaveIcon } from 'uiSrc/components/base/icons'
+import { SaveIcon } from 'uiBase/icons'
+import { RiEmptyButton } from 'uiBase/forms'
 import { rdiPipelineSelector } from 'uiSrc/slices/rdi/pipeline'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import styles from './styles.module.scss'
 
 interface Props {
@@ -44,7 +44,7 @@ const Download = ({ dataTestid, onClose }: Props) => {
   }
 
   return (
-    <EmptyButton
+    <RiEmptyButton
       color="text"
       className={styles.downloadBtn}
       icon={SaveIcon}
@@ -54,7 +54,7 @@ const Download = ({ dataTestid, onClose }: Props) => {
       data-testid={dataTestid || 'download-pipeline-btn'}
     >
       Save to file
-    </EmptyButton>
+    </RiEmptyButton>
   )
 }
 

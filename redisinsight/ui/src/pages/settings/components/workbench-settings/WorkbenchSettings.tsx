@@ -1,6 +1,11 @@
 import { toNumber } from 'lodash'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiFormField } from 'uiBase/forms'
+import { RiSwitchInput } from 'uiBase/inputs'
+import { RiTitle } from 'uiBase/text'
+import { RiLink } from 'uiBase/display'
 import { SettingItem } from 'uiSrc/components'
 import { PIPELINE_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import {
@@ -11,11 +16,6 @@ import {
 } from 'uiSrc/slices/user/user-settings'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { validateNumber } from 'uiSrc/utils'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { SwitchInput } from 'uiSrc/components/base/inputs'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Link } from 'uiSrc/components/base/link/Link'
 
 const WorkbenchSettings = () => {
   const { cleanup } = useSelector(userSettingsWBSelector)
@@ -41,17 +41,17 @@ const WorkbenchSettings = () => {
 
   return (
     <>
-      <Title size="M">Editor Cleanup</Title>
-      <Spacer size="m" />
-      <FormField>
-        <SwitchInput
+      <RiTitle size="M">Editor Cleanup</RiTitle>
+      <RiSpacer size="m" />
+      <RiFormField>
+        <RiSwitchInput
           checked={cleanup}
           onCheckedChange={onSwitchWbCleanUp}
           title="Clear the Editor after running commands"
           data-testid="switch-workbench-cleanup"
         />
-      </FormField>
-      <Spacer size="xl" />
+      </RiFormField>
+      <RiSpacer size="xl" />
       <SettingItem
         initValue={batchSize.toString()}
         onApply={handleApplyPipelineCountChanges}
@@ -63,14 +63,14 @@ const WorkbenchSettings = () => {
         summary={
           <>
             {'Sets the size of a command batch for the '}
-            <Link
+            <RiLink
               href="https://redis.io/docs/latest/develop/use/pipelining/"
               target="_blank"
               data-testid="pipelining-link"
               style={{ padding: 0 }}
             >
               pipeline
-            </Link>
+            </RiLink>
             {' mode in Workbench. 0 or 1 pipelines every command.'}
           </>
         }

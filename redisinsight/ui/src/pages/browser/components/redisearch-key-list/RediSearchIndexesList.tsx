@@ -1,9 +1,13 @@
-import cx from 'classnames'
 import React, { useEffect, useState } from 'react'
+import cx from 'classnames'
 import { isString } from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
 
 import styled from 'styled-components'
+import { RiOutsideClickDetector } from 'uiBase/utils'
+import { RiEmptyButton, RiIconButton, RiSelect } from 'uiBase/forms'
+import { RefreshIcon } from 'uiBase/icons'
+import { RiText } from 'uiBase/text'
 import {
   setSelectedIndex,
   redisearchSelector,
@@ -32,12 +36,7 @@ import {
 import { localStorageService } from 'uiSrc/services'
 import { BrowserStorageItem } from 'uiSrc/constants'
 
-import { OutsideClickDetector } from 'uiSrc/components/base/utils'
-import { EmptyButton, IconButton } from 'uiSrc/components/base/forms/buttons'
-import { RefreshIcon } from 'uiSrc/components/base/icons'
-import { RiTooltip } from 'uiSrc/components'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
-import { Text } from 'uiSrc/components/base/text'
+import { RiTooltip } from 'uiBase/display'
 import styles from './styles.module.scss'
 
 export const CREATE = 'create'
@@ -98,14 +97,14 @@ const RediSearchIndexesList = (props: Props) => {
     return {
       value: JSON.stringify(index),
       inputDisplay: (
-        <Text component="span" data-test-subj={`mode-option-type-${value}`}>
+        <RiText component="span" data-test-subj={`mode-option-type-${value}`}>
           {value}
-        </Text>
+        </RiText>
       ),
       dropdownDisplay: (
-        <Text component="span" data-test-subj={`mode-option-type-${value}`}>
+        <RiText component="span" data-test-subj={`mode-option-type-${value}`}>
           {value}
-        </Text>
+        </RiText>
       ),
     }
   })
@@ -114,13 +113,13 @@ const RediSearchIndexesList = (props: Props) => {
     value: JSON.stringify(CREATE),
     inputDisplay: <span>CREATE</span>,
     dropdownDisplay: (
-      <Text
+      <RiText
         size="M"
         className={cx(styles.createIndexBtn)}
         data-testid="create-index-btn"
       >
         Create Index
-      </Text>
+      </RiText>
     ),
   })
 
@@ -173,7 +172,7 @@ const RediSearchIndexesList = (props: Props) => {
   }
 
   return (
-    <OutsideClickDetector onOutsideClick={() => setIsSelectOpen(false)}>
+    <RiOutsideClickDetector onOutsideClick={() => setIsSelectOpen(false)}>
       <div className={cx(styles.container)}>
         <div className={styles.select}>
           <RiSelect
@@ -203,7 +202,7 @@ const RediSearchIndexesList = (props: Props) => {
         </div>
         <div className={styles.refresh}>
           <RiTooltip content="Refresh Indexes">
-            <IconButton
+            <RiIconButton
               size="S"
               icon={RefreshIcon}
               disabled={loading}
@@ -215,11 +214,11 @@ const RediSearchIndexesList = (props: Props) => {
           </RiTooltip>
         </div>
       </div>
-    </OutsideClickDetector>
+    </RiOutsideClickDetector>
   )
 }
 
-const Button = styled(EmptyButton)`
+const Button = styled(RiEmptyButton)`
   justify-content: flex-start;
   max-width: 200px;
   padding-left: 1.275rem;

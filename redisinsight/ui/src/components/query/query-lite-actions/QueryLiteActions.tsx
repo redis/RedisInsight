@@ -1,13 +1,13 @@
 import React from 'react'
 
 import { KEYBOARD_SHORTCUTS } from 'uiSrc/constants'
-import { KeyboardShortcut, RiTooltip } from 'uiSrc/components'
+import { KeyboardShortcut } from 'uiSrc/components'
 
-import { PlayFilledIcon } from 'uiSrc/components/base/icons'
-
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { Button, EmptyButton } from 'uiSrc/components/base/forms/buttons'
-import { Text } from 'uiSrc/components/base/text'
+import { PlayFilledIcon } from 'uiBase/icons'
+import { RiText } from 'uiBase/text'
+import { RiSpacer } from 'uiBase/layout'
+import { RiTooltip } from 'uiBase/display'
+import { RiEmptyButton, Button } from 'uiBase/forms'
 
 export interface Props {
   onSubmit: () => void
@@ -19,8 +19,8 @@ const QueryLiteActions = (props: Props) => {
   const { isLoading, onSubmit, onClear } = props
   const KeyBoardTooltipContent = KEYBOARD_SHORTCUTS?.workbench?.runQuery && (
     <>
-      <Text size="s">{KEYBOARD_SHORTCUTS.workbench.runQuery?.label}:</Text>
-      <Spacer size="s" />
+      <RiText size="s">{KEYBOARD_SHORTCUTS.workbench.runQuery?.label}:</RiText>
+      <RiSpacer size="s" />
       <KeyboardShortcut
         separator={KEYBOARD_SHORTCUTS?._separator}
         items={KEYBOARD_SHORTCUTS.workbench.runQuery.keys}
@@ -39,7 +39,7 @@ const QueryLiteActions = (props: Props) => {
         }
         data-testid="clear-query-tooltip"
       >
-        <EmptyButton
+        <RiEmptyButton
           onClick={onClear}
           loading={isLoading}
           disabled={isLoading}
@@ -47,7 +47,7 @@ const QueryLiteActions = (props: Props) => {
           data-testid="btn-clear"
         >
           Clear
-        </EmptyButton>
+        </RiEmptyButton>
       </RiTooltip>
 
       <RiTooltip

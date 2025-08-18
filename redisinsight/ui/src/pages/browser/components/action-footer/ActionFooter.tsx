@@ -1,8 +1,7 @@
 import React from 'react'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { PrimaryButton, SecondaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiFlexItem, RiRow, SpacerSize } from 'uiBase/layout'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
 import AddKeyFooter from 'uiSrc/pages/browser/components/add-key/AddKeyFooter/AddKeyFooter'
-import { SpacerSize } from 'uiSrc/components/base/layout/spacer/spacer.styles'
 
 export interface ActionFooterProps {
   cancelText?: string
@@ -27,7 +26,7 @@ export const ActionFooter = ({
   onAction,
   disabled = false,
   loading = false,
-  gap = "m",
+  gap = 'm',
   actionTestId,
   cancelTestId,
   cancelClassName = 'btn-cancel btn-back',
@@ -36,18 +35,18 @@ export const ActionFooter = ({
   enableFormSubmit = true,
 }: ActionFooterProps) => {
   const content = (
-    <Row justify="end" gap={gap} style={{ padding: 18 }}>
-      <FlexItem>
-        <SecondaryButton
+    <RiRow justify="end" gap={gap} style={{ padding: 18 }}>
+      <RiFlexItem>
+        <RiSecondaryButton
           onClick={onCancel}
           data-testid={cancelTestId}
           className={cancelClassName}
         >
           {cancelText}
-        </SecondaryButton>
-      </FlexItem>
-      <FlexItem>
-        <PrimaryButton
+        </RiSecondaryButton>
+      </RiFlexItem>
+      <RiFlexItem>
+        <RiPrimaryButton
           type={enableFormSubmit ? 'submit' : 'button'}
           loading={loading}
           onClick={onAction}
@@ -56,17 +55,17 @@ export const ActionFooter = ({
           className={actionClassName}
         >
           {actionText}
-        </PrimaryButton>
-      </FlexItem>
-    </Row>
+        </RiPrimaryButton>
+      </RiFlexItem>
+    </RiRow>
   )
 
   if (enableFormSubmit) {
     return (
       <>
-        <PrimaryButton type="submit" style={{ display: 'none' }}>
+        <RiPrimaryButton type="submit" style={{ display: 'none' }}>
           Submit
-        </PrimaryButton>
+        </RiPrimaryButton>
         {usePortal ? <AddKeyFooter>{content}</AddKeyFooter> : content}
       </>
     )
@@ -77,4 +76,4 @@ export const ActionFooter = ({
   }
 
   return content
-} 
+}

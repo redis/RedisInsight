@@ -4,21 +4,20 @@ import { FormikErrors, useFormik } from 'formik'
 import { isEmpty, forEach } from 'lodash'
 import cx from 'classnames'
 
-import { HorizontalRule, RiTooltip } from 'uiSrc/components'
-import { compareConsents } from 'uiSrc/utils'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton } from 'uiBase/forms'
+import { InfoIcon } from 'uiBase/icons'
+import { RiTitle, RiText } from 'uiBase/text'
+import { RiSwitchInput } from 'uiBase/inputs'
+import { RiLink, RiTooltip } from 'uiBase/display'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   updateUserConfigSettingsAction,
   userSettingsSelector,
 } from 'uiSrc/slices/user/user-settings'
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { InfoIcon } from 'uiSrc/components/base/icons'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
-import { SwitchInput } from 'uiSrc/components/base/inputs'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { compareConsents } from 'uiSrc/utils'
+import { RiHorizontalRule } from 'uiSrc/components'
 import ConsentOption from './ConsentOption'
 
 import styles from './styles.module.scss'
@@ -211,32 +210,34 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
   return (
     <form onSubmit={formik.handleSubmit} data-testid="consents-settings-form">
       <div className={styles.consentsWrapper}>
-        <Spacer size="m" />
+        <RiSpacer size="m" />
         {consents.length > 1 && (
           <>
-            <FlexItem>
-              <Row gap="m">
-                <FlexItem>
-                  <SwitchInput
+            <RiFlexItem>
+              <RiRow gap="m">
+                <RiFlexItem>
+                  <RiSwitchInput
                     checked={isRecommended}
                     onCheckedChange={selectAll}
                     data-testid="switch-option-recommended"
                   />
-                </FlexItem>
-                <FlexItem>
-                  <Text className={styles.label}>Use recommended settings</Text>
-                  <Text
+                </RiFlexItem>
+                <RiFlexItem>
+                  <RiText className={styles.label}>
+                    Use recommended settings
+                  </RiText>
+                  <RiText
                     size="s"
                     className={styles.smallText}
                     color="subdued"
                     style={{ marginTop: '12px' }}
                   >
                     Select to activate all listed options.
-                  </Text>
-                </FlexItem>
-              </Row>
-            </FlexItem>
-            <HorizontalRule
+                  </RiText>
+                </RiFlexItem>
+              </RiRow>
+            </RiFlexItem>
+            <RiHorizontalRule
               margin="l"
               className={cx({
                 [styles.pluginWarningHR]: !!requiredConsents.length,
@@ -246,15 +247,15 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
         )}
         {!!privacyConsents.length && (
           <>
-            <Spacer />
-            <Title size="M" className={styles.title}>
+            <RiSpacer />
+            <RiTitle size="M" className={styles.title}>
               Privacy Settings
-            </Title>
-            <Spacer size="m" />
-            <Text className={styles.smallText} size="s" color="subdued">
+            </RiTitle>
+            <RiSpacer size="m" />
+            <RiText className={styles.smallText} size="s" color="subdued">
               To optimize your experience, Redis Insight uses third-party tools.
-            </Text>
-            <Spacer />
+            </RiText>
+            <RiSpacer />
           </>
         )}
         {privacyConsents.map((consent: IConsent) => (
@@ -267,11 +268,11 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
         ))}
         {!!notificationConsents.length && (
           <>
-            <Spacer size="m" />
-            <Title size="M" className={styles.title}>
+            <RiSpacer size="m" />
+            <RiTitle size="M" className={styles.title}>
               Notifications
-            </Title>
-            <Spacer size="m" />
+            </RiTitle>
+            <RiSpacer size="m" />
           </>
         )}
         {notificationConsents.map((consent: IConsent) => (
@@ -285,33 +286,33 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
       </div>
       {requiredConsents.length ? (
         <>
-          <HorizontalRule margin="l" className={styles.requiredHR} />
-          <Spacer size="m" />
-          <Text color="subdued" size="s" className={styles.smallText}>
+          <RiHorizontalRule margin="l" className={styles.requiredHR} />
+          <RiSpacer size="m" />
+          <RiText color="subdued" size="s" className={styles.smallText}>
             Use of Redis Insight is governed by your signed agreement with
             Redis, or, if none, by the{' '}
-            <Link
+            <RiLink
               target="_blank"
               href="https://redis.io/software-subscription-agreement/?utm_source=redisinsight&utm_medium=app&utm_campaign=EULA"
             >
               Redis Enterprise Software Subscription Agreement
-            </Link>
+            </RiLink>
             . If no agreement applies, use is subject to the{' '}
-            <Link
+            <RiLink
               target="_blank"
               href="https://github.com/RedisInsight/RedisInsight/blob/main/LICENSE"
             >
               Server Side Public License
-            </Link>
-          </Text>
-          <Spacer size="m" />
+            </RiLink>
+          </RiText>
+          <RiSpacer size="m" />
         </>
       ) : (
-        <Spacer />
+        <RiSpacer />
       )}
 
-      <Row align="center" justify="between" responsive={false}>
-        <FlexItem>
+      <RiRow align="center" justify="between" responsive={false}>
+        <RiFlexItem>
           {requiredConsents.map((consent: IConsent) => (
             <ConsentOption
               consent={consent}
@@ -321,8 +322,8 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
               key={consent.agreementName}
             />
           ))}
-        </FlexItem>
-        <FlexItem>
+        </RiFlexItem>
+        <RiFlexItem>
           <RiTooltip
             position="top"
             anchorClassName="euiToolTip__btn-disabled"
@@ -337,7 +338,7 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
               ) : null
             }
           >
-            <PrimaryButton
+            <RiPrimaryButton
               className="btn-add"
               type="submit"
               onClick={() => {}}
@@ -346,10 +347,10 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
               data-testid="btn-submit"
             >
               Submit
-            </PrimaryButton>
+            </RiPrimaryButton>
           </RiTooltip>
-        </FlexItem>
-      </Row>
+        </RiFlexItem>
+      </RiRow>
     </form>
   )
 }

@@ -4,25 +4,25 @@ import cx from 'classnames'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 
-import {
-  sendEventTelemetry,
-  TELEMETRY_EMPTY_VALUE,
-  TelemetryEvent,
-} from 'uiSrc/telemetry'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { InsightsPanelTabs, SidePanels } from 'uiSrc/slices/interfaces/insights'
+import { RiPopover, RiTooltip } from 'uiBase/index'
+
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiEmptyButton, RiPrimaryButton } from 'uiBase/forms'
+import { EraserIcon, LightBulbIcon } from 'uiBase/icons'
+import { RiText } from 'uiBase/text'
+import { RestartChat } from 'uiSrc/components/side-panels/panels/ai-assistant/components/shared'
 import {
   changeSelectedTab,
   changeSidePanel,
   resetExplorePanelSearch,
   setExplorePanelIsPageOpen,
 } from 'uiSrc/slices/panels/sidePanels'
-import { RestartChat } from 'uiSrc/components/side-panels/panels/ai-assistant/components/shared'
-
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { EmptyButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { EraserIcon, LightBulbIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
+import { InsightsPanelTabs, SidePanels } from 'uiSrc/slices/interfaces/insights'
+import {
+  sendEventTelemetry,
+  TELEMETRY_EMPTY_VALUE,
+  TelemetryEvent,
+} from 'uiSrc/telemetry'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -66,9 +66,9 @@ const ExpertChatHeader = (props: Props) => {
           content={connectedInstanceName}
           anchorClassName={styles.dbName}
         >
-          <Text size="xs" className="truncateText">
+          <RiText size="xs" className="truncateText">
             {connectedInstanceName}
-          </Text>
+          </RiText>
         </RiTooltip>
       ) : (
         <span />
@@ -92,7 +92,7 @@ const ExpertChatHeader = (props: Props) => {
             panelPaddingSize="m"
             closePopover={() => setIsTutorialsPopoverOpen(false)}
             button={
-              <EmptyButton
+              <RiEmptyButton
                 icon={LightBulbIcon}
                 size="small"
                 onClick={() => setIsTutorialsPopoverOpen(true)}
@@ -102,24 +102,24 @@ const ExpertChatHeader = (props: Props) => {
             }
           >
             <>
-              <Text>
+              <RiText>
                 Open relevant tutorials to learn more about search and query.
-              </Text>
-              <Spacer size="s" />
-              <PrimaryButton
+              </RiText>
+              <RiSpacer size="s" />
+              <RiPrimaryButton
                 size="s"
                 onClick={handleOpenTutorials}
                 className={styles.openTutorialsBtn}
                 data-testid="ai-expert-open-tutorials"
               >
                 Open tutorials
-              </PrimaryButton>
+              </RiPrimaryButton>
             </>
           </RiPopover>
         </RiTooltip>
         <RestartChat
           button={
-            <EmptyButton
+            <RiEmptyButton
               disabled={isClearDisabled}
               icon={EraserIcon}
               size="small"

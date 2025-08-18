@@ -9,9 +9,9 @@ import {
   StyledFlexItem,
   StyledGrid,
   VALID_PADDING_VALUES,
-} from 'uiSrc/components/base/layout/flex/flex.styles'
+} from './flex.styles'
 
-export const Grid = ({ children, className, ...rest }: GridProps) => {
+export const RiGrid = ({ children, className, ...rest }: GridProps) => {
   const classes = classNames('RI-flex-grid', className)
   return (
     <StyledGrid {...rest} className={classes}>
@@ -39,7 +39,7 @@ export const Grid = ({ children, className, ...rest }: GridProps) => {
  *   </FlexItem>
  * </FlexGroup>
  */
-export const FlexGroup = ({
+export const RiFlexGroup = ({
   children,
   className,
   grow,
@@ -92,7 +92,7 @@ export const FlexGroup = ({
  *   </FlexItem>
  * </Col>
  */
-export const Col = ({
+export const RiCol = ({
   className,
   reverse,
   contentCentered,
@@ -105,7 +105,7 @@ export const Col = ({
 }) => {
   const classes = classNames('RI-flex-col', className)
   return (
-    <FlexGroup
+    <RiFlexGroup
       {...rest}
       align={contentCentered ? 'center' : align}
       justify={contentCentered ? 'center' : justify}
@@ -115,7 +115,7 @@ export const Col = ({
   )
 }
 
-export const Row = ({
+export const RiRow = ({
   className,
   reverse,
   ...rest
@@ -124,7 +124,7 @@ export const Row = ({
 }) => {
   const classes = classNames('RI-flex-row', className)
   return (
-    <FlexGroup
+    <RiFlexGroup
       {...rest}
       className={classes}
       direction={reverse ? 'rowReverse' : 'row'}
@@ -146,7 +146,7 @@ export const Row = ({
  *   <div>Content</div>
  * </FlexItem>
  */
-export const FlexItem = ({
+export const RiFlexItem = ({
   children,
   className,
   grow = false,

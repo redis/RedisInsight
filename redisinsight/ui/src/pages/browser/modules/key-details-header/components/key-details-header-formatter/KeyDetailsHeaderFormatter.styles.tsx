@@ -1,8 +1,8 @@
 import styled from 'styled-components'
 import { ComponentProps } from 'react'
-import { ColorText } from 'uiSrc/components/base/text'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiColorText } from 'uiBase/text'
+import { RiSelect } from 'uiBase/forms'
+import { RiIcon } from 'uiBase/icons'
 
 type KeyDetailsSelectProps = ComponentProps<typeof RiSelect> & {
   $fullWidth?: boolean
@@ -28,7 +28,7 @@ const KeyDetailsSelect = styled(RiSelect)<KeyDetailsSelectProps>`
   }
 `
 
-const OptionText = styled(ColorText)`
+const OptionText = styled(RiColorText)`
   padding-left: 6px;
   padding-right: 4px;
   font-size: 13px;

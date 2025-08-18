@@ -1,7 +1,13 @@
-import cx from 'classnames'
 import React, { useEffect, useState } from 'react'
+import styled from 'styled-components'
+import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
+
+import { RiOutsideClickDetector } from 'uiBase/utils'
+import { RiHealthText } from 'uiBase/text'
+import { RiSelect, defaultValueRender } from 'uiBase/forms'
+import { RiModal } from 'uiBase/display'
 import {
   SCAN_COUNT_DEFAULT,
   SCAN_TREE_COUNT_DEFAULT,
@@ -21,17 +27,9 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { resetBrowserTree } from 'uiSrc/slices/app/context'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { AdditionalRedisModule } from 'uiSrc/slices/interfaces'
-import { OutsideClickDetector } from 'uiSrc/components/base/utils'
-import { HealthText } from 'uiSrc/components/base/text/HealthText'
-import {
-  defaultValueRender,
-  RiSelect,
-} from 'uiSrc/components/base/forms/select/RiSelect'
-import { Modal } from 'uiSrc/components/base/display'
 import { FILTER_KEY_TYPE_OPTIONS } from './constants'
 
 import styles from './styles.module.scss'
-import styled from 'styled-components'
 
 const ALL_KEY_TYPES_VALUE = 'all'
 
@@ -87,20 +85,20 @@ const FilterKeyType = ({ modules }: Props) => {
     return {
       value,
       inputDisplay: (
-        <HealthText
+        <RiHealthText
           color={color}
           data-test-subj={`filter-option-type-${value}`}
         >
           {text}
-        </HealthText>
+        </RiHealthText>
       ),
       dropdownDisplay: (
-        <HealthText
+        <RiHealthText
           color={color}
           data-test-subj={`filter-option-type-${value}`}
         >
           {text}
-        </HealthText>
+        </RiHealthText>
       ),
       'data-test-subj': `filter-option-type-${value}`,
     }
@@ -152,7 +150,7 @@ const FilterKeyType = ({ modules }: Props) => {
   }
 
   return (
-    <OutsideClickDetector
+    <RiOutsideClickDetector
       onOutsideClick={() => isVersionSupported && setIsSelectOpen(false)}
     >
       <div
@@ -161,7 +159,7 @@ const FilterKeyType = ({ modules }: Props) => {
           !isVersionSupported && styles.unsupported,
         )}
       >
-        <Modal
+        <RiModal
           open={!isVersionSupported && isInfoPopoverOpen}
           onCancel={() => setIsInfoPopoverOpen(false)}
           className={styles.unsupportedInfoModal}
@@ -189,7 +187,7 @@ const FilterKeyType = ({ modules }: Props) => {
           data-testid="select-filter-key-type"
         />
       </div>
-    </OutsideClickDetector>
+    </RiOutsideClickDetector>
   )
 }
 

@@ -1,11 +1,12 @@
 import React from 'react'
 
+import { RiTable, ColumnDefinition } from 'uiBase/layout'
 import { IDataStreams } from 'uiSrc/slices/interfaces'
 import { formatLongName } from 'uiSrc/utils'
-import { FormatedDate, RiTooltip } from 'uiSrc/components'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { FormatedDate } from 'uiSrc/components'
 import Accordion from '../components/accordion'
 import Panel from '../components/panel'
+import { RiTooltip } from 'uiBase/tooltip'
 
 type DataStreamsData = {
   name: string
@@ -138,7 +139,7 @@ const DataStreams = ({
         onRefreshClicked={onRefreshClicked}
         onChangeAutoRefresh={onChangeAutoRefresh}
       >
-        <Table
+        <RiTable
           columns={columns}
           data={[...dataStreams, totalsRow]}
           defaultSorting={[{ id: 'name', desc: false }]}

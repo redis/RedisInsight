@@ -3,25 +3,22 @@ import { map, pick } from 'lodash'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 
-import { cloudSelector } from 'uiSrc/slices/instances/cloud'
-import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
-import validationErrors from 'uiSrc/constants/validationErrors'
-import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
-
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { InfoIcon } from 'uiSrc/components/base/icons'
+import { RiFlexItem, RiRow, RiTable, ColumnDefinition } from 'uiBase/layout'
+import { InfoIcon } from 'uiBase/icons'
 import {
-  DestructiveButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
+  RiDestructiveButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
+} from 'uiBase/forms'
+import { RiPopover, RiTooltip } from 'uiBase/index'
+import { RiTitle, RiText } from 'uiBase/text'
+import { RiSearchInput } from 'uiBase/inputs'
 import { Pages } from 'uiSrc/constants'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { SearchInput } from 'uiSrc/components/base/inputs'
-import { Text } from 'uiSrc/components/base/text'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
+import validationErrors from 'uiSrc/constants/validationErrors'
+import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
+import { cloudSelector } from 'uiSrc/slices/instances/cloud'
 import styles from '../styles.module.scss'
 
 export interface Props {
@@ -137,28 +134,28 @@ const RedisCloudDatabasesPage = ({
       panelClassName={styles.panelCancelBtn}
       panelPaddingSize="l"
       button={
-        <SecondaryButton
+        <RiSecondaryButton
           onClick={showPopover}
           className="btn-cancel"
           data-testid="btn-cancel"
         >
           Cancel
-        </SecondaryButton>
+        </RiSecondaryButton>
       }
     >
-      <Text size="m">
+      <RiText size="m">
         Your changes have not been saved.&#10;&#13; Do you want to proceed to
         the list of databases?
-      </Text>
+      </RiText>
       <br />
       <div>
-        <DestructiveButton
+        <RiDestructiveButton
           size="s"
           onClick={onClose}
           data-testid="btn-cancel-proceed"
         >
           Proceed
-        </DestructiveButton>
+        </RiDestructiveButton>
       </div>
     </RiPopover>
   )
@@ -171,14 +168,10 @@ const RedisCloudDatabasesPage = ({
         isDisabled ? validationErrors.SELECT_AT_LEAST_ONE('database') : null
       }
       content={
-        isDisabled ? (
-          <span>
-            {validationErrors.NO_DBS_SELECTED}
-          </span>
-        ) : null
+        isDisabled ? <span>{validationErrors.NO_DBS_SELECTED}</span> : null
       }
     >
-      <PrimaryButton
+      <RiPrimaryButton
         size="m"
         disabled={isDisabled}
         onClick={handleSubmit}
@@ -187,41 +180,45 @@ const RedisCloudDatabasesPage = ({
         data-testid="btn-add-databases"
       >
         Add selected Databases
-      </PrimaryButton>
+      </RiPrimaryButton>
     </RiTooltip>
   )
 
   return (
     <AutodiscoveryPageTemplate>
       <div className="databaseContainer">
-        <Title size="XXL" className={styles.title} data-testid="title">
+        <RiTitle size="XXL" className={styles.title} data-testid="title">
           Redis Cloud Databases
-        </Title>
+        </RiTitle>
 
-        <Row align="end" gap="s">
-          <FlexItem grow>
-            <Text color="subdued" className={styles.subTitle} component="span">
+        <RiRow align="end" gap="s">
+          <RiFlexItem grow>
+            <RiText
+              color="subdued"
+              className={styles.subTitle}
+              component="span"
+            >
               These are {items.length > 1 ? 'databases ' : 'database '}
               in your Redis Cloud. Select the
               {items.length > 1 ? ' databases ' : ' database '} that you want to
               add.
-            </Text>
-          </FlexItem>
-        </Row>
-        <FlexItem>
-          <FormField className={styles.searchForm}>
-            <SearchInput
+            </RiText>
+          </RiFlexItem>
+        </RiRow>
+        <RiFlexItem>
+          <RiFormField className={styles.searchForm}>
+            <RiSearchInput
               placeholder="Search..."
               onChange={onQueryChange}
               aria-label="Search"
               data-testid="search"
             />
-          </FormField>
-        </FlexItem>
+          </RiFormField>
+        </RiFlexItem>
         <br />
 
         <div className="itemList databaseList cloudDatabaseList">
-          <Table
+          <RiTable
             columns={columns}
             data={items}
             defaultSorting={[
@@ -232,24 +229,24 @@ const RedisCloudDatabasesPage = ({
             ]}
             onRowClick={selectionValue.onSelectionChange}
           />
-          {!items.length && <Text>{message}</Text>}
+          {!items.length && <RiText>{message}</RiText>}
         </div>
       </div>
-      <FlexItem padding={4}>
-        <Row justify="between" gap="m">
-          <SecondaryButton
+      <RiFlexItem padding={4}>
+        <RiRow justify="between" gap="m">
+          <RiSecondaryButton
             onClick={onBack}
             className="btn-cancel btn-back"
             data-testid="btn-back-to-adding"
           >
             Back to adding databases
-          </SecondaryButton>
+          </RiSecondaryButton>
           <div>
             <CancelButton isPopoverOpen={isPopoverOpen} />
             <SubmitButton isDisabled={selection.length < 1} />
           </div>
-        </Row>
-      </FlexItem>
+        </RiRow>
+      </RiFlexItem>
     </AutodiscoveryPageTemplate>
   )
 }

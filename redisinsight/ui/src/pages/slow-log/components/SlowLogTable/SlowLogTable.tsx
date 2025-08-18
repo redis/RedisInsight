@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { RiText } from 'uiBase/text'
 import { ITableColumn } from 'uiSrc/components/virtual-table/interfaces'
 import VirtualTable from 'uiSrc/components/virtual-table/VirtualTable'
 import {
@@ -12,10 +13,10 @@ import {
 import { convertNumberByUnits } from 'uiSrc/pages/slow-log/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
-import { Text } from 'uiSrc/components/base/text'
 
-import { FormatedDate, RiTooltip } from 'uiSrc/components'
+import { FormatedDate } from 'uiSrc/components'
 import styles from '../styles.module.scss'
+import { RiTooltip } from 'uiBase/tooltip'
 
 export const DATE_FORMAT = 'HH:mm:ss d LLL yyyy'
 
@@ -54,14 +55,14 @@ const SlowLogTable = (props: Props) => {
       minWidth: 190,
       isSortable: true,
       render: (timestamp) => (
-        <Text
+        <RiText
           size="s"
           color="subdued"
           data-testid="timestamp-value"
           className={styles.timestampCell}
         >
           <FormatedDate date={timestamp * 1000} />
-        </Text>
+        </RiText>
       ),
     },
     {
@@ -72,9 +73,9 @@ const SlowLogTable = (props: Props) => {
       textAlignment: TableCellTextAlignment.Right,
       alignment: TableCellAlignment.Right,
       render: (duration) => (
-        <Text size="s" color="subdued" data-testid="duration-value">
+        <RiText size="s" color="subdued" data-testid="duration-value">
           {numberWithSpaces(convertNumberByUnits(duration, durationUnit))}
-        </Text>
+        </RiText>
       ),
     },
     {

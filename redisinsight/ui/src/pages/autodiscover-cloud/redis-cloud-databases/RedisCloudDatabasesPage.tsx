@@ -2,6 +2,11 @@ import React, { useEffect, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { RiIconButton } from 'uiBase/forms'
+import { CopyIcon } from 'uiBase/icons'
+import { RiText } from 'uiBase/text'
+import { ColumnDefinition } from 'uiBase/layout'
+import { RiTooltip } from 'uiBase/display'
 import { Pages } from 'uiSrc/constants'
 import {
   addInstancesRedisCloud,
@@ -25,15 +30,10 @@ import {
 import {
   DatabaseListModules,
   DatabaseListOptions,
-  RiTooltip,
 } from 'uiSrc/components'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { oauthCloudUserSelector } from 'uiSrc/slices/oauth/cloud'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CopyIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
-import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import RedisCloudDatabases from './RedisCloudDatabases'
 
 import styles from './styles.module.scss'
@@ -143,7 +143,7 @@ const RedisCloudDatabasesPage = () => {
               anchorClassName="truncateText"
               content={formatLongName(name)}
             >
-              <Text>{cellContent}</Text>
+              <RiText>{cellContent}</RiText>
             </RiTooltip>
           </div>
         )
@@ -182,7 +182,7 @@ const RedisCloudDatabasesPage = () => {
               anchorClassName="truncateText"
               content={formatLongName(name)}
             >
-              <Text>{cellContent}</Text>
+              <RiText>{cellContent}</RiText>
             </RiTooltip>
           </div>
         )
@@ -218,9 +218,13 @@ const RedisCloudDatabasesPage = () => {
         const text = publicEndpoint
         return (
           <div className="public_endpoint">
-            <Text className="copyPublicEndpointText">{text}</Text>
-            <RiTooltip position="right" content="Copy" anchorClassName="copyPublicEndpointTooltip">
-              <IconButton
+            <RiText className="copyPublicEndpointText">{text}</RiText>
+            <RiTooltip
+              position="right"
+              content="Copy"
+              anchorClassName="copyPublicEndpointTooltip"
+            >
+              <RiIconButton
                 icon={CopyIcon}
                 aria-label="Copy public endpoint"
                 className="copyPublicEndpointBtn"

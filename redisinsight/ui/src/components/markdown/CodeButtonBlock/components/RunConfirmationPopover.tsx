@@ -1,19 +1,14 @@
 import React, { useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton, RiSecondaryButton, RiCheckbox } from 'uiBase/forms'
+import { RiTitle, RiText } from 'uiBase/text'
 import { FeatureFlags, Pages } from 'uiSrc/constants'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { setDBConfigStorageField } from 'uiSrc/services'
 import { ConfigDBStorageItem } from 'uiSrc/constants/storage'
 import { FeatureFlagComponent } from 'uiSrc/components'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import styles from '../styles.module.scss'
 
 interface Props {
@@ -49,14 +44,14 @@ const RunConfirmationPopover = ({ onApply }: Props) => {
 
   return (
     <>
-      <Title size="XS">Run commands</Title>
-      <Spacer size="s" />
-      <Text size="s">
+      <RiTitle size="XS">Run commands</RiTitle>
+      <RiSpacer size="s" />
+      <RiText size="s">
         This tutorial will change data in your database, are you sure you want
         to run commands in this database?
-      </Text>
-      <Spacer size="s" />
-      <Checkbox
+      </RiText>
+      <RiSpacer size="s" />
+      <RiCheckbox
         id="showAgain"
         name="showAgain"
         label="Don't show again for this database"
@@ -69,23 +64,23 @@ const RunConfirmationPopover = ({ onApply }: Props) => {
       <div className={styles.popoverFooter}>
         <div>
           <FeatureFlagComponent name={FeatureFlags.envDependent}>
-            <SecondaryButton
+            <RiSecondaryButton
               size="s"
               className={styles.popoverBtn}
               onClick={handleChangeDatabase}
               data-testid="tutorial-popover-change-db"
             >
               Change Database
-            </SecondaryButton>
+            </RiSecondaryButton>
           </FeatureFlagComponent>
-          <PrimaryButton
+          <RiPrimaryButton
             size="s"
             className={styles.popoverBtn}
             onClick={handleApply}
             data-testid="tutorial-popover-apply-run"
           >
             Run
-          </PrimaryButton>
+          </RiPrimaryButton>
         </div>
       </div>
     </>

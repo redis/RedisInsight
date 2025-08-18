@@ -1,9 +1,10 @@
 import React from 'react'
-import { Nullable } from 'uiSrc/utils'
 
-import { RiTooltip } from 'uiSrc/components'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { EditIcon } from 'uiSrc/components/base/icons'
+import { RiIconButton } from 'uiBase/forms'
+import { EditIcon } from 'uiBase/icons'
+import { Nullable } from 'uiSrc/utils'
+import { RiTooltip } from 'uiBase/display'
+
 import styles from '../styles.module.scss'
 
 export interface Props {
@@ -21,7 +22,7 @@ const EditItemAction = ({
 }: Props) => (
   <div className={styles.actionBtn}>
     <RiTooltip content={tooltipContent} data-testid="edit-key-value-tooltip">
-      <IconButton
+      <RiIconButton
         disabled={!isEditable}
         icon={EditIcon}
         aria-label={title}

@@ -1,7 +1,7 @@
 import React from 'react'
-import { ExtendIcon, ShrinkIcon } from 'uiSrc/components/base/icons'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { RiTooltip } from 'uiSrc/components'
+import { ExtendIcon, ShrinkIcon } from 'uiBase/icons'
+import { RiIconButton } from 'uiBase/forms'
+import { RiTooltip } from 'uiBase/display'
 
 export interface Props {
   isFullScreen: boolean
@@ -21,7 +21,7 @@ const FullScreen = ({
     position="left"
     anchorClassName={anchorClassName}
   >
-    <IconButton
+    <RiIconButton
       icon={isFullScreen ? ShrinkIcon : ExtendIcon}
       color="primary"
       aria-label="Open full screen"

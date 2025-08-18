@@ -3,7 +3,19 @@ import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import { toNumber } from 'lodash'
 
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiBase/text'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import {
+  RiDestructiveButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
+  RiSelect,
+} from 'uiBase/forms'
+import { DeleteIcon, RiIcon } from 'uiBase/icons'
+import { RiPopover } from 'uiBase/display'
+import { RiTextInput } from 'uiBase/inputs'
 import { KeyTypes } from 'uiSrc/constants'
 import {
   bufferToString,
@@ -30,19 +42,6 @@ import {
 } from 'uiSrc/slices/instances/instances'
 
 import { AddListFormConfig as config } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  DestructiveButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { DeleteIcon } from 'uiSrc/components/base/icons'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
-import { RiPopover } from 'uiSrc/components/base'
-import { TextInput } from 'uiSrc/components/base/inputs'
 import { DeleteListElementsDto } from 'apiSrc/modules/browser/list/dto'
 
 import {
@@ -174,38 +173,38 @@ const RemoveListElements = (props: Props) => {
       panelClassName={styles.panelCancelBtn}
       panelPaddingSize="l"
       button={
-        <PrimaryButton
+        <RiPrimaryButton
           onClick={showPopover}
           disabled={!isFormValid}
           data-testid="remove-elements-btn"
         >
           Remove
-        </PrimaryButton>
+        </RiPrimaryButton>
       }
     >
       <div className={styles.popover}>
-        <Text size="m" component="div">
+        <RiText size="m" component="div">
           <h4 style={{ marginTop: 0 }}>
             <b>{count}</b> Element(s)
           </h4>
-          <Text size="s">
+          <RiText size="s">
             will be removed from the {destination.toLowerCase()} of{' '}
             <b>{formatNameShort(bufferToString(selectedKey))}</b>
-          </Text>
+          </RiText>
           {(!length || length <= +count) && (
             <div className={styles.appendInfo}>
               <RiIcon
                 type="ToastDangerIcon"
                 style={{ marginRight: '1rem', marginTop: '4px' }}
               />
-              <Text size="s">
+              <RiText size="s">
                 If you remove all Elements, the whole Key will be deleted.
-              </Text>
+              </RiText>
             </div>
           )}
-        </Text>
-        <Spacer />
-        <DestructiveButton
+        </RiText>
+        <RiSpacer />
+        <RiDestructiveButton
           size="small"
           onClick={submitData}
           icon={DeleteIcon}
@@ -213,7 +212,7 @@ const RemoveListElements = (props: Props) => {
           data-testid="remove-submit"
         >
           Remove
-        </DestructiveButton>
+        </RiDestructiveButton>
       </div>
     </RiPopover>
   )
@@ -245,10 +244,10 @@ const RemoveListElements = (props: Props) => {
   return (
     <>
       <div className={styles.content}>
-        <FlexItem grow>
-          <Row align="center">
-            <FlexItem style={{ minWidth: '220px' }}>
-              <FormField>
+        <RiFlexItem grow>
+          <RiRow align="center">
+            <RiFlexItem style={{ minWidth: '220px' }}>
+              <RiFormField>
                 <RiSelect
                   style={{
                     height: 43,
@@ -260,13 +259,13 @@ const RemoveListElements = (props: Props) => {
                   }
                   data-testid="destination-select"
                 />
-              </FormField>
-            </FlexItem>
-            <FlexItem grow style={{ width: '100%' }}>
-              <FormField
+              </RiFormField>
+            </RiFlexItem>
+            <RiFlexItem grow style={{ width: '100%' }}>
+              <RiFormField
                 additionalText={!canRemoveMultiple ? InfoBoxPopover() : <></>}
               >
-                <TextInput
+                <RiTextInput
                   name={config.count.name}
                   id={config.count.name}
                   maxLength={200}
@@ -278,27 +277,27 @@ const RemoveListElements = (props: Props) => {
                   ref={countInput}
                   disabled={!canRemoveMultiple}
                 />
-              </FormField>
-            </FlexItem>
-          </Row>
-        </FlexItem>
+              </RiFormField>
+            </RiFlexItem>
+          </RiRow>
+        </RiFlexItem>
       </div>
       <>
-        <Row justify="end" gap="xl" style={{ padding: 18 }}>
-          <FlexItem>
+        <RiRow justify="end" gap="xl" style={{ padding: 18 }}>
+          <RiFlexItem>
             <div>
-              <SecondaryButton
+              <RiSecondaryButton
                 onClick={() => closePanel(true)}
                 data-testid="cancel-elements-btn"
               >
                 Cancel
-              </SecondaryButton>
+              </RiSecondaryButton>
             </div>
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <div>{RemoveButton()}</div>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </>
     </>
   )

@@ -1,6 +1,7 @@
 import React from 'react'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 
+import { mockModal } from 'uiSrc/mocks/components/modal'
 import ImportFileModal, { Props } from './ImportFileModal'
 
 const mockProps: Props<Object> = {
@@ -18,22 +19,10 @@ const mockProps: Props<Object> = {
   isSubmitDisabled: false,
 }
 
-jest.mock('uiSrc/components/base/display', () => {
-  const actual = jest.requireActual('uiSrc/components/base/display')
+jest.mock('uiBase/display', () => {
+  const actual = jest.requireActual('uiBase/display')
 
-  return {
-    ...actual,
-    Modal: {
-      ...actual.Modal,
-      Content: {
-        ...actual.Modal.Content,
-        Header: {
-          ...actual.Modal.Content.Header,
-          Title: jest.fn().mockReturnValue(null),
-        },
-      },
-    },
-  }
+  return mockModal(actual)
 })
 
 describe('ImportFileModal', () => {

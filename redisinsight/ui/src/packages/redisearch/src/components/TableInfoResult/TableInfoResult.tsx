@@ -2,11 +2,10 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 import { toUpper, flatten, isArray, isEmpty, map, uniq } from 'lodash'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { RiTable, ColumnDefinition, RiLoadingContent } from 'uiBase/layout'
 
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { ColorText, Text } from '../../../../../components/base/text'
-import { LoadingContent } from '../../../../../components/base/layout'
+import { RiIcon } from 'uiBase/icons'
+import { RiColorText, RiText } from 'uiBase/text'
 import GroupBadge from '../GroupBadge'
 import { InfoAttributesBoolean } from '../../constants'
 
@@ -59,7 +58,7 @@ const TableInfoResult = React.memo((props: Props) => {
             </div>
           )
         }
-        return <Text>{initValue}</Text>
+        return <RiText>{initValue}</RiText>
       },
     }),
   )
@@ -68,7 +67,7 @@ const TableInfoResult = React.memo((props: Props) => {
     <div>
       {result ? (
         <>
-          <Text className="row" size="s" color="subdued">
+          <RiText className="row" size="s" color="subdued">
             Indexing
             <GroupBadge
               type={result?.index_definition?.key_type?.toLowerCase()}
@@ -78,33 +77,33 @@ const TableInfoResult = React.memo((props: Props) => {
             {result?.index_definition?.prefixes
               ?.map((prefix: any) => `"${prefix}"`)
               .join(',')}
-          </Text>
-          <Text className="row" size="s" color="subdued">
+          </RiText>
+          <RiText className="row" size="s" color="subdued">
             Options:{' '}
             {result?.index_options?.length ? (
-              <ColorText style={{ color: 'var(--euiColorFullShade)' }}>
+              <RiColorText color="accent">
                 {result?.index_options?.join(', ')}
-              </ColorText>
+              </RiColorText>
             ) : (
               <span className="italic">{noOptionsMessage}</span>
             )}
-          </Text>
+          </RiText>
         </>
       ) : (
-        <LoadingContent lines={2} />
+        <RiLoadingContent lines={2} />
       )}
     </div>
   )
   const Footer = () => (
     <div>
       {result ? (
-        <Text className="row" size="s" color="subdued">
+        <RiText className="row" size="s" color="subdued">
           {`Number of docs: ${result?.num_docs || '0'} (max ${result?.max_doc_id || '0'}) | `}
           {`Number of records: ${result?.num_records || '0'} | `}
           {`Number of terms: ${result?.num_terms || '0'}`}
-        </Text>
+        </RiText>
       ) : (
-        <LoadingContent lines={1} />
+        <RiLoadingContent lines={1} />
       )}
     </div>
   )
@@ -118,7 +117,7 @@ const TableInfoResult = React.memo((props: Props) => {
       {isDataArr && (
         <div className="content" data-testid={`query-table-result-${query}`}>
           {Header()}
-          <Table columns={columns} data={items ?? []} />
+          <RiTable columns={columns} data={items ?? []} />
           {Footer()}
         </div>
       )}

@@ -1,7 +1,7 @@
 import React from 'react'
 import { render } from 'uiSrc/utils/test-utils'
 import { alignValues, dirValues, gapSizes, justifyValues } from './flex.styles'
-import { Col, FlexGroup as Flex, FlexItem, Grid, Row } from './flex'
+import { RiCol, RiFlexGroup as Flex, RiFlexItem, RiGrid, RiRow } from './flex'
 
 const gapStyles = {
   none: '',
@@ -14,7 +14,7 @@ const gapStyles = {
 }
 describe('Flex Components', () => {
   it('should render', () => {
-    expect(render(<FlexItem />)).toBeTruthy()
+    expect(render(<RiFlexItem />)).toBeTruthy()
     expect(
       render(
         <Flex>
@@ -24,23 +24,23 @@ describe('Flex Components', () => {
     ).toBeTruthy()
     expect(
       render(
-        <Row>
+        <RiRow>
           <span>Child</span>
-        </Row>,
+        </RiRow>,
       ),
     ).toBeTruthy()
     expect(
       render(
-        <Col>
+        <RiCol>
           <span>Child</span>
-        </Col>,
+        </RiCol>,
       ),
     ).toBeTruthy()
     expect(
       render(
-        <Grid>
+        <RiGrid>
           <span>Child</span>
-        </Grid>,
+        </RiGrid>,
       ),
     ).toBeTruthy()
   })
@@ -48,9 +48,9 @@ describe('Flex Components', () => {
   describe('Flex', () => {
     it('should render with default classes', () => {
       const { container } = render(
-        <Row>
+        <RiRow>
           <span>Child</span>
-        </Row>,
+        </RiRow>,
       )
       expect(container).toBeTruthy()
       expect(container.firstChild).toHaveClass('RI-flex-row', 'RI-flex-group')
@@ -60,9 +60,9 @@ describe('Flex Components', () => {
     describe('Col', () => {
       it('should render', () => {
         const { container } = render(
-          <Col>
+          <RiCol>
             <span>Child</span>
-          </Col>,
+          </RiCol>,
         )
         expect(container.firstChild).toHaveClass('RI-flex-col', 'RI-flex-group')
         expect(container.firstChild).toHaveStyle('flex-direction: column')
@@ -177,9 +177,9 @@ describe('Flex Components', () => {
     describe('inline', () => {
       it('should render div as default', () => {
         const { getByText, container } = render(
-          <FlexItem>
+          <RiFlexItem>
             <span>Child</span>
-          </FlexItem>,
+          </RiFlexItem>,
         )
         expect(container.firstChild?.nodeName).toEqual('DIV')
 
@@ -193,7 +193,7 @@ describe('Flex Components', () => {
 
         VALUES.forEach((value) => {
           it(`${value} should generate a flex-grow of 0`, () => {
-            const { container } = render(<FlexItem grow={value} />)
+            const { container } = render(<RiFlexItem grow={value} />)
             expect(container.firstChild).toHaveClass(
               'RI-flex-item',
               // value ? flex['flex-responsive'] : '',
@@ -208,7 +208,7 @@ describe('Flex Components', () => {
 
         VALUES.forEach((value) => {
           test(`${value} generates a flex-grow of 1`, () => {
-            const { container } = render(<FlexItem grow={value} />)
+            const { container } = render(<RiFlexItem grow={value} />)
             expect(container.firstChild).toHaveClass(
               'RI-flex-item',
               // value ? flex['flex-responsive'] : '',
@@ -223,7 +223,7 @@ describe('Flex Components', () => {
 
         VALUES.forEach((value) => {
           test(`${value} generates a flex-grow of ${value}`, () => {
-            const { container } = render(<FlexItem grow={value} />)
+            const { container } = render(<RiFlexItem grow={value} />)
             expect(container.firstChild).toHaveClass(
               'RI-flex-item',
               // value ? flex['flex-responsive'] : '',
@@ -239,9 +239,9 @@ describe('Flex Components', () => {
     it('should render', () => {
       expect(
         render(
-          <Grid>
+          <RiGrid>
             <h2>My Child</h2>
-          </Grid>,
+          </RiGrid>,
         ),
       ).toBeTruthy()
     })
@@ -250,9 +250,9 @@ describe('Flex Components', () => {
         gapSizes.forEach((value) => {
           it(`should render ${value} gap`, () => {
             const { getByText, container } = render(
-              <Grid gap={value}>
+              <RiGrid gap={value}>
                 <h2>My Child</h2>
-              </Grid>,
+              </RiGrid>,
             )
             const grid = container.firstChild
             expect(grid).toHaveClass('RI-flex-grid')
@@ -270,9 +270,9 @@ describe('Flex Components', () => {
         ;([1, 2, 3, 4] as const).forEach((value) => {
           it(`should render ${value} columns`, () => {
             const { container } = render(
-              <Grid columns={value}>
+              <RiGrid columns={value}>
                 <h2>My Child</h2>
-              </Grid>,
+              </RiGrid>,
             )
             expect(container.firstChild).toHaveClass(
               'RI-flex-grid',
@@ -285,18 +285,18 @@ describe('Flex Components', () => {
       describe('responsive', () => {
         it('should render when responsive is false', () => {
           const { container } = render(
-            <Grid responsive={false}>
+            <RiGrid responsive={false}>
               <h2>My Child</h2>
-            </Grid>,
+            </RiGrid>,
           )
           expect(container.firstChild).toHaveClass('RI-flex-grid')
           // expect(container.firstChild).not.toHaveClass(flex.gridResponsive)
         })
         it('should have class grid-responsive when responsive is true', () => {
           const { container } = render(
-            <Grid responsive>
+            <RiGrid responsive>
               <h2>My Child</h2>
-            </Grid>,
+            </RiGrid>,
           )
           expect(container.firstChild).toHaveClass(
             'RI-flex-grid',
@@ -308,18 +308,18 @@ describe('Flex Components', () => {
       describe('centered', () => {
         it('should render when centered is false', () => {
           const { container } = render(
-            <Grid centered={false}>
+            <RiGrid centered={false}>
               <h2>My Child</h2>
-            </Grid>,
+            </RiGrid>,
           )
           expect(container.firstChild).toHaveClass('RI-flex-grid')
           // expect(container.firstChild).not.toHaveClass(flex.gridCentered)
         })
         it('should have class grid-centered when responsive is true', () => {
           const { container } = render(
-            <Grid centered>
+            <RiGrid centered>
               <h2>My Child</h2>
-            </Grid>,
+            </RiGrid>,
           )
           expect(container.firstChild).toHaveClass(
             'RI-flex-grid',

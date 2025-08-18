@@ -1,16 +1,12 @@
 import React, { useState } from 'react'
 
+import { RiPrimaryButton, RiFormField, RiCheckbox } from 'uiBase/forms'
+import { ExportIcon, RiIcon } from 'uiBase/icons'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+
+import { RiText } from 'uiBase/text'
+import { RiPopover } from 'uiBase/index'
 import { formatLongName } from 'uiSrc/utils'
-
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { ExportIcon } from 'uiSrc/components/base/icons'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-
-import { Text } from 'uiSrc/components/base/text'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { RiPopover } from 'uiSrc/components/base'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from '../styles.module.scss'
 
 export interface Props<T> {
@@ -27,7 +23,7 @@ const ExportAction = <T extends { id: string; name?: string }>(
   const [withSecrets, setWithSecrets] = useState(true)
 
   const exportBtn = (
-    <PrimaryButton
+    <RiPrimaryButton
       onClick={() => setIsPopoverOpen((prevState) => !prevState)}
       size="small"
       icon={ExportIcon}
@@ -35,7 +31,7 @@ const ExportAction = <T extends { id: string; name?: string }>(
       data-testid="export-btn"
     >
       Export
-    </PrimaryButton>
+    </RiPrimaryButton>
   )
 
   return (
@@ -48,23 +44,23 @@ const ExportAction = <T extends { id: string; name?: string }>(
       panelPaddingSize="l"
       data-testid="export-popover"
     >
-      <Text size="m" className={styles.popoverSubTitle}>
+      <RiText size="m" className={styles.popoverSubTitle}>
         {subTitle}
-      </Text>
+      </RiText>
       <div className={styles.boxSection}>
         {selection.map((select) => (
-          <Row key={select.id} gap="s" className={styles.nameList}>
-            <FlexItem>
+          <RiRow key={select.id} gap="s" className={styles.nameList}>
+            <RiFlexItem>
               <RiIcon type="CheckThinIcon" />
-            </FlexItem>
-            <FlexItem grow className={styles.nameListText}>
+            </RiFlexItem>
+            <RiFlexItem grow className={styles.nameListText}>
               <span>{formatLongName(select.name)}</span>
-            </FlexItem>
-          </Row>
+            </RiFlexItem>
+          </RiRow>
         ))}
       </div>
-      <FormField style={{ marginTop: 16 }}>
-        <Checkbox
+      <RiFormField style={{ marginTop: 16 }}>
+        <RiCheckbox
           id="export-passwords"
           name="export-passwords"
           label="Export passwords"
@@ -72,9 +68,9 @@ const ExportAction = <T extends { id: string; name?: string }>(
           onChange={(e) => setWithSecrets(e.target.checked)}
           data-testid="export-passwords"
         />
-      </FormField>
+      </RiFormField>
       <div className={styles.popoverFooter}>
-        <PrimaryButton
+        <RiPrimaryButton
           size="small"
           icon={ExportIcon}
           onClick={() => {
@@ -84,7 +80,7 @@ const ExportAction = <T extends { id: string; name?: string }>(
           data-testid="export-selected-dbs"
         >
           Export
-        </PrimaryButton>
+        </RiPrimaryButton>
       </div>
     </RiPopover>
   )

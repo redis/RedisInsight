@@ -3,6 +3,11 @@ import { map, pick } from 'lodash'
 import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { RiIconButton } from 'uiBase/forms'
+import { CopyIcon, RiIcon } from 'uiBase/icons'
+import { RiText } from 'uiBase/text'
+import { ColumnDefinition } from 'uiBase/layout'
+import { RiTooltip } from 'uiBase/display'
 import { Pages } from 'uiSrc/constants'
 import { setTitle } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
@@ -14,13 +19,8 @@ import {
   updateMastersSentinel,
 } from 'uiSrc/slices/instances/sentinel'
 import { LoadedSentinel, ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
-import { InputFieldSentinel, RiTooltip } from 'uiSrc/components'
+import { InputFieldSentinel } from 'uiSrc/components'
 import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/InputFieldSentinel'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CopyIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import { CreateSentinelDatabaseDto } from 'apiSrc/modules/redis-sentinel/dto/create.sentinel.database.dto'
 
 import SentinelDatabases from './components'
@@ -156,13 +156,13 @@ const SentinelDatabasesPage = () => {
         const text = `${host}:${port}`
         return (
           <div className="host_port">
-            <Text className="copyHostPortText">{text}</Text>
+            <RiText className="copyHostPortText">{text}</RiText>
             <RiTooltip
               position="right"
               content="Copy"
               anchorClassName="copyPublicEndpointTooltip"
             >
-              <IconButton
+              <RiIconButton
                 icon={CopyIcon}
                 aria-label="Copy public endpoint"
                 className="copyPublicEndpointBtn"

@@ -3,10 +3,10 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 import styled from 'styled-components'
+import { RiText } from 'uiBase/text'
+import { RiEmptyButton } from 'uiBase/forms'
 import { findTutorialPath } from 'uiSrc/utils'
 import { openTutorialByPath } from 'uiSrc/slices/panels/sidePanels'
-import { Text } from 'uiSrc/components/base/text'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import {
   sendEventTelemetry,
   TELEMETRY_EMPTY_VALUE,
@@ -23,7 +23,7 @@ export interface Props {
   source: string
 }
 
-const QueryTutorialsButton = styled(EmptyButton)`
+const QueryTutorialsButton = styled(RiEmptyButton)`
   padding: 4px 8px;
   background-color: var(--browserTableRowEven);
 
@@ -67,7 +67,7 @@ const QueryTutorials = ({ tutorials, source }: Props) => {
 
   return (
     <div className={styles.container}>
-      <Text className={styles.title}>Tutorials:</Text>
+      <RiText className={styles.title}>Tutorials:</RiText>
       {tutorials.map(({ id, title }) => (
         <QueryTutorialsButton
           role="button"

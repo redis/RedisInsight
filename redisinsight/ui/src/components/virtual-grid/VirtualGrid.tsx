@@ -5,12 +5,12 @@ import { isObject, xor } from 'lodash'
 import InfiniteLoader from 'react-window-infinite-loader'
 import { VariableSizeGrid as Grid, GridChildComponentProps } from 'react-window'
 
+import { RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
+import { RiProgressBarLoader } from 'uiBase/display'
 import { Maybe, Nullable } from 'uiSrc/utils'
 import { SortOrder } from 'uiSrc/constants'
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
-import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { ProgressBarLoader } from 'uiSrc/components/base/display'
 import { IProps } from './interfaces'
 import { getColumnWidth, useInnerElementType } from './utils'
 
@@ -309,7 +309,7 @@ const VirtualGrid = (props: IProps) => {
       data-testid="virtual-grid-container"
     >
       {loading && !hideProgress && (
-        <ProgressBarLoader
+        <RiProgressBarLoader
           color="primary"
           className={styles.progress}
           data-testid="progress-entry-list"
@@ -371,9 +371,9 @@ const VirtualGrid = (props: IProps) => {
         </AutoSizer>
       )}
       {items.length === 1 && (
-        <Text className={styles.noItems} color="subdued">
+        <RiText className={styles.noItems} color="subdued">
           {loading ? loadingMsg : noItemsMessage}
-        </Text>
+        </RiText>
       )}
     </div>
   )

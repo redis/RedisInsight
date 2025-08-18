@@ -1,15 +1,11 @@
 import React, { useState } from 'react'
-import { formatLongName } from 'uiSrc/utils'
 
-import {
-  DestructiveButton,
-  PrimaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { DeleteIcon } from 'uiSrc/components/base/icons'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Text } from 'uiSrc/components/base/text'
-import { RiPopover } from 'uiSrc/components'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiDestructiveButton, RiPrimaryButton } from 'uiBase/forms'
+import { DeleteIcon, RiIcon } from 'uiBase/icons'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiPopover } from 'uiBase/display'
+import { RiText } from 'uiBase/text'
+import { formatLongName } from 'uiSrc/utils'
 import styles from '../styles.module.scss'
 
 export interface Props<T> {
@@ -33,7 +29,7 @@ const DeleteAction = <T extends { id: string; name?: string }>(
   }
 
   const deleteBtn = (
-    <PrimaryButton
+    <RiPrimaryButton
       size="small"
       onClick={onButtonClick}
       icon={DeleteIcon}
@@ -41,7 +37,7 @@ const DeleteAction = <T extends { id: string; name?: string }>(
       data-testid="delete-btn"
     >
       Delete
-    </PrimaryButton>
+    </RiPrimaryButton>
   )
 
   return (
@@ -54,23 +50,23 @@ const DeleteAction = <T extends { id: string; name?: string }>(
       panelPaddingSize="l"
       data-testid="delete-popover"
     >
-      <Text size="m" className={styles.popoverSubTitle}>
+      <RiText size="m" className={styles.popoverSubTitle}>
         {subTitle}
-      </Text>
+      </RiText>
       <div className={styles.boxSection}>
         {selection.map((select) => (
-          <Row key={select.id} gap="s" className={styles.nameList}>
-            <FlexItem>
+          <RiRow key={select.id} gap="s" className={styles.nameList}>
+            <RiFlexItem>
               <RiIcon type="CheckThinIcon" />
-            </FlexItem>
-            <FlexItem grow className={styles.nameListText}>
+            </RiFlexItem>
+            <RiFlexItem grow className={styles.nameListText}>
               <span>{formatLongName(select.name)}</span>
-            </FlexItem>
-          </Row>
+            </RiFlexItem>
+          </RiRow>
         ))}
       </div>
       <div className={styles.popoverFooter}>
-        <DestructiveButton
+        <RiDestructiveButton
           size="small"
           icon={DeleteIcon}
           onClick={() => {
@@ -81,7 +77,7 @@ const DeleteAction = <T extends { id: string; name?: string }>(
           data-testid="delete-selected-dbs"
         >
           Delete
-        </DestructiveButton>
+        </RiDestructiveButton>
       </div>
     </RiPopover>
   )

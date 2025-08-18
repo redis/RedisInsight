@@ -1,6 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTheme } from '@redis-ui/styles'
+import {
+  RiResizableContainer,
+  RiResizablePanel,
+  RiResizablePanelHandle,
+  RiSpacer,
+  ImperativePanelGroupHandle,
+} from 'uiBase/layout'
 import InstanceHeader from 'uiSrc/components/instance-header'
 import { ExplorePanelTemplate } from 'uiSrc/templates'
 import BottomGroupComponents from 'uiSrc/components/bottom-group-components/BottomGroupComponents'
@@ -9,13 +16,6 @@ import { monitorSelector } from 'uiSrc/slices/cli/monitor'
 
 import { localStorageService } from 'uiSrc/services'
 import { BrowserStorageItem } from 'uiSrc/constants'
-import {
-  ResizableContainer,
-  ResizablePanel,
-  ResizablePanelHandle,
-  Spacer,
-} from 'uiSrc/components/base/layout'
-import { ImperativePanelGroupHandle } from 'uiSrc/components/base/layout/resize'
 import { AppNavigation } from 'uiSrc/components'
 import { AppNavigationActionsProvider } from 'uiSrc/contexts/AppNavigationActionsProvider'
 import { Nullable } from 'uiSrc/utils'
@@ -103,13 +103,13 @@ const InstancePageTemplate = (props: Props) => {
     <>
       <InstanceHeader />
       <AppNavigation actions={actions} onChange={() => setActions(null)} />
-      <Spacer size="m" />
-      <ResizableContainer
+      <RiSpacer size="m" />
+      <RiResizableContainer
         ref={ref}
         direction="vertical"
         onLayout={onPanelWidthChange}
       >
-        <ResizablePanel
+        <RiResizablePanel
           id={firstPanelId}
           minSize={7}
           defaultSize={isShowBottomGroup ? sizes[0] : sizeMain}
@@ -123,15 +123,15 @@ const InstancePageTemplate = (props: Props) => {
           >
             <ExplorePanelTemplate>{children}</ExplorePanelTemplate>
           </AppNavigationActionsProvider>
-        </ResizablePanel>
-        <ResizablePanelHandle
+        </RiResizablePanel>
+        <RiResizablePanelHandle
           direction="horizontal"
           id="resize-btn-browser-cli"
           data-testid="resize-btn-browser-cli"
           style={{ display: isShowBottomGroup ? 'inherit' : 'none' }}
         />
-        <Spacer size="m" />
-        <ResizablePanel
+        <RiSpacer size="m" />
+        <RiResizablePanel
           id={secondPanelId}
           defaultSize={isShowBottomGroup ? sizes[1] : sizeBottomCollapsed}
           minSize={isShowBottomGroup ? 20 : 0}
@@ -141,8 +141,8 @@ const InstancePageTemplate = (props: Props) => {
           }}
         >
           <BottomGroupComponents />
-        </ResizablePanel>
-      </ResizableContainer>
+        </RiResizablePanel>
+      </RiResizableContainer>
     </>
   )
 }

@@ -3,6 +3,10 @@ import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
 
+import { RiTooltip, RiAccordion } from 'uiBase/display'
+import { RiCol } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
 import {
   sendEventTelemetry,
   TELEMETRY_EMPTY_VALUE,
@@ -12,11 +16,7 @@ import { workbenchCustomTutorialsSelector } from 'uiSrc/slices/workbench/wb-cust
 import { EAItemActions } from 'uiSrc/constants'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 
-import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
-import { Col } from 'uiSrc/components/base/layout/flex'
-import { RiTooltip, OnboardingTour } from 'uiSrc/components'
-import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import {  OnboardingTour } from 'uiSrc/components'
 
 import DeleteTutorialButton from '../DeleteTutorialButton'
 
@@ -125,7 +125,7 @@ const Group = (props: Props) => {
       defaultOpen={initialIsOpen}
       open={forceState === 'open' || isGroupOpen}
       label={
-        <Text className="group-header" size="m">
+        <RiText className="group-header" size="m">
           {isShowFolder && (
             <RiIcon
               type={isGroupOpen ? 'KnowledgeBaseIcon' : 'FolderIcon'}
@@ -133,7 +133,7 @@ const Group = (props: Props) => {
             />
           )}
           {label}
-        </Text>
+        </RiText>
       }
       onOpenChange={handleOpen}
       style={{
@@ -143,7 +143,7 @@ const Group = (props: Props) => {
       className={cx({ withBorder })}
       actions={isShowActions ? actionsContent : null}
     >
-      <Col gap="l">{children}</Col>
+      <RiCol gap="l">{children}</RiCol>
     </RiAccordion>
   )
 }

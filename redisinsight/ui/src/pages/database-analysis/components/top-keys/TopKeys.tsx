@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
+import { RiTitle } from 'uiBase/text'
 import { TableView } from 'uiSrc/pages/database-analysis'
 import { Nullable } from 'uiSrc/utils'
 import { TableLoader } from 'uiSrc/pages/database-analysis/components'
 import { TextBtn } from 'uiSrc/pages/database-analysis/components/base/TextBtn'
-import { Title } from 'uiSrc/components/base/text/Title'
 import { DatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
 
-import Table from './Table'
+import TopKeysTable from './Table'
 
 export interface Props {
   data: Nullable<DatabaseAnalysis>
@@ -30,12 +30,16 @@ const TopKeys = ({ data, loading }: Props) => {
   return (
     <div className={cx('section')}>
       <div className="section-title-wrapper">
-        <Title size="M" className="section-title" data-testid="top-keys-title">
+        <RiTitle
+          size="M"
+          className="section-title"
+          data-testid="top-keys-title"
+        >
           {topKeysLength.length < MAX_TOP_KEYS &&
           topKeysMemory?.length < MAX_TOP_KEYS
             ? 'TOP KEYS'
             : `TOP ${MAX_TOP_KEYS} KEYS`}
-        </Title>
+        </RiTitle>
         <TextBtn
           $active={tableView === TableView.MEMORY}
           size="small"
@@ -57,7 +61,7 @@ const TopKeys = ({ data, loading }: Props) => {
       </div>
       <div className="section-content">
         {tableView === TableView.MEMORY && (
-          <Table
+          <TopKeysTable
             data={topKeysMemory}
             defaultSortField="memory"
             delimiter={delimiter}
@@ -65,7 +69,7 @@ const TopKeys = ({ data, loading }: Props) => {
           />
         )}
         {tableView === TableView.KEYS && (
-          <Table
+          <TopKeysTable
             data={topKeysLength}
             defaultSortField="length"
             delimiter={delimiter}

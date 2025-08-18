@@ -1,7 +1,7 @@
-import { Drawer } from '@redis-ui/components'
+import { Drawer as RiDrawer } from '@redis-ui/components'
 
-const DrawerHeader = Drawer.Header
-const DrawerBody = Drawer.Body
-const DrawerFooter = Drawer.Footer
+const RiDrawerHeader = RiDrawer.Header
+const RiDrawerBody = RiDrawer.Body
+const RiDrawerFooter = RiDrawer.Footer
 
-export { Drawer, DrawerHeader, DrawerBody, DrawerFooter }
+export { RiDrawer, RiDrawerHeader, RiDrawerBody, RiDrawerFooter }

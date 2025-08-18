@@ -2,6 +2,8 @@ import React, { ChangeEvent } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import cx from 'classnames'
+import { RiCheckbox } from 'uiBase/forms'
+import { RiLink } from 'uiBase/display'
 import { localStorageService } from 'uiSrc/services'
 import { BrowserStorageItem } from 'uiSrc/constants'
 import {
@@ -10,8 +12,6 @@ import {
 } from 'uiSrc/slices/oauth/cloud'
 
 import { enableUserAnalyticsAction } from 'uiSrc/slices/user/user-settings'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
-import { Link } from 'uiSrc/components/base/link/Link'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -34,7 +34,7 @@ const OAuthAgreement = (props: Props) => {
 
   return (
     <div className={cx(styles.wrapper, { [styles.small]: size === 's' })}>
-      <Checkbox
+      <RiCheckbox
         id="ouath-agreement"
         name="agreement"
         label="By signing up, you acknowledge that you agree:"
@@ -46,8 +46,7 @@ const OAuthAgreement = (props: Props) => {
       <ul className={styles.list}>
         <li className={styles.listItem}>
           {'to our '}
-          <Link
-            variant="small-inline"
+          <RiLink
             color="subdued"
             href="https://redis.io/legal/cloud-tos/?utm_source=redisinsight&utm_medium=main&utm_campaign=main"
             className={styles.link}
@@ -55,10 +54,9 @@ const OAuthAgreement = (props: Props) => {
             data-testid="ouath-agreements-cloud-terms-of-service"
           >
             Cloud Terms of Service
-          </Link>
+          </RiLink>
           {' and '}
-          <Link
-            variant="small-inline"
+          <RiLink
             color="subdued"
             href="https://redis.io/legal/privacy-policy/?utm_source=redisinsight&utm_medium=main&utm_campaign=main"
             className={styles.link}
@@ -66,7 +64,7 @@ const OAuthAgreement = (props: Props) => {
             data-testid="oauth-agreement-privacy-policy"
           >
             Privacy Policy
-          </Link>
+          </RiLink>
         </li>
         <li className={styles.listItem}>
           that Redis Insight will generate Redis Cloud API account and user

@@ -1,9 +1,9 @@
 import React, { ReactNode } from 'react'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiIconButton } from 'uiBase/forms'
+import { CancelSlimIcon } from 'uiBase/icons'
 import { RiTooltip } from 'uiSrc/components'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 const TextDetailsWrapper = ({
@@ -25,7 +25,7 @@ const TextDetailsWrapper = ({
         position="left"
         anchorClassName={styles.closeRightPanel}
       >
-        <IconButton
+        <RiIconButton
           icon={CancelSlimIcon}
           aria-label="Close key"
           className={styles.closeBtn}
@@ -33,11 +33,11 @@ const TextDetailsWrapper = ({
           data-testid={getDataTestid('close-key-btn')}
         />
       </RiTooltip>
-      <Row centered>
-        <FlexItem className={styles.textWrapper}>
+      <RiRow centered>
+        <RiFlexItem className={styles.textWrapper}>
           <div>{children}</div>
-        </FlexItem>
-      </Row>
+        </RiFlexItem>
+      </RiRow>
     </div>
   )
 }

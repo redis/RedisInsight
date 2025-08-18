@@ -2,13 +2,13 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
+import { RiOutsideClickDetector } from 'uiBase/utils'
+import { RiSecondaryButton } from 'uiBase/forms'
+import { RiPopover } from 'uiBase/display'
 import TemplateForm from 'uiSrc/pages/rdi/pipeline-management/components/template-form'
 import { fetchPipelineStrategies } from 'uiSrc/slices/rdi/pipeline'
 import { RdiPipelineTabs } from 'uiSrc/slices/interfaces'
-import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 
-import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
-import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -44,7 +44,7 @@ const TemplatePopover = (props: Props) => {
   }
 
   return (
-    <OutsideClickDetector onOutsideClick={handleClose}>
+    <RiOutsideClickDetector onOutsideClick={handleClose}>
       <RiPopover
         ownFocus
         anchorPosition="downRight"
@@ -52,7 +52,7 @@ const TemplatePopover = (props: Props) => {
         closePopover={handleClose}
         panelClassName={styles.popoverWrapper}
         button={
-          <SecondaryButton
+          <RiSecondaryButton
             inverted
             size="s"
             className={styles.btn}
@@ -62,7 +62,7 @@ const TemplatePopover = (props: Props) => {
             data-testid={`template-trigger-${source}`}
           >
             Insert template
-          </SecondaryButton>
+          </RiSecondaryButton>
         }
       >
         <TemplateForm
@@ -72,7 +72,7 @@ const TemplatePopover = (props: Props) => {
           value={value}
         />
       </RiPopover>
-    </OutsideClickDetector>
+    </RiOutsideClickDetector>
   )
 }
 

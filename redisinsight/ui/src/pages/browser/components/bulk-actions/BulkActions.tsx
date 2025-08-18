@@ -3,6 +3,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 
+import { RiCol, RiFlexItem } from 'uiBase/layout'
+import { RiIconButton } from 'uiBase/forms'
+import { CancelSlimIcon } from 'uiBase/icons'
+import { RiTitle } from 'uiBase/text'
 import {
   selectedBulkActionsSelector,
   setBulkActionsInitialState,
@@ -16,16 +20,13 @@ import {
   TelemetryEvent,
 } from 'uiSrc/telemetry'
 import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
-import { FullScreen, RiTooltip } from 'uiSrc/components'
+import { FullScreen } from 'uiSrc/components'
 
-import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import { Title } from 'uiSrc/components/base/text/Title'
 import BulkUpload from './BulkUpload'
 import BulkDelete from './BulkDelete'
 import BulkActionsTabs from './BulkActionsTabs'
 import styles from './styles.module.scss'
+import { RiTooltip } from 'uiBase/tooltip'
 
 export interface Props {
   isFullScreen: boolean
@@ -99,11 +100,11 @@ const BulkActions = (props: Props) => {
 
   return (
     <div className={styles.page}>
-      <Col justify="center" className={cx(styles.container, 'relative')}>
-        <FlexItem grow style={{ marginBottom: '16px' }}>
-          <Title size="M" className={styles.title}>
+      <RiCol justify="center" className={cx(styles.container, 'relative')}>
+        <RiFlexItem grow style={{ marginBottom: '16px' }}>
+          <RiTitle size="M" className={styles.title}>
             Bulk Actions
-          </Title>
+          </RiTitle>
           {!arePanelsCollapsed && (
             <FullScreen
               isFullScreen={isFullScreen}
@@ -120,7 +121,7 @@ const BulkActions = (props: Props) => {
               position="left"
               anchorClassName={styles.anchorTooltip}
             >
-              <IconButton
+              <RiIconButton
                 icon={CancelSlimIcon}
                 aria-label="Close panel"
                 className={cx(styles.closeBtn, styles.anchorTooltip)}
@@ -129,7 +130,7 @@ const BulkActions = (props: Props) => {
               />
             </RiTooltip>
           )}
-        </FlexItem>
+        </RiFlexItem>
         <div className="eui-yScroll">
           <div
             className={styles.contentActions}
@@ -144,7 +145,7 @@ const BulkActions = (props: Props) => {
             )}
           </div>
         </div>
-      </Col>
+      </RiCol>
     </div>
   )
 }

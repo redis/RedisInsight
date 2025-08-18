@@ -1,4 +1,6 @@
 import React from 'react'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import {
   IBulkActionOverview,
@@ -12,8 +14,6 @@ import {
   millisecondsFormat,
 } from 'uiSrc/utils'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Text } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 // TODO: use i18n file for texts
@@ -216,47 +216,47 @@ export default {
           {fileName ? (
             <>
               <br />
-              <Text color="ghost">Commands executed from file:</Text>
-              <Text color="ghost">{formatLongName(fileName, 34, 5)}</Text>
+              <RiText color="ghost">Commands executed from file:</RiText>
+              <RiText color="ghost">{formatLongName(fileName, 34, 5)}</RiText>
             </>
           ) : null}
         </>
       ),
       message: (
-        <Row align="start" className={styles.summary}>
-          <FlexItem>
-            <Text color="ghost" className={styles.summaryValue}>
+        <RiRow align="start" className={styles.summary}>
+          <RiFlexItem>
+            <RiText color="ghost" className={styles.summaryValue}>
               {numberWithSpaces(processed)}
-            </Text>
-            <Text size="xs" className={styles.summaryLabel}>
+            </RiText>
+            <RiText size="xs" className={styles.summaryLabel}>
               Commands Processed
-            </Text>
-          </FlexItem>
-          <FlexItem>
-            <Text color="ghost" className={styles.summaryValue}>
+            </RiText>
+          </RiFlexItem>
+          <RiFlexItem>
+            <RiText color="ghost" className={styles.summaryValue}>
               {numberWithSpaces(succeed)}
-            </Text>
-            <Text size="xs" className={styles.summaryLabel}>
+            </RiText>
+            <RiText size="xs" className={styles.summaryLabel}>
               Success
-            </Text>
-          </FlexItem>
-          <FlexItem>
-            <Text color="ghost" className={styles.summaryValue}>
+            </RiText>
+          </RiFlexItem>
+          <RiFlexItem>
+            <RiText color="ghost" className={styles.summaryValue}>
               {numberWithSpaces(failed)}
-            </Text>
-            <Text size="xs" className={styles.summaryLabel}>
+            </RiText>
+            <RiText size="xs" className={styles.summaryLabel}>
               Errors
-            </Text>
-          </FlexItem>
-          <FlexItem>
-            <Text color="ghost" className={styles.summaryValue}>
+            </RiText>
+          </RiFlexItem>
+          <RiFlexItem>
+            <RiText color="ghost" className={styles.summaryValue}>
               {millisecondsFormat(data?.duration || 0, 'H:mm:ss.SSS')}
-            </Text>
-            <Text size="xs" className={styles.summaryLabel}>
+            </RiText>
+            <RiText size="xs" className={styles.summaryLabel}>
               Time Taken
-            </Text>
-          </FlexItem>
-        </Row>
+            </RiText>
+          </RiFlexItem>
+        </RiRow>
       ),
       className: 'dynamic',
     }

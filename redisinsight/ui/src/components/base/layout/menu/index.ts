@@ -1,8 +1,14 @@
 import { Menu } from '@redis-ui/components'
 
-const MenuContent = Menu.Content
-const MenuTrigger = Menu.Trigger
-const MenuItem = Menu.Content.Item
-const MenuDropdownArrow = Menu.Content.DropdownArrow
+const RiMenuContent = Menu.Content
+const RiMenuTrigger = Menu.Trigger
+const RiMenuItem = Menu.Content.Item
+const RiMenuDropdownArrow = Menu.Content.DropdownArrow
 
-export { Menu, MenuContent, MenuItem, MenuTrigger, MenuDropdownArrow }
+export {
+  Menu as RiMenu,
+  RiMenuContent,
+  RiMenuItem,
+  RiMenuTrigger,
+  RiMenuDropdownArrow,
+}

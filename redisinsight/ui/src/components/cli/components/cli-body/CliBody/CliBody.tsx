@@ -1,6 +1,7 @@
 import React, { Ref, useEffect, useRef, useState } from 'react'
-import { KeyboardKeys as keys } from 'uiSrc/constants/keys'
 import { useDispatch, useSelector } from 'react-redux'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { KeyboardKeys as keys } from 'uiSrc/constants/keys'
 
 import { Nullable, scrollIntoView } from 'uiSrc/utils'
 import { isModifiedEvent } from 'uiSrc/services'
@@ -11,7 +12,6 @@ import CliInputWrapper from 'uiSrc/components/cli/components/cli-input'
 import { clearOutput, updateCliHistoryStorage } from 'uiSrc/utils/cliHelper'
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -248,8 +248,8 @@ const CliBody = (props: Props) => {
       role="textbox"
       tabIndex={0}
     >
-      <Row justify="between" style={{ height: '100%' }}>
-        <FlexItem grow>
+      <RiRow justify="between" style={{ height: '100%' }}>
+        <RiFlexItem grow>
           <div className={styles.output}>{data}</div>
           {!error && !(loading || settingsLoading) ? (
             <span
@@ -270,8 +270,8 @@ const CliBody = (props: Props) => {
             !error && <span>Executing command...</span>
           )}
           <div ref={scrollDivRef} />
-        </FlexItem>
-      </Row>
+        </RiFlexItem>
+      </RiRow>
     </div>
   )
 }

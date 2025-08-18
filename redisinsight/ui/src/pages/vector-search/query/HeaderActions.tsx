@@ -4,9 +4,8 @@ import { useParams } from 'react-router-dom'
 import { ManageIndexesDrawer } from '../manage-indexes/ManageIndexesDrawer'
 import { collectSavedQueriesPanelToggleTelemetry } from '../telemetry'
 import { StartWizardButton } from './StartWizardButton'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
-import { Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout'
+import { RiEmptyButton } from 'uiBase/forms'
+import { RiRow, RiSpacer } from 'uiBase/layout'
 
 export type HeaderActionsProps = {
   isManageIndexesDrawerOpen: boolean
@@ -34,26 +33,26 @@ export const HeaderActions = ({
 
   return (
     <>
-      <Row align="center">
+      <RiRow align="center">
         <StartWizardButton />
 
-        <Row justify="end" data-testid="vector-search-header-actions" gap="m">
-          <EmptyButton onClick={handleSavedQueriesClick}>
+        <RiRow justify="end" data-testid="vector-search-header-actions" gap="m">
+          <RiEmptyButton onClick={handleSavedQueriesClick}>
             Saved queries
-          </EmptyButton>
+          </RiEmptyButton>
 
-          <EmptyButton onClick={() => setIsManageIndexesDrawerOpen(true)}>
+          <RiEmptyButton onClick={() => setIsManageIndexesDrawerOpen(true)}>
             Manage indexes
-          </EmptyButton>
-        </Row>
+          </RiEmptyButton>
+        </RiRow>
 
         <ManageIndexesDrawer
           open={isManageIndexesDrawerOpen}
           onOpenChange={setIsManageIndexesDrawerOpen}
         />
-      </Row>
+      </RiRow>
 
-      <Spacer size="m" />
+      <RiSpacer size="m" />
     </>
   )
 }

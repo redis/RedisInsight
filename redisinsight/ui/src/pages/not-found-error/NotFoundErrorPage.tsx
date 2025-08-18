@@ -1,15 +1,14 @@
 import React, { useCallback } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import { RiCol, RiFlexItem } from 'uiBase/layout'
+import { RiPrimaryButton } from 'uiBase/forms'
+import { RiTitle, RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { FeatureFlags } from 'uiSrc/constants/featureFlags'
 import { getConfig } from 'uiSrc/config'
 import Robot from 'uiSrc/assets/img/robot.svg?react'
-import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from './styles.module.scss'
 
 const NotFoundErrorPage = () => {
@@ -29,23 +28,23 @@ const NotFoundErrorPage = () => {
 
   return (
     <div className={styles.notfoundpage}>
-      <Col align="start" className={styles.notfoundgroup}>
-        <FlexItem grow>
-          <Col align="start" gap="xl">
-            <FlexItem grow>
+      <RiCol align="start" className={styles.notfoundgroup}>
+        <RiFlexItem grow>
+          <RiCol align="start" gap="xl">
+            <RiFlexItem grow>
               <RiIcon
                 className={styles.logoIcon}
                 size="original"
                 type="RedisLogoFullIcon"
               />
-            </FlexItem>
-            <FlexItem grow>
-              <Title size="XXL">
+            </RiFlexItem>
+            <RiFlexItem grow>
+              <RiTitle size="XXL">
                 Whoops!
                 <br />
                 This Page Is an Empty Set
-              </Title>
-              <Text component="div">
+              </RiTitle>
+              <RiText component="div">
                 <p
                   className={styles.errorSubtext}
                   style={{ marginBottom: '.8rem' }}
@@ -53,18 +52,18 @@ const NotFoundErrorPage = () => {
                   We searched every shard, <br />
                   But couldn&apos;t find the page you&apos;re after.
                 </p>
-                <PrimaryButton
+                <RiPrimaryButton
                   size="s"
                   onClick={onDbButtonClick}
                   data-testid="not-found-db-list-button"
                 >
                   Databases page
-                </PrimaryButton>
-              </Text>
-            </FlexItem>
-          </Col>
-        </FlexItem>
-      </Col>
+                </RiPrimaryButton>
+              </RiText>
+            </RiFlexItem>
+          </RiCol>
+        </RiFlexItem>
+      </RiCol>
       <div className={styles.robotHolder}>
         <Robot className={styles.robot} />
       </div>

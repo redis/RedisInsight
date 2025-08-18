@@ -1,17 +1,13 @@
 import React from 'react'
 import { FormikErrors } from 'formik'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiEmptyButton, RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
+import { InfoIcon } from 'uiBase/icons'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { getSubmitButtonContent } from 'uiSrc/pages/home/utils'
 import { DbConnectionInfo, ISubmitButton } from 'uiSrc/pages/home/interfaces'
 import { SubmitBtnText } from 'uiSrc/pages/home/constants'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import {
-  EmptyButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { InfoIcon } from 'uiSrc/components/base/icons'
-import { RiTooltip } from 'uiSrc/components'
+import { RiTooltip } from 'uiBase/display'
 
 export interface Props {
   submitIsDisable: () => boolean
@@ -49,7 +45,7 @@ const FooterActions = (props: Props) => {
       }
       content={getSubmitButtonContent(errors, submitIsDisabled)}
     >
-      <PrimaryButton
+      <RiPrimaryButton
         size="small"
         type="submit"
         onClick={onClick}
@@ -59,13 +55,13 @@ const FooterActions = (props: Props) => {
         data-testid="btn-submit"
       >
         {text}
-      </PrimaryButton>
+      </RiPrimaryButton>
     </RiTooltip>
   )
 
   return (
-    <Row justify="between" align="center">
-      <FlexItem className="btn-back">
+    <RiRow justify="between" align="center">
+      <RiFlexItem className="btn-back">
         <RiTooltip
           position="top"
           anchorClassName="euiToolTip__btn-disabled"
@@ -76,7 +72,7 @@ const FooterActions = (props: Props) => {
           }
           content={getSubmitButtonContent(errors, submitIsDisable())}
         >
-          <EmptyButton
+          <RiEmptyButton
             size="small"
             className="empty-btn"
             disabled={submitIsDisable()}
@@ -86,14 +82,14 @@ const FooterActions = (props: Props) => {
             data-testid="btn-test-connection"
           >
             Test Connection
-          </EmptyButton>
+          </RiEmptyButton>
         </RiTooltip>
-      </FlexItem>
+      </RiFlexItem>
 
-      <FlexItem>
-        <Row>
+      <RiFlexItem>
+        <RiRow>
           {onClose && (
-            <SecondaryButton
+            <RiSecondaryButton
               size="small"
               onClick={onClose}
               className="btn-cancel"
@@ -101,16 +97,16 @@ const FooterActions = (props: Props) => {
               style={{ marginRight: 12 }}
             >
               Cancel
-            </SecondaryButton>
+            </RiSecondaryButton>
           )}
           <SubmitButton
             onClick={onClickSubmit}
             text={submitButtonText}
             submitIsDisabled={submitIsDisable()}
           />
-        </Row>
-      </FlexItem>
-    </Row>
+        </RiRow>
+      </RiFlexItem>
+    </RiRow>
   )
 }
 

@@ -1,17 +1,14 @@
 import React from 'react'
 
 import cx from 'classnames'
-import { KeyTypes, ModulesKeyTypes } from 'uiSrc/constants'
-import { formatLongName } from 'uiSrc/utils'
+import { RiSpacer } from 'uiBase/layout'
+import { RiDestructiveButton, RiIconButton } from 'uiBase/forms'
+import { DeleteIcon } from 'uiBase/icons'
+import { RiText } from 'uiBase/text'
+import { RiPopover } from 'uiBase/display'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  DestructiveButton,
-  IconButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { DeleteIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
-import { RiPopover } from 'uiSrc/components/base'
+import { formatLongName } from 'uiSrc/utils'
+import { KeyTypes, ModulesKeyTypes } from 'uiSrc/constants'
 
 export interface DeleteProps {
   nameString: string
@@ -41,7 +38,7 @@ export const DeleteKeyPopover = ({
     closePopover={() => onOpenPopover(-1, type)}
     panelPaddingSize="l"
     button={
-      <IconButton
+      <RiIconButton
         icon={DeleteIcon}
         onClick={() => onOpenPopover(rowId, type)}
         aria-label="Delete Key"
@@ -51,14 +48,14 @@ export const DeleteKeyPopover = ({
     onClick={(e) => e.stopPropagation()}
   >
     <>
-      <Text size="m" component="div">
+      <RiText size="m" component="div">
         <h4 style={{ wordBreak: 'break-all' }}>
           <b>{formatLongName(nameString)}</b>
         </h4>
-        <Text size="s">will be deleted.</Text>
-      </Text>
-      <Spacer size="m" />
-      <DestructiveButton
+        <RiText size="s">will be deleted.</RiText>
+      </RiText>
+      <RiSpacer size="m" />
+      <RiDestructiveButton
         size="small"
         icon={DeleteIcon}
         disabled={deleting}
@@ -66,7 +63,7 @@ export const DeleteKeyPopover = ({
         data-testid="submit-delete-key"
       >
         Delete
-      </DestructiveButton>
+      </RiDestructiveButton>
     </>
   </RiPopover>
 )

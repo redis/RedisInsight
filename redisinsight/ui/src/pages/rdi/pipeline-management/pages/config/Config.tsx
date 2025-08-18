@@ -4,6 +4,9 @@ import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 import { get, throttle } from 'lodash'
 
+import { RiPrimaryButton } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
+import { RiLink, RiLoader } from 'uiBase/display'
 import {
   sendPageViewTelemetry,
   sendEventTelemetry,
@@ -32,11 +35,7 @@ import { appContextPipelineManagement } from 'uiSrc/slices/app/context'
 import { createAxiosError, isEqualPipelineFile, yamlToJson } from 'uiSrc/utils'
 
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { Text } from 'uiSrc/components/base/text'
 
-import { Link } from 'uiSrc/components/base/link/Link'
-import { Loader } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 const Config = () => {
@@ -148,7 +147,7 @@ const Config = () => {
         })}
       >
         <div className="rdi__content-header">
-          <Text className="rdi__title">Target database configuration</Text>
+          <RiText className="rdi__title">Target database configuration</RiText>
           <TemplatePopover
             isPopoverOpen={isPopoverOpen && !isOpenDialog}
             setIsPopoverOpen={setIsPopoverOpen}
@@ -158,9 +157,9 @@ const Config = () => {
             source={RdiPipelineTabs.Config}
           />
         </div>
-        <Text className="rdi__text" color="subdued">
+        <RiText className="rdi__text" color="subdued">
           {'Provide '}
-          <Link
+          <RiLink
             data-testid="rdi-pipeline-config-link"
             target="_blank"
             href={getUtmExternalLink(EXTERNAL_LINKS.rdiPipeline, {
@@ -169,17 +168,17 @@ const Config = () => {
             })}
           >
             connection details
-          </Link>
+          </RiLink>
           {
             ' for source and target databases and other collector configurations, such as tables and columns to track.'
           }
-        </Text>
+        </RiText>
         {pipelineLoading ? (
           <div
             className={cx('rdi__editorWrapper', 'rdi__loading')}
             data-testid="rdi-config-loading"
           >
-            <Loader color="secondary" size="l" loaderText='Loading data...' />
+            <RiLoader color="secondary" size="l" loaderText="Loading data..." />
           </div>
         ) : (
           <MonacoYaml
@@ -192,7 +191,7 @@ const Config = () => {
           />
         )}
         <div className="rdi__actions">
-          <PrimaryButton
+          <RiPrimaryButton
             size="s"
             onClick={testConnections}
             loading={testingConnections || pipelineLoading}
@@ -200,7 +199,7 @@ const Config = () => {
             data-testid="rdi-test-connection-btn"
           >
             Test Connection
-          </PrimaryButton>
+          </RiPrimaryButton>
         </div>
       </div>
       {isPanelOpen && <TestConnectionsPanel onClose={handleClosePanel} />}

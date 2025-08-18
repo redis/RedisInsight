@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
 
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiText } from 'uiBase/text'
+import { RiLink } from 'uiBase/display'
 import LoadSampleData from 'uiSrc/pages/browser/components/load-sample-data'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { Text } from 'uiSrc/components/base/text'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -23,30 +23,30 @@ const NoIndexesInitialMessage = (props: Props) => {
 
   return (
     <div data-testid="no-indexes-chat-message">
-      <Text size="xs">Hi!</Text>
-      <Text size="xs">
+      <RiText size="xs">Hi!</RiText>
+      <RiText size="xs">
         I am here to help you get started with data querying. I noticed that you
         have no indexes created.
-      </Text>
-      <Spacer />
-      <Text size="xs">
+      </RiText>
+      <RiSpacer />
+      <RiText size="xs">
         Would you like to load the sample data and indexes (from this{' '}
-        <Link
+        <RiLink
           color="subdued"
           className="defaultLink"
           onClick={onClickTutorial}
           data-testid="tutorial-initial-message-link"
         >
           tutorial
-        </Link>
+        </RiLink>
         ) to see what Redis Copilot can help you do?
-      </Text>
-      <Spacer />
+      </RiText>
+      <RiSpacer />
       <LoadSampleData
         anchorClassName={styles.anchorClassName}
         onSuccess={onSuccess}
       />
-      <Spacer />
+      <RiSpacer />
     </div>
   )
 }

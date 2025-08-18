@@ -1,7 +1,7 @@
 import React from 'react'
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiBase/text'
 
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiIcon } from 'uiBase/icons'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -27,12 +27,12 @@ const PromoLink = (props: Props) => {
       style={{ ...linkStyles }}
     >
       <RiIcon type="CloudIcon" size="m" className={styles.cloudIcon} />
-      <ColorText color={linkStyles?.color} className={styles.title}>
+      <RiColorText color={linkStyles?.color} className={styles.title}>
         {title}
-      </ColorText>
-      <ColorText color={linkStyles?.color} className={styles.description}>
+      </RiColorText>
+      <RiColorText color={linkStyles?.color} className={styles.description}>
         {description}
-      </ColorText>
+      </RiColorText>
     </a>
   )
 }

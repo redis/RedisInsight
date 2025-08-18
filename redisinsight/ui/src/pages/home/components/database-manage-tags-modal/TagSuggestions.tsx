@@ -2,8 +2,9 @@ import React, { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { EuiSelectable, EuiSelectableOption } from '@elastic/eui'
 import { uniqBy } from 'lodash'
+
+import { RiText } from 'uiBase/text'
 import { tagsSelector } from 'uiSrc/slices/instances/tags'
-import { Text } from 'uiSrc/components/base/text'
 import { presetTagSuggestions } from './constants'
 import styles from './styles.module.scss'
 
@@ -76,9 +77,9 @@ export const TagSuggestions = ({
     >
       {(list) => (
         <>
-          <Text size="m" color="subdued" className={styles.suggestionsTitle}>
+          <RiText size="m" color="subdued" className={styles.suggestionsTitle}>
             Suggestions
-          </Text>
+          </RiText>
           {list}
         </>
       )}

@@ -2,22 +2,21 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import cx from 'classnames'
 
+import { CancelSlimIcon } from 'uiBase/icons'
+import {
+  RiEmptyButton,
+  RiIconButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+} from 'uiBase/forms'
+import { RiColorText, RiTitle } from 'uiBase/text'
+import { RiTourStep } from 'uiBase/display'
+import { RiCol, RiRow } from 'uiBase/layout'
 import {
   skipOnboarding,
   setOnboardNextStep,
   setOnboardPrevStep,
 } from 'uiSrc/slices/app/features'
-import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import {
-  EmptyButton,
-  IconButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { ColorText } from 'uiSrc/components/base/text'
-import { TourStep } from 'uiSrc/components/base/display/tour/TourStep'
-import { Col, Row } from 'uiSrc/components/base/layout/flex'
-import { Title } from 'uiSrc/components/base/text/Title'
 import { Props as OnboardingWrapperProps } from './OnboardingTourWrapper'
 
 import styles from './styles.module.scss'
@@ -80,18 +79,18 @@ const OnboardingTour = (props: Props) => {
   }
 
   const Header = (
-    <Col className={styles.header}>
+    <RiCol className={styles.header}>
       {!isLastStep ? (
-        <EmptyButton
+        <RiEmptyButton
           onClick={handleSkip}
           className={styles.skipTourBtn}
           size="small"
           data-testid="skip-tour-btn"
         >
           Skip tour
-        </EmptyButton>
+        </RiEmptyButton>
       ) : (
-        <IconButton
+        <RiIconButton
           icon={CancelSlimIcon}
           className={styles.skipTourBtn}
           onClick={handleSkip}
@@ -100,41 +99,41 @@ const OnboardingTour = (props: Props) => {
           data-testid="close-tour-btn"
         />
       )}
-      <Title size="XS" data-testid="step-title">
+      <RiTitle size="XS" data-testid="step-title">
         {title}
-      </Title>
-    </Col>
+      </RiTitle>
+    </RiCol>
   )
 
   const StepContent = (
-    <Col>
+    <RiCol>
       <div className={styles.content} data-testid="step-content">
         {content}
       </div>
-      <Row className={styles.footer} align="center" justify="between">
-        <ColorText color="subdued" className={styles.stepCount}>
+      <RiRow className={styles.footer} align="center" justify="between">
+        <RiColorText color="subdued" className={styles.stepCount}>
           {currentStep} of {totalSteps}
-        </ColorText>
-        <Row grow={false} gap="m">
+        </RiColorText>
+        <RiRow grow={false} gap="m">
           {currentStep > 1 && (
-            <SecondaryButton
+            <RiSecondaryButton
               onClick={handleClickBack}
               size="s"
               data-testid="back-btn"
             >
               Back
-            </SecondaryButton>
+            </RiSecondaryButton>
           )}
-          <PrimaryButton
+          <RiPrimaryButton
             onClick={handleClickNext}
             size="s"
             data-testid="next-btn"
           >
             {!isLastStep ? 'Next' : 'Take me back'}
-          </PrimaryButton>
-        </Row>
-      </Row>
-    </Col>
+          </RiPrimaryButton>
+        </RiRow>
+      </RiRow>
+    </RiCol>
   )
 
   return (
@@ -145,7 +144,7 @@ const OnboardingTour = (props: Props) => {
       })}
       role="presentation"
     >
-      <TourStep
+      <RiTourStep
         content={StepContent}
         open={isOpen}
         minWidth={300}
@@ -159,7 +158,7 @@ const OnboardingTour = (props: Props) => {
         data-testid="onboarding-tour"
       >
         {children}
-      </TourStep>
+      </RiTourStep>
     </div>
   )
 }

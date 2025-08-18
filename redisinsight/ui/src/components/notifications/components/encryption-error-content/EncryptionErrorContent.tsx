@@ -1,15 +1,12 @@
 import React from 'react'
 import { matchPath, useHistory, useLocation } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { Pages } from 'uiSrc/constants'
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiBase/text'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiDestructiveButton, RiEmptyButton } from 'uiBase/forms'
 import { updateUserConfigSettingsAction } from 'uiSrc/slices/user/user-settings'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  DestructiveButton,
-  EmptyButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { Pages } from 'uiSrc/constants'
 
 export interface Props {
   onClose?: () => void
@@ -44,39 +41,39 @@ const EncryptionErrorContent = (props: Props) => {
   }
   return (
     <>
-      <ColorText color="danger">
+      <RiColorText color="danger">
         <b>Check the system keychain or disable encryption to proceed.</b>
-      </ColorText>
-      <Spacer />
-      <ColorText color="danger" style={{ fontWeight: 300 }}>
+      </RiColorText>
+      <RiSpacer />
+      <RiColorText color="danger" style={{ fontWeight: 300 }}>
         Disabling encryption will result in storing sensitive information
         locally in plain text. Re-enter database connection information to work
         with databases.
-      </ColorText>
-      <Spacer />
-      <Row justify="end" gap="m">
-        <FlexItem>
+      </RiColorText>
+      <RiSpacer />
+      <RiRow justify="end" gap="m">
+        <RiFlexItem>
           <div>
-            <DestructiveButton
+            <RiDestructiveButton
               onClick={disableEncryption}
               className="toast-danger-btn euiBorderWidthThick"
               data-testid="toast-action-btn"
             >
               Disable Encryption
-            </DestructiveButton>
+            </RiDestructiveButton>
           </div>
-        </FlexItem>
-        <FlexItem>
-          <EmptyButton
+        </RiFlexItem>
+        <RiFlexItem>
+          <RiEmptyButton
             variant="destructive"
             onClick={onClose}
             data-testid="toast-cancel-btn"
             className="toast-danger-btn"
           >
             Cancel
-          </EmptyButton>
-        </FlexItem>
-      </Row>
+          </RiEmptyButton>
+        </RiFlexItem>
+      </RiRow>
     </>
   )
 }

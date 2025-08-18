@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
-import { getUtmExternalLink } from 'uiSrc/utils/links'
-import { Text } from 'uiSrc/components/base/text'
+import { RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
+import { RiLink, RiPopover } from 'uiBase/display'
 import {
   EXTERNAL_LINKS,
   UTM_CAMPAINGS,
   UTM_MEDIUMS,
 } from 'uiSrc/constants/links'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { Link } from 'uiSrc/components/base/link/Link'
-import { RiPopover } from 'uiSrc/components/base'
+import { getUtmExternalLink } from 'uiSrc/utils/links'
 import styles from './styles.module.scss'
 
 const ClickableAppendInfo = () => {
@@ -39,13 +38,12 @@ const ClickableAppendInfo = () => {
       panelPaddingSize="s"
       data-testid="pub-sub-examples"
     >
-      <Text color="subdued" size="s">
+      <RiText color="subdued" size="s">
         Subscribe to one or more channels or patterns by entering them,
         separated by spaces.
         <br />
         Supported glob-style patterns are described&nbsp;
-        <Link
-          variant="small-inline"
+        <RiLink
           target="_blank"
           href={getUtmExternalLink(EXTERNAL_LINKS.pubSub, {
             medium: UTM_MEDIUMS.Main,
@@ -53,8 +51,8 @@ const ClickableAppendInfo = () => {
           })}
         >
           here.
-        </Link>
-      </Text>
+        </RiLink>
+      </RiText>
     </RiPopover>
   )
 }

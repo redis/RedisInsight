@@ -2,25 +2,25 @@ import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { render } from '@testing-library/react'
 
-import SwitchInput from './SwitchInput'
+import { RiSwitchInput } from './RiSwitchInput'
 
 describe('SwitchInput', () => {
   it('should render with default props', () => {
-    const { container } = render(<SwitchInput title="On" />)
+    const { container } = render(<RiSwitchInput title="On" />)
 
     expect(container.firstChild).toHaveTextContent('On')
   })
 
   it('should render with titleOff when provided', () => {
     const { container } = render(
-      <SwitchInput title="On" titleOff="Off" checked={false} />,
+      <RiSwitchInput title="On" titleOff="Off" checked={false} />,
     )
 
     expect(container.firstChild).toHaveTextContent('Off')
   })
 
   it('should fall back to title when titleOff is not provided', () => {
-    const { container } = render(<SwitchInput title="On" checked={false} />)
+    const { container } = render(<RiSwitchInput title="On" checked={false} />)
 
     expect(container.firstChild).toHaveTextContent('On')
   })
@@ -28,7 +28,7 @@ describe('SwitchInput', () => {
   it('should call onCheckedChange when toggled', async () => {
     const onCheckedChange = jest.fn()
     const { getByRole, container } = render(
-      <SwitchInput title="On" onCheckedChange={onCheckedChange} />,
+      <RiSwitchInput title="On" onCheckedChange={onCheckedChange} />,
     )
 
     expect(container.firstChild).toHaveTextContent('On')
@@ -42,7 +42,7 @@ describe('SwitchInput', () => {
 
   it('should apply custom styles', () => {
     const { container } = render(
-      <SwitchInput title="On" style={{ backgroundColor: 'red' }} />,
+      <RiSwitchInput title="On" style={{ backgroundColor: 'red' }} />,
     )
     expect(container.firstChild).toHaveStyle('background-color: red')
   })

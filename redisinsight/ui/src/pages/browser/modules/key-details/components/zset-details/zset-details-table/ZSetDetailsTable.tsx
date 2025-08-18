@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { toNumber, isNumber } from 'lodash'
 import cx from 'classnames'
 import { CellMeasurerCache } from 'react-virtualized'
+import { RiText } from 'uiBase/text'
 import {
   appContextBrowserKeyDetails,
   updateKeyDetailsSizes,
@@ -70,14 +71,13 @@ import {
   FormattedValue,
 } from 'uiSrc/pages/browser/modules/key-details/shared'
 import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
-import { Text } from 'uiSrc/components/base/text'
-import { RiTooltip } from 'uiSrc/components'
 import {
   AddMembersToZSetDto,
   SearchZSetMembersResponse,
 } from 'apiSrc/modules/browser/z-set/dto'
 
 import styles from './styles.module.scss'
+import { RiTooltip } from 'uiBase/display'
 
 const suffix = '_zset'
 const headerHeight = 60
@@ -336,7 +336,7 @@ const ZSetDetailsTable = (props: Props) => {
         )
 
         return (
-          <Text
+          <RiText
             color="subdued"
             size="s"
             component="div"
@@ -357,7 +357,7 @@ const ZSetDetailsTable = (props: Props) => {
                 tooltipContent={tooltipContent}
               />
             </div>
-          </Text>
+          </RiText>
         )
       },
     },

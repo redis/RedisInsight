@@ -4,6 +4,8 @@ import { useParams } from 'react-router-dom'
 import { last, toNumber } from 'lodash'
 import cx from 'classnames'
 
+import { RiText } from 'uiBase/text'
+import { RiFlexItem } from 'uiBase/layout'
 import {
   fetchMoreConsumerMessages,
   selectedConsumerSelector,
@@ -21,8 +23,6 @@ import { SortOrder, TEXT_CONSUMER_NAME_TOO_LONG } from 'uiSrc/constants'
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { isTruncatedString } from 'uiSrc/utils'
-import { Text } from 'uiSrc/components/base/text'
-import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import {
   AckPendingEntriesResponse,
   PendingEntryDto,
@@ -124,8 +124,8 @@ const MessagesViewWrapper = (props: Props) => {
       render: function Id(_name: string, { id }: PendingEntryDto) {
         const timestamp = id?.split('-')?.[0]
         return (
-          <FlexItem>
-            <Text
+          <RiFlexItem>
+            <RiText
               color="subdued"
               size="s"
               style={{ maxWidth: '100%' }}
@@ -133,16 +133,16 @@ const MessagesViewWrapper = (props: Props) => {
               data-testid={`stream-message-${id}-date`}
             >
               {getFormatTime(timestamp)}
-            </Text>
-            <Text
+            </RiText>
+            <RiText
               size="s"
               className="streamItemId"
               data-testid={`stream-message-${id}`}
               style={{ maxWidth: '100%' }}
             >
               {id}
-            </Text>
-          </FlexItem>
+            </RiText>
+          </RiFlexItem>
         )
       },
     },
@@ -157,7 +157,7 @@ const MessagesViewWrapper = (props: Props) => {
       render: function Idle(_name: string, { id, idle }: PendingEntryDto) {
         const timestamp = id?.split('-')?.[0]
         return (
-          <Text
+          <RiText
             className="truncateText streamItem"
             color="subdued"
             size="s"
@@ -165,7 +165,7 @@ const MessagesViewWrapper = (props: Props) => {
             style={{ maxWidth: '100%' }}
           >
             {getFormatTime(`${toNumber(timestamp) + idle}`)}
-          </Text>
+          </RiText>
         )
       },
     },
@@ -186,7 +186,7 @@ const MessagesViewWrapper = (props: Props) => {
       absoluteWidth: actionsWidth,
       render: function Actions(_act: any, { id }: PendingEntryDto) {
         return (
-          <FlexItem direction="row">
+          <RiFlexItem direction="row">
             <MessageAckPopover
               id={id}
               isOpen={openPopover === id + ackPrefix}
@@ -202,7 +202,7 @@ const MessagesViewWrapper = (props: Props) => {
               claimMessage={handleClaimingId}
               handleCancelClaim={handleCancelClaim}
             />
-          </FlexItem>
+          </RiFlexItem>
         )
       },
     },

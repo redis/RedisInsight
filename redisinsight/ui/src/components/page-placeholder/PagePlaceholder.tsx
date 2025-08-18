@@ -1,9 +1,9 @@
 import React from 'react'
 
-import LogoIcon from 'uiSrc/assets/img/logo_small.svg'
+import { RiLoadingLogo } from 'uiBase/display'
+import { RiEmptyPrompt } from 'uiBase/layout'
 import { getConfig } from 'uiSrc/config'
-import { RiLoadingLogo } from 'uiSrc/components/base/display'
-import { RiEmptyPrompt } from 'uiSrc/components/base/layout'
+import LogoIcon from 'uiSrc/assets/img/logo_small.svg'
 
 const riConfig = getConfig()
 

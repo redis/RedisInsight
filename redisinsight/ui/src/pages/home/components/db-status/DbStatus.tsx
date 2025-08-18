@@ -3,6 +3,7 @@ import cx from 'classnames'
 import { differenceInDays } from 'date-fns'
 
 import { useSelector } from 'react-redux'
+import { RiIcon } from 'uiBase/icons'
 import { getTutorialCapability, Maybe } from 'uiSrc/utils'
 
 import { appContextCapability } from 'uiSrc/slices/app/context'
@@ -12,14 +13,13 @@ import {
   TELEMETRY_EMPTY_VALUE,
   TelemetryEvent,
 } from 'uiSrc/telemetry'
-import { RiTooltip } from 'uiSrc/components'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import {
   CHECK_CLOUD_DATABASE,
   WARNING_WITH_CAPABILITY,
   WARNING_WITHOUT_CAPABILITY,
 } from './texts'
 import styles from './styles.module.scss'
+import { RiTooltip } from 'uiBase/display'
 
 export interface Props {
   id: string

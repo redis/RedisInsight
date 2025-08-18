@@ -2,6 +2,10 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
+import { WindowControlGroup } from 'uiBase/index'
+import { RiIcon } from 'uiBase/icons'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   resetCliHelperSettings,
@@ -11,10 +15,6 @@ import {
 import { OnboardingTour } from 'uiSrc/components'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Text } from 'uiSrc/components/base/text'
-import { WindowControlGroup } from 'uiSrc/components/base/shared/WindowControlGroup'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from './styles.module.scss'
 
 const CommandHelperHeader = () => {
@@ -44,25 +44,25 @@ const CommandHelperHeader = () => {
 
   return (
     <div className={styles.container} id="command-helper-header">
-      <Row justify="between" align="center" style={{ height: '100%' }}>
-        <FlexItem className={styles.title}>
+      <RiRow justify="between" align="center" style={{ height: '100%' }}>
+        <RiFlexItem className={styles.title}>
           <RiIcon type="DocumentationIcon" size="L" />
           <OnboardingTour
             options={ONBOARDING_FEATURES.BROWSER_COMMAND_HELPER}
             anchorPosition="upLeft"
             panelClassName={styles.helperOnboardPanel}
           >
-            <Text>Command Helper</Text>
+            <RiText>Command Helper</RiText>
           </OnboardingTour>
-        </FlexItem>
-        <FlexItem grow />
+        </RiFlexItem>
+        <RiFlexItem grow />
         <WindowControlGroup
           onClose={handleCloseHelper}
           onHide={handleHideHelper}
           id="command-helper"
           label="Command Helper"
         />
-      </Row>
+      </RiRow>
     </div>
   )
 }

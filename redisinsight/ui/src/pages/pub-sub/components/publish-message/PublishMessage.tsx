@@ -1,27 +1,20 @@
+import React, { FormEvent, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
-import React, {
-  FormEvent,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
+
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiPrimaryButton, RiFormField } from 'uiBase/forms'
+import { RiBadge } from 'uiBase/display'
+import { CheckThinIcon, RiIcon } from 'uiBase/icons'
+import { RiTextInput } from 'uiBase/inputs'
+import { useConnectionType } from 'uiSrc/components/hooks/useConnectionType'
+import { publishMessageAction } from 'uiSrc/slices/pubsub/pubsub'
+import { ConnectionType } from 'uiSrc/slices/interfaces'
 import {
   appContextPubSub,
   setPubSubFieldsContext,
 } from 'uiSrc/slices/app/context'
-import { ConnectionType } from 'uiSrc/slices/interfaces'
-import { publishMessageAction } from 'uiSrc/slices/pubsub/pubsub'
-import { useConnectionType } from 'uiSrc/components/hooks/useConnectionType'
-
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
-import { CheckThinIcon } from 'uiSrc/components/base/icons'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { TextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 
 const HIDE_BADGE_TIMER = 3000
@@ -80,30 +73,28 @@ const PublishMessage = () => {
 
   return (
     <form className={styles.container} onSubmit={onFormSubmit}>
-      <FlexItem
+      <RiFlexItem
         grow
         className={cx('flexItemNoFullWidth', 'inlineFieldsNoSpace')}
       >
-        <Row align="center">
-          <FlexItem className={styles.channelWrapper} grow>
-            <FormField>
-              <TextInput
+        <RiRow align="center">
+          <RiFlexItem className={styles.channelWrapper} grow>
+            <RiFormField>
+              <RiTextInput
                 name="channel"
                 id="channel"
                 placeholder="Enter Channel Name"
                 value={channel}
-                onChange={value =>
-                  setChannel(value)
-                }
+                onChange={(value) => setChannel(value)}
                 autoComplete="off"
                 data-testid="field-channel-name"
               />
-            </FormField>
-          </FlexItem>
-          <FlexItem className={styles.messageWrapper} grow>
-            <FormField>
+            </RiFormField>
+          </RiFlexItem>
+          <RiFlexItem className={styles.messageWrapper} grow>
+            <RiFormField>
               <>
-                <TextInput
+                <RiTextInput
                   className={cx(styles.messageField, {
                     [styles.showBadge]: isShowBadge,
                   })}
@@ -111,9 +102,7 @@ const PublishMessage = () => {
                   id="message"
                   placeholder="Enter Message"
                   value={message}
-                  onChange={value =>
-                    setMessage(value)
-                  }
+                  onChange={(value) => setMessage(value)}
                   autoComplete="off"
                   data-testid="field-message"
                 />
@@ -124,7 +113,7 @@ const PublishMessage = () => {
                   data-testid="affected-clients-badge"
                 >
                   {connectionType !== ConnectionType.Cluster && (
-                    <Row align="center">
+                    <RiRow align="center">
                       <span
                         className={styles.affectedClients}
                         data-testid="affected-clients"
@@ -132,21 +121,21 @@ const PublishMessage = () => {
                         {affectedClients}
                       </span>
                       <RiIcon type="UserIcon" />
-                    </Row>
+                    </RiRow>
                   )}
                 </RiBadge>
               </>
-            </FormField>
-          </FlexItem>
-        </Row>
-      </FlexItem>
-      <Row justify="end" style={{ marginTop: 6 }}>
-        <FlexItem>
-          <PrimaryButton type="submit" data-testid="publish-message-submit">
+            </RiFormField>
+          </RiFlexItem>
+        </RiRow>
+      </RiFlexItem>
+      <RiRow justify="end" style={{ marginTop: 6 }}>
+        <RiFlexItem>
+          <RiPrimaryButton type="submit" data-testid="publish-message-submit">
             Publish
-          </PrimaryButton>
-        </FlexItem>
-      </Row>
+          </RiPrimaryButton>
+        </RiFlexItem>
+      </RiRow>
     </form>
   )
 }

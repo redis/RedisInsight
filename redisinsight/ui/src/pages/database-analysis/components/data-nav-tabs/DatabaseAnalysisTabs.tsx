@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react'
 import { isNull } from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
+import { RiTabs, TabInfo } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
 import { EmptyMessage } from 'uiSrc/pages/database-analysis/constants'
 import { EmptyAnalysisMessage } from 'uiSrc/pages/database-analysis/components'
 import {
@@ -13,8 +15,6 @@ import { Nullable } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { renderOnboardingTourWithChild } from 'uiSrc/utils/onboarding'
 import { recommendationsSelector } from 'uiSrc/slices/recommendations/recommendations'
-import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
-import { Text } from 'uiSrc/components/base/text'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import {
   ShortDatabaseAnalysis,
@@ -47,18 +47,18 @@ const DatabaseAnalysisTabs = (props: Props) => {
   const tabs: TabInfo[] = useMemo(
     () => [
       {
-        label: <Text>Data Summary</Text>,
+        label: <RiText>Data Summary</RiText>,
         value: DatabaseAnalysisViewTab.DataSummary,
         content: <AnalysisDataView />,
       },
       {
         label: renderOnboardingTourWithChild(
-          <Text>
+          <RiText>
             Tips{' '}
             {data?.recommendations?.length
               ? `(${data.recommendations.length})`
               : ''}
-          </Text>,
+          </RiText>,
           {
             options: { ...ONBOARDING_FEATURES.ANALYTICS_RECOMMENDATIONS },
             anchorPosition: 'downLeft',
@@ -122,7 +122,7 @@ const DatabaseAnalysisTabs = (props: Props) => {
   }
 
   return (
-    <Tabs
+    <RiTabs
       tabs={tabs}
       value={viewTab}
       onChange={handleTabChange}

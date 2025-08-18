@@ -1,15 +1,15 @@
 import React from 'react'
 import { isArray, isString } from 'lodash'
 import cx from 'classnames'
+import { RiSpacer, SpacerSize } from 'uiBase/layout/spacer'
+import { RiColorText } from 'uiBase/text'
+import { RiLink } from 'uiBase/display'
 import { OAuthSsoHandlerDialog, OAuthConnectFreeDb } from 'uiSrc/components'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { replaceVariables } from 'uiSrc/utils/recommendation'
 import { IRecommendationContent } from 'uiSrc/slices/interfaces/recommendations'
 import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { UTM_MEDIUMS } from 'uiSrc/constants/links'
-import { Spacer, SpacerSize } from 'uiSrc/components/base/layout/spacer'
-import { ColorText } from 'uiSrc/components/base/text'
-import { Link } from 'uiSrc/components/base/link/Link'
 import InternalLink from '../internal-link'
 import RecommendationBody from '../recommendation-body'
 
@@ -40,7 +40,7 @@ const ContentElement = (props: Props) => {
   switch (type) {
     case 'paragraph':
       return (
-        <ColorText
+        <RiColorText
           data-testid={`paragraph-${telemetryName}-${idx}`}
           key={`${telemetryName}-${idx}`}
           component="div"
@@ -48,22 +48,22 @@ const ContentElement = (props: Props) => {
           color="subdued"
         >
           {value}
-        </ColorText>
+        </RiColorText>
       )
     case 'code':
       return (
-        <ColorText
+        <RiColorText
           data-testid={`code-${telemetryName}-${idx}`}
           className={cx(styles.code, { [styles.insights]: insights })}
           key={`${telemetryName}-${idx}`}
           color="subdued"
         >
           <code className={cx(styles.span, styles.text)}>{value}</code>
-        </ColorText>
+        </RiColorText>
       )
     case 'span':
       return (
-        <ColorText
+        <RiColorText
           data-testid={`span-${telemetryName}-${idx}`}
           key={`${telemetryName}-${idx}`}
           color="subdued"
@@ -72,11 +72,11 @@ const ContentElement = (props: Props) => {
           })}
         >
           {value}
-        </ColorText>
+        </RiColorText>
       )
     case 'link':
       return (
-        <Link
+        <RiLink
           key={`${telemetryName}-${idx}`}
           data-testid={`link-${telemetryName}-${idx}`}
           target="_blank"
@@ -87,13 +87,13 @@ const ContentElement = (props: Props) => {
           onClick={() => onLinkClick?.()}
         >
           {value.name}
-        </Link>
+        </RiLink>
       )
     case 'link-sso':
       return (
         <OAuthSsoHandlerDialog>
           {(ssoCloudHandlerClick) => (
-            <Link
+            <RiLink
               key={`${telemetryName}-${idx}`}
               data-testid={`link-sso-${telemetryName}-${idx}`}
               target="_blank"
@@ -109,7 +109,7 @@ const ContentElement = (props: Props) => {
               })}
             >
               {value.name}
-            </Link>
+            </RiLink>
           )}
         </OAuthSsoHandlerDialog>
       )
@@ -117,7 +117,7 @@ const ContentElement = (props: Props) => {
       return <OAuthConnectFreeDb source={telemetryName as OAuthSocialSource} />
     case 'code-link':
       return (
-        <Link
+        <RiLink
           key={`${telemetryName}-${idx}`}
           data-testid={`code-link-${telemetryName}-${idx}`}
           target="_blank"
@@ -126,17 +126,17 @@ const ContentElement = (props: Props) => {
             campaign: telemetryName,
           })}
         >
-          <ColorText
+          <RiColorText
             className={cx(styles.code, { [styles.insights]: insights })}
             color="subdued"
           >
             <code className={cx(styles.span, styles.text)}>{value.name}</code>
-          </ColorText>
-        </Link>
+          </RiColorText>
+        </RiLink>
       )
     case 'spacer':
       return (
-        <Spacer
+        <RiSpacer
           data-testid={`spacer-${telemetryName}-${idx}`}
           key={`${telemetryName}-${idx}`}
           size={value as SpacerSize}

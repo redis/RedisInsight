@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation, useParams } from 'react-router-dom'
+import { RiCol, RiFlexItem } from 'uiBase/layout'
 import {
   appContextSelector,
   resetDatabaseContext,
@@ -21,7 +22,6 @@ import {
 
 import { RdiInstancePageTemplate } from 'uiSrc/templates'
 import { RdiInstanceHeader } from 'uiSrc/components'
-import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
 import InstancePageRouter from './InstancePageRouter'
 import { RdiPipelineHeader } from './components'
 import styles from './styles.module.scss'
@@ -76,17 +76,17 @@ const RdiInstancePage = ({ routes = [] }: Props) => {
   }, [])
 
   return (
-    <Col className={styles.page} gap="none" responsive={false}>
-      <FlexItem>
+    <RiCol className={styles.page} gap="none" responsive={false}>
+      <RiFlexItem>
         <RdiInstanceHeader />
-      </FlexItem>
-      <FlexItem grow={false}>
+      </RiFlexItem>
+      <RiFlexItem grow={false}>
         <RdiPipelineHeader />
-      </FlexItem>
+      </RiFlexItem>
       <RdiInstancePageTemplate>
         <InstancePageRouter routes={routes} />
       </RdiInstancePageTemplate>
-    </Col>
+    </RiCol>
   )
 }
 

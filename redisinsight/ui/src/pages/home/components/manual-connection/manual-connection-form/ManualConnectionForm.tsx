@@ -5,6 +5,11 @@ import ReactDOM from 'react-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
 import cx from 'classnames'
+import { RiFlexItem, RiRow, RiTabs as TabsComponent } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { ArrowLeftIcon } from 'uiBase/icons'
+import { RiIconButton } from 'uiBase/forms'
+import { RiTitle } from 'uiBase/text'
 import * as keys from 'uiSrc/constants/keys'
 import { resetInstanceUpdateAction } from 'uiSrc/slices/instances/instances'
 import { ConnectionType } from 'uiSrc/slices/interfaces'
@@ -23,12 +28,6 @@ import { appInfoSelector } from 'uiSrc/slices/app/info'
 
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import TabsComponent from 'uiSrc/components/base/layout/tabs'
-import { Title } from 'uiSrc/components/base/text/Title'
 import { MANUAL_FORM_TABS, ManualFormTab } from './constants'
 import CloneConnection from './components/CloneConnection'
 import FooterActions from './components/FooterActions'
@@ -157,29 +156,29 @@ const ManualConnectionForm = (props: Props) => {
   useEffect(() => {
     if (isCloneMode) {
       setModalHeader(
-        <Row align="center" gap="s">
-          <FlexItem>
-            <IconButton
+        <RiRow align="center" gap="s">
+          <RiFlexItem>
+            <RiIconButton
               onClick={handleClickBackClone}
               icon={ArrowLeftIcon}
               aria-label="back"
               data-testid="back-btn"
             />
-          </FlexItem>
-          <FlexItem grow>
-            <Title size="M">Clone Database</Title>
-          </FlexItem>
-        </Row>,
+          </RiFlexItem>
+          <RiFlexItem grow>
+            <RiTitle size="M">Clone Database</RiTitle>
+          </RiFlexItem>
+        </RiRow>,
       )
       return
     }
 
     if (isEditMode) {
-      setModalHeader(<Title size="M">Edit Database</Title>)
+      setModalHeader(<RiTitle size="M">Edit Database</RiTitle>)
       return
     }
 
-    setModalHeader(<Title size="M">Connection Settings</Title>, true)
+    setModalHeader(<RiTitle size="M">Connection Settings</RiTitle>, true)
   }, [isEditMode, isCloneMode])
 
   useEffect(() => {
@@ -247,7 +246,7 @@ const ManualConnectionForm = (props: Props) => {
         {!isEditMode && !isFromCloud && (
           <>
             <Tabs />
-            <Spacer />
+            <RiSpacer />
             <div className="eui-yScroll">
               <AddConnection
                 activeTab={activeTab}
@@ -276,11 +275,11 @@ const ManualConnectionForm = (props: Props) => {
                     nodes={nodes}
                     isFromCloud={isFromCloud}
                   />
-                  <Spacer />
+                  <RiSpacer />
                 </>
               )}
               <Tabs />
-              <Spacer />
+              <RiSpacer />
               <div className="eui-yScroll">
                 <EditConnection
                   activeTab={activeTab}
@@ -309,11 +308,11 @@ const ManualConnectionForm = (props: Props) => {
                     host={host}
                     port={port}
                   />
-                  <Spacer />
+                  <RiSpacer />
                 </>
               )}
               <Tabs />
-              <Spacer />
+              <RiSpacer />
               <div className="eui-yScroll">
                 <EditSentinelConnection
                   activeTab={activeTab}

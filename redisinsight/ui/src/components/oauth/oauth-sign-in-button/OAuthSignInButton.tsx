@@ -1,12 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
+import { RiSecondaryButton } from 'uiBase/forms'
+import { RiImage } from 'uiBase/display'
 import { OAuthSsoHandlerDialog } from 'uiSrc/components'
 
 import RedisLogo from 'uiSrc/assets/img/logo_small.svg'
 
 import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
-import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
-import { RiImage } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 const LogoWrapper = styled.div`
@@ -24,7 +24,7 @@ const OAuthSignInButton = (props: Props) => {
   return (
     <OAuthSsoHandlerDialog>
       {(socialCloudHandlerClick) => (
-        <SecondaryButton
+        <RiSecondaryButton
           className={styles.btn}
           size="s"
           onClick={(e: React.MouseEvent) =>
@@ -39,7 +39,7 @@ const OAuthSignInButton = (props: Props) => {
             <RiImage $size={"fullWidth"} className={styles.logo} src={RedisLogo} alt="Redis logo" />
           </LogoWrapper>
           <span>Cloud sign in</span>
-        </SecondaryButton>
+        </RiSecondaryButton>
       )}
     </OAuthSsoHandlerDialog>
   )

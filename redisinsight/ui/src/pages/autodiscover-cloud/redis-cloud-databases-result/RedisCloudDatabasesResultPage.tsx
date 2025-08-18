@@ -2,6 +2,11 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 
+import { RiFlexItem, RiRow, ColumnDefinition } from 'uiBase/layout'
+import { RiIconButton } from 'uiBase/forms'
+import { CopyIcon, RiIcon } from 'uiBase/icons'
+import { RiColorText, RiText } from 'uiBase/text'
+import { RiTooltip } from 'uiBase/display'
 import { Pages } from 'uiSrc/constants'
 import {
   cloudSelector,
@@ -23,14 +28,7 @@ import {
 import {
   DatabaseListModules,
   DatabaseListOptions,
-  RiTooltip,
 } from 'uiSrc/components'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CopyIcon } from 'uiSrc/components/base/icons'
-import { ColorText, Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import RedisCloudDatabasesResult from './RedisCloudDatabasesResult'
 
 import styles from './styles.module.scss'
@@ -85,7 +83,7 @@ const RedisCloudDatabasesResultPage = () => {
               anchorClassName="truncateText"
               content={formatLongName(name)}
             >
-              <Text>{cellContent}</Text>
+              <RiText>{cellContent}</RiText>
             </RiTooltip>
           </div>
         )
@@ -117,7 +115,7 @@ const RedisCloudDatabasesResultPage = () => {
               anchorClassName="truncateText"
               content={formatLongName(name)}
             >
-              <Text>{cellContent}</Text>
+              <RiText>{cellContent}</RiText>
             </RiTooltip>
           </div>
         )
@@ -153,9 +151,13 @@ const RedisCloudDatabasesResultPage = () => {
         const text = publicEndpoint
         return (
           <div className="public_endpoint">
-            <Text className="copyPublicEndpointText">{text}</Text>
-            <RiTooltip position="right" content="Copy" anchorClassName="copyPublicEndpointTooltip">
-              <IconButton
+            <RiText className="copyPublicEndpointText">{text}</RiText>
+            <RiTooltip
+              position="right"
+              content="Copy"
+              anchorClassName="copyPublicEndpointTooltip"
+            >
+              <RiIconButton
                 icon={CopyIcon}
                 aria-label="Copy public endpoint"
                 className="copyPublicEndpointBtn"
@@ -205,23 +207,28 @@ const RedisCloudDatabasesResultPage = () => {
         return (
           <>
             {statusAdded === AddRedisDatabaseStatus.Success ? (
-              <Text>{messageAdded}</Text>
+              <RiText>{messageAdded}</RiText>
             ) : (
-              <RiTooltip position="left" title="Error" content={messageAdded} anchorClassName="truncateText">
-                <Row align="center" gap="s">
-                  <FlexItem>
+              <RiTooltip
+                position="left"
+                title="Error"
+                content={messageAdded}
+                anchorClassName="truncateText"
+              >
+                <RiRow align="center" gap="s">
+                  <RiFlexItem>
                     <RiIcon type="ToastDangerIcon" color="danger600" />
-                  </FlexItem>
+                  </RiFlexItem>
 
-                  <FlexItem>
-                    <ColorText
+                  <RiFlexItem>
+                    <RiColorText
                       color="danger"
-                      className="flex-row euiTextAlign--center"
+                      className="flex-row"
                     >
                       Error
-                    </ColorText>
-                  </FlexItem>
-                </Row>
+                    </RiColorText>
+                  </RiFlexItem>
+                </RiRow>
               </RiTooltip>
             )}
           </>

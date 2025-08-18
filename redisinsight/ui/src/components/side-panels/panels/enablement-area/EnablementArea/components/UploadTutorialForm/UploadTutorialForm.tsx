@@ -3,18 +3,15 @@ import { useFormik } from 'formik'
 import { FormikErrors } from 'formik/dist/types'
 import { isEmpty } from 'lodash'
 
-import { TextInput } from 'uiSrc/components/base/inputs'
-import { Nullable } from 'uiSrc/utils'
-import validationErrors from 'uiSrc/constants/validationErrors'
-import { RiFilePicker, RiTooltip } from 'uiSrc/components'
+import { RiTextInput } from 'uiBase/inputs'
 
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { InfoIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
+import { InfoIcon } from 'uiBase/icons'
+import { RiText } from 'uiBase/text'
+import { RiFilePicker, RiTooltip } from 'uiSrc/components'
+import validationErrors from 'uiSrc/constants/validationErrors'
+import { Nullable } from 'uiSrc/utils'
 import CreateTutorialLink from '../CreateTutorialLink'
 import styles from './styles.module.scss'
 
@@ -77,8 +74,8 @@ const UploadTutorialForm = (props: Props) => {
   return (
     <div className={styles.outerWrapper}>
       <div className={styles.wrapper} data-testid="upload-tutorial-form">
-        <Text>Add new Tutorial</Text>
-        <Spacer size="m" />
+        <RiText>Add new Tutorial</RiText>
+        <RiSpacer size="m" />
         <div>
           <div className={styles.uploadFileWrapper}>
             <RiFilePicker
@@ -93,24 +90,24 @@ const UploadTutorialForm = (props: Props) => {
             />
           </div>
           <div className={styles.hr}>OR</div>
-          <TextInput
+          <RiTextInput
             placeholder="GitHub link to tutorials"
             value={formik.values.link}
             onChange={(value) => formik.setFieldValue('link', value)}
             className={styles.input}
             data-testid="tutorial-link-field"
           />
-          <Spacer size="l" />
+          <RiSpacer size="l" />
           <div className={styles.footer}>
             <CreateTutorialLink />
             <div className={styles.footerButtons}>
-              <SecondaryButton
+              <RiSecondaryButton
                 size="s"
                 onClick={() => onCancel?.()}
                 data-testid="cancel-upload-tutorial-btn"
               >
                 Cancel
-              </SecondaryButton>
+              </RiSecondaryButton>
               <RiTooltip
                 position="top"
                 anchorClassName="euiToolTip__btn-disabled"
@@ -123,7 +120,7 @@ const UploadTutorialForm = (props: Props) => {
                 }
                 content={getSubmitButtonContent(isSubmitDisabled)}
               >
-                <PrimaryButton
+                <RiPrimaryButton
                   className={styles.btnSubmit}
                   size="s"
                   onClick={() => formik.handleSubmit()}
@@ -132,7 +129,7 @@ const UploadTutorialForm = (props: Props) => {
                   data-testid="submit-upload-tutorial-btn"
                 >
                   Submit
-                </PrimaryButton>
+                </RiPrimaryButton>
               </RiTooltip>
             </div>
           </div>

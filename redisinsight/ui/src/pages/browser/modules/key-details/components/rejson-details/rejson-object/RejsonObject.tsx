@@ -3,10 +3,10 @@ import cx from 'classnames'
 
 import { useDispatch } from 'react-redux'
 import { AxiosError } from 'axios'
+import { RiLoader } from 'uiBase/display'
 import { isTruncatedString } from 'uiSrc/utils'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { AXIOS_ERROR_DISABLED_ACTION_WITH_TRUNCATED_DATA } from 'uiSrc/constants'
-import { Loader } from 'uiSrc/components/base/display'
 import RejsonDynamicTypes from '../rejson-dynamic-types'
 import { JSONObjectProps, ObjectTypes, REJSONResponse } from '../interfaces'
 import { generatePath, getBrackets, wrapPath } from '../utils'
@@ -208,7 +208,7 @@ const RejsonObject = (props: JSONObjectProps) => {
               style={{ justifyContent: 'flex-end' }}
             >
               <div className={styles.spinner}>
-                <Loader size="m" />
+                <RiLoader size="m" />
               </div>
             </div>
           )}

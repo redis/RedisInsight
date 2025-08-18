@@ -3,7 +3,8 @@ import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 
 import cx from 'classnames'
-import { PlusIcon } from 'uiSrc/components/base/icons'
+import { PlusIcon } from 'uiBase/icons'
+import { RiIconButton } from 'uiBase/forms'
 import {
   appendReJSONArrayItemAction,
   fetchVisualisationResults,
@@ -12,7 +13,6 @@ import {
 } from 'uiSrc/slices/browser/rejson'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { getBrackets, isRealArray, isRealObject, wrapPath } from '../utils'
 import { BaseProps, ObjectTypes } from '../interfaces'
 import RejsonDynamicTypes from '../rejson-dynamic-types'
@@ -131,7 +131,7 @@ const RejsonDetails = (props: BaseProps) => {
               )}
             </span>
             {!addRootKVPair && (
-              <IconButton
+              <RiIconButton
                 icon={PlusIcon}
                 size="S"
                 className={styles.buttonStyle}

@@ -2,6 +2,7 @@ import {
   Criteria,
   EuiTableFieldDataColumnType,
   PropertySort,
+
 } from '@elastic/eui'
 import cx from 'classnames'
 import { saveAs } from 'file-saver'
@@ -17,15 +18,18 @@ import React, {
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import AutoSizer from 'react-virtualized-auto-sizer'
-import { Text, ColorText } from 'uiSrc/components/base/text'
 
+import { RiText, RiColorText } from 'uiBase/text'
 import {
   MoreactionsIcon,
   EditIcon,
   TagIcon,
   CopyIcon,
   RiIcon,
-} from 'uiSrc/components/base/icons'
+} from 'uiBase/icons'
+import { RiPopover, RiTooltip } from 'uiBase/index'
+import { RiEmptyButton, RiIconButton } from 'uiBase/forms'
+import { RiLink } from 'uiBase/display'
 import DatabaseListModules from 'uiSrc/components/database-list-modules/DatabaseListModules'
 import ItemList from 'uiSrc/components/item-list'
 import {
@@ -79,16 +83,13 @@ import { CREATE_CLOUD_DB_ID, HELP_LINKS } from 'uiSrc/pages/home/constants'
 
 import { Tag } from 'uiSrc/slices/interfaces/tag'
 import { FeatureFlagComponent } from 'uiSrc/components'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { EmptyButton, IconButton } from 'uiSrc/components/base/forms/buttons'
-import { Link } from 'uiSrc/components/base/link/Link'
-import { RIResizeObserver } from 'uiSrc/components/base/utils'
 
 import DbStatus from '../db-status'
 import { TagsCell } from '../tags-cell/TagsCell'
 import { TagsCellHeader } from '../tags-cell/TagsCellHeader'
 
 import styles from './styles.module.scss'
+import { RIResizeObserver } from 'uiBase/utils'
 
 export interface Props {
   instances: Instance[]
@@ -350,7 +351,7 @@ const DatabasesListWrapper = (props: Props) => {
   })
 
   const controlsButton = (instanceId: string) => (
-    <IconButton
+    <RiIconButton
       icon={MoreactionsIcon}
       aria-label="Controls icon"
       data-testid={`controls-button-${instanceId}`}
@@ -376,9 +377,9 @@ const DatabasesListWrapper = (props: Props) => {
         render: function InstanceCell(name: string = '', instance: Instance) {
           if (isCreateCloudDb(instance.id)) {
             return (
-              <Text className={cx(styles.tooltipAnchorColumnName)}>
+              <RiText className={cx(styles.tooltipAnchorColumnName)}>
                 {instance.name}
-              </Text>
+              </RiText>
             )
           }
 
@@ -407,7 +408,7 @@ const DatabasesListWrapper = (props: Props) => {
                 className={styles.tooltipColumnName}
                 content={`${formatLongName(name)} ${getDbIndex(db)}`}
               >
-                <Text
+                <RiText
                   className={styles.tooltipAnchorColumnName}
                   data-testid={`instance-name-${id}`}
                   onClick={(e: React.MouseEvent) =>
@@ -417,15 +418,15 @@ const DatabasesListWrapper = (props: Props) => {
                     handleCheckConnectToInstance(e, instance)
                   }
                 >
-                  <ColorText
+                  <RiColorText
                     className={cx(styles.tooltipColumnNameText, {
                       [styles.withDb]: db,
                     })}
                   >
                     {cellContent}
-                  </ColorText>
-                  <ColorText>{` ${getDbIndex(db)}`}</ColorText>
-                </Text>
+                  </RiColorText>
+                  <RiColorText>{` ${getDbIndex(db)}`}</RiColorText>
+                </RiText>
               </RiTooltip>
             </div>
           )
@@ -449,13 +450,13 @@ const DatabasesListWrapper = (props: Props) => {
           const text = `${name}:${port}`
           return (
             <div className="host_port" data-testid="host-port">
-              <Text className="copyHostPortText">{text}</Text>
+              <RiText className="copyHostPortText">{text}</RiText>
               <RiTooltip
                 position="right"
                 content="Copy"
                 anchorClassName="copyHostPortTooltip"
               >
-                <IconButton
+                <RiIconButton
                   icon={CopyIcon}
                   aria-label="Copy host:port"
                   className="copyHostPortBtn"
@@ -518,12 +519,12 @@ const DatabasesListWrapper = (props: Props) => {
                             className={styles.tooltipLogo}
                             data-testid="tooltip-redis-stack-icon"
                           />
-                          <Text
+                          <RiText
                             color="subdued"
                             style={{ marginTop: 4, marginBottom: -4 }}
                           >
                             Includes
-                          </Text>
+                          </RiText>
                         </>
                       ) : undefined
                     }
@@ -585,7 +586,7 @@ const DatabasesListWrapper = (props: Props) => {
             <>
               {databaseManagementFeature?.flag && (
                 <RiTooltip content="Manage Tags">
-                  <IconButton
+                  <RiIconButton
                     icon={TagIcon}
                     className={styles.tagsButton}
                     aria-label="Manage Instance Tags"
@@ -596,14 +597,14 @@ const DatabasesListWrapper = (props: Props) => {
               )}
               {instance.cloudDetails && (
                 <RiTooltip content="Go to Redis Cloud">
-                  <Link
+                  <RiLink
                     target="_blank"
                     href={EXTERNAL_LINKS.cloudConsole}
                     onClick={handleClickGoToCloud}
                     data-testid={`cloud-link-${instance.id}`}
                   >
                     <RiIcon type="CloudLinkIcon" className={styles.cloudIcon} />
-                  </Link>
+                  </RiLink>
                 </RiTooltip>
               )}
               <FeatureFlagComponent name={FeatureFlags.databaseManagement}>
@@ -618,7 +619,7 @@ const DatabasesListWrapper = (props: Props) => {
                 >
                   <div className="controlsPopoverContent">
                     <div>
-                      <EmptyButton
+                      <RiEmptyButton
                         justify="start"
                         icon={EditIcon}
                         className="editInstanceBtn"
@@ -627,7 +628,7 @@ const DatabasesListWrapper = (props: Props) => {
                         data-testid={`edit-instance-${instance.id}`}
                       >
                         Edit database
-                      </EmptyButton>
+                      </RiEmptyButton>
                     </div>
                     <div>
                       <PopoverDelete

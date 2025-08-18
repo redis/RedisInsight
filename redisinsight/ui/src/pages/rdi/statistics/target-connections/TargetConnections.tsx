@@ -1,15 +1,15 @@
 import React from 'react'
 
+import { RiTable, ColumnDefinition } from 'uiBase/layout'
+import { RiIcon } from 'uiBase/icons'
 import {
   IConnections,
   StatisticsConnectionStatus,
 } from 'uiSrc/slices/interfaces'
 import { formatLongName } from 'uiSrc/utils'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
-import { RiTooltip } from 'uiSrc/components'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import Accordion from '../components/accordion'
 import Panel from '../components/panel'
+import { RiTooltip } from 'uiBase/display'
 
 type ConnectionData = {
   name: string
@@ -99,7 +99,7 @@ const TargetConnections = ({ data }: Props) => {
         title="Target connections"
         hideAutoRefresh
       >
-        <Table
+        <RiTable
           columns={columns}
           data={connections}
           defaultSorting={[{ id: 'name', desc: false }]}

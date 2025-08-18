@@ -1,6 +1,8 @@
 import React, { ReactNode } from 'react'
 import { isArray, isUndefined, toNumber } from 'lodash'
 
+import { AllIconsType } from 'uiBase/icons'
+import { RiLoader } from 'uiBase/display'
 import {
   formatBytes,
   Nullable,
@@ -10,9 +12,6 @@ import {
 } from 'uiSrc/utils'
 import { Theme } from 'uiSrc/constants'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
-
-import { AllIconsType } from 'uiSrc/components/base/icons/RiIcon'
-import { Loader } from 'uiSrc/components/base/display'
 
 import styles from './styles.module.scss'
 
@@ -92,7 +91,7 @@ function getCpuUsage(
       cpuUsagePercentage === null ? (
         <>
           <div className={styles.calculationWrapper}>
-            <Loader className={styles.spinner} size="m" />
+            <RiLoader className={styles.spinner} size="m" />
             <span className={styles.calculation}>Calculating...</span>
           </div>
         </>

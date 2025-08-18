@@ -1,9 +1,9 @@
 import React from 'react'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiSecondaryButton } from 'uiBase/forms'
+import { CopyIcon } from 'uiBase/icons'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
-import { CopyIcon } from 'uiSrc/components/base/icons'
 
 export interface Props {
   id?: string
@@ -25,9 +25,9 @@ const CloneConnection = (props: Props) => {
 
   return (
     <>
-      <Row gap="m" justify="end" style={{ flexGrow: 0 }}>
-        <FlexItem>
-          <SecondaryButton
+      <RiRow gap="m" justify="end" style={{ flexGrow: 0 }}>
+        <RiFlexItem>
+          <RiSecondaryButton
             size="small"
             icon={CopyIcon}
             aria-label="Clone database"
@@ -35,10 +35,10 @@ const CloneConnection = (props: Props) => {
             onClick={handleClickClone}
           >
             Clone Connection
-          </SecondaryButton>
-        </FlexItem>
-      </Row>
-      <Spacer />
+          </RiSecondaryButton>
+        </RiFlexItem>
+      </RiRow>
+      <RiSpacer />
     </>
   )
 }

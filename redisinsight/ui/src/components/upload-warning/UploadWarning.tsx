@@ -1,25 +1,25 @@
 import React from 'react'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { CallOut } from 'uiSrc/components/base/display/call-out/CallOut'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
+import { RiCallOut } from 'uiBase/display'
 import styles from './styles.module.scss'
 
 const UploadWarning = () => (
-  <CallOut variant="attention" className={styles.wrapper}>
-    <Row gap="s" align="center">
-      <FlexItem>
+  <RiCallOut variant="attention" className={styles.wrapper}>
+    <RiRow gap="s" align="center">
+      <RiFlexItem>
         <RiIcon color="attention500" type="IndicatorErrorIcon" />
-      </FlexItem>
-      <FlexItem>
-        <Text className={styles.warningMessage}>
+      </RiFlexItem>
+      <RiFlexItem>
+        <RiText className={styles.warningMessage}>
           Use files only from trusted authors to avoid automatic execution of
           malicious code.
-        </Text>
-      </FlexItem>
-    </Row>
-  </CallOut>
+        </RiText>
+      </RiFlexItem>
+    </RiRow>
+  </RiCallOut>
 )
 
 export default UploadWarning

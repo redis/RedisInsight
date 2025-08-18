@@ -1,11 +1,10 @@
 import React from 'react'
 import { FormikProps } from 'formik'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiFormField, RiSelect } from 'uiBase/forms'
 import { KeyValueFormat } from 'uiSrc/constants'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 
 export interface Props {
   formik: FormikProps<DbConnectionInfo>
@@ -26,9 +25,9 @@ const KeyFormatSelector = (props: Props) => {
   ]
 
   return (
-    <Row gap="m">
-      <FlexItem grow>
-        <FormField label="Key name format">
+    <RiRow gap="m">
+      <RiFlexItem grow>
+        <RiFormField label="Key name format">
           <RiSelect
             name="key-name-format"
             placeholder="Key name format"
@@ -43,10 +42,10 @@ const KeyFormatSelector = (props: Props) => {
             }}
             data-testid="select-key-name-format"
           />
-        </FormField>
-      </FlexItem>
-      <FlexItem grow />
-    </Row>
+        </RiFormField>
+      </RiFlexItem>
+      <RiFlexItem grow />
+    </RiRow>
   )
 }
 

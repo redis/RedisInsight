@@ -1,6 +1,9 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
+import { RiFlexItem } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
 import {
   LENGTH_NAMING_BY_TYPE,
   MIDDLE_SCREEN_RESOLUTION,
@@ -11,10 +14,7 @@ import {
 } from 'uiSrc/slices/browser/keys'
 import { formatBytes } from 'uiSrc/utils'
 
-import { FlexItem } from 'uiSrc/components/base/layout/flex'
-import { Text } from 'uiSrc/components/base/text'
-import { RiTooltip } from 'uiSrc/components'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiTooltip } from 'uiBase/display'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -30,8 +30,8 @@ const KeyDetailsHeaderSizeLength = ({ width }: Props) => {
   return (
     <>
       {size && (
-        <FlexItem>
-          <Text
+        <RiFlexItem>
+          <RiText
             color="subdued"
             size="s"
             className={styles.subtitleText}
@@ -65,11 +65,11 @@ const KeyDetailsHeaderSizeLength = ({ width }: Props) => {
                 )}
               </>
             </RiTooltip>
-          </Text>
-        </FlexItem>
+          </RiText>
+        </RiFlexItem>
       )}
-      <FlexItem>
-        <Text
+      <RiFlexItem>
+        <RiText
           color="subdued"
           size="s"
           className={styles.subtitleText}
@@ -78,8 +78,8 @@ const KeyDetailsHeaderSizeLength = ({ width }: Props) => {
           {LENGTH_NAMING_BY_TYPE[type] ?? 'Length'}
           {': '}
           {length ?? '-'}
-        </Text>
-      </FlexItem>
+        </RiText>
+      </RiFlexItem>
     </>
   )
 }

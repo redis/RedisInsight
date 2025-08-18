@@ -8,9 +8,13 @@ import {
   IndexRange,
   InfiniteLoader,
   RowMouseEventHandlerParams,
-  Table,
+  Table as ReactVirtualizedTable,
   TableCellProps,
 } from 'react-virtualized'
+import { RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
+import { RIResizeObserver } from 'uiBase/utils'
+import { RiProgressBarLoader } from 'uiBase/display'
 import TableColumnSearchTrigger from 'uiSrc/components/table-column-search-trigger/TableColumnSearchTrigger'
 import TableColumnSearch from 'uiSrc/components/table-column-search/TableColumnSearch'
 import { SortOrder } from 'uiSrc/constants'
@@ -18,10 +22,6 @@ import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 
 import { isEqualBuffers, Maybe, Nullable } from 'uiSrc/utils'
 
-import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { RIResizeObserver } from 'uiSrc/components/base/utils'
-import { ProgressBarLoader } from 'uiSrc/components/base/display'
 import {
   ColumnWidthSizes,
   IColumnSearchState,
@@ -383,14 +383,14 @@ const VirtualTable = (props: IProps) => {
           className={styles.tableRowCell}
           style={{ justifyContent: column.alignment, whiteSpace: 'normal' }}
         >
-          <Text color="subdued" style={{ maxWidth: '100%' }}>
+          <RiText color="subdued" style={{ maxWidth: '100%' }}>
             <div
               style={{ display: 'flex' }}
               className={column.truncateText ? 'truncateText' : ''}
             >
               {cellData}
             </div>
-          </Text>
+          </RiText>
         </div>
       </CellMeasurer>
     )
@@ -436,9 +436,9 @@ const VirtualTable = (props: IProps) => {
               data-testid="score-button"
               style={{ justifyContent: column.alignment }}
             >
-              <Text size="m" className={cellClass}>
+              <RiText size="m" className={cellClass}>
                 <span>{column.label}</span>
-              </Text>
+              </RiText>
             </button>
           </div>
         )}
@@ -454,9 +454,9 @@ const VirtualTable = (props: IProps) => {
                 flex: '1',
               }}
             >
-              <Text size="m" className={cellClass}>
+              <RiText size="m" className={cellClass}>
                 <span>{column.label}</span>
-              </Text>
+              </RiText>
             </div>
             {column.isSearchable && searchRenderer(column)}
           </div>
@@ -499,9 +499,9 @@ const VirtualTable = (props: IProps) => {
     <>
       {noItemsMessage && (
         <div className={styles.placeholder}>
-          <Text textAlign="center" color="subdued" size="m">
+          <RiText textAlign="center" color="subdued" size="m">
             <div>{loading ? 'loading...' : noItemsMessage}</div>
-          </Text>
+          </RiText>
         </div>
       )}
     </>
@@ -601,7 +601,7 @@ const VirtualTable = (props: IProps) => {
           data-testid="virtual-table-container"
         >
           {loading && !hideProgress && (
-            <ProgressBarLoader
+            <RiProgressBarLoader
               color="primary"
               data-testid="progress-key-table"
             />
@@ -614,7 +614,7 @@ const VirtualTable = (props: IProps) => {
             rowCount={totalItemsCount || undefined}
           >
             {({ onRowsRendered, registerChild }) => (
-              <Table
+              <ReactVirtualizedTable
                 onRowClick={onRowSelect}
                 onRowDoubleClick={() => clearSelectTimeout()}
                 estimatedRowSize={rowHeight}
@@ -687,7 +687,7 @@ const VirtualTable = (props: IProps) => {
                     key={column.id}
                   />
                 ))}
-              </Table>
+              </ReactVirtualizedTable>
             )}
           </InfiniteLoader>
           {!hideFooter && (

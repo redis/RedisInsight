@@ -1,9 +1,14 @@
 import React, { useContext } from 'react'
+import styled from "styled-components"
 import { useDispatch } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
-import styled from 'styled-components'
 import { isUndefined } from 'lodash'
 
+import { HideIcon, ShowIcon, SnoozeIcon, StarsIcon, RiIcon } from 'uiBase/icons'
+import { RiFlexItem, RiRow, RiCard, RiCol } from 'uiBase/layout'
+import { RiIconButton, RiSecondaryButton } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
+import { RiAccordion, RiLink } from 'uiBase/display'
 import { findTutorialPath, Maybe, Nullable } from 'uiSrc/utils'
 import { FeatureFlags, Pages, Theme } from 'uiSrc/constants'
 import {
@@ -26,23 +31,7 @@ import {
   IRecommendationsStatic,
 } from 'uiSrc/slices/interfaces/recommendations'
 
-import {
-  HideIcon,
-  ShowIcon,
-  SnoozeIcon,
-  StarsIcon,
-} from 'uiSrc/components/base/icons'
-
 import { openTutorialByPath } from 'uiSrc/slices/panels/sidePanels'
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Card } from 'uiSrc/components/base/layout'
-import {
-  IconButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
-import { Link } from 'uiSrc/components/base/link/Link'
 
 import styles from './styles.module.scss'
 
@@ -58,10 +47,9 @@ export interface IProps {
   recommendationsContent: IRecommendationsStatic
 }
 
-const RecommendationContent = styled(Card)`
+const RecommendationContent = styled(RiCard)`
   padding: var(--size-m);
 `
-
 const RecommendationTitle = ({
   redisStack,
   title,
@@ -73,7 +61,7 @@ const RecommendationTitle = ({
 }) => {
   const { theme } = useContext(ThemeContext)
   return (
-    <Row
+    <RiRow
       align="center"
       justify="start"
       gap="m"
@@ -84,8 +72,8 @@ const RecommendationTitle = ({
       }}
     >
       {redisStack && (
-        <FlexItem>
-          <Link
+        <RiFlexItem>
+          <RiLink
             target="_blank"
             href={EXTERNAL_LINKS.redisStack}
             className={styles.redisStackLink}
@@ -106,13 +94,11 @@ const RecommendationTitle = ({
                 data-testid={`${id}-redis-stack-icon`}
               />
             </RiTooltip>
-          </Link>
-        </FlexItem>
+          </RiLink>
+        </RiFlexItem>
       )}
-      <div className="truncateText">
-        <span title={title}>{title}</span>
-      </div>
-    </Row>
+      <RiFlexItem className="truncateText">{title}</RiFlexItem>
+    </RiRow>
   )
 }
 
@@ -204,9 +190,9 @@ const Recommendation = ({
   }
 
   const recommendationContent = () => (
-    <Col>
+    <RiCol>
       {!isUndefined(tutorialId) && (
-        <SecondaryButton
+        <RiSecondaryButton
           filled
           icon={StarsIcon}
           iconSide="right"
@@ -215,7 +201,7 @@ const Recommendation = ({
           data-testid={`${name}-to-tutorial-btn`}
         >
           {tutorialId ? 'Start Tutorial' : 'Workbench'}
-        </SecondaryButton>
+        </RiSecondaryButton>
       )}
       <RecommendationBody
         elements={content}
@@ -244,19 +230,19 @@ const Recommendation = ({
           />
         </div>
       </FeatureFlagComponent>
-    </Col>
+    </RiCol>
   )
 
   const renderButtonContent = (
-    <Row className={styles.fullWidth} align="center" gap="s" justify="between">
-      <FlexItem>
+    <RiRow className={styles.fullWidth} align="center" gap="s" justify="between">
+      <RiFlexItem>
         <RiTooltip
           title="Snooze tip"
           content="This tip will be removed from the list and displayed again when relevant."
           position="top"
           anchorClassName="flex-row"
         >
-          <IconButton
+          <RiIconButton
             icon={SnoozeIcon}
             className={styles.snoozeBtn}
             onClick={handleDelete}
@@ -264,8 +250,8 @@ const Recommendation = ({
             data-testid={`${name}-delete-btn`}
           />
         </RiTooltip>
-      </FlexItem>
-      <FlexItem>
+      </RiFlexItem>
+      <RiFlexItem>
         <RiTooltip
           title={`${hide ? 'Show' : 'Hide'} tip`}
           content={`${
@@ -276,7 +262,7 @@ const Recommendation = ({
           position="top"
           anchorClassName="flex-row"
         >
-          <IconButton
+          <RiIconButton
             icon={hide ? HideIcon : ShowIcon}
             className={styles.hideBtn}
             onClick={toggleHide}
@@ -284,8 +270,8 @@ const Recommendation = ({
             data-testid={`toggle-hide-${name}-btn`}
           />
         </RiTooltip>
-      </FlexItem>
-    </Row>
+      </RiFlexItem>
+    </RiRow>
   )
 
   if (!(name in recommendationsContent)) {

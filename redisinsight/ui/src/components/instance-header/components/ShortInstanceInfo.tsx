@@ -2,6 +2,9 @@ import React, { useContext } from 'react'
 import { capitalize } from 'lodash'
 
 import cx from 'classnames'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
+import { AllIconsType, RiIcon } from 'uiBase/icons'
 import {
   CONNECTION_TYPE_DISPLAY,
   ConnectionType,
@@ -12,9 +15,6 @@ import { getModule, Nullable, truncateText } from 'uiSrc/utils'
 import { DEFAULT_MODULES_INFO } from 'uiSrc/constants/modules'
 import { Theme } from 'uiSrc/constants'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Text } from 'uiSrc/components/base/text'
-import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
 import styles from './styles.module.scss'
 
@@ -58,41 +58,41 @@ const ShortInstanceInfo = ({ info, databases, modules }: Props) => {
         </span>
       </div>
       {databases > 1 && (
-        <Row className={styles.dbIndexInfo} align="center">
-          <FlexItem style={{ marginRight: 16 }}>
+        <RiRow className={styles.dbIndexInfo} align="center">
+          <RiFlexItem style={{ marginRight: 16 }}>
             <RiIcon
               className={styles.messageInfoIcon}
               size="xxl"
               type="MessageInfoIcon"
             />
-          </FlexItem>
-          <FlexItem grow>
-            <Text size="s">Logical Databases</Text>
-            <Text color="subdued" size="xs">
+          </RiFlexItem>
+          <RiFlexItem grow>
+            <RiText size="s">Logical Databases</RiText>
+            <RiText color="subdued" size="xs">
               Select logical databases to work with in Browser, Workbench, and
               Database Analysis.
-            </Text>
-          </FlexItem>
-        </Row>
+            </RiText>
+          </RiFlexItem>
+        </RiRow>
       )}
-      <Row className={styles.tooltipItem} align="center" justify="start">
-        <FlexItem className={styles.rowTooltipItem}>
+      <RiRow className={styles.tooltipItem} align="center" justify="start">
+        <RiFlexItem className={styles.rowTooltipItem}>
           <RiIcon type="ConnectionIcon" />
           <span className={styles.tooltipItemValue}>
             {connectionType
               ? CONNECTION_TYPE_DISPLAY[connectionType]
               : capitalize(connectionType)}
           </span>
-        </FlexItem>
-        <FlexItem className={styles.rowTooltipItem}>
+        </RiFlexItem>
+        <RiFlexItem className={styles.rowTooltipItem}>
           <RiIcon type="VersionIcon" />
           <span className={styles.tooltipItemValue}>{version}</span>
-        </FlexItem>
-        <FlexItem className={styles.rowTooltipItem}>
+        </RiFlexItem>
+        <RiFlexItem className={styles.rowTooltipItem}>
           <RiIcon type="UserIcon" />
           <span className={styles.tooltipItemValue}>{user || 'Default'}</span>
-        </FlexItem>
-      </Row>
+        </RiFlexItem>
+      </RiRow>
       {!!modules?.length && (
         <div className={styles.modules}>
           <h4 className={styles.mi_fieldName}>Database Modules</h4>

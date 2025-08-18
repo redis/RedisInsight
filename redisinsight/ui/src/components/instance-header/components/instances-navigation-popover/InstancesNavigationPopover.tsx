@@ -1,9 +1,14 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
+import { RiTextInput } from 'uiBase/inputs'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
+import { RiTabs, TabInfo } from 'uiBase/layout'
+import { RiPopover } from 'uiBase/index'
 import { instancesSelector as rdiInstancesSelector } from 'uiSrc/slices/rdi/instances'
 import { instancesSelector as dbInstancesSelector } from 'uiSrc/slices/instances/instances'
-import { TextInput } from 'uiSrc/components/base/inputs'
 import Divider from 'uiSrc/components/divider/Divider'
 import { BrowserStorageItem, DEFAULT_SORT, Pages } from 'uiSrc/constants'
 import Search from 'uiSrc/assets/img/Search.svg'
@@ -11,11 +16,6 @@ import { Instance, RdiInstance } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { localStorageService } from 'uiSrc/services'
 import { filterAndSort } from 'uiSrc/utils'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
-import { RiPopover } from 'uiSrc/components/base'
 import InstancesList from './components/instances-list'
 import styles from './styles.module.scss'
 
@@ -117,7 +117,7 @@ const InstancesNavigationPopover = ({ name }: Props) => {
       isOpen={isPopoverOpen}
       closePopover={() => showPopover()}
       button={
-        <Text
+        <RiText
           className={styles.showPopoverBtn}
           onClick={() => showPopover()}
           data-testid="nav-instance-popover-btn"
@@ -126,12 +126,12 @@ const InstancesNavigationPopover = ({ name }: Props) => {
           <span>
             <RiIcon color="primary500" type="CaretDownIcon" />
           </span>
-        </Text>
+        </RiText>
       }
     >
       <div className={styles.wrapper}>
         <div className={styles.searchInputContainer}>
-          <TextInput
+          <RiTextInput
             className={styles.searchInput}
             icon={Search}
             value={searchFilter}
@@ -141,7 +141,7 @@ const InstancesNavigationPopover = ({ name }: Props) => {
         </div>
         <div>
           <div className={styles.tabsContainer}>
-            <Tabs
+            <RiTabs
               tabs={tabs}
               value={selectedTab}
               // @ts-expect-error type mismatch
@@ -150,7 +150,7 @@ const InstancesNavigationPopover = ({ name }: Props) => {
               data-testid="instances-tabs-testId"
             />
           </div>
-          <Spacer size="m" />
+          <RiSpacer size="m" />
           <InstancesList
             selectedTab={selectedTab}
             filteredDbInstances={filteredDbInstances}
@@ -158,12 +158,12 @@ const InstancesNavigationPopover = ({ name }: Props) => {
             onItemClick={showPopover}
           />
           <div>
-            <Spacer size="m" />
+            <RiSpacer size="m" />
             <Divider />
             <div className={styles.footerContainer}>
-              <Text className={styles.homePageLink} onClick={goHome}>
+              <RiText className={styles.homePageLink} onClick={goHome}>
                 {btnLabel}
-              </Text>
+              </RiText>
             </div>
           </div>
         </div>

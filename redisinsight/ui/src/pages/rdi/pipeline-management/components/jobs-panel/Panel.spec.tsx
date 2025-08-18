@@ -3,6 +3,7 @@ import { instance, mock } from 'ts-mockito'
 import { cloneDeep } from 'lodash'
 import { AxiosError } from 'axios'
 
+import { RiText } from 'uiBase/text'
 import {
   cleanup,
   fireEvent,
@@ -10,7 +11,6 @@ import {
   render,
   screen,
 } from 'uiSrc/utils/test-utils'
-import { Text } from 'uiSrc/components/base/text'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { dryRunJob, rdiDryRunJobSelector } from 'uiSrc/slices/rdi/dryRun'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
@@ -185,10 +185,10 @@ describe('JobsPanel', () => {
           data: {
             message: (
               <>
-                <Text>JobName has an invalid structure.</Text>
-                <Text>
+                <RiText>JobName has an invalid structure.</RiText>
+                <RiText>
                   end of the stream or a document separator is expected
-                </Text>
+                </RiText>
               </>
             ),
           },

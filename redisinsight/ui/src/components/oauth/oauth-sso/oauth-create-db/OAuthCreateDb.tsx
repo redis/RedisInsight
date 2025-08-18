@@ -1,5 +1,9 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton } from 'uiBase/forms'
+import { RiTitle, RiText } from 'uiBase/text'
 import {
   createFreeDbJob,
   fetchPlans,
@@ -27,11 +31,6 @@ import {
 } from 'uiSrc/slices/instances/cloud'
 import { Nullable } from 'uiSrc/utils'
 import OAuthForm from 'uiSrc/components/oauth/shared/oauth-form'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
 import {
   OAuthAdvantages,
   OAuthAgreement,
@@ -113,11 +112,11 @@ const OAuthCreateDb = (props: Props) => {
 
   return (
     <div className={styles.container} data-testid="oauth-container-create-db">
-      <Row>
-        <FlexItem grow className={styles.advantagesContainer}>
+      <RiRow>
+        <RiFlexItem grow className={styles.advantagesContainer}>
           <OAuthAdvantages />
-        </FlexItem>
-        <FlexItem grow className={styles.socialContainer}>
+        </RiFlexItem>
+        <RiFlexItem grow className={styles.socialContainer}>
           {!data ? (
             <OAuthForm
               className={styles.socialButtons}
@@ -126,11 +125,10 @@ const OAuthCreateDb = (props: Props) => {
             >
               {(form: React.ReactNode) => (
                 <>
-                  <Text className={styles.subTitle}>Get started with</Text>
-                  <Spacer size="s" />
-                  <Title size="XL" className={styles.title}>
+                  <RiText className={styles.subTitle}>Get started with</RiText>
+                  <RiTitle size="XL" className={styles.title}>
                     Free trial Cloud database
-                  </Title>
+                  </RiTitle>
                   {form}
                   <div>
                     <OAuthRecommendedSettings
@@ -144,32 +142,31 @@ const OAuthCreateDb = (props: Props) => {
             </OAuthForm>
           ) : (
             <>
-              <Text className={styles.subTitle}>Get your</Text>
-              <Spacer size="s" />
-              <Title size="XL" className={styles.title}>
+              <RiText className={styles.subTitle}>Get your</RiText>
+              <RiTitle size="XL" className={styles.title}>
                 Free trial Cloud database
-              </Title>
-              <Spacer size="xl" />
-              <Text textAlign="center" color="subdued">
+              </RiTitle>
+              <RiSpacer size="xl" />
+              <RiText textAlign="center" color="subdued">
                 The database will be created automatically and can be changed
                 from Redis Cloud.
-              </Text>
-              <Spacer size="xl" />
+              </RiText>
+              <RiSpacer size="xl" />
               <OAuthRecommendedSettings
                 value={isRecommended}
                 onChange={handleChangeRecommendedSettings}
               />
-              <Spacer />
-              <PrimaryButton
+              <RiSpacer />
+              <RiPrimaryButton
                 onClick={handleClickCreate}
                 data-testid="oauth-create-db"
               >
                 Create
-              </PrimaryButton>
+              </RiPrimaryButton>
             </>
           )}
-        </FlexItem>
-      </Row>
+        </RiFlexItem>
+      </RiRow>
     </div>
   )
 }

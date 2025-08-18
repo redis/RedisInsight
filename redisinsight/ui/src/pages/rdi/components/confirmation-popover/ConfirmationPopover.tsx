@@ -1,13 +1,12 @@
 import React, { useState } from 'react'
 
-import { formatLongName } from 'uiSrc/utils'
-import { OutsideClickDetector } from 'uiSrc/components/base/utils'
+import { RiOutsideClickDetector } from 'uiBase/utils'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { Text } from 'uiSrc/components/base/text'
-import { RiPopover } from 'uiSrc/components/base'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { RiFlexItem, RiRow, RiSpacer } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
+import { RiPopover } from 'uiBase/display'
+import { RiIcon } from 'uiBase/icons'
+import { formatLongName } from 'uiSrc/utils'
 import styles from './styles.module.scss'
 
 interface Props {
@@ -52,7 +51,7 @@ const ConfirmationPopover = (props: Props) => {
   const confirmBtn = React.cloneElement(submitBtn, { onClick: handleConfirm })
 
   return (
-    <OutsideClickDetector onOutsideClick={handleClosePopover}>
+    <RiOutsideClickDetector onOutsideClick={handleClosePopover}>
       <RiPopover
         id="confirmation-popover"
         ownFocus
@@ -63,23 +62,23 @@ const ConfirmationPopover = (props: Props) => {
         panelClassName={styles.panelPopover}
         button={popoverButton}
       >
-        <Row align="center">
-          <FlexItem>
+        <RiRow align="center">
+          <RiFlexItem>
             <RiIcon type="ToastDangerIcon" className={styles.alertIcon} />
-          </FlexItem>
-          <FlexItem className="eui-textNoWrap">
-            <Text>{formatLongName(title, 58, 0, '...')}</Text>
-          </FlexItem>
-        </Row>
-        <Spacer size="xs" />
+          </RiFlexItem>
+          <RiFlexItem className="eui-textNoWrap">
+            <RiText>{formatLongName(title, 58, 0, '...')}</RiText>
+          </RiFlexItem>
+        </RiRow>
+        <RiSpacer size="xs" />
         {body}
-        <Spacer size="m" />
-        <Row justify={appendAction ? 'between' : 'end'} align="center">
-          <FlexItem>{!!appendAction && appendAction}</FlexItem>
-          <FlexItem>{confirmBtn}</FlexItem>
-        </Row>
+        <RiSpacer size="m" />
+        <RiRow justify={appendAction ? 'between' : 'end'} align="center">
+          <RiFlexItem>{!!appendAction && appendAction}</RiFlexItem>
+          <RiFlexItem>{confirmBtn}</RiFlexItem>
+        </RiRow>
       </RiPopover>
-    </OutsideClickDetector>
+    </RiOutsideClickDetector>
   )
 }
 

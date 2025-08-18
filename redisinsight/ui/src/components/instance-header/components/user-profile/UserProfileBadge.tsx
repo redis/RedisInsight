@@ -2,6 +2,10 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import { useHistory } from 'react-router-dom'
+import { RiPopover } from 'uiBase/index'
+import { RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
+import { UserProfileLink, RiLoader } from 'uiBase/display'
 import { logoutUserAction } from 'uiSrc/slices/oauth/cloud'
 
 import { buildRedisInsightUrl, getUtmExternalLink } from 'uiSrc/utils/links'
@@ -17,12 +21,7 @@ import {
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { FeatureFlags, Pages } from 'uiSrc/constants'
 import { FeatureFlagComponent } from 'uiSrc/components'
-import { RiPopover } from 'uiSrc/components/base'
 import { getConfig } from 'uiSrc/config'
-import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { UserProfileLink } from 'uiSrc/components/base/link/UserProfileLink'
-import { Loader } from 'uiSrc/components/base/display'
 import { CloudUser } from 'apiSrc/modules/cloud/user/models'
 import styles from './styles.module.scss'
 
@@ -135,17 +134,20 @@ const UserProfileBadge = (props: UserProfileBadgeProps) => {
             <FeatureFlagComponent
               name={FeatureFlags.envDependent}
               otherwise={
-                <Text
+                <RiText
                   className={styles.optionTitle}
                   data-testid="profile-title"
                 >
                   Account
-                </Text>
+                </RiText>
               }
             >
-              <Text className={styles.optionTitle} data-testid="profile-title">
+              <RiText
+                className={styles.optionTitle}
+                data-testid="profile-title"
+              >
                 Redis Cloud account
-              </Text>
+              </RiText>
             </FeatureFlagComponent>
             <div
               className={styles.accounts}
@@ -164,9 +166,9 @@ const UserProfileBadge = (props: UserProfileBadgeProps) => {
                   onClick={() => handleClickSelectAccount?.(id)}
                   data-testid={`profile-account-${id}${id === currentAccountId ? '-selected' : ''}`}
                 >
-                  <Text className={styles.accountNameId}>
+                  <RiText className={styles.accountNameId}>
                     <span className={styles.accountName}>{name}</span> #{id}
-                  </Text>
+                  </RiText>
                   {id === currentAccountId && (
                     <RiIcon
                       type="CheckThinIcon"
@@ -174,7 +176,7 @@ const UserProfileBadge = (props: UserProfileBadgeProps) => {
                     />
                   )}
                   {id === selectingAccountId && (
-                    <Loader
+                    <RiLoader
                       className={styles.loadingSpinner}
                       size="m"
                       data-testid={`user-profile-selecting-account-${id}`}
@@ -192,14 +194,14 @@ const UserProfileBadge = (props: UserProfileBadgeProps) => {
                   href={riDesktopLink}
                   data-testid="open-ri-desktop-link"
                 >
-                  <Text>Open in Redis Insight Desktop version</Text>
+                  <RiText>Open in Redis Insight Desktop version</RiText>
                 </UserProfileLink>
                 <UserProfileLink
                   target="_blank"
                   href={riConfig.app.smConsoleRedirect}
                   data-testid="cloud-admin-console-link"
                 >
-                  <Text>Back to Redis Cloud Admin console</Text>
+                  <RiText>Back to Redis Cloud Admin console</RiText>
                   <RiIcon
                     type="CloudIcon"
                     style={{ fill: 'none' }}
@@ -218,9 +220,11 @@ const UserProfileBadge = (props: UserProfileBadgeProps) => {
               onClick={handleClickImport}
               data-testid="profile-import-cloud-databases"
             >
-              <Text className={styles.optionTitle}>Import Cloud databases</Text>
+              <RiText className={styles.optionTitle}>
+                Import Cloud databases
+              </RiText>
               {isImportLoading ? (
-                <Loader className={styles.loadingSpinner} size="m" />
+                <RiLoader className={styles.loadingSpinner} size="m" />
               ) : (
                 <RiIcon type="DownloadIcon" />
               )}
@@ -234,13 +238,13 @@ const UserProfileBadge = (props: UserProfileBadgeProps) => {
               data-testid="cloud-console-link"
             >
               <div className={styles.optionTitleWrapper}>
-                <Text className={styles.optionTitle}>Cloud Console</Text>
-                <Text
+                <RiText className={styles.optionTitle}>Cloud Console</RiText>
+                <RiText
                   className={cx('truncateText', styles.accountFullName)}
                   data-testid="account-full-name"
                 >
                   {name}
-                </Text>
+                </RiText>
               </div>
               <RiIcon
                 type="CloudIcon"
@@ -255,7 +259,7 @@ const UserProfileBadge = (props: UserProfileBadgeProps) => {
               onClick={handleClickLogout}
               data-testid="profile-logout"
             >
-              <Text className={styles.optionTitle}>Logout</Text>
+              <RiText className={styles.optionTitle}>Logout</RiText>
               <RiIcon type="ExportIcon" />
             </div>
           </FeatureFlagComponent>

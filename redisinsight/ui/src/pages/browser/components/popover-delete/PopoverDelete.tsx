@@ -1,16 +1,12 @@
 import React from 'react'
 
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { DeleteIcon } from 'uiSrc/components/base/icons'
+import { RiPopover, RiTooltip } from 'uiBase/index'
+import { DeleteIcon } from 'uiBase/icons'
+import { RiDestructiveButton, RiEmptyButton, RiIconButton } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
 import { RedisString } from 'uiSrc/slices/interfaces'
 import { isTruncatedString } from 'uiSrc/utils'
 import { TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA } from 'uiSrc/constants'
-import {
-  DestructiveButton,
-  EmptyButton,
-  IconButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { Text } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -63,7 +59,7 @@ const PopoverDelete = (props: Props) => {
   }
 
   const deleteButton = buttonLabel ? (
-    <EmptyButton
+    <RiEmptyButton
       icon={DeleteIcon}
       aria-label="Remove field"
       disabled={isDisabled || updateLoading}
@@ -71,9 +67,9 @@ const PopoverDelete = (props: Props) => {
       data-testid={testid ? `${testid}-icon` : 'remove-icon'}
     >
       {buttonLabel}
-    </EmptyButton>
+    </RiEmptyButton>
   ) : (
-    <IconButton
+    <RiIconButton
       size="M"
       icon={DeleteIcon}
       aria-label="Remove field"
@@ -106,23 +102,23 @@ const PopoverDelete = (props: Props) => {
       onClick={(e) => e.stopPropagation()}
     >
       <div className={styles.popover}>
-        <Text size="m" component="div">
+        <RiText size="m" component="div">
           {!!header && (
             <h4>
               <b>{header}</b>
             </h4>
           )}
-          <Text size="s">{text}</Text>
+          <RiText size="s">{text}</RiText>
           {appendInfo}
-        </Text>
+        </RiText>
         <div className={styles.popoverFooter}>
-          <DestructiveButton
+          <RiDestructiveButton
             icon={DeleteIcon}
             onClick={() => handleDeleteItem(itemRaw || item)}
             data-testid={testid || 'remove'}
           >
             Remove
-          </DestructiveButton>
+          </RiDestructiveButton>
         </div>
       </div>
     </RiPopover>

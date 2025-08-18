@@ -1,7 +1,7 @@
-import { getTagFromValue } from 'uiSrc/components/base/forms/combo-box/AutoTag'
+import { getTagFromValue } from './RiAutoTag'
 
 const defaultDelimiter = ' '
-describe('AutoTag', () => {
+describe('RiAutoTag', () => {
   describe('getTagFromValue', () => {
     it('should return null on empty string', () => {
       const result = getTagFromValue('', defaultDelimiter)

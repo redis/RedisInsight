@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { defaultValueRender, RiSelect, RiFormField } from 'uiBase/forms'
+import { RiTitle } from 'uiBase/text'
 import {
   updateUserConfigSettingsAction,
   userSettingsSelector,
@@ -8,12 +10,6 @@ import {
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { DEFAULT_THEME, THEMES } from 'uiSrc/constants'
-import {
-  defaultValueRender,
-  RiSelect,
-} from 'uiSrc/components/base/forms/select/RiSelect'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { Title } from 'uiSrc/components/base/text'
 
 const ThemeSettings = () => {
   const dispatch = useDispatch()
@@ -50,9 +46,9 @@ const ThemeSettings = () => {
 
   return (
     <form>
-      <Title size="XS">Color Theme</Title>
-      <Spacer size="m" />
-      <FormField label="Specifies the color theme to be used in Redis Insight:">
+      <RiTitle size="XS">Color Theme</RiTitle>
+      <RiSpacer size="m" />
+      <RiFormField label="Specifies the color theme to be used in Redis Insight:">
         <RiSelect
           valueRender={defaultValueRender}
           options={options}
@@ -62,8 +58,8 @@ const ThemeSettings = () => {
           data-test-subj="select-theme"
           data-testid="select-theme"
         />
-      </FormField>
-      <Spacer size="xl" />
+      </RiFormField>
+      <RiSpacer size="xl" />
     </form>
   )
 }

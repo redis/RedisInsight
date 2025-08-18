@@ -1,6 +1,9 @@
 import cx from 'classnames'
 import React, { useCallback, useEffect, useState } from 'react'
 
+import { RiSwitchInput } from 'uiBase/inputs'
+import { RiTitle } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
 import { DonutChart } from 'uiSrc/components/charts'
 import { ChartData } from 'uiSrc/components/charts/donut-chart/DonutChart'
 import { GROUP_TYPES_COLORS, GroupTypesColors } from 'uiSrc/constants'
@@ -16,9 +19,6 @@ import {
 } from 'uiSrc/utils'
 import { getPercentage, numberWithSpaces } from 'uiSrc/utils/numbers'
 
-import { SwitchInput } from 'uiSrc/components/base/inputs'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import {
   DatabaseAnalysis,
   SimpleTypeSummary,
@@ -171,11 +171,11 @@ const SummaryPerData = ({
       data-testid="summary-per-data"
     >
       <div className="section-title-wrapper">
-        <Title size="M" className="section-title">
+        <RiTitle size="M" className="section-title">
           SUMMARY PER DATA TYPE
-        </Title>
+        </RiTitle>
         {extrapolation !== DEFAULT_EXTRAPOLATION && (
-          <SwitchInput
+          <RiSwitchInput
             color="subdued"
             className="switch-extrapolate-results"
             title="Extrapolate results"
@@ -211,7 +211,7 @@ const SummaryPerData = ({
                   className={styles.icon}
                   size="m"
                 />
-                <Title size="XS">Memory</Title>
+                <RiTitle size="XS">Memory</RiTitle>
               </div>
               <hr className={styles.titleSeparator} />
               <div
@@ -239,7 +239,7 @@ const SummaryPerData = ({
             <div className={styles.chartCenter}>
               <div className={styles.chartTitle} data-testid="donut-title-keys">
                 <RiIcon type="KeyIconIcon" className={styles.icon} size="m" />
-                <Title size="XS">Keys</Title>
+                <RiTitle size="XS">Keys</RiTitle>
               </div>
               <hr className={styles.titleSeparator} />
               <div

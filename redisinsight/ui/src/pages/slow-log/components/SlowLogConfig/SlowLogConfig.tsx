@@ -3,6 +3,18 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import {
+  RiEmptyButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
+  defaultValueRender,
+  RiSelect,
+} from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
+import { RiCol, RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiTextInput } from 'uiBase/inputs'
 import {
   DEFAULT_SLOWLOG_DURATION_UNIT,
   DEFAULT_SLOWLOG_MAX_LEN,
@@ -21,20 +33,6 @@ import {
 import { errorValidateNegativeInteger, validateNumber } from 'uiSrc/utils'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { useConnectionType } from 'uiSrc/components/hooks/useConnectionType'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  EmptyButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { Text } from 'uiSrc/components/base/text'
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import {
-  defaultValueRender,
-  RiSelect,
-} from 'uiSrc/components/base/forms/select/RiSelect'
-import { TextInput } from 'uiSrc/components/base/inputs'
 import { convertNumberByUnits } from '../../utils'
 import styles from './styles.module.scss'
 
@@ -121,25 +119,25 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
 
   const clusterContent = () => (
     <>
-      <Text color="subdued" className={styles.clusterText}>
+      <RiText color="subdued" className={styles.clusterText}>
         Each node can have different Slow Log configuration in a clustered
         database.
-        <Spacer size="s" />
+        <RiSpacer size="s" />
         {'Use '}
         <code>CONFIG SET slowlog-log-slower-than</code>
         {' or '}
         <code>CONFIG SET slowlog-max-len</code>
         {' for a specific node in redis-cli to configure it.'}
-      </Text>
+      </RiText>
 
-      <Spacer size="xs" />
-      <PrimaryButton
+      <RiSpacer size="xs" />
+      <RiPrimaryButton
         className={styles.clusterBtn}
         onClick={closePopover}
         data-testid="slowlog-config-ok-btn"
       >
         Ok
-      </PrimaryButton>
+      </RiPrimaryButton>
     </>
   )
 
@@ -167,7 +165,7 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
   }
 
   return (
-    <Col
+    <RiCol
       className={cx(styles.container, {
         [styles.containerCluster]: connectionType === ConnectionType.Cluster,
       })}
@@ -176,7 +174,7 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
       {connectionType !== ConnectionType.Cluster && (
         <>
           <form>
-            <FormField
+            <RiFormField
               layout="horizontal"
               className={styles.formRow}
               label={
@@ -193,21 +191,19 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
                 </div>
               }
             >
-              <Row
+              <RiRow
                 grow={false}
                 align="center"
                 justify="start"
                 className={styles.rowFields}
               >
                 <div className={styles.input}>
-                  <TextInput
+                  <RiTextInput
                     name="slowerThan"
                     id="slowerThan"
                     value={slowerThan}
-                    onChange={value => {
-                      setSlowerThan(
-                        validateNumber(value.trim(), -1, Infinity),
-                      )
+                    onChange={(value) => {
+                      setSlowerThan(validateNumber(value.trim(), -1, Infinity))
                     }}
                     placeholder={`${convertNumberByUnits(DEFAULT_SLOWLOG_SLOWER_THAN, durationUnit)}`}
                     autoComplete="off"
@@ -222,9 +218,9 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
                   onChange={onChangeUnit}
                   data-test-subj="select-default-unit"
                 />
-              </Row>
-            </FormField>
-            <FormField
+              </RiRow>
+            </RiFormField>
+            <RiFormField
               className={styles.formRow}
               layout="horizontal"
               label={<div className={styles.rowLabel}>slowlog-max-len</div>}
@@ -239,13 +235,13 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
             >
               <>
                 <div className={styles.rowFields}>
-                  <TextInput
+                  <RiTextInput
                     name="maxLen"
                     id="maxLen"
                     className={styles.input}
                     placeholder={`${DEFAULT_SLOWLOG_MAX_LEN}`}
                     value={maxLen}
-                    onChange={value => {
+                    onChange={(value) => {
                       setMaxLen(validateNumber(value.trim()))
                     }}
                     autoComplete="off"
@@ -253,40 +249,40 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
                   />
                 </div>
               </>
-            </FormField>
-            <Spacer size="m" />
+            </RiFormField>
+            <RiSpacer size="m" />
           </form>
 
-          <Row className={styles.footer}>
-            <FlexItem className={styles.helpText}>
+          <RiRow className={styles.footer}>
+            <RiFlexItem className={styles.helpText}>
               NOTE: This is server configuration
-            </FlexItem>
-            <Row align="center" gap="m" className={styles.actions}>
-              <EmptyButton
+            </RiFlexItem>
+            <RiRow align="center" gap="m" className={styles.actions}>
+              <RiEmptyButton
                 size="large"
                 onClick={handleDefault}
                 data-testid="slowlog-config-default-btn"
               >
                 Default
-              </EmptyButton>
-              <SecondaryButton
+              </RiEmptyButton>
+              <RiSecondaryButton
                 onClick={handleCancel}
                 data-testid="slowlog-config-cancel-btn"
               >
                 Cancel
-              </SecondaryButton>
-              <PrimaryButton
+              </RiSecondaryButton>
+              <RiPrimaryButton
                 disabled={disabledApplyBtn()}
                 onClick={handleSave}
                 data-testid="slowlog-config-save-btn"
               >
                 Save
-              </PrimaryButton>
-            </Row>
-          </Row>
+              </RiPrimaryButton>
+            </RiRow>
+          </RiRow>
         </>
       )}
-    </Col>
+    </RiCol>
   )
 }
 

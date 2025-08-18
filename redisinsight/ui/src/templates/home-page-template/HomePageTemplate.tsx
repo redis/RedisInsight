@@ -1,6 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
+import { RiFlexGroup as Flex, RiFlexItem } from 'uiBase/layout'
 import { ExplorePanelTemplate } from 'uiSrc/templates'
 import HomeTabs from 'uiSrc/components/home-tabs'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
@@ -10,7 +11,6 @@ import { FeatureFlagComponent, OAuthUserProfile } from 'uiSrc/components'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { CopilotTrigger, InsightsTrigger } from 'uiSrc/components/triggers'
 
-import { Flex, FlexItem } from 'uiSrc/components/base/layout/flex'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -35,23 +35,23 @@ const HomePageTemplate = (props: Props) => {
         <HomeTabs />
         <Flex style={{ flexGrow: 0 }} gap="none" align="center">
           {isAnyChatAvailable && (
-            <FlexItem style={{ marginRight: 12 }}>
+            <RiFlexItem style={{ marginRight: 12 }}>
               <CopilotTrigger />
-            </FlexItem>
+            </RiFlexItem>
           )}
-          <FlexItem grow>
+          <RiFlexItem grow>
             <InsightsTrigger source="home page" />
-          </FlexItem>
+          </RiFlexItem>
           <FeatureFlagComponent
             name={[FeatureFlags.cloudSso, FeatureFlags.cloudAds]}
           >
-            <FlexItem
+            <RiFlexItem
               grow
               style={{ marginLeft: 16 }}
               data-testid="home-page-sso-profile"
             >
               <OAuthUserProfile source={OAuthSocialSource.UserProfile} />
-            </FlexItem>
+            </RiFlexItem>
           </FeatureFlagComponent>
         </Flex>
       </div>

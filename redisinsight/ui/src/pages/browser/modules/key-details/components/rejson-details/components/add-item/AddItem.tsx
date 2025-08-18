@@ -3,18 +3,20 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 
+import { RiFlexItem } from 'uiBase/layout'
+import {
+  RiWindowEvent,
+  RiFocusTrap,
+  RiOutsideClickDetector,
+} from 'uiBase/utils'
+import { CancelSlimIcon, CheckThinIcon } from 'uiBase/icons'
+import { RiIconButton } from 'uiBase/forms'
+import { RiTextInput } from 'uiBase/inputs'
 import * as keys from 'uiSrc/constants/keys'
 import { rejsonDataSelector } from 'uiSrc/slices/browser/rejson'
 import { checkExistingPath } from 'uiSrc/utils/rejson'
 import FieldMessage from 'uiSrc/components/field-message/FieldMessage'
 import { Nullable } from 'uiSrc/utils'
-import { FlexItem } from 'uiSrc/components/base/layout/flex'
-import { WindowEvent } from 'uiSrc/components/base/utils/WindowEvent'
-import { FocusTrap } from 'uiSrc/components/base/utils/FocusTrap'
-import { OutsideClickDetector } from 'uiSrc/components/base/utils'
-import { CancelSlimIcon, CheckThinIcon } from 'uiSrc/components/base/icons'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { TextInput } from 'uiSrc/components/base/inputs'
 import ConfirmOverwrite from './ConfirmOverwrite'
 import { isValidJSON, isValidKey, parseJsonData, wrapPath } from '../../utils'
 import { JSONErrors } from '../../constants'
@@ -92,10 +94,10 @@ const AddItem = (props: Props) => {
         paddingLeft: `${leftPadding}em`,
       }}
     >
-      <OutsideClickDetector onOutsideClick={() => {}}>
+      <RiOutsideClickDetector onOutsideClick={() => {}}>
         <div>
-          <WindowEvent event="keydown" handler={(e) => handleOnEsc(e)} />
-          <FocusTrap>
+          <RiWindowEvent event="keydown" handler={(e) => handleOnEsc(e)} />
+          <RiFocusTrap>
             <form
               className="relative"
               onSubmit={(e) => handleFormSubmit(e)}
@@ -103,37 +105,34 @@ const AddItem = (props: Props) => {
               noValidate
             >
               {isPair && (
-                <FlexItem grow>
-                  <TextInput
+                <RiFlexItem grow>
+                  <RiTextInput
                     name="newRootKey"
                     value={key}
                     error={error || undefined}
                     placeholder="Enter JSON key"
-                    onChange={setKey
-                    }
+                    onChange={setKey}
                     data-testid="json-key"
                   />
-                </FlexItem>
+                </RiFlexItem>
               )}
-              <FlexItem grow>
-                <TextInput
+              <RiFlexItem grow>
+                <RiTextInput
                   name="newValue"
                   value={value}
                   placeholder="Enter JSON value"
                   error={error || undefined}
-                  onChange={value =>
-                    setValue(value)
-                  }
+                  onChange={(value) => setValue(value)}
                   data-testid="json-value"
                 />
-              </FlexItem>
+              </RiFlexItem>
               <ConfirmOverwrite
                 isOpen={isConfirmationVisible}
                 onCancel={() => setIsConfirmationVisible(false)}
                 onConfirm={confirmApply}
               >
                 <ControlsWrapper>
-                  <IconButton
+                  <RiIconButton
                     size="M"
                     icon={CancelSlimIcon}
                     color="primary"
@@ -142,7 +141,7 @@ const AddItem = (props: Props) => {
                     onClick={() => onCancel?.()}
                   />
 
-                  <IconButton
+                  <RiIconButton
                     size="M"
                     icon={CheckThinIcon}
                     color="primary"
@@ -165,9 +164,9 @@ const AddItem = (props: Props) => {
                 </FieldMessage>
               </div>
             )}
-          </FocusTrap>
+          </RiFocusTrap>
         </div>
-      </OutsideClickDetector>
+      </RiOutsideClickDetector>
     </div>
   )
 }

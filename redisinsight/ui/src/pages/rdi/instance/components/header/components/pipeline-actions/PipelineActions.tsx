@@ -2,6 +2,7 @@ import React, { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
 import {
   getPipelineStatusAction,
   rdiPipelineActionSelector,
@@ -22,7 +23,6 @@ import {
   PipelineStatus,
 } from 'uiSrc/slices/interfaces'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import DeployPipelineButton from '../buttons/deploy-pipeline-button'
 import ResetPipelineButton from '../buttons/reset-pipeline-button'
 import RdiConfigFileActionMenu from '../rdi-config-file-action-menu'
@@ -149,15 +149,15 @@ const PipelineActions = ({ collectorStatus, pipelineStatus }: Props) => {
   const disabled = deployLoading || actionLoading
 
   return (
-    <Row gap="m" justify="end" align="center">
-      <FlexItem>
+    <RiRow gap="m" justify="end" align="center">
+      <RiFlexItem>
         <ResetPipelineButton
           onClick={onReset}
           disabled={disabled}
           loading={isLoadingBtn(PipelineAction.Reset)}
         />
-      </FlexItem>
-      <FlexItem>
+      </RiFlexItem>
+      <RiFlexItem>
         {collectorStatus === CollectorStatus.Ready ? (
           <StopPipelineButton
             onClick={onStopPipeline}
@@ -171,18 +171,18 @@ const PipelineActions = ({ collectorStatus, pipelineStatus }: Props) => {
             loading={isLoadingBtn(PipelineAction.Start)}
           />
         )}
-      </FlexItem>
-      <FlexItem>
+      </RiFlexItem>
+      <RiFlexItem>
         <DeployPipelineButton
           loading={deployLoading}
           disabled={disabled}
           onReset={resetPipeline}
         />
-      </FlexItem>
-      <FlexItem style={{ margin: 0 }}>
+      </RiFlexItem>
+      <RiFlexItem style={{ margin: 0 }}>
         <RdiConfigFileActionMenu />
-      </FlexItem>
-    </Row>
+      </RiFlexItem>
+    </RiRow>
   )
 }
 

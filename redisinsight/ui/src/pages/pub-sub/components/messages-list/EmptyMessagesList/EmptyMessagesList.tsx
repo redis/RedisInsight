@@ -1,12 +1,11 @@
 import React from 'react'
 import cx from 'classnames'
 
+import { RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
 import { ConnectionType } from 'uiSrc/slices/interfaces'
-import { Text } from 'uiSrc/components/base/text'
-
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from './styles.module.scss'
-import { Row } from 'uiSrc/components/base/layout/flex'
+import { RiRow } from 'uiBase/layout'
 
 export interface Props {
   connectionType?: ConnectionType
@@ -23,28 +22,28 @@ const EmptyMessagesList = ({
         [styles.contentCluster]: connectionType === ConnectionType.Cluster,
       })}
     >
-      <Text className={styles.title}>No messages to display</Text>
-      <Text className={styles.summary}>
+      <RiText className={styles.title}>No messages to display</RiText>
+      <RiText className={styles.summary}>
         Subscribe to the Channel to see all the messages published to your
         database
-      </Text>
-      <Row>
+      </RiText>
+      <RiRow>
         <RiIcon type="ToastDangerIcon" className={styles.alertIcon} />
-        <Text className={styles.alert}>
+        <RiText className={styles.alert}>
           Running in production may decrease performance and memory available
-        </Text>
-      </Row>
+        </RiText>
+      </RiRow>
       {connectionType === ConnectionType.Cluster && isSpublishNotSupported && (
         <>
           <div className={styles.separator} />
-          <Text
+          <RiText
             className={styles.cluster}
             data-testid="empty-messages-list-cluster"
           >
             {'Messages published with '}
             <span className={styles.badge}>SPUBLISH</span>
             {' will not appear in this channel'}
-          </Text>
+          </RiText>
         </>
       )}
     </div>

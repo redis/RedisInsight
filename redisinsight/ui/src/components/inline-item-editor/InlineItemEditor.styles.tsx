@@ -1,11 +1,11 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Theme } from 'uiSrc/components/base/theme/types'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { Theme } from 'uiBase/theme/types'
+import { RiIconButton } from 'uiBase/forms'
+import { RiTextInput } from 'uiBase/inputs'
+import { CancelSlimIcon, CheckThinIcon } from 'uiBase/icons'
 import { Props } from 'uiSrc/components/inline-item-editor/InlineItemEditor'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CancelSlimIcon, CheckThinIcon } from 'uiSrc/components/base/icons'
-import { TextInput } from '../base/inputs'
 
 interface ContainerProps {
   className?: string
@@ -46,14 +46,14 @@ export const IIEContainer = React.forwardRef<
   </StyledContainer>
 ))
 
-type ActionsContainerProps = React.ComponentProps<typeof Row> & {
+type ActionsContainerProps = React.ComponentProps<typeof RiRow> & {
   $position?: Props['controlsPosition']
   $design?: Props['controlsDesign']
   $width?: string
   $height?: string
 }
 
-export const DeclineButton = styled(IconButton).attrs({
+export const DeclineButton = styled(RiIconButton).attrs({
   icon: CancelSlimIcon,
   'aria-label': 'Cancel editing',
 })`
@@ -63,7 +63,7 @@ export const DeclineButton = styled(IconButton).attrs({
   }
 `
 
-export const ApplyButton = styled(IconButton).attrs({
+export const ApplyButton = styled(RiIconButton).attrs({
   icon: CheckThinIcon,
   color: 'primary',
   'aria-label': 'Apply',
@@ -136,14 +136,14 @@ const designs = {
   `,
 }
 
-export const ActionsWrapper = styled(FlexItem)<{
+export const ActionsWrapper = styled(RiFlexItem)<{
   $size?: { width: string; height: string }
 }>`
   width: ${({ $size }) => $size?.width ?? '24px'} !important;
   height: ${({ $size }) => $size?.height ?? '24px'} !important;
 `
 
-export const ActionsContainer = styled(Row)<ActionsContainerProps>`
+export const ActionsContainer = styled(RiRow)<ActionsContainerProps>`
   position: absolute;
   background-color: ${({ theme }: { theme: Theme }) =>
     theme.semantic.color.background.primary200};
@@ -156,8 +156,7 @@ export const ActionsContainer = styled(Row)<ActionsContainerProps>`
   ${({ $design }) => designs[$design || 'default']}
 `
 
-
-export const StyledTextInput = styled(TextInput)<{
+export const StyledTextInput = styled(RiTextInput)<{
   $width?: string
   $height?: string
 }>`

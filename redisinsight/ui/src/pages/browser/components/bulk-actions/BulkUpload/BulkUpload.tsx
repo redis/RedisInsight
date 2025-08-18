@@ -2,6 +2,11 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import cx from 'classnames'
+import { RiFilePicker, RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
+import { RefreshIcon, RiIcon } from 'uiBase/icons'
+import { RiColorText, RiText } from 'uiBase/text'
+import { RiCol, RiRow } from 'uiBase/layout'
+import { RiTooltip, RiPopover } from 'uiBase/display'
 import { Nullable } from 'uiSrc/utils'
 import { BulkActionsStatus, BulkActionsType } from 'uiSrc/constants'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
@@ -20,19 +25,8 @@ import BulkActionSummary from 'uiSrc/pages/browser/components/bulk-actions/BulkA
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { isProcessedBulkAction } from 'uiSrc/pages/browser/components/bulk-actions/utils'
 import {
-  RiFilePicker,
   UploadWarning,
-  RiPopover,
-  RiTooltip,
 } from 'uiSrc/components'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { RefreshIcon } from 'uiSrc/components/base/icons'
-import { ColorText, Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -108,18 +102,18 @@ const BulkUpload = (props: Props) => {
   return (
     <div className={styles.container} data-testid="bulk-upload-container">
       {!isCompleted ? (
-        <Col gap="l" className={styles.content} align="start">
-          <Row align="start" grow={false}>
-            <Text color="subdued">
+        <RiCol gap="l" className={styles.content} align="start">
+          <RiRow align="start" grow={false}>
+            <RiText color="subdued">
               Upload the text file with the list of Redis commands
-            </Text>
+            </RiText>
             <RiTooltip
               content={
                 <>
-                  <Text size="xs">SET Key0 Value0</Text>
-                  <Text size="xs">SET Key1 Value1</Text>
-                  <Text size="xs">...</Text>
-                  <Text size="xs">SET KeyN ValueN</Text>
+                  <RiText size="xs">SET Key0 Value0</RiText>
+                  <RiText size="xs">SET Key1 Value1</RiText>
+                  <RiText size="xs">...</RiText>
+                  <RiText size="xs">SET KeyN ValueN</RiText>
                 </>
               }
               data-testid="bulk-upload-tooltip-example"
@@ -132,7 +126,7 @@ const BulkUpload = (props: Props) => {
                 }}
               />
             </RiTooltip>
-          </Row>
+          </RiRow>
           <RiFilePicker
             id="bulk-upload-file-input"
             initialPromptText="Select or drag and drop a file"
@@ -143,16 +137,16 @@ const BulkUpload = (props: Props) => {
             aria-label="Select or drag and drop file"
           />
           {isInvalid && (
-            <ColorText
+            <RiColorText
               color="danger"
               className={styles.errorFileMsg}
               data-testid="input-file-error-msg"
             >
               File should not exceed {MAX_MB_FILE} MB
-            </ColorText>
+            </RiColorText>
           )}
           <UploadWarning />
-        </Col>
+        </RiCol>
       ) : (
         <BulkActionsInfo
           loading={loading}
@@ -176,13 +170,13 @@ const BulkUpload = (props: Props) => {
         </BulkActionsInfo>
       )}
       <div className={styles.footer}>
-        <SecondaryButton
+        <RiSecondaryButton
           onClick={handleClickCancel}
           className={styles.cancelBtn}
           data-testid="bulk-action-cancel-btn"
         >
           {isProcessedBulkAction(status) ? 'Close' : 'Cancel'}
-        </SecondaryButton>
+        </RiSecondaryButton>
         {!isCompleted ? (
           <RiPopover
             id="bulk-upload-warning-popover"
@@ -192,17 +186,17 @@ const BulkUpload = (props: Props) => {
             panelClassName={styles.panelPopover}
             panelPaddingSize="none"
             button={
-              <PrimaryButton
+              <RiPrimaryButton
                 onClick={handleUploadWarning}
                 disabled={isSubmitDisabled || loading}
                 loading={loading}
                 data-testid="bulk-action-warning-btn"
               >
                 Upload
-              </PrimaryButton>
+              </RiPrimaryButton>
             }
           >
-            <Text
+            <RiText
               color="subdued"
               className={styles.containerPopover}
               data-testid="bulk-action-tooltip"
@@ -215,25 +209,25 @@ const BulkUpload = (props: Props) => {
                 All commands from the file will be executed against your
                 database.
               </div>
-              <PrimaryButton
+              <RiPrimaryButton
                 size="s"
                 className={styles.uploadApproveBtn}
                 onClick={handleUpload}
                 data-testid="bulk-action-apply-btn"
               >
                 Upload
-              </PrimaryButton>
-            </Text>
+              </RiPrimaryButton>
+            </RiText>
           </RiPopover>
         ) : (
-          <PrimaryButton
+          <RiPrimaryButton
             icon={RefreshIcon}
             color="secondary"
             onClick={onStartAgain}
             data-testid="bulk-action-start-new-btn"
           >
             Start New
-          </PrimaryButton>
+          </RiPrimaryButton>
         )}
       </div>
     </div>

@@ -1,14 +1,14 @@
 import React from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import { oauthCloudPAgreementSelector } from 'uiSrc/slices/oauth/cloud'
-import { OAuthStrategy } from 'uiSrc/slices/interfaces'
 
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
-import { FlexItem } from 'uiSrc/components/base/layout/flex'
-import { Text } from 'uiSrc/components/base/text'
+import { RiEmptyButton } from 'uiBase/forms'
+import { RiFlexItem } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
+import { AllIconsType, RiIcon } from 'uiBase/icons'
 import { RiTooltip } from 'uiSrc/components'
-import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { OAuthStrategy } from 'uiSrc/slices/interfaces'
+import { oauthCloudPAgreementSelector } from 'uiSrc/slices/oauth/cloud'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -60,7 +60,7 @@ const OAuthSocialButtons = (props: Props) => {
           content={agreement ? null : 'Acknowledge the agreement'}
           data-testid={`${label}-tooltip`}
         >
-          <EmptyButton
+          <RiEmptyButton
             disabled={!agreement || disabled}
             className={cx(styles.button, className, {
               [styles.inline]: inline,
@@ -71,11 +71,11 @@ const OAuthSocialButtons = (props: Props) => {
             data-testid={label}
             aria-labelledby={label}
           >
-            <FlexItem direction={inline ? 'row' : 'column'}>
+            <RiFlexItem direction={inline ? 'row' : 'column'}>
               <RiIcon type={icon as AllIconsType} />
-              <Text className={styles.label}>{text}</Text>
-            </FlexItem>
-          </EmptyButton>
+              <RiText className={styles.label}>{text}</RiText>
+            </RiFlexItem>
+          </RiEmptyButton>
         </RiTooltip>
       ))}
     </div>

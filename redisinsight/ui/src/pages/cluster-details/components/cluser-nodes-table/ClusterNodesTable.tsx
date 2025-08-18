@@ -1,17 +1,16 @@
-import { EuiIcon } from '@elastic/eui'
 import cx from 'classnames'
 import { map } from 'lodash'
 import React, { useState } from 'react'
 
-import { LoadingContent } from 'uiSrc/components/base/layout'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { RiLoadingContent, RiTable, ColumnDefinition } from 'uiBase/layout'
+import { AllIconsType, RiIcon } from 'uiBase/icons'
+import type { PropertySort } from 'uiBase/theme/types'
 import { formatBytes, Nullable } from 'uiSrc/utils'
 import { rgb } from 'uiSrc/utils/colors'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { RiTooltip } from 'uiSrc/components'
 
 import { ModifiedClusterNodes } from '../../ClusterDetailsPage'
-import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from './styles.module.scss'
 
 const ClusterNodesTable = ({
@@ -224,12 +223,12 @@ const ClusterNodesTable = ({
           className={styles.loading}
           data-testid="primary-nodes-table-loading"
         >
-          <LoadingContent lines={4} />
+          <RiLoadingContent lines={4} />
         </div>
       )}
       {nodes && (
         <div className={styles.tableWrapper} data-testid="primary-nodes-table">
-          <Table
+          <RiTable
             columns={columns}
             data={nodes}
             defaultSorting={[

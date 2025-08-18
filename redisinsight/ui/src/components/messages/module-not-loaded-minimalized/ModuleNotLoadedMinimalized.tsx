@@ -2,6 +2,9 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton } from 'uiBase/forms'
+import { RiTitle, RiText } from 'uiBase/text'
 import TelescopeImg from 'uiSrc/assets/img/telescope-dark.svg'
 import {
   OAuthSocialAction,
@@ -25,10 +28,6 @@ import {
 import { useCapability } from 'uiSrc/services'
 import { FeatureFlags, Pages } from 'uiSrc/constants'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
 import {
   MODULE_CAPABILITY_TEXT_NOT_AVAILABLE,
   MODULE_CAPABILITY_TEXT_NOT_AVAILABLE_ENTERPRISE,
@@ -60,19 +59,19 @@ const ModuleNotLoadedMinimalized = (props: Props) => {
   return (
     <div className={styles.wrapper} data-testid="module-not-loaded-popover">
       <div>
-        <Title size="S" className={styles.title}>
+        <RiTitle size="S" className={styles.title}>
           {moduleText?.title}
-        </Title>
-        <Spacer size="s" />
+        </RiTitle>
+        <RiSpacer size="s" />
         <FeatureFlagComponent
           name={FeatureFlags.cloudAds}
           otherwise={
             <>
-              <Text color="subdued" size="s">
+              <RiText color="subdued" size="s">
                 {moduleText?.text}
-              </Text>
-              <Spacer size="s" />
-              <PrimaryButton
+              </RiText>
+              <RiSpacer size="s" />
+              <RiPrimaryButton
                 size="s"
                 className={styles.btnLink}
                 onClick={() => {
@@ -80,16 +79,16 @@ const ModuleNotLoadedMinimalized = (props: Props) => {
                 }}
               >
                 Redis Databases page
-              </PrimaryButton>
+              </RiPrimaryButton>
             </>
           }
         >
           {!freeDbWithModule ? (
             <>
-              <Text color="subdued" size="s">
+              <RiText color="subdued" size="s">
                 {moduleText?.text}
-              </Text>
-              <Spacer size="s" />
+              </RiText>
+              <RiSpacer size="s" />
               <OAuthSsoHandlerDialog>
                 {(ssoCloudHandlerClick) => (
                   <ExternalLink
@@ -117,11 +116,11 @@ const ModuleNotLoadedMinimalized = (props: Props) => {
             </>
           ) : (
             <>
-              <Text color="subdued" size="s">
+              <RiText color="subdued" size="s">
                 Use your free trial all-in-one Redis Cloud database to start
                 exploring these capabilities.
-              </Text>
-              <Spacer size="s" />
+              </RiText>
+              <RiSpacer size="s" />
               <OAuthConnectFreeDb
                 id={freeDbWithModule.id}
                 source={sourceTutorial}

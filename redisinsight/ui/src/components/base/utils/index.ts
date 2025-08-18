@@ -1,2 +1,7 @@
-export { OutsideClickDetector } from './OutsideClickDetector'
+export { RiOutsideClickDetector } from './RiOutsideClickDetector'
+export { RiFocusTrap } from './RiFocusTrap'
 export { RIResizeObserver } from './resize-observer/ResizeObserver'
+export { useGenerateId } from './hooks/generate-id'
+export { useInnerText } from './hooks/inner-text'
+export * from './RiShowHide'
+export * from './RiWindowEvent'

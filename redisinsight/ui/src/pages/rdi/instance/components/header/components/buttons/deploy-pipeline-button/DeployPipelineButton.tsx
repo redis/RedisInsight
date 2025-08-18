@@ -3,27 +3,23 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
+import { RiColorText, RiText, RiTitle } from 'uiBase/text'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiOutsideClickDetector } from 'uiBase/utils'
+import { RiPrimaryButton, RiCheckbox } from 'uiBase/forms'
+import { RiRocketIcon, RiIcon } from 'uiBase/icons'
+import { RiPopover, RiTooltip } from 'uiBase/display'
+import { rdiErrorMessages } from 'uiSrc/pages/rdi/constants'
+import { addErrorNotification } from 'uiSrc/slices/app/notifications'
+import { createAxiosError, pipelineToJson } from 'uiSrc/utils'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   deployPipelineAction,
   getPipelineStatusAction,
   rdiPipelineSelector,
   resetPipelineChecked,
 } from 'uiSrc/slices/rdi/pipeline'
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-
-import { createAxiosError, pipelineToJson } from 'uiSrc/utils'
-import { addErrorNotification } from 'uiSrc/slices/app/notifications'
-import { rdiErrorMessages } from 'uiSrc/pages/rdi/constants'
-import { ColorText, Text } from 'uiSrc/components/base/text'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { OutsideClickDetector } from 'uiSrc/components/base/utils'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { RiRocketIcon } from 'uiSrc/components/base/icons'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -101,22 +97,17 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
   }
 
   return (
-    <OutsideClickDetector onOutsideClick={handleClosePopover}>
+    <RiOutsideClickDetector onOutsideClick={handleClosePopover}>
       <RiPopover
         closePopover={handleClosePopover}
         ownFocus
-        initialFocus={false}
-        className={styles.popoverAnchor}
         panelClassName={cx('popoverLikeTooltip', styles.popover)}
         anchorClassName={styles.popoverAnchor}
         anchorPosition="upLeft"
         isOpen={isPopoverOpen}
         panelPaddingSize="m"
-        focusTrapProps={{
-          scrollLock: true,
-        }}
         button={
-          <PrimaryButton
+          <RiPrimaryButton
             size="s"
             onClick={handleClickDeploy}
             icon={RiRocketIcon}
@@ -125,35 +116,35 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
             data-testid="deploy-rdi-pipeline"
           >
             Deploy Pipeline
-          </PrimaryButton>
+          </RiPrimaryButton>
         }
       >
-        <Title size="XS">
+        <RiTitle size="XS">
           {isPipelineValid ? (
-            <ColorText color="default">
+            <RiColorText color="default">
               Are you sure you want to deploy the pipeline?
-            </ColorText>
+            </RiColorText>
           ) : (
-            <ColorText color="warning">
+            <RiColorText color="warning">
               <RiIcon type="ToastDangerIcon" size="L" color="attention500" />
               Your RDI pipeline contains errors. Are you sure you want to
               continue?
-            </ColorText>
+            </RiColorText>
           )}
-        </Title>
-        <Spacer size="s" />
-        <Text size="s">
+        </RiTitle>
+        <RiSpacer size="s" />
+        <RiText size="s">
           When deployed, this local configuration will overwrite any existing
           pipeline.
-        </Text>
-        <Spacer size="s" />
-        <Text size="s">
+        </RiText>
+        <RiSpacer size="s" />
+        <RiText size="s">
           After deployment, consider flushing the target Redis database and
           resetting the pipeline to ensure that all data is reprocessed.
-        </Text>
-        <Spacer size="s" />
+        </RiText>
+        <RiSpacer size="s" />
         <div className={styles.checkbox}>
-          <Checkbox
+          <RiCheckbox
             id="resetPipeline"
             name="resetPipeline"
             label="Reset"
@@ -174,9 +165,9 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
             />
           </RiTooltip>
         </div>
-        <Row gap="m" responsive justify="end">
-          <FlexItem>
-            <PrimaryButton
+        <RiRow gap="m" responsive justify="end">
+          <RiFlexItem>
+            <RiPrimaryButton
               size="s"
               color="secondary"
               className={styles.popoverBtn}
@@ -184,11 +175,11 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
               data-testid="deploy-confirm-btn"
             >
               Deploy
-            </PrimaryButton>
-          </FlexItem>
-        </Row>
+            </RiPrimaryButton>
+          </RiFlexItem>
+        </RiRow>
       </RiPopover>
-    </OutsideClickDetector>
+    </RiOutsideClickDetector>
   )
 }
 

@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { Card } from 'uiSrc/components/base/layout'
+import { RiPrimaryButton } from 'uiBase/forms'
+import { RiCard } from 'uiBase/layout'
 import CreateTutorialLink from '../CreateTutorialLink'
 
 import styles from './styles.module.scss'
@@ -12,19 +12,19 @@ export interface Props {
 
 const WelcomeMyTutorials = ({ handleOpenUpload }: Props) => (
   <div className={styles.wrapper} data-testid="welcome-my-tutorials">
-    <Card className={styles.panel}>
+    <RiCard className={styles.panel}>
       <div className={styles.link}>
         <CreateTutorialLink />
       </div>
-      <PrimaryButton
+      <RiPrimaryButton
         className={styles.btnSubmit}
         size="s"
         onClick={() => handleOpenUpload()}
         data-testid="upload-tutorial-btn"
       >
         + Upload <span className={styles.hideText}>tutorial</span>
-      </PrimaryButton>
-    </Card>
+      </RiPrimaryButton>
+    </RiCard>
   </div>
 )
 

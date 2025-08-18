@@ -4,6 +4,11 @@ import { useHistory, useParams } from 'react-router-dom'
 import { isNull } from 'lodash'
 import cx from 'classnames'
 
+import { RiFlexItem, RiRow, RiCard } from 'uiBase/layout'
+import { RiPrimaryButton } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
+import { RiIcon } from 'uiBase/icons'
+import { RiAccordion, RiLink } from 'uiBase/display'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import {
   FeatureFlagComponent,
@@ -25,14 +30,6 @@ import { recommendationsSelector } from 'uiSrc/slices/recommendations/recommenda
 import { sortRecommendations } from 'uiSrc/utils/recommendation'
 import { openTutorialByPath } from 'uiSrc/slices/panels/sidePanels'
 import { findTutorialPath } from 'uiSrc/utils'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-
-import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
-import { Link } from 'uiSrc/components/base/link/Link'
-import { Card } from 'uiSrc/components/base/layout'
 
 import styles from './styles.module.scss'
 
@@ -80,42 +77,49 @@ const Recommendations = () => {
   ) => event.stopPropagation()
 
   const renderButtonContent = (badges: string[], id: string) => (
-    <FlexItem className="recommendation-badges" data-test-subj={`${id}-button`}>
+    <RiFlexItem
+      className="recommendation-badges"
+      data-test-subj={`${id}-button`}
+    >
       <RecommendationBadges badges={badges} />
-    </FlexItem>
+    </RiFlexItem>
   )
   const renderLabel = (redisStack: boolean, title: string, id: string) => (
-    <Row
+    <RiRow
       className={cx(styles.accordionBtn, styles.accordionButton)}
       align="center"
       justify="start"
       gap="m"
       data-test-subj={`${id}-label`}
     >
-      <FlexItem onClick={onRedisStackClick}>
+      <RiFlexItem onClick={onRedisStackClick}>
         {redisStack && (
-            <Link
-              target="_blank"
-              href={EXTERNAL_LINKS.redisStack}
-              className={styles.redisStackLink}
-              data-testid={`${id}-redis-stack-link`}
+          <RiLink
+            target="_blank"
+            href={EXTERNAL_LINKS.redisStack}
+            className={styles.redisStackLink}
+            data-testid={`${id}-redis-stack-link`}
+          >
+            <RiTooltip
+              content="Redis Stack"
+              position="top"
+              anchorClassName="flex-row"
             >
-              <RiTooltip content="Redis Stack" position="top" anchorClassName="flex-row">
-                <RiIcon
-                  type={
-                    theme === Theme.Dark
-                      ? 'RediStackDarkMinIcon'
-                      : 'RediStackLightMinIcon'
-                  }
-                  className={styles.redisStackIcon}
-                  data-testid={`${id}-redis-stack-icon`}
-                />
-              </RiTooltip>
-            </Link>
-          )}
-      </FlexItem>
-      <FlexItem>{title}</FlexItem>
-    </Row>
+              <RiIcon
+                type={
+                  theme === Theme.Dark
+                    ? 'RediStackDarkMinIcon'
+                    : 'RediStackLightMinIcon'
+                }
+                className={styles.redisStackIcon}
+                data-testid={`${id}-redis-stack-icon`}
+              />
+            </RiTooltip>
+          </RiLink>
+        )}
+      </RiFlexItem>
+      <RiFlexItem>{title}</RiFlexItem>
+    </RiRow>
   )
 
   if (loading) {
@@ -142,10 +146,10 @@ const Recommendations = () => {
           className={styles.noRecommendationsIcon}
           data-testid="no=recommendations-icon"
         />
-        <Text className={styles.bigText}>AMAZING JOB!</Text>
-        <Text size="m">No Tips at the moment,</Text>
+        <RiText className={styles.bigText}>AMAZING JOB!</RiText>
+        <RiText size="m">No Tips at the moment,</RiText>
         <br />
-        <Text size="m">keep up the good work!</Text>
+        <RiText size="m">keep up the good work!</RiText>
       </div>
     )
   }
@@ -186,7 +190,7 @@ const Recommendations = () => {
                   onOpenChange={(isOpen) => handleToggle(isOpen, id)}
                   data-testid={`${id}-accordion`}
                 >
-                  <Card className={styles.accordionContent}>
+                  <RiCard className={styles.accordionContent}>
                     <RecommendationBody
                       elements={content}
                       params={params}
@@ -201,20 +205,20 @@ const Recommendations = () => {
                         }
                       />
                     )}
-                  </Card>
+                  </RiCard>
                 </RiAccordion>
                 <div className={styles.footer}>
                   <FeatureFlagComponent name={FeatureFlags.envDependent}>
                     <RecommendationVoting vote={vote as Vote} name={name} />
                   </FeatureFlagComponent>
                   {tutorialId && (
-                    <PrimaryButton
+                    <RiPrimaryButton
                       size="s"
                       onClick={() => goToTutorial(tutorialId, id)}
                       data-testid={`${id}-to-tutorial-btn`}
                     >
                       Tutorial
-                    </PrimaryButton>
+                    </RiPrimaryButton>
                   )}
                 </div>
               </div>

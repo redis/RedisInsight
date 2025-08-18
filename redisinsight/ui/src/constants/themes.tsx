@@ -1,5 +1,5 @@
+import { RiSelectOption } from 'uiBase/forms'
 import { getConfig } from 'uiSrc/config'
-import { RiSelectOption } from 'uiSrc/components/base/forms/select/RiSelect'
 
 const riConfig = getConfig()
 

@@ -2,6 +2,13 @@ import cx from 'classnames'
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { RiPopover } from 'uiBase/index'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiTitle, RiText } from 'uiBase/text'
+import { SupportIcon, RiIcon } from 'uiBase/icons'
+import { RiLink } from 'uiBase/display'
+import { RiSideBarItem, SideBarItemIcon } from 'uiBase/layout/sidebar'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import { ReleaseNotesSource } from 'uiSrc/constants/telemetry'
 import {
@@ -16,18 +23,6 @@ import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 
 import { FeatureFlags } from 'uiSrc/constants'
 import { FeatureFlagComponent } from 'uiSrc/components'
-import { RiPopover } from 'uiSrc/components/base'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { SupportIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
-import { Link } from 'uiSrc/components/base/link/Link'
-import {
-  SideBarItem,
-  SideBarItemIcon,
-} from 'uiSrc/components/base/layout/sidebar'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import navStyles from '../../styles.module.scss'
 import styles from './styles.module.scss'
 
@@ -70,7 +65,7 @@ const HelpMenu = () => {
   }
 
   const HelpMenuButton = (
-    <SideBarItem
+    <RiSideBarItem
       className={cx({
         [navStyles.navigationButtonNotified]: true,
       })}
@@ -83,7 +78,7 @@ const HelpMenu = () => {
         aria-label="Help Menu"
         data-testid="help-menu-button"
       />
-    </SideBarItem>
+    </RiSideBarItem>
   )
 
   return (
@@ -96,47 +91,47 @@ const HelpMenu = () => {
       button={HelpMenuButton}
     >
       <div className={styles.popover} data-testid="help-center">
-        <Title size="XS" className={styles.helpMenuTitle}>
+        <RiTitle size="XS" className={styles.helpMenuTitle}>
           Help Center
-        </Title>
-        <Spacer size="l" />
-        <Row
+        </RiTitle>
+        <RiSpacer size="l" />
+        <RiRow
           className={styles.helpMenuItems}
           align="center"
           justify="between"
           gap="l"
         >
           <FeatureFlagComponent name={FeatureFlags.envDependent}>
-            <FlexItem grow={2} className={styles.helpMenuItem}>
-              <Link
+            <RiFlexItem grow={2} className={styles.helpMenuItem}>
+              <RiLink
                 className={styles.helpMenuItemLink}
                 href={EXTERNAL_LINKS.githubIssues}
                 target="_blank"
                 data-testid="submit-bug-btn"
               >
                 <RiIcon type="GithubHelpCenterIcon" size="xxl" />
-                <Spacer size="m" />
-                <Text
+                <RiSpacer size="m" />
+                <RiText
                   size="xs"
                   textAlign="center"
                   className={styles.helpMenuText}
                 >
                   Provide <br /> Feedback
-                </Text>
-              </Link>
-            </FlexItem>
+                </RiText>
+              </RiLink>
+            </RiFlexItem>
           </FeatureFlagComponent>
-          <FlexItem className={styles.helpMenuItemRow} grow={4}>
+          <RiFlexItem className={styles.helpMenuItemRow} grow={4}>
             <div className={styles.helpMenuItemLink}>
               <RiIcon type="KeyboardShortcutsIcon" size="l" />
-              <Text
+              <RiText
                 size="xs"
                 className={styles.helpMenuTextLink}
                 onClick={() => onKeyboardShortcutClick()}
                 data-testid="shortcuts-btn"
               >
                 Keyboard Shortcuts
-              </Text>
+              </RiText>
             </div>
 
             <div className={styles.helpMenuItemLink}>
@@ -148,33 +143,33 @@ const HelpMenu = () => {
               >
                 <RiIcon type="DocumentationIcon" size="l" />
               </div>
-              <Link
+              <RiLink
                 onClick={onClickReleaseNotes}
                 className={styles.helpMenuTextLink}
                 href={EXTERNAL_LINKS.releaseNotes}
                 target="_blank"
                 data-testid="release-notes-btn"
               >
-                <Text size="xs" className={styles.helpMenuTextLink}>
+                <RiText size="xs" className={styles.helpMenuTextLink}>
                   Release Notes
-                </Text>
-              </Link>
+                </RiText>
+              </RiLink>
             </div>
             <FeatureFlagComponent name={FeatureFlags.envDependent}>
               <div className={styles.helpMenuItemLink}>
                 <RiIcon type="LightBulbIcon" size="l" />
-                <Text
+                <RiText
                   size="xs"
                   className={styles.helpMenuTextLink}
                   onClick={() => onResetOnboardingClick()}
                   data-testid="reset-onboarding-btn"
                 >
                   Reset Onboarding
-                </Text>
+                </RiText>
               </div>
             </FeatureFlagComponent>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </div>
     </RiPopover>
   )

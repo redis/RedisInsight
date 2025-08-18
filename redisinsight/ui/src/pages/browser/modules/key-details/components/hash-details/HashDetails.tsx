@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { useParams } from 'react-router-dom'
+import { RiCheckbox } from 'uiBase/forms'
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
 import { FeatureFlags, KeyTypes } from 'uiSrc/constants'
 
@@ -16,7 +17,6 @@ import { connectedInstanceOverviewSelector } from 'uiSrc/slices/instances/instan
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import Divider from 'uiSrc/components/divider/Divider'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import AddHashFields from './add-hash-fields/AddHashFields'
 import { HashDetailsTable } from './hash-details-table'
 import { KeyDetailsSubheader } from '../key-details-subheader/KeyDetailsSubheader'
@@ -73,7 +73,7 @@ const HashDetails = (props: Props) => {
     <>
       {isExpireFieldsAvailable && (
         <>
-          <Checkbox
+          <RiCheckbox
             id="showTtl"
             name="showTtl"
             label="Show TTL"

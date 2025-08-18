@@ -1,22 +1,16 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useCallback, useMemo, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { PlusIcon } from 'uiSrc/components/base/icons'
+import { PlusIcon, RiIcon } from 'uiBase/icons'
+import { RiEmptyButton, RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiTitle, RiText } from 'uiBase/text'
 import { ConnectionProvider, Instance } from 'uiSrc/slices/interfaces'
 import { FormDialog } from 'uiSrc/components'
 
 import { updateInstanceAction } from 'uiSrc/slices/instances/instances'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import successMessages from 'uiSrc/components/notifications/success-messages'
-import {
-  EmptyButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { VALID_TAG_KEY_REGEX, VALID_TAG_VALUE_REGEX } from './constants'
 import { TagInputField } from './TagInputField'
 import { getInvalidTagErrors } from './utils'
@@ -107,11 +101,11 @@ export const ManageTagsModal = ({
       className={styles.manageTagsModal}
       header={
         <div className={styles.header}>
-          <Title size="M">Manage tags for {instance.name}</Title>
-          <Spacer size="s" />
-          <Text size="s" color="subdued">
+          <RiTitle size="M">Manage tags for {instance.name}</RiTitle>
+          <RiSpacer size="s" />
+          <RiText size="s" color="subdued">
             Tags are key-value pairs that let you categorize your databases.
-          </Text>
+          </RiText>
         </div>
       }
       footer={
@@ -123,23 +117,23 @@ export const ManageTagsModal = ({
                 color="attention600"
                 size="m"
               />
-              <Text size="m">
+              <RiText size="m">
                 Tag changes in Redis Insight apply locally and are not synced
                 with Redis {isCloudDb ? 'Cloud' : 'Software'}.
-              </Text>
+              </RiText>
             </div>
           )}
           <div className={styles.footer}>
-            <SecondaryButton onClick={onClose} data-testid="close-button">
+            <RiSecondaryButton onClick={onClose} data-testid="close-button">
               Close
-            </SecondaryButton>
-            <PrimaryButton
+            </RiSecondaryButton>
+            <RiPrimaryButton
               onClick={handleSave}
               disabled={isSaveButtonDisabled}
               data-testid="save-tags-button"
             >
               Save tags
-            </PrimaryButton>
+            </RiPrimaryButton>
           </div>
         </>
       }
@@ -187,8 +181,8 @@ export const ManageTagsModal = ({
           })}
         </div>
       </div>
-      <Spacer size="s" />
-      <EmptyButton
+      <RiSpacer size="s" />
+      <RiEmptyButton
         icon={PlusIcon}
         onClick={handleAddTag}
         size="small"
@@ -196,7 +190,7 @@ export const ManageTagsModal = ({
         data-testid="add-tag-button"
       >
         Add additional tag
-      </EmptyButton>
+      </RiEmptyButton>
     </FormDialog>
   )
 }

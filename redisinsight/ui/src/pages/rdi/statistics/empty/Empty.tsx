@@ -1,12 +1,12 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
 
-import EmptyPipelineIcon from 'uiSrc/assets/img/rdi/empty_pipeline.svg'
+import { RiText } from 'uiBase/text'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton } from 'uiBase/forms'
+import { RiImage } from 'uiBase/display'
 import { Pages } from 'uiSrc/constants'
-import { Text } from 'uiSrc/components/base/text'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { RiImage } from 'uiSrc/components/base/display'
+import EmptyPipelineIcon from 'uiSrc/assets/img/rdi/empty_pipeline.svg'
 import Panel from '../components/panel'
 
 import styles from './styles.module.scss'
@@ -20,15 +20,18 @@ const Empty = ({ rdiInstanceId }: Props) => {
 
   return (
     <Panel>
-      <div className={styles.emptyPipelineContainer} data-testid="empty-pipeline">
+      <div
+        className={styles.emptyPipelineContainer}
+        data-testid="empty-pipeline"
+      >
         <RiImage src={EmptyPipelineIcon} alt="empty" $size="s" />
-        <Spacer size="xl" />
-        <Text>No pipeline deployed yet</Text>
-        <Text className={styles.subTitle}>
+        <RiSpacer size="xl" />
+        <RiText>No pipeline deployed yet</RiText>
+        <RiText className={styles.subTitle}>
           Create your first pipeline to get started!
-        </Text>
-        <Spacer size="l" />
-        <PrimaryButton
+        </RiText>
+        <RiSpacer size="l" />
+        <RiPrimaryButton
           data-testid="add-pipeline-btn"
           size="s"
           onClick={() => {
@@ -36,7 +39,7 @@ const Empty = ({ rdiInstanceId }: Props) => {
           }}
         >
           Add Pipeline
-        </PrimaryButton>
+        </RiPrimaryButton>
       </div>
     </Panel>
   )

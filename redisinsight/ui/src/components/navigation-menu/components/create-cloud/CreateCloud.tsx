@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { RiSideBarItem, SideBarItemIcon } from 'uiBase/layout'
+import { RiLink } from 'uiBase/display'
 import { FeatureFlagComponent, OAuthSsoHandlerDialog } from 'uiSrc/components'
 import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
@@ -9,9 +11,6 @@ import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { sendEventTelemetry } from 'uiSrc/telemetry'
 import { HELP_LINKS } from 'uiSrc/pages/home/constants'
 import { FeatureFlags } from 'uiSrc/constants'
-import { SideBarItem } from 'uiSrc/components/base/layout/sidebar'
-import { SideBarItemIcon } from 'uiSrc/components/base/layout/sidebar/SideBarItemIcon'
-import { Link } from 'uiSrc/components/base/link/Link'
 
 const CreateCloud = () => {
   const onCLickLink = (isSSOEnabled: boolean) => {
@@ -29,14 +28,14 @@ const CreateCloud = () => {
     <FeatureFlagComponent name={FeatureFlags.cloudAds}>
       <OAuthSsoHandlerDialog>
         {(ssoCloudHandlerClick, isSSOEnabled) => (
-          <Link
+          <RiLink
             href={getUtmExternalLink(EXTERNAL_LINKS.tryFree, {
               campaign: 'navigation_menu',
             })}
             style={{ marginInline: 'auto', backgroundColor: 'transparent' }}
             data-testid="create-cloud-db-link"
           >
-            <SideBarItem
+            <RiSideBarItem
               tooltipProps={{
                 text: 'Create FREE trial Redis Cloud database',
                 placement: 'right',
@@ -58,8 +57,8 @@ const CreateCloud = () => {
                 aria-label="cloud-db-icon"
                 data-testid="cloud-db-icon"
               />
-            </SideBarItem>
-          </Link>
+            </RiSideBarItem>
+          </RiLink>
         )}
       </OAuthSsoHandlerDialog>
     </FeatureFlagComponent>

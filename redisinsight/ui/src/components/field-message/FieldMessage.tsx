@@ -1,9 +1,9 @@
 import React, { Ref, useEffect, useRef } from 'react'
 import cx from 'classnames'
 
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiBase/text'
+import { AllIconsType, RiIcon } from 'uiBase/icons'
 import { scrollIntoView } from 'uiSrc/utils'
-import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from './styles.module.scss'
 
 type Colors =
@@ -51,13 +51,13 @@ const FieldMessage = ({
           color={color || 'danger'}
         />
       )}
-      <ColorText
+      <RiColorText
         className={cx(styles.message)}
         data-testid={testID}
         color={color || 'danger'}
       >
         {children}
-      </ColorText>
+      </RiColorText>
     </div>
   )
 }

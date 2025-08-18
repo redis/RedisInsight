@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toNumber } from 'lodash'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiPrimaryButton, RiSecondaryButton, RiFormField } from 'uiBase/forms'
+import { RiTextInput } from 'uiBase/inputs'
 import {
   keysSelector,
   selectedKeyDataSelector,
@@ -24,13 +27,6 @@ import {
   IHashFieldState,
   INITIAL_HASH_FIELD_STATE,
 } from 'uiSrc/pages/browser/components/add-key/AddKeyHash/interfaces'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { TextInput } from 'uiSrc/components/base/inputs'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
 import {
   AddFieldsToHashDto,
   HashFieldDto,
@@ -173,16 +169,16 @@ const AddHashFields = (props: Props) => {
           onClickAdd={addField}
         >
           {(item, index) => (
-            <Row align="center" gap="m">
-              <FlexItem grow={2}>
-                <FormField>
-                  <TextInput
+            <RiRow align="center" gap="m">
+              <RiFlexItem grow={2}>
+                <RiFormField>
+                  <RiTextInput
                     name={`fieldName-${item.id}`}
                     id={`fieldName-${item.id}`}
                     placeholder="Enter Field"
                     value={item.fieldName}
                     disabled={loading}
-                    onChange={value =>
+                    onChange={(value) =>
                       handleFieldChange('fieldName', item.id, value)
                     }
                     ref={
@@ -190,33 +186,33 @@ const AddHashFields = (props: Props) => {
                     }
                     data-testid="hash-field"
                   />
-                </FormField>
-              </FlexItem>
-              <FlexItem grow={2}>
-                <FormField>
-                  <TextInput
+                </RiFormField>
+              </RiFlexItem>
+              <RiFlexItem grow={2}>
+                <RiFormField>
+                  <RiTextInput
                     name={`fieldValue-${item.id}`}
                     id={`fieldValue-${item.id}`}
                     placeholder="Enter Value"
                     value={item.fieldValue}
                     disabled={loading}
-                    onChange={value =>
+                    onChange={(value) =>
                       handleFieldChange('fieldValue', item.id, value)
                     }
                     data-testid="hash-value"
                   />
-                </FormField>
-              </FlexItem>
+                </RiFormField>
+              </RiFlexItem>
               {isExpireFieldsAvailable && (
-                <FlexItem grow={1}>
-                  <FormField>
-                    <TextInput
+                <RiFlexItem grow={1}>
+                  <RiFormField>
+                    <RiTextInput
                       name={`fieldTTL-${item.id}`}
                       id={`fieldTTL-${item.id}`}
                       placeholder="Enter TTL"
                       value={item.fieldTTL || ''}
                       disabled={loading}
-                      onChange={value =>
+                      onChange={(value) =>
                         handleFieldChange(
                           'fieldTTL',
                           item.id,
@@ -225,38 +221,38 @@ const AddHashFields = (props: Props) => {
                       }
                       data-testid="hash-ttl"
                     />
-                  </FormField>
-                </FlexItem>
+                  </RiFormField>
+                </RiFlexItem>
               )}
-            </Row>
+            </RiRow>
           )}
         </AddMultipleFields>
       </div>
       <>
-        <Row justify="end" gap="m">
-          <FlexItem>
+        <RiRow justify="end" gap="m">
+          <RiFlexItem>
             <div>
-              <SecondaryButton
+              <RiSecondaryButton
                 onClick={() => closePanel(true)}
                 data-testid="cancel-fields-btn"
               >
                 Cancel
-              </SecondaryButton>
+              </RiSecondaryButton>
             </div>
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <div>
-              <PrimaryButton
+              <RiPrimaryButton
                 disabled={loading}
                 loading={loading}
                 onClick={submitData}
                 data-testid="save-fields-btn"
               >
                 Save
-              </PrimaryButton>
+              </RiPrimaryButton>
             </div>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </>
     </>
   )

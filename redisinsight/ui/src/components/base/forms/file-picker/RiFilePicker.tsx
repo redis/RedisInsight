@@ -1,19 +1,18 @@
 import React, { InputHTMLAttributes, ReactNode, useRef, useState } from 'react'
 import cx from 'classnames'
-import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
-import { Loader } from 'uiSrc/components/base/display'
-import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
-import { RiIcon } from 'uiSrc/components/base/icons'
+import { useGenerateId } from 'uiBase/utils'
+import { RiProgressBarLoader, RiLoader } from 'uiBase/display'
+import { RiSecondaryButton } from 'uiBase/forms'
+import { RiIcon } from 'uiBase/icons'
+import { CommonProps } from 'uiBase/theme/types'
+import { RiColorText } from 'uiBase/text'
 import {
   FilePickerClearButton,
   FilePickerInput,
   FilePickerPrompt,
   FilePickerPromptText,
   FilePickerWrapper,
-} from 'uiSrc/components/base/forms/file-picker/styles'
-import { CommonProps } from 'uiSrc/components/base/theme/types'
-import ProgressBarLoader from 'uiSrc/components/base/display/progress-bar/ProgressBarLoader'
-import { ColorText } from 'uiSrc/components/base/text'
+} from './styles'
 
 export type RiFilePickerProps = CommonProps &
   Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> & {
@@ -118,7 +117,7 @@ export const RiFilePicker = ({
   if (isLoading && normalFormControl) {
     // Override clear button with loading spinner if it is in loading state
     clearButton = (
-      <Loader
+      <RiLoader
         className="RI-File-Picker__loadingSpinner"
         size={compressed ? 's' : 'm'}
       />
@@ -126,7 +125,7 @@ export const RiFilePicker = ({
   } else if (isOverridingInitialPrompt && !disabled) {
     if (normalFormControl) {
       clearButton = (
-        <SecondaryButton
+        <RiSecondaryButton
           aria-label="Remove selected files"
           className="RI-File-Picker__clearButton"
           onClick={removeFiles}
@@ -141,7 +140,7 @@ export const RiFilePicker = ({
           size="small"
           onClick={removeFiles}
         >
-          <ColorText color="default">Remove</ColorText>
+          <RiColorText color="default">Remove</RiColorText>
         </FilePickerClearButton>
       )
     }
@@ -150,7 +149,7 @@ export const RiFilePicker = ({
   }
 
   const loader = !normalFormControl && isLoading && (
-    <ProgressBarLoader color="accent" />
+    <RiProgressBarLoader color="accent" />
   )
   return (
     <FilePickerWrapper className={classes} $large={display === 'large'}>

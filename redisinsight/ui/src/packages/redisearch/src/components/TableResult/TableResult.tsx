@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react'
 import parse from 'html-react-parser'
 import cx from 'classnames'
 import { flatten, isArray, isEmpty, map, uniq } from 'lodash'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 
-import { ColorText } from '../../../../../components/base/text/ColorText'
-import { IconButton } from '../../../../../components/base/forms/buttons'
-import { CopyIcon } from '../../../../../components/base/icons'
-import { RiTooltip } from '../../../../../components'
+import { RiTable, ColumnDefinition } from 'uiBase/layout'
+import { RiColorText } from 'uiBase/text'
+import { RiIconButton } from 'uiBase/forms'
+import { CopyIcon } from 'uiBase/icons'
+import { RiTooltip } from 'uiSrc/components'
+
 import { CommandArgument, Command } from '../../constants'
 import { formatLongName, replaceSpaces } from '../../utils'
 
@@ -83,10 +84,10 @@ const TableResult = React.memo((props: Props) => {
                 content={formatLongName(value.toString())}
               >
                 <div className="copy-btn-wrapper">
-                  <ColorText className={cx('cell', 'test')}>
+                  <RiColorText className={cx('cell', 'test')}>
                     {cellContent}
-                  </ColorText>
-                  <IconButton
+                  </RiColorText>
+                  <RiIconButton
                     icon={CopyIcon}
                     aria-label="Copy result"
                     className="copy-near-btn"
@@ -121,7 +122,7 @@ const TableResult = React.memo((props: Props) => {
       </div>
       {isDataArr && (
         <div data-testid={`query-table-result-${query}`}>
-          <Table columns={columns} data={result ?? []} />
+          <RiTable columns={columns} data={result ?? []} />
         </div>
       )}
       {isDataEl && <div className={cx('resultEl')}>{result}</div>}

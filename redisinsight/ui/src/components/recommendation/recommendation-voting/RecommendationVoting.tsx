@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
+import { RiRow } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
 import { userSettingsConfigSelector } from 'uiSrc/slices/user/user-settings'
 import { Vote } from 'uiSrc/constants/recommendations'
 import { Nullable } from 'uiSrc/utils'
 
-import { Row } from 'uiSrc/components/base/layout/flex'
-import { Text } from 'uiSrc/components/base/text'
 import VoteOption from './components/vote-option'
 import styles from './styles.module.scss'
 
@@ -29,15 +29,15 @@ const RecommendationVoting = ({
   const [popover, setPopover] = useState<string>('')
 
   return (
-    <Row
+    <RiRow
       align="center"
       className={cx(styles.votingContainer, containerClass)}
       gap={live ? 'none' : 'l'}
       data-testid="recommendation-voting"
     >
-      <Text size="m" className={cx({ [styles.highlightText]: live })}>
+      <RiText size="m" className={cx({ [styles.highlightText]: live })}>
         Is this useful?
-      </Text>
+      </RiText>
       <div className="voteContent">
         {Object.values(Vote).map((option) => (
           <VoteOption
@@ -53,7 +53,7 @@ const RecommendationVoting = ({
           />
         ))}
       </div>
-    </Row>
+    </RiRow>
   )
 }
 

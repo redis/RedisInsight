@@ -2,6 +2,10 @@ import React from 'react'
 import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { RiFlexItem, RiRow, ColumnDefinition } from 'uiBase/layout'
+import { RiIconButton } from 'uiBase/forms'
+import { CopyIcon, RiIcon } from 'uiBase/icons'
+import { RiColorText, RiText } from 'uiBase/text'
 import { Pages } from 'uiSrc/constants'
 import {
   addInstancesRedisCluster,
@@ -25,12 +29,6 @@ import {
   RiTooltip,
 } from 'uiSrc/components'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CopyIcon } from 'uiSrc/components/base/icons'
-import { ColorText, Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import RedisClusterDatabases from './RedisClusterDatabases'
 import RedisClusterDatabasesResult from './RedisClusterDatabasesResult'
 
@@ -95,7 +93,7 @@ const RedisClusterDatabasesPage = () => {
               className={styles.tooltipColumnName}
               content={formatLongName(name)}
             >
-              <Text>{cellContent}</Text>
+              <RiText>{cellContent}</RiText>
             </RiTooltip>
           </div>
         )
@@ -121,13 +119,13 @@ const RedisClusterDatabasesPage = () => {
         return (
           !!dnsName && (
             <div className="host_port">
-              <Text className="copyHostPortText">{text}</Text>
+              <RiText className="copyHostPortText">{text}</RiText>
               <RiTooltip
                 position="right"
                 content="Copy"
                 anchorClassName="copyHostPortTooltip"
               >
-                <IconButton
+                <RiIconButton
                   icon={CopyIcon}
                   aria-label="Copy host:port"
                   className="copyHostPortBtn"
@@ -180,23 +178,23 @@ const RedisClusterDatabasesPage = () => {
       return (
         <>
           {statusAdded === AddRedisDatabaseStatus.Success ? (
-            <Text>{messageAdded}</Text>
+            <RiText>{messageAdded}</RiText>
           ) : (
             <RiTooltip position="left" title="Error" content={messageAdded}>
-              <Row align="center" gap="s">
-                <FlexItem>
+              <RiRow align="center" gap="s">
+                <RiFlexItem>
                   <RiIcon type="ToastDangerIcon" color="danger600" />
-                </FlexItem>
+                </RiFlexItem>
 
-                <FlexItem>
-                  <ColorText
+                <RiFlexItem>
+                  <RiColorText
                     color="danger"
                     className="flex-row euiTextAlign--center"
                   >
                     Error
-                  </ColorText>
-                </FlexItem>
-              </Row>
+                  </RiColorText>
+                </RiFlexItem>
+              </RiRow>
             </RiTooltip>
           )}
         </>

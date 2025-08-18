@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
+import { RiListGroup, RiListItem } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
+import { RiLoader } from 'uiBase/display'
 import { checkConnectToRdiInstanceAction } from 'uiSrc/slices/rdi/instances'
 import {
   checkConnectToInstanceAction,
@@ -15,12 +18,6 @@ import {
   getRedisInfoSummary,
 } from 'uiSrc/telemetry'
 import { getDbIndex } from 'uiSrc/utils'
-import {
-  Group as ListGroup,
-  Item as ListGroupItem,
-} from 'uiSrc/components/base/layout/list'
-import { Text } from 'uiSrc/components/base/text'
-import { Loader } from 'uiSrc/components/base/display'
 import { InstancesTabs } from '../../InstancesNavigationPopover'
 import styles from '../../styles.module.scss'
 
@@ -130,24 +127,24 @@ const InstancesList = ({
 
   return (
     <div className={styles.listContainer}>
-      <ListGroup flush maxWidth="none" gap="none">
+      <RiListGroup flush maxWidth="none" gap="none">
         {instances?.map((instance) => (
-          <ListGroupItem
+          <RiListItem
             color="subdued"
             className={styles.item}
             isActive={isInstanceActive(instance.id)}
             isDisabled={loading}
             key={instance.id}
             label={
-              <Text
+              <RiText
                 style={{ display: 'flex', alignItems: 'center' }}
                 component="div"
               >
                 {loading && instance?.id === selected && (
-                  <Loader size="s" className={styles.loading} />
+                  <RiLoader size="s" className={styles.loading} />
                 )}
                 {instance.name} {getDbIndex(instance.db)}
-              </Text>
+              </RiText>
             }
             onClick={() => {
               setSelected(instance.id)
@@ -156,7 +153,7 @@ const InstancesList = ({
             data-testid={`instance-item-${instance.id}`}
           />
         ))}
-      </ListGroup>
+      </RiListGroup>
     </div>
   )
 }

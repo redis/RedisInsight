@@ -1,14 +1,13 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiTitle, RiText } from 'uiBase/text'
 import { OAuthAdvantages, OAuthAgreement } from 'uiSrc/components/oauth/shared'
 import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { setSSOFlow } from 'uiSrc/slices/instances/cloud'
 import { Nullable } from 'uiSrc/utils'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
 import OAuthForm from '../../shared/oauth-form/OAuthForm'
 import styles from './styles.module.scss'
 
@@ -36,11 +35,11 @@ const OAuthSignIn = (props: Props) => {
 
   return (
     <div className={styles.container} data-testid="oauth-container-signIn">
-      <Row>
-        <FlexItem grow className={styles.advantagesContainer}>
+      <RiRow>
+        <RiFlexItem grow className={styles.advantagesContainer}>
           <OAuthAdvantages />
-        </FlexItem>
-        <FlexItem grow className={styles.socialContainer}>
+        </RiFlexItem>
+        <RiFlexItem grow className={styles.socialContainer}>
           <OAuthForm
             onClick={handleSocialButtonClick}
             action={action}
@@ -48,17 +47,17 @@ const OAuthSignIn = (props: Props) => {
           >
             {(form: React.ReactNode) => (
               <>
-                <Text className={styles.subTitle}>Get started with</Text>
-                <Title size="XL" className={styles.title}>
+                <RiText className={styles.subTitle}>Get started with</RiText>
+                <RiTitle size="XL" className={styles.title}>
                   Redis Cloud account
-                </Title>
+                </RiTitle>
                 {form}
                 <OAuthAgreement />
               </>
             )}
           </OAuthForm>
-        </FlexItem>
-      </Row>
+        </RiFlexItem>
+      </RiRow>
     </div>
   )
 }

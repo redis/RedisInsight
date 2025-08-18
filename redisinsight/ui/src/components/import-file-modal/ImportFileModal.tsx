@@ -1,13 +1,13 @@
 import React from 'react'
 
+import { RiCol, RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiColorText, RiText } from 'uiBase/text'
+import { RiLoader, RiModal } from 'uiBase/display'
+import { RiIcon, CancelIcon } from 'uiBase/icons'
+import { Button, RiFilePicker } from 'uiBase/forms'
 import { Nullable } from 'uiSrc/utils'
-import { RiFilePicker, UploadWarning } from 'uiSrc/components'
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { ColorText, Text } from 'uiSrc/components/base/text'
-import { Loader, Modal } from 'uiSrc/components/base/display'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { CancelIcon } from 'uiSrc/components/base/icons'
-import { Button } from 'uiSrc/components/base/forms/buttons'
+import { UploadWarning } from 'uiSrc/components'
+
 import styles from './styles.module.scss'
 
 export interface Props<T> {
@@ -49,19 +49,23 @@ const ImportFileModal = <T,>({
 }: Props<T>) => {
   const isShowForm = !loading && !data && !error
   return (
-    <Modal.Compose open>
-      <Modal.Content.Compose className={styles.modal}>
-        <Modal.Content.Close icon={CancelIcon} onClick={onClose} data-testid="import-file-modal-close-btn" />
-        <Modal.Content.Header.Title
+    <RiModal.Compose open>
+      <RiModal.Content.Compose className={styles.modal}>
+        <RiModal.Content.Close
+          icon={CancelIcon}
+          onClick={onClose}
+          data-testid="import-file-modal-close-btn"
+        />
+        <RiModal.Content.Header.Title
           data-testid="import-file-modal-title"
           className={styles.marginTop2}
         >
           {!data && !error ? title : resultsTitle || 'Import Results'}
-        </Modal.Content.Header.Title>
-        <Modal.Content.Body.Compose className={styles.marginTop2}>
-          <Col align="center">
-            {warning && <FlexItem>{warning}</FlexItem>}
-            <FlexItem>
+        </RiModal.Content.Header.Title>
+        <RiModal.Content.Body.Compose className={styles.marginTop2}>
+          <RiCol align="center">
+            {warning && <RiFlexItem>{warning}</RiFlexItem>}
+            <RiFlexItem>
               {isShowForm && (
                 <>
                   <RiFilePicker
@@ -76,13 +80,13 @@ const ImportFileModal = <T,>({
                     aria-label="Select or drag and drop file"
                   />
                   {isInvalid && (
-                    <ColorText
+                    <RiColorText
                       color="danger"
                       className={styles.errorFileMsg}
                       data-testid="input-file-error-msg"
                     >
                       {invalidMessage}
-                    </ColorText>
+                    </RiColorText>
                   )}
                 </>
               )}
@@ -91,35 +95,35 @@ const ImportFileModal = <T,>({
                   className={styles.loading}
                   data-testid="file-loading-indicator"
                 >
-                  <Loader size="xl" />
-                  <Text color="subdued" style={{ marginTop: 12 }}>
+                  <RiLoader size="xl" />
+                  <RiText color="subdued" style={{ marginTop: 12 }}>
                     Uploading...
-                  </Text>
+                  </RiText>
                 </div>
               )}
               {error && (
                 <div className={styles.result} data-testid="result-failed">
                   <RiIcon type="ToastCancelIcon" size="xxl" color="danger500" />
-                  <Text color="subdued" style={{ marginTop: 16 }}>
+                  <RiText color="subdued" style={{ marginTop: 16 }}>
                     {errorMessage}
-                  </Text>
-                  <Text color="subdued">{error}</Text>
+                  </RiText>
+                  <RiText color="subdued">{error}</RiText>
                 </div>
               )}
               {isShowForm && (
-                <FlexItem grow className={styles.uploadWarningContainer}>
+                <RiFlexItem grow className={styles.uploadWarningContainer}>
                   <UploadWarning />
-                </FlexItem>
+                </RiFlexItem>
               )}
-            </FlexItem>
-          </Col>
+            </RiFlexItem>
+          </RiCol>
           {data && (
-            <Row justify="center">
-              <FlexItem>{submitResults}</FlexItem>
-            </Row>
+            <RiRow justify="center">
+              <RiFlexItem>{submitResults}</RiFlexItem>
+            </RiRow>
           )}
-        </Modal.Content.Body.Compose>
-        <Modal.Content.Footer.Compose>
+        </RiModal.Content.Body.Compose>
+        <RiModal.Content.Footer.Compose>
           {isShowForm && (
             <>
               <Button
@@ -144,9 +148,9 @@ const ImportFileModal = <T,>({
               OK
             </Button>
           )}
-        </Modal.Content.Footer.Compose>
-      </Modal.Content.Compose>
-    </Modal.Compose>
+        </RiModal.Content.Footer.Compose>
+      </RiModal.Content.Compose>
+    </RiModal.Compose>
   )
 }
 

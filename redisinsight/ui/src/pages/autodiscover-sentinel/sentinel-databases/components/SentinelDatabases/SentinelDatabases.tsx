@@ -2,24 +2,21 @@ import React, { useState, useEffect } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 
-import { sentinelSelector } from 'uiSrc/slices/instances/sentinel'
-import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
-import validationErrors from 'uiSrc/constants/validationErrors'
-import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
-
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { RiFlexItem, RiRow, RiTable, ColumnDefinition } from 'uiBase/layout'
 import {
-  DestructiveButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { InfoIcon } from 'uiSrc/components/base/icons'
-import { SearchInput } from 'uiSrc/components/base/inputs'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+  RiDestructiveButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
+} from 'uiBase/forms'
+import { InfoIcon } from 'uiBase/icons'
+import { RiSearchInput } from 'uiBase/inputs'
+import { RiTitle, RiText } from 'uiBase/text'
+import { RiPopover, RiTooltip } from 'uiBase/index'
+import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
+import validationErrors from 'uiSrc/constants/validationErrors'
+import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
+import { sentinelSelector } from 'uiSrc/slices/instances/sentinel'
 import styles from '../../../styles.module.scss'
 
 export interface Props {
@@ -127,29 +124,29 @@ const SentinelDatabases = ({
       panelClassName={styles.panelCancelBtn}
       panelPaddingSize="l"
       button={
-        <SecondaryButton
+        <RiSecondaryButton
           onClick={showPopover}
           color="secondary"
           className="btn-cancel"
           data-testid="btn-cancel"
         >
           Cancel
-        </SecondaryButton>
+        </RiSecondaryButton>
       }
     >
-      <Text size="m">
+      <RiText size="m">
         Your changes have not been saved.&#10;&#13; Do you want to proceed to
         the list of databases?
-      </Text>
+      </RiText>
       <br />
       <div>
-        <DestructiveButton
+        <RiDestructiveButton
           size="s"
           onClick={onClose}
           data-testid="btn-cancel-proceed"
         >
           Proceed
-        </DestructiveButton>
+        </RiDestructiveButton>
       </div>
     </RiPopover>
   )
@@ -174,13 +171,9 @@ const SentinelDatabases = ({
         position="top"
         anchorClassName="euiToolTip__btn-disabled"
         title={title}
-        content={
-          isSubmitDisabled() ? (
-            <span>{content}</span>
-          ) : null
-        }
+        content={isSubmitDisabled() ? <span>{content}</span> : null}
       >
-        <PrimaryButton
+        <RiPrimaryButton
           type="submit"
           onClick={onClick}
           disabled={isSubmitDisabled()}
@@ -189,7 +182,7 @@ const SentinelDatabases = ({
           data-testid="btn-add-primary-group"
         >
           Add Primary Group
-        </PrimaryButton>
+        </RiPrimaryButton>
       </RiTooltip>
     )
   }
@@ -197,33 +190,37 @@ const SentinelDatabases = ({
   return (
     <AutodiscoveryPageTemplate>
       <div className="databaseContainer">
-        <Title size="XXL" className={styles.title} data-testid="title">
+        <RiTitle size="XXL" className={styles.title} data-testid="title">
           Auto-Discover Redis Sentinel Primary Groups
-        </Title>
+        </RiTitle>
 
-        <Row align="end" gap="s">
-          <FlexItem grow>
-            <Text color="subdued" className={styles.subTitle} component="span">
+        <RiRow align="end" gap="s">
+          <RiFlexItem grow>
+            <RiText
+              color="subdued"
+              className={styles.subTitle}
+              component="span"
+            >
               Redis Sentinel instance found. <br />
               Here is a list of primary groups your Sentinel instance is
               managing. Select the primary group(s) you want to add:
-            </Text>
-          </FlexItem>
-          <FlexItem>
-            <FormField className={styles.searchForm}>
-              <SearchInput
+            </RiText>
+          </RiFlexItem>
+          <RiFlexItem>
+            <RiFormField className={styles.searchForm}>
+              <RiSearchInput
                 placeholder="Search..."
                 onChange={onQueryChange}
                 aria-label="Search"
                 data-testid="search"
               />
-            </FormField>
-          </FlexItem>
-        </Row>
+            </RiFormField>
+          </RiFlexItem>
+        </RiRow>
         <br />
 
         <div className="itemList databaseList sentinelDatabaseList">
-          <Table
+          <RiTable
             columns={columns}
             data={items}
             defaultSorting={[
@@ -234,32 +231,32 @@ const SentinelDatabases = ({
             ]}
             onRowClick={selectionValue.onSelectionChange}
           />
-          {!items.length && <Text color="subdued">{message}</Text>}
+          {!items.length && <RiText color="subdued">{message}</RiText>}
           {!masters.length && (
-            <Text className={styles.notFoundMsg} color="subdued">
+            <RiText className={styles.notFoundMsg} color="subdued">
               {notMastersMsg}
-            </Text>
+            </RiText>
           )}
         </div>
       </div>
-      <FlexItem>
-        <Row
+      <RiFlexItem>
+        <RiRow
           justify="between"
           className={cx(styles.footer, 'footerAddDatabase')}
         >
-          <SecondaryButton
+          <RiSecondaryButton
             onClick={onBack}
             className="btn-cancel btn-back"
             data-testid="btn-back-to-adding"
           >
             Back to adding databases
-          </SecondaryButton>
+          </RiSecondaryButton>
           <div>
             <CancelButton isPopoverOpen={isPopoverOpen} />
             <SubmitButton onClick={handleSubmit} />
           </div>
-        </Row>
-      </FlexItem>
+        </RiRow>
+      </RiFlexItem>
     </AutodiscoveryPageTemplate>
   )
 }

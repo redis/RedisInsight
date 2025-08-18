@@ -3,6 +3,11 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiPrimaryButton, RiSecondaryButton, RiFormField } from 'uiBase/forms'
+import { RiIcon } from 'uiBase/icons'
+import { RiTextInput } from 'uiBase/inputs'
+import { RiTooltip } from 'uiBase/display'
 import { lastDeliveredIDTooltipText } from 'uiSrc/constants/texts'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 import { addNewGroupAction } from 'uiSrc/slices/browser/stream'
@@ -12,15 +17,6 @@ import {
   validateConsumerGroupId,
 } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { RiTooltip } from 'uiSrc/components'
-import { TextInput } from 'uiSrc/components/base/inputs'
 import { CreateConsumerGroupsDto } from 'apiSrc/modules/browser/stream/dto'
 
 import styles from './styles.module.scss'
@@ -91,30 +87,28 @@ const AddStreamGroup = (props: Props) => {
         className={styles.content}
         data-test-subj="add-stream-groups-field-panel"
       >
-        <FlexItem
+        <RiFlexItem
           className={cx('flexItemNoFullWidth', 'inlineFieldsNoSpace')}
           grow
         >
-          <Row>
-            <FlexItem grow>
-              <Row align="start">
-                <FlexItem className={styles.groupNameWrapper} grow>
-                  <FormField>
-                    <TextInput
+          <RiRow>
+            <RiFlexItem grow>
+              <RiRow align="start">
+                <RiFlexItem className={styles.groupNameWrapper} grow>
+                  <RiFormField>
+                    <RiTextInput
                       name="group-name"
                       id="group-name"
                       placeholder="Enter Group Name*"
                       value={groupName}
-                      onChange={value =>
-                        setGroupName(value)
-                      }
+                      onChange={(value) => setGroupName(value)}
                       autoComplete="off"
                       data-testid="group-name-field"
                     />
-                  </FormField>
-                </FlexItem>
-                <FlexItem className={styles.timestampWrapper} grow>
-                  <FormField
+                  </RiFormField>
+                </RiFlexItem>
+                <RiFlexItem className={styles.timestampWrapper} grow>
+                  <RiFormField
                     additionalText={
                       <RiTooltip
                         anchorClassName="inputAppendIcon"
@@ -131,12 +125,12 @@ const AddStreamGroup = (props: Props) => {
                       </RiTooltip>
                     }
                   >
-                    <TextInput
+                    <RiTextInput
                       name="id"
                       id="id"
                       placeholder="ID*"
                       value={id}
-                      onChange={value =>
+                      onChange={(value) =>
                         setId(validateConsumerGroupId(value))
                       }
                       onBlur={() => setIsIdFocused(false)}
@@ -144,7 +138,7 @@ const AddStreamGroup = (props: Props) => {
                       autoComplete="off"
                       data-testid="id-field"
                     />
-                  </FormField>
+                  </RiFormField>
                   {!showIdError && (
                     <span className={styles.idText} data-testid="id-help-text">
                       Timestamp - Sequence Number or $
@@ -155,36 +149,36 @@ const AddStreamGroup = (props: Props) => {
                       {idError}
                     </span>
                   )}
-                </FlexItem>
-              </Row>
-            </FlexItem>
-          </Row>
-        </FlexItem>
+                </RiFlexItem>
+              </RiRow>
+            </RiFlexItem>
+          </RiRow>
+        </RiFlexItem>
       </div>
       <>
-        <Row justify="end" gap="l" style={{ padding: 18 }}>
-          <FlexItem>
+        <RiRow justify="end" gap="l" style={{ padding: 18 }}>
+          <RiFlexItem>
             <div>
-              <SecondaryButton
+              <RiSecondaryButton
                 onClick={() => closePanel(true)}
                 data-testid="cancel-stream-groups-btn"
               >
                 Cancel
-              </SecondaryButton>
+              </RiSecondaryButton>
             </div>
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <div>
-              <PrimaryButton
+              <RiPrimaryButton
                 onClick={submitData}
                 disabled={!isFormValid}
                 data-testid="save-groups-btn"
               >
                 Save
-              </PrimaryButton>
+              </RiPrimaryButton>
             </div>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </>
     </>
   )

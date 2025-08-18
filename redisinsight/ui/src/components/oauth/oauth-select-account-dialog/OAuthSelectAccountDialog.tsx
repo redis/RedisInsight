@@ -4,6 +4,18 @@ import { useFormik } from 'formik'
 import { useHistory } from 'react-router-dom'
 
 import {
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiRadioGroupItemIndicator,
+  RiRadioGroupItemLabel,
+  RiRadioGroupItemRoot,
+  RiRadioGroupRoot,
+} from 'uiBase/forms'
+import { RiColorText, RiText } from 'uiBase/text'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiModal } from 'uiBase/display'
+import { CancelIcon } from 'uiBase/icons'
+import {
   activateAccount,
   createFreeDbJob,
   fetchPlans,
@@ -31,20 +43,6 @@ import {
 import { CloudJobName, CloudJobStep } from 'uiSrc/electron/constants'
 import { OAuthSocialAction } from 'uiSrc/slices/interfaces'
 
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { ColorText, Text } from 'uiSrc/components/base/text'
-import {
-  RiRadioGroupItemIndicator,
-  RiRadioGroupItemLabel,
-  RiRadioGroupItemRoot,
-  RiRadioGroupRoot,
-} from 'uiSrc/components/base/forms/radio-group/RadioGroup'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { Modal } from 'uiSrc/components/base/display'
-import { CancelIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 interface FormValues {
@@ -173,35 +171,35 @@ const OAuthSelectAccountDialog = () => {
   const radios = accounts.map(({ id, name = '' }) => ({
     id: `${id}`,
     label: (
-      <ColorText color="subdued">
+      <RiColorText color="subdued">
         {name}
-        <ColorText color="accent" style={{ paddingLeft: 6 }}>
+        <RiColorText color="accent" style={{ paddingLeft: 6 }}>
           {id}
-        </ColorText>
-      </ColorText>
+        </RiColorText>
+      </RiColorText>
     ),
   }))
 
   return (
-    <Modal.Compose open>
-      <Modal.Content.Compose
+    <RiModal.Compose open>
+      <RiModal.Content.Compose
         className={styles.container}
         data-testid="oauth-select-account-dialog"
       >
-        <Modal.Content.Close
+        <RiModal.Content.Close
           icon={CancelIcon}
           onClick={handleOnClose}
           data-testid="oauth-select-account-dialog-close-btn"
         />
-        <Modal.Content.Header.Title>
+        <RiModal.Content.Header.Title>
           Connect to Redis Cloud
-        </Modal.Content.Header.Title>
-        <Modal.Content.Body.Compose>
+        </RiModal.Content.Header.Title>
+        <RiModal.Content.Body.Compose>
           <section className={styles.content}>
-            <Text className={styles.subTitle}>
+            <RiText className={styles.subTitle}>
               Select an account to connect to:
-            </Text>
-            <Spacer size="xl" />
+            </RiText>
+            <RiSpacer size="xl" />
             <RiRadioGroupRoot
               value={formik.values.accountId ?? ''}
               onChange={(id) => handleChangeAccountIdFormat(id)}
@@ -215,15 +213,15 @@ const OAuthSelectAccountDialog = () => {
             </RiRadioGroupRoot>
           </section>
           <div className={styles.footer}>
-            <SecondaryButton
+            <RiSecondaryButton
               className={styles.button}
               onClick={handleOnClose}
               data-testid="close-oauth-select-account-dialog"
               aria-labelledby="close oauth select account dialog"
             >
               Cancel
-            </SecondaryButton>
-            <PrimaryButton
+            </RiSecondaryButton>
+            <RiPrimaryButton
               disabled={loading || plansLoadings}
               loading={loading || plansLoadings}
               className={styles.button}
@@ -232,11 +230,11 @@ const OAuthSelectAccountDialog = () => {
               aria-labelledby="submit oauth select account dialog"
             >
               Select account
-            </PrimaryButton>
+            </RiPrimaryButton>
           </div>
-        </Modal.Content.Body.Compose>
-      </Modal.Content.Compose>
-    </Modal.Compose>
+        </RiModal.Content.Body.Compose>
+      </RiModal.Content.Compose>
+    </RiModal.Compose>
   )
 }
 

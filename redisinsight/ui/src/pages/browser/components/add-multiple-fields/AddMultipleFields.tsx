@@ -1,13 +1,9 @@
 import React from 'react'
 import cx from 'classnames'
 
-import { DeleteIcon, PlusIcon } from 'uiSrc/components/base/icons'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  ActionIconButton,
-  IconButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { DeleteIcon, PlusIcon } from 'uiBase/icons'
+import { RiFlexItem, RiRow, RiSpacer } from 'uiBase/layout'
+import { RiActionIconButton, RiIconButton } from 'uiBase/forms'
 import { RiTooltip } from 'uiSrc/components'
 import styles from './styles.module.scss'
 
@@ -23,16 +19,16 @@ const AddMultipleFields = <T,>(props: Props<T>) => {
   const { items, children, isClearDisabled, onClickRemove, onClickAdd } = props
 
   const renderItem = (child: React.ReactNode, item: T, index?: number) => (
-    <FlexItem
+    <RiFlexItem
       key={index}
       className={cx('flexItemNoFullWidth', 'inlineFieldsNoSpace', styles.row)}
       grow
     >
-      <Row align="center" gap="m">
-        <FlexItem grow>{child}</FlexItem>
-        <FlexItem>
+      <RiRow align="center" gap="m">
+        <RiFlexItem grow>{child}</RiFlexItem>
+        <RiFlexItem>
           <RiTooltip content="Remove" position="left">
-            <IconButton
+            <RiIconButton
               icon={DeleteIcon}
               disabled={isClearDisabled(item, index)}
               aria-label="Remove Item"
@@ -40,9 +36,9 @@ const AddMultipleFields = <T,>(props: Props<T>) => {
               data-testid="remove-item"
             />
           </RiTooltip>
-        </FlexItem>
-      </Row>
-    </FlexItem>
+        </RiFlexItem>
+      </RiRow>
+    </RiFlexItem>
   )
 
   return (
@@ -50,11 +46,11 @@ const AddMultipleFields = <T,>(props: Props<T>) => {
       {items.map((item, index) =>
         renderItem(children(item, index), item, index),
       )}
-      <Spacer size="s" />
-      <Row align="center" justify="end">
-        <FlexItem>
+      <RiSpacer size="s" />
+      <RiRow align="center" justify="end">
+        <RiFlexItem>
           <RiTooltip content="Add" position="left">
-            <ActionIconButton
+            <RiActionIconButton
               variant="secondary"
               icon={PlusIcon}
               aria-label="Add new item"
@@ -62,8 +58,8 @@ const AddMultipleFields = <T,>(props: Props<T>) => {
               data-testid="add-item"
             />
           </RiTooltip>
-        </FlexItem>
-      </Row>
+        </RiFlexItem>
+      </RiRow>
     </>
   )
 }

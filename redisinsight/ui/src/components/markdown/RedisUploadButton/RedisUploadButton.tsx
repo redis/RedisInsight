@@ -3,6 +3,11 @@ import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 import { AxiosError } from 'axios'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
+import { PlayFilledIcon, ContractsIcon, RiIcon } from 'uiBase/icons'
+import { RiText } from 'uiBase/text'
+import { RiLink, RiPopover } from 'uiBase/display'
 import { truncateText } from 'uiSrc/utils'
 import {
   sendEventTelemetry,
@@ -21,16 +26,6 @@ import {
   getPathToResource,
 } from 'uiSrc/services/resourcesService'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { PlayFilledIcon, ContractsIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
-import { RiPopover } from 'uiSrc/components/base'
-import { Link } from 'uiSrc/components/base/link/Link'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -118,7 +113,7 @@ const RedisUploadButton = ({ label, path }: Props) => {
         anchorClassName={styles.popoverAnchor}
         panelPaddingSize="none"
         button={
-          <SecondaryButton
+          <RiSecondaryButton
             loading={isLoading}
             iconSide="right"
             icon={ContractsIcon}
@@ -129,11 +124,11 @@ const RedisUploadButton = ({ label, path }: Props) => {
             data-testid="upload-data-bulk-btn"
           >
             {truncateText(label, 86)}
-          </SecondaryButton>
+          </RiSecondaryButton>
         }
       >
         {instanceId ? (
-          <Text
+          <RiText
             color="subdued"
             className={styles.containerPopover}
             data-testid="upload-data-bulk-tooltip"
@@ -142,22 +137,22 @@ const RedisUploadButton = ({ label, path }: Props) => {
             <div className={cx(styles.popoverItem, styles.popoverItemTitle)}>
               Execute commands in bulk
             </div>
-            <Spacer size="s" />
+            <RiSpacer size="s" />
             <div className={styles.popoverItem}>
               All commands from the file in your tutorial will be automatically
               executed against your database. Avoid executing them in production
               databases.
             </div>
-            <Spacer size="m" />
+            <RiSpacer size="m" />
             <div className={styles.popoverActions}>
-              <Link
+              <RiLink
                 onClick={handleDownload}
                 className={styles.link}
                 data-testid="download-redis-upload-file"
               >
                 Download file
-              </Link>
-              <PrimaryButton
+              </RiLink>
+              <RiPrimaryButton
                 size="s"
                 icon={PlayFilledIcon}
                 iconSide="right"
@@ -166,9 +161,9 @@ const RedisUploadButton = ({ label, path }: Props) => {
                 data-testid="upload-data-bulk-apply-btn"
               >
                 Execute
-              </PrimaryButton>
+              </RiPrimaryButton>
             </div>
-          </Text>
+          </RiText>
         ) : (
           <DatabaseNotOpened />
         )}

@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
+import { RiTabs, TabInfo } from 'uiBase/layout'
 import {
   streamSelector,
   setStreamViewType,
@@ -15,7 +16,6 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { SortOrder } from 'uiSrc/constants'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
-import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
 import { ConsumerGroupDto } from 'apiSrc/modules/browser/stream/dto'
 
 const StreamTabs = () => {
@@ -90,7 +90,7 @@ const StreamTabs = () => {
   }, [viewType, selectedGroupName, selectedConsumerName])
 
   return (
-    <Tabs
+    <RiTabs
       tabs={tabs}
       value={viewType}
       onChange={(id) => onSelectedTabChanged(id as StreamViewType)}

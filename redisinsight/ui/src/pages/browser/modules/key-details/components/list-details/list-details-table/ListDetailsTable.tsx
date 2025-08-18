@@ -3,11 +3,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import { isNull, isNumber } from 'lodash'
 import { CellMeasurerCache } from 'react-virtualized'
+
+import { RiText } from 'uiBase/text'
+import { RiTooltip } from 'uiBase/display'
 import {
   appContextBrowserKeyDetails,
   updateKeyDetailsSizes,
 } from 'uiSrc/slices/app/context'
-import { RiTooltip } from 'uiSrc/components'
 
 import {
   listSelector,
@@ -71,7 +73,6 @@ import {
   EditableTextArea,
   FormattedValue,
 } from 'uiSrc/pages/browser/modules/key-details/shared'
-import { Text } from 'uiSrc/components/base/text'
 import {
   SetListElementDto,
   SetListElementResponse,
@@ -262,7 +263,7 @@ const ListDetailsTable = () => {
         const cellContent = index?.toString().substring(0, 200)
         const tooltipContent = formatLongName(index?.toString())
         return (
-          <Text color="subdued" size="s" style={{ maxWidth: '100%' }}>
+          <RiText color="subdued" size="s" style={{ maxWidth: '100%' }}>
             <div
               style={{ display: 'flex' }}
               className="truncateText"
@@ -278,7 +279,7 @@ const ListDetailsTable = () => {
                 <>{cellContent}</>
               </RiTooltip>
             </div>
-          </Text>
+          </RiText>
         )
       },
     },

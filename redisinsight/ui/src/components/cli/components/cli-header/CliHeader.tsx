@@ -2,6 +2,10 @@ import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiText } from 'uiBase/text'
+import { WindowControlGroup } from 'uiBase/index'
+import { RiIcon } from 'uiBase/icons'
 import {
   toggleCli,
   resetCliSettings,
@@ -14,10 +18,6 @@ import { resetOutputLoading } from 'uiSrc/slices/cli/cli-output'
 import { OnboardingTour } from 'uiSrc/components'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Text } from 'uiSrc/components/base/text'
-import { WindowControlGroup } from 'uiSrc/components/base/shared/WindowControlGroup'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from './styles.module.scss'
 
 const CliHeader = () => {
@@ -63,24 +63,24 @@ const CliHeader = () => {
 
   return (
     <div className={styles.container} id="cli-header">
-      <Row justify="between" align="center" style={{ height: '100%' }}>
-        <FlexItem className={styles.title} direction="row">
+      <RiRow justify="between" align="center" style={{ height: '100%' }}>
+        <RiFlexItem className={styles.title} direction="row">
           <RiIcon type="CliIcon" size="M" />
           <OnboardingTour
             options={ONBOARDING_FEATURES.BROWSER_CLI}
             anchorPosition="upLeft"
             panelClassName={styles.cliOnboardPanel}
           >
-            <Text>CLI</Text>
+            <RiText>CLI</RiText>
           </OnboardingTour>
-        </FlexItem>
-        <FlexItem grow />
+        </RiFlexItem>
+        <RiFlexItem grow />
         <WindowControlGroup
           onClose={handleCloseCli}
           onHide={handleHideCli}
           id="cli"
         />
-      </Row>
+      </RiRow>
     </div>
   )
 }

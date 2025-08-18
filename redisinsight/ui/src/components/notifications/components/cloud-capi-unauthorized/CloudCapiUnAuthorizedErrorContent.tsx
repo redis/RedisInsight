@@ -1,17 +1,14 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiBase/text'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiDestructiveButton, RiEmptyButton } from 'uiBase/forms'
 import { removeCapiKeyAction } from 'uiSrc/slices/oauth/cloud'
 import { Pages } from 'uiSrc/constants'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  DestructiveButton,
-  EmptyButton,
-} from 'uiSrc/components/base/forms/buttons'
 
 export interface Props {
   resourceId: string
@@ -48,12 +45,11 @@ const CloudCapiUnAuthorizedErrorContent = ({
 
   return (
     <>
-
-      <ColorText color="danger">{text}</ColorText>
-      <Spacer />
-      <Row justify="end">
-        <FlexItem>
-          <EmptyButton
+      <RiColorText color="danger">{text}</RiColorText>
+      <RiSpacer />
+      <RiRow justify="end">
+        <RiFlexItem>
+          <RiEmptyButton
             variant="destructive"
             size="small"
             onClick={handleGoToSettings}
@@ -61,19 +57,19 @@ const CloudCapiUnAuthorizedErrorContent = ({
             data-testid="go-to-settings-btn"
           >
             Go to Settings
-          </EmptyButton>
-        </FlexItem>
-        <FlexItem>
-          <DestructiveButton
+          </RiEmptyButton>
+        </RiFlexItem>
+        <RiFlexItem>
+          <RiDestructiveButton
             size="s"
             onClick={handleRemoveCapi}
             className="toast-danger-btn"
             data-testid="remove-api-key-btn"
           >
             Remove API key
-          </DestructiveButton>
-        </FlexItem>
-      </Row>
+          </RiDestructiveButton>
+        </RiFlexItem>
+      </RiRow>
     </>
   )
 }

@@ -4,6 +4,12 @@ import { monaco } from 'react-monaco-editor'
 import parse from 'html-react-parser'
 import { useParams } from 'react-router-dom'
 import { find } from 'lodash'
+import { RiPopover, RiTooltip } from 'uiBase/display'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiEmptyButton } from 'uiBase/forms'
+import { PlayIcon, CheckBoldIcon, CopyIcon } from 'uiBase/icons'
+import { RiTitle } from 'uiBase/text'
 import {
   getCommandsForExecution,
   getUnsupportedModulesFromQuery,
@@ -16,7 +22,6 @@ import {
 } from 'uiSrc/constants'
 
 import { CodeBlock } from 'uiSrc/components'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { getDBConfigStorageField } from 'uiSrc/services'
 import { ConfigDBStorageItem } from 'uiSrc/constants/storage'
 import {
@@ -25,11 +30,6 @@ import {
 } from 'uiSrc/components/messages'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { ButtonLang } from 'uiSrc/utils/formatters/markdown/remarkCode'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
-import { PlayIcon, CheckBoldIcon, CopyIcon } from 'uiSrc/components/base/icons'
-import { Title } from 'uiSrc/components/base/text/Title'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
 
 import { RunConfirmationPopover } from './components'
@@ -157,20 +157,20 @@ const CodeButtonBlock = (props: Props) => {
 
   return (
     <div className={styles.wrapper}>
-      <Row>
-        <FlexItem grow>
+      <RiRow>
+        <RiFlexItem grow>
           {!!label && (
-            <Title
+            <RiTitle
               size="XS"
               className={styles.label}
               data-testid="code-button-block-label"
             >
               {truncateText(label, 86)}
-            </Title>
+            </RiTitle>
           )}
-        </FlexItem>
-        <FlexItem className={styles.actions}>
-          <EmptyButton
+        </RiFlexItem>
+        <RiFlexItem className={styles.actions}>
+          <RiEmptyButton
             onClick={handleCopy}
             icon={CopyIcon}
             size="small"
@@ -178,7 +178,7 @@ const CodeButtonBlock = (props: Props) => {
             data-testid={`copy-btn-${label}`}
           >
             Copy
-          </EmptyButton>
+          </RiEmptyButton>
           {!isRunButtonHidden && (
             <RiPopover
               ownFocus
@@ -197,7 +197,7 @@ const CodeButtonBlock = (props: Props) => {
                   }
                   data-testid="run-btn-open-workbench-tooltip"
                 >
-                  <EmptyButton
+                  <RiEmptyButton
                     onClick={handleRunClicked}
                     icon={isRunned ? CheckBoldIcon : PlayIcon}
                     iconSide="right"
@@ -209,21 +209,21 @@ const CodeButtonBlock = (props: Props) => {
                     data-testid={`run-btn-${label}`}
                   >
                     Run
-                  </EmptyButton>
+                  </RiEmptyButton>
                 </RiTooltip>
               }
             >
               {getPopoverMessage()}
             </RiPopover>
           )}
-        </FlexItem>
-      </Row>
+        </RiFlexItem>
+      </RiRow>
       <div className={styles.content} data-testid="code-button-block-content">
         <CodeBlock className={styles.code}>
           {highlightedContent ? parse(highlightedContent) : content}
         </CodeBlock>
       </div>
-      <Spacer size="s" />
+      <RiSpacer size="s" />
     </div>
   )
 }

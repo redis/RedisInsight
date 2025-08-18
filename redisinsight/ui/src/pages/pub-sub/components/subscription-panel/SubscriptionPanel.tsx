@@ -2,6 +2,17 @@ import cx from 'classnames'
 import React, { useContext, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import {
+  UserIcon,
+  IndicatorExcludedIcon,
+  DeleteIcon,
+  AllIconsType,
+  RiIcon,
+} from 'uiBase/icons'
+import { Button, RiIconButton, RiFormField } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
+import { RiTextInput } from 'uiBase/inputs'
 import { Theme } from 'uiSrc/constants'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import {
@@ -12,21 +23,10 @@ import {
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import {
-  UserIcon,
-  IndicatorExcludedIcon,
-  DeleteIcon,
-} from 'uiSrc/components/base/icons'
-import { Button, IconButton } from 'uiSrc/components/base/forms/buttons'
-import { Text } from 'uiSrc/components/base/text'
-import { RiTooltip } from 'uiSrc/components'
-import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { TextInput } from 'uiSrc/components/base/inputs'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
 import PatternsInfo from './components/patternsInfo'
 import ClickableAppendInfo from './components/clickable-append-info'
 import styles from './styles.module.scss'
+import { RiTooltip } from 'uiBase/display'
 
 const SubscriptionPanel = () => {
   const { messages, isSubscribed, subscriptions, loading, count } =
@@ -72,53 +72,59 @@ const SubscriptionPanel = () => {
   const displayMessages = count !== 0 || isSubscribed
 
   return (
-    <Row className={styles.container} align="center" justify="between" gap="s">
-      <FlexItem>
-        <Row align="center">
-          <FlexItem className={styles.iconSubscribe}>
+    <RiRow
+      className={styles.container}
+      align="center"
+      justify="between"
+      gap="s"
+    >
+      <RiFlexItem>
+        <RiRow align="center">
+          <RiFlexItem className={styles.iconSubscribe}>
             <RiIcon
               className={styles.iconUser}
               type={isSubscribed ? subscribedIcon : notSubscribedIcon}
             />
-          </FlexItem>
-          <FlexItem>
-            <Text color="subdued" size="s" data-testid="subscribe-status-text">
+          </RiFlexItem>
+          <RiFlexItem>
+            <RiText
+              color="subdued"
+              size="s"
+              data-testid="subscribe-status-text"
+            >
               You are {!isSubscribed && 'not'} subscribed
-            </Text>
-          </FlexItem>
+            </RiText>
+          </RiFlexItem>
           {isSubscribed && (
-            <FlexItem style={{ marginLeft: 12 }}>
+            <RiFlexItem style={{ marginLeft: 12 }}>
               <PatternsInfo channels={channels} />
-            </FlexItem>
+            </RiFlexItem>
           )}
           {displayMessages && (
-            <FlexItem style={{ marginLeft: 12 }}>
-              <Text color="subdued" size="s" data-testid="messages-count">
+            <RiFlexItem style={{ marginLeft: 12 }}>
+              <RiText color="subdued" size="s" data-testid="messages-count">
                 Messages: {count}
-              </Text>
-            </FlexItem>
+              </RiText>
+            </RiFlexItem>
           )}
-        </Row>
-      </FlexItem>
-      <FlexItem>
-        <Row align="center">
-          <FlexItem>
-            <ClickableAppendInfo />
-          </FlexItem>
-          <FlexItem className={styles.channels}>
-            <FormField>
-              <TextInput
+        </RiRow>
+      </RiFlexItem>
+      <RiFlexItem>
+        <RiRow align="center">
+          <RiFlexItem className={styles.channels}>
+            <RiFormField additionalText={<ClickableAppendInfo />}>
+              <RiTextInput
                 value={channels}
                 disabled={isSubscribed}
-                onChange={value => setChannels(value)}
+                onChange={(value) => setChannels(value)}
                 onBlur={onFocusOut}
                 placeholder="Enter Pattern"
                 aria-label="channel names for filtering"
                 data-testid="channels-input"
               />
-            </FormField>
-          </FlexItem>
-          <FlexItem>
+            </RiFormField>
+          </RiFlexItem>
+          <RiFlexItem>
             <Button
               variant={isSubscribed ? 'secondary-ghost' : 'primary'}
               size="s"
@@ -129,25 +135,25 @@ const SubscriptionPanel = () => {
             >
               Subscribe
             </Button>
-          </FlexItem>
+          </RiFlexItem>
           {!!messages.length && (
-            <FlexItem style={{ marginLeft: 8 }}>
+            <RiFlexItem style={{ marginLeft: 8 }}>
               <RiTooltip
                 content="Clear Messages"
                 anchorClassName={cx('inline-flex')}
               >
-                <IconButton
+                <RiIconButton
                   icon={DeleteIcon}
                   onClick={onClickClear}
                   aria-label="clear pub sub"
                   data-testid="clear-pubsub-btn"
                 />
               </RiTooltip>
-            </FlexItem>
+            </RiFlexItem>
           )}
-        </Row>
-      </FlexItem>
-    </Row>
+        </RiRow>
+      </RiFlexItem>
+    </RiRow>
   )
 }
 

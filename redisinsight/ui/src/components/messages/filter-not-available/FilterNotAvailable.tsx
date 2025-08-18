@@ -2,6 +2,11 @@ import React from 'react'
 
 import { useSelector } from 'react-redux'
 
+import { RiText, RiTitle } from 'uiBase/text'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton } from 'uiBase/forms'
+import { RiLink } from 'uiBase/display'
+import { RiIcon } from 'uiBase/icons'
 import {
   CloudSsoUtmCampaign,
   OAuthSocialAction,
@@ -16,12 +21,6 @@ import { freeInstancesSelector } from 'uiSrc/slices/instances/instances'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { EXTERNAL_LINKS, UTM_CAMPAINGS } from 'uiSrc/constants/links'
 import { FeatureFlags } from 'uiSrc/constants'
-import { Text } from 'uiSrc/components/base/text'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Link } from 'uiSrc/components/base/link/Link'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from './styles.module.scss'
 
 const utm = {
@@ -37,22 +36,22 @@ const FilterNotAvailable = ({ onClose }: { onClose?: () => void }) => {
   return (
     <div className={styles.container}>
       <RiIcon type="RedisDbBlueIcon" size="original" />
-      <Title
+      <RiTitle
         size="M"
         className={styles.title}
         data-testid="filter-not-available-title"
       >
         Upgrade your Redis database to version 6 or above
-      </Title>
-      <Text>Filtering by data type is supported in Redis 6 and above.</Text>
-      <Spacer size="m" />
+      </RiTitle>
+      <RiText>Filtering by data type is supported in Redis 6 and above.</RiText>
+      <RiSpacer size="m" />
       {!!freeInstances.length && (
         <>
-          <Text color="subdued">
+          <RiText color="subdued">
             Use your free trial all-in-one Redis Cloud database to start
             exploring these capabilities.
-          </Text>
-          <Spacer />
+          </RiText>
+          <RiSpacer />
           <OAuthConnectFreeDb
             id={freeInstances[0].id}
             source={OAuthSocialSource.BrowserFiltering}
@@ -62,15 +61,15 @@ const FilterNotAvailable = ({ onClose }: { onClose?: () => void }) => {
       )}
       {!freeInstances.length && (
         <FeatureFlagComponent name={FeatureFlags.cloudAds}>
-          <Text color="subdued">
+          <RiText color="subdued">
             Create a free trial Redis Stack database that supports filtering and
             extends the core capabilities of your Redis.
-          </Text>
-          <Spacer size="l" />
+          </RiText>
+          <RiSpacer size="l" />
           <div className={styles.linksWrapper}>
             <OAuthSsoHandlerDialog>
               {(ssoCloudHandlerClick) => (
-                <PrimaryButton
+                <RiPrimaryButton
                   onClick={(e) => {
                     ssoCloudHandlerClick(e, {
                       source: OAuthSocialSource.BrowserFiltering,
@@ -82,11 +81,11 @@ const FilterNotAvailable = ({ onClose }: { onClose?: () => void }) => {
                   size="s"
                 >
                   Get Started For Free
-                </PrimaryButton>
+                </RiPrimaryButton>
               )}
             </OAuthSsoHandlerDialog>
-            <Spacer size="m" />
-            <Link
+            <RiSpacer size="m" />
+            <RiLink
               className={styles.link}
               target="_blank"
               color="text"
@@ -94,7 +93,7 @@ const FilterNotAvailable = ({ onClose }: { onClose?: () => void }) => {
               data-testid="learn-more-link"
             >
               Learn More
-            </Link>
+            </RiLink>
           </div>
         </FeatureFlagComponent>
       )}

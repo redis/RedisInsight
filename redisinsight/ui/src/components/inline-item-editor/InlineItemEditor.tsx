@@ -3,14 +3,16 @@ import cx from 'classnames'
 
 import { useTheme } from '@redis-ui/styles'
 
+import { RiPopover, RiTooltip } from 'uiBase/index'
+import { RiFlexItem } from 'uiBase/layout'
+import {
+  RiWindowEvent,
+  RiOutsideClickDetector,
+  RiFocusTrap,
+} from 'uiBase/utils'
+import { RiDestructiveButton } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
 import * as keys from 'uiSrc/constants/keys'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { FlexItem } from 'uiSrc/components/base/layout/flex'
-import { WindowEvent } from 'uiSrc/components/base/utils/WindowEvent'
-import { FocusTrap } from 'uiSrc/components/base/utils/FocusTrap'
-import { OutsideClickDetector } from 'uiSrc/components/base/utils'
-import { DestructiveButton } from 'uiSrc/components/base/forms/buttons'
-import { Text } from 'uiSrc/components/base/text'
 
 import {
   ActionsContainer,
@@ -20,7 +22,6 @@ import {
   IIEContainer,
   StyledTextInput,
 } from './InlineItemEditor.styles'
-
 
 import styles from './styles.module.scss'
 
@@ -61,12 +62,12 @@ export interface Props {
   textFiledClassName?: string
   styles?: {
     inputContainer?: {
-      width?: string,
-      height?: string,
+      width?: string
+      height?: string
     }
     input?: {
-      width?: string,
-      height?: string,
+      width?: string
+      height?: string
     }
     actionsContainer?: {
       width?: string
@@ -214,20 +215,20 @@ const InlineItemEditor = (props: Props) => {
       {viewChildrenMode ? (
         children
       ) : (
-        <OutsideClickDetector onOutsideClick={handleClickOutside}>
+        <RiOutsideClickDetector onOutsideClick={handleClickOutside}>
           <IIEContainer ref={containerEl}>
-            <WindowEvent event="keydown" handler={handleOnEsc} />
-            <FocusTrap disabled={disableFocusTrap}>
+            <RiWindowEvent event="keydown" handler={handleOnEsc} />
+            <RiFocusTrap disabled={disableFocusTrap}>
               <form
                 className="relative"
                 onSubmit={(e: unknown) =>
                   handleFormSubmit(e as React.MouseEvent<HTMLElement>)
                 }
                 style={{
-                  ...customStyles?.inputContainer
+                  ...customStyles?.inputContainer,
                 }}
               >
-                <FlexItem grow>
+                <RiFlexItem grow>
                   {children || (
                     <>
                       <StyledTextInput
@@ -251,7 +252,7 @@ const InlineItemEditor = (props: Props) => {
                       )}
                     </>
                   )}
-                </FlexItem>
+                </RiFlexItem>
                 <ActionsContainer
                   justify="around"
                   gap="m"
@@ -293,22 +294,22 @@ const InlineItemEditor = (props: Props) => {
                           className={styles.popover}
                           data-testid="approve-popover"
                         >
-                          <Text size="m" component="div">
+                          <RiText size="m" component="div">
                             {!!approveText?.title && (
                               <h4>
                                 <b>{approveText?.title}</b>
                               </h4>
                             )}
-                            <Text
+                            <RiText
                               size="s"
                               color="subdued"
                               className={styles.approveText}
                             >
                               {approveText?.text}
-                            </Text>
-                          </Text>
+                            </RiText>
+                          </RiText>
                           <div className={styles.popoverFooter}>
-                            <DestructiveButton
+                            <RiDestructiveButton
                               aria-label="Save"
                               className={cx(styles.btn, styles.saveBtn)}
                               disabled={isDisabledApply()}
@@ -316,7 +317,7 @@ const InlineItemEditor = (props: Props) => {
                               data-testid="save-btn"
                             >
                               Save
-                            </DestructiveButton>
+                            </RiDestructiveButton>
                           </div>
                         </div>
                       </RiPopover>
@@ -324,9 +325,9 @@ const InlineItemEditor = (props: Props) => {
                   )}
                 </ActionsContainer>
               </form>
-            </FocusTrap>
+            </RiFocusTrap>
           </IIEContainer>
-        </OutsideClickDetector>
+        </RiOutsideClickDetector>
       )}
     </>
   )

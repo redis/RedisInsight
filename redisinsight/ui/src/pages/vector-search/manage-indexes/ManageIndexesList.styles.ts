@@ -1,7 +1,6 @@
 import styled from 'styled-components'
-import { FlexGroup } from 'uiSrc/components/base/layout/flex'
+import { RiCol } from 'uiBase/layout'
 
-export const StyledManageIndexesListAction = styled(FlexGroup)`
-  flex-direction: column;
+export const StyledManageIndexesListAction = styled(RiCol)`
   gap: ${({ theme }) => theme.core.space.space150};
 `

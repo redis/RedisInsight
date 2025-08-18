@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
-import UploadModal from 'uiSrc/pages/rdi/pipeline-management/components/upload-modal/UploadModal'
+import { RiCol, RiFlexItem } from 'uiBase/layout'
+import { RiEmptyButton, RiIconButton } from 'uiBase/forms'
+import { UploadIcon, MoreactionsIcon } from 'uiBase/icons'
+import { RiPopover } from 'uiBase/index'
 import Download from 'uiSrc/pages/rdi/instance/components/download'
-import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
-import { EmptyButton, IconButton } from 'uiSrc/components/base/forms/buttons'
-import { UploadIcon, MoreactionsIcon } from 'uiSrc/components/base/icons'
-import { RiPopover } from 'uiSrc/components/base'
+import UploadModal from 'uiSrc/pages/rdi/pipeline-management/components/upload-modal/UploadModal'
 import FetchPipelinePopover from '../fetch-pipeline-popover'
 
 import styles from './styles.module.scss'
@@ -22,7 +22,7 @@ const RdiConfigFileActionMenu = () => {
   }
 
   const button = (
-    <IconButton
+    <RiIconButton
       className={styles.threeDotsBtn}
       role="button"
       icon={MoreactionsIcon}
@@ -43,13 +43,13 @@ const RdiConfigFileActionMenu = () => {
       panelPaddingSize="none"
       anchorPosition="upRight"
     >
-      <Col align="start">
-        <FlexItem grow>
+      <RiCol align="start">
+        <RiFlexItem grow>
           <FetchPipelinePopover onClose={closePopover} />
-        </FlexItem>
-        <FlexItem grow>
+        </RiFlexItem>
+        <RiFlexItem grow>
           <UploadModal onClose={closePopover}>
-            <EmptyButton
+            <RiEmptyButton
               color="text"
               className={styles.uploadBtn}
               icon={UploadIcon}
@@ -57,13 +57,13 @@ const RdiConfigFileActionMenu = () => {
               data-testid="upload-file-btn"
             >
               Upload from file
-            </EmptyButton>
+            </RiEmptyButton>
           </UploadModal>
-        </FlexItem>
-        <FlexItem grow>
+        </RiFlexItem>
+        <RiFlexItem grow>
           <Download onClose={closePopover} />
-        </FlexItem>
-      </Col>
+        </RiFlexItem>
+      </RiCol>
     </RiPopover>
   )
 }

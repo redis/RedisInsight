@@ -1,11 +1,9 @@
-import React, {
-  FormEvent,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import React, { FormEvent, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toNumber } from 'lodash'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiFormField } from 'uiBase/forms'
+import { RiTextInput } from 'uiBase/inputs'
 import { Maybe, stringToBuffer, validateScoreNumber } from 'uiSrc/utils'
 import { isNaNConvertedString } from 'uiSrc/utils/numbers'
 import { addKeyStateSelector, addZsetKey } from 'uiSrc/slices/browser/keys'
@@ -17,9 +15,6 @@ import {
   IZsetMemberState,
 } from 'uiSrc/pages/browser/components/add-key/AddKeyZset/interfaces'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { TextInput } from 'uiSrc/components/base/inputs'
 import { CreateZSetWithExpireDto } from 'apiSrc/modules/browser/z-set/dto'
 import { AddZsetFormConfig as config } from '../constants/fields-config'
 
@@ -185,10 +180,10 @@ const AddKeyZset = (props: Props) => {
         onClickAdd={addMember}
       >
         {(item, index) => (
-          <Row align="center" gap="m">
-            <FlexItem grow>
-              <FormField>
-                <TextInput
+          <RiRow align="center" gap="m">
+            <RiFlexItem grow>
+              <RiFormField>
+                <RiTextInput
                   name={`member-${item.id}`}
                   id={`member-${item.id}`}
                   placeholder={config.member.placeholder}
@@ -202,11 +197,11 @@ const AddKeyZset = (props: Props) => {
                   disabled={loading}
                   data-testid="member-name"
                 />
-              </FormField>
-            </FlexItem>
-            <FlexItem grow>
-              <FormField>
-                <TextInput
+              </RiFormField>
+            </RiFlexItem>
+            <RiFlexItem grow>
+              <RiFormField>
+                <RiTextInput
                   name={`score-${item.id}`}
                   id={`score-${item.id}`}
                   maxLength={200}
@@ -221,9 +216,9 @@ const AddKeyZset = (props: Props) => {
                   disabled={loading}
                   data-testid="member-score"
                 />
-              </FormField>
-            </FlexItem>
-          </Row>
+              </RiFormField>
+            </RiFlexItem>
+          </RiRow>
         )}
       </AddMultipleFields>
 

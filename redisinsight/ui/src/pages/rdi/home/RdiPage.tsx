@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import cx from 'classnames'
+import { RiPage, RiPageBody } from 'uiBase/layout'
+import { RIResizeObserver } from 'uiBase/utils'
 import { RdiInstance } from 'uiSrc/slices/interfaces'
 import {
   createInstanceAction,
@@ -17,9 +19,6 @@ import {
 } from 'uiSrc/telemetry'
 import HomePageTemplate from 'uiSrc/templates/home-page-template'
 import { setTitle } from 'uiSrc/utils'
-import { Page, PageBody } from 'uiSrc/components/base/layout/page'
-import { RIResizeObserver } from 'uiSrc/components/base/utils'
-import { Card } from 'uiSrc/components/base/layout'
 import { Rdi as RdiInstanceResponse } from 'apiSrc/modules/rdi/models/rdi'
 import EmptyMessage from './empty-message/EmptyMessage'
 import ConnectionForm from './connection-form/ConnectionFormWrapper'
@@ -148,8 +147,8 @@ const RdiPage = () => {
 
   return (
     <HomePageTemplate>
-      <Page className={cx(styles.page, 'homePage')}>
-        <PageBody component="div">
+      <RiPage className={cx(styles.page, 'homePage')}>
+        <RiPageBody component="div">
           <RdiHeader onRdiInstanceClick={handleOpenConnectionForm} />
           <InstanceList />
           <ConnectionForm
@@ -159,8 +158,8 @@ const RdiPage = () => {
             editInstance={editInstance}
             isLoading={loading || loadingChanging}
           />
-        </PageBody>
-      </Page>
+        </RiPageBody>
+      </RiPage>
     </HomePageTemplate>
   )
 }

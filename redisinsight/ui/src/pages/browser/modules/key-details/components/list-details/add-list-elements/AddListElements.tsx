@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiPrimaryButton, RiSecondaryButton, RiSelect } from 'uiBase/forms'
+import { RiTextInput } from 'uiBase/inputs'
 import {
   selectedKeyDataSelector,
   keysSelector,
@@ -16,13 +19,6 @@ import {
 import { KeyTypes } from 'uiSrc/constants'
 import { stringToBuffer } from 'uiSrc/utils'
 import { AddListFormConfig as config } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
-import { TextInput } from 'uiSrc/components/base/inputs'
 import { PushElementToListDto } from 'apiSrc/modules/browser/list/dto'
 
 import styles from '../styles.module.scss'
@@ -137,42 +133,40 @@ const AddListElements = (props: Props) => {
           isClearDisabled={isClearDisabled}
         >
           {(item, index) => (
-            <TextInput
+            <RiTextInput
               name={`element-${index}`}
               id={`element-${index}`}
               placeholder={config.element.placeholder}
               value={item}
-              onChange={value =>
-                handleElementChange(value, index)
-              }
+              onChange={(value) => handleElementChange(value, index)}
               data-testid={`element-${index}`}
             />
           )}
         </AddMultipleFields>
       </div>
       <>
-        <Row justify="end" gap="m" style={{ padding: 18 }}>
-          <FlexItem>
+        <RiRow justify="end" gap="m" style={{ padding: 18 }}>
+          <RiFlexItem>
             <div>
-              <SecondaryButton
+              <RiSecondaryButton
                 onClick={() => closePanel(true)}
                 data-testid="cancel-members-btn"
               >
                 Cancel
-              </SecondaryButton>
+              </RiSecondaryButton>
             </div>
-          </FlexItem>
-          <FlexItem>
+          </RiFlexItem>
+          <RiFlexItem>
             <div>
-              <PrimaryButton
+              <RiPrimaryButton
                 onClick={submitData}
                 data-testid="save-elements-btn"
               >
                 Save
-              </PrimaryButton>
+              </RiPrimaryButton>
             </div>
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </>
     </>
   )

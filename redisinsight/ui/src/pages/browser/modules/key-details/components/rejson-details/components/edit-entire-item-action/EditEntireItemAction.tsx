@@ -2,16 +2,18 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import jsonValidator from 'json-dup-key-validator'
 
-import * as keys from 'uiSrc/constants/keys'
-import { CancelSlimIcon, CheckThinIcon } from 'uiSrc/components/base/icons'
-import FieldMessage from 'uiSrc/components/field-message/FieldMessage'
+import { CancelSlimIcon, CheckThinIcon } from 'uiBase/icons'
+import { RiFlexItem } from 'uiBase/layout'
+import {
+  RiWindowEvent,
+  RiFocusTrap,
+  RiOutsideClickDetector,
+} from 'uiBase/utils'
+import { RiIconButton } from 'uiBase/forms'
+import { RiTextArea } from 'uiBase/inputs'
 import { Nullable } from 'uiSrc/utils'
-import { FlexItem } from 'uiSrc/components/base/layout/flex'
-import { WindowEvent } from 'uiSrc/components/base/utils/WindowEvent'
-import { FocusTrap } from 'uiSrc/components/base/utils/FocusTrap'
-import { OutsideClickDetector } from 'uiSrc/components/base/utils'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { TextArea } from 'uiSrc/components/base/inputs'
+import FieldMessage from 'uiSrc/components/field-message/FieldMessage'
+import * as keys from 'uiSrc/constants/keys'
 import { isValidJSON } from '../../utils'
 import { JSONErrors } from '../../constants'
 
@@ -63,18 +65,18 @@ const EditEntireItemAction = (props: Props) => {
   return (
     <div className={styles.row}>
       <div className={styles.fullWidthContainer}>
-        <OutsideClickDetector onOutsideClick={() => onCancel?.()}>
+        <RiOutsideClickDetector onOutsideClick={() => onCancel?.()}>
           <div>
-            <WindowEvent event="keydown" handler={(e) => handleOnEsc(e)} />
-            <FocusTrap>
+            <RiWindowEvent event="keydown" handler={(e) => handleOnEsc(e)} />
+            <RiFocusTrap>
               <form
                 className="relative"
                 onSubmit={handleFormSubmit}
                 data-testid="json-entire-form"
                 noValidate
               >
-                <FlexItem grow>
-                  <TextArea
+                <RiFlexItem grow>
+                  <RiTextArea
                     valid={!error}
                     className={styles.fullWidthTextArea}
                     value={value}
@@ -82,21 +84,21 @@ const EditEntireItemAction = (props: Props) => {
                     onChange={setValue}
                     data-testid="json-value"
                   />
-                </FlexItem>
+                </RiFlexItem>
                 <ConfirmOverwrite
                   isOpen={isConfirmationVisible}
                   onCancel={() => setIsConfirmationVisible(false)}
                   onConfirm={confirmApply}
                 >
                   <div className={cx(styles.controls, styles.controlsBottom)}>
-                    <IconButton
+                    <RiIconButton
                       icon={CancelSlimIcon}
                       aria-label="Cancel add"
                       className={styles.declineBtn}
                       onClick={onCancel}
                       data-testid="cancel-edit-btn"
                     />
-                    <IconButton
+                    <RiIconButton
                       icon={CheckThinIcon}
                       color="primary"
                       type="submit"
@@ -123,9 +125,9 @@ const EditEntireItemAction = (props: Props) => {
                   </FieldMessage>
                 </div>
               )}
-            </FocusTrap>
+            </RiFocusTrap>
           </div>
-        </OutsideClickDetector>
+        </RiOutsideClickDetector>
       </div>
     </div>
   )

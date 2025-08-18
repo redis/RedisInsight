@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { EditIcon } from 'uiSrc/components/base/icons'
+import { EditIcon } from 'uiBase/icons'
+import { RiIconButton } from 'uiBase/forms'
 import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
 import {
   bufferToString,
@@ -7,7 +8,6 @@ import {
   createDeleteFieldMessage,
 } from 'uiSrc/utils'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import styles from '../../styles.module.scss'
 
 export interface Props {
@@ -31,7 +31,7 @@ const EditItemFieldAction = ({
 
   return (
     <div className={styles.actionButtons}>
-      <IconButton
+      <RiIconButton
         icon={EditIcon}
         className={styles.jsonButtonStyle}
         onClick={onClickEditEntireItem}

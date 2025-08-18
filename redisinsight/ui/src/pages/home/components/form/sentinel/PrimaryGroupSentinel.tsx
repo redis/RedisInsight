@@ -1,10 +1,10 @@
 import React from 'react'
 import { FormikProps } from 'formik'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiFormField } from 'uiBase/forms'
+import { RiTextInput } from 'uiBase/inputs'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { TextInput } from 'uiSrc/components/base/inputs'
 
 export interface Props {
   flexGroupClassName?: string
@@ -16,10 +16,10 @@ const PrimaryGroupSentinel = (props: Props) => {
   const { flexGroupClassName = '', flexItemClassName = '', formik } = props
   return (
     <>
-      <Row gap="m" responsive className={flexGroupClassName}>
-        <FlexItem grow className={flexItemClassName}>
-          <FormField label="Database Alias*">
-            <TextInput
+      <RiRow gap="m" responsive className={flexGroupClassName}>
+        <RiFlexItem grow className={flexItemClassName}>
+          <RiFormField label="Database Alias*">
+            <RiTextInput
               name="name"
               id="name"
               data-testid="name"
@@ -28,13 +28,13 @@ const PrimaryGroupSentinel = (props: Props) => {
               maxLength={500}
               onChange={formik.handleChange}
             />
-          </FormField>
-        </FlexItem>
-      </Row>
-      <Row gap="m" responsive className={flexGroupClassName}>
-        <FlexItem grow className={flexItemClassName}>
-          <FormField label="Primary Group Name*">
-            <TextInput
+          </RiFormField>
+        </RiFlexItem>
+      </RiRow>
+      <RiRow gap="m" responsive className={flexGroupClassName}>
+        <RiFlexItem grow className={flexItemClassName}>
+          <RiFormField label="Primary Group Name*">
+            <RiTextInput
               name="sentinelMasterName"
               id="sentinelMasterName"
               data-testid="primary-group"
@@ -44,9 +44,9 @@ const PrimaryGroupSentinel = (props: Props) => {
               onChange={formik.handleChange}
               disabled
             />
-          </FormField>
-        </FlexItem>
-      </Row>
+          </RiFormField>
+        </RiFlexItem>
+      </RiRow>
     </>
   )
 }

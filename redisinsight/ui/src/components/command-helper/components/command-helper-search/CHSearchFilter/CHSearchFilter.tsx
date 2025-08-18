@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 
+import { RiText } from 'uiBase/text'
+import { RiSelect } from 'uiBase/forms'
+import { RiIcon } from 'uiBase/icons'
 import { GROUP_TYPES_DISPLAY } from 'uiSrc/constants'
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 import { cliSettingsSelector } from 'uiSrc/slices/cli/cli-settings'
-import { Text } from 'uiSrc/components/base/text'
 
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -46,21 +46,21 @@ const CHSearchFilter = ({ submitFilter, isLoading }: Props) => {
       label: text,
       value,
       inputDisplay: (
-        <Text
+        <RiText
           data-test-subj={`filter-option-group-type-${value}`}
           className={cx(styles.selectedType, 'text-capitalize')}
           size="s"
         >
           {text}
-        </Text>
+        </RiText>
       ),
       dropdownDisplay: (
-        <Text
+        <RiText
           data-test-subj={`filter-option-group-type-${value}`}
           className="text-capitalize"
         >
           {text}
-        </Text>
+        </RiText>
       ),
     }
   })

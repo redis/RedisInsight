@@ -1,12 +1,10 @@
 import React from 'react'
 
-import { Text } from 'uiSrc/components/base/text'
-import {
-  DestructiveButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { RiPopover } from 'uiSrc/components/base'
-import { HorizontalSpacer } from 'uiSrc/components/base/layout'
+import { RiText } from 'uiBase/text'
+import { RiDestructiveButton, RiSecondaryButton } from 'uiBase/forms'
+import { RiPopover } from 'uiBase/display'
+import { RiHorizontalSpacer } from 'uiBase/layout'
+
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -37,7 +35,7 @@ const AckPopover = (props: Props) => {
       panelClassName={styles.popoverWrapper}
       button={
         <>
-          <SecondaryButton
+          <RiSecondaryButton
             size="s"
             aria-label="Acknowledge pending message"
             onClick={showPopover}
@@ -45,25 +43,25 @@ const AckPopover = (props: Props) => {
             data-testid="acknowledge-btn"
           >
             ACK
-          </SecondaryButton>
-          <HorizontalSpacer size="s" />
+          </RiSecondaryButton>
+          <RiHorizontalSpacer size="s" />
         </>
       }
     >
       <div className={styles.popover}>
-        <Text size="m">
+        <RiText size="m">
           <b>{id}</b>
           <br />
           will be acknowledged and removed from the pending messages list
-        </Text>
+        </RiText>
         <div className={styles.popoverFooter}>
-          <DestructiveButton
+          <RiDestructiveButton
             size="s"
             onClick={() => acknowledge(id)}
             data-testid="acknowledge-submit"
           >
             Acknowledge
-          </DestructiveButton>
+          </RiDestructiveButton>
         </div>
       </div>
     </RiPopover>

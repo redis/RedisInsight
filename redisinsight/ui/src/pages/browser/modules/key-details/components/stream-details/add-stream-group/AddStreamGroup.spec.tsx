@@ -1,6 +1,6 @@
 import React from 'react'
-import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import { instance, mock } from 'ts-mockito'
+import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import AddStreamGroup, { Props } from './AddStreamGroup'
 
 const GROUP_NAME_FIELD = 'group-name-field'

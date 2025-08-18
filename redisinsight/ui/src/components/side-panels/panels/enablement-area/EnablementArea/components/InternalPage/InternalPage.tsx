@@ -5,9 +5,15 @@ import { debounce } from 'lodash'
 import { useLocation, useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
-import { ChevronLeftIcon } from 'uiSrc/components/base/icons'
-import { ExternalLink, HorizontalRule, LoadingContent } from 'uiSrc/components'
-import { RiPopover } from 'uiSrc/components/base'
+import { ChevronLeftIcon } from 'uiBase/icons'
+import { RiPopover } from 'uiBase/index'
+import { RiEmptyButton } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
+import {
+  ExternalLink,
+  RiHorizontalRule,
+  RiLoadingContent,
+} from 'uiSrc/components'
 import { IEnablementAreaItem } from 'uiSrc/slices/interfaces'
 import {
   sendEventTelemetry,
@@ -29,8 +35,6 @@ import {
   CloudLink,
   RedisInsightLink,
 } from 'uiSrc/components/markdown'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
-import { Text } from 'uiSrc/components/base/text'
 import { getTutorialSection } from '../../utils'
 import { EmptyPrompt, Pagination, Code } from '..'
 
@@ -176,35 +180,35 @@ const InternalPage = (props: Props) => {
             closePopover={() => setShowCapabilityPopover(false)}
             button={
               <div className={styles.backButton}>
-                <EmptyButton
+                <RiEmptyButton
                   data-testid="enablement-area__page-close"
                   icon={ChevronLeftIcon}
                   onClick={onClose}
                   aria-label="Back"
                 >
                   {backTitle}
-                </EmptyButton>
+                </RiEmptyButton>
               </div>
             }
           >
             <div data-testid="explore-capability-popover">
               <RocketIcon className={styles.rocketIcon} />
-              <Text className={styles.popoverTitle}>Explore Redis</Text>
-              <Text className={styles.popoverText}>
+              <RiText className={styles.popoverTitle}>Explore Redis</RiText>
+              <RiText className={styles.popoverText}>
                 {'You expressed interest in learning about the '}
                 <b>{tutorialCapability?.name}</b>. Try this tutorial to get
                 started.
-              </Text>
+              </RiText>
             </div>
           </RiPopover>
         </div>
         <div>
-          <HorizontalRule margin="xs" />
+          <RiHorizontalRule margin="xs" />
         </div>
         <div>
-          <Text className={styles.pageTitle} color="default">
+          <RiText className={styles.pageTitle} color="default">
             {title?.toUpperCase()}
-          </Text>
+          </RiText>
         </div>
       </div>
       <div
@@ -216,7 +220,7 @@ const InternalPage = (props: Props) => {
         data-testid="enablement-area__page"
       >
         {isLoading && (
-          <LoadingContent
+          <RiLoadingContent
             data-testid="enablement-area__page-loader"
             lines={3}
           />

@@ -17,6 +17,7 @@ import {
 } from 'uiSrc/slices/oauth/cloud'
 import { apiService } from 'uiSrc/services'
 import { loadSubscriptionsRedisCloud } from 'uiSrc/slices/instances/cloud'
+import { mockModal } from 'uiSrc/mocks/components/modal'
 import OAuthSelectAccountDialog from './OAuthSelectAccountDialog'
 
 jest.mock('uiSrc/telemetry', () => ({
@@ -45,22 +46,10 @@ jest.mock('uiSrc/slices/instances/cloud', () => ({
   }),
 }))
 
-jest.mock('uiSrc/components/base/display', () => {
-  const actual = jest.requireActual('uiSrc/components/base/display')
+jest.mock('uiBase/display', () => {
+  const actual = jest.requireActual('uiBase/display')
 
-  return {
-    ...actual,
-    Modal: {
-      ...actual.Modal,
-      Content: {
-        ...actual.Modal.Content,
-        Header: {
-          ...actual.Modal.Content.Header,
-          Title: jest.fn().mockReturnValue(null),
-        },
-      },
-    },
-  }
+  return mockModal(actual)
 })
 
 let store: typeof mockedStore

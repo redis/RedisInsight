@@ -1,19 +1,15 @@
 import { isEmpty } from 'lodash'
 import React, { useState } from 'react'
 import { FormikErrors, useFormik } from 'formik'
-import { validateEmail, validateField } from 'uiSrc/utils'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiPrimaryButton, RiSecondaryButton, RiFormField } from 'uiBase/forms'
+import { InfoIcon } from 'uiBase/icons'
+import { RiTextInput } from 'uiBase/inputs'
+import { RiTitle } from 'uiBase/text'
 import { RiTooltip } from 'uiSrc/components'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { InfoIcon } from 'uiSrc/components/base/icons'
-import { TextInput } from 'uiSrc/components/base/inputs'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
+import { validateEmail, validateField } from 'uiSrc/utils'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -72,7 +68,7 @@ const OAuthSsoForm = ({ onBack, onSubmit }: Props) => {
         ) : null
       }
     >
-      <PrimaryButton
+      <RiPrimaryButton
         size="s"
         type="submit"
         disabled={disabled}
@@ -80,20 +76,20 @@ const OAuthSsoForm = ({ onBack, onSubmit }: Props) => {
         data-testid="btn-submit"
       >
         {text}
-      </PrimaryButton>
+      </RiPrimaryButton>
     </RiTooltip>
   )
 
   return (
     <div className={styles.container} data-testid="oauth-container-sso-form">
-      <Title className={styles.title} size="S">
+      <RiTitle className={styles.title} size="S">
         Single Sign-On
-      </Title>
+      </RiTitle>
       <form onSubmit={formik.handleSubmit}>
-        <Row>
-          <FlexItem>
-            <FormField className={styles.formRaw} label="Email">
-              <TextInput
+        <RiRow>
+          <RiFlexItem>
+            <RiFormField className={styles.formRaw} label="Email">
+              <RiTextInput
                 name="email"
                 id="sso-email"
                 data-testid="sso-email"
@@ -101,31 +97,28 @@ const OAuthSsoForm = ({ onBack, onSubmit }: Props) => {
                 value={formik.values.email}
                 autoComplete="off"
                 onChange={(value) => {
-                  formik.setFieldValue(
-                    'email',
-                    validateField(value.trim()),
-                  )
+                  formik.setFieldValue('email', validateField(value.trim()))
                 }}
               />
-            </FormField>
-          </FlexItem>
-        </Row>
-        <Spacer />
-        <Row justify="end">
-          <FlexItem>
-            <SecondaryButton
+            </RiFormField>
+          </RiFlexItem>
+        </RiRow>
+        <RiSpacer />
+        <RiRow justify="end">
+          <RiFlexItem>
+            <RiSecondaryButton
               type="button"
               size="s"
               onClick={onBack}
               data-testid="btn-back"
             >
               Back
-            </SecondaryButton>
-          </FlexItem>
-          <FlexItem>
+            </RiSecondaryButton>
+          </RiFlexItem>
+          <RiFlexItem>
             <SubmitButton text="Login" disabled={submitIsDisabled()} />
-          </FlexItem>
-        </Row>
+          </RiFlexItem>
+        </RiRow>
       </form>
     </div>
   )

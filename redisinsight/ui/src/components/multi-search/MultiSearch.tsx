@@ -1,23 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 
-import * as keys from 'uiSrc/constants/keys'
-import { TextInput } from 'uiSrc/components/base/inputs'
-import { GroupBadge, RiTooltip } from 'uiSrc/components'
-import { OutsideClickDetector } from 'uiSrc/components/base/utils'
-import { Nullable } from 'uiSrc/utils'
+import { RiTextInput } from 'uiBase/inputs'
+import { RiOutsideClickDetector } from 'uiBase/utils'
 
-import {
-  CancelSlimIcon,
-  SearchIcon,
-  SwitchIcon,
-} from 'uiSrc/components/base/icons'
-import {
-  ActionIconButton,
-  IconButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { ProgressBarLoader } from 'uiSrc/components/base/display'
+import { CancelSlimIcon, SearchIcon, SwitchIcon, RiIcon } from 'uiBase/icons'
+import { RiActionIconButton, RiIconButton } from 'uiBase/forms'
+import { RiProgressBarLoader } from 'uiBase/display'
+import { Nullable } from 'uiSrc/utils'
+import { GroupBadge, RiTooltip } from 'uiSrc/components'
+import * as keys from 'uiSrc/constants/keys'
 import styles from './styles.module.scss'
 
 interface MultiSearchSuggestion {
@@ -153,7 +145,7 @@ const MultiSearch = (props: Props) => {
   }
 
   const SubmitBtn = () => (
-    <IconButton
+    <RiIconButton
       icon={SearchIcon}
       aria-label="Search"
       disabled={disableSubmit}
@@ -164,7 +156,7 @@ const MultiSearch = (props: Props) => {
   )
 
   return (
-    <OutsideClickDetector onOutsideClick={exitAutoSuggestions}>
+    <RiOutsideClickDetector onOutsideClick={exitAutoSuggestions}>
       <div
         className={cx(styles.multiSearchWrapper, className)}
         onKeyDown={handleKeyDown}
@@ -186,13 +178,12 @@ const MultiSearch = (props: Props) => {
               />
             ))}
           </div>
-          <TextInput
+          <RiTextInput
             className={styles.multiSearchInput}
             placeholder={placeholder}
             value={value}
             onKeyDown={handleKeyDown}
-            onChange={onChange
-            }
+            onChange={onChange}
             onFocus={() => setIsInputFocus(true)}
             onBlur={() => setIsInputFocus(false)}
             ref={inputRef}
@@ -205,7 +196,7 @@ const MultiSearch = (props: Props) => {
               data-testid="suggestions"
             >
               {suggestions?.loading && (
-                <ProgressBarLoader
+                <RiProgressBarLoader
                   data-testid="progress-suggestions"
                   color="primary"
                 />
@@ -236,7 +227,7 @@ const MultiSearch = (props: Props) => {
                         >
                           {value}
                         </span>
-                        <IconButton
+                        <RiIconButton
                           className={styles.suggestionRemoveBtn}
                           icon={CancelSlimIcon}
                           color="primary"
@@ -268,7 +259,7 @@ const MultiSearch = (props: Props) => {
           )}
           {(value || !!options.length) && (
             <RiTooltip content="Reset Filters" position="bottom">
-              <ActionIconButton
+              <RiActionIconButton
                 icon={CancelSlimIcon}
                 size="XS"
                 aria-label="Reset Filters"
@@ -284,7 +275,7 @@ const MultiSearch = (props: Props) => {
               content={suggestions?.buttonTooltipTitle}
               position="bottom"
             >
-              <IconButton
+              <RiIconButton
                 icon={SwitchIcon}
                 size="S"
                 aria-label={suggestions?.buttonTooltipTitle}
@@ -310,7 +301,7 @@ const MultiSearch = (props: Props) => {
           {!disableSubmit && SubmitBtn()}
         </div>
       </div>
-    </OutsideClickDetector>
+    </RiOutsideClickDetector>
   )
 }
 

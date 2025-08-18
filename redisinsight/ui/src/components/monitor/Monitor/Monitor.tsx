@@ -2,19 +2,17 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiIconButton } from 'uiBase/forms'
+import { PlayFilledIcon, RiIcon } from 'uiBase/icons'
+import { RiColorText } from 'uiBase/text'
+import { RiSwitchInput } from 'uiBase/inputs'
 import { IMonitorDataPayload } from 'uiSrc/slices/interfaces'
-
-import { RiTooltip } from 'uiSrc/components'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { PlayFilledIcon } from 'uiSrc/components/base/icons'
-import { ColorText } from 'uiSrc/components/base/text'
-import { SwitchInput } from 'uiSrc/components/base/inputs'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import MonitorLog from '../MonitorLog'
 import MonitorOutputList from '../MonitorOutputList'
 
 import styles from './styles.module.scss'
+import { RiTooltip } from 'uiBase/display'
 
 export interface Props {
   items: IMonitorDataPayload[]
@@ -46,7 +44,7 @@ const Monitor = (props: Props) => {
     <div className={styles.startContainer} data-testid="monitor-not-started">
       <div className={styles.startContent}>
         <RiTooltip content="Start">
-          <IconButton
+          <RiIconButton
             icon={PlayFilledIcon}
             className={styles.startTitleIcon}
             onClick={() => handleRunMonitor(saveLogValue)}
@@ -55,8 +53,8 @@ const Monitor = (props: Props) => {
           />
         </RiTooltip>
         <div className={styles.startTitle}>Start Profiler</div>
-        <Row style={{ flexGrow: 0 }}>
-          <FlexItem>
+        <RiRow style={{ flexGrow: 0 }}>
+          <RiFlexItem>
             <RiIcon
               className={cx(styles.iconWarning, 'warning--light')}
               type="ToastDangerIcon"
@@ -65,9 +63,9 @@ const Monitor = (props: Props) => {
               aria-label="alert icon"
               style={{ paddingTop: 2 }}
             />
-          </FlexItem>
-          <FlexItem>
-            <ColorText
+          </RiFlexItem>
+          <RiFlexItem>
+            <RiColorText
               color="warning"
               className="warning--light"
               style={{ paddingLeft: 4 }}
@@ -75,9 +73,9 @@ const Monitor = (props: Props) => {
             >
               Running Profiler will decrease throughput, avoid running it in
               production databases.
-            </ColorText>
-          </FlexItem>
-        </Row>
+            </RiColorText>
+          </RiFlexItem>
+        </RiRow>
       </div>
       <div className={styles.saveLogContainer} data-testid="save-log-container">
         <RiTooltip
@@ -86,7 +84,7 @@ const Monitor = (props: Props) => {
           The temporary log file will be automatically rewritten when the Profiler is reset."
           data-testid="save-log-tooltip"
         >
-          <SwitchInput
+          <RiSwitchInput
             title="Save Log"
             checked={saveLogValue}
             onCheckedChange={setSaveLogValue}
@@ -100,25 +98,25 @@ const Monitor = (props: Props) => {
   const MonitorError = () => (
     <div className={styles.startContainer} data-testid="monitor-error">
       <div className={cx(styles.startContent, styles.startContentError)}>
-        <Row>
-          <FlexItem>
+        <RiRow>
+          <RiFlexItem>
             <RiIcon
               type="BannedIcon"
               size="m"
               color="danger"
               aria-label="no permissions icon"
             />
-          </FlexItem>
-          <FlexItem grow>
-            <ColorText
+          </RiFlexItem>
+          <RiFlexItem grow>
+            <RiColorText
               color="danger"
               style={{ paddingLeft: 4 }}
               data-testid="monitor-error-message"
             >
               {error}
-            </ColorText>
-          </FlexItem>
-        </Row>
+            </RiColorText>
+          </RiFlexItem>
+        </RiRow>
       </div>
     </div>
   )

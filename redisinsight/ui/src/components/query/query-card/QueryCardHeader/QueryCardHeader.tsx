@@ -4,7 +4,7 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { findIndex, isNumber } from 'lodash'
-import { ColorText } from 'uiSrc/components/base/text'
+import { RiColorText } from 'uiBase/text'
 
 import {
   ChevronDownIcon,
@@ -12,7 +12,10 @@ import {
   CopyIcon,
   DeleteIcon,
   PlayIcon,
-} from 'uiSrc/components/base/icons'
+  RiIcon,
+} from 'uiBase/icons'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiIconButton, RiSelect } from 'uiBase/forms'
 import { Theme } from 'uiSrc/constants'
 import {
   getCommandNameFromQuery,
@@ -46,10 +49,6 @@ import {
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 import { FormatedDate, FullScreen, RiTooltip } from 'uiSrc/components'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import QueryCardTooltip from '../QueryCardTooltip'
 
 import styles from './styles.module.scss'
@@ -356,10 +355,10 @@ const QueryCardHeader = (props: Props) => {
       data-testid="query-card-open"
       role="button"
     >
-      <Row align="center" gap="l" style={{ width: '100%' }}>
-        <FlexItem className={styles.titleWrapper} grow>
+      <RiRow align="center" gap="l" style={{ width: '100%' }}>
+        <RiFlexItem className={styles.titleWrapper} grow>
           <div className="copy-btn-wrapper">
-            <ColorText
+            <RiColorText
               className={styles.title}
               color="subdued"
               component="div"
@@ -371,8 +370,8 @@ const QueryCardHeader = (props: Props) => {
                 db={db}
                 resultsMode={resultsMode}
               />
-            </ColorText>
-            <IconButton
+            </RiColorText>
+            <RiIconButton
               icon={CopyIcon}
               aria-label="Copy query"
               className={cx('copy-btn', styles.copyBtn)}
@@ -383,27 +382,27 @@ const QueryCardHeader = (props: Props) => {
               data-testid="copy-command"
             />
           </div>
-        </FlexItem>
-        <FlexItem className={styles.controls}>
-          <Row align="center" justify="end" gap="l">
-            <FlexItem
+        </RiFlexItem>
+        <RiFlexItem className={styles.controls}>
+          <RiRow align="center" justify="end" gap="l">
+            <RiFlexItem
               className={styles.time}
               data-testid="command-execution-date-time"
             >
               {!!createdAt && (
-                <ColorText className={styles.timeText} component="div">
+                <RiColorText className={styles.timeText} component="div">
                   <FormatedDate date={createdAt} />
-                </ColorText>
+                </RiColorText>
               )}
-            </FlexItem>
-            <FlexItem className={styles.summaryTextWrapper}>
+            </RiFlexItem>
+            <RiFlexItem className={styles.summaryTextWrapper}>
               {!!message && !isOpen && (
-                <ColorText className={styles.summaryText} component="div">
+                <RiColorText className={styles.summaryText} component="div">
                   {truncateText(message, 13)}
-                </ColorText>
+                </RiColorText>
               )}
-            </FlexItem>
-            <FlexItem
+            </RiFlexItem>
+            <RiFlexItem
               className={styles.executionTime}
               data-testid="command-execution-time"
             >
@@ -421,7 +420,7 @@ const QueryCardHeader = (props: Props) => {
                       data-testid="command-execution-time-icon"
                       className={styles.iconExecutingTime}
                     />
-                    <ColorText
+                    <RiColorText
                       className={cx(
                         styles.summaryText,
                         styles.executionTimeValue,
@@ -429,13 +428,13 @@ const QueryCardHeader = (props: Props) => {
                       data-testid="command-execution-time-value"
                     >
                       {getTruncatedExecutionTimeString(executionTime)}
-                    </ColorText>
+                    </RiColorText>
                   </>
                 </RiTooltip>
               )}
-            </FlexItem>
+            </RiFlexItem>
             {!hideFields?.includes(HIDE_FIELDS.profiler) && (
-              <FlexItem
+              <RiFlexItem
                 className={cx(styles.buttonIcon, styles.viewTypeIcon)}
                 onClick={onDropDownViewClick}
               >
@@ -459,10 +458,10 @@ const QueryCardHeader = (props: Props) => {
                     </div>
                   </div>
                 )}
-              </FlexItem>
+              </RiFlexItem>
             )}
             {!hideFields?.includes(HIDE_FIELDS.viewType) && (
-              <FlexItem
+              <RiFlexItem
                 className={cx(styles.buttonIcon, styles.viewTypeIcon)}
                 onClick={onDropDownViewClick}
               >
@@ -484,9 +483,9 @@ const QueryCardHeader = (props: Props) => {
                     </div>
                   </div>
                 )}
-              </FlexItem>
+              </RiFlexItem>
             )}
-            <FlexItem
+            <RiFlexItem
               className={styles.buttonIcon}
               onClick={onDropDownViewClick}
             >
@@ -496,24 +495,24 @@ const QueryCardHeader = (props: Props) => {
                   onToggleFullScreen={toggleFullScreen}
                 />
               )}
-            </FlexItem>
-            <FlexItem className={styles.buttonIcon}>
-              <IconButton
+            </RiFlexItem>
+            <RiFlexItem className={styles.buttonIcon}>
+              <RiIconButton
                 disabled={loading || clearing}
                 icon={DeleteIcon}
                 aria-label="Delete command"
                 data-testid="delete-command"
                 onClick={handleQueryDelete}
               />
-            </FlexItem>
+            </RiFlexItem>
             {!isFullScreen && (
-              <FlexItem className={cx(styles.buttonIcon, styles.playIcon)}>
+              <RiFlexItem className={cx(styles.buttonIcon, styles.playIcon)}>
                 <RiTooltip
                   content="Run again"
                   position="left"
                   anchorClassName={cx(styles.buttonIcon, styles.playIcon)}
                 >
-                  <IconButton
+                  <RiIconButton
                     disabled={emptyCommand}
                     icon={PlayIcon}
                     aria-label="Re-run command"
@@ -521,19 +520,19 @@ const QueryCardHeader = (props: Props) => {
                     onClick={handleQueryReRun}
                   />
                 </RiTooltip>
-              </FlexItem>
+              </RiFlexItem>
             )}
             {!isFullScreen && (
-              <FlexItem className={styles.buttonIcon}>
+              <RiFlexItem className={styles.buttonIcon}>
                 {!isSilentModeWithoutError(resultsMode, summary?.fail) && (
-                  <IconButton
+                  <RiIconButton
                     icon={isOpen ? ChevronUpIcon : ChevronDownIcon}
                     aria-label="toggle collapse"
                   />
                 )}
-              </FlexItem>
+              </RiFlexItem>
             )}
-            <FlexItem className={styles.buttonIcon}>
+            <RiFlexItem className={styles.buttonIcon}>
               {(isRawMode(mode) || isGroupResults(resultsMode)) && (
                 <RiTooltip
                   className={styles.tooltip}
@@ -541,28 +540,28 @@ const QueryCardHeader = (props: Props) => {
                   content={
                     <>
                       {isGroupMode(resultsMode) && (
-                        <ColorText
+                        <RiColorText
                           className={cx(styles.mode)}
                           data-testid="group-mode-tooltip"
                         >
                           <RiIcon type="GroupModeIcon" />
-                        </ColorText>
+                        </RiColorText>
                       )}
                       {isSilentMode(resultsMode) && (
-                        <ColorText
+                        <RiColorText
                           className={cx(styles.mode)}
                           data-testid="silent-mode-tooltip"
                         >
                           <RiIcon type="SilentModeIcon" />
-                        </ColorText>
+                        </RiColorText>
                       )}
                       {isRawMode(mode) && (
-                        <ColorText
+                        <RiColorText
                           className={cx(styles.mode)}
                           data-testid="raw-mode-tooltip"
                         >
                           -r
-                        </ColorText>
+                        </RiColorText>
                       )}
                     </>
                   }
@@ -576,10 +575,10 @@ const QueryCardHeader = (props: Props) => {
                   />
                 </RiTooltip>
               )}
-            </FlexItem>
-          </Row>
-        </FlexItem>
-      </Row>
+            </RiFlexItem>
+          </RiRow>
+        </RiFlexItem>
+      </RiRow>
     </div>
   )
 }

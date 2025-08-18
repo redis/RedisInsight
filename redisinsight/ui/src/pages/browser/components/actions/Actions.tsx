@@ -1,22 +1,19 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
+import { BulkActionsIcon } from 'uiBase/icons'
+import { RiRow } from 'uiBase/layout'
 import {
   getBasedOnViewTypeEvent,
   sendEventTelemetry,
   TelemetryEvent,
 } from 'uiSrc/telemetry'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
 import styles from 'uiSrc/pages/browser/components/browser-search-panel/styles.module.scss'
 import { setBulkActionType } from 'uiSrc/slices/browser/bulkActions'
 import { BulkActionsType, FeatureFlags } from 'uiSrc/constants'
-import { BulkActionsIcon } from 'uiSrc/components/base/icons'
 import { FeatureFlagComponent } from 'uiSrc/components'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { keysSelector } from 'uiSrc/slices/browser/keys'
-import { Row } from 'uiSrc/components/base/layout/flex'
 
 export interface Props {
   handleAddKeyPanel: (value: boolean) => void
@@ -41,20 +38,20 @@ const Actions = ({ handleAddKeyPanel, handleBulkActionsPanel }: Props) => {
   }
 
   const AddKeyBtn = (
-    <PrimaryButton
+    <RiPrimaryButton
       onClick={openAddKeyPanel}
       className={styles.addKey}
       data-testid="btn-add-key"
     >
       + <span className={styles.addKeyText}>Key</span>
-    </PrimaryButton>
+    </RiPrimaryButton>
   )
   const openBulkActions = () => {
     dispatch(setBulkActionType(BulkActionsType.Delete))
     handleBulkActionsPanel(true)
   }
   const BulkActionsBtn = (
-    <SecondaryButton
+    <RiSecondaryButton
       color="secondary"
       icon={BulkActionsIcon}
       onClick={openBulkActions}
@@ -63,10 +60,10 @@ const Actions = ({ handleAddKeyPanel, handleBulkActionsPanel }: Props) => {
       aria-label="bulk actions"
     >
       <span className={styles.bulkActionsText}>Bulk Actions</span>
-    </SecondaryButton>
+    </RiSecondaryButton>
   )
   return (
-    <Row
+    <RiRow
       grow={false}
       gap="m"
       style={{
@@ -78,7 +75,7 @@ const Actions = ({ handleAddKeyPanel, handleBulkActionsPanel }: Props) => {
         {BulkActionsBtn}
       </FeatureFlagComponent>
       {AddKeyBtn}
-    </Row>
+    </RiRow>
   )
 }
 

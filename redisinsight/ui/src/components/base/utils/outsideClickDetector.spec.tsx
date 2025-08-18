@@ -1,13 +1,13 @@
 import React from 'react'
 import { fireEvent, render } from 'uiSrc/utils/test-utils'
-import { OutsideClickDetector } from 'uiSrc/components/base/utils/OutsideClickDetector'
+import { RiOutsideClickDetector } from './RiOutsideClickDetector'
 
-describe('OutsideClickDetector', () => {
+describe('RiOutsideClickDetector', () => {
   it('is rendered', () => {
     const { container } = render(
-      <OutsideClickDetector onOutsideClick={() => {}}>
+      <RiOutsideClickDetector onOutsideClick={() => {}}>
         <div />
-      </OutsideClickDetector>,
+      </RiOutsideClickDetector>,
     )
     expect(container.firstChild).toBeTruthy()
   })
@@ -21,18 +21,18 @@ describe('OutsideClickDetector', () => {
       const { findByTestId } = render(
         <div role="button" tabIndex={0}>
           <div>
-            <OutsideClickDetector onOutsideClick={parentDetector}>
+            <RiOutsideClickDetector onOutsideClick={parentDetector}>
               <div>
-                <OutsideClickDetector onOutsideClick={childDetector}>
+                <RiOutsideClickDetector onOutsideClick={childDetector}>
                   <div data-testid="target1" />
-                </OutsideClickDetector>
+                </RiOutsideClickDetector>
               </div>
-            </OutsideClickDetector>
+            </RiOutsideClickDetector>
           </div>
 
-          <OutsideClickDetector onOutsideClick={unrelatedDetector}>
+          <RiOutsideClickDetector onOutsideClick={unrelatedDetector}>
             <div data-testid="target2" />
-          </OutsideClickDetector>
+          </RiOutsideClickDetector>
         </div>,
       )
       const target2 = await findByTestId('target2')

@@ -1,14 +1,11 @@
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { debounce, get, set } from 'lodash'
 import { TreeWalker, TreeWalkerValue, FixedSizeTree as Tree } from 'react-vtree'
 import { useDispatch } from 'react-redux'
 
+import { RiLoader, RiProgressBarLoader, RiImage } from 'uiBase/display'
+import { RiIcon } from 'uiBase/icons'
 import { bufferToString, Maybe, Nullable } from 'uiSrc/utils'
 import { useDisposableWebworker } from 'uiSrc/services'
 import { IKeyPropTypes } from 'uiSrc/constants/prop-types/keys'
@@ -20,8 +17,6 @@ import {
 } from 'uiSrc/constants'
 import { RedisResponseBuffer, RedisString } from 'uiSrc/slices/interfaces'
 import { fetchKeysMetadataTree } from 'uiSrc/slices/browser/keys'
-import { Loader, ProgressBarLoader, RiImage } from 'uiSrc/components/base/display'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { GetKeyInfoResponse } from 'apiSrc/modules/browser/keys/dto'
 
 import { Node } from './components/Node'
@@ -276,7 +271,7 @@ const VirtualTree = (props: Props) => {
           {nodes.current.length > 0 && (
             <>
               {loading && (
-                <ProgressBarLoader
+                <RiProgressBarLoader
                   color="primary"
                   data-testid="progress-key-tree"
                   style={{ width }}
@@ -301,10 +296,7 @@ const VirtualTree = (props: Props) => {
               data-testid="virtual-tree-spinner"
             >
               <div className={styles.loadingBody}>
-                <Loader
-                  size="xl"
-                  className={styles.loadingSpinner}
-                />
+                <RiLoader size="xl" className={styles.loadingSpinner} />
                 {loadingIcon ? (
                   <RiImage
                     className={styles.loadingIcon}

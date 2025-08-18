@@ -3,6 +3,9 @@ import { keys } from '@elastic/eui'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
+import { RiText } from 'uiBase/text'
+import { RiIcon, CancelIcon } from 'uiBase/icons'
+import { RiModal } from 'uiBase/display'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   fetchRdiPipeline,
@@ -14,12 +17,8 @@ import {
   setPipelineDialogState,
 } from 'uiSrc/slices/app/context'
 import UploadModal from 'uiSrc/pages/rdi/pipeline-management/components/upload-modal/UploadModal'
-import { Text } from 'uiSrc/components/base/text'
 
 import { FileChangeType } from 'uiSrc/slices/interfaces'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { Modal } from 'uiSrc/components/base/display'
-import { CancelIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 export const EMPTY_PIPELINE = {
@@ -105,13 +104,13 @@ const SourcePipelineDialog = () => {
   }
 
   return (
-    <Modal.Compose open>
-      <Modal.Content.Compose>
-        <Modal.Content.Close icon={CancelIcon} onClick={handleCloseDialog} />
-        <Modal.Content.Header.Title>
+    <RiModal.Compose open>
+      <RiModal.Content.Compose>
+        <RiModal.Content.Close icon={CancelIcon} onClick={handleCloseDialog} />
+        <RiModal.Content.Header.Title>
           Start with your pipeline
-        </Modal.Content.Header.Title>
-        <Modal.Content.Body.Compose width="100%">
+        </RiModal.Content.Header.Title>
+        <RiModal.Content.Body.Compose width="100%">
           <div className={styles.content}>
             <div className={styles.actions}>
               <div
@@ -123,7 +122,7 @@ const SourcePipelineDialog = () => {
                 data-testid="server-source-pipeline-dialog"
               >
                 <RiIcon type="UploadIcon" size="xl" className={styles.icon} />
-                <Text className={styles.text}>Download from server</Text>
+                <RiText className={styles.text}>Download from server</RiText>
               </div>
               <div
                 role="button"
@@ -134,7 +133,7 @@ const SourcePipelineDialog = () => {
                 data-testid="file-source-pipeline-dialog"
               >
                 <RiIcon type="ExportIcon" size="xl" className={styles.icon} />
-                <Text className={styles.text}>Upload from file</Text>
+                <RiText className={styles.text}>Upload from file</RiText>
               </div>
               <div
                 role="button"
@@ -149,13 +148,13 @@ const SourcePipelineDialog = () => {
                   size="xl"
                   className={styles.icon}
                 />
-                <Text className={styles.text}>Create new pipeline</Text>
+                <RiText className={styles.text}>Create new pipeline</RiText>
               </div>
             </div>
           </div>
-        </Modal.Content.Body.Compose>
-      </Modal.Content.Compose>
-    </Modal.Compose>
+        </RiModal.Content.Body.Compose>
+      </RiModal.Content.Compose>
+    </RiModal.Compose>
   )
 }
 

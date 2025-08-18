@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 
-import { RiTooltip } from 'uiSrc/components'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { RiTextInput } from 'uiBase/inputs'
 import { TagSuggestions } from './TagSuggestions'
+import { RiTooltip } from 'uiBase/display'
 
 type TagInputFieldProps = {
   value: string
@@ -30,7 +30,7 @@ export const TagInputField = ({
     <div>
       <RiTooltip content={errorMessage} position="top">
         <div>
-          <TextInput
+          <RiTextInput
             value={value}
             disabled={disabled}
             valid={!isInvalid}

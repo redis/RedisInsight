@@ -1,13 +1,12 @@
 import cx from 'classnames'
 import React from 'react'
 
-import { CommandGroup, KeyTypes, GROUP_TYPES_COLORS } from 'uiSrc/constants'
+import { RiIconButton } from 'uiBase/forms'
+import { CancelSlimIcon } from 'uiBase/icons'
+import { RiText } from 'uiBase/text'
+import { RiBadge } from 'uiBase/display'
 import { getGroupTypeDisplay } from 'uiSrc/utils'
-
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
-import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
+import { CommandGroup, KeyTypes, GROUP_TYPES_COLORS } from 'uiSrc/constants'
 
 import styles from './styles.module.scss'
 
@@ -42,16 +41,16 @@ const GroupBadge = ({
       data-testid={`badge-${type}_${name}`}
     >
       {!compressed && (
-        <Text
+        <RiText
           style={{ color: 'var(--euiTextSubduedColorHover)' }}
           className="text-uppercase"
           size="xs"
         >
           {getGroupTypeDisplay(type)}
-        </Text>
+        </RiText>
       )}
       {onDelete && (
-        <IconButton
+        <RiIconButton
           size="XS"
           icon={CancelSlimIcon}
           color="primary"

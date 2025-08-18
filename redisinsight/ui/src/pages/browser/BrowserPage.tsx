@@ -5,6 +5,13 @@ import cx from 'classnames'
 
 import { isNumber } from 'lodash'
 import { useTheme } from '@redis-ui/styles'
+import { RiEmptyButton } from 'uiBase/forms'
+import { ArrowLeftIcon } from 'uiBase/icons'
+import {
+  RiResizableContainer,
+  RiResizablePanel,
+  RiResizablePanelHandle,
+} from 'uiBase/layout'
 import {
   formatLongName,
   getDbIndex,
@@ -44,20 +51,13 @@ import OnboardingStartPopover from 'uiSrc/pages/browser/components/onboarding-st
 import { sidePanelsSelector } from 'uiSrc/slices/panels/sidePanels'
 import { useStateWithContext } from 'uiSrc/services/hooks'
 
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
-import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
-import {
-  ResizableContainer,
-  ResizablePanel,
-  ResizablePanelHandle,
-} from 'uiSrc/components/base/layout'
-
 import { useAppNavigationActions } from 'uiSrc/contexts/AppNavigationActionsProvider'
 import Actions from 'uiSrc/pages/browser/components/actions/Actions'
 import BrowserSearchPanel from './components/browser-search-panel'
 import BrowserLeftPanel from './components/browser-left-panel'
 import BrowserRightPanel from './components/browser-right-panel'
 
+import UploadModal from '../rdi/pipeline-management/components/upload-modal/UploadModal'
 import styles from './styles.module.scss'
 
 const widthResponsiveSize = 1280
@@ -298,7 +298,7 @@ const BrowserPage = () => {
   return (
     <div className={`browserPage ${styles.container}`}>
       {arePanelsCollapsed && isRightPanelOpen && !isBrowserFullScreen && (
-        <EmptyButton
+        <RiEmptyButton
           icon={ArrowLeftIcon}
           size="small"
           onClick={closePanel}
@@ -306,7 +306,7 @@ const BrowserPage = () => {
           data-testid="back-right-panel-btn"
         >
           Back
-        </EmptyButton>
+        </RiEmptyButton>
       )}
       <div
         className={cx({
@@ -316,12 +316,12 @@ const BrowserPage = () => {
         <BrowserSearchPanel handleCreateIndexPanel={handleCreateIndexPanel} />
       </div>
       <div className={cx(styles.main)}>
-        <ResizableContainer
+        <RiResizableContainer
           className={styles.resizableContainer}
           direction="horizontal"
           onLayout={onPanelWidthChange}
         >
-          <ResizablePanel
+          <RiResizablePanel
             defaultSize={sizes && sizes[0] ? sizes[0] : 50}
             minSize={45}
             id={firstPanelId}
@@ -335,17 +335,20 @@ const BrowserPage = () => {
               borderRadius: `8px`,
             }}
           >
+            <UploadModal>
+              <div>test</div>
+            </UploadModal>
             <BrowserLeftPanel
               selectedKey={selectedKey}
               selectKey={selectKey}
               removeSelectedKey={handleRemoveSelectedKey}
               handleAddKeyPanel={handleAddKeyPanel}
             />
-          </ResizablePanel>
+          </RiResizablePanel>
           {!arePanelsCollapsed && !isBrowserFullScreen && (
-            <ResizablePanelHandle />
+            <RiResizablePanelHandle />
           )}
-          <ResizablePanel
+          <RiResizablePanel
             defaultSize={sizes && sizes[1] ? sizes[1] : 50}
             minSize={45}
             id={secondPanelId}
@@ -372,8 +375,8 @@ const BrowserPage = () => {
               handleBulkActionsPanel={handleBulkActionsPanel}
               closeRightPanels={closeRightPanels}
             />
-          </ResizablePanel>
-        </ResizableContainer>
+          </RiResizablePanel>
+        </RiResizableContainer>
       </div>
       <OnboardingStartPopover />
     </div>

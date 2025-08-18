@@ -2,17 +2,17 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { useParams } from 'react-router-dom'
+import { RiSecondaryButton } from 'uiBase/forms'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   fetchJobTemplate,
   rdiPipelineStrategiesSelector,
 } from 'uiSrc/slices/rdi/pipeline'
-import { RiTooltip } from 'uiSrc/components'
 import { RdiPipelineTabs } from 'uiSrc/slices/interfaces'
-import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
 import { getTooltipContent } from '../template-form/TemplateForm'
 import { INGEST_OPTION } from '../template-form/constants'
 import styles from './styles.module.scss'
+import { RiTooltip } from 'uiBase/display'
 
 export interface TemplateButtonProps {
   value: string
@@ -51,7 +51,7 @@ const TemplateButton = ({ setFieldValue, value }: TemplateButtonProps) => {
       position="bottom"
       anchorClassName="flex-row"
     >
-      <SecondaryButton
+      <RiSecondaryButton
         inverted
         size="s"
         className={styles.btn}
@@ -62,7 +62,7 @@ const TemplateButton = ({ setFieldValue, value }: TemplateButtonProps) => {
         data-testid="template-btn"
       >
         Insert template
-      </SecondaryButton>
+      </RiSecondaryButton>
     </RiTooltip>
   )
 }

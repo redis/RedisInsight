@@ -1,10 +1,12 @@
+import * as React from 'react';
+
 function _extends() {
   _extends =
     Object.assign ||
     function (target) {
-      for (var i = 1; i < arguments.length; i++) {
-        var source = arguments[i];
-        for (var key in source) {
+      for (let i = 1; i < arguments.length; i++) {
+        const source = arguments[i];
+        for (const key in source) {
           if (Object.prototype.hasOwnProperty.call(source, key)) {
             target[key] = source[key];
           }
@@ -17,10 +19,10 @@ function _extends() {
 
 function _objectWithoutProperties(source, excluded) {
   if (source == null) return {};
-  var target = _objectWithoutPropertiesLoose(source, excluded);
-  var key, i;
+  const target = _objectWithoutPropertiesLoose(source, excluded);
+  let key; let i;
   if (Object.getOwnPropertySymbols) {
-    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+    const sourceSymbolKeys = Object.getOwnPropertySymbols(source);
     for (i = 0; i < sourceSymbolKeys.length; i++) {
       key = sourceSymbolKeys[i];
       if (excluded.indexOf(key) >= 0) continue;
@@ -33,9 +35,9 @@ function _objectWithoutProperties(source, excluded) {
 
 function _objectWithoutPropertiesLoose(source, excluded) {
   if (source == null) return {};
-  var target = {};
-  var sourceKeys = Object.keys(source);
-  var key, i;
+  const target = {};
+  const sourceKeys = Object.keys(source);
+  let key; let i;
   for (i = 0; i < sourceKeys.length; i++) {
     key = sourceKeys[i];
     if (excluded.indexOf(key) >= 0) continue;
@@ -44,31 +46,27 @@ function _objectWithoutPropertiesLoose(source, excluded) {
   return target;
 }
 
-import * as React from 'react';
-
-var EuiIconCopy = function EuiIconCopy(_ref) {
-  var title = _ref.title,
-    titleId = _ref.titleId,
-    props = _objectWithoutProperties(_ref, ['title', 'titleId']);
+const EuiIconCopy = function EuiIconCopy(_ref) {
+  const {title} = _ref;
+    const {titleId} = _ref;
+    const props = _objectWithoutProperties(_ref, ['title', 'titleId']);
 
   // For e2e tests. Hammerhead cannot create svg throw createElementNS
   try {
     document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 
-    return /*#__PURE__*/ React.createElement(
+    return /* #__PURE__ */ React.createElement(
       'svg',
-      _extends(
-        {
-          width: 16,
+      {
+        width: 16,
           height: 16,
           viewBox: '0 0 16 16',
           xmlns: 'http://www.w3.org/2000/svg',
           'aria-labelledby': titleId,
-        },
-        props,
-      ),
+        ...props,
+      },
       title
-        ? /*#__PURE__*/ React.createElement(
+        ? /* #__PURE__ */ React.createElement(
             'title',
             {
               id: titleId,
@@ -76,10 +74,10 @@ var EuiIconCopy = function EuiIconCopy(_ref) {
             title,
           )
         : null,
-      /*#__PURE__*/ React.createElement('path', {
+      /* #__PURE__ */ React.createElement('path', {
         d: 'M11.4 0c.235 0 .46.099.622.273l2.743 3c.151.162.235.378.235.602v9.25a.867.867 0 01-.857.875H3.857A.867.867 0 013 13.125V.875C3 .392 3.384 0 3.857 0H11.4zM14 4h-2.6a.4.4 0 01-.4-.4V1H4v12h10V4z',
       }),
-      /*#__PURE__*/ React.createElement('path', {
+      /* #__PURE__ */ React.createElement('path', {
         d: 'M3 1H2a1 1 0 00-1 1v13a1 1 0 001 1h10a1 1 0 001-1v-1h-1v1H2V2h1V1z',
       }),
     );

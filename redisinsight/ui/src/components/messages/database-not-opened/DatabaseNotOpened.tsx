@@ -1,14 +1,13 @@
 import React from 'react'
 
+import { RiSpacer } from 'uiBase/layout'
+import { RiTitle, RiText } from 'uiBase/text'
 import { ExternalLink, OAuthSsoHandlerDialog } from 'uiSrc/components'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { EXTERNAL_LINKS, UTM_CAMPAINGS } from 'uiSrc/constants/links'
 import TelescopeImg from 'uiSrc/assets/img/telescope-dark.svg'
 import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
 
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -22,15 +21,15 @@ const DatabaseNotOpened = (props: Props) => {
   return (
     <div className={styles.wrapper} data-testid="database-not-opened-popover">
       <div>
-        <Title size="S" className={styles.title}>
+        <RiTitle size="S" className={styles.title}>
           Open a database
-        </Title>
-        <Spacer size="s" />
+        </RiTitle>
+        <RiSpacer size="s" />
         <>
-          <Text color="subdued" size="s">
+          <RiText color="subdued" size="s">
             Open your Redis database, or create a new database to get started.
-          </Text>
-          <Spacer size="s" />
+          </RiText>
+          <RiSpacer size="s" />
           <OAuthSsoHandlerDialog>
             {(ssoCloudHandlerClick) => (
               <ExternalLink
@@ -51,7 +50,7 @@ const DatabaseNotOpened = (props: Props) => {
               </ExternalLink>
             )}
           </OAuthSsoHandlerDialog>
-          <Spacer size="xs" />
+          <RiSpacer size="xs" />
           <ExternalLink
             iconSize="S"
             href={getUtmExternalLink(EXTERNAL_LINKS.docker, {

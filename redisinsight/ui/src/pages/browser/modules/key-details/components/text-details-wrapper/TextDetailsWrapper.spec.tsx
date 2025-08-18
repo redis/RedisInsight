@@ -1,6 +1,6 @@
 import React from 'react'
-import TextDetailsWrapper from './TextDetailsWrapper'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
+import TextDetailsWrapper from './TextDetailsWrapper'
 
 describe('TextDetailsWrapper', () => {
   it('should render children correctly', () => {

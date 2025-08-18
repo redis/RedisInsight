@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { throttle } from 'lodash'
+import { get, throttle } from 'lodash'
 import cx from 'classnames'
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
+import { RiPrimaryButton, RiSecondaryButton } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
+import { RiLink, RiLoader } from 'uiBase/display'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { EXTERNAL_LINKS, UTM_MEDIUMS } from 'uiSrc/constants/links'
 import {
@@ -28,13 +31,6 @@ import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { KeyboardShortcut, RiTooltip } from 'uiSrc/components'
 
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { Text } from 'uiSrc/components/base/text'
-import { Link } from 'uiSrc/components/base/link/Link'
-import { Loader } from 'uiSrc/components/base/display'
 import TemplateButton from '../../components/template-button'
 import styles from './styles.module.scss'
 
@@ -179,7 +175,7 @@ const Job = (props: Props) => {
     <>
       <div className={cx('content', { isSidePanelOpen: isPanelOpen })}>
         <div className="rdi__content-header">
-          <Text className={cx('rdi__title', 'line-clamp-2')}>{name}</Text>
+          <RiText className={cx('rdi__title', 'line-clamp-2')}>{name}</RiText>
           <div className={styles.actionContainer}>
             <RiTooltip
               position="top"
@@ -187,7 +183,7 @@ const Job = (props: Props) => {
               content={
                 KEYBOARD_SHORTCUTS?.rdi?.openDedicatedEditor && (
                   <div className={styles.tooltipContent}>
-                    <Text size="s">{`${KEYBOARD_SHORTCUTS.rdi.openDedicatedEditor?.description}\u00A0\u00A0`}</Text>
+                    <RiText size="s">{`${KEYBOARD_SHORTCUTS.rdi.openDedicatedEditor?.description}\u00A0\u00A0`}</RiText>
                     <KeyboardShortcut
                       separator={KEYBOARD_SHORTCUTS?._separator}
                       items={KEYBOARD_SHORTCUTS.rdi.openDedicatedEditor.keys}
@@ -197,14 +193,14 @@ const Job = (props: Props) => {
               }
               data-testid="open-dedicated-editor-tooltip"
             >
-              <SecondaryButton
+              <RiSecondaryButton
                 size="s"
                 style={{ marginRight: '16px' }}
                 onClick={() => setShouldOpenDedicatedEditor(true)}
                 data-testid="open-dedicated-editor-btn"
               >
                 SQL and JMESPath Editor
-              </SecondaryButton>
+              </RiSecondaryButton>
             </RiTooltip>
             <TemplateButton
               value={value}
@@ -220,9 +216,9 @@ const Job = (props: Props) => {
             />
           </div>
         </div>
-        <Text className="rdi__text" color="subdued">
+        <RiText className="rdi__text" color="subdued">
           {'Create a job per source table to filter, transform, and '}
-          <Link
+          <RiLink
             data-testid="rdi-pipeline-transformation-link"
             target="_blank"
             href={getUtmExternalLink(EXTERNAL_LINKS.rdiPipelineTransforms, {
@@ -231,15 +227,15 @@ const Job = (props: Props) => {
             })}
           >
             map data
-          </Link>
+          </RiLink>
           {' to Redis.'}
-        </Text>
+        </RiText>
         {loading ? (
           <div
             className={cx('rdi__editorWrapper', 'rdi__loading')}
             data-testid="rdi-job-loading"
           >
-            <Loader color="secondary" size="l" loaderText="Loading data..." />
+            <RiLoader color="secondary" size="l" loaderText="Loading data..." />
           </div>
         ) : (
           <MonacoYaml
@@ -265,7 +261,7 @@ const Job = (props: Props) => {
         )}
 
         <div className="rdi__actions">
-          <PrimaryButton
+          <RiPrimaryButton
             color="secondary"
             size="s"
             onClick={handleDryRunJob}
@@ -273,7 +269,7 @@ const Job = (props: Props) => {
             data-testid="rdi-job-dry-run"
           >
             Dry Run
-          </PrimaryButton>
+          </RiPrimaryButton>
         </div>
       </div>
       {isPanelOpen && (

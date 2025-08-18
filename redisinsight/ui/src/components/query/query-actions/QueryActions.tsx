@@ -1,21 +1,16 @@
 import React from 'react'
 
 import cx from 'classnames'
+import { GroupModeIcon, PlayFilledIcon, RawModeIcon } from 'uiBase/icons'
+import { RiSpacer } from 'uiBase/layout/spacer'
+import { RiEmptyButton } from 'uiBase/forms'
+import { RiText } from 'uiBase/text'
 import { ResultsMode, RunQueryMode } from 'uiSrc/slices/interfaces'
 import { KEYBOARD_SHORTCUTS } from 'uiSrc/constants'
 import { KeyboardShortcut, RiTooltip } from 'uiSrc/components'
 import { isGroupMode } from 'uiSrc/utils'
 
-import {
-  GroupModeIcon,
-  PlayFilledIcon,
-  RawModeIcon,
-} from 'uiSrc/components/base/icons'
-
 import Divider from 'uiSrc/components/divider/Divider'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
-import { Text } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -40,10 +35,10 @@ const QueryActions = (props: Props) => {
   } = props
   const KeyBoardTooltipContent = KEYBOARD_SHORTCUTS?.workbench?.runQuery && (
     <>
-      <Text className={styles.tooltipText} size="s">
+      <RiText className={styles.tooltipText} size="s">
         {KEYBOARD_SHORTCUTS.workbench.runQuery?.label}:
-      </Text>
-      <Spacer size="s" />
+      </RiText>
+      <RiSpacer size="s" />
       <KeyboardShortcut
         badgeTextClassName={styles.tooltipText}
         separator={KEYBOARD_SHORTCUTS?._separator}
@@ -62,7 +57,7 @@ const QueryActions = (props: Props) => {
           content="Enables the raw output mode"
           data-testid="change-mode-tooltip"
         >
-          <EmptyButton
+          <RiEmptyButton
             onClick={() => onChangeMode()}
             icon={RawModeIcon}
             disabled={isLoading}
@@ -72,7 +67,7 @@ const QueryActions = (props: Props) => {
             data-testid="btn-change-mode"
           >
             Raw mode
-          </EmptyButton>
+          </RiEmptyButton>
         </RiTooltip>
       )}
       {onChangeGroupMode && (
@@ -88,7 +83,7 @@ const QueryActions = (props: Props) => {
           }
           data-testid="group-results-tooltip"
         >
-          <EmptyButton
+          <RiEmptyButton
             onClick={() => onChangeGroupMode()}
             disabled={isLoading}
             icon={GroupModeIcon}
@@ -98,7 +93,7 @@ const QueryActions = (props: Props) => {
             data-testid="btn-change-group-mode"
           >
             Group results
-          </EmptyButton>
+          </RiEmptyButton>
         </RiTooltip>
       )}
       <Divider
@@ -115,7 +110,7 @@ const QueryActions = (props: Props) => {
         }
         data-testid="run-query-tooltip"
       >
-        <EmptyButton
+        <RiEmptyButton
           onClick={() => {
             onSubmit()
           }}
@@ -127,7 +122,7 @@ const QueryActions = (props: Props) => {
           data-testid="btn-submit"
         >
           Run
-        </EmptyButton>
+        </RiEmptyButton>
       </RiTooltip>
     </div>
   )

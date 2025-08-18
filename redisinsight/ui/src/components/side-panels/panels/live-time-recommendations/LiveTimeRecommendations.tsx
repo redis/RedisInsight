@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react'
+import styled from 'styled-components'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 import { remove } from 'lodash'
-import styled from 'styled-components'
 
+import { RiColorText, RiText } from 'uiBase/text'
+import { RiCheckbox } from 'uiBase/forms'
+import { RiIcon } from 'uiBase/icons'
+import { RiLink, RiTooltip } from 'uiBase/display'
 import { FeatureFlags, DEFAULT_DELIMITER, Pages } from 'uiSrc/constants'
 import {
   ANALYZE_CLUSTER_TOOLTIP_MESSAGE,
@@ -29,19 +33,14 @@ import { comboBoxToArray } from 'uiSrc/utils'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import {
   FeatureFlagComponent,
-  LoadingContent,
-  RiTooltip,
+  RiLoadingContent,
+  RiRow,
+  RiSpacer,
 } from 'uiSrc/components'
-import { ColorText, Text } from 'uiSrc/components/base/text'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
-
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import Recommendation from './components/recommendation'
 import WelcomeScreen from './components/welcome-screen'
 import PopoverRunAnalyze from './components/popover-run-analyze'
 import styles from './styles.module.scss'
-import { Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout'
 
 const FooterLink = styled.button<{
   onClick?: () => void;
@@ -155,22 +154,21 @@ const LiveTimeRecommendations = () => {
 
   const renderHeader = () => (
     <div className={styles.actions}>
-      <Row align="center" gap="s">
-        <ColorText variant="semiBold" className={styles.boldText}>
-          Our Tips
-        </ColorText>
+      <RiRow>
+        <RiColorText className={styles.boldText}>Our Tips</RiColorText>
         <RiTooltip
           position="bottom"
           className={styles.tooltip}
+          anchorClassName={styles.tooltipAnchor}
           content={
             <Text size="s">
               Tips will help you improve your database.
-              <Spacer size="s" />
+              <RiSpacer size="s" />
               New tips appear while you work with your database, including how
               to improve performance and optimize memory usage.
               <FeatureFlagComponent name={FeatureFlags.envDependent}>
                 <>
-                  <Spacer size="s" />
+                  <RiSpacer size="s" />
                   Eager for more tips? Run Database Analysis to get started.
                 </>
               </FeatureFlagComponent>
@@ -185,7 +183,7 @@ const LiveTimeRecommendations = () => {
           />
         </RiTooltip>
         <FeatureFlagComponent name={FeatureFlags.envDependent}>
-          <a
+          <RiLink variant="regular-inline"
             href={EXTERNAL_LINKS.githubRepo}
             target="_blank"
             data-testid="github-repo-btn"
@@ -197,12 +195,12 @@ const LiveTimeRecommendations = () => {
               size="s"
               data-testid="github-repo-icon"
             />
-          </a>
+          </RiLink>
         </FeatureFlagComponent>
-      </Row>
+      </RiRow>
 
       {isShowHiddenDisplayed && (
-        <Checkbox
+        <RiCheckbox
           id="showHidden"
           name="showHidden"
           label="Show hidden"
@@ -223,7 +221,7 @@ const LiveTimeRecommendations = () => {
       </div>
       <div className={styles.body}>
         {loading ? (
-          <LoadingContent className={styles.loading} lines={4} />
+          <RiLoadingContent className={styles.loading} lines={4} />
         ) : (
           renderBody()
         )}
@@ -236,7 +234,7 @@ const LiveTimeRecommendations = () => {
               size="m"
               type="MessageInfoIcon"
             />
-            <Text className={styles.text}>
+            <RiText className={styles.text}>
               {'Run '}
               <PopoverRunAnalyze
                 isShowPopover={isShowApproveRun}
@@ -256,7 +254,7 @@ const LiveTimeRecommendations = () => {
                 </FooterLink>
               </PopoverRunAnalyze>
               {' to get more tips'}
-            </Text>
+            </RiText>
           </div>
         </FeatureFlagComponent>
       )}

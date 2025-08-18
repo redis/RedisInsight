@@ -1,11 +1,10 @@
 import React from 'react'
 import cx from 'classnames'
-import { Text } from 'uiSrc/components/base/text'
-import { Loader } from 'uiSrc/components/base/display'
-
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { RiTooltip } from 'uiSrc/components'
+import { RiText } from 'uiBase/text'
+import { RiLoader, RiTooltip } from 'uiBase/display'
 import ValidationErrorsList from 'uiSrc/pages/rdi/pipeline-management/components/validation-errors-list/ValidationErrorsList'
+
+import { RiIcon } from 'uiBase/icons'
 import styles from './styles.module.scss'
 
 export interface IProps {
@@ -38,15 +37,17 @@ const Tab = (props: IProps) => {
       className={cx(styles.wrapper, className, { [styles.active]: isSelected })}
       data-testid={testID}
     >
-      <Text className="rdi-pipeline-nav__title" size="m">
+      <RiText className="rdi-pipeline-nav__title" size="m">
         {title}
-      </Text>
+      </RiText>
       {fileName ? (
         <div className="rdi-pipeline-nav__file">
           <RiIcon type="ContractsIcon" className="rdi-pipeline-nav__fileIcon" />
-          <Text className={cx('rdi-pipeline-nav__text', { invalid: !isValid })}>
+          <RiText
+            className={cx('rdi-pipeline-nav__text', { invalid: !isValid })}
+          >
             {fileName}
-          </Text>
+          </RiText>
 
           {!isValid && (
             <RiTooltip
@@ -65,7 +66,7 @@ const Tab = (props: IProps) => {
           )}
 
           {isLoading && (
-            <Loader
+            <RiLoader
               data-testid="rdi-nav-config-loader"
               className={styles.loader}
             />

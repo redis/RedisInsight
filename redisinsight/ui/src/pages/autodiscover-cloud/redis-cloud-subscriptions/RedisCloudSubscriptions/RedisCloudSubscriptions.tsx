@@ -2,30 +2,33 @@ import React, { useState, useEffect } from 'react'
 import { map } from 'lodash'
 import cx from 'classnames'
 import {
+  RiLoadingContent,
+  RiTable,
+  ColumnDefinition,
+  RiFlexItem,
+  RiRow,
+} from 'uiBase/layout'
+
+import {
+  RiDestructiveButton,
+  RiPrimaryButton,
+  RiSecondaryButton,
+  RiFormField,
+} from 'uiBase/forms'
+import { InfoIcon } from 'uiBase/icons'
+import { RiSearchInput } from 'uiBase/inputs'
+import { RiTitle, RiText } from 'uiBase/text'
+import { RiPopover, RiTooltip } from 'uiBase/display'
+import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
+import validationErrors from 'uiSrc/constants/validationErrors'
+import MessageBar from 'uiSrc/components/message-bar/MessageBar'
+import { Maybe, Nullable } from 'uiSrc/utils'
+import {
   InstanceRedisCloud,
   RedisCloudAccount,
   RedisCloudSubscription,
   RedisCloudSubscriptionStatus,
 } from 'uiSrc/slices/interfaces'
-import { Maybe, Nullable } from 'uiSrc/utils'
-import { LoadingContent } from 'uiSrc/components/base/layout'
-import MessageBar from 'uiSrc/components/message-bar/MessageBar'
-import validationErrors from 'uiSrc/constants/validationErrors'
-import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
-
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import {
-  DestructiveButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { InfoIcon } from 'uiSrc/components/base/icons'
-import { SearchInput } from 'uiSrc/components/base/inputs'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import styles from '../styles.module.scss'
 
 export interface Props {
@@ -148,28 +151,28 @@ const RedisCloudSubscriptions = ({
       panelClassName={styles.panelCancelBtn}
       panelPaddingSize="l"
       button={
-        <SecondaryButton
+        <RiSecondaryButton
           onClick={showPopover}
           className="btn-cancel"
           data-testid="btn-cancel"
         >
           Cancel
-        </SecondaryButton>
+        </RiSecondaryButton>
       }
     >
-      <Text size="m">
+      <RiText size="m">
         Your changes have not been saved.&#10;&#13; Do you want to proceed to
         the list of databases?
-      </Text>
+      </RiText>
       <br />
       <div>
-        <DestructiveButton
+        <RiDestructiveButton
           size="s"
           onClick={onClose}
           data-testid="btn-cancel-proceed"
         >
           Proceed
-        </DestructiveButton>
+        </RiDestructiveButton>
       </div>
     </RiPopover>
   )
@@ -183,13 +186,11 @@ const RedisCloudSubscriptions = ({
       }
       content={
         isDisabled ? (
-          <span>
-            {validationErrors.NO_SUBSCRIPTIONS_CLOUD}
-          </span>
+          <span>{validationErrors.NO_SUBSCRIPTIONS_CLOUD}</span>
         ) : null
       }
     >
-      <PrimaryButton
+      <RiPrimaryButton
         size="m"
         disabled={isDisabled}
         onClick={handleSubmit}
@@ -198,12 +199,12 @@ const RedisCloudSubscriptions = ({
         data-testid="btn-show-databases"
       >
         Show databases
-      </PrimaryButton>
+      </RiPrimaryButton>
     </RiTooltip>
   )
 
   const SummaryText = () => (
-    <Text className={styles.subTitle}>
+    <RiText className={styles.subTitle}>
       <b>Summary: </b>
       {countStatusActive ? (
         <span>
@@ -221,7 +222,7 @@ const RedisCloudSubscriptions = ({
           {countStatusFailed > 1 ? 'subscriptions.' : ' subscription.'}
         </span>
       ) : null}
-    </Text>
+    </RiText>
   )
 
   const Account = () => (
@@ -229,25 +230,25 @@ const RedisCloudSubscriptions = ({
       <span className={styles.account_item}>
         <span className={styles.account_item_title}>Account ID:&nbsp;</span>
         <span color="subdued" data-testid="account-id">
-          {account?.accountId ?? <LoadingContent lines={1} />}
+          {account?.accountId ?? <RiLoadingContent lines={1} />}
         </span>
       </span>
       <span className={styles.account_item}>
         <span className={styles.account_item_title}>Name:&nbsp;</span>
         <span color="subdued" data-testid="account-name">
-          {account?.accountName ?? <LoadingContent lines={1} />}
+          {account?.accountName ?? <RiLoadingContent lines={1} />}
         </span>
       </span>
       <span className={styles.account_item}>
         <span className={styles.account_item_title}>Owner Name:&nbsp;</span>
         <span color="subdued" data-testid="account-owner-name">
-          {account?.ownerName ?? <LoadingContent lines={1} />}
+          {account?.ownerName ?? <RiLoadingContent lines={1} />}
         </span>
       </span>
       <span className={styles.account_item}>
         <span className={styles.account_item_title}>Owner Email:&nbsp;</span>
         <span color="subdued" data-testid="account-owner-email">
-          {account?.ownerEmail ?? <LoadingContent lines={1} />}
+          {account?.ownerEmail ?? <RiLoadingContent lines={1} />}
         </span>
       </span>
     </>
@@ -256,28 +257,28 @@ const RedisCloudSubscriptions = ({
   return (
     <AutodiscoveryPageTemplate>
       <div className="databaseContainer">
-        <Title size="XXL" className={styles.title} data-testid="title">
+        <RiTitle size="XXL" className={styles.title} data-testid="title">
           Redis Cloud Subscriptions
-        </Title>
+        </RiTitle>
 
-        <Row align="end" gap="s">
-          <FlexItem grow>
+        <RiRow align="end" gap="s">
+          <RiFlexItem grow>
             <MessageBar opened={countStatusActive + countStatusFailed > 0}>
               <SummaryText />
             </MessageBar>
-          </FlexItem>
-          <FlexItem>
-            <FormField className={styles.searchForm}>
-              <SearchInput
+          </RiFlexItem>
+          <RiFlexItem>
+            <RiFormField className={styles.searchForm}>
+              <RiSearchInput
                 placeholder="Search..."
                 className={styles.search}
                 onChange={onQueryChange}
                 aria-label="Search"
                 data-testid="search"
               />
-            </FormField>
-          </FlexItem>
-        </Row>
+            </RiFormField>
+          </RiFlexItem>
+        </RiRow>
         <br />
 
         <div
@@ -286,7 +287,7 @@ const RedisCloudSubscriptions = ({
           <div className={styles.account}>
             <Account />
           </div>
-          <Table
+          <RiTable
             columns={columns}
             data={items}
             defaultSorting={[
@@ -298,25 +299,25 @@ const RedisCloudSubscriptions = ({
             onRowClick={selectionValue.onSelectionChange}
           />
           {!items.length && (
-            <Text className={styles.noSubscriptions}>{message}</Text>
+            <RiText className={styles.noSubscriptions}>{message}</RiText>
           )}
         </div>
       </div>
-      <FlexItem padding={4}>
-        <Row gap="m" justify="between">
-          <SecondaryButton
+      <RiFlexItem padding={4}>
+        <RiRow gap="m" justify="between">
+          <RiSecondaryButton
             onClick={onBack}
             className="btn-cancel btn-back"
             data-testid="btn-back-adding"
           >
             Back to adding databases
-          </SecondaryButton>
-          <FlexItem direction="row">
+          </RiSecondaryButton>
+          <RiFlexItem direction="row">
             <CancelButton isPopoverOpen={isPopoverOpen} />
             <SubmitButton isDisabled={selection.length < 1} />
-          </FlexItem>
-        </Row>
-      </FlexItem>
+          </RiFlexItem>
+        </RiRow>
+      </RiFlexItem>
     </AutodiscoveryPageTemplate>
   )
 }

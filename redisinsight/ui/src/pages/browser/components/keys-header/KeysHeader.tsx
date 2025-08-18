@@ -9,7 +9,11 @@ import {
   ColumnsIcon,
   EqualIcon,
   FoldersIcon,
-} from 'uiSrc/components/base/icons'
+  RiIcon,
+} from 'uiBase/icons'
+import { RiPopover, RiTooltip } from 'uiBase/display'
+import { RiFlexItem, RiRow } from 'uiBase/layout'
+import { RiIconButton, RiSecondaryButton, RiCheckbox } from 'uiBase/forms'
 import KeysSummary from 'uiSrc/components/keys-summary'
 import {
   SCAN_COUNT_DEFAULT,
@@ -46,18 +50,10 @@ import {
 import { OnboardingStepName, OnboardingSteps } from 'uiSrc/constants/onboarding'
 import { incrementOnboardStepAction } from 'uiSrc/slices/app/features'
 import { AutoRefresh, OnboardingTour } from 'uiSrc/components'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { BrowserColumns, KeyValueFormat } from 'uiSrc/constants'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { setConnectivityError } from 'uiSrc/slices/app/connectivity'
-import {
-  IconButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from './styles.module.scss'
 
 const HIDE_REFRESH_LABEL_WIDTH = 640
@@ -298,7 +294,7 @@ const KeysHeader = (props: Props) => {
               position="top"
               key={view.tooltipText}
             >
-              <IconButton
+              <RiIconButton
                 size="S"
                 className={view.getClassName()}
                 icon={view.getIconType()}
@@ -370,7 +366,7 @@ const KeysHeader = (props: Props) => {
                     panelClassName={styles.popoverWrapper}
                     closePopover={() => setColumnsConfigShown(false)}
                     button={
-                      <SecondaryButton
+                      <RiSecondaryButton
                         size="small"
                         icon={ColumnsIcon}
                         onClick={toggleColumnsConfigVisibility}
@@ -381,12 +377,12 @@ const KeysHeader = (props: Props) => {
                         <span className={styles.columnsButtonText}>
                           Columns
                         </span>
-                      </SecondaryButton>
+                      </RiSecondaryButton>
                     }
                   >
-                    <Row align="center" gap="m">
-                      <FlexItem grow>
-                        <Checkbox
+                    <RiRow align="center" gap="m">
+                      <RiFlexItem grow>
+                        <RiCheckbox
                           id="show-key-size"
                           name="show-key-size"
                           label="Key size"
@@ -400,8 +396,8 @@ const KeysHeader = (props: Props) => {
                           data-testid="show-key-size"
                           className={styles.checkbox}
                         />
-                      </FlexItem>
-                      <FlexItem grow>
+                      </RiFlexItem>
+                      <RiFlexItem grow>
                         <RiTooltip
                           content="Hide the key size to avoid performance issues when working with large keys."
                           position="top"
@@ -415,9 +411,9 @@ const KeysHeader = (props: Props) => {
                             data-testid="key-size-info-icon"
                           />
                         </RiTooltip>
-                      </FlexItem>
-                    </Row>
-                    <Checkbox
+                      </RiFlexItem>
+                    </RiRow>
+                    <RiCheckbox
                       id="show-ttl"
                       name="show-ttl"
                       label="TTL"

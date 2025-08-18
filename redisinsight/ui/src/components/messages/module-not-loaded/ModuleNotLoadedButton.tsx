@@ -2,6 +2,8 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { useHistory } from 'react-router-dom'
+import { RiPrimaryButton } from 'uiBase/forms'
+import { RiLink } from 'uiBase/display'
 import {
   FeatureFlags,
   MODULE_NOT_LOADED_CONTENT as CONTENT,
@@ -17,8 +19,6 @@ import {
   OAuthSocialSource,
   RedisDefaultModules,
 } from 'uiSrc/slices/interfaces'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { Link } from 'uiSrc/components/base/link/Link'
 
 export interface IProps {
   moduleName: RedisDefaultModules
@@ -49,7 +49,7 @@ const ModuleNotLoadedButton = ({
 
   return (
     <>
-      <Link
+      <RiLink
         className={cx(styles.text, styles.link)}
         target="_blank"
         href={getUtmExternalLink(CONTENT[moduleName]?.link, {
@@ -58,11 +58,11 @@ const ModuleNotLoadedButton = ({
         data-testid="learn-more-link"
       >
         Learn More
-      </Link>
+      </RiLink>
       <FeatureFlagComponent
         name={FeatureFlags.cloudAds}
         otherwise={
-          <Link
+          <RiLink
             className={styles.link}
             target="_blank"
             href=""
@@ -74,15 +74,15 @@ const ModuleNotLoadedButton = ({
             }}
             data-testid="get-started-link"
           >
-            <PrimaryButton size="s" className={styles.btnLink}>
+            <RiPrimaryButton size="s" className={styles.btnLink}>
               Redis Databases page
-            </PrimaryButton>
-          </Link>
+            </RiPrimaryButton>
+          </RiLink>
         }
       >
         <OAuthSsoHandlerDialog>
           {(ssoCloudHandlerClick) => (
-            <Link
+            <RiLink
               className={styles.link}
               target="_blank"
               href={getUtmExternalLink(EXTERNAL_LINKS.tryFree, {
@@ -102,10 +102,10 @@ const ModuleNotLoadedButton = ({
               }}
               data-testid="get-started-link"
             >
-              <PrimaryButton size="s" className={styles.btnLink}>
+              <RiPrimaryButton size="s" className={styles.btnLink}>
                 Get Started For Free
-              </PrimaryButton>
-            </Link>
+              </RiPrimaryButton>
+            </RiLink>
           )}
         </OAuthSsoHandlerDialog>
       </FeatureFlagComponent>

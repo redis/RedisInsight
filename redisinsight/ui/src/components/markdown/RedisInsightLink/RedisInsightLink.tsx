@@ -2,11 +2,10 @@ import React, { useState } from 'react'
 import { useHistory, useLocation, useParams } from 'react-router-dom'
 import cx from 'classnames'
 import { isNull } from 'lodash'
+import { RiLink, RiPopover } from 'uiBase/display'
 import { getRedirectionPage } from 'uiSrc/utils/routing'
 import DatabaseNotOpened from 'uiSrc/components/messages/database-not-opened'
 
-import { Link } from 'uiSrc/components/base/link/Link'
-import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -46,7 +45,7 @@ const RedisInsightLink = (props: Props) => {
       panelPaddingSize="m"
       closePopover={() => setIsPopoverOpen(false)}
       button={
-        <Link
+        <RiLink
           color="text"
           href="/"
           onClick={handleLinkClick}
@@ -54,7 +53,7 @@ const RedisInsightLink = (props: Props) => {
           data-testid="redisinsight-link"
         >
           {text}
-        </Link>
+        </RiLink>
       }
     >
       <DatabaseNotOpened />

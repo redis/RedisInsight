@@ -1,11 +1,10 @@
 import React from 'react'
 import { isNull } from 'lodash'
 
+import { Button } from 'uiBase/forms'
+import { RiIcon } from 'uiBase/icons'
+import { RiTooltip } from 'uiBase/display'
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
-import { RiTooltip } from 'uiSrc/components'
-import { Button } from 'uiSrc/components/base/forms/buttons'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from './styles.module.scss'
 
 export interface Props {
   withAlert?: boolean
@@ -49,11 +48,7 @@ const ScanMore = ({
         data-testid="scan-more"
       >
         {withAlert && (
-          <RiTooltip
-            content={WARNING_MESSAGE}
-            position="top"
-            anchorClassName={styles.anchor}
-          >
+          <RiTooltip content={WARNING_MESSAGE} position="top">
             <RiIcon type="InfoIcon" />
           </RiTooltip>
         )}
