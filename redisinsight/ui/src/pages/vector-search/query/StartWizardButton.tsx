@@ -3,7 +3,7 @@ import { CallOut } from 'uiSrc/components/base/display/call-out/CallOut'
 import useStartWizard from '../hooks/useStartWizard'
 
 export const StartWizardButton = () => {
-  const { start } = useStartWizard()
+  const start = useStartWizard()
 
   return (
     <CallOut

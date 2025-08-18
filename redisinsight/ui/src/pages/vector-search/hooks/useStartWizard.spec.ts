@@ -31,7 +31,7 @@ describe('useStartWizard', () => {
     const { result } = renderHook(() => useStartWizard())
 
     act(() => {
-      result.current.start()
+      result.current()
     })
 
     expect(mockPush).toHaveBeenCalledWith(
@@ -47,7 +47,7 @@ describe('useStartWizard', () => {
     const { result } = renderHook(() => useStartWizard())
 
     act(() => {
-      result.current.start()
+      result.current()
     })
 
     expect(mockPush).toHaveBeenCalledWith(
@@ -61,7 +61,7 @@ describe('useStartWizard', () => {
     const { result } = renderHook(() => useStartWizard())
 
     act(() => {
-      result.current.start()
+      result.current()
     })
 
     expect(mockPush).toHaveBeenCalledWith(
@@ -76,7 +76,7 @@ describe('useStartWizard', () => {
     const { result } = renderHook(() => useStartWizard())
 
     act(() => {
-      result.current.start()
+      result.current()
     })
 
     const expectedPath = `/${instanceId}/vector-search/create-index`

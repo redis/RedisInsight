@@ -5,7 +5,7 @@ import { Text } from 'uiSrc/components/base/text'
 import useStartWizard from '../hooks/useStartWizard'
 
 const NoIndexesMessage = () => {
-  const { start } = useStartWizard()
+  const start = useStartWizard()
 
   return (
     <Col gap="m">

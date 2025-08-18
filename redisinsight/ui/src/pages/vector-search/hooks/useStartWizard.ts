@@ -6,13 +6,9 @@ const useStartWizard = () => {
   const history = useHistory()
   const { instanceId } = useParams<{ instanceId: string }>()
 
-  const start = useCallback(() => {
+  return useCallback(() => {
     history.push(Pages.vectorSearchCreateIndex(instanceId))
   }, [history, instanceId])
-
-  return {
-    start,
-  }
 }
 
 export default useStartWizard
