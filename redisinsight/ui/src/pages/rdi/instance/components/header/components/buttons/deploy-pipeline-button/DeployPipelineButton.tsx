@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
-import { RiText, RiTitle } from 'uiBase/text'
+import { RiColorText, RiText, RiTitle } from 'uiBase/text'
 import { RiFlexItem, RiRow } from 'uiBase/layout'
 import { RiSpacer } from 'uiBase/layout/spacer'
 import { RiOutsideClickDetector } from 'uiBase/utils'
@@ -32,7 +32,8 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const [resetPipeline, setResetPipeline] = useState(false)
 
-  const { config, jobs, resetChecked } = useSelector(rdiPipelineSelector)
+  const { config, jobs, resetChecked, isPipelineValid } =
+    useSelector(rdiPipelineSelector)
 
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
   const dispatch = useDispatch()
@@ -119,7 +120,17 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
         }
       >
         <RiTitle size="XS">
-          Are you sure you want to deploy the pipeline?
+          {isPipelineValid ? (
+            <RiColorText color="default">
+              Are you sure you want to deploy the pipeline?
+            </RiColorText>
+          ) : (
+            <RiColorText color="warning">
+              <RiIcon type="ToastDangerIcon" size="L" color="attention500" />
+              Your RDI pipeline contains errors. Are you sure you want to
+              continue?
+            </RiColorText>
+          )}
         </RiTitle>
         <RiSpacer size="s" />
         <RiText size="s">
