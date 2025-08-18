@@ -32,18 +32,21 @@ jest.mock('uiSrc/slices/instances/instances', () => ({
 
 const renderComponent = () => render(<ManageIndexesList />)
 
+const mockedRedisearchListSelector = redisearchListSelector as jest.Mock
+const mockedConnectedInstanceSelector = connectedInstanceSelector as jest.Mock
+
 describe('ManageIndexesList', () => {
   beforeEach(() => {
     cleanup()
     jest.clearAllMocks()
 
     // Reset mocks to default state before each test
-    ;(redisearchListSelector as jest.Mock).mockReturnValue({
+    mockedRedisearchListSelector.mockReturnValue({
       data: [],
       loading: false,
       error: '',
     })
-    ;(connectedInstanceSelector as jest.Mock).mockReturnValue({
+    mockedConnectedInstanceSelector.mockReturnValue({
       id: 'test-instance-123',
       connectionType: 'STANDALONE',
       host: 'localhost',
@@ -62,7 +65,7 @@ describe('ManageIndexesList', () => {
   })
 
   it('should render Loader spinner while fetching data', async () => {
-    ;(redisearchListSelector as jest.Mock).mockReturnValue({
+    mockedRedisearchListSelector.mockReturnValue({
       data: [],
       loading: true,
       error: '',
@@ -74,13 +77,28 @@ describe('ManageIndexesList', () => {
     expect(loader).toBeInTheDocument()
   })
 
+  it('should render no indexes message when there are no indexes', async () => {
+    mockedRedisearchListSelector.mockReturnValue({
+      data: [],
+      loading: false,
+      error: '',
+    })
+
+    renderComponent()
+
+    const noIndexesMessage = await screen.getByText(
+      'No indexes to display yet.',
+    )
+    expect(noIndexesMessage).toBeInTheDocument()
+  })
+
   it('should render indexes boxes when data is available', () => {
     const mockIndexes = [
       Buffer.from('test-index-1'),
       Buffer.from('test-index-2'),
     ]
 
-    ;(redisearchListSelector as jest.Mock).mockReturnValue({
+    mockedRedisearchListSelector.mockReturnValue({
       data: mockIndexes,
       loading: false,
       error: '',
@@ -109,7 +127,7 @@ describe('ManageIndexesList', () => {
   it('should not render indexes boxes when there is no instanceHost', () => {
     // Mock connectedInstanceSelector to return no host
     // TODO: Potential candidate for a factory function to create mock instances
-    ;(connectedInstanceSelector as jest.Mock).mockReturnValue({
+    mockedConnectedInstanceSelector.mockReturnValue({
       id: 'test-instance-123',
       connectionType: 'STANDALONE',
       host: null, // No host means no instanceId
@@ -136,7 +154,7 @@ describe('ManageIndexesList', () => {
   it('should not render indexes boxes when redisearch module is not available', () => {
     // Mock connectedInstanceSelector to return modules without redisearch
     // TODO: Potential candidate for a factory function to create mock instances
-    ;(connectedInstanceSelector as jest.Mock).mockReturnValue({
+    mockedConnectedInstanceSelector.mockReturnValue({
       id: 'test-instance-123',
       connectionType: 'STANDALONE',
       host: 'localhost',
