@@ -66,6 +66,9 @@ export function useNavigation() {
       Pages.rdiPipelineManagement(connectedRdiInstanceId),
     )
 
+  const isVectorSearchPath = () =>
+    location.pathname.split('/')[2] === PageNames.vectorSearch
+
   const getAdditionPropsForHighlighting = (
     pageName: string,
   ): Omit<HighlightedFeatureProps, 'children'> => {
@@ -91,6 +94,16 @@ export function useNavigation() {
       connectedInstanceId,
       iconType: BrowserIcon,
       onboard: ONBOARDING_FEATURES.BROWSER_PAGE,
+    },
+    {
+      tooltipText: 'Search',
+      pageName: PageNames.vectorSearch,
+      ariaLabel: 'Search',
+      onClick: () => handleGoPage(Pages.vectorSearch(connectedInstanceId)),
+      dataTestId: 'vector-search-page-btn',
+      connectedInstanceId,
+      isActivePage: isVectorSearchPath(),
+      iconType: SlowLogIcon,
     },
     {
       tooltipText: 'Workbench',

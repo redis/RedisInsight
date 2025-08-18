@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
+import styled from 'styled-components'
 
 import { RiFlexItem } from 'uiBase/layout'
 import {
@@ -21,6 +22,11 @@ import { isValidJSON, isValidKey, parseJsonData, wrapPath } from '../../utils'
 import { JSONErrors } from '../../constants'
 
 import styles from '../../styles.module.scss'
+
+const ControlsWrapper = styled.div.attrs({ className: styles.controls })`
+  height: 34px;
+  min-height: 34px;
+`
 
 export interface Props {
   isPair: boolean
@@ -125,7 +131,7 @@ const AddItem = (props: Props) => {
                 onCancel={() => setIsConfirmationVisible(false)}
                 onConfirm={confirmApply}
               >
-                <div className={cx(styles.controls)}>
+                <ControlsWrapper>
                   <RiIconButton
                     size="M"
                     icon={CancelSlimIcon}
@@ -144,7 +150,7 @@ const AddItem = (props: Props) => {
                     className={styles.applyBtn}
                     data-testid="apply-btn"
                   />
-                </div>
+                </ControlsWrapper>
               </ConfirmOverwrite>
             </form>
             {!!error && (

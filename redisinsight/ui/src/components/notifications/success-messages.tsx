@@ -196,6 +196,14 @@ export default {
     title: 'Index has been created',
     message: 'Open the list of indexes to see it.',
   }),
+  DELETE_INDEX: (indexName: string) => ({
+    title: 'Index has been deleted',
+    message: (
+      <>
+        <b>{formatNameShort(indexName)}</b> has been deleted from Redis Insight.
+      </>
+    ),
+  }),
   TEST_CONNECTION: () => ({
     title: 'Connection is successful',
   }),
