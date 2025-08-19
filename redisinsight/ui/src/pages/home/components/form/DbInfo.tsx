@@ -150,16 +150,10 @@ const DbInfo = (props: Props) => {
 
       {!!modules?.length && (
         <ListGroupItem
-          className={styles.dbInfoModulesLabel}
           label={
             <Text color="subdued" size="s">
               Capabilities:
-              <ColorText
-                color="default"
-                className={cx(styles.dbInfoListValue, styles.dbInfoModules)}
-              >
-                <DatabaseListModules modules={modules} />
-              </ColorText>
+              <DatabaseListModules modules={modules} />
             </Text>
           }
         />
