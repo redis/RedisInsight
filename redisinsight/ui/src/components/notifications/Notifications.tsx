@@ -165,7 +165,7 @@ const Notifications = () => {
             dispatch(removeInfiniteNotification(id))
           },
         },
-        { variant: riToast.Variant.Notice, autoClose: ONE_HOUR },
+        { variant: riToast.Variant.Informative, autoClose: ONE_HOUR },
       )
       toastIdsRef.current.set(id, toastId)
     })
