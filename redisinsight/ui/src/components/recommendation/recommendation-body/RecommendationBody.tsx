@@ -11,12 +11,12 @@ export interface Props {
 }
 
 const RecommendationBody = ({ elements = [], ...rest }: Props) => (
-  <>
+  <div>
     {// eslint-disable-next-line react/no-array-index-key
     elements?.map((item, idx) => (
       <ContentElement key={idx} content={item} idx={idx} {...rest} />
     ))}
-  </>
+  </div>
 )
 
 export default RecommendationBody
