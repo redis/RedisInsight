@@ -123,15 +123,17 @@ const Notifications = () => {
         toastIdsRef.current.set(id, toastId)
       },
     )
+  const infiniteToastIdsRef = useRef(new Set<number | string>())
 
-  const showInfiniteToasts = (data: InfiniteMessage[]) =>
+  const showInfiniteToasts = (data: InfiniteMessage[]) => {
+    infiniteToastIdsRef.current.forEach((toastId) => {
+      setTimeout(() => {
+        riToast.dismiss(toastId)
+        infiniteToastIdsRef.current.delete(toastId)
+      }, 50)
+    })
     data.forEach((message: InfiniteMessage) => {
       const { id, Inner, className = '' } = message
-      if (toastIdsRef.current.has(id)) {
-        removeToast(id)
-        dispatch(removeInfiniteNotification(id))
-        return
-      }
       const toastId = riToast(
         {
           className: cx(styles.infiniteMessage, className),
@@ -167,14 +169,20 @@ const Notifications = () => {
         },
         { variant: riToast.Variant.Informative, autoClose: ONE_HOUR },
       )
+      infiniteToastIdsRef.current.add(toastId)
       toastIdsRef.current.set(id, toastId)
     })
+  }
 
   useEffect(() => {
     showSuccessToasts(messagesData)
+  }, [messagesData])
+  useEffect(() => {
     showErrorsToasts(errorsData)
+  }, [errorsData])
+  useEffect(() => {
     showInfiniteToasts(infiniteNotifications)
-  }, [messagesData, errorsData, infiniteNotifications])
+  }, [infiniteNotifications])
 
   return <RiToaster />
 }
