@@ -67,7 +67,7 @@ const NoKeysFound = (props: Props) => {
         alt="no results"
       />
       <Spacer />
-      <Title className={styles.title} size="S">
+      <Title color="primary" className={styles.title} size="S">
         Let&apos;s start working
       </Title>
       <Spacer />
