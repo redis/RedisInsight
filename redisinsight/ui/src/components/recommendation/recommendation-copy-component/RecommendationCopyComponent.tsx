@@ -47,8 +47,7 @@ const RecommendationCopyComponent = ({
         Example of a key that may be relevant:
       </Text>
       <div className={styles.keyNameWrapper}>
-        <ColorText
-          color="subdued"
+        <Text
           className={cx(styles.keyName, 'truncateText', {
             [styles.dbAnalysis]: !live,
           })}
@@ -56,7 +55,7 @@ const RecommendationCopyComponent = ({
           data-testid="recommendation-key-name"
         >
           {formattedName}
-        </ColorText>
+        </Text>
         <IconButton
           onClick={handleCopy}
           className={styles.btn}
