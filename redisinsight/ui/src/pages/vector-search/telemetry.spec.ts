@@ -9,10 +9,7 @@ import {
   collectInsertSavedQueryTelemetry,
   collectManageIndexesDeleteTelemetry,
   collectManageIndexesDetailsToggleTelemetry,
-  collectManageIndexesDrawerClosedTelemetry,
-  collectManageIndexesDrawerOpenedTelemetry,
   collectQueryToggleFullScreenTelemetry,
-  collectSavedQueriesPanelToggleTelemetry,
   collectStartStepTelemetry,
   collectTelemetryQueryClear,
   collectTelemetryQueryClearAll,
@@ -161,42 +158,6 @@ describe('telemetry', () => {
     })
   })
 
-  describe('collectSavedQueriesPanelToggleTelemetry', () => {
-    it('should collect telemetry for saved queries panel toggle on open', () => {
-      const instanceId = INSTANCE_ID_MOCK
-      const isSavedQueriesOpen = false
-
-      collectSavedQueriesPanelToggleTelemetry({
-        instanceId,
-        isSavedQueriesOpen,
-      })
-
-      expect(sendEventTelemetry).toHaveBeenCalledWith({
-        event: TelemetryEvent.SEARCH_SAVED_QUERIES_PANEL_OPENED,
-        eventData: {
-          databaseId: instanceId,
-        },
-      })
-    })
-
-    it('should collect telemetry for saved queries panel toggle on close', () => {
-      const instanceId = INSTANCE_ID_MOCK
-      const isSavedQueriesOpen = true
-
-      collectSavedQueriesPanelToggleTelemetry({
-        instanceId,
-        isSavedQueriesOpen,
-      })
-
-      expect(sendEventTelemetry).toHaveBeenCalledWith({
-        event: TelemetryEvent.SEARCH_SAVED_QUERIES_PANEL_CLOSED,
-        eventData: {
-          databaseId: instanceId,
-        },
-      })
-    })
-  })
-
   describe('collectChangedSavedQueryIndexTelemetry', () => {
     it('should collect telemetry for changed saved query index', () => {
       const instanceId = INSTANCE_ID_MOCK
@@ -223,32 +184,6 @@ describe('telemetry', () => {
         eventData: {
           databaseId: instanceId,
         },
-      })
-    })
-  })
-
-  describe('collectManageIndexesDrawerOpenedTelemetry', () => {
-    it('should collect telemetry for the manage indexes drawer opened', () => {
-      const instanceId = INSTANCE_ID_MOCK
-
-      collectManageIndexesDrawerOpenedTelemetry({ instanceId })
-
-      expect(sendEventTelemetry).toHaveBeenCalledWith({
-        event: TelemetryEvent.SEARCH_MANAGE_INDEXES_DRAWER_OPENED,
-        eventData: { databaseId: instanceId },
-      })
-    })
-  })
-
-  describe('collectManageIndexesDrawerClosedTelemetry', () => {
-    it('should collect telemetry for the manage indexes drawer closed', () => {
-      const instanceId = INSTANCE_ID_MOCK
-
-      collectManageIndexesDrawerClosedTelemetry({ instanceId })
-
-      expect(sendEventTelemetry).toHaveBeenCalledWith({
-        event: TelemetryEvent.SEARCH_MANAGE_INDEXES_DRAWER_CLOSED,
-        eventData: { databaseId: instanceId },
       })
     })
   })

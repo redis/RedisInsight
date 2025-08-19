@@ -13,6 +13,7 @@ import { HeaderActions } from './HeaderActions'
 import CommandsViewWrapper from '../components/commands-view'
 import { VectorSearchScreenWrapper } from '../styles'
 import { SavedQueriesScreen } from '../saved-queries/SavedQueriesScreen'
+import { ManageIndexesScreen } from '../manage-indexes/ManageIndexesScreen'
 import { SavedIndex } from '../saved-queries/types'
 import { PresetDataType } from '../create-index/types'
 import {
@@ -44,6 +45,11 @@ const mockSavedIndexes: SavedIndex[] = [
   },
 ]
 
+enum RightPanelType {
+  SAVED_QUERIES = 'saved-queries',
+  MANAGE_INDEXES = 'manage-indexes',
+}
+
 export type VectorSearchQueryProps = {
   instanceId: string
   openSavedQueriesPanel?: boolean
@@ -73,11 +79,10 @@ export const VectorSearchQuery = ({
     onQueryProfile,
   } = useQuery()
 
-  const [isSavedQueriesOpen, setIsSavedQueriesOpen] = useState<boolean>(
-    openSavedQueriesPanel,
+  const [rightPanel, setRightPanel] = useState<RightPanelType | null>(
+    openSavedQueriesPanel ? RightPanelType.SAVED_QUERIES : null,
   )
-  const [isManageIndexesDrawerOpen, setIsManageIndexesDrawerOpen] =
-    useState<boolean>(false)
+  const isSavedQueriesOpen = rightPanel === RightPanelType.SAVED_QUERIES
   const [queryIndex, setQueryIndex] = useState(mockSavedIndexes[0].value)
   const selectedIndex = mockSavedIndexes.find(
     (index) => index.value === queryIndex,
@@ -118,14 +123,28 @@ export const VectorSearchQuery = ({
     })
   }
 
+  const toggleManageIndexesScreen = () => {
+    setRightPanel(
+      rightPanel === RightPanelType.MANAGE_INDEXES
+        ? null
+        : RightPanelType.MANAGE_INDEXES,
+    )
+  }
+
+  const toggleSavedQueriesScreen = () => {
+    setRightPanel(
+      rightPanel === RightPanelType.SAVED_QUERIES
+        ? null
+        : RightPanelType.SAVED_QUERIES,
+    )
+  }
+
   return (
     <ViewModeContextProvider viewMode={ViewMode.VectorSearch}>
       <VectorSearchScreenWrapper direction="column" justify="between">
         <HeaderActions
-          isManageIndexesDrawerOpen={isManageIndexesDrawerOpen}
-          setIsManageIndexesDrawerOpen={setIsManageIndexesDrawerOpen}
-          isSavedQueriesOpen={isSavedQueriesOpen}
-          setIsSavedQueriesOpen={setIsSavedQueriesOpen}
+          toggleManageIndexesScreen={toggleManageIndexesScreen}
+          toggleSavedQueriesScreen={toggleSavedQueriesScreen}
         />
 
         <ResizableContainer direction="horizontal">
@@ -186,7 +205,7 @@ export const VectorSearchQuery = ({
             </ResizableContainer>
           </ResizablePanel>
 
-          {isSavedQueriesOpen && (
+          {rightPanel && (
             <>
               <ResizablePanelHandle
                 direction="vertical"
@@ -199,12 +218,18 @@ export const VectorSearchQuery = ({
                 minSize={20}
                 defaultSize={30}
               >
-                <SavedQueriesScreen
-                  onIndexChange={handleIndexChange}
-                  onQueryInsert={handleQueryInsert}
-                  savedIndexes={mockSavedIndexes}
-                  selectedIndex={selectedIndex}
-                />
+                {rightPanel === RightPanelType.MANAGE_INDEXES && (
+                  <ManageIndexesScreen />
+                )}
+
+                {rightPanel === RightPanelType.SAVED_QUERIES && (
+                  <SavedQueriesScreen
+                    onIndexChange={handleIndexChange}
+                    onQueryInsert={handleQueryInsert}
+                    savedIndexes={mockSavedIndexes}
+                    selectedIndex={selectedIndex}
+                  />
+                )}
               </ResizablePanel>
             </>
           )}

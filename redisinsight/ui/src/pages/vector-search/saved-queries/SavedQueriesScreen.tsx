@@ -20,6 +20,8 @@ import {
   VectorSearchScreenHeader,
   VectorSearchScreenWrapper,
 } from '../styles'
+import { useTelemetryMountEvent } from '../hooks/useTelemetryMountEvent'
+import { TelemetryEvent } from 'uiSrc/telemetry'
 
 type SavedQueriesScreenProps = {
   savedIndexes: SavedIndex[]
@@ -33,55 +35,65 @@ export const SavedQueriesScreen = ({
   selectedIndex,
   onIndexChange,
   onQueryInsert,
-}: SavedQueriesScreenProps) => (
-  <VectorSearchScreenWrapper direction="column" data-testid='saved-queries-screen'>
-    <VectorSearchScreenHeader>
-      <Title size="M" data-testid="title">
-        Saved queries
-      </Title>
-    </VectorSearchScreenHeader>
-    <VectorSearchScreenFooter grow={1}>
-      <VectorSearchSavedQueriesContentWrapper>
-        <VectorSearchSavedQueriesSelectWrapper>
-          <Title size="S">Index:</Title>
-          <RiSelect
-            loading={false}
-            disabled={false}
-            options={savedIndexes}
-            value={selectedIndex?.value}
-            data-testid="select-saved-index"
-            onChange={onIndexChange}
-            valueRender={({ option, isOptionValue }) =>
-              isOptionValue ? (
-                option.value
-              ) : (
-                <TagsWrapper>
-                  {option.value}
-                  {option.tags.map((tag) => (
-                    <FieldTag key={tag} tag={tag as any} />
-                  ))}
-                </TagsWrapper>
-              )
-            }
-          />
-        </VectorSearchSavedQueriesSelectWrapper>
-        {selectedIndex?.queries.map((query) => (
-          <VectorSearchScreenBlockWrapper key={query.value} as="div">
-            <Text>{query.label}</Text>
-            <RightAlignedWrapper>
-              <Button
-                variant="secondary-invert"
-                icon={PlayFilledIcon}
-                size="s"
-                onClick={() => onQueryInsert(query.value)}
-                data-testid="btn-insert-query"
-              >
-                Insert
-              </Button>
-            </RightAlignedWrapper>
-          </VectorSearchScreenBlockWrapper>
-        ))}
-      </VectorSearchSavedQueriesContentWrapper>
-    </VectorSearchScreenFooter>
-  </VectorSearchScreenWrapper>
-)
+}: SavedQueriesScreenProps) => {
+  useTelemetryMountEvent(
+    TelemetryEvent.SEARCH_SAVED_QUERIES_PANEL_OPENED,
+    TelemetryEvent.SEARCH_SAVED_QUERIES_PANEL_CLOSED,
+  )
+
+  return (
+    <VectorSearchScreenWrapper
+      direction="column"
+      data-testid="saved-queries-screen"
+    >
+      <VectorSearchScreenHeader>
+        <Title size="M" data-testid="title">
+          Saved queries
+        </Title>
+      </VectorSearchScreenHeader>
+      <VectorSearchScreenFooter grow={1}>
+        <VectorSearchSavedQueriesContentWrapper>
+          <VectorSearchSavedQueriesSelectWrapper>
+            <Title size="S">Index:</Title>
+            <RiSelect
+              loading={false}
+              disabled={false}
+              options={savedIndexes}
+              value={selectedIndex?.value}
+              data-testid="select-saved-index"
+              onChange={onIndexChange}
+              valueRender={({ option, isOptionValue }) =>
+                isOptionValue ? (
+                  option.value
+                ) : (
+                  <TagsWrapper>
+                    {option.value}
+                    {option.tags.map((tag) => (
+                      <FieldTag key={tag} tag={tag as any} />
+                    ))}
+                  </TagsWrapper>
+                )
+              }
+            />
+          </VectorSearchSavedQueriesSelectWrapper>
+          {selectedIndex?.queries.map((query) => (
+            <VectorSearchScreenBlockWrapper key={query.value} as="div">
+              <Text>{query.label}</Text>
+              <RightAlignedWrapper>
+                <Button
+                  variant="secondary-invert"
+                  icon={PlayFilledIcon}
+                  size="s"
+                  onClick={() => onQueryInsert(query.value)}
+                  data-testid="btn-insert-query"
+                >
+                  Insert
+                </Button>
+              </RightAlignedWrapper>
+            </VectorSearchScreenBlockWrapper>
+          ))}
+        </VectorSearchSavedQueriesContentWrapper>
+      </VectorSearchScreenFooter>
+    </VectorSearchScreenWrapper>
+  )
+}

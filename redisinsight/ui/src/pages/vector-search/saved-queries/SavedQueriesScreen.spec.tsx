@@ -2,10 +2,17 @@
  * @jest-environment jsdom
  */
 import React from 'react'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent } from 'uiSrc/utils/test-utils'
 
 import { SavedQueriesScreen } from './SavedQueriesScreen'
 import { SavedIndex } from './types'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+
+// Mock the telemetry sender once for this spec file
+jest.mock('uiSrc/telemetry', () => ({
+  ...jest.requireActual('uiSrc/telemetry'),
+  sendEventTelemetry: jest.fn(),
+}))
 
 const mockOnIndexChange = jest.fn()
 const mockOnQueryInsert = jest.fn()
@@ -155,6 +162,31 @@ describe('SavedQueriesScreen', () => {
       render(<SavedQueriesScreen {...propsWithEmptyQueries} />)
 
       expect(screen.queryByText('Insert')).not.toBeInTheDocument()
+    })
+  })
+
+  describe('Telemetry', () => {
+    it('should send telemetry event on mount', () => {
+      render(<SavedQueriesScreen {...defaultProps} />)
+
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_SAVED_QUERIES_PANEL_OPENED,
+        eventData: { databaseId: 'instanceId' },
+      })
+    })
+
+    it('should send telemetry event on unmount', () => {
+      const { unmount } = render(<SavedQueriesScreen {...defaultProps} />)
+
+      // clear mount call
+      ;(sendEventTelemetry as jest.Mock).mockClear()
+
+      unmount()
+
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_SAVED_QUERIES_PANEL_CLOSED,
+        eventData: { databaseId: 'instanceId' },
+      })
     })
   })
 })
