@@ -46,7 +46,7 @@ const ExploreGuides = () => {
       </Title>
       <Spacer size="s" />
       <Text color="primary">
-        Explore the amazing world of Redis Stack with our interactive guides
+        Explore the amazing world of Redis with our interactive guides
       </Text>
       <Spacer size="xl" />
       {!!data.length && (
