@@ -2,8 +2,8 @@ import { AllIconsType } from 'uiSrc/components/base/icons/RiIcon'
 
 const GUIDE_ICONS: Record<string, AllIconsType> = {
   search: 'QuerySearchIcon',
-  json: 'JSONIcon',
-  'probabilistic-data-structures': 'ProbabilisticDataIcon',
+  json: 'JsonIcon',
+  'probabilistic-data-structures': 'ProbabilisticIcon',
   'time-series': 'TimeSeriesIcon',
   'vector-similarity-search': 'VectorSimilarityIcon',
 }
