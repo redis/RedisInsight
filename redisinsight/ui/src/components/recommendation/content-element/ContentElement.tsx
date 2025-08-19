@@ -77,6 +77,7 @@ const ContentElement = (props: Props) => {
     case 'link':
       return (
         <Link
+          color="subdued"
           key={`${telemetryName}-${idx}`}
           data-testid={`link-${telemetryName}-${idx}`}
           target="_blank"
