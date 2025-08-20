@@ -113,7 +113,8 @@ const StreamEntryFields = (props: Props) => {
         <FormField
           label={config.entryId.label}
           additionalText={
-            <RiTooltip
+            <Row align="center" gap="s">
+              <RiTooltip
                 anchorClassName="inputAppendIcon"
                 className={styles.entryIdTooltip}
                 position="left"
@@ -130,6 +131,17 @@ const StreamEntryFields = (props: Props) => {
               >
                 <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
               </RiTooltip>
+              {!showEntryError && (
+                <span className={styles.timestampText}>
+                  Timestamp - Sequence Number or *
+                </span>
+              )}
+              {showEntryError && (
+                <span className={styles.error} data-testid="stream-entry-error">
+                  {entryIdError}
+                </span>
+              )}
+            </Row>
           }
         >
           <TextInput
@@ -146,16 +158,6 @@ const StreamEntryFields = (props: Props) => {
             data-testid={config.entryId.id}
           />
         </FormField>
-        {!showEntryError && (
-          <span className={styles.timestampText}>
-            Timestamp - Sequence Number or *
-          </span>
-        )}
-        {showEntryError && (
-          <span className={styles.error} data-testid="stream-entry-error">
-            {entryIdError}
-          </span>
-        )}
       </div>
 
       <div className={styles.fieldsWrapper}>
@@ -167,7 +169,7 @@ const StreamEntryFields = (props: Props) => {
             onClickAdd={addField}
           >
             {(item, index) => (
-              <Row align="center" gap='m'>
+              <Row align="center" gap="m">
                 <FlexItem className={styles.fieldItemWrapper} grow>
                   <FormField>
                     <TextInput
@@ -175,7 +177,7 @@ const StreamEntryFields = (props: Props) => {
                       id={`fieldName-${item.id}`}
                       placeholder={config.name.placeholder}
                       value={item.name}
-                      onChange={value =>
+                      onChange={(value) =>
                         handleFieldChange('name', item.id, value)
                       }
                       ref={
@@ -194,7 +196,7 @@ const StreamEntryFields = (props: Props) => {
                       id={`fieldValue-${item.id}`}
                       placeholder={config.value.placeholder}
                       value={item.value}
-                      onChange={value =>
+                      onChange={(value) =>
                         handleFieldChange('value', item.id, value)
                       }
                       autoComplete="off"

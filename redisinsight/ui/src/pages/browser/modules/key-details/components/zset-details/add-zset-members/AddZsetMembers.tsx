@@ -19,7 +19,7 @@ import {
 import AddMultipleFields from 'uiSrc/pages/browser/components/add-multiple-fields'
 import { ISetMemberState } from 'uiSrc/pages/browser/components/add-key/AddKeySet/interfaces'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
   PrimaryButton,
   SecondaryButton,
@@ -175,7 +175,7 @@ const AddZsetMembers = (props: Props) => {
     members.length === 1 && !(item.name.length || item.score.length)
 
   return (
-    <>
+    <Col gap="m">
       <div className={styles.container}>
         <AddMultipleFields
           items={members}
@@ -184,7 +184,7 @@ const AddZsetMembers = (props: Props) => {
           onClickAdd={addMember}
         >
           {(item, index) => (
-            <Row align="center">
+            <Row align="center" gap="m">
               <FlexItem grow>
                 <FormField>
                   <TextInput
@@ -192,7 +192,7 @@ const AddZsetMembers = (props: Props) => {
                     id={`member-${item.id}`}
                     placeholder={config.member.placeholder}
                     value={item.name}
-                    onChange={value =>
+                    onChange={(value) =>
                       handleMemberChange('name', item.id, value)
                     }
                     ref={
@@ -211,7 +211,7 @@ const AddZsetMembers = (props: Props) => {
                     maxLength={200}
                     placeholder={config.score.placeholder}
                     value={item.score}
-                    onChange={value =>
+                    onChange={(value) =>
                       handleMemberChange('score', item.id, value)
                     }
                     onBlur={() => {
@@ -226,33 +226,31 @@ const AddZsetMembers = (props: Props) => {
           )}
         </AddMultipleFields>
       </div>
-      <>
-        <Row justify="end" gap="l" style={{ padding: 18 }}>
-          <FlexItem>
-            <div>
-              <SecondaryButton
-                onClick={() => closePanel(true)}
-                data-testid="cancel-members-btn"
-              >
-                Cancel
-              </SecondaryButton>
-            </div>
-          </FlexItem>
-          <FlexItem>
-            <div>
-              <PrimaryButton
-                disabled={loading || !isFormValid}
-                loading={loading}
-                onClick={submitData}
-                data-testid="save-members-btn"
-              >
-                Save
-              </PrimaryButton>
-            </div>
-          </FlexItem>
-        </Row>
-      </>
-    </>
+      <Row justify="end" gap="l">
+        <FlexItem>
+          <div>
+            <SecondaryButton
+              onClick={() => closePanel(true)}
+              data-testid="cancel-members-btn"
+            >
+              Cancel
+            </SecondaryButton>
+          </div>
+        </FlexItem>
+        <FlexItem>
+          <div>
+            <PrimaryButton
+              disabled={loading || !isFormValid}
+              loading={loading}
+              onClick={submitData}
+              data-testid="save-members-btn"
+            >
+              Save
+            </PrimaryButton>
+          </div>
+        </FlexItem>
+      </Row>
+    </Col>
   )
 }
 

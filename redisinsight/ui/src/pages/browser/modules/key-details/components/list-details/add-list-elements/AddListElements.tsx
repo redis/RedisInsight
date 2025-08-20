@@ -142,38 +142,31 @@ const AddListElements = (props: Props) => {
               id={`element-${index}`}
               placeholder={config.element.placeholder}
               value={item}
-              onChange={value =>
-                handleElementChange(value, index)
-              }
+              onChange={(value) => handleElementChange(value, index)}
               data-testid={`element-${index}`}
             />
           )}
         </AddMultipleFields>
       </div>
-      <>
-        <Row justify="end" gap="m" style={{ padding: 18 }}>
-          <FlexItem>
-            <div>
-              <SecondaryButton
-                onClick={() => closePanel(true)}
-                data-testid="cancel-members-btn"
-              >
-                Cancel
-              </SecondaryButton>
-            </div>
-          </FlexItem>
-          <FlexItem>
-            <div>
-              <PrimaryButton
-                onClick={submitData}
-                data-testid="save-elements-btn"
-              >
-                Save
-              </PrimaryButton>
-            </div>
-          </FlexItem>
-        </Row>
-      </>
+      <Row justify="end" gap="m" style={{ padding: 18 }}>
+        <FlexItem>
+          <div>
+            <SecondaryButton
+              onClick={() => closePanel(true)}
+              data-testid="cancel-members-btn"
+            >
+              Cancel
+            </SecondaryButton>
+          </div>
+        </FlexItem>
+        <FlexItem>
+          <div>
+            <PrimaryButton onClick={submitData} data-testid="save-elements-btn">
+              Save
+            </PrimaryButton>
+          </div>
+        </FlexItem>
+      </Row>
     </>
   )
 }

@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
 
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
 import { KeyTypes } from 'uiSrc/constants'
@@ -14,6 +13,7 @@ import { ZSetDetailsTable } from './zset-details-table'
 import AddZsetMembers from './add-zset-members/AddZsetMembers'
 import { AddItemsAction } from '../key-details-actions'
 import { KeyDetailsSubheader } from '../key-details-subheader/KeyDetailsSubheader'
+import { AddKeysContainer } from '../common/AddKeysContainer.styled'
 
 export interface Props extends KeyDetailsHeaderProps {
   onRemoveKey: () => void
@@ -66,9 +66,9 @@ const ZSetDetails = (props: Props) => {
           </FlexItem>
         )}
         {isAddItemPanelOpen && (
-          <div className={cx('formFooterBar', 'contentActive')}>
+          <AddKeysContainer>
             <AddZsetMembers closePanel={closeAddItemPanel} />
-          </div>
+          </AddKeysContainer>
         )}
       </FlexItem>
     </Col>
