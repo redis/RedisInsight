@@ -1,5 +1,5 @@
 import React from 'react'
-import { cleanup, render, screen } from 'uiSrc/utils/test-utils'
+import { cleanup, fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { ManageIndexesScreen } from './ManageIndexesScreen'
@@ -15,6 +15,12 @@ jest.mock('./ManageIndexesList', () => ({
   ManageIndexesList: jest.fn().mockReturnValue(null),
 }))
 
+const mockOnClose = jest.fn()
+
+const defaultProps = {
+  onClose: mockOnClose,
+}
+
 describe('ManageIndexesScreen', () => {
   beforeEach(() => {
     cleanup()
@@ -22,7 +28,7 @@ describe('ManageIndexesScreen', () => {
   })
 
   it('renders correctly', () => {
-    const { container } = render(<ManageIndexesScreen />)
+    const { container } = render(<ManageIndexesScreen {...defaultProps} />)
 
     expect(container).toBeTruthy()
 
@@ -31,9 +37,18 @@ describe('ManageIndexesScreen', () => {
     expect(screen.getByTestId('title')).toHaveTextContent('Manage indexes')
   })
 
+  it('should call onClose when close button is clicked', () => {
+    render(<ManageIndexesScreen {...defaultProps} />)
+
+    const closeButton = screen.getByTestId('close-saved-queries-btn')
+    fireEvent.click(closeButton)
+
+    expect(mockOnClose).toHaveBeenCalledTimes(1)
+  })
+
   describe('telemetry', () => {
     it('should send telemetry event on mount', () => {
-      render(<ManageIndexesScreen />)
+      render(<ManageIndexesScreen {...defaultProps} />)
 
       expect(sendEventTelemetry).toHaveBeenCalledWith({
         event: TelemetryEvent.SEARCH_MANAGE_INDEXES_DRAWER_OPENED,
@@ -42,7 +57,7 @@ describe('ManageIndexesScreen', () => {
     })
 
     it('should send telemetry event on unmount', () => {
-      const { unmount } = render(<ManageIndexesScreen />)
+      const { unmount } = render(<ManageIndexesScreen {...defaultProps} />)
 
       // Unmount component to trigger the onUnmount event
       unmount()

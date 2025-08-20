@@ -14,18 +14,6 @@ export const VectorSearchSavedQueriesSelectWrapper = styled.div`
   align-items: center;
 `
 
-export const VectorSearchSavedQueryCardWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  border: 1px solid;
-  border-color: ${({ theme }) => theme.color?.dusk200};
-  border-radius: ${({ theme }) => theme.core?.space.space100};
-  padding: ${({ theme }) => theme.core?.space.space200};
-  gap: ${({ theme }) => theme.core?.space.space200};
-`
-
 export const RightAlignedWrapper = styled.div`
   display: flex;
   align-self: flex-end;

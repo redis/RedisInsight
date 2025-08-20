@@ -123,6 +123,10 @@ export const VectorSearchQuery = ({
     })
   }
 
+  const closeRightPanel = () => {
+    setRightPanel(null)
+  }
+
   const toggleManageIndexesScreen = () => {
     setRightPanel(
       rightPanel === RightPanelType.MANAGE_INDEXES
@@ -219,7 +223,7 @@ export const VectorSearchQuery = ({
                 defaultSize={30}
               >
                 {rightPanel === RightPanelType.MANAGE_INDEXES && (
-                  <ManageIndexesScreen />
+                  <ManageIndexesScreen onClose={closeRightPanel} />
                 )}
 
                 {rightPanel === RightPanelType.SAVED_QUERIES && (
@@ -228,6 +232,7 @@ export const VectorSearchQuery = ({
                     onQueryInsert={handleQueryInsert}
                     savedIndexes={mockSavedIndexes}
                     selectedIndex={selectedIndex}
+                    onClose={closeRightPanel}
                   />
                 )}
               </ResizablePanel>

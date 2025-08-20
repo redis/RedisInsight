@@ -3,19 +3,19 @@ import React from 'react'
 import { Title, Text } from 'uiSrc/components/base/text'
 
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
+import { EmptyButton, IconButton } from 'uiSrc/components/base/forms/buttons'
 import { FieldTag } from 'uiSrc/components/new-index/create-index-step/field-box/FieldTag'
 
-import { PlayFilledIcon } from 'uiSrc/components/base/icons'
+import { CancelSlimIcon, PlayFilledIcon } from 'uiSrc/components/base/icons'
 import {
   RightAlignedWrapper,
   TagsWrapper,
   VectorSearchSavedQueriesContentWrapper,
   VectorSearchSavedQueriesSelectWrapper,
-  VectorSearchSavedQueryCardWrapper,
 } from './styles'
 import { SavedIndex } from './types'
 import {
+  VectorSearchScreenBlockWrapper,
   VectorSearchScreenFooter,
   VectorSearchScreenHeader,
   VectorSearchScreenWrapper,
@@ -28,6 +28,7 @@ type SavedQueriesScreenProps = {
   selectedIndex?: SavedIndex
   onIndexChange: (value: string) => void
   onQueryInsert: (value: string) => void
+  onClose: () => void
 }
 
 export const SavedQueriesScreen = ({
@@ -35,6 +36,7 @@ export const SavedQueriesScreen = ({
   selectedIndex,
   onIndexChange,
   onQueryInsert,
+  onClose,
 }: SavedQueriesScreenProps) => {
   useTelemetryMountEvent(
     TelemetryEvent.SEARCH_SAVED_QUERIES_PANEL_OPENED,
@@ -46,12 +48,19 @@ export const SavedQueriesScreen = ({
       direction="column"
       data-testid="saved-queries-screen"
     >
-      <VectorSearchScreenHeader>
-        <Title size="M" data-testid="title">
+      <VectorSearchScreenHeader padding={6}>
+        <Title size="S" data-testid="title">
           Saved queries
         </Title>
+        <IconButton
+          size="XS"
+          icon={CancelSlimIcon}
+          aria-label="Close"
+          data-testid={'close-saved-queries-btn'}
+          onClick={() => onClose()}
+        />
       </VectorSearchScreenHeader>
-      <VectorSearchScreenFooter grow={1}>
+      <VectorSearchScreenFooter grow={1} padding={6}>
         <VectorSearchSavedQueriesContentWrapper>
           <VectorSearchSavedQueriesSelectWrapper>
             <Title size="S">Index:</Title>
@@ -77,7 +86,11 @@ export const SavedQueriesScreen = ({
             />
           </VectorSearchSavedQueriesSelectWrapper>
           {selectedIndex?.queries.map((query) => (
-            <VectorSearchSavedQueryCardWrapper key={query.value} as="div">
+            <VectorSearchScreenBlockWrapper
+              key={query.value}
+              // as="div"
+              padding={6}
+            >
               <Text>{query.label}</Text>
               <RightAlignedWrapper>
                 <EmptyButton
@@ -88,7 +101,7 @@ export const SavedQueriesScreen = ({
                   Insert
                 </EmptyButton>
               </RightAlignedWrapper>
-            </VectorSearchSavedQueryCardWrapper>
+            </VectorSearchScreenBlockWrapper>
           ))}
         </VectorSearchSavedQueriesContentWrapper>
       </VectorSearchScreenFooter>

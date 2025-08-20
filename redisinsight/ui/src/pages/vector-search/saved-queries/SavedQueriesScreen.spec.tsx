@@ -16,6 +16,7 @@ jest.mock('uiSrc/telemetry', () => ({
 
 const mockOnIndexChange = jest.fn()
 const mockOnQueryInsert = jest.fn()
+const mockOnClose = jest.fn()
 
 const mockSavedIndexes: SavedIndex[] = [
   {
@@ -49,6 +50,7 @@ const defaultProps = {
   selectedIndex: mockSavedIndexes[0],
   onIndexChange: mockOnIndexChange,
   onQueryInsert: mockOnQueryInsert,
+  onClose: mockOnClose,
 }
 
 describe('SavedQueriesScreen', () => {
@@ -76,6 +78,15 @@ describe('SavedQueriesScreen', () => {
 
     const insertButtons = screen.getAllByText('Insert')
     expect(insertButtons).toHaveLength(2) // 2 queries in the selected index
+  })
+
+  it('should call onClose when close button is clicked', () => {
+    render(<SavedQueriesScreen {...defaultProps} />)
+
+    const closeButton = screen.getByTestId('close-saved-queries-btn')
+    fireEvent.click(closeButton)
+
+    expect(mockOnClose).toHaveBeenCalledTimes(1)
   })
 
   it('should call onQueryInsert when insert button is clicked', () => {

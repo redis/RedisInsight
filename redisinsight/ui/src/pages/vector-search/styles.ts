@@ -26,8 +26,9 @@ export const VectorSearchScreenWrapper = styled(FlexGroup)`
 `
 
 export const VectorSearchScreenHeader = styled(FlexItem)`
-  padding: ${({ theme }) => theme.core?.space.space300};
+  flex-direction: row;
   justify-content: space-between;
+  align-items: center;
   border: 1px solid;
   border-color: ${({ theme }) => theme.color?.dusk200};
   border-top-left-radius: 8px;
@@ -35,7 +36,6 @@ export const VectorSearchScreenHeader = styled(FlexItem)`
 `
 
 export const VectorSearchScreenContent = styled(FlexItem)`
-  padding: ${({ theme }) => theme.core?.space.space300};
   gap: ${({ theme }) => theme.core?.space.space550};
   border: 1px solid;
   border-top: none;
@@ -43,7 +43,6 @@ export const VectorSearchScreenContent = styled(FlexItem)`
 `
 
 export const VectorSearchScreenFooter = styled(FlexItem)`
-  padding: ${({ theme }) => theme.core?.space.space300};
   border: 1px solid;
   border-color: ${({ theme }) => theme.color?.dusk200};
   border-top: none;
@@ -52,12 +51,12 @@ export const VectorSearchScreenFooter = styled(FlexItem)`
   border-bottom-right-radius: 8px;
 `
 
-export const VectorSearchScreenBlockWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
+export const VectorSearchScreenBlockWrapper = styled(FlexItem)`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   border: 1px solid;
   border-color: ${({ theme }) => theme.color?.dusk200};
   border-radius: ${({ theme }) => theme.core?.space.space100};
-  padding: ${({ theme }) => theme.core?.space.space200};
   gap: ${({ theme }) => theme.core?.space.space200};
 `
