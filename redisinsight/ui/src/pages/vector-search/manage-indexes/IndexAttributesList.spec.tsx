@@ -33,12 +33,12 @@ describe('IndexAttributesList', () => {
     const list = screen.getByTestId('index-attributes-list')
     expect(list).toBeInTheDocument()
 
-    const table = screen.getByTestId('index-attributes-list--table')
+    const tableHeader1 = screen.getByText('Identifier')
     const summaryInfo = screen.getByTestId(
       'index-attributes-list--summary-info',
     )
 
-    expect(table).toBeInTheDocument()
+    expect(tableHeader1).toBeInTheDocument()
     expect(summaryInfo).toBeInTheDocument()
   })
 
