@@ -3,7 +3,7 @@ import React from 'react'
 import { Title, Text } from 'uiSrc/components/base/text'
 
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
-import { Button } from 'uiSrc/components/base/forms/buttons'
+import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { FieldTag } from 'uiSrc/components/new-index/create-index-step/field-box/FieldTag'
 
 import { PlayFilledIcon } from 'uiSrc/components/base/icons'
@@ -12,10 +12,10 @@ import {
   TagsWrapper,
   VectorSearchSavedQueriesContentWrapper,
   VectorSearchSavedQueriesSelectWrapper,
+  VectorSearchSavedQueryCardWrapper,
 } from './styles'
 import { SavedIndex } from './types'
 import {
-  VectorSearchScreenBlockWrapper,
   VectorSearchScreenFooter,
   VectorSearchScreenHeader,
   VectorSearchScreenWrapper,
@@ -77,20 +77,18 @@ export const SavedQueriesScreen = ({
             />
           </VectorSearchSavedQueriesSelectWrapper>
           {selectedIndex?.queries.map((query) => (
-            <VectorSearchScreenBlockWrapper key={query.value} as="div">
+            <VectorSearchSavedQueryCardWrapper key={query.value} as="div">
               <Text>{query.label}</Text>
               <RightAlignedWrapper>
-                <Button
-                  variant="secondary-invert"
+                <EmptyButton
                   icon={PlayFilledIcon}
-                  size="s"
                   onClick={() => onQueryInsert(query.value)}
                   data-testid="btn-insert-query"
                 >
                   Insert
-                </Button>
+                </EmptyButton>
               </RightAlignedWrapper>
-            </VectorSearchScreenBlockWrapper>
+            </VectorSearchSavedQueryCardWrapper>
           ))}
         </VectorSearchSavedQueriesContentWrapper>
       </VectorSearchScreenFooter>
