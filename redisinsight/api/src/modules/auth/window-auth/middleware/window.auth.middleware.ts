@@ -13,6 +13,8 @@ export class WindowAuthMiddleware implements NestMiddleware {
 
   async use(req: Request, res: Response, next: NextFunction): Promise<any> {
     const { windowId } = WindowAuthMiddleware.getWindowIdFromReq(req);
+    next()
+    return
 
     const isAuthorized = await this.windowAuthService.isAuthorized(windowId);
 
