@@ -1,12 +1,9 @@
-import { useTheme } from '@redis-ui/styles'
 import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 import { VectorSearchBox } from 'uiSrc/components/new-index/create-index-step/field-box/types'
 import { BoxSelectionOption } from 'uiSrc/components/new-index/selection-box/SelectionBox'
 import {
   BikeIcon,
-  BikeDarkIcon,
   PopcornIcon,
-  PopcornDarkIcon,
   VectorSearchIcon,
   WandIcon,
 } from 'uiSrc/components/base/icons'
@@ -45,26 +42,21 @@ export const sampleDatasetOptions = [
   },
 ]
 
-export const useGetIndexDataContent =
-  (): BoxSelectionOption<SampleDataContent>[] => {
-    const { name: theme } = useTheme()
-
-    return [
-      {
-        value: SampleDataContent.E_COMMERCE_DISCOVERY,
-        label: 'E-commerce Discovery',
-        text: 'Find products by meaning, not just keywords.',
-        icon: theme === 'dark' ? BikeDarkIcon : BikeIcon,
-      },
-      {
-        value: SampleDataContent.CONTENT_RECOMMENDATIONS,
-        label: 'Movie Recommendations',
-        text: 'Suggest movies based on the true meaning of plots or themes.',
-        icon: theme === 'dark' ? PopcornDarkIcon : PopcornIcon,
-        disabled: true,
-      },
-    ]
-  }
+export const indexDataContent: BoxSelectionOption<SampleDataContent>[] = [
+  {
+    value: SampleDataContent.E_COMMERCE_DISCOVERY,
+    label: 'E-commerce Discovery',
+    text: 'Find products by meaning, not just keywords.',
+    icon: BikeIcon,
+  },
+  {
+    value: SampleDataContent.CONTENT_RECOMMENDATIONS,
+    label: 'Movie Recommendations',
+    text: 'Suggest movies based on the true meaning of plots or themes.',
+    icon: PopcornIcon,
+    disabled: true,
+  },
+]
 
 // ** Create index step */
 
