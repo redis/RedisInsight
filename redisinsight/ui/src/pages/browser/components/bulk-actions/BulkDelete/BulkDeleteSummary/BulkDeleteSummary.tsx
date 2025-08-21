@@ -41,7 +41,7 @@ const BulkDeleteSummary = () => {
     <div className={styles.container}>
       {isUndefined(status) && (
         <>
-          <Text className={styles.title}>
+          <Text size="m" variant="semiBold" className={styles.title}>
             <span>{title}</span>
             <RiTooltip
               position="right"
@@ -59,6 +59,7 @@ const BulkDeleteSummary = () => {
           </Text>
           <Text
             color="subdued"
+            size="XS"
             className={styles.summaryApproximate}
             data-testid="bulk-delete-summary"
           >
