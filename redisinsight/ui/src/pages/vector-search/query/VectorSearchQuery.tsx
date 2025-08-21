@@ -14,10 +14,7 @@ import CommandsViewWrapper from '../components/commands-view'
 import { VectorSearchScreenWrapper } from '../styles'
 import { SavedQueriesScreen } from '../saved-queries/SavedQueriesScreen'
 import { ManageIndexesScreen } from '../manage-indexes/ManageIndexesScreen'
-import { SavedIndex } from '../saved-queries/types'
-import { PresetDataType } from '../create-index/types'
 import {
-  collectChangedSavedQueryIndexTelemetry,
   collectInsertSavedQueryTelemetry,
   collectTelemetryQueryClear,
   collectTelemetryQueryClearAll,
@@ -27,23 +24,6 @@ import {
   ViewMode,
   ViewModeContextProvider,
 } from 'uiSrc/components/query/context/view-mode.context'
-
-const mockSavedIndexes: SavedIndex[] = [
-  {
-    value: PresetDataType.BIKES,
-    tags: ['tag', 'text', 'vector'],
-    queries: [
-      {
-        label: 'Search for "Nord" bikes ordered by price',
-        value: 'FT.SEARCH idx:bikes_vss "@brand:Nord" SORTBY price ASC',
-      },
-      {
-        label: 'Find road alloy bikes under 20kg',
-        value: 'FT.SEARCH idx:bikes_vss "@material:{alloy} @weight:[0 20]"',
-      },
-    ],
-  },
-]
 
 enum RightPanelType {
   SAVED_QUERIES = 'saved-queries',
@@ -83,10 +63,6 @@ export const VectorSearchQuery = ({
     openSavedQueriesPanel ? RightPanelType.SAVED_QUERIES : null,
   )
   const isSavedQueriesOpen = rightPanel === RightPanelType.SAVED_QUERIES
-  const [queryIndex, setQueryIndex] = useState(mockSavedIndexes[0].value)
-  const selectedIndex = mockSavedIndexes.find(
-    (index) => index.value === queryIndex,
-  )
 
   const onQuerySubmit = () => {
     onSubmit()
@@ -105,14 +81,6 @@ export const VectorSearchQuery = ({
 
   const onQueryClear = () => {
     collectTelemetryQueryClear({ instanceId })
-  }
-
-  const handleIndexChange = (value: string) => {
-    setQueryIndex(value)
-
-    collectChangedSavedQueryIndexTelemetry({
-      instanceId,
-    })
   }
 
   const handleQueryInsert = (query: string) => {
@@ -228,10 +196,8 @@ export const VectorSearchQuery = ({
 
                 {rightPanel === RightPanelType.SAVED_QUERIES && (
                   <SavedQueriesScreen
-                    onIndexChange={handleIndexChange}
+                    instanceId={instanceId}
                     onQueryInsert={handleQueryInsert}
-                    savedIndexes={mockSavedIndexes}
-                    selectedIndex={selectedIndex}
                     onClose={closeRightPanel}
                   />
                 )}

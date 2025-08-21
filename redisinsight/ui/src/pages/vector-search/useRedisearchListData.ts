@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import {
@@ -6,12 +6,16 @@ import {
   fetchRedisearchListAction,
 } from 'uiSrc/slices/browser/redisearch'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
-import { isRedisearchAvailable } from 'uiSrc/utils'
+import { bufferToString, isRedisearchAvailable } from 'uiSrc/utils'
 
 export const useRedisearchListData = () => {
   const dispatch = useDispatch()
   const { loading, data } = useSelector(redisearchListSelector)
   const { modules, host: instanceHost } = useSelector(connectedInstanceSelector)
+  const stringData = useMemo(
+    () => data.map((index) => bufferToString(index)),
+    [data],
+  )
 
   useEffect(() => {
     if (!instanceHost) {
@@ -27,5 +31,6 @@ export const useRedisearchListData = () => {
   return {
     loading,
     data,
+    stringData,
   }
 }

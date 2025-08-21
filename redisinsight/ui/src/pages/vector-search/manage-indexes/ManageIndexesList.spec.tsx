@@ -93,10 +93,7 @@ describe('ManageIndexesList', () => {
   })
 
   it('should render indexes boxes when data is available', () => {
-    const mockIndexes = [
-      Buffer.from('test-index-1'),
-      Buffer.from('test-index-2'),
-    ]
+    const mockIndexes = ['test-index-1', 'test-index-2']
 
     mockedRedisearchListSelector.mockReturnValue({
       data: mockIndexes,
