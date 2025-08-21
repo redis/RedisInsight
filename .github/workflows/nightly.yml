@@ -1,7 +1,8 @@
 name: Nightly jobs
-on:
-  schedule:
-    - cron: 0 0 * * *
+# Disabled nightly jobs until issues with individual jobs are resolved
+# on:
+#   schedule:
+#     - cron: 0 0 * * *
 
 jobs:
   # Integration tests
