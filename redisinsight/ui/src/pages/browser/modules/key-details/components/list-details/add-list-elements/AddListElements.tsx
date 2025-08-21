@@ -16,7 +16,7 @@ import {
 import { KeyTypes } from 'uiSrc/constants'
 import { stringToBuffer } from 'uiSrc/utils'
 import { AddListFormConfig as config } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
   PrimaryButton,
   SecondaryButton,
@@ -122,8 +122,8 @@ const AddListElements = (props: Props) => {
   }
 
   return (
-    <>
-      <div className={styles.container}>
+    <Col gap="m">
+      <Col gap="m" className={styles.container}>
         <RiSelect
           value={destination}
           options={optionsDestinations}
@@ -147,8 +147,8 @@ const AddListElements = (props: Props) => {
             />
           )}
         </AddMultipleFields>
-      </div>
-      <Row justify="end" gap="m" style={{ padding: 18 }}>
+      </Col>
+      <Row justify="end" gap="m">
         <FlexItem>
           <div>
             <SecondaryButton
@@ -167,7 +167,7 @@ const AddListElements = (props: Props) => {
           </div>
         </FlexItem>
       </Row>
-    </>
+    </Col>
   )
 }
 
