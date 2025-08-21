@@ -45,7 +45,7 @@ const GroupBadge = ({
         <Text
           style={{ color: 'var(--euiTextSubduedColorHover)' }}
           className="text-uppercase"
-          size="xs"
+          size="XS"
         >
           {getGroupTypeDisplay(type)}
         </Text>

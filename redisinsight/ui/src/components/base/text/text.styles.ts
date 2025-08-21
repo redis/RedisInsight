@@ -22,20 +22,14 @@ export interface MapProps extends HTMLAttributes<HTMLElement> {
 
 export type ColorTextProps = Omit<BodyProps, 'color' | 'size' | 'component'> & {
   color?: ColorType
+  size?: BodyProps['size'] | 'm' | 's' | 'xs'
   component?: 'div' | 'span'
 }
 
-export type TextProps = Omit<
-  React.ComponentProps<typeof Typography.Body>,
-  'color' | 'size'
-> &
+export type TextProps = Omit<BodyProps, 'color' | 'size'> &
   CommonProps & {
     color?: ColorType
-    size?:
-      | React.ComponentProps<typeof Typography.Body>['size']
-      | 'm'
-      | 's'
-      | 'xs'
+    size?: BodyProps['size'] | 'm' | 's' | 'xs'
     textAlign?: 'left' | 'center' | 'right'
   }
 
