@@ -82,7 +82,7 @@ const rdiPipelineSlice = createSlice({
       state.loading = false
       state.data = payload
       state.config = payload?.config || ''
-      state.jobs = payload?.jobs || ''
+      state.jobs = payload?.jobs || []
     },
     getPipelineFailure: (state, { payload }: PayloadAction<string>) => {
       state.loading = false
@@ -93,6 +93,15 @@ const rdiPipelineSlice = createSlice({
     },
     setPipelineJobs: (state, { payload }: PayloadAction<IRdiPipelineJob[]>) => {
       state.jobs = payload
+    },
+    updatePipelineJob: (
+      state,
+      { payload }: PayloadAction<{ name: string; value: string }>,
+    ) => {
+      const jobIndex = state.jobs.findIndex((job) => job.name === payload.name)
+      if (jobIndex !== -1) {
+        state.jobs[jobIndex].value = payload.value
+      }
     },
     deployPipeline: (state) => {
       state.loading = true
@@ -134,10 +143,7 @@ const rdiPipelineSlice = createSlice({
     ) => {
       state.monacoJobsSchema = payload
     },
-    setJobNameSchema: (
-      state,
-      { payload }: PayloadAction<Nullable<object>>,
-    ) => {
+    setJobNameSchema: (state, { payload }: PayloadAction<Nullable<object>>) => {
       state.jobNameSchema = payload
     },
     getPipelineStrategies: (state) => {
@@ -243,6 +249,7 @@ export const {
   getPipelineStrategiesFailure,
   setPipelineConfig,
   setPipelineJobs,
+  updatePipelineJob,
   setPipelineInitialState,
   setChangedFile,
   setChangedFiles,
@@ -418,13 +425,17 @@ export function fetchRdiPipelineSchema(
 
       if (isStatusSuccessful(status)) {
         dispatch(setPipelineSchema(data))
-        dispatch(setMonacoJobsSchema({
-          ...omit(get(data, ['jobs'], {}), ['properties.name']),
-          required: get(data, ['jobs', 'required'], []).filter(
-            (val: string) => val !== 'name',
-          ),
-        }))
-        dispatch(setJobNameSchema(get(data, ['jobs', 'properties', 'name'], null)))
+        dispatch(
+          setMonacoJobsSchema({
+            ...omit(get(data, ['jobs'], {}), ['properties.name']),
+            required: get(data, ['jobs', 'required'], []).filter(
+              (val: string) => val !== 'name',
+            ),
+          }),
+        )
+        dispatch(
+          setJobNameSchema(get(data, ['jobs', 'properties', 'name'], null)),
+        )
         onSuccessAction?.(data)
       }
     } catch (_err) {

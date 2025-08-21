@@ -12,6 +12,7 @@ import {
   rdiPipelineSelector,
   setChangedFile,
   setPipelineJobs,
+  updatePipelineJob,
 } from 'uiSrc/slices/rdi/pipeline'
 import { FileChangeType } from 'uiSrc/slices/interfaces'
 import MonacoYaml from 'uiSrc/components/monaco-editor/components/monaco-yaml'
@@ -125,13 +126,7 @@ const Job = (props: Props) => {
   )
 
   const handleChange = (value: string) => {
-    const newJobs = jobs.map((job, index) => {
-      if (index === jobIndexRef.current) {
-        return { ...job, value }
-      }
-      return job
-    })
-    dispatch(setPipelineJobs(newJobs))
+    dispatch(updatePipelineJob({ name: jobNameRef.current, value }))
     checkIsFileUpdated(value)
   }
 

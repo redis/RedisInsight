@@ -9,8 +9,7 @@ export interface Props {
 const PipelineManagementPageRouter = ({ routes }: Props) => (
   <Switch>
     {routes.map((route, i) => (
-      // eslint-disable-next-line react/no-array-index-key
-      <RouteWithSubRoutes key={i} {...route} />
+      <RouteWithSubRoutes key={`pipeline-management-route-${i}`} {...route} />
     ))}
   </Switch>
 )
