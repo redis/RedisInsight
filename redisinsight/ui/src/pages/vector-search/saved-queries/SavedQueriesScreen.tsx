@@ -5,6 +5,8 @@ import { Title, Text } from 'uiSrc/components/base/text'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { EmptyButton, IconButton } from 'uiSrc/components/base/forms/buttons'
 import { FieldTag } from 'uiSrc/components/new-index/create-index-step/field-box/FieldTag'
+import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
+import { Loader } from 'uiSrc/components/base/display'
 
 import { CancelSlimIcon, PlayFilledIcon } from 'uiSrc/components/base/icons'
 import {
@@ -25,13 +27,12 @@ import { TelemetryEvent } from 'uiSrc/telemetry'
 import { useRedisearchListData } from '../useRedisearchListData'
 import { collectChangedSavedQueryIndexTelemetry } from '../telemetry'
 import { PresetDataType } from '../create-index/types'
-import { Loader } from '@redis-ui/components'
 import NoIndexesMessage from '../manage-indexes/NoIndexesMessage'
 
 const mockSavedIndexes: SavedIndex[] = [
   {
     value: PresetDataType.BIKES,
-    tags: ['tag', 'text', 'vector'],
+    tags: [FieldTypes.TAG, FieldTypes.TEXT, FieldTypes.VECTOR],
     queries: [
       {
         label: 'Search for "Nord" bikes ordered by price',
@@ -139,7 +140,7 @@ export const SavedQueriesScreen = ({
                     <TagsWrapper>
                       {option.value}
                       {option.tags.map((tag) => (
-                        <FieldTag key={tag} tag={tag as any} />
+                        <FieldTag key={tag} tag={tag} />
                       ))}
                     </TagsWrapper>
                   )
