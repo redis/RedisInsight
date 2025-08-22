@@ -98,7 +98,7 @@ export const VectorSearchCreateIndex = ({
       dispatch(addMessageNotification(successMessages.CREATE_INDEX()))
 
       history.push(Pages.vectorSearch(instanceId), {
-        openSavedQueriesPanel: true,
+        defaultSavedQueriesIndex: createSearchIndexParameters.indexName,
       })
     }
   }, [success, error])

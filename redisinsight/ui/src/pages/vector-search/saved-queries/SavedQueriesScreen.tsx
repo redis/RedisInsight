@@ -47,12 +47,14 @@ const mockSavedIndexes: SavedIndex[] = [
 
 type SavedQueriesScreenProps = {
   instanceId: string
+  defaultSavedQueriesIndex?: string
   onQueryInsert: (value: string) => void
   onClose: () => void
 }
 
 export const SavedQueriesScreen = ({
   instanceId,
+  defaultSavedQueriesIndex,
   onQueryInsert,
   onClose,
 }: SavedQueriesScreenProps) => {
@@ -60,7 +62,7 @@ export const SavedQueriesScreen = ({
     TelemetryEvent.SEARCH_SAVED_QUERIES_PANEL_OPENED,
     TelemetryEvent.SEARCH_SAVED_QUERIES_PANEL_CLOSED,
   )
-  const [selectedIndex, setSelectedIndex] = useState('')
+  const [selectedIndex, setSelectedIndex] = useState(defaultSavedQueriesIndex)
   const { stringData, loading } = useRedisearchListData()
   const savedIndexes = useMemo(
     () =>
@@ -81,10 +83,13 @@ export const SavedQueriesScreen = ({
   )
 
   useEffect(() => {
+    if (selectedIndex) return
+
+    // Select the first index by default if none is selected yet
     const firstIndex = savedIndexes[0]?.value
 
     firstIndex && setSelectedIndex(firstIndex)
-  }, [savedIndexes])
+  }, [selectedIndex, savedIndexes])
 
   const onIndexChange = (value: string) => {
     setSelectedIndex(value)

@@ -11,7 +11,7 @@ type Params = {
   instanceId: string
 }
 type LocationState = {
-  openSavedQueriesPanel: boolean
+  defaultSavedQueriesIndex?: string
 }
 
 const VectorSearchPage = () => {
@@ -30,7 +30,7 @@ const VectorSearchPage = () => {
     <VectorSearchPageWrapper>
       <VectorSearchQuery
         instanceId={instanceId}
-        openSavedQueriesPanel={state?.openSavedQueriesPanel}
+        defaultSavedQueriesIndex={state?.defaultSavedQueriesIndex}
       />
     </VectorSearchPageWrapper>
   )

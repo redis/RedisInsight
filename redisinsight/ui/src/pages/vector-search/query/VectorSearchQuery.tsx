@@ -32,12 +32,12 @@ enum RightPanelType {
 
 export type VectorSearchQueryProps = {
   instanceId: string
-  openSavedQueriesPanel?: boolean
+  defaultSavedQueriesIndex?: string
 }
 
 export const VectorSearchQuery = ({
   instanceId,
-  openSavedQueriesPanel = false,
+  defaultSavedQueriesIndex,
 }: VectorSearchQueryProps) => {
   const {
     query,
@@ -60,7 +60,7 @@ export const VectorSearchQuery = ({
   } = useQuery()
 
   const [rightPanel, setRightPanel] = useState<RightPanelType | null>(
-    openSavedQueriesPanel ? RightPanelType.SAVED_QUERIES : null,
+    defaultSavedQueriesIndex ? RightPanelType.SAVED_QUERIES : null,
   )
   const isSavedQueriesOpen = rightPanel === RightPanelType.SAVED_QUERIES
 
@@ -197,6 +197,7 @@ export const VectorSearchQuery = ({
                 {rightPanel === RightPanelType.SAVED_QUERIES && (
                   <SavedQueriesScreen
                     instanceId={instanceId}
+                    defaultSavedQueriesIndex={defaultSavedQueriesIndex}
                     onQueryInsert={handleQueryInsert}
                     onClose={closeRightPanel}
                   />

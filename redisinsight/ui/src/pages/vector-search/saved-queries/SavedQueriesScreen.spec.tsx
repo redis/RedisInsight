@@ -24,12 +24,13 @@ const mockOnClose = jest.fn()
 
 describe('SavedQueriesScreen', () => {
   const instanceId = 'instanceId'
-  const renderComponent = () =>
+  const renderComponent = (defaultSavedQueriesIndex?: string) =>
     render(
       <SavedQueriesScreen
         instanceId={instanceId}
         onQueryInsert={mockOnQueryInsert}
         onClose={mockOnClose}
+        defaultSavedQueriesIndex={defaultSavedQueriesIndex}
       />,
     )
 
@@ -38,7 +39,7 @@ describe('SavedQueriesScreen', () => {
     ;(useRedisearchListData as jest.Mock).mockReturnValue({
       loading: false,
       data: [],
-      stringData: ['idx:bikes_vss'],
+      stringData: ['idx:bikes_vss', 'idx:restaurants_vss'],
     })
   })
 
@@ -66,6 +67,18 @@ describe('SavedQueriesScreen', () => {
     renderComponent()
     const insertButtons = screen.getAllByText('Insert')
     expect(insertButtons).toHaveLength(2)
+  })
+
+  it('should select the first index by default', () => {
+    renderComponent()
+    expect(screen.queryByText('idx:bikes_vss')).toBeInTheDocument()
+  })
+
+  it('should select the default index if provided', () => {
+    renderComponent('idx:restaurants_vss')
+    // The Select component isn't a native <select>, so assert by displayed text
+    expect(screen.queryByText('idx:bikes_vss')).not.toBeInTheDocument()
+    expect(screen.queryByText('idx:restaurants_vss')).toBeInTheDocument()
   })
 
   it('should call onClose when close button is clicked', () => {

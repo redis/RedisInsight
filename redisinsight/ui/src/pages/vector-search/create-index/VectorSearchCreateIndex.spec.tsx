@@ -16,7 +16,12 @@ import {
   VectorSearchCreateIndex,
   VectorSearchCreateIndexProps,
 } from './VectorSearchCreateIndex'
-import { SampleDataContent, SampleDataType, SearchIndexType } from './types'
+import {
+  PresetDataType,
+  SampleDataContent,
+  SampleDataType,
+  SearchIndexType,
+} from './types'
 import { useCreateIndex } from './hooks/useCreateIndex'
 
 // Mock the telemetry module, so we don't send actual telemetry data during tests
@@ -93,7 +98,7 @@ describe('VectorSearchCreateIndex', () => {
     expect(pushMock).toHaveBeenCalledWith(
       Pages.vectorSearch(INSTANCE_ID_MOCK),
       {
-        openSavedQueriesPanel: true,
+        defaultSavedQueriesIndex: PresetDataType.BIKES,
       },
     )
   })
