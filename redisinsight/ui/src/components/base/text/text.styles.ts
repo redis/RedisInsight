@@ -19,17 +19,19 @@ export interface MapProps extends HTMLAttributes<HTMLElement> {
   $color?: ColorType
   $align?: 'left' | 'center' | 'right'
 }
+type BodySizesLowerCaseType = 'm' | 's' | 'xs'
+type TextSizeType = BodyProps['size'] | BodySizesLowerCaseType
 
 export type ColorTextProps = Omit<BodyProps, 'color' | 'size' | 'component'> & {
   color?: ColorType
-  size?: BodyProps['size'] | 'm' | 's' | 'xs'
+  size?: TextSizeType
   component?: 'div' | 'span'
 }
 
 export type TextProps = Omit<BodyProps, 'color' | 'size'> &
   CommonProps & {
     color?: ColorType
-    size?: BodyProps['size'] | 'm' | 's' | 'xs'
+    size?: TextSizeType
     textAlign?: 'left' | 'center' | 'right'
   }
 
@@ -103,3 +105,14 @@ export const Indicator = styled.div<
   border-radius: 50%;
   background-color: ${({ $color }) => $color || 'inherit'};
 `
+
+export const mapSize = (size: TextSizeType): BodyProps['size'] => {
+  if (size === 'm') {
+    return 'M'
+  } else if (size === 's') {
+    return 'S'
+  } else if (size === 'xs') {
+    return 'XS'
+  }
+  return size
+}

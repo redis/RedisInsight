@@ -4,6 +4,8 @@ import ExplorePanelTemplate from 'uiSrc/templates/explore-panel/ExplorePanelTemp
 
 import { Page, PageBody } from 'uiSrc/components/base/layout/page'
 import styles from './styles.module.scss'
+import { Spacer } from 'uiSrc/components/base/layout'
+import { Col } from 'uiSrc/components/base/layout/flex'
 
 export interface Props {
   children: React.ReactNode
@@ -14,11 +16,11 @@ const AutodiscoveryPageTemplate = (props: Props) => {
   return (
     <>
       <PageHeader title="Redis databases" showInsights />
-      <div />
+      <Spacer size="s" />
       <ExplorePanelTemplate panelClassName={styles.explorePanel}>
         <Page className={styles.page}>
           <PageBody component="div">
-            <div className="homePage">{children}</div>
+            <Col>{children}</Col>
           </PageBody>
         </Page>
       </ExplorePanelTemplate>
