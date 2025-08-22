@@ -1,23 +1,15 @@
 import React, { useState, useMemo, useEffect } from 'react'
 
-import { Title, Text } from 'uiSrc/components/base/text'
+import { Title } from 'uiSrc/components/base/text'
 
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
-import { EmptyButton, IconButton } from 'uiSrc/components/base/forms/buttons'
-import { FieldTag } from 'uiSrc/components/new-index/create-index-step/field-box/FieldTag'
+import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 import { Loader } from 'uiSrc/components/base/display'
 
-import { CancelSlimIcon, PlayFilledIcon } from 'uiSrc/components/base/icons'
-import {
-  RightAlignedWrapper,
-  TagsWrapper,
-  VectorSearchSavedQueriesContentWrapper,
-  VectorSearchSavedQueriesSelectWrapper,
-} from './styles'
+import { CancelSlimIcon } from 'uiSrc/components/base/icons'
+import { VectorSearchSavedQueriesContentWrapper } from './styles'
 import { SavedIndex } from './types'
 import {
-  VectorSearchScreenBlockWrapper,
   VectorSearchScreenFooter,
   VectorSearchScreenHeader,
   VectorSearchScreenWrapper,
@@ -28,6 +20,8 @@ import { useRedisearchListData } from '../useRedisearchListData'
 import { collectChangedSavedQueryIndexTelemetry } from '../telemetry'
 import { PresetDataType } from '../create-index/types'
 import NoIndexesMessage from '../manage-indexes/NoIndexesMessage'
+import { QueryCard } from './QueryCard'
+import { IndexSelect } from './IndexSelect'
 
 const mockSavedIndexes: SavedIndex[] = [
   {
@@ -82,6 +76,7 @@ export const SavedQueriesScreen = ({
   const selectedIndexItem = savedIndexes.find(
     (index) => index.value === selectedIndex,
   )
+  const hasIndexes = savedIndexes.length > 0
 
   useEffect(() => {
     if (selectedIndex) return
@@ -98,10 +93,6 @@ export const SavedQueriesScreen = ({
     collectChangedSavedQueryIndexTelemetry({
       instanceId,
     })
-  }
-
-  if (loading) {
-    return <Loader data-testid="manage-indexes-list--loader" />
   }
 
   return (
@@ -123,46 +114,25 @@ export const SavedQueriesScreen = ({
       </VectorSearchScreenHeader>
       <VectorSearchScreenFooter grow={1} padding={6}>
         <VectorSearchSavedQueriesContentWrapper>
-          {savedIndexes.length > 0 ? (
-            <VectorSearchSavedQueriesSelectWrapper>
-              <Title size="S">Index:</Title>
-              <RiSelect
-                loading={false}
-                disabled={false}
-                options={savedIndexes}
-                value={selectedIndexItem?.value}
-                data-testid="select-saved-index"
-                onChange={onIndexChange}
-                valueRender={({ option, isOptionValue }) =>
-                  isOptionValue ? (
-                    option.value
-                  ) : (
-                    <TagsWrapper>
-                      {option.value}
-                      {option.tags.map((tag) => (
-                        <FieldTag key={tag} tag={tag} />
-                      ))}
-                    </TagsWrapper>
-                  )
-                }
-              />
-            </VectorSearchSavedQueriesSelectWrapper>
-          ) : (
-            <NoIndexesMessage />
+          {loading && <Loader data-testid="manage-indexes-list--loader" />}
+
+          {!loading && hasIndexes && (
+            <IndexSelect
+              savedIndexes={savedIndexes}
+              selectedIndex={selectedIndexItem?.value}
+              onIndexChange={onIndexChange}
+            />
           )}
+
+          {!loading && !hasIndexes && <NoIndexesMessage />}
+
           {selectedIndexItem?.queries.map((query) => (
-            <VectorSearchScreenBlockWrapper key={query.value} padding={6}>
-              <Text>{query.label}</Text>
-              <RightAlignedWrapper>
-                <EmptyButton
-                  icon={PlayFilledIcon}
-                  onClick={() => onQueryInsert(query.value)}
-                  data-testid="btn-insert-query"
-                >
-                  Insert
-                </EmptyButton>
-              </RightAlignedWrapper>
-            </VectorSearchScreenBlockWrapper>
+            <QueryCard
+              key={query.value}
+              label={query.label}
+              value={query.value}
+              onQueryInsert={onQueryInsert}
+            />
           ))}
         </VectorSearchSavedQueriesContentWrapper>
       </VectorSearchScreenFooter>
