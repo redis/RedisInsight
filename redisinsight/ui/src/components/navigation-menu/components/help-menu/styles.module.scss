@@ -14,7 +14,8 @@
   align-items: center;
   cursor: pointer;
 
-  :global(.euiButtonIcon), :global(svg) {
+  :global(.euiButtonIcon),
+  :global(svg) {
     color: var(--euiTooltipTextColor) !important;
   }
 
@@ -42,12 +43,15 @@
   .helpMenuItemLink {
     display: flex;
     flex-direction: row;
+    gap: 4px;
+    align-items: center;
 
     &:not(:last-child) {
       margin-bottom: 16px;
     }
 
-    :global(.euiButtonIcon), :global(.euiIcon) {
+    :global(.euiButtonIcon),
+    :global(.euiIcon) {
       margin-right: 12px;
       color: var(--euiTooltipTextColor) !important;
       width: 16px !important;
@@ -59,8 +63,11 @@
       line-height: 16px !important;
       text-decoration: none !important;
       cursor: pointer;
+      padding: 0 !important;
+      color: var(--externalLinkColor) !important;
 
       &:hover {
+        background: none !important;
         color: var(--externalLinkColor) !important;
         text-decoration: underline !important;
       }
@@ -70,7 +77,8 @@
 
 .helpMenuItemDisabled {
   cursor: auto;
-  :global(svg), div {
+  :global(svg),
+  div {
     color: var(--buttonSecondaryDisabledTextColor) !important;
   }
 }
