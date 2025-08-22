@@ -1,8 +1,6 @@
 .title {
   padding-top: 16px;
-  //font-size: 18px !important;
   line-height: 24px;
-  //font-weight: 500 !important;
 }
 
 .tooltipAnchor {
@@ -11,6 +9,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  vertical-align: middle;
 
   svg {
     margin-top: -2px;
