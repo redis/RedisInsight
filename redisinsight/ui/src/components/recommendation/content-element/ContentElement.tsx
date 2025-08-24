@@ -45,7 +45,7 @@ const ContentElement = (props: Props) => {
           key={`${telemetryName}-${idx}`}
           component="div"
           className={cx(styles.text, { [styles.insights]: insights })}
-          color="subdued"
+          color="primary"
         >
           {value}
         </ColorText>
@@ -56,7 +56,7 @@ const ContentElement = (props: Props) => {
           data-testid={`code-${telemetryName}-${idx}`}
           className={cx(styles.code, { [styles.insights]: insights })}
           key={`${telemetryName}-${idx}`}
-          color="subdued"
+          color="primary"
         >
           <code className={cx(styles.span, styles.text)}>{value}</code>
         </ColorText>
@@ -66,7 +66,7 @@ const ContentElement = (props: Props) => {
         <ColorText
           data-testid={`span-${telemetryName}-${idx}`}
           key={`${telemetryName}-${idx}`}
-          color="subdued"
+          color="primary"
           className={cx(styles.span, styles.text, {
             [styles.insights]: insights,
           })}
