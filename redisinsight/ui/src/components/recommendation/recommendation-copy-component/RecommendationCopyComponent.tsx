@@ -80,6 +80,7 @@ const RecommendationCopyComponent = ({
         <StyledKeyName
           className="truncateText"
           data-testid="recommendation-key-name"
+          component="div"
         >
           {formattedName}
         </StyledKeyName>
