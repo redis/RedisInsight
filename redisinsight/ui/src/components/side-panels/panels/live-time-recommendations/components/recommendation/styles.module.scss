@@ -118,28 +118,9 @@
 }
 
 .votingContainer {
-  justify-content: center;
   border-radius: 8px;
   background-color: var(--recommendationsBgColor) !important;
   padding: 4px 0 4px 10px;
-  :global {
-    .voteContent {
-      margin-left: 6px !important;
-    }
-    .euiText {
-      font-size: 12px;
-    }
-
-    .vote__btn {
-      width: 28px !important;
-      height: 28px !important;
-    }
-
-    .euiIcon {
-      width: 28px !important;
-      height: 28px !important;
-    }
-  }
 }
 
 .keyNameContainer {
