@@ -95,12 +95,12 @@ describe('VectorSearchCreateIndex', () => {
     renderVectorSearchCreateIndexComponent({ initialStep: 2 })
 
     // Effect should dispatch success notification and navigate
-    expect(pushMock).toHaveBeenCalledWith(
-      Pages.vectorSearch(INSTANCE_ID_MOCK),
-      {
-        defaultSavedQueriesIndex: PresetDataType.BIKES,
-      },
-    )
+    expect(pushMock).toHaveBeenCalledWith({
+      pathname: Pages.vectorSearch(INSTANCE_ID_MOCK),
+      search: `?defaultSavedQueriesIndex=${encodeURIComponent(
+        PresetDataType.BIKES,
+      )}`,
+    })
   })
 
   it('should dispatch error notification on error', () => {

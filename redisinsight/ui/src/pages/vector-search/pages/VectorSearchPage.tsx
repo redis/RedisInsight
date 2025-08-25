@@ -10,13 +10,13 @@ import { VectorSearchPageWrapper } from './../styles'
 type Params = {
   instanceId: string
 }
-type LocationState = {
-  defaultSavedQueriesIndex?: string
-}
 
 const VectorSearchPage = () => {
   const { instanceId } = useParams<Params>()
-  const { state } = useLocation<LocationState | undefined>()
+  const { search } = useLocation()
+  const defaultSavedQueriesIndex =
+    new URLSearchParams(search).get('defaultSavedQueriesIndex') || undefined
+
   usePageViewTelemetry({
     page: TelemetryPageView.VECTOR_SEARCH_PAGE,
   })
@@ -30,7 +30,7 @@ const VectorSearchPage = () => {
     <VectorSearchPageWrapper>
       <VectorSearchQuery
         instanceId={instanceId}
-        defaultSavedQueriesIndex={state?.defaultSavedQueriesIndex}
+        defaultSavedQueriesIndex={defaultSavedQueriesIndex}
       />
     </VectorSearchPageWrapper>
   )
