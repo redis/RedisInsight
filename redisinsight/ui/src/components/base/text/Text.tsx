@@ -8,6 +8,7 @@ export const Text = ({
   color,
   size,
   textAlign,
+  weight,
   ...rest
 }: TextProps) => {
   const sizeMap = {
@@ -26,6 +27,7 @@ export const Text = ({
       className={cn(className, 'RI-text')}
       $color={color}
       $align={textAlign}
+      $weight={weight}
       size={sizeMap.size as BodySizesType}
     />
   )
