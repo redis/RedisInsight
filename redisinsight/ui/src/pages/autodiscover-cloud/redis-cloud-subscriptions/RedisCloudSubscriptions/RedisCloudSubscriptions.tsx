@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { map } from 'lodash'
-import cx from 'classnames'
 import {
   InstanceRedisCloud,
   RedisCloudAccount,
@@ -8,7 +7,7 @@ import {
   RedisCloudSubscriptionStatus,
 } from 'uiSrc/slices/interfaces'
 import { Maybe, Nullable } from 'uiSrc/utils'
-import { LoadingContent } from 'uiSrc/components/base/layout'
+import { LoadingContent, Spacer } from 'uiSrc/components/base/layout'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
@@ -31,12 +30,14 @@ import {
   AccountItem,
   AccountItemTitle,
   AccountWrapper,
+  DatabaseWrapper,
   Footer,
 } from './RedisCloudSubscriptions.styles'
 
 export interface Props {
   columns: ColumnDefinition<RedisCloudSubscription>[]
   subscriptions: Nullable<RedisCloudSubscription[]>
+  selection: Nullable<RedisCloudSubscription[]>
   loading: boolean
   account: Nullable<RedisCloudAccount>
   error: string
@@ -59,6 +60,7 @@ const noResultsMessage = 'Your Redis Cloud has no subscriptions available.'
 
 const RedisCloudSubscriptions = ({
   subscriptions,
+  selection,
   columns,
   loading,
   account = null,
@@ -70,8 +72,6 @@ const RedisCloudSubscriptions = ({
   const [items, setItems] = useState(subscriptions || [])
   const [message, setMessage] = useState(loadingMsg)
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
-
-  const [selection, setSelection] = useState<RedisCloudSubscription[]>([])
 
   useEffect(() => {
     if (subscriptions !== null) {
@@ -106,29 +106,6 @@ const RedisCloudSubscriptions = ({
 
   const closePopover = () => {
     setIsPopoverOpen(false)
-  }
-
-  const selectionValue = {
-    onSelectionChange: (selected: RedisCloudSubscription) =>
-      setSelection((previous) => {
-        const canSelect =
-          selected.status === RedisCloudSubscriptionStatus.Active &&
-          selected.numberOfDatabases !== 0
-
-        if (!canSelect) {
-          return previous
-        }
-
-        const isSelected = previous.some(
-          (item) => item.id === selected.id && item.type === selected.type,
-        )
-        if (isSelected) {
-          return previous.filter(
-            (item) => !(item.id === selected.id && item.type === selected.type),
-          )
-        }
-        return [...previous, selected]
-      }),
   }
 
   const onQueryChange = (term: string) => {
@@ -276,12 +253,11 @@ const RedisCloudSubscriptions = ({
         </Row>
         <br />
 
-        <div
-          className={cx('databaseList', 'itemList', styles.cloudSubscriptions)}
-        >
+        <DatabaseWrapper>
           <AccountWrapper>
             <Account />
           </AccountWrapper>
+          <Spacer size="m" />
           <Table
             columns={columns}
             data={items}
@@ -291,12 +267,11 @@ const RedisCloudSubscriptions = ({
                 desc: false,
               },
             ]}
-            onRowClick={selectionValue.onSelectionChange}
           />
           {!items.length && (
             <Text className={styles.noSubscriptions}>{message}</Text>
           )}
-        </div>
+        </DatabaseWrapper>
         <MessageBar opened={countStatusActive + countStatusFailed > 0}>
           <SummaryText />
         </MessageBar>
@@ -313,7 +288,7 @@ const RedisCloudSubscriptions = ({
           </SecondaryButton>
           <Row grow={false} gap="m">
             <CancelButton isPopoverOpen={isPopoverOpen} />
-            <SubmitButton isDisabled={selection.length < 1} />
+            <SubmitButton isDisabled={(selection?.length || 0) < 1} />
           </Row>
         </Row>
       </Footer>
