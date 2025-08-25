@@ -44,9 +44,9 @@ import { Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout'
 
 const FooterLink = styled.button<{
-  onClick?: () => void;
-  'data-testid'?: string;
-  children?: React.ReactNode;
+  onClick?: () => void
+  'data-testid'?: string
+  children?: React.ReactNode
 }>`
   font:
     normal normal 400 12px/14px Graphik,
@@ -194,7 +194,7 @@ const LiveTimeRecommendations = () => {
               className={styles.githubIcon}
               aria-label="redis insight github repository"
               type="GithubIcon"
-              size="s"
+              size="m"
               data-testid="github-repo-icon"
             />
           </a>
