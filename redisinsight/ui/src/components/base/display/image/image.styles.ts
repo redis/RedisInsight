@@ -1,9 +1,20 @@
 import { HTMLAttributes } from 'react'
 import styled, { css } from 'styled-components'
 
-export const SIZES = ['s', 'm', 'l', 'xl', 'original', 'fullWidth'] as const
+export const SIZES = [
+  'xs',
+  's',
+  'm',
+  'l',
+  'xl',
+  'original',
+  'fullWidth',
+] as const
 
 export const imageSizeStyles = {
+  xs: css`
+    width: 50px;
+  `,
   s: css`
     width: 100px;
   `,

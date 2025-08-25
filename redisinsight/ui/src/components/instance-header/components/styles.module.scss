@@ -2,24 +2,11 @@
   margin-bottom: 4px;
 }
 
-.rowTooltipItem {
-  flex-direction: row !important;
-  margin-right: 12px;
-}
-
-.tooltipItemValue {
-  margin-left: 4px;
-}
-
 .dbIndexInfo {
   margin: 8px 0;
   background: var(--tooltipLightBgColor);
   border-radius: 8px;
   padding: 8px 16px;
-
-  .messageInfoIcon {
-    width: 54px;
-  }
 }
 
 .modules {

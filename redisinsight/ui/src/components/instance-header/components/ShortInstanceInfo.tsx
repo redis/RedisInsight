@@ -12,10 +12,13 @@ import { getModule, Nullable, truncateText } from 'uiSrc/utils'
 import { DEFAULT_MODULES_INFO } from 'uiSrc/constants/modules'
 import { Theme } from 'uiSrc/constants'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { FlexGroup, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
+import { Spacer } from 'uiSrc/components/base/layout'
+import { RiImage } from 'uiSrc/components/base/display'
+import MessageInfoSvg from 'uiSrc/assets/img/icons/help_illus.svg'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -49,50 +52,46 @@ const ShortInstanceInfo = ({ info, databases, modules }: Props) => {
 
   return (
     <div data-testid="db-info-tooltip">
-      <div className={styles.tooltipItem}>
-        <b style={{ fontSize: 13 }}>{name}</b>
-      </div>
-      <div className={styles.tooltipItem}>
-        <span>
-          {host}:{port}
-        </span>
-      </div>
+      <Text color="primary" size="s" component="div" weight="bold">
+        {name}
+      </Text>
+      <Spacer size="xs" />
+      <Text color="primary" size="xs">
+        {host}:{port}
+      </Text>
       {databases > 1 && (
-        <Row className={styles.dbIndexInfo} align="center">
-          <FlexItem style={{ marginRight: 16 }}>
-            <RiIcon
-              className={styles.messageInfoIcon}
-              size="xxl"
-              type="MessageInfoIcon"
-            />
+        <Row className={styles.dbIndexInfo} align="center" gap="l">
+          <FlexItem>
+            <RiImage src={MessageInfoSvg} alt="Database Info" $size="xs" />
           </FlexItem>
-          <FlexItem grow>
-            <Text size="s">Logical Databases</Text>
-            <Text color="subdued" size="xs">
+          <FlexItem>
+            <Text size="m">Logical Databases</Text>
+            <Spacer size="xs" />
+            <Text color="primary" size="s">
               Select logical databases to work with in Browser, Workbench, and
               Database Analysis.
             </Text>
           </FlexItem>
         </Row>
       )}
-      <Row className={styles.tooltipItem} align="center" justify="start">
-        <FlexItem className={styles.rowTooltipItem}>
+      <FlexGroup align="center">
+        <Row align="center">
           <RiIcon type="ConnectionIcon" />
-          <span className={styles.tooltipItemValue}>
+          <span>
             {connectionType
               ? CONNECTION_TYPE_DISPLAY[connectionType]
               : capitalize(connectionType)}
           </span>
-        </FlexItem>
-        <FlexItem className={styles.rowTooltipItem}>
+        </Row>
+        <Row align="center">
           <RiIcon type="VersionIcon" />
-          <span className={styles.tooltipItemValue}>{version}</span>
-        </FlexItem>
-        <FlexItem className={styles.rowTooltipItem}>
+          <span>{version}</span>
+        </Row>
+        <Row align="center">
           <RiIcon type="UserIcon" />
-          <span className={styles.tooltipItemValue}>{user || 'Default'}</span>
-        </FlexItem>
-      </Row>
+          <span>{user || 'Default'}</span>
+        </Row>
+      </FlexGroup>
       {!!modules?.length && (
         <div className={styles.modules}>
           <h4 className={styles.mi_fieldName}>Database Modules</h4>
