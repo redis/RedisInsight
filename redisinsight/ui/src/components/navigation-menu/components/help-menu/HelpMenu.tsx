@@ -114,8 +114,8 @@ const HelpMenu = () => {
                 target="_blank"
                 data-testid="submit-bug-btn"
               >
-                <RiIcon type="GithubHelpCenterIcon" size="xxl" />
-                <Spacer size="m" />
+                <RiIcon type="GithubIcon" size="original" />
+                <Spacer size="xs" />
                 <Text
                   size="xs"
                   textAlign="center"
