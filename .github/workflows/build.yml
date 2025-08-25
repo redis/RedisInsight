@@ -23,16 +23,6 @@ on:
         type: boolean
 
 jobs:
-  build-linux:
-    if: contains(inputs.target, 'linux') || inputs.target == 'all'
-    uses: ./.github/workflows/pipeline-build-linux.yml
-    secrets: inherit
-    with:
-      environment: ${{ inputs.environment }}
-      target: ${{ inputs.target }}
-      debug: ${{ inputs.debug }}
-      enterprise: ${{ inputs.enterprise }}
-
   build-macos:
     if: contains(inputs.target, 'macos') || inputs.target == 'all'
     uses: ./.github/workflows/pipeline-build-macos.yml
@@ -40,15 +30,6 @@ jobs:
     with:
       environment: ${{ inputs.environment }}
       target: ${{ inputs.target }}
-      debug: ${{ inputs.debug }}
-      enterprise: ${{ inputs.enterprise }}
-
-  build-windows:
-    if: contains(inputs.target, 'windows') || inputs.target == 'all'
-    uses: ./.github/workflows/pipeline-build-windows.yml
-    secrets: inherit
-    with:
-      environment: ${{ inputs.environment }}
       debug: ${{ inputs.debug }}
       enterprise: ${{ inputs.enterprise }}
 
