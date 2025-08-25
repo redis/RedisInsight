@@ -64,8 +64,8 @@ export const VectorSearchQuery = ({
   )
   const isSavedQueriesOpen = rightPanel === RightPanelType.SAVED_QUERIES
 
-  const onQuerySubmit = () => {
-    onSubmit()
+  const onQuerySubmit = (value?: string) => {
+    onSubmit(value)
     collectTelemetryQueryRun({
       instanceId,
       query,
