@@ -10,7 +10,6 @@ import {
   RedisCloudSubscription,
   RedisCloudSubscriptionStatus,
   RedisCloudSubscriptionStatusText,
-  RedisCloudSubscriptionType,
   RedisCloudSubscriptionTypeText,
 } from 'uiSrc/slices/interfaces'
 import {
@@ -41,58 +40,6 @@ import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { ToastDangerIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 
-// TODO - 25.08.25 - remove mock
-const mockAccount = {
-  accountId: 1,
-  accountName: 'Viktar',
-  ownerEmail: 'viktar.pavlov@redis.com',
-  ownerName: 'Viktar Pavlov',
-}
-
-// TODO - 25.08.25 - remove mock
-export const mockSubscriptions: RedisCloudSubscription[] = [
-  {
-    id: 2854056,
-    name: 'name',
-    type: RedisCloudSubscriptionType.Fixed,
-    numberOfDatabases: 1,
-    provider: 'aws',
-    region: 'us-east-1',
-    status: RedisCloudSubscriptionStatus.Active,
-    free: false,
-  },
-  {
-    id: 2854057,
-    name: 'name 2',
-    type: RedisCloudSubscriptionType.Fixed,
-    numberOfDatabases: 1,
-    provider: 'aws',
-    region: 'us-east-1',
-    status: RedisCloudSubscriptionStatus.Active,
-    free: false,
-  },
-  {
-    id: 28540562,
-    name: 'name-2',
-    type: RedisCloudSubscriptionType.Flexible,
-    numberOfDatabases: 2,
-    provider: 'azure',
-    region: 'centralus',
-    status: RedisCloudSubscriptionStatus.NotActivated,
-    free: false,
-  },
-  {
-    id: 2854056223,
-    name: 'name-3',
-    type: RedisCloudSubscriptionType.Flexible,
-    numberOfDatabases: 3,
-    provider: 'gcp',
-    region: 'us-west1',
-    status: RedisCloudSubscriptionStatus.Deleting,
-    free: true,
-  },
-]
-
 function canSelectRow(row: RowDefinition<RedisCloudSubscription>) {
   return (
     row.original.status === RedisCloudSubscriptionStatus.Active &&
@@ -122,8 +69,7 @@ export const useCloudSubscriptionConfig = () => {
 
   useEffect(() => {
     if (subscriptions === null) {
-      subscriptions = mockSubscriptions
-      // history.push(Pages.home)
+      history.push(Pages.home)
     }
   }, [])
 
@@ -131,7 +77,7 @@ export const useCloudSubscriptionConfig = () => {
     if (ssoFlowRef.current !== OAuthSocialAction.Import) return
 
     if (!userOAuthProfile) {
-      // history.push(Pages.home)
+      history.push(Pages.home)
       return
     }
 
@@ -388,8 +334,8 @@ export const useCloudSubscriptionConfig = () => {
     columns,
     selection,
     loading,
-    account: account ?? mockAccount,
-    subscriptions: subscriptions ? subscriptions : mockSubscriptions,
+    account: account,
+    subscriptions: subscriptions,
     subscriptionsError,
     accountError,
     handleClose,
