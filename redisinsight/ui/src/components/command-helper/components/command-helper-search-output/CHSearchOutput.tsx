@@ -47,7 +47,7 @@ const CHSearchOutput = ({ searchedCommands }: Props) => {
       return (
         <Text
           size="s"
-          color="subdued"
+          color="primary"
           className={styles.description}
           data-testid={`cli-helper-output-args-${command}`}
         >
@@ -72,7 +72,7 @@ const CHSearchOutput = ({ searchedCommands }: Props) => {
       {searchedCommands.length > 0 && (
         <div style={{ width: '100%' }}>
           {searchedCommands.map((command: string) => (
-            <Row gap="m" key={command}>
+            <Row gap="m" key={command} align="center">
               <FlexItem style={{ flexShrink: 0 }}>
                 <Text
                   key={command}
@@ -82,7 +82,7 @@ const CHSearchOutput = ({ searchedCommands }: Props) => {
                     handleClickCommand(e, command)
                   }}
                 >
-                  <Link className={styles.title}>
+                  <Link color="subdued">
                     {command}
                   </Link>
                 </Text>

@@ -119,14 +119,14 @@ const CommandHelper = (props: Props) => {
             </div>
           )}
           {!commandLine && (
-            <ColorText
-              color="subdued"
+            <Text
+              color="primary"
               className={styles.defaultScreen}
               data-testid="cli-helper-default"
             >
               Enter any command in CLI or use search to see detailed
               information.
-            </ColorText>
+            </Text>
           )}
         </div>
       )}
