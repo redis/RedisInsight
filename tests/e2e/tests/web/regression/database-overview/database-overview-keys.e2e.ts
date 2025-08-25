@@ -76,7 +76,7 @@ test('Verify that when users hover over keys icon in Overview for Cloud DB, they
     .skip
     .meta({ rte: rte.reCloud, skipComment: "Unstable CI execution, assertion failure, needs investigation" })
     .before(async() => {
-        await databaseHelper.acceptLicenseTermsAndAddRECloudDatabase(cloudDatabaseConfig);
+        await databaseHelper.acceptLicenseTermsAndAddRedisCloudDatabase(cloudDatabaseConfig);
     })
     .after(async() => {
         // Delete database

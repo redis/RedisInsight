@@ -55,7 +55,7 @@ jest.mock('uiSrc/slices/instances/instances', () => ({
   ...jest.requireActual('uiSrc/slices/instances/instances'),
   connectedInstanceSelector: jest.fn().mockReturnValue({
     id: 'instanceId',
-    provider: 'RE_CLOUD',
+    provider: 'REDIS_CLOUD',
   }),
 }))
 
@@ -180,7 +180,7 @@ describe('DatabaseAnalysisTabs', () => {
         event: TelemetryEvent.DATABASE_ANALYSIS_DATA_SUMMARY_CLICKED,
         eventData: {
           databaseId: INSTANCE_ID_MOCK,
-          provider: 'RE_CLOUD',
+          provider: 'REDIS_CLOUD',
         },
       })
       ;(sendEventTelemetry as jest.Mock).mockRestore()
@@ -211,7 +211,7 @@ describe('DatabaseAnalysisTabs', () => {
           databaseId: INSTANCE_ID_MOCK,
           tipsCount: 0,
           list: [],
-          provider: 'RE_CLOUD',
+          provider: 'REDIS_CLOUD',
         },
       })
       ;(sendEventTelemetry as jest.Mock).mockRestore()
@@ -242,7 +242,7 @@ describe('DatabaseAnalysisTabs', () => {
           databaseId: INSTANCE_ID_MOCK,
           tipsCount: 2,
           list: ['luaScript', 'shardHashes'],
-          provider: 'RE_CLOUD',
+          provider: 'REDIS_CLOUD',
         },
       })
       ;(sendEventTelemetry as jest.Mock).mockRestore()

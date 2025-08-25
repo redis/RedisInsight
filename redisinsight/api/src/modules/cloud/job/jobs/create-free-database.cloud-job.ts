@@ -148,7 +148,7 @@ export class CreateFreeDatabaseCloudJob extends CloudJob {
           name,
           nameFromProvider: name,
           password,
-          provider: HostingProvider.RE_CLOUD,
+          provider: HostingProvider.REDIS_CLOUD,
           cloudDetails: {
             ...cloudDatabase?.cloudDetails,
             free: true,

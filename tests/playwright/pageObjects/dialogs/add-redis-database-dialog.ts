@@ -261,7 +261,7 @@ export class AddRedisDatabaseDialog extends BasePage {
         }
     }
 
-    async addAutodiscoverREClusterDatabase(
+    async addAutodiscoverRedisSoftwareDatabase(
         parameters: AddNewDatabaseParameters,
     ): Promise<void> {
         await this.addDatabaseButton.click()
@@ -272,7 +272,7 @@ export class AddRedisDatabaseDialog extends BasePage {
         await this.passwordInput.fill(parameters.databasePassword || '')
     }
 
-    async addAutodiscoverRECloudDatabase(
+    async addAutodiscoverRedisCloudDatabase(
         cloudAPIAccessKey: string,
         cloudAPISecretKey: string,
     ): Promise<void> {

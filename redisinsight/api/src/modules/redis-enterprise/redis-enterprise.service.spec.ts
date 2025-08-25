@@ -30,7 +30,7 @@ const mockGetDatabasesDto: ClusterConnectionDetailsDto = {
   password: 'adminpassword',
 };
 
-const mockREClusterDatabaseEndpoint: IRedisEnterpriseEndpoint = {
+const mockRedisSoftwareDatabaseEndpoint: IRedisEnterpriseEndpoint = {
   oss_cluster_api_preferred_ip_type: 'internal',
   uid: '2:1',
   addr_type: 'external',
@@ -39,7 +39,7 @@ const mockREClusterDatabaseEndpoint: IRedisEnterpriseEndpoint = {
   port: 11305,
   addr: ['172.17.0.2'],
 };
-const mockREClusterDatabase: IRedisEnterpriseDatabase = {
+const mockRedisSoftwareDatabase: IRedisEnterpriseDatabase = {
   gradual_src_mode: 'disabled',
   group_uid: 0,
   memory_size: 107374182,
@@ -126,11 +126,11 @@ const mockREClusterDatabase: IRedisEnterpriseDatabase = {
   ssl: false,
   dns_address_master: '',
   import_progress: 0.0,
-  endpoints: [mockREClusterDatabaseEndpoint],
+  endpoints: [mockRedisSoftwareDatabaseEndpoint],
   tags: [],
 };
-const mockREClusterDbsResponse: IRedisEnterpriseDatabase[] = [
-  mockREClusterDatabase,
+const mockRedisSoftwareDbsResponse: IRedisEnterpriseDatabase[] = [
+  mockRedisSoftwareDatabase,
 ];
 
 describe('RedisEnterpriseService', () => {
@@ -158,7 +158,7 @@ describe('RedisEnterpriseService', () => {
 
   describe('getDatabases', () => {
     it('successfully get databases from RE cluster', async () => {
-      const response = { status: 200, data: mockREClusterDbsResponse };
+      const response = { status: 200, data: mockRedisSoftwareDbsResponse };
       mockedAxios.get.mockResolvedValue(response);
 
       await expect(
@@ -166,7 +166,7 @@ describe('RedisEnterpriseService', () => {
       ).resolves.not.toThrow();
       expect(mockedAxios.get).toHaveBeenCalled();
       expect(parseClusterDbsResponse).toHaveBeenCalledWith(
-        mockREClusterDbsResponse,
+        mockRedisSoftwareDbsResponse,
       );
     });
     it('the user could not be authenticated', async () => {
@@ -197,21 +197,21 @@ describe('RedisEnterpriseService', () => {
 
   describe('getDatabaseExternalEndpoint', () => {
     const externalEndpoint: IRedisEnterpriseEndpoint =
-      mockREClusterDatabaseEndpoint;
+      mockRedisSoftwareDatabaseEndpoint;
     const internalEndpoint: IRedisEnterpriseEndpoint = {
-      ...mockREClusterDatabaseEndpoint,
+      ...mockRedisSoftwareDatabaseEndpoint,
       addr_type: 'internal',
     };
     it('should return only one external endpoints', async () => {
       const result = service.getDatabaseExternalEndpoint({
-        ...mockREClusterDatabase,
+        ...mockRedisSoftwareDatabase,
         endpoints: [externalEndpoint, internalEndpoint],
       });
       expect(result).toEqual(externalEndpoint);
     });
     it('should return undefined', async () => {
       const result = service.getDatabaseExternalEndpoint({
-        ...mockREClusterDatabase,
+        ...mockRedisSoftwareDatabase,
         endpoints: [internalEndpoint],
       });
       expect(result).toBeUndefined();
@@ -221,7 +221,7 @@ describe('RedisEnterpriseService', () => {
   describe('getDatabasePersistencePolicy', () => {
     it('should return AofEveryOneSecond', async () => {
       const result = service.getDatabasePersistencePolicy({
-        ...mockREClusterDatabase,
+        ...mockRedisSoftwareDatabase,
         data_persistence: RedisEnterpriseDatabasePersistence.Aof,
         aof_policy: RedisEnterpriseDatabaseAofPolicy.AofEveryOneSecond,
       });
@@ -231,7 +231,7 @@ describe('RedisEnterpriseService', () => {
     });
     it('should return AofEveryWrite', async () => {
       const result = service.getDatabasePersistencePolicy({
-        ...mockREClusterDatabase,
+        ...mockRedisSoftwareDatabase,
         data_persistence: RedisEnterpriseDatabasePersistence.Aof,
         aof_policy: RedisEnterpriseDatabaseAofPolicy.AofEveryWrite,
       });
@@ -239,7 +239,7 @@ describe('RedisEnterpriseService', () => {
     });
     it('should return SnapshotEveryOneHour', async () => {
       const result = service.getDatabasePersistencePolicy({
-        ...mockREClusterDatabase,
+        ...mockRedisSoftwareDatabase,
         data_persistence: RedisEnterpriseDatabasePersistence.Snapshot,
         snapshot_policy: [{ secs: 3600 }],
       });
@@ -249,7 +249,7 @@ describe('RedisEnterpriseService', () => {
     });
     it('should return SnapshotEverySixHours', async () => {
       const result = service.getDatabasePersistencePolicy({
-        ...mockREClusterDatabase,
+        ...mockRedisSoftwareDatabase,
         data_persistence: RedisEnterpriseDatabasePersistence.Snapshot,
         snapshot_policy: [{ secs: 21600 }],
       });
@@ -259,7 +259,7 @@ describe('RedisEnterpriseService', () => {
     });
     it('should return SnapshotEveryTwelveHours', async () => {
       const result = service.getDatabasePersistencePolicy({
-        ...mockREClusterDatabase,
+        ...mockRedisSoftwareDatabase,
         data_persistence: RedisEnterpriseDatabasePersistence.Snapshot,
         snapshot_policy: [{ secs: 43200 }],
       });
@@ -269,7 +269,7 @@ describe('RedisEnterpriseService', () => {
     });
     it('should return None', async () => {
       const result = service.getDatabasePersistencePolicy({
-        ...mockREClusterDatabase,
+        ...mockRedisSoftwareDatabase,
         data_persistence: null,
       });
       expect(result).toEqual(RedisEnterprisePersistencePolicy.None);
@@ -278,10 +278,10 @@ describe('RedisEnterpriseService', () => {
 
   describe('findReplicasForDatabase', () => {
     it('successfully return replicas', async () => {
-      const soursDatabase = mockREClusterDatabase;
-      const sourceEndpoint = mockREClusterDatabase.endpoints[0];
+      const soursDatabase = mockRedisSoftwareDatabase;
+      const sourceEndpoint = mockRedisSoftwareDatabase.endpoints[0];
       const replicaDatabase: IRedisEnterpriseDatabase = {
-        ...mockREClusterDatabase,
+        ...mockRedisSoftwareDatabase,
         uid: 1,
         replica_sources: [
           {
@@ -300,13 +300,13 @@ describe('RedisEnterpriseService', () => {
     });
     it('source dont have replicas', async () => {
       const databases = [
-        mockREClusterDatabase,
+        mockRedisSoftwareDatabase,
         {
-          ...mockREClusterDatabase,
+          ...mockRedisSoftwareDatabase,
           uid: 3,
         },
         {
-          ...mockREClusterDatabase,
+          ...mockRedisSoftwareDatabase,
           uid: 4,
           replica_sources: [
             {
@@ -319,7 +319,7 @@ describe('RedisEnterpriseService', () => {
       ];
       const result = service.findReplicasForDatabase(
         databases,
-        mockREClusterDatabase,
+        mockRedisSoftwareDatabase,
       );
 
       expect(result).toEqual([]);

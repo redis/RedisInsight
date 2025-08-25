@@ -2,10 +2,10 @@ import { Joi } from '../../helpers/test';
 import { caCertSchema, clientCertSchema } from '../certificate/constants';
 
 const providers = [
-  'RE_CLUSTER',
-  'RE_CLOUD',
+  'REDIS_SOFTWARE',
+  'REDIS_CLOUD',
   'REDIS_STACK',
-  'REDIS_ENTERPRISE',
+  'OTHER_REDIS_MANAGED',
   'AZURE_CACHE',
   'AZURE_CACHE_REDIS_ENTERPRISE',
   'REDIS_COMMUNITY_EDITION',

@@ -10,11 +10,11 @@ import {
   ICloudCapiDatabaseTag,
 } from 'src/modules/cloud/database/models';
 import { CloudSubscriptionType } from 'src/modules/cloud/subscription/models';
-import { RE_CLOUD_MODULES_NAMES } from 'src/constants';
+import { REDIS_CLOUD_MODULES_NAMES } from 'src/constants';
 import { Tag } from 'src/modules/tag/models/tag';
 
-export function convertRECloudModuleName(name: string): string {
-  return RE_CLOUD_MODULES_NAMES[name] ?? name;
+export function convertRedisCloudModuleName(name: string): string {
+  return REDIS_CLOUD_MODULES_NAMES[name] ?? name;
 }
 
 export const parseCloudDatabaseCapiResponse = (
@@ -46,7 +46,7 @@ export const parseCloudDatabaseCapiResponse = (
       password: security?.password,
       sslClientAuthentication: security.sslClientAuthentication,
       modules: database.modules.map((module) =>
-        convertRECloudModuleName(module.name),
+        convertRedisCloudModuleName(module.name),
       ),
       options: {
         enabledDataPersistence:

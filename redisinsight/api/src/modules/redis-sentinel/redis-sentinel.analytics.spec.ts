@@ -128,7 +128,7 @@ describe('RedisSentinelAnalytics', () => {
     });
   });
 
-  describe('sendGetRECloudSubsFailedEvent', () => {
+  describe('sendGetRedisCloudSubsFailedEvent', () => {
     it('should emit event', () => {
       service.sendGetSentinelMastersFailedEvent(
         mockSessionMetadata,

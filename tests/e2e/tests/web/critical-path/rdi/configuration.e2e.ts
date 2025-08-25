@@ -52,7 +52,7 @@ test.after(async() => {
     await databaseAPIRequests.deleteAllDatabasesApi();
 })('Verify that user can test connection', async() => {
     await myRedisDatabasePage.setActivePage(RedisOverviewPage.DataBase);
-    await databaseHelper.autodiscoverRECloudDatabase(
+    await databaseHelper.autodiscoverRedisCloudDatabase(
         cloudDatabaseConfig.accessKey,
         cloudDatabaseConfig.secretKey
     );

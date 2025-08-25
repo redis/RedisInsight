@@ -135,7 +135,7 @@ export class Database {
 
   @ApiPropertyOptional({
     description: 'The redis database hosting provider',
-    example: HostingProvider.RE_CLOUD,
+    example: HostingProvider.REDIS_CLOUD,
   })
   @Expose()
   @IsOptional()
