@@ -126,20 +126,21 @@ const HelpMenu = () => {
               </Link>
             </FlexItem>
           </FeatureFlagComponent>
+
           <FlexItem className={styles.helpMenuItemRow} grow={4}>
-            <div className={styles.helpMenuItemLink}>
+            <Row className={styles.helpMenuItemLink} align="center" gap="xs">
               <RiIcon type="KeyboardShortcutsIcon" size="l" />
               <Text
                 size="xs"
                 className={styles.helpMenuTextLink}
-                onClick={() => onKeyboardShortcutClick()}
+                onClick={onKeyboardShortcutClick}
                 data-testid="shortcuts-btn"
               >
                 Keyboard Shortcuts
               </Text>
-            </div>
+            </Row>
 
-            <div className={styles.helpMenuItemLink}>
+            <Row className={styles.helpMenuItemLink} align="center" gap="xs">
               <div
                 className={cx({
                   [styles.helpMenuItemNotified]: isReleaseNotesViewed === false,
@@ -159,19 +160,20 @@ const HelpMenu = () => {
                   Release Notes
                 </Text>
               </Link>
-            </div>
+            </Row>
+
             <FeatureFlagComponent name={FeatureFlags.envDependent}>
-              <div className={styles.helpMenuItemLink}>
+              <Row className={styles.helpMenuItemLink} align="center" gap="xs">
                 <RiIcon type="LightBulbIcon" size="l" />
                 <Text
                   size="xs"
                   className={styles.helpMenuTextLink}
-                  onClick={() => onResetOnboardingClick()}
+                  onClick={onResetOnboardingClick}
                   data-testid="reset-onboarding-btn"
                 >
                   Reset Onboarding
                 </Text>
-              </div>
+              </Row>
             </FeatureFlagComponent>
           </FlexItem>
         </Row>

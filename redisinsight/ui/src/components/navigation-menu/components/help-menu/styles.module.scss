@@ -49,21 +49,8 @@
 
 .helpMenuItemRow {
   .helpMenuItemLink {
-    display: flex;
-    flex-direction: row;
-    gap: 4px;
-    align-items: center;
-
     &:not(:last-child) {
       margin-bottom: 16px;
-    }
-
-    :global(.euiButtonIcon),
-    :global(.euiIcon) {
-      margin-right: 12px;
-      color: var(--euiTooltipTextColor) !important;
-      width: 16px !important;
-      height: 16px !important;
     }
 
     .helpMenuTextLink {
