@@ -24,7 +24,7 @@ import {
   IHashFieldState,
   INITIAL_HASH_FIELD_STATE,
 } from 'uiSrc/pages/browser/components/add-key/AddKeyHash/interfaces'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
   PrimaryButton,
   SecondaryButton,
@@ -164,7 +164,7 @@ const AddHashFields = (props: Props) => {
     !(item.fieldName.length || item.fieldValue.length || item.fieldTTL?.length)
 
   return (
-    <>
+    <Col gap="m">
       <div className={styles.container}>
         <AddMultipleFields
           items={fields}
@@ -182,7 +182,7 @@ const AddHashFields = (props: Props) => {
                     placeholder="Enter Field"
                     value={item.fieldName}
                     disabled={loading}
-                    onChange={value =>
+                    onChange={(value) =>
                       handleFieldChange('fieldName', item.id, value)
                     }
                     ref={
@@ -200,7 +200,7 @@ const AddHashFields = (props: Props) => {
                     placeholder="Enter Value"
                     value={item.fieldValue}
                     disabled={loading}
-                    onChange={value =>
+                    onChange={(value) =>
                       handleFieldChange('fieldValue', item.id, value)
                     }
                     data-testid="hash-value"
@@ -216,7 +216,7 @@ const AddHashFields = (props: Props) => {
                       placeholder="Enter TTL"
                       value={item.fieldTTL || ''}
                       disabled={loading}
-                      onChange={value =>
+                      onChange={(value) =>
                         handleFieldChange(
                           'fieldTTL',
                           item.id,
@@ -232,33 +232,31 @@ const AddHashFields = (props: Props) => {
           )}
         </AddMultipleFields>
       </div>
-      <>
-        <Row justify="end" gap="m">
-          <FlexItem>
-            <div>
-              <SecondaryButton
-                onClick={() => closePanel(true)}
-                data-testid="cancel-fields-btn"
-              >
-                Cancel
-              </SecondaryButton>
-            </div>
-          </FlexItem>
-          <FlexItem>
-            <div>
-              <PrimaryButton
-                disabled={loading}
-                loading={loading}
-                onClick={submitData}
-                data-testid="save-fields-btn"
-              >
-                Save
-              </PrimaryButton>
-            </div>
-          </FlexItem>
-        </Row>
-      </>
-    </>
+      <Row justify="end" gap="m">
+        <FlexItem>
+          <div>
+            <SecondaryButton
+              onClick={() => closePanel(true)}
+              data-testid="cancel-fields-btn"
+            >
+              Cancel
+            </SecondaryButton>
+          </div>
+        </FlexItem>
+        <FlexItem>
+          <div>
+            <PrimaryButton
+              disabled={loading}
+              loading={loading}
+              onClick={submitData}
+              data-testid="save-fields-btn"
+            >
+              Save
+            </PrimaryButton>
+          </div>
+        </FlexItem>
+      </Row>
+    </Col>
   )
 }
 

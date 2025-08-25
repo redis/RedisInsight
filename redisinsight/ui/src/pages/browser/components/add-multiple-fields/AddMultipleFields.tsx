@@ -1,15 +1,13 @@
 import React from 'react'
-import cx from 'classnames'
 
 import { DeleteIcon, PlusIcon } from 'uiSrc/components/base/icons'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import {
   ActionIconButton,
   IconButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { RiTooltip } from 'uiSrc/components'
-import styles from './styles.module.scss'
 
 export interface Props<T> {
   items: T[]
@@ -23,11 +21,7 @@ const AddMultipleFields = <T,>(props: Props<T>) => {
   const { items, children, isClearDisabled, onClickRemove, onClickAdd } = props
 
   const renderItem = (child: React.ReactNode, item: T, index?: number) => (
-    <FlexItem
-      key={index}
-      className={cx('flexItemNoFullWidth', 'inlineFieldsNoSpace', styles.row)}
-      grow
-    >
+    <FlexItem key={index} grow>
       <Row align="center" gap="m">
         <FlexItem grow>{child}</FlexItem>
         <FlexItem>
@@ -46,25 +40,28 @@ const AddMultipleFields = <T,>(props: Props<T>) => {
   )
 
   return (
-    <>
-      {items.map((item, index) =>
-        renderItem(children(item, index), item, index),
-      )}
-      <Spacer size="s" />
+    <Col gap="m">
+      <Col
+        gap="m"
+        style={{ overflow: 'auto', maxHeight: 'calc(234px - 60px)' }}
+      >
+        {items.map((item, index) =>
+          renderItem(children(item, index), item, index),
+        )}
+      </Col>
       <Row align="center" justify="end">
-        <FlexItem>
-          <RiTooltip content="Add" position="left">
-            <ActionIconButton
-              variant="secondary"
-              icon={PlusIcon}
-              aria-label="Add new item"
-              onClick={onClickAdd}
-              data-testid="add-item"
-            />
-          </RiTooltip>
-        </FlexItem>
+        <RiTooltip content="Add" position="left">
+          <ActionIconButton
+            variant="secondary"
+            icon={PlusIcon}
+            aria-label="Add new item"
+            onClick={onClickAdd}
+            data-testid="add-item"
+          />
+        </RiTooltip>
       </Row>
-    </>
+      <Spacer size="s" />
+    </Col>
   )
 }
 

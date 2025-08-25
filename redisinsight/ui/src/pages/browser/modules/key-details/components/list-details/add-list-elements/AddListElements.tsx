@@ -16,7 +16,7 @@ import {
 import { KeyTypes } from 'uiSrc/constants'
 import { stringToBuffer } from 'uiSrc/utils'
 import { AddListFormConfig as config } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
   PrimaryButton,
   SecondaryButton,
@@ -122,8 +122,8 @@ const AddListElements = (props: Props) => {
   }
 
   return (
-    <>
-      <div className={styles.container}>
+    <Col gap="m">
+      <Col gap="m" className={styles.container}>
         <RiSelect
           value={destination}
           options={optionsDestinations}
@@ -142,39 +142,32 @@ const AddListElements = (props: Props) => {
               id={`element-${index}`}
               placeholder={config.element.placeholder}
               value={item}
-              onChange={value =>
-                handleElementChange(value, index)
-              }
+              onChange={(value) => handleElementChange(value, index)}
               data-testid={`element-${index}`}
             />
           )}
         </AddMultipleFields>
-      </div>
-      <>
-        <Row justify="end" gap="m" style={{ padding: 18 }}>
-          <FlexItem>
-            <div>
-              <SecondaryButton
-                onClick={() => closePanel(true)}
-                data-testid="cancel-members-btn"
-              >
-                Cancel
-              </SecondaryButton>
-            </div>
-          </FlexItem>
-          <FlexItem>
-            <div>
-              <PrimaryButton
-                onClick={submitData}
-                data-testid="save-elements-btn"
-              >
-                Save
-              </PrimaryButton>
-            </div>
-          </FlexItem>
-        </Row>
-      </>
-    </>
+      </Col>
+      <Row justify="end" gap="m">
+        <FlexItem>
+          <div>
+            <SecondaryButton
+              onClick={() => closePanel(true)}
+              data-testid="cancel-members-btn"
+            >
+              Cancel
+            </SecondaryButton>
+          </div>
+        </FlexItem>
+        <FlexItem>
+          <div>
+            <PrimaryButton onClick={submitData} data-testid="save-elements-btn">
+              Save
+            </PrimaryButton>
+          </div>
+        </FlexItem>
+      </Row>
+    </Col>
   )
 }
 

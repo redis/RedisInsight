@@ -17,6 +17,7 @@ import AddListElements from './add-list-elements/AddListElements'
 import { AddItemsAction, RemoveItemsAction } from '../key-details-actions'
 import { KeyDetailsSubheader } from '../key-details-subheader/KeyDetailsSubheader'
 import styles from './styles.module.scss'
+import { AddKeysContainer } from '../common/AddKeysContainer.styled'
 
 export interface Props extends KeyDetailsHeaderProps {
   onRemoveKey: () => void
@@ -82,9 +83,9 @@ const ListDetails = (props: Props) => {
           </div>
         )}
         {isAddItemPanelOpen && (
-          <div className={cx('formFooterBar', 'contentActive')}>
+          <AddKeysContainer>
             <AddListElements closePanel={closeAddItemPanel} />
-          </div>
+          </AddKeysContainer>
         )}
         {isRemoveItemPanelOpen && (
           <div className={cx('formFooterBar', styles.contentActive)}>

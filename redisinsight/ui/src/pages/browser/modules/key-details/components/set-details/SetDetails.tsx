@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
 
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
 import { KeyTypes } from 'uiSrc/constants'
@@ -13,6 +12,7 @@ import { SetDetailsTable } from './set-details-table'
 import { AddSetMembers } from './add-set-members'
 import { AddItemsAction } from '../key-details-actions'
 import { KeyDetailsSubheader } from '../key-details-subheader/KeyDetailsSubheader'
+import { AddKeysContainer } from 'uiSrc/pages/browser/modules/key-details/components/common/AddKeysContainer.styled'
 
 export interface Props extends KeyDetailsHeaderProps {
   onRemoveKey: () => void
@@ -59,9 +59,9 @@ const SetDetails = (props: Props) => {
           </div>
         )}
         {isAddItemPanelOpen && (
-          <div className={cx('formFooterBar', 'contentActive')}>
+          <AddKeysContainer>
             <AddSetMembers closePanel={closeAddItemPanel} />
-          </div>
+          </AddKeysContainer>
         )}
       </div>
     </div>
