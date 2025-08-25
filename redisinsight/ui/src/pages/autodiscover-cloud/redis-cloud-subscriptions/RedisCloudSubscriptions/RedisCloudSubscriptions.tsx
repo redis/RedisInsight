@@ -267,7 +267,6 @@ const RedisCloudSubscriptions = ({
             ]}
             paginationEnabled
             stripedRows
-            defaultPagination={{ pageIndex: 0, pageSize: 5 }}
             pageSizes={[5, 10, 25, 50, 100]}
           />
           {!items.length && (
