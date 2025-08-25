@@ -21,9 +21,7 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { SearchInput } from 'uiSrc/components/base/inputs'
-import { Title } from 'uiSrc/components/base/text/Title'
 import { ColorText, Text } from 'uiSrc/components/base/text'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import styles from '../styles.module.scss'
 import {
@@ -32,6 +30,8 @@ import {
   AccountWrapper,
   DatabaseWrapper,
   Footer,
+  PageTitle,
+  SearchForm,
 } from './RedisCloudSubscriptions.styles'
 
 export interface Props {
@@ -234,13 +234,11 @@ const RedisCloudSubscriptions = ({
   return (
     <AutodiscoveryPageTemplate>
       <div className="databaseContainer">
-        <Title size="M" className={styles.title} data-testid="title">
-          Redis Cloud Subscriptions
-        </Title>
+        <PageTitle data-testid="title">Redis Cloud Subscriptions</PageTitle>
 
         <Row justify="end" gap="s">
           <FlexItem>
-            <FormField className={styles.searchForm}>
+            <SearchForm>
               <SearchInput
                 placeholder="Search..."
                 className={styles.search}
@@ -248,7 +246,7 @@ const RedisCloudSubscriptions = ({
                 aria-label="Search"
                 data-testid="search"
               />
-            </FormField>
+            </SearchForm>
           </FlexItem>
         </Row>
         <br />
@@ -267,6 +265,10 @@ const RedisCloudSubscriptions = ({
                 desc: false,
               },
             ]}
+            paginationEnabled
+            stripedRows
+            defaultPagination={{ pageIndex: 0, pageSize: 5 }}
+            pageSizes={[5, 10, 25, 50, 100]}
           />
           {!items.length && (
             <Text className={styles.noSubscriptions}>{message}</Text>

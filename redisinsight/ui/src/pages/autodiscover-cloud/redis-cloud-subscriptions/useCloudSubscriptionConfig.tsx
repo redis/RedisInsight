@@ -32,13 +32,12 @@ import {
   AlertStatusDot,
   AlertStatusList,
   AlertStatusListItem,
-  SelectAllCheckbox,
 } from 'uiSrc/pages/autodiscover-cloud/redis-cloud-subscriptions/RedisCloudSubscriptions/RedisCloudSubscriptions.styles'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { RiTooltip } from 'uiSrc/components'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { ToastDangerIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
+import { getSelectionColumn } from 'uiSrc/pages/autodiscover-cloud/utils'
 
 function canSelectRow(row: RowDefinition<RedisCloudSubscription>) {
   return (
@@ -167,43 +166,11 @@ export const useCloudSubscriptionConfig = () => {
     })
 
   const columns: ColumnDefinition<RedisCloudSubscription>[] = [
-    {
-      id: 'select-col',
-      size: 50,
-      enableResizing: false,
-      header: ({ table }) => (
-        <SelectAllCheckbox
-          checked={table.getIsAllRowsSelected()}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            const selected = event.target.checked
-            table.toggleAllRowsSelected()
-            if (selected) {
-              const rows = table.getRowModel().rows
-              setSelection(
-                rows
-                  .filter((row) => canSelectRow(row))
-                  .map((row) => row.original),
-              )
-            } else {
-              setSelection([])
-            }
-          }} //or getToggleAllPageRowsSelectedHandler
-        />
-      ),
-      cell: ({ row }) => {
-        const canSelect = canSelectRow(row)
-        return (
-          <Checkbox
-            checked={canSelect && row.getIsSelected()}
-            disabled={!canSelect}
-            onChange={() => {
-              row.toggleSelected()
-              onSelectionChange(row.original)
-            }}
-          />
-        )
-      },
-    },
+    getSelectionColumn({
+      setSelection,
+      onSelectionChange,
+      canSelectRow,
+    }),
     {
       id: 'alert',
       accessorKey: 'alert',

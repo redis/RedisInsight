@@ -8,7 +8,7 @@ import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import {
   DestructiveButton,
@@ -17,15 +17,23 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { Pages } from 'uiSrc/constants'
-import { Title } from 'uiSrc/components/base/text/Title'
 import { SearchInput } from 'uiSrc/components/base/inputs'
 import { Text } from 'uiSrc/components/base/text'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import styles from '../styles.module.scss'
+import {
+  DatabaseWrapper,
+  Footer,
+  PageSubTitle,
+  PageTitle,
+  SearchContainer,
+  SearchForm,
+} from 'uiSrc/pages/autodiscover-cloud/redis-cloud-subscriptions/RedisCloudSubscriptions/RedisCloudSubscriptions.styles'
+import { Spacer } from 'uiSrc/components/base/layout'
 
 export interface Props {
   columns: ColumnDefinition<InstanceRedisCloud>[]
+  selection: InstanceRedisCloud[]
   onClose: () => void
   onBack: () => void
   onSubmit: (
@@ -47,6 +55,7 @@ const noResultsMessage =
 
 const RedisCloudDatabasesPage = ({
   columns,
+  selection,
   onClose,
   onBack,
   onSubmit,
@@ -54,8 +63,6 @@ const RedisCloudDatabasesPage = ({
   const [items, setItems] = useState<InstanceRedisCloud[]>([])
   const [message, setMessage] = useState(loadingMsg)
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
-
-  const [selection, setSelection] = useState<InstanceRedisCloud[]>([])
 
   const history = useHistory()
 
@@ -93,21 +100,6 @@ const RedisCloudDatabasesPage = ({
 
   const closePopover = () => {
     setIsPopoverOpen(false)
-  }
-
-  const selectionValue = {
-    onSelectionChange: (selected: InstanceRedisCloud) =>
-      setSelection((previous) => {
-        const isSelected = previous.some(
-          (item) => item.databaseId === selected.databaseId,
-        )
-        if (isSelected) {
-          return previous.filter(
-            (item) => item.databaseId !== selected.databaseId,
-          )
-        }
-        return [...previous, selected]
-      }),
   }
 
   const onQueryChange = (term: string) => {
@@ -171,11 +163,7 @@ const RedisCloudDatabasesPage = ({
         isDisabled ? validationErrors.SELECT_AT_LEAST_ONE('database') : null
       }
       content={
-        isDisabled ? (
-          <span>
-            {validationErrors.NO_DBS_SELECTED}
-          </span>
-        ) : null
+        isDisabled ? <span>{validationErrors.NO_DBS_SELECTED}</span> : null
       }
     >
       <PrimaryButton
@@ -194,33 +182,28 @@ const RedisCloudDatabasesPage = ({
   return (
     <AutodiscoveryPageTemplate>
       <div className="databaseContainer">
-        <Title size="XXL" className={styles.title} data-testid="title">
-          Redis Cloud Databases
-        </Title>
+        <PageTitle data-testid="title">Redis Cloud Databases</PageTitle>
 
         <Row align="end" gap="s">
-          <FlexItem grow>
-            <Text color="subdued" className={styles.subTitle} component="span">
-              These are {items.length > 1 ? 'databases ' : 'database '}
-              in your Redis Cloud. Select the
-              {items.length > 1 ? ' databases ' : ' database '} that you want to
-              add.
-            </Text>
-          </FlexItem>
+          <PageSubTitle>
+            These are {items.length > 1 ? 'databases ' : 'database '}
+            in your Redis Cloud. Select the
+            {items.length > 1 ? ' databases ' : ' database '} that you want to
+            add.
+          </PageSubTitle>
         </Row>
-        <FlexItem>
-          <FormField className={styles.searchForm}>
+        <SearchContainer>
+          <SearchForm>
             <SearchInput
               placeholder="Search..."
               onChange={onQueryChange}
               aria-label="Search"
               data-testid="search"
             />
-          </FormField>
-        </FlexItem>
-        <br />
-
-        <div className="itemList databaseList cloudDatabaseList">
+          </SearchForm>
+        </SearchContainer>
+        <Spacer size="l" />
+        <DatabaseWrapper>
           <Table
             columns={columns}
             data={items}
@@ -230,13 +213,12 @@ const RedisCloudDatabasesPage = ({
                 desc: false,
               },
             ]}
-            onRowClick={selectionValue.onSelectionChange}
           />
-          {!items.length && <Text>{message}</Text>}
-        </div>
+          {!items.length && <Text size="S">{message}</Text>}
+        </DatabaseWrapper>
       </div>
-      <FlexItem padding={4}>
-        <Row justify="between" gap="m">
+      <Footer padding={4}>
+        <Row justify="between">
           <SecondaryButton
             onClick={onBack}
             className="btn-cancel btn-back"
@@ -244,12 +226,12 @@ const RedisCloudDatabasesPage = ({
           >
             Back to adding databases
           </SecondaryButton>
-          <div>
+          <Row grow={false} gap="m">
             <CancelButton isPopoverOpen={isPopoverOpen} />
             <SubmitButton isDisabled={selection.length < 1} />
-          </div>
+          </Row>
         </Row>
-      </FlexItem>
+      </Footer>
     </AutodiscoveryPageTemplate>
   )
 }
