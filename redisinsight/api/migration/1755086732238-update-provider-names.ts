@@ -10,7 +10,7 @@ export class UpdateProviderNames1755086732238 implements MigrationInterface {
                 WHEN 'REDIS_ENTERPRISE' THEN 'OTHER_REDIS_MANAGED'
                 ELSE provider
             END
-            WHERE provider IN ('RE_CLOUD', 'RE_CLUSTER');
+            WHERE provider IN ('RE_CLOUD', 'RE_CLUSTER', 'REDIS_ENTERPRISE');
           `);
   }
 
@@ -23,7 +23,7 @@ export class UpdateProviderNames1755086732238 implements MigrationInterface {
                 WHEN 'OTHER_REDIS_MANAGED' THEN 'REDIS_ENTERPRISE'
                 ELSE provider
             END
-            WHERE provider IN ('REDIS_CLOUD', 'REDIS_SOFTWARE');
+            WHERE provider IN ('REDIS_CLOUD', 'REDIS_SOFTWARE', 'OTHER_REDIS_MANAGED');
           `);
   }
 }
