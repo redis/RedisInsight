@@ -12,15 +12,23 @@ export type UseRedisInstanceCompatibilityReturn = {
 const MIN_SUPPORTED_REDIS_VERSION = '7.2.0'
 const REDISEARCH_MODULE_SET = new Set(REDISEARCH_MODULES)
 
-export const isVersionSupported = (raw?: string | null) => {
-  if (!raw) return null
+export const isVersionSupported = (raw?: string | null): boolean => {
+  if (!raw) {
+    return false
+  }
 
+  // Try a loose/full parse of the whole string first.
+  // This returns a normalized version string like "7.2.0" or null if not recognizable.
   const vLoose = semver.valid(raw, { loose: true })
   if (vLoose)
     return semver.satisfies(vLoose, `>=${MIN_SUPPORTED_REDIS_VERSION}`)
 
+  // Fallback: try to coerce a version from arbitrary text,
+  // e.g. "Redis 7.2.1" -> SemVer { version: '7.2.1' }
   const coerced = semver.coerce(raw)
-  if (!coerced) return null
+  if (!coerced) {
+    return false
+  }
 
   return semver.gte(coerced, MIN_SUPPORTED_REDIS_VERSION)
 }
@@ -33,9 +41,9 @@ const useRedisInstanceCompatibility =
       version,
     } = useSelector(connectedInstanceSelector)
 
-    const hasRedisearch = modules
-      ? modules.some((m) => REDISEARCH_MODULE_SET.has(m.name))
-      : null
+    const hasRedisearch = modules?.some((m) =>
+      REDISEARCH_MODULE_SET.has(m.name),
+    )
 
     return {
       loading,
