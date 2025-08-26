@@ -52,11 +52,11 @@ const ShortInstanceInfo = ({ info, databases, modules }: Props) => {
 
   return (
     <div data-testid="db-info-tooltip">
-      <Text color="primary" size="s" component="div" weight="bold">
+      <Text color="primary" size="m" component="div" variant="semiBold">
         {name}
       </Text>
       <Spacer size="xs" />
-      <Text color="primary" size="xs">
+      <Text color="primary" size="s">
         {host}:{port}
       </Text>
       {databases > 1 && (
