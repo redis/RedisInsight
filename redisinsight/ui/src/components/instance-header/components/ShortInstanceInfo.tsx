@@ -12,7 +12,7 @@ import { getModule, Nullable, truncateText } from 'uiSrc/utils'
 import { DEFAULT_MODULES_INFO } from 'uiSrc/constants/modules'
 import { Theme } from 'uiSrc/constants'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
-import { FlexGroup, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
@@ -55,11 +55,13 @@ const ShortInstanceInfo = ({ info, databases, modules }: Props) => {
       <Text color="primary" size="m" component="div" variant="semiBold">
         {name}
       </Text>
-      <Spacer size="xs" />
+      <Spacer size="s" />
       <Text color="primary" size="s">
         {host}:{port}
       </Text>
       {databases > 1 && (
+        <>
+        <Spacer size="s" />
         <Row className={styles.dbIndexInfo} align="center" gap="l">
           <FlexItem>
             <RiImage src={MessageInfoSvg} alt="Database Info" $size="xs" />
@@ -73,8 +75,10 @@ const ShortInstanceInfo = ({ info, databases, modules }: Props) => {
             </Text>
           </FlexItem>
         </Row>
+        </>
       )}
-      <FlexGroup align="center">
+      <Spacer size="xs" />
+      <Row align="center">
         <Row align="center">
           <RiIcon type="ConnectionIcon" />
           <span>
@@ -91,7 +95,7 @@ const ShortInstanceInfo = ({ info, databases, modules }: Props) => {
           <RiIcon type="UserIcon" />
           <span>{user || 'Default'}</span>
         </Row>
-      </FlexGroup>
+      </Row>
       {!!modules?.length && (
         <div className={styles.modules}>
           <h4 className={styles.mi_fieldName}>Database Modules</h4>
