@@ -4,7 +4,7 @@ import { formatTimestamp } from 'uiSrc/utils'
 import { DATETIME_FORMATTER_DEFAULT, TimezoneOption } from 'uiSrc/constants'
 import { userSettingsConfigSelector } from 'uiSrc/slices/user/user-settings'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { HorizontalSpacer, Spacer } from 'uiSrc/components/base/layout'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import TimezoneForm from './components/timezone-form/TimezoneForm'
@@ -29,13 +29,13 @@ const DateTimeFormatter = () => {
     <>
       <Title size="M">Date and Time Format</Title>
       <Spacer size="m" />
-      <Text color="subdued" className={styles.dateTimeSubtitle}>
+      <Text color="primary" className={styles.dateTimeSubtitle}>
         Specifies the date and time format to be used in Redis Insight:
       </Text>
       <Spacer size="m" />
       <DatetimeForm onFormatChange={(newPreview) => setPreview(newPreview)} />
       <Spacer size="m" />
-      <Text className={styles.dateTimeSubtitle} color="subdued">
+      <Text color="primary" className={styles.dateTimeSubtitle}>
         Specifies the time zone to be used in Redis Insight:
       </Text>
       <Spacer size="s" />
@@ -44,16 +44,15 @@ const DateTimeFormatter = () => {
           <FlexItem grow={1}>
             <TimezoneForm />
           </FlexItem>
-          <FlexItem grow={2}>
-            <div className={styles.previewContainer}>
-              <Text className={styles.dateTimeSubtitle} color="subdued">
-                Preview:
-              </Text>
-              <Text className={styles.preview} data-testid="data-preview">
-                {preview}
-              </Text>
-            </div>
-          </FlexItem>
+          <Row align="center">
+            <Text color="primary" size="m">
+              Preview:
+            </Text>
+            <HorizontalSpacer size="s" />
+            <Text data-testid="data-preview" size="m">
+              {preview}
+            </Text>
+          </Row>
         </Row>
       </div>
       <Spacer />
