@@ -113,7 +113,11 @@ export const VectorSearchQuery = ({
 
   return (
     <ViewModeContextProvider viewMode={ViewMode.VectorSearch}>
-      <VectorSearchScreenWrapper direction="column" justify="between">
+      <VectorSearchScreenWrapper
+        direction="column"
+        justify="between"
+        data-testid="vector-search-query"
+      >
         <HeaderActions
           toggleManageIndexesScreen={toggleManageIndexesScreen}
           toggleSavedQueriesScreen={toggleSavedQueriesScreen}
