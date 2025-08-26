@@ -21,6 +21,7 @@ import { SearchInput } from 'uiSrc/components/base/inputs'
 import { Text } from 'uiSrc/components/base/text'
 import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import styles from '../styles.module.scss'
+import { Spacer } from 'uiSrc/components/base/layout'
 import {
   DatabaseWrapper,
   Footer,
@@ -28,8 +29,7 @@ import {
   PageTitle,
   SearchContainer,
   SearchForm,
-} from 'uiSrc/pages/autodiscover-cloud/redis-cloud-subscriptions/RedisCloudSubscriptions/RedisCloudSubscriptions.styles'
-import { Spacer } from 'uiSrc/components/base/layout'
+} from 'uiSrc/components/auto-discover'
 
 export interface Props {
   columns: ColumnDefinition<InstanceRedisCloud>[]

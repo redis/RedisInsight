@@ -30,14 +30,14 @@ import {
   RiTooltip,
 } from 'uiSrc/components'
 import styles from 'uiSrc/pages/autodiscover-cloud/redis-cloud-databases/styles.module.scss'
+import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { CopyIcon } from 'uiSrc/components/base/icons'
+import { getSelectionColumn } from 'uiSrc/pages/autodiscover-cloud/utils'
 import {
   CellText,
   CopyPublicEndpointText,
   CopyTextContainer,
-} from 'uiSrc/pages/autodiscover-cloud/redis-cloud-subscriptions/RedisCloudSubscriptions/RedisCloudSubscriptions.styles'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CopyIcon } from 'uiSrc/components/base/icons'
-import { getSelectionColumn } from 'uiSrc/pages/autodiscover-cloud/utils'
+} from 'uiSrc/components/auto-discover'
 
 export const useCloudDatabasesConfig = () => {
   const dispatch = useDispatch()

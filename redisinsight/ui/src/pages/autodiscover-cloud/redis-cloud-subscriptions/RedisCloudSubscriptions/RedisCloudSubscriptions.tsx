@@ -28,11 +28,13 @@ import {
   AccountItem,
   AccountItemTitle,
   AccountWrapper,
+} from './RedisCloudSubscriptions.styles'
+import {
   DatabaseWrapper,
   Footer,
   PageTitle,
   SearchForm,
-} from './RedisCloudSubscriptions.styles'
+} from 'uiSrc/components/auto-discover'
 
 export interface Props {
   columns: ColumnDefinition<RedisCloudSubscription>[]

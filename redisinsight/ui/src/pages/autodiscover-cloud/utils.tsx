@@ -1,10 +1,10 @@
 import React from 'react'
-import { SelectAllCheckbox } from 'uiSrc/pages/autodiscover-cloud/redis-cloud-subscriptions/RedisCloudSubscriptions/RedisCloudSubscriptions.styles'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import {
   ColumnDefinition,
   RowDefinition,
 } from 'uiSrc/components/base/layout/table'
+import { SelectAllCheckbox } from 'uiSrc/components/auto-discover'
 
 type Props = {
   size?: number

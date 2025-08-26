@@ -28,12 +28,17 @@ import {
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CopyIcon } from 'uiSrc/components/base/icons'
-import { ColorText, Text } from 'uiSrc/components/base/text'
+import { ColorText } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import RedisCloudDatabasesResult from './RedisCloudDatabasesResult'
 
 import styles from './styles.module.scss'
+import {
+  CellText,
+  CopyPublicEndpointText,
+  CopyTextContainer,
+} from 'uiSrc/components/auto-discover'
 
 const RedisCloudDatabasesResultPage = () => {
   const dispatch = useDispatch()
@@ -70,6 +75,7 @@ const RedisCloudDatabasesResultPage = () => {
       id: 'name',
       accessorKey: 'name',
       enableSorting: true,
+      size: 195,
       cell: function InstanceCell({
         row: {
           original: { name },
@@ -85,7 +91,7 @@ const RedisCloudDatabasesResultPage = () => {
               anchorClassName="truncateText"
               content={formatLongName(name)}
             >
-              <Text>{cellContent}</Text>
+              <CellText>{cellContent}</CellText>
             </RiTooltip>
           </div>
         )
@@ -96,12 +102,14 @@ const RedisCloudDatabasesResultPage = () => {
       id: 'subscriptionId',
       accessorKey: 'subscriptionId',
       enableSorting: true,
+      size: 170,
     },
     {
       header: 'Subscription',
       id: 'subscriptionName',
       accessorKey: 'subscriptionName',
       enableSorting: true,
+      size: 300,
       cell: function SubscriptionCell({
         row: {
           original: { subscriptionName: name },
@@ -117,7 +125,7 @@ const RedisCloudDatabasesResultPage = () => {
               anchorClassName="truncateText"
               content={formatLongName(name)}
             >
-              <Text>{cellContent}</Text>
+              <CellText>{cellContent}</CellText>
             </RiTooltip>
           </div>
         )
@@ -128,6 +136,7 @@ const RedisCloudDatabasesResultPage = () => {
       id: 'subscriptionType',
       accessorKey: 'subscriptionType',
       enableSorting: true,
+      size: 95,
       cell: ({
         row: {
           original: { subscriptionType },
@@ -139,12 +148,19 @@ const RedisCloudDatabasesResultPage = () => {
       id: 'status',
       accessorKey: 'status',
       enableSorting: true,
+      size: 95,
+      cell: ({
+        row: {
+          original: { status },
+        },
+      }) => <CellText className="column_status">{status}</CellText>,
     },
     {
       header: 'Endpoint',
       id: 'publicEndpoint',
       accessorKey: 'publicEndpoint',
       enableSorting: true,
+      size: 310,
       cell: function PublicEndpoint({
         row: {
           original: { publicEndpoint },
@@ -152,9 +168,13 @@ const RedisCloudDatabasesResultPage = () => {
       }) {
         const text = publicEndpoint
         return (
-          <div className="public_endpoint">
-            <Text className="copyPublicEndpointText">{text}</Text>
-            <RiTooltip position="right" content="Copy" anchorClassName="copyPublicEndpointTooltip">
+          <CopyTextContainer>
+            <CopyPublicEndpointText>{text}</CopyPublicEndpointText>
+            <RiTooltip
+              position="right"
+              content="Copy"
+              anchorClassName="copyPublicEndpointTooltip"
+            >
               <IconButton
                 icon={CopyIcon}
                 aria-label="Copy public endpoint"
@@ -162,7 +182,7 @@ const RedisCloudDatabasesResultPage = () => {
                 onClick={() => handleCopy(text)}
               />
             </RiTooltip>
-          </div>
+          </CopyTextContainer>
         )
       },
     },
@@ -171,6 +191,7 @@ const RedisCloudDatabasesResultPage = () => {
       id: 'modules',
       accessorKey: 'modules',
       enableSorting: true,
+      size: 200,
       cell: function Modules({ row: { original: instance } }) {
         return (
           <DatabaseListModules
@@ -184,6 +205,7 @@ const RedisCloudDatabasesResultPage = () => {
       id: 'options',
       accessorKey: 'options',
       enableSorting: true,
+      size: 180,
       cell: function Opitions({ row: { original: instance } }) {
         const options = parseInstanceOptionsCloud(
           instance.databaseId,
@@ -197,6 +219,7 @@ const RedisCloudDatabasesResultPage = () => {
       id: 'messageAdded',
       accessorKey: 'messageAdded',
       enableSorting: true,
+      size: 110,
       cell: function Message({
         row: {
           original: { statusAdded, messageAdded },
@@ -205,19 +228,21 @@ const RedisCloudDatabasesResultPage = () => {
         return (
           <>
             {statusAdded === AddRedisDatabaseStatus.Success ? (
-              <Text>{messageAdded}</Text>
+              <CellText>{messageAdded}</CellText>
             ) : (
-              <RiTooltip position="left" title="Error" content={messageAdded} anchorClassName="truncateText">
+              <RiTooltip
+                position="left"
+                title="Error"
+                content={messageAdded}
+                anchorClassName="truncateText"
+              >
                 <Row align="center" gap="s">
                   <FlexItem>
                     <RiIcon type="ToastDangerIcon" color="danger600" />
                   </FlexItem>
 
                   <FlexItem>
-                    <ColorText
-                      color="danger"
-                      className="flex-row euiTextAlign--center"
-                    >
+                    <ColorText color="danger" className="flex-row" size="S">
                       Error
                     </ColorText>
                   </FlexItem>
