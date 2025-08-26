@@ -9,6 +9,7 @@ import { Text } from 'uiSrc/components/base/text'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CopyIcon } from 'uiSrc/components/base/icons'
 import { FlexGroup } from 'uiSrc/components/base/layout/flex'
+import { HorizontalSpacer } from 'uiSrc/components/base/layout'
 
 const StyledWrapper = styled.div`
   margin-top: 15px;
@@ -25,7 +26,7 @@ const StyledKeyNameWrapper = styled(FlexGroup)<{ $isDbAnalysis: boolean }>`
 `
 
 const StyledKeyName = styled(Text)`
-  padding: 4px;
+  padding: ${({ theme }) => theme.core.space.space050};
   font:
     normal normal normal 13px/16px Graphik,
     sans-serif !important;
@@ -36,10 +37,6 @@ const StyledText = styled(Text)`
   font:
     normal normal normal 13px/16px Graphik,
     sans-serif !important;
-`
-
-const StyledIconButton = styled(IconButton)`
-  margin-right: 5px;
 `
 
 export interface IProps {
@@ -84,12 +81,13 @@ const RecommendationCopyComponent = ({
         >
           {formattedName}
         </StyledKeyName>
-        <StyledIconButton
+        <IconButton
           onClick={handleCopy}
           icon={CopyIcon}
           data-testid="copy-key-name-btn"
           aria-label="copy key name"
         />
+        <HorizontalSpacer size="xs" />
       </StyledKeyNameWrapper>
     </StyledWrapper>
   )
