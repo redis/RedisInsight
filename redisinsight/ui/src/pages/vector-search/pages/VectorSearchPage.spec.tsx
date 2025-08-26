@@ -1,6 +1,6 @@
 import React from 'react'
 import * as reactRedux from 'react-redux'
-import { cleanup, render } from 'uiSrc/utils/test-utils'
+import { cleanup, render, screen } from 'uiSrc/utils/test-utils'
 import { TelemetryPageView } from 'uiSrc/telemetry/pageViews'
 import { sendPageViewTelemetry } from 'uiSrc/telemetry'
 import {
@@ -10,6 +10,7 @@ import {
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { redisearchListSelector } from 'uiSrc/slices/browser/redisearch'
 import VectorSearchPage from './VectorSearchPage'
+import useRedisInstanceCompatibility from '../create-index/hooks/useRedisInstanceCompatibility'
 
 // Mock the telemetry module, so we don't send actual telemetry data during tests
 jest.mock('uiSrc/telemetry', () => ({
@@ -17,17 +18,63 @@ jest.mock('uiSrc/telemetry', () => ({
   sendPageViewTelemetry: jest.fn(),
 }))
 
+jest.mock('../create-index/hooks/useRedisInstanceCompatibility', () =>
+  jest.fn(),
+)
+
 const renderVectorSearchPageComponent = () => render(<VectorSearchPage />)
 
 describe('VectorSearchPage', () => {
+  const mockUseRedisInstanceCompatibility =
+    useRedisInstanceCompatibility as jest.Mock
+
   beforeEach(() => {
     cleanup()
+
+    mockUseRedisInstanceCompatibility.mockReturnValue({
+      loading: false,
+      hasRedisearch: true,
+      hasSupportedVersion: true,
+    })
+  })
+
+  afterEach(() => {
+    jest.clearAllMocks()
   })
 
   it('should render ', () => {
     const { container } = renderVectorSearchPageComponent()
 
     expect(container).toBeTruthy()
+
+    const vectorSearchQuery = screen.getByTestId('vector-search-query')
+    expect(vectorSearchQuery).toBeInTheDocument()
+  })
+
+  it('should render loader while checking the database compatibility', () => {
+    mockUseRedisInstanceCompatibility.mockReturnValue({
+      loading: true,
+      hasRedisearch: null,
+      hasSupportedVersion: null,
+    })
+
+    renderVectorSearchPageComponent()
+
+    const loader = screen.getByTestId('vector-search-loader')
+    expect(loader).toBeInTheDocument()
+  })
+
+  it('should render fallback message when RediSearch is not available', () => {
+    mockUseRedisInstanceCompatibility.mockReturnValue({
+      loading: false,
+      hasRedisearch: false,
+      hasSupportedVersion: true,
+    })
+
+    renderVectorSearchPageComponent()
+
+    const rqeNotAvailableCard = screen.getByTestId('rqe-not-available-card')
+    expect(rqeNotAvailableCard).toBeInTheDocument()
   })
 
   describe('Telemetry', () => {

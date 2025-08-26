@@ -23,6 +23,7 @@ export const EXTERNAL_LINKS = {
   pubSub: 'https://redis.io/docs/latest/commands/psubscribe/',
   legalPrivacyPolicy: 'https://redis.io/legal/privacy-policy/',
   redisEnterpriseCloud: 'https://redis.io/redis-enterprise-cloud/overview/',
+  redisQueryEngine: 'https://redis.io/docs/latest/develop/ai/search-and-query/',
 }
 
 export const UTM_CAMPAINGS: Record<any, string> = {
