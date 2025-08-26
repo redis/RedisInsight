@@ -3,19 +3,6 @@
     .voteContent {
       margin-left: 10px;
 
-      .vote__btn {
-        width: 28px !important;
-        height: 28px !important;
-        border-radius: 50%;
-
-        &:hover,
-        &:focus,
-        &.selected {
-          transform: none;
-          background-color: var(--separatorColor);
-        }
-      }
-
       svg {
         width: 34px;
         height: 34px;

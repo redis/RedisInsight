@@ -88,21 +88,6 @@
       font-size: inherit !important;
     }
   }
-
-  .link {
-    color: var(--externalLinkColor) !important;
-  }
-
-  :global {
-    .vote__btn {
-      &:hover,
-      &:focus,
-      &.selected {
-        transform: none;
-        background-color: var(--liveRecommendationVoteBgColor) !important;
-      }
-    }
-  }
 }
 
 .actions {
