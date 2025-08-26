@@ -14,6 +14,7 @@ export const StartWizardButton = () => {
           onClick: start,
         },
       }}
+      data-testid="start-wizard-button"
     >
       Power fast, real-time semantic AI search with vector search.
     </CallOut>

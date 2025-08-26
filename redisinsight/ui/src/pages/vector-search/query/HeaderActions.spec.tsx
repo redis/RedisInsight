@@ -1,6 +1,7 @@
 import React from 'react'
 import { cleanup, render, screen, userEvent } from 'uiSrc/utils/test-utils'
 import { HeaderActions, HeaderActionsProps } from './HeaderActions'
+import useRedisInstanceCompatibility from '../create-index/hooks/useRedisInstanceCompatibility'
 
 // Workaround for @redis-ui/components Title component issue with react-children-utilities
 // TypeError: react_utils.childrenToString is not a function
@@ -15,6 +16,10 @@ jest.mock('uiSrc/telemetry', () => ({
   sendEventTelemetry: jest.fn(),
 }))
 
+jest.mock('../create-index/hooks/useRedisInstanceCompatibility', () =>
+  jest.fn(),
+)
+
 const mockProps: HeaderActionsProps = {
   toggleManageIndexesScreen: jest.fn(),
   toggleSavedQueriesScreen: jest.fn(),
@@ -24,8 +29,21 @@ const renderComponent = (props = mockProps) =>
   render(<HeaderActions {...props} />)
 
 describe('HeaderActions', () => {
+  const mockUseRedisInstanceCompatibility =
+    useRedisInstanceCompatibility as jest.Mock
+
   beforeEach(() => {
     cleanup()
+    jest.clearAllMocks()
+
+    mockUseRedisInstanceCompatibility.mockReturnValue({
+      loading: false,
+      hasRedisearch: true,
+      hasSupportedVersion: true,
+    })
+  })
+
+  afterEach(() => {
     jest.clearAllMocks()
   })
 
@@ -69,5 +87,37 @@ describe('HeaderActions', () => {
     await userEvent.click(manageIndexesButton)
 
     expect(onToggle).toHaveBeenCalledTimes(1)
+  })
+
+  it('should render "start wizard banner" when RQE and Vector sets are supported', () => {
+    mockUseRedisInstanceCompatibility.mockReturnValue({
+      loading: false,
+      hasRedisearch: false,
+      hasSupportedVersion: true,
+    })
+
+    renderComponent({
+      ...mockProps,
+    })
+
+    const startWizardButton = screen.getByTestId('start-wizard-button')
+    expect(startWizardButton).toBeInTheDocument()
+  })
+
+  it('should render "free redis cloud db" banner when vector sets are not supported', () => {
+    mockUseRedisInstanceCompatibility.mockReturnValue({
+      loading: false,
+      hasRedisearch: true,
+      hasSupportedVersion: false,
+    })
+
+    renderComponent({
+      ...mockProps,
+    })
+
+    const vectorSetNotAvailableBanner = screen.getByTestId(
+      'vector-set-not-available-banner',
+    )
+    expect(vectorSetNotAvailableBanner).toBeInTheDocument()
   })
 })
