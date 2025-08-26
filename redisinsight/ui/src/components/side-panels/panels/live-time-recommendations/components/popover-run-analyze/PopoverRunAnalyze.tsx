@@ -38,11 +38,11 @@ const PopoverRunAnalyze = (props: Props) => {
         className={styles.popover}
         data-testid="insights-db-analysis-popover"
       >
-        <Text className={styles.popoverTitle}>Run database analysis</Text>
-        <Spacer size="xs" />
-        <Text className={styles.popoverContent} color="subdued">
-          {popoverContent}
+        <Text className={styles.popoverTitle} size="m">
+          Run database analysis
         </Text>
+        <Spacer size="s" />
+        <Text className={styles.popoverContent}>{popoverContent}</Text>
         <Spacer size="m" />
         <PrimaryButton
           aria-label="Analyze"
