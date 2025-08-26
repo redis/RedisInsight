@@ -27,9 +27,9 @@ describe('useRedisInstanceCompatibility', () => {
   })
 
   test.each([
-    [undefined, null],
-    [null, null],
-    ['', null],
+    [undefined, false],
+    [null, false],
+    ['', false],
     ['7.1.9', false],
     ['7.2', true],
     ['v7.2', true],
@@ -38,7 +38,7 @@ describe('useRedisInstanceCompatibility', () => {
     ['7.2.0-rc.1', false], // prerelease should NOT satisfy >=7.2.0
     ['Redis 7.2-rc1 (abc)', true], // coerced to 7.2.0 -> true (note: prerelease info lost)
     ['Redis 6 something', false],
-    ['nonsense', null],
+    ['nonsense', false],
   ])('isVersionSupported(%p) === %p', (input, expected) => {
     expect(isVersionSupported(input as any)).toBe(expected)
   })
@@ -52,8 +52,8 @@ describe('useRedisInstanceCompatibility', () => {
     const hookResult = renderUseRedisInstanceCompatibility()
 
     expect(hookResult.loading).toBe(true)
-    expect(hookResult.hasRedisearch).toBeNull()
-    expect(hookResult.hasSupportedVersion).toBeNull()
+    expect(hookResult.hasRedisearch).toBeUndefined()
+    expect(hookResult.hasSupportedVersion).toBe(false)
   })
 
   it('detects RediSearch module + supported version', () => {
@@ -83,7 +83,7 @@ describe('useRedisInstanceCompatibility', () => {
     expect(hookResult.hasSupportedVersion).toBe(true)
   })
 
-  it('returns hasRedisearch=null when modules are missing', () => {
+  it('returns hasRedisearch=undefined when modules are missing', () => {
     mockConnectedInstanceSelector.mockReturnValue({
       loading: false,
       modules: null, // explicit null
@@ -91,7 +91,7 @@ describe('useRedisInstanceCompatibility', () => {
     })
 
     const hookResult = renderUseRedisInstanceCompatibility()
-    expect(hookResult.hasRedisearch).toBeNull()
+    expect(hookResult.hasRedisearch).toBeUndefined()
     expect(hookResult.hasSupportedVersion).toBe(true)
   })
 
@@ -107,7 +107,7 @@ describe('useRedisInstanceCompatibility', () => {
     expect(hookResult.hasSupportedVersion).toBe(false)
   })
 
-  it('handles unparsable/absent version -> null', () => {
+  it('handles unparsable/absent version -> false', () => {
     mockConnectedInstanceSelector.mockReturnValue({
       loading: false,
       modules: [{ name: 'something else' }],
@@ -115,7 +115,7 @@ describe('useRedisInstanceCompatibility', () => {
     })
 
     const hookResult1 = renderUseRedisInstanceCompatibility()
-    expect(hookResult1.hasSupportedVersion).toBeNull()
+    expect(hookResult1.hasSupportedVersion).toBe(false)
 
     mockConnectedInstanceSelector.mockReturnValue({
       loading: false,
@@ -124,6 +124,6 @@ describe('useRedisInstanceCompatibility', () => {
     })
 
     const hookResult2 = renderUseRedisInstanceCompatibility()
-    expect(hookResult2.hasSupportedVersion).toBeNull()
+    expect(hookResult2.hasSupportedVersion).toBe(false)
   })
 })
