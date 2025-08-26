@@ -215,7 +215,7 @@ const Job = (props: Props) => {
             />
           </div>
         </div>
-        <Text className="rdi__text" color="subdued">
+        <Text className="rdi__text" color="primary">
           {'Create a job per source table to filter, transform, and '}
           <Link
             data-testid="rdi-pipeline-transformation-link"
