@@ -15,11 +15,18 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { SearchInput } from 'uiSrc/components/base/inputs'
-import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import {
+  DatabaseWrapper,
+  Footer,
+  PageSubTitle,
+  PageTitle,
+  SearchContainer,
+  SearchForm,
+} from 'uiSrc/components/auto-discover'
+
 import styles from '../../../styles.module.scss'
 
 export interface Props {
@@ -137,7 +144,7 @@ const SentinelDatabases = ({
         </SecondaryButton>
       }
     >
-      <Text size="m">
+      <Text size="S">
         Your changes have not been saved.&#10;&#13; Do you want to proceed to
         the list of databases?
       </Text>
@@ -174,11 +181,7 @@ const SentinelDatabases = ({
         position="top"
         anchorClassName="euiToolTip__btn-disabled"
         title={title}
-        content={
-          isSubmitDisabled() ? (
-            <span>{content}</span>
-          ) : null
-        }
+        content={isSubmitDisabled() ? <span>{content}</span> : null}
       >
         <PrimaryButton
           type="submit"
@@ -197,32 +200,32 @@ const SentinelDatabases = ({
   return (
     <AutodiscoveryPageTemplate>
       <div className="databaseContainer">
-        <Title size="XXL" className={styles.title} data-testid="title">
+        <PageTitle data-testid="title">
           Auto-Discover Redis Sentinel Primary Groups
-        </Title>
+        </PageTitle>
 
-        <Row align="end" gap="s">
+        <Row justify="between" align="center">
           <FlexItem grow>
-            <Text color="subdued" className={styles.subTitle} component="span">
+            <PageSubTitle>
               Redis Sentinel instance found. <br />
               Here is a list of primary groups your Sentinel instance is
               managing. Select the primary group(s) you want to add:
-            </Text>
+            </PageSubTitle>
           </FlexItem>
-          <FlexItem>
-            <FormField className={styles.searchForm}>
+          <SearchContainer>
+            <SearchForm>
               <SearchInput
                 placeholder="Search..."
                 onChange={onQueryChange}
                 aria-label="Search"
                 data-testid="search"
               />
-            </FormField>
-          </FlexItem>
+            </SearchForm>
+          </SearchContainer>
         </Row>
         <br />
 
-        <div className="itemList databaseList sentinelDatabaseList">
+        <DatabaseWrapper>
           <Table
             columns={columns}
             data={items}
@@ -234,15 +237,19 @@ const SentinelDatabases = ({
             ]}
             onRowClick={selectionValue.onSelectionChange}
           />
-          {!items.length && <Text color="subdued">{message}</Text>}
+          {!items.length && (
+            <Text size="S" color="subdued">
+              {message}
+            </Text>
+          )}
           {!masters.length && (
-            <Text className={styles.notFoundMsg} color="subdued">
+            <Text size="S" className={styles.notFoundMsg} color="subdued">
               {notMastersMsg}
             </Text>
           )}
-        </div>
+        </DatabaseWrapper>
       </div>
-      <FlexItem>
+      <Footer padding={4} grow>
         <Row
           justify="between"
           className={cx(styles.footer, 'footerAddDatabase')}
@@ -254,12 +261,12 @@ const SentinelDatabases = ({
           >
             Back to adding databases
           </SecondaryButton>
-          <div>
+          <Row gap="m" grow={false}>
             <CancelButton isPopoverOpen={isPopoverOpen} />
             <SubmitButton onClick={handleSubmit} />
-          </div>
+          </Row>
         </Row>
-      </FlexItem>
+      </Footer>
     </AutodiscoveryPageTemplate>
   )
 }

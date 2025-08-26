@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Theme } from 'uiSrc/components/base/theme/types'
 import { Group, Item } from 'uiSrc/components/base/layout/list'
+import { ColorText } from 'uiSrc/components/base/text'
 
 export const AccountItem = styled(FlexItem).attrs({
   grow: false,
@@ -11,6 +12,12 @@ export const AccountItem = styled(FlexItem).attrs({
   align-items: center;
 `
 
+export const AccountItemTitle = styled(ColorText).attrs({
+  size: 'XS',
+  color: 'secondary',
+})`
+  text-wrap: nowrap;
+`
 export const AccountWrapper = styled(Row).attrs({
   justify: 'start',
   gap: 'xxl',
