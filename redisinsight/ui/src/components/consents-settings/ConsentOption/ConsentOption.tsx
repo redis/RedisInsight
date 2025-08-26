@@ -33,19 +33,19 @@ const ConsentOption = (props: Props) => {
     <FlexItem key={consent.agreementName} grow>
       {isSettingsPage && consent.description && (
         <>
-          <Text
-            size="s"
-            className={styles.smallText}
-            color="subdued"
-            style={{ marginTop: '12px' }}
-          >
-            <ItemDescription description={consent.description} withLink={consent.linkToPrivacyPolicy} />
+          <Spacer size="s" />
+          <Text size="s" className={styles.smallText} color="primary">
+            <ItemDescription
+              description={consent.description}
+              withLink={consent.linkToPrivacyPolicy}
+            />
           </Text>
           <Spacer size="m" />
         </>
       )}
       <Row gap="m">
         <FlexItem>
+          <Spacer size="xxs" />
           <SwitchInput
             checked={checked}
             onCheckedChange={(checked) =>
@@ -58,14 +58,15 @@ const ConsentOption = (props: Props) => {
         <FlexItem>
           <Text className={styles.smallText}>{parse(consent.label)}</Text>
           {!isSettingsPage && consent.description && (
-            <Text
-              size="s"
-              className={styles.smallText}
-              color="subdued"
-              style={{ marginTop: '12px' }}
-            >
-              <ItemDescription description={consent.description} withLink={consent.linkToPrivacyPolicy} />
-            </Text>
+            <>
+              <Spacer size="s" />
+              <Text size="s" className={styles.smallText} color="primary">
+                <ItemDescription
+                  description={consent.description}
+                  withLink={consent.linkToPrivacyPolicy}
+                />
+              </Text>
+            </>
           )}
         </FlexItem>
       </Row>

@@ -8,14 +8,6 @@
   border: 1px solid var(--euiColorPrimary) !important;
   max-height: calc(100vh - 60px) !important;
   height: auto;
-
-  a {
-    color: currentColor !important;
-    text-decoration: underline;
-    &:hover {
-      text-decoration: none !important;
-    }
-  }
 }
 
 .modalHeader {
