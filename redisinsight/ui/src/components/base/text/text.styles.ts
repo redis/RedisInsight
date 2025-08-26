@@ -18,7 +18,6 @@ export type ColorType = BodyProps['color'] | EuiColorNames | (string & {})
 export interface MapProps extends HTMLAttributes<HTMLElement> {
   $color?: ColorType
   $align?: 'left' | 'center' | 'right'
-  $weight?: 'bold' | 'medium' | 'regular'
 }
 
 export type ColorTextProps = Omit<BodyProps, 'color' | 'size' | 'component'> & {
@@ -32,7 +31,6 @@ export type TextProps = Omit<BodyProps, 'color' | 'size'> &
     color?: ColorType
     size?: BodyProps['size'] | 'm' | 's' | 'xs'
     textAlign?: 'left' | 'center' | 'right'
-    weight?: 'bold' | 'medium' | 'regular'
   }
 
 export const useColorTextStyles = ({ $color }: MapProps = {}) => {
@@ -88,26 +86,12 @@ const getAlignValue = (align?: MapProps['$align']) => {
   }
 }
 
-const getWeightValue = (weight?: MapProps['$weight']) => {
-  switch (weight) {
-    case 'bold':
-      return 'font-weight: 800'
-    case 'medium':
-      return 'font-weight: 600'
-    case 'regular':
-      return 'font-weight: 400'
-    default:
-      return ''
-  }
-}
-
 export const StyledColorText = styled(Typography.Body)<MapProps>`
   ${useColorTextStyles}
 `
 export const StyledText = styled(Typography.Body)<MapProps>`
   ${useColorTextStyles};
   ${({ $align }) => getAlignValue($align)};
-  ${({ $weight }) => getWeightValue($weight)};
 `
 export const Indicator = styled.div<
   {
