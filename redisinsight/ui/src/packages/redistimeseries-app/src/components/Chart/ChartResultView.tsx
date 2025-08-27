@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import {
   AxisScale,
   ChartConfig,
@@ -71,6 +71,11 @@ export default function ChartResultView(props: ChartResultViewProps) {
     }
   }
 
+  const memoizedChartData = useMemo(
+    () => normalizeDatapointUnits(props.data, chartConfig.timeUnit),
+    [props.data, chartConfig.timeUnit],
+  )
+
   return (
     <div>
       <div className="zoom-helper-text">
@@ -82,7 +87,7 @@ export default function ChartResultView(props: ChartResultViewProps) {
       </div>
       <Chart
         chartConfig={chartConfig}
-        data={normalizeDatapointUnits(props.data, chartConfig.timeUnit)}
+        data={memoizedChartData}
         onRelayout={onRelayout}
         onDoubleClick={onDoubleClick}
       />
