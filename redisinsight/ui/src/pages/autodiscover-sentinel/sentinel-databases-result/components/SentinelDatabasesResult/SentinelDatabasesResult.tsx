@@ -63,10 +63,10 @@ const SentinelDatabasesResult = ({
 
     const itemsTemp = masters.filter(
       (item: ModifiedSentinelMaster) =>
-        item.name?.toLowerCase().includes(value) ||
-        item.host?.toLowerCase().includes(value) ||
-        item.alias?.toLowerCase().includes(value) ||
-        item.username?.toLowerCase().includes(value) ||
+        item.name?.toLowerCase()?.includes(value) ||
+        (item.host || '')?.toLowerCase()?.includes(value) ||
+        item.alias?.toLowerCase()?.includes(value) ||
+        (item.username || '')?.toLowerCase()?.includes(value) ||
         item.port?.toString()?.includes(value) ||
         item.numberOfSlaves?.toString().includes(value),
     )
