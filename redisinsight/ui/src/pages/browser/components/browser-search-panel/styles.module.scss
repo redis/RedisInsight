@@ -18,17 +18,6 @@
     }
   }
 
-  .bulkActions {
-    height: 36px !important;
-    width: 128px !important;
-    min-width: 36px !important;
-    margin-left: 12px;
-
-    :global(.euiButtonContent) {
-      padding: 0 !important;
-    }
-  }
-
   .searchWrapper {
     display: flex;
     flex-grow: 1;
@@ -52,18 +41,6 @@
       :global(.euiButton__text) {
         font-size: 20px !important;
         font-weight: 400 !important;
-      }
-    }
-
-    .bulkActions {
-      width: 36px !important;
-
-      :global(.euiButton__text) {
-        display: none !important;
-      }
-
-      :global(.euiButtonContent__icon) {
-        width: 13px;
       }
     }
   }
@@ -120,9 +97,4 @@
 
 .browserFilterOnboard {
   margin-left: -5px;
-}
-
-.bulkActionsText {
-  // todo: remove after redis-ui is implemented
-  font-size: 14px;
 }

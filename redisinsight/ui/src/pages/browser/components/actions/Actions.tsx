@@ -58,11 +58,11 @@ const Actions = ({ handleAddKeyPanel, handleBulkActionsPanel }: Props) => {
       color="secondary"
       icon={BulkActionsIcon}
       onClick={openBulkActions}
-      className={styles.bulkActions}
       data-testid="btn-bulk-actions"
       aria-label="bulk actions"
+      iconSize="small"
     >
-      <span className={styles.bulkActionsText}>Bulk Actions</span>
+      Bulk Actions
     </SecondaryButton>
   )
   return (
