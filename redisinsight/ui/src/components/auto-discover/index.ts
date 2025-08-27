@@ -4,6 +4,8 @@ import { Text, Title } from 'uiSrc/components/base/text'
 import { Theme } from 'uiSrc/components/base/theme/types'
 import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
+import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { CopyIcon } from 'uiSrc/components/base/icons'
 
 export const PageTitle = styled(Title).attrs({
   size: 'M',
@@ -52,8 +54,9 @@ export const CellText = styled(Text).attrs({
   size: 'S',
   component: 'span',
 })``
+
 export const CopyPublicEndpointText = styled(CellText)`
-  max-width: calc(100% - 50px);
+  max-width: 100%;
   display: inline-block;
   width: auto;
   white-space: nowrap;
@@ -61,6 +64,15 @@ export const CopyPublicEndpointText = styled(CellText)`
   overflow: hidden;
   vertical-align: top;
 `
+export const CopyBtn = styled(IconButton).attrs({
+  icon: CopyIcon,
+})`
+  margin-left: 25px;
+  opacity: 0;
+  height: 0;
+  transition: opacity 0.25s ease-in-out;
+`
+
 export const CopyTextContainer = styled.div`
   height: 24px;
   line-height: 24px;
@@ -73,9 +85,7 @@ export const CopyTextContainer = styled.div`
       theme.semantic.color.text.primary500};
   }
 
-  &:hover .copyHostPortBtn,
-  &:hover .copyUrlBtn,
-  &:hover .copyPublicEndpointBtn {
+  &:hover ${CopyBtn} {
     opacity: 1;
     height: auto;
   }

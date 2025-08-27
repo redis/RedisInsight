@@ -32,6 +32,7 @@ import styles from '../../../styles.module.scss'
 export interface Props {
   columns: ColumnDefinition<ModifiedSentinelMaster>[]
   masters: ModifiedSentinelMaster[]
+  selection: ModifiedSentinelMaster[]
   onClose: () => void
   onBack: () => void
   onSubmit: (databases: ModifiedSentinelMaster[]) => void
@@ -51,32 +52,13 @@ const SentinelDatabases = ({
   onBack,
   onSubmit,
   masters,
+  selection,
 }: Props) => {
   const [items, setItems] = useState<ModifiedSentinelMaster[]>(masters)
   const [message, setMessage] = useState(loadingMsg)
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
-  const [selection, setSelection] = useState<ModifiedSentinelMaster[]>([])
 
   const { loading } = useSelector(sentinelSelector)
-
-  const updateSelection = (
-    selected: ModifiedSentinelMaster[],
-    masters: ModifiedSentinelMaster[],
-  ) =>
-    selected.map(
-      (select) => masters.find((master) => master.id === select.id) ?? select,
-    )
-
-  useEffect(() => {
-    if (masters.length) {
-      setItems(masters)
-      setSelection((prevState) => updateSelection(prevState, masters))
-    }
-
-    if (!masters.length) {
-      setMessage(notMastersMsg)
-    }
-  }, [masters])
 
   const handleSubmit = () => {
     onSubmit(selection)
@@ -96,16 +78,15 @@ const SentinelDatabases = ({
     return selected || emptyAliases.length !== 0
   }
 
-  const selectionValue = {
-    onSelectionChange: (selected: ModifiedSentinelMaster) =>
-      setSelection((previous) => {
-        const isSelected = previous.some((item) => item.id === selected.id)
-        if (isSelected) {
-          return previous.filter((item) => item.id !== selected.id)
-        }
-        return [...previous, selected]
-      }),
-  }
+  useEffect(() => {
+    if (masters.length) {
+      setItems(masters)
+    }
+
+    if (!masters.length) {
+      setMessage(notMastersMsg)
+    }
+  }, [masters])
 
   const onQueryChange = (term: string) => {
     const value = term?.toLowerCase()
@@ -113,9 +94,9 @@ const SentinelDatabases = ({
     const itemsTemp = masters.filter(
       (item: ModifiedSentinelMaster) =>
         item.name?.toLowerCase().includes(value) ||
-        item.host?.toLowerCase().includes(value) ||
+        (item.host?.toLowerCase() || '').includes(value) ||
         item.alias?.toLowerCase().includes(value) ||
-        item.username?.toLowerCase().includes(value) ||
+        (item.username?.toLowerCase() || '').includes(value) ||
         item.port?.toString()?.includes(value) ||
         item.numberOfSlaves?.toString().includes(value),
     )
@@ -235,7 +216,6 @@ const SentinelDatabases = ({
                 desc: false,
               },
             ]}
-            onRowClick={selectionValue.onSelectionChange}
           />
           {!items.length && (
             <Text size="S" color="subdued">

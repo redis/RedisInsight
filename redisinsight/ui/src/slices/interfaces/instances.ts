@@ -465,7 +465,13 @@ export interface ModifiedSentinelMaster extends CreateSentinelDatabaseDto {
   loading?: boolean
   message?: string
   status?: AddRedisDatabaseStatus
-  error?: string | object
+  error?:
+    | string
+    | {
+        statusCode?: number
+        name?: string
+      }
+  numberOfSlaves?: number
 }
 
 export interface ModifiedGetListElementsResponse

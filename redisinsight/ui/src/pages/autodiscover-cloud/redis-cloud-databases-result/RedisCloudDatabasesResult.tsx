@@ -55,7 +55,7 @@ const RedisCloudDatabaseListResult = ({ columns, onBack, onView }: Props) => {
     const itemsTemp = instances.filter(
       (item: InstanceRedisCloud) =>
         item.name?.toLowerCase().indexOf(value) !== -1 ||
-        item.publicEndpoint?.toLowerCase().indexOf(value) !== -1 ||
+        (item.publicEndpoint || '')?.toLowerCase().indexOf(value) !== -1 ||
         item.subscriptionId?.toString()?.indexOf(value) !== -1 ||
         item.subscriptionName?.toLowerCase().indexOf(value) !== -1 ||
         item.databaseId?.toString()?.indexOf(value) !== -1,
