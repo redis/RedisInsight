@@ -4,7 +4,7 @@ import { Col } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import NoIndexesIcon from 'uiSrc/assets/img/vector-search/no-indexes.svg'
 import NoSavedQueries from 'uiSrc/assets/img/vector-search/no-saved-queries.svg'
-import useStartWizard from '../hooks/useStartWizard'
+import useStartWizard from '../../hooks/useStartWizard'
 import { StyledContainer, StyledImage } from './NoIndexesMessage.styles'
 
 export enum NoDataMessageKeys {

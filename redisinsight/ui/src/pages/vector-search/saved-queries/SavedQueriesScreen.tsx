@@ -21,7 +21,7 @@ import { collectChangedSavedQueryIndexTelemetry } from '../telemetry'
 import { PresetDataType } from '../create-index/types'
 import NoIndexesMessage, {
   NoDataMessageKeys,
-} from '../manage-indexes/NoIndexesMessage'
+} from '../components/no-data-message/NoIndexesMessage'
 import { QueryCard } from './QueryCard'
 import { IndexSelect } from './IndexSelect'
 
