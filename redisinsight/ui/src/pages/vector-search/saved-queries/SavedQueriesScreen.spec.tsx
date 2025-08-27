@@ -118,14 +118,21 @@ describe('SavedQueriesScreen', () => {
     ).toBeInTheDocument()
   })
 
-  it('should render "No indexes" message when there are no indexes', () => {
+  it('should render "No saved queries" message when there are no indexes', async () => {
     ;(useRedisearchListData as jest.Mock).mockReturnValue({
       loading: false,
       data: [],
       stringData: [],
     })
     renderComponent()
-    expect(screen.getByText('No indexes to display yet.')).toBeInTheDocument()
+
+    const noSavedQueriesMessage =
+      await screen.findByTestId('no-indexes-message')
+    const noSavedQueriesMessageTitle =
+      await screen.getByText('No saved queries.')
+
+    expect(noSavedQueriesMessage).toBeInTheDocument()
+    expect(noSavedQueriesMessageTitle).toBeInTheDocument()
   })
 
   describe('Telemetry', () => {

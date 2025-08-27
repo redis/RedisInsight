@@ -4,6 +4,7 @@ export const VectorSearchSavedQueriesContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.core?.space.space150};
+  flex-grow: 1;
 `
 
 export const VectorSearchSavedQueriesSelectWrapper = styled.div`

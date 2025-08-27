@@ -19,7 +19,9 @@ import { TelemetryEvent } from 'uiSrc/telemetry'
 import { useRedisearchListData } from '../useRedisearchListData'
 import { collectChangedSavedQueryIndexTelemetry } from '../telemetry'
 import { PresetDataType } from '../create-index/types'
-import NoIndexesMessage from '../manage-indexes/NoIndexesMessage'
+import NoIndexesMessage, {
+  NoDataMessageKeys,
+} from '../manage-indexes/NoIndexesMessage'
 import { QueryCard } from './QueryCard'
 import { IndexSelect } from './IndexSelect'
 
@@ -124,7 +126,9 @@ export const SavedQueriesScreen = ({
             />
           )}
 
-          {!loading && !hasIndexes && <NoIndexesMessage />}
+          {!loading && !hasIndexes && (
+            <NoIndexesMessage variant={NoDataMessageKeys.SavedQueries} />
+          )}
 
           {selectedIndexItem?.queries.map((query) => (
             <QueryCard

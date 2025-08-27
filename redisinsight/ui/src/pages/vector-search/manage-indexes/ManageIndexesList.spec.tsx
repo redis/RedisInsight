@@ -86,10 +86,11 @@ describe('ManageIndexesList', () => {
 
     renderComponent()
 
-    const noIndexesMessage = await screen.getByText(
-      'No indexes to display yet.',
-    )
+    const noIndexesMessage = await screen.findByTestId('no-indexes-message')
+    const noIndexesMessageTitle = await screen.getByText('No indexes.')
+
     expect(noIndexesMessage).toBeInTheDocument()
+    expect(noIndexesMessageTitle).toBeInTheDocument()
   })
 
   it('should render indexes boxes when data is available', () => {
