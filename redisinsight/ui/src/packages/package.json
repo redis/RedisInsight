@@ -26,7 +26,7 @@
     "rollup-plugin-css-only": "^4.5.2",
     "vite": "^6.3.4",
     "vite-plugin-ejs": "^1.7.0",
-    "vite-plugin-static-copy": "^2.3.1"
+    "vite-plugin-static-copy": "^2.3.2"
   },
   "dependencies": {}
 }
