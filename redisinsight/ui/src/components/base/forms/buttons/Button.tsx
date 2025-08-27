@@ -20,6 +20,7 @@ export const BaseButton = ({
   iconSide = 'left',
   loading,
   size = 'medium',
+  iconSize,
   ...props
 }: BaseButtonProps) => {
   let btnSize: ButtonSize = 'medium'
@@ -27,6 +28,12 @@ export const BaseButton = ({
   if (size in buttonSizeMap) {
     btnSize = buttonSizeMap[size]
   }
+
+  let btnIconSize: ButtonSize = btnSize
+  if (iconSize && iconSize in buttonSizeMap) {
+    btnIconSize = buttonSizeMap[iconSize]
+  }
+
   return (
     <Button {...props} size={btnSize} disabled={props.disabled || loading}>
       <ButtonIcon
@@ -34,7 +41,7 @@ export const BaseButton = ({
         icon={icon}
         iconSide={iconSide}
         loading={loading}
-        size={btnSize}
+        size={btnIconSize}
       />
       {children}
       <ButtonIcon
@@ -42,7 +49,7 @@ export const BaseButton = ({
         icon={icon}
         iconSide={iconSide}
         loading={loading}
-        size={btnSize}
+        size={btnIconSize}
       />
     </Button>
   )
@@ -54,6 +61,7 @@ export type ButtonIconProps = Pick<
 > & {
   buttonSide: 'left' | 'right'
   size?: 'small' | 'large' | 'medium'
+  iconSize?: 'small' | 'large' | 'medium'
 }
 export const IconSizes = {
   small: '16px',
