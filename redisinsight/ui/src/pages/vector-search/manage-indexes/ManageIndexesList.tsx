@@ -4,9 +4,9 @@ import React from 'react'
 import { StyledManageIndexesListAction } from './ManageIndexesList.styles'
 import { IndexSection } from './IndexSection'
 import { useRedisearchListData } from '../useRedisearchListData'
-import NoIndexesMessage, {
+import NoDataMessage, {
   NoDataMessageKeys,
-} from '../components/no-data-message/NoIndexesMessage'
+} from '../components/no-data-message/NoDataMessage'
 
 export const ManageIndexesList = () => {
   const { stringData: data, loading } = useRedisearchListData()
@@ -17,7 +17,7 @@ export const ManageIndexesList = () => {
       {loading && <Loader data-testid="manage-indexes-list--loader" />}
 
       {!loading && !hasIndexes && (
-        <NoIndexesMessage variant={NoDataMessageKeys.ManageIndexes} />
+        <NoDataMessage variant={NoDataMessageKeys.ManageIndexes} />
       )}
 
       {data.map((index) => (

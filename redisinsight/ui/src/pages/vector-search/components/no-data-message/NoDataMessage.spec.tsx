@@ -1,26 +1,26 @@
 import React from 'react'
 import { render, screen } from 'uiSrc/utils/test-utils'
-import NoIndexesMessage, {
+import NoDataMessage, {
   NO_DATA_MESSAGES,
   NoDataMessageKeys,
-  NoIndexesMessageProps,
-} from './NoIndexesMessage'
+  NoDataMessageProps,
+} from './NoDataMessage'
 
 const mockDefaultNoDataMessageVariant = NoDataMessageKeys.ManageIndexes
 
-const renderNoIndexesMessageComponent = (props?: NoIndexesMessageProps) => {
-  const defaultProps: NoIndexesMessageProps = {
+const renderNoDataMessageComponent = (props?: NoDataMessageProps) => {
+  const defaultProps: NoDataMessageProps = {
     variant: mockDefaultNoDataMessageVariant,
   }
 
-  return render(<NoIndexesMessage {...defaultProps} {...props} />)
+  return render(<NoDataMessage {...defaultProps} {...props} />)
 }
 
-describe('NoIndexesMessage', () => {
+describe('NoDataMessage', () => {
   it('should render correctly', () => {
-    renderNoIndexesMessageComponent()
+    renderNoDataMessageComponent()
 
-    const container = screen.getByTestId('no-indexes-message')
+    const container = screen.getByTestId('no-data-message')
     expect(container).toBeInTheDocument()
 
     const title = screen.getByText(

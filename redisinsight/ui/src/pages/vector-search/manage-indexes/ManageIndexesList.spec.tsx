@@ -86,7 +86,7 @@ describe('ManageIndexesList', () => {
 
     renderComponent()
 
-    const noIndexesMessage = await screen.findByTestId('no-indexes-message')
+    const noIndexesMessage = await screen.findByTestId('no-data-message')
     const noIndexesMessageTitle = await screen.getByText('No indexes.')
 
     expect(noIndexesMessage).toBeInTheDocument()

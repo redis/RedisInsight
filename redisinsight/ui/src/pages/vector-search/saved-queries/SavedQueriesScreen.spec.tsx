@@ -126,8 +126,7 @@ describe('SavedQueriesScreen', () => {
     })
     renderComponent()
 
-    const noSavedQueriesMessage =
-      await screen.findByTestId('no-indexes-message')
+    const noSavedQueriesMessage = await screen.findByTestId('no-data-message')
     const noSavedQueriesMessageTitle =
       await screen.getByText('No saved queries.')
 

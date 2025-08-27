@@ -5,7 +5,7 @@ import { Text } from 'uiSrc/components/base/text'
 import NoIndexesIcon from 'uiSrc/assets/img/vector-search/no-indexes.svg'
 import NoSavedQueries from 'uiSrc/assets/img/vector-search/no-saved-queries.svg'
 import useStartWizard from '../../hooks/useStartWizard'
-import { StyledContainer, StyledImage } from './NoIndexesMessage.styles'
+import { StyledContainer, StyledImage } from './NoDataMessage.styles'
 
 export enum NoDataMessageKeys {
   ManageIndexes = 'manage-indexes',
@@ -34,16 +34,16 @@ export const NO_DATA_MESSAGES: Record<NoDataMessageKeys, NoDataMessageDetails> =
     },
   }
 
-export interface NoIndexesMessageProps {
+export interface NoDataMessageProps {
   variant: NoDataMessageKeys
 }
 
-const NoIndexesMessage = ({ variant }: NoIndexesMessageProps) => {
+const NoDataMessage = ({ variant }: NoDataMessageProps) => {
   const start = useStartWizard()
   const { title, description, icon } = NO_DATA_MESSAGES[variant]
 
   return (
-    <StyledContainer gap="xxl" data-testid="no-indexes-message">
+    <StyledContainer gap="xxl" data-testid="no-data-message">
       <StyledImage src={icon} alt={title} as="img" />
 
       <Col gap="m">
@@ -58,4 +58,4 @@ const NoIndexesMessage = ({ variant }: NoIndexesMessageProps) => {
   )
 }
 
-export default NoIndexesMessage
+export default NoDataMessage
