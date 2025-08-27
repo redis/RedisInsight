@@ -1,10 +1,7 @@
 import React from 'react'
 import { render, screen } from 'uiSrc/utils/test-utils'
-import NoDataMessage, {
-  NO_DATA_MESSAGES,
-  NoDataMessageKeys,
-  NoDataMessageProps,
-} from './NoDataMessage'
+import NoDataMessage, { NoDataMessageProps } from './NoDataMessage'
+import { NO_DATA_MESSAGES, NoDataMessageKeys } from './data'
 
 const mockDefaultNoDataMessageVariant = NoDataMessageKeys.ManageIndexes
 

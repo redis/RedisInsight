@@ -19,11 +19,10 @@ import { TelemetryEvent } from 'uiSrc/telemetry'
 import { useRedisearchListData } from '../useRedisearchListData'
 import { collectChangedSavedQueryIndexTelemetry } from '../telemetry'
 import { PresetDataType } from '../create-index/types'
-import NoDataMessage, {
-  NoDataMessageKeys,
-} from '../components/no-data-message/NoDataMessage'
+import NoDataMessage from '../components/no-data-message/NoDataMessage'
 import { QueryCard } from './QueryCard'
 import { IndexSelect } from './IndexSelect'
+import { NoDataMessageKeys } from '../components/no-data-message/data'
 
 const mockSavedIndexes: SavedIndex[] = [
   {
