@@ -7,7 +7,7 @@ import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import { ColorText } from '../../../../../components/base/text/ColorText'
 import { IconButton } from '../../../../../components/base/forms/buttons'
 import { CopyIcon } from '../../../../../components/base/icons'
-import { RiTooltip } from '../../../../../components'
+import { RiTooltip } from '../../../../../components/base/tooltip/RITooltip'
 import { CommandArgument, Command } from '../../constants'
 import { formatLongName, replaceSpaces } from '../../utils'
 
