@@ -21,6 +21,7 @@ export const EXTERNAL_LINKS = {
   rdiPipelineTransforms:
     'https://redis.io/docs/latest/integrate/redis-data-integration/ingest/data-pipelines/transform-examples/',
   pubSub: 'https://redis.io/docs/latest/commands/psubscribe/',
+  legalPrivacyPolicy: 'https://redis.io/legal/privacy-policy/',
 }
 
 export const UTM_CAMPAINGS: Record<any, string> = {
