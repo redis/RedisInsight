@@ -19,12 +19,12 @@ import { getSelectionColumn } from 'uiSrc/pages/autodiscover-cloud/utils'
 import { InputFieldSentinel, RiTooltip } from 'uiSrc/components'
 import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/InputFieldSentinel'
 import {
+  CopyBtn,
   CopyPublicEndpointText,
   CopyTextContainer,
 } from 'uiSrc/components/auto-discover'
 import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { RiIcon, CopyIcon } from 'uiSrc/components/base/icons'
+import { RiIcon } from 'uiSrc/components/base/icons'
 
 import styles from '../styles.module.scss'
 
@@ -188,10 +188,8 @@ export const useSentinelDatabasesConfig = () => {
               content="Copy"
               anchorClassName="copyPublicEndpointTooltip"
             >
-              <IconButton
-                icon={CopyIcon}
+              <CopyBtn
                 aria-label="Copy public endpoint"
-                className="copyPublicEndpointBtn"
                 onClick={() => handleCopy(text)}
                 tabIndex={-1}
               />

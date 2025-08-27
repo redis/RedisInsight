@@ -18,6 +18,7 @@ describe('RedisCloudDatabases', () => {
     expect(
       render(
         <RedisCloudDatabases
+          selection={[]}
           {...instance(mockedProps)}
           columns={columnsMock}
         />,
