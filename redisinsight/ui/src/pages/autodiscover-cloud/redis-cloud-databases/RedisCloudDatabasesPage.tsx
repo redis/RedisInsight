@@ -1,6 +1,6 @@
 import React from 'react'
 import RedisCloudDatabases from './RedisCloudDatabases'
-import { useCloudDatabasesConfig } from 'uiSrc/pages/autodiscover-cloud/redis-cloud-databases/useCloudDatabasesConfig'
+import { useCloudDatabasesConfig } from './useCloudDatabasesConfig'
 
 const RedisCloudDatabasesPage = () => {
   const {
