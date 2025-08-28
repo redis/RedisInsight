@@ -29,7 +29,6 @@
     line-height: 24px;
     word-break: break-word;
     color: var(--wbTextColor);
-    margin-bottom: 20px;
   }
 
   .flex {
@@ -65,7 +64,7 @@
 
   .listItem {
     display: flex;
-    margin-bottom: 20px;
+    white-space: nowrap;
 
     .iconWrapper {
       display: flex;
