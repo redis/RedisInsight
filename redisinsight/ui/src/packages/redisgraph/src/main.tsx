@@ -2,6 +2,7 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { GraphApp, TableApp } from './App'
+import { ThemeProvider } from 'uiSrc/components/base/utils/pluginsThemeContext'
 import './styles/styles.scss'
 
 interface Props {
@@ -20,6 +21,7 @@ import { icon as EuiIconArrowLeft } from '@elastic/eui/es/components/icon/assets
 import { icon as EuiIconArrowRight } from '@elastic/eui/es/components/icon/assets/arrow_right'
 import { icon as EuiIconArrowDown } from '@elastic/eui/es/components/icon/assets/arrow_down'
 import { icon as EuiIconCross } from '@elastic/eui/es/components/icon/assets/cross'
+import result from './mockData/resultGraph.json'
 
 appendIconComponentCache({
   magnifyWithPlus: EuiIconMagnifyWithPlus,
@@ -35,13 +37,20 @@ appendIconComponentCache({
 })
 
 const renderApp = (element: JSX.Element) =>
-  render(element, document.getElementById('app'))
+  render(
+    <ThemeProvider>{element}</ThemeProvider>,
+    document.getElementById('app'),
+  )
 
 const renderGraphTable = (props: Props) =>
   renderApp(<TableApp data={props.data} command={props.command} />)
 
 const renderGraph = (props: Props) =>
   renderApp(<GraphApp data={props.data} command={props.command} />)
+
+if (process.env.NODE_ENV === 'development') {
+  renderGraph({ data: result, command: 'graph' })
+}
 
 // This is a required action - export the main function for execution of the visualization
 export default { renderGraphTable, renderGraph }

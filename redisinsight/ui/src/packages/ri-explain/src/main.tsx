@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-filename-extension */
 import React from 'react'
 import { render } from 'react-dom'
+import { ThemeProvider } from 'uiSrc/components/base/utils/pluginsThemeContext'
 
 import { appendIconComponentCache } from '@elastic/eui/es/components/icon/icon'
 import { icon as EuiIconMagnifyWithPlus } from '@elastic/eui/es/components/icon/assets/magnifyWithPlus'
@@ -41,7 +42,11 @@ const renderApp = (element: JSX.Element) =>
   render(element, document.getElementById('app'))
 
 const renderCore = (props: Props) =>
-  renderApp(<App data={props.data} command={props.command} />)
+  renderApp(
+    <ThemeProvider>
+      <App data={props.data} command={props.command} />
+    </ThemeProvider>,
+  )
 
 if (process.env.NODE_ENV === 'development') {
   const command = "FT.EXPLAIN 'idx:bicycle' 'query to search'"
