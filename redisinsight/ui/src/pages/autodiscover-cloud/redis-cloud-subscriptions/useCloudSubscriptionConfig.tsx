@@ -51,7 +51,7 @@ export const useCloudSubscriptionConfig = () => {
   const dispatch = useDispatch()
   const history = useHistory()
 
-  let {
+  const {
     ssoFlow,
     credentials,
     subscriptions,
@@ -94,7 +94,8 @@ export const useCloudSubscriptionConfig = () => {
 
   const sendCancelEvent = () => {
     sendEventTelemetry({
-      event: TelemetryEvent.CONFIG_DATABASES_RE_CLOUD_AUTODISCOVERY_CANCELLED,
+      event:
+        TelemetryEvent.CONFIG_DATABASES_REDIS_CLOUD_AUTODISCOVERY_CANCELLED,
     })
   }
 
@@ -301,8 +302,8 @@ export const useCloudSubscriptionConfig = () => {
     columns,
     selection,
     loading,
-    account: account,
-    subscriptions: subscriptions,
+    account,
+    subscriptions,
     subscriptionsError,
     accountError,
     handleClose,
