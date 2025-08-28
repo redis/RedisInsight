@@ -19,7 +19,7 @@ import {
   sendEventTelemetry,
   TelemetryEvent,
 } from 'uiSrc/telemetry'
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
 import {
   PrimaryButton,
   SecondaryButton,
@@ -27,6 +27,8 @@ import {
 import { AddStreamEntriesDto } from 'apiSrc/modules/browser/stream/dto'
 
 import StreamEntryFields from './StreamEntryFields/StreamEntryFields'
+import { Panel } from 'uiSrc/components/panel'
+
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -141,7 +143,7 @@ const AddStreamEntries = (props: Props) => {
           setFields={setFields}
         />
       </div>
-      <Row justify="end" gap="m" style={{ padding: 18 }}>
+      <Panel justify="end" gap="m">
         <FlexItem>
           <div>
             <SecondaryButton
@@ -165,7 +167,7 @@ const AddStreamEntries = (props: Props) => {
             </PrimaryButton>
           </div>
         </FlexItem>
-      </Row>
+      </Panel>
     </Col>
   )
 }

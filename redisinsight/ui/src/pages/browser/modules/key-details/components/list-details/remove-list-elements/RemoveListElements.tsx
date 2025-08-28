@@ -52,6 +52,7 @@ import {
 } from '../add-list-elements/AddListElements'
 
 import styles from './styles.module.scss'
+import { Panel } from 'uiSrc/components/panel'
 
 export interface Props {
   closePanel: (isCancelled?: boolean) => void
@@ -284,7 +285,7 @@ const RemoveListElements = (props: Props) => {
         </FlexItem>
       </div>
       <>
-        <Row justify="end" gap="xl" style={{ padding: 18 }}>
+        <Panel justify="end" gap="xl">
           <FlexItem>
             <div>
               <SecondaryButton
@@ -298,7 +299,7 @@ const RemoveListElements = (props: Props) => {
           <FlexItem>
             <div>{RemoveButton()}</div>
           </FlexItem>
-        </Row>
+        </Panel>
       </>
     </>
   )

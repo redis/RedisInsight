@@ -8,6 +8,7 @@ import {
   IconButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { RiTooltip } from 'uiSrc/components'
+import { ItemsWrapper } from './AddMultipleFields.styles'
 
 export interface Props<T> {
   items: T[]
@@ -41,14 +42,11 @@ const AddMultipleFields = <T,>(props: Props<T>) => {
 
   return (
     <Col gap="m">
-      <Col
-        gap="m"
-        style={{ overflow: 'auto', maxHeight: 'calc(234px - 60px)' }}
-      >
+      <ItemsWrapper gap="m">
         {items.map((item, index) =>
           renderItem(children(item, index), item, index),
         )}
-      </Col>
+      </ItemsWrapper>
       <Row align="center" justify="end">
         <RiTooltip content="Add" position="left">
           <ActionIconButton

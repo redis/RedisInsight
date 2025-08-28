@@ -13,7 +13,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import BulbImg from 'uiSrc/assets/img/workbench/bulb.svg'
 import ArrowToGuidesIcon from 'uiSrc/assets/img/workbench/arrow-to-guides.svg?react'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { LightBulbIcon } from 'uiSrc/components/base/icons'
@@ -22,6 +22,7 @@ import { Text } from 'uiSrc/components/base/text'
 import { Card } from 'uiSrc/components/base/layout'
 
 import styles from './styles.module.scss'
+import { Panel } from 'uiSrc/components/panel'
 
 const WbNoResultsMessage = () => {
   const { provider } = useSelector(connectedInstanceSelector)
@@ -61,7 +62,7 @@ const WbNoResultsMessage = () => {
 
       <Card className={styles.noResultsPanel}>
         <ArrowToGuidesIcon className={styles.arrowToGuides} />
-        <Row gap="m" responsive style={{ padding: 18 }}>
+        <Panel gap="m" responsive>
           <FlexItem>
             <img
               className={styles.noResultsIcon}
@@ -94,7 +95,7 @@ const WbNoResultsMessage = () => {
               Or click the icon in the top right corner.
             </Text>
           </FlexItem>
-        </Row>
+        </Panel>
       </Card>
     </div>
   )

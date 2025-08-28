@@ -36,6 +36,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
+import { FooterDatabaseForm } from 'uiSrc/components/form-dialog/FooterDatabaseForm'
 
 export interface Props {
   editMode: boolean
@@ -187,8 +188,8 @@ const DatabasePanelDialog = (props: Props) => {
     <FormDialog
       isOpen
       onClose={onClose}
-      header={modalHeader ?? <Title size="M">Add Database</Title>}
-      footer={<div id="footerDatabaseForm" />}
+      header={modalHeader ?? 'Add Database'}
+      footer={<FooterDatabaseForm />}
     >
       <div
         className={cx(styles.bodyWrapper, 'container relative', {

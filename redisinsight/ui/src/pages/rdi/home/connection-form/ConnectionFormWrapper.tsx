@@ -6,6 +6,7 @@ import { ModalHeaderProvider } from 'uiSrc/contexts/ModalTitleProvider'
 import ConnectionForm, { Props as ConnectionFormProps } from './ConnectionForm'
 
 import styles from './styles.module.scss'
+import { FooterDatabaseForm } from 'uiSrc/components/form-dialog/FooterDatabaseForm'
 
 export interface Props extends ConnectionFormProps {
   isOpen: boolean
@@ -21,7 +22,7 @@ const ConnectionFormWrapper = (props: Props) => {
       isOpen={isOpen}
       onClose={onCancel}
       header={modalHeader ?? <Title size="M">Add endpoint</Title>}
-      footer={<div id="footerDatabaseForm" />}
+      footer={<FooterDatabaseForm />}
     >
       <div className={styles.bodyWrapper}>
         <ModalHeaderProvider value={{ modalHeader, setModalHeader }}>

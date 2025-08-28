@@ -24,6 +24,7 @@ import { TextInput } from 'uiSrc/components/base/inputs'
 import { CreateConsumerGroupsDto } from 'apiSrc/modules/browser/stream/dto'
 
 import styles from './styles.module.scss'
+import { Panel } from 'uiSrc/components/panel'
 
 export interface Props {
   closePanel: (isCancelled?: boolean) => void
@@ -164,7 +165,7 @@ const AddStreamGroup = (props: Props) => {
           </Row>
         </FlexItem>
       </div>
-      <Row justify="end" gap="l" style={{ padding: 18 }}>
+      <Panel justify="end" gap="l">
         <FlexItem>
           <div>
             <SecondaryButton
@@ -186,7 +187,7 @@ const AddStreamGroup = (props: Props) => {
             </PrimaryButton>
           </div>
         </FlexItem>
-      </Row>
+      </Panel>
     </Col>
   )
 }
