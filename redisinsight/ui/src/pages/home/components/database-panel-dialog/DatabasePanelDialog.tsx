@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
+import styled from 'styled-components'
+
 import { Nullable } from 'uiSrc/utils'
 import { UrlHandlingActions } from 'uiSrc/slices/interfaces/urlHandling'
 import { Instance } from 'uiSrc/slices/interfaces'
@@ -36,6 +38,10 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
+
+const StyledFormDialogFooter = styled.div<{ id?: string }>`
+  width: 100%;
+`
 
 export interface Props {
   editMode: boolean
@@ -188,7 +194,7 @@ const DatabasePanelDialog = (props: Props) => {
       isOpen
       onClose={onClose}
       header={modalHeader ?? <Title size="M">Add Database</Title>}
-      footer={<div id="footerDatabaseForm" />}
+      footer={<StyledFormDialogFooter id="footerDatabaseForm" />}
     >
       <div
         className={cx(styles.bodyWrapper, 'container relative', {
