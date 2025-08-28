@@ -47,7 +47,7 @@ beforeEach(() => {
   store.clearActions()
 })
 
-const PROVIDER = 'RE_CLOUD'
+const PROVIDER = 'REDIS_CLOUD'
 
 describe('Recommendation', () => {
   it('should render', () => {

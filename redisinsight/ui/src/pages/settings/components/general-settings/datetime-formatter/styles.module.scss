@@ -6,21 +6,3 @@
   font-style: normal;
   letter-spacing: -0.14px;
 }
-
-.previewContainer {
-  display: flex;
-}
-
-.preview {
-  font-family: 'SourceCodePro',sans-serif;
-  font-size: 14px !important;
-  font-weight: 400;
-  line-height: 17.6px !important;
-  text-align: left;
-  background-color: var(--euiPageBackgroundColor);
-  padding: 4px;
-  margin-left: 4px;
-  overflow-x: hidden;
-  text-overflow: ellipsis;
-  max-width: 330px;
-}

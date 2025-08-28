@@ -158,7 +158,7 @@ const Config = () => {
             source={RdiPipelineTabs.Config}
           />
         </div>
-        <Text className="rdi__text" color="subdued">
+        <Text color="primary">
           {'Provide '}
           <Link
             data-testid="rdi-pipeline-config-link"

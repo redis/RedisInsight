@@ -6,7 +6,7 @@ import Hierarchy from '@antv/hierarchy'
 import { formatRedisReply } from 'redisinsight-plugin-sdk'
 
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { RiTooltip } from 'uiSrc/components'
+import { RiTooltip } from 'uiSrc/components/base/tooltip/RITooltip'
 
 import {
   EDGE_COLOR_BODY_DARK,

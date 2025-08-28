@@ -14,7 +14,6 @@ import { formatLongName, getDbIndex, setTitle } from 'uiSrc/utils'
 import { OnboardingTour } from 'uiSrc/components'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { incrementOnboardStepAction } from 'uiSrc/slices/app/features'
-import { Title } from 'uiSrc/components/base/text/Title'
 import { OnboardingSteps } from 'uiSrc/constants/onboarding'
 import {
   MessagesListWrapper,
@@ -32,6 +31,12 @@ const MainContainer = styled.div<React.HTMLAttributes<HTMLDivElement>>`
 
 const ContentPanel = styled.div`
   flex-grow: 1;
+`
+
+const HeaderPanel = styled.div`
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--separatorColor);
+  border-color: ${({ theme }) => theme.semantic.color.border.neutral500};
 `
 
 const FooterPanel = styled.div`
@@ -89,12 +94,9 @@ const PubSubPage = () => {
   return (
     <MainContainer className={styles.main} data-testid="pub-sub-page">
       <ContentPanel>
-        <div className={styles.header}>
-          <Title size="XXL" className={styles.title}>
-            Pub/Sub
-          </Title>
+        <HeaderPanel>
           <SubscriptionPanel />
-        </div>
+        </HeaderPanel>
         <div className={styles.tableWrapper}>
           <MessagesListWrapper />
         </div>

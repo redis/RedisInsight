@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react'
-import { EuiBadge } from '@elastic/eui'
 import { Header } from 'uiSrc/components/side-panels/components'
 import styles from 'uiSrc/components/side-panels/styles.module.scss'
 import AiAssistant from 'uiSrc/components/side-panels/panels/ai-assistant'

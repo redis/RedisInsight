@@ -22,7 +22,7 @@ test.skip
     .after(async() => {
         await databaseHelper.deleteDatabase(cloudDatabaseConfig.databaseName);
     })('Verify that user can add database from RE Cloud', async() => {
-        await databaseHelper.addRECloudDatabase(cloudDatabaseConfig);
+        await databaseHelper.addRedisCloudDatabase(cloudDatabaseConfig);
         // Verify new connection badge for RE cloud
         await myRedisDatabasePage.verifyDatabaseStatusIsVisible(cloudDatabaseConfig.databaseName);
         // Verify redis stack icon for RE Cloud with all 5 modules
@@ -31,7 +31,7 @@ test.skip
 // unskip after closing https://redislabs.atlassian.net/browse/RI-5768
 test.skip
     .meta({ rte: rte.reCloud })('Verify that user can add a subscription via auto-discover flow', async t => {
-        await myRedisDatabasePage.AddRedisDatabaseDialog.addAutodiscoverRECloudDatabase(
+        await myRedisDatabasePage.AddRedisDatabaseDialog.addAutodiscoverRedisCloudDatabase(
             cloudDatabaseConfig.accessKey,
             cloudDatabaseConfig.secretKey
         );

@@ -36,7 +36,7 @@ jest.mock('uiSrc/slices/instances/instances', () => ({
   connectedInstanceSelector: jest.fn().mockReturnValue({
     id: 'instanceId',
     connectionType: 'CLUSTER',
-    provider: 'RE_CLOUD',
+    provider: 'REDIS_CLOUD',
   }),
 }))
 
@@ -99,7 +99,7 @@ describe('InsightsTrigger', () => {
       event: TelemetryEvent.INSIGHTS_PANEL_OPENED,
       eventData: {
         databaseId: 'instanceId',
-        provider: 'RE_CLOUD',
+        provider: 'REDIS_CLOUD',
         source: 'overview',
         page: '/browser',
         tab: 'tips',

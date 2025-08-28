@@ -18,7 +18,11 @@ const ExternalLink = (props: Props) => {
   )
 
   return (
-    <Link {...rest} target="_blank">
+    <Link
+      {...rest}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       {iconPosition === 'left' && <ArrowIcon />}
       {children}
       {iconPosition === 'right' && <ArrowIcon />}

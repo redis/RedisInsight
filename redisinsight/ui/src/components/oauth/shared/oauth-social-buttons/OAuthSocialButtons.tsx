@@ -5,7 +5,7 @@ import { oauthCloudPAgreementSelector } from 'uiSrc/slices/oauth/cloud'
 import { OAuthStrategy } from 'uiSrc/slices/interfaces'
 
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
-import { FlexItem } from 'uiSrc/components/base/layout/flex'
+import { FlexGroup, FlexItem } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons/RiIcon'
@@ -71,10 +71,10 @@ const OAuthSocialButtons = (props: Props) => {
             data-testid={label}
             aria-labelledby={label}
           >
-            <FlexItem direction={inline ? 'row' : 'column'}>
+            <FlexGroup direction={inline ? 'row' : 'column'} align="center" justify="center">
               <RiIcon type={icon as AllIconsType} />
               <Text className={styles.label}>{text}</Text>
-            </FlexItem>
+            </FlexGroup>
           </EmptyButton>
         </RiTooltip>
       ))}

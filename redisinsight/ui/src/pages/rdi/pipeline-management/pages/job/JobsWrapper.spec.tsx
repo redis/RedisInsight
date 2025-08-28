@@ -10,6 +10,7 @@ import {
   rdiPipelineSelector,
   setChangedFile,
   setPipelineJobs,
+  updatePipelineJob,
 } from 'uiSrc/slices/rdi/pipeline'
 import {
   cleanup,
@@ -26,8 +27,6 @@ import {
 } from 'uiSrc/telemetry'
 import {
   MOCK_RDI_PIPELINE_CONFIG,
-  MOCK_RDI_PIPELINE_DATA,
-  MOCK_RDI_PIPELINE_JOB1,
   MOCK_RDI_PIPELINE_JOB2,
 } from 'uiSrc/mocks/data/rdi'
 import { FileChangeType } from 'uiSrc/slices/interfaces'
@@ -189,7 +188,7 @@ describe('JobWrapper', () => {
 
     const expectedActions = [
       getPipelineStrategies(),
-      setPipelineJobs(expect.any(Array)),
+      updatePipelineJob({ name: 'jobName', value: '123' }),
       setChangedFile({ name: 'jobName', status: FileChangeType.Modified }),
     ]
 
@@ -214,7 +213,7 @@ describe('JobWrapper', () => {
 
     const expectedActions = [
       getPipelineStrategies(),
-      setPipelineJobs([{ name: 'jobName', value: '123' }]),
+      updatePipelineJob({ name: 'jobName', value: '123' }),
       deleteChangedFile('jobName'),
     ]
 

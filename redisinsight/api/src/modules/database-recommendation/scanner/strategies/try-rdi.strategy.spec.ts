@@ -5,8 +5,8 @@ import { HostingProvider } from 'src/modules/database/entities/database.entity';
 const mockClusterConnectionType = RedisClientConnectionType.CLUSTER;
 const mockNotClusterConnectionType = RedisClientConnectionType.STANDALONE;
 
-const mockREProvider = HostingProvider.RE_CLUSTER;
-const mockNotREProvider = HostingProvider.RE_CLOUD;
+const mockREProvider = HostingProvider.REDIS_SOFTWARE;
+const mockNotREProvider = HostingProvider.REDIS_CLOUD;
 
 describe('TryRdiStrategyStrategy', () => {
   let strategy: TryRdiStrategyStrategy;

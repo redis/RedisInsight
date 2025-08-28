@@ -75,7 +75,7 @@ const DbInfo = (props: Props) => {
       {!isFromCloud && (
         <ListGroupItem
           label={
-            <Text color="subdued" size="s">
+            <Text color="default" size="s">
               Connection Type:
               <ColorText
                 color="default"
@@ -92,7 +92,7 @@ const DbInfo = (props: Props) => {
       {nameFromProvider && (
         <ListGroupItem
           label={
-            <Text color="subdued" size="s">
+            <Text color="default" size="s">
               Database Name from Provider:
               <ColorText color="default" className={styles.dbInfoListValue}>
                 {nameFromProvider}
@@ -105,7 +105,7 @@ const DbInfo = (props: Props) => {
         label={
           <>
             {!!nodes?.length && <AppendEndpoints />}
-            <Text color="subdued" size="s">
+            <Text color="default" size="s">
               Host:
               <ColorText
                 color="default"
@@ -121,7 +121,7 @@ const DbInfo = (props: Props) => {
       {(server?.buildType === BuildType.RedisStack || isFromCloud) && (
         <ListGroupItem
           label={
-            <Text color="subdued" size="s">
+            <Text color="default" size="s">
               Port:
               <ColorText
                 color="default"
@@ -138,7 +138,7 @@ const DbInfo = (props: Props) => {
       {!!db && (
         <ListGroupItem
           label={
-            <Text color="subdued" size="s">
+            <Text color="default" size="s">
               Database Index:
               <ColorText color="default" className={styles.dbInfoListValue}>
                 {db}
@@ -150,16 +150,10 @@ const DbInfo = (props: Props) => {
 
       {!!modules?.length && (
         <ListGroupItem
-          className={styles.dbInfoModulesLabel}
           label={
-            <Text color="subdued" size="s">
+            <Text color="default" size="s">
               Capabilities:
-              <ColorText
-                color="default"
-                className={cx(styles.dbInfoListValue, styles.dbInfoModules)}
-              >
-                <DatabaseListModules modules={modules} />
-              </ColorText>
+              <DatabaseListModules modules={modules} />
             </Text>
           }
         />

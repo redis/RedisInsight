@@ -97,8 +97,11 @@ export const VectorSearchCreateIndex = ({
     } else if (success) {
       dispatch(addMessageNotification(successMessages.CREATE_INDEX()))
 
-      history.push(Pages.vectorSearch(instanceId), {
-        defaultSavedQueriesIndex: createSearchIndexParameters.indexName,
+      history.push({
+        pathname: Pages.vectorSearch(instanceId),
+        search: `?defaultSavedQueriesIndex=${encodeURIComponent(
+          createSearchIndexParameters.indexName,
+        )}`,
       })
     }
   }, [success, error])
