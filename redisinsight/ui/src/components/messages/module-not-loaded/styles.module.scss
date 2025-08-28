@@ -64,7 +64,10 @@
 
   .listItem {
     display: flex;
-    white-space: nowrap;
+
+    .text {
+      white-space: nowrap;
+    }
 
     .iconWrapper {
       display: flex;
