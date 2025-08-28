@@ -201,7 +201,6 @@ const DatabaseForm = (props: Props) => {
               }}
               autoComplete="new-password"
               disabled={isFieldDisabled('password')}
-              showExposureToggle="never"
             />
           </FormField>
         </FlexItem>
