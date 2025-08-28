@@ -1,6 +1,7 @@
-import axios, { AxiosInstance } from 'axios';
+import { sign } from 'jsonwebtoken';
+import axios, { AxiosError, AxiosInstance } from 'axios';
 import { plainToInstance } from 'class-transformer';
-import { Logger } from '@nestjs/common';
+import { HttpStatus, Logger } from '@nestjs/common';
 
 import { RdiClient } from 'src/modules/rdi/client/rdi.client';
 import {
@@ -66,6 +67,28 @@ export class ApiRdiClient extends RdiClient {
         rejectUnauthorized: false, // lgtm[js/disabling-certificate-validation]
       }),
     });
+  }
+
+  private async loginDev(): Promise<string> {
+    return sign({}, 'dev', { expiresIn: '1h' });
+  }
+
+  private async login(): Promise<string> {
+    try {
+      const response = await this.client.post(RdiUrl.Login, {
+        username: this.rdi.username,
+        password: this.rdi.password,
+      });
+
+      return response.data.access_token;
+    } catch (e) {
+      // If /login endpoint is not found we assume that RDI is in dev mode
+      if (e.status === HttpStatus.NOT_FOUND) {
+        return this.loginDev();
+      }
+
+      throw e;
+    }
   }
 
   async getSchema(): Promise<object> {
@@ -261,16 +284,16 @@ export class ApiRdiClient extends RdiClient {
 
   async connect(): Promise<void> {
     try {
-      const response = await this.client.post(RdiUrl.Login, {
-        username: this.rdi.username,
-        password: this.rdi.password,
-      });
-      const accessToken = response.data.access_token;
+      const accessToken = await this.login();
+
       const { exp } = JSON.parse(
         Buffer.from(accessToken.split('.')[1], 'base64').toString(),
       );
 
-      this.auth = { jwt: accessToken, exp };
+      this.auth = {
+        jwt: accessToken,
+        exp,
+      };
       this.client.defaults.headers.common['Authorization'] =
         `Bearer ${accessToken}`;
     } catch (e) {
