@@ -8,10 +8,7 @@ import {
 } from './interfaces'
 import ChartConfigForm from './ChartConfigForm'
 import Chart from './Chart'
-import {
-  determineDefaultTimeUnits,
-  normalizeDatapointUnits,
-} from 'uiSrc/packages/redistimeseries-app/src/components/Chart/utils'
+import { determineDefaultTimeUnits, normalizeDatapointUnits } from './utils'
 
 enum LAYOUT_STATE {
   INITIAL_STATE,
