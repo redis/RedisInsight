@@ -146,6 +146,8 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
+            const MAX_WAIT_MS = 60 * 60 * 1000 // 1 hour
+            const POLL_INTERVAL_MS = 15 * 1000 // 15 seconds
             const runId = Number('${{ needs.gate.outputs.target_run_id }}')
             const poll = async () => {
               const { data } = await github.rest.actions.getWorkflowRun({
@@ -158,11 +160,11 @@ jobs:
             let data = await poll()
             const started = Date.now()
             while (data.status !== 'completed') {
-              if (Date.now() - started > 60 * 60 * 1000) {
+              if (Date.now() - started > MAX_WAIT_MS) {
                 core.setFailed('Timeout waiting for prior run')
                 return
               }
-              await new Promise(r => setTimeout(r, 15000))
+              await new Promise(r => setTimeout(r, POLL_INTERVAL_MS))
               data = await poll()
             }
             const conclusion = data.conclusion || 'failure'
