@@ -8,17 +8,21 @@ import { cloudSelector } from 'uiSrc/slices/instances/cloud'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import { Flex, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { SearchInput } from 'uiSrc/components/base/inputs'
-import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
-import styles from './styles.module.scss'
+import { Spacer } from 'uiSrc/components/base/layout'
+import {
+  DatabaseWrapper,
+  Footer,
+  PageTitle,
+  SearchForm,
+} from 'uiSrc/components/auto-discover'
 
 export interface Props {
   columns: ColumnDefinition<InstanceRedisCloud>[]
@@ -51,7 +55,7 @@ const RedisCloudDatabaseListResult = ({ columns, onBack, onView }: Props) => {
     const itemsTemp = instances.filter(
       (item: InstanceRedisCloud) =>
         item.name?.toLowerCase().indexOf(value) !== -1 ||
-        item.publicEndpoint?.toLowerCase().indexOf(value) !== -1 ||
+        (item.publicEndpoint || '')?.toLowerCase().indexOf(value) !== -1 ||
         item.subscriptionId?.toString()?.indexOf(value) !== -1 ||
         item.subscriptionName?.toLowerCase().indexOf(value) !== -1 ||
         item.databaseId?.toString()?.indexOf(value) !== -1,
@@ -64,7 +68,7 @@ const RedisCloudDatabaseListResult = ({ columns, onBack, onView }: Props) => {
   }
 
   const SummaryText = () => (
-    <Text className={styles.subTitle}>
+    <Text color="secondary" size="S">
       <b>Summary: </b>
       {countSuccessAdded ? (
         <span>
@@ -81,28 +85,23 @@ const RedisCloudDatabaseListResult = ({ columns, onBack, onView }: Props) => {
   return (
     <AutodiscoveryPageTemplate>
       <div className="databaseContainer">
-        <Title size="XXL" className={styles.title} data-testid="title">
+        <PageTitle data-testid="title">
           Redis Enterprise Databases Added
-        </Title>
-        <Flex align="end" gap="s">
-          <FlexItem grow>
-            <MessageBar opened={!!countSuccessAdded || !!countFailAdded}>
-              <SummaryText />
-            </MessageBar>
-          </FlexItem>
+        </PageTitle>
+        <Row justify="end" gap="s">
           <FlexItem>
-            <FormField className={styles.searchForm}>
+            <SearchForm>
               <SearchInput
                 placeholder="Search..."
                 onChange={onQueryChange}
                 aria-label="Search"
                 data-testid="search"
               />
-            </FormField>
+            </SearchForm>
           </FlexItem>
-        </Flex>
-        <br />
-        <div className="itemList databaseList cloudDatabaseListResult">
+        </Row>
+        <Spacer size="l" />
+        <DatabaseWrapper>
           <Table
             columns={columns}
             data={items}
@@ -114,9 +113,12 @@ const RedisCloudDatabaseListResult = ({ columns, onBack, onView }: Props) => {
             ]}
           />
           {!items.length && <Text>{message}</Text>}
-        </div>
+        </DatabaseWrapper>
+        <MessageBar opened={!!countSuccessAdded || !!countFailAdded}>
+          <SummaryText />
+        </MessageBar>
       </div>
-      <FlexItem padding={4}>
+      <Footer padding={4}>
         <Row justify="between">
           <SecondaryButton
             onClick={onBack}
@@ -129,7 +131,7 @@ const RedisCloudDatabaseListResult = ({ columns, onBack, onView }: Props) => {
             View Databases
           </PrimaryButton>
         </Row>
-      </FlexItem>
+      </Footer>
     </AutodiscoveryPageTemplate>
   )
 }

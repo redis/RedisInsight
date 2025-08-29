@@ -57,7 +57,7 @@ const PageHeader = (props: Props) => {
     <div className={cx(styles.pageHeader, className)}>
       <div className={styles.pageHeaderTop}>
         <div>
-          <Title size="XXL" className={styles.title} data-testid="page-title">
+          <Title size="L" data-testid="page-title">
             <b data-testid="page-header-title">{title}</b>
           </Title>
           {subtitle ? <span data-testid="page-subtitle">{subtitle}</span> : ''}

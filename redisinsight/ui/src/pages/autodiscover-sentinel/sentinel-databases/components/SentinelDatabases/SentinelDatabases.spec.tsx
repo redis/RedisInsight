@@ -39,6 +39,7 @@ describe('SentinelDatabases', () => {
       render(
         <SentinelDatabases
           {...instance(mockedProps)}
+          selection={[]}
           columns={columnsMock}
           masters={mastersMock}
         />,
@@ -50,6 +51,7 @@ describe('SentinelDatabases', () => {
     render(
       <SentinelDatabases
         {...instance(mockedProps)}
+        selection={[]}
         columns={columnsMock}
         masters={[]}
       />,
@@ -65,6 +67,7 @@ describe('SentinelDatabases', () => {
     render(
       <SentinelDatabases
         {...instance(mockedProps)}
+        selection={[]}
         columns={columnsMock}
         masters={mastersMock}
       />,
@@ -76,6 +79,7 @@ describe('SentinelDatabases', () => {
     render(
       <SentinelDatabases
         {...instance(mockedProps)}
+        selection={[]}
         columns={columnsMock}
         masters={mastersMock}
       />,
@@ -93,6 +97,7 @@ describe('SentinelDatabases', () => {
     render(
       <SentinelDatabases
         {...instance(mockedProps)}
+        selection={[]}
         columns={columnsMock}
         masters={mastersMock}
       />,

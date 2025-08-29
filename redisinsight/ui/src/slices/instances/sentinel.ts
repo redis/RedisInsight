@@ -164,7 +164,13 @@ export function fetchMastersSentinelAction(
 
 // Asynchronous thunk action
 export function createMastersSentinelAction(
-  payload: CreateSentinelDatabasesDto,
+  payload: {
+    alias: string
+    name: string
+    username?: string
+    password?: string
+    db?: number
+  }[],
   onSuccessAction?: () => void,
   onFailAction?: () => void,
 ) {

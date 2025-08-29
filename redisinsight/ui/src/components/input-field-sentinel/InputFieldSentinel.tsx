@@ -2,7 +2,11 @@ import { omit } from 'lodash'
 import React, { useState } from 'react'
 import cx from 'classnames'
 import { useDebouncedEffect } from 'uiSrc/services'
-import { NumericInput, PasswordInput, TextInput } from 'uiSrc/components/base/inputs'
+import {
+  NumericInput,
+  PasswordInput,
+  TextInput,
+} from 'uiSrc/components/base/inputs'
 
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from './styles.module.scss'

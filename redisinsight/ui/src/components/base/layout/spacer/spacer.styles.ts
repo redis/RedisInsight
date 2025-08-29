@@ -1,15 +1,16 @@
 import { HTMLAttributes, ReactNode } from 'react'
-import styled from 'styled-components'
-import { CommonProps } from 'uiSrc/components/base/theme/types'
-import { theme } from 'uiSrc/components/base/theme'
+import styled, { css } from 'styled-components'
+import { CommonProps, Theme } from 'uiSrc/components/base/theme/types'
 
-export const SpacerSizes = ['xs', 's', 'm', 'l', 'xl', 'xxl'] as const
-export type SpacerSize = (typeof SpacerSizes)[number]
+export type SpacerSize = 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl'
 
 // Extract only the spaceXXX keys from the theme
-export type ThemeSpacingKey = Extract<keyof typeof theme.semantic.core.space, `space${string}`>
+export type ThemeSpacingKey = Extract<
+  keyof Theme['core']['space'],
+  `space${string}`
+>
 // Allow direct theme spacing values
-export type ThemeSpacingValue = typeof theme.semantic.core.space[ThemeSpacingKey]
+export type ThemeSpacingValue = Theme['core']['space'][ThemeSpacingKey]
 
 export type SpacerProps = CommonProps &
   HTMLAttributes<HTMLDivElement> & {
@@ -17,30 +18,40 @@ export type SpacerProps = CommonProps &
     size?: SpacerSize | ThemeSpacingKey | ThemeSpacingValue
   }
 
-export const spacerStyles = {
-  xs: 'var(--size-xs)',
-  s: 'var(--size-s)',
-  m: 'var(--size-m)',
-  l: 'var(--size-l)',
+export const spacerStyles: Record<SpacerSize, ReturnType<typeof css>> = {
+  xs: css`
+    ${({ theme }: { theme: Theme }) => theme.core.space.space025}
+  `,
+  s: css`
+    ${({ theme }: { theme: Theme }) => theme.core.space.space050}
+  `,
+  m: css`
+    ${({ theme }: { theme: Theme }) => theme.core.space.space100}
+  `,
+  l: css`
+    ${({ theme }: { theme: Theme }) => theme.core.space.space200}
+  `,
   // @see redisinsight/ui/src/styles/base/_base.scss:124
-  xl: 'calc(var(--base) * 2.25)',
-  xxl: 'var(--size-xxl)',
+  xl: css`
+    ${({ theme }: { theme: Theme }) => theme.core.space.space250}
+  `,
+  xxl: css`
+    ${({ theme }: { theme: Theme }) => theme.core.space.space300}
+  `,
 }
 
 const isThemeSpacingKey = (
-  size: SpacerSize | ThemeSpacingKey | ThemeSpacingValue
-): size is ThemeSpacingKey => typeof size === 'string' && size in theme.semantic.core.space
+  size: SpacerSize | ThemeSpacingKey | ThemeSpacingValue,
+  theme: Theme,
+): size is ThemeSpacingKey =>
+  typeof size === 'string' && size in theme.core.space
 
 const getSpacingValue = (
-  size: SpacerSize | ThemeSpacingKey | ThemeSpacingValue, 
-): string => {
-  const themeSpacingValues = Object.values(theme.semantic.core.space)
-  if (typeof size === 'string' && themeSpacingValues.includes(size)) {
-    return size
-  }
-  
-  if (isThemeSpacingKey(size)) {
-    return theme?.semantic?.core?.space?.[size] || '0'
+  size: SpacerSize | ThemeSpacingKey | ThemeSpacingValue,
+  theme: Theme,
+): string | ReturnType<typeof css> => {
+  if (isThemeSpacingKey(size, theme)) {
+    return theme?.core?.space?.[size] || '0'
   }
 
   return spacerStyles[size as SpacerSize]
@@ -48,5 +59,5 @@ const getSpacingValue = (
 
 export const StyledSpacer = styled.div<SpacerProps>`
   flex-shrink: 0;
-  height: ${({ size = 'l' }) => getSpacingValue(size)};
+  height: ${({ size = 'l', theme }) => getSpacingValue(size, theme)};
 `

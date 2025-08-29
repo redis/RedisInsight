@@ -14,12 +14,7 @@
   min-height: 70px;
 }
 
-.title {
-  font-size: 24px;
-  @include eui.euiBreakpoint("m", "l", "xl") {
-    padding-left: 12px;
-  }
-}
+
 
 .logo {
   transition: transform 0.1s linear;

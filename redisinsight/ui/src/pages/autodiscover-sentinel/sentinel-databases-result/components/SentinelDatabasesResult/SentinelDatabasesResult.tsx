@@ -12,11 +12,16 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
-import styles from './styles.module.scss'
+
+import {
+  DatabaseWrapper,
+  Footer,
+  PageTitle,
+  SearchForm,
+} from 'uiSrc/components/auto-discover'
+import { Spacer } from 'uiSrc/components/base/layout'
 
 export interface Props {
   countSuccessAdded: number
@@ -58,10 +63,10 @@ const SentinelDatabasesResult = ({
 
     const itemsTemp = masters.filter(
       (item: ModifiedSentinelMaster) =>
-        item.name?.toLowerCase().includes(value) ||
-        item.host?.toLowerCase().includes(value) ||
-        item.alias?.toLowerCase().includes(value) ||
-        item.username?.toLowerCase().includes(value) ||
+        item.name?.toLowerCase()?.includes(value) ||
+        (item.host || '')?.toLowerCase()?.includes(value) ||
+        item.alias?.toLowerCase()?.includes(value) ||
+        (item.username || '')?.toLowerCase()?.includes(value) ||
         item.port?.toString()?.includes(value) ||
         item.numberOfSlaves?.toString().includes(value),
     )
@@ -73,7 +78,7 @@ const SentinelDatabasesResult = ({
   }
 
   const SummaryText = () => (
-    <Text className={styles.subTitle} data-testid="summary">
+    <Text color="secondary" size="S" data-testid="summary">
       <b>Summary: </b>
       {countSuccessAdded ? (
         <span>
@@ -94,29 +99,24 @@ const SentinelDatabasesResult = ({
   return (
     <AutodiscoveryPageTemplate>
       <div className="databaseContainer">
-        <Title size="XXL" className={styles.title} data-testid="title">
+        <PageTitle data-testid="title">
           Auto-Discover Redis Sentinel Primary Groups
-        </Title>
+        </PageTitle>
 
         <Row align="end" gap="s">
-          <FlexItem grow>
-            <MessageBar opened={!!countSuccessAdded || !!countFailAdded}>
-              <SummaryText />
-            </MessageBar>
+          <FlexItem>
+            <SearchForm>
+              <SearchInput
+                placeholder="Search..."
+                onChange={onQueryChange}
+                aria-label="Search"
+                data-testid="search"
+              />
+            </SearchForm>
           </FlexItem>
         </Row>
-        <FlexItem>
-          <FormField className={styles.searchForm}>
-            <SearchInput
-              placeholder="Search..."
-              onChange={onQueryChange}
-              aria-label="Search"
-              data-testid="search"
-            />
-          </FormField>
-        </FlexItem>
-        <br />
-        <div className="itemList databaseList sentinelDatabaseListResult">
+        <Spacer size="l" />
+        <DatabaseWrapper>
           {!items.length || loading ? (
             <Text>{message}</Text>
           ) : (
@@ -131,10 +131,13 @@ const SentinelDatabasesResult = ({
               ]}
             />
           )}
-        </div>
+        </DatabaseWrapper>
+        <MessageBar opened={!!countSuccessAdded || !!countFailAdded}>
+          <SummaryText />
+        </MessageBar>
       </div>
-      <FlexItem padding={4}>
-        <Row gap="m" justify="between">
+      <Footer padding={4}>
+        <Row justify="between">
           <SecondaryButton
             onClick={onBack}
             className="btn-cancel btn-back"
@@ -150,7 +153,7 @@ const SentinelDatabasesResult = ({
             View Databases
           </PrimaryButton>
         </Row>
-      </FlexItem>
+      </Footer>
     </AutodiscoveryPageTemplate>
   )
 }
