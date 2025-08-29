@@ -30,7 +30,7 @@ export const MODULE_NOT_LOADED_CONTENT: { [key in RedisDefaultModules]?: any } =
         'These features enable multi-field queries, aggregation, exact phrase matching, numeric filtering, ',
         'geo filtering and vector similarity semantic search on top of text queries.',
       ],
-      link: 'https://redis.io/docs/interact/search-and-query/',
+      link: 'https://redis.io/docs/latest/develop/ai/search-and-query/',
     },
     [RedisDefaultModules.ReJSON]: {
       text: ['JSON adds the capability to:'],
