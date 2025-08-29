@@ -48,8 +48,8 @@ export const useDatabaseOverview = () => {
     } = {},
   } = overview
 
-  const loadData = () => {
-    if (connectedInstanceId && !connectivityError) {
+  const loadData = (forceDataReload = false) => {
+    if (connectedInstanceId && (!connectivityError || forceDataReload)) {
       dispatch(getDatabaseConfigInfoAction(connectedInstanceId))
       setLastRefreshTime(Date.now())
     }
@@ -75,8 +75,8 @@ export const useDatabaseOverview = () => {
       },
     })
 
-  const handleRefresh = () => {
-    loadData()
+  const handleRefresh = (forceRefresh?: boolean) => {
+    loadData(forceRefresh)
   }
   const handleRefreshClick = () => {
     // clear error, if connectivity is broken, the interceptor will set it again
