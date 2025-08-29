@@ -34,7 +34,6 @@ on:
         description: The workflow filename to inspect for prior runs (e.g., tests-e2e.yml)
         required: true
         type: string
-        default: tests-e2e.yml
       require_approval:
         description: Require an Approved review to proceed (ignored for workflow_dispatch when allowed)
         required: false
@@ -84,7 +83,7 @@ jobs:
           script: |
             const requireApproval = core.getInput('require_approval') === 'true'
             const allowDispatch = core.getInput('allow_workflow_dispatch') === 'true'
-            const workflowFilename = core.getInput('workflow_filename') || 'tests-e2e.yml'
+            const workflowFilename = core.getInput('workflow_filename')
             const explicitSha = (core.getInput('head_sha') || '').trim()
 
             if (context.eventName === 'workflow_dispatch' && allowDispatch) {
@@ -186,4 +185,3 @@ jobs:
             exit 1
           fi
           echo "Mirroring success"
-
