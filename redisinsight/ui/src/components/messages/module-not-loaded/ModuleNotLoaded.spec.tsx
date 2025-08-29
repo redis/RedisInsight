@@ -56,7 +56,9 @@ describe('ModuleNotLoaded', () => {
   it('should render free trial text when cloudAds feature is enabled and no free db exists', () => {
     const { queryByText } = render(<ModuleNotLoaded {...props} />)
     expect(
-      queryByText(/Create a free trial Redis Stack database/),
+      queryByText(
+        /Create a free all-in-one Redis Cloud database to start exploring these capabilities./,
+      ),
     ).toBeInTheDocument()
   })
 
@@ -64,7 +66,9 @@ describe('ModuleNotLoaded', () => {
     mockGetDbWithModuleLoaded(true)
     const { queryByText } = render(<ModuleNotLoaded {...props} />)
     expect(
-      queryByText(/Use your free trial all-in-one Redis Cloud database/),
+      queryByText(
+        /Use your free all-in-one Redis Cloud database to start exploring these capabilities./,
+      ),
     ).toBeInTheDocument()
   })
 
@@ -138,7 +142,9 @@ describe('ModuleNotLoaded', () => {
     mockGetDbWithModuleLoaded(true)
     const { getByText } = render(<ModuleNotLoaded {...props} />)
     expect(
-      getByText(/Use your free trial all-in-one Redis Cloud database/),
+      getByText(
+        /Use your free all-in-one Redis Cloud database to start exploring these capabilities./,
+      ),
     ).toBeInTheDocument()
   })
 
@@ -146,7 +152,7 @@ describe('ModuleNotLoaded', () => {
     const { getByText } = render(<ModuleNotLoaded {...props} />)
     expect(
       getByText(
-        /Create a free trial Redis Stack database with Redis Query Engine/,
+        /Create a free all-in-one Redis Cloud database to start exploring these capabilities./,
       ),
     ).toBeInTheDocument()
   })
