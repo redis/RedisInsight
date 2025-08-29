@@ -175,6 +175,39 @@ describe('connectivityErrorsInterceptor', () => {
       ])
     }
   })
+
+  it('should not dispatch connectivity error when instance ID does not match', async () => {
+    // Set up connected instance with different ID than the response URL
+    mockedTestStore.getState().connections.instances.connectedInstance = {
+      ...INSTANCES_MOCK[0],
+      id: 'different-instance-id',
+    }
+
+    jest
+      .spyOn(store, 'dispatch')
+      .mockImplementation(mockedTestStore.dispatch as any)
+    jest.spyOn(store, 'getState').mockImplementation(mockedTestStore.getState)
+
+    const response: any = {
+      response: {
+        status: 424,
+        data: {
+          error: 'RedisConnectionFailedException',
+        },
+        request: {
+          responseURL:
+            'http://localhost:5001/databases/test-instance-id/overview', // Different ID
+        },
+      },
+    }
+
+    try {
+      await connectivityErrorsInterceptor(response)
+    } catch {
+      // Should not dispatch any connectivity error actions
+      expect(mockedTestStore.getActions()).toEqual([])
+    }
+  })
 })
 
 describe('cloudAuthInterceptor', () => {
