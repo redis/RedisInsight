@@ -79,12 +79,17 @@ jobs:
       - name: Determine mode
         id: check
         uses: actions/github-script@v7
+        env:
+          WORKFLOW_FILENAME: ${{ inputs.workflow_filename }}
+          REQUIRE_APPROVAL: ${{ inputs.require_approval }}
+          ALLOW_WORKFLOW_DISPATCH: ${{ inputs.allow_workflow_dispatch }}
+          HEAD_SHA: ${{ inputs.head_sha }}
         with:
           script: |
-            const requireApproval = core.getInput('require_approval') === 'true'
-            const allowDispatch = core.getInput('allow_workflow_dispatch') === 'true'
-            const workflowFilename = core.getInput('workflow_filename')
-            const explicitSha = (core.getInput('head_sha') || '').trim()
+            const workflowFilename = process.env.WORKFLOW_FILENAME
+            const requireApproval = process.env.REQUIRE_APPROVAL === 'true'
+            const allowDispatch = process.env.ALLOW_WORKFLOW_DISPATCH === 'true'
+            const explicitSha = (process.env.HEAD_SHA || '').trim()
 
             if (context.eventName === 'workflow_dispatch' && allowDispatch) {
               core.setOutput('mode', 'run')
