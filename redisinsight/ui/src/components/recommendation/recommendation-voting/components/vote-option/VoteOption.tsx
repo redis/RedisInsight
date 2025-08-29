@@ -14,7 +14,7 @@ import { Nullable } from 'uiSrc/utils'
 
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
-import { CancelSlimIcon } from 'uiSrc/components/base/icons'
+import { CancelSlimIcon, Icon } from 'uiSrc/components/base/icons'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
@@ -47,6 +47,12 @@ const GitHubLink = styled(Link)`
     gap: 4px;
     align-items: center;
   }
+`
+
+const VotingIconButton = styled(IconButton)`
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 50%;
 `
 
 export interface Props {
@@ -130,7 +136,7 @@ const VoteOption = (props: Props) => {
           position="bottom"
           data-testid={`${voteOption}-vote-tooltip`}
         >
-          <IconButton
+          <VotingIconButton
             disabled={!isAnalyticsEnable}
             icon={iconType[voteOption] ?? 'LikeIcon'}
             className={cx('vote__btn', { selected: vote === voteOption })}
