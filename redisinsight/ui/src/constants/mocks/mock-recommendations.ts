@@ -410,7 +410,7 @@ export const MOCK_RECOMMENDATIONS: IRecommendationsStatic = {
       {
         type: 'link',
         value: {
-          href: 'https://redis.io/docs/interact/search-and-query/',
+          href: 'https://redis.io/docs/latest/develop/ai/search-and-query/',
           name: 'query and search capabilities',
         },
       },
@@ -853,7 +853,7 @@ export const MOCK_RECOMMENDATIONS: IRecommendationsStatic = {
       {
         type: 'link',
         value: {
-          href: 'https://redis.io/docs/interact/search-and-query/',
+          href: 'https://redis.io/docs/latest/develop/ai/search-and-query/',
           name: 'query and search',
         },
       },
@@ -907,7 +907,7 @@ export const MOCK_RECOMMENDATIONS: IRecommendationsStatic = {
       {
         type: 'link',
         value: {
-          href: 'https://redis.io/docs/interact/search-and-query/',
+          href: 'https://redis.io/docs/latest/develop/ai/search-and-query/',
           name: 'Redis Query Engine',
         },
       },
@@ -1008,7 +1008,7 @@ export const MOCK_RECOMMENDATIONS: IRecommendationsStatic = {
       {
         type: 'link',
         value: {
-          href: 'https://redis.io/docs/interact/search-and-query/',
+          href: 'https://redis.io/docs/latest/develop/ai/search-and-query/',
           name: 'query and search capabilities',
         },
       },
@@ -1095,7 +1095,7 @@ export const MOCK_RECOMMENDATIONS: IRecommendationsStatic = {
       {
         type: 'link',
         value: {
-          href: 'https://redis.io/docs/interact/search-and-query/',
+          href: 'https://redis.io/docs/latest/develop/ai/search-and-query/',
           name: 'query and search capabilities',
         },
       },
@@ -1241,7 +1241,7 @@ export const MOCK_RECOMMENDATIONS: IRecommendationsStatic = {
             {
               type: 'link',
               value: {
-                href: 'https://redis.io/docs/interact/search-and-query/',
+                href: 'https://redis.io/docs/latest/develop/ai/search-and-query/',
                 name: 'query and search capabilities',
               },
             },
@@ -1340,7 +1340,7 @@ export const MOCK_RECOMMENDATIONS: IRecommendationsStatic = {
       {
         type: 'link',
         value: {
-          href: 'https://redis.io/docs/interact/search-and-query/',
+          href: 'https://redis.io/docs/latest/develop/ai/search-and-query/',
           name: 'query and search',
         },
       },
@@ -1396,7 +1396,7 @@ export const MOCK_RECOMMENDATIONS: IRecommendationsStatic = {
             {
               type: 'link',
               value: {
-                href: 'https://redis.io/docs/interact/search-and-query/search/aggregations/',
+                href: 'https://redis.io/docs/latest/develop/ai/search-and-query/',
                 name: 'Apply Functions',
               },
             },
@@ -1414,7 +1414,7 @@ export const MOCK_RECOMMENDATIONS: IRecommendationsStatic = {
       {
         type: 'link',
         value: {
-          href: 'https://redis.io/docs/interact/search-and-query/',
+          href: 'https://redis.io/docs/latest/develop/ai/search-and-query/',
           name: 'query and search',
         },
       },
