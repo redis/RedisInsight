@@ -21,7 +21,6 @@ import { Pages } from 'uiSrc/constants'
 import { setCapability } from 'uiSrc/slices/app/context'
 
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { ExportIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 
 interface Props {
@@ -86,8 +85,7 @@ const OAuthConnectFreeDb = ({
 
   return (
     <PrimaryButton
-      size="s"
-      icon={ExportIcon}
+      size="m"
       disabled={loading}
       loading={loading}
       onClick={handleCheckConnectToInstance}
