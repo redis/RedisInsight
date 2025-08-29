@@ -215,7 +215,7 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
             The ultimate Redis starting point
           </Title>
           <Spacer size="s" />
-          <Text size="s" className={styles.smallText} color="subdued">
+          <Text size="s" className={styles.smallText} color="primary">
             Cloud API keys will be created and stored when you connect to Redis
             Cloud to create a free trial Cloud database or autodiscover your
             Cloud database.
