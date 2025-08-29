@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
 
 import { useParams } from 'react-router-dom'
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
@@ -22,6 +21,7 @@ import { HashDetailsTable } from './hash-details-table'
 import { KeyDetailsSubheader } from '../key-details-subheader/KeyDetailsSubheader'
 import { AddItemsAction } from '../key-details-actions'
 import styles from './styles.module.scss'
+import { AddKeysContainer } from '../common/AddKeysContainer.styled'
 
 export interface Props extends KeyDetailsHeaderProps {
   onRemoveKey: () => void
@@ -110,12 +110,12 @@ const HashDetails = (props: Props) => {
           </div>
         )}
         {isAddItemPanelOpen && (
-          <div className={cx('formFooterBar', 'contentActive')}>
+          <AddKeysContainer>
             <AddHashFields
               isExpireFieldsAvailable={isExpireFieldsAvailable}
               closePanel={closeAddItemPanel}
             />
-          </div>
+          </AddKeysContainer>
         )}
       </div>
     </div>

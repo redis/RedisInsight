@@ -4,7 +4,6 @@
   width: 100%;
   border: none !important;
   border-top: 1px solid var(--euiColorPrimary);
-  padding: 12px 20px;
   max-height: 234px;
   scroll-padding-bottom: 30px;
 
@@ -20,8 +19,6 @@
     display: inline-block;
     color: var(--euiColorMediumShade);
     font: normal normal normal 12px/18px Graphik, sans-serif;
-    margin-top: 6px;
-    padding-right: 6px;
   }
 
   .error {

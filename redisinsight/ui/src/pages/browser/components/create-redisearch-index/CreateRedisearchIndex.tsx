@@ -35,6 +35,7 @@ import { CreateRedisearchIndexDto } from 'apiSrc/modules/browser/redisearch/dto'
 import { KEY_TYPE_OPTIONS, RedisearchIndexKeyType } from './constants'
 
 import styles from './styles.module.scss'
+import { Panel } from 'uiSrc/components/panel'
 
 export interface Props {
   onClosePanel?: () => void
@@ -283,12 +284,8 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
                         id={`identifier-${item.id}`}
                         placeholder="Enter Identifier"
                         value={item.identifier}
-                        onChange={value =>
-                          handleFieldChange(
-                            'identifier',
-                            item.id,
-                            value,
-                          )
+                        onChange={(value) =>
+                          handleFieldChange('identifier', item.id, value)
                         }
                         ref={
                           index === fields.length - 1
@@ -319,7 +316,7 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
         </div>
       </div>
       <>
-        <Row justify="end" gap="m" style={{ padding: 18 }}>
+        <Panel justify="end" gap="m">
           <FlexItem>
             <SecondaryButton
               color="secondary"
@@ -341,7 +338,7 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
               Create Index
             </PrimaryButton>
           </FlexItem>
-        </Row>
+        </Panel>
       </>
     </>
   )
