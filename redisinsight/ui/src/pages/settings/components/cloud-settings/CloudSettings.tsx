@@ -18,6 +18,8 @@ import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { RiPopover } from 'uiSrc/components/base'
+import { EXTERNAL_LINKS, UTM_MEDIUMS } from 'uiSrc/constants/links'
+import { getUtmExternalLink } from 'uiSrc/utils/links'
 import UserApiKeysTable from './components/user-api-keys-table'
 
 import styles from './styles.module.scss'
@@ -68,8 +70,12 @@ const CloudSettings = () => {
           <Text size="m" className={styles.smallText} color="primary">
             To delete API keys from Redis Cloud,
             <Link
+              color="primary"
               target="_blank"
-              href="https://redis.io/redis-enterprise-cloud/overview/?utm_source=redisinsight&utm_medium=settings&utm_campaign=clear_keys"
+              href={getUtmExternalLink(EXTERNAL_LINKS.redisEnterpriseCloud, {
+                medium: UTM_MEDIUMS.Settings,
+                campaign: 'clear_keys',
+              })}
             >
               sign in to Redis Cloud
             </Link>
