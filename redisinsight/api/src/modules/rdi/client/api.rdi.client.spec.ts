@@ -608,12 +608,6 @@ describe('ApiRdiClient', () => {
     });
 
     it('should set dummy authorization headers in dev mode when login is disabled', async () => {
-      const mockedAccessToken = sign(
-        { exp: Math.trunc(Date.now() / 1000) + 3600 },
-        'test',
-      );
-      const expectedAuthorizationHeader = `Bearer ${mockedAccessToken}`;
-
       mockedAxios.post.mockRejectedValueOnce({
         status: 404,
       });
