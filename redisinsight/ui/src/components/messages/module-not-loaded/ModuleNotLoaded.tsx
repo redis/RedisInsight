@@ -100,15 +100,15 @@ const ModuleNotLoaded = ({
 
       return !freeDbWithModule ? (
         <Text className={cx(styles.text, styles.marginBottom)}>
-          Create a free trial Redis Stack database with {moduleName} which
-          extends the core capabilities of your Redis.
+          Create a free all-in-one Redis Cloud database to start exploring these
+          capabilities.
         </Text>
       ) : (
         <Text
           className={cx(styles.text, styles.marginBottom, styles.textFooter)}
         >
-          Use your free trial all-in-one Redis Cloud database to start exploring
-          these capabilities.
+          Use your free all-in-one Redis Cloud database to start exploring these
+          capabilities.
         </Text>
       )
     },

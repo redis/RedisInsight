@@ -4,6 +4,7 @@ import { fireEvent, render, screen, waitFor } from 'uiSrc/utils/test-utils'
 import { OAuthSsoDialog } from 'uiSrc/components'
 import { FeatureFlags } from 'uiSrc/constants'
 import cloudReducer from 'uiSrc/slices/instances/cloud'
+import instancesReducer from 'uiSrc/slices/instances/instances'
 import appOauthReducer from 'uiSrc/slices/oauth/cloud'
 import appFeaturesReducer from 'uiSrc/slices/app/features'
 import { RqeNotAvailableCard } from './RqeNotAvailableCard'
@@ -13,7 +14,10 @@ import { RqeNotAvailableCard } from './RqeNotAvailableCard'
 const createTestStore = (featureFlagsEnabled = true) =>
   configureStore({
     reducer: combineReducers({
-      connections: combineReducers({ cloud: cloudReducer }),
+      connections: combineReducers({
+        cloud: cloudReducer,
+        instances: instancesReducer,
+      }),
       oauth: combineReducers({ cloud: appOauthReducer }),
       app: combineReducers({ features: appFeaturesReducer }),
     }),
@@ -24,6 +28,7 @@ const createTestStore = (featureFlagsEnabled = true) =>
             features: {
               [FeatureFlags.cloudSso]: { flag: featureFlagsEnabled },
               [FeatureFlags.cloudAds]: { flag: featureFlagsEnabled },
+              [FeatureFlags.envDependent]: { flag: featureFlagsEnabled },
             },
           },
         },
@@ -55,7 +60,7 @@ describe('RqeNotAvailableCard', () => {
   it('should open "Cloud Login" modal when clicking on "Get started for free" button', async () => {
     renderRqeNotAvailableCardComponent()
 
-    const button = screen.getByRole('button', { name: /Get started for free/i })
+    const button = screen.getByRole('button', { name: /Get Started for Free/i })
     expect(button).toBeInTheDocument()
 
     fireEvent.click(button)
@@ -70,7 +75,7 @@ describe('RqeNotAvailableCard', () => {
     renderRqeNotAvailableCardComponent(false) // Disable feature flags
 
     const button = screen.queryByRole('button', {
-      name: /Get started for free/i,
+      name: /Get Started for Free/i,
     })
     expect(button).not.toBeInTheDocument()
   })
