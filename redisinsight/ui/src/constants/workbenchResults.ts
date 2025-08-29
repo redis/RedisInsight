@@ -1,4 +1,5 @@
 import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
+import { EXTERNAL_LINKS } from './links'
 
 export const bulkReplyCommands = [
   'LOLWUT',
@@ -30,7 +31,7 @@ export const MODULE_NOT_LOADED_CONTENT: { [key in RedisDefaultModules]?: any } =
         'These features enable multi-field queries, aggregation, exact phrase matching, numeric filtering, ',
         'geo filtering and vector similarity semantic search on top of text queries.',
       ],
-      link: 'https://redis.io/docs/latest/develop/ai/search-and-query/',
+      link: EXTERNAL_LINKS.redisQueryEngine,
     },
     [RedisDefaultModules.ReJSON]: {
       text: ['JSON adds the capability to:'],
