@@ -24,6 +24,8 @@ import {
   ViewMode,
   ViewModeContextProvider,
 } from 'uiSrc/components/query/context/view-mode.context'
+import NoDataMessage from '../components/no-data-message/NoDataMessage'
+import { NoDataMessageKeys } from '../components/no-data-message/data'
 
 enum RightPanelType {
   SAVED_QUERIES = 'saved-queries',
@@ -169,7 +171,9 @@ export const VectorSearchQuery = ({
                   onAllQueriesDelete={handleClearResults}
                   noResultsPlaceholder={
                     <StyledNoResultsWrapper>
-                      The calm before the output
+                      <NoDataMessage
+                        variant={NoDataMessageKeys.NoQueryResults}
+                      />
                     </StyledNoResultsWrapper>
                   }
                 />

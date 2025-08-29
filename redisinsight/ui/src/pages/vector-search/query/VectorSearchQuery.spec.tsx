@@ -5,6 +5,7 @@ import { TelemetryEvent } from 'uiSrc/telemetry/events'
 import { sendEventTelemetry } from 'uiSrc/telemetry'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
 import { VectorSearchQuery, VectorSearchQueryProps } from './VectorSearchQuery'
+import * as utils from './utils'
 
 // Mock the telemetry module, so we don't send actual telemetry data during tests
 jest.mock('uiSrc/telemetry', () => ({
@@ -22,6 +23,12 @@ jest.mock('uiSrc/slices/browser/redisearch', () => ({
   fetchRedisearchListAction: jest
     .fn()
     .mockReturnValue({ type: 'FETCH_REDISEARCH_LIST' }),
+}))
+
+// Mock the utils module to control loadHistoryData behavior
+jest.mock('./utils', () => ({
+  ...jest.requireActual('./utils'),
+  loadHistoryData: jest.fn(),
 }))
 
 const DEFAULT_PROPS: VectorSearchQueryProps = {
@@ -69,6 +76,24 @@ describe('VectorSearchQuery', () => {
 
     // Verify the saved queries screen is closed
     expect(savedQueriesScreen).not.toBeInTheDocument()
+  })
+
+  it('should render "No query results" message if there are no results', async () => {
+    // Mock loadHistoryData specifically for this test to return empty array
+    // This ensures isResultsLoaded becomes true and items remains empty
+    const mockedUtils = utils as jest.Mocked<typeof utils>
+    mockedUtils.loadHistoryData.mockResolvedValueOnce([])
+
+    renderVectorSearchQueryComponent()
+
+    // Wait for the component to load (for the useEffect in useQuery to complete)
+    await screen.findByTestId('no-data-message')
+
+    const noResultsMessage = screen.getByTestId('no-data-message')
+    const noResultsMessageTitle = screen.getByText('No search results.')
+
+    expect(noResultsMessage).toBeInTheDocument()
+    expect(noResultsMessageTitle).toBeInTheDocument()
   })
 
   describe('Telemetry', () => {
