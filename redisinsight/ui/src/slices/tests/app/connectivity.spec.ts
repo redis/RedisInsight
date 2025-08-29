@@ -23,6 +23,7 @@ import {
   getDatabaseConfigInfoFailure,
   getDatabaseConfigInfoSuccess,
 } from 'uiSrc/slices/instances/instances'
+import { INSTANCES_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
 
 let testStore: typeof mockedStore
 const onSuccessAction = jest.fn()
@@ -81,6 +82,12 @@ describe('app connectivity slice', () => {
 
   describe('retryConnection', () => {
     it('should handle success path', async () => {
+      // Set connected instance for interceptor to work
+      testStore.getState().connections.instances.connectedInstance = {
+        ...INSTANCES_MOCK[0],
+        id: '123', // Match the test database ID
+      }
+
       const getDbOverviewMock = jest.fn((_req, res, ctx) => res(ctx.json({})))
       mswServer.use(
         rest.get(
@@ -104,7 +111,7 @@ describe('app connectivity slice', () => {
           setConnectivityLoading(false),
         ]
 
-        expect(mockedStore.getActions()).toEqual(expectedActions)
+        expect(testStore.getActions()).toEqual(expectedActions)
       })
 
       expect(onSuccessAction).toHaveBeenCalledTimes(1)
@@ -112,8 +119,14 @@ describe('app connectivity slice', () => {
     })
 
     it('should handle failure path', async () => {
+      // Set connected instance for interceptor to work
+      testStore.getState().connections.instances.connectedInstance = {
+        ...INSTANCES_MOCK[0],
+        id: '123', // Match the test database ID
+      }
+
       jest.spyOn(store, 'dispatch').mockImplementation((action: any) => {
-        mockedStore.dispatch(action)
+        testStore.dispatch(action)
       })
       const getDbOverviewMock = jest.fn((_req, res, ctx) =>
         res(
@@ -143,7 +156,7 @@ describe('app connectivity slice', () => {
           setConnectivityLoading(false),
         ]
 
-        expect(mockedStore.getActions()).toEqual(expectedActions)
+        expect(testStore.getActions()).toEqual(expectedActions)
       })
 
       expect(onSuccessAction).not.toHaveBeenCalled()
