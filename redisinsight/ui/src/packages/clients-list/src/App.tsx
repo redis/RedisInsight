@@ -1,13 +1,8 @@
 /* eslint-disable react/jsx-filename-extension */
 import React from 'react'
-import { appendIconComponentCache } from '@elastic/eui/es/components/icon/icon'
 import { JSONView, TableView } from './components'
 
-import {
-  cachedIcons,
-  parseClientListResponse,
-  parseJSONASCIIResponse,
-} from './utils'
+import { parseClientListResponse, parseJSONASCIIResponse } from './utils'
 
 export enum CommonPlugin {
   ClientList = 'ClientList',
@@ -25,10 +20,6 @@ interface Props {
   mode: RawMode
   result?: { response: any; status: string }[]
 }
-
-// This is problematic for some bundlers and/or deployments,
-// so a method exists to preload specific icons an application needs.
-appendIconComponentCache(cachedIcons)
 
 const getJsonResultString = (result: any, mode: RawMode) =>
   mode !== RawMode.RAW && result !== null

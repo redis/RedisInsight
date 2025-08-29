@@ -7,6 +7,7 @@ import { formatRedisReply } from 'redisinsight-plugin-sdk'
 
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiTooltip } from 'uiSrc/components/base/tooltip/RITooltip'
+import { IconButton } from 'uiSrc/components/base/forms/buttons'
 
 import {
   EDGE_COLOR_BODY_DARK,
@@ -28,7 +29,6 @@ import {
   findFlatProfile,
 } from './parser'
 import { ExplainNode, ProfileNode } from './Node'
-import { IconButton } from '../../../components/base/forms/buttons'
 
 interface IExplain {
   command: string
@@ -507,7 +507,8 @@ function ExplainDraw({
                   core && Math.floor(core.zoom()) <= 3 && core?.zoom(0.5)
                   core?.resize(undefined, core?.getContentBBox().height + 50)
                 },
-                icon: 'magnifyWithPlus',
+                // icon: 'magnifyWithPlus', TODO: needs replacement
+                icon: 'PlusSlimIcon',
               },
               {
                 name: 'Zoom Out',
@@ -523,7 +524,8 @@ function ExplainDraw({
                   }
                   core?.resize(undefined, core?.getContentBBox().height + 50)
                 },
-                icon: 'magnifyWithMinus',
+                // icon: 'magnifyWithMinus', TODO: needs replacement
+                icon: 'MinusIcon',
               },
               {
                 name: 'Reset Zoom',
@@ -535,7 +537,8 @@ function ExplainDraw({
                   core?.zoomTo(1)
                   core?.resize(undefined, core?.getContentBBox().height + 50)
                 },
-                icon: 'bullseye',
+                // icon: 'bullseye', TODO: needs replacement
+                icon: 'IndicatorXIcon',
               },
             ].map((item) => (
               <RiTooltip position="left" content={item.name}>
