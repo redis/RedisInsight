@@ -31,7 +31,6 @@ export type TextProps = Omit<BodyProps, 'color' | 'size'> &
     color?: ColorType
     size?: BodyProps['size'] | 'm' | 's' | 'xs'
     textAlign?: 'left' | 'center' | 'right'
-    variant?: BodyProps['variant'] | 'regular' | 'semiBold' | 'italic'
   }
 
 export const useColorTextStyles = ({ $color }: MapProps = {}) => {
