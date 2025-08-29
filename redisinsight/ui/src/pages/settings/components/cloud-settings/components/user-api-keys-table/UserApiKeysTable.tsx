@@ -26,6 +26,7 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import { Link } from 'uiSrc/components/base/link/Link'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -206,16 +207,16 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
     return (
       <>
         <div className={styles.noKeysMessage} data-testid="no-api-keys-message">
-          <Title size="XS">
+          <Row align="center">
             <RiIcon
-                className={styles.starsIcon}
-                type="StarsIcon"
-                color="attention300"
-              />
-            The ultimate Redis starting point
-          </Title>
+              className={styles.starsIcon}
+              type="StarsIcon"
+              color="attention300"
+            />
+            <Title size="XS">The ultimate Redis starting point</Title>
+          </Row>
           <Spacer size="s" />
-          <Text size="s" className={styles.smallText} color="subdued">
+          <Text size="s" className={styles.smallText} color="primary">
             Cloud API keys will be created and stored when you connect to Redis
             Cloud to create a free trial Cloud database or autodiscover your
             Cloud database.
