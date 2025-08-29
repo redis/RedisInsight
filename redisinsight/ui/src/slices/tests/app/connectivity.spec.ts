@@ -162,6 +162,51 @@ describe('app connectivity slice', () => {
       expect(onSuccessAction).not.toHaveBeenCalled()
       expect(onFailAction).toHaveBeenCalledTimes(1)
     })
+
+    it('should not dispatch connectivity error when instance ID does not match', async () => {
+      // Set connected instance with different ID than the request
+      testStore.getState().connections.instances.connectedInstance = {
+        ...INSTANCES_MOCK[0],
+        id: 'different-instance-id', // Different from request URL
+      }
+
+      jest.spyOn(store, 'dispatch').mockImplementation((action: any) => {
+        testStore.dispatch(action)
+      })
+      const getDbOverviewMock = jest.fn((_req, res, ctx) =>
+        res(
+          ctx.status(503),
+          ctx.json({ code: 'serviceUnavailable', message: 'Test error' }),
+        ),
+      )
+      mswServer.use(
+        rest.get(
+          getMswURL(`${ApiEndpoints.DATABASES}/123/overview`), // ID 123 in URL
+          getDbOverviewMock,
+        ),
+      )
+
+      testStore.dispatch<any>(
+        retryConnection('123', onSuccessAction, onFailAction),
+      )
+
+      await waitFor(() => {
+        expect(getDbOverviewMock).toHaveBeenCalledTimes(1)
+
+        const expectedActions = [
+          setConnectivityLoading(true),
+          getDatabaseConfigInfo(),
+          // Note: NO setConnectivityError action should be dispatched
+          getDatabaseConfigInfoFailure('Test error'),
+          setConnectivityLoading(false),
+        ]
+
+        expect(testStore.getActions()).toEqual(expectedActions)
+      })
+
+      expect(onSuccessAction).not.toHaveBeenCalled()
+      expect(onFailAction).toHaveBeenCalledTimes(1)
+    })
   })
 
   describe('selectors', () => {
