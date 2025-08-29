@@ -10,7 +10,7 @@ fixture `Overview`
     .meta({ type: 'regression', rte: rte.reCloud })
     .page(commonUrl)
     .beforeEach(async() => {
-        await databaseHelper.acceptLicenseTermsAndAddRECloudDatabase(cloudDatabaseConfig);
+        await databaseHelper.acceptLicenseTermsAndAddRedisCloudDatabase(cloudDatabaseConfig);
     })
     .afterEach(async() => {
         // Delete database

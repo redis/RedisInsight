@@ -5,22 +5,6 @@ interface CollectTelemetry {
   instanceId: string
 }
 
-export const collectSavedQueriesPanelToggleTelemetry = ({
-  instanceId,
-  isSavedQueriesOpen,
-}: CollectTelemetry & {
-  isSavedQueriesOpen: boolean
-}): void => {
-  sendEventTelemetry({
-    event: isSavedQueriesOpen
-      ? TelemetryEvent.SEARCH_SAVED_QUERIES_PANEL_CLOSED
-      : TelemetryEvent.SEARCH_SAVED_QUERIES_PANEL_OPENED,
-    eventData: {
-      databaseId: instanceId,
-    },
-  })
-}
-
 export const collectChangedSavedQueryIndexTelemetry = ({
   instanceId,
 }: CollectTelemetry): void => {
@@ -94,28 +78,6 @@ export const collectIndexInfoStepTelemetry = (
 export const collectCreateIndexStepTelemetry = (instanceId: string): void => {
   sendEventTelemetry({
     event: TelemetryEvent.VECTOR_SEARCH_ONBOARDING_PROCEED_TO_QUERIES,
-    eventData: {
-      databaseId: instanceId,
-    },
-  })
-}
-
-export const collectManageIndexesDrawerOpenedTelemetry = ({
-  instanceId,
-}: CollectTelemetry): void => {
-  sendEventTelemetry({
-    event: TelemetryEvent.SEARCH_MANAGE_INDEXES_DRAWER_OPENED,
-    eventData: {
-      databaseId: instanceId,
-    },
-  })
-}
-
-export const collectManageIndexesDrawerClosedTelemetry = ({
-  instanceId,
-}: CollectTelemetry): void => {
-  sendEventTelemetry({
-    event: TelemetryEvent.SEARCH_MANAGE_INDEXES_DRAWER_CLOSED,
     eventData: {
       databaseId: instanceId,
     },

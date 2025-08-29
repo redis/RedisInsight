@@ -1,9 +1,6 @@
 import React from 'react'
 import { cleanup, render, screen, userEvent } from 'uiSrc/utils/test-utils'
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-
 import { HeaderActions, HeaderActionsProps } from './HeaderActions'
-import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
 
 // Workaround for @redis-ui/components Title component issue with react-children-utilities
 // TypeError: react_utils.childrenToString is not a function
@@ -19,10 +16,8 @@ jest.mock('uiSrc/telemetry', () => ({
 }))
 
 const mockProps: HeaderActionsProps = {
-  isManageIndexesDrawerOpen: false,
-  setIsManageIndexesDrawerOpen: jest.fn(),
-  isSavedQueriesOpen: false,
-  setIsSavedQueriesOpen: jest.fn(),
+  toggleManageIndexesScreen: jest.fn(),
+  toggleSavedQueriesScreen: jest.fn(),
 }
 
 const renderComponent = (props = mockProps) =>
@@ -50,79 +45,29 @@ describe('HeaderActions', () => {
     expect(manageIndexesButton).toBeInTheDocument()
   })
 
-  it('should call setIsSavedQueriesOpen when "Saved queries" is clicked', async () => {
-    const mockSetIsSavedQueriesOpen = jest.fn()
+  it('should call toggleSavedQueriesScreen when "Saved queries" is clicked', async () => {
+    const onToggle = jest.fn()
     renderComponent({
       ...mockProps,
-      setIsSavedQueriesOpen: mockSetIsSavedQueriesOpen,
+      toggleSavedQueriesScreen: onToggle,
     })
 
     const savedQueriesButton = screen.getByText('Saved queries')
     await userEvent.click(savedQueriesButton)
 
-    expect(mockSetIsSavedQueriesOpen).toHaveBeenCalledWith(true)
-
-    // Verify telemetry event is sent
-    expect(sendEventTelemetry).toHaveBeenCalledWith({
-      event: TelemetryEvent.SEARCH_SAVED_QUERIES_PANEL_OPENED,
-      eventData: {
-        databaseId: INSTANCE_ID_MOCK,
-      },
-    })
+    expect(onToggle).toHaveBeenCalledTimes(1)
   })
 
-  it('should call setIsSavedQueriesOpen with false when "Saved queries" is clicked and isSavedQueriesOpen is true', async () => {
-    const mockSetIsSavedQueriesOpen = jest.fn()
+  it('should call toggleManageIndexesScreen when "Manage indexes" is clicked', async () => {
+    const onToggle = jest.fn()
     renderComponent({
       ...mockProps,
-      isSavedQueriesOpen: true,
-      setIsSavedQueriesOpen: mockSetIsSavedQueriesOpen,
-    })
-
-    const savedQueriesButton = screen.getByText('Saved queries')
-    await userEvent.click(savedQueriesButton)
-
-    expect(mockSetIsSavedQueriesOpen).toHaveBeenCalledWith(false)
-
-    // Verify telemetry event is sent
-    expect(sendEventTelemetry).toHaveBeenCalledWith({
-      event: TelemetryEvent.SEARCH_SAVED_QUERIES_PANEL_CLOSED,
-      eventData: {
-        databaseId: INSTANCE_ID_MOCK,
-      },
-    })
-  })
-
-  it('should call setIsManageIndexesDrawerOpen when "Manage indexes" is clicked', async () => {
-    const mockSetIsManageIndexesDrawerOpen = jest.fn()
-    renderComponent({
-      ...mockProps,
-      setIsManageIndexesDrawerOpen: mockSetIsManageIndexesDrawerOpen,
+      toggleManageIndexesScreen: onToggle,
     })
 
     const manageIndexesButton = screen.getByText('Manage indexes')
     await userEvent.click(manageIndexesButton)
 
-    expect(mockSetIsManageIndexesDrawerOpen).toHaveBeenCalledWith(true)
-  })
-
-  it('should render ManageIndexesDrawer when isManageIndexesDrawerOpen is true', () => {
-    renderComponent({
-      ...mockProps,
-      isManageIndexesDrawerOpen: true,
-    })
-
-    const drawer = screen.getByTestId('manage-indexes-drawer')
-    expect(drawer).toBeInTheDocument()
-  })
-
-  it('should not render ManageIndexesDrawer when isManageIndexesDrawerOpen is false', () => {
-    renderComponent({
-      ...mockProps,
-      isManageIndexesDrawerOpen: false,
-    })
-
-    const drawer = screen.queryByTestId('manage-indexes-drawer')
-    expect(drawer).not.toBeInTheDocument()
+    expect(onToggle).toHaveBeenCalledTimes(1)
   })
 })

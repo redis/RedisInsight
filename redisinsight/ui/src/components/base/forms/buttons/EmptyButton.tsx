@@ -22,9 +22,7 @@ export const EmptyButton = ({
   ...rest
 }: ButtonProps) => (
   <TextButton {...rest}>
-    <Row
-      justify={justify}
-    >  
+    <Row justify={justify} gap="xs">
       <ButtonIcon
         buttonSide="left"
         icon={icon}

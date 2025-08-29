@@ -9,6 +9,8 @@ import {
 } from 'uiSrc/utils/test-utils'
 import {
   MOCK_RDI_PIPELINE_DATA,
+  MOCK_RDI_PIPELINE_JOB1,
+  MOCK_RDI_PIPELINE_JOB2,
   MOCK_RDI_PIPELINE_JSON_DATA,
   MOCK_RDI_PIPELINE_STATUS_DATA,
 } from 'uiSrc/mocks/data/rdi'
@@ -52,6 +54,7 @@ import reducer, {
   setPipelineJobs,
   setMonacoJobsSchema,
   setJobNameSchema,
+  updatePipelineJob,
 } from 'uiSrc/slices/rdi/pipeline'
 import { apiService } from 'uiSrc/services'
 import {
@@ -63,6 +66,7 @@ import { INFINITE_MESSAGES } from 'uiSrc/components/notifications/components'
 import { FileChangeType, PipelineAction } from 'uiSrc/slices/interfaces'
 import { parseJMESPathFunctions } from 'uiSrc/utils'
 import successMessages from 'uiSrc/components/notifications/success-messages'
+import { value } from 'jsonpath'
 
 let store: typeof mockedStore
 
@@ -176,6 +180,41 @@ describe('rdi pipe slice', () => {
         },
       })
       expect(rdiPipelineSelector(rootState)).toEqual(state)
+    })
+  })
+
+  describe('updatePipelineJob', () => {
+    it('should properly update job by name', () => {
+      // Arrange - preload state with existing jobs
+      const baseState = {
+        ...initialState,
+        jobs: MOCK_RDI_PIPELINE_DATA.jobs,
+      }
+
+      const expectedState = {
+        ...initialState,
+        jobs: [
+          MOCK_RDI_PIPELINE_JOB1,
+          { ...MOCK_RDI_PIPELINE_JOB2, value: 'newValue2' },
+        ],
+      }
+
+      // Act - update second job value
+      const nextState = reducer(
+        baseState,
+        updatePipelineJob({
+          name: MOCK_RDI_PIPELINE_JOB2.name,
+          value: 'newValue2',
+        }),
+      )
+
+      // Assert
+      const rootState = Object.assign(initialStateDefault, {
+        rdi: {
+          pipeline: nextState,
+        },
+      })
+      expect(rdiPipelineSelector(rootState)).toEqual(expectedState)
     })
   })
 
@@ -864,19 +903,19 @@ describe('rdi pipe slice', () => {
             properties: {
               name: {
                 type: 'string',
-                pattern: '^[a-zA-Z][a-zA-Z0-9_]*$'
+                pattern: '^[a-zA-Z][a-zA-Z0-9_]*$',
               },
               source: {
                 type: 'object',
                 properties: {
                   server_name: { type: 'string' },
                   schema: { type: 'string' },
-                  table: { type: 'string' }
-                }
-              }
+                  table: { type: 'string' },
+                },
+              },
             },
-            required: ['name', 'source']
-          }
+            required: ['name', 'source'],
+          },
         }
         const responsePayload = { data, status: 200 }
 
@@ -894,16 +933,16 @@ describe('rdi pipe slice', () => {
               properties: {
                 server_name: { type: 'string' },
                 schema: { type: 'string' },
-                table: { type: 'string' }
-              }
-            }
+                table: { type: 'string' },
+              },
+            },
           },
-          required: ['source'] // 'name' is filtered out
+          required: ['source'], // 'name' is filtered out
         }
 
         const expectedJobNameSchema = {
           type: 'string',
-          pattern: '^[a-zA-Z][a-zA-Z0-9_]*$'
+          pattern: '^[a-zA-Z][a-zA-Z0-9_]*$',
         }
 
         const expectedActions = [
@@ -922,10 +961,10 @@ describe('rdi pipe slice', () => {
             type: 'object',
             properties: {
               source: { type: 'object' },
-              transform: { type: 'array' }
+              transform: { type: 'array' },
             },
-            required: ['source', 'transform']
-          }
+            required: ['source', 'transform'],
+          },
         }
         const responsePayload = { data, status: 200 }
 
@@ -939,9 +978,9 @@ describe('rdi pipe slice', () => {
           type: 'object',
           properties: {
             source: { type: 'object' },
-            transform: { type: 'array' }
+            transform: { type: 'array' },
           },
-          required: ['source', 'transform']
+          required: ['source', 'transform'],
         }
 
         const expectedActions = [
@@ -956,7 +995,7 @@ describe('rdi pipe slice', () => {
       it('succeed to fetch data with empty jobs schema', async () => {
         const data = {
           config: 'string',
-          jobs: {}
+          jobs: {},
         }
         const responsePayload = { data, status: 200 }
 

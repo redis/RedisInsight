@@ -1,11 +1,22 @@
 import React from 'react'
+import { useLocation, useParams } from 'react-router-dom'
+
 import { TelemetryPageView } from 'uiSrc/telemetry'
 import { usePageViewTelemetry } from 'uiSrc/telemetry/usePageViewTelemetry'
 
 import { VectorSearchQuery } from './../query/VectorSearchQuery'
 import { VectorSearchPageWrapper } from './../styles'
 
+type Params = {
+  instanceId: string
+}
+
 const VectorSearchPage = () => {
+  const { instanceId } = useParams<Params>()
+  const { search } = useLocation()
+  const defaultSavedQueriesIndex =
+    new URLSearchParams(search).get('defaultSavedQueriesIndex') || undefined
+
   usePageViewTelemetry({
     page: TelemetryPageView.VECTOR_SEARCH_PAGE,
   })
@@ -17,7 +28,10 @@ const VectorSearchPage = () => {
 
   return (
     <VectorSearchPageWrapper>
-      <VectorSearchQuery />
+      <VectorSearchQuery
+        instanceId={instanceId}
+        defaultSavedQueriesIndex={defaultSavedQueriesIndex}
+      />
     </VectorSearchPageWrapper>
   )
 }

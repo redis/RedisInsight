@@ -47,29 +47,6 @@
   margin-left: 10px;
 }
 
-.dbInfoModules {
-  padding-right: 0;
-  margin-left: 0;
-  height: 27px;
-  & > div {
-    display: inline-block;
-    line-height: 20px;
-    margin-top: 5px;
-    vertical-align: top;
-  }
-}
-
-.dbInfoModulesLabel {
-  position: relative;
-  display: inline-block !important;
-  padding-right: 0 !important;
-  width: auto;
-
-  :global(.euiListGroupItem__text) {
-    padding-right: 0 !important;
-  }
-}
-
 .anchorEndpoints {
   position: absolute;
   right: 12px;

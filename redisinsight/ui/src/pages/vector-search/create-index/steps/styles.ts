@@ -39,7 +39,7 @@ export const CodeBlocKWrapper = styled.div`
   border-color: ${({ theme }) => theme.color.dusk200};
   border-radius: 8px;
 
-  background: ${({ theme }) => theme.color.dusk100};
+  background: ${({ theme }) => theme.semantic.color.background.neutral200};
   word-wrap: break-word;
   white-space: break-spaces;
 `

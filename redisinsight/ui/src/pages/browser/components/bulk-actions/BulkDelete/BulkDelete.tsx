@@ -87,7 +87,11 @@ const BulkDelete = (props: Props) => {
           <Text color="subdued" className={styles.placeholderTitle}>
             No pattern or key type set
           </Text>
-          <Text color="subdued" className={styles.placeholderSummary}>
+          <Text
+            color="subdued"
+            className={styles.placeholderSummary}
+            style={{ textAlign: 'center' }}
+          >
             To perform a bulk action, set the pattern or select the key type
           </Text>
         </div>

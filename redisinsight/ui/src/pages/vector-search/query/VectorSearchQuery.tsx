@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useParams } from 'react-router-dom'
+
 import {
   ResizableContainer,
   ResizablePanel,
@@ -13,9 +13,8 @@ import { HeaderActions } from './HeaderActions'
 import CommandsViewWrapper from '../components/commands-view'
 import { VectorSearchScreenWrapper } from '../styles'
 import { SavedQueriesScreen } from '../saved-queries/SavedQueriesScreen'
-import { SavedIndex } from '../saved-queries/types'
+import { ManageIndexesScreen } from '../manage-indexes/ManageIndexesScreen'
 import {
-  collectChangedSavedQueryIndexTelemetry,
   collectInsertSavedQueryTelemetry,
   collectTelemetryQueryClear,
   collectTelemetryQueryClearAll,
@@ -26,24 +25,20 @@ import {
   ViewModeContextProvider,
 } from 'uiSrc/components/query/context/view-mode.context'
 
-const mockSavedIndexes: SavedIndex[] = [
-  {
-    value: 'idx:bikes_vss',
-    tags: ['tag', 'text', 'vector'],
-    queries: [
-      {
-        label: 'Search for "Nord" bikes ordered by price',
-        value: 'FT.SEARCH idx:bikes_vss "@brand:Nord" SORTBY price ASC',
-      },
-      {
-        label: 'Find road alloy bikes under 20kg',
-        value: 'FT.SEARCH idx:bikes_vss "@material:{alloy} @weight:[0 20]"',
-      },
-    ],
-  },
-]
+enum RightPanelType {
+  SAVED_QUERIES = 'saved-queries',
+  MANAGE_INDEXES = 'manage-indexes',
+}
 
-export const VectorSearchQuery = () => {
+export type VectorSearchQueryProps = {
+  instanceId: string
+  defaultSavedQueriesIndex?: string
+}
+
+export const VectorSearchQuery = ({
+  instanceId,
+  defaultSavedQueriesIndex,
+}: VectorSearchQueryProps) => {
   const {
     query,
     setQuery,
@@ -63,15 +58,11 @@ export const VectorSearchQuery = () => {
     onQueryReRun,
     onQueryProfile,
   } = useQuery()
-  const { instanceId } = useParams<{ instanceId: string }>()
 
-  const [isSavedQueriesOpen, setIsSavedQueriesOpen] = useState<boolean>(false)
-  const [isManageIndexesDrawerOpen, setIsManageIndexesDrawerOpen] =
-    useState<boolean>(false)
-  const [queryIndex, setQueryIndex] = useState(mockSavedIndexes[0].value)
-  const selectedIndex = mockSavedIndexes.find(
-    (index) => index.value === queryIndex,
+  const [rightPanel, setRightPanel] = useState<RightPanelType | null>(
+    defaultSavedQueriesIndex ? RightPanelType.SAVED_QUERIES : null,
   )
+  const isSavedQueriesOpen = rightPanel === RightPanelType.SAVED_QUERIES
 
   const onQuerySubmit = () => {
     onSubmit()
@@ -92,14 +83,6 @@ export const VectorSearchQuery = () => {
     collectTelemetryQueryClear({ instanceId })
   }
 
-  const handleIndexChange = (value: string) => {
-    setQueryIndex(value)
-
-    collectChangedSavedQueryIndexTelemetry({
-      instanceId,
-    })
-  }
-
   const handleQueryInsert = (query: string) => {
     setQuery(query)
 
@@ -108,20 +91,43 @@ export const VectorSearchQuery = () => {
     })
   }
 
+  const closeRightPanel = () => {
+    setRightPanel(null)
+  }
+
+  const toggleManageIndexesScreen = () => {
+    setRightPanel(
+      rightPanel === RightPanelType.MANAGE_INDEXES
+        ? null
+        : RightPanelType.MANAGE_INDEXES,
+    )
+  }
+
+  const toggleSavedQueriesScreen = () => {
+    setRightPanel(
+      rightPanel === RightPanelType.SAVED_QUERIES
+        ? null
+        : RightPanelType.SAVED_QUERIES,
+    )
+  }
+
   return (
     <ViewModeContextProvider viewMode={ViewMode.VectorSearch}>
       <VectorSearchScreenWrapper direction="column" justify="between">
         <HeaderActions
-          isManageIndexesDrawerOpen={isManageIndexesDrawerOpen}
-          setIsManageIndexesDrawerOpen={setIsManageIndexesDrawerOpen}
-          isSavedQueriesOpen={isSavedQueriesOpen}
-          setIsSavedQueriesOpen={setIsSavedQueriesOpen}
+          toggleManageIndexesScreen={toggleManageIndexesScreen}
+          toggleSavedQueriesScreen={toggleSavedQueriesScreen}
         />
 
         <ResizableContainer direction="horizontal">
-          <ResizablePanel id="left-panel" minSize={20} defaultSize={30}>
+          <ResizablePanel
+            id="left-panel"
+            minSize={20}
+            order={1}
+            defaultSize={isSavedQueriesOpen ? 70 : 100}
+          >
             <ResizableContainer direction="vertical">
-              <ResizablePanel id="top-panel" minSize={20} defaultSize={30}>
+              <ResizablePanel id="top-panel" minSize={10} defaultSize={30}>
                 <QueryWrapper
                   query={query}
                   activeMode={activeMode}
@@ -144,8 +150,8 @@ export const VectorSearchQuery = () => {
               <ResizablePanel
                 id="bottom-panel"
                 minSize={10}
-                maxSize={70}
-                defaultSize={80}
+                maxSize={80}
+                defaultSize={70}
               >
                 <CommandsViewWrapper
                   items={items}
@@ -171,20 +177,31 @@ export const VectorSearchQuery = () => {
             </ResizableContainer>
           </ResizablePanel>
 
-          {isSavedQueriesOpen && (
+          {rightPanel && (
             <>
               <ResizablePanelHandle
                 direction="vertical"
                 data-test-subj="resize-btn-scripting-area-and-results"
               />
 
-              <ResizablePanel id="right-panel" minSize={20} defaultSize={30}>
-                <SavedQueriesScreen
-                  onIndexChange={handleIndexChange}
-                  onQueryInsert={handleQueryInsert}
-                  savedIndexes={mockSavedIndexes}
-                  selectedIndex={selectedIndex}
-                />
+              <ResizablePanel
+                id="right-panel"
+                order={2}
+                minSize={20}
+                defaultSize={30}
+              >
+                {rightPanel === RightPanelType.MANAGE_INDEXES && (
+                  <ManageIndexesScreen onClose={closeRightPanel} />
+                )}
+
+                {rightPanel === RightPanelType.SAVED_QUERIES && (
+                  <SavedQueriesScreen
+                    instanceId={instanceId}
+                    defaultSavedQueriesIndex={defaultSavedQueriesIndex}
+                    onQueryInsert={handleQueryInsert}
+                    onClose={closeRightPanel}
+                  />
+                )}
               </ResizablePanel>
             </>
           )}

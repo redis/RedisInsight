@@ -5,7 +5,6 @@ import { Loader } from 'uiSrc/components/base/display'
 import { IndexInfoDto } from 'apiSrc/modules/browser/redisearch/dto'
 import {
   StyledIndexAttributesList,
-  StyledIndexAttributesTable,
   StyledIndexSummaryInfo,
 } from './IndexAttributesList.styles'
 
@@ -72,12 +71,7 @@ export const IndexAttributesList = ({
 
   return (
     <StyledIndexAttributesList data-testid="index-attributes-list" as="div">
-      <StyledIndexAttributesTable
-        as="div"
-        data-testid="index-attributes-list--table"
-      >
-        <Table columns={tableColumns} data={parseIndexAttributes(indexInfo)} />
-      </StyledIndexAttributesTable>
+      <Table columns={tableColumns} data={parseIndexAttributes(indexInfo)} />
 
       <StyledIndexSummaryInfo>
         <p data-testid="index-attributes-list--summary-info">

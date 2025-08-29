@@ -24,7 +24,7 @@ test.skip
         // Delete database
         await databaseHelper.deleteDatabase(redisEnterpriseClusterConfig.databaseName);
     })('Verify that user can connect to the RE cluster database', async t => {
-        await databaseHelper.addNewREClusterDatabase(redisEnterpriseClusterConfig);
+        await databaseHelper.addNewRedisSoftwareDatabase(redisEnterpriseClusterConfig);
         await myRedisDatabasePage.clickOnDBByName(redisEnterpriseClusterConfig.databaseName);
         await t.expect(getPageUrl()).contains('browser', 'The edit view is not opened');
     });

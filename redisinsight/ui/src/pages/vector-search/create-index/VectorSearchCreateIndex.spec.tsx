@@ -16,7 +16,12 @@ import {
   VectorSearchCreateIndex,
   VectorSearchCreateIndexProps,
 } from './VectorSearchCreateIndex'
-import { SampleDataContent, SampleDataType, SearchIndexType } from './types'
+import {
+  PresetDataType,
+  SampleDataContent,
+  SampleDataType,
+  SearchIndexType,
+} from './types'
 import { useCreateIndex } from './hooks/useCreateIndex'
 
 // Mock the telemetry module, so we don't send actual telemetry data during tests
@@ -90,7 +95,12 @@ describe('VectorSearchCreateIndex', () => {
     renderVectorSearchCreateIndexComponent({ initialStep: 2 })
 
     // Effect should dispatch success notification and navigate
-    expect(pushMock).toHaveBeenCalledWith(Pages.vectorSearch(INSTANCE_ID_MOCK))
+    expect(pushMock).toHaveBeenCalledWith({
+      pathname: Pages.vectorSearch(INSTANCE_ID_MOCK),
+      search: `?defaultSavedQueriesIndex=${encodeURIComponent(
+        PresetDataType.BIKES,
+      )}`,
+    })
   })
 
   it('should dispatch error notification on error', () => {

@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 
 import {
@@ -18,7 +17,7 @@ import {
 import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
 import { FullScreen, RiTooltip } from 'uiSrc/components'
 
-import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
@@ -26,6 +25,13 @@ import BulkUpload from './BulkUpload'
 import BulkDelete from './BulkDelete'
 import BulkActionsTabs from './BulkActionsTabs'
 import styles from './styles.module.scss'
+import {
+  BulkActionsContainer,
+  BulkActionsContentActions,
+  BulkActionsHeader,
+  BulkActionsPage,
+  BulkActionsScrollPanel,
+} from './BulkActions.styles'
 
 export interface Props {
   isFullScreen: boolean
@@ -98,43 +104,36 @@ const BulkActions = (props: Props) => {
   }
 
   return (
-    <div className={styles.page}>
-      <Col justify="center" className={cx(styles.container, 'relative')}>
-        <FlexItem grow style={{ marginBottom: '16px' }}>
-          <Title size="M" className={styles.title}>
-            Bulk Actions
-          </Title>
-          {!arePanelsCollapsed && (
-            <FullScreen
-              isFullScreen={isFullScreen}
-              onToggleFullScreen={onToggleFullScreen}
-              anchorClassName={cx(
-                styles.anchorTooltip,
-                styles.anchorTooltipFullScreen,
-              )}
-            />
-          )}
-          {(!arePanelsCollapsed || isFullScreen) && (
-            <RiTooltip
-              content="Close"
-              position="left"
-              anchorClassName={styles.anchorTooltip}
-            >
-              <IconButton
-                icon={CancelSlimIcon}
-                aria-label="Close panel"
-                className={cx(styles.closeBtn, styles.anchorTooltip)}
-                data-testid="bulk-close-panel"
-                onClick={closePanel}
+    <BulkActionsPage>
+      <BulkActionsContainer justify="center" gap="l">
+        <BulkActionsHeader align="center" justify="between">
+          <Title size="M">Bulk Actions</Title>
+          <Row align="center" gap="s" grow={false}>
+            {!arePanelsCollapsed && (
+              <FullScreen
+                isFullScreen={isFullScreen}
+                onToggleFullScreen={onToggleFullScreen}
+                anchorClassName={styles.anchorTooltipFullScreen}
               />
-            </RiTooltip>
-          )}
-        </FlexItem>
-        <div className="eui-yScroll">
-          <div
-            className={styles.contentActions}
-            data-testid="bulk-actions-content"
-          >
+            )}
+            {(!arePanelsCollapsed || isFullScreen) && (
+              <RiTooltip
+                content="Close"
+                position="left"
+                anchorClassName={styles.anchorTooltip}
+              >
+                <IconButton
+                  icon={CancelSlimIcon}
+                  aria-label="Close panel"
+                  data-testid="bulk-close-panel"
+                  onClick={closePanel}
+                />
+              </RiTooltip>
+            )}
+          </Row>
+        </BulkActionsHeader>
+        <BulkActionsScrollPanel>
+          <BulkActionsContentActions data-testid="bulk-actions-content">
             <BulkActionsTabs onChangeType={handleChangeType} />
             {type === BulkActionsType.Upload && (
               <BulkUpload onCancel={closePanel} />
@@ -142,10 +141,10 @@ const BulkActions = (props: Props) => {
             {type === BulkActionsType.Delete && (
               <BulkDelete onCancel={closePanel} />
             )}
-          </div>
-        </div>
-      </Col>
-    </div>
+          </BulkActionsContentActions>
+        </BulkActionsScrollPanel>
+      </BulkActionsContainer>
+    </BulkActionsPage>
   )
 }
 

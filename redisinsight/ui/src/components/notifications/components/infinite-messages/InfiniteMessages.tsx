@@ -51,12 +51,12 @@ export const INFINITE_MESSAGES = {
       <div role="presentation" data-testid="authenticating-notification">
         <Row justify="end">
           <FlexItem>
-            <Loader
-              className={cx('infiniteMessage__icon', styles.loading)}
-            />
+            <Loader className={cx('infiniteMessage__icon', styles.loading)} />
           </FlexItem>
           <FlexItem grow>
-            <Title className="infiniteMessage__title">Authenticating…</Title>
+            <Title className="infiniteMessage__title" size="XS">
+              Authenticating…
+            </Title>
             <Text size="xs">
               This may take several seconds, but it is totally worth it!
             </Text>
@@ -71,12 +71,10 @@ export const INFINITE_MESSAGES = {
       <div role="presentation" data-testid="pending-create-db-notification">
         <Row justify="end">
           <FlexItem grow={false}>
-            <Loader
-              className={cx('infiniteMessage__icon', styles.loading)}
-            />
+            <Loader className={cx('infiniteMessage__icon', styles.loading)} />
           </FlexItem>
           <FlexItem grow>
-            <Title className="infiniteMessage__title">
+            <Title className="infiniteMessage__title" size="XS">
               <span>
                 {(step === CloudJobStep.Credentials || !step) &&
                   'Processing Cloud API keys…'}
@@ -133,7 +131,9 @@ export const INFINITE_MESSAGES = {
               <RiIcon type="ChampagneIcon" size="original" />
             </FlexItem>
             <FlexItem grow>
-              <Title className="infiniteMessage__title">Congratulations!</Title>
+              <Title className="infiniteMessage__title" size="XS">
+                Congratulations!
+              </Title>
               <Text size="xs">
                 {text}
                 <Spacer size="s" />
@@ -209,7 +209,7 @@ export const INFINITE_MESSAGES = {
         }}
         data-testid="database-exists-notification"
       >
-        <Title className="infiniteMessage__title">
+        <Title className="infiniteMessage__title" size="XS">
           You already have a free trial Redis Cloud subscription.
         </Title>
         <Text size="xs">
@@ -253,7 +253,7 @@ export const INFINITE_MESSAGES = {
         }}
         data-testid="database-import-forbidden-notification"
       >
-        <Title className="infiniteMessage__title">
+        <Title className="infiniteMessage__title" size="XS">
           Unable to import Cloud database.
         </Title>
         <Text size="xs">
@@ -299,7 +299,7 @@ export const INFINITE_MESSAGES = {
         }}
         data-testid="subscription-exists-notification"
       >
-        <Title className="infiniteMessage__title">
+        <Title className="infiniteMessage__title" size="XS">
           Your subscription does not have a free trial Redis Cloud database.
         </Title>
         <Text size="xs">
@@ -337,12 +337,10 @@ export const INFINITE_MESSAGES = {
       <div role="presentation" data-testid="pending-create-db-notification">
         <Row justify="end">
           <FlexItem>
-            <Loader
-              className={cx('infiniteMessage__icon', styles.loading)}
-            />
+            <Loader className={cx('infiniteMessage__icon', styles.loading)} />
           </FlexItem>
           <FlexItem grow>
-            <Title className="infiniteMessage__title">
+            <Title className="infiniteMessage__title" size="XS">
               Connecting to your database
             </Title>
             <Text size="xs">
@@ -366,7 +364,7 @@ export const INFINITE_MESSAGES = {
         }}
         data-testid="app-update-available-notification"
       >
-        <Title className="infiniteMessage__title">
+        <Title className="infiniteMessage__title" size="XS">
           New version is now available
         </Title>
         <Text size="s">
@@ -408,7 +406,9 @@ export const INFINITE_MESSAGES = {
             <RiIcon type="ChampagneIcon" size="original" />
           </FlexItem>
           <FlexItem grow>
-            <Title className="infiniteMessage__title">Congratulations!</Title>
+            <Title className="infiniteMessage__title" size="XS">
+              Congratulations!
+            </Title>
             <Text size="xs">
               Deployment completed successfully!
               <br />
@@ -420,7 +420,7 @@ export const INFINITE_MESSAGES = {
               <FlexItem>
                 <PrimaryButton
                   size="s"
-                  onClick={() => { }}
+                  onClick={() => {}}
                   data-testid="notification-connect-db"
                 >
                   Statistics

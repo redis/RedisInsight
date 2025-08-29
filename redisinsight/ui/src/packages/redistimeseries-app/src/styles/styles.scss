@@ -119,18 +119,18 @@ body {
         &:not(:first-child) {
           margin-top: 10px;
         }
-  
+
         .right-y-axis {
           display: flex;
           justify-content: space-between;
           align-items: center;
           width: 100%;
-  
+
           .switch-wrapper {
             width: 100%;
           }
         }
-  
+
         .y-axis-2 {
           width: 100%;
           .y-axis-2-item {
@@ -202,7 +202,7 @@ body {
         padding: 0px;
         font-weight: normal;
         height: 30px;
-        width: 68px;
+        min-width: 68px;
     }
 
     div:first-child {

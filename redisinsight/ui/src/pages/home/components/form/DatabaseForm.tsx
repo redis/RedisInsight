@@ -99,7 +99,7 @@ const DatabaseForm = (props: Props) => {
                 onFocus={selectOnFocus}
                 value={formik.values.name ?? ''}
                 maxLength={500}
-                onChange={formik.handleChange}
+                onChangeCapture={formik.handleChange}
                 disabled={isFieldDisabled('alias')}
               />
             </FormField>
@@ -174,7 +174,7 @@ const DatabaseForm = (props: Props) => {
               maxLength={200}
               placeholder="Enter Username"
               value={formik.values.username ?? ''}
-              onChange={formik.handleChange}
+              onChangeCapture={formik.handleChange}
               disabled={isFieldDisabled('username')}
             />
           </FormField>

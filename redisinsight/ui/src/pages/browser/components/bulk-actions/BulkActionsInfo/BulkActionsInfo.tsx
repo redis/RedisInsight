@@ -1,14 +1,18 @@
 import React from 'react'
-import { isUndefined } from 'lodash'
-import cx from 'classnames'
 
-import { getApproximatePercentage, Maybe, Nullable } from 'uiSrc/utils'
+import { Maybe, Nullable } from 'uiSrc/utils'
 import Divider from 'uiSrc/components/divider/Divider'
 import { BulkActionsStatus, KeyTypes } from 'uiSrc/constants'
 import GroupBadge from 'uiSrc/components/group-badge/GroupBadge'
-import { isProcessedBulkAction } from 'uiSrc/pages/browser/components/bulk-actions/utils'
-import { Text } from 'uiSrc/components/base/text'
-import styles from './styles.module.scss'
+import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import {
+  BulkActionsContainer,
+  BulkActionsInfoFilter,
+  BulkActionsInfoSearch,
+  BulkActionsProgressLine,
+  BulkActionsStatusDisplay,
+  BulkActionsTitle,
+} from './BulkActionsInfo.styles'
 
 export interface Props {
   title?: string | React.ReactNode
@@ -38,77 +42,47 @@ const BulkActionsInfo = (props: Props) => {
   const { total = 0, scanned = 0 } = progress || {}
 
   return (
-    <div className={styles.container} data-testid="bulk-actions-info">
-      <div className={styles.header}>
-        <Text color="subdued" className={styles.title}>
+    <BulkActionsContainer data-testid="bulk-actions-info">
+      <BulkActionsStatusDisplay
+        status={status}
+        total={total}
+        scanned={scanned}
+      />
+      <Col gap="m">
+        <BulkActionsTitle color="subdued" $full>
           {title}
-        </Text>
-        <Text color="subdued" className={styles.subTitle}>
-          {subTitle}
+        </BulkActionsTitle>
+        {subTitle && (
+          <BulkActionsTitle color="subdued" $full>
+            {subTitle}
+          </BulkActionsTitle>
+        )}
+        <Row justify="start" align="center" gap="s">
           {filter && (
-            <div
-              className={styles.filter}
-              data-testid="bulk-actions-info-filter"
-            >
-              <span style={{ paddingRight: 6 }}>Key type:</span>
-              <GroupBadge type={filter} className={styles.badge} />
-            </div>
+            <BulkActionsInfoFilter data-testid="bulk-actions-info-filter">
+              <div>Key type:</div>
+              <GroupBadge type={filter} />
+            </BulkActionsInfoFilter>
           )}
           {search && (
-            <div
-              className={styles.search}
-              data-testid="bulk-actions-info-search"
-            >
+            <BulkActionsInfoFilter data-testid="bulk-actions-info-search">
               Pattern:
-              <span className={styles.match}>{` ${search}`}</span>
-            </div>
+              <BulkActionsInfoSearch color="subdued">
+                {' '}
+                {search}
+              </BulkActionsInfoSearch>
+            </BulkActionsInfoFilter>
           )}
-        </Text>
-        {!isUndefined(status) && !isProcessedBulkAction(status) && (
-          <Text
-            color="subdued"
-            className={styles.progress}
-            data-testid="bulk-status-progress"
-          >
-            In progress:
-            <span>{` ${getApproximatePercentage(total, scanned)}`}</span>
-          </Text>
-        )}
-        {status === BulkActionsStatus.Aborted && (
-          <Text
-            color="danger"
-            className={styles.progress}
-            data-testid="bulk-status-stopped"
-          >
-            Stopped: {getApproximatePercentage(total, scanned)}
-          </Text>
-        )}
-        {status === BulkActionsStatus.Completed && (
-          <Text
-            className={cx(styles.progress, styles.progressCompleted)}
-            data-testid="bulk-status-completed"
-          >
-            Action completed
-          </Text>
-        )}
-        {status === BulkActionsStatus.Disconnected && (
-          <Text
-            color="danger"
-            className={styles.progress}
-            data-testid="bulk-status-disconnected"
-          >
-            Connection Lost: {getApproximatePercentage(total, scanned)}
-          </Text>
-        )}
-      </div>
-      <Divider colorVariable="separatorColor" className={styles.divider} />
+        </Row>
+      </Col>
+      <Divider colorVariable="separatorColor" />
       {loading && (
-        <div className={styles.progressLine} data-testid="progress-line">
+        <BulkActionsProgressLine data-testid="progress-line">
           <div style={{ width: `${(total ? scanned / total : 0) * 100}%` }} />
-        </div>
+        </BulkActionsProgressLine>
       )}
-      <div className={styles.children}>{children}</div>
-    </div>
+      <div>{children}</div>
+    </BulkActionsContainer>
   )
 }
 

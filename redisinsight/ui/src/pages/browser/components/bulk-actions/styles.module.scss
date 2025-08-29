@@ -1,88 +1,13 @@
-.page {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.container {
-  background-color: var(--euiColorEmptyShade);
-  padding: 24px 0;
-  height: 100%;
-}
-
-.title {
-  padding: 0 20px;
-}
-
-.contentActions {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.divider {
-  margin-top: 30px;
-  margin-bottom: 30px;
-}
-
-.helpText {
-  color: var(--euiTextSubduedColor);
-  display: block;
-  margin-bottom: 12px;
-  font-size: 14px !important;
-  line-height: 24px !important;
-}
-
 .anchorTooltip {
-  position: absolute;
-  top: 22px;
-  right: 18px;
-
   svg {
     width: 20px;
     height: 20px;
   }
 }
 
-.backBtn:global(.euiButton.euiButton--fill.euiButton--secondary) {
-  background-color: var(--browserComponentActive) !important;
-  border-color: var(--browserComponentActive) !important;
-  color: var(--buttonSecondaryTextColor) !important;
-
-  position: absolute;
-  top: 22px;
-  right: 18px;
-
-  &:hover, &:focus {
-    color: var(--buttonSecondaryTextColor) !important;
-  }
-}
-
 .anchorTooltipFullScreen {
-  right: 54px;
   svg {
     width: 16px;
     height: 16px;
   }
-}
-
-.placeholder {
-  max-width: 440px;
-  height: calc(100% - 45px);
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  white-space: pre-wrap;
-  margin: 0 auto;
-  justify-content: center;
-}
-
-.placeholderTitle {
-  color: var(--htmlColor) !important;
-  font-size: 16px !important;
-  line-height: 24px !important;
-  font-weight: 500 !important;
-  padding-bottom: 20px;
 }

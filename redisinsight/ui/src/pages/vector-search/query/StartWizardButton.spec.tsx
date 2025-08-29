@@ -1,10 +1,15 @@
 import React from 'react'
 import { cleanup, render, screen, userEvent } from 'uiSrc/utils/test-utils'
-import { Pages } from 'uiSrc/constants'
-
 import { StartWizardButton } from './StartWizardButton'
+import useStartWizard from '../hooks/useStartWizard'
+
+jest.mock('../hooks/useStartWizard', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}))
 
 const renderComponent = () => render(<StartWizardButton />)
+const mockedUseStartWizard = useStartWizard as jest.Mock
 
 describe('StartWizardButton', () => {
   beforeEach(() => {
@@ -12,38 +17,22 @@ describe('StartWizardButton', () => {
     jest.clearAllMocks()
   })
 
-  it('should navigate to vector search create index page when "Get started" is clicked', async () => {
-    const mockPush = jest.fn()
-
-    const useHistoryMock = jest.spyOn(require('react-router-dom'), 'useHistory')
-    useHistoryMock.mockImplementation(() => ({
-      push: mockPush,
-    }))
+  it('renders the CTA and calls the start function on click', async () => {
+    const startMock = jest.fn()
+    mockedUseStartWizard.mockReturnValue(startMock)
 
     renderComponent()
 
-    const getStartedButton = screen.getByText('Get started')
-    await userEvent.click(getStartedButton)
+    expect(
+      screen.getByText(
+        'Power fast, real-time semantic AI search with vector search.',
+      ),
+    ).toBeInTheDocument()
 
-    expect(mockPush).toHaveBeenCalledWith(
-      Pages.vectorSearchCreateIndex('instanceId'),
-    )
-    expect(mockPush).toHaveBeenCalledTimes(1)
+    const btn = screen.getByRole('button', { name: /get started/i })
+    expect(btn).toBeInTheDocument()
 
-    useHistoryMock.mockRestore()
-  })
-
-  it('should maintain callback reference stability with useCallback', () => {
-    const { rerender } = renderComponent()
-
-    const firstRenderButton = screen.getByText('Get started')
-
-    rerender(<StartWizardButton />)
-
-    const secondRenderButton = screen.getByText('Get started')
-
-    // Both buttons should exist (they're the same element after rerender)
-    expect(firstRenderButton).toBeInTheDocument()
-    expect(secondRenderButton).toBeInTheDocument()
+    await userEvent.click(btn)
+    expect(startMock).toHaveBeenCalledTimes(1)
   })
 })

@@ -4,7 +4,7 @@ import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import { TelemetryEvent } from 'uiSrc/telemetry/events'
 import { sendEventTelemetry } from 'uiSrc/telemetry'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
-import { VectorSearchQuery } from './VectorSearchQuery'
+import { VectorSearchQuery, VectorSearchQueryProps } from './VectorSearchQuery'
 
 // Mock the telemetry module, so we don't send actual telemetry data during tests
 jest.mock('uiSrc/telemetry', () => ({
@@ -12,7 +12,26 @@ jest.mock('uiSrc/telemetry', () => ({
   sendEventTelemetry: jest.fn(),
 }))
 
-const renderVectorSearchQueryComponent = () => render(<VectorSearchQuery />)
+jest.mock('uiSrc/slices/browser/redisearch', () => ({
+  ...jest.requireActual('uiSrc/slices/browser/redisearch'),
+  redisearchListSelector: jest.fn().mockReturnValue({
+    data: [Buffer.from('idx:bikes_vss')],
+    loading: false,
+    error: '',
+  }),
+  fetchRedisearchListAction: jest
+    .fn()
+    .mockReturnValue({ type: 'FETCH_REDISEARCH_LIST' }),
+}))
+
+const DEFAULT_PROPS: VectorSearchQueryProps = {
+  instanceId: INSTANCE_ID_MOCK,
+  defaultSavedQueriesIndex: undefined,
+}
+
+const renderVectorSearchQueryComponent = (
+  props: VectorSearchQueryProps = DEFAULT_PROPS,
+) => render(<VectorSearchQuery {...props} />)
 
 describe('VectorSearchQuery', () => {
   beforeEach(() => {
@@ -24,6 +43,32 @@ describe('VectorSearchQuery', () => {
 
     expect(container).toBeTruthy()
     expect(container).toBeInTheDocument()
+  })
+
+  it('should not render Saved Queries screen by default', () => {
+    renderVectorSearchQueryComponent()
+
+    const savedQueriesScreen = screen.queryByTestId('saved-queries-screen')
+    expect(savedQueriesScreen).not.toBeInTheDocument()
+  })
+
+  it('can close the Saved Queries screen', () => {
+    renderVectorSearchQueryComponent({
+      ...DEFAULT_PROPS,
+      defaultSavedQueriesIndex: faker.string.uuid(),
+    })
+
+    // Verify the saved queries screen is open by default
+    const savedQueriesScreen = screen.getByTestId('saved-queries-screen')
+    expect(savedQueriesScreen).toBeInTheDocument()
+
+    // Close the saved queries screen
+    const savedQueriesButton = screen.getAllByText('Saved queries')[0]
+    expect(savedQueriesButton).toBeInTheDocument()
+    fireEvent.click(savedQueriesButton)
+
+    // Verify the saved queries screen is closed
+    expect(savedQueriesScreen).not.toBeInTheDocument()
   })
 
   describe('Telemetry', () => {

@@ -80,6 +80,7 @@ const ContentElement = (props: Props) => {
           key={`${telemetryName}-${idx}`}
           data-testid={`link-${telemetryName}-${idx}`}
           target="_blank"
+          variant="small-inline"
           href={getUtmExternalLink(value.href, {
             medium: UTM_MEDIUMS.Recommendation,
             campaign: telemetryName,
@@ -97,6 +98,7 @@ const ContentElement = (props: Props) => {
               key={`${telemetryName}-${idx}`}
               data-testid={`link-sso-${telemetryName}-${idx}`}
               target="_blank"
+              variant="small-inline"
               onClick={(e) => {
                 ssoCloudHandlerClick?.(e, {
                   source: telemetryName as OAuthSocialSource,
@@ -121,6 +123,7 @@ const ContentElement = (props: Props) => {
           key={`${telemetryName}-${idx}`}
           data-testid={`code-link-${telemetryName}-${idx}`}
           target="_blank"
+          variant="small-inline"
           href={getUtmExternalLink(value.href, {
             medium: UTM_MEDIUMS.Recommendation,
             campaign: telemetryName,

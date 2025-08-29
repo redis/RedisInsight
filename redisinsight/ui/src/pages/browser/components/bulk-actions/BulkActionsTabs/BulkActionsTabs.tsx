@@ -1,10 +1,8 @@
 import React, { useMemo } from 'react'
-import { EuiIcon } from '@elastic/eui'
 import { useSelector } from 'react-redux'
 
 import { BulkActionsType } from 'uiSrc/constants'
 import { selectedBulkActionsSelector } from 'uiSrc/slices/browser/bulkActions'
-import BulkUpload from 'uiSrc/assets/img/icons/bulk-upload.svg?react'
 
 import {
   getMatchType,
@@ -18,6 +16,8 @@ import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
 
 import { Text } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
+import { RiIcon } from 'uiSrc/components/base/icons'
+import { Row } from 'uiSrc/components/base/layout/flex'
 
 export interface Props {
   onChangeType: (id: BulkActionsType) => void
@@ -57,20 +57,20 @@ const BulkActionsTabs = (props: Props) => {
       {
         value: BulkActionsType.Delete,
         label: (
-          <>
-            <EuiIcon type="trash" />
-            <Text>Delete Keys</Text>
-          </>
+          <Row align="center" gap="m" grow={false}>
+            <RiIcon type="DeleteIcon" />
+            <Text size="XS">Delete Keys</Text>
+          </Row>
         ),
         content: null,
       },
       {
         value: BulkActionsType.Upload,
         label: (
-          <>
-            <EuiIcon type={BulkUpload} />
-            <Text>Upload Data</Text>
-          </>
+          <Row align="center" gap="m" grow={false}>
+            <RiIcon type="BulkUploadIcon" />
+            <Text size="XS">Upload Data</Text>
+          </Row>
         ),
         content: null,
       },

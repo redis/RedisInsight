@@ -200,7 +200,7 @@ export default {
     title: 'Index has been deleted',
     message: (
       <>
-        <b>{formatNameShort(indexName)}</b> has been deleted from Redis Insight.
+        <b>{formatNameShort(indexName)}</b> has been deleted.
       </>
     ),
   }),

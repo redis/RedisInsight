@@ -124,7 +124,6 @@ import RedisOnFlashLight from 'uiSrc/assets/img/options/RedisOnFlashLight.svg?re
 
 // Import sidebar icons
 import BrowserSvg from 'uiSrc/assets/img/sidebar/browser.svg?react'
-import GithubSvg from 'uiSrc/assets/img/sidebar/github.svg?react'
 import PipelineManagementActiveSvg from 'uiSrc/assets/img/sidebar/pipeline_active.svg?react'
 import PipelineManagementSvg from 'uiSrc/assets/img/sidebar/pipeline.svg?react'
 import PipelineStatisticsSvg from 'uiSrc/assets/img/sidebar/pipeline_statistics.svg?react'
@@ -157,6 +156,7 @@ export {
   GooglecloudIcon,
   GoogleSigninIcon,
   SsoIcon,
+  GithubIcon,
 } from '@redis-ui/icons/multicolor'
 
 // Common icons
@@ -292,7 +292,6 @@ export const RedisOnFlashLightIcon = createIconComponent(RedisOnFlashLight)
 
 // Sidebar icons
 export const BrowserIcon = createIconComponent(BrowserSvg)
-export const GithubIcon = createIconComponent(GithubSvg)
 export const PipelineManagementActiveIcon = createIconComponent(
   PipelineManagementActiveSvg,
 )

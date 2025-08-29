@@ -25,7 +25,7 @@ export const useCreateIndex = (): UseCreateIndexResult => {
   const { load } = useLoadData()
 
   const run = useCallback(
-    async ({ instanceId }: CreateSearchIndexParameters) => {
+    async ({ instanceId, indexName }: CreateSearchIndexParameters) => {
       setSuccess(false)
       setError(null)
       setLoading(true)
@@ -42,7 +42,9 @@ export const useCreateIndex = (): UseCreateIndexResult => {
         await load(instanceId, collectionName)
 
         // Step 2: Create the search index
-        const cmd = generateFtCreateCommand()
+        const cmd = generateFtCreateCommand({
+          indexName,
+        })
         const data = await executeQuery(instanceId, cmd)
 
         // Step 3: Persist results locally so Vector Search history (CommandsView) shows it

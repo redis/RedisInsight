@@ -97,13 +97,18 @@ export const VectorSearchCreateIndex = ({
     } else if (success) {
       dispatch(addMessageNotification(successMessages.CREATE_INDEX()))
 
-      history.push(Pages.vectorSearch(instanceId))
+      history.push({
+        pathname: Pages.vectorSearch(instanceId),
+        search: `?defaultSavedQueriesIndex=${encodeURIComponent(
+          createSearchIndexParameters.indexName,
+        )}`,
+      })
     }
   }, [success, error])
 
   return (
     <VectorSearchScreenWrapper direction="column" justify="between">
-      <VectorSearchScreenHeader direction="row">
+      <VectorSearchScreenHeader direction="row" padding={8}>
         <Title size="M" data-testid="title">
           New vector search
         </Title>
@@ -113,13 +118,13 @@ export const VectorSearchCreateIndex = ({
           <Stepper.Step>Create Index</Stepper.Step>
         </Stepper>
       </VectorSearchScreenHeader>
-      <VectorSearchScreenContent direction="column" grow={1}>
+      <VectorSearchScreenContent direction="column" grow={1} padding={8}>
         <StepContent
           parameters={createSearchIndexParameters}
           setParameters={setParameters}
         />
       </VectorSearchScreenContent>
-      <VectorSearchScreenFooter direction="row">
+      <VectorSearchScreenFooter direction="row" padding={8}>
         {showBackButton && (
           <SecondaryButton
             iconSide="left"

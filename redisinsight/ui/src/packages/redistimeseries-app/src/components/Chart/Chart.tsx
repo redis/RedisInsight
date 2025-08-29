@@ -1,20 +1,20 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import Plotly from 'plotly.js-dist-min'
 import {
-  Legend,
+  Layout,
   LayoutAxis,
+  Legend,
   PlotData,
   PlotMouseEvent,
-  Layout,
   PlotRelayoutEvent,
 } from 'plotly.js'
 import { format } from 'date-fns'
 import {
-  hexToRGBA,
-  IGoodColor,
-  GoodColorPicker,
   COLORS,
   COLORS_DARK,
+  GoodColorPicker,
+  hexToRGBA,
+  IGoodColor,
 } from './utils'
 
 import { Datapoint, GraphMode, ChartProps, PlotlyEvents } from './interfaces'
@@ -78,21 +78,15 @@ export default function Chart(props: ChartProps) {
   }, [props.chartConfig])
 
   function getData(props: ChartProps): Partial<PlotData>[] {
-    return props.data.map((timeSeries, i) => {
-      const currentData = chartContainer.current.data
-      const dataUnchanged = currentData && props.data === props.data
+    return props.data.map((timeSeries) => {
       /*
        * Time format for inclusion of milliseconds:
        * https://github.com/moment/moment/issues/4864#issuecomment-440142542
        */
-      const x = dataUnchanged
-        ? currentData[i].x
-        : selectCol(timeSeries.datapoints, 0).map((time: number) =>
-            format(time, 'yyyy-MM-dd HH:mm:ss.SSS'),
-          )
-      const y = dataUnchanged
-        ? currentData[i].y
-        : selectCol(timeSeries.datapoints, 1)
+      const x = selectCol(timeSeries.datapoints, 0).map((time: number) =>
+        format(time, 'yyyy-MM-dd HH:mm:ss.SSS'),
+      )
+      const y = selectCol(timeSeries.datapoints, 1)
 
       return {
         x,

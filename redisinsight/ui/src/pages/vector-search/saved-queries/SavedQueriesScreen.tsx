@@ -1,87 +1,144 @@
-import React from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 
-import { Title, Text } from 'uiSrc/components/base/text'
+import { Title } from 'uiSrc/components/base/text'
 
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
-import { Button } from 'uiSrc/components/base/forms/buttons'
-import { FieldTag } from 'uiSrc/components/new-index/create-index-step/field-box/FieldTag'
+import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
+import { Loader } from 'uiSrc/components/base/display'
 
-import { PlayFilledIcon } from 'uiSrc/components/base/icons'
-import {
-  RightAlignedWrapper,
-  TagsWrapper,
-  VectorSearchSavedQueriesContentWrapper,
-  VectorSearchSavedQueriesSelectWrapper,
-} from './styles'
+import { CancelSlimIcon } from 'uiSrc/components/base/icons'
+import { VectorSearchSavedQueriesContentWrapper } from './styles'
 import { SavedIndex } from './types'
 import {
-  VectorSearchScreenBlockWrapper,
   VectorSearchScreenFooter,
   VectorSearchScreenHeader,
   VectorSearchScreenWrapper,
 } from '../styles'
+import { useTelemetryMountEvent } from '../hooks/useTelemetryMountEvent'
+import { TelemetryEvent } from 'uiSrc/telemetry'
+import { useRedisearchListData } from '../useRedisearchListData'
+import { collectChangedSavedQueryIndexTelemetry } from '../telemetry'
+import { PresetDataType } from '../create-index/types'
+import NoDataMessage from '../components/no-data-message/NoDataMessage'
+import { QueryCard } from './QueryCard'
+import { IndexSelect } from './IndexSelect'
+import { NoDataMessageKeys } from '../components/no-data-message/data'
+
+const mockSavedIndexes: SavedIndex[] = [
+  {
+    value: PresetDataType.BIKES,
+    tags: [FieldTypes.TAG, FieldTypes.TEXT, FieldTypes.VECTOR],
+    queries: [
+      {
+        label: 'Search for "Nord" bikes ordered by price',
+        value: 'FT.SEARCH idx:bikes_vss "@brand:Nord" SORTBY price ASC',
+      },
+      {
+        label: 'Find road alloy bikes under 20kg',
+        value: 'FT.SEARCH idx:bikes_vss "@material:{alloy} @weight:[0 20]"',
+      },
+    ],
+  },
+]
 
 type SavedQueriesScreenProps = {
-  savedIndexes: SavedIndex[]
-  selectedIndex?: SavedIndex
-  onIndexChange: (value: string) => void
+  instanceId: string
+  defaultSavedQueriesIndex?: string
   onQueryInsert: (value: string) => void
+  onClose: () => void
 }
 
 export const SavedQueriesScreen = ({
-  savedIndexes,
-  selectedIndex,
-  onIndexChange,
+  instanceId,
+  defaultSavedQueriesIndex,
   onQueryInsert,
-}: SavedQueriesScreenProps) => (
-  <VectorSearchScreenWrapper direction="column">
-    <VectorSearchScreenHeader>
-      <Title size="M" data-testid="title">
-        Saved queries
-      </Title>
-    </VectorSearchScreenHeader>
-    <VectorSearchScreenFooter grow={1}>
-      <VectorSearchSavedQueriesContentWrapper>
-        <VectorSearchSavedQueriesSelectWrapper>
-          <Title size="S">Index:</Title>
-          <RiSelect
-            loading={false}
-            disabled={false}
-            options={savedIndexes}
-            value={selectedIndex?.value}
-            data-testid="select-saved-index"
-            onChange={onIndexChange}
-            valueRender={({ option, isOptionValue }) =>
-              isOptionValue ? (
-                option.value
-              ) : (
-                <TagsWrapper>
-                  {option.value}
-                  {option.tags.map((tag) => (
-                    <FieldTag key={tag} tag={tag as any} />
-                  ))}
-                </TagsWrapper>
-              )
-            }
-          />
-        </VectorSearchSavedQueriesSelectWrapper>
-        {selectedIndex?.queries.map((query) => (
-          <VectorSearchScreenBlockWrapper key={query.value} as="div">
-            <Text>{query.label}</Text>
-            <RightAlignedWrapper>
-              <Button
-                variant="secondary-invert"
-                icon={PlayFilledIcon}
-                size="s"
-                onClick={() => onQueryInsert(query.value)}
-                data-testid="btn-insert-query"
-              >
-                Insert
-              </Button>
-            </RightAlignedWrapper>
-          </VectorSearchScreenBlockWrapper>
-        ))}
-      </VectorSearchSavedQueriesContentWrapper>
-    </VectorSearchScreenFooter>
-  </VectorSearchScreenWrapper>
-)
+  onClose,
+}: SavedQueriesScreenProps) => {
+  useTelemetryMountEvent(
+    TelemetryEvent.SEARCH_SAVED_QUERIES_PANEL_OPENED,
+    TelemetryEvent.SEARCH_SAVED_QUERIES_PANEL_CLOSED,
+  )
+  const [selectedIndex, setSelectedIndex] = useState(defaultSavedQueriesIndex)
+  const { stringData, loading } = useRedisearchListData()
+  const savedIndexes = useMemo(
+    () =>
+      stringData.map(
+        (index) =>
+          ({
+            value: index,
+            // Hardcoded values for the preset index, else empty arrays:
+            tags: mockSavedIndexes.find((i) => i.value === index)?.tags || [],
+            queries:
+              mockSavedIndexes.find((i) => i.value === index)?.queries || [],
+          }) as SavedIndex,
+      ),
+    [stringData],
+  )
+  const selectedIndexItem = savedIndexes.find(
+    (index) => index.value === selectedIndex,
+  )
+  const hasIndexes = savedIndexes.length > 0
+
+  useEffect(() => {
+    if (selectedIndex) return
+
+    // Select the first index by default if none is selected yet
+    const firstIndex = savedIndexes[0]?.value
+
+    firstIndex && setSelectedIndex(firstIndex)
+  }, [selectedIndex, savedIndexes])
+
+  const onIndexChange = (value: string) => {
+    setSelectedIndex(value)
+
+    collectChangedSavedQueryIndexTelemetry({
+      instanceId,
+    })
+  }
+
+  return (
+    <VectorSearchScreenWrapper
+      direction="column"
+      data-testid="saved-queries-screen"
+    >
+      <VectorSearchScreenHeader padding={6}>
+        <Title size="S" data-testid="title">
+          Saved queries
+        </Title>
+        <IconButton
+          size="XS"
+          icon={CancelSlimIcon}
+          aria-label="Close"
+          data-testid={'close-saved-queries-btn'}
+          onClick={() => onClose()}
+        />
+      </VectorSearchScreenHeader>
+      <VectorSearchScreenFooter grow={1} padding={6}>
+        <VectorSearchSavedQueriesContentWrapper>
+          {loading && <Loader data-testid="manage-indexes-list--loader" />}
+
+          {!loading && hasIndexes && (
+            <IndexSelect
+              savedIndexes={savedIndexes}
+              selectedIndex={selectedIndexItem?.value}
+              onIndexChange={onIndexChange}
+            />
+          )}
+
+          {!loading && !hasIndexes && (
+            <NoDataMessage variant={NoDataMessageKeys.SavedQueries} />
+          )}
+
+          {selectedIndexItem?.queries.map((query) => (
+            <QueryCard
+              key={query.value}
+              label={query.label}
+              value={query.value}
+              onQueryInsert={onQueryInsert}
+            />
+          ))}
+        </VectorSearchSavedQueriesContentWrapper>
+      </VectorSearchScreenFooter>
+    </VectorSearchScreenWrapper>
+  )
+}

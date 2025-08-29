@@ -72,7 +72,7 @@ describe('CloudAuthAnalytics', () => {
     });
   });
 
-  describe('sendGetRECloudSubsFailedEvent', () => {
+  describe('sendGetRedisCloudSubsFailedEvent', () => {
     it('should emit error event with deep link flow', () => {
       service.sendCloudSignInFailed(
         mockSessionMetadata,

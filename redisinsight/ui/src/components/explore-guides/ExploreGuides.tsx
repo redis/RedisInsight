@@ -41,11 +41,12 @@ const ExploreGuides = () => {
 
   return (
     <div data-testid="explore-guides">
-      <Title size="XS">
+      <Title color="primary" size="S">
         <span>Here&apos;s a good starting point</span>
       </Title>
-      <Text>
-        Explore the amazing world of Redis Stack with our interactive guides
+      <Spacer size="s" />
+      <Text color="primary">
+        Explore the amazing world of Redis with our interactive guides
       </Text>
       <Spacer size="xl" />
       {!!data.length && (
