@@ -13,6 +13,7 @@ import { store } from 'uiSrc/slices/store'
 import { setSSOFlow } from 'uiSrc/slices/instances/cloud'
 import { setConnectivityError } from 'uiSrc/slices/app/connectivity'
 import ApiErrors from 'uiSrc/constants/apiErrors'
+import { INSTANCES_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
 
 describe('requestInterceptor', () => {
   it('should properly set db-index to headers', () => {
@@ -71,6 +72,12 @@ describe('connectivityErrorsInterceptor', () => {
   })
 
   it('should properly handle 424 error and store default error message', async () => {
+    // Set up connected instance for interceptor to work
+    mockedTestStore.getState().connections.instances.connectedInstance = {
+      ...INSTANCES_MOCK[0],
+      id: 'test-instance-id',
+    }
+
     jest
       .spyOn(store, 'dispatch')
       .mockImplementation(mockedTestStore.dispatch as any)
@@ -82,17 +89,29 @@ describe('connectivityErrorsInterceptor', () => {
         data: {
           error: 'RedisConnectionFailedException',
         },
+        request: {
+          responseURL:
+            'http://localhost:5001/databases/test-instance-id/overview',
+        },
       },
     }
 
     try {
       await connectivityErrorsInterceptor(response)
     } catch {
-      expect(mockedTestStore.getActions()).toEqual([setConnectivityError(ApiErrors.ConnectionLost)])
+      expect(mockedTestStore.getActions()).toEqual([
+        setConnectivityError(ApiErrors.ConnectionLost),
+      ])
     }
   })
 
   it('should properly handle specific 424 error and store custom error message', async () => {
+    // Set up connected instance for interceptor to work
+    mockedTestStore.getState().connections.instances.connectedInstance = {
+      ...INSTANCES_MOCK[0],
+      id: 'test-instance-id',
+    }
+
     jest
       .spyOn(store, 'dispatch')
       .mockImplementation(mockedTestStore.dispatch as any)
@@ -106,17 +125,29 @@ describe('connectivityErrorsInterceptor', () => {
           error: 'RedisConnectionFailedException',
           errorCode: CustomErrorCodes.RedisConnectionDefaultUserDisabled,
         },
+        request: {
+          responseURL:
+            'http://localhost:5001/databases/test-instance-id/overview',
+        },
       },
     }
 
     try {
       await connectivityErrorsInterceptor(response)
     } catch {
-      expect(mockedTestStore.getActions()).toEqual([setConnectivityError('custom message')])
+      expect(mockedTestStore.getActions()).toEqual([
+        setConnectivityError('custom message'),
+      ])
     }
   })
 
   it('should properly handle specific 424 error and store default error message when no message available', async () => {
+    // Set up connected instance for interceptor to work
+    mockedTestStore.getState().connections.instances.connectedInstance = {
+      ...INSTANCES_MOCK[0],
+      id: 'test-instance-id',
+    }
+
     jest
       .spyOn(store, 'dispatch')
       .mockImplementation(mockedTestStore.dispatch as any)
@@ -129,13 +160,52 @@ describe('connectivityErrorsInterceptor', () => {
           error: 'RedisConnectionFailedException',
           errorCode: CustomErrorCodes.RedisConnectionDefaultUserDisabled,
         },
+        request: {
+          responseURL:
+            'http://localhost:5001/databases/test-instance-id/overview',
+        },
       },
     }
 
     try {
       await connectivityErrorsInterceptor(response)
     } catch {
-      expect(mockedTestStore.getActions()).toEqual([setConnectivityError(ApiErrors.ConnectionLost)])
+      expect(mockedTestStore.getActions()).toEqual([
+        setConnectivityError(ApiErrors.ConnectionLost),
+      ])
+    }
+  })
+
+  it('should not dispatch connectivity error when instance ID does not match', async () => {
+    // Set up connected instance with different ID than the response URL
+    mockedTestStore.getState().connections.instances.connectedInstance = {
+      ...INSTANCES_MOCK[0],
+      id: 'different-instance-id',
+    }
+
+    jest
+      .spyOn(store, 'dispatch')
+      .mockImplementation(mockedTestStore.dispatch as any)
+    jest.spyOn(store, 'getState').mockImplementation(mockedTestStore.getState)
+
+    const response: any = {
+      response: {
+        status: 424,
+        data: {
+          error: 'RedisConnectionFailedException',
+        },
+        request: {
+          responseURL:
+            'http://localhost:5001/databases/test-instance-id/overview', // Different ID
+        },
+      },
+    }
+
+    try {
+      await connectivityErrorsInterceptor(response)
+    } catch {
+      // Should not dispatch any connectivity error actions
+      expect(mockedTestStore.getActions()).toEqual([])
     }
   })
 })
@@ -186,7 +256,7 @@ describe('cloudAuthInterceptor', () => {
 })
 
 describe('isConnectivityError', () => {
-  it.each<{apiResponse: any, result: boolean}>([
+  it.each<{ apiResponse: any; result: boolean }>([
     {
       apiResponse: undefined,
       result: false,
@@ -244,8 +314,10 @@ describe('isConnectivityError', () => {
         },
       },
       result: false,
-    }
+    },
   ])('test %j', ({ apiResponse, result }) => {
-    expect(isConnectivityError(apiResponse?.status, apiResponse?.data)).toEqual(result)
+    expect(isConnectivityError(apiResponse?.status, apiResponse?.data)).toEqual(
+      result,
+    )
   })
 })

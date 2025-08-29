@@ -34,7 +34,7 @@ export interface Props {
   testid?: string
   containerClassName?: string
   turnOffAutoRefresh?: boolean
-  onRefresh: (enableAutoRefresh: boolean) => void
+  onRefresh: (forceRefresh?: boolean) => void
   onRefreshClicked?: () => void
   onEnableAutoRefresh?: (
     enableAutoRefresh: boolean,
@@ -184,12 +184,12 @@ const AutoRefresh = ({
     setEditingRate(false)
   }
 
-  const handleRefresh = () => {
-    onRefresh(enableAutoRefresh)
+  const handleRefresh = (forceRefresh = false) => {
+    onRefresh(forceRefresh)
   }
 
   const handleRefreshClick = () => {
-    handleRefresh()
+    handleRefresh(true)
     onRefreshClicked?.()
   }
 

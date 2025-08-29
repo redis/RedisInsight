@@ -104,6 +104,7 @@ export const isConnectivityError = (
 
 export const connectivityErrorsInterceptor = (error: AxiosError) => {
   const { response } = error
+  const responseUrl = response?.request?.responseURL || ''
   const responseData = response?.data as {
     message?: string
     code?: string
@@ -118,7 +119,16 @@ export const connectivityErrorsInterceptor = (error: AxiosError) => {
       message = responseData?.message
     }
 
-    store?.dispatch<any>(setConnectivityError(message || ApiErrors.ConnectionLost))
+    const state = store.getState()
+    const isConnectedToDatabase =
+      !!state.connections.instances.connectedInstance?.id
+    const isErrorTargetsConnectedDatabase = responseUrl.includes(
+      state.connections.instances.connectedInstance?.id,
+    )
+
+    if (isConnectedToDatabase && isErrorTargetsConnectedDatabase) {
+      store?.dispatch<any>(setConnectivityError(message || ApiErrors.ConnectionLost))
+    }
   }
 
   return Promise.reject(error)
