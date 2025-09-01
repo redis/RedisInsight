@@ -78,7 +78,7 @@ const Notifications = () => {
             },
           },
         },
-        { variant: riToast.Variant.Success },
+        { variant: riToast.Variant.Success, toastId: id },
       )
       toastIdsRef.current.set(id, toastId)
     })
@@ -99,7 +99,11 @@ const Notifications = () => {
         }
         let toastId: ReturnType<typeof riToast>
         if (ApiEncryptionErrors.includes(name)) {
-          toastId = errorMessages.ENCRYPTION(() => removeToast(id), instanceId)
+          toastId = errorMessages.ENCRYPTION(
+            () => removeToast(id),
+            instanceId,
+            id,
+          )
         } else if (
           additionalInfo?.errorCode ===
           CustomErrorCodes.CloudCapiKeyUnauthorized
@@ -108,16 +112,24 @@ const Notifications = () => {
             { message, title },
             additionalInfo,
             () => removeToast(id),
+            id,
           )
         } else if (
           additionalInfo?.errorCode ===
           CustomErrorCodes.RdiDeployPipelineFailure
         ) {
-          toastId = errorMessages.RDI_DEPLOY_PIPELINE({ title, message }, () =>
-            removeToast(id),
+          toastId = errorMessages.RDI_DEPLOY_PIPELINE(
+            { title, message },
+            () => removeToast(id),
+            id,
           )
         } else {
-          toastId = errorMessages.DEFAULT(message, () => removeToast(id), title)
+          toastId = errorMessages.DEFAULT(
+            message,
+            () => removeToast(id),
+            title,
+            id,
+          )
         }
 
         toastIdsRef.current.set(id, toastId)
@@ -167,7 +179,11 @@ const Notifications = () => {
             dispatch(removeInfiniteNotification(id))
           },
         },
-        { variant: riToast.Variant.Informative, autoClose: ONE_HOUR },
+        {
+          variant: riToast.Variant.Informative,
+          autoClose: ONE_HOUR,
+          toastId: id,
+        },
       )
       infiniteToastIdsRef.current.add(toastId)
       toastIdsRef.current.set(id, toastId)
