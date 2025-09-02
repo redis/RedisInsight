@@ -60,7 +60,6 @@ const Actions = ({ handleAddKeyPanel, handleBulkActionsPanel }: Props) => {
       onClick={openBulkActions}
       data-testid="btn-bulk-actions"
       aria-label="bulk actions"
-      iconSize="small"
     >
       Bulk Actions
     </SecondaryButton>

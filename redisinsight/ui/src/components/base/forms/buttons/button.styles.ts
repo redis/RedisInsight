@@ -11,7 +11,6 @@ export type BaseButtonProps = Omit<
   iconSide?: 'left' | 'right'
   loading?: boolean
   size?: (typeof buttonSizes)[number] | 's' | 'm' | 'l'
-  iconSize?: (typeof buttonSizes)[number] | 's' | 'm' | 'l'
 }
 export type ButtonProps = Omit<BaseButtonProps, 'variant'>
 export type SecondaryButtonProps = ButtonProps & {
