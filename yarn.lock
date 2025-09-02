@@ -1052,12 +1052,10 @@
     "@babel/plugin-transform-modules-commonjs" "^7.24.1"
     "@babel/plugin-transform-typescript" "^7.24.1"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.11.0", "@babel/runtime@^7.12.13", "@babel/runtime@^7.12.5", "@babel/runtime@^7.13.9", "@babel/runtime@^7.15.4", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
-  version "7.27.0"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.27.0.tgz#fbee7cf97c709518ecc1f590984481d5460d4762"
-  integrity sha512-VtPOkrdPHZsKc/clNqyi9WUA8TINkZ4cGk63UUE3u4pmB2k+ZMQRDuIOagv8UVd6j7k0T3+RRIb7beKTebNbcw==
-  dependencies:
-    regenerator-runtime "^0.14.0"
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.11.0", "@babel/runtime@^7.12.13", "@babel/runtime@^7.12.5", "@babel/runtime@^7.13.9", "@babel/runtime@^7.15.4", "@babel/runtime@^7.17.8", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
+  version "7.28.3"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.28.3.tgz#75c5034b55ba868121668be5d5bb31cc64e6e61a"
+  integrity sha512-9uIQ10o0WGdpP6GDhXcdOJPJuDgFtIDtN/9+ArJQ2NAfAmiuhTQdzkaTGR33v43GYS2UrSA0eX2pPPHoFVvpxA==
 
 "@babel/template@^7.25.0", "@babel/template@^7.25.7", "@babel/template@^7.27.1", "@babel/template@^7.27.2", "@babel/template@^7.3.3":
   version "7.27.2"
@@ -2156,7 +2154,7 @@
     "@radix-ui/react-primitive" "2.1.2"
     "@radix-ui/react-use-callback-ref" "1.1.1"
 
-"@radix-ui/react-id@1.1.1":
+"@radix-ui/react-id@1.1.1", "@radix-ui/react-id@^1.1.0":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@radix-ui/react-id/-/react-id-1.1.1.tgz#1404002e79a03fe062b7e3864aa01e24bd1471f7"
   integrity sha512-kGkGegYIdQsOb4XjsfM97rXsiHaBwco+hFI66oO4s9LU+PLAC5oJ7khdOVFxkhsmlbpUqDAvXw11CluXP+jkHg==
@@ -2455,15 +2453,16 @@
     "@react-hook/latest" "^1.0.2"
     "@react-hook/passive-layout-effect" "^1.2.0"
 
-"@redis-ui/components@^38.0.0", "@redis-ui/components@^38.1.4":
-  version "38.1.4"
-  resolved "https://registry.yarnpkg.com/@redis-ui/components/-/components-38.1.4.tgz#02e620f937629162539b2fb36f8b1505442fad24"
-  integrity sha512-13SDg3R4hQ1tGyOz8glk3NEuduTsnQpm5sjBf6AtsDHGmugFtQSn3JHvcOgVM+i4Ax6m42SvB6q/4nJD1Yygvg==
+"@redis-ui/components@^39.11.0", "@redis-ui/components@^39.12.0":
+  version "39.12.0"
+  resolved "https://registry.yarnpkg.com/@redis-ui/components/-/components-39.12.0.tgz#3ee4d4bd2125a48a04020c147d3f634ed306d213"
+  integrity sha512-XYUn4cPyQjzxKy9KOYsvS8QkFdYsgVgM08HsKXKrB1r/vzn11TI0VKQ3bR1xuvi5Mej/MLAY3FFI4ALMPPlJQw==
   dependencies:
     "@radix-ui/react-checkbox" "^1.0.3"
     "@radix-ui/react-collapsible" "^1.0.3"
     "@radix-ui/react-dialog" "^1.0.5"
     "@radix-ui/react-dropdown-menu" "^2.0.4"
+    "@radix-ui/react-id" "^1.1.0"
     "@radix-ui/react-popover" "^1.0.3"
     "@radix-ui/react-progress" "^1.1.0"
     "@radix-ui/react-radio-group" "^1.1.2"
@@ -2481,26 +2480,27 @@
     type-fest "^3.13.1"
     virtua "^0.36.3"
 
-"@redis-ui/icons@^4.16.1", "@redis-ui/icons@^4.3.0":
-  version "4.16.1"
-  resolved "https://registry.yarnpkg.com/@redis-ui/icons/-/icons-4.16.1.tgz#87fc6ab073a203de6b313a4868c0a84f076c8580"
-  integrity sha512-ZRQWzambHq9A/5zWx4HXEBNU8uCFwf6Ap0NKZryoMq5iGfygBF8k8A89RmwUXuSlJ99NRxW+RvmbcMd+Tyosmg==
+"@redis-ui/icons@^6.1.0", "@redis-ui/icons@^6.1.1":
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/@redis-ui/icons/-/icons-6.1.1.tgz#100dfb7fdb4fa810ab85d9ddbd6ed75ed755f1fe"
+  integrity sha512-KzxU7cCcArOfE3cGX59Dd3FDDkQAp1QLupcj9nvXj+zOoPkaCdGELeAFL5l8glo7eY/6pyQl5VTR4XQ3d12mjQ==
 
-"@redis-ui/styles@^11.0.2", "@redis-ui/styles@^11.4.0":
-  version "11.4.0"
-  resolved "https://registry.yarnpkg.com/@redis-ui/styles/-/styles-11.4.0.tgz#188712020d985d6c94cacabcf47e341335e46270"
-  integrity sha512-t+3sgLblPxas+qGx0gGzQFm6kQoA8Pxg7y355OeT+fMJ03WMZmeAj+hcfR3zAgVUTfyU9QgOCJKo5/QKfIxNgQ==
+"@redis-ui/styles@^12.5.0", "@redis-ui/styles@^12.7.0":
+  version "12.7.0"
+  resolved "https://registry.yarnpkg.com/@redis-ui/styles/-/styles-12.7.0.tgz#1f8a329b807e462b0273ad443503be3d845fc5b3"
+  integrity sha512-0dO/5C+EfiYv7X0EHmakvfOZtt+IWSAg/Yl7tU5Lq0GZDGJVNw3F+3JDIRnzdkPVKQy3HJlz/BI+0dZZAFd3DA==
   dependencies:
     color-alpha "^2.0.0"
+    polished "^4.3.1"
 
-"@redis-ui/table@^2.4.0":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@redis-ui/table/-/table-2.4.0.tgz#fd25a5e61f1670c3343d5a47e90842ad2a068311"
-  integrity sha512-2MeJtn6ttTGrUjfImAn6U41Ep6Zaz4V7Q2QAeFso/27ShMZqSZVQgETqLd6U9CAjtYoYTMeM643cuJVHB18hyg==
+"@redis-ui/table@^2.12.0":
+  version "2.12.0"
+  resolved "https://registry.yarnpkg.com/@redis-ui/table/-/table-2.12.0.tgz#ae9f9907d4c10b4d57d2793b1a6b0320fef2fa24"
+  integrity sha512-1pFOy4uN8/8h4uq38+ktiT0+kJYN4RXrStss5ZWuCYzjrQsJjeBz/0iP9cWIGeABqQbEpxnnE0wuX/na+KlVIQ==
   dependencies:
-    "@redis-ui/components" "^38.0.0"
-    "@redis-ui/icons" "^4.3.0"
-    "@redis-ui/styles" "^11.0.2"
+    "@redis-ui/components" "^39.11.0"
+    "@redis-ui/icons" "^6.1.0"
+    "@redis-ui/styles" "^12.5.0"
     "@tanstack/react-table" "^8.9.8"
 
 "@reduxjs/toolkit@^1.6.2":
@@ -11680,6 +11680,13 @@ plist@3.1.0, plist@^3.0.4, plist@^3.0.5, plist@^3.1.0:
     base64-js "^1.5.1"
     xmlbuilder "^15.1.1"
 
+polished@^4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/polished/-/polished-4.3.1.tgz#5a00ae32715609f83d89f6f31d0f0261c6170548"
+  integrity sha512-OBatVyC/N7SCW/FaDHrSd+vn0o5cS855TOmYi4OkdWUMSJCET/xip//ch8xGUvtr3i44X9LVyWwQlRMTN3pwSA==
+  dependencies:
+    "@babel/runtime" "^7.17.8"
+
 possible-typed-array-names@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/possible-typed-array-names/-/possible-typed-array-names-1.0.0.tgz#89bb63c6fada2c3e90adc4a647beeeb39cc7bf8f"
@@ -13291,14 +13298,14 @@ semver-compare@^1.0.0:
   resolved "https://registry.yarnpkg.com/semver-compare/-/semver-compare-1.0.0.tgz#0dee216a1c941ab37e9efb1788f6afc5ff5537fc"
   integrity sha512-YM3/ITh2MJ5MtzaM429anh+x2jiLVjqILF4m4oyQB18W7Ggea7BfqdH/wGMK7dDiMghv/6WG7znWMwUDzJiXow==
 
-"semver@2 || 3 || 4 || 5", semver@7.6.3, semver@^5.5.0, semver@^5.7.2, semver@^6.2.0, semver@^6.3.0, semver@^6.3.1, semver@^7.2.1, semver@^7.3.2, semver@^7.3.4, semver@^7.3.5, semver@^7.3.6, semver@^7.3.8, semver@^7.5.2, semver@^7.5.3, semver@^7.5.4, semver@^7.6.0, semver@^7.6.2, semver@^7.6.3:
+"semver@2 || 3 || 4 || 5", semver@7.6.3, semver@^5.5.0, semver@^5.7.2, semver@^6.2.0, semver@^6.3.0, semver@^6.3.1:
   version "7.5.4"
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.5.4.tgz#483986ec4ed38e1c6c48c34894a9182dbff68a6e"
   integrity sha512-1bCSESV6Pv+i21Hvpxp3Dx+pSD8lIPt8uVjRrxAUt/nbswYc+tK6Y2btiULjd4+fnq15PX+nqQDC7Oft7WkwcA==
   dependencies:
     lru-cache "^6.0.0"
 
-semver@^7.7.2:
+semver@^7.2.1, semver@^7.3.2, semver@^7.3.4, semver@^7.3.5, semver@^7.3.6, semver@^7.3.8, semver@^7.5.2, semver@^7.5.3, semver@^7.5.4, semver@^7.6.0, semver@^7.6.2, semver@^7.6.3, semver@^7.7.2:
   version "7.7.2"
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.7.2.tgz#67d99fdcd35cec21e6f8b87a7fd515a33f982b58"
   integrity sha512-RF0Fw+rO5AMf9MAyaRXI4AV0Ulj5lMHqVxxdSgiVbixSCXoEmmX/jk0CuJw4+3SqroYO9VoUh+HcuJivvtJemA==
