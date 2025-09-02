@@ -57,3 +57,11 @@ export const lastDeliveredIDTooltipText = (
     <b>0</b> fetches the entire stream from the beginning.
   </>
 )
+
+export const streamIDTooltipText = (
+  <>
+    ID must be a timestamp and sequence number greater than the last ID.
+    <Spacer size="xs" />
+    Otherwise, type * to auto-generate ID based on the database current time.
+  </>
+)

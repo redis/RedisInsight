@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react'
-import cx from 'classnames'
 import { validateEntryId } from 'uiSrc/utils'
 import { INITIAL_STREAM_FIELD_STATE } from 'uiSrc/pages/browser/components/add-key/AddKeyStream/AddKeyStream'
 import { AddStreamFormConfig as config } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
@@ -7,10 +6,15 @@ import AddMultipleFields from 'uiSrc/pages/browser/components/add-multiple-field
 
 import { RiTooltip } from 'uiSrc/components'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { Text } from 'uiSrc/components/base/text'
 import { TextInput } from 'uiSrc/components/base/inputs'
+import { streamIDTooltipText } from 'uiSrc/constants/texts'
+import { EntryIdContainer, FieldsWrapper } from '../AddStreamEntries.styles'
+import {
+  StreamGroupContent,
+  TimeStampInfoIcon,
+} from '../../add-stream-group/AddStreamGroup.styles'
 import styles from '../styles.module.scss'
 
 export interface Props {
@@ -108,8 +112,8 @@ const StreamEntryFields = (props: Props) => {
   const showEntryError = !isEntryIdFocused && entryIdError
 
   return (
-    <div className={cx(styles.container)}>
-      <div className={styles.entryIdContainer}>
+    <StreamGroupContent>
+      <EntryIdContainer>
         <FormField
           label={config.entryId.label}
           additionalText={
@@ -119,27 +123,19 @@ const StreamEntryFields = (props: Props) => {
                 className={styles.entryIdTooltip}
                 position="left"
                 title="Enter Valid ID or *"
-                content={
-                  <>
-                    ID must be a timestamp and sequence number greater than the
-                    last ID.
-                    <Spacer size="xs" />
-                    Otherwise, type * to auto-generate ID based on the database
-                    current time.
-                  </>
-                }
+                content={streamIDTooltipText}
               >
-                <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
+                <TimeStampInfoIcon />
               </RiTooltip>
               {!showEntryError && (
-                <span className={styles.timestampText}>
+                <Text size="XS" color="primary">
                   Timestamp - Sequence Number or *
-                </span>
+                </Text>
               )}
               {showEntryError && (
-                <span className={styles.error} data-testid="stream-entry-error">
+                <Text size="XS" color="danger" data-testid="stream-entry-error">
                   {entryIdError}
-                </span>
+                </Text>
               )}
             </Row>
           }
@@ -158,58 +154,55 @@ const StreamEntryFields = (props: Props) => {
             data-testid={config.entryId.id}
           />
         </FormField>
-      </div>
+      </EntryIdContainer>
 
-      <div className={styles.fieldsWrapper}>
-        <div className={cx(styles.fieldsContainer)}>
-          <AddMultipleFields
-            items={fields}
-            isClearDisabled={isClearDisabled}
-            onClickRemove={onClickRemove}
-            onClickAdd={addField}
-          >
-            {(item, index) => (
-              <Row align="center" gap="m">
-                <FlexItem className={styles.fieldItemWrapper} grow>
-                  <FormField>
-                    <TextInput
-                      name={`fieldName-${item.id}`}
-                      id={`fieldName-${item.id}`}
-                      placeholder={config.name.placeholder}
-                      value={item.name}
-                      onChange={(value) =>
-                        handleFieldChange('name', item.id, value)
-                      }
-                      ref={
-                        index === fields.length - 1 ? lastAddedFieldName : null
-                      }
-                      autoComplete="off"
-                      data-testid="field-name"
-                    />
-                  </FormField>
-                </FlexItem>
-                <FlexItem className={styles.valueItemWrapper} grow>
-                  <FormField>
-                    <TextInput
-                      className={styles.fieldValue}
-                      name={`fieldValue-${item.id}`}
-                      id={`fieldValue-${item.id}`}
-                      placeholder={config.value.placeholder}
-                      value={item.value}
-                      onChange={(value) =>
-                        handleFieldChange('value', item.id, value)
-                      }
-                      autoComplete="off"
-                      data-testid="field-value"
-                    />
-                  </FormField>
-                </FlexItem>
-              </Row>
-            )}
-          </AddMultipleFields>
-        </div>
-      </div>
-    </div>
+      <FieldsWrapper>
+        <AddMultipleFields
+          items={fields}
+          isClearDisabled={isClearDisabled}
+          onClickRemove={onClickRemove}
+          onClickAdd={addField}
+        >
+          {(item, index) => (
+            <Row align="center" gap="m">
+              <FlexItem grow>
+                <FormField>
+                  <TextInput
+                    name={`fieldName-${item.id}`}
+                    id={`fieldName-${item.id}`}
+                    placeholder={config.name.placeholder}
+                    value={item.name}
+                    onChange={(value) =>
+                      handleFieldChange('name', item.id, value)
+                    }
+                    ref={
+                      index === fields.length - 1 ? lastAddedFieldName : null
+                    }
+                    autoComplete="off"
+                    data-testid="field-name"
+                  />
+                </FormField>
+              </FlexItem>
+              <FlexItem grow={2}>
+                <FormField>
+                  <TextInput
+                    name={`fieldValue-${item.id}`}
+                    id={`fieldValue-${item.id}`}
+                    placeholder={config.value.placeholder}
+                    value={item.value}
+                    onChange={(value) =>
+                      handleFieldChange('value', item.id, value)
+                    }
+                    autoComplete="off"
+                    data-testid="field-value"
+                  />
+                </FormField>
+              </FlexItem>
+            </Row>
+          )}
+        </AddMultipleFields>
+      </FieldsWrapper>
+    </StreamGroupContent>
   )
 }
 

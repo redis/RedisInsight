@@ -19,7 +19,7 @@ import {
   sendEventTelemetry,
   TelemetryEvent,
 } from 'uiSrc/telemetry'
-import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
+import { Col } from 'uiSrc/components/base/layout/flex'
 import {
   PrimaryButton,
   SecondaryButton,
@@ -29,7 +29,7 @@ import { AddStreamEntriesDto } from 'apiSrc/modules/browser/stream/dto'
 import StreamEntryFields from './StreamEntryFields/StreamEntryFields'
 import { Panel } from 'uiSrc/components/panel'
 
-import styles from './styles.module.scss'
+import { StreamEntryContent } from './AddStreamEntries.styles'
 
 export interface Props {
   closePanel: (isCancelled?: boolean) => void
@@ -134,7 +134,7 @@ const AddStreamEntries = (props: Props) => {
 
   return (
     <Col gap="m">
-      <div className={styles.content} data-test-subj="add-stream-field-panel">
+      <StreamEntryContent data-test-subj="add-stream-field-panel">
         <StreamEntryFields
           entryIdError={entryIdError}
           entryID={entryID}
@@ -142,31 +142,23 @@ const AddStreamEntries = (props: Props) => {
           fields={fields}
           setFields={setFields}
         />
-      </div>
+      </StreamEntryContent>
       <Panel justify="end" gap="m">
-        <FlexItem>
-          <div>
-            <SecondaryButton
-              onClick={() => closePanel(true)}
-              data-testid="cancel-members-btn"
-            >
-              Cancel
-            </SecondaryButton>
-          </div>
-        </FlexItem>
-        <FlexItem>
-          <div>
-            <PrimaryButton
-              size="m"
-              color="secondary"
-              onClick={submitData}
-              disabled={!isFormValid}
-              data-testid="save-elements-btn"
-            >
-              Save
-            </PrimaryButton>
-          </div>
-        </FlexItem>
+        <SecondaryButton
+          onClick={() => closePanel(true)}
+          data-testid="cancel-members-btn"
+        >
+          Cancel
+        </SecondaryButton>
+        <PrimaryButton
+          size="m"
+          color="secondary"
+          onClick={submitData}
+          disabled={!isFormValid}
+          data-testid="save-elements-btn"
+        >
+          Save
+        </PrimaryButton>
       </Panel>
     </Col>
   )

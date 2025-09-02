@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
@@ -18,13 +17,17 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiTooltip } from 'uiSrc/components'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { CreateConsumerGroupsDto } from 'apiSrc/modules/browser/stream/dto'
 
-import styles from './styles.module.scss'
 import { Panel } from 'uiSrc/components/panel'
+import { Text } from 'uiSrc/components/base/text'
+import {
+  StreamGroupContent,
+  TimeStampInfoIcon,
+  TimeStampWrapper,
+} from './AddStreamGroup.styles'
 
 export interface Props {
   closePanel: (isCancelled?: boolean) => void
@@ -88,14 +91,8 @@ const AddStreamGroup = (props: Props) => {
 
   return (
     <Col gap="m">
-      <div
-        className={styles.content}
-        data-test-subj="add-stream-groups-field-panel"
-      >
-        <FlexItem
-          className={cx('flexItemNoFullWidth', 'inlineFieldsNoSpace')}
-          grow
-        >
+      <StreamGroupContent data-test-subj="add-stream-groups-field-panel">
+        <FlexItem grow>
           <Row gap="m">
             <FlexItem grow>
               <Row align="start" gap="m">
@@ -112,35 +109,31 @@ const AddStreamGroup = (props: Props) => {
                     />
                   </FormField>
                 </FlexItem>
-                <FlexItem className={styles.timestampWrapper} grow>
+                <TimeStampWrapper>
                   <FormField
                     additionalText={
                       <Row align="center" gap="s">
                         <RiTooltip
                           anchorClassName="inputAppendIcon"
-                          className={styles.entryIdTooltip}
                           position="left"
                           title="Enter Valid ID, 0 or $"
                           content={lastDeliveredIDTooltipText}
                         >
-                          <RiIcon
-                            type="InfoIcon"
-                            style={{ cursor: 'pointer' }}
-                            data-testid="entry-id-info-icon"
-                          />
+                          <TimeStampInfoIcon data-testid="entry-id-info-icon" />
                         </RiTooltip>
                         {!showIdError && (
-                          <span
-                            className={styles.idText}
+                          <Text
+                            size="XS"
+                            color="primary"
                             data-testid="id-help-text"
                           >
                             Timestamp - Sequence Number or $
-                          </span>
+                          </Text>
                         )}
                         {showIdError && (
-                          <span className={styles.error} data-testid="id-error">
+                          <Text size="XS" color="danger" data-testid="id-error">
                             {idError}
-                          </span>
+                          </Text>
                         )}
                       </Row>
                     }
@@ -159,34 +152,26 @@ const AddStreamGroup = (props: Props) => {
                       data-testid="id-field"
                     />
                   </FormField>
-                </FlexItem>
+                </TimeStampWrapper>
               </Row>
             </FlexItem>
           </Row>
         </FlexItem>
-      </div>
-      <Panel justify="end" gap="l">
-        <FlexItem>
-          <div>
-            <SecondaryButton
-              onClick={() => closePanel(true)}
-              data-testid="cancel-stream-groups-btn"
-            >
-              Cancel
-            </SecondaryButton>
-          </div>
-        </FlexItem>
-        <FlexItem>
-          <div>
-            <PrimaryButton
-              onClick={submitData}
-              disabled={!isFormValid}
-              data-testid="save-groups-btn"
-            >
-              Save
-            </PrimaryButton>
-          </div>
-        </FlexItem>
+      </StreamGroupContent>
+      <Panel justify="end" gap="m">
+        <SecondaryButton
+          onClick={() => closePanel(true)}
+          data-testid="cancel-stream-groups-btn"
+        >
+          Cancel
+        </SecondaryButton>
+        <PrimaryButton
+          onClick={submitData}
+          disabled={!isFormValid}
+          data-testid="save-groups-btn"
+        >
+          Save
+        </PrimaryButton>
       </Panel>
     </Col>
   )
