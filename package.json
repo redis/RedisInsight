@@ -317,11 +317,6 @@
     "npm": ">=6.x",
     "yarn": ">=1.21.3"
   },
-  "devEngines": {
-    "node": ">=22.x",
-    "npm": ">=6.x",
-    "yarn": ">=1.21.3"
-  },
   "browser": {
     "uuid": "./node_modules/uuid/dist/esm-browser/index.js"
   }
