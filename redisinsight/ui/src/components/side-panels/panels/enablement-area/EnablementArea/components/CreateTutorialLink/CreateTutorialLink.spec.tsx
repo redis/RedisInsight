@@ -10,7 +10,7 @@ jest.mock('uiSrc/telemetry', () => ({
   sendEventTelemetry: jest.fn(),
 }))
 
-describe('CreateTutoralLink', () => {
+describe('CreateTutorialLink', () => {
   it('should render', () => {
     expect(render(<CreateTutorailLink />)).toBeTruthy()
   })
@@ -25,7 +25,7 @@ describe('CreateTutoralLink', () => {
 
     fireEvent.click(screen.getByTestId('read-more-link'))
 
-    expect(sendEventTelemetry).toBeCalledWith({
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
       event: TelemetryEvent.EXPLORE_PANEL_CREATE_TUTORIAL_LINK_CLICKED,
       eventData: {
         databaseId: INSTANCE_ID_MOCK,

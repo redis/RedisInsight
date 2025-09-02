@@ -26,8 +26,6 @@ module.exports = {
     'remark-rehype': '<rootDir>/redisinsight/__mocks__/remarkRehype.js',
     'rehype-stringify': '<rootDir>/redisinsight/__mocks__/rehypeStringify.js',
     'unist-util-visit': '<rootDir>/redisinsight/__mocks__/unistUtilsVisit.js',
-    'react-children-utilities':
-      '<rootDir>/redisinsight/__mocks__/react-children-utilities.js',
     d3: '<rootDir>/node_modules/d3/dist/d3.min.js',
     '^uuid$': require.resolve('uuid'),
     msgpackr: require.resolve('msgpackr'),

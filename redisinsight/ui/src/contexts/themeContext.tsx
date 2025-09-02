@@ -2,9 +2,11 @@ import React from 'react'
 import { ThemeProvider as StyledThemeProvider } from 'styled-components'
 import {
   theme as redisUiOldTheme,
+  CommonStyles,
   themeLight,
   themeDark,
 } from '@redis-ui/styles'
+import 'modern-normalize'
 import '@redis-ui/styles/normalized-styles.css'
 import '@redis-ui/styles/fonts.css'
 
@@ -94,7 +96,10 @@ export class ThemeProvider extends React.Component<Props> {
           changeTheme: this.changeTheme,
         }}
       >
-        <StyledThemeProvider theme={uiTheme}>{children}</StyledThemeProvider>
+        <StyledThemeProvider theme={uiTheme}>
+          <CommonStyles />
+          {children}
+        </StyledThemeProvider>
       </ThemeContext.Provider>
     )
   }

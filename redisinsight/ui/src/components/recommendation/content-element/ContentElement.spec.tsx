@@ -227,6 +227,6 @@ describe('ContentElement', () => {
 
     fireEvent.click(queryByTestId(`link-${mockTelemetryName}-0`) as HTMLElement)
 
-    expect(onClickMock).toBeCalled()
+    expect(onClickMock).toHaveBeenCalled()
   })
 })

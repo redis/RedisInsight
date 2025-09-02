@@ -1052,12 +1052,10 @@
     "@babel/plugin-transform-modules-commonjs" "^7.24.1"
     "@babel/plugin-transform-typescript" "^7.24.1"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.11.0", "@babel/runtime@^7.12.13", "@babel/runtime@^7.12.5", "@babel/runtime@^7.13.9", "@babel/runtime@^7.15.4", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
-  version "7.27.0"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.27.0.tgz#fbee7cf97c709518ecc1f590984481d5460d4762"
-  integrity sha512-VtPOkrdPHZsKc/clNqyi9WUA8TINkZ4cGk63UUE3u4pmB2k+ZMQRDuIOagv8UVd6j7k0T3+RRIb7beKTebNbcw==
-  dependencies:
-    regenerator-runtime "^0.14.0"
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.11.0", "@babel/runtime@^7.12.13", "@babel/runtime@^7.12.5", "@babel/runtime@^7.13.9", "@babel/runtime@^7.15.4", "@babel/runtime@^7.17.8", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
+  version "7.28.3"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.28.3.tgz#75c5034b55ba868121668be5d5bb31cc64e6e61a"
+  integrity sha512-9uIQ10o0WGdpP6GDhXcdOJPJuDgFtIDtN/9+ArJQ2NAfAmiuhTQdzkaTGR33v43GYS2UrSA0eX2pPPHoFVvpxA==
 
 "@babel/template@^7.25.0", "@babel/template@^7.25.7", "@babel/template@^7.27.1", "@babel/template@^7.27.2", "@babel/template@^7.3.3":
   version "7.27.2"
@@ -2156,7 +2154,7 @@
     "@radix-ui/react-primitive" "2.1.2"
     "@radix-ui/react-use-callback-ref" "1.1.1"
 
-"@radix-ui/react-id@1.1.1":
+"@radix-ui/react-id@1.1.1", "@radix-ui/react-id@^1.1.0":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@radix-ui/react-id/-/react-id-1.1.1.tgz#1404002e79a03fe062b7e3864aa01e24bd1471f7"
   integrity sha512-kGkGegYIdQsOb4XjsfM97rXsiHaBwco+hFI66oO4s9LU+PLAC5oJ7khdOVFxkhsmlbpUqDAvXw11CluXP+jkHg==
@@ -2455,15 +2453,16 @@
     "@react-hook/latest" "^1.0.2"
     "@react-hook/passive-layout-effect" "^1.2.0"
 
-"@redis-ui/components@^38.0.0", "@redis-ui/components@^38.1.4":
-  version "38.1.4"
-  resolved "https://registry.yarnpkg.com/@redis-ui/components/-/components-38.1.4.tgz#02e620f937629162539b2fb36f8b1505442fad24"
-  integrity sha512-13SDg3R4hQ1tGyOz8glk3NEuduTsnQpm5sjBf6AtsDHGmugFtQSn3JHvcOgVM+i4Ax6m42SvB6q/4nJD1Yygvg==
+"@redis-ui/components@^39.18.0":
+  version "39.18.0"
+  resolved "https://registry.yarnpkg.com/@redis-ui/components/-/components-39.18.0.tgz#b5fb63e4fbcf9e25d9c56eb7bcd3232b539a37c4"
+  integrity sha512-o+I8nN+S4C++924w/hy6q4RyfEwvWqb7c+6vr1QxxZ9+aZcBMatyw/QW8yKnGHhP5IOB4Dm4SHIVYisTXbaSuA==
   dependencies:
     "@radix-ui/react-checkbox" "^1.0.3"
     "@radix-ui/react-collapsible" "^1.0.3"
     "@radix-ui/react-dialog" "^1.0.5"
     "@radix-ui/react-dropdown-menu" "^2.0.4"
+    "@radix-ui/react-id" "^1.1.0"
     "@radix-ui/react-popover" "^1.0.3"
     "@radix-ui/react-progress" "^1.1.0"
     "@radix-ui/react-radio-group" "^1.1.2"
@@ -2481,27 +2480,29 @@
     type-fest "^3.13.1"
     virtua "^0.36.3"
 
-"@redis-ui/icons@^4.16.1", "@redis-ui/icons@^4.3.0":
-  version "4.16.1"
-  resolved "https://registry.yarnpkg.com/@redis-ui/icons/-/icons-4.16.1.tgz#87fc6ab073a203de6b313a4868c0a84f076c8580"
-  integrity sha512-ZRQWzambHq9A/5zWx4HXEBNU8uCFwf6Ap0NKZryoMq5iGfygBF8k8A89RmwUXuSlJ99NRxW+RvmbcMd+Tyosmg==
+"@redis-ui/icons@^6.1.1":
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/@redis-ui/icons/-/icons-6.1.1.tgz#100dfb7fdb4fa810ab85d9ddbd6ed75ed755f1fe"
+  integrity sha512-KzxU7cCcArOfE3cGX59Dd3FDDkQAp1QLupcj9nvXj+zOoPkaCdGELeAFL5l8glo7eY/6pyQl5VTR4XQ3d12mjQ==
 
-"@redis-ui/styles@^11.0.2", "@redis-ui/styles@^11.4.0":
-  version "11.4.0"
-  resolved "https://registry.yarnpkg.com/@redis-ui/styles/-/styles-11.4.0.tgz#188712020d985d6c94cacabcf47e341335e46270"
-  integrity sha512-t+3sgLblPxas+qGx0gGzQFm6kQoA8Pxg7y355OeT+fMJ03WMZmeAj+hcfR3zAgVUTfyU9QgOCJKo5/QKfIxNgQ==
+"@redis-ui/styles@^12.8.0", "@redis-ui/styles@^12.9.0":
+  version "12.9.0"
+  resolved "https://registry.yarnpkg.com/@redis-ui/styles/-/styles-12.9.0.tgz#41dc32db88079e79e61d99676f3c1116b4d6fdf9"
+  integrity sha512-tHiRisLBJNQBAEuxyTIIs2HLSVI3kB53AZp+L22T7aJCBqJ/P24jwfsSI4znUzH4aN3yEyXBwaDclPXuq986ew==
   dependencies:
     color-alpha "^2.0.0"
+    polished "^4.3.1"
 
-"@redis-ui/table@^2.4.0":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@redis-ui/table/-/table-2.4.0.tgz#fd25a5e61f1670c3343d5a47e90842ad2a068311"
-  integrity sha512-2MeJtn6ttTGrUjfImAn6U41Ep6Zaz4V7Q2QAeFso/27ShMZqSZVQgETqLd6U9CAjtYoYTMeM643cuJVHB18hyg==
+"@redis-ui/table@^2.18.0":
+  version "2.18.0"
+  resolved "https://registry.yarnpkg.com/@redis-ui/table/-/table-2.18.0.tgz#d8f22a3902a72ff7e140a2e3b77d6941bd6b6bc2"
+  integrity sha512-LkU0oco+uOfGCHi6n3yqwTgQP4i0xPbeF5k5heDRynmX55P9pOtNR6qxzSBu/gV5IQGOGVzfjcgHY/oFdSHqvA==
   dependencies:
-    "@redis-ui/components" "^38.0.0"
-    "@redis-ui/icons" "^4.3.0"
-    "@redis-ui/styles" "^11.0.2"
+    "@redis-ui/components" "^39.18.0"
+    "@redis-ui/icons" "^6.1.1"
+    "@redis-ui/styles" "^12.8.0"
     "@tanstack/react-table" "^8.9.8"
+    type-fest "^3.13.1"
 
 "@reduxjs/toolkit@^1.6.2":
   version "1.9.5"
@@ -11010,6 +11011,11 @@ mkdirp@^1.0.3, mkdirp@^1.0.4:
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
 
+modern-normalize@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/modern-normalize/-/modern-normalize-3.0.1.tgz#4e2dc8da282ab854d53d70d7155a8027f59fbed6"
+  integrity sha512-VqlMdYi59Uch6fnUPxnpijWUQe+TW6zeWCvyr6Mb7JibheHzSuAAoJi2c71ZwIaWKpECpGpYHoaaBp6rBRr+/g==
+
 modify-filename@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/modify-filename/-/modify-filename-1.1.0.tgz#9a2dec83806fbb2d975f22beec859ca26b393aa1"
@@ -11747,6 +11753,13 @@ plist@3.1.0, plist@^3.0.4, plist@^3.0.5, plist@^3.1.0:
     "@xmldom/xmldom" "^0.8.8"
     base64-js "^1.5.1"
     xmlbuilder "^15.1.1"
+
+polished@^4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/polished/-/polished-4.3.1.tgz#5a00ae32715609f83d89f6f31d0f0261c6170548"
+  integrity sha512-OBatVyC/N7SCW/FaDHrSd+vn0o5cS855TOmYi4OkdWUMSJCET/xip//ch8xGUvtr3i44X9LVyWwQlRMTN3pwSA==
+  dependencies:
+    "@babel/runtime" "^7.17.8"
 
 possible-typed-array-names@^1.0.0:
   version "1.0.0"
@@ -12769,11 +12782,6 @@ regenerator-runtime@^0.13.5:
   version "0.13.11"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.11.tgz#f6dca3e7ceec20590d07ada785636a90cdca17f9"
   integrity sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==
-
-regenerator-runtime@^0.14.0:
-  version "0.14.1"
-  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.14.1.tgz#356ade10263f685dda125100cd862c1db895327f"
-  integrity sha512-dYnhHh0nJoMfnkZs6GmmhFknAGRrLznOu5nc9ML+EJxGvrx6H7teuevqVqCuPcPK//3eDrrjQhehXVx9cnkGdw==
 
 regexp-ast-analysis@^0.7.0:
   version "0.7.1"
