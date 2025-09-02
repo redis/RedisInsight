@@ -120,4 +120,24 @@ describe('HeaderActions', () => {
     )
     expect(vectorSetNotAvailableBanner).toBeInTheDocument()
   })
+
+  it('should not render "start wizard banner" and "free redis cloud db" banner when loading', () => {
+    mockUseRedisInstanceCompatibility.mockReturnValue({
+      loading: true,
+      hasRedisearch: true,
+      hasSupportedVersion: true,
+    })
+
+    renderComponent({
+      ...mockProps,
+    })
+
+    const startWizardButton = screen.queryByTestId('start-wizard-button')
+    const vectorSetNotAvailableBanner = screen.queryByTestId(
+      'vector-set-not-available-banner',
+    )
+
+    expect(startWizardButton).not.toBeInTheDocument()
+    expect(vectorSetNotAvailableBanner).not.toBeInTheDocument()
+  })
 })

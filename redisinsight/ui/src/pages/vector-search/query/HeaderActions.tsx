@@ -16,13 +16,13 @@ export const HeaderActions = ({
   toggleManageIndexesScreen,
   toggleSavedQueriesScreen,
 }: HeaderActionsProps) => {
-  const { hasSupportedVersion } = useRedisInstanceCompatibility()
+  const { loading, hasSupportedVersion } = useRedisInstanceCompatibility()
 
   return (
     <>
       <Row align="center">
-        {hasSupportedVersion && <StartWizardButton />}
-        {!hasSupportedVersion && <VectorSetNotAvaiallableBanner />}
+        {!loading && hasSupportedVersion && <StartWizardButton />}
+        {!loading && !hasSupportedVersion && <VectorSetNotAvaiallableBanner />}
 
         <Row justify="end" data-testid="vector-search-header-actions" gap="m">
           <EmptyButton onClick={toggleSavedQueriesScreen}>
