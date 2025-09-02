@@ -3,7 +3,6 @@ import React from 'react'
 // Import all custom SVG assets
 import AlarmSvg from 'uiSrc/assets/img/alarm.svg?react'
 import BanIconSvg from 'uiSrc/assets/img/monitor/ban.svg?react'
-import BulkActionsSvg from 'uiSrc/assets/img/icons/bulk_actions.svg?react'
 import BulkUploadSvg from 'uiSrc/assets/img/icons/bulk-upload.svg?react'
 import ChampagneSvg from 'uiSrc/assets/img/icons/champagne.svg?react'
 import CloudLinkSvg from 'uiSrc/assets/img/oauth/cloud_link.svg?react'
@@ -162,7 +161,6 @@ export {
 // Common icons
 export const AlarmIcon = createIconComponent(AlarmSvg)
 export const BannedIcon = createIconComponent(BanIconSvg)
-export const BulkActionsIcon = createIconComponent(BulkActionsSvg)
 export const BulkUploadIcon = createIconComponent(BulkUploadSvg)
 export const ChampagneIcon = createIconComponent(ChampagneSvg)
 export const CloudIcon = createIconComponent(CloudSvg)

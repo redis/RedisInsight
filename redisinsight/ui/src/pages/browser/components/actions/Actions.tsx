@@ -12,7 +12,7 @@ import {
 import styles from 'uiSrc/pages/browser/components/browser-search-panel/styles.module.scss'
 import { setBulkActionType } from 'uiSrc/slices/browser/bulkActions'
 import { BulkActionsType, FeatureFlags } from 'uiSrc/constants'
-import { BulkActionsIcon } from 'uiSrc/components/base/icons'
+import { SubscriptionsIcon } from 'uiSrc/components/base/icons'
 import { FeatureFlagComponent } from 'uiSrc/components'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { keysSelector } from 'uiSrc/slices/browser/keys'
@@ -56,7 +56,7 @@ const Actions = ({ handleAddKeyPanel, handleBulkActionsPanel }: Props) => {
   const BulkActionsBtn = (
     <SecondaryButton
       color="secondary"
-      icon={BulkActionsIcon}
+      icon={SubscriptionsIcon}
       onClick={openBulkActions}
       data-testid="btn-bulk-actions"
       aria-label="bulk actions"
