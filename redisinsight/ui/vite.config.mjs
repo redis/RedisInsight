@@ -101,6 +101,18 @@ export default defineConfig({
       '@antv/x6',
       '@antv/x6-react-shape',
       '@antv/hierarchy',
+      'class-transformer',
+      'keytar',
+      '@nestjs/common',
+      '@nestjs/core',
+      '@nestjs/event-emitter',
+      '@nestjs/platform-express',
+      '@nestjs/platform-socket.io',
+      '@nestjs/serve-static',
+      '@nestjs/swagger',
+      '@nestjs/typeorm',
+      '@nestjs/websockets',
+      'nestjs-form-data',
     ],
     esbuildOptions: {
       // fix for https://github.com/bvaughn/react-virtualized/issues/1722
