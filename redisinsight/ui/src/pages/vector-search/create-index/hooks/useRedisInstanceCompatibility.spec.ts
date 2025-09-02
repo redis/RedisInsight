@@ -53,7 +53,7 @@ describe('useRedisInstanceCompatibility', () => {
 
     expect(hookResult.loading).toBe(true)
     expect(hookResult.hasRedisearch).toBeUndefined()
-    expect(hookResult.hasSupportedVersion).toBe(false)
+    expect(hookResult.hasSupportedVersion).toBeUndefined()
   })
 
   it('detects RediSearch module + supported version', () => {
@@ -107,23 +107,25 @@ describe('useRedisInstanceCompatibility', () => {
     expect(hookResult.hasSupportedVersion).toBe(false)
   })
 
-  it('handles unparsable/absent version -> false', () => {
+  it('handles unparsable version -> false', () => {
     mockConnectedInstanceSelector.mockReturnValue({
       loading: false,
       modules: [{ name: 'something else' }],
       version: 'not a version',
     })
 
-    const hookResult1 = renderUseRedisInstanceCompatibility()
-    expect(hookResult1.hasSupportedVersion).toBe(false)
+    const hookResult = renderUseRedisInstanceCompatibility()
+    expect(hookResult.hasSupportedVersion).toBe(false)
+  })
 
+  it('handles absent version -> undefined', () => {
     mockConnectedInstanceSelector.mockReturnValue({
       loading: false,
       modules: [{ name: 'search' }],
       version: undefined,
     })
 
-    const hookResult2 = renderUseRedisInstanceCompatibility()
-    expect(hookResult2.hasSupportedVersion).toBe(false)
+    const hookResult = renderUseRedisInstanceCompatibility()
+    expect(hookResult.hasSupportedVersion).toBeUndefined()
   })
 })
