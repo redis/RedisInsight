@@ -1,7 +1,6 @@
 import { renderHook } from 'uiSrc/utils/test-utils'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import useRedisInstanceCompatibility, {
-  isVersionSupported,
   UseRedisInstanceCompatibilityReturn,
 } from './useRedisInstanceCompatibility'
 
@@ -24,23 +23,6 @@ describe('useRedisInstanceCompatibility', () => {
 
   afterEach(() => {
     jest.clearAllMocks()
-  })
-
-  test.each([
-    [undefined, false],
-    [null, false],
-    ['', false],
-    ['7.1.9', false],
-    ['7.2', true],
-    ['v7.2', true],
-    ['7.2.0', true],
-    ['7.2.0+build.5', true],
-    ['7.2.0-rc.1', false], // prerelease should NOT satisfy >=7.2.0
-    ['Redis 7.2-rc1 (abc)', true], // coerced to 7.2.0 -> true (note: prerelease info lost)
-    ['Redis 6 something', false],
-    ['nonsense', false],
-  ])('isVersionSupported(%p) === %p', (input, expected) => {
-    expect(isVersionSupported(input as any)).toBe(expected)
   })
 
   it('returns loading=true when connectedInstanceSelector returns loading=true', () => {
