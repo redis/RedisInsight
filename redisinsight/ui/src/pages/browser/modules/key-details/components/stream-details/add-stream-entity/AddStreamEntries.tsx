@@ -29,7 +29,7 @@ import { AddStreamEntriesDto } from 'apiSrc/modules/browser/stream/dto'
 import StreamEntryFields from './StreamEntryFields/StreamEntryFields'
 import { Panel } from 'uiSrc/components/panel'
 
-import { StreamEntryContent } from './AddStreamEntries.styles'
+import { EntryContent } from '../../common/AddKeysContainer.styled'
 
 export interface Props {
   closePanel: (isCancelled?: boolean) => void
@@ -134,7 +134,7 @@ const AddStreamEntries = (props: Props) => {
 
   return (
     <Col gap="m">
-      <StreamEntryContent data-test-subj="add-stream-field-panel">
+      <EntryContent data-test-subj="add-stream-field-panel">
         <StreamEntryFields
           entryIdError={entryIdError}
           entryID={entryID}
@@ -142,7 +142,7 @@ const AddStreamEntries = (props: Props) => {
           fields={fields}
           setFields={setFields}
         />
-      </StreamEntryContent>
+      </EntryContent>
       <Panel justify="end" gap="m">
         <SecondaryButton
           onClick={() => closePanel(true)}

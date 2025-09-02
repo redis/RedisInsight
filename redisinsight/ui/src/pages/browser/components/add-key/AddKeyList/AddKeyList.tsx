@@ -10,6 +10,7 @@ import {
 } from 'uiSrc/pages/browser/modules/key-details/components/list-details/add-list-elements/AddListElements'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { TextInput } from 'uiSrc/components/base/inputs'
+import { Spacer } from 'uiSrc/components/base/layout'
 import {
   CreateListWithExpireDto,
   ListElementDestination,
@@ -88,6 +89,7 @@ const AddKeyList = (props: Props) => {
         onChange={(value) => setDestination(value as ListElementDestination)}
         data-testid="destination-select"
       />
+      <Spacer size="m" />
       <AddMultipleFields
         items={elements}
         onClickRemove={onClickRemove}
@@ -101,9 +103,7 @@ const AddKeyList = (props: Props) => {
             placeholder={config.element.placeholder}
             value={item}
             disabled={loading}
-            onChange={value =>
-              handleElementChange(value, index)
-            }
+            onChange={(value) => handleElementChange(value, index)}
             data-testid={`element-${index}`}
           />
         )}

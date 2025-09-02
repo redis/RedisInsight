@@ -25,7 +25,7 @@ import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { PushElementToListDto } from 'apiSrc/modules/browser/list/dto'
 
-import styles from '../styles.module.scss'
+import { EntryContent } from '../../common/AddKeysContainer.styled'
 
 export interface Props {
   closePanel: (isCancelled?: boolean) => void
@@ -123,13 +123,17 @@ const AddListElements = (props: Props) => {
 
   return (
     <Col gap="m">
-      <Col gap="m" className={styles.container}>
-        <RiSelect
-          value={destination}
-          options={optionsDestinations}
-          onChange={(value) => setDestination(value as ListElementDestination)}
-          data-testid="destination-select"
-        />
+      <EntryContent gap="m">
+        <FlexItem>
+          <RiSelect
+            value={destination}
+            options={optionsDestinations}
+            onChange={(value) =>
+              setDestination(value as ListElementDestination)
+            }
+            data-testid="destination-select"
+          />
+        </FlexItem>
         <AddMultipleFields
           items={elements}
           onClickRemove={onClickRemove}
@@ -147,7 +151,7 @@ const AddListElements = (props: Props) => {
             />
           )}
         </AddMultipleFields>
-      </Col>
+      </EntryContent>
       <Row justify="end" gap="m">
         <FlexItem>
           <div>

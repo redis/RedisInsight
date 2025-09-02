@@ -1,12 +1,5 @@
 import styled from 'styled-components'
-import { Col } from 'uiSrc/components/base/layout/flex'
 import { Theme } from 'uiSrc/components/base/theme/types'
-
-export const StreamEntryContent = styled(Col)`
-  max-height: 234px;
-  scroll-padding-bottom: 60px;
-  overflow-y: auto;
-`
 
 export const EntryIdContainer = styled.div`
   width: 50%;

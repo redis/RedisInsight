@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Theme } from 'uiSrc/components/base/theme/types'
+import { Col } from 'uiSrc/components/base/layout/flex'
 
 export const AddKeysContainer = styled.div<
   React.HTMLAttributes<HTMLDivElement> & {
@@ -28,4 +29,9 @@ export const AddKeysContainer = styled.div<
       theme.semantic.color.border.neutral500};
     border-bottom-width: 1px;
   }
+`
+export const EntryContent = styled(Col)`
+  max-height: 234px;
+  scroll-padding-bottom: 60px;
+  overflow-y: auto;
 `

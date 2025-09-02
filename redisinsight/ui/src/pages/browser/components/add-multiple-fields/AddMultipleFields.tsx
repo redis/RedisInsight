@@ -7,6 +7,7 @@ import {
   ActionIconButton,
   IconButton,
 } from 'uiSrc/components/base/forms/buttons'
+import { HorizontalSpacer } from 'uiSrc/components/base/layout'
 import { RiTooltip } from 'uiSrc/components'
 import { ItemsWrapper } from './AddMultipleFields.styles'
 
@@ -57,6 +58,7 @@ const AddMultipleFields = <T,>(props: Props<T>) => {
             data-testid="add-item"
           />
         </RiTooltip>
+        <HorizontalSpacer size="l" />
       </Row>
       <Spacer size="s" />
     </Col>
