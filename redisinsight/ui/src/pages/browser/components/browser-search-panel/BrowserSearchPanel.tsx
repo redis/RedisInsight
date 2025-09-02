@@ -1,9 +1,10 @@
 /* eslint-disable react/no-this-in-sfc */
 /* eslint-disable react/destructuring-assignment */
 import React, { useCallback, useState } from 'react'
-
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
+import styled, { css } from 'styled-components'
+
 import {
   FilterTableIcon,
   IconType,
@@ -23,10 +24,10 @@ import { resetBrowserTree } from 'uiSrc/slices/app/context'
 import { localStorageService } from 'uiSrc/services'
 import { BrowserStorageItem } from 'uiSrc/constants'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
-
 import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { Modal } from 'uiSrc/components/base/display'
+
 import styles from './styles.module.scss'
 
 interface ISwitchType<T> {
@@ -35,7 +36,6 @@ interface ISwitchType<T> {
   disabled?: boolean
   ariaLabel: string
   dataTestId: string
-  getClassName: () => string
   onClick: () => void
   isActiveView: () => boolean
   getIconType: () => IconType
@@ -44,6 +44,30 @@ interface ISwitchType<T> {
 export interface Props {
   handleCreateIndexPanel: (value: boolean) => void
 }
+
+const SwitchSearchModeIconButton = styled(IconButton)<{ active: boolean }>`
+  width: 40px;
+  height: 26px;
+  border-radius: ${({ theme }) => theme.core.space.space050};
+
+  padding: ${({ theme }) => theme.core.space.space100};
+  margin: ${({ theme }) => theme.core.space.space050};
+
+  svg {
+    color: ${({ theme }) => theme.semantic.color.text.neutral700};
+
+    g > path {
+      fill: ${({ theme }) => theme.semantic.color.text.neutral700};
+    }
+  }
+
+  ${({ active }) =>
+    active &&
+    css`
+      background-color: ${({ theme }) =>
+        theme.semantic.color.background.neutral400};
+    `}
+`
 
 const BrowserSearchPanel = (props: Props) => {
   const { handleCreateIndexPanel } = props
@@ -63,11 +87,6 @@ const BrowserSearchPanel = (props: Props) => {
       isActiveView() {
         return searchMode === this.type
       },
-      getClassName() {
-        return cx(styles.viewTypeBtn, styles.iconVector, {
-          [styles.active]: this.isActiveView?.(),
-        })
-      },
       getIconType() {
         return FilterTableIcon
       },
@@ -83,11 +102,6 @@ const BrowserSearchPanel = (props: Props) => {
       disabled: !isRedisearchAvailable(modules),
       isActiveView() {
         return searchMode === this.type
-      },
-      getClassName() {
-        return cx(styles.viewTypeBtn, {
-          [styles.active]: this.isActiveView?.(),
-        })
       },
       getIconType() {
         return QuerySearchIcon
@@ -140,12 +154,12 @@ const BrowserSearchPanel = (props: Props) => {
   }, [])
 
   const SwitchModeBtn = (item: ISwitchType<SearchMode>) => (
-    <IconButton
-      className={item.getClassName()}
+    <SwitchSearchModeIconButton
       icon={item.getIconType()}
       aria-label={item.ariaLabel}
       onClick={() => item.onClick?.()}
       data-testid={item.dataTestId}
+      active={item.isActiveView?.()}
     />
   )
 

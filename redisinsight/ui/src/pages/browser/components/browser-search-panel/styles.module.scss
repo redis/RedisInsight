@@ -46,25 +46,9 @@
   }
 }
 
-.viewTypeSwitch,
-.searchModeSwitch {
-  padding: 0 18px;
-  flex-shrink: 0;
-  &.middleScreen {
-    padding: 0 36px;
-  }
-  &.fullScreen {
-    padding: 0 120px;
-  }
-}
-
 .moduleNotLoaded {
   max-width: 520px !important;
   z-index: 10000 !important;
-}
-
-.iconVector svg {
-  height: 17px !important;
 }
 
 .searchModeSwitch {
@@ -72,28 +56,6 @@
   background-color: var(--euiColorEmptyShade) !important;
   border: 1px solid var(--controlsBorderColor) !important;
   border-radius: 4px 0 0 4px;
-  padding: 0 2px !important;
-
-  .viewTypeBtn {
-    width: 40px !important;
-    height: 26px !important;
-
-    margin: 4px 2px !important;
-    border-radius: 4px !important;
-
-    svg {
-      width: 26px;
-      color: var(--euiTextSubduedColor) !important;
-    }
-
-    svg > g > path {
-      fill: var(--euiTextSubduedColor) !important;
-    }
-
-    &.active {
-      background-color: var(--euiColorLightShade) !important;
-    }
-  }
 }
 
 .browserFilterOnboard {
