@@ -2,6 +2,7 @@ import { defineConfig, devices } from '@playwright/test'
 import { Status } from 'allure-js-commons'
 import dotenv from 'dotenv'
 import * as os from 'os'
+import './setup/module-mocks'
 
 dotenv.config({
     path: process.env.envPath ?? 'env/.local-web.env',
