@@ -1,3 +1,4 @@
+import React from 'react'
 import { BoxSelectionOption } from 'uiSrc/components/new-index/selection-box/SelectionBox'
 import {
   BikeIcon,
@@ -5,11 +6,10 @@ import {
   VectorSearchIcon,
   WandIcon,
 } from 'uiSrc/components/base/icons'
-
-import { SearchIndexType, SampleDataType, SampleDataContent } from '../types'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 import { Row } from 'uiSrc/components/base/layout/flex'
-import React from 'react'
+
+import { SearchIndexType, SampleDataType, SampleDataContent } from '../types'
 
 // ** Add data step */
 

@@ -10,13 +10,8 @@ import {
   SmallSelectionBox,
   StyledBoxSelectionGroup,
 } from './styles'
-import {
-  indexDataContent,
-  indexType,
-  sampleDatasetOptions,
-  selectedBikesIndexFields,
-  selectedMoviesIndexFields,
-} from './config'
+import { indexDataContent, indexType, sampleDatasetOptions } from './config'
+import { selectedBikesIndexFields, selectedMoviesIndexFields } from './data'
 import {
   IStepComponent,
   PresetDataType,
