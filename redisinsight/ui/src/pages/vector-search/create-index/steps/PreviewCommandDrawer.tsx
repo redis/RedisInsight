@@ -21,7 +21,11 @@ export const PreviewCommandDrawer = ({
   isOpen,
   onOpenChange,
 }: PreviewCommandDrawerProps) => (
-  <Drawer open={isOpen} onOpenChange={onOpenChange}>
+  <Drawer
+    open={isOpen}
+    onOpenChange={onOpenChange}
+    data-testid="preview-command-drawer"
+  >
     <DrawerHeader title="Command preview" />
     <DrawerBody>
       <CodeBlocKWrapper>

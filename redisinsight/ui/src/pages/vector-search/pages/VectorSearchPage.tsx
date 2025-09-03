@@ -51,7 +51,7 @@ const VectorSearchPage = () => {
   }
 
   return (
-    <VectorSearchPageWrapper>
+    <VectorSearchPageWrapper as="div" data-testid="vector-search-page">
       <VectorSearchQuery
         instanceId={instanceId}
         defaultSavedQueriesIndex={defaultSavedQueriesIndex}
