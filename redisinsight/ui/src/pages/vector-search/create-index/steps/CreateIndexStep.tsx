@@ -15,7 +15,7 @@ import { TextInput } from 'uiSrc/components/base/inputs'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { PlayFilledIcon } from 'uiSrc/components/base/icons'
-import { bikesIndexFieldsBoxes } from './config'
+import { bikesIndexFieldsBoxes } from './data'
 import { CreateIndexStepScreenWrapper, SearchInputWrapper } from './styles'
 import { PreviewCommandDrawer } from './PreviewCommandDrawer'
 import { IStepComponent, StepComponentProps } from '../types'

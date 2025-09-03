@@ -1,5 +1,3 @@
-import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
-import { VectorSearchBox } from 'uiSrc/components/new-index/create-index-step/field-box/types'
 import { BoxSelectionOption } from 'uiSrc/components/new-index/selection-box/SelectionBox'
 import {
   BikeIcon,
@@ -57,61 +55,3 @@ export const indexDataContent: BoxSelectionOption<SampleDataContent>[] = [
     disabled: true,
   },
 ]
-
-// ** Create index step */
-
-export const bikesIndexFieldsBoxes: VectorSearchBox[] = [
-  {
-    value: 'model',
-    label: 'model',
-    text: 'Product model',
-    tag: FieldTypes.TEXT,
-    disabled: true,
-  },
-  {
-    value: 'brand',
-    label: 'brand',
-    text: 'Product brand',
-    tag: FieldTypes.TEXT,
-    disabled: true,
-  },
-  {
-    value: 'price',
-    label: 'price',
-    text: 'Product price',
-    tag: FieldTypes.NUMERIC,
-    disabled: true,
-  },
-  {
-    value: 'type',
-    label: 'type',
-    text: 'Product type',
-    tag: FieldTypes.TAG,
-    disabled: true,
-  },
-  {
-    value: 'material',
-    label: 'material',
-    text: 'Product material',
-    tag: FieldTypes.TAG,
-    disabled: true,
-  },
-  {
-    value: 'weight',
-    label: 'weight',
-    text: 'Product weight',
-    tag: FieldTypes.NUMERIC,
-    disabled: true,
-  },
-  {
-    value: 'description_embeddings',
-    label: 'description_embeddings',
-    text: 'Product embedding vector',
-    tag: FieldTypes.VECTOR,
-    disabled: true,
-  },
-]
-
-export const selectedBikesIndexFields = bikesIndexFieldsBoxes.map(
-  (field) => field.value,
-)
