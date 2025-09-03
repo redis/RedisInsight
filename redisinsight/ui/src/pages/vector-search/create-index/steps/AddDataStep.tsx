@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { FlexItem } from 'uiSrc/components/base/layout/flex'
+import { FlexGroup, FlexItem } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { RiRadioGroup } from 'uiSrc/components/base/forms/radio-group/RadioGroup'
 
@@ -16,9 +16,12 @@ export const AddDataStep: IStepComponent = ({
   parameters,
   setParameters,
 }: StepComponentProps) => (
-  <>
+  <FlexGroup direction="column" gap="xxl" data-testid="create-index-step1">
     <FlexItem direction="column" $gap="m">
-      <StyledBoxSelectionGroup defaultValue={parameters.searchIndexType}>
+      <StyledBoxSelectionGroup
+        defaultValue={parameters.searchIndexType}
+        data-testid="step-data--index-type"
+      >
         {indexType.map((type) => (
           <LargeSelectionBox
             box={type}
@@ -28,7 +31,11 @@ export const AddDataStep: IStepComponent = ({
         ))}
       </StyledBoxSelectionGroup>
     </FlexItem>
-    <FlexItem direction="column" $gap="m">
+    <FlexItem
+      direction="column"
+      $gap="m"
+      data-testid="step-data--sample-dataset"
+    >
       <Text size="L">Select sample dataset</Text>
       <RiRadioGroup
         items={sampleDatasetOptions}
@@ -39,7 +46,7 @@ export const AddDataStep: IStepComponent = ({
         }
       />
     </FlexItem>
-    <FlexItem direction="column" $gap="m">
+    <FlexItem direction="column" $gap="m" data-testid="step-data--data-content">
       <Text>Data content</Text>
       <StyledBoxSelectionGroup defaultValue={parameters.dataContent}>
         {indexDataContent.map((type) => (
@@ -51,5 +58,5 @@ export const AddDataStep: IStepComponent = ({
         ))}
       </StyledBoxSelectionGroup>
     </FlexItem>
-  </>
+  </FlexGroup>
 )
