@@ -3,7 +3,6 @@ import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { CreateIndexStep } from './CreateIndexStep'
-import { bikesIndexFieldsBoxes, selectedBikesIndexFields } from './config'
 import {
   SearchIndexType,
   SampleDataType,
@@ -11,6 +10,7 @@ import {
   PresetDataType,
   StepComponentProps,
 } from '../types'
+import { bikesIndexFieldsBoxes, selectedBikesIndexFields } from './data'
 
 // Mock the telemetry module, so we don't send actual telemetry data during tests
 jest.mock('uiSrc/telemetry', () => ({

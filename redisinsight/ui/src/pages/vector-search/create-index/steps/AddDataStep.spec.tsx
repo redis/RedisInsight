@@ -2,7 +2,7 @@ import React from 'react'
 import { render, screen, fireEvent } from 'uiSrc/utils/test-utils'
 
 import { AddDataStep } from './AddDataStep'
-import { selectedBikesIndexFields } from './config'
+import { selectedBikesIndexFields } from './data'
 import {
   SearchIndexType,
   SampleDataType,
