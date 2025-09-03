@@ -78,7 +78,7 @@ export const CreateIndexStep: IStepComponent = ({
   }
 
   return (
-    <CreateIndexStepScreenWrapper>
+    <CreateIndexStepScreenWrapper as="div" data-testid="create-index-step2">
       <FlexItem direction="column" $gap="xxl">
         <FlexItem direction="column" $gap="m">
           <Text>Vector index</Text>
