@@ -3,7 +3,7 @@ import { reverse } from 'lodash'
 import { useLoadData } from 'uiSrc/services/hooks'
 import { addCommands } from 'uiSrc/services/workbenchStorage'
 import { generateFtCreateCommand } from 'uiSrc/utils/index/generateFtCreateCommand'
-import { CreateSearchIndexParameters, PresetDataType } from '../types'
+import { CreateSearchIndexParameters, SampleDataContent } from '../types'
 import executeQuery from 'uiSrc/services/executeQuery'
 
 interface UseCreateIndexResult {
@@ -14,7 +14,8 @@ interface UseCreateIndexResult {
 }
 
 const collectionNameByPresetDataChoiceMap = {
-  [PresetDataType.BIKES]: 'bikes',
+  [SampleDataContent.E_COMMERCE_DISCOVERY]: 'bikes',
+  [SampleDataContent.CONTENT_RECOMMENDATIONS]: 'movies',
 }
 
 export const useCreateIndex = (): UseCreateIndexResult => {
@@ -25,14 +26,17 @@ export const useCreateIndex = (): UseCreateIndexResult => {
   const { load } = useLoadData()
 
   const run = useCallback(
-    async ({ instanceId, indexName }: CreateSearchIndexParameters) => {
+    async ({
+      instanceId,
+      indexName,
+      dataContent,
+    }: CreateSearchIndexParameters) => {
       setSuccess(false)
       setError(null)
       setLoading(true)
 
       try {
-        const collectionName =
-          collectionNameByPresetDataChoiceMap[PresetDataType.BIKES]
+        const collectionName = collectionNameByPresetDataChoiceMap[dataContent]
 
         if (!instanceId) {
           throw new Error('Instance ID is required')
@@ -44,6 +48,7 @@ export const useCreateIndex = (): UseCreateIndexResult => {
         // Step 2: Create the search index
         const cmd = generateFtCreateCommand({
           indexName,
+          dataContent,
         })
         const data = await executeQuery(instanceId, cmd)
 

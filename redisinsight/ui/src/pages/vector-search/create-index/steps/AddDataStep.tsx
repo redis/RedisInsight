@@ -9,8 +9,20 @@ import {
   SmallSelectionBox,
   StyledBoxSelectionGroup,
 } from './styles'
-import { indexDataContent, indexType, sampleDatasetOptions } from './config'
-import { IStepComponent, SampleDataType, StepComponentProps } from '../types'
+import {
+  indexDataContent,
+  indexType,
+  sampleDatasetOptions,
+  selectedBikesIndexFields,
+  selectedMoviesIndexFields,
+} from './config'
+import {
+  IStepComponent,
+  PresetDataType,
+  SampleDataContent,
+  SampleDataType,
+  StepComponentProps,
+} from '../types'
 
 export const AddDataStep: IStepComponent = ({
   parameters,
@@ -46,7 +58,19 @@ export const AddDataStep: IStepComponent = ({
           <SmallSelectionBox
             box={type}
             key={type.value}
-            onClick={() => setParameters({ dataContent: type.value })}
+            onClick={() =>
+              setParameters({
+                dataContent: type.value,
+                indexName:
+                  type.value === SampleDataContent.E_COMMERCE_DISCOVERY
+                    ? PresetDataType.BIKES
+                    : PresetDataType.MOVIES,
+                indexFields:
+                  type.value === SampleDataContent.E_COMMERCE_DISCOVERY
+                    ? selectedBikesIndexFields
+                    : selectedMoviesIndexFields,
+              })
+            }
           />
         ))}
       </StyledBoxSelectionGroup>

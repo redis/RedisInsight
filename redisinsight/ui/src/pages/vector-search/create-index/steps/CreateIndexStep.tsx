@@ -15,13 +15,19 @@ import { TextInput } from 'uiSrc/components/base/inputs'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { PlayFilledIcon } from 'uiSrc/components/base/icons'
-import { bikesIndexFieldsBoxes } from './config'
+import { bikesIndexFieldsBoxes, moviesIndexFieldsBoxes } from './config'
 import { CreateIndexStepScreenWrapper, SearchInputWrapper } from './styles'
 import { PreviewCommandDrawer } from './PreviewCommandDrawer'
-import { IStepComponent, StepComponentProps } from '../types'
+import { IStepComponent, SampleDataContent, StepComponentProps } from '../types'
 
 // eslint-disable-next-line arrow-body-style, @typescript-eslint/no-unused-vars
-const useIndexFieldsBoxes = (_indexName: string): VectorSearchBox[] => {
+const useIndexFieldsBoxes = (
+  dataContent: SampleDataContent,
+): VectorSearchBox[] => {
+  if (dataContent === SampleDataContent.CONTENT_RECOMMENDATIONS) {
+    return moviesIndexFieldsBoxes
+  }
+
   return bikesIndexFieldsBoxes
 }
 
@@ -29,7 +35,7 @@ export const CreateIndexStep: IStepComponent = ({
   parameters,
   setParameters,
 }: StepComponentProps) => {
-  const indexFieldsBoxes = useIndexFieldsBoxes(parameters.indexName)
+  const indexFieldsBoxes = useIndexFieldsBoxes(parameters.dataContent)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
   const indexFieldsTabs: IndexStepTab[] = [
@@ -104,6 +110,7 @@ export const CreateIndexStep: IStepComponent = ({
       <PreviewCommandDrawer
         commandContent={generateFtCreateCommand({
           indexName: parameters.indexName,
+          dataContent: parameters.dataContent,
         })}
         isOpen={isDrawerOpen}
         onOpenChange={setIsDrawerOpen}

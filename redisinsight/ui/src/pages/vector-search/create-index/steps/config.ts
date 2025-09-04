@@ -54,7 +54,6 @@ export const indexDataContent: BoxSelectionOption<SampleDataContent>[] = [
     label: 'Movie Recommendations',
     text: 'Suggest movies based on the true meaning of plots or themes.',
     icon: PopcornIcon,
-    disabled: true,
   },
 ]
 
@@ -112,6 +111,48 @@ export const bikesIndexFieldsBoxes: VectorSearchBox[] = [
   },
 ]
 
+export const moviesIndexFieldsBoxes: VectorSearchBox[] = [
+  {
+    value: 'title',
+    label: 'title',
+    text: 'Movie title',
+    tag: FieldTypes.TEXT,
+    disabled: true,
+  },
+  {
+    value: 'genres',
+    label: 'genres',
+    text: 'Movie genre',
+    tag: FieldTypes.TAG,
+    disabled: true,
+  },
+  {
+    value: 'plot',
+    label: 'plot',
+    text: 'Movie plot',
+    tag: FieldTypes.TEXT,
+    disabled: true,
+  },
+  {
+    value: 'year',
+    label: 'year',
+    text: 'Movie year',
+    tag: FieldTypes.NUMERIC,
+    disabled: true,
+  },
+  {
+    value: 'embedding',
+    label: 'embedding',
+    text: 'Movie embedding vector',
+    tag: FieldTypes.VECTOR,
+    disabled: true,
+  },
+]
+
 export const selectedBikesIndexFields = bikesIndexFieldsBoxes.map(
+  (field) => field.value,
+)
+
+export const selectedMoviesIndexFields = moviesIndexFieldsBoxes.map(
   (field) => field.value,
 )

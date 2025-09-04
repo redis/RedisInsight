@@ -15,6 +15,7 @@ export enum SampleDataContent {
 
 export enum PresetDataType {
   BIKES = 'idx:bikes_vss',
+  MOVIES = 'idx:movies_vss',
 }
 
 export type CreateSearchIndexParameters = {
