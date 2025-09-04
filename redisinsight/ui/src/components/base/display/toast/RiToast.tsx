@@ -34,7 +34,7 @@ export const riToast = (
     }
     toastContent.message = (
       <ColorText color={color}>
-        <Title size="M">{message}</Title>
+        <Title size="XS">{message}</Title>
         <Spacer size="m" />
       </ColorText>
     )
