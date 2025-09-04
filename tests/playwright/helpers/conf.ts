@@ -3,6 +3,7 @@ import * as os from 'os'
 import * as fs from 'fs'
 import { join as joinPath } from 'path'
 import * as path from 'path'
+import { AddNewDatabaseParameters } from '../types/databases'
 
 // Urls for using in the tests
 export const commonUrl = process.env.COMMON_URL || 'https://localhost:5540'
@@ -20,7 +21,7 @@ export const workingDirectory =
 export const fileDownloadPath = joinPath(os.homedir(), 'Downloads')
 const uniqueId = faker.string.alphanumeric({ length: 10 })
 
-export const ossStandaloneConfig = {
+export const ossStandaloneConfig: AddNewDatabaseParameters = {
     host: process.env.OSS_STANDALONE_HOST!,
     port: process.env.OSS_STANDALONE_PORT!,
     databaseName: `${process.env.OSS_STANDALONE_DATABASE_NAME || 'test_standalone'}-${uniqueId}`,
@@ -28,7 +29,7 @@ export const ossStandaloneConfig = {
     databasePassword: process.env.OSS_STANDALONE_PASSWORD,
 }
 
-export const ossStandaloneConfigEmpty = {
+export const ossStandaloneConfigEmpty: AddNewDatabaseParameters = {
     host: process.env.OSS_STANDALONE_EMPTY_HOST,
     port: process.env.OSS_STANDALONE_EMPTY_PORT,
     databaseName: `${process.env.OSS_STANDALONE_EMPTY_DATABASE_NAME || 'test_standalone_empty'}-${uniqueId}`,
@@ -36,7 +37,7 @@ export const ossStandaloneConfigEmpty = {
     databasePassword: process.env.OSS_STANDALONE_EMPTY_PASSWORD,
 }
 
-export const ossStandaloneV5Config = {
+export const ossStandaloneV5Config: AddNewDatabaseParameters = {
     host: process.env.OSS_STANDALONE_V5_HOST,
     port: process.env.OSS_STANDALONE_V5_PORT,
     databaseName: `${process.env.OSS_STANDALONE_V5_DATABASE_NAME || 'test_standalone-v5'}-${uniqueId}`,
@@ -44,7 +45,7 @@ export const ossStandaloneV5Config = {
     databasePassword: process.env.OSS_STANDALONE_V5_PASSWORD,
 }
 
-export const ossStandaloneV7Config = {
+export const ossStandaloneV7Config: AddNewDatabaseParameters = {
     host: process.env.OSS_STANDALONE_V7_HOST,
     port: process.env.OSS_STANDALONE_V7_PORT,
     databaseName: `${process.env.OSS_STANDALONE_V7_DATABASE_NAME || 'test_standalone-v7'}-${uniqueId}`,
@@ -52,7 +53,8 @@ export const ossStandaloneV7Config = {
     databasePassword: process.env.OSS_STANDALONE_V7_PASSWORD,
 }
 
-export const ossStandaloneV6Config = {
+// TODO: Rename this, please
+export const ossStandaloneV6Config: AddNewDatabaseParameters = {
     host: process.env.OSS_STANDALONE_V8_HOST,
     port: process.env.OSS_STANDALONE_V8_PORT,
     databaseName: `${process.env.OSS_STANDALONE_V8_DATABASE_NAME || 'test_standalone-v6'}-${uniqueId}`,
@@ -60,7 +62,7 @@ export const ossStandaloneV6Config = {
     databasePassword: process.env.OSS_STANDALONE_V8_PASSWORD,
 }
 
-export const ossStandaloneRedisearch = {
+export const ossStandaloneRedisearch: AddNewDatabaseParameters = {
     host: process.env.OSS_STANDALONE_REDISEARCH_HOST,
     port: process.env.OSS_STANDALONE_REDISEARCH_PORT,
     databaseName: `${process.env.OSS_STANDALONE_REDISEARCH_DATABASE_NAME || 'test_standalone-redisearch'}-${uniqueId}`,
@@ -68,13 +70,13 @@ export const ossStandaloneRedisearch = {
     databasePassword: process.env.OSS_STANDALONE_REDISEARCH_PASSWORD,
 }
 
-export const ossClusterConfig = {
+export const ossClusterConfig: AddNewDatabaseParameters = {
     ossClusterHost: process.env.OSS_CLUSTER_HOST,
     ossClusterPort: process.env.OSS_CLUSTER_PORT,
     ossClusterDatabaseName: `${process.env.OSS_CLUSTER_DATABASE_NAME || 'test_cluster'}-${uniqueId}`,
 }
 
-export const ossSentinelConfig = {
+export const ossSentinelConfig: AddNewDatabaseParameters = {
     sentinelHost: process.env.OSS_SENTINEL_HOST,
     sentinelPort: process.env.OSS_SENTINEL_PORT,
     sentinelPassword: process.env.OSS_SENTINEL_PASSWORD,
@@ -95,7 +97,7 @@ export const ossSentinelConfig = {
     name: ['primary-group-1', 'primary-group-2'],
 }
 
-export const redisEnterpriseClusterConfig = {
+export const redisEnterpriseClusterConfig: AddNewDatabaseParameters = {
     host: process.env.RE_CLUSTER_HOST,
     port: process.env.RE_CLUSTER_PORT,
     databaseName: process.env.RE_CLUSTER_DATABASE_NAME || 'test-re-standalone',
@@ -103,7 +105,7 @@ export const redisEnterpriseClusterConfig = {
     databasePassword: process.env.RE_CLUSTER_ADMIN_PASSWORD || '123456',
 }
 
-export const invalidOssStandaloneConfig = {
+export const invalidOssStandaloneConfig: AddNewDatabaseParameters = {
     host: 'oss-standalone-invalid',
     port: '1010',
     databaseName: `${process.env.OSS_STANDALONE_INVALID_DATABASE_NAME || 'test_standalone-invalid'}-${uniqueId}`,
@@ -111,7 +113,7 @@ export const invalidOssStandaloneConfig = {
     databasePassword: process.env.OSS_STANDALONE_INVALID_PASSWORD,
 }
 
-export const ossStandaloneBigConfig = {
+export const ossStandaloneBigConfig: AddNewDatabaseParameters = {
     host: process.env.OSS_STANDALONE_BIG_HOST,
     port: process.env.OSS_STANDALONE_BIG_PORT,
     databaseName: `${process.env.OSS_STANDALONE_BIG_DATABASE_NAME || 'test_standalone_big'}-${uniqueId}`,
@@ -119,7 +121,7 @@ export const ossStandaloneBigConfig = {
     databasePassword: process.env.OSS_STANDALONE_BIG_PASSWORD,
 }
 
-export const cloudDatabaseConfig = {
+export const cloudDatabaseConfig: AddNewDatabaseParameters = {
     host: process.env.E2E_CLOUD_DATABASE_HOST || '',
     port: process.env.E2E_CLOUD_DATABASE_PORT || '',
     databaseName: `${process.env.E2E_CLOUD_DATABASE_NAME || 'cloud-database'}-${uniqueId}`,
@@ -129,7 +131,7 @@ export const cloudDatabaseConfig = {
     secretKey: process.env.E2E_CLOUD_API_SECRET_KEY || '',
 }
 
-export const ossStandaloneNoPermissionsConfig = {
+export const ossStandaloneNoPermissionsConfig: AddNewDatabaseParameters = {
     host: process.env.OSS_STANDALONE_NOPERM_HOST,
     port: process.env.OSS_STANDALONE_NOPERM_PORT,
     databaseName: `${process.env.OSS_STANDALONE_NOPERM_DATABASE_NAME || 'oss-standalone-no-permissions'}-${uniqueId}`,
@@ -137,7 +139,7 @@ export const ossStandaloneNoPermissionsConfig = {
     databasePassword: process.env.OSS_STANDALONE_NOPERM_PASSWORD,
 }
 
-export const ossStandaloneForSSHConfig = {
+export const ossStandaloneForSSHConfig: AddNewDatabaseParameters = {
     host: process.env.OSS_STANDALONE_SSH_HOST || '172.33.100.111',
     port: process.env.OSS_STANDALONE_SSH_PORT || '6379',
     databaseName: `${process.env.OSS_STANDALONE_SSH_DATABASE_NAME || 'oss-standalone-for-ssh'}-${uniqueId}`,
@@ -145,7 +147,7 @@ export const ossStandaloneForSSHConfig = {
     databasePassword: process.env.OSS_STANDALONE_SSH_PASSWORD,
 }
 
-export const ossClusterForSSHConfig = {
+export const ossClusterForSSHConfig: AddNewDatabaseParameters = {
     host: process.env.OSS_CLUSTER_SSH_HOST || '172.31.100.211',
     port: process.env.OSS_CLUSTER_SSH_PORT || '6379',
     databaseName: `${process.env.OSS_CLUSTER_SSH_DATABASE_NAME || 'oss-cluster-for-ssh'}-${uniqueId}`,
@@ -153,7 +155,7 @@ export const ossClusterForSSHConfig = {
     databasePassword: process.env.OSS_CLUSTER_SSH_PASSWORD,
 }
 
-export const ossStandaloneTlsConfig = {
+export const ossStandaloneTlsConfig: AddNewDatabaseParameters = {
     host: process.env.OSS_STANDALONE_TLS_HOST,
     port: process.env.OSS_STANDALONE_TLS_PORT,
     databaseName: `${process.env.OSS_STANDALONE_TLS_DATABASE_NAME || 'test_standalone_tls'}-${uniqueId}`,
@@ -194,7 +196,7 @@ export const ossStandaloneTlsConfig = {
     },
 }
 
-export const ossStandaloneRedisGears = {
+export const ossStandaloneRedisGears: AddNewDatabaseParameters = {
     host: process.env.OSS_STANDALONE_REDISGEARS_HOST,
     port: process.env.OSS_STANDALONE_REDISGEARS_PORT,
     databaseName: `${process.env.OSS_STANDALONE_REDISGEARS_DATABASE_NAME || 'test_standalone_redisgears'}-${uniqueId}`,
@@ -202,7 +204,7 @@ export const ossStandaloneRedisGears = {
     databasePassword: process.env.OSS_STANDALONE_REDISGEARS_PASSWORD,
 }
 
-export const ossClusterRedisGears = {
+export const ossClusterRedisGears: AddNewDatabaseParameters = {
     ossClusterHost: process.env.OSS_CLUSTER_REDISGEARS_2_HOST,
     ossClusterPort: process.env.OSS_CLUSTER_REDISGEARS_2_PORT,
     ossClusterDatabaseName: `${process.env.OSS_CLUSTER_REDISGEARS_2_NAME || 'test_cluster-gears-2.0'}-${uniqueId}`,
