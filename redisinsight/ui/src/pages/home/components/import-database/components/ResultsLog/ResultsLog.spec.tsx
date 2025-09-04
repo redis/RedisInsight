@@ -111,7 +111,7 @@ describe('ResultsLog', () => {
       within(screen.getByTestId('success-results-closed')).getByRole('button'),
     )
 
-    expect(sendEventTelemetry).toBeCalledWith({
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
       event: TelemetryEvent.CONFIG_DATABASES_REDIS_IMPORT_LOG_VIEWED,
       eventData: {
         length: 1,
@@ -121,9 +121,11 @@ describe('ResultsLog', () => {
     ;(sendEventTelemetry as jest.Mock).mockRestore()
 
     fireEvent.click(
-      within(screen.getByTestId('success-results-open')).getByRole('button'),
+      within(screen.getByTestId('success-results-open')).getByTestId(
+        'ri-accordion-header-success-results-open',
+      ),
     )
 
-    expect(sendEventTelemetry).not.toBeCalled()
+    expect(sendEventTelemetry).not.toHaveBeenCalled()
   })
 })

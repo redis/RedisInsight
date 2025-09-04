@@ -6,7 +6,7 @@ import {
   themeLight,
   themeDark,
 } from '@redis-ui/styles'
-import 'modern-normalize'
+import 'modern-normalize/modern-normalize.css'
 import '@redis-ui/styles/normalized-styles.css'
 import '@redis-ui/styles/fonts.css'
 
