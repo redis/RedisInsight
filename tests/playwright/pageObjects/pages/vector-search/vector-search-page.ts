@@ -11,6 +11,15 @@ export class VectorSearchPage extends BasePage {
     // SELECTORS
     public readonly vectorSearchPage: Locator
     public readonly searchTab: Locator
+    public readonly cloudLoginModal: Locator
+
+    // VECTOR SET NOT AVAILABLE BANNER
+    public readonly vectorSetNotAvailableBanner: Locator
+    public readonly freeRedisCloudDatabaseButton: Locator
+
+    // RQE NOT AVAILABLE CARD
+    public readonly rqeNotAvailableCard: Locator
+    public readonly createRedisCloudDatabaseButton: Locator
 
     // EDITOR
     public readonly editorContainer: Locator
@@ -32,6 +41,7 @@ export class VectorSearchPage extends BasePage {
     // BUTTONS
     public readonly getStartedButton: Locator
     public readonly clearCommandsResultsButton: Locator
+    public readonly startWizardButton: Locator
 
     constructor(page: Page) {
         super(page)
@@ -43,6 +53,25 @@ export class VectorSearchPage extends BasePage {
         // CONTAINERS
         this.vectorSearchPage = page.getByTestId('vector-search-page')
         this.searchTab = page.getByRole('tab', { name: 'Search' })
+        this.cloudLoginModal = page.getByTestId('social-oauth-dialog')
+
+        // VECTOR SET NOT AVAILABLE BANNER
+        this.vectorSetNotAvailableBanner = page.getByTestId(
+            'vector-set-not-available-banner',
+        )
+        this.freeRedisCloudDatabaseButton =
+            this.vectorSetNotAvailableBanner.getByRole('button', {
+                name: 'Free Redis Cloud DB',
+            })
+
+        // RQE NOT AVAILABLE CARD
+        this.rqeNotAvailableCard = page.getByTestId(
+            'vector-search-page--rqe-not-available',
+        )
+        this.createRedisCloudDatabaseButton =
+            this.rqeNotAvailableCard.getByRole('button', {
+                name: 'Get Started For Free',
+            })
 
         // EDITOR
         this.editorContainer = page.getByTestId('vector-search-query-editor')
@@ -80,6 +109,7 @@ export class VectorSearchPage extends BasePage {
             })
         this.clearCommandsResultsButton =
             this.commandsResults.getByTestId('clear-history-btn')
+        this.startWizardButton = page.getByTestId('start-wizard-button')
     }
 
     async navigateToVectorSearchPage(): Promise<void> {

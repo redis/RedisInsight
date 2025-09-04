@@ -44,7 +44,10 @@ const VectorSearchPage = () => {
 
   if (!hasRedisearch) {
     return (
-      <VectorSearchPageWrapper>
+      <VectorSearchPageWrapper
+        as="div"
+        data-testid="vector-search-page--rqe-not-available"
+      >
         <RqeNotAvailableCard />
       </VectorSearchPageWrapper>
     )
