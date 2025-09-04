@@ -37,7 +37,7 @@ const BATCH_LIMIT = 10_000;
 const PATH_CONFIG = config.get('dir_path') as Config['dir_path'];
 const SERVER_CONFIG = config.get('server') as Config['server'];
 
-const ALLOWED_VECTOR_INDEX_COLLECTIONS = ['bikes'];
+const ALLOWED_VECTOR_INDEX_COLLECTIONS = ['bikes', 'movies'];
 
 @Injectable()
 export class BulkImportService {
