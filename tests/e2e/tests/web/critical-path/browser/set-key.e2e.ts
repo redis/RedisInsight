@@ -12,7 +12,7 @@ const databaseAPIRequests = new DatabaseAPIRequests();
 const apiKeyRequests = new APIKeyRequests();
 
 let keyName = Common.generateWord(10);
-const keyTTL = '2147476121';
+const keyTTL = 2147476121;
 const keyMember = '1111setMember11111';
 
 fixture `Set Key fields verification`
@@ -24,13 +24,17 @@ fixture `Set Key fields verification`
     .afterEach(async() => {
         // Clear and delete database
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that user can search by full member name in Set', async t => {
     keyName = Common.generateWord(10);
-    await browserPage.addSetKey(keyName, keyTTL, '1111');
-    // Add member to the Set key
-    await browserPage.addMemberToSet(keyMember);
+
+    await apiKeyRequests.addSetKeyApi({
+        keyName,
+        ttl: keyTTL,
+        members: ['1111', keyMember],
+    }, ossStandaloneConfig);
+    await browserPage.navigateToKey(keyName)
+
     await browserPage.searchByTheValueInSetKey(keyMember);
     // Verify search by full member name
     let result = await browserPage.setMembersList.nth(0).textContent;

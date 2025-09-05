@@ -15,13 +15,13 @@ export class MemoryEfficiencyPage extends InstancePage {
     // BUTTONS
     databaseAnalysisTab = Selector('[data-testid=analytics-tab-DatabaseAnalysis]');
     newReportBtn = Selector('[data-testid=start-database-analysis-btn]');
-    expandArrowBtn = Selector('[data-testid^=expand-arrow-]');
     sortByKeyPattern = Selector('[data-testid=tableHeaderSortButton]');
     showNoExpiryToggle = Selector('[data-testid=show-no-expiry-switch]');
-    reportItem = Selector('[data-test-subj^=items-report-]');
+    reportItem = Selector('[role=listbox] [data-test-subj^=items-report-]').parent('[role=option]');
     selectedReport = Selector('[data-testid=select-report]');
     sortByLength = Selector('[data-testid=btn-change-table-keys]');
-    recommendationsTab = Selector('[data-testid=Recommendations-tab]');
+    recommendationsTab = Selector('[data-testid=database-analysis-tabs] [role=tab] p').withText(/^Tips/).parent('[role=tab]');
+
     veryUsefulVoteBtn = Selector('[data-testid=very-useful-vote-btn]').nth(0);
     usefulVoteBtn = Selector('[data-testid=useful-vote-btn]').nth(0);
     notUsefulVoteBtn = Selector('[data-testid=not-useful-vote-btn]').nth(0);
@@ -44,12 +44,13 @@ export class MemoryEfficiencyPage extends InstancePage {
     topKeysLengthCell = Selector('[data-testid^=length-value]');
     // TABLE
     namespaceTable = Selector('[data-testid=nsp-table-memory]');
-    nameSpaceTableRows = this.namespaceTable.find('[data-testid^=row-]');
+    nameSpaceTableRows = this.namespaceTable.find('tbody tr');
+    nspTableExpandArrowBtn = this.nameSpaceTableRows.find('td:nth-child(5) button');
     expandedRow = Selector('[data-testid^=expanded-]');
     expandedItem = this.expandedRow.find('button');
-    tableKeyPatternHeader = Selector('[data-test-subj*=tableHeaderCell_nsp]');
-    tableMemoryHeader = Selector('[data-test-subj*=tableHeaderCell_memory]');
-    tableKeysHeader = Selector('[data-test-subj*=tableHeaderCell_keys]');
+    tableKeyPatternHeader = this.namespaceTable.find('th:nth-child(1)');
+    tableMemoryHeader = this.namespaceTable.find('th:nth-child(3)');
+    tableKeysHeader = this.namespaceTable.find('th:nth-child(4)');
     // GRAPH ELEMENTS
     donutTotalKeys = Selector('[data-testid=donut-title-keys]');
     firstPoint = Selector('[data-testid*=bar-3600]');
@@ -85,7 +86,7 @@ export class MemoryEfficiencyPage extends InstancePage {
      * @param recommendationName Name of the recommendation
      */
     getRecommendationButtonByName(recommendationName: RecommendationIds): Selector {
-        return Selector(`[data-test-subj=${recommendationName}-button]`);
+        return Selector(`[data-testid=ri-accordion-header-${recommendationName}]`);
     }
     /**
      * Get recommendation Tutorial button by recommendation name

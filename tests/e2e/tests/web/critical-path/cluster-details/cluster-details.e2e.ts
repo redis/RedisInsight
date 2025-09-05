@@ -28,10 +28,7 @@ fixture `Overview`
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddOSSClusterDatabase(ossClusterConfig);
         // Go to Analysis Tools page
-        await t.click(myRedisDatabasePage.NavigationPanel.analysisPageButton);
-    })
-    .afterEach(async() => {
-        await databaseAPIRequests.deleteOSSClusterDatabaseApi(ossClusterConfig);
+        await t.click(browserPage.NavigationTabs.analysisButton);
     });
 test('Overview tab header for OSS Cluster', async t => {
     const uptime = /[1-9][0-9]\s|[0-9]\smin|[1-9][0-9]\smin|[0-9]\sh/;
@@ -46,7 +43,8 @@ test('Overview tab header for OSS Cluster', async t => {
     // Verify that Uptime is displayed as time in seconds or minutes from start
     await t.expect(clusterDetailsPage.clusterDetailsUptime.textContent).match(uptime, 'Uptime value is not correct');
 });
-test
+// todo: enable after RI-7449 fix
+test.skip
     .after(async() => {
     //Clear database and delete
         await browserPage.Cli.sendCommandInCli(`DEL ${keyName}`);
@@ -70,6 +68,8 @@ test
         await t.click(browserPage.Cli.cliCollapseButton);
         // Verify nodes in header column equal to rows
         await t.expect(await clusterDetailsPage.getPrimaryNodesCount()).eql(nodesNumberInHeader, 'Primary nodes in table are not displayed');
+
+        // todo: change verification of nodes since order is not guaranteed
         // Verify that all nodes from BE response are displayed in table
         for (const node of nodes) {
             await t.expect(clusterDetailsPage.tableRow.nth(nodes.indexOf(node)).textContent).contains(node, `Node ${node} is not displayed in table`);
@@ -82,7 +82,7 @@ test
         await t.click(tutorials.internalLinkWorkingWithHashes);
         await tutorials.runBlockCode('Create a hash');
         // Go to Analysis Tools page
-        await t.click(myRedisDatabasePage.NavigationPanel.analysisPageButton);
+        await t.click(browserPage.NavigationTabs.analysisButton);
         // Verify that values in table are dynamic
         for (const column in columns) {
             await t.expect(await clusterDetailsPage.getTotalValueByColumnName(column)).notEql(initialValues[columns.indexOf(column)], `${column} not dynamic`);

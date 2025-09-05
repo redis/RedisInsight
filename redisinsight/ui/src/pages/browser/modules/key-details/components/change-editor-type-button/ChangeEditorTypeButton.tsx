@@ -20,6 +20,7 @@ const ChangeEditorTypeButton = () => {
         onClick={switchEditorType}
         aria-label="Change editor type"
         disabled={isDisabled}
+        data-testid="change-editor-type"
       />
     </RiTooltip>
   )

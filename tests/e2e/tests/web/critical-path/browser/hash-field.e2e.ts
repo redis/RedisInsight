@@ -12,7 +12,7 @@ const databaseAPIRequests = new DatabaseAPIRequests();
 const apiKeyRequests = new APIKeyRequests();
 
 let keyName = Common.generateWord(10);
-const keyTTL = '2147476121';
+const keyTTL = 2147476121;
 const keyFieldValue = 'hashField11111';
 const keyValue = 'hashValue11111!';
 
@@ -25,13 +25,20 @@ fixture `Hash Key fields verification`
     .afterEach(async() => {
         // Clear and delete database
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that user can search by full field name in Hash', async t => {
     keyName = Common.generateWord(10);
-    await browserPage.addHashKey(keyName, keyTTL);
-    // Add field to the hash key
-    await browserPage.addFieldToHash(keyFieldValue, keyValue);
+
+    await apiKeyRequests.addHashKeyApi({
+        keyName,
+        ttl: keyTTL,
+        fields: [{
+            field: keyFieldValue,
+            value: keyValue
+        }]
+    }, ossStandaloneConfig);
+    await browserPage.navigateToKey(keyName);
+
     // Search by full field name
     await browserPage.searchByTheValueInKeyDetails(keyFieldValue);
     // Check the search result

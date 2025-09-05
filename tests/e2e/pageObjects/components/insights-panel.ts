@@ -7,15 +7,15 @@ export class InsightsPanel {
     // CONTAINERS
     sidePanel = Selector('[data-testid=side-panels-insights]');
     closeButton = Selector('[data-testid=close-insights-btn]');
-    activeTab = this.sidePanel.find('[class*="euiTab-isSelected"]');
+    activeTab = this.sidePanel.find('[data-testid=insights-tabs] [data-state=active]');
 
     recommendationsTab = Selector('[data-testid=recommendations-tab]');
-    exploreTab = Selector('[data-testid=explore-tab]');
+    exploreTab = this.sidePanel.find('[role=tablist] span').withExactText('Tutorials').parent('[role=tab]');
     copilotTab = Selector('[data-testid=ai-assistant-tab]');
 
     existsCompatibilityPopover = Selector('[data-testid=explore-capability-popover]');
 
-    activeTabMask = '[class*=euiTab-isSelected]';
+    activeTabMask = '[data-testid=insights-tabs] [data-state=active]';
 
     /**
      * get active tab

@@ -81,7 +81,7 @@ export class TreeView {
     * @param number The number of tree folder
     */
     async getTextFromNthTreeElement(number: number): Promise<string> {
-        return (await Selector('[role="treeitem"]').nth(number).find('div').textContent).replace(/\s/g, '');
+        return (await Selector('[role="treeitem"]').nth(number).find('[data-testid^=folder-]').textContent).replace(/\s/g, '');
     }
 
     /**

@@ -100,9 +100,9 @@ test.skip
         await t.click(browserPage.bulkActionsButton);
         await browserPage.BulkActions.startBulkDelete();
         // Go to Workbench page
-        await t.click(browserPage.NavigationPanel.workbenchButton);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
         // Go to Browser Page
-        await t.click(browserPage.NavigationPanel.browserButton);
+        await t.click(browserPage.NavigationTabs.browserButton);
         await t.expect(browserPage.BulkActions.bulkStatusInProgress.exists).ok('Progress value not displayed', { timeout: 5000 });
     });
 test.skip

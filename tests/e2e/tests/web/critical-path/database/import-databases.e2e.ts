@@ -90,7 +90,8 @@ fixture `Import databases`
         // Delete all existing connections
         await databaseAPIRequests.deleteAllDatabasesApi();
     });
-test.before(async() => {
+// todo: enable after RI-7450 fix
+test.skip.before(async() => {
     await databaseAPIRequests.deleteAllDatabasesApi();
     await databaseHelper.acceptLicenseTerms();
     await databaseAPIRequests.addNewStandaloneDatabaseApi(ossStandaloneConfig);

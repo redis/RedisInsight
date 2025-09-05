@@ -25,10 +25,6 @@ fixture `Filtering per key name in Browser page`
     .page(commonUrl)
     .beforeEach(async() => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfigEmpty);
-    })
-    .afterEach(async() => {
-        // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfigEmpty);
     });
 test
     .after(async() => {
@@ -96,10 +92,6 @@ test
 test
     .before(async() => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneBigConfig);
-    })
-    .after(async() => {
-        // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneBigConfig);
     })('Verify that user see the key type label when filtering per key types and when removes label the filter is removed on Browser page', async t => { //Check filtering labels
         for (const { textType } of keyTypes) {
             await browserPage.selectFilterGroupType(textType);

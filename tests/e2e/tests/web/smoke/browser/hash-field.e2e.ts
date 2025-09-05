@@ -25,7 +25,6 @@ fixture `Hash Key fields verification`
     .afterEach(async() => {
         // Clear and delete database
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that user can add field to Hash', async t => {
     keyName = Common.generateWord(10);

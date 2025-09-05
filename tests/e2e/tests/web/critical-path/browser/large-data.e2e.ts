@@ -28,9 +28,7 @@ fixture `Cases with large data`
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
     })
     .afterEach(async() => {
-        // Clear and delete database
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that user can see relevant information about key size', async t => {
     keyName = Common.generateWord(10);
@@ -55,9 +53,6 @@ test('Verify that user can see relevant information about key size', async t => 
     await t.expect(+keySize).gt(10, 'Key size value not correct');
 });
 test
-    .before(async() => {
-        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
-    })
     .after(async() => {
         // Clear and delete database
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
@@ -99,8 +94,8 @@ test
         await t.expect(browserPage.tooltip.textContent).eql(disabledEditTooltip, 'Edit button tooltip contains invalid message');
 
         // Verify that user can see "Load the entire value to select a format." tooltip when hovering on disabled formatters button before loading all
-        await t.hover(browserPage.formatSwitcher);
-        await t.expect(browserPage.tooltip.textContent).eql(disabledFormattersTooltip, 'Edit button tooltip contains invalid message');
+        await t.hover(browserPage.formatSwitcher.child('span'));
+        await t.expect(browserPage.tooltip.textContent).eql(disabledFormattersTooltip, 'Formatter button tooltip contains invalid message');
 
         // Verify that user can see String key value with only 5000 characters uploaded if length is more than 5000
         // Verify that 3 dots after truncated big strings displayed

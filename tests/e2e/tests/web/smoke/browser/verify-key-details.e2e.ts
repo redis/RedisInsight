@@ -24,7 +24,6 @@ fixture `Key details verification`
     .afterEach(async() => {
         // Clear and delete database
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that user can see Hash Key details', async t => {
     keyName = Common.generateWord(10);
@@ -141,7 +140,7 @@ test
 
         // verify that ttl can have empty value
         await browserPage.editHashFieldTtlValue(field1, ' ');
-        ttlFieldValue = await browserPage.getHashTtlFieldInput(field1).textContent;
+        ttlFieldValue = await browserPage.getHashTtlFieldInput(field1).textContentWithoutButtons;
         await t.expect(ttlFieldValue).eql('No Limit', 'the field ttl can not be removed');
 
         //verify that ttl field value can be set

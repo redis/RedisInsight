@@ -1,4 +1,4 @@
-FROM redis:7.0.6
+FROM --platform=linux/amd64 redis:7.0.6
 
 USER root
 

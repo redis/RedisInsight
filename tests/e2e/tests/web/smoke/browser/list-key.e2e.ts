@@ -26,7 +26,6 @@ fixture `List Key verification`
     .afterEach(async() => {
         // Clear and delete database
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that user can select remove List element position: from tail', async t => {
     keyName = Common.generateWord(10);

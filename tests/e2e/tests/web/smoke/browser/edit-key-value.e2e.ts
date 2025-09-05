@@ -11,7 +11,7 @@ const databaseHelper = new DatabaseHelper();
 const databaseAPIRequests = new DatabaseAPIRequests();
 const apiKeyRequests = new APIKeyRequests();
 
-const keyTTL = '2147476121';
+const keyTTL = 2147476121;
 const keyValueBefore = 'ValueBeforeEdit!';
 const keyValueAfter = 'ValueAfterEdit!';
 let keyName = Common.generateWord(10);
@@ -25,13 +25,18 @@ fixture `Edit Key values verification`
     .afterEach(async() => {
         // Clear and delete database
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that user can edit String value', async t => {
     keyName = Common.generateWord(10);
 
     // Add string key
-    await browserPage.addStringKey(keyName, keyValueBefore, keyTTL);
+    await apiKeyRequests.addStringKeyApi({
+        keyName,
+        value: keyValueBefore,
+        ttl: keyTTL,
+    }, ossStandaloneConfig);
+    await browserPage.navigateToKey(keyName);
+
     // Check the key value before edit
     let keyValue = await browserPage.getStringKeyValue();
     await t.expect(keyValue).contains(keyValueBefore, 'The String value is incorrect');
@@ -48,32 +53,50 @@ test('Verify that user can edit String value', async t => {
 });
 test('Verify that user can edit Zset Key member', async t => {
     keyName = Common.generateWord(10);
-    const scoreBefore = '5';
-    const scoreAfter = '10';
+    const scoreBefore = 5;
+    const scoreAfter = 10;
 
     // Add zset key
-    await browserPage.addZSetKey(keyName, scoreBefore, keyTTL, keyValueBefore);
+    await apiKeyRequests.addSortedSetKeyApi({
+        keyName,
+        members: [{
+            name: keyValueBefore,
+            score: scoreBefore,
+        }],
+        ttl: keyTTL,
+    }, ossStandaloneConfig);
+    await browserPage.navigateToKey(keyName);
+
     // Check the key score before edit
     let zsetScore = await browserPage.getZsetKeyScore();
-    await t.expect(zsetScore).eql(scoreBefore, 'Zset Score is incorrect');
+    await t.expect(zsetScore).eql(`${scoreBefore}`, 'Zset Score is incorrect');
     // Edit Zset key score
     await t.hover(browserPage.zsetScoresList);
     await t.click(browserPage.editZsetButton);
-    await t.typeText(browserPage.inlineItemEditor, scoreAfter, { replace: true, paste: true });
+    await t.typeText(browserPage.inlineItemEditor, `${scoreAfter}`, { replace: true, paste: true });
     // Verify that refresh is disabled for Zset key when editing member
     await t.expect(browserPage.refreshKeyButton.hasAttribute('disabled')).ok('Refresh button not disabled');
 
     await t.click(browserPage.EditorButton.applyBtn);
     // Check Zset key score after edit
     zsetScore = await browserPage.getZsetKeyScore();
-    await t.expect(zsetScore).contains(scoreAfter, 'Zset Score is not edited');
+    await t.expect(zsetScore).contains(`${scoreAfter}`, 'Zset Score is not edited');
 });
 test('Verify that user can edit Hash Key field', async t => {
     const fieldName = 'test';
     keyName = Common.generateWord(10);
 
     // Add Hash key
-    await browserPage.addHashKey(keyName, keyTTL, fieldName, keyValueBefore);
+    await apiKeyRequests.addHashKeyApi({
+        keyName,
+        fields: [{
+            field: 'f',
+            value: keyValueBefore,
+        }],
+        ttl: keyTTL,
+    }, ossStandaloneConfig);
+    await browserPage.navigateToKey(keyName);
+
     // Check the key value before edit
     let keyValue = await browserPage.getHashKeyValue();
     await t.expect(keyValue).eql(keyValueBefore, 'The Hash value is incorrect');
@@ -93,7 +116,13 @@ test('Verify that user can edit List Key element', async t => {
     keyName = Common.generateWord(10);
 
     // Add List key
-    await browserPage.addListKey(keyName, keyTTL, [keyValueBefore]);
+    await apiKeyRequests.addListKeyApi({
+        keyName,
+        elements: [keyValueBefore],
+        ttl: keyTTL,
+    }, ossStandaloneConfig);
+
+    await browserPage.navigateToKey(keyName);
     // Check the key value before edit
     let keyValue = await browserPage.getListKeyValue();
     await t.expect(keyValue).eql(keyValueBefore, 'The List value is incorrect');
@@ -110,13 +139,19 @@ test('Verify that user can edit List Key element', async t => {
     await t.expect(keyValue).contains(keyValueAfter, 'Edited List value is incorrect');
 });
 test('Verify that user can edit JSON Key value', async t => {
-    const jsonValueBefore = '{"name":"xyz"}';
+    const jsonValueBefore = { name : 'xyz'};
     const jsonEditedValue = '"xyz test"';
     const jsonValueAfter = '{name:"xyz test"}';
     keyName = Common.generateWord(10);
 
     // Add JSON key with json object
-    await browserPage.addJsonKey(keyName, jsonValueBefore, keyTTL);
+    await apiKeyRequests.addJsonKeyApi({
+        keyName,
+        data: jsonValueBefore,
+        ttl: keyTTL,
+    }, ossStandaloneConfig);
+    await browserPage.navigateToKey(keyName);
+
     // Check the key value before edit
     await t.expect(await browserPage.getJsonKeyValue()).eql('{name:"xyz"}', 'The JSON value is incorrect');
     // Edit JSON key value

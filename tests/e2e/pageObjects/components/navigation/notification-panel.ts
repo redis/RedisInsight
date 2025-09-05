@@ -27,7 +27,7 @@ class NotificationPanel {
     notificationList = Selector(this.cssNotificationList);
     notificationCategory = Selector('[data-testid=notification-category]');
     //ICONS
-    notificationBadge = Selector('[data-testid=total-unread-badge]', { timeout: 35000 });
+    notificationBadge = Selector('[data-testid=total-unread-badge]', { timeout: 10000 });
 
     /**
      * Get number of unread messages from notification bell

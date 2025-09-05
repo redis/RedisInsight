@@ -12,7 +12,7 @@ const databaseAPIRequests = new DatabaseAPIRequests();
 const apiKeyRequests = new APIKeyRequests();
 
 let keyName = Common.generateWord(10);
-const keyTTL = '2147476121';
+const keyTTL = 2147476121;
 const keyMember = '1111ZsetMember11111';
 
 fixture `ZSet Key fields verification`
@@ -24,11 +24,19 @@ fixture `ZSet Key fields verification`
     .afterEach(async() => {
         // Clear and delete database
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that user can search by member in Zset', async t => {
     keyName = Common.generateWord(10);
-    await browserPage.addZSetKey(keyName, '0', keyTTL, '12345qwerty');
+    await apiKeyRequests.addSortedSetKeyApi({
+        keyName,
+        ttl: keyTTL,
+        members: [{
+            name: '12345qwerty',
+            score: 0,
+        }]
+    }, ossStandaloneConfig);
+    await browserPage.navigateToKey(keyName);
+
     // Add member to the ZSet key
     await browserPage.addMemberToZSet(keyMember, '3');
     // Search by member name

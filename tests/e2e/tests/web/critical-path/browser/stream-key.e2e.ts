@@ -30,7 +30,6 @@ fixture `Stream Key`
     .afterEach(async() => {
         //Clear and delete database
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that user can create Stream key via Add New Key form', async t => {
     keyName = Common.generateWord(20);
@@ -75,7 +74,17 @@ test('Verify that user can add new Stream Entry for Stream data type key which h
     const newField = Common.generateWord(20);
 
     // Add New Stream Key and check columns and rows
-    await browserPage.addStreamKey(keyName, keyField, keyValue);
+    await apiKeyRequests.addStreamKeyApi({
+        keyName,
+        entries: [{
+            id: '*',
+            fields: [{
+                name: keyField,
+                value: keyValue
+            }],
+        }]
+    }, ossStandaloneConfig);
+    await browserPage.navigateToKey(keyName);
     await t.expect(browserPage.streamEntryIDDateValue.count).eql(1, 'One Entry ID not displayed');
     await t.expect(browserPage.streamFields.count).eql(4, 'One field in table not displayed');
     await t.expect(browserPage.streamEntryFields.count).eql(1, 'One value in table not displayed');
@@ -97,7 +106,18 @@ test('Verify that during new entry adding to existing Stream, user can clear the
     const values = [keyValue, Common.generateWord(20)];
 
     // Add New Stream Key
-    await browserPage.addStreamKey(keyName, keyField, keyValue);
+    await apiKeyRequests.addStreamKeyApi({
+        keyName,
+        entries: [{
+            id: '*',
+            fields: [{
+                name: keyField,
+                value: keyValue
+            }],
+        }]
+    }, ossStandaloneConfig);
+    await browserPage.navigateToKey(keyName);
+
     await t.click(browserPage.addNewStreamEntry);
     await browserPage.fulfillSeveralStreamFields(fields, values);
     // Check number of rows
@@ -130,8 +150,20 @@ test('Verify that user can add several fields and values to the existing Stream 
         fields.push(chance.word({ length: randomGeneratorValue }));
         values.push(chance.word({ length: randomGeneratorValue }));
     }
+
     // Add New Stream Key
-    await browserPage.addStreamKey(keyName, keyField, keyValue);
+    await apiKeyRequests.addStreamKeyApi({
+        keyName,
+        entries: [{
+            id: '*',
+            fields: [{
+                name: keyField,
+                value: keyValue
+            }],
+        }]
+    }, ossStandaloneConfig);
+    await browserPage.navigateToKey(keyName);
+
     await t.click(browserPage.addNewStreamEntry);
     // Filled Stream by new several Fields
     await browserPage.fulfillSeveralStreamFields(fields, values);
