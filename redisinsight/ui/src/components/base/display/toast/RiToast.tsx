@@ -8,7 +8,7 @@ import {
 
 import { CommonProps } from 'uiSrc/components/base/theme/types'
 import { CancelIcon } from 'uiSrc/components/base/icons'
-import { ColorText, Title } from 'uiSrc/components/base/text'
+import { ColorText, Text } from 'uiSrc/components/base/text'
 import { Spacer } from '../../layout'
 
 type RiToastProps = React.ComponentProps<typeof Toast>
@@ -34,7 +34,9 @@ export const riToast = (
     }
     toastContent.message = (
       <ColorText color={color}>
-        <Title size="XS">{message}</Title>
+        <Text size="M" variant="semiBold">
+          {message}
+        </Text>
         <Spacer size="s" />
       </ColorText>
     )
