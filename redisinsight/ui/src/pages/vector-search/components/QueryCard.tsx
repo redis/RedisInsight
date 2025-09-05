@@ -195,6 +195,7 @@ const QueryCard = (props: Props) => {
       <div
         className={cx(queryStyles.container)}
         data-testid={`query-card-container-${id}`}
+        data-full-screen={isFullScreen}
       >
         <QueryCardHeader
           isOpen={isOpen}

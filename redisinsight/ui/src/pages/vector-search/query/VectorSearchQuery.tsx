@@ -133,7 +133,12 @@ export const VectorSearchQuery = ({
             defaultSize={isSavedQueriesOpen ? 70 : 100}
           >
             <ResizableContainer direction="vertical">
-              <ResizablePanel id="top-panel" minSize={10} defaultSize={30}>
+              <ResizablePanel
+                id="top-panel"
+                minSize={10}
+                defaultSize={30}
+                data-testid="vector-search-query-editor"
+              >
                 <QueryWrapper
                   query={query}
                   activeMode={activeMode}

@@ -19,11 +19,12 @@ export type DatabasesForImport = {
 }[]
 
 export type AddNewDatabaseParameters = {
-    host: string
-    port: string
+    host?: string
+    port?: string
     databaseName?: string
     databaseUsername?: string
     databasePassword?: string
+
     // For OSS Cluster parameters, you might use these fields:
     ossClusterHost?: string
     ossClusterPort?: string
@@ -37,6 +38,20 @@ export type AddNewDatabaseParameters = {
         certificate?: string
         key?: string
     }
+    accessKey?: string
+    secretKey?: string
+
+    // For OSS Sentinel parameters, you might use these fields:
+    name?: string[]
+    sentinelHost?: string
+    sentinelPort?: string
+    sentinelPassword?: string
+    masters?: {
+        alias: string
+        db: string
+        name: string
+        password: string
+    }[]
 }
 
 export type DatabaseInstance = {

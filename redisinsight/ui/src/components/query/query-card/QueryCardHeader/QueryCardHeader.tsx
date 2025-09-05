@@ -529,6 +529,7 @@ const QueryCardHeader = (props: Props) => {
                   <IconButton
                     icon={isOpen ? ChevronUpIcon : ChevronDownIcon}
                     aria-label="toggle collapse"
+                    data-testid="toggle-collapse"
                   />
                 )}
               </FlexItem>
