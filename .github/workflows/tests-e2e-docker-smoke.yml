@@ -61,9 +61,9 @@ jobs:
 #
       - name: Download Docker Artifacts
         run: |
-          mkdir -p ./release
+          mkdir -p ./release/docker
           curl -L "https://s3.us-east-1.amazonaws.com/redisinsight.test/public/_tmp/docker-linux-alpine.amd64.tar" \
-            -o ./release/docker-linux-alpine.amd64.tar
+            -o ./release/docker/docker-linux-alpine.amd64.tar
 
       - name: Load built docker image from workspace
         run: |
