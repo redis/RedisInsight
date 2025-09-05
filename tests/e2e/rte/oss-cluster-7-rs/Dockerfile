@@ -1,6 +1,6 @@
-FROM redislabs/rejson:1.0.8 as rejson
+FROM --platform=linux/amd64 redislabs/rejson:1.0.8 AS rejson
 
-FROM redis:7.0.8
+FROM --platform=linux/amd64 redis:7.0.8
 
 COPY redis.conf /etc/redis/
 COPY --from=rejson /usr/lib/redis/modules/rejson.so /etc/redis/modules/

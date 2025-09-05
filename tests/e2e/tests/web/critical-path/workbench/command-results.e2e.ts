@@ -21,11 +21,7 @@ fixture `Command results at Workbench`
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         // Go to Workbench page
-        await t.click(browserPage.NavigationPanel.workbenchButton);
-    })
-    .afterEach(async t => {
-        await t.switchToMainWindow();
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
     });
 test.skip('Verify that user can see re-run icon near the already executed command and re-execute the command by clicking on the icon in Workbench page', async t => {
     // Send commands

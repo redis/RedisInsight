@@ -85,6 +85,11 @@ export class MyRedisDatabasePage extends BaseOverviewPage {
     connectionTypeTitle  = Selector('[data-test-subj=tableHeaderCell_connectionType_2]');
     addDatabaseImport = Selector('[data-testid=add-db_import]');
 
+    async navigateToDatabase(dbName: string): Promise<void> {
+        await t.click(this.NavigationPanel.myRedisDBButton);
+        await this.clickOnDBByName(dbName);
+    }
+
     /**
      * Click on the database by name
      * @param dbName The name of the database to be opened

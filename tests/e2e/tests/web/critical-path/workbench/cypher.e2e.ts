@@ -16,11 +16,7 @@ fixture `Cypher syntax at Workbench`
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         // Go to Workbench page
-        await t.click(browserPage.NavigationPanel.workbenchButton);
-    })
-    .afterEach(async() => {
-        // Drop database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
     });
 test
     .skip('Verify that user can see popover Editor when clicks on “Use Cypher Syntax” popover in the Editor or “Shift+Space”', async t => {

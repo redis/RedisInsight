@@ -1,5 +1,5 @@
 import { BrowserPage } from '../../../../pageObjects';
-import { commonUrl, ossStandaloneBigConfig, ossStandaloneV6Config } from '../../../../helpers/conf';
+import { commonUrl, ossStandaloneBigConfig, ossStandaloneConfig } from '../../../../helpers/conf'
 import { rte } from '../../../../helpers/constants';
 import { DatabaseHelper } from '../../../../helpers/database';
 import { DatabaseAPIRequests } from '../../../../helpers/api/api-database';
@@ -20,9 +20,6 @@ fixture `Delimiter tests`
     .page(commonUrl)
     .beforeEach(async () => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneBigConfig);
-    })
-    .afterEach(async () => {
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneBigConfig);
     });
 test('Verify that user can see that input is not saved when the Cancel button is clicked', async t => {
     // Switch to tree view
@@ -48,7 +45,7 @@ test('Verify that user can see that input is not saved when the Cancel button is
 });
 test
     .before(async () => {
-        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneV6Config);
+        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         keyNames = [
             `device:common-dev`,
             `device-common:dev`,
@@ -71,16 +68,15 @@ test
             }
             await apiKeyRequests.addHashKeyApi(
                 hashKeyParameters,
-                ossStandaloneV6Config,
+                ossStandaloneConfig,
             )
         }
         await browserPage.reloadPage();
     })
     .after(async () => {
         for (const keyName of keyNames) {
-            await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneV6Config.databaseName);
+            await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
         }
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneV6Config);
     })('Verify that user can set multiple delimiters in the tree view', async t => {
         // Switch to tree view
         await t.click(browserPage.treeViewButton);
@@ -93,6 +89,7 @@ test
         // Verify that when user changes the delimiter and clicks on Save button delimiter is applied
         await browserActions.checkTreeViewFoldersStructure([['device', 'common'], ['device', 'common1'], ['mobile', 'common']], [':', '-']);
 
+        await t.setTestSpeed(.3); // change default test speed to check tooltip
         // Verify that namespace names tooltip contains valid names and delimiter
         await t.click(browserActions.getNodeSelector('device'));
         await t.hover(browserActions.getNodeSelector('device-common'));

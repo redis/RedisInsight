@@ -39,7 +39,6 @@ fixture `Formatters`
     .afterEach(async() => {
         // Clear keys and database
         await deleteKeysViaCli(keysData);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 formattersHighlightedSet.forEach(formatter => {
     test
@@ -52,7 +51,7 @@ formattersHighlightedSet.forEach(formatter => {
             // Verify for Hash, List, Set, ZSet, String, Stream keys
             for (const key of keysData) {
                 const valueSelector = Selector(`[data-testid^=${key.keyName.split('-')[0]}][data-testid*=${key.data}]`);
-                await browserPage.openKeyDetailsByKeyName(key.keyName);
+                await browserPage.navigateToKey(key.keyName);
                 // Verify that value not formatted with default formatter
                 await browserPage.selectFormatter(defaultFormatter);
                 await t.expect(valueSelector.find(browserPage.cssJsonValue).exists).notOk(`${key.textType} Value is formatted to ${formatter.format}`);
@@ -75,7 +74,7 @@ formattersForEditSet.forEach(formatter => {
         // Verify for JSON, Msgpack, PHP serialized formatters
         const invalidText = 'invalid text';
         // Open key details and select formatter
-        await browserPage.openKeyDetails(keysData[0].keyName);
+        await browserPage.navigateToKey(keysData[0].keyName);
         await browserPage.selectFormatter(formatter.format);
         await browserPage.editHashKeyValue(invalidText);
         await t.click(browserPage.saveButton);
@@ -113,7 +112,7 @@ formattersWithTooltipSet.forEach(formatter => {
                 innerValueSelector = valueSelector;
             }
             // Open key details and select formatter
-            await browserPage.openKeyDetailsByKeyName(keysData[i].keyName);
+            await browserPage.navigateToKey(keysData[i].keyName);
             await browserPage.selectFormatter(formatter.format);
             // Verify that not valid value is not formatted
             await t.expect(valueSelector.find(browserPage.cssJsonValue).exists).notOk(`${keysData[i].textType} Value is formatted to ${formatter.format}`);
@@ -134,7 +133,7 @@ binaryFormattersSet.forEach(formatter => {
             // Verify for Hash, List, Set, ZSet, String, Stream keys
             for (let i = 0; i < keysData.length; i++) {
                 const valueSelector = Selector(`[data-testid^=${keysData[i].keyName.split('-')[0]}][data-testid*=${keysData[i].data}]`);
-                await browserPage.openKeyDetailsByKeyName(keysData[i].keyName);
+                await browserPage.navigateToKey(keysData[i].keyName);
                 // Verify that value not formatted with default formatter
                 await browserPage.selectFormatter(defaultFormatter);
                 await t.expect(valueSelector.innerText).contains(formatter.fromText ?? '', `Value is formatted as ${formatter.format} in Unicode`);
@@ -150,7 +149,7 @@ binaryFormattersSet.forEach(formatter => {
     test(`Verify that user can edit value for Hash field in ${formatter.format} and convert them to another format`, async t => {
         // Verify for ASCII, HEX, Binary formatters
         // Open key details and select formatter
-        await browserPage.openKeyDetails(keysData[0].keyName);
+        await browserPage.navigateToKey(keysData[0].keyName);
         await browserPage.selectFormatter(formatter.format);
         // Add value in selected format
         await browserPage.editHashKeyValue(formatter.formattedText ?? '');
@@ -170,7 +169,7 @@ binaryFormattersSet.forEach(formatter => {
 });
 test('Verify that user can format different data types of PHP serialized', async t => {
     // Open Hash key details
-    await browserPage.openKeyDetailsByKeyName(keysData[0].keyName);
+    await browserPage.navigateToKey(keysData[0].keyName);
     for (const type of phpData) {
         //Add fields to the hash key
         await browserPage.selectFormatter('Unicode');
@@ -198,7 +197,7 @@ notEditableFormattersSet.forEach(formatter => {
                     ? browserPage.editKeyValueButton
                     : Selector(`[data-testid*=${key.keyName.split('-')[0]}][data-testid*=edit-]`, { timeout: 500 });
                 const valueSelector = Selector(`[data-testid^=${key.keyName.split('-')[0]}][data-testid*=${key.data}]`);
-                await browserPage.openKeyDetailsByKeyName(key.keyName);
+                await browserPage.navigateToKey(key.keyName);
                 await browserPage.selectFormatter(formatter.format);
                 // Verify that edit button disabled
                 await t.hover(valueSelector);
@@ -211,7 +210,7 @@ notEditableFormattersSet.forEach(formatter => {
             if (key.textType === 'Sorted Set') {
                 const editBtn = Selector(`[data-testid*=${key.keyName.split('-')[0]}][data-testid*=edit-]`, { timeout: 500 });
                 const valueSelector = Selector('[data-testid*=zset_content-value]');
-                await browserPage.openKeyDetailsByKeyName(key.keyName);
+                await browserPage.navigateToKey(key.keyName);
                 await browserPage.selectFormatter(formatter.format);
                 // Verify that edit button enabled for ZSet
                 await t.hover(valueSelector);
@@ -222,7 +221,7 @@ notEditableFormattersSet.forEach(formatter => {
 });
 test('Verify that user can format timestamp value', async t => {
     const formatterName = 'Timestamp to DateTime';
-    await browserPage.openKeyDetailsByKeyName(keysData[0].keyName);
+    await browserPage.navigateToKey(keysData[0].keyName);
     //Add fields to the hash key
     await browserPage.selectFormatter('Unicode');
     const formatter = formatters.find(f => f.format === formatterName);

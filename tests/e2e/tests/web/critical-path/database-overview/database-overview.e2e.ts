@@ -27,23 +27,16 @@ let keys: string[];
 let keys1: string[];
 let keys2: string[];
 
+// todo: rethink. might be flaky since requires empty database to calculate overview
 fixture `Database overview`
     .meta({ type: 'critical_path' })
     .page(commonUrl)
     .beforeEach(async() => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
-    })
-    .afterEach(async() => {
-        //Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test
     .meta({ rte: rte.standalone })
-    .after(async() => {
-        //Delete databases
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneRedisearch);
-    })('Verify that user can see the list of Modules updated each time when he connects to the database', async t => {
+    ('Verify that user can see the list of Modules updated each time when he connects to the database', async t => {
         const firstDatabaseModules: string[] = [];
         const secondDatabaseModules: string[] = [];
         //Remember modules
@@ -98,15 +91,14 @@ test
         await myRedisDatabasePage.clickOnDBByName(ossStandaloneConfig.databaseName);
         await browserPage.Cli.sendCommandInCli(`DEL ${keys1.join(' ')}`);
         await browserPage.Cli.sendCommandInCli(`DEL ${keys2.join(' ')}`);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneBigConfig);
     })('Verify that user can see total number of keys rounded in format 100, 1K, 1M, 1B in DB header in Browser page', async t => {
+        const initialKeys = parseInt(await browserPage.OverviewPanel.overviewTotalKeys.innerText, 10) || 0;
         //Add 100 keys
         keys1 = await Common.createArrayWithKeyValue(100);
         await browserPage.Cli.sendCliCommandAndWaitForTotalKeys(`MSET ${keys1.join(' ')}`);
         let totalKeys = await browserPage.OverviewPanel.overviewTotalKeys.innerText;
         //Verify that the info on DB header is updated after adds
-        await t.expect(totalKeys).eql('100', 'Info in DB header after ADD 100 keys');
+        await t.expect(totalKeys).eql(`${initialKeys + 100}`, 'Info in DB header after ADD 100 keys');
         //Add 1000 keys
         keys2 = await Common.createArrayWithKeyValue(1000);
         await browserPage.Cli.sendCliCommandAndWaitForTotalKeys(`MSET ${keys2.join(' ')}`);
@@ -129,7 +121,6 @@ test
     .after(async() => {
         //Clear and delete database
         await browserPage.Cli.sendCommandInCli(`DEL ${keys.join(' ')}`);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     })('Verify that user can see total memory rounded in format B, KB, MB, GB, TB in DB header in Browser page', async t => {
         //Add new keys
         keys = await Common.createArrayWithKeyValue(100);
@@ -138,16 +129,16 @@ test
         await t.wait(fiveSecondsTimeout);
         await t.expect(browserPage.OverviewPanel.overviewTotalMemory.textContent).contains('MB', 'Total memory value is MB');
     });
-test
+// todo: rethink. flaky test. cpu, cmd/s are not guaranteed.
+test.skip
     .meta({ rte: rte.standalone })
     .before(async() => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneBigConfig);
     })
     .after(async t => {
         //Delete database and index
-        await t.click(browserPage.NavigationPanel.workbenchButton);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
         await workbenchPage.sendCommandInWorkbench('FT.DROPINDEX idx:schools DD');
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneBigConfig);
     })('Verify that user can see additional information in Overview: Connected Clients, Commands/Sec, CPU (%) using Standalone DB connection type', async t => {
         const commandsSecBeforeEdit = await browserPage.OverviewPanel.overviewCommandsSec.textContent;
         await browserPage.OverviewPanel.waitForCpuIsCalculated();

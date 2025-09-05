@@ -4,10 +4,12 @@ import { Toast } from './components/common/toast';
 import { ShortcutsPanel } from './components/shortcuts-panel';
 import { EditorButton } from './components/common/editorButton';
 import { Modal } from './components/common/modal';
+import {NavigationTabs} from './components/navigation-tabs'
 
 export class BasePage {
     notification = Selector('[data-testid^=-notification]');
 
+    NavigationTabs = new NavigationTabs();
     NavigationPanel = new NavigationPanel();
     ShortcutsPanel = new ShortcutsPanel();
     Toast = new Toast();

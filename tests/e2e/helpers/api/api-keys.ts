@@ -6,8 +6,9 @@ import {
     ListKeyParameters,
     SetKeyParameters,
     SortedSetKeyParameters,
-    StreamKeyParameters
-} from '../../pageObjects/browser-page';
+    StreamKeyParameters,
+    JsonKeyParameters,
+} from '../../pageObjects/browser-page'
 import { sendDeleteRequest, sendPostRequest } from './api-common';
 import { DatabaseAPIRequests } from './api-database';
 
@@ -28,8 +29,13 @@ export class APIKeyRequests {
         const databaseId = await databaseAPIRequests.getDatabaseIdByName(
             databaseParameters.databaseName
         );
+
+        // ensure key doesn't exist
+        await this.deleteKeyApi(keyParameters.keyName, databaseId);
+
         const requestBody = {
             keyName: Buffer.from(keyParameters.keyName, 'utf-8'),
+            expire: keyParameters.ttl,
             fields: keyParameters.fields
                 .map((fields) => ({ ...fields,
                     field: Buffer.from(fields.field, 'utf-8'),
@@ -57,8 +63,13 @@ export class APIKeyRequests {
         const databaseId = await databaseAPIRequests.getDatabaseIdByName(
             databaseParameters.databaseName
         );
+
+        // ensure key doesn't exist
+        await this.deleteKeyApi(keyParameters.keyName, databaseId);
+
         const requestBody = {
             keyName: Buffer.from(keyParameters.keyName, 'utf-8'),
+            expire: keyParameters.ttl,
             entries: keyParameters.entries
                 .map((member) =>
                     ({
@@ -90,8 +101,13 @@ export class APIKeyRequests {
         const databaseId = await databaseAPIRequests.getDatabaseIdByName(
             databaseParameters.databaseName
         );
+
+        // ensure key doesn't exist
+        await this.deleteKeyApi(keyParameters.keyName, databaseId);
+
         const requestBody = {
             keyName: Buffer.from(keyParameters.keyName, 'utf-8'),
+            expire: keyParameters.ttl,
             members: keyParameters.members
                 .map((member) => (Buffer.from(member, 'utf-8')))
         };
@@ -117,8 +133,13 @@ export class APIKeyRequests {
         const databaseId = await databaseAPIRequests.getDatabaseIdByName(
             databaseParameters.databaseName
         );
+
+        // ensure key doesn't exist
+        await this.deleteKeyApi(keyParameters.keyName, databaseId);
+
         const requestBody = {
             keyName: Buffer.from(keyParameters.keyName, 'utf-8'),
+            expire: keyParameters.ttl,
             members: keyParameters.members
                 .map((member) => ({ ...member, name: Buffer.from(member.name, 'utf-8') }))
         };
@@ -144,9 +165,14 @@ export class APIKeyRequests {
         const databaseId = await databaseAPIRequests.getDatabaseIdByName(
             databaseParameters.databaseName
         );
+
+        // ensure key doesn't exist
+        await this.deleteKeyApi(keyParameters.keyName, databaseId);
+
         const requestBody = {
             keyName: Buffer.from(keyParameters.keyName, 'utf-8'),
-            element: Buffer.from(keyParameters.element, 'utf-8')
+            expire: keyParameters.ttl,
+            elements: keyParameters.elements
         };
         const response = await sendPostRequest(
             `/databases/${databaseId}/list?encoding=buffer`,
@@ -170,8 +196,13 @@ export class APIKeyRequests {
         const databaseId = await databaseAPIRequests.getDatabaseIdByName(
             databaseParameters.databaseName
         );
+
+        // ensure key doesn't exist
+        await this.deleteKeyApi(keyParameters.keyName, databaseId);
+
         const requestBody = {
             keyName: Buffer.from(keyParameters.keyName, 'utf-8'),
+            expire: keyParameters.ttl,
             value: Buffer.from(keyParameters.value, 'utf-8')
         };
         const response = await sendPostRequest(
@@ -182,6 +213,37 @@ export class APIKeyRequests {
         await t
             .expect(response.status)
             .eql(201, 'The creation of new string key request failed');
+    }
+
+    /**
+     * Add Json key
+     * @param keyParameters The key parameters
+     * @param databaseParameters The database parameters
+     */
+    async addJsonKeyApi(
+        keyParameters: JsonKeyParameters,
+        databaseParameters: AddNewDatabaseParameters
+    ): Promise<void> {
+        const databaseId = await databaseAPIRequests.getDatabaseIdByName(
+            databaseParameters.databaseName
+        );
+
+        // ensure key doesn't exist
+        await this.deleteKeyApi(keyParameters.keyName, databaseId);
+
+        const requestBody = {
+            keyName: keyParameters.keyName,
+            expire: keyParameters.ttl,
+            data: JSON.stringify(keyParameters.data)
+        };
+        const response = await sendPostRequest(
+            `/databases/${databaseId}/rejson-rl`,
+            requestBody
+        );
+
+        await t
+            .expect(response.status)
+            .eql(201, 'The creation of new json key request failed');
     }
 
     /**
@@ -230,6 +292,27 @@ export class APIKeyRequests {
             await t
                 .expect(response.status)
                 .eql(200, 'The deletion of the key request failed');
+        }
+    }
+
+    /**
+     * Delete Key by name
+     * @param keyName The key name
+     * @param databaseId The database id
+     */
+    async deleteKeyApi(
+        keyName: string,
+        databaseId: string,
+    ): Promise<void> {
+        try {
+            await sendDeleteRequest(
+                `/databases/${databaseId}/keys`,
+                {
+                    keyNames: [keyName],
+                },
+            )
+        } catch (e) {
+            // ignore errors
         }
     }
 }

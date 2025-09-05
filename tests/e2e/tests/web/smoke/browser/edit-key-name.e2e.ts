@@ -15,7 +15,7 @@ const apiKeyRequests = new APIKeyRequests();
 
 let keyNameBefore = Common.generateWord(10);
 let keyNameAfter = Common.generateWord(10);
-const keyTTL = '2147476121';
+const keyTTL = 2147476121;
 const logger = telemetry.createLogger();
 const telemetryEvent = 'BROWSER_KEY_VALUE_VIEWED';
 const expectedProperties = [
@@ -33,14 +33,19 @@ fixture `Edit Key names verification`
     .afterEach(async() => {
         // Clear and delete database
         await apiKeyRequests.deleteKeyByNameApi(keyNameAfter, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test
     .requestHooks(logger)('Verify that user can edit String Key name', async t => {
         keyNameBefore = Common.generateWord(10);
         keyNameAfter = Common.generateWord(10);
 
-        await browserPage.addStringKey(keyNameBefore, keyTTL);
+        await apiKeyRequests.addStringKeyApi({
+            keyName: keyNameBefore,
+            value: 'v',
+            ttl: keyTTL,
+        }, ossStandaloneConfig);
+        await browserPage.navigateToKey(keyNameBefore);
+
         let keyNameFromDetails = await browserPage.keyNameFormDetails.textContent;
         await t.expect(keyNameFromDetails).contains(keyNameBefore, 'The String Key Name not correct before editing');
 
@@ -57,7 +62,13 @@ test('Verify that user can edit Set Key name', async t => {
     keyNameBefore = Common.generateWord(10);
     keyNameAfter = Common.generateWord(10);
 
-    await browserPage.addSetKey(keyNameBefore, keyTTL);
+    await apiKeyRequests.addSetKeyApi({
+        keyName: keyNameBefore,
+        members: ['m'],
+        ttl: keyTTL,
+    }, ossStandaloneConfig);
+    await browserPage.navigateToKey(keyNameBefore);
+
     let keyNameFromDetails = await browserPage.keyNameFormDetails.textContent;
     await t.expect(keyNameFromDetails).contains(keyNameBefore, 'The Set Key Name not correct before editing');
     await browserPage.editKeyName(keyNameAfter);
@@ -68,7 +79,16 @@ test('Verify that user can edit Zset Key name', async t => {
     keyNameBefore = Common.generateWord(10);
     keyNameAfter = Common.generateWord(10);
 
-    await browserPage.addZSetKey(keyNameBefore, keyTTL);
+    await apiKeyRequests.addSortedSetKeyApi({
+        keyName: keyNameBefore,
+        members: [{
+            name: 'n',
+            score: 0,
+        }],
+        ttl: keyTTL,
+    }, ossStandaloneConfig);
+    await browserPage.navigateToKey(keyNameBefore);
+
     let keyNameFromDetails = await browserPage.keyNameFormDetails.textContent;
     await t.expect(keyNameFromDetails).contains(keyNameBefore, 'The Zset Key Name not correct before editing');
     await browserPage.editKeyName(keyNameAfter);
@@ -79,7 +99,16 @@ test('Verify that user can edit Hash Key name', async t => {
     keyNameBefore = Common.generateWord(10);
     keyNameAfter = Common.generateWord(10);
 
-    await browserPage.addHashKey(keyNameBefore, keyTTL);
+    await apiKeyRequests.addHashKeyApi({
+        keyName: keyNameBefore,
+        ttl: keyTTL,
+        fields: [{
+            field: 'f',
+            value:'v',
+        }]
+    }, ossStandaloneConfig);
+    await browserPage.navigateToKey(keyNameBefore);
+
     let keyNameFromDetails = await browserPage.keyNameFormDetails.textContent;
     await t.expect(keyNameFromDetails).contains(keyNameBefore, 'The Hash Key Name not correct before editing');
     await browserPage.editKeyName(keyNameAfter);
@@ -90,7 +119,13 @@ test('Verify that user can edit List Key name', async t => {
     keyNameBefore = Common.generateWord(10);
     keyNameAfter = Common.generateWord(10);
 
-    await browserPage.addListKey(keyNameBefore, keyTTL);
+    await apiKeyRequests.addListKeyApi({
+        keyName: keyNameBefore,
+        elements: ['e'],
+        ttl: keyTTL,
+    }, ossStandaloneConfig);
+    await browserPage.navigateToKey(keyNameBefore);
+
     let keyNameFromDetails = await browserPage.keyNameFormDetails.textContent;
     await t.expect(keyNameFromDetails).contains(keyNameBefore, 'The List Key Name not correct before editing');
     await browserPage.editKeyName(keyNameAfter);
@@ -102,7 +137,13 @@ test('Verify that user can edit JSON Key name', async t => {
     keyNameAfter = Common.generateWord(10);
     const keyValue = '{"name":"xyz"}';
 
-    await browserPage.addJsonKey(keyNameBefore, keyValue, keyTTL);
+    await apiKeyRequests.addJsonKeyApi({
+        keyName: keyNameBefore,
+        data: keyValue,
+        ttl: keyTTL,
+    }, ossStandaloneConfig);
+    await browserPage.navigateToKey(keyNameBefore);
+
     let keyNameFromDetails = await browserPage.keyNameFormDetails.textContent;
     await t.expect(keyNameFromDetails).contains(keyNameBefore, 'The JSON Key Name not correct before editing');
     await browserPage.editKeyName(keyNameAfter);

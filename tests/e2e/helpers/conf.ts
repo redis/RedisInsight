@@ -16,7 +16,7 @@ export const samlUserPassword = process.env.E2E_SSO_PASSWORD || '';
 export const workingDirectory = process.env.RI_APP_FOLDER_ABSOLUTE_PATH
     || (joinPath(os.homedir(), process.env.RI_APP_FOLDER_NAME || '.redis-insight'));
 export const fileDownloadPath = joinPath(os.homedir(), 'Downloads');
-const uniqueId = chance.string({ length: 10 });
+export const uniqueId = chance.word({ length: 10 });
 
 export const ossStandaloneConfig = {
     host: process.env.OSS_STANDALONE_HOST || 'oss-standalone-v8',

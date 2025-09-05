@@ -3,7 +3,7 @@ import { Selector, t } from 'testcafe';
 export class FiltersDialog {
     // INPUTS
     delimiterCombobox = Selector('[data-testid=delimiter-combobox]');
-    delimiterComboboxInput = Selector('[data-test-subj=comboBoxSearchInput]');
+    delimiterComboboxInput = Selector('[data-testid=delimiter-combobox] input[data-test-subj=autoTagInput]');
     // BUTTONS
     treeViewDelimiterValueCancel = Selector('[data-testid=tree-view-cancel-btn]');
     treeViewDelimiterValueSave = Selector('[data-testid=tree-view-apply-btn]');
@@ -33,7 +33,7 @@ export class FiltersDialog {
      */
      async addDelimiterItem(delimiterName: string): Promise<void> {
         await t.click(this.delimiterComboboxInput);
-        await t.typeText(this.delimiterComboboxInput, delimiterName, { paste: true })
+        await t.typeText(this.delimiterComboboxInput, delimiterName, { paste: true }).pressKey('enter')
     }
 
     /**

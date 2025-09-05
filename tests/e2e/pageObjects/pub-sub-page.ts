@@ -20,7 +20,7 @@ export class PubSubPage extends InstancePage {
     ossClusterEmptyMessage = Selector('[data-testid=empty-messages-list-cluster]');
     //BUTTONS
     subscribeButton = Selector('[data-testid=subscribe-btn]').withText('Subscribe');
-    unsubscribeButton = Selector('[data-testid=subscribe-btn]').withText('Unsubscribe');
+    unsubscribeButton = Selector('[data-testid=subscribe-btn]');
     publishButton = Selector('[data-testid=publish-message-submit]');
     clearPubSubButton = Selector('[data-testid=clear-pubsub-btn]');
     scrollDownButton = Selector('[data-testid=messages-list-anchor-btn]');

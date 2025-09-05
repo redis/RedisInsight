@@ -3,7 +3,7 @@ import { InstancePage } from './instance-page';
 
 export class ClusterDetailsPage extends InstancePage {
     //CSS Selectors
-    cssTableRow = 'tr[class=euiTableRow]';
+    cssTableRow = 'tbody tr';
     //-------------------------------------------------------------------------------------------
     //DECLARATION OF SELECTORS
     //*Declare all elements/components of the relevant page.
@@ -11,13 +11,13 @@ export class ClusterDetailsPage extends InstancePage {
     //*The following categories are ordered alphabetically (Alerts, Buttons, Checkboxes, etc.).
     //-------------------------------------------------------------------------------------------
     //BUTTONS
-    overviewTab = Selector('[data-testid=analytics-tab-ClusterDetails]');
+    overviewTab = Selector('[data-testid=analytics-tabs] [role=tab] p').withExactText('Overview').parent('[role=tab]');
     // COMPONENTS
     clusterDetailsUptime = Selector('[data-testid=cluster-details-uptime]');
     //TABLE COMPONENTS
-    tableHeaderCell = Selector('[data-test-subj^=tableHeaderCell]');
+    tableHeaderCell = Selector('[data-testid=primary-nodes-table] thead th');
     primaryNodesTable = Selector('[data-testid=primary-nodes-table]');
-    tableRow = Selector('tr[class=euiTableRow]');
+    tableRow = Selector('tbody tr');
 
     /**
      * Get Primary nodes count in table

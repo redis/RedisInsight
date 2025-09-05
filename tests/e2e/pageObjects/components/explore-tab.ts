@@ -1,7 +1,7 @@
 import { Selector, t } from 'testcafe';
 
 export class ExploreTab {
-    dataStructureAccordionTutorialButton = Selector('[data-testid=accordion-button-ds]');
+    dataStructureAccordionTutorialButton = Selector('[data-testid=ri-accordion-header-ds]');
     internalLinkWorkingWithHashes = Selector('[data-testid=internal-link-ds-hashes]');
     redisStackTutorialsButton = Selector('[data-testid=accordion-button-redis_stack]');
     timeSeriesLink = Selector('[data-testid=accordion-button-ds-ts]');

@@ -18,13 +18,12 @@ fixture `JSON verifications at Workbench`
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneRedisearch);
         // Go to Workbench page
-        await t.click(browserPage.NavigationPanel.workbenchButton);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
     })
     .afterEach(async t => {
         // Clear and delete database
         await t.switchToMainWindow();
         await workbenchPage.sendCommandInWorkbench(`FT.DROPINDEX ${indexName} DD`);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneRedisearch);
     });
 test
     .skip('Verify that user can execute redisearch command for JSON data type in Workbench', async t => {

@@ -49,19 +49,18 @@ fixture(`Memory Efficiency Recommendations`)
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         // Go to Analysis Tools page
-        await t.click(myRedisDatabasePage.NavigationPanel.analysisPageButton);
+        await t.click(browserPage.NavigationTabs.analysisButton);
     })
     .afterEach(async() => {
         // Clear and delete database
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test
     .requestHooks(logger)
     .before(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneBigConfig);
         // Go to Analysis Tools page
-        await t.click(myRedisDatabasePage.NavigationPanel.analysisPageButton);
+        await t.click(browserPage.NavigationTabs.analysisButton);
         // Add cached scripts and generate new report
         await memoryEfficiencyPage.Cli.addCachedScripts(11);
         await t.click(memoryEfficiencyPage.newReportBtn);
@@ -70,7 +69,6 @@ test
     })
     .after(async() => {
         await browserPage.Cli.sendCommandInCli('SCRIPT FLUSH');
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneBigConfig);
     })('Recommendations displaying', async t => {
         await t.click(memoryEfficiencyPage.newReportBtn);
         // Verify that user can see Avoid dynamic Lua script recommendation when number_of_cached_scripts> 10
@@ -113,7 +111,7 @@ test.skip('No recommendations message', async t => {
     // Create Hash key and create report
     await browserPage.Cli.sendCommandInCli(command);
     // Go to Analysis Tools page
-    await t.click(myRedisDatabasePage.NavigationPanel.analysisPageButton);
+    await t.click(browserPage.NavigationTabs.analysisButton);
     await t.click(memoryEfficiencyPage.newReportBtn);
     // Go to Recommendations tab
     await t.click(memoryEfficiencyPage.recommendationsTab);
@@ -124,23 +122,26 @@ test
     .before(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         keyName = `recomKey-${Common.generateWord(10)}`;
-        await browserPage.addStringKey(stringKeyName, '2147476121', 'field');
+        await apiKeyRequests.addStringKeyApi({
+            keyName: stringKeyName,
+            value: 'field',
+            ttl: 2147476121,
+        }, ossStandaloneConfig);
         await t.click(myRedisDatabasePage.NavigationPanel.myRedisDBButton);
         await myRedisDatabasePage.AddRedisDatabaseDialog.addLogicalRedisDatabase(ossStandaloneConfig, index);
         await myRedisDatabasePage.clickOnDBByName(`${ossStandaloneConfig.databaseName} [db${index}]`);
-        await browserPage.addHashKey(keyName, '2147476121', 'field', 'value');
+        await browserPage.Cli.sendCommandInCli(`SET ${keyName} 1`);
     })
     .after(async t => {
         // Clear and delete database
-        await t.click(myRedisDatabasePage.NavigationPanel.browserButton);
+        await t.click(browserPage.NavigationTabs.browserButton);
         await browserPage.deleteKeyByName(keyName);
         await databaseHelper.deleteCustomDatabase(`${ossStandaloneConfig.databaseName} [${index}]`);
         await myRedisDatabasePage.clickOnDBByName(ossStandaloneConfig.databaseName);
         await browserPage.deleteKeyByName(stringKeyName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     })('Avoid using logical databases recommendation', async t => {
         // Go to Analysis Tools page
-        await t.click(myRedisDatabasePage.NavigationPanel.analysisPageButton);
+        await t.click(browserPage.NavigationTabs.analysisButton);
         await t.click(memoryEfficiencyPage.newReportBtn);
         // Go to Recommendations tab
         await t.click(memoryEfficiencyPage.recommendationsTab);
@@ -154,11 +155,9 @@ test
     .before(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneV5Config);
         // Go to Analysis Tools page and create new report and open recommendations
-        await t.click(myRedisDatabasePage.NavigationPanel.analysisPageButton);
+        await t.click(browserPage.NavigationTabs.analysisButton);
         await t.click(memoryEfficiencyPage.newReportBtn);
         await t.click(memoryEfficiencyPage.recommendationsTab);
-    }).after(async() => {
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneV5Config);
     })('Verify that user can upvote recommendations', async t => {
         const notUsefulVoteOption = 'not useful';
         const usefulVoteOption = 'useful';
@@ -188,7 +187,7 @@ test
         await browserPage.searchByKeyName(keyName);
         await t.expect(await browserPage.isKeyIsDisplayedInTheList(keyName)).ok('The JSON key is not added');
         // Go to Analysis Tools page
-        await t.click(myRedisDatabasePage.NavigationPanel.analysisPageButton);
+        await t.click(browserPage.NavigationTabs.analysisButton);
         await t.click(memoryEfficiencyPage.newReportBtn);
         // Go to Recommendations tab
         await t.click(memoryEfficiencyPage.recommendationsTab);
