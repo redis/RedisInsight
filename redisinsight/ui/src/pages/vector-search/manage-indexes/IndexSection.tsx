@@ -71,22 +71,21 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
   return (
     <Section.Compose
       collapsible
-      collapsedInfo={<CategoryValueList categoryValueList={indexSummaryInfo} />}
-      content={<IndexAttributesList indexInfo={indexInfo} />}
-      // TODO: Add FieldTag component to list the types of the different fields
       defaultOpen={false}
       onOpenChange={handleOpenChange}
-      onAction={() => setIsPopoverOpen(true)}
       data-testid={`manage-indexes-list--item--${indexName}`}
       {...rest}
     >
       <Section.Header.Compose
         collapsedInfo={
-          <CategoryValueList categoryValueList={indexSummaryInfo} />
+          <div data-testid="index-collapsed-info">
+            <CategoryValueList categoryValueList={indexSummaryInfo} />
+          </div>
         }
       >
         <Section.Header.Group>
           <Section.Header.Label label={formatLongName(indexName)} />
+          {/* // TODO: Add FieldTag component to list the types of the different fields */}
         </Section.Header.Group>
         <Section.Header.Group>
           <Section.Header.ActionButton onClick={() => setIsPopoverOpen(true)}>
