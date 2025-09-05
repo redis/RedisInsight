@@ -11,7 +11,6 @@ permissions:
 
 jobs:
   build-docker:
-    if: needs.approval-dedupe.outputs.mode == 'run'
     uses: ./.github/workflows/pipeline-build-docker.yml
     secrets: inherit
     with:
