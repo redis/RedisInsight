@@ -15,7 +15,7 @@ import { TextInput } from 'uiSrc/components/base/inputs'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { PlayFilledIcon } from 'uiSrc/components/base/icons'
-import { bikesIndexFieldsBoxes } from './config'
+import { bikesIndexFieldsBoxes } from './data'
 import { CreateIndexStepScreenWrapper, SearchInputWrapper } from './styles'
 import { PreviewCommandDrawer } from './PreviewCommandDrawer'
 import { IStepComponent, StepComponentProps } from '../types'
@@ -78,7 +78,7 @@ export const CreateIndexStep: IStepComponent = ({
   }
 
   return (
-    <CreateIndexStepScreenWrapper>
+    <CreateIndexStepScreenWrapper as="div" data-testid="create-index-step2">
       <FlexItem direction="column" $gap="xxl">
         <FlexItem direction="column" $gap="m">
           <Text>Vector index</Text>

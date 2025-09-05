@@ -11,7 +11,10 @@ const VectorSearchCreateIndexPage = () => {
   })
 
   return (
-    <VectorSearchPageWrapper>
+    <VectorSearchPageWrapper
+      as="div"
+      data-testid="vector-search--create-index-page"
+    >
       <VectorSearchCreateIndex />
     </VectorSearchPageWrapper>
   )
