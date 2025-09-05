@@ -44,14 +44,17 @@ const VectorSearchPage = () => {
 
   if (!hasRedisearch) {
     return (
-      <VectorSearchPageWrapper>
+      <VectorSearchPageWrapper
+        as="div"
+        data-testid="vector-search-page--rqe-not-available"
+      >
         <RqeNotAvailableCard />
       </VectorSearchPageWrapper>
     )
   }
 
   return (
-    <VectorSearchPageWrapper>
+    <VectorSearchPageWrapper as="div" data-testid="vector-search-page">
       <VectorSearchQuery
         instanceId={instanceId}
         defaultSavedQueriesIndex={defaultSavedQueriesIndex}
