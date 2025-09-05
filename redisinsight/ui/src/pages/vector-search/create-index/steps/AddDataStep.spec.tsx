@@ -133,10 +133,20 @@ describe('AddDataStep', () => {
 
       expect(mockSetParameters).toHaveBeenCalledWith({
         dataContent: SampleDataContent.E_COMMERCE_DISCOVERY,
+        indexFields: [
+          'model',
+          'brand',
+          'price',
+          'type',
+          'material',
+          'weight',
+          'description_embeddings',
+        ],
+        indexName: 'idx:bikes_vss',
       })
     })
 
-    it('should not call setParameters when Movie Recommendations (disabled) is clicked', () => {
+    it('should call setParameters when Movie Recommendations is clicked', () => {
       render(<AddDataStep {...defaultProps} />)
 
       const movieRecommendationsOption = screen
@@ -144,16 +154,18 @@ describe('AddDataStep', () => {
         .closest('div')
       fireEvent.click(movieRecommendationsOption!)
 
-      // Disabled options should not trigger onClick
-      expect(mockSetParameters).not.toHaveBeenCalled()
+      expect(mockSetParameters).toHaveBeenCalledWith({
+        dataContent: SampleDataContent.CONTENT_RECOMMENDATIONS,
+        indexFields: ['title', 'genres', 'plot', 'year', 'embedding'],
+        indexName: 'idx:movies_vss',
+      })
     })
 
-    it('should show "Coming soon" text for disabled options', () => {
+    it('should show "Coming soon" text for disabled Vector set', () => {
       render(<AddDataStep {...defaultProps} />)
 
-      // There should be 3 "Coming soon" texts - Vector Set, and Movie Recommendations
       const comingSoonTexts = screen.getAllByText('Coming soon')
-      expect(comingSoonTexts).toHaveLength(2)
+      expect(comingSoonTexts).toHaveLength(1)
     })
   })
 

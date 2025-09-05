@@ -114,4 +114,24 @@ describe('useCreateIndex', () => {
     expect(result.current.error?.message).toBe('Execution failed')
     expect(result.current.loading).toBe(false)
   })
+
+  it('should handle movies data content correctly', async () => {
+    const mockData = [{ id: '1', databaseId: 'test-instance-id' }]
+    mockLoad.mockResolvedValue(undefined)
+    mockExecute.mockResolvedValue(mockData)
+
+    const { result } = renderHook(() => useCreateIndex())
+
+    const moviesParams = {
+      ...defaultParams,
+      dataContent: SampleDataContent.CONTENT_RECOMMENDATIONS,
+    }
+
+    await act(async () => {
+      await result.current.run(moviesParams)
+    })
+
+    expect(mockLoad).toHaveBeenCalledWith('test-instance-id', 'movies')
+    expect(result.current.success).toBe(true)
+  })
 })

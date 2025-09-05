@@ -101,6 +101,25 @@ describe('CreateIndexStep', () => {
     expect(screen.getByText('weight')).toBeInTheDocument()
   })
 
+  it('should render field boxes for the movies index', () => {
+    render(
+      <CreateIndexStep
+        {...defaultProps}
+        parameters={{
+          ...defaultProps.parameters,
+          dataContent: SampleDataContent.CONTENT_RECOMMENDATIONS,
+          indexName: PresetDataType.MOVIES,
+        }}
+      />,
+    )
+
+    expect(screen.getByText('title')).toBeInTheDocument()
+    expect(screen.getByText('genres')).toBeInTheDocument()
+    expect(screen.getByText('plot')).toBeInTheDocument()
+    expect(screen.getByText('year')).toBeInTheDocument()
+    expect(screen.getByText('embedding')).toBeInTheDocument()
+  })
+
   it('should render field descriptions', () => {
     render(<CreateIndexStep {...defaultProps} />)
 
