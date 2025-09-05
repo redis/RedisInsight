@@ -1,0 +1,15 @@
+version: "3.4"
+
+networks:
+  default:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.31.100.0/24
+          gateway: 172.31.100.1
+  ssh:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.33.100.0/24
+          gateway: 172.33.100.1

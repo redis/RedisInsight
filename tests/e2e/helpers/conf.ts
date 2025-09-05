@@ -19,7 +19,7 @@ export const fileDownloadPath = joinPath(os.homedir(), 'Downloads');
 export const uniqueId = chance.word({ length: 10 });
 
 export const ossStandaloneConfig = {
-    host: process.env.OSS_STANDALONE_HOST || 'oss-standalone-v8',
+    host: process.env.OSS_STANDALONE_HOST || 'oss-standalone',
     port: process.env.OSS_STANDALONE_PORT || '6379',
     databaseName: `${process.env.OSS_STANDALONE_DATABASE_NAME || 'test_standalone'}-${uniqueId}`,
     databaseUsername: process.env.OSS_STANDALONE_USERNAME,
@@ -50,6 +50,7 @@ export const ossStandaloneV7Config = {
     databasePassword: process.env.OSS_STANDALONE_V7_PASSWORD
 };
 
+// todo: double check. currently it is redis v8
 export const ossStandaloneV6Config = {
     host: process.env.OSS_STANDALONE_V8_HOST || 'oss-standalone',
     port: process.env.OSS_STANDALONE_V8_PORT || '6379',

@@ -10,16 +10,16 @@ permissions:
   contents: read
 
 jobs:
-  build-docker:
-    uses: ./.github/workflows/pipeline-build-docker.yml
-    secrets: inherit
-    with:
-      debug: ${{ inputs.debug || false }}
-      for_e2e_tests: true
+#  build-docker:
+#    uses: ./.github/workflows/pipeline-build-docker.yml
+#    secrets: inherit
+#    with:
+#      debug: ${{ inputs.debug || false }}
+#      for_e2e_tests: true
 
-  e2e-docker-tests:
-    needs: build-docker
-    uses: ./.github/workflows/tests-e2e-docker-debug.yml
+  e2e-docker-tests-smoke:
+#    needs: build-docker
+    uses: ./.github/workflows/tests-e2e-docker-smoke.yml
     secrets: inherit
     with:
       debug: ${{ inputs.debug || false }}
