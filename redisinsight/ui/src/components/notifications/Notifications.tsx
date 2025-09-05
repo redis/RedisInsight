@@ -71,7 +71,7 @@ const Notifications = () => {
           actions: {
             primary: {
               closes: true,
-              label: 'Ok',
+              label: 'OK',
               onClick: handleClose,
             },
           },
