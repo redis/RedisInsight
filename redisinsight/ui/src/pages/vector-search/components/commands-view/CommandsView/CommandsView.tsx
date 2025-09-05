@@ -83,7 +83,7 @@ const CommandsView = (props: Props) => {
   }
 
   return (
-    <StyledWrapper>
+    <StyledWrapper as="div" data-testid="commands-view">
       {!isResultsLoaded && (
         <ProgressBarLoader color="primary" data-testid="progress-wb-history" />
       )}
@@ -158,6 +158,7 @@ const CommandsView = (props: Props) => {
                     })
                   }}
                   onQueryDelete={() => onQueryDelete(id)}
+                  data-testid={`query-card-${id}`}
                 />
               ),
             )
