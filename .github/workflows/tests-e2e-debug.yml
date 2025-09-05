@@ -1,0 +1,36 @@
+name: ✅ E2E Tests
+run-name: >
+  E2E • ${{ github.event_name == 'pull_request_review'
+    && format('PR #{0} {1}', github.event.pull_request.number, github.event.pull_request.title)
+    || github.ref_name }} • by ${{ github.actor }}
+
+on:
+  push:
+    branches:
+      - 'e2e/**'
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  build-docker:
+    if: needs.approval-dedupe.outputs.mode == 'run'
+    uses: ./.github/workflows/pipeline-build-docker.yml
+    secrets: inherit
+    with:
+      debug: ${{ inputs.debug || false }}
+      for_e2e_tests: true
+
+  e2e-docker-tests:
+    needs: build-docker
+    uses: ./.github/workflows/tests-e2e-docker-debug.yml
+    secrets: inherit
+    with:
+      debug: ${{ inputs.debug || false }}
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove all artifacts
+        uses: ./.github/actions/remove-artifacts
