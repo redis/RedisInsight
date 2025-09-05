@@ -16,6 +16,7 @@ import { apiUrl, isElectron, electronExecutablePath } from '../helpers/conf'
 import { generateApiClient } from '../helpers/api/http-client'
 import { APIKeyRequests } from '../helpers/api/api-keys'
 import { DatabaseAPIRequests } from '../helpers/api/api-databases'
+import { APIIndexRequests } from '../helpers/api/api-indexes'
 import { UserAgreementDialog } from '../pageObjects'
 
 // Coverage type declaration
@@ -36,6 +37,7 @@ type CommonFixtures = {
         apiClient: AxiosInstance
         keyService: APIKeyRequests
         databaseService: DatabaseAPIRequests
+        indexService: APIIndexRequests
     }
 }
 
@@ -72,8 +74,9 @@ const commonTest = base.extend<CommonFixtures>({
         const apiClient = generateApiClient(apiUrl, windowId)
         const databaseService = new DatabaseAPIRequests(apiClient)
         const keyService = new APIKeyRequests(apiClient, databaseService)
+        const indexService = new APIIndexRequests(apiClient, databaseService)
 
-        await use({ apiClient, keyService, databaseService })
+        await use({ apiClient, keyService, databaseService, indexService })
     },
     forEachTest: [
         async ({ page }, use) => {
