@@ -84,16 +84,7 @@ jobs:
           echo "$testFiles" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
-      - name: Pull web images
-        timeout-minutes: 80
-        run: |
-          docker compose \
-          -f tests/e2e/docker.web.docker-compose.yml \
-          -f tests/e2e/networks.docker-compose.yml \
-          pull
-
       - name: Build web images
-        timeout-minutes: 80
         run: |
           docker compose \
           -f tests/e2e/docker.web.docker-compose.yml \
@@ -101,7 +92,6 @@ jobs:
           build
 
       - name: Pull RTE images
-        timeout-minutes: 80
         run: |
           docker compose \
           -f tests/e2e/smoke.rte.docker-compose.yml \
@@ -109,7 +99,6 @@ jobs:
           pull
 
       - name: Build RTE images
-        timeout-minutes: 80
         run: |
           docker compose \
           -f tests/e2e/smoke.rte.docker-compose.yml \
