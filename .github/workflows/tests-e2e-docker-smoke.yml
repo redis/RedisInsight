@@ -86,21 +86,21 @@ jobs:
 
       - name: Build web images
         run: |
-          docker compose \
+          docker compose --profile e2e \
           -f tests/e2e/docker.web.docker-compose.yml \
           -f tests/e2e/networks.docker-compose.yml \
           build
 
       - name: Pull RTE images
         run: |
-          docker compose \
+          docker compose --profile e2e \
           -f tests/e2e/smoke.rte.docker-compose.yml \
           -f tests/e2e/networks.docker-compose.yml \
           pull
 
       - name: Build RTE images
         run: |
-          docker compose \
+          docker compose --profile e2e \
           -f tests/e2e/smoke.rte.docker-compose.yml \
           -f tests/e2e/networks.docker-compose.yml \
           build
@@ -108,7 +108,7 @@ jobs:
       - name: Run tests
         timeout-minutes: 80
         run: |
-          docker compose \
+          docker compose --profile e2e \
           -f tests/e2e/smoke.rte.docker-compose.yml \
           -f tests/e2e/docker.web.docker-compose.yml \
           -f tests/e2e/networks.docker-compose.yml \
