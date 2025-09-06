@@ -32,8 +32,8 @@ services:
       E2E_CLOUD_API_SECRET_KEY: $E2E_CLOUD_API_SECRET_KEY
       REMOTE_FOLDER_PATH: "/root/remote"
     command: [
-#        './wait-for-it.sh', 'redis-enterprise:12000', '-s', '-t', '240',
-#        '--',
+        './wait-for-it.sh', "${SLOWEST_SERVICE:oss-standalone:6379}", '-s', '-t', '240',
+        '--',
         'npm', 'run', 'test:chrome:ci'
     ]
 

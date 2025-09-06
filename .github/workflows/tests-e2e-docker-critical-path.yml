@@ -29,6 +29,7 @@ env:
   TEST_BIG_DB_DUMP: ${{ secrets.TEST_BIG_DB_DUMP }}
   E2E_VOLUME_PATH: '/usr/src/app'
   REPORT_NAME: 'report-critical-path-docker-node'
+  SLOWEST_SERVICE: 'oss-standalone-big:6379'
 
 jobs:
   e2e-docker-tests:
