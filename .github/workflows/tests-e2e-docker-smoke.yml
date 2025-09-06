@@ -28,7 +28,7 @@ env:
   SLACK_TEST_REPORT_KEY: ${{ secrets.SLACK_TEST_REPORT_KEY }}
   TEST_BIG_DB_DUMP: ${{ secrets.TEST_BIG_DB_DUMP }}
   E2E_VOLUME_PATH: '/usr/src/app'
-  REPORT_NAME: 'report-docker-node'
+  REPORT_NAME: 'report-smoke-docker-node'
 
 jobs:
   e2e-docker-tests:
@@ -132,7 +132,7 @@ jobs:
         uses: dorny/test-reporter@v1
         if: always()
         with:
-          name: 'Test results: E2E:Smoke (docker) ${{ matrix.parallel }}th node'
+          name: 'Report: E2E Smoke (docker) ${{ matrix.parallel }}th node'
           path: /usr/src/app/results/results.xml
           reporter: java-junit
           list-tests: 'failed'

@@ -54,9 +54,17 @@ services:
       ssh:
         ipv4_address: 172.33.100.117
 
+  # todo: investigate the Redis version and Graph module tests based on it
   oss-standalone-empty:
     logging: *logging
-    image: redis:8.2.1-alpine
+    image: redislabs/redismod
+    command: [
+      "--loadmodule", "/usr/lib/redis/modules/redisearch.so",
+      "--loadmodule", "/usr/lib/redis/modules/redisgraph.so",
+      "--loadmodule", "/usr/lib/redis/modules/redistimeseries.so",
+      "--loadmodule", "/usr/lib/redis/modules/rejson.so",
+      "--loadmodule", "/usr/lib/redis/modules/redisbloom.so"
+    ]
     ports:
       - "8105:6379"
     networks:
