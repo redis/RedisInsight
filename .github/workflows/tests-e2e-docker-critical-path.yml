@@ -74,9 +74,12 @@ jobs:
         working-directory: ./tests/e2e
         run: |
           export NODE_INDEX=${{ matrix.parallel }}
-          testFiles=$(find tests/web/critical-path -type f -name '*.e2e.ts' | sort | awk "NR % 4 == ${{ matrix.parallel }}")
+          testFiles=$(find tests/web/critical-path -type f -name '*.e2e.ts' \
+            | sort \
+            | awk "NR % 4 == $(( ${{ matrix.parallel }} - 1 ))")
 
-          echo $testFiles
+          echo "Selected files:"
+          echo "$testFiles"
 
           # Multi-Line value
           echo "TEST_FILES<<EOF" >> $GITHUB_ENV
@@ -131,7 +134,7 @@ jobs:
         uses: dorny/test-reporter@v1
         if: always()
         with:
-          name: 'Test results: E2E:Smoke (docker) ${{ matrix.parallel }}th node'
+          name: 'Test results: E2E: Critical Path (docker) ${{ matrix.parallel }}th node'
           path: /usr/src/app/results/results.xml
           reporter: java-junit
           list-tests: 'failed'
