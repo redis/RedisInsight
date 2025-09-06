@@ -45,6 +45,7 @@ const SearchDatabasesList = () => {
             item.host?.toString()?.indexOf(value) !== -1 ||
             item.port?.toString()?.indexOf(value) !== -1 ||
             (item.connectionType &&
+              CONNECTION_TYPE_DISPLAY[item.connectionType] &&
               CONNECTION_TYPE_DISPLAY[item.connectionType]
                 ?.toLowerCase()
                 ?.indexOf(value) !== -1) ||
