@@ -118,7 +118,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: report-docker-node-${{ matrix.parallel }}
+          name: ${{ env.REPORT_NAME }}-${{ matrix.parallel }}
           path: /usr/src/app/report
 
       - name: Send report to Slack
