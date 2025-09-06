@@ -1,4 +1,10 @@
 name: Tests E2E Docker
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
 on:
   workflow_call:
     inputs:
@@ -72,6 +78,8 @@ jobs:
       - name: Generate short list of the test files
         working-directory: ./tests/e2e
         run: |
+          export NODE_INDEX=${{ matrix.parallel }}
+
           testFiles="tests/web/smoke/**/*.e2e.ts"
 
           echo $testFiles
@@ -81,28 +89,34 @@ jobs:
           echo "$testFiles" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
+      - name: Pull web images
+        timeout-minutes: 80
+        run: |
+          docker compose \
+          -f tests/e2e/docker.web.docker-compose.yml \
+          -f tests/e2e/networks.docker-compose.yml \
+          pull
+
       - name: Build web images
         timeout-minutes: 80
         run: |
-          export NODE_INDEX=${{ matrix.parallel }}
-
-          TEST_BIG_DB_DUMP=$TEST_BIG_DB_DUMP \
-          RI_SERVER_TLS_CERT="$RI_SERVER_TLS_CERT" \
-          RI_SERVER_TLS_KEY="$RI_SERVER_TLS_KEY" \
-          docker compose --profile e2e \
+          docker compose \
           -f tests/e2e/docker.web.docker-compose.yml \
           -f tests/e2e/networks.docker-compose.yml \
           build
 
+      - name: Pull RTE images
+        timeout-minutes: 80
+        run: |
+          docker compose \
+          -f tests/e2e/smoke.rte.docker-compose.yml \
+          -f tests/e2e/networks.docker-compose.yml \
+          pull
+
       - name: Build RTE images
         timeout-minutes: 80
         run: |
-          export NODE_INDEX=${{ matrix.parallel }}
-
-          TEST_BIG_DB_DUMP=$TEST_BIG_DB_DUMP \
-          RI_SERVER_TLS_CERT="$RI_SERVER_TLS_CERT" \
-          RI_SERVER_TLS_KEY="$RI_SERVER_TLS_KEY" \
-          docker compose --profile e2e \
+          docker compose \
           -f tests/e2e/smoke.rte.docker-compose.yml \
           -f tests/e2e/networks.docker-compose.yml \
           build
@@ -110,12 +124,7 @@ jobs:
       - name: Run tests
         timeout-minutes: 80
         run: |
-          export NODE_INDEX=${{ matrix.parallel }}
-
-          TEST_BIG_DB_DUMP=$TEST_BIG_DB_DUMP \
-          RI_SERVER_TLS_CERT="$RI_SERVER_TLS_CERT" \
-          RI_SERVER_TLS_KEY="$RI_SERVER_TLS_KEY" \
-          docker compose --profile e2e \
+          docker compose \
           -f tests/e2e/smoke.rte.docker-compose.yml \
           -f tests/e2e/docker.web.docker-compose.yml \
           -f tests/e2e/networks.docker-compose.yml \
