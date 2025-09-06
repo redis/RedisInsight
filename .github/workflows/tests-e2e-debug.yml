@@ -8,6 +8,8 @@ on:
 permissions:
   actions: read
   contents: read
+  checks: write
+  pull-requests: write
 
 jobs:
 #  build-docker:

@@ -1,10 +1,5 @@
 name: Tests E2E Docker
 
-permissions:
-  contents: read
-  checks: write
-  pull-requests: write
-
 on:
   workflow_call:
     inputs:
