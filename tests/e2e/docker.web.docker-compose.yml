@@ -1,5 +1,3 @@
-version: "3.4"
-
 services:
   e2e:
     profiles:
@@ -43,7 +41,9 @@ services:
       - "host.docker.internal:host-gateway"
     logging:
       driver: none
-    image: redisinsight:amd64
+    build:
+      context: .
+      dockerfile_inline: FROM redisinsight:amd64
     env_file:
       - ./.env
     environment:
