@@ -1,11 +1,8 @@
-version: "3.4"
-
 x-logging:
   logging: &logging
     driver: none
 
 services:
-  # oss standalone
   oss-standalone:
     logging: *logging
     image: redis:8.2.1-alpine

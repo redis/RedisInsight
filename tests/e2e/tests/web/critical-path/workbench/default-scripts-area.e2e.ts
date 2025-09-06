@@ -2,7 +2,7 @@ import { Chance } from 'chance';
 import { DatabaseHelper } from '../../../../helpers/database';
 import { BrowserPage, MyRedisDatabasePage, WorkbenchPage } from '../../../../pageObjects';
 import { ExploreTabs, rte } from '../../../../helpers/constants';
-import { commonUrl, ossStandaloneRedisearch } from '../../../../helpers/conf';
+import { commonUrl, ossStandaloneConfig } from '../../../../helpers/conf';
 import { DatabaseAPIRequests } from '../../../../helpers/api/api-database';
 import { Telemetry } from '../../../../helpers/telemetry';
 
@@ -45,7 +45,7 @@ fixture `Default scripts area at Workbench`
     .meta({ type: 'critical_path', rte: rte.standalone })
     .page(commonUrl)
     .beforeEach(async t => {
-        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneRedisearch);
+        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         // Go to Workbench page
         await t.click(browserPage.NavigationTabs.workbenchButton);
     })

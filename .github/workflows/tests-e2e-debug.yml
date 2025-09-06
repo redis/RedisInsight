@@ -20,8 +20,31 @@ jobs:
 #      for_e2e_tests: true
 
   e2e-docker-tests-smoke:
+    name: "E2E: Smoke (Docker)"
 #    needs: build-docker
     uses: ./.github/workflows/tests-e2e-docker-smoke.yml
     secrets: inherit
     with:
       debug: ${{ inputs.debug || false }}
+
+  e2e-docker-tests-critical-path:
+    name: "E2E: Critical Path (Docker)"
+#    needs: build-docker
+    uses: ./.github/workflows/tests-e2e-docker-critical-path.yml
+    secrets: inherit
+    with:
+      debug: ${{ inputs.debug || false }}
+
+  # Remove artifacts from github actions
+  remove-artifacts:
+    name: Remove artifacts
+    needs:
+      [
+        e2e-docker-tests-smoke,
+        e2e-docker-tests-critical-path,
+      ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove all artifacts
+        uses: ./.github/actions/remove-artifacts

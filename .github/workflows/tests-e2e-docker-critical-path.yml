@@ -1,4 +1,5 @@
-name: Tests E2E Docker
+name: "E2E: Critical Path (Docker)"
+
 on:
   workflow_call:
     inputs:
@@ -37,7 +38,7 @@ jobs:
       fail-fast: false
       matrix:
         # Number of threads to run tests
-        parallel: [0, 1, 2, 3]
+        parallel: [1, 2, 3, 4]
 
     steps:
       - uses: actions/checkout@v4
@@ -52,12 +53,18 @@ jobs:
         if: inputs.debug
         with:
           detached: true
-
+#
+#      - name: Download Docker Artifacts
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: docker-builds
+#          path: ./release
+#
       - name: Download Docker Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: docker-builds
-          path: ./release
+        run: |
+          mkdir -p ./release/docker
+          curl -L "https://s3.us-east-1.amazonaws.com/redisinsight.test/public/_tmp/docker-linux-alpine.amd64.tar" \
+            -o ./release/docker/docker-linux-alpine.amd64.tar
 
       - name: Load built docker image from workspace
         run: |
@@ -66,7 +73,8 @@ jobs:
       - name: Generate short list of the test files
         working-directory: ./tests/e2e
         run: |
-          testFiles=$(find tests/web -type f -name '*.e2e.ts' | sort | awk "NR % 4 == ${{ matrix.parallel }}")
+          export NODE_INDEX=${{ matrix.parallel }}
+          testFiles=$(find tests/web/critical-path -type f -name '*.e2e.ts' | sort | awk "NR % 4 == ${{ matrix.parallel }}")
 
           echo $testFiles
 
@@ -75,17 +83,34 @@ jobs:
           echo "$testFiles" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
+      - name: Build web images
+        run: |
+          docker compose --profile e2e \
+          -f tests/e2e/docker.web.docker-compose.yml \
+          -f tests/e2e/rte.networks.docker-compose.yml \
+          build
+
+      - name: Pull RTE images
+        run: |
+          docker compose --profile e2e \
+          -f tests/e2e/rte.critical-path.docker-compose.yml \
+          -f tests/e2e/rte.networks.docker-compose.yml \
+          pull
+
+      - name: Build RTE images
+        run: |
+          docker compose --profile e2e \
+          -f tests/e2e/rte.critical-path.docker-compose.yml \
+          -f tests/e2e/rte.networks.docker-compose.yml \
+          build
+
       - name: Run tests
         timeout-minutes: 80
         run: |
-          export NODE_INDEX=${{ matrix.parallel }}
-
-          TEST_BIG_DB_DUMP=$TEST_BIG_DB_DUMP \
-          RI_SERVER_TLS_CERT="$RI_SERVER_TLS_CERT" \
-          RI_SERVER_TLS_KEY="$RI_SERVER_TLS_KEY" \
           docker compose --profile e2e \
-          -f tests/e2e/rte.docker-compose.yml \
+          -f tests/e2e/rte.critical-path.docker-compose.yml \
           -f tests/e2e/docker.web.docker-compose.yml \
+          -f tests/e2e/rte.networks.docker-compose.yml \
           up --abort-on-container-exit --force-recreate
 
       - name: Upload Test Report
@@ -101,11 +126,12 @@ jobs:
           node ./.github/e2e-results.js
           curl -H "Content-type: application/json" --data @e2e.report.json -H "Authorization: Bearer $SLACK_TEST_REPORT_KEY" -X POST https://slack.com/api/chat.postMessage
 
+      # todo: why do we need this report? we already have html report on s3
       - name: Generate test results for ${{ matrix.parallel }}th node
         uses: dorny/test-reporter@v1
         if: always()
         with:
-          name: 'Test results: E2E (docker) ${{ matrix.parallel }}th node'
+          name: 'Test results: E2E:Smoke (docker) ${{ matrix.parallel }}th node'
           path: /usr/src/app/results/results.xml
           reporter: java-junit
           list-tests: 'failed'

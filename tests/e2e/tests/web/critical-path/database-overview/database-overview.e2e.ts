@@ -10,7 +10,7 @@ import {
 import {
     commonUrl,
     ossStandaloneConfig,
-    ossStandaloneRedisearch,
+    ossStandaloneV5Config,
     ossStandaloneBigConfig
 } from '../../../../helpers/conf';
 import { DatabaseAPIRequests } from '../../../../helpers/api/api-database';
@@ -51,9 +51,9 @@ test
         // Verify that user can be redirected to db list page by clicking on "Databases" link in the top left corner
         await t.click(browserPage.OverviewPanel.myRedisDBLink);
         //Add database with different modules
-        await databaseAPIRequests.addNewStandaloneDatabaseApi(ossStandaloneRedisearch);
+        await databaseAPIRequests.addNewStandaloneDatabaseApi(ossStandaloneV5Config);
         await browserPage.reloadPage();
-        await myRedisDatabasePage.clickOnDBByName(ossStandaloneRedisearch.databaseName);
+        await myRedisDatabasePage.clickOnDBByName(ossStandaloneV5Config.databaseName);
         await t.hover(browserPage.OverviewPanel.databaseInfoIcon);
         await t.expect(browserPage.OverviewPanel.databaseInfoToolTip.visible).ok('Tooltip is not opened');
         countOfModules = await moduleIcons.count;

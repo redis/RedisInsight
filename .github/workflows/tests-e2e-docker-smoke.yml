@@ -1,4 +1,4 @@
-name: Tests E2E Docker
+name: "E2E: Smoke (Docker)"
 
 on:
   workflow_call:
@@ -88,30 +88,30 @@ jobs:
         run: |
           docker compose --profile e2e \
           -f tests/e2e/docker.web.docker-compose.yml \
-          -f tests/e2e/networks.docker-compose.yml \
+          -f tests/e2e/rte.networks.docker-compose.yml \
           build
 
       - name: Pull RTE images
         run: |
           docker compose --profile e2e \
-          -f tests/e2e/smoke.rte.docker-compose.yml \
-          -f tests/e2e/networks.docker-compose.yml \
+          -f tests/e2e/rte.smoke.docker-compose.yml \
+          -f tests/e2e/rte.networks.docker-compose.yml \
           pull
 
       - name: Build RTE images
         run: |
           docker compose --profile e2e \
-          -f tests/e2e/smoke.rte.docker-compose.yml \
-          -f tests/e2e/networks.docker-compose.yml \
+          -f tests/e2e/rte.smoke.docker-compose.yml \
+          -f tests/e2e/rte.networks.docker-compose.yml \
           build
 
       - name: Run tests
         timeout-minutes: 80
         run: |
           docker compose --profile e2e \
-          -f tests/e2e/smoke.rte.docker-compose.yml \
+          -f tests/e2e/rte.smoke.docker-compose.yml \
           -f tests/e2e/docker.web.docker-compose.yml \
-          -f tests/e2e/networks.docker-compose.yml \
+          -f tests/e2e/rte.networks.docker-compose.yml \
           up --abort-on-container-exit --force-recreate
 
       - name: Upload Test Report
@@ -127,11 +127,12 @@ jobs:
           node ./.github/e2e-results.js
           curl -H "Content-type: application/json" --data @e2e.report.json -H "Authorization: Bearer $SLACK_TEST_REPORT_KEY" -X POST https://slack.com/api/chat.postMessage
 
+      # todo: why do we need this report? we already have html report on s3
       - name: Generate test results for ${{ matrix.parallel }}th node
         uses: dorny/test-reporter@v1
         if: always()
         with:
-          name: 'Test results: E2E (docker) ${{ matrix.parallel }}th node'
+          name: 'Test results: E2E:Smoke (docker) ${{ matrix.parallel }}th node'
           path: /usr/src/app/results/results.xml
           reporter: java-junit
           list-tests: 'failed'

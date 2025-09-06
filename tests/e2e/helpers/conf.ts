@@ -42,30 +42,22 @@ export const ossStandaloneV5Config = {
     databasePassword: process.env.OSS_STANDALONE_V5_PASSWORD
 };
 
-export const ossStandaloneV7Config = {
-    host: process.env.OSS_STANDALONE_V7_HOST || 'oss-standalone-v7',
-    port: process.env.OSS_STANDALONE_V7_PORT || '6379',
-    databaseName: `${process.env.OSS_STANDALONE_V7_DATABASE_NAME || 'test_standalone-v7'}-${uniqueId}`,
-    databaseUsername: process.env.OSS_STANDALONE_V7_USERNAME,
-    databasePassword: process.env.OSS_STANDALONE_V7_PASSWORD
-};
-
-// todo: double check. currently it is redis v8
-export const ossStandaloneV6Config = {
-    host: process.env.OSS_STANDALONE_V8_HOST || 'oss-standalone',
-    port: process.env.OSS_STANDALONE_V8_PORT || '6379',
-    databaseName: `${process.env.OSS_STANDALONE_V8_DATABASE_NAME || 'test_standalone-v6'}-${uniqueId}`,
-    databaseUsername: process.env.OSS_STANDALONE_V8_USERNAME,
-    databasePassword: process.env.OSS_STANDALONE_V8_PASSWORD
-};
-
-export const ossStandaloneRedisearch = {
-    host: process.env.OSS_STANDALONE_REDISEARCH_HOST || 'oss-standalone-redisearch',
-    port: process.env.OSS_STANDALONE_REDISEARCH_PORT || '6379',
-    databaseName: `${process.env.OSS_STANDALONE_REDISEARCH_DATABASE_NAME || 'test_standalone-redisearch'}-${uniqueId}`,
-    databaseUsername: process.env.OSS_STANDALONE_REDISEARCH_USERNAME,
-    databasePassword: process.env.OSS_STANDALONE_REDISEARCH_PASSWORD
-};
+// export const ossStandaloneV7Config = {
+//     host: process.env.OSS_STANDALONE_V7_HOST || 'oss-standalone-v7',
+//     port: process.env.OSS_STANDALONE_V7_PORT || '6379',
+//     databaseName: `${process.env.OSS_STANDALONE_V7_DATABASE_NAME || 'test_standalone-v7'}-${uniqueId}`,
+//     databaseUsername: process.env.OSS_STANDALONE_V7_USERNAME,
+//     databasePassword: process.env.OSS_STANDALONE_V7_PASSWORD
+// };
+//
+// // todo: double check. currently it is redis v8
+// export const ossStandaloneV6Config = {
+//     host: process.env.OSS_STANDALONE_V8_HOST || 'oss-standalone',
+//     port: process.env.OSS_STANDALONE_V8_PORT || '6379',
+//     databaseName: `${process.env.OSS_STANDALONE_V8_DATABASE_NAME || 'test_standalone-v6'}-${uniqueId}`,
+//     databaseUsername: process.env.OSS_STANDALONE_V8_USERNAME,
+//     databasePassword: process.env.OSS_STANDALONE_V8_PASSWORD
+// };
 
 export const ossClusterConfig = {
     ossClusterHost: process.env.OSS_CLUSTER_HOST || 'master-plain-7-1',
@@ -92,13 +84,13 @@ export const ossSentinelConfig = {
     name: ['primary-group-1', 'primary-group-2']
 };
 
-export const redisEnterpriseClusterConfig = {
-    host: process.env.RE_CLUSTER_HOST || 'redis-enterprise',
-    port: process.env.RE_CLUSTER_PORT || '9443',
-    databaseName: process.env.RE_CLUSTER_DATABASE_NAME || 'test-re-standalone',
-    databaseUsername: process.env.RE_CLUSTER_ADMIN_USER || 'demo@redislabs.com',
-    databasePassword: process.env.RE_CLUSTER_ADMIN_PASSWORD || '123456'
-};
+// export const redisEnterpriseClusterConfig = {
+//     host: process.env.RE_CLUSTER_HOST || 'redis-enterprise',
+//     port: process.env.RE_CLUSTER_PORT || '9443',
+//     databaseName: process.env.RE_CLUSTER_DATABASE_NAME || 'test-re-standalone',
+//     databaseUsername: process.env.RE_CLUSTER_ADMIN_USER || 'demo@redislabs.com',
+//     databasePassword: process.env.RE_CLUSTER_ADMIN_PASSWORD || '123456'
+// };
 
 export const invalidOssStandaloneConfig = {
     host: 'oss-standalone-invalid',
@@ -126,14 +118,14 @@ export const cloudDatabaseConfig = {
     secretKey: process.env.E2E_CLOUD_API_SECRET_KEY || ''
 };
 
-export const ossStandaloneNoPermissionsConfig = {
-    host: process.env.OSS_STANDALONE_NOPERM_HOST || 'oss-standalone',
-    port: process.env.OSS_STANDALONE_NOPERM_PORT || '6379',
-    databaseName: `${process.env.OSS_STANDALONE_NOPERM_DATABASE_NAME || 'oss-standalone-no-permissions'}-${uniqueId}`,
-    databaseUsername: process.env.OSS_STANDALONE_NOPERM_USERNAME || 'noperm',
-    databasePassword: process.env.OSS_STANDALONE_NOPERM_PASSWORD
-};
-
+// export const ossStandaloneNoPermissionsConfig = {
+//     host: process.env.OSS_STANDALONE_NOPERM_HOST || 'oss-standalone',
+//     port: process.env.OSS_STANDALONE_NOPERM_PORT || '6379',
+//     databaseName: `${process.env.OSS_STANDALONE_NOPERM_DATABASE_NAME || 'oss-standalone-no-permissions'}-${uniqueId}`,
+//     databaseUsername: process.env.OSS_STANDALONE_NOPERM_USERNAME || 'noperm',
+//     databasePassword: process.env.OSS_STANDALONE_NOPERM_PASSWORD
+// };
+//
 export const ossStandaloneForSSHConfig = {
     host: process.env.OSS_STANDALONE_SSH_HOST || '172.33.100.111',
     port: process.env.OSS_STANDALONE_SSH_PORT || '6379',
@@ -167,6 +159,7 @@ export const ossStandaloneTlsConfig = {
     }
 };
 
+// todo: investigate if we need this. EOL
 export const ossStandaloneRedisGears = {
     host: process.env.OSS_STANDALONE_REDISGEARS_HOST || 'oss-standalone-redisgears-2-0',
     port: process.env.OSS_STANDALONE_REDISGEARS_PORT || '6379',
@@ -174,9 +167,9 @@ export const ossStandaloneRedisGears = {
     databaseUsername: process.env.OSS_STANDALONE_REDISGEARS_USERNAME,
     databasePassword: process.env.OSS_STANDALONE_REDISGEARS_PASSWORD
 };
-
-export const ossClusterRedisGears = {
-    ossClusterHost: process.env.OSS_CLUSTER_REDISGEARS_2_HOST || 'gears-cluster-2-0-node-1',
-    ossClusterPort: process.env.OSS_CLUSTER_REDISGEARS_2_PORT || '6379',
-    ossClusterDatabaseName: `${process.env.OSS_CLUSTER_REDISGEARS_2_NAME || 'test_cluster-gears-2.0'}-${uniqueId}`
-};
+//
+// export const ossClusterRedisGears = {
+//     ossClusterHost: process.env.OSS_CLUSTER_REDISGEARS_2_HOST || 'gears-cluster-2-0-node-1',
+//     ossClusterPort: process.env.OSS_CLUSTER_REDISGEARS_2_PORT || '6379',
+//     ossClusterDatabaseName: `${process.env.OSS_CLUSTER_REDISGEARS_2_NAME || 'test_cluster-gears-2.0'}-${uniqueId}`
+// };
