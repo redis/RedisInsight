@@ -11,7 +11,7 @@ import testcafe from 'testcafe';
                         experimentalDecorators: true
                     } })
                 .src((process.env.TEST_FILES || 'tests/web/**/*.e2e.ts').split('\n'))
-                .browsers(['chromium:headless --disable-search-engine-choice-screen --ignore-certificate-errors --disable-dev-shm-usage --no-sandbox --retry-test-pages'])
+                .browsers(['chromium:headless --disable-search-engine-choice-screen --ignore-certificate-errors --no-sandbox --retry-test-pages'])
                 .screenshots({
                     path: 'report/screenshots/',
                     takeOnFails: true,

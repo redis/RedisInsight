@@ -4,6 +4,7 @@ services:
   e2e:
     profiles:
       - e2e
+    shm_size: '2gb'
     build:
       context: .
       dockerfile: e2e.Dockerfile
