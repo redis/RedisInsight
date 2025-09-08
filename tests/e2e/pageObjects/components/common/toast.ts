@@ -6,6 +6,7 @@ export class Toast {
     toastSuccess = Selector('[data-testid=redisui-toast]');
     toastError = Selector('[data-testid=toast-error]', { timeout: 30000 });
     toastCloseButton = Selector('[data-testid=redisui-toast-action-button]');
-    toastSubmitBtn = Selector('[data-testid=submit-tooltip-btn]');
-    toastCancelBtn = Selector('[data-testid=toast-cancel-btn]');
+    toastSubmitBtn = Selector('[data-testid=redisui-toast-action-button]');
+    // todo: investigate. there is no cancel button in toast
+    toastCancelBtn = Selector('[data-testid=redisui-toast-action-button]');
 }

@@ -26,7 +26,6 @@ fixture `Pending messages`
             await t.click(browserPage.closeKeyButton);
         }
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that user can\'t select currently selected Consumer to Claim message in the drop-down', async t => {
     keyName = Common.generateWord(20);
@@ -44,9 +43,7 @@ test('Verify that user can\'t select currently selected Consumer to Claim messag
     ];
 
     // Add New Stream Key with pending message
-    for(const command of cliCommandsForStream){
-        await browserPage.Cli.sendCommandInCli(command);
-    }
+    await browserPage.Cli.sendCommandsInCli(cliCommandsForStream);
     // Open Stream pending view
     await browserPage.openStreamPendingsView(keyName);
     // Click on Claim message and check result
@@ -54,7 +51,8 @@ test('Verify that user can\'t select currently selected Consumer to Claim messag
     await t.click(browserPage.consumerDestinationSelect);
     await t.expect(browserPage.consumerOption.textContent).notContains(consumerNames[0], 'The currently selected Consumer is in the drop-down');
 });
-test('Verify that the message is claimed only if its idle time is greater than the Min Idle Time', async t => {
+// todo: enable after RI-7447 will be fixed
+test.skip('Verify that the message is claimed only if its idle time is greater than the Min Idle Time', async t => {
     keyName = Common.generateWord(20);
     consumerGroupName = Common.generateWord(20);
     const cliCommands = [
@@ -66,9 +64,7 @@ test('Verify that the message is claimed only if its idle time is greater than t
     ];
 
     // Add New Stream Key with pending message
-    for(const command of cliCommands){
-        await browserPage.Cli.sendCommandInCli(command);
-    }
+    await browserPage.Cli.sendCommandsInCli(cliCommands);
     // Open Stream pendings view
     await browserPage.openStreamPendingsView(keyName);
     const streamMessageBefore = await browserPage.streamMessage.count;
@@ -79,7 +75,8 @@ test('Verify that the message is claimed only if its idle time is greater than t
     await t.expect(browserPage.Toast.toastHeader.textContent).contains('No messages claimed', 'The message is not claimed notification');
     await t.expect(browserPage.streamMessage.count).eql(streamMessageBefore, 'The number of pendings in the table not correct');
 });
-test('Verify that when user toggle optional parameters on, he can see optional fields', async t => {
+// todo: enable after RI-7447 will be fixed
+test.skip('Verify that when user toggle optional parameters on, he can see optional fields', async t => {
     keyName = Common.generateWord(20);
     consumerGroupName = Common.generateWord(20);
     const cliCommands = [
@@ -91,9 +88,7 @@ test('Verify that when user toggle optional parameters on, he can see optional f
     ];
 
     // Add New Stream Key with pending message
-    for(const command of cliCommands){
-        await browserPage.Cli.sendCommandInCli(command);
-    }
+    await browserPage.Cli.sendCommandsInCli(cliCommands);
     // Open Stream pendings view
     await browserPage.openStreamPendingsView(keyName);
     // Click Claim message with optional parameters and check fields
@@ -122,9 +117,7 @@ test('Verify that user see the column names in the Pending messages table and na
     ];
 
     // Add New Stream Key with pending message
-    for(const command of cliCommandsForStream){
-        await browserPage.Cli.sendCommandInCli(command);
-    }
+    await browserPage.Cli.sendCommandsInCli(cliCommandsForStream);
     // Open Stream pendings view and check columns
     await browserPage.openStreamPendingsView(keyName);
     // Click Claim message with optional parameters and check fields

@@ -30,8 +30,8 @@ export class AddRedisDatabaseDialog {
     testConnectionBtn = Selector('[data-testid=btn-test-connection]');
     testConnectionBtnHover = Selector('[data-testid=btn-test-connection]').parent();
     backButton = Selector('[data-testid=back-btn]');
-    generalTab = Selector('[data-testid=manual-form-tab-general]');
-    securityTab = Selector('[data-testid=manual-form-tab-security]');
+    generalTab = Selector('[data-testid=manual-form-tabs] [role=tab][id*=-general]');
+    securityTab = Selector('[data-testid=manual-form-tabs] [role=tab][id*=-security]');
     decompressionTab = Selector('[data-testid=manual-form-tab-decompression]');
 
     // TEXT INPUTS (also referred to as 'Text fields')

@@ -14,17 +14,6 @@ services:
       ssh:
         ipv4_address: 172.33.100.109
 
-  oss-standalone-v5:
-    logging: *logging
-    image: redis:5
-    ports:
-      - "8101:6379"
-    networks:
-      default:
-        ipv4_address: 172.31.100.111
-      ssh:
-        ipv4_address: 172.33.100.111
-
   # todo: Investigate if we can have lower size of data (2.6GB currently)
   oss-standalone-big:
     logging: *logging
@@ -41,7 +30,8 @@ services:
       ssh:
         ipv4_address: 172.33.100.116
 
-  # todo: investigate the Redis version and if we need it for critical-path tests
+  # todo: review Redis version
+  # oss standalone tls
   oss-standalone-tls:
     logging: *logging
     build:
@@ -85,6 +75,17 @@ services:
         ipv4_address: 172.31.100.115
       ssh:
         ipv4_address: 172.33.100.115
+
+  oss-standalone-v7:
+    logging: *logging
+    image: redis:7.4-rc2
+    ports:
+      - "8108:6379"
+    networks:
+      default:
+        ipv4_address: 172.31.100.112
+      ssh:
+        ipv4_address: 172.33.100.112
 
   # todo: investigate base Redis version and if we need this in critical-path tests
   # ========== oss cluster (v7) ==========

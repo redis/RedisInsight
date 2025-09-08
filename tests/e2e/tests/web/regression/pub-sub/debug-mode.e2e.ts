@@ -1,5 +1,5 @@
 import { DatabaseHelper } from '../../../../helpers/database';
-import { MyRedisDatabasePage, PubSubPage } from '../../../../pageObjects';
+import { BrowserPage, MyRedisDatabasePage, PubSubPage } from '../../../../pageObjects'
 import { commonUrl, ossStandaloneConfig } from '../../../../helpers/conf';
 import { rte } from '../../../../helpers/constants';
 import { verifyMessageDisplayingInPubSub } from '../../../../helpers/pub-sub';
@@ -7,6 +7,7 @@ import { DatabaseAPIRequests } from '../../../../helpers/api/api-database';
 
 const myRedisDatabasePage = new MyRedisDatabasePage();
 const pubSubPage = new PubSubPage();
+const browserPage = new BrowserPage();
 const databaseHelper = new DatabaseHelper();
 const databaseAPIRequests = new DatabaseAPIRequests();
 
@@ -16,7 +17,7 @@ fixture `PubSub debug mode`
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         // Go to PubSub page and subscribe to channel
-        await t.click(myRedisDatabasePage.NavigationPanel.pubSubButton);
+        await t.click(browserPage.NavigationTabs.pubSubButton);
         await t.click(pubSubPage.subscribeButton);
         // Publish different messages
         await pubSubPage.Cli.sendCommandInCli('10 publish channel first');
@@ -38,9 +39,9 @@ test('Verify that when user navigating away and back to pubsub window the debug 
     await pubSubPage.publishMessage('test', 'new message with no scroll');
     await verifyMessageDisplayingInPubSub('new message with no scroll', false);
     // Go to Browser Page
-    await t.click(myRedisDatabasePage.NavigationPanel.myRedisDBButton);
+    await t.click(browserPage.NavigationTabs.browserButton);
     // Go to PubSub page
-    await t.click(myRedisDatabasePage.NavigationPanel.pubSubButton);
+    await t.click(browserPage.NavigationTabs.pubSubButton);
     // Verify that the debug mode state is reset to default auto-scroll
     await verifyMessageDisplayingInPubSub('new message with no scroll', true);
 });

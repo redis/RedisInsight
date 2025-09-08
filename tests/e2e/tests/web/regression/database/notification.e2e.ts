@@ -51,7 +51,7 @@ test.before(async() => {
       //  await databaseAPIRequests.deleteAllDatabasesApi();
     })
     .skip('Verify that notifications are displayed if the db will be expired soon', async t => {
-        await t.click(browserPage.NavigationPanel.workbenchButton);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
         await workbenchPage.sendCommandInWorkbench('CMS.INITBYDIM');
 
         await DatabaseScripts.updateColumnValueInDBTable(dbTableParams5days);

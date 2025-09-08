@@ -17,11 +17,7 @@ fixture `Cypher syntax at Workbench`
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         // Go to Workbench page
-        await t.click(browserPage.NavigationPanel.workbenchButton);
-    })
-    .afterEach(async() => {
-        // Drop database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
     });
 test('Verify that user can see popover “Use Cypher Syntax” when cursor is inside the query argument double/single quotes in the GRAPH command', async t => {
     // Type command and put the cursor inside

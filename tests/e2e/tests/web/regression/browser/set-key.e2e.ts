@@ -22,12 +22,16 @@ fixture `Set Key verification`
     .page(commonUrl)
     .beforeEach(async() => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
-        await browserPage.addSetKey(keyName, '2147476121', 'testMember');
+        await apiKeyRequests.addSetKeyApi({
+            keyName,
+            ttl: 2147476121,
+            members: ['testMember']
+        }, ossStandaloneConfig);
+        await browserPage.navigateToKey(keyName);
     })
     .afterEach(async() => {
         // Clear and delete database
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that user can search per exact member name in Set key in DB with 1 million of members', async t => {
     // Add 1000000 members to the set key

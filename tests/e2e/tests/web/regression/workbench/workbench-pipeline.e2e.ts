@@ -24,20 +24,19 @@ fixture `Workbench Pipeline`
         // Go to Settings page - Pipeline mode
         await t.click(myRedisDatabasePage.NavigationPanel.settingsButton);
         await t.click(settingsPage.accordionWorkbenchSettings);
-    })
-    .afterEach(async() => {
-        // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneBigConfig);
     });
 test('Verify that user can see the text in settings for pipeline with link', async t => {
-    const pipelineText = 'Sets the size of a command batch for the pipeline(opens in a new tab or window) mode in Workbench. 0 or 1 pipelines every command.';
+    const pipelineText = 'Sets the size of a command batch for the pipeline mode in Workbench. 0 or 1 pipelines every command.';
 
     // Verify that user can enter only numbers >0 in "Commands in pipeline" input
     await t.hover(settingsPage.commandsInPipelineValue);
     await t.click(settingsPage.commandsInPipelineInput);
-    await t.typeText(settingsPage.commandsInPipelineInput, pipelineValues[0], { replace: true });
+    await t.typeText(settingsPage.commandsInPipelineInput, '-25', { replace: true });
+    await t.click(settingsPage.EditorButton.applyBtn);
     // Verify that negative number converted to positive
-    await t.expect(settingsPage.commandsInPipelineInput.value).eql(pipelineValues[1], 'Value is incorrect');
+    await t.hover(settingsPage.commandsInPipelineValue);
+    await t.click(settingsPage.commandsInPipelineInput);
+    await t.expect(settingsPage.commandsInPipelineInput.value).eql('25', 'Value is incorrect');
 
     // Verify text in setting for pipeline
     await t.expect(settingsPage.accordionWorkbenchSettings.textContent).contains(pipelineText, 'Text is incorrect');
@@ -49,8 +48,8 @@ test('Verify that user can see the text in settings for pipeline with link', asy
 test.skip('Verify that only chosen in pipeline number of commands is loading at the same time in Workbench', async t => {
     await settingsPage.changeCommandsInPipeline(pipelineValues[1]);
     // Go to Workbench page
-    await t.click(settingsPage.NavigationPanel.browserButton);
-    await t.click(browserPage.NavigationPanel.workbenchButton);
+    await myRedisDatabasePage.navigateToDatabase(ossStandaloneBigConfig.databaseName);
+    await t.click(browserPage.NavigationTabs.workbenchButton);
     await workbenchPage.sendCommandInWorkbench(commandForSend, 0.01);
     // Verify that only selected pipeline number of commands are loaded at the same time
     await t.expect(workbenchPage.loadedCommand.count).eql(Number(pipelineValues[1]), 'The number of sending commands is incorrect');
@@ -58,8 +57,8 @@ test.skip('Verify that only chosen in pipeline number of commands is loading at 
 test.skip('Verify that user can see spinner over Run button and grey preloader for each command', async t => {
     await settingsPage.changeCommandsInPipeline(pipelineValues[3]);
     // Go to Workbench page
-    await t.click(settingsPage.NavigationPanel.browserButton);
-    await t.click(browserPage.NavigationPanel.workbenchButton);
+    await myRedisDatabasePage.navigateToDatabase(ossStandaloneBigConfig.databaseName);
+    await t.click(browserPage.NavigationTabs.workbenchButton);
     await workbenchPage.sendCommandInWorkbench(commandForSend, 0.01);
     // Verify that user can`t start new commands from the Workbench while command(s) is executing
     await t.expect(workbenchPage.submitCommandButton.withAttribute('disabled').exists).ok('Run button is not disabled', { timeout: 5000 });
@@ -73,7 +72,8 @@ test
 
     await settingsPage.changeCommandsInPipeline(pipelineValues[2]);
     // Go to Workbench page
-    await t.click(browserPage.NavigationPanel.workbenchButton);
+    await myRedisDatabasePage.navigateToDatabase(ossStandaloneBigConfig.databaseName);
+    await t.click(browserPage.NavigationTabs.workbenchButton);
     await workbenchPage.sendCommandInWorkbench(commandForSend);
     await t.typeText(workbenchPage.queryInput, commandForSend, { replace: true });
     // await t.pressKey('enter');
@@ -93,7 +93,8 @@ test
 
     await settingsPage.changeCommandsInPipeline(pipelineValues[2]);
     // Go to Workbench page
-    await t.click(browserPage.NavigationPanel.workbenchButton);
+    await myRedisDatabasePage.navigateToDatabase(ossStandaloneBigConfig.databaseName);
+    await t.click(browserPage.NavigationTabs.workbenchButton);
     await workbenchPage.sendCommandInWorkbench(multipleCommands.join('\n'));
     // Check that the results for all commands are displayed in workbench history in reverse order (most recent - on top)
     for (let i = 0; i < multipleCommands.length; i++) {

@@ -9,7 +9,7 @@ export class InsightsPanel {
     closeButton = Selector('[data-testid=close-insights-btn]');
     activeTab = this.sidePanel.find('[data-testid=insights-tabs] [data-state=active]');
 
-    recommendationsTab = Selector('[data-testid=recommendations-tab]');
+    recommendationsTab = this.sidePanel.find('[role=tablist] span').withText(/^Tips/).parent('[role=tab]');
     exploreTab = this.sidePanel.find('[role=tablist] span').withExactText('Tutorials').parent('[role=tab]');
     copilotTab = Selector('[data-testid=ai-assistant-tab]');
 

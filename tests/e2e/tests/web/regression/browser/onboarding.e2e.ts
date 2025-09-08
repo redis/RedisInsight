@@ -40,7 +40,6 @@ fixture `Onboarding new user tests`
     })
     .afterEach(async() => {
         await browserPage.Cli.sendCommandInCli(`DEL ${indexName}`);
-        await databaseHelper.deleteDatabase(ossStandaloneConfigEmpty.databaseName);
     });
 // https://redislabs.atlassian.net/browse/RI-4070, https://redislabs.atlassian.net/browse/RI-4067
 // https://redislabs.atlassian.net/browse/RI-4278
@@ -134,12 +133,11 @@ test
     await onboardingCardsDialog.clickNextStep();
     // verify tree view step is visible
     await onboardingCardsDialog.verifyStepVisible('Tree view');
-    await t.click(browserPage.NavigationPanel.workbenchButton);
+    await t.click(browserPage.NavigationTabs.workbenchButton);
     await t.click(myRedisDatabasePage.NavigationPanel.helpCenterButton);
     await t.expect(myRedisDatabasePage.NavigationPanel.HelpCenter.helpCenterPanel.visible).ok('help center panel is not opened');
     await t.click(onboardingCardsDialog.resetOnboardingBtn);
-    await t.click(myRedisDatabasePage.NavigationPanel.browserButton);
-    await t.click(browserPage.NavigationPanel.browserButton);
+    await t.click(browserPage.NavigationTabs.browserButton);
     // Verify that when user reset onboarding, user can see the onboarding triggered when user open the Browser page.
     await t.expect(onboardingCardsDialog.showMeAroundButton.visible).ok('onboarding starting is not visible');
     // click skip tour
@@ -162,19 +160,18 @@ test.requestHooks(logger)
     // Verify last step of onboarding process is visible
     await onboardingCardsDialog.verifyStepVisible('Great job!');
     // Go to Workbench page
-    await t.click(myRedisDatabasePage.NavigationPanel.browserButton);
-    await t.click(browserPage.NavigationPanel.workbenchButton);
+    await t.click(browserPage.NavigationTabs.workbenchButton);
 
     // Verify that “ONBOARDING_TOUR_FINISHED” event is sent when user opens another page (or close the app)
     await telemetry.verifyEventHasProperties(telemetryEvent, expectedProperties, logger);
 
     // Go to PubSub page
-    await t.click(myRedisDatabasePage.NavigationPanel.pubSubButton);
+    await t.click(browserPage.NavigationTabs.pubSubButton);
     // Verify onboarding completed successfully
     await t.expect(onboardingCardsDialog.showMeAroundButton.exists).notOk('Show me around button still visible');
     await t.expect(onboardingCardsDialog.stepTitle.exists).notOk('Onboarding tooltip still visible');
     // Go to Browser Page
-    await t.click(myRedisDatabasePage.NavigationPanel.browserButton);
+    await t.click(browserPage.NavigationTabs.browserButton);
     // Verify onboarding completed successfully
     await onboardingCardsDialog.completeOnboarding();
     await t.expect(browserPage.patternModeBtn.visible).ok('Browser page is not opened');

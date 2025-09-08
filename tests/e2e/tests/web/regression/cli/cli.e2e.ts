@@ -21,10 +21,6 @@ fixture `CLI`
     .page(commonUrl)
     .beforeEach(async() => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
-    })
-    .afterEach(async() => {
-        // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that user can see CLI is minimized when he clicks the "minimize" button', async t => {
     const cliColourBefore = await Common.getBackgroundColour(browserPage.Cli.cliBadge);
@@ -54,7 +50,6 @@ test
     .after(async() => {
         // Clear database and delete
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     })('Verify that user can repeat commands by entering a number of repeats before the Redis command in CLI', async t => {
         keyName = Common.generateWord(20);
         const command = `SET ${keyName} a`;
@@ -71,7 +66,6 @@ test
     .after(async() => {
         // Clear database and delete
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     })('Verify that user can run command json.get and see JSON object with escaped quotes (\" instead of ")', async t => {
         keyName = Common.generateWord(20);
         const jsonValueCli = '"{\\"name\\":\\"xyz\\"}"';
@@ -92,10 +86,6 @@ test
         for (const command of cliCommands) {
             await browserPage.Cli.sendCommandInCli(command);
         }
-    })
-    .after(async() => {
-        // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     })('Verify that user can use "Up" and "Down" keys to view previous commands in CLI in the application', async t => {
         await t.click(browserPage.Cli.cliExpandButton);
         await t.expect(browserPage.Cli.cliCommandInput.innerText).eql('');

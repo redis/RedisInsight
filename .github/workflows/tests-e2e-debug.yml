@@ -35,6 +35,14 @@ jobs:
     with:
       debug: ${{ inputs.debug || false }}
 
+  e2e-docker-tests-regression:
+    name: "E2E: Regression (Docker)"
+    #    needs: build-docker
+    uses: ./.github/workflows/tests-e2e-docker-regression.yml
+    secrets: inherit
+    with:
+      debug: ${{ inputs.debug || false }}
+
   # Remove artifacts from github actions
   remove-artifacts:
     name: Remove artifacts
@@ -42,6 +50,7 @@ jobs:
       [
         e2e-docker-tests-smoke,
         e2e-docker-tests-critical-path,
+        e2e-docker-tests-regression,
       ]
     runs-on: ubuntu-latest
     steps:

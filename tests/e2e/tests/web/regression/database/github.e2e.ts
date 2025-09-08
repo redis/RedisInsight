@@ -30,10 +30,10 @@ test('Verify that user can work with Github link in the application', async t =>
     await myRedisDatabasePage.clickOnDBByName(ossStandaloneConfig.databaseName);
     await t.expect(myRedisDatabasePage.NavigationPanel.githubButton.visible).ok('Github button not found');
     // Verify that user can see the icon for GitHub reference at the bottom of the left side bar on the Workbench page
-    await t.click(browserPage.NavigationPanel.workbenchButton);
+    await t.click(browserPage.NavigationTabs.workbenchButton);
     await t.expect(myRedisDatabasePage.NavigationPanel.githubButton.visible).ok('Github button');
     // Verify that when user clicks on Github icon he redirects to the URL: https://github.com/RedisInsight/RedisInsight
     await t.click(myRedisDatabasePage.NavigationPanel.githubButton);
 
-    await Common.checkURLContainsText('https://github.com/RedisInsight/RedisInsight');
+    await Common.checkURLContainsText('https://github.com/redis/RedisInsight');
 });

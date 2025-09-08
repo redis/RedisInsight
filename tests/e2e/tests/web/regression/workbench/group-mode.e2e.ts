@@ -23,11 +23,7 @@ fixture `Workbench Group Mode`
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneBigConfig);
         // Go to Workbench page
-        await t.click(browserPage.NavigationPanel.workbenchButton);
-    })
-    .afterEach(async() => {
-        // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneBigConfig);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
     });
 test
     .skip('Verify that user can run the commands from the Editor in the group mode', async t => {
