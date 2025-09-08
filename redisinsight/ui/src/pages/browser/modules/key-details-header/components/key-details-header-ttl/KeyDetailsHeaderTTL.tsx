@@ -101,7 +101,7 @@ const KeyDetailsHeaderTTL = ({ onEditTTL }: Props) => {
             data-testid="edit-ttl-grid"
           >
             <FlexItem>
-              <Text color="subdued" size="s" className={styles.subtitleText}>
+              <Text size="s" className={styles.subtitleText}>
                 TTL:
               </Text>
             </FlexItem>
@@ -138,7 +138,6 @@ const KeyDetailsHeaderTTL = ({ onEditTTL }: Props) => {
           </Grid>
         )}
         <Text
-          color="subdued"
           size="s"
           className={cx(styles.subtitleText, {
             [styles.hidden]: ttlIsEditing || ttlIsHovering,

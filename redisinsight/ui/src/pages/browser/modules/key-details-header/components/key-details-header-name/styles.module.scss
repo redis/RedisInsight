@@ -12,10 +12,17 @@
   height: 31px !important;
 }
 
+.inputWithIcon {
+  display: flex;
+  align-items: center;
+  min-width: 150px;
+}
+
 .keyInput {
   height: 31px !important;
   font-size: 14px !important;
   font-weight: 500 !important;
+  flex: 1;
 }
 
 :global(.browserPage .key-details-header .euiFormControlLayout) {
@@ -35,12 +42,10 @@
 }
 
 .copyKey {
-  position: absolute;
-  padding-left: 7px;
-  padding-top: 4px;
-  right: 0;
+  display: flex;
+  align-items: center;
   height: 31px;
-  width: 25px;
+  flex-shrink: 0;
 }
 
 .capitalize {
@@ -58,12 +63,4 @@
 
 .hidden {
   display: none;
-}
-
-.keyFlexItem {
-  overflow: hidden;
-}
-
-.keyFlexItemEditing {
-  overflow: inherit;
 }
