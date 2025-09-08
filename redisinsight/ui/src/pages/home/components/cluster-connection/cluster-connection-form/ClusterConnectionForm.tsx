@@ -278,7 +278,7 @@ const ClusterConnectionForm = (props: Props) => {
                 maxLength={200}
                 placeholder="Enter Admin Username"
                 value={formik.values.username}
-                onChange={formik.handleChange}
+                onChange={(value) => formik.setFieldValue('username', value)}
               />
             </FormField>
           </FlexItem>
@@ -293,7 +293,7 @@ const ClusterConnectionForm = (props: Props) => {
                 maxLength={200}
                 placeholder="Enter Password"
                 value={formik.values.password}
-                onChange={formik.handleChange}
+                onChange={(value) => formik.setFieldValue('password', value)}
                 autoComplete="new-password"
               />
             </FormField>
