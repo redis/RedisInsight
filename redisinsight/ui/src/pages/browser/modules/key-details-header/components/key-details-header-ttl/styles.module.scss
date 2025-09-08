@@ -22,9 +22,7 @@
 .ttlInput {
   min-width: 106px;
   font-size: 13px !important;
-  &.editing {
-    width: 124px;
-  }
+  height: 25px !important;
 }
 
 .ttlGridComponent,
@@ -49,9 +47,7 @@
   .ttlInput {
     min-width: 90px;
     font-size: 12px !important;
-    &.editing {
-      width: 92px;
-    }
+    height: 25px !important;
   }
 
   :global(.euiFormControlLayout--compressed > .euiFormControlLayout__append) {
