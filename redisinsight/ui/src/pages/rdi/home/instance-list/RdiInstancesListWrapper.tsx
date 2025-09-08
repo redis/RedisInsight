@@ -48,18 +48,15 @@ const RdiInstancesListWrapper = ({
   const { search } = useLocation()
 
   const instances = useSelector(instancesSelector)
-  const [, forceRerender] = useState({})
-  const deleting = { id: '' }
+  const [deletingId, setDeletingId] = useState('')
   const isLoadingRef = useRef(false)
 
   const closePopover = () => {
-    deleting.id = ''
-    forceRerender({})
+    setDeletingId('')
   }
 
   const showPopover = (id: string) => {
-    deleting.id = `${id + suffix}`
-    forceRerender({})
+    setDeletingId(`${id + suffix}`)
   }
 
   useEffect(() => {
@@ -77,7 +74,6 @@ const RdiInstancesListWrapper = ({
     }
 
     isLoadingRef.current = instances.loading
-    forceRerender({})
   }, [instances.loading, search])
 
   useEffect(() => {
@@ -234,7 +230,7 @@ const RdiInstancesListWrapper = ({
             text="will be removed from RedisInsight."
             item={instance.id}
             suffix={suffix}
-            deleting={deleting.id}
+            deleting={deletingId}
             closePopover={closePopover}
             updateLoading={false}
             showPopover={showPopover}
