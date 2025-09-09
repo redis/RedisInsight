@@ -728,6 +728,13 @@ find-up@^4.0.0, find-up@^4.1.0:
     locate-path "^5.0.0"
     path-exists "^4.0.0"
 
+fishery@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/fishery/-/fishery-2.3.1.tgz#94b896a0a8f6c6c7f5987f8dafcdd0b8b1aa81c9"
+  integrity sha512-eKgpAfx88/dFnLUGhJmq9eslN6nsHUcCR13Th1z6tLZixUtKjW/33MqKuzxGtYmhzUh2yLYZxq4jHxIQd3F04A==
+  dependencies:
+    lodash.mergewith "^4.6.2"
+
 follow-redirects@^1.15.6:
   version "1.15.9"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.9.tgz#a604fa10e443bf98ca94228d9eebcc2e8a2c8ee1"
@@ -1149,6 +1156,11 @@ lodash.flattendeep@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/lodash.flattendeep/-/lodash.flattendeep-4.4.0.tgz#fb030917f86a3134e5bc9bec0d69e0013ddfedb2"
   integrity sha512-uHaJFihxmJcEX3kT4I23ABqKKalJ/zDrDg0lsFtc1h+3uw49SIJ5beyhx5ExVRti3AvKoOJngIj7xz3oylPdWQ==
+
+lodash.mergewith@^4.6.2:
+  version "4.6.2"
+  resolved "https://registry.yarnpkg.com/lodash.mergewith/-/lodash.mergewith-4.6.2.tgz#617121f89ac55f59047c7aec1ccd6654c6590f55"
+  integrity sha512-GK3g5RPZWTRSeLSpgP8Xhra+pnjBC56q9FZYe1d5RN3TJ35dbkGy3YqBSMbyCrlbi+CM9Z3Jk5yTL7RCsqboyQ==
 
 lru-cache@^5.1.1:
   version "5.1.1"
