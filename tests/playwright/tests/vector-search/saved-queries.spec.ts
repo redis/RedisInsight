@@ -1,4 +1,3 @@
-import { faker } from '@faker-js/faker'
 import { PresetDataType } from 'uiSrc/pages/vector-search/create-index/types'
 import { VectorSearchPage } from '../../pageObjects/pages/vector-search/vector-search-page'
 import { test, expect } from '../../fixtures/test'
@@ -9,18 +8,13 @@ import {
 import { CreateIndexPage } from '../../pageObjects/pages/vector-search/create-index-page'
 import { ossStandaloneV6Config } from '../../helpers/conf'
 import { CreateRedisearchIndexParameters } from '../../types'
+import { redisearchIndexFactory } from '../../factories/redisearch-index.factory'
 
-const mockIndex: CreateRedisearchIndexParameters = {
-    indexName: PresetDataType.BIKES,
-    keyType: 'HASH' as const,
-    prefixes: [`product:${faker.string.alphanumeric({ length: 5 })}:`],
-    fields: [
-        { name: 'title', type: 'TEXT' as const },
-        { name: 'description', type: 'TEXT' as const },
-        { name: 'category', type: 'TAG' as const },
-        { name: 'price', type: 'NUMERIC' as const },
-    ],
-}
+const mockIndex: CreateRedisearchIndexParameters = redisearchIndexFactory.build(
+    {
+        indexName: PresetDataType.BIKES,
+    },
+)
 
 test.describe('Vector Search - Saved Queries', () => {
     let searchPage: VectorSearchPage
