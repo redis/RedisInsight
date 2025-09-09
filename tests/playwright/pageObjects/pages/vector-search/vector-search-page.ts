@@ -29,6 +29,13 @@ export class VectorSearchPage extends BasePage {
     public readonly queryCardToggleFullScreenButton: Locator
     public readonly queryCardContent: Locator
 
+    // SAVED QUERIES
+    public readonly savedQueriesContainer: Locator
+    public readonly savedQueriesButton: Locator
+    public readonly savedQueriesNoDataMessage: Locator
+    public readonly savedQueriesGettingStartedButton: Locator
+    public readonly savedQueriesInsertButton: Locator
+
     // BUTTONS
     public readonly getStartedButton: Locator
     public readonly clearCommandsResultsButton: Locator
@@ -72,6 +79,20 @@ export class VectorSearchPage extends BasePage {
         this.queryCardContent =
             this.queryCardContainer.getByTestId('query-cli-result')
 
+        // SAVED QUERIES
+        this.savedQueriesContainer = page.getByTestId('saved-queries-screen')
+        this.savedQueriesButton = page.getByRole('button', {
+            name: 'Saved queries',
+        })
+        this.savedQueriesNoDataMessage =
+            this.savedQueriesContainer.getByTestId('no-data-message')
+        this.savedQueriesGettingStartedButton =
+            this.savedQueriesContainer.getByRole('button', {
+                name: 'Get started',
+            })
+        this.savedQueriesInsertButton =
+            this.savedQueriesContainer.getByTestId('btn-insert-query')
+
         // BUTTONS
         this.getStartedButton = this.commandsResults
             .getByTestId('no-data-message')
@@ -112,5 +133,10 @@ export class VectorSearchPage extends BasePage {
                 timeout,
             },
         )
+    }
+
+    async openSavedQueriesPanel(): Promise<void> {
+        await this.savedQueriesButton.click()
+        await this.waitForLocatorVisible(this.savedQueriesContainer)
     }
 }
