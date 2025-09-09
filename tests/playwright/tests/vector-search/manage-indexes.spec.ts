@@ -8,30 +8,33 @@ import {
 import { CreateIndexPage } from '../../pageObjects/pages/vector-search/create-index-page'
 import { ossStandaloneV6Config } from '../../helpers/conf'
 import { CreateRedisearchIndexParameters } from '../../types'
+import { redisearchIndexFactory } from '../../factories/redisearch-index.factory'
 
-const mockHashIndex: CreateRedisearchIndexParameters = {
-    indexName: 'test-index-hash',
-    keyType: 'HASH' as const,
-    prefixes: [`product:${faker.string.alphanumeric({ length: 5 })}:`],
-    fields: [
-        { name: 'title', type: 'TEXT' as const },
-        { name: 'description', type: 'TEXT' as const },
-        { name: 'category', type: 'TAG' as const },
-        { name: 'price', type: 'NUMERIC' as const },
-    ],
-}
+const mockHashIndex: CreateRedisearchIndexParameters =
+    redisearchIndexFactory.build({
+        indexName: 'test-index-hash',
+        keyType: 'HASH' as const,
+        prefixes: [`product:${faker.string.alphanumeric({ length: 5 })}:`],
+        fields: [
+            { name: 'title', type: 'TEXT' as const },
+            { name: 'description', type: 'TEXT' as const },
+            { name: 'category', type: 'TAG' as const },
+            { name: 'price', type: 'NUMERIC' as const },
+        ],
+    })
 
-const mockJsonIndex: CreateRedisearchIndexParameters = {
-    indexName: 'test-index-json',
-    keyType: 'JSON' as const,
-    prefixes: [`product:${faker.string.alphanumeric({ length: 5 })}:`],
-    fields: [
-        { name: '$.title', type: 'TEXT' as const },
-        { name: '$.description', type: 'TEXT' as const },
-        { name: '$.category', type: 'TAG' as const },
-        { name: '$.price', type: 'NUMERIC' as const },
-    ],
-}
+const mockJsonIndex: CreateRedisearchIndexParameters =
+    redisearchIndexFactory.build({
+        indexName: 'test-index-json',
+        keyType: 'JSON' as const,
+        prefixes: [`product:${faker.string.alphanumeric({ length: 5 })}:`],
+        fields: [
+            { name: '$.title', type: 'TEXT' as const },
+            { name: '$.description', type: 'TEXT' as const },
+            { name: '$.category', type: 'TAG' as const },
+            { name: '$.price', type: 'NUMERIC' as const },
+        ],
+    })
 
 test.describe('Vector Search - Manage Indexes', () => {
     let searchPage: VectorSearchPage
