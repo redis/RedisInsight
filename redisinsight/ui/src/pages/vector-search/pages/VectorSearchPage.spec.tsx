@@ -11,6 +11,7 @@ import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { redisearchListSelector } from 'uiSrc/slices/browser/redisearch'
 import VectorSearchPage from './VectorSearchPage'
 import useRedisInstanceCompatibility from '../create-index/hooks/useRedisInstanceCompatibility'
+import useVectorSearchOnboarding from '../create-index/hooks/useVectorSearchOnboarding'
 
 // Mock the telemetry module, so we don't send actual telemetry data during tests
 jest.mock('uiSrc/telemetry', () => ({
@@ -22,11 +23,14 @@ jest.mock('../create-index/hooks/useRedisInstanceCompatibility', () =>
   jest.fn(),
 )
 
+jest.mock('../create-index/hooks/useVectorSearchOnboarding', () => jest.fn())
+
 const renderVectorSearchPageComponent = () => render(<VectorSearchPage />)
 
 describe('VectorSearchPage', () => {
   const mockUseRedisInstanceCompatibility =
     useRedisInstanceCompatibility as jest.Mock
+  const mockUseVectorSearchOnboarding = useVectorSearchOnboarding as jest.Mock
 
   beforeEach(() => {
     cleanup()
@@ -36,13 +40,18 @@ describe('VectorSearchPage', () => {
       hasRedisearch: true,
       hasSupportedVersion: true,
     })
+
+    mockUseVectorSearchOnboarding.mockReturnValue({
+      showOnboarding: false,
+      markOnboardingAsSeen: jest.fn(),
+    })
   })
 
   afterEach(() => {
     jest.clearAllMocks()
   })
 
-  it('should render ', () => {
+  it('should render vector search page', () => {
     const { container } = renderVectorSearchPageComponent()
 
     expect(container).toBeTruthy()
@@ -75,6 +84,18 @@ describe('VectorSearchPage', () => {
 
     const rqeNotAvailableCard = screen.getByTestId('rqe-not-available-card')
     expect(rqeNotAvailableCard).toBeInTheDocument()
+  })
+
+  it('should render onboarding screen when opening the page for the first time', () => {
+    mockUseVectorSearchOnboarding.mockReturnValue({
+      showOnboarding: true,
+      markOnboardingAsSeen: jest.fn(),
+    })
+
+    renderVectorSearchPageComponent()
+
+    const onboarding = screen.getByTestId('vector-search-onboarding')
+    expect(onboarding).toBeInTheDocument()
   })
 
   describe('Telemetry', () => {
