@@ -10,34 +10,15 @@ import {
 } from 'uiSrc/utils/test-utils'
 
 import { instancesSelector } from 'uiSrc/slices/rdi/instances'
-import { RdiInstance } from 'uiSrc/slices/interfaces'
 import RdiInstancesListWrapper from './RdiInstancesListWrapper'
+import { rdiInstanceFactory } from 'uiSrc/mocks/rdi/RdiInstance.factory'
 
 jest.mock('uiSrc/slices/rdi/instances', () => ({
   ...jest.requireActual('uiSrc/slices/rdi/instances'),
   instancesSelector: jest.fn(),
 }))
 
-const mockInstances: RdiInstance[] = [
-  {
-    id: '1',
-    name: 'My first integration',
-    url: 'redis-12345.c253.us-central1-1.gce.cloud.redislabs.com:12345',
-    lastConnection: new Date(),
-    version: '1.2',
-    error: '',
-    loading: false,
-  },
-  {
-    id: '2',
-    name: 'My second integration',
-    url: 'redis-67890.c253.us-central1-1.gce.cloud.redislabs.com:67890',
-    lastConnection: new Date(),
-    version: '1.3',
-    error: '',
-    loading: false,
-  },
-]
+const mockInstances = rdiInstanceFactory.buildList(2)
 
 const mockSelectorData = {
   loading: false,
@@ -85,16 +66,20 @@ describe('RdiInstancesListWrapper', () => {
     render(<RdiInstancesListWrapper {...mockProps} />, { store })
 
     // Find and click the delete button for the first instance
-    const deleteButton = screen.getByTestId('delete-instance-1-icon')
+    const deleteButton = screen.getByTestId(`delete-instance-${mockInstances[0].id}-icon`)
 
     await act(async () => {
       fireEvent.click(deleteButton)
     })
 
     // Check that the popover is visible with the confirmation content
-    expect(screen.getByText('will be removed from RedisInsight.')).toBeInTheDocument()
+    expect(
+      screen.getByText('will be removed from RedisInsight.'),
+    ).toBeInTheDocument()
     // Check that the instance name appears in the popover (there should be multiple instances, but we just need one)
-    expect(screen.getAllByText('My first integration').length).toBeGreaterThan(0)
-    expect(screen.getByTestId('delete-instance-1')).toBeInTheDocument()
+    expect(screen.getAllByText(mockInstances[0].name).length).toBeGreaterThan(0)
+    expect(
+      screen.getByTestId(`delete-instance-${mockInstances[0].id}`),
+    ).toBeInTheDocument()
   })
 })
