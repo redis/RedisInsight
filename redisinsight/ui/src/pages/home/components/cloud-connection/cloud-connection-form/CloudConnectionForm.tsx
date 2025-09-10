@@ -187,7 +187,7 @@ const CloudConnectionForm = (props: Props) => {
       <WindowEvent event="keydown" handler={onKeyDown} />
       <form onSubmit={formik.handleSubmit}>
         <Row responsive>
-          <FlexItem>
+          <FlexItem grow>
             <FormField label="API Account Key*">
               <TextInput
                 name="accessKey"
