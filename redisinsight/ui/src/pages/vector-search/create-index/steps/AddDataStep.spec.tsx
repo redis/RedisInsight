@@ -110,7 +110,7 @@ describe('AddDataStep', () => {
     it('should expect custom data to be disabled', () => {
       render(<AddDataStep {...defaultProps} />)
 
-      const customDataRadio = screen.getByLabelText('Custom data')
+      const customDataRadio = screen.getByLabelText(/Custom data/i)
       expect(customDataRadio).toBeDisabled()
     })
 
@@ -165,7 +165,7 @@ describe('AddDataStep', () => {
       render(<AddDataStep {...defaultProps} />)
 
       const comingSoonTexts = screen.getAllByText('Coming soon')
-      expect(comingSoonTexts).toHaveLength(1)
+      expect(comingSoonTexts).toHaveLength(2)
     })
   })
 
@@ -176,7 +176,7 @@ describe('AddDataStep', () => {
       const presetDataRadio = screen.getByLabelText('Pre-set data')
       expect(presetDataRadio).toBeChecked()
 
-      const customDataRadio = screen.getByLabelText('Custom data')
+      const customDataRadio = screen.getByLabelText(/Custom data/i)
       expect(customDataRadio).not.toBeChecked()
     })
 
@@ -224,8 +224,11 @@ describe('AddDataStep', () => {
     it('should have proper labels for radio buttons', () => {
       render(<AddDataStep {...defaultProps} />)
 
-      expect(screen.getByLabelText('Pre-set data')).toBeInTheDocument()
-      expect(screen.getByLabelText('Custom data')).toBeInTheDocument()
+      const presetDataLabel = screen.getByLabelText('Pre-set data')
+      expect(presetDataLabel).toBeInTheDocument()
+
+      const customDataLabel = screen.getByLabelText(/Custom data/i)
+      expect(customDataLabel).toBeInTheDocument()
     })
   })
 })
