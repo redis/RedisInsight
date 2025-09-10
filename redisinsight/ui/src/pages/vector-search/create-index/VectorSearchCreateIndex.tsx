@@ -118,8 +118,7 @@ export const VectorSearchCreateIndex = ({
         <Title size="M" data-testid="title">
           New vector search
         </Title>
-        <Stepper currentStep={step} title="test">
-          <Stepper.Step>Select a database</Stepper.Step>
+        <Stepper currentStep={step - 1} title="test">
           <Stepper.Step>Adding data</Stepper.Step>
           <Stepper.Step>Create Index</Stepper.Step>
         </Stepper>
