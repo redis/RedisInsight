@@ -1,3 +1,4 @@
+import React from 'react'
 import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 import { VectorSearchBox } from 'uiSrc/components/new-index/create-index-step/field-box/types'
 import { BoxSelectionOption } from 'uiSrc/components/new-index/selection-box/SelectionBox'
@@ -9,6 +10,8 @@ import {
 } from 'uiSrc/components/base/icons'
 
 import { SearchIndexType, SampleDataType, SampleDataContent } from '../types'
+import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
+import { Row } from 'uiSrc/components/base/layout/flex'
 
 // ** Add data step */
 
@@ -37,7 +40,11 @@ export const sampleDatasetOptions = [
   {
     id: SampleDataType.CUSTOM_DATA,
     value: SampleDataType.CUSTOM_DATA,
-    label: 'Custom data',
+    label: (
+      <Row gap="m">
+        Custom data <RiBadge label="Coming soon" />
+      </Row>
+    ),
     disabled: true,
   },
 ]
