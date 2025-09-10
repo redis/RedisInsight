@@ -29,7 +29,8 @@ env:
   TEST_BIG_DB_DUMP: ${{ secrets.TEST_BIG_DB_DUMP }}
   E2E_VOLUME_PATH: '/usr/src/app'
   REPORT_NAME: 'report-regression-docker-node'
-  SLOWEST_SERVICE: 'oss-standalone-big:6379'
+  E2E_SLOWEST_SERVICE: 'oss-standalone-big:6379'
+  E2E_SLEEP_BEFORE_START: '30'
 
 jobs:
   e2e-docker-tests:
