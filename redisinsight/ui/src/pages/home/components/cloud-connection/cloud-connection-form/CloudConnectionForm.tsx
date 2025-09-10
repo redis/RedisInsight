@@ -207,6 +207,7 @@ const CloudConnectionForm = (props: Props) => {
             </FormField>
           </FlexItem>
         </Row>
+        <Spacer size="l" />
         <Row responsive>
           <FlexItem grow>
             <FormField label="API User Key*">
