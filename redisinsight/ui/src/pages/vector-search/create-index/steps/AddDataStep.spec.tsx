@@ -51,7 +51,7 @@ describe('AddDataStep', () => {
   it('should render sample dataset section', () => {
     render(<AddDataStep {...defaultProps} />)
 
-    expect(screen.getByText('Select sample dataset')).toBeInTheDocument()
+    expect(screen.getByText('Select data to use')).toBeInTheDocument()
     expect(screen.getByText('Pre-set data')).toBeInTheDocument()
     expect(screen.getByText('Custom data')).toBeInTheDocument()
   })
@@ -59,7 +59,7 @@ describe('AddDataStep', () => {
   it('should render data content section', () => {
     render(<AddDataStep {...defaultProps} />)
 
-    expect(screen.getByText('Data content')).toBeInTheDocument()
+    expect(screen.getByText('Select sample data to load')).toBeInTheDocument()
     expect(screen.getByText('E-commerce Discovery')).toBeInTheDocument()
     expect(screen.getByText('Movie Recommendations')).toBeInTheDocument()
   })
@@ -198,10 +198,10 @@ describe('AddDataStep', () => {
       expect(screen.getByText('Redis Query Engine')).toBeInTheDocument()
 
       // Sample dataset section
-      expect(screen.getByText('Select sample dataset')).toBeInTheDocument()
+      expect(screen.getByText('Select data to use')).toBeInTheDocument()
 
       // Data content section
-      expect(screen.getByText('Data content')).toBeInTheDocument()
+      expect(screen.getByText('Select sample data to load')).toBeInTheDocument()
     })
 
     it('should render all icons for search index types', () => {

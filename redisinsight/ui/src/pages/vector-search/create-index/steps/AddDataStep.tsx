@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { RadioGroupItem } from '@redis-ui/components'
 import { FlexGroup, FlexItem } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { RiRadioGroup } from 'uiSrc/components/base/forms/radio-group/RadioGroup'
@@ -48,9 +49,9 @@ export const AddDataStep: IStepComponent = ({
       $gap="m"
       data-testid="step-data--sample-dataset"
     >
-      <Text size="L">Select sample dataset</Text>
+      <Text size="L">Select data to use</Text>
       <RiRadioGroup
-        items={sampleDatasetOptions}
+        items={sampleDatasetOptions as RadioGroupItem[]}
         layout="horizontal"
         defaultValue={parameters.sampleDataType}
         onChange={(id) =>
@@ -59,7 +60,7 @@ export const AddDataStep: IStepComponent = ({
       />
     </FlexItem>
     <FlexItem direction="column" $gap="m" data-testid="step-data--data-content">
-      <Text>Data content</Text>
+      <Text>Select sample data to load</Text>
       <StyledBoxSelectionGroup defaultValue={parameters.dataContent}>
         {indexDataContent.map((type) => (
           <SmallSelectionBox
