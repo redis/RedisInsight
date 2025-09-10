@@ -87,7 +87,7 @@ export const CreateIndexStep: IStepComponent = ({
     <CreateIndexStepScreenWrapper as="div" data-testid="create-index-step2">
       <FlexItem direction="column" $gap="xxl">
         <FlexItem direction="column" $gap="m">
-          <Text>Vector index</Text>
+          <Text>Create index</Text>
           <Text size="S" color="secondary">
             Indexes tell Redis how to search your data. Creating an index
             enables fast, accurate retrieval across your dataset.
