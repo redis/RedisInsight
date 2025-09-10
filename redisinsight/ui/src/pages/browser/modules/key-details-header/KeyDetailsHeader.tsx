@@ -166,7 +166,12 @@ const KeyDetailsHeader = ({
                   )}
                 </FlexItem>
               </Row>
-              <Row centered className={styles.groupSecondLine} gap="m">
+              <Row
+                centered
+                className={styles.groupSecondLine}
+                gap="m"
+                align="start"
+              >
                 <KeyDetailsHeaderSizeLength width={width} />
                 <KeyDetailsHeaderTTL onEditTTL={handleEditTTL} />
                 <FlexItem grow>

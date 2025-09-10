@@ -8,14 +8,8 @@
 }
 
 .toolTipAnchorKey {
-  max-width: calc(100% - 25px);
+  max-width: 450px;
   height: 31px !important;
-}
-
-.inputWithIcon {
-  display: flex;
-  align-items: center;
-  min-width: 150px;
 }
 
 .keyInput {
@@ -23,6 +17,10 @@
   font-size: 14px !important;
   font-weight: 500 !important;
   flex: 1;
+  max-width: 400px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 :global(.browserPage .key-details-header .euiFormControlLayout) {
@@ -56,7 +54,7 @@
   display: flex;
   width: 100%;
   min-width: 100%;
-
+  max-width: 400px;
   padding-left: 9px;
   line-height: 31px !important;
 }

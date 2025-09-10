@@ -26,7 +26,7 @@ import {
   stringToBuffer,
 } from 'uiSrc/utils'
 
-import { FlexItem } from 'uiSrc/components/base/layout/flex'
+import {FlexItem, Row} from 'uiSrc/components/base/layout/flex'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CopyIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
@@ -34,6 +34,7 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiTooltip } from 'uiSrc/components'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
+import styled from 'styled-components'
 
 export interface Props {
   onEditKey: (
@@ -140,6 +141,10 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
     })
   }
 
+  const StyledInputWrapper = styled(Row)`
+    min-width: 150px;
+  `
+
   return (
     <FlexItem
       grow
@@ -169,7 +174,9 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
             isLoading={loading}
             declineOnUnmount={false}
           >
-            <div className={styles.inputWithIcon}>
+            <StyledInputWrapper
+              align="center"
+            >
               <TextInput
                 name="key"
                 id="key"
@@ -192,10 +199,9 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
                 <RiIcon
                   size="M"
                   type="EditIcon"
-                  className={styles.editIconAppended}
                 />
               )}
-            </div>
+            </StyledInputWrapper>
           </InlineItemEditor>
         </RiTooltip>
       ) : (
