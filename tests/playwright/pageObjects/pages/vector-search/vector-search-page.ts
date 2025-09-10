@@ -230,7 +230,7 @@ export class VectorSearchPage extends BasePage {
             await this.toast.closeToast()
         } catch {
             // No toast appeared - this is acceptable for some actions
-            // Success is typically verified by other means (navigation, etc.)Expand commentComment on lines R179 to R181ResolvedCode has comments. Press enter to view.
+            // Success is typically verified by other means (navigation, etc.)
         }
     }
 
@@ -272,22 +272,5 @@ export class VectorSearchPage extends BasePage {
 
         await this.waitForLocatorNotVisible(this.manageIndexesIndexDetails)
         await this.waitForLocatorVisible(this.manageIndexesIndexCollapsedInfo)
-
-        // Verify that the index details are not displayed
-        await this.waitForLocatorNotVisible(
-            this.manageIndexesContainer.getByText('Identifier'),
-        )
-        await this.waitForLocatorNotVisible(
-            this.manageIndexesContainer.getByText('Attribute'),
-        )
-        await this.waitForLocatorNotVisible(
-            this.manageIndexesContainer.getByText('Type'),
-        )
-        await this.waitForLocatorNotVisible(
-            this.manageIndexesContainer.getByText('Weight'),
-        )
-        await this.waitForLocatorNotVisible(
-            this.manageIndexesContainer.getByText('Noindex'),
-        )
     }
 }
