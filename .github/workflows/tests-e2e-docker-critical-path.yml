@@ -30,7 +30,6 @@ env:
   E2E_VOLUME_PATH: '/usr/src/app'
   REPORT_NAME: 'report-critical-path-docker-node'
   E2E_SLOWEST_SERVICE: 'oss-standalone-big:6379'
-  E2E_SLEEP_BEFORE_START: '30'
 
 jobs:
   e2e-docker-tests:
@@ -55,18 +54,12 @@ jobs:
         if: inputs.debug
         with:
           detached: true
-#
-#      - name: Download Docker Artifacts
-#        uses: actions/download-artifact@v4
-#        with:
-#          name: docker-builds
-#          path: ./release
-#
+
       - name: Download Docker Artifacts
-        run: |
-          mkdir -p ./release/docker
-          curl -L "https://s3.us-east-1.amazonaws.com/redisinsight.test/public/_tmp/docker-linux-alpine.amd64.tar" \
-            -o ./release/docker/docker-linux-alpine.amd64.tar
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-builds
+          path: ./release
 
       - name: Load built docker image from workspace
         run: |
@@ -130,18 +123,6 @@ jobs:
         run: |
           node ./.github/e2e-results.js
           curl -H "Content-type: application/json" --data @e2e.report.json -H "Authorization: Bearer $SLACK_TEST_REPORT_KEY" -X POST https://slack.com/api/chat.postMessage
-
-      # todo: why do we need this report? we already have html report on s3
-      - name: Generate test results for ${{ matrix.parallel }}th node
-        uses: dorny/test-reporter@v1
-        if: always()
-        with:
-          name: 'Report: E2E Critical Path (docker) ${{ matrix.parallel }}th node'
-          path: /usr/src/app/results/results.xml
-          reporter: java-junit
-          list-tests: 'failed'
-          list-suites: 'failed'
-          fail-on-error: 'false'
 
       - name: Deploy report
         if: always()
