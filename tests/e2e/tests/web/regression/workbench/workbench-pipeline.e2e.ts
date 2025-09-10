@@ -12,7 +12,7 @@ const settingsPage = new SettingsPage();
 const databaseHelper = new DatabaseHelper();
 const databaseAPIRequests = new DatabaseAPIRequests();
 
-const externalPageLink = 'https://redis.io/docs/latest/develop/use/pipelining/';
+const externalPageLink = 'https://redis.io/docs/latest/develop/using-commands/pipelining/';
 const pipelineValues = ['-5', '5', '4', '20'];
 const commandForSend = '100 scan 0 match * count 5000';
 

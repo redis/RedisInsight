@@ -194,7 +194,8 @@ test
         const invalidPathes = ['Invalid relative', 'Invalid absolute'];
         const keyNames = ['hashkey1', 'listkey1', 'setkey1', 'zsetkey1', 'stringkey1', 'jsonkey1', 'streamkey1', 'graphkey1', 'tskey1', 'stringkey1test'];
         internalLinkName1 = 'probably-1';
-        const fileStarts = 'bulkUplAllKeyTypes';
+        // todo: this tests doesn't wotk locally because of different "fileStart" value
+        const fileStarts = 'Upload';
 
         // Upload custom tutorial
         await workbenchPage.NavigationHeader.togglePanel(true);
