@@ -3,6 +3,8 @@ import { BasePage } from '../../base-page'
 import { ToastSelectors } from '../../../selectors'
 
 export class Toast extends BasePage {
+    // Deprecated - use new toast selectors below
+    // TODO: Remove deprecated selectors and usages after migrating all toasts
     public readonly toastHeader: Locator
 
     public readonly toastBody: Locator
@@ -17,6 +19,15 @@ export class Toast extends BasePage {
 
     public readonly toastCancelBtn: Locator
 
+    // New toast selectors
+    public readonly toastContainer: Locator
+
+    public readonly toastMessage: Locator
+
+    public readonly toastDescription: Locator
+
+    public readonly toastActionButton: Locator
+
     constructor(page: Page) {
         super(page)
         this.toastHeader = page.locator(ToastSelectors.toastHeader)
@@ -26,6 +37,12 @@ export class Toast extends BasePage {
         this.toastCloseButton = page.locator(ToastSelectors.toastCloseButton)
         this.toastSubmitBtn = page.getByTestId(ToastSelectors.toastSubmitBtn)
         this.toastCancelBtn = page.getByTestId(ToastSelectors.toastCancelBtn)
+
+        // New toast selectors
+        this.toastContainer = page.locator(ToastSelectors.toastContainer)
+        this.toastMessage = page.locator(ToastSelectors.toastMessage)
+        this.toastDescription = page.locator(ToastSelectors.toastDescription)
+        this.toastActionButton = page.locator(ToastSelectors.toastActionButton)
     }
 
     async isCloseButtonVisible(): Promise<boolean> {
@@ -33,6 +50,6 @@ export class Toast extends BasePage {
     }
 
     async closeToast(): Promise<void> {
-        await this.toastCloseButton.click()
+        await this.toastActionButton.click()
     }
 }
