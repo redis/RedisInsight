@@ -1,5 +1,5 @@
 import React from 'react'
-import { cleanup, render, screen } from 'uiSrc/utils/test-utils'
+import { cleanup, render, screen, within } from 'uiSrc/utils/test-utils'
 import {
   indexInfoAttributeFactory,
   indexInfoFactory,
@@ -101,7 +101,7 @@ describe('IndexAttributesList', () => {
 
     // Verify Number of documents
     const numberOfDocumentLabel = screen.getByText(/Number of docs:/)
-    const numberOfDocumentValue = screen.getByText(
+    const numberOfDocumentValue = within(summaryInfo).getByText(
       new RegExp(mockIndexInfo.num_docs),
     )
     expect(numberOfDocumentLabel).toBeInTheDocument()
@@ -109,7 +109,7 @@ describe('IndexAttributesList', () => {
 
     // Verify Max document ID
     const maxDocumentIdLabel = screen.getByText(/max/)
-    const maxDocumentIdValue = screen.getByText(
+    const maxDocumentIdValue = within(summaryInfo).getByText(
       new RegExp(mockIndexInfo.max_doc_id!),
     )
     expect(maxDocumentIdLabel).toBeInTheDocument()
@@ -117,7 +117,7 @@ describe('IndexAttributesList', () => {
 
     // Verify Number of records
     const numberOfRecordsLabel = screen.getByText(/Number of records:/)
-    const numberOfRecordsValue = screen.getByText(
+    const numberOfRecordsValue = within(summaryInfo).getByText(
       new RegExp(mockIndexInfo.num_records!),
     )
     expect(numberOfRecordsLabel).toBeInTheDocument()
@@ -125,7 +125,7 @@ describe('IndexAttributesList', () => {
 
     // Verify Number of terms
     const numberOfTermsLabel = screen.getByText(/Number of terms:/)
-    const numberOfTermsValue = screen.getByText(
+    const numberOfTermsValue = within(summaryInfo).getByText(
       new RegExp(mockIndexInfo.num_terms!),
     )
     expect(numberOfTermsLabel).toBeInTheDocument()
