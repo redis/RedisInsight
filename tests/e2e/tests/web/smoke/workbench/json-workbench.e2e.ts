@@ -1,7 +1,7 @@
 import { rte } from '../../../../helpers/constants';
 import { DatabaseHelper } from '../../../../helpers/database';
 import { BrowserPage, WorkbenchPage } from '../../../../pageObjects';
-import { commonUrl, ossStandaloneRedisearch } from '../../../../helpers/conf';
+import { commonUrl, ossStandaloneConfig } from '../../../../helpers/conf';
 import { Common } from '../../../../helpers/common';
 import { DatabaseAPIRequests } from '../../../../helpers/api/api-database';
 
@@ -16,7 +16,7 @@ fixture `JSON verifications at Workbench`
     .meta({ type: 'smoke', rte: rte.standalone })
     .page(commonUrl)
     .beforeEach(async t => {
-        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneRedisearch);
+        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         // Go to Workbench page
         await t.click(browserPage.NavigationTabs.workbenchButton);
     })

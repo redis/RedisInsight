@@ -3,7 +3,7 @@ import { Selector } from 'testcafe';
 import { MyRedisDatabasePage, MemoryEfficiencyPage, BrowserPage } from '../../../../pageObjects';
 import { rte } from '../../../../helpers/constants';
 import { DatabaseHelper } from '../../../../helpers/database';
-import { commonUrl, ossStandaloneRedisearch } from '../../../../helpers/conf';
+import { commonUrl, ossStandaloneConfig } from '../../../../helpers/conf';
 import { DatabaseAPIRequests } from '../../../../helpers/api/api-database';
 import { deleteAllKeysFromDB, populateDBWithHashes, populateHashWithFields } from '../../../../helpers/keys';
 import { Common } from '../../../../helpers/common';
@@ -33,16 +33,16 @@ fixture(`Memory Efficiency Top Keys Table`).skip
     .page(commonUrl);
 test
     .before(async t => {
-        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneRedisearch);
+        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         // Create keys
-        await populateDBWithHashes(ossStandaloneRedisearch.host, ossStandaloneRedisearch.port, keyToAddParameters);
+        await populateDBWithHashes(ossStandaloneConfig.host, ossStandaloneConfig.port, keyToAddParameters);
         // Go to Analysis Tools page
         await t.click(browserPage.NavigationTabs.analysisButton);
     })
     .after(async() => {
         await browserPage.Cli.sendCommandInCli('flushdb');
-        await deleteAllKeysFromDB(ossStandaloneRedisearch.host, ossStandaloneRedisearch.port);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneRedisearch);
+        await deleteAllKeysFromDB(ossStandaloneConfig.host, ossStandaloneConfig.port);
+        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     })('Top Keys displaying in Summary of big keys', async t => {
         // Verify that user can see “-” as length for all unsupported data types
         await browserPage.Cli.sendCommandInCli(mbloomCommand);
@@ -74,15 +74,15 @@ test
     });
 test
     .before(async t => {
-        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneRedisearch);
+        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         // Create keys
-        await populateHashWithFields(ossStandaloneRedisearch.host, ossStandaloneRedisearch.port, keyToAddParameters2);
+        await populateHashWithFields(ossStandaloneConfig.host, ossStandaloneConfig.port, keyToAddParameters2);
         // Go to Analysis Tools page
         await t.click(browserPage.NavigationTabs.analysisButton);
     })
     .after(async() => {
-        await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneRedisearch.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneRedisearch);
+        await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
+        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     })('Big highlighted key tooltip', async t => {
         const tooltipText = 'Consider splitting it into multiple keys';
 

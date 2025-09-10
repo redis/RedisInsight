@@ -2,7 +2,7 @@ import * as path from 'path';
 import { BrowserPage, MemoryEfficiencyPage, MyRedisDatabasePage, WorkbenchPage } from '../../../../pageObjects';
 import { ExploreTabs, RecommendationIds, rte } from '../../../../helpers/constants';
 import { DatabaseHelper } from '../../../../helpers/database';
-import { commonUrl, ossStandaloneV6Config, ossStandaloneV5Config, ossStandaloneV7Config } from '../../../../helpers/conf';
+import { commonUrl, ossStandaloneConfig, ossStandaloneV5Config, ossStandaloneV7Config } from '../../../../helpers/conf';
 import { DatabaseAPIRequests } from '../../../../helpers/api/api-database';
 import { Common } from '../../../../helpers/common';
 import { Telemetry } from '../../../../helpers/telemetry';
@@ -49,14 +49,14 @@ fixture `Live Recommendations`
         await refreshFeaturesTestData();
         await modifyFeaturesConfigJson(featuresConfig);
         await updateControlNumber(47.2);
-        await databaseAPIRequests.addNewStandaloneDatabaseApi(ossStandaloneV6Config);
+        await databaseAPIRequests.addNewStandaloneDatabaseApi(ossStandaloneConfig);
         await myRedisDatabasePage.reloadPage();
-        await myRedisDatabasePage.clickOnDBByName(ossStandaloneV6Config.databaseName);
+        await myRedisDatabasePage.clickOnDBByName(ossStandaloneConfig.databaseName);
     })
     .afterEach(async() => {
         await refreshFeaturesTestData();
         // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneV6Config);
+        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test
     .before(async() => {
@@ -221,7 +221,7 @@ test
     await t.expect(await tab.getRecommendationByName(setPasswordRecom).visible).notOk(`${setPasswordRecom} recommendation displayed`);
     await browserPage.NavigationHeader.togglePanel(false);
     // Go to Analysis Tools page
-    await t.click(myRedisDatabasePage.NavigationPanel.analysisPageButton);
+    await t.click(browserPage.NavigationTabs.analysisButton);
     await t.click(memoryEfficiencyPage.newReportBtn);
     await browserPage.NavigationHeader.togglePanel(true);
     tab = await browserPage.InsightsPanel.setActiveTab(ExploreTabs.Tips);
@@ -251,7 +251,7 @@ test
         //Verify that user is navigated to DB Analysis page via Analyze button and new report is generated
         await t.click(memoryEfficiencyPage.selectedReport);
         await t.expect(memoryEfficiencyPage.reportItem.visible).ok('Database analysis page not opened');
-        await t.click(memoryEfficiencyPage.NavigationPanel.browserButton);
+        await t.click(browserPage.NavigationTabs.browserButton);
         await workbenchPage.NavigationHeader.togglePanel(true);
         tab = await browserPage.InsightsPanel.setActiveTab(ExploreTabs.Tips);
         await t.click(tab.analyzeDatabaseLink);
@@ -285,5 +285,5 @@ test
             .find(tab.cssKeyName)
             .innerText;
         await t.expect(keyNameFromRecommendation).eql(keyName);
-        await t.click(memoryEfficiencyPage.NavigationPanel.browserButton);
+        await t.click(memoryEfficiencyPage.NavigationTabs.browserButton);
     });

@@ -22,12 +22,19 @@ fixture(`Hash Key fields verification`)
     .page(commonUrl)
     .beforeEach(async() => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
-        await browserPage.addHashKey(keyName, '2147476121', 'field', 'value');
+        await apiKeyRequests.addHashKeyApi({
+            keyName,
+            ttl: 2147476121,
+            fields: [{
+                field: 'field',
+                value: 'value',
+            }]
+        }, ossStandaloneConfig);
+        await browserPage.navigateToKey(keyName);
     })
     .afterEach(async() => {
         // Clear and delete database
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that user can search per exact field name in Hash in DB with 1 million of fields', async t => {
     // Add 1000000 fields to the hash key

@@ -21,12 +21,11 @@ fixture `Scripting area at Workbench`
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         // Go to Workbench page
-        await t.click(browserPage.NavigationPanel.workbenchButton);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
     })
     .afterEach(async() => {
         // Clear and delete database
         await workbenchPage.sendCommandInWorkbench(`FT.DROPINDEX ${indexName} DD`);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test
     .skip('Verify that user can run multiple commands written in multiple lines in Workbench page', async t => {
@@ -43,7 +42,7 @@ test
     await t.click(settingsPage.accordionWorkbenchSettings);
     await settingsPage.changeCommandsInPipeline('1');
     // Go to Workbench page
-    await t.click(browserPage.NavigationPanel.workbenchButton);
+    await t.click(browserPage.NavigationTabs.workbenchButton);
     // Send commands in multiple lines
     await workbenchPage.sendCommandInWorkbench(commandsForSend.join('\n'), 0.5);
     // Check the result
@@ -56,7 +55,6 @@ test
     .after(async() => {
         // Clear and delete database
         await workbenchPage.Cli.sendCommandInCli(`DEL ${keyName}`);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     })
     .skip('Verify that user can use double slashes (//) wrapped in double quotes and these slashes will not comment out any characters', async t => {
         keyName = Common.generateWord(10);
@@ -71,7 +69,7 @@ test
         await t.click(settingsPage.accordionWorkbenchSettings);
         await settingsPage.changeCommandsInPipeline('1');
         // Go to Workbench page
-        await t.click(settingsPage.NavigationPanel.workbenchButton);
+        await t.click(settingsPage.NavigationTabs.workbenchButton);
         // Send commands in multiple lines with double slashes (//) wrapped in double quotes
         await workbenchPage.sendCommandInWorkbench(commandsForSend.join('\n"//"'), 0.5);
         // Check that all commands are executed

@@ -13,7 +13,7 @@ export class MemoryEfficiencyPage extends InstancePage {
     cssReadMoreLink = '[data-testid=read-more-link]';
     cssKeyName = '[data-testid=recommendation-key-name]';
     // BUTTONS
-    databaseAnalysisTab = Selector('[data-testid=analytics-tab-DatabaseAnalysis]');
+    databaseAnalysisTab = Selector('[data-testid=analytics-tabs] [role=tab] p').withText('Database Analysis').parent('[role=tab]');
     newReportBtn = Selector('[data-testid=start-database-analysis-btn]');
     sortByKeyPattern = Selector('[data-testid=tableHeaderSortButton]');
     showNoExpiryToggle = Selector('[data-testid=show-no-expiry-switch]');

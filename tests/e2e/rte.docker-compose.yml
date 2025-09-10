@@ -122,18 +122,6 @@ services:
       ssh:
         ipv4_address: 172.33.100.113
 
-  # oss standalone redisearch
-  oss-standalone-redisearch:
-    logging: *logging
-    image: redislabs/redismod
-    ports:
-      - 8102:6379
-    networks:
-      default:
-        ipv4_address: 172.31.100.114
-      ssh:
-        ipv4_address: 172.33.100.114
-
   oss-standalone-redisgears-2-0:
     logging: *logging
     image: redislabs/redisgears:edge

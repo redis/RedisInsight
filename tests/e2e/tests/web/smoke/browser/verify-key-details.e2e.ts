@@ -1,7 +1,7 @@
 import { rte } from '../../../../helpers/constants';
 import { DatabaseHelper } from '../../../../helpers/database';
 import { BrowserPage } from '../../../../pageObjects';
-import { commonUrl, ossStandaloneConfig, ossStandaloneV7Config } from '../../../../helpers/conf';
+import { commonUrl, ossStandaloneConfig } from '../../../../helpers/conf';
 import { Common } from '../../../../helpers/common';
 import { DatabaseAPIRequests } from '../../../../helpers/api/api-database';
 import { APIKeyRequests } from '../../../../helpers/api/api-keys';
@@ -118,53 +118,44 @@ test('Verify that user can see JSON Key details', async t => {
     await t.expect(keyTTLValue).match(expectedTTL, 'The JSON Key TTL is incorrect');
     await t.expect(keyBadge).contains('JSON', 'The JSON Key Badge is incorrect');
 });
+test('Verify that user can set ttl for Hash fields', async t => {
+    keyName = Common.generateWord(10);
+    const keyName2 = Common.generateWord(10);
+    const field1 = 'Field1WithTtl';
+    const field2 = 'Field2WithTtl';
+    await browserPage.addHashKey(keyName, ' ',  field1,  'value',  keyTTL);
 
-test
-    .before(async() => {
-        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneV7Config);
-    })
-    .after(async() => {
-        // Clear and delete database
-        await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneV7Config.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneV7Config);
-    })('Verify that user can set ttl for Hash fields', async t => {
-        keyName = Common.generateWord(10);
-        const keyName2 = Common.generateWord(10);
-        const field1 = 'Field1WithTtl';
-        const field2 = 'Field2WithTtl';
-        await browserPage.addHashKey(keyName, ' ',  field1,  'value',  keyTTL);
+    //verify that user can create key with ttl for the has field
+    let ttlFieldValue = await browserPage.getHashTtlFieldInput(field1).textContent;
+    await t.expect(ttlFieldValue).match(expectedTTL, 'the field ttl is not set');
 
-        //verify that user can create key with ttl for the has field
-        let ttlFieldValue = await browserPage.getHashTtlFieldInput(field1).textContent;
-        await t.expect(ttlFieldValue).match(expectedTTL, 'the field ttl is not set');
+    // verify that ttl can have empty value
+    await browserPage.editHashFieldTtlValue(field1, ' ');
+    ttlFieldValue = await browserPage.getHashTtlFieldInput(field1).textContentWithoutButtons;
+    await t.expect(ttlFieldValue).eql('No Limit', 'the field ttl can not be removed');
 
-        // verify that ttl can have empty value
-        await browserPage.editHashFieldTtlValue(field1, ' ');
-        ttlFieldValue = await browserPage.getHashTtlFieldInput(field1).textContentWithoutButtons;
-        await t.expect(ttlFieldValue).eql('No Limit', 'the field ttl can not be removed');
+    //verify that ttl field value can be set
+    await browserPage.addFieldToHash(field2, 'value', keyTTL);
+    ttlFieldValue = await browserPage.getHashTtlFieldInput(field2).textContent;
+    await t.expect(ttlFieldValue).match(expectedTTL, 'the field ttl is not set');
 
-        //verify that ttl field value can be set
-        await browserPage.addFieldToHash(field2, 'value', keyTTL);
-        ttlFieldValue = await browserPage.getHashTtlFieldInput(field2).textContent;
-        await t.expect(ttlFieldValue).match(expectedTTL, 'the field ttl is not set');
+    //verify that ttl column can be hidden
+    await t.click(browserPage.showTtlCheckbox);
+    await t.expect(await browserPage.getHashTtlFieldInput(field2).exists).notOk('the ttl column is not hidden');
+    await t.click(browserPage.showTtlCheckbox);
 
-        //verify that ttl column can be hidden
-        await t.click(browserPage.showTtlCheckbox);
-        await t.expect(await browserPage.getHashTtlFieldInput(field2).exists).notOk('the ttl column is not hidden');
-        await t.click(browserPage.showTtlCheckbox);
+    //verify that field is removed after ttl field is expired
+    await browserPage.editHashFieldTtlValue(field1, '1');
+    await t.wait(1000);
+    await t.click(browserPage.refreshKeyButton);
+    const result = browserPage.hashFieldsList.count;
+    await t.expect(result).eql(1, 'the field was not removed');
 
-        //verify that field is removed after ttl field is expired
-        await browserPage.editHashFieldTtlValue(field1, '1');
-        await t.wait(1000);
-        await t.click(browserPage.refreshKeyButton);
-        const result = browserPage.hashFieldsList.count;
-        await t.expect(result).eql(1, 'the field was not removed');
+    //verify that the key is removed if key has 1 field and ttl field is expired
+    await browserPage.addHashKey(keyName2, ' ',  field1);
+    await browserPage.editHashFieldTtlValue(field1, '1');
+    await t.wait(1000);
+    await t.click(browserPage.refreshKeysButton);
 
-        //verify that the key is removed if key has 1 field and ttl field is expired
-        await browserPage.addHashKey(keyName2, ' ',  field1);
-        await browserPage.editHashFieldTtlValue(field1, '1');
-        await t.wait(1000);
-        await t.click(browserPage.refreshKeysButton);
-
-        await t.expect(browserPage.getKeySelectorByName(keyName2).exists).notOk('key is not removed when the field ttl is expired');
-    });
+    await t.expect(browserPage.getKeySelectorByName(keyName2).exists).notOk('key is not removed when the field ttl is expired');
+});

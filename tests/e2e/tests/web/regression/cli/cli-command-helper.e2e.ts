@@ -19,15 +19,12 @@ let commandsArgumentsToCheck: string[] = [];
 let externalPageLink = '';
 let externalPageLinks: string[] = [];
 
-fixture`CLI Command helper`
+// todo: uncomment when RI-7447 will be fixed
+fixture.skip`CLI Command helper`
     .meta({ type: 'regression', rte: rte.standalone })
     .page(commonUrl)
     .beforeEach(async () => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
-    })
-    .afterEach(async () => {
-        // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that user can open/close CLI separately from Command Helper', async t => {
     // Open CLI

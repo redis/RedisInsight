@@ -8,8 +8,8 @@ export class FiltersDialog {
     treeViewDelimiterValueCancel = Selector('[data-testid=tree-view-cancel-btn]');
     treeViewDelimiterValueSave = Selector('[data-testid=tree-view-apply-btn]');
     sortingBtn = Selector('[data-testid=tree-view-sorting-select]');
-    sortingASCoption = Selector('[id=ASC]');
-    sortingDESCoption = Selector('[id=DESC]');
+    sortingASCoption = Selector('[data-testid=tree-view-sorting-item-ASC]').parent('[role=option]');
+    sortingDESCoption = Selector('[data-testid=tree-view-sorting-item-DESC]').parent('[role=option]');
 
     /**
      * Get Delimiter badge selector by title

@@ -33,7 +33,6 @@ fixture `Add keys`
             commandString = commandString.concat(` ${key[0]}`);
         }
         await browserPage.Cli.sendCommandInCli(commandString);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that user can create different types(string, number, null, array, boolean) of JSON', async t => {
     for (let i = 0; i < jsonKeys.length; i++) {
@@ -66,7 +65,6 @@ test
         }
         const commands = [`FT.DROPINDEX ${indexName}`, commandString];
         await browserPage.Cli.sendCommandsInCli(commands);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneBigConfig);
     })('Verify that the new key is displayed at the top of the list', async t => {
         const keyName = Common.generateWord(12);
         const keyName1 = Common.generateWord(12);

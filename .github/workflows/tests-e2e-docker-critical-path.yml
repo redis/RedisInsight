@@ -1,0 +1,137 @@
+name: "E2E: Critical Path (Docker)"
+
+on:
+  workflow_call:
+    inputs:
+      report:
+        description: Send report to Slack
+        default: false
+        type: boolean
+
+      debug:
+        description: SSH Debug
+        default: false
+        type: boolean
+
+env:
+  E2E_CLOUD_DATABASE_USERNAME: ${{ secrets.E2E_CLOUD_DATABASE_USERNAME }}
+  E2E_CLOUD_DATABASE_PASSWORD: ${{ secrets.E2E_CLOUD_DATABASE_PASSWORD }}
+  E2E_CLOUD_API_ACCESS_KEY: ${{ secrets.E2E_CLOUD_API_ACCESS_KEY }}
+  E2E_CLOUD_DATABASE_HOST: ${{ secrets.E2E_CLOUD_DATABASE_HOST }}
+  E2E_CLOUD_DATABASE_PORT: ${{ secrets.E2E_CLOUD_DATABASE_PORT }}
+  E2E_CLOUD_DATABASE_NAME: ${{ secrets.E2E_CLOUD_DATABASE_NAME }}
+  E2E_CLOUD_API_SECRET_KEY: ${{ secrets.E2E_CLOUD_API_SECRET_KEY }}
+  E2E_RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
+  RI_ENCRYPTION_KEY: ${{ secrets.RI_ENCRYPTION_KEY }}
+  RI_SERVER_TLS_CERT: ${{ secrets.RI_SERVER_TLS_CERT }}
+  RI_SERVER_TLS_KEY: ${{ secrets.RI_SERVER_TLS_KEY }}
+  SLACK_TEST_REPORT_KEY: ${{ secrets.SLACK_TEST_REPORT_KEY }}
+  TEST_BIG_DB_DUMP: ${{ secrets.TEST_BIG_DB_DUMP }}
+  E2E_VOLUME_PATH: '/usr/src/app'
+  REPORT_NAME: 'report-critical-path-docker-node'
+  E2E_SLOWEST_SERVICE: 'oss-standalone-big:6379'
+
+jobs:
+  e2e-docker-tests:
+    runs-on: ubuntu-latest
+    name: E2E Docker tests
+    strategy:
+      fail-fast: false
+      matrix:
+        # Number of threads to run tests
+        parallel: [1, 2, 3, 4]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get current date
+        id: date
+        uses: ./.github/actions/get-current-date
+
+      # SSH Debug
+      - name: Enable SSH
+        uses: mxschmitt/action-tmate@v3
+        if: inputs.debug
+        with:
+          detached: true
+
+      - name: Download Docker Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-builds
+          path: ./release
+
+      - name: Load built docker image from workspace
+        run: |
+          docker image load -i ./release/docker/docker-linux-alpine.amd64.tar
+
+      - name: Generate short list of the test files
+        working-directory: ./tests/e2e
+        run: |
+          export NODE_INDEX=${{ matrix.parallel }}
+          testFiles=$(find tests/web/critical-path -type f -name '*.e2e.ts' \
+            | sort \
+            | awk "NR % 4 == $(( ${{ matrix.parallel }} - 1 ))")
+
+          echo "Selected files:"
+          echo "$testFiles"
+
+          # Multi-Line value
+          echo "TEST_FILES<<EOF" >> $GITHUB_ENV
+          echo "$testFiles" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Build web images
+        run: |
+          docker compose --profile e2e \
+          -f tests/e2e/docker.web.docker-compose.yml \
+          -f tests/e2e/rte.networks.docker-compose.yml \
+          build
+
+      - name: Pull RTE images
+        run: |
+          docker compose --profile e2e \
+          -f tests/e2e/rte.critical-path.docker-compose.yml \
+          -f tests/e2e/rte.networks.docker-compose.yml \
+          pull
+
+      - name: Build RTE images
+        run: |
+          docker compose --profile e2e \
+          -f tests/e2e/rte.critical-path.docker-compose.yml \
+          -f tests/e2e/rte.networks.docker-compose.yml \
+          build
+
+      - name: Run tests
+        timeout-minutes: 80
+        run: |
+          docker compose --profile e2e \
+          -f tests/e2e/rte.critical-path.docker-compose.yml \
+          -f tests/e2e/docker.web.docker-compose.yml \
+          -f tests/e2e/rte.networks.docker-compose.yml \
+          up --abort-on-container-exit --force-recreate
+
+      - name: Upload Test Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ${{ env.REPORT_NAME }}-${{ matrix.parallel }}
+          path: /usr/src/app/report
+
+      - name: Send report to Slack
+        if: inputs.report && always()
+        run: |
+          node ./.github/e2e-results.js
+          curl -H "Content-type: application/json" --data @e2e.report.json -H "Authorization: Bearer $SLACK_TEST_REPORT_KEY" -X POST https://slack.com/api/chat.postMessage
+
+      - name: Deploy report
+        if: always()
+        uses: ./.github/actions/deploy-test-reports
+        with:
+          group: 'report'
+          path: '${{ vars.DEFAULT_TEST_REPORTS_URL }}/${{ steps.date.outputs.date }}/${{ github.run_id }}/${{ env.REPORT_NAME }}-${{ matrix.parallel }}'
+          AWS_BUCKET_NAME_TEST: ${{ vars.AWS_BUCKET_NAME_TEST }}
+          AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
+          AWS_DISTRIBUTION_ID: ${{ secrets.AWS_DISTRIBUTION_ID }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

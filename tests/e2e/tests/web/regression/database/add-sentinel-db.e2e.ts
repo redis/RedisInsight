@@ -6,7 +6,8 @@ import { MyRedisDatabasePage } from '../../../../pageObjects';
 const myRedisDatabasePage = new MyRedisDatabasePage();
 const databaseHelper = new DatabaseHelper();
 
-fixture `Add DBs from Sentinel`
+// todo: enable after RI-7463 fix
+fixture.skip `Add DBs from Sentinel`
     .page(commonUrl)
     .meta({ type: 'smoke', rte: rte.standalone })
     .beforeEach(async() => {

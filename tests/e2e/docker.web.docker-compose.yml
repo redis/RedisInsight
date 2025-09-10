@@ -4,6 +4,7 @@ services:
   e2e:
     profiles:
       - e2e
+    shm_size: 2gb
     build:
       context: .
       dockerfile: e2e.Dockerfile
@@ -19,7 +20,7 @@ services:
     env_file:
       - ./.env
     entrypoint: [
-        './upload-custom-plugins.sh',
+      './upload-custom-plugins.sh',
     ]
     environment:
       TEST_FILES: $TEST_FILES
@@ -32,9 +33,9 @@ services:
       E2E_CLOUD_API_SECRET_KEY: $E2E_CLOUD_API_SECRET_KEY
       REMOTE_FOLDER_PATH: "/root/remote"
     command: [
-        './wait-for-it.sh', 'redis-enterprise:12000', '-s', '-t', '240',
-        '--',
-        'npm', 'run', 'test:chrome:ci'
+      './wait-for-it.sh', "${E2E_SLOWEST_SERVICE:-oss-standalone:6379}", '-s', '-t', '240',
+      '--',
+      'npm', 'run', 'test:chrome:ci'
     ]
 
   # Built image

@@ -1,6 +1,6 @@
 import { DatabaseHelper } from '../../../../helpers/database';
 import { WorkbenchPage, BrowserPage } from '../../../../pageObjects';
-import { commonUrl, ossStandaloneRedisearch } from '../../../../helpers/conf';
+import { commonUrl, ossStandaloneConfigEmpty } from '../../../../helpers/conf';
 import { rte } from '../../../../helpers/constants';
 import { DatabaseAPIRequests } from '../../../../helpers/api/api-database';
 import { Common } from '../../../../helpers/common';
@@ -23,16 +23,15 @@ fixture `Command results at Workbench`
     .meta({ type: 'regression', rte: rte.standalone })
     .page(commonUrl)
     .beforeEach(async t => {
-        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneRedisearch);
+        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfigEmpty);
         // Add index and data
-        await t.click(browserPage.NavigationPanel.workbenchButton);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
         await workbenchPage.sendCommandsArrayInWorkbench(commandsForIndex);
     })
     .afterEach(async t => {
         // Drop index and database
         await t.switchToMainWindow();
         await workbenchPage.sendCommandInWorkbench(`FT.DROPINDEX ${indexName} DD`);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneRedisearch);
     });
 test
     .skip('Verify that user can switches between Table and Text for FT.INFO and see results corresponding to their views', async t => {
@@ -118,12 +117,11 @@ test
 });
 test
     .before(async t => {
-        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneRedisearch);
-        await t.click(browserPage.NavigationPanel.workbenchButton);
+        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfigEmpty);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
     })
     .after(async t => {
         await t.switchToMainWindow();
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneRedisearch);
     })
     .skip('Verify that user can see the client List visualization available for all users', async t => {
         const command = 'CLIENT LIST';

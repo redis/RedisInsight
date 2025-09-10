@@ -3,20 +3,7 @@ import { Common } from '../helpers/common';
 import { InstancePage } from './instance-page';
 import { BulkActions, TreeView } from './components/browser';
 import { AddElementInList } from '../helpers/constants';
-
-interface EnhancedSelector extends Selector {
-    textContentWithoutButtons: Promise<string>;
-}
-
-const createEnhancedSelector = (selector: string): EnhancedSelector => {
-    return Selector(selector).addCustomDOMProperties({
-        textContentWithoutButtons: el => {
-            const clone = el.cloneNode(true) as HTMLElement;
-            clone.querySelectorAll('button').forEach(btn => btn.remove());
-            return clone.textContent?.trim() ?? '';
-        }
-    }) as unknown as EnhancedSelector
-}
+import { createEnhancedSelector, EnhancedSelector } from './enhanced-selector';
 
 export class BrowserPage extends InstancePage {
     BulkActions = new BulkActions();
@@ -64,6 +51,7 @@ export class BrowserPage extends InstancePage {
     removeElementFromListButton = Selector('[data-testid=remove-elements-btn]');
     confirmRemoveListElementButton = Selector('[data-testid=remove-submit]');
     removeElementFromListSelect = Selector('[data-testid=destination-select]');
+    destinationSelect = Selector('[data-testid=destination-select]');
     addJsonObjectButton = Selector('[data-testid=add-object-btn]');
     addJsonFieldButton = Selector('[data-testid=add-field-btn]');
     expandJsonObject = Selector('[data-testid=expand-object]');
@@ -136,6 +124,8 @@ export class BrowserPage extends InstancePage {
     listOption = Selector('[data-test-subj=list]').parent('[role=option]');
     hashOption = Selector('[data-test-subj=hash]').parent('[role=option]');
     streamOption = Selector('[data-test-subj=stream]').parent('[role=option]');
+    pushToTailSelection = Selector('[role=option] span').withExactText('Push to tail').parent('[role=option]');
+    pushToHeadSelection = Selector('[role=option] span').withExactText('Push to head').parent('[role=option]');
     removeFromHeadSelection = Selector('span').withExactText('Remove from head').parent('[role=option]');
     filterOptionType = Selector('[data-test-subj^=filter-option-type-]');
     filterByKeyTypeDropDown = Selector('[data-testid=select-filter-key-type]', { timeout: 500 });
@@ -156,7 +146,7 @@ export class BrowserPage extends InstancePage {
     filterHistoryItemText = Selector('[data-testid=suggestion-item-text]');
     //TABS
     streamTabGroups = Selector('[data-testid=stream-details] [role=tablist] p').withExactText('Consumer Groups').parent('[role=tab]');
-    streamTabConsumers = Selector('[data-testid=stream-tab-Consumers]');
+    streamTabConsumers = Selector('[data-testid=stream-details] [role=tab][aria-controls*=-content-Consumers]');
     streamTabs = Selector('[data-testid=stream-tabs]');
     //TEXT INPUTS (also referred to as 'Text fields')
     addKeyNameInput = Selector('[data-testid=key]');
@@ -397,9 +387,9 @@ export class BrowserPage extends InstancePage {
         await t.typeText(this.keyTTLInput, TTL, { replace: true, paste: true });
 
         if(position === AddElementInList.Head){
-            await t.click(this.removeElementFromListSelect);
-            await t.click(this.removeFromHeadSelection);
-            await t.expect(this.removeFromHeadSelection.exists).notOk();
+            await t.click(this.destinationSelect);
+            await t.click(this.pushToHeadSelection);
+            await t.expect(this.pushToHeadSelection.exists).notOk();
         }
 
         for(let i = 0; i < element.length; i++ ) {
@@ -421,7 +411,7 @@ export class BrowserPage extends InstancePage {
      * @param value The value of the key
      * @param fieldTtl The ttl of the field for Redis databases 7.4 and higher*/
     async addHashKey(keyName: string, TTL = ' ', field = ' ', value = ' ', fieldTtl = ''): Promise<void> {
-        if (await this.Toast.toastCloseButton.exists) {
+        if (await this.Toast.toastCloseButton.visible) {
             await t.click(this.Toast.toastCloseButton);
         }
         await Common.waitForElementNotVisible(this.progressLine);
@@ -795,9 +785,9 @@ export class BrowserPage extends InstancePage {
         await t
             .click(this.addKeyValueItemsButton)
         if(position === AddElementInList.Head){
-            await t.click(this.removeElementFromListSelect);
-            await t.click(this.removeFromHeadSelection);
-            await t.expect(this.removeFromHeadSelection.exists).notOk();
+            await t.click(this.destinationSelect);
+            await t.click(this.pushToHeadSelection);
+            await t.expect(this.pushToHeadSelection.exists).notOk();
         }
         for (let i = 0; i < element.length; i ++){
             await t.typeText(this.getListElementInput(i), element[i], { replace: true, paste: true });

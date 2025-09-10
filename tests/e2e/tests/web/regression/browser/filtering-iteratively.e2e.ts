@@ -16,11 +16,11 @@ fixture `Filtering iteratively in Browser page`
     .page(commonUrl)
     .beforeEach(async() => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
+        await browserPage.Cli.sendCommandInCli('flushdb');
     })
     .afterEach(async() => {
         // Clear and delete database
         await browserPage.Cli.sendCommandInCli(`DEL ${keys.join(' ')}`);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test
     .meta({ rte: rte.standalone })('Verify that user can see search results per 500 keys if number of results is 500', async t => {
@@ -56,7 +56,6 @@ test
     .after(async() => {
         // Clear and delete database
         await browserPage.Cli.sendCommandInCli(`DEL ${keys.join(' ')}`);
-        await databaseAPIRequests.deleteOSSClusterDatabaseApi(ossClusterConfig);
     })('Verify that user can search via Scan more for search pattern and selected data type in OSS Cluster DB', async t => {
         // Create new keys
         keys = await Common.createArrayWithKeyValueForOSSCluster(1000);
@@ -77,10 +76,6 @@ test
     .before(async() => {
         // Add Big standalone DB
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneBigConfig);
-    })
-    .after(async() => {
-        // Clear and delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneBigConfig);
     })('Verify that user use Scan More in DB with 10-50 millions of keys (when search by pattern/)', async t => {
         // Search all string keys
         await browserPage.searchByKeyName('*');

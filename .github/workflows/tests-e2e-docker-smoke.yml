@@ -1,4 +1,5 @@
-name: Tests E2E Docker
+name: "E2E: Smoke (Docker)"
+
 on:
   workflow_call:
     inputs:
@@ -27,7 +28,7 @@ env:
   SLACK_TEST_REPORT_KEY: ${{ secrets.SLACK_TEST_REPORT_KEY }}
   TEST_BIG_DB_DUMP: ${{ secrets.TEST_BIG_DB_DUMP }}
   E2E_VOLUME_PATH: '/usr/src/app'
-  REPORT_NAME: 'report-docker-node'
+  REPORT_NAME: 'report-smoke-docker-node'
 
 jobs:
   e2e-docker-tests:
@@ -37,7 +38,7 @@ jobs:
       fail-fast: false
       matrix:
         # Number of threads to run tests
-        parallel: [0, 1, 2, 3]
+        parallel: [1]
 
     steps:
       - uses: actions/checkout@v4
@@ -66,33 +67,53 @@ jobs:
       - name: Generate short list of the test files
         working-directory: ./tests/e2e
         run: |
-          testFiles=$(find tests/web -type f -name '*.e2e.ts' | sort | awk "NR % 4 == ${{ matrix.parallel }}")
+          export NODE_INDEX=${{ matrix.parallel }}
 
-          echo $testFiles
+          testFiles="tests/web/smoke/**/*.e2e.ts"
+
+          echo "Selected files:"
+          echo "$testFiles"
 
           # Multi-Line value
           echo "TEST_FILES<<EOF" >> $GITHUB_ENV
           echo "$testFiles" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
+      - name: Build web images
+        run: |
+          docker compose --profile e2e \
+          -f tests/e2e/docker.web.docker-compose.yml \
+          -f tests/e2e/rte.networks.docker-compose.yml \
+          build
+
+      - name: Pull RTE images
+        run: |
+          docker compose --profile e2e \
+          -f tests/e2e/rte.smoke.docker-compose.yml \
+          -f tests/e2e/rte.networks.docker-compose.yml \
+          pull
+
+      - name: Build RTE images
+        run: |
+          docker compose --profile e2e \
+          -f tests/e2e/rte.smoke.docker-compose.yml \
+          -f tests/e2e/rte.networks.docker-compose.yml \
+          build
+
       - name: Run tests
         timeout-minutes: 80
         run: |
-          export NODE_INDEX=${{ matrix.parallel }}
-
-          TEST_BIG_DB_DUMP=$TEST_BIG_DB_DUMP \
-          RI_SERVER_TLS_CERT="$RI_SERVER_TLS_CERT" \
-          RI_SERVER_TLS_KEY="$RI_SERVER_TLS_KEY" \
           docker compose --profile e2e \
-          -f tests/e2e/rte.docker-compose.yml \
+          -f tests/e2e/rte.smoke.docker-compose.yml \
           -f tests/e2e/docker.web.docker-compose.yml \
+          -f tests/e2e/rte.networks.docker-compose.yml \
           up --abort-on-container-exit --force-recreate
 
       - name: Upload Test Report
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: report-docker-node-${{ matrix.parallel }}
+          name: ${{ env.REPORT_NAME }}-${{ matrix.parallel }}
           path: /usr/src/app/report
 
       - name: Send report to Slack
@@ -100,17 +121,6 @@ jobs:
         run: |
           node ./.github/e2e-results.js
           curl -H "Content-type: application/json" --data @e2e.report.json -H "Authorization: Bearer $SLACK_TEST_REPORT_KEY" -X POST https://slack.com/api/chat.postMessage
-
-      - name: Generate test results for ${{ matrix.parallel }}th node
-        uses: dorny/test-reporter@v1
-        if: always()
-        with:
-          name: 'Test results: E2E (docker) ${{ matrix.parallel }}th node'
-          path: /usr/src/app/results/results.xml
-          reporter: java-junit
-          list-tests: 'failed'
-          list-suites: 'failed'
-          fail-on-error: 'false'
 
       - name: Deploy report
         if: always()
