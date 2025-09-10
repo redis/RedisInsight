@@ -39,6 +39,7 @@ enum BrowserStorageItem {
   aiChatSession = 'aiChatSession',
   selectedAiChat = 'selectedAiChat',
   generalChatAgreements = 'generalChatAgreements',
+  vectorSearchOnboarding = 'vectorSearchOnboarding',
 }
 
 export default BrowserStorageItem
