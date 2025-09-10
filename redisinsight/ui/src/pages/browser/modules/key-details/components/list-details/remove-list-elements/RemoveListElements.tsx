@@ -30,7 +30,7 @@ import {
 } from 'uiSrc/slices/instances/instances'
 
 import { AddListFormConfig as config } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import {
   DestructiveButton,
@@ -53,6 +53,7 @@ import {
 
 import styles from './styles.module.scss'
 import { Panel } from 'uiSrc/components/panel'
+import { EntryContent } from 'uiSrc/pages/browser/modules/key-details/components/common/AddKeysContainer.styled'
 
 export interface Props {
   closePanel: (isCancelled?: boolean) => void
@@ -244,16 +245,13 @@ const RemoveListElements = (props: Props) => {
   )
 
   return (
-    <>
-      <div className={styles.content}>
+    <Col gap="m">
+      <EntryContent gap="m">
         <FlexItem grow>
-          <Row align="center">
+          <Row align="start" gap="m" className={styles.formFieldsRow}>
             <FlexItem style={{ minWidth: '220px' }}>
               <FormField>
                 <RiSelect
-                  style={{
-                    height: 43,
-                  }}
                   value={destination}
                   options={optionsDestinations}
                   onChange={(value) =>
@@ -283,25 +281,23 @@ const RemoveListElements = (props: Props) => {
             </FlexItem>
           </Row>
         </FlexItem>
-      </div>
-      <>
-        <Panel justify="end" gap="xl">
-          <FlexItem>
-            <div>
-              <SecondaryButton
-                onClick={() => closePanel(true)}
-                data-testid="cancel-elements-btn"
-              >
-                Cancel
-              </SecondaryButton>
-            </div>
-          </FlexItem>
-          <FlexItem>
-            <div>{RemoveButton()}</div>
-          </FlexItem>
-        </Panel>
-      </>
-    </>
+      </EntryContent>
+      <Panel justify="end" gap="xl">
+        <FlexItem>
+          <div>
+            <SecondaryButton
+              onClick={() => closePanel(true)}
+              data-testid="cancel-elements-btn"
+            >
+              Cancel
+            </SecondaryButton>
+          </div>
+        </FlexItem>
+        <FlexItem>
+          <div>{RemoveButton()}</div>
+        </FlexItem>
+      </Panel>
+    </Col>
   )
 }
 

@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
 
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
 import { KeyTypes } from 'uiSrc/constants'
@@ -88,12 +87,12 @@ const ListDetails = (props: Props) => {
           </AddKeysContainer>
         )}
         {isRemoveItemPanelOpen && (
-          <div className={cx('formFooterBar', styles.contentActive)}>
+          <AddKeysContainer>
             <RemoveListElements
               closePanel={closeRemoveItemPanel}
               onRemoveKey={onRemoveKey}
             />
-          </div>
+          </AddKeysContainer>
         )}
       </div>
     </div>
