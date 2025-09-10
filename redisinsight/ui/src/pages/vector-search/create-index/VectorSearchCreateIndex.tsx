@@ -33,6 +33,7 @@ import {
 } from 'uiSrc/slices/app/notifications'
 import successMessages from 'uiSrc/components/notifications/success-messages'
 import { parseCustomError } from 'uiSrc/utils'
+import { Row } from 'uiSrc/components/base/layout/flex'
 
 const stepNextButtonTexts = [
   'Proceed to adding data',
@@ -79,8 +80,13 @@ export const VectorSearchCreateIndex = ({
 
     setStep(step + 1)
   }
+
   const onBackClick = () => {
     setStep(step - 1)
+  }
+
+  const onCancelClick = () => {
+    history.push(Pages.vectorSearch(instanceId))
   }
 
   useEffect(() => {
@@ -134,10 +140,12 @@ export const VectorSearchCreateIndex = ({
             Back
           </SecondaryButton>
         )}
-        <div />
-        <Button loading={loading} onClick={onNextClick}>
-          {stepNextButtonTexts[step]}
-        </Button>
+        <Row gap="m" grow={false}>
+          <SecondaryButton onClick={onCancelClick}>Cancel</SecondaryButton>
+          <Button loading={loading} onClick={onNextClick}>
+            {stepNextButtonTexts[step]}
+          </Button>
+        </Row>
       </VectorSearchScreenFooter>
     </VectorSearchScreenWrapper>
   )

@@ -49,6 +49,10 @@ export const VectorSearchScreenFooter = styled(FlexItem)`
   justify-content: space-between;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
+
+  & > :only-child {
+    margin-left: auto;
+  }
 `
 
 export const VectorSearchScreenBlockWrapper = styled(FlexItem)`

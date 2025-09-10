@@ -123,6 +123,20 @@ describe('VectorSearchCreateIndex', () => {
     expect(hasErrorAction).toBe(true)
   })
 
+  it('should redirect to vector search page on cancel', () => {
+    const pushMock = jest.fn()
+    reactRouterDom.useHistory = jest.fn().mockReturnValue({ push: pushMock })
+
+    renderVectorSearchCreateIndexComponent()
+
+    const buttonCancel = screen.getByText('Cancel')
+    expect(buttonCancel).toBeInTheDocument()
+
+    fireEvent.click(buttonCancel)
+
+    expect(pushMock).toHaveBeenCalledWith(Pages.vectorSearch(INSTANCE_ID_MOCK))
+  })
+
   describe('Telemetry', () => {
     it('should send telemetry events on start step', () => {
       renderVectorSearchCreateIndexComponent()
