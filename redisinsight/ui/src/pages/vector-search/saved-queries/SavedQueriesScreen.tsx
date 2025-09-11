@@ -12,8 +12,8 @@ import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import { VectorSearchSavedQueriesContentWrapper } from './styles'
 import { SavedIndex } from './types'
 import {
-  VectorSearchScreenFooter,
   VectorSearchScreenHeader,
+  VectorSearchScreenSideBarWrapper,
   VectorSearchScreenWrapper,
 } from '../styles'
 import { useTelemetryMountEvent } from '../hooks/useTelemetryMountEvent'
@@ -158,7 +158,7 @@ export const SavedQueriesScreen = ({
           onClick={() => onClose()}
         />
       </VectorSearchScreenHeader>
-      <VectorSearchScreenFooter grow={1} padding={6}>
+      <VectorSearchScreenSideBarWrapper grow={1} padding={6}>
         <VectorSearchSavedQueriesContentWrapper>
           {loading && <Loader data-testid="manage-indexes-list--loader" />}
 
@@ -183,7 +183,7 @@ export const SavedQueriesScreen = ({
             />
           ))}
         </VectorSearchSavedQueriesContentWrapper>
-      </VectorSearchScreenFooter>
+      </VectorSearchScreenSideBarWrapper>
     </VectorSearchScreenWrapper>
   )
 }

@@ -7,8 +7,8 @@ import { IconButton } from 'uiSrc/components/base/forms/buttons'
 
 import { useTelemetryMountEvent } from '../hooks/useTelemetryMountEvent'
 import {
-  VectorSearchScreenFooter,
   VectorSearchScreenHeader,
+  VectorSearchScreenSideBarWrapper,
   VectorSearchScreenWrapper,
 } from '../styles'
 import { ManageIndexesList } from './ManageIndexesList'
@@ -40,13 +40,13 @@ export const ManageIndexesScreen = ({ onClose }: ManageIndexesScreenProps) => {
           onClick={() => onClose()}
         />
       </VectorSearchScreenHeader>
-      <VectorSearchScreenFooter
+      <VectorSearchScreenSideBarWrapper
         data-testid="manage-indexes-screen-body"
         grow={1}
         padding={6}
       >
         <ManageIndexesList />
-      </VectorSearchScreenFooter>
+      </VectorSearchScreenSideBarWrapper>
     </VectorSearchScreenWrapper>
   )
 }

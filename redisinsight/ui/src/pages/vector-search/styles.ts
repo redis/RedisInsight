@@ -42,18 +42,20 @@ export const VectorSearchScreenContent = styled(FlexItem)`
   border-color: ${({ theme }) => theme.color?.dusk200};
 `
 
-export const VectorSearchScreenFooter = styled(FlexItem)`
+export const VectorSearchScreenSideBarWrapper = styled(FlexItem)`
   border: 1px solid;
   border-color: ${({ theme }) => theme.color?.dusk200};
   border-top: none;
   justify-content: space-between;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
+`
 
+export const VectorSearchScreenFooter = styled(
+  VectorSearchScreenSideBarWrapper,
+)`
   & > :only-child {
-    width: 100%;
     margin-left: auto;
-    margin-right: auto;
   }
 `
 
