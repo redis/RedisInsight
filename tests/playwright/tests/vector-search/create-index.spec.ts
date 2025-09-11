@@ -10,6 +10,7 @@ import {
     navigateToStandaloneInstance,
 } from '../../helpers/utils'
 import { CreateIndexPage } from '../../pageObjects/pages/vector-search/create-index-page'
+import { ossStandaloneV6Config } from '../../helpers/conf'
 
 test.describe('Vector Search - Create Index', () => {
     let searchPage: VectorSearchPage
@@ -22,9 +23,10 @@ test.describe('Vector Search - Create Index', () => {
         cleanupInstance = await addStandaloneInstanceAndNavigateToIt(
             page,
             databaseService,
+            ossStandaloneV6Config,
         )
 
-        await navigateToStandaloneInstance(page)
+        await navigateToStandaloneInstance(page, ossStandaloneV6Config)
         await searchPage.navigateToVectorSearchPage()
         await searchPage.navigateToCreateIndexPage()
     })
