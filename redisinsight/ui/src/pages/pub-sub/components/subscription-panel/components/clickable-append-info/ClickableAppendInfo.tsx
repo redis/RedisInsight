@@ -45,7 +45,8 @@ const ClickableAppendInfo = () => {
         <br />
         Supported glob-style patterns are described&nbsp;
         <Link
-          variant="small-inline"
+          variant="inline"
+          size="S"
           target="_blank"
           href={getUtmExternalLink(EXTERNAL_LINKS.pubSub, {
             medium: UTM_MEDIUMS.Main,

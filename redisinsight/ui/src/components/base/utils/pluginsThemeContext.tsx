@@ -1,6 +1,7 @@
 import React, { useLayoutEffect, useState } from 'react'
 import { ThemeProvider as StyledThemeProvider } from 'styled-components'
-import { themeLight, themeDark } from '@redis-ui/styles'
+import { CommonStyles, themeLight, themeDark } from '@redis-ui/styles'
+import 'modern-normalize'
 import '@redis-ui/styles/normalized-styles.css'
 import '@redis-ui/styles/fonts.css'
 
@@ -28,7 +29,10 @@ export const ThemeProvider = ({ children }: Props) => {
   }, [theme])
   return (
     <PluginsThemeContext.Provider value={{ theme }}>
-      <StyledThemeProvider theme={theme}>{children}</StyledThemeProvider>
+      <StyledThemeProvider theme={theme}>
+        <CommonStyles />
+        {children}
+      </StyledThemeProvider>
     </PluginsThemeContext.Provider>
   )
 }
