@@ -51,7 +51,9 @@ export const VectorSearchScreenFooter = styled(FlexItem)`
   border-bottom-right-radius: 8px;
 
   & > :only-child {
+    width: 100%;
     margin-left: auto;
+    margin-right: auto;
   }
 `
 
