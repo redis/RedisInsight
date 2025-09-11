@@ -53,4 +53,21 @@ test.describe('Vector Search - Create Index', () => {
 
         await createIndexPage.verifySuccessToast('Index has been created')
     })
+
+    test('should cancel the create index wizard', async () => {
+        // Fill in step 1
+        await createIndexPage.step1SelectIndexType(
+            SearchIndexType.REDIS_QUERY_ENGINE,
+        )
+        await createIndexPage.step1SelectSampleDataset(
+            SampleDataType.PRESET_DATA,
+        )
+        await createIndexPage.step1SelectDataContent(
+            SampleDataContent.E_COMMERCE_DISCOVERY,
+        )
+        await createIndexPage.step1ClickNextButton()
+
+        // Cancel the wizard
+        await createIndexPage.clickCancelButton()
+    })
 })

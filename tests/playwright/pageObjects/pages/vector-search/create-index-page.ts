@@ -36,6 +36,9 @@ export class CreateIndexPage extends BasePage {
     public readonly step2CloseCommandPreviewButton: Locator
     public readonly step2CreateIndexButton: Locator
 
+    // BUTTONS
+    public readonly cancelButton: Locator
+
     constructor(page: Page) {
         super(page)
         this.page = page
@@ -69,6 +72,11 @@ export class CreateIndexPage extends BasePage {
             this.step2CommandPreviewDrawer.getByText('Close')
         this.step2CreateIndexButton = page.getByRole('button', {
             name: 'Create index',
+        })
+
+        // BUTTONS
+        this.cancelButton = page.getByRole('button', {
+            name: 'Cancel',
         })
     }
 
@@ -180,5 +188,12 @@ export class CreateIndexPage extends BasePage {
             // No toast appeared - this is acceptable for some actions
             // Success is typically verified by other means (navigation, etc.)
         }
+    }
+
+    async clickCancelButton(): Promise<void> {
+        await this.waitForLocatorVisible(this.cancelButton)
+        await this.cancelButton.click()
+
+        await this.waitForLocatorVisible(this.vectorSearchPage)
     }
 }
