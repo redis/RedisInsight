@@ -39,7 +39,14 @@
     "dotenv": "^16.4.7",
     "dotenv-cli": "^8.0.0",
     "fs-extra": "^11.3.0",
+    "module-alias": "^2.2.3",
     "node-color-log": "^12.0.1",
     "sqlite3": "^5.1.7"
+  },
+  "_moduleAliases": {
+    "@redislabsdev/redis-ui-icons": "../../node_modules/@redis-ui/icons",
+    "@redislabsdev/redis-ui-styles": "../../node_modules/@redis-ui/styles",
+    "@redislabsdev/redis-ui-components": "../../node_modules/@redis-ui/components",
+    "@redislabsdev/redis-ui-table": "../../node_modules/@redis-ui/table"
   }
 }
