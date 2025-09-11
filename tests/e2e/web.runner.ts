@@ -10,8 +10,7 @@ import testcafe from 'testcafe';
                         configPath: 'tsconfig.testcafe.json',
                         experimentalDecorators: true
                     } })
-                // .src((process.env.TEST_FILES || 'tests/web/**/*.e2e.ts').split('\n'))
-                .src((process.env.TEST_FILES || 'tests/electron/**/*.e2e.ts').split('\n'))
+                .src((process.env.TEST_FILES || 'tests/web/**/*.e2e.ts').split('\n'))
                 .browsers([`${process.env.TEST_BROWSER || 'chromium'} --disable-search-engine-choice-screen --ignore-certificate-errors --disable-dev-shm-usage --no-sandbox`])
                 .screenshots({
                     path: 'report/screenshots/',
