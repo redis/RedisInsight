@@ -20,7 +20,7 @@ fixture `Slow Log`
     .page(commonUrl)
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneBigConfig);
-        await t.click(myRedisDatabasePage.NavigationPanel.analysisPageButton);
+        await t.click(slowLogPage.NavigationTabs.analysisButton);
         await t.click(slowLogPage.slowLogTab);
     })
     .afterEach(async() => {
@@ -53,9 +53,9 @@ test('Verify that user can see "No Slow Logs found" message when slowlog-max-len
     await slowLogPage.changeSlowerThanParameter(slowerThanParameter, slowLogPage.slowLogConfigureMicroSecondsUnit);
     await slowLogPage.changeMaxLengthParameter(maxCommandLength);
     // Go to Browser page to scan keys and turn back
-    await t.click(myRedisDatabasePage.NavigationPanel.browserButton);
+    await t.click(slowLogPage.NavigationTabs.browserButton);
     await t.click(browserPage.refreshKeysButton);
-    await t.click(myRedisDatabasePage.NavigationPanel.analysisPageButton);
+    await t.click(browserPage.NavigationTabs.analysisButton);
     await t.click(slowLogPage.slowLogTab);
     // Compare number of logged commands with maxLength
     await t.expect(slowLogPage.slowLogCommandStatistics.withText(`${maxCommandLength} entries`).exists).ok(`Number of displayed commands is less than selected ${maxCommandLength}`);

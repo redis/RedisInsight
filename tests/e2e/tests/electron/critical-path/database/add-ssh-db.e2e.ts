@@ -146,7 +146,7 @@ test.skip
     await t.click(browserPage.Profiler.startMonitorButton);
     await t.expect(browserPage.Profiler.monitorIsStartedText.innerText).eql('Profiler is started.');
 
-    await t.click(browserPage.NavigationPanel.analysisPageButton);
+    await t.click(browserPage.NavigationTabs.analysisButton);
     await t.click(clusterPage.overviewTab);
     await t.expect(await clusterPage.getPrimaryNodesCount()).eql(Number('3'), 'Primary nodes in table are not corrected');
 });
