@@ -60,7 +60,7 @@ export const AddDataStep: IStepComponent = ({
       />
     </FlexItem>
     <FlexItem direction="column" $gap="m" data-testid="step-data--data-content">
-      <Text>Select sample data to load</Text>
+      <Text size="L">Select sample data to load</Text>
       <StyledBoxSelectionGroup defaultValue={parameters.dataContent}>
         {indexDataContent.map((type) => (
           <SmallSelectionBox
