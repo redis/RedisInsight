@@ -84,6 +84,10 @@ export class FeatureFlagProvider {
         this.settingsService,
       ),
     );
+    this.strategies.set(
+      KnownFeatures.VectorSearch,
+      new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
+    );
   }
 
   getStrategy(name: string): FeatureFlagStrategy {
