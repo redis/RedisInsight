@@ -180,14 +180,9 @@ export class CreateIndexPage extends BasePage {
         expectedMessage: string,
         timeout = 2000,
     ): Promise<void> {
-        try {
-            await this.waitForLocatorVisible(this.toast.toastSuccess, timeout)
-            await expect(this.toast.toastBody).toContainText(expectedMessage)
-            await this.toast.closeToast()
-        } catch {
-            // No toast appeared - this is acceptable for some actions
-            // Success is typically verified by other means (navigation, etc.)
-        }
+        await this.waitForLocatorVisible(this.toast.toastContainer, timeout)
+        await expect(this.toast.toastMessage).toContainText(expectedMessage)
+        await this.toast.closeToast()
     }
 
     async clickCancelButton(): Promise<void> {
