@@ -52,7 +52,7 @@ describe('CreateIndexStep', () => {
   it('should render the main heading and description', () => {
     render(<CreateIndexStep {...defaultProps} />)
 
-    expect(screen.getByText('Vector index')).toBeInTheDocument()
+    expect(screen.getByText('Create index')).toBeInTheDocument()
     expect(
       screen.getByText(
         'Indexes tell Redis how to search your data. Creating an index enables fast, accurate retrieval across your dataset.',
