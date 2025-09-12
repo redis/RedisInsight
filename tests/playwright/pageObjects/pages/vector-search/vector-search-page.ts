@@ -194,7 +194,9 @@ export class VectorSearchPage extends BasePage {
 
     async navigateToVectorSearchPage({
         forceOnboarding = false,
-    }: { forceOnboarding?: boolean } = {}): Promise<void> {
+    }: {
+        forceOnboarding?: boolean
+    } = {}): Promise<void> {
         // Toggle the visibility of the onboarding screen, based on the locaStorage flag
         await this.page.evaluate((vectorSearchOnboarding: boolean) => {
             localStorage.setItem(
@@ -203,7 +205,14 @@ export class VectorSearchPage extends BasePage {
             )
         }, forceOnboarding)
 
-        await this.searchTab.getByRole('paragraph').click()
+        // Note: Temporray disable the navigation to the vector search page through the search tab because of a feature flag
+        // await this.searchTab.getByRole('paragraph').click()
+
+        // Note: Temporary get the instance ID from the URL and navigate to the vector search page directly
+        const url = await this.page.url().split('/')
+        const instanceId = url[url.length - 2]
+
+        await this.navigateTo(`/${instanceId}/vector-search`)
 
         if (forceOnboarding) {
             await this.waitForLocatorVisible(this.onboardingContainer)
