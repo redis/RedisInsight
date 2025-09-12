@@ -3,13 +3,14 @@ import { useHistory, useParams } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 
 import { Stepper } from '@redis-ui/components'
-import { Title } from 'uiSrc/components/base/text'
+import { Title, Text } from 'uiSrc/components/base/text'
 import { Button, SecondaryButton } from 'uiSrc/components/base/forms/buttons'
 import { ChevronLeftIcon } from 'uiSrc/components/base/icons'
 
 import { selectedBikesIndexFields, stepContents } from './steps'
 import {
   CreateSearchIndexParameters,
+  IStepNextButton,
   PresetDataType,
   SampleDataContent,
   SampleDataType,
@@ -34,16 +35,36 @@ import {
 import successMessages from 'uiSrc/components/notifications/success-messages'
 import { parseCustomError } from 'uiSrc/utils'
 import { Row } from 'uiSrc/components/base/layout/flex'
+import { Banner } from 'uiSrc/components/base/display'
 
-const stepNextButtonTexts = [
-  'Proceed to adding data',
-  'Proceed to index',
-  'Create index',
+const stepNextButton: IStepNextButton[] = [
+  {
+    text: 'Proceed to adding data',
+    testId: 'proceed-to-adding-data-button',
+  },
+  {
+    text: 'Proceed to index',
+    testId: 'proceed-to-index-button',
+  },
+  {
+    text: 'Create index',
+    testId: 'create-index-button',
+  },
 ]
 
 export type VectorSearchCreateIndexProps = {
   initialStep?: number
 }
+
+const DisabledBannerText = () => (
+  <Text component="div">
+    Editing the index is not available for pre-set data. Click{' '}
+    <Text variant="semiBold" component="span">
+      Create Index
+    </Text>{' '}
+    to continue.
+  </Text>
+)
 
 export const VectorSearchCreateIndex = ({
   initialStep = 1,
@@ -52,6 +73,7 @@ export const VectorSearchCreateIndex = ({
   const history = useHistory()
   const { instanceId } = useParams<{ instanceId: string }>()
   const [step, setStep] = useState(initialStep)
+
   const [createSearchIndexParameters, setCreateSearchIndexParameters] =
     useState<CreateSearchIndexParameters>({
       instanceId,
@@ -65,13 +87,17 @@ export const VectorSearchCreateIndex = ({
 
   const { run: createIndex, error, success, loading } = useCreateIndex()
 
+  const isFinalStep = step === stepContents.length - 1
+  const isPresetData =
+    createSearchIndexParameters.sampleDataType === SampleDataType.PRESET_DATA
+  const showDisabledBanner = isFinalStep && isPresetData
+
   const setParameters = (params: Partial<CreateSearchIndexParameters>) => {
     setCreateSearchIndexParameters((prev) => ({ ...prev, ...params }))
   }
   const showBackButton = step > initialStep
   const StepContent = stepContents[step]
   const onNextClick = () => {
-    const isFinalStep = step === stepContents.length - 1
     if (isFinalStep) {
       createIndex(createSearchIndexParameters)
       collectCreateIndexStepTelemetry(instanceId)
@@ -139,10 +165,19 @@ export const VectorSearchCreateIndex = ({
             Back
           </SecondaryButton>
         )}
-        <Row gap="m" grow={false}>
+        <Row gap="m" grow={false} align="center">
+          <Banner
+            show={showDisabledBanner}
+            message={<DisabledBannerText />}
+            variant="notice"
+          />
           <SecondaryButton onClick={onCancelClick}>Cancel</SecondaryButton>
-          <Button loading={loading} onClick={onNextClick}>
-            {stepNextButtonTexts[step]}
+          <Button
+            loading={loading}
+            onClick={onNextClick}
+            data-testid={stepNextButton[step].testId}
+          >
+            {stepNextButton[step].text}
           </Button>
         </Row>
       </VectorSearchScreenFooter>

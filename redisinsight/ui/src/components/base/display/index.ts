@@ -3,8 +3,9 @@ import ProgressBarLoader from './progress-bar/ProgressBarLoader'
 import RiImage from './image/RiImage'
 import RiLoadingLogo from './loading-logo/RiLoadingLogo'
 import { Modal } from './modal'
+import { Banner } from './banner'
 
-export { Loader, ProgressBarLoader, RiImage, RiLoadingLogo, Modal }
+export { Loader, ProgressBarLoader, RiImage, RiLoadingLogo, Modal, Banner }
 
 export { RICollapsibleNavGroup } from './collapsible-nav-group/RICollapsibleNavGroup'
 

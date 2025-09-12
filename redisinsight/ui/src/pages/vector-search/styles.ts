@@ -57,6 +57,8 @@ export const VectorSearchScreenFooter = styled(
   & > :only-child {
     margin-left: auto;
   }
+
+  align-items: center;
 `
 
 export const VectorSearchScreenBlockWrapper = styled(FlexItem)`
