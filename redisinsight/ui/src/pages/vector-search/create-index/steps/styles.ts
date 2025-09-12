@@ -20,14 +20,6 @@ export const SearchInputWrapper = styled.div`
   display: flex;
 `
 
-export const CreateIndexStepScreenWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  border: 1px solid;
-  border-color: ${({ theme }) => theme.color.dusk200};
-  padding: ${({ theme }) => theme.core.space.space300};
-  border-radius: ${({ theme }) => theme.core.space.space100};
-`
 export const CodeBlocKWrapper = styled.div`
   overflow: auto;
   height: 100%;
