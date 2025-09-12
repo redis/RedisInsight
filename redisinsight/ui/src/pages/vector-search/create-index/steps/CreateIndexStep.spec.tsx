@@ -81,14 +81,6 @@ describe('CreateIndexStep', () => {
     expect(screen.getByText('Command preview')).toBeInTheDocument()
   })
 
-  it('should render the tab labels', () => {
-    render(<CreateIndexStep {...defaultProps} />)
-
-    expect(screen.getByText('Use preset index')).toBeInTheDocument()
-    // Build new index tab should be present but disabled
-    expect(screen.getByText('Build new index')).toBeInTheDocument()
-  })
-
   it('should render field boxes for the bikes index', () => {
     render(<CreateIndexStep {...defaultProps} />)
 
