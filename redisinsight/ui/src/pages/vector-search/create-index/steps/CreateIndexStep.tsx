@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { FlexGroup, FlexItem } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexGroup, FlexItem } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import CreateIndexStepWrapper, {
   IndexStepTab,
@@ -16,7 +16,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { PlayFilledIcon } from 'uiSrc/components/base/icons'
 import { bikesIndexFieldsBoxes, moviesIndexFieldsBoxes } from './data'
-import { CreateIndexStepScreenWrapper, SearchInputWrapper } from './styles'
+import { SearchInputWrapper } from './styles'
 import { PreviewCommandDrawer } from './PreviewCommandDrawer'
 import { IStepComponent, SampleDataContent, StepComponentProps } from '../types'
 
@@ -84,20 +84,22 @@ export const CreateIndexStep: IStepComponent = ({
   }
 
   return (
-    <CreateIndexStepScreenWrapper as="div" data-testid="create-index-step2">
-      <FlexItem direction="column" $gap="xxl">
-        <FlexItem direction="column" $gap="m">
-          <Text>Create index</Text>
-          <Text size="S" color="secondary">
-            Indexes tell Redis how to search your data. Creating an index
-            enables fast, accurate retrieval across your dataset.
-          </Text>
-        </FlexItem>
-        <CreateIndexStepWrapper
-          defaultValue={VectorIndexTab.UsePresetIndex}
-          tabs={indexFieldsTabs}
-        />
-        <FlexGroup justify="end">
+    <FlexGroup direction="column" data-testid="create-index-step2">
+      <Col justify="between" gap="xxl">
+        <Col gap="xxl">
+          <FlexItem direction="column" $gap="m">
+            <Text>Create index</Text>
+            <Text size="S" color="secondary">
+              Indexes tell Redis how to search your data. Creating an index
+              enables fast, accurate retrieval across your dataset.
+            </Text>
+          </FlexItem>
+          <CreateIndexStepWrapper
+            defaultValue={VectorIndexTab.UsePresetIndex}
+            tabs={indexFieldsTabs}
+          />
+        </Col>
+        <FlexGroup justify="end" grow={false}>
           <EmptyButton
             icon={PlayFilledIcon}
             onClick={handlePreviewCommandClick}
@@ -106,7 +108,7 @@ export const CreateIndexStep: IStepComponent = ({
             Command preview
           </EmptyButton>
         </FlexGroup>
-      </FlexItem>
+      </Col>
       <PreviewCommandDrawer
         commandContent={generateFtCreateCommand({
           indexName: parameters.indexName,
@@ -115,6 +117,6 @@ export const CreateIndexStep: IStepComponent = ({
         isOpen={isDrawerOpen}
         onOpenChange={setIsDrawerOpen}
       />
-    </CreateIndexStepScreenWrapper>
+    </FlexGroup>
   )
 }
