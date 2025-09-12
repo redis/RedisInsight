@@ -56,20 +56,17 @@ test.describe('Vector Search - Manage Indexes', () => {
     })
 
     test.afterEach(async ({ api: { indexService } }) => {
-        // Delete all indexes
-        await indexService.deleteRedisearchIndexApi(
-            mockHashIndex.indexName,
-            ossStandaloneV6Config,
-        )
-        await indexService.deleteRedisearchIndexApi(
-            mockJsonIndex.indexName,
-            ossStandaloneV6Config,
-        )
+        await indexService.deleteAllRedisearchIndexesApi(ossStandaloneV6Config)
 
         await cleanupInstance()
     })
 
-    test('should open Manage Indexes page when there are no indexes', async () => {
+    test('should open Manage Indexes page when there are no indexes', async ({
+        api: { indexService },
+    }) => {
+        // Make sure there are no indexes in the database before the test
+        await indexService.deleteAllRedisearchIndexesApi(ossStandaloneV6Config)
+
         await searchPage.openManageIndexesPanel()
         await expect(searchPage.manageIndexesNoDataMessage).toBeVisible()
 

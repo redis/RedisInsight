@@ -45,7 +45,12 @@ test.describe('Vector Search - Saved Queries', () => {
         await cleanupInstance()
     })
 
-    test('should open Saved Queries panel when there are no indexes', async () => {
+    test('should open Saved Queries panel when there are no indexes', async ({
+        api: { indexService },
+    }) => {
+        // Make sure there are no indexes in the database
+        await indexService.deleteAllRedisearchIndexesApi(ossStandaloneV6Config)
+
         await searchPage.openSavedQueriesPanel()
         await expect(searchPage.savedQueriesNoDataMessage).toBeVisible()
 
