@@ -118,11 +118,11 @@ const DatabaseOverview = () => {
 const getTooltipContent = (metric: IMetric) => {
   if (!metric.children?.length) {
     return (
-      <>
+      <Row>
         <span>{metric.tooltip?.content}</span>
         &nbsp;
         <span>{metric.tooltip?.title}</span>
-      </>
+      </Row>
     )
   }
   return metric.children
