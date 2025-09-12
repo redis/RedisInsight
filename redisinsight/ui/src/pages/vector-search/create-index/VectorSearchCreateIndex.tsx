@@ -10,6 +10,7 @@ import { ChevronLeftIcon } from 'uiSrc/components/base/icons'
 import { selectedBikesIndexFields, stepContents } from './steps'
 import {
   CreateSearchIndexParameters,
+  IStepNextButton,
   PresetDataType,
   SampleDataContent,
   SampleDataType,
@@ -36,10 +37,19 @@ import { parseCustomError } from 'uiSrc/utils'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { Banner } from 'uiSrc/components/base/display'
 
-const stepNextButtonTexts = [
-  'Proceed to adding data',
-  'Proceed to index',
-  'Create index',
+const stepNextButton: IStepNextButton[] = [
+  {
+    text: 'Proceed to adding data',
+    testId: 'proceed-to-adding-data-button',
+  },
+  {
+    text: 'Proceed to index',
+    testId: 'proceed-to-index-button',
+  },
+  {
+    text: 'Create index',
+    testId: 'create-index-button',
+  },
 ]
 
 export type VectorSearchCreateIndexProps = {
@@ -162,8 +172,12 @@ export const VectorSearchCreateIndex = ({
             variant="notice"
           />
           <SecondaryButton onClick={onCancelClick}>Cancel</SecondaryButton>
-          <Button loading={loading} onClick={onNextClick}>
-            {stepNextButtonTexts[step]}
+          <Button
+            loading={loading}
+            onClick={onNextClick}
+            data-testid={stepNextButton[step].testId}
+          >
+            {stepNextButton[step].text}
           </Button>
         </Row>
       </VectorSearchScreenFooter>
