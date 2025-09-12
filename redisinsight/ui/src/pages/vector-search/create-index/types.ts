@@ -41,3 +41,8 @@ export type StepComponentProps = {
 export interface IStepComponent {
   (props: StepComponentProps): JSX.Element | null
 }
+
+export interface IStepNextButton {
+  text: string
+  testId: string
+}
