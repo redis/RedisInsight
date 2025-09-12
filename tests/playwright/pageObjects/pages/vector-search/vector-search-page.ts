@@ -168,7 +168,17 @@ export class VectorSearchPage extends BasePage {
             this.manageIndexesContainer.getByTestId('index-attributes-list')
     }
 
-    async navigateToVectorSearchPage(): Promise<void> {
+    async navigateToVectorSearchPage({
+        forceOnboarding = false,
+    }: { forceOnboarding?: boolean } = {}): Promise<void> {
+        // Toggle the visibility of the onboarding screen, based on the locaStorage flag
+        await this.page.evaluate((vectorSearchOnboarding: boolean) => {
+            localStorage.setItem(
+                'vectorSearchOnboarding', // BrowserStorageItem.vectorSearchOnboarding,
+                (!vectorSearchOnboarding).toString(),
+            )
+        }, forceOnboarding)
+
         await this.searchTab.getByRole('paragraph').click()
         await this.waitForLocatorVisible(this.vectorSearchPage)
     }
