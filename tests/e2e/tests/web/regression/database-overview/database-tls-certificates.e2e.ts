@@ -17,11 +17,6 @@ fixture `tls certificates`
         await databaseAPIRequests.addNewStandaloneDatabaseApi(ossStandaloneConfig);
         await myRedisDatabasePage.reloadPage();
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneTlsConfig);
-
-    })
-    .afterEach(async() => {
-        // Delete database
-        await databaseAPIRequests.deleteAllDatabasesApi();
     });
 test
     .skip('Verify that user can remove added certificates', async t => {

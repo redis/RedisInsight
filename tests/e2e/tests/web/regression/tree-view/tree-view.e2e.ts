@@ -34,9 +34,6 @@ fixture `Tree view verifications`
     .page(commonUrl)
     .beforeEach(async() => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneBigConfig);
-    })
-    .afterEach(async() => {
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneBigConfig);
     });
 test
     .before(async() => {
@@ -45,7 +42,6 @@ test
     })
     .after(async() => {
         await browserPage.Cli.sendCommandInCli('flushdb');
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfigEmpty);
     })('Verify that user has load sample data button when there are no keys in the database', async t => {
         const message = 'Let\'sstartworkingLoadsampledata+Addkeymanually';
         const actualMessage = await browserPage.keyListMessage.innerText;
@@ -98,7 +94,6 @@ test
     .after(async() => {
         // Delete database
         await browserPage.Cli.sendCommandInCli('flushdb');
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneRedisGears);
     })('Verify that user can load sample data if database does not have modules', async t => {
         // Verify the message
         await t.click(browserPage.refreshKeysButton);
@@ -157,7 +152,6 @@ test
     })
     .after(async() => {
         await browserPage.Cli.sendCommandInCli('flushdb');
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfigEmpty);
     })('Verify that if there are keys without namespaces, they are displayed in the root directory after all folders by default in the Tree view', async t => {
         keyNames = [
             `atest:a-${Common.generateWord(10)}`,
@@ -197,6 +191,7 @@ test
         await browserPage.Cli.sendCommandsInCli(commands);
         await t.click(browserPage.treeViewButton);
 
+        await t.setTestSpeed(.9)
         // Verify that if there are keys without namespaces, they are displayed in the root directory after all folders by default in the Tree view
         await browserPage.TreeView.openTreeFolders([`${keyNames[0]}`.split(':')[0]]);
         await browserPage.TreeView.openTreeFolders([`${keyNames[2]}`.split(':')[0]]);
@@ -212,14 +207,13 @@ test
         await t.expect(actualItemsArray).eql(expectedSortedByDESC);
     });
 
-https://redislabs.atlassian.net/browse/RI-5131
+// https://redislabs.atlassian.net/browse/RI-5131
 test
     .before(async() => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
     })
     .after(async() => {
         await browserPage.Cli.sendCommandInCli('flushdb');
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     })('Verify that if filtering results has only 1 folder, the folder will be expanded', async t => {
         const name = Common.generateWord(10);
         const additionalCharacter = Common.generateWord(1);

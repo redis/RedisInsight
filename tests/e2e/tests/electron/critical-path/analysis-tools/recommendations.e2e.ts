@@ -27,7 +27,7 @@ test
     .before(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneBigConfig);
         // Go to Analysis Tools page
-        await t.click(myRedisDatabasePage.NavigationPanel.analysisPageButton);
+        await t.click(browserPage.NavigationTabs.analysisButton);
         // Add cached scripts and generate new report
         await memoryEfficiencyPage.Cli.addCachedScripts(11);
         await t.click(memoryEfficiencyPage.newReportBtn);
@@ -70,7 +70,7 @@ test
     .before(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneV5Config);
         // Go to Analysis Tools page and create new report and open recommendations
-        await t.click(myRedisDatabasePage.NavigationPanel.analysisPageButton);
+        await t.click(browserPage.NavigationTabs.analysisButton);
         await t.click(memoryEfficiencyPage.newReportBtn);
         await t.click(memoryEfficiencyPage.recommendationsTab);
     }).after(async() => {

@@ -25,8 +25,7 @@ fixture `Stream key`
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
     })
     .afterEach(async() => {
-        await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
+        // await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
     });
 test('Verify that user can see a Stream in a table format', async t => {
     const streamFields = [
@@ -136,16 +135,18 @@ test('Verify that the Entry ID field, Delete button are always displayed while s
     const fields = Common.createArrayWithKeys(9);
     const values = Common.createArrayWithKeys(9);
 
+    const commands: string[] = [];
     // Add new Stream key with 3 fields
     for (let i = 0; i < fields.length; i++) {
-        await browserPage.Cli.sendCommandInCli(`XADD ${keyName} * ${fields[i]} ${values[i]}`);
+        commands.push(`XADD ${keyName} * ${fields[i]} ${values[i]}`);
     }
+    await browserPage.Cli.sendCommandsInCli(commands);
     // Open key details
     await browserPage.openKeyDetails(keyName);
     // Scroll right
     await t.pressKey('shift').scroll(browserPage.streamVirtualContainer, 'right');
     // Verify that Entry ID field and Delete button are always displayed
-    await t.expect(browserPage.streamFieldsValues.withText(fields[5]).visible).ok(`The Stream field ${fields[5]} is not visible`)
+    await t.expect(browserPage.streamFieldsValues.withText(fields[2]).visible).ok(`The Stream field ${fields[2]} is not visible`)
         .expect(browserPage.removeEntryButton.visible).ok('Delete icon is not visible')
         .expect(browserPage.streamEntryDate.visible).ok('Entry ID column is not visible');
 });

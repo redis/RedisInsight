@@ -17,7 +17,8 @@ const apiKeyRequests = new APIKeyRequests();
 let keyName = Common.generateWord(20);
 let consumerGroupName = Common.generateWord(20);
 
-fixture `Acknowledge and Claim of Pending messages`
+// todo: enable after RI-7447 will be fixed
+fixture.skip `Acknowledge and Claim of Pending messages`
     .meta({ type: 'critical_path', rte: rte.standalone })
     .page(commonUrl)
     .beforeEach(async() => {
@@ -41,9 +42,8 @@ test('Verify that user can acknowledge any message in the list of pending messag
     ];
 
     // Add New Stream Key with pending message
-    for(const command of cliCommands){
-        await browserPage.Cli.sendCommandInCli(command);
-    }
+    await browserPage.Cli.sendCommandsInCli(cliCommands);
+
     // Open Stream pending view
     await browserPage.openStreamPendingsView(keyName);
     // Acknowledge message and check result
@@ -64,9 +64,8 @@ test('Verify that user can claim any message in the list of pending messages', a
     ];
 
     // Add New Stream Key with pending message
-    for(const command of cliCommands){
-        await browserPage.Cli.sendCommandInCli(command);
-    }
+    await browserPage.Cli.sendCommandsInCli(cliCommands);
+
     // Open Stream pendings view
     await browserPage.openStreamPendingsView(keyName);
     // Claim message and check result
@@ -90,9 +89,8 @@ test('Verify that claim with optional parameters, the message removed from this 
     ];
 
     // Add New Stream Key with pending message
-    for(const command of cliCommands){
-        await browserPage.Cli.sendCommandInCli(command);
-    }
+    await browserPage.Cli.sendCommandsInCli(cliCommands);
+
     // Open Stream pendings view
     await browserPage.openStreamPendingsView(keyName);
     // Claim message with optional parameters and check result

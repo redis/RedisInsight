@@ -24,7 +24,6 @@ fixture `JSON Key verification`
     .afterEach(async() => {
         // Clear and delete database
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that user can not add invalid JSON structure inside of created JSON', async t => {
     keyName = Common.generateWord(10);

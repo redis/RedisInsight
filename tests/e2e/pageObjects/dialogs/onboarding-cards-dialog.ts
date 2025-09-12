@@ -3,7 +3,7 @@ import { Selector, t } from 'testcafe';
 export class OnboardingCardsDialog {
     backButton = Selector('[data-testid=back-btn]');
     nextButton = Selector('[data-testid=next-btn]');
-    showMeAroundButton = Selector('span').withText('Show me around');
+    showMeAroundButton = Selector('[data-testid=start-tour-btn]');
     skipTourButton = Selector('[data-testid=skip-tour-btn]');
     stepTitle = Selector('[data-testid=step-title]');
     wbOnbardingCommand = Selector('[data-testid=wb-onboarding-command]');

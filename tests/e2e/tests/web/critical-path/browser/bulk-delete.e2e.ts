@@ -1,7 +1,7 @@
 import { KeyTypesTexts, rte } from '../../../../helpers/constants';
 import { DatabaseHelper } from '../../../../helpers/database';
 import { BrowserPage, MyRedisDatabasePage } from '../../../../pageObjects';
-import { commonUrl, ossStandaloneRedisearch } from '../../../../helpers/conf';
+import { commonUrl, ossStandaloneConfig } from '../../../../helpers/conf';
 import { DatabaseAPIRequests } from '../../../../helpers/api/api-database';
 import { Common } from '../../../../helpers/common';
 import { deleteAllKeysFromDB, populateDBWithHashes } from '../../../../helpers/keys';
@@ -12,7 +12,7 @@ const databaseHelper = new DatabaseHelper();
 const databaseAPIRequests = new DatabaseAPIRequests();
 
 const keyNames = [Common.generateWord(20), Common.generateWord(20)];
-const dbParameters = { host: ossStandaloneRedisearch.host, port: ossStandaloneRedisearch.port };
+const dbParameters = { host: ossStandaloneConfig.host, port: ossStandaloneConfig.port };
 const keyToAddParameters = { keysCount: 10000, keyNameStartWith: 'hashKey' };
 const keyToAddParameters2 = { keysCount: 500000, keyNameStartWith: 'hashKey' };
 
@@ -20,7 +20,7 @@ fixture.skip(`Bulk Delete`)
     .meta({ type: 'critical_path', rte: rte.standalone })
     .page(commonUrl)
     .beforeEach(async t => {
-        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneRedisearch);
+        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         await browserPage.addHashKey(keyNames[0], '100000', Common.generateWord(20), Common.generateWord(20));
         await browserPage.addSetKey(keyNames[1], '100000', Common.generateWord(20));
         if (await browserPage.Toast.toastCloseButton.exists) {
@@ -30,7 +30,7 @@ fixture.skip(`Bulk Delete`)
     .afterEach(async() => {
         // Clear and delete database
         await deleteAllKeysFromDB(dbParameters.host, dbParameters.port);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneRedisearch);
+        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 
 test.skip('Verify that user can access the bulk actions screen in the Browser', async t => {
@@ -89,7 +89,7 @@ test.skip('Verify that user can see blue progress line during the process of bul
 });
 test.skip
     .before(async() => {
-        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneRedisearch);
+        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         // Add 1000000 Hash keys
         await populateDBWithHashes(dbParameters.host, dbParameters.port, keyToAddParameters2);
         await populateDBWithHashes(dbParameters.host, dbParameters.port, keyToAddParameters2);
@@ -100,14 +100,14 @@ test.skip
         await t.click(browserPage.bulkActionsButton);
         await browserPage.BulkActions.startBulkDelete();
         // Go to Workbench page
-        await t.click(browserPage.NavigationPanel.workbenchButton);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
         // Go to Browser Page
-        await t.click(browserPage.NavigationPanel.browserButton);
+        await t.click(browserPage.NavigationTabs.browserButton);
         await t.expect(browserPage.BulkActions.bulkStatusInProgress.exists).ok('Progress value not displayed', { timeout: 5000 });
     });
 test.skip
     .before(async() => {
-        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneRedisearch);
+        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         // Add 500000 keys
         await populateDBWithHashes(dbParameters.host, dbParameters.port, keyToAddParameters2);
         // Filter and search by Hash keys added
@@ -138,7 +138,7 @@ test.skip('Verify that when bulk deletion is completed, status Action completed 
 });
 test.skip
     .before(async t => {
-        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneRedisearch);
+        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         await browserPage.addSetKey(keyNames[1], '100000', Common.generateWord(20));
         if (await browserPage.Toast.toastCloseButton.exists) {
             await t.click(browserPage.Toast.toastCloseButton);
@@ -188,7 +188,7 @@ test('Verify that when user clicks on Close button when bulk delete is completed
 });
 test
     .before(async() => {
-        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneRedisearch);
+        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         await browserPage.addHashKey(keyNames[0], '100000', Common.generateWord(20), Common.generateWord(20));
     })('Verify that user can see the list of keys when click on “Back” button from the bulk actions', async t => {
         await t.click(browserPage.bulkActionsButton);

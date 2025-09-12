@@ -15,11 +15,7 @@ fixture`Autocomplete for entered commands`
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         // Go to Workbench page
-        await t.click(browserPage.NavigationPanel.workbenchButton);
-    })
-    .afterEach(async () => {
-        // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
     });
 test('Verify that user can open the "read more" about the command by clicking on the ">" icon or "ctrl+space"', async t => {
     const command = 'HSE';

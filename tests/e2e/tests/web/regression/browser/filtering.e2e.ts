@@ -26,7 +26,6 @@ fixture `Filtering per key name in Browser page`
     .afterEach(async() => {
         // Clear and delete database
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that when user searches not existed key, he can see the standard screen when there are no keys found', async t => {
     keyName = `KeyForSearch*${Common.generateWord(10)}?[]789`;
@@ -34,7 +33,11 @@ test('Verify that when user searches not existed key, he can see the standard sc
     const searchedValue = 'KeyForSear*';
 
     // Add new key
-    await browserPage.addStringKey(keyName);
+    await apiKeyRequests.addStringKeyApi({
+        keyName,
+        value: 'v',
+    }, ossStandaloneConfig);
+
     // Search not existed key
     await browserPage.searchByKeyName(searchedKeyName);
     // Verify the standard screen when there are no keys found
@@ -54,7 +57,10 @@ test('Verify that user can filter per pattern with ? (matches keys with any char
     keyName = `KeyForSearch*?[]789${randomValue}`;
 
     // Add new key
-    await browserPage.addStringKey(keyName);
+    await apiKeyRequests.addStringKeyApi({
+        keyName,
+        value: 'v',
+    }, ossStandaloneConfig);
     // Filter per pattern with ?
     await browserPage.searchByKeyName(searchedValue);
     // Verify that key was found
@@ -65,7 +71,6 @@ test
         // Clear and delete database
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
         await apiKeyRequests.deleteKeyByNameApi(keyName2, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     })('Verify that user can filter per pattern with [xy] (matches one symbol: either x or y))', async t => {
         keyName = `KeyForSearch${Common.generateWord(10)}`;
         keyName2 = `KeyForFearch${Common.generateWord(10)}`;
@@ -74,8 +79,17 @@ test
         const searchedValue3 = 'KeyFor[A-G]*';
 
         // Add keys
-        await browserPage.addStringKey(keyName);
-        await browserPage.addHashKey(keyName2);
+        await apiKeyRequests.addStringKeyApi({
+            keyName,
+            value: 'v',
+        }, ossStandaloneConfig);
+        await apiKeyRequests.addHashKeyApi({
+            keyName: keyName2,
+            fields: [{
+                field: 'f',
+                value: 'v',
+            }],
+        }, ossStandaloneConfig);
         // Filter per pattern with [XY]
         await browserPage.searchByKeyName(searchedValue1);
         // Verify that key was found with filter per pattern with [xy]
@@ -92,40 +106,38 @@ test
         await t.expect(await browserPage.isKeyIsDisplayedInTheList(keyName2)).ok('The key was not found');
         await t.expect(await browserPage.isKeyIsDisplayedInTheList(keyName)).notOk('The wrong key found');
     });
-test
-    .after(async() => {
-        // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
-    })('Verify that when user clicks on “clear” control with no filter per key name applied all characters and filter per key type are removed, “clear” control is disappeared', async t => {
-        keyName = `KeyForSearch${Common.generateWord(10)}`;
+test('Verify that when user clicks on “clear” control with no filter per key name applied all characters and filter per key type are removed, “clear” control is disappeared', async t => {
+    keyName = `KeyForSearch${Common.generateWord(10)}`;
 
-        // Set filter by key type and filter per key name
-        await browserPage.searchByKeyName(keyName);
-        await browserPage.selectFilterGroupType(COMMAND_GROUP_SET);
-        // Verify that when user clicks on “clear” control and filter per key name is applied all characters and filter per key type are removed, “clear” control is disappeared
-        await t.click(browserPage.clearFilterButton);
-        await t.expect(browserPage.multiSearchArea.find(browserPage.cssFilteringLabel).visible).notOk('The filter per key type is not removed');
-        await t.expect(browserPage.filterByPatterSearchInput.getAttribute('value')).eql('', 'All characters from filter input are not removed');
-        await t.expect(browserPage.clearFilterButton.visible).notOk('The clear control is not disappeared');
+    // Set filter by key type and filter per key name
+    await browserPage.searchByKeyName(keyName);
+    await browserPage.selectFilterGroupType(COMMAND_GROUP_SET);
+    // Verify that when user clicks on “clear” control and filter per key name is applied all characters and filter per key type are removed, “clear” control is disappeared
+    await t.click(browserPage.clearFilterButton);
+    await t.expect(browserPage.multiSearchArea.find(browserPage.cssFilteringLabel).visible).notOk('The filter per key type is not removed');
+    await t.expect(browserPage.filterByPatterSearchInput.getAttribute('value')).eql('', 'All characters from filter input are not removed');
+    await t.expect(browserPage.clearFilterButton.visible).notOk('The clear control is not disappeared');
+    await apiKeyRequests.addStringKeyApi({
+        keyName,
+        value: 'v',
+    }, ossStandaloneConfig);
+    // Search for not existed key name
+    await browserPage.searchByKeyName(keyName2);
+    await t.expect(browserPage.keyListTable.textContent).contains('No results found.', 'Key is not found message not displayed');
+    // Verify that when user clicks on “clear” control and filter per key name is applied filter is reset and rescan initiated
+    await t.click(browserPage.clearFilterButton);
+    await t.expect(browserPage.filterByPatterSearchInput.getAttribute('value')).eql('', 'The filtering is not reset');
+    await t.expect(browserPage.noResultsFound.exists).notOk('No results found message is not hidden');
 
-        await browserPage.addStringKey(keyName);
-        // Search for not existed key name
-        await browserPage.searchByKeyName(keyName2);
-        await t.expect(browserPage.keyListTable.textContent).contains('No results found.', 'Key is not found message not displayed');
-        // Verify that when user clicks on “clear” control and filter per key name is applied filter is reset and rescan initiated
-        await t.click(browserPage.clearFilterButton);
-        await t.expect(browserPage.filterByPatterSearchInput.getAttribute('value')).eql('', 'The filtering is not reset');
-        await t.expect(browserPage.noResultsFound.exists).notOk('No results found message is not hidden');
-
-        // Set filter by key type and type characters
-        await t.typeText(browserPage.filterByPatterSearchInput, keyName);
-        await browserPage.selectFilterGroupType(COMMAND_GROUP_SET);
-        // Verify the clear control with no filter per key name
-        await t.click(browserPage.clearFilterButton);
-        await t.expect(browserPage.multiSearchArea.find(browserPage.cssFilteringLabel).visible).notOk('The filter per key type is not removed');
-        await t.expect(browserPage.filterByPatterSearchInput.getAttribute('value')).eql('', 'All characters from filter input are not removed');
-        await t.expect(browserPage.clearFilterButton.visible).notOk('The clear control is not disappeared');
-    });
+    // Set filter by key type and type characters
+    await t.typeText(browserPage.filterByPatterSearchInput, keyName);
+    await browserPage.selectFilterGroupType(COMMAND_GROUP_SET);
+    // Verify the clear control with no filter per key name
+    await t.click(browserPage.clearFilterButton);
+    await t.expect(browserPage.multiSearchArea.find(browserPage.cssFilteringLabel).visible).notOk('The filter per key type is not removed');
+    await t.expect(browserPage.filterByPatterSearchInput.getAttribute('value')).eql('', 'All characters from filter input are not removed');
+    await t.expect(browserPage.clearFilterButton.visible).notOk('The clear control is not disappeared');
+});
 test
     .before(async() => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneBigConfig);
@@ -133,11 +145,13 @@ test
     .after(async() => {
         // Delete database
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneBigConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneBigConfig);
     })('Verify that user can filter per exact key without using any patterns in DB with 10 millions of keys', async t => {
         // Create new key
         keyName = `KeyForSearch-${Common.generateWord(10)}`;
-        await browserPage.addSetKey(keyName);
+        await apiKeyRequests.addSetKeyApi({
+            keyName,
+            members: ['m'],
+        }, ossStandaloneBigConfig);
         // Search by key name
         await browserPage.searchByKeyName(keyName);
         // Verify that required key is displayed
@@ -149,10 +163,6 @@ test
 test
     .before(async() => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneBigConfig);
-    })
-    .after(async() => {
-        // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneBigConfig);
     })('Verify that user can filter per key name using patterns in DB with 10-50 millions of keys', async t => {
         keyName = 'device*';
         await browserPage.selectFilterGroupType(KeyTypesTexts.Set);

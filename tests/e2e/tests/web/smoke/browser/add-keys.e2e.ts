@@ -22,7 +22,6 @@ fixture `Add keys`
     .afterEach(async() => {
         // Clear and delete database
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that user can add Hash Key', async t => {
     keyName = Common.generateWord(10);

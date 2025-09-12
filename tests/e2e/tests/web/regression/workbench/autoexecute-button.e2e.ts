@@ -14,11 +14,7 @@ fixture `Workbench Auto-Execute button`
     .page(commonUrl)
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
-        await t.click(browserPage.NavigationPanel.workbenchButton);
-    })
-    .afterEach(async() => {
-        // Clear and delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
     });
 // Test is skipped until Enablement area will be updated with auto-execute buttons
 test.skip('Verify that when user clicks on auto-execute button, command is run', async t => {

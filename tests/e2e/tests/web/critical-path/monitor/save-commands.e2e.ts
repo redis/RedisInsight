@@ -24,10 +24,6 @@ fixture `Save commands`
     .page(commonUrl)
     .beforeEach(async() => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
-    })
-    .afterEach(async() => {
-        // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that user can see a tooltip and toggle that allows to save Profiler log or not in the Profiler', async t => {
     const toolTip = [
@@ -40,7 +36,6 @@ test('Verify that user can see a tooltip and toggle that allows to save Profiler
     await t.expect(browserPage.Profiler.saveLogSwitchButton.exists).ok('The toggle that allows to save Profiler log is not displayed');
     await t.hover(browserPage.Profiler.saveLogSwitchButton);
     for (const message of toolTip) {
-        await t.click(browserPage.Profiler.saveLogSwitchButton);
         await t.expect(browserPage.Profiler.saveLogToolTip.innerText).contains(message, 'The toolTip for save log in Profiler is not displayed');
     }
     // Check toggle state

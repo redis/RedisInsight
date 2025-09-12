@@ -3,7 +3,7 @@ import { t } from 'testcafe';
 import { rte } from '../../../../helpers/constants';
 import { DatabaseHelper } from '../../../../helpers/database';
 import { BrowserPage } from '../../../../pageObjects';
-import { commonUrl, ossStandaloneRedisearch } from '../../../../helpers/conf';
+import { commonUrl, ossStandaloneConfig } from '../../../../helpers/conf';
 import { DatabaseAPIRequests } from '../../../../helpers/api/api-database';
 import { deleteAllKeysFromDB, verifyKeysDisplayingInTheList } from '../../../../helpers/keys';
 
@@ -11,7 +11,7 @@ const browserPage = new BrowserPage();
 const databaseHelper = new DatabaseHelper();
 const databaseAPIRequests = new DatabaseAPIRequests();
 
-const dbParameters = { host: ossStandaloneRedisearch.host, port: ossStandaloneRedisearch.port };
+const dbParameters = { host: ossStandaloneConfig.host, port: ossStandaloneConfig.port };
 const filesToUpload = ['bulkUplAllKeyTypes.txt', 'bigKeysData.rtf'];
 const filePathes = {
     allKeysFile: path.join('..', '..', '..', '..', 'test-data', 'bulk-upload', filesToUpload[0]),
@@ -29,12 +29,12 @@ fixture.skip(`Bulk Upload`)
     .meta({ type: 'critical_path', rte: rte.standalone })
     .page(commonUrl)
     .beforeEach(async() => {
-        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneRedisearch);
+        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
     })
     .afterEach(async() => {
         // Clear and delete database
         await deleteAllKeysFromDB(dbParameters.host, dbParameters.port);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneRedisearch);
+        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify bulk upload of different text docs formats', async t => {
     // Verify bulk upload for docker app version

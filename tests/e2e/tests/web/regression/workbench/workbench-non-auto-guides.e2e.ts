@@ -38,23 +38,17 @@ fixture `Workbench modes to non-auto guides`
     .page(commonUrl)
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
-        await t.click(browserPage.NavigationPanel.workbenchButton);
-    })
-    .afterEach(async() => {
-        // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
     });
 test
     .before(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
-        await t.click(browserPage.NavigationPanel.workbenchButton);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
         await workbenchPage.sendCommandInWorkbench(`set ${keyName} "${keyValue}"`);
     })
     .after(async t => {
         // Clear and delete database
-        await t.click(myRedisDatabasePage.NavigationPanel.browserButton);
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     })
     .skip('Workbench modes from editor', async t => {
         const groupCommandResultName = `${counter} Command(s) - ${counter} success, 0 error(s)`;

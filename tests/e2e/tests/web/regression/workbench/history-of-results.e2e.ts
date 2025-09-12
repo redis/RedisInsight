@@ -21,12 +21,11 @@ fixture `History of results at Workbench`
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         // Go to Workbench page
-        await t.click(browserPage.NavigationPanel.workbenchButton);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
     })
     .afterEach(async() => {
         // Clear and delete database
         await workbenchPage.Cli.sendCommandInCli(`DEL ${keyName}`);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test
     .meta({ rte: rte.standalone })
@@ -44,8 +43,7 @@ test
 test.skip
     .meta({ rte: rte.standalone })
     .after(async() => {
-        // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
+        // overwrite aftereach
     })('Verify that if command result is more than 1 MB and user refreshes the page, the message "Results have been deleted since they exceed 1 MB. Re-run the command to see new results." is displayed', async t => {
         const commandToSend = 'set key';
         const commandToGet = 'get key';

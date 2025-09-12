@@ -3,7 +3,7 @@ import { Common, DatabaseHelper } from '../../../../helpers';
 import { BrowserPage } from '../../../../pageObjects';
 import {
     commonUrl,
-    ossStandaloneV6Config
+    ossStandaloneConfig
 } from '../../../../helpers/conf';
 import { DatabaseAPIRequests } from '../../../../helpers/api/api-database';
 import { APIKeyRequests } from '../../../../helpers/api/api-keys';
@@ -23,13 +23,12 @@ fixture `Formatters`
     })
     .page(commonUrl)
     .beforeEach(async() => {
-        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneV6Config);
+        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
 
     })
     .afterEach(async() => {
         // Clear keys and database
-        await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneV6Config.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneV6Config);
+        await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
     });
 
 test('Verify that UTF8 in PHP serialized', async t => {

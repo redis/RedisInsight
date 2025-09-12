@@ -58,9 +58,26 @@ jobs:
       - name: Both builds finished
         run: echo "Docker and AppImage builds completed"
 
-  e2e-docker-tests:
-    needs: builds-complete
-    uses: ./.github/workflows/tests-e2e-docker.yml
+  e2e-docker-tests-smoke:
+    name: "E2E: Smoke (Docker)"
+    needs: build-docker
+    uses: ./.github/workflows/tests-e2e-docker-smoke.yml
+    secrets: inherit
+    with:
+      debug: ${{ inputs.debug || false }}
+
+  e2e-docker-tests-critical-path:
+    name: "E2E: Critical Path (Docker)"
+    needs: build-docker
+    uses: ./.github/workflows/tests-e2e-docker-critical-path.yml
+    secrets: inherit
+    with:
+      debug: ${{ inputs.debug || false }}
+
+  e2e-docker-tests-regression:
+    name: "E2E: Regression (Docker)"
+    needs: build-docker
+    uses: ./.github/workflows/tests-e2e-docker-regression.yml
     secrets: inherit
     with:
       debug: ${{ inputs.debug || false }}
@@ -85,7 +102,9 @@ jobs:
     needs:
       [
         approval-dedupe,
-        e2e-docker-tests,
+        e2e-docker-tests-smoke,
+        e2e-docker-tests-critical-path,
+        e2e-docker-tests-regression,
         e2e-appimage-tests,
         tests-e2e-playwright,
       ]
@@ -97,7 +116,9 @@ jobs:
     needs:
       [
         approval-dedupe,
-        e2e-docker-tests,
+        e2e-docker-tests-smoke,
+        e2e-docker-tests-critical-path,
+        e2e-docker-tests-regression,
         e2e-appimage-tests,
         tests-e2e-playwright,
       ]

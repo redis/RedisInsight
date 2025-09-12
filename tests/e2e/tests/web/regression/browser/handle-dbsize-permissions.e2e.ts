@@ -18,6 +18,10 @@ const databaseAPIRequests = new DatabaseAPIRequests();
 const createUserCommand = 'acl setuser noperm nopass on +@all ~* -dbsize';
 const keyName = Common.generateWord(20);
 const createKeyCommand = `set ${keyName} ${Common.generateWord(20)}`;
+const noPermDatabase = {
+    ...ossStandaloneBigConfig,
+    databaseName: ossStandaloneNoPermissionsConfig.databaseName,
+}
 
 fixture `Handle user permissions`
     .meta({ type: 'regression', rte: rte.standalone })
@@ -25,17 +29,13 @@ fixture `Handle user permissions`
     .beforeEach(async() => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneBigConfig);
         await browserPage.Cli.sendCommandInCli(createUserCommand);
-        ossStandaloneNoPermissionsConfig.host = process.env.OSS_STANDALONE_BIG_HOST || 'oss-standalone-big';
         await t.click(myRedisDatabasePage.NavigationPanel.myRedisDBButton);
-        await databaseAPIRequests.addNewStandaloneDatabaseApi(ossStandaloneNoPermissionsConfig);
+        await databaseAPIRequests.addNewStandaloneDatabaseApi(noPermDatabase);
         await browserPage.reloadPage();
     })
     .afterEach(async() => {
         // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneBigConfig);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneNoPermissionsConfig);
-        // Change config to initial
-        ossStandaloneNoPermissionsConfig.host = process.env.OSS_STANDALONE_HOST || 'oss-standalone';
+        await databaseAPIRequests.deleteStandaloneDatabaseApi(noPermDatabase);
     });
 
 test('Verify that user without dbsize permissions can connect to DB', async t => {

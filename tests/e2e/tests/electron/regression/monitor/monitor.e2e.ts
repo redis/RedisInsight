@@ -51,7 +51,7 @@ test.skip
         await t.expect(browserPage.Profiler.monitorNoPermissionsMessage.innerText).eql('The Profiler cannot be started. This user has no permissions to run the \'monitor\' command', 'No Permissions message not found');
         // Verify that if user doesn't have permissions to run monitor, run monitor button is not available
         await t.expect(browserPage.Profiler.runMonitorToggle.withAttribute('disabled').exists).ok('No permissions run icon not found');
-        await t.click(myRedisDatabasePage.NavigationPanel.workbenchButton);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
         await workbenchPage.sendCommandInWorkbench(command);
         // Verify that user have the following error when there is no permission to run the CLIENT LIST: "NOPERM this user has no permissions to run the 'CLIENT LIST' command or its subcommand"
         await workbenchActions.verifyClientListErrorMessage();

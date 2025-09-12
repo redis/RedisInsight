@@ -22,7 +22,6 @@ fixture `Keys refresh functionality`
     .afterEach(async() => {
         // Clear and delete database
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test.skip('Verify that user can refresh Keys', async t => {
     keyName = Common.generateWord(10);

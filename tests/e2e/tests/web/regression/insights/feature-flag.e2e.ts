@@ -103,7 +103,7 @@ test
         // Verify that Insights panel can be displayed for Telemetry enabled/disabled according to filters
         await t.click(browserPage.NavigationPanel.settingsButton);
         await settingsPage.changeAnalyticsSwitcher(false);
-        await t.click(myRedisDatabasePage.NavigationPanel.browserButton);
+        await myRedisDatabasePage.navigateToDatabase(ossStandaloneV5Config.databaseName);
         await browserPage.NavigationHeader.togglePanel(true);
         await t.expect(browserPage.InsightsPanel.getInsightsPanel().exists).notOk('Insights panel displayed without analytics when its filter is on');
 

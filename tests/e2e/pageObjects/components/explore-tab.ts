@@ -1,7 +1,7 @@
 import { Selector, t } from 'testcafe';
 
 export class ExploreTab {
-    dataStructureAccordionTutorialButton = Selector('[data-testid=accordion-button-ds]');
+    dataStructureAccordionTutorialButton = Selector('[data-testid=ri-accordion-header-ds]');
     internalLinkWorkingWithHashes = Selector('[data-testid=internal-link-ds-hashes]');
     redisStackTutorialsButton = Selector('[data-testid=accordion-button-redis_stack]');
     timeSeriesLink = Selector('[data-testid=accordion-button-ds-ts]');
@@ -12,9 +12,9 @@ export class ExploreTab {
     tutorialLatestDeleteIcon = Selector('[data-testid^=delete-tutorial-icon-]').nth(0);
     tutorialDeleteButton = Selector('button[data-testid^=delete-tutorial-]');
     preselectArea = Selector('[data-testid=enablementArea]');
-    enablementAreaPagination = Selector('[data-testid=enablement-area__pagination-popover-btn]');
-    paginationPopoverButtons = Selector('[data-testid=enablement-area__pagination-popover] button');
-    enablementAreaPaginationPopover = Selector('[data-testid=enablement-area__pagination-popover]');
+    enablementAreaPagination = Selector('[data-testid=enablement-area__toggle-pagination-menu-btn]');
+    paginationPopoverButtons = Selector('[data-testid=enablement-area__pagination-menu] [role=menuitem]');
+    enablementAreaPaginationPopover = Selector('[data-testid=enablement-area__pagination-menu]');
     nextPageButton = Selector('[data-testid=enablement-area__next-page-btn]');
     prevPageButton = Selector('[data-testid=enablement-area__prev-page-btn]');
     guidesGraphAccordion = Selector('[data-testid=accordion-button-graph]');
@@ -27,11 +27,11 @@ export class ExploreTab {
     openDatabasePopover = Selector('[data-testid=database-not-opened-popover]');
     tutorialPopoverConfirmRunButton = Selector('[data-testid=tutorial-popover-apply-run]');
     //Custom tutorials
-    customTutorials = Selector('[data-testid=accordion-button-custom-tutorials]');
+    customTutorials = Selector('[data-testid=ri-accordion-header-custom-tutorials]');
     tutorialOpenUploadButton = Selector('[data-testid=open-upload-tutorial-btn]');
     tutorialSubmitButton = Selector('[data-testid=submit-upload-tutorial-btn]');
     tutorialImport = Selector('[data-testid=import-tutorial]');
-    tutorialAccordionButton = Selector('[data-testid^=accordion-button-]');
+    tutorialAccordionButton = Selector('[data-testid^=ri-accordion-header-]');
     uploadDataBulkBtn = Selector('[data-testid=upload-data-bulk-btn]');
     uploadDataBulkApplyBtn = Selector('[data-testid=upload-data-bulk-apply-btn]');
     downloadFileBtn = Selector('[data-testid=download-redis-upload-file]');
@@ -87,7 +87,7 @@ export class ExploreTab {
      * @param tutorialName name of the uploaded tutorial
      */
     getAccordionButtonWithName(tutorialName: string): Selector {
-        return Selector(`[data-testid=accordion-button-${tutorialName}]`);
+        return Selector(`[data-testid=ri-accordion-header-${tutorialName}]`);
     }
 
     /**

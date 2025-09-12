@@ -18,7 +18,7 @@ fixture `Redis Stack command in Workbench`
     .page(commonUrl)
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
-        await t.click(browserPage.NavigationPanel.workbenchButton);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
     })
     .afterEach(async() => {
         // Drop key and database

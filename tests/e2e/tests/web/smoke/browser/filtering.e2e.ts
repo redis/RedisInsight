@@ -27,14 +27,12 @@ fixture `Filtering per key name in Browser page`
     .afterEach(async() => {
         // Clear and delete database
         await browserPage.deleteKeyByName(`${searchedKeyName}${randomValue}`);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that user can search per full key name', async t => {
     randomValue = Common.generateWord(10);
     keyName = `KeyForSearch*?[]789${randomValue}`;
-
     // Add new key
-    await browserPage.addStringKey(keyName);
+    await apiKeyRequests.addStringKeyApi({ keyName, value: 'a' }, ossStandaloneConfig)
     // Search by key with full name
     await browserPage.searchByKeyName(`${searchedKeyName}${randomValue}`);
     // Verify that key was found
@@ -68,9 +66,10 @@ test
         keyName2 = `KeyForSomething${Common.generateWord(10)}`;
 
         // Add keys
-        await browserPage.addStringKey(keyName);
-        await browserPage.addHashKey(keyName2);
-        await browserPage.addHashKey(valueWithEscapedSymbols);
+        await apiKeyRequests.addStringKeyApi({ keyName, value: 'a' }, ossStandaloneConfig)
+        await apiKeyRequests.addHashKeyApi({ keyName: keyName2, fields: [{ field: 'f', value: 'v' }] }, ossStandaloneConfig)
+        await apiKeyRequests.addHashKeyApi({ keyName: valueWithEscapedSymbols, fields: [{ field: 'f', value: 'v' }] }, ossStandaloneConfig)
+
         // Filter per pattern with ?, *, [xy], [^x], [a-z]
         const searchedValue = 'Key?[A-z]rS[^o][ae]*';
         await browserPage.searchByKeyName(searchedValue);

@@ -27,7 +27,6 @@ fixture `Monitor`
     })
     .afterEach(async() => {
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that user can work with Monitor', async t => {
     const command = 'set';
@@ -64,7 +63,7 @@ test.skip('Verify that user can see the list of all commands from all clients ra
     await browserPage.addHashKey(keyName);
     await browserPage.Profiler.checkCommandInMonitorResults(browser_command);
     //Open Workbench page to create new client
-    await t.click(browserPage.NavigationPanel.workbenchButton);
+    await t.click(browserPage.NavigationTabs.workbenchButton);
     //Send command in Workbench
     await workbenchPage.sendCommandInWorkbench(workbench_command);
     //Check that command from Workbench is displayed in monitor

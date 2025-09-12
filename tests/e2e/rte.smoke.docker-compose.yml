@@ -1,0 +1,15 @@
+x-logging:
+  logging: &logging
+    driver: none
+
+services:
+  oss-standalone:
+    logging: *logging
+    image: redis:8.2.1-alpine
+    ports:
+      - "8100:6379"
+    networks:
+      default:
+        ipv4_address: 172.31.100.109
+      ssh:
+        ipv4_address: 172.33.100.109

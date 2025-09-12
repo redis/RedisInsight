@@ -1,0 +1,143 @@
+x-logging:
+  logging: &logging
+    driver: none
+
+services:
+  oss-standalone:
+    logging: *logging
+    image: redis:8.2.1-alpine
+    ports:
+      - "8100:6379"
+    networks:
+      default:
+        ipv4_address: 172.31.100.109
+      ssh:
+        ipv4_address: 172.33.100.109
+
+  # todo: Investigate if we can have lower size of data (2.6GB currently)
+  oss-standalone-big:
+    logging: *logging
+    build:
+      context: ./rte/oss-standalone-big
+      dockerfile: Dockerfile
+      args:
+        TEST_DB_DUMP: $TEST_BIG_DB_DUMP
+    ports:
+      - "8103:6379"
+    networks:
+      default:
+        ipv4_address: 172.31.100.116
+      ssh:
+        ipv4_address: 172.33.100.116
+
+  # todo: review Redis version
+  # oss standalone tls
+  oss-standalone-tls:
+    logging: *logging
+    build:
+      context: ./rte/oss-standalone-tls
+      dockerfile: Dockerfile
+    ports:
+      - "8104:6379"
+    networks:
+      default:
+        ipv4_address: 172.31.100.117
+      ssh:
+        ipv4_address: 172.33.100.117
+
+  # todo: investigate the Redis version and Graph module tests based on it
+  oss-standalone-empty:
+    logging: *logging
+    image: redislabs/redismod
+    command: [
+      "--loadmodule", "/usr/lib/redis/modules/redisearch.so",
+      "--loadmodule", "/usr/lib/redis/modules/redisgraph.so",
+      "--loadmodule", "/usr/lib/redis/modules/redistimeseries.so",
+      "--loadmodule", "/usr/lib/redis/modules/rejson.so",
+      "--loadmodule", "/usr/lib/redis/modules/redisbloom.so"
+    ]
+    ports:
+      - "8105:6379"
+    networks:
+      default:
+        ipv4_address: 172.31.100.110
+      ssh:
+        ipv4_address: 172.33.100.110
+
+  # todo: investigate if we need this. EOL
+  oss-standalone-redisgears-2-0:
+    logging: *logging
+    image: redislabs/redisgears:edge
+    ports:
+      - "8106:6379"
+    networks:
+      default:
+        ipv4_address: 172.31.100.115
+      ssh:
+        ipv4_address: 172.33.100.115
+
+  oss-standalone-v7:
+    logging: *logging
+    image: redis:7.4-rc2
+    ports:
+      - "8108:6379"
+    networks:
+      default:
+        ipv4_address: 172.31.100.112
+      ssh:
+        ipv4_address: 172.33.100.112
+
+  # todo: investigate base Redis version and if we need this in critical-path tests
+  # ========== oss cluster (v7) ==========
+  cluster-plain-creator-7:
+    logging: *logging
+    build:
+      context: ./rte/oss-cluster-7
+      dockerfile: creator.Dockerfile
+    depends_on:
+      - master-plain-7-1
+      - master-plain-7-2
+      - master-plain-7-3
+  master-plain-7-1:
+    logging: *logging
+    build: &cluster-plain-7-build ./rte/oss-cluster-7
+    ports:
+      - "8200:6379"
+    networks:
+      default:
+        ipv4_address: 172.31.100.211
+      ssh:
+        ipv4_address: 172.33.100.211
+  master-plain-7-2:
+    logging: *logging
+    build: *cluster-plain-7-build
+    networks:
+      default:
+        ipv4_address: 172.31.100.212
+  master-plain-7-3:
+    logging: *logging
+    build: *cluster-plain-7-build
+    networks:
+      default:
+        ipv4_address: 172.31.100.213
+  # ========== END oss cluster (v7) ==========
+
+  # todo: investigate base Redis version and if we need this in critical-path tests
+  # ========== oss sentinel ==========
+  oss-sentinel:
+    logging: *logging
+    build: ./rte/oss-sentinel
+    depends_on:
+      - oss-sentinel-primary-1
+      - oss-sentinel-primary-2
+    ports:
+      - "28100:26379"
+
+  oss-sentinel-primary-1:
+    logging: *logging
+    image: redis:5
+
+  oss-sentinel-primary-2:
+    logging: *logging
+    image: redis:5
+  # ========== END oss sentinel ==========

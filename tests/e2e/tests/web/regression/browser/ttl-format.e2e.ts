@@ -32,7 +32,6 @@ fixture `TTL values in Keys Table`
     .afterEach(async() => {
         // Clear and delete database
         await deleteKeysViaCli(keysData);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that user can see TTL in the list of keys rounded down to the nearest unit', async t => {
     // Create new keys with TTL

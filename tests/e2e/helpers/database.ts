@@ -203,11 +203,20 @@ export class DatabaseHelper {
         databaseParameters: AddNewDatabaseParameters
     ): Promise<void> {
         await this.acceptLicenseTerms();
-        await databaseAPIRequests.addNewStandaloneDatabaseApi(
-            databaseParameters
+
+        const databaseId = await databaseAPIRequests.getDatabaseIdByName(
+            databaseParameters.databaseName
         );
-        // Reload Page to see the new added database through api
-        await myRedisDatabasePage.reloadPage();
+
+        if (!databaseId) {
+            await databaseAPIRequests.addNewStandaloneDatabaseApi(
+                databaseParameters
+            );
+
+            // Reload Page to see the new added database through api
+            await myRedisDatabasePage.reloadPage();
+        }
+
         // Connect to DB
         await myRedisDatabasePage.clickOnDBByName(
             databaseParameters.databaseName!
@@ -223,7 +232,15 @@ export class DatabaseHelper {
         databaseParameters: OSSClusterParameters
     ): Promise<void> {
         await this.acceptLicenseTerms();
-        await this.addOSSClusterDatabase(databaseParameters);
+
+        const databaseId = await databaseAPIRequests.getDatabaseIdByName(
+            databaseParameters.ossClusterDatabaseName
+        );
+
+        if (!databaseId) {
+            await this.addOSSClusterDatabase(databaseParameters);
+        }
+
         // Connect to DB
         await myRedisDatabasePage.clickOnDBByName(
             databaseParameters.ossClusterDatabaseName!

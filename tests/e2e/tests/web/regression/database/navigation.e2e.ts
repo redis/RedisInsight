@@ -54,7 +54,7 @@ test('Verify that user can navigate to instances using navigation widget', async
     let dbWidgetNames = await browserPage.NavigationHeader.getAllDatabases();
     await t.expect(dbListPageNames).eql(dbWidgetNames, 'DB Lists have the same names');
     await t.click(browserPage.NavigationHeader.dbListInstance.withText(ossStandaloneV7Config.databaseName));
-    await t.expect(browserPage.NavigationHeader.dbName.textContent).eql(ossStandaloneV7Config.databaseName, 'user can not be navigated');
+    await t.expect(browserPage.NavigationHeader.dbNameExactText.textContent).eql(ossStandaloneV7Config.databaseName, 'user can not be navigated');
     await t.click(browserPage.NavigationHeader.dbName)
     await t.click(browserPage.NavigationHeader.homeLinkNavigation);
     await t.expect(myRedisDatabasePage.hostPort.exists).ok('Db list page is not opened');

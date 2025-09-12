@@ -8,9 +8,9 @@ export class ShortcutsPanel {
     //*The following categories are ordered alphabetically (Alerts, Buttons, Checkboxes, etc.).
     //-------------------------------------------------------------------------------------------
     //BUTTONS
-    shortcutsCloseButton = Selector('[data-test-subj=euiFlyoutCloseButton]');
+    shortcutsCloseButton = Selector('[role=dialog][title=Shortcuts] button title').withText('Cancel');
     //TEXT ELEMENTS
-    shortcutsTitle = Selector('[data-testid=shortcuts-title]');
+    shortcutsTitle = Selector('[role=dialog][title=Shortcuts] h3');
     shortcutsDesktopApplicationSection = Selector('[data-test-subj="shortcuts-section-Desktop application"]');
     shortcutsCLISection = Selector('[data-test-subj=shortcuts-section-CLI]');
     shortcutsWorkbenchSection = Selector('[data-test-subj=shortcuts-section-Workbench]');

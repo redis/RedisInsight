@@ -19,10 +19,6 @@ fixture `CLI Command helper`
     .page(commonUrl)
     .beforeEach(async() => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
-    })
-    .afterEach(async() => {
-        // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify Command Helper search and filter', async t => {
     // Open Command Helper
@@ -33,7 +29,8 @@ test('Verify Command Helper search and filter', async t => {
     await t.typeText(browserPage.CommandHelper.cliHelperSearch, 'SET', { replace: true, paste: true });
     await t.expect(browserPage.CommandHelper.cliHelperOutputTitles.count).gt(0, 'List of commands were not found');
     // Clear search input
-    const clearButton = browserPage.CommandHelper.cliHelper.find('[aria-label="Clear input"]');
+    // todo: add proper attr to html
+    const clearButton = browserPage.CommandHelper.cliHelper.find('button title').withExactText('Cancel').parent('button');
     await t.click(clearButton);
     // Verify that when user clears the input in the Search of CLI Helper (via x icon), he can see the default screen with proper the text
     await t.expect(browserPage.CommandHelper.cliHelperText.textContent).eql(defaultHelperText, 'Default text for CLI Helper is not shown');
@@ -42,7 +39,7 @@ test('Verify Command Helper search and filter', async t => {
     await browserPage.CommandHelper.selectFilterGroupType(COMMAND_GROUP_SET);
     await t.expect(browserPage.CommandHelper.cliHelperOutputTitles.count).gt(0, 'List of commands were not found');
     // Unselect previous command from list
-    await browserPage.CommandHelper.selectFilterGroupType(COMMAND_GROUP_SET);
+    await t.click(browserPage.CommandHelper.clearAllGroupFilters);
     await t.expect(browserPage.CommandHelper.cliHelperOutputTitles.count).eql(0, 'List of commands were not cleared');
     await t.expect(browserPage.CommandHelper.cliHelperText.textContent).eql(defaultHelperText, 'Default text for CLI Helper is not shown');
 
@@ -91,7 +88,7 @@ test('Verify that user can type TS. in Command helper and see commands from Redi
     // Search per part of command and check all opened commands
     await browserPage.CommandHelper.checkSearchedCommandInCommandHelper(commandForSearch, timeSeriesCommands);
     // Check the first command documentation url
-    await browserPage.CommandHelper.checkURLCommand(timeSeriesCommands[0], `https://redis.io/docs/latest/commands/${timeSeriesCommands[0].toLowerCase()}/?utm_source=redisinsight&utm_medium=app&utm_campaign=redisinsight_command_helper`);
+    await browserPage.CommandHelper.checkURLCommand(timeSeriesCommands[0], `https://redis.io/docs/latest/commands/${timeSeriesCommands[0].toLowerCase()}?utm_source=redisinsight&utm_medium=app&utm_campaign=redisinsight_command_helper`);
 });
 // outdated after https://redislabs.atlassian.net/browse/RI-4608
 test.skip('Verify that user can type GRAPH. in Command helper and see auto-suggestions from RedisGraph commands.json', async t => {

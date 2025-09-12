@@ -12,7 +12,7 @@ export class SettingsPage extends BasePage {
     accordionAppearance = Selector('[data-test-subj=accordion-appearance]');
     accordionPrivacySettings = Selector('[data-test-subj=accordion-privacy-settings]');
     accordionAdvancedSettings = Selector('[data-test-subj=accordion-advanced-settings]');
-    accordionWorkbenchSettings = Selector('[data-test-subj=accordion-workbench-settings]');
+    accordionWorkbenchSettings = Selector('[data-testid=accordion-workbench-settings]');
     switchAnalyticsOption = Selector('[data-testid=switch-option-analytics]');
     switchEulaOption = Selector('[data-testid=switch-option-eula]');
     submitConsentsPopupButton = Selector('[data-testid=consents-settings-popup] [data-testid=btn-submit]');
@@ -29,8 +29,8 @@ export class SettingsPage extends BasePage {
     selectFormatDropdown = Selector('[data-test-subj=select-datetime]');
     selectTimezoneDropdown = Selector('[data-test-subj=select-timezone]');
     dataPreview = Selector('[data-testid=data-preview]');
-    customRadioButton = Selector('[id=custom]', { timeout: 500 }).sibling();
-    commonRadioButton = Selector('[id=common]', { timeout: 500 }).sibling();
+    customRadioButton = Selector('[data-testid=format-timestamp-form-radio-group] button[value=custom]');
+    commonRadioButton = Selector('[data-testid=format-timestamp-form-radio-group] button[value=common]');
     customTextField =  Selector('[data-testid=custom-datetime-input]');
     saveCustomFormatButton = Selector('[data-testid=datetime-custom-btn]');
 

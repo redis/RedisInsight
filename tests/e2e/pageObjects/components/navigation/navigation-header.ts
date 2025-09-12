@@ -6,9 +6,10 @@ export class NavigationHeader {
     cloudSignInButton = Selector('[data-testid=cloud-sign-in-btn]');
     copilotButton = Selector('[data-testid=copilot-trigger]');
     dbName = Selector('[data-testid=nav-instance-popover-btn]');
+    dbNameExactText = Selector('[data-testid=nav-instance-popover-btn] b');
     homeLinkNavigation = Selector('[class*=homePageLink]');
     dbListInstance = Selector('[data-testid^=instance-item-]');
-    rdiNavigationTab = Selector('[data-testid*=Integration-tab-id]');
+    rdiNavigationTab = Selector('[role=tab][id*="Redis Data Integration"]');
     dbListInput = Selector('[data-testid=instances-nav-popover-search]');
 
     /**

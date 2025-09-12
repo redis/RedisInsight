@@ -1,7 +1,7 @@
 import { KeyTypesTexts, rte } from '../../../../helpers/constants';
 import { DatabaseHelper } from '../../../../helpers/database';
 import { BrowserPage } from '../../../../pageObjects';
-import { commonUrl, ossStandaloneRedisearch } from '../../../../helpers/conf';
+import { commonUrl, ossStandaloneConfig } from '../../../../helpers/conf';
 import { DatabaseAPIRequests } from '../../../../helpers/api/api-database';
 import { Common } from '../../../../helpers/common';
 import { deleteAllKeysFromDB } from '../../../../helpers/keys';
@@ -11,13 +11,13 @@ const databaseHelper = new DatabaseHelper();
 const databaseAPIRequests = new DatabaseAPIRequests();
 
 const keyNames = [Common.generateWord(20), Common.generateWord(20)];
-const dbParameters = { host: ossStandaloneRedisearch.host, port: ossStandaloneRedisearch.port };
+const dbParameters = { host: ossStandaloneConfig.host, port: ossStandaloneConfig.port };
 
 fixture `Bulk Delete`
     .meta({ type: 'critical_path', rte: rte.standalone })
     .page(commonUrl)
     .beforeEach(async t => {
-        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneRedisearch);
+        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         await browserPage.addHashKey(keyNames[0], '100000', Common.generateWord(20), Common.generateWord(20));
         await browserPage.addSetKey(keyNames[1], '100000', Common.generateWord(20));
         if (await browserPage.Toast.toastCloseButton.exists) {
@@ -27,7 +27,7 @@ fixture `Bulk Delete`
     .afterEach(async() => {
         // Clear and delete database
         await deleteAllKeysFromDB(dbParameters.host, dbParameters.port);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneRedisearch);
+        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that when bulk deletion is completed, status Action completed is displayed', async t => {
     // Filter by Hash keys

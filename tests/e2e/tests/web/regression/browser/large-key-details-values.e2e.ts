@@ -12,10 +12,10 @@ const databaseAPIRequests = new DatabaseAPIRequests();
 const apiKeyRequests = new APIKeyRequests();
 
 const field = Common.generateWord(20);
-const value = Common.generateSentence(200);
+const value = Common.generateSentence(400);
 const value1 = Common.generateWord(20);
 const keyName = Common.generateWord(20);
-const keyTTL = '2147476121';
+const keyTTL = 2147476121;
 
 fixture `Expand/Collapse large values in key details`
     .meta({ type: 'regression', rte: rte.standalone })
@@ -29,14 +29,15 @@ fixture `Expand/Collapse large values in key details`
             await t.click(browserPage.closeKeyButton);
         }
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that user can click on a row to expand it if any of its cells contains a value which is truncated.', async t => {
     const entryFieldLong = browserPage.streamEntryFields.nth(1).parent(1);
     const entryFieldSmall = browserPage.streamEntryFields.nth(0).parent(1);
     // Create stream key
-    await browserPage.Cli.sendCommandInCli(`XADD ${keyName} * '${field}' '${value}'`);
-    await browserPage.Cli.sendCommandInCli(`XADD ${keyName} * '${field}' '${value1}'`);
+    await browserPage.Cli.sendCommandsInCli([
+        `XADD ${keyName} * '${field}' '${value}'`,
+        `XADD ${keyName} * '${field}' '${value1}'`
+    ]);
     // Open key details
     await browserPage.openKeyDetails(keyName);
     // Remember height of the cells
@@ -55,7 +56,15 @@ test('Verify that user can click on a row to expand it if any of its cells conta
 test('Verify that user can expand/collapse for hash data type', async t => {
     const fieldValueCell = browserPage.hashFieldValue.parent(2);
     // Create hash key
-    await browserPage.addHashKey(keyName, keyTTL, field, value);
+    await apiKeyRequests.addHashKeyApi({
+        keyName,
+        ttl: keyTTL,
+        fields: [{
+            field,
+            value,
+        }]
+    }, ossStandaloneConfig)
+    await browserPage.navigateToKey(keyName);
     // Remember height of the cell with long value
     const startCellHeight = await fieldValueCell.clientHeight;
     // Verify that user can expand a row of hash data type
@@ -68,7 +77,12 @@ test('Verify that user can expand/collapse for hash data type', async t => {
 test('Verify that user can expand/collapse for set data type', async t => {
     const memberValueCell = browserPage.setMembersList.parent(2);
     // Create set key
-    await browserPage.addSetKey(keyName, keyTTL, value);
+    await apiKeyRequests.addSetKeyApi({
+        keyName,
+        ttl: keyTTL,
+        members: [value]
+    }, ossStandaloneConfig)
+    await browserPage.navigateToKey(keyName);
     // Remember height of the cell with long value
     const startLongCellHeight = await memberValueCell.clientHeight;
     // Verify that user can expand a row of set data type
@@ -81,7 +95,15 @@ test('Verify that user can expand/collapse for set data type', async t => {
 test('Verify that user can expand/collapse for sorted set data type', async t => {
     const memberValueCell = browserPage.zsetMembersList.parent(1);
     // Create zset key
-    await browserPage.addZSetKey(keyName, '1', keyTTL, value);
+    await apiKeyRequests.addSortedSetKeyApi({
+        keyName,
+        ttl: keyTTL,
+        members: [{
+            name: value,
+            score: 0,
+        }]
+    }, ossStandaloneConfig)
+    await browserPage.navigateToKey(keyName);
     // Remember height of the cell with long value
     const startLongCellHeight = await memberValueCell.clientHeight;
     // Verify that user can expand a row of sorted set data type
@@ -94,7 +116,12 @@ test('Verify that user can expand/collapse for sorted set data type', async t =>
 test('Verify that user can expand/collapse for list data type', async t => {
     const elementValueCell = browserPage.listElementsList.parent(2);
     // Create list key
-    await browserPage.addListKey(keyName, keyTTL, [value]);
+    await apiKeyRequests.addListKeyApi({
+        keyName,
+        ttl: keyTTL,
+        elements: [value]
+    }, ossStandaloneConfig)
+    await browserPage.navigateToKey(keyName);
     // Remember height of the cell with long value
     const startLongCellHeight = await elementValueCell.clientHeight;
     // Verify that user can expand a row of list data type
@@ -107,7 +134,12 @@ test('Verify that user can expand/collapse for list data type', async t => {
 test('Verify that user can work in full mode with expanded/collapsed value', async t => {
     const elementValueCell = browserPage.listElementsList.parent(2);
     // Create list key
-    await browserPage.addListKey(keyName, keyTTL, [value]);
+    await apiKeyRequests.addListKeyApi({
+        keyName,
+        ttl: keyTTL,
+        elements: [value]
+    }, ossStandaloneConfig)
+    await browserPage.navigateToKey(keyName);
     // Open full mode for key details
     await t.click(browserPage.fullScreenModeButton);
     // Remember height of the cell with long value

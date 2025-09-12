@@ -58,7 +58,7 @@ export class OverviewPanel {
             await t.click(this.autoRefreshArrow)
         }
         await t.click(this.autoRefreshRateInput);
-        await t.typeText(this.inlineItemEditor, rate);
+        await t.typeText(this.inlineItemEditor, rate, { replace: true });
         await t.click(this.EditorButton.applyBtn);
     }
 }

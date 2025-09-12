@@ -13,7 +13,7 @@ export class Cli {
     cliCollapseButton = Selector('[data-testid=close-cli]');
     minimizeCliButton = Selector('[data-testid=hide-cli]');
 
-    cliBadge = Selector('[data-testid=expand-cli] span');
+    cliBadge = Selector('[data-testid=expand-cli] div');
 
     cliResizeButton = Selector('[data-test-subj=resize-btn-browser-cli]');
     workbenchLink = Selector('[data-test-subj=cli-workbench-page-btn]');

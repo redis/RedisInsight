@@ -70,6 +70,7 @@ async function verifyContext(): Promise<void> {
         .expect(browserPage.keyNameFormDetails.withExactText(keyName).exists).ok('Key details not opened');
 }
 
+// todo: rework tests. seems flaky. requires database to be empty to verify keys existence.
 fixture `Search capabilities in Browser`
     .meta({ type: 'critical_path', rte: rte.standalone })
     .page(commonUrl);
@@ -77,17 +78,16 @@ test
     .before(async() => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         keyName = Common.generateWord(10);
-        await browserPage.addHashKey(keyName);
     })
     .after(async() => {
         // Clear and delete database
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
         await browserPage.Cli.sendCommandsInCli([`DEL ${keyNames.join(' ')}`, `FT.DROPINDEX ${indexName}`]);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     })('RediSearch capabilities in Browser view to search per Hashes or JSONs', async t => {
         indexName = `idx:${keyName}`;
         keyNames = [`${keyName}:1`, `${keyName}:2`, `${keyName}:3`];
         const commands = [
+            `HSET ${keyName} "" ""`,
             `HSET ${keyNames[0]} "name" "Hall School" "description" " Spanning 10 states" "class" "independent" "type" "traditional" "address_city" "London" "address_street" "Manor Street" "students" 342 "location" "51.445417, -0.258352"`,
             `HSET ${keyNames[1]} "name" "Garden School" "description" "Garden School is a new outdoor" "class" "state" "type" "forest; montessori;" "address_city" "London" "address_street" "Gordon Street" "students" 1452 "location" "51.402926, -0.321523"`,
             `HSET ${keyNames[2]} "name" "Gillford School" "description" "Gillford School is a centre" "class" "private" "type" "democratic; waldorf" "address_city" "Goudhurst" "address_street" "Goudhurst" "students" 721 "location" "51.112685, 0.451076"`,
@@ -97,7 +97,6 @@ test
         // Create 3 keys and index
         await browserPage.Cli.sendCommandsInCli(commands);
         // Verify that user see the tooltips for the controls to switch the modes
-        await t.click(browserPage.patternModeBtn);
         await t.hover(browserPage.patternModeBtn);
         await t.expect(browserPage.tooltip.textContent).contains(patternModeTooltipText, 'Invalid text in pattern mode tooltip');
         await t.hover(browserPage.redisearchModeBtn);
@@ -153,7 +152,6 @@ test
     .after(async() => {
         // Clear and delete database
         await browserPage.Cli.sendCommandInCli(`FT.DROPINDEX ${indexName}`);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneBigConfig);
     })('Search by index keys scanned for JSON', async t => {
         keyName = Common.generateWord(10);
         indexName = `idx:${keyName}`;
@@ -177,13 +175,9 @@ test
 test
     .before(async() => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneV5Config);
-    })
-    .after(async() => {
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneV5Config);
     })('No Redis Query Engine module message', async t => {
         const noRedisearchMessage = 'Redis Query Engine is not available for this database';
         const externalPageLinkFirst = 'https://redis.io/try-free';
-        const externalPageLinkSecond = '?utm_source=redisinsight&utm_medium=app&utm_campaign=redisinsight_browser_search'
 
         await t.click(browserPage.redisearchModeBtn);
         // Verify that user can see message in the dialog when he doesn't have Redis Query Engine module
@@ -192,7 +186,9 @@ test
         // Verify that user can navigate by link to create a Redis db
         await t.click(browserPage.redisearchFreeLink);
         await Common.checkURLContainsText(externalPageLinkFirst);
-        await Common.checkURLContainsText(externalPageLinkSecond);
+        await Common.checkURLContainsText('utm_source=redisinsight');
+        await Common.checkURLContainsText('utm_medium=app');
+        await Common.checkURLContainsText('utm_campaign=redisinsight_browser_search');
     });
 test.requestHooks(logger)
     .before(async() => {
@@ -200,7 +196,6 @@ test.requestHooks(logger)
     })
     .after(async() => {
         await browserPage.Cli.sendCommandInCli(`FT.DROPINDEX ${indexName}`);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneBigConfig);
     })('Index creation', async t => {
         const createIndexLink = 'https://redis.io/docs/latest/commands/ft.create/';
 
@@ -262,8 +257,7 @@ test
     })
     .after(async() => {
         // Clear and delete database
-        await browserPage.Cli.sendCommandInCli(`FT.DROPINDEX ${indexName}`);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
+        // await browserPage.Cli.sendCommandInCli(`FT.DROPINDEX ${indexName}`);
     })('Context for RediSearch capability', async t => {
         keyName = Common.generateWord(10);
         indexName = `idx:${keyName}`;
@@ -280,8 +274,8 @@ test
         await t.click(browserPage.getKeySelectorByName(keyName));
 
         // Verify that Redisearch context (inputs, key selected, scroll, key details) saved after switching between pages
-        await t.click(browserPage.NavigationPanel.workbenchButton);
-        await t.click(browserPage.NavigationPanel.browserButton);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
+        await t.click(browserPage.NavigationTabs.browserButton);
         await verifyContext();
 
         // Verify that Redisearch context saved when switching between browser/tree view

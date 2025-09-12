@@ -15,11 +15,7 @@ fixture `Scripting area at Workbench`
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         // Go to Workbench page
-        await t.click(browserPage.NavigationPanel.workbenchButton);
-    })
-    .afterEach(async() => {
-        // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
     });
 test.skip('Verify that user can comment out any characters in scripting area and all these characters in this raw number are not send in the request', async t => {
     const command1 = 'info';

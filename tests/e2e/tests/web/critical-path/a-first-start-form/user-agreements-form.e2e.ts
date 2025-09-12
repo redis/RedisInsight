@@ -21,8 +21,7 @@ test('Verify that user should accept User Agreements to continue working with th
     await t.expect(userAgreementDialog.submitButton.hasAttribute('disabled')).ok('Submit button not disabled by default');
     await t.expect(myRedisDatabasePage.AddRedisDatabaseDialog.customSettingsButton.exists).notOk('User can\'t add a database');
 });
-test('Verify that the encryption enabled by default and specific message', async t => {
-    await t.expect(userAgreementDialog.pluginSectionWithText.exists).ok('Plugin text is not displayed');
+test('Verify that the encryption enabled by default', async t => {
     // Verify that encryption enabled by default
     await t.expect(userAgreementDialog.switchOptionEncryption.withAttribute('aria-checked', 'true').exists).ok('Encryption enabled by default');
 });

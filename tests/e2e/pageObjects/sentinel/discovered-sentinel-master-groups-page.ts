@@ -8,7 +8,8 @@ export class DiscoverMasterGroupsPage {
     //*The following categories are ordered alphabetically (Alerts, Buttons, Checkboxes, etc.).
     //-------------------------------------------------------------------------------------------
     //BUTTONS
-    selectAllCheckbox = Selector('[data-test-subj=checkboxSelectAll]');
+    // todo: add data-testid to the checkbox and to the table on UI
+    selectAllCheckbox = Selector('[thead th:nth-child(1) button]');
     addPrimaryGroupButton = Selector('[data-testid=btn-add-primary-group]');
     masterGroupsTitle = Selector('//h1[text()="Auto-Discover Redis Sentinel Primary Groups"]');
 

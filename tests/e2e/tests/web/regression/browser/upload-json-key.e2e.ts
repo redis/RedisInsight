@@ -25,7 +25,6 @@ fixture `Upload json file`
     })
     .afterEach(async() => {
         await browserPage.Cli.sendCommandInCli(`DEL ${keyName}`);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 // https://redislabs.atlassian.net/browse/RI-4061
 test('Verify that user can insert a JSON from .json file on the form to add a JSON key', async t => {

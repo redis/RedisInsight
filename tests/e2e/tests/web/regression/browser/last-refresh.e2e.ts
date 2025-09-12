@@ -22,7 +22,6 @@ fixture `Last refresh`
     .afterEach(async() => {
         // Clear and delete database
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that user can see my timer updated when I refresh the list of Keys of the list of values', async t => {
     keyName = Common.generateWord(10);
@@ -41,6 +40,7 @@ test('Verify that user can see my timer updated when I refresh the list of Keys 
     await t.expect(browserPage.tooltip.innerText).contains('Last Refresh\n1 min', 'tooltip text not correct');
     // Click on Refresh and check last refresh
     await t.click(browserPage.refreshKeyButton);
+    await t.hover(browserPage.keyDetailsHeader);
     await t.hover(browserPage.refreshKeyButton);
     // Verify that user can see the date and time of the last update of my Key values in the tooltip
     // Verify that user can see my last refresh updated each time I hover over the Refresh icon

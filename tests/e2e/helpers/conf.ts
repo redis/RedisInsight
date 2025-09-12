@@ -16,10 +16,10 @@ export const samlUserPassword = process.env.E2E_SSO_PASSWORD || '';
 export const workingDirectory = process.env.RI_APP_FOLDER_ABSOLUTE_PATH
     || (joinPath(os.homedir(), process.env.RI_APP_FOLDER_NAME || '.redis-insight'));
 export const fileDownloadPath = joinPath(os.homedir(), 'Downloads');
-const uniqueId = chance.string({ length: 10 });
+export const uniqueId = chance.word({ length: 10 });
 
 export const ossStandaloneConfig = {
-    host: process.env.OSS_STANDALONE_HOST || 'oss-standalone-v8',
+    host: process.env.OSS_STANDALONE_HOST || 'oss-standalone',
     port: process.env.OSS_STANDALONE_PORT || '6379',
     databaseName: `${process.env.OSS_STANDALONE_DATABASE_NAME || 'test_standalone'}-${uniqueId}`,
     databaseUsername: process.env.OSS_STANDALONE_USERNAME,
@@ -48,22 +48,6 @@ export const ossStandaloneV7Config = {
     databaseName: `${process.env.OSS_STANDALONE_V7_DATABASE_NAME || 'test_standalone-v7'}-${uniqueId}`,
     databaseUsername: process.env.OSS_STANDALONE_V7_USERNAME,
     databasePassword: process.env.OSS_STANDALONE_V7_PASSWORD
-};
-
-export const ossStandaloneV6Config = {
-    host: process.env.OSS_STANDALONE_V8_HOST || 'oss-standalone',
-    port: process.env.OSS_STANDALONE_V8_PORT || '6379',
-    databaseName: `${process.env.OSS_STANDALONE_V8_DATABASE_NAME || 'test_standalone-v6'}-${uniqueId}`,
-    databaseUsername: process.env.OSS_STANDALONE_V8_USERNAME,
-    databasePassword: process.env.OSS_STANDALONE_V8_PASSWORD
-};
-
-export const ossStandaloneRedisearch = {
-    host: process.env.OSS_STANDALONE_REDISEARCH_HOST || 'oss-standalone-redisearch',
-    port: process.env.OSS_STANDALONE_REDISEARCH_PORT || '6379',
-    databaseName: `${process.env.OSS_STANDALONE_REDISEARCH_DATABASE_NAME || 'test_standalone-redisearch'}-${uniqueId}`,
-    databaseUsername: process.env.OSS_STANDALONE_REDISEARCH_USERNAME,
-    databasePassword: process.env.OSS_STANDALONE_REDISEARCH_PASSWORD
 };
 
 export const ossClusterConfig = {
@@ -166,6 +150,7 @@ export const ossStandaloneTlsConfig = {
     }
 };
 
+// todo: investigate if we need this. EOL
 export const ossStandaloneRedisGears = {
     host: process.env.OSS_STANDALONE_REDISGEARS_HOST || 'oss-standalone-redisgears-2-0',
     port: process.env.OSS_STANDALONE_REDISGEARS_PORT || '6379',

@@ -4,7 +4,7 @@ import { BrowserPage, MyRedisDatabasePage } from '../../../../pageObjects';
 import {
     commonUrl,
     ossStandaloneConfig,
-    ossStandaloneV6Config,
+    ossStandaloneConfigEmpty,
 } from '../../../../helpers/conf';
 import { DatabaseAPIRequests } from '../../../../helpers/api/api-database';
 
@@ -21,7 +21,7 @@ fixture `Redis Stack`
     .beforeEach(async() => {
         // Add new databases using API
         await databaseHelper.acceptLicenseTerms();
-        await databaseAPIRequests.addNewStandaloneDatabaseApi(ossStandaloneV6Config);
+        await databaseAPIRequests.addNewStandaloneDatabaseApi(ossStandaloneConfigEmpty);
         // Reload Page
         await browserPage.reloadPage();
     })

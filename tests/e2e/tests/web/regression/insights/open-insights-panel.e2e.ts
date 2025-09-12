@@ -48,7 +48,7 @@ test
 
         await t.click(browserPage.NavigationPanel.myRedisDBButton);
         await myRedisDatabasePage.clickOnDBByName(ossStandaloneV5Config.databaseName);
-        await t.click(browserPage.NavigationPanel.workbenchButton);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
         await workbenchPage.sendCommandInWorkbench('TS.');
 
         await t.click(browserPage.NavigationPanel.myRedisDBButton);
