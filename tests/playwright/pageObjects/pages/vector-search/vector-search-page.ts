@@ -24,6 +24,12 @@ export class VectorSearchPage extends BasePage {
     public readonly rqeNotAvailableCard: Locator
     public readonly createRedisCloudDatabaseButton: Locator
 
+    // ONBOARDING
+    public readonly onboardingContainer: Locator
+    public readonly onboardingDismissButton: Locator
+    public readonly onboardingGetStartedButton: Locator
+    public readonly onboardingSkipButton: Locator
+
     // EDITOR
     public readonly editorContainer: Locator
     public readonly editorViewLine: Locator
@@ -93,6 +99,24 @@ export class VectorSearchPage extends BasePage {
             this.rqeNotAvailableCard.getByRole('button', {
                 name: 'Get Started For Free',
             })
+
+        // ONBOARDING
+        this.onboardingContainer = page.getByTestId('vector-search-onboarding')
+        this.onboardingDismissButton = this.onboardingContainer.getByTestId(
+            'vector-search-onboarding--dismiss-button',
+        )
+        this.onboardingGetStartedButton = this.onboardingContainer.getByRole(
+            'button',
+            {
+                name: 'Explore vector search',
+            },
+        )
+        this.onboardingSkipButton = this.onboardingContainer.getByRole(
+            'button',
+            {
+                name: 'Skip for now',
+            },
+        )
 
         // EDITOR
         this.editorContainer = page.getByTestId('vector-search-query-editor')
@@ -180,7 +204,12 @@ export class VectorSearchPage extends BasePage {
         }, forceOnboarding)
 
         await this.searchTab.getByRole('paragraph').click()
-        await this.waitForLocatorVisible(this.vectorSearchPage)
+
+        if (forceOnboarding) {
+            await this.waitForLocatorVisible(this.onboardingContainer)
+        } else {
+            await this.waitForLocatorVisible(this.vectorSearchPage)
+        }
     }
 
     async navigateToCreateIndexPage(): Promise<void> {
