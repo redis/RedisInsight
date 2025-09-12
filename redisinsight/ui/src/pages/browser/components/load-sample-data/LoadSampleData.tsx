@@ -17,30 +17,12 @@ import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from './styles.module.scss'
-import successMessages from 'uiSrc/components/notifications/success-messages'
-import {addMessageNotification} from 'uiSrc/slices/app/notifications'
 
 export interface Props {
   anchorClassName?: string
   onSuccess?: () => void
 }
 
-const ddd = {
-  "id": "empty",
-  "databaseId": "fb63d5dc-4bb9-4e8a-91c8-2fd509b4bd6a",
-  "type": "upload",
-  "summary": {
-    "processed": 234,
-    "succeed": 234,
-    "failed": 0,
-    "errors": [],
-    "keys": []
-  },
-  "progress": null,
-  "filter": null,
-  "status": "completed",
-  "duration": 14
-}
 const LoadSampleData = (props: Props) => {
   const { anchorClassName, onSuccess } = props
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false)
@@ -49,7 +31,6 @@ const LoadSampleData = (props: Props) => {
   const { loading } = useSelector(bulkActionsSelector)
 
   const dispatch = useDispatch()
-  dispatch(addMessageNotification(successMessages.UPLOAD_DATA_BULK(ddd as any)))
 
   const handleSampleData = () => {
     setIsConfirmationOpen(false)
