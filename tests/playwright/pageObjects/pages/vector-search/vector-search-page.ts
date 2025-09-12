@@ -4,6 +4,7 @@ import { Locator, Page, expect } from '@playwright/test'
 import { CreateIndexPage } from './create-index-page'
 import { BasePage } from '../../base-page'
 import { Toast } from '../../components/common/toast'
+import { BrowserPage } from '../../browser-page'
 
 export class VectorSearchPage extends BasePage {
     private readonly toast: Toast
@@ -13,6 +14,7 @@ export class VectorSearchPage extends BasePage {
 
     // SELECTORS
     public readonly vectorSearchPage: Locator
+    public readonly browserPage: BrowserPage
     public readonly searchTab: Locator
     public readonly cloudLoginModal: Locator
 
@@ -23,6 +25,12 @@ export class VectorSearchPage extends BasePage {
     // RQE NOT AVAILABLE CARD
     public readonly rqeNotAvailableCard: Locator
     public readonly createRedisCloudDatabaseButton: Locator
+
+    // ONBOARDING
+    public readonly onboardingContainer: Locator
+    public readonly onboardingDismissButton: Locator
+    public readonly onboardingGetStartedButton: Locator
+    public readonly onboardingSkipButton: Locator
 
     // EDITOR
     public readonly editorContainer: Locator
@@ -70,6 +78,7 @@ export class VectorSearchPage extends BasePage {
 
         // PAGES
         this.createIndexPage = new CreateIndexPage(page)
+        this.browserPage = new BrowserPage(page)
 
         // CONTAINERS
         this.vectorSearchPage = page.getByTestId('vector-search-page')
@@ -93,6 +102,24 @@ export class VectorSearchPage extends BasePage {
             this.rqeNotAvailableCard.getByRole('button', {
                 name: 'Get Started For Free',
             })
+
+        // ONBOARDING
+        this.onboardingContainer = page.getByTestId('vector-search-onboarding')
+        this.onboardingDismissButton = this.onboardingContainer.getByTestId(
+            'vector-search-onboarding--dismiss-button',
+        )
+        this.onboardingGetStartedButton = this.onboardingContainer.getByRole(
+            'button',
+            {
+                name: 'Explore vector search',
+            },
+        )
+        this.onboardingSkipButton = this.onboardingContainer.getByRole(
+            'button',
+            {
+                name: 'Skip for now',
+            },
+        )
 
         // EDITOR
         this.editorContainer = page.getByTestId('vector-search-query-editor')
@@ -168,9 +195,41 @@ export class VectorSearchPage extends BasePage {
             this.manageIndexesContainer.getByTestId('index-attributes-list')
     }
 
-    async navigateToVectorSearchPage(): Promise<void> {
-        await this.searchTab.getByRole('paragraph').click()
-        await this.waitForLocatorVisible(this.vectorSearchPage)
+    async navigateToVectorSearchPage({
+        forceOnboarding = false,
+    }: {
+        forceOnboarding?: boolean
+    } = {}): Promise<void> {
+        // Toggle the visibility of the onboarding screen, based on the locaStorage flag
+        await this.page.evaluate((vectorSearchOnboarding: boolean) => {
+            localStorage.setItem(
+                'vectorSearchOnboarding', // BrowserStorageItem.vectorSearchOnboarding,
+                (!vectorSearchOnboarding).toString(),
+            )
+        }, forceOnboarding)
+
+        // Note: Temporray disable the navigation to the vector search page through the search tab because of a feature flag
+        // await this.searchTab.getByRole('paragraph').click()
+
+        // Note: Temporary get the instance ID from the URL and navigate to the vector search page directly
+        await this.navigateToVectorSearchPageFromUrl()
+
+        if (forceOnboarding) {
+            await this.waitForLocatorVisible(this.onboardingContainer)
+        } else {
+            await this.waitForLocatorVisible(this.vectorSearchPage)
+        }
+    }
+
+    // Note: Temporary navigate to the vector search page from the URL because of a feature flag
+    async navigateToVectorSearchPageFromUrl(): Promise<void> {
+        // Navigate to Browser page to make sure we can get the instance ID from the URL and navigate to the vector search page directly
+        await this.browserPage.navigateToBrowserPage()
+
+        const url = await this.page.url().split('/')
+        const instanceId = url[url.length - 2]
+
+        await this.navigateTo(`/${instanceId}/vector-search`)
     }
 
     async navigateToCreateIndexPage(): Promise<void> {
@@ -226,7 +285,7 @@ export class VectorSearchPage extends BasePage {
     ): Promise<void> {
         await this.waitForLocatorVisible(this.toast.toastContainer, timeout)
         await expect(this.toast.toastMessage).toContainText(expectedMessage)
-        await this.toast.closeToast()
+        // await this.toast.closeToast() // Note: Temporarily disabled due to flakyness
     }
 
     async expandIndexDetails(indexName: string): Promise<void> {

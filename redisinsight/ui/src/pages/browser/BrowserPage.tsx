@@ -296,7 +296,10 @@ const BrowserPage = () => {
     (arePanelsCollapsed && isRightPanelOpen)
 
   return (
-    <div className={`browserPage ${styles.container}`}>
+    <div
+      className={`browserPage ${styles.container}`}
+      data-testid="browser-page"
+    >
       {arePanelsCollapsed && isRightPanelOpen && !isBrowserFullScreen && (
         <EmptyButton
           icon={ArrowLeftIcon}

@@ -13,6 +13,35 @@ export class APIIndexRequests {
     ) {}
 
     /**
+     * Gets all RediSearch indexes using the API (FT._LIST equivalent)
+     * @param databaseParameters Database connection parameters
+     * @returns Array of index names (as strings)
+     */
+    async getAllRedisearchIndexesApi(
+        databaseParameters: AddNewDatabaseParameters,
+    ): Promise<string[]> {
+        const databaseId = await this.databaseAPIRequests.getDatabaseIdByName(
+            databaseParameters.databaseName,
+        )
+        const response = await this.apiClient.get(
+            `/databases/${databaseId}/redisearch`,
+        )
+
+        if (response.status !== 200) {
+            throw new Error('Failed to get RediSearch indexes')
+        }
+
+        // The response should have a property 'indexes' which is an array
+        return (
+            response.data.indexes?.map((idx: any) =>
+                typeof idx === 'string'
+                    ? idx
+                    : Buffer.from(idx.data).toString('utf8'),
+            ) || []
+        )
+    }
+
+    /**
      * Creates a new RediSearch index using the FT.CREATE command
      * @param indexParameters Parameters for creating the index
      * @param databaseParameters Database connection parameters
@@ -89,6 +118,31 @@ export class APIIndexRequests {
                 return
             }
             throw error
+        }
+    }
+
+    /**
+     * Deletes all RediSearch indexes using the API
+     * @param databaseParameters Database connection parameters
+     * @param deleteDocuments Whether to delete associated documents (DD flag)
+     */
+    async deleteAllRedisearchIndexesApi(
+        databaseParameters: AddNewDatabaseParameters,
+        deleteDocuments: boolean = false,
+    ): Promise<void> {
+        const indexes =
+            await this.getAllRedisearchIndexesApi(databaseParameters)
+
+        for (const indexName of indexes) {
+            try {
+                await this.deleteRedisearchIndexApi(
+                    indexName,
+                    databaseParameters,
+                    deleteDocuments,
+                )
+            } catch (e) {
+                // Ignore errors for individual indexes, in case of cleanup
+            }
         }
     }
 }

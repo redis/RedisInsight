@@ -48,7 +48,12 @@ test.describe('Vector Search - Query', () => {
         )
 
         await navigateToStandaloneInstance(page, ossStandaloneV5Config)
-        await searchPage.searchTab.click()
+
+        // Note: Temporray disable the navigation to the vector search page through the search tab because of a feature flag
+        // await searchPage.searchTab.click()
+
+        // Note: Temporary get the instance ID from the URL and navigate to the vector search page directly
+        await searchPage.navigateToVectorSearchPageFromUrl()
 
         // Verify that Vector Search page is opened and the start wizard button is visible
         await searchPage.waitForLocatorVisible(searchPage.rqeNotAvailableCard)

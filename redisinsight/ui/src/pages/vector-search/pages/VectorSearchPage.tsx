@@ -3,22 +3,34 @@ import { useLocation, useParams } from 'react-router-dom'
 
 import { TelemetryPageView } from 'uiSrc/telemetry'
 import { usePageViewTelemetry } from 'uiSrc/telemetry/usePageViewTelemetry'
-
-import { VectorSearchQuery } from './../query/VectorSearchQuery'
-import { VectorSearchPageWrapper } from './../styles'
 import { Loader } from 'uiSrc/components/base/display'
-import useRedisInstanceCompatibility from '../create-index/hooks/useRedisInstanceCompatibility'
 import { Spacer } from 'uiSrc/components/base/layout'
+
+import { VectorSearchPageWrapper } from './../styles'
+import { VectorSearchQuery } from './../query/VectorSearchQuery'
+import useRedisInstanceCompatibility from '../create-index/hooks/useRedisInstanceCompatibility'
 import { RqeNotAvailableCard } from '../components/rqe-not-available/RqeNotAvailableCard'
+import { VectorSearchOnboarding } from '../components/onboarding/VectorSearchOnboarding'
+import {
+  useVectorSearchOnboarding,
+  VectorSearchOnboardingProvider,
+} from '../context/VectorSearchOnboardingContext'
 
 type Params = {
   instanceId: string
 }
 
-const VectorSearchPage = () => {
+const VectorSearchPage = () => (
+  <VectorSearchOnboardingProvider>
+    <VectorSearch />
+  </VectorSearchOnboardingProvider>
+)
+
+export const VectorSearch = () => {
   const { instanceId } = useParams<Params>()
   const { search } = useLocation()
   const { hasRedisearch, loading } = useRedisInstanceCompatibility()
+  const { showOnboarding } = useVectorSearchOnboarding()
 
   const defaultSavedQueriesIndex =
     new URLSearchParams(search).get('defaultSavedQueriesIndex') || undefined
@@ -49,6 +61,14 @@ const VectorSearchPage = () => {
         data-testid="vector-search-page--rqe-not-available"
       >
         <RqeNotAvailableCard />
+      </VectorSearchPageWrapper>
+    )
+  }
+
+  if (showOnboarding) {
+    return (
+      <VectorSearchPageWrapper>
+        <VectorSearchOnboarding />
       </VectorSearchPageWrapper>
     )
   }

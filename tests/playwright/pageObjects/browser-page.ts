@@ -9,7 +9,10 @@ import { AddElementInList } from '../helpers/constants'
 
 export class BrowserPage extends BasePage {
     private toast: Toast
+
     // CSS Selectors
+    public readonly browserPage: Locator
+    public readonly browserTab: Locator
     public readonly cssSelectorGrid: Locator
     public readonly cssSelectorRows: Locator
     public readonly cssSelectorKey: Locator
@@ -274,6 +277,8 @@ export class BrowserPage extends BasePage {
         this.toast = new Toast(page)
 
         // CSS Selectors
+        this.browserTab = page.getByRole('tab', { name: 'Browse' })
+        this.browserPage = page.getByTestId('browser-page')
         this.cssSelectorGrid = page.locator('[aria-label="grid"]')
         this.cssSelectorRows = page.locator('[aria-label="row"]')
         this.cssSelectorKey = page.locator('[data-testid^="key-"]')
@@ -624,6 +629,11 @@ export class BrowserPage extends BasePage {
             page.getByTestId(`size-${keyName}`)
         this.getKeyTTl = (keyName: string): Locator =>
             page.getByTestId(`ttl-${keyName}`)
+    }
+
+    async navigateToBrowserPage(): Promise<void> {
+        await this.browserTab.getByRole('paragraph').click()
+        await this.waitForLocatorVisible(this.browserPage)
     }
 
     async commonAddNewKey(keyName: string, TTL?: string): Promise<void> {
