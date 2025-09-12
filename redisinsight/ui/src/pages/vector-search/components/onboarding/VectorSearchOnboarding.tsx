@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { TelemetryEvent } from 'uiSrc/telemetry'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import useVectorSearchOnboarding from '../../create-index/hooks/useVectorSearchOnboarding'
 import { useTelemetryMountEvent } from '../../hooks/useTelemetryMountEvent'
 import {
   Content,
@@ -14,14 +13,16 @@ import Header from './components/Header'
 import Actions from './components/Actions'
 import Footer from './components/Footer'
 import Stepper from './components/Stepper'
+import { useVectorSearchOnboarding } from '../../context/VectorSearchOnboardingContext'
 
 export const VectorSearchOnboarding = () => {
   useTelemetryMountEvent(TelemetryEvent.VECTOR_SEARCH_INITIAL_MESSAGE_DISPLAYED)
 
-  const { markOnboardingAsSeen } = useVectorSearchOnboarding()
+  const { setOnboardingSeen, setOnboardingSeenSilent } =
+    useVectorSearchOnboarding()
 
   useEffect(() => {
-    markOnboardingAsSeen()
+    setOnboardingSeenSilent()
   }, [])
 
   return (
@@ -32,7 +33,7 @@ export const VectorSearchOnboarding = () => {
       <DismissAction>
         <IconButton
           icon="CancelIcon"
-          onClick={markOnboardingAsSeen}
+          onClick={setOnboardingSeen}
           data-testid="vector-search-onboarding--dismiss-button"
         />
       </DismissAction>

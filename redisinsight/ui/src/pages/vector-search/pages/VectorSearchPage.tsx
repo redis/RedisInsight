@@ -9,15 +9,24 @@ import { Spacer } from 'uiSrc/components/base/layout'
 import { VectorSearchPageWrapper } from './../styles'
 import { VectorSearchQuery } from './../query/VectorSearchQuery'
 import useRedisInstanceCompatibility from '../create-index/hooks/useRedisInstanceCompatibility'
-import useVectorSearchOnboarding from '../create-index/hooks/useVectorSearchOnboarding'
 import { RqeNotAvailableCard } from '../components/rqe-not-available/RqeNotAvailableCard'
 import { VectorSearchOnboarding } from '../components/onboarding/VectorSearchOnboarding'
+import {
+  useVectorSearchOnboarding,
+  VectorSearchOnboardingProvider,
+} from '../context/VectorSearchOnboardingContext'
 
 type Params = {
   instanceId: string
 }
 
-const VectorSearchPage = () => {
+const VectorSearchPage = () => (
+  <VectorSearchOnboardingProvider>
+    <VectorSearch />
+  </VectorSearchOnboardingProvider>
+)
+
+export const VectorSearch = () => {
   const { instanceId } = useParams<Params>()
   const { search } = useLocation()
   const { hasRedisearch, loading } = useRedisInstanceCompatibility()
