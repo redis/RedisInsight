@@ -32,9 +32,8 @@ const KeyRowName = (props: Props) => {
   return (
     <div className={styles.keyName}>
       <Text
-        color="subdued"
-        size="s"
-        style={{ maxWidth: '100%', display: 'flex' }}
+        color="secondary"
+        style={{ maxWidth: '100%', display: 'flex', paddingRight: 16 }}
       >
         <div
           style={{ display: 'flex' }}

@@ -38,7 +38,7 @@ const KeyRowTTL = (props: Props) => {
         className={cx(styles.keyTTL, 'moveOnHoverKey', {
           hide: deletePopoverId === rowId,
         })}
-        color="subdued"
+        color="secondary"
         data-testid={`ttl-${nameString}`}
       >
         No limit
@@ -50,7 +50,7 @@ const KeyRowTTL = (props: Props) => {
       className={cx(styles.keyTTL, 'moveOnHoverKey', {
         hide: deletePopoverId === rowId,
       })}
-      color="subdued"
+      color="secondary"
       size="s"
     >
       <div

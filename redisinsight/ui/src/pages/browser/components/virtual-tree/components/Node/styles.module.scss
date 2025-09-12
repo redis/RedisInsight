@@ -65,7 +65,7 @@
   border-left-color: var(--euiColorPrimary) !important;
   background-color: var(--browserComponentActive) !important;
 
-  .nodeContent {
+  .nodeContent * {
     color: var(--euiColorFullShade) !important;
   }
 }
