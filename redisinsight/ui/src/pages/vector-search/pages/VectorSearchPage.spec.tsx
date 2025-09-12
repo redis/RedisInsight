@@ -9,9 +9,12 @@ import {
 } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { redisearchListSelector } from 'uiSrc/slices/browser/redisearch'
-import VectorSearchPage from './VectorSearchPage'
+import { VectorSearch } from './VectorSearchPage'
 import useRedisInstanceCompatibility from '../create-index/hooks/useRedisInstanceCompatibility'
-import useVectorSearchOnboarding from '../create-index/hooks/useVectorSearchOnboarding'
+import {
+  VectorSearchOnboardingContext,
+  VectorSearchOnboardingContextType,
+} from '../context/VectorSearchOnboardingContext'
 
 // Mock the telemetry module, so we don't send actual telemetry data during tests
 jest.mock('uiSrc/telemetry', () => ({
@@ -23,14 +26,26 @@ jest.mock('../create-index/hooks/useRedisInstanceCompatibility', () =>
   jest.fn(),
 )
 
-jest.mock('../create-index/hooks/useVectorSearchOnboarding', () => jest.fn())
+const renderVectorSearchPageComponent = (
+  contextValue?: Partial<VectorSearchOnboardingContextType>,
+) => {
+  const defaultContextValue: VectorSearchOnboardingContextType = {
+    showOnboarding: false,
+    setOnboardingSeen: jest.fn(),
+    setOnboardingSeenSilent: jest.fn(),
+    ...contextValue,
+  }
 
-const renderVectorSearchPageComponent = () => render(<VectorSearchPage />)
+  return render(
+    <VectorSearchOnboardingContext.Provider value={defaultContextValue}>
+      <VectorSearch />
+    </VectorSearchOnboardingContext.Provider>,
+  )
+}
 
 describe('VectorSearchPage', () => {
   const mockUseRedisInstanceCompatibility =
     useRedisInstanceCompatibility as jest.Mock
-  const mockUseVectorSearchOnboarding = useVectorSearchOnboarding as jest.Mock
 
   beforeEach(() => {
     cleanup()
@@ -39,11 +54,6 @@ describe('VectorSearchPage', () => {
       loading: false,
       hasRedisearch: true,
       hasSupportedVersion: true,
-    })
-
-    mockUseVectorSearchOnboarding.mockReturnValue({
-      showOnboarding: false,
-      markOnboardingAsSeen: jest.fn(),
     })
   })
 
@@ -87,12 +97,7 @@ describe('VectorSearchPage', () => {
   })
 
   it('should render onboarding screen when opening the page for the first time', () => {
-    mockUseVectorSearchOnboarding.mockReturnValue({
-      showOnboarding: true,
-      markOnboardingAsSeen: jest.fn(),
-    })
-
-    renderVectorSearchPageComponent()
+    renderVectorSearchPageComponent({ showOnboarding: true })
 
     const onboarding = screen.getByTestId('vector-search-onboarding')
     expect(onboarding).toBeInTheDocument()
