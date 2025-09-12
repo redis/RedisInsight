@@ -35,6 +35,19 @@ describe('VectorSearchOnboarding', () => {
     const container = screen.getByTestId('vector-search-onboarding')
     expect(container).toBeInTheDocument()
 
+    // Verify that the content sections are rendered correctly
+    const header = screen.getByTestId('vector-search-onboarding--header')
+    const features = screen.getByTestId('vector-search-onboarding--features')
+    const stepper = screen.getByTestId('vector-search-onboarding--stepper')
+    const actions = screen.getByTestId('vector-search-onboarding--actions')
+    const footer = screen.getByTestId('vector-search-onboarding--footer')
+
+    expect(header).toBeInTheDocument()
+    expect(features).toBeInTheDocument()
+    expect(stepper).toBeInTheDocument()
+    expect(actions).toBeInTheDocument()
+    expect(footer).toBeInTheDocument()
+
     // Verify the onboarding was marked as seen
     expect(mockMarkOnboardingAsSeen).toHaveBeenCalledTimes(1)
 
