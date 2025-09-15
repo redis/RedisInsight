@@ -57,31 +57,29 @@ const KeysSummary = (props: Props) => {
           <Text size="xs" component="div">
             {!!scanned && (
               <>
-                <ColorText>
-                  <b>
-                    {'Results: '}
-                    <span data-testid="keys-number-of-results">
-                      {numberWithSpaces(resultsLength)}
-                    </span>
-                    {'. '}
-                  </b>
-                  <ColorText color="subdued">
-                    {'Scanned '}
-                    <span data-testid="keys-number-of-scanned">
-                      {notAccurateScanned}
-                      {numberWithSpaces(scannedDisplay)}
-                    </span>
-                    {' / '}
-                    <span data-testid="keys-total">
-                      {nullableNumberWithSpaces(totalItemsCount)}
-                    </span>
-                    <span
-                      className={cx([
-                        styles.loading,
-                        { [styles.loadingShow]: loading },
-                      ])}
-                    />
-                  </ColorText>
+                <ColorText variant="semiBold">
+                  {'Results: '}
+                  <span data-testid="keys-number-of-results">
+                    {numberWithSpaces(resultsLength)}
+                  </span>
+                  {'. '}
+                </ColorText>
+                <ColorText color="secondary">
+                  {'Scanned '}
+                  <span data-testid="keys-number-of-scanned">
+                    {notAccurateScanned}
+                    {numberWithSpaces(scannedDisplay)}
+                  </span>
+                  {' / '}
+                  <span data-testid="keys-total">
+                    {nullableNumberWithSpaces(totalItemsCount)}
+                  </span>
+                  <span
+                    className={cx([
+                      styles.loading,
+                      { [styles.loadingShow]: loading },
+                    ])}
+                  />
                 </ColorText>
                 {showScanMore && (
                   <ScanMore
@@ -99,11 +97,9 @@ const KeysSummary = (props: Props) => {
             )}
 
             {!scanned && (
-              <Text size="xs">
-                <b>
-                  {'Total: '}
-                  {nullableNumberWithSpaces(totalItemsCount)}
-                </b>
+              <Text size="s" variant="semiBold">
+                {'Total: '}
+                {nullableNumberWithSpaces(totalItemsCount)}
               </Text>
             )}
           </Text>
