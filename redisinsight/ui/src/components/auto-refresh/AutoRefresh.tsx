@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
-import { ChevronDownIcon, RefreshIcon } from 'uiSrc/components/base/icons'
+import { ChevronDownIcon, ResetIcon } from 'uiSrc/components/base/icons'
 import {
   errorValidateRefreshRateNumber,
   MIN_REFRESH_RATE,
@@ -233,7 +233,7 @@ const AutoRefresh = ({
       >
         <IconButton
           size={iconSize}
-          icon={RefreshIcon}
+          icon={ResetIcon}
           disabled={loading || disabled}
           onClick={handleRefreshClick}
           onMouseEnter={updateLastRefresh}
@@ -279,7 +279,6 @@ const AutoRefresh = ({
           <div className={styles.inputLabel}>Refresh rate:</div>
           {!editingRate && (
             <ColorText
-              color="subdued"
               className={styles.refreshRateText}
               onClick={() => setEditingRate(true)}
               data-testid={getDataTestid('refresh-rate')}
@@ -307,7 +306,7 @@ const AutoRefresh = ({
                   onApply={(value) => handleApplyAutoRefreshRate(value)}
                 />
               </div>
-              <ColorText color="subdued">{' s'}</ColorText>
+              <ColorText>{' s'}</ColorText>
             </>
           )}
         </div>

@@ -89,13 +89,11 @@
 }
 
 .popover-without-top-tail {
-  margin-top: -8px;
+  margin-top: -6px;
 
-  .euiPopover__panelArrow {
-    &::before,
-    &::after {
-      content: none !important;
-    }
+  // removes top arrow (it is always first child)
+  & > span:nth-child(1) * {
+    display: none
   }
 }
 

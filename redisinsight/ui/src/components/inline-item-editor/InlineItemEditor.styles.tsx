@@ -68,7 +68,7 @@ export const ApplyButton = styled(IconButton).attrs({
   color: 'primary',
   'aria-label': 'Apply',
 })`
-  vertical-align: initial;
+  vertical-align: top;
   &:hover:not([class*='isDisabled']) {
     color: ${({ theme }: { theme: Theme }) =>
       theme.semantic.color.text.neutral500};
@@ -165,10 +165,12 @@ export const StyledTextInput = styled(TextInput)<{
   height: ${({ $height }) => $height || 'auto'};
   max-height: ${({ $height }) => $height || 'auto'};
   min-height: ${({ $height }) => $height || 'auto'};
+  padding: 0;
 
   // Target the actual input element inside
   input {
     width: 100%;
-    height: ${({ $height }) => $height || 'auto'};  
-  }  
+    height: ${({ $height }) => $height || 'auto'};
+    padding: 0 5px;
+  }
 `

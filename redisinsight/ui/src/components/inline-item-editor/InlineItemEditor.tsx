@@ -89,7 +89,6 @@ const InlineItemEditor = (props: Props) => {
     children,
     expandable,
     isLoading,
-    isInvalid,
     disableEmpty,
     disableByValidation,
     validation,
@@ -241,7 +240,6 @@ const InlineItemEditor = (props: Props) => {
                         value={value}
                         onChange={handleChangeValue}
                         loading={isLoading}
-                        valid={!isInvalid}
                         data-testid="inline-item-editor"
                         autoComplete={autoComplete}
                         ref={inputRef}
