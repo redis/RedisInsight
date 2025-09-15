@@ -56,7 +56,7 @@ export type VectorSearchCreateIndexProps = {
   initialStep?: number
 }
 
-const DisabledBannerText = () => (
+const DisabledDataEditingBannerText = () => (
   <Text component="div">
     Editing the index is not available for pre-set data. Click{' '}
     <Text variant="semiBold" component="span">
@@ -90,7 +90,7 @@ export const VectorSearchCreateIndex = ({
   const isFinalStep = step === stepContents.length - 1
   const isPresetData =
     createSearchIndexParameters.sampleDataType === SampleDataType.PRESET_DATA
-  const showDisabledBanner = isFinalStep && isPresetData
+  const showDisabledDataEditingBanner = isFinalStep && isPresetData
 
   const setParameters = (params: Partial<CreateSearchIndexParameters>) => {
     setCreateSearchIndexParameters((prev) => ({ ...prev, ...params }))
@@ -167,8 +167,9 @@ export const VectorSearchCreateIndex = ({
         )}
         <Row gap="m" grow={false} align="center">
           <Banner
-            show={showDisabledBanner}
-            message={<DisabledBannerText />}
+            data-testid="disabled-data-editing-banner"
+            show={showDisabledDataEditingBanner}
+            message={<DisabledDataEditingBannerText />}
             variant="notice"
           />
           <SecondaryButton onClick={onCancelClick}>Cancel</SecondaryButton>

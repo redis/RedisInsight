@@ -199,4 +199,18 @@ describe('VectorSearchCreateIndex', () => {
       })
     })
   })
+
+  it('should show disabled data editing banner when on final step with preset data', () => {
+    renderVectorSearchCreateIndexComponent({ initialStep: 2 })
+
+    const banner = screen.getByTestId('disabled-data-editing-banner')
+    expect(banner).toBeInTheDocument()
+  })
+
+  it('should not show disabled data editing banner when not on final step', () => {
+    renderVectorSearchCreateIndexComponent({ initialStep: 1 })
+
+    const banner = screen.queryByTestId('disabled-data-editing-banner')
+    expect(banner).not.toBeInTheDocument()
+  })
 })
