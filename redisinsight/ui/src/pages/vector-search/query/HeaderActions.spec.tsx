@@ -3,13 +3,6 @@ import { cleanup, render, screen, userEvent } from 'uiSrc/utils/test-utils'
 import { HeaderActions, HeaderActionsProps } from './HeaderActions'
 import useRedisInstanceCompatibility from '../create-index/hooks/useRedisInstanceCompatibility'
 
-// Workaround for @redis-ui/components Title component issue with react-children-utilities
-// TypeError: react_utils.childrenToString is not a function
-jest.mock('uiSrc/components/base/layout/drawer', () => ({
-  ...jest.requireActual('uiSrc/components/base/layout/drawer'),
-  DrawerHeader: jest.fn().mockReturnValue(null),
-}))
-
 // Mock the telemetry module, so we don't send actual telemetry data during tests
 jest.mock('uiSrc/telemetry', () => ({
   ...jest.requireActual('uiSrc/telemetry'),
