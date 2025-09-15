@@ -143,7 +143,7 @@ const KeyTreeSettings = ({ loading }: Props) => {
         anchorPosition="downLeft"
         isOpen={isPopoverOpen}
         anchorClassName={styles.anchorWrapper}
-        panelClassName={styles.popoverWrapper}
+        panelClassName={cx('popover-without-top-tail', styles.popoverWrapper)}
         closePopover={closePopover}
         button={button}
       >

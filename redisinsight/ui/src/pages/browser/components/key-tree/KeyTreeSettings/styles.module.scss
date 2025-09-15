@@ -1,20 +1,9 @@
 .container {
   margin-left: 8px;
-  margin-top: 1px;
 
   :global(.euiPopover),
   .anchorWrapper {
     height: 100%;
-  }
-}
-
-.anchorBtn {
-  width: 24px;
-  height: 100% !important;
-
-  svg {
-    width: 18px !important;
-    height: 18px !important;
   }
 }
 

@@ -3,9 +3,9 @@ import { isNull } from 'lodash'
 
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { RiTooltip } from 'uiSrc/components'
-import { Button } from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from './styles.module.scss'
+import { TextButton } from '@redis-ui/components'
+import { Text } from 'uiSrc/components/base/text'
 
 export interface Props {
   withAlert?: boolean
@@ -24,21 +24,18 @@ const WARNING_MESSAGE =
   'Scanning additional keys may decrease performance and memory available.'
 
 const ScanMore = ({
-  fill = true,
   withAlert = true,
   scanned = 0,
   totalItemsCount = 0,
   loading,
-  style,
   loadMoreItems,
   nextCursor,
 }: Props) => (
   <>
     {(scanned || isNull(totalItemsCount)) && nextCursor !== '0' && (
-      <Button
-        variant={fill ? 'primary' : 'secondary-ghost'}
-        size="s"
-        style={style ?? { marginLeft: 25, height: 26 }}
+      <TextButton
+        variant="primary-inline"
+        style={{ margin: '0 0 0 16px', lineHeight: 'inherit' }}
         disabled={loading}
         onClick={() =>
           loadMoreItems?.({
@@ -48,17 +45,18 @@ const ScanMore = ({
         }
         data-testid="scan-more"
       >
+        <Text size="s">Scan more</Text>
         {withAlert && (
           <RiTooltip
+            anchorClassName="scan-more-tooltip"
             content={WARNING_MESSAGE}
             position="top"
-            anchorClassName={styles.anchor}
+            style={{ height: 16 }}
           >
-            <RiIcon type="InfoIcon" />
+            <RiIcon size="m" type="InfoIcon" />
           </RiTooltip>
         )}
-        Scan more
-      </Button>
+      </TextButton>
     )}
   </>
 )

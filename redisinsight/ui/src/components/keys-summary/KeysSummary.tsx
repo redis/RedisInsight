@@ -12,6 +12,7 @@ import { KeyTreeSettings } from 'uiSrc/pages/browser/components/key-tree'
 
 import ScanMore from '../scan-more'
 import styles from './styles.module.scss'
+import {Row, FlexItem} from 'uiSrc/components/base/layout/flex'
 
 export interface Props {
   loading: boolean
@@ -53,63 +54,60 @@ const KeysSummary = (props: Props) => {
   return (
     <>
       {(!!totalItemsCount || isNull(totalItemsCount)) && (
-        <div className={styles.content} data-testid="keys-summary">
-          <Text size="xs" component="div">
-            {!!scanned && (
-              <>
-                <ColorText variant="semiBold">
-                  {'Results: '}
-                  <span data-testid="keys-number-of-results">
-                    {numberWithSpaces(resultsLength)}
-                  </span>
-                  {'. '}
-                </ColorText>
-                <ColorText color="secondary">
-                  {'Scanned '}
-                  <span data-testid="keys-number-of-scanned">
-                    {notAccurateScanned}
-                    {numberWithSpaces(scannedDisplay)}
-                  </span>
-                  {' / '}
-                  <span data-testid="keys-total">
-                    {nullableNumberWithSpaces(totalItemsCount)}
-                  </span>
-                  <span
-                    className={cx([
-                      styles.loading,
-                      { [styles.loadingShow]: loading },
-                    ])}
-                  />
-                </ColorText>
-                {showScanMore && (
-                  <ScanMore
-                    withAlert
-                    fill={false}
-                    style={scanMoreStyle}
-                    scanned={scanned}
-                    totalItemsCount={totalItemsCount}
-                    loading={loading}
-                    loadMoreItems={loadMoreItems}
-                    nextCursor={nextCursor}
-                  />
-                )}
-              </>
-            )}
-
-            {!scanned && (
-              <Text size="s" variant="semiBold">
-                {'Total: '}
-                {nullableNumberWithSpaces(totalItemsCount)}
-              </Text>
-            )}
-          </Text>
+        <Row align="center" gap="s" data-testid="keys-summary">
+          {!!scanned && (
+            <>
+              <ColorText size="s" variant="semiBold" component="span">
+                {'Results: '}
+                <span data-testid="keys-number-of-results">
+                  {numberWithSpaces(resultsLength)}
+                </span>
+                {'. '}
+              </ColorText>
+              <ColorText size="s" color="secondary" component="span">
+                {'Scanned '}
+                <span data-testid="keys-number-of-scanned">
+                  {notAccurateScanned}
+                  {numberWithSpaces(scannedDisplay)}
+                </span>
+                {' / '}
+                <span data-testid="keys-total">
+                  {nullableNumberWithSpaces(totalItemsCount)}
+                </span>
+                <span
+                  className={cx([
+                    styles.loading,
+                    { [styles.loadingShow]: loading },
+                  ])}
+                />
+              </ColorText>
+            </>
+          )}
+          {!scanned && (
+            <Text size="s" variant="semiBold" component="span">
+              {'Total: '}
+              {nullableNumberWithSpaces(totalItemsCount)}
+            </Text>
+          )}
           {viewType === KeyViewType.Tree && (
             <KeyTreeSettings loading={loading} />
           )}
-        </div>
+          {showScanMore && (
+            <ScanMore
+              withAlert
+              fill={false}
+              style={scanMoreStyle}
+              scanned={scanned}
+              totalItemsCount={totalItemsCount}
+              loading={loading}
+              loadMoreItems={loadMoreItems}
+              nextCursor={nextCursor}
+            />
+          )}
+        </Row>
       )}
       {loading && !totalItemsCount && !isNull(totalItemsCount) && (
-        <Text size="xs" data-testid="scanning-text">
+        <Text size="s" data-testid="scanning-text">
           Scanning...
         </Text>
       )}
