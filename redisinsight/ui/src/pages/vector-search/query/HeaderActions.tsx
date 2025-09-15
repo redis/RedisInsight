@@ -21,8 +21,10 @@ export const HeaderActions = ({
   return (
     <>
       <Row align="center">
-        {!loading && hasSupportedVersion && <StartWizardButton />}
-        {!loading && !hasSupportedVersion && <VectorSetNotAvaiallableBanner />}
+        {loading === false && hasSupportedVersion && <StartWizardButton />}
+        {loading === false && hasSupportedVersion === false && (
+          <VectorSetNotAvaiallableBanner />
+        )}
 
         <Row justify="end" data-testid="vector-search-header-actions" gap="m">
           <EmptyButton onClick={toggleSavedQueriesScreen}>
