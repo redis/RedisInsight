@@ -1,8 +1,15 @@
 import React from 'react'
 import * as reactRedux from 'react-redux'
-import { cleanup, render, screen } from 'uiSrc/utils/test-utils'
+import {
+  cleanup,
+  initialStateDefault,
+  mockStore,
+  render,
+  screen,
+} from 'uiSrc/utils/test-utils'
 import { TelemetryPageView } from 'uiSrc/telemetry/pageViews'
 import { sendPageViewTelemetry } from 'uiSrc/telemetry'
+import { RootState } from 'uiSrc/slices/store'
 import {
   INSTANCE_ID_MOCK,
   INSTANCES_MOCK,
@@ -36,10 +43,26 @@ const renderVectorSearchPageComponent = (
     ...contextValue,
   }
 
+  const testState: RootState = {
+    ...initialStateDefault,
+    connections: {
+      ...initialStateDefault.connections,
+      instances: {
+        ...initialStateDefault.connections.instances,
+        connectedInstance: {
+          ...initialStateDefault.connections.instances.connectedInstance,
+          ...INSTANCES_MOCK[0],
+        },
+      },
+    },
+  }
+  const store = mockStore(testState)
+
   return render(
     <VectorSearchOnboardingContext.Provider value={defaultContextValue}>
       <VectorSearch />
     </VectorSearchOnboardingContext.Provider>,
+    { store },
   )
 }
 
@@ -68,6 +91,11 @@ describe('VectorSearchPage', () => {
 
     const vectorSearchQuery = screen.getByTestId('vector-search-query')
     expect(vectorSearchQuery).toBeInTheDocument()
+
+    // Verify the title of the page
+    expect(document.title).toBe(
+      `${INSTANCES_MOCK[0].name} [db${INSTANCES_MOCK[0].db}] - Vector Search`,
+    )
   })
 
   it('should render loader while checking the database compatibility', () => {

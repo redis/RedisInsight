@@ -1,10 +1,13 @@
 import React from 'react'
 import { useLocation, useParams } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 import { TelemetryPageView } from 'uiSrc/telemetry'
 import { usePageViewTelemetry } from 'uiSrc/telemetry/usePageViewTelemetry'
 import { Loader } from 'uiSrc/components/base/display'
 import { Spacer } from 'uiSrc/components/base/layout'
+import { formatLongName, getDbIndex, setTitle } from 'uiSrc/utils'
+import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 
 import { VectorSearchPageWrapper } from './../styles'
 import { VectorSearchQuery } from './../query/VectorSearchQuery'
@@ -32,6 +35,10 @@ export const VectorSearch = () => {
   const { hasRedisearch, loading } = useRedisInstanceCompatibility()
   const { showOnboarding } = useVectorSearchOnboarding()
 
+  const { name: connectedInstanceName, db } = useSelector(
+    connectedInstanceSelector,
+  )
+
   const defaultSavedQueriesIndex =
     new URLSearchParams(search).get('defaultSavedQueriesIndex') || undefined
 
@@ -39,10 +46,9 @@ export const VectorSearch = () => {
     page: TelemetryPageView.VECTOR_SEARCH_PAGE,
   })
 
-  // TODO: Set title, once we know the name of the page
-  // setTitle(
-  //   `${formatLongName(connectedInstanceName, 33, 0, '...')} ${getDbIndex(db)} - Vector Search`,
-  // )
+  setTitle(
+    `${formatLongName(connectedInstanceName, 33, 0, '...')} ${getDbIndex(db)} - Vector Search`,
+  )
 
   if (loading) {
     return (
