@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
+import styled from 'styled-components'
 import { ChevronDownIcon, ResetIcon } from 'uiSrc/components/base/icons'
 import {
   errorValidateRefreshRateNumber,
@@ -7,6 +8,8 @@ import {
   Nullable,
   validateRefreshRateNumber,
 } from 'uiSrc/utils'
+import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Theme } from 'uiSrc/components/base/theme/types'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
 import { localStorageService } from 'uiSrc/services'
 import { BrowserStorageItem } from 'uiSrc/constants'
@@ -199,119 +202,157 @@ const AutoRefresh = ({
     onEnableAutoRefresh?.(value, refreshRate)
   }
 
+  const AutoRefreshInterval = styled('span')`
+    color: ${({ theme }: { theme: Theme }) =>
+      !disabled && enableAutoRefresh
+        ? theme.semantic.color.text.primary400
+        : 'inherit'};
+    opacity: ${disabled ? '0.5' : 'inherit'};
+  `
+
+  const AutoRefreshButton = styled(IconButton)`
+    color: ${({ theme }: { theme: Theme }) =>
+      !disabled && enableAutoRefresh
+        ? theme.semantic.color.text.primary400
+        : 'inherit'};
+  `
+
+  const AutoRefreshConfigButton = styled(IconButton)`
+    svg {
+      width: 10px;
+      height: 10px;
+    }
+    background-color: ${({ theme }: { theme: Theme }) =>
+      isPopoverOpen ? theme.color.gray100 : 'transparent'};
+  }
+`
+
   return (
-    <div
-      className={cx(styles.container, containerClassName, {
+    <Row
+      align="center"
+      gap="m"
+      className={cx(containerClassName, {
         [styles.enable]: !disabled && enableAutoRefresh,
       })}
       data-testid={getDataTestid('auto-refresh-container')}
     >
-      <ColorText className={styles.summary}>
-        {displayText && (
-          <span data-testid={getDataTestid('refresh-message-label')}>
-            {enableAutoRefresh ? 'Auto refresh:' : 'Last refresh:'}
-          </span>
-        )}
-        {displayLastRefresh && (
-          <span
-            className={cx('refresh-message-time', styles.time, {
-              [styles.disabled]: disabled,
-            })}
-            data-testid={getDataTestid('refresh-message')}
-          >
-            {` ${enableAutoRefresh ? refreshRateMessage : refreshMessage}`}
-          </span>
-        )}
-      </ColorText>
-
-      <RiTooltip
-        title={!disabled && 'Last Refresh'}
-        className={styles.tooltip}
-        position="top"
-        content={disabled ? disabledRefreshButtonMessage : refreshMessage}
-        data-testid={getDataTestid('refresh-tooltip')}
-      >
-        <IconButton
-          size={iconSize}
-          icon={ResetIcon}
-          disabled={loading || disabled}
-          onClick={handleRefreshClick}
-          onMouseEnter={updateLastRefresh}
-          className={cx('auto-refresh-btn', styles.btn, {
-            [styles.rolling]: !disabled && enableAutoRefresh,
-          })}
-          aria-labelledby={getDataTestid('refresh-btn')?.replaceAll?.('-', ' ')}
-          data-testid={getDataTestid('refresh-btn')}
-        />
-      </RiTooltip>
-
-      <RiPopover
-        ownFocus={false}
-        anchorPosition="downRight"
-        isOpen={isPopoverOpen}
-        anchorClassName={styles.anchorWrapper}
-        panelClassName={cx('popover-without-top-tail', styles.popoverWrapper, {
-          [styles.popoverWrapperEditing]: editingRate,
-        })}
-        closePopover={closePopover}
-        button={
-          <IconButton
-            disabled={disabled}
-            size="S"
-            icon={ChevronDownIcon}
-            aria-label="Auto-refresh config popover"
-            className={cx(styles.anchorBtn, {
-              [styles.anchorBtnOpen]: isPopoverOpen,
-            })}
-            onClick={onButtonClick}
-            data-testid={getDataTestid('auto-refresh-config-btn')}
-          />
-        }
-      >
-        <SwitchInput
-          title="Auto Refresh"
-          checked={enableAutoRefresh}
-          onCheckedChange={onChangeEnableAutoRefresh}
-          className={styles.switchOption}
-          data-testid={getDataTestid('auto-refresh-switch')}
-        />
-        <div className={styles.inputContainer}>
-          <div className={styles.inputLabel}>Refresh rate:</div>
-          {!editingRate && (
-            <ColorText
-              className={styles.refreshRateText}
-              onClick={() => setEditingRate(true)}
-              data-testid={getDataTestid('refresh-rate')}
+      <FlexItem>
+        <ColorText size="s">
+          {displayText && (
+            <span data-testid={getDataTestid('refresh-message-label')}>
+              {enableAutoRefresh ? 'Auto refresh:' : 'Last refresh:'}
+            </span>
+          )}
+          {displayLastRefresh && (
+            <AutoRefreshInterval
+              className={cx('refresh-message-time')}
+              data-testid={getDataTestid('refresh-message')}
             >
-              {`${refreshRate} s`}
-              <div className={styles.refreshRatePencil}>
-                <RiIcon type="EditIcon" />
-              </div>
-            </ColorText>
+              {` ${enableAutoRefresh ? refreshRateMessage : refreshMessage}`}
+            </AutoRefreshInterval>
           )}
-          {editingRate && (
-            <>
-              <div
-                className={styles.input}
-                data-testid={getDataTestid('auto-refresh-rate-input')}
-              >
-                <InlineItemEditor
-                  initialValue={refreshRate}
-                  fieldName="refreshRate"
-                  placeholder={DEFAULT_REFRESH_RATE}
-                  isLoading={loading}
-                  validation={validateRefreshRateNumber}
-                  disableByValidation={errorValidateRefreshRateNumber}
-                  onDecline={() => handleDeclineAutoRefreshRate()}
-                  onApply={(value) => handleApplyAutoRefreshRate(value)}
+        </ColorText>
+      </FlexItem>
+      <FlexItem>
+        <Row align="center" gap="none">
+          <FlexItem>
+            <RiTooltip
+              title={!disabled && 'Last Refresh'}
+              className={styles.tooltip}
+              position="top"
+              content={disabled ? disabledRefreshButtonMessage : refreshMessage}
+              data-testid={getDataTestid('refresh-tooltip')}
+            >
+              <AutoRefreshButton
+                size={iconSize}
+                icon={ResetIcon}
+                disabled={loading || disabled}
+                onClick={handleRefreshClick}
+                onMouseEnter={updateLastRefresh}
+                className={cx('auto-refresh-btn')}
+                aria-labelledby={getDataTestid('refresh-btn')?.replaceAll?.(
+                  '-',
+                  ' ',
+                )}
+                data-testid={getDataTestid('refresh-btn')}
+              />
+            </RiTooltip>
+          </FlexItem>
+          <FlexItem>
+            <RiPopover
+              ownFocus={false}
+              anchorPosition="downRight"
+              isOpen={isPopoverOpen}
+              anchorClassName={styles.anchorWrapper}
+              panelClassName={cx(
+                'popover-without-top-tail',
+                styles.popoverWrapper,
+                {
+                  [styles.popoverWrapperEditing]: editingRate,
+                },
+              )}
+              closePopover={closePopover}
+              button={
+                <AutoRefreshConfigButton
+                  disabled={disabled}
+                  size="XS"
+                  icon={ChevronDownIcon}
+                  aria-label="Auto-refresh config popover"
+                  className={cx(styles.anchorBtn, {
+                    [styles.anchorBtnOpen]: isPopoverOpen,
+                  })}
+                  onClick={onButtonClick}
+                  data-testid={getDataTestid('auto-refresh-config-btn')}
                 />
+              }
+            >
+              <SwitchInput
+                title="Auto Refresh"
+                checked={enableAutoRefresh}
+                onCheckedChange={onChangeEnableAutoRefresh}
+                className={styles.switchOption}
+                data-testid={getDataTestid('auto-refresh-switch')}
+              />
+              <div className={styles.inputContainer}>
+                <div className={styles.inputLabel}>Refresh rate:</div>
+                {!editingRate && (
+                  <ColorText
+                    className={styles.refreshRateText}
+                    onClick={() => setEditingRate(true)}
+                    data-testid={getDataTestid('refresh-rate')}
+                  >
+                    {`${refreshRate} s`}
+                    <div className={styles.refreshRatePencil}>
+                      <RiIcon type="EditIcon" />
+                    </div>
+                  </ColorText>
+                )}
+                {editingRate && (
+                  <>
+                    <div
+                      className={styles.input}
+                      data-testid={getDataTestid('auto-refresh-rate-input')}
+                    >
+                      <InlineItemEditor
+                        initialValue={refreshRate}
+                        fieldName="refreshRate"
+                        placeholder={DEFAULT_REFRESH_RATE}
+                        isLoading={loading}
+                        validation={validateRefreshRateNumber}
+                        disableByValidation={errorValidateRefreshRateNumber}
+                        onDecline={() => handleDeclineAutoRefreshRate()}
+                        onApply={(value) => handleApplyAutoRefreshRate(value)}
+                      />
+                    </div>
+                    <ColorText>{' s'}</ColorText>
+                  </>
+                )}
               </div>
-              <ColorText>{' s'}</ColorText>
-            </>
-          )}
-        </div>
-      </RiPopover>
-    </div>
+            </RiPopover>
+          </FlexItem>
+        </Row>
+      </FlexItem>
+    </Row>
   )
 }
 

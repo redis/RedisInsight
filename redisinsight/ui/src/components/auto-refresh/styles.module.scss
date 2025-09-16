@@ -1,39 +1,3 @@
-.container {
-  position: relative;
-  white-space: nowrap;
-}
-
-.btn {
-  display: inline-block;
-  margin-top: 1px;
-  transition: transform 0.3s ease;
-
-  &:global(.euiButtonIcon--xSmall) {
-    svg {
-      width: 16px;
-      height: 16px;
-    }
-  }
-
-  svg {
-    width: 18px;
-    height: 18px;
-  }
-
-  &.rolling svg {
-    color: var(--euiColorPrimary) !important;
-  }
-}
-
-.time {
-  padding-right: 6px;
-  color: var(--euiTextSubduedColor) !important;
-
-  &.disabled {
-    opacity: 0.5;
-  }
-}
-
 .summary {
   color: var(--euiColorMediumShade) !important;
   vertical-align: middle;
@@ -82,36 +46,8 @@
   color: var(--euiTextSubduedColor) !important;
 }
 
-.anchorBtn {
-  width: 18px !important;
-  height: 22px !important;
-  margin-top: 4px;
-
-  &Open {
-    background-color: var(--browserComponentActive) !important;
-    border-bottom: 2px solid var(--euiColorPrimary) !important;
-    border-radius: 4px 4px 0 0 !important;
-  }
-
-  svg {
-    width: 10px !important;
-    height: 10px !important;
-  }
-
-  &:disabled {
-    cursor: not-allowed;
-    pointer-events: none;
-  }
-}
-
 .switchOption {
   padding-bottom: 16px;
-}
-
-.enable {
-  .time {
-    color: var(--euiColorPrimary) !important;
-  }
 }
 
 .refreshRatePencil {

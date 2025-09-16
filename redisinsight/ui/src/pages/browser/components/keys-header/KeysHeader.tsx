@@ -52,13 +52,13 @@ import { BrowserColumns, KeyValueFormat } from 'uiSrc/constants'
 
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { setConnectivityError } from 'uiSrc/slices/app/connectivity'
-import {
-  IconButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from './styles.module.scss'
+import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
+import styled from 'styled-components'
+import {TextButton} from '@redis-ui/components'
+import {Text} from 'uiSrc/components/base/text'
 
 const HIDE_REFRESH_LABEL_WIDTH = 640
 
@@ -68,7 +68,6 @@ interface ISwitchType<T> {
   disabled?: boolean
   ariaLabel: string
   dataTestId: string
-  getClassName: () => string
   onClick: () => void
   isActiveView: () => boolean
   getIconType: () => IconType
@@ -119,9 +118,6 @@ const KeysHeader = (props: Props) => {
       isActiveView() {
         return viewType === this.type
       },
-      getClassName() {
-        return cx(styles.viewTypeBtn, { [styles.active]: this.isActiveView() })
-      },
       getIconType() {
         return EqualIcon
       },
@@ -139,9 +135,6 @@ const KeysHeader = (props: Props) => {
       disabled: isTreeViewDisabled,
       isActiveView() {
         return viewType === this.type
-      },
-      getClassName() {
-        return cx(styles.viewTypeBtn, { [styles.active]: this.isActiveView() })
       },
       getIconType() {
         return FoldersIcon
@@ -288,80 +281,85 @@ const KeysHeader = (props: Props) => {
     })
   }
 
+  const ViewSwitchButtonGroup = styled(ButtonGroup)`
+    button {
+      width: 24px !important;
+      min-width: 24px !important;
+    }
+  `
   const ViewSwitch = () => (
-    <div className={styles.viewTypeSwitch} data-testid="view-type-switcher">
-      <OnboardingTour options={ONBOARDING_FEATURES.BROWSER_TREE_VIEW}>
-        <>
-          {viewTypes.map((view) => (
-            <RiTooltip
-              content={view.tooltipText}
-              position="top"
-              key={view.tooltipText}
+    <OnboardingTour options={ONBOARDING_FEATURES.BROWSER_TREE_VIEW}>
+      <ViewSwitchButtonGroup data-testid="view-type-switcher">
+        {viewTypes.map((view) => (
+          <RiTooltip
+            content={view.tooltipText}
+            position="top"
+            key={view.tooltipText}
+          >
+            <ButtonGroup.Button
+              aria-label={view.ariaLabel}
+              onClick={() => view.onClick()}
+              isSelected={view.isActiveView()}
+              data-testid={view.dataTestId}
+              disabled={view.disabled || false}
             >
-              <IconButton
-                size="S"
-                className={view.getClassName()}
-                icon={view.getIconType()}
-                aria-label={view.ariaLabel}
-                onClick={() => view.onClick()}
-                data-testid={view.dataTestId}
-                disabled={view.disabled || false}
-              />
-            </RiTooltip>
-          ))}
-        </>
-      </OnboardingTour>
-    </div>
+              <ButtonGroup.Icon icon={view.getIconType()} />
+            </ButtonGroup.Button>
+          </RiTooltip>
+        ))}
+      </ViewSwitchButtonGroup>
+    </OnboardingTour>
   )
 
   return (
     <div className={styles.content} ref={rootDivRef}>
       <AutoSizer disableHeight>
         {({ width }) => (
-          <div style={{ width }}>
-            <div className={styles.bottom}>
-              <div className={styles.keysSummary}>
-                <KeysSummary
-                  items={keysState.keys}
-                  totalItemsCount={keysState.total}
-                  scanned={
-                    isSearched ||
-                    (isFiltered && searchMode === SearchMode.Pattern) ||
-                    viewType === KeyViewType.Tree
-                      ? keysState.scanned
-                      : 0
-                  }
-                  loading={loading}
-                  showScanMore={
-                    !(
-                      searchMode === SearchMode.Redisearch &&
-                      keysState.maxResults &&
-                      keysState.keys.length >= keysState.maxResults
-                    )
-                  }
-                  scanMoreStyle={scanMoreStyle}
-                  loadMoreItems={handleScanMore}
-                  nextCursor={nextCursor}
-                />
-              </div>
-              <div className={styles.keysControlsWrapper}>
-                <AutoRefresh
-                  disabled={
-                    searchMode === SearchMode.Redisearch && !selectedIndex
-                  }
-                  disabledRefreshButtonMessage="Select an index to refresh keys."
-                  iconSize="S"
-                  postfix="keys"
-                  loading={loading}
-                  lastRefreshTime={keysState.lastRefreshTime}
-                  displayText={(width || 0) > HIDE_REFRESH_LABEL_WIDTH}
-                  containerClassName={styles.refreshContainer}
-                  onRefresh={handleRefreshKeys}
-                  onEnableAutoRefresh={handleEnableAutoRefresh}
-                  onChangeAutoRefreshRate={handleChangeAutoRefreshRate}
-                  testid="keys"
-                />
-                <div className={styles.columnsButtonPopup}>
+          <Row justify="between" style={{ width }}>
+            <FlexItem>
+              <KeysSummary
+                items={keysState.keys}
+                totalItemsCount={keysState.total}
+                scanned={
+                  isSearched ||
+                  (isFiltered && searchMode === SearchMode.Pattern) ||
+                  viewType === KeyViewType.Tree
+                    ? keysState.scanned
+                    : 0
+                }
+                loading={loading}
+                showScanMore={
+                  !(
+                    searchMode === SearchMode.Redisearch &&
+                    keysState.maxResults &&
+                    keysState.keys.length >= keysState.maxResults
+                  )
+                }
+                scanMoreStyle={scanMoreStyle}
+                loadMoreItems={handleScanMore}
+                nextCursor={nextCursor}
+              />
+            </FlexItem>
+            <FlexItem>
+              <Row gap="l">
+                <FlexItem>
+                  <AutoRefresh
+                    disabled={
+                      searchMode === SearchMode.Redisearch && !selectedIndex
+                    }
+                    disabledRefreshButtonMessage="Select an index to refresh keys."
+                    iconSize="S"
+                    postfix="keys"
+                    loading={loading}
+                    lastRefreshTime={keysState.lastRefreshTime}
+                    displayText={(width || 0) > HIDE_REFRESH_LABEL_WIDTH}
+                    onRefresh={handleRefreshKeys}
+                    onEnableAutoRefresh={handleEnableAutoRefresh}
+                    onChangeAutoRefreshRate={handleChangeAutoRefreshRate}
+                    testid="keys"
+                  />
+                </FlexItem>
+                <FlexItem>
                   <RiPopover
                     ownFocus={false}
                     anchorPosition="downLeft"
@@ -370,18 +368,15 @@ const KeysHeader = (props: Props) => {
                     panelClassName={styles.popoverWrapper}
                     closePopover={() => setColumnsConfigShown(false)}
                     button={
-                      <SecondaryButton
-                        size="small"
-                        icon={ColumnsIcon}
+                      <TextButton
                         onClick={toggleColumnsConfigVisibility}
                         className={styles.columnsButton}
                         data-testid="btn-columns-actions"
                         aria-label="columns"
                       >
-                        <span className={styles.columnsButtonText}>
-                          Columns
-                        </span>
-                      </SecondaryButton>
+                        <RiIcon size="m" type="ColumnsIcon" />
+                        <Text size="s">Columns</Text>
+                      </TextButton>
                     }
                   >
                     <Row align="center" gap="m">
@@ -428,11 +423,13 @@ const KeysHeader = (props: Props) => {
                       data-testid="show-ttl"
                     />
                   </RiPopover>
-                </div>
-                {ViewSwitch()}
-              </div>
-            </div>
-          </div>
+                </FlexItem>
+                <FlexItem>
+                  {ViewSwitch()}
+                </FlexItem>
+              </Row>
+            </FlexItem>
+          </Row>
         )}
       </AutoSizer>
     </div>

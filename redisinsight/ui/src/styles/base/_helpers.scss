@@ -89,7 +89,7 @@
 }
 
 .popover-without-top-tail {
-  margin-top: -6px;
+  margin-top: -8px;
 
   // removes top arrow (it is always first child)
   & > span:nth-child(1) * {

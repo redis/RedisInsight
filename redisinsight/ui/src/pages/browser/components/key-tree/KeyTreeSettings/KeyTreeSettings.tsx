@@ -3,6 +3,7 @@ import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { isEqual } from 'lodash'
+import styled from 'styled-components'
 
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
@@ -32,6 +33,7 @@ import {
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { RiPopover } from 'uiSrc/components/base'
+import { Theme } from 'uiSrc/components/base/theme/types'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -85,12 +87,16 @@ const KeyTreeSettings = ({ loading }: Props) => {
     setDelimiters(treeViewDelimiter)
   }, [treeViewSort, treeViewDelimiter])
 
+  const TreeViewSettingsButton = styled(IconButton)`
+    background-color: ${({ theme }: { theme: Theme }) =>
+      isPopoverOpen ? theme.color.gray100 : 'transparent'};
+  `
+
   const button = (
-    <IconButton
+    <TreeViewSettingsButton
       icon={SettingsIcon}
       onClick={onButtonClick}
       disabled={loading}
-      className={cx(styles.anchorBtn)}
       aria-label="open tree view settings"
       data-testid="tree-view-settings-btn"
     />
@@ -143,7 +149,7 @@ const KeyTreeSettings = ({ loading }: Props) => {
         anchorPosition="downLeft"
         isOpen={isPopoverOpen}
         anchorClassName={styles.anchorWrapper}
-        panelClassName={styles.popoverWrapper}
+        panelClassName={cx('popover-without-top-tail', styles.popoverWrapper)}
         closePopover={closePopover}
         button={button}
       >
