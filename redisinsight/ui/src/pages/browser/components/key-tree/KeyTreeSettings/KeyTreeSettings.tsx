@@ -18,7 +18,7 @@ import {
 } from 'uiSrc/slices/app/context'
 import { comboBoxToArray } from 'uiSrc/utils'
 
-import {Col, FlexItem, Row} from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
   IconButton,
   PrimaryButton,
@@ -31,8 +31,18 @@ import {
 } from 'uiSrc/components/base/forms/combo-box/AutoTag'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { RiPopover } from 'uiSrc/components/base'
-import { Theme } from 'uiSrc/components/base/theme/types'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
+
+const StyledCol = styled(Col)`
+  width: 300px;
+`
+
+const TreeViewSettingsButton = styled(IconButton)<{
+  isPopoverOpen: boolean
+}>`
+  background-color: ${({ theme, isPopoverOpen }) =>
+    isPopoverOpen ? theme.semantic.color.background.neutral100 : 'transparent'};
+`
 
 export interface Props {
   loading: boolean
@@ -82,13 +92,9 @@ const KeyTreeSettings = ({ loading }: Props) => {
     setDelimiters(treeViewDelimiter)
   }, [treeViewSort, treeViewDelimiter])
 
-  const TreeViewSettingsButton = styled(IconButton)`
-    background-color: ${({ theme }: { theme: Theme }) =>
-      isPopoverOpen ? theme.color.gray100 : 'transparent'};
-  `
-
   const button = (
     <TreeViewSettingsButton
+      isPopoverOpen={isPopoverOpen}
       icon={SettingsIcon}
       onClick={onButtonClick}
       disabled={loading}
@@ -137,10 +143,6 @@ const KeyTreeSettings = ({ loading }: Props) => {
     setSorting(value)
   }
 
-  const StyledCol = styled(Col)`
-    width: 300px;
-  `
-
   return (
     <RiPopover
       ownFocus={false}
@@ -167,9 +169,7 @@ const KeyTreeSettings = ({ loading }: Props) => {
           <FormField layout="horizontal" label="Sort by">
             <RiSelect
               options={sortOptions}
-              valueRender={({ option }) =>
-                option.inputDisplay ?? option.value
-              }
+              valueRender={({ option }) => option.inputDisplay ?? option.value}
               value={sorting}
               onChange={(value: SortOrder) => onChangeSort(value)}
               data-testid="tree-view-sorting-select"

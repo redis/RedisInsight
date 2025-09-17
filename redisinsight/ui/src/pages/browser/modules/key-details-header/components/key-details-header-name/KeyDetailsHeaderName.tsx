@@ -26,7 +26,7 @@ import {
   stringToBuffer,
 } from 'uiSrc/utils'
 
-import {FlexItem, Row} from 'uiSrc/components/base/layout/flex'
+import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CopyIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
@@ -35,6 +35,10 @@ import { RiTooltip } from 'uiSrc/components'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
 import styled from 'styled-components'
+
+const StyledInputWrapper = styled(Row)`
+  min-width: 150px;
+`
 
 export interface Props {
   onEditKey: (
@@ -141,10 +145,6 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
     })
   }
 
-  const StyledInputWrapper = styled(Row)`
-    min-width: 150px;
-  `
-
   return (
     <FlexItem
       grow
@@ -174,9 +174,7 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
             isLoading={loading}
             declineOnUnmount={false}
           >
-            <StyledInputWrapper
-              align="center"
-            >
+            <StyledInputWrapper align="center">
               <TextInput
                 name="key"
                 id="key"
@@ -195,12 +193,7 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
                 // todo: do not hardcode. align with other components in a single place
                 style={{ paddingLeft: 9, lineHeight: '31px' }}
               />
-              {!keyIsEditing && (
-                <RiIcon
-                  size="M"
-                  type="EditIcon"
-                />
-              )}
+              {!keyIsEditing && <RiIcon size="M" type="EditIcon" />}
             </StyledInputWrapper>
           </InlineItemEditor>
         </RiTooltip>

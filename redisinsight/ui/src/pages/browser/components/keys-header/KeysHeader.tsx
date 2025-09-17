@@ -76,6 +76,13 @@ export interface Props {
   handleScanMoreClick: (config: any) => void
 }
 
+const ViewSwitchButtonGroup = styled(ButtonGroup)`
+  button {
+    width: 24px !important;
+    min-width: 24px !important;
+  }
+`
+
 const KeysHeader = (props: Props) => {
   const {
     loading,
@@ -275,12 +282,6 @@ const KeysHeader = (props: Props) => {
     })
   }
 
-  const ViewSwitchButtonGroup = styled(ButtonGroup)`
-    button {
-      width: 24px !important;
-      min-width: 24px !important;
-    }
-  `
   const ViewSwitch = () => (
     <OnboardingTour options={ONBOARDING_FEATURES.BROWSER_TREE_VIEW}>
       <ViewSwitchButtonGroup data-testid="view-type-switcher">

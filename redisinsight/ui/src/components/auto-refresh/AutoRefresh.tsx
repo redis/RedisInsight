@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { HTMLAttributes, useEffect, useState } from 'react'
 import cx from 'classnames'
 import styled from 'styled-components'
 import { ChevronDownIcon, ResetIcon } from 'uiSrc/components/base/icons'
@@ -9,7 +9,6 @@ import {
   validateRefreshRateNumber,
 } from 'uiSrc/utils'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Theme } from 'uiSrc/components/base/theme/types'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
 import { localStorageService } from 'uiSrc/services'
 import { BrowserStorageItem } from 'uiSrc/constants'
@@ -27,6 +26,44 @@ import {
 } from './utils'
 
 import styles from './styles.module.scss'
+
+const AutoRefreshInterval = styled.span<
+  HTMLAttributes<HTMLSpanElement> & {
+    enableAutoRefresh: boolean
+    disabled?: boolean
+  }
+>`
+  color: ${({ disabled, enableAutoRefresh, theme }) =>
+    !disabled && enableAutoRefresh
+      ? theme.semantic.color.text.primary400
+      : 'inherit'};
+  opacity: ${({ disabled }) => (disabled ? '0.5' : 'inherit')};
+`
+
+const AutoRefreshButton = styled(IconButton)<{
+  enableAutoRefresh: boolean
+  disabled?: boolean
+}>`
+  color: ${({ theme, disabled, enableAutoRefresh }) =>
+    !disabled && enableAutoRefresh
+      ? theme.semantic.color.text.primary400
+      : 'inherit'};
+`
+
+const AutoRefreshConfigButton = styled(IconButton)<{
+  isPopoverOpen: boolean
+}>`
+    svg {
+      width: 10px;
+      height: 10px;
+    }
+
+    background-color: ${({ theme, isPopoverOpen }) =>
+      isPopoverOpen
+        ? theme.semantic.color.background.neutral100
+        : 'transparent'};
+  }
+`
 
 export interface Props {
   postfix: string
@@ -202,31 +239,6 @@ const AutoRefresh = ({
     onEnableAutoRefresh?.(value, refreshRate)
   }
 
-  const AutoRefreshInterval = styled('span')`
-    color: ${({ theme }: { theme: Theme }) =>
-      !disabled && enableAutoRefresh
-        ? theme.semantic.color.text.primary400
-        : 'inherit'};
-    opacity: ${disabled ? '0.5' : 'inherit'};
-  `
-
-  const AutoRefreshButton = styled(IconButton)`
-    color: ${({ theme }: { theme: Theme }) =>
-      !disabled && enableAutoRefresh
-        ? theme.semantic.color.text.primary400
-        : 'inherit'};
-  `
-
-  const AutoRefreshConfigButton = styled(IconButton)`
-    svg {
-      width: 10px;
-      height: 10px;
-    }
-    background-color: ${({ theme }: { theme: Theme }) =>
-      isPopoverOpen ? theme.color.gray100 : 'transparent'};
-  }
-`
-
   return (
     <Row
       align="center"
@@ -245,6 +257,8 @@ const AutoRefresh = ({
           )}
           {displayLastRefresh && (
             <AutoRefreshInterval
+              disabled={disabled}
+              enableAutoRefresh={enableAutoRefresh}
               className={cx('refresh-message-time')}
               data-testid={getDataTestid('refresh-message')}
             >
@@ -264,6 +278,7 @@ const AutoRefresh = ({
               data-testid={getDataTestid('refresh-tooltip')}
             >
               <AutoRefreshButton
+                enableAutoRefresh={enableAutoRefresh}
                 size={iconSize}
                 icon={ResetIcon}
                 disabled={loading || disabled}
@@ -294,6 +309,7 @@ const AutoRefresh = ({
               closePopover={closePopover}
               button={
                 <AutoRefreshConfigButton
+                  isPopoverOpen={isPopoverOpen}
                   disabled={disabled}
                   size="XS"
                   icon={ChevronDownIcon}
