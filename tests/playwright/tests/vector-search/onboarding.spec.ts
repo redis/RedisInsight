@@ -6,18 +6,15 @@ import {
 } from '../../helpers/utils'
 import { CreateIndexPage } from '../../pageObjects/pages/vector-search/create-index-page'
 import { ossStandaloneV6Config } from '../../helpers/conf'
-import { BrowserPage } from '../../pageObjects/browser-page'
 
 test.describe('Vector Search - Onboarding', () => {
     let searchPage: VectorSearchPage
     let createIndexPage: CreateIndexPage
-    let browserPage: BrowserPage
     let cleanupInstance: () => Promise<void>
 
     test.beforeEach(async ({ page, api: { databaseService } }) => {
         searchPage = new VectorSearchPage(page)
         createIndexPage = new CreateIndexPage(page)
-        browserPage = new BrowserPage(page)
 
         cleanupInstance = await addStandaloneInstanceAndNavigateToIt(
             page,
@@ -42,6 +39,13 @@ test.describe('Vector Search - Onboarding', () => {
 
         // Verify that "Create index" flow is opened
         await createIndexPage.verifyCreateIndexPageLoaded()
+
+        // But it should not dismiss the onboarding screen yet
+        // Click on "Cancel" button to go back to Search page
+        await createIndexPage.cancelButton.click()
+
+        // Verify that onboarding screen is still visible
+        await searchPage.waitForLocatorVisible(searchPage.onboardingContainer)
     })
 
     test('should dismiss onboarding when clicking on "Skip for now" button', async () => {
@@ -53,6 +57,15 @@ test.describe('Vector Search - Onboarding', () => {
 
         // Verify that onboarding screen is not visible
         await searchPage.waitForLocatorVisible(searchPage.vectorSearchPage)
+
+        // Verify that onboarding screen is not visible after dismissing it
+        await searchPage.reload()
+
+        // Verify that onboarding screen is not visible anymore
+        await searchPage.waitForLocatorNotVisible(
+            searchPage.onboardingContainer,
+        )
+        await searchPage.waitForLocatorVisible(searchPage.vectorSearchPage)
     })
 
     test('should dismiss onboarding when clicking on "X" button', async () => {
@@ -61,19 +74,28 @@ test.describe('Vector Search - Onboarding', () => {
 
         // Click on "X" button
         await searchPage.onboardingDismissButton.click()
+
+        // Verify that onboarding screen is not visible
+        await searchPage.waitForLocatorVisible(searchPage.vectorSearchPage)
+
+        // Verify that onboarding screen is not visible after dismissing it
+        await searchPage.reload()
+
+        // Verify that onboarding screen is not visible anymore
+        await searchPage.waitForLocatorNotVisible(
+            searchPage.onboardingContainer,
+        )
+        await searchPage.waitForLocatorVisible(searchPage.vectorSearchPage)
     })
 
-    test('should not open the onboarding screen when it is already dismissed', async () => {
+    test('should open the onboarding screen unless it is manuyally dismissed', async () => {
         // Verify that onboarding screen is visible
         await searchPage.waitForLocatorVisible(searchPage.onboardingContainer)
 
-        // Go to Browser page
-        await browserPage.navigateToBrowserPage()
+        // Verify that onboarding screen is visible unless we dismiss it manually
+        await searchPage.reload()
 
-        // Navigate back to vector search page
-        await searchPage.navigateToVectorSearchPage()
-
-        // Verify that onboarding screen is not visible anymore
-        await searchPage.waitForLocatorVisible(searchPage.vectorSearchPage)
+        // Verify that onboarding screen is still visible
+        await searchPage.waitForLocatorVisible(searchPage.onboardingContainer)
     })
 })
