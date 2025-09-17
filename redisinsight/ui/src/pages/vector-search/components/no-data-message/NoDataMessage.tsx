@@ -6,6 +6,7 @@ import { Text } from 'uiSrc/components/base/text'
 import useStartWizard from '../../hooks/useStartWizard'
 import { StyledContainer, StyledImage } from './NoDataMessage.styles'
 import { NO_DATA_MESSAGES, NoDataMessageKeys } from './data'
+import useRedisInstanceCompatibility from '../../create-index/hooks/useRedisInstanceCompatibility'
 
 export interface NoDataMessageProps {
   variant: NoDataMessageKeys
@@ -13,6 +14,7 @@ export interface NoDataMessageProps {
 
 const NoDataMessage = ({ variant }: NoDataMessageProps) => {
   const start = useStartWizard()
+  const { loading, hasSupportedVersion } = useRedisInstanceCompatibility()
   const { title, description, icon } = NO_DATA_MESSAGES[variant]
 
   return (
@@ -24,9 +26,11 @@ const NoDataMessage = ({ variant }: NoDataMessageProps) => {
         <Text size="S">{description}</Text>
       </Col>
 
-      <Button variant="secondary-invert" onClick={start}>
-        Get started
-      </Button>
+      {loading === false && hasSupportedVersion === true && (
+        <Button variant="secondary-invert" onClick={start}>
+          Get started
+        </Button>
+      )}
     </StyledContainer>
   )
 }
