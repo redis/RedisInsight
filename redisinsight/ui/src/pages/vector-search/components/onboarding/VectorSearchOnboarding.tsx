@@ -33,13 +33,7 @@ export const VectorSearchOnboarding = () => {
         />
       </DismissAction>
 
-      <Content
-        grow={true}
-        direction="column"
-        justify="center"
-        align="center"
-        gap="xxl"
-      >
+      <Content grow={true} direction="column" justify="center" align="center">
         <Header />
         <Features />
         <Stepper />

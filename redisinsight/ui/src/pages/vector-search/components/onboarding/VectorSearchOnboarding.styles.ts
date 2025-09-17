@@ -29,6 +29,10 @@ export const Content = styled(FlexGroup)`
 
 export const HeaderContainer = styled(FlexGroup)`
   z-index: 1;
+  gap: 8px;
+  max-width: 508px;
+  text-align: center;
+  margin-bottom: 40px;
 `
 
 export const MagnifierImage = styled.img`
@@ -43,5 +47,5 @@ export const MagnifierImage = styled.img`
 
 export const StyledActions = styled(FlexGroup)`
   z-index: 1;
-  margin-top: ${({ theme }) => theme.core.space.space300};
+  margin-top: 56px; // ${({ theme }) => theme.core.space.space300};
 `

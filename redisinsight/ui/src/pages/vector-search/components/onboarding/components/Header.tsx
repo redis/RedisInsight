@@ -8,7 +8,6 @@ const Header: React.FC = () => (
     direction="column"
     justify="center"
     align="center"
-    gap="s"
     grow={false}
     data-testid="vector-search-onboarding--header"
   >
