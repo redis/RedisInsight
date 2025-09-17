@@ -23,6 +23,7 @@ export type AutoTagProps = Omit<
     selectedOptions?: AutoTagOption[]
     onCreateOption?: (value: string, options?: AutoTagOption[]) => void
     onChange?: (value: AutoTagOption[]) => void
+    onInputChange?: (value: string) => void
     size?: 'S' | 'M'
     full?: boolean
   }
@@ -84,6 +85,7 @@ export const AutoTag = ({
   onCreateOption,
   delimiter = '',
   onChange,
+  onInputChange,
   style,
   size = 'S',
   full = false,
@@ -104,6 +106,7 @@ export const AutoTag = ({
     }
     // add the new option to options
     setTag('')
+    onInputChange?.('')
     const newSelection = [...selection, newOption]
     setSelection(newSelection)
     // add the new option to selection
@@ -116,6 +119,7 @@ export const AutoTag = ({
       return
     }
     setTag(value)
+    onInputChange?.(value)
   }
   const handleEnter: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
     // todo: replace when keys constants are in scope
@@ -128,12 +132,6 @@ export const AutoTag = ({
     }
   }
 
-  const handleBlur: React.FocusEventHandler<HTMLInputElement> = (e) => {
-    const tag = (e.target as HTMLInputElement).value.trim()
-    if (tag !== null && tag.length > 0) {
-      createOption(tag)
-    }
-  }
 
   function getPlaceholder() {
     return selectedOptions?.length && selectedOptions.length > 0
@@ -193,7 +191,6 @@ export const AutoTag = ({
             placeholder={getPlaceholder()}
             onChange={handleInputChange}
             onKeyDown={handleEnter}
-            onBlur={handleBlur}
             value={tag}
             data-test-subj="autoTagInput"
           />

@@ -65,6 +65,7 @@ const KeyTreeSettings = ({ loading }: Props) => {
   const [sorting, setSorting] = useState<SortOrder>(treeViewSort)
   const [delimiters, setDelimiters] =
     useState<AutoTagOption[]>(treeViewDelimiter)
+  const [pendingInput, setPendingInput] = useState('')
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
 
@@ -90,6 +91,7 @@ const KeyTreeSettings = ({ loading }: Props) => {
   const resetStates = useCallback(() => {
     setSorting(treeViewSort)
     setDelimiters(treeViewDelimiter)
+    setPendingInput('')
   }, [treeViewSort, treeViewDelimiter])
 
   const button = (
@@ -104,9 +106,15 @@ const KeyTreeSettings = ({ loading }: Props) => {
   )
 
   const handleApply = () => {
-    if (!isEqual(delimiters, treeViewDelimiter)) {
-      const delimitersValue = delimiters.length
-        ? delimiters
+    let finalDelimiters = delimiters
+    if (pendingInput.trim()) {
+      finalDelimiters = [...delimiters, { label: pendingInput.trim() }]
+      setPendingInput('')
+    }
+
+    if (!isEqual(finalDelimiters, treeViewDelimiter)) {
+      const delimitersValue = finalDelimiters.length
+        ? finalDelimiters
         : [DEFAULT_DELIMITER]
 
       dispatch(setBrowserTreeDelimiter(delimitersValue))
@@ -162,6 +170,7 @@ const KeyTreeSettings = ({ loading }: Props) => {
               setDelimiters([...delimiters, { label: del }])
             }
             onChange={(selectedOptions) => setDelimiters(selectedOptions)}
+            onInputChange={setPendingInput}
             data-testid="delimiter-combobox"
           />
         </FlexItem>
