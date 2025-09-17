@@ -43,7 +43,6 @@ const KeyRowName = (props: Props) => {
           <RiTooltip
             title="Key Name"
             className={styles.tooltip}
-            anchorClassName="truncateText"
             position="bottom"
             content={nameTooltipContent}
           >
