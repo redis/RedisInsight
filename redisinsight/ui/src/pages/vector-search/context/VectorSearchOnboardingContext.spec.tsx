@@ -7,8 +7,7 @@ import {
 import { BrowserStorageItem } from 'uiSrc/constants'
 
 const TestComponent: React.FC = () => {
-  const { showOnboarding, setOnboardingSeen, setOnboardingSeenSilent } =
-    useVectorSearchOnboarding()
+  const { showOnboarding, setOnboardingSeen } = useVectorSearchOnboarding()
 
   return (
     <div>
@@ -18,9 +17,6 @@ const TestComponent: React.FC = () => {
 
       <button onClick={setOnboardingSeen} data-testid="seen-btn">
         Seen
-      </button>
-      <button onClick={setOnboardingSeenSilent} data-testid="silent-btn">
-        Silent
       </button>
     </div>
   )
@@ -87,24 +83,6 @@ describe('VectorSearchOnboardingContext', () => {
       BrowserStorageItem.vectorSearchOnboarding,
     )
     expect(showOnboardingStorage).toBe('true')
-  })
-
-  it('should update only localStorage when setOnboardingSeenSilent is called', () => {
-    renderTestComponent()
-
-    // Update localStorage only, to not force re-render
-    const markAsSeenSilentBtn = screen.getByTestId('silent-btn')
-    fireEvent.click(markAsSeenSilentBtn)
-
-    // localStorage should be updated
-    const showOnboardingStorage = localStorage.getItem(
-      BrowserStorageItem.vectorSearchOnboarding,
-    )
-    expect(showOnboardingStorage).toBe('true')
-
-    // State should remain intact
-    const showOnboardingState = screen.getByTestId('show-onboarding')
-    expect(showOnboardingState.textContent).toBe('true')
   })
 
   it('should throw if used outside provider', () => {

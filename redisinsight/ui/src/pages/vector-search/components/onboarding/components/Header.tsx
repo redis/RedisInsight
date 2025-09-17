@@ -12,7 +12,7 @@ const Header: React.FC = () => (
     grow={false}
     data-testid="vector-search-onboarding--header"
   >
-    <Title size="XL">Get Started with vector search</Title>
+    <Title size="XL">Get started with vector search</Title>
     <Text size="M">
       Launch a quick onboarding to learn how to build ultra-fast similarity
       search across massive datasets - in real time.

@@ -4,7 +4,6 @@ import { BrowserStorageItem } from 'uiSrc/constants'
 export interface VectorSearchOnboardingContextType {
   showOnboarding: boolean
   setOnboardingSeen: () => void
-  setOnboardingSeenSilent: () => void
 }
 
 export const VectorSearchOnboardingContext = createContext<
@@ -27,18 +26,11 @@ export const VectorSearchOnboardingProvider: React.FC<{
     setShowOnboarding(false)
   }, [])
 
-  // Update only localStorage (no re-render)
-  const setOnboardingSeenSilent = useCallback(() => {
-    localStorage.setItem(BrowserStorageItem.vectorSearchOnboarding, 'true')
-    // Do not update state
-  }, [])
-
   return (
     <VectorSearchOnboardingContext.Provider
       value={{
         showOnboarding,
         setOnboardingSeen,
-        setOnboardingSeenSilent,
       }}
     >
       {children}

@@ -20,7 +20,6 @@ const renderVectorSearchOnboardingComponent = (
   const defaultContextValue: VectorSearchOnboardingContextType = {
     showOnboarding: false,
     setOnboardingSeen: jest.fn(),
-    setOnboardingSeenSilent: jest.fn(),
     ...contextValue,
   }
 
@@ -37,11 +36,8 @@ describe('VectorSearchOnboarding', () => {
   })
 
   it('should render onboarding content', () => {
-    const mockMarkOnboardingAsSeenSilent = jest.fn()
-
     renderVectorSearchOnboardingComponent({
       showOnboarding: true,
-      setOnboardingSeenSilent: mockMarkOnboardingAsSeenSilent,
     })
 
     const container = screen.getByTestId('vector-search-onboarding')
@@ -59,9 +55,6 @@ describe('VectorSearchOnboarding', () => {
     expect(stepper).toBeInTheDocument()
     expect(actions).toBeInTheDocument()
     expect(footer).toBeInTheDocument()
-
-    // Verify the onboarding was marked as seen
-    expect(mockMarkOnboardingAsSeenSilent).toHaveBeenCalledTimes(1)
 
     // Verify telemetry event was sent
     expect(sendEventTelemetry).toHaveBeenCalledWith({
