@@ -142,12 +142,22 @@ const Notifications = () => {
         infiniteToastIdsRef.current.delete(toastId)
       }, 50)
     })
-    data.forEach((message: InfiniteMessage) => {
-      const { id, Inner, className = '' } = message
+    data.forEach((notification: InfiniteMessage) => {
+      const {
+        id,
+        message,
+        description,
+        actions,
+        Inner,
+        className = '',
+      } = notification
       const toastId = riToast(
         {
           className: cx(styles.infiniteMessage, className),
-          description: Inner,
+          message: message,
+          description: description || Inner, // TODO: Remove inner later
+          actions,
+          showCloseButton: true,
           onClose: () => {
             switch (id) {
               case InfiniteMessagesIds.oAuthProgress:
@@ -178,7 +188,7 @@ const Notifications = () => {
           },
         },
         {
-          variant: riToast.Variant.Informative,
+          variant: riToast.Variant.Notice,
           autoClose: ONE_HOUR,
           toastId: id,
         },

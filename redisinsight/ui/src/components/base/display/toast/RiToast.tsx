@@ -5,24 +5,25 @@ import {
   ToastContentParams,
   ToastOptions,
 } from '@redis-ui/components'
+import { ToastOptions as RcToastOptions } from 'react-toastify'
 
 import { CommonProps } from 'uiSrc/components/base/theme/types'
-import { CancelIcon } from 'uiSrc/components/base/icons'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import { Spacer } from '../../layout'
 
 type RiToastProps = React.ComponentProps<typeof Toast>
 export const RiToast = (props: RiToastProps) => <Toast {...props} />
 
-type RiToastType = ToastContentParams &
+export type RiToastType = ToastContentParams &
   CommonProps & {
     onClose?: VoidFunction
   }
 export const riToast = (
-  { onClose, actions, message, ...content }: RiToastType,
+  { onClose, message, ...content }: RiToastType,
   options?: ToastOptions | undefined,
 ) => {
   const toastContent: ToastContentParams = {
+    showCloseButton: false,
     ...content,
   }
 
@@ -44,26 +45,11 @@ export const riToast = (
     toastContent.message = message
   }
 
-  if (onClose) {
-    toastContent.showCloseButton = false
-    toastContent.actions = {
-      ...actions,
-      secondary: {
-        label: '',
-        icon: CancelIcon,
-        closes: true,
-        onClick: onClose,
-      },
-    }
-  }
-  if (actions && !onClose) {
-    toastContent.showCloseButton = false
-    toastContent.actions = actions
-  }
-  const toastOptions: ToastOptions = {
+  const toastOptions: ToastOptions & RcToastOptions = {
     ...options,
     delay: 100,
     closeOnClick: false,
+    onClose,
   }
   return toast(<RiToast {...toastContent} />, toastOptions)
 }
