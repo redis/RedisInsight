@@ -342,7 +342,6 @@ const MessageClaimPopover = (props: Props) => {
             </SecondaryButton>
             <PrimaryButton
               className={styles.footerBtn}
-              type="submit"
               onClick={() => formik.handleSubmit()}
               data-testid="btn-submit"
             >
