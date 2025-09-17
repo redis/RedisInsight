@@ -150,6 +150,7 @@ const Notifications = () => {
         actions,
         Inner,
         className = '',
+        variant,
       } = notification
       const toastId = riToast(
         {
@@ -188,7 +189,7 @@ const Notifications = () => {
           },
         },
         {
-          variant: riToast.Variant.Notice,
+          variant: variant ?? riToast.Variant.Notice,
           autoClose: ONE_HOUR,
           toastId: id,
         },
