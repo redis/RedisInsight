@@ -6,7 +6,7 @@ import ExternalLink from 'uiSrc/components/base/external-link'
 import Divider from 'uiSrc/components/divider/Divider'
 import { OAuthProviders } from 'uiSrc/components/oauth/oauth-select-plan/constants'
 
-import { CloudSuccessResult } from 'uiSrc/slices/interfaces'
+import { CloudSuccessResult, InfiniteMessage } from 'uiSrc/slices/interfaces'
 
 import { Maybe } from 'uiSrc/utils'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
@@ -44,7 +44,11 @@ const MANAGE_DB_LINK = getUtmExternalLink(EXTERNAL_LINKS.cloudConsole, {
   medium: UTM_MEDIUMS.Main,
 })
 
-export const INFINITE_MESSAGES = {
+// TODO: Refactor this type definition to work with the real parameters and their types we use in each message
+export const INFINITE_MESSAGES: Record<
+  string,
+  (...args: any[]) => InfiniteMessage
+> = {
   AUTHENTICATING: () => ({
     id: InfiniteMessagesIds.oAuthProgress,
     Inner: (
@@ -353,39 +357,19 @@ export const INFINITE_MESSAGES = {
   }),
   APP_UPDATE_AVAILABLE: (version: string, onSuccess?: () => void) => ({
     id: InfiniteMessagesIds.appUpdateAvailable,
-    Inner: (
-      <div
-        role="presentation"
-        onMouseDown={(e) => {
-          e.preventDefault()
-        }}
-        onMouseUp={(e) => {
-          e.preventDefault()
-        }}
-        data-testid="app-update-available-notification"
-      >
-        <Title className="infiniteMessage__title" size="XS">
-          New version is now available
-        </Title>
-        <Text size="s">
-          <>
-            With Redis Insight
-            {` ${version} `}
-            you have access to new useful features and optimizations.
-            <br />
-            Restart Redis Insight to install updates.
-          </>
-        </Text>
+    message: 'New version is now available',
+    description: (
+      <>
+        With Redis Insight {version} you have access to new useful features and
+        optimizations.
         <br />
-        <PrimaryButton
-          size="s"
-          onClick={() => onSuccess?.()}
-          data-testid="app-restart-btn"
-        >
-          Restart
-        </PrimaryButton>
-      </div>
+        <br />
+        Restart Redis Insight to install updates.
+      </>
     ),
+    actions: {
+      primary: { label: 'Restart', onClick: () => onSuccess?.() },
+    },
   }),
   SUCCESS_DEPLOY_PIPELINE: () => ({
     id: InfiniteMessagesIds.pipelineDeploySuccess,

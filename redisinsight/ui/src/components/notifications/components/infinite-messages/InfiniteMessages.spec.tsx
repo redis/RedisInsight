@@ -2,7 +2,36 @@ import React from 'react'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 
 import { OAuthProvider } from 'uiSrc/components/oauth/oauth-select-plan/constants'
+import notificationsReducer, {
+  addInfiniteNotification,
+} from 'uiSrc/slices/app/notifications'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
+import { InfiniteMessage } from 'uiSrc/slices/interfaces'
+import Notifications from '../../Notifications'
 import { INFINITE_MESSAGES } from './InfiniteMessages'
+
+const createTestStore = () =>
+  configureStore({
+    reducer: combineReducers({
+      app: combineReducers({ notifications: notificationsReducer }),
+    }),
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({ serializableCheck: false }),
+  })
+
+const renderToast = (notification: InfiniteMessage) => {
+  const store = createTestStore()
+
+  render(
+    <>
+      {/* <RiToaster /> */}
+      <Notifications />
+    </>,
+    { store },
+  )
+
+  store.dispatch(addInfiniteNotification(notification))
+}
 
 describe('INFINITE_MESSAGES', () => {
   describe('SUCCESS_CREATE_DB', () => {
@@ -157,23 +186,42 @@ describe('INFINITE_MESSAGES', () => {
   })
 
   describe('APP_UPDATE_AVAILABLE', () => {
-    it('should render message', () => {
-      const { Inner } = INFINITE_MESSAGES.APP_UPDATE_AVAILABLE('1', jest.fn())
-      expect(render(<>{Inner}</>)).toBeTruthy()
+    it('should render message', async () => {
+      const version = '<version>'
+      const onSuccess = jest.fn()
+
+      renderToast(INFINITE_MESSAGES.APP_UPDATE_AVAILABLE(version, onSuccess))
+
+      // Wait for the notification to appear
+      const title = await screen.findByText('New version is now available')
+      const description = await screen.findByText(
+        /With Redis Insight <version> you have access to new useful features and optimizations\.\s*Restart Redis Insight to install updates\./,
+      )
+      const restartButton = await screen.findByRole('button', {
+        name: /Restart/,
+      })
+      const closeButton = await screen.findByRole('button', { name: /close/i })
+
+      expect(title).toBeInTheDocument()
+      expect(description).toBeInTheDocument()
+      expect(restartButton).toBeInTheDocument()
+      expect(closeButton).toBeInTheDocument()
     })
 
-    it('should call onSuccess', () => {
+    it('should call onSuccess when clicking restart button', async () => {
+      const version = '<version>'
       const onSuccess = jest.fn()
-      const { Inner } = INFINITE_MESSAGES.APP_UPDATE_AVAILABLE('1', onSuccess)
-      render(<>{Inner}</>)
 
-      fireEvent.click(screen.getByTestId('app-restart-btn'))
-      fireEvent.mouseUp(screen.getByTestId('app-update-available-notification'))
-      fireEvent.mouseDown(
-        screen.getByTestId('app-update-available-notification'),
-      )
+      renderToast(INFINITE_MESSAGES.APP_UPDATE_AVAILABLE(version, onSuccess))
 
-      expect(onSuccess).toBeCalled()
+      const restartButton = await screen.findByRole('button', {
+        name: /Restart/,
+      })
+      expect(restartButton).toBeInTheDocument()
+
+      fireEvent.click(restartButton)
+
+      expect(onSuccess).toHaveBeenCalled()
     })
   })
 })
