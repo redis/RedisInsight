@@ -58,36 +58,26 @@ export const INFINITE_MESSAGES: Record<
   }),
   PENDING_CREATE_DB: (step?: CloudJobStep) => ({
     id: InfiniteMessagesIds.oAuthProgress,
-    Inner: (
-      <div role="presentation" data-testid="pending-create-db-notification">
-        <Row justify="end">
-          <FlexItem grow={false}>
-            <Loader className={cx('infiniteMessage__icon', styles.loading)} />
-          </FlexItem>
-          <FlexItem grow>
-            <Title className="infiniteMessage__title" size="XS">
-              <span>
-                {(step === CloudJobStep.Credentials || !step) &&
-                  'Processing Cloud API keys…'}
-                {step === CloudJobStep.Subscription &&
-                  'Processing Cloud subscriptions…'}
-                {step === CloudJobStep.Database &&
-                  'Creating a free trial Cloud database…'}
-                {step === CloudJobStep.Import &&
-                  'Importing a free trial Cloud database…'}
-              </span>
-            </Title>
-            <Text size="xs">
-              This may take several minutes, but it is totally worth it!
-            </Text>
-            <Spacer size="m" />
-            <Text size="xs">
-              You can continue working in Redis Insight, and we will notify you
-              once done.
-            </Text>
-          </FlexItem>
-        </Row>
-      </div>
+    customIcon: LoaderLargeIcon,
+    message: (
+      <>
+        {(step === CloudJobStep.Credentials || !step) &&
+          'Processing Cloud API keys…'}
+        {step === CloudJobStep.Subscription &&
+          'Processing Cloud subscriptions…'}
+        {step === CloudJobStep.Database &&
+          'Creating a free trial Cloud database…'}
+        {step === CloudJobStep.Import &&
+          'Importing a free trial Cloud database…'}
+      </>
+    ),
+    description: (
+      <>
+        This may take several minutes, but it is totally worth it!
+        <Spacer size="m" />
+        You can continue working in Redis Insight, and we will notify you once
+        done.
+      </>
     ),
   }),
   SUCCESS_CREATE_DB: (
@@ -349,8 +339,7 @@ export const INFINITE_MESSAGES: Record<
       <>
         With Redis Insight {version} you have access to new useful features and
         optimizations.
-        <br />
-        <br />
+        <Spacer size="m" />
         Restart Redis Insight to install updates.
       </>
     ),

@@ -89,11 +89,22 @@ describe('INFINITE_MESSAGES', () => {
   })
 
   describe('PENDING_CREATE_DB', () => {
-    it('should render message', () => {
-      const { Inner } = INFINITE_MESSAGES.PENDING_CREATE_DB()
-      expect(render(<>{Inner}</>)).toBeTruthy()
+    it('should render message', async () => {
+      renderToast(INFINITE_MESSAGES.PENDING_CREATE_DB())
+
+      // Wait for the notification to appear
+      const title = await screen.findByText('Processing Cloud API keys…')
+      const description = await screen.findByText(
+        /This may take several minutes, but it is totally worth it!\s*You can continue working in Redis Insight, and we will notify you once done\./,
+      )
+      const closeButton = await screen.findByRole('button', { name: /close/i })
+
+      expect(title).toBeInTheDocument()
+      expect(description).toBeInTheDocument()
+      expect(closeButton).toBeInTheDocument()
     })
   })
+
   describe('DATABASE_EXISTS', () => {
     it('should render message', () => {
       const { Inner } = INFINITE_MESSAGES.DATABASE_EXISTS(jest.fn())
