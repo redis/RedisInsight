@@ -7,6 +7,21 @@ import { CommonProps, Theme } from 'uiSrc/components/base/theme/types'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 
+const StyledWrapper = styled(Row)`
+  position: relative;
+  border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral600};
+  border-radius: 0.4rem;
+  padding: ${({ theme }: { theme: Theme }) =>
+  `${theme.core.space.space000} ${theme.core.space.space050}`};
+  background-color: ${({ theme }) =>
+  theme.semantic.color.background.neutral100};
+`
+
+const StyledInput = styled(Input)`
+  flex: 1;
+  min-width: 27px;
+`
+
 export type AutoTagOption<T = string | number | string[] | undefined> = {
   label: string
   key?: string
@@ -209,18 +224,3 @@ export const AutoTag = ({
     </FormField>
   )
 }
-
-const StyledWrapper = styled(Row)`
-  position: relative;
-  border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral600};
-  border-radius: 0.4rem;
-  padding: ${({ theme }: { theme: Theme }) =>
-    `${theme.core.space.space000} ${theme.core.space.space050}`};
-  background-color: ${({ theme }) =>
-    theme.semantic.color.background.neutral100};
-`
-
-const StyledInput = styled(Input)`
-  flex: 1;
-  min-width: 27px;
-`
