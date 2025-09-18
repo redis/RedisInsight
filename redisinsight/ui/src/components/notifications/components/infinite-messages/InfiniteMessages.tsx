@@ -373,47 +373,20 @@ export const INFINITE_MESSAGES: Record<
   }),
   SUCCESS_DEPLOY_PIPELINE: () => ({
     id: InfiniteMessagesIds.pipelineDeploySuccess,
-    className: 'wide',
-    Inner: (
-      <div
-        role="presentation"
-        onMouseDown={(e) => {
-          e.preventDefault()
-        }}
-        onMouseUp={(e) => {
-          e.preventDefault()
-        }}
-        data-testid="success-deploy-pipeline-notification"
-      >
-        <Row justify="end">
-          <FlexItem className="infiniteMessage__icon">
-            <RiIcon type="ChampagneIcon" size="original" />
-          </FlexItem>
-          <FlexItem grow>
-            <Title className="infiniteMessage__title" size="XS">
-              Congratulations!
-            </Title>
-            <Text size="xs">
-              Deployment completed successfully!
-              <br />
-              Check out the pipeline statistics page.
-            </Text>
-            <Spacer size="m" />
-            {/* // TODO remove display none when statistics page will be available */}
-            <Row style={{ display: 'none' }} justify="end" align="center">
-              <FlexItem>
-                <PrimaryButton
-                  size="s"
-                  onClick={() => {}}
-                  data-testid="notification-connect-db"
-                >
-                  Statistics
-                </PrimaryButton>
-              </FlexItem>
-            </Row>
-          </FlexItem>
-        </Row>
-      </div>
+    message: 'Congratulations!',
+    description: (
+      <>
+        Deployment completed successfully!
+        <br />
+        Check out the pipeline statistics page.
+      </>
     ),
+    // TODO enable when statistics page will be available
+    // actions: {
+    //   primary: {
+    //     label: 'Statistics',
+    //     onClick: () => {},
+    //   }
+    // }
   }),
 }

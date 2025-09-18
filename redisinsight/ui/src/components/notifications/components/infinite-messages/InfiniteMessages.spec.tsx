@@ -224,4 +224,21 @@ describe('INFINITE_MESSAGES', () => {
       expect(onSuccess).toHaveBeenCalled()
     })
   })
+
+  describe('SUCCESS_DEPLOY_PIPELINE', () => {
+    it('should render message', async () => {
+      renderToast(INFINITE_MESSAGES.SUCCESS_DEPLOY_PIPELINE())
+
+      // Wait for the notification to appear
+      const title = await screen.findByText('Congratulations!')
+      const description = await screen.findByText(
+        /Deployment completed successfully!\s*Check out the pipeline statistics page\./,
+      )
+      const closeButton = await screen.findByRole('button', { name: /close/i })
+
+      expect(title).toBeInTheDocument()
+      expect(description).toBeInTheDocument()
+      expect(closeButton).toBeInTheDocument()
+    })
+  })
 })
