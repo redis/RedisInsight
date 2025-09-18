@@ -185,16 +185,14 @@ export const AutoTag = ({
               />
             )
           })}
-          <FlexibleInputWrapper>
-            <Input
-              variant="underline"
-              placeholder={getPlaceholder()}
-              onChange={handleInputChange}
-              onKeyDown={handleEnter}
-              value={tag}
-              data-test-subj="autoTagInput"
-            />
-          </FlexibleInputWrapper>
+          <StyledInput
+            variant="underline"
+            placeholder={getPlaceholder()}
+            onChange={handleInputChange}
+            onKeyDown={handleEnter}
+            value={tag}
+            data-test-subj="autoTagInput"
+          />
           <ClearButton
             onClick={() => {
               setTag('')
@@ -222,10 +220,7 @@ const StyledWrapper = styled(Row)`
     theme.semantic.color.background.neutral100};
 `
 
-const FlexibleInputWrapper = styled.div`
+const StyledInput = styled(Input)`
   flex: 1;
-  min-width: 28px;
-  > * {
-    width: 100%;
-  }
+  min-width: 27px;
 `
