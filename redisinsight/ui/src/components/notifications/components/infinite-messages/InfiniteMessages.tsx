@@ -214,48 +214,14 @@ export const INFINITE_MESSAGES: Record<
   }),
   SUBSCRIPTION_EXISTS: (onSuccess?: () => void, onClose?: () => void) => ({
     id: InfiniteMessagesIds.subscriptionExists,
-    Inner: (
-      <div
-        role="presentation"
-        onMouseDown={(e) => {
-          e.preventDefault()
-        }}
-        onMouseUp={(e) => {
-          e.preventDefault()
-        }}
-        data-testid="subscription-exists-notification"
-      >
-        <Title className="infiniteMessage__title" size="XS">
-          Your subscription does not have a free trial Redis Cloud database.
-        </Title>
-        <Text size="xs">
-          Do you want to create a free trial database in your existing
-          subscription?
-        </Text>
-        <Spacer size="m" />
-        <Row justify="between">
-          <FlexItem>
-            <PrimaryButton
-              size="s"
-              onClick={() => onSuccess?.()}
-              data-testid="create-subscription-sso-btn"
-            >
-              Create
-            </PrimaryButton>
-          </FlexItem>
-          <FlexItem>
-            <SecondaryButton
-              size="s"
-              className="infiniteMessage__btn"
-              onClick={() => onClose?.()}
-              data-testid="cancel-create-subscription-sso-btn"
-            >
-              Cancel
-            </SecondaryButton>
-          </FlexItem>
-        </Row>
-      </div>
-    ),
+    message:
+      'Your subscription does not have a free trial Redis Cloud database.',
+    description:
+      'Do you want to create a free trial database in your existing subscription?',
+    actions: {
+      primary: { label: 'Create', onClick: () => onSuccess?.() },
+    },
+    onClose,
   }),
   AUTO_CREATING_DATABASE: () => ({
     id: InfiniteMessagesIds.autoCreateDb,
