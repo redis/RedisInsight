@@ -284,9 +284,19 @@ describe('INFINITE_MESSAGES', () => {
   })
 
   describe('AUTO_CREATING_DATABASE', () => {
-    it('should render message', () => {
-      const { Inner } = INFINITE_MESSAGES.AUTO_CREATING_DATABASE()
-      expect(render(<>{Inner}</>)).toBeTruthy()
+    it('should render message', async () => {
+      renderToast(INFINITE_MESSAGES.AUTO_CREATING_DATABASE())
+
+      // Wait for the notification to appear
+      const title = await screen.findByText('Connecting to your database')
+      const description = await screen.findByText(
+        'This may take several minutes, but it is totally worth it!',
+      )
+      const closeButton = await screen.findByRole('button', { name: /Close/ })
+
+      expect(title).toBeInTheDocument()
+      expect(description).toBeInTheDocument()
+      expect(closeButton).toBeInTheDocument()
     })
   })
 

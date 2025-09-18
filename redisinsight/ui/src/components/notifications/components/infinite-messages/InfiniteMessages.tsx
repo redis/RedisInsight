@@ -225,23 +225,9 @@ export const INFINITE_MESSAGES: Record<
   }),
   AUTO_CREATING_DATABASE: () => ({
     id: InfiniteMessagesIds.autoCreateDb,
-    Inner: (
-      <div role="presentation" data-testid="pending-create-db-notification">
-        <Row justify="end">
-          <FlexItem>
-            <Loader className={cx('infiniteMessage__icon', styles.loading)} />
-          </FlexItem>
-          <FlexItem grow>
-            <Title className="infiniteMessage__title" size="XS">
-              Connecting to your database
-            </Title>
-            <Text size="xs">
-              This may take several minutes, but it is totally worth it!
-            </Text>
-          </FlexItem>
-        </Row>
-      </div>
-    ),
+    message: 'Connecting to your database',
+    description: 'This may take several minutes, but it is totally worth it!',
+    customIcon: LoaderLargeIcon,
   }),
   APP_UPDATE_AVAILABLE: (version: string, onSuccess?: () => void) => ({
     id: InfiniteMessagesIds.appUpdateAvailable,
