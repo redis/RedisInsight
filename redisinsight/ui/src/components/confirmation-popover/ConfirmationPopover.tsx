@@ -1,7 +1,7 @@
 import React from 'react'
 import { RiPopover, RiPopoverProps } from 'uiSrc/components'
 import styled from 'styled-components'
-import {Col, Row} from 'uiSrc/components/base/layout/flex'
+import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { Text, Title } from 'uiSrc/components/base/text'
 
 const PopoverContentWrapper = styled(Col)`
@@ -9,7 +9,8 @@ const PopoverContentWrapper = styled(Col)`
   max-width: 300px;
 `
 
-export interface ConfirmationPopoverProps extends Omit<RiPopoverProps, 'children'> {
+export interface ConfirmationPopoverProps
+  extends Omit<RiPopoverProps, 'children'> {
   title?: string
   message?: string
   confirmButton: React.ReactNode
@@ -20,12 +21,10 @@ const ConfirmationPopover = (props: ConfirmationPopoverProps) => {
 
   return (
     <RiPopover {...rest}>
-      <PopoverContentWrapper gap="l">
+      <PopoverContentWrapper gap="l" data-testid="confirm-popover">
         {title && <Title size="S">{title}</Title>}
         {message && <Text size="m">{message}</Text>}
-        <Row>
-          {confirmButton}
-        </Row>
+        <Row>{confirmButton}</Row>
       </PopoverContentWrapper>
     </RiPopover>
   )
