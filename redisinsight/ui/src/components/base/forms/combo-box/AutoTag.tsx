@@ -224,7 +224,7 @@ const StyledWrapper = styled(Row)`
 
 const FlexibleInputWrapper = styled.div`
   flex: 1;
-  min-width: 50px;
+  min-width: 28px;
   > * {
     width: 100%;
   }
