@@ -147,7 +147,7 @@ export const INFINITE_MESSAGES: Record<
           )}
           <Spacer size="m" />
           <Row justify="between" align="center">
-            <FlexItem style={{ marginLeft: -10 }}>
+            <FlexItem>
               <ExternalLink href={MANAGE_DB_LINK} iconSize="S">
                 Manage DB
               </ExternalLink>
@@ -168,47 +168,13 @@ export const INFINITE_MESSAGES: Record<
   },
   DATABASE_EXISTS: (onSuccess?: () => void, onClose?: () => void) => ({
     id: InfiniteMessagesIds.databaseExists,
-    Inner: (
-      <div
-        role="presentation"
-        onMouseDown={(e) => {
-          e.preventDefault()
-        }}
-        onMouseUp={(e) => {
-          e.preventDefault()
-        }}
-        data-testid="database-exists-notification"
-      >
-        <Title className="infiniteMessage__title" size="XS">
-          You already have a free trial Redis Cloud subscription.
-        </Title>
-        <Text size="xs">
-          Do you want to import your existing database into Redis Insight?
-        </Text>
-        <Spacer size="m" />
-        <Row justify="between">
-          <FlexItem>
-            <PrimaryButton
-              size="s"
-              onClick={() => onSuccess?.()}
-              data-testid="import-db-sso-btn"
-            >
-              Import
-            </PrimaryButton>
-          </FlexItem>
-          <FlexItem>
-            <SecondaryButton
-              size="s"
-              className="infiniteMessage__btn"
-              onClick={() => onClose?.()}
-              data-testid="cancel-import-db-sso-btn"
-            >
-              Cancel
-            </SecondaryButton>
-          </FlexItem>
-        </Row>
-      </div>
-    ),
+    message: 'You already have a free trial Redis Cloud subscription.',
+    description:
+      'Do you want to import your existing database into Redis Insight?',
+    actions: {
+      primary: { label: 'Import', onClick: () => onSuccess?.() },
+    },
+    onClose,
   }),
   DATABASE_IMPORT_FORBIDDEN: (onClose?: () => void) => ({
     id: InfiniteMessagesIds.databaseImportForbidden,
