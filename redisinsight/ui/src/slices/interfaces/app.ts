@@ -255,6 +255,7 @@ export interface InfiniteMessage {
   description?: RiToastType['description']
   actions?: RiToastType['actions']
   customIcon?: RiToastType['customIcon']
+  onClose?: () => void
 }
 
 export interface StateAppNotifications {

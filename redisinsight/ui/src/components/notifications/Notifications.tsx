@@ -152,6 +152,7 @@ const Notifications = () => {
         className = '',
         variant,
         customIcon,
+        onClose: onCloseCallback,
       } = notification
       const toastId = riToast(
         {
@@ -188,6 +189,7 @@ const Notifications = () => {
             }
 
             dispatch(removeInfiniteNotification(id))
+            onCloseCallback?.()
           },
         },
         {
