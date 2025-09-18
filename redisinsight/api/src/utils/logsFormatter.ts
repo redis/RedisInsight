@@ -1,5 +1,5 @@
 import { format } from 'winston';
-import { omit } from 'lodash';
+import { omit, isString } from 'lodash';
 import { inspect } from 'util';
 import config, { Config } from 'src/utils/config';
 
@@ -28,7 +28,7 @@ export const sanitizeError = (error?: Error, opts: SanitizeOptions = {} ): Sanit
 
   return {
     type: error.constructor?.name ?? 'UnknownError',
-    message: String(error.message ?? 'Unknown error'),
+    message: error.message,
     stack: opts.omitSensitiveData ? undefined : error.stack,
     cause: sanitizeError(getOriginalErrorCause((error as any).cause), opts),
   };
