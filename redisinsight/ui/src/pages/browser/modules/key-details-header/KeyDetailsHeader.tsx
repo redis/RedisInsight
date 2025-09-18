@@ -167,14 +167,15 @@ const KeyDetailsHeader = ({
                 </FlexItem>
               </Row>
               <Row
-                centered
                 className={styles.groupSecondLine}
                 gap="m"
                 align="start"
+                justify="between"
               >
-                <KeyDetailsHeaderSizeLength width={width} />
-                <KeyDetailsHeaderTTL onEditTTL={handleEditTTL} />
-                <FlexItem grow />
+                <Row>
+                  <KeyDetailsHeaderSizeLength width={width} />
+                  <KeyDetailsHeaderTTL onEditTTL={handleEditTTL} />
+                </Row>
                 <FlexItem>
                   <div className={styles.subtitleActionBtns}>
                     <AutoRefresh
