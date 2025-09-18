@@ -254,6 +254,7 @@ export interface InfiniteMessage {
   message?: RiToastType['message']
   description?: RiToastType['description']
   actions?: RiToastType['actions']
+  customIcon?: RiToastType['customIcon']
 }
 
 export interface StateAppNotifications {

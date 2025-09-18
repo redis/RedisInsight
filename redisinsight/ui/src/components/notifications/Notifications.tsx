@@ -151,6 +151,7 @@ const Notifications = () => {
         Inner,
         className = '',
         variant,
+        customIcon,
       } = notification
       const toastId = riToast(
         {
@@ -159,6 +160,7 @@ const Notifications = () => {
           description: description || Inner, // TODO: Remove inner later
           actions,
           showCloseButton: true,
+          customIcon,
           onClose: () => {
             switch (id) {
               case InfiniteMessagesIds.oAuthProgress:
