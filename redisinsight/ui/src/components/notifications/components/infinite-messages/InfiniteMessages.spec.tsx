@@ -34,43 +34,6 @@ const renderToast = (notification: InfiniteMessage) => {
 }
 
 describe('INFINITE_MESSAGES', () => {
-  describe('SUCCESS_CREATE_DB', () => {
-    it('should render message', () => {
-      const { Inner } = INFINITE_MESSAGES.SUCCESS_CREATE_DB({}, jest.fn())
-      expect(render(<>{Inner}</>)).toBeTruthy()
-    })
-
-    it('should call onSuccess', () => {
-      const onSuccess = jest.fn()
-      const { Inner } = INFINITE_MESSAGES.SUCCESS_CREATE_DB({}, onSuccess)
-      render(<>{Inner}</>)
-
-      fireEvent.click(screen.getByTestId('notification-connect-db'))
-      fireEvent.mouseUp(screen.getByTestId('success-create-db-notification'))
-      fireEvent.mouseDown(screen.getByTestId('success-create-db-notification'))
-
-      expect(onSuccess).toBeCalled()
-    })
-
-    it('should render plan details', () => {
-      const { Inner } = INFINITE_MESSAGES.SUCCESS_CREATE_DB(
-        { region: 'us-us', provider: OAuthProvider.AWS },
-        jest.fn(),
-      )
-      render(<>{Inner}</>)
-
-      expect(screen.getByTestId('notification-details-plan')).toHaveTextContent(
-        'Free',
-      )
-      expect(
-        screen.getByTestId('notification-details-vendor'),
-      ).toHaveTextContent('Amazon Web Services')
-      expect(
-        screen.getByTestId('notification-details-region'),
-      ).toHaveTextContent('us-us')
-    })
-  })
-
   describe('AUTHENTICATING', () => {
     it('should render message', async () => {
       renderToast(INFINITE_MESSAGES.AUTHENTICATING())
@@ -102,6 +65,71 @@ describe('INFINITE_MESSAGES', () => {
       expect(title).toBeInTheDocument()
       expect(description).toBeInTheDocument()
       expect(closeButton).toBeInTheDocument()
+    })
+  })
+
+  describe('SUCCESS_CREATE_DB', () => {
+    it('should render message', async () => {
+      const onSuccess = jest.fn()
+
+      renderToast(INFINITE_MESSAGES.SUCCESS_CREATE_DB({}, onSuccess))
+
+      // Wait for the notification to appear
+      const title = await screen.findByText('Congratulations!')
+      const description = await screen.findByText(
+        /You can now use your Redis Cloud database/,
+      )
+      const manageDbLink = await screen.findByText('Manage DB')
+      const connectButton = await screen.findByRole('button', {
+        name: /Connect/,
+      })
+      const closeButton = await screen.findByRole('button', { name: /close/i })
+
+      expect(title).toBeInTheDocument()
+      expect(description).toBeInTheDocument()
+      expect(manageDbLink).toBeInTheDocument()
+      expect(connectButton).toBeInTheDocument()
+      expect(closeButton).toBeInTheDocument()
+    })
+
+    it('should call onSuccess callback when clicking on the "Connect" button', async () => {
+      const onSuccess = jest.fn()
+
+      renderToast(INFINITE_MESSAGES.SUCCESS_CREATE_DB({}, onSuccess))
+
+      const connectButton = await screen.findByRole('button', {
+        name: /Connect/,
+      })
+      expect(connectButton).toBeInTheDocument()
+
+      fireEvent.click(connectButton)
+
+      expect(onSuccess).toHaveBeenCalled()
+    })
+
+    it('should render plan details', async () => {
+      const planDetails = { region: 'us-us', provider: OAuthProvider.AWS }
+      const onSuccess = jest.fn()
+
+      renderToast(INFINITE_MESSAGES.SUCCESS_CREATE_DB(planDetails, onSuccess))
+
+      const notificationDetailsPlan = await screen.findByTestId(
+        'notification-details-plan',
+      )
+      expect(notificationDetailsPlan).toBeInTheDocument()
+      expect(notificationDetailsPlan).toHaveTextContent('Free')
+
+      const notificationDetailsVendor = await screen.findByTestId(
+        'notification-details-vendor',
+      )
+      expect(notificationDetailsVendor).toBeInTheDocument()
+      expect(notificationDetailsVendor).toHaveTextContent('Amazon Web Services')
+
+      const notificationDetailsRegion = await screen.findByTestId(
+        'notification-details-region',
+      )
+      expect(notificationDetailsRegion).toBeInTheDocument()
+      expect(notificationDetailsRegion).toHaveTextContent('us-us')
     })
   })
 

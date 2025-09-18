@@ -93,87 +93,76 @@ export const INFINITE_MESSAGES: Record<
         CloudJobName.CreateFreeSubscriptionAndDatabase,
       ].includes(jobName)
     const text = `You can now use your Redis Cloud database${withFeed ? ' with pre-loaded sample data' : ''}.`
+
     return {
       id: InfiniteMessagesIds.oAuthSuccess,
-      className: 'wide',
-      Inner: (
-        <div
-          role="presentation"
-          onMouseDown={(e) => {
-            e.preventDefault()
-          }}
-          onMouseUp={(e) => {
-            e.preventDefault()
-          }}
-          data-testid="success-create-db-notification"
-        >
-          <Row justify="end">
-            <FlexItem className="infiniteMessage__icon">
-              <RiIcon type="ChampagneIcon" size="original" />
-            </FlexItem>
-            <FlexItem grow>
-              <Title className="infiniteMessage__title" size="XS">
-                Congratulations!
-              </Title>
-              <Text size="xs">
-                {text}
-                <Spacer size="s" />
-                <b>Notice:</b> the database will be deleted after 15 days of
-                inactivity.
-              </Text>
-              {!!details && (
-                <>
-                  <Spacer size="m" />
-                  <Divider variant="fullWidth" />
-                  <Spacer size="m" />
-                  <Row className={styles.detailsRow} justify="between">
-                    <FlexItem>
-                      <Text size="xs">Plan</Text>
-                    </FlexItem>
-                    <FlexItem data-testid="notification-details-plan">
-                      <Text size="xs">Free</Text>
-                    </FlexItem>
-                  </Row>
-                  <Row className={styles.detailsRow} justify="between">
-                    <FlexItem>
-                      <Text size="xs">Cloud Vendor</Text>
-                    </FlexItem>
-                    <FlexItem
-                      className={styles.vendorLabel}
-                      data-testid="notification-details-vendor"
-                    >
-                      {!!vendor?.icon && <RiIcon type={vendor?.icon} />}
-                      <Text size="xs">{vendor?.label}</Text>
-                    </FlexItem>
-                  </Row>
-                  <Row className={styles.detailsRow} justify="between">
-                    <FlexItem>
-                      <Text size="xs">Region</Text>
-                    </FlexItem>
-                    <FlexItem data-testid="notification-details-region">
-                      <Text size="xs">{details.region}</Text>
-                    </FlexItem>
-                  </Row>
-                </>
-              )}
+      message: 'Congratulations!',
+      description: (
+        <>
+          {text}
+          <Spacer size="m" />
+          <Text variant="semiBold" component="span">
+            Notice:
+          </Text>{' '}
+          the database will be deleted after 15 days of inactivity.
+          {!!details && (
+            <>
               <Spacer size="m" />
-              <Row justify="between" align="center">
+              <Divider variant="fullWidth" />
+              <Spacer size="m" />
+              <Row className={styles.detailsRow} justify="between">
                 <FlexItem>
-                  <ExternalLink href={MANAGE_DB_LINK}>Manage DB</ExternalLink>
+                  <Text size="xs">Plan</Text>
                 </FlexItem>
-                <FlexItem>
-                  <PrimaryButton
-                    size="s"
-                    onClick={() => onSuccess()}
-                    data-testid="notification-connect-db"
-                  >
-                    Connect
-                  </PrimaryButton>
+                <FlexItem data-testid="notification-details-plan">
+                  <Text size="xs">Free</Text>
                 </FlexItem>
               </Row>
+              <Row
+                className={styles.detailsRow}
+                justify="between"
+                align="center"
+              >
+                <FlexItem>
+                  <Text size="xs">Cloud Vendor</Text>
+                </FlexItem>
+                <FlexItem
+                  className={styles.vendorLabel}
+                  data-testid="notification-details-vendor"
+                  $gap="s"
+                >
+                  {!!vendor?.icon && <RiIcon type={vendor?.icon} />}
+                  <Text size="xs">{vendor?.label}</Text>
+                </FlexItem>
+              </Row>
+              <Row className={styles.detailsRow} justify="between">
+                <FlexItem>
+                  <Text size="xs">Region</Text>
+                </FlexItem>
+                <FlexItem data-testid="notification-details-region">
+                  <Text size="xs">{details.region}</Text>
+                </FlexItem>
+              </Row>
+            </>
+          )}
+          <Spacer size="m" />
+          <Row justify="between" align="center">
+            <FlexItem style={{ marginLeft: -10 }}>
+              <ExternalLink href={MANAGE_DB_LINK} iconSize="S">
+                Manage DB
+              </ExternalLink>
+            </FlexItem>
+            <FlexItem>
+              <PrimaryButton
+                size="small"
+                onClick={() => onSuccess()}
+                data-testid="notification-connect-db"
+              >
+                Connect
+              </PrimaryButton>
             </FlexItem>
           </Row>
-        </div>
+        </>
       ),
     }
   },
