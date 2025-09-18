@@ -17,7 +17,6 @@
   width: 240px;
   height: 114px;
   padding: 28px 18px !important;
-  background-color: var(--euiColorLightestShade) !important;
 
   .input {
     display: inline-block;
@@ -26,7 +25,6 @@
     input {
       height: 30px !important;
       border-radius: 0 !important;
-      background-color: var(--euiColorLightestShade) !important;
     }
   }
 }
@@ -54,7 +52,6 @@
   display: none;
   right: 61px;
   margin-bottom: 3px;
-  background-color: var(--browserTableRowEven);
   width: 26px !important;
   height: 28px !important;
   padding: 5px;
@@ -69,11 +66,10 @@
   display: inline-block;
   width: 80px;
   height: 30px;
-  border: 1px solid transparent;
   cursor: pointer;
+  padding-left: 5px;
 
   &:hover {
-    padding-left: 5px;
     border-color: var(--controlsBorderColor);
 
     .refreshRatePencil {

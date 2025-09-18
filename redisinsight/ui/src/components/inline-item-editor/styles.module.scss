@@ -6,14 +6,6 @@
   }
 }
 
-.field {
-  min-width: 72px;
-  max-width: 100% !important;
-  box-shadow: 0 3px 3px var(--controlsBoxShadowColor) !important;
-  height: 33px !important;
-  border: 1px solid var(--controlsBoxShadowColor) !important;
-}
-
 .controls {
   .tooltip,
   .popoverWrapper {

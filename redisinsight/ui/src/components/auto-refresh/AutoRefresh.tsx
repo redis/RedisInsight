@@ -296,11 +296,10 @@ const AutoRefresh = ({
           <FlexItem>
             <RiPopover
               ownFocus={false}
-              anchorPosition="downRight"
+              anchorPosition="downCenter"
               isOpen={isPopoverOpen}
               anchorClassName={styles.anchorWrapper}
               panelClassName={cx(
-                'popover-without-top-tail',
                 styles.popoverWrapper,
                 {
                   [styles.popoverWrapperEditing]: editingRate,
