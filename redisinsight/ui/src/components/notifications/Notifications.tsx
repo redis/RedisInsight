@@ -148,7 +148,6 @@ const Notifications = () => {
         message,
         description,
         actions,
-        Inner,
         className = '',
         variant,
         customIcon,
@@ -159,7 +158,7 @@ const Notifications = () => {
         {
           className: cx(styles.infiniteMessage, className),
           message: message,
-          description: description || Inner, // TODO: Remove inner later
+          description: description,
           actions,
           showCloseButton,
           customIcon,

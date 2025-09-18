@@ -1,6 +1,5 @@
 import React from 'react'
 import { find } from 'lodash'
-import cx from 'classnames'
 import { CloudJobName, CloudJobStep } from 'uiSrc/electron/constants'
 import ExternalLink from 'uiSrc/components/base/external-link'
 import Divider from 'uiSrc/components/divider/Divider'
@@ -19,14 +18,8 @@ import {
 } from 'uiSrc/constants/links'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Link } from 'uiSrc/components/base/link/Link'
-import { Loader } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 export enum InfiniteMessagesIds {
