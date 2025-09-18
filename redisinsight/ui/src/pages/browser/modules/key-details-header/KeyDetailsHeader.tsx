@@ -174,7 +174,8 @@ const KeyDetailsHeader = ({
               >
                 <KeyDetailsHeaderSizeLength width={width} />
                 <KeyDetailsHeaderTTL onEditTTL={handleEditTTL} />
-                <FlexItem grow>
+                <FlexItem grow />
+                <FlexItem>
                   <div className={styles.subtitleActionBtns}>
                     <AutoRefresh
                       postfix={type}

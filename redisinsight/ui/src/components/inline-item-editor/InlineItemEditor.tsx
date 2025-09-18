@@ -4,13 +4,13 @@ import cx from 'classnames'
 import { useTheme } from '@redis-ui/styles'
 
 import * as keys from 'uiSrc/constants/keys'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
+import { RiTooltip } from 'uiSrc/components/base'
 import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import { WindowEvent } from 'uiSrc/components/base/utils/WindowEvent'
 import { FocusTrap } from 'uiSrc/components/base/utils/FocusTrap'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 import { DestructiveButton } from 'uiSrc/components/base/forms/buttons'
-import { Text } from 'uiSrc/components/base/text'
+import ConfirmationPopover from 'uiSrc/components/confirmation-popover'
 
 import {
   ActionsContainer,
@@ -276,7 +276,7 @@ const InlineItemEditor = (props: Props) => {
                   )}
                   {approveByValidation && (
                     <ActionsWrapper $size={size}>
-                      <RiPopover
+                      <ConfirmationPopover
                         anchorPosition="leftCenter"
                         isOpen={isShowApprovePopover}
                         closePopover={() => setIsShowApprovePopover(false)}
@@ -286,38 +286,20 @@ const InlineItemEditor = (props: Props) => {
                         )}
                         panelClassName={cx(styles.popoverPanel)}
                         button={ApplyBtn}
-                      >
-                        <div
-                          className={styles.popover}
-                          data-testid="approve-popover"
-                        >
-                          <Text size="m" component="div">
-                            {!!approveText?.title && (
-                              <h4>
-                                <b>{approveText?.title}</b>
-                              </h4>
-                            )}
-                            <Text
-                              size="s"
-                              color="subdued"
-                              className={styles.approveText}
-                            >
-                              {approveText?.text}
-                            </Text>
-                          </Text>
-                          <div className={styles.popoverFooter}>
-                            <DestructiveButton
-                              aria-label="Save"
-                              className={cx(styles.btn, styles.saveBtn)}
-                              disabled={isDisabledApply()}
-                              onClick={handleFormSubmit}
-                              data-testid="save-btn"
-                            >
-                              Save
-                            </DestructiveButton>
-                          </div>
-                        </div>
-                      </RiPopover>
+                        title={approveText?.title}
+                        message={approveText?.text}
+                        confirmButton={
+                          <DestructiveButton
+                            aria-label="Save"
+                            className={cx(styles.btn, styles.saveBtn)}
+                            disabled={isDisabledApply()}
+                            onClick={handleFormSubmit}
+                            data-testid="save-btn"
+                          >
+                            Save
+                          </DestructiveButton>
+                        }
+                      />
                     </ActionsWrapper>
                   )}
                 </ActionsContainer>

@@ -20,9 +20,7 @@ import {
   DestructiveButton,
   IconButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { Text } from 'uiSrc/components/base/text'
-import { RiPopover } from 'uiSrc/components/base'
-import styles from './styles.module.scss'
+import { ConfirmationPopover } from 'uiSrc/components'
 
 export interface Props {
   onDelete: (key: RedisResponseBuffer) => void
@@ -62,7 +60,7 @@ const KeyDetailsHeaderDelete = ({ onDelete }: Props) => {
   }
 
   return (
-    <RiPopover
+    <ConfirmationPopover
       key={keyProp}
       anchorPosition="leftCenter"
       ownFocus
@@ -78,27 +76,19 @@ const KeyDetailsHeaderDelete = ({ onDelete }: Props) => {
           data-testid="delete-key-btn"
         />
       }
-    >
-      <div className={styles.popoverDeleteContainer}>
-        <Text size="m" component="div">
-          <h4 style={{ wordBreak: 'break-all' }}>
-            <b>{tooltipContent}</b>
-          </h4>
-          <Text size="s">will be deleted.</Text>
-        </Text>
-        <div className={styles.popoverFooter}>
-          <DestructiveButton
-            size="small"
-            icon={DeleteIcon}
-            onClick={() => onDelete(keyBuffer!)}
-            className={styles.popoverDeleteBtn}
-            data-testid="delete-key-confirm-btn"
-          >
-            Delete
-          </DestructiveButton>
-        </div>
-      </div>
-    </RiPopover>
+      title={tooltipContent}
+      message="will be deleted."
+      confirmButton={
+        <DestructiveButton
+          size="small"
+          icon={DeleteIcon}
+          onClick={() => onDelete(keyBuffer!)}
+          data-testid="delete-key-confirm-btn"
+        >
+          Delete
+        </DestructiveButton>
+      }
+    />
   )
 }
 

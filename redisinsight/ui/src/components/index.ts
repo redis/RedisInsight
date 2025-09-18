@@ -29,6 +29,7 @@ import CodeBlock from './code-block'
 import ShowChildByCondition from './show-child-by-condition'
 import FeatureFlagComponent from './feature-flag-component'
 import AutoRefresh from './auto-refresh'
+import ConfirmationPopover from './confirmation-popover'
 import { ModuleNotLoaded, FilterNotAvailable } from './messages'
 import RdiInstanceHeader from './rdi-instance-header'
 import {
@@ -81,6 +82,7 @@ export {
   ModuleNotLoaded,
   FilterNotAvailable,
   AutoRefresh,
+  ConfirmationPopover,
   RdiInstanceHeader,
   RecommendationBody,
   RecommendationBadges,

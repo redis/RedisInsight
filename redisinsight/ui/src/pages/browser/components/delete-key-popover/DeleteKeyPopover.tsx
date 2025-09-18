@@ -1,5 +1,4 @@
 import React from 'react'
-import styled from 'styled-components'
 
 import cx from 'classnames'
 import { KeyTypes, ModulesKeyTypes } from 'uiSrc/constants'
@@ -10,9 +9,7 @@ import {
   IconButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { DeleteIcon } from 'uiSrc/components/base/icons'
-import { Text, Title } from 'uiSrc/components/base/text'
-import { RiPopover } from 'uiSrc/components/base'
-import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import ConfirmationPopover from 'uiSrc/components/confirmation-popover'
 
 export interface DeleteProps {
   nameString: string
@@ -24,11 +21,6 @@ export interface DeleteProps {
   onDelete: (key: RedisResponseBuffer) => void
   onOpenPopover: (index: number, type: KeyTypes | ModulesKeyTypes) => void
 }
-
-const PopoverContentWrapper = styled(Col)`
-  word-break: break-all;
-  max-width: 300px;
-`
 
 export const DeleteKeyPopover = ({
   nameString,
@@ -46,7 +38,7 @@ export const DeleteKeyPopover = ({
   }
 
   return (
-    <RiPopover
+    <ConfirmationPopover
       anchorClassName={cx('showOnHoverKey', {
         show: deletePopoverId === rowId,
       })}
@@ -63,22 +55,19 @@ export const DeleteKeyPopover = ({
         />
       }
       onClick={(e) => e.stopPropagation()}
-    >
-      <PopoverContentWrapper gap="l">
-        <Title size="S">{formatLongName(nameString)}</Title>
-        <Text size="m">will be deleted.</Text>
-        <Row>
-          <DestructiveButton
-            size="small"
-            icon={DeleteIcon}
-            disabled={deleting}
-            onClick={() => onDelete(name)}
-            data-testid="submit-delete-key"
-          >
-            Delete
-          </DestructiveButton>
-        </Row>
-      </PopoverContentWrapper>
-    </RiPopover>
+      title={formatLongName(nameString)}
+      message="will be deleted."
+      confirmButton={
+        <DestructiveButton
+          size="small"
+          icon={DeleteIcon}
+          disabled={deleting}
+          onClick={() => onDelete(name)}
+          data-testid="submit-delete-key"
+        >
+          Delete
+        </DestructiveButton>
+      }
+    />
   )
 }
