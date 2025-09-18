@@ -10,20 +10,22 @@ const PopoverContentWrapper = styled(Col)`
 `
 
 export interface ConfirmationPopoverProps
-  extends Omit<RiPopoverProps, 'children'> {
-  title?: string
-  message?: string
+  extends Omit<RiPopoverProps, 'children' | 'title'> {
+  title?: JSX.Element | string
+  message?: JSX.Element | string
+  appendInfo?: JSX.Element | string | null
   confirmButton: React.ReactNode
 }
 
 const ConfirmationPopover = (props: ConfirmationPopoverProps) => {
-  const { title, message, confirmButton, ...rest } = props
+  const { title, message, confirmButton, appendInfo, ...rest } = props
 
   return (
     <RiPopover {...rest}>
       <PopoverContentWrapper gap="l" data-testid="confirm-popover">
         {title && <Title size="S">{title}</Title>}
         {message && <Text size="m">{message}</Text>}
+        {appendInfo}
         <Row>{confirmButton}</Row>
       </PopoverContentWrapper>
     </RiPopover>

@@ -94,7 +94,6 @@ const EditableTextArea = (props: Props) => {
         data-testid={`${testIdPrefix}_content-value-${field}`}
       >
         <Text
-          color="subdued"
           size="s"
           style={{ maxWidth: '100%', whiteSpace: 'break-spaces' }}
         >

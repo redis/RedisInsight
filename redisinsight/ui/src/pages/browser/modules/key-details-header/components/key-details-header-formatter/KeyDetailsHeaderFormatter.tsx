@@ -75,7 +75,7 @@ const KeyDetailsHeaderFormatter = (props: Props) => {
           >
             <>
               {width >= MIDDLE_SCREEN_RESOLUTION ? (
-                <OptionText color="subdued">{text}</OptionText>
+                <OptionText>{text}</OptionText>
               ) : (
                 <ControlsIcon
                   type={

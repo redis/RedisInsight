@@ -383,7 +383,6 @@ const HashDetailsTable = (props: Props) => {
 
         return (
           <Text
-            color="subdued"
             size="s"
             style={{ maxWidth: '100%', whiteSpace: 'break-spaces' }}
             component="div"
@@ -573,9 +572,9 @@ const HashDetailsTable = (props: Props) => {
             onApply={(value) => handleApplyEditExpire(fieldItem, value, 'ttl')}
             testIdPrefix="hash-ttl"
             validation={validateTTLNumber}
+            variant="underline"
             isEditDisabled={isTruncatedFieldName}
             editToolTipContent={editTooltipContent}
-            
           >
             <div className="innerCellAsCell">
               {expire === -1 ? (

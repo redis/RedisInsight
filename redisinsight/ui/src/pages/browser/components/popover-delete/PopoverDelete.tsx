@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
+import { RiTooltip } from 'uiSrc/components/base'
 import { DeleteIcon } from 'uiSrc/components/base/icons'
 import { RedisString } from 'uiSrc/slices/interfaces'
 import { isTruncatedString } from 'uiSrc/utils'
@@ -10,8 +10,8 @@ import {
   EmptyButton,
   IconButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { Text } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
+import ConfirmationPopover from 'uiSrc/components/confirmation-popover'
 
 export interface Props {
   header?: JSX.Element | string
@@ -94,7 +94,7 @@ const PopoverDelete = (props: Props) => {
   )
 
   return (
-    <RiPopover
+    <ConfirmationPopover
       key={item}
       anchorPosition="leftCenter"
       ownFocus
@@ -104,28 +104,20 @@ const PopoverDelete = (props: Props) => {
       anchorClassName="deleteFieldPopover"
       button={isDisabled ? deleteButtonWithTooltip : deleteButton}
       onClick={(e) => e.stopPropagation()}
-    >
-      <div className={styles.popover}>
-        <Text size="m" component="div">
-          {!!header && (
-            <h4>
-              <b>{header}</b>
-            </h4>
-          )}
-          <Text size="s">{text}</Text>
-          {appendInfo}
-        </Text>
-        <div className={styles.popoverFooter}>
-          <DestructiveButton
-            icon={DeleteIcon}
-            onClick={() => handleDeleteItem(itemRaw || item)}
-            data-testid={testid || 'remove'}
-          >
-            Remove
-          </DestructiveButton>
-        </div>
-      </div>
-    </RiPopover>
+      title={header}
+      message={text}
+      appendInfo={appendInfo}
+      confirmButton={
+        <DestructiveButton
+          size="small"
+          icon={DeleteIcon}
+          onClick={() => handleDeleteItem(itemRaw || item)}
+          data-testid={testid || 'remove'}
+        >
+          Remove
+        </DestructiveButton>
+      }
+    />
   )
 }
 

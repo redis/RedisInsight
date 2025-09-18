@@ -26,6 +26,7 @@ import styles from './styles.module.scss'
 
 type Positions = 'top' | 'bottom' | 'left' | 'right' | 'inside'
 type Design = 'default' | 'separate'
+type InputVariant = 'outline' | 'underline'
 
 export interface Props {
   onDecline: (event?: React.MouseEvent<HTMLElement>) => void
@@ -59,14 +60,15 @@ export interface Props {
   approveByValidation?: (value: string) => boolean
   approveText?: { title: string; text: string }
   textFiledClassName?: string
+  variant?: InputVariant
   styles?: {
     inputContainer?: {
-      width?: string,
-      height?: string,
+      width?: string
+      height?: string
     }
     input?: {
-      width?: string,
-      height?: string,
+      width?: string
+      height?: string
     }
     actionsContainer?: {
       width?: string
@@ -105,6 +107,7 @@ const InlineItemEditor = (props: Props) => {
     approveByValidation,
     approveText,
     textFiledClassName,
+    variant,
     styles: customStyles,
   } = props
   const containerEl: Ref<HTMLDivElement> = useRef(null)
@@ -223,7 +226,7 @@ const InlineItemEditor = (props: Props) => {
                   handleFormSubmit(e as React.MouseEvent<HTMLElement>)
                 }
                 style={{
-                  ...customStyles?.inputContainer
+                  ...customStyles?.inputContainer,
                 }}
               >
                 <FlexItem grow>
@@ -242,6 +245,7 @@ const InlineItemEditor = (props: Props) => {
                         loading={isLoading}
                         data-testid="inline-item-editor"
                         autoComplete={autoComplete}
+                        variant={variant}
                         ref={inputRef}
                       />
                       {expandable && (
@@ -291,6 +295,7 @@ const InlineItemEditor = (props: Props) => {
                         confirmButton={
                           <DestructiveButton
                             aria-label="Save"
+                            size="small"
                             className={cx(styles.btn, styles.saveBtn)}
                             disabled={isDisabledApply()}
                             onClick={handleFormSubmit}

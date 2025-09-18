@@ -4,6 +4,7 @@ import cx from 'classnames'
 import { RiTooltip } from 'uiSrc/components'
 import { StopPropagation } from 'uiSrc/components/virtual-table'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
+import { Props as InlineItemEditorProps } from 'uiSrc/components/inline-item-editor/InlineItemEditor'
 
 import { Text } from 'uiSrc/components/base/text'
 import { EditIcon } from 'uiSrc/components/base/icons'
@@ -23,6 +24,7 @@ export interface Props {
   onDecline: (event?: React.MouseEvent<HTMLElement>) => void
   onApply: (value: string, event: React.MouseEvent) => void
   testIdPrefix?: string
+  variant?: InlineItemEditorProps['variant']
 }
 
 const EditableInput = (props: Props) => {
@@ -39,6 +41,7 @@ const EditableInput = (props: Props) => {
     onDecline,
     onApply,
     testIdPrefix = '',
+    variant,
   } = props
 
   const [isHovering, setIsHovering] = useState(false)
@@ -51,11 +54,7 @@ const EditableInput = (props: Props) => {
         onMouseLeave={() => setIsHovering(false)}
         data-testid={`${testIdPrefix}_content-value-${field}`}
       >
-        <Text
-          color="subdued"
-          size="s"
-          style={{ maxWidth: '100%', whiteSpace: 'break-spaces' }}
-        >
+        <Text size="s" style={{ maxWidth: '100%', whiteSpace: 'break-spaces' }}>
           <div style={{ display: 'flex' }}>{children}</div>
         </Text>
         {isHovering && (
@@ -102,6 +101,7 @@ const EditableInput = (props: Props) => {
             onEdit?.(false)
           }}
           validation={validation}
+          variant={variant}
         />
       </div>
     </StopPropagation>
