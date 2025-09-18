@@ -23,7 +23,6 @@ export const riToast = (
   options?: ToastOptions | undefined,
 ) => {
   const toastContent: ToastContentParams = {
-    showCloseButton: false,
     ...content,
   }
 

@@ -255,6 +255,7 @@ export interface InfiniteMessage {
   description?: RiToastType['description']
   actions?: RiToastType['actions']
   customIcon?: RiToastType['customIcon']
+  showCloseButton?: boolean
   onClose?: () => void
 }
 

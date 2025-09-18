@@ -152,6 +152,7 @@ const Notifications = () => {
         className = '',
         variant,
         customIcon,
+        showCloseButton = true,
         onClose: onCloseCallback,
       } = notification
       const toastId = riToast(
@@ -160,7 +161,7 @@ const Notifications = () => {
           message: message,
           description: description || Inner, // TODO: Remove inner later
           actions,
-          showCloseButton: true,
+          showCloseButton,
           customIcon,
           onClose: () => {
             switch (id) {
