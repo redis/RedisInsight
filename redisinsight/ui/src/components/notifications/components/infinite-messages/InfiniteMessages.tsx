@@ -148,7 +148,11 @@ export const INFINITE_MESSAGES: Record<
           <Spacer size="m" />
           <Row justify="between" align="center">
             <FlexItem>
-              <ExternalLink href={MANAGE_DB_LINK} iconSize="S">
+              <ExternalLink
+                href={MANAGE_DB_LINK}
+                iconSize="XS"
+                variant="small-inline"
+              >
                 Manage DB
               </ExternalLink>
             </FlexItem>
@@ -178,49 +182,35 @@ export const INFINITE_MESSAGES: Record<
   }),
   DATABASE_IMPORT_FORBIDDEN: (onClose?: () => void) => ({
     id: InfiniteMessagesIds.databaseImportForbidden,
-    Inner: (
-      <div
-        role="presentation"
-        onMouseDown={(e) => {
-          e.preventDefault()
-        }}
-        onMouseUp={(e) => {
-          e.preventDefault()
-        }}
-        data-testid="database-import-forbidden-notification"
-      >
-        <Title className="infiniteMessage__title" size="XS">
-          Unable to import Cloud database.
-        </Title>
-        <Text size="xs">
-          Adding your Redis Cloud database to Redis Insight is disabled due to a
-          setting restricting database connection management.
-          <Spacer size="m" />
-          Log in to{' '}
-          <Link
-            target="_blank"
-            color="text"
-            tabIndex={-1}
-            href="https://cloud.redis.io/#/databases?utm_source=redisinsight&utm_medium=main&utm_campaign=disabled_db_management"
-          >
-            Redis Cloud
-          </Link>{' '}
-          to check your database.
-        </Text>
+    message: 'Unable to import Cloud database.',
+    description: (
+      <>
+        Adding your Redis Cloud database to Redis Insight is disabled due to a
+        setting restricting database connection management.
         <Spacer size="m" />
-        <Row justify="end">
-          <FlexItem>
-            <PrimaryButton
-              size="s"
-              onClick={() => onClose?.()}
-              data-testid="database-import-forbidden-notification-ok-btn"
-            >
-              Ok
-            </PrimaryButton>
-          </FlexItem>
-        </Row>
-      </div>
+        Log in to{' '}
+        <ExternalLink
+          target="_blank"
+          variant="small-inline"
+          iconSize={'XS'}
+          tabIndex={-1}
+          href={getUtmExternalLink(EXTERNAL_LINKS.cloudConsole, {
+            medium: UTM_MEDIUMS.Main,
+            campaign: 'disabled_db_management',
+          })}
+        >
+          Redis Cloud
+        </ExternalLink>{' '}
+        to check your database.
+      </>
     ),
+    actions: {
+      primary: {
+        label: 'OK',
+        onClick: () => onClose?.(),
+      },
+    },
+    showCloseButton: false,
   }),
   SUBSCRIPTION_EXISTS: (onSuccess?: () => void, onClose?: () => void) => ({
     id: InfiniteMessagesIds.subscriptionExists,

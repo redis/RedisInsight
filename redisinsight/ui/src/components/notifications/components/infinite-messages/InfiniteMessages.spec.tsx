@@ -189,27 +189,38 @@ describe('INFINITE_MESSAGES', () => {
   })
 
   describe('DATABASE_IMPORT_FORBIDDEN', () => {
-    it('should render message', () => {
-      const { Inner } = INFINITE_MESSAGES.DATABASE_IMPORT_FORBIDDEN(jest.fn())
-      expect(render(<>{Inner}</>)).toBeTruthy()
+    it('should render message', async () => {
+      const onClose = jest.fn()
+
+      renderToast(INFINITE_MESSAGES.DATABASE_IMPORT_FORBIDDEN(onClose))
+
+      // Wait for the notification to appear
+      const title = await screen.findByText('Unable to import Cloud database.')
+      const description = await screen.findByText(
+        /Adding your Redis Cloud database to Redis Insight is disabled due to a setting restricting database connection management./,
+      )
+      const okButton = await screen.findByRole('button', {
+        name: /OK/,
+      })
+
+      expect(title).toBeInTheDocument()
+      expect(description).toBeInTheDocument()
+      expect(okButton).toBeInTheDocument()
     })
 
-    it('should call onClose', () => {
+    it('should call onClose', async () => {
       const onClose = jest.fn()
-      const { Inner } = INFINITE_MESSAGES.DATABASE_IMPORT_FORBIDDEN(onClose)
-      render(<>{Inner}</>)
 
-      fireEvent.click(
-        screen.getByTestId('database-import-forbidden-notification-ok-btn'),
-      )
-      fireEvent.mouseUp(
-        screen.getByTestId('database-import-forbidden-notification'),
-      )
-      fireEvent.mouseDown(
-        screen.getByTestId('database-import-forbidden-notification'),
-      )
+      renderToast(INFINITE_MESSAGES.DATABASE_IMPORT_FORBIDDEN(onClose))
 
-      expect(onClose).toBeCalled()
+      const okButton = await screen.findByRole('button', {
+        name: /OK/,
+      })
+      expect(okButton).toBeInTheDocument()
+
+      fireEvent.click(okButton)
+
+      expect(onClose).toHaveBeenCalled()
     })
   })
 
