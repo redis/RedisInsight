@@ -5,6 +5,7 @@ import {
   themeLight,
   themeDark,
 } from '@redis-ui/styles'
+import { legacyDarkTheme } from 'uiSrc/styles/themes/legacy-theme-override'
 import '@redis-ui/styles/normalized-styles.css'
 import '@redis-ui/styles/fonts.css'
 
@@ -82,10 +83,11 @@ export class ThemeProvider extends React.Component<Props> {
     const { theme, usingSystemTheme }: any = this.state
     const uiTheme =
       theme === Theme.Dark
-        ? themeDark
+        ? legacyDarkTheme
         : theme === Theme.Light
           ? themeLight
           : redisUiOldTheme
+    
     return (
       <ThemeContext.Provider
         value={{
