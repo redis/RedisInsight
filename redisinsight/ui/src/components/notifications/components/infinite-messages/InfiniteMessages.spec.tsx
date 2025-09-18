@@ -70,12 +70,24 @@ describe('INFINITE_MESSAGES', () => {
       ).toHaveTextContent('us-us')
     })
   })
+
   describe('AUTHENTICATING', () => {
-    it('should render message', () => {
-      const { Inner } = INFINITE_MESSAGES.AUTHENTICATING()
-      expect(render(<>{Inner}</>)).toBeTruthy()
+    it('should render message', async () => {
+      renderToast(INFINITE_MESSAGES.AUTHENTICATING())
+
+      // Wait for the notification to appear
+      const title = await screen.findByText('Authenticating…')
+      const description = await screen.findByText(
+        'This may take several seconds, but it is totally worth it!',
+      )
+      const closeButton = await screen.findByRole('button', { name: /close/i })
+
+      expect(title).toBeInTheDocument()
+      expect(description).toBeInTheDocument()
+      expect(closeButton).toBeInTheDocument()
     })
   })
+
   describe('PENDING_CREATE_DB', () => {
     it('should render message', () => {
       const { Inner } = INFINITE_MESSAGES.PENDING_CREATE_DB()

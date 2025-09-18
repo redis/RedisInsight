@@ -5,6 +5,7 @@ import { CloudJobName, CloudJobStep } from 'uiSrc/electron/constants'
 import ExternalLink from 'uiSrc/components/base/external-link'
 import Divider from 'uiSrc/components/divider/Divider'
 import { OAuthProviders } from 'uiSrc/components/oauth/oauth-select-plan/constants'
+import { LoaderLargeIcon } from 'uiSrc/components/base/icons'
 
 import { CloudSuccessResult, InfiniteMessage } from 'uiSrc/slices/interfaces'
 
@@ -51,23 +52,9 @@ export const INFINITE_MESSAGES: Record<
 > = {
   AUTHENTICATING: () => ({
     id: InfiniteMessagesIds.oAuthProgress,
-    Inner: (
-      <div role="presentation" data-testid="authenticating-notification">
-        <Row justify="end">
-          <FlexItem>
-            <Loader className={cx('infiniteMessage__icon', styles.loading)} />
-          </FlexItem>
-          <FlexItem grow>
-            <Title className="infiniteMessage__title" size="XS">
-              Authenticating…
-            </Title>
-            <Text size="xs">
-              This may take several seconds, but it is totally worth it!
-            </Text>
-          </FlexItem>
-        </Row>
-      </div>
-    ),
+    message: 'Authenticating…',
+    description: 'This may take several seconds, but it is totally worth it!',
+    customIcon: LoaderLargeIcon,
   }),
   PENDING_CREATE_DB: (step?: CloudJobStep) => ({
     id: InfiniteMessagesIds.oAuthProgress,
