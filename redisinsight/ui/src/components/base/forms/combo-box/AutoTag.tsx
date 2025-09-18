@@ -161,7 +161,7 @@ export const AutoTag = ({
           className="RI-auto-tag__selection"
           wrap
           justify="start"
-          grow={false}
+          grow
           align="center"
           data-test-subj="autoTagWrapper"
         >
@@ -185,15 +185,16 @@ export const AutoTag = ({
               />
             )
           })}
-          <Input
-            variant="underline"
-            autoSize
-            placeholder={getPlaceholder()}
-            onChange={handleInputChange}
-            onKeyDown={handleEnter}
-            value={tag}
-            data-test-subj="autoTagInput"
-          />
+          <FlexibleInputWrapper>
+            <Input
+              variant="underline"
+              placeholder={getPlaceholder()}
+              onChange={handleInputChange}
+              onKeyDown={handleEnter}
+              value={tag}
+              data-test-subj="autoTagInput"
+            />
+          </FlexibleInputWrapper>
           <ClearButton
             onClick={() => {
               setTag('')
@@ -219,4 +220,12 @@ const StyledWrapper = styled(Row)`
     `${theme.core.space.space000} ${theme.core.space.space050}`};
   background-color: ${({ theme }) =>
     theme.semantic.color.background.neutral100};
+`
+
+const FlexibleInputWrapper = styled.div`
+  flex: 1;
+  min-width: 50px;
+  > * {
+    width: 100%;
+  }
 `
