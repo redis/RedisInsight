@@ -43,8 +43,11 @@ import {
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
 import { Link } from 'uiSrc/components/base/link/Link'
+import { Title } from 'uiSrc/pages/vector-search/manage-indexes/styles'
 
 import styles from './styles.module.scss'
+
+const TITLE_TRUNCATE_LENGTH = 30 // Note: Temporary dirty fix for RI-7474, before the full redesign of this component
 
 export interface IProps {
   id: string
@@ -59,7 +62,9 @@ export interface IProps {
 }
 
 const RecommendationContent = styled(Card)`
-  padding: var(--size-m);
+  padding: 0;
+  border: none;
+  box-shadow: none;
 `
 
 const RecommendationTitle = ({
@@ -311,12 +316,16 @@ const Recommendation = ({
         data-testid={`${name}-accordion`}
         aria-label={`${name}-accordion`}
       >
-        <RecommendationContent
-          className={styles.accordionContent}
-          color="subdued"
-        >
-          {recommendationContent()}
-        </RecommendationContent>
+        <Col>
+          {/* Note: Temporary dirty fix for RI-7474, before the full redesign of this component */}
+          {title?.length > TITLE_TRUNCATE_LENGTH && <Title>{title}</Title>}
+          <RecommendationContent
+            className={styles.accordionContent}
+            color="subdued"
+          >
+            {recommendationContent()}
+          </RecommendationContent>
+        </Col>
       </RiAccordion>
     </div>
   )
