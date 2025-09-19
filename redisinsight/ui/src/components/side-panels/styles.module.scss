@@ -34,7 +34,6 @@ $animation-duration: 300ms;
   font-size: 16px;
 }
 
-
 .body {
   height: calc(100% - 60px);
   display: flex;
@@ -101,7 +100,9 @@ $animation-duration: 300ms;
   }
 
   .triggerText {
-    font: normal normal 400 12px/14px Graphik, sans-serif !important;
+    font:
+      normal normal 400 12px/14px Graphik,
+      sans-serif !important;
     color: var(--htmlColor) !important;
   }
 
@@ -114,11 +115,12 @@ $animation-duration: 300ms;
   display: flex;
   flex-shrink: 0 !important;
   overflow: initial !important;
-  margin-right: 12px;
-  border-bottom: 1px solid var(--separatorColor);
   align-items: center;
-  padding: 0 12px;
   flex-grow: 0;
+
+  & > div {
+    padding: 0 12px;
+  }
 }
 
 .assistantHeader {

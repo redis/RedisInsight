@@ -2,6 +2,7 @@
   overflow: hidden;
   height: 100%;
   flex-grow: 1;
+  margin-top: 8px;
 }
 
 .innerContainerLoader {
@@ -24,5 +25,3 @@
 .internalPageVisible {
   transform: translateX(0);
 }
-
-
