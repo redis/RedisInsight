@@ -86,7 +86,7 @@ export class FeatureFlagProvider {
     );
     this.strategies.set(
       KnownFeatures.VectorSearch,
-      new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
+      new SwitchableFlagStrategy(this.featuresConfigService, this.settingsService),
     );
   }
 
