@@ -60,6 +60,14 @@ const Pagination = ({
         path: sourcePath + path,
         manifestPath: !isNil(key) ? `${groupPath}/${key}` : '',
       })
+
+      // Scroll the context panel to top
+      const panel = document.querySelector(
+        '[data-testid="enablement-area__page"]',
+      )
+      if (panel) {
+        panel.scrollTop = 0
+      }
     }
   }
 
