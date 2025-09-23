@@ -21,7 +21,6 @@ import {
   StyledTextInput,
 } from './InlineItemEditor.styles'
 
-
 import styles from './styles.module.scss'
 
 type Positions = 'top' | 'bottom' | 'left' | 'right' | 'inside'
@@ -216,7 +215,10 @@ const InlineItemEditor = (props: Props) => {
       {viewChildrenMode ? (
         children
       ) : (
-        <OutsideClickDetector onOutsideClick={handleClickOutside}>
+        <OutsideClickDetector
+          onOutsideClick={handleClickOutside}
+          isDisabled={isShowApprovePopover}
+        >
           <IIEContainer ref={containerEl}>
             <WindowEvent event="keydown" handler={handleOnEsc} />
             <FocusTrap disabled={disableFocusTrap}>
