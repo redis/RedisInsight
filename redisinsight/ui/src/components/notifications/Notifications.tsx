@@ -54,32 +54,43 @@ const Notifications = () => {
   )
 
   const showSuccessToasts = (data: IMessage[]) =>
-    data.forEach(({ id = '', title = '', message = '', className, group }) => {
-      const handleClose = () => {
-        onSubmitNotification(id, group)
-        removeToast(id)
-      }
-      if (toastIdsRef.current.has(id)) {
-        removeToast(id)
-        return
-      }
-      const toastId = riToast(
-        {
-          className,
-          message: title,
-          description: getSuccessText(message),
-          actions: {
-            primary: {
-              closes: true,
-              label: 'OK',
-              onClick: handleClose,
+    data.forEach(
+      ({
+        id = '',
+        title = '',
+        message = '',
+        showCloseButton = true,
+        actions,
+        className,
+        group,
+      }) => {
+        const handleClose = () => {
+          onSubmitNotification(id, group)
+          removeToast(id)
+        }
+        if (toastIdsRef.current.has(id)) {
+          removeToast(id)
+          return
+        }
+        const toastId = riToast(
+          {
+            className,
+            message: title,
+            description: getSuccessText(message),
+            actions: actions ?? {
+              primary: {
+                closes: true,
+                label: 'OK',
+                onClick: handleClose,
+              },
             },
+            showCloseButton,
           },
-        },
-        { variant: riToast.Variant.Success, toastId: id },
-      )
-      toastIdsRef.current.set(id, toastId)
-    })
+          { variant: riToast.Variant.Success, toastId: id },
+        )
+        toastIdsRef.current.set(id, toastId)
+      },
+    )
 
   const showErrorsToasts = (errors: IError[]) =>
     errors.forEach(

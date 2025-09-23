@@ -48,6 +48,8 @@ export interface IMessage {
   message: string | JSX.Element
   group?: string
   className?: string
+  showCloseButton?: boolean
+  actions?: RiToastType['actions']
 }
 
 export enum AppWorkspace {
