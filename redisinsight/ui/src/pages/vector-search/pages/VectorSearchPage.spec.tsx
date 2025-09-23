@@ -16,6 +16,7 @@ import {
 } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { redisearchListSelector } from 'uiSrc/slices/browser/redisearch'
+import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { VectorSearch } from './VectorSearchPage'
 import useRedisInstanceCompatibility from '../create-index/hooks/useRedisInstanceCompatibility'
 import {
@@ -32,6 +33,15 @@ jest.mock('uiSrc/telemetry', () => ({
 jest.mock('../create-index/hooks/useRedisInstanceCompatibility', () =>
   jest.fn(),
 )
+
+jest.mock('uiSrc/slices/app/features', () => ({
+  ...jest.requireActual('uiSrc/slices/app/features'),
+  appFeatureFlagsFeaturesSelector: jest.fn().mockReturnValue({
+    vectorSearch: {
+      flag: true,
+    },
+  }),
+}))
 
 const renderVectorSearchPageComponent = (
   contextValue?: Partial<VectorSearchOnboardingContextType>,
@@ -129,6 +139,19 @@ describe('VectorSearchPage', () => {
 
     const onboarding = screen.getByTestId('vector-search-onboarding')
     expect(onboarding).toBeInTheDocument()
+  })
+
+  it('should not render onboarding screen when ff is disabled', () => {
+    ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockImplementation(() => ({
+      vectorSearch: {
+        flag: false,
+      },
+    }))
+    renderVectorSearchPageComponent({ showOnboarding: true })
+
+    expect(
+      screen.queryByTestId('vector-search-onboarding'),
+    ).not.toBeInTheDocument()
   })
 
   describe('Telemetry', () => {

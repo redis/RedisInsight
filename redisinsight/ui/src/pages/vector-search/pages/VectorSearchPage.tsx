@@ -2,12 +2,14 @@ import React from 'react'
 import { useLocation, useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
+import { FeatureFlags } from 'uiSrc/constants'
 import { TelemetryPageView } from 'uiSrc/telemetry'
 import { usePageViewTelemetry } from 'uiSrc/telemetry/usePageViewTelemetry'
 import { Loader } from 'uiSrc/components/base/display'
 import { Spacer } from 'uiSrc/components/base/layout'
 import { formatLongName, getDbIndex, setTitle } from 'uiSrc/utils'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 
 import { VectorSearchPageWrapper } from './../styles'
 import { VectorSearchQuery } from './../query/VectorSearchQuery'
@@ -37,6 +39,10 @@ export const VectorSearch = () => {
 
   const { name: connectedInstanceName, db } = useSelector(
     connectedInstanceSelector,
+  )
+
+  const { [FeatureFlags.vectorSearch]: vectorSearchFeature } = useSelector(
+    appFeatureFlagsFeaturesSelector,
   )
 
   const defaultSavedQueriesIndex =
@@ -71,7 +77,7 @@ export const VectorSearch = () => {
     )
   }
 
-  if (showOnboarding) {
+  if (showOnboarding && vectorSearchFeature?.flag) {
     return (
       <VectorSearchPageWrapper>
         <VectorSearchOnboarding />

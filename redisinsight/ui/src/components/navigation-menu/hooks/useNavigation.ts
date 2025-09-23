@@ -8,7 +8,6 @@ import { ANALYTICS_ROUTES } from 'uiSrc/components/main-router/constants/sub-rou
 import {
   appFeaturePagesHighlightingSelector,
   removeFeatureFromHighlighting,
-  appFeatureFlagsFeaturesSelector,
 } from 'uiSrc/slices/app/features'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { connectedInstanceSelector as connectedRdiInstanceSelector } from 'uiSrc/slices/rdi/instances'
@@ -48,10 +47,6 @@ export function useNavigation() {
     connectedRdiInstanceSelector,
   )
   const highlightedPages = useSelector(appFeaturePagesHighlightingSelector)
-
-  const { [FeatureFlags.vectorSearch]: vectorSearchFeature } = useSelector(
-    appFeatureFlagsFeaturesSelector,
-  )
 
   const isRdiWorkspace = workspace === AppWorkspace.RDI
 
@@ -100,7 +95,7 @@ export function useNavigation() {
       iconType: BrowserIcon,
       onboard: ONBOARDING_FEATURES.BROWSER_PAGE,
     },
-    vectorSearchFeature?.flag && {
+    {
       tooltipText: 'Search',
       pageName: PageNames.vectorSearch,
       ariaLabel: 'Search',
@@ -144,7 +139,7 @@ export function useNavigation() {
       onboard: ONBOARDING_FEATURES.PUB_SUB_PAGE,
       featureFlag: FeatureFlags.envDependent,
     },
-  ].filter((tab) => !!tab) as INavigations[]
+  ]
 
   const privateRdiRoutes: INavigations[] = [
     {

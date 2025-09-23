@@ -1,5 +1,6 @@
 import React from 'react'
 import { cleanup, render, screen, userEvent } from 'uiSrc/utils/test-utils'
+import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { HeaderActions, HeaderActionsProps } from './HeaderActions'
 import useRedisInstanceCompatibility from '../create-index/hooks/useRedisInstanceCompatibility'
 
@@ -12,6 +13,15 @@ jest.mock('uiSrc/telemetry', () => ({
 jest.mock('../create-index/hooks/useRedisInstanceCompatibility', () =>
   jest.fn(),
 )
+
+jest.mock('uiSrc/slices/app/features', () => ({
+  ...jest.requireActual('uiSrc/slices/app/features'),
+  appFeatureFlagsFeaturesSelector: jest.fn().mockReturnValue({
+    vectorSearch: {
+      flag: true,
+    },
+  }),
+}))
 
 const mockProps: HeaderActionsProps = {
   toggleManageIndexesScreen: jest.fn(),
@@ -95,6 +105,26 @@ describe('HeaderActions', () => {
 
     const startWizardButton = screen.getByTestId('start-wizard-button')
     expect(startWizardButton).toBeInTheDocument()
+  })
+
+  it('should not render "start wizard banner" when ff is disabled', () => {
+    ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockImplementation(() => ({
+      vectorSearch: {
+        flag: false,
+      },
+    }))
+
+    mockUseRedisInstanceCompatibility.mockReturnValue({
+      loading: false,
+      hasRedisearch: false,
+      hasSupportedVersion: true,
+    })
+
+    renderComponent({
+      ...mockProps,
+    })
+
+    expect(screen.queryByTestId('start-wizard-button')).not.toBeInTheDocument()
   })
 
   it('should render "free redis cloud db" banner when vector sets are not supported', () => {
