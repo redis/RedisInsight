@@ -17,24 +17,6 @@
   box-shadow: none !important;
 }
 
-.summary {
-  border-top: 1px solid var(--euiToastSuccessBtnColor);
-  padding-top: 8px;
-
-  :global(.euiFlexItem:not(:last-child)) {
-    margin-right: 14px !important;
-  }
-
-  .summaryValue {
-    font-size: 14px;
-    font-weight: 500;
-  }
-
-  .summaryLabel {
-    color: var(--euiToastLightColor) !important;
-  }
-}
-
 .infiniteMessage {
   :global {
     .euiToastHeader {

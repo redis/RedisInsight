@@ -13,8 +13,9 @@ import {
 } from 'uiSrc/utils'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Text } from 'uiSrc/components/base/text'
+import { Text, Title } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
+import { Spacer } from '../base/layout'
 
 // TODO: use i18n file for texts
 export default {
@@ -242,53 +243,41 @@ export default {
     return {
       title: (
         <>
-          Action completed
+          <Title size="S">Action completed</Title>
           {fileName ? (
             <>
-              <br />
-              <Text color="ghost">Commands executed from file:</Text>
-              <Text color="ghost">{formatLongName(fileName, 34, 5)}</Text>
+              <Spacer size="s" />
+              <Text>Commands executed from file:</Text>
+              <Text>{formatLongName(fileName, 34, 5)}</Text>
             </>
           ) : null}
+          <Spacer size="m" />
         </>
       ),
       message: (
-        <Row align="start" className={styles.summary}>
+        <Row align="start" gap="xl">
           <FlexItem>
-            <Text color="ghost" className={styles.summaryValue}>
-              {numberWithSpaces(processed)}
-            </Text>
-            <Text size="xs" className={styles.summaryLabel}>
-              Commands Processed
-            </Text>
+            <Text>{numberWithSpaces(processed)}</Text>
+            <Text size="xs">Commands Processed</Text>
           </FlexItem>
           <FlexItem>
-            <Text color="ghost" className={styles.summaryValue}>
-              {numberWithSpaces(succeed)}
-            </Text>
-            <Text size="xs" className={styles.summaryLabel}>
-              Success
-            </Text>
+            <Text>{numberWithSpaces(succeed)}</Text>
+            <Text size="xs">Success</Text>
           </FlexItem>
           <FlexItem>
-            <Text color="ghost" className={styles.summaryValue}>
-              {numberWithSpaces(failed)}
-            </Text>
-            <Text size="xs" className={styles.summaryLabel}>
-              Errors
-            </Text>
+            <Text>{numberWithSpaces(failed)}</Text>
+            <Text size="xs">Errors</Text>
           </FlexItem>
           <FlexItem>
-            <Text color="ghost" className={styles.summaryValue}>
+            <Text>
               {millisecondsFormat(data?.duration || 0, 'H:mm:ss.SSS')}
             </Text>
-            <Text size="xs" className={styles.summaryLabel}>
-              Time Taken
-            </Text>
+            <Text size="xs">Time Taken</Text>
           </FlexItem>
         </Row>
       ),
       className: 'dynamic',
+      actions: {}, // Make sure we don't show the default OK button
     }
   },
   DELETE_LIBRARY: (libraryName: string) => ({
