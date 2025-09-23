@@ -110,3 +110,8 @@
     #0000 100%
   ) !important;
 }
+
+// To be removed once global font styling is fixed
+.font-inconsolata {
+  font-family: 'Inconsolata', serif !important;
+}
