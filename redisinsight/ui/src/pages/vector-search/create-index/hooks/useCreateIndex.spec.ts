@@ -30,6 +30,8 @@ jest.mock('uiSrc/services/executeQuery', () => ({
   default: jest.fn(),
 }))
 const mockExecute = executeQuery as jest.Mock
+const mockOnSuccess = jest.fn()
+const mockOnError = jest.fn()
 
 describe('useCreateIndex', () => {
   beforeEach(() => {
@@ -53,7 +55,7 @@ describe('useCreateIndex', () => {
     const { result } = renderHook(() => useCreateIndex())
 
     await act(async () => {
-      await result.current.run(defaultParams)
+      await result.current.run(defaultParams, mockOnSuccess, mockOnError)
     })
 
     expect(mockLoad).toHaveBeenCalledWith('test-instance-id', 'bikes')
@@ -65,6 +67,8 @@ describe('useCreateIndex', () => {
     expect(result.current.success).toBe(true)
     expect(result.current.error).toBeNull()
     expect(result.current.loading).toBe(false)
+    expect(mockOnSuccess).toHaveBeenCalled()
+    expect(mockOnError).not.toHaveBeenCalled()
   })
 
   it('should handle error if instanceId is missing', async () => {
@@ -88,7 +92,7 @@ describe('useCreateIndex', () => {
     const { result } = renderHook(() => useCreateIndex())
 
     await act(async () => {
-      await result.current.run(defaultParams)
+      await result.current.run(defaultParams, mockOnSuccess, mockOnError)
     })
 
     expect(mockLoad).toHaveBeenCalled()
@@ -96,6 +100,8 @@ describe('useCreateIndex', () => {
     expect(result.current.error).toBe(error)
     expect(result.current.loading).toBe(false)
     expect(mockExecute).not.toHaveBeenCalled()
+    expect(mockOnSuccess).not.toHaveBeenCalled()
+    expect(mockOnError).toHaveBeenCalled()
   })
 
   it('should handle execution failure', async () => {

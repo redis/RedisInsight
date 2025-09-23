@@ -7,7 +7,11 @@ import { CreateSearchIndexParameters, SampleDataContent } from '../types'
 import executeQuery from 'uiSrc/services/executeQuery'
 
 interface UseCreateIndexResult {
-  run: (params: CreateSearchIndexParameters) => Promise<void>
+  run: (
+    params: CreateSearchIndexParameters,
+    onSuccess?: () => void,
+    onError?: () => void,
+  ) => Promise<void>
   loading: boolean
   error: Error | null
   success: boolean
@@ -26,11 +30,11 @@ export const useCreateIndex = (): UseCreateIndexResult => {
   const { load } = useLoadData()
 
   const run = useCallback(
-    async ({
-      instanceId,
-      indexName,
-      dataContent,
-    }: CreateSearchIndexParameters) => {
+    async (
+      { instanceId, indexName, dataContent }: CreateSearchIndexParameters,
+      onSuccess: () => void,
+      onError: () => void,
+    ) => {
       setSuccess(false)
       setError(null)
       setLoading(true)
@@ -58,8 +62,10 @@ export const useCreateIndex = (): UseCreateIndexResult => {
         }
 
         setSuccess(true)
+        onSuccess?.()
       } catch (e) {
         setError(e instanceof Error ? e : new Error(String(e)))
+        onError?.()
       } finally {
         setLoading(false)
       }

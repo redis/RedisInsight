@@ -3,6 +3,7 @@ import { faker } from '@faker-js/faker'
 import { Factory } from 'fishery'
 import {
   collectChangedSavedQueryIndexTelemetry,
+  collectCreateIndexErrorStepTelemetry,
   collectCreateIndexStepTelemetry,
   collectCreateIndexWizardTelemetry,
   collectIndexInfoStepTelemetry,
@@ -153,6 +154,19 @@ describe('telemetry', () => {
 
       expect(sendEventTelemetry).toHaveBeenCalledWith({
         event: TelemetryEvent.VECTOR_SEARCH_ONBOARDING_PROCEED_TO_QUERIES,
+        eventData: { databaseId: instanceId },
+      })
+    })
+  })
+
+  describe('collectCreateIndexErrorStepTelemetry', () => {
+    it('should collect telemetry for the create index step failed', () => {
+      const instanceId = INSTANCE_ID_MOCK
+
+      collectCreateIndexErrorStepTelemetry(instanceId)
+
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.VECTOR_SEARCH_ONBOARDING_CREATE_INDEX_ERROR,
         eventData: { databaseId: instanceId },
       })
     })

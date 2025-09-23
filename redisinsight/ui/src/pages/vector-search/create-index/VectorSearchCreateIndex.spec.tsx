@@ -12,6 +12,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { Pages } from 'uiSrc/constants'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/analytics/dbAnalysisHistoryHandlers'
+import { VectorSearchOnboardingProvider } from 'uiSrc/pages/vector-search/context/VectorSearchOnboardingContext'
 import {
   VectorSearchCreateIndex,
   VectorSearchCreateIndexProps,
@@ -38,6 +39,14 @@ const mockedUseCreateIndex = useCreateIndex as jest.MockedFunction<
   typeof useCreateIndex
 >
 
+const mockRunSuccess = jest.fn(async (_params, onSuccess) => {
+  onSuccess?.()
+})
+
+const mockRunFail = jest.fn(async (_params, _onSuccess, onError) => {
+  onError?.()
+})
+
 const renderVectorSearchCreateIndexComponent = (
   props?: VectorSearchCreateIndexProps,
 ) => {
@@ -59,7 +68,12 @@ const renderVectorSearchCreateIndexComponent = (
     },
   }
   const store = mockStore(testState)
-  const utils = render(<VectorSearchCreateIndex {...props} />, { store })
+  const utils = render(
+    <VectorSearchOnboardingProvider>
+      <VectorSearchCreateIndex {...props} />
+    </VectorSearchOnboardingProvider>,
+    { store },
+  )
 
   return { ...utils, store }
 }
@@ -68,7 +82,7 @@ describe('VectorSearchCreateIndex', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockedUseCreateIndex.mockReturnValue({
-      run: jest.fn(),
+      run: mockRunSuccess,
       loading: false,
       error: null,
       success: false,
@@ -193,6 +207,33 @@ describe('VectorSearchCreateIndex', () => {
       expect(sendEventTelemetry).toHaveBeenCalledTimes(3)
       expect(sendEventTelemetry).toHaveBeenNthCalledWith(3, {
         event: TelemetryEvent.VECTOR_SEARCH_ONBOARDING_PROCEED_TO_QUERIES,
+        eventData: {
+          databaseId: INSTANCE_ID_MOCK,
+        },
+      })
+    })
+
+    it('should send telemetry events on create index step failed', () => {
+      mockedUseCreateIndex.mockReturnValue({
+        run: mockRunFail,
+        loading: false,
+        error: { message: 'Some error' },
+        success: false,
+      } as any)
+
+      renderVectorSearchCreateIndexComponent()
+
+      // Simulate going to the index info step
+      const buttonNext = screen.getByTestId('proceed-to-index-button')
+      fireEvent.click(buttonNext)
+
+      // Simulate creating the index
+      const buttonCreateIndex = screen.getByTestId('create-index-button')
+      fireEvent.click(buttonCreateIndex)
+
+      expect(sendEventTelemetry).toHaveBeenCalledTimes(3)
+      expect(sendEventTelemetry).toHaveBeenNthCalledWith(3, {
+        event: TelemetryEvent.VECTOR_SEARCH_ONBOARDING_CREATE_INDEX_ERROR,
         eventData: {
           databaseId: INSTANCE_ID_MOCK,
         },
