@@ -21,6 +21,7 @@ import {
 import FeatureFlagComponent from 'uiSrc/components/feature-flag-component'
 import { FeatureFlags } from 'uiSrc/constants'
 
+import { Text } from 'uiSrc/components/base/text'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { HideFor, ShowFor } from 'uiSrc/components/base/utils/ShowHide'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
@@ -100,7 +101,7 @@ const BottomGroupMinimized = () => {
           <RiBadge
             icon={CliIcon}
             withIcon
-            label="CLI"
+            label={<Text size="S">CLI</Text>}
             variant="light"
             className={cx(styles.componentBadge, {
               [styles.active]: isShowCli || cliClientUuid,
@@ -119,7 +120,7 @@ const BottomGroupMinimized = () => {
             className={cx(styles.componentBadge, {
               [styles.active]: isShowHelper || isMinimizedHelper,
             })}
-            label="Command Helper"
+            label={<Text size="S">Command Helper</Text>}
           />
         </FlexItem>
         <FeatureFlagComponent name={FeatureFlags.envDependent}>
@@ -134,7 +135,7 @@ const BottomGroupMinimized = () => {
               className={cx(styles.componentBadge, {
                 [styles.active]: isShowMonitor || isMinimizedMonitor,
               })}
-              label="Profiler"
+              label={<Text size="S">Profiler</Text>}
             />
           </FlexItem>
         </FeatureFlagComponent>
