@@ -1,7 +1,10 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { Button } from 'uiSrc/components/base/forms/buttons'
 import { Col } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
+import { FeatureFlags } from 'uiSrc/constants'
+import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 
 import useStartWizard from '../../hooks/useStartWizard'
 import { StyledContainer, StyledImage } from './NoDataMessage.styles'
@@ -13,24 +16,30 @@ export interface NoDataMessageProps {
 }
 
 const NoDataMessage = ({ variant }: NoDataMessageProps) => {
+  const { [FeatureFlags.vectorSearch]: vectorSearchFeature } = useSelector(
+    appFeatureFlagsFeaturesSelector,
+  )
+
   const start = useStartWizard()
   const { loading, hasSupportedVersion } = useRedisInstanceCompatibility()
-  const { title, description, icon } = NO_DATA_MESSAGES[variant]
+  const { title, description, icon, imgStyle } = NO_DATA_MESSAGES[variant]
 
   return (
     <StyledContainer gap="xxl" data-testid="no-data-message">
-      <StyledImage src={icon} alt={title} as="img" />
+      <StyledImage src={icon} alt={title} as="img" style={imgStyle} />
 
       <Col gap="m">
         <Text size="M">{title}</Text>
-        <Text size="S">{description}</Text>
+        {vectorSearchFeature?.flag && <Text size="S">{description}</Text>}
       </Col>
 
-      {loading === false && hasSupportedVersion === true && (
-        <Button variant="secondary-invert" onClick={start}>
-          Get started
-        </Button>
-      )}
+      {vectorSearchFeature?.flag &&
+        loading === false &&
+        hasSupportedVersion === true && (
+          <Button variant="secondary-invert" onClick={start}>
+            Get started
+          </Button>
+        )}
     </StyledContainer>
   )
 }

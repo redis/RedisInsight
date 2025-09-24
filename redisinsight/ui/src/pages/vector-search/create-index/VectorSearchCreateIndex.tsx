@@ -136,9 +136,7 @@ export const VectorSearchCreateIndex = ({
   }, [step])
 
   useEffect(() => {
-    console.log('___ success/error changed!!!!', { success, error })
     if (error) {
-      console.log('___ error handler', { error })
       dispatch(addErrorNotification(parseCustomError(error.message) as any))
     } else if (success) {
       dispatch(addMessageNotification(successMessages.CREATE_INDEX()))

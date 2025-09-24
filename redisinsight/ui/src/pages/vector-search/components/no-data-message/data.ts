@@ -12,6 +12,7 @@ export interface NoDataMessageDetails {
   title: string
   description: string
   icon: string
+  imgStyle?: Record<string, string>
 }
 
 export const NO_DATA_MESSAGES: Record<NoDataMessageKeys, NoDataMessageDetails> =
@@ -21,6 +22,9 @@ export const NO_DATA_MESSAGES: Record<NoDataMessageKeys, NoDataMessageDetails> =
       description:
         'Start with vector search onboarding to explore sample data, or create an index and write queries in the smart editor.',
       icon: NoQueryResultsIcon,
+      imgStyle: {
+        marginRight: '30px'
+      }
     },
     [NoDataMessageKeys.ManageIndexes]: {
       title: 'No indexes.',
