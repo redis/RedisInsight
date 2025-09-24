@@ -1,40 +1,19 @@
-.groupComponentsWrapper {
-  flex-grow: 1;
-  height: 100%;
-  padding: 0 16px 16px 16px;
-}
-
-.groupComponents {
-  display: flex;
-  flex-grow: 1;
-  height: calc(100% - 26px);
-}
-
-.containerMinimized {
+.surveyLink {
   display: flex;
   align-items: center;
-  height: 26px;
-  line-height: 26px;  
-
-  .surveyLink {
-    display: flex;
-    align-items: center;
-    height: 100%;
-    padding: 0 12px;
-    color: var(--htmlColor) !important;
-    font: normal normal normal 12px/18px Graphik, sans-serif;
-
-    &:hover {
-      background-color: var(--euiColorSecondary);
-      color: var(--euiColorPrimaryText) !important;
-    }
+  height: 100%;
+  padding: 0 12px;
+  color: var(--htmlColor) !important;
+  font: normal normal normal 12px/18px Graphik, sans-serif;
+  &:hover {
+    background-color: var(--euiColorSecondary);
+    color: var(--euiColorPrimaryText) !important;
   }
-
-  .surveyIcon {
-    margin-right: 8px;
-    width: 18px;
-    height: 18px;
-  }
+}
+.surveyIcon {
+  margin-right: 8px;
+  width: 18px;
+  height: 18px;
 }
 
 .componentBadgeItem {

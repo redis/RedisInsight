@@ -2,8 +2,9 @@ import React, { useEffect } from 'react'
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
+import styled from 'styled-components'
 
+import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import {
   clearSearchingCommand,
   cliSettingsSelector,
@@ -32,6 +33,17 @@ import {
 } from 'uiSrc/components/base/icons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from '../../styles.module.scss'
+
+const ContainerMinimized = styled.div`
+  display: flex;
+  align-items: center;
+  height: 26px;
+  line-height: 26px;
+  border-left: 1px solid
+    ${({ theme }) => theme.semantic.color.border.neutral500};
+  border-right: 1px solid
+    ${({ theme }) => theme.semantic.color.border.neutral500};
+`
 
 const BottomGroupMinimized = () => {
   const { instanceId = '' } = useParams<{ instanceId: string }>()
@@ -91,7 +103,7 @@ const BottomGroupMinimized = () => {
   }
 
   return (
-    <div className={styles.containerMinimized}>
+    <ContainerMinimized>
       <Row align="center" responsive={false} style={{ height: '100%' }}>
         <FlexItem
           className={styles.componentBadgeItem}
@@ -158,7 +170,7 @@ const BottomGroupMinimized = () => {
           </ShowFor>
         </a>
       </FeatureFlagComponent>
-    </div>
+    </ContainerMinimized>
   )
 }
 
