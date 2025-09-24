@@ -25,6 +25,33 @@ describe('useRedisInstanceCompatibility', () => {
     jest.clearAllMocks()
   })
 
+  it('returns undefineds when loading is undefined (not initialized yet)', () => {
+    mockConnectedInstanceSelector.mockReturnValue({
+      loading: undefined,
+      modules: [{ name: 'search' }],
+      version: '7.2.0',
+    })
+
+    const hookResult = renderUseRedisInstanceCompatibility()
+    expect(hookResult.loading).toBeUndefined()
+    expect(hookResult.hasRedisearch).toBeUndefined()
+    expect(hookResult.hasSupportedVersion).toBeUndefined()
+  })
+
+  it('still returns hasRedisearch=undefined when modules is null even after init', () => {
+    mockConnectedInstanceSelector.mockReturnValue({
+      loading: false,
+      modules: null,
+      version: '7.2.0',
+    })
+
+    const hookResult = renderUseRedisInstanceCompatibility()
+    expect(hookResult.loading).toBe(false)
+    // preserve prior behavior: null => unknown, not false
+    expect(hookResult.hasRedisearch).toBeUndefined()
+    expect(hookResult.hasSupportedVersion).toBe(true)
+  })
+
   it('returns loading=true when connectedInstanceSelector returns loading=true', () => {
     mockConnectedInstanceSelector.mockReturnValue({
       loading: true,

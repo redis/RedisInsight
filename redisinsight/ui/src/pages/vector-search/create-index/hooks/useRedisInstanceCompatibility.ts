@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { REDISEARCH_MODULES } from 'uiSrc/slices/interfaces'
@@ -20,15 +21,18 @@ const useRedisInstanceCompatibility =
       version,
     } = useSelector(connectedInstanceSelector)
 
-    const hasRedisearch = modules?.some((m) =>
-      REDISEARCH_MODULE_SET.has(m.name),
+    const isInitialized = loading !== undefined
+
+    const redisearchPresent = useMemo(
+      () => modules?.some((m) => REDISEARCH_MODULE_SET.has(m.name)),
+      [modules],
     )
 
     return {
       loading,
-      hasRedisearch: !loading ? hasRedisearch : undefined,
+      hasRedisearch: isInitialized ? redisearchPresent : undefined,
       hasSupportedVersion:
-        !loading && version
+        isInitialized && version
           ? isRedisVersionSupported(version, MIN_SUPPORTED_REDIS_VERSION)
           : undefined,
     }
