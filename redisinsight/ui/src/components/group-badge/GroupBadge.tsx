@@ -33,7 +33,7 @@ const GroupBadge = ({
       variant="light"
       style={{
         backgroundColor,
-        padding: 8,
+        padding: 10,
       }}
       className={cx(styles.badgeWrapper, className, {
         [styles.withDeleteBtn]: onDelete,
