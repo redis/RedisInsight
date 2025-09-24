@@ -7,6 +7,8 @@ import {
   StyledAppNavTab,
 } from './AppNavigation.styles'
 import { useNavigation } from '../hooks/useNavigation'
+import FeatureFlagComponent from 'uiSrc/components/feature-flag-component/FeatureFlagComponent'
+import { FeatureFlags } from 'uiSrc/constants'
 
 type AppNavigationContainerProps = {
   children?: ReactNode
@@ -45,16 +47,23 @@ export type AppNavigationProps = {
 const AppNavigation = ({ actions, onChange }: AppNavigationProps) => {
   const { privateRoutes } = useNavigation()
   const activeTab = privateRoutes.find((route) => route.isActivePage)
-  const navTabs: TabInfo[] = privateRoutes.map((route) => ({
-    label: route.tooltipText,
-    content: '',
-    value: route.pageName,
-  }))
+  const navTabs: (TabInfo & { featureFlag?: FeatureFlags })[] =
+    privateRoutes.map((route) => ({
+      label: route.tooltipText,
+      content: '',
+      value: route.pageName,
+      featureFlag: route.featureFlag,
+    }))
 
   return (
     <StyledAppNavigation>
       <AppNavigationContainer />
-      <AppNavigationContainer borderLess grow={false} justify="center" style={{ paddingTop: '20px' }}>
+      <AppNavigationContainer
+        borderLess
+        grow={false}
+        justify="center"
+        style={{ paddingTop: '20px' }}
+      >
         <Tabs.Compose
           value={activeTab?.pageName}
           onChange={(tabValue) => {
@@ -68,8 +77,22 @@ const AppNavigation = ({ actions, onChange }: AppNavigationProps) => {
           }}
         >
           <Tabs.TabBar.Compose variant="default">
-            {navTabs.map(({ value, label, disabled }, index) => {
+            {navTabs.map(({ value, label, disabled, featureFlag }, index) => {
               const key = `${value}-${index}`
+              if (featureFlag) {
+                return (
+                  <FeatureFlagComponent name={featureFlag as FeatureFlags}>
+                    <Tabs.TabBar.Trigger.Compose
+                      value={value}
+                      disabled={disabled}
+                      key={key}
+                    >
+                      <StyledAppNavTab>{label ?? value}</StyledAppNavTab>
+                      <Tabs.TabBar.Trigger.Marker />
+                    </Tabs.TabBar.Trigger.Compose>
+                  </FeatureFlagComponent>
+                )
+              }
               return (
                 <Tabs.TabBar.Trigger.Compose
                   value={value}
