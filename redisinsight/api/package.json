@@ -73,7 +73,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "combined-stream": "^1.0.8",
-    "connect-timeout": "^1.9.0",
+    "connect-timeout": "^1.9.1",
     "date-fns": "^2.29.3",
     "detect-port": "^1.5.1",
     "dotenv": "^16.0.0",
