@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import { CommandGroup } from 'uiSrc/constants'
 import { goBackFromCommand } from 'uiSrc/slices/cli/cli-settings'
 import { getDocUrlForCommand } from 'uiSrc/utils'
-import { ColorText, Text } from 'uiSrc/components/base/text'
+import { Text } from 'uiSrc/components/base/text'
 
 import { Link } from 'uiSrc/components/base/link/Link'
 import CHCommandInfo from '../components/command-helper-info'
@@ -47,9 +47,10 @@ const CommandHelper = (props: Props) => {
     return (
       <Link
         href={docUrl}
-        className={styles.link}
         target="_blank"
         data-testid="read-more"
+        variant="small-inline"
+        color="primary"
       >
         Read more
       </Link>
