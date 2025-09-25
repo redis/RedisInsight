@@ -54,7 +54,7 @@ const EditableInput = (props: Props) => {
         onMouseLeave={() => setIsHovering(false)}
         data-testid={`${testIdPrefix}_content-value-${field}`}
       >
-        <Text size="s" style={{ maxWidth: '100%', whiteSpace: 'break-spaces' }}>
+        <Text color="secondary" style={{ maxWidth: '100%', whiteSpace: 'break-spaces' }}>
           <div style={{ display: 'flex' }}>{children}</div>
         </Text>
         {isHovering && (

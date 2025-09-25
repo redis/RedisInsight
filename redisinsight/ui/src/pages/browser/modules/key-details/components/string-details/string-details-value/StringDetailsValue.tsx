@@ -233,6 +233,7 @@ const StringDetailsValue = (props: Props) => {
   const renderValue = (value: string) => {
     const textEl = (
       <Text
+        color="secondary"
         className={styles.stringValue}
         onClick={() => isEditable && setIsEdit(true)}
         style={{ whiteSpace: 'break-spaces' }}

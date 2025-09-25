@@ -127,7 +127,7 @@ const ConsumersViewWrapper = (props: Props) => {
         const cellContent = viewName.substring(0, 200)
         const tooltipContent = formatLongName(viewName)
         return (
-          <Text color="subdued" size="s" style={{ maxWidth: '100%' }}>
+          <Text style={{ maxWidth: '100%' }} color="secondary">
             <div
               style={{ display: 'flex' }}
               className="truncateText"
@@ -156,6 +156,7 @@ const ConsumersViewWrapper = (props: Props) => {
       isSortable: true,
       headerClassName: 'streamItemHeader',
       headerCellClassName: 'truncateText',
+      render: (cellData: number) => <Text color="secondary">{cellData}</Text>,
     },
     {
       id: 'idle',
@@ -168,7 +169,7 @@ const ConsumersViewWrapper = (props: Props) => {
       className: styles.cell,
       headerClassName: 'streamItemHeader',
       headerCellClassName: 'truncateText',
-      render: (cellData: number) => numberWithSpaces(cellData),
+      render: (cellData: number) => <Text color="secondary">{numberWithSpaces(cellData)}</Text>,
     },
     {
       id: 'actions',

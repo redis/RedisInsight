@@ -262,7 +262,7 @@ const ListDetailsTable = () => {
         const cellContent = index?.toString().substring(0, 200)
         const tooltipContent = formatLongName(index?.toString())
         return (
-          <Text color="subdued" size="s" style={{ maxWidth: '100%' }}>
+          <Text color="secondary" style={{ maxWidth: '100%' }}>
             <div
               style={{ display: 'flex' }}
               className="truncateText"

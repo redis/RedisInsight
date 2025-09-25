@@ -153,7 +153,11 @@ const VirtualGrid = (props: IProps) => {
     preventSelect = true
   }
 
-  const renderNotEmptyContent = (text: string) => text || <div>&nbsp;</div>
+  const renderNotEmptyContent = (text: string) => (
+    <Text color="primary" component="span" variant="semiBold">
+      {text || <>&nbsp;</>}
+    </Text>
+  )
 
   const Cell = ({
     columnIndex,
@@ -182,6 +186,7 @@ const VirtualGrid = (props: IProps) => {
 
     if (rowIndex === 0) {
       const isLastColumn = columns.length - 1 === columnIndex
+      console.log('____ content', content)
       return (
         <hgroup className={styles.gridHeaderCell} ref={cellRef} style={style}>
           <div
@@ -371,7 +376,7 @@ const VirtualGrid = (props: IProps) => {
         </AutoSizer>
       )}
       {items.length === 1 && (
-        <Text className={styles.noItems} color="subdued">
+        <Text className={styles.noItems}>
           {loading ? loadingMsg : noItemsMessage}
         </Text>
       )}

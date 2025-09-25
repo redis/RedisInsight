@@ -382,8 +382,7 @@ const HashDetailsTable = (props: Props) => {
         )
 
         return (
-          <Text
-            size="s"
+          <Text color="secondary"
             style={{ maxWidth: '100%', whiteSpace: 'break-spaces' }}
             component="div"
           >

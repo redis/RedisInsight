@@ -337,8 +337,7 @@ const ZSetDetailsTable = (props: Props) => {
 
         return (
           <Text
-            color="subdued"
-            size="s"
+            color="secondary"
             component="div"
             style={{ maxWidth: '100%', whiteSpace: 'break-spaces' }}
           >

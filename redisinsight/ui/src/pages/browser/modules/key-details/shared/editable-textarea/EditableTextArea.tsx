@@ -93,8 +93,7 @@ const EditableTextArea = (props: Props) => {
         onMouseLeave={() => setIsHovering(false)}
         data-testid={`${testIdPrefix}_content-value-${field}`}
       >
-        <Text
-          size="s"
+        <Text color="secondary"
           style={{ maxWidth: '100%', whiteSpace: 'break-spaces' }}
         >
           {children}
