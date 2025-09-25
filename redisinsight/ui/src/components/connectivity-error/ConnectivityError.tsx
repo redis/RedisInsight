@@ -3,7 +3,6 @@ import SuspenseLoader from 'uiSrc/components/main-router/components/SuspenseLoad
 
 import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { Card } from 'uiSrc/components/base/layout'
 
 export type ConnectivityErrorProps = {
   onRetry?: () => void
@@ -16,20 +15,16 @@ const ConnectivityError = ({
   error,
   onRetry,
 }: ConnectivityErrorProps) => (
-  <Col>
-    <Card>
-      <Col style={{ minHeight: '100vh' }} centered>
-        {isLoading && <SuspenseLoader />}
-        <Col centered gap="xl">
-          <FlexItem data-testid="connectivity-error-message">{error}</FlexItem>
-          {onRetry && (
-            <FlexItem>
-              <PrimaryButton onClick={onRetry}>Retry</PrimaryButton>
-            </FlexItem>
-          )}
-        </Col>
-      </Col>
-    </Card>
+  <Col centered>
+    {isLoading && <SuspenseLoader />}
+    <Col centered gap="xl">
+      <FlexItem data-testid="connectivity-error-message">{error}</FlexItem>
+      {onRetry && (
+        <FlexItem>
+          <PrimaryButton onClick={onRetry}>Retry</PrimaryButton>
+        </FlexItem>
+      )}
+    </Col>
   </Col>
 )
 
