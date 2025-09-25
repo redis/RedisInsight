@@ -28,12 +28,22 @@ import { savedQueries } from './saved-queries'
 const mockSavedIndexes: SavedIndex[] = [
   {
     value: PresetDataType.BIKES,
-    tags: [FieldTypes.TAG, FieldTypes.TEXT, FieldTypes.VECTOR],
+    tags: [
+      FieldTypes.TAG,
+      FieldTypes.TEXT,
+      FieldTypes.VECTOR,
+      FieldTypes.NUMERIC,
+    ],
     queries: savedQueries[PresetDataType.BIKES],
   },
   {
     value: PresetDataType.MOVIES,
-    tags: [FieldTypes.TAG, FieldTypes.TEXT, FieldTypes.VECTOR],
+    tags: [
+      FieldTypes.TAG,
+      FieldTypes.TEXT,
+      FieldTypes.VECTOR,
+      FieldTypes.NUMERIC,
+    ],
     queries: savedQueries[PresetDataType.MOVIES],
   },
 ]
