@@ -6,9 +6,9 @@ import {
   TelemetryEvent,
 } from 'uiSrc/telemetry'
 import {
+  EmptyButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import styles from 'uiSrc/pages/browser/components/browser-search-panel/styles.module.scss'
 import { setBulkActionType } from 'uiSrc/slices/browser/bulkActions'
 import { BulkActionsType, FeatureFlags } from 'uiSrc/constants'
 import { SubscriptionsIcon } from 'uiSrc/components/base/icons'
@@ -46,7 +46,7 @@ const Actions = ({ handleAddKeyPanel, handleBulkActionsPanel }: Props) => {
       onClick={openAddKeyPanel}
       data-testid="btn-add-key"
     >
-      + <span className={styles.addKeyText}>Key</span>
+      Add key
     </SecondaryButton>
   )
   const openBulkActions = () => {
@@ -54,15 +54,15 @@ const Actions = ({ handleAddKeyPanel, handleBulkActionsPanel }: Props) => {
     handleBulkActionsPanel(true)
   }
   const BulkActionsBtn = (
-    <SecondaryButton
+    <EmptyButton
       color="secondary"
       icon={SubscriptionsIcon}
       onClick={openBulkActions}
       data-testid="btn-bulk-actions"
       aria-label="bulk actions"
     >
-      Bulk Actions
-    </SecondaryButton>
+      Bulk actions
+    </EmptyButton>
   )
   return (
     <Row
