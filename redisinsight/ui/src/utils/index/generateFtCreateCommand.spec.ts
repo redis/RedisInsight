@@ -32,14 +32,17 @@ describe('generateFtCreateCommand', () => {
       dataContent: SampleDataContent.CONTENT_RECOMMENDATIONS,
     })
 
-    expect(result).toBe(`FT.CREATE idx:movies ON JSON PREFIX 1 "movie:" SCHEMA
-  $.title AS title TEXT
-  $.genres[*] AS genres TAG
-  $.plot AS plot TEXT
-  $.year AS year NUMERIC
-  $.embedding AS embedding VECTOR FLAT 6
-    TYPE FLOAT32
-    DIM 8
-    DISTANCE_METRIC COSINE`)
+    expect(result).toBe(`FT.CREATE idx:movies
+    ON JSON
+      PREFIX 1 "movie:"
+    SCHEMA
+      $.title AS title TEXT
+      $.genres[*] AS genres TAG
+      $.plot AS plot TEXT
+      $.year AS year NUMERIC
+      $.embedding AS embedding VECTOR FLAT 6
+        TYPE FLOAT32
+        DIM 8
+        DISTANCE_METRIC COSINE`)
   })
 })

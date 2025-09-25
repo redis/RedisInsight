@@ -17,7 +17,7 @@ export const generateFtCreateCommand = ({
   if (dataContent === SampleDataContent.CONTENT_RECOMMENDATIONS) {
     return `FT.CREATE ${indexName}
     ON JSON
-     PREFIX 1 "movie:"
+      PREFIX 1 "movie:"
     SCHEMA
       $.title AS title TEXT
       $.genres[*] AS genres TAG
