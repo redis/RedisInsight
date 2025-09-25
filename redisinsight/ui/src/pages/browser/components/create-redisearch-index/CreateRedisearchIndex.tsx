@@ -2,6 +2,7 @@ import { EuiComboBoxOptionOption } from '@elastic/eui/src/components/combo_box/t
 import cx from 'classnames'
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import styled from 'styled-components'
 
 import {
   createIndexStateSelector,
@@ -31,7 +32,7 @@ import { RiPopover } from 'uiSrc/components/base'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { CreateRedisearchIndexDto } from 'apiSrc/modules/browser/redisearch/dto'
 import { Panel } from 'uiSrc/components/panel'
-import { HorizontalRule } from 'uiSrc/components/base/layout'
+import { HorizontalRule, Spacer } from 'uiSrc/components/base/layout'
 
 import { KEY_TYPE_OPTIONS, RedisearchIndexKeyType } from './constants'
 
@@ -61,6 +62,17 @@ const initialFieldValue = (fieldTypeOptions: any[], id = 0) => ({
   identifier: '',
   fieldType: fieldTypeOptions[0]?.value || '',
 })
+
+const StyledFooter = styled(Panel)`
+  flex: 0 0 auto;
+`
+
+const StyledContent = styled(Col)`
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+`
 
 const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
   const { viewType } = useSelector(keysSelector)
@@ -204,8 +216,9 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
   )
 
   return (
-    <Col justify="between">
-      <Col gap="xxl">
+    <>
+      <StyledContent gap="xl">
+        <Spacer size="xs" />
         <Row gap="m" grow={false}>
           <FlexItem grow>
             <FormField label="Index Name">
@@ -254,7 +267,7 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
             />
           </FlexItem>
         </Row>
-        <HorizontalRule margin="m" />
+        <HorizontalRule margin="s" />
         <Col grow={false} gap="s">
           <Row align="center" gap="xs">
             <Text>Identifier</Text>
@@ -302,9 +315,9 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
             )}
           </AddMultipleFields>
         </Col>
-      </Col>
-
-      <Panel justify="end" gap="m" align="end">
+      </StyledContent>
+      <HorizontalRule margin="xs" />
+      <StyledFooter justify="end" gap="m">
         <FlexItem>
           <SecondaryButton
             color="secondary"
@@ -325,8 +338,8 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
             Create Index
           </PrimaryButton>
         </FlexItem>
-      </Panel>
-    </Col>
+      </StyledFooter>
+    </>
   )
 }
 

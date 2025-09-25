@@ -14,9 +14,17 @@ import CreateRedisearchIndex from './CreateRedisearchIndex'
 import { HorizontalRule, Spacer } from 'uiSrc/components/base/layout'
 
 const StyledCreateRedisearchIndexWrapper = styled(Col)`
+  background-color: ${({ theme }) =>
+    theme.name === 'light'
+      ? theme.semantic.color.background.neutral100
+      : theme.semantic.color.background.neutral200};
   padding: ${({ theme }) => theme.core.space.space200};
   width: 100%;
   height: 100%;
+`
+
+const StyledHeader = styled(Col)`
+  flex: 0 0 auto;
 `
 
 export interface Props {
@@ -31,7 +39,8 @@ const CreateRedisearchIndexWrapper = ({
   onCreateIndex,
 }: Props) => (
   <StyledCreateRedisearchIndexWrapper data-testid="create-index-panel">
-    <Col grow={false}>
+    <StyledHeader>
+      <Spacer size="m" />
       <Row justify="between">
         <Title size="M">New Index</Title>
         {!arePanelsCollapsed && (
@@ -46,7 +55,7 @@ const CreateRedisearchIndexWrapper = ({
           </RiTooltip>
         )}
       </Row>
-      <Spacer size="l" />
+      <Spacer size="xl" />
       <FlexItem>
         <Text size="s">
           Use CLI or Workbench to create more advanced indexes. See more details
@@ -57,13 +66,15 @@ const CreateRedisearchIndexWrapper = ({
               campaign: 'browser_search',
             })}
             target="_blank"
+            color="primary"
           >
             documentation.
           </Link>
         </Text>
       </FlexItem>
-    </Col>
-    <HorizontalRule margin="l" />
+      <Spacer size="xl" />
+    </StyledHeader>
+    <HorizontalRule margin="xs" />
     <CreateRedisearchIndex
       onCreateIndex={onCreateIndex}
       onClosePanel={onClosePanel}
