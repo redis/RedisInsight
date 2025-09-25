@@ -107,16 +107,18 @@ export const SavedQueriesScreen = ({
   const { stringData, loading } = useRedisearchListData()
   const savedIndexes = useMemo(
     () =>
-      stringData.map(
-        (index) =>
-          ({
-            value: index,
-            // Hardcoded values for the preset index, else empty arrays:
-            tags: mockSavedIndexes.find((i) => i.value === index)?.tags || [],
-            queries:
-              mockSavedIndexes.find((i) => i.value === index)?.queries || [],
-          }) as SavedIndex,
-      ),
+      stringData
+        .filter((index) => mockSavedIndexes.some((i) => i.value === index))
+        .map(
+          (index) =>
+            ({
+              value: index,
+              // Hardcoded values for the preset index, else empty arrays:
+              tags: mockSavedIndexes.find((i) => i.value === index)?.tags || [],
+              queries:
+                mockSavedIndexes.find((i) => i.value === index)?.queries || [],
+            }) as SavedIndex,
+        ),
     [stringData],
   )
   const selectedIndexItem = savedIndexes.find(

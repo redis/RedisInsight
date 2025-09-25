@@ -39,7 +39,7 @@ describe('SavedQueriesScreen', () => {
     ;(useRedisearchListData as jest.Mock).mockReturnValue({
       loading: false,
       data: [],
-      stringData: ['idx:bikes_vss', 'idx:restaurants_vss'],
+      stringData: ['idx:bikes_vss', 'idx:movies_vss'],
     })
   })
 
@@ -75,10 +75,39 @@ describe('SavedQueriesScreen', () => {
   })
 
   it('should select the default index if provided', () => {
-    renderComponent('idx:restaurants_vss')
+    renderComponent('idx:movies_vss')
+
     // The Select component isn't a native <select>, so assert by displayed text
     expect(screen.queryByText('idx:bikes_vss')).not.toBeInTheDocument()
-    expect(screen.queryByText('idx:restaurants_vss')).toBeInTheDocument()
+    expect(screen.queryByText('idx:movies_vss')).toBeInTheDocument()
+  })
+
+  it('should not render queries if the there is no index with preset data', () => {
+    ;(useRedisearchListData as jest.Mock).mockReturnValue({
+      loading: false,
+      data: [],
+      stringData: ['idx:unknown_index'],
+    })
+
+    renderComponent()
+
+    expect(screen.queryByText('idx:unknown_index')).not.toBeInTheDocument()
+    expect(screen.queryByText('idx:bikes_vss')).not.toBeInTheDocument()
+    expect(screen.queryByText('idx:movies_vss')).not.toBeInTheDocument()
+  })
+
+  it('should render only saved queries related to preset data', () => {
+    ;(useRedisearchListData as jest.Mock).mockReturnValue({
+      loading: false,
+      data: [],
+      stringData: ['idx:unknown_index', 'idx:bikes_vss'],
+    })
+
+    renderComponent()
+
+    expect(screen.queryByText('idx:unknown_index')).not.toBeInTheDocument()
+    expect(screen.queryByText('idx:movies_vss')).not.toBeInTheDocument()
+    expect(screen.queryByText('idx:bikes_vss')).toBeInTheDocument()
   })
 
   it('should call onClose when close button is clicked', () => {
