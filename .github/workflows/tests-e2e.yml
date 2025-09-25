@@ -1,13 +1,6 @@
 name: ✅ E2E Tests
-run-name: >
-  E2E • ${{ github.event_name == 'pull_request_review'
-    && format('PR #{0} {1}', github.event.pull_request.number, github.event.pull_request.title)
-    || github.ref_name }} • by ${{ github.actor }}
 
 on:
-  pull_request_review:
-    types: [submitted]
-
   workflow_dispatch:
     inputs:
       debug:
@@ -21,21 +14,11 @@ permissions:
 
 # Cancel a previous run workflow
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.head.sha || github.ref }}-e2e
-  cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.ref }}-e2e
+  cancel-in-progress: true
 
 jobs:
-  approval-dedupe:
-    uses: ./.github/workflows/approval-dedupe.yml
-    secrets: inherit
-    with:
-      workflow_filename: tests-e2e.yml
-      require_approval: true
-      allow_workflow_dispatch: true
-
   build-docker:
-    needs: approval-dedupe
-    if: needs.approval-dedupe.outputs.mode == 'run'
     uses: ./.github/workflows/pipeline-build-docker.yml
     secrets: inherit
     with:
@@ -43,20 +26,11 @@ jobs:
       for_e2e_tests: true
 
   build-appimage:
-    needs: approval-dedupe
-    if: needs.approval-dedupe.outputs.mode == 'run'
     uses: ./.github/workflows/pipeline-build-linux.yml
     secrets: inherit
     with:
       target: build_linux_appimage_x64
       debug: ${{ inputs.debug || false }}
-
-  builds-complete:
-    needs: [build-docker, build-appimage]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Both builds finished
-        run: echo "Docker and AppImage builds completed"
 
   e2e-docker-tests-smoke:
     name: "E2E: Smoke (Docker)"
@@ -83,14 +57,14 @@ jobs:
       debug: ${{ inputs.debug || false }}
 
   tests-e2e-playwright:
-    needs: builds-complete
+    needs: build-docker
     uses: ./.github/workflows/tests-e2e-playwright.yml
     secrets: inherit
     with:
       debug: ${{ inputs.debug || false }}
 
   e2e-appimage-tests:
-    needs: builds-complete
+    needs: build-appimage
     uses: ./.github/workflows/tests-e2e-appimage.yml
     secrets: inherit
     with:
@@ -98,10 +72,8 @@ jobs:
 
   clean:
     uses: ./.github/workflows/clean-deployments.yml
-    if: always() && needs.approval-dedupe.outputs.mode == 'run'
     needs:
       [
-        approval-dedupe,
         e2e-docker-tests-smoke,
         e2e-docker-tests-critical-path,
         e2e-docker-tests-regression,
@@ -112,10 +84,8 @@ jobs:
   # Remove artifacts from github actions
   remove-artifacts:
     name: Remove artifacts
-    if: needs.approval-dedupe.outputs.mode == 'run'
     needs:
       [
-        approval-dedupe,
         e2e-docker-tests-smoke,
         e2e-docker-tests-critical-path,
         e2e-docker-tests-regression,
