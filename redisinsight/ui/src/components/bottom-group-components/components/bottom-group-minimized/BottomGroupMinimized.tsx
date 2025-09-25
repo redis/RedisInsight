@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
@@ -34,9 +33,42 @@ import {
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from '../../styles.module.scss'
 
+const ComponentBadge = styled(RiBadge)<{ isActive?: boolean }>`
+  background-color: transparent !important;
+  color: var(--euiTextSubduedColor) !important;
+  height: 18px !important;
+  border: none !important;
+  cursor: pointer;
+  user-select: none;
+
+  &[title] {
+    pointer-events: none;
+  }
+
+  ${({ isActive, theme }) => {
+    const bgColorActive =
+      theme.name === 'dark' ? theme.color.azure600 : theme.color.azure200
+    const bgColorHover =
+      theme.name === 'dark' ? theme.color.azure700 : theme.color.azure100
+
+    const color =
+      theme.name === 'dark' ? theme.color.azure200 : theme.color.azure600
+
+    return `
+    ${isActive ? `background-color: ${bgColorActive} !important;` : ''}
+    ${isActive ? `color: ${color} !important;` : ''}
+    &:hover {
+      background-color: ${bgColorHover} !important;
+      color: ${color} !important;
+    }
+  `
+  }}
+`
+
 const ContainerMinimized = styled.div`
   display: flex;
   align-items: center;
+  padding-left: ${({ theme }) => theme.core.space.space050};
   height: 26px;
   line-height: 26px;
   border-left: 1px solid
@@ -104,20 +136,21 @@ const BottomGroupMinimized = () => {
 
   return (
     <ContainerMinimized>
-      <Row align="center" responsive={false} style={{ height: '100%' }}>
+      <Row align="center" responsive={false} style={{ height: '100%' }} gap="s">
         <FlexItem
           className={styles.componentBadgeItem}
           onClick={handleExpandCli}
           data-testid="expand-cli"
         >
-          <RiBadge
-            icon={CliIcon}
+          <ComponentBadge
             withIcon
-            label={<Text size="S">CLI</Text>}
-            variant="light"
-            className={cx(styles.componentBadge, {
-              [styles.active]: isShowCli || cliClientUuid,
-            })}
+            icon={CliIcon}
+            label={
+              <Text size="S" variant="semiBold">
+                CLI
+              </Text>
+            }
+            isActive={isShowCli || !!cliClientUuid}
           />
         </FlexItem>
 
@@ -126,13 +159,15 @@ const BottomGroupMinimized = () => {
           onClick={handleExpandHelper}
           data-testid="expand-command-helper"
         >
-          <RiBadge
+          <ComponentBadge
             withIcon
             icon={DocumentationIcon}
-            className={cx(styles.componentBadge, {
-              [styles.active]: isShowHelper || isMinimizedHelper,
-            })}
-            label={<Text size="S">Command Helper</Text>}
+            label={
+              <Text size="S" variant="semiBold">
+                Command Helper
+              </Text>
+            }
+            isActive={isShowHelper || isMinimizedHelper}
           />
         </FlexItem>
         <FeatureFlagComponent name={FeatureFlags.envDependent}>
@@ -141,13 +176,15 @@ const BottomGroupMinimized = () => {
             onClick={handleExpandMonitor}
             data-testid="expand-monitor"
           >
-            <RiBadge
+            <ComponentBadge
               withIcon
               icon={ProfilerIcon}
-              className={cx(styles.componentBadge, {
-                [styles.active]: isShowMonitor || isMinimizedMonitor,
-              })}
-              label={<Text size="S">Profiler</Text>}
+              label={
+                <Text size="S" variant="semiBold">
+                  Profiler
+                </Text>
+              }
+              isActive={isShowMonitor || isMinimizedMonitor}
             />
           </FlexItem>
         </FeatureFlagComponent>

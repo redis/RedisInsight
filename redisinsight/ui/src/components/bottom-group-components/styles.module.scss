@@ -16,43 +16,6 @@
   height: 18px;
 }
 
-.componentBadgeItem {
-  margin: 0 2px;
-  cursor: pointer;
-  user-select: none;
-
-  :global {
-    [class*='RedisUI'] {
-      cursor: pointer !important;
-    }
-    svg {
-      margin-right: 4px;
-    }
-  }
-
-  &:hover {
-    .componentBadge {
-      background-color: var(--buttonIconPrimaryHover) !important;
-    }
-  }
-}
-
-.componentBadge {
-  background-color: transparent !important;
-  color: var(--euiTextSubduedColor) !important;
-  height: 18px !important;
-  border: none !important;
-
-  &[title] {
-    pointer-events: none;
-  }
-
-  &.active {
-    background-color: var(--hoverInListColorDarken) !important;
-    color: var(--euiColorPrimary) !important;
-  }
-}
-
 .helperWrapper {
   width: 100%;
   max-width: 360px;
