@@ -186,6 +186,7 @@ const VirtualGrid = (props: IProps) => {
 
     if (rowIndex === 0) {
       const isLastColumn = columns.length - 1 === columnIndex
+      console.log('____ content', content)
       return (
         <hgroup className={styles.gridHeaderCell} ref={cellRef} style={style}>
           <div
