@@ -106,6 +106,7 @@ html {
 }
 
 .badge {
+  display: inline-flex !important;
   position: relative;
   font: normal normal normal 12px/15px;
   margin: 0 5px;

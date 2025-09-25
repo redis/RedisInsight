@@ -6,9 +6,10 @@ import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { ColorText, Text } from '../../../../../components/base/text'
-import { LoadingContent } from '../../../../../components/base/layout'
+import { LoadingContent, Spacer } from '../../../../../components/base/layout'
 import GroupBadge from '../GroupBadge'
 import { InfoAttributesBoolean } from '../../constants'
+import { FlexGroup } from 'uiSrc/components/base/layout/flex'
 
 export interface Props {
   query: string
@@ -68,7 +69,7 @@ const TableInfoResult = React.memo((props: Props) => {
     <div>
       {result ? (
         <>
-          <Text className="row" size="s" color="subdued">
+          <Text className="row" size="s">
             Indexing
             <GroupBadge
               type={result?.index_definition?.key_type?.toLowerCase()}
@@ -79,7 +80,7 @@ const TableInfoResult = React.memo((props: Props) => {
               ?.map((prefix: any) => `"${prefix}"`)
               .join(',')}
           </Text>
-          <Text className="row" size="s" color="subdued">
+          <Text className="row" size="s">
             Options:{' '}
             {result?.index_options?.length ? (
               <ColorText style={{ color: 'var(--euiColorFullShade)' }}>
@@ -98,7 +99,7 @@ const TableInfoResult = React.memo((props: Props) => {
   const Footer = () => (
     <div>
       {result ? (
-        <Text className="row" size="s" color="subdued">
+        <Text className="row" size="s">
           {`Number of docs: ${result?.num_docs || '0'} (max ${result?.max_doc_id || '0'}) | `}
           {`Number of records: ${result?.num_records || '0'} | `}
           {`Number of terms: ${result?.num_terms || '0'}`}
@@ -116,11 +117,16 @@ const TableInfoResult = React.memo((props: Props) => {
   return (
     <div className="container">
       {isDataArr && (
-        <div className="content" data-testid={`query-table-result-${query}`}>
+        <FlexGroup
+          direction="column"
+          gap="m"
+          className="content"
+          data-testid={`query-table-result-${query}`}
+        >
           {Header()}
           <Table columns={columns} data={items ?? []} />
           {Footer()}
-        </div>
+        </FlexGroup>
       )}
       {isDataEl && <div className={cx('resultEl')}>{result}</div>}
       {!isDataArr && !isDataEl && (
