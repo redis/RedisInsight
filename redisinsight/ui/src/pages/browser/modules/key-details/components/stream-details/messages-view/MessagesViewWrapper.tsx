@@ -35,7 +35,6 @@ import MessageClaimPopover from './MessageClaimPopover'
 import MessageAckPopover from './MessageAckPopover'
 
 import styles from './MessagesView/styles.module.scss'
-import {numberWithSpaces} from 'uiSrc/utils/numbers'
 
 const actionsWidth = 150
 const minColumnWidth = 195
