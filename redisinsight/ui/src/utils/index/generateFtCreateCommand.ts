@@ -15,15 +15,18 @@ export const generateFtCreateCommand = ({
   dataContent,
 }: FtCreateCommandParams): string => {
   if (dataContent === SampleDataContent.CONTENT_RECOMMENDATIONS) {
-    return `FT.CREATE ${indexName} ON JSON PREFIX 1 "movie:" SCHEMA
-  $.title AS title TEXT
-  $.genres[*] AS genres TAG
-  $.plot AS plot TEXT
-  $.year AS year NUMERIC
-  $.embedding AS embedding VECTOR FLAT 6
-    TYPE FLOAT32
-    DIM 8
-    DISTANCE_METRIC COSINE`
+    return `FT.CREATE ${indexName}
+    ON JSON
+     PREFIX 1 "movie:"
+    SCHEMA
+      $.title AS title TEXT
+      $.genres[*] AS genres TAG
+      $.plot AS plot TEXT
+      $.year AS year NUMERIC
+      $.embedding AS embedding VECTOR FLAT 6
+        TYPE FLOAT32
+        DIM 8
+        DISTANCE_METRIC COSINE`
   }
 
   return `FT.CREATE ${indexName}
