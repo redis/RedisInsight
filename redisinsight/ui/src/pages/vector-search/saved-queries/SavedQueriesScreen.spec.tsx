@@ -7,6 +7,7 @@ import { render, screen, fireEvent } from 'uiSrc/utils/test-utils'
 import { SavedQueriesScreen } from './SavedQueriesScreen'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { useRedisearchListData } from '../useRedisearchListData'
+import { PresetDataType } from '../create-index/types'
 
 // Mock the telemetry sender once for this spec file
 jest.mock('uiSrc/telemetry', () => ({
@@ -39,7 +40,7 @@ describe('SavedQueriesScreen', () => {
     ;(useRedisearchListData as jest.Mock).mockReturnValue({
       loading: false,
       data: [],
-      stringData: ['idx:bikes_vss', 'idx:movies_vss'],
+      stringData: [PresetDataType.BIKES, PresetDataType.MOVIES],
     })
   })
 
@@ -71,15 +72,15 @@ describe('SavedQueriesScreen', () => {
 
   it('should select the first index by default', () => {
     renderComponent()
-    expect(screen.queryByText('idx:bikes_vss')).toBeInTheDocument()
+    expect(screen.queryByText(PresetDataType.BIKES)).toBeInTheDocument()
   })
 
   it('should select the default index if provided', () => {
-    renderComponent('idx:movies_vss')
+    renderComponent(PresetDataType.MOVIES)
 
     // The Select component isn't a native <select>, so assert by displayed text
-    expect(screen.queryByText('idx:bikes_vss')).not.toBeInTheDocument()
-    expect(screen.queryByText('idx:movies_vss')).toBeInTheDocument()
+    expect(screen.queryByText(PresetDataType.BIKES)).not.toBeInTheDocument()
+    expect(screen.queryByText(PresetDataType.MOVIES)).toBeInTheDocument()
   })
 
   it('should not render queries if the there is no index with preset data', () => {
@@ -92,22 +93,22 @@ describe('SavedQueriesScreen', () => {
     renderComponent()
 
     expect(screen.queryByText('idx:unknown_index')).not.toBeInTheDocument()
-    expect(screen.queryByText('idx:bikes_vss')).not.toBeInTheDocument()
-    expect(screen.queryByText('idx:movies_vss')).not.toBeInTheDocument()
+    expect(screen.queryByText(PresetDataType.BIKES)).not.toBeInTheDocument()
+    expect(screen.queryByText(PresetDataType.MOVIES)).not.toBeInTheDocument()
   })
 
   it('should render only saved queries related to preset data', () => {
     ;(useRedisearchListData as jest.Mock).mockReturnValue({
       loading: false,
       data: [],
-      stringData: ['idx:unknown_index', 'idx:bikes_vss'],
+      stringData: ['idx:unknown_index', PresetDataType.BIKES],
     })
 
     renderComponent()
 
     expect(screen.queryByText('idx:unknown_index')).not.toBeInTheDocument()
-    expect(screen.queryByText('idx:movies_vss')).not.toBeInTheDocument()
-    expect(screen.queryByText('idx:bikes_vss')).toBeInTheDocument()
+    expect(screen.queryByText(PresetDataType.MOVIES)).not.toBeInTheDocument()
+    expect(screen.queryByText(PresetDataType.BIKES)).toBeInTheDocument()
   })
 
   it('should call onClose when close button is clicked', () => {
