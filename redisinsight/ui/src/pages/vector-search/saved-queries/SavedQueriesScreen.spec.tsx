@@ -56,17 +56,29 @@ describe('SavedQueriesScreen', () => {
 
     // Check that preset queries are rendered for bikes index
     expect(
-      screen.getByText('Search for "Nord" bikes ordered by price'),
+      screen.getByText("Run a vector search for 'Comfortable commuter bike'"),
     ).toBeInTheDocument()
     expect(
-      screen.getByText('Find road alloy bikes under 20kg'),
+      screen.getByText(
+        "Run a vector search for 'Commuter bike for people over 60'",
+      ),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        "Run a vector search for 'Female specific mountain bike'",
+      ),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        "Run a vector search for 'Female specific mountain bike' for bikes type 'Mountain bikes' and with price between $3500 and $3500",
+      ),
     ).toBeInTheDocument()
   })
 
   it('should render insert buttons for each query', () => {
     renderComponent()
     const insertButtons = screen.getAllByText('Insert')
-    expect(insertButtons).toHaveLength(2)
+    expect(insertButtons).toHaveLength(4)
   })
 
   it('should select the first index by default', () => {
@@ -93,7 +105,9 @@ describe('SavedQueriesScreen', () => {
     const firstInsertButton = screen.getAllByText('Insert')[0]
     fireEvent.click(firstInsertButton)
     expect(mockOnQueryInsert).toHaveBeenCalledWith(
-      'FT.SEARCH idx:bikes_vss "@brand:Nord" SORTBY price ASC',
+      expect.stringContaining(
+        'FT.SEARCH idx:bikes_vss \"*=>[KNN 3 @description_embeddings $my_blob AS score ]\" RETURN 4 score brand type description PARAMS 2 my_blob \"\\xecNN<\\xec\\xc78=\\`',
+      ),
     )
   })
 
@@ -102,7 +116,9 @@ describe('SavedQueriesScreen', () => {
     const secondInsertButton = screen.getAllByText('Insert')[1]
     fireEvent.click(secondInsertButton)
     expect(mockOnQueryInsert).toHaveBeenCalledWith(
-      'FT.SEARCH idx:bikes_vss "@material:{alloy} @weight:[0 20]"',
+      expect.stringContaining(
+        'FT.SEARCH idx:bikes_vss \"*=>[KNN 3 @description_embeddings $my_blob AS score ]\" PARAMS 2 my_blob \"A=\\xe1\\xbb\\x8a\\xad\\x9b<&7R',
+      ),
     )
   })
 
