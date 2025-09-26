@@ -36,6 +36,7 @@ export class VectorSearchPage extends BasePage {
     public readonly editorContainer: Locator
     public readonly editorViewLine: Locator
     public readonly editorTextBox: Locator
+    public readonly editorSuggesstionPopup: Locator
     public readonly editorSubmitButton: Locator
     public readonly editorClearButton: Locator
 
@@ -127,6 +128,9 @@ export class VectorSearchPage extends BasePage {
         this.editorTextBox = this.editorContainer.getByRole('textbox', {
             name: 'Editor content;Press Alt+F1',
         })
+        this.editorSuggesstionPopup = page.locator(
+            '.monaco-editor .suggest-widget.visible',
+        )
         this.editorSubmitButton = page.getByTestId('btn-submit')
         this.editorClearButton = page.getByTestId('btn-clear')
 

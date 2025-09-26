@@ -493,6 +493,12 @@ const Query = (props: Props) => {
     const { data, forceHide, forceShow } = getSuggestions(editor, command)
     suggestionsRef.current = data
 
+    // Prevent suggestions if editor is not focused or cursor is not set
+    if (!editor.hasTextFocus() || !editor.getPosition()) {
+      editor.trigger('', 'hideSuggestWidget', null)
+      return
+    }
+
     if (!forceShow) {
       editor.trigger('', 'editor.action.triggerParameterHints', '')
       return
