@@ -121,5 +121,10 @@ test.describe('Vector Search - Saved Queries', () => {
         await expect(searchPage.editorTextBox).toHaveValue(
             'FT.SEARCH idx:bikes_vss "@brand:Nord" SORTBY price ASC', // TODO: Replace this with actual query, once we reimplement them soon
         )
+
+        // Verify that the suggestion popup is not visible
+        await searchPage.waitForLocatorNotVisible(
+            searchPage.editorSuggesstionPopup,
+        )
     })
 })

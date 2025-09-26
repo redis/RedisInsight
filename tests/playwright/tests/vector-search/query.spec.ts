@@ -46,7 +46,13 @@ test.describe('Vector Search - Query', () => {
         // Click on editor, fill in a query and submit it
         await searchPage.editorViewLine.click()
         await searchPage.editorTextBox.fill('FT._LIST')
+        await searchPage.waitForLocatorVisible(
+            searchPage.editorSuggesstionPopup,
+        )
         await searchPage.editorSubmitButton.click()
+        await searchPage.waitForLocatorNotVisible(
+            searchPage.editorSuggesstionPopup,
+        )
 
         // Verify the query results
         await searchPage.waitForLocatorVisible(searchPage.commandsResults)
