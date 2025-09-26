@@ -62,7 +62,7 @@ const AppNavigation = ({ actions, onChange }: AppNavigationProps) => {
         borderLess
         grow={false}
         justify="center"
-        style={{ paddingTop: '20px' }}
+        style={{ paddingTop: '16px' }}
       >
         <Tabs.Compose
           value={activeTab?.pageName}

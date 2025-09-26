@@ -17,6 +17,13 @@ const mockedProps: Props = {
 describe('Actions', () => {
   it('should render', () => {
     expect(render(<Actions {...mockedProps} />)).toBeTruthy()
+
+    // Verify the buttons are present
+    const bulkActionsButton = screen.getByTestId('btn-bulk-actions')
+    const addKeyButton = screen.getByTestId('btn-add-key')
+
+    expect(bulkActionsButton).toBeInTheDocument()
+    expect(addKeyButton).toBeInTheDocument()
   })
 
   it('should show feature dependent items when feature flag is off', async () => {
