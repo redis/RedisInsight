@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import { connectedInstanceInfoSelector, connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { REDISEARCH_MODULES } from 'uiSrc/slices/interfaces'
 import { isRedisVersionSupported } from 'uiSrc/utils/comparisons/compareVersions'
 
@@ -16,9 +16,12 @@ const REDISEARCH_MODULE_SET = new Set(REDISEARCH_MODULES)
 const useRedisInstanceCompatibility =
   (): UseRedisInstanceCompatibilityReturn => {
     const {
+      version,
+    } = useSelector(connectedInstanceInfoSelector)
+
+    const {
       loading,
       modules = [],
-      version,
     } = useSelector(connectedInstanceSelector)
 
     const isInitialized = loading !== undefined
