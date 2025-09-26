@@ -68,6 +68,7 @@ const Actions = ({ handleAddKeyPanel, handleBulkActionsPanel }: Props) => {
     <Row
       grow={false}
       gap="m"
+      align="center"
       style={{
         flexShrink: 0,
         marginLeft: 12,
