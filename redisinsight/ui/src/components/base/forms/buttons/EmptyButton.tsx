@@ -4,7 +4,6 @@ import { ButtonIcon } from 'uiSrc/components/base/forms/buttons/Button'
 import { IconType } from 'uiSrc/components/base/icons'
 import { Row } from '../../layout/flex'
 import { FlexProps } from '../../layout/flex/flex.styles'
-import { StyledTextButton } from './button.styles'
 
 export type ButtonProps = React.ComponentProps<typeof TextButton> & {
   icon?: IconType
@@ -22,7 +21,7 @@ export const EmptyButton = ({
   justify = 'center',
   ...rest
 }: ButtonProps) => (
-  <StyledTextButton size={size} {...rest}>
+  <TextButton {...rest}>
     <Row justify={justify} gap="xs">
       <ButtonIcon
         buttonSide="left"
@@ -40,5 +39,5 @@ export const EmptyButton = ({
         size={size}
       />
     </Row>
-  </StyledTextButton>
+  </TextButton>
 )

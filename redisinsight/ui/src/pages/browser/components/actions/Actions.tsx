@@ -55,7 +55,6 @@ const Actions = ({ handleAddKeyPanel, handleBulkActionsPanel }: Props) => {
   }
   const BulkActionsBtn = (
     <EmptyButton
-      size="medium"
       color="secondary"
       icon={SubscriptionsIcon}
       onClick={openBulkActions}
