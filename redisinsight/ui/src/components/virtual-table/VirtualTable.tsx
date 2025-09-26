@@ -383,7 +383,7 @@ const VirtualTable = (props: IProps) => {
           className={styles.tableRowCell}
           style={{ justifyContent: column.alignment, whiteSpace: 'normal' }}
         >
-          <Text style={{ maxWidth: '100%' }}>
+          <Text color="subdued" style={{ maxWidth: '100%' }}>
             <div
               style={{ display: 'flex' }}
               className={column.truncateText ? 'truncateText' : ''}
@@ -436,7 +436,7 @@ const VirtualTable = (props: IProps) => {
               data-testid="score-button"
               style={{ justifyContent: column.alignment }}
             >
-              <Text size="m" className={cellClass}  variant="semiBold">
+              <Text size="m" className={cellClass}>
                 <span>{column.label}</span>
               </Text>
             </button>
@@ -454,7 +454,7 @@ const VirtualTable = (props: IProps) => {
                 flex: '1',
               }}
             >
-              <Text size="m" className={cellClass} variant="semiBold">
+              <Text size="m" className={cellClass}>
                 <span>{column.label}</span>
               </Text>
             </div>
@@ -474,6 +474,7 @@ const VirtualTable = (props: IProps) => {
             >
               <RiIcon
                 style={{ marginLeft: '4px' }}
+                size="S"
                 type={
                   sortedColumn?.order === SortOrder.DESC
                     ? 'ArrowDownIcon'

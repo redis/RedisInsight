@@ -58,6 +58,14 @@ const TableColumnSearchTrigger = (props: Props) => {
     }
   }
 
+  const handleOnBlur = (e?: React.FocusEvent<HTMLInputElement>) => {
+    const target = e?.target as HTMLInputElement
+
+    if (!target.value) {
+      handleOpenState(false)
+    }
+  }
+
   return (
     <div style={{ paddingRight: 10 }}>
       <IconButton
@@ -72,13 +80,14 @@ const TableColumnSearchTrigger = (props: Props) => {
       >
         <SearchInput
           onKeyDown={onKeyDown}
-          // onBlur={handleOnBlur}
+          onBlur={handleOnBlur}
           ref={setInputEl}
           name={fieldName}
           placeholder="Search"
           value={value || ''}
           onChange={handleChangeValue}
           data-testid="search"
+          style={{ width: '100%' }}
         />
       </div>
     </div>
