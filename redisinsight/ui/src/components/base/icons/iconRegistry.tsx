@@ -156,6 +156,7 @@ export {
   GoogleSigninIcon,
   SsoIcon,
   GithubIcon,
+  RedisLogoDarkMinIcon,
 } from '@redis-ui/icons/multicolor'
 
 // Common icons

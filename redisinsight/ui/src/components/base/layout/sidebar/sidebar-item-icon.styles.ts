@@ -1,5 +1,5 @@
 import { SideBar } from '@redis-ui/components'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 
 export type RiSideBarItemIconProps = Omit<
   React.ComponentProps<typeof SideBar.Item.Icon>,
@@ -7,13 +7,20 @@ export type RiSideBarItemIconProps = Omit<
 > & {
   width?: string
   height?: string
+  centered?: boolean
 }
 
-export const StyledIcon = styled(SideBar.Item.Icon)<RiSideBarItemIconProps>`
-  ${({ width = 'inherit' }) => css`
+export const StyledIcon = styled(SideBar.Item.Icon)<RiSideBarItemIconProps & {
+  $centered?: boolean
+}>`
+  ${({ width = 'inherit' }) => `
     width: ${width};
   `}
-  ${({ height = 'inherit' }) => css`
+  ${({ height = 'inherit' }) => `
     height: ${height};
+  `}
+  ${({ $centered }) => $centered && `
+    justify-content: center;
+    align-items: center;
   `}
 `
