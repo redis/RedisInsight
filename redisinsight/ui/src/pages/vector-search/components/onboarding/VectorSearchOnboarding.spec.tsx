@@ -46,7 +46,7 @@ describe('VectorSearchOnboarding', () => {
     // Verify that the content sections are rendered correctly
     const header = screen.getByTestId('vector-search-onboarding--header')
     const features = screen.getByTestId('vector-search-onboarding--features')
-    const stepper = screen.getByTestId('vector-search-onboarding--stepper')
+    const stepper = screen.getByText('Select or create a database')
     const actions = screen.getByTestId('vector-search-onboarding--actions')
     const footer = screen.getByTestId('vector-search-onboarding--footer')
 
