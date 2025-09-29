@@ -62,7 +62,7 @@ const DisabledDataEditingBannerText = () => (
   <Text component="div">
     Editing the index is not available for pre-set data. Click{' '}
     <Text variant="semiBold" component="span">
-      Create Index
+      Create index
     </Text>{' '}
     to continue.
   </Text>
