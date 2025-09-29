@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 
-import { Stepper } from '@redis-ui/components'
+import { Stepper } from 'uiSrc/components/base/layout'
 import { Title, Text } from 'uiSrc/components/base/text'
 import { Button, SecondaryButton } from 'uiSrc/components/base/forms/buttons'
 import { ChevronLeftIcon } from 'uiSrc/components/base/icons'

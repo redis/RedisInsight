@@ -8,6 +8,7 @@ import RiEmptyPrompt from './empty-prompt/RiEmptyPrompt'
 export * from './card'
 export * from './horizontal-spacer'
 export * from './spacer'
+export * from './stepper'
 export {
   HorizontalRule,
   LoadingContent,
