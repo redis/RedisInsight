@@ -360,8 +360,8 @@ const QueryCardHeader = (props: Props) => {
         <FlexItem className={styles.titleWrapper} grow>
           <div className="copy-btn-wrapper">
             <ColorText
+              color="primary"
               className={styles.title}
-              color="subdued"
               component="div"
               data-testid="query-card-command"
             >
