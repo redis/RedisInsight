@@ -64,4 +64,22 @@ describe('TableColumnSearchTrigger', () => {
     fireEvent.blur(searchInput)
     expect(handleOpenState).not.toHaveBeenCalled()
   })
+
+  it('should call "handleOpenState" with false when ESCAPE key is pressed', () => {
+    const handleOpenState = jest.fn()
+
+    render(
+      <TableColumnSearchTrigger
+        {...instance(mockedProps)}
+        isOpen
+        handleOpenState={handleOpenState}
+      />,
+    )
+
+    const searchInput = screen.getByTestId('search')
+    expect(searchInput).toBeInTheDocument()
+
+    fireEvent.keyDown(searchInput, { key: 'Escape' })
+    expect(handleOpenState).toHaveBeenCalledWith(false)
+  })
 })

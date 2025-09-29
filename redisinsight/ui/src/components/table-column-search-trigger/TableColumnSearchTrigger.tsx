@@ -55,6 +55,8 @@ const TableColumnSearchTrigger = (props: Props) => {
   const onKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === keys.ENTER) {
       handleApply(value)
+    } else if (event.key === keys.ESCAPE) {
+      handleOpenState(false)
     }
   }
 
