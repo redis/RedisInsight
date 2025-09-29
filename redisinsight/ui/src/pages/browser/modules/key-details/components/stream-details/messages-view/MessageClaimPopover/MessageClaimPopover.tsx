@@ -223,7 +223,7 @@ const MessageClaimPopover = (props: Props) => {
               />
             </FormField>
           </FlexItem>
-          <FlexItem grow className={styles.relative}>
+          <FlexItem grow>
             <FormField label="Min Idle Time">
               <div className={styles.timeWrapper}>
                 <NumericInput
@@ -246,14 +246,13 @@ const MessageClaimPopover = (props: Props) => {
         </Row>
         {isOptionalShow && (
           <>
-            <Spacer size="m" />
+            <Spacer size="xl" />
             <Row
-              className={styles.container}
               align="center"
               justify="between"
               gap="m"
             >
-              <FlexItem grow className={styles.idle}>
+              <FlexItem grow>
                 <FormField label="Idle Time">
                   <div className={styles.timeWrapper}>
                     <NumericInput
@@ -319,12 +318,8 @@ const MessageClaimPopover = (props: Props) => {
             </Row>
           </>
         )}
-        <Row
-          responsive
-          className={styles.footer}
-          justify="between"
-          align="center"
-        >
+        <Spacer size="xl" />
+        <Row responsive justify="between" align="center">
           <FlexItem>
             <SwitchInput
               title="Optional Parameters"
@@ -333,21 +328,15 @@ const MessageClaimPopover = (props: Props) => {
               data-testid="optional-parameters-switcher"
             />
           </FlexItem>
-          <div>
-            <SecondaryButton
-              className={styles.footerBtn}
-              onClick={handleCancel}
-            >
-              Cancel
-            </SecondaryButton>
+          <Row grow={false} gap="m">
+            <SecondaryButton onClick={handleCancel}>Cancel</SecondaryButton>
             <PrimaryButton
-              className={styles.footerBtn}
               onClick={() => formik.handleSubmit()}
               data-testid="btn-submit"
             >
               Claim
             </PrimaryButton>
-          </div>
+          </Row>
         </Row>
       </form>
     </RiPopover>
