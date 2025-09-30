@@ -361,7 +361,7 @@ const BrowserPage = () => {
             })}
             style={{
               border: `1px solid ${theme.semantic.color.border.neutral500}`,
-              borderRadius: `5px`,
+              borderRadius: `8px`,
             }}
           >
             <BrowserRightPanel
