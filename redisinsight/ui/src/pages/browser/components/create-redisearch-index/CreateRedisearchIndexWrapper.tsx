@@ -61,7 +61,8 @@ const CreateRedisearchIndexWrapper = ({
           Use CLI or Workbench to create more advanced indexes. See more details
           in the{' '}
           <Link
-            variant="small-inline"
+            variant="inline"
+            size="S"
             href={getUtmExternalLink('https://redis.io/commands/ft.create/', {
               campaign: 'browser_search',
             })}

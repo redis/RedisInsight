@@ -196,7 +196,8 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
     >
       <>
         <Link
-          variant="small-inline"
+          variant="inline"
+          size="S"
           href={getUtmExternalLink(
             'https://redis.io/commands/ft.create/#SCHEMA',
             {

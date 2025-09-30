@@ -35,7 +35,8 @@ const DatabaseNotOpened = (props: Props) => {
           <OAuthSsoHandlerDialog>
             {(ssoCloudHandlerClick) => (
               <ExternalLink
-                variant="small-inline"
+                variant="inline"
+                size="S"
                 iconSize="S"
                 href={getUtmExternalLink(EXTERNAL_LINKS.tryFree, {
                   campaign: UTM_CAMPAINGS[source] ?? source,
@@ -55,7 +56,8 @@ const DatabaseNotOpened = (props: Props) => {
           </OAuthSsoHandlerDialog>
           <Spacer size="xs" />
           <ExternalLink
-            variant="small-inline"
+            size="S"
+            variant="inline"
             iconSize="S"
             href={getUtmExternalLink(EXTERNAL_LINKS.docker, {
               campaign: UTM_CAMPAINGS[source] ?? source,

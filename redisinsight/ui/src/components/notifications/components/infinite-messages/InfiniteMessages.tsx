@@ -144,7 +144,8 @@ export const INFINITE_MESSAGES: Record<
               <ExternalLink
                 href={MANAGE_DB_LINK}
                 iconSize="XS"
-                variant="small-inline"
+                size="S"
+                variant="inline"
               >
                 Manage DB
               </ExternalLink>
@@ -184,7 +185,8 @@ export const INFINITE_MESSAGES: Record<
         Log in to{' '}
         <ExternalLink
           target="_blank"
-          variant="small-inline"
+          variant="inline"
+          size="S"
           iconSize={'XS'}
           tabIndex={-1}
           href={getUtmExternalLink(EXTERNAL_LINKS.cloudConsole, {

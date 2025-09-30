@@ -1,15 +1,14 @@
 import React from 'react'
-import { EuiLinkProps } from '@elastic/eui/src/components/link/link'
-import { LinkButtonVariants } from '@redis-ui/components'
 import { IconProps } from 'uiSrc/components/base/icons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { Link, type LinkProps } from 'uiSrc/components/base/link/Link'
 
-export type Props = EuiLinkProps & {
+export type Props = LinkProps & {
   href: string
   iconPosition?: 'left' | 'right'
   iconSize?: IconProps['size']
-  variant?: LinkButtonVariants
+  variant?: LinkProps['variant']
+  size?: LinkProps['size']
 }
 
 const ExternalLink = (props: Props) => {

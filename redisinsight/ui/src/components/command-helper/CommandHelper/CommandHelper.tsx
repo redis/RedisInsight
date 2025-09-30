@@ -49,7 +49,8 @@ const CommandHelper = (props: Props) => {
         href={docUrl}
         target="_blank"
         data-testid="read-more"
-        variant="small-inline"
+        size="S"
+        variant="inline"
         color="primary"
       >
         Read more
