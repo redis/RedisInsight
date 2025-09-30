@@ -1,7 +1,7 @@
 import React, { useLayoutEffect, useState } from 'react'
 import { ThemeProvider as StyledThemeProvider } from 'styled-components'
 import { CommonStyles, themeLight, themeDark } from '@redis-ui/styles'
-import 'modern-normalize'
+import 'modern-normalize/modern-normalize.css'
 import '@redis-ui/styles/normalized-styles.css'
 import '@redis-ui/styles/fonts.css'
 
