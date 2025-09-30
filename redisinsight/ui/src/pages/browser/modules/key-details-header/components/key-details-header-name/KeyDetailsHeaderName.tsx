@@ -152,6 +152,7 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
       onMouseEnter={onMouseEnterKey}
       onMouseLeave={onMouseLeaveKey}
       onClick={onClickKey}
+      $gap="xs"
       className={cx(
         styles.keyFlexItem, // TODO with styles.keyFlexItemEditing
         keyIsEditing || keyIsHovering ? styles.keyFlexItemEditing : null,

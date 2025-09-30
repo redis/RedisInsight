@@ -10,6 +10,7 @@
 .toolTipAnchorKey {
   max-width: 450px;
   height: 31px !important;
+  width: 100%;
 }
 
 .keyInput {
@@ -21,6 +22,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  padding-right: 6px;
 }
 
 :global(.browserPage .key-details-header .euiFormControlLayout) {
