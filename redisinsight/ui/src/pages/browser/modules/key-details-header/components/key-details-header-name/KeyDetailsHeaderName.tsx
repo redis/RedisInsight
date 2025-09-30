@@ -147,16 +147,12 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
 
   return (
     <FlexItem
-      grow
+      grow={5}
       direction="row"
       onMouseEnter={onMouseEnterKey}
       onMouseLeave={onMouseLeaveKey}
       onClick={onClickKey}
       $gap="xs"
-      className={cx(
-        styles.keyFlexItem, // TODO with styles.keyFlexItemEditing
-        keyIsEditing || keyIsHovering ? styles.keyFlexItemEditing : null,
-      )}
       data-testid="edit-key-btn"
     >
       {keyIsEditing || keyIsHovering ? (
