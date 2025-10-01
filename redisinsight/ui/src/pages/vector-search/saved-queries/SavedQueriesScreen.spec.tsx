@@ -52,7 +52,7 @@ describe('SavedQueriesScreen', () => {
   it('should render the main content', () => {
     renderComponent()
 
-    expect(screen.getByText('Saved queries')).toBeInTheDocument()
+    expect(screen.getByText('Sample queries')).toBeInTheDocument()
     expect(screen.getByText('Index:')).toBeInTheDocument()
 
     // Check that preset queries are rendered for bikes index
@@ -164,7 +164,7 @@ describe('SavedQueriesScreen', () => {
     ).toBeInTheDocument()
   })
 
-  it('should render "No saved queries" message when there are no indexes', async () => {
+  it('should render "No sample queries" message when there are no indexes', async () => {
     ;(useRedisearchListData as jest.Mock).mockReturnValue({
       loading: false,
       data: [],
@@ -174,7 +174,7 @@ describe('SavedQueriesScreen', () => {
 
     const noSavedQueriesMessage = await screen.findByTestId('no-data-message')
     const noSavedQueriesMessageTitle =
-      await screen.getByText('No saved queries.')
+      await screen.getByText('No sample queries.')
 
     expect(noSavedQueriesMessage).toBeInTheDocument()
     expect(noSavedQueriesMessageTitle).toBeInTheDocument()

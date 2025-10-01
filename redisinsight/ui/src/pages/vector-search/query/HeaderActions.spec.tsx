@@ -59,21 +59,21 @@ describe('HeaderActions', () => {
     expect(headerActions).toBeInTheDocument()
 
     // Verify the presence of the actions
-    const savedQueriesButton = screen.getByText('Saved queries')
+    const savedQueriesButton = screen.getByText('Sample queries')
     expect(savedQueriesButton).toBeInTheDocument()
 
     const manageIndexesButton = screen.getByText('Manage indexes')
     expect(manageIndexesButton).toBeInTheDocument()
   })
 
-  it('should call toggleSavedQueriesScreen when "Saved queries" is clicked', async () => {
+  it('should call toggleSavedQueriesScreen when "Sample queries" is clicked', async () => {
     const onToggle = jest.fn()
     renderComponent({
       ...mockProps,
       toggleSavedQueriesScreen: onToggle,
     })
 
-    const savedQueriesButton = screen.getByText('Saved queries')
+    const savedQueriesButton = screen.getByText('Sample queries')
     await userEvent.click(savedQueriesButton)
 
     expect(onToggle).toHaveBeenCalledTimes(1)

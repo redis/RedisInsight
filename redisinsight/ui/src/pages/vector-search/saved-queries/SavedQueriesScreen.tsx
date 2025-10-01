@@ -112,7 +112,7 @@ export const SavedQueriesScreen = ({
     >
       <VectorSearchScreenHeader padding={6}>
         <Title size="S" data-testid="title">
-          Saved queries
+          Sample queries
         </Title>
         <IconButton
           size="XS"

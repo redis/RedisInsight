@@ -37,7 +37,7 @@ export const HeaderActions = ({
 
         <Row justify="end" data-testid="vector-search-header-actions" gap="m">
           <EmptyButton onClick={toggleSavedQueriesScreen}>
-            Saved queries
+            Sample queries
           </EmptyButton>
 
           <EmptyButton onClick={toggleManageIndexesScreen}>

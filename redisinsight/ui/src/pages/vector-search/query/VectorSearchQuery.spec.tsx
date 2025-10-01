@@ -70,7 +70,7 @@ describe('VectorSearchQuery', () => {
     expect(savedQueriesScreen).toBeInTheDocument()
 
     // Close the saved queries screen
-    const savedQueriesButton = screen.getAllByText('Saved queries')[0]
+    const savedQueriesButton = screen.getAllByText('Sample queries')[0]
     expect(savedQueriesButton).toBeInTheDocument()
     fireEvent.click(savedQueriesButton)
 
@@ -101,7 +101,7 @@ describe('VectorSearchQuery', () => {
       renderVectorSearchQueryComponent()
 
       // Open the saved queries screen
-      const savedQueriesButton = screen.getByText('Saved queries')
+      const savedQueriesButton = screen.getByText('Sample queries')
       expect(savedQueriesButton).toBeInTheDocument()
 
       fireEvent.click(savedQueriesButton)
@@ -124,7 +124,7 @@ describe('VectorSearchQuery', () => {
       renderVectorSearchQueryComponent()
 
       // Open the saved queries screen
-      const savedQueriesButton = screen.getByText('Saved queries')
+      const savedQueriesButton = screen.getByText('Sample queries')
       expect(savedQueriesButton).toBeInTheDocument()
 
       fireEvent.click(savedQueriesButton)

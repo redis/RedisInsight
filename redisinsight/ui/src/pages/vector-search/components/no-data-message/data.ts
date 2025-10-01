@@ -23,8 +23,8 @@ export const NO_DATA_MESSAGES: Record<NoDataMessageKeys, NoDataMessageDetails> =
         'Start with vector search onboarding to explore sample data, or create an index and write queries in the smart editor.',
       icon: NoQueryResultsIcon,
       imgStyle: {
-        marginRight: '30px'
-      }
+        marginRight: '30px',
+      },
     },
     [NoDataMessageKeys.ManageIndexes]: {
       title: 'No indexes.',
@@ -33,7 +33,7 @@ export const NO_DATA_MESSAGES: Record<NoDataMessageKeys, NoDataMessageDetails> =
       icon: NoIndexesIcon,
     },
     [NoDataMessageKeys.SavedQueries]: {
-      title: 'No saved queries.',
+      title: 'No sample queries.',
       description:
         'Start with vector search onboarding to explore sample data, or write queries in the smart editor.',
       icon: NoSavedQueries,
