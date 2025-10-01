@@ -67,7 +67,7 @@ const ShortInstanceInfo = ({ info, databases, modules }: Props) => {
             </Col>
             <Col gap="xs">
               <Text size="m">Logical Databases</Text>
-              <Text color="primary" size="s">
+              <Text color="secondary" size="s">
                 Select logical databases to work with in Browser, Workbench, and
                 Database Analysis.
               </Text>
@@ -109,7 +109,7 @@ const ShortInstanceInfo = ({ info, databases, modules }: Props) => {
                   data-testid={`module_${name}`}
                 >
                   <RiIcon type={getIcon(name)} size="M" />
-                  <Text size="S">
+                  <Text size="S" color="secondary">
                     {truncateText(
                       getModule(name)?.name ||
                         DATABASE_LIST_MODULES_TEXT[
