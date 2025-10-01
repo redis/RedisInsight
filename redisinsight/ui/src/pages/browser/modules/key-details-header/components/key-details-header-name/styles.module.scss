@@ -18,7 +18,7 @@
   font-size: 14px !important;
   font-weight: 500 !important;
   flex: 1;
-  max-width: 400px;
+  min-width: 150px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -62,5 +62,5 @@
 }
 
 .hidden {
-  display: none;
+  visibility: hidden;
 }
