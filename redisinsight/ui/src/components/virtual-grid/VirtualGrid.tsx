@@ -11,6 +11,7 @@ import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { ProgressBarLoader } from 'uiSrc/components/base/display'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import { IProps } from './interfaces'
 import { getColumnWidth, useInnerElementType } from './utils'
 
@@ -202,19 +203,22 @@ const VirtualGrid = (props: IProps) => {
                     className={styles.gridHeaderItemSortable}
                     onClick={() => changeSorting(column.id)}
                   >
-                    {content.render
-                      ? content.render(content)
-                      : renderNotEmptyContent(content.label)}
-                    <span style={{ paddingLeft: 0 }}>
-                      <RiIcon
-                        style={{ marginLeft: '4px' }}
-                        type={
-                          sortedColumn?.order === SortOrder.DESC
-                            ? 'ArrowDownIcon'
-                            : 'ArrowUpIcon'
-                        }
-                      />
-                    </span>
+                    <Row align="center">
+                      {content.render
+                        ? content.render(content)
+                        : renderNotEmptyContent(content.label)}
+                      <span style={{ paddingLeft: 0 }}>
+                        <RiIcon
+                          size="S"
+                          style={{ marginLeft: '4px' }}
+                          type={
+                            sortedColumn?.order === SortOrder.DESC
+                              ? 'ArrowDownIcon'
+                              : 'ArrowUpIcon'
+                          }
+                        />
+                      </span>
+                    </Row>
                   </button>
                 )}
                 {!content?.sortable &&

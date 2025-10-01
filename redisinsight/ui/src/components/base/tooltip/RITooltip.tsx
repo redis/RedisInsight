@@ -13,7 +13,7 @@ export interface RiTooltipProps
 }
 
 const StyledTooltip = styled(Tooltip)`
-  word-break: break-all;
+  word-break: break-word;
 `
 
 export const RiTooltip = ({

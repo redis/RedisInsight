@@ -1,8 +1,7 @@
 import React, { FormEvent, useEffect, useState } from 'react'
 import cx from 'classnames'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
   IconButton,
   PrimaryButton,
@@ -127,7 +126,8 @@ const EditablePopover = (props: Props) => {
       })}
       closePopover={handleDecline}
       button={
-        <div
+        <Row
+          align="center"
           className={styles.contentWrapper}
           onMouseEnter={() => setIsHovering(!isDisabledEditButton)}
           onMouseLeave={() => setIsHovering(false)}
@@ -137,37 +137,39 @@ const EditablePopover = (props: Props) => {
           {isDelayed && (
             <Loader className={cx(editBtnClassName, styles.spinner)} size="m" />
           )}
-          {!isPopoverOpen && isHovering && !isDelayed && button}
-        </div>
+          <FlexItem>
+            {(isPopoverOpen || isHovering) && !isDelayed && button}
+          </FlexItem>
+        </Row>
       }
       data-testid="popover-item-editor"
       onClick={(e) => e.stopPropagation()}
     >
       <form onSubmit={onFormSubmit}>
-        <div className={styles.content}>{children}</div>
-        <Spacer size="s" />
-        <Row className={styles.footer} justify="end" gap="m">
-          <FlexItem>
-            <SecondaryButton
-              size="s"
-              onClick={() => handleDecline()}
-              data-testid="cancel-btn"
-            >
-              Cancel
-            </SecondaryButton>
-          </FlexItem>
-
-          <FlexItem>
-            <PrimaryButton
-              size="s"
-              type="submit"
-              disabled={isDisabledApply()}
-              data-testid="save-btn"
-            >
-              Save
-            </PrimaryButton>
-          </FlexItem>
-        </Row>
+        <Col gap="l">
+          <Row>{children}</Row>
+          <Row justify="end" gap="m">
+            <FlexItem>
+              <SecondaryButton
+                size="s"
+                onClick={() => handleDecline()}
+                data-testid="cancel-btn"
+              >
+                Cancel
+              </SecondaryButton>
+            </FlexItem>
+            <FlexItem>
+              <PrimaryButton
+                size="s"
+                type="submit"
+                disabled={isDisabledApply()}
+                data-testid="save-btn"
+              >
+                Save
+              </PrimaryButton>
+            </FlexItem>
+          </Row>
+        </Col>
       </form>
     </RiPopover>
   )

@@ -5,7 +5,7 @@ import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { Text, Title } from 'uiSrc/components/base/text'
 
 const PopoverContentWrapper = styled(Col)`
-  word-break: break-all;
+  word-break: break-word;
   max-width: 300px;
 `
 
@@ -26,7 +26,7 @@ const ConfirmationPopover = (props: ConfirmationPopoverProps) => {
         {title && <Title size="S">{title}</Title>}
         {message && <Text size="m">{message}</Text>}
         {appendInfo}
-        <Row>{confirmButton}</Row>
+        <Row justify="end">{confirmButton}</Row>
       </PopoverContentWrapper>
     </RiPopover>
   )

@@ -37,7 +37,8 @@ import { FormatedDate, RiTooltip } from 'uiSrc/components'
 import { Text } from 'uiSrc/components/base/text'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { ComposedInput } from 'uiSrc/components/base/inputs'
+
 import {
   ConsumerDto,
   ConsumerGroupDto,
@@ -371,19 +372,8 @@ const GroupsViewWrapper = (props: Props) => {
             delay={500}
             editBtnClassName={styles.editBtn}
           >
-            <FormField
-              additionalText={
-                <RiTooltip
-                    anchorClassName="inputAppendIcon"
-                    position="left"
-                    title="Enter Valid ID, 0 or $"
-                    content={lastDeliveredIDTooltipText}
-                  >
-                    <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
-                  </RiTooltip>
-              }
-            >
-              <TextInput
+            <FormField>
+              <ComposedInput
                 name="id"
                 id="id"
                 placeholder="ID*"
@@ -396,6 +386,16 @@ const GroupsViewWrapper = (props: Props) => {
                 style={{ width: 240 }}
                 autoComplete="off"
                 data-testid="last-id-field"
+                after={
+                  <RiTooltip
+                    anchorClassName="inputAppendIcon"
+                    position="left"
+                    title="Enter Valid ID, 0 or $"
+                    content={lastDeliveredIDTooltipText}
+                  >
+                    <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
+                  </RiTooltip>
+                }
               />
               {!showIdError && (
                 <span className={styles.idText} data-testid="id-help-text">

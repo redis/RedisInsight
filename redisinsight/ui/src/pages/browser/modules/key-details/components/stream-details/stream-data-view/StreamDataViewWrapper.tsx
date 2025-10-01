@@ -387,14 +387,12 @@ const StreamDataViewWrapper = (props: Props) => {
   }
 
   return (
-    <>
-      <StreamDataView
-        data={entries}
-        columns={columns}
-        onClosePopover={closePopover}
-        {...props}
-      />
-    </>
+    <StreamDataView
+      data={entries}
+      columns={columns}
+      onClosePopover={closePopover}
+      {...props}
+    />
   )
 }
 
