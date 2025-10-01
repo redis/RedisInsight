@@ -156,7 +156,7 @@ export class VectorSearchPage extends BasePage {
         // SAVED QUERIES
         this.savedQueriesContainer = page.getByTestId('saved-queries-screen')
         this.savedQueriesButton = page.getByRole('button', {
-            name: 'Saved queries',
+            name: 'Sample queries',
         })
         this.savedQueriesNoDataMessage =
             this.savedQueriesContainer.getByTestId('no-data-message')

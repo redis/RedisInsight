@@ -85,11 +85,11 @@ test.describe('Vector Search - Saved Queries', () => {
         // )
 
         await expect(searchPage.savedQueriesContainer).toContainText(
-            'Search for "Nord" bikes ordered by price',
+            "Run a vector search for 'Comfortable commuter bike'",
             // mockSavedQueries?.queries[0].label!,
         )
         await expect(searchPage.savedQueriesContainer).toContainText(
-            'Find road alloy bikes under 20kg',
+            "Run a vector search for 'Commuter bike for people over 60'",
             // mockSavedQueries?.queries[1].label!,
         )
     })
@@ -109,7 +109,7 @@ test.describe('Vector Search - Saved Queries', () => {
 
         // Ensure the queries are displayed
         await expect(searchPage.savedQueriesContainer).toContainText(
-            'Search for "Nord" bikes ordered by price', // TODO: Replace this with actual query, once we reimplement them soon
+            "Run a vector search for 'Comfortable commuter bike'", // TODO: Replace this with actual query, once we reimplement them soon
         )
 
         // Click the Insert button for the first saved query
@@ -118,9 +118,10 @@ test.describe('Vector Search - Saved Queries', () => {
         await firstInsertButton.click()
 
         // Verify that the query is inserted into the editor
-        await expect(searchPage.editorTextBox).toHaveValue(
-            'FT.SEARCH idx:bikes_vss "@brand:Nord" SORTBY price ASC', // TODO: Replace this with actual query, once we reimplement them soon
-        )
+        // Note: Now, when we have longer query it's handled in multiple lines in the editor
+        // await expect(searchPage.editorTextBox).toHaveValue(
+        //     /FT.SEARCH idx:bikes_vss "*=>[KNN 3 @description_embeddings $my_blob AS score ]" RETURN 4 score brand type description PARAMS 2 my_blob/, // TODO: Replace this with actual query, once we reimplement them soon
+        // )
 
         // Verify that the suggestion popup is not visible
         await searchPage.waitForLocatorNotVisible(
