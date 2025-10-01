@@ -131,13 +131,14 @@ const EditablePopover = (props: Props) => {
           className={styles.contentWrapper}
           onMouseEnter={() => setIsHovering(!isDisabledEditButton)}
           onMouseLeave={() => setIsHovering(false)}
+          onClick={(e) => e.stopPropagation()}
           data-testid={`${prefix}_content-value-${field}`}
         >
           {content}
-          {isDelayed && (
-            <Loader className={cx(editBtnClassName, styles.spinner)} size="m" />
-          )}
-          <FlexItem>
+          <FlexItem style={{ marginLeft: '-19px' }}>
+            {isDelayed && (
+              <Loader className={cx(editBtnClassName, styles.spinner)} size="m" />
+            )}
             {(isPopoverOpen || isHovering) && !isDelayed && button}
           </FlexItem>
         </Row>
