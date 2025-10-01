@@ -88,7 +88,7 @@ const ShortInstanceInfo = ({ info, databases, modules }: Props) => {
             <span>{version}</span>
           </Row>
           <Row align="center" grow={false}>
-            <RiIcon type="UserIcon" size="M" />
+            <RiIcon type="UserIcon" size="S" />
             <span>{user || 'Default'}</span>
           </Row>
         </Row>
