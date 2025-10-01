@@ -76,11 +76,9 @@ export interface Props {
   handleScanMoreClick: (config: any) => void
 }
 
-const ViewSwitchButtonGroup = styled(ButtonGroup)`
-  button {
-    width: 24px !important;
-    min-width: 24px !important;
-  }
+const ViewSwitchButton = styled(ButtonGroup.Button)`
+  width: 24px !important;
+  min-width: 24px !important;
 `
 
 const KeysHeader = (props: Props) => {
@@ -284,14 +282,14 @@ const KeysHeader = (props: Props) => {
 
   const ViewSwitch = () => (
     <OnboardingTour options={ONBOARDING_FEATURES.BROWSER_TREE_VIEW}>
-      <ViewSwitchButtonGroup data-testid="view-type-switcher">
+      <ButtonGroup data-testid="view-type-switcher">
         {viewTypes.map((view) => (
           <RiTooltip
             content={view.tooltipText}
             position="top"
             key={view.tooltipText}
           >
-            <ButtonGroup.Button
+            <ViewSwitchButton
               aria-label={view.ariaLabel}
               onClick={() => view.onClick()}
               isSelected={view.isActiveView()}
@@ -299,10 +297,10 @@ const KeysHeader = (props: Props) => {
               disabled={view.disabled || false}
             >
               <ButtonGroup.Icon icon={view.getIconType()} />
-            </ButtonGroup.Button>
+            </ViewSwitchButton>
           </RiTooltip>
         ))}
-      </ViewSwitchButtonGroup>
+      </ButtonGroup>
     </OnboardingTour>
   )
 

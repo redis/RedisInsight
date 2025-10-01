@@ -41,6 +41,7 @@ const Actions = ({ handleAddKeyPanel, handleBulkActionsPanel }: Props) => {
 
   const AddKeyBtn = (
     <SecondaryButton
+      inverted
       size="m"
       filled
       onClick={openAddKeyPanel}

@@ -6,17 +6,14 @@ import { KEYBOARD_SHORTCUTS } from 'uiSrc/constants'
 import { KeyboardShortcut, RiTooltip } from 'uiSrc/components'
 import { isGroupMode } from 'uiSrc/utils'
 
-import {
-  GroupModeIcon,
-  PlayFilledIcon,
-  RawModeIcon,
-} from 'uiSrc/components/base/icons'
+import { GroupModeIcon, RawModeIcon } from 'uiSrc/components/base/icons'
 
 import Divider from 'uiSrc/components/divider/Divider'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
+import RunButton from 'uiSrc/components/query/components/RunButton'
 
 export interface Props {
   onChangeMode?: () => void
@@ -115,19 +112,7 @@ const QueryActions = (props: Props) => {
         }
         data-testid="run-query-tooltip"
       >
-        <EmptyButton
-          onClick={() => {
-            onSubmit()
-          }}
-          loading={isLoading}
-          disabled={isLoading}
-          icon={PlayFilledIcon}
-          className={cx(styles.btn, styles.submitButton)}
-          aria-label="submit"
-          data-testid="btn-submit"
-        >
-          Run
-        </EmptyButton>
+        <RunButton isLoading={isLoading} onSubmit={onSubmit} />
       </RiTooltip>
     </div>
   )

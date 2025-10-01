@@ -4,9 +4,7 @@ import {
   CheckedType,
   Typography,
 } from '@redis-ui/components'
-import { BodySizesType } from '@redis-ui/components/dist/Typography/components/Body/Body.types'
-
-type Size = BodySizesType
+import { BodyProps } from 'uiSrc/components/base/text/text.styles'
 
 export type CheckboxProps = Omit<
   React.ComponentProps<typeof RedisUiCheckbox>,
@@ -16,7 +14,7 @@ export type CheckboxProps = Omit<
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void
   name?: string
   id?: string
-  labelSize?: Size
+  labelSize?: BodyProps['size']
 }
 
 type CheckboxLabelProps = Omit<

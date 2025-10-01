@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { Row } from 'uiSrc/components/base/layout/flex'
-import Tabs from 'uiSrc/components/base/layout/tabs'
 
 export const StyledAppNavigation = styled.div`
   display: grid;
@@ -31,8 +30,4 @@ export const StyledAppNavigationContainer = styled(Row)<NavContainerProps>`
       $borderLess ? '0' : theme.components.tabs.variants.default.tabsLine.size}
     solid
     ${({ theme }) => theme.components.tabs.variants.default.tabsLine.color};
-`
-
-export const StyledAppNavTab = styled(Tabs.TabBar.Trigger.Tab)`
-  padding-bottom: ${({ theme }) => theme.core.space.space200} !important;
 `

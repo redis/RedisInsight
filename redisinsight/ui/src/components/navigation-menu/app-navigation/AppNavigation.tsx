@@ -4,7 +4,6 @@ import { Row } from 'uiSrc/components/base/layout/flex'
 import {
   StyledAppNavigation,
   StyledAppNavigationContainer,
-  StyledAppNavTab,
 } from './AppNavigation.styles'
 import { useNavigation } from '../hooks/useNavigation'
 import FeatureFlagComponent from 'uiSrc/components/feature-flag-component/FeatureFlagComponent'
@@ -62,7 +61,7 @@ const AppNavigation = ({ actions, onChange }: AppNavigationProps) => {
         borderLess
         grow={false}
         justify="center"
-        style={{ paddingTop: '16px' }}
+        align="end"
       >
         <Tabs.Compose
           value={activeTab?.pageName}
@@ -81,13 +80,17 @@ const AppNavigation = ({ actions, onChange }: AppNavigationProps) => {
               const key = `${value}-${index}`
               if (featureFlag) {
                 return (
-                  <FeatureFlagComponent name={featureFlag as FeatureFlags}>
+                  <FeatureFlagComponent
+                    name={featureFlag as FeatureFlags}
+                    key={key}
+                  >
                     <Tabs.TabBar.Trigger.Compose
                       value={value}
                       disabled={disabled}
-                      key={key}
                     >
-                      <StyledAppNavTab>{label ?? value}</StyledAppNavTab>
+                      <Tabs.TabBar.Trigger.Tab>
+                        {label ?? value}
+                      </Tabs.TabBar.Trigger.Tab>
                       <Tabs.TabBar.Trigger.Marker />
                     </Tabs.TabBar.Trigger.Compose>
                   </FeatureFlagComponent>
@@ -99,7 +102,9 @@ const AppNavigation = ({ actions, onChange }: AppNavigationProps) => {
                   disabled={disabled}
                   key={key}
                 >
-                  <StyledAppNavTab>{label ?? value}</StyledAppNavTab>
+                  <Tabs.TabBar.Trigger.Tab>
+                    {label ?? value}
+                  </Tabs.TabBar.Trigger.Tab>
                   <Tabs.TabBar.Trigger.Marker />
                 </Tabs.TabBar.Trigger.Compose>
               )

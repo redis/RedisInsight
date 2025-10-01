@@ -77,7 +77,6 @@ const HashDetails = (props: Props) => {
             id="showTtl"
             name="showTtl"
             label="Show TTL"
-            className={styles.showTtlCheckbox}
             checked={showTtl}
             onChange={(e) => handleSelectShow(e.target.checked)}
             data-testid="test-check-ttl"

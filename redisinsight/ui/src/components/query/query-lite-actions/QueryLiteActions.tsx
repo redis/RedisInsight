@@ -3,11 +3,10 @@ import React from 'react'
 import { KEYBOARD_SHORTCUTS } from 'uiSrc/constants'
 import { KeyboardShortcut, RiTooltip } from 'uiSrc/components'
 
-import { PlayFilledIcon } from 'uiSrc/components/base/icons'
-
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { Button, EmptyButton } from 'uiSrc/components/base/forms/buttons'
+import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
+import RunButton from 'uiSrc/components/query/components/RunButton'
 
 export interface Props {
   onSubmit: () => void
@@ -59,16 +58,7 @@ const QueryLiteActions = (props: Props) => {
         }
         data-testid="run-query-tooltip"
       >
-        <Button
-          onClick={() => onSubmit()}
-          loading={isLoading}
-          disabled={isLoading}
-          icon={PlayFilledIcon}
-          aria-label="submit"
-          data-testid="btn-submit"
-        >
-          Run
-        </Button>
+        <RunButton onSubmit={onSubmit} isLoading={isLoading} />
       </RiTooltip>
     </>
   )

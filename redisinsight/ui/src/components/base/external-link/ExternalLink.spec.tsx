@@ -5,6 +5,6 @@ import ExternalLink from './ExternalLink'
 
 describe('ExternalLink', () => {
   it('should render', () => {
-    expect(render(<ExternalLink />)).toBeTruthy()
+    expect(render(<ExternalLink href="https://redis.com" />)).toBeTruthy()
   })
 })

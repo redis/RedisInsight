@@ -144,7 +144,6 @@ export const INFINITE_MESSAGES: Record<
               <ExternalLink
                 href={MANAGE_DB_LINK}
                 iconSize="XS"
-                size="S"
                 variant="inline"
               >
                 Manage DB
@@ -186,8 +185,7 @@ export const INFINITE_MESSAGES: Record<
         <ExternalLink
           target="_blank"
           variant="inline"
-          size="S"
-          iconSize={'XS'}
+          iconSize="XS"
           tabIndex={-1}
           href={getUtmExternalLink(EXTERNAL_LINKS.cloudConsole, {
             medium: UTM_MEDIUMS.Main,

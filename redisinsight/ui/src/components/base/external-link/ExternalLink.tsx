@@ -12,7 +12,13 @@ export type Props = LinkProps & {
 }
 
 const ExternalLink = (props: Props) => {
-  const { iconPosition = 'right', iconSize = 'M', children, ...rest } = props
+  const {
+    iconPosition = 'right',
+    iconSize = 'M',
+    size = 'S',
+    children,
+    ...rest
+  } = props
 
   const ArrowIcon = () => (
     <RiIcon type="ArrowDiagonalIcon" size={iconSize} color="informative400" />

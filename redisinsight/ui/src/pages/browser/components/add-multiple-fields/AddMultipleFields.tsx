@@ -49,7 +49,7 @@ const AddMultipleFields = <T,>(props: Props<T>) => {
         )}
       </ItemsWrapper>
       <Row align="center" justify="end">
-        <RiTooltip content="Add" position="left">
+        <RiTooltip content="Add" position="left" delay={500}>
           <ActionIconButton
             variant="secondary"
             icon={PlusIcon}
