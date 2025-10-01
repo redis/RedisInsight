@@ -66,7 +66,7 @@ const ShortInstanceInfo = ({ info, databases, modules }: Props) => {
               <RiImage src={MessageInfoSvg} alt="Database Info" $size="xs" />
             </Col>
             <Col gap="xs">
-              <Text size="m">Logical Databases</Text>
+              <Text size="m">Logical databases</Text>
               <Text color="secondary" size="s">
                 Select logical databases to work with in Browser, Workbench, and
                 Database Analysis.
@@ -97,7 +97,7 @@ const ShortInstanceInfo = ({ info, databases, modules }: Props) => {
         <>
           <SeparatorLine />
           <Text color="primary" size="L" component="div" variant="semiBold">
-            Database Modules
+            Database modules
           </Text>
           <Col gap="s">
             {modules?.map(
