@@ -109,6 +109,14 @@ const ProfileSelect = styled(RiSelect)`
   width: 46px;
   padding: inherit !important;
 
+  &.profiler {
+    width: 50px;
+  }
+
+  &.toggle-view {
+    width: 40px;
+  }
+
   & ~ div {
     right: 0;
 
@@ -385,7 +393,7 @@ const QueryCardHeader = (props: Props) => {
           </div>
         </FlexItem>
         <FlexItem className={styles.controls}>
-          <Row align="center" justify="end" gap="l">
+          <Row align="center" justify="end" gap="s">
             <FlexItem
               className={styles.time}
               data-testid="command-execution-date-time"
@@ -440,24 +448,21 @@ const QueryCardHeader = (props: Props) => {
                 onClick={onDropDownViewClick}
               >
                 {isOpen && canCommandProfile && !summaryText && (
-                  <div className={styles.dropdownWrapper}>
-                    <div className={styles.dropdown}>
-                      <ProfileSelect
-                        placeholder={profileOptions[0].inputDisplay}
-                        onChange={(value: ProfileQueryType | string) =>
-                          onQueryProfile(value as ProfileQueryType)
-                        }
-                        options={profileOptions}
-                        data-testid="run-profile-type"
-                        valueRender={({ option, isOptionValue }) => {
-                          if (isOptionValue) {
-                            return option.dropdownDisplay as JSX.Element
-                          }
-                          return option.inputDisplay as JSX.Element
-                        }}
-                      />
-                    </div>
-                  </div>
+                  <ProfileSelect
+                    placeholder={profileOptions[0].inputDisplay}
+                    onChange={(value: ProfileQueryType | string) =>
+                      onQueryProfile(value as ProfileQueryType)
+                    }
+                    className="profiler"
+                    options={profileOptions}
+                    data-testid="run-profile-type"
+                    valueRender={({ option, isOptionValue }) => {
+                      if (isOptionValue) {
+                        return option.dropdownDisplay as JSX.Element
+                      }
+                      return option.inputDisplay as JSX.Element
+                    }}
+                  />
                 )}
               </FlexItem>
             )}
@@ -467,22 +472,19 @@ const QueryCardHeader = (props: Props) => {
                 onClick={onDropDownViewClick}
               >
                 {isOpen && options.length > 1 && !summaryText && (
-                  <div className={styles.dropdownWrapper}>
-                    <div className={styles.dropdown}>
-                      <ProfileSelect
-                        options={modifiedOptions}
-                        valueRender={({ option, isOptionValue }) => {
-                          if (isOptionValue) {
-                            return option.dropdownDisplay as JSX.Element
-                          }
-                          return option.inputDisplay as JSX.Element
-                        }}
-                        value={selectedValue}
-                        onChange={(value: string) => onChangeView(value)}
-                        data-testid="select-view-type"
-                      />
-                    </div>
-                  </div>
+                  <ProfileSelect
+                    options={modifiedOptions}
+                    valueRender={({ option, isOptionValue }) => {
+                      if (isOptionValue) {
+                        return option.dropdownDisplay as JSX.Element
+                      }
+                      return option.inputDisplay as JSX.Element
+                    }}
+                    value={selectedValue}
+                    onChange={(value: string) => onChangeView(value)}
+                    className="toggle-view"
+                    data-testid="select-view-type"
+                  />
                 )}
               </FlexItem>
             )}
@@ -498,13 +500,15 @@ const QueryCardHeader = (props: Props) => {
               )}
             </FlexItem>
             <FlexItem className={styles.buttonIcon}>
-              <IconButton
-                disabled={loading || clearing}
-                icon={DeleteIcon}
-                aria-label="Delete command"
-                data-testid="delete-command"
-                onClick={handleQueryDelete}
-              />
+              <RiTooltip content="Clear result" position="left">
+                <IconButton
+                  disabled={loading || clearing}
+                  icon={DeleteIcon}
+                  aria-label="Delete command"
+                  data-testid="delete-command"
+                  onClick={handleQueryDelete}
+                />
+              </RiTooltip>
             </FlexItem>
             {!isFullScreen && (
               <FlexItem className={cx(styles.buttonIcon, styles.playIcon)}>
