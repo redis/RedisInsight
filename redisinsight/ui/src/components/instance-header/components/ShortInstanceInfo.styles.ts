@@ -16,3 +16,7 @@ export const SeparatorLine = styled.div`
     --euiToastSuccessBorderColor
   ); // TODO: use theme color when designs are available
 `
+
+export const WordBreakWrapper = styled.div`
+  word-break: break-word;
+`

@@ -18,7 +18,11 @@ import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
 import { RiImage } from 'uiSrc/components/base/display'
 import MessageInfoSvg from 'uiSrc/assets/img/icons/help_illus.svg'
-import { DbIndexInfoWrapper, SeparatorLine } from './ShortInstanceInfo.styles'
+import {
+  DbIndexInfoWrapper,
+  SeparatorLine,
+  WordBreakWrapper,
+} from './ShortInstanceInfo.styles'
 
 export interface Props {
   info: {
@@ -68,8 +72,10 @@ const ShortInstanceInfo = ({ info, databases, modules }: Props) => {
             <Col gap="xs">
               <Text size="m">Logical databases</Text>
               <Text color="secondary" size="s">
-                Select logical databases to work with in Browser, Workbench, and
-                Database Analysis.
+                <WordBreakWrapper>
+                  Select logical databases to work with in Browser, Workbench,
+                  and Database Analysis.
+                </WordBreakWrapper>
               </Text>
             </Col>
           </DbIndexInfoWrapper>
