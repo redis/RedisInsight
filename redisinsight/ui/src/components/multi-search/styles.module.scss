@@ -9,6 +9,7 @@
   .multiSearch {
     position: relative;
     flex: 1;
+    gap: 8px;
     height: 100%;
     display: flex;
     align-items: center;
@@ -103,10 +104,6 @@
       visibility: hidden;
       pointer-events: none;
     }
-  }
-
-  .historyIcon {
-    margin-inline: 8px;
   }
 
   .clearHistory {

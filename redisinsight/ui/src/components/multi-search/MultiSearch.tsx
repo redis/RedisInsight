@@ -191,8 +191,7 @@ const MultiSearch = (props: Props) => {
             placeholder={placeholder}
             value={value}
             onKeyDown={handleKeyDown}
-            onChange={onChange
-            }
+            onChange={onChange}
             onFocus={() => setIsInputFocus(true)}
             onBlur={() => setIsInputFocus(false)}
             ref={inputRef}
@@ -292,7 +291,6 @@ const MultiSearch = (props: Props) => {
                   setShowAutoSuggestions((v) => !v)
                   inputRef.current?.focus()
                 }}
-                className={styles.historyIcon}
                 data-testid="show-suggestions-btn"
               />
             </RiTooltip>
