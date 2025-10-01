@@ -5,6 +5,8 @@ import cx from 'classnames'
 
 import { isNumber } from 'lodash'
 import { useTheme } from '@redis-ui/styles'
+import styled from 'styled-components'
+
 import {
   formatLongName,
   getDbIndex,
@@ -65,6 +67,11 @@ const widthExplorePanel = 460
 
 export const firstPanelId = 'keys'
 export const secondPanelId = 'keyDetails'
+
+const BorderedResizablePanel = styled(ResizablePanel)`
+  border-radius: 8px;
+  border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
+`
 
 const isOneSideMode = (isInsightsOpen: boolean) =>
   globalThis.innerWidth <
@@ -324,7 +331,7 @@ const BrowserPage = () => {
           direction="horizontal"
           onLayout={onPanelWidthChange}
         >
-          <ResizablePanel
+          <BorderedResizablePanel
             defaultSize={sizes && sizes[0] ? sizes[0] : 50}
             minSize={45}
             id={firstPanelId}
@@ -333,10 +340,6 @@ const BrowserPage = () => {
                 arePanelsCollapsed ||
                 (isBrowserFullScreen && !isRightPanelOpen),
             })}
-            style={{
-              border: `1px solid ${theme.semantic.color.border.neutral500}`,
-              borderRadius: `8px`,
-            }}
           >
             <BrowserLeftPanel
               selectedKey={selectedKey}
@@ -344,11 +347,11 @@ const BrowserPage = () => {
               removeSelectedKey={handleRemoveSelectedKey}
               handleAddKeyPanel={handleAddKeyPanel}
             />
-          </ResizablePanel>
+          </BorderedResizablePanel>
           {!arePanelsCollapsed && !isBrowserFullScreen && (
             <ResizablePanelHandle />
           )}
-          <ResizablePanel
+          <BorderedResizablePanel
             defaultSize={sizes && sizes[1] ? sizes[1] : 50}
             minSize={45}
             id={secondPanelId}
@@ -359,10 +362,6 @@ const BrowserPage = () => {
               [styles.keyDetails]:
                 arePanelsCollapsed || (isRightPanelOpen && isBrowserFullScreen),
             })}
-            style={{
-              border: `1px solid ${theme.semantic.color.border.neutral500}`,
-              borderRadius: `8px`,
-            }}
           >
             <BrowserRightPanel
               arePanelsCollapsed={arePanelsCollapsed}
@@ -375,7 +374,7 @@ const BrowserPage = () => {
               handleBulkActionsPanel={handleBulkActionsPanel}
               closeRightPanels={closeRightPanels}
             />
-          </ResizablePanel>
+          </BorderedResizablePanel>
         </ResizableContainer>
       </div>
       <OnboardingStartPopover />
