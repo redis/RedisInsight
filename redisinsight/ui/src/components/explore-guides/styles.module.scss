@@ -1,29 +1,3 @@
 .guides {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-
-  max-width: 480px;
-  margin: 0 auto;
-}
-
-.btn {
-  margin: 0 6px 12px;
-  padding: 4px 16px;
-  border: 1px solid var(--externalLinkColor);
-  background-color: var(--buttonGuideBgColor);
-
-  border-radius: 24px;
-  color: var(--externalLinkColor);
-
-  font-size: 12px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  .icon {
-    color: var(--externalLinkColor);
-    margin-right: 8px;
-  }
+  max-width: 414px;
 }

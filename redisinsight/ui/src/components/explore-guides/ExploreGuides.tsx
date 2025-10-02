@@ -13,6 +13,8 @@ import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
+import { FlexGroup } from 'uiSrc/components/base/layout/flex'
 import styles from './styles.module.scss'
 
 const ExploreGuides = () => {
@@ -50,13 +52,11 @@ const ExploreGuides = () => {
       </Text>
       <Spacer size="xl" />
       {!!data.length && (
-        <div className={styles.guides}>
+        <FlexGroup gap="l" wrap justify="center" className={styles.guides}>
           {data.map(({ title, tutorialId, icon }) => (
-            <div
-              key={title}
-              role="button"
+            <SecondaryButton
+              inverted
               tabIndex={0}
-              onKeyDown={() => {}}
               onClick={() => handleLinkClick(tutorialId)}
               className={styles.btn}
               data-testid={`guide-button-${tutorialId}`}
@@ -69,9 +69,9 @@ const ExploreGuides = () => {
                 />
               )}
               {title}
-            </div>
+            </SecondaryButton>
           ))}
-        </div>
+        </FlexGroup>
       )}
     </div>
   )

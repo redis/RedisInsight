@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import TelescopeImg from 'uiSrc/assets/img/telescope-dark.svg'
+import NoDataImg from 'uiSrc/assets/img/no-data.svg'
 
 import { findTutorialPath } from 'uiSrc/utils'
 import {
@@ -22,6 +22,7 @@ import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { RiImage } from 'uiSrc/components/base/display'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import LoadSampleData from '../load-sample-data'
 
 import styles from './styles.module.scss'
@@ -61,17 +62,13 @@ const NoKeysFound = (props: Props) => {
 
   return (
     <div className={styles.container} data-testid="no-result-found-msg">
-      <RiImage
-        className={styles.img}
-        src={TelescopeImg}
-        alt="no results"
-      />
+      <RiImage className={styles.img} src={NoDataImg} alt="no results" />
       <Spacer />
       <Title color="primary" className={styles.title} size="S">
         Let&apos;s start working
       </Title>
       <Spacer />
-      <div className={styles.actions}>
+      <Row gap="m">
         <LoadSampleData onSuccess={onSuccessLoadData} />
         <EmptyButton
           onClick={() => onAddKeyPanel(true)}
@@ -80,7 +77,7 @@ const NoKeysFound = (props: Props) => {
         >
           + Add key manually
         </EmptyButton>
-      </div>
+      </Row>
     </div>
   )
 }
