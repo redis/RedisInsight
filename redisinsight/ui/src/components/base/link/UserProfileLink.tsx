@@ -9,12 +9,6 @@ export const UserProfileLink = styled(Link)`
     theme.semantic.color.text.informative400} !important;
   text-decoration: none !important;
 
-  &:not(:last-child) {
-    border-bottom: 1px solid
-      ${({ theme }: { theme: ReturnType<typeof useTheme> }) =>
-    theme.color.gray400};
-  }
-
   span {
     width: 100%;
 

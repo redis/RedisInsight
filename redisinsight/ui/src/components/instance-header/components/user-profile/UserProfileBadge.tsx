@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import cx from 'classnames'
 import { useHistory } from 'react-router-dom'
 import { logoutUserAction } from 'uiSrc/slices/oauth/cloud'
 
@@ -9,7 +8,7 @@ import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
-import { getTruncatedName, Nullable } from 'uiSrc/utils'
+import { Nullable } from 'uiSrc/utils'
 import {
   fetchSubscriptionsRedisCloud,
   setSSOFlow,
@@ -17,14 +16,12 @@ import {
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { FeatureFlags, Pages } from 'uiSrc/constants'
 import { FeatureFlagComponent } from 'uiSrc/components'
-import { RiPopover } from 'uiSrc/components/base'
 import { getConfig } from 'uiSrc/config'
-import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { UserProfileLink } from 'uiSrc/components/base/link/UserProfileLink'
-import { Loader } from 'uiSrc/components/base/display'
 import { CloudUser } from 'apiSrc/modules/cloud/user/models'
-import styles from './styles.module.scss'
+import { Link } from 'uiSrc/components/base/link/Link'
+import { DownloadIcon, SignoutIcon } from '@redis-ui/icons'
+import { Menu } from 'uiSrc/components/base/layout/menu'
+import { ProfileIcon } from 'uiSrc/components/base/layout/profile-icon/ProfileIcon'
 
 export interface UserProfileBadgeProps {
   'data-testid'?: string
@@ -109,159 +106,115 @@ const UserProfileBadge = (props: UserProfileBadgeProps) => {
   const { accounts, currentAccountId, name } = data
 
   return (
-    <div className={styles.wrapper} data-testid={dataTestId}>
-      <RiPopover
-        ownFocus
-        anchorPosition="upRight"
-        isOpen={isProfileOpen}
-        closePopover={() => setIsProfileOpen(false)}
-        panelClassName={cx('popoverLikeTooltip', styles.popover)}
-        button={
-          <div
-            role="presentation"
-            onClick={handleToggleProfile}
-            className={styles.profileBtn}
-            data-testid="user-profile-btn"
-          >
-            {getTruncatedName(name) || 'R'}
-          </div>
-        }
+    <Menu>
+      <Menu.Trigger withButton onClick={handleToggleProfile}>
+        <ProfileIcon
+          size="L"
+          fullName={name}
+          role="presentation"
+          data-testid="user-profile-btn"
+          style={{ cursor: 'pointer' }}
+        />
+      </Menu.Trigger>
+      <Menu.Content
+        data-testid="user-profile-popover-content"
+        style={{ minWidth: 330 }}
       >
-        <div
-          className={styles.popoverOptions}
-          data-testid="user-profile-popover-content"
+        <FeatureFlagComponent
+          name={FeatureFlags.envDependent}
+          otherwise={
+            <Menu.Content.Label text="Account" data-testid="profile-title" />
+          }
         >
-          <div className={styles.option}>
-            <FeatureFlagComponent
-              name={FeatureFlags.envDependent}
-              otherwise={
-                <Text
-                  className={styles.optionTitle}
-                  data-testid="profile-title"
-                >
-                  Account
-                </Text>
-              }
-            >
-              <Text className={styles.optionTitle} data-testid="profile-title">
-                Redis Cloud account
-              </Text>
-            </FeatureFlagComponent>
-            <div
-              className={styles.accounts}
-              data-testid="user-profile-popover-accounts"
-            >
-              {accounts?.map(({ name, id }) => (
-                <div
-                  role="presentation"
-                  key={id}
-                  className={cx(styles.account, {
-                    [styles.isCurrent]: id === currentAccountId,
-                    [styles.isSelected]:
-                      id === currentAccountId && accounts?.length > 1,
-                    [styles.isDisabled]: selectingAccountId,
-                  })}
-                  onClick={() => handleClickSelectAccount?.(id)}
-                  data-testid={`profile-account-${id}${id === currentAccountId ? '-selected' : ''}`}
-                >
-                  <Text className={styles.accountNameId}>
-                    <span className={styles.accountName}>{name}</span> #{id}
-                  </Text>
-                  {id === currentAccountId && (
-                    <RiIcon
-                      type="CheckThinIcon"
-                      data-testid={`user-profile-selected-account-${id}`}
-                    />
-                  )}
-                  {id === selectingAccountId && (
-                    <Loader
-                      className={styles.loadingSpinner}
-                      size="m"
-                      data-testid={`user-profile-selecting-account-${id}`}
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-          <FeatureFlagComponent
-            name={FeatureFlags.envDependent}
-            otherwise={
-              <>
-                <UserProfileLink
-                  href={riDesktopLink}
-                  data-testid="open-ri-desktop-link"
-                >
-                  <Text>Open in Redis Insight Desktop version</Text>
-                </UserProfileLink>
-                <UserProfileLink
-                  target="_blank"
-                  href={riConfig.app.smConsoleRedirect}
-                  data-testid="cloud-admin-console-link"
-                >
-                  <Text>Back to Redis Cloud Admin console</Text>
-                  <RiIcon
-                    type="CloudIcon"
-                    style={{ fill: 'none' }}
-                    viewBox="-1 0 30 20"
-                    strokeWidth={1.8}
-                  />
-                </UserProfileLink>
-              </>
-            }
-          >
-            <div
+          <Menu.Content.Label
+            text="Redis Cloud account"
+            data-testid="profile-title"
+          />
+        </FeatureFlagComponent>
+        <Menu.Content.Separator />
+        <div data-testid="user-profile-popover-accounts">
+          {accounts?.map(({ name, id }) => (
+            <Menu.Content.Item
               role="presentation"
-              className={cx(styles.option, styles.clickableOption, {
-                [styles.isDisabled]: isImportLoading,
-              })}
-              onClick={handleClickImport}
-              data-testid="profile-import-cloud-databases"
-            >
-              <Text className={styles.optionTitle}>Import Cloud databases</Text>
-              {isImportLoading ? (
-                <Loader className={styles.loadingSpinner} size="m" />
-              ) : (
-                <RiIcon type="DownloadIcon" />
-              )}
-            </div>
-            <UserProfileLink
-              target="_blank"
-              href={getUtmExternalLink(EXTERNAL_LINKS.cloudConsole, {
-                campaign: 'cloud_account',
-              })}
-              onClick={handleClickCloudAccount}
-              data-testid="cloud-console-link"
-            >
-              <div className={styles.optionTitleWrapper}>
-                <Text className={styles.optionTitle}>Cloud Console</Text>
-                <Text
-                  className={cx('truncateText', styles.accountFullName)}
-                  data-testid="account-full-name"
-                >
-                  {name}
-                </Text>
-              </div>
-              <RiIcon
-                type="CloudIcon"
-                style={{ fill: 'none' }}
-                viewBox="-1 0 30 20"
-                strokeWidth={1.8}
-              />
-            </UserProfileLink>
-            <div
-              role="presentation"
-              className={cx(styles.option, styles.clickableOption)}
-              onClick={handleClickLogout}
-              data-testid="profile-logout"
-            >
-              <Text className={styles.optionTitle}>Logout</Text>
-              <RiIcon type="ExportIcon" />
-            </div>
-          </FeatureFlagComponent>
+              key={id}
+              text={`${name} #${id}`}
+              selected={id === currentAccountId}
+              onClick={() => handleClickSelectAccount?.(id)}
+              data-testid={`profile-account-${id}${id === currentAccountId ? '-selected' : ''}`}
+            />
+          ))}
         </div>
-      </RiPopover>
-    </div>
+        <Menu.Content.Separator />
+        <FeatureFlagComponent
+          name={FeatureFlags.envDependent}
+          otherwise={
+            <>
+              <Menu.Content.Item.Compose>
+                <Menu.Content.Item.Text>
+                  <Link
+                    external
+                    color="text"
+                    href={riDesktopLink}
+                    data-testid="open-ri-desktop-link"
+                    variant="inline"
+                  >
+                    Open in Redis Insight Desktop version
+                  </Link>
+                </Menu.Content.Item.Text>
+              </Menu.Content.Item.Compose>
+              <Menu.Content.Item.Compose>
+                <Menu.Content.Item.Text>
+                  <Link
+                    external
+                    color="text"
+                    variant="inline"
+                    target="_blank"
+                    href={riConfig.app.smConsoleRedirect}
+                    data-testid="cloud-admin-console-link"
+                  >
+                    Back to Redis Cloud Admin console
+                  </Link>
+                </Menu.Content.Item.Text>
+              </Menu.Content.Item.Compose>
+            </>
+          }
+        >
+          <Menu.Content.Item
+            role="presentation"
+            subHead="Import Cloud Databases"
+            icon={DownloadIcon}
+            onSelect={handleClickImport}
+            data-testid="profile-import-cloud-databases"
+          />
+          <Menu.Content.Item.Compose>
+            <Menu.Content.Item.Text>
+              <Link
+                external
+                color="text"
+                variant="inline"
+                target="_blank"
+                href={getUtmExternalLink(EXTERNAL_LINKS.cloudConsole, {
+                  campaign: 'cloud_account',
+                })}
+                onClick={handleClickCloudAccount}
+                data-testid="cloud-console-link"
+              >
+                Cloud Console: {name}
+              </Link>
+            </Menu.Content.Item.Text>
+          </Menu.Content.Item.Compose>
+          <Menu.Content.Separator />
+          <Menu.Content.Item
+            role="presentation"
+            subHead="Logout"
+            icon={SignoutIcon}
+            onClick={handleClickLogout}
+            data-testid="profile-logout"
+          />
+        </FeatureFlagComponent>
+        <Menu.Content.DropdownArrow />
+      </Menu.Content>
+    </Menu>
   )
 }
 

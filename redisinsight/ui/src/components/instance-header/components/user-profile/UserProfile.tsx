@@ -13,7 +13,11 @@ const UserProfile = () => {
     [FeatureFlags.cloudAds]: cloudAds,
     [FeatureFlags.cloudSso]: cloudSso,
   } = useSelector(appFeatureFlagsFeaturesSelector)
-
+  return (
+    <FlexItem style={{ marginLeft: 16 }}>
+      <CloudUserProfile />
+    </FlexItem>
+  )
   if (!envDependentFeature?.flag) {
     return (
       <FlexItem style={{ marginLeft: 16 }}>
