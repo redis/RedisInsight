@@ -112,8 +112,7 @@ import RedisTimeSeriesDark from 'uiSrc/assets/img/modules/RedisTimeSeriesDark.sv
 import RedisTimeSeriesLight from 'uiSrc/assets/img/modules/RedisTimeSeriesLight.svg?react'
 import UnknownDark from 'uiSrc/assets/img/modules/UnknownDark.svg?react'
 import UnknownLight from 'uiSrc/assets/img/modules/UnknownLight.svg?react'
-import FormattersLight from 'uiSrc/assets/img/icons/formatter_light.svg?react'
-import FormattersDark from 'uiSrc/assets/img/icons/formatter_dark.svg?react'
+import FormatterSvg from 'uiSrc/assets/img/icons/formatter.svg?react'
 
 // Import options icons
 import ActiveActiveDark from 'uiSrc/assets/img/options/Active-ActiveDark.svg?react'
@@ -257,8 +256,7 @@ export const OutputDarkIcon = createIconComponent(OutputDarkSvg)
 export const OutputIconIcon = createIconComponent(OutputIconBaseSvg)
 
 // Modules icons
-export const FormattersLightIcon = createIconComponent(FormattersLight)
-export const FormattersDarkIcon = createIconComponent(FormattersDark)
+export const FormatterIcon = createIconComponent(FormatterSvg)
 export const RedisAIDarkIcon = createIconComponent(RedisAIDark)
 export const RedisAILightIcon = createIconComponent(RedisAILight)
 export const RedisBloomDarkIcon = createIconComponent(RedisBloomDark)

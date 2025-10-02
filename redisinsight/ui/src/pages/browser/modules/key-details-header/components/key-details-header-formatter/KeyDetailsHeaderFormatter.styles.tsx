@@ -11,7 +11,6 @@ type KeyDetailsSelectProps = ComponentProps<typeof RiSelect> & {
 const KeyDetailsSelect = styled(RiSelect)<KeyDetailsSelectProps>`
   border: none !important;
   background-color: inherit !important;
-  color: var(--iconsDefaultColor) !important;
   max-width: 100%;
   padding-right: 18px;
   padding-left: 0;
@@ -41,8 +40,8 @@ const ControlsIcon = styled(RiIcon)`
   position: relative;
   margin-left: 3px;
   margin-top: 2px;
-  width: 20px !important;
-  height: 20px !important;
+  width: 17px !important;
+  height: 17px !important;
 
   :global(.insightsOpen) {
     @media only screen and (max-width: 1440px) {

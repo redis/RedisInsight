@@ -7,9 +7,7 @@ import {
   KeyValueFormat,
   MIDDLE_SCREEN_RESOLUTION,
   TEXT_DISABLED_STRING_FORMATTING,
-  Theme,
 } from 'uiSrc/constants'
-import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import {
   keysSelector,
   selectedKeyDataSelector,
@@ -40,7 +38,6 @@ const KeyDetailsHeaderFormatter = (props: Props) => {
   const { width } = props
 
   const { instanceId = '' } = useParams<{ instanceId: string }>()
-  const { theme } = useContext(ThemeContext)
   const { viewType } = useSelector(keysSelector)
   const { viewFormat } = useSelector(selectedKeySelector)
   const { type: keyType, length } = useSelector(selectedKeyDataSelector) ?? {}
@@ -78,11 +75,7 @@ const KeyDetailsHeaderFormatter = (props: Props) => {
                 <OptionText>{text}</OptionText>
               ) : (
                 <ControlsIcon
-                  type={
-                    theme === Theme.Dark
-                      ? 'FormattersDarkIcon'
-                      : 'FormattersLightIcon'
-                  }
+                  type="FormatterIcon"
                   data-testid={`key-value-formatter-option-selected-${value}`}
                 />
               )}
