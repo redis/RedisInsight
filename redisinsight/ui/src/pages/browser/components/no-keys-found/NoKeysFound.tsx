@@ -19,13 +19,14 @@ import { SCAN_TREE_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { TutorialsIds } from 'uiSrc/constants'
 
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { RiImage } from 'uiSrc/components/base/display'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import LoadSampleData from '../load-sample-data'
 
 import styles from './styles.module.scss'
+import {Button, TextButton} from '@redis-ui/components'
+import {PlusSlimIcon} from '@redis-ui/icons'
 
 export interface Props {
   onAddKeyPanel: (value: boolean) => void
@@ -68,15 +69,16 @@ const NoKeysFound = (props: Props) => {
         Let&apos;s start working
       </Title>
       <Spacer />
-      <Row gap="m">
+      <Row gap="l">
         <LoadSampleData onSuccess={onSuccessLoadData} />
-        <EmptyButton
+        <TextButton
           onClick={() => onAddKeyPanel(true)}
           className={styles.addKey}
           data-testid="add-key-msg-btn"
+          variant="primary-inline"
         >
-          + Add key manually
-        </EmptyButton>
+          <Button.Icon icon={PlusSlimIcon} /> Add key manually
+        </TextButton>
       </Row>
     </div>
   )

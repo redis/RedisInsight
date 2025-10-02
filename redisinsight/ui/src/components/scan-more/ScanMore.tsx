@@ -4,11 +4,11 @@ import styled from 'styled-components'
 
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { RiTooltip } from 'uiSrc/components'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { TextButton } from '@redis-ui/components'
+import { Button, TextButton } from '@redis-ui/components'
 import { Text } from 'uiSrc/components/base/text'
 import { Theme } from 'uiSrc/components/base/theme/types'
 import styles from './styles.module.scss'
+import { InfoIcon } from '@redis-ui/icons'
 
 export interface Props {
   withAlert?: boolean
@@ -27,7 +27,8 @@ const WARNING_MESSAGE =
   'Scanning additional keys may decrease performance and memory available.'
 
 const ScanMoreButton = styled(TextButton)`
-  color: ${({ theme }: { theme: Theme }) => theme.semantic.color.text.primary400} !important;
+  // color: ${({ theme }: { theme: Theme }) =>
+    theme.semantic.color.text.primary400} !important;
   line-height: inherit;
 `
 
@@ -50,6 +51,7 @@ const ScanMore = ({
           })
         }
         data-testid="scan-more"
+        variant="primary-inline"
       >
         <Text size="s">Scan more</Text>
         {withAlert && (
@@ -58,7 +60,7 @@ const ScanMore = ({
             position="top"
             anchorClassName={styles.anchor}
           >
-            <RiIcon color="primary400" size="m" type="InfoIcon" />
+            <Button.Icon icon={InfoIcon} customSize={'12px'} />
           </RiTooltip>
         )}
       </ScanMoreButton>

@@ -35,7 +35,7 @@ const AutoRefreshInterval = styled.span<
 >`
   color: ${({ disabled, enableAutoRefresh, theme }) =>
     !disabled && enableAutoRefresh
-      ? theme.semantic.color.text.primary400
+      ? theme.semantic.color.text.primary500
       : 'inherit'};
   opacity: ${({ disabled }) => (disabled ? '0.5' : 'inherit')};
 `
@@ -46,7 +46,7 @@ const AutoRefreshButton = styled(IconButton)<{
 }>`
   color: ${({ theme, disabled, enableAutoRefresh }) =>
     !disabled && enableAutoRefresh
-      ? theme.semantic.color.text.primary400
+      ? theme.semantic.color.text.primary500
       : 'inherit'};
 `
 
@@ -357,6 +357,7 @@ const AutoRefresh = ({
                         disableByValidation={errorValidateRefreshRateNumber}
                         onDecline={() => handleDeclineAutoRefreshRate()}
                         onApply={(value) => handleApplyAutoRefreshRate(value)}
+                        variant="underline"
                       />
                     </div>
                     <ColorText>{' s'}</ColorText>

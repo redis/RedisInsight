@@ -12,10 +12,10 @@ import { findTutorialPath } from 'uiSrc/utils'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
 import { FlexGroup } from 'uiSrc/components/base/layout/flex'
 import styles from './styles.module.scss'
+import { Button } from '@redis-ui/components'
 
 const ExploreGuides = () => {
   const { data } = useSelector(guideLinksSelector)
@@ -61,13 +61,7 @@ const ExploreGuides = () => {
               className={styles.btn}
               data-testid={`guide-button-${tutorialId}`}
             >
-              {icon in GUIDE_ICONS && (
-                <RiIcon
-                  className={styles.icon}
-                  type={GUIDE_ICONS[icon]}
-                  data-testid={`guide-icon-${icon}`}
-                />
-              )}
+              {icon in GUIDE_ICONS && <Button.Icon icon={GUIDE_ICONS[icon]} />}
               {title}
             </SecondaryButton>
           ))}

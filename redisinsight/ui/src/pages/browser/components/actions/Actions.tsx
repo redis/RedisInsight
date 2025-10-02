@@ -42,7 +42,7 @@ const Actions = ({ handleAddKeyPanel, handleBulkActionsPanel }: Props) => {
   const AddKeyBtn = (
     <SecondaryButton
       size="m"
-      filled
+      inverted
       onClick={openAddKeyPanel}
       data-testid="btn-add-key"
     >
