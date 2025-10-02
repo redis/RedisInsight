@@ -288,6 +288,7 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
             Use of Redis Insight is governed by your signed agreement with
             Redis, or, if none, by the{' '}
             <Link
+              variant="inline"
               target="_blank"
               href="https://redis.io/software-subscription-agreement/?utm_source=redisinsight&utm_medium=app&utm_campaign=EULA"
             >
@@ -295,6 +296,7 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
             </Link>
             . If no agreement applies, use is subject to the{' '}
             <Link
+              variant="inline"
               target="_blank"
               href="https://github.com/RedisInsight/RedisInsight/blob/main/LICENSE"
             >

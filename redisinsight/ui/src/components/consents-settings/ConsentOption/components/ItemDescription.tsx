@@ -18,6 +18,7 @@ export const ItemDescription = ({
     {withLink && (
       <>
         <Link
+          variant="inline"
           color="primary"
           target="_blank"
           href={getUtmExternalLink(EXTERNAL_LINKS.legalPrivacyPolicy, {

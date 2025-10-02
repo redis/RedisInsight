@@ -9,13 +9,11 @@ export type ThemeSpacingKey = Extract<
   keyof Theme['core']['space'],
   `space${string}`
 >
-// Allow direct theme spacing values
-export type ThemeSpacingValue = Theme['core']['space'][ThemeSpacingKey]
 
 export type SpacerProps = CommonProps &
   HTMLAttributes<HTMLDivElement> & {
     children?: ReactNode
-    size?: SpacerSize | ThemeSpacingKey | ThemeSpacingValue
+    size?: SpacerSize | ThemeSpacingKey
   }
 
 export const spacerStyles: Record<SpacerSize, ReturnType<typeof css>> = {
@@ -41,13 +39,12 @@ export const spacerStyles: Record<SpacerSize, ReturnType<typeof css>> = {
 }
 
 const isThemeSpacingKey = (
-  size: SpacerSize | ThemeSpacingKey | ThemeSpacingValue,
+  size: SpacerSize | ThemeSpacingKey,
   theme: Theme,
-): size is ThemeSpacingKey =>
-  typeof size === 'string' && size in theme.core.space
+): size is ThemeSpacingKey => size in theme.core.space
 
 const getSpacingValue = (
-  size: SpacerSize | ThemeSpacingKey | ThemeSpacingValue,
+  size: SpacerSize | ThemeSpacingKey,
   theme: Theme,
 ): string | ReturnType<typeof css> => {
   if (isThemeSpacingKey(size, theme)) {

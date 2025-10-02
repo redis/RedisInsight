@@ -36,7 +36,6 @@ const DatabaseNotOpened = (props: Props) => {
             {(ssoCloudHandlerClick) => (
               <ExternalLink
                 variant="inline"
-                iconSize="S"
                 href={getUtmExternalLink(EXTERNAL_LINKS.tryFree, {
                   campaign: UTM_CAMPAINGS[source] ?? source,
                 })}
@@ -56,7 +55,6 @@ const DatabaseNotOpened = (props: Props) => {
           <Spacer size="xs" />
           <ExternalLink
             variant="inline"
-            iconSize="S"
             href={getUtmExternalLink(EXTERNAL_LINKS.docker, {
               campaign: UTM_CAMPAINGS[source] ?? source,
             })}

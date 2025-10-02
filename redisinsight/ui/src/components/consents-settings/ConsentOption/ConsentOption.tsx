@@ -10,8 +10,6 @@ import { SwitchInput } from 'uiSrc/components/base/inputs'
 import { ItemDescription } from './components'
 import { IConsent } from '../ConsentsSettings'
 
-import styles from '../styles.module.scss'
-
 interface Props {
   consent: IConsent
   onChangeAgreement: (checked: boolean, name: string) => void
@@ -34,7 +32,7 @@ const ConsentOption = (props: Props) => {
       {isSettingsPage && consent.description && (
         <>
           <Spacer size="s" />
-          <Text size="s" className={styles.smallText} color="primary">
+          <Text size="M" color="primary">
             <ItemDescription
               description={consent.description}
               withLink={consent.linkToPrivacyPolicy}
@@ -56,11 +54,11 @@ const ConsentOption = (props: Props) => {
           />
         </FlexItem>
         <FlexItem>
-          <Text className={styles.smallText}>{parse(consent.label)}</Text>
+          <Text size="M">{parse(consent.label)}</Text>
           {!isSettingsPage && consent.description && (
             <>
               <Spacer size="s" />
-              <Text size="s" className={styles.smallText} color="primary">
+              <Text size="M" color="primary">
                 <ItemDescription
                   description={consent.description}
                   withLink={consent.linkToPrivacyPolicy}

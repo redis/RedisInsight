@@ -10,14 +10,10 @@
 }
 
 .inputHover {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
   padding-left: 10px;
 
   & > * {
-    line-height: 3.1rem !important;
+    line-height: 3.2rem !important;
   }
 }
 
@@ -36,16 +32,14 @@
 }
 
 .value {
-  color: var(--inputTextColor) !important;
-  font-size: 13px !important;
   padding: 0 9px;
-  line-height: 32px !important;
-  height: 32px !important;
+  line-height: 3.2rem !important;
+  height: 3.2rem !important;
   min-width: 150px;
 }
 
 .title {
-  font-size:16px !important;
+  font-size: 16px !important;
 }
 
 .smallText {
