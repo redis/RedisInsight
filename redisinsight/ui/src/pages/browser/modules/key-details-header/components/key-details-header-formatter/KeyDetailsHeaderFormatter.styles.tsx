@@ -12,7 +12,6 @@ const KeyDetailsSelect = styled(RiSelect)<KeyDetailsSelectProps>`
   border: none !important;
   background-color: inherit !important;
   color: var(--iconsDefaultColor) !important;
-  /* max-width: ${({ $fullWidth }) => ($fullWidth ? '100%' : '92px')}; */
   max-width: 100%;
   padding-right: 18px;
   padding-left: 0;
