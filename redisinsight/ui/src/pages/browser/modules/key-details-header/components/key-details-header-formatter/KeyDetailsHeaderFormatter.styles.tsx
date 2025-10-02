@@ -57,6 +57,8 @@ const Container = styled.div<{
   className?: string
   children: React.ReactNode
 }>`
+  display: flex;
+  align-items: center;
   height: 30px;
   border-radius: 4px;
   transition: transform 0.3s ease;
