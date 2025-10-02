@@ -146,7 +146,6 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
 
   return (
     <StyledFlexWrapper
-      grow={10}
       direction="row"
       onMouseEnter={onMouseEnterKey}
       onMouseLeave={onMouseLeaveKey}
@@ -168,8 +167,9 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
           isLoading={loading}
           declineOnUnmount={false}
         >
-          <StyledInputWrapper align="center">
+          <StyledInputWrapper align="center" style={{ maxWidth: 420 }}>
             <TextInput
+              autoSize
               name="key"
               id="key"
               ref={keyNameRef}
@@ -187,26 +187,29 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
               // todo: do not hardcode. align with other components in a single place
               style={{ paddingLeft: 9, lineHeight: '31px' }}
             />
-            {!keyIsEditing && <RiIcon size="M" type="EditIcon" />}
           </StyledInputWrapper>
         </InlineItemEditor>
       </RiTooltip>
-      <RiTooltip
-        position="right"
-        content="Copy"
-        anchorClassName={styles.copyKey}
-      >
-        <IconButton
-          icon={CopyIcon}
-          id={COPY_KEY_NAME_ICON}
-          aria-label="Copy key name"
-          onClick={(event: any) =>
-            handleCopy(event, key!, keyIsEditing, keyNameRef)
-          }
-          data-testid="copy-key-name-btn"
-          className={!keyIsHovering ? styles.hidden : ''}
-        />
-      </RiTooltip>
+      {!keyIsEditing && keyIsHovering && (
+        <Row align="center">
+          <RiIcon size="M" type="EditIcon" />
+          <RiTooltip
+            position="right"
+            content="Copy"
+            anchorClassName={styles.copyKey}
+          >
+            <IconButton
+              icon={CopyIcon}
+              id={COPY_KEY_NAME_ICON}
+              aria-label="Copy key name"
+              onClick={(event: any) =>
+                handleCopy(event, key!, keyIsEditing, keyNameRef)
+              }
+              data-testid="copy-key-name-btn"
+            />
+          </RiTooltip>
+        </Row>
+      )}
     </StyledFlexWrapper>
   )
 }
