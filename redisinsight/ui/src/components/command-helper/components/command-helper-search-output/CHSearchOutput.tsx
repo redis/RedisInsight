@@ -90,7 +90,7 @@ const CHSearchOutput = ({ searchedCommands }: Props) => {
                     handleClickCommand(e, command)
                   }}
                 >
-                  <UnderlineReverseLink color="text" variant="button">
+                  <UnderlineReverseLink href="#" color="text" variant="inline">
                     {command}
                   </UnderlineReverseLink>
                 </Text>
