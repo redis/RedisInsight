@@ -62,7 +62,7 @@
 }
 
 .nodeSelected {
-  border-left-color: var(--euiColorPrimary) !important;
+  border-left-color: var(--browserComponentActive) !important;
   background-color: var(--browserComponentActive) !important;
 
   .nodeContent * {
