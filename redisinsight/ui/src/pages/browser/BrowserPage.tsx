@@ -61,6 +61,7 @@ import BrowserLeftPanel from './components/browser-left-panel'
 import BrowserRightPanel from './components/browser-right-panel'
 
 import styles from './styles.module.scss'
+import {Col} from 'uiSrc/components/base/layout/flex'
 
 const widthResponsiveSize = 1280
 const widthExplorePanel = 460
@@ -303,7 +304,8 @@ const BrowserPage = () => {
     (arePanelsCollapsed && isRightPanelOpen)
 
   return (
-    <div
+    <Col
+      gap="m"
       className={`browserPage ${styles.container}`}
       data-testid="browser-page"
     >
@@ -378,7 +380,7 @@ const BrowserPage = () => {
         </ResizableContainer>
       </div>
       <OnboardingStartPopover />
-    </div>
+    </Col>
   )
 }
 

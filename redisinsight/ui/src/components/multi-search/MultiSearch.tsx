@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 
 import * as keys from 'uiSrc/constants/keys'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { SearchInput, TextInput } from 'uiSrc/components/base/inputs'
 import { GroupBadge, RiTooltip } from 'uiSrc/components'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 import { Nullable } from 'uiSrc/utils'
@@ -19,6 +19,14 @@ import {
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { ProgressBarLoader } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
+import {
+  Button,
+  Select,
+  SelectOption,
+  SelectOptionComponent,
+  TextButton,
+} from '@redis-ui/components'
+import { EraserIcon } from '@redis-ui/icons'
 
 interface MultiSearchSuggestion {
   options: null | Array<{
@@ -163,7 +171,7 @@ const MultiSearch = (props: Props) => {
     />
   )
 
-  return (
+  const Old = (
     <OutsideClickDetector onOutsideClick={exitAutoSuggestions}>
       <div
         className={cx(styles.multiSearchWrapper, className)}
@@ -309,6 +317,118 @@ const MultiSearch = (props: Props) => {
         </div>
       </div>
     </OutsideClickDetector>
+  )
+
+  const opts =
+    suggestionOptions?.map(({ id, option, value }, index) => ({
+      label: value || '',
+      value: id,
+      keyType: option,
+      index,
+    })) || []
+
+  const SearchHistoryOption: SelectOptionComponent = ({
+    option,
+    content,
+  }: {
+    content: string
+    option: SelectOption & { keyType: string; index: number }
+  }) => {
+    const { keyType, index, value } = option
+
+    return (
+      <Select.Option.Compose option={option}>
+        {keyType && (
+          <GroupBadge
+            type={keyType}
+            compressed={compressed}
+            className={styles.suggestionOption}
+          />
+        )}
+        <Select.Option.Content onClick={() => handleApplySuggestion(index)}>
+          {content}
+        </Select.Option.Content>
+        <IconButton
+          className={styles.suggestionRemoveBtn}
+          icon={CancelSlimIcon}
+          color="primary"
+          aria-label="Remove History Record"
+          onClick={(e: React.MouseEvent) => {
+            e.stopPropagation()
+            handleDeleteSuggestion([value])
+          }}
+          data-testid={`remove-suggestion-item-${value}`}
+        />
+      </Select.Option.Compose>
+    )
+  }
+
+  const Sel = (
+    <Select.Compose options={opts} open={showAutoSuggestions}>
+      <Select.Trigger
+        style={{
+          height: 0,
+          border: 'none',
+        }}
+      />
+      <Select.Content.Compose>
+        <Select.Content.OptionList optionComponent={SearchHistoryOption} />
+        <Select.Content.Footer>
+          <TextButton
+            role="presentation"
+            className={styles.clearHistory}
+            onClick={() =>
+              handleDeleteSuggestion(suggestionOptions?.map((item) => item.id))
+            }
+            data-testid="clear-history-btn"
+            variant="primary-inline"
+          >
+            <Button.Icon icon={EraserIcon} />
+            Clear history
+          </TextButton>
+        </Select.Content.Footer>
+      </Select.Content.Compose>
+    </Select.Compose>
+  )
+
+  const New = (
+    <OutsideClickDetector onOutsideClick={exitAutoSuggestions}>
+      <div>
+        <SearchInput.Compose onChange={onChange} value={value}>
+          <SearchInput.SearchIcon />
+          <SearchInput.Tag onKeyDown={handleKeyDown} />
+
+          {!!suggestionOptions?.length && (
+            <RiTooltip
+              content={suggestions?.buttonTooltipTitle}
+              position="bottom"
+            >
+              <IconButton
+                icon={SwitchIcon}
+                size="S"
+                aria-label={suggestions?.buttonTooltipTitle}
+                onClick={() => {
+                  setShowAutoSuggestions((v) => !v)
+                  inputRef.current?.focus()
+                }}
+                data-testid="show-suggestions-btn"
+              />
+            </RiTooltip>
+          )}
+
+          <SearchInput.ResetButton />
+        </SearchInput.Compose>
+        {Sel}
+      </div>
+    </OutsideClickDetector>
+  )
+
+  return (
+    <>
+      {/* {Sel} */}
+      {/* {Old} */}
+      {New}
+    </>
   )
 }
 

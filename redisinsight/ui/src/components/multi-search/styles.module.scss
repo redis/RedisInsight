@@ -106,22 +106,6 @@
     }
   }
 
-  .clearHistory {
-    border-top: 1px solid var(--separatorColor);
-    padding: 8px 10px;
-    text-align: left;
-
-    display: flex;
-    align-items: center;
-
-    cursor: pointer;
-    user-select: none;
-
-    &:hover {
-      background: var(--hoverInListColorDarken);
-    }
-  }
-
   .searchButton {
     width: 24px;
     height: 24px;
@@ -149,5 +133,58 @@
 
   .anchorSubmitBtn {
     height: 100%;
+  }
+}
+.autoSuggestions {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  width: 100%;
+  min-width: 180px;
+
+  background: var(--euiColorEmptyShade);
+  border: 1px solid var(--controlsBorderColor);
+  border-radius: 4px;
+  z-index: 1001;
+  padding: 4px 0;
+
+  font-size: 13px;
+
+  color: var(--euiTextSubduedColor);
+
+  .suggestion {
+    display: flex;
+    align-items: center;
+    text-align: left;
+
+    padding: 6px 10px;
+    cursor: default;
+
+    &:hover,
+    &.focused {
+      background: var(--hoverInListColorDarken);
+      .suggestionRemoveBtn {
+        visibility: visible;
+        pointer-events: auto;
+      }
+    }
+  }
+
+  .suggestionText {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    flex-grow: 1;
+    line-height: 1.4;
+  }
+
+  .suggestionOption {
+    margin-right: 10px;
+  }
+
+  .suggestionRemoveBtn {
+    flex-shrink: 0;
+    visibility: hidden;
+    pointer-events: none;
   }
 }

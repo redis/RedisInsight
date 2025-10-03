@@ -1,27 +1,6 @@
-.content {
-  width: 100%;
-  padding: 0 16px 16px 16px;
-
-  display: flex;
-  justify-content: space-between;
-  position: relative;
-
-  .searchWrapper {
-    display: flex;
-    flex-grow: 1;
-  }
-}
-
 .moduleNotLoaded {
   max-width: 520px !important;
   z-index: 10000 !important;
-}
-
-.searchModeSwitch {
-  display: flex;
-  background-color: var(--euiColorEmptyShade) !important;
-  border: 1px solid var(--controlsBorderColor) !important;
-  border-radius: 4px 0 0 4px;
 }
 
 .browserFilterOnboard {

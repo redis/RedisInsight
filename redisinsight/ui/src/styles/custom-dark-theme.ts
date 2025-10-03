@@ -2,7 +2,7 @@ import {
   ActionIconButtonTheme,
   ButtonGroupTheme,
   ButtonTheme,
-  InputTheme,
+  InputTheme, SelectTheme,
   TextButtonTheme,
   themeDark,
 } from '@redis-ui/styles'
@@ -154,6 +154,17 @@ const input: DeepPartial<InputTheme> = {
   }
 }
 
+const select: DeepPartial<SelectTheme> = {
+  states: {
+    focused: {
+      borderColor: themeDark.color.azure600,
+    },
+    opened: {
+      borderColor: themeDark.color.azure600,
+    }
+  }
+}
+
 const themeOverrides: DeepPartial<typeof themeDark> = {
   components: {
     buttonGroup,
@@ -162,6 +173,7 @@ const themeOverrides: DeepPartial<typeof themeDark> = {
     actionIconButton,
     checkbox,
     input,
+    select,
   },
 }
 
