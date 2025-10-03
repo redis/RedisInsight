@@ -40,8 +40,6 @@ const ControlsIcon = styled(RiIcon)`
   position: relative;
   margin-left: 3px;
   margin-top: 2px;
-  width: 17px !important;
-  height: 17px !important;
 
   :global(.insightsOpen) {
     @media only screen and (max-width: 1440px) {

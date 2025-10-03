@@ -75,6 +75,7 @@ const KeyDetailsHeaderFormatter = (props: Props) => {
                 <OptionText>{text}</OptionText>
               ) : (
                 <ControlsIcon
+                  size="m"
                   type="FormatterIcon"
                   data-testid={`key-value-formatter-option-selected-${value}`}
                 />
