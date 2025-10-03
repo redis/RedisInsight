@@ -26,6 +26,14 @@ interface Props {
 
 const THEME_NAMES = THEMES.map(({ value }) => value)
 
+const getQueryTheme = () => {
+  const queryThemeParam = new URLSearchParams(window.location.search)
+    .get('theme')
+    ?.toUpperCase()
+
+  return THEMES.find(({ value }) => value === queryThemeParam)?.value
+}
+
 export const defaultState = {
   theme: DEFAULT_THEME || Theme.System,
   usingSystemTheme:
@@ -41,11 +49,14 @@ export class ThemeProvider extends React.Component<Props> {
   constructor(props: any) {
     super(props)
 
+    // theme query param can be used to override the local/default theme
+    const queryTheme = getQueryTheme()
     const storedThemeValue = localStorageService.get(BrowserStorageItem.theme)
     const theme =
-      !storedThemeValue || !THEME_NAMES.includes(storedThemeValue)
+      queryTheme ||
+      (!storedThemeValue || !THEME_NAMES.includes(storedThemeValue)
         ? defaultState.theme
-        : storedThemeValue
+        : storedThemeValue)
     const usingSystemTheme = theme === Theme.System
 
     themeService.applyTheme(theme)

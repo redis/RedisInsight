@@ -1,15 +1,11 @@
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { isNumber } from 'lodash'
 import { BrowserStorageItem, FeatureFlags, Theme } from 'uiSrc/constants'
 import { BuildType } from 'uiSrc/constants/env'
 import { BUILD_FEATURES } from 'uiSrc/constants/featuresHighlighting'
-import {
-  localStorageService,
-  setObjectStorage,
-  themeService,
-} from 'uiSrc/services'
+import { localStorageService, setObjectStorage } from 'uiSrc/services'
 
 import {
   appFeatureFlagsFeaturesSelector,
@@ -44,6 +40,7 @@ import { fetchProfile } from 'uiSrc/slices/oauth/cloud'
 import { fetchDBSettings } from 'uiSrc/slices/app/db-settings'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { DatabaseSettingsData } from 'uiSrc/slices/interfaces'
+import { ThemeContext } from 'uiSrc/contexts/themeContext'
 
 const SETTINGS_PAGE_PATH = '/settings'
 const Config = () => {
@@ -54,6 +51,7 @@ const Config = () => {
     [FeatureFlags.cloudSso]: cloudSsoFeature,
     [FeatureFlags.envDependent]: envDependentFeature,
   } = useSelector(appFeatureFlagsFeaturesSelector)
+  const { changeTheme } = useContext(ThemeContext)
   const { pathname } = useLocation()
 
   const dispatch = useDispatch()
@@ -211,7 +209,7 @@ const Config = () => {
   const checkAndSetTheme = () => {
     const theme = config?.theme
     if (theme && localStorageService.get(BrowserStorageItem.theme) !== theme)
-      themeService.applyTheme(theme as Theme)
+      changeTheme(theme)
   }
 
   return null
