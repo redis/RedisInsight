@@ -41,11 +41,16 @@ export class ThemeProvider extends React.Component<Props> {
   constructor(props: any) {
     super(props)
 
+    // theme query param can be used to override the local/default theme
+    const queryTheme = new URLSearchParams(window.location.search)
+      .get('theme')
+      ?.toUpperCase()
     const storedThemeValue = localStorageService.get(BrowserStorageItem.theme)
     const theme =
-      !storedThemeValue || !THEME_NAMES.includes(storedThemeValue)
+      queryTheme ||
+      (!storedThemeValue || !THEME_NAMES.includes(storedThemeValue)
         ? defaultState.theme
-        : storedThemeValue
+        : storedThemeValue)
     const usingSystemTheme = theme === Theme.System
 
     themeService.applyTheme(theme)
