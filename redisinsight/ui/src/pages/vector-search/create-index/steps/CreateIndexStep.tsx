@@ -1,6 +1,11 @@
 import React, { useState } from 'react'
 
-import { Col, FlexGroup, FlexItem } from 'uiSrc/components/base/layout/flex'
+import {
+  Col,
+  FlexGroup,
+  FlexItem,
+  Row,
+} from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { FieldBoxesGroup } from 'uiSrc/components/new-index/create-index-step/field-boxes-group/FieldBoxesGroup'
 import { VectorSearchBox } from 'uiSrc/components/new-index/create-index-step/field-box/types'
@@ -14,6 +19,7 @@ import { bikesIndexFieldsBoxes, moviesIndexFieldsBoxes } from './data'
 import { SearchInputWrapper } from './styles'
 import { PreviewCommandDrawer } from './PreviewCommandDrawer'
 import { IStepComponent, SampleDataContent, StepComponentProps } from '../types'
+import { NamespacesBrowser } from '../../components/namespaces-browser/NameSpacesBrowser'
 
 // eslint-disable-next-line arrow-body-style, @typescript-eslint/no-unused-vars
 const useIndexFieldsBoxes = (
@@ -45,8 +51,11 @@ export const CreateIndexStep: IStepComponent = ({
 
   return (
     <FlexGroup direction="column" data-testid="create-index-step2">
-      <Col justify="between" gap="xxl">
-        <Col gap="xxl">
+      <Row justify="between" gap="xxl">
+        <Col>
+          <NamespacesBrowser />
+        </Col>
+        <Col gap="xxl" grow>
           <FlexItem direction="column" $gap="m">
             <Text>Create index</Text>
             <Text size="S" color="secondary">
@@ -75,7 +84,7 @@ export const CreateIndexStep: IStepComponent = ({
             />
           </FlexGroup>
         </Col>
-        <FlexGroup justify="end" grow={false}>
+        {/* <FlexGroup justify="end" grow={false}>
           <EmptyButton
             icon={PlayFilledIcon}
             onClick={handlePreviewCommandClick}
@@ -83,8 +92,8 @@ export const CreateIndexStep: IStepComponent = ({
           >
             Command preview
           </EmptyButton>
-        </FlexGroup>
-      </Col>
+        </FlexGroup> */}
+      </Row>
       <PreviewCommandDrawer
         commandContent={generateFtCreateCommand({
           indexName: parameters.indexName,
