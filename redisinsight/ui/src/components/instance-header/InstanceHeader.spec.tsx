@@ -4,7 +4,7 @@ import reactRouterDom from 'react-router-dom'
 import { instance, mock } from 'ts-mockito'
 import {
   cleanup,
-  userEvent,
+  act,
   fireEvent,
   initialStateDefault,
   mockedStore,
@@ -195,7 +195,9 @@ describe('InstanceHeader', () => {
       store: mockStore(initialStoreState),
     })
 
-    await userEvent.click(screen.getByTestId('user-profile-btn'))
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('user-profile-btn'))
+    })
     await waitFor(() => {
       expect(
         screen.queryByTestId('user-profile-popover-content'),
@@ -232,7 +234,9 @@ describe('InstanceHeader', () => {
       store: mockStore(initialStoreState),
     })
 
-    await userEvent.click(screen.getByTestId('user-profile-btn'))
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('user-profile-btn'))
+    })
     await waitFor(() => {
       expect(
         screen.queryByTestId('user-profile-popover-content'),
