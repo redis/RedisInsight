@@ -172,7 +172,7 @@ const KeyDetailsHeader = ({
                 align="start"
                 justify="between"
               >
-                <Row>
+                <Row gap="l">
                   <KeyDetailsHeaderSizeLength width={width} />
                   <KeyDetailsHeaderTTL onEditTTL={handleEditTTL} />
                 </Row>
