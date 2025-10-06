@@ -35,22 +35,5 @@
 }
 
 .popoverLikeTooltip {
-  border: none;
   max-width: 267px !important;
-  background-color: var(--euiTooltipBackgroundColor) !important;
-  .euiPopover__panelArrow.euiPopover__panelArrow--bottom:after {
-    border-bottom-color: var(--euiTooltipBackgroundColor) !important;
-  }
-
-  .euiPopover__panelArrow.euiPopover__panelArrow--right:after {
-    border-right-color: var(--euiTooltipBackgroundColor) !important;
-  }
-
-  .euiPopover__panelArrow.euiPopover__panelArrow--left:after {
-    border-left-color: var(--euiTooltipBackgroundColor) !important;
-  }
-
-  .euiPopover__panelArrow.euiPopover__panelArrow--top:after {
-    border-top-color: var(--euiTooltipBackgroundColor) !important;
-  }
 }
