@@ -91,7 +91,7 @@ const WbNoResultsMessage = () => {
               </PrimaryButton>
             </div>
             <Spacer size="s" />
-            <Text color="subdued" textAlign="left" size="xs">
+            <Text textAlign="left" size="xs">
               Or click the icon in the top right corner.
             </Text>
           </FlexItem>
