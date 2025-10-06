@@ -66,6 +66,7 @@ const ExploreGuides = () => {
                   className={styles.icon}
                   type={GUIDE_ICONS[icon]}
                   data-testid={`guide-icon-${icon}`}
+                  color="inherit"
                 />
               )}
               {title}
