@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { EuiFlexItem } from '@elastic/eui'
 import { monaco } from 'react-monaco-editor'
 import JSONbig from 'json-bigint'
 

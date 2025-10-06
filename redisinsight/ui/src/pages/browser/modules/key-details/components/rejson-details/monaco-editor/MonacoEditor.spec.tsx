@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen } from 'uiSrc/utils/test-utils'
 import { configureStore } from '@reduxjs/toolkit'
 import { Provider } from 'react-redux'
 
