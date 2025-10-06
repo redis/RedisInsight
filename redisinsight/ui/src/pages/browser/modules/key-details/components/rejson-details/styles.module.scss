@@ -13,7 +13,7 @@
   position: relative;
 
   input {
-    font-family: "Graphik", sans-serif !important;
+    font-family: 'Graphik', sans-serif !important;
   }
 
   :global {
@@ -56,7 +56,7 @@
 .jsonData {
   font-size: 14px;
   line-height: 25px;
-  font-family: "Inconsolata", monospace !important;
+  font-family: 'Inconsolata', monospace !important;
   letter-spacing: 0.15px;
   flex-grow: 1;
 
@@ -69,7 +69,7 @@
 .monacoEditorJsonData {
   font-size: 14px;
   line-height: 25px;
-  font-family: "Inconsolata", monospace !important;
+  font-family: 'Inconsolata', monospace !important;
   letter-spacing: 0.15px;
   flex-grow: 1;
   width: 100%;
@@ -78,7 +78,7 @@
 }
 
 .defaultFont {
-  font-family: "Graphik", sans-serif !important;
+  font-family: 'Graphik', sans-serif !important;
 }
 
 .errorMessage {
@@ -95,7 +95,8 @@
   z-index: 2;
   display: flex;
   align-items: center;
-  justify-content: center;gap:12px;
+  justify-content: center;
+  gap: 12px;
   box-shadow: 0 3px 3px var(--controlsBoxShadowColor);
 
   &.controls {
@@ -123,7 +124,7 @@
   align-items: center;
 
   &:before {
-    content: "";
+    content: '';
     display: block;
     position: absolute;
     height: 100%;
@@ -142,7 +143,9 @@
     background: var(--hoverInListColor);
   }
 
-  > div, span, button {
+  > div,
+  span,
+  button {
     z-index: 1;
   }
 }
@@ -189,7 +192,7 @@
 .jsonValue {
   font-size: 14px;
   line-height: 25px;
-  font-family: "Inconsolata", monospace;
+  font-family: 'Inconsolata', monospace;
   letter-spacing: 0.15px;
   padding: 0 8px;
   max-width: 1000px;
@@ -240,7 +243,8 @@
   }
 }
 
-.actionButtons, .deleteBtn {
+.actionButtons,
+.deleteBtn {
   margin-left: 1em;
   display: flex;
   align-items: center;
@@ -269,22 +273,8 @@
   max-width: none;
 }
 
-.actions {
-  margin-top: 1em;
-  display: flex;
-  flex-direction: row !important;
-  width: 100%;
-  justify-content: flex-end;
-
-  button {
-
-    &:first-of-type {
-      margin-right: 1em;
-    }
-  }
-}
-
-.editor, .editorWrapper {
+.editor,
+.editorWrapper {
   // Using 100% height starts a weird Monaco animation,
   // which causes the editor to overflow its container.
   // Probably it's related to the borders of the inside elements.

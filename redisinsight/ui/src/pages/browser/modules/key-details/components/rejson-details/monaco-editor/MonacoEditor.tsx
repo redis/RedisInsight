@@ -13,6 +13,8 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
+import { Row } from 'uiSrc/components/base/layout/flex'
+import { Spacer } from 'uiSrc/components/base/layout'
 import { BaseProps } from '../interfaces'
 import { useChangeEditorType } from '../../change-editor-type-button'
 
@@ -64,8 +66,8 @@ const MonacoEditor = (props: BaseProps) => {
         editorWrapperClassName={styles.editorWrapper}
         onEditorDidMount={onEditorDidMount}
       />
-
-      <EuiFlexItem className={styles.actions}>
+      <Spacer size="m" />
+      <Row justify="end" gap="m" className={styles.actions}>
         <SecondaryButton
           onClick={switchEditorType}
           data-testid="json-data-cancel-btn"
@@ -80,7 +82,7 @@ const MonacoEditor = (props: BaseProps) => {
         >
           Overwrite Data
         </PrimaryButton>
-      </EuiFlexItem>
+      </Row>
     </div>
   )
 }
