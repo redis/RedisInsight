@@ -90,6 +90,7 @@ const OAuthUserProfile = (props: Props) => {
       handleClickCloudAccount={handleClickCloudAccount}
       handleClickSelectAccount={handleClickSelectAccount}
       data-testid="oauth-user-profile-badge"
+      selectingAccountId={selectingAccountId}
     />
   )
 }

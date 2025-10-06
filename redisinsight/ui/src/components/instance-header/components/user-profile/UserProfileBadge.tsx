@@ -22,6 +22,8 @@ import { Link } from 'uiSrc/components/base/link/Link'
 import { DownloadIcon, SignoutIcon } from '@redis-ui/icons'
 import { Menu } from 'uiSrc/components/base/layout/menu'
 import { ProfileIcon } from 'uiSrc/components/base/layout/profile-icon/ProfileIcon'
+import Loader from 'uiSrc/components/base/display/loader/Loader'
+import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 
 export interface UserProfileBadgeProps {
   'data-testid'?: string
@@ -106,62 +108,109 @@ const UserProfileBadge = (props: UserProfileBadgeProps) => {
   const { accounts, currentAccountId, name } = data
 
   return (
-    <Menu>
-      <Menu.Trigger withButton onClick={handleToggleProfile}>
-        <ProfileIcon
-          size="L"
-          fullName={name}
-          role="presentation"
-          data-testid="user-profile-btn"
-          style={{ cursor: 'pointer' }}
-        />
-      </Menu.Trigger>
-      <Menu.Content
-        data-testid="user-profile-popover-content"
-        style={{ minWidth: 330 }}
-      >
-        <FeatureFlagComponent
-          name={FeatureFlags.envDependent}
-          otherwise={
-            <Menu.Content.Label text="Account" data-testid="profile-title" />
-          }
-        >
-          <Menu.Content.Label
-            text="Redis Cloud account"
-            data-testid="profile-title"
-          />
-        </FeatureFlagComponent>
-        <Menu.Content.Separator />
-        <div data-testid="user-profile-popover-accounts">
-          {accounts?.map(({ name, id }) => (
-            <Menu.Content.Item
+    <OutsideClickDetector onOutsideClick={() => setIsProfileOpen(false)}>
+      <div data-testid={dataTestId}>
+        <Menu open={isProfileOpen}>
+          <Menu.Trigger
+            withButton
+            onClick={handleToggleProfile}
+            data-testid="user-profile-btn"
+          >
+            <ProfileIcon
+              size="L"
+              fullName={name}
               role="presentation"
-              key={id}
-              text={`${name} #${id}`}
-              selected={id === currentAccountId}
-              onClick={() => handleClickSelectAccount?.(id)}
-              data-testid={`profile-account-${id}${id === currentAccountId ? '-selected' : ''}`}
+              style={{ cursor: 'pointer' }}
             />
-          ))}
-        </div>
-        <Menu.Content.Separator />
-        <FeatureFlagComponent
-          name={FeatureFlags.envDependent}
-          otherwise={
-            <>
-              <Menu.Content.Item.Compose>
-                <Menu.Content.Item.Text>
-                  <Link
-                    external
-                    color="text"
-                    href={riDesktopLink}
-                    data-testid="open-ri-desktop-link"
-                    variant="inline"
-                  >
-                    Open in Redis Insight Desktop version
-                  </Link>
-                </Menu.Content.Item.Text>
-              </Menu.Content.Item.Compose>
+          </Menu.Trigger>
+          <Menu.Content
+            data-testid="user-profile-popover-content"
+            style={{ minWidth: 330 }}
+          >
+            <FeatureFlagComponent
+              name={FeatureFlags.envDependent}
+              otherwise={
+                <Menu.Content.Label
+                  text="Account"
+                  data-testid="profile-title"
+                />
+              }
+            >
+              <Menu.Content.Label
+                text="Redis Cloud account"
+                data-testid="profile-title"
+              />
+            </FeatureFlagComponent>
+            <Menu.Content.Separator />
+            <div data-testid="user-profile-popover-accounts">
+              {accounts?.map(({ name, id }) => (
+                <Menu.Content.Item.Compose
+                  role="presentation"
+                  key={id}
+                  selected={id === selectingAccountId}
+                  onClick={() => handleClickSelectAccount?.(id)}
+                  data-testid={`profile-account-${id}${id === currentAccountId ? '-selected' : ''}`}
+                >
+                  <Menu.Content.Item.Text>
+                    {`${name} #${id}`}
+                  </Menu.Content.Item.Text>
+                  {id === selectingAccountId && (
+                    <Loader
+                      size="m"
+                      data-testid={`user-profile-selecting-account-${id}`}
+                    />
+                  )}
+                  {id === currentAccountId && (
+                    <Menu.Content.Item.Check
+                      data-testid={`user-profile-selected-account-${id}`}
+                    />
+                  )}
+                </Menu.Content.Item.Compose>
+              ))}
+            </div>
+            <Menu.Content.Separator />
+            <FeatureFlagComponent
+              name={FeatureFlags.envDependent}
+              otherwise={
+                <>
+                  <Menu.Content.Item.Compose>
+                    <Menu.Content.Item.Text>
+                      <Link
+                        external
+                        color="text"
+                        href={riDesktopLink}
+                        data-testid="open-ri-desktop-link"
+                        variant="inline"
+                      >
+                        Open in Redis Insight Desktop version
+                      </Link>
+                    </Menu.Content.Item.Text>
+                  </Menu.Content.Item.Compose>
+                  <Menu.Content.Item.Compose>
+                    <Menu.Content.Item.Text>
+                      <Link
+                        external
+                        color="text"
+                        variant="inline"
+                        target="_blank"
+                        href={riConfig.app.smConsoleRedirect}
+                        data-testid="cloud-admin-console-link"
+                      >
+                        Back to Redis Cloud Admin console
+                      </Link>
+                    </Menu.Content.Item.Text>
+                  </Menu.Content.Item.Compose>
+                </>
+              }
+            >
+              <Menu.Content.Item
+                role="presentation"
+                subHead="Import Cloud Databases"
+                text=""
+                icon={DownloadIcon}
+                onSelect={handleClickImport}
+                data-testid="profile-import-cloud-databases"
+              />
               <Menu.Content.Item.Compose>
                 <Menu.Content.Item.Text>
                   <Link
@@ -169,52 +218,32 @@ const UserProfileBadge = (props: UserProfileBadgeProps) => {
                     color="text"
                     variant="inline"
                     target="_blank"
-                    href={riConfig.app.smConsoleRedirect}
-                    data-testid="cloud-admin-console-link"
+                    href={getUtmExternalLink(EXTERNAL_LINKS.cloudConsole, {
+                      campaign: 'cloud_account',
+                    })}
+                    onClick={handleClickCloudAccount}
+                    data-testid="cloud-console-link"
                   >
-                    Back to Redis Cloud Admin console
+                    Cloud Console:
+                    <span data-testid="account-full-name"> {name}</span>
                   </Link>
                 </Menu.Content.Item.Text>
               </Menu.Content.Item.Compose>
-            </>
-          }
-        >
-          <Menu.Content.Item
-            role="presentation"
-            subHead="Import Cloud Databases"
-            icon={DownloadIcon}
-            onSelect={handleClickImport}
-            data-testid="profile-import-cloud-databases"
-          />
-          <Menu.Content.Item.Compose>
-            <Menu.Content.Item.Text>
-              <Link
-                external
-                color="text"
-                variant="inline"
-                target="_blank"
-                href={getUtmExternalLink(EXTERNAL_LINKS.cloudConsole, {
-                  campaign: 'cloud_account',
-                })}
-                onClick={handleClickCloudAccount}
-                data-testid="cloud-console-link"
-              >
-                Cloud Console: {name}
-              </Link>
-            </Menu.Content.Item.Text>
-          </Menu.Content.Item.Compose>
-          <Menu.Content.Separator />
-          <Menu.Content.Item
-            role="presentation"
-            subHead="Logout"
-            icon={SignoutIcon}
-            onClick={handleClickLogout}
-            data-testid="profile-logout"
-          />
-        </FeatureFlagComponent>
-        <Menu.Content.DropdownArrow />
-      </Menu.Content>
-    </Menu>
+              <Menu.Content.Separator />
+              <Menu.Content.Item
+                role="presentation"
+                subHead="Logout"
+                text=""
+                icon={SignoutIcon}
+                onClick={handleClickLogout}
+                data-testid="profile-logout"
+              />
+            </FeatureFlagComponent>
+            <Menu.Content.DropdownArrow />
+          </Menu.Content>
+        </Menu>
+      </div>
+    </OutsideClickDetector>
   )
 }
 
