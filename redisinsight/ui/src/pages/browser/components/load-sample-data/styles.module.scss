@@ -1,15 +1,3 @@
 .popover {
   min-width: 380px !important;
 }
-
-.buttonWrapper {
-  .loadDataBtn {
-    height: 36px !important;
-
-    :global(.euiButton__text) {
-      font-size: 14px !important;
-      font-weight: 400 !important;
-    }
-  }
-}
-
