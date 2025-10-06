@@ -10,6 +10,7 @@ import { truncateText } from 'uiSrc/utils'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { TitleSize, Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
+import { Spacer } from 'uiSrc/components/base/layout'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 
 import styles from '../styles.module.scss'
@@ -31,10 +32,9 @@ const Notification = (props: Props) => {
       >
         {notification.title}
       </Title>
-
+      <Spacer size="s" />
       <Text
         size="s"
-        color="subdued"
         className={cx('notificationHTMLBody', styles.notificationBody)}
         data-testid="notification-body"
       >
@@ -43,7 +43,7 @@ const Notification = (props: Props) => {
 
       <Row className={styles.notificationFooter} align="center" justify="start">
         <FlexItem>
-          <Text size="xs" color="subdued" data-testid="notification-date">
+          <Text size="xs" data-testid="notification-date">
             {format(notification.timestamp * 1000, NOTIFICATION_DATE_FORMAT)}
           </Text>
         </FlexItem>
