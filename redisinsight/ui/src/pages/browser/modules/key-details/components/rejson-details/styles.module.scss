@@ -269,20 +269,6 @@
   max-width: none;
 }
 
-.confirmDialogActions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 16px;
-
-  button {
-    margin-left: 8px;
-
-    &:first-of-type {
-      margin-left: 0;
-    }
-  }
-}
-
 .actions {
   margin-top: 1em;
   display: flex;
