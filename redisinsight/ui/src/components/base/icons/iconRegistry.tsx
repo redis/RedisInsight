@@ -12,7 +12,6 @@ import CopilotSvg from 'uiSrc/assets/img/icons/copilot.svg?react'
 import DefaultPluginDarkSvg from 'uiSrc/assets/img/workbench/default_view_dark.svg?react'
 import DefaultPluginLightSvg from 'uiSrc/assets/img/workbench/default_view_light.svg?react'
 import DislikeSvg from 'uiSrc/assets/img/icons/dislike.svg?react'
-import ExecutionTimeSvg from 'uiSrc/assets/img/workbench/execution_time.svg?react'
 import ExtendSvg from 'uiSrc/assets/img/icons/extend.svg?react'
 import GithubHelpCenterSVG from 'uiSrc/assets/img/github.svg?react'
 import GroupModeSvg from 'uiSrc/assets/img/icons/group_mode.svg?react'
@@ -170,7 +169,6 @@ export const CopilotIcon = createIconComponent(CopilotSvg)
 export const DefaultPluginDarkIcon = createIconComponent(DefaultPluginDarkSvg)
 export const DefaultPluginLightIcon = createIconComponent(DefaultPluginLightSvg)
 export const DislikeIcon = createIconComponent(DislikeSvg)
-export const ExecutionTimeIcon = createIconComponent(ExecutionTimeSvg)
 export const ExtendIcon = createIconComponent(ExtendSvg)
 export const GithubHelpCenterIcon = createIconComponent(GithubHelpCenterSVG)
 export const GroupModeIcon = createIconComponent(GroupModeSvg)

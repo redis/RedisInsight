@@ -4,30 +4,16 @@ import { PlayFilledIcon } from 'uiSrc/components/base/icons'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 
 const StyledEmptyButton = styled(EmptyButton)`
-  height: 24px !important;
-  min-width: auto !important;
-  min-height: auto !important;
-  border-radius: 4px !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  margin-left: 8px;
-
-  border: 1px solid transparent !important;
-
-  & .RI-flex-row {
-    padding: 0 6px;
-  }
-
   &:focus,
   &:active {
-    outline: 0 !important;
+    outline: 0;
   }
 
   svg {
     margin-top: 1px;
     width: 14px;
     height: 14px;
-    color: var(--rsSubmitBtn) !important;
+    color: var(--rsSubmitBtn);
   }
 `
 
