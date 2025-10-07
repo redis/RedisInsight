@@ -93,7 +93,7 @@ const RediSearchIndexesList = (props: Props) => {
   )
 
   const options = list.map((index) => {
-    const value = formatLongName(bufferToString(index))
+    const value = formatLongName(bufferToString(index), 100, 10)
 
     return {
       value: JSON.stringify(index),
