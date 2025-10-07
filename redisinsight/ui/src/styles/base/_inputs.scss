@@ -12,11 +12,6 @@
   pointer-events: none !important;
 }
 
-input::placeholder,
-textarea::placeholder {
-  color: var(--inputPlaceholderColor) !important;
-}
-
 input[type='password'] ~ .euiFormControlLayoutIcons,
 input[name='password'] ~ .euiFormControlLayoutIcons,
 input[name='sentinelMasterPassword'] ~ .euiFormControlLayoutIcons,

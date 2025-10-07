@@ -48,6 +48,10 @@ export interface Props {
 const SwitchSearchModeButtonGroup = styled(ButtonGroup)`
   button {
     height: 32px;
+    svg {
+      height: 20px;
+      width: 20px;
+    }
   }
 `
 

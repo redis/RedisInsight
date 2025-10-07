@@ -13,25 +13,11 @@
     height: 100%;
     display: flex;
     align-items: center;
-    padding: 5px 6px;
-    border: 1px solid var(--controlsBorderColor);
-    border-radius: 0 4px 4px 0;
-    background-color: var(--euiColorEmptyShade);
+    padding: 5px 6px 5px 0;
     background-repeat: no-repeat;
     background-size: 0 100%;
     transition: box-shadow 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in,
       background-color 150ms ease-in;
-
-    &.isFocused {
-      background-size: 100% 100%;
-      background-image: linear-gradient(
-        to top,
-        var(--euiColorPrimary),
-        var(--euiColorPrimary) 2px,
-        transparent 2px,
-        transparent 100%
-      ) !important;
-    }
   }
 
   .multiSearchInput {
@@ -79,7 +65,7 @@
 
       &:hover,
       &.focused {
-        background: var(--hoverInListColorDarken);
+        background: var(--browserComponentActive);
         .suggestionRemoveBtn {
           visibility: visible;
           pointer-events: auto;
@@ -118,7 +104,7 @@
     user-select: none;
 
     &:hover {
-      background: var(--hoverInListColorDarken);
+      background: var(--browserComponentActive);
     }
   }
 
