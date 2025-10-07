@@ -35,7 +35,7 @@ import {
 
 import { openTutorialByPath } from 'uiSrc/slices/panels/sidePanels'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Card } from 'uiSrc/components/base/layout'
+import { Card, Spacer } from 'uiSrc/components/base/layout'
 import {
   IconButton,
   SecondaryButton,
@@ -211,16 +211,20 @@ const Recommendation = ({
   const recommendationContent = () => (
     <Col>
       {!isUndefined(tutorialId) && (
-        <SecondaryButton
-          filled
-          icon={StarsIcon}
-          iconSide="right"
-          className={styles.btn}
-          onClick={handleRedirect}
-          data-testid={`${name}-to-tutorial-btn`}
-        >
-          {tutorialId ? 'Start Tutorial' : 'Workbench'}
-        </SecondaryButton>
+        <Col align="start">
+          <Spacer size="s" />
+          <SecondaryButton
+            filled
+            icon={StarsIcon}
+            iconSide="right"
+            className={styles.btn}
+            onClick={handleRedirect}
+            data-testid={`${name}-to-tutorial-btn`}
+          >
+            {tutorialId ? 'Start Tutorial' : 'Workbench'}
+          </SecondaryButton>
+          <Spacer size="m" />
+        </Col>
       )}
       <RecommendationBody
         elements={content}
