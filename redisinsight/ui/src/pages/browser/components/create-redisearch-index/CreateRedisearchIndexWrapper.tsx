@@ -11,7 +11,9 @@ import { Link } from 'uiSrc/components/base/link/Link'
 import { RiTooltip } from 'uiSrc/components'
 import CreateRedisearchIndex from './CreateRedisearchIndex'
 
-import { HorizontalRule, Spacer } from 'uiSrc/components/base/layout'
+import { Spacer } from 'uiSrc/components/base/layout'
+import Divider from 'uiSrc/components/divider/Divider'
+import styles from 'uiSrc/pages/browser/components/add-key/styles.module.scss'
 
 const StyledCreateRedisearchIndexWrapper = styled(Col)`
   background-color: ${({ theme }) =>
@@ -73,9 +75,8 @@ const CreateRedisearchIndexWrapper = ({
           </Link>
         </Text>
       </FlexItem>
-      <Spacer size="xl" />
     </StyledHeader>
-    <HorizontalRule margin="xs" />
+    <Divider colorVariable="separatorColor" className={styles.divider} />
     <CreateRedisearchIndex
       onCreateIndex={onCreateIndex}
       onClosePanel={onClosePanel}
