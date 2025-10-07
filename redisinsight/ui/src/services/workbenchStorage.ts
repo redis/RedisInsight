@@ -1,5 +1,5 @@
 import { flatten } from 'lodash'
-import { CommandExecution } from 'uiSrc/slices/interfaces'
+import { CommandExecution, CommandExecutionType } from 'uiSrc/slices/interfaces'
 import { BrowserStorageItem } from 'uiSrc/constants'
 import { CommandExecutionStatus } from 'uiSrc/slices/interfaces/cli'
 import { getConfig } from 'uiSrc/config'
@@ -283,14 +283,22 @@ export const wbHistoryStorage = new WorkbenchStorage(
 
 type CommandHistoryType = CommandExecution[]
 
-export async function getLocalWbHistory(dbId: string) {
+export async function getLocalWbHistory(
+  dbId: string,
+  commandExecutionType?: CommandExecutionType,
+) {
   try {
-    const history = (await wbHistoryStorage.getItems(
-      BrowserStorageItem.wbCommandsHistory,
-      dbId,
-    )) as CommandHistoryType
+    const history =
+      ((await wbHistoryStorage.getItems(
+        BrowserStorageItem.wbCommandsHistory,
+        dbId,
+      )) as CommandHistoryType) || []
 
-    return history || []
+    if (!commandExecutionType) {
+      return history
+    }
+
+    return history.filter((item) => item.type === commandExecutionType)
   } catch (e) {
     console.error(e)
     return []
@@ -315,14 +323,16 @@ async function cleanupDatabaseHistory(dbId: string) {
   const commandsHistory: CommandHistoryType = await getLocalWbHistory(dbId)
   let size = 0
   // collect items up to maxItemsPerDb
-  const update = commandsHistory.reverse().reduce((acc, commandsHistoryElement) => {
-    if (size >= WORKBENCH_HISTORY_MAX_LENGTH) {
+  const update = commandsHistory
+    .reverse()
+    .reduce((acc, commandsHistoryElement) => {
+      if (size >= WORKBENCH_HISTORY_MAX_LENGTH) {
+        return acc
+      }
+      size++
+      acc.push(commandsHistoryElement)
       return acc
-    }
-    size++
-    acc.push(commandsHistoryElement)
-    return acc
-  }, [] as CommandHistoryType)
+    }, [] as CommandHistoryType)
   // clear old items
   await clearCommands(dbId)
   // save

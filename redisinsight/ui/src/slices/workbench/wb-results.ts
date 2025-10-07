@@ -317,7 +317,10 @@ export function fetchWBHistoryAction(
         state.app.features.featureFlags.features.envDependent?.flag
       if (envDependentFlag === false) {
         // Fetch commands from local storage
-        const commandsHistory = await getLocalWbHistory(instanceId)
+        const commandsHistory = await getLocalWbHistory(
+          instanceId,
+          CommandExecutionType.Workbench,
+        )
         if (Array.isArray(commandsHistory)) {
           dispatch(loadWBHistorySuccess(reverse(commandsHistory)))
         } else {

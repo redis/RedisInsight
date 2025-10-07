@@ -38,8 +38,8 @@ export const useCreateIndex = (): UseCreateIndexResult => {
   const run = useCallback(
     async (
       { instanceId, indexName, dataContent }: CreateSearchIndexParameters,
-      onSuccess: () => void,
-      onError: () => void,
+      onSuccess?: () => void,
+      onError?: () => void,
     ) => {
       setSuccess(false)
       setError(null)

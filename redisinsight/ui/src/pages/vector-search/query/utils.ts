@@ -76,7 +76,10 @@ export const limitHistoryLength = (
 export const loadHistoryData = async (
   instanceId: string,
 ): Promise<CommandExecutionUI[]> => {
-  const commandsHistory = await getLocalWbHistory(instanceId)
+  const commandsHistory = await getLocalWbHistory(
+    instanceId,
+    CommandExecutionType.Search,
+  )
   if (!Array.isArray(commandsHistory)) {
     return []
   }
