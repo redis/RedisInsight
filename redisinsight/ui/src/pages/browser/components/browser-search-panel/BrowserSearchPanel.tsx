@@ -1,9 +1,8 @@
 /* eslint-disable react/no-this-in-sfc */
 /* eslint-disable react/destructuring-assignment */
 import React, { useCallback, useState } from 'react'
-import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 
 import {
   FilterTableIcon,
@@ -25,8 +24,9 @@ import { localStorageService } from 'uiSrc/services'
 import { BrowserStorageItem } from 'uiSrc/constants'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { Modal } from 'uiSrc/components/base/display'
+import { Row } from 'uiSrc/components/base/layout/flex'
+import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
 
 import styles from './styles.module.scss'
 
@@ -45,28 +45,10 @@ export interface Props {
   handleCreateIndexPanel: (value: boolean) => void
 }
 
-const SwitchSearchModeIconButton = styled(IconButton)<{ active: boolean }>`
-  width: 40px;
-  height: 26px;
-  border-radius: ${({ theme }) => theme.core.space.space050};
-
-  padding: ${({ theme }) => theme.core.space.space100};
-  margin: ${({ theme }) => theme.core.space.space050};
-
-  svg {
-    color: ${({ theme }) => theme.semantic.color.text.neutral700};
-
-    g > path {
-      fill: ${({ theme }) => theme.semantic.color.text.neutral700};
-    }
+const SwitchSearchModeButtonGroup = styled(ButtonGroup)`
+  button {
+    height: 32px;
   }
-
-  ${({ active }) =>
-    active &&
-    css`
-      background-color: ${({ theme }) =>
-        theme.semantic.color.background.neutral400};
-    `}
 `
 
 const BrowserSearchPanel = (props: Props) => {
@@ -154,20 +136,18 @@ const BrowserSearchPanel = (props: Props) => {
   }, [])
 
   const SwitchModeBtn = (item: ISwitchType<SearchMode>) => (
-    <SwitchSearchModeIconButton
-      icon={item.getIconType()}
+    <ButtonGroup.Button
       aria-label={item.ariaLabel}
       onClick={() => item.onClick?.()}
       data-testid={item.dataTestId}
-      active={item.isActiveView?.()}
-    />
+      isSelected={item.isActiveView?.()}
+    >
+      <ButtonGroup.Icon icon={item.getIconType()} />
+    </ButtonGroup.Button>
   )
 
   const SearchModeSwitch = () => (
-    <div
-      className={cx(styles.searchModeSwitch)}
-      data-testid="search-mode-switcher"
-    >
+    <SwitchSearchModeButtonGroup data-testid="search-mode-switcher">
       {searchModes.map((mode) => (
         <RiTooltip
           content={mode.tooltipText}
@@ -177,7 +157,7 @@ const BrowserSearchPanel = (props: Props) => {
           {SwitchModeBtn(mode)}
         </RiTooltip>
       ))}
-    </div>
+    </SwitchSearchModeButtonGroup>
   )
 
   return (
@@ -196,7 +176,7 @@ const BrowserSearchPanel = (props: Props) => {
         }
         title={null}
       />
-      <div className={styles.searchWrapper}>
+      <Row className={styles.searchWrapper} gap="m" align="center">
         <OnboardingTour
           options={ONBOARDING_FEATURES.BROWSER_FILTER_SEARCH}
           anchorPosition="downLeft"
@@ -210,7 +190,7 @@ const BrowserSearchPanel = (props: Props) => {
           <RediSearchIndexesList onCreateIndex={handleCreateIndexPanel} />
         )}
         <SearchKeyList />
-      </div>
+      </Row>
     </div>
   )
 }

@@ -188,7 +188,7 @@ const RediSearchIndexesList = (props: Props) => {
         value={index || ''}
         onChange={onChangeIndex}
       >
-        <RiSelect.Trigger.Compose data-testid="select-search-mode" style={{ borderRadius: 0 }}>
+        <RiSelect.Trigger.Compose data-testid="select-search-mode">
           <RiSelect.Trigger.Value
             placeholder="Select Index"
             data-testid="select-index-placeholder"
