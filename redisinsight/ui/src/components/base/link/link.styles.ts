@@ -21,7 +21,7 @@ export type RiLinkProps = Omit<LinkProps, 'color'> & {
   color?: ColorType
 }
 
-export interface MapProps extends RiLinkProps {
+type MapProps = RiLinkProps & {
   $color?: ColorType
 }
 
