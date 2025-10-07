@@ -8,6 +8,12 @@ import { WORKBENCH_HISTORY_MAX_LENGTH } from 'uiSrc/pages/workbench/constants'
 
 const riConfig = getConfig()
 
+enum CommandExecutionIndex {
+  DatabaseId = 'dbId',
+  CommandId = 'commandId',
+  DatabaseIdType = 'dbId_type',
+}
+
 export class WorkbenchStorage {
   private db?: IDBDatabase
 
@@ -70,8 +76,21 @@ export class WorkbenchStorage {
           const objectStore = this.db.createObjectStore(storeName, {
             keyPath: ['id', 'databaseId'],
           })
-          objectStore.createIndex('dbId', 'databaseId', { unique: false })
-          objectStore.createIndex('commandId', 'id', { unique: true })
+          objectStore.createIndex(
+            CommandExecutionIndex.DatabaseId,
+            'databaseId',
+            { unique: false },
+          )
+          objectStore.createIndex(CommandExecutionIndex.CommandId, 'id', {
+            unique: true,
+          })
+          objectStore.createIndex(
+            CommandExecutionIndex.DatabaseIdType,
+            ['databaseId', 'type'],
+            {
+              unique: false,
+            },
+          )
         } catch (ex) {
           if (ex instanceof DOMException && ex?.name === 'ConstraintError') {
             console.warn(
@@ -235,7 +254,8 @@ export class WorkbenchStorage {
 
   clear(
     storeName: string,
-    dbId: string,
+    indexName: CommandExecutionIndex,
+    indexSelector: string | [string, string],
     onSuccess?: () => void,
     onError?: () => void,
   ): Promise<void> {
@@ -250,8 +270,8 @@ export class WorkbenchStorage {
           const objectStore = db
             .transaction(storeName, 'readwrite')
             ?.objectStore(storeName)
-          const idbIndex = objectStore?.index('dbId')
-          const indexReq = idbIndex?.openCursor(dbId)
+          const idbIndex = objectStore?.index(indexName)
+          const indexReq = idbIndex?.openCursor(indexSelector)
           indexReq.onsuccess = () => {
             const cursor = indexReq.result
             onSuccess?.()
@@ -278,7 +298,7 @@ export class WorkbenchStorage {
 
 export const wbHistoryStorage = new WorkbenchStorage(
   riConfig.app.indexedDbName,
-  2,
+  3,
 )
 
 type CommandHistoryType = CommandExecution[]
@@ -368,8 +388,20 @@ export async function removeCommand(dbId: string, commandId: string) {
   )
 }
 
-export async function clearCommands(dbId: string) {
-  await wbHistoryStorage.clear(BrowserStorageItem.wbCommandsHistory, dbId)
+export async function clearCommands(dbId: string, type?: CommandExecutionType) {
+  if (type) {
+    await wbHistoryStorage.clear(
+      BrowserStorageItem.wbCommandsHistory,
+      CommandExecutionIndex.DatabaseIdType,
+      [dbId, type],
+    )
+  } else {
+    await wbHistoryStorage.clear(
+      BrowserStorageItem.wbCommandsHistory,
+      CommandExecutionIndex.DatabaseId,
+      dbId,
+    )
+  }
 }
 
 export async function findCommand(commandId: string) {

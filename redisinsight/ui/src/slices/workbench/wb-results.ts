@@ -598,7 +598,7 @@ export function clearWbResultsAction(
       const envDependentFlag =
         state.app.features.featureFlags.features.envDependent?.flag
       if (envDependentFlag === false) {
-        await clearCommands(id)
+        await clearCommands(id, CommandExecutionType.Workbench)
         dispatch(clearWbResultsSuccess())
         onSuccessAction?.()
         return

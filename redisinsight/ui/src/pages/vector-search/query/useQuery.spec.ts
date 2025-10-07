@@ -11,6 +11,7 @@ import {
 import * as utils from './utils'
 import * as storage from 'uiSrc/services/workbenchStorage'
 import * as sharedUtils from 'uiSrc/utils'
+import { CommandExecutionType } from 'uiSrc/slices/interfaces'
 
 import { useQuery } from './useQuery'
 
@@ -269,7 +270,10 @@ describe('useQuery hook', () => {
 
     // clearing should have been toggled to true at least once during the call
     expect(result.current.clearing).toBe(false)
-    expect(mockedStorage.clearCommands).toHaveBeenCalledWith('instanceId')
+    expect(mockedStorage.clearCommands).toHaveBeenCalledWith(
+      'instanceId',
+      CommandExecutionType.Search,
+    )
     expect(result.current.items).toEqual([])
     expect(result.current.clearing).toBe(false)
   })

@@ -16,6 +16,7 @@ import {
   ResultsMode,
   CommandExecutionUI,
   CommandExecution,
+  CommandExecutionType,
 } from 'uiSrc/slices/interfaces'
 import { PIPELINE_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import {
@@ -224,7 +225,7 @@ const useQuery = () => {
   const handleAllQueriesDelete = useCallback(async () => {
     try {
       setClearing(true)
-      await clearCommands(instanceId)
+      await clearCommands(instanceId, CommandExecutionType.Search)
       setItems([])
     } catch (error) {
       // Keep clearing state false on error
