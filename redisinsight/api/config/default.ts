@@ -370,6 +370,15 @@ export default {
       parseInt(process.env.RI_CLOUD_DATABASE_CONNECTION_TIMEOUT, 10) ||
       2 * 60_000, // 2min
     idp: {
+      microsoft: {
+        redirectUri:
+          process.env.RI_CLOUD_IDP_MICROSOFT_REDIRECT_URI ||
+          process.env.RI_CLOUD_IDP_REDIRECT_URI,
+        clientId:
+          process.env.RI_CLOUD_IDP_MICROSOFT_CLIENT_ID ||
+          process.env.RI_CLOUD_IDP_CLIENT_ID,
+        authority: process.env.RI_CLOUD_IDP_MICROSOFT_AUTHORITY,
+      },
       google: {
         authorizeUrl:
           process.env.RI_CLOUD_IDP_GOOGLE_AUTHORIZE_URL ||

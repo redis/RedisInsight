@@ -4,6 +4,7 @@ export enum CloudAuthIdpType {
   Google = 'google',
   GitHub = 'github',
   Sso = 'sso',
+  Microsoft = 'microsoft',
 }
 
 export class CloudAuthRequestOptions {
