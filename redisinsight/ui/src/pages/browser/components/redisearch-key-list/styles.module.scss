@@ -149,36 +149,3 @@
     background-color: transparent !important;
   }
 }
-
-.refresh {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  position: absolute;
-  top: 50%;
-  right: 1px;
-  transform: translateY(-50%);
-  z-index: 6;
-  height: 100%;
-  width: 32px;
-
-  .refreshBtn {
-    &:hover {
-      transform: translateY(0) !important;
-    }
-  }
-}
-
-.select {
-  width: 350px;
-  position: absolute;
-  z-index: 1;
-
-  :global {
-    .euiFormControlLayout__childrenWrapper {
-      width: 200px;
-      position: relative;
-    }
-  }
-}
