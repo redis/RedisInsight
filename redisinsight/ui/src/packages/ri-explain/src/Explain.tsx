@@ -87,7 +87,7 @@ export default function Explain({ command, data }: IExplain): JSX.Element {
 
   const module = ModuleType.Search
 
-  if (command === 'ft.profile') {
+  if (cmd === 'ft.profile') {
     try {
       const isNewResponse = typeof data[0].response[1]?.[0] === 'string'
 
