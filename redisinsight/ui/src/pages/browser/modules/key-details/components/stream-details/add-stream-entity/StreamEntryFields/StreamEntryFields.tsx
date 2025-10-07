@@ -149,7 +149,6 @@ const StreamEntryFields = (props: Props) => {
             onChange={handleEntryIdChange}
             onBlur={onEntryIdBlur}
             onFocus={() => setIsEntryIdFocused(true)}
-            valid={!entryIdError}
             autoComplete="off"
             data-testid={config.entryId.id}
           />
