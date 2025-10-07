@@ -86,12 +86,3 @@ $euiBreakpointKeys: map-keys($euiBreakpoints);
   $alpha: 1 - $factor;
   color: rgba($color, $alpha);
 }
-
-@mixin multiline-ellipsis($line-count, $line-height) {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: $line-count;
-  line-height: $line-height;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}

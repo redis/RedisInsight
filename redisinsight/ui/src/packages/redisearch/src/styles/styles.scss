@@ -85,12 +85,6 @@ html {
   display: inline-block !important;
 }
 
-// The style applies to the last div element in the tooltip, 
-// which is the one containing the text
-.euiToolTipPopover.text-multiline-ellipsis > div:last-child {
-  @include eui.multiline-ellipsis($line-count: 7, $line-height: 1.5rem);
-}
-
 .cell {
   position: relative;
 }
