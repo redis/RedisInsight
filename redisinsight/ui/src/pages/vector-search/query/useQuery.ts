@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { chunk, reverse } from 'lodash'
+import { useSelector } from 'react-redux'
+import { RootState } from 'uiSrc/slices/store'
 import {
   Nullable,
   getCommandsForExecution,
@@ -43,6 +45,10 @@ const useQuery = () => {
   const [clearing, setClearing] = useState(false)
   const [processing, setProcessing] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
+  const envDependentFlag = useSelector(
+    (state: RootState) =>
+      state?.app?.features?.featureFlags?.features?.envDependent?.flag,
+  )
 
   const resultsMode = ResultsMode.Default
   const activeRunQueryMode = RunQueryMode.ASCII
@@ -84,7 +90,9 @@ const useQuery = () => {
         return sortCommandsByDate(updatedItems)
       })
 
-      await addCommands(reverse(data))
+      if (envDependentFlag === false) {
+        await addCommands(reverse(data))
+      }
 
       if (isNewCommand) {
         scrollToElement(scrollDivRef.current, 'start')

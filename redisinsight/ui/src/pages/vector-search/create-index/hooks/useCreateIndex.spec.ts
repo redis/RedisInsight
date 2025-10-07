@@ -1,5 +1,11 @@
-import { renderHook, act } from '@testing-library/react-hooks'
+import { merge } from 'lodash'
 import executeQuery from 'uiSrc/services/executeQuery'
+import {
+  act,
+  renderHook,
+  mockStore,
+  initialStateDefault,
+} from 'uiSrc/utils/test-utils'
 import {
   CreateSearchIndexParameters,
   SampleDataContent,
@@ -59,11 +65,48 @@ describe('useCreateIndex', () => {
     })
 
     expect(mockLoad).toHaveBeenCalledWith('test-instance-id', 'bikes')
+    expect(result.current.success).toBe(true)
+    expect(result.current.error).toBeNull()
+    expect(result.current.loading).toBe(false)
+    expect(mockOnSuccess).toHaveBeenCalled()
+    expect(mockOnError).not.toHaveBeenCalled()
+  })
+
+  it('should complete flow successfully with envDependent flag false and call addCommands', async () => {
+    const mockData = [{ id: '1', databaseId: 'test-instance-id' }]
+    mockLoad.mockResolvedValue(undefined)
+    mockExecute.mockResolvedValue(mockData)
+
+    const customStore = mockStore(
+      merge({}, initialStateDefault, {
+        app: {
+          features: {
+            featureFlags: {
+              features: {
+                envDependent: { flag: false },
+              },
+            },
+          },
+        },
+      }),
+    )
+
+    const { result } = renderHook(() => useCreateIndex(), {
+      store: customStore,
+    })
+
+    await act(async () => {
+      await result.current.run(defaultParams, mockOnSuccess, mockOnError)
+    })
+
+    expect(mockLoad).toHaveBeenCalledWith('test-instance-id', 'bikes')
     expect(mockExecute).toHaveBeenCalledWith(
       'test-instance-id',
       'FT.CREATE idx:bikes_vss ...',
     )
-    expect(mockAddCommands).toHaveBeenCalled()
+    expect(mockAddCommands).toHaveBeenCalledWith([
+      { id: '1', databaseId: 'test-instance-id' },
+    ])
     expect(result.current.success).toBe(true)
     expect(result.current.error).toBeNull()
     expect(result.current.loading).toBe(false)

@@ -1,5 +1,12 @@
 import type { RenderHookResult } from '@testing-library/react'
-import { act, renderHook, waitFor } from 'uiSrc/utils/test-utils'
+import { merge } from 'lodash'
+import {
+  act,
+  initialStateDefault,
+  mockStore,
+  renderHook,
+  waitFor,
+} from 'uiSrc/utils/test-utils'
 
 import * as utils from './utils'
 import * as storage from 'uiSrc/services/workbenchStorage'
@@ -82,7 +89,7 @@ describe('useQuery hook', () => {
     expect(result.current.items).toEqual([])
   })
 
-  it('onSubmit success path updates items, calls addCommands and scrolls', async () => {
+  it('onSubmit success path updates items and scrolls', async () => {
     // Initial history empty
     mockedUtils.loadHistoryData.mockResolvedValueOnce([])
 
@@ -105,6 +112,66 @@ describe('useQuery hook', () => {
     const { result } = renderHook(() =>
       useQuery(),
     ) as unknown as UseQueryHookResult
+
+    await waitFor(() => expect(result.current.isResultsLoaded).toBe(true))
+
+    await act(async () => {
+      await result.current.onSubmit('PING')
+    })
+
+    // Items updated with API data: loading false, no error, opened
+    expect(result.current.items[0]).toMatchObject({
+      id: 'cmd-1230',
+      result: 'PONG',
+      loading: false,
+      error: '',
+      isOpen: true,
+    })
+
+    // Scroll called for a new command
+    expect(mockedUtils.scrollToElement).toHaveBeenCalled()
+    // processing returns to false at the end
+    expect(result.current.processing).toBe(false)
+  })
+
+  it('onSubmit success path updates items, calls addCommands (when envDependent flag false) and scrolls', async () => {
+    // Initial history empty
+    mockedUtils.loadHistoryData.mockResolvedValueOnce([])
+
+    // Prepare new UI items for the command to execute
+    mockedSharedUtils.getCommandsForExecution.mockReturnValueOnce(['PING'])
+    mockedUtils.prepareNewItems.mockImplementationOnce(
+      (cmds: string[], id: string) =>
+        cmds.map((_, i) => ({
+          id: `${id}${i}`,
+          loading: true,
+          isOpen: false,
+          error: '',
+        })),
+    )
+
+    // API returns data matching ids
+    const apiData = [{ id: 'cmd-1230', result: 'PONG' }] as any
+    mockedUtils.executeApiCall.mockResolvedValueOnce(apiData)
+
+    // Mock store with envDependent flag false, so addCommands is called
+    const customStore = mockStore(
+      merge({}, initialStateDefault, {
+        app: {
+          features: {
+            featureFlags: {
+              features: {
+                envDependent: { flag: false },
+              },
+            },
+          },
+        },
+      }),
+    )
+
+    const { result } = renderHook(() => useQuery(), {
+      store: customStore,
+    }) as unknown as UseQueryHookResult
 
     await waitFor(() => expect(result.current.isResultsLoaded).toBe(true))
 
