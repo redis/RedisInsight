@@ -5,16 +5,14 @@ import { KEYBOARD_SHORTCUTS } from 'uiSrc/constants'
 import { KeyboardShortcut, RiTooltip } from 'uiSrc/components'
 import { isGroupMode } from 'uiSrc/utils'
 
-import { GroupModeIcon, RawModeIcon } from 'uiSrc/components/base/icons'
+import { RiIcon } from 'uiSrc/components/base/icons'
 
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Text } from 'uiSrc/components/base/text'
 import RunButton from 'uiSrc/components/query/components/RunButton'
 import { Row } from 'uiSrc/components/base/layout/flex'
-import {
-  QABtn,
-  QADivider,
-} from 'uiSrc/components/query/query-actions/QueryActions.styles'
+import { QADivider } from 'uiSrc/components/query/query-actions/QueryActions.styles'
+import { ToggleButton } from 'uiSrc/components/base/forms/buttons'
 
 export interface Props {
   onChangeMode?: () => void
@@ -53,15 +51,15 @@ const QueryActions = (props: Props) => {
           content="Enables the raw output mode"
           data-testid="change-mode-tooltip"
         >
-          <QABtn
-            onClick={() => onChangeMode()}
-            icon={RawModeIcon}
+          <ToggleButton
+            onPressedChange={() => onChangeMode()}
             disabled={isLoading}
-            $active={activeMode === RunQueryMode.Raw}
+            pressed={activeMode === RunQueryMode.Raw}
             data-testid="btn-change-mode"
           >
-            Raw mode
-          </QABtn>
+            <RiIcon size="m" type="RawModeIcon" />
+            <Text size="s">Raw mode</Text>
+          </ToggleButton>
         </RiTooltip>
       )}
       {onChangeGroupMode && (
@@ -77,15 +75,15 @@ const QueryActions = (props: Props) => {
           }
           data-testid="group-results-tooltip"
         >
-          <QABtn
-            onClick={() => onChangeGroupMode()}
+          <ToggleButton
+            onPressedChange={() => onChangeGroupMode()}
             disabled={isLoading}
-            icon={GroupModeIcon}
-            $active={isGroupMode(resultsMode)}
+            pressed={isGroupMode(resultsMode)}
             data-testid="btn-change-group-mode"
           >
-            Group results
-          </QABtn>
+            <RiIcon size="m" type="GroupModeIcon" />
+            <Text size="s">Group results</Text>
+          </ToggleButton>
         </RiTooltip>
       )}
       <QADivider orientation="vertical" colorVariable="separatorColor" />
