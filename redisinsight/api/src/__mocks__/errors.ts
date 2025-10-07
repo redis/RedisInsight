@@ -25,6 +25,12 @@ export const mockRedisUnknownIndexName: ReplyError = {
   message: 'Unknown Index name',
 };
 
+export const mockRedisUnknownIndexNameV8: ReplyError = {
+  name: 'ReplyError',
+  command: 'FT.INFO',
+  message: 'idx: no such index',
+};
+
 export const mockRedisWrongNumberOfArgumentsError: ReplyError = {
   name: 'ReplyError',
   command: 'GET',

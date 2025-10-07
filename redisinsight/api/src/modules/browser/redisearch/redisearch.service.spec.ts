@@ -13,6 +13,7 @@ import {
   mockDatabaseClientFactory,
   mockRedisNoPermError,
   mockRedisUnknownIndexName,
+  mockRedisUnknownIndexNameV8,
   mockStandaloneRedisClient,
 } from 'src/__mocks__';
 import { RedisearchService } from 'src/modules/browser/redisearch/redisearch.service';
@@ -127,6 +128,38 @@ describe('RedisearchService', () => {
       when(standaloneClient.sendCommand)
         .calledWith(expect.arrayContaining(['FT.INFO']))
         .mockRejectedValue(mockRedisUnknownIndexName);
+      when(standaloneClient.sendCommand)
+        .calledWith(expect.arrayContaining(['FT.CREATE']))
+        .mockResolvedValue('OK');
+
+      await service.createIndex(
+        mockBrowserClientMetadata,
+        mockCreateRedisearchIndexDto,
+      );
+
+      expect(standaloneClient.sendCommand).toHaveBeenCalledTimes(2);
+      expect(standaloneClient.sendCommand).toHaveBeenCalledWith(
+        [
+          'FT.CREATE',
+          mockCreateRedisearchIndexDto.index,
+          'ON',
+          mockCreateRedisearchIndexDto.type,
+          'PREFIX',
+          2,
+          ...mockCreateRedisearchIndexDto.prefixes,
+          'SCHEMA',
+          mockCreateRedisearchIndexDto.fields[0].name,
+          mockCreateRedisearchIndexDto.fields[0].type,
+          mockCreateRedisearchIndexDto.fields[1].name,
+          mockCreateRedisearchIndexDto.fields[1].type,
+        ],
+        { replyEncoding: 'utf8' },
+      );
+    });
+    it('should create index for standalone v8', async () => {
+      when(standaloneClient.sendCommand)
+        .calledWith(expect.arrayContaining(['FT.INFO']))
+        .mockRejectedValue(mockRedisUnknownIndexNameV8);
       when(standaloneClient.sendCommand)
         .calledWith(expect.arrayContaining(['FT.CREATE']))
         .mockResolvedValue('OK');

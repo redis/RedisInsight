@@ -104,7 +104,13 @@ export class RedisearchService {
           );
         }
       } catch (error) {
-        if (!error.message?.toLowerCase()?.includes('unknown index name')) {
+        const noIndexMessages = ['unknown index name', 'no such index'];
+
+        if (
+          !noIndexMessages.some((keyword) =>
+            error.message?.toLowerCase().includes(keyword),
+          )
+        ) {
           throw error;
         }
       }
