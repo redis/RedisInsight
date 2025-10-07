@@ -65,7 +65,6 @@
 
       &:hover,
       &.focused {
-        background: var(--browserComponentActive);
         .suggestionRemoveBtn {
           visibility: visible;
           pointer-events: auto;
@@ -131,9 +130,5 @@
       border: 1px solid var(--separatorColor);
       background-color: var(--euiColorLightestShade);
     }
-  }
-
-  .anchorSubmitBtn {
-    height: 100%;
   }
 }

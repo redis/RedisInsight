@@ -42,6 +42,19 @@ const StyledAutoSuggestions = styled.div<React.HTMLAttributes<HTMLDivElement>>`
   border-color: ${({ theme }: { theme: Theme }) =>
     theme.components.select.states.disabled.borderColor};
 `
+const StyledSuggestion = styled.li<React.HTMLAttributes<HTMLLIElement>>`
+  &:hover {
+    background: ${({ theme }: { theme: Theme }) =>
+      theme.components.select.dropdown.option.states.highlighted.bgColor};
+  }
+`
+
+const StyledClearHistory = styled.li<React.HTMLAttributes<HTMLDivElement>>`
+  &:hover {
+    background: ${({ theme }: { theme: Theme }) =>
+      theme.components.select.dropdown.option.states.highlighted.bgColor};
+  }
+`
 
 interface MultiSearchSuggestion {
   options: null | Array<{
@@ -237,7 +250,7 @@ const MultiSearch = (props: Props) => {
                 {suggestionOptions?.map(
                   ({ id, option, value }, index) =>
                     value && (
-                      <li
+                      <StyledSuggestion
                         key={id}
                         className={cx(styles.suggestion, {
                           [styles.focused]: focusedItem === index,
@@ -270,11 +283,11 @@ const MultiSearch = (props: Props) => {
                           }}
                           data-testid={`remove-suggestion-item-${id}`}
                         />
-                      </li>
+                      </StyledSuggestion>
                     ),
                 )}
               </ul>
-              <div
+              <StyledClearHistory
                 role="presentation"
                 className={styles.clearHistory}
                 onClick={() =>
@@ -286,7 +299,7 @@ const MultiSearch = (props: Props) => {
               >
                 <RiIcon type="EraserIcon" style={{ marginRight: 6 }} />
                 <span>Clear history</span>
-              </div>
+              </StyledClearHistory>
             </StyledAutoSuggestions>
           )}
           {(value || !!options.length) && (
