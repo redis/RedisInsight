@@ -6,8 +6,6 @@ $breakpoint-xl: 1650px;
 $marginIcon: 12px;
 
 .container {
-  display: flex;
-  align-items: center;
   height: 45px;
   padding: 0 20px;
   cursor: pointer;
@@ -19,29 +17,11 @@ $marginIcon: 12px;
     }
   }
 
-  :global(.euiFlexGroup--gutterLarge > .euiFlexItem) {
-    margin: $marginIcon calc($marginIcon/2) !important;
-
-    @media (min-width: $breakpoint-m) {
-      margin: $marginIcon !important;
-    }
-  }
-
   &.notExpanded {
     cursor: default;
   }
 }
 
-.isOpen {
-  &.container {
-    color: var(--euiColorPrimary);
-    background-color: var(--tableRowSelectedColor) !important;
-  }
-
-  .title {
-    color: var(--euiColorFullShade) !important;
-  }
-}
 
 .title {
   display: inline-block;
@@ -118,7 +98,6 @@ $marginIcon: 12px;
 .executionTime {
   min-width: 13px;
   width: 13px;
-  display: flex;
 
   @media (min-width: $breakpoint-m) {
     min-width: 92px;
@@ -171,21 +150,6 @@ $marginIcon: 12px;
 
 .controls {
   flex-shrink: 0;
-}
-
-.iconDropdownOption {
-  width: auto;
-  height: 16px;
-}
-
-.iconExecutingTime {
-  width: 13px !important;
-  height: 13px !important;
-  margin-right: 6px;
-
-  path {
-    fill: var(--iconsDefaultColor);
-  }
 }
 
 .dropdownOptionSeparator:after {
@@ -254,13 +218,13 @@ $marginIcon: 12px;
   z-index: 2;
 }
 
-.container :global(.euiFlexItem).viewTypeIcon {
+.container :global(.RI-flex-item).viewTypeIcon {
   width: 54px;
   min-width: 54px;
   margin: 0 calc($marginIcon/3) !important;
 }
 
-.container :global(.euiFlexItem).playIcon {
+.container :global(.RI-flex-item).playIcon {
   margin-right: calc($marginIcon/3) !important;
 }
 
