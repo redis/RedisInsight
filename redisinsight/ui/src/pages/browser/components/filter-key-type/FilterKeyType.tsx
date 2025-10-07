@@ -41,7 +41,6 @@ export interface Props {
 
 const FilterKeyTypeSelect = styled(RiSelect)`
   height: 100%;
-  border-radius: 0;
 `
 
 const FilterKeyType = ({ modules }: Props) => {
