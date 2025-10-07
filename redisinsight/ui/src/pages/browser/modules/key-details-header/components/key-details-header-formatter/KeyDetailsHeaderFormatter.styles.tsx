@@ -62,7 +62,6 @@ const Container = styled.div<{
 
   &:hover {
     transform: translateY(-1px);
-    background-color: var(--tableRowSelectedColor);
   }
 
   &:active {
