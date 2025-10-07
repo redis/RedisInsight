@@ -73,17 +73,17 @@ const PageHeader = (props: Props) => {
             <FlexItem grow>
               <InsightsTrigger source="home page" />
             </FlexItem>
-            <FeatureFlagComponent
+            {/* <FeatureFlagComponent
               name={[FeatureFlags.cloudSso, FeatureFlags.cloudAds]}
+            > */}
+            <FlexItem
+              grow
+              style={{ marginLeft: 16 }}
+              data-testid="o-auth-user-profile"
             >
-              <FlexItem
-                grow
-                style={{ marginLeft: 16 }}
-                data-testid="o-auth-user-profile"
-              >
-                <OAuthUserProfile source={OAuthSocialSource.UserProfile} />
-              </FlexItem>
-            </FeatureFlagComponent>
+              <OAuthUserProfile source={OAuthSocialSource.UserProfile} />
+            </FlexItem>
+            {/* </FeatureFlagComponent> */}
           </Row>
         ) : (
           <div className={styles.pageHeaderLogo}>

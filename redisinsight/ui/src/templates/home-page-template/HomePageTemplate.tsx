@@ -42,17 +42,17 @@ const HomePageTemplate = (props: Props) => {
           <FlexItem grow>
             <InsightsTrigger source="home page" />
           </FlexItem>
-          <FeatureFlagComponent
+          {/* <FeatureFlagComponent
             name={[FeatureFlags.cloudSso, FeatureFlags.cloudAds]}
+          > */}
+          <FlexItem
+            grow
+            style={{ marginLeft: 16 }}
+            data-testid="home-page-sso-profile"
           >
-            <FlexItem
-              grow
-              style={{ marginLeft: 16 }}
-              data-testid="home-page-sso-profile"
-            >
-              <OAuthUserProfile source={OAuthSocialSource.UserProfile} />
-            </FlexItem>
-          </FeatureFlagComponent>
+            <OAuthUserProfile source={OAuthSocialSource.UserProfile} />
+          </FlexItem>
+          {/* </FeatureFlagComponent> */}
         </Flex>
       </div>
       <div className={styles.pageWrapper}>

@@ -108,6 +108,7 @@ export enum OAuthStrategy {
   Google = 'google',
   GitHub = 'github',
   SSO = 'sso',
+  Microsoft = 'microsoft',
 }
 
 export enum CloudSsoUtmCampaign {

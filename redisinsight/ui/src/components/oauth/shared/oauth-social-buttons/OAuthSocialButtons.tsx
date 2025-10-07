@@ -25,6 +25,14 @@ const OAuthSocialButtons = (props: Props) => {
 
   const socialLinks = [
     {
+      text: 'Microsoft',
+      className: styles.microsoftButton,
+      // reusing the sso icon for microsoft for testing
+      icon: 'SsoIcon',
+      label: 'microsoft-oauth',
+      strategy: OAuthStrategy.Microsoft,
+    },
+    {
       text: 'Google',
       className: styles.googleButton,
       icon: 'GoogleSigninIcon',
@@ -71,7 +79,11 @@ const OAuthSocialButtons = (props: Props) => {
             data-testid={label}
             aria-labelledby={label}
           >
-            <FlexGroup direction={inline ? 'row' : 'column'} align="center" justify="center">
+            <FlexGroup
+              direction={inline ? 'row' : 'column'}
+              align="center"
+              justify="center"
+            >
               <RiIcon type={icon as AllIconsType} />
               <Text className={styles.label}>{text}</Text>
             </FlexGroup>

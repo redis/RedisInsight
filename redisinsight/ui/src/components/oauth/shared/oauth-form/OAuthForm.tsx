@@ -39,6 +39,7 @@ const OAuthForm = ({ children, action, onClick, ...rest }: Props) => {
     onClick?.(authStrategy)
 
     switch (authStrategy) {
+      case OAuthStrategy.Microsoft:
       case OAuthStrategy.Google:
       case OAuthStrategy.GitHub:
         initOAuthProcess(authStrategy, action)

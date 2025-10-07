@@ -38,7 +38,7 @@ const OAuthUserProfile = (props: Props) => {
   if (!data) {
     if (server?.packageType === PackageType.Mas) return null
 
-    if (initialLoading) {
+    if (initialLoading && false) {
       return (
         <div className={styles.loadingContainer}>
           <Loader
