@@ -142,7 +142,7 @@ const KeyDetailsHeaderTTL = ({ onEditTTL }: Props) => {
         )}
         <Text
           size="s"
-          className={cx(styles.subtitleText, styles.subtitleTextTTL, {
+          className={cx(styles.subtitleTextTTL, {
             [styles.hidden]: ttlIsEditing || ttlIsHovering,
           })}
           data-testid="key-ttl-text"
