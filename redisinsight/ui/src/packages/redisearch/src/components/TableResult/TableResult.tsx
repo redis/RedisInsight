@@ -2,14 +2,22 @@ import React, { useEffect, useState } from 'react'
 import parse from 'html-react-parser'
 import cx from 'classnames'
 import { flatten, isArray, isEmpty, map, uniq } from 'lodash'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import styled from 'styled-components'
 
-import { ColorText } from '../../../../../components/base/text/ColorText'
-import { IconButton } from '../../../../../components/base/forms/buttons'
-import { CopyIcon } from '../../../../../components/base/icons'
-import { RiTooltip } from '../../../../../components/base/tooltip/RITooltip'
-import { CommandArgument, Command } from '../../constants'
-import { formatLongName, replaceSpaces } from '../../utils'
+import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { ColorText } from 'uiSrc/components/base/text/ColorText'
+import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { CopyIcon } from 'uiSrc/components/base/icons'
+import { RiTooltip } from 'uiSrc/components/base/tooltip/RITooltip'
+import {
+  CommandArgument,
+  Command,
+} from 'uiSrc/packages/redisearch/src/constants'
+import {
+  formatLongName,
+  replaceSpaces,
+} from 'uiSrc/packages/redisearch/src/utils'
+import MultilineEllipsisText from 'uiSrc/components/base/text/MultilineEllipsisText'
 
 export interface Props {
   query: string
@@ -17,6 +25,11 @@ export interface Props {
   matched?: number
   cursorId?: null | number
 }
+
+const EllipsisText = styled(ColorText)`
+  overflow: hidden;
+  text-overflow: ellipsis;
+`
 
 const noResultsMessage = 'No results found.'
 
@@ -76,16 +89,19 @@ const TableResult = React.memo((props: Props) => {
               data-testid={`query-column-${title}`}
             >
               <RiTooltip
-                position="bottom"
+                position="left"
                 title={title}
-                className="text-multiline-ellipsis"
                 anchorClassName={cx('tooltip')}
-                content={formatLongName(value.toString())}
+                content={
+                  <MultilineEllipsisText lineCount={7} paddingBlock="s">
+                    {formatLongName(value.toString())}
+                  </MultilineEllipsisText>
+                }
               >
                 <div className="copy-btn-wrapper">
-                  <ColorText className={cx('cell', 'test')}>
+                  <EllipsisText className={cx('cell', 'test')}>
                     {cellContent}
-                  </ColorText>
+                  </EllipsisText>
                   <IconButton
                     icon={CopyIcon}
                     aria-label="Copy result"
