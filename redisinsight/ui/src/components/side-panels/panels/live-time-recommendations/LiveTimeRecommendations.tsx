@@ -39,9 +39,11 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import Recommendation from './components/recommendation'
 import WelcomeScreen from './components/welcome-screen'
 import PopoverRunAnalyze from './components/popover-run-analyze'
-import styles from './styles.module.scss'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout'
+import { Link } from 'uiSrc/components/base/link/Link'
+
+import styles from './styles.module.scss'
 
 const FooterLink = styled.button<{
   onClick?: () => void
@@ -154,14 +156,13 @@ const LiveTimeRecommendations = () => {
   }
 
   const renderHeader = () => (
-    <div className={styles.actions}>
-      <Row align="center" gap="s">
-        <ColorText variant="semiBold" className={styles.boldText}>
-          Our Tips
-        </ColorText>
+    <Row align="center" justify="between" className={styles.actions}>
+      <Row align="center" gap="m">
+        <ColorText variant="semiBold">Our Tips</ColorText>
         <RiTooltip
           position="bottom"
           className={styles.tooltip}
+          anchorClassName={styles.tooltipAnchor}
           content={
             <Text size="s">
               Tips will help you improve your database.
@@ -180,12 +181,14 @@ const LiveTimeRecommendations = () => {
           <RiIcon
             className={styles.infoIcon}
             type="InfoIcon"
-            size="s"
+            size="m"
             data-testid="recommendations-info-icon"
           />
         </RiTooltip>
         <FeatureFlagComponent name={FeatureFlags.envDependent}>
-          <a
+          <Link
+            variant="inline"
+            size="M"
             href={EXTERNAL_LINKS.githubRepo}
             target="_blank"
             data-testid="github-repo-btn"
@@ -197,7 +200,7 @@ const LiveTimeRecommendations = () => {
               size="m"
               data-testid="github-repo-icon"
             />
-          </a>
+          </Link>
         </FeatureFlagComponent>
       </Row>
 
@@ -213,7 +216,7 @@ const LiveTimeRecommendations = () => {
           aria-label="checkbox show hidden"
         />
       )}
-    </div>
+    </Row>
   )
 
   return (

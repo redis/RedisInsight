@@ -36,8 +36,6 @@ $animation-duration: 300ms;
 
 .body {
   height: calc(100% - 60px);
-  display: flex;
-  flex-direction: column;
 }
 
 .trigger {
@@ -112,10 +110,8 @@ $animation-duration: 300ms;
 }
 
 .tabs {
-  display: flex;
   flex-shrink: 0 !important;
   overflow: initial !important;
-  align-items: center;
   flex-grow: 0;
 
   & > div {

@@ -2,7 +2,6 @@ import React, { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { Header } from 'uiSrc/components/side-panels/components'
-import styles from 'uiSrc/components/side-panels/styles.module.scss'
 import { InsightsPanelTabs } from 'uiSrc/slices/interfaces/insights'
 import EnablementAreaWrapper from 'uiSrc/components/side-panels/panels/enablement-area'
 import LiveTimeRecommendations from 'uiSrc/components/side-panels/panels/live-time-recommendations'
@@ -19,6 +18,8 @@ import {
   TELEMETRY_EMPTY_VALUE,
   TelemetryEvent,
 } from 'uiSrc/telemetry'
+import { Col } from 'uiSrc/components/base/layout/flex'
+import styles from 'uiSrc/components/side-panels/styles.module.scss'
 
 export interface Props {
   isFullScreen: boolean
@@ -93,7 +94,7 @@ const InsightsPanel = (props: Props) => {
           <span className={styles.title}>Insights</span>
         </div>
       </Header>
-      <div className={styles.body}>
+      <Col className={styles.body}>
         <Tabs
           tabs={tabs}
           value={tabSelected}
@@ -105,7 +106,7 @@ const InsightsPanel = (props: Props) => {
         {tabSelected === InsightsPanelTabs.Recommendations && (
           <LiveTimeRecommendations />
         )}
-      </div>
+      </Col>
     </>
   )
 }
