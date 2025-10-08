@@ -43,7 +43,7 @@ export default {
       </FeatureFlagComponent>
     </>
   ),
-  REMOVE_LAST_ELEMENT: (_fieldType: string) => (
+  REMOVE_LAST_ELEMENT: () => (
     <Row align="center">
       <RiIcon size="s" type="ToastDangerIcon" style={{ marginRight: '1rem' }} />
       <Text size="s">Removing the last item deletes the entire key.</Text>
