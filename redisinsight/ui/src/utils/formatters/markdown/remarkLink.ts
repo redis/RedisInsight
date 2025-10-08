@@ -23,7 +23,7 @@ export const remarkLink = (): ((tree: Node) => void) => (tree: any) => {
       const [text] = node.children || []
       const url = node.url.replace('redisinsight:', '')
       node.type = 'html'
-      node.value = `<RedisInsightLink url="${url}" text="${text?.value || 'Redis Cloud'}" />`
+      node.value = `<RedisInsightLink url="${url}" text="${text?.value || 'Redis Cloud'}" size="S" />`
     }
   })
 }

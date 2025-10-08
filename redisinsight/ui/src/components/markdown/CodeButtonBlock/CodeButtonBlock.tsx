@@ -157,7 +157,7 @@ const CodeButtonBlock = (props: Props) => {
 
   return (
     <div className={styles.wrapper}>
-      <Row>
+      <Row align="center">
         <FlexItem grow>
           {!!label && (
             <Title
