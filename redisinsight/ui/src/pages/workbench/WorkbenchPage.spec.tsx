@@ -315,7 +315,6 @@ describe('Raw mode', () => {
     render(<WorkbenchPage />)
 
     const btn = screen.getByTestId(/btn-change-mode/)
-
     expect(btn).not.toBeDisabled()
 
     await userEvent.click(btn)
