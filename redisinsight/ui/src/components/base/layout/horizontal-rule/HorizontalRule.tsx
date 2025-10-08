@@ -10,6 +10,8 @@ const HorizontalRule = ({
   className,
   size = 'full',
   margin = 'l',
+  color,
+  colorVariable,
   ...rest
 }: HorizontalRuleProps) => {
   const classes = classNames('RI-horizontal-rule', className)
@@ -19,6 +21,8 @@ const HorizontalRule = ({
       size={size}
       margin={margin}
       className={classes}
+      color={color}
+      colorVariable={colorVariable}
       {...rest}
     />
   )

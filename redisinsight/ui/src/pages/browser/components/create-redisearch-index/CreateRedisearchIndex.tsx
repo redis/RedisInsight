@@ -32,10 +32,9 @@ import { RiPopover } from 'uiSrc/components/base'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { CreateRedisearchIndexDto } from 'apiSrc/modules/browser/redisearch/dto'
 import { Panel } from 'uiSrc/components/panel'
+import { HorizontalRule, Spacer } from 'uiSrc/components/base/layout'
 
 import { KEY_TYPE_OPTIONS, RedisearchIndexKeyType } from './constants'
-import Divider from 'uiSrc/components/divider/Divider'
-import styles from 'uiSrc/pages/browser/components/add-key/styles.module.scss'
 
 export interface Props {
   onClosePanel?: () => void
@@ -220,6 +219,7 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
   return (
     <>
       <StyledContent gap="xl">
+        <Spacer size="xs" />
         <Row gap="m" grow={false}>
           <FlexItem grow>
             <FormField label="Index Name">
@@ -268,7 +268,7 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
             />
           </FlexItem>
         </Row>
-        <Divider colorVariable="separatorColor" className={styles.divider} />
+        <HorizontalRule margin="s" colorVariable="separatorColor" />
         <Col grow={false} gap="s">
           <Row align="center" gap="xs">
             <Text>Identifier</Text>
@@ -317,7 +317,7 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
           </AddMultipleFields>
         </Col>
       </StyledContent>
-      <Divider colorVariable="separatorColor" className={styles.divider} />{' '}
+      <HorizontalRule margin="xs" colorVariable="separatorColor" />
       <StyledFooter justify="end" gap="m">
         <FlexItem>
           <SecondaryButton

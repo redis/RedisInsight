@@ -47,12 +47,16 @@ const horizontalRuleStyles = {
 export interface HorizontalRuleProps extends HTMLAttributes<HTMLHRElement> {
   size?: HorizontalRuleSize
   margin?: HorizontalRuleMargin
+  color?: string
+  colorVariable?: string
 }
 
 export const StyledHorizontalRule = styled.hr<
   Omit<HorizontalRuleProps, 'size' | 'margin'> & {
     size?: HorizontalRuleSize
     margin?: HorizontalRuleMargin
+    color?: string
+    colorVariable?: string
   }
 >`
   ${({ size = 'full' }) => horizontalRuleStyles.size[size]}
@@ -65,6 +69,9 @@ export const StyledHorizontalRule = styled.hr<
   flex-shrink: 0;
   flex-grow: 0;
 
-  background-color: var(--hrBackgroundColor);
+  background-color: ${({ color, colorVariable }) =>
+    color || colorVariable
+      ? (color ?? `var(--${colorVariable})`)
+      : 'var(--hrBackgroundColor)'};
   height: 1px;
 `
