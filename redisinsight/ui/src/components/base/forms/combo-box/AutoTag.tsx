@@ -6,15 +6,16 @@ import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import { CommonProps, Theme } from 'uiSrc/components/base/theme/types'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { truncateText } from 'uiSrc/utils'
 
 const StyledWrapper = styled(Row)`
   position: relative;
   border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral600};
   border-radius: 0.4rem;
   padding: ${({ theme }: { theme: Theme }) =>
-  `${theme.core.space.space000} ${theme.core.space.space050}`};
+    `${theme.core.space.space000} ${theme.core.space.space050}`};
   background-color: ${({ theme }) =>
-  theme.semantic.color.background.neutral100};
+    theme.semantic.color.background.neutral100};
 `
 
 const StyledInput = styled(Input)`
@@ -147,7 +148,6 @@ export const AutoTag = ({
     }
   }
 
-
   function getPlaceholder() {
     return selectedOptions?.length && selectedOptions.length > 0
       ? undefined
@@ -188,7 +188,7 @@ export const AutoTag = ({
                 data-test-subj="autoTagChip"
                 size={size}
                 key={key}
-                text={text}
+                text={truncateText(text, 20)}
                 title={text}
                 onClose={() => {
                   // remove option from selection
