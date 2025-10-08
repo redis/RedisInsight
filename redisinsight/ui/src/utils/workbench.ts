@@ -30,15 +30,16 @@ const getWBQueryType = (
 }
 
 const getExecuteParams = (
-  params: CodeButtonParams = {},
+  params: CodeButtonParams & Partial<ExecuteQueryParams> = {},
   state: ExecuteQueryParams,
 ): ExecuteQueryParams => {
   const {
     batchSize: batchSizeState,
     resultsMode: resultsModeState,
     activeRunQueryMode: activeRunQueryModeState,
+    executionType: activeExecutionTypeState,
   } = state
-  const { results, mode, pipeline } = params
+  const { results, mode, pipeline, executionType: executionTypeParam } = params
 
   const batchSize =
     pipeline && isInteger(+pipeline) && +pipeline >= 0
@@ -52,8 +53,9 @@ const getExecuteParams = (
     mode && mode in CodeButtonRunQueryMode
       ? CodeButtonRunQueryMode[mode]
       : activeRunQueryModeState
+  const executionType = executionTypeParam ?? activeExecutionTypeState
 
-  return { batchSize, resultsMode, activeRunQueryMode }
+  return { batchSize, resultsMode, activeRunQueryMode, executionType }
 }
 
 export const parseParams = (params?: string): Maybe<CodeButtonParams> => {

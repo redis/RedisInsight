@@ -85,4 +85,5 @@ export interface ExecuteQueryParams {
   batchSize: number
   activeRunQueryMode: RunQueryMode
   resultsMode: ResultsMode
+  executionType?: CommandExecutionType
 }

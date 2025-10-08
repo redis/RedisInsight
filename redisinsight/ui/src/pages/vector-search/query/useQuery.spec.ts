@@ -5,166 +5,53 @@ import {
   initialStateDefault,
   mockStore,
   renderHook,
-  waitFor,
 } from 'uiSrc/utils/test-utils'
 
-import * as utils from './utils'
-import * as storage from 'uiSrc/services/workbenchStorage'
-import * as sharedUtils from 'uiSrc/utils'
-import { CommandExecutionType } from 'uiSrc/slices/interfaces'
-
 import { useQuery } from './useQuery'
+import {
+  sendWbQueryAction,
+  deleteWBCommandAction,
+  clearWbResultsAction,
+  fetchWBCommandAction,
+  toggleOpenWBResult,
+} from 'uiSrc/slices/workbench/wb-results'
+import {
+  CommandExecutionType,
+  ResultsMode,
+  RunQueryMode,
+} from 'uiSrc/slices/interfaces'
 
 // Helper types for strong typing of renderHook result
 type UseQueryReturn = ReturnType<typeof useQuery>
 type UseQueryHookResult = RenderHookResult<UseQueryReturn, unknown>
 
-// Mocks for utils inside this folder
-jest.mock('./utils', () => ({
-  loadHistoryData: jest.fn(),
-  sortCommandsByDate: jest.fn((items) => items),
-  prepareNewItems: jest.fn(),
-  executeApiCall: jest.fn(),
-  generateCommandId: jest.fn(() => 'cmd-123'),
-  createErrorResult: jest.fn((msg: string) => ({ error: msg })),
-  scrollToElement: jest.fn(),
-  limitHistoryLength: jest.fn((items) => items),
-  createGroupItem: jest.fn((count: number, id: string) => ({
-    id,
-    result: `group-${count}`,
-    loading: false,
-    isOpen: false,
-    error: '',
-  })),
+// Mock the Redux actions
+jest.mock('uiSrc/slices/workbench/wb-results', () => ({
+  ...jest.requireActual('uiSrc/slices/workbench/wb-results'),
+  fetchWBHistoryAction: jest.fn(() => ({ type: 'FETCH_WB_HISTORY' })),
+  sendWbQueryAction: jest.fn(() => ({ type: 'SEND_WB_QUERY' })),
+  deleteWBCommandAction: jest.fn(() => ({ type: 'DELETE_WB_COMMAND' })),
+  clearWbResultsAction: jest.fn(() => ({ type: 'CLEAR_WB_RESULTS' })),
+  fetchWBCommandAction: jest.fn(() => ({ type: 'FETCH_WB_COMMAND' })),
+  toggleOpenWBResult: jest.fn(() => ({ type: 'TOGGLE_OPEN_WB_RESULT' })),
 }))
-
-// Mocks for workbench storage
-jest.mock('uiSrc/services/workbenchStorage', () => ({
-  addCommands: jest.fn(async () => {}),
-  clearCommands: jest.fn(async () => {}),
-  findCommand: jest.fn(async () => null),
-  removeCommand: jest.fn(async () => {}),
-}))
-
-// Mocks for shared utils used by the hook
-jest.mock('uiSrc/utils', () => ({
-  ...jest.requireActual('uiSrc/utils'),
-  getCommandsForExecution: jest.fn(),
-  getExecuteParams: jest.fn((_, current) => ({ ...current })),
-  isGroupResults: jest.fn(() => false),
-  isSilentMode: jest.fn(() => false),
-}))
-
-const mockedUtils = jest.mocked(utils)
-const mockedStorage = jest.mocked(storage)
-const mockedSharedUtils = jest.mocked(sharedUtils)
 
 describe('useQuery hook', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
-  it('loads history on mount (success - returns data)', async () => {
-    const historyItems = [
-      { id: 'h1', loading: false, error: '', isOpen: false },
-    ] as any
-    mockedUtils.loadHistoryData.mockResolvedValueOnce(historyItems)
-
-    const { result } = renderHook(() =>
-      useQuery(),
-    ) as unknown as UseQueryHookResult
-
-    await waitFor(() => expect(result.current.isResultsLoaded).toBe(true))
-    expect(result.current.items).toEqual(historyItems)
-    expect(mockedUtils.loadHistoryData).toHaveBeenCalledWith('instanceId')
-  })
-
-  it('loads history on mount (error - returns empty array)', async () => {
-    mockedUtils.loadHistoryData.mockRejectedValueOnce(new Error('error'))
-
-    const { result } = renderHook(() =>
-      useQuery(),
-    ) as unknown as UseQueryHookResult
-
-    await waitFor(() => expect(result.current.isResultsLoaded).toBe(true))
-    expect(result.current.items).toEqual([])
-  })
-
-  it('onSubmit success path updates items and scrolls', async () => {
-    // Initial history empty
-    mockedUtils.loadHistoryData.mockResolvedValueOnce([])
-
-    // Prepare new UI items for the command to execute
-    mockedSharedUtils.getCommandsForExecution.mockReturnValueOnce(['PING'])
-    mockedUtils.prepareNewItems.mockImplementationOnce(
-      (cmds: string[], id: string) =>
-        cmds.map((_, i) => ({
-          id: `${id}${i}`,
-          loading: true,
-          isOpen: false,
-          error: '',
-        })),
-    )
-
-    // API returns data matching ids
-    const apiData = [{ id: 'cmd-1230', result: 'PONG' }] as any
-    mockedUtils.executeApiCall.mockResolvedValueOnce(apiData)
-
-    const { result } = renderHook(() =>
-      useQuery(),
-    ) as unknown as UseQueryHookResult
-
-    await waitFor(() => expect(result.current.isResultsLoaded).toBe(true))
-
-    await act(async () => {
-      await result.current.onSubmit('PING')
-    })
-
-    // Items updated with API data: loading false, no error, opened
-    expect(result.current.items[0]).toMatchObject({
-      id: 'cmd-1230',
-      result: 'PONG',
-      loading: false,
-      error: '',
-      isOpen: true,
-    })
-
-    // Scroll called for a new command
-    expect(mockedUtils.scrollToElement).toHaveBeenCalled()
-    // processing returns to false at the end
-    expect(result.current.processing).toBe(false)
-  })
-
-  it('onSubmit success path updates items, calls addCommands (when envDependent flag false) and scrolls', async () => {
-    // Initial history empty
-    mockedUtils.loadHistoryData.mockResolvedValueOnce([])
-
-    // Prepare new UI items for the command to execute
-    mockedSharedUtils.getCommandsForExecution.mockReturnValueOnce(['PING'])
-    mockedUtils.prepareNewItems.mockImplementationOnce(
-      (cmds: string[], id: string) =>
-        cmds.map((_, i) => ({
-          id: `${id}${i}`,
-          loading: true,
-          isOpen: false,
-          error: '',
-        })),
-    )
-
-    // API returns data matching ids
-    const apiData = [{ id: 'cmd-1230', result: 'PONG' }] as any
-    mockedUtils.executeApiCall.mockResolvedValueOnce(apiData)
-
-    // Mock store with envDependent flag false, so addCommands is called
+  it('should return initial state with empty items', () => {
     const customStore = mockStore(
       merge({}, initialStateDefault, {
-        app: {
-          features: {
-            featureFlags: {
-              features: {
-                envDependent: { flag: false },
-              },
-            },
+        workbench: {
+          results: {
+            items: [],
+            clearing: false,
+            processing: false,
+            loading: false,
+            error: '',
+            isLoaded: false,
           },
         },
       }),
@@ -174,179 +61,308 @@ describe('useQuery hook', () => {
       store: customStore,
     }) as unknown as UseQueryHookResult
 
-    await waitFor(() => expect(result.current.isResultsLoaded).toBe(true))
-
-    await act(async () => {
-      await result.current.onSubmit('PING')
-    })
-
-    // Items updated with API data: loading false, no error, opened
-    expect(result.current.items[0]).toMatchObject({
-      id: 'cmd-1230',
-      result: 'PONG',
-      loading: false,
-      error: '',
-      isOpen: true,
-    })
-
-    // addCommands called with reverse(data)
-    expect(mockedStorage.addCommands).toHaveBeenCalledWith(
-      [...apiData].reverse(),
-    )
-    // Scroll called for a new command
-    expect(mockedUtils.scrollToElement).toHaveBeenCalled()
-    // processing returns to false at the end
-    expect(result.current.processing).toBe(false)
-  })
-
-  it('onSubmit handles API error and sets error result', async () => {
-    mockedUtils.loadHistoryData.mockResolvedValueOnce([])
-    mockedSharedUtils.getCommandsForExecution.mockReturnValueOnce(['PING'])
-    mockedUtils.prepareNewItems.mockImplementationOnce(
-      (cmds: string[], id: string) =>
-        cmds.map((_, i) => ({
-          id: `${id}${i}`,
-          loading: true,
-          isOpen: false,
-          error: '',
-        })),
-    )
-    mockedUtils.executeApiCall.mockRejectedValueOnce(new Error('api failed'))
-
-    const { result } = renderHook(() =>
-      useQuery(),
-    ) as unknown as UseQueryHookResult
-    await waitFor(() => expect(result.current.isResultsLoaded).toBe(true))
-
-    await act(async () => {
-      await result.current.onSubmit('PING')
-    })
-
-    // error should be set on the loading item
-    expect(result.current.items[0]).toMatchObject({
-      loading: false,
-      isOpen: true,
-      error: 'api failed',
-      result: { error: 'api failed' },
-    })
-    expect(result.current.processing).toBe(false)
-  })
-
-  it('onQueryDelete removes an item and calls removeCommand', async () => {
-    // preload history with one item
-    mockedUtils.loadHistoryData.mockResolvedValueOnce([
-      { id: 'to-delete', loading: false, isOpen: false, error: '' },
-    ])
-    const { result } = renderHook(() =>
-      useQuery(),
-    ) as unknown as UseQueryHookResult
-    await waitFor(() => expect(result.current.isResultsLoaded).toBe(true))
-
-    await act(async () => {
-      await result.current.onQueryDelete('to-delete')
-    })
-
-    expect(mockedStorage.removeCommand).toHaveBeenCalledWith(
-      'instanceId',
-      'to-delete',
-    )
     expect(result.current.items).toEqual([])
+    expect(result.current.clearing).toBe(false)
+    expect(result.current.processing).toBe(false)
+    expect(result.current.isResultsLoaded).toBe(false)
   })
 
-  it('onAllQueriesDelete clears all items and toggles clearing flag', async () => {
-    mockedUtils.loadHistoryData.mockResolvedValueOnce([
-      { id: 'a', loading: false, isOpen: false, error: '' },
-      { id: 'b', loading: false, isOpen: false, error: '' },
-      { id: 'c', loading: false, isOpen: false, error: '' },
-    ])
-    const { result } = renderHook(() =>
-      useQuery(),
-    ) as unknown as UseQueryHookResult
-    await waitFor(() => expect(result.current.isResultsLoaded).toBe(true))
+  it('should return items from Redux store', () => {
+    const mockItems = [
+      { id: 'item-1', command: 'FT.SEARCH idx *', result: { data: 'result1' } },
+      { id: 'item-2', command: 'FT.INFO idx', result: { data: 'result2' } },
+    ]
+
+    const customStore = mockStore(
+      merge({}, initialStateDefault, {
+        workbench: {
+          results: {
+            items: mockItems,
+            clearing: false,
+            processing: false,
+            loading: false,
+            error: '',
+            isLoaded: true,
+          },
+        },
+      }),
+    )
+
+    const { result } = renderHook(() => useQuery(), {
+      store: customStore,
+    }) as unknown as UseQueryHookResult
+
+    expect(result.current.items).toEqual(mockItems)
+    expect(result.current.items).toHaveLength(2)
+    expect(result.current.isResultsLoaded).toBe(true)
+  })
+
+  it('should dispatch fetchWBHistoryAction on mount', () => {
+    const customStore = mockStore(initialStateDefault)
+
+    renderHook(() => useQuery(), {
+      store: customStore,
+    })
+
+    const actions = customStore.getActions()
+    expect(actions).toContainEqual(
+      expect.objectContaining({
+        type: 'FETCH_WB_HISTORY',
+      }),
+    )
+  })
+
+  it('should dispatch sendWbQueryAction when onSubmit is called with a command', async () => {
+    const customStore = mockStore(initialStateDefault)
+
+    const { result } = renderHook(() => useQuery(), {
+      store: customStore,
+    }) as unknown as UseQueryHookResult
+
+    await act(async () => {
+      result.current.setQuery('FT.SEARCH idx *')
+      await result.current.onSubmit('FT.SEARCH idx *')
+    })
+
+    expect(sendWbQueryAction).toHaveBeenCalledWith(
+      'FT.SEARCH idx *',
+      undefined,
+      expect.objectContaining({
+        executionType: CommandExecutionType.Search,
+      }),
+      expect.objectContaining({
+        afterAll: expect.any(Function),
+      }),
+    )
+  })
+
+  it('should not dispatch sendWbQueryAction when onSubmit is called with empty command', async () => {
+    const customStore = mockStore(initialStateDefault)
+
+    const { result } = renderHook(() => useQuery(), {
+      store: customStore,
+    }) as unknown as UseQueryHookResult
+
+    const initialActionsCount = customStore.getActions().length
+
+    await act(async () => {
+      await result.current.onSubmit('')
+    })
+
+    const actions = customStore.getActions()
+    expect(actions).toHaveLength(initialActionsCount)
+    expect(sendWbQueryAction).not.toHaveBeenCalled()
+  })
+
+  it('should dispatch deleteWBCommandAction when onQueryDelete is called', async () => {
+    const customStore = mockStore(initialStateDefault)
+
+    const { result } = renderHook(() => useQuery(), {
+      store: customStore,
+    }) as unknown as UseQueryHookResult
+
+    await act(async () => {
+      await result.current.onQueryDelete('cmd-123')
+    })
+
+    expect(deleteWBCommandAction).toHaveBeenCalledWith('cmd-123')
+  })
+
+  it('should dispatch clearWbResultsAction when onAllQueriesDelete is called', async () => {
+    const customStore = mockStore(initialStateDefault)
+
+    const { result } = renderHook(() => useQuery(), {
+      store: customStore,
+    }) as unknown as UseQueryHookResult
 
     await act(async () => {
       await result.current.onAllQueriesDelete()
     })
 
-    // clearing should have been toggled to true at least once during the call
-    expect(result.current.clearing).toBe(false)
-    expect(mockedStorage.clearCommands).toHaveBeenCalledWith(
-      'instanceId',
+    expect(clearWbResultsAction).toHaveBeenCalledWith(
       CommandExecutionType.Search,
     )
-    expect(result.current.items).toEqual([])
-    expect(result.current.clearing).toBe(false)
   })
 
-  describe('onQueryOpen', () => {
-    it('toggles item open and merges command details when found', async () => {
-      mockedUtils.loadHistoryData.mockResolvedValueOnce([
-        { id: 'item-1', loading: false, isOpen: false, error: '' },
-      ])
-      mockedStorage.findCommand.mockResolvedValueOnce({
-        result: 'data',
-        error: '',
-      })
+  it('should dispatch toggleOpenWBResult when onQueryOpen is called for item with result', async () => {
+    const mockItems = [
+      { id: 'item-1', command: 'FT.SEARCH', result: { data: 'some data' } },
+    ]
 
-      const { result } = renderHook(() =>
-        useQuery(),
-      ) as unknown as UseQueryHookResult
-      await waitFor(() => expect(result.current.isResultsLoaded).toBe(true))
+    const customStore = mockStore(
+      merge({}, initialStateDefault, {
+        workbench: {
+          results: {
+            items: mockItems,
+            clearing: false,
+            processing: false,
+            loading: false,
+            error: '',
+            isLoaded: true,
+          },
+        },
+      }),
+    )
 
-      await act(async () => {
-        await result.current.onQueryOpen('item-1')
-      })
+    const { result } = renderHook(() => useQuery(), {
+      store: customStore,
+    }) as unknown as UseQueryHookResult
 
-      expect(mockedStorage.findCommand).toHaveBeenCalledWith('item-1')
-      expect(result.current.items[0]).toMatchObject({
-        id: 'item-1',
-        loading: false,
-        isOpen: true,
-        result: 'data',
+    await act(async () => {
+      await result.current.onQueryOpen('item-1')
+    })
+
+    expect(toggleOpenWBResult).toHaveBeenCalledWith('item-1')
+  })
+
+  it('should dispatch fetchWBCommandAction when onQueryOpen is called for item without result', async () => {
+    const mockItems = [{ id: 'item-1', command: 'FT.SEARCH', result: null }]
+
+    const customStore = mockStore(
+      merge({}, initialStateDefault, {
+        workbench: {
+          results: {
+            items: mockItems,
+            clearing: false,
+            processing: false,
+            loading: false,
+            error: '',
+            isLoaded: true,
+          },
+        },
+      }),
+    )
+
+    const { result } = renderHook(() => useQuery(), {
+      store: customStore,
+    }) as unknown as UseQueryHookResult
+
+    await act(async () => {
+      await result.current.onQueryOpen('item-1')
+    })
+
+    expect(fetchWBCommandAction).toHaveBeenCalledWith('item-1')
+  })
+
+  it('should reflect processing state from Redux store', () => {
+    const customStore = mockStore(
+      merge({}, initialStateDefault, {
+        workbench: {
+          results: {
+            items: [],
+            clearing: false,
+            processing: true,
+            loading: false,
+            error: '',
+            isLoaded: true,
+          },
+        },
+      }),
+    )
+
+    const { result } = renderHook(() => useQuery(), {
+      store: customStore,
+    }) as unknown as UseQueryHookResult
+
+    expect(result.current.processing).toBe(true)
+  })
+
+  it('should reflect clearing state from Redux store', () => {
+    const customStore = mockStore(
+      merge({}, initialStateDefault, {
+        workbench: {
+          results: {
+            items: [],
+            clearing: true,
+            processing: false,
+            loading: false,
+            error: '',
+            isLoaded: true,
+          },
+        },
+      }),
+    )
+
+    const { result } = renderHook(() => useQuery(), {
+      store: customStore,
+    }) as unknown as UseQueryHookResult
+
+    expect(result.current.clearing).toBe(true)
+  })
+
+  it('should return correct configuration values', () => {
+    const customStore = mockStore(initialStateDefault)
+
+    const { result } = renderHook(() => useQuery(), {
+      store: customStore,
+    }) as unknown as UseQueryHookResult
+
+    expect(result.current.activeMode).toBe(RunQueryMode.ASCII)
+    expect(result.current.resultsMode).toBe(ResultsMode.Default)
+    expect(result.current.scrollDivRef).toBeDefined()
+    expect(result.current.scrollDivRef.current).toBeNull()
+  })
+
+  it('should allow query state to be updated', () => {
+    const customStore = mockStore(initialStateDefault)
+
+    const { result } = renderHook(() => useQuery(), {
+      store: customStore,
+    }) as unknown as UseQueryHookResult
+
+    expect(result.current.query).toBe('')
+
+    act(() => {
+      result.current.setQuery('FT.SEARCH idx *')
+    })
+
+    expect(result.current.query).toBe('FT.SEARCH idx *')
+  })
+
+  it('should call onSubmit with current query when onQueryReRun is called', async () => {
+    const customStore = mockStore(initialStateDefault)
+
+    const { result } = renderHook(() => useQuery(), {
+      store: customStore,
+    }) as unknown as UseQueryHookResult
+
+    act(() => {
+      result.current.setQuery('FT.SEARCH idx *')
+    })
+
+    await act(async () => {
+      await result.current.onQueryReRun('FT.SEARCH idx *')
+    })
+
+    expect(sendWbQueryAction).toHaveBeenCalledWith(
+      'FT.SEARCH idx *',
+      undefined,
+      expect.objectContaining({
+        executionType: CommandExecutionType.Search,
+      }),
+      expect.any(Object),
+    )
+  })
+
+  it('should handle scrollDivRef correctly', () => {
+    const customStore = mockStore(initialStateDefault)
+
+    const { result } = renderHook(() => useQuery(), {
+      store: customStore,
+    }) as unknown as UseQueryHookResult
+
+    expect(result.current.scrollDivRef).toBeDefined()
+    expect(result.current.scrollDivRef.current).toBeNull()
+
+    // Simulate attaching a div element
+    const mockDiv = document.createElement('div')
+    act(() => {
+      Object.defineProperty(result.current.scrollDivRef, 'current', {
+        value: mockDiv,
+        writable: true,
       })
     })
 
-    it('sets loading false without changes if command not found', async () => {
-      mockedUtils.loadHistoryData.mockResolvedValueOnce([
-        { id: 'item-2', loading: false, isOpen: false, error: '' },
-      ])
-      mockedStorage.findCommand.mockResolvedValueOnce(null)
-
-      const { result } = renderHook(() =>
-        useQuery(),
-      ) as unknown as UseQueryHookResult
-      await waitFor(() => expect(result.current.isResultsLoaded).toBe(true))
-
-      await act(async () => {
-        await result.current.onQueryOpen('item-2')
-      })
-
-      expect(result.current.items[0]).toMatchObject({
-        id: 'item-2',
-        loading: false,
-      })
-    })
-
-    it('sets error when loading command details fails', async () => {
-      mockedUtils.loadHistoryData.mockResolvedValueOnce([
-        { id: 'item-3', loading: false, isOpen: false, error: '' },
-      ])
-      mockedStorage.findCommand.mockRejectedValueOnce(new Error('load failed'))
-
-      const { result } = renderHook(() =>
-        useQuery(),
-      ) as unknown as UseQueryHookResult
-      await waitFor(() => expect(result.current.isResultsLoaded).toBe(true))
-
-      await act(async () => {
-        await result.current.onQueryOpen('item-3')
-      })
-
-      expect(result.current.items[0]).toMatchObject({
-        id: 'item-3',
-        loading: false,
-        error: 'Failed to load command details',
-      })
-    })
+    expect(result.current.scrollDivRef.current).toBe(mockDiv)
   })
 })

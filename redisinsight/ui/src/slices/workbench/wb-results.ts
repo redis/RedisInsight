@@ -14,6 +14,7 @@ import {
   RunQueryMode,
   ResultsMode,
   CommandExecutionType,
+  ExecuteQueryParams,
 } from 'uiSrc/slices/interfaces/workbench'
 import {
   getApiErrorMessage,
@@ -319,7 +320,7 @@ export function fetchWBHistoryAction(
         // Fetch commands from local storage
         const commandsHistory = await getLocalWbHistory(
           instanceId,
-          CommandExecutionType.Workbench,
+          executionType,
         )
         if (Array.isArray(commandsHistory)) {
           dispatch(loadWBHistorySuccess(reverse(commandsHistory)))
@@ -628,7 +629,7 @@ export function clearWbResultsAction(
 export function sendWbQueryAction(
   queryInit: string,
   commandId?: Nullable<string>,
-  executeParams: CodeButtonParams = {},
+  executeParams: CodeButtonParams & Partial<ExecuteQueryParams> = {},
   onSuccessAction?: {
     afterEach?: () => void
     afterAll?: () => void
@@ -644,29 +645,32 @@ export function sendWbQueryAction(
     } = state.workbench.results || {}
     const { batchSize: batchSizeInitial = PIPELINE_COUNT_DEFAULT } =
       state.user.settings?.config || {}
-    const currentExecuteParams = {
+    const currentExecuteParams: ExecuteQueryParams = {
       resultsMode: resultsModeInitial,
       activeRunQueryMode: activeRunQueryModeInitial,
       batchSize: batchSizeInitial,
+      executionType:
+        executeParams.executionType || CommandExecutionType.Workbench,
     }
 
     const sendCommand = (
       commands: string[],
       multiCommands: string[] = [],
-      executeParams: any,
+      executeParams: ExecuteQueryParams,
       onSuccess: () => void,
     ) => {
-      const { activeRunQueryMode, resultsMode } = executeParams
+      const { activeRunQueryMode, resultsMode, executionType } = executeParams
       const { connectionType, host, port } =
         state.connections.instances?.connectedInstance
 
       if (connectionType !== ConnectionType.Cluster) {
         dispatch(
           sendWBCommandAction({
-            resultsMode,
             commands,
-            multiCommands,
             mode: activeRunQueryMode,
+            resultsMode,
+            multiCommands,
+            executionType,
             onSuccessAction: onSuccess,
             onFailAction: onFail,
           }),
@@ -690,6 +694,7 @@ export function sendWbQueryAction(
           mode: activeRunQueryMode,
           resultsMode,
           multiCommands,
+          executionType,
           onSuccessAction: onSuccess,
           onFailAction: onFail,
         }),
@@ -699,7 +704,7 @@ export function sendWbQueryAction(
     const prepareQueryToSend = (
       commandInit: string,
       commandId?: Nullable<string>,
-      executeParams: CodeButtonParams = {},
+      executeParams: CodeButtonParams & Partial<ExecuteQueryParams> = {},
     ) => {
       if (!commandInit?.length) {
         if (queryInit?.length) {
@@ -708,10 +713,8 @@ export function sendWbQueryAction(
         return
       }
 
-      const { batchSize, activeRunQueryMode, resultsMode } = getExecuteParams(
-        executeParams,
-        currentExecuteParams,
-      )
+      const { batchSize, activeRunQueryMode, resultsMode, executionType } =
+        getExecuteParams(executeParams, currentExecuteParams)
       const commandsForExecuting = getCommandsForExecution(commandInit)
       const chunkSize = isGroupResults(resultsMode)
         ? commandsForExecuting.length
@@ -729,7 +732,12 @@ export function sendWbQueryAction(
       sendCommand(
         commands,
         multiCommands,
-        { activeRunQueryMode, resultsMode },
+        {
+          activeRunQueryMode,
+          resultsMode,
+          batchSize,
+          executionType: executionType || CommandExecutionType.Workbench,
+        },
         () => {
           prepareQueryToSend(multiCommands.join('\n'), commandId, executeParams)
           onSuccessAction?.afterEach?.()
