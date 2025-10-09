@@ -55,9 +55,9 @@ const OAuthSsoHandlerDialog = ({ children }: Props) => {
   ) => {
     const isCloudSsoEnabled = !!feature?.flag
 
-    if (!isCloudSsoEnabled) {
-      return
-    }
+    // if (!isCloudSsoEnabled) {
+    //   return
+    // }
     e?.preventDefault()
 
     if (action === OAuthSocialAction.Import && data) {

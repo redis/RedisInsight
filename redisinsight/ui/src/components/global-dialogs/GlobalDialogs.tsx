@@ -9,11 +9,11 @@ import { FeatureFlags } from 'uiSrc/constants'
 
 const GlobalDialogs = () => (
   <>
-    <FeatureFlagComponent name={FeatureFlags.cloudSso}>
-      <OAuthSelectAccountDialog />
-      <OAuthSelectPlan />
-      <OAuthSsoDialog />
-    </FeatureFlagComponent>
+    {/* <FeatureFlagComponent name={FeatureFlags.cloudSso}> */}
+    <OAuthSelectAccountDialog />
+    <OAuthSelectPlan />
+    <OAuthSsoDialog />
+    {/* </FeatureFlagComponent> */}
   </>
 )
 
