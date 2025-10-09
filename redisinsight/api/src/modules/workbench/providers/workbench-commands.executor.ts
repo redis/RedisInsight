@@ -79,6 +79,7 @@ export class WorkbenchCommandsExecutor {
       this.analyticsService.sendCommandExecutedEvents(
         client.clientMetadata.sessionMetadata,
         client.clientMetadata.databaseId,
+        dto.type,
         result,
         { command, rawMode: mode === RunQueryMode.Raw },
       );
@@ -102,6 +103,7 @@ export class WorkbenchCommandsExecutor {
       this.analyticsService.sendCommandExecutedEvent(
         client.clientMetadata.sessionMetadata,
         client.clientMetadata.databaseId,
+        dto.type,
         { ...errorResult, error },
         { command, rawMode: dto.mode === RunQueryMode.Raw },
       );

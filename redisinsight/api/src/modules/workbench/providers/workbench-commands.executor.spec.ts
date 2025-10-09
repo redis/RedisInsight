@@ -26,7 +26,10 @@ import {
   FormatterTypes,
 } from 'src/common/transformers';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
-import { RunQueryMode } from 'src/modules/workbench/models/command-execution';
+import {
+  CommandExecutionType,
+  RunQueryMode,
+} from 'src/modules/workbench/models/command-execution';
 import { WorkbenchAnalytics } from 'src/modules/workbench/workbench.analytics';
 
 const MOCK_ERROR_MESSAGE = 'Some error';
@@ -85,6 +88,7 @@ describe('WorkbenchCommandsExecutor', () => {
         const result = await service.sendCommand(client, {
           command: 'ft.info idx',
           mode: RunQueryMode.Raw,
+          type: CommandExecutionType.Workbench,
         });
 
         expect(result).toEqual([
@@ -99,6 +103,7 @@ describe('WorkbenchCommandsExecutor', () => {
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
           mockWorkbenchClientMetadata.databaseId,
+          CommandExecutionType.Workbench,
           [
             {
               response: mockRedisFtInfoReply,
@@ -122,6 +127,7 @@ describe('WorkbenchCommandsExecutor', () => {
         const result = await service.sendCommand(client, {
           command: mockCreateCommandExecutionDto.command,
           mode: RunQueryMode.ASCII,
+          type: CommandExecutionType.Workbench,
         });
 
         expect(result).toEqual([
@@ -136,6 +142,7 @@ describe('WorkbenchCommandsExecutor', () => {
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
           mockWorkbenchClientMetadata.databaseId,
+          CommandExecutionType.Workbench,
           [
             {
               response: mockCommandExecutionResult.response,
@@ -156,6 +163,7 @@ describe('WorkbenchCommandsExecutor', () => {
         const result = await service.sendCommand(client, {
           command: mockCreateCommandExecutionDto.command,
           mode: RunQueryMode.ASCII,
+          type: CommandExecutionType.Workbench,
         });
 
         expect(result).toEqual([
@@ -170,6 +178,7 @@ describe('WorkbenchCommandsExecutor', () => {
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
           mockWorkbenchClientMetadata.databaseId,
+          CommandExecutionType.Workbench,
           {
             response: MOCK_ERROR_MESSAGE,
             error: new CommandNotSupportedError(MOCK_ERROR_MESSAGE),
@@ -192,6 +201,7 @@ describe('WorkbenchCommandsExecutor', () => {
         const result = await service.sendCommand(client, {
           command: mockCreateCommandExecutionDto.command,
           mode: RunQueryMode.ASCII,
+          type: CommandExecutionType.Workbench,
         });
 
         expect(result).toEqual([
@@ -206,6 +216,7 @@ describe('WorkbenchCommandsExecutor', () => {
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
           mockWorkbenchClientMetadata.databaseId,
+          CommandExecutionType.Workbench,
           {
             response: MOCK_ERROR_MESSAGE,
             error: replyError,
@@ -227,6 +238,7 @@ describe('WorkbenchCommandsExecutor', () => {
         const result = await service.sendCommand(client, {
           command: mockCreateCommandExecutionDto.command,
           mode: RunQueryMode.ASCII,
+          type: CommandExecutionType.Workbench,
         });
 
         expect(result).toEqual([
@@ -242,6 +254,7 @@ describe('WorkbenchCommandsExecutor', () => {
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
           mockWorkbenchClientMetadata.databaseId,
+          CommandExecutionType.Workbench,
           [
             {
               response: mockCommandExecutionResult.response,
@@ -264,6 +277,7 @@ describe('WorkbenchCommandsExecutor', () => {
         const result = await service.sendCommand(client, {
           command: mockCreateCommandExecutionDto.command,
           mode: RunQueryMode.Raw,
+          type: CommandExecutionType.Workbench,
         });
 
         expect(result).toEqual([
@@ -279,6 +293,7 @@ describe('WorkbenchCommandsExecutor', () => {
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
           mockWorkbenchClientMetadata.databaseId,
+          CommandExecutionType.Workbench,
           [
             {
               response: mockCommandExecutionResult.response,
@@ -299,6 +314,7 @@ describe('WorkbenchCommandsExecutor', () => {
         const result = await service.sendCommand(client, {
           command: mockCreateCommandExecutionDto.command,
           mode: RunQueryMode.ASCII,
+          type: CommandExecutionType.Workbench,
         });
 
         expect(result).toEqual([
@@ -313,6 +329,7 @@ describe('WorkbenchCommandsExecutor', () => {
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
           mockWorkbenchClientMetadata.databaseId,
+          CommandExecutionType.Workbench,
           {
             response: MOCK_ERROR_MESSAGE,
             error: new ServiceUnavailableException(MOCK_ERROR_MESSAGE),
@@ -337,6 +354,7 @@ describe('WorkbenchCommandsExecutor', () => {
         const result = await service.sendCommand(client, {
           command: mockGetEscapedKeyCommand,
           mode: RunQueryMode.ASCII,
+          type: CommandExecutionType.Workbench,
         });
 
         expect(result).toEqual(mockResult);
@@ -345,6 +363,7 @@ describe('WorkbenchCommandsExecutor', () => {
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
           mockWorkbenchClientMetadata.databaseId,
+          CommandExecutionType.Workbench,
           {
             response: ERROR_MESSAGES.CLI_UNTERMINATED_QUOTES(),
             error: new CommandParsingError(

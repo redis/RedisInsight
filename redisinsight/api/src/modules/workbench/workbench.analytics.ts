@@ -6,6 +6,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CommandsService } from 'src/modules/commands/commands.service';
 import { CommandTelemetryBaseService } from 'src/modules/analytics/command.telemetry.base.service';
 import { SessionMetadata } from 'src/common/models';
+import { CommandExecutionType } from './models/command-execution';
 
 export interface IExecResult {
   response: any;
@@ -48,6 +49,7 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
   public async sendCommandExecutedEvents(
     sessionMetadata: SessionMetadata,
     databaseId: string,
+    commandExecutionType: CommandExecutionType,
     results: IExecResult[],
     additionalData: object = {},
   ): Promise<void> {
@@ -57,6 +59,7 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
           this.sendCommandExecutedEvent(
             sessionMetadata,
             databaseId,
+            commandExecutionType,
             result,
             additionalData,
           ),
@@ -70,15 +73,19 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
   public async sendCommandExecutedEvent(
     sessionMetadata: SessionMetadata,
     databaseId: string,
+    commandExecutionType: CommandExecutionType,
     result: IExecResult,
     additionalData: object = {},
   ): Promise<void> {
     const { status } = result;
+
     try {
       if (status === CommandExecutionStatus.Success) {
         this.sendEvent(
           sessionMetadata,
-          TelemetryEvents.WorkbenchCommandExecuted,
+          commandExecutionType === CommandExecutionType.Search
+            ? TelemetryEvents.SearchCommandExecuted
+            : TelemetryEvents.WorkbenchCommandExecuted,
           {
             databaseId,
             ...(await this.getCommandAdditionalInfo(additionalData['command'])),
