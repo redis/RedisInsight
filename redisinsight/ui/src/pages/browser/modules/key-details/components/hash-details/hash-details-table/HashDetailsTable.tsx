@@ -529,7 +529,7 @@ const HashDetailsTable = (props: Props) => {
               handleDeleteItem={handleDeleteField}
               handleButtonClick={handleRemoveIconClick}
               appendInfo={
-                length === 1 ? HelpTexts.REMOVE_LAST_ELEMENT : null
+                length === 1 ? HelpTexts.REMOVE_LAST_ELEMENT() : null
               }
             />
           </StopPropagation>
