@@ -393,6 +393,33 @@ describe('WorkbenchAnalytics', () => {
         },
       );
     });
+    it('should emit SearchCommandError event', async () => {
+      await service.sendCommandExecutedEvent(
+        mockSessionMetadata,
+        instanceId,
+        CommandExecutionType.Search,
+        {
+          response: 'Error',
+          error: redisReplyError,
+          status: CommandExecutionStatus.Fail,
+        },
+        { command: 'set', data: 'Some data' },
+      );
+
+      expect(sendEventMethod).toHaveBeenCalledWith(
+        mockSessionMetadata,
+        TelemetryEvents.SearchCommandErrorReceived,
+        {
+          databaseId: instanceId,
+          error: ReplyError.name,
+          command: 'set',
+          commandType: CommandType.Core,
+          moduleName: 'n/a',
+          capability: 'string',
+          data: 'Some data',
+        },
+      );
+    });
   });
   describe('sendCommandDeletedEvent', () => {
     it('should emit WorkbenchCommandDeleted event', () => {

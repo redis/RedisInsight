@@ -61,6 +61,7 @@ export enum TelemetryEvents {
 
   // Events for search tool
   SearchCommandExecuted = 'SEARCH_COMMAND_EXECUTED',
+  SearchCommandErrorReceived = 'SEARCH_COMMAND_ERROR_RECEIVED',
 
   // Custom tutorials
   WorkbenchEnablementAreaImportSucceeded = 'WORKBENCH_ENABLEMENT_AREA_IMPORT_SUCCEEDED',
