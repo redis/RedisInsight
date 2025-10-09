@@ -88,6 +88,7 @@ export class WorkbenchCommandsExecutor {
         this.analyticsService.sendIndexInfoEvent(
           client.clientMetadata.sessionMetadata,
           client.clientMetadata.databaseId,
+          dto.type,
           getAnalyticsDataFromIndexInfo(response as string[]),
         );
       }

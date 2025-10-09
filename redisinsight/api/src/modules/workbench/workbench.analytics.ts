@@ -26,6 +26,7 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
   sendIndexInfoEvent(
     sessionMetadata: SessionMetadata,
     databaseId: string,
+    commandExecutionType: CommandExecutionType,
     additionalData: object,
   ): void {
     if (!additionalData) {
@@ -33,14 +34,15 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
     }
 
     try {
-      this.sendEvent(
-        sessionMetadata,
-        TelemetryEvents.WorkbenchIndexInfoSubmitted,
-        {
-          databaseId,
-          ...additionalData,
-        },
-      );
+      const event =
+        commandExecutionType === CommandExecutionType.Search
+          ? TelemetryEvents.SearchIndexInfoSubmitted
+          : TelemetryEvents.WorkbenchIndexInfoSubmitted;
+
+      this.sendEvent(sessionMetadata, event, {
+        databaseId,
+        ...additionalData,
+      });
     } catch (e) {
       // ignore error
     }
@@ -80,17 +82,16 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
     const { status } = result;
     try {
       if (status === CommandExecutionStatus.Success) {
-        this.sendEvent(
-          sessionMetadata,
+        const event =
           commandExecutionType === CommandExecutionType.Search
             ? TelemetryEvents.SearchCommandExecuted
-            : TelemetryEvents.WorkbenchCommandExecuted,
-          {
-            databaseId,
-            ...(await this.getCommandAdditionalInfo(additionalData['command'])),
-            ...additionalData,
-          },
-        );
+            : TelemetryEvents.WorkbenchCommandExecuted;
+
+        this.sendEvent(sessionMetadata, event, {
+          databaseId,
+          ...(await this.getCommandAdditionalInfo(additionalData['command'])),
+          ...additionalData,
+        });
       }
       if (status === CommandExecutionStatus.Fail) {
         this.sendCommandErrorEvent(

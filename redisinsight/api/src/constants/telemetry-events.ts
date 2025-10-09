@@ -61,6 +61,7 @@ export enum TelemetryEvents {
 
   // Events for search tool
   SearchCommandExecuted = 'SEARCH_COMMAND_EXECUTED',
+  SearchIndexInfoSubmitted = 'SEARCH_INDEX_INFO_SUBMITTED',
   SearchCommandErrorReceived = 'SEARCH_COMMAND_ERROR_RECEIVED',
 
   // Custom tutorials

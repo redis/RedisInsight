@@ -118,6 +118,7 @@ describe('WorkbenchCommandsExecutor', () => {
         expect(mockAnalyticsService.sendIndexInfoEvent).toHaveBeenCalledWith(
           mockSessionMetadata,
           mockWorkbenchClientMetadata.databaseId,
+          CommandExecutionType.Workbench,
           mockFtInfoAnalyticsData,
         );
       });

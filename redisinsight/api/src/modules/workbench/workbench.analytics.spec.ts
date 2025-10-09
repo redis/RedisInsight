@@ -82,10 +82,15 @@ describe('WorkbenchAnalytics', () => {
   });
 
   describe('sendIndexInfoEvent', () => {
-    it('should emit index info event', async () => {
-      service.sendIndexInfoEvent(mockSessionMetadata, instanceId, {
-        any: 'fields',
-      });
+    it('should emit index info event for Workbench commands', async () => {
+      service.sendIndexInfoEvent(
+        mockSessionMetadata,
+        instanceId,
+        CommandExecutionType.Workbench,
+        {
+          any: 'fields',
+        },
+      );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
@@ -96,8 +101,32 @@ describe('WorkbenchAnalytics', () => {
         },
       );
     });
+    it('should emit index info event for Search commands', async () => {
+      service.sendIndexInfoEvent(
+        mockSessionMetadata,
+        instanceId,
+        CommandExecutionType.Search,
+        {
+          any: 'fields',
+        },
+      );
+
+      expect(sendEventMethod).toHaveBeenCalledWith(
+        mockSessionMetadata,
+        TelemetryEvents.SearchIndexInfoSubmitted,
+        {
+          databaseId: instanceId,
+          any: 'fields',
+        },
+      );
+    });
     it('should not fail and should not emit when no data to send', async () => {
-      service.sendIndexInfoEvent(mockSessionMetadata, instanceId, null);
+      service.sendIndexInfoEvent(
+        mockSessionMetadata,
+        instanceId,
+        CommandExecutionType.Workbench,
+        null,
+      );
 
       expect(sendEventMethod).not.toHaveBeenCalled();
     });
