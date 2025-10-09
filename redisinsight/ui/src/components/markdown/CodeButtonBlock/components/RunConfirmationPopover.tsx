@@ -7,6 +7,7 @@ import { setDBConfigStorageField } from 'uiSrc/services'
 import { ConfigDBStorageItem } from 'uiSrc/constants/storage'
 import { FeatureFlagComponent } from 'uiSrc/components'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import {
   PrimaryButton,
   SecondaryButton,
@@ -67,7 +68,7 @@ const RunConfirmationPopover = ({ onApply }: Props) => {
         aria-label="checkbox do not show agan"
       />
       <div className={styles.popoverFooter}>
-        <div>
+        <Row gap="m" justify="end">
           <FeatureFlagComponent name={FeatureFlags.envDependent}>
             <SecondaryButton
               size="s"
@@ -86,7 +87,7 @@ const RunConfirmationPopover = ({ onApply }: Props) => {
           >
             Run
           </PrimaryButton>
-        </div>
+        </Row>
       </div>
     </>
   )

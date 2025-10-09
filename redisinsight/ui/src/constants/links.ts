@@ -21,6 +21,13 @@ export const EXTERNAL_LINKS = {
   rdiPipelineTransforms:
     'https://redis.io/docs/latest/integrate/redis-data-integration/ingest/data-pipelines/transform-examples/',
   pubSub: 'https://redis.io/docs/latest/commands/psubscribe/',
+  legalPrivacyPolicy: 'https://redis.io/legal/privacy-policy/',
+  redisEnterpriseCloud: 'https://redis.io/redis-enterprise-cloud/overview/',
+  redisQueryEngine: 'https://redis.io/docs/latest/develop/ai/search-and-query/',
+  redisForAI: 'https://redis.io/redis-for-ai/',
+  vectorDatabaseGettingStarted:
+    'https://redis.io/docs/latest/develop/get-started/vector-database/',
+  redisSandbox: 'https://redis.io/try/sandbox/',
 }
 
 export const UTM_CAMPAINGS: Record<any, string> = {
@@ -40,4 +47,6 @@ export const UTM_MEDIUMS = {
   Main: 'main',
   Rdi: 'rdi',
   Recommendation: 'recommendation',
+  Settings: 'settings',
+  VectorSearchOnboarding: 'vss_onboarding',
 }

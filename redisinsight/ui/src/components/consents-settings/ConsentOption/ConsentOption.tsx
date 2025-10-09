@@ -10,8 +10,6 @@ import { SwitchInput } from 'uiSrc/components/base/inputs'
 import { ItemDescription } from './components'
 import { IConsent } from '../ConsentsSettings'
 
-import styles from '../styles.module.scss'
-
 interface Props {
   consent: IConsent
   onChangeAgreement: (checked: boolean, name: string) => void
@@ -33,19 +31,19 @@ const ConsentOption = (props: Props) => {
     <FlexItem key={consent.agreementName} grow>
       {isSettingsPage && consent.description && (
         <>
-          <Text
-            size="s"
-            className={styles.smallText}
-            color="subdued"
-            style={{ marginTop: '12px' }}
-          >
-            <ItemDescription description={consent.description} withLink={consent.linkToPrivacyPolicy} />
+          <Spacer size="s" />
+          <Text size="M" color="primary">
+            <ItemDescription
+              description={consent.description}
+              withLink={consent.linkToPrivacyPolicy}
+            />
           </Text>
           <Spacer size="m" />
         </>
       )}
       <Row gap="m">
         <FlexItem>
+          <Spacer size="xxs" />
           <SwitchInput
             checked={checked}
             onCheckedChange={(checked) =>
@@ -56,16 +54,17 @@ const ConsentOption = (props: Props) => {
           />
         </FlexItem>
         <FlexItem>
-          <Text className={styles.smallText}>{parse(consent.label)}</Text>
+          <Text size="M">{parse(consent.label)}</Text>
           {!isSettingsPage && consent.description && (
-            <Text
-              size="s"
-              className={styles.smallText}
-              color="subdued"
-              style={{ marginTop: '12px' }}
-            >
-              <ItemDescription description={consent.description} withLink={consent.linkToPrivacyPolicy} />
-            </Text>
+            <>
+              <Spacer size="s" />
+              <Text size="M" color="primary">
+                <ItemDescription
+                  description={consent.description}
+                  withLink={consent.linkToPrivacyPolicy}
+                />
+              </Text>
+            </>
           )}
         </FlexItem>
       </Row>

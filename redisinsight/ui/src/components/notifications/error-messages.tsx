@@ -9,7 +9,12 @@ import CloudCapiUnAuthorizedErrorContent from './components/cloud-capi-unauthori
 
 // TODO: use i18n file for texts
 export default {
-  DEFAULT: (text: any, onClose = () => {}, title: string = 'Error') =>
+  DEFAULT: (
+    text: any,
+    onClose = () => {},
+    title: string = 'Error',
+    toastId?: string,
+  ) =>
     riToast(
       {
         'data-testid': 'toast-error',
@@ -24,9 +29,9 @@ export default {
           },
         },
       },
-      { variant: riToast.Variant.Danger },
+      { variant: riToast.Variant.Danger, toastId },
     ),
-  ENCRYPTION: (onClose = () => {}, instanceId = '') =>
+  ENCRYPTION: (onClose = () => {}, instanceId = '', toastId?: string) =>
     riToast(
       {
         'data-testid': 'toast-error-encryption',
@@ -37,7 +42,7 @@ export default {
         ),
         showCloseButton: false,
       },
-      { variant: riToast.Variant.Danger },
+      { variant: riToast.Variant.Danger, toastId },
     ),
   CLOUD_CAPI_KEY_UNAUTHORIZED: (
     {
@@ -49,6 +54,7 @@ export default {
     },
     additionalInfo: Record<string, any>,
     onClose: () => void,
+    toastId?: string,
   ) =>
     riToast(
       {
@@ -64,11 +70,12 @@ export default {
           />
         ),
       },
-      { variant: riToast.Variant.Danger },
+      { variant: riToast.Variant.Danger, toastId },
     ),
   RDI_DEPLOY_PIPELINE: (
     { title, message }: { title?: string; message: string },
     onClose: () => void,
+    toastId?: string,
   ) =>
     riToast(
       {
@@ -80,6 +87,6 @@ export default {
           <RdiDeployErrorContent message={message} onClose={onClose} />
         ),
       },
-      { variant: riToast.Variant.Danger },
+      { variant: riToast.Variant.Danger, toastId },
     ),
 }

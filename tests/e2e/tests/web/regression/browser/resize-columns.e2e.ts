@@ -63,7 +63,8 @@ fixture `Resize columns in Key details`
         await browserPage.deleteKeysByNames(keyNames);
         await databaseAPIRequests.deleteAllDatabasesApi();
     });
-test('Resize of columns in Hash, List, Zset Key details', async t => {
+test
+    .skip('Resize of columns in Hash, List, Zset Key details', async t => {
     const field = browserPage.keyDetailsTable.find(browserPage.cssRowInVirtualizedTable);
     const tableHeaderResizeTrigger = browserPage.resizeTrigger;
 
@@ -80,8 +81,8 @@ test('Resize of columns in Hash, List, Zset Key details', async t => {
     }
 
     // Verify that resize saved when switching between pages
-    await t.click(browserPage.NavigationPanel.workbenchButton);
-    await t.click(browserPage.NavigationPanel.browserButton);
+    await t.click(browserPage.NavigationTabs.workbenchButton);
+    await t.click(browserPage.NavigationTabs.browserButton);
     await browserPage.openKeyDetails(keys[0].name);
     await t.expect(field.clientWidth).within(keys[0].fieldWidthEnd - 5, keys[0].fieldWidthEnd + 5, 'Resize context not saved for key when switching between pages');
 

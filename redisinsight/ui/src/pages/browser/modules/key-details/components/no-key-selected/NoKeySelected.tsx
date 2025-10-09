@@ -59,7 +59,7 @@ export const NoKeySelected = (props: Props) => {
       </RiTooltip>
 
       <div className={styles.placeholder}>
-        <Text textAlign="center" color="subdued" size="s">
+        <Text textAlign="center">
           {error ? (
             <span data-testid="no-keys-selected-text">{error}</span>
           ) : (

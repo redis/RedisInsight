@@ -32,6 +32,7 @@ import {
   appFeatureOnboardingSelector,
 } from 'uiSrc/slices/app/features'
 import { OnboardingSteps } from 'uiSrc/constants/onboarding'
+import { Spacer } from 'uiSrc/components/base/layout'
 import { FormValues } from '../UploadTutorialForm/UploadTutorialForm'
 
 import Group from '../Group'
@@ -148,7 +149,7 @@ const Navigation = (props: Props) => {
     } = item
 
     const paddingsStyle = {
-      paddingLeft: `${padding + level * 14}px`,
+      paddingLeft: `${padding + level * 0}px`, // Note: Using the accordion component, we don't need to manually increase padding for nested items anymore
       paddingRight: `${padding}px`,
     }
     const currentSourcePath =
@@ -185,6 +186,7 @@ const Navigation = (props: Props) => {
                     <WelcomeMyTutorials
                       handleOpenUpload={() => setIsCreateOpen(true)}
                     />
+                    <Spacer />
                     <div className={styles.uploadWarningContainer}>
                       <UploadWarning />
                     </div>

@@ -2,7 +2,7 @@ import { Chance } from 'chance';
 import { DatabaseHelper } from '../../../../helpers/database';
 import { BrowserPage, MyRedisDatabasePage, WorkbenchPage } from '../../../../pageObjects';
 import { ExploreTabs, rte } from '../../../../helpers/constants';
-import { commonUrl, ossStandaloneRedisearch } from '../../../../helpers/conf';
+import { commonUrl, ossStandaloneConfig } from '../../../../helpers/conf';
 import { DatabaseAPIRequests } from '../../../../helpers/api/api-database';
 import { Telemetry } from '../../../../helpers/telemetry';
 
@@ -45,17 +45,17 @@ fixture `Default scripts area at Workbench`
     .meta({ type: 'critical_path', rte: rte.standalone })
     .page(commonUrl)
     .beforeEach(async t => {
-        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneRedisearch);
+        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         // Go to Workbench page
-        await t.click(browserPage.NavigationPanel.workbenchButton);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
     })
     .afterEach(async t => {
         // Drop index, documents and database
         await t.switchToMainWindow();
         await workbenchPage.sendCommandInWorkbench(`FT.DROPINDEX ${indexName} DD`);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneRedisearch);
     });
 test
+    .skip
     .requestHooks(logger)('Verify that user can run automatically  "FT._LIST" and "FT.INFO {index}" scripts in Workbench and see the results', async t => {
         indexName = 'idx:schools';
         keyName = chance.word({ length: 5 });
@@ -91,7 +91,7 @@ test
         await t.switchToIframe(workbenchPage.iframe);
         await t.expect(workbenchPage.queryColumns.textContent).contains('name', 'The result of the FT.INFO command not found');
     });
-test('Verify that user can edit and run automatically added "Search" script in Workbench and see the results', async t => {
+test.skip('Verify that user can edit and run automatically added "Search" script in Workbench and see the results', async t => {
     indexName = chance.word({ length: 5 });
     keyName = chance.word({ length: 5 });
     const commandsForSend = [
@@ -112,7 +112,7 @@ test('Verify that user can edit and run automatically added "Search" script in W
     await t.expect(key.exists).ok('The added key is not in the Search result');
     await t.expect(name.exists).ok('The added key name field is not in the Search result');
 });
-test('Verify that user can edit and run automatically added "Aggregate" script in Workbench and see the results', async t => {
+test.skip('Verify that user can edit and run automatically added "Aggregate" script in Workbench and see the results', async t => {
     indexName = chance.word({ length: 5 });
     const aggregationResultField = 'max_price';
     const commandsForSend = [

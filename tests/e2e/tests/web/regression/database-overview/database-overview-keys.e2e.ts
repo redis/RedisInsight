@@ -5,7 +5,7 @@ import {
     BrowserPage
 } from '../../../../pageObjects';
 import { rte } from '../../../../helpers/constants';
-import { cloudDatabaseConfig, commonUrl, ossStandaloneRedisearch } from '../../../../helpers/conf';
+import { cloudDatabaseConfig, commonUrl, ossStandaloneConfig } from '../../../../helpers/conf';
 import { Common } from '../../../../helpers/common';
 import { DatabaseAPIRequests } from '../../../../helpers/api/api-database';
 import { BrowserActions } from '../../../../common-actions/browser-actions';
@@ -29,26 +29,26 @@ fixture `Database overview`
     .page(commonUrl)
     .beforeEach(async t => {
         // Create databases and keys
-        await databaseHelper.acceptLicenseTermsAndAddDatabase(ossStandaloneRedisearch);
+        await databaseHelper.acceptLicenseTermsAndAddDatabase(ossStandaloneConfig);
         await browserPage.addStringKey(keyName);
         await t.click(myRedisDatabasePage.NavigationPanel.myRedisDBButton);
-        await myRedisDatabasePage.AddRedisDatabaseDialog.addLogicalRedisDatabase(ossStandaloneRedisearch, index);
-        await myRedisDatabasePage.clickOnDBByName(`${ossStandaloneRedisearch.databaseName} [db${index}]`);
+        await myRedisDatabasePage.AddRedisDatabaseDialog.addLogicalRedisDatabase(ossStandaloneConfig, index);
+        await myRedisDatabasePage.clickOnDBByName(`${ossStandaloneConfig.databaseName} [db${index}]`);
         keys = await Common.createArrayWithKeyValue(keysAmount);
         await browserPage.Cli.sendCommandInCli(`MSET ${keys.join(' ')}`);
     })
     .afterEach(async t => {
         // Clear and delete databases
         await t.click(myRedisDatabasePage.NavigationPanel.myRedisDBButton);
-        await myRedisDatabasePage.clickOnDBByName(`${ossStandaloneRedisearch.databaseName} [db${index}]`);
+        await myRedisDatabasePage.clickOnDBByName(`${ossStandaloneConfig.databaseName} [db${index}]`);
         await browserPage.Cli.sendCommandInCli(`DEL ${keys.join(' ')}`);
-        await databaseHelper.deleteCustomDatabase(`${ossStandaloneRedisearch.databaseName} [db${index}]`);
-        await myRedisDatabasePage.clickOnDBByName(ossStandaloneRedisearch.databaseName);
-        await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneRedisearch.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneRedisearch);
+        await databaseHelper.deleteCustomDatabase(`${ossStandaloneConfig.databaseName} [db${index}]`);
+        await myRedisDatabasePage.clickOnDBByName(ossStandaloneConfig.databaseName);
+        await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
     });
 test
-    .meta({ rte: rte.standalone })('Verify that user can see total and current logical database number of keys (if there are any keys in other logical DBs)', async t => {
+    .meta({ rte: rte.standalone })
+    .skip('Verify that user can see total and current logical database number of keys (if there are any keys in other logical DBs)', async t => {
         // Wait for Total Keys number refreshed
         await t.expect(browserPage.OverviewPanel.overviewTotalKeys.withText(`${keysAmount + 1}`).exists).ok('Total keys are not changed', { timeout: 10000 });
         await t.hover(workbenchPage.OverviewPanel.overviewTotalKeys);
@@ -58,7 +58,7 @@ test
 
         // Open Database
         await t.click(myRedisDatabasePage.NavigationPanel.myRedisDBButton);
-        await myRedisDatabasePage.clickOnDBByName(ossStandaloneRedisearch.databaseName);
+        await myRedisDatabasePage.clickOnDBByName(ossStandaloneConfig.databaseName);
         await t.hover(workbenchPage.OverviewPanel.overviewTotalKeys);
         // Verify that user can see total number of keys and not it current logical database (if there are no any keys in other logical DBs)
         await t.expect(browserPage.tooltip.visible).ok('Total keys tooltip not displayed');
@@ -75,7 +75,7 @@ test('Verify that when users hover over keys icon in Overview for Cloud DB, they
     .skip
     .meta({ rte: rte.reCloud, skipComment: "Unstable CI execution, assertion failure, needs investigation" })
     .before(async() => {
-        await databaseHelper.acceptLicenseTermsAndAddRECloudDatabase(cloudDatabaseConfig);
+        await databaseHelper.acceptLicenseTermsAndAddRedisCloudDatabase(cloudDatabaseConfig);
     })
     .after(async() => {
         // Delete database

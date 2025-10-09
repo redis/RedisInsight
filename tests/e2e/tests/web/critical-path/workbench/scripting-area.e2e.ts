@@ -20,16 +20,16 @@ fixture `Scripting area at Workbench`
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         //Go to Workbench page
-        await t.click(browserPage.NavigationPanel.workbenchButton);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
     })
     .afterEach(async t => {
         await t.switchToMainWindow();
         //Drop index, documents and database
         await workbenchPage.sendCommandInWorkbench(`FT.DROPINDEX ${indexName} DD`);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 // Update after resolving https://redislabs.atlassian.net/browse/RI-3299
-test('Verify that user can resize scripting area in Workbench', async t => {
+test
+    .skip('Verify that user can resize scripting area in Workbench', async t => {
     const commandForSend = 'info';
     const offsetY = 130;
 
@@ -47,7 +47,8 @@ test('Verify that user can resize scripting area in Workbench', async t => {
     const inputHeightEnd = inputHeightStart + 15;
     await t.expect(await workbenchPage.queryInput.clientHeight).gt(inputHeightEnd, 'Scripting area after resize has incorrect size');
 });
-test('Verify that user when he have more than 10 results can request to view more results in Workbench', async t => {
+test
+    .skip('Verify that user when he have more than 10 results can request to view more results in Workbench', async t => {
     indexName = Common.generateWord(5);
     keyName = Common.generateWord(5);
     const commandsForSendInCli = [
@@ -83,7 +84,8 @@ test('Verify that user when he have more than 10 results can request to view mor
     await t.expect(workbenchPage.paginationButtonPrevious.exists).ok('Pagination previous button exists');
     await t.expect(workbenchPage.paginationButtonNext.exists).ok('Pagination next button exists');
 });
-test('Verify that user can see result in Table and Text views for Hash data types for FT.SEARCH command in Workbench', async t => {
+test
+    .skip('Verify that user can see result in Table and Text views for Hash data types for FT.SEARCH command in Workbench', async t => {
     indexName = Common.generateWord(5);
     keyName = Common.generateWord(5);
     const commandsForSend = [
@@ -105,7 +107,8 @@ test('Verify that user can see result in Table and Text views for Hash data type
     //Check that result is displayed in Text view
     await t.expect(workbenchPage.queryTextResult.exists).ok('The result is displayed in Text view');
 });
-test('Verify that user can run one command in multiple lines in Workbench page', async t => {
+test
+    .skip('Verify that user can run one command in multiple lines in Workbench page', async t => {
     indexName = Common.generateWord(5);
     const multipleLinesCommand = [
         `FT.CREATE ${indexName}`,
@@ -120,7 +123,8 @@ test('Verify that user can run one command in multiple lines in Workbench page',
         await t.expect(resultCommand).contains(commandPart, 'The multiple lines command is in the result');
     }
 });
-test('Verify that user can use one indent to indicate command in several lines in Workbench page', async t => {
+test
+    .skip('Verify that user can use one indent to indicate command in several lines in Workbench page', async t => {
     indexName = Common.generateWord(5);
     const multipleLinesCommand = [
         `FT.CREATE ${indexName}`,

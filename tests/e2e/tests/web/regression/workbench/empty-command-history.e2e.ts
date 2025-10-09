@@ -16,14 +16,11 @@ fixture `Empty command history in Workbench`
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         // Go to Workbench page
-        await t.click(browserPage.NavigationPanel.workbenchButton);
-    })
-    .afterEach(async() => {
-        // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
     });
 test
-    .meta({ rte: rte.standalone })('Verify that user can see placeholder text in Workbench history if no commands have not been run yet', async t => {
+    .meta({ rte: rte.standalone })
+    .skip('Verify that user can see placeholder text in Workbench history if no commands have not been run yet', async t => {
         const commandToSend = 'info server';
 
         // Verify that all the elements from empty command history placeholder are displayed

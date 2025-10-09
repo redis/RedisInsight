@@ -31,7 +31,7 @@ const KeyRowSize = (props: Props) => {
   if (!size) {
     return (
       <Text
-        color="subdued"
+        color="secondary"
         size="s"
         className={cx(styles.keySize)}
         data-testid={`size-${nameString}`}
@@ -43,7 +43,7 @@ const KeyRowSize = (props: Props) => {
   return (
     <>
       <Text
-        color="subdued"
+        color="secondary"
         size="s"
         className={cx(styles.keySize, 'moveOnHoverKey', {
           hide: deletePopoverId === rowId,

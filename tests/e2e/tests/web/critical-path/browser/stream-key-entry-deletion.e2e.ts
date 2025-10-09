@@ -30,15 +30,19 @@ fixture `Stream key entry deletion`
     })
     .afterEach(async() => {
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that the Stream information is refreshed and the deleted entry is removed when user confirm the deletion of an entry', async t => {
     keyName = Common.generateWord(20);
     const fieldForDeletion = fields[2];
+
+    const cliCommands: string[] = [];
     // Add new Stream key with 3 fields
     for(let i = 0; i < fields.length; i++){
-        await browserPage.Cli.sendCommandInCli(`XADD ${keyName} * ${fields[i]} ${values[i]}`);
+        cliCommands.push(`XADD ${keyName} * ${fields[i]} ${values[i]}`);
     }
+
+    await browserPage.Cli.sendCommandsInCli(cliCommands);
+
     // Open key details and remember the Stream information
     await browserPage.openKeyDetails(keyName);
     await t.expect(browserPage.streamFields.nth(1).textContent).eql(fieldForDeletion, 'The first field entry name not found');

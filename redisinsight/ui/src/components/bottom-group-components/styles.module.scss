@@ -1,78 +1,19 @@
-.groupComponentsWrapper {
-  flex-grow: 1;
-  height: 100%;
-  padding: 0 16px;
-}
-
-.groupComponents {
-  display: flex;
-  flex-grow: 1;
-  height: calc(100% - 26px);
-}
-
-.containerMinimized {
+.surveyLink {
   display: flex;
   align-items: center;
-  height: 26px;
-  line-height: 26px;
-  border: 1px solid var(--euiColorLightShade);
-
-  .surveyLink {
-    display: flex;
-    align-items: center;
-    height: 100%;
-    padding: 0 12px;
-    color: var(--htmlColor) !important;
-    font: normal normal normal 12px/18px Graphik, sans-serif;
-
-    &:hover {
-      background-color: var(--euiColorSecondary);
-      color: var(--euiColorPrimaryText) !important;
-    }
-  }
-
-  .surveyIcon {
-    margin-right: 8px;
-    width: 18px;
-    height: 18px;
-  }
-}
-
-.componentBadgeItem {
-  margin: 0 2px;
-  cursor: pointer;
-  user-select: none;
-
-  :global {
-    [class*='RedisUI'] {
-      cursor: pointer !important;
-    }
-    svg {
-      margin-right: 4px;
-    }
-  }
-
+  height: 100%;
+  padding: 0 12px;
+  color: var(--htmlColor) !important;
+  font: normal normal normal 12px/18px Graphik, sans-serif;
   &:hover {
-    .componentBadge {
-      background-color: var(--buttonIconPrimaryHover) !important;
-    }
+    background-color: var(--euiColorSecondary);
+    color: var(--euiColorPrimaryText) !important;
   }
 }
-
-.componentBadge {
-  background-color: transparent !important;
-  color: var(--euiTextSubduedColor) !important;
-  height: 18px !important;
-  border: none !important;
-
-  &[title] {
-    pointer-events: none;
-  }
-
-  &.active {
-    background-color: var(--hoverInListColorDarken) !important;
-    color: var(--euiColorPrimary) !important;
-  }
+.surveyIcon {
+  margin-right: 8px;
+  width: 18px;
+  height: 18px;
 }
 
 .helperWrapper {

@@ -80,7 +80,7 @@ describe('remarkLink', () => {
     expect(codeNode).toEqual({
       ...codeNode,
       type: 'html',
-      value: '<RedisInsightLink url="workbench" text="Workbench" />',
+      value: '<RedisInsightLink url="workbench" text="Workbench" size="S" />',
     })
   })
 })

@@ -1,4 +1,3 @@
-import { EuiFieldText } from '@elastic/eui'
 import {
   Field,
   FieldInputProps,
@@ -25,9 +24,10 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { PasswordInput } from 'uiSrc/components/base/inputs'
+import { PasswordInput, TextInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { Spacer } from 'uiSrc/components/base/layout'
 import ValidationTooltip from './components/ValidationTooltip'
 
 import styles from './styles.module.scss'
@@ -171,47 +171,56 @@ const ConnectionForm = (props: Props) => {
               <FormField label="RDI Alias*" className={styles.withoutPadding}>
                 <Field name="name">
                   {({ field }: { field: FieldInputProps<string> }) => (
-                    <EuiFieldText
+                    <TextInput
                       data-testid="connection-form-name-input"
-                      fullWidth
                       placeholder="Enter RDI Alias"
                       maxLength={500}
-                      {...field}
+                      name={field.name}
+                      value={field.value}
+                      onChange={(value) => field.onChange({ target: { name: field.name, value } })}
                     />
                   )}
                 </Field>
               </FormField>
-              <FormField label="URL*">
+              <Spacer size='s' />
+              <FormField
+                label="URL*"
+                infoIconProps={{
+                  content: "The RDI machine servers REST API via port 443. Ensure that Redis Insight can access the RDI host over port 443."
+                }}
+              >
                 <Field name="url">
                   {({ field }: { field: FieldInputProps<string> }) => (
-                    <EuiFieldText
+                    <TextInput
                       data-testid="connection-form-url-input"
-                      fullWidth
                       placeholder="Enter the RDI host IP as: https://[IP-Address]"
                       disabled={!!editInstance}
-                      append={
-                        <AppendInfo content="The RDI machine servers REST API via port 443. Ensure that Redis Insight can access the RDI host over port 443." />
-                      }
-                      {...field}
+                      name={field.name}
+                      value={field.value}
+                      onChange={(value) => field.onChange({ target: { name: field.name, value } })}
                     />
                   )}
                 </Field>
               </FormField>
+              <Spacer size='s' />
               <FormField>
                 <Row gap="m">
                   <FlexItem grow={1}>
-                    <FormField label="Username">
+                    <FormField
+                      label="Username"
+                      infoIconProps={{
+                        content: "The RDI REST API authentication is using the RDI Redis username and password."
+                      }}
+                    >
                       <Field name="username">
                         {({ field }: { field: FieldInputProps<string> }) => (
-                          <EuiFieldText
+                          <TextInput
                             data-testid="connection-form-username-input"
-                            fullWidth
                             placeholder="Enter the RDI Redis username"
                             maxLength={500}
-                            append={
-                              <AppendInfo content="The RDI REST API authentication is using the RDI Redis username and password." />
-                            }
-                            {...field}
+                            name={field.name}
+                            value={field.value}
+                            onChange={(value) => field.onChange({ target: { name: field.name, value } })}
                           />
                         )}
                       </Field>
@@ -219,12 +228,10 @@ const ConnectionForm = (props: Props) => {
                   </FlexItem>
                   <FlexItem grow={1}>
                     <FormField
-                      label={
-                        <>
-                          Password
-                          <AppendInfo content="The RDI REST API authentication is using the RDI Redis username and password." />
-                        </>
-                      }
+                      infoIconProps={{
+                        content: "The RDI REST API authentication is using the RDI Redis username and password."
+                      }}
+                      label="Password"
                     >
                       <Field name="password">
                         {({

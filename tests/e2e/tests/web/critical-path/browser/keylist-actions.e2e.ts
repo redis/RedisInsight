@@ -17,10 +17,6 @@ fixture `Actions with Key List on Browser page`
     .beforeEach(async() => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         keyName = Common.generateWord(10);
-    })
-    .afterEach(async() => {
-        // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that user can delete key in List mode', async t => {
     // Add new key

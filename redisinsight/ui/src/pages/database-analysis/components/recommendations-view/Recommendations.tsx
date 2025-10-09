@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 import { isNull } from 'lodash'
 import cx from 'classnames'
+import styled from 'styled-components'
 
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import {
@@ -35,6 +36,10 @@ import { Link } from 'uiSrc/components/base/link/Link'
 import { Card } from 'uiSrc/components/base/layout'
 
 import styles from './styles.module.scss'
+
+const RecommendationContent = styled(Card)`
+  padding: ${({ theme }) => theme.core.space.space150};
+`
 
 const Recommendations = () => {
   const { data, loading } = useSelector(dbAnalysisSelector)
@@ -186,7 +191,7 @@ const Recommendations = () => {
                   onOpenChange={(isOpen) => handleToggle(isOpen, id)}
                   data-testid={`${id}-accordion`}
                 >
-                  <Card className={styles.accordionContent}>
+                  <RecommendationContent>
                     <RecommendationBody
                       elements={content}
                       params={params}
@@ -201,7 +206,7 @@ const Recommendations = () => {
                         }
                       />
                     )}
-                  </Card>
+                  </RecommendationContent>
                 </RiAccordion>
                 <div className={styles.footer}>
                   <FeatureFlagComponent name={FeatureFlags.envDependent}>

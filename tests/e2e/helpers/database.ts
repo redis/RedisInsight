@@ -80,11 +80,11 @@ export class DatabaseHelper {
      * Add a new database from RE Cluster via auto-discover flow
      * @param databaseParameters The database parameters
      */
-    async addNewREClusterDatabase(
+    async addNewRedisSoftwareDatabase(
         databaseParameters: AddNewDatabaseParameters
     ): Promise<void> {
         // Fill the add database form
-        await myRedisDatabasePage.AddRedisDatabaseDialog.addAutodiscoverREClusterDatabase(
+        await myRedisDatabasePage.AddRedisDatabaseDialog.addAutodiscoverRedisSoftwareDatabase(
             databaseParameters
         );
         // Click on submit button
@@ -138,12 +138,12 @@ export class DatabaseHelper {
      * @param cloudAPIAccessKey The Cloud API Access Key
      * @param cloudAPISecretKey The Cloud API Secret Key
      */
-    async autodiscoverRECloudDatabase(
+    async autodiscoverRedisCloudDatabase(
         cloudAPIAccessKey: string,
         cloudAPISecretKey: string
     ): Promise<string> {
         // Fill the add database form and Submit
-        await myRedisDatabasePage.AddRedisDatabaseDialog.addAutodiscoverRECloudDatabase(
+        await myRedisDatabasePage.AddRedisDatabaseDialog.addAutodiscoverRedisCloudDatabase(
             cloudAPIAccessKey,
             cloudAPISecretKey
         );
@@ -203,11 +203,20 @@ export class DatabaseHelper {
         databaseParameters: AddNewDatabaseParameters
     ): Promise<void> {
         await this.acceptLicenseTerms();
-        await databaseAPIRequests.addNewStandaloneDatabaseApi(
-            databaseParameters
+
+        const databaseId = await databaseAPIRequests.getDatabaseIdByName(
+            databaseParameters.databaseName
         );
-        // Reload Page to see the new added database through api
-        await myRedisDatabasePage.reloadPage();
+
+        if (!databaseId) {
+            await databaseAPIRequests.addNewStandaloneDatabaseApi(
+                databaseParameters
+            );
+
+            // Reload Page to see the new added database through api
+            await myRedisDatabasePage.reloadPage();
+        }
+
         // Connect to DB
         await myRedisDatabasePage.clickOnDBByName(
             databaseParameters.databaseName!
@@ -223,7 +232,15 @@ export class DatabaseHelper {
         databaseParameters: OSSClusterParameters
     ): Promise<void> {
         await this.acceptLicenseTerms();
-        await this.addOSSClusterDatabase(databaseParameters);
+
+        const databaseId = await databaseAPIRequests.getDatabaseIdByName(
+            databaseParameters.ossClusterDatabaseName
+        );
+
+        if (!databaseId) {
+            await this.addOSSClusterDatabase(databaseParameters);
+        }
+
         // Connect to DB
         await myRedisDatabasePage.clickOnDBByName(
             databaseParameters.ossClusterDatabaseName!
@@ -253,11 +270,11 @@ export class DatabaseHelper {
      * Accept License terms and add RE Cluster database
      * @param databaseParameters The database parameters
      */
-    async acceptLicenseTermsAndAddREClusterDatabase(
+    async acceptLicenseTermsAndAddRedisSoftwareDatabase(
         databaseParameters: AddNewDatabaseParameters
     ): Promise<void> {
         await this.acceptLicenseTerms();
-        await this.addNewREClusterDatabase(databaseParameters);
+        await this.addNewRedisSoftwareDatabase(databaseParameters);
         // Connect to DB
         await myRedisDatabasePage.clickOnDBByName(
             databaseParameters.databaseName ?? ''
@@ -268,7 +285,7 @@ export class DatabaseHelper {
      * Accept License terms and add RE Cloud database
      * @param databaseParameters The database parameters
      */
-    async acceptLicenseTermsAndAddRECloudDatabase(
+    async acceptLicenseTermsAndAddRedisCloudDatabase(
         databaseParameters: AddNewDatabaseParameters
     ): Promise<void> {
         const searchTimeout = 60 * 1000; // 60 sec to wait database appearing
@@ -312,7 +329,7 @@ export class DatabaseHelper {
      * Add RE Cloud database
      * @param databaseParameters The database parameters
      */
-    async addRECloudDatabase(
+    async addRedisCloudDatabase(
         databaseParameters: AddNewDatabaseParameters
     ): Promise<void> {
         const searchTimeout = 60 * 1000; // 60 sec to wait database appearing

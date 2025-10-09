@@ -11,7 +11,9 @@ module.exports = {
     '\\.svg': '<rootDir>/redisinsight/__mocks__/svg.js',
     '\\.(css|less|sass|scss)$': 'identity-obj-proxy',
     '\\.scss\\?inline$': '<rootDir>/redisinsight/__mocks__/scssRaw.js',
+    'uiSrc/slices/store$': '<rootDir>/redisinsight/ui/src/utils/test-store.ts',
     'uiSrc/(.*)': '<rootDir>/redisinsight/ui/src/$1',
+    'apiSrc/(.*)': '<rootDir>/redisinsight/api/src/$1',
     '@redislabsdev/redis-ui-components': '@redis-ui/components',
     '@redislabsdev/redis-ui-styles': '@redis-ui/styles',
     '@redislabsdev/redis-ui-icons': '@redis-ui/icons',
@@ -24,8 +26,6 @@ module.exports = {
     'remark-rehype': '<rootDir>/redisinsight/__mocks__/remarkRehype.js',
     'rehype-stringify': '<rootDir>/redisinsight/__mocks__/rehypeStringify.js',
     'unist-util-visit': '<rootDir>/redisinsight/__mocks__/unistUtilsVisit.js',
-    'react-children-utilities':
-      '<rootDir>/redisinsight/__mocks__/react-children-utilities.js',
     d3: '<rootDir>/node_modules/d3/dist/d3.min.js',
     '^uuid$': require.resolve('uuid'),
     msgpackr: require.resolve('msgpackr'),

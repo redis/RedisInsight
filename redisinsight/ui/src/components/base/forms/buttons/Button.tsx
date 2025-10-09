@@ -27,6 +27,7 @@ export const BaseButton = ({
   if (size in buttonSizeMap) {
     btnSize = buttonSizeMap[size]
   }
+
   return (
     <Button {...props} size={btnSize} disabled={props.disabled || loading}>
       <ButtonIcon

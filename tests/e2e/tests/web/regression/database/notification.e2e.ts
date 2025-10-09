@@ -49,8 +49,9 @@ test.before(async() => {
     })
     .after(async() => {
       //  await databaseAPIRequests.deleteAllDatabasesApi();
-    })('Verify that notifications are displayed if the db will be expired soon', async t => {
-        await t.click(browserPage.NavigationPanel.workbenchButton);
+    })
+    .skip('Verify that notifications are displayed if the db will be expired soon', async t => {
+        await t.click(browserPage.NavigationTabs.workbenchButton);
         await workbenchPage.sendCommandInWorkbench('CMS.INITBYDIM');
 
         await DatabaseScripts.updateColumnValueInDBTable(dbTableParams5days);

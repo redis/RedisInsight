@@ -5,6 +5,7 @@ import svgr from 'vite-plugin-svgr';
 import fixReactVirtualized from 'esbuild-plugin-react-virtualized';
 import { reactClickToComponent } from 'vite-plugin-react-click-to-component';
 import { ViteEjsPlugin } from 'vite-plugin-ejs';
+import istanbul from 'vite-plugin-istanbul';
 // import { compression } from 'vite-plugin-compression2'
 import { fileURLToPath, URL } from 'url';
 import path from 'path';
@@ -47,8 +48,26 @@ export default defineConfig({
         })};</script>`;
 
         return html.replace(/<head>/, `<head>\n  ${script}`);
-      }
-    }
+      },
+    },
+    // Add istanbul plugin for coverage collection when COLLECT_COVERAGE is true
+    ...(process.env.COLLECT_COVERAGE === 'true'
+      ? [
+          istanbul({
+            include: 'src/**/*',
+            exclude: [
+              'node_modules',
+              'test/',
+              '**/*.spec.ts',
+              '**/*.spec.tsx',
+              '**/*.test.ts',
+              '**/*.test.tsx',
+            ],
+            extension: ['.js', '.ts', '.tsx'],
+            requireEnv: false,
+          }),
+        ]
+      : []),
     // !isElectron && compression({
     //   include: [/\.(js)$/, /\.(css)$/],
     //   deleteOriginalAssets: true
@@ -82,6 +101,18 @@ export default defineConfig({
       '@antv/x6',
       '@antv/x6-react-shape',
       '@antv/hierarchy',
+      'class-transformer',
+      'keytar',
+      '@nestjs/common',
+      '@nestjs/core',
+      '@nestjs/event-emitter',
+      '@nestjs/platform-express',
+      '@nestjs/platform-socket.io',
+      '@nestjs/serve-static',
+      '@nestjs/swagger',
+      '@nestjs/typeorm',
+      '@nestjs/websockets',
+      'nestjs-form-data',
     ],
     esbuildOptions: {
       // fix for https://github.com/bvaughn/react-virtualized/issues/1722

@@ -26,7 +26,6 @@ test
     })
     .after(async() => {
         await browserPage.Cli.sendCommandInCli('flushdb');
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     })('Tree view preselected folder', async t => {
         keyName1 = Common.generateWord(10);
         keyName2 = Common.generateWord(10);
@@ -116,7 +115,6 @@ test
     .after(async() => {
         await browserPage.Cli.sendCommandInCli(`FT.DROPINDEX ${index}`);
         await browserPage.Cli.sendCommandInCli('flushdb');
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     })('Verify tree view navigation for index based search', async t => {
         keyName1 = Common.generateWord(10); // used to create index name
         keyName2 = Common.generateWord(10); // used to create index name
@@ -149,7 +147,6 @@ test
     .after(async() => {
         await t.click(browserPage.patternModeBtn);
         await browserPage.Cli.sendCommandInCli('flushdb');
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     })('Search capability Refreshed Tree view preselected folder', async t => {
         keyName1 = Common.generateWord(10);
         keyName2 = Common.generateWord(10);

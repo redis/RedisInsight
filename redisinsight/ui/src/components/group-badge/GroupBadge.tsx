@@ -33,6 +33,7 @@ const GroupBadge = ({
       variant="light"
       style={{
         backgroundColor,
+        padding: 10,
       }}
       className={cx(styles.badgeWrapper, className, {
         [styles.withDeleteBtn]: onDelete,
@@ -45,7 +46,8 @@ const GroupBadge = ({
         <Text
           style={{ color: 'var(--euiTextSubduedColorHover)' }}
           className="text-uppercase"
-          size="xs"
+          variant="semiBold"
+          size="S"
         >
           {getGroupTypeDisplay(type)}
         </Text>

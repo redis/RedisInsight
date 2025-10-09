@@ -14,31 +14,36 @@ export const InitOutputText = (
   emptyOutput: boolean,
   onClick: () => void,
 ) => [
-    <Fragment key={Math.random()}>
-      {emptyOutput && (
-        <span className="color-green" key={Math.random()}>
-          {'Try '}
-          <Link
-            onClick={onClick}
-            className="color-green"
-            style={{ fontSize: 'inherit', fontFamily: 'inherit' }}
-            data-test-subj="cli-workbench-page-btn"
-          >
-            Workbench
-          </Link>
-          , our advanced CLI. Check out our Quick Guides to learn more about Redis
-          capabilities.
-        </span>
-      )}
-    </Fragment>,
-    '\n\n',
-    'Connecting...',
-    '\n\n',
-    'Pinging Redis server on ',
-    <ColorText color="default" key={Math.random()}>
-      {`${host}:${port}${getDbIndex(dbIndex)}`}
-    </ColorText>,
-  ]
+  <Fragment key={Math.random()}>
+    {emptyOutput && (
+      <span className="color-green" key={Math.random()}>
+        {'Try '}
+        <Link
+          onClick={onClick}
+          className="color-green"
+          style={{ fontSize: 'inherit', fontFamily: 'inherit' }}
+          data-test-subj="cli-workbench-page-btn"
+        >
+          Workbench
+        </Link>
+        , our advanced CLI. Check out our Quick Guides to learn more about Redis
+        capabilities.
+      </span>
+    )}
+  </Fragment>,
+  '\n\n',
+  'Connecting...',
+  '\n\n',
+  'Pinging Redis server on ',
+  <ColorText
+    component="span"
+    color="default"
+    key={Math.random()}
+    className="font-inconsolata"
+  >
+    {`${host}:${port}${getDbIndex(dbIndex)}`}
+  </ColorText>,
+]
 
 export const ConnectionSuccessOutputText = [
   '\n',

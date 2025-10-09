@@ -1,22 +1,28 @@
 import React, { useContext } from 'react'
 import { capitalize } from 'lodash'
 
-import cx from 'classnames'
 import {
   CONNECTION_TYPE_DISPLAY,
   ConnectionType,
   DATABASE_LIST_MODULES_TEXT,
+  RedisDefaultModules,
 } from 'uiSrc/slices/interfaces'
 import { getModule, Nullable, truncateText } from 'uiSrc/utils'
 
 import { DEFAULT_MODULES_INFO } from 'uiSrc/constants/modules'
 import { Theme } from 'uiSrc/constants'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
-import styles from './styles.module.scss'
+import { RiImage } from 'uiSrc/components/base/display'
+import MessageInfoSvg from 'uiSrc/assets/img/icons/help_illus.svg'
+import {
+  DbIndexInfoWrapper,
+  SeparatorLine,
+  WordBreakWrapper,
+} from './ShortInstanceInfo.styles'
 
 export interface Props {
   info: {
@@ -37,7 +43,7 @@ const ShortInstanceInfo = ({ info, databases, modules }: Props) => {
 
   const getIcon = (name: string) => {
     const icon: AllIconsType =
-      DEFAULT_MODULES_INFO[name]?.[
+      DEFAULT_MODULES_INFO[name as RedisDefaultModules]?.[
         theme === Theme.Dark ? 'iconDark' : 'iconLight'
       ]
     if (icon) {
@@ -48,80 +54,86 @@ const ShortInstanceInfo = ({ info, databases, modules }: Props) => {
   }
 
   return (
-    <div data-testid="db-info-tooltip">
-      <div className={styles.tooltipItem}>
-        <b style={{ fontSize: 13 }}>{name}</b>
-      </div>
-      <div className={styles.tooltipItem}>
-        <span>
-          {host}:{port}
-        </span>
-      </div>
-      {databases > 1 && (
-        <Row className={styles.dbIndexInfo} align="center">
-          <FlexItem style={{ marginRight: 16 }}>
-            <RiIcon
-              className={styles.messageInfoIcon}
-              size="xxl"
-              type="MessageInfoIcon"
-            />
-          </FlexItem>
-          <FlexItem grow>
-            <Text size="s">Logical Databases</Text>
-            <Text color="subdued" size="xs">
-              Select logical databases to work with in Browser, Workbench, and
-              Database Analysis.
-            </Text>
-          </FlexItem>
+    <Col gap="l" data-testid="db-info-tooltip">
+      <Col gap="m">
+        <Col gap="m">
+          <Text color="primary" size="L" component="div" variant="semiBold">
+            {name}
+          </Text>
+          <Text color="primary" size="s">
+            {host}:{port}
+          </Text>
+        </Col>
+        {databases > 1 && (
+          <DbIndexInfoWrapper align="center" gap="l">
+            <Col>
+              <RiImage src={MessageInfoSvg} alt="Database Info" $size="xs" />
+            </Col>
+            <Col gap="xs">
+              <Text size="m">Logical databases</Text>
+              <Text color="secondary" size="s">
+                <WordBreakWrapper>
+                  Select logical databases to work with in Browser, Workbench,
+                  and Database Analysis.
+                </WordBreakWrapper>
+              </Text>
+            </Col>
+          </DbIndexInfoWrapper>
+        )}
+        <Row align="center" gap="l">
+          <Row align="center" grow={false}>
+            <RiIcon type="ConnectionIcon" size="M" />
+            <span>
+              {connectionType
+                ? CONNECTION_TYPE_DISPLAY[connectionType]
+                : capitalize(connectionType)}
+            </span>
+          </Row>
+          <Row align="center" grow={false}>
+            <RiIcon type="VersionIcon" size="M" />
+            <span>{version}</span>
+          </Row>
+          <Row align="center" grow={false}>
+            <RiIcon type="UserIcon" size="S" />
+            <span>{user || 'Default'}</span>
+          </Row>
         </Row>
-      )}
-      <Row className={styles.tooltipItem} align="center" justify="start">
-        <FlexItem className={styles.rowTooltipItem}>
-          <RiIcon type="ConnectionIcon" />
-          <span className={styles.tooltipItemValue}>
-            {connectionType
-              ? CONNECTION_TYPE_DISPLAY[connectionType]
-              : capitalize(connectionType)}
-          </span>
-        </FlexItem>
-        <FlexItem className={styles.rowTooltipItem}>
-          <RiIcon type="VersionIcon" />
-          <span className={styles.tooltipItemValue}>{version}</span>
-        </FlexItem>
-        <FlexItem className={styles.rowTooltipItem}>
-          <RiIcon type="UserIcon" />
-          <span className={styles.tooltipItemValue}>{user || 'Default'}</span>
-        </FlexItem>
-      </Row>
+      </Col>
       {!!modules?.length && (
-        <div className={styles.modules}>
-          <h4 className={styles.mi_fieldName}>Database Modules</h4>
-          {modules?.map(({ name = '', semanticVersion = '', version = '' }) => (
-            <div
-              key={name}
-              className={cx(styles.mi_moduleName)}
-              data-testid={`module_${name}`}
-            >
-              <RiIcon type={getIcon(name)} className={styles.mi_icon} />
-              <span>
-                {truncateText(
-                  getModule(name)?.name ||
-                    DATABASE_LIST_MODULES_TEXT[name] ||
-                    name,
-                  50,
-                )}
-              </span>
-              {!!(semanticVersion || version) && (
-                <span className={styles.mi_version}>
-                  v.
-                  {semanticVersion || version}
-                </span>
-              )}
-            </div>
-          ))}
-        </div>
+        <>
+          <SeparatorLine />
+          <Text color="primary" size="L" component="div" variant="semiBold">
+            Database modules
+          </Text>
+          <Col gap="s">
+            {modules?.map(
+              ({ name = '', semanticVersion = '', version = '' }) => (
+                <Row
+                  gap="s"
+                  align="center"
+                  key={name}
+                  data-testid={`module_${name}`}
+                >
+                  <RiIcon type={getIcon(name)} size="M" />
+                  <Text size="S" color="secondary">
+                    {truncateText(
+                      getModule(name)?.name ||
+                        DATABASE_LIST_MODULES_TEXT[
+                          name as RedisDefaultModules
+                        ] ||
+                        name,
+                      50,
+                    )}{' '}
+                    v.
+                    {semanticVersion || version}
+                  </Text>
+                </Row>
+              ),
+            )}
+          </Col>
+        </>
       )}
-    </div>
+    </Col>
   )
 }
 

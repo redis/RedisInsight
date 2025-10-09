@@ -35,7 +35,7 @@ describe('Checkbox', () => {
 
       const checkbox = screen.getByRole('checkbox')
       expect(checkbox).toHaveValue('on')
-      expect(checkbox).toHaveTextContent('Minus')
+      expect(screen.getByLabelText('Minus')).toBeInTheDocument()
     })
   })
 

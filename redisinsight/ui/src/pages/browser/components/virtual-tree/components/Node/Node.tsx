@@ -17,6 +17,8 @@ import { RiTooltip } from 'uiSrc/components'
 import { DeleteKeyPopover } from '../../../delete-key-popover/DeleteKeyPopover'
 import { TreeData } from '../../interfaces'
 import styles from './styles.module.scss'
+import { Flex, Row } from 'uiSrc/components/base/layout/flex'
+import { Text } from 'uiSrc/components/base/text'
 
 const MAX_NESTING_LEVEL = 20
 
@@ -117,23 +119,25 @@ const Node = ({
       position="bottom"
       anchorClassName={styles.anchorTooltipNode}
     >
-      <>
-        <div className={styles.nodeName}>
+      <Row align="center">
+        <Flex align="center">
           <RiIcon
-            type={isOpen ? 'ArrowDownIcon' : 'ArrowRightIcon'}
+            size="xs"
+            type={isOpen ? 'ChevronDownIcon' : 'ChevronRightIcon'}
             className={cx(styles.nodeIcon, styles.nodeIconArrow)}
             data-test-subj={`node-arrow-icon_${fullName}`}
           />
           <RiIcon
+            size="m"
             type="FolderIcon"
             className={styles.nodeIcon}
             data-test-subj={`node-folder-icon_${fullName}`}
           />
-          <span className="truncateText" data-testid={`folder-${nameString}`}>
+          <Text className="truncateText" data-testid={`folder-${nameString}`}>
             {nameString}
-          </span>
-        </div>
-        <div className={styles.options}>
+          </Text>
+        </Flex>
+        <Flex justify="end">
           <div
             className={styles.approximate}
             data-testid={`percentage_${fullName}`}
@@ -145,8 +149,8 @@ const Node = ({
           <div className={styles.keyCount} data-testid={`count_${fullName}`}>
             {keyCount ?? ''}
           </div>
-        </div>
-      </>
+        </Flex>
+      </Row>
     </RiTooltip>
   )
 

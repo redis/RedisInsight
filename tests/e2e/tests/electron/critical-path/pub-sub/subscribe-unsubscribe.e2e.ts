@@ -16,7 +16,7 @@ fixture `Subscribe/Unsubscribe from a channel`
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         //Go to PubSub page
-        await t.click(myRedisDatabasePage.NavigationPanel.pubSubButton);
+        await t.click(pubSubPage.NavigationTabs.pubSubButton);
     })
     .afterEach(async() => {
         await databaseAPIRequests.deleteAllDatabasesApi();

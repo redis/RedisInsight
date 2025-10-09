@@ -1,9 +1,9 @@
-import React, { ChangeEvent, useEffect, useState, useMemo } from 'react'
-import { EuiFieldText } from '@elastic/eui'
+import React, { useEffect, useState, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 import { instancesSelector as rdiInstancesSelector } from 'uiSrc/slices/rdi/instances'
 import { instancesSelector as dbInstancesSelector } from 'uiSrc/slices/instances/instances'
+import { TextInput } from 'uiSrc/components/base/inputs'
 import Divider from 'uiSrc/components/divider/Divider'
 import { BrowserStorageItem, DEFAULT_SORT, Pages } from 'uiSrc/constants'
 import Search from 'uiSrc/assets/img/Search.svg'
@@ -64,8 +64,7 @@ const InstancesNavigationPopover = ({ name }: Props) => {
     setFilteredRdiInstances(rdiFiltered)
   }, [dbInstances, rdiInstances, searchFilter])
 
-  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target
+  const handleSearch = (value: string) => {
     setSearchFilter(value)
   }
 
@@ -132,12 +131,11 @@ const InstancesNavigationPopover = ({ name }: Props) => {
     >
       <div className={styles.wrapper}>
         <div className={styles.searchInputContainer}>
-          <EuiFieldText
-            fullWidth
+          <TextInput
             className={styles.searchInput}
             icon={Search}
             value={searchFilter}
-            onChange={(e) => handleSearch(e)}
+            onChange={handleSearch}
             data-testid="instances-nav-popover-search"
           />
         </div>

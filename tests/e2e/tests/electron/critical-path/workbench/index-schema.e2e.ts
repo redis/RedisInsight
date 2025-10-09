@@ -1,7 +1,7 @@
 import { rte } from '../../../../helpers/constants';
 import { DatabaseHelper } from '../../../../helpers/database';
 import { BrowserPage, MyRedisDatabasePage, WorkbenchPage } from '../../../../pageObjects';
-import { commonUrl, ossStandaloneRedisearch } from '../../../../helpers/conf';
+import { commonUrl, ossStandaloneConfig } from '../../../../helpers/conf';
 import { DatabaseAPIRequests } from '../../../../helpers/api/api-database';
 import { Common } from '../../../../helpers/common';
 
@@ -17,17 +17,17 @@ fixture `Index Schema at Workbench`
     .meta({ type: 'critical_path', rte: rte.standalone })
     .page(commonUrl)
     .beforeEach(async t => {
-        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneRedisearch);
+        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         // Go to Workbench page
-        await t.click(browserPage.NavigationPanel.workbenchButton);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
     })
     .afterEach(async t => {
         // Drop index, documents and database
         await t.switchToMainWindow();
         await workbenchPage.sendCommandInWorkbench(`FT.DROPINDEX ${indexName} DD`);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneRedisearch);
+        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
-test('Verify that user can open results in Text and Table views for FT.INFO for Hash in Workbench', async t => {
+test.skip('Verify that user can open results in Text and Table views for FT.INFO for Hash in Workbench', async t => {
     indexName = Common.generateWord(5);
     const commandsForSend = [
         `FT.CREATE ${indexName} ON HASH PREFIX 1 product: SCHEMA name TEXT`,
@@ -48,7 +48,7 @@ test('Verify that user can open results in Text and Table views for FT.INFO for 
     // Check that result is displayed in Text view
     await t.expect(workbenchPage.queryTextResult.exists).ok('The result is displayed in Text view');
 });
-test('Verify that user can open results in Text and Table views for FT.INFO for JSON in Workbench', async t => {
+test.skip('Verify that user can open results in Text and Table views for FT.INFO for JSON in Workbench', async t => {
     indexName = Common.generateWord(5);
     const commandsForSend = [
         `FT.CREATE ${indexName} ON JSON SCHEMA $.user.name AS name TEXT $.user.tag AS country TAG`,

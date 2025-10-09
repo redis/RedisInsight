@@ -5,7 +5,7 @@ import axios, {
 } from 'axios'
 import { isNumber } from 'lodash'
 import { sessionStorageService } from 'uiSrc/services'
-import { BrowserStorageItem } from 'uiSrc/constants'
+import { BrowserStorageItem, CustomErrorCodes } from 'uiSrc/constants'
 import { CLOUD_AUTH_API_ENDPOINTS, CustomHeaders } from 'uiSrc/constants/api'
 import { store } from 'uiSrc/slices/store'
 import { logoutUserAction } from 'uiSrc/slices/oauth/cloud'
@@ -104,14 +104,31 @@ export const isConnectivityError = (
 
 export const connectivityErrorsInterceptor = (error: AxiosError) => {
   const { response } = error
+  const responseUrl = response?.request?.responseURL || ''
   const responseData = response?.data as {
     message?: string
     code?: string
     error?: string
+    errorCode?: number
   }
 
   if (isConnectivityError(response?.status, responseData)) {
-    store?.dispatch<any>(setConnectivityError(ApiErrors.ConnectionLost))
+    let message
+
+    if (responseData?.errorCode === CustomErrorCodes.RedisConnectionDefaultUserDisabled) {
+      message = responseData?.message
+    }
+
+    const state = store.getState()
+    const isConnectedToDatabase =
+      !!state.connections.instances.connectedInstance?.id
+    const isErrorTargetsConnectedDatabase = responseUrl.includes(
+      state.connections.instances.connectedInstance?.id,
+    )
+
+    if (isConnectedToDatabase && isErrorTargetsConnectedDatabase) {
+      store?.dispatch<any>(setConnectivityError(message || ApiErrors.ConnectionLost))
+    }
   }
 
   return Promise.reject(error)

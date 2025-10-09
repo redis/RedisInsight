@@ -1,5 +1,4 @@
 import React, { ChangeEvent, useState } from 'react'
-import { EuiFieldText } from '@elastic/eui'
 import cx from 'classnames'
 import { FormikProps } from 'formik'
 
@@ -25,7 +24,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { TextArea } from 'uiSrc/components/base/inputs'
+import { TextArea, TextInput } from 'uiSrc/components/base/inputs'
 import {
   RiSelect,
   SelectValueRender,
@@ -226,17 +225,16 @@ const TlsDetails = (props: Props) => {
               <Row gap="m">
                 <FlexItem grow>
                   <FormField label="Server Name*">
-                    <EuiFieldText
+                    <TextInput
                       name="servername"
                       id="servername"
-                      fullWidth
                       maxLength={200}
                       placeholder="Enter Server Name"
                       value={formik.values.servername ?? ''}
-                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                      onChange={value =>
                         formik.setFieldValue(
-                          e.target.name,
-                          validateField(e.target.value.trim()),
+                          'servername',
+                          validateField(value.trim()),
                         )
                       }
                       data-testid="sni-servername"
@@ -295,17 +293,16 @@ const TlsDetails = (props: Props) => {
               formik.values.selectedCaCertName === ADD_NEW_CA_CERT && (
                 <FlexItem grow>
                   <FormField label="Name*">
-                    <EuiFieldText
+                    <TextInput
                       name="newCaCertName"
                       id="newCaCertName"
-                      fullWidth
                       maxLength={200}
                       placeholder="Enter CA Certificate Name"
                       value={formik.values.newCaCertName ?? ''}
-                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                      onChange={value =>
                         formik.setFieldValue(
-                          e.target.name,
-                          validateCertName(e.target.value),
+                          'newCaCertName',
+                          validateCertName(value),
                         )
                       }
                       data-testid="qa-ca-cert"
@@ -376,17 +373,16 @@ const TlsDetails = (props: Props) => {
               formik.values.selectedTlsClientCertId === 'ADD_NEW' && (
                 <FlexItem grow>
                   <FormField label="Name*">
-                    <EuiFieldText
+                    <TextInput
                       name="newTlsCertPairName"
                       id="newTlsCertPairName"
-                      fullWidth
                       maxLength={200}
                       placeholder="Enter Client Certificate Name"
                       value={formik.values.newTlsCertPairName ?? ''}
-                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                      onChange={value =>
                         formik.setFieldValue(
-                          e.target.name,
-                          validateCertName(e.target.value),
+                          'newTlsCertPairName', // same as the name prop passed a few lines above
+                          validateCertName(value),
                         )
                       }
                       data-testid="new-tsl-cert-pair-name"

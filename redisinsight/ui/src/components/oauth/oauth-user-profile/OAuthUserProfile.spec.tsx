@@ -203,7 +203,7 @@ describe('OAuthUserProfile', () => {
 
     fireEvent.click(screen.getByTestId('cloud-console-link'))
 
-    expect(sendEventTelemetry).toBeCalledWith({
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
       event: TelemetryEvent.CLOUD_CONSOLE_CLICKED,
     })
     ;(sendEventTelemetry as jest.Mock).mockRestore()

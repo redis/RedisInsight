@@ -20,6 +20,7 @@ import { useCapability } from 'uiSrc/services'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { ColorText, Text } from 'uiSrc/components/base/text'
+import { Spacer } from 'uiSrc/components/base/layout'
 import ModuleNotLoadedButton from './ModuleNotLoadedButton'
 import styles from './styles.module.scss'
 
@@ -100,15 +101,15 @@ const ModuleNotLoaded = ({
 
       return !freeDbWithModule ? (
         <Text className={cx(styles.text, styles.marginBottom)}>
-          Create a free trial Redis Stack database with {moduleName} which
-          extends the core capabilities of your Redis.
+          Create a free all-in-one Redis Cloud database to start exploring these
+          capabilities.
         </Text>
       ) : (
         <Text
           className={cx(styles.text, styles.marginBottom, styles.textFooter)}
         >
-          Use your free trial all-in-one Redis Cloud database to start exploring
-          these capabilities.
+          Use your free all-in-one Redis Cloud database to start exploring these
+          capabilities.
         </Text>
       )
     },
@@ -139,6 +140,7 @@ const ModuleNotLoaded = ({
           data-testid="module-not-loaded-content"
         >
           {renderTitle(width, MODULE_TEXT_VIEW[moduleName])}
+          <Spacer size="l" />
           <Text className={styles.bigText}>
             {CONTENT[moduleName]?.text.map((item: string) =>
               width > MIN_ELEMENT_WIDTH ? (
@@ -151,6 +153,7 @@ const ModuleNotLoaded = ({
               ),
             )}
           </Text>
+          <Spacer size="m" />
           <ul
             className={cx(styles.list, {
               [styles.bloomList]: moduleName === RedisDefaultModules.Bloom,
@@ -161,24 +164,27 @@ const ModuleNotLoaded = ({
             ))}
           </ul>
           {!!CONTENT[moduleName]?.additionalText && (
-            <Text
-              className={cx(
-                styles.text,
-                styles.additionalText,
-                styles.marginBottom,
-              )}
-            >
-              {CONTENT[moduleName]?.additionalText.map((item: string) =>
-                width > MIN_ELEMENT_WIDTH ? (
-                  <>
-                    {item}
-                    <br />
-                  </>
-                ) : (
-                  item
-                ),
-              )}
-            </Text>
+            <>
+              <Spacer size="l" />
+              <Text
+                className={cx(
+                  styles.text,
+                  styles.additionalText,
+                  styles.marginBottom,
+                )}
+              >
+                {CONTENT[moduleName]?.additionalText.map((item: string) =>
+                  width > MIN_ELEMENT_WIDTH ? (
+                    <>
+                      {item}
+                      <br />
+                    </>
+                  ) : (
+                    item
+                  ),
+                )}
+              </Text>
+            </>
           )}
           {renderText(MODULE_TEXT_VIEW[moduleName])}
         </div>

@@ -18,6 +18,8 @@ import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { RiPopover } from 'uiSrc/components/base'
+import { EXTERNAL_LINKS, UTM_MEDIUMS } from 'uiSrc/constants/links'
+import { getUtmExternalLink } from 'uiSrc/utils/links'
 import UserApiKeysTable from './components/user-api-keys-table'
 
 import styles from './styles.module.scss'
@@ -58,19 +60,26 @@ const CloudSettings = () => {
       <Spacer size="s" />
       <Row gap="m" responsive>
         <FlexItem grow>
-          <Text size="s" className={styles.smallText} color="subdued">
-            The list of API user keys that are stored locally in Redis Insight.{' '}
-            <br />
-            API user keys grant programmatic access to Redis Cloud. <br />
-            {'To delete API keys from Redis Cloud, '}
+          <Text size="m" className={styles.smallText} color="primary">
+            The list of API user keys that are stored locally in Redis Insight.
+          </Text>
+          <Spacer size="xs" />
+          <Text size="m" className={styles.smallText} color="primary">
+            API user keys grant programmatic access to Redis Cloud.
+          </Text>
+          <Text size="m" className={styles.smallText} color="primary">
+            To delete API keys from Redis Cloud,
             <Link
+              color="primary"
               target="_blank"
-              color="text"
-              href="https://redis.io/redis-enterprise-cloud/overview/?utm_source=redisinsight&utm_medium=settings&utm_campaign=clear_keys"
+              href={getUtmExternalLink(EXTERNAL_LINKS.redisEnterpriseCloud, {
+                medium: UTM_MEDIUMS.Settings,
+                campaign: 'clear_keys',
+              })}
             >
               sign in to Redis Cloud
             </Link>
-            {' and delete them manually.'}
+            and delete them manually.
           </Text>
         </FlexItem>
         <FlexItem grow={false}>

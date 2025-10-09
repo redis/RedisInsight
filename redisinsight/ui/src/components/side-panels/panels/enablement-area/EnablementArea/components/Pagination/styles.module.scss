@@ -5,14 +5,16 @@
   justify-content: space-between;
   align-items: center;
   border-top: 1px solid var(--separatorColor);
-  & > div:first-of-type,& > div:last-of-type  {
+  & > div:first-of-type,
+  & > div:last-of-type {
     min-width: 94px;
   }
 }
 
 .paginationCompressed {
   padding: 8px 16px;
-  & > div:first-of-type, & > div:last-of-type {
+  & > div:first-of-type,
+  & > div:last-of-type {
     min-width: 70px;
   }
 
@@ -22,20 +24,10 @@
   }
 }
 
-.prevPage, .nextPage {
+.prevPage,
+.nextPage {
   & > span {
     justify-content: flex-start;
-  }
-}
-
-.prevPageCompressed {
-  & > span {
-    padding: 0 12px 0 4px !important;
-  }
-}
-.nextPageCompressed {
-  & > span {
-    padding: 0 4px 0 12px !important;
   }
 }
 

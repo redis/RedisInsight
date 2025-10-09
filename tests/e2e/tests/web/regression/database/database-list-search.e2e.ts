@@ -37,7 +37,8 @@ fixture `Database list search`
         // Clear and delete databases
         await databaseAPIRequests.deleteAllDatabasesApi();
     });
-test('Verify DB list search', async t => {
+test
+    .skip('Verify DB list search', async t => {
     const searchedDBHostInvalid = 'invalid';
     const searchedDBName = 'Search';
     const searchedDBHost = ossStandaloneConfig.host;

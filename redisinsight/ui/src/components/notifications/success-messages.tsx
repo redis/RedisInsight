@@ -13,43 +13,54 @@ import {
 } from 'uiSrc/utils'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Text } from 'uiSrc/components/base/text'
+import { Text, Title } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
+import { Spacer } from '../base/layout'
 
 // TODO: use i18n file for texts
 export default {
   ADDED_NEW_INSTANCE: (instanceName: string) => ({
     title: 'Database has been added',
     message: (
-      <>
-        <b>{formatNameShort(instanceName)}</b> has been added to Redis Insight.
-      </>
+      <Text component="span">
+        <Text variant="semiBold" component="span">
+          {formatNameShort(instanceName)}
+        </Text>{' '}
+        has been added to Redis Insight.
+      </Text>
     ),
   }),
   ADDED_NEW_RDI_INSTANCE: (instanceName: string) => ({
     title: 'Instance has been added',
     message: (
-      <>
-        <b>{formatNameShort(instanceName)}</b> has been added to RedisInsight.
-      </>
+      <Text component="span">
+        <Text variant="semiBold" component="span">
+          {formatNameShort(instanceName)}
+        </Text>{' '}
+        has been added to RedisInsight.
+      </Text>
     ),
   }),
   DELETE_INSTANCE: (instanceName: string) => ({
     title: 'Database has been deleted',
     message: (
-      <>
-        <b>{formatNameShort(instanceName)}</b> has been deleted from Redis
-        Insight.
-      </>
+      <Text component="span">
+        <Text variant="semiBold" component="span">
+          {formatNameShort(instanceName)}
+        </Text>{' '}
+        has been deleted from Redis Insight.
+      </Text>
     ),
   }),
   DELETE_RDI_INSTANCE: (instanceName: string) => ({
     title: 'Instance has been deleted',
     message: (
-      <>
-        <b>{formatNameShort(instanceName)}</b> has been deleted from
-        RedisInsight.
-      </>
+      <Text component="span">
+        <Text variant="semiBold" component="span">
+          {formatNameShort(instanceName)}
+        </Text>{' '}
+        has been deleted from RedisInsight.
+      </Text>
     ),
   }),
   DELETE_INSTANCES: (instanceNames: Maybe<string>[]) => {
@@ -58,10 +69,12 @@ export default {
       title: 'Databases have been deleted',
       message: (
         <>
-          <span>
-            <b>{instanceNames.length}</b> databases have been deleted from Redis
-            Insight:
-          </span>
+          <Text component="span">
+            <Text variant="semiBold" component="span">
+              {instanceNames.length}
+            </Text>{' '}
+            databases have been deleted from Redis Insight:
+          </Text>
           <ul style={{ marginBottom: 0 }}>
             {instanceNames.slice(0, limitShowRemovedInstances).map((el, i) => (
               // eslint-disable-next-line react/no-array-index-key
@@ -81,10 +94,12 @@ export default {
       title: 'Instances have been deleted',
       message: (
         <>
-          <span>
-            <b>{instanceNames.length}</b> instances have been deleted from
-            RedisInsight:
-          </span>
+          <Text component="span">
+            <Text variant="semiBold" component="span">
+              {instanceNames.length}
+            </Text>{' '}
+            instances have been deleted from RedisInsight:
+          </Text>
           <ul style={{ marginBottom: 0 }}>
             {instanceNames.slice(0, limitShowRemovedInstances).map((el, i) => (
               // eslint-disable-next-line react/no-array-index-key
@@ -101,17 +116,23 @@ export default {
   ADDED_NEW_KEY: (keyName: RedisResponseBuffer) => ({
     title: 'Key has been added',
     message: (
-      <>
-        <b>{formatNameShort(bufferToString(keyName))}</b> has been added.
-      </>
+      <Text component="span">
+        <Text variant="semiBold" component="span">
+          {formatNameShort(bufferToString(keyName))}
+        </Text>{' '}
+        has been added.
+      </Text>
     ),
   }),
   DELETED_KEY: (keyName: RedisResponseBuffer) => ({
     title: 'Key has been deleted',
     message: (
-      <>
-        <b>{formatNameShort(bufferToString(keyName))}</b> has been deleted.
-      </>
+      <Text component="span">
+        <Text variant="semiBold" component="span">
+          {formatNameShort(bufferToString(keyName))}
+        </Text>{' '}
+        has been deleted.
+      </Text>
     ),
   }),
   REMOVED_KEY_VALUE: (
@@ -126,9 +147,13 @@ export default {
     ),
     message: (
       <>
-        <b>{formatNameShort(bufferToString(keyValue))}</b> has been removed from
-        &nbsp;
-        <b>{formatNameShort(bufferToString(keyName))}</b>
+        <Text variant="semiBold" component="span">
+          {formatNameShort(bufferToString(keyValue))}
+        </Text>{' '}
+        has been removed from &nbsp;
+        <Text variant="semiBold" component="span">
+          {formatNameShort(bufferToString(keyName))}
+        </Text>
       </>
     ),
   }),
@@ -183,9 +208,12 @@ export default {
   MESSAGE_ACTION: (message: string, actionName: string) => ({
     title: <>Message has been {actionName}</>,
     message: (
-      <>
-        <b>{message}</b> has been successfully {actionName}.
-      </>
+      <Text component="span">
+        <Text variant="semiBold" component="span">
+          {message}
+        </Text>{' '}
+        has been successfully {actionName}.
+      </Text>
     ),
   }),
   NO_CLAIMED_MESSAGES: () => ({
@@ -196,6 +224,17 @@ export default {
     title: 'Index has been created',
     message: 'Open the list of indexes to see it.',
   }),
+  DELETE_INDEX: (indexName: string) => ({
+    title: 'Index has been deleted',
+    message: (
+      <Text component="span">
+        <Text variant="semiBold" component="span">
+          {formatNameShort(indexName)}
+        </Text>{' '}
+        has been deleted.
+      </Text>
+    ),
+  }),
   TEST_CONNECTION: () => ({
     title: 'Connection is successful',
   }),
@@ -204,69 +243,63 @@ export default {
     return {
       title: (
         <>
-          Action completed
+          <Title size="S">Action completed</Title>
           {fileName ? (
             <>
-              <br />
-              <Text color="ghost">Commands executed from file:</Text>
-              <Text color="ghost">{formatLongName(fileName, 34, 5)}</Text>
+              <Spacer size="s" />
+              <Text>Commands executed from file:</Text>
+              <Text>{formatLongName(fileName, 34, 5)}</Text>
             </>
           ) : null}
+          <Spacer size="m" />
         </>
       ),
       message: (
-        <Row align="start" className={styles.summary}>
+        <Row align="start" gap="xl">
           <FlexItem>
-            <Text color="ghost" className={styles.summaryValue}>
-              {numberWithSpaces(processed)}
-            </Text>
-            <Text size="xs" className={styles.summaryLabel}>
-              Commands Processed
-            </Text>
+            <Text>{numberWithSpaces(processed)}</Text>
+            <Text size="xs">Commands Processed</Text>
           </FlexItem>
           <FlexItem>
-            <Text color="ghost" className={styles.summaryValue}>
-              {numberWithSpaces(succeed)}
-            </Text>
-            <Text size="xs" className={styles.summaryLabel}>
-              Success
-            </Text>
+            <Text>{numberWithSpaces(succeed)}</Text>
+            <Text size="xs">Success</Text>
           </FlexItem>
           <FlexItem>
-            <Text color="ghost" className={styles.summaryValue}>
-              {numberWithSpaces(failed)}
-            </Text>
-            <Text size="xs" className={styles.summaryLabel}>
-              Errors
-            </Text>
+            <Text>{numberWithSpaces(failed)}</Text>
+            <Text size="xs">Errors</Text>
           </FlexItem>
           <FlexItem>
-            <Text color="ghost" className={styles.summaryValue}>
+            <Text>
               {millisecondsFormat(data?.duration || 0, 'H:mm:ss.SSS')}
             </Text>
-            <Text size="xs" className={styles.summaryLabel}>
-              Time Taken
-            </Text>
+            <Text size="xs">Time Taken</Text>
           </FlexItem>
         </Row>
       ),
       className: 'dynamic',
+      actions: {}, // Make sure we don't show the default OK button
     }
   },
   DELETE_LIBRARY: (libraryName: string) => ({
     title: 'Library has been deleted',
     message: (
-      <>
-        <b>{formatNameShort(libraryName)}</b> has been deleted.
-      </>
+      <Text component="span">
+        <Text variant="semiBold" component="span">
+          {formatNameShort(libraryName)}
+        </Text>{' '}
+        has been deleted.
+      </Text>
     ),
   }),
   ADD_LIBRARY: (libraryName: string) => ({
     title: 'Library has been added',
     message: (
-      <>
-        <b>{formatNameShort(libraryName)}</b> has been added.
-      </>
+      <Text component="span">
+        <Text variant="semiBold" component="span">
+          {formatNameShort(libraryName)}
+        </Text>{' '}
+        has been added.
+      </Text>
     ),
   }),
   REMOVED_ALL_CAPI_KEYS: () => ({

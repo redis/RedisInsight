@@ -13,7 +13,7 @@ import { EAItemActions } from 'uiSrc/constants'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 
 import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
-import { Col } from 'uiSrc/components/base/layout/flex'
+import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { RiTooltip, OnboardingTour } from 'uiSrc/components'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
@@ -125,15 +125,15 @@ const Group = (props: Props) => {
       defaultOpen={initialIsOpen}
       open={forceState === 'open' || isGroupOpen}
       label={
-        <Text className="group-header" size="m">
+        <Row align="end" justify="start" gap="s">
           {isShowFolder && (
-            <RiIcon
-              type={isGroupOpen ? 'KnowledgeBaseIcon' : 'FolderIcon'}
-              style={{ marginRight: '10px' }}
-            />
+            <RiIcon type={isGroupOpen ? 'KnowledgeBaseIcon' : 'FolderIcon'} />
           )}
-          {label}
-        </Text>
+
+          <Text className="group-header" size="m">
+            {label}
+          </Text>
+        </Row>
       }
       onOpenChange={handleOpen}
       style={{

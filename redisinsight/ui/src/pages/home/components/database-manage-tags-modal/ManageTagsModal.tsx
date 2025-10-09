@@ -64,8 +64,8 @@ export const ManageTagsModal = ({
   )
 
   const isSaveButtonDisabled = !isModified || hasErrors
-  const isCloudDb = instance.provider === ConnectionProvider.RE_CLOUD
-  const isClusterDb = instance.provider === ConnectionProvider.RE_CLUSTER
+  const isCloudDb = instance.provider === ConnectionProvider.REDIS_CLOUD
+  const isClusterDb = instance.provider === ConnectionProvider.REDIS_SOFTWARE
 
   const handleTagChange = useCallback(
     (index: number, key: 'key' | 'value', value: string) => {
@@ -104,6 +104,7 @@ export const ManageTagsModal = ({
     <FormDialog
       isOpen
       onClose={onClose}
+      className={styles.manageTagsModal}
       header={
         <div className={styles.header}>
           <Title size="M">Manage tags for {instance.name}</Title>
@@ -142,7 +143,6 @@ export const ManageTagsModal = ({
           </div>
         </>
       }
-      className={styles.manageTagsModal}
     >
       <div className={styles.tagForm}>
         <div className={styles.tagFormHeader}>

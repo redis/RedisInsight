@@ -22,8 +22,8 @@ import {
 import { IconButton } from '../../../components/base/forms/buttons'
 import { CancelSlimIcon } from '../../../components/base/icons'
 import { SwitchInput } from 'uiSrc/components/base/inputs'
-import { RiTooltip } from 'uiSrc/components'
-import { TOOLTIP_DELAY_LONG } from 'uiSrc/constants'
+import { RiTooltip } from 'uiSrc/components/base/tooltip/RITooltip'
+import { TOOLTIP_DELAY_LONG } from 'uiSrc/constants/durationUnits'
 
 enum EntityType {
   Node = 'Node',

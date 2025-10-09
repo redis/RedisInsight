@@ -5,5 +5,6 @@ export { EmptyButton } from 'uiSrc/components/base/forms/buttons/EmptyButton'
 export { IconButton } from 'uiSrc/components/base/forms/buttons/IconButton'
 export { PrimaryButton } from 'uiSrc/components/base/forms/buttons/PrimaryButton'
 export { SecondaryButton } from 'uiSrc/components/base/forms/buttons/SecondaryButton'
+export { ToggleButton } from 'uiSrc/components/base/forms/buttons/ToggleButton'
 
 export type { IconType } from 'uiSrc/components/base/forms/buttons/IconButton'

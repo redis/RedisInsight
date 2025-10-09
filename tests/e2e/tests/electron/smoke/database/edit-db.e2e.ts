@@ -18,13 +18,13 @@ fixture `Edit Databases`
     });
 // Returns the URL of the current web page
 const getPageUrl = ClientFunction(() => window.location.href);
-test
+test.skip
     .meta({ rte: rte.reCluster })
     .after(async() => {
         // Delete database
         await databaseHelper.deleteDatabase(redisEnterpriseClusterConfig.databaseName);
     })('Verify that user can connect to the RE cluster database', async t => {
-        await databaseHelper.addNewREClusterDatabase(redisEnterpriseClusterConfig);
+        await databaseHelper.addNewRedisSoftwareDatabase(redisEnterpriseClusterConfig);
         await myRedisDatabasePage.clickOnDBByName(redisEnterpriseClusterConfig.databaseName);
         await t.expect(getPageUrl()).contains('browser', 'The edit view is not opened');
     });

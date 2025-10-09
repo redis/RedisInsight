@@ -304,6 +304,7 @@ function getTotalKeysItem(
             >
               db{db || 0}:
             </span>
+            &nbsp;
             <b>{numberWithSpaces(dbKeysCount || 0)}</b>
           </>
         ),

@@ -33,7 +33,7 @@ export interface OutsideClickDetectorProps {
 // A click event's target can be imprecise, as the value will be
 // the closest common ancestor of the press (mousedown, touchstart)
 // and release (mouseup, touchend) events (often <body />) if
-// the the target of each event differs.
+// the target of each event differs.
 // We need the actual event targets to make the correct decisions
 // about user intention. So, consider the down/start and up/end
 // items below as the deconstruction of a click event.

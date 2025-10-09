@@ -41,14 +41,18 @@ const BulkDeleteSummary = () => {
     <div className={styles.container}>
       {isUndefined(status) && (
         <>
-          <Text className={styles.title}>
+          <Text size="m" variant="semiBold" className={styles.title}>
             <span>{title}</span>
             <RiTooltip
               position="right"
               anchorClassName={styles.tooltipAnchor}
-              content="Expected amount is estimated based on
-              the number of keys scanned and the scan percentage.
-              The final number may be different."
+              content={
+                <Text size="XS">
+                  Expected amount is estimated based on the number of keys
+                  scanned and the scan percentage. The final number may be
+                  different.
+                </Text>
+              }
             >
               <RiIcon
                 color="informative400"
@@ -59,6 +63,7 @@ const BulkDeleteSummary = () => {
           </Text>
           <Text
             color="subdued"
+            size="XS"
             className={styles.summaryApproximate}
             data-testid="bulk-delete-summary"
           >

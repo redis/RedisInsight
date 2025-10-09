@@ -1,3 +1,8 @@
+import {
+  TimeSeries,
+  TimeUnit,
+} from './interfaces'
+
 function charCodeSum(str: string) {
   let sum = 0
   for (let i = 0; i < str.length; i++) {
@@ -133,4 +138,33 @@ export function hexToRGBA(hex: string, alpha: number): string {
   } else {
     return 'rgb(' + r + ', ' + g + ', ' + b + ')'
   }
+}
+
+export function normalizeDatapointUnits(
+  timeSeries: TimeSeries[],
+  unit: TimeUnit,
+): TimeSeries[] {
+  try {
+    if (unit === TimeUnit.seconds) {
+      return timeSeries.map((ts) => {
+        return {
+          ...ts,
+          datapoints: ts.datapoints.map(([timestamp, label]) => [
+            timestamp * 1_000,
+            label,
+          ]),
+        }
+      })
+    }
+  } catch (e) {
+    // ignore an error to return original data
+  }
+
+  return timeSeries
+}
+
+export function determineDefaultTimeUnits(timeSeries: TimeSeries[]): TimeUnit {
+  return timeSeries?.[0]?.datapoints?.[0]?.[0] > 1e10
+    ? TimeUnit.milliseconds
+    : TimeUnit.seconds
 }

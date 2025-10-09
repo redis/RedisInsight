@@ -1,0 +1,52 @@
+{
+  "name": "playwright",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@faker-js/faker": "^9.6.0",
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.15.29",
+    "allure-commandline": "^2.33.0",
+    "allure-js-commons": "^3.2.0",
+    "allure-playwright": "^3.2.0",
+    "cross-env": "^7.0.3",
+    "fishery": "^2.3.1",
+    "nyc": "^17.1.0"
+  },
+  "scripts": {
+    "removeReportDirs": "rm -rf allure-results playwright-report test-results",
+    "allTests": "playwright test",
+    "generateReports": "allure generate --clean",
+    "test:chromium:docker": "cross-env envPath=env/.docker.env yarn playwright test --project=Chromium",
+    "test:chromium:docker:debug": "yarn test:chromium:docker --debug",
+    "test:chromium:local-web": "cross-env envPath=env/.local-web.env yarn playwright test --project=Chromium",
+    "test:chromium:local-web:debug": "yarn test:chromium:local-web --debug",
+    "test:electron": "cross-env envPath=env/.desktop.env yarn playwright test --project=Chromium",
+    "test:electron:debug": "yarn test:electron --debug",
+    "test:coverage": "cross-env COLLECT_COVERAGE=true yarn playwright test; yarn coverage",
+    "coverage": "npx nyc report --reporter=html --reporter=lcov --reporter=text",
+    "coverage:clean": "rm -rf .nyc_output coverage",
+    "clean:results": "rm -rf allure-results",
+    "prep:history": "if [ -d allure-report/history ]; then cp -R allure-report/history allure-results; fi",
+    "test:allureHistoryReport": "yarn run prep:history && yarn allTests && yarn allure generate --clean -o allure-report allure-results",
+    "test:electron:allureHistoryReport": "yarn run prep:history && yarn test:electron && yarn allure generate --clean -o allure-report allure-results",
+    "generateAndShowReports": "allure serve allure-results",
+    "test:autogen": "playwright codegen"
+  },
+  "dependencies": {
+    "axios": "^1.9.0",
+    "dotenv": "^16.4.7",
+    "dotenv-cli": "^8.0.0",
+    "fs-extra": "^11.3.0",
+    "module-alias": "^2.2.3",
+    "node-color-log": "^12.0.1",
+    "sqlite3": "^5.1.7"
+  },
+  "_moduleAliases": {
+    "@redislabsdev/redis-ui-icons": "../../node_modules/@redis-ui/icons",
+    "@redislabsdev/redis-ui-styles": "../../node_modules/@redis-ui/styles",
+    "@redislabsdev/redis-ui-components": "../../node_modules/@redis-ui/components",
+    "@redislabsdev/redis-ui-table": "../../node_modules/@redis-ui/table"
+  }
+}

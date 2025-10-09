@@ -1,8 +1,7 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import { toNumber } from 'lodash'
-import { EuiFieldText } from '@elastic/eui'
 
 import { Text } from 'uiSrc/components/base/text'
 import { KeyTypes } from 'uiSrc/constants'
@@ -31,7 +30,7 @@ import {
 } from 'uiSrc/slices/instances/instances'
 
 import { AddListFormConfig as config } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import {
   DestructiveButton,
@@ -43,6 +42,7 @@ import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { RiPopover } from 'uiSrc/components/base'
+import { TextInput } from 'uiSrc/components/base/inputs'
 import { DeleteListElementsDto } from 'apiSrc/modules/browser/list/dto'
 
 import {
@@ -52,6 +52,8 @@ import {
 } from '../add-list-elements/AddListElements'
 
 import styles from './styles.module.scss'
+import { Panel } from 'uiSrc/components/panel'
+import { EntryContent } from 'uiSrc/pages/browser/modules/key-details/components/common/AddKeysContainer.styled'
 
 export interface Props {
   closePanel: (isCancelled?: boolean) => void
@@ -116,8 +118,8 @@ const RemoveListElements = (props: Props) => {
     }
   }, [databaseVersion])
 
-  const handleCountChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setCount(validateCountNumber(e.target.value))
+  const handleCountChange = (value: string) => {
+    setCount(validateCountNumber(value))
   }
 
   const showPopover = () => {
@@ -243,16 +245,13 @@ const RemoveListElements = (props: Props) => {
   )
 
   return (
-    <>
-      <div className={styles.content}>
+    <Col gap="m">
+      <EntryContent gap="m">
         <FlexItem grow>
-          <Row align="center">
+          <Row align="start" gap="m" className={styles.formFieldsRow}>
             <FlexItem style={{ minWidth: '220px' }}>
               <FormField>
                 <RiSelect
-                  style={{
-                    height: 43,
-                  }}
                   value={destination}
                   options={optionsDestinations}
                   onChange={(value) =>
@@ -262,47 +261,49 @@ const RemoveListElements = (props: Props) => {
                 />
               </FormField>
             </FlexItem>
-            <FlexItem grow style={{ width: '100%' }}>
-              <FormField>
-                <EuiFieldText
-                  fullWidth
-                  name={config.count.name}
-                  id={config.count.name}
-                  maxLength={200}
-                  placeholder={config.count.placeholder}
-                  value={count}
-                  data-testid="count-input"
-                  autoComplete="off"
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    handleCountChange(e)
-                  }
-                  inputRef={countInput}
-                  disabled={!canRemoveMultiple}
-                  append={!canRemoveMultiple ? InfoBoxPopover() : <></>}
-                />
-              </FormField>
-            </FlexItem>
+            <Row grow>
+              <FlexItem grow>
+                <FormField>
+                  <TextInput
+                    name={config.count.name}
+                    id={config.count.name}
+                    maxLength={200}
+                    placeholder={config.count.placeholder}
+                    value={count}
+                    data-testid="count-input"
+                    autoComplete="off"
+                    onChange={handleCountChange}
+                    ref={countInput}
+                    disabled={!canRemoveMultiple}
+                  />
+                </FormField>
+              </FlexItem>
+
+              {!canRemoveMultiple ? (
+                <FlexItem>{InfoBoxPopover()}</FlexItem>
+              ) : (
+                <></>
+              )}
+            </Row>
           </Row>
         </FlexItem>
-      </div>
-      <>
-        <Row justify="end" gap="xl" style={{ padding: 18 }}>
-          <FlexItem>
-            <div>
-              <SecondaryButton
-                onClick={() => closePanel(true)}
-                data-testid="cancel-elements-btn"
-              >
-                Cancel
-              </SecondaryButton>
-            </div>
-          </FlexItem>
-          <FlexItem>
-            <div>{RemoveButton()}</div>
-          </FlexItem>
-        </Row>
-      </>
-    </>
+      </EntryContent>
+      <Panel justify="end" gap="xl">
+        <FlexItem>
+          <div>
+            <SecondaryButton
+              onClick={() => closePanel(true)}
+              data-testid="cancel-elements-btn"
+            >
+              Cancel
+            </SecondaryButton>
+          </div>
+        </FlexItem>
+        <FlexItem>
+          <div>{RemoveButton()}</div>
+        </FlexItem>
+      </Panel>
+    </Col>
   )
 }
 

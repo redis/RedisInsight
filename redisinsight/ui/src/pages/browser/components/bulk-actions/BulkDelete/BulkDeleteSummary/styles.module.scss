@@ -1,13 +1,15 @@
 .title {
   padding-top: 16px;
-  font-size: 18px !important;
   line-height: 24px;
-  font-weight: 500 !important;
 }
 
 .tooltipAnchor {
   padding-left: 6px;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
 
   svg {
     margin-top: -2px;
@@ -18,6 +20,5 @@
 
 .summaryApproximate {
   padding-top: 6px;
-  font-size: 13px !important;
   line-height: 18px;
 }

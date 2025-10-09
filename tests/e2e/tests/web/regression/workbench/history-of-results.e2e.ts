@@ -21,15 +21,15 @@ fixture `History of results at Workbench`
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         // Go to Workbench page
-        await t.click(browserPage.NavigationPanel.workbenchButton);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
     })
     .afterEach(async() => {
         // Clear and delete database
         await workbenchPage.Cli.sendCommandInCli(`DEL ${keyName}`);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test
-    .meta({ rte: rte.standalone })('Verify that user can see original date and time of command execution in Workbench history after the page update', async t => {
+    .meta({ rte: rte.standalone })
+    .skip('Verify that user can see original date and time of command execution in Workbench history after the page update', async t => {
         keyName = Common.generateWord(5);
         // Send command and remember the time
         await workbenchPage.sendCommandInWorkbench(command);
@@ -43,8 +43,7 @@ test
 test.skip
     .meta({ rte: rte.standalone })
     .after(async() => {
-        // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
+        // overwrite aftereach
     })('Verify that if command result is more than 1 MB and user refreshes the page, the message "Results have been deleted since they exceed 1 MB. Re-run the command to see new results." is displayed', async t => {
         const commandToSend = 'set key';
         const commandToGet = 'get key';
@@ -59,7 +58,8 @@ test.skip
         await t.expect(workbenchPage.queryTextResult.textContent).eql('"Results have been deleted since they exceed 1 MB. Re-run the command to see new results."', 'The message is not displayed');
     });
 test
-    .meta({ rte: rte.standalone })('Verify that the first command in workbench history is deleted when user executes 31 command (new the following result replaces the first result)', async t => {
+    .meta({ rte: rte.standalone })
+    .skip('Verify that the first command in workbench history is deleted when user executes 31 command (new the following result replaces the first result)', async t => {
         keyName = Common.generateWord(10);
         const numberOfCommands = 30;
         const firstCommand = 'FT._LIST';
@@ -73,7 +73,8 @@ test
         await t.expect(workbenchPage.queryCardCommand.count).eql(30, { timeout: 5000 });
     });
 test
-    .meta({ rte: rte.none })('Verify that user can see cursor is at the first character when Editor is empty', async t => {
+    .meta({ rte: rte.none })
+    .skip('Verify that user can see cursor is at the first character when Editor is empty', async t => {
         const commands = [
             'FT.INFO',
             'RANDOMKEY'

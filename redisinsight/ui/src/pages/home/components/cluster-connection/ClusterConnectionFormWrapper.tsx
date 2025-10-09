@@ -58,7 +58,7 @@ const ClusterConnectionFormWrapper = ({ onClose }: Props) => {
 
   const formSubmit = (values: ICredentialsRedisCluster) => {
     sendEventTelemetry({
-      event: TelemetryEvent.CONFIG_DATABASES_RE_CLUSTER_AUTODISCOVERY_SUBMITTED,
+      event: TelemetryEvent.CONFIG_DATABASES_REDIS_SOFTWARE_AUTODISCOVERY_SUBMITTED,
     })
 
     dispatch(fetchInstancesRedisCluster(values, onSuccess))

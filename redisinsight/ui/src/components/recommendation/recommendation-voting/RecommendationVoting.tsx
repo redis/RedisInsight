@@ -35,7 +35,7 @@ const RecommendationVoting = ({
       gap={live ? 'none' : 'l'}
       data-testid="recommendation-voting"
     >
-      <Text size="m" className={cx({ [styles.highlightText]: live })}>
+      <Text size="m">
         Is this useful?
       </Text>
       <div className="voteContent">

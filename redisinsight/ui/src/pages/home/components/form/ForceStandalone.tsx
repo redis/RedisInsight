@@ -14,7 +14,7 @@ export interface Props {
 }
 
 const ForceStandaloneLabel = () => (
-  <p>
+  <>
     <span>Force Standalone Connection</span>
     <RiTooltip
       className="homePage_tooltip"
@@ -34,7 +34,7 @@ const ForceStandaloneLabel = () => (
         }}
       />
     </RiTooltip>
-  </p>
+  </>
 )
 const ForceStandalone = (props: Props) => {
   const { formik } = props

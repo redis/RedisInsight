@@ -73,6 +73,7 @@ const ResultsLog = ({ data }: Props) => {
         }
         forceState={getNavGroupState(ResultsStatus.Success)}
         data-testid={`success-results-${getNavGroupState(ResultsStatus.Success)}`}
+        id={`success-results-${getNavGroupState(ResultsStatus.Success)}`}
       >
         <TableResult data={data?.success ?? []} />
       </RICollapsibleNavGroup>

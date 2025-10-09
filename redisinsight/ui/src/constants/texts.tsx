@@ -50,10 +50,23 @@ export const ScanNoResultsFoundText = (
 
 export const lastDeliveredIDTooltipText = (
   <>
-    Specify the ID of the last delivered entry in the stream from the new
-    group's perspective.
+    <Text size="s">
+      Specify the ID of the last delivered entry in the stream from the new
+      group's perspective.
+    </Text>
     <Spacer size="xs" />
-    Otherwise, <b>$</b> represents the ID of the last entry in the stream,&nbsp;
-    <b>0</b> fetches the entire stream from the beginning.
+    <Text size="s">
+      Otherwise, <b>$</b> represents the ID of the last entry in the
+      stream,&nbsp;
+      <b>0</b> fetches the entire stream from the beginning.
+    </Text>
+  </>
+)
+
+export const streamIDTooltipText = (
+  <>
+    ID must be a timestamp and sequence number greater than the last ID.
+    <Spacer size="xs" />
+    Otherwise, type * to auto-generate ID based on the database current time.
   </>
 )

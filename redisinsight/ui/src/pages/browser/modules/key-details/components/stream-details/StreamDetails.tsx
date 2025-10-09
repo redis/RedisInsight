@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
 
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
 import {
@@ -20,6 +19,7 @@ import AddStreamEntries from './add-stream-entity'
 import AddStreamGroup from './add-stream-group'
 import { StreamItemsAction } from '../key-details-actions'
 import { KeyDetailsSubheader } from '../key-details-subheader/KeyDetailsSubheader'
+import { AddKeysContainer } from '../common/AddKeysContainer.styled'
 
 export interface Props extends KeyDetailsHeaderProps {
   onRemoveKey: () => void
@@ -74,14 +74,14 @@ const StreamDetails = (props: Props) => {
           </div>
         )}
         {isAddItemPanelOpen && (
-          <div className={cx('formFooterBar', 'contentActive')}>
+          <AddKeysContainer>
             {streamViewType === StreamViewType.Data && (
               <AddStreamEntries closePanel={closeAddItemPanel} />
             )}
             {STREAM_ADD_GROUP_VIEW_TYPES.includes(streamViewType!) && (
               <AddStreamGroup closePanel={closeAddItemPanel} />
             )}
-          </div>
+          </AddKeysContainer>
         )}
       </div>
     </div>

@@ -14,7 +14,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { createAxiosError, pipelineToJson } from 'uiSrc/utils'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { rdiErrorMessages } from 'uiSrc/pages/rdi/constants'
-import { Text } from 'uiSrc/components/base/text'
+import { ColorText, Text } from 'uiSrc/components/base/text'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
@@ -36,7 +36,8 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const [resetPipeline, setResetPipeline] = useState(false)
 
-  const { config, jobs, resetChecked } = useSelector(rdiPipelineSelector)
+  const { config, jobs, resetChecked, isPipelineValid } =
+    useSelector(rdiPipelineSelector)
 
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
   const dispatch = useDispatch()
@@ -127,7 +128,19 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
           </PrimaryButton>
         }
       >
-        <Title size="XS">Are you sure you want to deploy the pipeline?</Title>
+        <Title size="XS">
+          {isPipelineValid ? (
+            <ColorText color="default">
+              Are you sure you want to deploy the pipeline?
+            </ColorText>
+          ) : (
+            <ColorText color="warning">
+              <RiIcon type="ToastDangerIcon" size="L" color="attention500" />
+              Your RDI pipeline contains errors. Are you sure you want to
+              continue?
+            </ColorText>
+          )}
+        </Title>
         <Spacer size="s" />
         <Text size="s">
           When deployed, this local configuration will overwrite any existing

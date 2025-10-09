@@ -88,7 +88,7 @@ describe('InlineItemEditor', () => {
       })
 
       fireEvent.click(screen.getByTestId(/apply-btn/))
-      expect(queryByTestId('approve-popover')).toBeInTheDocument()
+      expect(queryByTestId('confirm-popover')).toBeInTheDocument()
       expect(onApplyMock).not.toBeCalled()
     })
 
@@ -109,7 +109,7 @@ describe('InlineItemEditor', () => {
       })
 
       fireEvent.click(screen.getByTestId(/apply-btn/))
-      expect(queryByTestId('approve-popover')).toBeInTheDocument()
+      expect(queryByTestId('confirm-popover')).toBeInTheDocument()
       expect(onApplyMock).not.toBeCalled()
 
       fireEvent.click(screen.getByTestId(/save-btn/))

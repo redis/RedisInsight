@@ -30,4 +30,8 @@
 
 .tooltipAnchor {
   cursor: pointer;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

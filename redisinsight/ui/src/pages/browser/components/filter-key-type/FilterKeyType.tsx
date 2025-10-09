@@ -1,4 +1,3 @@
-import { EuiModal, EuiModalBody } from '@elastic/eui'
 import cx from 'classnames'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -24,16 +23,25 @@ import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { AdditionalRedisModule } from 'uiSrc/slices/interfaces'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 import { HealthText } from 'uiSrc/components/base/text/HealthText'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
+import {
+  defaultValueRender,
+  RiSelect,
+} from 'uiSrc/components/base/forms/select/RiSelect'
+import { Modal } from 'uiSrc/components/base/display'
 import { FILTER_KEY_TYPE_OPTIONS } from './constants'
 
 import styles from './styles.module.scss'
+import styled from 'styled-components'
 
 const ALL_KEY_TYPES_VALUE = 'all'
 
 export interface Props {
   modules?: AdditionalRedisModule[]
 }
+
+const FilterKeyTypeSelect = styled(RiSelect)`
+  height: 100%;
+`
 
 const FilterKeyType = ({ modules }: Props) => {
   const [isSelectOpen, setIsSelectOpen] = useState<boolean>(false)
@@ -152,17 +160,16 @@ const FilterKeyType = ({ modules }: Props) => {
           !isVersionSupported && styles.unsupported,
         )}
       >
-        {!isVersionSupported && isInfoPopoverOpen && (
-          <EuiModal
-            onClose={() => setIsInfoPopoverOpen(false)}
-            className={styles.unsupportedInfoModal}
-            data-testid="filter-not-available-modal"
-          >
-            <EuiModalBody className={styles.modalBody}>
-              <FilterNotAvailable onClose={() => setIsInfoPopoverOpen(false)} />
-            </EuiModalBody>
-          </EuiModal>
-        )}
+        <Modal
+          open={!isVersionSupported && isInfoPopoverOpen}
+          onCancel={() => setIsInfoPopoverOpen(false)}
+          className={styles.unsupportedInfoModal}
+          data-testid="filter-not-available-modal"
+          content={
+            <FilterNotAvailable onClose={() => setIsInfoPopoverOpen(false)} />
+          }
+          title={null}
+        />
         {!isVersionSupported && (
           <div
             role="presentation"
@@ -171,15 +178,10 @@ const FilterKeyType = ({ modules }: Props) => {
             data-testid="unsupported-btn-anchor"
           />
         )}
-        <RiSelect
+        <FilterKeyTypeSelect
           disabled={!isVersionSupported}
           options={options}
-          valueRender={({ option, isOptionValue }) => {
-            if (isOptionValue) {
-              return option.inputDisplay
-            }
-            return option.dropdownDisplay
-          }}
+          valueRender={defaultValueRender}
           defaultOpen={isSelectOpen}
           value={typeSelected}
           onChange={(value: string) => onChangeType(value)}

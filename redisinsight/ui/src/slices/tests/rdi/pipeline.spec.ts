@@ -9,6 +9,8 @@ import {
 } from 'uiSrc/utils/test-utils'
 import {
   MOCK_RDI_PIPELINE_DATA,
+  MOCK_RDI_PIPELINE_JOB1,
+  MOCK_RDI_PIPELINE_JOB2,
   MOCK_RDI_PIPELINE_JSON_DATA,
   MOCK_RDI_PIPELINE_STATUS_DATA,
 } from 'uiSrc/mocks/data/rdi'
@@ -24,7 +26,6 @@ import reducer, {
   getPipelineStrategiesSuccess,
   getPipelineStrategiesFailure,
   setPipelineSchema,
-  setPipeline,
   setChangedFile,
   setChangedFiles,
   deleteChangedFile,
@@ -51,6 +52,9 @@ import reducer, {
   rdiPipelineActionSelector,
   setPipelineConfig,
   setPipelineJobs,
+  setMonacoJobsSchema,
+  setJobNameSchema,
+  updatePipelineJob,
 } from 'uiSrc/slices/rdi/pipeline'
 import { apiService } from 'uiSrc/services'
 import {
@@ -62,6 +66,7 @@ import { INFINITE_MESSAGES } from 'uiSrc/components/notifications/components'
 import { FileChangeType, PipelineAction } from 'uiSrc/slices/interfaces'
 import { parseJMESPathFunctions } from 'uiSrc/utils'
 import successMessages from 'uiSrc/components/notifications/success-messages'
+import { value } from 'jsonpath'
 
 let store: typeof mockedStore
 
@@ -95,30 +100,6 @@ describe('rdi pipe slice', () => {
 
       // Act
       const nextState = reducer(initialState, getPipeline())
-
-      // Assert
-      const rootState = Object.assign(initialStateDefault, {
-        rdi: {
-          pipeline: nextState,
-        },
-      })
-      expect(rdiPipelineSelector(rootState)).toEqual(state)
-    })
-  })
-
-  describe('setPipeline', () => {
-    it('should properly set state', () => {
-      // Arrange
-      const state = {
-        ...initialState,
-        data: MOCK_RDI_PIPELINE_DATA,
-      }
-
-      // Act
-      const nextState = reducer(
-        initialState,
-        setPipeline(MOCK_RDI_PIPELINE_DATA),
-      )
 
       // Assert
       const rootState = Object.assign(initialStateDefault, {
@@ -199,6 +180,41 @@ describe('rdi pipe slice', () => {
         },
       })
       expect(rdiPipelineSelector(rootState)).toEqual(state)
+    })
+  })
+
+  describe('updatePipelineJob', () => {
+    it('should properly update job by name', () => {
+      // Arrange - preload state with existing jobs
+      const baseState = {
+        ...initialState,
+        jobs: MOCK_RDI_PIPELINE_DATA.jobs,
+      }
+
+      const expectedState = {
+        ...initialState,
+        jobs: [
+          MOCK_RDI_PIPELINE_JOB1,
+          { ...MOCK_RDI_PIPELINE_JOB2, value: 'newValue2' },
+        ],
+      }
+
+      // Act - update second job value
+      const nextState = reducer(
+        baseState,
+        updatePipelineJob({
+          name: MOCK_RDI_PIPELINE_JOB2.name,
+          value: 'newValue2',
+        }),
+      )
+
+      // Assert
+      const rootState = Object.assign(initialStateDefault, {
+        rdi: {
+          pipeline: nextState,
+        },
+      })
+      expect(rdiPipelineSelector(rootState)).toEqual(expectedState)
     })
   })
 
@@ -860,7 +876,7 @@ describe('rdi pipe slice', () => {
     })
 
     describe('fetchRdiPipelineSchema', () => {
-      it('succeed to fetch data', async () => {
+      it('succeed to fetch data with minimal schema', async () => {
         const data = { config: 'string' }
         const responsePayload = { data, status: 200 }
 
@@ -870,7 +886,130 @@ describe('rdi pipe slice', () => {
         await store.dispatch<any>(fetchRdiPipelineSchema('123'))
 
         // Assert
-        const expectedActions = [setPipelineSchema(data)]
+        const expectedActions = [
+          setPipelineSchema(data),
+          setMonacoJobsSchema({ required: [] }),
+          setJobNameSchema(null),
+        ]
+
+        expect(store.getActions()).toEqual(expectedActions)
+      })
+
+      it('succeed to fetch data with complete jobs schema', async () => {
+        const data = {
+          config: 'string',
+          jobs: {
+            type: 'object',
+            properties: {
+              name: {
+                type: 'string',
+                pattern: '^[a-zA-Z][a-zA-Z0-9_]*$',
+              },
+              source: {
+                type: 'object',
+                properties: {
+                  server_name: { type: 'string' },
+                  schema: { type: 'string' },
+                  table: { type: 'string' },
+                },
+              },
+            },
+            required: ['name', 'source'],
+          },
+        }
+        const responsePayload = { data, status: 200 }
+
+        apiService.get = jest.fn().mockResolvedValue(responsePayload)
+
+        // Act
+        await store.dispatch<any>(fetchRdiPipelineSchema('123'))
+
+        // Assert
+        const expectedMonacoJobsSchema = {
+          type: 'object',
+          properties: {
+            source: {
+              type: 'object',
+              properties: {
+                server_name: { type: 'string' },
+                schema: { type: 'string' },
+                table: { type: 'string' },
+              },
+            },
+          },
+          required: ['source'], // 'name' is filtered out
+        }
+
+        const expectedJobNameSchema = {
+          type: 'string',
+          pattern: '^[a-zA-Z][a-zA-Z0-9_]*$',
+        }
+
+        const expectedActions = [
+          setPipelineSchema(data),
+          setMonacoJobsSchema(expectedMonacoJobsSchema),
+          setJobNameSchema(expectedJobNameSchema),
+        ]
+
+        expect(store.getActions()).toEqual(expectedActions)
+      })
+
+      it('succeed to fetch data with jobs schema but no name property', async () => {
+        const data = {
+          config: 'string',
+          jobs: {
+            type: 'object',
+            properties: {
+              source: { type: 'object' },
+              transform: { type: 'array' },
+            },
+            required: ['source', 'transform'],
+          },
+        }
+        const responsePayload = { data, status: 200 }
+
+        apiService.get = jest.fn().mockResolvedValue(responsePayload)
+
+        // Act
+        await store.dispatch<any>(fetchRdiPipelineSchema('123'))
+
+        // Assert
+        const expectedMonacoJobsSchema = {
+          type: 'object',
+          properties: {
+            source: { type: 'object' },
+            transform: { type: 'array' },
+          },
+          required: ['source', 'transform'],
+        }
+
+        const expectedActions = [
+          setPipelineSchema(data),
+          setMonacoJobsSchema(expectedMonacoJobsSchema),
+          setJobNameSchema(null), // default fallback value
+        ]
+
+        expect(store.getActions()).toEqual(expectedActions)
+      })
+
+      it('succeed to fetch data with empty jobs schema', async () => {
+        const data = {
+          config: 'string',
+          jobs: {},
+        }
+        const responsePayload = { data, status: 200 }
+
+        apiService.get = jest.fn().mockResolvedValue(responsePayload)
+
+        // Act
+        await store.dispatch<any>(fetchRdiPipelineSchema('123'))
+
+        // Assert
+        const expectedActions = [
+          setPipelineSchema(data),
+          setMonacoJobsSchema({ required: [] }),
+          setJobNameSchema(null),
+        ]
 
         expect(store.getActions()).toEqual(expectedActions)
       })

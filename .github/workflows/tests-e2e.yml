@@ -1,0 +1,99 @@
+name: ✅ E2E Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      debug:
+        description: Enable SSH Debug (IT and E2E)
+        default: false
+        type: boolean
+
+permissions:
+  actions: read
+  contents: read
+
+# Cancel a previous run workflow
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-e2e
+  cancel-in-progress: true
+
+jobs:
+  build-docker:
+    uses: ./.github/workflows/pipeline-build-docker.yml
+    secrets: inherit
+    with:
+      debug: ${{ inputs.debug || false }}
+      for_e2e_tests: true
+
+  build-appimage:
+    uses: ./.github/workflows/pipeline-build-linux.yml
+    secrets: inherit
+    with:
+      target: build_linux_appimage_x64
+      debug: ${{ inputs.debug || false }}
+
+  e2e-docker-tests-smoke:
+    name: "E2E: Smoke (Docker)"
+    needs: build-docker
+    uses: ./.github/workflows/tests-e2e-docker-smoke.yml
+    secrets: inherit
+    with:
+      debug: ${{ inputs.debug || false }}
+
+  e2e-docker-tests-critical-path:
+    name: "E2E: Critical Path (Docker)"
+    needs: build-docker
+    uses: ./.github/workflows/tests-e2e-docker-critical-path.yml
+    secrets: inherit
+    with:
+      debug: ${{ inputs.debug || false }}
+
+  e2e-docker-tests-regression:
+    name: "E2E: Regression (Docker)"
+    needs: build-docker
+    uses: ./.github/workflows/tests-e2e-docker-regression.yml
+    secrets: inherit
+    with:
+      debug: ${{ inputs.debug || false }}
+
+  tests-e2e-playwright:
+    needs: build-docker
+    uses: ./.github/workflows/tests-e2e-playwright.yml
+    secrets: inherit
+    with:
+      debug: ${{ inputs.debug || false }}
+
+  e2e-appimage-tests:
+    needs: build-appimage
+    uses: ./.github/workflows/tests-e2e-appimage.yml
+    secrets: inherit
+    with:
+      debug: ${{ inputs.debug || false }}
+
+  clean:
+    uses: ./.github/workflows/clean-deployments.yml
+    needs:
+      [
+        e2e-docker-tests-smoke,
+        e2e-docker-tests-critical-path,
+        e2e-docker-tests-regression,
+        e2e-appimage-tests,
+        tests-e2e-playwright,
+      ]
+
+  # Remove artifacts from github actions
+  remove-artifacts:
+    name: Remove artifacts
+    needs:
+      [
+        e2e-docker-tests-smoke,
+        e2e-docker-tests-critical-path,
+        e2e-docker-tests-regression,
+        e2e-appimage-tests,
+        tests-e2e-playwright,
+      ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove all artifacts
+        uses: ./.github/actions/remove-artifacts

@@ -1,40 +1,12 @@
 /* eslint-disable react/no-this-in-sfc */
-import React, { useEffect, useState } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
-import { last } from 'lodash'
-import { useDispatch, useSelector } from 'react-redux'
-import HighlightedFeature, {
-  Props as HighlightedFeatureProps,
-} from 'uiSrc/components/hightlighted-feature/HighlightedFeature'
-import { ANALYTICS_ROUTES } from 'uiSrc/components/main-router/constants/sub-routes'
+import React from 'react'
 
-import { FeatureFlags, PageNames, Pages } from 'uiSrc/constants'
+import { FeatureFlags } from 'uiSrc/constants'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
-import {
-  appFeaturePagesHighlightingSelector,
-  removeFeatureFromHighlighting,
-} from 'uiSrc/slices/app/features'
-import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
-import { connectedInstanceSelector as connectedRdiInstanceSelector } from 'uiSrc/slices/rdi/instances'
 
 import { renderOnboardingTourWithChild } from 'uiSrc/utils/onboarding'
-import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
-import { BUILD_FEATURES } from 'uiSrc/constants/featuresHighlighting'
 import { FeatureFlagComponent } from 'uiSrc/components'
 
-import { appContextSelector } from 'uiSrc/slices/app/context'
-import { AppWorkspace } from 'uiSrc/slices/interfaces'
-import { IconType } from 'uiSrc/components/base/forms/buttons'
-import {
-  BrowserIcon,
-  PipelineManagementIcon,
-  PipelineStatisticsIcon,
-  PubSubIcon,
-  SlowLogIcon,
-  WorkbenchIcon,
-  GithubIcon,
-  SettingsIcon,
-} from 'uiSrc/components/base/icons'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 import {
   SideBar,
@@ -44,159 +16,26 @@ import {
   SideBarItem,
   SideBarItemIcon,
 } from 'uiSrc/components/base/layout/sidebar'
+import { GithubIcon } from 'uiSrc/components/base/icons'
+import { INavigations } from './navigation.types'
 import CreateCloud from './components/create-cloud'
 import HelpMenu from './components/help-menu/HelpMenu'
 import NotificationMenu from './components/notifications-center'
 
 import { RedisLogo } from './components/redis-logo/RedisLogo'
+import { useNavigation } from './hooks/useNavigation'
+import HighlightedFeature from '../hightlighted-feature/HighlightedFeature'
 import styles from './styles.module.scss'
 
-const pubSubPath = `/${PageNames.pubSub}`
-
-interface INavigations {
-  isActivePage: boolean
-  isBeta?: boolean
-  pageName: string
-  tooltipText: string
-  ariaLabel: string
-  dataTestId: string
-  connectedInstanceId?: string
-  onClick: () => void
-  iconType: IconType
-  onboard?: any
-  featureFlag?: FeatureFlags
-}
-
 const NavigationMenu = () => {
-  const history = useHistory()
-  const location = useLocation()
-  const dispatch = useDispatch()
-
-  const [activePage, setActivePage] = useState(Pages.home)
-
-  const { workspace } = useSelector(appContextSelector)
-  const { id: connectedInstanceId = '' } = useSelector(
-    connectedInstanceSelector,
-  )
-  const { id: connectedRdiInstanceId = '' } = useSelector(
-    connectedRdiInstanceSelector,
-  )
-  const highlightedPages = useSelector(appFeaturePagesHighlightingSelector)
-
-  const isRdiWorkspace = workspace === AppWorkspace.RDI
-
-  useEffect(() => {
-    setActivePage(`/${last(location.pathname.split('/'))}`)
-  }, [location])
-
-  const handleGoPage = (page: string) => history.push(page)
-
-  const isAnalyticsPath = (activePage: string) =>
-    !!ANALYTICS_ROUTES.find(
-      ({ path }) => `/${last(path.split('/'))}` === activePage,
-    )
-
-  const isPipelineManagementPath = () =>
-    location.pathname?.startsWith(
-      Pages.rdiPipelineManagement(connectedRdiInstanceId),
-    )
-
-  const getAdditionPropsForHighlighting = (
-    pageName: string,
-  ): Omit<HighlightedFeatureProps, 'children'> => {
-    if (BUILD_FEATURES[pageName]?.asPageFeature) {
-      return {
-        hideFirstChild: true,
-        onClick: () => dispatch(removeFeatureFromHighlighting(pageName)),
-        ...BUILD_FEATURES[pageName],
-      }
-    }
-
-    return {}
-  }
-
-  const privateRoutes: INavigations[] = [
-    {
-      tooltipText: 'Browser',
-      pageName: PageNames.browser,
-      isActivePage: activePage === `/${PageNames.browser}`,
-      ariaLabel: 'Browser page button',
-      onClick: () => handleGoPage(Pages.browser(connectedInstanceId)),
-      dataTestId: 'browser-page-btn',
-      connectedInstanceId,
-      iconType: BrowserIcon,
-      onboard: ONBOARDING_FEATURES.BROWSER_PAGE,
-    },
-    {
-      tooltipText: 'Workbench',
-      pageName: PageNames.workbench,
-      ariaLabel: 'Workbench page button',
-      onClick: () => handleGoPage(Pages.workbench(connectedInstanceId)),
-      dataTestId: 'workbench-page-btn',
-      connectedInstanceId,
-      isActivePage: activePage === `/${PageNames.workbench}`,
-      iconType: WorkbenchIcon,
-      onboard: ONBOARDING_FEATURES.WORKBENCH_PAGE,
-    },
-    {
-      tooltipText: 'Analysis Tools',
-      pageName: PageNames.analytics,
-      ariaLabel: 'Analysis Tools',
-      onClick: () => handleGoPage(Pages.analytics(connectedInstanceId)),
-      dataTestId: 'analytics-page-btn',
-      connectedInstanceId,
-      isActivePage: isAnalyticsPath(activePage),
-      iconType: SlowLogIcon,
-      featureFlag: FeatureFlags.envDependent,
-    },
-    {
-      tooltipText: 'Pub/Sub',
-      pageName: PageNames.pubSub,
-      ariaLabel: 'Pub/Sub page button',
-      onClick: () => handleGoPage(Pages.pubSub(connectedInstanceId)),
-      dataTestId: 'pub-sub-page-btn',
-      connectedInstanceId,
-      isActivePage: activePage === pubSubPath,
-      iconType: PubSubIcon,
-      onboard: ONBOARDING_FEATURES.PUB_SUB_PAGE,
-      featureFlag: FeatureFlags.envDependent,
-    },
-  ]
-
-  const privateRdiRoutes: INavigations[] = [
-    {
-      tooltipText: 'Pipeline Status',
-      pageName: PageNames.rdiStatistics,
-      ariaLabel: 'Pipeline Status page button',
-      onClick: () => handleGoPage(Pages.rdiStatistics(connectedRdiInstanceId)),
-      dataTestId: 'pipeline-status-page-btn',
-      isActivePage: activePage === `/${PageNames.rdiStatistics}`,
-      iconType: PipelineStatisticsIcon,
-    },
-    {
-      tooltipText: 'Pipeline Management',
-      pageName: PageNames.rdiPipelineManagement,
-      ariaLabel: 'Pipeline Management page button',
-      onClick: () =>
-        handleGoPage(Pages.rdiPipelineManagement(connectedRdiInstanceId)),
-      dataTestId: 'pipeline-management-page-btn',
-      isActivePage: isPipelineManagementPath(),
-      iconType: PipelineManagementIcon,
-    },
-  ]
-
-  const publicRoutes: INavigations[] = [
-    {
-      tooltipText: 'Settings',
-      pageName: PageNames.settings,
-      ariaLabel: 'Settings page button',
-      onClick: () => handleGoPage(Pages.settings),
-      dataTestId: 'settings-page-btn',
-      isActivePage: activePage === Pages.settings,
-      iconType: SettingsIcon,
-      featureFlag: FeatureFlags.envDependent,
-    },
-  ]
+  const {
+    privateRdiRoutes,
+    isRdiWorkspace,
+    publicRoutes,
+    getAdditionPropsForHighlighting,
+    highlightedPages,
+    connectedRdiInstanceId,
+  } = useNavigation()
 
   const renderNavItem = (nav: INavigations) => {
     const fragment = (
@@ -292,9 +131,6 @@ const NavigationMenu = () => {
     >
       <SideBarContainer>
         <RedisLogo isRdiWorkspace={isRdiWorkspace} />
-        {connectedInstanceId &&
-          !isRdiWorkspace &&
-          privateRoutes.map(renderNavItem)}
         {connectedRdiInstanceId &&
           isRdiWorkspace &&
           privateRdiRoutes.map(renderNavItem)}

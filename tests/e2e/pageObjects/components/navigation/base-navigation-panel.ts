@@ -7,7 +7,7 @@ export class BaseNavigationPanel {
     NotificationPanel = new NotificationPanel();
     HelpCenter  = new HelpCenter();
 
-    myRedisDBButton = Selector('[data-test-subj=home-page-btn]', { timeout: 1000 });
+    myRedisDBButton = Selector('[data-testid=redis-logo-link]', { timeout: 1000 });
     notificationCenterButton = Selector('[data-testid=notification-menu-button]');
 
     settingsButton = Selector('[data-testid=settings-page-btn]');

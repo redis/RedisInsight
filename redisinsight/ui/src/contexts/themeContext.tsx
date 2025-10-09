@@ -2,9 +2,11 @@ import React from 'react'
 import { ThemeProvider as StyledThemeProvider } from 'styled-components'
 import {
   theme as redisUiOldTheme,
+  CommonStyles,
   themeLight,
   themeDark,
 } from '@redis-ui/styles'
+import 'modern-normalize/modern-normalize.css'
 import '@redis-ui/styles/normalized-styles.css'
 import '@redis-ui/styles/fonts.css'
 
@@ -24,6 +26,14 @@ interface Props {
 
 const THEME_NAMES = THEMES.map(({ value }) => value)
 
+const getQueryTheme = () => {
+  const queryThemeParam = new URLSearchParams(window.location.search)
+    .get('theme')
+    ?.toUpperCase()
+
+  return THEMES.find(({ value }) => value === queryThemeParam)?.value
+}
+
 export const defaultState = {
   theme: DEFAULT_THEME || Theme.System,
   usingSystemTheme:
@@ -39,14 +49,20 @@ export class ThemeProvider extends React.Component<Props> {
   constructor(props: any) {
     super(props)
 
+    const queryTheme = getQueryTheme()
     const storedThemeValue = localStorageService.get(BrowserStorageItem.theme)
-    const theme =
-      !storedThemeValue || !THEME_NAMES.includes(storedThemeValue)
-        ? defaultState.theme
-        : storedThemeValue
+
+    let theme = defaultState.theme
+
+    if (queryTheme) {
+      theme = queryTheme
+    } else if (storedThemeValue && THEME_NAMES.includes(storedThemeValue)) {
+      theme = storedThemeValue
+    }
+
     const usingSystemTheme = theme === Theme.System
 
-    themeService.applyTheme(theme)
+    themeService.applyTheme(theme as Theme)
 
     this.state = {
       theme: theme === Theme.System ? this.getSystemTheme() : theme,
@@ -94,7 +110,10 @@ export class ThemeProvider extends React.Component<Props> {
           changeTheme: this.changeTheme,
         }}
       >
-        <StyledThemeProvider theme={uiTheme}>{children}</StyledThemeProvider>
+        <StyledThemeProvider theme={uiTheme}>
+          <CommonStyles />
+          {children}
+        </StyledThemeProvider>
       </ThemeContext.Provider>
     )
   }

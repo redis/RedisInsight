@@ -5,6 +5,7 @@ import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { EXTERNAL_LINKS, UTM_CAMPAINGS } from 'uiSrc/constants/links'
 import TelescopeImg from 'uiSrc/assets/img/telescope-dark.svg'
 import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
+import { Col } from 'uiSrc/components/base/layout/flex'
 
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Title } from 'uiSrc/components/base/text/Title'
@@ -26,15 +27,15 @@ const DatabaseNotOpened = (props: Props) => {
           Open a database
         </Title>
         <Spacer size="s" />
-        <>
+        <Col>
           <Text color="subdued" size="s">
             Open your Redis database, or create a new database to get started.
           </Text>
-          <Spacer size="s" />
+          <Spacer size="m" />
           <OAuthSsoHandlerDialog>
             {(ssoCloudHandlerClick) => (
               <ExternalLink
-                iconSize="S"
+                variant="inline"
                 href={getUtmExternalLink(EXTERNAL_LINKS.tryFree, {
                   campaign: UTM_CAMPAINGS[source] ?? source,
                 })}
@@ -53,7 +54,7 @@ const DatabaseNotOpened = (props: Props) => {
           </OAuthSsoHandlerDialog>
           <Spacer size="xs" />
           <ExternalLink
-            iconSize="S"
+            variant="inline"
             href={getUtmExternalLink(EXTERNAL_LINKS.docker, {
               campaign: UTM_CAMPAINGS[source] ?? source,
             })}
@@ -61,7 +62,7 @@ const DatabaseNotOpened = (props: Props) => {
           >
             Install using Docker
           </ExternalLink>
-        </>
+        </Col>
       </div>
       <img
         src={TelescopeImg}

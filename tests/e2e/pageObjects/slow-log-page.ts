@@ -23,7 +23,7 @@ export class SlowLogPage extends InstancePage {
     slowLogRefreshButton = Selector('[data-testid=slowlog-refresh-btn]');
     slowLogClearButton = Selector('[data-testid=clear-btn]');
     slowLogConfirmClearButton = Selector('[data-testid=reset-confirm-btn]');
-    slowLogTab = Selector('[data-testid=analytics-tab-SlowLog]');
+    slowLogTab = Selector('[data-testid=analytics-tabs] [role=tab] p').withText('Slow Log').parent('[role=tab]');
     //INPUTS
     slowLogSlowerThanConfig = Selector('[data-testid=slower-than-input]');
     slowLogMaxLengthConfig = Selector('[data-testid=max-len-input]');
@@ -67,12 +67,11 @@ export class SlowLogPage extends InstancePage {
 
     /**
      * Change Display Up To parameter in Slow Log
-     * @param number number of commands to display
+     * @param option option for commands to display
      */
-    async changeDisplayUpToParameter(number: number): Promise<void> {
+    async changeDisplayUpToParameter(option: string): Promise<void> {
         await t.click(this.slowLogNumberOfCommandsDropdown);
-        const dropdownSelector = Selector('button').withAttribute('id', `${number}`);
-        await t.click(dropdownSelector);
+        await t.click(Selector('[role=listbox] [role=option] span').withText(`${option}`));
     }
 
     /**

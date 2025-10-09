@@ -20,21 +20,14 @@
 
   .fileDrop {
     :global {
-      .euiButtonEmpty.euiButtonEmpty--primary.euiFilePicker__clearButton {
-        margin-top: 8px;
-      }
 
-      .euiButtonEmpty.euiButtonEmpty--primary.euiFilePicker__clearButton .euiButtonEmpty__text {
-        color: var(--externalLinkColor) !important;
-        text-transform: lowercase;
-      }
 
-      .euiFilePicker__showDrop .euiFilePicker__prompt,
-      .euiFilePicker__input:focus + .euiFilePicker__prompt {
+      .RI-File-Picker__showDrop .RI-File-Picker__prompt,
+      .RI-File-Picker__input:focus + .RI-File-Picker__prompt {
         background-color: var(--euiColorEmptyShade);
       }
 
-      .euiFilePicker__prompt {
+      .RI-File-Picker__prompt {
         background-color: var(--euiColorEmptyShade);
         height: 140px;
         border-radius: 4px;
@@ -42,7 +35,7 @@
         border: 1px dashed var(--controlsBorderColor);
       }
 
-      .euiFilePicker__clearButton {
+      .RI-File-Picker__clearButton {
         margin-top: 4px;
       }
     }

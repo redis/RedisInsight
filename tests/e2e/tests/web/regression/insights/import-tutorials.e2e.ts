@@ -5,7 +5,7 @@ import { t } from 'testcafe';
 import { ExploreTabs, rte } from '../../../../helpers/constants';
 import { DatabaseHelper } from '../../../../helpers/database';
 import { BrowserPage, MemoryEfficiencyPage, MyRedisDatabasePage, WorkbenchPage } from '../../../../pageObjects';
-import { commonUrl, ossStandaloneConfig, ossStandaloneRedisearch, fileDownloadPath } from '../../../../helpers/conf';
+import { commonUrl, ossStandaloneConfig, ossStandaloneConfigEmpty, fileDownloadPath } from '../../../../helpers/conf';
 import { DatabaseAPIRequests } from '../../../../helpers/api/api-database';
 import { Common } from '../../../../helpers/common';
 import { deleteAllKeysFromDB, verifyKeysDisplayingInTheList } from '../../../../helpers/keys';
@@ -41,10 +41,7 @@ fixture `Upload custom tutorials`
     .page(commonUrl)
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
-        await t.click(browserPage.NavigationPanel.workbenchButton);
-    })
-    .afterEach(async() => {
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
     });
 /* https://redislabs.atlassian.net/browse/RI-4186, https://redislabs.atlassian.net/browse/RI-4198,
 https://redislabs.atlassian.net/browse/RI-4302, https://redislabs.atlassian.net/browse/RI-4318
@@ -52,7 +49,7 @@ https://redislabs.atlassian.net/browse/RI-4302, https://redislabs.atlassian.net/
 test
     .before(async() => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
-        await t.click(browserPage.NavigationPanel.workbenchButton);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
 
         tutorialName = `${zipFolderName}${Common.generateWord(5)}`;
         zipFilePath = path.join('..', 'test-data', 'upload-tutorials', `${tutorialName}.zip`);
@@ -62,7 +59,6 @@ test
     .after(async() => {
         // Delete zip file
         await Common.deleteFileFromFolder(zipFilePath);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     })('Verify that user can upload tutorial with local zip file without manifest.json', async t => {
         // Verify that user can upload custom tutorials on docker version
         internalLinkName1 = 'probably-1';
@@ -133,7 +129,6 @@ test
         if(await tutorials.tutorialAccordionButton.withText(tutorialName).exists) {
             await tutorials.deleteTutorialByName(tutorialName);
         }
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     })('Verify that user can upload tutorial with URL with manifest.json', async t => {
         const labelFromManifest = 'Working with JSON label';
         const link = 'https://github.com/RedisInsight/RedisInsight/raw/9155d0241f6937c213893a29fe24c2f560cd48f3/tests/e2e/test-data/upload-tutorials/TutorialsWithManifest.zip';
@@ -172,8 +167,8 @@ test
 // https://redislabs.atlassian.net/browse/RI-4352
 test
     .before(async() => {
-        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneRedisearch);
-        await t.click(browserPage.NavigationPanel.workbenchButton);
+        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfigEmpty);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
 
         tutorialName = `${zipFolderName}${Common.generateWord(5)}`;
         zipFilePath = path.join('..', 'test-data', 'upload-tutorials', `${tutorialName}.zip`);
@@ -184,22 +179,22 @@ test
         // Delete exported file
         fs.unlinkSync(joinPath(fileDownloadPath, foundExportedFiles[0]));
         await Common.deleteFileFromFolder(zipFilePath);
-        await deleteAllKeysFromDB(ossStandaloneRedisearch.host, ossStandaloneRedisearch.port);
+        await deleteAllKeysFromDB(ossStandaloneConfigEmpty.host, ossStandaloneConfigEmpty.port);
         // Clear and delete database
-        await t.click(browserPage.NavigationPanel.workbenchButton);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
 
         await workbenchPage.NavigationHeader.togglePanel(true);
         const tutorials = await workbenchPage.InsightsPanel.setActiveTab(ExploreTabs.Tutorials);
         await tutorials.deleteTutorialByName(tutorialName);
         await t.expect(tutorials.tutorialAccordionButton.withText(tutorialName).exists)
             .notOk(`${tutorialName} tutorial is not deleted`);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneRedisearch);
     })('Verify that user can bulk upload data from custom tutorial', async t => {
         const allKeysResults = ['9Commands Processed', '9Success', '0Errors'];
         const absolutePathResults = ['1Commands Processed', '1Success', '0Errors'];
         const invalidPathes = ['Invalid relative', 'Invalid absolute'];
         const keyNames = ['hashkey1', 'listkey1', 'setkey1', 'zsetkey1', 'stringkey1', 'jsonkey1', 'streamkey1', 'graphkey1', 'tskey1', 'stringkey1test'];
         internalLinkName1 = 'probably-1';
+        // todo: this tests doesn't wotk locally because of different "fileStart" value
         const fileStarts = 'Upload';
 
         // Upload custom tutorial
@@ -225,7 +220,7 @@ test
         await t.click(tutorials.uploadDataBulkBtn.withText('Upload relative'));
         await t.click(tutorials.downloadFileBtn);
         foundExportedFiles = await databasesActions.findFilesByFileStarts(fileDownloadPath, fileStarts);
-        await t.expect(await databasesActions.getFileCount(fileDownloadPath, fileStarts)).gt(numberOfDownloadFiles, 'The Profiler logs not saved', { timeout: 5000 });
+        await t.expect(await databasesActions.getFileCount(fileDownloadPath, fileStarts)).gt(numberOfDownloadFiles, 'The tutorials files not saved', { timeout: 5000 });
 
         await t.click(tutorials.uploadDataBulkApplyBtn);
         // Verify that user can see the summary when the command execution is completed
@@ -247,7 +242,7 @@ test
         }
 
         // Open Browser page
-        await t.click(myRedisDatabasePage.NavigationPanel.browserButton);
+        await t.click(browserPage.NavigationTabs.browserButton);
         // Verify that keys of all types can be uploaded
         await browserPage.searchByKeyName('*key1*');
         await verifyKeysDisplayingInTheList(keyNames, true);
@@ -256,7 +251,7 @@ test
     .before(async() => {
         await databaseHelper.acceptLicenseTerms();
         await databaseAPIRequests.addNewStandaloneDatabaseApi(
-            ossStandaloneRedisearch
+            ossStandaloneConfigEmpty
         );
         await myRedisDatabasePage.reloadPage();
         tutorialName = `${zipFolderName}${Common.generateWord(5)}`;
@@ -271,7 +266,6 @@ test
         await tutorials.deleteTutorialByName(tutorialName);
         await t.expect(tutorials.tutorialAccordionButton.withText(tutorialName).exists)
             .notOk(`${tutorialName} tutorial is not deleted`);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneRedisearch);
     })('Verify that user can open tutorial from links in other tutorials', async t => {
         // Upload custom tutorial
         await workbenchPage.NavigationHeader.togglePanel(true);
@@ -308,7 +302,7 @@ test
         // await t.expect(tutorials.openDatabasePopover.exists).notOk('Open a database popover is still displayed');
 
         // Open existing database
-        await myRedisDatabasePage.clickOnDBByName(ossStandaloneRedisearch.databaseName);
+        await myRedisDatabasePage.clickOnDBByName(ossStandaloneConfigEmpty.databaseName);
 
         // Verify that user can use '[link](redisinsight:_?tutorialId={tutorialId})' syntax to cross-reference tutorials
         await t.click(tutorials.tutorialLink.withText('link2AnalyticsPageWithTutorial'));

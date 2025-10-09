@@ -1,8 +1,12 @@
 import React from 'react'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { PrimaryButton, SecondaryButton } from 'uiSrc/components/base/forms/buttons'
+import { FlexItem } from 'uiSrc/components/base/layout/flex'
+import {
+  PrimaryButton,
+  SecondaryButton,
+} from 'uiSrc/components/base/forms/buttons'
 import AddKeyFooter from 'uiSrc/pages/browser/components/add-key/AddKeyFooter/AddKeyFooter'
 import { SpacerSize } from 'uiSrc/components/base/layout/spacer/spacer.styles'
+import { Panel } from 'uiSrc/components/panel'
 
 export interface ActionFooterProps {
   cancelText?: string
@@ -27,7 +31,7 @@ export const ActionFooter = ({
   onAction,
   disabled = false,
   loading = false,
-  gap = "m",
+  gap = 'm',
   actionTestId,
   cancelTestId,
   cancelClassName = 'btn-cancel btn-back',
@@ -36,7 +40,7 @@ export const ActionFooter = ({
   enableFormSubmit = true,
 }: ActionFooterProps) => {
   const content = (
-    <Row justify="end" gap={gap} style={{ padding: 18 }}>
+    <Panel justify="end" gap={gap}>
       <FlexItem>
         <SecondaryButton
           onClick={onCancel}
@@ -58,7 +62,7 @@ export const ActionFooter = ({
           {actionText}
         </PrimaryButton>
       </FlexItem>
-    </Row>
+    </Panel>
   )
 
   if (enableFormSubmit) {
@@ -77,4 +81,4 @@ export const ActionFooter = ({
   }
 
   return content
-} 
+}

@@ -184,4 +184,122 @@ describe('KeyTreeDelimiter', () => {
       clearStoreActions(expectedActions),
     )
   })
+
+  it('should handle pending input when Apply is clicked without pressing Enter', async () => {
+    const sendEventTelemetryMock = jest.fn()
+    ;(sendEventTelemetry as jest.Mock).mockImplementation(
+      () => sendEventTelemetryMock,
+    )
+    const pendingValue = 'newDelimiter'
+    render(<KeyTreeSettings {...instance(mockedProps)} />)
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId(TREE_SETTINGS_TRIGGER_BTN))
+    })
+
+    await waitForRiPopoverVisible()
+
+    const comboboxInput = document.querySelector(
+      '[data-testid="delimiter-combobox"] [data-test-subj="autoTagInput"]',
+    ) as HTMLInputElement
+
+    // Type in the input but don't press Enter
+    fireEvent.change(comboboxInput, { target: { value: pendingValue } })
+
+    // Verify the input has the value but no tag is created yet
+    expect(comboboxInput.value).toBe(pendingValue)
+    const containerLabels = document.querySelector(
+      '[data-test-subj="autoTagWrapper"]',
+    )!
+    expect(
+      containerLabels.querySelector(`[title="${pendingValue}"]`),
+    ).not.toBeInTheDocument()
+
+    // Click Apply - this should handle the pending input
+    await act(async () => {
+      fireEvent.click(screen.getByTestId(APPLY_BTN))
+    })
+
+    const expectedActions = [
+      setBrowserTreeDelimiter([DEFAULT_DELIMITER, { label: pendingValue }]),
+      resetBrowserTree(),
+    ]
+
+    expect(clearStoreActions(store.getActions())).toEqual(
+      clearStoreActions(expectedActions),
+    )
+
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
+      event: TelemetryEvent.TREE_VIEW_DELIMITER_CHANGED,
+      eventData: {
+        databaseId: INSTANCE_ID_MOCK,
+        from: comboBoxToArray([DEFAULT_DELIMITER]),
+        to: comboBoxToArray([DEFAULT_DELIMITER, { label: pendingValue }]),
+      },
+    })
+    ;(sendEventTelemetry as jest.Mock).mockRestore()
+  })
+
+  it('should not handle pending input when it is empty or whitespace only', async () => {
+    render(<KeyTreeSettings {...instance(mockedProps)} />)
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId(TREE_SETTINGS_TRIGGER_BTN))
+    })
+
+    await waitForRiPopoverVisible()
+
+    const comboboxInput = document.querySelector(
+      '[data-testid="delimiter-combobox"] [data-test-subj="autoTagInput"]',
+    ) as HTMLInputElement
+
+    // Type whitespace only
+    fireEvent.change(comboboxInput, { target: { value: '   ' } })
+
+    // Click Apply - this should not handle the pending input
+    await act(async () => {
+      fireEvent.click(screen.getByTestId(APPLY_BTN))
+    })
+
+    // Should not dispatch any actions since no changes were made
+    expect(store.getActions()).toEqual([])
+  })
+
+  it('should clear pending input after successful Apply', async () => {
+    const pendingValue = 'testDelimiter'
+    render(<KeyTreeSettings {...instance(mockedProps)} />)
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId(TREE_SETTINGS_TRIGGER_BTN))
+    })
+
+    await waitForRiPopoverVisible()
+
+    const comboboxInput = document.querySelector(
+      '[data-testid="delimiter-combobox"] [data-test-subj="autoTagInput"]',
+    ) as HTMLInputElement
+
+    // Type in the input
+    fireEvent.change(comboboxInput, { target: { value: pendingValue } })
+    expect(comboboxInput.value).toBe(pendingValue)
+
+    // Click Apply
+    await act(async () => {
+      fireEvent.click(screen.getByTestId(APPLY_BTN))
+    })
+
+    // Open the popover again to check if input is cleared
+    await act(async () => {
+      fireEvent.click(screen.getByTestId(TREE_SETTINGS_TRIGGER_BTN))
+    })
+
+    await waitForRiPopoverVisible()
+
+    const comboboxInputAfter = document.querySelector(
+      '[data-testid="delimiter-combobox"] [data-test-subj="autoTagInput"]',
+    ) as HTMLInputElement
+
+    // Input should be cleared after Apply
+    expect(comboboxInputAfter.value).toBe('')
+  })
 })

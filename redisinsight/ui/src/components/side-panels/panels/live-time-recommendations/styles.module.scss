@@ -81,31 +81,22 @@ $animation-duration: 300ms;
 }
 
 .actions {
-  display: flex;
-  align-items: center;
   background: var(--browserTableRowEven);
   padding: 8px 16px;
-  justify-content: space-between;
-
-  .boldText {
-    font:
-      normal normal 500 14px/17px Graphik,
-      sans-serif !important;
-  }
 
   .githubIcon {
     color: var(--htmlColor);
   }
 
   .infoIcon {
-    width: 16px !important;
-    height: 16px !important;
     fill: var(--htmlColor);
     cursor: pointer;
   }
 
   .tooltipAnchor {
-    margin-left: 6px;
+    svg {
+      vertical-align: middle;
+    }
   }
 }
 

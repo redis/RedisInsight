@@ -1,16 +1,16 @@
 import React from 'react'
 
-
 import { GroupBadge } from 'uiSrc/components'
 import { CommandGroup } from 'uiSrc/constants'
 
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
-import { ColorText } from 'uiSrc/components/base/text'
+import { Text } from 'uiSrc/components/base/text'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
-import { Row } from 'uiSrc/components/base/layout/flex'
+import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 
 import styles from './styles.module.scss'
+import { HorizontalSpacer } from 'uiSrc/components/base/layout'
 
 export interface Props {
   args: string
@@ -39,14 +39,15 @@ const CHCommandInfo = (props: Props) => {
         data-testid="cli-helper-back-to-list-btn"
         style={{ marginRight: '4px' }}
       />
-      <GroupBadge type={group} className={styles.groupBadge} />
-      <ColorText
-        className={styles.title}
-        color="subdued"
+      <GroupBadge type={group} />
+      <HorizontalSpacer size="s" />
+      <Text
         data-testid="cli-helper-title-args"
+        variant="semiBold"
+        color="primary"
       >
         {args}
-      </ColorText>
+      </Text>
       {complexity && (
         <RiBadge
           label={complexity}

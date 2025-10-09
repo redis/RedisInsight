@@ -1,4 +1,3 @@
-import { EuiFieldText } from '@elastic/eui'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
@@ -36,7 +35,10 @@ import EditablePopover from 'uiSrc/pages/browser/modules/key-details/shared/edit
 
 import { FormatedDate, RiTooltip } from 'uiSrc/components'
 import { Text } from 'uiSrc/components/base/text'
+import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { ComposedInput } from 'uiSrc/components/base/inputs'
+
 import {
   ConsumerDto,
   ConsumerGroupDto,
@@ -220,7 +222,7 @@ const GroupsViewWrapper = (props: Props) => {
         const cellContent = viewName.substring(0, 200)
         const tooltipContent = formatLongName(viewName)
         return (
-          <Text color="subdued" size="s" style={{ maxWidth: '100%' }}>
+          <Text style={{ maxWidth: '100%' }} color="secondary">
             <div
               style={{ display: 'flex' }}
               className="truncateText"
@@ -249,6 +251,14 @@ const GroupsViewWrapper = (props: Props) => {
       isSortable: true,
       headerClassName: 'streamItemHeader',
       headerCellClassName: 'truncateText',
+      render: function Name(_name: string, { consumers }: IConsumerGroup) {
+        return (
+          <Text color="secondary">
+            {consumers}
+          </Text>
+        )
+      },
+
     },
     {
       id: 'pending',
@@ -277,7 +287,7 @@ const GroupsViewWrapper = (props: Props) => {
         )
 
         return (
-          <Text size="s" style={{ maxWidth: '100%' }}>
+          <Text style={{ maxWidth: '100%' }} color="secondary">
             <div
               style={{ display: 'flex' }}
               className="truncateText"
@@ -323,7 +333,7 @@ const GroupsViewWrapper = (props: Props) => {
             content={
               <div className={styles.editableCell}>
                 <Text
-                  color="subdued"
+                  color="secondary"
                   size="s"
                   style={{ maxWidth: '100%' }}
                   component="div"
@@ -362,19 +372,21 @@ const GroupsViewWrapper = (props: Props) => {
             delay={500}
             editBtnClassName={styles.editBtn}
           >
-            <>
-              <EuiFieldText
-                fullWidth
+            <FormField>
+              <ComposedInput
                 name="id"
                 id="id"
                 placeholder="ID*"
                 value={editValue}
-                onChange={(e: any) =>
-                  setEditValue(validateConsumerGroupId(e.target.value))
+                onChange={value =>
+                  setEditValue(validateConsumerGroupId(value))
                 }
                 onBlur={() => setIsIdFocused(false)}
                 onFocus={() => setIsIdFocused(true)}
-                append={
+                style={{ width: 240 }}
+                autoComplete="off"
+                data-testid="last-id-field"
+                after={
                   <RiTooltip
                     anchorClassName="inputAppendIcon"
                     position="left"
@@ -384,9 +396,6 @@ const GroupsViewWrapper = (props: Props) => {
                     <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
                   </RiTooltip>
                 }
-                style={{ width: 240 }}
-                autoComplete="off"
-                data-testid="last-id-field"
               />
               {!showIdError && (
                 <span className={styles.idText} data-testid="id-help-text">
@@ -398,7 +407,7 @@ const GroupsViewWrapper = (props: Props) => {
                   {idError}
                 </span>
               )}
-            </>
+            </FormField>
           </EditablePopover>
         )
       },

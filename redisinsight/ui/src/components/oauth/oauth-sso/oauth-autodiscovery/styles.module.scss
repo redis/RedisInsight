@@ -83,8 +83,6 @@
 
   .advantagesContainer {
     max-width: 300px;
-
-    background-color: var(--cloudSsoAdvantagesBgColor);
     padding-bottom: 24px;
   }
 
@@ -93,7 +91,7 @@
     flex-direction: column;
     align-items: center;
 
-    padding: 108px 60px 60px;
+    padding: 108px 0px 40px 40px;
 
     .subTitle {
       font-size: 16px;

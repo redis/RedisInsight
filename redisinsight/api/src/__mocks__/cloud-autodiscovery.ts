@@ -68,8 +68,8 @@ export const mockCloudAutodiscoveryService = jest.fn(() => ({
 }));
 
 export const mockCloudAutodiscoveryAnalytics = jest.fn(() => ({
-  sendGetRECloudSubsSucceedEvent: jest.fn(),
-  sendGetRECloudSubsFailedEvent: jest.fn(),
-  sendGetRECloudDbsSucceedEvent: jest.fn(),
-  sendGetRECloudDbsFailedEvent: jest.fn(),
+  sendGetRedisCloudSubsSucceedEvent: jest.fn(),
+  sendGetRedisCloudSubsFailedEvent: jest.fn(),
+  sendGetRedisCloudDbsSucceedEvent: jest.fn(),
+  sendGetRedisCloudDbsFailedEvent: jest.fn(),
 }));

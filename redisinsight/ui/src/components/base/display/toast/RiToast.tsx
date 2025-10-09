@@ -5,28 +5,21 @@ import {
   ToastContentParams,
   ToastOptions,
 } from '@redis-ui/components'
-import styled from 'styled-components'
-import { CommonProps, Theme } from 'uiSrc/components/base/theme/types'
-import { CancelIcon } from 'uiSrc/components/base/icons'
-import { ColorText } from 'uiSrc/components/base/text'
+import { ToastOptions as RcToastOptions } from 'react-toastify'
+
+import { CommonProps } from 'uiSrc/components/base/theme/types'
+import { ColorText, Text } from 'uiSrc/components/base/text'
+import { Spacer } from '../../layout'
 
 type RiToastProps = React.ComponentProps<typeof Toast>
 export const RiToast = (props: RiToastProps) => <Toast {...props} />
 
-const StyledMessage = styled.div<{ theme: Theme }>`
-  margin-bottom: ${({ theme }) => theme.core.space.space100};
-`
-
+export type RiToastType = ToastContentParams &
+  CommonProps & {
+    onClose?: VoidFunction
+  }
 export const riToast = (
-  {
-    onClose,
-    actions,
-    message,
-    ...content
-  }: ToastContentParams &
-    CommonProps & {
-      onClose?: VoidFunction
-    },
+  { onClose, message, ...content }: RiToastType,
   options?: ToastOptions | undefined,
 ) => {
   const toastContent: ToastContentParams = {
@@ -41,33 +34,21 @@ export const riToast = (
     }
     toastContent.message = (
       <ColorText color={color}>
-        <StyledMessage>{message}</StyledMessage>
+        <Text size="M" variant="semiBold">
+          {message}
+        </Text>
+        <Spacer size="s" />
       </ColorText>
     )
   } else {
     toastContent.message = message
   }
 
-  if (onClose) {
-    toastContent.showCloseButton = false
-    toastContent.actions = {
-      ...actions,
-      secondary: {
-        label: '',
-        icon: CancelIcon,
-        closes: true,
-        onClick: onClose,
-      },
-    }
-  }
-  if (actions && !onClose) {
-    toastContent.showCloseButton = false
-    toastContent.actions = actions
-  }
-  const toastOptions: ToastOptions = {
+  const toastOptions: ToastOptions & RcToastOptions = {
     ...options,
     delay: 100,
     closeOnClick: false,
+    onClose,
   }
   return toast(<RiToast {...toastContent} />, toastOptions)
 }

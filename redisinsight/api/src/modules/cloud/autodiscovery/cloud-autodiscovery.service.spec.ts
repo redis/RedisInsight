@@ -98,13 +98,13 @@ describe('CloudAutodiscoveryService', () => {
           CloudAutodiscoveryAuthType.Credentials,
         ),
       ).toEqual([mockCloudSubscription, mockCloudSubscription]);
-      expect(analytics.sendGetRECloudSubsSucceedEvent).toHaveBeenCalledWith(
+      expect(analytics.sendGetRedisCloudSubsSucceedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
         [mockCloudSubscription],
         CloudSubscriptionType.Fixed,
         CloudAutodiscoveryAuthType.Credentials,
       );
-      expect(analytics.sendGetRECloudSubsSucceedEvent).toHaveBeenCalledWith(
+      expect(analytics.sendGetRedisCloudSubsSucceedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
         [mockCloudSubscription],
         CloudSubscriptionType.Flexible,
@@ -124,7 +124,7 @@ describe('CloudAutodiscoveryService', () => {
         ),
       ).rejects.toThrow(CloudApiUnauthorizedException);
 
-      expect(analytics.sendGetRECloudSubsFailedEvent).toHaveBeenCalledWith(
+      expect(analytics.sendGetRedisCloudSubsFailedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
         new CloudApiUnauthorizedException(),
         CloudSubscriptionType.Fixed,
@@ -173,7 +173,7 @@ describe('CloudAutodiscoveryService', () => {
           free: true,
         },
       );
-      expect(analytics.sendGetRECloudDbsSucceedEvent).toHaveBeenCalledWith(
+      expect(analytics.sendGetRedisCloudDbsSucceedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
         [mockCloudDatabase, mockCloudDatabase],
         CloudAutodiscoveryAuthType.Credentials,
@@ -250,7 +250,7 @@ describe('CloudAutodiscoveryService', () => {
         ),
       ).rejects.toThrow(NotFoundException);
 
-      expect(analytics.sendGetRECloudDbsFailedEvent).toHaveBeenCalledWith(
+      expect(analytics.sendGetRedisCloudDbsFailedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
         new NotFoundException(),
         CloudAutodiscoveryAuthType.Credentials,

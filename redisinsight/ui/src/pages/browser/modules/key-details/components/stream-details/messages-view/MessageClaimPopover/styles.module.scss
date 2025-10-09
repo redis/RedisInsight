@@ -1,53 +1,3 @@
-.popoverWrapper.popoverWrapper.popoverWrapper {
-  background-color: var(--euiColorLightestShade);
-  border: 1px solid var(--externalLinkColor);
-
-  :before {
-    border-left: 12px solid var(--externalLinkColor) !important;
-  }
-
-  :after {
-    border-left: 13px solid var(--euiColorLightestShade) !important;
-  }
-}
-
-.popoverWrapper :global(.euiFormControlLayout__append.euiFormLabel) {
-  position: absolute;
-  right: 0;
-  height: 36px !important;
-  padding: 9px 12px !important;
-  background-color: transparent !important;
-  color: var(--inputPlaceholderColor) !important;
-}
-
-.footer {
-  width: 100%;
-  justify-content:space-between;
-  margin: 30px 0 7px !important;
-
-  &:global(.euiFlexGroup--gutterLarge) > :global(.euiFlexItem) {
-    margin-left: 0;
-  }
-}
-
-.footer .footerBtn {
-  height: 36px !important;
-
-  &:last-child {
-    margin-left: 18px
-  }
-}
-
-.claimBtn:global(.euiButton.euiButton--secondary) {
-  margin-left: 12px;
-  min-width: initial !important;
-  color: var(--textColorShade) !important;
-}
-
-.claimBtn :global(.euiButtonContent .euiButton__text) {
-  font: normal normal normal 12px/18px Graphik, sans-serif !important;
-}
-
 .option {
   display: flex;
   justify-content: space-between;
@@ -72,23 +22,6 @@
   height: 20px;
 }
 
-.popoverWrapper.popoverWrapper .container .idle {
-  position: relative;
-  margin-right: 0;
-}
-
-.popoverWrapper.popoverWrapper .container .timeSelect {
-  margin-left: 0;
-}
-
-.popoverWrapper :global(.euiFlexGroup--gutterLarge > .euiFlexItem) {
-  margin: 9px;
-}
-
-.relative {
-  position: relative;
-}
-
 .consumerField {
   width: 389px !important;
   height: 36px !important;
@@ -100,18 +33,9 @@
   padding-right: 40px !important;
 }
 
-.timeOptionField {
-  width: 100px !important;
-  height: 38px !important;
-}
-
-.popoverWrapper .container  .retryCountField {
+.retryCountField {
   width: 88px;
   height: 36px !important;
-}
-
-.popoverWrapper .container .grow {
-  flex-grow: 2;
 }
 
 .consumerName {

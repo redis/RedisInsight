@@ -1,6 +1,5 @@
-import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
+import React, { FormEvent, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { EuiFieldText } from '@elastic/eui'
 
 import { Maybe, stringToBuffer } from 'uiSrc/utils'
 import { addKeyStateSelector, addListKey } from 'uiSrc/slices/browser/keys'
@@ -10,6 +9,8 @@ import {
   TAIL_DESTINATION,
 } from 'uiSrc/pages/browser/modules/key-details/components/list-details/add-list-elements/AddListElements'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
+import { TextInput } from 'uiSrc/components/base/inputs'
+import { Spacer } from 'uiSrc/components/base/layout'
 import {
   CreateListWithExpireDto,
   ListElementDestination,
@@ -88,6 +89,7 @@ const AddKeyList = (props: Props) => {
         onChange={(value) => setDestination(value as ListElementDestination)}
         data-testid="destination-select"
       />
+      <Spacer size="m" />
       <AddMultipleFields
         items={elements}
         onClickRemove={onClickRemove}
@@ -95,16 +97,13 @@ const AddKeyList = (props: Props) => {
         isClearDisabled={isClearDisabled}
       >
         {(item, index) => (
-          <EuiFieldText
-            fullWidth
+          <TextInput
             name={`element-${index}`}
             id={`element-${index}`}
             placeholder={config.element.placeholder}
             value={item}
             disabled={loading}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              handleElementChange(e.target.value, index)
-            }
+            onChange={(value) => handleElementChange(value, index)}
             data-testid={`element-${index}`}
           />
         )}

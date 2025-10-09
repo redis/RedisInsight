@@ -1,22 +1,15 @@
 /* eslint-disable react/no-this-in-sfc */
 /* eslint-disable react/destructuring-assignment */
 import React, { useCallback, useState } from 'react'
-
-import cx from 'classnames'
-import { EuiModal, EuiModalBody } from '@elastic/eui'
 import { useDispatch, useSelector } from 'react-redux'
+import styled from 'styled-components'
+
 import {
-  BulkActionsIcon,
   FilterTableIcon,
-  QuerySearchIcon,
   IconType,
+  QuerySearchIcon,
 } from 'uiSrc/components/base/icons'
-import {
-  FeatureFlagComponent,
-  ModuleNotLoaded,
-  OnboardingTour,
-  RiTooltip,
-} from 'uiSrc/components'
+import { ModuleNotLoaded, OnboardingTour, RiTooltip } from 'uiSrc/components'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { KeyViewType, SearchMode } from 'uiSrc/slices/interfaces/keys'
 import FilterKeyType from 'uiSrc/pages/browser/components/filter-key-type'
@@ -25,27 +18,16 @@ import SearchKeyList from 'uiSrc/pages/browser/components/search-key-list'
 
 import { changeSearchMode, keysSelector } from 'uiSrc/slices/browser/keys'
 import { isRedisearchAvailable } from 'uiSrc/utils'
-import {
-  getBasedOnViewTypeEvent,
-  sendEventTelemetry,
-  TelemetryEvent,
-} from 'uiSrc/telemetry'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { resetBrowserTree } from 'uiSrc/slices/app/context'
 import { localStorageService } from 'uiSrc/services'
-import {
-  BrowserStorageItem,
-  BulkActionsType,
-  FeatureFlags,
-} from 'uiSrc/constants'
+import { BrowserStorageItem } from 'uiSrc/constants'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
-import { setBulkActionType } from 'uiSrc/slices/browser/bulkActions'
-
 import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
-import {
-  IconButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { Modal } from 'uiSrc/components/base/display'
+import { Row } from 'uiSrc/components/base/layout/flex'
+import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
+
 import styles from './styles.module.scss'
 
 interface ISwitchType<T> {
@@ -54,7 +36,6 @@ interface ISwitchType<T> {
   disabled?: boolean
   ariaLabel: string
   dataTestId: string
-  getClassName: () => string
   onClick: () => void
   isActiveView: () => boolean
   getIconType: () => IconType
@@ -62,13 +43,20 @@ interface ISwitchType<T> {
 
 export interface Props {
   handleCreateIndexPanel: (value: boolean) => void
-  handleAddKeyPanel: (value: boolean) => void
-  handleBulkActionsPanel: (value: boolean) => void
 }
 
+const SwitchSearchModeButtonGroup = styled(ButtonGroup)`
+  button {
+    height: 32px;
+    svg {
+      height: 20px;
+      width: 20px;
+    }
+  }
+`
+
 const BrowserSearchPanel = (props: Props) => {
-  const { handleCreateIndexPanel, handleAddKeyPanel, handleBulkActionsPanel } =
-    props
+  const { handleCreateIndexPanel } = props
   const { viewType, searchMode } = useSelector(keysSelector)
   const { id: instanceId, modules } = useSelector(connectedInstanceSelector)
 
@@ -85,11 +73,6 @@ const BrowserSearchPanel = (props: Props) => {
       isActiveView() {
         return searchMode === this.type
       },
-      getClassName() {
-        return cx(styles.viewTypeBtn, styles.iconVector, {
-          [styles.active]: this.isActiveView?.(),
-        })
-      },
       getIconType() {
         return FilterTableIcon
       },
@@ -105,11 +88,6 @@ const BrowserSearchPanel = (props: Props) => {
       disabled: !isRedisearchAvailable(modules),
       isActiveView() {
         return searchMode === this.type
-      },
-      getClassName() {
-        return cx(styles.viewTypeBtn, {
-          [styles.active]: this.isActiveView?.(),
-        })
       },
       getIconType() {
         return QuerySearchIcon
@@ -130,25 +108,6 @@ const BrowserSearchPanel = (props: Props) => {
       },
     },
   ]
-
-  const openAddKeyPanel = () => {
-    handleAddKeyPanel(true)
-    sendEventTelemetry({
-      event: getBasedOnViewTypeEvent(
-        viewType,
-        TelemetryEvent.BROWSER_KEY_ADD_BUTTON_CLICKED,
-        TelemetryEvent.TREE_VIEW_KEY_ADD_BUTTON_CLICKED,
-      ),
-      eventData: {
-        databaseId: instanceId,
-      },
-    })
-  }
-
-  const openBulkActions = () => {
-    dispatch(setBulkActionType(BulkActionsType.Delete))
-    handleBulkActionsPanel(true)
-  }
 
   const handleSwitchSearchMode = (mode: SearchMode) => {
     if (searchMode !== mode) {
@@ -181,43 +140,18 @@ const BrowserSearchPanel = (props: Props) => {
   }, [])
 
   const SwitchModeBtn = (item: ISwitchType<SearchMode>) => (
-    <IconButton
-      className={item.getClassName()}
-      icon={item.getIconType()}
+    <ButtonGroup.Button
       aria-label={item.ariaLabel}
       onClick={() => item.onClick?.()}
       data-testid={item.dataTestId}
-    />
-  )
-
-  const AddKeyBtn = (
-    <PrimaryButton
-      onClick={openAddKeyPanel}
-      className={styles.addKey}
-      data-testid="btn-add-key"
+      isSelected={item.isActiveView?.()}
     >
-      + <span className={styles.addKeyText}>Key</span>
-    </PrimaryButton>
-  )
-
-  const BulkActionsBtn = (
-    <SecondaryButton
-      color="secondary"
-      icon={BulkActionsIcon}
-      onClick={openBulkActions}
-      className={styles.bulkActions}
-      data-testid="btn-bulk-actions"
-      aria-label="bulk actions"
-    >
-      <span className={styles.bulkActionsText}>Bulk Actions</span>
-    </SecondaryButton>
+      <ButtonGroup.Icon icon={item.getIconType()} />
+    </ButtonGroup.Button>
   )
 
   const SearchModeSwitch = () => (
-    <div
-      className={cx(styles.searchModeSwitch)}
-      data-testid="search-mode-switcher"
-    >
+    <SwitchSearchModeButtonGroup data-testid="search-mode-switcher">
       {searchModes.map((mode) => (
         <RiTooltip
           content={mode.tooltipText}
@@ -227,24 +161,26 @@ const BrowserSearchPanel = (props: Props) => {
           {SwitchModeBtn(mode)}
         </RiTooltip>
       ))}
-    </div>
+    </SwitchSearchModeButtonGroup>
   )
 
   return (
     <div className={styles.content}>
-      {isPopoverOpen && (
-        <EuiModal onClose={hidePopover} className={styles.moduleNotLoaded}>
-          <EuiModalBody className={styles.modalBody}>
-            <ModuleNotLoaded
-              moduleName={RedisDefaultModules.Search}
-              type="browser"
-              id="0"
-              onClose={hidePopover}
-            />
-          </EuiModalBody>
-        </EuiModal>
-      )}
-      <div className={styles.searchWrapper}>
+      <Modal
+        open={isPopoverOpen}
+        onCancel={hidePopover}
+        className={styles.moduleNotLoaded}
+        content={
+          <ModuleNotLoaded
+            moduleName={RedisDefaultModules.Search}
+            type="browser"
+            id="0"
+            onClose={hidePopover}
+          />
+        }
+        title={null}
+      />
+      <Row className={styles.searchWrapper} gap="m" align="center">
         <OnboardingTour
           options={ONBOARDING_FEATURES.BROWSER_FILTER_SEARCH}
           anchorPosition="downLeft"
@@ -258,13 +194,7 @@ const BrowserSearchPanel = (props: Props) => {
           <RediSearchIndexesList onCreateIndex={handleCreateIndexPanel} />
         )}
         <SearchKeyList />
-      </div>
-      <div style={{ flexShrink: 0, marginLeft: 12 }}>
-        <FeatureFlagComponent name={FeatureFlags.envDependent}>
-          {BulkActionsBtn}
-        </FeatureFlagComponent>
-        {AddKeyBtn}
-      </div>
+      </Row>
     </div>
   )
 }

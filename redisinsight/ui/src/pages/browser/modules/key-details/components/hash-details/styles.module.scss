@@ -3,26 +3,3 @@
   height: 20px;
   width: 1px;
 }
-
-
-.showTtlCheckbox {
-  font-weight: 400;
-  font-size: 14px;
-
-  :global(.euiCheckbox__input) {
-    color: var(--controlsBorderColor) !important;
-  }
-
-  :global(.euiCheckbox__square) {
-    width: 18px !important;
-    height: 18px !important;
-    border: 1px solid var(--controlsBorderColor) !important;
-    border-radius: 4px !important;
-    box-shadow: none !important;
-  }
-
-  :global(.euiCheckbox__label) {
-    color: var(--controlsLabelColor) !important;
-  }
-}
-

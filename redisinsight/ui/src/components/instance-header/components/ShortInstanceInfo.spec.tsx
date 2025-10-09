@@ -52,7 +52,7 @@ describe('ShortInstanceInfo', () => {
     modules.forEach(({ name, version }) => {
       expect(screen.getByTestId(`module_${name}`)).toBeInTheDocument()
       expect(screen.getByTestId(`module_${name}`)).toHaveTextContent(
-        `${truncateText(getModule(name)?.name || DATABASE_LIST_MODULES_TEXT[name] || name, 50)}${version ? `v.${version}` : ''}`,
+        `${truncateText(getModule(name)?.name || DATABASE_LIST_MODULES_TEXT[name] || name, 50)}${version ? ` v.${version}` : ''}`,
       )
     })
   })

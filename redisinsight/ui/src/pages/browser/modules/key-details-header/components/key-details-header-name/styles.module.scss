@@ -8,14 +8,21 @@
 }
 
 .toolTipAnchorKey {
-  max-width: calc(100% - 25px);
+  max-width: 450px;
   height: 31px !important;
+  width: 100%;
 }
 
 .keyInput {
   height: 31px !important;
   font-size: 14px !important;
   font-weight: 500 !important;
+  flex: 1;
+  min-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 6px;
 }
 
 :global(.browserPage .key-details-header .euiFormControlLayout) {
@@ -35,12 +42,10 @@
 }
 
 .copyKey {
-  position: absolute;
-  padding-left: 7px;
-  padding-top: 4px;
-  right: 0;
+  display: flex;
+  align-items: center;
   height: 31px;
-  width: 25px;
+  flex-shrink: 0;
 }
 
 .capitalize {
@@ -51,19 +56,7 @@
   display: flex;
   width: 100%;
   min-width: 100%;
-
+  max-width: 400px;
   padding-left: 9px;
   line-height: 31px !important;
-}
-
-.hidden {
-  display: none;
-}
-
-.keyFlexItem {
-  overflow: hidden;
-}
-
-.keyFlexItemEditing {
-  overflow: inherit;
 }

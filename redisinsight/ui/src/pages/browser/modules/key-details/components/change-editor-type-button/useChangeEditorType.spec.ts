@@ -2,7 +2,7 @@ import * as reactRedux from 'react-redux'
 import { renderHook, act } from '@testing-library/react-hooks'
 import { EditorType } from 'uiSrc/slices/interfaces'
 import { FeatureFlags } from 'uiSrc/constants'
-
+import { stringToBuffer } from 'uiSrc/utils'
 import { useChangeEditorType } from './useChangeEditorType'
 
 jest.mock('react-redux', () => ({
@@ -10,8 +10,14 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }))
 
+jest.mock('uiSrc/slices/browser/rejson', () => ({
+  ...jest.requireActual('uiSrc/slices/browser/rejson'),
+  fetchReJSON: jest.fn((key) => ({ type: 'FETCH_REJSON', payload: key })),
+}))
+
 const mockedUseDispatch = reactRedux.useDispatch as jest.Mock
 const mockedUseSelector = reactRedux.useSelector as jest.Mock
+const mockKeyName = stringToBuffer('test-key')
 
 describe('useChangeEditorType', () => {
   const dispatchMock = jest.fn()
@@ -56,6 +62,50 @@ describe('useChangeEditorType', () => {
     expect(dispatchMock).toHaveBeenCalledWith({
       type: 'rejson/setEditorType',
       payload: EditorType.Default,
+    })
+  })
+
+  it('should fetch json when type switched', async () => {
+    mockedUseSelector.mockReturnValue({
+      editorType: EditorType.Default,
+    }).mockReturnValue({
+      [FeatureFlags.envDependent]: { flag: false },
+    }).mockReturnValue({
+      name: mockKeyName,
+    })
+
+    const { result } = renderHook(() => useChangeEditorType())
+
+    act(() => {
+      result.current.switchEditorType()
+    })
+
+    expect(dispatchMock).toHaveBeenCalledWith({
+      type: 'rejson/setEditorType',
+      payload: EditorType.Default,
+    })
+    expect(dispatchMock).toHaveBeenCalledWith({
+      type: 'FETCH_REJSON',
+      payload: mockKeyName,
+    })
+  })
+
+  it('should not fetch json when there is no selected key', () => {
+    mockedUseSelector.mockReturnValue({
+      editorType: EditorType.Default,
+    }).mockReturnValue({
+      [FeatureFlags.envDependent]: { flag: false },
+    })
+
+    const { result } = renderHook(() => useChangeEditorType())
+
+    act(() => {
+      result.current.switchEditorType()
+    })
+
+    expect(dispatchMock).not.toHaveBeenCalledWith({
+      type: 'FETCH_REJSON',
+      payload: expect.anything(),
     })
   })
 

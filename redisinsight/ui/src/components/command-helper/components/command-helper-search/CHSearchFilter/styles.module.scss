@@ -1,45 +1,5 @@
 .container {
   height: 36px;
-  width: 180px;
-
-  :global {
-    .euiFormControlLayout {
-      .euiSuperSelectControl {
-        height: 36px !important;
-        padding: 0 8px !important;
-        background-color: var(--euiColorLightShade) !important;
-        border-color: var(--euiColorLightShade) !important;
-        box-shadow: none !important;
-
-        .euiHealth {
-          margin-top: 10px;
-          margin-left: -5px;
-        }
-
-        &.euiSuperSelect--isOpen__button {
-          background-color: var(--euiColorLightShade) !important;
-        }
-        &:focus {
-          background-color: var(--euiColorLightShade) !important;
-        }
-      }
-    }
-
-    .euiPopover:not(.euiSuperSelect) {
-      position: absolute;
-      z-index: 10;
-      top: 7px;
-      right: 88px;
-
-      svg {
-        width: 24px !important;
-        height: 24px !important;
-      }
-    }
-    .euiFormControlLayoutIcons {
-      right: 80px;
-    }
-  }
 }
 
 .filterKeyType {
@@ -49,9 +9,9 @@
 
 .controlsIcon {
   cursor: pointer;
-  margin-left: 3px;
   height: 20px !important;
   width: 20px !important;
+  
   &:global(svg) {
     color: var(--inputTextColor) !important;
   }

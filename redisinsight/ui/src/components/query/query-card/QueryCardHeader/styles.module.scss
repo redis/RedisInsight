@@ -6,8 +6,6 @@ $breakpoint-xl: 1650px;
 $marginIcon: 12px;
 
 .container {
-  display: flex;
-  align-items: center;
   height: 45px;
   padding: 0 20px;
   cursor: pointer;
@@ -19,29 +17,11 @@ $marginIcon: 12px;
     }
   }
 
-  :global(.euiFlexGroup--gutterLarge > .euiFlexItem) {
-    margin: $marginIcon calc($marginIcon/2) !important;
-
-    @media (min-width: $breakpoint-m) {
-      margin: $marginIcon !important;
-    }
-  }
-
   &.notExpanded {
     cursor: default;
   }
 }
 
-.isOpen {
-  &.container {
-    color: var(--euiColorPrimary);
-    background-color: var(--tableRowSelectedColor) !important;
-  }
-
-  .title {
-    color: var(--euiColorFullShade) !important;
-  }
-}
 
 .title {
   display: inline-block;
@@ -61,7 +41,7 @@ $marginIcon: 12px;
 }
 
 .time {
-  max-width: 126px;
+  max-width: 134px;
 }
 
 .mode + .mode {
@@ -94,11 +74,6 @@ $marginIcon: 12px;
   flex: 1;
 }
 
-.dropdownWrapper {
-  position: relative;
-  height: 40px;
-}
-
 .dropdownProfileIcon {
   padding: inherit !important;
   :global {
@@ -116,24 +91,6 @@ $marginIcon: 12px;
   :global {
     .euiContextMenu__icon {
       display: none !important;
-    }
-  }
-}
-
-.dropdown {
-  width: 168px;
-  position: absolute;
-  z-index: 1;
-
-  // move a little bit left to align with dropdown options icons
-  left: -21px;
-
-  :global {
-    .euiFormControlLayout__childrenWrapper {
-      width: 46px;
-      position: relative;
-      // move right to align self
-      left: 21px;
     }
   }
 }
@@ -193,21 +150,6 @@ $marginIcon: 12px;
 
 .controls {
   flex-shrink: 0;
-}
-
-.iconDropdownOption {
-  width: 20px !important;
-  height: 20px !important;
-}
-
-.iconExecutingTime {
-  width: 13px !important;
-  height: 13px !important;
-  margin-right: 6px;
-
-  path {
-    fill: var(--iconsDefaultColor);
-  }
 }
 
 .dropdownOptionSeparator:after {
@@ -271,19 +213,18 @@ $marginIcon: 12px;
 
 .buttonIcon {
   padding: 0 4px;
-  width: 32px;
   min-width: 32px;
   position: relative;
   z-index: 2;
 }
 
-.container :global(.euiFlexItem).viewTypeIcon {
+.container :global(.RI-flex-item).viewTypeIcon {
   width: 54px;
   min-width: 54px;
   margin: 0 calc($marginIcon/3) !important;
 }
 
-.container :global(.euiFlexItem).playIcon {
+.container :global(.RI-flex-item).playIcon {
   margin-right: calc($marginIcon/3) !important;
 }
 

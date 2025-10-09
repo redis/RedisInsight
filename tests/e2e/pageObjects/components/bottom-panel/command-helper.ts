@@ -19,6 +19,7 @@ export class CommandHelper {
     returnToList = Selector('[data-testid=cli-helper-back-to-list-btn]');
     filterGroupTypeButton = Selector('[data-testid=select-filter-group-type]');
     filterOptionGroupType = Selector('[data-test-subj^=filter-option-group-type-]');
+    clearAllGroupFilters = Selector('[data-testid=select-filter-group-type] button title').withExactText('Clear All').parent('button');
 
     //TEXT ELEMENTS
     cliHelper = Selector('[data-testid=cli-helper]');

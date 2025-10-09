@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react'
-import cx from 'classnames'
-
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useParams } from 'react-router-dom'
+
 import {
   changeSelectedTab,
   changeSidePanel,
@@ -23,10 +22,14 @@ import {
 } from 'uiSrc/telemetry'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { LightBulbIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
-import styles from './styles.module.scss'
+
+import {
+  BulbHighlighting,
+  BulbIconButton,
+  BulbWrapper,
+} from './insights-trigger.styles'
 
 export interface Props {
   source?: string
@@ -79,29 +82,26 @@ const InsightsTrigger = (props: Props) => {
   }
 
   return (
-    <div className={cx(styles.container, { [styles.isOpen]: isInsightsOpen })}>
-      <RiTooltip
-        title={isHighlighted && instanceId ? undefined : 'Insights'}
-        content={
-          isHighlighted && instanceId
-            ? 'New tips are available'
-            : 'Open interactive tutorials to learn more about Redis or Redis Stack capabilities, or use tips to improve your database.'
-        }
-      >
-        <IconButton
+    <RiTooltip
+      title={isHighlighted && instanceId ? undefined : 'Insights'}
+      content={
+        isHighlighted && instanceId
+          ? 'New tips are available'
+          : 'Open interactive tutorials to learn more about Redis or Redis Stack capabilities, or use tips to improve your database.'
+      }
+    >
+      <BulbWrapper>
+        <BulbIconButton
           size="S"
-          className={styles.btn}
           role="button"
           icon={LightBulbIcon}
           onClick={handleClickTrigger}
           data-testid="insights-trigger"
-        >
-          {isHighlighted && instanceId && (
-            <span className={styles.highlighting} />
-          )}
-        </IconButton>
-      </RiTooltip>
-    </div>
+          isOpen={isInsightsOpen}
+        />
+        {isHighlighted && instanceId && <BulbHighlighting />}
+      </BulbWrapper>
+    </RiTooltip>
   )
 }
 

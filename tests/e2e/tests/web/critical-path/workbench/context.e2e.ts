@@ -14,26 +14,26 @@ const browserPage = new BrowserPage();
 const speed = 0.4;
 let indexName = Common.generateWord(5);
 
+// todo: investigate. seems like should fail but passes
 fixture `Workbench Context`
     .meta({ type: 'critical_path', rte: rte.standalone })
     .page(commonUrl)
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         // Go to Workbench page
-        await t.click(browserPage.NavigationPanel.workbenchButton);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
     })
     .afterEach(async() => {
         // Drop index, documents and database
         await workbenchPage.sendCommandInWorkbench(`FT.DROPINDEX ${indexName} DD`);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that user can see saved input in Editor when navigates away to any other page', async t => {
     indexName = Common.generateWord(5);
     const command = `FT.CREATE ${indexName} ON HASH PREFIX 1 product: SCHEMA name TEXT`;
     // Enter the command in the Workbench editor and navigate to Browser
     await t.typeText(workbenchPage.queryInput, command, { replace: true, speed: speed });
-    await t.click(browserPage.NavigationPanel.browserButton);
+    await t.click(browserPage.NavigationTabs.browserButton);
     // Return back to Workbench and check input in editor
-    await t.click(browserPage.NavigationPanel.workbenchButton);
+    await t.click(browserPage.NavigationTabs.workbenchButton);
     await t.expect((await workbenchPage.queryInputScriptArea.textContent).replace(/\s/g, ' ')).eql(command, 'Input in Editor is saved');
 });

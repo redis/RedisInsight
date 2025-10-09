@@ -32,7 +32,6 @@ const KeyDetailsHeaderSizeLength = ({ width }: Props) => {
       {size && (
         <FlexItem>
           <Text
-            color="subdued"
             size="s"
             className={styles.subtitleText}
             data-testid="key-size-text"
@@ -70,7 +69,6 @@ const KeyDetailsHeaderSizeLength = ({ width }: Props) => {
       )}
       <FlexItem>
         <Text
-          color="subdued"
           size="s"
           className={styles.subtitleText}
           data-testid="key-length-text"

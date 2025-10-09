@@ -58,24 +58,22 @@ const SettingItem = (props: Props) => {
 
   return (
     <>
-      <Title className={styles.title} size="XS">
+      <Title component="h5" size="S">
         {title}
       </Title>
       <Spacer size="s" />
-      <Text className={styles.smallText} size="s">
-        {summary}
-      </Text>
+      <Text size="M">{summary}</Text>
       <Spacer size="m" />
-      <Row align="center" className={styles.container}>
-        <FlexItem style={{ marginRight: '4px' }}>
-          <Text size="xs" className={styles.inputLabel}>
+      <Row align="center" justify="start" gap="s" className={styles.container}>
+        <FlexItem>
+          <Text size="M" variant="semiBold">
             {label}
           </Text>
         </FlexItem>
 
         <FlexItem
-          onMouseEnter={() => setHovering(true)}
-          onMouseLeave={() => setHovering(false)}
+          onMouseEnter={() => !isEditing && setHovering(true)}
+          onMouseLeave={() => !isEditing && setHovering(false)}
           onClick={() => setEditing(true)}
           style={{ width: '200px' }}
         >
@@ -87,10 +85,10 @@ const SettingItem = (props: Props) => {
               onDecline={handleDeclineChanges}
               declineOnUnmount={false}
             >
-              <div
-                className={cx({
-                  [styles.inputHover]: isHovering,
-                })}
+              <Row
+                align="center"
+                justify="between"
+                className={styles.inputHover}
               >
                 <NumericInput
                   autoValidate
@@ -109,10 +107,14 @@ const SettingItem = (props: Props) => {
                   style={{ width: '100%' }}
                 />
                 {!isEditing && <EditIcon />}
-              </div>
+              </Row>
             </InlineItemEditor>
           ) : (
-            <Text className={styles.value} data-testid={`${testid}-value`}>
+            <Text
+              variant="semiBold"
+              className={styles.value}
+              data-testid={`${testid}-value`}
+            >
               {value}
             </Text>
           )}

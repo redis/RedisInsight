@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
-import { EuiFieldText } from '@elastic/eui'
 import { useSelector } from 'react-redux'
+import styled from 'styled-components'
 
 import * as keys from 'uiSrc/constants/keys'
 import { rejsonDataSelector } from 'uiSrc/slices/browser/rejson'
@@ -14,11 +14,17 @@ import { FocusTrap } from 'uiSrc/components/base/utils/FocusTrap'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 import { CancelSlimIcon, CheckThinIcon } from 'uiSrc/components/base/icons'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { TextInput } from 'uiSrc/components/base/inputs'
 import ConfirmOverwrite from './ConfirmOverwrite'
 import { isValidJSON, isValidKey, parseJsonData, wrapPath } from '../../utils'
 import { JSONErrors } from '../../constants'
 
 import styles from '../../styles.module.scss'
+
+const ControlsWrapper = styled.div.attrs({ className: styles.controls })`
+  height: 34px;
+  min-height: 34px;
+`
 
 export interface Props {
   isPair: boolean
@@ -98,26 +104,25 @@ const AddItem = (props: Props) => {
             >
               {isPair && (
                 <FlexItem grow>
-                  <EuiFieldText
+                  <TextInput
                     name="newRootKey"
                     value={key}
-                    isInvalid={!!error}
+                    error={error || undefined}
                     placeholder="Enter JSON key"
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setKey(e.target.value)
+                    onChange={setKey
                     }
                     data-testid="json-key"
                   />
                 </FlexItem>
               )}
               <FlexItem grow>
-                <EuiFieldText
+                <TextInput
                   name="newValue"
                   value={value}
                   placeholder="Enter JSON value"
-                  isInvalid={!!error}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setValue(e.target.value)
+                  error={error || undefined}
+                  onChange={value =>
+                    setValue(value)
                   }
                   data-testid="json-value"
                 />
@@ -127,7 +132,7 @@ const AddItem = (props: Props) => {
                 onCancel={() => setIsConfirmationVisible(false)}
                 onConfirm={confirmApply}
               >
-                <div className={cx(styles.controls)}>
+                <ControlsWrapper>
                   <IconButton
                     size="M"
                     icon={CancelSlimIcon}
@@ -146,7 +151,7 @@ const AddItem = (props: Props) => {
                     className={styles.applyBtn}
                     data-testid="apply-btn"
                   />
-                </div>
+                </ControlsWrapper>
               </ConfirmOverwrite>
             </form>
             {!!error && (

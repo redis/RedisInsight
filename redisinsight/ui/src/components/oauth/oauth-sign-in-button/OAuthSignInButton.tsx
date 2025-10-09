@@ -1,13 +1,18 @@
 import React from 'react'
-import { EuiImage } from '@elastic/eui'
-
+import styled from 'styled-components'
 import { OAuthSsoHandlerDialog } from 'uiSrc/components'
 
 import RedisLogo from 'uiSrc/assets/img/logo_small.svg'
 
 import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiImage } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
+
+const LogoWrapper = styled.div`
+  width: 15px;
+  height: 15px;
+`
 
 export interface Props {
   source: OAuthSocialSource
@@ -30,7 +35,9 @@ const OAuthSignInButton = (props: Props) => {
           }
           data-testid="cloud-sign-in-btn"
         >
-          <EuiImage className={styles.logo} src={RedisLogo} alt="" />
+          <LogoWrapper>
+            <RiImage $size={"fullWidth"} className={styles.logo} src={RedisLogo} alt="Redis logo" />
+          </LogoWrapper>
           <span>Cloud sign in</span>
         </SecondaryButton>
       )}

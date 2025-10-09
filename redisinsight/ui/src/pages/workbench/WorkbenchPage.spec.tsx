@@ -12,6 +12,7 @@ import {
   mockedStore,
   render,
   screen,
+  userEvent,
   waitForRiTooltipVisible,
 } from 'uiSrc/utils/test-utils'
 import WorkbenchPage from './WorkbenchPage'
@@ -137,7 +138,7 @@ describe('Telemetry', () => {
     // turn on Raw mode
     fireEvent.click(screen.getByTestId('btn-change-mode'))
 
-    expect(sendEventTelemetry).toBeCalledWith({
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
       event: TelemetryEvent.WORKBENCH_MODE_CHANGED,
       eventData: {
         databaseId: INSTANCE_ID_MOCK,
@@ -159,7 +160,7 @@ describe('Telemetry', () => {
     // send command without Raw mode
     fireEvent.click(screen.getByTestId('btn-submit'))
 
-    expect(sendEventTelemetry).toBeCalledWith({
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
       event: TelemetryEvent.WORKBENCH_COMMAND_SUBMITTED,
       eventData: {
         command: 'INFO',
@@ -184,7 +185,7 @@ describe('Telemetry', () => {
     // send command with Raw mode
     fireEvent.click(screen.getByTestId('btn-submit'))
 
-    expect(sendEventTelemetry).toBeCalledWith({
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
       event: TelemetryEvent.WORKBENCH_COMMAND_SUBMITTED,
       eventData: {
         command: 'INFO',
@@ -208,7 +209,7 @@ describe('Telemetry', () => {
 
     fireEvent.click(screen.getByTestId('re-run-command'))
 
-    expect(sendEventTelemetry).toBeCalledWith({
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
       event: TelemetryEvent.WORKBENCH_COMMAND_RUN_AGAIN,
       eventData: {
         auto: undefined,
@@ -233,7 +234,7 @@ describe('Telemetry', () => {
 
     fireEvent.click(screen.getByTestId('delete-command'))
 
-    expect(sendEventTelemetry).toBeCalledWith({
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
       event: TelemetryEvent.WORKBENCH_CLEAR_RESULT_CLICKED,
       eventData: {
         databaseId: 'instanceId',
@@ -244,7 +245,7 @@ describe('Telemetry', () => {
 
     fireEvent.click(screen.getByTestId('clear-history-btn'))
 
-    expect(sendEventTelemetry).toBeCalledWith({
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
       event: TelemetryEvent.WORKBENCH_CLEAR_ALL_RESULTS_CLICKED,
       eventData: {
         databaseId: 'instanceId',
@@ -306,21 +307,26 @@ describe('Raw mode', () => {
   })
 
   it('check button clickable and selected', async () => {
+    const sendEventTelemetryMock = jest.fn()
+    ;(sendEventTelemetry as jest.Mock).mockImplementation(
+      () => sendEventTelemetryMock,
+    )
+
     render(<WorkbenchPage />)
 
     const btn = screen.getByTestId(/btn-change-mode/)
-
     expect(btn).not.toBeDisabled()
-    expect(btn).toHaveStyle('background: #000 !important')
 
-    fireEvent.click(btn)
+    await userEvent.click(btn)
 
-    expect(btn).toHaveStyle(
-      'background: var(--browserComponentActive) !important',
-    )
-
-    fireEvent.click(btn)
-
-    expect(btn).toHaveStyle('background: #000 !important')
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
+      event: TelemetryEvent.WORKBENCH_MODE_CHANGED,
+      eventData: {
+        databaseId: INSTANCE_ID_MOCK,
+        changedFromMode: RunQueryMode.ASCII,
+        changedToMode: RunQueryMode.Raw,
+      },
+    })
+    ;(sendEventTelemetry as jest.Mock).mockRestore()
   })
 })

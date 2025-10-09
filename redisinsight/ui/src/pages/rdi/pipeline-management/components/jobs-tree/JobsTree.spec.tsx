@@ -289,4 +289,153 @@ describe('JobsTree', () => {
 
     expect(screen.getByTestId('apply-btn')).toBeDisabled()
   })
+
+  it('should display ValidationErrorsList in tooltip when job has multiple validation errors', () => {
+    const validationErrors = [
+      'Missing required field: name',
+      'Invalid data type for age',
+      'Email format is incorrect'
+    ]
+
+    ;(rdiPipelineSelector as jest.Mock).mockImplementationOnce(() => ({
+      loading: false,
+      error: '',
+      jobs: [{ name: 'job1', value: 'value' }],
+      jobsValidationErrors: {
+        job1: validationErrors,
+      },
+    }))
+
+    render(<JobsTree {...instance(mockedProps)} />)
+
+    expect(screen.getByTestId('rdi-nav-job-job1')).toBeInTheDocument()
+    expect(screen.getByTestId('rdi-pipeline-nav__error')).toBeInTheDocument()
+    
+    // The ValidationErrorsList is inside a tooltip, so we verify the error icon is present
+    const errorIcon = screen.getByTestId('rdi-pipeline-nav__error')
+    expect(errorIcon).toBeInTheDocument()
+  })
+
+  it('should display ValidationErrorsList in tooltip when job has single validation error', () => {
+    const validationErrors = ['Single validation error']
+
+    ;(rdiPipelineSelector as jest.Mock).mockImplementationOnce(() => ({
+      loading: false,
+      error: '',
+      jobs: [{ name: 'job1', value: 'value' }],
+      jobsValidationErrors: {
+        job1: validationErrors,
+      },
+    }))
+
+    render(<JobsTree {...instance(mockedProps)} />)
+
+    expect(screen.getByTestId('rdi-nav-job-job1')).toBeInTheDocument()
+    expect(screen.getByTestId('rdi-pipeline-nav__error')).toBeInTheDocument()
+  })
+
+  it('should handle multiple jobs with different validation states', () => {
+    ;(rdiPipelineSelector as jest.Mock).mockImplementationOnce(() => ({
+      loading: false,
+      error: '',
+      jobs: [
+        { name: 'job1', value: 'value1' },
+        { name: 'job2', value: 'value2' },
+        { name: 'job3', value: 'value3' }
+      ],
+      jobsValidationErrors: {
+        job1: ['Error in job1'],
+        job3: ['Error in job3', 'Another error in job3'],
+      },
+    }))
+
+    render(<JobsTree {...instance(mockedProps)} />)
+
+    // job1 should have error icon
+    const job1Element = screen.getByTestId('rdi-nav-job-job1')
+    expect(job1Element).toBeInTheDocument()
+    expect(job1Element).toHaveClass('invalid')
+    
+    // job2 should not have error icon and should not have invalid class
+    const job2Element = screen.getByTestId('rdi-nav-job-job2')
+    expect(job2Element).toBeInTheDocument()
+    expect(job2Element).not.toHaveClass('invalid')
+
+    // job3 should have error icon
+    const job3Element = screen.getByTestId('rdi-nav-job-job3')
+    expect(job3Element).toBeInTheDocument()
+    expect(job3Element).toHaveClass('invalid')
+
+    // There should be exactly 2 error icons total (for job1 and job3)
+    const errorIcons = screen.getAllByTestId('rdi-pipeline-nav__error')
+    expect(errorIcons).toHaveLength(2)
+  })
+
+  it('should apply invalid class to job name when validation errors exist', () => {
+    ;(rdiPipelineSelector as jest.Mock).mockImplementationOnce(() => ({
+      loading: false,
+      error: '',
+      jobs: [{ name: 'job1', value: 'value' }],
+      jobsValidationErrors: {
+        job1: ['Some validation error'],
+      },
+    }))
+
+    render(<JobsTree {...instance(mockedProps)} />)
+
+    expect(screen.getByTestId('rdi-nav-job-job1')).toHaveClass('invalid')
+  })
+
+  it('should not apply invalid class to job name when no validation errors exist', () => {
+    ;(rdiPipelineSelector as jest.Mock).mockImplementationOnce(() => ({
+      loading: false,
+      error: '',
+      jobs: [{ name: 'job1', value: 'value' }],
+      jobsValidationErrors: {},
+    }))
+
+    render(<JobsTree {...instance(mockedProps)} />)
+
+    expect(screen.getByTestId('rdi-nav-job-job1')).not.toHaveClass('invalid')
+  })
+
+  it('should handle empty validation errors array', () => {
+    ;(rdiPipelineSelector as jest.Mock).mockImplementationOnce(() => ({
+      loading: false,
+      error: '',
+      jobs: [{ name: 'job1', value: 'value' }],
+      jobsValidationErrors: {
+        job1: [],
+      },
+    }))
+
+    render(<JobsTree {...instance(mockedProps)} />)
+
+    expect(screen.getByTestId('rdi-nav-job-job1')).toBeInTheDocument()
+    expect(
+      screen.queryByTestId('rdi-pipeline-nav__error'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('should handle validation errors with special characters', () => {
+    const validationErrors = [
+      'Error with <script>alert("xss")</script>',
+      'Error with & special characters',
+      'Error with "quotes" and \'apostrophes\''
+    ]
+
+    ;(rdiPipelineSelector as jest.Mock).mockImplementationOnce(() => ({
+      loading: false,
+      error: '',
+      jobs: [{ name: 'job1', value: 'value' }],
+      jobsValidationErrors: {
+        job1: validationErrors,
+      },
+    }))
+
+    render(<JobsTree {...instance(mockedProps)} />)
+
+    expect(screen.getByTestId('rdi-nav-job-job1')).toBeInTheDocument()
+    expect(screen.getByTestId('rdi-pipeline-nav__error')).toBeInTheDocument()
+  })
 })

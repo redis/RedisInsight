@@ -1,92 +1,58 @@
-.modal {
-  background: var(--euiColorLightestShade) !important;
-  min-width: 500px !important;
-  max-width: 700px !important;
-  min-height: 270px !important;
+.marginTop2 {
+  margin-top: 2rem !important;
+}
 
-  &.result {
-    width: 500px !important;
+.uploadWarningContainer {
+  align-self: flex-start;
+  text-wrap: wrap;
+  margin-inline: auto;
+  margin-top: 1rem;
+  max-width: 400px;
+}
 
-    @media screen and (min-width: 1024px) {
-      width: 700px !important;
-      min-width: 700px !important;
-    }
-  }
+.result {
+   height: fit-content;
+   overflow: hidden;
+}
 
-  .uploadWarningContainer {
-    align-self: flex-start;
-    text-wrap: wrap;
-    margin-left: 30px;
-    max-width: 400px;
-  }
+.errorFileMsg {
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+.fileDrop {
+  width: 300px;
+  margin: auto;
 
   :global {
-    .euiModalHeader {
-      padding: 4px 42px 20px 30px;
+    .RI-File-Picker__showDrop .RI-File-Picker__prompt, .RI-File-Picker__input:focus + .RI-File-Picker__prompt {
+      background-color: var(--euiColorEmptyShade);
     }
 
-    .euiModalBody__overflow {
-      padding: 8px 30px;
-      overflow-y: hidden !important;
-      mask-image: none !important;
+    .RI-File-Picker__prompt {
+      background-color: var(--euiColorEmptyShade);
+      height: 140px;
+      border-radius: 4px;
+      box-shadow: none;
+      border: 1px dashed var(--controlsBorderColor);
+      color: var(--htmlColor);
     }
 
-    .euiModal__closeIcon {
-      top: 16px;
-      right: 16px;
-      background: none;
+    .RI-File-Picker {
+      width: 400px;
     }
 
-    .euiButtonEmpty.euiButtonEmpty--primary.euiFilePicker__clearButton,
-    .euiButtonEmpty.euiButtonEmpty--primary.euiFilePicker__clearButton .euiButtonEmpty__text {
-      color: var(--externalLinkColor) !important;
-      text-transform: lowercase;
-    }
-
-    .euiModalFooter {
-      margin-top: 12px;
+    .RI-File-Picker__clearButton {
+      margin-top: 4px;
     }
   }
+}
 
-  .errorFileMsg {
-    margin-top: 10px;
-    font-size: 12px;
-  }
-
-  .fileDrop {
-    width: 300px;
-
-    :global {
-      .euiFilePicker__showDrop .euiFilePicker__prompt, .euiFilePicker__input:focus + .euiFilePicker__prompt {
-        background-color: var(--euiColorEmptyShade);
-      }
-
-      .euiFilePicker__prompt {
-        background-color: var(--euiColorEmptyShade);
-        height: 140px;
-        border-radius: 4px;
-        box-shadow: none;
-        border: 1px dashed var(--controlsBorderColor);
-        color: var(--htmlColor);
-      }
-
-      .euiFilePicker {
-        width: 400px;
-      }
-
-      .euiFilePicker__clearButton {
-        margin-top: 4px;
-      }
-    }
-  }
-
-  .loading, .result {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-
-    margin-top: 20px;
-  }
+.loading, .result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-top: 20px;
 }

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { map } from 'lodash'
-import cx from 'classnames'
 import {
   InstanceRedisCloud,
   RedisCloudAccount,
@@ -8,7 +7,7 @@ import {
   RedisCloudSubscriptionStatus,
 } from 'uiSrc/slices/interfaces'
 import { Maybe, Nullable } from 'uiSrc/utils'
-import { LoadingContent } from 'uiSrc/components/base/layout'
+import { LoadingContent, Spacer } from 'uiSrc/components/base/layout'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
@@ -22,15 +21,25 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { SearchInput } from 'uiSrc/components/base/inputs'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
+import { ColorText, Text } from 'uiSrc/components/base/text'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import styles from '../styles.module.scss'
+import {
+  AccountItem,
+  AccountItemTitle,
+  AccountWrapper,
+} from './RedisCloudSubscriptions.styles'
+import {
+  DatabaseWrapper,
+  Footer,
+  PageTitle,
+  SearchForm,
+} from 'uiSrc/components/auto-discover'
 
 export interface Props {
   columns: ColumnDefinition<RedisCloudSubscription>[]
   subscriptions: Nullable<RedisCloudSubscription[]>
+  selection: Nullable<RedisCloudSubscription[]>
   loading: boolean
   account: Nullable<RedisCloudAccount>
   error: string
@@ -53,6 +62,7 @@ const noResultsMessage = 'Your Redis Cloud has no subscriptions available.'
 
 const RedisCloudSubscriptions = ({
   subscriptions,
+  selection,
   columns,
   loading,
   account = null,
@@ -64,8 +74,6 @@ const RedisCloudSubscriptions = ({
   const [items, setItems] = useState(subscriptions || [])
   const [message, setMessage] = useState(loadingMsg)
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
-
-  const [selection, setSelection] = useState<RedisCloudSubscription[]>([])
 
   useEffect(() => {
     if (subscriptions !== null) {
@@ -100,29 +108,6 @@ const RedisCloudSubscriptions = ({
 
   const closePopover = () => {
     setIsPopoverOpen(false)
-  }
-
-  const selectionValue = {
-    onSelectionChange: (selected: RedisCloudSubscription) =>
-      setSelection((previous) => {
-        const canSelect =
-          selected.status === RedisCloudSubscriptionStatus.Active &&
-          selected.numberOfDatabases !== 0
-
-        if (!canSelect) {
-          return previous
-        }
-
-        const isSelected = previous.some(
-          (item) => item.id === selected.id && item.type === selected.type,
-        )
-        if (isSelected) {
-          return previous.filter(
-            (item) => !(item.id === selected.id && item.type === selected.type),
-          )
-        }
-        return [...previous, selected]
-      }),
   }
 
   const onQueryChange = (term: string) => {
@@ -183,9 +168,7 @@ const RedisCloudSubscriptions = ({
       }
       content={
         isDisabled ? (
-          <span>
-            {validationErrors.NO_SUBSCRIPTIONS_CLOUD}
-          </span>
+          <span>{validationErrors.NO_SUBSCRIPTIONS_CLOUD}</span>
         ) : null
       }
     >
@@ -203,7 +186,7 @@ const RedisCloudSubscriptions = ({
   )
 
   const SummaryText = () => (
-    <Text className={styles.subTitle}>
+    <Text color="secondary" size="S">
       <b>Summary: </b>
       {countStatusActive ? (
         <span>
@@ -226,48 +209,38 @@ const RedisCloudSubscriptions = ({
 
   const Account = () => (
     <>
-      <span className={styles.account_item}>
-        <span className={styles.account_item_title}>Account ID:&nbsp;</span>
-        <span color="subdued" data-testid="account-id">
-          {account?.accountId ?? <LoadingContent lines={1} />}
-        </span>
-      </span>
-      <span className={styles.account_item}>
-        <span className={styles.account_item_title}>Name:&nbsp;</span>
-        <span color="subdued" data-testid="account-name">
-          {account?.accountName ?? <LoadingContent lines={1} />}
-        </span>
-      </span>
-      <span className={styles.account_item}>
-        <span className={styles.account_item_title}>Owner Name:&nbsp;</span>
-        <span color="subdued" data-testid="account-owner-name">
-          {account?.ownerName ?? <LoadingContent lines={1} />}
-        </span>
-      </span>
-      <span className={styles.account_item}>
-        <span className={styles.account_item_title}>Owner Email:&nbsp;</span>
-        <span color="subdued" data-testid="account-owner-email">
-          {account?.ownerEmail ?? <LoadingContent lines={1} />}
-        </span>
-      </span>
+      <AccountItem>
+        <AccountItemTitle>Account ID:&nbsp;</AccountItemTitle>
+        <AccountValue data-testid="account-id" value={account?.accountId} />
+      </AccountItem>
+      <AccountItem>
+        <AccountItemTitle>Name:&nbsp;</AccountItemTitle>
+        <AccountValue data-testid="account-name" value={account?.accountName} />
+      </AccountItem>
+      <AccountItem>
+        <AccountItemTitle>Owner Name:&nbsp;</AccountItemTitle>
+        <AccountValue
+          data-testid="account-owner-name"
+          value={account?.ownerName}
+        />
+      </AccountItem>
+      <AccountItem>
+        <AccountItemTitle>Owner Email:&nbsp;</AccountItemTitle>
+        <AccountValue
+          data-testid="account-owner-email"
+          value={account?.ownerEmail}
+        />
+      </AccountItem>
     </>
   )
-
   return (
     <AutodiscoveryPageTemplate>
       <div className="databaseContainer">
-        <Title size="XXL" className={styles.title} data-testid="title">
-          Redis Cloud Subscriptions
-        </Title>
+        <PageTitle data-testid="title">Redis Cloud Subscriptions</PageTitle>
 
-        <Row align="end" gap="s">
-          <FlexItem grow>
-            <MessageBar opened={countStatusActive + countStatusFailed > 0}>
-              <SummaryText />
-            </MessageBar>
-          </FlexItem>
+        <Row justify="end" gap="s">
           <FlexItem>
-            <FormField className={styles.searchForm}>
+            <SearchForm>
               <SearchInput
                 placeholder="Search..."
                 className={styles.search}
@@ -275,17 +248,16 @@ const RedisCloudSubscriptions = ({
                 aria-label="Search"
                 data-testid="search"
               />
-            </FormField>
+            </SearchForm>
           </FlexItem>
         </Row>
         <br />
 
-        <div
-          className={cx('databaseList', 'itemList', styles.cloudSubscriptions)}
-        >
-          <div className={styles.account}>
+        <DatabaseWrapper>
+          <AccountWrapper>
             <Account />
-          </div>
+          </AccountWrapper>
+          <Spacer size="m" />
           <Table
             columns={columns}
             data={items}
@@ -295,15 +267,21 @@ const RedisCloudSubscriptions = ({
                 desc: false,
               },
             ]}
-            onRowClick={selectionValue.onSelectionChange}
+            paginationEnabled
+            stripedRows
+            pageSizes={[5, 10, 25, 50, 100]}
           />
           {!items.length && (
             <Text className={styles.noSubscriptions}>{message}</Text>
           )}
-        </div>
+        </DatabaseWrapper>
+        <MessageBar opened={countStatusActive + countStatusFailed > 0}>
+          <SummaryText />
+        </MessageBar>
       </div>
-      <FlexItem padding={4}>
-        <Row gap="m" justify="between">
+
+      <Footer padding={4}>
+        <Row justify="between">
           <SecondaryButton
             onClick={onBack}
             className="btn-cancel btn-back"
@@ -311,13 +289,33 @@ const RedisCloudSubscriptions = ({
           >
             Back to adding databases
           </SecondaryButton>
-          <FlexItem direction="row">
+          <Row grow={false} gap="m">
             <CancelButton isPopoverOpen={isPopoverOpen} />
-            <SubmitButton isDisabled={selection.length < 1} />
-          </FlexItem>
+            <SubmitButton isDisabled={(selection?.length || 0) < 1} />
+          </Row>
         </Row>
-      </FlexItem>
+      </Footer>
     </AutodiscoveryPageTemplate>
+  )
+}
+
+const AccountValue = ({
+  value,
+  ...rest
+}: {
+  value?: Nullable<string | number>
+}) => {
+  if (!value) {
+    return (
+      <div style={{ width: 80, height: 15 }}>
+        <LoadingContent lines={1} />
+      </div>
+    )
+  }
+  return (
+    <ColorText color="subdued" size="XS" {...rest}>
+      {value}
+    </ColorText>
   )
 }
 

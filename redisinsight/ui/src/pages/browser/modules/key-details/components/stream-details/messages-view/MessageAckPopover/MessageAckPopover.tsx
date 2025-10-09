@@ -1,12 +1,11 @@
 import React from 'react'
 
-import { Text } from 'uiSrc/components/base/text'
 import {
   DestructiveButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { RiPopover } from 'uiSrc/components/base'
-import styles from './styles.module.scss'
+import { HorizontalSpacer } from 'uiSrc/components/base/layout'
+import ConfirmationPopover from 'uiSrc/components/confirmation-popover'
 
 export interface Props {
   id: string
@@ -25,44 +24,39 @@ const AckPopover = (props: Props) => {
     acknowledge = () => {},
   } = props
   return (
-    <RiPopover
+    <ConfirmationPopover
       key={id}
+      title={id}
+      message="will be acknowledged and removed from the pending messages list"
       anchorPosition="leftCenter"
       ownFocus
       isOpen={isOpen}
       closePopover={closePopover}
       panelPaddingSize="m"
       anchorClassName="ackMessagePopover"
-      panelClassName={styles.popoverWrapper}
-      button={
-        <SecondaryButton
+      confirmButton={
+        <DestructiveButton
           size="s"
-          aria-label="Acknowledge pending message"
-          onClick={showPopover}
-          className={styles.ackBtn}
-          data-testid="acknowledge-btn"
+          onClick={() => acknowledge(id)}
+          data-testid="acknowledge-submit"
         >
-          ACK
-        </SecondaryButton>
+          Acknowledge
+        </DestructiveButton>
       }
-    >
-      <div className={styles.popover}>
-        <Text size="m">
-          <b>{id}</b>
-          <br />
-          will be acknowledged and removed from the pending messages list
-        </Text>
-        <div className={styles.popoverFooter}>
-          <DestructiveButton
+      button={
+        <>
+          <SecondaryButton
             size="s"
-            onClick={() => acknowledge(id)}
-            data-testid="acknowledge-submit"
+            aria-label="Acknowledge pending message"
+            onClick={showPopover}
+            data-testid="acknowledge-btn"
           >
-            Acknowledge
-          </DestructiveButton>
-        </div>
-      </div>
-    </RiPopover>
+            ACK
+          </SecondaryButton>
+          <HorizontalSpacer size="s" />
+        </>
+      }
+    />
   )
 }
 

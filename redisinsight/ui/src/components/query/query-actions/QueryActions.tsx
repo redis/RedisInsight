@@ -1,22 +1,18 @@
 import React from 'react'
 
-import cx from 'classnames'
 import { ResultsMode, RunQueryMode } from 'uiSrc/slices/interfaces'
 import { KEYBOARD_SHORTCUTS } from 'uiSrc/constants'
 import { KeyboardShortcut, RiTooltip } from 'uiSrc/components'
 import { isGroupMode } from 'uiSrc/utils'
 
-import {
-  GroupModeIcon,
-  PlayFilledIcon,
-  RawModeIcon,
-} from 'uiSrc/components/base/icons'
+import { RiIcon } from 'uiSrc/components/base/icons'
 
-import Divider from 'uiSrc/components/divider/Divider'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
-import styles from './styles.module.scss'
+import RunButton from 'uiSrc/components/query/components/RunButton'
+import { Row } from 'uiSrc/components/base/layout/flex'
+import { QADivider } from 'uiSrc/components/query/query-actions/QueryActions.styles'
+import { ToggleButton } from 'uiSrc/components/base/forms/buttons'
 
 export interface Props {
   onChangeMode?: () => void
@@ -25,13 +21,11 @@ export interface Props {
   activeMode: RunQueryMode
   resultsMode?: ResultsMode
   isLoading?: boolean
-  isDisabled?: boolean
 }
 
 const QueryActions = (props: Props) => {
   const {
     isLoading,
-    isDisabled,
     activeMode,
     resultsMode,
     onChangeMode,
@@ -40,12 +34,9 @@ const QueryActions = (props: Props) => {
   } = props
   const KeyBoardTooltipContent = KEYBOARD_SHORTCUTS?.workbench?.runQuery && (
     <>
-      <Text className={styles.tooltipText} size="s">
-        {KEYBOARD_SHORTCUTS.workbench.runQuery?.label}:
-      </Text>
+      <Text size="s">{KEYBOARD_SHORTCUTS.workbench.runQuery?.label}:</Text>
       <Spacer size="s" />
       <KeyboardShortcut
-        badgeTextClassName={styles.tooltipText}
         separator={KEYBOARD_SHORTCUTS?._separator}
         items={KEYBOARD_SHORTCUTS.workbench.runQuery.keys}
       />
@@ -53,26 +44,22 @@ const QueryActions = (props: Props) => {
   )
 
   return (
-    <div
-      className={cx(styles.actions, { [styles.disabledActions]: isDisabled })}
-    >
+    <Row align="center" justify="between" gap="l" grow={false}>
       {onChangeMode && (
         <RiTooltip
           position="left"
           content="Enables the raw output mode"
           data-testid="change-mode-tooltip"
         >
-          <EmptyButton
-            onClick={() => onChangeMode()}
-            icon={RawModeIcon}
+          <ToggleButton
+            onPressedChange={() => onChangeMode()}
             disabled={isLoading}
-            className={cx(styles.btn, styles.textBtn, {
-              [styles.activeBtn]: activeMode === RunQueryMode.Raw,
-            })}
+            pressed={activeMode === RunQueryMode.Raw}
             data-testid="btn-change-mode"
           >
-            Raw mode
-          </EmptyButton>
+            <RiIcon size="m" type="RawModeIcon" />
+            <Text size="s">Raw mode</Text>
+          </ToggleButton>
         </RiTooltip>
       )}
       {onChangeGroupMode && (
@@ -88,24 +75,18 @@ const QueryActions = (props: Props) => {
           }
           data-testid="group-results-tooltip"
         >
-          <EmptyButton
-            onClick={() => onChangeGroupMode()}
+          <ToggleButton
+            onPressedChange={() => onChangeGroupMode()}
             disabled={isLoading}
-            icon={GroupModeIcon}
-            className={cx(styles.btn, styles.textBtn, {
-              [styles.activeBtn]: isGroupMode(resultsMode),
-            })}
+            pressed={isGroupMode(resultsMode)}
             data-testid="btn-change-group-mode"
           >
-            Group results
-          </EmptyButton>
+            <RiIcon size="m" type="GroupModeIcon" />
+            <Text size="s">Group results</Text>
+          </ToggleButton>
         </RiTooltip>
       )}
-      <Divider
-        orientation="vertical"
-        colorVariable="separatorColor"
-        className={styles.divider}
-      />
+      <QADivider orientation="vertical" colorVariable="separatorColor" />
       <RiTooltip
         position="left"
         content={
@@ -115,21 +96,9 @@ const QueryActions = (props: Props) => {
         }
         data-testid="run-query-tooltip"
       >
-        <EmptyButton
-          onClick={() => {
-            onSubmit()
-          }}
-          loading={isLoading}
-          disabled={isLoading}
-          icon={PlayFilledIcon}
-          className={cx(styles.btn, styles.submitButton)}
-          aria-label="submit"
-          data-testid="btn-submit"
-        >
-          Run
-        </EmptyButton>
+        <RunButton isLoading={isLoading} onSubmit={onSubmit} />
       </RiTooltip>
-    </div>
+    </Row>
   )
 }
 

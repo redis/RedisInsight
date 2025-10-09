@@ -1,8 +1,5 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-
-import cx from 'classnames'
-import { EuiFieldText } from '@elastic/eui'
 
 import {
   selectedKeyDataSelector,
@@ -19,15 +16,16 @@ import {
 import { KeyTypes } from 'uiSrc/constants'
 import { stringToBuffer } from 'uiSrc/utils'
 import { AddListFormConfig as config } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
+import { TextInput } from 'uiSrc/components/base/inputs'
 import { PushElementToListDto } from 'apiSrc/modules/browser/list/dto'
 
-import styles from '../styles.module.scss'
+import { EntryContent } from '../../common/AddKeysContainer.styled'
 
 export interface Props {
   closePanel: (isCancelled?: boolean) => void
@@ -124,14 +122,18 @@ const AddListElements = (props: Props) => {
   }
 
   return (
-    <>
-      <div className={styles.container}>
-        <RiSelect
-          value={destination}
-          options={optionsDestinations}
-          onChange={(value) => setDestination(value as ListElementDestination)}
-          data-testid="destination-select"
-        />
+    <Col gap="m">
+      <EntryContent gap="m">
+        <FlexItem>
+          <RiSelect
+            value={destination}
+            options={optionsDestinations}
+            onChange={(value) =>
+              setDestination(value as ListElementDestination)
+            }
+            data-testid="destination-select"
+          />
+        </FlexItem>
         <AddMultipleFields
           items={elements}
           onClickRemove={onClickRemove}
@@ -139,45 +141,37 @@ const AddListElements = (props: Props) => {
           isClearDisabled={isClearDisabled}
         >
           {(item, index) => (
-            <EuiFieldText
-              fullWidth
+            <TextInput
               name={`element-${index}`}
               id={`element-${index}`}
               placeholder={config.element.placeholder}
               value={item}
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                handleElementChange(e.target.value, index)
-              }
+              onChange={(value) => handleElementChange(value, index)}
               data-testid={`element-${index}`}
             />
           )}
         </AddMultipleFields>
-      </div>
-      <>
-        <Row justify="end" gap="m" style={{ padding: 18 }}>
-          <FlexItem>
-            <div>
-              <SecondaryButton
-                onClick={() => closePanel(true)}
-                data-testid="cancel-members-btn"
-              >
-                Cancel
-              </SecondaryButton>
-            </div>
-          </FlexItem>
-          <FlexItem>
-            <div>
-              <PrimaryButton
-                onClick={submitData}
-                data-testid="save-elements-btn"
-              >
-                Save
-              </PrimaryButton>
-            </div>
-          </FlexItem>
-        </Row>
-      </>
-    </>
+      </EntryContent>
+      <Row justify="end" gap="m">
+        <FlexItem>
+          <div>
+            <SecondaryButton
+              onClick={() => closePanel(true)}
+              data-testid="cancel-members-btn"
+            >
+              Cancel
+            </SecondaryButton>
+          </div>
+        </FlexItem>
+        <FlexItem>
+          <div>
+            <PrimaryButton onClick={submitData} data-testid="save-elements-btn">
+              Save
+            </PrimaryButton>
+          </div>
+        </FlexItem>
+      </Row>
+    </Col>
   )
 }
 

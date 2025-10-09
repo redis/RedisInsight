@@ -74,8 +74,8 @@ test('Verify that when user enters command, he can see Command Name, Complexity,
     await t.click(browserPage.CommandHelper.cliHelperOutputTitles.withExactText(commandForCheck));
     // Verify details of the command
     await t.expect(browserPage.CommandHelper.cliHelperTitleArgs.innerText).eql('LPOP key [count]', 'Command Name not correct');
-    await t.expect(browserPage.CommandHelper.cliHelperComplexity.innerText).eql('Complexity:\nO(N) where N is the number of elements returned', 'Complexity not correct');
-    await t.expect(browserPage.CommandHelper.cliHelperArguments.innerText).eql('Arguments:\nRequired\nkey\nOptional\n[count]', 'Arguments not correct');
+    await t.expect(browserPage.CommandHelper.cliHelperComplexity.innerText).eql('Complexity:\n\nO(N) where N is the number of elements returned', 'Complexity not correct');
+    await t.expect(browserPage.CommandHelper.cliHelperArguments.innerText).eql('Arguments:\n\nRequired\n\nkey\n\nOptional\n\n[count]', 'Arguments not correct');
     await t.expect(browserPage.CommandHelper.cliHelperSummary.innerText).contains('Returns the first elements in a list after removing it. Deletes the list if the last element was popped.', 'Command Summary not correct');
     await t.expect(browserPage.CommandHelper.cliHelperTitle.innerText).contains('LIST', 'Command Group not correct');
     await t.expect(browserPage.CommandHelper.readMoreButton.exists).ok('Read more button not displayed');

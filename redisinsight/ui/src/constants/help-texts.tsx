@@ -6,13 +6,13 @@ import {
   UTM_MEDIUMS,
 } from 'uiSrc/constants/links'
 
-import styles from 'uiSrc/pages/browser/components/popover-delete/styles.module.scss'
 import { CloudLink } from 'uiSrc/components/markdown'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { FeatureFlags } from './featureFlags'
+import { Row } from 'uiSrc/components/base/layout/flex'
 
 export default {
   REJSON_SHOULD_BE_LOADED: (
@@ -43,16 +43,11 @@ export default {
       </FeatureFlagComponent>
     </>
   ),
-  REMOVE_LAST_ELEMENT: (fieldType: string) => (
-    <div className={styles.appendInfo}>
-      <RiIcon
-        type="ToastDangerIcon"
-        style={{ marginRight: '1rem', marginTop: '4px' }}
-      />
-      <Text size="s">
-        If you remove the single {fieldType}, the whole Key will be deleted.
-      </Text>
-    </div>
+  REMOVE_LAST_ELEMENT: () => (
+    <Row align="center">
+      <RiIcon size="s" type="ToastDangerIcon" style={{ marginRight: '1rem' }} />
+      <Text size="s">Removing the last item deletes the entire key.</Text>
+    </Row>
   ),
   REMOVING_MULTIPLE_ELEMENTS_NOT_SUPPORT: (
     <>

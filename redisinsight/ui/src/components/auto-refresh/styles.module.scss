@@ -1,39 +1,3 @@
-.container {
-  position: relative;
-  white-space: nowrap;
-}
-
-.btn {
-  display: inline-block;
-  margin-top: 1px;
-  transition: transform 0.3s ease;
-
-  &:global(.euiButtonIcon--xSmall) {
-    svg {
-      width: 16px;
-      height: 16px;
-    }
-  }
-
-  svg {
-    width: 20px;
-    height: 20px;
-  }
-
-  &.rolling svg {
-    color: var(--euiColorPrimary) !important;
-  }
-}
-
-.time {
-  padding-right: 6px;
-  color: var(--euiTextSubduedColor) !important;
-
-  &.disabled {
-    opacity: 0.5;
-  }
-}
-
 .summary {
   color: var(--euiColorMediumShade) !important;
   vertical-align: middle;
@@ -53,7 +17,6 @@
   width: 240px;
   height: 114px;
   padding: 28px 18px !important;
-  background-color: var(--euiColorLightestShade) !important;
 
   .input {
     display: inline-block;
@@ -61,10 +24,12 @@
 
     input {
       height: 30px !important;
-      border-radius: 0px !important;
-      background-color: var(--euiColorLightestShade) !important;
+      border-radius: 0 !important;
     }
   }
+}
+.popoverWrapperEditing {
+  height: 140px;
 }
 
 .inputContainer {
@@ -79,43 +44,14 @@
   color: var(--euiTextSubduedColor) !important;
 }
 
-.anchorBtn {
-  width: 18px !important;
-  height: 22px !important;
-  margin-top: 4px;
-
-  &Open {
-    background-color: var(--browserComponentActive) !important;
-    border-bottom: 2px solid var(--euiColorPrimary) !important;
-    border-radius: 4px 4px 0 0 !important;
-  }
-
-  svg {
-    width: 10px !important;
-    height: 10px !important;
-  }
-
-  &:disabled {
-    cursor: not-allowed;
-    pointer-events: none;
-  }
-}
-
 .switchOption {
   padding-bottom: 16px;
-}
-
-.enable {
-  .time {
-    color: var(--euiColorPrimary) !important;
-  }
 }
 
 .refreshRatePencil {
   display: none;
   right: 61px;
   margin-bottom: 3px;
-  background-color: var(--browserTableRowEven);
   width: 26px !important;
   height: 28px !important;
   padding: 5px;
@@ -130,11 +66,10 @@
   display: inline-block;
   width: 80px;
   height: 30px;
-  border: 1px solid transparent;
   cursor: pointer;
+  padding-left: 5px;
 
   &:hover {
-    padding-left: 5px;
     border-color: var(--controlsBorderColor);
 
     .refreshRatePencil {

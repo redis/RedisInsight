@@ -1,4 +1,4 @@
-FROM bitnami/redis:6.2.4
+FROM bitnamilegacy/redis:6.2.4
 
 ENV ALLOW_EMPTY_PASSWORD yes
 

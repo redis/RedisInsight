@@ -2,10 +2,8 @@
 import React from 'react'
 import { isArray } from 'lodash'
 import { setHeaderText } from 'redisinsight-plugin-sdk'
-import { appendIconComponentCache } from '@elastic/eui/es/components/icon/icon'
 
 import {
-  cachedIcons,
   parseInfoRawResponse,
   parseSearchRawResponse,
   parseAggregateRawResponse,
@@ -17,10 +15,6 @@ interface Props {
   command: string
   result?: { response: any; status: string }[]
 }
-
-// This is problematic for some bundlers and/or deployments,
-// so a method exists to preload specific icons an application needs.
-appendIconComponentCache(cachedIcons)
 
 const App = (props: Props) => {
   const { command = '', result: [{ response = '', status = '' } = {}] = [] } =

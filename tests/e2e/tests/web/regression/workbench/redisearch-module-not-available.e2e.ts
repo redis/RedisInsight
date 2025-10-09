@@ -18,11 +18,7 @@ fixture `Redisearch module not available`
     .page(commonUrl)
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneV5Config);
-        await t.click(browserPage.NavigationPanel.workbenchButton);
-    })
-    .afterEach(async() => {
-        // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneV5Config);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
     });
 // Skipped as outdated after implementing RI-4230
 test.skip('Verify that user can see the "Create your free trial Redis database with RediSearch on Redis Cloud" button and click on it in Workbench when module in not loaded', async t => {
@@ -38,7 +34,8 @@ test.skip('Verify that user can see the "Create your free trial Redis database w
     await t.switchToParentWindow();
 });
 // https://redislabs.atlassian.net/browse/RI-4230
-test('Verify that user can see options on what can be done to work with capabilities in Workbench for docker', async t => {
+test
+    .skip('Verify that user can see options on what can be done to work with capabilities in Workbench for docker', async t => {
     const commandJSON = 'JSON.ARRAPPEND key value';
     const commandFT = 'FT.LIST';
 

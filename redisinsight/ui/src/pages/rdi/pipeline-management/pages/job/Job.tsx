@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { get, throttle } from 'lodash'
+import { throttle } from 'lodash'
 import cx from 'classnames'
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
@@ -12,6 +12,7 @@ import {
   rdiPipelineSelector,
   setChangedFile,
   setPipelineJobs,
+  updatePipelineJob,
 } from 'uiSrc/slices/rdi/pipeline'
 import { FileChangeType } from 'uiSrc/slices/interfaces'
 import MonacoYaml from 'uiSrc/components/monaco-editor/components/monaco-yaml'
@@ -59,7 +60,7 @@ const Job = (props: Props) => {
   const deployedJobValueRef = useRef<Maybe<string>>(deployedJobValue)
   const jobNameRef = useRef<string>(name)
 
-  const { loading, schema, jobFunctions, jobs } =
+  const { loading, monacoJobsSchema, jobFunctions, jobs } =
     useSelector(rdiPipelineSelector)
 
   useEffect(() => {
@@ -125,13 +126,7 @@ const Job = (props: Props) => {
   )
 
   const handleChange = (value: string) => {
-    const newJobs = jobs.map((job, index) => {
-      if (index === jobIndexRef.current) {
-        return { ...job, value }
-      }
-      return job
-    })
-    dispatch(setPipelineJobs(newJobs))
+    dispatch(updatePipelineJob({ name: jobNameRef.current, value }))
     checkIsFileUpdated(value)
   }
 
@@ -220,7 +215,7 @@ const Job = (props: Props) => {
             />
           </div>
         </div>
-        <Text className="rdi__text" color="subdued">
+        <Text color="primary">
           {'Create a job per source table to filter, transform, and '}
           <Link
             data-testid="rdi-pipeline-transformation-link"
@@ -239,14 +234,11 @@ const Job = (props: Props) => {
             className={cx('rdi__editorWrapper', 'rdi__loading')}
             data-testid="rdi-job-loading"
           >
-            <Text color="subdued" style={{ marginBottom: 12 }}>
-              Loading data...
-            </Text>
-            <Loader color="secondary" size="l" />
+            <Loader color="secondary" size="l" loaderText="Loading data..." />
           </div>
         ) : (
           <MonacoYaml
-            schema={get(schema, 'jobs', null)}
+            schema={monacoJobsSchema}
             value={value}
             onChange={handleChange}
             disabled={loading}

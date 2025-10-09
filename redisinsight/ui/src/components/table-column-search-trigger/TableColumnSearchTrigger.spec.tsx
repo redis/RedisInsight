@@ -20,4 +20,66 @@ describe('TableColumnSearchTrigger', () => {
     })
     expect(searchInput).toHaveValue('*1*')
   })
+
+  it('should call "handleOpenState" on search blur if input is empty', () => {
+    const handleOpenState = jest.fn()
+
+    render(
+      <TableColumnSearchTrigger
+        {...instance(mockedProps)}
+        isOpen
+        handleOpenState={handleOpenState}
+      />,
+    )
+
+    const searchInput = screen.getByTestId('search')
+    expect(searchInput).toBeInTheDocument()
+    expect(searchInput).toHaveValue('')
+
+    fireEvent.blur(searchInput)
+    expect(handleOpenState).toHaveBeenCalledWith(false)
+  })
+
+  it('should not call "handleOpenState" on search blur if input has value', () => {
+    const handleOpenState = jest.fn()
+
+    render(
+      <TableColumnSearchTrigger
+        {...instance(mockedProps)}
+        isOpen
+        handleOpenState={handleOpenState}
+      />,
+    )
+
+    const searchInput = screen.getByTestId('search')
+    expect(searchInput).toBeInTheDocument()
+    expect(searchInput).toHaveValue('')
+
+    fireEvent.change(searchInput, {
+      target: { value: '*1*' },
+    })
+
+    expect(searchInput).toHaveValue('*1*')
+
+    fireEvent.blur(searchInput)
+    expect(handleOpenState).not.toHaveBeenCalled()
+  })
+
+  it('should call "handleOpenState" with false when ESCAPE key is pressed', () => {
+    const handleOpenState = jest.fn()
+
+    render(
+      <TableColumnSearchTrigger
+        {...instance(mockedProps)}
+        isOpen
+        handleOpenState={handleOpenState}
+      />,
+    )
+
+    const searchInput = screen.getByTestId('search')
+    expect(searchInput).toBeInTheDocument()
+
+    fireEvent.keyDown(searchInput, { key: 'Escape' })
+    expect(handleOpenState).toHaveBeenCalledWith(false)
+  })
 })

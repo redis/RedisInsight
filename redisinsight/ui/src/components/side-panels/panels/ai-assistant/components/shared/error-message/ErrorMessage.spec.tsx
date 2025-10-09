@@ -27,7 +27,7 @@ describe('ErrorMessage', () => {
 
   it('should render rate limit error', () => {
     const error = {
-      errorCode: CustomErrorCodes.AiQueryRateLimitRequest,
+      errorCode: CustomErrorCodes.QueryAiRateLimitRequest,
       statusCode: 429,
       details: {
         limiterType: 'request',
@@ -51,7 +51,7 @@ describe('ErrorMessage', () => {
 
   it('should render tokens limit error', () => {
     const error = {
-      errorCode: CustomErrorCodes.AiQueryRateLimitMaxTokens,
+      errorCode: CustomErrorCodes.QueryAiRateLimitMaxTokens,
       statusCode: 413,
       details: { tokenLimit: 20000, tokenCount: 575 },
     }

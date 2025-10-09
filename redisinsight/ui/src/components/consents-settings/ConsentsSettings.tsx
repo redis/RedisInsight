@@ -217,6 +217,7 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
             <FlexItem>
               <Row gap="m">
                 <FlexItem>
+                  <Spacer size="xxs" />
                   <SwitchInput
                     checked={isRecommended}
                     onCheckedChange={selectAll}
@@ -225,12 +226,8 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
                 </FlexItem>
                 <FlexItem>
                   <Text className={styles.label}>Use recommended settings</Text>
-                  <Text
-                    size="s"
-                    className={styles.smallText}
-                    color="subdued"
-                    style={{ marginTop: '12px' }}
-                  >
+                  <Spacer size="s" />
+                  <Text size="s" className={styles.smallText} color="primary">
                     Select to activate all listed options.
                   </Text>
                 </FlexItem>
@@ -251,7 +248,7 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
               Privacy Settings
             </Title>
             <Spacer size="m" />
-            <Text className={styles.smallText} size="s" color="subdued">
+            <Text className={styles.smallText} size="s" color="primary">
               To optimize your experience, Redis Insight uses third-party tools.
             </Text>
             <Spacer />
@@ -287,10 +284,11 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
         <>
           <HorizontalRule margin="l" className={styles.requiredHR} />
           <Spacer size="m" />
-          <Text color="subdued" size="s" className={styles.smallText}>
+          <Text color="primary" size="s" className={styles.smallText}>
             Use of Redis Insight is governed by your signed agreement with
             Redis, or, if none, by the{' '}
             <Link
+              variant="inline"
               target="_blank"
               href="https://redis.io/software-subscription-agreement/?utm_source=redisinsight&utm_medium=app&utm_campaign=EULA"
             >
@@ -298,6 +296,7 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
             </Link>
             . If no agreement applies, use is subject to the{' '}
             <Link
+              variant="inline"
               target="_blank"
               href="https://github.com/RedisInsight/RedisInsight/blob/main/LICENSE"
             >

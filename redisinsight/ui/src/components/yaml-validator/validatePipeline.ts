@@ -1,15 +1,20 @@
 import { get } from 'lodash'
-import { validateYamlSchema } from './validateYamlSchema'
+import { Nullable } from 'uiSrc/utils'
+import { validateSchema, validateYamlSchema } from './validateYamlSchema'
 
 interface PipelineValidationProps {
   config: string
   schema: any
+  monacoJobsSchema: Nullable<object>
+  jobNameSchema: Nullable<object>
   jobs: { name: string; value: string }[]
 }
 
 export const validatePipeline = ({
   config,
   schema,
+  monacoJobsSchema,
+  jobNameSchema,
   jobs,
 }: PipelineValidationProps) => {
   const { valid: isConfigValid, errors: configErrors } = validateYamlSchema(
@@ -22,7 +27,11 @@ export const validatePipeline = ({
     jobsErrors: Record<string, Set<string>>
   }>(
     (acc, j) => {
-      const validation = validateYamlSchema(j.value, get(schema, 'jobs', null))
+      const validation = validateYamlSchema(j.value, monacoJobsSchema)
+      const jobNameValidation = validateSchema(j.name, jobNameSchema, {
+        errorMessagePrefix: 'Job name',
+        includePathIntoErrorMessage: false,
+      })
 
       if (!acc.jobsErrors[j.name]) {
         acc.jobsErrors[j.name] = new Set()
@@ -32,7 +41,14 @@ export const validatePipeline = ({
         validation.errors.forEach((error) => acc.jobsErrors[j.name].add(error))
       }
 
-      acc.areJobsValid = acc.areJobsValid && validation.valid
+      if (!jobNameValidation.valid) {
+        jobNameValidation.errors.forEach((error) =>
+          acc.jobsErrors[j.name].add(error),
+        )
+      }
+
+      acc.areJobsValid =
+        acc.areJobsValid && validation.valid && jobNameValidation.valid
       return acc
     },
     { areJobsValid: true, jobsErrors: {} },

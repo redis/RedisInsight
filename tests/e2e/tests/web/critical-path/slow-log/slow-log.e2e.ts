@@ -36,12 +36,11 @@ fixture `Slow Log`
     .page(commonUrl)
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneBigConfig);
-        await t.click(myRedisDatabasePage.NavigationPanel.analysisPageButton);
+        await t.click(browserPage.NavigationTabs.analysisButton);
         await t.click(slowLogPage.slowLogTab);
     })
     .afterEach(async() => {
         await slowLogPage.resetToDefaultConfig();
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneBigConfig);
     });
 test('Verify that user can open new Slow Log page using new icon on left app panel', async t => {
     // Verify that user see "Slow Log" page by default for non OSS Cluster
@@ -69,23 +68,23 @@ test('Verify that user can see "No Slow Logs found" message when slowlog-max-len
     await slowLogPage.changeSlowerThanParameter(slowerThanParameter, slowLogPage.slowLogConfigureMicroSecondsUnit);
     await slowLogPage.changeMaxLengthParameter(maxCommandLength);
     // Go to Browser page to scan keys and turn back
-    await t.click(myRedisDatabasePage.NavigationPanel.browserButton);
+    await t.click(browserPage.NavigationTabs.browserButton);
     await t.click(browserPage.refreshKeysButton);
-    await t.click(myRedisDatabasePage.NavigationPanel.analysisPageButton);
+    await t.click(browserPage.NavigationTabs.analysisButton);
     await t.click(slowLogPage.slowLogTab);
     // Compare number of logged commands with maxLength
     await t.expect(slowLogPage.slowLogCommandStatistics.withText(`${maxCommandLength} entries`).exists).ok(`Number of displayed commands is less than selected ${maxCommandLength}`);
 });
 test('Verify that users can specify number of commands that they want to display (10, 25, 50, 100, Max) in Slow Log', async t => {
     maxCommandLength = 128;
-    const numberOfCommandsArray = [10, 25, 50, 100, -1];
+    const numberOfCommandsArray = ['10', '25', '50', '100', 'Max available'];
     // Change slower-than parameter
     await slowLogPage.changeSlowerThanParameter(slowerThanParameter, slowLogPage.slowLogConfigureMicroSecondsUnit);
     await slowLogPage.changeMaxLengthParameter(maxCommandLength);
     // Go to Browser page to scan keys and turn back
-    await t.click(myRedisDatabasePage.NavigationPanel.browserButton);
+    await t.click(browserPage.NavigationTabs.browserButton);
     await t.click(browserPage.refreshKeysButton);
-    await t.click(myRedisDatabasePage.NavigationPanel.analysisPageButton);
+    await t.click(browserPage.NavigationTabs.analysisButton);
     await t.click(slowLogPage.slowLogTab);
     for (let i = 0; i < numberOfCommandsArray.length; i++) {
         await slowLogPage.changeDisplayUpToParameter(numberOfCommandsArray[i]);

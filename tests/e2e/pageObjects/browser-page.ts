@@ -3,6 +3,7 @@ import { Common } from '../helpers/common';
 import { InstancePage } from './instance-page';
 import { BulkActions, TreeView } from './components/browser';
 import { AddElementInList } from '../helpers/constants';
+import { createEnhancedSelector, EnhancedSelector } from './enhanced-selector';
 
 export class BrowserPage extends InstancePage {
     BulkActions = new BulkActions();
@@ -37,19 +38,20 @@ export class BrowserPage extends InstancePage {
     saveHashFieldButton = Selector('[data-testid=save-fields-btn]');
     saveMemberButton = Selector('[data-testid=save-members-btn]');
     searchButtonInKeyDetails = Selector('[data-testid=search-button]');
-    addKeyButton = Selector('span').withExactText('Add Key');
-    keyTypeDropDown = Selector('fieldset button.euiSuperSelectControl');
-    confirmRemoveHashFieldButton = Selector('[data-testid^=remove-hash-button-] span');
+    addKeyButton = Selector('button').withExactText('Add Key');
+    keyTypeDropDown = Selector('[data-testid=select-key-type]');
+    confirmRemoveHashFieldButton = Selector('[role=dialog] [data-testid^=remove-hash-button]');
     removeSetMemberButton = Selector('[data-testid^=set-remove-btn]');
     removeHashFieldButton = Selector('[data-testid^=remove-hash-button]');
     removeZsetMemberButton = Selector('[data-testid^=zset-remove-button]');
-    confirmRemoveSetMemberButton = Selector('[data-testid^=set-remove-btn-] span');
-    confirmRemoveZSetMemberButton = Selector('[data-testid^=zset-remove-button-] span');
+    confirmRemoveSetMemberButton = Selector('[role=dialog] [data-testid^=set-remove-btn-]');
+    confirmRemoveZSetMemberButton = Selector('[role=dialog] [data-testid^=zset-remove-button-]');
     saveElementButton = Selector('[data-testid=save-elements-btn]');
     removeElementFromListIconButton = Selector('[data-testid=remove-key-value-items-btn]');
     removeElementFromListButton = Selector('[data-testid=remove-elements-btn]');
     confirmRemoveListElementButton = Selector('[data-testid=remove-submit]');
     removeElementFromListSelect = Selector('[data-testid=destination-select]');
+    destinationSelect = Selector('[data-testid=destination-select]');
     addJsonObjectButton = Selector('[data-testid=add-object-btn]');
     addJsonFieldButton = Selector('[data-testid=add-field-btn]');
     expandJsonObject = Selector('[data-testid=expand-object]');
@@ -115,17 +117,19 @@ export class BrowserPage extends InstancePage {
     redisearchFreeLink = Selector('[data-testid=get-started-link]');
     guideLinksBtn = Selector('[data-testid^=guide-button-]');
     //OPTION ELEMENTS
-    stringOption = Selector('#string');
-    jsonOption = Selector('#ReJSON-RL');
-    setOption = Selector('#set');
-    zsetOption = Selector('#zset');
-    listOption = Selector('#list');
-    hashOption = Selector('#hash');
-    streamOption = Selector('#stream');
-    removeFromHeadSelection = Selector('#HEAD');
+    stringOption = Selector('[data-test-subj=string]').parent('[role=option]');
+    jsonOption = Selector('[data-test-subj=ReJSON-RL]').parent('[role=option]');
+    setOption = Selector('[data-test-subj=set]').parent('[role=option]');
+    zsetOption = Selector('[data-test-subj=zset]').parent('[role=option]');
+    listOption = Selector('[data-test-subj=list]').parent('[role=option]');
+    hashOption = Selector('[data-test-subj=hash]').parent('[role=option]');
+    streamOption = Selector('[data-test-subj=stream]').parent('[role=option]');
+    pushToTailSelection = Selector('[role=option] span').withExactText('Push to tail').parent('[role=option]');
+    pushToHeadSelection = Selector('[role=option] span').withExactText('Push to head').parent('[role=option]');
+    removeFromHeadSelection = Selector('span').withExactText('Remove from head').parent('[role=option]');
     filterOptionType = Selector('[data-test-subj^=filter-option-type-]');
     filterByKeyTypeDropDown = Selector('[data-testid=select-filter-key-type]', { timeout: 500 });
-    filterAllKeyType = Selector('[id=all]');
+    filterAllKeyType = Selector('[role=option] span').withExactText('All Key Types').parent('[role=option]');
     consumerOption = Selector('[data-testid=consumer-option]');
     claimTimeOptionSelect = Selector('[data-testid=time-option-select]');
     relativeTimeOption = Selector('#idle');
@@ -141,9 +145,9 @@ export class BrowserPage extends InstancePage {
     filterHistoryOption = Selector('[data-testid^=suggestion-item-]');
     filterHistoryItemText = Selector('[data-testid=suggestion-item-text]');
     //TABS
-    streamTabGroups = Selector('[data-testid=stream-tab-Groups]');
-    streamTabConsumers = Selector('[data-testid=stream-tab-Consumers]');
-    streamTabs = Selector('[data-test-subj=stream-tabs]');
+    streamTabGroups = Selector('[data-testid=stream-details] [role=tablist] p').withExactText('Consumer Groups').parent('[role=tab]');
+    streamTabConsumers = Selector('[data-testid=stream-details] [role=tab][aria-controls*=-content-Consumers]');
+    streamTabs = Selector('[data-testid=stream-tabs]');
     //TEXT INPUTS (also referred to as 'Text fields')
     addKeyNameInput = Selector('[data-testid=key]');
     keyNameInput = Selector('[data-testid=edit-key-input]');
@@ -188,14 +192,14 @@ export class BrowserPage extends InstancePage {
     keyLengthDetails = Selector('[data-testid=key-length-text]');
     keyNameInTheList = Selector(this.cssSelectorKey);
     hashFieldsList = Selector('[data-testid^=hash-field-] span');
-    hashValuesList = Selector('[data-testid^=hash_content-value-] span');
+    hashValuesList = Selector('[data-testid^=hash_content-value-] p');
     hashField = Selector('[data-testid^=hash-field-]').nth(0);
     hashFieldValue = Selector('[data-testid^=hash_content-value-]');
     setMembersList = Selector('[data-testid^=set-member-value-]');
     zsetMembersList = Selector('[data-testid^=zset-member-value-]');
     zsetScoresList = Selector('[data-testid^=zset_content-value-]');
     listElementsList = Selector('[data-testid^=list_content-value-]');
-    jsonKeyValue = Selector('[data-testid=json-data]');
+    jsonKeyValue = createEnhancedSelector('[data-testid=json-data]');
     jsonError = Selector('[data-testid=edit-json-error]');
     tooltip = Selector('[role=tooltip]', { timeout: 500 });
     dialog = Selector('[role=dialog]', { timeout: 500 });
@@ -205,7 +209,7 @@ export class BrowserPage extends InstancePage {
     keysNumberOfResults = Selector('[data-testid=keys-number-of-results]');
     scannedValue = Selector('[data-testid=keys-number-of-scanned]');
     totalKeysNumber = Selector('[data-testid=keys-total]');
-    keyDetailsBadge = Selector('.key-details-header .euiBadge__text');
+    keyDetailsBadge = Selector('[data-testid=key-details-header] [data-testid^=badge-]');
     modulesTypeDetails = Selector('[data-testid=modules-type-details]');
     filteringLabel = Selector('[data-testid^=badge-]');
     keysSummary = Selector('[data-testid=keys-summary]');
@@ -225,7 +229,7 @@ export class BrowserPage extends InstancePage {
     streamFields = Selector('[data-testid=stream-entries-container] .truncateText');
     streamVirtualContainer = Selector('[data-testid=virtual-grid-container] div div').nth(0);
     streamEntryFields = Selector('[data-testid^=stream-entry-field]');
-    confirmationMessagePopover = Selector('div.euiPopover__panel .euiText ');
+    confirmationMessagePopover = Selector('[role=dialog][data-state=open]');
     streamGroupId = Selector('.streamItemId[data-testid^=stream-group-id]');
     streamGroupName = Selector('[data-testid^=stream-group-name]');
     streamMessage = Selector('[data-testid*=-date][data-testid^=stream-message]');
@@ -252,7 +256,7 @@ export class BrowserPage extends InstancePage {
 
     //Get Hash key field ttl value
     //for Redis databases 7.4 and higher
-    getHashTtlFieldInput = (fieldName: string): Selector => (Selector(`[data-testid=hash-ttl_content-value-${fieldName}]`));
+    getHashTtlFieldInput = (fieldName: string): EnhancedSelector => (createEnhancedSelector(`[data-testid=hash-ttl_content-value-${fieldName}]`));
     getListElementInput = (count: number): Selector => (Selector(`[data-testid*=element-${count}]`));
     getKeySize = (keyName: string): Selector => (Selector(`[data-testid=size-${keyName}]`));
     getKeyTTl = (keyName: string): Selector => (Selector(`[data-testid=ttl-${keyName}]`));
@@ -383,9 +387,9 @@ export class BrowserPage extends InstancePage {
         await t.typeText(this.keyTTLInput, TTL, { replace: true, paste: true });
 
         if(position === AddElementInList.Head){
-            await t.click(this.removeElementFromListSelect);
-            await t.click(this.removeFromHeadSelection);
-            await t.expect(this.removeFromHeadSelection.exists).notOk();
+            await t.click(this.destinationSelect);
+            await t.click(this.pushToHeadSelection);
+            await t.expect(this.pushToHeadSelection.exists).notOk();
         }
 
         for(let i = 0; i < element.length; i++ ) {
@@ -407,7 +411,7 @@ export class BrowserPage extends InstancePage {
      * @param value The value of the key
      * @param fieldTtl The ttl of the field for Redis databases 7.4 and higher*/
     async addHashKey(keyName: string, TTL = ' ', field = ' ', value = ' ', fieldTtl = ''): Promise<void> {
-        if (await this.Toast.toastCloseButton.exists) {
+        if (await this.Toast.toastCloseButton.visible) {
             await t.click(this.Toast.toastCloseButton);
         }
         await Common.waitForElementNotVisible(this.progressLine);
@@ -504,6 +508,16 @@ export class BrowserPage extends InstancePage {
         await t
             .click(this.filterByKeyTypeDropDown)
             .click(this.filterAllKeyType);
+    }
+
+    /**
+     * Searching by Key name in the list
+     * @param keyName The name of the key
+     */
+    async navigateToKey(keyName: string): Promise<void> {
+        // todo: check if we outside of database
+        await this.searchByKeyName(keyName);
+        await this.openKeyDetailsByKeyName(keyName);
     }
 
     /**
@@ -677,7 +691,7 @@ export class BrowserPage extends InstancePage {
 
     //Get JSON key value from details
     async getJsonKeyValue(): Promise<string> {
-        return this.jsonKeyValue.textContent;
+        return this.jsonKeyValue.textContentWithoutButtons;
     }
 
     /**
@@ -771,9 +785,9 @@ export class BrowserPage extends InstancePage {
         await t
             .click(this.addKeyValueItemsButton)
         if(position === AddElementInList.Head){
-            await t.click(this.removeElementFromListSelect);
-            await t.click(this.removeFromHeadSelection);
-            await t.expect(this.removeFromHeadSelection.exists).notOk();
+            await t.click(this.destinationSelect);
+            await t.click(this.pushToHeadSelection);
+            await t.expect(this.pushToHeadSelection.exists).notOk();
         }
         for (let i = 0; i < element.length; i ++){
             await t.typeText(this.getListElementInput(i), element[i], { replace: true, paste: true });
@@ -948,8 +962,14 @@ export class BrowserPage extends InstancePage {
     */
     async selectIndexByName(index: string): Promise<void> {
         const option = Selector(`[data-test-subj="mode-option-type-${index}"]`);
+        const placeholder = Selector('[data-testid="select-index-placeholder"]');
+        const dropdown = Selector('[data-testid="select-search-mode"]');
+
+        // Click placeholder if it exists, otherwise click dropdown
+        const triggerElement = await placeholder.exists ? placeholder : dropdown;
+
         await t
-            .click(this.selectIndexDdn)
+            .click(triggerElement)
             .click(option);
     }
 
@@ -1000,6 +1020,11 @@ export type AddNewKeyParameters = {
     }]
 };
 
+export type BaseKeyParameters = {
+    keyName: string,
+    ttl?: number
+};
+
 /**
  * Hash key parameters
  * @param keyName The name of the key
@@ -1008,8 +1033,7 @@ export type AddNewKeyParameters = {
  * @param value The value of the field
 
  */
-export type HashKeyParameters = {
-    keyName: string,
+export type HashKeyParameters = BaseKeyParameters & {
     fields: {
         field: string,
         value: string
@@ -1023,8 +1047,7 @@ export type HashKeyParameters = {
  * @param id The id of entry
  * @param fields The Array with fields
  */
-export type StreamKeyParameters = {
-    keyName: string,
+export type StreamKeyParameters = BaseKeyParameters & {
     entries: {
         id: string,
         fields: {
@@ -1039,8 +1062,7 @@ export type StreamKeyParameters = {
  * @param keyName The name of the key
  * @param members The Array with members
  */
-export type SetKeyParameters = {
-    keyName: string,
+export type SetKeyParameters = BaseKeyParameters & {
     members: string[]
 };
 
@@ -1051,8 +1073,7 @@ export type SetKeyParameters = {
  * @param name The name of the member
  * @param id The id of the member
  */
-export type SortedSetKeyParameters = {
-    keyName: string,
+export type SortedSetKeyParameters = BaseKeyParameters & {
     members: {
         name: string,
         score: number
@@ -1064,9 +1085,8 @@ export type SortedSetKeyParameters = {
  * @param keyName The name of the key
  * @param element The element in list
  */
-export type ListKeyParameters = {
-    keyName: string,
-    element: string
+export type ListKeyParameters = BaseKeyParameters & {
+    elements: string[]
 };
 
 /**
@@ -1074,9 +1094,17 @@ export type ListKeyParameters = {
  * @param keyName The name of the key
  * @param value The value in the string
  */
-export type StringKeyParameters = {
-    keyName: string,
+export type StringKeyParameters = BaseKeyParameters & {
     value: string
+};
+
+/**
+ * Json key parameters
+ * @param keyName The name of the key
+ * @param value The value in the json
+ */
+export type JsonKeyParameters = BaseKeyParameters & {
+    data: any
 };
 
 /**

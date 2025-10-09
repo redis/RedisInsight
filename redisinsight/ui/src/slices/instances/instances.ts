@@ -59,7 +59,7 @@ export const initialState: InitialStateInstances = {
     connectionType: ConnectionType.Standalone,
     isRediStack: false,
     modules: [],
-    loading: false,
+    loading: undefined,
   },
   editedInstance: {
     loading: false,

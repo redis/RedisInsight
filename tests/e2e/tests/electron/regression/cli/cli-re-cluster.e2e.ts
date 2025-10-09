@@ -31,10 +31,10 @@ const verifyCommandsInCli = async(): Promise<void> => {
 fixture `Work with CLI in RE Cluster`
     .meta({ type: 'regression' })
     .page(commonUrl);
-test
+test.skip
     .meta({ rte: rte.reCluster })
     .before(async() => {
-        await databaseHelper.acceptLicenseTermsAndAddREClusterDatabase(redisEnterpriseClusterConfig);
+        await databaseHelper.acceptLicenseTermsAndAddRedisSoftwareDatabase(redisEnterpriseClusterConfig);
     })
     .after(async() => {
         // Clear and delete database

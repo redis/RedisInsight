@@ -3,7 +3,7 @@ import { DatabaseHelper } from '../../../../helpers/database';
 import { BrowserPage } from '../../../../pageObjects';
 import {
     commonUrl,
-    ossStandaloneV6Config,
+    ossStandaloneConfigEmpty,
 } from '../../../../helpers/conf';
 import { DatabaseAPIRequests } from '../../../../helpers/api/api-database';
 import { populateListWithElements } from '../../../../helpers/keys';
@@ -17,7 +17,7 @@ const databaseAPIRequests = new DatabaseAPIRequests();
 const apiKeyRequests = new APIKeyRequests();
 const telemetry = new Telemetry();
 
-const dbParameters = { host: ossStandaloneV6Config.host, port: ossStandaloneV6Config.port };
+const dbParameters = { host: ossStandaloneConfigEmpty.host, port: ossStandaloneConfigEmpty.port };
 const keyName = `TestListKey-${ Common.generateWord(10) }`;
 const elementForSearch = `SearchField-${ Common.generateWord(5) }`;
 const keyToAddParameters = { elementsCount: 500000, keyName, elementStartWith: 'listElement' };
@@ -34,12 +34,16 @@ fixture `List Key verification`
     .meta({ type: 'regression', rte: rte.standalone })
     .page(commonUrl)
     .beforeEach(async() => {
-        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneV6Config);
-        await browserPage.addListKey(keyName, '2147476121', ['testElement']);
+        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfigEmpty);
+        await apiKeyRequests.addListKeyApi({
+            keyName,
+            ttl: 2147476121,
+            elements: ['testElement'],
+        }, ossStandaloneConfigEmpty);
+        await browserPage.navigateToKey(keyName);
     })
     .afterEach(async() => {
-        await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneV6Config.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneV6Config);
+        await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfigEmpty.databaseName);
     });
 test.requestHooks(logger)
   ('Verify that user can search per exact element index in List key in DB with 1 million of fields', async t => {
@@ -63,12 +67,10 @@ test.requestHooks(logger)
 
 test
     .before(async() => {
-        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneV6Config);
-
+        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfigEmpty);
     })
     .after(async() => {
         await browserPage.Cli.sendCommandInCli('flushdb');
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneV6Config);
     })
     ('Verify that user can add a multiple fields', async t => {
 

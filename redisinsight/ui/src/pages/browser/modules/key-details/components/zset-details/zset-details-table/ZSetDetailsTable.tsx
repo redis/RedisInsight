@@ -337,8 +337,7 @@ const ZSetDetailsTable = (props: Props) => {
 
         return (
           <Text
-            color="subdued"
-            size="s"
+            color="secondary"
             component="div"
             style={{ maxWidth: '100%', whiteSpace: 'break-spaces' }}
           >
@@ -443,7 +442,7 @@ const ZSetDetailsTable = (props: Props) => {
                 handleButtonClick={handleRemoveIconClick}
                 testid={`zset-remove-button-${name}`}
                 appendInfo={
-                  length === 1 ? HelpTexts.REMOVE_LAST_ELEMENT('Member') : null
+                  length === 1 ? HelpTexts.REMOVE_LAST_ELEMENT : null
                 }
               />
             </div>

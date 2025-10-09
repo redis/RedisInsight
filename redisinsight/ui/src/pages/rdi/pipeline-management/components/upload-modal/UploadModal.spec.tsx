@@ -80,6 +80,24 @@ beforeEach(() => {
   jest.clearAllMocks()
 })
 
+jest.mock('uiSrc/components/base/display', () => {
+  const actual = jest.requireActual('uiSrc/components/base/display')
+
+  return {
+    ...actual,
+    Modal: {
+      ...actual.Modal,
+      Content: {
+        ...actual.Modal.Content,
+        Header: {
+          ...actual.Modal.Content.Header,
+          Title: jest.fn().mockReturnValue(null),
+        },
+      },
+    },
+  }
+})
+
 describe('UploadModal', () => {
   it('should render', () => {
     expect(render(<UploadModal>{button}</UploadModal>)).toBeTruthy()
@@ -209,7 +227,7 @@ describe('UploadModal', () => {
     expect(onUploadedPipelineMock).not.toBeCalled()
   })
 
-  it('should call onCLose when close button is clicked', async () => {
+  it('should call onClose when close button is clicked', async () => {
     const onCloseMock = jest.fn()
 
     render(<UploadModal onClose={onCloseMock}>{button}</UploadModal>)
@@ -219,9 +237,7 @@ describe('UploadModal', () => {
     })
 
     await act(() => {
-      fireEvent.click(
-        screen.getByRole('button', { name: 'Closes this modal window' }),
-      )
+      fireEvent.click(screen.getByTestId('import-file-modal-close-btn'))
     })
 
     expect(onCloseMock).toBeCalled()

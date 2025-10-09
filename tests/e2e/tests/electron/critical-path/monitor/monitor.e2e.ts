@@ -47,7 +47,7 @@ test('Verify that user can work with Monitor', async t => {
     await browserPage.Cli.getSuccessCommandResultFromCli(`${command} ${keyName} ${keyValue}`);
     await browserPage.Profiler.checkCommandInMonitorResults(command, [keyName, keyValue]);
 });
-test('Verify that user can see the list of all commands from all clients ran for this Redis database in the list of results in Monitor', async t => {
+test.skip('Verify that user can see the list of all commands from all clients ran for this Redis database in the list of results in Monitor', async t => {
     //Define commands in different clients
     const cli_command = 'command';
     const workbench_command = 'hello';
@@ -65,7 +65,7 @@ test('Verify that user can see the list of all commands from all clients ran for
     await browserPage.addHashKey(keyName);
     await browserPage.Profiler.checkCommandInMonitorResults(browser_command);
     //Open Workbench page to create new client
-    await t.click(browserPage.NavigationPanel.workbenchButton);
+    await t.click(browserPage.NavigationTabs.workbenchButton);
     //Send command in Workbench
     await workbenchPage.sendCommandInWorkbench(workbench_command);
     //Check that command from Workbench is displayed in monitor

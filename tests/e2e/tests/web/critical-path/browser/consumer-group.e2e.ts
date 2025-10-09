@@ -36,13 +36,13 @@ fixture `Consumer group`
             await t.click(browserPage.closeKeyButton);
         }
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
+        // await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that user can create a new Consumer Group in the current Stream', async t => {
     const toolTip = [
         'Enter Valid ID, 0 or $',
         '\nSpecify the ID of the last delivered entry in the stream from the new group\'s perspective.',
-        '\nOtherwise, ',
+        '\nOtherwise,',
         '$',
         'represents the ID of the last entry in the stream,',
         '0',
@@ -50,8 +50,20 @@ test('Verify that user can create a new Consumer Group in the current Stream', a
     ];
     keyName = Common.generateWord(20);
     consumerGroupName = `qwerty123456${Common.generateWord(20)}!@#$%^&*()_+=`;
+
     // Add New Stream Key
-    await browserPage.addStreamKey(keyName, keyField, keyValue);
+    await apiKeyRequests.addStreamKeyApi({
+        keyName,
+        entries: [{
+            id: '*',
+            fields: [{
+                name: keyField,
+                value: keyValue,
+            }],
+        }],
+    }, ossStandaloneConfig);
+
+    await browserPage.navigateToKey(keyName);
     await t.click(browserPage.fullScreenModeButton);
     // Open Stream consumer groups and add group
     await t.click(browserPage.streamTabGroups);
@@ -67,8 +79,20 @@ test('Verify that user can create a new Consumer Group in the current Stream', a
 test('Verify that user can input the 0, $ and Valid Entry ID in the ID field', async t => {
     keyName = Common.generateWord(20);
     consumerGroupName = Common.generateWord(20);
+
     // Add New Stream Key
-    await browserPage.addStreamKey(keyName, keyField, keyValue);
+    await apiKeyRequests.addStreamKeyApi({
+        keyName,
+        entries: [{
+            id: '*',
+            fields: [{
+                name: keyField,
+                value: keyValue,
+            }],
+        }],
+    }, ossStandaloneConfig);
+
+    await browserPage.navigateToKey(keyName);
     await t.click(browserPage.fullScreenModeButton);
     // Open Stream consumer groups and add group with different IDs
     await t.click(browserPage.streamTabGroups);
@@ -89,7 +113,18 @@ test('Verify that user can see the Consumer group columns (Group Name, Consumers
     const message = 'Your Consumer Group has no Consumers available.';
 
     // Add New Stream Key
-    await browserPage.addStreamKey(keyName, keyField, keyValue);
+    await apiKeyRequests.addStreamKeyApi({
+        keyName,
+        entries: [{
+            id: '*',
+            fields: [{
+                name: keyField,
+                value: keyValue,
+            }],
+        }],
+    }, ossStandaloneConfig);
+
+    await browserPage.navigateToKey(keyName);
     await t.click(browserPage.fullScreenModeButton);
     // Open Stream consumer groups and add group with different IDs
     await t.click(browserPage.streamTabGroups);

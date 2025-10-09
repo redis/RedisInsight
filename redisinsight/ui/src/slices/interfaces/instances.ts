@@ -88,8 +88,8 @@ export enum ConnectionType {
 export enum ConnectionProvider {
   UNKNOWN = 'UNKNOWN',
   LOCALHOST = 'LOCALHOST',
-  RE_CLUSTER = 'RE_CLUSTER',
-  RE_CLOUD = 'RE_CLOUD',
+  REDIS_SOFTWARE = 'REDIS_SOFTWARE',
+  REDIS_CLOUD = 'REDIS_CLOUD',
   AZURE = 'AZURE',
   AWS = 'AWS',
   GOOGLE = 'GOOGLE',
@@ -465,7 +465,13 @@ export interface ModifiedSentinelMaster extends CreateSentinelDatabaseDto {
   loading?: boolean
   message?: string
   status?: AddRedisDatabaseStatus
-  error?: string | object
+  error?:
+    | string
+    | {
+        statusCode?: number
+        name?: string
+      }
+  numberOfSlaves?: number
 }
 
 export interface ModifiedGetListElementsResponse

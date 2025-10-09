@@ -382,9 +382,7 @@ const HashDetailsTable = (props: Props) => {
         )
 
         return (
-          <Text
-            color="subdued"
-            size="s"
+          <Text color="secondary"
             style={{ maxWidth: '100%', whiteSpace: 'break-spaces' }}
             component="div"
           >
@@ -531,7 +529,7 @@ const HashDetailsTable = (props: Props) => {
               handleDeleteItem={handleDeleteField}
               handleButtonClick={handleRemoveIconClick}
               appendInfo={
-                length === 1 ? HelpTexts.REMOVE_LAST_ELEMENT('Field') : null
+                length === 1 ? HelpTexts.REMOVE_LAST_ELEMENT : null
               }
             />
           </StopPropagation>
@@ -573,6 +571,7 @@ const HashDetailsTable = (props: Props) => {
             onApply={(value) => handleApplyEditExpire(fieldItem, value, 'ttl')}
             testIdPrefix="hash-ttl"
             validation={validateTTLNumber}
+            variant="underline"
             isEditDisabled={isTruncatedFieldName}
             editToolTipContent={editTooltipContent}
           >

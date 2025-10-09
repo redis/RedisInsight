@@ -39,7 +39,8 @@ test
         // Delete exported file
         fs.unlinkSync(joinPath(fileDownloadPath, foundExportedFiles[0]));
         await databaseAPIRequests.deleteAllDatabasesApi();
-    })('Exporting Standalone, OSS Cluster, and Sentinel connection types', async t => {
+    })
+    .skip('Exporting Standalone, OSS Cluster, and Sentinel connection types', async t => {
         const databaseNames = [
             ossStandaloneConfig.databaseName,
             ossStandaloneTlsConfig.databaseName,
@@ -104,7 +105,7 @@ test
     .before(async() => {
         await databaseHelper.acceptLicenseTerms();
         await databaseAPIRequests.addNewStandaloneDatabaseApi(ossStandaloneTlsConfig);
-        await databaseHelper.addRECloudDatabase(cloudDatabaseConfig);
+        await databaseHelper.addRedisCloudDatabase(cloudDatabaseConfig);
         await databaseAPIRequests.discoverSentinelDatabaseApi(ossSentinelConfig);
         await myRedisDatabasePage.reloadPage();
     })

@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
+import styled from 'styled-components'
+
 import InstanceHeader from 'uiSrc/components/instance-header'
 import { ExplorePanelTemplate } from 'uiSrc/templates'
 import BottomGroupComponents from 'uiSrc/components/bottom-group-components/BottomGroupComponents'
@@ -12,8 +14,12 @@ import {
   ResizableContainer,
   ResizablePanel,
   ResizablePanelHandle,
+  Spacer,
 } from 'uiSrc/components/base/layout'
 import { ImperativePanelGroupHandle } from 'uiSrc/components/base/layout/resize'
+import { AppNavigation } from 'uiSrc/components'
+import { AppNavigationActionsProvider } from 'uiSrc/contexts/AppNavigationActionsProvider'
+import { Nullable } from 'uiSrc/utils'
 
 export const firstPanelId = 'main-component'
 export const secondPanelId = 'cli'
@@ -22,23 +28,16 @@ export interface Props {
   children: React.ReactNode
 }
 
+const ButtonGroupResizablePanel = styled(ResizablePanel)`
+  flex-basis: 27px !important;
+`
+
 export const getDefaultSizes = () => {
   const storedSizes = localStorageService.get(
     BrowserStorageItem.cliResizableContainer,
   )
 
   return storedSizes && Array.isArray(storedSizes) ? storedSizes : [60, 40]
-}
-
-export const calculateMainPanelInitialSize = () => {
-  const total = window.innerHeight
-  const remaining = total - 26
-  return Math.floor((remaining / total) * 100)
-}
-
-export const calculateBottomGroupPanelInitialSize = () => {
-  const total = window.innerHeight
-  return Math.ceil((26 / total) * 100)
 }
 
 const roundUpSizes = (sizes: number[]) => [
@@ -52,9 +51,6 @@ const InstancePageTemplate = (props: Props) => {
 
   const { isShowCli, isShowHelper } = useSelector(cliSettingsSelector)
   const { isShowMonitor } = useSelector(monitorSelector)
-
-  const sizeMain: number = calculateMainPanelInitialSize()
-  const sizeBottomCollapsed: number = calculateBottomGroupPanelInitialSize()
 
   const ref = useRef<ImperativePanelGroupHandle>(null)
 
@@ -87,13 +83,17 @@ const InstancePageTemplate = (props: Props) => {
     if (isShowBottomGroup) {
       ref.current?.setLayout(roundUpSizes(sizes))
     } else {
-      ref.current?.setLayout([sizeMain, sizeBottomCollapsed])
+      ref.current?.setLayout([100, 0])
     }
   }, [isShowBottomGroup])
+
+  const [actions, setActions] = useState<Nullable<React.ReactNode>>(null)
 
   return (
     <>
       <InstanceHeader />
+      <AppNavigation actions={actions} onChange={() => setActions(null)} />
+      <Spacer size="m" />
       <ResizableContainer
         ref={ref}
         direction="vertical"
@@ -102,10 +102,17 @@ const InstancePageTemplate = (props: Props) => {
         <ResizablePanel
           id={firstPanelId}
           minSize={7}
-          defaultSize={isShowBottomGroup ? sizes[0] : sizeMain}
+          defaultSize={isShowBottomGroup ? sizes[0] : 100}
           data-testid={firstPanelId}
         >
-          <ExplorePanelTemplate>{children}</ExplorePanelTemplate>
+          <AppNavigationActionsProvider
+            value={{
+              actions,
+              setActions,
+            }}
+          >
+            <ExplorePanelTemplate>{children}</ExplorePanelTemplate>
+          </AppNavigationActionsProvider>
         </ResizablePanel>
         <ResizablePanelHandle
           direction="horizontal"
@@ -113,14 +120,15 @@ const InstancePageTemplate = (props: Props) => {
           data-testid="resize-btn-browser-cli"
           style={{ display: isShowBottomGroup ? 'inherit' : 'none' }}
         />
-        <ResizablePanel
+        {!isShowBottomGroup && <Spacer size="l" />}
+        <ButtonGroupResizablePanel
           id={secondPanelId}
-          defaultSize={isShowBottomGroup ? sizes[1] : sizeBottomCollapsed}
+          defaultSize={isShowBottomGroup ? sizes[1] : 0}
           minSize={isShowBottomGroup ? 20 : 0}
           data-testid={secondPanelId}
         >
           <BottomGroupComponents />
-        </ResizablePanel>
+        </ButtonGroupResizablePanel>
       </ResizableContainer>
     </>
   )

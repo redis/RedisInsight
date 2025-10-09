@@ -33,8 +33,8 @@ const RdiDeployErrorContent = (props: Props) => {
           <FlexItem>
             <div>Review the error log for details.</div>
             <Link
-              variant="small"
-              isExternalLink
+              variant="inline"
+              size="S"
               href={fileUrl}
               download="error-log.txt"
               data-testid="donwload-log-file-btn"

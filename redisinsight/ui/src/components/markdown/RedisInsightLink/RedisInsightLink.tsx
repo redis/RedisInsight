@@ -5,17 +5,18 @@ import { isNull } from 'lodash'
 import { getRedirectionPage } from 'uiSrc/utils/routing'
 import DatabaseNotOpened from 'uiSrc/components/messages/database-not-opened'
 
-import { Link } from 'uiSrc/components/base/link/Link'
+import { Link, RiLinkProps } from 'uiSrc/components/base/link/Link'
 import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 
 export interface Props {
   url: string
   text: string
+  size?: RiLinkProps['size']
 }
 
 const RedisInsightLink = (props: Props) => {
-  const { url, text } = props
+  const { url, text, size } = props
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const { instanceId } = useParams<{ instanceId: string }>()
@@ -47,10 +48,10 @@ const RedisInsightLink = (props: Props) => {
       closePopover={() => setIsPopoverOpen(false)}
       button={
         <Link
-          color="text"
+          variant="inline"
+          size={size}
           href="/"
           onClick={handleLinkClick}
-          className={styles.link}
           data-testid="redisinsight-link"
         >
           {text}

@@ -88,21 +88,6 @@
       font-size: inherit !important;
     }
   }
-
-  .link {
-    color: var(--externalLinkColor) !important;
-  }
-
-  :global {
-    .vote__btn {
-      &:hover,
-      &:focus,
-      &.selected {
-        transform: none;
-        background-color: var(--liveRecommendationVoteBgColor) !important;
-      }
-    }
-  }
 }
 
 .actions {
@@ -118,28 +103,9 @@
 }
 
 .votingContainer {
-  justify-content: center;
   border-radius: 8px;
   background-color: var(--recommendationsBgColor) !important;
-  padding: 4px 0;
-  :global {
-    .voteContent {
-      margin-left: 6px !important;
-    }
-    .euiText {
-      font-size: 12px;
-    }
-
-    .vote__btn {
-      width: 28px !important;
-      height: 28px !important;
-    }
-
-    .euiIcon {
-      width: 28px !important;
-      height: 28px !important;
-    }
-  }
+  padding: 4px 0 4px 10px;
 }
 
 .keyNameContainer {

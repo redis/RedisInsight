@@ -91,11 +91,9 @@
 .popover-without-top-tail {
   margin-top: -8px;
 
-  .euiPopover__panelArrow {
-    &::before,
-    &::after {
-      content: none !important;
-    }
+  // removes top arrow (it is always first child)
+  & > span:nth-child(1) * {
+    display: none
   }
 }
 
@@ -111,4 +109,9 @@
     #0000 2px,
     #0000 100%
   ) !important;
+}
+
+// To be removed once global font styling is fixed
+.font-inconsolata {
+  font-family: 'Inconsolata', serif !important;
 }

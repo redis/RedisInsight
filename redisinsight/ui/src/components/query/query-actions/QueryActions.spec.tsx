@@ -26,12 +26,12 @@ describe('QueryActions', () => {
     )
 
     fireEvent.click(screen.getByTestId('btn-change-mode'))
-    expect(onChangeMode).toBeCalled()
+    expect(onChangeMode).toHaveBeenCalled()
 
     fireEvent.click(screen.getByTestId('btn-change-group-mode'))
-    expect(onChangeGroupMode).toBeCalled()
+    expect(onChangeGroupMode).toHaveBeenCalled()
 
     fireEvent.click(screen.getByTestId('btn-submit'))
-    expect(onSubmit).toBeCalled()
+    expect(onSubmit).toHaveBeenCalled()
   })
 })

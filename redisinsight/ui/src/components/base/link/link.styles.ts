@@ -21,7 +21,7 @@ export type RiLinkProps = Omit<LinkProps, 'color'> & {
   color?: ColorType
 }
 
-export interface MapProps extends RiLinkProps {
+type MapProps = RiLinkProps & {
   $color?: ColorType
 }
 
@@ -65,10 +65,11 @@ export const useColorTextStyles = ({ $color }: MapProps = {}) => {
 
 export const StyledLink = styled(RedisUiLink)<MapProps>`
   ${useColorTextStyles};
-
-  text-decoration: underline !important;
-
-  &:hover {
+  text-decoration: none !important;
+  & > span {
     text-decoration: none !important;
+  }
+  &:hover {
+    text-decoration: underline !important;
   }
 `

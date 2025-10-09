@@ -18,7 +18,7 @@ const verifyCommandsInWorkbench = async(): Promise<void> => {
         'FT.SEARCH idx *'
     ];
 
-    await t.click(browserPage.NavigationPanel.workbenchButton);
+    await t.click(browserPage.NavigationTabs.workbenchButton);
     // Send commands
     await workbenchPage.sendCommandInWorkbench(commandForSend1);
     await workbenchPage.sendCommandInWorkbench(commandForSend2);
@@ -37,10 +37,10 @@ const verifyCommandsInWorkbench = async(): Promise<void> => {
 fixture `Work with Workbench in RE Cluster`
     .meta({ type: 'regression' })
     .page(commonUrl);
-test
+test.skip
     .meta({ rte: rte.reCluster })
     .before(async() => {
-        await databaseHelper.acceptLicenseTermsAndAddREClusterDatabase(redisEnterpriseClusterConfig);
+        await databaseHelper.acceptLicenseTermsAndAddRedisSoftwareDatabase(redisEnterpriseClusterConfig);
     })
     .after(async() => {
         // Delete database

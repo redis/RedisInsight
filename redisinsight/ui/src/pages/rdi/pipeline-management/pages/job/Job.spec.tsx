@@ -7,7 +7,7 @@ import {
   rdiPipelineSelector,
   setChangedFile,
   deleteChangedFile,
-  setPipelineJobs,
+  updatePipelineJob,
 } from 'uiSrc/slices/rdi/pipeline'
 import {
   act,
@@ -33,7 +33,7 @@ jest.mock('uiSrc/slices/rdi/pipeline', () => ({
   ...jest.requireActual('uiSrc/slices/rdi/pipeline'),
   rdiPipelineSelector: jest.fn().mockReturnValue({
     loading: false,
-    schema: { jobs: { test: {} } },
+    monacoJobsSchema: { jobs: { test: {} } },
     config: `connections:
             target:
               type: redis
@@ -72,7 +72,7 @@ describe('Job', () => {
   it('should not push to config page', () => {
     const rdiPipelineSelectorMock = jest.fn().mockReturnValue({
       loading: false,
-      schema: { jobs: { test: {} } },
+      monacoJobsSchema: { jobs: { test: {} } },
       error: '',
       config: `connections:
       target:
@@ -121,56 +121,71 @@ describe('Job', () => {
   })
 
   it('should not call any updated file action if there is no deployed job', () => {
-    render(<Job {...instance(mockedProps)} name="jobName" />)
+    const mockJob = {
+      name: 'jobName',
+      value: '123',
+    }
+
+    render(<Job {...instance(mockedProps)} name={mockJob.name} />)
 
     const fieldName = screen.getByTestId('rdi-monaco-job')
-    fireEvent.change(fieldName, { target: { value: '123' } })
+    fireEvent.change(fieldName, { target: { value: mockJob.value } })
 
     const expectedActions = [
       getPipelineStrategies(),
-      setPipelineJobs(expect.any(Array)),
+      updatePipelineJob(mockJob),
     ]
 
     expect(store.getActions()).toEqual(expectedActions)
   })
 
   it('should set modified file', () => {
+    const mockJob = {
+      name: 'jobName',
+      value: '123',
+    }
+
     render(
       <Job
         {...instance(mockedProps)}
-        deployedJobValue="value"
-        name="jobName"
+        deployedJobValue={mockJob.value}
+        name={mockJob.name}
       />,
     )
 
     const fieldName = screen.getByTestId('rdi-monaco-job')
-    fireEvent.change(fieldName, { target: { value: '123' } })
+    fireEvent.change(fieldName, { target: { value: 'updated' } })
 
     const expectedActions = [
       getPipelineStrategies(),
-      setPipelineJobs(expect.any(Array)),
-      setChangedFile({ name: 'jobName', status: FileChangeType.Modified }),
+      updatePipelineJob({ name: mockJob.name, value: 'updated' }),
+      setChangedFile({ name: mockJob.name, status: FileChangeType.Modified }),
     ]
 
     expect(store.getActions()).toEqual(expectedActions)
   })
 
   it('should remove job from modified files', () => {
+    const mockJob = {
+      name: 'jobName',
+      value: '123',
+    }
+
     render(
       <Job
         {...instance(mockedProps)}
-        deployedJobValue="value"
-        name="jobName"
+        deployedJobValue={mockJob.value}
+        name={mockJob.name}
       />,
     )
 
     const fieldName = screen.getByTestId('rdi-monaco-job')
-    fireEvent.change(fieldName, { target: { value: 'value' } })
+    fireEvent.change(fieldName, { target: { value: mockJob.value } })
 
     const expectedActions = [
       getPipelineStrategies(),
-      setPipelineJobs(expect.any(Array)),
-      deleteChangedFile('jobName'),
+      updatePipelineJob(mockJob),
+      deleteChangedFile(mockJob.name),
     ]
 
     expect(store.getActions()).toEqual(expectedActions)
@@ -258,6 +273,7 @@ describe('Job', () => {
   it('should render loading spinner', () => {
     const rdiPipelineSelectorMock = jest.fn().mockReturnValue({
       loading: true,
+      monacoJobsSchema: { jobs: { test: {} } },
     })
     ;(rdiPipelineSelector as jest.Mock).mockImplementation(
       rdiPipelineSelectorMock,
@@ -266,5 +282,157 @@ describe('Job', () => {
     render(<Job {...instance(mockedProps)} />)
 
     expect(screen.getByTestId('rdi-job-loading')).toBeInTheDocument()
+  })
+
+  describe('monacoJobsSchema integration', () => {
+    it('should pass monacoJobsSchema to MonacoYaml when available', () => {
+      const mockMonacoJobsSchema = {
+        type: 'object',
+        properties: {
+          source: { type: 'object' },
+          transform: { type: 'object' },
+          output: { type: 'object' },
+        },
+      }
+
+      const rdiPipelineSelectorMock = jest.fn().mockReturnValue({
+        loading: false,
+        schema: { jobs: { test: {} } },
+        monacoJobsSchema: mockMonacoJobsSchema,
+        config: 'test-config',
+        jobs: [
+          {
+            name: 'testJob',
+            value: 'test-value',
+          },
+        ],
+      })
+      ;(rdiPipelineSelector as jest.Mock).mockImplementation(
+        rdiPipelineSelectorMock,
+      )
+
+      render(
+        <Job {...instance(mockedProps)} name="testJob" value="test-value" />,
+      )
+
+      // Verify the component renders and doesn't crash with schema
+      expect(screen.getByTestId('rdi-monaco-job')).toBeInTheDocument()
+      expect(screen.queryByTestId('rdi-job-loading')).not.toBeInTheDocument()
+    })
+
+    it('should handle empty monacoJobsSchema gracefully', () => {
+      const rdiPipelineSelectorMock = jest.fn().mockReturnValue({
+        loading: false,
+        monacoJobsSchema: {},
+        config: 'test-config',
+        jobs: [
+          {
+            name: 'testJob',
+            value: 'test-value',
+          },
+        ],
+      })
+      ;(rdiPipelineSelector as jest.Mock).mockImplementation(
+        rdiPipelineSelectorMock,
+      )
+
+      render(
+        <Job {...instance(mockedProps)} name="testJob" value="test-value" />,
+      )
+
+      // Verify the component renders without issues when schema is empty
+      expect(screen.getByTestId('rdi-monaco-job')).toBeInTheDocument()
+      expect(screen.queryByTestId('rdi-job-loading')).not.toBeInTheDocument()
+    })
+
+    it('should handle undefined monacoJobsSchema gracefully', () => {
+      const rdiPipelineSelectorMock = jest.fn().mockReturnValue({
+        loading: false,
+        monacoJobsSchema: undefined,
+        config: 'test-config',
+        jobs: [
+          {
+            name: 'testJob',
+            value: 'test-value',
+          },
+        ],
+      })
+      ;(rdiPipelineSelector as jest.Mock).mockImplementation(
+        rdiPipelineSelectorMock,
+      )
+
+      render(
+        <Job {...instance(mockedProps)} name="testJob" value="test-value" />,
+      )
+
+      // Verify the component renders without issues when schema is undefined
+      expect(screen.getByTestId('rdi-monaco-job')).toBeInTheDocument()
+      expect(screen.queryByTestId('rdi-job-loading')).not.toBeInTheDocument()
+    })
+
+    it('should pass complex monacoJobsSchema structure to MonacoYaml', () => {
+      const complexSchema = {
+        type: 'object',
+        properties: {
+          source: {
+            type: 'object',
+            properties: {
+              server_name: { type: 'string' },
+              schema: { type: 'string' },
+              table: { type: 'string' },
+            },
+            required: ['server_name', 'schema', 'table'],
+          },
+          transform: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                uses: { type: 'string' },
+                with: { type: 'object' },
+              },
+            },
+          },
+          output: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                uses: { type: 'string' },
+                with: { type: 'object' },
+              },
+            },
+          },
+        },
+        required: ['source'],
+      }
+
+      const rdiPipelineSelectorMock = jest.fn().mockReturnValue({
+        loading: false,
+        monacoJobsSchema: complexSchema,
+        config: 'test-config',
+        jobs: [
+          {
+            name: 'complexJob',
+            value: 'source:\n  server_name: test',
+          },
+        ],
+      })
+      ;(rdiPipelineSelector as jest.Mock).mockImplementation(
+        rdiPipelineSelectorMock,
+      )
+
+      render(
+        <Job
+          {...instance(mockedProps)}
+          name="complexJob"
+          value="source:\n  server_name: test"
+        />,
+      )
+
+      // Verify the component renders with complex schema structure
+      expect(screen.getByTestId('rdi-monaco-job')).toBeInTheDocument()
+      expect(screen.queryByTestId('rdi-job-loading')).not.toBeInTheDocument()
+    })
   })
 })

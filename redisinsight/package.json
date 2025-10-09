@@ -3,7 +3,7 @@
   "appName": "Redis Insight",
   "productName": "RedisInsight",
   "private": true,
-  "version": "2.70.0",
+  "version": "2.72.0",
   "description": "Redis Insight",
   "main": "./dist/main/main.js",
   "author": {

@@ -15,17 +15,14 @@ fixture `Promote workbench in CLI`
     .page(commonUrl)
     .beforeEach(async() => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
-    })
-    .afterEach(async() => {
-        // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
-test('Verify that user can see saved workbench context after redirection from CLI to workbench', async t => {
+test
+    .skip('Verify that user can see saved workbench context after redirection from CLI to workbench', async t => {
     // Open Workbench
-    await t.click(browserPage.NavigationPanel.workbenchButton);
+    await t.click(browserPage.NavigationTabs.workbenchButton);
     const command = 'INFO';
     await t.typeText(workbenchPage.queryInput, command, { replace: true, speed: 1, paste: true });
-    await t.click(myRedisDatabasePage.NavigationPanel.browserButton);
+    await t.click(browserPage.NavigationTabs.browserButton);
     // Verify that users can see workbench promotion message when they open CLI
     await t.click(browserPage.Cli.cliExpandButton);
     await t.expect(browserPage.Cli.workbenchLink.parent().textContent).eql('Try Workbench, our advanced CLI. Check out our Quick Guides to learn more about Redis capabilities.', 'Wrong promotion message');

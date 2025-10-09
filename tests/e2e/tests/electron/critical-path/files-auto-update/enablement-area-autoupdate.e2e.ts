@@ -45,7 +45,7 @@ if (fs.existsSync(workingDirectory)) {
         const tutorialsTimestampFileNew = editJsonFile(tutorialsTimestampPath);
 
         // Open Workbench page
-        await t.click(browserPage.NavigationPanel.workbenchButton);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
 
         // Check Enablement area and validate that removed file is existed in Guides
         await workbenchPage.NavigationHeader.togglePanel(true);

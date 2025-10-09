@@ -116,11 +116,7 @@ export const catchRedisConnectionError = (
 export const catchAclError = (error: ReplyError): HttpException => {
   // todo: Move to other place after refactoring
   if (
-    error instanceof EncryptionServiceErrorException ||
-    error instanceof NotFoundException ||
-    error instanceof ConflictException ||
-    error instanceof ServiceUnavailableException ||
-    error instanceof RedisConnectionFailedException
+    error instanceof HttpException
   ) {
     throw error;
   }
@@ -177,7 +173,10 @@ export const catchRedisSearchError = (
     );
   }
 
-  if (error.message?.includes('Unknown index')) {
+  if (
+    error.message?.toLowerCase()?.includes('unknown index') ||
+    error.message?.toLowerCase()?.includes('no such index')
+  ) {
     throw new NotFoundException(error.message);
   }
 

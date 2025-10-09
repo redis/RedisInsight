@@ -11,7 +11,10 @@ import {
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import {
+  PrimaryButton,
+  SecondaryButton,
+} from 'uiSrc/components/base/forms/buttons'
 import { PlayFilledIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
@@ -55,7 +58,8 @@ const LoadSampleData = (props: Props) => {
       panelPaddingSize="none"
       anchorClassName={cx(styles.buttonWrapper, anchorClassName)}
       button={
-        <PrimaryButton
+        <SecondaryButton
+          filled
           onClick={() => setIsConfirmationOpen(true)}
           className={styles.loadDataBtn}
           loading={loading}
@@ -63,21 +67,21 @@ const LoadSampleData = (props: Props) => {
           data-testid="load-sample-data-btn"
         >
           Load sample data
-        </PrimaryButton>
+        </SecondaryButton>
       }
     >
-      <Row gap="m" responsive={false} style={{ padding: 8 }}>
+      <Row gap="m" responsive={false} style={{ padding: 15 }}>
         <FlexItem>
-          <RiIcon type="ToastDangerIcon" className={styles.popoverIcon} />
+          <RiIcon size="m" type="ToastDangerIcon" color="attention500" />
         </FlexItem>
         <FlexItem>
-          <Text>Execute commands in bulk</Text>
-          <Spacer size="s" />
-          <Text color="subdued" size="s">
+          <Text variant="semiBold">Execute commands in bulk</Text>
+          <Spacer size="m" />
+          <Text size="s">
             All commands from the file will be automatically executed against
             your database. Avoid executing them in production databases.
           </Text>
-          <Spacer size="s" />
+          <Spacer size="l" />
           <Row justify="end">
             <FlexItem>
               <PrimaryButton

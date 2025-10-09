@@ -4,27 +4,6 @@ import { EditorType } from 'uiSrc/slices/interfaces'
 
 const mockStore = configureStore([thunk])
 
-const originalConsoleError = console.error
-
-// Suppress Redux warnings about missing reducers
-beforeAll(() => {
-  console.error = (...args: any[]) => {
-    const message = args[0]
-    if (
-      typeof message === 'string' &&
-      message.includes('No reducer provided for key')
-    ) {
-      return
-    }
-
-    originalConsoleError(...args)
-  }
-})
-
-afterAll(() => {
-  console.error = originalConsoleError
-})
-
 describe('setReJSONDataAction', () => {
   let store: any
   let sendEventTelemetryMock: jest.Mock

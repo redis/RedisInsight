@@ -80,11 +80,12 @@ const ConsentsPrivacy = () => {
   return (
     <form onSubmit={formik.handleSubmit} data-testid="consents-settings-form">
       <div className={styles.consentsWrapper}>
-        <Text size="s" className={styles.smallText} color="subdued">
+        <Text size="M" color="primary">
           To optimize your experience, Redis Insight uses third-party tools.
         </Text>
-        <Spacer />
-        <Title size="XS">Usage Data</Title>
+        <Spacer size="m" />
+        <Title size="M">Usage Data</Title>
+        <Spacer size="m" />
         {privacyConsents.map((consent: IConsent) => (
           <ConsentOption
             consent={consent}

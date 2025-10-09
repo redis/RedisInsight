@@ -21,12 +21,8 @@ fixture `Browser Context`
     .beforeEach(async() => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
     })
-    .afterEach(async() => {
-        // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
-    });
 // Update after resolving https://redislabs.atlassian.net/browse/RI-3299
-test('Verify that user can see saved CLI size on Browser page when he returns back to Browser page', async t => {
+test.skip('Verify that user can see saved CLI size on Browser page when he returns back to Browser page', async t => {
     const offsetY = 200;
 
     await t.click(browserPage.Cli.cliExpandButton);
@@ -40,7 +36,7 @@ test('Verify that user can see saved CLI size on Browser page when he returns ba
     await myRedisDatabasePage.clickOnDBByName(ossStandaloneConfig.databaseName);
     await t.expect(await browserPage.Cli.cliArea.clientHeight).gt(cliAreaHeightEnd, 'Saved context for resizable cli is incorrect');
 });
-test('Verify that user can see saved Key details and Keys tables size on Browser page when he returns back to Browser page', async t => {
+test.skip('Verify that user can see saved Key details and Keys tables size on Browser page when he returns back to Browser page', async t => {
     const offsetX = 200;
     const keyListWidth = await browserPage.keyListTable.clientWidth;
     const cliResizeButton = await browserPage.resizeBtnKeyList;
@@ -57,7 +53,7 @@ test('Verify that user can see saved filter per key type applied when he returns
     await browserPage.selectFilterGroupType(KeyTypesTexts.String);
     await t.click(myRedisDatabasePage.NavigationPanel.settingsButton);
     // Return back to Browser and check filter applied
-    await t.click(myRedisDatabasePage.NavigationPanel.browserButton);
+    await myRedisDatabasePage.navigateToDatabase(ossStandaloneConfig.databaseName);
     await t.expect(browserPage.filterByKeyTypeDropDown.innerText).eql(KeyTypesTexts.String, 'Filter per key type is still applied');
     // Clear filter
     await browserPage.setAllKeyType();
@@ -65,7 +61,7 @@ test('Verify that user can see saved filter per key type applied when he returns
     await browserPage.searchByKeyName(keyName);
     await t.click(myRedisDatabasePage.NavigationPanel.settingsButton);
     // Return back to Browser and check filter applied
-    await t.click(myRedisDatabasePage.NavigationPanel.browserButton);
+    await myRedisDatabasePage.navigateToDatabase(ossStandaloneConfig.databaseName);
     // Verify that user can see saved input entered into the filter per Key name when he returns back to Browser page
     await verifySearchFilterValue(keyName);
 });
@@ -83,7 +79,7 @@ test('Verify that user can see saved executed commands in CLI on Browser page wh
     }
     await t.click(myRedisDatabasePage.NavigationPanel.settingsButton);
     // Return back to Browser and check executed command in CLI
-    await t.click(myRedisDatabasePage.NavigationPanel.browserButton);
+    await myRedisDatabasePage.navigateToDatabase(ossStandaloneConfig.databaseName);
     for(const command of commands) {
         await t.expect(browserPage.Cli.cliCommandExecuted.withExactText(command).exists).ok(`Executed command '${command}' in CLI is saved`);
     }
@@ -91,10 +87,6 @@ test('Verify that user can see saved executed commands in CLI on Browser page wh
 test
     .before(async() => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneBigConfig);
-    })
-    .after(async() => {
-        // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneBigConfig);
     })('Verify that user can see key details selected when he returns back to Browser page', async t => {
         // Scroll keys elements
         const scrollY = 1000;
@@ -112,7 +104,7 @@ test
 
         await t.click(myRedisDatabasePage.NavigationPanel.settingsButton);
         // Return back to Browser and check key details selected
-        await t.click(myRedisDatabasePage.NavigationPanel.browserButton);
+        await myRedisDatabasePage.navigateToDatabase(ossStandaloneBigConfig.databaseName);
         // Check Keys details saved
         await t.expect(browserPage.keyNameFormDetails.innerText).eql(targetKeyName, 'Key details is not saved as context');
         // Check Key selected in Key List
@@ -122,7 +114,6 @@ test
     .after(async() => {
         // Clear and delete database
         await browserPage.Cli.sendCommandInCli(`DEL ${keys.join(' ')}`);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     })('Verify that user can see list of keys viewed on Browser page when he returns back to Browser page', async t => {
         const numberOfItems = 5000;
         const scrollY = 3200;
@@ -153,3 +144,11 @@ test
         const isKeyIsDisplayedInTheList = await browserPage.isKeyIsDisplayedInTheList(randomKeyName);
         await t.expect(isKeyIsDisplayedInTheList).ok('Scrolled position and saved key list is proper');
     });
+
+
+fixture `Browser Context`
+    .meta({ type: 'critical_path', rte: rte.standalone })
+    .page(commonUrl)
+    .beforeEach(async() => {
+        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
+    })

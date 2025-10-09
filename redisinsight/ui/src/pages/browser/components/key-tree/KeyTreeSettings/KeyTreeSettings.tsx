@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { isEqual } from 'lodash'
+import styled from 'styled-components'
 
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
@@ -18,7 +18,7 @@ import {
 } from 'uiSrc/slices/app/context'
 import { comboBoxToArray } from 'uiSrc/utils'
 
-import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
   IconButton,
   PrimaryButton,
@@ -29,10 +29,20 @@ import {
   AutoTag,
   AutoTagOption,
 } from 'uiSrc/components/base/forms/combo-box/AutoTag'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { RiPopover } from 'uiSrc/components/base'
-import styles from './styles.module.scss'
+import { FormField } from 'uiSrc/components/base/forms/FormField'
+
+const StyledCol = styled(Col)`
+  width: 300px;
+`
+
+const TreeViewSettingsButton = styled(IconButton)<{
+  isPopoverOpen: boolean
+}>`
+  background-color: ${({ theme, isPopoverOpen }) =>
+    isPopoverOpen ? theme.semantic.color.background.neutral100 : 'transparent'};
+`
 
 export interface Props {
   loading: boolean
@@ -40,10 +50,7 @@ export interface Props {
 const sortOptions = [SortOrder.ASC, SortOrder.DESC].map((value) => ({
   value,
   inputDisplay: (
-    <span
-      data-testid={`tree-view-sorting-item-${value}`}
-      className={styles.selectItem}
-    >
+    <span data-testid={`tree-view-sorting-item-${value}`}>
       Key name {value}
     </span>
   ),
@@ -58,6 +65,7 @@ const KeyTreeSettings = ({ loading }: Props) => {
   const [sorting, setSorting] = useState<SortOrder>(treeViewSort)
   const [delimiters, setDelimiters] =
     useState<AutoTagOption[]>(treeViewDelimiter)
+  const [pendingInput, setPendingInput] = useState('')
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
 
@@ -83,23 +91,30 @@ const KeyTreeSettings = ({ loading }: Props) => {
   const resetStates = useCallback(() => {
     setSorting(treeViewSort)
     setDelimiters(treeViewDelimiter)
+    setPendingInput('')
   }, [treeViewSort, treeViewDelimiter])
 
   const button = (
-    <IconButton
+    <TreeViewSettingsButton
+      isPopoverOpen={isPopoverOpen}
       icon={SettingsIcon}
       onClick={onButtonClick}
       disabled={loading}
-      className={cx(styles.anchorBtn)}
       aria-label="open tree view settings"
       data-testid="tree-view-settings-btn"
     />
   )
 
   const handleApply = () => {
-    if (!isEqual(delimiters, treeViewDelimiter)) {
-      const delimitersValue = delimiters.length
-        ? delimiters
+    let finalDelimiters = delimiters
+    if (pendingInput.trim()) {
+      finalDelimiters = [...delimiters, { label: pendingInput.trim() }]
+      setPendingInput('')
+    }
+
+    if (!isEqual(finalDelimiters, treeViewDelimiter)) {
+      const delimitersValue = finalDelimiters.length
+        ? finalDelimiters
         : [DEFAULT_DELIMITER]
 
       dispatch(setBrowserTreeDelimiter(delimitersValue))
@@ -137,68 +152,58 @@ const KeyTreeSettings = ({ loading }: Props) => {
   }
 
   return (
-    <div className={styles.container}>
-      <RiPopover
-        ownFocus={false}
-        anchorPosition="downLeft"
-        isOpen={isPopoverOpen}
-        anchorClassName={styles.anchorWrapper}
-        panelClassName={styles.popoverWrapper}
-        closePopover={closePopover}
-        button={button}
-      >
-        <Col gap="s">
-          <FlexItem grow className={styles.row} />
-          <FlexItem grow className={styles.row}>
-            <AutoTag
-              layout="horizontal"
-              label="Delimiter"
-              placeholder=":"
-              delimiter=" "
-              selectedOptions={delimiters}
-              onCreateOption={(del) =>
-                setDelimiters([...delimiters, { label: del }])
-              }
-              onChange={(selectedOptions) => setDelimiters(selectedOptions)}
-              className={styles.combobox}
-              data-testid="delimiter-combobox"
-            />
-          </FlexItem>
-          <FlexItem className={styles.row}>
-            <div className={styles.label}>
-              <RiIcon type="DescendingIcon" className={styles.sortIcon} />
-              Sort by
-            </div>
+    <RiPopover
+      ownFocus={false}
+      isOpen={isPopoverOpen}
+      closePopover={closePopover}
+      button={button}
+    >
+      <StyledCol gap="l">
+        <FlexItem>
+          <AutoTag
+            layout="horizontal"
+            label="Delimiter"
+            placeholder=":"
+            delimiter=" "
+            selectedOptions={delimiters}
+            onCreateOption={(del) =>
+              setDelimiters([...delimiters, { label: del }])
+            }
+            onChange={(selectedOptions) => setDelimiters(selectedOptions)}
+            onInputChange={setPendingInput}
+            data-testid="delimiter-combobox"
+          />
+        </FlexItem>
+        <FlexItem>
+          <FormField layout="horizontal" label="Sort by">
             <RiSelect
               options={sortOptions}
               valueRender={({ option }) => option.inputDisplay ?? option.value}
               value={sorting}
-              className={styles.select}
               onChange={(value: SortOrder) => onChangeSort(value)}
               data-testid="tree-view-sorting-select"
             />
-          </FlexItem>
-          <FlexItem className={styles.row}>
-            <div className={styles.footer}>
-              <SecondaryButton
-                size="s"
-                data-testid="tree-view-cancel-btn"
-                onClick={closePopover}
-              >
-                Cancel
-              </SecondaryButton>
-              <PrimaryButton
-                size="s"
-                data-testid="tree-view-apply-btn"
-                onClick={handleApply}
-              >
-                Apply
-              </PrimaryButton>
-            </div>
-          </FlexItem>
-        </Col>
-      </RiPopover>
-    </div>
+          </FormField>
+        </FlexItem>
+        <FlexItem />
+        <FlexItem>
+          <Row gap="m" justify="end">
+            <SecondaryButton
+              data-testid="tree-view-cancel-btn"
+              onClick={closePopover}
+            >
+              Cancel
+            </SecondaryButton>
+            <PrimaryButton
+              data-testid="tree-view-apply-btn"
+              onClick={handleApply}
+            >
+              Apply
+            </PrimaryButton>
+          </Row>
+        </FlexItem>
+      </StyledCol>
+    </RiPopover>
   )
 }
 

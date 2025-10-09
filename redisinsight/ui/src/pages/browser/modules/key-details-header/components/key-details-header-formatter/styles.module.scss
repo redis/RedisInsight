@@ -1,9 +1,6 @@
 .container {
-  margin-right: 12px;
-  height: 30px;
   border-radius: 4px;
   transition: transform 0.3s ease;
-  width: 92px;
   overflow: hidden;
 
   &:hover {
@@ -14,25 +11,8 @@
     transform: translateY(1px);
   }
 
-  :global(.euiFormControlLayout) {
-    height: 100%;
-  }
-
-  .selectWrapper {
-    width: 142px;
-    position: absolute;
-
-    :global(.euiFormControlLayout__childrenWrapper) {
-      width: 92px;
-    }
-  }
-
   &:not(.fullWidth) {
     width: 46px;
-
-    :global(.euiFormControlLayout__childrenWrapper) {
-      width: 46px;
-    }
   }
 
   .optionText {
@@ -47,36 +27,11 @@
   }
 }
 
-.changeView:global(.euiSuperSelectControl) {
-  border: none !important;
-  background-color: inherit !important;
-  color: var(--iconsDefaultColor) !important;
-  min-width: 46px;
-  padding-right: 18px;
-  padding-left: 0;
-  height: 28px;
-
-  & ~ div {
-    right: 7px;
-    top: 4px;
-    svg {
-      width: 10px !important;
-      height: 10px !important;
-    }
-  }
-}
-
 .formatType {
   margin-top: 3px;
   margin-bottom: 3px;
   padding: 6px !important;
   min-height: 36px !important;
-
-  :global(.euiContextMenu__icon) {
-    height: 14px;
-    width: 14px;
-    margin-right: 6px;
-  }
 }
 
 .optionText {

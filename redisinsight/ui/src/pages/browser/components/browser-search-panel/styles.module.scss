@@ -1,33 +1,10 @@
 .content {
   width: 100%;
-  padding: 0 16px 16px 16px;
+  padding: 0 16px 8px 16px;
 
   display: flex;
   justify-content: space-between;
   position: relative;
-
-  .addKey {
-    height: 36px !important;
-    width: 78px !important;
-    margin-left: 12px;
-
-    :global(.euiButton__text) {
-      font:
-        normal normal 500 15px/24px "Graphik",
-        sans-serif !important;
-    }
-  }
-
-  .bulkActions {
-    height: 36px !important;
-    width: 128px !important;
-    min-width: 36px !important;
-    margin-left: 12px;
-
-    :global(.euiButtonContent) {
-      padding: 0 !important;
-    }
-  }
 
   .searchWrapper {
     display: flex;
@@ -35,72 +12,9 @@
   }
 }
 
-@include global.insights-open {
-  .content {
-    .addKey {
-      width: 36px !important;
-      min-width: auto !important;
-
-      .addKeyText {
-        display: none;
-      }
-
-      :global(.euiButton__content) {
-        padding: 0;
-      }
-
-      :global(.euiButton__text) {
-        font-size: 20px !important;
-        font-weight: 400 !important;
-      }
-    }
-
-    .bulkActions {
-      width: 36px !important;
-
-      :global(.euiButton__text) {
-        display: none !important;
-      }
-
-      :global(.euiButtonContent__icon) {
-        width: 13px;
-      }
-    }
-  }
-}
-
-.viewTypeSwitch,
-.searchModeSwitch {
-  padding: 0 18px;
-  flex-shrink: 0;
-  &.middleScreen {
-    padding: 0 36px;
-  }
-  &.fullScreen {
-    padding: 0 120px;
-  }
-}
-
 .moduleNotLoaded {
   max-width: 520px !important;
-  background-color: var(--separatorColor) !important;
   z-index: 10000 !important;
-
-  :global {
-    .euiModal__closeIcon {
-      background-color: transparent !important;
-      top: 14px;
-      right: 14px;
-    }
-  }
-
-  .modalBody :global(.euiModalBody__overflow) {
-    padding: 0 !important;
-  }
-}
-
-.iconVector svg {
-  height: 17px !important;
 }
 
 .searchModeSwitch {
@@ -108,27 +22,6 @@
   background-color: var(--euiColorEmptyShade) !important;
   border: 1px solid var(--controlsBorderColor) !important;
   border-radius: 4px 0 0 4px;
-  padding: 0 2px !important;
-
-  .viewTypeBtn {
-    width: 40px !important;
-    height: 26px !important;
-
-    margin: 4px 2px !important;
-    border-radius: 4px !important;
-
-    svg {
-      color: var(--euiTextSubduedColor) !important;
-    }
-
-    svg > g > path {
-      fill: var(--euiTextSubduedColor) !important;
-    }
-
-    &.active {
-      background-color: var(--euiColorLightShade) !important;
-    }
-  }
 }
 
 .browserFilterOnboard {

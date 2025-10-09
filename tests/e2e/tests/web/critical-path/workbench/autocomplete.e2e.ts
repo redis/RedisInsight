@@ -16,11 +16,7 @@ fixture `Autocomplete for entered commands`
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         // Go to Workbench page
-        await t.click(browserPage.NavigationPanel.workbenchButton);
-    })
-    .afterEach(async() => {
-        // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
     });
 test('Verify that when user have selected a command (via “Enter” from the list of auto-suggested commands), user can see the required arguments inserted to the Editor', async t => {
     const commandArguments = [

@@ -153,15 +153,17 @@ const StreamDataViewWrapper = (props: Props) => {
                       }}
                       data-testid={`stream-field-name-${field}`}
                     >
-                      <FormattedValue
-                        value={formattedValue}
-                        title={
-                          isValid
-                            ? 'Field'
-                            : TEXT_FAILED_CONVENT_FORMATTER(viewFormatProp)
-                        }
-                        tooltipContent={tooltipContent}
-                      />
+                      <Text variant="semiBold" color="primary">
+                        <FormattedValue
+                          value={formattedValue}
+                          title={
+                            isValid
+                              ? 'Field'
+                              : TEXT_FAILED_CONVENT_FORMATTER(viewFormatProp)
+                          }
+                          tooltipContent={tooltipContent}
+                        />
+                      </Text>
                     </div>
                   ) : (
                     <div>&nbsp;</div>
@@ -281,9 +283,9 @@ const StreamDataViewWrapper = (props: Props) => {
 
       return (
         <Text
-          size="s"
           style={{ maxWidth: '100%', minHeight: '36px' }}
           component="div"
+          color="secondary"
         >
           <div
             style={{ display: 'flex', whiteSpace: 'break-spaces' }}
@@ -324,8 +326,8 @@ const StreamDataViewWrapper = (props: Props) => {
         <div style={{ minHeight: '38px' }}>
           {id.length < MAX_VISIBLE_LENGTH_STREAM_TIMESTAMP && (
             <Text
-              color="subdued"
               size="s"
+              color="secondary"
               style={{ maxWidth: '100%' }}
               component="div"
             >
@@ -385,14 +387,12 @@ const StreamDataViewWrapper = (props: Props) => {
   }
 
   return (
-    <>
-      <StreamDataView
-        data={entries}
-        columns={columns}
-        onClosePopover={closePopover}
-        {...props}
-      />
-    </>
+    <StreamDataView
+      data={entries}
+      columns={columns}
+      onClosePopover={closePopover}
+      {...props}
+    />
   )
 }
 

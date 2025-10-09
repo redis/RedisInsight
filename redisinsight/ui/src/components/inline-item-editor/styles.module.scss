@@ -6,24 +6,8 @@
   }
 }
 
-.field {
-  min-width: 72px;
-  max-width: 100% !important;
-  box-shadow: 0 3px 3px var(--controlsBoxShadowColor) !important;
-  height: 33px !important;
-  border: 1px solid var(--controlsBoxShadowColor) !important;
-}
-
 .controls {
-  position: absolute;
-  background-color: var(--euiColorLightestShade);
-  width: 80px;
-  height: 33px;
-
-  z-index: 3;
-
   .tooltip,
-  .declineBtn,
   .popoverWrapper {
     width: 50% !important;
     height: 100% !important;

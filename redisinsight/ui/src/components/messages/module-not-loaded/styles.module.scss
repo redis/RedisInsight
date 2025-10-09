@@ -29,7 +29,6 @@
     line-height: 24px;
     word-break: break-word;
     color: var(--wbTextColor);
-    margin-bottom: 20px;
   }
 
   .flex {
@@ -65,7 +64,10 @@
 
   .listItem {
     display: flex;
-    margin-bottom: 20px;
+
+    .text {
+      white-space: nowrap;
+    }
 
     .iconWrapper {
       display: flex;
@@ -153,7 +155,6 @@
 
   &.modal {
     padding: 30px;
-    background-color: var(--browserTableRowEven);
 
     .title {
       padding-top: 42px;

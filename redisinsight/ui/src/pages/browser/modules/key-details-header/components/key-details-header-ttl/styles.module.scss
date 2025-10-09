@@ -2,6 +2,12 @@
   padding: 6px 2px 6px 0;
 }
 
+.subtitleTextTTL {
+  height: 26px;
+  line-height: 26px;
+  padding: 0;
+}
+
 .controlsKey {
   right: 25px;
 }
@@ -21,10 +27,9 @@
 
 .ttlInput {
   min-width: 106px;
-  font-size: 13px !important;
-  &.editing {
-    width: 124px;
-  }
+  font-size: 12px !important;
+  height: 24px !important;
+  padding: 2px 0 0 9px !important;
 }
 
 .ttlGridComponent,
@@ -32,12 +37,17 @@
   position: relative;
 }
 
+.ttlGridComponent {
+  height: 24px;
+  line-height: 24px;
+}
+
 .hidden {
   display: none;
 }
 
 .ttlTextValue {
-  padding-left: 11px;
+  padding-left: 14px;
 }
 
 @include global.insights-open {
@@ -49,9 +59,7 @@
   .ttlInput {
     min-width: 90px;
     font-size: 12px !important;
-    &.editing {
-      width: 92px;
-    }
+    height: 25px !important;
   }
 
   :global(.euiFormControlLayout--compressed > .euiFormControlLayout__append) {

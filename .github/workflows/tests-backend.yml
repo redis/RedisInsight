@@ -44,7 +44,7 @@ jobs:
       - name: Code analysis
         run: |
           FILENAME=api.lint.audit.json
-          WORKDIR="./redisinsight/api"
+          WORKDIR="."
 
           yarn lint:api -f json -o $FILENAME || true &&
           FILENAME=$FILENAME WORKDIR=$WORKDIR TARGET="API" node .github/lint-report.js &&

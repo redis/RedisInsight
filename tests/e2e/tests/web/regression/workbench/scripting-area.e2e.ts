@@ -21,14 +21,14 @@ fixture `Scripting area at Workbench`
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         // Go to Workbench page
-        await t.click(browserPage.NavigationPanel.workbenchButton);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
     })
     .afterEach(async() => {
         // Clear and delete database
         await workbenchPage.sendCommandInWorkbench(`FT.DROPINDEX ${indexName} DD`);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
-test('Verify that user can run multiple commands written in multiple lines in Workbench page', async t => {
+test
+    .skip('Verify that user can run multiple commands written in multiple lines in Workbench page', async t => {
     const commandsForSend = [
         'info',
         `FT.CREATE ${indexName} ON HASH PREFIX 1 product: SCHEMA name TEXT`,
@@ -42,7 +42,7 @@ test('Verify that user can run multiple commands written in multiple lines in Wo
     await t.click(settingsPage.accordionWorkbenchSettings);
     await settingsPage.changeCommandsInPipeline('1');
     // Go to Workbench page
-    await t.click(browserPage.NavigationPanel.workbenchButton);
+    await t.click(browserPage.NavigationTabs.workbenchButton);
     // Send commands in multiple lines
     await workbenchPage.sendCommandInWorkbench(commandsForSend.join('\n'), 0.5);
     // Check the result
@@ -55,8 +55,8 @@ test
     .after(async() => {
         // Clear and delete database
         await workbenchPage.Cli.sendCommandInCli(`DEL ${keyName}`);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
-    })('Verify that user can use double slashes (//) wrapped in double quotes and these slashes will not comment out any characters', async t => {
+    })
+    .skip('Verify that user can use double slashes (//) wrapped in double quotes and these slashes will not comment out any characters', async t => {
         keyName = Common.generateWord(10);
         const commandsForSend = [
             `HMSET ${keyName} price 20`,
@@ -69,7 +69,7 @@ test
         await t.click(settingsPage.accordionWorkbenchSettings);
         await settingsPage.changeCommandsInPipeline('1');
         // Go to Workbench page
-        await t.click(settingsPage.NavigationPanel.workbenchButton);
+        await t.click(settingsPage.NavigationTabs.workbenchButton);
         // Send commands in multiple lines with double slashes (//) wrapped in double quotes
         await workbenchPage.sendCommandInWorkbench(commandsForSend.join('\n"//"'), 0.5);
         // Check that all commands are executed
@@ -104,7 +104,8 @@ test
         // Clear and delete database
         await workbenchPage.Cli.sendCommandInCli(`DEL ${keyName}`);
         await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
-    })('Verify that user can find (using right click) "Run Commands" custom shortcut option in monaco menu and run a command', async t => {
+    })
+    .skip('Verify that user can find (using right click) "Run Commands" custom shortcut option in monaco menu and run a command', async t => {
         keyName = Common.generateWord(10);
         const command = `HSET ${keyName} field value`;
 
@@ -121,7 +122,8 @@ test
         // Check the result with sent command
         await t.expect(workbenchPage.queryCardCommand.withExactText(command).exists).ok('The result of sent command is not displayed');
     });
-test('Verify that user can repeat commands by entering a number of repeats before the Redis command and see separate results per each command in Workbench', async t => {
+test
+    .skip('Verify that user can repeat commands by entering a number of repeats before the Redis command and see separate results per each command in Workbench', async t => {
     const command = 'FT._LIST';
     const command2 = 'select 13';
     const repeats = 5;

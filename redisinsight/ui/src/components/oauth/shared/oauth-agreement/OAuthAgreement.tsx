@@ -47,6 +47,8 @@ const OAuthAgreement = (props: Props) => {
         <li className={styles.listItem}>
           {'to our '}
           <Link
+            variant="inline"
+            size="S"
             color="subdued"
             href="https://redis.io/legal/cloud-tos/?utm_source=redisinsight&utm_medium=main&utm_campaign=main"
             className={styles.link}
@@ -57,6 +59,8 @@ const OAuthAgreement = (props: Props) => {
           </Link>
           {' and '}
           <Link
+            variant="inline"
+            size="S"
             color="subdued"
             href="https://redis.io/legal/privacy-policy/?utm_source=redisinsight&utm_medium=main&utm_campaign=main"
             className={styles.link}

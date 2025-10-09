@@ -1,4 +1,5 @@
 import NavigationMenu from './navigation-menu/NavigationMenu'
+import AppNavigation from './navigation-menu/app-navigation/AppNavigation'
 import PageHeader from './page-header/PageHeader'
 import GroupBadge from './group-badge/GroupBadge'
 import Notifications from './notifications/Notifications'
@@ -28,6 +29,7 @@ import CodeBlock from './code-block'
 import ShowChildByCondition from './show-child-by-condition'
 import FeatureFlagComponent from './feature-flag-component'
 import AutoRefresh from './auto-refresh'
+import ConfirmationPopover from './confirmation-popover'
 import { ModuleNotLoaded, FilterNotAvailable } from './messages'
 import RdiInstanceHeader from './rdi-instance-header'
 import {
@@ -48,6 +50,7 @@ export * from './base'
 
 export {
   NavigationMenu,
+  AppNavigation,
   PageHeader,
   GroupBadge,
   Notifications,
@@ -79,6 +82,7 @@ export {
   ModuleNotLoaded,
   FilterNotAvailable,
   AutoRefresh,
+  ConfirmationPopover,
   RdiInstanceHeader,
   RecommendationBody,
   RecommendationBadges,

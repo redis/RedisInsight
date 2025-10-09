@@ -1,8 +1,41 @@
 import React, { useCallback, useState, useEffect, useRef } from 'react'
 import cx from 'classnames'
+import styled from 'styled-components'
 
 import { FormatedDate } from '../formated-date'
 import styles from './styles.module.scss'
+import { Theme } from 'uiSrc/components/base/theme/types'
+
+const SliderRange = styled.div<
+  React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+>`
+  background-color: ${({ theme }: { theme: Theme }) =>
+    theme.semantic.color.background.primary400};
+  height: 1px;
+  z-index: 2;
+  transform: translateY(2px);
+
+  &:before {
+    content: '';
+    width: 1px;
+    height: 6px;
+    position: absolute;
+    top: -5px;
+    left: -1px;
+    background-color: ${({ theme }: { theme: Theme }) =>
+      theme.semantic.color.background.primary400};
+  }
+
+  &:after {
+    content: '';
+    width: 1px;
+    height: 6px;
+    position: absolute;
+    right: -1px;
+    background-color: ${({ theme }: { theme: Theme }) =>
+      theme.semantic.color.background.primary400};
+  }
+`
 
 const buttonString = 'Reset Filter'
 
@@ -130,7 +163,7 @@ const RangeFilter = (props: Props) => {
   if (start === end) {
     return (
       <div data-testid="mock-fill-range" className={styles.rangeWrapper}>
-        <div className={cx(styles.sliderRange, styles.mockRange)}>
+        <SliderRange className={cx(styles.sliderRange, styles.mockRange)}>
           <div
             className={styles.sliderLeftValue}
             data-testid="range-left-timestamp"
@@ -143,7 +176,7 @@ const RangeFilter = (props: Props) => {
           >
             <FormatedDate date={end?.toString()} />
           </div>
-        </div>
+        </SliderRange>
       </div>
     )
   }
@@ -177,7 +210,7 @@ const RangeFilter = (props: Props) => {
         />
         <div className={styles.slider}>
           <div className={styles.sliderTrack} />
-          <div
+          <SliderRange
             ref={range}
             className={cx(styles.sliderRange, {
               [styles.leftPosition]: max - startVal < (max - min) / 2,
@@ -200,7 +233,7 @@ const RangeFilter = (props: Props) => {
             >
               <FormatedDate date={endVal?.toString()} />
             </div>
-          </div>
+          </SliderRange>
         </div>
       </div>
       {(start !== min || end !== max) && (

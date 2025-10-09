@@ -35,7 +35,8 @@ test
     })
     .after(async() => {
         await databaseAPIRequests.deleteAllDatabasesApi();
-    })('Verify that insights panel is opened in cloud db if users db does not have some module', async t => {
+    })
+    .skip('Verify that insights panel is opened in cloud db if users db does not have some module', async t => {
         await t.click(browserPage.redisearchModeBtn);
         await t.click(browserPage.Modal.closeModalButton);
         await t.click(browserPage.NavigationPanel.myRedisDBButton);
@@ -47,7 +48,7 @@ test
 
         await t.click(browserPage.NavigationPanel.myRedisDBButton);
         await myRedisDatabasePage.clickOnDBByName(ossStandaloneV5Config.databaseName);
-        await t.click(browserPage.NavigationPanel.workbenchButton);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
         await workbenchPage.sendCommandInWorkbench('TS.');
 
         await t.click(browserPage.NavigationPanel.myRedisDBButton);

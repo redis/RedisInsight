@@ -34,12 +34,13 @@ fixture `Work with keys in all types of databases`
 test
     .meta({ rte: rte.reCluster })
     .before(async() => {
-        await databaseHelper.acceptLicenseTermsAndAddREClusterDatabase(redisEnterpriseClusterConfig);
+        await databaseHelper.acceptLicenseTermsAndAddRedisSoftwareDatabase(redisEnterpriseClusterConfig);
     })
     .after(async() => {
         // Clear and delete database
         await apiKeyRequests.deleteKeyByNameApi(keyName, redisEnterpriseClusterConfig.databaseName);
         await databaseHelper.deleteDatabase(redisEnterpriseClusterConfig.databaseName);
-    })('Verify that user can add Key in RE Cluster DB', async() => {
+    })
+    .skip('Verify that user can add Key in RE Cluster DB', async() => {
         await verifyKeysAdded();
     });

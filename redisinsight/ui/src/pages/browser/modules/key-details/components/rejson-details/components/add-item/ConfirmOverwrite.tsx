@@ -7,7 +7,8 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
-import styles from '../../styles.module.scss'
+import { Row } from 'uiSrc/components/base/layout/flex'
+import { Spacer } from 'uiSrc/components/base/layout'
 
 interface ConfirmOverwriteProps {
   isOpen: boolean
@@ -37,8 +38,8 @@ const ConfirmOverwrite = ({
       You already have the same JSON key. If you proceed, a value of the
       existing JSON key will be overwritten.
     </Text>
-
-    <div className={styles.confirmDialogActions}>
+    <Spacer size="l" />
+    <Row justify="end" gap="m">
       <SecondaryButton
         aria-label="Cancel"
         size="small"
@@ -56,7 +57,7 @@ const ConfirmOverwrite = ({
       >
         Overwrite
       </PrimaryButton>
-    </div>
+    </Row>
   </RiPopover>
 )
 

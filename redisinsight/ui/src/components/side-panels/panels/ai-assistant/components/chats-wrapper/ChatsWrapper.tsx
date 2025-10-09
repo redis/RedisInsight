@@ -15,6 +15,7 @@ import AssistanceChat from '../assistance-chat'
 import ExpertChat from '../expert-chat'
 
 import styles from './styles.module.scss'
+import sidePanelStyles from 'uiSrc/components/side-panels/styles.module.scss'
 
 interface ChatWithTabs {
   feature: Maybe<FeatureFlagComponent>
@@ -89,6 +90,7 @@ const ChatsWrapper = () => {
       {chats.length > 1 && (
         <Tabs
           tabs={tabs}
+          className={sidePanelStyles.tabs}
           value={activeTab}
           onChange={selectTab}
           data-testid="ai-tabs"

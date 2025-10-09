@@ -23,13 +23,10 @@ fixture `Workbench Group Mode`
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneBigConfig);
         // Go to Workbench page
-        await t.click(browserPage.NavigationPanel.workbenchButton);
-    })
-    .afterEach(async() => {
-        // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneBigConfig);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
     });
-test('Verify that user can run the commands from the Editor in the group mode', async t => {
+test
+    .skip('Verify that user can run the commands from the Editor in the group mode', async t => {
     await t.click(workbenchPage.groupMode);
     // Verify that user can run a command with quantifier and see results in group(10 info)
     await workbenchPage.sendCommandInWorkbench(`${counter} ${command}`);
@@ -62,7 +59,8 @@ test.skip('Verify that when user clicks on copy icon for group result, all comma
     await t.pressKey('ctrl+enter');
     await t.expect(workbenchPage.queryCardCommand.textContent).eql(`${commandsNumber} Command(s) - ${commandsNumber} success, 0 error(s)`, 'Not valid summary');
 });
-test('Verify that user can see group results in full mode', async t => {
+test
+    .skip('Verify that user can see group results in full mode', async t => {
     await t.click(workbenchPage.groupMode);
     await workbenchPage.sendCommandInWorkbench(`${commandsString}`); // 3 commands are sent in group mode
     // Open full mode

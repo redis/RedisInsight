@@ -107,11 +107,19 @@ export default {
       : true,
     buildType: process.env.RI_BUILD_TYPE || 'DOCKER_ON_PREMISE',
     appType: process.env.RI_APP_TYPE,
-    appVersion: process.env.RI_APP_VERSION || '2.70.0',
+    appVersion: process.env.RI_APP_VERSION || '2.72.0',
     requestTimeout: parseInt(process.env.RI_REQUEST_TIMEOUT, 10) || 25000,
     excludeRoutes: [],
     excludeAuthRoutes: [],
     databaseManagement: process.env.RI_DATABASE_MANAGEMENT !== 'false',
+    maxPayloadSize: process.env.RI_MAX_PAYLOAD_SIZE || '512MB',
+    cors: {
+      origin: process.env.RI_CORS_ORIGIN
+        ? process.env.RI_CORS_ORIGIN
+        : '*',
+      credentials:
+        process.env.RI_CORS_CREDENTIALS === 'true',
+    },
   },
   statics: {
     initDefaults: process.env.RI_STATICS_INIT_DEFAULTS

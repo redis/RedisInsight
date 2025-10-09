@@ -6,19 +6,19 @@ b + ul, strong + ul, b + ol, strong + ol {
 
 ul, ol {
   &:not(.euiPagination__list) {
-    margin-bottom: ($margin-size-pace * 6 + px);
+    margin-top: ($margin-size-pace * 3 + px);
+    margin-bottom: ($margin-size-pace * 3 + px);
     margin-left: 16px;
     li {
-      line-height: 24px;
       &:not(:last-of-type) {
-      margin-bottom: 12px;
+        margin-bottom: ($margin-size-pace + px);
       }
     }
     @media only screen and (max-width: ($l-breakpoint + px)) {
       li {
         line-height: 18px;
         &:not(:last-of-type) {
-          margin-bottom: 6px;
+          margin-bottom: ($margin-size-pace + px);
         }
       }
     }

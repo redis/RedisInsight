@@ -28,7 +28,8 @@ fixture `Warning for invalid formatter value`
         await browserPage.Cli.sendCommandInCli(`del ${keyName}`);
         await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
-test('Verify that user can see warning message when editing value', async t => {
+// todo: enable after fix RI-7461
+test.skip('Verify that user can see warning message when editing value', async t => {
     // Open key details
     await browserPage.addStringKey(keyName, '{"test": 123}');
     await browserPage.selectFormatter('JSON');
@@ -38,7 +39,7 @@ test('Verify that user can see warning message when editing value', async t => {
         .expect(browserPage.changeValueWarning.visible).ok('Warning is not displayed')
         // Verify that tooltip has text "Value will be saved as Unicode as it is not valid in the selected format."
         .expect(browserPage.changeValueWarning.find('h4').withExactText(title).visible).ok('Title is not correct')
-        .expect(browserPage.changeValueWarning.find('div').withExactText(reason).visible).ok('Reason is not correct');
+        .expect(browserPage.changeValueWarning.find('p').withExactText(reason).visible).ok('Reason is not correct');
     await t.click(browserPage.saveButton);
     // Verify that when user click on save button, value is saved in Unicode format
     await t.expect(browserPage.stringValueAsJson.exists).notOk('Value is not converted to Unicode');

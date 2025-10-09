@@ -1,4 +1,3 @@
-import { EuiFieldText } from '@elastic/eui'
 import cx from 'classnames'
 import React, { useContext, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -23,6 +22,8 @@ import { Button, IconButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { TextInput } from 'uiSrc/components/base/inputs'
+import { FormField } from 'uiSrc/components/base/forms/FormField'
 import PatternsInfo from './components/patternsInfo'
 import ClickableAppendInfo from './components/clickable-append-info'
 import styles from './styles.module.scss'
@@ -101,18 +102,21 @@ const SubscriptionPanel = () => {
       </FlexItem>
       <FlexItem>
         <Row align="center">
+          <FlexItem>
+            <ClickableAppendInfo />
+          </FlexItem>
           <FlexItem className={styles.channels}>
-            <EuiFieldText
-              value={channels}
-              disabled={isSubscribed}
-              compressed
-              onChange={(e) => setChannels(e.target.value)}
-              onBlur={onFocusOut}
-              placeholder="Enter Pattern"
-              aria-label="channel names for filtering"
-              data-testid="channels-input"
-              append={<ClickableAppendInfo />}
-            />
+            <FormField>
+              <TextInput
+                value={channels}
+                disabled={isSubscribed}
+                onChange={value => setChannels(value)}
+                onBlur={onFocusOut}
+                placeholder="Enter Pattern"
+                aria-label="channel names for filtering"
+                data-testid="channels-input"
+              />
+            </FormField>
           </FlexItem>
           <FlexItem>
             <Button

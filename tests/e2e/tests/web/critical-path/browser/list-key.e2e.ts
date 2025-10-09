@@ -17,7 +17,7 @@ const databaseAPIRequests = new DatabaseAPIRequests();
 const apiKeyRequests = new APIKeyRequests();
 
 let keyName = Common.generateWord(10);
-const keyTTL = '2147476121';
+const keyTTL = 2147476121;
 const elements = ['1111listElement11111', '2222listElement22222', '33333listElement33333'];
 
 fixture `List Key verification`
@@ -27,16 +27,19 @@ fixture `List Key verification`
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
     })
     .afterEach(async() => {
-        // Clear and delete database
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test('Verify that user can search List element by index', async t => {
     keyName = Common.generateWord(10);
-    await browserPage.addListKey(keyName, keyTTL, [elements[0]]);
-    // Add few elements to the List key
-    await browserPage.addElementToList([elements[1]]);
-    await browserPage.addElementToList([elements[2]]);
+
+    await apiKeyRequests.addListKeyApi({
+        keyName,
+        ttl: keyTTL,
+        elements,
+    }, ossStandaloneConfig);
+
+    await browserPage.navigateToKey(keyName);
+
     // Search List element by index
     await browserPage.searchByTheValueInKeyDetails('1');
     // Check the search result
@@ -49,9 +52,7 @@ test
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneV5Config);
     })
     .after(async() => {
-        //Clear and delete database
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneV5Config.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneV5Config);
     })('Verify that user can remove only one element for List for Redis v. <6.2', async t => {
         keyName = Common.generateWord(10);
         // Open CLI
@@ -61,7 +62,7 @@ test
         await t.pressKey('enter');
         await t.click(browserPage.Cli.cliCollapseButton);
         // Remove element from the key
-        await browserPage.openKeyDetails(keyName);
+        await browserPage.navigateToKey(keyName);
         const lengthBeforeRemove = (await browserPage.keyLengthDetails.textContent).split(': ')[1];
         await browserPage.removeListElementFromHeadOld();
         // Check that only one element is removed

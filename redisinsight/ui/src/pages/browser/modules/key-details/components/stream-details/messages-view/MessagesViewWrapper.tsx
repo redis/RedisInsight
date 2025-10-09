@@ -126,7 +126,7 @@ const MessagesViewWrapper = (props: Props) => {
         return (
           <FlexItem>
             <Text
-              color="subdued"
+              color="secondary"
               size="s"
               style={{ maxWidth: '100%' }}
               className="truncateText streamItem"
@@ -159,7 +159,7 @@ const MessagesViewWrapper = (props: Props) => {
         return (
           <Text
             className="truncateText streamItem"
-            color="subdued"
+            color="secondary"
             size="s"
             data-testid={`stream-message-${id}-idle`}
             style={{ maxWidth: '100%' }}
@@ -176,6 +176,7 @@ const MessagesViewWrapper = (props: Props) => {
       truncateText: true,
       headerClassName: cx('streamItemHeader', styles.deliveredHeaderCell),
       headerCellClassName: 'truncateText',
+      render: (cellData: number) => <Text color="secondary">{cellData}</Text>,
     },
     {
       id: 'actions',

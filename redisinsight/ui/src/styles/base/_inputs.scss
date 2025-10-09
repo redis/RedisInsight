@@ -12,11 +12,6 @@
   pointer-events: none !important;
 }
 
-input::placeholder,
-textarea::placeholder {
-  color: var(--inputPlaceholderColor) !important;
-}
-
 input[type='password'] ~ .euiFormControlLayoutIcons,
 input[name='password'] ~ .euiFormControlLayoutIcons,
 input[name='sentinelMasterPassword'] ~ .euiFormControlLayoutIcons,
@@ -25,22 +20,6 @@ input[name='sshPassphrase'] ~ .euiFormControlLayoutIcons {
   display: none;
 }
 
-.inputAppendIcon.inputAppendIcon {
-  height: auto;
-}
-
-.euiFormControlLayout > .euiFormControlLayout__append,
-.inputAppendIcon > svg {
-  width: 41px !important;
-  color: var(--iconsDefaultColor) !important;
-  background-color: var(--browserTableRowEven) !important;
-}
-
-.euiFormControlLayout--compressed .inputAppendIcon > svg,
-.euiFormControlLayout--compressed > .euiFormControlLayout__append {
-  width: 34px !important;
-  height: 29px !important;
-}
 
 .euiComboBox.euiComboBox-isOpen .euiComboBox__inputWrap {
   background-image: none !important;

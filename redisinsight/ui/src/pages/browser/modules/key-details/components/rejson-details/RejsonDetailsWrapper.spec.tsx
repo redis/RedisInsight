@@ -2,7 +2,6 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { instance, mock } from 'ts-mockito'
 import { render } from 'uiSrc/utils/test-utils'
-import { fetchReJSON } from 'uiSrc/slices/browser/rejson'
 import { EditorType } from 'uiSrc/slices/interfaces'
 import { stringToBuffer } from 'uiSrc/utils'
 
@@ -67,7 +66,7 @@ describe('RejsonDetailsWrapper', () => {
     ).toBeTruthy()
   })
 
-  it('should dispatch fetchReJSON when editorType changes', () => {
+  it('should not dispatch fetchReJSON on init', () => {
     let editorType = EditorType.Default
 
     mockUseSelector.mockImplementation((selector) => {
@@ -84,7 +83,9 @@ describe('RejsonDetailsWrapper', () => {
     editorType = EditorType.Text
     rerender(<RejsonDetailsWrapper {...instance(mockedProps)} />)
 
-    const expectedKey = stringToBuffer('test-key')
-    expect(mockDispatch).toHaveBeenCalledWith(fetchReJSON(expectedKey))
+    expect(mockDispatch).not.toHaveBeenCalledWith({
+      type: 'FETCH_REJSON',
+      payload: expect.anything(),
+    })
   })
 })

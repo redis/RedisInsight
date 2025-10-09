@@ -10,7 +10,7 @@ export const remarkLink = (): ((tree: Node) => void) => (tree: any) => {
       // External link
       const [text] = node.children || []
       node.type = 'html'
-      node.value = `<ExternalLink href="${node.url}" rel="nofollow noopener noreferrer">${text?.value || EXTERNAL_LINKS.redisIo}</ExternalLink>`
+      node.value = `<ExternalLink href="${node.url}" rel="nofollow noopener noreferrer" variant="inline" size="S" iconSize="S">${text?.value || EXTERNAL_LINKS.redisIo}</ExternalLink>`
     }
 
     if (node.title === 'Redis Cloud') {
@@ -23,7 +23,7 @@ export const remarkLink = (): ((tree: Node) => void) => (tree: any) => {
       const [text] = node.children || []
       const url = node.url.replace('redisinsight:', '')
       node.type = 'html'
-      node.value = `<RedisInsightLink url="${url}" text="${text?.value || 'Redis Cloud'}" />`
+      node.value = `<RedisInsightLink url="${url}" text="${text?.value || 'Redis Cloud'}" size="S" />`
     }
   })
 }

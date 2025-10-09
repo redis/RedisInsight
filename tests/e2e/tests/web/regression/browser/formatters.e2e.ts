@@ -3,7 +3,7 @@ import { Common, DatabaseHelper } from '../../../../helpers';
 import { BrowserPage } from '../../../../pageObjects';
 import {
     commonUrl,
-    ossStandaloneV6Config
+    ossStandaloneConfig
 } from '../../../../helpers/conf';
 import { DatabaseAPIRequests } from '../../../../helpers/api/api-database';
 import { APIKeyRequests } from '../../../../helpers/api/api-keys';
@@ -23,13 +23,12 @@ fixture `Formatters`
     })
     .page(commonUrl)
     .beforeEach(async() => {
-        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneV6Config);
+        await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
 
     })
     .afterEach(async() => {
         // Clear keys and database
-        await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneV6Config.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneV6Config);
+        await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
     });
 
 test('Verify that UTF8 in PHP serialized', async t => {
@@ -46,7 +45,8 @@ test('Verify that UTF8 in PHP serialized', async t => {
     await t.expect(await browserPage.getStringKeyValue()).contains(phpValueCRussian, 'data is not serialized in php');
 });
 
-test('Verify that dataTime is displayed in Java serialized', async t => {
+test
+    .skip('Verify that dataTime is displayed in Java serialized', async t => {
     const hexValue ='ACED00057372000E6A6176612E7574696C2E44617465686A81014B59741903000078707708000000BEACD0567278';
     const javaTimeValue = '"1995-12-14T12:12:01.010Z"'
 

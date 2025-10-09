@@ -44,7 +44,7 @@ export default {
     `Could not connect to ${url}, please check the CA or Client certificate.`,
   INCORRECT_CREDENTIALS: (url) =>
     `Could not connect to ${url}, please check the Username or Password.`,
-
+  DATABASE_DEFAULT_USER_DISABLED: 'Database does not have default user enabled.',
   DATABASE_MANAGEMENT_IS_DISABLED:
     'Database connection management is disabled.',
   CA_CERT_EXIST: 'This ca certificate name is already in use.',

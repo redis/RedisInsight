@@ -17,13 +17,9 @@ test
     .before(async () => {
         await databaseHelper.acceptLicenseTermsAndAddOSSClusterDatabase(ossClusterConfig);
         await browserPage.Cli.sendCommandInCli('flushdb');
-    })
-    .after(async () => {
-        await databaseAPIRequests.deleteOSSClusterDatabaseApi(ossClusterConfig);
-
     })('Verify suggestions when there are no indexes', async t => {
 
-        await t.click(browserPage.NavigationPanel.workbenchButton);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
 
         await t.typeText(workbenchPage.queryInput, 'FT.SE', { replace: true });
         await t.pressKey('tab');

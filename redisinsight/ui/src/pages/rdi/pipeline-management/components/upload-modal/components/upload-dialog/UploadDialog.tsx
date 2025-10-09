@@ -65,8 +65,12 @@ const UploadDialog = ({
       warning={
         showWarning ? (
           <div className={styles.warning} data-testid="input-file-warning">
-            <Text size="xs" color="subdued">
-              <RiIcon type="ToastDangerIcon" className={styles.alertIcon} />
+            <Text size="s" color="subdued">
+              <RiIcon
+                type="ToastDangerIcon"
+                className={styles.alertIcon}
+                size="m"
+              />
               {warningMessage}
             </Text>
           </div>

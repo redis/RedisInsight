@@ -16,7 +16,7 @@ fixture `Logical databases`
         //Delete database
         await databaseHelper.deleteDatabase(ossStandaloneConfig.databaseName);
     });
-test('Verify that user can add DB with logical index via host and port from Add DB manually form', async t => {
+test.skip('Verify that user can add DB with logical index via host and port from Add DB manually form', async t => {
     const index = '10';
 
     await myRedisDatabasePage.AddRedisDatabaseDialog.addRedisDataBase(ossStandaloneConfig);

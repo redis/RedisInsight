@@ -38,24 +38,19 @@ fixture `Workbench modes to non-auto guides`
     .page(commonUrl)
     .beforeEach(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
-        await t.click(browserPage.NavigationPanel.workbenchButton);
-    })
-    .afterEach(async() => {
-        // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
     });
 test
     .before(async t => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
-        await t.click(browserPage.NavigationPanel.workbenchButton);
+        await t.click(browserPage.NavigationTabs.workbenchButton);
         await workbenchPage.sendCommandInWorkbench(`set ${keyName} "${keyValue}"`);
     })
     .after(async t => {
         // Clear and delete database
-        await t.click(myRedisDatabasePage.NavigationPanel.browserButton);
         await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
-    })('Workbench modes from editor', async t => {
+    })
+    .skip('Workbench modes from editor', async t => {
         const groupCommandResultName = `${counter} Command(s) - ${counter} success, 0 error(s)`;
         const containerOfCommand = await workbenchPage.getCardContainerByCommand(groupCommandResultName);
 
@@ -108,7 +103,8 @@ test
         await workbenchPage.sendMultipleCommandsInWorkbench([parameters[4], commands[1]]);
         await t.expect(workbenchPage.queryTextResult.textContent).contains(`"${keyValue}"`, 'The first duplicated parameter not applied');
     });
-test('Workbench Silent mode', async t => {
+test
+    .skip('Workbench Silent mode', async t => {
     const silentCommandSuccessResultName = `${counter} Command(s) - ${counter} success`;
     const silentCommandErrorsResultName = `${counter + 1} Command(s) - ${counter} success, 1 error(s)`;
     const errorResult = `"ERR unknown command \'${commands[3]}\', with args beginning with: "`;

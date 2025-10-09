@@ -14,15 +14,32 @@ import { ApiEndpoints } from 'uiSrc/constants'
 import { INSTANCES_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
 import { store } from 'uiSrc/slices/store'
 
-const initialState = set(cloneDeep(initialStateDefault), 'app.connectivity', {
-  loading: false,
-  error: 'Test error',
-})
-const mockedStore = mockStore(initialState)
+let mockedStore: ReturnType<typeof mockStore>
 
 beforeEach(() => {
   jest.resetAllMocks()
-  mockedStore.clearActions()
+
+  // Create fresh state for each test, inheriting all defaults
+  const initialState: typeof initialStateDefault = {
+    ...cloneDeep(initialStateDefault),
+    app: {
+      ...initialStateDefault.app,
+      connectivity: {
+        ...initialStateDefault.app.connectivity,
+        loading: false,
+        error: 'Test error',
+      },
+    },
+    connections: {
+      ...initialStateDefault.connections,
+      instances: {
+        ...initialStateDefault.connections.instances,
+        connectedInstance: INSTANCES_MOCK[0],
+      },
+    },
+  }
+
+  mockedStore = mockStore(initialState)
 })
 
 describe('instanceConnectionLost', () => {

@@ -3,7 +3,6 @@ import React from 'react'
 // Import all custom SVG assets
 import AlarmSvg from 'uiSrc/assets/img/alarm.svg?react'
 import BanIconSvg from 'uiSrc/assets/img/monitor/ban.svg?react'
-import BulkActionsSvg from 'uiSrc/assets/img/icons/bulk_actions.svg?react'
 import BulkUploadSvg from 'uiSrc/assets/img/icons/bulk-upload.svg?react'
 import ChampagneSvg from 'uiSrc/assets/img/icons/champagne.svg?react'
 import CloudLinkSvg from 'uiSrc/assets/img/oauth/cloud_link.svg?react'
@@ -13,7 +12,6 @@ import CopilotSvg from 'uiSrc/assets/img/icons/copilot.svg?react'
 import DefaultPluginDarkSvg from 'uiSrc/assets/img/workbench/default_view_dark.svg?react'
 import DefaultPluginLightSvg from 'uiSrc/assets/img/workbench/default_view_light.svg?react'
 import DislikeSvg from 'uiSrc/assets/img/icons/dislike.svg?react'
-import ExecutionTimeSvg from 'uiSrc/assets/img/workbench/execution_time.svg?react'
 import ExtendSvg from 'uiSrc/assets/img/icons/extend.svg?react'
 import GithubHelpCenterSVG from 'uiSrc/assets/img/github.svg?react'
 import GroupModeSvg from 'uiSrc/assets/img/icons/group_mode.svg?react'
@@ -52,6 +50,8 @@ import UserInCircleSvg from 'uiSrc/assets/img/icons/user_in_circle.svg?react'
 import UserSvg from 'uiSrc/assets/img/icons/user.svg?react'
 import VersionSvg from 'uiSrc/assets/img/icons/version.svg?react'
 import VisTagCloudSvg from 'uiSrc/assets/img/workbench/vis_tag_cloud.svg?react'
+import BikeSvg from 'uiSrc/assets/img/icons/bike.svg?react'
+import PopcornSvg from 'uiSrc/assets/img/icons/popcorn.svg?react'
 
 // Import guides icons
 import ProbabilisticDataSvg from 'uiSrc/assets/img/guides/probabilistic-data.svg?react'
@@ -111,8 +111,7 @@ import RedisTimeSeriesDark from 'uiSrc/assets/img/modules/RedisTimeSeriesDark.sv
 import RedisTimeSeriesLight from 'uiSrc/assets/img/modules/RedisTimeSeriesLight.svg?react'
 import UnknownDark from 'uiSrc/assets/img/modules/UnknownDark.svg?react'
 import UnknownLight from 'uiSrc/assets/img/modules/UnknownLight.svg?react'
-import FormattersLight from 'uiSrc/assets/img/icons/formatter_light.svg?react'
-import FormattersDark from 'uiSrc/assets/img/icons/formatter_dark.svg?react'
+import FormatterSvg from 'uiSrc/assets/img/icons/formatter.svg?react'
 
 // Import options icons
 import ActiveActiveDark from 'uiSrc/assets/img/options/Active-ActiveDark.svg?react'
@@ -122,7 +121,6 @@ import RedisOnFlashLight from 'uiSrc/assets/img/options/RedisOnFlashLight.svg?re
 
 // Import sidebar icons
 import BrowserSvg from 'uiSrc/assets/img/sidebar/browser.svg?react'
-import GithubSvg from 'uiSrc/assets/img/sidebar/github.svg?react'
 import PipelineManagementActiveSvg from 'uiSrc/assets/img/sidebar/pipeline_active.svg?react'
 import PipelineManagementSvg from 'uiSrc/assets/img/sidebar/pipeline.svg?react'
 import PipelineStatisticsSvg from 'uiSrc/assets/img/sidebar/pipeline_statistics.svg?react'
@@ -155,12 +153,13 @@ export {
   GooglecloudIcon,
   GoogleSigninIcon,
   SsoIcon,
+  GithubIcon,
+  RedisLogoDarkMinIcon,
 } from '@redis-ui/icons/multicolor'
 
 // Common icons
 export const AlarmIcon = createIconComponent(AlarmSvg)
 export const BannedIcon = createIconComponent(BanIconSvg)
-export const BulkActionsIcon = createIconComponent(BulkActionsSvg)
 export const BulkUploadIcon = createIconComponent(BulkUploadSvg)
 export const ChampagneIcon = createIconComponent(ChampagneSvg)
 export const CloudIcon = createIconComponent(CloudSvg)
@@ -170,7 +169,6 @@ export const CopilotIcon = createIconComponent(CopilotSvg)
 export const DefaultPluginDarkIcon = createIconComponent(DefaultPluginDarkSvg)
 export const DefaultPluginLightIcon = createIconComponent(DefaultPluginLightSvg)
 export const DislikeIcon = createIconComponent(DislikeSvg)
-export const ExecutionTimeIcon = createIconComponent(ExecutionTimeSvg)
 export const ExtendIcon = createIconComponent(ExtendSvg)
 export const GithubHelpCenterIcon = createIconComponent(GithubHelpCenterSVG)
 export const GroupModeIcon = createIconComponent(GroupModeSvg)
@@ -217,6 +215,8 @@ export const Trigger = createIconComponent(TriggerIcon)
 export const UserInCircle = createIconComponent(UserInCircleSvg)
 export const VersionIcon = createIconComponent(VersionSvg)
 export const VisTagCloudIcon = createIconComponent(VisTagCloudSvg)
+export const BikeIcon = createIconComponent(BikeSvg)
+export const PopcornIcon = createIconComponent(PopcornSvg)
 
 // Guides icons
 export const ProbabilisticDataIcon = createIconComponent(ProbabilisticDataSvg)
@@ -254,8 +254,7 @@ export const OutputDarkIcon = createIconComponent(OutputDarkSvg)
 export const OutputIconIcon = createIconComponent(OutputIconBaseSvg)
 
 // Modules icons
-export const FormattersLightIcon = createIconComponent(FormattersLight)
-export const FormattersDarkIcon = createIconComponent(FormattersDark)
+export const FormatterIcon = createIconComponent(FormatterSvg)
 export const RedisAIDarkIcon = createIconComponent(RedisAIDark)
 export const RedisAILightIcon = createIconComponent(RedisAILight)
 export const RedisBloomDarkIcon = createIconComponent(RedisBloomDark)
@@ -288,7 +287,6 @@ export const RedisOnFlashLightIcon = createIconComponent(RedisOnFlashLight)
 
 // Sidebar icons
 export const BrowserIcon = createIconComponent(BrowserSvg)
-export const GithubIcon = createIconComponent(GithubSvg)
 export const PipelineManagementActiveIcon = createIconComponent(
   PipelineManagementActiveSvg,
 )

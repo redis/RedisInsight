@@ -1,15 +1,9 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/no-this-in-sfc */
-import cx from 'classnames'
 import React, { Ref, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
-import {
-  IconType,
-  ColumnsIcon,
-  EqualIcon,
-  FoldersIcon,
-} from 'uiSrc/components/base/icons'
+import { IconType, EqualIcon, FoldersIcon } from 'uiSrc/components/base/icons'
 import KeysSummary from 'uiSrc/components/keys-summary'
 import {
   SCAN_COUNT_DEFAULT,
@@ -50,15 +44,15 @@ import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { BrowserColumns, KeyValueFormat } from 'uiSrc/constants'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { setConnectivityError } from 'uiSrc/slices/app/connectivity'
-import {
-  IconButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from './styles.module.scss'
+import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
+import styled from 'styled-components'
+import { ToggleButton } from 'uiSrc/components/base/forms/buttons'
+import { Text } from 'uiSrc/components/base/text'
 
 const HIDE_REFRESH_LABEL_WIDTH = 640
 
@@ -68,7 +62,6 @@ interface ISwitchType<T> {
   disabled?: boolean
   ariaLabel: string
   dataTestId: string
-  getClassName: () => string
   onClick: () => void
   isActiveView: () => boolean
   getIconType: () => IconType
@@ -82,6 +75,11 @@ export interface Props {
   loadKeys: (type?: KeyViewType) => void
   handleScanMoreClick: (config: any) => void
 }
+
+const ViewSwitchButton = styled(ButtonGroup.Button)`
+  width: 24px !important;
+  min-width: 24px !important;
+`
 
 const KeysHeader = (props: Props) => {
   const {
@@ -119,9 +117,6 @@ const KeysHeader = (props: Props) => {
       isActiveView() {
         return viewType === this.type
       },
-      getClassName() {
-        return cx(styles.viewTypeBtn, { [styles.active]: this.isActiveView() })
-      },
       getIconType() {
         return EqualIcon
       },
@@ -139,9 +134,6 @@ const KeysHeader = (props: Props) => {
       disabled: isTreeViewDisabled,
       isActiveView() {
         return viewType === this.type
-      },
-      getClassName() {
-        return cx(styles.viewTypeBtn, { [styles.active]: this.isActiveView() })
       },
       getIconType() {
         return FoldersIcon
@@ -289,79 +281,78 @@ const KeysHeader = (props: Props) => {
   }
 
   const ViewSwitch = () => (
-    <div className={styles.viewTypeSwitch} data-testid="view-type-switcher">
-      <OnboardingTour options={ONBOARDING_FEATURES.BROWSER_TREE_VIEW}>
-        <>
-          {viewTypes.map((view) => (
-            <RiTooltip
-              content={view.tooltipText}
-              position="top"
-              key={view.tooltipText}
+    <OnboardingTour options={ONBOARDING_FEATURES.BROWSER_TREE_VIEW}>
+      <ButtonGroup data-testid="view-type-switcher">
+        {viewTypes.map((view) => (
+          <RiTooltip
+            content={view.tooltipText}
+            position="top"
+            key={view.tooltipText}
+          >
+            <ViewSwitchButton
+              aria-label={view.ariaLabel}
+              onClick={() => view.onClick()}
+              isSelected={view.isActiveView()}
+              data-testid={view.dataTestId}
+              disabled={view.disabled || false}
             >
-              <IconButton
-                size="S"
-                className={view.getClassName()}
-                icon={view.getIconType()}
-                aria-label={view.ariaLabel}
-                onClick={() => view.onClick()}
-                data-testid={view.dataTestId}
-                disabled={view.disabled || false}
-              />
-            </RiTooltip>
-          ))}
-        </>
-      </OnboardingTour>
-    </div>
+              <ButtonGroup.Icon icon={view.getIconType()} />
+            </ViewSwitchButton>
+          </RiTooltip>
+        ))}
+      </ButtonGroup>
+    </OnboardingTour>
   )
 
   return (
     <div className={styles.content} ref={rootDivRef}>
       <AutoSizer disableHeight>
         {({ width }) => (
-          <div style={{ width }}>
-            <div className={styles.bottom}>
-              <div className={styles.keysSummary}>
-                <KeysSummary
-                  items={keysState.keys}
-                  totalItemsCount={keysState.total}
-                  scanned={
-                    isSearched ||
-                    (isFiltered && searchMode === SearchMode.Pattern) ||
-                    viewType === KeyViewType.Tree
-                      ? keysState.scanned
-                      : 0
-                  }
-                  loading={loading}
-                  showScanMore={
-                    !(
-                      searchMode === SearchMode.Redisearch &&
-                      keysState.maxResults &&
-                      keysState.keys.length >= keysState.maxResults
-                    )
-                  }
-                  scanMoreStyle={scanMoreStyle}
-                  loadMoreItems={handleScanMore}
-                  nextCursor={nextCursor}
-                />
-              </div>
-              <div className={styles.keysControlsWrapper}>
-                <AutoRefresh
-                  disabled={
-                    searchMode === SearchMode.Redisearch && !selectedIndex
-                  }
-                  disabledRefreshButtonMessage="Select an index to refresh keys."
-                  iconSize="S"
-                  postfix="keys"
-                  loading={loading}
-                  lastRefreshTime={keysState.lastRefreshTime}
-                  displayText={(width || 0) > HIDE_REFRESH_LABEL_WIDTH}
-                  containerClassName={styles.refreshContainer}
-                  onRefresh={handleRefreshKeys}
-                  onEnableAutoRefresh={handleEnableAutoRefresh}
-                  onChangeAutoRefreshRate={handleChangeAutoRefreshRate}
-                  testid="keys"
-                />
-                <div className={styles.columnsButtonPopup}>
+          <Row justify="between" style={{ width }}>
+            <FlexItem>
+              <KeysSummary
+                items={keysState.keys}
+                totalItemsCount={keysState.total}
+                scanned={
+                  isSearched ||
+                  (isFiltered && searchMode === SearchMode.Pattern) ||
+                  viewType === KeyViewType.Tree
+                    ? keysState.scanned
+                    : 0
+                }
+                loading={loading}
+                showScanMore={
+                  !(
+                    searchMode === SearchMode.Redisearch &&
+                    keysState.maxResults &&
+                    keysState.keys.length >= keysState.maxResults
+                  )
+                }
+                scanMoreStyle={scanMoreStyle}
+                loadMoreItems={handleScanMore}
+                nextCursor={nextCursor}
+              />
+            </FlexItem>
+            <FlexItem>
+              <Row gap="l">
+                <FlexItem>
+                  <AutoRefresh
+                    disabled={
+                      searchMode === SearchMode.Redisearch && !selectedIndex
+                    }
+                    disabledRefreshButtonMessage="Select an index to refresh keys."
+                    iconSize="S"
+                    postfix="keys"
+                    loading={loading}
+                    lastRefreshTime={keysState.lastRefreshTime}
+                    displayText={(width || 0) > HIDE_REFRESH_LABEL_WIDTH}
+                    onRefresh={handleRefreshKeys}
+                    onEnableAutoRefresh={handleEnableAutoRefresh}
+                    onChangeAutoRefreshRate={handleChangeAutoRefreshRate}
+                    testid="keys"
+                  />
+                </FlexItem>
+                <FlexItem>
                   <RiPopover
                     ownFocus={false}
                     anchorPosition="downLeft"
@@ -370,69 +361,78 @@ const KeysHeader = (props: Props) => {
                     panelClassName={styles.popoverWrapper}
                     closePopover={() => setColumnsConfigShown(false)}
                     button={
-                      <SecondaryButton
-                        size="small"
-                        icon={ColumnsIcon}
-                        onClick={toggleColumnsConfigVisibility}
+                      <ToggleButton
+                        onPressedChange={toggleColumnsConfigVisibility}
                         className={styles.columnsButton}
                         data-testid="btn-columns-actions"
                         aria-label="columns"
+                        pressed={columnsConfigShown}
                       >
-                        <span className={styles.columnsButtonText}>
-                          Columns
-                        </span>
-                      </SecondaryButton>
+                        <RiIcon size="m" type="ColumnsIcon" />
+                        <Text size="s">Columns</Text>
+                      </ToggleButton>
                     }
                   >
-                    <Row align="center" gap="m">
-                      <FlexItem grow>
+                    <Col gap="m">
+                      <FlexItem>
+                        <Row align="center" gap="m">
+                          <FlexItem grow>
+                            <Checkbox
+                              id="show-key-size"
+                              name="show-key-size"
+                              label="Key size"
+                              checked={shownColumns.includes(
+                                BrowserColumns.Size,
+                              )}
+                              onChange={(e) =>
+                                changeColumnsShown(
+                                  e.target.checked,
+                                  BrowserColumns.Size,
+                                )
+                              }
+                              data-testid="show-key-size"
+                              className={styles.checkbox}
+                            />
+                          </FlexItem>
+                          <FlexItem grow>
+                            <RiTooltip
+                              content="Hide the key size to avoid performance issues when working with large keys."
+                              position="top"
+                              anchorClassName="flex-row"
+                            >
+                              <RiIcon
+                                className={styles.infoIcon}
+                                type="InfoIcon"
+                                size="m"
+                                style={{ cursor: 'pointer' }}
+                                data-testid="key-size-info-icon"
+                              />
+                            </RiTooltip>
+                          </FlexItem>
+                        </Row>
+                      </FlexItem>
+                      <FlexItem>
                         <Checkbox
-                          id="show-key-size"
-                          name="show-key-size"
-                          label="Key size"
-                          checked={shownColumns.includes(BrowserColumns.Size)}
+                          id="show-ttl"
+                          name="show-ttl"
+                          label="TTL"
+                          checked={shownColumns.includes(BrowserColumns.TTL)}
                           onChange={(e) =>
                             changeColumnsShown(
                               e.target.checked,
-                              BrowserColumns.Size,
+                              BrowserColumns.TTL,
                             )
                           }
-                          data-testid="show-key-size"
-                          className={styles.checkbox}
+                          data-testid="show-ttl"
                         />
                       </FlexItem>
-                      <FlexItem grow>
-                        <RiTooltip
-                          content="Hide the key size to avoid performance issues when working with large keys."
-                          position="top"
-                          anchorClassName="flex-row"
-                        >
-                          <RiIcon
-                            className={styles.infoIcon}
-                            type="InfoIcon"
-                            size="m"
-                            style={{ cursor: 'pointer' }}
-                            data-testid="key-size-info-icon"
-                          />
-                        </RiTooltip>
-                      </FlexItem>
-                    </Row>
-                    <Checkbox
-                      id="show-ttl"
-                      name="show-ttl"
-                      label="TTL"
-                      checked={shownColumns.includes(BrowserColumns.TTL)}
-                      onChange={(e) =>
-                        changeColumnsShown(e.target.checked, BrowserColumns.TTL)
-                      }
-                      data-testid="show-ttl"
-                    />
+                    </Col>
                   </RiPopover>
-                </div>
-                {ViewSwitch()}
-              </div>
-            </div>
-          </div>
+                </FlexItem>
+                <FlexItem>{ViewSwitch()}</FlexItem>
+              </Row>
+            </FlexItem>
+          </Row>
         )}
       </AutoSizer>
     </div>

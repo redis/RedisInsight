@@ -158,7 +158,7 @@ const Config = () => {
             source={RdiPipelineTabs.Config}
           />
         </div>
-        <Text className="rdi__text" color="subdued">
+        <Text color="primary">
           {'Provide '}
           <Link
             data-testid="rdi-pipeline-config-link"
@@ -179,10 +179,7 @@ const Config = () => {
             className={cx('rdi__editorWrapper', 'rdi__loading')}
             data-testid="rdi-config-loading"
           >
-            <Text color="subdued" style={{ marginBottom: 12 }}>
-              Loading data...
-            </Text>
-            <Loader color="secondary" size="l" />
+            <Loader color="secondary" size="l" loaderText='Loading data...' />
           </div>
         ) : (
           <MonacoYaml

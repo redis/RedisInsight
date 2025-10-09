@@ -1,13 +1,14 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import {
+  AxisScale,
+  ChartConfig,
+  GraphMode,
   TimeSeries,
   YAxisConfig,
-  ChartConfig,
-  AxisScale,
-  GraphMode,
 } from './interfaces'
 import ChartConfigForm from './ChartConfigForm'
 import Chart from './Chart'
+import { determineDefaultTimeUnits, normalizeDatapointUnits } from './utils'
 
 enum LAYOUT_STATE {
   INITIAL_STATE,
@@ -30,6 +31,7 @@ export default function ChartResultView(props: ChartResultViewProps) {
 
   const [chartConfig, setChartConfig] = useState<ChartConfig>({
     mode: GraphMode.line,
+    timeUnit: determineDefaultTimeUnits(props.data),
     title: '',
     xlabel: '',
     staircase: false,
@@ -66,6 +68,11 @@ export default function ChartResultView(props: ChartResultViewProps) {
     }
   }
 
+  const memoizedChartData = useMemo(
+    () => normalizeDatapointUnits(props.data, chartConfig.timeUnit),
+    [props.data, chartConfig.timeUnit],
+  )
+
   return (
     <div>
       <div className="zoom-helper-text">
@@ -77,7 +84,7 @@ export default function ChartResultView(props: ChartResultViewProps) {
       </div>
       <Chart
         chartConfig={chartConfig}
-        data={props.data}
+        data={memoizedChartData}
         onRelayout={onRelayout}
         onDoubleClick={onDoubleClick}
       />

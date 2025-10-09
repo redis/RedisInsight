@@ -32,13 +32,12 @@ const Item = ({
   let iconNode: ReactElement
 
   if (iconType) {
-    // todo replace with redis-ui icon
     iconNode = (
       <RiIcon
         color="currentColor" // forces the icon to inherit its parent color
         {...iconProps}
         type={iconType}
-        className={cx('euiListGroupItem__icon', iconProps?.className)}
+        className={cx('ListGroupItem__icon', iconProps?.className)}
       />
     )
 

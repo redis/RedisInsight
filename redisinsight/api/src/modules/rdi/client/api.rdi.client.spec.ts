@@ -607,6 +607,24 @@ describe('ApiRdiClient', () => {
       );
     });
 
+    it('should set dummy authorization headers in dev mode when login is disabled', async () => {
+      mockedAxios.post.mockRejectedValueOnce({
+        status: 404,
+      });
+
+      await client.connect();
+
+      expect(mockedAxios.post).toHaveBeenCalledWith(RdiUrl.Login, {
+        username: mockRdi.username,
+        password: mockRdi.password,
+      });
+
+      expect(client['auth']['jwt']).toEqual(expect.any(String));
+      expect(mockedAxios.defaults.headers.common['Authorization']).toEqual(
+        `Bearer ${client['auth']['jwt']}`,
+      );
+    });
+
     it('should throw an error if login fails', async () => {
       mockedAxios.post.mockRejectedValueOnce(mockRdiUnauthorizedError);
 

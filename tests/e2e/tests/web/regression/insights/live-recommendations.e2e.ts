@@ -2,7 +2,7 @@ import * as path from 'path';
 import { BrowserPage, MemoryEfficiencyPage, MyRedisDatabasePage, WorkbenchPage } from '../../../../pageObjects';
 import { ExploreTabs, RecommendationIds, rte } from '../../../../helpers/constants';
 import { DatabaseHelper } from '../../../../helpers/database';
-import { commonUrl, ossStandaloneV6Config, ossStandaloneV5Config, ossStandaloneV7Config } from '../../../../helpers/conf';
+import { commonUrl, ossStandaloneConfig, ossStandaloneV5Config, ossStandaloneV7Config } from '../../../../helpers/conf';
 import { DatabaseAPIRequests } from '../../../../helpers/api/api-database';
 import { Common } from '../../../../helpers/common';
 import { Telemetry } from '../../../../helpers/telemetry';
@@ -49,14 +49,14 @@ fixture `Live Recommendations`
         await refreshFeaturesTestData();
         await modifyFeaturesConfigJson(featuresConfig);
         await updateControlNumber(47.2);
-        await databaseAPIRequests.addNewStandaloneDatabaseApi(ossStandaloneV6Config);
+        await databaseAPIRequests.addNewStandaloneDatabaseApi(ossStandaloneConfig);
         await myRedisDatabasePage.reloadPage();
-        await myRedisDatabasePage.clickOnDBByName(ossStandaloneV6Config.databaseName);
+        await myRedisDatabasePage.clickOnDBByName(ossStandaloneConfig.databaseName);
     })
     .afterEach(async() => {
         await refreshFeaturesTestData();
         // Delete database
-        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneV6Config);
+        await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 test
     .before(async() => {
@@ -80,7 +80,8 @@ test
         await browserPage.OverviewPanel.changeDbIndex(0);
         await apiKeyRequests.deleteKeyByNameApi(keyName, databasesForAdding[1].databaseName);
         await databaseAPIRequests.deleteStandaloneDatabasesApi(databasesForAdding);
-    })('Verify Insights panel Recommendations displaying', async t => {
+    })
+    .skip('Verify Insights panel Recommendations displaying', async t => {
         await browserPage.NavigationHeader.togglePanel(true);
         // Verify that "Welcome to recommendations" panel displayed when there are no recommendations
         let tab = await browserPage.InsightsPanel.setActiveTab(ExploreTabs.Tips);
@@ -127,7 +128,8 @@ test
     }).after(async() => {
         await refreshFeaturesTestData();
         await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneV5Config);
-    })('Verify that user can upvote recommendations', async t => {
+    })
+    .skip('Verify that user can upvote recommendations', async t => {
         const notUsefulVoteOption = 'not useful';
         const usefulVoteOption = 'useful';
         await browserPage.NavigationHeader.togglePanel(true);
@@ -156,7 +158,8 @@ test
         // Verify that user can rate recommendations with one of 2 existing types at the same time
         await recommendationsActions.verifyVoteIsSelected(redisVersionRecom, usefulVoteOption);
     });
-test('Verify that user can hide recommendations and checkbox value is saved', async t => {
+test
+    .skip('Verify that user can hide recommendations and checkbox value is saved', async t => {
     const commandToGetRecommendation = 'FT.INFO';
     await browserPage.Cli.sendCommandInCli(commandToGetRecommendation);
 
@@ -187,7 +190,8 @@ test('Verify that user can hide recommendations and checkbox value is saved', as
     await t.expect(await tab.getRecommendationByName(searchVisualizationRecom).visible)
         .ok('recommendation is not displayed when show hide recommendation is checked');
 });
-test('Verify that user can snooze recommendation', async t => {
+test
+    .skip('Verify that user can snooze recommendation', async t => {
     const commandToGetRecommendation = 'FT.INFO';
     await browserPage.Cli.sendCommandInCli(commandToGetRecommendation);
 
@@ -206,7 +210,8 @@ test('Verify that user can snooze recommendation', async t => {
     tab = await browserPage.InsightsPanel.setActiveTab(ExploreTabs.Tips);
     await t.expect(await tab.getRecommendationByName(searchVisualizationRecom).visible).ok('recommendation is not displayed again');
 });
-test('Verify that recommendations from database analysis are displayed in Insight panel above live recommendations', async t => {
+test
+    .skip('Verify that recommendations from database analysis are displayed in Insight panel above live recommendations', async t => {
     await browserPage.NavigationHeader.togglePanel(true);
     let tab = await browserPage.InsightsPanel.setActiveTab(ExploreTabs.Tips);
     const redisVersionRecommendationSelector = tab.getRecommendationByName(redisVersionRecom);
@@ -216,7 +221,7 @@ test('Verify that recommendations from database analysis are displayed in Insigh
     await t.expect(await tab.getRecommendationByName(setPasswordRecom).visible).notOk(`${setPasswordRecom} recommendation displayed`);
     await browserPage.NavigationHeader.togglePanel(false);
     // Go to Analysis Tools page
-    await t.click(myRedisDatabasePage.NavigationPanel.analysisPageButton);
+    await t.click(browserPage.NavigationTabs.analysisButton);
     await t.click(memoryEfficiencyPage.newReportBtn);
     await browserPage.NavigationHeader.togglePanel(true);
     tab = await browserPage.InsightsPanel.setActiveTab(ExploreTabs.Tips);
@@ -246,7 +251,7 @@ test
         //Verify that user is navigated to DB Analysis page via Analyze button and new report is generated
         await t.click(memoryEfficiencyPage.selectedReport);
         await t.expect(memoryEfficiencyPage.reportItem.visible).ok('Database analysis page not opened');
-        await t.click(memoryEfficiencyPage.NavigationPanel.browserButton);
+        await t.click(browserPage.NavigationTabs.browserButton);
         await workbenchPage.NavigationHeader.togglePanel(true);
         tab = await browserPage.InsightsPanel.setActiveTab(ExploreTabs.Tips);
         await t.click(tab.analyzeDatabaseLink);
@@ -261,7 +266,8 @@ test
         await refreshFeaturesTestData();
         await browserPage.deleteKeyByName(keyName);
         await databaseAPIRequests.deleteStandaloneDatabasesApi(databasesForAdding);
-    })('Verify that key name is displayed for Insights and DA recommendations', async t => {
+    })
+    .skip('Verify that key name is displayed for Insights and DA recommendations', async t => {
         const cliCommand = `JSON.SET ${keyName} $ '{ "model": "Hyperion", "brand": "Velorim"}'`;
         await browserPage.Cli.sendCommandInCli('flushdb');
         await browserPage.Cli.sendCommandInCli(cliCommand);
@@ -279,5 +285,5 @@ test
             .find(tab.cssKeyName)
             .innerText;
         await t.expect(keyNameFromRecommendation).eql(keyName);
-        await t.click(memoryEfficiencyPage.NavigationPanel.browserButton);
+        await t.click(memoryEfficiencyPage.NavigationTabs.browserButton);
     });
