@@ -4,7 +4,6 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { PrimaryButton } from './PrimaryButton'
 
 const primaryMeta = {
-  title: 'Components/Base/Forms/Buttons/Primary Button',
   component: PrimaryButton,
   tags: ['autodocs'],
   args: { onClick: fn() },

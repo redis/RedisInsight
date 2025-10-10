@@ -77,7 +77,6 @@ export default defineConfig({
       exclude: ['./packages'],
     },
     target: 'es2020',
-    minify: 'esbuild',
   },
   optimizeDeps: {
     include: ['monaco-editor', 'monaco-yaml/yaml.worker'],

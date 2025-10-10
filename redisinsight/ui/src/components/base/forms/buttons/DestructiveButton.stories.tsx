@@ -4,7 +4,6 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { DestructiveButton } from './DestructiveButton'
 
 const destructiveMeta = {
-  title: 'Components/Base/Forms/Buttons/Destructive Button',
   component: DestructiveButton,
   parameters: {
     layout: 'centered',

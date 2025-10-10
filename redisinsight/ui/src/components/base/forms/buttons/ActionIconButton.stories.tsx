@@ -5,7 +5,6 @@ import { ActionIconButton } from './ActionIconButton'
 import { ActiveActiveIcon } from 'uiSrc/components/base/icons'
 
 const actionIconMeta = {
-  title: 'Components/Base/Forms/Buttons/Action Icon Button',
   component: ActionIconButton,
   parameters: {
     layout: 'centered',

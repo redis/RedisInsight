@@ -5,7 +5,6 @@ import { SecondaryButton } from './SecondaryButton'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 
 const secondaryMeta = {
-  title: 'Components/Base/Forms/Buttons/Secondary Button',
   component: SecondaryButton,
   parameters: {
     layout: 'centered',

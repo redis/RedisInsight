@@ -4,7 +4,6 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Button } from './index'
 
 const baseMeta = {
-  title: 'Components/Base/Forms/Buttons/Base Button',
   component: Button,
   parameters: {
     layout: 'centered',

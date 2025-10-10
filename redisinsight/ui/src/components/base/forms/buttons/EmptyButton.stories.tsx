@@ -4,7 +4,6 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 import { fn } from 'storybook/test'
 
 const emptyMeta = {
-  title: 'Components/Base/Forms/Buttons/Empty Button',
   component: EmptyButton,
   parameters: {
     layout: 'centered',

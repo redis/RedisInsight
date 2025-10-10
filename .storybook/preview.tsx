@@ -19,6 +19,9 @@ import { Provider } from 'react-redux'
 import { store } from 'uiSrc/slices/store'
 
 const parameters: Parameters = {
+  parameters: {
+    layout: 'centered',
+  },
   actions: { argTypesRegex: '^on[A-Z].*' },
   controls: {
     disableSaveFromUI: true,
