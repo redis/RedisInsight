@@ -5,15 +5,8 @@ import {
   DATABASE_OVERVIEW_MINIMUM_REFRESH_INTERVAL,
   DATABASE_OVERVIEW_REFRESH_INTERVAL,
 } from 'uiSrc/constants'
-import styled from 'styled-components'
-import { Theme } from 'uiSrc/components/base/theme/types'
-const StyledContainer = styled.div`
-  padding: 50px;
-  background-color: ${({ theme }: { theme: Theme }) =>
-    theme.semantic.color.background.neutral100};
-  border: 2px solid
-    ${({ theme }: { theme: Theme }) => theme.semantic.color.border.neutral500};
-`
+import { StyledContainer } from '../../../../../.storybook/helpers/styles'
+
 const meta = {
   component: AutoRefresh,
   parameters: {
