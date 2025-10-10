@@ -4,7 +4,7 @@ import { fn } from 'storybook/test'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 const toggleMeta = {
-  title: 'UI/Buttons/Toggle Button',
+  title: 'Components/Base/Forms/Buttons/Toggle Button',
   component: ToggleButton,
   parameters: {
     layout: 'centered',
