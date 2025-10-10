@@ -21,7 +21,7 @@ export enum BarChartDataType {
   Bytes = 'bytes',
 }
 
-interface IProps {
+export interface IProps {
   name?: string
   data?: BarChartData[]
   dataType?: BarChartDataType

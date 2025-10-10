@@ -3,6 +3,7 @@ import { Theme } from 'uiSrc/components/base/theme/types'
 
 export const StyledContainer = styled.div`
   padding: 50px;
+  height: max-content;
   overflow: hidden;
   overflow-y: auto;
   background-color: ${({ theme }: { theme: Theme }) =>
