@@ -18,7 +18,7 @@ import {
   DEFAULT_THEME,
 } from '../constants'
 import { localStorageService, themeService } from '../services'
-import { customDarkTheme } from 'uiSrc/styles/custom'
+import { customDarkTheme } from 'uiSrc/styles/custom/dark_theme'
 
 interface Props {
   children: React.ReactNode
