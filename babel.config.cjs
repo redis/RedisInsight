@@ -10,5 +10,12 @@ module.exports = (api) => {
       [require('@babel/preset-react'), { development }],
       [require('babel-preset-vite'), { env: true, glob: false }],
     ],
+    // added to support storybook
+    plugins: [
+      [
+        require('@babel/plugin-proposal-decorators'),
+        { version: '2023-11', decoratorsBeforeExport: true },
+      ],
+    ],
   };
 };
