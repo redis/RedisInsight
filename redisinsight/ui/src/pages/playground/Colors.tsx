@@ -3,7 +3,32 @@ import { useTheme } from '@redis-ui/styles'
 import { Col, Grid } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { Title } from 'uiSrc/components/base/text/Title'
+import { type Theme as ThemeType } from 'uiSrc/components/base/theme/types'
+import styled from 'styled-components'
 
+const StyledColorItem = styled(Col).attrs({
+  gap: 's',
+  justify: 'center',
+  align: 'center',
+})`
+  background-color: ${({ theme }: { theme: ThemeType }) =>
+    theme.semantic.color.background.neutral300};
+  opacity: 0.8;
+  padding: 5px;
+  min-width: 100;
+  border: 1px solid
+    ${({ theme }: { theme: ThemeType }) =>
+      theme.semantic.color.border.neutral500};
+`
+
+const ColorSquare = styled.div<{
+  $color: any
+}>`
+  width: 40px;
+  height: 40px;
+  border: 1px solid;
+  background-color: ${({ $color }) => $color};
+`
 const ColorItem = ({
   color,
   colorName,
@@ -11,30 +36,22 @@ const ColorItem = ({
   color: string
   colorName: string
 }) => (
-  <Col
-    gap="m"
-    style={{
-      alignItems: 'center',
-      backgroundColor: '#aaa',
-      opacity: 0.8,
-      padding: 10,
-      minWidth: 200,
-    }}
-  >
-    <Text variant="semiBold">{colorName}</Text>
-    <div
-      style={{
-        width: 50,
-        height: 50,
-        backgroundColor: color,
-        border: '1px solid',
-      }}
-    />
-    <Text variant="semiBold"> {color}</Text>
-  </Col>
+  <StyledColorItem>
+    <Text variant="semiBold" component="span" color="primary">
+      {colorName}
+    </Text>
+    <ColorSquare $color={color} />
+    <Text variant="semiBold" component="span" color="primary">
+      {color}
+    </Text>
+  </StyledColorItem>
 )
 const ColorSectionTitle = ({ title }: { title: string }) => (
-  <Title size="S" style={{ textAlign: 'center', marginTop: 10 }}>
+  <Title
+    size="S"
+    color="secondary"
+    style={{ textAlign: 'center', marginTop: 10 }}
+  >
     {title}
   </Title>
 )

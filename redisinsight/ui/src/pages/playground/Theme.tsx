@@ -6,6 +6,7 @@ import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
 import { ColorText, Text, Title } from 'uiSrc/components/base/text'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { RiTooltip } from 'uiSrc/components'
+import MonacoEnvironmentInitializer from 'uiSrc/components/MonacoEnvironmentInitializer/MonacoEnvironmentInitializer'
 
 enum ThemeTabs {
   raw = 'raw',
@@ -59,12 +60,16 @@ export const Theme = () => {
             language="json"
             value={JSON.stringify(theme, null, 2)}
             options={monacoOptions}
-            theme="light"
+            theme={theme.name === 'dark' ? 'vs-dark' : 'vs'}
             height={500}
-            width={900}
+            width={600}
           />
         ),
-        label: <Text>Raw</Text>,
+        label: (
+          <Text color="secondary" component="div">
+            Raw
+          </Text>
+        ),
       },
       {
         value: ThemeTabs.formatted,
@@ -77,7 +82,7 @@ export const Theme = () => {
               </ColorText>
             </Title>
             <Title size="M">
-              <Link href="#colors" isExternalLink={false} target="_self">
+              <Link href="#colors" variant="inline" target="_self">
                 Colors
               </Link>
             </Title>
@@ -110,18 +115,23 @@ export const Theme = () => {
             </dl>
           </Col>
         ),
-        label: <Text>Formatted</Text>,
+        label: (
+          <Text color="secondary" component="div">
+            Formatted
+          </Text>
+        ),
       },
     ]
 
     return visibleTabs
-  }, [viewTab])
+  }, [viewTab, theme.name])
   const handleTabChange = (id: string) => {
     if (viewTab === id) return
     setViewTab(id as ThemeTabs)
   }
   return (
     <Col align="center" style={{ maxWidth: 1000, minWidth: 600 }}>
+      <MonacoEnvironmentInitializer />
       <Tabs tabs={tabs} value={viewTab} onChange={handleTabChange} />
     </Col>
   )
