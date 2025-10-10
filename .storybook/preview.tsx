@@ -17,6 +17,7 @@ import { type Theme } from 'uiSrc/components/base/theme/types'
 // import { store } from 'uiSrc/utils/test-utils'
 import { Provider } from 'react-redux'
 import { store } from 'uiSrc/slices/store'
+import Router from 'uiSrc/Router'
 
 const parameters: Parameters = {
   parameters: {
@@ -59,14 +60,16 @@ const preview: Preview = {
   decorators: [
     (Story) => (
       <StoryContextProvider value={useStoryContext()}>
-        <Provider store={store}>
-          <TooltipProvider>
-            <RootStoryLayout storyContext={useStoryContext()}>
-              <CommonStyles />
-              <Story />
-            </RootStoryLayout>
-          </TooltipProvider>
-        </Provider>
+        <Router>
+          <Provider store={store}>
+            <TooltipProvider>
+              <RootStoryLayout storyContext={useStoryContext()}>
+                <CommonStyles />
+                <Story />
+              </RootStoryLayout>
+            </TooltipProvider>
+          </Provider>
+        </Router>
       </StoryContextProvider>
     ),
     withThemeFromJSXProvider({
