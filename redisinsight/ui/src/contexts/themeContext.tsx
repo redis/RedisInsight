@@ -4,7 +4,6 @@ import {
   theme as redisUiOldTheme,
   CommonStyles,
   themeLight,
-  themeDark,
 } from '@redis-ui/styles'
 import 'modern-normalize/modern-normalize.css'
 import '@redis-ui/styles/normalized-styles.css'
@@ -19,6 +18,7 @@ import {
   DEFAULT_THEME,
 } from '../constants'
 import { localStorageService, themeService } from '../services'
+import { customDarkTheme } from 'uiSrc/styles/custom'
 
 interface Props {
   children: React.ReactNode
@@ -98,7 +98,7 @@ export class ThemeProvider extends React.Component<Props> {
     const { theme, usingSystemTheme }: any = this.state
     const uiTheme =
       theme === Theme.Dark
-        ? themeDark
+        ? customDarkTheme
         : theme === Theme.Light
           ? themeLight
           : redisUiOldTheme
