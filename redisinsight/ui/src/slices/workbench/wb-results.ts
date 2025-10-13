@@ -48,6 +48,7 @@ import {
   ConnectionType,
   StateWorkbenchResults,
 } from '../interfaces'
+import { mapCommandExecutionToUI } from 'uiSrc/services/commands-history/utils/command-execution.mapper'
 
 export const initialState: StateWorkbenchResults = {
   isLoaded: false,
@@ -80,11 +81,7 @@ const workbenchResultsSlice = createSlice({
       state,
       { payload }: { payload: CommandExecution[] },
     ) => {
-      state.items = payload.map((item) => ({
-        ...item,
-        command: item.command || EMPTY_COMMAND,
-        emptyCommand: !item.command,
-      }))
+      state.items = payload.map(mapCommandExecutionToUI)
       state.loading = false
       state.isLoaded = true
     },

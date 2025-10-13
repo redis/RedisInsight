@@ -14,6 +14,7 @@ import {
   ResultsMode,
   CommandExecutionUI,
   CommandExecution,
+  CommandExecutionType,
 } from 'uiSrc/slices/interfaces'
 import { PIPELINE_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import {
@@ -22,13 +23,13 @@ import {
   findCommand,
   removeCommand,
 } from 'uiSrc/services/workbenchStorage'
+import { useCommandsHistory } from 'uiSrc/services/commands-history/hooks/useCommandsHistory'
 import {
   createErrorResult,
   createGroupItem,
   executeApiCall,
   generateCommandId,
   limitHistoryLength,
-  loadHistoryData,
   prepareNewItems,
   scrollToElement,
   sortCommandsByDate,
@@ -44,13 +45,17 @@ const useQuery = () => {
   const [processing, setProcessing] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
 
+  const { getCommandsHistory } = useCommandsHistory({
+    commandExecutionType: CommandExecutionType.Search,
+  })
+
   const resultsMode = ResultsMode.Default
   const activeRunQueryMode = RunQueryMode.ASCII
 
   useEffect(() => {
     const loadHistory = async () => {
       try {
-        const historyData = await loadHistoryData(instanceId)
+        const historyData = await getCommandsHistory(instanceId)
         setItems(historyData)
       } catch (error) {
         // Silently handle error
