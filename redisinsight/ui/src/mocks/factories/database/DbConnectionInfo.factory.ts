@@ -8,7 +8,7 @@ export const dbConnectionInfoFactory = Factory.define<DbConnectionInfo>(() => ({
   name: faker.company.name(),
   host: faker.internet.ip(),
   port: faker.internet.port().toString(),
-  username: faker.internet.username(),
+  username: faker.internet.userName(),
   password: faker.internet.password(),
   timeout: faker.number.int({ min: 10, max: 120 }).toString(),
   selectedCaCertName: 'none',

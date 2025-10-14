@@ -13,7 +13,7 @@ import {
 export const commandExecutionFactory = Factory.define<CommandExecution>(
   ({ sequence }) => ({
     id: sequence.toString() ?? faker.string.uuid(),
-    databaseId: faker.string.ulid(),
+    databaseId: faker.string.uuid(),
     db: faker.number.int({ min: 0, max: 15 }),
     type: faker.helpers.enumValue(CommandExecutionType),
     mode: faker.helpers.enumValue(RunQueryMode),
