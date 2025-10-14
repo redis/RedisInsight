@@ -1,10 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
+import styled from 'styled-components'
 import { useTheme } from '@redis-ui/styles'
-import { Col, Grid } from 'uiSrc/components/base/layout/flex'
+import { Col, Grid, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { type Theme as ThemeType } from 'uiSrc/components/base/theme/types'
-import styled from 'styled-components'
+import { ColorText } from 'uiSrc/components/base/text'
+import SearchInput from 'uiSrc/components/base/inputs/SearchInput'
+
+const StyledColorContainer = styled(Col).attrs({
+  gap: 'l',
+  justify: 'start',
+})`
+  max-height: 600px;
+  height: 600px;
+  overflow-y: auto;
+  background-color: ${({ theme }: { theme: ThemeType }) =>
+    theme.semantic.color.background.neutral300};
+`
 
 const StyledColorItem = styled(Col).attrs({
   gap: 's',
@@ -86,17 +99,80 @@ export const Colors = () => {
   const theme = useTheme()
   const { color: rootColors, semantic } = theme
   const { color: semanticColors } = semantic
+  const [search, setSearch] = useState('')
+  // Create regex pattern: each character from search with .* in between
+  // Escape special regex characters
+  const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const pattern = escapedSearch.split('').join('.*')
+  const regex = new RegExp(pattern, 'i')
+  let semanticCount = 0
+
+  const filteredSemanticColors = Object.keys(semanticColors).reduce(
+    (acc, colorSection) => {
+      // @ts-ignore
+      const tempColors = semanticColors[colorSection]
+      Object.entries(tempColors).forEach(([colorName, color]) => {
+        if (!search || regex.test(colorName)) {
+          semanticCount++
+          // @ts-ignore
+          if (acc[colorSection] === undefined) {
+            // @ts-ignore
+            acc[colorSection] = {}
+          }
+          // @ts-ignore
+          acc[colorSection][colorName] = color
+        }
+      })
+      return acc
+    },
+    {},
+  )
+  const filteredRootColors = Object.entries(rootColors).filter(
+    ([colorName]) => {
+      if (!search) {
+        return true
+      }
+      // Create regex pattern: each character from search with .* in between
+      // Escape special regex characters
+      const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      const pattern = escapedSearch.split('').join('.*')
+      const regex = new RegExp(pattern, 'i')
+      return regex.test(colorName)
+    },
+  )
+
   return (
-    <>
-      <ColorSection title="Root colors" colors={Object.entries(rootColors)} />
+    <StyledColorContainer>
+      <Row gap="l" align="center" grow={false}>
+        <SearchInput
+          allowReset
+          placeholder="Search colors"
+          onChange={(value) => setSearch(value)}
+          value={search}
+          variant="underline"
+        />
+        {search !== '' ? (
+          <Text size="s">
+            <ColorText size="XL" color="accent" variant="italic">
+              {search}
+            </ColorText>
+            :&nbsp;&nbsp;found {filteredRootColors.length + semanticCount}{' '}
+            colors
+          </Text>
+        ) : (
+          <Text>{filteredRootColors.length + semanticCount} colors</Text>
+        )}
+      </Row>
+
+      <ColorSection title="Root colors" colors={filteredRootColors} />
       <ColorSectionTitle title="Semantic colors" />
-      {Object.entries(semanticColors).map(([colorSection, colors]) => (
+      {Object.entries(filteredSemanticColors).map(([colorSection, colors]) => (
         <ColorSection
           title={`Semantic: ${colorSection}`}
           colors={Object.entries(colors)}
           key={`semantic-${colorSection}`}
         />
       ))}
-    </>
+    </StyledColorContainer>
   )
 }

@@ -43,7 +43,7 @@ const parameters: Parameters = {
   options: {
     storySort: {
       method: 'alphabetical',
-      order: ['Getting Started', '*'],
+      order: ['Getting Started', 'Playground', '*'],
     },
   },
 }
