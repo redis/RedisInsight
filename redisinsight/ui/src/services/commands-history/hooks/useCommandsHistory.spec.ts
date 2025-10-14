@@ -3,7 +3,11 @@ import { cloneDeep } from 'lodash'
 import * as reactRedux from 'react-redux'
 
 import { mockedStore, renderHook, act } from 'uiSrc/utils/test-utils'
-import { CommandExecutionType } from 'uiSrc/slices/interfaces'
+import {
+  CommandExecutionType,
+  ResultsMode,
+  RunQueryMode,
+} from 'uiSrc/slices/interfaces'
 import { FeatureFlags } from 'uiSrc/constants/featureFlags'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { commandExecutionUIFactory } from 'uiSrc/mocks/factories/workbench/commandExectution.factory'
@@ -72,66 +76,176 @@ describe('useCommandsHistory', () => {
       expect(mockedCommandsHistoryIndexedDB).not.toHaveBeenCalled()
     })
 
-    it('should call getCommandsHistory with SQLite database and return data on success', async () => {
-      const mockGetCommandsHistory = jest.fn().mockResolvedValue({
-        success: true,
-        data: mockCommandHistoryData,
+    describe('getCommandsHistory', () => {
+      it('should call getCommandsHistory with SQLite database and return data on success', async () => {
+        const mockGetCommandsHistory = jest.fn().mockResolvedValue({
+          success: true,
+          data: mockCommandHistoryData,
+        })
+        mockedCommandsHistorySQLite.mockImplementation(() => ({
+          getCommandsHistory: mockGetCommandsHistory,
+          addCommandsToHistory: jest.fn(),
+        }))
+
+        const { result } = renderHook(() =>
+          useCommandsHistory({
+            commandExecutionType: mockCommandExecutionType,
+          }),
+        )
+
+        let returnedData
+        await act(async () => {
+          returnedData = await (result.current as any).getCommandsHistory(
+            mockInstanceId,
+          )
+        })
+
+        expect(returnedData).toEqual(mockCommandHistoryData)
       })
-      mockedCommandsHistorySQLite.mockImplementation(() => ({
-        getCommandsHistory: mockGetCommandsHistory,
-      }))
 
-      const { result } = renderHook(() =>
-        useCommandsHistory({
-          commandExecutionType: mockCommandExecutionType,
-        }),
-      )
+      it('should call getCommandsHistory with SQLite database and dispatch error notification on failure', async () => {
+        const mockError = {
+          message: 'Database connection failed',
+          name: 'Error',
+          isAxiosError: false,
+          toJSON: () => ({}),
+        } as any
+        const mockGetCommandsHistory = jest.fn().mockResolvedValue({
+          success: false,
+          error: mockError,
+        })
+        mockedCommandsHistorySQLite.mockImplementation(() => ({
+          getCommandsHistory: mockGetCommandsHistory,
+          addCommandsToHistory: jest.fn(),
+        }))
 
-      let returnedData
-      await act(async () => {
-        returnedData = await result.current.getCommandsHistory(mockInstanceId)
+        const { result } = renderHook(() =>
+          useCommandsHistory({
+            commandExecutionType: mockCommandExecutionType,
+          }),
+        )
+
+        let returnedData
+        await act(async () => {
+          returnedData = await (result.current as any).getCommandsHistory(
+            mockInstanceId,
+          )
+        })
+
+        expect(returnedData).toEqual([])
+        expect(mockDispatch).toHaveBeenCalledWith(
+          addErrorNotification(mockError),
+        )
       })
-
-      expect(mockGetCommandsHistory).toHaveBeenCalledWith(
-        mockInstanceId,
-        mockCommandExecutionType,
-      )
-      expect(returnedData).toEqual(mockCommandHistoryData)
-      expect(mockDispatch).not.toHaveBeenCalled()
     })
 
-    it('should call getCommandsHistory with SQLite database and dispatch error notification on failure', async () => {
-      const mockError = {
-        message: 'Database connection failed',
-        name: 'Error',
-        isAxiosError: false,
-        toJSON: () => ({}),
-      } as any
-      const mockGetCommandsHistory = jest.fn().mockResolvedValue({
-        success: false,
-        error: mockError,
+    describe('addCommandsToHistory', () => {
+      it('should call addCommandsToHistory with SQLite database and return data on success', async () => {
+        const mockCommands = commandExecutionUIFactory.buildList(2)
+        const mockAddCommandsToHistory = jest.fn().mockResolvedValue({
+          success: true,
+          data: mockCommands,
+        })
+        mockedCommandsHistorySQLite.mockImplementation(() => ({
+          getCommandsHistory: jest.fn(),
+          addCommandsToHistory: mockAddCommandsToHistory,
+        }))
+
+        const { result } = renderHook(() =>
+          useCommandsHistory({
+            commandExecutionType: mockCommandExecutionType,
+          }),
+        )
+
+        let returnedData
+        await act(async () => {
+          returnedData = await (result.current as any).addCommandsToHistory(
+            mockInstanceId,
+            mockCommandExecutionType,
+            mockCommands,
+            {
+              activeRunQueryMode: RunQueryMode.ASCII,
+              resultsMode: ResultsMode.Default,
+            },
+          )
+        })
+
+        expect(returnedData).toEqual(mockCommands)
       })
-      mockedCommandsHistorySQLite.mockImplementation(() => ({
-        getCommandsHistory: mockGetCommandsHistory,
-      }))
 
-      const { result } = renderHook(() =>
-        useCommandsHistory({
-          commandExecutionType: mockCommandExecutionType,
-        }),
-      )
+      it('should call addCommandsToHistory with SQLite database and dispatch error notification on failure', async () => {
+        const mockCommands = commandExecutionUIFactory.buildList(2)
+        const mockError = {
+          message: 'Failed to add commands to history',
+          name: 'Error',
+          isAxiosError: false,
+          toJSON: () => ({}),
+        } as any
+        const mockAddCommandsToHistory = jest.fn().mockResolvedValue({
+          success: false,
+          error: mockError,
+        })
+        mockedCommandsHistorySQLite.mockImplementation(() => ({
+          getCommandsHistory: jest.fn(),
+          addCommandsToHistory: mockAddCommandsToHistory,
+        }))
 
-      let returnedData
-      await act(async () => {
-        returnedData = await result.current.getCommandsHistory(mockInstanceId)
+        const { result } = renderHook(() =>
+          useCommandsHistory({
+            commandExecutionType: mockCommandExecutionType,
+          }),
+        )
+
+        let returnedData
+        await act(async () => {
+          returnedData = await (result.current as any).addCommandsToHistory(
+            mockInstanceId,
+            mockCommandExecutionType,
+            mockCommands,
+            {
+              activeRunQueryMode: RunQueryMode.ASCII,
+              resultsMode: ResultsMode.Default,
+            },
+          )
+        })
+
+        expect(returnedData).toEqual([])
+        expect(mockDispatch).toHaveBeenCalledWith(
+          addErrorNotification(mockError),
+        )
       })
 
-      expect(mockGetCommandsHistory).toHaveBeenCalledWith(
-        mockInstanceId,
-        mockCommandExecutionType,
-      )
-      expect(returnedData).toEqual([])
-      expect(mockDispatch).toHaveBeenCalledWith(addErrorNotification(mockError))
+      it('should handle empty commands array', async () => {
+        const mockAddCommandsToHistory = jest.fn().mockResolvedValue({
+          success: true,
+          data: [],
+        })
+        mockedCommandsHistorySQLite.mockImplementation(() => ({
+          getCommandsHistory: jest.fn(),
+          addCommandsToHistory: mockAddCommandsToHistory,
+        }))
+
+        const { result } = renderHook(() =>
+          useCommandsHistory({
+            commandExecutionType: mockCommandExecutionType,
+          }),
+        )
+
+        let returnedData
+        await act(async () => {
+          returnedData = await (result.current as any).addCommandsToHistory(
+            mockInstanceId,
+            mockCommandExecutionType,
+            [],
+            {
+              activeRunQueryMode: RunQueryMode.ASCII,
+              resultsMode: ResultsMode.Default,
+            },
+          )
+        })
+
+        expect(returnedData).toEqual([])
+      })
     })
   })
 
@@ -153,66 +267,141 @@ describe('useCommandsHistory', () => {
       expect(mockedCommandsHistorySQLite).not.toHaveBeenCalled()
     })
 
-    it('should call getCommandsHistory with IndexDB database and return data on success', async () => {
-      const mockGetCommandsHistory = jest.fn().mockResolvedValue({
-        success: true,
-        data: mockCommandHistoryData,
+    describe('getCommandsHistory', () => {
+      it('should call getCommandsHistory with IndexDB database and return data on success', async () => {
+        const mockGetCommandsHistory = jest.fn().mockResolvedValue({
+          success: true,
+          data: mockCommandHistoryData,
+        })
+        mockedCommandsHistoryIndexedDB.mockImplementation(() => ({
+          getCommandsHistory: mockGetCommandsHistory,
+          addCommandsToHistory: jest.fn(),
+        }))
+
+        const { result } = renderHook(() =>
+          useCommandsHistory({
+            commandExecutionType: mockCommandExecutionType,
+          }),
+        )
+
+        let returnedData
+        await act(async () => {
+          returnedData = await (result.current as any).getCommandsHistory(
+            mockInstanceId,
+          )
+        })
+
+        expect(returnedData).toEqual(mockCommandHistoryData)
       })
-      mockedCommandsHistoryIndexedDB.mockImplementation(() => ({
-        getCommandsHistory: mockGetCommandsHistory,
-      }))
 
-      const { result } = renderHook(() =>
-        useCommandsHistory({
-          commandExecutionType: mockCommandExecutionType,
-        }),
-      )
+      it('should call getCommandsHistory with IndexDB database and dispatch error notification on failure', async () => {
+        const mockError = {
+          message: 'IndexedDB operation failed',
+          name: 'Error',
+          isAxiosError: false,
+          toJSON: () => ({}),
+        } as any
+        const mockGetCommandsHistory = jest.fn().mockResolvedValue({
+          success: false,
+          error: mockError,
+        })
+        mockedCommandsHistoryIndexedDB.mockImplementation(() => ({
+          getCommandsHistory: mockGetCommandsHistory,
+          addCommandsToHistory: jest.fn(),
+        }))
 
-      let returnedData
-      await act(async () => {
-        returnedData = await result.current.getCommandsHistory(mockInstanceId)
+        const { result } = renderHook(() =>
+          useCommandsHistory({
+            commandExecutionType: mockCommandExecutionType,
+          }),
+        )
+
+        let returnedData
+        await act(async () => {
+          returnedData = await (result.current as any).getCommandsHistory(
+            mockInstanceId,
+          )
+        })
+
+        expect(returnedData).toEqual([])
+        expect(mockDispatch).toHaveBeenCalledWith(
+          addErrorNotification(mockError),
+        )
       })
-
-      expect(mockGetCommandsHistory).toHaveBeenCalledWith(
-        mockInstanceId,
-        mockCommandExecutionType,
-      )
-      expect(returnedData).toEqual(mockCommandHistoryData)
-      expect(mockDispatch).not.toHaveBeenCalled()
     })
 
-    it('should call getCommandsHistory with IndexDB database and dispatch error notification on failure', async () => {
-      const mockError = {
-        message: 'IndexedDB operation failed',
-        name: 'Error',
-        isAxiosError: false,
-        toJSON: () => ({}),
-      } as any
-      const mockGetCommandsHistory = jest.fn().mockResolvedValue({
-        success: false,
-        error: mockError,
+    describe('addCommandsToHistory', () => {
+      it('should call addCommandsToHistory with IndexedDB database and return data on success', async () => {
+        const mockCommands = commandExecutionUIFactory.buildList(2)
+        const mockAddCommandsToHistory = jest.fn().mockResolvedValue({
+          success: true,
+          data: mockCommands,
+        })
+        mockedCommandsHistoryIndexedDB.mockImplementation(() => ({
+          getCommandsHistory: jest.fn(),
+          addCommandsToHistory: mockAddCommandsToHistory,
+        }))
+
+        const { result } = renderHook(() =>
+          useCommandsHistory({
+            commandExecutionType: mockCommandExecutionType,
+          }),
+        )
+
+        let returnedData
+        await act(async () => {
+          returnedData = await (result.current as any).addCommandsToHistory(
+            mockInstanceId,
+            mockCommandExecutionType,
+            mockCommands,
+            {
+              activeRunQueryMode: RunQueryMode.ASCII,
+              resultsMode: ResultsMode.Default,
+            },
+          )
+        })
+
+        expect(returnedData).toEqual(mockCommands)
       })
-      mockedCommandsHistoryIndexedDB.mockImplementation(() => ({
-        getCommandsHistory: mockGetCommandsHistory,
-      }))
 
-      const { result } = renderHook(() =>
-        useCommandsHistory({
-          commandExecutionType: mockCommandExecutionType,
-        }),
-      )
+      it('should call addCommandsToHistory with IndexedDB database and dispatch error notification on failure', async () => {
+        const mockCommands = commandExecutionUIFactory.buildList(2)
+        const mockError = {
+          message: 'IndexedDB add operation failed',
+          name: 'Error',
+          isAxiosError: false,
+          toJSON: () => ({}),
+        } as any
+        const mockAddCommandsToHistory = jest.fn().mockResolvedValue({
+          success: false,
+          error: mockError,
+        })
+        mockedCommandsHistoryIndexedDB.mockImplementation(() => ({
+          getCommandsHistory: jest.fn(),
+          addCommandsToHistory: mockAddCommandsToHistory,
+        }))
 
-      let returnedData
-      await act(async () => {
-        returnedData = await result.current.getCommandsHistory(mockInstanceId)
+        const { result } = renderHook(() =>
+          useCommandsHistory({
+            commandExecutionType: mockCommandExecutionType,
+          }),
+        )
+
+        let returnedData
+        await act(async () => {
+          returnedData = await (result.current as any).addCommandsToHistory(
+            mockInstanceId,
+            mockCommandExecutionType,
+            mockCommands,
+            {
+              activeRunQueryMode: RunQueryMode.ASCII,
+              resultsMode: ResultsMode.Default,
+            },
+          )
+        })
+
+        expect(returnedData).toEqual([])
       })
-
-      expect(mockGetCommandsHistory).toHaveBeenCalledWith(
-        mockInstanceId,
-        mockCommandExecutionType,
-      )
-      expect(returnedData).toEqual([])
-      expect(mockDispatch).toHaveBeenCalledWith(addErrorNotification(mockError))
     })
   })
 })

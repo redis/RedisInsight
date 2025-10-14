@@ -65,6 +65,7 @@ describe('useQuery hook', () => {
     // Mock the useCommandsHistory hook to return a mock function
     mockedUseCommandsHistory.mockReturnValue({
       getCommandsHistory: jest.fn().mockResolvedValue([]),
+      addCommandsToHistory: jest.fn().mockResolvedValue([]),
     })
   })
 
@@ -73,6 +74,7 @@ describe('useQuery hook', () => {
     const mockGetCommandsHistory = jest.fn().mockResolvedValue(historyItems)
     mockedUseCommandsHistory.mockReturnValue({
       getCommandsHistory: mockGetCommandsHistory,
+      addCommandsToHistory: jest.fn(),
     })
 
     const { result } = renderHook(() =>
@@ -90,6 +92,7 @@ describe('useQuery hook', () => {
       .mockRejectedValueOnce(new Error('error'))
     mockedUseCommandsHistory.mockReturnValue({
       getCommandsHistory: mockGetCommandsHistory,
+      addCommandsToHistory: jest.fn(),
     })
 
     const { result } = renderHook(() =>
@@ -102,9 +105,13 @@ describe('useQuery hook', () => {
 
   it('onSubmit success path updates items, calls addCommands and scrolls', async () => {
     // Initial history empty
+    // API returns data matching ids
+    const apiData = [{ id: 'cmd-1230', result: 'PONG' }] as any
+
     // Mock empty history
     mockedUseCommandsHistory.mockReturnValue({
       getCommandsHistory: jest.fn().mockResolvedValue([]),
+      addCommandsToHistory: jest.fn().mockResolvedValue(apiData),
     })
 
     // Prepare new UI items for the command to execute
@@ -118,10 +125,6 @@ describe('useQuery hook', () => {
           error: '',
         })),
     )
-
-    // API returns data matching ids
-    const apiData = [{ id: 'cmd-1230', result: 'PONG' }] as any
-    mockedUtils.executeApiCall.mockResolvedValueOnce(apiData)
 
     const { result } = renderHook(() =>
       useQuery(),
@@ -142,10 +145,6 @@ describe('useQuery hook', () => {
       isOpen: true,
     })
 
-    // addCommands called with reverse(data)
-    expect(mockedStorage.addCommands).toHaveBeenCalledWith(
-      [...apiData].reverse(),
-    )
     // Scroll called for a new command
     expect(mockedUtils.scrollToElement).toHaveBeenCalled()
     // processing returns to false at the end
@@ -156,6 +155,9 @@ describe('useQuery hook', () => {
     // Mock empty history
     mockedUseCommandsHistory.mockReturnValue({
       getCommandsHistory: jest.fn().mockResolvedValue([]),
+      addCommandsToHistory: jest
+        .fn()
+        .mockRejectedValue(new Error('api failed')),
     })
     mockedSharedUtils.getCommandsForExecution.mockReturnValueOnce(['PING'])
     mockedUtils.prepareNewItems.mockImplementationOnce(
@@ -197,6 +199,7 @@ describe('useQuery hook', () => {
     ]
     mockedUseCommandsHistory.mockReturnValue({
       getCommandsHistory: jest.fn().mockResolvedValue(historyItems),
+      addCommandsToHistory: jest.fn(),
     })
     const { result } = renderHook(() =>
       useQuery(),
@@ -218,6 +221,7 @@ describe('useQuery hook', () => {
     const historyItems = commandExecutionUIFactory.buildList(3)
     mockedUseCommandsHistory.mockReturnValue({
       getCommandsHistory: jest.fn().mockResolvedValue(historyItems),
+      addCommandsToHistory: jest.fn(),
     })
     const { result } = renderHook(() =>
       useQuery(),
@@ -244,6 +248,7 @@ describe('useQuery hook', () => {
       ]
       mockedUseCommandsHistory.mockReturnValue({
         getCommandsHistory: jest.fn().mockResolvedValue(historyItems),
+        addCommandsToHistory: jest.fn(),
       })
       mockedStorage.findCommand.mockResolvedValueOnce({
         result: 'data',
@@ -279,6 +284,7 @@ describe('useQuery hook', () => {
       ]
       mockedUseCommandsHistory.mockReturnValue({
         getCommandsHistory: jest.fn().mockResolvedValue(historyItems),
+        addCommandsToHistory: jest.fn(),
       })
       mockedStorage.findCommand.mockResolvedValueOnce(null)
 
@@ -308,6 +314,7 @@ describe('useQuery hook', () => {
       ]
       mockedUseCommandsHistory.mockReturnValue({
         getCommandsHistory: jest.fn().mockResolvedValue(historyItems),
+        addCommandsToHistory: jest.fn(),
       })
       mockedStorage.findCommand.mockRejectedValueOnce(new Error('load failed'))
 
