@@ -6,9 +6,8 @@ import {
   SentinelDatabasesResultPage,
   SentinelPage,
 } from 'uiSrc/pages/autodiscover-sentinel'
-import { PlaygroundPage } from 'uiSrc/pages/playground/PlaygroundPage'
 
-import { LAZY_LOAD, LOAD_PLAYGROUND } from '../config'
+import { LAZY_LOAD } from '../config'
 
 const LazySettingsPage = lazy(() => import('uiSrc/pages/settings'))
 const LazySentinelDatabasesPage = lazy(
@@ -45,12 +44,5 @@ const ROUTES: IRoute[] = [
     ],
   },
 ]
-
-if (LOAD_PLAYGROUND) {
-  ROUTES.push({
-    path: '/playground',
-    component: PlaygroundPage,
-  })
-}
 
 export default ROUTES

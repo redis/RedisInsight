@@ -8,8 +8,8 @@ const config: StorybookConfig = {
     return mergeConfig(inlineConfig, vc)
   },
   stories: [
-    // '../stories/**/*.mdx',
-    // '../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)',
+    '../stories/**/*.mdx',
+    '../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)',
     '../redisinsight/ui/src/**/*.stories.@(js|jsx|mjs|ts|tsx)',
     '../redisinsight/ui/src/**/*.mdx',
   ],

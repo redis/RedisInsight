@@ -4,7 +4,6 @@ import { getConfig } from 'uiSrc/config'
 const riConfig = getConfig()
 
 export const LAZY_LOAD = riConfig?.app?.lazyLoad
-export const LOAD_PLAYGROUND = riConfig?.app?.env !== 'production'
 
 export const ROUTES_EXCLUDED_BY_ENV = riConfig?.app?.routesExcludedByEnv
 

@@ -9,13 +9,13 @@ import { themeDark, themeLight, themeOld } from '@redis-ui/styles'
 import { type Theme as ThemeType } from 'uiSrc/components/base/theme/types'
 import { Text } from 'uiSrc/components/base/text'
 
-const Container = styled(Row).attrs({ gap: 'm' })`
+export const Container = styled(Row).attrs({ gap: 'm' })`
   padding: 2rem;
   background-color: ${({ theme }: { theme: ThemeType }) =>
     theme.semantic.color.background.neutral100};
   max-width: 100%;
 `
-const MainContent = styled(Col).attrs({ gap: 'xl', align: 'center' })`
+export const MainContent = styled(Col).attrs({ gap: 'xl', align: 'center' })`
   flex-grow: 1;
 `
 const NavContainer = styled(Col).attrs({ gap: 'm', grow: false })`
