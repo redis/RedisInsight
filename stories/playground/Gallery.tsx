@@ -66,7 +66,7 @@ export const Gallery = () => {
     return regex.test(icon)
   })
   return (
-    <Col gap="l" align="center">
+    <Col gap="l" align="start" justify="start">
       <Row gap="l" align="center">
         <SearchInput
           allowReset

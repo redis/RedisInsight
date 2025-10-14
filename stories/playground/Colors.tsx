@@ -109,23 +109,19 @@ export const Colors = () => {
 
   const filteredSemanticColors = Object.keys(semanticColors).reduce(
     (acc, colorSection) => {
-      // @ts-ignore
-      const tempColors = semanticColors[colorSection]
+      const tempColors = semanticColors[colorSection as keyof typeof semanticColors]
       Object.entries(tempColors).forEach(([colorName, color]) => {
         if (!search || regex.test(colorName)) {
           semanticCount++
-          // @ts-ignore
           if (acc[colorSection] === undefined) {
-            // @ts-ignore
             acc[colorSection] = {}
           }
-          // @ts-ignore
           acc[colorSection][colorName] = color
         }
       })
       return acc
     },
-    {},
+    {} as Record<string, Record<string, string>>,
   )
   const filteredRootColors = Object.entries(rootColors).filter(
     ([colorName]) => {
