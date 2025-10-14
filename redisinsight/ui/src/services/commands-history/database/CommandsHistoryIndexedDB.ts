@@ -12,4 +12,17 @@ export class CommandsHistoryIndexedDB implements CommandsHistoryDatabase {
       data: [],
     })
   }
+
+  async addCommandsToHistory(
+    instanceId: string,
+    commandExecutionType: CommandExecutionType,
+    commands: string[],
+  ): Promise<CommandHistoryResult> {
+    // TODO: Implementation for adding command to IndexedDB
+    // For now, just return success as IndexedDB implementation is not complete
+    return Promise.resolve({
+      success: true,
+      data: [],
+    })
+  }
 }

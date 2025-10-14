@@ -7,6 +7,8 @@ import {
   CommandExecution,
   CommandExecutionType,
   CommandExecutionUI,
+  ResultsMode,
+  RunQueryMode,
 } from 'uiSrc/slices/interfaces'
 
 import { mapCommandExecutionToUI } from '../utils/command-execution.mapper'
@@ -29,6 +31,44 @@ export class CommandsHistorySQLite implements CommandsHistoryDatabase {
       if (isStatusSuccessful(status)) {
         const results: CommandExecutionUI[] = data.map(mapCommandExecutionToUI)
 
+        return { success: true, data: results }
+      }
+
+      return {
+        success: false,
+        error: new Error(`Request failed with status ${status}`),
+      }
+    } catch (exception) {
+      return {
+        success: false,
+        error: exception as AxiosError,
+      }
+    }
+  }
+
+  async addCommandsToHistory(
+    instanceId: string,
+    commandExecutionType: CommandExecutionType,
+    commands: string[],
+    options: {
+      activeRunQueryMode: RunQueryMode
+      resultsMode: ResultsMode
+    },
+  ): Promise<CommandHistoryResult> {
+    const { activeRunQueryMode, resultsMode } = options
+    try {
+      const url = getUrl(instanceId, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS)
+
+      const { data, status } = await apiService.post<CommandExecution[]>(url, {
+        commands,
+
+        type: commandExecutionType,
+        activeRunQueryMode,
+        resultsMode,
+      })
+
+      if (isStatusSuccessful(status)) {
+        const results: CommandExecutionUI[] = data.map(mapCommandExecutionToUI)
         return { success: true, data: results }
       }
 

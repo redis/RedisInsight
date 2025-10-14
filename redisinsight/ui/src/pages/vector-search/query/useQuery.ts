@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { chunk, reverse } from 'lodash'
+import { chunk } from 'lodash'
 import {
   Nullable,
   getCommandsForExecution,
@@ -13,12 +13,10 @@ import {
   RunQueryMode,
   ResultsMode,
   CommandExecutionUI,
-  CommandExecution,
   CommandExecutionType,
 } from 'uiSrc/slices/interfaces'
 import { PIPELINE_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import {
-  addCommands,
   clearCommands,
   findCommand,
   removeCommand,
@@ -27,7 +25,6 @@ import { useCommandsHistory } from 'uiSrc/services/commands-history/hooks/useCom
 import {
   createErrorResult,
   createGroupItem,
-  executeApiCall,
   generateCommandId,
   limitHistoryLength,
   prepareNewItems,
@@ -45,7 +42,7 @@ const useQuery = () => {
   const [processing, setProcessing] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
 
-  const { getCommandsHistory } = useCommandsHistory({
+  const { getCommandsHistory, addCommandsToHistory } = useCommandsHistory({
     commandExecutionType: CommandExecutionType.Search,
   })
 
@@ -69,7 +66,7 @@ const useQuery = () => {
 
   const handleApiSuccess = useCallback(
     async (
-      data: CommandExecution[],
+      data: CommandExecutionUI[],
       commandId: string,
       isNewCommand: boolean,
     ) => {
@@ -88,8 +85,6 @@ const useQuery = () => {
         })
         return sortCommandsByDate(updatedItems)
       })
-
-      await addCommands(reverse(data))
 
       if (isNewCommand) {
         scrollToElement(scrollDivRef.current, 'start')
@@ -159,11 +154,14 @@ const useQuery = () => {
         return limitHistoryLength(updatedItems)
       })
 
-      const data = await executeApiCall(
+      const data = await addCommandsToHistory(
         instanceId,
+        CommandExecutionType.Search,
         commands,
-        activeRunQueryMode,
-        resultsMode,
+        {
+          activeRunQueryMode,
+          resultsMode,
+        },
       )
 
       await handleApiSuccess(data, newCommandId, !commandId)
