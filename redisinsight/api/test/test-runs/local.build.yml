@@ -13,7 +13,7 @@ services:
       dockerfile: ./test/test-runs/test.Dockerfile
     tty: true
     volumes:
-      - ../../${COV_FOLDER}:/usr/src/app/coverage
+      - ${COV_FOLDER}:/usr/src/app/coverage
       - ${COV_FOLDER}:/root/.redisinsight-v2.0
     depends_on:
       - redis
