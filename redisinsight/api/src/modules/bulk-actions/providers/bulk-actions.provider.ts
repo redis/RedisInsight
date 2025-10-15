@@ -79,6 +79,7 @@ export class BulkActionsProvider {
     // eslint-disable-next-line sonarjs/no-small-switch
     switch (dto.type) {
       case BulkActionType.Delete:
+      case BulkActionType.Unlink:
         return DeleteBulkActionSimpleRunner;
       default:
         throw new BadRequestException(

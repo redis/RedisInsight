@@ -96,7 +96,7 @@ const BulkActionsConfig = () => {
         id,
         databaseId: instanceId,
         db: db || 0,
-        type: BulkActionsType.Delete,
+        type: BulkActionsType.Unlink,
         filter: {
           type: filter,
           match: search || '*',

@@ -91,6 +91,16 @@ describe('BulkActionsProvider', () => {
 
       expect(service['bulkActions'].size).toEqual(2);
     });
+    it('should support unlink type', async () => {
+      const bulkAction = await service.create(
+        mockSessionMetadata,
+        { ...mockCreateBulkActionDto, type: BulkActionType.Unlink },
+        mockSocket1,
+      );
+
+      expect(bulkAction).toBeInstanceOf(BulkAction);
+      expect(service['bulkActions'].size).toEqual(1);
+    });
     it('should fail when unsupported runner class', async () => {
       try {
         await service.create(
