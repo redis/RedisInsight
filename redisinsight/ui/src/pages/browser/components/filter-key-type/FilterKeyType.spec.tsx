@@ -17,6 +17,7 @@ import { FeatureFlags, KeyTypes } from 'uiSrc/constants'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
 import FilterKeyType from './FilterKeyType'
+import { resetBrowserTree } from 'uiSrc/slices/app/context'
 
 let store: typeof mockedStore
 
@@ -67,7 +68,7 @@ describe('FilterKeyType', () => {
     await userEvent.click(screen.getByTestId(filterSelectId))
     await userEvent.click(await findByText('Hash'))
 
-    const expectedActions = [setFilter(KeyTypes.Hash), loadKeys()]
+    const expectedActions = [setFilter(KeyTypes.Hash), resetBrowserTree(), loadKeys()]
     expect(clearStoreActions(store.getActions())).toEqual(
       clearStoreActions(expectedActions),
     )

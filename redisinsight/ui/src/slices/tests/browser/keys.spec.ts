@@ -26,10 +26,7 @@ import {
 } from 'uiSrc/slices/app/notifications'
 import successMessages from 'uiSrc/components/notifications/success-messages'
 import { SearchHistoryItem, SearchMode } from 'uiSrc/slices/interfaces/keys'
-import {
-  resetBrowserTree,
-  setBrowserSelectedKey,
-} from 'uiSrc/slices/app/context'
+import { setBrowserSelectedKey } from 'uiSrc/slices/app/context'
 import { MOCK_TIMESTAMP } from 'uiSrc/mocks/data/dateNow'
 import {
   setEditorType,
@@ -1525,7 +1522,6 @@ describe('keys slice', () => {
         const expectedActions = [
           addKey(),
           addKeySuccess(),
-          resetBrowserTree(),
           updateKeyList({ keyName: data.keyName, keyType: 'hash' }),
           addMessageNotification(successMessages.ADDED_NEW_KEY(data.keyName)),
         ]
@@ -1551,7 +1547,6 @@ describe('keys slice', () => {
         const expectedActions = [
           addKey(),
           addKeySuccess(),
-          resetBrowserTree(),
           updateKeyList({ keyName: data.keyName, keyType: 'zset' }),
           addMessageNotification(successMessages.ADDED_NEW_KEY(data.keyName)),
         ]
@@ -1577,7 +1572,6 @@ describe('keys slice', () => {
         const expectedActions = [
           addKey(),
           addKeySuccess(),
-          resetBrowserTree(),
           updateKeyList({ keyName: data.keyName, keyType: 'set' }),
           addMessageNotification(successMessages.ADDED_NEW_KEY(data.keyName)),
         ]
@@ -1603,7 +1597,6 @@ describe('keys slice', () => {
         const expectedActions = [
           addKey(),
           addKeySuccess(),
-          resetBrowserTree(),
           updateKeyList({ keyName: data.keyName, keyType: 'string' }),
           addMessageNotification(successMessages.ADDED_NEW_KEY(data.keyName)),
         ]
@@ -1630,7 +1623,6 @@ describe('keys slice', () => {
         const expectedActions = [
           addKey(),
           addKeySuccess(),
-          resetBrowserTree(),
           updateKeyList({ keyName: data.keyName, keyType: 'list' }),
           addMessageNotification(successMessages.ADDED_NEW_KEY(data.keyName)),
         ]
@@ -1656,7 +1648,6 @@ describe('keys slice', () => {
         const expectedActions = [
           addKey(),
           addKeySuccess(),
-          resetBrowserTree(),
           updateKeyList({ keyName: data.keyName, keyType: 'ReJSON-RL' }),
           addMessageNotification(successMessages.ADDED_NEW_KEY(data.keyName)),
         ]
@@ -1973,7 +1964,6 @@ describe('keys slice', () => {
 
         // Assert
         const expectedActions = [
-          resetBrowserTree(),
           updateKeyList({ keyName: 'key', keyType: 'hash' }),
         ]
         expect(store.getActions()).toEqual(expectedActions)

@@ -17,14 +17,14 @@ import {
   setBrowserSelectedKey,
 } from 'uiSrc/slices/app/context'
 import BrowserPage from './BrowserPage'
-import KeyList, { Props as KeyListProps } from './components/key-list/KeyList'
+import KeyList, { Props as KeyListProps } from './components/key-tree/KeyTree'
 import { Props as KeyDetailsWrapperProps } from './modules/key-details/KeyDetails'
 import { KeyDetails } from './modules'
 import AddKey, { Props as AddKeyProps } from './components/add-key/AddKey'
 import BrowserSearchPanel from './components/browser-search-panel'
 import { Props as KeysHeaderProps } from './components/keys-header/KeysHeader'
 
-jest.mock('./components/key-list/KeyList', () => ({
+jest.mock('./components/key-tree/KeyTree', () => ({
   __esModule: true,
   namedExport: jest.fn(),
   default: jest.fn(),
@@ -138,6 +138,9 @@ describe('BrowserPage', () => {
 
   it('should call loadMoreItems without nextCursor', () => {
     render(<BrowserPage />)
+    // select Browser/List view
+    fireEvent.click(screen.getByTestId('view-type-list-btn'))
+
     const afterRenderActions = [...store.getActions()]
 
     fireEvent.click(screen.getByTestId('loadMoreItems-btn'))

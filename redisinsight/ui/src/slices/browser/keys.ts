@@ -432,7 +432,7 @@ const keysSlice = createSlice({
         ...initialState,
         viewType:
           localStorageService?.get(BrowserStorageItem.browserViewType) ??
-          KeyViewType.Browser,
+          KeyViewType.Tree,
         searchMode:
           localStorageService?.get(BrowserStorageItem.browserSearchMode) ??
           SearchMode.Pattern,
