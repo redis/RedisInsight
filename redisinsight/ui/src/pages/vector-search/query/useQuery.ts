@@ -21,7 +21,7 @@ import {
   findCommand,
   removeCommand,
 } from 'uiSrc/services/workbenchStorage'
-import { useCommandsHistory } from 'uiSrc/services/commands-history/hooks/useCommandsHistory'
+import { CommandsHistoryService } from 'uiSrc/services/commands-history/commandsHistoryService'
 import {
   createErrorResult,
   createGroupItem,
@@ -42,9 +42,9 @@ const useQuery = () => {
   const [processing, setProcessing] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
 
-  const { getCommandsHistory, addCommandsToHistory } = useCommandsHistory({
-    commandExecutionType: CommandExecutionType.Search,
-  })
+  const commandsHistoryService = useRef(
+    new CommandsHistoryService(CommandExecutionType.Search),
+  ).current
 
   const resultsMode = ResultsMode.Default
   const activeRunQueryMode = RunQueryMode.ASCII
@@ -52,7 +52,8 @@ const useQuery = () => {
   useEffect(() => {
     const loadHistory = async () => {
       try {
-        const historyData = await getCommandsHistory(instanceId)
+        const historyData =
+          await commandsHistoryService.getCommandsHistory(instanceId)
         setItems(historyData)
       } catch (error) {
         // Silently handle error
@@ -154,9 +155,8 @@ const useQuery = () => {
         return limitHistoryLength(updatedItems)
       })
 
-      const data = await addCommandsToHistory(
+      const data = await commandsHistoryService.addCommandsToHistory(
         instanceId,
-        CommandExecutionType.Search,
         commands,
         {
           activeRunQueryMode,

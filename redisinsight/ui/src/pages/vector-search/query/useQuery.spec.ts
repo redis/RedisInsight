@@ -4,7 +4,6 @@ import { act, renderHook, waitFor } from 'uiSrc/utils/test-utils'
 import * as utils from './utils'
 import * as storage from 'uiSrc/services/workbenchStorage'
 import * as sharedUtils from 'uiSrc/utils'
-import { useCommandsHistory } from 'uiSrc/services/commands-history/hooks/useCommandsHistory'
 import { commandExecutionUIFactory } from 'uiSrc/mocks/factories/workbench/commandExectution.factory'
 
 import { useQuery } from './useQuery'
@@ -40,9 +39,15 @@ jest.mock('uiSrc/services/workbenchStorage', () => ({
   removeCommand: jest.fn(async () => {}),
 }))
 
-// Mock the useCommandsHistory hook
-jest.mock('uiSrc/services/commands-history/hooks/useCommandsHistory', () => ({
-  useCommandsHistory: jest.fn(),
+// Mock the CommandsHistoryService class
+const mockGetCommandsHistory = jest.fn()
+const mockAddCommandsToHistory = jest.fn()
+
+jest.mock('uiSrc/services/commands-history/commandsHistoryService', () => ({
+  CommandsHistoryService: jest.fn().mockImplementation(() => ({
+    getCommandsHistory: mockGetCommandsHistory,
+    addCommandsToHistory: mockAddCommandsToHistory,
+  })),
 }))
 
 // Mocks for shared utils used by the hook
@@ -57,25 +62,18 @@ jest.mock('uiSrc/utils', () => ({
 const mockedUtils = jest.mocked(utils)
 const mockedStorage = jest.mocked(storage)
 const mockedSharedUtils = jest.mocked(sharedUtils)
-const mockedUseCommandsHistory = jest.mocked(useCommandsHistory)
-
 describe('useQuery hook', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    // Mock the useCommandsHistory hook to return a mock function
-    mockedUseCommandsHistory.mockReturnValue({
-      getCommandsHistory: jest.fn().mockResolvedValue([]),
-      addCommandsToHistory: jest.fn().mockResolvedValue([]),
-    })
+    // Reset the mock functions
+    mockGetCommandsHistory.mockResolvedValue([])
+    mockAddCommandsToHistory.mockResolvedValue([])
   })
 
   it('loads history on mount (success - returns data)', async () => {
     const historyItems = [commandExecutionUIFactory.build()]
-    const mockGetCommandsHistory = jest.fn().mockResolvedValue(historyItems)
-    mockedUseCommandsHistory.mockReturnValue({
-      getCommandsHistory: mockGetCommandsHistory,
-      addCommandsToHistory: jest.fn(),
-    })
+    mockGetCommandsHistory.mockResolvedValue(historyItems)
+    mockAddCommandsToHistory.mockResolvedValue([])
 
     const { result } = renderHook(() =>
       useQuery(),
@@ -90,10 +88,8 @@ describe('useQuery hook', () => {
     const mockGetCommandsHistory = jest
       .fn()
       .mockRejectedValueOnce(new Error('error'))
-    mockedUseCommandsHistory.mockReturnValue({
-      getCommandsHistory: mockGetCommandsHistory,
-      addCommandsToHistory: jest.fn(),
-    })
+    mockGetCommandsHistory.mockImplementation(mockGetCommandsHistory)
+    mockAddCommandsToHistory.mockResolvedValue([])
 
     const { result } = renderHook(() =>
       useQuery(),
@@ -109,10 +105,8 @@ describe('useQuery hook', () => {
     const apiData = [{ id: 'cmd-1230', result: 'PONG' }] as any
 
     // Mock empty history
-    mockedUseCommandsHistory.mockReturnValue({
-      getCommandsHistory: jest.fn().mockResolvedValue([]),
-      addCommandsToHistory: jest.fn().mockResolvedValue(apiData),
-    })
+    mockGetCommandsHistory.mockResolvedValue([])
+    mockAddCommandsToHistory.mockResolvedValue(apiData)
 
     // Prepare new UI items for the command to execute
     mockedSharedUtils.getCommandsForExecution.mockReturnValueOnce(['PING'])
@@ -153,12 +147,8 @@ describe('useQuery hook', () => {
 
   it('onSubmit handles API error and sets error result', async () => {
     // Mock empty history
-    mockedUseCommandsHistory.mockReturnValue({
-      getCommandsHistory: jest.fn().mockResolvedValue([]),
-      addCommandsToHistory: jest
-        .fn()
-        .mockRejectedValue(new Error('api failed')),
-    })
+    mockGetCommandsHistory.mockResolvedValue([])
+    mockAddCommandsToHistory.mockRejectedValue(new Error('api failed'))
     mockedSharedUtils.getCommandsForExecution.mockReturnValueOnce(['PING'])
     mockedUtils.prepareNewItems.mockImplementationOnce(
       (cmds: string[], id: string) =>
@@ -197,10 +187,8 @@ describe('useQuery hook', () => {
         id: 'to-delete',
       }),
     ]
-    mockedUseCommandsHistory.mockReturnValue({
-      getCommandsHistory: jest.fn().mockResolvedValue(historyItems),
-      addCommandsToHistory: jest.fn(),
-    })
+    mockGetCommandsHistory.mockResolvedValue(historyItems)
+    mockAddCommandsToHistory.mockResolvedValue([])
     const { result } = renderHook(() =>
       useQuery(),
     ) as unknown as UseQueryHookResult
@@ -219,10 +207,8 @@ describe('useQuery hook', () => {
 
   it('onAllQueriesDelete clears all items and toggles clearing flag', async () => {
     const historyItems = commandExecutionUIFactory.buildList(3)
-    mockedUseCommandsHistory.mockReturnValue({
-      getCommandsHistory: jest.fn().mockResolvedValue(historyItems),
-      addCommandsToHistory: jest.fn(),
-    })
+    mockGetCommandsHistory.mockResolvedValue(historyItems)
+    mockAddCommandsToHistory.mockResolvedValue([])
     const { result } = renderHook(() =>
       useQuery(),
     ) as unknown as UseQueryHookResult
@@ -244,12 +230,11 @@ describe('useQuery hook', () => {
       const historyItems = [
         commandExecutionUIFactory.build({
           id: 'item-1',
+          isOpen: false,
         }),
       ]
-      mockedUseCommandsHistory.mockReturnValue({
-        getCommandsHistory: jest.fn().mockResolvedValue(historyItems),
-        addCommandsToHistory: jest.fn(),
-      })
+      mockGetCommandsHistory.mockResolvedValue(historyItems)
+      mockAddCommandsToHistory.mockResolvedValue([])
       mockedStorage.findCommand.mockResolvedValueOnce({
         result: 'data',
         error: '',
@@ -282,10 +267,8 @@ describe('useQuery hook', () => {
           error: '',
         }),
       ]
-      mockedUseCommandsHistory.mockReturnValue({
-        getCommandsHistory: jest.fn().mockResolvedValue(historyItems),
-        addCommandsToHistory: jest.fn(),
-      })
+      mockGetCommandsHistory.mockResolvedValue(historyItems)
+      mockAddCommandsToHistory.mockResolvedValue([])
       mockedStorage.findCommand.mockResolvedValueOnce(null)
 
       const { result } = renderHook(() =>
@@ -312,10 +295,8 @@ describe('useQuery hook', () => {
           error: '',
         }),
       ]
-      mockedUseCommandsHistory.mockReturnValue({
-        getCommandsHistory: jest.fn().mockResolvedValue(historyItems),
-        addCommandsToHistory: jest.fn(),
-      })
+      mockGetCommandsHistory.mockResolvedValue(historyItems)
+      mockAddCommandsToHistory.mockResolvedValue([])
       mockedStorage.findCommand.mockRejectedValueOnce(new Error('load failed'))
 
       const { result } = renderHook(() =>
