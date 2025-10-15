@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react'
+import { faker } from '@faker-js/faker'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-
-import Notifications from './Notifications'
 import { useDispatch } from 'react-redux'
+import { action } from 'storybook/actions'
+
 import {
   addErrorNotification,
   addInfiniteNotification,
@@ -11,13 +12,13 @@ import {
   resetMessages,
 } from 'uiSrc/slices/app/notifications'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { faker } from '@faker-js/faker'
 import { Text } from 'uiSrc/components/base/text'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { INFINITE_MESSAGES } from 'uiSrc/components/notifications/components'
-import { fn } from 'storybook/test'
 import { CloudJobName, CloudJobStep } from 'uiSrc/electron/constants'
 import { OAuthProvider } from 'uiSrc/components/oauth/oauth-select-plan/constants'
+
+import Notifications from './Notifications'
 
 const meta = {
   component: Notifications,
@@ -181,7 +182,7 @@ const InfiniteNotifications = () => {
                     provider: OAuthProvider.AWS,
                     region: 'us-east-1',
                   },
-                  () => fn(),
+                  action('create aws success'),
                   CloudJobName.CreateFreeDatabase,
                 ),
               ),
@@ -200,7 +201,7 @@ const InfiniteNotifications = () => {
                     provider: OAuthProvider.Google,
                     region: 'us-central1',
                   },
-                  () => fn(),
+                  action('create gcp success'),
                   CloudJobName.CreateFreeSubscriptionAndDatabase,
                 ),
               ),
@@ -215,8 +216,8 @@ const InfiniteNotifications = () => {
             dispatch(
               addInfiniteNotification(
                 INFINITE_MESSAGES.DATABASE_EXISTS(
-                  () => fn(),
-                  () => fn(),
+                  action('db exists success'),
+                  action('db exists close'),
                 ),
               ),
             )
@@ -229,7 +230,9 @@ const InfiniteNotifications = () => {
           onClick={() => {
             dispatch(
               addInfiniteNotification(
-                INFINITE_MESSAGES.DATABASE_IMPORT_FORBIDDEN(() => fn()),
+                INFINITE_MESSAGES.DATABASE_IMPORT_FORBIDDEN(
+                  action('db import forbidden close'),
+                ),
               ),
             )
           }}
@@ -242,8 +245,8 @@ const InfiniteNotifications = () => {
             dispatch(
               addInfiniteNotification(
                 INFINITE_MESSAGES.SUBSCRIPTION_EXISTS(
-                  () => fn(),
-                  () => fn(),
+                  action('subscription exists success'),
+                  action('subscription exists close'),
                 ),
               ),
             )
@@ -268,7 +271,10 @@ const InfiniteNotifications = () => {
           onClick={() => {
             dispatch(
               addInfiniteNotification(
-                INFINITE_MESSAGES.APP_UPDATE_AVAILABLE('2.60.0', () => fn()),
+                INFINITE_MESSAGES.APP_UPDATE_AVAILABLE(
+                  '2.60.0',
+                  action('app update available success'),
+                ),
               ),
             )
           }}
