@@ -75,6 +75,9 @@ describe('CommandsHistoryService', () => {
         success: true,
         data: [],
       }),
+      deleteCommandFromHistory: jest.fn().mockResolvedValue({
+        success: true,
+      }),
     }))
 
     // Create a new instance for each test
@@ -93,6 +96,7 @@ describe('CommandsHistoryService', () => {
       mockedCommandsHistoryIndexedDB.mockImplementation(() => ({
         getCommandsHistory: mockGetCommandsHistory,
         addCommandsToHistory: jest.fn(),
+        deleteCommandFromHistory: jest.fn(),
       }))
 
       // Create a new service instance with the mocked database
@@ -127,6 +131,7 @@ describe('CommandsHistoryService', () => {
       mockedCommandsHistorySQLite.mockImplementation(() => ({
         getCommandsHistory: mockGetCommandsHistory,
         addCommandsToHistory: jest.fn(),
+        deleteCommandFromHistory: jest.fn(),
       }))
 
       // Create a new service instance with the updated store state
@@ -147,6 +152,7 @@ describe('CommandsHistoryService', () => {
       mockedCommandsHistoryIndexedDB.mockImplementation(() => ({
         getCommandsHistory: mockGetCommandsHistory,
         addCommandsToHistory: jest.fn(),
+        deleteCommandFromHistory: jest.fn(),
       }))
 
       // Create a new service instance with the mocked database
@@ -176,6 +182,7 @@ describe('CommandsHistoryService', () => {
       mockedCommandsHistoryIndexedDB.mockImplementation(() => ({
         getCommandsHistory: jest.fn(),
         addCommandsToHistory: mockAddCommandsToHistory,
+        deleteCommandFromHistory: jest.fn(),
       }))
 
       // Create a new service instance with the mocked database
@@ -201,6 +208,7 @@ describe('CommandsHistoryService', () => {
       mockedCommandsHistoryIndexedDB.mockImplementation(() => ({
         getCommandsHistory: jest.fn(),
         addCommandsToHistory: mockAddCommandsToHistory,
+        deleteCommandFromHistory: jest.fn(),
       }))
 
       // Create a new service instance with the mocked database
@@ -226,6 +234,7 @@ describe('CommandsHistoryService', () => {
       mockedCommandsHistoryIndexedDB.mockImplementation(() => ({
         getCommandsHistory: jest.fn(),
         addCommandsToHistory: mockAddCommandsToHistory,
+        deleteCommandFromHistory: jest.fn(),
       }))
 
       const result = await commandsHistoryService.addCommandsToHistory(
@@ -235,6 +244,138 @@ describe('CommandsHistoryService', () => {
       )
 
       expect(result).toEqual([])
+    })
+  })
+
+  describe('deleteCommandFromHistory', () => {
+    const mockCommandId = faker.string.uuid()
+
+    it('should delete command from history successfully', async () => {
+      const mockDeleteCommandFromHistory = jest.fn().mockResolvedValue({
+        success: true,
+      })
+
+      mockedCommandsHistoryIndexedDB.mockImplementation(() => ({
+        getCommandsHistory: jest.fn(),
+        addCommandsToHistory: jest.fn(),
+        deleteCommandFromHistory: mockDeleteCommandFromHistory,
+      }))
+
+      // Create a new service instance with the mocked database
+      const deleteCommandService = new CommandsHistoryService(
+        mockCommandExecutionType,
+      )
+      await deleteCommandService.deleteCommandFromHistory(
+        mockInstanceId,
+        mockCommandId,
+      )
+
+      expect(mockDeleteCommandFromHistory).toHaveBeenCalledWith(
+        mockInstanceId,
+        mockCommandId,
+      )
+      expect(mockedStore.dispatch).not.toHaveBeenCalled()
+    })
+
+    it('should dispatch error notification when database returns error', async () => {
+      const mockError = { message: 'Database error' } as any
+      const mockDeleteCommandFromHistory = jest.fn().mockResolvedValue({
+        success: false,
+        error: mockError,
+      })
+
+      mockedCommandsHistoryIndexedDB.mockImplementation(() => ({
+        getCommandsHistory: jest.fn(),
+        addCommandsToHistory: jest.fn(),
+        deleteCommandFromHistory: mockDeleteCommandFromHistory,
+      }))
+
+      // Create a new service instance with the mocked database
+      const errorService = new CommandsHistoryService(mockCommandExecutionType)
+      await errorService.deleteCommandFromHistory(mockInstanceId, mockCommandId)
+
+      expect(mockedStore.dispatch).toHaveBeenCalledWith(
+        addErrorNotification(mockError),
+      )
+    })
+
+    it('should work with SQLite database when envDependent feature is enabled', async () => {
+      // Update store state for this test using initial state
+      mockedStore.getState.mockReturnValue({
+        app: {
+          features: merge({}, appFeaturesInitialState, {
+            featureFlags: {
+              features: {
+                [FeatureFlags.envDependent]: { flag: true },
+              },
+            },
+          }),
+        },
+      } as RootState)
+
+      const mockDeleteCommandFromHistory = jest.fn().mockResolvedValue({
+        success: true,
+      })
+
+      mockedCommandsHistorySQLite.mockImplementation(() => ({
+        getCommandsHistory: jest.fn(),
+        addCommandsToHistory: jest.fn(),
+        deleteCommandFromHistory: mockDeleteCommandFromHistory,
+      }))
+
+      // Create a new service instance with the updated store state
+      const sqliteService = new CommandsHistoryService(mockCommandExecutionType)
+      await sqliteService.deleteCommandFromHistory(
+        mockInstanceId,
+        mockCommandId,
+      )
+
+      expect(mockDeleteCommandFromHistory).toHaveBeenCalledWith(
+        mockInstanceId,
+        mockCommandId,
+      )
+      expect(mockedCommandsHistorySQLite).toHaveBeenCalled()
+    })
+
+    it('should handle different command IDs', async () => {
+      const commandId1 = faker.string.uuid()
+      const commandId2 = faker.string.uuid()
+
+      const mockDeleteCommandFromHistory = jest.fn().mockResolvedValue({
+        success: true,
+      })
+
+      mockedCommandsHistoryIndexedDB.mockImplementation(() => ({
+        getCommandsHistory: jest.fn(),
+        addCommandsToHistory: jest.fn(),
+        deleteCommandFromHistory: mockDeleteCommandFromHistory,
+      }))
+
+      // Create a new service instance with the mocked database
+      const deleteCommandService = new CommandsHistoryService(
+        mockCommandExecutionType,
+      )
+
+      await deleteCommandService.deleteCommandFromHistory(
+        mockInstanceId,
+        commandId1,
+      )
+      await deleteCommandService.deleteCommandFromHistory(
+        mockInstanceId,
+        commandId2,
+      )
+
+      expect(mockDeleteCommandFromHistory).toHaveBeenCalledTimes(2)
+      expect(mockDeleteCommandFromHistory).toHaveBeenNthCalledWith(
+        1,
+        mockInstanceId,
+        commandId1,
+      )
+      expect(mockDeleteCommandFromHistory).toHaveBeenNthCalledWith(
+        2,
+        mockInstanceId,
+        commandId2,
+      )
     })
   })
 })

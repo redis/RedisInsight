@@ -426,4 +426,137 @@ describe('CommandHistorySQLite', () => {
       })
     })
   })
+
+  describe('deleteCommandFromHistory', () => {
+    it('should successfully delete command from history', async () => {
+      const commandId = faker.string.uuid()
+
+      // Override the MSW handler to return success status
+      mswServer.use(
+        rest.delete<CommandExecution>(
+          getMswURL(
+            getUrl(
+              instanceId,
+              ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS,
+              commandId,
+            ),
+          ),
+          async (_req, res, ctx) => res(ctx.status(200)),
+        ),
+      )
+
+      const result = await commandHistorySQLite.deleteCommandFromHistory(
+        instanceId,
+        commandId,
+      )
+
+      expect(result).toEqual({
+        success: true,
+      })
+    })
+
+    it('should handle unsuccessful status code 400', async () => {
+      const statusCode = 400
+      const commandId = faker.string.uuid()
+
+      // Override the MSW handler to return an error status
+      mswServer.use(
+        rest.delete<CommandExecution>(
+          getMswURL(
+            getUrl(
+              instanceId,
+              ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS,
+              commandId,
+            ),
+          ),
+          async (_req, res, ctx) => res(ctx.status(statusCode)),
+        ),
+      )
+
+      const result = await commandHistorySQLite.deleteCommandFromHistory(
+        instanceId,
+        commandId,
+      )
+
+      expect(result.success).toBe(false)
+      expect(result.error).toBeInstanceOf(Error)
+      expect(result.error?.message).toBe(
+        `Request failed with status code ${statusCode}`,
+      )
+    })
+
+    it('should handle network errors', async () => {
+      const mockError = 'Network Error'
+      const commandId = faker.string.uuid()
+
+      // Override the MSW handler to simulate a network error
+      mswServer.use(
+        rest.delete<CommandExecution>(
+          getMswURL(
+            getUrl(
+              instanceId,
+              ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS,
+              commandId,
+            ),
+          ),
+          async (_req, res) => res.networkError(mockError),
+        ),
+      )
+
+      const result = await commandHistorySQLite.deleteCommandFromHistory(
+        instanceId,
+        commandId,
+      )
+
+      expect(result.success).toBe(false)
+      expect(result.error.message).toBe(mockError)
+    })
+
+    it('should handle different instance IDs and command IDs', async () => {
+      const instanceId1 = 'instance-1'
+      const instanceId2 = 'instance-2'
+      const commandId1 = faker.string.uuid()
+      const commandId2 = faker.string.uuid()
+
+      // Override the MSW handler to return success for both requests
+      mswServer.use(
+        rest.delete<CommandExecution>(
+          getMswURL(
+            getUrl(
+              instanceId1,
+              ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS,
+              commandId1,
+            ),
+          ),
+          async (_req, res, ctx) => res(ctx.status(200)),
+        ),
+        rest.delete<CommandExecution>(
+          getMswURL(
+            getUrl(
+              instanceId2,
+              ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS,
+              commandId2,
+            ),
+          ),
+          async (_req, res, ctx) => res(ctx.status(200)),
+        ),
+      )
+
+      const result1 = await commandHistorySQLite.deleteCommandFromHistory(
+        instanceId1,
+        commandId1,
+      )
+      const result2 = await commandHistorySQLite.deleteCommandFromHistory(
+        instanceId2,
+        commandId2,
+      )
+
+      expect(result1).toEqual({
+        success: true,
+      })
+      expect(result2).toEqual({
+        success: true,
+      })
+    })
+  })
 })

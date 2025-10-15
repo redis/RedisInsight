@@ -42,11 +42,13 @@ jest.mock('uiSrc/services/workbenchStorage', () => ({
 // Mock the CommandsHistoryService class
 const mockGetCommandsHistory = jest.fn()
 const mockAddCommandsToHistory = jest.fn()
+const mockDeleteCommandFromHistory = jest.fn()
 
 jest.mock('uiSrc/services/commands-history/commandsHistoryService', () => ({
   CommandsHistoryService: jest.fn().mockImplementation(() => ({
     getCommandsHistory: mockGetCommandsHistory,
     addCommandsToHistory: mockAddCommandsToHistory,
+    deleteCommandFromHistory: mockDeleteCommandFromHistory,
   })),
 }))
 
@@ -68,6 +70,7 @@ describe('useQuery hook', () => {
     // Reset the mock functions
     mockGetCommandsHistory.mockResolvedValue([])
     mockAddCommandsToHistory.mockResolvedValue([])
+    mockDeleteCommandFromHistory.mockResolvedValue(undefined)
   })
 
   it('loads history on mount (success - returns data)', async () => {
@@ -180,7 +183,7 @@ describe('useQuery hook', () => {
     expect(result.current.processing).toBe(false)
   })
 
-  it('onQueryDelete removes an item and calls removeCommand', async () => {
+  it('onQueryDelete removes an item and calls deleteCommandFromHistory', async () => {
     // preload history with one item
     const historyItems = [
       commandExecutionUIFactory.build({
@@ -189,6 +192,8 @@ describe('useQuery hook', () => {
     ]
     mockGetCommandsHistory.mockResolvedValue(historyItems)
     mockAddCommandsToHistory.mockResolvedValue([])
+    mockDeleteCommandFromHistory.mockResolvedValue(undefined)
+
     const { result } = renderHook(() =>
       useQuery(),
     ) as unknown as UseQueryHookResult
@@ -198,7 +203,7 @@ describe('useQuery hook', () => {
       await result.current.onQueryDelete('to-delete')
     })
 
-    expect(mockedStorage.removeCommand).toHaveBeenCalledWith(
+    expect(mockDeleteCommandFromHistory).toHaveBeenCalledWith(
       'instanceId',
       'to-delete',
     )

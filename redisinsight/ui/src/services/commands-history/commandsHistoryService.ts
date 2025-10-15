@@ -71,6 +71,21 @@ export class CommandsHistoryService {
 
     return success && data ? data : []
   }
+
+  async deleteCommandFromHistory(
+    instanceId: string,
+    commandId: string,
+  ): Promise<void> {
+    const { error } =
+      await this.commandsHistoryDatabase.deleteCommandFromHistory(
+        instanceId,
+        commandId,
+      )
+
+    if (error) {
+      store.dispatch(addErrorNotification(error))
+    }
+  }
 }
 
 export default CommandsHistoryService

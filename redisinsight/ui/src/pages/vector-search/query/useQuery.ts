@@ -205,7 +205,10 @@ const useQuery = () => {
   const handleQueryDelete = useCallback(
     async (commandId: string) => {
       try {
-        await removeCommand(instanceId, commandId)
+        await commandsHistoryService.deleteCommandFromHistory(
+          instanceId,
+          commandId,
+        )
         setItems((prevItems) =>
           prevItems.filter((item) => item.id !== commandId),
         )

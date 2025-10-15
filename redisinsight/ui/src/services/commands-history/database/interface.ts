@@ -21,6 +21,11 @@ export interface CommandsHistoryDatabase {
       resultsMode: ResultsMode
     },
   ): Promise<CommandHistoryResult>
+
+  deleteCommandFromHistory(
+    instanceId: string,
+    commandId: string,
+  ): Promise<CommandHistoryResult>
 }
 
 export interface CommandHistoryResult {
