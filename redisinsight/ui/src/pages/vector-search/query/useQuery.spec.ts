@@ -43,12 +43,14 @@ jest.mock('uiSrc/services/workbenchStorage', () => ({
 const mockGetCommandsHistory = jest.fn()
 const mockAddCommandsToHistory = jest.fn()
 const mockDeleteCommandFromHistory = jest.fn()
+const mockClearCommandsHistory = jest.fn()
 
 jest.mock('uiSrc/services/commands-history/commandsHistoryService', () => ({
   CommandsHistoryService: jest.fn().mockImplementation(() => ({
     getCommandsHistory: mockGetCommandsHistory,
     addCommandsToHistory: mockAddCommandsToHistory,
     deleteCommandFromHistory: mockDeleteCommandFromHistory,
+    clearCommandsHistory: mockClearCommandsHistory,
   })),
 }))
 
@@ -71,6 +73,7 @@ describe('useQuery hook', () => {
     mockGetCommandsHistory.mockResolvedValue([])
     mockAddCommandsToHistory.mockResolvedValue([])
     mockDeleteCommandFromHistory.mockResolvedValue(undefined)
+    mockClearCommandsHistory.mockResolvedValue(undefined)
   })
 
   it('loads history on mount (success - returns data)', async () => {
@@ -214,6 +217,8 @@ describe('useQuery hook', () => {
     const historyItems = commandExecutionUIFactory.buildList(3)
     mockGetCommandsHistory.mockResolvedValue(historyItems)
     mockAddCommandsToHistory.mockResolvedValue([])
+    mockClearCommandsHistory.mockResolvedValue(undefined)
+
     const { result } = renderHook(() =>
       useQuery(),
     ) as unknown as UseQueryHookResult
@@ -225,7 +230,7 @@ describe('useQuery hook', () => {
 
     // clearing should have been toggled to true at least once during the call
     expect(result.current.clearing).toBe(false)
-    expect(mockedStorage.clearCommands).toHaveBeenCalledWith('instanceId')
+    expect(mockClearCommandsHistory).toHaveBeenCalledWith('instanceId')
     expect(result.current.items).toEqual([])
     expect(result.current.clearing).toBe(false)
   })

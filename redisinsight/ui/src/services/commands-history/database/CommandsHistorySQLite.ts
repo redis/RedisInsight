@@ -112,4 +112,31 @@ export class CommandsHistorySQLite implements CommandsHistoryDatabase {
       }
     }
   }
+
+  async clearCommandsHistory(
+    instanceId: string,
+    commandExecutionType: CommandExecutionType,
+  ): Promise<CommandHistoryResult> {
+    try {
+      const url = getUrl(instanceId, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS)
+
+      const { status } = await apiService.delete<CommandExecution>(url, {
+        data: { type: commandExecutionType },
+      })
+
+      if (isStatusSuccessful(status)) {
+        return { success: true }
+      }
+
+      return {
+        success: false,
+        error: new Error(`Request failed with status ${status}`),
+      }
+    } catch (exception) {
+      return {
+        success: false,
+        error: exception as AxiosError,
+      }
+    }
+  }
 }

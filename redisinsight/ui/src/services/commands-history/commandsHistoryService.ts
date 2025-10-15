@@ -86,6 +86,17 @@ export class CommandsHistoryService {
       store.dispatch(addErrorNotification(error))
     }
   }
+
+  async clearCommandsHistory(instanceId: string): Promise<void> {
+    const { error } = await this.commandsHistoryDatabase.clearCommandsHistory(
+      instanceId,
+      this.commandExecutionType,
+    )
+
+    if (error) {
+      store.dispatch(addErrorNotification(error))
+    }
+  }
 }
 
 export default CommandsHistoryService

@@ -61,6 +61,9 @@ describe('CommandsHistoryService', () => {
     deleteCommandFromHistory: jest.fn().mockResolvedValue({
       success: true,
     }),
+    clearCommandsHistory: jest.fn().mockResolvedValue({
+      success: true,
+    }),
     ...overrides,
   })
 
@@ -381,6 +384,124 @@ describe('CommandsHistoryService', () => {
         2,
         mockInstanceId,
         commandId2,
+      )
+    })
+  })
+
+  describe('clearCommandsHistory', () => {
+    it('should clear command history successfully', async () => {
+      const mockClearCommandsHistory = jest.fn().mockResolvedValue({
+        success: true,
+      })
+
+      mockedCommandsHistoryIndexedDB.mockImplementation(() =>
+        createDefaultDatabaseMock({
+          clearCommandsHistory: mockClearCommandsHistory,
+        }),
+      )
+
+      // Create a new service instance with the mocked database
+      const clearCommandsService = new CommandsHistoryService(
+        mockCommandExecutionType,
+      )
+      await clearCommandsService.clearCommandsHistory(mockInstanceId)
+
+      expect(mockClearCommandsHistory).toHaveBeenCalledWith(
+        mockInstanceId,
+        mockCommandExecutionType,
+      )
+      expect(mockedStore.dispatch).not.toHaveBeenCalled()
+    })
+
+    it('should dispatch error notification when database returns error', async () => {
+      const mockError = { message: 'Database error' } as any
+      const mockClearCommandsHistory = jest.fn().mockResolvedValue({
+        success: false,
+        error: mockError,
+      })
+
+      mockedCommandsHistoryIndexedDB.mockImplementation(() =>
+        createDefaultDatabaseMock({
+          clearCommandsHistory: mockClearCommandsHistory,
+        }),
+      )
+
+      // Create a new service instance with the mocked database
+      const errorService = new CommandsHistoryService(mockCommandExecutionType)
+      await errorService.clearCommandsHistory(mockInstanceId)
+
+      expect(mockedStore.dispatch).toHaveBeenCalledWith(
+        addErrorNotification(mockError),
+      )
+    })
+
+    it('should work with SQLite database when envDependent feature is enabled', async () => {
+      // Update store state for this test using initial state
+      mockedStore.getState.mockReturnValue({
+        app: {
+          features: merge({}, appFeaturesInitialState, {
+            featureFlags: {
+              features: {
+                [FeatureFlags.envDependent]: { flag: true },
+              },
+            },
+          }),
+        },
+      } as RootState)
+
+      const mockClearCommandsHistory = jest.fn().mockResolvedValue({
+        success: true,
+      })
+
+      mockedCommandsHistorySQLite.mockImplementation(() =>
+        createDefaultDatabaseMock({
+          clearCommandsHistory: mockClearCommandsHistory,
+        }),
+      )
+
+      // Create a new service instance with the updated store state
+      const sqliteService = new CommandsHistoryService(mockCommandExecutionType)
+      await sqliteService.clearCommandsHistory(mockInstanceId)
+
+      expect(mockClearCommandsHistory).toHaveBeenCalledWith(
+        mockInstanceId,
+        mockCommandExecutionType,
+      )
+      expect(mockedCommandsHistorySQLite).toHaveBeenCalled()
+    })
+
+    it('should handle different instance IDs', async () => {
+      const instanceId1 = 'instance-1'
+      const instanceId2 = 'instance-2'
+
+      const mockClearCommandsHistory = jest.fn().mockResolvedValue({
+        success: true,
+      })
+
+      mockedCommandsHistoryIndexedDB.mockImplementation(() =>
+        createDefaultDatabaseMock({
+          clearCommandsHistory: mockClearCommandsHistory,
+        }),
+      )
+
+      // Create a new service instance with the mocked database
+      const clearCommandsService = new CommandsHistoryService(
+        mockCommandExecutionType,
+      )
+
+      await clearCommandsService.clearCommandsHistory(instanceId1)
+      await clearCommandsService.clearCommandsHistory(instanceId2)
+
+      expect(mockClearCommandsHistory).toHaveBeenCalledTimes(2)
+      expect(mockClearCommandsHistory).toHaveBeenNthCalledWith(
+        1,
+        instanceId1,
+        mockCommandExecutionType,
+      )
+      expect(mockClearCommandsHistory).toHaveBeenNthCalledWith(
+        2,
+        instanceId2,
+        mockCommandExecutionType,
       )
     })
   })

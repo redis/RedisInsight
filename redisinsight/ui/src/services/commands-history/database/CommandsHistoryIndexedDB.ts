@@ -35,4 +35,13 @@ export class CommandsHistoryIndexedDB implements CommandsHistoryDatabase {
       success: true,
     })
   }
+
+  async clearCommandsHistory(
+    instanceId: string,
+  ): Promise<CommandHistoryResult> {
+    // TODO: Implementation for clearing command history from IndexedDB
+    return Promise.resolve({
+      success: true,
+    })
+  }
 }

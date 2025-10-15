@@ -26,6 +26,11 @@ export interface CommandsHistoryDatabase {
     instanceId: string,
     commandId: string,
   ): Promise<CommandHistoryResult>
+
+  clearCommandsHistory(
+    instanceId: string,
+    commandExecutionType: CommandExecutionType,
+  ): Promise<CommandHistoryResult>
 }
 
 export interface CommandHistoryResult {

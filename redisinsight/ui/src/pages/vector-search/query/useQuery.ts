@@ -222,7 +222,7 @@ const useQuery = () => {
   const handleAllQueriesDelete = useCallback(async () => {
     try {
       setClearing(true)
-      await clearCommands(instanceId)
+      await commandsHistoryService.clearCommandsHistory(instanceId)
       setItems([])
     } catch (error) {
       // Keep clearing state false on error
