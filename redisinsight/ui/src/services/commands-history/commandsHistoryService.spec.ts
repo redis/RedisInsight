@@ -48,6 +48,22 @@ describe('CommandsHistoryService', () => {
 
   const mockCommandHistoryData = commandExecutionUIFactory.buildList(3)
 
+  // Helper function to create default database mock
+  const createDefaultDatabaseMock = (overrides = {}) => ({
+    getCommandsHistory: jest.fn().mockResolvedValue({
+      success: true,
+      data: [],
+    }),
+    addCommandsToHistory: jest.fn().mockResolvedValue({
+      success: true,
+      data: [],
+    }),
+    deleteCommandFromHistory: jest.fn().mockResolvedValue({
+      success: true,
+    }),
+    ...overrides,
+  })
+
   beforeEach(() => {
     jest.clearAllMocks()
 
@@ -66,19 +82,9 @@ describe('CommandsHistoryService', () => {
     mockedStore.dispatch.mockClear()
 
     // Set up default database mock
-    mockedCommandsHistoryIndexedDB.mockImplementation(() => ({
-      getCommandsHistory: jest.fn().mockResolvedValue({
-        success: true,
-        data: [],
-      }),
-      addCommandsToHistory: jest.fn().mockResolvedValue({
-        success: true,
-        data: [],
-      }),
-      deleteCommandFromHistory: jest.fn().mockResolvedValue({
-        success: true,
-      }),
-    }))
+    mockedCommandsHistoryIndexedDB.mockImplementation(() =>
+      createDefaultDatabaseMock(),
+    )
 
     // Create a new instance for each test
     commandsHistoryService = new CommandsHistoryService(
@@ -93,11 +99,11 @@ describe('CommandsHistoryService', () => {
         data: mockCommandHistoryData,
       })
 
-      mockedCommandsHistoryIndexedDB.mockImplementation(() => ({
-        getCommandsHistory: mockGetCommandsHistory,
-        addCommandsToHistory: jest.fn(),
-        deleteCommandFromHistory: jest.fn(),
-      }))
+      mockedCommandsHistoryIndexedDB.mockImplementation(() =>
+        createDefaultDatabaseMock({
+          getCommandsHistory: mockGetCommandsHistory,
+        }),
+      )
 
       // Create a new service instance with the mocked database
       const indexedDBService = new CommandsHistoryService(
@@ -128,11 +134,11 @@ describe('CommandsHistoryService', () => {
         data: mockCommandHistoryData,
       })
 
-      mockedCommandsHistorySQLite.mockImplementation(() => ({
-        getCommandsHistory: mockGetCommandsHistory,
-        addCommandsToHistory: jest.fn(),
-        deleteCommandFromHistory: jest.fn(),
-      }))
+      mockedCommandsHistorySQLite.mockImplementation(() =>
+        createDefaultDatabaseMock({
+          getCommandsHistory: mockGetCommandsHistory,
+        }),
+      )
 
       // Create a new service instance with the updated store state
       const sqliteService = new CommandsHistoryService(mockCommandExecutionType)
@@ -149,11 +155,11 @@ describe('CommandsHistoryService', () => {
         error: mockError,
       })
 
-      mockedCommandsHistoryIndexedDB.mockImplementation(() => ({
-        getCommandsHistory: mockGetCommandsHistory,
-        addCommandsToHistory: jest.fn(),
-        deleteCommandFromHistory: jest.fn(),
-      }))
+      mockedCommandsHistoryIndexedDB.mockImplementation(() =>
+        createDefaultDatabaseMock({
+          getCommandsHistory: mockGetCommandsHistory,
+        }),
+      )
 
       // Create a new service instance with the mocked database
       const errorService = new CommandsHistoryService(mockCommandExecutionType)
@@ -179,11 +185,11 @@ describe('CommandsHistoryService', () => {
         data: mockCommandHistoryData,
       })
 
-      mockedCommandsHistoryIndexedDB.mockImplementation(() => ({
-        getCommandsHistory: jest.fn(),
-        addCommandsToHistory: mockAddCommandsToHistory,
-        deleteCommandFromHistory: jest.fn(),
-      }))
+      mockedCommandsHistoryIndexedDB.mockImplementation(() =>
+        createDefaultDatabaseMock({
+          addCommandsToHistory: mockAddCommandsToHistory,
+        }),
+      )
 
       // Create a new service instance with the mocked database
       const addCommandsService = new CommandsHistoryService(
@@ -205,11 +211,11 @@ describe('CommandsHistoryService', () => {
         error: mockError,
       })
 
-      mockedCommandsHistoryIndexedDB.mockImplementation(() => ({
-        getCommandsHistory: jest.fn(),
-        addCommandsToHistory: mockAddCommandsToHistory,
-        deleteCommandFromHistory: jest.fn(),
-      }))
+      mockedCommandsHistoryIndexedDB.mockImplementation(() =>
+        createDefaultDatabaseMock({
+          addCommandsToHistory: mockAddCommandsToHistory,
+        }),
+      )
 
       // Create a new service instance with the mocked database
       const errorService = new CommandsHistoryService(mockCommandExecutionType)
@@ -231,11 +237,11 @@ describe('CommandsHistoryService', () => {
         data: mockCommandHistoryData,
       })
 
-      mockedCommandsHistoryIndexedDB.mockImplementation(() => ({
-        getCommandsHistory: jest.fn(),
-        addCommandsToHistory: mockAddCommandsToHistory,
-        deleteCommandFromHistory: jest.fn(),
-      }))
+      mockedCommandsHistoryIndexedDB.mockImplementation(() =>
+        createDefaultDatabaseMock({
+          addCommandsToHistory: mockAddCommandsToHistory,
+        }),
+      )
 
       const result = await commandsHistoryService.addCommandsToHistory(
         mockInstanceId,
@@ -255,11 +261,11 @@ describe('CommandsHistoryService', () => {
         success: true,
       })
 
-      mockedCommandsHistoryIndexedDB.mockImplementation(() => ({
-        getCommandsHistory: jest.fn(),
-        addCommandsToHistory: jest.fn(),
-        deleteCommandFromHistory: mockDeleteCommandFromHistory,
-      }))
+      mockedCommandsHistoryIndexedDB.mockImplementation(() =>
+        createDefaultDatabaseMock({
+          deleteCommandFromHistory: mockDeleteCommandFromHistory,
+        }),
+      )
 
       // Create a new service instance with the mocked database
       const deleteCommandService = new CommandsHistoryService(
@@ -284,11 +290,11 @@ describe('CommandsHistoryService', () => {
         error: mockError,
       })
 
-      mockedCommandsHistoryIndexedDB.mockImplementation(() => ({
-        getCommandsHistory: jest.fn(),
-        addCommandsToHistory: jest.fn(),
-        deleteCommandFromHistory: mockDeleteCommandFromHistory,
-      }))
+      mockedCommandsHistoryIndexedDB.mockImplementation(() =>
+        createDefaultDatabaseMock({
+          deleteCommandFromHistory: mockDeleteCommandFromHistory,
+        }),
+      )
 
       // Create a new service instance with the mocked database
       const errorService = new CommandsHistoryService(mockCommandExecutionType)
@@ -317,11 +323,11 @@ describe('CommandsHistoryService', () => {
         success: true,
       })
 
-      mockedCommandsHistorySQLite.mockImplementation(() => ({
-        getCommandsHistory: jest.fn(),
-        addCommandsToHistory: jest.fn(),
-        deleteCommandFromHistory: mockDeleteCommandFromHistory,
-      }))
+      mockedCommandsHistorySQLite.mockImplementation(() =>
+        createDefaultDatabaseMock({
+          deleteCommandFromHistory: mockDeleteCommandFromHistory,
+        }),
+      )
 
       // Create a new service instance with the updated store state
       const sqliteService = new CommandsHistoryService(mockCommandExecutionType)
@@ -345,11 +351,11 @@ describe('CommandsHistoryService', () => {
         success: true,
       })
 
-      mockedCommandsHistoryIndexedDB.mockImplementation(() => ({
-        getCommandsHistory: jest.fn(),
-        addCommandsToHistory: jest.fn(),
-        deleteCommandFromHistory: mockDeleteCommandFromHistory,
-      }))
+      mockedCommandsHistoryIndexedDB.mockImplementation(() =>
+        createDefaultDatabaseMock({
+          deleteCommandFromHistory: mockDeleteCommandFromHistory,
+        }),
+      )
 
       // Create a new service instance with the mocked database
       const deleteCommandService = new CommandsHistoryService(
