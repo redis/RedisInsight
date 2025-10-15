@@ -89,7 +89,7 @@
     "nestjs-form-data": "~1.9.93",
     "node-version-compare": "^1.0.3",
     "quicktype-core": "^23.0.116",
-    "redis": "^4.6.10",
+    "redis": "^5.8.3",
     "redis-parser": "3.0.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.5.6",

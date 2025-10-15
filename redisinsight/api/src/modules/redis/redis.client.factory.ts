@@ -52,6 +52,8 @@ export abstract class RedisClientFactory {
   public getConnectionStrategy(
     strategy?: RedisClientLib,
   ): RedisConnectionStrategy {
+    return this.nodeRedisConnectionStrategy;
+
     switch (strategy || REDIS_CLIENTS_CONFIG.forceStrategy) {
       case RedisClientLib.NODE_REDIS:
         return this.nodeRedisConnectionStrategy;
