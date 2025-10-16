@@ -1,18 +1,10 @@
-import React, { useEffect } from 'react'
-import { faker } from '@faker-js/faker'
+import React from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useDispatch } from 'react-redux'
 import { action } from 'storybook/actions'
 
-import {
-  addErrorNotification,
-  addInfiniteNotification,
-  addMessageNotification,
-  resetErrors,
-  resetMessages,
-} from 'uiSrc/slices/app/notifications'
+import { addInfiniteNotification } from 'uiSrc/slices/app/notifications'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { Text } from 'uiSrc/components/base/text'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { INFINITE_MESSAGES } from 'uiSrc/components/notifications/components'
 import { CloudJobName, CloudJobStep } from 'uiSrc/electron/constants'
@@ -27,86 +19,6 @@ const meta = {
 export default meta
 
 type Story = StoryObj<typeof meta>
-
-const MessageNotifications = () => {
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    dispatch(resetMessages())
-  }, [])
-
-  return (
-    <>
-      <Notifications />
-      <Row gap="m">
-        <PrimaryButton
-          onClick={() => {
-            return dispatch(
-              addMessageNotification({
-                title: faker.word.words(3),
-                message: (
-                  <Text component="span">
-                    <Text variant="semiBold" component="span">
-                      {faker.lorem.sentence()}
-                    </Text>
-                  </Text>
-                ),
-              }),
-            )
-          }}
-          size="small"
-        >
-          Trigger Message
-        </PrimaryButton>
-        {/*<SecondaryButton*/}
-        {/*  onClick={() => {*/}
-        {/*    return dispatch(resetMessages())*/}
-        {/*  }}*/}
-        {/*  size="small"*/}
-        {/*>*/}
-        {/*  Reset Messages*/}
-        {/*</SecondaryButton>*/}
-      </Row>
-    </>
-  )
-}
-
-const ErrorNotifications = () => {
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    dispatch(resetErrors())
-  }, [])
-
-  return (
-    <>
-      <Notifications />
-      <Row gap="m">
-        <PrimaryButton
-          onClick={() => {
-            return dispatch(
-              addErrorNotification({
-                instanceId: faker.database.mongodbObjectId(),
-                response: {
-                  data: {
-                    title: faker.word.words(3),
-                    // @ts-ignore
-                    name: faker.word.words(3),
-                    additionalInfo: {},
-                    message: faker.lorem.sentence(),
-                  },
-                },
-              }),
-            )
-          }}
-          size="small"
-        >
-          Trigger Error
-        </PrimaryButton>
-      </Row>
-    </>
-  )
-}
 
 const InfiniteNotifications = () => {
   const dispatch = useDispatch()
@@ -297,14 +209,6 @@ const InfiniteNotifications = () => {
       </Row>
     </>
   )
-}
-
-export const Messages: Story = {
-  render: () => <MessageNotifications />,
-}
-
-export const Errors: Story = {
-  render: () => <ErrorNotifications />,
 }
 
 export const Infinite: Story = {
