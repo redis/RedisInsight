@@ -16,11 +16,6 @@ import {
   CommandExecutionType,
 } from 'uiSrc/slices/interfaces'
 import { PIPELINE_COUNT_DEFAULT } from 'uiSrc/constants/api'
-import {
-  clearCommands,
-  findCommand,
-  removeCommand,
-} from 'uiSrc/services/workbenchStorage'
 import { CommandsHistoryService } from 'uiSrc/services/commands-history/commandsHistoryService'
 import {
   createErrorResult,
