@@ -1,6 +1,5 @@
-import { DefaultBodyType, MockedRequest, RestHandler } from 'msw'
-
+import { HttpHandler } from 'msw'
 import crb from './createRedisButtonsHandlers'
 
-const handlers: RestHandler<MockedRequest>[] = [].concat(crb)
+const handlers: HttpHandler[] = [...crb]
 export default handlers

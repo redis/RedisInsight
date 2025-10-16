@@ -1,10 +1,7 @@
-import { DefaultBodyType, MockedRequest, RestHandler } from 'msw'
+import { HttpHandler } from 'msw'
 
 import recommendations from './recommendationsHandler'
 import readRecommendations from './recommendationsReadHandler'
 
-const handlers: RestHandler<MockedRequest<DefaultBodyType>>[] = [].concat(
-  recommendations,
-  readRecommendations,
-)
+const handlers: HttpHandler[] = [...recommendations, ...readRecommendations]
 export default handlers

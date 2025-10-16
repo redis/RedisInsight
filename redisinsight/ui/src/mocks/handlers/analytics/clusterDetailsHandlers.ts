@@ -1,4 +1,4 @@
-import { rest, RestHandler } from 'msw'
+import { http, HttpHandler, HttpResponse } from 'msw'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { getUrl } from 'uiSrc/utils'
 import { getMswURL } from 'uiSrc/utils/test-utils'
@@ -11,12 +11,13 @@ import { Database as DatabaseInstanceResponse } from 'apiSrc/modules/database/mo
 
 export const INSTANCE_ID_MOCK = 'instanceId'
 
-const handlers: RestHandler[] = [
+const handlers: HttpHandler[] = [
   // useGetClusterDetailsQuery
-  rest.get<DatabaseInstanceResponse[]>(
+  http.get<any, DatabaseInstanceResponse[]>(
     getMswURL(getUrl(INSTANCE_ID_MOCK, ApiEndpoints.CLUSTER_DETAILS)),
-    async (_req, res, ctx) =>
-      res(ctx.status(200), ctx.json(CLUSTER_DETAILS_DATA_MOCK)),
+    async () => {
+      HttpResponse.json(CLUSTER_DETAILS_DATA_MOCK, { status: 200 })
+    },
   ),
 ]
 

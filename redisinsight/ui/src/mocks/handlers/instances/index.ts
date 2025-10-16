@@ -1,10 +1,7 @@
-import { DefaultBodyType, MockedRequest, RestHandler } from 'msw'
+import { HttpHandler } from 'msw'
 
 import instances from './instancesHandlers'
 import caCerts from './caCertsHandlers'
 
-const handlers: RestHandler<MockedRequest<DefaultBodyType>>[] = [].concat(
-  instances,
-  caCerts,
-)
+const handlers: HttpHandler[] = [...instances, ...caCerts]
 export default handlers

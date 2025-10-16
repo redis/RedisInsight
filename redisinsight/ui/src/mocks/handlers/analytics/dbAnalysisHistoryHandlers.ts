@@ -1,16 +1,17 @@
-import { rest, RestHandler } from 'msw'
+import { http, HttpHandler, HttpResponse } from 'msw'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { getUrl } from 'uiSrc/utils'
 import { getMswURL } from 'uiSrc/utils/test-utils'
 
 export const INSTANCE_ID_MOCK = 'instanceId'
 
-const handlers: RestHandler[] = [
+const handlers: HttpHandler[] = [
   // fetchDBAnalysisReportsHistory
-  rest.get(
+  http.get(
     getMswURL(getUrl(INSTANCE_ID_MOCK, ApiEndpoints.DATABASE_ANALYSIS)),
-    async (_req, res, ctx) =>
-      res(ctx.status(200), ctx.json(DB_ANALYSIS_HISTORY_DATA_MOCK)),
+    async () => {
+      HttpResponse.json(DB_ANALYSIS_HISTORY_DATA_MOCK, { status: 200 })
+    },
   ),
 ]
 

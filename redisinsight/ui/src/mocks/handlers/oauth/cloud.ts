@@ -1,4 +1,4 @@
-import { rest, RestHandler } from 'msw'
+import { http, HttpHandler, HttpResponse } from 'msw'
 import { getMswURL } from 'uiSrc/utils/test-utils'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { OAUTH_CLOUD_CAPI_KEYS_DATA } from 'uiSrc/mocks/data/oauth'
@@ -16,16 +16,16 @@ export const CLOUD_ME_DATA_MOCK = {
   data: {},
 }
 
-const handlers: RestHandler[] = [
+const handlers: HttpHandler[] = [
   // fetch cloud capi keys
-  rest.get(getMswURL(ApiEndpoints.CLOUD_CAPI_KEYS), async (_req, res, ctx) =>
-    res(ctx.status(200), ctx.json(OAUTH_CLOUD_CAPI_KEYS_DATA)),
-  ),
+  http.get(getMswURL(ApiEndpoints.CLOUD_CAPI_KEYS), async () => {
+    HttpResponse.json(OAUTH_CLOUD_CAPI_KEYS_DATA, { status: 200 })
+  }),
 
   // fetch user profile
-  rest.get(getMswURL(ApiEndpoints.CLOUD_ME), async (_req, res, ctx) =>
-    res(ctx.status(200), ctx.json(CLOUD_ME_DATA_MOCK)),
-  ),
+  http.get(getMswURL(ApiEndpoints.CLOUD_ME), async () => {
+    HttpResponse.json(CLOUD_ME_DATA_MOCK, { status: 200 })
+  }),
 ]
 
 export default handlers

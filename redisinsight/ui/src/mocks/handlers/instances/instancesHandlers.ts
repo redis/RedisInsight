@@ -1,4 +1,4 @@
-import { rest, RestHandler } from 'msw'
+import { http, HttpHandler, HttpResponse } from 'msw'
 import { RedisNodeInfoResponse } from 'src/modules/database/dto/redis-info.dto'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { ConnectionType, Instance } from 'uiSrc/slices/interfaces'
@@ -76,25 +76,30 @@ export const getDatabasesApiSpy = jest
     res(ctx.status(200), ctx.json(INSTANCES_MOCK)),
   )
 
-const handlers: RestHandler[] = [
+const handlers: HttpHandler[] = [
   // fetchInstancesAction
-  rest.get<DatabaseInstanceResponse[]>(
+  http.get<any, DatabaseInstanceResponse[]>(
     getMswURL(ApiEndpoints.DATABASES),
     getDatabasesApiSpy,
   ),
-  rest.post<ExportDatabase>(
+  http.post<any, ExportDatabase>(
     getMswURL(ApiEndpoints.DATABASES_EXPORT),
-    async (_req, res, ctx) => res(ctx.status(200), ctx.json(INSTANCES_MOCK)),
+    async () => {
+      HttpResponse.json(INSTANCES_MOCK, { status: 200 })
+    },
   ),
-  rest.get<DatabaseInstanceResponse>(
+  http.get<any, DatabaseInstanceResponse>(
     getMswURL(getUrl(INSTANCE_ID_MOCK)),
-    async (_req, res, ctx) => res(ctx.status(200), ctx.json(INSTANCES_MOCK[0])),
+    async () => {
+      HttpResponse.json(INSTANCES_MOCK[0], { status: 200 })
+    },
   ),
-  rest.get<RedisNodeInfoResponse>(
+  http.get<any, RedisNodeInfoResponse>(
     getMswURL(`/${ApiEndpoints.DATABASES}/:id/info`),
     // getMswURL(getUrl(INSTANCE_ID_MOCK, 'info')),
-    async (_req, res, ctx) =>
-      res(ctx.status(200), ctx.json(MOCK_INFO_API_RESPONSE)),
+    async () => {
+      HttpResponse.json(MOCK_INFO_API_RESPONSE, { status: 200 })
+    },
   ),
 ]
 
