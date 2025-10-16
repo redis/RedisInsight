@@ -18,7 +18,18 @@ import { initialState as appFeaturesInitialState } from 'uiSrc/slices/app/featur
 
 // Mock the database classes
 jest.mock('./database/CommandsHistorySQLite')
-jest.mock('./database/CommandsHistoryIndexedDB')
+jest.mock('./database/CommandsHistoryIndexedDB', () => ({
+  CommandsHistoryIndexedDB: jest.fn().mockImplementation(() => ({
+    getCommandsHistory: jest
+      .fn()
+      .mockResolvedValue({ success: true, data: [] }),
+    addCommandsToHistory: jest
+      .fn()
+      .mockResolvedValue({ success: true, data: [] }),
+    deleteCommandFromHistory: jest.fn().mockResolvedValue({ success: true }),
+    clearCommandsHistory: jest.fn().mockResolvedValue({ success: true }),
+  })),
+}))
 
 // Mock the notification action
 jest.mock('uiSrc/slices/app/notifications', () => ({

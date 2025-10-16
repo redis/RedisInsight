@@ -31,7 +31,7 @@ export class CommandsHistoryService {
     if (envDependentFeature?.flag) {
       return new CommandsHistorySQLite()
     } else {
-      return new CommandsHistoryIndexedDB()
+      return new CommandsHistoryIndexedDB(this.commandExecutionType)
     }
   }
 
