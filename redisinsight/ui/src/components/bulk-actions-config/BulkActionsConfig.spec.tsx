@@ -67,7 +67,7 @@ const deletingMock = [
     id: '123',
     databaseId: '1',
     db: 1,
-    type: BulkActionsType.Delete,
+    type: BulkActionsType.Unlink,
     filter: {
       type: null,
       match: '*',

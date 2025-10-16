@@ -22,7 +22,28 @@ on:
         description: SSH Debug
         type: boolean
         default: false
-
+  workflow_dispatch:
+    inputs:
+      build:
+        description: Backend build to run tests over
+        type: string
+        default: 'local'
+      redis_client:
+        description: Library to use for redis connection
+        type: string
+        default: 'ioredis'
+      report:
+        description: Send report for test run to slack
+        type: boolean
+        default: false
+      short_rte_list:
+        description: Use short rte list
+        type: boolean
+        default: false
+      debug:
+        description: SSH Debug
+        type: boolean
+        default: false
 env:
   SLACK_AUDIT_REPORT_KEY: ${{ secrets.SLACK_AUDIT_REPORT_KEY }}
   SLACK_AUDIT_REPORT_CHANNEL: ${{ secrets.SLACK_AUDIT_REPORT_CHANNEL }}

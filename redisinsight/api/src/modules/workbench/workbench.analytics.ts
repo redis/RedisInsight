@@ -6,6 +6,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CommandsService } from 'src/modules/commands/commands.service';
 import { CommandTelemetryBaseService } from 'src/modules/analytics/command.telemetry.base.service';
 import { SessionMetadata } from 'src/common/models';
+import { CommandExecutionType } from './models/command-execution';
 
 export interface IExecResult {
   response: any;
@@ -25,6 +26,7 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
   sendIndexInfoEvent(
     sessionMetadata: SessionMetadata,
     databaseId: string,
+    commandExecutionType: CommandExecutionType,
     additionalData: object,
   ): void {
     if (!additionalData) {
@@ -32,14 +34,15 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
     }
 
     try {
-      this.sendEvent(
-        sessionMetadata,
-        TelemetryEvents.WorkbenchIndexInfoSubmitted,
-        {
-          databaseId,
-          ...additionalData,
-        },
-      );
+      const event =
+        commandExecutionType === CommandExecutionType.Search
+          ? TelemetryEvents.SearchIndexInfoSubmitted
+          : TelemetryEvents.WorkbenchIndexInfoSubmitted;
+
+      this.sendEvent(sessionMetadata, event, {
+        databaseId,
+        ...additionalData,
+      });
     } catch (e) {
       // ignore error
     }
@@ -48,6 +51,7 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
   public async sendCommandExecutedEvents(
     sessionMetadata: SessionMetadata,
     databaseId: string,
+    commandExecutionType: CommandExecutionType,
     results: IExecResult[],
     additionalData: object = {},
   ): Promise<void> {
@@ -57,6 +61,7 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
           this.sendCommandExecutedEvent(
             sessionMetadata,
             databaseId,
+            commandExecutionType,
             result,
             additionalData,
           ),
@@ -70,27 +75,35 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
   public async sendCommandExecutedEvent(
     sessionMetadata: SessionMetadata,
     databaseId: string,
+    commandExecutionType: CommandExecutionType,
     result: IExecResult,
     additionalData: object = {},
   ): Promise<void> {
     const { status } = result;
     try {
       if (status === CommandExecutionStatus.Success) {
-        this.sendEvent(
+        const event =
+          commandExecutionType === CommandExecutionType.Search
+            ? TelemetryEvents.SearchCommandExecuted
+            : TelemetryEvents.WorkbenchCommandExecuted;
+
+        this.sendEvent(sessionMetadata, event, {
+          databaseId,
+          ...(await this.getCommandAdditionalInfo(additionalData['command'])),
+          ...additionalData,
+        });
+      }
+      if (status === CommandExecutionStatus.Fail) {
+        this.sendCommandErrorEvent(
           sessionMetadata,
-          TelemetryEvents.WorkbenchCommandExecuted,
+          databaseId,
+          result.error,
+          commandExecutionType,
           {
-            databaseId,
             ...(await this.getCommandAdditionalInfo(additionalData['command'])),
             ...additionalData,
           },
         );
-      }
-      if (status === CommandExecutionStatus.Fail) {
-        this.sendCommandErrorEvent(sessionMetadata, databaseId, result.error, {
-          ...(await this.getCommandAdditionalInfo(additionalData['command'])),
-          ...additionalData,
-        });
       }
     } catch (e) {
       // continue regardless of error
@@ -112,30 +125,27 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
     sessionMetadata: SessionMetadata,
     databaseId: string,
     error: any,
+    commandExecutionType: CommandExecutionType,
     additionalData: object = {},
   ): void {
     try {
+      const event =
+        commandExecutionType === CommandExecutionType.Search
+          ? TelemetryEvents.SearchCommandErrorReceived
+          : TelemetryEvents.WorkbenchCommandErrorReceived;
+
       if (error instanceof HttpException) {
-        this.sendFailedEvent(
-          sessionMetadata,
-          TelemetryEvents.WorkbenchCommandErrorReceived,
-          error,
-          {
-            databaseId,
-            ...additionalData,
-          },
-        );
+        this.sendFailedEvent(sessionMetadata, event, error, {
+          databaseId,
+          ...additionalData,
+        });
       } else {
-        this.sendEvent(
-          sessionMetadata,
-          TelemetryEvents.WorkbenchCommandErrorReceived,
-          {
-            databaseId,
-            error: error.name,
-            command: error?.command?.name,
-            ...additionalData,
-          },
-        );
+        this.sendEvent(sessionMetadata, event, {
+          databaseId,
+          error: error.name,
+          command: error?.command?.name,
+          ...additionalData,
+        });
       }
     } catch (e) {
       // continue regardless of error

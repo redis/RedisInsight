@@ -122,7 +122,7 @@ export const initialState: KeysStore = {
     SearchMode.Pattern,
   viewType:
     localStorageService?.get(BrowserStorageItem.browserViewType) ??
-    KeyViewType.Browser,
+    KeyViewType.Tree,
   data: {
     total: 0,
     scanned: 0,
@@ -432,7 +432,7 @@ const keysSlice = createSlice({
         ...initialState,
         viewType:
           localStorageService?.get(BrowserStorageItem.browserViewType) ??
-          KeyViewType.Browser,
+          KeyViewType.Tree,
         searchMode:
           localStorageService?.get(BrowserStorageItem.browserSearchMode) ??
           SearchMode.Pattern,

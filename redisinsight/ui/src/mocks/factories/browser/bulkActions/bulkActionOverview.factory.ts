@@ -13,7 +13,7 @@ import {
 export const bulkActionOverviewFactory = Factory.define<IBulkActionOverview>(
   ({ sequence }) => ({
     id: `bulk-action-${sequence}`,
-    databaseId: faker.string.ulid(),
+    databaseId: faker.string.uuid(),
     type: faker.helpers.enumValue(BulkActionType),
     summary: bulkActionSummaryOverviewFactory.build(),
     progress: bulkActionProgressOverviewFactory.build(),

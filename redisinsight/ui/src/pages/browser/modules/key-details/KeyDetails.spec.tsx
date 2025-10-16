@@ -116,7 +116,7 @@ describe('KeyDetails', () => {
     })
 
     expect(sendEventTelemetry).toBeCalledWith({
-      event: TelemetryEvent.BROWSER_KEY_VALUE_VIEWED,
+      event: TelemetryEvent.TREE_VIEW_KEY_VALUE_VIEWED,
       eventData: {
         databaseId: INSTANCE_ID_MOCK,
         length: 1,

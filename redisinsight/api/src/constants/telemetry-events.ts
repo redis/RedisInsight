@@ -58,6 +58,12 @@ export enum TelemetryEvents {
   WorkbenchIndexInfoSubmitted = 'WORKBENCH_INDEX_INFO_SUBMITTED',
   WorkbenchCommandErrorReceived = 'WORKBENCH_COMMAND_ERROR_RECEIVED',
   WorkbenchCommandDeleted = 'WORKBENCH_COMMAND_DELETE_COMMAND',
+
+  // Events for search tool
+  SearchCommandExecuted = 'SEARCH_COMMAND_EXECUTED',
+  SearchIndexInfoSubmitted = 'SEARCH_INDEX_INFO_SUBMITTED',
+  SearchCommandErrorReceived = 'SEARCH_COMMAND_ERROR_RECEIVED',
+
   // Custom tutorials
   WorkbenchEnablementAreaImportSucceeded = 'WORKBENCH_ENABLEMENT_AREA_IMPORT_SUCCEEDED',
   WorkbenchEnablementAreaImportFailed = 'WORKBENCH_ENABLEMENT_AREA_IMPORT_FAILED',

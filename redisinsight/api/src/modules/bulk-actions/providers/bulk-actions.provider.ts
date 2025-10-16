@@ -12,6 +12,7 @@ import {
   BulkActionType,
 } from 'src/modules/bulk-actions/constants';
 import { DeleteBulkActionSimpleRunner } from 'src/modules/bulk-actions/models/runners/simple/delete.bulk-action.simple.runner';
+import { UnlinkBulkActionSimpleRunner } from 'src/modules/bulk-actions/models/runners/simple/unlink.bulk-action.simple.runner';
 import { BulkActionsAnalytics } from 'src/modules/bulk-actions/bulk-actions.analytics';
 import { ClientContext, SessionMetadata } from 'src/common/models';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
@@ -80,6 +81,8 @@ export class BulkActionsProvider {
     switch (dto.type) {
       case BulkActionType.Delete:
         return DeleteBulkActionSimpleRunner;
+      case BulkActionType.Unlink:
+        return UnlinkBulkActionSimpleRunner;
       default:
         throw new BadRequestException(
           `Unsupported type: ${dto.type} for Bulk Actions`,

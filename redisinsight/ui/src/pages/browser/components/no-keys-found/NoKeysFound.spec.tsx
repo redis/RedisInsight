@@ -19,8 +19,7 @@ import {
 } from 'uiSrc/slices/browser/bulkActions'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import successMessages from 'uiSrc/components/notifications/success-messages'
-import { changeKeyViewType, loadKeys } from 'uiSrc/slices/browser/keys'
-import { KeyViewType } from 'uiSrc/slices/interfaces/keys'
+import { loadKeys } from 'uiSrc/slices/browser/keys'
 import {
   changeSelectedTab,
   changeSidePanel,
@@ -90,7 +89,6 @@ describe('NoKeysFound', () => {
       changeSelectedTab(InsightsPanelTabs.Explore),
       changeSidePanel(SidePanels.Insights),
       resetExplorePanelSearch(),
-      changeKeyViewType(KeyViewType.Tree),
       loadKeys(),
     ]
 
