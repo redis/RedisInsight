@@ -4,7 +4,11 @@ import {
   CommandExecutionType,
   CommandExecutionUI,
 } from 'uiSrc/slices/interfaces'
-import { CommandsHistoryDatabase, CommandHistoryResult } from './interface'
+import {
+  CommandHistoryResult,
+  CommandsHistoryDatabase,
+  CommandsHistoryResult,
+} from './interface'
 import { vectorSearchCommandsHistoryStorage } from 'uiSrc/services/vectorSearchHistoryStorage'
 import { getUrl, isStatusSuccessful } from 'uiSrc/utils'
 import { ApiEndpoints } from 'uiSrc/constants'
@@ -13,11 +17,13 @@ import { mapCommandExecutionToUI } from '../utils/command-execution.mapper'
 import {
   addCommands,
   clearCommands,
+  findCommand,
   getLocalWbHistory,
   removeCommand,
   wbHistoryStorage,
   WorkbenchStorage,
 } from 'uiSrc/services/workbenchStorage'
+import { C } from 'msw/lib/glossary-2792c6da'
 
 export class CommandsHistoryIndexedDB implements CommandsHistoryDatabase {
   private readonly dbStorage: WorkbenchStorage
@@ -32,7 +38,7 @@ export class CommandsHistoryIndexedDB implements CommandsHistoryDatabase {
   async getCommandsHistory(
     instanceId: string,
     _commandExecutionType: CommandExecutionType,
-  ): Promise<CommandHistoryResult> {
+  ): Promise<CommandsHistoryResult> {
     const data = await getLocalWbHistory(this.dbStorage, instanceId)
     const results: CommandExecutionUI[] = data.map(mapCommandExecutionToUI)
 
@@ -40,6 +46,24 @@ export class CommandsHistoryIndexedDB implements CommandsHistoryDatabase {
       success: true,
       data: results,
     })
+  }
+
+  async getCommandHistory(
+    _instanceId: string,
+    commandId: string,
+  ): Promise<CommandHistoryResult> {
+    const command = await findCommand(this.dbStorage, commandId)
+
+    if (!command) {
+      return {
+        success: false,
+      }
+    }
+
+    return {
+      success: true,
+      data: mapCommandExecutionToUI(command as CommandExecution),
+    }
   }
 
   async addCommandsToHistory(
@@ -50,7 +74,7 @@ export class CommandsHistoryIndexedDB implements CommandsHistoryDatabase {
       activeRunQueryMode: string
       resultsMode: string
     },
-  ): Promise<CommandHistoryResult> {
+  ): Promise<CommandsHistoryResult> {
     const { activeRunQueryMode, resultsMode } = options
 
     try {
@@ -87,7 +111,7 @@ export class CommandsHistoryIndexedDB implements CommandsHistoryDatabase {
   async deleteCommandFromHistory(
     instanceId: string,
     commandId: string,
-  ): Promise<CommandHistoryResult> {
+  ): Promise<CommandsHistoryResult> {
     await removeCommand(this.dbStorage, instanceId, commandId)
 
     return Promise.resolve({
@@ -97,7 +121,7 @@ export class CommandsHistoryIndexedDB implements CommandsHistoryDatabase {
 
   async clearCommandsHistory(
     instanceId: string,
-  ): Promise<CommandHistoryResult> {
+  ): Promise<CommandsHistoryResult> {
     await clearCommands(this.dbStorage, instanceId)
 
     return Promise.resolve({

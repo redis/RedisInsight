@@ -23,6 +23,9 @@ jest.mock('./database/CommandsHistoryIndexedDB', () => ({
     getCommandsHistory: jest
       .fn()
       .mockResolvedValue({ success: true, data: [] }),
+    getCommandHistory: jest
+      .fn()
+      .mockResolvedValue({ success: true, data: null }),
     addCommandsToHistory: jest
       .fn()
       .mockResolvedValue({ success: true, data: [] }),
@@ -65,6 +68,10 @@ describe('CommandsHistoryService', () => {
       success: true,
       data: [],
     }),
+    getCommandHistory: jest.fn().mockResolvedValue({
+      success: true,
+      data: null,
+    }),
     addCommandsToHistory: jest.fn().mockResolvedValue({
       success: true,
       data: [],
@@ -96,8 +103,8 @@ describe('CommandsHistoryService', () => {
     mockedStore.dispatch.mockClear()
 
     // Set up default database mock
-    mockedCommandsHistoryIndexedDB.mockImplementation(() =>
-      createDefaultDatabaseMock(),
+    mockedCommandsHistoryIndexedDB.mockImplementation(
+      () => createDefaultDatabaseMock() as any,
     )
 
     // Create a new instance for each test
@@ -113,10 +120,11 @@ describe('CommandsHistoryService', () => {
         data: mockCommandHistoryData,
       })
 
-      mockedCommandsHistoryIndexedDB.mockImplementation(() =>
-        createDefaultDatabaseMock({
-          getCommandsHistory: mockGetCommandsHistory,
-        }),
+      mockedCommandsHistoryIndexedDB.mockImplementation(
+        () =>
+          createDefaultDatabaseMock({
+            getCommandsHistory: mockGetCommandsHistory,
+          }) as any,
       )
 
       // Create a new service instance with the mocked database
@@ -148,10 +156,11 @@ describe('CommandsHistoryService', () => {
         data: mockCommandHistoryData,
       })
 
-      mockedCommandsHistorySQLite.mockImplementation(() =>
-        createDefaultDatabaseMock({
-          getCommandsHistory: mockGetCommandsHistory,
-        }),
+      mockedCommandsHistorySQLite.mockImplementation(
+        () =>
+          createDefaultDatabaseMock({
+            getCommandsHistory: mockGetCommandsHistory,
+          }) as any,
       )
 
       // Create a new service instance with the updated store state
@@ -169,10 +178,11 @@ describe('CommandsHistoryService', () => {
         error: mockError,
       })
 
-      mockedCommandsHistoryIndexedDB.mockImplementation(() =>
-        createDefaultDatabaseMock({
-          getCommandsHistory: mockGetCommandsHistory,
-        }),
+      mockedCommandsHistoryIndexedDB.mockImplementation(
+        () =>
+          createDefaultDatabaseMock({
+            getCommandsHistory: mockGetCommandsHistory,
+          }) as any,
       )
 
       // Create a new service instance with the mocked database
@@ -182,6 +192,176 @@ describe('CommandsHistoryService', () => {
       expect(result).toEqual([])
       expect(mockedStore.dispatch).toHaveBeenCalledWith(
         addErrorNotification(mockError),
+      )
+    })
+  })
+
+  describe('getCommandHistory', () => {
+    const mockCommandId = faker.string.uuid()
+    const mockCommandData = commandExecutionUIFactory.build()
+
+    it('should initialize with IndexedDB when envDependent feature is disabled', async () => {
+      const mockGetCommandHistory = jest.fn().mockResolvedValue({
+        success: true,
+        data: mockCommandData,
+      })
+
+      mockedCommandsHistoryIndexedDB.mockImplementation(
+        () =>
+          createDefaultDatabaseMock({
+            getCommandHistory: mockGetCommandHistory,
+          }) as any,
+      )
+
+      // Create a new service instance with the mocked database
+      const indexedDBService = new CommandsHistoryService(
+        mockCommandExecutionType,
+      )
+      const result = await indexedDBService.getCommandHistory(
+        mockInstanceId,
+        mockCommandId,
+      )
+
+      expect(result).toEqual(mockCommandData)
+      expect(mockedCommandsHistoryIndexedDB).toHaveBeenCalled()
+    })
+
+    it('should initialize with SQLite when envDependent feature is enabled', async () => {
+      // Update store state for this test using initial state
+      mockedStore.getState.mockReturnValue({
+        app: {
+          features: merge({}, appFeaturesInitialState, {
+            featureFlags: {
+              features: {
+                [FeatureFlags.envDependent]: { flag: true },
+              },
+            },
+          }),
+        },
+      } as any)
+
+      const mockGetCommandHistory = jest.fn().mockResolvedValue({
+        success: true,
+        data: mockCommandData,
+      })
+
+      mockedCommandsHistorySQLite.mockImplementation(
+        () =>
+          createDefaultDatabaseMock({
+            getCommandHistory: mockGetCommandHistory,
+          }) as any,
+      )
+
+      // Create a new service instance with the updated store state
+      const sqliteService = new CommandsHistoryService(mockCommandExecutionType)
+      const result = await sqliteService.getCommandHistory(
+        mockInstanceId,
+        mockCommandId,
+      )
+
+      expect(result).toEqual(mockCommandData)
+      expect(mockedCommandsHistorySQLite).toHaveBeenCalled()
+    })
+
+    it('should dispatch error notification when database returns error', async () => {
+      const mockError = { message: 'Database error' } as any
+      const mockGetCommandHistory = jest.fn().mockResolvedValue({
+        success: false,
+        error: mockError,
+      })
+
+      mockedCommandsHistoryIndexedDB.mockImplementation(
+        () =>
+          createDefaultDatabaseMock({
+            getCommandHistory: mockGetCommandHistory,
+          }) as any,
+      )
+
+      // Create a new service instance with the mocked database
+      const errorService = new CommandsHistoryService(mockCommandExecutionType)
+      const result = await errorService.getCommandHistory(
+        mockInstanceId,
+        mockCommandId,
+      )
+
+      expect(result).toEqual(null)
+      expect(mockedStore.dispatch).toHaveBeenCalledWith(
+        addErrorNotification(mockError),
+      )
+    })
+
+    it('should return null when data is not available', async () => {
+      const mockGetCommandHistory = jest.fn().mockResolvedValue({
+        success: true,
+        data: null,
+      })
+
+      mockedCommandsHistoryIndexedDB.mockImplementation(
+        () =>
+          createDefaultDatabaseMock({
+            getCommandHistory: mockGetCommandHistory,
+          }) as any,
+      )
+
+      // Create a new service instance with the mocked database
+      const nullDataService = new CommandsHistoryService(
+        mockCommandExecutionType,
+      )
+      const result = await nullDataService.getCommandHistory(
+        mockInstanceId,
+        mockCommandId,
+      )
+
+      expect(result).toEqual(null)
+    })
+
+    it('should handle different instance IDs and command IDs', async () => {
+      const instanceId1 = faker.string.uuid()
+      const instanceId2 = faker.string.uuid()
+      const commandId1 = faker.string.uuid()
+      const commandId2 = faker.string.uuid()
+
+      const mockCommand1 = commandExecutionUIFactory.build()
+      const mockCommand2 = commandExecutionUIFactory.build()
+
+      const mockGetCommandHistory = jest
+        .fn()
+        .mockResolvedValueOnce({ success: true, data: mockCommand1 })
+        .mockResolvedValueOnce({ success: true, data: mockCommand2 })
+
+      mockedCommandsHistoryIndexedDB.mockImplementation(
+        () =>
+          createDefaultDatabaseMock({
+            getCommandHistory: mockGetCommandHistory,
+          }) as any,
+      )
+
+      // Create a new service instance with the mocked database
+      const multiCommandService = new CommandsHistoryService(
+        mockCommandExecutionType,
+      )
+
+      const result1 = await multiCommandService.getCommandHistory(
+        instanceId1,
+        commandId1,
+      )
+      const result2 = await multiCommandService.getCommandHistory(
+        instanceId2,
+        commandId2,
+      )
+
+      expect(result1).toEqual(mockCommand1)
+      expect(result2).toEqual(mockCommand2)
+      expect(mockGetCommandHistory).toHaveBeenCalledTimes(2)
+      expect(mockGetCommandHistory).toHaveBeenNthCalledWith(
+        1,
+        instanceId1,
+        commandId1,
+      )
+      expect(mockGetCommandHistory).toHaveBeenNthCalledWith(
+        2,
+        instanceId2,
+        commandId2,
       )
     })
   })
@@ -199,10 +379,11 @@ describe('CommandsHistoryService', () => {
         data: mockCommandHistoryData,
       })
 
-      mockedCommandsHistoryIndexedDB.mockImplementation(() =>
-        createDefaultDatabaseMock({
-          addCommandsToHistory: mockAddCommandsToHistory,
-        }),
+      mockedCommandsHistoryIndexedDB.mockImplementation(
+        () =>
+          createDefaultDatabaseMock({
+            addCommandsToHistory: mockAddCommandsToHistory,
+          }) as any,
       )
 
       // Create a new service instance with the mocked database
@@ -225,10 +406,11 @@ describe('CommandsHistoryService', () => {
         error: mockError,
       })
 
-      mockedCommandsHistoryIndexedDB.mockImplementation(() =>
-        createDefaultDatabaseMock({
-          addCommandsToHistory: mockAddCommandsToHistory,
-        }),
+      mockedCommandsHistoryIndexedDB.mockImplementation(
+        () =>
+          createDefaultDatabaseMock({
+            addCommandsToHistory: mockAddCommandsToHistory,
+          }) as any,
       )
 
       // Create a new service instance with the mocked database
@@ -251,10 +433,11 @@ describe('CommandsHistoryService', () => {
         data: mockCommandHistoryData,
       })
 
-      mockedCommandsHistoryIndexedDB.mockImplementation(() =>
-        createDefaultDatabaseMock({
-          addCommandsToHistory: mockAddCommandsToHistory,
-        }),
+      mockedCommandsHistoryIndexedDB.mockImplementation(
+        () =>
+          createDefaultDatabaseMock({
+            addCommandsToHistory: mockAddCommandsToHistory,
+          }) as any,
       )
 
       const result = await commandsHistoryService.addCommandsToHistory(
@@ -275,10 +458,11 @@ describe('CommandsHistoryService', () => {
         success: true,
       })
 
-      mockedCommandsHistoryIndexedDB.mockImplementation(() =>
-        createDefaultDatabaseMock({
-          deleteCommandFromHistory: mockDeleteCommandFromHistory,
-        }),
+      mockedCommandsHistoryIndexedDB.mockImplementation(
+        () =>
+          createDefaultDatabaseMock({
+            deleteCommandFromHistory: mockDeleteCommandFromHistory,
+          }) as any,
       )
 
       // Create a new service instance with the mocked database
@@ -304,10 +488,11 @@ describe('CommandsHistoryService', () => {
         error: mockError,
       })
 
-      mockedCommandsHistoryIndexedDB.mockImplementation(() =>
-        createDefaultDatabaseMock({
-          deleteCommandFromHistory: mockDeleteCommandFromHistory,
-        }),
+      mockedCommandsHistoryIndexedDB.mockImplementation(
+        () =>
+          createDefaultDatabaseMock({
+            deleteCommandFromHistory: mockDeleteCommandFromHistory,
+          }) as any,
       )
 
       // Create a new service instance with the mocked database
@@ -337,10 +522,11 @@ describe('CommandsHistoryService', () => {
         success: true,
       })
 
-      mockedCommandsHistorySQLite.mockImplementation(() =>
-        createDefaultDatabaseMock({
-          deleteCommandFromHistory: mockDeleteCommandFromHistory,
-        }),
+      mockedCommandsHistorySQLite.mockImplementation(
+        () =>
+          createDefaultDatabaseMock({
+            deleteCommandFromHistory: mockDeleteCommandFromHistory,
+          }) as any,
       )
 
       // Create a new service instance with the updated store state
@@ -365,10 +551,11 @@ describe('CommandsHistoryService', () => {
         success: true,
       })
 
-      mockedCommandsHistoryIndexedDB.mockImplementation(() =>
-        createDefaultDatabaseMock({
-          deleteCommandFromHistory: mockDeleteCommandFromHistory,
-        }),
+      mockedCommandsHistoryIndexedDB.mockImplementation(
+        () =>
+          createDefaultDatabaseMock({
+            deleteCommandFromHistory: mockDeleteCommandFromHistory,
+          }) as any,
       )
 
       // Create a new service instance with the mocked database
@@ -405,10 +592,11 @@ describe('CommandsHistoryService', () => {
         success: true,
       })
 
-      mockedCommandsHistoryIndexedDB.mockImplementation(() =>
-        createDefaultDatabaseMock({
-          clearCommandsHistory: mockClearCommandsHistory,
-        }),
+      mockedCommandsHistoryIndexedDB.mockImplementation(
+        () =>
+          createDefaultDatabaseMock({
+            clearCommandsHistory: mockClearCommandsHistory,
+          }) as any,
       )
 
       // Create a new service instance with the mocked database
@@ -431,10 +619,11 @@ describe('CommandsHistoryService', () => {
         error: mockError,
       })
 
-      mockedCommandsHistoryIndexedDB.mockImplementation(() =>
-        createDefaultDatabaseMock({
-          clearCommandsHistory: mockClearCommandsHistory,
-        }),
+      mockedCommandsHistoryIndexedDB.mockImplementation(
+        () =>
+          createDefaultDatabaseMock({
+            clearCommandsHistory: mockClearCommandsHistory,
+          }) as any,
       )
 
       // Create a new service instance with the mocked database
@@ -464,10 +653,11 @@ describe('CommandsHistoryService', () => {
         success: true,
       })
 
-      mockedCommandsHistorySQLite.mockImplementation(() =>
-        createDefaultDatabaseMock({
-          clearCommandsHistory: mockClearCommandsHistory,
-        }),
+      mockedCommandsHistorySQLite.mockImplementation(
+        () =>
+          createDefaultDatabaseMock({
+            clearCommandsHistory: mockClearCommandsHistory,
+          }) as any,
       )
 
       // Create a new service instance with the updated store state
@@ -489,10 +679,11 @@ describe('CommandsHistoryService', () => {
         success: true,
       })
 
-      mockedCommandsHistoryIndexedDB.mockImplementation(() =>
-        createDefaultDatabaseMock({
-          clearCommandsHistory: mockClearCommandsHistory,
-        }),
+      mockedCommandsHistoryIndexedDB.mockImplementation(
+        () =>
+          createDefaultDatabaseMock({
+            clearCommandsHistory: mockClearCommandsHistory,
+          }) as any,
       )
 
       // Create a new service instance with the mocked database

@@ -10,6 +10,11 @@ export interface CommandsHistoryDatabase {
   getCommandsHistory(
     instanceId: string,
     commandExecutionType: CommandExecutionType,
+  ): Promise<CommandsHistoryResult>
+
+  getCommandHistory(
+    instanceId: string,
+    commandId: string,
   ): Promise<CommandHistoryResult>
 
   addCommandsToHistory(
@@ -20,21 +25,27 @@ export interface CommandsHistoryDatabase {
       activeRunQueryMode: RunQueryMode
       resultsMode: ResultsMode
     },
-  ): Promise<CommandHistoryResult>
+  ): Promise<CommandsHistoryResult>
 
   deleteCommandFromHistory(
     instanceId: string,
     commandId: string,
-  ): Promise<CommandHistoryResult>
+  ): Promise<CommandsHistoryResult>
 
   clearCommandsHistory(
     instanceId: string,
     commandExecutionType: CommandExecutionType,
-  ): Promise<CommandHistoryResult>
+  ): Promise<CommandsHistoryResult>
+}
+
+export interface CommandsHistoryResult {
+  success: boolean
+  data?: CommandExecutionUI[]
+  error?: Error | AxiosError | any
 }
 
 export interface CommandHistoryResult {
   success: boolean
-  data?: CommandExecutionUI[]
+  data?: CommandExecutionUI
   error?: Error | AxiosError | any
 }

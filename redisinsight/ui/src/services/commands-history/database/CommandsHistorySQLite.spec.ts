@@ -180,6 +180,203 @@ describe('CommandHistorySQLite', () => {
     })
   })
 
+  describe('getCommandHistory', () => {
+    it('should successfully fetch and map single command history', async () => {
+      const commandId = faker.string.uuid()
+      const mockCommand = commandExecutionFactory.build({
+        id: commandId,
+        command: 'GET key1',
+      })
+      const expectedResultCommand = {
+        ...mockCommand,
+        emptyCommand: false,
+        createdAt: mockCommand.createdAt.toISOString(),
+      }
+
+      // Override the MSW handler to return our mock command
+      mswServer.use(
+        rest.get<CommandExecution>(
+          getMswURL(
+            getUrl(
+              instanceId,
+              ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS,
+              commandId,
+            ),
+          ),
+          async (_req, res, ctx) => res(ctx.status(200), ctx.json(mockCommand)),
+        ),
+      )
+
+      const result = await commandHistorySQLite.getCommandHistory(
+        instanceId,
+        commandId,
+      )
+
+      expect(result).toEqual({
+        success: true,
+        data: expectedResultCommand,
+      })
+    })
+
+    it('should handle unsuccessful status code 400', async () => {
+      const statusCode = 400
+      const commandId = faker.string.uuid()
+
+      // Override the MSW handler to return an error status
+      mswServer.use(
+        rest.get<CommandExecution>(
+          getMswURL(
+            getUrl(
+              instanceId,
+              ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS,
+              commandId,
+            ),
+          ),
+          async (_req, res, ctx) => res(ctx.status(statusCode)),
+        ),
+      )
+
+      const result = await commandHistorySQLite.getCommandHistory(
+        instanceId,
+        commandId,
+      )
+
+      expect(result.success).toBe(false)
+      expect(result.error).toBeInstanceOf(Error)
+      expect(result.error?.message).toBe(
+        `Request failed with status code ${statusCode}`,
+      )
+    })
+
+    it('should handle network errors', async () => {
+      const mockError = 'Network Error'
+      const commandId = faker.string.uuid()
+
+      // Override the MSW handler to simulate a network error
+      mswServer.use(
+        rest.get<CommandExecution>(
+          getMswURL(
+            getUrl(
+              instanceId,
+              ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS,
+              commandId,
+            ),
+          ),
+          async (_req, res) => res.networkError(mockError),
+        ),
+      )
+
+      const result = await commandHistorySQLite.getCommandHistory(
+        instanceId,
+        commandId,
+      )
+
+      expect(result.success).toBe(false)
+      expect(result.error.message).toBe(mockError)
+    })
+
+    it('should handle different instance IDs and command IDs', async () => {
+      const instanceId1 = 'instance-1'
+      const instanceId2 = 'instance-2'
+      const commandId1 = faker.string.uuid()
+      const commandId2 = faker.string.uuid()
+
+      const mockCommand1 = commandExecutionFactory.build({
+        id: commandId1,
+        command: 'GET key1',
+      })
+      const mockCommand2 = commandExecutionFactory.build({
+        id: commandId2,
+        command: 'SET key2 value',
+      })
+
+      const expectedResultCommand1 = {
+        ...mockCommand1,
+        emptyCommand: false,
+        createdAt: mockCommand1.createdAt.toISOString(),
+      }
+      const expectedResultCommand2 = {
+        ...mockCommand2,
+        emptyCommand: false,
+        createdAt: mockCommand2.createdAt.toISOString(),
+      }
+
+      // Override the MSW handler to return different data based on instance ID and command ID
+      mswServer.use(
+        rest.get<CommandExecution>(
+          getMswURL(
+            getUrl(
+              instanceId1,
+              ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS,
+              commandId1,
+            ),
+          ),
+          async (_req, res, ctx) =>
+            res(ctx.status(200), ctx.json(mockCommand1)),
+        ),
+        rest.get<CommandExecution>(
+          getMswURL(
+            getUrl(
+              instanceId2,
+              ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS,
+              commandId2,
+            ),
+          ),
+          async (_req, res, ctx) =>
+            res(ctx.status(200), ctx.json(mockCommand2)),
+        ),
+      )
+
+      const result1 = await commandHistorySQLite.getCommandHistory(
+        instanceId1,
+        commandId1,
+      )
+      const result2 = await commandHistorySQLite.getCommandHistory(
+        instanceId2,
+        commandId2,
+      )
+
+      expect(result1).toEqual({
+        success: true,
+        data: expectedResultCommand1,
+      })
+      expect(result2).toEqual({
+        success: true,
+        data: expectedResultCommand2,
+      })
+    })
+
+    it('should handle 404 not found error', async () => {
+      const statusCode = 404
+      const commandId = faker.string.uuid()
+
+      // Override the MSW handler to return 404 status
+      mswServer.use(
+        rest.get<CommandExecution>(
+          getMswURL(
+            getUrl(
+              instanceId,
+              ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS,
+              commandId,
+            ),
+          ),
+          async (_req, res, ctx) => res(ctx.status(statusCode)),
+        ),
+      )
+
+      const result = await commandHistorySQLite.getCommandHistory(
+        instanceId,
+        commandId,
+      )
+
+      expect(result.success).toBe(false)
+      expect(result.error).toBeInstanceOf(Error)
+      expect(result.error?.message).toBe(
+        `Request failed with status code ${statusCode}`,
+      )
+    })
+  })
+
   describe('addCommandsToHistory', () => {
     it('should successfully add commands to history and return mapped results', async () => {
       const commandExecutionType = faker.helpers.enumValue(CommandExecutionType)

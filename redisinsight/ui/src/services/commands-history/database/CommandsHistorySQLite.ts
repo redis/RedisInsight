@@ -12,13 +12,17 @@ import {
 } from 'uiSrc/slices/interfaces'
 
 import { mapCommandExecutionToUI } from '../utils/command-execution.mapper'
-import { CommandsHistoryDatabase, CommandHistoryResult } from './interface'
+import {
+  CommandHistoryResult,
+  CommandsHistoryDatabase,
+  CommandsHistoryResult,
+} from './interface'
 
 export class CommandsHistorySQLite implements CommandsHistoryDatabase {
   async getCommandsHistory(
     instanceId: string,
     commandExecutionType: CommandExecutionType,
-  ): Promise<CommandHistoryResult> {
+  ): Promise<CommandsHistoryResult> {
     try {
       const url = getUrl(instanceId, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS)
       const config = { params: { type: commandExecutionType } }
@@ -46,6 +50,34 @@ export class CommandsHistorySQLite implements CommandsHistoryDatabase {
     }
   }
 
+  async getCommandHistory(
+    instanceId: string,
+    commandId: string,
+  ): Promise<CommandHistoryResult> {
+    try {
+      const url = getUrl(
+        instanceId,
+        ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS,
+        commandId,
+      )
+      const { data, status } = await apiService.get<CommandExecution>(url)
+
+      if (isStatusSuccessful(status)) {
+        return { success: true, data: mapCommandExecutionToUI(data) }
+      }
+
+      return {
+        success: false,
+        error: new Error(`Request failed with status ${status}`),
+      }
+    } catch (exception) {
+      return {
+        success: false,
+        error: exception as AxiosError,
+      }
+    }
+  }
+
   async addCommandsToHistory(
     instanceId: string,
     commandExecutionType: CommandExecutionType,
@@ -54,7 +86,7 @@ export class CommandsHistorySQLite implements CommandsHistoryDatabase {
       activeRunQueryMode: RunQueryMode
       resultsMode: ResultsMode
     },
-  ): Promise<CommandHistoryResult> {
+  ): Promise<CommandsHistoryResult> {
     const { activeRunQueryMode, resultsMode } = options
     try {
       const url = getUrl(instanceId, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS)
@@ -87,7 +119,7 @@ export class CommandsHistorySQLite implements CommandsHistoryDatabase {
   async deleteCommandFromHistory(
     instanceId: string,
     commandId: string,
-  ): Promise<CommandHistoryResult> {
+  ): Promise<CommandsHistoryResult> {
     try {
       const url = getUrl(
         instanceId,
@@ -116,7 +148,7 @@ export class CommandsHistorySQLite implements CommandsHistoryDatabase {
   async clearCommandsHistory(
     instanceId: string,
     commandExecutionType: CommandExecutionType,
-  ): Promise<CommandHistoryResult> {
+  ): Promise<CommandsHistoryResult> {
     try {
       const url = getUrl(instanceId, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS)
 

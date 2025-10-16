@@ -49,6 +49,23 @@ export class CommandsHistoryService {
     return data || []
   }
 
+  async getCommandHistory(
+    instanceId: string,
+    commandId: string,
+  ): Promise<CommandExecutionUI | null> {
+    const { data, error } =
+      await this.commandsHistoryDatabase.getCommandHistory(
+        instanceId,
+        commandId,
+      )
+
+    if (error) {
+      store.dispatch(addErrorNotification(error))
+    }
+
+    return data || null
+  }
+
   async addCommandsToHistory(
     instanceId: string,
     commands: string[],

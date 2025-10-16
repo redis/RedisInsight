@@ -14,6 +14,7 @@ import {
 import {
   addCommands,
   clearCommands,
+  findCommand,
   getLocalWbHistory,
   removeCommand,
 } from 'uiSrc/services/workbenchStorage'
@@ -28,6 +29,7 @@ import { CommandsHistoryIndexedDB } from './CommandsHistoryIndexedDB'
 jest.mock('uiSrc/services/workbenchStorage', () => ({
   addCommands: jest.fn(),
   clearCommands: jest.fn(),
+  findCommand: jest.fn(),
   getLocalWbHistory: jest.fn(),
   removeCommand: jest.fn(),
   wbHistoryStorage: {},
@@ -39,6 +41,7 @@ jest.mock('uiSrc/services/vectorSearchHistoryStorage', () => ({
 
 const mockedAddCommands = jest.mocked(addCommands)
 const mockedClearCommands = jest.mocked(clearCommands)
+const mockedFindCommand = jest.mocked(findCommand)
 const mockedGetLocalWbHistory = jest.mocked(getLocalWbHistory)
 const mockedRemoveCommand = jest.mocked(removeCommand)
 
@@ -139,6 +142,94 @@ describe('CommandsHistoryIndexedDB', () => {
       expect(result2).toEqual({
         success: true,
         data: [],
+      })
+    })
+  })
+
+  describe('getCommandHistory', () => {
+    it('should successfully fetch and map single command history from IndexedDB', async () => {
+      const commandId = faker.string.uuid()
+      const mockCommand = commandExecutionFactory.build({
+        id: commandId,
+        command: 'GET key1',
+      })
+      const expectedResultCommand = {
+        ...mockCommand,
+        emptyCommand: false,
+      }
+
+      mockedFindCommand.mockResolvedValue(mockCommand)
+
+      const result = await commandsHistoryIndexedDB.getCommandHistory(
+        mockInstanceId,
+        commandId,
+      )
+
+      expect(result).toEqual({
+        success: true,
+        data: expectedResultCommand,
+      })
+    })
+
+    it('should handle command not found in IndexedDB', async () => {
+      const commandId = faker.string.uuid()
+
+      mockedFindCommand.mockResolvedValue(undefined)
+
+      const result = await commandsHistoryIndexedDB.getCommandHistory(
+        mockInstanceId,
+        commandId,
+      )
+
+      expect(result).toEqual({
+        success: false,
+      })
+    })
+
+    it('should handle different instance IDs and command IDs', async () => {
+      const instanceId1 = faker.string.uuid()
+      const instanceId2 = faker.string.uuid()
+      const commandId1 = faker.string.uuid()
+      const commandId2 = faker.string.uuid()
+
+      const mockCommand1 = commandExecutionFactory.build({
+        id: commandId1,
+        command: 'GET key1',
+      })
+      const mockCommand2 = commandExecutionFactory.build({
+        id: commandId2,
+        command: 'SET key2 value',
+      })
+
+      const expectedResultCommand1 = {
+        ...mockCommand1,
+        emptyCommand: false,
+      }
+      const expectedResultCommand2 = {
+        ...mockCommand2,
+        emptyCommand: false,
+      }
+
+      mockedFindCommand
+        .mockResolvedValueOnce(mockCommand1)
+        .mockResolvedValueOnce(mockCommand2)
+
+      const result1 = await commandsHistoryIndexedDB.getCommandHistory(
+        instanceId1,
+        commandId1,
+      )
+      const result2 = await commandsHistoryIndexedDB.getCommandHistory(
+        instanceId2,
+        commandId2,
+      )
+
+      expect(result1).toEqual({
+        success: true,
+        data: expectedResultCommand1,
+      })
+      expect(result2).toEqual({
+        success: true,
+        data: expectedResultCommand2,
       })
     })
   })

@@ -239,7 +239,11 @@ const useQuery = () => {
         ),
       )
 
-      const command = await findCommand(commandId)
+      const command = await commandsHistoryService.getCommandHistory(
+        instanceId,
+        commandId,
+      )
+
       setItems((prevItems) =>
         prevItems.map((item) => {
           if (item.id !== commandId) return item
