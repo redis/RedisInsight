@@ -182,7 +182,7 @@ const OAuthSelectPlan = () => {
           <section className={styles.content}>
             <Text className={styles.subTitle}>
               Select a cloud vendor and region to complete the final step
-              towards your free trial Redis database. No credit card is
+              towards your free Redis Cloud database. No credit card is
               required.
             </Text>
             <section className={styles.providers}>

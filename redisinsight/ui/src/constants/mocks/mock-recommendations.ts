@@ -940,7 +940,7 @@ export const MOCK_RECOMMENDATIONS: IRecommendationsStatic = {
         type: 'link',
         value: {
           href: 'https://redis.io/try-free/',
-          name: 'free trial Redis Stack database',
+          name: 'free Redis Cloud database',
         },
       },
       {

@@ -7,7 +7,7 @@ export const CHECK_CLOUD_DATABASE = (
     <Title size="XS">Build your app with Redis Cloud</Title>
     <Spacer size="s" />
     <div>
-      Free trial Cloud DBs auto-delete after 15 days of inactivity.
+      Free Redis Cloud DBs auto-delete after 15 days of inactivity.
       <Spacer size="s" />
       But not to worry, you can always re-create it to test your ideas.
       <br />
@@ -23,17 +23,17 @@ export const WARNING_WITH_CAPABILITY = (capability: string) => (
     <div>
       Hey, remember your interest in {capability}?
       <br />
-      Use your free trial Redis Cloud DB to try it.
+      Use your free Redis Cloud DB to try it.
     </div>
     <Spacer size="s" />
     <div>
-      <b>Note</b>: Free trial Cloud DBs auto-delete after 15 days of inactivity.
+      <b>Note</b>: Free Cloud DBs auto-delete after 15 days of inactivity.
     </div>
   </>
 )
 export const WARNING_WITHOUT_CAPABILITY = (
   <>
-    <Title size="XS">Your free trial Redis Cloud DB is waiting.</Title>
+    <Title size="XS">Your free Redis Cloud DB is waiting.</Title>
     <Spacer size="s" />
     <div>
       Test ideas and build prototypes.
@@ -42,7 +42,7 @@ export const WARNING_WITHOUT_CAPABILITY = (
     </div>
     <Spacer size="s" />
     <div>
-      <b>Note</b>: Free trial Cloud DBs auto-delete after 15 days of inactivity.
+      <b>Note</b>: Free Redis Cloud DBs auto-delete after 15 days of inactivity.
     </div>
   </>
 )

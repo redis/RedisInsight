@@ -50,13 +50,13 @@ const EmptyMessage = ({ onAddInstanceClick }: Props) => (
             medium: 'main',
           })}
           onClick={(e) => {
-            ssoCloudHandlerClick(e, {
+            ssoCloudHandlerClick(e as any, {
               action: OAuthSocialAction.Create,
               source: OAuthSocialSource.EmptyDatabasesList,
             })
           }}
         >
-          Create a free trial Cloud database
+          Create a free Redis Cloud database
         </Link>
       )}
     </OAuthSsoHandlerDialog>
