@@ -69,12 +69,8 @@ env:
     }
   ITESTS_NAMES_SHORT: |
     {
-      "mods-preview": "OSS Standalone and all preview modules",
       "oss-st-5-pass": "OSS Standalone v5 with admin pass required",
-      "oss-st-6-tls-auth": "OSS Standalone v6 with TLS auth required",
-      "oss-clu-tls": "OSS Cluster with TLS enabled",
-      "re-crdt": "Redis Enterprise with active-active database inside",
-      "oss-sent-tls-auth": "OSS Sentinel with TLS auth"
+      "oss-st-6-tls-auth": "OSS Standalone v6 with TLS auth required"
     }
 
 jobs:
@@ -239,7 +235,14 @@ jobs:
           reporter: java-junit
           list-tests: 'failed'
           list-suites: 'failed'
-          fail-on-error: 'false'
+          fail-on-error: 'true'
+
+      - name: Update report name
+        if: always()
+        run: |
+          echo "##[group]Test summary"
+          echo "Failed/Total: ${{ steps.test-reporter.outputs.failures }}/${{ steps.test-reporter.outputs.count }}"
+          echo "##[endgroup]"
 
       - name: Add link to report in the workflow summary
         if: always()
