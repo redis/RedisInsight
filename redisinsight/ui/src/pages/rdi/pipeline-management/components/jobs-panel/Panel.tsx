@@ -62,7 +62,7 @@ const DryRunJobPanel = (props: Props) => {
   const [selectedTab, changeSelectedTab] = useState<PipelineJobsTabs>(
     PipelineJobsTabs.Transformations,
   )
-  const [input, setInput] = useState<string>('')
+  const [input, setInput] = useState<string>('{\n}')
   const [isFormValid, setIsFormValid] = useState<boolean>(false)
   const [targetOptions, setTargetOptions] = useState<RiSelectOption[]>([])
   const [selectedTarget, setSelectedTarget] = useState<string>()
@@ -224,7 +224,7 @@ const DryRunJobPanel = (props: Props) => {
         </div>
         <div className={styles.body}>
           <Text className={styles.text}>
-            Add input data to test the transformation logic.
+            Add input data in JSON format to test the transformation logic.
           </Text>
           <div className={styles.codeLabel}>
             <Text>Input</Text>
