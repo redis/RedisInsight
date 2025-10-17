@@ -153,6 +153,15 @@ jobs:
           cp ./redisinsight/api/test/test-runs/coverage/test-run-result.xml ./itest/results/${{ matrix.rte }}.result.xml
           cp ./redisinsight/api/test/test-runs/coverage/test-run-coverage.json ./itest/coverages/${{ matrix.rte }}.coverage.json
 
+      - name: Process test results
+        if: always()
+        run: |
+          mkdir -p itest/coverages && mkdir -p itest/results
+
+          cp ./redisinsight/api/test/test-runs/coverage/test-run-result.json ./itest/results/${{ matrix.rte }}.result.json
+          cp ./redisinsight/api/test/test-runs/coverage/test-run-result.xml ./itest/results/${{ matrix.rte }}.result.xml
+          cp ./redisinsight/api/test/test-runs/coverage/test-run-coverage.json ./itest/coverages/${{ matrix.rte }}.coverage.json
+
       - name: Upload coverage files as artifact
         if: always()
         uses: actions/upload-artifact@v4

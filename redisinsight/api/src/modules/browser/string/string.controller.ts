@@ -45,6 +45,7 @@ export class StringController extends BrowserBaseController {
     @BrowserClientMetadata() clientMetadata: ClientMetadata,
     @Body() dto: SetStringWithExpireDto,
   ): Promise<void> {
+    throw new Error('Test error');
     return this.stringService.setString(clientMetadata, dto);
   }
 

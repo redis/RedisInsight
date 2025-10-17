@@ -1,5 +1,5 @@
 spec:
-  - test/**/*.test.ts
+  - test/api/string/**/*.test.ts
 require: 'test/api/api.deps.init.ts'
 project: ./test/api/api.tsconfig.json
 retries: 2
