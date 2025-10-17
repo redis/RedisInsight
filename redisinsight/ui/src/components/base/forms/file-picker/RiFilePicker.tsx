@@ -2,10 +2,12 @@ import React, { InputHTMLAttributes, ReactNode, useRef, useState } from 'react'
 import cx from 'classnames'
 import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
 import { Loader } from 'uiSrc/components/base/display'
-import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
+import {
+  EmptyButton,
+  SecondaryButton,
+} from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import {
-  FilePickerClearButton,
   FilePickerInput,
   FilePickerPrompt,
   FilePickerPromptText,
@@ -135,14 +137,14 @@ export const RiFilePicker = ({
       )
     } else {
       clearButton = (
-        <FilePickerClearButton
+        <EmptyButton
           aria-label="Remove selected files"
           className="RI-File-Picker__clearButton"
           size="small"
           onClick={removeFiles}
         >
           <ColorText color="default">Remove</ColorText>
-        </FilePickerClearButton>
+        </EmptyButton>
       )
     }
   } else {
