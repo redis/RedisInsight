@@ -57,7 +57,7 @@ describe('executeQuery', () => {
           getUrl(instanceId, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS),
         ),
         async () => {
-          HttpResponse.json(mockResponse, { status: 200 })
+          return HttpResponse.json(mockResponse, { status: 200 })
         },
       ),
     )
@@ -76,7 +76,7 @@ describe('executeQuery', () => {
           getUrl(instanceId, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS),
         ),
         async () => {
-          HttpResponse.text('', { status: 500 })
+          return HttpResponse.text('', { status: 500 })
         },
       ),
     )

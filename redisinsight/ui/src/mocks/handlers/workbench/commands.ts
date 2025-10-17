@@ -12,7 +12,9 @@ const handlers: HttpHandler[] = [
       getUrl(INSTANCE_ID_MOCK, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS),
     ),
     async () => {
-      HttpResponse.json(commandExecutionFactory.buildList(1), { status: 200 })
+      return HttpResponse.json(commandExecutionFactory.buildList(1), {
+        status: 200,
+      })
     },
   ),
 ]

@@ -16,7 +16,7 @@ const handlers: HttpHandler[] = [
   http.get<any, DatabaseInstanceResponse[]>(
     getMswURL(ApiEndpoints.INFO),
     async () => {
-      HttpResponse.json(APP_INFO_DATA_MOCK, { status: 200 })
+      return HttpResponse.json(APP_INFO_DATA_MOCK, { status: 200 })
     },
   ),
 ]

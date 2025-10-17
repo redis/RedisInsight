@@ -8,7 +8,7 @@ const handlers: HttpHandler[] = [
   http.get(
     getMswResourceURL(ApiEndpoints.CONTENT_CREATE_DATABASE),
     async () => {
-      HttpResponse.json(
+      return HttpResponse.json(
         [
           {
             id: 'e37cc441-a4f2-402c-8bdb-fc2413cbbaff',

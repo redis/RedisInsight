@@ -18,13 +18,13 @@ const handlers: HttpHandler[] = [
   http.get<any, RecommendationResponse>(
     getMswURL(getUrl(INSTANCE_ID_MOCK, ApiEndpoints.RECOMMENDATIONS)),
     async () => {
-      HttpResponse.json(RECOMMENDATIONS_DATA_MOCK, { status: 200 })
+      return HttpResponse.json(RECOMMENDATIONS_DATA_MOCK, { status: 200 })
     },
   ),
   http.delete(
     getMswURL(getUrl(INSTANCE_ID_MOCK, ApiEndpoints.RECOMMENDATIONS)),
     async () => {
-      HttpResponse.text({ status: 200 })
+      return HttpResponse.text('', { status: 200 })
     },
   ),
 ]

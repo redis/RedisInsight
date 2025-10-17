@@ -117,7 +117,7 @@ describe('useLoadData', () => {
           ),
         ),
         async () => {
-          HttpResponse.json({ message: errorMessage }, { status: 500 })
+          return HttpResponse.json({ message: errorMessage }, { status: 500 })
         },
       ),
     )

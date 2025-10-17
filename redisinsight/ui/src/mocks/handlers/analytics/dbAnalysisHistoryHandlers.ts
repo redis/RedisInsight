@@ -10,7 +10,7 @@ const handlers: HttpHandler[] = [
   http.get(
     getMswURL(getUrl(INSTANCE_ID_MOCK, ApiEndpoints.DATABASE_ANALYSIS)),
     async () => {
-      HttpResponse.json(DB_ANALYSIS_HISTORY_DATA_MOCK, { status: 200 })
+      return HttpResponse.json(DB_ANALYSIS_HISTORY_DATA_MOCK, { status: 200 })
     },
   ),
 ]

@@ -15,7 +15,7 @@ const handlers: HttpHandler[] = [
   http.patch<any, RecommendationResponse>(
     getMswURL(getUrl(INSTANCE_ID_MOCK, ApiEndpoints.RECOMMENDATIONS_READ)),
     async () => {
-      HttpResponse.json(EMPTY_RECOMMENDATIONS_MOCK, { status: 200 })
+      return HttpResponse.json(EMPTY_RECOMMENDATIONS_MOCK, { status: 200 })
     },
   ),
 ]

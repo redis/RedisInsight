@@ -134,7 +134,7 @@ describe('init slice', () => {
         http.get<any, (typeof FEATURES_DATA_MOCK)[]>(
           getMswURL(ApiEndpoints.FEATURES),
           async () => {
-            HttpResponse.text('', { status: 500 })
+            return HttpResponse.text('', { status: 500 })
           },
         ),
       )
@@ -159,7 +159,7 @@ describe('init slice', () => {
         http.get<any, CSRFTokenResponse>(
           getMswURL(riConfig.api.csrfEndpoint),
           async () => {
-            HttpResponse.text('', { status: 500 })
+            return HttpResponse.text('', { status: 500 })
           },
         ),
       )
@@ -196,7 +196,7 @@ describe('init slice', () => {
         http.get<any, (typeof FEATURES_DATA_MOCK)[]>(
           getMswURL(ApiEndpoints.FEATURES),
           async () => {
-            HttpResponse.json(newFeatureFlags, { status: 200 })
+            return HttpResponse.json(newFeatureFlags, { status: 200 })
           },
         ),
       )

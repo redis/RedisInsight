@@ -3,6 +3,9 @@ import { DEFAULT_ERROR_MESSAGE } from 'uiSrc/utils'
 
 export const errorHandlers = [
   http.all('*', () => {
-    HttpResponse.json({ message: DEFAULT_ERROR_MESSAGE }, { status: 500 })
+    return HttpResponse.json(
+      { message: DEFAULT_ERROR_MESSAGE },
+      { status: 500 },
+    )
   }),
 ]

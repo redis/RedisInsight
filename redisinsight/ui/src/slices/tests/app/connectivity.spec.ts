@@ -88,7 +88,9 @@ describe('app connectivity slice', () => {
         id: '123', // Match the test database ID
       }
 
-      const getDbOverviewMock = jest.fn(() => HttpResponse.json({}))
+      const getDbOverviewMock = jest.fn(() => {
+        return HttpResponse.json({})
+      })
       mswServer.use(
         http.get(
           getMswURL(`${ApiEndpoints.DATABASES}/123/overview`),
@@ -128,12 +130,12 @@ describe('app connectivity slice', () => {
       jest.spyOn(store, 'dispatch').mockImplementation((action: any) => {
         testStore.dispatch(action)
       })
-      const getDbOverviewMock = jest.fn(() =>
-        HttpResponse.json(
+      const getDbOverviewMock = jest.fn(() => {
+        return HttpResponse.json(
           { code: 'serviceUnavailable', message: 'Test error' },
           { status: 503 },
-        ),
-      )
+        )
+      })
       mswServer.use(
         http.get(
           getMswURL(`${ApiEndpoints.DATABASES}/123/overview`),

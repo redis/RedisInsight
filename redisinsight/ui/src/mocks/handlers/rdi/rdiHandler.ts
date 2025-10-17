@@ -9,7 +9,7 @@ const handlers: HttpHandler[] = [
   http.get<any, RdiInstanceResponse[]>(
     getMswURL(getUrl(ApiEndpoints.RDI_INSTANCES)),
     async () => {
-      HttpResponse.json(
+      return HttpResponse.json(
         [
           {
             id: '1',
@@ -28,17 +28,17 @@ const handlers: HttpHandler[] = [
 
   // create rdi instance
   http.post(getMswURL(ApiEndpoints.RDI_INSTANCES), async () => {
-    HttpResponse.json({}, { status: 200 })
+    return HttpResponse.json({}, { status: 200 })
   }),
 
   // update rdi instance
   http.patch(getMswURL(getUrl('1', ApiEndpoints.RDI_INSTANCES)), async () => {
-    HttpResponse.json({}, { status: 200 })
+    return HttpResponse.json({}, { status: 200 })
   }),
 
   // delete rdi instance
   http.delete(getMswURL(ApiEndpoints.RDI_INSTANCES), async () => {
-    HttpResponse.json({}, { status: 200 })
+    return HttpResponse.json({}, { status: 200 })
   }),
 ]
 

@@ -15,7 +15,9 @@ const handlers: HttpHandler[] = [
       ),
     ),
     async () => {
-      HttpResponse.json(bulkActionOverviewFactory.build(), { status: 200 })
+      return HttpResponse.json(bulkActionOverviewFactory.build(), {
+        status: 200,
+      })
     },
   ),
 ]

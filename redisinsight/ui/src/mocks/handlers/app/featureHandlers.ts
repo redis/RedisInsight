@@ -97,7 +97,7 @@ const handlers: HttpHandler[] = [
   http.get<any, (typeof FEATURES_DATA_MOCK)[]>(
     getMswURL(ApiEndpoints.FEATURES),
     async () => {
-      HttpResponse.json(FEATURES_DATA_MOCK, { status: 200 })
+      return HttpResponse.json(FEATURES_DATA_MOCK, { status: 200 })
     },
   ),
 ]

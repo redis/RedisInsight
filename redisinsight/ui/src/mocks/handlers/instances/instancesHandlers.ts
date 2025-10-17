@@ -85,20 +85,20 @@ const handlers: HttpHandler[] = [
   http.post<any, ExportDatabase>(
     getMswURL(ApiEndpoints.DATABASES_EXPORT),
     async () => {
-      HttpResponse.json(INSTANCES_MOCK, { status: 200 })
+      return HttpResponse.json(INSTANCES_MOCK, { status: 200 })
     },
   ),
   http.get<any, DatabaseInstanceResponse>(
     getMswURL(getUrl(INSTANCE_ID_MOCK)),
     async () => {
-      HttpResponse.json(INSTANCES_MOCK[0], { status: 200 })
+      return HttpResponse.json(INSTANCES_MOCK[0], { status: 200 })
     },
   ),
   http.get<any, RedisNodeInfoResponse>(
     getMswURL(`/${ApiEndpoints.DATABASES}/:id/info`),
     // getMswURL(getUrl(INSTANCE_ID_MOCK, 'info')),
     async () => {
-      HttpResponse.json(MOCK_INFO_API_RESPONSE, { status: 200 })
+      return HttpResponse.json(MOCK_INFO_API_RESPONSE, { status: 200 })
     },
   ),
 ]

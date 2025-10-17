@@ -389,7 +389,7 @@ Object.defineProperty(window, 'sessionStorage', { value: sessionStorageMock })
 const scrollIntoViewMock = jest.fn()
 window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock
 
-const matchMediaMock = () => ({
+const matchMediaMock = (_: any) => ({
   matches: false,
   addEventListener: jest.fn(),
   removeEventListener: jest.fn(),
@@ -402,6 +402,7 @@ Object.defineProperty(window, 'matchMedia', {
 
 export const getMswResourceURL = (path: string = '') =>
   RESOURCES_BASE_URL.concat(path)
+
 export const getMswURL = (path: string = '') =>
   apiService.defaults.baseURL?.concat(
     path.startsWith('/') ? path.slice(1) : path,

@@ -43,7 +43,7 @@ const handlers: HttpHandler[] = [
   http.get(
     getMswURL(getRdiUrl('rdiInstanceId', ApiEndpoints.RDI_PIPELINE_STRATEGIES)),
     async () => {
-      HttpResponse.json(MOCK_RDI_STRATEGIES, { status: 200 })
+      return HttpResponse.json(MOCK_RDI_STRATEGIES, { status: 200 })
     },
   ),
 ]

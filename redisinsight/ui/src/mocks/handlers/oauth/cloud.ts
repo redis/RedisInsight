@@ -19,12 +19,12 @@ export const CLOUD_ME_DATA_MOCK = {
 const handlers: HttpHandler[] = [
   // fetch cloud capi keys
   http.get(getMswURL(ApiEndpoints.CLOUD_CAPI_KEYS), async () => {
-    HttpResponse.json(OAUTH_CLOUD_CAPI_KEYS_DATA, { status: 200 })
+    return HttpResponse.json(OAUTH_CLOUD_CAPI_KEYS_DATA, { status: 200 })
   }),
 
   // fetch user profile
   http.get(getMswURL(ApiEndpoints.CLOUD_ME), async () => {
-    HttpResponse.json(CLOUD_ME_DATA_MOCK, { status: 200 })
+    return HttpResponse.json(CLOUD_ME_DATA_MOCK, { status: 200 })
   }),
 ]
 

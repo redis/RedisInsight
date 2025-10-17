@@ -21,19 +21,19 @@ const handlers: HttpHandler[] = [
   http.get<any, ListRedisearchIndexesResponse>(
     getMswURL(getUrl(INSTANCE_ID_MOCK, ApiEndpoints.REDISEARCH)),
     async () => {
-      HttpResponse.json(REDISEARCH_LIST_DATA_MOCK, { status: 200 })
+      return HttpResponse.json(REDISEARCH_LIST_DATA_MOCK, { status: 200 })
     },
   ),
   http.post<any, IndexInfoDto>(
     getMswURL(getUrl(INSTANCE_ID_MOCK, ApiEndpoints.REDISEARCH_INFO)),
     async () => {
-      HttpResponse.json(indexInfoFactory.build(), { status: 200 })
+      return HttpResponse.json(indexInfoFactory.build(), { status: 200 })
     },
   ),
   http.delete(
     getMswURL(getUrl(INSTANCE_ID_MOCK, ApiEndpoints.REDISEARCH)),
     async () => {
-      HttpResponse.text('', { status: 204 })
+      return HttpResponse.text('', { status: 204 })
     },
   ),
 ]
