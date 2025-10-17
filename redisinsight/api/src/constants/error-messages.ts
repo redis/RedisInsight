@@ -140,7 +140,7 @@ export default {
   CLOUD_TASK_NOT_FOUND: 'Cloud task was not found',
   CLOUD_DATABASE_IN_FAILED_STATE: 'Cloud database is in the failed state',
   CLOUD_DATABASE_IN_UNEXPECTED_STATE: 'Cloud database is in unexpected state',
-  CLOUD_DATABASE_ALREADY_EXISTS_FREE: 'Free trial database already exists',
+  CLOUD_DATABASE_ALREADY_EXISTS_FREE: 'Free database already exists',
   CLOUD_DATABASE_IMPORT_FORBIDDEN:
     'Adding your Redis Cloud database to Redis Insight is disabled due to a setting restricting database connection management.',
   CLOUD_PLAN_NOT_FOUND_FREE: 'Unable to find free cloud plan',

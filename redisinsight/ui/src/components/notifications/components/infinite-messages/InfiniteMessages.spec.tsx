@@ -236,7 +236,7 @@ describe('INFINITE_MESSAGES', () => {
         'Your subscription does not have a free Redis Cloud database.',
       )
       const description = await screen.findByText(
-        'Do you want to create a free trial database in your existing subscription?',
+        'Do you want to create a free database in your existing subscription?',
       )
       const createButton = await screen.findByRole('button', {
         name: /Create/,

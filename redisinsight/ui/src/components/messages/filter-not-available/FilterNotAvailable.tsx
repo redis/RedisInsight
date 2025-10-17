@@ -49,7 +49,7 @@ const FilterNotAvailable = ({ onClose }: { onClose?: () => void }) => {
       {!!freeInstances.length && (
         <>
           <Text color="subdued">
-            Use your free trial all-in-one Redis Cloud database to start
+            Use your free all-in-one Redis Cloud database to start
             exploring these capabilities.
           </Text>
           <Spacer />

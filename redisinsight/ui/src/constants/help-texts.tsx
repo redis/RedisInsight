@@ -59,7 +59,7 @@ export default {
         className="link-underline"
         rel="noreferrer"
       >
-        free up-to-date trial
+        free up-to-date
       </a>
       &nbsp;Redis database.
     </>

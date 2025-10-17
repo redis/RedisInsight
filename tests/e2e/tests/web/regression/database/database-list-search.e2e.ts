@@ -57,7 +57,7 @@ test
     // Search for DB by Invalid search
     await t.typeText(myRedisDatabasePage.searchInput, searchedDBHostInvalid, { replace: true, paste: true });
     // Verify that free cloud db is displayed always
-    await t.expect(myRedisDatabasePage.tableRowContent.textContent).contains('Free Redis Cloud DB', `create free trial db row is not displayed`);
+    await t.expect(myRedisDatabasePage.tableRowContent.textContent).contains('Free Redis Cloud DB', `create free db row is not displayed`);
 
     // Search for DB by name
     await t.typeText(myRedisDatabasePage.searchInput, searchedDBName, { replace: true, paste: true });

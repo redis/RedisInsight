@@ -837,7 +837,7 @@ export const MOCK_RECOMMENDATIONS: IRecommendationsStatic = {
       {
         type: 'span',
         value:
-          'For a quick trial of the features, spin up a free trial developer database with ',
+          'For a quick trial of the features, spin up a free developer database with ',
       },
       {
         type: 'link',

@@ -206,7 +206,7 @@ const ExpertChat = () => {
       return {
         title: 'Redis Query Engine capability is not available',
         content: freeInstances?.length
-          ? 'Use your free trial all-in-one Redis Cloud database to start exploring these capabilities.'
+          ? 'Use your free all-in-one Redis Cloud database to start exploring these capabilities.'
           : 'Create a free Redis Cloud database with Redis Query Engine capability that extends the core capabilities of open-source Redis.',
         icon: <TelescopeImg className={styles.iconTelescope} />,
       }
