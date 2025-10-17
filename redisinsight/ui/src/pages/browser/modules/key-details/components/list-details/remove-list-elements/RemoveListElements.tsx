@@ -212,7 +212,6 @@ const RemoveListElements = (props: Props) => {
             size="small"
             onClick={submitData}
             icon={DeleteIcon}
-            className={styles.popoverDeleteBtn}
             data-testid="remove-submit"
           >
             Remove
