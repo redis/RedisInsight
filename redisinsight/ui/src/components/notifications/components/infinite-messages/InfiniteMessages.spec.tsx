@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
+import { fireEvent, render, screen, act } from 'uiSrc/utils/test-utils'
 
 import { OAuthProvider } from 'uiSrc/components/oauth/oauth-select-plan/constants'
 import notificationsReducer, {
@@ -19,24 +19,22 @@ const createTestStore = () =>
       getDefaultMiddleware({ serializableCheck: false }),
   })
 
-const renderToast = (notification: InfiniteMessage) => {
+const renderToast = async (notification: InfiniteMessage) => {
   const store = createTestStore()
 
   render(
     <>
-      {/* <RiToaster /> */}
       <Notifications />
     </>,
     { store },
   )
-
-  store.dispatch(addInfiniteNotification(notification))
+  await act(async () => store.dispatch(addInfiniteNotification(notification)))
 }
 
 describe('INFINITE_MESSAGES', () => {
   describe('AUTHENTICATING', () => {
     it('should render message', async () => {
-      renderToast(INFINITE_MESSAGES.AUTHENTICATING())
+      await renderToast(INFINITE_MESSAGES.AUTHENTICATING())
 
       // Wait for the notification to appear
       const title = await screen.findByText('Authenticating…')

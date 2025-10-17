@@ -16,8 +16,13 @@ export const USER_SETTINGS_DATA_MOCK = {
   },
 }
 
+const apiSettings = getMswURL(ApiEndpoints.SETTINGS)
+
 const handlers: HttpHandler[] = [
-  http.get(getMswURL(ApiEndpoints.SETTINGS), async () => {
+  http.get(apiSettings, async () => {
+    return HttpResponse.json(USER_SETTINGS_DATA_MOCK, { status: 200 })
+  }),
+  http.patch(apiSettings, async () => {
     return HttpResponse.json(USER_SETTINGS_DATA_MOCK, { status: 200 })
   }),
 ]
