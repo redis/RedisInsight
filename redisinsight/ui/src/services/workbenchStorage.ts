@@ -283,9 +283,12 @@ export const wbHistoryStorage = new WorkbenchStorage(
 
 type CommandHistoryType = CommandExecution[]
 
-export async function getLocalWbHistory(dbId: string) {
+export async function getLocalWbHistory(
+  dbStorage: WorkbenchStorage,
+  dbId: string,
+) {
   try {
-    const history = (await wbHistoryStorage.getItems(
+    const history = (await dbStorage.getItems(
       BrowserStorageItem.wbCommandsHistory,
       dbId,
     )) as CommandHistoryType
@@ -297,13 +300,14 @@ export async function getLocalWbHistory(dbId: string) {
   }
 }
 
-export function saveLocalWbHistory(commandsHistory: CommandHistoryType) {
+export function saveLocalWbHistory(
+  dbStorage: WorkbenchStorage,
+  commandsHistory: CommandHistoryType,
+) {
   try {
     const key = BrowserStorageItem.wbCommandsHistory
     return Promise.all(
-      flatten(
-        commandsHistory.map((chItem) => wbHistoryStorage.setItem(key, chItem)),
-      ),
+      flatten(commandsHistory.map((chItem) => dbStorage.setItem(key, chItem))),
     )
   } catch (e) {
     console.error(e)
@@ -311,25 +315,36 @@ export function saveLocalWbHistory(commandsHistory: CommandHistoryType) {
   }
 }
 
-async function cleanupDatabaseHistory(dbId: string) {
-  const commandsHistory: CommandHistoryType = await getLocalWbHistory(dbId)
+async function cleanupDatabaseHistory(
+  dbStorage: WorkbenchStorage,
+  dbId: string,
+) {
+  const commandsHistory: CommandHistoryType = await getLocalWbHistory(
+    dbStorage,
+    dbId,
+  )
   let size = 0
   // collect items up to maxItemsPerDb
-  const update = commandsHistory.reverse().reduce((acc, commandsHistoryElement) => {
-    if (size >= WORKBENCH_HISTORY_MAX_LENGTH) {
+  const update = commandsHistory
+    .reverse()
+    .reduce((acc, commandsHistoryElement) => {
+      if (size >= WORKBENCH_HISTORY_MAX_LENGTH) {
+        return acc
+      }
+      size++
+      acc.push(commandsHistoryElement)
       return acc
-    }
-    size++
-    acc.push(commandsHistoryElement)
-    return acc
-  }, [] as CommandHistoryType)
+    }, [] as CommandHistoryType)
   // clear old items
-  await clearCommands(dbId)
+  await clearCommands(dbStorage, dbId)
   // save
-  await saveLocalWbHistory(update)
+  await saveLocalWbHistory(dbStorage, update)
 }
 
-export async function addCommands(data: CommandExecution[]) {
+export async function addCommands(
+  dbStorage: WorkbenchStorage,
+  data: CommandExecution[],
+) {
   // Store command results in local storage!
   const storedData = data.map((item) => {
     // Do not store command execution result that exceeded limitation
@@ -344,28 +359,32 @@ export async function addCommands(data: CommandExecution[]) {
     }
     return item
   })
-  await saveLocalWbHistory(storedData)
+  await saveLocalWbHistory(dbStorage, storedData)
   const [{ databaseId }] = storedData
-  return cleanupDatabaseHistory(databaseId)
+  return cleanupDatabaseHistory(dbStorage, databaseId)
 }
 
-export async function removeCommand(dbId: string, commandId: string) {
+export async function removeCommand(
+  dbStorage: WorkbenchStorage,
+  dbId: string,
+  commandId: string,
+) {
   // Delete command from local storage?!
-  await wbHistoryStorage.removeItem(
+  await dbStorage.removeItem(
     BrowserStorageItem.wbCommandsHistory,
     dbId,
     commandId,
   )
 }
 
-export async function clearCommands(dbId: string) {
-  await wbHistoryStorage.clear(BrowserStorageItem.wbCommandsHistory, dbId)
+export async function clearCommands(dbStorage: WorkbenchStorage, dbId: string) {
+  await dbStorage.clear(BrowserStorageItem.wbCommandsHistory, dbId)
 }
 
-export async function findCommand(commandId: string) {
+export async function findCommand(
+  dbStorage: WorkbenchStorage,
+  commandId: string,
+) {
   // Fetch command from local storage
-  return wbHistoryStorage.getItem(
-    BrowserStorageItem.wbCommandsHistory,
-    commandId,
-  )
+  return dbStorage.getItem(BrowserStorageItem.wbCommandsHistory, commandId)
 }

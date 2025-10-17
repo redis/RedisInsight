@@ -1,5 +1,4 @@
 import { renderHook, act } from '@testing-library/react-hooks'
-import executeQuery from 'uiSrc/services/executeQuery'
 import {
   CreateSearchIndexParameters,
   SampleDataContent,
@@ -9,7 +8,7 @@ import {
 import { useCreateIndex } from './useCreateIndex'
 
 const mockLoad = jest.fn()
-const mockAddCommands = jest.fn()
+const mockAddCommandsToHistory = jest.fn()
 
 jest.mock('uiSrc/services/hooks', () => ({
   useLoadData: () => ({
@@ -17,19 +16,17 @@ jest.mock('uiSrc/services/hooks', () => ({
   }),
 }))
 
-jest.mock('uiSrc/services/workbenchStorage', () => ({
-  addCommands: (...args: any[]) => mockAddCommands(...args),
-}))
-
 jest.mock('uiSrc/utils/index/generateFtCreateCommand', () => ({
   generateFtCreateCommand: () => 'FT.CREATE idx:bikes_vss ...',
 }))
 
-jest.mock('uiSrc/services/executeQuery', () => ({
+jest.mock('uiSrc/services/commands-history/commandsHistoryService', () => ({
   __esModule: true,
-  default: jest.fn(),
+  default: jest.fn().mockImplementation(() => ({
+    addCommandsToHistory: mockAddCommandsToHistory,
+  })),
 }))
-const mockExecute = executeQuery as jest.Mock
+
 const mockOnSuccess = jest.fn()
 const mockOnError = jest.fn()
 
@@ -50,7 +47,7 @@ describe('useCreateIndex', () => {
 
   it('should complete flow successfully', async () => {
     mockLoad.mockResolvedValue(undefined)
-    mockExecute.mockResolvedValue([{ id: '1', databaseId: 'test-instance-id' }])
+    mockAddCommandsToHistory.mockResolvedValue([])
 
     const { result } = renderHook(() => useCreateIndex())
 
@@ -59,11 +56,14 @@ describe('useCreateIndex', () => {
     })
 
     expect(mockLoad).toHaveBeenCalledWith('test-instance-id', 'bikes')
-    expect(mockExecute).toHaveBeenCalledWith(
+    expect(mockAddCommandsToHistory).toHaveBeenCalledWith(
       'test-instance-id',
-      'FT.CREATE idx:bikes_vss ...',
+      ['FT.CREATE idx:bikes_vss ...'],
+      {
+        activeRunQueryMode: 'RAW',
+        resultsMode: 'DEFAULT',
+      },
     )
-    expect(mockAddCommands).toHaveBeenCalled()
     expect(result.current.success).toBe(true)
     expect(result.current.error).toBeNull()
     expect(result.current.loading).toBe(false)
@@ -82,7 +82,7 @@ describe('useCreateIndex', () => {
     expect(result.current.error?.message).toMatch(/Instance ID is required/)
     expect(result.current.loading).toBe(false)
     expect(mockLoad).not.toHaveBeenCalled()
-    expect(mockExecute).not.toHaveBeenCalled()
+    expect(mockAddCommandsToHistory).not.toHaveBeenCalled()
   })
 
   it('should handle failure in data loading', async () => {
@@ -99,14 +99,16 @@ describe('useCreateIndex', () => {
     expect(result.current.success).toBe(false)
     expect(result.current.error).toBe(error)
     expect(result.current.loading).toBe(false)
-    expect(mockExecute).not.toHaveBeenCalled()
+    expect(mockAddCommandsToHistory).not.toHaveBeenCalled()
     expect(mockOnSuccess).not.toHaveBeenCalled()
     expect(mockOnError).toHaveBeenCalled()
   })
 
-  it('should handle execution failure', async () => {
+  it('should handle command history service failure', async () => {
     mockLoad.mockResolvedValue(undefined)
-    mockExecute.mockRejectedValue(new Error('Execution failed'))
+    mockAddCommandsToHistory.mockRejectedValue(
+      new Error('Command history service failed'),
+    )
 
     const { result } = renderHook(() => useCreateIndex())
 
@@ -114,17 +116,16 @@ describe('useCreateIndex', () => {
       await result.current.run(defaultParams)
     })
 
-    expect(mockExecute).toHaveBeenCalled()
+    expect(mockAddCommandsToHistory).toHaveBeenCalled()
     expect(result.current.success).toBe(false)
     expect(result.current.error).toBeInstanceOf(Error)
-    expect(result.current.error?.message).toBe('Execution failed')
+    expect(result.current.error?.message).toBe('Command history service failed')
     expect(result.current.loading).toBe(false)
   })
 
   it('should handle movies data content correctly', async () => {
-    const mockData = [{ id: '1', databaseId: 'test-instance-id' }]
     mockLoad.mockResolvedValue(undefined)
-    mockExecute.mockResolvedValue(mockData)
+    mockAddCommandsToHistory.mockResolvedValue([])
 
     const { result } = renderHook(() => useCreateIndex())
 
@@ -138,6 +139,14 @@ describe('useCreateIndex', () => {
     })
 
     expect(mockLoad).toHaveBeenCalledWith('test-instance-id', 'movies')
+    expect(mockAddCommandsToHistory).toHaveBeenCalledWith(
+      'test-instance-id',
+      ['FT.CREATE idx:bikes_vss ...'],
+      {
+        activeRunQueryMode: 'RAW',
+        resultsMode: 'DEFAULT',
+      },
+    )
     expect(result.current.success).toBe(true)
   })
 })

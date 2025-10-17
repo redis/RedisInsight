@@ -5,7 +5,6 @@ import { TelemetryEvent } from 'uiSrc/telemetry/events'
 import { sendEventTelemetry } from 'uiSrc/telemetry'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
 import { VectorSearchQuery, VectorSearchQueryProps } from './VectorSearchQuery'
-import * as utils from './utils'
 
 // Mock the telemetry module, so we don't send actual telemetry data during tests
 jest.mock('uiSrc/telemetry', () => ({
@@ -25,10 +24,19 @@ jest.mock('uiSrc/slices/browser/redisearch', () => ({
     .mockReturnValue({ type: 'FETCH_REDISEARCH_LIST' }),
 }))
 
-// Mock the utils module to control loadHistoryData behavior
-jest.mock('./utils', () => ({
-  ...jest.requireActual('./utils'),
-  loadHistoryData: jest.fn(),
+// Mock the CommandsHistoryService
+const mockGetCommandsHistory = jest.fn()
+const mockAddCommandsToHistory = jest.fn()
+const mockDeleteCommandFromHistory = jest.fn()
+const mockClearCommandsHistory = jest.fn()
+
+jest.mock('uiSrc/services/commands-history/commandsHistoryService', () => ({
+  CommandsHistoryService: jest.fn().mockImplementation(() => ({
+    getCommandsHistory: mockGetCommandsHistory,
+    addCommandsToHistory: mockAddCommandsToHistory,
+    deleteCommandFromHistory: mockDeleteCommandFromHistory,
+    clearCommandsHistory: mockClearCommandsHistory,
+  })),
 }))
 
 const DEFAULT_PROPS: VectorSearchQueryProps = {
@@ -43,6 +51,11 @@ const renderVectorSearchQueryComponent = (
 describe('VectorSearchQuery', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    // Reset the mock functions
+    mockGetCommandsHistory.mockResolvedValue([])
+    mockAddCommandsToHistory.mockResolvedValue([])
+    mockDeleteCommandFromHistory.mockResolvedValue(undefined)
+    mockClearCommandsHistory.mockResolvedValue(undefined)
   })
 
   it('should render correctly', () => {
@@ -79,10 +92,9 @@ describe('VectorSearchQuery', () => {
   })
 
   it('should render "No query results" message if there are no results', async () => {
-    // Mock loadHistoryData specifically for this test to return empty array
+    // Mock getCommandsHistory to return empty array
     // This ensures isResultsLoaded becomes true and items remains empty
-    const mockedUtils = utils as jest.Mocked<typeof utils>
-    mockedUtils.loadHistoryData.mockResolvedValueOnce([])
+    mockGetCommandsHistory.mockResolvedValueOnce([])
 
     renderVectorSearchQueryComponent()
 

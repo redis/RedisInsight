@@ -1,10 +1,14 @@
-import { useCallback, useState } from 'react'
-import { reverse } from 'lodash'
+import { useCallback, useRef, useState } from 'react'
 import { useLoadData } from 'uiSrc/services/hooks'
-import { addCommands } from 'uiSrc/services/workbenchStorage'
 import { generateFtCreateCommand } from 'uiSrc/utils/index/generateFtCreateCommand'
 import { CreateSearchIndexParameters, SampleDataContent } from '../types'
 import executeQuery from 'uiSrc/services/executeQuery'
+import {
+  CommandExecutionType,
+  ResultsMode,
+  RunQueryMode,
+} from 'uiSrc/slices/interfaces'
+import CommandsHistoryService from 'uiSrc/services/commands-history/commandsHistoryService'
 
 interface UseCreateIndexResult {
   run: (
@@ -26,6 +30,10 @@ export const useCreateIndex = (): UseCreateIndexResult => {
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
+
+  const commandsHistoryService = useRef(
+    new CommandsHistoryService(CommandExecutionType.Search),
+  ).current
 
   const { load } = useLoadData()
 
@@ -54,12 +62,12 @@ export const useCreateIndex = (): UseCreateIndexResult => {
           indexName,
           dataContent,
         })
-        const data = await executeQuery(instanceId, cmd)
 
-        // Step 3: Persist results locally so Vector Search history (CommandsView) shows it
-        if (Array.isArray(data) && data.length) {
-          await addCommands(reverse(data))
-        }
+        // Step 3: Persist results so Vector Search history (CommandsView) shows it
+        await commandsHistoryService.addCommandsToHistory(instanceId, [cmd], {
+          activeRunQueryMode: RunQueryMode.Raw,
+          resultsMode: ResultsMode.Default,
+        })
 
         setSuccess(true)
         onSuccess?.()
