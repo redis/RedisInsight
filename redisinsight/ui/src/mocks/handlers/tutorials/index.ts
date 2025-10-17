@@ -1,9 +1,7 @@
-import { DefaultBodyType, MockedRequest, RestHandler } from 'msw'
+import { HttpHandler } from 'msw'
 
 import tutorials from './tutorialsHandlers'
 
 // @ts-ignore
-const handlers: RestHandler<MockedRequest<DefaultBodyType>>[] = [].concat(
-  tutorials,
-)
+const handlers: HttpHandler[] = [...tutorials]
 export default handlers

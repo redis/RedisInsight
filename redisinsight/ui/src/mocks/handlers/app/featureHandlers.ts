@@ -1,4 +1,4 @@
-import { rest, RestHandler } from 'msw'
+import { http, HttpHandler, HttpResponse } from 'msw'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { getMswURL } from 'uiSrc/utils/test-utils'
 
@@ -92,12 +92,13 @@ export const FEATURES_DATA_MOCK = {
   },
 }
 
-const handlers: RestHandler[] = [
+const handlers: HttpHandler[] = [
   // get features
-  rest.get<(typeof FEATURES_DATA_MOCK)[]>(
+  http.get<any, (typeof FEATURES_DATA_MOCK)[]>(
     getMswURL(ApiEndpoints.FEATURES),
-    async (_req, res, ctx) =>
-      res(ctx.status(200), ctx.json(FEATURES_DATA_MOCK)),
+    async () => {
+      return HttpResponse.json(FEATURES_DATA_MOCK, { status: 200 })
+    },
   ),
 ]
 
