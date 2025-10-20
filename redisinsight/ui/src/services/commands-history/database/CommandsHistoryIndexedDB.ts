@@ -23,7 +23,6 @@ import {
   wbHistoryStorage,
   WorkbenchStorage,
 } from 'uiSrc/services/workbenchStorage'
-import { C } from 'msw/lib/glossary-2792c6da'
 
 export class CommandsHistoryIndexedDB implements CommandsHistoryDatabase {
   private readonly dbStorage: WorkbenchStorage
