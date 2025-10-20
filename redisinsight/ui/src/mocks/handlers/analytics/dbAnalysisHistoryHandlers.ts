@@ -13,6 +13,12 @@ const handlers: HttpHandler[] = [
       return HttpResponse.json(DB_ANALYSIS_HISTORY_DATA_MOCK, { status: 200 })
     },
   ),
+  http.post(
+    getMswURL(getUrl(INSTANCE_ID_MOCK, ApiEndpoints.DATABASE_ANALYSIS)),
+    async () => {
+      return HttpResponse.json({}, { status: 200 })
+    },
+  ),
 ]
 
 export const DB_ANALYSIS_HISTORY_DATA_MOCK = [

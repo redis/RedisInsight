@@ -62,7 +62,7 @@ describe('TemplateForm', () => {
   })
 
   it('should fetch rdi strategies on initial', async () => {
-    await act(() => {
+    await act(async () => {
       render(<TemplateForm {...instance(mockedProps)} />)
     })
 
