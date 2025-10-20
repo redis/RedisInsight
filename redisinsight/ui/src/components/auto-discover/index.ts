@@ -26,9 +26,11 @@ export const SearchContainer = styled(FlexItem)`
 export const SearchForm = styled(FormField)`
   width: 266px;
 `
-export const Footer = styled(FlexItem).attrs({
-  grow: false,
-})`
+export const Footer = styled(FlexItem).attrs<{ grow?: boolean | number }>(
+  ({ grow }) => ({
+    grow: grow ?? false,
+  }),
+)`
   border-top: 1px solid
     ${({ theme }: { theme: Theme }) => theme.semantic.color.border.neutral400};
 `

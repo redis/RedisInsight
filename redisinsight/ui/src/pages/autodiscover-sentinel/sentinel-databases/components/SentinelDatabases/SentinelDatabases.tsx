@@ -17,7 +17,11 @@ import { InfoIcon } from 'uiSrc/components/base/icons'
 import { SearchInput } from 'uiSrc/components/base/inputs'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import {
+  Table,
+  ColumnDef,
+  RowSelectionState,
+} from 'uiSrc/components/base/layout/table'
 import {
   DatabaseWrapper,
   Footer,
@@ -28,11 +32,13 @@ import {
 } from 'uiSrc/components/auto-discover'
 
 import styles from '../../../styles.module.scss'
+import { getRowId } from 'uiSrc/pages/autodiscover-sentinel/sentinel-databases/useSentinelDatabasesConfig'
 
 export interface Props {
-  columns: ColumnDefinition<ModifiedSentinelMaster>[]
+  columns: ColumnDef<ModifiedSentinelMaster>[]
   masters: ModifiedSentinelMaster[]
   selection: ModifiedSentinelMaster[]
+  onSelectionChange: (state: RowSelectionState) => void
   onClose: () => void
   onBack: () => void
   onSubmit: (databases: ModifiedSentinelMaster[]) => void
@@ -48,6 +54,7 @@ const notFoundMsg = 'Not found.'
 
 const SentinelDatabases = ({
   columns,
+  onSelectionChange,
   onClose,
   onBack,
   onSubmit,
@@ -55,6 +62,23 @@ const SentinelDatabases = ({
   selection,
 }: Props) => {
   const [items, setItems] = useState<ModifiedSentinelMaster[]>(masters)
+  const [rowSelection, setRowSelection] = useState<
+    Record<NonNullable<ModifiedSentinelMaster['id']>, boolean>
+  >({})
+  useEffect(() => {
+    setRowSelection(
+      selection.reduce(
+        (acc, item) => {
+          if (item.id) {
+            acc[item.id] = true
+          }
+          return acc
+        },
+        {} as Record<NonNullable<ModifiedSentinelMaster['id']>, boolean>,
+      ),
+    )
+  }, [selection])
+
   const [message, setMessage] = useState(loadingMsg)
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
 
@@ -86,7 +110,7 @@ const SentinelDatabases = ({
     if (!masters.length) {
       setMessage(notMastersMsg)
     }
-  }, [masters])
+  }, [masters.length])
 
   const onQueryChange = (term: string) => {
     const value = term?.toLowerCase()
@@ -208,6 +232,11 @@ const SentinelDatabases = ({
 
         <DatabaseWrapper>
           <Table
+            rowSelectionMode="multiple"
+            rowSelection={rowSelection}
+            onRowSelectionChange={onSelectionChange}
+            getRowCanSelect={(row) => getRowId(row.original) !== ''}
+            getRowId={getRowId}
             columns={columns}
             data={items}
             defaultSorting={[
@@ -216,6 +245,7 @@ const SentinelDatabases = ({
                 desc: false,
               },
             ]}
+            stripedRows
           />
           {!items.length && (
             <Text size="S" color="subdued">

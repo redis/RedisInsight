@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { map, pick } from 'lodash'
@@ -23,10 +23,19 @@ import {
   CopyPublicEndpointText,
   CopyTextContainer,
 } from 'uiSrc/components/auto-discover'
-import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import {
+  ColumnDef,
+  RowSelectionState,
+} from 'uiSrc/components/base/layout/table'
 import { RiIcon } from 'uiSrc/components/base/icons'
 
 import styles from '../styles.module.scss'
+
+const handleCopy = (text = '') => {
+  return navigator.clipboard.writeText(text)
+}
+
+export const getRowId = (row: ModifiedSentinelMaster) => row.id || ''
 
 export const useSentinelDatabasesConfig = () => {
   const [items, setItems] = useState<ModifiedSentinelMaster[]>([])
@@ -36,29 +45,35 @@ export const useSentinelDatabasesConfig = () => {
   const dispatch = useDispatch()
   const history = useHistory()
   const [selection, setSelection] = useState<ModifiedSentinelMaster[]>([])
+
   const updateSelection = (
     selected: ModifiedSentinelMaster[],
     masters: ModifiedSentinelMaster[],
   ) => {
     return selected.map(
-      (select) => masters.find((master) => master.id === select.id) ?? select,
+      (select) =>
+        masters.find((master) => {
+          return getRowId(master) === getRowId(select)
+        }) ?? select,
     )
   }
-  const onSelectionChange = (selected: ModifiedSentinelMaster) =>
-    setSelection((previous) => {
-      const isSelected = previous.some((item) => item.id === selected.id)
-      if (isSelected) {
-        return previous.filter((item) => item.id !== selected.id)
+  const handleSelectionChange = (currentSelected: RowSelectionState) => {
+    const newSelection = items.filter((item) => {
+      const id = getRowId(item)
+      if (!id) {
+        return false
       }
-      return [...previous, selected]
+      return currentSelected[id]
     })
+    setSelection(newSelection)
+  }
 
   useEffect(() => {
     if (masters.length) {
       setItems(masters)
       setSelection((prevState) => updateSelection(prevState, masters))
     }
-  }, [masters])
+  }, [masters.length])
 
   setTitle('Auto-Discover Redis Sentinel Primary Groups')
 
@@ -75,7 +90,7 @@ export const useSentinelDatabasesConfig = () => {
     history.push(Pages.home)
   }
 
-  const handleBackAdditing = () => {
+  const handleBackAdding = () => {
     sendCancelEvent()
     dispatch(resetLoadedSentinel(LoadedSentinel.Masters))
     history.push(Pages.home)
@@ -107,53 +122,48 @@ export const useSentinelDatabasesConfig = () => {
     )
   }
 
-  const handleCopy = (text = '') => {
-    navigator.clipboard.writeText(text)
-  }
+  const handleChangedInput = useCallback(
+    (name: string, value: string) => {
+      const [field, id] = name.split('-')
 
-  const handleChangedInput = (name: string, value: string) => {
-    const [field, id] = name.split('-')
+      setItems((items) =>
+        items.map((item) => {
+          const itemId = getRowId(item)
+          if (itemId !== id) {
+            return item
+          }
 
-    setItems((items) =>
-      items.map((item) => {
-        if (item.id !== id) {
-          return item
-        }
-
-        return { ...item, [field]: value }
-      }),
-    )
-  }
-
-  const columns: ColumnDefinition<ModifiedSentinelMaster>[] = [
-    getSelectionColumn({
-      setSelection,
-      onSelectionChange,
-    }),
-    {
-      header: 'Primary Group',
-      id: 'name',
-      accessorKey: 'name',
-      enableSorting: true,
-      size: 211,
-      cell: ({
-        row: {
-          original: { name },
-        },
-      }) => <span data-testid={`primary-group_${name}`}>{name}</span>,
+          return { ...item, [field]: value }
+        }),
+      )
     },
-    {
-      header: 'Database Alias*',
-      id: 'alias',
-      accessorKey: 'alias',
-      enableSorting: true,
-      size: 285,
-      cell: function InstanceAliasCell({
-        row: {
-          original: { id, alias, name },
-        },
-      }) {
-        return (
+    [setItems],
+  )
+  const columns: ColumnDef<ModifiedSentinelMaster>[] = useMemo(() => {
+    const cols: ColumnDef<ModifiedSentinelMaster>[] = [
+      {
+        header: 'Primary Group',
+        id: 'name',
+        accessorKey: 'name',
+        enableSorting: true,
+        size: 211,
+        cell: ({
+          row: {
+            original: { name },
+          },
+        }) => <span data-testid={`primary-group_${name}`}>{name}</span>,
+      },
+      {
+        header: 'Database Alias*',
+        id: 'alias',
+        accessorKey: 'alias',
+        enableSorting: true,
+        size: 285,
+        cell: ({
+          row: {
+            original: { id, alias, name },
+          },
+        }) => (
           <div role="presentation">
             <InputFieldSentinel
               name={`alias-${id}`}
@@ -165,57 +175,55 @@ export const useSentinelDatabasesConfig = () => {
               maxLength={500}
             />
           </div>
-        )
+        ),
       },
-    },
-    {
-      header: 'Address',
-      id: 'host',
-      accessorKey: 'host',
-      enableSorting: true,
-      size: 210,
-      cell: ({
-        row: {
-          original: { host, port },
+      {
+        header: 'Address',
+        id: 'host',
+        accessorKey: 'host',
+        enableSorting: true,
+        size: 210,
+        cell: ({
+          row: {
+            original: { host, port },
+          },
+        }) => {
+          const text = `${host}:${port}`
+          return (
+            <CopyTextContainer>
+              <CopyPublicEndpointText>{text}</CopyPublicEndpointText>
+              <RiTooltip
+                position="right"
+                content="Copy"
+                anchorClassName="copyPublicEndpointTooltip"
+              >
+                <CopyBtn
+                  aria-label="Copy public endpoint"
+                  onClick={() => handleCopy(text)}
+                  tabIndex={-1}
+                />
+              </RiTooltip>
+            </CopyTextContainer>
+          )
         },
-      }) => {
-        const text = `${host}:${port}`
-        return (
-          <CopyTextContainer>
-            <CopyPublicEndpointText>{text}</CopyPublicEndpointText>
-            <RiTooltip
-              position="right"
-              content="Copy"
-              anchorClassName="copyPublicEndpointTooltip"
-            >
-              <CopyBtn
-                aria-label="Copy public endpoint"
-                onClick={() => handleCopy(text)}
-                tabIndex={-1}
-              />
-            </RiTooltip>
-          </CopyTextContainer>
-        )
       },
-    },
-    {
-      header: '# of replicas',
-      id: 'numberOfSlaves',
-      accessorKey: 'numberOfSlaves',
-      enableSorting: true,
-      size: 130,
-    },
-    {
-      header: 'Username',
-      id: 'username',
-      accessorKey: 'username',
-      size: 285,
-      cell: function UsernameCell({
-        row: {
-          original: { username, id },
-        },
-      }) {
-        return (
+      {
+        header: '# of replicas',
+        id: 'numberOfSlaves',
+        accessorKey: 'numberOfSlaves',
+        enableSorting: true,
+        size: 130,
+      },
+      {
+        header: 'Username',
+        id: 'username',
+        accessorKey: 'username',
+        size: 285,
+        cell: ({
+          row: {
+            original: { username, id },
+          },
+        }) => (
           <div role="presentation">
             <InputFieldSentinel
               value={username}
@@ -226,20 +234,18 @@ export const useSentinelDatabasesConfig = () => {
               onChangedInput={handleChangedInput}
             />
           </div>
-        )
+        ),
       },
-    },
-    {
-      header: 'Password',
-      id: 'password',
-      accessorKey: 'password',
-      size: 285,
-      cell: function PasswordCell({
-        row: {
-          original: { password, id },
-        },
-      }) {
-        return (
+      {
+        header: 'Password',
+        id: 'password',
+        accessorKey: 'password',
+        size: 285,
+        cell: ({
+          row: {
+            original: { password, id },
+          },
+        }) => (
           <div role="presentation">
             <InputFieldSentinel
               value={password}
@@ -250,20 +256,18 @@ export const useSentinelDatabasesConfig = () => {
               onChangedInput={handleChangedInput}
             />
           </div>
-        )
+        ),
       },
-    },
-    {
-      header: 'Database Index',
-      id: 'db',
-      accessorKey: 'db',
-      size: 200,
-      cell: function IndexCell({
-        row: {
-          original: { db = 0, id },
-        },
-      }) {
-        return (
+      {
+        header: 'Database Index',
+        id: 'db',
+        accessorKey: 'db',
+        size: 200,
+        cell: ({
+          row: {
+            original: { db = 0, id },
+          },
+        }) => (
           <div role="presentation">
             <InputFieldSentinel
               min={0}
@@ -284,16 +288,21 @@ export const useSentinelDatabasesConfig = () => {
               }
             />
           </div>
-        )
+        ),
       },
-    },
-  ]
+    ]
+    if (items.length > 0) {
+      cols.unshift(getSelectionColumn<ModifiedSentinelMaster>())
+    }
+    return cols
+  }, [handleChangedInput, items.length])
   return {
     columns,
     selection,
     items,
     handleClose,
-    handleBackAdditing,
+    handleBackAdding,
     handleAddInstances,
+    handleSelectionChange,
   }
 }

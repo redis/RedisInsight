@@ -1,66 +1,25 @@
 import React from 'react'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
-import {
-  ColumnDefinition,
-  RowDefinition,
-} from 'uiSrc/components/base/layout/table'
-import { SelectAllCheckbox } from 'uiSrc/components/auto-discover'
+import { type ColumnDef, Table } from 'uiSrc/components/base/layout/table'
 
 type Props = {
   size?: number
   id?: string
-  enableResizing?: boolean
-  canSelectRow?: (row: RowDefinition<any>) => boolean
-  setSelection: (selection: any[]) => void
-  onSelectionChange: (selection: any) => void
 }
 
+/**
+ * @see [Row selection]{@link https://redislabsdev.github.io/redis-ui/?path=/docs/table-table-rowselection--docs#usage}
+ */
 export const getSelectionColumn = <T extends object>({
   size = 50,
-  id = 'select-col',
-  enableResizing = false,
-  canSelectRow = (_row: RowDefinition<T>) => true,
-  setSelection,
-  onSelectionChange,
-}: Props): ColumnDefinition<T> => {
+  id = 'row-selection',
+}: Props = {}): ColumnDef<T> => {
   return {
     id,
     size,
-    enableResizing,
+    isHeaderCustom: true,
     header: ({ table }) => (
-      <SelectAllCheckbox
-        checked={table.getIsAllRowsSelected()}
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-          const selected = event.target.checked
-          table.toggleAllRowsSelected()
-          if (selected) {
-            const rows = table.getRowModel().rows
-            setSelection(
-              rows
-                .filter((row) => canSelectRow(row))
-                .map((row) => row.original),
-            )
-          } else {
-            setSelection([])
-          }
-        }} //or getToggleAllPageRowsSelectedHandler
-      />
+      <Table.HeaderMultiRowSelectionButton table={table} />
     ),
-    cell: ({ row }) => {
-      let canSelect = true
-      if (canSelectRow) {
-        canSelect = canSelectRow(row)
-      }
-      return (
-        <Checkbox
-          checked={canSelect && row.getIsSelected()}
-          disabled={!canSelect}
-          onChange={() => {
-            row.toggleSelected()
-            onSelectionChange(row.original)
-          }}
-        />
-      )
-    },
+    cell: ({ row }) => <Table.RowSelectionButton row={row} />,
   }
 }
