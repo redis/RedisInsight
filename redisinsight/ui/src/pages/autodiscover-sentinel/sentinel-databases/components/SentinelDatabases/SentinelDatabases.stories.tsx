@@ -11,6 +11,7 @@ import { ColumnDef } from 'uiSrc/components/base/layout/table'
 import { getSelectionColumn } from 'uiSrc/pages/autodiscover-cloud/utils'
 import { RowSelectionState } from '@redis-ui/table'
 import { getRowId } from 'uiSrc/pages/autodiscover-sentinel/sentinel-databases/useSentinelDatabasesConfig'
+import { StyledContainer } from '../../../../../../../../.storybook/helpers/styles'
 
 const meta: Meta<typeof SentinelDatabases> = {
   component: SentinelDatabases,
@@ -109,39 +110,31 @@ let columnsMock: ColumnDef<ModifiedSentinelMaster>[] = [
     size: 200,
   },
 ]
+
+const DefaultRender = () => {
+  const [rowSelection, setSelection] = useState<RowSelectionState>({})
+  const selection = Object.keys(rowSelection)
+    .map((key) => mastersMock.find((master) => getRowId(master) === key))
+    .filter((item): item is ModifiedSentinelMaster => Boolean(item))
+  return (
+    <StyledContainer paddingSize="m">
+      <SentinelDatabases
+        selection={selection || []}
+        columns={[getSelectionColumn<ModifiedSentinelMaster>(), ...columnsMock]}
+        masters={mastersMock}
+        onClose={action('onClose')}
+        onBack={action('onBack')}
+        onSubmit={action('onSubmit')}
+        onSelectionChange={(sel) => {
+          setSelection(sel)
+        }}
+      />
+    </StyledContainer>
+  )
+}
+
 export const Default: Story = {
-  render: () => {
-    const [rowSelection, setSelection] = useState<RowSelectionState>({})
-    const selection = Object.keys(rowSelection)
-      .map((key) => mastersMock.find((master) => getRowId(master) === key))
-      .filter(Boolean)
-    console.log({ selection, rowSelection })
-    return (
-      <>
-        <SentinelDatabases
-          selection={selection || []}
-          columns={[
-            getSelectionColumn<ModifiedSentinelMaster>(),
-            ...columnsMock,
-          ]}
-          masters={mastersMock}
-          onClose={action('onClose')}
-          onBack={action('onBack')}
-          onSubmit={action('onSubmit')}
-          onSelectionChange={(sel) => {
-            console.log('onSelectionChange', sel)
-            setSelection(sel)
-          }}
-        />
-        <div style={{ fontSize: '1rem' }}>
-          Selected rows:{' '}
-          {Object.keys(rowSelection).filter((key) => rowSelection[key]).length}
-          <pre>{JSON.stringify(rowSelection, null, 2)}</pre>
-          <pre>{JSON.stringify(selection, null, 2)}</pre>
-        </div>
-      </>
-    )
-  },
+  render: () => <DefaultRender />,
 }
 
 export const Empty: Story = {
