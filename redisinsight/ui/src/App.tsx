@@ -23,6 +23,7 @@ import ThemeComponent from './components/theme/ThemeComponent'
 import MonacoEnvironmentInitializer from './components/MonacoEnvironmentInitializer/MonacoEnvironmentInitializer'
 import GlobalDialogs from './components/global-dialogs'
 import NotFoundErrorPage from './pages/not-found-error/NotFoundErrorPage'
+import { ErrorBoundary } from './components/error-boundary'
 
 import themeDark from './styles/themes/dark_theme/darkTheme.scss?inline'
 import themeLight from './styles/themes/light_theme/lightTheme.scss?inline'
@@ -36,9 +37,11 @@ themeService.registerTheme(Theme.Light, themeLight)
 const AppWrapper = ({ children }: { children?: ReactElement[] }) => (
   <Provider store={store}>
     <ThemeProvider>
-      <AppInit>
-        <App>{children}</App>
-      </AppInit>
+      <ErrorBoundary>
+        <AppInit>
+          <App>{children}</App>
+        </AppInit>
+      </ErrorBoundary>
     </ThemeProvider>
   </Provider>
 )
