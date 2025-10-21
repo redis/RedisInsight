@@ -194,10 +194,17 @@ const DedicatedEditor = (props: Props) => {
         selectedLang.completionProvider?.(keywords, functions)!,
       ).dispose
 
-    monaco.languages.setMonarchTokensProvider(
-      selectedLang.language,
-      selectedLang.tokensProvider?.(keywords, functions)!,
-    )
+    try {
+      monaco.languages.setMonarchTokensProvider(
+        selectedLang.language,
+        selectedLang.tokensProvider?.(keywords, functions)!,
+      )
+    } catch (exception) {
+      console.error(
+        `Monaco ${selectedLang.language} language setup error: `,
+        exception,
+      )
+    }
   }
 
   const onChangeLanguageSelect = (id: string) => {
