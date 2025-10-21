@@ -72,12 +72,17 @@ const MonacoLanguages = () => {
         MonacoLanguage.RediSearch,
         getRediSearchSubRedisMonarchTokensProvider(REDIS_SEARCH_COMMANDS),
       )
+    } catch (exception) {
+      console.error('Monaco RediSearch language setup error: ', exception)
+    }
+
+    try {
       monaco.languages.setMonarchTokensProvider(
         MonacoLanguage.Redis,
         getRedisMonarchTokensProvider(REDIS_COMMANDS),
       )
     } catch (exception) {
-      console.error('Monaco languages setup error: ', exception)
+      console.error('Monaco Redis language setup error: ', exception)
     }
   }
 
