@@ -22,6 +22,7 @@ import {
   RowSelectionState,
 } from 'uiSrc/components/base/layout/table'
 import {
+  DatabaseContainer,
   DatabaseWrapper,
   Footer,
   PageSubTitle,
@@ -203,7 +204,7 @@ const SentinelDatabases = ({
 
   return (
     <AutodiscoveryPageTemplate>
-      <Col className="databaseContainer" justify="start">
+      <DatabaseContainer justify="start">
         <PageTitle data-testid="title">
           Auto-Discover Redis Sentinel Primary Groups
         </PageTitle>
@@ -257,7 +258,7 @@ const SentinelDatabases = ({
             </Col>
           )}
         </DatabaseWrapper>
-      </Col>
+      </DatabaseContainer>
       <Footer>
         <Row justify="between">
           <SecondaryButton
