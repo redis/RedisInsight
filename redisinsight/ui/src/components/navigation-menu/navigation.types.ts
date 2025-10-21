@@ -1,5 +1,6 @@
 import { IconType } from 'uiSrc/components/base/forms/buttons'
 import { FeatureFlags } from 'uiSrc/constants'
+import { OnboardingTourOptions } from '../onboarding-tour'
 
 export interface INavigations {
   isActivePage: boolean
@@ -11,6 +12,6 @@ export interface INavigations {
   connectedInstanceId?: string
   onClick: () => void
   iconType: IconType
-  onboard?: any
+  onboard?: OnboardingTourOptions
   featureFlag?: FeatureFlags
 }
