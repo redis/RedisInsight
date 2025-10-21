@@ -118,7 +118,7 @@ const RedisCloudDatabaseListResult = ({ columns, onBack, onView }: Props) => {
           <SummaryText />
         </MessageBar>
       </div>
-      <Footer padding={4}>
+      <Footer>
         <Row justify="between">
           <SecondaryButton
             onClick={onBack}

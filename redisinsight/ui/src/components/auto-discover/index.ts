@@ -6,6 +6,7 @@ import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CopyIcon } from 'uiSrc/components/base/icons'
+import { PaddingType } from 'uiSrc/components/base/layout/flex/flex.styles'
 
 export const PageTitle = styled(Title).attrs({
   size: 'M',
@@ -14,7 +15,6 @@ export const PageTitle = styled(Title).attrs({
 `
 export const PageSubTitle = styled(Text).attrs({
   size: 'S',
-  color: 'subdued',
   component: 'span',
 })`
   padding-bottom: ${({ theme }: { theme: Theme }) => theme.core.space.space100};
@@ -26,11 +26,13 @@ export const SearchContainer = styled(FlexItem)`
 export const SearchForm = styled(FormField)`
   width: 266px;
 `
-export const Footer = styled(FlexItem).attrs<{ grow?: boolean | number }>(
-  ({ grow }) => ({
-    grow: grow ?? false,
-  }),
-)`
+export const Footer = styled(FlexItem).attrs<{
+  grow?: boolean | number
+  padding?: PaddingType
+}>(({ grow, padding }) => ({
+  grow: grow ?? false,
+  padding: padding ?? 6,
+}))`
   border-top: 1px solid
     ${({ theme }: { theme: Theme }) => theme.semantic.color.border.neutral400};
 `

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import cx from 'classnames'
 import { useSelector } from 'react-redux'
 
 import { sentinelSelector } from 'uiSrc/slices/instances/sentinel'
@@ -7,7 +6,7 @@ import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
   DestructiveButton,
   PrimaryButton,
@@ -33,6 +32,7 @@ import {
 
 import styles from '../../../styles.module.scss'
 import { getRowId } from 'uiSrc/pages/autodiscover-sentinel/sentinel-databases/useSentinelDatabasesConfig'
+import { Spacer } from 'uiSrc/components/base/layout'
 
 export interface Props {
   columns: ColumnDef<ModifiedSentinelMaster>[]
@@ -70,7 +70,7 @@ const SentinelDatabases = ({
       selection.reduce(
         (acc, item) => {
           if (item.id) {
-            acc[item.id] = true
+            acc[item.id as string] = true
           }
           return acc
         },
@@ -184,7 +184,6 @@ const SentinelDatabases = ({
     return (
       <RiTooltip
         position="top"
-        anchorClassName="euiToolTip__btn-disabled"
         title={title}
         content={isSubmitDisabled() ? <span>{content}</span> : null}
       >
@@ -204,12 +203,12 @@ const SentinelDatabases = ({
 
   return (
     <AutodiscoveryPageTemplate>
-      <div className="databaseContainer">
+      <Col className="databaseContainer" justify="start">
         <PageTitle data-testid="title">
           Auto-Discover Redis Sentinel Primary Groups
         </PageTitle>
 
-        <Row justify="between" align="center">
+        <Row justify="between" align="center" grow={false}>
           <FlexItem grow>
             <PageSubTitle>
               Redis Sentinel instance found. <br />
@@ -228,8 +227,7 @@ const SentinelDatabases = ({
             </SearchForm>
           </SearchContainer>
         </Row>
-        <br />
-
+        <Spacer size="l" />
         <DatabaseWrapper>
           <Table
             rowSelectionMode="multiple"
@@ -247,23 +245,21 @@ const SentinelDatabases = ({
             ]}
             stripedRows
           />
-          {!items.length && (
-            <Text size="S" color="subdued">
-              {message}
-            </Text>
+          {!items.length && message !== notMastersMsg && (
+            <>
+              <Spacer size="m" />
+              <Text size="S">{message}</Text>
+            </>
           )}
           {!masters.length && (
-            <Text size="S" className={styles.notFoundMsg} color="subdued">
-              {notMastersMsg}
-            </Text>
+            <Col centered full>
+              <Text size="L">{notMastersMsg}</Text>
+            </Col>
           )}
         </DatabaseWrapper>
-      </div>
-      <Footer padding={4} grow>
-        <Row
-          justify="between"
-          className={cx(styles.footer, 'footerAddDatabase')}
-        >
+      </Col>
+      <Footer>
+        <Row justify="between">
           <SecondaryButton
             onClick={onBack}
             className="btn-cancel btn-back"
