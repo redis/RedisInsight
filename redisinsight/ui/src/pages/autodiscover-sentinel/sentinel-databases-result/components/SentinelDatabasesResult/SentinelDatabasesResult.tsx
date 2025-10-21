@@ -13,9 +13,10 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { Table, ColumnDef } from 'uiSrc/components/base/layout/table'
 
 import {
+  DatabaseContainer,
   DatabaseWrapper,
   Footer,
   PageTitle,
@@ -25,7 +26,7 @@ import { Spacer } from 'uiSrc/components/base/layout'
 
 export interface Props {
   countSuccessAdded: number
-  columns: ColumnDefinition<ModifiedSentinelMaster>[]
+  columns: ColumnDef<ModifiedSentinelMaster>[]
   masters: ModifiedSentinelMaster[]
   onBack: () => void
   onViewDatabases: () => void
@@ -78,33 +79,35 @@ const SentinelDatabasesResult = ({
   }
 
   const SummaryText = () => (
-    <Text color="secondary" size="S" data-testid="summary">
-      <b>Summary: </b>
+    <div data-testid="summary">
+      <Text size="S" component="span" variant="semiBold">
+        Summary:&nbsp;
+      </Text>
       {countSuccessAdded ? (
-        <span>
+        <Text size="S" component="span">
           Successfully added {countSuccessAdded}
           {' primary group(s)'}
           {countFailAdded ? '; ' : ' '}
-        </span>
+        </Text>
       ) : null}
       {countFailAdded ? (
-        <span>
+        <Text size="S" component="span">
           Failed to add {countFailAdded}
           {' primary group(s)'}
-        </span>
+        </Text>
       ) : null}
-    </Text>
+    </div>
   )
 
   return (
     <AutodiscoveryPageTemplate>
-      <div className="databaseContainer">
+      <DatabaseContainer justify="start">
         <PageTitle data-testid="title">
           Auto-Discover Redis Sentinel Primary Groups
         </PageTitle>
 
-        <Row align="end" gap="s">
-          <FlexItem>
+        <Row justify="between" align="center" grow={false}>
+          <FlexItem grow>
             <SearchForm>
               <SearchInput
                 placeholder="Search..."
@@ -121,6 +124,7 @@ const SentinelDatabasesResult = ({
             <Text>{message}</Text>
           ) : (
             <Table
+              rowSelectionMode={undefined}
               columns={columns}
               data={items}
               defaultSorting={[
@@ -135,7 +139,7 @@ const SentinelDatabasesResult = ({
         <MessageBar opened={!!countSuccessAdded || !!countFailAdded}>
           <SummaryText />
         </MessageBar>
-      </div>
+      </DatabaseContainer>
       <Footer>
         <Row justify="between">
           <SecondaryButton

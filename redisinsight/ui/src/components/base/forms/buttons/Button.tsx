@@ -2,6 +2,7 @@ import { Button } from '@redis-ui/components'
 import React from 'react'
 import { LoaderLargeIcon } from 'uiSrc/components/base/icons'
 import { BaseButtonProps } from 'uiSrc/components/base/forms/buttons/button.styles'
+import { Spacer } from 'uiSrc/components/base/layout'
 
 type ButtonSize = 'small' | 'medium' | 'large'
 type SizeKey = 'small' | 's' | 'medium' | 'm' | 'large' | 'l'
@@ -84,11 +85,16 @@ export const ButtonIcon = ({
   if (size) {
     iconSize = IconSizes[size]
   }
+  const spacer = <Spacer size="s" direction="horizontal" />
   return (
-    <Button.Icon
-      title={`button-icon ${iconSide}`}
-      icon={renderIcon}
-      customSize={iconSize}
-    />
+    <>
+      {buttonSide === 'right' && spacer}
+      <Button.Icon
+        title={`button-icon ${iconSide}`}
+        icon={renderIcon}
+        customSize={iconSize}
+      />
+      {buttonSide === 'left' && spacer}
+    </>
   )
 }

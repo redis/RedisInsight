@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { Text, Title } from 'uiSrc/components/base/text'
 import { Theme } from 'uiSrc/components/base/theme/types'
-import { FlexItem } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CopyIcon } from 'uiSrc/components/base/icons'
@@ -36,6 +36,16 @@ export const Footer = styled(FlexItem).attrs<{
   border-top: 1px solid
     ${({ theme }: { theme: Theme }) => theme.semantic.color.border.neutral400};
 `
+
+export const DatabaseContainer = styled(Col)`
+  position: relative;
+  padding: 20px 14px 0 14px;
+  @media only screen and (min-width: 768px) {
+    padding: 30px 14px 0 30px;
+    max-width: calc(100vw - 95px);
+  }
+`
+
 export const DatabaseWrapper = styled.div`
   height: auto;
   scrollbar-width: thin;
@@ -72,8 +82,9 @@ export const CopyPublicEndpointText = styled(CellText)`
 `
 export const CopyBtn = styled(IconButton).attrs({
   icon: CopyIcon,
+  size: 'L',
 })`
-  margin-left: 25px;
+  margin-left: 15px;
   opacity: 0;
   height: 0;
   transition: opacity 0.25s ease-in-out;
@@ -87,8 +98,6 @@ export const CopyTextContainer = styled.div`
   padding-right: 34px;
   position: relative;
   * {
-    color: ${({ theme }: { theme: Theme }) =>
-      theme.semantic.color.text.primary500};
   }
 
   &:hover ${CopyBtn} {
