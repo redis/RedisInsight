@@ -35,6 +35,166 @@ const handleCopy = (text = '') => {
   return navigator.clipboard.writeText(text)
 }
 
+export const colFactory = (
+  items: ModifiedSentinelMaster[],
+  handleChangedInput: (name: string, value: string) => void,
+) => {
+  const cols: ColumnDef<ModifiedSentinelMaster>[] = [
+    {
+      header: 'Primary Group',
+      id: 'name',
+      accessorKey: 'name',
+      enableSorting: true,
+      size: 211,
+      cell: ({
+        row: {
+          original: { name },
+        },
+      }) => <span data-testid={`primary-group_${name}`}>{name}</span>,
+    },
+    {
+      header: 'Database Alias*',
+      id: 'alias',
+      accessorKey: 'alias',
+      enableSorting: true,
+      size: 285,
+      cell: ({
+        row: {
+          original: { id, alias, name },
+        },
+      }) => (
+        <div role="presentation">
+          <InputFieldSentinel
+            name={`alias-${id}`}
+            value={alias || name}
+            className={styles.input}
+            placeholder="Enter Database Alias"
+            inputType={SentinelInputFieldType.Text}
+            onChangedInput={handleChangedInput}
+            maxLength={500}
+          />
+        </div>
+      ),
+    },
+    {
+      header: 'Address',
+      id: 'host',
+      accessorKey: 'host',
+      enableSorting: true,
+      size: 210,
+      cell: ({
+        row: {
+          original: { host, port },
+        },
+      }) => {
+        const text = `${host}:${port}`
+        return (
+          <CopyTextContainer>
+            <CopyPublicEndpointText>{text}</CopyPublicEndpointText>
+            <RiTooltip
+              position="right"
+              content="Copy"
+              anchorClassName="copyPublicEndpointTooltip"
+            >
+              <CopyBtn
+                aria-label="Copy public endpoint"
+                onClick={() => handleCopy(text)}
+                tabIndex={-1}
+              />
+            </RiTooltip>
+          </CopyTextContainer>
+        )
+      },
+    },
+    {
+      header: '# of replicas',
+      id: 'numberOfSlaves',
+      accessorKey: 'numberOfSlaves',
+      enableSorting: true,
+      size: 130,
+    },
+    {
+      header: 'Username',
+      id: 'username',
+      accessorKey: 'username',
+      size: 285,
+      cell: ({
+        row: {
+          original: { username, id },
+        },
+      }) => (
+        <div role="presentation">
+          <InputFieldSentinel
+            value={username}
+            name={`username-${id}`}
+            className={styles.input}
+            placeholder="Enter Username"
+            inputType={SentinelInputFieldType.Text}
+            onChangedInput={handleChangedInput}
+          />
+        </div>
+      ),
+    },
+    {
+      header: 'Password',
+      id: 'password',
+      accessorKey: 'password',
+      size: 285,
+      cell: ({
+        row: {
+          original: { password, id },
+        },
+      }) => (
+        <div role="presentation">
+          <InputFieldSentinel
+            value={password}
+            name={`password-${id}`}
+            className={styles.input}
+            placeholder="Enter Password"
+            inputType={SentinelInputFieldType.Password}
+            onChangedInput={handleChangedInput}
+          />
+        </div>
+      ),
+    },
+    {
+      header: 'Database Index',
+      id: 'db',
+      accessorKey: 'db',
+      size: 200,
+      cell: ({
+        row: {
+          original: { db = 0, id },
+        },
+      }) => (
+        <div role="presentation">
+          <InputFieldSentinel
+            min={0}
+            className={styles.dbInfo}
+            value={`${db}` || '0'}
+            name={`db-${id}`}
+            placeholder="Enter Index"
+            inputType={SentinelInputFieldType.Number}
+            onChangedInput={handleChangedInput}
+            append={
+              <RiTooltip
+                anchorClassName="inputAppendIcon"
+                position="left"
+                content="Select the Redis logical database to work with in Browser and Workbench."
+              >
+                <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
+              </RiTooltip>
+            }
+          />
+        </div>
+      ),
+    },
+  ]
+  if (items.length > 0) {
+    cols.unshift(getSelectionColumn<ModifiedSentinelMaster>())
+  }
+  return cols
+}
 export const getRowId = (row: ModifiedSentinelMaster) => row.id || ''
 
 export const useSentinelDatabasesConfig = () => {
@@ -139,163 +299,10 @@ export const useSentinelDatabasesConfig = () => {
     },
     [setItems],
   )
-  const columns: ColumnDef<ModifiedSentinelMaster>[] = useMemo(() => {
-    const cols: ColumnDef<ModifiedSentinelMaster>[] = [
-      {
-        header: 'Primary Group',
-        id: 'name',
-        accessorKey: 'name',
-        enableSorting: true,
-        size: 211,
-        cell: ({
-          row: {
-            original: { name },
-          },
-        }) => <span data-testid={`primary-group_${name}`}>{name}</span>,
-      },
-      {
-        header: 'Database Alias*',
-        id: 'alias',
-        accessorKey: 'alias',
-        enableSorting: true,
-        size: 285,
-        cell: ({
-          row: {
-            original: { id, alias, name },
-          },
-        }) => (
-          <div role="presentation">
-            <InputFieldSentinel
-              name={`alias-${id}`}
-              value={alias || name}
-              className={styles.input}
-              placeholder="Enter Database Alias"
-              inputType={SentinelInputFieldType.Text}
-              onChangedInput={handleChangedInput}
-              maxLength={500}
-            />
-          </div>
-        ),
-      },
-      {
-        header: 'Address',
-        id: 'host',
-        accessorKey: 'host',
-        enableSorting: true,
-        size: 210,
-        cell: ({
-          row: {
-            original: { host, port },
-          },
-        }) => {
-          const text = `${host}:${port}`
-          return (
-            <CopyTextContainer>
-              <CopyPublicEndpointText>{text}</CopyPublicEndpointText>
-              <RiTooltip
-                position="right"
-                content="Copy"
-                anchorClassName="copyPublicEndpointTooltip"
-              >
-                <CopyBtn
-                  aria-label="Copy public endpoint"
-                  onClick={() => handleCopy(text)}
-                  tabIndex={-1}
-                />
-              </RiTooltip>
-            </CopyTextContainer>
-          )
-        },
-      },
-      {
-        header: '# of replicas',
-        id: 'numberOfSlaves',
-        accessorKey: 'numberOfSlaves',
-        enableSorting: true,
-        size: 130,
-      },
-      {
-        header: 'Username',
-        id: 'username',
-        accessorKey: 'username',
-        size: 285,
-        cell: ({
-          row: {
-            original: { username, id },
-          },
-        }) => (
-          <div role="presentation">
-            <InputFieldSentinel
-              value={username}
-              name={`username-${id}`}
-              className={styles.input}
-              placeholder="Enter Username"
-              inputType={SentinelInputFieldType.Text}
-              onChangedInput={handleChangedInput}
-            />
-          </div>
-        ),
-      },
-      {
-        header: 'Password',
-        id: 'password',
-        accessorKey: 'password',
-        size: 285,
-        cell: ({
-          row: {
-            original: { password, id },
-          },
-        }) => (
-          <div role="presentation">
-            <InputFieldSentinel
-              value={password}
-              name={`password-${id}`}
-              className={styles.input}
-              placeholder="Enter Password"
-              inputType={SentinelInputFieldType.Password}
-              onChangedInput={handleChangedInput}
-            />
-          </div>
-        ),
-      },
-      {
-        header: 'Database Index',
-        id: 'db',
-        accessorKey: 'db',
-        size: 200,
-        cell: ({
-          row: {
-            original: { db = 0, id },
-          },
-        }) => (
-          <div role="presentation">
-            <InputFieldSentinel
-              min={0}
-              className={styles.dbInfo}
-              value={`${db}` || '0'}
-              name={`db-${id}`}
-              placeholder="Enter Index"
-              inputType={SentinelInputFieldType.Number}
-              onChangedInput={handleChangedInput}
-              append={
-                <RiTooltip
-                  anchorClassName="inputAppendIcon"
-                  position="left"
-                  content="Select the Redis logical database to work with in Browser and Workbench."
-                >
-                  <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
-                </RiTooltip>
-              }
-            />
-          </div>
-        ),
-      },
-    ]
-    if (items.length > 0) {
-      cols.unshift(getSelectionColumn<ModifiedSentinelMaster>())
-    }
-    return cols
-  }, [handleChangedInput, items.length])
+  const columns: ColumnDef<ModifiedSentinelMaster>[] = useMemo(
+    () => colFactory(items, handleChangedInput),
+    [handleChangedInput, items.length],
+  )
   return {
     columns,
     selection,

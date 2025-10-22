@@ -8,7 +8,6 @@ import {
   ModifiedSentinelMaster,
 } from 'uiSrc/slices/interfaces'
 import { ColumnDef } from 'uiSrc/components/base/layout/table'
-import { getSelectionColumn } from 'uiSrc/pages/autodiscover-cloud/utils'
 import { StyledContainer } from '../../../../../../../../.storybook/helpers/styles'
 import { colFactory } from '../../useSentinelDatabasesResultConfig'
 
@@ -88,13 +87,14 @@ let columnsMock: ColumnDef<ModifiedSentinelMaster>[] = colFactory(
   mastersMock.length - 2,
   mastersMock.length,
 )
+
 const DefaultRender = () => {
   let countSuccessAdded = mastersMock.length - 2
   return (
     <StyledContainer paddingSize="m">
       <SentinelDatabasesResult
         onViewDatabases={action('onViewDatabases')}
-        columns={[getSelectionColumn<ModifiedSentinelMaster>(), ...columnsMock]}
+        columns={columnsMock}
         masters={mastersMock}
         countSuccessAdded={countSuccessAdded}
         onBack={action('onBack')}

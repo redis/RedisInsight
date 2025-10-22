@@ -7,10 +7,12 @@ import {
   AddRedisDatabaseStatus,
   ModifiedSentinelMaster,
 } from 'uiSrc/slices/interfaces'
-import { ColumnDef } from 'uiSrc/components/base/layout/table'
-import { getSelectionColumn } from 'uiSrc/pages/autodiscover-cloud/utils'
 import { RowSelectionState } from '@redis-ui/table'
-import { getRowId } from 'uiSrc/pages/autodiscover-sentinel/sentinel-databases/useSentinelDatabasesConfig'
+import {
+  colFactory,
+  getRowId,
+} from 'uiSrc/pages/autodiscover-sentinel/sentinel-databases/useSentinelDatabasesConfig'
+
 import { StyledContainer } from '../../../../../../../../.storybook/helpers/styles'
 
 const meta: Meta<typeof SentinelDatabases> = {
@@ -62,54 +64,7 @@ let mastersMock: ModifiedSentinelMaster[] = [
     db: 1,
   },
 ]
-let columnsMock: ColumnDef<ModifiedSentinelMaster>[] = [
-  {
-    header: 'Primary Group',
-    id: 'name',
-    accessorKey: 'name',
-    enableSorting: true,
-    size: 211,
-  },
-  {
-    header: 'Database Alias*',
-    id: 'alias',
-    accessorKey: 'alias',
-    enableSorting: true,
-    size: 285,
-  },
-  {
-    header: 'Address',
-    id: 'host',
-    accessorKey: 'host',
-    enableSorting: true,
-    size: 210,
-  },
-  {
-    header: '# of replicas',
-    id: 'numberOfSlaves',
-    accessorKey: 'numberOfSlaves',
-    enableSorting: true,
-    size: 130,
-  },
-  {
-    header: 'Username',
-    id: 'username',
-    accessorKey: 'username',
-    size: 285,
-  },
-  {
-    header: 'Password',
-    id: 'password',
-    accessorKey: 'password',
-    size: 285,
-  },
-  {
-    header: 'Database Index',
-    id: 'db',
-    accessorKey: 'db',
-    size: 200,
-  },
-]
+let columnsMock = colFactory(mastersMock, () => {})
 
 const DefaultRender = () => {
   const [rowSelection, setSelection] = useState<RowSelectionState>({})
@@ -120,7 +75,7 @@ const DefaultRender = () => {
     <StyledContainer paddingSize="m">
       <SentinelDatabases
         selection={selection || []}
-        columns={[getSelectionColumn<ModifiedSentinelMaster>(), ...columnsMock]}
+        columns={columnsMock}
         masters={mastersMock}
         onClose={action('onClose')}
         onBack={action('onBack')}
@@ -136,11 +91,11 @@ const DefaultRender = () => {
 export const Default: Story = {
   render: () => <DefaultRender />,
 }
-
+const emptyColumnsMock = colFactory([], () => {})
 export const Empty: Story = {
   args: {
     selection: [],
-    columns: columnsMock,
+    columns: emptyColumnsMock,
     masters: [],
     onClose: action('onClose'),
     onBack: action('onBack'),
