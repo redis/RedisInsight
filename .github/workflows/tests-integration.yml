@@ -70,22 +70,6 @@ env:
     }
   ITESTS_NAMES_SHORT: |
     {
-      "oss-st-5": "OSS Standalone v5",
-      "oss-st-5-pass": "OSS Standalone v5 with admin pass required",
-      "oss-st-6": "OSS Standalone v6 and all modules",
-      "mods-preview": "OSS Standalone and all preview modules",
-      "oss-st-6-tls": "OSS Standalone v6 with TLS enabled",
-      "oss-st-6-tls-auth": "OSS Standalone v6 with TLS auth required",
-      "oss-clu": "OSS Cluster",
-      "oss-clu-tls": "OSS Cluster with TLS enabled",
-      "oss-sent": "OSS Sentinel",
-      "oss-sent-tls-auth": "OSS Sentinel with TLS auth",
-      "re-st": "Redis Enterprise with Standalone inside",
-      "re-clu": "Redis Enterprise with Cluster inside",
-      "re-crdt": "Redis Enterprise with active-active database inside"
-    }
-  ITESTS_NAMES_SHORT2: |
-    {
       "mods-preview": "OSS Standalone and all preview modules",
       "oss-st-5-pass": "OSS Standalone v5 with admin pass required",
       "oss-st-6-tls-auth": "OSS Standalone v6 with TLS auth required",
