@@ -617,7 +617,7 @@ describe(`POST /databases/test/:id`, () => {
 
         await validateApiCall({
           endpoint,
-          statusCode: 401,
+          statusCode: 424,
           data: {
             name: dbName,
             sentinelMaster: {
@@ -625,10 +625,10 @@ describe(`POST /databases/test/:id`, () => {
             },
           },
           responseBody: {
-            statusCode: 401,
+            statusCode: 424,
             message:
               'Failed to authenticate, please check the username or password.',
-            error: 'Unauthorized',
+            error: 'RedisConnectionUnauthorizedException',
           },
         });
       });

@@ -1318,10 +1318,10 @@ describe('POST /databases', () => {
             port: constants.TEST_REDIS_PORT,
             password: constants.TEST_REDIS_PASSWORD,
           },
-          statusCode: 400,
+          statusCode: 424,
           responseBody: {
-            statusCode: 400,
-            error: 'SENTINEL_PARAMS_REQUIRED',
+            statusCode: 424,
+            error: 'RedisConnectionSentinelMasterRequiredException',
             message: 'Sentinel master name must be specified.',
           },
         });
