@@ -154,9 +154,9 @@ describe('POST /cloud/autodiscovery/get-databases', () => {
               `/subscriptions/${mockGetCloudSubscriptionDatabasesDto.subscriptionId}/databases`,
             )
             .replyWithError({
+              message: 'Unauthorized for this action',
               response: {
                 status: 403,
-                data: { message: 'Unauthorized for this action' },
               },
             });
         },
@@ -180,9 +180,9 @@ describe('POST /cloud/autodiscovery/get-databases', () => {
               `/subscriptions/${mockGetCloudSubscriptionDatabasesDto.subscriptionId}/databases`,
             )
             .replyWithError({
+              message: ERROR_MESSAGES.UNAUTHORIZED,
               response: {
                 status: 401,
-                data: '',
               },
             });
         },
@@ -206,6 +206,7 @@ describe('POST /cloud/autodiscovery/get-databases', () => {
               `/subscriptions/${mockGetCloudSubscriptionDatabasesDto.subscriptionId}/databases`,
             )
             .replyWithError({
+              message: ERROR_MESSAGES.NOT_FOUND,
               response: {
                 status: 404,
                 data: 'Subscription is not found',
