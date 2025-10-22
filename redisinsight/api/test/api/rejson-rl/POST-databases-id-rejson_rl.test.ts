@@ -61,9 +61,9 @@ const createCheckFn = async (testCase) => {
             await rte.data.executeCommand(
               'json.get',
               testCase.data.keyName,
-              '$',
+              '.',
             ),
-          )[0],
+          ),
         ).to.deep.eql(JSON.parse(testCase.data.data));
         if (testCase.data.expire) {
           expect(await rte.client.ttl(testCase.data.keyName)).to.gte(
@@ -99,9 +99,9 @@ describe('POST /databases/:instanceId/rejson-rl', () => {
             JSON.parse(
               await rte.data.sendCommand('json.get', [
                 constants.TEST_REJSON_KEY_BIN_BUFFER_1,
-                '$',
+                '.',
               ]),
-            )[0],
+            ),
           ).to.deep.eql(constants.TEST_REJSON_VALUE_1);
         },
       },
@@ -120,9 +120,9 @@ describe('POST /databases/:instanceId/rejson-rl', () => {
             JSON.parse(
               await rte.data.sendCommand('json.get', [
                 constants.TEST_REJSON_KEY_BIN_BUFFER_1,
-                '$',
+                '.',
               ]),
-            )[0],
+            ),
           ).to.deep.eql(constants.TEST_REJSON_VALUE_1);
         },
       },
@@ -208,9 +208,9 @@ describe('POST /databases/:instanceId/rejson-rl', () => {
                 await rte.data.executeCommand(
                   'json.get',
                   constants.TEST_REJSON_KEY_1,
-                  '$',
+                  '.',
                 ),
-              )[0],
+              ),
             ).to.deep.eql(constants.TEST_REJSON_VALUE_1);
           },
         },
@@ -234,9 +234,9 @@ describe('POST /databases/:instanceId/rejson-rl', () => {
                 await rte.data.executeCommand(
                   'json.get',
                   constants.TEST_REJSON_KEY_1,
-                  '$',
+                  '.',
                 ),
-              )[0],
+              ),
             ).to.deep.eql(constants.TEST_REJSON_VALUE_1);
           },
         },

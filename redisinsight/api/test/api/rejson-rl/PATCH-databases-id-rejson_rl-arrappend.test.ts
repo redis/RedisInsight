@@ -61,90 +61,193 @@ describe('PATCH /databases/:instanceId/rejson-rl/arrappend', () => {
   });
 
   describe('Common', () => {
-    [
-      {
-        name: 'Should append array (from buf)',
-        data: {
-          keyName: {
-            type: 'Buffer',
-            data: [...Buffer.from(constants.TEST_REJSON_KEY_2)],
+    describe('re-json v1', () => {
+      requirements('rte.modules.rejson.version<20000');
+      [
+        {
+          name: 'Should append array (from buf)',
+          data: {
+            keyName: {
+              type: 'Buffer',
+              data: [...Buffer.from(constants.TEST_REJSON_KEY_2)],
+            },
+            data: [JSON.stringify([1, 2])],
+            path: '.',
           },
-          data: [JSON.stringify([1, 2])],
-          path: '.',
+          statusCode: 200,
+          after: async () => {
+            const json = JSON.parse(
+              await rte.data.executeCommand(
+                'json.get',
+                constants.TEST_REJSON_KEY_2,
+                '.',
+              ),
+            );
+            expect(json)
+              .to
+              .eql([...constants.TEST_REJSON_VALUE_2, [1, 2]]);
+          },
         },
-        statusCode: 200,
-        after: async () => {
-          const json = JSON.parse(
-            await rte.data.executeCommand(
-              'json.get',
-              constants.TEST_REJSON_KEY_2,
-              '$',
-            ),
-          );
-          expect(json[0]).to.eql([...constants.TEST_REJSON_VALUE_2, [1, 2]]);
+        {
+          name: 'Should append multiple items into array.array',
+          data: {
+            keyName: constants.TEST_REJSON_KEY_2,
+            data: [JSON.stringify(null), JSON.stringify('somestring')],
+            path: '[1]',
+          },
+          statusCode: 200,
+          before: async () => {
+            const json = JSON.parse(
+              await rte.data.executeCommand(
+                'json.get',
+                constants.TEST_REJSON_KEY_2,
+                '[1]',
+              ),
+            );
+            expect(json)
+              .to
+              .eql([1, 2]);
+          },
+          after: async () => {
+            const json = JSON.parse(
+              await rte.data.executeCommand(
+                'json.get',
+                constants.TEST_REJSON_KEY_2,
+                '.',
+              ),
+            );
+            expect(json)
+              .to
+              .eql([
+                ...constants.TEST_REJSON_VALUE_2,
+                [1, 2, null, 'somestring'],
+              ]);
+          },
         },
-      },
-      {
-        name: 'Should append multiple items into array.array',
-        data: {
-          keyName: constants.TEST_REJSON_KEY_2,
-          data: [JSON.stringify(null), JSON.stringify('somestring')],
-          path: '$[1]',
-        },
-        statusCode: 200,
-        before: async () => {
-          const json = JSON.parse(
-            await rte.data.executeCommand(
-              'json.get',
-              constants.TEST_REJSON_KEY_2,
-              '$[1]',
-            ),
-          );
-          expect(json[0]).to.eql([1, 2]);
-        },
-        after: async () => {
-          const json = JSON.parse(
-            await rte.data.executeCommand(
-              'json.get',
-              constants.TEST_REJSON_KEY_2,
-              '$',
-            ),
-          );
-          expect(json[0]).to.eql([
-            ...constants.TEST_REJSON_VALUE_2,
-            [1, 2, null, 'somestring'],
-          ]);
-        },
-      },
-      {
-        name: 'Should return BadRequest if try to append to not array item',
-        data: {
-          keyName: constants.TEST_REJSON_KEY_2,
-          data: [JSON.stringify(constants.getRandomString())],
-          path: '$[1][1]',
-        },
-        // todo: handle error to return 400 instead of 500 (BE)
-        statusCode: 500,
-        responseBody: {
+        {
+          name: 'Should return BadRequest if try to append to not array item',
+          data: {
+            keyName: constants.TEST_REJSON_KEY_2,
+            data: [JSON.stringify(constants.getRandomString())],
+            path: '[1][1]',
+          },
+          // todo: handle error to return 400 instead of 500 (BE)
           statusCode: 500,
+          responseBody: {
+            statusCode: 500,
+          },
         },
-      },
-      {
-        name: 'Should return NotFound error if instance id does not exists',
-        endpoint: () => endpoint(constants.TEST_NOT_EXISTED_INSTANCE_ID),
-        data: {
-          keyName: constants.TEST_REJSON_KEY_2,
-          data: JSON.stringify(constants.getRandomString()),
-          path: '$',
-        },
-        statusCode: 404,
-        responseBody: {
+        {
+          name: 'Should return NotFound error if instance id does not exists',
+          endpoint: () => endpoint(constants.TEST_NOT_EXISTED_INSTANCE_ID),
+          data: {
+            keyName: constants.TEST_REJSON_KEY_2,
+            data: JSON.stringify(constants.getRandomString()),
+            path: '.',
+          },
           statusCode: 404,
-          error: 'Not Found',
-          message: 'Invalid database instance id.',
+          responseBody: {
+            statusCode: 404,
+            error: 'Not Found',
+            message: 'Invalid database instance id.',
+          },
         },
-      },
-    ].map(mainCheckFn);
+      ].map(mainCheckFn);
+    });
+
+    describe('re-json v2', () => {
+      requirements('rte.modules.rejson.version>=20000');
+      [
+        {
+          name: 'Should append array (from buf)',
+          data: {
+            keyName: {
+              type: 'Buffer',
+              data: [...Buffer.from(constants.TEST_REJSON_KEY_2)],
+            },
+            data: [JSON.stringify([1, 2])],
+            path: '.',
+          },
+          statusCode: 200,
+          after: async () => {
+            const json = JSON.parse(
+              await rte.data.executeCommand(
+                'json.get',
+                constants.TEST_REJSON_KEY_2,
+                '$',
+              ),
+            );
+            expect(json[0])
+              .to
+              .eql([...constants.TEST_REJSON_VALUE_2, [1, 2]]);
+          },
+        },
+        {
+          name: 'Should append multiple items into array.array',
+          data: {
+            keyName: constants.TEST_REJSON_KEY_2,
+            data: [JSON.stringify(null), JSON.stringify('somestring')],
+            path: '$[1]',
+          },
+          statusCode: 200,
+          before: async () => {
+            const json = JSON.parse(
+              await rte.data.executeCommand(
+                'json.get',
+                constants.TEST_REJSON_KEY_2,
+                '$[1]',
+              ),
+            );
+            expect(json[0])
+              .to
+              .eql([1, 2]);
+          },
+          after: async () => {
+            const json = JSON.parse(
+              await rte.data.executeCommand(
+                'json.get',
+                constants.TEST_REJSON_KEY_2,
+                '$',
+              ),
+            );
+            expect(json[0])
+              .to
+              .eql([
+                ...constants.TEST_REJSON_VALUE_2,
+                [1, 2, null, 'somestring'],
+              ]);
+          },
+        },
+        {
+          name: 'Should return BadRequest if try to append to not array item',
+          data: {
+            keyName: constants.TEST_REJSON_KEY_2,
+            data: [JSON.stringify(constants.getRandomString())],
+            path: '$[1][1]',
+          },
+          // todo: handle error to return 400 instead of 500 (BE)
+          statusCode: 500,
+          responseBody: {
+            statusCode: 500,
+          },
+        },
+        {
+          name: 'Should return NotFound error if instance id does not exists',
+          endpoint: () => endpoint(constants.TEST_NOT_EXISTED_INSTANCE_ID),
+          data: {
+            keyName: constants.TEST_REJSON_KEY_2,
+            data: JSON.stringify(constants.getRandomString()),
+            path: '$',
+          },
+          statusCode: 404,
+          responseBody: {
+            statusCode: 404,
+            error: 'Not Found',
+            message: 'Invalid database instance id.',
+          },
+        },
+      ].map(mainCheckFn);
+    });
   });
 
   describe('ACL', () => {
@@ -158,7 +261,7 @@ describe('PATCH /databases/:instanceId/rejson-rl/arrappend', () => {
         data: {
           keyName: constants.TEST_REJSON_KEY_2,
           data: [JSON.stringify([1, 2])],
-          path: '$',
+          path: '.',
         },
         statusCode: 200,
       },
@@ -168,7 +271,7 @@ describe('PATCH /databases/:instanceId/rejson-rl/arrappend', () => {
         data: {
           keyName: constants.TEST_REJSON_KEY_2,
           data: [JSON.stringify(constants.getRandomString())],
-          path: '$',
+          path: '.',
         },
         statusCode: 403,
         responseBody: {
