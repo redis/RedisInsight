@@ -70,13 +70,8 @@ const MessageSentinel = () => (
   </Text>
 )
 
-const MessageEnterpriceSoftware = () => (
-  <Text
-    color="subdued"
-    size="s"
-    className={styles.message}
-    data-testid="summary"
-  >
+const MessageEnterpriseSoftware = () => (
+  <Text size="s" data-testid="summary">
     Your Redis Software databases can be automatically added. Enter the
     connection details of your Redis Software Cluster to automatically discover
     your databases and add them to {APPLICATION_NAME}. &nbsp;
@@ -96,5 +91,5 @@ export {
   MessageStandalone,
   MessageSentinel,
   MessageCloudApiKeys,
-  MessageEnterpriceSoftware,
+  MessageEnterpriseSoftware,
 }

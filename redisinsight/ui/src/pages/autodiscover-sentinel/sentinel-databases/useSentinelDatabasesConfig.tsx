@@ -13,7 +13,7 @@ import {
 } from 'uiSrc/slices/instances/sentinel'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { Pages } from 'uiSrc/constants'
-import { setTitle } from 'uiSrc/utils'
+import { handleCopy, setTitle } from 'uiSrc/utils'
 import { CreateSentinelDatabaseDto } from 'apiSrc/modules/redis-sentinel/dto/create.sentinel.database.dto'
 import { getSelectionColumn } from 'uiSrc/pages/autodiscover-cloud/utils'
 import { InputFieldSentinel, RiTooltip } from 'uiSrc/components'
@@ -23,7 +23,7 @@ import {
   CopyPublicEndpointText,
   CopyTextContainer,
 } from 'uiSrc/components/auto-discover'
-import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { ColumnDef } from 'uiSrc/components/base/layout/table'
 import { RiIcon } from 'uiSrc/components/base/icons'
 
 import styles from '../styles.module.scss'
@@ -107,10 +107,6 @@ export const useSentinelDatabasesConfig = () => {
     )
   }
 
-  const handleCopy = (text = '') => {
-    navigator.clipboard.writeText(text)
-  }
-
   const handleChangedInput = (name: string, value: string) => {
     const [field, id] = name.split('-')
 
@@ -125,7 +121,7 @@ export const useSentinelDatabasesConfig = () => {
     )
   }
 
-  const columns: ColumnDefinition<ModifiedSentinelMaster>[] = [
+  const columns: ColumnDef<ModifiedSentinelMaster>[] = [
     getSelectionColumn({
       setSelection,
       onSelectionChange,

@@ -16,6 +16,7 @@ import {
 } from 'uiSrc/slices/interfaces'
 import {
   formatLongName,
+  handleCopy,
   parseInstanceOptionsCloud,
   replaceSpaces,
   setTitle,
@@ -30,7 +31,7 @@ import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CopyIcon } from 'uiSrc/components/base/icons'
 import { ColorText } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { ColumnDef } from 'uiSrc/components/base/layout/table'
 import RedisCloudDatabasesResult from './RedisCloudDatabasesResult'
 
 import styles from './styles.module.scss'
@@ -65,11 +66,7 @@ const RedisCloudDatabasesResultPage = () => {
     history.push(Pages.home)
   }
 
-  const handleCopy = (text = '') => {
-    navigator.clipboard.writeText(text)
-  }
-
-  const columns: ColumnDefinition<InstanceRedisCloud>[] = [
+  const columns: ColumnDef<InstanceRedisCloud>[] = [
     {
       header: 'Database',
       id: 'name',

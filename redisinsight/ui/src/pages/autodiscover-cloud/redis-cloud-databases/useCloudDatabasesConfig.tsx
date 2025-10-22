@@ -8,9 +8,10 @@ import {
   resetLoadedRedisCloud,
 } from 'uiSrc/slices/instances/cloud'
 import { oauthCloudUserSelector } from 'uiSrc/slices/oauth/cloud'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import {
   formatLongName,
+  handleCopy,
   parseInstanceOptionsCloud,
   replaceSpaces,
   setTitle,
@@ -23,21 +24,190 @@ import {
   RedisCloudSubscriptionTypeText,
 } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import {
+  ColumnDef,
+  RowSelectionState,
+} from 'uiSrc/components/base/layout/table'
 import {
   DatabaseListModules,
   DatabaseListOptions,
   RiTooltip,
 } from 'uiSrc/components'
 import styles from 'uiSrc/pages/autodiscover-cloud/redis-cloud-databases/styles.module.scss'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CopyIcon } from 'uiSrc/components/base/icons'
 import { getSelectionColumn } from 'uiSrc/pages/autodiscover-cloud/utils'
 import {
   CellText,
+  CopyBtn,
   CopyPublicEndpointText,
   CopyTextContainer,
+  StatusColumnText,
 } from 'uiSrc/components/auto-discover'
+
+export const colFactory = (instances: InstanceRedisCloud[]) => {
+  const columns: ColumnDef<InstanceRedisCloud>[] = [
+    getSelectionColumn<InstanceRedisCloud>(),
+    {
+      header: 'Database',
+      id: 'name',
+      accessorKey: 'name',
+      enableSorting: true,
+      size: 250,
+      cell: ({
+        row: {
+          original: { name },
+        },
+      }) => {
+        const cellContent = replaceSpaces(name.substring(0, 200))
+        return (
+          <div role="presentation" data-testid={`db_name_${name}`}>
+            <RiTooltip
+              delay={200}
+              position="bottom"
+              title="Database"
+              className={styles.tooltipColumnName}
+              anchorClassName="truncateText"
+              content={formatLongName(name)}
+            >
+              <CellText>{cellContent}</CellText>
+            </RiTooltip>
+          </div>
+        )
+      },
+    },
+    {
+      header: 'Subscription ID',
+      id: 'subscriptionId',
+      accessorKey: 'subscriptionId',
+      enableSorting: true,
+      size: 120,
+      cell: ({
+        row: {
+          original: { subscriptionId },
+        },
+      }) => (
+        <CellText data-testid={`sub_id_${subscriptionId}`}>
+          {subscriptionId}
+        </CellText>
+      ),
+    },
+    {
+      header: 'Subscription',
+      id: 'subscriptionName',
+      accessorKey: 'subscriptionName',
+      enableSorting: true,
+      size: 250,
+      cell: ({
+        row: {
+          original: { subscriptionName: name },
+        },
+      }) => {
+        const cellContent = replaceSpaces(name.substring(0, 200))
+        return (
+          <div role="presentation">
+            <RiTooltip
+              delay={200}
+              position="bottom"
+              title="Subscription"
+              className={styles.tooltipColumnName}
+              anchorClassName="truncateText"
+              content={formatLongName(name)}
+            >
+              <CellText>{cellContent}</CellText>
+            </RiTooltip>
+          </div>
+        )
+      },
+    },
+    {
+      header: 'Type',
+      id: 'subscriptionType',
+      accessorKey: 'subscriptionType',
+      enableSorting: true,
+      size: 100,
+      cell: ({
+        row: {
+          original: { subscriptionType },
+        },
+      }) => (
+        <CellText>
+          {RedisCloudSubscriptionTypeText[subscriptionType!] ?? '-'}
+        </CellText>
+      ),
+    },
+    {
+      header: 'Status',
+      id: 'status',
+      accessorKey: 'status',
+      enableSorting: true,
+      size: 100,
+      cell: ({
+        row: {
+          original: { status },
+        },
+      }) => <StatusColumnText>{status}</StatusColumnText>,
+    },
+    {
+      header: 'Endpoint',
+      id: 'publicEndpoint',
+      accessorKey: 'publicEndpoint',
+      enableSorting: true,
+      size: 310,
+      cell: ({
+        row: {
+          original: { publicEndpoint },
+        },
+      }) => {
+        const text = publicEndpoint
+        return (
+          <CopyTextContainer>
+            <CopyPublicEndpointText>{text}</CopyPublicEndpointText>
+            <RiTooltip
+              delay={200}
+              position="right"
+              content="Copy"
+              anchorClassName="copyPublicEndpointTooltip"
+            >
+              <CopyBtn
+                aria-label="Copy public endpoint"
+                onClick={() => handleCopy(text)}
+              />
+            </RiTooltip>
+          </CopyTextContainer>
+        )
+      },
+    },
+    {
+      header: 'Capabilities',
+      id: 'modules',
+      accessorKey: 'modules',
+      enableSorting: true,
+      size: 120,
+      cell: function Modules({ row: { original: instance } }) {
+        return (
+          <DatabaseListModules
+            modules={instance.modules.map((name) => ({ name }))}
+          />
+        )
+      },
+    },
+    {
+      header: 'Options',
+      id: 'options',
+      accessorKey: 'options',
+      enableSorting: true,
+      size: 120,
+      cell: ({ row: { original: instance } }) => {
+        const options = parseInstanceOptionsCloud(
+          instance.databaseId,
+          instances || [],
+        )
+        return <DatabaseListOptions options={options} />
+      },
+    },
+  ]
+
+  return columns
+}
 
 export const useCloudDatabasesConfig = () => {
   const dispatch = useDispatch()
@@ -46,26 +216,31 @@ export const useCloudDatabasesConfig = () => {
   const {
     ssoFlow,
     credentials,
+    loading,
     data: instances,
     dataAdded: instancesAdded,
   } = useSelector(cloudSelector)
+
   const { data: userOAuthProfile } = useSelector(oauthCloudUserSelector)
+
   const currentAccountIdRef = useRef(userOAuthProfile?.id)
   const ssoFlowRef = useRef(ssoFlow)
-  const [selection, setSelection] = useState<InstanceRedisCloud[]>([])
-  const onSelectionChange = (selected: InstanceRedisCloud) =>
-    setSelection((previous) => {
-      const isSelected = previous.some(
-        (item) => item.databaseId === selected.databaseId,
-      )
-      if (isSelected) {
-        return previous.filter(
-          (item) => item.databaseId !== selected.databaseId,
-        )
-      }
-      return [...previous, selected]
-    })
+
   setTitle('Redis Cloud Databases')
+
+  const [selection, setSelection] = useState<InstanceRedisCloud[]>([])
+
+  const handleSelectionChange = (currentSelected: RowSelectionState) => {
+    debugger
+    const newSelection = instances?.filter((item) => {
+      const { id } = item
+      if (!id) {
+        return false
+      }
+      return currentSelected[id]
+    })
+    setSelection(newSelection || [])
+  }
 
   useEffect(() => {
     if (instances === null) {
@@ -73,7 +248,7 @@ export const useCloudDatabasesConfig = () => {
     }
 
     dispatch(resetLoadedRedisCloud(LoadedCloud.Instances))
-  }, [])
+  }, [instances])
 
   useEffect(() => {
     if (ssoFlowRef.current !== OAuthSocialAction.Import) return
@@ -132,179 +307,16 @@ export const useCloudDatabasesConfig = () => {
     )
   }
 
-  const handleCopy = (text = '') => {
-    navigator.clipboard.writeText(text)
-  }
-
-  const columns: ColumnDefinition<InstanceRedisCloud>[] = [
-    getSelectionColumn({
-      setSelection,
-      onSelectionChange,
-    }),
-    {
-      header: 'Database',
-      id: 'name',
-      accessorKey: 'name',
-      enableSorting: true,
-      size: 195,
-      cell: ({
-        row: {
-          original: { name },
-        },
-      }) => {
-        const cellContent = replaceSpaces(name.substring(0, 200))
-        return (
-          <div role="presentation" data-testid={`db_name_${name}`}>
-            <RiTooltip
-              position="bottom"
-              title="Database"
-              className={styles.tooltipColumnName}
-              anchorClassName="truncateText"
-              content={formatLongName(name)}
-            >
-              <CellText>{cellContent}</CellText>
-            </RiTooltip>
-          </div>
-        )
-      },
-    },
-    {
-      header: 'Subscription ID',
-      id: 'subscriptionId',
-      accessorKey: 'subscriptionId',
-      enableSorting: true,
-      size: 170,
-      cell: ({
-        row: {
-          original: { subscriptionId },
-        },
-      }) => (
-        <CellText data-testid={`sub_id_${subscriptionId}`}>
-          {subscriptionId}
-        </CellText>
-      ),
-    },
-    {
-      header: 'Subscription',
-      id: 'subscriptionName',
-      accessorKey: 'subscriptionName',
-      enableSorting: true,
-      size: 300,
-      cell: ({
-        row: {
-          original: { subscriptionName: name },
-        },
-      }) => {
-        const cellContent = replaceSpaces(name.substring(0, 200))
-        return (
-          <div role="presentation">
-            <RiTooltip
-              position="bottom"
-              title="Subscription"
-              className={styles.tooltipColumnName}
-              anchorClassName="truncateText"
-              content={formatLongName(name)}
-            >
-              <CellText>{cellContent}</CellText>
-            </RiTooltip>
-          </div>
-        )
-      },
-    },
-    {
-      header: 'Type',
-      id: 'subscriptionType',
-      accessorKey: 'subscriptionType',
-      enableSorting: true,
-      size: 95,
-      cell: ({
-        row: {
-          original: { subscriptionType },
-        },
-      }) => (
-        <CellText>
-          {RedisCloudSubscriptionTypeText[subscriptionType!] ?? '-'}
-        </CellText>
-      ),
-    },
-    {
-      header: 'Status',
-      id: 'status',
-      accessorKey: 'status',
-      enableSorting: true,
-      size: 110,
-      cell: ({
-        row: {
-          original: { status },
-        },
-      }) => <CellText className="column_status">{status}</CellText>,
-    },
-    {
-      header: 'Endpoint',
-      id: 'publicEndpoint',
-      accessorKey: 'publicEndpoint',
-      enableSorting: true,
-      size: 310,
-      cell: ({
-        row: {
-          original: { publicEndpoint },
-        },
-      }) => {
-        const text = publicEndpoint
-        return (
-          <CopyTextContainer>
-            <CopyPublicEndpointText>{text}</CopyPublicEndpointText>
-            <RiTooltip
-              position="right"
-              content="Copy"
-              anchorClassName="copyPublicEndpointTooltip"
-            >
-              <IconButton
-                icon={CopyIcon}
-                aria-label="Copy public endpoint"
-                className="copyPublicEndpointBtn"
-                onClick={() => handleCopy(text)}
-              />
-            </RiTooltip>
-          </CopyTextContainer>
-        )
-      },
-    },
-    {
-      header: 'Capabilities',
-      id: 'modules',
-      accessorKey: 'modules',
-      enableSorting: true,
-      size: 200,
-      cell: function Modules({ row: { original: instance } }) {
-        return (
-          <DatabaseListModules
-            modules={instance.modules.map((name) => ({ name }))}
-          />
-        )
-      },
-    },
-    {
-      header: 'Options',
-      id: 'options',
-      accessorKey: 'options',
-      enableSorting: true,
-      size: 180,
-      cell: ({ row: { original: instance } }) => {
-        const options = parseInstanceOptionsCloud(
-          instance.databaseId,
-          instances || [],
-        )
-        return <DatabaseListOptions options={options} />
-      },
-    },
-  ]
+  const columns = useMemo(() => colFactory(instances || []), [instances])
 
   return {
     columns,
     selection,
+    instances,
+    loading,
     handleClose,
     handleBackAdding,
     handleAddInstances,
+    handleSelectionChange,
   }
 }

@@ -244,7 +244,7 @@ const ManualConnectionForm = (props: Props) => {
           <CloneConnection id={id} setIsCloneMode={setIsCloneMode} />
         )}
       <div className={cx('getStartedForm', styles.content)} ref={formRef}>
-        {!isEditMode && !isFromCloud && (
+        {!isEditMode && !isFromCloud && !isCloneMode && (
           <>
             <Tabs />
             <Spacer />

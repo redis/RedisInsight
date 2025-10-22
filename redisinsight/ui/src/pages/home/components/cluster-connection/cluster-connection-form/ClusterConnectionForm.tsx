@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { isEmpty } from 'lodash'
-import { FormikErrors, useFormik } from 'formik'
+import styled from 'styled-components'
 
+import { FormikErrors, useFormik } from 'formik'
 import * as keys from 'uiSrc/constants/keys'
 import { MAX_PORT_NUMBER, validateField } from 'uiSrc/utils/validations'
 import { handlePasteHostName } from 'uiSrc/utils'
 import validationErrors from 'uiSrc/constants/validationErrors'
-import { ICredentialsRedisCluster } from 'uiSrc/slices/interfaces'
 
-import { MessageEnterpriceSoftware } from 'uiSrc/pages/home/components/form/Messages'
+import { ICredentialsRedisCluster } from 'uiSrc/slices/interfaces'
+import { MessageEnterpriseSoftware } from 'uiSrc/pages/home/components/form/Messages'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { WindowEvent } from 'uiSrc/components/base/utils/WindowEvent'
 import {
@@ -18,9 +19,15 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { NumericInput, PasswordInput, TextInput } from 'uiSrc/components/base/inputs'
+import {
+  NumericInput,
+  PasswordInput,
+  TextInput,
+} from 'uiSrc/components/base/inputs'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { RiTooltip } from 'uiSrc/components'
+import { RiTooltip } from 'uiSrc/components/base/tooltip'
+import { Text } from 'uiSrc/components/base/text'
+import { Spacer } from 'uiSrc/components/base/layout'
 
 export interface Props {
   host: string
@@ -50,9 +57,67 @@ const fieldDisplayNames: Values = {
   host: 'Cluster Host',
   port: 'Cluster Port',
   username: 'Admin Username',
-  // deepcode ignore NoHardcodedPasswords: <Not a passowrd but "password" field placeholder>
+  // deepcode ignore NoHardcodedPasswords: <Not a password but "password" field placeholder>
   password: 'Admin Password',
 }
+
+const AppendHostNameUl = styled.ul`
+  font-weight: 300;
+  opacity: 0.85;
+  padding-bottom: 10px;
+  list-style: none;
+
+  li {
+    line-height: 20px;
+  }
+
+  .dot {
+    margin-left: 10px;
+  }
+
+  .dot::before {
+    font-size: 8px;
+    padding: 0 14px;
+    content: ' \\25CF';
+    vertical-align: middle;
+  }
+`
+
+const AppendHostName = () => (
+  <RiTooltip
+    title={
+      <div>
+        <Text variant="semiBold">
+          Pasting a connection URL auto fills the database details.
+        </Text>
+        <Text style={{ margin: 0, paddingTop: '10px' }}>
+          The following connection URLs are supported:
+        </Text>
+      </div>
+    }
+    className="homePage_tooltip"
+    anchorClassName="inputAppendIcon"
+    position="right"
+    content={
+      <AppendHostNameUl>
+        <li>
+          <span className="dot" />
+          redis://[[username]:[password]]@host:port
+        </li>
+        <li>
+          <span className="dot" />
+          rediss://[[username]:[password]]@host:port
+        </li>
+        <li>
+          <span className="dot" />
+          host:port
+        </li>
+      </AppendHostNameUl>
+    }
+  >
+    <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
+  </RiTooltip>
+)
 
 const ClusterConnectionForm = (props: Props) => {
   const {
@@ -93,7 +158,8 @@ const ClusterConnectionForm = (props: Props) => {
 
     Object.entries(values).forEach(
       ([key, value]) =>
-        !value && Object.assign(errs, { [key]: fieldDisplayNames[key] }),
+        !value &&
+        Object.assign(errs, { [key]: fieldDisplayNames[key as keyof Values] }),
     )
 
     setErrors(errs)
@@ -119,42 +185,6 @@ const ClusterConnectionForm = (props: Props) => {
       event.stopPropagation()
     }
   }
-
-  const AppendHostName = () => (
-    <RiTooltip
-      title={
-        <div>
-          <p>
-            <b>Pasting a connection URL auto fills the database details.</b>
-          </p>
-          <p style={{ margin: 0, paddingTop: '10px' }}>
-            The following connection URLs are supported:
-          </p>
-        </div>
-      }
-      className="homePage_tooltip"
-      anchorClassName="inputAppendIcon"
-      position="right"
-      content={
-        <ul className="homePage_toolTipUl">
-          <li>
-            <span className="dot" />
-            redis://[[username]:[password]]@host:port
-          </li>
-          <li>
-            <span className="dot" />
-            rediss://[[username]:[password]]@host:port
-          </li>
-          <li>
-            <span className="dot" />
-            host:port
-          </li>
-        </ul>
-      }
-    >
-      <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
-    </RiTooltip>
-  )
 
   const CancelButton = ({ onClick }: { onClick: () => void }) => (
     <SecondaryButton
@@ -216,13 +246,12 @@ const ClusterConnectionForm = (props: Props) => {
   }
 
   return (
-    <div className="getStartedForm eui-yScroll" data-testid="add-db_cluster">
-      <MessageEnterpriceSoftware />
-      <br />
-
+    <div className="getStartedForm" data-testid="add-db_cluster">
+      <MessageEnterpriseSoftware />
+      <Spacer size="l" />
       <form>
         <WindowEvent event="keydown" handler={onKeyDown} />
-        <Row responsive>
+        <Row responsive gap="m">
           <FlexItem grow={4}>
             <FormField
               label="Cluster Host*"
@@ -235,11 +264,8 @@ const ClusterConnectionForm = (props: Props) => {
                 maxLength={200}
                 placeholder="Enter Cluster Host"
                 value={formik.values.host}
-                onChange={value => {
-                  formik.setFieldValue(
-                    'host',
-                    validateField(value.trim()),
-                  )
+                onChange={(value) => {
+                  formik.setFieldValue('host', validateField(value.trim()))
                 }}
                 onPaste={(event: React.ClipboardEvent<HTMLInputElement>) =>
                   handlePasteHostName(onHostNamePaste, event)
@@ -267,8 +293,8 @@ const ClusterConnectionForm = (props: Props) => {
             </FormField>
           </FlexItem>
         </Row>
-
-        <Row responsive>
+        <Spacer size="l" />
+        <Row responsive gap="m">
           <FlexItem grow>
             <FormField label="Admin Username*">
               <TextInput

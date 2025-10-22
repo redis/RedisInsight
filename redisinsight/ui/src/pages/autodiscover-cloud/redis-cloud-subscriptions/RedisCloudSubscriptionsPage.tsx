@@ -14,6 +14,7 @@ const RedisCloudSubscriptionsPage = () => {
     handleClose,
     handleBackAdding,
     handleLoadInstances,
+    handleSelectionChange,
   } = useCloudSubscriptionConfig()
 
   return (
@@ -27,6 +28,7 @@ const RedisCloudSubscriptionsPage = () => {
       onClose={handleClose}
       onBack={handleBackAdding}
       onSubmit={handleLoadInstances}
+      onSelectionChange={handleSelectionChange}
     />
   )
 }

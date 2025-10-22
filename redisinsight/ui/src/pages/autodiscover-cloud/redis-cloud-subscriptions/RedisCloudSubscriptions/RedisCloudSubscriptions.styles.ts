@@ -7,30 +7,37 @@ import { ColorText } from 'uiSrc/components/base/text'
 export const AccountItem = styled(FlexItem).attrs({
   grow: false,
   direction: 'row',
-  padding: 3,
 })`
   align-items: center;
+  gap: ${({ theme }: { theme: Theme }) => theme.core.space.space100};
+  &:not(:last-child):after {
+    content: '';
+    margin-left: ${({ theme }: { theme: Theme }) => theme.core.space.space100};
+    border-right: 1px solid
+      ${({ theme }: { theme: Theme }) => theme.semantic.color.border.neutral400};
+    height: ${({ theme }: { theme: Theme }) => theme.core.space.space200};
+  }
 `
 
 export const AccountItemTitle = styled(ColorText).attrs({
-  size: 'XS',
-  color: 'secondary',
+  size: 'M',
 })`
+  color: ${({ theme }: { theme: Theme }) =>
+    theme.components.typography.colors.secondary};
   text-wrap: nowrap;
 `
 export const AccountWrapper = styled(Row).attrs({
   justify: 'start',
-  gap: 'xxl',
+  gap: 'l',
   align: 'center',
 })`
+  align-self: stretch;
   width: 100%;
-  border-radius: 0.8rem;
+  border-radius: ${({ theme }: { theme: Theme }) => theme.core.space.space100};
   min-height: 44px;
-  padding-left: ${({ theme }: { theme: Theme }) => theme.core.space.space150};
-  border: 1px solid
-    ${({ theme }: { theme: Theme }) => theme.semantic.color.border.neutral500};
+  padding: ${({ theme }: { theme: Theme }) => theme.core.space.space200};
   background-color: ${({ theme }: { theme: Theme }) =>
-    theme.semantic.color.background.neutral500};
+    theme.semantic.color.background.neutral200};
 `
 
 export const AlertStatusDot = styled.span`

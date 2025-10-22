@@ -4,7 +4,8 @@ import cx from 'classnames'
 import { flatten, isArray, isEmpty, map, uniq } from 'lodash'
 import styled from 'styled-components'
 
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { handleCopy as handleCopyUtil } from 'uiSrc/utils'
+import { Table, ColumnDef } from 'uiSrc/components/base/layout/table'
 import { ColorText } from 'uiSrc/components/base/text/ColorText'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CopyIcon } from 'uiSrc/components/base/icons'
@@ -36,7 +37,7 @@ const noResultsMessage = 'No results found.'
 const TableResult = React.memo((props: Props) => {
   const { result, query, matched, cursorId } = props
 
-  const [columns, setColumns] = useState<ColumnDefinition<any>[]>([])
+  const [columns, setColumns] = useState<ColumnDef<any>[]>([])
 
   const checkShouldParsedHTML = (query: string) => {
     const command = query.toUpperCase()
@@ -50,7 +51,7 @@ const TableResult = React.memo((props: Props) => {
     event.preventDefault()
     event.stopPropagation()
 
-    navigator.clipboard.writeText(text)
+    handleCopyUtil(text)
   }
 
   useEffect(() => {
@@ -62,7 +63,7 @@ const TableResult = React.memo((props: Props) => {
     const uniqColumns =
       uniq(flatten(map(result, (doc) => Object.keys(doc)))) ?? []
 
-    const newColumns: ColumnDefinition<any>[] = uniqColumns.map(
+    const newColumns: ColumnDef<any>[] = uniqColumns.map(
       (title: string = ' ') => ({
         header: title,
         id: title,

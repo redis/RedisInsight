@@ -14,9 +14,9 @@ import {
   LoadedSentinel,
   ModifiedSentinelMaster,
 } from 'uiSrc/slices/interfaces'
-import { removeEmpty, setTitle } from 'uiSrc/utils'
+import { handleCopy, removeEmpty, setTitle } from 'uiSrc/utils'
 import { pick } from 'lodash'
-import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { ColumnDef } from 'uiSrc/components/base/layout/table'
 import { Loader } from 'uiSrc/components/base/display'
 import { RiTooltip } from 'uiSrc/components/base/tooltip'
 import { ColorText } from 'uiSrc/components/base/text'
@@ -92,10 +92,6 @@ export const useSentinelDatabasesResultConfig = () => {
     history.push(Pages.home)
   }
 
-  const handleCopy = (text = '') => {
-    navigator.clipboard.writeText(text)
-  }
-
   const handleAddInstance = (masterName: string) => {
     const instance: ModifiedSentinelMaster = {
       ...removeEmpty(items.find((item) => item.name === masterName)),
@@ -128,7 +124,7 @@ export const useSentinelDatabasesResultConfig = () => {
     )
   }
 
-  const columns: ColumnDefinition<ModifiedSentinelMaster>[] = [
+  const columns: ColumnDef<ModifiedSentinelMaster>[] = [
     {
       header: 'Result',
       id: 'message',
@@ -333,7 +329,7 @@ export const useSentinelDatabasesResultConfig = () => {
   ]
 
   if (countSuccessAdded !== items.length) {
-    const columnActions: ColumnDefinition<ModifiedSentinelMaster> = {
+    const columnActions: ColumnDef<ModifiedSentinelMaster> = {
       header: '',
       id: 'actions',
       accessorKey: 'actions',

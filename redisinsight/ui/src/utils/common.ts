@@ -65,3 +65,7 @@ export const openNewWindowDatabase = (location: string) => {
 
   window.app?.ipc?.invoke(IpcInvokeEvent.windowOpen, { location })
 }
+
+export const handleCopy = (text = '') => {
+  navigator.clipboard.writeText(text)
+}

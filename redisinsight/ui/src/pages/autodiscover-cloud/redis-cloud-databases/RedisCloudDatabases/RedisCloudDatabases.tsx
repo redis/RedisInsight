@@ -1,9 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { map, pick } from 'lodash'
-import { useSelector } from 'react-redux'
-import { useHistory } from 'react-router-dom'
 
-import { cloudSelector } from 'uiSrc/slices/instances/cloud'
 import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
@@ -16,10 +13,13 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { Pages } from 'uiSrc/constants'
 import { SearchInput } from 'uiSrc/components/base/inputs'
 import { Text } from 'uiSrc/components/base/text'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import {
+  ColumnDef,
+  RowSelectionState,
+  Table,
+} from 'uiSrc/components/base/layout/table'
 import styles from '../styles.module.scss'
 import { Spacer } from 'uiSrc/components/base/layout'
 import {
@@ -32,8 +32,11 @@ import {
 } from 'uiSrc/components/auto-discover'
 
 export interface Props {
-  columns: ColumnDefinition<InstanceRedisCloud>[]
+  columns: ColumnDef<InstanceRedisCloud>[]
+  instances: InstanceRedisCloud[]
   selection: InstanceRedisCloud[]
+  loading: boolean
+  onSelectionChange: (currentSelected: RowSelectionState) => void
   onClose: () => void
   onBack: () => void
   onSubmit: (
@@ -51,11 +54,14 @@ interface IPopoverProps {
 const loadingMsg = 'loading...'
 const notFoundMsg = 'Not found'
 const noResultsMessage =
-  'Your Redis Enterprise Сloud has no databases available'
+  'Your Redis Enterprise Cloud has no databases available'
 
 const RedisCloudDatabasesPage = ({
   columns,
   selection,
+  instances,
+  loading,
+  onSelectionChange,
   onClose,
   onBack,
   onSubmit,
@@ -63,28 +69,44 @@ const RedisCloudDatabasesPage = ({
   const [items, setItems] = useState<InstanceRedisCloud[]>([])
   const [message, setMessage] = useState(loadingMsg)
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
+  const [rowSelection, setRowSelection] = useState<
+    Record<NonNullable<InstanceRedisCloud['id']>, boolean>
+  >({})
 
-  const history = useHistory()
+  useEffect(() => {
+    if (!selection) return
+    setRowSelection(
+      selection.reduce(
+        (acc, item) => {
+          if (item.id) {
+            acc[item.id] = true
+          }
+          return acc
+        },
+        {} as Record<NonNullable<InstanceRedisCloud['id']>, boolean>,
+      ),
+    )
+  }, [selection])
 
-  const { loading, data: instances } = useSelector(cloudSelector)
+  // const history = useHistory()
+
+  // const { loading, data: instances } = useSelector(cloudSelector)
 
   useEffect(() => {
     if (instances !== null) {
       setItems(instances)
     }
-  }, [instances])
 
-  useEffect(() => {
-    if (instances === null) {
-      history.push(Pages.home)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (instances?.length === 0) {
+    if (instances?.length === 0 && !loading) {
       setMessage(noResultsMessage)
     }
-  }, [instances])
+  }, [instances, loading])
+
+  // useEffect(() => {
+  //   if (instances === null) {
+  //     history.push(Pages.home)
+  //   }
+  // }, [])
 
   const handleSubmit = () => {
     onSubmit(
@@ -205,6 +227,11 @@ const RedisCloudDatabasesPage = ({
         <Spacer size="l" />
         <DatabaseWrapper>
           <Table
+            rowSelectionMode="multiple"
+            // getRowCanSelect={canSelectRow}
+            rowSelection={rowSelection}
+            onRowSelectionChange={onSelectionChange}
+            getRowId={(row) => `${row.id}`}
             columns={columns}
             data={items}
             defaultSorting={[
@@ -213,6 +240,9 @@ const RedisCloudDatabasesPage = ({
                 desc: false,
               },
             ]}
+            paginationEnabled={items.length > 10}
+            stripedRows
+            pageSizes={[5, 10, 25, 50, 100]}
           />
           {!items.length && <Text size="S">{message}</Text>}
         </DatabaseWrapper>

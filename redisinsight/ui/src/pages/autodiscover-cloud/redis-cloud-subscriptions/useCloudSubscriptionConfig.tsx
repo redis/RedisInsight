@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { isNumber } from 'lodash'
@@ -13,8 +13,9 @@ import {
   RedisCloudSubscriptionTypeText,
 } from 'uiSrc/slices/interfaces'
 import {
-  ColumnDefinition,
-  RowDefinition,
+  ColumnDef,
+  Row,
+  RowSelectionState,
 } from 'uiSrc/components/base/layout/table'
 import {
   cloudSelector,
@@ -33,18 +34,180 @@ import {
   AlertStatusList,
   AlertStatusListItem,
 } from 'uiSrc/pages/autodiscover-cloud/redis-cloud-subscriptions/RedisCloudSubscriptions/RedisCloudSubscriptions.styles'
-import { RiTooltip } from 'uiSrc/components'
+import { RiTooltip } from 'uiSrc/components/base/tooltip'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { ToastDangerIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
 import { getSelectionColumn } from 'uiSrc/pages/autodiscover-cloud/utils'
+import { CellText } from 'uiSrc/components/auto-discover'
 
-function canSelectRow(row: RowDefinition<RedisCloudSubscription>) {
+export function canSelectRow({ original }: Row<RedisCloudSubscription>) {
   return (
-    row.original.status === RedisCloudSubscriptionStatus.Active &&
-    row.original.numberOfDatabases !== 0 &&
-    row.getCanSelect()
+    original.status === RedisCloudSubscriptionStatus.Active &&
+    original.numberOfDatabases !== 0
   )
+}
+
+const AlertStatusContent = () => (
+  <AlertStatusList gap="none" flush>
+    <AlertStatusListItem
+      size="s"
+      label="Subscription status is not Active"
+      icon={<AlertStatusDot />}
+    />
+    <AlertStatusListItem
+      size="s"
+      wrapText
+      label="Subscription does not have any databases"
+      icon={<AlertStatusDot />}
+    />
+    <AlertStatusListItem
+      size="s"
+      label="Error fetching subscription details"
+      icon={<AlertStatusDot />}
+    />
+  </AlertStatusList>
+)
+
+export const colFactory = (
+  items: RedisCloudSubscription[],
+): ColumnDef<RedisCloudSubscription>[] => {
+  const cols: ColumnDef<RedisCloudSubscription>[] = [
+    {
+      id: 'alert',
+      accessorKey: 'alert',
+      header: '',
+      enableResizing: false,
+      enableSorting: false,
+      size: 50,
+      cell: ({
+        row: {
+          original: { status, numberOfDatabases },
+        },
+      }) =>
+        status !== RedisCloudSubscriptionStatus.Active ||
+        numberOfDatabases === 0 ? (
+          <RiTooltip
+            title={
+              <CellText variant="semiBold">
+                This subscription is not available for one of the following
+                reasons:
+              </CellText>
+            }
+            content={<AlertStatusContent />}
+            position="right"
+            className={styles.tooltipStatus}
+          >
+            <IconButton
+              icon={ToastDangerIcon}
+              aria-label="subscription alert"
+            />
+          </RiTooltip>
+        ) : null,
+    },
+    {
+      id: 'id',
+      accessorKey: 'id',
+      header: 'Id',
+      enableSorting: true,
+      size: 80,
+      cell: ({
+        row: {
+          original: { id },
+        },
+      }) => <CellText data-testid={`id_${id}`}>{id}</CellText>,
+    },
+    {
+      id: 'name',
+      accessorKey: 'name',
+      header: 'Subscription',
+      enableSorting: true,
+      cell: function InstanceCell({
+        row: {
+          original: { name },
+        },
+      }) {
+        const cellContent = replaceSpaces(name.substring(0, 200))
+        return (
+          <div role="presentation">
+            <RiTooltip
+              position="bottom"
+              title="Subscription"
+              delay={200}
+              className={styles.tooltipColumnName}
+              content={formatLongName(name)}
+            >
+              <CellText>{cellContent}</CellText>
+            </RiTooltip>
+          </div>
+        )
+      },
+    },
+    {
+      id: 'type',
+      accessorKey: 'type',
+      header: 'Type',
+      enableSorting: true,
+      cell: ({
+        row: {
+          original: { type },
+        },
+      }) => <CellText>{RedisCloudSubscriptionTypeText[type] ?? '-'}</CellText>,
+    },
+    {
+      id: 'provider',
+      accessorKey: 'provider',
+      header: 'Cloud provider',
+      enableSorting: true,
+      cell: ({
+        row: {
+          original: { provider },
+        },
+      }) => <CellText>{provider ?? '-'}</CellText>,
+    },
+    {
+      id: 'region',
+      accessorKey: 'region',
+      header: 'Region',
+      enableSorting: true,
+      cell: ({
+        row: {
+          original: { region },
+        },
+      }) => <CellText>{region ?? '-'}</CellText>,
+    },
+    {
+      id: 'numberOfDatabases',
+      accessorKey: 'numberOfDatabases',
+      header: '# databases',
+      enableSorting: true,
+      cell: ({
+        row: {
+          original: { numberOfDatabases },
+        },
+      }) => (
+        <CellText>
+          {isNumber(numberOfDatabases) ? numberOfDatabases : '-'}
+        </CellText>
+      ),
+    },
+    {
+      id: 'status',
+      accessorKey: 'status',
+      header: 'Status',
+      enableSorting: true,
+      cell: ({
+        row: {
+          original: { status },
+        },
+      }) => (
+        <CellText>{RedisCloudSubscriptionStatusText[status] ?? '-'}</CellText>
+      ),
+    },
+  ]
+  if (items.length > 0) {
+    cols.unshift(getSelectionColumn<RedisCloudSubscription>())
+  }
+  return cols
 }
 
 export const useCloudSubscriptionConfig = () => {
@@ -124,179 +287,24 @@ export const useCloudSubscriptionConfig = () => {
     )
   }
 
-  const AlertStatusContent = () => (
-    <AlertStatusList gap="none">
-      <AlertStatusListItem
-        size="s"
-        label="Subscription status is not Active"
-        icon={<AlertStatusDot />}
-      />
-      <AlertStatusListItem
-        size="s"
-        wrapText
-        label="Subscription does not have any databases"
-        icon={<AlertStatusDot />}
-      />
-      <AlertStatusListItem
-        size="s"
-        label="Error fetching subscription details"
-        icon={<AlertStatusDot />}
-      />
-    </AlertStatusList>
-  )
   const [selection, setSelection] = useState<RedisCloudSubscription[]>([])
-  const onSelectionChange = (selected: RedisCloudSubscription) =>
-    setSelection((previous) => {
-      const canSelect =
-        selected.status === RedisCloudSubscriptionStatus.Active &&
-        selected.numberOfDatabases !== 0
 
-      if (!canSelect) {
-        return previous
+  const handleSelectionChange = (currentSelected: RowSelectionState) => {
+    debugger
+    const newSelection = subscriptions?.filter((item) => {
+      const { id } = item
+      if (!id) {
+        return false
       }
-
-      const isSelected = previous.some(
-        (item) => item.id === selected.id && item.type === selected.type,
-      )
-      if (isSelected) {
-        return previous.filter(
-          (item) => !(item.id === selected.id && item.type === selected.type),
-        )
-      }
-      return [...previous, selected]
+      return currentSelected[id]
     })
+    setSelection(newSelection || [])
+  }
 
-  const columns: ColumnDefinition<RedisCloudSubscription>[] = [
-    getSelectionColumn({
-      setSelection,
-      onSelectionChange,
-      canSelectRow,
-    }),
-    {
-      id: 'alert',
-      accessorKey: 'alert',
-      header: '',
-      enableResizing: false,
-      enableSorting: false,
-      size: 50,
-      cell: ({
-        row: {
-          original: { status, numberOfDatabases },
-        },
-      }) =>
-        status !== RedisCloudSubscriptionStatus.Active ||
-        numberOfDatabases === 0 ? (
-          <RiTooltip
-            title={
-              <Text size="S">
-                This subscription is not available for one of the following
-                reasons:
-              </Text>
-            }
-            content={<AlertStatusContent />}
-            position="right"
-            className={styles.tooltipStatus}
-          >
-            <IconButton
-              icon={ToastDangerIcon}
-              aria-label="subscription alert"
-            />
-          </RiTooltip>
-        ) : null,
-    },
-    {
-      id: 'id',
-      accessorKey: 'id',
-      header: 'Id',
-      enableSorting: true,
-      size: 80,
-      cell: ({
-        row: {
-          original: { id },
-        },
-      }) => <span data-testid={`id_${id}`}>{id}</span>,
-    },
-    {
-      id: 'name',
-      accessorKey: 'name',
-      header: 'Subscription',
-      enableSorting: true,
-      cell: function InstanceCell({
-        row: {
-          original: { name },
-        },
-      }) {
-        const cellContent = replaceSpaces(name.substring(0, 200))
-        return (
-          <div role="presentation">
-            <RiTooltip
-              position="bottom"
-              title="Subscription"
-              className={styles.tooltipColumnName}
-              content={formatLongName(name)}
-            >
-              <Text>{cellContent}</Text>
-            </RiTooltip>
-          </div>
-        )
-      },
-    },
-    {
-      id: 'type',
-      accessorKey: 'type',
-      header: 'Type',
-      enableSorting: true,
-      cell: ({
-        row: {
-          original: { type },
-        },
-      }) => RedisCloudSubscriptionTypeText[type] ?? '-',
-    },
-    {
-      id: 'provider',
-      accessorKey: 'provider',
-      header: 'Cloud provider',
-      enableSorting: true,
-      cell: ({
-        row: {
-          original: { provider },
-        },
-      }) => provider ?? '-',
-    },
-    {
-      id: 'region',
-      accessorKey: 'region',
-      header: 'Region',
-      enableSorting: true,
-      cell: ({
-        row: {
-          original: { region },
-        },
-      }) => region ?? '-',
-    },
-    {
-      id: 'numberOfDatabases',
-      accessorKey: 'numberOfDatabases',
-      header: '# databases',
-      enableSorting: true,
-      cell: ({
-        row: {
-          original: { numberOfDatabases },
-        },
-      }) => (isNumber(numberOfDatabases) ? numberOfDatabases : '-'),
-    },
-    {
-      id: 'status',
-      accessorKey: 'status',
-      header: 'Status',
-      enableSorting: true,
-      cell: ({
-        row: {
-          original: { status },
-        },
-      }) => RedisCloudSubscriptionStatusText[status] ?? '-',
-    },
-  ]
+  const columns: ColumnDef<RedisCloudSubscription>[] = useMemo(
+    () => colFactory(subscriptions || []),
+    [subscriptions],
+  )
 
   return {
     columns,
@@ -309,5 +317,6 @@ export const useCloudSubscriptionConfig = () => {
     handleClose,
     handleBackAdding,
     handleLoadInstances,
+    handleSelectionChange,
   }
 }

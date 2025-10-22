@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -11,7 +11,9 @@ import {
 } from 'uiSrc/slices/instances/cluster'
 import {
   formatLongName,
+  handleCopy,
   Maybe,
+  Nullable,
   parseInstanceOptionsCluster,
   setTitle,
 } from 'uiSrc/utils'
@@ -19,61 +21,22 @@ import {
   AddRedisDatabaseStatus,
   InstanceRedisCluster,
 } from 'uiSrc/slices/interfaces'
-import {
-  DatabaseListModules,
-  DatabaseListOptions,
-  RiTooltip,
-} from 'uiSrc/components'
+import { DatabaseListModules, DatabaseListOptions } from 'uiSrc/components'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CopyIcon } from 'uiSrc/components/base/icons'
 import { ColorText, Text } from 'uiSrc/components/base/text'
+import { RiTooltip } from 'uiSrc/components/base/tooltip'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { ColumnDef } from 'uiSrc/components/base/layout/table'
 import RedisClusterDatabases from './RedisClusterDatabases'
 import RedisClusterDatabasesResult from './RedisClusterDatabasesResult'
 
 import styles from './styles.module.scss'
 
-const RedisClusterDatabasesPage = () => {
-  const dispatch = useDispatch()
-  const history = useHistory()
-
-  const {
-    credentials,
-    data: instances,
-    dataAdded: instancesAdded,
-  } = useSelector(clusterSelector)
-  setTitle('Auto-Discover Redis Enterprise Databases')
-
-  const sendCancelEvent = () => {
-    sendEventTelemetry({
-      event: TelemetryEvent.CONFIG_DATABASES_REDIS_SOFTWARE_AUTODISCOVERY_CANCELLED,
-    })
-  }
-
-  const handleClose = (sendEvent = true) => {
-    sendEvent && sendCancelEvent()
-    dispatch(resetDataRedisCluster())
-    history.push(Pages.home)
-  }
-
-  const handleBackAdding = (sendEvent = true) => {
-    sendEvent && sendCancelEvent()
-    dispatch(resetInstancesRedisCluster())
-    history.push(Pages.home)
-  }
-
-  const handleAddInstances = (uids: Maybe<number>[]) => {
-    dispatch(addInstancesRedisCluster({ uids, credentials }))
-  }
-
-  const handleCopy = (text = '') => {
-    navigator.clipboard.writeText(text)
-  }
-
-  const columns: ColumnDefinition<InstanceRedisCluster>[] = [
+export const colFactory = (instances: Nullable<InstanceRedisCluster[]>) => {
+  const columns: ColumnDef<InstanceRedisCluster>[] = [
     {
       header: 'Database',
       id: 'name',
@@ -167,7 +130,7 @@ const RedisClusterDatabasesPage = () => {
     },
   ]
 
-  const messageColumn: ColumnDefinition<InstanceRedisCluster> = {
+  const messageColumn: ColumnDef<InstanceRedisCluster> = {
     header: 'Result',
     id: 'messageAdded',
     accessorKey: 'messageAdded',
@@ -204,8 +167,50 @@ const RedisClusterDatabasesPage = () => {
     },
   }
 
-  const columnsResult: ColumnDefinition<InstanceRedisCluster>[] = [...columns]
+  const columnsResult: ColumnDef<InstanceRedisCluster>[] = [...columns]
   columnsResult.push(messageColumn)
+  return [columns, columnsResult]
+}
+
+const RedisClusterDatabasesPage = () => {
+  const dispatch = useDispatch()
+  const history = useHistory()
+
+  const {
+    credentials,
+    data: instances,
+    dataAdded: instancesAdded,
+  } = useSelector(clusterSelector)
+
+  setTitle('Auto-Discover Redis Enterprise Databases')
+
+  const sendCancelEvent = () => {
+    sendEventTelemetry({
+      event:
+        TelemetryEvent.CONFIG_DATABASES_REDIS_SOFTWARE_AUTODISCOVERY_CANCELLED,
+    })
+  }
+
+  const handleClose = (sendEvent = true) => {
+    sendEvent && sendCancelEvent()
+    dispatch(resetDataRedisCluster())
+    history.push(Pages.home)
+  }
+
+  const handleBackAdding = (sendEvent = true) => {
+    sendEvent && sendCancelEvent()
+    dispatch(resetInstancesRedisCluster())
+    history.push(Pages.home)
+  }
+
+  const handleAddInstances = (uids: Maybe<number>[]) => {
+    dispatch(addInstancesRedisCluster({ uids, credentials }))
+  }
+
+  const [columns, columnsResult] = useMemo(
+    () => colFactory(instances),
+    [instances],
+  )
 
   if (instancesAdded.length) {
     return (

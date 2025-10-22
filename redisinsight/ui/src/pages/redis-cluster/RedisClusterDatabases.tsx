@@ -20,11 +20,11 @@ import {
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { Table, ColumnDef } from 'uiSrc/components/base/layout/table'
 import styles from './styles.module.scss'
 
 interface Props {
-  columns: ColumnDefinition<InstanceRedisCluster>[]
+  columns: ColumnDef<InstanceRedisCluster>[]
   onClose: () => void
   onBack: () => void
   onSubmit: (uids: Maybe<number>[]) => void
@@ -219,9 +219,7 @@ const RedisClusterDatabases = ({
               }
               content={
                 isSubmitDisabled() ? (
-                  <span>
-                    {validationErrors.NO_DBS_SELECTED}
-                  </span>
+                  <span>{validationErrors.NO_DBS_SELECTED}</span>
                 ) : null
               }
             >

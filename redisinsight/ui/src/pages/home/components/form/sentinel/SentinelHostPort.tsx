@@ -1,6 +1,7 @@
 import React from 'react'
 
-import { RiTooltip } from 'uiSrc/components'
+import { handleCopy } from 'uiSrc/utils'
+import { RiTooltip } from 'uiSrc/components/base/tooltip'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CopyIcon } from 'uiSrc/components/base/icons'
@@ -13,10 +14,6 @@ export interface Props {
 
 const SentinelHostPort = (props: Props) => {
   const { host, port } = props
-
-  const handleCopy = (text = '') => {
-    navigator.clipboard.writeText(text)
-  }
 
   return (
     <Text color="subdued" className={styles.sentinelCollapsedField}>
