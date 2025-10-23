@@ -1,5 +1,5 @@
-import { isNull, isNumber } from 'lodash';
-import { createClient, createCluster } from 'redis';
+import { isNumber } from 'lodash';
+import { createClient, createCluster, RESP_TYPES } from 'redis';
 import {
   IRedisClientCommandOptions,
   RedisClient,
@@ -14,14 +14,11 @@ export abstract class NodeRedisClient extends RedisClient {
   protected readonly client: NodeRedis | NodeRedisCluster;
 
   static prepareCommandOptions(options: IRedisClientCommandOptions): any {
-    let replyEncoding = null;
-
-    if (options?.replyEncoding === 'utf8') {
-      replyEncoding = 'utf8';
-    }
-
     return {
-      returnBuffers: isNull(replyEncoding),
+      typeMapping: {
+        [RESP_TYPES.BLOB_STRING]:
+          options?.replyEncoding === 'utf8' ? undefined : Buffer,
+      },
     };
   }
 

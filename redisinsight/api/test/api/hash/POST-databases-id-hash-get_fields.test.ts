@@ -46,6 +46,7 @@ const responseSchema = Joi.object()
       Joi.object().keys({
         field: Joi.string().required(),
         value: Joi.string().required(),
+        expire: Joi.number(),
       }),
     ),
     nextCursor: Joi.number().integer().required(),
