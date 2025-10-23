@@ -8,6 +8,7 @@ import {
   NodeRedis,
   NodeRedisClient,
 } from 'src/modules/redis/client/node-redis/node-redis.client';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 export class StandaloneNodeRedisClient extends NodeRedisClient {
   protected readonly client: NodeRedis;
@@ -71,5 +72,30 @@ export class StandaloneNodeRedisClient extends NodeRedisClient {
     options?: IRedisClientCommandOptions,
   ): Promise<RedisClientCommandReply> {
     return this.sendCommand(command, options);
+  }
+
+  async monitor(): Promise<any> {
+    const monitorObserver = new NodeRedisMonitorObserver();
+    await this.client.monitor((replyStr: string) => {
+      const len = replyStr.indexOf(" ");
+      const timestamp = replyStr.slice(0, len);
+      const argIndex = replyStr.indexOf('"');
+      const args = replyStr
+        .slice(argIndex + 1, -1)
+        .split('" "')
+        .map((elem) => elem.replace(/\\"/g, '"'));
+      const dbAndSource = replyStr.slice(len + 2, argIndex - 2).split(" ");
+      monitorObserver.emit("monitor", timestamp, args, dbAndSource[1], dbAndSource[0]);
+    });
+
+    this.client.on('end', () => monitorObserver.emit('end'));
+    this.client.on('error', (e) => monitorObserver.emit('error', e));
+    return monitorObserver;
+  }
+}
+
+class NodeRedisMonitorObserver extends EventEmitter2 {
+  disconnect() {
+    console.log('TBD: disconnect')
   }
 }
