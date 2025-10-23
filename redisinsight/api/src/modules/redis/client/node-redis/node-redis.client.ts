@@ -53,7 +53,8 @@ export abstract class NodeRedisClient extends RedisClient {
    * @inheritDoc
    */
   async publish(channel: string, message: string): Promise<number> {
-    return this.client.publish(channel, message);
+    const response = await this.client.publish(channel, message);
+    return parseInt(`${response}`, 10);
   }
 
   /**

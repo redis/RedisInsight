@@ -52,7 +52,7 @@ env:
   REPORT_NAME: 'report-it'
   #  Disabled RTE for now. Need to prepare reasonable dataset to not take so much time for tests.
   #  "oss-st-big": "OSS Standalone v6 and all modules and predefined amount of data inside (~3-4M)",
-  ITESTS_NAMES: |
+  ITESTS_NAMES_SHORT: |
     {
       "oss-st-5": "OSS Standalone v5",
       "oss-st-5-pass": "OSS Standalone v5 with admin pass required",
@@ -68,7 +68,7 @@ env:
       "re-clu": "Redis Enterprise with Cluster inside",
       "re-crdt": "Redis Enterprise with active-active database inside"
     }
-  ITESTS_NAMES_SHORT: |
+  ITESTS_NAMES: |
     {
       "mods-preview": "OSS Standalone and all preview modules",
       "oss-st-5-pass": "OSS Standalone v5 with admin pass required",
