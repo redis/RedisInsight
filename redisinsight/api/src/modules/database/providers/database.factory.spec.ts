@@ -98,7 +98,7 @@ describe('DatabaseFactory', () => {
         await service.createDatabaseModel(mockSessionMetadata, mockDatabase);
         fail();
       } catch (e) {
-        expect(e.message).toEqual(RedisErrorCodes.SentinelParamsRequired);
+        expect(e.message).toEqual(ERROR_MESSAGES.SENTINEL_MASTER_NAME_REQUIRED);
       }
     });
     it('should create cluster database model', async () => {
