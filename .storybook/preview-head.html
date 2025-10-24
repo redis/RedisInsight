@@ -1,0 +1,46 @@
+<script>
+    window.global = window;
+</script>
+<style>
+    :root {
+        /*
+           Insert global variables here:
+           colors, sizes, fonts, etc.
+        */
+    }
+
+    body {
+      min-height: 100vh;
+    }
+
+    .sbdocs-wrapper div:has(>div>.toc-wrapper){
+      width:14rem;
+    }
+
+    .sbdocs-wrapper div:has(>.toc-wrapper){
+      width:fit-content;
+      margin-right:1rem;
+    }
+
+    .sbdocs-wrapper .toc-wrapper .toc-list-item {
+      padding-block: 5px;
+    }
+
+    .sb-errordisplay pre code {
+      background-color: transparent;
+    }
+
+    .docblock-argstable [type='checkbox'][role='switch'] {
+      display: none;
+    }
+
+    pre:has(.docblock-source), pre.prismjs{
+      max-height: none; /*fix code block scroll*/
+    }
+
+    .docblock-source [data-radix-scroll-area-viewport],
+    .docs-story + div [data-radix-scroll-area-viewport]{
+      max-height: 80vh; /*add max height of code block*/
+    }
+
+</style>

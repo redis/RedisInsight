@@ -87,3 +87,6 @@ static/
 
 .env*
 .npmrc
+
+*storybook.log
+storybook-static

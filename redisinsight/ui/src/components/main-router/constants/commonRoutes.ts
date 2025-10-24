@@ -6,6 +6,7 @@ import {
   SentinelDatabasesResultPage,
   SentinelPage,
 } from 'uiSrc/pages/autodiscover-sentinel'
+
 import { LAZY_LOAD } from '../config'
 
 const LazySettingsPage = lazy(() => import('uiSrc/pages/settings'))
