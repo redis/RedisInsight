@@ -41,7 +41,7 @@ export const validatePipeline = ({
         validation.errors.forEach((error) => acc.jobsErrors[j.name].add(error))
       }
 
-      if (!jobNameValidation.valid) {
+      if (jobNameSchema && !jobNameValidation.valid) {
         jobNameValidation.errors.forEach((error) =>
           acc.jobsErrors[j.name].add(error),
         )
