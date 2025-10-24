@@ -24,7 +24,6 @@ import {
   getFeatureFlags,
   getFeatureFlagsFailure,
   getFeatureFlagsSuccess,
-  setFeaturesToHighlight,
 } from 'uiSrc/slices/app/features'
 import { getConfig } from 'uiSrc/config'
 import {
@@ -157,15 +156,10 @@ describe('init slice', () => {
     it('failed to init csrf', async () => {
       riConfig.api.csrfEndpoint = 'csrf'
       mswServer.use(
-        http.get<any, CSRFTokenResponse>(
+        http.get<any, CSRFTokenResponse | { message: string }>(
           getMswURL(riConfig.api.csrfEndpoint),
           async () => {
-            return HttpResponse.json(
-              {
-                message: 'Network Error',
-              },
-              { status: 500 },
-            )
+            return HttpResponse.text('', { status: 500 })
           },
         ),
       )
@@ -177,7 +171,7 @@ describe('init slice', () => {
       const expectedActions = [
         initializeAppState(),
         fetchCsrfToken(),
-        fetchCsrfTokenFail({ error: 'Network Error' }),
+        fetchCsrfTokenFail({ error: 'Request failed with status code 500' }),
         initializeAppStateFail({ error: FAILED_TO_FETCH_CSRF_TOKEN_ERROR }),
       ]
 
