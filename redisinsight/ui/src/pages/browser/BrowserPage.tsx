@@ -2,9 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
-
 import { isNumber } from 'lodash'
-import { useTheme } from '@redis-ui/styles'
 import styled from 'styled-components'
 
 import {
@@ -79,7 +77,6 @@ const isOneSideMode = (isInsightsOpen: boolean) =>
 
 const BrowserPage = () => {
   const { instanceId } = useParams<{ instanceId: string }>()
-  const theme = useTheme()
   const {
     name: connectedInstanceName,
     db = 0,

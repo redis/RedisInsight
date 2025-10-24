@@ -14,6 +14,7 @@ import { EmptyButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import styles from './styles.module.scss'
 
 const OnboardingStartPopover = () => {
@@ -50,9 +51,8 @@ const OnboardingStartPopover = () => {
       ownFocus={false}
       closePopover={() => {}}
       panelClassName={styles.onboardingStartPopover}
-      anchorPosition="upCenter"
+      anchorPosition="downRight"
       data-testid="onboarding-start-popover"
-      style={{ display: 'none' }}
     >
       <Title size="S">Take a quick tour of Redis Insight?</Title>
       <Spacer size="s" />
@@ -62,10 +62,10 @@ const OnboardingStartPopover = () => {
         <br />
         Would you like us to show them to you?
       </Text>
-      <div className={styles.onboardingActions}>
+      <Spacer />
+      <Row justify="between">
         <EmptyButton
           onClick={handleSkip}
-          className={styles.skipTourBtn}
           size="small"
           data-testid="skip-tour-btn"
         >
@@ -79,7 +79,7 @@ const OnboardingStartPopover = () => {
         >
           Show me around
         </PrimaryButton>
-      </div>
+      </Row>
     </RiPopover>
   )
 }

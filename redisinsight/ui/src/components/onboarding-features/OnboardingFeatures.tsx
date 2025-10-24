@@ -42,7 +42,7 @@ import { InsightsPanelTabs, SidePanels } from 'uiSrc/slices/interfaces/insights'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import { FeatureFlags } from 'uiSrc/constants'
 import { isAnyFeatureEnabled } from 'uiSrc/utils/features'
-
+import { Link } from 'uiSrc/components/base/link/Link'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import styles from './styles.module.scss'
 
@@ -342,21 +342,23 @@ const ONBOARDING_FEATURES = {
             and working with commands in editor mode.
             <Spacer size="xs" />
             Workbench visualizes complex{' '}
-            <a
+            <Link
               href={EXTERNAL_LINKS.redisStack}
               target="_blank"
               rel="noreferrer"
+              variant="inline"
             >
               Redis Stack
-            </a>{' '}
+            </Link>{' '}
             data models such as documents, graphs, and time series. Or you{' '}
-            <a
+            <Link
               href="https://github.com/RedisInsight/Packages"
               target="_blank"
               rel="noreferrer"
+              variant="inline"
             >
               can build your own visualization
-            </a>
+            </Link>
             .
             {isString(firstIndex) && (
               <>
@@ -459,13 +461,14 @@ const ONBOARDING_FEATURES = {
             building custom Redis Insight tutorials.
             <Spacer size="xs" />
             Use our{' '}
-            <a
+            <Link
               href={EXTERNAL_LINKS.guidesRepo}
               target="_blank"
               rel="noreferrer"
+              variant="inline"
             >
               instructions
-            </a>{' '}
+            </Link>{' '}
             to describe your implementations of Redis for other users to follow
             and interact with in the context of a connected Redis database
           </>

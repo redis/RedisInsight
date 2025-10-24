@@ -18,6 +18,7 @@ import { ColorText } from 'uiSrc/components/base/text'
 import { TourStep } from 'uiSrc/components/base/display/tour/TourStep'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { Title } from 'uiSrc/components/base/text/Title'
+import { Spacer } from 'uiSrc/components/base/layout'
 import { Props as OnboardingWrapperProps } from './OnboardingTourWrapper'
 
 import styles from './styles.module.scss'
@@ -111,8 +112,9 @@ const OnboardingTour = (props: Props) => {
       <div className={styles.content} data-testid="step-content">
         {content}
       </div>
-      <Row className={styles.footer} align="center" justify="between">
-        <ColorText color="subdued" className={styles.stepCount}>
+      <Spacer />
+      <Row align="center" justify="between">
+        <ColorText>
           {currentStep} of {totalSteps}
         </ColorText>
         <Row grow={false} gap="m">

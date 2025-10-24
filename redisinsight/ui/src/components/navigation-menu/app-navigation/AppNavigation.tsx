@@ -8,6 +8,8 @@ import {
 import { useNavigation } from '../hooks/useNavigation'
 import FeatureFlagComponent from 'uiSrc/components/feature-flag-component/FeatureFlagComponent'
 import { FeatureFlags } from 'uiSrc/constants'
+import { OnboardingTourOptions } from 'uiSrc/components/onboarding-tour'
+import NavigationTabTrigger from './AppNavigationTabTrigger'
 
 type AppNavigationContainerProps = {
   children?: ReactNode
@@ -46,13 +48,18 @@ export type AppNavigationProps = {
 const AppNavigation = ({ actions, onChange }: AppNavigationProps) => {
   const { privateRoutes } = useNavigation()
   const activeTab = privateRoutes.find((route) => route.isActivePage)
-  const navTabs: (TabInfo & { featureFlag?: FeatureFlags })[] =
-    privateRoutes.map((route) => ({
-      label: route.tooltipText,
-      content: '',
-      value: route.pageName,
-      featureFlag: route.featureFlag,
-    }))
+  const navTabs: (TabInfo & {
+    isActivePage: boolean
+    featureFlag?: FeatureFlags
+    onboard?: OnboardingTourOptions
+  })[] = privateRoutes.map((route) => ({
+    label: route.tooltipText,
+    content: '',
+    value: route.pageName,
+    isActivePage: route.isActivePage,
+    featureFlag: route.featureFlag,
+    onboard: route.onboard,
+  }))
 
   return (
     <StyledAppNavigation>
@@ -76,39 +83,42 @@ const AppNavigation = ({ actions, onChange }: AppNavigationProps) => {
           }}
         >
           <Tabs.TabBar.Compose variant="default">
-            {navTabs.map(({ value, label, disabled, featureFlag }, index) => {
-              const key = `${value}-${index}`
-              if (featureFlag) {
-                return (
-                  <FeatureFlagComponent
-                    name={featureFlag as FeatureFlags}
-                    key={key}
-                  >
-                    <Tabs.TabBar.Trigger.Compose
-                      value={value}
-                      disabled={disabled}
+            {navTabs.map(
+              (
+                { value, label, disabled, featureFlag, onboard, isActivePage },
+                index,
+              ) => {
+                const key = `${value}-${index}`
+                if (featureFlag) {
+                  return (
+                    <FeatureFlagComponent
+                      name={featureFlag as FeatureFlags}
+                      key={key}
                     >
-                      <Tabs.TabBar.Trigger.Tab>
-                        {label ?? value}
-                      </Tabs.TabBar.Trigger.Tab>
-                      <Tabs.TabBar.Trigger.Marker />
-                    </Tabs.TabBar.Trigger.Compose>
-                  </FeatureFlagComponent>
+                      <NavigationTabTrigger
+                        value={value}
+                        label={label}
+                        disabled={disabled}
+                        onboard={onboard}
+                        isActivePage={isActivePage}
+                        tabKey={key}
+                      />
+                    </FeatureFlagComponent>
+                  )
+                }
+
+                return (
+                  <NavigationTabTrigger
+                    value={value}
+                    label={label}
+                    disabled={disabled}
+                    onboard={onboard}
+                    isActivePage={isActivePage}
+                    tabKey={key}
+                  />
                 )
-              }
-              return (
-                <Tabs.TabBar.Trigger.Compose
-                  value={value}
-                  disabled={disabled}
-                  key={key}
-                >
-                  <Tabs.TabBar.Trigger.Tab>
-                    {label ?? value}
-                  </Tabs.TabBar.Trigger.Tab>
-                  <Tabs.TabBar.Trigger.Marker />
-                </Tabs.TabBar.Trigger.Compose>
-              )
-            })}
+              },
+            )}
           </Tabs.TabBar.Compose>
         </Tabs.Compose>
       </AppNavigationContainer>
