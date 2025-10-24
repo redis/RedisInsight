@@ -1,8 +1,6 @@
-import { DefaultBodyType, MockedRequest, RestHandler } from 'msw'
+import { HttpHandler } from 'msw'
 
 import userSettings from './userSettingsHandlers'
 
-const handlers: RestHandler<MockedRequest<DefaultBodyType>>[] = [].concat(
-  userSettings,
-)
+const handlers: HttpHandler[] = [...userSettings]
 export default handlers

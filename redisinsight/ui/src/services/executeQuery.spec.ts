@@ -1,9 +1,9 @@
-import { rest } from 'msw'
+import { http, HttpResponse } from 'msw'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { mswServer } from 'uiSrc/mocks/server'
 import { getMswURL } from 'uiSrc/utils/test-utils'
 import { getUrl } from 'uiSrc/utils'
-import { RunQueryMode, ResultsMode } from 'uiSrc/slices/interfaces'
+import { ResultsMode, RunQueryMode } from 'uiSrc/slices/interfaces'
 import executeQuery from './executeQuery'
 
 describe('executeQuery', () => {
@@ -27,19 +27,19 @@ describe('executeQuery', () => {
     const mockResponse = [{ id: '1', databaseId: instanceId }]
 
     mswServer.use(
-      rest.post(
+      http.post(
         getMswURL(
           getUrl(instanceId, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS),
         ),
-        async (req, res, ctx) => {
-          const body = await req.json()
+        async ({ request }) => {
+          const body = await request.json()
           expect(body).toEqual({
             commands: [command],
             mode: RunQueryMode.ASCII,
             resultsMode: ResultsMode.Default,
             type: 'SEARCH',
           })
-          return res(ctx.status(200), ctx.json(mockResponse))
+          return HttpResponse.json(mockResponse, { status: 200 })
         },
       ),
     )
@@ -52,11 +52,13 @@ describe('executeQuery', () => {
     const mockResponse = [{ id: '1', databaseId: instanceId }]
 
     mswServer.use(
-      rest.post(
+      http.post(
         getMswURL(
           getUrl(instanceId, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS),
         ),
-        async (_req, res, ctx) => res(ctx.status(200), ctx.json(mockResponse)),
+        async () => {
+          return HttpResponse.json(mockResponse, { status: 200 })
+        },
       ),
     )
 
@@ -69,11 +71,13 @@ describe('executeQuery', () => {
 
   it('invokes onFail and rethrows on error', async () => {
     mswServer.use(
-      rest.post(
+      http.post(
         getMswURL(
           getUrl(instanceId, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS),
         ),
-        async (_req, res, ctx) => res(ctx.status(500)),
+        async () => {
+          return HttpResponse.text('', { status: 500 })
+        },
       ),
     )
 

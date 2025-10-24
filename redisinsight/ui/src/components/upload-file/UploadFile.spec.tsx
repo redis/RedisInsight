@@ -35,7 +35,7 @@ describe('UploadFile', () => {
 
     const fileInput = screen.getByTestId('upload-input-file')
     fireEvent.change(fileInput, { target: { files: [file] } })
-    await waitFor(() => expect(onFileChange).toBeCalled())
+    await waitFor(() => expect(onFileChange).toHaveBeenCalled())
     await waitFor(() =>
       expect(screen.getByTestId('upload-input-file')).toHaveValue(''),
     )

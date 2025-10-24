@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash'
-import { rest } from 'msw'
+import { http, HttpResponse } from 'msw'
 import reducer, {
   appInitSelector,
   FAILED_TO_FETCH_CSRF_TOKEN_ERROR,
@@ -131,9 +131,11 @@ describe('init slice', () => {
 
     it('failed to init data', async () => {
       mswServer.use(
-        rest.get<(typeof FEATURES_DATA_MOCK)[]>(
+        http.get<any, (typeof FEATURES_DATA_MOCK)[]>(
           getMswURL(ApiEndpoints.FEATURES),
-          async (_req, res, ctx) => res(ctx.status(500)),
+          async () => {
+            return HttpResponse.text('', { status: 500 })
+          },
         ),
       )
 
@@ -152,11 +154,13 @@ describe('init slice', () => {
     })
 
     it('failed to init csrf', async () => {
-      riConfig.api.csrfEndpoint = 'http://localhost/csrf'
+      riConfig.api.csrfEndpoint = 'csrf'
       mswServer.use(
-        rest.get<CSRFTokenResponse>(
+        http.get<any, CSRFTokenResponse | { message: string }>(
           getMswURL(riConfig.api.csrfEndpoint),
-          async (_req, res, ctx) => res(ctx.status(500)),
+          async () => {
+            return HttpResponse.text('', { status: 500 })
+          },
         ),
       )
 
@@ -167,7 +171,7 @@ describe('init slice', () => {
       const expectedActions = [
         initializeAppState(),
         fetchCsrfToken(),
-        fetchCsrfTokenFail({ error: 'Network Error' }),
+        fetchCsrfTokenFail({ error: 'Request failed with status code 500' }),
         initializeAppStateFail({ error: FAILED_TO_FETCH_CSRF_TOKEN_ERROR }),
       ]
 
@@ -189,10 +193,11 @@ describe('init slice', () => {
 
       // Arrange
       mswServer.use(
-        rest.get<(typeof FEATURES_DATA_MOCK)[]>(
+        http.get<any, (typeof FEATURES_DATA_MOCK)[]>(
           getMswURL(ApiEndpoints.FEATURES),
-          async (_req, res, ctx) =>
-            res(ctx.status(200), ctx.json(newFeatureFlags)),
+          async () => {
+            return HttpResponse.json(newFeatureFlags, { status: 200 })
+          },
         ),
       )
 

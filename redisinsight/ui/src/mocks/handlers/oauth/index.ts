@@ -1,6 +1,6 @@
-import { DefaultBodyType, MockedRequest, RestHandler } from 'msw'
+import { HttpHandler } from 'msw'
 
 import cloud from './cloud'
 
-const handlers: RestHandler<MockedRequest<DefaultBodyType>>[] = [].concat(cloud)
+const handlers: HttpHandler[] = [...cloud]
 export default handlers

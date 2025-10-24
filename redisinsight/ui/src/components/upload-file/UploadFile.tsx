@@ -16,13 +16,11 @@ const UploadFile = (props: Props) => {
   const { onFileChange, onClick, accept, id = 'upload-input-file' } = props
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader()
-      reader.onload = async (e) => {
-        onFileChange(e?.target?.result as string)
-      }
-      reader.readAsText(e.target.files[0])
-      // reset input value after reading file
+    if (e.target.files && e.target.files.length > 0) {
+      const fileBlob = e.target.files[0]
+      fileBlob.text().then((text) => {
+        onFileChange(text)
+      })
       e.target.value = ''
     }
   }

@@ -1,5 +1,5 @@
 /**
- * @jest-environment jsdom
+ * @jest-environment jest-fixed-jsdom
  */
 import React from 'react'
 import { render, screen, fireEvent } from 'uiSrc/utils/test-utils'
