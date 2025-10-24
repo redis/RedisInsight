@@ -11,10 +11,15 @@ import {
 import { isNumber } from 'lodash';
 import { IRedisConnectionOptions } from 'src/modules/redis/redis.client.factory';
 import { ConnectionOptions } from 'tls';
-import { ClusterNodeRedisClient, RedisClient } from 'src/modules/redis/client';
+import {
+  ClusterNodeRedisClient,
+  NodeRedis,
+  RedisClient,
+} from 'src/modules/redis/client';
 import { StandaloneNodeRedisClient } from 'src/modules/redis/client/node-redis/standalone.node-redis.client';
 import { SshTunnel } from 'src/modules/ssh/models/ssh-tunnel';
 import { discoverClusterNodes } from 'src/modules/redis/utils';
+import { getRedisConnectionException } from 'src/utils';
 
 const REDIS_CLIENTS_CONFIG = serverConfig.get('redis_clients');
 
@@ -204,19 +209,26 @@ export class NodeRedisConnectionStrategy extends RedisConnectionStrategy {
         };
       }
 
-      const client = await createClient({
-        ...config,
-        // cover cases when we are connecting to sentinel as to standalone to discover master groups
-        database:
-          config.database > 0 && !database.sentinelMaster ? config.database : 0,
-      })
-        .on('error', (e): void => {
-          this.logger.error('Failed to connect to the redis database.', e);
+      let client: NodeRedis;
+      try {
+        client = await createClient({
+          ...config,
+          // cover cases when we are connecting to sentinel as to standalone to discover master groups
+          database:
+            config.database > 0 && !database.sentinelMaster
+              ? config.database
+              : 0,
         })
-        .on('end', () => {
-          tnl?.close?.();
-        })
-        .connect();
+          .on('error', (e): void => {
+            this.logger.error('Failed to connect to the redis database.', e);
+          })
+          .on('end', () => {
+            tnl?.close?.();
+          })
+          .connect();
+      } catch (e) {
+        throw getRedisConnectionException(e, database);
+      }
 
       return new StandaloneNodeRedisClient(clientMetadata, client, {
         host: database.host,
@@ -224,6 +236,8 @@ export class NodeRedisConnectionStrategy extends RedisConnectionStrategy {
         connectTimeout: database.timeout,
       });
     } catch (e) {
+      this.addConnectionError(e);
+
       tnl?.close?.();
       throw e;
     }
