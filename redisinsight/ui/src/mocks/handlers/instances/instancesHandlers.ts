@@ -72,8 +72,8 @@ export const INSTANCES_MOCK: Instance[] = [
 
 export const getDatabasesApiSpy = jest
   .fn()
-  .mockImplementation(async (_req, res, ctx) =>
-    res(ctx.status(200), ctx.json(INSTANCES_MOCK)),
+  .mockImplementation(async () =>
+    HttpResponse.json(INSTANCES_MOCK, { status: 200 }),
   )
 
 const handlers: HttpHandler[] = [
