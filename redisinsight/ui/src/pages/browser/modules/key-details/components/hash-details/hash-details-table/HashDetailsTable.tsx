@@ -382,7 +382,8 @@ const HashDetailsTable = (props: Props) => {
         )
 
         return (
-          <Text color="secondary"
+          <Text
+            color="secondary"
             style={{ maxWidth: '100%', whiteSpace: 'break-spaces' }}
             component="div"
           >
@@ -528,9 +529,7 @@ const HashDetailsTable = (props: Props) => {
               testid={`remove-hash-button-${field}`}
               handleDeleteItem={handleDeleteField}
               handleButtonClick={handleRemoveIconClick}
-              appendInfo={
-                length === 1 ? HelpTexts.REMOVE_LAST_ELEMENT() : null
-              }
+              appendInfo={length === 1 ? HelpTexts.REMOVE_LAST_ELEMENT() : null}
             />
           </StopPropagation>
         )
@@ -607,7 +606,6 @@ const HashDetailsTable = (props: Props) => {
         )}
       >
         <VirtualTable
-          hideProgress
           expandable
           autoHeight
           tableRef={tableRef}

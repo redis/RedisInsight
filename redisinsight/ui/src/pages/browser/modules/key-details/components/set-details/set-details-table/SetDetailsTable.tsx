@@ -290,9 +290,7 @@ const SetDetailsTable = (props: Props) => {
               handleDeleteItem={handleDeleteMember}
               handleButtonClick={handleRemoveIconClick}
               testid={`set-remove-btn-${member}`}
-              appendInfo={
-                length === 1 ? HelpTexts.REMOVE_LAST_ELEMENT() : null
-              }
+              appendInfo={length === 1 ? HelpTexts.REMOVE_LAST_ELEMENT() : null}
             />
           </div>
         )
@@ -324,7 +322,6 @@ const SetDetailsTable = (props: Props) => {
     >
       <VirtualTable
         autoHeight
-        hideProgress
         expandable
         selectable={false}
         keyName={key}
