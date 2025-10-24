@@ -24,6 +24,7 @@ import {
   getFeatureFlags,
   getFeatureFlagsFailure,
   getFeatureFlagsSuccess,
+  setFeaturesToHighlight,
 } from 'uiSrc/slices/app/features'
 import { getConfig } from 'uiSrc/config'
 import {
@@ -154,12 +155,17 @@ describe('init slice', () => {
     })
 
     it('failed to init csrf', async () => {
-      riConfig.api.csrfEndpoint = 'http://localhost/csrf'
+      riConfig.api.csrfEndpoint = 'csrf'
       mswServer.use(
         http.get<any, CSRFTokenResponse>(
           getMswURL(riConfig.api.csrfEndpoint),
           async () => {
-            return HttpResponse.text('', { status: 500 })
+            return HttpResponse.json(
+              {
+                message: 'Network Error',
+              },
+              { status: 500 },
+            )
           },
         ),
       )
