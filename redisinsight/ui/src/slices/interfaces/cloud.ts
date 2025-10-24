@@ -122,5 +122,7 @@ export enum CloudSsoUtmCampaign {
   Copilot = 'copilot',
   UserProfile = 'user_account',
   Settings = 'settings',
+  NavigationMenu = 'navigation_menu',
+  AddDbForm = 'add_db_form',
   Unknown = 'other',
 }

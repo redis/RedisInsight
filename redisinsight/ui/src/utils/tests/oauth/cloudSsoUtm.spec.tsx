@@ -3,6 +3,10 @@ import { CloudSsoUtmCampaign, OAuthSocialSource } from 'uiSrc/slices/interfaces'
 
 const getCloudSsoUtmCampaignTestCases = [
   [OAuthSocialSource.ListOfDatabases, CloudSsoUtmCampaign.ListOfDatabases],
+  [
+    OAuthSocialSource.DatabaseConnectionList,
+    CloudSsoUtmCampaign.ListOfDatabases,
+  ],
   [OAuthSocialSource.BrowserSearch, CloudSsoUtmCampaign.BrowserSearch],
   [OAuthSocialSource.RediSearch, CloudSsoUtmCampaign.Workbench],
   [OAuthSocialSource.RedisJSON, CloudSsoUtmCampaign.Workbench],
@@ -14,6 +18,8 @@ const getCloudSsoUtmCampaignTestCases = [
   [OAuthSocialSource.WelcomeScreen, CloudSsoUtmCampaign.WelcomeScreen],
   [OAuthSocialSource.Tutorials, CloudSsoUtmCampaign.Tutorial],
   [OAuthSocialSource.Autodiscovery, CloudSsoUtmCampaign.AutoDiscovery],
+  [OAuthSocialSource.NavigationMenu, CloudSsoUtmCampaign.NavigationMenu],
+  [OAuthSocialSource.AddDbForm, CloudSsoUtmCampaign.AddDbForm],
   [null, CloudSsoUtmCampaign.Unknown],
   [undefined, CloudSsoUtmCampaign.Unknown],
 ]
