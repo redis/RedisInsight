@@ -35,14 +35,7 @@ describe('WorkbenchAnalytics', () => {
     jest.clearAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        EventEmitter2,
-        {
-          provide: CommandsService,
-          useFactory: () => mockCommandsService,
-        },
-        WorkbenchAnalytics,
-      ],
+      providers: [],
     }).compile();
 
     service = module.get<WorkbenchAnalytics>(WorkbenchAnalytics);
