@@ -32,8 +32,6 @@ const getZipArchive = () => {
 describe('POST /databases/:id/bulk-actions/import/tutorial-data', () => {
   requirements('!rte.sharedData', '!rte.bigData', 'rte.serverType=local');
 
-  beforeEach(async () => await rte.data.truncate());
-
   describe('Common', function () {
     let tutorialId;
     it('should import data', async () => {
