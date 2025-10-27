@@ -41,7 +41,25 @@ Object.defineProperty(window, 'File', {
 })
 
 beforeAll(() => {
-  mswServer.listen()
+  // mswServer.listen()
+  mswServer.listen({
+    onUnhandledRequest: ((req: any, res: any, ctx: any) => {
+      const url = req.url.href
+      const method = req.method
+      const testName = expect.getState()?.currentTestName ?? 'unknown test'
+
+      // Log it nicely
+      console.warn(`[MSW][${testName}] Unhandled request: ${method} ${url}`)
+
+      // throw to fail the test???
+      // tmp: just return empty object to fix libuv error.
+      // todo: need to find all unhandled requests and probably throw right from here and close socket
+      return res(
+        ctx.status(200),
+        ctx.json({})
+      )
+    }) as any,
+  })
 })
 
 afterEach(() => {
