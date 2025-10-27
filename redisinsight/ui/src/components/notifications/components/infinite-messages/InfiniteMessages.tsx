@@ -38,11 +38,23 @@ const MANAGE_DB_LINK = getUtmExternalLink(EXTERNAL_LINKS.cloudConsole, {
   medium: UTM_MEDIUMS.Main,
 })
 
-// TODO: Refactor this type definition to work with the real parameters and their types we use in each message
-export const INFINITE_MESSAGES: Record<
-  string,
-  (...args: any[]) => InfiniteMessage
-> = {
+interface InfiniteMessagesType {
+  AUTHENTICATING: () => InfiniteMessage
+  PENDING_CREATE_DB: (step?: CloudJobStep) => InfiniteMessage
+  SUCCESS_CREATE_DB: (
+    details: Omit<CloudSuccessResult, 'resourceId'>,
+    onSuccess: () => void,
+    jobName: Maybe<CloudJobName>,
+  ) => InfiniteMessage
+  DATABASE_EXISTS: (onSuccess?: () => void, onClose?: () => void) => InfiniteMessage
+  DATABASE_IMPORT_FORBIDDEN: (onClose?: () => void) => InfiniteMessage
+  SUBSCRIPTION_EXISTS: (onSuccess?: () => void, onClose?: () => void) => InfiniteMessage
+  AUTO_CREATING_DATABASE: () => InfiniteMessage
+  APP_UPDATE_AVAILABLE: (version: string, onSuccess?: () => void) => InfiniteMessage
+  SUCCESS_DEPLOY_PIPELINE: () => InfiniteMessage
+}
+
+export const INFINITE_MESSAGES: InfiniteMessagesType = {
   AUTHENTICATING: () => ({
     id: InfiniteMessagesIds.oAuthProgress,
     message: 'Authenticating…',
