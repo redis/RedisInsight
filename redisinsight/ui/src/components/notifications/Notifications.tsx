@@ -1,17 +1,18 @@
 import React from 'react'
 import { RiToaster } from 'uiSrc/components/base/display/toast'
-import {
-  useErrorNotifications,
-  useMessageNotifications,
-  useInfiniteNotifications,
-} from './hooks'
+import { useErrorNotifications, useMessageNotifications } from './hooks'
+import { InfiniteNotifications } from './components/infinite-messages/InfiniteNotifications'
 
 const Notifications = () => {
   useErrorNotifications()
   useMessageNotifications()
-  useInfiniteNotifications()
 
-  return <RiToaster />
+  return (
+    <>
+      <InfiniteNotifications />
+      <RiToaster containerId={'default'} />
+    </>
+  )
 }
 
 export default Notifications

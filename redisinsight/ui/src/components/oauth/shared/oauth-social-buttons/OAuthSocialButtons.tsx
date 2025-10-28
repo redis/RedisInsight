@@ -5,7 +5,7 @@ import { oauthCloudPAgreementSelector } from 'uiSrc/slices/oauth/cloud'
 import { OAuthStrategy } from 'uiSrc/slices/interfaces'
 
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
-import { FlexGroup, FlexItem } from 'uiSrc/components/base/layout/flex'
+import { FlexGroup, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons/RiIcon'
@@ -18,37 +18,40 @@ export interface Props {
   disabled?: boolean
 }
 
+const socialLinks = [
+  {
+    text: 'Google',
+    className: styles.googleButton,
+    icon: 'GoogleSigninIcon',
+    label: 'google-oauth',
+    strategy: OAuthStrategy.Google,
+  },
+  {
+    text: 'Github',
+    className: styles.githubButton,
+    icon: 'GithubIcon',
+    label: 'github-oauth',
+    strategy: OAuthStrategy.GitHub,
+  },
+  {
+    text: 'SSO',
+    className: styles.ssoButton,
+    icon: 'SsoIcon',
+    label: 'sso-oauth',
+    strategy: OAuthStrategy.SSO,
+  },
+]
+
 const OAuthSocialButtons = (props: Props) => {
   const { onClick, className, inline, disabled } = props
 
   const agreement = useSelector(oauthCloudPAgreementSelector)
 
-  const socialLinks = [
-    {
-      text: 'Google',
-      className: styles.googleButton,
-      icon: 'GoogleSigninIcon',
-      label: 'google-oauth',
-      strategy: OAuthStrategy.Google,
-    },
-    {
-      text: 'Github',
-      className: styles.githubButton,
-      icon: 'GithubIcon',
-      label: 'github-oauth',
-      strategy: OAuthStrategy.GitHub,
-    },
-    {
-      text: 'SSO',
-      className: styles.ssoButton,
-      icon: 'SsoIcon',
-      label: 'sso-oauth',
-      strategy: OAuthStrategy.SSO,
-    },
-  ]
-
   return (
-    <div
+    <Row
+      gap="l"
+      align="center"
+      justify="between"
       className={cx(styles.container, className)}
       data-testid="oauth-container-social-buttons"
     >
@@ -61,6 +64,7 @@ const OAuthSocialButtons = (props: Props) => {
           data-testid={`${label}-tooltip`}
         >
           <EmptyButton
+            variant="primary-inline"
             disabled={!agreement || disabled}
             className={cx(styles.button, className, {
               [styles.inline]: inline,
@@ -71,14 +75,18 @@ const OAuthSocialButtons = (props: Props) => {
             data-testid={label}
             aria-labelledby={label}
           >
-            <FlexGroup direction={inline ? 'row' : 'column'} align="center" justify="center">
+            <FlexGroup
+              direction={inline ? 'row' : 'column'}
+              align="center"
+              justify="center"
+            >
               <RiIcon type={icon as AllIconsType} />
               <Text className={styles.label}>{text}</Text>
             </FlexGroup>
           </EmptyButton>
         </RiTooltip>
       ))}
-    </div>
+    </Row>
   )
 }
 

@@ -20,6 +20,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+
 import styles from './styles.module.scss'
 
 export enum InfiniteMessagesIds {
@@ -46,11 +47,20 @@ interface InfiniteMessagesType {
     onSuccess: () => void,
     jobName: Maybe<CloudJobName>,
   ) => InfiniteMessage
-  DATABASE_EXISTS: (onSuccess?: () => void, onClose?: () => void) => InfiniteMessage
+  DATABASE_EXISTS: (
+    onSuccess?: () => void,
+    onClose?: () => void,
+  ) => InfiniteMessage
   DATABASE_IMPORT_FORBIDDEN: (onClose?: () => void) => InfiniteMessage
-  SUBSCRIPTION_EXISTS: (onSuccess?: () => void, onClose?: () => void) => InfiniteMessage
+  SUBSCRIPTION_EXISTS: (
+    onSuccess?: () => void,
+    onClose?: () => void,
+  ) => InfiniteMessage
   AUTO_CREATING_DATABASE: () => InfiniteMessage
-  APP_UPDATE_AVAILABLE: (version: string, onSuccess?: () => void) => InfiniteMessage
+  APP_UPDATE_AVAILABLE: (
+    version: string,
+    onSuccess?: () => void,
+  ) => InfiniteMessage
   SUCCESS_DEPLOY_PIPELINE: () => InfiniteMessage
 }
 
@@ -219,8 +229,7 @@ export const INFINITE_MESSAGES: InfiniteMessagesType = {
   }),
   SUBSCRIPTION_EXISTS: (onSuccess?: () => void, onClose?: () => void) => ({
     id: InfiniteMessagesIds.subscriptionExists,
-    message:
-      'Your subscription does not have a free Redis Cloud database.',
+    message: 'Your subscription does not have a free Redis Cloud database.',
     description:
       'Do you want to create a free database in your existing subscription?',
     actions: {
@@ -268,3 +277,6 @@ export const INFINITE_MESSAGES: InfiniteMessagesType = {
     // }
   }),
 }
+
+export const IMContainerId = 'InfiniteMessages'
+export const ONE_HOUR = 3_600_000

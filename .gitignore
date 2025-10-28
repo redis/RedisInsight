@@ -87,3 +87,7 @@ static/
 
 .env*
 .npmrc
+
+# AI rules
+.windsurfrules
+.junie/

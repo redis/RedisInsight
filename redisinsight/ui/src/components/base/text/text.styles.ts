@@ -14,6 +14,7 @@ export type EuiColorNames =
   | 'accent'
   | 'warning'
   | 'success'
+
 export type ColorType = BodyProps['color'] | EuiColorNames | (string & {})
 export interface MapProps extends HTMLAttributes<HTMLElement> {
   $color?: ColorType

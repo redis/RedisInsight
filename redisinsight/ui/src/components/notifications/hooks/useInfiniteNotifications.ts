@@ -1,27 +1,18 @@
-import { useEffect, useRef } from 'react'
+import { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { InfiniteMessage } from 'uiSrc/slices/interfaces'
-import { riToast } from 'uiSrc/components/base/display/toast'
-import {
-  infiniteNotificationsSelector,
-  removeInfiniteNotification,
-} from 'uiSrc/slices/app/notifications'
-import cx from 'classnames'
+import { infiniteNotificationsSelector } from 'uiSrc/slices/app/notifications'
 import { InfiniteMessagesIds } from 'uiSrc/components/notifications/components'
 import { showOAuthProgress } from 'uiSrc/slices/oauth/cloud'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
-const ONE_HOUR = 3_600_000
-
 export const useInfiniteNotifications = () => {
   const infiniteNotifications = useSelector(infiniteNotificationsSelector)
   const dispatch = useDispatch()
-  const infiniteToastIdsRef = useRef(new Map<string, number | string>())
-
-  const showInfiniteToasts = (data: InfiniteMessage[]) => {
-    data.forEach((notification: InfiniteMessage) => {
-      const {
+  return useMemo(() => {
+    return infiniteNotifications.map(
+      ({
         id,
         message,
         description,
@@ -31,15 +22,16 @@ export const useInfiniteNotifications = () => {
         customIcon,
         showCloseButton = true,
         onClose: onCloseCallback,
-      } = notification
-      const toastId = riToast(
-        {
-          className: cx(className),
-          message: message,
-          description: description,
+      }: InfiniteMessage) => {
+        return {
+          id,
+          message,
+          description,
           actions,
-          showCloseButton,
+          className,
+          variant,
           customIcon,
+          showCloseButton,
           onClose: () => {
             switch (id) {
               case InfiniteMessagesIds.oAuthProgress:
@@ -65,25 +57,10 @@ export const useInfiniteNotifications = () => {
               default:
                 break
             }
-
-            dispatch(removeInfiniteNotification(id))
             onCloseCallback?.()
           },
-        },
-        {
-          variant: variant ?? riToast.Variant.Notice,
-          autoClose: ONE_HOUR,
-        },
-      )
-      // if this infinite toast id is already in the map, dismiss it
-      if (infiniteToastIdsRef.current.has(id)) {
-        riToast.dismiss(infiniteToastIdsRef.current.get(id))
-      }
-      infiniteToastIdsRef.current.set(id, toastId)
-    })
-  }
-
-  useEffect(() => {
-    showInfiniteToasts(infiniteNotifications)
+        }
+      },
+    )
   }, [infiniteNotifications])
 }
