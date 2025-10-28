@@ -5,6 +5,7 @@ import { messagesSelector, removeMessage } from 'uiSrc/slices/app/notifications'
 import { IMessage } from 'uiSrc/slices/interfaces'
 import { setReleaseNotesViewed } from 'uiSrc/slices/app/info'
 import { ColorText } from 'uiSrc/components/base/text'
+import { defaultContainerId } from '../constants'
 
 export const useMessageNotifications = () => {
   const messagesData = useSelector(messagesSelector)
@@ -61,7 +62,11 @@ export const useMessageNotifications = () => {
             },
             showCloseButton,
           },
-          { variant: riToast.Variant.Success, toastId: id },
+          {
+            variant: riToast.Variant.Success,
+            toastId: id,
+            containerId: defaultContainerId,
+          },
         )
         toastIdsRef.current.set(id, toastId)
       },

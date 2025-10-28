@@ -2,8 +2,8 @@ import React, { useEffect, useRef } from 'react'
 
 import { useInfiniteNotifications } from 'uiSrc/components/notifications/hooks'
 import { riToast, RiToaster } from 'uiSrc/components/base/display/toast'
-import { IMContainerId, ONE_HOUR } from './InfiniteMessages'
 import { InfiniteMessage } from 'uiSrc/slices/interfaces'
+import { IMContainerId, ONE_HOUR } from '../../constants'
 
 const DISMISS_DELAY = 3000 // 3 seconds interval
 

@@ -6,6 +6,7 @@ import { InfoIcon, ToastDangerIcon } from 'uiSrc/components/base/icons'
 import RdiDeployErrorContent from './components/rdi-deploy-error-content'
 import { EncryptionErrorContent, DefaultErrorContent } from './components'
 import CloudCapiUnAuthorizedErrorContent from './components/cloud-capi-unauthorized'
+import { defaultContainerId } from './constants'
 
 // TODO: use i18n file for texts
 export default {
@@ -29,7 +30,11 @@ export default {
           },
         },
       },
-      { variant: riToast.Variant.Danger, toastId },
+      {
+        variant: riToast.Variant.Danger,
+        toastId,
+        containerId: defaultContainerId,
+      },
     ),
   ENCRYPTION: (onClose = () => {}, instanceId = '', toastId?: string) =>
     riToast(
@@ -42,7 +47,11 @@ export default {
         ),
         showCloseButton: false,
       },
-      { variant: riToast.Variant.Danger, toastId },
+      {
+        variant: riToast.Variant.Danger,
+        toastId,
+        containerId: defaultContainerId,
+      },
     ),
   CLOUD_CAPI_KEY_UNAUTHORIZED: (
     {
@@ -70,7 +79,11 @@ export default {
           />
         ),
       },
-      { variant: riToast.Variant.Danger, toastId },
+      {
+        variant: riToast.Variant.Danger,
+        toastId,
+        containerId: defaultContainerId,
+      },
     ),
   RDI_DEPLOY_PIPELINE: (
     { title, message }: { title?: string; message: string },
@@ -87,6 +100,10 @@ export default {
           <RdiDeployErrorContent message={message} onClose={onClose} />
         ),
       },
-      { variant: riToast.Variant.Danger, toastId },
+      {
+        variant: riToast.Variant.Danger,
+        toastId,
+        containerId: defaultContainerId,
+      },
     ),
 }
