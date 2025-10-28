@@ -18,8 +18,22 @@ jest.mock('uiSrc/telemetry', () => ({
 
 const mockedProps = mock<Props>()
 const daysToMs = (days: number) => days * 60 * 60 * 24 * 1000
+let mockDate: Date
 
 describe('DbStatus', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+
+    // Set up fake timers
+    jest.useFakeTimers()
+    mockDate = new Date('2024-11-22T12:00:00Z')
+    jest.setSystemTime(mockDate)
+  })
+
+  afterEach(() => {
+    jest.useRealTimers()
+  })
+
   it('should render', () => {
     expect(render(<DbStatus {...mockedProps} />)).toBeTruthy()
   })
