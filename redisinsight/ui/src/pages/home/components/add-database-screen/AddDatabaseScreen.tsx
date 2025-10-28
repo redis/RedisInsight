@@ -130,7 +130,7 @@ const AddDatabaseScreen = (props: Props) => {
                 loading={isLoading}
                 data-testid="btn-test-connection"
               >
-                Test Connection
+                Test connection
               </EmptyButton>
             </RiTooltip>
           </FlexItem>
@@ -142,7 +142,7 @@ const AddDatabaseScreen = (props: Props) => {
                   onClick={() => handleProceedForm(AddDbType.manual)}
                   data-testid="btn-connection-settings"
                 >
-                  Connection Settings
+                  Connection settings
                 </SecondaryButton>
               </FlexItem>
               <FlexItem>
@@ -158,7 +158,7 @@ const AddDatabaseScreen = (props: Props) => {
                     icon={isInvalid ? InfoIcon : undefined}
                     data-testid="btn-submit"
                   >
-                    Add Database
+                    Add database
                   </PrimaryButton>
                 </RiTooltip>
               </FlexItem>
