@@ -1,12 +1,9 @@
 import { http, HttpHandler, HttpResponse } from 'msw'
-import { RedisNodeInfoResponse } from 'src/modules/database/dto/redis-info.dto'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { ConnectionType, Instance } from 'uiSrc/slices/interfaces'
 import { getMswURL } from 'uiSrc/utils/test-utils'
 import { getUrl } from 'uiSrc/utils'
 import { MOCK_INFO_API_RESPONSE } from 'uiSrc/mocks/data/instances'
-import { Database as DatabaseInstanceResponse } from 'apiSrc/modules/database/models/database'
-import { ExportDatabase } from 'apiSrc/modules/database/models/export-database'
 
 export const INSTANCE_ID_MOCK = 'instanceId'
 export const INSTANCES_MOCK: Instance[] = [
@@ -78,29 +75,23 @@ export const getDatabasesApiSpy = jest
 
 const handlers: HttpHandler[] = [
   // fetchInstancesAction
-  http.get<any, DatabaseInstanceResponse[]>(
-    getMswURL(ApiEndpoints.DATABASES),
-    getDatabasesApiSpy,
-  ),
-  http.post<any, ExportDatabase>(
-    getMswURL(ApiEndpoints.DATABASES_EXPORT),
-    async () => {
-      return HttpResponse.json(INSTANCES_MOCK, { status: 200 })
-    },
-  ),
-  http.get<any, DatabaseInstanceResponse>(
-    getMswURL(getUrl(INSTANCE_ID_MOCK)),
-    async () => {
-      return HttpResponse.json(INSTANCES_MOCK[0], { status: 200 })
-    },
-  ),
-  http.get<any, RedisNodeInfoResponse>(
+  http.get(getMswURL(ApiEndpoints.DATABASES), getDatabasesApiSpy),
+  http.post(getMswURL(ApiEndpoints.DATABASES_EXPORT), async () => {
+    return HttpResponse.json(INSTANCES_MOCK, { status: 200 })
+  }),
+  http.get(getMswURL(getUrl(INSTANCE_ID_MOCK)), async () => {
+    return HttpResponse.json(INSTANCES_MOCK[0], { status: 200 })
+  }),
+  http.get(
     getMswURL(`/${ApiEndpoints.DATABASES}/:id/info`),
     // getMswURL(getUrl(INSTANCE_ID_MOCK, 'info')),
     async () => {
       return HttpResponse.json(MOCK_INFO_API_RESPONSE, { status: 200 })
     },
   ),
+  http.get(getMswURL(`${ApiEndpoints.DATABASES}/:id/connect`), async () => {
+    return HttpResponse.text('', { status: 200 })
+  }),
 ]
 
 // rest.post(`${ApiEndpoints.INSTANCE}`, (req, res, ctx) => {

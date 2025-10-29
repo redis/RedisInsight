@@ -1,12 +1,6 @@
 import React from 'react'
 import { cloneDeep } from 'lodash'
-import {
-  act,
-  cleanup,
-  fireEvent,
-  mockedStore,
-  render,
-} from 'uiSrc/utils/test-utils'
+import { cleanup, mockedStore, render, userEvent } from 'uiSrc/utils/test-utils'
 import {
   getRedisModulesSummary,
   sendEventTelemetry,
@@ -15,6 +9,7 @@ import {
 import {
   freeInstancesSelector,
   setDefaultInstance,
+  setDefaultInstanceSuccess,
 } from 'uiSrc/slices/instances/instances'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { setCapability } from 'uiSrc/slices/app/context'
@@ -63,10 +58,8 @@ describe('OAuthConnectFreeDb', () => {
 
     const { queryByTestId } = render(<OAuthConnectFreeDb id="providedId" />)
 
-    await act(() =>
-      fireEvent.click(
-        queryByTestId('connect-free-db-btn') as HTMLButtonElement,
-      ),
+    await userEvent.click(
+      queryByTestId('connect-free-db-btn') as HTMLButtonElement,
     )
 
     expect(sendEventTelemetry).toHaveBeenCalledWith({
@@ -86,6 +79,7 @@ describe('OAuthConnectFreeDb', () => {
         tutorialPopoverShown: false,
       }),
       setDefaultInstance(),
+      setDefaultInstanceSuccess(),
     ]
     expect(store.getActions()).toEqual(expectedActions)
   })
