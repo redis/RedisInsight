@@ -52,7 +52,6 @@ const ConnectionUrl = ({ value, onChange }: Props) => (
       value={value}
       onChangeCapture={onChange}
       placeholder="redis://default@127.0.0.1:6379"
-      style={{ height: 88 }}
       data-testid="connection-url"
     />
   </FormField>
