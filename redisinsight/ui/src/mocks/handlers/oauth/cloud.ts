@@ -26,6 +26,12 @@ const handlers: HttpHandler[] = [
   http.get(getMswURL(ApiEndpoints.CLOUD_ME), async () => {
     return HttpResponse.json(CLOUD_ME_DATA_MOCK, { status: 200 })
   }),
+  http.get(getMswURL(ApiEndpoints.CLOUD_SUBSCRIPTION_PLANS), async () => {
+    return HttpResponse.json(CLOUD_ME_DATA_MOCK, { status: 200 })
+  }),
+  http.post(getMswURL(ApiEndpoints.CLOUD_ME_JOBS), async () => {
+    return HttpResponse.json(CLOUD_ME_DATA_MOCK, { status: 200 })
+  }),
 ]
 
 export default handlers
