@@ -3,8 +3,10 @@ import { useFormik } from 'formik'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
 import { toNumber } from 'lodash'
-import { Nullable, parseRedisUrl } from 'uiSrc/utils'
+import styled from 'styled-components'
+import { Theme } from '@redis-ui/styles'
 
+import { Nullable, parseRedisUrl } from 'uiSrc/utils'
 import { AddDbType, DEFAULT_TIMEOUT } from 'uiSrc/pages/home/constants'
 import { Instance } from 'uiSrc/slices/interfaces'
 import {
@@ -26,7 +28,28 @@ import ConnectivityOptions from './components/connectivity-options'
 import ConnectionUrl from './components/connection-url'
 import { Values } from './constants'
 
-import styles from './styles.module.scss'
+const CustomHorizontalRule = styled.div`
+  margin: 12px 0;
+  width: 100%;
+  text-align: center;
+  position: relative;
+
+  &:before,
+  &:after {
+    content: '';
+    display: block;
+    width: 47%;
+    height: 1px;
+    background: ${({ theme }: { theme: Theme }) =>
+    theme.semantic.color.background.neutral500};
+    position: absolute;
+    top: 50%;
+  }
+
+  &:after {
+    right: 0;
+  }
+`
 
 export interface Props {
   onSelectOption: (type: AddDbType, db: Nullable<Record<string, any>>) => void
@@ -167,7 +190,7 @@ const AddDatabaseScreen = (props: Props) => {
         </Row>
       </form>
       <Spacer />
-      <div className={styles.hr}>Or</div>
+      <CustomHorizontalRule>Or</CustomHorizontalRule>
       <Spacer />
       <ConnectivityOptions
         onClickOption={handleProceedForm}
