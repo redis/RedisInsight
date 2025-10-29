@@ -36,7 +36,6 @@ import RedisDbBlueSvg from 'uiSrc/assets/img/icons/redis_db_blue.svg?react'
 import RedisLogoFullSvg from 'uiSrc/assets/img/logo.svg?react'
 import RedisLogoSvg from 'uiSrc/assets/img/logo_small.svg?react'
 import ResetSvg from 'uiSrc/assets/img/rdi/reset.svg?react'
-import RocketSvg from 'uiSrc/assets/img/rdi/rocket.svg?react'
 import ShrinkSvg from 'uiSrc/assets/img/icons/shrink.svg?react'
 import SilentModeSvg from 'uiSrc/assets/img/icons/silent_mode.svg?react'
 import SnoozeSvg from 'uiSrc/assets/img/icons/snooze.svg?react'
@@ -208,7 +207,6 @@ export const RedisDbBlueIcon = createIconComponent(RedisDbBlueSvg)
 export const RedisLogo = createIconComponent(RedisLogoSvg)
 export const RedisLogoFullIcon = createIconComponent(RedisLogoFullSvg)
 export const RiResetIcon = createIconComponent(ResetSvg)
-export const RiRocketIcon = createIconComponent(RocketSvg)
 export const RiStarsIcon = createIconComponent(StarsSvg)
 export const RiStopIcon = createIconComponent(StopIconSvg)
 export const RiUserIcon = createIconComponent(UserSvg)
