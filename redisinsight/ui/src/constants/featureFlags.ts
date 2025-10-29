@@ -11,4 +11,5 @@ export enum FeatureFlags {
   cloudAds = 'cloudAds',
   databaseManagement = 'databaseManagement',
   vectorSearch = 'vectorSearch',
+  databasesListV2 = 'databasesListV2',
 }
