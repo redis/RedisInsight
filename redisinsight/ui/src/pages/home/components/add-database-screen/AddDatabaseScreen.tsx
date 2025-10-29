@@ -103,7 +103,7 @@ const AddDatabaseScreen = (props: Props) => {
   })
 
   return (
-    <div className="eui-yScroll">
+    <div>
       <form onSubmit={formik.handleSubmit} data-testid="form">
         <Row responsive>
           <FlexItem grow>
@@ -113,8 +113,8 @@ const AddDatabaseScreen = (props: Props) => {
             />
           </FlexItem>
         </Row>
-
-        <Row responsive justify="between" style={{ padding: 4 }}>
+        <Spacer size="xxl" />
+        <Row responsive justify="between" align="center">
           <FlexItem>
             <RiTooltip
               position="top"
