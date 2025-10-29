@@ -1,8 +1,6 @@
-.connectionUrlInfo {
-  display: flex;
+.infoTooltipAnchor {
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: flex-start;
   align-items: center;
-
-  > :global(.euiToolTipAnchor) {
-    margin-left: 4px;
-  }
 }

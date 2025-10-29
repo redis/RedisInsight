@@ -4,6 +4,9 @@ import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { TextArea } from 'uiSrc/components/base/inputs'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiTooltip } from 'uiSrc/components'
+import { FlexGroup } from 'uiSrc/components/base/layout/flex'
+import { Text } from 'uiSrc/components/base/text'
+
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -14,11 +17,12 @@ export interface Props {
 const ConnectionUrl = ({ value, onChange }: Props) => (
   <FormField
     label={
-      <div className={styles.connectionUrlInfo}>
-        <div>Connection URL</div>
+      <FlexGroup gap="s">
+        <Text>Connection URL</Text>
         <RiTooltip
           title="The following connection URLs are supported:"
           className="homePage_tooltip"
+          anchorClassName={styles.infoTooltipAnchor}
           position="right"
           content={
             <ul className="homePage_toolTipUl">
@@ -37,9 +41,9 @@ const ConnectionUrl = ({ value, onChange }: Props) => (
             </ul>
           }
         >
-          <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
+          <RiIcon type="InfoIcon" />
         </RiTooltip>
-      </div>
+      </FlexGroup>
     }
   >
     <TextArea
