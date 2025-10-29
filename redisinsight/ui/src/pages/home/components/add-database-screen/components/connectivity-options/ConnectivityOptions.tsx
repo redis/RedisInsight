@@ -8,7 +8,10 @@ import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { EXTERNAL_LINKS, UTM_CAMPAINGS } from 'uiSrc/constants/links'
 import { FeatureFlags } from 'uiSrc/constants'
 import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
-import { CloudIcon, RocketIcon } from 'uiSrc/components/base/icons'
+
+// to be replaced with cloud icon from @redis-ui/icons once redis-ui bumped
+import CloudIcon from 'uiSrc/assets/img/oauth/cloud_centered.svg?react'
+import { RocketIcon } from 'uiSrc/components/base/icons'
 
 import { Col, FlexItem, Grid } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
