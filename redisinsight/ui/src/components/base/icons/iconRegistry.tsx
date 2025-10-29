@@ -129,12 +129,9 @@ import PipelineStatisticsSvg from 'uiSrc/assets/img/sidebar/pipeline_statistics.
 import PubSubSvg from 'uiSrc/assets/img/sidebar/pubsub.svg?react'
 import SlowLogSvg from 'uiSrc/assets/img/sidebar/slowlog.svg?react'
 import WorkbenchSvg from 'uiSrc/assets/img/sidebar/workbench.svg?react'
-// Missing SVGs and not used/legacy:
-// import BrowserActiveSvg from 'uiSrc/assets/img/sidebar/browser_active.svg?react'
-// import PipelineStatisticsActiveSvg from 'uiSrc/assets/img/sidebar/pipeline_statistics_active.svg?react'
-// import PubSubActiveSvg from 'uiSrc/assets/img/sidebar/pubsub_active.svg?react'
-// import SlowLogActiveSvg from 'uiSrc/assets/img/sidebar/slowlog_active.svg?react'
-// import WorkbenchActiveSvg from 'uiSrc/assets/img/sidebar/workbench_active.svg?react'
+
+import ShieldSvg from 'uiSrc/assets/img/shield.svg?react'
+import RedisSoftwareSvg from 'uiSrc/assets/img/redis-software.svg?react'
 
 import { Icon, IconProps } from './Icon'
 
@@ -306,10 +303,6 @@ export const PipelineStatisticsIcon = createIconComponent(PipelineStatisticsSvg)
 export const PubSubIcon = createIconComponent(PubSubSvg)
 export const SlowLogIcon = createIconComponent(SlowLogSvg)
 export const WorkbenchIcon = createIconComponent(WorkbenchSvg)
-// export const BrowserActiveIcon = createIconComponent(BrowserActiveSvg)
-// export const PipelineStatisticsActiveIcon = createIconComponent(
-//   PipelineStatisticsActiveSvg,
-// )
-// export const PubSubActiveIcon = createIconComponent(PubSubActiveSvg)
-// export const SlowLogActiveIcon = createIconComponent(SlowLogActiveSvg)
-// export const WorkbenchActiveIcon = createIconComponent(WorkbenchActiveSvg)
+
+export const ShieldIcon = createIconComponent(ShieldSvg)
+export const RedisSoftwareIcon = createIconComponent(RedisSoftwareSvg)

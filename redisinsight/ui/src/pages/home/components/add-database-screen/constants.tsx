@@ -1,33 +1,30 @@
-import React from 'react'
-
 import { AddDbType } from 'uiSrc/pages/home/constants'
-import ShieldIcon from 'uiSrc/assets/img/shield.svg?react'
-import RedisSoftwareIcon from 'uiSrc/assets/img/redis-software.svg?react'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { DownloadIcon, IconType, RedisSoftwareIcon, ShieldIcon } from 'uiSrc/components/base/icons'
 
-export interface Values {
-  connectionURL: string
+export interface ConnectivityOption {
+  id: string
+  title: string
+  type: AddDbType
+  icon: IconType
 }
 
-export const CONNECTIVITY_OPTIONS = [
+export const CONNECTIVITY_OPTIONS: ConnectivityOption[] = [
   {
     id: 'sentinel',
     title: 'Redis Sentinel',
     type: AddDbType.sentinel,
-    icon: (props: Record<string, any> = {}) => <ShieldIcon {...props} />,
+    icon: ShieldIcon,
   },
   {
     id: 'software',
     title: 'Redis Software',
     type: AddDbType.software,
-    icon: (props: Record<string, any> = {}) => <RedisSoftwareIcon {...props} />,
+    icon: RedisSoftwareIcon,
   },
   {
     id: 'import',
     title: 'Import from file',
     type: AddDbType.import,
-    icon: (props: Record<string, any> = {}) => (
-      <RiIcon type="DownloadIcon" {...props} />
-    ),
+    icon: DownloadIcon,
   },
 ]

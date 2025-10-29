@@ -18,7 +18,7 @@ import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
-
+import { Text } from 'uiSrc/components/base/text/Text'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { CONNECTIVITY_OPTIONS } from '../../constants'
 
@@ -72,9 +72,9 @@ const ConnectivityOptions = (props: Props) => {
   return (
     <>
       <section className={styles.cloudSection}>
-        <Title size="XS" className={styles.sectionTitle}>
+        <Text color="primary">
           Get started with Redis Cloud account
-        </Title>
+        </Text>
         <Spacer />
         <Grid gap="l" columns={3} responsive>
           <FlexItem>
@@ -123,20 +123,19 @@ const ConnectivityOptions = (props: Props) => {
       </section>
       <Spacer size="xxl" />
       <section>
-        <Title size="XS" className={styles.sectionTitle}>
+        <Text color="primary">
           More connectivity options
-        </Title>
+        </Text>
         <Spacer />
         <Grid gap="l" responsive columns={3}>
           {CONNECTIVITY_OPTIONS.map(({ id, type, title, icon }) => (
             <FlexItem key={id}>
               <SecondaryButton
-                color="secondary"
-                className={cx(styles.typeBtn, styles.small)}
+                icon={icon}
                 onClick={() => onClickOption(type)}
                 data-testid={`option-btn-${id}`}
+                size="large"
               >
-                {icon?.({ className: styles.btnIcon })}
                 {title}
               </SecondaryButton>
             </FlexItem>
