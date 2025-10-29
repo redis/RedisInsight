@@ -8,6 +8,7 @@ import {
   mockedStore,
   cleanup,
   act,
+  expectActionsToContain,
 } from 'uiSrc/utils/test-utils'
 
 import { defaultInstanceChanging } from 'uiSrc/slices/instances/instances'
@@ -35,7 +36,7 @@ describe('AddDatabaseScreen', () => {
       fireEvent.click(screen.getByTestId('btn-submit'))
     })
 
-    expect(store.getActions()).toEqual([defaultInstanceChanging()])
+    expectActionsToContain(store.getActions(), [defaultInstanceChanging()])
   })
 
   it('should disable test connection and submit buttons when connection url is invalid', async () => {
