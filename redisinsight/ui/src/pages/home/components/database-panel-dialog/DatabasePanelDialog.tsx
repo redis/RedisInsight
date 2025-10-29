@@ -36,6 +36,7 @@ import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
 import styles from './styles.module.scss'
 import { FooterDatabaseForm } from 'uiSrc/components/form-dialog/FooterDatabaseForm'
+import { Title } from 'uiSrc/components/base/text'
 
 export interface Props {
   editMode: boolean
@@ -187,7 +188,7 @@ const DatabasePanelDialog = (props: Props) => {
     <FormDialog
       isOpen
       onClose={onClose}
-      header={modalHeader ?? 'Add database'}
+      header={modalHeader ?? <Title size="L">Add database</Title>}
       footer={<FooterDatabaseForm />}
     >
       <div
