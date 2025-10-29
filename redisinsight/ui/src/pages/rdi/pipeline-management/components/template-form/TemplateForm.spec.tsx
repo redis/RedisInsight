@@ -5,6 +5,7 @@ import { instance, mock } from 'ts-mockito'
 import {
   act,
   cleanup,
+  expectActionsToContain,
   fireEvent,
   mockedStore,
   render,
@@ -66,11 +67,9 @@ describe('TemplateForm', () => {
       render(<TemplateForm {...instance(mockedProps)} />)
     })
 
-    const expectedActions = getPipelineStrategies()
+    const expectedActions = [getPipelineStrategies()]
 
-    expect(store.getActions()).toEqual(
-      expect.arrayContaining([expectedActions]),
-    )
+    expectActionsToContain(store.getActions(), expectedActions)
   })
 
   it('apply btn should be disabled if there is any value', () => {

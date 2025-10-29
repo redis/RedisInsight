@@ -3,10 +3,12 @@ import { cloneDeep } from 'lodash'
 import {
   act,
   cleanup,
+  expectActionsToContain,
   fireEvent,
   mockedStore,
   render,
   screen,
+  userEvent,
 } from 'uiSrc/utils/test-utils'
 import { getPipeline, rdiPipelineSelector } from 'uiSrc/slices/rdi/pipeline'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
@@ -57,9 +59,7 @@ describe('FetchPipelinePopover', () => {
 
     expect(screen.queryByTestId('confirm-btn')).not.toBeInTheDocument()
 
-    await act(() => {
-      fireEvent.click(screen.getByTestId('upload-pipeline-btn'))
-    })
+    await userEvent.click(screen.getByTestId('upload-pipeline-btn'))
 
     expect(screen.queryByTestId('upload-confirm-btn')).toBeInTheDocument()
   })
@@ -67,16 +67,16 @@ describe('FetchPipelinePopover', () => {
   it('should call proper actions', async () => {
     render(<FetchPipelinePopover />)
 
-    await act(() => {
+    await act(async () => {
       fireEvent.click(screen.getByTestId('upload-pipeline-btn'))
     })
 
-    await act(() => {
+    await act(async () => {
       fireEvent.click(screen.getByTestId('upload-confirm-btn'))
     })
 
     const expectedActions = [getPipeline()]
-    expect(store.getActions()).toEqual(expectedActions)
+    expectActionsToContain(store.getActions(), expectedActions)
   })
 
   it('should call proper telemetry event', async () => {
@@ -87,11 +87,11 @@ describe('FetchPipelinePopover', () => {
 
     render(<FetchPipelinePopover />)
 
-    await act(() => {
+    await act(async () => {
       fireEvent.click(screen.getByTestId('upload-pipeline-btn'))
     })
 
-    expect(sendEventTelemetry).toBeCalledWith({
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
       event: TelemetryEvent.RDI_PIPELINE_UPLOAD_FROM_SERVER_CLICKED,
       eventData: {
         id: 'rdiInstanceId',

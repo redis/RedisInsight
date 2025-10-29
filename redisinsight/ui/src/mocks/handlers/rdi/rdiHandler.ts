@@ -2,25 +2,36 @@ import { http, HttpHandler, HttpResponse } from 'msw'
 import { getMswURL } from 'uiSrc/utils/test-utils'
 import { getUrl } from 'uiSrc/utils'
 import { ApiEndpoints } from 'uiSrc/constants'
-import { Rdi as RdiInstanceResponse } from 'apiSrc/modules/rdi/models/rdi'
 
 const handlers: HttpHandler[] = [
   // fetch rdi instances
-  http.get<any, RdiInstanceResponse[]>(
-    getMswURL(getUrl(ApiEndpoints.RDI_INSTANCES)),
+  http.get(getMswURL(getUrl(ApiEndpoints.RDI_INSTANCES)), async () => {
+    return HttpResponse.json(
+      [
+        {
+          id: '1',
+          name: 'My first integration',
+          url: 'redis-12345.c253.us-central1-1.gce.cloud.redislabs.com:12345',
+          lastConnection: new Date(),
+          version: '1.2',
+          type: 'api',
+          username: 'user',
+        },
+      ],
+      { status: 200 },
+    )
+  }),
+  http.get(
+    getMswURL(`/${ApiEndpoints.RDI_INSTANCES}/:id/pipeline`),
     async () => {
       return HttpResponse.json(
-        [
-          {
-            id: '1',
-            name: 'My first integration',
-            url: 'redis-12345.c253.us-central1-1.gce.cloud.redislabs.com:12345',
-            lastConnection: new Date(),
-            version: '1.2',
-            type: 'api',
-            username: 'user',
-          },
-        ],
+        {
+          jobs: [
+            { name: 'job1', value: 'value' },
+            { name: 'job2', value: 'value' },
+          ],
+          config: { field: 'value' },
+        },
         { status: 200 },
       )
     },

@@ -442,6 +442,18 @@ export const mockFeatureFlags = (
     })
 }
 
+/**
+ * Helper function to check if expected actions are contained within actual store actions
+ * @param actualActions - The actual actions dispatched to the store
+ * @param expectedActions - The expected actions that should be present
+ */
+const expectActionsToContain = (
+  actualActions: any[],
+  expectedActions: any[],
+) => {
+  expect(actualActions).toEqual(expect.arrayContaining(expectedActions))
+}
+
 // re-export everything
 export * from '@testing-library/react'
 // override render method
@@ -455,4 +467,5 @@ export {
   waitForRiTooltipVisible,
   waitForRiTooltipHidden,
   waitForRiPopoverVisible,
+  expectActionsToContain,
 }

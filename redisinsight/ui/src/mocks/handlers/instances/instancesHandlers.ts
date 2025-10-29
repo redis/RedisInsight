@@ -92,19 +92,30 @@ const handlers: HttpHandler[] = [
   http.get(getMswURL(`${ApiEndpoints.DATABASES}/:id/connect`), async () => {
     return HttpResponse.text('', { status: 200 })
   }),
+  http.post<
+    any,
+    {
+      name: string
+      host: string
+      port: number
+      username: string
+      timeout: number
+      tls: boolean
+    },
+    Partial<Instance>
+  >(getMswURL(`${ApiEndpoints.DATABASES}`), async ({ request }) => {
+    const { username } = await request.json()
+
+    return HttpResponse.json(
+      {
+        id: 'f79e82e8-c34a-4dc7-a49e-9fadc0979fda',
+        username,
+        host: 'localhost',
+        port: 6379,
+      },
+      { status: 201 },
+    )
+  }),
 ]
-
-// rest.post(`${ApiEndpoints.INSTANCE}`, (req, res, ctx) => {
-//   const { username } = req.body
-
-//   return res(
-//     ctx.json({
-//       id: 'f79e82e8-c34a-4dc7-a49e-9fadc0979fda',
-//       username,
-//       firstName: 'John',
-//       lastName: 'Maverick',
-//     }),
-//   )
-// }),
 
 export default handlers
