@@ -138,7 +138,7 @@ const AddDatabaseScreen = (props: Props) => {
             <Row responsive gap="l">
               <FlexItem>
                 <SecondaryButton
-                  size="small"
+                  size="medium"
                   onClick={() => handleProceedForm(AddDbType.manual)}
                   data-testid="btn-connection-settings"
                 >
@@ -152,7 +152,7 @@ const AddDatabaseScreen = (props: Props) => {
                   content={isInvalid ? <span>{ConnectionUrlError}</span> : null}
                 >
                   <PrimaryButton
-                    size="small"
+                    size="medium"
                     type="submit"
                     disabled={!!isInvalid}
                     icon={isInvalid ? InfoIcon : undefined}
