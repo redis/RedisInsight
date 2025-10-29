@@ -23,12 +23,3 @@
     right: 0;
   }
 }
-
-.connectionUrlInfo {
-  display: flex;
-  align-items: center;
-
-  > :global(.euiToolTipAnchor) {
-    margin-left: 4px;
-  }
-}

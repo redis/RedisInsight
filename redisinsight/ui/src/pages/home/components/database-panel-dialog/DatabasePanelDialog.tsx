@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
+import { Theme } from '@redis-ui/styles'
+
 
 import { Nullable } from 'uiSrc/utils'
 import { UrlHandlingActions } from 'uiSrc/slices/interfaces/urlHandling'
@@ -41,6 +43,7 @@ import { Title } from 'uiSrc/components/base/text'
 const ScrollableWrapper = styled.div`
   height: 100%;
   overflow: scroll;
+  padding-top: ${({ theme }: { theme: Theme }) => theme.core.space.space400};
 `
 
 export interface Props {
