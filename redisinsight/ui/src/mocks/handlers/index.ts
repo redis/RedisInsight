@@ -9,6 +9,7 @@ import tutorials from './tutorials'
 import rdi from './rdi'
 import user from './user'
 import workbench from './workbench'
+import ai from './ai'
 
 // @ts-ignore
 export const handlers = [
@@ -23,4 +24,5 @@ export const handlers = [
   ...rdi,
   ...user,
   ...workbench,
+  ...ai,
 ]
