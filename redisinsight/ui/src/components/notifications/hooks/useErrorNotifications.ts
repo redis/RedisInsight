@@ -8,6 +8,8 @@ import { ApiEncryptionErrors } from 'uiSrc/constants/apiErrors'
 import errorMessages from 'uiSrc/components/notifications/error-messages'
 import { CustomErrorCodes } from 'uiSrc/constants'
 import { errorsSelector, removeMessage } from 'uiSrc/slices/app/notifications'
+import { defaultContainerId } from 'uiSrc/components/notifications/constants'
+import { RiToastType } from 'uiSrc/components/base/display/toast/RiToast'
 
 const DEFAULT_ERROR_TITLE = 'Error'
 
@@ -36,41 +38,42 @@ export const useErrorNotifications = () => {
           removeToast(id)
           return
         }
-        let toastId: ReturnType<typeof riToast>
+
+        let errorMessage: RiToastType
         if (ApiEncryptionErrors.includes(name)) {
-          toastId = errorMessages.ENCRYPTION(
+          errorMessage = errorMessages.ENCRYPTION(
             () => removeToast(id),
             instanceId,
-            id,
           )
         } else if (
           additionalInfo?.errorCode ===
           CustomErrorCodes.CloudCapiKeyUnauthorized
         ) {
-          toastId = errorMessages.CLOUD_CAPI_KEY_UNAUTHORIZED(
+          errorMessage = errorMessages.CLOUD_CAPI_KEY_UNAUTHORIZED(
             { message, title },
             additionalInfo,
             () => removeToast(id),
-            id,
           )
         } else if (
           additionalInfo?.errorCode ===
           CustomErrorCodes.RdiDeployPipelineFailure
         ) {
-          toastId = errorMessages.RDI_DEPLOY_PIPELINE(
+          errorMessage = errorMessages.RDI_DEPLOY_PIPELINE(
             { title, message },
             () => removeToast(id),
-            id,
           )
         } else {
-          toastId = errorMessages.DEFAULT(
+          errorMessage = errorMessages.DEFAULT(
             message,
             () => removeToast(id),
             title,
-            id,
           )
         }
-
+        const toastId: ReturnType<typeof riToast> = riToast(errorMessage, {
+          variant: riToast.Variant.Danger,
+          toastId: id,
+          containerId: defaultContainerId,
+        })
         toastIdsRef.current.set(id, toastId)
       },
     )

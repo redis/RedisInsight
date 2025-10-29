@@ -168,6 +168,14 @@ const notificationsSlice = createSlice({
       if (index === -1) {
         state.infiniteMessages.push(payload)
       } else {
+        const currentNotification = state.infiniteMessages[index]
+        // check if existing notification is exactly the same as the new one, if yes, do not update
+        if (
+          currentNotification.variation &&
+          payload.variation === currentNotification.variation
+        ) {
+          return
+        }
         state.infiniteMessages[index] = payload
       }
     },

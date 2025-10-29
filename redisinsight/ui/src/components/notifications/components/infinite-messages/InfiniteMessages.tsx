@@ -74,6 +74,7 @@ export const INFINITE_MESSAGES: InfiniteMessagesType = {
   PENDING_CREATE_DB: (step?: CloudJobStep) => ({
     id: InfiniteMessagesIds.oAuthProgress,
     customIcon: LoaderLargeIcon,
+    variation: step,
     message: (
       <>
         {(step === CloudJobStep.Credentials || !step) &&
