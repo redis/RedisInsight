@@ -25,7 +25,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
+import { ChevronLeftIcon } from 'uiSrc/components/base/icons'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import TabsComponent from 'uiSrc/components/base/layout/tabs'
 import { Title } from 'uiSrc/components/base/text/Title'
@@ -161,7 +161,7 @@ const ManualConnectionForm = (props: Props) => {
           <FlexItem>
             <IconButton
               onClick={handleClickBackClone}
-              icon={ArrowLeftIcon}
+              icon={ChevronLeftIcon}
               aria-label="back"
               data-testid="back-btn"
             />

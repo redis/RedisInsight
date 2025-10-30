@@ -36,7 +36,7 @@ import { ModalHeaderProvider } from 'uiSrc/contexts/ModalTitleProvider'
 import ClusterConnectionFormWrapper from 'uiSrc/pages/home/components/cluster-connection'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
+import { ChevronLeftIcon } from 'uiSrc/components/base/icons'
 import { FooterDatabaseForm } from 'uiSrc/components/form-dialog/FooterDatabaseForm'
 import { Title } from 'uiSrc/components/base/text'
 
@@ -178,7 +178,7 @@ const DatabasePanelDialog = (props: Props) => {
           <FlexItem>
             <IconButton
               onClick={handleClickBack}
-              icon={ArrowLeftIcon}
+              icon={ChevronLeftIcon}
               aria-label="back"
               data-testid="back-btn"
             />
