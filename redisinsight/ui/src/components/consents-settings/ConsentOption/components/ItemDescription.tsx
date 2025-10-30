@@ -20,6 +20,7 @@ export const ItemDescription = ({
         <Link
           variant="inline"
           target="_blank"
+          color="secondary"
           size="S"
           href={getUtmExternalLink(EXTERNAL_LINKS.legalPrivacyPolicy, {
             medium: UTM_MEDIUMS.App,
