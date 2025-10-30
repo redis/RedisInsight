@@ -55,10 +55,14 @@ const getSpacingValue = (
   return spacerStyles[size as SpacerSize]
 }
 
-export const StyledSpacer = styled.div<SpacerProps>`
+type StyledSpacerType = Omit<SpacerProps, 'direction'> & {
+  $direction: SpacerProps['direction']
+}
+
+export const StyledSpacer = styled.div<StyledSpacerType>`
   flex-shrink: 0;
-  ${({ direction = 'vertical', size = 'l', theme }) => {
-    return direction === 'horizontal'
+  ${({ $direction = 'vertical', size = 'l', theme }) => {
+    return $direction === 'horizontal'
       ? css`
           width: ${getSpacingValue(size, theme)};
         `

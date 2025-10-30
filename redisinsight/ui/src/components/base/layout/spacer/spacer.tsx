@@ -16,9 +16,18 @@ import { SpacerProps, StyledSpacer } from './spacer.styles'
  *
  *   The default value for `size` is 'l'.
  */
-export const Spacer = ({ className, children, ...rest }: SpacerProps) => {
+export const Spacer = ({
+  className,
+  children,
+  direction,
+  ...rest
+}: SpacerProps) => {
   return (
-    <StyledSpacer {...rest} className={cx('RI-spacer', className)}>
+    <StyledSpacer
+      {...rest}
+      className={cx('RI-spacer', className)}
+      $direction={direction}
+    >
       {children}
     </StyledSpacer>
   )

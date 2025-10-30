@@ -89,11 +89,7 @@ export const ButtonIcon = ({
   return (
     <>
       {buttonSide === 'right' && spacer}
-      <Button.Icon
-        title={`button-icon ${iconSide}`}
-        icon={renderIcon}
-        customSize={iconSize}
-      />
+      <Button.Icon icon={renderIcon} customSize={iconSize} />
       {buttonSide === 'left' && spacer}
     </>
   )
