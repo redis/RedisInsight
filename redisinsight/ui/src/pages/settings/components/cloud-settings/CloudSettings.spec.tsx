@@ -1,8 +1,8 @@
 import React from 'react'
-import { cloneDeep } from 'lodash'
 import {
   act,
   cleanup,
+  createMockedStore,
   fireEvent,
   mockedStore,
   render,
@@ -34,7 +34,7 @@ jest.mock('uiSrc/slices/oauth/cloud', () => ({
 let store: typeof mockedStore
 beforeEach(() => {
   cleanup()
-  store = cloneDeep(mockedStore)
+  store = createMockedStore()
   store.clearActions()
 })
 
@@ -43,13 +43,17 @@ jest.mock('uiSrc/telemetry', () => ({
   sendEventTelemetry: jest.fn(),
 }))
 
+const renderCloudSettings = () => {
+  return render(<CloudSettings />, { store })
+}
+
 describe('CloudSettings', () => {
   it('should show delete popover and call proper action on delete', async () => {
     ;(oauthCapiKeysSelector as jest.Mock).mockReturnValue({
       data: OAUTH_CLOUD_CAPI_KEYS_DATA,
       loading: false,
     })
-    render(<CloudSettings />)
+    renderCloudSettings()
 
     await userEvent.click(screen.getByTestId('delete-key-btn'))
     await waitForRiPopoverVisible()
@@ -64,11 +68,11 @@ describe('CloudSettings', () => {
   })
 
   it('should render', () => {
-    expect(render(<CloudSettings />)).toBeTruthy()
+    expect(renderCloudSettings()).toBeTruthy()
   })
 
   it('should get api keys after render', () => {
-    render(<CloudSettings />)
+    renderCloudSettings()
 
     expect(store.getActions()).toEqual([getCapiKeys()])
   })
@@ -79,7 +83,7 @@ describe('CloudSettings', () => {
       loading: false,
     })
 
-    render(<CloudSettings />)
+    renderCloudSettings()
 
     expect(screen.getByTestId('delete-key-btn')).toBeDisabled()
   })
@@ -92,7 +96,7 @@ describe('CloudSettings', () => {
       data: OAUTH_CLOUD_CAPI_KEYS_DATA,
       loading: false,
     })
-    render(<CloudSettings />)
+    renderCloudSettings()
 
     fireEvent.click(screen.getByTestId('delete-key-btn'))
     await waitForRiPopoverVisible()

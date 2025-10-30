@@ -4,6 +4,7 @@ require('dotenv').config({ path: './redisinsight/ui/.env.test' });
 module.exports = {
   testEnvironmentOptions: {
     url: 'http://localhost/',
+    customExportConditions: [''],
   },
   moduleNameMapper: {
     '\\.(jpg|jpeg|png|ico|gif|eot|otf|webp|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
@@ -40,9 +41,9 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/redisinsight/ui/src/setup-tests.ts'],
   moduleDirectories: ['node_modules', 'redisinsight/node_modules'],
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json'],
-  testEnvironment: 'jest-environment-jsdom',
+  testEnvironment: 'jest-fixed-jsdom',
   transformIgnorePatterns: [
-    'node_modules/(?!(monaco-editor|react-monaco-editor|brotli-dec-wasm)/)',
+    'node_modules/(?!(monaco-editor|react-monaco-editor|brotli-dec-wasm|until-async)/)',
   ],
   // TODO: add tests for plugins
   modulePathIgnorePatterns: [

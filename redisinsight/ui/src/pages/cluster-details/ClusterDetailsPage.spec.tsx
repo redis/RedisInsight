@@ -38,7 +38,7 @@ describe('ClusterDetailsPage', () => {
   })
 
   it('should call fetchClusterDetailsAction after rendering', async () => {
-    await act(() => {
+    await act(async () => {
       render(<ClusterDetailsPage />)
     })
 

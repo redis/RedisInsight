@@ -168,6 +168,11 @@ const initialStateDefault: RootState = {
 export const mockStore = configureMockStore<RootState>([thunk])
 export const mockedStore = mockStore(initialStateDefault)
 export const mockedStoreFn = () => mockStore(initialStateDefault)
+export const createMockedStore = () => {
+  const store = mockStore(initialStateDefault)
+  setStoreRef(store)
+  return store
+}
 
 // Set the mock store reference for the dynamic store wrapper
 // This ensures that store-dynamic works correctly in tests
@@ -389,7 +394,7 @@ Object.defineProperty(window, 'sessionStorage', { value: sessionStorageMock })
 const scrollIntoViewMock = jest.fn()
 window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock
 
-const matchMediaMock = () => ({
+const matchMediaMock = (_: any) => ({
   matches: false,
   addEventListener: jest.fn(),
   removeEventListener: jest.fn(),
@@ -402,6 +407,7 @@ Object.defineProperty(window, 'matchMedia', {
 
 export const getMswResourceURL = (path: string = '') =>
   RESOURCES_BASE_URL.concat(path)
+
 export const getMswURL = (path: string = '') =>
   apiService.defaults.baseURL?.concat(
     path.startsWith('/') ? path.slice(1) : path,
@@ -441,6 +447,18 @@ export const mockFeatureFlags = (
     })
 }
 
+/**
+ * Helper function to check if expected actions are contained within actual store actions
+ * @param actualActions - The actual actions dispatched to the store
+ * @param expectedActions - The expected actions that should be present
+ */
+const expectActionsToContain = (
+  actualActions: any[],
+  expectedActions: any[],
+) => {
+  expect(actualActions).toEqual(expect.arrayContaining(expectedActions))
+}
+
 // re-export everything
 export * from '@testing-library/react'
 // override render method
@@ -454,4 +472,5 @@ export {
   waitForRiTooltipVisible,
   waitForRiTooltipHidden,
   waitForRiPopoverVisible,
+  expectActionsToContain,
 }
