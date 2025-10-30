@@ -147,16 +147,7 @@ export function useNavigation() {
 
   const privateRdiRoutes: INavigations[] = [
     {
-      tooltipText: 'Pipeline Status',
-      pageName: PageNames.rdiStatistics,
-      ariaLabel: 'Pipeline Status page button',
-      onClick: () => handleGoPage(Pages.rdiStatistics(connectedRdiInstanceId)),
-      dataTestId: 'pipeline-status-page-btn',
-      isActivePage: activePage === `/${PageNames.rdiStatistics}`,
-      iconType: PipelineStatisticsIcon,
-    },
-    {
-      tooltipText: 'Pipeline Management',
+      tooltipText: 'Pipeline',
       pageName: PageNames.rdiPipelineManagement,
       ariaLabel: 'Pipeline Management page button',
       onClick: () =>
@@ -164,6 +155,15 @@ export function useNavigation() {
       dataTestId: 'pipeline-management-page-btn',
       isActivePage: isPipelineManagementPath(),
       iconType: PipelineManagementIcon,
+    },
+    {
+      tooltipText: 'Analytics',
+      pageName: PageNames.rdiStatistics,
+      ariaLabel: 'Pipeline Status page button',
+      onClick: () => handleGoPage(Pages.rdiStatistics(connectedRdiInstanceId)),
+      dataTestId: 'pipeline-status-page-btn',
+      isActivePage: activePage === `/${PageNames.rdiStatistics}`,
+      iconType: PipelineStatisticsIcon,
     },
   ]
 
