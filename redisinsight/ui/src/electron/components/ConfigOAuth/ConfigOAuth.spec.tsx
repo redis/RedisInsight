@@ -1,6 +1,10 @@
 import React from 'react'
-import { cloneDeep } from 'lodash'
-import { cleanup, mockedStore, render } from 'uiSrc/utils/test-utils'
+import {
+  cleanup,
+  createMockedStore,
+  mockedStore,
+  render,
+} from 'uiSrc/utils/test-utils'
 
 import {
   CloudAuthStatus,
@@ -48,12 +52,16 @@ jest.mock('uiSrc/slices/instances/cloud', () => ({
 let store: typeof mockedStore
 beforeEach(() => {
   cleanup()
-  store = cloneDeep(mockedStore)
+  store = createMockedStore()
   store.clearActions()
   window.app = {
     cloudOauthCallback: jest.fn(),
   } as any
 })
+
+const renderConfigOAuth = () => {
+  return render(<ConfigOAuth />, { store })
+}
 
 describe('ConfigOAuth', () => {
   it('should render', () => {
@@ -68,7 +76,7 @@ describe('ConfigOAuth', () => {
     window.app?.cloudOauthCallback.mockImplementation((cb: any) =>
       cb(undefined, { status: CloudAuthStatus.Succeed }),
     )
-    render(<ConfigOAuth />)
+    renderConfigOAuth()
 
     const expectedActions = [
       setJob({
@@ -95,7 +103,7 @@ describe('ConfigOAuth', () => {
         error: 'error',
       }),
     )
-    render(<ConfigOAuth />)
+    renderConfigOAuth()
 
     const expectedActions = [
       setOAuthCloudSource(null),
@@ -127,7 +135,7 @@ describe('ConfigOAuth', () => {
     window.app?.cloudOauthCallback.mockImplementation((cb: any) =>
       cb(undefined, { status: CloudAuthStatus.Succeed }),
     )
-    render(<ConfigOAuth />)
+    renderConfigOAuth()
 
     const afterCallbackActions = [
       setJob({
@@ -165,7 +173,7 @@ describe('ConfigOAuth', () => {
     window.app?.cloudOauthCallback.mockImplementation((cb: any) =>
       cb(undefined, { status: CloudAuthStatus.Succeed }),
     )
-    render(<ConfigOAuth />)
+    renderConfigOAuth()
 
     const afterCallbackActions = [
       setJob({
@@ -204,7 +212,7 @@ describe('ConfigOAuth', () => {
     window.app?.cloudOauthCallback.mockImplementation((cb: any) =>
       cb(undefined, { status: CloudAuthStatus.Succeed }),
     )
-    render(<ConfigOAuth />)
+    renderConfigOAuth()
 
     const afterCallbackActions = [
       setJob({

@@ -168,6 +168,11 @@ const initialStateDefault: RootState = {
 export const mockStore = configureMockStore<RootState>([thunk])
 export const mockedStore = mockStore(initialStateDefault)
 export const mockedStoreFn = () => mockStore(initialStateDefault)
+export const createMockedStore = () => {
+  const store = mockStore(initialStateDefault)
+  setStoreRef(store)
+  return store
+}
 
 // Set the mock store reference for the dynamic store wrapper
 // This ensures that store-dynamic works correctly in tests

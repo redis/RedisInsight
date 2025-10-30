@@ -1,7 +1,12 @@
 import React from 'react'
-import { cloneDeep } from 'lodash'
 import reactRouterDom from 'react-router-dom'
-import { act, cleanup, mockedStore, render } from 'uiSrc/utils/test-utils'
+import {
+  act,
+  cleanup,
+  createMockedStore,
+  mockedStore,
+  render,
+} from 'uiSrc/utils/test-utils'
 
 import {
   appRedirectionSelector,
@@ -45,12 +50,14 @@ jest.mock('uiSrc/utils/routing', () => ({
 let store: typeof mockedStore
 beforeEach(() => {
   cleanup()
-  store = cloneDeep(mockedStore)
+  store = createMockedStore()
   store.clearActions()
 })
 
 const fromUrl =
   'redisinsight://databases/connect?redisUrl=redis://default:password@localhost:6379&databaseAlias=My Name&redirect=workbench?guidePath=/quick-guides/document/introduction.md&cloudBdbId=1232&subscriptionType=fixed&planMemoryLimit=30&memoryLimitMeasurementUnit=mb&free=true&target=_blank'
+
+const renderGlobalUrlHandler = () => render(<GlobalUrlHandler />, { store })
 
 describe('GlobalUrlHandler', () => {
   beforeEach(() => {
@@ -60,11 +67,11 @@ describe('GlobalUrlHandler', () => {
   })
 
   it('should render', () => {
-    expect(render(<GlobalUrlHandler />)).toBeTruthy()
+    expect(renderGlobalUrlHandler()).toBeTruthy()
   })
 
   it('should not call any actions by default', () => {
-    render(<GlobalUrlHandler />)
+    renderGlobalUrlHandler()
     expect(store.getActions()).toEqual([])
   })
 
@@ -77,7 +84,7 @@ describe('GlobalUrlHandler', () => {
       .mockReturnValueOnce({ replace: replaceMock })
     reactRouterDom.useLocation = jest.fn().mockReturnValueOnce({ search })
 
-    render(<GlobalUrlHandler />)
+    renderGlobalUrlHandler()
     expect(store.getActions()).toEqual([
       setFromUrl(decodeURIComponent(fromUrl)),
     ])
@@ -99,7 +106,7 @@ describe('GlobalUrlHandler', () => {
     ;(appRedirectionSelector as jest.Mock).mockReturnValueOnce({ fromUrl })
 
     await act(async () => {
-      render(<GlobalUrlHandler />)
+      renderGlobalUrlHandler()
     })
 
     const actionUrl = new URL(fromUrl)
@@ -130,7 +137,7 @@ describe('GlobalUrlHandler', () => {
     ;(appRedirectionSelector as jest.Mock).mockReturnValueOnce({ fromUrl })
 
     await act(async () => {
-      render(<GlobalUrlHandler />)
+      renderGlobalUrlHandler()
     })
 
     const actionUrl = new URL(fromUrl)
@@ -158,9 +165,7 @@ describe('GlobalUrlHandler', () => {
       fromUrl,
     })
 
-    await act(() => {
-      render(<GlobalUrlHandler />)
-    })
+    renderGlobalUrlHandler()
 
     const actionUrl = new URL(fromUrl)
     const fromParams = new URLSearchParams(actionUrl.search)
@@ -194,7 +199,7 @@ describe('GlobalUrlHandler', () => {
     })
 
     await act(() => {
-      render(<GlobalUrlHandler />)
+      renderGlobalUrlHandler()
     })
 
     const actionUrl = new URL(url)
@@ -246,7 +251,7 @@ describe('GlobalUrlHandler', () => {
     })
 
     await act(() => {
-      render(<GlobalUrlHandler />)
+      renderGlobalUrlHandler()
     })
 
     const actionUrl = new URL(url)
@@ -296,7 +301,7 @@ describe('GlobalUrlHandler', () => {
     })
 
     await act(() => {
-      render(<GlobalUrlHandler />)
+      renderGlobalUrlHandler()
     })
 
     const actionUrl = new URL(url)
@@ -347,7 +352,7 @@ describe('GlobalUrlHandler', () => {
     })
 
     await act(() => {
-      render(<GlobalUrlHandler />)
+      renderGlobalUrlHandler()
     })
 
     const actionUrl = new URL(url)
@@ -398,7 +403,7 @@ describe('GlobalUrlHandler', () => {
     })
 
     await act(() => {
-      render(<GlobalUrlHandler />)
+      renderGlobalUrlHandler()
     })
 
     const actionUrl = new URL(url)
