@@ -13,8 +13,6 @@ import {
   getRowId,
 } from 'uiSrc/pages/autodiscover-sentinel/sentinel-databases/useSentinelDatabasesConfig'
 
-import { StyledContainer } from '../../../../../../../../.storybook/helpers/styles'
-
 const meta: Meta<typeof SentinelDatabases> = {
   component: SentinelDatabases,
 }
@@ -72,19 +70,17 @@ const DefaultRender = () => {
     .map((key) => mastersMock.find((master) => getRowId(master) === key))
     .filter((item): item is ModifiedSentinelMaster => Boolean(item))
   return (
-    <StyledContainer paddingSize="m">
-      <SentinelDatabases
-        selection={selection || []}
-        columns={columnsMock}
-        masters={mastersMock}
-        onClose={action('onClose')}
-        onBack={action('onBack')}
-        onSubmit={action('onSubmit')}
-        onSelectionChange={(sel) => {
-          setSelection(sel)
-        }}
-      />
-    </StyledContainer>
+    <SentinelDatabases
+      selection={selection || []}
+      columns={columnsMock}
+      masters={mastersMock}
+      onClose={action('onClose')}
+      onBack={action('onBack')}
+      onSubmit={action('onSubmit')}
+      onSelectionChange={(sel) => {
+        setSelection(sel)
+      }}
+    />
   )
 }
 

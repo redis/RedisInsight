@@ -19,6 +19,7 @@ import { getSelectionColumn } from 'uiSrc/pages/autodiscover-cloud/utils'
 import { InputFieldSentinel, RiTooltip } from 'uiSrc/components'
 import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/InputFieldSentinel'
 import {
+  CellText,
   CopyBtn,
   CopyPublicEndpointText,
   CopyTextContainer,
@@ -50,7 +51,7 @@ export const colFactory = (
         row: {
           original: { name },
         },
-      }) => <span data-testid={`primary-group_${name}`}>{name}</span>,
+      }) => <CellText data-testid={`primary-group_${name}`}>{name}</CellText>,
     },
     {
       header: 'Database Alias*',

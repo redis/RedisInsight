@@ -1,3 +1,4 @@
+import React from 'react'
 import styled from 'styled-components'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { Text, Title } from 'uiSrc/components/base/text'
@@ -6,10 +7,9 @@ import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CopyIcon } from 'uiSrc/components/base/icons'
-import { PaddingType } from 'uiSrc/components/base/layout/flex/flex.styles'
 
 export const PageTitle = styled(Title).attrs({
-  size: 'M',
+  size: 'L',
 })`
   padding-bottom: ${({ theme }: { theme: Theme }) => theme.core.space.space050};
 `
@@ -28,7 +28,7 @@ export const SearchForm = styled(FormField)`
 `
 export const Footer = styled(FlexItem).attrs<{
   grow?: boolean | number
-  padding?: PaddingType
+  padding?: React.ComponentProps<typeof FlexItem>['padding']
 }>(({ grow, padding }) => ({
   grow: grow ?? false,
   padding: padding ?? 6,
@@ -56,10 +56,6 @@ export const DatabaseWrapper = styled.div`
     theme.semantic.color.background.neutral100};
   flex-grow: 1;
   overflow: hidden;
-
-  .column_status {
-    text-transform: capitalize;
-  }
 `
 export const SelectAllCheckbox = styled(Checkbox)`
   & svg {
@@ -67,18 +63,23 @@ export const SelectAllCheckbox = styled(Checkbox)`
   }
 `
 export const CellText = styled(Text).attrs({
-  size: 'S',
+  size: 'M',
   component: 'span',
-})``
-
-export const CopyPublicEndpointText = styled(CellText)`
+})`
   max-width: 100%;
   display: inline-block;
   width: auto;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+`
+
+export const CopyPublicEndpointText = styled(CellText)`
   vertical-align: top;
+`
+
+export const StatusColumnText = styled(CellText)`
+  text-transform: capitalize;
 `
 export const CopyBtn = styled(IconButton).attrs({
   icon: CopyIcon,

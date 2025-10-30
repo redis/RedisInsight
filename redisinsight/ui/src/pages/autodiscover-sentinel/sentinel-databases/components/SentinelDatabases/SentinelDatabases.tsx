@@ -12,7 +12,7 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { InfoIcon } from 'uiSrc/components/base/icons'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import { SearchInput } from 'uiSrc/components/base/inputs'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
@@ -142,7 +142,6 @@ const SentinelDatabases = ({
       button={
         <SecondaryButton
           onClick={showPopover}
-          color="secondary"
           className="btn-cancel"
           data-testid="btn-cancel"
         >
@@ -168,8 +167,8 @@ const SentinelDatabases = ({
   )
 
   const SubmitButton = ({ onClick }: { onClick: () => void }) => {
-    let title = null
-    let content = null
+    let title: string | null = null
+    let content: string | null = null
     const emptyAliases = selection.filter(({ alias }) => !alias)
 
     if (selection.length < 1) {
@@ -181,24 +180,23 @@ const SentinelDatabases = ({
       title = validationErrors.REQUIRED_TITLE(emptyAliases.length)
       content = 'Database Alias'
     }
+    const TooltipIcon = () => (
+      <RiTooltip position="top" title={title} content={<span>{content}</span>}>
+        <RiIcon type="InfoIcon" />
+      </RiTooltip>
+    )
 
     return (
-      <RiTooltip
-        position="top"
-        title={title}
-        content={isSubmitDisabled() ? <span>{content}</span> : null}
+      <PrimaryButton
+        type="submit"
+        onClick={onClick}
+        disabled={isSubmitDisabled()}
+        loading={loading}
+        icon={isSubmitDisabled() ? TooltipIcon : undefined}
+        data-testid="btn-add-primary-group"
       >
-        <PrimaryButton
-          type="submit"
-          onClick={onClick}
-          disabled={isSubmitDisabled()}
-          loading={loading}
-          icon={isSubmitDisabled() ? InfoIcon : undefined}
-          data-testid="btn-add-primary-group"
-        >
-          Add Primary Group
-        </PrimaryButton>
-      </RiTooltip>
+        Add Primary Group
+      </PrimaryButton>
     )
   }
 
