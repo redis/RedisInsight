@@ -14,9 +14,13 @@ import {
 } from 'uiSrc/utils'
 import { RiTooltip } from 'uiSrc/components'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { NumericInput, PasswordInput, TextInput } from 'uiSrc/components/base/inputs'
+import {
+  NumericInput,
+  PasswordInput,
+  TextInput,
+} from 'uiSrc/components/base/inputs'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 
 interface IShowFields {
@@ -86,11 +90,11 @@ const DatabaseForm = (props: Props) => {
   const isFieldDisabled = (name: string) => readyOnlyFields.includes(name)
 
   return (
-    <>
+    <Col gap="l">
       {showFields.alias && (
         <Row gap="m">
           <FlexItem grow>
-            <FormField label="Database Alias*">
+            <FormField label="Database alias" required>
               <TextInput
                 name="name"
                 id="name"
@@ -106,14 +110,14 @@ const DatabaseForm = (props: Props) => {
           </FlexItem>
         </Row>
       )}
-
       {(showFields.host || isShowPort) && (
         <Row gap="m">
           {showFields.host && (
             <FlexItem grow={4}>
               <FormField
-                label="Host*"
+                label="Host"
                 additionalText={<AppendHostName />}
+                required
               >
                 <TextInput
                   autoFocus={autoFocus}
@@ -124,11 +128,8 @@ const DatabaseForm = (props: Props) => {
                   maxLength={200}
                   placeholder="Enter Hostname / IP address / Connection URL"
                   value={formik.values.host ?? ''}
-                  onChange={value => {
-                    formik.setFieldValue(
-                      'host',
-                      validateField(value.trim()),
-                    )
+                  onChange={(value) => {
+                    formik.setFieldValue('host', validateField(value.trim()))
                   }}
                   onPaste={(event: React.ClipboardEvent<HTMLInputElement>) =>
                     handlePasteHostName(onHostNamePaste, event)
@@ -142,8 +143,9 @@ const DatabaseForm = (props: Props) => {
           {isShowPort && (
             <FlexItem grow={2}>
               <FormField
-                label="Port*"
+                label="Port"
                 additionalText={`Should not exceed ${MAX_PORT_NUMBER}.`}
+                required
               >
                 <NumericInput
                   autoValidate
@@ -228,7 +230,7 @@ const DatabaseForm = (props: Props) => {
           <FlexItem grow />
         </Row>
       )}
-    </>
+    </Col>
   )
 }
 
