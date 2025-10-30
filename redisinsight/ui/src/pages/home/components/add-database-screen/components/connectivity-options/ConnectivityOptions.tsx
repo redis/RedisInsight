@@ -72,9 +72,7 @@ const ConnectivityOptions = (props: Props) => {
   return (
     <>
       <section className={styles.cloudSection}>
-        <Text color="primary">
-          Get started with Redis Cloud account
-        </Text>
+        <Text color="primary">Get started with Redis Cloud account</Text>
         <Spacer />
         <Grid gap="l" columns={3} responsive>
           <FlexItem>
@@ -108,7 +106,7 @@ const ConnectivityOptions = (props: Props) => {
                     })}
                     target="_blank"
                   >
-                    <RiBadge className="freeBadge" label="Free" />
+                    <RiBadge className="freeBadge" label="Free" variant="notice" />
                     <Col align="center">
                       <RocketIcon className="btnIcon" />
                       New database
@@ -123,9 +121,7 @@ const ConnectivityOptions = (props: Props) => {
       </section>
       <Spacer size="xxl" />
       <section>
-        <Text color="primary">
-          More connectivity options
-        </Text>
+        <Text color="primary">More connectivity options</Text>
         <Spacer />
         <Grid gap="l" responsive columns={3}>
           {CONNECTIVITY_OPTIONS.map(({ id, type, title, icon }) => (
