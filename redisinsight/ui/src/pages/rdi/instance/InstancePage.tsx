@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation, useParams } from 'react-router-dom'
 import {
@@ -20,11 +20,13 @@ import {
 } from 'uiSrc/slices/instances/instances'
 
 import { RdiInstancePageTemplate } from 'uiSrc/templates'
-import { RdiInstanceHeader } from 'uiSrc/components'
+import { AppNavigation, RdiInstanceHeader } from 'uiSrc/components'
 import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
 import InstancePageRouter from './InstancePageRouter'
 import { RdiPipelineHeader } from './components'
 import styles from './styles.module.scss'
+import { Nullable } from 'uiSrc/utils'
+import { useNavigation } from 'uiSrc/components/navigation-menu/hooks/useNavigation'
 
 export interface Props {
   routes: IRoute[]
@@ -39,6 +41,9 @@ const RdiInstancePage = ({ routes = [] }: Props) => {
   const { lastPage, contextRdiInstanceId } = useSelector(appContextSelector)
   const { data: rdiInstances } = useSelector(rdiInstancesSelector)
   const { data: dbInstances } = useSelector(dbInstancesSelector)
+  const { privateRdiRoutes } = useNavigation()
+
+  const [actions, setActions] = useState<Nullable<React.ReactNode>>(null)
 
   useEffect(() => {
     if (!dbInstances?.length) {
@@ -79,6 +84,13 @@ const RdiInstancePage = ({ routes = [] }: Props) => {
     <Col className={styles.page} gap="none" responsive={false}>
       <FlexItem>
         <RdiInstanceHeader />
+      </FlexItem>
+      <FlexItem>
+        <AppNavigation
+          actions={actions}
+          onChange={() => setActions(null)}
+          routes={privateRdiRoutes}
+        />
       </FlexItem>
       <FlexItem grow={false}>
         <RdiPipelineHeader />
