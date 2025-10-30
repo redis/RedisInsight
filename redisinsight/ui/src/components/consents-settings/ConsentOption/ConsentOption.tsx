@@ -59,7 +59,7 @@ const ConsentOption = (props: Props) => {
           </Text>
           {!isSettingsPage && consent.description && (
             <>
-              <Spacer size="s" />
+              <Spacer size="xs" />
               <Text size="s" color="secondary">
                 <ItemDescription
                   description={consent.description}

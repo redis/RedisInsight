@@ -227,7 +227,7 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
                 </FlexItem>
                 <FlexItem>
                   <Text color="primary">Use recommended settings</Text>
-                  <Spacer size="s" />
+                  <Spacer size="xs" />
                   <Text size="s" color="secondary">
                     Select to activate all listed options.
                   </Text>
@@ -235,7 +235,7 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
               </Row>
             </FlexItem>
             <HorizontalRule
-              margin="l"
+              margin="m"
               className={cx({
                 [styles.pluginWarningHR]: !!requiredConsents.length,
               })}
@@ -245,15 +245,15 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
 
         {!!privacyConsents.length && (
           <>
-            <Spacer />
+            <Spacer size="l" />
             <Title size="M" color="primary">
-              Privacy Settings
+              Privacy settings
             </Title>
-            <Spacer size="m" />
+            <Spacer size="xs" />
             <Text size="s" color="secondary">
               To optimize your experience, Redis Insight uses third-party tools.
             </Text>
-            <Spacer />
+            <Spacer size="m" />
           </>
         )}
         <StyledContainer>
@@ -270,7 +270,7 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
 
         {!!notificationConsents.length && (
           <>
-            <Spacer size="l" />
+            <Spacer size="m" />
             <Title size="M" color="primary">
               Notifications
             </Title>
@@ -331,6 +331,9 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
             />
           ))}
         </FlexItem>
+      </Row>
+      <Spacer />
+      <Row justify="end">
         <FlexItem>
           <RiTooltip
             position="top"
