@@ -186,18 +186,6 @@ describe('NavigationMenu', () => {
     })
   })
 
-  it('should render private routes with connectedRdiInstanceId', () => {
-    ;(appContextSelector as jest.Mock).mockImplementation(() => ({
-      ...appContextSelector,
-      workspace: 'redisDataIntegration',
-    }))
-
-    render(<NavigationMenu />)
-
-    expect(screen.getByTestId('pipeline-status-page-btn')).toBeTruthy()
-    expect(screen.getByTestId('pipeline-management-page-btn')).toBeTruthy()
-  })
-
   describe('feature flags tests', () => {
     it('should show feature dependent items when feature flag is on', async () => {
       const initialStoreState = set(

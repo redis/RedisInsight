@@ -36,12 +36,12 @@ const RdiInstancePage = ({ routes = [] }: Props) => {
   const dispatch = useDispatch()
   const history = useHistory()
   const { pathname } = useLocation()
+  const { privateRdiRoutes } = useNavigation()
 
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
   const { lastPage, contextRdiInstanceId } = useSelector(appContextSelector)
   const { data: rdiInstances } = useSelector(rdiInstancesSelector)
   const { data: dbInstances } = useSelector(dbInstancesSelector)
-  const { privateRdiRoutes } = useNavigation()
 
   const [actions, setActions] = useState<Nullable<React.ReactNode>>(null)
 

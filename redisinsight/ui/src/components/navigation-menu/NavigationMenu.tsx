@@ -4,10 +4,8 @@ import React from 'react'
 import { FeatureFlags } from 'uiSrc/constants'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 
-import { renderOnboardingTourWithChild } from 'uiSrc/utils/onboarding'
 import { FeatureFlagComponent } from 'uiSrc/components'
 
-import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 import {
   SideBar,
   SideBarContainer,
@@ -29,62 +27,10 @@ import styles from './styles.module.scss'
 
 const NavigationMenu = () => {
   const {
-    privateRdiRoutes,
     isRdiWorkspace,
     publicRoutes,
-    getAdditionPropsForHighlighting,
     highlightedPages,
-    connectedRdiInstanceId,
   } = useNavigation()
-
-  const renderNavItem = (nav: INavigations) => {
-    const fragment = (
-      <React.Fragment key={nav.tooltipText}>
-        {renderOnboardingTourWithChild(
-          <HighlightedFeature
-            {...getAdditionPropsForHighlighting(nav.pageName)}
-            key={nav.tooltipText}
-            isHighlight={!!highlightedPages[nav.pageName]?.length}
-            dotClassName={styles.highlightDot}
-            tooltipPosition="right"
-            transformOnHover
-          >
-            <div className={styles.navigationButtonWrapper}>
-              <SideBarItem
-                isActive={nav.isActivePage}
-                onClick={nav.onClick}
-                tooltipProps={{ text: nav.tooltipText, placement: 'right' }}
-              >
-                <SideBarItemIcon
-                  icon={nav.iconType}
-                  aria-label={nav.ariaLabel}
-                  data-testid={nav.dataTestId}
-                />
-              </SideBarItem>
-              {nav.isBeta && (
-                <RiBadge className={styles.betaLabel} label="BETA" />
-              )}
-            </div>
-          </HighlightedFeature>,
-          { options: nav.onboard },
-          nav.isActivePage,
-          `ob-${nav.tooltipText}`,
-        )}
-      </React.Fragment>
-    )
-
-    return nav.featureFlag ? (
-      <FeatureFlagComponent
-        name={nav.featureFlag}
-        key={nav.tooltipText}
-        enabledByDefault
-      >
-        {fragment}
-      </FeatureFlagComponent>
-    ) : (
-      fragment
-    )
-  }
 
   const renderPublicNavItem = (nav: INavigations) => {
     const fragment = (
@@ -131,9 +77,6 @@ const NavigationMenu = () => {
     >
       <SideBarContainer>
         <RedisLogo isRdiWorkspace={isRdiWorkspace} />
-        {connectedRdiInstanceId &&
-          isRdiWorkspace &&
-          privateRdiRoutes.map(renderNavItem)}
       </SideBarContainer>
       <SideBarFooter className={styles.footer}>
         <FeatureFlagComponent name={FeatureFlags.envDependent} enabledByDefault>
