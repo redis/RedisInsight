@@ -22,6 +22,7 @@ import { Link } from 'uiSrc/components/base/link/Link'
 import ConsentOption from './ConsentOption'
 
 import styles from './styles.module.scss'
+import { StyledContainer } from './styles'
 
 interface Values {
   [key: string]: string
@@ -217,7 +218,7 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
             <FlexItem>
               <Row gap="m">
                 <FlexItem>
-                  <Spacer size="xxs" />
+                  <Spacer size="xs" />
                   <SwitchInput
                     checked={isRecommended}
                     onCheckedChange={selectAll}
@@ -225,9 +226,9 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
                   />
                 </FlexItem>
                 <FlexItem>
-                  <Text className={styles.label}>Use recommended settings</Text>
+                  <Text color="primary">Use recommended settings</Text>
                   <Spacer size="s" />
-                  <Text size="s" className={styles.smallText} color="primary">
+                  <Text size="s" color="secondary">
                     Select to activate all listed options.
                   </Text>
                 </FlexItem>
@@ -241,54 +242,62 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
             />
           </>
         )}
+
         {!!privacyConsents.length && (
           <>
             <Spacer />
-            <Title size="M" className={styles.title}>
+            <Title size="M" color="primary">
               Privacy Settings
             </Title>
             <Spacer size="m" />
-            <Text className={styles.smallText} size="s" color="primary">
+            <Text size="s" color="secondary">
               To optimize your experience, Redis Insight uses third-party tools.
             </Text>
             <Spacer />
           </>
         )}
-        {privacyConsents.map((consent: IConsent) => (
-          <ConsentOption
-            consent={consent}
-            checked={formik.values[consent.agreementName] ?? false}
-            onChangeAgreement={onChangeAgreement}
-            key={consent.agreementName}
-          />
-        ))}
+        <StyledContainer>
+          {privacyConsents.map((consent: IConsent) => (
+            <ConsentOption
+              consent={consent}
+              checked={formik.values[consent.agreementName] ?? false}
+              onChangeAgreement={onChangeAgreement}
+              key={consent.agreementName}
+              withoutSpacer
+            />
+          ))}
+        </StyledContainer>
+
         {!!notificationConsents.length && (
           <>
-            <Spacer size="m" />
-            <Title size="M" className={styles.title}>
+            <Spacer size="l" />
+            <Title size="M" color="primary">
               Notifications
             </Title>
             <Spacer size="m" />
           </>
         )}
-        {notificationConsents.map((consent: IConsent) => (
-          <ConsentOption
-            consent={consent}
-            checked={formik.values[consent.agreementName] ?? false}
-            onChangeAgreement={onChangeAgreement}
-            key={consent.agreementName}
-          />
-        ))}
+        <StyledContainer>
+          {notificationConsents.map((consent: IConsent) => (
+            <ConsentOption
+              consent={consent}
+              checked={formik.values[consent.agreementName] ?? false}
+              onChangeAgreement={onChangeAgreement}
+              key={consent.agreementName}
+              withoutSpacer
+            />
+          ))}
+        </StyledContainer>
       </div>
       {requiredConsents.length ? (
         <>
-          <HorizontalRule margin="l" className={styles.requiredHR} />
-          <Spacer size="m" />
-          <Text color="primary" size="s" className={styles.smallText}>
+          <Spacer size="l" />
+          <Text color="secondary" size="s">
             Use of Redis Insight is governed by your signed agreement with
             Redis, or, if none, by the{' '}
             <Link
               variant="inline"
+              size="S"
               target="_blank"
               href="https://redis.io/software-subscription-agreement/?utm_source=redisinsight&utm_medium=app&utm_campaign=EULA"
             >
@@ -297,6 +306,7 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
             . If no agreement applies, use is subject to the{' '}
             <Link
               variant="inline"
+              size="S"
               target="_blank"
               href="https://github.com/RedisInsight/RedisInsight/blob/main/LICENSE"
             >

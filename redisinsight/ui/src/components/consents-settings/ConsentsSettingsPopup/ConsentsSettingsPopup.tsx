@@ -44,7 +44,7 @@ const ConsentsSettingsPopup = () => {
       title={
         <Row justify="between">
           <FlexItem>
-            <Title size="L" className={styles.consentsPopupTitle}>
+            <Title size="XL" variant="semiBold" color="primary">
               EULA and Privacy Settings
             </Title>
           </FlexItem>

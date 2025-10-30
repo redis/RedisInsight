@@ -43,7 +43,7 @@ const ConsentOption = (props: Props) => {
       )}
       <Row gap="m">
         <FlexItem>
-          <Spacer size="xxs" />
+          <Spacer size="xs" />
           <SwitchInput
             checked={checked}
             onCheckedChange={(checked) =>
@@ -54,11 +54,13 @@ const ConsentOption = (props: Props) => {
           />
         </FlexItem>
         <FlexItem>
-          <Text size="M">{parse(consent.label)}</Text>
+          <Text size="M" color="primary">
+            {parse(consent.label)}
+          </Text>
           {!isSettingsPage && consent.description && (
             <>
               <Spacer size="s" />
-              <Text size="M" color="primary">
+              <Text size="s" color="secondary">
                 <ItemDescription
                   description={consent.description}
                   withLink={consent.linkToPrivacyPolicy}

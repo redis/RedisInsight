@@ -19,8 +19,8 @@ export const ItemDescription = ({
       <>
         <Link
           variant="inline"
-          color="primary"
           target="_blank"
+          size="S"
           href={getUtmExternalLink(EXTERNAL_LINKS.legalPrivacyPolicy, {
             medium: UTM_MEDIUMS.App,
             campaign: 'telemetry',
