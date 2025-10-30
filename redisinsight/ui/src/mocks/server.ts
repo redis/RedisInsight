@@ -9,6 +9,9 @@ export const mswServer = setupServer(
     '*',
     jest
       .fn()
-      .mockImplementation(async () => HttpResponse.json({}, { status: 200 })),
+      .mockImplementation(async ({ request }) => {
+        console.warn(`[MSW] Unhandled request: ${request.method} ${request.url}`)
+        return HttpResponse.json({}, { status: 200 })
+      }),
   ),
 )
