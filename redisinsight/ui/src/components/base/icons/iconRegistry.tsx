@@ -280,9 +280,7 @@ export const RedisJSONLightIcon = createIconComponent(RedisJSONLight)
 export const RedisSearchDarkIcon = createIconComponent(RedisSearchDark)
 export const RedisSearchLightIcon = createIconComponent(RedisSearchLight)
 export const RediStackDarkLogoIcon = createIconComponent(RediStackDarkLogoSvg)
-export const RediStackDarkMinIcon = createIconComponent(RediStackDarkMinSvg)
 export const RediStackLightLogoIcon = createIconComponent(RediStackLightLogoSvg)
-export const RediStackLightMinIcon = createIconComponent(RediStackLightMinLight)
 export const RediStackMinIcon = createIconComponent(
   RediStackLightMinLight,
   RediStackDarkMinSvg,
