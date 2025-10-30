@@ -1,4 +1,3 @@
-import { MockedRequest, RestHandler } from 'msw'
 import instances from './instances'
 import content from './content'
 import app from './app'
@@ -10,18 +9,20 @@ import tutorials from './tutorials'
 import rdi from './rdi'
 import user from './user'
 import workbench from './workbench'
+import ai from './ai'
 
 // @ts-ignore
-export const handlers: RestHandler<MockedRequest>[] = [].concat(
-  instances,
-  content,
-  app,
-  analytics,
-  browser,
-  recommendations,
-  cloud,
-  tutorials,
-  rdi,
-  user,
-  workbench,
-)
+export const handlers = [
+  ...instances,
+  ...content,
+  ...app,
+  ...analytics,
+  ...browser,
+  ...recommendations,
+  ...cloud,
+  ...tutorials,
+  ...rdi,
+  ...user,
+  ...workbench,
+  ...ai,
+]

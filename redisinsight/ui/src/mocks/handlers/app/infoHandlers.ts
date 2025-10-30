@@ -1,4 +1,4 @@
-import { rest, RestHandler } from 'msw'
+import { http, HttpHandler, HttpResponse } from 'msw'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { getMswURL } from 'uiSrc/utils/test-utils'
 import { Database as DatabaseInstanceResponse } from 'apiSrc/modules/database/models/database'
@@ -11,12 +11,13 @@ export const APP_INFO_DATA_MOCK = {
   buildType: 'ELECTRON',
 }
 
-const handlers: RestHandler[] = [
+const handlers: HttpHandler[] = [
   // fetchServerInfo
-  rest.get<DatabaseInstanceResponse[]>(
+  http.get<any, DatabaseInstanceResponse[]>(
     getMswURL(ApiEndpoints.INFO),
-    async (_req, res, ctx) =>
-      res(ctx.status(200), ctx.json(APP_INFO_DATA_MOCK)),
+    async () => {
+      return HttpResponse.json(APP_INFO_DATA_MOCK, { status: 200 })
+    },
   ),
 ]
 
