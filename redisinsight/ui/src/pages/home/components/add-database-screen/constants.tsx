@@ -1,6 +1,10 @@
 import { AddDbType } from 'uiSrc/pages/home/constants'
 import { DownloadIcon, IconType, RedisSoftwareIcon, ShieldIcon } from 'uiSrc/components/base/icons'
 
+export interface Values {
+  connectionURL: string
+}
+
 export interface ConnectivityOption {
   id: string
   title: string
