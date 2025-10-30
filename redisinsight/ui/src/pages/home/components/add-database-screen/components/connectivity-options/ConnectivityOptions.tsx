@@ -1,5 +1,4 @@
 import React from 'react'
-import cx from 'classnames'
 import styled from 'styled-components'
 
 import { AddDbType } from 'uiSrc/pages/home/constants'
@@ -16,7 +15,6 @@ import { RocketIcon } from 'uiSrc/components/base/icons'
 import { Col, FlexItem, Grid } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
-import { Title } from 'uiSrc/components/base/text/Title'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 import { Text } from 'uiSrc/components/base/text/Text'
 import { Link } from 'uiSrc/components/base/link/Link'
@@ -42,27 +40,22 @@ const NewCloudLink = styled(Link)`
   width: 100%;
   height: 84px !important;
   padding: 0 12px;
-  color: var(--buttonSecondaryTextColor) !important;
   border: 1px solid ${({ theme }) => theme.semantic.color.border.primary500};
   border-radius: 5px;
+
   & .freeBadge {
     position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1;
+    top: 10px;
+    left: 10px;
 
     text-transform: uppercase;
-    background-color: var(--euiColorLightestShade);
-    border: 1px solid var(--euiColorPrimary);
-    border-radius: 2px !important;
+    border-radius: 3px;
   }
 
   & .btnIcon {
     margin-bottom: 8px;
-    width: 24px;
-    height: 24px;
-    fill: currentColor;
+    width: 30px;
+    height: 30px;
   }
 `
 
@@ -82,7 +75,7 @@ const ConnectivityOptions = (props: Props) => {
               data-testid="discover-cloud-btn"
             >
               <Col align="center">
-                <CloudIcon className={styles.btnIcon} />
+                <CloudIcon />
                 Add databases
               </Col>
             </SecondaryButton>
