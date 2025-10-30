@@ -18,7 +18,7 @@ export interface ChartData {
   }
 }
 
-interface IProps {
+export interface IProps {
   name?: string
   data: ChartData[]
   width?: number
