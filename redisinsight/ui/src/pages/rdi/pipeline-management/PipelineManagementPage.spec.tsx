@@ -1,10 +1,14 @@
 import React from 'react'
-import { cloneDeep } from 'lodash'
 
 import reactRouterDom, { BrowserRouter } from 'react-router-dom'
 import { instance, mock } from 'ts-mockito'
 import { useFormikContext } from 'formik'
-import { render, cleanup, mockedStore } from 'uiSrc/utils/test-utils'
+import {
+  render,
+  cleanup,
+  mockedStore,
+  createMockedStore,
+} from 'uiSrc/utils/test-utils'
 import {
   appContextPipelineManagement,
   setLastPageContext,
@@ -29,9 +33,17 @@ jest.mock('formik')
 let store: typeof mockedStore
 beforeEach(() => {
   cleanup()
-  store = cloneDeep(mockedStore)
+  store = createMockedStore()
   store.clearActions()
 })
+
+const renderPipelineManagement = (props: Props) =>
+  render(
+    <BrowserRouter>
+      <PipelineManagementPage {...props} />
+    </BrowserRouter>,
+    { store },
+  )
 
 describe('PipelineManagementPage', () => {
   beforeEach(() => {
@@ -43,13 +55,7 @@ describe('PipelineManagementPage', () => {
   })
 
   it('should render', () => {
-    expect(
-      render(
-        <BrowserRouter>
-          <PipelineManagementPage {...instance(mockedProps)} />
-        </BrowserRouter>,
-      ),
-    ).toBeTruthy()
+    expect(renderPipelineManagement(instance(mockedProps))).toBeTruthy()
   })
 
   it('should redirect to the config tab by default', () => {
@@ -59,11 +65,7 @@ describe('PipelineManagementPage', () => {
       pathname: Pages.rdiPipelineManagement('rdiInstanceId'),
     })
 
-    render(
-      <BrowserRouter>
-        <PipelineManagementPage {...instance(mockedProps)} />
-      </BrowserRouter>,
-    )
+    renderPipelineManagement(instance(mockedProps))
 
     expect(pushMock).toBeCalledWith(Pages.rdiPipelineConfig('rdiInstanceId'))
   })
@@ -78,11 +80,7 @@ describe('PipelineManagementPage', () => {
       pathname: Pages.rdiPipelineManagement('rdiInstanceId'),
     })
 
-    render(
-      <BrowserRouter>
-        <PipelineManagementPage {...instance(mockedProps)} />
-      </BrowserRouter>,
-    )
+    renderPipelineManagement(instance(mockedProps))
 
     expect(pushMock).toBeCalledWith(Pages.rdiPipelineConfig('rdiInstanceId'))
   })
@@ -92,11 +90,7 @@ describe('PipelineManagementPage', () => {
       .fn()
       .mockReturnValue({ pathname: Pages.rdiPipelineConfig('rdiInstanceId') })
 
-    const { unmount } = render(
-      <BrowserRouter>
-        <PipelineManagementPage {...instance(mockedProps)} />
-      </BrowserRouter>,
-    )
+    const { unmount } = renderPipelineManagement(instance(mockedProps))
 
     unmount()
     const expectedActions = [
