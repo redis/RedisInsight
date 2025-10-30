@@ -1,9 +1,10 @@
 import styled from 'styled-components'
 import { Theme } from 'uiSrc/components/base/theme/types'
+import PageBody from 'uiSrc/components/base/layout/page/PageBody'
 
-export const StyledContainer = styled.div`
-  padding: 50px;
+export const StyledContainer = styled(PageBody)`
   height: max-content;
+  max-height: 100%;
   overflow: hidden;
   overflow-y: auto;
   background-color: ${({ theme }: { theme: Theme }) =>

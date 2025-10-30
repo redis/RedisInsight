@@ -5,10 +5,10 @@ import {
   FlexItemProps,
   FlexProps,
   GridProps,
+  PaddingType,
   StyledFlex,
   StyledFlexItem,
   StyledGrid,
-  VALID_PADDING_VALUES,
 } from 'uiSrc/components/base/layout/flex/flex.styles'
 
 export const Grid = ({ children, className, ...rest }: GridProps) => {
@@ -77,7 +77,7 @@ export const FlexGroup = ({
  * Column Component
  *
  * A Column component is a special type of FlexGroup that is meant to be used when you
- * want to layout a group of items in a vertical column. It is functionally equivalent to
+ * want to lay out a group of items in a vertical column. It is functionally equivalent to
  * using a FlexGroup with a direction of 'column', but includes some additional conveniences.
  *
  * This is the preferred API of a component that is not meant to be distributed but widely used in our project
@@ -154,7 +154,7 @@ export const FlexItem = ({
   direction,
   ...rest
 }: Omit<FlexItemProps, '$padding' | '$direction'> & {
-  padding?: (typeof VALID_PADDING_VALUES)[number]
+  padding?: PaddingType
   direction?: (typeof dirValues)[number]
 }) => {
   const classes = classNames('RI-flex-item', className)

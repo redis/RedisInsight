@@ -1,6 +1,7 @@
-import { omit } from 'lodash'
 import React, { useState } from 'react'
-import cx from 'classnames'
+import styled from 'styled-components'
+import { omit } from 'lodash'
+
 import { useDebouncedEffect } from 'uiSrc/services'
 import {
   NumericInput,
@@ -9,7 +10,6 @@ import {
 } from 'uiSrc/components/base/inputs'
 
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from './styles.module.scss'
 
 export enum SentinelInputFieldType {
   Text = 'text',
@@ -33,6 +33,14 @@ export interface Props {
   append?: React.ReactElement
   onChangedInput: (name: string, value: string) => void
 }
+const InputInvalidIcon = styled(RiIcon).attrs({
+  color: 'danger500',
+  type: 'ToastDangerIcon',
+})`
+  position: absolute;
+  top: calc(50% - 9px);
+  right: 10px;
+`
 
 const InputFieldSentinel = (props: Props) => {
   const {
@@ -82,13 +90,7 @@ const InputFieldSentinel = (props: Props) => {
           data-testid="sentinel-input-number"
         />
       )}
-      {isInvalid && (
-        <RiIcon
-          color="danger500"
-          type="ToastDangerIcon"
-          className={cx(styles.inputInvalidIcon)}
-        />
-      )}
+      {isInvalid && <InputInvalidIcon />}
     </>
   )
 }

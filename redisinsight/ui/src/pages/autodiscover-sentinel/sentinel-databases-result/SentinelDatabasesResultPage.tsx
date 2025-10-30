@@ -1,5 +1,5 @@
 import React from 'react'
-import SentinelDatabasesResult from './components'
+import SentinelDatabasesResult from './components/SentinelDatabasesResult/SentinelDatabasesResult'
 import { useSentinelDatabasesResultConfig } from './useSentinelDatabasesResultConfig'
 
 const SentinelDatabasesResultPage = () => {

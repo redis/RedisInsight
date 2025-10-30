@@ -2,13 +2,13 @@ import React from 'react'
 import { instance, mock } from 'ts-mockito'
 import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import { cleanup, render, screen, fireEvent } from 'uiSrc/utils/test-utils'
-import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { ColumnDef } from 'uiSrc/components/base/layout/table'
 import SentinelDatabasesResult, { Props } from './SentinelDatabasesResult'
 
 const mockedProps = mock<Props>()
 
 let mastersMock: ModifiedSentinelMaster[]
-let columnsMock: ColumnDefinition<ModifiedSentinelMaster>[]
+let columnsMock: ColumnDef<ModifiedSentinelMaster>[]
 
 beforeEach(() => {
   cleanup()
@@ -26,7 +26,7 @@ beforeEach(() => {
     {
       name: 'mymaster',
       host: 'localhost',
-      port: 6379,
+      port: '6379',
       alias: 'alias',
       numberOfSlaves: 0,
     },

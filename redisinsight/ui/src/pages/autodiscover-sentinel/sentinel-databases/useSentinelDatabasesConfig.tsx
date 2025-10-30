@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { map, pick } from 'lodash'
@@ -19,117 +19,28 @@ import { getSelectionColumn } from 'uiSrc/pages/autodiscover-cloud/utils'
 import { InputFieldSentinel, RiTooltip } from 'uiSrc/components'
 import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/InputFieldSentinel'
 import {
+  CellText,
   CopyBtn,
   CopyPublicEndpointText,
   CopyTextContainer,
 } from 'uiSrc/components/auto-discover'
-import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import {
+  ColumnDef,
+  RowSelectionState,
+} from 'uiSrc/components/base/layout/table'
 import { RiIcon } from 'uiSrc/components/base/icons'
 
 import styles from '../styles.module.scss'
 
-export const useSentinelDatabasesConfig = () => {
-  const [items, setItems] = useState<ModifiedSentinelMaster[]>([])
+const handleCopy = (text = '') => {
+  return navigator.clipboard.writeText(text)
+}
 
-  const { data: masters } = useSelector(sentinelSelector)
-
-  const dispatch = useDispatch()
-  const history = useHistory()
-  const [selection, setSelection] = useState<ModifiedSentinelMaster[]>([])
-  const updateSelection = (
-    selected: ModifiedSentinelMaster[],
-    masters: ModifiedSentinelMaster[],
-  ) => {
-    return selected.map(
-      (select) => masters.find((master) => master.id === select.id) ?? select,
-    )
-  }
-  const onSelectionChange = (selected: ModifiedSentinelMaster) =>
-    setSelection((previous) => {
-      const isSelected = previous.some((item) => item.id === selected.id)
-      if (isSelected) {
-        return previous.filter((item) => item.id !== selected.id)
-      }
-      return [...previous, selected]
-    })
-
-  useEffect(() => {
-    if (masters.length) {
-      setItems(masters)
-      setSelection((prevState) => updateSelection(prevState, masters))
-    }
-  }, [masters])
-
-  setTitle('Auto-Discover Redis Sentinel Primary Groups')
-
-  const sendCancelEvent = () => {
-    sendEventTelemetry({
-      event:
-        TelemetryEvent.CONFIG_DATABASES_REDIS_SENTINEL_AUTODISCOVERY_CANCELLED,
-    })
-  }
-
-  const handleClose = () => {
-    sendCancelEvent()
-    dispatch(resetDataSentinel())
-    history.push(Pages.home)
-  }
-
-  const handleBackAdditing = () => {
-    sendCancelEvent()
-    dispatch(resetLoadedSentinel(LoadedSentinel.Masters))
-    history.push(Pages.home)
-  }
-
-  const handleAddInstances = (databases: ModifiedSentinelMaster[]) => {
-    const pikedDatabases = map(databases, (i) => {
-      const database: CreateSentinelDatabaseDto = {
-        name: i.name,
-        alias: i.alias || i.name,
-      }
-      if (i.username) {
-        database.username = i.username
-      }
-      if (i.password) {
-        database.password = i.password
-      }
-      if (i.db) {
-        database.db = i.db
-      }
-      return pick(database, 'alias', 'name', 'username', 'password', 'db')
-    })
-
-    dispatch(updateMastersSentinel(databases))
-    dispatch(
-      createMastersSentinelAction(pikedDatabases, () =>
-        history.push(Pages.sentinelDatabasesResult),
-      ),
-    )
-  }
-
-  const handleCopy = (text = '') => {
-    navigator.clipboard.writeText(text)
-  }
-
-  const handleChangedInput = (name: string, value: string) => {
-    const [field, id] = name.split('-')
-
-    setItems((items) =>
-      items.map((item) => {
-        if (item.id !== id) {
-          return item
-        }
-
-        return { ...item, [field]: value }
-      }),
-    )
-  }
-
-  const columns: ColumnDefinition<ModifiedSentinelMaster>[] = [
-    getSelectionColumn({
-      setSelection,
-      onSelectionChange,
-    }),
+export const colFactory = (
+  items: ModifiedSentinelMaster[],
+  handleChangedInput: (name: string, value: string) => void,
+) => {
+  const cols: ColumnDef<ModifiedSentinelMaster>[] = [
     {
       header: 'Primary Group',
       id: 'name',
@@ -140,7 +51,7 @@ export const useSentinelDatabasesConfig = () => {
         row: {
           original: { name },
         },
-      }) => <span data-testid={`primary-group_${name}`}>{name}</span>,
+      }) => <CellText data-testid={`primary-group_${name}`}>{name}</CellText>,
     },
     {
       header: 'Database Alias*',
@@ -148,25 +59,23 @@ export const useSentinelDatabasesConfig = () => {
       accessorKey: 'alias',
       enableSorting: true,
       size: 285,
-      cell: function InstanceAliasCell({
+      cell: ({
         row: {
           original: { id, alias, name },
         },
-      }) {
-        return (
-          <div role="presentation">
-            <InputFieldSentinel
-              name={`alias-${id}`}
-              value={alias || name}
-              className={styles.input}
-              placeholder="Enter Database Alias"
-              inputType={SentinelInputFieldType.Text}
-              onChangedInput={handleChangedInput}
-              maxLength={500}
-            />
-          </div>
-        )
-      },
+      }) => (
+        <div role="presentation">
+          <InputFieldSentinel
+            name={`alias-${id}`}
+            value={alias || name}
+            className={styles.input}
+            placeholder="Enter Database Alias"
+            inputType={SentinelInputFieldType.Text}
+            onChangedInput={handleChangedInput}
+            maxLength={500}
+          />
+        </div>
+      ),
     },
     {
       header: 'Address',
@@ -210,90 +119,198 @@ export const useSentinelDatabasesConfig = () => {
       id: 'username',
       accessorKey: 'username',
       size: 285,
-      cell: function UsernameCell({
+      cell: ({
         row: {
           original: { username, id },
         },
-      }) {
-        return (
-          <div role="presentation">
-            <InputFieldSentinel
-              value={username}
-              name={`username-${id}`}
-              className={styles.input}
-              placeholder="Enter Username"
-              inputType={SentinelInputFieldType.Text}
-              onChangedInput={handleChangedInput}
-            />
-          </div>
-        )
-      },
+      }) => (
+        <div role="presentation">
+          <InputFieldSentinel
+            value={username}
+            name={`username-${id}`}
+            className={styles.input}
+            placeholder="Enter Username"
+            inputType={SentinelInputFieldType.Text}
+            onChangedInput={handleChangedInput}
+          />
+        </div>
+      ),
     },
     {
       header: 'Password',
       id: 'password',
       accessorKey: 'password',
       size: 285,
-      cell: function PasswordCell({
+      cell: ({
         row: {
           original: { password, id },
         },
-      }) {
-        return (
-          <div role="presentation">
-            <InputFieldSentinel
-              value={password}
-              name={`password-${id}`}
-              className={styles.input}
-              placeholder="Enter Password"
-              inputType={SentinelInputFieldType.Password}
-              onChangedInput={handleChangedInput}
-            />
-          </div>
-        )
-      },
+      }) => (
+        <div role="presentation">
+          <InputFieldSentinel
+            value={password}
+            name={`password-${id}`}
+            className={styles.input}
+            placeholder="Enter Password"
+            inputType={SentinelInputFieldType.Password}
+            onChangedInput={handleChangedInput}
+          />
+        </div>
+      ),
     },
     {
       header: 'Database Index',
       id: 'db',
       accessorKey: 'db',
       size: 200,
-      cell: function IndexCell({
+      cell: ({
         row: {
           original: { db = 0, id },
         },
-      }) {
-        return (
-          <div role="presentation">
-            <InputFieldSentinel
-              min={0}
-              className={styles.dbInfo}
-              value={`${db}` || '0'}
-              name={`db-${id}`}
-              placeholder="Enter Index"
-              inputType={SentinelInputFieldType.Number}
-              onChangedInput={handleChangedInput}
-              append={
-                <RiTooltip
-                  anchorClassName="inputAppendIcon"
-                  position="left"
-                  content="Select the Redis logical database to work with in Browser and Workbench."
-                >
-                  <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
-                </RiTooltip>
-              }
-            />
-          </div>
-        )
-      },
+      }) => (
+        <div role="presentation">
+          <InputFieldSentinel
+            min={0}
+            className={styles.dbInfo}
+            value={`${db}` || '0'}
+            name={`db-${id}`}
+            placeholder="Enter Index"
+            inputType={SentinelInputFieldType.Number}
+            onChangedInput={handleChangedInput}
+            append={
+              <RiTooltip
+                anchorClassName="inputAppendIcon"
+                position="left"
+                content="Select the Redis logical database to work with in Browser and Workbench."
+              >
+                <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
+              </RiTooltip>
+            }
+          />
+        </div>
+      ),
     },
   ]
+  if (items.length > 0) {
+    cols.unshift(getSelectionColumn<ModifiedSentinelMaster>())
+  }
+  return cols
+}
+export const getRowId = (row: ModifiedSentinelMaster) => row.id || ''
+
+export const useSentinelDatabasesConfig = () => {
+  const [items, setItems] = useState<ModifiedSentinelMaster[]>([])
+
+  const { data: masters } = useSelector(sentinelSelector)
+
+  const dispatch = useDispatch()
+  const history = useHistory()
+  const [selection, setSelection] = useState<ModifiedSentinelMaster[]>([])
+
+  const updateSelection = (
+    selected: ModifiedSentinelMaster[],
+    masters: ModifiedSentinelMaster[],
+  ) => {
+    return selected.map(
+      (select) =>
+        masters.find((master) => {
+          return getRowId(master) === getRowId(select)
+        }) ?? select,
+    )
+  }
+  const handleSelectionChange = (currentSelected: RowSelectionState) => {
+    const newSelection = items.filter((item) => {
+      const id = getRowId(item)
+      if (!id) {
+        return false
+      }
+      return currentSelected[id]
+    })
+    setSelection(newSelection)
+  }
+
+  useEffect(() => {
+    if (masters.length) {
+      setItems(masters)
+      setSelection((prevState) => updateSelection(prevState, masters))
+    }
+  }, [masters.length])
+
+  setTitle('Auto-Discover Redis Sentinel Primary Groups')
+
+  const sendCancelEvent = () => {
+    sendEventTelemetry({
+      event:
+        TelemetryEvent.CONFIG_DATABASES_REDIS_SENTINEL_AUTODISCOVERY_CANCELLED,
+    })
+  }
+
+  const handleClose = () => {
+    sendCancelEvent()
+    dispatch(resetDataSentinel())
+    history.push(Pages.home)
+  }
+
+  const handleBackAdding = () => {
+    sendCancelEvent()
+    dispatch(resetLoadedSentinel(LoadedSentinel.Masters))
+    history.push(Pages.home)
+  }
+
+  const handleAddInstances = (databases: ModifiedSentinelMaster[]) => {
+    const pikedDatabases = map(databases, (i) => {
+      const database: CreateSentinelDatabaseDto = {
+        name: i.name,
+        alias: i.alias || i.name,
+      }
+      if (i.username) {
+        database.username = i.username
+      }
+      if (i.password) {
+        database.password = i.password
+      }
+      if (i.db) {
+        database.db = i.db
+      }
+      return pick(database, 'alias', 'name', 'username', 'password', 'db')
+    })
+
+    dispatch(updateMastersSentinel(databases))
+    dispatch(
+      createMastersSentinelAction(pikedDatabases, () =>
+        history.push(Pages.sentinelDatabasesResult),
+      ),
+    )
+  }
+
+  const handleChangedInput = useCallback(
+    (name: string, value: string) => {
+      const [field, id] = name.split('-')
+
+      setItems((items) =>
+        items.map((item) => {
+          const itemId = getRowId(item)
+          if (itemId !== id) {
+            return item
+          }
+
+          return { ...item, [field]: value }
+        }),
+      )
+    },
+    [setItems],
+  )
+  const columns: ColumnDef<ModifiedSentinelMaster>[] = useMemo(
+    () => colFactory(items, handleChangedInput),
+    [handleChangedInput, items.length],
+  )
   return {
     columns,
     selection,
     items,
     handleClose,
-    handleBackAdditing,
+    handleBackAdding,
     handleAddInstances,
+    handleSelectionChange,
   }
 }

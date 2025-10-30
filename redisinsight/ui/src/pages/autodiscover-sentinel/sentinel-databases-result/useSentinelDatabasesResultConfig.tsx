@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { ApiStatusCode, Pages } from 'uiSrc/constants'
@@ -16,7 +16,7 @@ import {
 } from 'uiSrc/slices/interfaces'
 import { removeEmpty, setTitle } from 'uiSrc/utils'
 import { pick } from 'lodash'
-import { ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { ColumnDef } from 'uiSrc/components/base/layout/table'
 import { Loader } from 'uiSrc/components/base/display'
 import { RiTooltip } from 'uiSrc/components/base/tooltip'
 import { ColorText } from 'uiSrc/components/base/text'
@@ -33,6 +33,8 @@ import {
   CopyPublicEndpointText,
   CopyTextContainer,
 } from 'uiSrc/components/auto-discover'
+import { FlexItem, Row } from 'uiSrc/components/base/layout/flex/flex'
+import { Spacer } from 'uiSrc/components/base/layout'
 
 // Define an interface for the error object
 interface ErrorWithStatusCode {
@@ -52,83 +54,18 @@ function errorNotAuth(
   )
 }
 
-export const useSentinelDatabasesResultConfig = () => {
-  const [items, setItems] = useState<ModifiedSentinelMaster[]>([])
-  const [isInvalid, setIsInvalid] = useState(true)
+const handleCopy = (text = '') => {
+  navigator.clipboard.writeText(text)
+}
 
-  const { data: masters } = useSelector(sentinelSelector)
-
-  const countSuccessAdded = masters.filter(
-    ({ status }) => status === AddRedisDatabaseStatus.Success,
-  )?.length
-
-  const dispatch = useDispatch()
-  const history = useHistory()
-
-  setTitle('Redis Sentinel Primary Groups Added')
-
-  useEffect(() => {
-    if (!masters.length) {
-      history.push(Pages.home)
-    }
-
-    dispatch(resetLoadedSentinel(LoadedSentinel.MastersAdded))
-  }, [])
-
-  useEffect(() => {
-    if (masters.length) {
-      setIsInvalid(true)
-      setItems(masters)
-    }
-  }, [masters])
-
-  const handleBackAdding = () => {
-    dispatch(resetLoadedSentinel(LoadedSentinel.MastersAdded))
-    history.push(Pages.home)
-  }
-
-  const handleViewDatabases = () => {
-    dispatch(resetDataSentinel())
-    history.push(Pages.home)
-  }
-
-  const handleCopy = (text = '') => {
-    navigator.clipboard.writeText(text)
-  }
-
-  const handleAddInstance = (masterName: string) => {
-    const instance: ModifiedSentinelMaster = {
-      ...removeEmpty(items.find((item) => item.name === masterName)),
-      loading: true,
-    }
-
-    const updatedItems = items.map((item) =>
-      item.name === masterName ? instance : item,
-    )
-
-    const pikedInstance = [
-      pick(instance, 'alias', 'name', 'username', 'password', 'db'),
-    ]
-
-    dispatch(updateMastersSentinel(updatedItems))
-    dispatch(createMastersSentinelAction(pikedInstance))
-  }
-
-  const handleChangedInput = (name: string, value: string) => {
-    const [field, id] = name.split('-')
-
-    setItems((items) =>
-      items.map((item) => {
-        if (item.id !== id) {
-          return item
-        }
-
-        return { ...item, [field]: value }
-      }),
-    )
-  }
-
-  const columns: ColumnDefinition<ModifiedSentinelMaster>[] = [
+export const colFactory = (
+  handleChangedInput: (name: string, value: string) => void,
+  handleAddInstance: (masterName: string) => void,
+  isInvalid: boolean,
+  countSuccessAdded: number,
+  itemsLength: number,
+) => {
+  const cols: ColumnDef<ModifiedSentinelMaster>[] = [
     {
       header: 'Result',
       id: 'message',
@@ -140,20 +77,31 @@ export const useSentinelDatabasesResultConfig = () => {
           original: { status, message, name, loading = false },
         },
       }) => (
-        <div data-testid={`status_${name}_${status}`}>
-          {loading && <Loader />}
+        <Row
+          data-testid={`status_${name}_${status}`}
+          align="center"
+          justify="start"
+        >
+          {loading && <Loader size="L" />}
           {!loading && status === AddRedisDatabaseStatus.Success && (
-            <CellText size="S">{message}</CellText>
+            <CellText>{message}</CellText>
           )}
           {!loading && status !== AddRedisDatabaseStatus.Success && (
             <RiTooltip position="right" title="Error" content={message}>
-              <ColorText size="S" color="danger" style={{ cursor: 'pointer' }}>
-                Error&nbsp;
-                <RiIcon type="ToastDangerIcon" color="danger600" />
-              </ColorText>
+              <FlexItem direction="row" grow={false}>
+                <ColorText
+                  size="S"
+                  color="danger"
+                  style={{ cursor: 'pointer' }}
+                >
+                  Error
+                </ColorText>
+                <Spacer size="s" direction="horizontal" />
+                <RiIcon size="M" type="ToastDangerIcon" color="danger600" />
+              </FlexItem>
             </RiTooltip>
           )}
-        </div>
+        </Row>
       ),
     },
     {
@@ -180,7 +128,7 @@ export const useSentinelDatabasesResultConfig = () => {
         },
       }) => {
         if (errorNotAuth(error, status)) {
-          return alias
+          return <CellText>{alias}</CellText>
         }
         return (
           <InputFieldSentinel
@@ -332,8 +280,8 @@ export const useSentinelDatabasesResultConfig = () => {
     },
   ]
 
-  if (countSuccessAdded !== items.length) {
-    const columnActions: ColumnDefinition<ModifiedSentinelMaster> = {
+  if (countSuccessAdded !== itemsLength) {
+    const columnActions: ColumnDef<ModifiedSentinelMaster> = {
       header: '',
       id: 'actions',
       accessorKey: 'actions',
@@ -358,7 +306,6 @@ export const useSentinelDatabasesResultConfig = () => {
           <div role="presentation">
             <RiTooltip
               position="top"
-              anchorClassName="euiToolTip__btn-disabled"
               title={isDisabled ? validationErrors.REQUIRED_TITLE(1) : null}
               content={isDisabled ? <span>Database Alias</span> : null}
             >
@@ -377,8 +324,95 @@ export const useSentinelDatabasesResultConfig = () => {
       },
     }
 
-    columns.splice(1, 0, columnActions)
+    cols.splice(1, 0, columnActions)
   }
+  return cols
+}
+
+export const useSentinelDatabasesResultConfig = () => {
+  const [items, setItems] = useState<ModifiedSentinelMaster[]>([])
+  const [isInvalid, setIsInvalid] = useState(true)
+
+  const { data: masters } = useSelector(sentinelSelector)
+
+  const countSuccessAdded = masters.filter(
+    ({ status }) => status === AddRedisDatabaseStatus.Success,
+  )?.length
+
+  const dispatch = useDispatch()
+  const history = useHistory()
+
+  setTitle('Redis Sentinel Primary Groups Added')
+
+  useEffect(() => {
+    if (!masters.length) {
+      history.push(Pages.home)
+    }
+
+    dispatch(resetLoadedSentinel(LoadedSentinel.MastersAdded))
+  }, [])
+
+  useEffect(() => {
+    if (masters.length) {
+      setIsInvalid(true)
+      setItems(masters)
+    }
+  }, [masters])
+
+  const handleBackAdding = () => {
+    dispatch(resetLoadedSentinel(LoadedSentinel.MastersAdded))
+    history.push(Pages.home)
+  }
+
+  const handleViewDatabases = () => {
+    dispatch(resetDataSentinel())
+    history.push(Pages.home)
+  }
+
+  const handleAddInstance = useCallback(
+    (masterName: string) => {
+      const instance: ModifiedSentinelMaster = {
+        ...removeEmpty(items.find((item) => item.name === masterName)),
+        loading: true,
+      }
+
+      const updatedItems = items.map((item) =>
+        item.name === masterName ? instance : item,
+      )
+
+      const pikedInstance = [
+        pick(instance, 'alias', 'name', 'username', 'password', 'db'),
+      ]
+
+      dispatch(updateMastersSentinel(updatedItems))
+      dispatch(createMastersSentinelAction(pikedInstance))
+    },
+    [items],
+  )
+
+  const handleChangedInput = (name: string, value: string) => {
+    const [field, id] = name.split('-')
+
+    setItems((items) =>
+      items.map((item) => {
+        if (item.id !== id) {
+          return item
+        }
+
+        return { ...item, [field]: value }
+      }),
+    )
+  }
+
+  const columns: ColumnDef<ModifiedSentinelMaster>[] = useMemo(() => {
+    return colFactory(
+      handleChangedInput,
+      handleAddInstance,
+      isInvalid,
+      countSuccessAdded,
+      items.length,
+    )
+  }, [countSuccessAdded, isInvalid, items.length])
 
   return {
     columns,

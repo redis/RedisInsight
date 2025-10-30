@@ -1,7 +1,7 @@
 import React from 'react'
 
-import SentinelDatabases from './components'
 import { useSentinelDatabasesConfig } from './useSentinelDatabasesConfig'
+import SentinelDatabases from './components/SentinelDatabases/SentinelDatabases'
 
 const SentinelDatabasesPage = () => {
   const {
@@ -9,17 +9,20 @@ const SentinelDatabasesPage = () => {
     selection,
     items,
     handleClose,
-    handleBackAdditing,
+    handleBackAdding,
     handleAddInstances,
+    handleSelectionChange,
   } = useSentinelDatabasesConfig()
+
   return (
     <SentinelDatabases
       columns={columns}
       selection={selection}
       masters={items}
       onClose={handleClose}
-      onBack={handleBackAdditing}
+      onBack={handleBackAdding}
       onSubmit={handleAddInstances}
+      onSelectionChange={handleSelectionChange}
     />
   )
 }

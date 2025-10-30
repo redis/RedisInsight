@@ -9,6 +9,7 @@ import { CommonStyles, themeDark, themeLight, themeOld } from '@redis-ui/styles'
 import 'modern-normalize/modern-normalize.css'
 import '@redis-ui/styles/normalized-styles.css'
 import '@redis-ui/styles/fonts.css'
+import 'uiSrc/pages/home/styles.scss'
 import { RootStoryLayout } from './RootStoryLayout'
 import { StoryContextProvider } from './Story.context'
 import { useStoryContext } from 'storybook/internal/preview-api'
@@ -18,12 +19,13 @@ import { type Theme } from 'uiSrc/components/base/theme/types'
 import { Provider } from 'react-redux'
 import { store } from 'uiSrc/slices/store'
 import Router from 'uiSrc/Router'
+import { StyledContainer } from './helpers/styles'
 
 const parameters: Parameters = {
   parameters: {
     layout: 'centered',
   },
-  actions: { argTypesRegex: '^on[A-Z].*' },
+  actions: { argTypesRegex: '^on.*' },
   controls: {
     disableSaveFromUI: true,
     matchers: {
@@ -51,7 +53,7 @@ const parameters: Parameters = {
 const GlobalStoryStyles = createGlobalStyle`
   .sb-show-main, .docs-story {
     background: ${({ theme }: { theme: Theme }) => theme.globals.body.bgColor};
-    color: ${({ theme }: { theme: Theme }) => theme.globals.body.textColor};
+    color: ${({ theme }: { theme: Theme }) => theme.components.typography.colors.primary};
   }
 `
 
@@ -65,7 +67,9 @@ const preview: Preview = {
             <TooltipProvider>
               <RootStoryLayout storyContext={useStoryContext()}>
                 <CommonStyles />
-                <Story />
+                <StyledContainer>
+                  <Story />
+                </StyledContainer>
               </RootStoryLayout>
             </TooltipProvider>
           </Provider>
