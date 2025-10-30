@@ -10,8 +10,8 @@ import {
 import Divider from 'uiSrc/components/divider/Divider'
 import { BuildType } from 'uiSrc/constants/env'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
+import { Spacer } from 'uiSrc/components/base/layout'
 import DecompressionAndFormatters from './DecompressionAndFormatters'
-
 import { ManualFormTab } from '../constants'
 
 export interface Props {
@@ -49,18 +49,28 @@ const AddConnection = (props: Props) => {
             onHostNamePaste={onHostNamePaste}
             showFields={{ host: true, alias: true, port: true, timeout: true }}
           />
+          <Spacer size="l" />
           <Divider
             colorVariable="separatorColor"
             variant="fullWidth"
             className="form__divider"
           />
+          <Spacer size="l" />
           <DbIndex formik={formik} />
+          <Spacer size="l" />
           <Divider
             colorVariable="separatorColor"
             variant="fullWidth"
             className="form__divider"
           />
+          <Spacer size="l" />
           <ForceStandalone formik={formik} />
+          <Spacer size="l" />
+          <Divider
+            colorVariable="separatorColor"
+            variant="fullWidth"
+            className="form__divider"
+          />
         </>
       )}
       {activeTab === ManualFormTab.Security && (

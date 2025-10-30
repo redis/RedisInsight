@@ -179,7 +179,7 @@ const ManualConnectionForm = (props: Props) => {
       return
     }
 
-    setModalHeader(<Title size="L">Connection Settings</Title>, true)
+    setModalHeader(<Title size="L">Connection settings</Title>, true)
   }, [isEditMode, isCloneMode])
 
   useEffect(() => {

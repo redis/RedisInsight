@@ -8,14 +8,15 @@ import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiTooltip } from 'uiSrc/components'
 import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
+import { Text } from 'uiSrc/components/base/text/Text'
 
 export interface Props {
   formik: FormikProps<DbConnectionInfo>
 }
 
 const ForceStandaloneLabel = () => (
-  <>
-    <span>Force Standalone Connection</span>
+  <Row align="center" gap="s">
+    <Text>Force Standalone Connection</Text>
     <RiTooltip
       className="homePage_tooltip"
       position="right"
@@ -26,15 +27,11 @@ const ForceStandaloneLabel = () => (
         </p>
       }
     >
-      <RiIcon
-        type="InfoIcon"
-        style={{
-          cursor: 'pointer',
-          marginLeft: '5px',
-        }}
-      />
+      <FlexItem>
+        <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
+      </FlexItem>
     </RiTooltip>
-  </>
+  </Row>
 )
 const ForceStandalone = (props: Props) => {
   const { formik } = props
