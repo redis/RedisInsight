@@ -225,24 +225,40 @@ export class ApiRdiClient extends RdiClient {
       throw wrapRdiPipelineError(error);
     }
 
-    try {
-      const sourceConfigs = Object.keys(config.sources || {});
+    const sourceConfigs = Object.keys(config.sources || {});
 
-      if (sourceConfigs.length) {
-        await Promise.all(
-          sourceConfigs.map(async (source) => {
-            const response = await this.client.post(
-              RdiUrl.TestSourcesConnections,
-              { ...config.sources[source] },
-            );
-            sources[source] = response.data;
-          }),
-        );
-      }
-    } catch (error) {
-      // failing is expected on RDI version below 1.6.0 (1.4.3 for example)
-      this.logger.error('Failed to fetch sources', error);
+    if (sourceConfigs.length === 0) {
+      return { targets, sources };
     }
+
+    await Promise.all(
+      sourceConfigs.map(async (source) => {
+        try {
+          const response = await this.client.post(
+            RdiUrl.TestSourcesConnections,
+            { ...config.sources[source] },
+          );
+          sources[source] = response.data;
+        } catch (error: any) {
+          // Older versions of RDI (below 1.6.0) don't support testing sources connections
+          // RDI returns 405 Method Not Allowed for non existing endpoints
+          const status = error?.status;
+          if (status === 405) {
+            sources[source] = {
+              connected: false,
+              error:
+                'Testing source connections is not supported in your RDI version. Please upgrade to version 1.6.0 or later.',
+            };
+          } else {
+            // Something went wrong with testing source connection
+            sources[source] = {
+              connected: false,
+              error: 'Failed to test source connection.',
+            };
+          }
+        }
+      }),
+    );
 
     return { targets, sources };
   }
