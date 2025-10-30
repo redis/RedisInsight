@@ -12,22 +12,54 @@ import {
   selectOnFocus,
   validateField,
 } from 'uiSrc/utils'
-import { RiTooltip } from 'uiSrc/components'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
+import { FormField, InfoIconProps } from 'uiSrc/components/base/forms/FormField'
 import {
   NumericInput,
   PasswordInput,
   TextInput,
 } from 'uiSrc/components/base/inputs'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { Text } from 'uiSrc/components/base/text'
+import { Spacer } from 'uiSrc/components/base/layout'
 
 interface IShowFields {
   alias: boolean
   host: boolean
   port: boolean
   timeout: boolean
+}
+
+const infoIcon: InfoIconProps = {
+  content: (
+    <div className="homePage_tooltip">
+      <div>
+        <Text variant="semiBold">
+          Pasting a connection URL auto fills the database details.
+        </Text>
+        <Spacer size="s" />
+        <Text variant="semiBold">
+          The following connection URLs are supported:
+        </Text>
+      </div>
+      <ul className="homePage_toolTipUl">
+        <li>
+          <span className="dot" />
+          redis://[[username]:[password]]@host:port
+        </li>
+        <li>
+          <span className="dot" />
+          rediss://[[username]:[password]]@host:port
+        </li>
+        <li>
+          <span className="dot" />
+          host:port
+        </li>
+      </ul>
+    </div>
+  ),
+  placement: 'right',
+  maxWidth: '100%',
 }
 
 export interface Props {
@@ -48,42 +80,6 @@ const DatabaseForm = (props: Props) => {
   } = props
 
   const { server } = useSelector(appInfoSelector)
-
-  const AppendHostName = () => (
-    <RiTooltip
-      title={
-        <div>
-          <p>
-            <b>Pasting a connection URL auto fills the database details.</b>
-          </p>
-          <p style={{ margin: 0, paddingTop: '10px' }}>
-            The following connection URLs are supported:
-          </p>
-        </div>
-      }
-      className="homePage_tooltip"
-      anchorClassName="inputAppendIcon"
-      position="right"
-      content={
-        <ul className="homePage_toolTipUl">
-          <li>
-            <span className="dot" />
-            redis://[[username]:[password]]@host:port
-          </li>
-          <li>
-            <span className="dot" />
-            rediss://[[username]:[password]]@host:port
-          </li>
-          <li>
-            <span className="dot" />
-            host:port
-          </li>
-        </ul>
-      }
-    >
-      <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
-    </RiTooltip>
-  )
 
   const isShowPort =
     server?.buildType !== BuildType.RedisStack && showFields.port
@@ -114,11 +110,7 @@ const DatabaseForm = (props: Props) => {
         <Row gap="m">
           {showFields.host && (
             <FlexItem grow={4}>
-              <FormField
-                label="Host"
-                additionalText={<AppendHostName />}
-                required
-              >
+              <FormField label="Host" required infoIconProps={infoIcon}>
                 <TextInput
                   autoFocus={autoFocus}
                   name="ip"
