@@ -36,7 +36,6 @@ import RedisDbBlueSvg from 'uiSrc/assets/img/icons/redis_db_blue.svg?react'
 import RedisLogoFullSvg from 'uiSrc/assets/img/logo.svg?react'
 import RedisLogoSvg from 'uiSrc/assets/img/logo_small.svg?react'
 import ResetSvg from 'uiSrc/assets/img/rdi/reset.svg?react'
-import RocketSvg from 'uiSrc/assets/img/rdi/rocket.svg?react'
 import ShrinkSvg from 'uiSrc/assets/img/icons/shrink.svg?react'
 import SilentModeSvg from 'uiSrc/assets/img/icons/silent_mode.svg?react'
 import SnoozeSvg from 'uiSrc/assets/img/icons/snooze.svg?react'
@@ -130,12 +129,9 @@ import PipelineStatisticsSvg from 'uiSrc/assets/img/sidebar/pipeline_statistics.
 import PubSubSvg from 'uiSrc/assets/img/sidebar/pubsub.svg?react'
 import SlowLogSvg from 'uiSrc/assets/img/sidebar/slowlog.svg?react'
 import WorkbenchSvg from 'uiSrc/assets/img/sidebar/workbench.svg?react'
-// Missing SVGs and not used/legacy:
-// import BrowserActiveSvg from 'uiSrc/assets/img/sidebar/browser_active.svg?react'
-// import PipelineStatisticsActiveSvg from 'uiSrc/assets/img/sidebar/pipeline_statistics_active.svg?react'
-// import PubSubActiveSvg from 'uiSrc/assets/img/sidebar/pubsub_active.svg?react'
-// import SlowLogActiveSvg from 'uiSrc/assets/img/sidebar/slowlog_active.svg?react'
-// import WorkbenchActiveSvg from 'uiSrc/assets/img/sidebar/workbench_active.svg?react'
+
+import ShieldSvg from 'uiSrc/assets/img/shield.svg?react'
+import RedisSoftwareSvg from 'uiSrc/assets/img/redis-software.svg?react'
 
 import { Icon, IconProps } from './Icon'
 
@@ -208,7 +204,6 @@ export const RedisDbBlueIcon = createIconComponent(RedisDbBlueSvg)
 export const RedisLogo = createIconComponent(RedisLogoSvg)
 export const RedisLogoFullIcon = createIconComponent(RedisLogoFullSvg)
 export const RiResetIcon = createIconComponent(ResetSvg)
-export const RiRocketIcon = createIconComponent(RocketSvg)
 export const RiStarsIcon = createIconComponent(StarsSvg)
 export const RiStopIcon = createIconComponent(StopIconSvg)
 export const RiUserIcon = createIconComponent(UserSvg)
@@ -308,10 +303,6 @@ export const PipelineStatisticsIcon = createIconComponent(PipelineStatisticsSvg)
 export const PubSubIcon = createIconComponent(PubSubSvg)
 export const SlowLogIcon = createIconComponent(SlowLogSvg)
 export const WorkbenchIcon = createIconComponent(WorkbenchSvg)
-// export const BrowserActiveIcon = createIconComponent(BrowserActiveSvg)
-// export const PipelineStatisticsActiveIcon = createIconComponent(
-//   PipelineStatisticsActiveSvg,
-// )
-// export const PubSubActiveIcon = createIconComponent(PubSubActiveSvg)
-// export const SlowLogActiveIcon = createIconComponent(SlowLogActiveSvg)
-// export const WorkbenchActiveIcon = createIconComponent(WorkbenchActiveSvg)
+
+export const ShieldIcon = createIconComponent(ShieldSvg)
+export const RedisSoftwareIcon = createIconComponent(RedisSoftwareSvg)

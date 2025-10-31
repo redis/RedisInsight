@@ -3,8 +3,8 @@ import { useFormik } from 'formik'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
 import { toNumber } from 'lodash'
-import { Nullable, parseRedisUrl } from 'uiSrc/utils'
 
+import { Nullable, parseRedisUrl } from 'uiSrc/utils'
 import { AddDbType, DEFAULT_TIMEOUT } from 'uiSrc/pages/home/constants'
 import { Instance } from 'uiSrc/slices/interfaces'
 import {
@@ -25,8 +25,7 @@ import { RiTooltip } from 'uiSrc/components'
 import ConnectivityOptions from './components/connectivity-options'
 import ConnectionUrl from './components/connection-url'
 import { Values } from './constants'
-
-import styles from './styles.module.scss'
+import { CustomHorizontalRule } from './AddDatabaseScreen.styles'
 
 export interface Props {
   onSelectOption: (type: AddDbType, db: Nullable<Record<string, any>>) => void
@@ -103,7 +102,7 @@ const AddDatabaseScreen = (props: Props) => {
   })
 
   return (
-    <div className="eui-yScroll">
+    <div>
       <form onSubmit={formik.handleSubmit} data-testid="form">
         <Row responsive>
           <FlexItem grow>
@@ -113,8 +112,8 @@ const AddDatabaseScreen = (props: Props) => {
             />
           </FlexItem>
         </Row>
-
-        <Row responsive justify="between" style={{ padding: 4 }}>
+        <Spacer size="xxl" />
+        <Row responsive justify="between" align="center">
           <FlexItem>
             <RiTooltip
               position="top"
@@ -130,7 +129,7 @@ const AddDatabaseScreen = (props: Props) => {
                 loading={isLoading}
                 data-testid="btn-test-connection"
               >
-                Test Connection
+                Test connection
               </EmptyButton>
             </RiTooltip>
           </FlexItem>
@@ -138,11 +137,11 @@ const AddDatabaseScreen = (props: Props) => {
             <Row responsive gap="l">
               <FlexItem>
                 <SecondaryButton
-                  size="small"
+                  size="medium"
                   onClick={() => handleProceedForm(AddDbType.manual)}
                   data-testid="btn-connection-settings"
                 >
-                  Connection Settings
+                  Connection settings
                 </SecondaryButton>
               </FlexItem>
               <FlexItem>
@@ -152,13 +151,13 @@ const AddDatabaseScreen = (props: Props) => {
                   content={isInvalid ? <span>{ConnectionUrlError}</span> : null}
                 >
                   <PrimaryButton
-                    size="small"
+                    size="medium"
                     type="submit"
                     disabled={!!isInvalid}
                     icon={isInvalid ? InfoIcon : undefined}
                     data-testid="btn-submit"
                   >
-                    Add Database
+                    Add database
                   </PrimaryButton>
                 </RiTooltip>
               </FlexItem>
@@ -167,7 +166,7 @@ const AddDatabaseScreen = (props: Props) => {
         </Row>
       </form>
       <Spacer />
-      <div className={styles.hr}>Or</div>
+      <CustomHorizontalRule>Or</CustomHorizontalRule>
       <Spacer />
       <ConnectivityOptions
         onClickOption={handleProceedForm}

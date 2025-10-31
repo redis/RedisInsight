@@ -19,7 +19,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { RiRocketIcon } from 'uiSrc/components/base/icons'
+import { RocketIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
@@ -119,7 +119,7 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
           <PrimaryButton
             size="s"
             onClick={handleClickDeploy}
-            icon={RiRocketIcon}
+            icon={RocketIcon}
             disabled={disabled}
             loading={loading}
             data-testid="deploy-rdi-pipeline"

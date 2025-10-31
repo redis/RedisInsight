@@ -167,7 +167,7 @@ const ManualConnectionForm = (props: Props) => {
             />
           </FlexItem>
           <FlexItem grow>
-            <Title size="M">Clone Database</Title>
+            <Title size="L">Clone Database</Title>
           </FlexItem>
         </Row>,
       )
@@ -175,11 +175,11 @@ const ManualConnectionForm = (props: Props) => {
     }
 
     if (isEditMode) {
-      setModalHeader(<Title size="M">Edit Database</Title>)
+      setModalHeader(<Title size="L">Edit Database</Title>)
       return
     }
 
-    setModalHeader(<Title size="M">Connection Settings</Title>, true)
+    setModalHeader(<Title size="L">Connection Settings</Title>, true)
   }, [isEditMode, isCloneMode])
 
   useEffect(() => {
