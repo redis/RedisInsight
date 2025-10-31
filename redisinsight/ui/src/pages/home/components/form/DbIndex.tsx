@@ -38,6 +38,7 @@ const DbIndex = (props: Props) => {
             <Checkbox
               id={id}
               name="showDb"
+              labelSize="M"
               label="Select Logical Database"
               checked={!!formik.values.showDb}
               onChange={handleChangeDbIndexCheckbox}

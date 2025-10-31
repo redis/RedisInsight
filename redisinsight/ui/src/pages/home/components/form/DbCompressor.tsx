@@ -79,26 +79,23 @@ const DbCompressor = (props: Props) => {
       </Row>
 
       {formik.values.showCompressor && (
-        <>
-          <Spacer />
-          <Row gap="m">
-            <FlexItem grow>
-              <FormField label="Decompression format">
-                <RiSelect
-                  name="compressor"
-                  placeholder="Decompression format"
-                  value={formik.values.compressor ?? NONE}
-                  options={optionsCompressor}
-                  onChange={(value) => {
-                    formik.setFieldValue('compressor', value || NONE)
-                  }}
-                  data-testid="select-compressor"
-                />
-              </FormField>
-            </FlexItem>
-            <FlexItem grow />
-          </Row>
-        </>
+        <Row gap="m">
+          <FlexItem grow>
+            <FormField label="Decompression format">
+              <RiSelect
+                name="compressor"
+                placeholder="Decompression format"
+                value={formik.values.compressor ?? NONE}
+                options={optionsCompressor}
+                onChange={(value) => {
+                  formik.setFieldValue('compressor', value || NONE)
+                }}
+                data-testid="select-compressor"
+              />
+            </FormField>
+          </FlexItem>
+          <FlexItem grow />
+        </Row>
       )}
     </>
   )

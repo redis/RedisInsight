@@ -47,11 +47,7 @@ const EditSentinelConnection = (props: Props) => {
   const GeneralFormClodeMode = (
     <>
       <PrimaryGroupSentinel formik={formik} />
-      <Divider
-        colorVariable="separatorColor"
-        variant="fullWidth"
-        className="form__divider"
-      />
+      <Divider colorVariable="separatorColor" variant="fullWidth" />
       <Title size="XS">Database</Title>
       <Spacer size="s" />
       <SentinelMasterDatabase
@@ -59,11 +55,7 @@ const EditSentinelConnection = (props: Props) => {
         db={db}
         isCloneMode={isCloneMode}
       />
-      <Divider
-        colorVariable="separatorColor"
-        variant="fullWidth"
-        className="form__divider"
-      />
+      <Divider colorVariable="separatorColor" variant="fullWidth" />
       <Title size="XS">Sentinel</Title>
       <Spacer size="s" />
       <DatabaseForm
@@ -71,12 +63,12 @@ const EditSentinelConnection = (props: Props) => {
         showFields={{ host: true, port: true, alias: false, timeout: false }}
         onHostNamePaste={onHostNamePaste}
       />
-      <Divider
-        colorVariable="separatorColor"
-        variant="fullWidth"
-        className="form__divider"
-      />
+      <Spacer size="l" />
+      <Divider colorVariable="separatorColor" variant="fullWidth" />
+      <Spacer size="l" />
       <DbIndex formik={formik} />
+      <Spacer size="l" />
+      <Divider colorVariable="separatorColor" variant="fullWidth" />
     </>
   )
 
@@ -99,11 +91,7 @@ const EditSentinelConnection = (props: Props) => {
         </FlexItem>
       </Row>
       <Spacer size="s" />
-      <Divider
-        colorVariable="separatorColor"
-        variant="fullWidth"
-        className="form__divider"
-      />
+      <Divider colorVariable="separatorColor" variant="fullWidth" />
       <Title size="XS">Database</Title>
       <Spacer size="s" />
       <SentinelMasterDatabase
@@ -111,11 +99,7 @@ const EditSentinelConnection = (props: Props) => {
         db={db}
         isCloneMode={isCloneMode}
       />
-      <Divider
-        colorVariable="separatorColor"
-        variant="fullWidth"
-        className="form__divider"
-      />
+      <Divider colorVariable="separatorColor" variant="fullWidth" />
       <Title size="XS">Sentinel</Title>
       <Spacer size="s" />
       <DatabaseForm
