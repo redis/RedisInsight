@@ -17,14 +17,13 @@ const StopPipelineButton = ({
   >
     <SecondaryButton
       aria-label="Stop running pipeline"
-      size="s"
       loading={loading}
       disabled={disabled}
       icon={RiStopIcon}
       data-testid="stop-pipeline-btn"
       onClick={onClick}
     >
-      Stop Pipeline
+      Stop
     </SecondaryButton>
   </RiTooltip>
 )

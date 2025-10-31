@@ -1,10 +1,10 @@
 import React from 'react'
 
-import { RiResetIcon } from 'uiSrc/components/base/icons'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
 import { RiTooltip } from 'uiSrc/components'
 import styles from '../styles.module.scss'
+import { Button, TextButton } from '@redis-ui/components'
+import { ResetIcon } from '@redis-ui/icons'
 
 export interface PipelineButtonProps {
   onClick: () => void
@@ -35,17 +35,15 @@ const ResetPipelineButton = ({
     }
     anchorClassName={disabled || loading ? styles.disabled : styles.tooltip}
   >
-    <SecondaryButton
+    <TextButton
       aria-label="Reset pipeline button"
-      size="s"
-      icon={RiResetIcon}
       data-testid="reset-pipeline-btn"
       onClick={onClick}
       disabled={disabled}
-      loading={loading}
     >
-      Reset Pipeline
-    </SecondaryButton>
+      <Button.Icon icon={ResetIcon} />
+      Reset
+    </TextButton>
   </RiTooltip>
 )
 
