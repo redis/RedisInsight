@@ -224,7 +224,7 @@ const TlsDetails = (props: Props) => {
               <Spacer />
               <Row gap="m">
                 <FlexItem grow>
-                  <FormField label="Server Name*">
+                  <FormField label="Server Name" required>
                     <TextInput
                       name="servername"
                       id="servername"
@@ -268,9 +268,8 @@ const TlsDetails = (props: Props) => {
           <Row gap="m" responsive>
             <FlexItem>
               <FormField
-                label={`CA Certificate${
-                  formik.values.verifyServerTlsCert ? '*' : ''
-                }`}
+                label="CA Certificate"
+                required={formik.values.verifyServerTlsCert}
               >
                 <RiSelect
                   name="selectedCaCertName"
@@ -292,7 +291,7 @@ const TlsDetails = (props: Props) => {
             {formik.values.tls &&
               formik.values.selectedCaCertName === ADD_NEW_CA_CERT && (
                 <FlexItem grow>
-                  <FormField label="Name*">
+                  <FormField label="Name" required>
                     <TextInput
                       name="newCaCertName"
                       id="newCaCertName"
@@ -314,20 +313,23 @@ const TlsDetails = (props: Props) => {
 
           {formik.values.tls &&
             formik.values.selectedCaCertName === ADD_NEW_CA_CERT && (
-              <Row gap="m" responsive>
-                <FlexItem grow>
-                  <FormField label="Certificate*">
-                    <TextArea
-                      name="newCaCert"
-                      id="newCaCert"
-                      value={formik.values.newCaCert ?? ''}
-                      onChangeCapture={formik.handleChange}
-                      placeholder="Enter CA Certificate"
-                      data-testid="new-ca-cert"
-                    />
-                  </FormField>
-                </FlexItem>
-              </Row>
+              <>
+                <Spacer />
+                <Row gap="m" responsive>
+                  <FlexItem grow>
+                    <FormField label="Certificate" required>
+                      <TextArea
+                        name="newCaCert"
+                        id="newCaCert"
+                        value={formik.values.newCaCert ?? ''}
+                        onChangeCapture={formik.handleChange}
+                        placeholder="Enter CA Certificate"
+                        data-testid="new-ca-cert"
+                      />
+                    </FormField>
+                  </FlexItem>
+                </Row>
+              </>
             )}
         </div>
       )}
@@ -360,7 +362,7 @@ const TlsDetails = (props: Props) => {
         >
           <Row gap="m" responsive>
             <FlexItem grow>
-              <FormField label="Client Certificate*">
+              <FormField label="Client Certificate" required>
                 <RiSelect
                   placeholder="Select certificate"
                   value={formik.values.selectedTlsClientCertId}
@@ -378,7 +380,7 @@ const TlsDetails = (props: Props) => {
               formik.values.tlsClientAuthRequired &&
               formik.values.selectedTlsClientCertId === 'ADD_NEW' && (
                 <FlexItem grow>
-                  <FormField label="Name*">
+                  <FormField label="Name" required>
                     <TextInput
                       name="newTlsCertPairName"
                       id="newTlsCertPairName"
@@ -402,9 +404,10 @@ const TlsDetails = (props: Props) => {
             formik.values.tlsClientAuthRequired &&
             formik.values.selectedTlsClientCertId === 'ADD_NEW' && (
               <>
+                <Spacer />
                 <Row gap="m" responsive>
                   <FlexItem grow>
-                    <FormField label="Certificate*">
+                    <FormField label="Certificate" required>
                       <TextArea
                         name="newTlsClientCert"
                         id="newTlsClientCert"
@@ -417,10 +420,10 @@ const TlsDetails = (props: Props) => {
                     </FormField>
                   </FlexItem>
                 </Row>
-
+                <Spacer />
                 <Row gap="m" responsive>
                   <FlexItem grow>
-                    <FormField label="Private Key*">
+                    <FormField label="Private Key" required>
                       <TextArea
                         placeholder="Enter Private Key"
                         name="newTlsClientKey"
