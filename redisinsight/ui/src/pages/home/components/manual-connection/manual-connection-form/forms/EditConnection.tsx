@@ -64,7 +64,6 @@ const EditConnection = (props: Props) => {
           <Divider
             colorVariable="separatorColor"
             variant="fullWidth"
-            className="form__divider"
           />
           <ForceStandalone formik={formik} />
           {isCloneMode && (
@@ -72,7 +71,6 @@ const EditConnection = (props: Props) => {
               <Divider
                 colorVariable="separatorColor"
                 variant="fullWidth"
-                className="form__divider"
               />
               <DbIndex formik={formik} />
             </>
@@ -91,7 +89,6 @@ const EditConnection = (props: Props) => {
               <Divider
                 colorVariable="separatorColor"
                 variant="fullWidth"
-                className="form__divider"
               />
               <SSHDetails formik={formik} />
             </>

@@ -53,7 +53,6 @@ const AddConnection = (props: Props) => {
           <Divider
             colorVariable="separatorColor"
             variant="fullWidth"
-            className="form__divider"
           />
           <Spacer size="l" />
           <DbIndex formik={formik} />
@@ -61,7 +60,6 @@ const AddConnection = (props: Props) => {
           <Divider
             colorVariable="separatorColor"
             variant="fullWidth"
-            className="form__divider"
           />
           <Spacer size="l" />
           <ForceStandalone formik={formik} />
@@ -69,7 +67,6 @@ const AddConnection = (props: Props) => {
           <Divider
             colorVariable="separatorColor"
             variant="fullWidth"
-            className="form__divider"
           />
         </>
       )}
@@ -85,7 +82,6 @@ const AddConnection = (props: Props) => {
               <Divider
                 colorVariable="separatorColor"
                 variant="fullWidth"
-                className="form__divider"
               />
               <SSHDetails formik={formik} />
             </>

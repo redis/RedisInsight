@@ -19,7 +19,6 @@ const DecompressionAndFormatters = ({
     <Divider
       colorVariable="separatorColor"
       variant="fullWidth"
-      className="form__divider"
     />
 
     <KeyFormatSelector formik={formik} />

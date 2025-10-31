@@ -50,7 +50,6 @@ const EditSentinelConnection = (props: Props) => {
       <Divider
         colorVariable="separatorColor"
         variant="fullWidth"
-        className="form__divider"
       />
       <Title size="XS">Database</Title>
       <Spacer size="s" />
@@ -62,7 +61,6 @@ const EditSentinelConnection = (props: Props) => {
       <Divider
         colorVariable="separatorColor"
         variant="fullWidth"
-        className="form__divider"
       />
       <Title size="XS">Sentinel</Title>
       <Spacer size="s" />
@@ -74,7 +72,6 @@ const EditSentinelConnection = (props: Props) => {
       <Divider
         colorVariable="separatorColor"
         variant="fullWidth"
-        className="form__divider"
       />
       <DbIndex formik={formik} />
     </>
@@ -102,7 +99,6 @@ const EditSentinelConnection = (props: Props) => {
       <Divider
         colorVariable="separatorColor"
         variant="fullWidth"
-        className="form__divider"
       />
       <Title size="XS">Database</Title>
       <Spacer size="s" />
@@ -114,7 +110,6 @@ const EditSentinelConnection = (props: Props) => {
       <Divider
         colorVariable="separatorColor"
         variant="fullWidth"
-        className="form__divider"
       />
       <Title size="XS">Sentinel</Title>
       <Spacer size="s" />
