@@ -236,7 +236,6 @@ const ManualConnectionForm = (props: Props) => {
     <div
       className={styles.container}
       data-testid="add-db_manual"
-      style={{ height: '100%' }}
     >
       {isEditMode &&
         !isCloneMode &&
