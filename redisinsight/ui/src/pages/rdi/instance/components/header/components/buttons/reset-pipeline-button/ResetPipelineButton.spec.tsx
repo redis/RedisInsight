@@ -1,6 +1,12 @@
 import React from 'react'
 
-import { fireEvent, render, screen, waitFor } from 'uiSrc/utils/test-utils'
+import {
+  fireEvent,
+  render,
+  screen,
+  userEvent,
+  waitFor,
+} from 'uiSrc/utils/test-utils'
 import ResetPipelineButton, { PipelineButtonProps } from './ResetPipelineButton'
 
 const mockedProps: PipelineButtonProps = {
@@ -46,7 +52,7 @@ describe('ResetPipelineButton', () => {
     const onClick = jest.fn()
     render(<ResetPipelineButton {...mockedProps} loading onClick={onClick} />)
 
-    fireEvent.click(screen.getByTestId('reset-pipeline-btn'))
+    userEvent.click(screen.getByTestId('reset-pipeline-btn'))
     expect(onClick).not.toHaveBeenCalled()
   })
 })
