@@ -231,7 +231,7 @@ const TlsDetails = (props: Props) => {
                       maxLength={200}
                       placeholder="Enter Server Name"
                       value={formik.values.servername ?? ''}
-                      onChange={value =>
+                      onChange={(value) =>
                         formik.setFieldValue(
                           'servername',
                           validateField(value.trim()),
@@ -299,7 +299,7 @@ const TlsDetails = (props: Props) => {
                       maxLength={200}
                       placeholder="Enter CA Certificate Name"
                       value={formik.values.newCaCertName ?? ''}
-                      onChange={value =>
+                      onChange={(value) =>
                         formik.setFieldValue(
                           'newCaCertName',
                           validateCertName(value),
@@ -332,20 +332,26 @@ const TlsDetails = (props: Props) => {
         </div>
       )}
       {formik.values.tls && (
-        <Row responsive style={{ margin: '20px 0 20px' }}>
-          <FlexItem grow>
-            <Checkbox
-              id={isTlsAuthId}
-              name="tlsClientAuthRequired"
-              label="Requires TLS Client Authentication"
-              checked={!!formik.values.tlsClientAuthRequired}
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                formik.setFieldValue('tlsClientAuthRequired', e.target.checked)
-              }
-              data-testid="tls-required-checkbox"
-            />
-          </FlexItem>
-        </Row>
+        <>
+          <Spacer />
+          <Row responsive>
+            <FlexItem grow>
+              <Checkbox
+                id={isTlsAuthId}
+                name="tlsClientAuthRequired"
+                label="Requires TLS Client Authentication"
+                checked={!!formik.values.tlsClientAuthRequired}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  formik.setFieldValue(
+                    'tlsClientAuthRequired',
+                    e.target.checked,
+                  )
+                }
+                data-testid="tls-required-checkbox"
+              />
+            </FlexItem>
+          </Row>
+        </>
       )}
       {formik.values.tls && formik.values.tlsClientAuthRequired && (
         <div
@@ -379,7 +385,7 @@ const TlsDetails = (props: Props) => {
                       maxLength={200}
                       placeholder="Enter Client Certificate Name"
                       value={formik.values.newTlsCertPairName ?? ''}
-                      onChange={value =>
+                      onChange={(value) =>
                         formik.setFieldValue(
                           'newTlsCertPairName', // same as the name prop passed a few lines above
                           validateCertName(value),
