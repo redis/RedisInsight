@@ -7,6 +7,7 @@ import {
   DbCompressor,
   KeyFormatSelector,
 } from 'uiSrc/pages/home/components/form'
+import { Spacer } from 'uiSrc/components/base/layout'
 
 const DecompressionAndFormatters = ({
   formik,
@@ -15,12 +16,9 @@ const DecompressionAndFormatters = ({
 }) => (
   <>
     <DbCompressor formik={formik} />
-
-    <Divider
-      colorVariable="separatorColor"
-      variant="fullWidth"
-    />
-
+    <Spacer />
+    <Divider colorVariable="separatorColor" variant="fullWidth" />
+    <Spacer />
     <KeyFormatSelector formik={formik} />
   </>
 )
