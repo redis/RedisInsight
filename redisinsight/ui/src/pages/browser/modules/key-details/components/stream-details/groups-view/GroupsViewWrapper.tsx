@@ -252,13 +252,8 @@ const GroupsViewWrapper = (props: Props) => {
       headerClassName: 'streamItemHeader',
       headerCellClassName: 'truncateText',
       render: function Name(_name: string, { consumers }: IConsumerGroup) {
-        return (
-          <Text color="secondary">
-            {consumers}
-          </Text>
-        )
+        return <Text color="secondary">{consumers}</Text>
       },
-
     },
     {
       id: 'pending',
@@ -378,7 +373,7 @@ const GroupsViewWrapper = (props: Props) => {
                 id="id"
                 placeholder="ID*"
                 value={editValue}
-                onChange={value =>
+                onChange={(value) =>
                   setEditValue(validateConsumerGroupId(value))
                 }
                 onBlur={() => setIsIdFocused(false)}

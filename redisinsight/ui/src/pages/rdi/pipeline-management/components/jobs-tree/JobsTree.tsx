@@ -67,8 +67,6 @@ const validateJobName = (
   return undefined
 }
 
-
-
 const JobsTree = (props: IProps) => {
   const { onSelectedTab, path, rdiInstanceId, changes = {} } = props
 
@@ -268,8 +266,8 @@ const JobsTree = (props: IProps) => {
         disableEmpty
         styles={{
           actionsContainer: {
-            width: '64px'
-          }
+            width: '64px',
+          },
         }}
       />
     </FlexItem>

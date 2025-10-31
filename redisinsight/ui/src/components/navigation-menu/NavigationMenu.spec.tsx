@@ -180,7 +180,7 @@ describe('NavigationMenu', () => {
       }))
       render(<NavigationMenu />)
 
-      const githubBtn = screen.getByTestId("github-repo-btn")
+      const githubBtn = screen.getByTestId('github-repo-btn')
       expect(githubBtn).toBeTruthy()
       expect(githubBtn?.getAttribute('href')).toEqual(EXTERNAL_LINKS.githubRepo)
     })

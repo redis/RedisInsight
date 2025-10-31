@@ -1,9 +1,4 @@
-import React, {
-  FormEvent,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import React, { FormEvent, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toNumber } from 'lodash'
 import {
@@ -178,9 +173,7 @@ const AddKeyHash = (props: Props) => {
                   onChange={(value) =>
                     handleFieldChange('fieldName', item.id, value)
                   }
-                  ref={
-                    index === fields.length - 1 ? lastAddedFieldName : null
-                  }
+                  ref={index === fields.length - 1 ? lastAddedFieldName : null}
                   data-testid="field-name"
                 />
               </FormField>

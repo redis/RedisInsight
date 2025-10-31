@@ -50,11 +50,7 @@ const RdiPipelineHeader = () => {
     : undefined
 
   return (
-    <Row
-      className={styles.wrapper}
-      align="center"
-      justify="between"
-    >
+    <Row className={styles.wrapper} align="center" justify="between">
       <FlexItem grow>
         <CurrentPipelineStatus
           pipelineState={pipelineState}

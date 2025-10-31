@@ -179,7 +179,7 @@ const Config = () => {
             className={cx('rdi__editorWrapper', 'rdi__loading')}
             data-testid="rdi-config-loading"
           >
-            <Loader color="secondary" size="l" loaderText='Loading data...' />
+            <Loader color="secondary" size="l" loaderText="Loading data..." />
           </div>
         ) : (
           <MonacoYaml

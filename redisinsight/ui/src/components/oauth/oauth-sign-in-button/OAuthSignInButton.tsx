@@ -36,7 +36,12 @@ const OAuthSignInButton = (props: Props) => {
           data-testid="cloud-sign-in-btn"
         >
           <LogoWrapper>
-            <RiImage $size={"fullWidth"} className={styles.logo} src={RedisLogo} alt="Redis logo" />
+            <RiImage
+              $size={'fullWidth'}
+              className={styles.logo}
+              src={RedisLogo}
+              alt="Redis logo"
+            />
           </LogoWrapper>
           <span>Cloud sign in</span>
         </SecondaryButton>

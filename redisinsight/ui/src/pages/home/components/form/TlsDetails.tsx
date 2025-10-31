@@ -231,7 +231,7 @@ const TlsDetails = (props: Props) => {
                       maxLength={200}
                       placeholder="Enter Server Name"
                       value={formik.values.servername ?? ''}
-                      onChange={value =>
+                      onChange={(value) =>
                         formik.setFieldValue(
                           'servername',
                           validateField(value.trim()),
@@ -299,7 +299,7 @@ const TlsDetails = (props: Props) => {
                       maxLength={200}
                       placeholder="Enter CA Certificate Name"
                       value={formik.values.newCaCertName ?? ''}
-                      onChange={value =>
+                      onChange={(value) =>
                         formik.setFieldValue(
                           'newCaCertName',
                           validateCertName(value),
@@ -379,7 +379,7 @@ const TlsDetails = (props: Props) => {
                       maxLength={200}
                       placeholder="Enter Client Certificate Name"
                       value={formik.values.newTlsCertPairName ?? ''}
-                      onChange={value =>
+                      onChange={(value) =>
                         formik.setFieldValue(
                           'newTlsCertPairName', // same as the name prop passed a few lines above
                           validateCertName(value),

@@ -96,7 +96,7 @@ describe('Tab', () => {
   it('should display validation errors in tooltip when isValid is false and validationErrors are provided', () => {
     const validationErrors = [
       'Missing required field: name',
-      'Invalid data type for age'
+      'Invalid data type for age',
     ]
 
     render(
@@ -106,7 +106,7 @@ describe('Tab', () => {
         fileName="config.yaml"
         isValid={false}
         validationErrors={validationErrors}
-      />
+      />,
     )
 
     expect(screen.getByTestId('rdi-nav-config-error')).toBeInTheDocument()
@@ -116,9 +116,7 @@ describe('Tab', () => {
   })
 
   it('should not display validation errors when isValid is true even if validationErrors are provided', () => {
-    const validationErrors = [
-      'Some validation error'
-    ]
+    const validationErrors = ['Some validation error']
 
     render(
       <Tab
@@ -127,7 +125,7 @@ describe('Tab', () => {
         fileName="config.yaml"
         isValid
         validationErrors={validationErrors}
-      />
+      />,
     )
 
     expect(screen.queryByTestId('rdi-nav-config-error')).not.toBeInTheDocument()
@@ -141,7 +139,7 @@ describe('Tab', () => {
         fileName="config.yaml"
         isValid={false}
         validationErrors={[]}
-      />
+      />,
     )
 
     expect(screen.getByTestId('rdi-nav-config-error')).toBeInTheDocument()
@@ -154,7 +152,7 @@ describe('Tab', () => {
         isSelected={false}
         fileName="config.yaml"
         isValid={false}
-      />
+      />,
     )
 
     expect(screen.getByTestId('rdi-nav-config-error')).toBeInTheDocument()
@@ -167,7 +165,7 @@ describe('Tab', () => {
         isSelected={false}
         isValid={false}
         validationErrors={['Some error']}
-      />
+      />,
     )
 
     expect(screen.queryByTestId('rdi-nav-config-error')).not.toBeInTheDocument()

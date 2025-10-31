@@ -200,10 +200,7 @@ const StreamDetailsBody = (props: Props) => {
   return (
     <Col data-testid="stream-details" className={styles.container} gap="m">
       {(loading || loadingGroups) && (
-        <ProgressBarLoader
-          color="primary"
-          data-testid="progress-key-stream"
-        />
+        <ProgressBarLoader color="primary" data-testid="progress-key-stream" />
       )}
       {shouldFilterRender ? (
         <RangeFilter

@@ -10,16 +10,20 @@ export type RiSideBarItemIconProps = Omit<
   centered?: boolean
 }
 
-export const StyledIcon = styled(SideBar.Item.Icon)<RiSideBarItemIconProps & {
-  $centered?: boolean
-}>`
+export const StyledIcon = styled(SideBar.Item.Icon)<
+  RiSideBarItemIconProps & {
+    $centered?: boolean
+  }
+>`
   ${({ width = 'inherit' }) => `
     width: ${width};
   `}
   ${({ height = 'inherit' }) => `
     height: ${height};
   `}
-  ${({ $centered }) => $centered && `
+  ${({ $centered }) =>
+    $centered &&
+    `
     justify-content: center;
     align-items: center;
   `}

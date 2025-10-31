@@ -177,16 +177,19 @@ const ConnectionForm = (props: Props) => {
                       maxLength={500}
                       name={field.name}
                       value={field.value}
-                      onChange={(value) => field.onChange({ target: { name: field.name, value } })}
+                      onChange={(value) =>
+                        field.onChange({ target: { name: field.name, value } })
+                      }
                     />
                   )}
                 </Field>
               </FormField>
-              <Spacer size='s' />
+              <Spacer size="s" />
               <FormField
                 label="URL*"
                 infoIconProps={{
-                  content: "The RDI machine servers REST API via port 443. Ensure that Redis Insight can access the RDI host over port 443."
+                  content:
+                    'The RDI machine servers REST API via port 443. Ensure that Redis Insight can access the RDI host over port 443.',
                 }}
               >
                 <Field name="url">
@@ -197,19 +200,22 @@ const ConnectionForm = (props: Props) => {
                       disabled={!!editInstance}
                       name={field.name}
                       value={field.value}
-                      onChange={(value) => field.onChange({ target: { name: field.name, value } })}
+                      onChange={(value) =>
+                        field.onChange({ target: { name: field.name, value } })
+                      }
                     />
                   )}
                 </Field>
               </FormField>
-              <Spacer size='s' />
+              <Spacer size="s" />
               <FormField>
                 <Row gap="m">
                   <FlexItem grow={1}>
                     <FormField
                       label="Username"
                       infoIconProps={{
-                        content: "The RDI REST API authentication is using the RDI Redis username and password."
+                        content:
+                          'The RDI REST API authentication is using the RDI Redis username and password.',
                       }}
                     >
                       <Field name="username">
@@ -220,7 +226,11 @@ const ConnectionForm = (props: Props) => {
                             maxLength={500}
                             name={field.name}
                             value={field.value}
-                            onChange={(value) => field.onChange({ target: { name: field.name, value } })}
+                            onChange={(value) =>
+                              field.onChange({
+                                target: { name: field.name, value },
+                              })
+                            }
                           />
                         )}
                       </Field>
@@ -229,7 +239,8 @@ const ConnectionForm = (props: Props) => {
                   <FlexItem grow={1}>
                     <FormField
                       infoIconProps={{
-                        content: "The RDI REST API authentication is using the RDI Redis username and password."
+                        content:
+                          'The RDI REST API authentication is using the RDI Redis username and password.',
                       }}
                       label="Password"
                     >

@@ -53,7 +53,7 @@ export const TagsCellHeader = memo(() => {
               data-testid="tag-search"
               placeholder="Enter tag key or value"
               value={tagSearch}
-              onChange={value => {
+              onChange={(value) => {
                 setTagSearch(value)
               }}
             />

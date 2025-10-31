@@ -197,11 +197,8 @@ const CloudConnectionForm = (props: Props) => {
                 placeholder={fieldDisplayNames.accessKey}
                 value={formik.values.accessKey}
                 autoComplete="off"
-                onChange={value => {
-                  formik.setFieldValue(
-                    'accessKey',
-                    validateField(value.trim()),
-                  )
+                onChange={(value) => {
+                  formik.setFieldValue('accessKey', validateField(value.trim()))
                 }}
               />
             </FormField>
@@ -219,11 +216,8 @@ const CloudConnectionForm = (props: Props) => {
                 placeholder={fieldDisplayNames.secretKey}
                 value={formik.values.secretKey}
                 autoComplete="off"
-                onChange={value => {
-                  formik.setFieldValue(
-                    'secretKey',
-                    validateField(value.trim()),
-                  )
+                onChange={(value) => {
+                  formik.setFieldValue('secretKey', validateField(value.trim()))
                 }}
               />
             </FormField>

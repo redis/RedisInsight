@@ -110,7 +110,7 @@ const SubscriptionPanel = () => {
               <TextInput
                 value={channels}
                 disabled={isSubscribed}
-                onChange={value => setChannels(value)}
+                onChange={(value) => setChannels(value)}
                 onBlur={onFocusOut}
                 placeholder="Enter Pattern"
                 aria-label="channel names for filtering"

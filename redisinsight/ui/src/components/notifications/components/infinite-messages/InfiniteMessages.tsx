@@ -207,8 +207,7 @@ export const INFINITE_MESSAGES: Record<
   }),
   SUBSCRIPTION_EXISTS: (onSuccess?: () => void, onClose?: () => void) => ({
     id: InfiniteMessagesIds.subscriptionExists,
-    message:
-      'Your subscription does not have a free Redis Cloud database.',
+    message: 'Your subscription does not have a free Redis Cloud database.',
     description:
       'Do you want to create a free database in your existing subscription?',
     actions: {

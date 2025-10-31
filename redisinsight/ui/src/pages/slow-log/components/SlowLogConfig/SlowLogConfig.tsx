@@ -204,10 +204,8 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
                     name="slowerThan"
                     id="slowerThan"
                     value={slowerThan}
-                    onChange={value => {
-                      setSlowerThan(
-                        validateNumber(value.trim(), -1, Infinity),
-                      )
+                    onChange={(value) => {
+                      setSlowerThan(validateNumber(value.trim(), -1, Infinity))
                     }}
                     placeholder={`${convertNumberByUnits(DEFAULT_SLOWLOG_SLOWER_THAN, durationUnit)}`}
                     autoComplete="off"
@@ -245,7 +243,7 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
                     className={styles.input}
                     placeholder={`${DEFAULT_SLOWLOG_MAX_LEN}`}
                     value={maxLen}
-                    onChange={value => {
+                    onChange={(value) => {
                       setMaxLen(validateNumber(value.trim()))
                     }}
                     autoComplete="off"

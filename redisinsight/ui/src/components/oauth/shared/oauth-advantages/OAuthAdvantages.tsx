@@ -10,7 +10,12 @@ import styles from './styles.module.scss'
 
 const OAuthAdvantages = () => (
   <div className={styles.container} data-testid="oauth-advantages">
-    <RiImage className={styles.logo} src={RedisLogo} alt="Redis logo" $size="m" />
+    <RiImage
+      className={styles.logo}
+      src={RedisLogo}
+      alt="Redis logo"
+      $size="m"
+    />
     <Title size="S" className={styles.title}>
       Cloud
     </Title>

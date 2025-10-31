@@ -219,9 +219,7 @@ const RedisClusterDatabases = ({
               }
               content={
                 isSubmitDisabled() ? (
-                  <span>
-                    {validationErrors.NO_DBS_SELECTED}
-                  </span>
+                  <span>{validationErrors.NO_DBS_SELECTED}</span>
                 ) : null
               }
             >

@@ -75,11 +75,8 @@ const SSHDetails = (props: Props) => {
                   maxLength={200}
                   placeholder="Enter SSH Host"
                   value={formik.values.sshHost ?? ''}
-                  onChange={value => {
-                    formik.setFieldValue(
-                      'sshHost',
-                      validateField(value.trim()),
-                    )
+                  onChange={(value) => {
+                    formik.setFieldValue('sshHost', validateField(value.trim()))
                   }}
                 />
               </FormField>
@@ -115,7 +112,7 @@ const SSHDetails = (props: Props) => {
                   maxLength={200}
                   placeholder="Enter SSH Username"
                   value={formik.values.sshUsername ?? ''}
-                  onChange={value => {
+                  onChange={(value) => {
                     formik.setFieldValue(
                       'sshUsername',
                       validateField(value.trim()),
