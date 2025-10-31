@@ -427,6 +427,7 @@ module.exports = {
     'node_modules',
     'release',
     'redisinsight/ui/src/packages/**/icons/*.js*',
+    'redisinsight/ui/src/packages/**',
     'redisinsight/api/report/**',
     'redisinsight/api/static/**',
     'redisinsight/api/migration/**',
