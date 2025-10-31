@@ -62,12 +62,18 @@ const EditConnection = (props: Props) => {
             autoFocus={!isCloneMode && isEditMode}
             onHostNamePaste={onHostNamePaste}
           />
+          <Spacer size="l" />
           <Divider colorVariable="separatorColor" variant="fullWidth" />
+          <Spacer size="l" />
           <ForceStandalone formik={formik} />
+          <Spacer size="l" />
+          <Divider colorVariable="separatorColor" variant="fullWidth" />
           {isCloneMode && (
             <>
-              <Divider colorVariable="separatorColor" variant="fullWidth" />
+              <Spacer size="l" />
               <DbIndex formik={formik} />
+              <Spacer size="l" />
+              <Divider colorVariable="separatorColor" variant="fullWidth" />
             </>
           )}
         </>
