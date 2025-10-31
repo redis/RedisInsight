@@ -22,7 +22,11 @@ const ExternalLink = (props: Props) => {
   } = props
 
   const ArrowIcon = () => (
-    <RiIcon type="ArrowDiagonalIcon" size={iconSize} color="informative400" />
+    <RiIcon
+      type="ArrowDiagonalIcon"
+      size={iconSize || size}
+      color="informative400"
+    />
   )
 
   return (

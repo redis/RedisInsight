@@ -9,6 +9,7 @@ import { ToastOptions as RcToastOptions } from 'react-toastify'
 
 import { CommonProps } from 'uiSrc/components/base/theme/types'
 import { ColorText, Text } from 'uiSrc/components/base/text'
+import { ColorType } from 'uiSrc/components/base/text/text.styles'
 import { Spacer } from '../../layout'
 
 type RiToastProps = React.ComponentProps<typeof Toast>
@@ -27,18 +28,15 @@ export const riToast = (
   }
 
   if (typeof message === 'string') {
-    let color = options?.variant
+    let color: ColorType = options?.variant
     if (color === 'informative') {
-      // @ts-ignore
       color = 'subdued'
     }
     toastContent.message = (
-      <ColorText color={color}>
-        <Text size="M" variant="semiBold">
-          {message}
-        </Text>
+      <Text size="M" variant="semiBold">
+        <ColorText color={color}>{message}</ColorText>
         <Spacer size="s" />
-      </ColorText>
+      </Text>
     )
   } else {
     toastContent.message = message
@@ -55,3 +53,4 @@ export const riToast = (
 riToast.Variant = toast.Variant
 riToast.Position = toast.Position
 riToast.dismiss = toast.dismiss
+riToast.isActive = toast.isActive

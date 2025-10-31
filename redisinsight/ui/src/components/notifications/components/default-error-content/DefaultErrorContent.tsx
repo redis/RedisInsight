@@ -1,8 +1,6 @@
 import React from 'react'
 
 import { ColorText } from 'uiSrc/components/base/text'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
 
 export interface Props {
   text: string | JSX.Element | JSX.Element[]
