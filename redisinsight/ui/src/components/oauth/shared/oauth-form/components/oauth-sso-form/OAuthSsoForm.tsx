@@ -86,12 +86,13 @@ const OAuthSsoForm = ({ onBack, onSubmit }: Props) => {
 
   return (
     <div className={styles.container} data-testid="oauth-container-sso-form">
-      <Title className={styles.title} size="S">
+      <Title size="S" color="primary">
         Single Sign-On
       </Title>
+      <Spacer />
       <form onSubmit={formik.handleSubmit}>
-        <Row>
-          <FlexItem>
+        <Row grow>
+          <FlexItem grow>
             <FormField className={styles.formRaw} label="Email">
               <TextInput
                 name="email"
@@ -101,17 +102,14 @@ const OAuthSsoForm = ({ onBack, onSubmit }: Props) => {
                 value={formik.values.email}
                 autoComplete="off"
                 onChange={(value) => {
-                  formik.setFieldValue(
-                    'email',
-                    validateField(value.trim()),
-                  )
+                  formik.setFieldValue('email', validateField(value.trim()))
                 }}
               />
             </FormField>
           </FlexItem>
         </Row>
         <Spacer />
-        <Row justify="end">
+        <Row justify="end" gap="m">
           <FlexItem>
             <SecondaryButton
               type="button"

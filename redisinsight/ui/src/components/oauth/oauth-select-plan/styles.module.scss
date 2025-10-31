@@ -5,15 +5,8 @@
   text-align: center;
 }
 
-.title {
-  font-size: 28px !important;
-  color: var(--htmlColor) !important;
-  padding-top: 16px;
-}
-
 .subTitle {
-  padding: 24px 40px 0;
-  font-size: 14px !important;
+  padding: 0 40px;
 }
 
 .providers {
@@ -34,10 +27,6 @@
 
     &.activeProvider {
       border: 2px solid var(--euiColorPrimary) !important;
-    }
-
-    :global(.euiButton__text) {
-      display: none;
     }
 
     svg {
@@ -92,16 +81,6 @@
 
   .selectDescription {
     padding-top: 10px;
-    color: var(--euiColorMediumShade) !important;
-  }
-
-  :global(.euiSuperSelectControl) {
-    border-radius: 4px;
-    background-color: var(--euiColorLightestShade) !important;
-  }
-
-  :global(.euiTextColor) {
-    font-size: 14px !important;
   }
 }
 
@@ -110,45 +89,13 @@
   &:hover {
     background-color: var(--hoverInListColorLight) !important;
   }
-
-  :global(.euiTextColor) {
-    font-size: 14px !important;
-  }
-
-  :global(.euiContextMenuItem__text) {
-    position: relative;
-  }
 }
 
 .regionName {
   padding-left: 4px;
-  color: var(--euiColorMediumShade) !important;
 }
 
 .footer {
   width: 100%;
-  padding-top: 32px;
-  text-align: right;
-  padding-bottom: 1px;
-}
-
-.button {
-  margin-left: 8px;
-}
-
-.tfOptionIconTooltip {
-  display: inline;
-}
-
-.tfOptionIcon {
-  display: inline-block !important;
-  width: 16px !important;
-  margin-left: 11px;
-  margin-bottom: 0 !important;
-}
-
-:global(.euiTextColor).rspreview {
-  font-size: 12px !important;
-  margin-left: 11px;
-  color: var(--euiColorMediumShade) !important;
+  padding: 32px 46px 0 46px;
 }

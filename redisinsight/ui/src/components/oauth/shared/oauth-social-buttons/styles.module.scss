@@ -1,12 +1,17 @@
 .container {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+
   .button {
     height: auto !important;
-    padding: 0 !important;
+    padding: 8px !important;
     margin: 0 10px;
 
     transition: transform 0.3s ease;
 
-    &:hover, &:focus {
+    &:hover,
+    &:focus {
       transform: translateY(-1px) !important;
       background: none !important;
     }
@@ -28,20 +33,6 @@
       width: 34px !important;
       margin-top: 0 !important;
       margin-right: 0 !important;
-    }
-
-    &:global(.euiButtonEmpty) {
-      .label {
-        color: var(--htmlColor) !important;
-      }
-    }
-
-    &.githubButton {
-      svg {
-        path {
-          fill: var(--htmlColor);
-        }
-      }
     }
   }
 }

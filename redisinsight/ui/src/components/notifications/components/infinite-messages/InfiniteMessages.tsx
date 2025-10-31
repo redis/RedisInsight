@@ -113,6 +113,7 @@ export const INFINITE_MESSAGES: InfiniteMessagesType = {
     return {
       id: InfiniteMessagesIds.oAuthSuccess,
       message: 'Congratulations!',
+      variant: 'success',
       description: (
         <>
           {text}
@@ -166,8 +167,9 @@ export const INFINITE_MESSAGES: InfiniteMessagesType = {
             <FlexItem>
               <ExternalLink
                 href={MANAGE_DB_LINK}
-                iconSize="XS"
+                iconSize="S"
                 variant="inline"
+                style={{ display: 'inline-flex' }}
               >
                 Manage DB
               </ExternalLink>

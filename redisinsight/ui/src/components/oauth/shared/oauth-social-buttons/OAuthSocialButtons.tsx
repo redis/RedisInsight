@@ -6,6 +6,7 @@ import { OAuthStrategy } from 'uiSrc/slices/interfaces'
 
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { FlexGroup, Row } from 'uiSrc/components/base/layout/flex'
+import { Spacer } from 'uiSrc/components/base/layout'
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons/RiIcon'
@@ -81,6 +82,7 @@ const OAuthSocialButtons = (props: Props) => {
               justify="center"
             >
               <RiIcon type={icon as AllIconsType} />
+              <Spacer size="m" />
               <Text className={styles.label}>{text}</Text>
             </FlexGroup>
           </EmptyButton>
