@@ -17,14 +17,13 @@ const StartPipelineButton = ({
   >
     <SecondaryButton
       aria-label="Start running pipeline"
-      size="s"
       icon={PlayFilledIcon}
       data-testid="start-pipeline-btn"
       disabled={disabled}
       loading={loading}
       onClick={onClick}
     >
-      Start Pipeline
+      Start
     </SecondaryButton>
   </RiTooltip>
 )
