@@ -7,6 +7,7 @@ import {
   SSHDetails,
   TlsDetails,
 } from 'uiSrc/pages/home/components/form'
+import { Spacer } from 'uiSrc/components/base/layout'
 import Divider from 'uiSrc/components/divider/Divider'
 import { BuildType } from 'uiSrc/constants/env'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
@@ -61,17 +62,11 @@ const EditConnection = (props: Props) => {
             autoFocus={!isCloneMode && isEditMode}
             onHostNamePaste={onHostNamePaste}
           />
-          <Divider
-            colorVariable="separatorColor"
-            variant="fullWidth"
-          />
+          <Divider colorVariable="separatorColor" variant="fullWidth" />
           <ForceStandalone formik={formik} />
           {isCloneMode && (
             <>
-              <Divider
-                colorVariable="separatorColor"
-                variant="fullWidth"
-              />
+              <Divider colorVariable="separatorColor" variant="fullWidth" />
               <DbIndex formik={formik} />
             </>
           )}
@@ -86,10 +81,9 @@ const EditConnection = (props: Props) => {
           />
           {buildType !== BuildType.RedisStack && (
             <>
-              <Divider
-                colorVariable="separatorColor"
-                variant="fullWidth"
-              />
+              <Spacer />
+              <Divider colorVariable="separatorColor" variant="fullWidth" />
+              <Spacer />
               <SSHDetails formik={formik} />
             </>
           )}
