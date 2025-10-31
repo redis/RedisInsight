@@ -19,6 +19,7 @@ export const getSelectionColumn = <T extends object>({
   size = 50,
   id = 'select-col',
   enableResizing = false,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   canSelectRow = (_row: RowDefinition<T>) => true,
   setSelection,
   onSelectionChange,

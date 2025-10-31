@@ -13,7 +13,7 @@ import { isNull } from 'lodash'
 
 import ReactDOM from 'react-dom'
 import { SECURITY_FIELD } from 'uiSrc/constants'
-import { RiTooltip, RiTooltipProps } from 'uiSrc/components'
+import { RiTooltipProps } from 'uiSrc/components'
 import { RdiInstance } from 'uiSrc/slices/interfaces'
 import { getFormUpdates, Nullable } from 'uiSrc/utils'
 import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
@@ -26,7 +26,6 @@ import { InfoIcon } from 'uiSrc/components/base/icons'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { PasswordInput, TextInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Spacer } from 'uiSrc/components/base/layout'
 import ValidationTooltip from './components/ValidationTooltip'
 
@@ -59,18 +58,6 @@ const getInitialValues = (
   username: values ? (values.username ?? '') : 'default',
   password: values ? null : '',
 })
-
-const AppendInfo = ({ title, content, ...rest }: AppendInfoProps) => (
-  <RiTooltip
-    anchorClassName="inputAppendIcon"
-    position="right"
-    title={title}
-    content={content}
-    {...rest}
-  >
-    <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
-  </RiTooltip>
-)
 
 const ConnectionForm = (props: Props) => {
   const { onSubmit, onCancel, editInstance, isLoading } = props

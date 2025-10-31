@@ -2,7 +2,7 @@ import React from 'react'
 import { mock } from 'ts-mockito'
 import { BuildType } from 'uiSrc/constants/env'
 import { appInfoSelector } from 'uiSrc/slices/app/info'
-import { render, screen, fireEvent } from 'uiSrc/utils/test-utils'
+import { render, screen } from 'uiSrc/utils/test-utils'
 
 import DatabaseAlias, { Props } from './DatabaseAlias'
 

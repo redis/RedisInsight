@@ -1,4 +1,3 @@
-import { EuiIcon } from '@elastic/eui'
 import cx from 'classnames'
 import { map } from 'lodash'
 import React, { useState } from 'react'

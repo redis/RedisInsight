@@ -17,10 +17,7 @@ import {
   screen,
 } from 'uiSrc/utils/test-utils'
 
-import {
-  resetConnectedInstance,
-  setDefaultInstance,
-} from 'uiSrc/slices/rdi/instances'
+import { setDefaultInstance } from 'uiSrc/slices/rdi/instances'
 import RdiInstancesListWrapper, { Props } from './RdiInstancesListWrapper'
 
 const mockedProps = mock<Props>()
