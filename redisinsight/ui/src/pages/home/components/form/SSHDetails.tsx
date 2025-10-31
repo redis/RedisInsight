@@ -140,8 +140,7 @@ const SSHDetails = (props: Props) => {
                   onChange={(id) => formik.setFieldValue('sshPassType', id)}
                   data-testid="ssh-pass-type"
                 />
-
-                <Spacer size="m" />
+                <Spacer size="s" />
               </FlexItem>
             </Row>
             {formik.values.sshPassType === SshPassType.Password && (
