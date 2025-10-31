@@ -1,4 +1,4 @@
-import { DefaultBodyType, MockedRequest, RestHandler } from 'msw'
+import { MockedRequest, RestHandler } from 'msw'
 
 import crb from './createRedisButtonsHandlers'
 

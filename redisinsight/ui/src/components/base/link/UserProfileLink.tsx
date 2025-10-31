@@ -1,6 +1,6 @@
-import styled from "styled-components"
-import { useTheme } from "@redis-ui/styles"
-import { Link } from "./Link"
+import styled from 'styled-components'
+import { useTheme } from '@redis-ui/styles'
+import { Link } from './Link'
 
 export const UserProfileLink = styled(Link)`
   padding: 8px 12px !important;

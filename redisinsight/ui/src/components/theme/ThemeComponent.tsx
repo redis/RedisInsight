@@ -10,7 +10,7 @@ import { ThemeContext } from 'uiSrc/contexts/themeContext'
 const ThemeComponent = () => {
   const themeContext = useContext(ThemeContext)
   useEffect(() => {
-    const handler = (event) => {
+    const handler = () => {
       let theme = localStorageService.get(BrowserStorageItem.theme)
       if (theme === Theme.System) {
         themeContext.changeTheme(theme)

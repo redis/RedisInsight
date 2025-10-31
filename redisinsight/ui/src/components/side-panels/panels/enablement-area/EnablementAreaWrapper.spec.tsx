@@ -1,13 +1,7 @@
 import React from 'react'
 import { cloneDeep } from 'lodash'
 import { instance, mock } from 'ts-mockito'
-import {
-  cleanup,
-  clearStoreActions,
-  mockedStore,
-  render,
-} from 'uiSrc/utils/test-utils'
-import { getWBCustomTutorials } from 'uiSrc/slices/workbench/wb-custom-tutorials'
+import { cleanup, mockedStore, render } from 'uiSrc/utils/test-utils'
 import EnablementAreaWrapper, { Props } from './EnablementAreaWrapper'
 
 const mockedProps = mock<Props>()

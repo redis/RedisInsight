@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { TelemetryEvent } from 'uiSrc/telemetry'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { useTelemetryMountEvent } from '../../hooks/useTelemetryMountEvent'

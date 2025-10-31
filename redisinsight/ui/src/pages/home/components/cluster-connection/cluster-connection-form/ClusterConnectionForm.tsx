@@ -18,7 +18,11 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { NumericInput, PasswordInput, TextInput } from 'uiSrc/components/base/inputs'
+import {
+  NumericInput,
+  PasswordInput,
+  TextInput,
+} from 'uiSrc/components/base/inputs'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiTooltip } from 'uiSrc/components'
 
@@ -235,11 +239,8 @@ const ClusterConnectionForm = (props: Props) => {
                 maxLength={200}
                 placeholder="Enter Cluster Host"
                 value={formik.values.host}
-                onChange={value => {
-                  formik.setFieldValue(
-                    'host',
-                    validateField(value.trim()),
-                  )
+                onChange={(value) => {
+                  formik.setFieldValue('host', validateField(value.trim()))
                 }}
                 onPaste={(event: React.ClipboardEvent<HTMLInputElement>) =>
                   handlePasteHostName(onHostNamePaste, event)

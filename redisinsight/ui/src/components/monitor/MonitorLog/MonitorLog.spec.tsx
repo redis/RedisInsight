@@ -17,7 +17,6 @@ import { sendCliCommand } from 'uiSrc/slices/cli/cli-output'
 import MonitorLog from './MonitorLog'
 
 let store: typeof mockedStore
-let URLMock: jest.SpyInstance<object>
 const mockURLrevokeObjectURL = 123123
 
 jest.mock('file-saver', () => ({
@@ -47,7 +46,7 @@ beforeEach(() => {
 
 describe('MonitorLog', () => {
   beforeAll(() => {
-    URLMock = jest
+    jest
       .spyOn(URL, 'revokeObjectURL')
       .mockImplementation(() => mockURLrevokeObjectURL)
   })

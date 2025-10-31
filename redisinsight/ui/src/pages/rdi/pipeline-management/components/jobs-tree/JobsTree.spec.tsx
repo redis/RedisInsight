@@ -294,7 +294,7 @@ describe('JobsTree', () => {
     const validationErrors = [
       'Missing required field: name',
       'Invalid data type for age',
-      'Email format is incorrect'
+      'Email format is incorrect',
     ]
 
     ;(rdiPipelineSelector as jest.Mock).mockImplementationOnce(() => ({
@@ -310,7 +310,7 @@ describe('JobsTree', () => {
 
     expect(screen.getByTestId('rdi-nav-job-job1')).toBeInTheDocument()
     expect(screen.getByTestId('rdi-pipeline-nav__error')).toBeInTheDocument()
-    
+
     // The ValidationErrorsList is inside a tooltip, so we verify the error icon is present
     const errorIcon = screen.getByTestId('rdi-pipeline-nav__error')
     expect(errorIcon).toBeInTheDocument()
@@ -341,7 +341,7 @@ describe('JobsTree', () => {
       jobs: [
         { name: 'job1', value: 'value1' },
         { name: 'job2', value: 'value2' },
-        { name: 'job3', value: 'value3' }
+        { name: 'job3', value: 'value3' },
       ],
       jobsValidationErrors: {
         job1: ['Error in job1'],
@@ -355,7 +355,7 @@ describe('JobsTree', () => {
     const job1Element = screen.getByTestId('rdi-nav-job-job1')
     expect(job1Element).toBeInTheDocument()
     expect(job1Element).toHaveClass('invalid')
-    
+
     // job2 should not have error icon and should not have invalid class
     const job2Element = screen.getByTestId('rdi-nav-job-job2')
     expect(job2Element).toBeInTheDocument()
@@ -421,7 +421,7 @@ describe('JobsTree', () => {
     const validationErrors = [
       'Error with <script>alert("xss")</script>',
       'Error with & special characters',
-      'Error with "quotes" and \'apostrophes\''
+      'Error with "quotes" and \'apostrophes\'',
     ]
 
     ;(rdiPipelineSelector as jest.Mock).mockImplementationOnce(() => ({

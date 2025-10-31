@@ -43,7 +43,12 @@ const KeyDetails = (props: Props) => {
 
   const { instanceId } = useParams<{ instanceId: string }>()
   const { viewType } = useSelector(keysSelector)
-  const { loading, error = '', data, viewFormat } = useSelector(selectedKeySelector)
+  const {
+    loading,
+    error = '',
+    data,
+    viewFormat,
+  } = useSelector(selectedKeySelector)
   const isKeySelected = !isNull(useSelector(selectedKeyDataSelector))
   const { type: keyType } = useSelector(selectedKeyDataSelector) ?? {
     type: KeyTypes.String,

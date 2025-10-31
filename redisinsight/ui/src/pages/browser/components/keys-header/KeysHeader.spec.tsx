@@ -178,10 +178,9 @@ describe('KeysHeader', () => {
 
   it('should reset selected key data when no keys data is returned', async () => {
     ;(keysSlice.fetchKeys as jest.Mock).mockImplementation(
-      (_options: any, onSuccess: (data: any) => void, __onFailed: () => void) =>
-        () => {
-          onSuccess({ keys: [] }) // Simulate empty data response
-        },
+      (_options: any, onSuccess: (data: any) => void) => () => {
+        onSuccess({ keys: [] }) // Simulate empty data response
+      },
     )
 
     render(<KeysHeader {...propsMock} />)

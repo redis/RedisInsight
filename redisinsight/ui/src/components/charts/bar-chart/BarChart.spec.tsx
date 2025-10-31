@@ -1,4 +1,4 @@
-import { isEmpty, last, min as minBy, reject } from 'lodash'
+import { last, min as minBy, reject } from 'lodash'
 import React from 'react'
 import { render, screen, fireEvent, waitFor } from 'uiSrc/utils/test-utils'
 
@@ -43,7 +43,7 @@ describe('BarChart', () => {
     const minBarHeight = 5
     const smallestBar = minBy(
       reject([...mockData], ({ y }) => !y),
-      ({ y }, i) => y,
+      ({ y }) => y,
     ) ?? { x: 0, y: 0 }
 
     render(<BarChart data={mockData} minBarHeight={minBarHeight} />)

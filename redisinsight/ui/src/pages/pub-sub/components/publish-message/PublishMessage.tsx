@@ -1,10 +1,5 @@
 import cx from 'classnames'
-import React, {
-  FormEvent,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import React, { FormEvent, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import {
@@ -92,9 +87,7 @@ const PublishMessage = () => {
                 id="channel"
                 placeholder="Enter Channel Name"
                 value={channel}
-                onChange={value =>
-                  setChannel(value)
-                }
+                onChange={(value) => setChannel(value)}
                 autoComplete="off"
                 data-testid="field-channel-name"
               />
@@ -111,9 +104,7 @@ const PublishMessage = () => {
                   id="message"
                   placeholder="Enter Message"
                   value={message}
-                  onChange={value =>
-                    setMessage(value)
-                  }
+                  onChange={(value) => setMessage(value)}
                   autoComplete="off"
                   data-testid="field-message"
                 />

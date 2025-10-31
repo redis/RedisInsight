@@ -332,7 +332,6 @@ describe('recommendations slice', () => {
     describe('getContentRecommendationsFailure', () => {
       it('should properly set error', () => {
         // Arrange
-        const error = 'Some error'
         const state = {
           ...initialState,
           loading: false,

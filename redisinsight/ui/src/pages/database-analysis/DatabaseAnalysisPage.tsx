@@ -31,7 +31,8 @@ import styles from './styles.module.scss'
 // Styled component for the main container with theme border
 const MainContainer = styled.div<React.HTMLAttributes<HTMLDivElement>>`
   border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
-  border-radius: ${({ theme }) => theme.components.semanticContainer.sizes.M.borderRadius};
+  border-radius: ${({ theme }) =>
+    theme.components.semanticContainer.sizes.M.borderRadius};
   padding: ${({ theme }) => theme.components.semanticContainer.sizes.M.padding};
   height: 100%;
   overflow: auto;

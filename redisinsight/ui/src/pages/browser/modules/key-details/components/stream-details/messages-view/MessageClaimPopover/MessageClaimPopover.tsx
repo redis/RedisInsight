@@ -247,11 +247,7 @@ const MessageClaimPopover = (props: Props) => {
         {isOptionalShow && (
           <>
             <Spacer size="xl" />
-            <Row
-              align="center"
-              justify="between"
-              gap="m"
-            >
+            <Row align="center" justify="between" gap="m">
               <FlexItem grow>
                 <FormField label="Idle Time">
                   <div className={styles.timeWrapper}>

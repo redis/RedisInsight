@@ -66,7 +66,9 @@ describe('RdiInstancesListWrapper', () => {
     render(<RdiInstancesListWrapper {...mockProps} />, { store })
 
     // Find and click the delete button for the first instance
-    const deleteButton = screen.getByTestId(`delete-instance-${mockInstances[0].id}-icon`)
+    const deleteButton = screen.getByTestId(
+      `delete-instance-${mockInstances[0].id}-icon`,
+    )
 
     await act(async () => {
       fireEvent.click(deleteButton)

@@ -1,6 +1,8 @@
 import React from 'react'
 import { render, screen, fireEvent } from 'uiSrc/utils/test-utils'
-import ConfirmationPopover, { ConfirmationPopoverProps } from './ConfirmationPopover'
+import ConfirmationPopover, {
+  ConfirmationPopoverProps,
+} from './ConfirmationPopover'
 
 const mockClosePopover = jest.fn()
 const mockButtonClick = jest.fn()
@@ -16,7 +18,9 @@ const defaultProps: ConfirmationPopoverProps = {
   ),
 }
 
-const renderConfirmationPopover = (props: Partial<ConfirmationPopoverProps> = {}) => {
+const renderConfirmationPopover = (
+  props: Partial<ConfirmationPopoverProps> = {},
+) => {
   return render(<ConfirmationPopover {...defaultProps} {...props} />)
 }
 
@@ -28,14 +32,14 @@ describe('ConfirmationPopover', () => {
   describe('Basic Rendering', () => {
     it('should render with required props only', () => {
       renderConfirmationPopover()
-      
+
       expect(screen.getByTestId('trigger-button')).toBeInTheDocument()
       expect(screen.getByTestId('confirm-button')).toBeInTheDocument()
     })
 
     it('should render the confirm button', () => {
       renderConfirmationPopover()
-      
+
       const confirmButton = screen.getByTestId('confirm-button')
       expect(confirmButton).toBeInTheDocument()
       expect(confirmButton).toHaveTextContent('Confirm')
@@ -43,13 +47,13 @@ describe('ConfirmationPopover', () => {
 
     it('should not render title when not provided', () => {
       renderConfirmationPopover()
-      
+
       expect(screen.queryByRole('heading')).not.toBeInTheDocument()
     })
 
     it('should not render message when not provided', () => {
       renderConfirmationPopover()
-      
+
       expect(screen.queryByText(/message/i)).not.toBeInTheDocument()
     })
   })
@@ -104,16 +108,20 @@ describe('ConfirmationPopover', () => {
 
     it('should pass through closePopover prop to RiPopover', () => {
       renderConfirmationPopover()
-      
+
       fireEvent.click(document.body)
     })
 
     it('should pass through button prop to RiPopover', () => {
-      const customButton = <button data-testid="custom-trigger">Custom Trigger</button>
+      const customButton = (
+        <button data-testid="custom-trigger">Custom Trigger</button>
+      )
       renderConfirmationPopover({ button: customButton })
 
       expect(screen.getByTestId('custom-trigger')).toBeInTheDocument()
-      expect(screen.getByTestId('custom-trigger')).toHaveTextContent('Custom Trigger')
+      expect(screen.getByTestId('custom-trigger')).toHaveTextContent(
+        'Custom Trigger',
+      )
     })
 
     it('should pass through additional RiPopover props', () => {
@@ -185,8 +193,10 @@ describe('ConfirmationPopover', () => {
       expect(titleElement).toBeInTheDocument()
       expect(messageElement).toBeInTheDocument()
       expect(confirmButton).toBeInTheDocument()
-      
-      const allElements = screen.getAllByText(/Confirm Action|This is a test message|Confirm/)
+
+      const allElements = screen.getAllByText(
+        /Confirm Action|This is a test message|Confirm/,
+      )
       expect(allElements[0]).toBe(titleElement)
       expect(allElements[1]).toBe(messageElement)
     })
@@ -202,12 +212,14 @@ describe('ConfirmationPopover', () => {
     })
 
     it('should handle long text content gracefully', () => {
-      const longTitle = 'This is a very long title that might wrap to multiple lines'
-      const longMessage = 'This is a very long message that should break properly with word-break styling'
+      const longTitle =
+        'This is a very long title that might wrap to multiple lines'
+      const longMessage =
+        'This is a very long message that should break properly with word-break styling'
 
       renderConfirmationPopover({
         title: longTitle,
-        message: longMessage
+        message: longMessage,
       })
 
       expect(screen.getByText(longTitle)).toBeInTheDocument()

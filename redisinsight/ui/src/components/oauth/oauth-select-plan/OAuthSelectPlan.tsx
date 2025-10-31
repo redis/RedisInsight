@@ -173,8 +173,15 @@ const OAuthSelectPlan = () => {
 
   return (
     <Modal.Compose open>
-      <Modal.Content.Compose className={styles.container} data-testid="oauth-select-plan-dialog">
-        <Modal.Content.Close icon={CancelIcon} onClick={handleOnClose} data-testid="oauth-select-plan-dialog-close-btn" />
+      <Modal.Content.Compose
+        className={styles.container}
+        data-testid="oauth-select-plan-dialog"
+      >
+        <Modal.Content.Close
+          icon={CancelIcon}
+          onClick={handleOnClose}
+          data-testid="oauth-select-plan-dialog-close-btn"
+        />
         <Modal.Content.Header.Title>
           Choose a cloud vendor
         </Modal.Content.Header.Title>

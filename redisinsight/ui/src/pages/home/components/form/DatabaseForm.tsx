@@ -16,7 +16,11 @@ import { RiTooltip } from 'uiSrc/components'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { NumericInput, PasswordInput, TextInput } from 'uiSrc/components/base/inputs'
+import {
+  NumericInput,
+  PasswordInput,
+  TextInput,
+} from 'uiSrc/components/base/inputs'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 
 interface IShowFields {
@@ -111,10 +115,7 @@ const DatabaseForm = (props: Props) => {
         <Row gap="m">
           {showFields.host && (
             <FlexItem grow={4}>
-              <FormField
-                label="Host*"
-                additionalText={<AppendHostName />}
-              >
+              <FormField label="Host*" additionalText={<AppendHostName />}>
                 <TextInput
                   autoFocus={autoFocus}
                   name="ip"
@@ -124,11 +125,8 @@ const DatabaseForm = (props: Props) => {
                   maxLength={200}
                   placeholder="Enter Hostname / IP address / Connection URL"
                   value={formik.values.host ?? ''}
-                  onChange={value => {
-                    formik.setFieldValue(
-                      'host',
-                      validateField(value.trim()),
-                    )
+                  onChange={(value) => {
+                    formik.setFieldValue('host', validateField(value.trim()))
                   }}
                   onPaste={(event: React.ClipboardEvent<HTMLInputElement>) =>
                     handlePasteHostName(onHostNamePaste, event)

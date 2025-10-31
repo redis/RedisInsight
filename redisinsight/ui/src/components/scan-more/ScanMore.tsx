@@ -27,7 +27,8 @@ const WARNING_MESSAGE =
   'Scanning additional keys may decrease performance and memory available.'
 
 const ScanMoreButton = styled(TextButton)`
-  color: ${({ theme }: { theme: Theme }) => theme.semantic.color.text.primary400} !important;
+  color: ${({ theme }: { theme: Theme }) =>
+    theme.semantic.color.text.primary400} !important;
   line-height: inherit;
 `
 

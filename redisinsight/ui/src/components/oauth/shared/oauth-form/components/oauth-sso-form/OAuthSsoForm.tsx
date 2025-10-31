@@ -101,10 +101,7 @@ const OAuthSsoForm = ({ onBack, onSubmit }: Props) => {
                 value={formik.values.email}
                 autoComplete="off"
                 onChange={(value) => {
-                  formik.setFieldValue(
-                    'email',
-                    validateField(value.trim()),
-                  )
+                  formik.setFieldValue('email', validateField(value.trim()))
                 }}
               />
             </FormField>

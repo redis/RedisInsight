@@ -51,7 +51,11 @@ const ImportFileModal = <T,>({
   return (
     <Modal.Compose open>
       <Modal.Content.Compose className={styles.modal}>
-        <Modal.Content.Close icon={CancelIcon} onClick={onClose} data-testid="import-file-modal-close-btn" />
+        <Modal.Content.Close
+          icon={CancelIcon}
+          onClick={onClose}
+          data-testid="import-file-modal-close-btn"
+        />
         <Modal.Content.Header.Title
           data-testid="import-file-modal-title"
           className={styles.marginTop2}

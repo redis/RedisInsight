@@ -48,7 +48,6 @@ const CloudCapiUnAuthorizedErrorContent = ({
 
   return (
     <>
-
       <ColorText color="danger">{text}</ColorText>
       <Spacer />
       <Row justify="end">

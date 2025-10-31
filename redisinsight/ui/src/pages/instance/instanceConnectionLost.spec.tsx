@@ -1,6 +1,6 @@
 import React from 'react'
 import { fireEvent, screen, waitFor, within } from '@testing-library/react'
-import { cloneDeep, set } from 'lodash'
+import { cloneDeep } from 'lodash'
 import { rest } from 'msw'
 import { mswServer } from 'uiSrc/mocks/server'
 import {
