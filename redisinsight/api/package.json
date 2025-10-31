@@ -99,7 +99,7 @@
     "sqlite3": "5.1.7",
     "swagger-ui-express": "^4.1.4",
     "tunnel-ssh": "^5.1.2",
-    "typeorm": "^0.3.18",
+    "typeorm": "^0.3.26",
     "uuid": "^8.3.2",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.0"
