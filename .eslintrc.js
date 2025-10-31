@@ -428,6 +428,7 @@ module.exports = {
     'release',
     'redisinsight/ui/src/packages/**/icons/*.js*',
     'redisinsight/api/report/**',
+    'redisinsight/api/static/**',
     'redisinsight/api/migration/**',
     // Config files that don't need linting
     '.eslintrc.js',
