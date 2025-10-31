@@ -155,17 +155,17 @@ export class RejsonRlService {
 
     switch (type) {
       case 'object':
-        length = await client.sendCommand(
+        length = (await client.sendCommand(
           [BrowserToolRejsonRlCommands.JsonObjLen, keyName, path],
           { replyEncoding: 'utf8' },
-        ) as number;
+        )) as number;
 
         break;
       case 'array':
-        length = await client.sendCommand(
+        length = (await client.sendCommand(
           [BrowserToolRejsonRlCommands.JsonArrLen, keyName, path],
           { replyEncoding: 'utf8' },
-        ) as number;
+        )) as number;
 
         break;
       default:
@@ -180,7 +180,10 @@ export class RejsonRlService {
       );
     }
 
-    return MODULES_CONFIG.json.lengthThreshold > 0 && length > MODULES_CONFIG.json.lengthThreshold;
+    return (
+      MODULES_CONFIG.json.lengthThreshold > 0 &&
+      length > MODULES_CONFIG.json.lengthThreshold
+    );
   }
 
   private async getDetails(

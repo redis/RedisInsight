@@ -11,11 +11,14 @@ export class RedisConnectionIncorrectCertificateException extends RedisConnectio
     message: string = ERROR_MESSAGES.INCORRECT_CERTIFICATES('this host'),
     options?: HttpExceptionOptions,
   ) {
-    super({
-      message,
-      error: 'RedisConnectionIncorrectCertificateException',
-      statusCode: RedisConnectionFailedStatusCode,
-      errorCode: CustomErrorCodes.RedisConnectionIncorrectCertificate,
-    }, options);
+    super(
+      {
+        message,
+        error: 'RedisConnectionIncorrectCertificateException',
+        statusCode: RedisConnectionFailedStatusCode,
+        errorCode: CustomErrorCodes.RedisConnectionIncorrectCertificate,
+      },
+      options,
+    );
   }
 }

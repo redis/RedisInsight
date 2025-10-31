@@ -121,7 +121,7 @@ export const parseNodesFromClusterInfoReply = (
         const fields = line.split(' ');
         const [id, endpoint, , master, , , , linkState, slot] = fields;
 
-        const hostAndPort = endpoint.split('@')[0]
+        const hostAndPort = endpoint.split('@')[0];
         const lastColonIndex = hostAndPort.lastIndexOf(':');
 
         const host = hostAndPort.substring(0, lastColonIndex);

@@ -61,7 +61,10 @@ export class RedisEnterpriseService {
         sessionMetadata,
       );
       const result = this.parseClusterDbsResponse(data);
-      this.analytics.sendGetRedisSoftwareDbsSucceedEvent(sessionMetadata, result);
+      this.analytics.sendGetRedisSoftwareDbsSucceedEvent(
+        sessionMetadata,
+        result,
+      );
       return result;
     } catch (error) {
       const { response } = error;
@@ -80,7 +83,10 @@ export class RedisEnterpriseService {
           ERROR_MESSAGES.INCORRECT_DATABASE_URL(`${host}:${port}`),
         );
       }
-      this.analytics.sendGetRedisSoftwareDbsFailedEvent(sessionMetadata, exception);
+      this.analytics.sendGetRedisSoftwareDbsFailedEvent(
+        sessionMetadata,
+        exception,
+      );
       throw exception;
     }
   }

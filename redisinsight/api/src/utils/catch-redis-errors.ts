@@ -52,7 +52,9 @@ export const getRedisConnectionException = (
 
   if (error?.message) {
     if (error.message.includes(RedisErrorCodes.SentinelParamsRequired)) {
-      return new RedisConnectionSentinelMasterRequiredException(undefined, { cause: error });
+      return new RedisConnectionSentinelMasterRequiredException(undefined, {
+        cause: error,
+      });
     }
 
     if (
@@ -67,15 +69,21 @@ export const getRedisConnectionException = (
       error.message.includes(RedisErrorCodes.AuthRequired) ||
       error.message === 'ERR invalid password'
     ) {
-      return new RedisConnectionUnauthorizedException(undefined, { cause: error });
+      return new RedisConnectionUnauthorizedException(undefined, {
+        cause: error,
+      });
     }
 
     if (error.message === "ERR unknown command 'auth'") {
-      return new RedisConnectionAuthUnsupportedException(undefined, { cause: error });
+      return new RedisConnectionAuthUnsupportedException(undefined, {
+        cause: error,
+      });
     }
 
     if (error.message.includes(RedisErrorCodes.ClusterAllFailedError)) {
-      return new RedisConnectionClusterNodesUnavailableException(undefined, { cause: error });
+      return new RedisConnectionClusterNodesUnavailableException(undefined, {
+        cause: error,
+      });
     }
 
     if (
@@ -115,9 +123,7 @@ export const catchRedisConnectionError = (
 
 export const catchAclError = (error: ReplyError): HttpException => {
   // todo: Move to other place after refactoring
-  if (
-    error instanceof HttpException
-  ) {
+  if (error instanceof HttpException) {
     throw error;
   }
 

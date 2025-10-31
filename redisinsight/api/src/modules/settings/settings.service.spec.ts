@@ -154,10 +154,11 @@ describe('SettingsService', () => {
       // Create a custom instance of the service with an override method
       const customService = {
         // Preserve the same data structure expected from the method
-        getAppSettings: async () => classToClass(GetAppSettingsResponse, {
-          ...mockSettings.data,
-          agreements: preselectedAgreements,
-        }),
+        getAppSettings: async () =>
+          classToClass(GetAppSettingsResponse, {
+            ...mockSettings.data,
+            agreements: preselectedAgreements,
+          }),
       };
 
       // Call the customized method

@@ -118,7 +118,9 @@ describe('LocalAgreementsRepository', () => {
       repository.findOneBy.mockResolvedValueOnce(null);
       repository.save.mockRejectedValueOnce(new Error());
 
-      await expect(service.getOrCreate(mockSessionMetadata)).rejects.toThrow(Error);
+      await expect(service.getOrCreate(mockSessionMetadata)).rejects.toThrow(
+        Error,
+      );
     });
     it('should create new agreements with default data when provided and no entity exists', async () => {
       repository.findOneBy.mockResolvedValueOnce(null);

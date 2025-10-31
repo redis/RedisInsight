@@ -274,7 +274,6 @@ module.exports = {
         'no-underscore-dangle': 'off',
         'import/no-duplicates': 'off',
         'no-console': 'off',
-        'prettier/prettier': 'off',
         'prefer-destructuring': 'off',
         'no-unneeded-ternary': 'off',
         'prefer-template': 'off',

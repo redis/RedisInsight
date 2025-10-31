@@ -109,7 +109,9 @@ export class AppLogger implements LoggerService {
       context,
       error,
       ...instanceToPlain(userMetadata),
-      data: optionalParamsCopy?.length ? logDataToPlain(optionalParamsCopy) : undefined,
+      data: optionalParamsCopy?.length
+        ? logDataToPlain(optionalParamsCopy)
+        : undefined,
     };
   }
 

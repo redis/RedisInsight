@@ -1,4 +1,8 @@
-import { HttpException, HttpExceptionOptions, HttpStatus } from '@nestjs/common';
+import {
+  HttpException,
+  HttpExceptionOptions,
+  HttpStatus,
+} from '@nestjs/common';
 import { isString } from 'lodash';
 import { CustomErrorCodes } from 'src/constants';
 import ERROR_MESSAGES from 'src/constants/error-messages';
@@ -10,7 +14,9 @@ export const RedisConnectionFailedStatusCode = HttpStatus.FAILED_DEPENDENCY;
 
 export class RedisConnectionFailedException extends HttpException {
   constructor(
-    message: string | Record<string, any> = ERROR_MESSAGES.REDIS_CONNECTION_FAILED,
+    message:
+      | string
+      | Record<string, any> = ERROR_MESSAGES.REDIS_CONNECTION_FAILED,
     options?: HttpExceptionOptions,
   ) {
     let response: Record<string, any>;

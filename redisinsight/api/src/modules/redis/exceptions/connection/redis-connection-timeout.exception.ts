@@ -11,11 +11,14 @@ export class RedisConnectionTimeoutException extends RedisConnectionFailedExcept
     message: string = ERROR_MESSAGES.CONNECTION_TIMEOUT,
     options?: HttpExceptionOptions,
   ) {
-    super({
-      message,
-      error: 'RedisConnectionTimeoutException',
-      statusCode: RedisConnectionFailedStatusCode,
-      errorCode: CustomErrorCodes.RedisConnectionTimeout,
-    }, options);
+    super(
+      {
+        message,
+        error: 'RedisConnectionTimeoutException',
+        statusCode: RedisConnectionFailedStatusCode,
+        errorCode: CustomErrorCodes.RedisConnectionTimeout,
+      },
+      options,
+    );
   }
 }

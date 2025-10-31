@@ -619,10 +619,14 @@ describe('JsonService', () => {
           )
           .mockReturnValue([5001]);
 
-        await expect(service.getJson(mockBrowserClientMetadata, {
-          keyName: testKey,
-          path: testPath,
-        })).rejects.toThrow(new BadRequestException(ERROR_MESSAGES.UNSAFE_BIG_JSON_LENGTH));
+        await expect(
+          service.getJson(mockBrowserClientMetadata, {
+            keyName: testKey,
+            path: testPath,
+          }),
+        ).rejects.toThrow(
+          new BadRequestException(ERROR_MESSAGES.UNSAFE_BIG_JSON_LENGTH),
+        );
       });
       it('should return array with scalar values in a custom path', async () => {
         const path = '$["customPath"]';
@@ -821,10 +825,14 @@ describe('JsonService', () => {
           )
           .mockReturnValue([10_000]);
 
-        await expect(service.getJson(mockBrowserClientMetadata, {
-          keyName: testKey,
-          path: testPath,
-        })).rejects.toThrow(new BadRequestException(ERROR_MESSAGES.UNSAFE_BIG_JSON_LENGTH));
+        await expect(
+          service.getJson(mockBrowserClientMetadata, {
+            keyName: testKey,
+            path: testPath,
+          }),
+        ).rejects.toThrow(
+          new BadRequestException(ERROR_MESSAGES.UNSAFE_BIG_JSON_LENGTH),
+        );
       });
       it('should return object with scalar values as strings in a custom path', async () => {
         const path = '$["customPath"]';
