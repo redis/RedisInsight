@@ -97,11 +97,12 @@ export class RedisEnterpriseService {
     const result: RedisEnterpriseDatabase[] = [];
     databases.forEach((database) => {
       const {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         uid,
         name,
         crdt,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         tls_mode,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         crdt_replica_id,
         tags,
       } = database;

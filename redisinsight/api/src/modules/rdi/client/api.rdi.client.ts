@@ -1,5 +1,5 @@
 import { sign } from 'jsonwebtoken';
-import axios, { AxiosError, AxiosInstance } from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import { plainToInstance } from 'class-transformer';
 import { HttpStatus, Logger } from '@nestjs/common';
 

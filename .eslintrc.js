@@ -261,9 +261,6 @@ module.exports = {
       rules: {
         semi: 'off',
         '@typescript-eslint/semi': 'off',
-        '@typescript-eslint/no-unused-vars': 'off',
-        '@typescript-eslint/no-use-before-define': 'off',
-        '@typescript-eslint/no-unused-expressions': 'off',
         'sonarjs/no-identical-functions': 'off',
         'sonarjs/prefer-immediate-return': 'off',
         'sonarjs/no-duplicate-string': 'off',
@@ -278,9 +275,6 @@ module.exports = {
         'no-unneeded-ternary': 'off',
         'prefer-template': 'off',
         'prefer-const': 'off',
-        '@typescript-eslint/naming-convention': 'off',
-        '@typescript-eslint/lines-between-class-members': 'off',
-        '@typescript-eslint/no-shadow': 'off',
         // REDUNDANT: These are OFF by default in newer Airbnb config
         // 'prefer-arrow-callback': 'off',
         // 'no-restricted-syntax': 'off',

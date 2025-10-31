@@ -1,16 +1,13 @@
 import {
   BadRequestException,
-  ConflictException,
   ForbiddenException,
   HttpException,
   InternalServerErrorException,
   NotFoundException,
-  ServiceUnavailableException,
 } from '@nestjs/common';
 import { ReplyError } from 'src/models';
 import { RedisErrorCodes, CertificatesErrorCodes } from 'src/constants';
 import ERROR_MESSAGES from 'src/constants/error-messages';
-import { EncryptionServiceErrorException } from 'src/modules/encryption/exceptions';
 import { RedisClientCommandReply } from 'src/modules/redis/client';
 import {
   RedisConnectionAuthUnsupportedException,

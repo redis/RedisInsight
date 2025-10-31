@@ -19,7 +19,6 @@ import {
   mockCloudCapiKeyRepository,
   mockCloudApiCapiKey,
   mockServer,
-  mockCapiUnauthorizedError,
   mockCloudApiCapiAccessKey,
   mockCloudSession,
 } from 'src/__mocks__';

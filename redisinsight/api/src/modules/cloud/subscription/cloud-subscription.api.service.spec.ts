@@ -3,10 +3,8 @@ import {
   mockCapiUnauthorizedError,
   mockCloudApiAuthDto,
   mockCloudApiCloudRegions,
-  mockCloudApiCsrfToken,
   mockCloudCapiKeyService,
   mockCloudSessionService,
-  mockCloudSubscriptionApiProvider,
   mockCloudSubscriptionCapiService,
   mockCloudSubscriptionRegions,
   mockFeatureService,
@@ -30,7 +28,6 @@ mockedAxios.create = jest.fn(() => mockedAxios);
 
 describe('CloudSubscriptionApiService', () => {
   let service: CloudSubscriptionApiService;
-  let api: MockType<CloudSubscriptionApiProvider>;
   let capi: MockType<CloudSubscriptionCapiService>;
   let featureService: MockType<FeatureService>;
 
@@ -62,7 +59,6 @@ describe('CloudSubscriptionApiService', () => {
     }).compile();
 
     service = module.get(CloudSubscriptionApiService);
-    api = module.get(CloudSubscriptionApiProvider);
     capi = module.get(CloudSubscriptionCapiService);
     featureService = module.get(FeatureService);
 

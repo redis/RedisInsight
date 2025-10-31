@@ -1,10 +1,6 @@
 import { when, resetAllWhenMocks } from 'jest-when';
 import { RECOMMENDATION_NAMES } from 'src/constants';
-import {
-  mockRedisNoAuthError,
-  mockRedisNoPasswordError,
-  mockStandaloneRedisClient,
-} from 'src/__mocks__';
+import { mockRedisNoAuthError, mockStandaloneRedisClient } from 'src/__mocks__';
 import { RecommendationProvider } from 'src/modules/recommendation/providers/recommendation.provider';
 import { RedisClientConnectionType } from 'src/modules/redis/client';
 import { convertRedisInfoReplyToObject } from 'src/utils';
@@ -171,14 +167,6 @@ const mockSmallStringKey = {
   type: 'string',
   length: 10,
   memory: 199,
-  ttl: -1,
-};
-
-const mockStreamKey = {
-  name: Buffer.from('name'),
-  type: 'stream',
-  length: 1,
-  memory: 1,
   ttl: -1,
 };
 

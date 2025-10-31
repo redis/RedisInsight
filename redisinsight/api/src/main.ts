@@ -36,7 +36,9 @@ interface IApp {
 
 export default async function bootstrap(apiPort?: number): Promise<IApp> {
   if (serverConfig.migrateOldFolders) {
-    (await migrateHomeFolder()) && (await removeOldFolders());
+    if (await migrateHomeFolder()) {
+      await removeOldFolders();
+    }
   }
 
   if (apiPort) {
