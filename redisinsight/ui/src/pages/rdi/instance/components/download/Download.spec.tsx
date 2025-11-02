@@ -2,8 +2,8 @@ import React from 'react'
 
 import { rdiPipelineSelector } from 'uiSrc/slices/rdi/pipeline'
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
-import { act, fireEvent, render, screen } from 'uiSrc/utils/test-utils'
-import Download from './Download'
+import { render, screen, userEvent } from 'uiSrc/utils/test-utils'
+import Download, { Props } from './Download'
 
 jest.mock('uiSrc/slices/rdi/pipeline', () => ({
   ...jest.requireActual('uiSrc/slices/rdi/pipeline'),
@@ -22,18 +22,27 @@ jest.mock('uiSrc/telemetry', () => ({
   sendEventTelemetry: jest.fn(),
 }))
 
+const button = (
+  <button type="button" data-testid="download-pipeline-btn">
+    test
+  </button>
+)
+
+const renderDownload = (props: Partial<Props> = {}) => {
+  const { trigger = button, ...rest } = props
+  return render(<Download trigger={trigger} {...rest} />)
+}
+
 describe('Download', () => {
   it('should render', () => {
-    expect(render(<Download />)).toBeTruthy()
+    expect(renderDownload()).toBeTruthy()
   })
 
   it('should call onClose when download clicked', async () => {
     const onClose = jest.fn()
-    render(<Download onClose={onClose} />)
+    renderDownload({ onClose })
 
-    await act(() => {
-      fireEvent.click(screen.getByTestId('download-pipeline-btn'))
-    })
+    await userEvent.click(screen.getByTestId('download-pipeline-btn'))
 
     expect(onClose).toBeCalledTimes(1)
   })
@@ -44,11 +53,9 @@ describe('Download', () => {
       () => sendEventTelemetryMock,
     )
 
-    render(<Download />)
+    renderDownload()
 
-    await act(() => {
-      fireEvent.click(screen.getByTestId('download-pipeline-btn'))
-    })
+    await userEvent.click(screen.getByTestId('download-pipeline-btn'))
 
     expect(sendEventTelemetry).toBeCalledWith({
       event: TelemetryEvent.RDI_PIPELINE_DOWNLOAD_CLICKED,
@@ -64,7 +71,7 @@ describe('Download', () => {
       loading: true,
     }))
 
-    render(<Download />)
+    renderDownload()
 
     expect(screen.getByTestId('download-pipeline-btn')).toBeDisabled()
   })

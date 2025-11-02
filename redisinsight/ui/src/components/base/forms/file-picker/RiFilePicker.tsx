@@ -184,7 +184,7 @@ export const RiFilePicker = ({
           size={normalFormControl ? 'L' : 'XL'}
           aria-hidden="true"
         />
-        <FilePickerPromptText size="XS" className="RI-File-Picker__promptText">
+        <FilePickerPromptText size="s" className="RI-File-Picker__promptText">
           {promptText || initialPromptText}
         </FilePickerPromptText>
         {clearButton}
