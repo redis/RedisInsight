@@ -68,9 +68,9 @@ const AddConnection = (props: Props) => {
           />
           {buildType !== BuildType.RedisStack && (
             <>
-              <Spacer />
+              <Spacer size="m" />
               <Divider colorVariable="separatorColor" variant="fullWidth" />
-              <Spacer />
+              <Spacer size="m" />
               <SSHDetails formik={formik} />
             </>
           )}

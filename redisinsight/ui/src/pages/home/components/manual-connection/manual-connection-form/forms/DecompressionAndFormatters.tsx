@@ -16,9 +16,9 @@ const DecompressionAndFormatters = ({
 }) => (
   <>
     <DbCompressor formik={formik} />
-    <Spacer />
+    <Spacer size="m" />
     <Divider colorVariable="separatorColor" variant="fullWidth" />
-    <Spacer />
+    <Spacer size="m" />
     <KeyFormatSelector formik={formik} />
   </>
 )
