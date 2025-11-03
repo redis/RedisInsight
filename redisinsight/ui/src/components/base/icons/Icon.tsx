@@ -3,11 +3,12 @@ import { useTheme } from '@redis-ui/styles'
 import cx from 'classnames'
 import { IconSizeType } from '@redis-ui/icons'
 import { MonochromeIconProps } from 'uiSrc/components/base/icons'
+import { Theme } from 'uiSrc/components/base/theme/types'
 
 type BaseIconProps = Omit<MonochromeIconProps, 'color' | 'size'> & {
   icon: React.ComponentType<any>
   color?:
-    | keyof ReturnType<typeof useTheme>['semantic']['color']['icon']
+    | keyof Theme['semantic']['color']['icon']
     | 'currentColor'
     | (string & {})
   size?: IconSizeType | null
@@ -30,7 +31,7 @@ const sizesMap = {
  * @returns A boolean indicating if the color is valid and a type predicate
  */
 function isValidIconColor(
-  theme: ReturnType<typeof useTheme>,
+  theme: Theme,
   color: string | number | symbol,
 ): color is keyof typeof theme.semantic.color.icon {
   return color in theme.semantic.color.icon

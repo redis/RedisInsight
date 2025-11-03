@@ -9,10 +9,11 @@ import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
   DestructiveButton,
+  EmptyButton,
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { RiIcon } from 'uiSrc/components/base/icons'
+import { ArrowLeftIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { SearchInput } from 'uiSrc/components/base/inputs'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
@@ -66,6 +67,7 @@ const SentinelDatabases = ({
   const [rowSelection, setRowSelection] = useState<
     Record<NonNullable<ModifiedSentinelMaster['id']>, boolean>
   >({})
+
   useEffect(() => {
     setRowSelection(
       selection.reduce(
@@ -203,30 +205,45 @@ const SentinelDatabases = ({
   return (
     <AutodiscoveryPageTemplate>
       <DatabaseContainer justify="start">
-        <PageTitle data-testid="title">
-          Auto-Discover Redis Sentinel Primary Groups
-        </PageTitle>
-
-        <Row justify="between" align="center" grow={false}>
-          <FlexItem grow>
-            <PageSubTitle>
-              Redis Sentinel instance found. <br />
-              Here is a list of primary groups your Sentinel instance is
-              managing. Select the primary group(s) you want to add:
-            </PageSubTitle>
-          </FlexItem>
-          <SearchContainer>
-            <SearchForm>
-              <SearchInput
-                placeholder="Search..."
-                onChange={onQueryChange}
-                aria-label="Search"
-                data-testid="search"
-              />
-            </SearchForm>
-          </SearchContainer>
+        <Row align="center" justify="between" grow={false}>
+          <Col align="start" justify="start">
+            <EmptyButton
+              icon={ArrowLeftIcon}
+              onClick={onBack}
+              className="btn-cancel btn-back"
+              data-testid="btn-back-adding"
+            >
+              Add databases
+            </EmptyButton>
+            <Spacer size="s" />
+            <PageTitle data-testid="title">
+              Auto-Discover Redis Sentinel Primary Groups
+            </PageTitle>
+            <Spacer size="m" />
+            {items.length > 0 && (
+              <FlexItem grow>
+                <PageSubTitle>
+                  Redis Sentinel instance found. <br />
+                  Here is a list of primary groups your Sentinel instance is
+                  managing. Select the primary group(s) you want to add:
+                </PageSubTitle>
+              </FlexItem>
+            )}
+          </Col>
+          <Row justify="end" gap="s" grow={false}>
+            <SearchContainer>
+              <SearchForm>
+                <SearchInput
+                  placeholder="Search..."
+                  onChange={onQueryChange}
+                  aria-label="Search"
+                  data-testid="search"
+                />
+              </SearchForm>
+            </SearchContainer>
+          </Row>
         </Row>
-        <Spacer size="l" />
+        <Spacer size="m" />
         <DatabaseWrapper>
           <Table
             rowSelectionMode="multiple"
@@ -243,6 +260,13 @@ const SentinelDatabases = ({
               },
             ]}
             stripedRows
+            emptyState={() => (
+              <Col centered full>
+                <FlexItem padding={13}>
+                  <Text size="L">{message}</Text>
+                </FlexItem>
+              </Col>
+            )}
           />
           {!items.length && message !== notMastersMsg && (
             <>
@@ -258,14 +282,7 @@ const SentinelDatabases = ({
         </DatabaseWrapper>
       </DatabaseContainer>
       <Footer>
-        <Row justify="between">
-          <SecondaryButton
-            onClick={onBack}
-            className="btn-cancel btn-back"
-            data-testid="btn-back-to-adding"
-          >
-            Back to adding databases
-          </SecondaryButton>
+        <Row justify="end">
           <Row gap="m" grow={false}>
             <CancelButton isPopoverOpen={isPopoverOpen} />
             <SubmitButton onClick={handleSubmit} />

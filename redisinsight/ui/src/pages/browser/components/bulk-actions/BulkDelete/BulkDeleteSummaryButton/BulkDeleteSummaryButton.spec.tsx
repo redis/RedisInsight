@@ -1,6 +1,6 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
 import BulkDeleteSummaryButton from './BulkDeleteSummaryButton'
+import { render, screen } from 'uiSrc/utils/test-utils'
 
 const readBlobContent = async (blob: Blob): Promise<string> => {
   return blob.text()
