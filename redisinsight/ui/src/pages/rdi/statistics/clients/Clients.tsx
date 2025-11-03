@@ -2,8 +2,11 @@ import React from 'react'
 
 import { IClients } from 'uiSrc/slices/interfaces'
 import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
-import Accordion from '../components/accordion'
-import Panel from '../components/panel'
+import { Section } from '@redis-ui/components'
+import {
+  StyledRdiAnalyticsTable,
+  StyledRdiStatisticsSectionBody,
+} from 'uiSrc/pages/rdi/statistics/styles'
 
 type ClientsData = {
   id: string
@@ -55,19 +58,9 @@ const columns: ColumnDefinition<ClientsData>[] = [
 
 interface Props {
   data: IClients
-  loading: boolean
-  onRefresh: () => void
-  onRefreshClicked: () => void
-  onChangeAutoRefresh: (enableAutoRefresh: boolean, refreshRate: string) => void
 }
 
-const Clients = ({
-  data,
-  loading,
-  onRefresh,
-  onRefreshClicked,
-  onChangeAutoRefresh,
-}: Props) => {
+const Clients = ({ data }: Props) => {
   const clients: ClientsData[] = Object.keys(data).map((key) => {
     const client = data[key]
     return {
@@ -77,23 +70,21 @@ const Clients = ({
   })
 
   return (
-    <Panel>
-      <Accordion
-        id="clients"
-        title="Clients"
-        hideAutoRefresh
-        loading={loading}
-        onRefresh={onRefresh}
-        onRefreshClicked={onRefreshClicked}
-        onChangeAutoRefresh={onChangeAutoRefresh}
-      >
-        <Table
-          columns={columns}
-          data={clients}
-          defaultSorting={[{ id: 'id', desc: false }]}
-        />
-      </Accordion>
-    </Panel>
+    <Section.Compose collapsible defaultOpen id="clients">
+      <Section.Header label="Clients" />
+      <StyledRdiStatisticsSectionBody
+        content={
+          <StyledRdiAnalyticsTable
+            columns={columns}
+            data={clients}
+            defaultSorting={[{ id: 'id', desc: false }]}
+          >
+            <Table.Header />
+            <Table.Body />
+          </StyledRdiAnalyticsTable>
+        }
+      />
+    </Section.Compose>
   )
 }
 
