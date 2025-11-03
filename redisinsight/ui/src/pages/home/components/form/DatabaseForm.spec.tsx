@@ -191,9 +191,9 @@ describe('DatabaseForm', () => {
   it('should render with correct field labels', () => {
     renderComponent()
 
-    expect(screen.getByText('Database Alias*')).toBeInTheDocument()
-    expect(screen.getByText('Host*')).toBeInTheDocument()
-    expect(screen.getByText('Port*')).toBeInTheDocument()
+    expect(screen.getByText('Database Alias')).toBeInTheDocument()
+    expect(screen.getByText('Host')).toBeInTheDocument()
+    expect(screen.getByText('Port')).toBeInTheDocument()
     expect(screen.getByText('Username')).toBeInTheDocument()
     expect(screen.getByText('Password')).toBeInTheDocument()
     expect(screen.getByText('Timeout (s)')).toBeInTheDocument()
