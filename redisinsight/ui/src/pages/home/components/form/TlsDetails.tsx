@@ -187,15 +187,17 @@ const TlsDetails = (props: Props) => {
   return (
     <>
       <Row gap="m">
-        <FlexItem grow={1}>
-          <Checkbox
-            id={sslId}
-            name="tls"
-            label={<Text>Use TLS</Text>}
-            checked={!!formik.values.tls}
-            onChange={formik.handleChange}
-            data-testid="tls"
-          />
+        <FlexItem>
+          <FormField>
+            <Checkbox
+              id={sslId}
+              name="tls"
+              label={<Text>Use TLS</Text>}
+              checked={!!formik.values.tls}
+              onChange={formik.handleChange}
+              data-testid="tls"
+            />
+          </FormField>
         </FlexItem>
       </Row>
 

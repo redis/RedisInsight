@@ -53,14 +53,16 @@ const SSHDetails = (props: Props) => {
         align={!flexGroupClassName ? 'end' : undefined}
       >
         <FlexItem style={{ width: '230px' }} className={flexItemClassName}>
-          <Checkbox
-            id={id}
-            name="ssh"
-            label={<Text>Use SSH Tunnel</Text>}
-            checked={!!formik.values.ssh}
-            onChange={formik.handleChange}
-            data-testid="use-ssh"
-          />
+          <FormField>
+            <Checkbox
+              id={id}
+              name="ssh"
+              label={<Text>Use SSH Tunnel</Text>}
+              checked={!!formik.values.ssh}
+              onChange={formik.handleChange}
+              data-testid="use-ssh"
+            />
+          </FormField>
         </FlexItem>
       </Row>
 
