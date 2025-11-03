@@ -39,6 +39,7 @@ export interface IAddInstanceErrorPayload extends AxiosError {
   instanceId?: string
   response?: AxiosError['response'] & {
     data: {
+      message?: string | JSX.Element
       title?: string
       additionalInfo?: Record<string, any>
     }

@@ -31,7 +31,7 @@ import {
 import { appContextPipelineManagement } from 'uiSrc/slices/app/context'
 import { createAxiosError, isEqualPipelineFile, yamlToJson } from 'uiSrc/utils'
 
-import { addErrorNotification } from 'uiSrc/slices/app/notifications'
+import { addErrorNotification, IAddInstanceErrorPayload } from 'uiSrc/slices/app/notifications'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
 
@@ -88,7 +88,7 @@ const Config = () => {
         addErrorNotification(
           createAxiosError({
             message: rdiErrorMessages.invalidStructure('config', msg),
-          }),
+          }) as IAddInstanceErrorPayload,
         ),
       )
     })
