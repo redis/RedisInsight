@@ -4,19 +4,15 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
-import { SaveIcon } from 'uiSrc/components/base/icons'
 import { rdiPipelineSelector } from 'uiSrc/slices/rdi/pipeline'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
-import styles from './styles.module.scss'
-
-interface Props {
-  dataTestid?: string
+export interface Props {
+  trigger: React.ReactElement
   onClose?: () => void
 }
 
-const Download = ({ dataTestid, onClose }: Props) => {
+const Download = ({ onClose, trigger }: Props) => {
   const { loading, jobs, config } = useSelector(rdiPipelineSelector)
 
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
@@ -43,19 +39,14 @@ const Download = ({ dataTestid, onClose }: Props) => {
     onClose?.()
   }
 
-  return (
-    <EmptyButton
-      color="text"
-      className={styles.downloadBtn}
-      icon={SaveIcon}
-      disabled={loading}
-      onClick={handleDownloadClick}
-      aria-labelledby="Download pipeline button"
-      data-testid={dataTestid || 'download-pipeline-btn'}
-    >
-      Save to file
-    </EmptyButton>
-  )
+  const button = trigger
+    ? React.cloneElement(trigger, {
+        disabled: loading,
+        onClick: handleDownloadClick,
+      })
+    : null
+
+  return <>{button}</>
 }
 
 export default Download

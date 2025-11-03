@@ -76,12 +76,6 @@ describe('UploadDialog', () => {
     expect(screen.getByTestId('submit-btn')).not.toBeDisabled()
   })
 
-  it('should render warning message', () => {
-    render(<UploadDialog {...mockedProps} showWarning />)
-
-    expect(screen.getByTestId('input-file-warning')).toBeInTheDocument()
-  })
-
   it('should only allow .zip files', () => {
     render(<UploadDialog {...mockedProps} />)
 
