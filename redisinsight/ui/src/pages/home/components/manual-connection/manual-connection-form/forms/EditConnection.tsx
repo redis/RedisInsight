@@ -64,16 +64,14 @@ const EditConnection = (props: Props) => {
           />
           <Spacer size="l" />
           <Divider colorVariable="separatorColor" variant="fullWidth" />
-          <Spacer size="l" />
+          <Spacer size="m" />
           <ForceStandalone formik={formik} />
-          <Spacer size="l" />
-          <Divider colorVariable="separatorColor" variant="fullWidth" />
           {isCloneMode && (
             <>
-              <Spacer size="l" />
-              <DbIndex formik={formik} />
-              <Spacer size="l" />
+              <Spacer size="m" />
               <Divider colorVariable="separatorColor" variant="fullWidth" />
+              <Spacer size="m" />
+              <DbIndex formik={formik} />
             </>
           )}
         </>

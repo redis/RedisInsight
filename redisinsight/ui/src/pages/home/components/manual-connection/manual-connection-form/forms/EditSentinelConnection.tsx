@@ -63,11 +63,11 @@ const EditSentinelConnection = (props: Props) => {
         showFields={{ host: true, port: true, alias: false, timeout: false }}
         onHostNamePaste={onHostNamePaste}
       />
-      <Spacer size="l" />
+      <Spacer size="m" />
       <Divider colorVariable="separatorColor" variant="fullWidth" />
-      <Spacer size="l" />
+      <Spacer size="m" />
       <DbIndex formik={formik} />
-      <Spacer size="l" />
+      <Spacer size="m" />
       <Divider colorVariable="separatorColor" variant="fullWidth" />
     </>
   )

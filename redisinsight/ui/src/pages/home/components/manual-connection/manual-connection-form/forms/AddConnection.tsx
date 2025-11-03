@@ -50,24 +50,13 @@ const AddConnection = (props: Props) => {
             showFields={{ host: true, alias: true, port: true, timeout: true }}
           />
           <Spacer size="l" />
-          <Divider
-            colorVariable="separatorColor"
-            variant="fullWidth"
-          />
-          <Spacer size="l" />
+          <Divider colorVariable="separatorColor" variant="fullWidth" />
+          <Spacer size="m" />
           <DbIndex formik={formik} />
-          <Spacer size="l" />
-          <Divider
-            colorVariable="separatorColor"
-            variant="fullWidth"
-          />
-          <Spacer size="l" />
+          <Spacer size="m" />
+          <Divider colorVariable="separatorColor" variant="fullWidth" />
+          <Spacer size="m" />
           <ForceStandalone formik={formik} />
-          <Spacer size="l" />
-          <Divider
-            colorVariable="separatorColor"
-            variant="fullWidth"
-          />
         </>
       )}
       {activeTab === ManualFormTab.Security && (
@@ -80,10 +69,7 @@ const AddConnection = (props: Props) => {
           {buildType !== BuildType.RedisStack && (
             <>
               <Spacer />
-              <Divider
-                colorVariable="separatorColor"
-                variant="fullWidth"
-              />
+              <Divider colorVariable="separatorColor" variant="fullWidth" />
               <Spacer />
               <SSHDetails formik={formik} />
             </>
