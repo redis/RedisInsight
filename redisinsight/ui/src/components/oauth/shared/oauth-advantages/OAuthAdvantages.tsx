@@ -6,6 +6,7 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiImage } from 'uiSrc/components/base/display'
 import { Spacer } from 'uiSrc/components/base/layout'
 import { OAUTH_ADVANTAGES_ITEMS } from './constants'
+import { Col } from 'uiSrc/components/base/layout/flex'
 
 import styles from './styles.module.scss'
 
@@ -14,7 +15,7 @@ const OAuthAdvantages = () => (
     <RiImage src={RedisLogo} alt="Redis logo" $size="s" />
     <Title size="M">Cloud</Title>
     <Spacer size="space600" />
-    <div className={styles.advantages}>
+    <Col justify="between" align="stretch" grow={false} gap="m">
       {OAUTH_ADVANTAGES_ITEMS.map(({ title }) => (
         <Text
           component="div"
@@ -25,7 +26,7 @@ const OAuthAdvantages = () => (
           <Text size="S">{title}</Text>
         </Text>
       ))}
-    </div>
+    </Col>
   </div>
 )
 
