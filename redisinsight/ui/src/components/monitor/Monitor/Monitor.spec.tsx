@@ -60,7 +60,7 @@ describe('Monitor', () => {
     unmount()
   })
 
-  it('Monitor should start after click on the play button', () => {
+  it('Monitor should start after click on the start button', () => {
     const handleRunMonitorMock = jest.fn()
     render(
       <Monitor
@@ -72,5 +72,10 @@ describe('Monitor', () => {
     fireEvent.click(screen.getByTestId('start-monitor') ?? {})
 
     expect(handleRunMonitorMock).toBeCalled()
+  })
+
+  it('should show warning banner', () => {
+    render(<Monitor {...instance(mockedProps)} />)
+    expect(screen.getByTestId('monitor-warning-message')).toBeInTheDocument()
   })
 })
