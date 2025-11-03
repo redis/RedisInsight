@@ -89,11 +89,7 @@ const SSHDetails = (props: Props) => {
                 </FormField>
               </FlexItem>
               <FlexItem grow className={flexItemClassName}>
-                <FormField
-                  label="Port"
-                  required
-                  additionalText="Should not exceed 65535."
-                >
+                <FormField label="Port" required>
                   <NumericInput
                     autoValidate
                     min={0}

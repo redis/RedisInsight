@@ -134,11 +134,7 @@ const DatabaseForm = (props: Props) => {
           )}
           {isShowPort && (
             <FlexItem grow={2}>
-              <FormField
-                label="Port"
-                additionalText={`Should not exceed ${MAX_PORT_NUMBER}.`}
-                required
-              >
+              <FormField label="Port" required>
                 <NumericInput
                   autoValidate
                   name="port"
