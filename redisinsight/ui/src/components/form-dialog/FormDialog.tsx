@@ -3,8 +3,10 @@ import React from 'react'
 import { Nullable } from 'uiSrc/utils'
 import { CancelIcon } from 'uiSrc/components/base/icons'
 import { Modal } from 'uiSrc/components/base/display'
-
-import { StyledFormDialogContent } from './FormDialog.styles'
+import {
+  StyledFormDialogContent,
+  StyledFormDialogContentBody,
+} from './FormDialog.styles'
 
 export interface Props {
   isOpen: boolean
@@ -29,7 +31,7 @@ const FormDialog = (props: Props) => {
       >
         <Modal.Content.Close icon={CancelIcon} onClick={onClose} />
         <Modal.Content.Header.Title>{header}</Modal.Content.Header.Title>
-        <Modal.Content.Body content={children} />
+        <StyledFormDialogContentBody content={children} />
         <Modal.Content.Footer.Compose>{footer}</Modal.Content.Footer.Compose>
       </StyledFormDialogContent>
     </Modal.Compose>

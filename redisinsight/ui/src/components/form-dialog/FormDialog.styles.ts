@@ -7,9 +7,9 @@ export const StyledFormDialogContent = styled(Modal.Content.Compose)`
 
   max-width: calc(100vw - 120px) !important;
   max-height: calc(100vh - 120px) !important;
+`
 
-  // Flex the modal content to fill the whole available space
-  > [data-role='dialog-hub'] {
-    flex: 1;
-  }
+export const StyledFormDialogContentBody = styled(Modal.Content.Body)`
+  flex: 1;
+  min-height: 0;
 `
