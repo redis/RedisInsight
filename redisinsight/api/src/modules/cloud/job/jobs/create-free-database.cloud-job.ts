@@ -171,7 +171,10 @@ export class CreateFreeDatabaseCloudJob extends CloudJob {
           this.dependencies.bulkImportService.importDefaultData(clientMetadata);
         }
       } catch (e) {
-        this.logger.error('Error when trying to feed the db with default data', e);
+        this.logger.error(
+          'Error when trying to feed the db with default data',
+          e,
+        );
       }
 
       this.result = {

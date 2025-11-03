@@ -49,7 +49,7 @@ const ClusterNodesTable = ({
       enableSorting: true,
       cell: ({
         row: {
-          original: { letter, port, color },
+          original: { letter, port, color, host },
         },
       }) => (
         <>
@@ -63,7 +63,7 @@ const ClusterNodesTable = ({
               {letter}
             </span>
             <span>
-              {letter}:{port}
+              {host}:{port}
             </span>
           </div>
         </>

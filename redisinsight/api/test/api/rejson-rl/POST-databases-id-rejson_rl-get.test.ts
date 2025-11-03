@@ -54,87 +54,180 @@ describe('POST /databases/:instanceId/rejson-rl/get', () => {
     });
 
     describe('Modes', () => {
-      [
-        {
-          name: 'Should force get entire json from buff',
-          data: {
-            keyName: {
-              type: 'Buffer',
-              data: [...Buffer.from(constants.TEST_REJSON_KEY_3)],
+      describe('re-json v1', () => {
+        requirements('rte.modules.rejson.version<20000');
+
+        [
+          {
+            name: 'Should force get entire json from buff',
+            data: {
+              keyName: {
+                type: 'Buffer',
+                data: [...Buffer.from(constants.TEST_REJSON_KEY_3)],
+              },
+              path: '.',
+              forceRetrieve: true,
             },
-            path: '$',
-            forceRetrieve: true,
+            responseSchema,
+            responseBody: {
+              downloaded: true,
+              path: '.',
+              data: JSON.stringify(constants.TEST_REJSON_VALUE_3),
+            },
           },
-          responseSchema,
-          responseBody: {
-            downloaded: true,
-            path: '$',
-            data: JSON.stringify(constants.TEST_REJSON_VALUE_3),
+        ].map(mainCheckFn);
+      });
+      describe('re-json v2', () => {
+        requirements('rte.modules.rejson.version>=20000');
+
+        [
+          {
+            name: 'Should force get entire json from buff',
+            data: {
+              keyName: {
+                type: 'Buffer',
+                data: [...Buffer.from(constants.TEST_REJSON_KEY_3)],
+              },
+              path: '$',
+              forceRetrieve: true,
+            },
+            responseSchema,
+            responseBody: {
+              downloaded: true,
+              path: '$',
+              data: JSON.stringify(constants.TEST_REJSON_VALUE_3),
+            },
           },
-        },
-      ].map(mainCheckFn);
+        ].map(mainCheckFn);
+      });
     });
 
     describe('Common', () => {
-      [
-        {
-          name: 'Should force get entire json',
-          data: {
-            keyName: constants.TEST_REJSON_KEY_3,
-            path: '$',
-            forceRetrieve: true,
+      describe('re-json v1', () => {
+        requirements('rte.modules.rejson.version<20000');
+        [
+          {
+            name: 'Should force get entire json',
+            data: {
+              keyName: constants.TEST_REJSON_KEY_3,
+              path: '.',
+              forceRetrieve: true,
+            },
+            responseSchema,
+            responseBody: {
+              downloaded: true,
+              path: '.',
+              data: JSON.stringify(constants.TEST_REJSON_VALUE_3),
+            },
           },
-          responseSchema,
-          responseBody: {
-            downloaded: true,
-            path: '$',
-            data: JSON.stringify(constants.TEST_REJSON_VALUE_3),
+          {
+            name: 'Should get nested object',
+            data: {
+              keyName: constants.TEST_REJSON_KEY_3,
+              path: '.object.field',
+              forceRetrieve: false,
+            },
+            responseSchema,
+            responseBody: {
+              downloaded: true,
+              path: '.object.field',
+              data: `"${'value'}"`,
+            },
           },
-        },
-        {
-          name: 'Should get nested object',
-          data: {
-            keyName: constants.TEST_REJSON_KEY_3,
-            path: '$.object.field',
-            forceRetrieve: false,
+          {
+            name: 'Should get nested array value (downloaded true due to size)',
+            data: {
+              keyName: constants.TEST_REJSON_KEY_3,
+              path: '["array"][1]',
+              forceRetrieve: false,
+            },
+            responseSchema,
+            responseBody: {
+              downloaded: true,
+              path: '["array"][1]',
+              data: String(2),
+            },
           },
-          responseSchema,
-          responseBody: {
-            downloaded: true,
-            path: '$.object.field',
-            data: `"${'value'}"`,
-          },
-        },
-        {
-          name: 'Should get nested array value (downloaded true due to size)',
-          data: {
-            keyName: constants.TEST_REJSON_KEY_3,
-            path: '$["array"][1]',
-            forceRetrieve: false,
-          },
-          responseSchema,
-          responseBody: {
-            downloaded: true,
-            path: '$["array"][1]',
-            data: String(2),
-          },
-        },
-        {
-          name: 'Should return NotFound error if instance id does not exists',
-          endpoint: () => endpoint(constants.TEST_NOT_EXISTED_INSTANCE_ID),
-          data: {
-            keyName: constants.TEST_REJSON_KEY_1,
-            path: '$["object"]["some"]',
-            forceRetrieve: false,
-          },
-          statusCode: 404,
-          responseBody: {
+          {
+            name: 'Should return NotFound error if instance id does not exists',
+            endpoint: () => endpoint(constants.TEST_NOT_EXISTED_INSTANCE_ID),
+            data: {
+              keyName: constants.TEST_REJSON_KEY_1,
+              path: '["object"]["some"]',
+              forceRetrieve: false,
+            },
             statusCode: 404,
-            error: 'Not Found',
-            message: 'Invalid database instance id.',
+            responseBody: {
+              statusCode: 404,
+              error: 'Not Found',
+              message: 'Invalid database instance id.',
+            },
           },
-        },
-      ].map(mainCheckFn);
+        ].map(mainCheckFn);
+      });
+
+      describe('re-json v2', () => {
+        requirements('rte.modules.rejson.version>=20000');
+        [
+          {
+            name: 'Should force get entire json',
+            data: {
+              keyName: constants.TEST_REJSON_KEY_3,
+              path: '$',
+              forceRetrieve: true,
+            },
+            responseSchema,
+            responseBody: {
+              downloaded: true,
+              path: '$',
+              data: JSON.stringify(constants.TEST_REJSON_VALUE_3),
+            },
+          },
+          {
+            name: 'Should get nested object',
+            data: {
+              keyName: constants.TEST_REJSON_KEY_3,
+              path: '$.object.field',
+              forceRetrieve: false,
+            },
+            responseSchema,
+            responseBody: {
+              downloaded: true,
+              path: '$.object.field',
+              data: `"${'value'}"`,
+            },
+          },
+          {
+            name: 'Should get nested array value (downloaded true due to size)',
+            data: {
+              keyName: constants.TEST_REJSON_KEY_3,
+              path: '$["array"][1]',
+              forceRetrieve: false,
+            },
+            responseSchema,
+            responseBody: {
+              downloaded: true,
+              path: '$["array"][1]',
+              data: String(2),
+            },
+          },
+          {
+            name: 'Should return NotFound error if instance id does not exists',
+            endpoint: () => endpoint(constants.TEST_NOT_EXISTED_INSTANCE_ID),
+            data: {
+              keyName: constants.TEST_REJSON_KEY_1,
+              path: '$["object"]["some"]',
+              forceRetrieve: false,
+            },
+            statusCode: 404,
+            responseBody: {
+              statusCode: 404,
+              error: 'Not Found',
+              message: 'Invalid database instance id.',
+            },
+          },
+        ].map(mainCheckFn);
+      });
     });
 
     describe('Large key value', () => {
@@ -145,25 +238,25 @@ describe('POST /databases/:instanceId/rejson-rl/get', () => {
           name: 'Should get json with calculated cardinality',
           data: {
             keyName: constants.TEST_REJSON_KEY_3,
-            path: '$',
+            path: '.',
             forceRetrieve: false,
           },
           responseSchema,
           responseBody: {
             downloaded: false,
-            path: '$',
+            path: '.',
             type: 'object',
             data: [
               {
                 type: 'array',
                 key: 'array',
-                path: '$["array"]',
+                path: '["array"]',
                 cardinality: 3,
               },
               {
                 type: 'object',
                 key: 'object',
-                path: '$["object"]',
+                path: '["object"]',
                 cardinality: 2,
               },
             ],
@@ -173,13 +266,13 @@ describe('POST /databases/:instanceId/rejson-rl/get', () => {
           name: 'Should get safe large string from the object', // todo: do not forget to implement partially string download for JSON
           data: {
             keyName: constants.TEST_REJSON_KEY_3,
-            path: '$["object"]["some"]',
+            path: '["object"]["some"]',
             forceRetrieve: false,
           },
           responseSchema,
           responseBody: {
             downloaded: false,
-            path: '$["object"]["some"]',
+            path: '["object"]["some"]',
             data: `"${constants.TEST_REJSON_VALUE_3.object.some}"`, // full value right now
             type: 'string',
           },
@@ -198,7 +291,7 @@ describe('POST /databases/:instanceId/rejson-rl/get', () => {
           endpoint: () => endpoint(constants.TEST_INSTANCE_ACL_ID),
           data: {
             keyName: constants.TEST_REJSON_KEY_1,
-            path: '$',
+            path: '.',
             forceRetrieve: false,
           },
           responseSchema,
@@ -208,7 +301,7 @@ describe('POST /databases/:instanceId/rejson-rl/get', () => {
           endpoint: () => endpoint(constants.TEST_INSTANCE_ACL_ID),
           data: {
             keyName: constants.TEST_REJSON_KEY_1,
-            path: '$',
+            path: '.',
             forceRetrieve: true,
           },
           statusCode: 403,
@@ -223,7 +316,7 @@ describe('POST /databases/:instanceId/rejson-rl/get', () => {
           endpoint: () => endpoint(constants.TEST_INSTANCE_ACL_ID),
           data: {
             keyName: constants.TEST_REJSON_KEY_1,
-            path: '$',
+            path: '.',
             forceRetrieve: false,
           },
           statusCode: 403,
@@ -238,13 +331,13 @@ describe('POST /databases/:instanceId/rejson-rl/get', () => {
           endpoint: () => endpoint(constants.TEST_INSTANCE_ACL_ID),
           data: {
             keyName: constants.TEST_REJSON_KEY_3,
-            path: '$',
+            path: '.',
             forceRetrieve: false,
           },
           responseSchema,
           responseBody: {
             downloaded: true,
-            path: '$',
+            path: '.',
             data: constants.TEST_REJSON_VALUE_3,
           },
           before: () => rte.data.setAclUserRules('~* +@all -json.debug'),
@@ -254,13 +347,13 @@ describe('POST /databases/:instanceId/rejson-rl/get', () => {
           endpoint: () => endpoint(constants.TEST_INSTANCE_ACL_ID),
           data: {
             keyName: constants.TEST_REJSON_KEY_3,
-            path: '$',
+            path: '.',
             forceRetrieve: false,
           },
           responseSchema,
           responseBody: {
             downloaded: true,
-            path: '$',
+            path: '.',
             data: constants.TEST_REJSON_VALUE_3,
           },
           before: () => rte.data.setAclUserRules('~* +@all -json.debug'),
@@ -270,7 +363,7 @@ describe('POST /databases/:instanceId/rejson-rl/get', () => {
           endpoint: () => endpoint(constants.TEST_INSTANCE_ACL_ID),
           data: {
             keyName: constants.TEST_REJSON_KEY_3,
-            path: '$',
+            path: '.',
             forceRetrieve: false,
           },
           statusCode: 403,
@@ -285,7 +378,7 @@ describe('POST /databases/:instanceId/rejson-rl/get', () => {
           endpoint: () => endpoint(constants.TEST_INSTANCE_ACL_ID),
           data: {
             keyName: constants.TEST_REJSON_KEY_3,
-            path: '$',
+            path: '.',
             forceRetrieve: false,
           },
           statusCode: 403,
@@ -300,7 +393,7 @@ describe('POST /databases/:instanceId/rejson-rl/get', () => {
           endpoint: () => endpoint(constants.TEST_INSTANCE_ACL_ID),
           data: {
             keyName: constants.TEST_REJSON_KEY_3,
-            path: '$',
+            path: '.',
             forceRetrieve: false,
           },
           statusCode: 403,
@@ -315,7 +408,7 @@ describe('POST /databases/:instanceId/rejson-rl/get', () => {
           endpoint: () => endpoint(constants.TEST_INSTANCE_ACL_ID),
           data: {
             keyName: constants.TEST_REJSON_KEY_3,
-            path: '$',
+            path: '.',
             forceRetrieve: false,
           },
           statusCode: 403,

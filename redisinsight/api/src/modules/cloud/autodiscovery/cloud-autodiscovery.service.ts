@@ -174,7 +174,11 @@ export class CloudAutodiscoveryService {
         sessionMetadata,
         e,
       );
-      this.analytics.sendGetRedisCloudDbsFailedEvent(sessionMetadata, e, authType);
+      this.analytics.sendGetRedisCloudDbsFailedEvent(
+        sessionMetadata,
+        e,
+        authType,
+      );
 
       throw wrapHttpError(e);
     }

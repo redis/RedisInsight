@@ -207,15 +207,16 @@ const RemoveListElements = (props: Props) => {
           )}
         </Text>
         <Spacer />
-        <DestructiveButton
-          size="small"
-          onClick={submitData}
-          icon={DeleteIcon}
-          className={styles.popoverDeleteBtn}
-          data-testid="remove-submit"
-        >
-          Remove
-        </DestructiveButton>
+        <Row justify="end">
+          <DestructiveButton
+            size="small"
+            onClick={submitData}
+            icon={DeleteIcon}
+            data-testid="remove-submit"
+          >
+            Remove
+          </DestructiveButton>
+        </Row>
       </div>
     </RiPopover>
   )

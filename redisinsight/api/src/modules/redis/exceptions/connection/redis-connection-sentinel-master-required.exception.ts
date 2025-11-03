@@ -11,11 +11,14 @@ export class RedisConnectionSentinelMasterRequiredException extends RedisConnect
     message: string = ERROR_MESSAGES.SENTINEL_MASTER_NAME_REQUIRED,
     options?: HttpExceptionOptions,
   ) {
-    super({
-      message,
-      error: 'RedisConnectionSentinelMasterRequiredException',
-      statusCode: RedisConnectionFailedStatusCode,
-      errorCode: CustomErrorCodes.RedisConnectionSentinelMasterRequired,
-    }, options);
+    super(
+      {
+        message,
+        error: 'RedisConnectionSentinelMasterRequiredException',
+        statusCode: RedisConnectionFailedStatusCode,
+        errorCode: CustomErrorCodes.RedisConnectionSentinelMasterRequired,
+      },
+      options,
+    );
   }
 }

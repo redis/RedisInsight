@@ -31,7 +31,7 @@ export default {
         <>
           You can also create a{' '}
           <CloudLink
-            text="free trial Redis Cloud database"
+            text="free Redis Cloud database"
             url={getUtmExternalLink(EXTERNAL_LINKS.tryFree, {
               source: UTM_MEDIUMS.App,
               campaign: UTM_CAMPAINGS.RedisJson,
@@ -59,7 +59,7 @@ export default {
         className="link-underline"
         rel="noreferrer"
       >
-        free up-to-date trial
+        free up-to-date
       </a>
       &nbsp;Redis database.
     </>

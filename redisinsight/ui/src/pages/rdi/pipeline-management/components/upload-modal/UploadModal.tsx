@@ -37,6 +37,8 @@ const UploadModal = (props: Props) => {
     config: pipelineConfig,
     jobs: pipelineJobs,
     schema,
+    monacoJobsSchema,
+    jobNameSchema,
   } = useSelector(rdiPipelineSelector)
 
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
@@ -111,7 +113,13 @@ const UploadModal = (props: Props) => {
 
       if (config && schema && jobs?.length) {
         const { result, configValidationErrors, jobsValidationErrors } =
-          validatePipeline({ config, schema, jobs })
+          validatePipeline({
+            config,
+            schema,
+            jobs,
+            monacoJobsSchema,
+            jobNameSchema,
+          })
 
         dispatch(setConfigValidationErrors(configValidationErrors))
         dispatch(setJobsValidationErrors(jobsValidationErrors))

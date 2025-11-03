@@ -6,6 +6,7 @@ export const getCloudSsoUtmCampaign = (
 ): CloudSsoUtmCampaign => {
   switch (source) {
     case OAuthSocialSource.ListOfDatabases:
+    case OAuthSocialSource.DatabaseConnectionList:
       return CloudSsoUtmCampaign.ListOfDatabases
     case OAuthSocialSource.BrowserSearch:
       return CloudSsoUtmCampaign.BrowserSearch
@@ -32,6 +33,10 @@ export const getCloudSsoUtmCampaign = (
       return CloudSsoUtmCampaign.UserProfile
     case OAuthSocialSource.SettingsPage:
       return CloudSsoUtmCampaign.Settings
+    case OAuthSocialSource.NavigationMenu:
+      return CloudSsoUtmCampaign.NavigationMenu
+    case OAuthSocialSource.AddDbForm:
+      return CloudSsoUtmCampaign.AddDbForm
     default:
       return CloudSsoUtmCampaign.Unknown
   }

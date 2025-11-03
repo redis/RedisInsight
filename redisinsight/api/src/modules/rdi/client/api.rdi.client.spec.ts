@@ -45,6 +45,12 @@ const createMockPostImplementation = (
   };
 };
 
+const axiosError = (status: number, message = 'Request failed') => ({
+  isAxiosError: true,
+  message,
+  status,
+});
+
 describe('ApiRdiClient', () => {
   let client: ApiRdiClient;
 
@@ -432,7 +438,7 @@ describe('ApiRdiClient', () => {
       );
     });
 
-    it('should return targets data even if TestSourcesConnections fails', async () => {
+    it('should return targets when single source test fails', async () => {
       const expectedTargetsResponse = {
         targets: { target1: { status: 'success' } },
       };
@@ -453,19 +459,19 @@ describe('ApiRdiClient', () => {
 
       expect(response).toEqual({
         targets: expectedTargetsResponse.targets,
-        sources: {},
+        sources: {
+          source1: {
+            connected: false,
+            error: 'Failed to test source connection.',
+          },
+        },
       });
 
       expect(mockedAxios.post).toHaveBeenCalledTimes(2);
-
-      expect(loggerErrorSpy).toHaveBeenCalledWith(
-        'Failed to fetch sources',
-        expect.any(Error),
-      );
       loggerErrorSpy.mockRestore();
     });
 
-    it('should return targets data even if TestSourcesConnections fails, asd', async () => {
+    it('should return targets when one of multiple source tests fails', async () => {
       const expectedTargetsResponse = {
         targets: { target1: { status: 'success' } },
       };
@@ -496,16 +502,103 @@ describe('ApiRdiClient', () => {
         targets: expectedTargetsResponse.targets,
         sources: {
           source1: { connected: true, error: '' },
+          source2: {
+            connected: false,
+            error: 'Failed to test source connection.',
+          },
         },
       });
 
       expect(mockedAxios.post).toHaveBeenCalledTimes(3);
-
-      expect(loggerErrorSpy).toHaveBeenCalledWith(
-        'Failed to fetch sources',
-        expect.any(Error),
-      );
       loggerErrorSpy.mockRestore();
+    });
+
+    it('should map 405 to the friendly message for a single source', async () => {
+      const expectedTargetsResponse = {
+        targets: { target1: { status: 'success' } },
+      };
+
+      mockedAxios.post
+        .mockResolvedValueOnce({ data: expectedTargetsResponse }) // TestTargetsConnections
+        .mockRejectedValueOnce(axiosError(405)); // TestSourcesConnections
+
+      const response = await client.testConnections({
+        sources: { source1: {} },
+      });
+
+      expect(response).toEqual({
+        targets: expectedTargetsResponse.targets,
+        sources: {
+          source1: {
+            connected: false,
+            error:
+              'Testing source connections is not supported in your RDI version. Please upgrade to version 1.6.0 or later.',
+          },
+        },
+      });
+
+      expect(mockedAxios.post).toHaveBeenCalledTimes(2);
+    });
+
+    it('should map the 405 only to the failing source among multiple sources', async () => {
+      const expectedTargetsResponse = {
+        targets: { target1: { status: 'success' } },
+      };
+
+      mockedAxios.post
+        .mockResolvedValueOnce({ data: expectedTargetsResponse }) // TestTargetsConnections
+        .mockResolvedValueOnce({ data: { connected: true, error: '' } }) // source1 OK
+        .mockRejectedValueOnce(axiosError(405)); // source2 405
+
+      const response = await client.testConnections({
+        sources: { source1: {}, source2: {} },
+      });
+
+      expect(response).toEqual({
+        targets: expectedTargetsResponse.targets,
+        sources: {
+          source1: { connected: true, error: '' },
+          source2: {
+            connected: false,
+            error:
+              'Testing source connections is not supported in your RDI version. Please upgrade to version 1.6.0 or later.',
+          },
+        },
+      });
+
+      expect(mockedAxios.post).toHaveBeenCalledTimes(3);
+    });
+
+    it('should handle mixed non-405 and 405 source failures', async () => {
+      const expectedTargetsResponse = {
+        targets: { target1: { status: 'success' } },
+      };
+
+      mockedAxios.post
+        .mockResolvedValueOnce({ data: expectedTargetsResponse }) // targets
+        .mockRejectedValueOnce(axiosError(500, 'Internal error')) // source1 500
+        .mockRejectedValueOnce(axiosError(405)); // source2 405
+
+      const response = await client.testConnections({
+        sources: { source1: {}, source2: {} },
+      });
+
+      expect(response).toEqual({
+        targets: expectedTargetsResponse.targets,
+        sources: {
+          source1: {
+            connected: false,
+            error: 'Failed to test source connection.',
+          },
+          source2: {
+            connected: false,
+            error:
+              'Testing source connections is not supported in your RDI version. Please upgrade to version 1.6.0 or later.',
+          },
+        },
+      });
+
+      expect(mockedAxios.post).toHaveBeenCalledTimes(3);
     });
   });
 

@@ -1,11 +1,11 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { useDispatch } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { isUndefined } from 'lodash'
 
 import { findTutorialPath, Maybe, Nullable } from 'uiSrc/utils'
-import { FeatureFlags, Pages, Theme } from 'uiSrc/constants'
+import { FeatureFlags, Pages } from 'uiSrc/constants'
 import {
   FeatureFlagComponent,
   RecommendationBody,
@@ -15,7 +15,6 @@ import {
 } from 'uiSrc/components'
 import { Vote } from 'uiSrc/constants/recommendations'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import {
   deleteLiveRecommendations,
   updateLiveRecommendation,
@@ -28,6 +27,7 @@ import {
 
 import {
   HideIcon,
+  RediStackMinIcon,
   ShowIcon,
   SnoozeIcon,
   StarsIcon,
@@ -40,7 +40,6 @@ import {
   IconButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { Title } from 'uiSrc/pages/vector-search/manage-indexes/styles'
@@ -76,7 +75,6 @@ const RecommendationTitle = ({
   title?: string
   id: string
 }) => {
-  const { theme } = useContext(ThemeContext)
   return (
     <Row
       align="center"
@@ -101,12 +99,7 @@ const RecommendationTitle = ({
               position="top"
               anchorClassName="flex-row"
             >
-              <RiIcon
-                type={
-                  theme === Theme.Dark
-                    ? 'RediStackDarkMinIcon'
-                    : 'RediStackLightMinIcon'
-                }
+              <RediStackMinIcon
                 className={styles.redisStackIcon}
                 data-testid={`${id}-redis-stack-icon`}
               />

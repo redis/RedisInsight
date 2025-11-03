@@ -11,11 +11,14 @@ export class RedisConnectionUnauthorizedException extends RedisConnectionFailedE
     message: string = ERROR_MESSAGES.AUTHENTICATION_FAILED(),
     options?: HttpExceptionOptions,
   ) {
-    super({
-      message,
-      error: 'RedisConnectionUnauthorizedException',
-      statusCode: RedisConnectionFailedStatusCode,
-      errorCode: CustomErrorCodes.RedisConnectionUnauthorized,
-    }, options);
+    super(
+      {
+        message,
+        error: 'RedisConnectionUnauthorizedException',
+        statusCode: RedisConnectionFailedStatusCode,
+        errorCode: CustomErrorCodes.RedisConnectionUnauthorized,
+      },
+      options,
+    );
   }
 }

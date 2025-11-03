@@ -385,7 +385,6 @@ const ListDetailsTable = () => {
     >
       <VirtualTable
         autoHeight
-        hideProgress
         expandable
         tableRef={tableRef}
         selectable={false}

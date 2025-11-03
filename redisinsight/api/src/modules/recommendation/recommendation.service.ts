@@ -7,6 +7,7 @@ import { RedisString } from 'src/common/constants';
 import { Key } from 'src/modules/database-analysis/models';
 import { RedisClient } from 'src/modules/redis/client';
 
+// TODO: do we need info and libraries?
 interface RecommendationInput {
   client?: RedisClient;
   keys?: Key[];
@@ -32,16 +33,7 @@ export class RecommendationService {
     dto: RecommendationInput,
   ): Promise<Recommendation[]> {
     // generic solution, if somewhere we will sent info, we don't need determined some recommendations
-    const {
-      client,
-      keys,
-      info,
-      total,
-      globalClient,
-      exclude,
-      indexes,
-      libraries,
-    } = dto;
+    const { client, keys, total, globalClient, exclude, indexes } = dto;
 
     const recommendations: Map<string, () => Promise<Recommendation | null>> =
       new Map([

@@ -669,7 +669,7 @@ describe(`PATCH /databases/:id`, () => {
 
         await validateApiCall({
           endpoint: () => endpoint(constants.TEST_INSTANCE_ID_2),
-          statusCode: 400,
+          statusCode: 424,
           data: {
             name: dbName,
             host: constants.TEST_REDIS_HOST,
@@ -679,10 +679,9 @@ describe(`PATCH /databases/:id`, () => {
             caCert: null,
           },
           responseBody: {
-            statusCode: 400,
-            // todo: verify error handling because right now messages are different
-            // message: 'Could not connect to',
-            error: 'Bad Request',
+            statusCode: 424,
+            message: 'Could not connect to redis:6379, please check the CA or Client certificate.',
+            error: 'RedisConnectionIncorrectCertificateException',
           },
         });
 
@@ -695,7 +694,7 @@ describe(`PATCH /databases/:id`, () => {
 
         await validateApiCall({
           endpoint: () => endpoint(constants.TEST_INSTANCE_ID_2),
-          statusCode: 400,
+          statusCode: 424,
           data: {
             name: dbName,
             host: constants.TEST_REDIS_HOST,
@@ -708,10 +707,9 @@ describe(`PATCH /databases/:id`, () => {
             },
           },
           responseBody: {
-            statusCode: 400,
-            // todo: verify error handling because right now messages are different
-            // message: 'Could not connect to',
-            error: 'Bad Request',
+            statusCode: 424,
+            message: 'Could not connect to redis:6379, please check the CA or Client certificate.',
+            error: 'RedisConnectionIncorrectCertificateException',
           },
         });
 
@@ -1203,7 +1201,7 @@ describe(`PATCH /databases/:id`, () => {
 
         await validateApiCall({
           endpoint,
-          statusCode: 401,
+          statusCode: 424,
           data: {
             name: dbName,
             sentinelMaster: {
@@ -1211,10 +1209,10 @@ describe(`PATCH /databases/:id`, () => {
             },
           },
           responseBody: {
-            statusCode: 401,
+            statusCode: 424,
             message:
               'Failed to authenticate, please check the username or password.',
-            error: 'Unauthorized',
+            error: 'RedisConnectionUnauthorizedException',
           },
         });
       });

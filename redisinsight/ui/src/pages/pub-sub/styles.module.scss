@@ -16,12 +16,9 @@
 }
 
 .onboardAnchor {
-  position: relative;
-  visibility: hidden;
-  opacity: 0;
+  align-self: end;
 }
 
 .onboardPanel {
-  position: fixed;
-  top: calc(100% - 214px) !important;
+  margin-right: 15px; // Dirty placement fix, to position popover in the bottom right corner of the screen, in line with the browser containers
 }

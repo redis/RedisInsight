@@ -14,8 +14,16 @@ import {
   sanitizeErrors,
 } from './logsFormatter';
 
+const stringCause = 'string cause';
+const objectCause = { object: 'cause' };
 const simpleError = new Error('Original error');
 simpleError['some'] = 'field';
+const errorWithStringCause = new NotFoundException('Not found', {
+  cause: stringCause,
+});
+const errorWithObjectCause = new NotFoundException('Not found', {
+  cause: objectCause,
+});
 const errorWithCause = new NotFoundException('Not found', {
   cause: simpleError,
 });
@@ -25,6 +33,10 @@ const errorWithCauseDepth2 = new BadRequestException('Bad req', {
 const errorWithCauseDepth3 = new CloudOauthMisconfigurationException(
   'Misconfigured',
   { cause: errorWithCauseDepth2 },
+);
+const errorWithObjectCauseDepth = new CloudOauthMisconfigurationException(
+  'Misconfigured',
+  { cause: errorWithObjectCause },
 );
 const axiosError = new AxiosError(
   'Request failed with status code 404',
@@ -132,8 +144,18 @@ describe('logsFormatter', () => {
       expect(getOriginalErrorCause(errorWithCauseDepth3)).toEqual(simpleError);
     });
 
-    it('should return undefined if input is not an Error instance', () => {
-      expect(getOriginalErrorCause({ cause: simpleError })).toEqual(undefined);
+    it('should return simple error if it is last in the chain and only the one in cause', () => {
+      expect(getOriginalErrorCause({ cause: simpleError })).toEqual(
+        simpleError,
+      );
+    });
+
+    it('should return string as cause', () => {
+      expect(getOriginalErrorCause(errorWithStringCause)).toEqual(stringCause);
+    });
+
+    it('should return object as cause', () => {
+      expect(getOriginalErrorCause(errorWithObjectCause)).toEqual(objectCause);
     });
 
     it('should not fail if input is not specified', () => {
@@ -167,6 +189,16 @@ describe('logsFormatter', () => {
           type: 'Error',
           message: simpleError.message,
         },
+      });
+    });
+
+    it('should return sanitized object with a single original cause for nested errors', () => {
+      expect(
+        sanitizeError(errorWithObjectCauseDepth, { omitSensitiveData: true }),
+      ).toEqual({
+        type: 'CloudOauthMisconfigurationException',
+        message: errorWithObjectCauseDepth.message,
+        cause: objectCause,
       });
     });
 

@@ -33,13 +33,6 @@ const mockGetTotalResponse1000000: number = 1000000;
 const mockGetTotalResponse0: number = 0;
 const mockGetTotalResponse10: number = 10;
 
-const mockKeyInfo: GetKeyInfoResponse = {
-  name: 'testString',
-  type: 'string',
-  ttl: -1,
-  size: 50,
-};
-
 describe('StandaloneScannerStrategy', () => {
   let strategy: StandaloneScannerStrategy;
 

@@ -33,7 +33,7 @@ if (fs.existsSync(workingDirectory)) {
         .beforeEach(async() => {
             await databaseHelper.acceptLicenseTerms();
         });
-    test.skip('Verify that user has the ability to update "Create free trial database" button without changing the app', async t => {
+    test.skip('Verify that user has the ability to update "Create free database" button without changing the app', async t => {
         // Create new file paths due to cache-ability
         const timestampPathNew = editJsonFile(timestampPromoButtonPath);
         const contentPathNew = editJsonFile(contentPromoButtonPath);

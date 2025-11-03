@@ -38,7 +38,7 @@ const CreateCloud = () => {
           >
             <SideBarItem
               tooltipProps={{
-                text: 'Create FREE trial Redis Cloud database',
+                text: 'Create FREE Redis Cloud database',
                 placement: 'right',
               }}
               onClick={(e) => {

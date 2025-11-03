@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { chunk, reverse } from 'lodash'
+import { chunk } from 'lodash'
 import {
   Nullable,
   getCommandsForExecution,
@@ -13,22 +13,15 @@ import {
   RunQueryMode,
   ResultsMode,
   CommandExecutionUI,
-  CommandExecution,
+  CommandExecutionType,
 } from 'uiSrc/slices/interfaces'
 import { PIPELINE_COUNT_DEFAULT } from 'uiSrc/constants/api'
-import {
-  addCommands,
-  clearCommands,
-  findCommand,
-  removeCommand,
-} from 'uiSrc/services/workbenchStorage'
+import { CommandsHistoryService } from 'uiSrc/services/commands-history/commandsHistoryService'
 import {
   createErrorResult,
   createGroupItem,
-  executeApiCall,
   generateCommandId,
   limitHistoryLength,
-  loadHistoryData,
   prepareNewItems,
   scrollToElement,
   sortCommandsByDate,
@@ -44,13 +37,18 @@ const useQuery = () => {
   const [processing, setProcessing] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
 
+  const commandsHistoryService = useRef(
+    new CommandsHistoryService(CommandExecutionType.Search),
+  ).current
+
   const resultsMode = ResultsMode.Default
   const activeRunQueryMode = RunQueryMode.ASCII
 
   useEffect(() => {
     const loadHistory = async () => {
       try {
-        const historyData = await loadHistoryData(instanceId)
+        const historyData =
+          await commandsHistoryService.getCommandsHistory(instanceId)
         setItems(historyData)
       } catch (error) {
         // Silently handle error
@@ -64,7 +62,7 @@ const useQuery = () => {
 
   const handleApiSuccess = useCallback(
     async (
-      data: CommandExecution[],
+      data: CommandExecutionUI[],
       commandId: string,
       isNewCommand: boolean,
     ) => {
@@ -83,8 +81,6 @@ const useQuery = () => {
         })
         return sortCommandsByDate(updatedItems)
       })
-
-      await addCommands(reverse(data))
 
       if (isNewCommand) {
         scrollToElement(scrollDivRef.current, 'start')
@@ -154,11 +150,13 @@ const useQuery = () => {
         return limitHistoryLength(updatedItems)
       })
 
-      const data = await executeApiCall(
+      const data = await commandsHistoryService.addCommandsToHistory(
         instanceId,
         commands,
-        activeRunQueryMode,
-        resultsMode,
+        {
+          activeRunQueryMode,
+          resultsMode,
+        },
       )
 
       await handleApiSuccess(data, newCommandId, !commandId)
@@ -202,7 +200,10 @@ const useQuery = () => {
   const handleQueryDelete = useCallback(
     async (commandId: string) => {
       try {
-        await removeCommand(instanceId, commandId)
+        await commandsHistoryService.deleteCommandFromHistory(
+          instanceId,
+          commandId,
+        )
         setItems((prevItems) =>
           prevItems.filter((item) => item.id !== commandId),
         )
@@ -216,7 +217,7 @@ const useQuery = () => {
   const handleAllQueriesDelete = useCallback(async () => {
     try {
       setClearing(true)
-      await clearCommands(instanceId)
+      await commandsHistoryService.clearCommandsHistory(instanceId)
       setItems([])
     } catch (error) {
       // Keep clearing state false on error
@@ -233,7 +234,11 @@ const useQuery = () => {
         ),
       )
 
-      const command = await findCommand(commandId)
+      const command = await commandsHistoryService.getCommandHistory(
+        instanceId,
+        commandId,
+      )
+
       setItems((prevItems) =>
         prevItems.map((item) => {
           if (item.id !== commandId) return item

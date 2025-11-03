@@ -11,11 +11,14 @@ export class RedisConnectionDefaultUserDisabledException extends RedisConnection
     message: string = ERROR_MESSAGES.DATABASE_DEFAULT_USER_DISABLED,
     options?: HttpExceptionOptions,
   ) {
-    super({
-      message,
-      error: 'RedisConnectionDefaultUserDisabledException',
-      statusCode: RedisConnectionFailedStatusCode,
-      errorCode: CustomErrorCodes.RedisConnectionDefaultUserDisabled,
-    }, options);
+    super(
+      {
+        message,
+        error: 'RedisConnectionDefaultUserDisabledException',
+        statusCode: RedisConnectionFailedStatusCode,
+        errorCode: CustomErrorCodes.RedisConnectionDefaultUserDisabled,
+      },
+      options,
+    );
   }
 }

@@ -28,9 +28,7 @@ import { DatabaseService } from 'src/modules/database/database.service';
 import { DatabaseFactory } from 'src/modules/database/providers/database.factory';
 import { RedisClientFactory } from 'src/modules/redis/redis.client.factory';
 import { ConstantsProvider } from 'src/modules/constants/providers/constants.provider';
-import {
-  RedisConnectionIncorrectCertificateException,
-} from 'src/modules/redis/exceptions/connection';
+import { RedisConnectionIncorrectCertificateException } from 'src/modules/redis/exceptions/connection';
 
 describe('RedisSentinelService', () => {
   let service: RedisSentinelService;

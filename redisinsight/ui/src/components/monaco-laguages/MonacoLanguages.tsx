@@ -67,14 +67,23 @@ const MonacoLanguages = () => {
       name?.startsWith(ModuleCommandPrefix.RediSearch),
     )
 
-    monaco.languages.setMonarchTokensProvider(
-      MonacoLanguage.RediSearch,
-      getRediSearchSubRedisMonarchTokensProvider(REDIS_SEARCH_COMMANDS),
-    )
-    monaco.languages.setMonarchTokensProvider(
-      MonacoLanguage.Redis,
-      getRedisMonarchTokensProvider(REDIS_COMMANDS),
-    )
+    try {
+      monaco.languages.setMonarchTokensProvider(
+        MonacoLanguage.RediSearch,
+        getRediSearchSubRedisMonarchTokensProvider(REDIS_SEARCH_COMMANDS),
+      )
+    } catch (exception) {
+      console.error('Monaco RediSearch language setup error: ', exception)
+    }
+
+    try {
+      monaco.languages.setMonarchTokensProvider(
+        MonacoLanguage.Redis,
+        getRedisMonarchTokensProvider(REDIS_COMMANDS),
+      )
+    } catch (exception) {
+      console.error('Monaco Redis language setup error: ', exception)
+    }
   }
 
   return null

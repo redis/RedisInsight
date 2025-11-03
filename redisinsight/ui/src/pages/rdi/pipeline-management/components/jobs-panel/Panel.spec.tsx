@@ -43,6 +43,12 @@ describe('JobsPanel', () => {
     expect(render(<JobsPanel {...instance(mockedProps)} />)).toBeTruthy()
   })
 
+  it('should have default value', () => {
+    render(<JobsPanel {...instance(mockedProps)} />)
+
+    expect(screen.getByTestId('input-value')).toHaveValue('{\n}')
+  })
+
   it('should call onClose', () => {
     const mockOnClose = jest.fn()
     render(<JobsPanel {...instance(mockedProps)} onClose={mockOnClose} />)
@@ -54,7 +60,7 @@ describe('JobsPanel', () => {
   it('should render run btn with proper properties', () => {
     render(<JobsPanel {...instance(mockedProps)} />)
 
-    expect(screen.getByTestId('dry-run-btn')).toBeDisabled()
+    expect(screen.getByTestId('dry-run-btn')).not.toBeDisabled()
 
     // set invalid json value
     fireEvent.change(screen.getByTestId('input-value'), {

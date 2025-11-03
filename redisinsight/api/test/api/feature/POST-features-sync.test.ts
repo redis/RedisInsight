@@ -35,7 +35,7 @@ describe('POST /features/sync', () => {
           .remove(constants.TEST_FEATURE_FLAG_REMOTE_CONFIG_PATH)
           .catch(console.error);
         // remove all configs
-        await featureConfigRepository.delete({});
+        await featureConfigRepository.deleteAll();
 
         const [config] = await featureConfigRepository.find();
         expect(config).to.eq(undefined);
@@ -55,8 +55,7 @@ describe('POST /features/sync', () => {
         await fsExtra
           .remove(constants.TEST_FEATURE_FLAG_REMOTE_CONFIG_PATH)
           .catch(console.error);
-        await featureConfigRepository.update(
-          {},
+        await featureConfigRepository.updateAll(
           {
             data: JSON.stringify({
               ...defaultConfig,
@@ -98,7 +97,7 @@ describe('POST /features/sync', () => {
           .catch(console.error);
 
         // remove all configs
-        await featureConfigRepository.delete({});
+        await featureConfigRepository.deleteAll();
 
         const [config] = await featureConfigRepository.find();
 
@@ -134,8 +133,7 @@ describe('POST /features/sync', () => {
           )
           .catch(console.error);
         // remove all configs
-        await featureConfigRepository.update(
-          {},
+        await featureConfigRepository.updateAll(
           {
             data: JSON.stringify({
               ...defaultConfig,

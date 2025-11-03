@@ -322,8 +322,6 @@ export class NodeRedisConnectionStrategy extends RedisConnectionStrategy {
    */
   public async createSentinelClient(
     clientMetadata: ClientMetadata,
-    database: Database,
-    options: IRedisConnectionOptions,
   ): Promise<RedisClient> {
     // Additional validation
     ClientMetadata.validate(clientMetadata);

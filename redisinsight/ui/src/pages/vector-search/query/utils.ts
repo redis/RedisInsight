@@ -1,5 +1,5 @@
 import { scrollIntoView, getUrl, isStatusSuccessful } from 'uiSrc/utils'
-import { EMPTY_COMMAND, ApiEndpoints } from 'uiSrc/constants'
+import { ApiEndpoints } from 'uiSrc/constants'
 import {
   RunQueryMode,
   ResultsMode,
@@ -10,7 +10,6 @@ import {
 import { apiService } from 'uiSrc/services'
 import { WORKBENCH_HISTORY_MAX_LENGTH } from 'uiSrc/pages/workbench/constants'
 import { CommandExecutionStatus } from 'uiSrc/slices/interfaces/cli'
-import { getLocalWbHistory } from 'uiSrc/services/workbenchStorage'
 
 export const sortCommandsByDate = (
   commands: CommandExecutionUI[],
@@ -72,23 +71,6 @@ export const limitHistoryLength = (
   items.length > WORKBENCH_HISTORY_MAX_LENGTH
     ? items.slice(0, WORKBENCH_HISTORY_MAX_LENGTH)
     : items
-
-export const loadHistoryData = async (
-  instanceId: string,
-): Promise<CommandExecutionUI[]> => {
-  const commandsHistory = await getLocalWbHistory(instanceId)
-  if (!Array.isArray(commandsHistory)) {
-    return []
-  }
-
-  const processedHistory = commandsHistory.map((item) => ({
-    ...item,
-    command: item.command || EMPTY_COMMAND,
-    emptyCommand: !item.command,
-  }))
-
-  return sortCommandsByDate(processedHistory)
-}
 
 export const executeApiCall = async (
   instanceId: string,

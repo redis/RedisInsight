@@ -11,11 +11,14 @@ export class RedisConnectionClusterNodesUnavailableException extends RedisConnec
     message: string = ERROR_MESSAGES.DB_CLUSTER_CONNECT_FAILED,
     options?: HttpExceptionOptions,
   ) {
-    super({
-      message,
-      error: 'RedisConnectionClusterNodesUnavailableException',
-      statusCode: RedisConnectionFailedStatusCode,
-      errorCode: CustomErrorCodes.RedisConnectionClusterNodesUnavailable,
-    }, options);
+    super(
+      {
+        message,
+        error: 'RedisConnectionClusterNodesUnavailableException',
+        statusCode: RedisConnectionFailedStatusCode,
+        errorCode: CustomErrorCodes.RedisConnectionClusterNodesUnavailable,
+      },
+      options,
+    );
   }
 }

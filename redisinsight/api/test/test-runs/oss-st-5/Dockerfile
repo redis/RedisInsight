@@ -1,7 +1,7 @@
-FROM redislabs/redisearch:1.6.15 as redisearch
-FROM redislabs/rejson:1.0.8 as rejson
+FROM --platform=linux/amd64 redislabs/redisearch:1.6.15 as redisearch
+FROM --platform=linux/amd64 redislabs/rejson:1.0.8 as rejson
 
-FROM redis:5
+FROM --platform=linux/amd64 redis:5
 
 # Install RediSearch 1.6.15
 COPY --from=redisearch /usr/lib/redis/modules/ /usr/lib/redis/modules/

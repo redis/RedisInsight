@@ -59,9 +59,9 @@ export const INFINITE_MESSAGES: Record<
         {step === CloudJobStep.Subscription &&
           'Processing Cloud subscriptions…'}
         {step === CloudJobStep.Database &&
-          'Creating a free trial Cloud database…'}
+          'Creating a free Redis Cloud database…'}
         {step === CloudJobStep.Import &&
-          'Importing a free trial Cloud database…'}
+          'Importing a free Redis Cloud database…'}
       </>
     ),
     description: (
@@ -165,7 +165,7 @@ export const INFINITE_MESSAGES: Record<
   },
   DATABASE_EXISTS: (onSuccess?: () => void, onClose?: () => void) => ({
     id: InfiniteMessagesIds.databaseExists,
-    message: 'You already have a free trial Redis Cloud subscription.',
+    message: 'You already have a free Redis Cloud subscription.',
     description:
       'Do you want to import your existing database into Redis Insight?',
     actions: {
@@ -208,9 +208,9 @@ export const INFINITE_MESSAGES: Record<
   SUBSCRIPTION_EXISTS: (onSuccess?: () => void, onClose?: () => void) => ({
     id: InfiniteMessagesIds.subscriptionExists,
     message:
-      'Your subscription does not have a free trial Redis Cloud database.',
+      'Your subscription does not have a free Redis Cloud database.',
     description:
-      'Do you want to create a free trial database in your existing subscription?',
+      'Do you want to create a free database in your existing subscription?',
     actions: {
       primary: { label: 'Create', onClick: () => onSuccess?.() },
     },

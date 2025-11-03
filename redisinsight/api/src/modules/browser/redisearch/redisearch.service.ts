@@ -1,10 +1,5 @@
 import { isUndefined, toNumber, uniq } from 'lodash';
-import {
-  ConflictException,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { ConflictException, Injectable, Logger } from '@nestjs/common';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import { catchRedisSearchError } from 'src/utils';
 import { ClientMetadata } from 'src/common/models';

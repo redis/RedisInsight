@@ -99,7 +99,10 @@ describe('RedisEnterpriseAnalytics', () => {
       );
     });
     it('should emit GetRedisSoftwareDbsSucceed event for undefined input value', () => {
-      service.sendGetRedisSoftwareDbsSucceedEvent(mockSessionMetadata, undefined);
+      service.sendGetRedisSoftwareDbsSucceedEvent(
+        mockSessionMetadata,
+        undefined,
+      );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,

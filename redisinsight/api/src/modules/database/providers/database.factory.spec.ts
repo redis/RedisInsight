@@ -34,7 +34,6 @@ import { ClientCertificateService } from 'src/modules/certificate/client-certifi
 import { ConnectionType } from 'src/modules/database/entities/database.entity';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import { NotFoundException } from '@nestjs/common';
-import { RedisErrorCodes } from 'src/constants';
 import { RedisClientFactory } from 'src/modules/redis/redis.client.factory';
 
 describe('DatabaseFactory', () => {
@@ -98,7 +97,7 @@ describe('DatabaseFactory', () => {
         await service.createDatabaseModel(mockSessionMetadata, mockDatabase);
         fail();
       } catch (e) {
-        expect(e.message).toEqual(RedisErrorCodes.SentinelParamsRequired);
+        expect(e.message).toEqual(ERROR_MESSAGES.SENTINEL_MASTER_NAME_REQUIRED);
       }
     });
     it('should create cluster database model', async () => {
