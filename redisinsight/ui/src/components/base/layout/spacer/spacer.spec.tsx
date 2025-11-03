@@ -12,6 +12,7 @@ const sizeToValue = {
   xl: '2rem',
   xxl: '2.4rem',
 } as const
+
 describe('Spacer', () => {
   test('is rendered', () => {
     const { container } = render(<Spacer />)

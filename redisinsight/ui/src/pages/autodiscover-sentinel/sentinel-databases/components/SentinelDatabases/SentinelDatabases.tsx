@@ -268,12 +268,6 @@ const SentinelDatabases = ({
               </Col>
             )}
           />
-          {!items.length && message !== notMastersMsg && (
-            <>
-              <Spacer size="m" />
-              <Text size="S">{message}</Text>
-            </>
-          )}
           {!masters.length && (
             <Col centered full>
               <Text size="L">{notMastersMsg}</Text>
