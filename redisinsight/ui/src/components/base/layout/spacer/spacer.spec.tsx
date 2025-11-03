@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { render } from 'uiSrc/utils/test-utils'
-import { Spacer } from './Spacer'
+import { Spacer } from './spacer'
 import { SpacerProps } from './spacer.styles'
 
 const sizeToValue = {
