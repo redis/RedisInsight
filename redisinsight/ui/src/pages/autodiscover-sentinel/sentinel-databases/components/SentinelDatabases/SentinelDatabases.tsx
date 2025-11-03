@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import { sentinelSelector } from 'uiSrc/slices/instances/sentinel'
@@ -9,32 +9,28 @@ import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
   DestructiveButton,
-  EmptyButton,
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { ArrowLeftIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { SearchInput } from 'uiSrc/components/base/inputs'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import {
-  Table,
   ColumnDef,
   RowSelectionState,
+  Table,
 } from 'uiSrc/components/base/layout/table'
 import {
   DatabaseContainer,
   DatabaseWrapper,
   Footer,
-  PageSubTitle,
-  PageTitle,
-  SearchContainer,
-  SearchForm,
 } from 'uiSrc/components/auto-discover'
 
-import styles from '../../../styles.module.scss'
-import { getRowId } from 'uiSrc/pages/autodiscover-sentinel/sentinel-databases/useSentinelDatabasesConfig'
 import { Spacer } from 'uiSrc/components/base/layout'
+import { Header } from 'uiSrc/components/auto-discover/Header'
+import { getRowId } from '../../useSentinelDatabasesConfig'
+
+import styles from '../../../styles.module.scss'
 
 export interface Props {
   columns: ColumnDef<ModifiedSentinelMaster>[]
@@ -205,44 +201,20 @@ const SentinelDatabases = ({
   return (
     <AutodiscoveryPageTemplate>
       <DatabaseContainer justify="start">
-        <Row align="center" justify="between" grow={false}>
-          <Col align="start" justify="start">
-            <EmptyButton
-              icon={ArrowLeftIcon}
-              onClick={onBack}
-              className="btn-cancel btn-back"
-              data-testid="btn-back-adding"
-            >
-              Add databases
-            </EmptyButton>
-            <Spacer size="s" />
-            <PageTitle data-testid="title">
-              Auto-Discover Redis Sentinel Primary Groups
-            </PageTitle>
-            <Spacer size="m" />
-            {items.length > 0 && (
-              <FlexItem grow>
-                <PageSubTitle>
-                  Redis Sentinel instance found. <br />
-                  Here is a list of primary groups your Sentinel instance is
-                  managing. Select the primary group(s) you want to add:
-                </PageSubTitle>
-              </FlexItem>
-            )}
-          </Col>
-          <Row justify="end" gap="s" grow={false}>
-            <SearchContainer>
-              <SearchForm>
-                <SearchInput
-                  placeholder="Search..."
-                  onChange={onQueryChange}
-                  aria-label="Search"
-                  data-testid="search"
-                />
-              </SearchForm>
-            </SearchContainer>
-          </Row>
-        </Row>
+        <Header
+          title="Auto-Discover Redis Sentinel Primary Groups"
+          onBack={onBack}
+          onQueryChange={onQueryChange}
+          subTitle={
+            masters.length > 0 && (
+              <>
+                Redis Sentinel instance found. <br />
+                Here is a list of primary groups your Sentinel instance is
+                managing. Select the primary group(s) you want to add:
+              </>
+            )
+          }
+        />
         <Spacer size="m" />
         <DatabaseWrapper>
           <Table

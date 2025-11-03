@@ -1,28 +1,23 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { SearchInput } from 'uiSrc/components/base/inputs'
 
 import { sentinelSelector } from 'uiSrc/slices/instances/sentinel'
 import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
-import { Table, ColumnDef } from 'uiSrc/components/base/layout/table'
+import { ColumnDef, Table } from 'uiSrc/components/base/layout/table'
 
 import {
   DatabaseContainer,
   DatabaseWrapper,
   Footer,
-  PageTitle,
-  SearchForm,
 } from 'uiSrc/components/auto-discover'
 import { Spacer } from 'uiSrc/components/base/layout'
+import { Header } from 'uiSrc/components/auto-discover/Header'
 
 export interface Props {
   countSuccessAdded: number
@@ -102,26 +97,20 @@ const SentinelDatabasesResult = ({
   return (
     <AutodiscoveryPageTemplate>
       <DatabaseContainer justify="start">
-        <PageTitle data-testid="title">
-          Auto-Discover Redis Sentinel Primary Groups
-        </PageTitle>
+        <Header
+          title="Auto-Discover Redis Sentinel Primary Groups"
+          onBack={onBack}
+          onQueryChange={onQueryChange}
+        />
 
-        <Row justify="between" align="center" grow={false}>
-          <FlexItem grow>
-            <SearchForm>
-              <SearchInput
-                placeholder="Search..."
-                onChange={onQueryChange}
-                aria-label="Search"
-                data-testid="search"
-              />
-            </SearchForm>
-          </FlexItem>
-        </Row>
-        <Spacer size="l" />
+        <Spacer size="m" />
         <DatabaseWrapper>
           {!items.length || loading ? (
-            <Text>{message}</Text>
+            <Col full centered>
+              <Text size="XL" variant="semiBold">
+                {message}
+              </Text>
+            </Col>
           ) : (
             <Table
               rowSelectionMode={undefined}
@@ -141,14 +130,7 @@ const SentinelDatabasesResult = ({
         </MessageBar>
       </DatabaseContainer>
       <Footer>
-        <Row justify="between">
-          <SecondaryButton
-            onClick={onBack}
-            className="btn-cancel btn-back"
-            data-testid="btn-back-to-adding"
-          >
-            Back to adding databases
-          </SecondaryButton>
+        <Row justify="end">
           <PrimaryButton
             size="m"
             onClick={handleViewDatabases}

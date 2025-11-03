@@ -20,7 +20,7 @@ import { RedisLogoFullIcon } from 'uiSrc/components/base/icons'
 import styles from './PageHeader.module.scss'
 
 interface Props {
-  title: string
+  title?: string
   subtitle?: string
   children?: React.ReactNode
   showInsights?: boolean
@@ -57,9 +57,11 @@ const PageHeader = (props: Props) => {
     <div className={cx(styles.pageHeader, className)}>
       <div className={styles.pageHeaderTop}>
         <div>
-          <Title size="L" data-testid="page-title">
-            <b data-testid="page-header-title">{title}</b>
-          </Title>
+          {title && (
+            <Title size="L" data-testid="page-title">
+              <b data-testid="page-header-title">{title}</b>
+            </Title>
+          )}
           {subtitle ? <span data-testid="page-subtitle">{subtitle}</span> : ''}
         </div>
         {children ? <>{children}</> : ''}
