@@ -14,7 +14,7 @@ import {
 } from 'uiSrc/utils'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { FormField, InfoIconProps } from 'uiSrc/components/base/forms/FormField'
+import { FormField, RiInfoIconProps } from 'uiSrc/components/base/forms/FormField'
 import {
   NumericInput,
   PasswordInput,
@@ -30,7 +30,7 @@ interface IShowFields {
   timeout: boolean
 }
 
-const infoIcon: InfoIconProps = {
+const infoIcon: RiInfoIconProps = {
   content: (
     <div className="homePage_tooltip">
       <div>

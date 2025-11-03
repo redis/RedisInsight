@@ -2,13 +2,13 @@ import React, { ComponentProps } from 'react'
 import {
   FormField as RedisFormField,
   TooltipProvider,
+  LabelProps,
 } from '@redis-ui/components'
-import { InfoIconProps } from '@redis-ui/components/dist/Label/components/InfoIcon/InfoIcon.types'
 
-export type { InfoIconProps }
+export type RiInfoIconProps = LabelProps['infoIconProps']
 
 export type RedisFormFieldProps = ComponentProps<typeof RedisFormField> & {
-  infoIconProps?: InfoIconProps
+  infoIconProps?: RiInfoIconProps
 }
 
 export function FormField(props: RedisFormFieldProps) {
