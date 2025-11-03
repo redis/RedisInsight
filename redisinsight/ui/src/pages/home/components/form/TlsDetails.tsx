@@ -31,6 +31,7 @@ import {
   RiSelectOption,
 } from 'uiSrc/components/base/forms/select/RiSelect'
 import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
+import { Text } from 'uiSrc/components/base/text/Text'
 import styles from '../styles.module.scss'
 
 const suffix = '_tls_details'
@@ -190,7 +191,7 @@ const TlsDetails = (props: Props) => {
           <Checkbox
             id={sslId}
             name="tls"
-            label="Use TLS"
+            label={<Text>Use TLS</Text>}
             checked={!!formik.values.tls}
             onChange={formik.handleChange}
             data-testid="tls"

@@ -18,6 +18,7 @@ import {
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { RiRadioGroup } from 'uiSrc/components/base/forms/radio-group/RadioGroup'
 import { Spacer } from 'uiSrc/components/base/layout'
+import { Text } from 'uiSrc/components/base/text/Text'
 import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
 
 export interface Props {
@@ -55,7 +56,7 @@ const SSHDetails = (props: Props) => {
           <Checkbox
             id={id}
             name="ssh"
-            label="Use SSH Tunnel"
+            label={<Text>Use SSH Tunnel</Text>}
             checked={!!formik.values.ssh}
             onChange={formik.handleChange}
             data-testid="use-ssh"
