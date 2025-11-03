@@ -1,10 +1,8 @@
 import React from 'react'
 import { cloneDeep } from 'lodash'
 import {
-  act,
   cleanup,
   expectActionsToContain,
-  fireEvent,
   mockedStore,
   render,
   screen,
@@ -12,7 +10,8 @@ import {
 } from 'uiSrc/utils/test-utils'
 import { getPipeline, rdiPipelineSelector } from 'uiSrc/slices/rdi/pipeline'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import FetchPipelinePopover from './FetchPipelinePopover'
+import DownloadFromServerModal from './DownloadFromServerModal'
+import { Button } from 'uiSrc/components/base/forms/buttons'
 
 jest.mock('uiSrc/slices/rdi/pipeline', () => ({
   ...jest.requireActual('uiSrc/slices/rdi/pipeline'),
@@ -49,31 +48,31 @@ beforeEach(() => {
   store.clearActions()
 })
 
+const trigger = <Button data-testid="trigger-btn">trigger</Button>
+const renderDownloadFromServerModal = () =>
+  render(<DownloadFromServerModal trigger={trigger} />)
+
 describe('FetchPipelinePopover', () => {
   it('should render', () => {
-    expect(render(<FetchPipelinePopover />)).toBeTruthy()
+    expect(renderDownloadFromServerModal()).toBeTruthy()
   })
 
   it('should open confirmation message', async () => {
-    render(<FetchPipelinePopover />)
+    renderDownloadFromServerModal()
 
-    expect(screen.queryByTestId('confirm-btn')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('upload-confirm-btn')).not.toBeInTheDocument()
 
-    await userEvent.click(screen.getByTestId('upload-pipeline-btn'))
+    await userEvent.click(screen.getByTestId('trigger-btn'))
 
     expect(screen.queryByTestId('upload-confirm-btn')).toBeInTheDocument()
   })
 
   it('should call proper actions', async () => {
-    render(<FetchPipelinePopover />)
+    renderDownloadFromServerModal()
 
-    await act(async () => {
-      fireEvent.click(screen.getByTestId('upload-pipeline-btn'))
-    })
+    await userEvent.click(screen.getByTestId('trigger-btn'))
 
-    await act(async () => {
-      fireEvent.click(screen.getByTestId('upload-confirm-btn'))
-    })
+    await userEvent.click(screen.getByTestId('upload-confirm-btn'))
 
     const expectedActions = [getPipeline()]
     expectActionsToContain(store.getActions(), expectedActions)
@@ -85,11 +84,9 @@ describe('FetchPipelinePopover', () => {
       () => sendEventTelemetryMock,
     )
 
-    render(<FetchPipelinePopover />)
+    renderDownloadFromServerModal()
 
-    await act(async () => {
-      fireEvent.click(screen.getByTestId('upload-pipeline-btn'))
-    })
+    await userEvent.click(screen.getByTestId('trigger-btn'))
 
     expect(sendEventTelemetry).toHaveBeenCalledWith({
       event: TelemetryEvent.RDI_PIPELINE_UPLOAD_FROM_SERVER_CLICKED,
@@ -105,8 +102,8 @@ describe('FetchPipelinePopover', () => {
       loading: true,
     }))
 
-    render(<FetchPipelinePopover />)
+    renderDownloadFromServerModal()
 
-    expect(screen.getByTestId('upload-pipeline-btn')).toBeDisabled()
+    expect(screen.getByTestId('trigger-btn')).toBeDisabled()
   })
 })

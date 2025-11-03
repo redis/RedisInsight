@@ -1,70 +1,71 @@
 import React, { useState } from 'react'
-import cx from 'classnames'
 import UploadModal from 'uiSrc/pages/rdi/pipeline-management/components/upload-modal/UploadModal'
 import Download from 'uiSrc/pages/rdi/instance/components/download'
-import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
-import { EmptyButton, IconButton } from 'uiSrc/components/base/forms/buttons'
-import { UploadIcon, MoreactionsIcon } from 'uiSrc/components/base/icons'
-import { RiPopover } from 'uiSrc/components/base'
-import FetchPipelinePopover from '../fetch-pipeline-popover'
+import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import {
+  UploadIcon,
+  MoreactionsIcon,
+  DownloadIcon,
+  SaveIcon,
+} from 'uiSrc/components/base/icons'
 
-import styles from './styles.module.scss'
+import { Menu } from '@redis-ui/components'
+import DownloadFromServerModal from 'uiSrc/pages/rdi/pipeline-management/components/download-from-server-modal/DownloadFromServerModal'
 
 const RdiConfigFileActionMenu = () => {
-  const [isPopoverOpen, setPopover] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
 
-  const onButtonClick = () => {
-    setPopover(!isPopoverOpen)
-  }
-
-  const closePopover = () => {
-    setPopover(false)
-  }
+  const closeMenu = () => setIsOpen(false)
 
   const button = (
     <IconButton
-      className={styles.threeDotsBtn}
       role="button"
       icon={MoreactionsIcon}
-      onClick={onButtonClick}
       data-testid="rdi-config-file-action-menu-trigger"
       aria-label="rdi-config-file-action-menu-trigger"
     />
   )
 
   return (
-    <RiPopover
-      id="rdiConfigFileActionsMenu"
-      initialFocus={false}
-      button={button}
-      isOpen={isPopoverOpen}
-      closePopover={closePopover}
-      panelClassName={cx('popoverLikeTooltip', styles.popoverWrapper)}
-      panelPaddingSize="none"
-      anchorPosition="upRight"
-    >
-      <Col align="start">
-        <FlexItem grow>
-          <FetchPipelinePopover onClose={closePopover} />
-        </FlexItem>
-        <FlexItem grow>
-          <UploadModal onClose={closePopover}>
-            <EmptyButton
-              color="text"
-              className={styles.uploadBtn}
-              icon={UploadIcon}
+    <Menu open={isOpen} onOpenChange={setIsOpen}>
+      <Menu.Trigger withButton>{button}</Menu.Trigger>
+      <Menu.Content>
+        <DownloadFromServerModal
+          onClose={closeMenu}
+          trigger={
+            <Menu.Content.Item
+              text="Download from server"
+              icon={DownloadIcon}
+              onClick={(e) => e.preventDefault()}
               aria-labelledby="Upload pipeline button"
+              data-testid="upload-pipeline-btn"
+            />
+          }
+        />
+        <UploadModal
+          onClose={closeMenu}
+          trigger={
+            <Menu.Content.Item
+              text="Upload from file"
+              icon={UploadIcon}
+              onClick={(e) => e.preventDefault()}
+              aria-labelledby="Upload file button"
               data-testid="upload-file-btn"
-            >
-              Upload from file
-            </EmptyButton>
-          </UploadModal>
-        </FlexItem>
-        <FlexItem grow>
-          <Download onClose={closePopover} />
-        </FlexItem>
-      </Col>
-    </RiPopover>
+            />
+          }
+        />
+        <Download
+          trigger={
+            <Menu.Content.Item
+              text="Save to file"
+              icon={SaveIcon}
+              aria-labelledby="Download pipeline button"
+              data-testid="download-pipeline-btn"
+            />
+          }
+        />
+      </Menu.Content>
+    </Menu>
   )
 }
 

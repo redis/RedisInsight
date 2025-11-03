@@ -155,17 +155,6 @@ describe('ImportFileModal', () => {
     expect(screen.getByTestId('submit-btn')).toHaveTextContent('Import')
   })
 
-  it('should render warning message', () => {
-    render(
-      <ImportFileModal
-        {...mockProps}
-        warning={<div data-testid="warning">warning</div>}
-      />,
-    )
-
-    expect(screen.getByTestId('warning')).toHaveTextContent('warning')
-  })
-
   it('should contain the upload warning text', () => {
     render(<ImportFileModal {...mockProps} />)
 

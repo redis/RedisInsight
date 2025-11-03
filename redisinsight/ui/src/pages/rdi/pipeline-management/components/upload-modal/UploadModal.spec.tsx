@@ -19,11 +19,12 @@ import {
   mockedStore,
   render,
   screen,
+  userEvent,
   waitFor,
 } from 'uiSrc/utils/test-utils'
 import { FileChangeType } from 'uiSrc/slices/interfaces'
 import { validatePipeline } from 'uiSrc/components/yaml-validator'
-import UploadModal from './UploadModal'
+import UploadModal, { Props } from './UploadModal'
 
 jest.mock('uiSrc/slices/rdi/pipeline', () => ({
   ...jest.requireActual('uiSrc/slices/rdi/pipeline'),
@@ -98,9 +99,14 @@ jest.mock('uiSrc/components/base/display', () => {
   }
 })
 
+const renderUploadModal = (props: Partial<Props> = {}) => {
+  const { trigger = button, ...rest } = props
+  return render(<UploadModal trigger={trigger} {...rest} />, { store })
+}
+
 describe('UploadModal', () => {
   it('should render', () => {
-    expect(render(<UploadModal>{button}</UploadModal>)).toBeTruthy()
+    expect(renderUploadModal()).toBeTruthy()
   })
 
   it('should call proper telemetry event when button is clicked', async () => {
@@ -109,11 +115,9 @@ describe('UploadModal', () => {
       () => sendEventTelemetryMock,
     )
 
-    render(<UploadModal>{button}</UploadModal>)
+    renderUploadModal()
 
-    await act(() => {
-      fireEvent.click(screen.getByTestId('btn'))
-    })
+    await userEvent.click(screen.getByTestId('btn'))
 
     expect(sendEventTelemetry).toBeCalledWith({
       event: TelemetryEvent.RDI_PIPELINE_UPLOAD_FROM_FILE_CLICKED,
@@ -124,18 +128,17 @@ describe('UploadModal', () => {
   })
 
   it('should call proper telemetry event when file upload is successful', async () => {
-    render(<UploadModal>{button}</UploadModal>)
+    renderUploadModal()
 
-    await act(() => {
-      fireEvent.click(screen.getByTestId('btn'))
-    })
+    await userEvent.click(screen.getByTestId('btn'))
 
     await act(() => {
       fireEvent.change(screen.getByTestId('import-file-modal-filepicker'), {
         target: { files: ['file'] },
       })
-      fireEvent.click(screen.getByTestId('submit-btn'))
     })
+
+    await userEvent.click(screen.getByTestId('submit-btn'))
 
     const expectedActions = [
       setChangedFiles({
@@ -160,11 +163,7 @@ describe('UploadModal', () => {
       () => sendEventTelemetryMock,
     )
 
-    render(
-      <UploadModal onUploadedPipeline={onUploadedPipelineMock}>
-        {button}
-      </UploadModal>,
-    )
+    renderUploadModal({ onUploadedPipeline: onUploadedPipelineMock })
 
     await act(() => {
       fireEvent.click(screen.getByTestId('btn'))
@@ -199,11 +198,7 @@ describe('UploadModal', () => {
       () => sendEventTelemetryMock,
     )
 
-    render(
-      <UploadModal onUploadedPipeline={onUploadedPipelineMock}>
-        {button}
-      </UploadModal>,
-    )
+    renderUploadModal({ onUploadedPipeline: onUploadedPipelineMock })
 
     await act(() => {
       fireEvent.click(screen.getByTestId('btn'))
@@ -230,7 +225,7 @@ describe('UploadModal', () => {
   it('should call onClose when close button is clicked', async () => {
     const onCloseMock = jest.fn()
 
-    render(<UploadModal onClose={onCloseMock}>{button}</UploadModal>)
+    renderUploadModal({ onClose: onCloseMock })
 
     await act(() => {
       fireEvent.click(screen.getByTestId('btn'))
@@ -248,13 +243,13 @@ describe('UploadModal', () => {
       loading: true,
     }))
 
-    render(<UploadModal>{button}</UploadModal>)
+    renderUploadModal()
 
     expect(screen.getByTestId('btn')).toBeDisabled()
   })
 
   it('should open modal when upload button is clicked', async () => {
-    render(<UploadModal>{button}</UploadModal>)
+    renderUploadModal()
 
     await act(() => {
       fireEvent.click(screen.getByTestId('btn'))
@@ -289,7 +284,7 @@ describe('UploadModal', () => {
       },
     })
 
-    render(<UploadModal>{button}</UploadModal>)
+    renderUploadModal()
 
     await act(() => {
       fireEvent.click(screen.getByTestId('btn'))
@@ -328,7 +323,7 @@ describe('UploadModal', () => {
       schema: null,
     })
 
-    render(<UploadModal>{button}</UploadModal>)
+    renderUploadModal()
 
     await act(() => {
       fireEvent.click(screen.getByTestId('btn'))
@@ -357,7 +352,7 @@ describe('UploadModal', () => {
       },
     })
 
-    render(<UploadModal>{button}</UploadModal>)
+    renderUploadModal()
 
     await act(() => {
       fireEvent.click(screen.getByTestId('btn'))
@@ -391,7 +386,7 @@ describe('UploadModal', () => {
       },
     })
 
-    render(<UploadModal>{button}</UploadModal>)
+    renderUploadModal()
 
     await act(() => {
       fireEvent.click(screen.getByTestId('btn'))
