@@ -31,6 +31,14 @@ import { CancelIcon } from 'uiSrc/components/base/icons'
 import { CloudSubscriptionPlanResponse } from 'apiSrc/modules/cloud/subscription/dto'
 import { OAuthProvider, OAuthProviders } from './constants'
 import styles from './styles.module.scss'
+import {
+  StyledFooter,
+  StyledModalContentBody,
+  StyledRegion,
+  StyledRegionName,
+  StyledRegionSelectDescription,
+  StyledSubTitle,
+} from './OAuthSelectPlan.styles'
 
 export const DEFAULT_REGIONS = ['us-east-2', 'asia-northeast1']
 export const DEFAULT_PROVIDER = OAuthProvider.AWS
@@ -127,7 +135,7 @@ const OAuthSelectPlan = () => {
         data-test-subj={`oauth-region-${region}`}
       >
         {`${countryName} (${cityName})`}
-        <ColorText className={styles.regionName}>{region}</ColorText>
+        <StyledRegionName>{region}</StyledRegionName>
         {rsProviderRegions?.includes(region) && (
           <ColorText
             className={styles.rspreview}
@@ -174,10 +182,7 @@ const OAuthSelectPlan = () => {
 
   return (
     <Modal.Compose open>
-      <Modal.Content.Compose
-        className={styles.container}
-        data-testid="oauth-select-plan-dialog"
-      >
+      <Modal.Content.Compose data-testid="oauth-select-plan-dialog">
         <Modal.Content.Close
           icon={CancelIcon}
           onClick={handleOnClose}
@@ -189,12 +194,12 @@ const OAuthSelectPlan = () => {
           </Row>
         </Modal.Content.Header.Title>
         <Modal.Content.Body.Compose width="fit-content">
-          <section className={styles.content}>
-            <Text className={styles.subTitle} color="default">
+          <StyledModalContentBody>
+            <StyledSubTitle color="default">
               Select a cloud vendor and region to complete the final step
               towards your free Redis Cloud database. No credit card is
               required.
-            </Text>
+            </StyledSubTitle>
             <section className={styles.providers}>
               {OAuthProviders.map(({ icon, id, label }) => {
                 const Icon = () => (
@@ -215,12 +220,12 @@ const OAuthSelectPlan = () => {
                         [styles.activeProvider]: id === providerSelected,
                       })}
                     />
-                    <Text className={styles.providerLabel}>{label}</Text>
+                    <Text>{label}</Text>
                   </div>
                 )
               })}
             </section>
-            <section className={styles.region}>
+            <StyledRegion>
               <Text className={styles.regionLabel}>Region</Text>
               <RiSelect
                 loading={loading}
@@ -237,15 +242,15 @@ const OAuthSelectPlan = () => {
                 }}
               />
               {!regionOptions.length && (
-                <Text
+                <StyledRegionSelectDescription
                   className={styles.selectDescription}
                   data-testid="select-region-select-description"
                 >
                   No regions available, try another vendor.
-                </Text>
+                </StyledRegionSelectDescription>
               )}
-            </section>
-            <footer className={styles.footer}>
+            </StyledRegion>
+            <StyledFooter>
               <Row justify="end" gap="m">
                 <SecondaryButton
                   onClick={handleOnClose}
@@ -264,8 +269,8 @@ const OAuthSelectPlan = () => {
                   Create database
                 </PrimaryButton>
               </Row>
-            </footer>
-          </section>
+            </StyledFooter>
+          </StyledModalContentBody>
         </Modal.Content.Body.Compose>
       </Modal.Content.Compose>
     </Modal.Compose>

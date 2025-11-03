@@ -1,14 +1,3 @@
-.content {
-  width: 575px !important;
-  min-width: 575px !important;
-  padding: 16px;
-  text-align: center;
-}
-
-.subTitle {
-  padding: 0 40px;
-}
-
 .providers {
   padding: 30px 45px 22px;
   width: 100%;
@@ -35,14 +24,6 @@
       max-width: 44px;
     }
   }
-}
-
-.provider {
-  position: relative;
-}
-
-.providerLabel {
-  font-size: 10px !important;
 }
 
 .providerActiveIcon {
@@ -73,29 +54,4 @@
 
 .awsIcon svg > path:first-of-type {
   fill: var(--euiColorFullShade);
-}
-
-.region {
-  padding: 2px 45px;
-  text-align: left;
-
-  .selectDescription {
-    padding-top: 10px;
-  }
-}
-
-.regionSelectItem {
-  background-color: var(--euiColorLightestShade) !important;
-  &:hover {
-    background-color: var(--hoverInListColorLight) !important;
-  }
-}
-
-.regionName {
-  padding-left: 4px;
-}
-
-.footer {
-  width: 100%;
-  padding: 32px 46px 0 46px;
 }
