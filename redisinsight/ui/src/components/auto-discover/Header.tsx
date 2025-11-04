@@ -3,7 +3,6 @@ import React, { ReactNode } from 'react'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
-import { Spacer } from 'uiSrc/components/base/layout'
 import {
   PageSubTitle,
   PageTitle,
@@ -28,7 +27,7 @@ export const Header = ({
 }: HeaderProps) => {
   return (
     <Row align="center" justify="between" grow={false}>
-      <Col align="start" justify="start">
+      <Col align="start" justify="start" gap="m">
         <EmptyButton
           icon={ArrowLeftIcon}
           onClick={onBack}
@@ -36,11 +35,9 @@ export const Header = ({
         >
           {backButtonText}
         </EmptyButton>
-        <Spacer size="m" />
         <PageTitle data-testid="title">{title}</PageTitle>
         {subTitle && (
           <FlexItem grow>
-            <Spacer size="m" />
             <PageSubTitle>{subTitle}</PageSubTitle>
           </FlexItem>
         )}
