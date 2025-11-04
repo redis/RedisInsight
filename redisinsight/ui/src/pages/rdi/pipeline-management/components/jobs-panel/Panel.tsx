@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import cx from 'classnames'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
@@ -19,9 +18,9 @@ import DryRunJobTransformations from 'uiSrc/pages/rdi/pipeline-management/compon
 import { createAxiosError, formatLongName, yamlToJson } from 'uiSrc/utils'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 
-import { Text } from 'uiSrc/components/base/text'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { EmptyButton, IconButton } from 'uiSrc/components/base/forms/buttons'
+import { Text, Title } from 'uiSrc/components/base/text'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import {
   PlayFilledIcon,
   CancelSlimIcon,
@@ -35,7 +34,8 @@ import {
   RiSelectOption,
   defaultValueRender,
 } from 'uiSrc/components/base/forms/select/RiSelect'
-import styles from './styles.module.scss'
+import { DryRunPanelContainer } from 'uiSrc/pages/rdi/pipeline-management/components/jobs-panel/styles'
+import { Button, TextButton } from '@redis-ui/components'
 
 export interface Props {
   job: string
@@ -157,7 +157,7 @@ const DryRunJobPanel = (props: Props) => {
       label: (
         <RiTooltip
           content={
-            <Text color="subdued" size="s">
+            <Text>
               Displays the results of the transformations you defined. The data
               is presented in JSON format.
               <br />
@@ -176,7 +176,7 @@ const DryRunJobPanel = (props: Props) => {
       label: (
         <RiTooltip
           content={
-            <Text color="subdued" size="s">
+            <Text>
               Displays the list of Redis commands that will be generated based
               on your job details.
               <br />
@@ -198,43 +198,51 @@ const DryRunJobPanel = (props: Props) => {
   }
 
   return (
-    <div
-      className={cx(styles.panel, { [styles.fullScreen]: isFullScreen })}
+    <DryRunPanelContainer
+      grow
+      gap="xxl"
       data-testid="dry-run-panel"
+      isFullScreen={isFullScreen}
     >
-      <div className={styles.panelInner}>
-        <div className={styles.header}>
-          <Text className={styles.title}>Test transformation logic</Text>
-          <div>
-            <IconButton
-              icon={isFullScreen ? ShrinkIcon : ExtendIcon}
-              aria-label="toggle fullscrenn dry run panel"
-              className={styles.fullScreenBtn}
-              onClick={handleFullScreen}
-              data-testid="fullScreen-dry-run-btn"
-            />
-            <IconButton
-              icon={CancelSlimIcon}
-              aria-label="close dry run panel"
-              className={styles.closeBtn}
-              onClick={onClose}
-              data-testid="close-dry-run-btn"
-            />
-          </div>
-        </div>
-        <div className={styles.body}>
-          <Text className={styles.text}>
-            Add input data in JSON format to test the transformation logic.
-          </Text>
-          <div className={styles.codeLabel}>
-            <Text>Input</Text>
-          </div>
+      {/* Header */}
+      <FlexItem>
+        <Row align="center" justify="between">
+          <Title size="L" color="primary">
+            Test transformation logic
+          </Title>
+          <FlexItem>
+            <Row gap="s">
+              <IconButton
+                icon={isFullScreen ? ShrinkIcon : ExtendIcon}
+                aria-label="toggle fullscrenn dry run panel"
+                onClick={handleFullScreen}
+                data-testid="fullScreen-dry-run-btn"
+              />
+              <IconButton
+                icon={CancelSlimIcon}
+                aria-label="close dry run panel"
+                onClick={onClose}
+                data-testid="close-dry-run-btn"
+              />
+            </Row>
+          </FlexItem>
+        </Row>
+        <Text color="primary">
+          Add input data to test the transformation logic.
+        </Text>
+      </FlexItem>
+      {/* Input section */}
+      <FlexItem>
+        <Col gap="s">
+          <Title size="S" color="primary">
+            Input
+          </Title>
           <MonacoJson
             value={input}
             onChange={setInput}
             disabled={false}
-            wrapperClassName={styles.inputCode}
             data-testid="input-value"
+            fullHeight
           />
           <Row responsive justify="end">
             <FlexItem>
@@ -242,47 +250,49 @@ const DryRunJobPanel = (props: Props) => {
                 content={isFormValid ? null : 'Input should have JSON format'}
                 position="top"
               >
-                <EmptyButton
+                <TextButton
+                  variant="primary-inline"
                   onClick={handleDryRun}
-                  icon={PlayFilledIcon}
-                  iconSide="right"
-                  size="small"
                   disabled={isDryRunning || !isFormValid}
-                  loading={isDryRunning}
-                  className={cx(styles.actionBtn, styles.runBtn)}
                   data-testid="dry-run-btn"
                 >
+                  <Button.Icon icon={PlayFilledIcon} customSize="12" />
                   Dry run
-                </EmptyButton>
+                </TextButton>
               </RiTooltip>
             </FlexItem>
           </Row>
-          <div className={styles.codeLabel}>
-            {isSelectAvailable && (
-              <RiSelect
-                options={targetOptions}
-                valueRender={defaultValueRender}
-                value={selectedTarget}
-                onChange={(value) => setSelectedTarget(value)}
-                data-testid="target-select"
-              />
-            )}
+        </Col>
+      </FlexItem>
+      {/* Results section */}
+      <FlexItem grow>
+        <Col gap="m">
+          {isSelectAvailable && (
+            <RiSelect
+              options={targetOptions}
+              valueRender={defaultValueRender}
+              value={selectedTarget}
+              onChange={(value) => setSelectedTarget(value)}
+              data-testid="target-select"
+            />
+          )}
+          <FlexItem grow>
             <Tabs
               tabs={tabs}
               value={selectedTab}
               onChange={handleTabChange}
               data-testid="pipeline-jobs-tabs"
             />
-          </div>
-          {selectedTab === PipelineJobsTabs.Transformations && (
-            <DryRunJobTransformations />
-          )}
-          {selectedTab === PipelineJobsTabs.Output && (
-            <DryRunJobCommands target={selectedTarget} />
-          )}
-        </div>
-      </div>
-    </div>
+            {selectedTab === PipelineJobsTabs.Transformations && (
+              <DryRunJobTransformations />
+            )}
+            {selectedTab === PipelineJobsTabs.Output && (
+              <DryRunJobCommands target={selectedTarget} />
+            )}
+          </FlexItem>
+        </Col>
+      </FlexItem>
+    </DryRunPanelContainer>
   )
 }
 
