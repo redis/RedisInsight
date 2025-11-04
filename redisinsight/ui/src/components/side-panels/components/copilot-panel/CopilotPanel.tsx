@@ -4,6 +4,7 @@ import styles from 'uiSrc/components/side-panels/styles.module.scss'
 import AiAssistant from 'uiSrc/components/side-panels/panels/ai-assistant'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { OnboardingTour } from 'uiSrc/components'
+import { Text } from 'uiSrc/components/base/text'
 
 export interface Props {
   isFullScreen: boolean
@@ -25,7 +26,9 @@ const CopilotPanel = (props: Props) => {
             fullSize
           >
             <div className={styles.titleWrapper}>
-              <span className={styles.title}>Redis Copilot</span>
+              <Text size="L" color="primary">
+                Redis Copilot
+              </Text>
             </div>
           </OnboardingTour>
         </div>

@@ -1,5 +1,5 @@
 $spacing: 6px;
-$delay: .13s;
+$delay: 0.13s;
 
 .wrapper {
   width: 100%;
@@ -10,7 +10,7 @@ $delay: .13s;
       background-color: var(--euiColorEmptyShade) !important;
     }
     pre > code {
-      background-color:  var(--browserTableRowEven) !important;
+      background-color: var(--browserTableRowEven) !important;
     }
   }
 }
@@ -36,44 +36,16 @@ $delay: .13s;
     margin-top: auto;
   }
 }
-.answerWrapper, .questionWrapper {
+.answerWrapper,
+.questionWrapper {
   max-width: 90%;
   margin: 8px 0;
-}
-
-.answer, .question {
-  overflow-wrap: break-word;
-  padding: 8px 16px;
-  border-radius: 8px;
-
-  &.error {
-    opacity: .66;
-    display: flex;
-
-    .errorIcon {
-      width: 12px;
-      height: 12px;
-      color: var(--euiColorDangerText);
-      margin-top: 2px;
-      margin-right: 6px;
-    }
-  }
 }
 
 .answerWrapper {
   align-self: flex-start;
 }
 
-.answer {
-  background-color: var(--euiColorLightestShade);
-}
-
 .questionWrapper {
   align-self: flex-end;
 }
-
-.question {
-  background-color: var(--insightsTriggerBgColor);
-}
-
-

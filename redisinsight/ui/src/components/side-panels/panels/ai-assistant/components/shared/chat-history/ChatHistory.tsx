@@ -22,6 +22,7 @@ import MarkdownMessage from '../markdown-message'
 import ErrorMessage from '../error-message'
 
 import styles from './styles.module.scss'
+import { MessageContainer } from './ChatHistory.styles'
 
 export interface Props {
   autoScroll?: boolean
@@ -121,17 +122,15 @@ const ChatHistory = (props: Props) => {
                 messageType === AiChatMessageType.HumanMessage,
             })}
           >
-            <div
-              className={cx('jsx-markdown', {
-                [styles.answer]: messageType === AiChatMessageType.AIMessage,
-                [styles.question]:
-                  messageType === AiChatMessageType.HumanMessage,
-                [styles.error]: !!error,
-              })}
+            <MessageContainer
+              as="div"
+              className="jsx-markdown"
+              messageType={messageType}
+              hasError={!!error}
               data-testid={`ai-message-${messageType}_${id}`}
             >
               {error && (
-                <RiIcon type="ToastDangerIcon" className={styles.errorIcon} />
+                <RiIcon type="ToastDangerIcon" size="M" color="danger500" />
               )}
               {messageType === AiChatMessageType.HumanMessage ? (
                 content
@@ -144,7 +143,7 @@ const ChatHistory = (props: Props) => {
                   {content}
                 </MarkdownMessage>
               )}
-            </div>
+            </MessageContainer>
           </div>
           <ErrorMessage error={error} onRestart={onRestart} />
         </React.Fragment>

@@ -6,6 +6,7 @@ import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -41,21 +42,25 @@ const RestartChat = (props: Props) => {
       button={extendedButton}
     >
       <>
-        <Title size="S">Restart session</Title>
+        <Title size="S" color="primary">
+          Restart session
+        </Title>
         <Spacer size="s" />
-        <Text size="xs">
+        <Text size="m" color="primary">
           This will delete the current message history and initiate a new
           session.
         </Text>
-        <Spacer size="s" />
-        <PrimaryButton
-          size="s"
-          onClick={handleConfirm}
-          className={styles.confirmBtn}
-          data-testid="ai-chat-restart-confirm"
-        >
-          Restart
-        </PrimaryButton>
+        <Spacer size="l" />
+        <Row justify="end">
+          <PrimaryButton
+            size="s"
+            onClick={handleConfirm}
+            className={styles.confirmBtn}
+            data-testid="ai-chat-restart-confirm"
+          >
+            Restart
+          </PrimaryButton>
+        </Row>
       </>
     </RiPopover>
   )
