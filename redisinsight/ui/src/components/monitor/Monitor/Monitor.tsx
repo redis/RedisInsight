@@ -16,9 +16,10 @@ import MonitorOutputList from '../MonitorOutputList'
 import ProfilerImage from 'uiSrc/assets/img/profiler/magnifier.svg'
 
 import styles from './styles.module.scss'
-import StyledImagePanel, { StyledImage } from './Monitor.styles'
+import { StyledImagePanel } from './Monitor.styles'
 import { Spacer } from 'uiSrc/components/base/layout'
 import { Banner } from 'uiSrc/components/base/display/banner'
+import { RiImage } from 'uiSrc/components/base/display'
 
 export interface Props {
   items: IMonitorDataPayload[]
@@ -54,7 +55,11 @@ const Monitor = (props: Props) => {
       data-testid="monitor-not-started"
     >
       <StyledImagePanel align="center">
-        <StyledImage as="img" src={ProfilerImage} alt="Profiler" />
+        <RiImage
+          src={ProfilerImage}
+          alt="Profiler"
+          style={{ userSelect: 'none' }}
+        />
         <Spacer size="l" />
         <Text>
           Get a deeper understanding of your database with real-time command,
