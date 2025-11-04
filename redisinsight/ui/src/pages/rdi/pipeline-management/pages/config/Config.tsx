@@ -38,6 +38,7 @@ import { Text, Title } from 'uiSrc/components/base/text'
 import { Loader } from 'uiSrc/components/base/display'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Link } from '@redis-ui/components'
+import { StyledRdiDatabaseConfigContainer } from 'uiSrc/pages/rdi/pipeline-management/pages/config/styles'
 
 const Config = () => {
   const [isPanelOpen, setIsPanelOpen] = useState<boolean>(false)
@@ -141,8 +142,8 @@ const Config = () => {
   }
 
   return (
-    <Row gap="m">
-      <FlexItem grow>
+    <Row>
+      <StyledRdiDatabaseConfigContainer grow>
         <Col gap="m">
           <Row grow={false} align="center" justify="between">
             <Title size="S" color="primary">
@@ -178,16 +179,13 @@ const Config = () => {
           </FlexItem>
           <FlexItem grow>
             {pipelineLoading ? (
-              <div
-                className={cx('rdi__editorWrapper', 'rdi__loading')}
-                data-testid="rdi-config-loading"
-              >
+              <Col grow data-testid="rdi-config-loading">
                 <Loader
                   color="secondary"
                   size="l"
                   loaderText="Loading data..."
                 />
-              </div>
+              </Col>
             ) : (
               <MonacoYaml
                 schema={get(schema, 'config', null)}
@@ -210,7 +208,7 @@ const Config = () => {
             </PrimaryButton>
           </Row>
         </Col>
-      </FlexItem>
+      </StyledRdiDatabaseConfigContainer>
       {isPanelOpen && (
         <FlexItem>
           <TestConnectionsPanel onClose={handleClosePanel} />

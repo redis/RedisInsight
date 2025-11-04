@@ -10,6 +10,7 @@ import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import { Loader } from 'uiSrc/components/base/display'
 import Divider from 'uiSrc/components/divider/Divider'
+import { TestConnectionContainer } from 'uiSrc/pages/rdi/pipeline-management/components/test-connections-panel/styles'
 
 interface TestConnectionPanelWrapperProps {
   onClose: () => void
@@ -20,12 +21,7 @@ const TestConnectionPanelWrapper = ({
   children,
   onClose,
 }: TestConnectionPanelWrapperProps) => (
-  <Col
-    style={{ paddingLeft: 20, borderLeft: '1px solid #ccc', width: 440 }}
-    grow
-    data-testid="test-connection-panel"
-    gap="xxl"
-  >
+  <TestConnectionContainer grow data-testid="test-connection-panel" gap="xxl">
     <FlexItem>
       <Row align="center" justify="between">
         <Title size="L" color="primary">
@@ -41,7 +37,7 @@ const TestConnectionPanelWrapper = ({
     </FlexItem>
     <FlexItem />
     <FlexItem grow>{children}</FlexItem>
-  </Col>
+  </TestConnectionContainer>
 )
 
 export interface Props {
@@ -89,7 +85,7 @@ const TestConnectionsPanel = (props: Props) => {
           <TestConnectionsLog data={results.source} />
         </FlexItem>
         <FlexItem>
-          <Divider color="secondary" />
+          <Divider colorVariable="separatorColor" />
         </FlexItem>
         <FlexItem>
           <Text color="primary">Target connections</Text>
