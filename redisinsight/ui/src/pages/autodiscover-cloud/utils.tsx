@@ -18,8 +18,16 @@ export const getSelectionColumn = <T extends object>({
     size,
     isHeaderCustom: true,
     header: ({ table }) => (
-      <Table.HeaderMultiRowSelectionButton table={table} />
+      <Table.HeaderMultiRowSelectionButton
+        table={table}
+        data-testid="row-selection"
+      />
     ),
-    cell: ({ row }) => <Table.RowSelectionButton row={row} />,
+    cell: ({ row }) => (
+      <Table.RowSelectionButton
+        row={row}
+        data-testid={`row-selection-${row.id}`}
+      />
+    ),
   }
 }

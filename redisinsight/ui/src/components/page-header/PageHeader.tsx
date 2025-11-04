@@ -18,6 +18,7 @@ import { Title } from 'uiSrc/components/base/text/Title'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { RedisLogoFullIcon } from 'uiSrc/components/base/icons'
 import styles from './PageHeader.module.scss'
+import { ColorText } from 'uiSrc/components/base/text'
 
 interface Props {
   title?: string
@@ -59,7 +60,9 @@ const PageHeader = (props: Props) => {
         <div>
           {title && (
             <Title size="L" data-testid="page-title">
-              <b data-testid="page-header-title">{title}</b>
+              <ColorText variant="semiBold" data-testid="page-header-title">
+                {title}
+              </ColorText>
             </Title>
           )}
           {subtitle ? <span data-testid="page-subtitle">{subtitle}</span> : ''}
