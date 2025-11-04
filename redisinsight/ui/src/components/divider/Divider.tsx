@@ -8,10 +8,10 @@ import {
 } from './Divider.styles'
 
 export interface DividerProps {
-  orientation: DividerOrientation
-  variant: DividerVariant
-  color: string
-  className: string
+  orientation?: DividerOrientation
+  variant?: DividerVariant
+  color?: string
+  className?: string
 }
 
 const Divider = ({
