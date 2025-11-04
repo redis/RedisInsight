@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { plainToInstance } from 'class-transformer';
-import { ClientMetadata, SessionMetadata } from 'src/common/models';
+import { SessionMetadata } from 'src/common/models';
 import {
   RecommendationEvents,
   RecommendationServerEvents,

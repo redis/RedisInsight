@@ -122,7 +122,7 @@ describe('DbStatus', () => {
 
     await waitForRiTooltipVisible(1_000)
 
-    expect(sendEventTelemetry).toBeCalledWith({
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
       event: TelemetryEvent.CLOUD_NOT_USED_DB_NOTIFICATION_VIEWED,
       eventData: {
         capability: expect.any(String),

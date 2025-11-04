@@ -35,7 +35,6 @@ export const BaseButton = ({
         icon={icon}
         iconSide={iconSide}
         loading={loading}
-        size={btnSize}
       />
       {children}
       <ButtonIcon
@@ -43,7 +42,6 @@ export const BaseButton = ({
         icon={icon}
         iconSide={iconSide}
         loading={loading}
-        size={btnSize}
       />
     </Button>
   )

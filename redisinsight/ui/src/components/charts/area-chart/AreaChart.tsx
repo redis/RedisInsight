@@ -21,7 +21,7 @@ export enum AreaChartDataType {
   Bytes = 'bytes',
 }
 
-interface IProps {
+export interface IProps {
   name?: string
   data?: AreaChartData[]
   dataType?: AreaChartDataType

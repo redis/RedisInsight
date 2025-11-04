@@ -1,16 +1,13 @@
 import {
   BadRequestException,
-  ConflictException,
   ForbiddenException,
   HttpException,
   InternalServerErrorException,
   NotFoundException,
-  ServiceUnavailableException,
 } from '@nestjs/common';
 import { ReplyError } from 'src/models';
 import { RedisErrorCodes, CertificatesErrorCodes } from 'src/constants';
 import ERROR_MESSAGES from 'src/constants/error-messages';
-import { EncryptionServiceErrorException } from 'src/modules/encryption/exceptions';
 import { RedisClientCommandReply } from 'src/modules/redis/client';
 import {
   RedisConnectionAuthUnsupportedException,
@@ -52,7 +49,9 @@ export const getRedisConnectionException = (
 
   if (error?.message) {
     if (error.message.includes(RedisErrorCodes.SentinelParamsRequired)) {
-      return new RedisConnectionSentinelMasterRequiredException(undefined, { cause: error });
+      return new RedisConnectionSentinelMasterRequiredException(undefined, {
+        cause: error,
+      });
     }
 
     if (
@@ -67,15 +66,21 @@ export const getRedisConnectionException = (
       error.message.includes(RedisErrorCodes.AuthRequired) ||
       error.message === 'ERR invalid password'
     ) {
-      return new RedisConnectionUnauthorizedException(undefined, { cause: error });
+      return new RedisConnectionUnauthorizedException(undefined, {
+        cause: error,
+      });
     }
 
     if (error.message === "ERR unknown command 'auth'") {
-      return new RedisConnectionAuthUnsupportedException(undefined, { cause: error });
+      return new RedisConnectionAuthUnsupportedException(undefined, {
+        cause: error,
+      });
     }
 
     if (error.message.includes(RedisErrorCodes.ClusterAllFailedError)) {
-      return new RedisConnectionClusterNodesUnavailableException(undefined, { cause: error });
+      return new RedisConnectionClusterNodesUnavailableException(undefined, {
+        cause: error,
+      });
     }
 
     if (
@@ -115,9 +120,7 @@ export const catchRedisConnectionError = (
 
 export const catchAclError = (error: ReplyError): HttpException => {
   // todo: Move to other place after refactoring
-  if (
-    error instanceof HttpException
-  ) {
+  if (error instanceof HttpException) {
     throw error;
   }
 

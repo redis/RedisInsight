@@ -36,7 +36,9 @@ interface IApp {
 
 export default async function bootstrap(apiPort?: number): Promise<IApp> {
   if (serverConfig.migrateOldFolders) {
-    (await migrateHomeFolder()) && (await removeOldFolders());
+    if (await migrateHomeFolder()) {
+      await removeOldFolders();
+    }
   }
 
   if (apiPort) {
@@ -61,10 +63,12 @@ export default async function bootstrap(apiPort?: number): Promise<IApp> {
   // set qs as parser to support nested objects in the query string
   app.set('query parser', qs.parse);
   app.use(bodyParser.json({ limit: serverConfig.maxPayloadSize }));
-  app.use(bodyParser.urlencoded({
-    limit: serverConfig.maxPayloadSize,
-    extended: true,
-  }));
+  app.use(
+    bodyParser.urlencoded({
+      limit: serverConfig.maxPayloadSize,
+      extended: true,
+    }),
+  );
   app.use(bodyParserMiddleware);
   app.enableCors();
 

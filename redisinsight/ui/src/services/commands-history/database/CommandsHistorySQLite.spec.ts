@@ -1,10 +1,9 @@
-import { rest } from 'msw'
+import { http, HttpResponse } from 'msw'
 import { faker } from '@faker-js/faker'
 
 import { ApiEndpoints } from 'uiSrc/constants'
 import { getUrl } from 'uiSrc/utils'
 import {
-  CommandExecution,
   CommandExecutionType,
   CommandExecutionUI,
   ResultsMode,
@@ -41,12 +40,11 @@ describe('CommandHistorySQLite', () => {
 
       // Override the MSW handler to return our mock commands
       mswServer.use(
-        rest.get<CommandExecution[]>(
+        http.get(
           getMswURL(
             getUrl(instanceId, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS),
           ),
-          async (_req, res, ctx) =>
-            res(ctx.status(200), ctx.json(mockCommands)),
+          async () => HttpResponse.json(mockCommands, { status: 200 }),
         ),
       )
 
@@ -82,11 +80,11 @@ describe('CommandHistorySQLite', () => {
 
       // Override the MSW handler to return an error status
       mswServer.use(
-        rest.get<CommandExecution[]>(
+        http.get(
           getMswURL(
             getUrl(instanceId, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS),
           ),
-          async (_req, res, ctx) => res(ctx.status(statusCode)),
+          async () => HttpResponse.text('', { status: statusCode }),
         ),
       )
 
@@ -107,11 +105,11 @@ describe('CommandHistorySQLite', () => {
 
       // Override the MSW handler to simulate a network error
       mswServer.use(
-        rest.get<CommandExecution[]>(
+        http.get(
           getMswURL(
             getUrl(instanceId, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS),
           ),
-          async (_req, res) => res.networkError(mockError),
+          async () => HttpResponse.error(),
         ),
       )
 
@@ -144,19 +142,19 @@ describe('CommandHistorySQLite', () => {
 
       // Override the MSW handler to return different data based on instance ID
       mswServer.use(
-        rest.get<CommandExecution[]>(
+        http.get(
           getMswURL(
             getUrl(instanceId1, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS),
           ),
-          async (_req, res, ctx) =>
-            res(ctx.status(200), ctx.json(mockCommandExecutions1)),
+          async () =>
+            HttpResponse.json(mockCommandExecutions1, { status: 200 }),
         ),
-        rest.get<CommandExecution[]>(
+        http.get(
           getMswURL(
             getUrl(instanceId2, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS),
           ),
-          async (_req, res, ctx) =>
-            res(ctx.status(200), ctx.json(mockCommandExecutions2)),
+          async () =>
+            HttpResponse.json(mockCommandExecutions2, { status: 200 }),
         ),
       )
 
@@ -195,7 +193,7 @@ describe('CommandHistorySQLite', () => {
 
       // Override the MSW handler to return our mock command
       mswServer.use(
-        rest.get<CommandExecution>(
+        http.get(
           getMswURL(
             getUrl(
               instanceId,
@@ -203,7 +201,7 @@ describe('CommandHistorySQLite', () => {
               commandId,
             ),
           ),
-          async (_req, res, ctx) => res(ctx.status(200), ctx.json(mockCommand)),
+          async () => HttpResponse.json(mockCommand, { status: 200 }),
         ),
       )
 
@@ -224,7 +222,7 @@ describe('CommandHistorySQLite', () => {
 
       // Override the MSW handler to return an error status
       mswServer.use(
-        rest.get<CommandExecution>(
+        http.get(
           getMswURL(
             getUrl(
               instanceId,
@@ -232,7 +230,7 @@ describe('CommandHistorySQLite', () => {
               commandId,
             ),
           ),
-          async (_req, res, ctx) => res(ctx.status(statusCode)),
+          async () => HttpResponse.text('', { status: statusCode }),
         ),
       )
 
@@ -254,7 +252,7 @@ describe('CommandHistorySQLite', () => {
 
       // Override the MSW handler to simulate a network error
       mswServer.use(
-        rest.get<CommandExecution>(
+        http.get(
           getMswURL(
             getUrl(
               instanceId,
@@ -262,7 +260,7 @@ describe('CommandHistorySQLite', () => {
               commandId,
             ),
           ),
-          async (_req, res) => res.networkError(mockError),
+          async () => HttpResponse.error(),
         ),
       )
 
@@ -303,7 +301,7 @@ describe('CommandHistorySQLite', () => {
 
       // Override the MSW handler to return different data based on instance ID and command ID
       mswServer.use(
-        rest.get<CommandExecution>(
+        http.get(
           getMswURL(
             getUrl(
               instanceId1,
@@ -311,10 +309,9 @@ describe('CommandHistorySQLite', () => {
               commandId1,
             ),
           ),
-          async (_req, res, ctx) =>
-            res(ctx.status(200), ctx.json(mockCommand1)),
+          async () => HttpResponse.json(mockCommand1, { status: 200 }),
         ),
-        rest.get<CommandExecution>(
+        http.get(
           getMswURL(
             getUrl(
               instanceId2,
@@ -322,8 +319,7 @@ describe('CommandHistorySQLite', () => {
               commandId2,
             ),
           ),
-          async (_req, res, ctx) =>
-            res(ctx.status(200), ctx.json(mockCommand2)),
+          async () => HttpResponse.json(mockCommand2, { status: 200 }),
         ),
       )
 
@@ -352,7 +348,7 @@ describe('CommandHistorySQLite', () => {
 
       // Override the MSW handler to return 404 status
       mswServer.use(
-        rest.get<CommandExecution>(
+        http.get(
           getMswURL(
             getUrl(
               instanceId,
@@ -360,7 +356,7 @@ describe('CommandHistorySQLite', () => {
               commandId,
             ),
           ),
-          async (_req, res, ctx) => res(ctx.status(statusCode)),
+          async () => HttpResponse.text('', { status: statusCode }),
         ),
       )
 
@@ -393,12 +389,11 @@ describe('CommandHistorySQLite', () => {
 
       // Override the MSW handler to return our mock commands
       mswServer.use(
-        rest.post<CommandExecution[]>(
+        http.post(
           getMswURL(
             getUrl(instanceId, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS),
           ),
-          async (_req, res, ctx) =>
-            res(ctx.status(200), ctx.json(mockCommands)),
+          async () => HttpResponse.json(mockCommands, { status: 200 }),
         ),
       )
 
@@ -433,12 +428,11 @@ describe('CommandHistorySQLite', () => {
         })) as unknown as CommandExecutionUI[]
 
         mswServer.use(
-          rest.post<CommandExecution[]>(
+          http.post(
             getMswURL(
               getUrl(instanceId, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS),
             ),
-            async (_req, res, ctx) =>
-              res(ctx.status(200), ctx.json(mockCommands)),
+            async () => HttpResponse.json(mockCommands, { status: 200 }),
           ),
         )
 
@@ -466,11 +460,11 @@ describe('CommandHistorySQLite', () => {
 
       // Override the MSW handler to return an error status
       mswServer.use(
-        rest.post<CommandExecution[]>(
+        http.post(
           getMswURL(
             getUrl(instanceId, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS),
           ),
-          async (_req, res, ctx) => res(ctx.status(statusCode)),
+          async () => HttpResponse.text('', { status: statusCode }),
         ),
       )
 
@@ -500,11 +494,11 @@ describe('CommandHistorySQLite', () => {
 
       // Override the MSW handler to simulate a network error
       mswServer.use(
-        rest.post<CommandExecution[]>(
+        http.post(
           getMswURL(
             getUrl(instanceId, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS),
           ),
-          async (_req, res) => res.networkError(mockError),
+          async () => HttpResponse.error(),
         ),
       )
 
@@ -527,12 +521,11 @@ describe('CommandHistorySQLite', () => {
       const emptyCommands: string[] = []
 
       mswServer.use(
-        rest.post<CommandExecution[]>(
+        http.post(
           getMswURL(
             getUrl(instanceId, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS),
           ),
-          async (_req, res, ctx) =>
-            res(ctx.status(200), ctx.json(emptyCommands)),
+          async () => HttpResponse.json(emptyCommands, { status: 200 }),
         ),
       )
 
@@ -578,19 +571,19 @@ describe('CommandHistorySQLite', () => {
 
       // Override the MSW handler to return different data based on instance ID
       mswServer.use(
-        rest.post<CommandExecution[]>(
+        http.post(
           getMswURL(
             getUrl(instanceId1, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS),
           ),
-          async (_req, res, ctx) =>
-            res(ctx.status(200), ctx.json(mockCommandExecutions1)),
+          async () =>
+            HttpResponse.json(mockCommandExecutions1, { status: 200 }),
         ),
-        rest.post<CommandExecution[]>(
+        http.post(
           getMswURL(
             getUrl(instanceId2, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS),
           ),
-          async (_req, res, ctx) =>
-            res(ctx.status(200), ctx.json(mockCommandExecutions2)),
+          async () =>
+            HttpResponse.json(mockCommandExecutions2, { status: 200 }),
         ),
       )
 
@@ -630,7 +623,7 @@ describe('CommandHistorySQLite', () => {
 
       // Override the MSW handler to return success status
       mswServer.use(
-        rest.delete<CommandExecution>(
+        http.delete(
           getMswURL(
             getUrl(
               instanceId,
@@ -638,7 +631,7 @@ describe('CommandHistorySQLite', () => {
               commandId,
             ),
           ),
-          async (_req, res, ctx) => res(ctx.status(200)),
+          async () => HttpResponse.text('', { status: 200 }),
         ),
       )
 
@@ -658,7 +651,7 @@ describe('CommandHistorySQLite', () => {
 
       // Override the MSW handler to return an error status
       mswServer.use(
-        rest.delete<CommandExecution>(
+        http.delete(
           getMswURL(
             getUrl(
               instanceId,
@@ -666,7 +659,7 @@ describe('CommandHistorySQLite', () => {
               commandId,
             ),
           ),
-          async (_req, res, ctx) => res(ctx.status(statusCode)),
+          async () => HttpResponse.text('', { status: statusCode }),
         ),
       )
 
@@ -688,7 +681,7 @@ describe('CommandHistorySQLite', () => {
 
       // Override the MSW handler to simulate a network error
       mswServer.use(
-        rest.delete<CommandExecution>(
+        http.delete(
           getMswURL(
             getUrl(
               instanceId,
@@ -696,7 +689,7 @@ describe('CommandHistorySQLite', () => {
               commandId,
             ),
           ),
-          async (_req, res) => res.networkError(mockError),
+          async () => HttpResponse.error(),
         ),
       )
 
@@ -717,7 +710,7 @@ describe('CommandHistorySQLite', () => {
 
       // Override the MSW handler to return success for both requests
       mswServer.use(
-        rest.delete<CommandExecution>(
+        http.delete(
           getMswURL(
             getUrl(
               instanceId1,
@@ -725,9 +718,9 @@ describe('CommandHistorySQLite', () => {
               commandId1,
             ),
           ),
-          async (_req, res, ctx) => res(ctx.status(200)),
+          async () => HttpResponse.text('', { status: 200 }),
         ),
-        rest.delete<CommandExecution>(
+        http.delete(
           getMswURL(
             getUrl(
               instanceId2,
@@ -735,7 +728,7 @@ describe('CommandHistorySQLite', () => {
               commandId2,
             ),
           ),
-          async (_req, res, ctx) => res(ctx.status(200)),
+          async () => HttpResponse.text('', { status: 200 }),
         ),
       )
 
@@ -763,11 +756,11 @@ describe('CommandHistorySQLite', () => {
 
       // Override the MSW handler to return success status
       mswServer.use(
-        rest.delete<CommandExecution>(
+        http.delete(
           getMswURL(
             getUrl(instanceId, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS),
           ),
-          async (_req, res, ctx) => res(ctx.status(200)),
+          async () => HttpResponse.text('', { status: 200 }),
         ),
       )
 
@@ -787,11 +780,11 @@ describe('CommandHistorySQLite', () => {
 
       // Override the MSW handler to return an error status
       mswServer.use(
-        rest.delete<CommandExecution>(
+        http.delete(
           getMswURL(
             getUrl(instanceId, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS),
           ),
-          async (_req, res, ctx) => res(ctx.status(statusCode)),
+          async () => HttpResponse.text('', { status: statusCode }),
         ),
       )
 
@@ -813,11 +806,11 @@ describe('CommandHistorySQLite', () => {
 
       // Override the MSW handler to simulate a network error
       mswServer.use(
-        rest.delete<CommandExecution>(
+        http.delete(
           getMswURL(
             getUrl(instanceId, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS),
           ),
-          async (_req, res) => res.networkError(mockError),
+          async () => HttpResponse.error(),
         ),
       )
 
@@ -838,17 +831,17 @@ describe('CommandHistorySQLite', () => {
 
       // Override the MSW handler to return success for both requests
       mswServer.use(
-        rest.delete<CommandExecution>(
+        http.delete(
           getMswURL(
             getUrl(instanceId1, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS),
           ),
-          async (_req, res, ctx) => res(ctx.status(200)),
+          async () => HttpResponse.text('', { status: 200 }),
         ),
-        rest.delete<CommandExecution>(
+        http.delete(
           getMswURL(
             getUrl(instanceId2, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS),
           ),
-          async (_req, res, ctx) => res(ctx.status(200)),
+          async () => HttpResponse.text('', { status: 200 }),
         ),
       )
 

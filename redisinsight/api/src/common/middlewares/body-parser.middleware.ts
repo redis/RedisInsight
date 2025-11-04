@@ -22,7 +22,10 @@ export default (
     return res
       .status(HttpStatus.PAYLOAD_TOO_LARGE)
       .set('Access-Control-Allow-Origin', serverConfig.cors.origin)
-      .set('Access-Control-Allow-Credentials', `${serverConfig.cors.credentials}`)
+      .set(
+        'Access-Control-Allow-Credentials',
+        `${serverConfig.cors.credentials}`,
+      )
       .json(exception.getResponse());
   }
 

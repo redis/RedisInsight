@@ -34,7 +34,9 @@ export const sessionMetadataFromRequest = (
     requestMetadata,
   };
 
-  const session = plainToInstance(SessionMetadata, requestSession, { groups: ['security'] });
+  const session = plainToInstance(SessionMetadata, requestSession, {
+    groups: ['security'],
+  });
 
   const errors = validator.validateSync(session, {
     whitelist: false, // we need this to allow additional fields if needed for flexibility

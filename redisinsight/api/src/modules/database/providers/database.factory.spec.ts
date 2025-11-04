@@ -34,7 +34,6 @@ import { ClientCertificateService } from 'src/modules/certificate/client-certifi
 import { ConnectionType } from 'src/modules/database/entities/database.entity';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import { NotFoundException } from '@nestjs/common';
-import { RedisErrorCodes } from 'src/constants';
 import { RedisClientFactory } from 'src/modules/redis/redis.client.factory';
 
 describe('DatabaseFactory', () => {

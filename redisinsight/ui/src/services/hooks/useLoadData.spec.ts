@@ -1,5 +1,5 @@
-import { renderHook, act } from '@testing-library/react-hooks'
-import { rest } from 'msw'
+import { act, renderHook } from '@testing-library/react-hooks'
+import { http, HttpResponse } from 'msw'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { mswServer } from 'uiSrc/mocks/server'
 import { getMswURL } from 'uiSrc/utils/test-utils'
@@ -33,17 +33,17 @@ describe('useLoadData', () => {
     }
 
     mswServer.use(
-      rest.post(
+      http.post(
         getMswURL(
           getUrl(
             instanceId,
             ApiEndpoints.BULK_ACTIONS_IMPORT_VECTOR_COLLECTION,
           ),
         ),
-        async (req, res, ctx) => {
-          const body = await req.json()
+        async ({ request }) => {
+          const body = await request.json()
           expect(body).toEqual({ collectionName })
-          return res(ctx.status(200), ctx.json(mockResponse))
+          return HttpResponse.json(mockResponse, { status: 200 })
         },
       ),
     )
@@ -68,16 +68,16 @@ describe('useLoadData', () => {
     })
 
     mswServer.use(
-      rest.post(
+      http.post(
         getMswURL(
           getUrl(
             instanceId,
             ApiEndpoints.BULK_ACTIONS_IMPORT_VECTOR_COLLECTION,
           ),
         ),
-        async (_, res, ctx) => {
+        async () => {
           await requestPromise
-          return res(ctx.status(200), ctx.json(mockResponse))
+          return HttpResponse.json(mockResponse, { status: 200 })
         },
       ),
     )
@@ -109,15 +109,16 @@ describe('useLoadData', () => {
     const errorMessage = 'Network error occurred'
 
     mswServer.use(
-      rest.post(
+      http.post(
         getMswURL(
           getUrl(
             instanceId,
             ApiEndpoints.BULK_ACTIONS_IMPORT_VECTOR_COLLECTION,
           ),
         ),
-        async (_, res, ctx) =>
-          res(ctx.status(500), ctx.json({ message: errorMessage })),
+        async () => {
+          return HttpResponse.json({ message: errorMessage }, { status: 500 })
+        },
       ),
     )
 
@@ -141,19 +142,22 @@ describe('useLoadData', () => {
 
     // Mock first call to fail, second to succeed
     mswServer.use(
-      rest.post(
+      http.post(
         getMswURL(
           getUrl(
             instanceId,
             ApiEndpoints.BULK_ACTIONS_IMPORT_VECTOR_COLLECTION,
           ),
         ),
-        async (_, res, ctx) => {
+        async () => {
           callCount++
           if (callCount === 1) {
-            return res(ctx.status(500), ctx.json({ message: 'Server error' }))
+            return HttpResponse.json(
+              { message: 'Server error' },
+              { status: 500 },
+            )
           }
-          return res(ctx.status(200), ctx.json(mockResponse))
+          return HttpResponse.json(mockResponse, { status: 200 })
         },
       ),
     )
@@ -186,17 +190,17 @@ describe('useLoadData', () => {
     let callCount = 0
 
     mswServer.use(
-      rest.post(
+      http.post(
         getMswURL(
           getUrl(
             instanceId,
             ApiEndpoints.BULK_ACTIONS_IMPORT_VECTOR_COLLECTION,
           ),
         ),
-        async (_, res, ctx) => {
+        async () => {
           callCount++
           const response = callCount === 1 ? mockResponse1 : mockResponse2
-          return res(ctx.status(200), ctx.json(response))
+          return HttpResponse.json(response, { status: 200 })
         },
       ),
     )
@@ -225,12 +229,12 @@ describe('useLoadData', () => {
     const requestBodies: any[] = []
 
     mswServer.use(
-      rest.post(
+      http.post(
         '*/bulk-actions/import/vector-collection',
-        async (req, res, ctx) => {
-          const body = await req.json()
+        async ({ request }) => {
+          const body = await request.json()
           requestBodies.push(body)
-          return res(ctx.status(200), ctx.json(mockResponse))
+          return HttpResponse.json(mockResponse, { status: 200 })
         },
       ),
     )

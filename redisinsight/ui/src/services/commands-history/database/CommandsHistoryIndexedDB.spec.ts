@@ -1,7 +1,6 @@
-import { rest } from 'msw'
+import { http, HttpResponse } from 'msw'
 import { faker } from '@faker-js/faker'
 import {
-  CommandExecution,
   CommandExecutionType,
   CommandExecutionUI,
   ResultsMode,
@@ -251,12 +250,11 @@ describe('CommandsHistoryIndexedDB', () => {
 
       // Override the MSW handler to return our mock commands
       mswServer.use(
-        rest.post<CommandExecution[]>(
+        http.post(
           getMswURL(
             getUrl(mockInstanceId, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS),
           ),
-          async (_req, res, ctx) =>
-            res(ctx.status(200), ctx.json(mockCommandExecutions)),
+          async () => HttpResponse.json(mockCommandExecutions, { status: 200 }),
         ),
       )
 
@@ -284,11 +282,11 @@ describe('CommandsHistoryIndexedDB', () => {
 
       // Override the MSW handler to return an error status
       mswServer.use(
-        rest.post<CommandExecution[]>(
+        http.post(
           getMswURL(
             getUrl(mockInstanceId, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS),
           ),
-          async (_req, res, ctx) => res(ctx.status(statusCode)),
+          async () => HttpResponse.text('', { status: statusCode }),
         ),
       )
 
@@ -318,11 +316,11 @@ describe('CommandsHistoryIndexedDB', () => {
 
       // Override the MSW handler to simulate a network error
       mswServer.use(
-        rest.post<CommandExecution[]>(
+        http.post(
           getMswURL(
             getUrl(mockInstanceId, ApiEndpoints.WORKBENCH_COMMAND_EXECUTIONS),
           ),
-          async (_req, res) => res.networkError(mockError),
+          async () => HttpResponse.error(),
         ),
       )
 

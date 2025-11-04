@@ -26,7 +26,6 @@ describe('DatabaseRecommendationService', () => {
 
   let service: DatabaseRecommendationService;
   let databaseRecommendationRepository: MockType<DatabaseRecommendationRepository>;
-  let scanner: MockType<RecommendationScanner>;
   let databaseService: MockType<DatabaseService>;
   let analytics: MockType<DatabaseRecommendationAnalytics>;
 
@@ -56,7 +55,6 @@ describe('DatabaseRecommendationService', () => {
     databaseRecommendationRepository = await module.get(
       DatabaseRecommendationRepository,
     );
-    scanner = await module.get(RecommendationScanner);
     databaseService = await module.get(DatabaseService);
     analytics = await module.get(DatabaseRecommendationAnalytics);
     service = module.get(DatabaseRecommendationService);

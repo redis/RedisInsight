@@ -46,18 +46,6 @@ export const migrateHomeFolder = async () => {
 };
 
 /**
- * Remove old folders
- */
-export const removeOldFolders = async () => {
-  try {
-    // remove old folders
-    await PATH_CONFIG.oldFolders?.map(removeFolder);
-  } catch (e) {
-    // continue initialization even without removing
-  }
-};
-
-/**
  * Remove a folder
  */
 export const removeFolder = async (path: string) => {
@@ -65,6 +53,18 @@ export const removeFolder = async (path: string) => {
     if (await fs.pathExists(path)) {
       await fs.rm(path, { recursive: true, force: true });
     }
+  } catch (e) {
+    // continue initialization even without removing
+  }
+};
+
+/**
+ * Remove old folders
+ */
+export const removeOldFolders = async () => {
+  try {
+    // remove old folders
+    await PATH_CONFIG.oldFolders?.map(removeFolder);
   } catch (e) {
     // continue initialization even without removing
   }

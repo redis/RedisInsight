@@ -91,3 +91,5 @@ static/
 # AI rules
 .windsurfrules
 .junie/
+*storybook.log
+storybook-static

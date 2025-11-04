@@ -32,6 +32,7 @@ export enum KnownFeatures {
   EnhancedCloudUI = 'enhancedCloudUI',
   DatabaseManagement = 'databaseManagement',
   VectorSearch = 'vectorSearch',
+  DatabasesListV2 = 'databasesListV2',
 }
 
 export interface IFeatureFlag {

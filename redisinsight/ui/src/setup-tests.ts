@@ -15,14 +15,35 @@ class ResizeObserver {
   disconnect() {}
 }
 
+class File extends Blob {
+  constructor(fileBits: any[], fileName: string, options?: any) {
+    super(fileBits, options)
+    this.name = fileName
+  }
+
+  lastModified = Date.now()
+
+  name = 'test-file'
+
+  webkitRelativePath = ''
+}
+
 Object.defineProperty(window, 'ResizeObserver', {
   writable: true,
   configurable: true,
   value: ResizeObserver,
 })
 
+Object.defineProperty(window, 'File', {
+  writable: true,
+  configurable: true,
+  value: File,
+})
+
 beforeAll(() => {
-  mswServer.listen()
+  mswServer.listen({
+    onUnhandledRequest: 'bypass'
+  })
 })
 
 afterEach(() => {

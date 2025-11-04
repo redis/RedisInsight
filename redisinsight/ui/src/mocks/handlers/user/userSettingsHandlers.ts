@@ -1,4 +1,4 @@
-import { rest, RestHandler } from 'msw'
+import { http, HttpHandler, HttpResponse } from 'msw'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { getMswURL } from 'uiSrc/utils/test-utils'
 
@@ -16,10 +16,15 @@ export const USER_SETTINGS_DATA_MOCK = {
   },
 }
 
-const handlers: RestHandler[] = [
-  rest.get(getMswURL(ApiEndpoints.SETTINGS), async (_req, res, ctx) =>
-    res(ctx.status(200), ctx.json(USER_SETTINGS_DATA_MOCK)),
-  ),
+const apiSettings = getMswURL(ApiEndpoints.SETTINGS)
+
+const handlers: HttpHandler[] = [
+  http.get(apiSettings, async () => {
+    return HttpResponse.json(USER_SETTINGS_DATA_MOCK, { status: 200 })
+  }),
+  http.patch(apiSettings, async () => {
+    return HttpResponse.json(USER_SETTINGS_DATA_MOCK, { status: 200 })
+  }),
 ]
 
 export default handlers

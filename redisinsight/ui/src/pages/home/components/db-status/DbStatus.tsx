@@ -88,7 +88,10 @@ const DbStatus = (props: Props) => {
   )
 
   if (isFree && daysDiff >= LAST_CONNECTION_L) {
-    return renderWarningTooltip(CHECK_CLOUD_DATABASE, 'checkIfDeleted')
+    return renderWarningTooltip(
+      CHECK_CLOUD_DATABASE,
+      WarningTypes.CheckIfDeleted,
+    )
   }
 
   if (isFree && daysDiff >= LAST_CONNECTION_SM) {

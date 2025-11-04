@@ -11,11 +11,14 @@ export class RedisConnectionUnavailableException extends RedisConnectionFailedEx
     message: string = ERROR_MESSAGES.INCORRECT_DATABASE_URL('this host'),
     options?: HttpExceptionOptions,
   ) {
-    super({
-      message,
-      error: 'RedisConnectionUnavailableException',
-      statusCode: RedisConnectionFailedStatusCode,
-      errorCode: CustomErrorCodes.RedisConnectionUnavailable,
-    }, options);
+    super(
+      {
+        message,
+        error: 'RedisConnectionUnavailableException',
+        statusCode: RedisConnectionFailedStatusCode,
+        errorCode: CustomErrorCodes.RedisConnectionUnavailable,
+      },
+      options,
+    );
   }
 }

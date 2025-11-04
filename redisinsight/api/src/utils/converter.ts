@@ -1,4 +1,4 @@
-import { chunk, isInteger, isString, isNumber, isNaN } from 'lodash';
+import { isInteger, isString, isNumber, isNaN } from 'lodash';
 
 export const convertIntToSemanticVersion = (input: number): string => {
   const separator = '.';

@@ -3,19 +3,20 @@ import { cloneDeep } from 'lodash'
 import { instance, mock } from 'ts-mockito'
 
 import {
-  fireEvent,
-  render,
-  cleanup,
-  mockedStore,
-  screen,
   act,
+  cleanup,
+  expectActionsToContain,
+  fireEvent,
+  mockedStore,
+  render,
+  screen,
 } from 'uiSrc/utils/test-utils'
 import {
   getPipelineStrategies,
   rdiPipelineStrategiesSelector,
 } from 'uiSrc/slices/rdi/pipeline'
 import { RdiPipelineTabs } from 'uiSrc/slices/interfaces'
-import { NO_TEMPLATE_LABEL, INGEST_OPTION } from './constants'
+import { INGEST_OPTION, NO_TEMPLATE_LABEL } from './constants'
 import TemplateForm, { Props } from './TemplateForm'
 
 const mockedProps = mock<Props>()
@@ -58,18 +59,17 @@ describe('TemplateForm', () => {
 
     fireEvent.click(screen.getByTestId('template-cancel-btn'))
 
-    expect(mockClosePopover).toBeCalled()
+    expect(mockClosePopover).toHaveBeenCalled()
   })
 
   it('should fetch rdi strategies on initial', async () => {
-    await act(() => {
+    await act(async () => {
       render(<TemplateForm {...instance(mockedProps)} />)
     })
 
     const expectedActions = [getPipelineStrategies()]
-    expect(store.getActions().slice(0, expectedActions.length)).toEqual(
-      expectedActions,
-    )
+
+    expectActionsToContain(store.getActions(), expectedActions)
   })
 
   it('apply btn should be disabled if there is any value', () => {

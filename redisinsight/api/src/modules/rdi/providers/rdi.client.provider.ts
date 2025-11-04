@@ -1,6 +1,6 @@
 import { RdiClient } from 'src/modules/rdi/client/rdi.client';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { Rdi, RdiClientMetadata } from 'src/modules/rdi/models';
+import { RdiClientMetadata } from 'src/modules/rdi/models';
 import { RdiClientStorage } from 'src/modules/rdi/providers/rdi.client.storage';
 import { RdiClientFactory } from 'src/modules/rdi/providers/rdi.client.factory';
 import { RdiRepository } from 'src/modules/rdi/repository/rdi.repository';
