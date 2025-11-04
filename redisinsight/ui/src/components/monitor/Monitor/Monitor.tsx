@@ -54,7 +54,7 @@ const Monitor = (props: Props) => {
       data-testid="monitor-not-started"
     >
       <StyledImagePanel align="center">
-        <StyledImage as="img" src={ProfilerImage} alt={'asd'} />
+        <StyledImage as="img" src={ProfilerImage} alt="Profiler" />
         <Spacer size="l" />
         <Text>
           Get a deeper understanding of your database with real-time command,

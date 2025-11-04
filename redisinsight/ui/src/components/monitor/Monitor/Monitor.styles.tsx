@@ -10,6 +10,7 @@ const StyledImagePanel = styled(Col)`
 
 export const StyledImage = styled.img`
   max-width: 120px;
+  user-select: none;
 `
 
 export default StyledImagePanel
