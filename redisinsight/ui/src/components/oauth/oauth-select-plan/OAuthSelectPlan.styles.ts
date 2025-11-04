@@ -1,4 +1,7 @@
 import styled from 'styled-components'
+import { BoxSelectionGroup } from '@redis-ui/components'
+
+import { FlexGroup } from 'uiSrc/components/base/layout/flex'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 
 export const StyledModalContentBody = styled.section`
@@ -10,6 +13,24 @@ export const StyledModalContentBody = styled.section`
 
 export const StyledSubTitle = styled(Text)`
   padding: 0 40px;
+`
+
+export const StyledProvidersSection = styled(FlexGroup)`
+  width: 100%;
+  padding: 30px 45px 22px;
+`
+
+export const StyledProvidersSelectionGroup = styled(BoxSelectionGroup)`
+  min-height: 68px;
+
+  svg {
+    width: 28px;
+    height: initial;
+  }
+
+  p {
+    font-size: 1.2rem;
+  }
 `
 
 export const StyledRegion = styled.section`

@@ -1,5 +1,4 @@
 import { AllIconsType } from 'uiSrc/components/base/icons/RiIcon'
-import styles from './styles.module.scss'
 
 export enum OAuthProvider {
   AWS = 'AWS',
@@ -11,13 +10,11 @@ export const OAuthProviders: {
   id: OAuthProvider
   icon: AllIconsType
   label: string
-  className?: string
 }[] = [
   {
     id: OAuthProvider.AWS,
     icon: 'Awss3Icon',
     label: 'Amazon Web Services',
-    className: styles.awsIcon,
   },
   {
     id: OAuthProvider.Google,

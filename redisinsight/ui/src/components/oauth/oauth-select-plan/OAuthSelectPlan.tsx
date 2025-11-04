@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { toNumber, filter, get, find, first } from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
-import cx from 'classnames'
 
 import {
   createFreeDbJob,
@@ -18,7 +17,6 @@ import { FeatureFlags } from 'uiSrc/constants'
 import { Region } from 'uiSrc/slices/interfaces'
 
 import {
-  EmptyButton,
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
@@ -30,21 +28,30 @@ import { Modal } from 'uiSrc/components/base/display'
 import { CancelIcon } from 'uiSrc/components/base/icons'
 import { CloudSubscriptionPlanResponse } from 'apiSrc/modules/cloud/subscription/dto'
 import { OAuthProvider, OAuthProviders } from './constants'
-import styles from './styles.module.scss'
 import {
   StyledFooter,
   StyledModalContentBody,
+  StyledProvidersSection,
+  StyledProvidersSelectionGroup,
   StyledRegion,
   StyledRegionName,
   StyledRegionSelectDescription,
   StyledSubTitle,
 } from './OAuthSelectPlan.styles'
+import { BoxSelectionGroupBox, CountryFlag } from '@redis-ui/components'
 
 export const DEFAULT_REGIONS = ['us-east-2', 'asia-northeast1']
 export const DEFAULT_PROVIDER = OAuthProvider.AWS
 
 const getProviderRegions = (regions: Region[], provider: OAuthProvider) =>
   (find(regions, { provider }) || {}).regions || []
+
+const oAuthProvidersBoxes: BoxSelectionGroupBox<OAuthProvider>[] =
+  OAuthProviders.map(({ id, label, icon }) => ({
+    value: id,
+    label,
+    icon: () => <RiIcon type={icon} size="XL" />,
+  }))
 
 const OAuthSelectPlan = () => {
   const {
@@ -64,16 +71,19 @@ const OAuthSelectPlan = () => {
 
   const [plans, setPlans] = useState(plansInit || [])
   const [planIdSelected, setPlanIdSelected] = useState('')
-  const [providerSelected, setProviderSelected] =
-    useState<OAuthProvider>(DEFAULT_PROVIDER)
+  const [providerSelected, setProviderSelected] = useState<
+    OAuthProvider | string
+  >(DEFAULT_PROVIDER)
   const [rsProviderRegions, setRsProviderRegions] = useState(
-    getProviderRegions(rsRegions, providerSelected),
+    getProviderRegions(rsRegions, providerSelected as OAuthProvider),
   )
 
   const dispatch = useDispatch()
 
   useEffect(() => {
-    setRsProviderRegions(getProviderRegions(rsRegions, providerSelected))
+    setRsProviderRegions(
+      getProviderRegions(rsRegions, providerSelected as OAuthProvider),
+    )
   }, [providerSelected, plansInit])
 
   useEffect(() => {
@@ -121,30 +131,31 @@ const OAuthSelectPlan = () => {
   const getOptionDisplay = (item: CloudSubscriptionPlanResponse) => {
     const {
       region = '',
-      details: { countryName = '', cityName = '' },
+      details: { countryName = '', cityName = '', flag = '' },
       provider,
     } = item
     const rsProviderRegions: string[] =
       find(rsRegions, { provider })?.regions || []
 
     return (
-      <Text
-        color="subdued"
-        size="s"
-        data-testid={`option-${region}`}
-        data-test-subj={`oauth-region-${region}`}
-      >
-        {`${countryName} (${cityName})`}
-        <StyledRegionName>{region}</StyledRegionName>
-        {rsProviderRegions?.includes(region) && (
-          <ColorText
-            className={styles.rspreview}
-            data-testid={`rs-text-${region}`}
-          >
-            (Redis 7.2)
-          </ColorText>
-        )}
-      </Text>
+      <Row align="center" gap="s">
+        <CountryFlag countryCode={flag} />
+
+        <Text
+          color="primary"
+          data-testid={`option-${region}`}
+          data-test-subj={`oauth-region-${region}`}
+        >
+          {`${countryName} (${cityName})`}
+        </Text>
+
+        <Text color="secondary">
+          <StyledRegionName>{region}</StyledRegionName>
+          {rsProviderRegions?.includes(region) && (
+            <ColorText data-testid={`rs-text-${region}`}>(Redis 7.2)</ColorText>
+          )}
+        </Text>
+      </Row>
     )
   }
 
@@ -200,33 +211,18 @@ const OAuthSelectPlan = () => {
               towards your free Redis Cloud database. No credit card is
               required.
             </StyledSubTitle>
-            <section className={styles.providers}>
-              {OAuthProviders.map(({ icon, id, label }) => {
-                const Icon = () => (
-                  <RiIcon type={icon} size="original" style={{ width: 44 }} />
-                )
-                return (
-                  <div className={styles.provider} key={id}>
-                    {id === providerSelected && (
-                      <div className={cx(styles.providerActiveIcon)}>
-                        <RiIcon type="CheckThinIcon" />
-                      </div>
-                    )}
-                    <EmptyButton
-                      size="large"
-                      icon={Icon}
-                      onClick={() => setProviderSelected(id)}
-                      className={cx(styles.providerBtn, {
-                        [styles.activeProvider]: id === providerSelected,
-                      })}
-                    />
-                    <Text>{label}</Text>
-                  </div>
-                )
-              })}
-            </section>
+
+            <StyledProvidersSection gap="m" direction="column" align="start">
+              <Text color="primary">Select cloud vendor</Text>
+              <StyledProvidersSelectionGroup
+                boxes={oAuthProvidersBoxes}
+                value={providerSelected}
+                onChange={setProviderSelected}
+              />
+            </StyledProvidersSection>
+
             <StyledRegion>
-              <Text className={styles.regionLabel}>Region</Text>
+              <Text color="secondary">Region</Text>
               <RiSelect
                 loading={loading}
                 disabled={loading || !regionOptions.length}
@@ -242,10 +238,7 @@ const OAuthSelectPlan = () => {
                 }}
               />
               {!regionOptions.length && (
-                <StyledRegionSelectDescription
-                  className={styles.selectDescription}
-                  data-testid="select-region-select-description"
-                >
+                <StyledRegionSelectDescription data-testid="select-region-select-description">
                   No regions available, try another vendor.
                 </StyledRegionSelectDescription>
               )}
