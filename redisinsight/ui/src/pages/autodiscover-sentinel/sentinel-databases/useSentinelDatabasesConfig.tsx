@@ -196,6 +196,7 @@ export const colFactory = (
   }
   return cols
 }
+
 export const getRowId = (row: ModifiedSentinelMaster) => row.id || ''
 
 export const useSentinelDatabasesConfig = () => {
