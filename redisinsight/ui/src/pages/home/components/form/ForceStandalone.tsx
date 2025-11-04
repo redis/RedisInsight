@@ -18,13 +18,12 @@ const ForceStandaloneLabel = () => (
   <Row align="center" gap="s">
     <Text>Force Standalone Connection</Text>
     <RiTooltip
-      className="homePage_tooltip"
       position="right"
       content={
-        <p>
+        <Text>
           Override the default connection logic and connect to the specified
           endpoint as a standalone database.
-        </p>
+        </Text>
       }
     >
       <FlexItem>
