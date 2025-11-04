@@ -26,7 +26,6 @@ export const KeyDetailsSubheader = ({ keyType, Actions }: Props) => (
                 </FlexItem>
                 <Divider
                   className={styles.divider}
-                  colorVariable="separatorColor"
                   orientation="vertical"
                 />
               </>

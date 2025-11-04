@@ -47,7 +47,7 @@ const EditSentinelConnection = (props: Props) => {
   const GeneralFormClodeMode = (
     <>
       <PrimaryGroupSentinel formik={formik} />
-      <Divider colorVariable="separatorColor" variant="fullWidth" />
+      <Divider />
       <Title size="XS">Database</Title>
       <Spacer size="s" />
       <SentinelMasterDatabase
@@ -55,7 +55,7 @@ const EditSentinelConnection = (props: Props) => {
         db={db}
         isCloneMode={isCloneMode}
       />
-      <Divider colorVariable="separatorColor" variant="fullWidth" />
+      <Divider />
       <Title size="XS">Sentinel</Title>
       <Spacer size="s" />
       <DatabaseForm
@@ -64,11 +64,11 @@ const EditSentinelConnection = (props: Props) => {
         onHostNamePaste={onHostNamePaste}
       />
       <Spacer size="m" />
-      <Divider colorVariable="separatorColor" variant="fullWidth" />
+      <Divider />
       <Spacer size="m" />
       <DbIndex formik={formik} />
       <Spacer size="m" />
-      <Divider colorVariable="separatorColor" variant="fullWidth" />
+      <Divider />
     </>
   )
 
@@ -91,7 +91,7 @@ const EditSentinelConnection = (props: Props) => {
         </FlexItem>
       </Row>
       <Spacer size="s" />
-      <Divider colorVariable="separatorColor" variant="fullWidth" />
+      <Divider />
       <Title size="XS">Database</Title>
       <Spacer size="s" />
       <SentinelMasterDatabase
@@ -99,7 +99,7 @@ const EditSentinelConnection = (props: Props) => {
         db={db}
         isCloneMode={isCloneMode}
       />
-      <Divider colorVariable="separatorColor" variant="fullWidth" />
+      <Divider />
       <Title size="XS">Sentinel</Title>
       <Spacer size="s" />
       <DatabaseForm

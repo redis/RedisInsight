@@ -124,7 +124,7 @@ export const INFINITE_MESSAGES: InfiniteMessagesType = {
           {!!details && (
             <>
               <Spacer size="m" />
-              <Divider variant="fullWidth" />
+              <Divider />
               <Spacer size="m" />
               <Row className={styles.detailsRow} justify="between">
                 <FlexItem>

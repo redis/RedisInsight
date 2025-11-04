@@ -67,7 +67,7 @@ const SettingsPage = () => {
     <>
       <ThemeSettings />
       <ConsentsNotifications />
-      <Divider colorVariable="separatorColor" />
+      <Divider />
       <Spacer />
       <DateTimeFormatter />
     </>

@@ -50,11 +50,11 @@ const AddConnection = (props: Props) => {
             showFields={{ host: true, alias: true, port: true, timeout: true }}
           />
           <Spacer size="l" />
-          <Divider colorVariable="separatorColor" variant="fullWidth" />
+          <Divider />
           <Spacer size="m" />
           <DbIndex formik={formik} />
           <Spacer size="m" />
-          <Divider colorVariable="separatorColor" variant="fullWidth" />
+          <Divider />
           <Spacer size="m" />
           <ForceStandalone formik={formik} />
         </>
@@ -69,7 +69,7 @@ const AddConnection = (props: Props) => {
           {buildType !== BuildType.RedisStack && (
             <>
               <Spacer size="m" />
-              <Divider colorVariable="separatorColor" variant="fullWidth" />
+              <Divider />
               <Spacer size="m" />
               <SSHDetails formik={formik} />
             </>

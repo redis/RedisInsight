@@ -63,13 +63,13 @@ const EditConnection = (props: Props) => {
             onHostNamePaste={onHostNamePaste}
           />
           <Spacer size="l" />
-          <Divider colorVariable="separatorColor" variant="fullWidth" />
+          <Divider />
           <Spacer size="m" />
           <ForceStandalone formik={formik} />
           {isCloneMode && (
             <>
               <Spacer size="m" />
-              <Divider colorVariable="separatorColor" variant="fullWidth" />
+              <Divider />
               <Spacer size="m" />
               <DbIndex formik={formik} />
             </>
@@ -86,7 +86,7 @@ const EditConnection = (props: Props) => {
           {buildType !== BuildType.RedisStack && (
             <>
               <Spacer size="m" />
-              <Divider colorVariable="separatorColor" variant="fullWidth" />
+              <Divider />
               <Spacer size="m" />
               <SSHDetails formik={formik} />
             </>

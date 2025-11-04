@@ -83,7 +83,6 @@ const HashDetails = (props: Props) => {
           />
           <Divider
             className={styles.divider}
-            colorVariable="separatorColor"
             orientation="vertical"
           />
         </>
