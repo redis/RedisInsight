@@ -85,11 +85,7 @@ const MonitorLog = () => {
               className={styles.time}
               data-testid="profiler-running-time"
             >
-              <RiIcon
-                size="s"
-                color="informative400"
-                type="ExecutionTimeIcon"
-              />
+              <RiIcon size="s" color="informative400" type="TimeIconIcon" />
               {format(timestamp.start, 'hh:mm:ss')}
               &nbsp;&#8211;&nbsp;
               {format(timestamp.paused, 'hh:mm:ss')}
