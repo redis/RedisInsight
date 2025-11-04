@@ -58,7 +58,7 @@ const Monitor = (props: Props) => {
         <RiImage
           src={ProfilerImage}
           alt="Profiler"
-          style={{ userSelect: 'none' }}
+          style={{ userSelect: 'none', pointerEvents: 'none' }}
         />
         <Spacer size="l" />
         <Text>
