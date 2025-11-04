@@ -26,7 +26,7 @@ import {
 import { FileChangeType } from 'uiSrc/slices/interfaces'
 import {
   addErrorNotification,
-  IAddInstanceErrorPayload,
+  type IAddInstanceErrorPayload,
 } from 'uiSrc/slices/app/notifications'
 import Config from './Config'
 
