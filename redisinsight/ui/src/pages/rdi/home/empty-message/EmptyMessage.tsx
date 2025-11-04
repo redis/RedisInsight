@@ -1,23 +1,15 @@
 import React, { useContext } from 'react'
 
-import { EXTERNAL_LINKS, UTM_MEDIUMS } from 'uiSrc/constants/links'
-import { getUtmExternalLink } from 'uiSrc/utils/links'
 import EmptyListDarkIcon from 'uiSrc/assets/img/rdi/empty_list_dark.svg'
 import EmptyListLightIcon from 'uiSrc/assets/img/rdi/empty_list_light.svg'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import { Theme } from 'uiSrc/constants'
 
-import { Text } from 'uiSrc/components/base/text'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Text, Title } from 'uiSrc/components/base/text'
+import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { Link } from 'uiSrc/components/base/link/Link'
 import { RiImage } from 'uiSrc/components/base/display'
-import styles from './styles.module.scss'
-
-const subTitleText =
-  "Redis Data Integration (RDI) synchronizes data from your existing database into Redis in near-real-time. We've done the heavy lifting so you can turn slow data into fast data without coding."
 
 export interface Props {
   onAddInstanceClick: () => void
@@ -26,43 +18,48 @@ export interface Props {
 const EmptyMessage = ({ onAddInstanceClick }: Props) => {
   const { theme } = useContext(ThemeContext)
   return (
-    <div
-      className={styles.noResultsContainer}
+    <Col
       data-testid="empty-rdi-instance-list"
+      align="center"
+      justify="center"
+      gap="xxl"
     >
+      <FlexItem>
+        <Col align="center" gap="m">
+          <Title color="primary">Create data pipeline</Title>
+          <FlexItem>
+            <Col align="center">
+              <Text color="primary">
+                Redis data integration (RDI) streams data to Redis Cloud,
+                ensuring
+              </Text>
+              <Text color="primary">
+                real-time sync while saving time and costs. It eliminates cache
+              </Text>
+              <Text color="primary">
+                misses and simplifies data management.
+              </Text>
+            </Col>
+          </FlexItem>
+        </Col>
+      </FlexItem>
+      <FlexItem>
+        <PrimaryButton
+          data-testid="empty-rdi-instance-button"
+          size="l"
+          onClick={onAddInstanceClick}
+        >
+          Let’s connect to RDI
+        </PrimaryButton>
+      </FlexItem>
       <Spacer size="xl" />
-      <Text className={styles.title}>Redis Data Integration</Text>
-      <RiImage
-        src={theme === Theme.Dark ? EmptyListDarkIcon : EmptyListLightIcon}
-        className={styles.icon}
-        alt="empty"
-      />
-      <Text className={styles.subTitle}>{subTitleText}</Text>
-      <Row align="center" gap="m" responsive style={{ lineHeight: '20px' }}>
-        <FlexItem grow>
-          <PrimaryButton
-            data-testid="empty-rdi-instance-button"
-            size="small"
-            onClick={onAddInstanceClick}
-          >
-            + Add RDI Endpoint
-          </PrimaryButton>
-        </FlexItem>
-        or
-        <FlexItem grow>
-          <Link
-            data-testid="empty-rdi-quickstart-button"
-            target="_blank"
-            href={getUtmExternalLink(EXTERNAL_LINKS.rdiQuickStart, {
-              medium: UTM_MEDIUMS.Rdi,
-              campaign: 'rdi_list',
-            })}
-          >
-            RDI Quickstart <RiIcon type="ArrowDiagonalIcon" />
-          </Link>
-        </FlexItem>
-      </Row>
-    </div>
+      <FlexItem>
+        <RiImage
+          src={theme === Theme.Dark ? EmptyListDarkIcon : EmptyListLightIcon}
+          alt="empty"
+        />
+      </FlexItem>
+    </Col>
   )
 }
 

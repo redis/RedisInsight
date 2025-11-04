@@ -17,18 +17,20 @@ const RdiHeader = ({ onRdiInstanceClick }: Props) => {
   return (
     <div className="containerDl">
       <Row className="contentDL" align="center" gap="s">
-        <FlexItem>
-          <PrimaryButton
-            onClick={onRdiInstanceClick}
-            data-testid="rdi-instance"
-          >
-            <span>+ Endpoint</span>
-          </PrimaryButton>
-        </FlexItem>
         {instances.length > 0 && (
-          <FlexItem className="searchContainer">
-            <SearchRdiList />
-          </FlexItem>
+          <>
+            <FlexItem>
+              <PrimaryButton
+                onClick={onRdiInstanceClick}
+                data-testid="rdi-instance"
+              >
+                <span>+ Endpoint</span>
+              </PrimaryButton>
+            </FlexItem>
+            <FlexItem className="searchContainer">
+              <SearchRdiList />
+            </FlexItem>
+          </>
         )}
       </Row>
       <Spacer className="spacerDl" />
