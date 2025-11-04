@@ -60,23 +60,6 @@ const SentinelDatabases = ({
   selection,
 }: Props) => {
   const [items, setItems] = useState<ModifiedSentinelMaster[]>(masters)
-  const [rowSelection, setRowSelection] = useState<
-    Record<NonNullable<ModifiedSentinelMaster['id']>, boolean>
-  >({})
-
-  useEffect(() => {
-    setRowSelection(
-      selection.reduce(
-        (acc, item) => {
-          if (item.id) {
-            acc[item.id as string] = true
-          }
-          return acc
-        },
-        {} as Record<NonNullable<ModifiedSentinelMaster['id']>, boolean>,
-      ),
-    )
-  }, [selection])
 
   const [message, setMessage] = useState(loadingMsg)
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
@@ -219,7 +202,7 @@ const SentinelDatabases = ({
         <DatabaseWrapper>
           <Table
             rowSelectionMode="multiple"
-            rowSelection={rowSelection}
+            // rowSelection={rowSelection}
             onRowSelectionChange={onSelectionChange}
             getRowCanSelect={(row) => getRowId(row.original) !== ''}
             getRowId={getRowId}

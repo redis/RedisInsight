@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useHistory } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import { map, pick } from 'lodash'
 
+import { dispatch } from 'uiSrc/slices/store'
+import { history } from 'uiSrc/Router'
 import { LoadedSentinel, ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import {
   createMastersSentinelAction,
@@ -36,6 +37,36 @@ const handleCopy = (text = '') => {
   return navigator.clipboard.writeText(text)
 }
 
+const updateSelection = (
+  selected: ModifiedSentinelMaster[],
+  masters: ModifiedSentinelMaster[],
+) => {
+  return selected.map(
+    (select) =>
+      masters.find((master) => {
+        return getRowId(master) === getRowId(select)
+      }) ?? select,
+  )
+}
+
+const sendCancelEvent = () => {
+  sendEventTelemetry({
+    event:
+      TelemetryEvent.CONFIG_DATABASES_REDIS_SENTINEL_AUTODISCOVERY_CANCELLED,
+  })
+}
+
+const handleClose = () => {
+  sendCancelEvent()
+  dispatch(resetDataSentinel())
+  history.push(Pages.home)
+}
+
+const handleBackAdding = () => {
+  sendCancelEvent()
+  dispatch(resetLoadedSentinel(LoadedSentinel.Masters))
+  history.push(Pages.home)
+}
 export const colFactory = (
   items: ModifiedSentinelMaster[],
   handleChangedInput: (name: string, value: string) => void,
@@ -204,31 +235,7 @@ export const useSentinelDatabasesConfig = () => {
 
   const { data: masters } = useSelector(sentinelSelector)
 
-  const dispatch = useDispatch()
-  const history = useHistory()
   const [selection, setSelection] = useState<ModifiedSentinelMaster[]>([])
-
-  const updateSelection = (
-    selected: ModifiedSentinelMaster[],
-    masters: ModifiedSentinelMaster[],
-  ) => {
-    return selected.map(
-      (select) =>
-        masters.find((master) => {
-          return getRowId(master) === getRowId(select)
-        }) ?? select,
-    )
-  }
-  const handleSelectionChange = (currentSelected: RowSelectionState) => {
-    const newSelection = items.filter((item) => {
-      const id = getRowId(item)
-      if (!id) {
-        return false
-      }
-      return currentSelected[id]
-    })
-    setSelection(newSelection)
-  }
 
   useEffect(() => {
     if (masters.length) {
@@ -237,52 +244,50 @@ export const useSentinelDatabasesConfig = () => {
     }
   }, [masters.length])
 
-  setTitle('Auto-Discover Redis Sentinel Primary Groups')
+  useEffect(() => setTitle('Auto-Discover Redis Sentinel Primary Groups'), [])
 
-  const sendCancelEvent = () => {
-    sendEventTelemetry({
-      event:
-        TelemetryEvent.CONFIG_DATABASES_REDIS_SENTINEL_AUTODISCOVERY_CANCELLED,
-    })
-  }
+  const handleSelectionChange = useCallback(
+    (currentSelected: RowSelectionState) => {
+      const newSelection = items.filter((item) => {
+        const id = getRowId(item)
+        if (!id) {
+          return false
+        }
+        return currentSelected[id]
+      })
+      setSelection(newSelection)
+    },
+    [items],
+  )
 
-  const handleClose = () => {
-    sendCancelEvent()
-    dispatch(resetDataSentinel())
-    history.push(Pages.home)
-  }
+  const handleAddInstances = useCallback(
+    (databases: ModifiedSentinelMaster[]) => {
+      const pikedDatabases = map(databases, (i) => {
+        const database: CreateSentinelDatabaseDto = {
+          name: i.name,
+          alias: i.alias || i.name,
+        }
+        if (i.username) {
+          database.username = i.username
+        }
+        if (i.password) {
+          database.password = i.password
+        }
+        if (i.db) {
+          database.db = i.db
+        }
+        return pick(database, 'alias', 'name', 'username', 'password', 'db')
+      })
 
-  const handleBackAdding = () => {
-    sendCancelEvent()
-    dispatch(resetLoadedSentinel(LoadedSentinel.Masters))
-    history.push(Pages.home)
-  }
-
-  const handleAddInstances = (databases: ModifiedSentinelMaster[]) => {
-    const pikedDatabases = map(databases, (i) => {
-      const database: CreateSentinelDatabaseDto = {
-        name: i.name,
-        alias: i.alias || i.name,
-      }
-      if (i.username) {
-        database.username = i.username
-      }
-      if (i.password) {
-        database.password = i.password
-      }
-      if (i.db) {
-        database.db = i.db
-      }
-      return pick(database, 'alias', 'name', 'username', 'password', 'db')
-    })
-
-    dispatch(updateMastersSentinel(databases))
-    dispatch(
-      createMastersSentinelAction(pikedDatabases, () =>
-        history.push(Pages.sentinelDatabasesResult),
-      ),
-    )
-  }
+      dispatch(updateMastersSentinel(databases))
+      dispatch(
+        createMastersSentinelAction(pikedDatabases, () =>
+          history.push(Pages.sentinelDatabasesResult),
+        ),
+      )
+    },
+    [dispatch, history],
+  )
 
   const handleChangedInput = useCallback(
     (name: string, value: string) => {
@@ -301,10 +306,12 @@ export const useSentinelDatabasesConfig = () => {
     },
     [setItems],
   )
+
   const columns: ColumnDef<ModifiedSentinelMaster>[] = useMemo(
     () => colFactory(items, handleChangedInput),
     [handleChangedInput, items.length],
   )
+
   return {
     columns,
     selection,

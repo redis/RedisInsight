@@ -1,6 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
+
+import { history } from 'uiSrc/Router'
+import { dispatch } from 'uiSrc/slices/store'
 import { ApiStatusCode, Pages } from 'uiSrc/constants'
 import {
   createMastersSentinelAction,
@@ -56,6 +59,16 @@ function errorNotAuth(
 
 const handleCopy = (text = '') => {
   navigator.clipboard.writeText(text)
+}
+
+const handleBackAdding = () => {
+  dispatch(resetLoadedSentinel(LoadedSentinel.MastersAdded))
+  history.push(Pages.home)
+}
+
+const handleViewDatabases = () => {
+  dispatch(resetDataSentinel())
+  history.push(Pages.home)
 }
 
 export const colFactory = (
@@ -342,9 +355,8 @@ export const useSentinelDatabasesResultConfig = () => {
   const dispatch = useDispatch()
   const history = useHistory()
 
-  setTitle('Redis Sentinel Primary Groups Added')
-
   useEffect(() => {
+    setTitle('Redis Sentinel Primary Groups Added')
     if (!masters.length) {
       history.push(Pages.home)
     }
@@ -358,16 +370,6 @@ export const useSentinelDatabasesResultConfig = () => {
       setItems(masters)
     }
   }, [masters])
-
-  const handleBackAdding = () => {
-    dispatch(resetLoadedSentinel(LoadedSentinel.MastersAdded))
-    history.push(Pages.home)
-  }
-
-  const handleViewDatabases = () => {
-    dispatch(resetDataSentinel())
-    history.push(Pages.home)
-  }
 
   const handleAddInstance = useCallback(
     (masterName: string) => {
@@ -390,19 +392,22 @@ export const useSentinelDatabasesResultConfig = () => {
     [items],
   )
 
-  const handleChangedInput = (name: string, value: string) => {
-    const [field, id] = name.split('-')
+  const handleChangedInput = useCallback(
+    (name: string, value: string) => {
+      const [field, id] = name.split('-')
 
-    setItems((items) =>
-      items.map((item) => {
-        if (item.id !== id) {
-          return item
-        }
+      setItems((items) =>
+        items.map((item) => {
+          if (item.id !== id) {
+            return item
+          }
 
-        return { ...item, [field]: value }
-      }),
-    )
-  }
+          return { ...item, [field]: value }
+        }),
+      )
+    },
+    [items],
+  )
 
   const columns: ColumnDef<ModifiedSentinelMaster>[] = useMemo(() => {
     return colFactory(
@@ -412,7 +417,13 @@ export const useSentinelDatabasesResultConfig = () => {
       countSuccessAdded,
       items.length,
     )
-  }, [countSuccessAdded, isInvalid, items.length])
+  }, [
+    countSuccessAdded,
+    isInvalid,
+    items.length,
+    handleAddInstance,
+    handleChangedInput,
+  ])
 
   return {
     columns,
