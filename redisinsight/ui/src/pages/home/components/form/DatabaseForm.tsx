@@ -14,14 +14,16 @@ import {
 } from 'uiSrc/utils'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { FormField, RiInfoIconProps } from 'uiSrc/components/base/forms/FormField'
+import {
+  FormField,
+  RiInfoIconProps,
+} from 'uiSrc/components/base/forms/FormField'
 import {
   NumericInput,
   PasswordInput,
   TextInput,
 } from 'uiSrc/components/base/inputs'
-import { Text } from 'uiSrc/components/base/text'
-import { Spacer } from 'uiSrc/components/base/layout'
+import { HostInfoTooltipContent } from '../host-info-tooltip-content/HostInfoTooltipContent'
 
 interface IShowFields {
   alias: boolean
@@ -30,34 +32,8 @@ interface IShowFields {
   timeout: boolean
 }
 
-const infoIcon: RiInfoIconProps = {
-  content: (
-    <div className="homePage_tooltip">
-      <div>
-        <Text variant="semiBold">
-          Pasting a connection URL auto fills the database details.
-        </Text>
-        <Spacer size="s" />
-        <Text variant="semiBold">
-          The following connection URLs are supported:
-        </Text>
-      </div>
-      <ul className="homePage_toolTipUl">
-        <li>
-          <span className="dot" />
-          redis://[[username]:[password]]@host:port
-        </li>
-        <li>
-          <span className="dot" />
-          rediss://[[username]:[password]]@host:port
-        </li>
-        <li>
-          <span className="dot" />
-          host:port
-        </li>
-      </ul>
-    </div>
-  ),
+const hostInfo: RiInfoIconProps = {
+  content: HostInfoTooltipContent({ includeAutofillInfo: true }),
   placement: 'right',
   maxWidth: '100%',
 }
@@ -110,7 +86,7 @@ const DatabaseForm = (props: Props) => {
         <Row gap="m">
           {showFields.host && (
             <FlexItem grow={4}>
-              <FormField label="Host" required infoIconProps={infoIcon}>
+              <FormField label="Host" required infoIconProps={hostInfo}>
                 <TextInput
                   autoFocus={autoFocus}
                   name="ip"
