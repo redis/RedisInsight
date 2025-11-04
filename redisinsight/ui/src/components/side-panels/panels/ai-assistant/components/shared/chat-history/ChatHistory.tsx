@@ -165,12 +165,13 @@ const ChatHistory = (props: Props) => {
       <div className={styles.wrapper}>
         <div className={styles.history} data-testid="ai-chat-empty-history">
           <div className={styles.answerWrapper}>
-            <div
-              className={styles.answer}
+            <MessageContainer
+              as="div"
+              messageType={AiChatMessageType.AIMessage}
               data-testid="ai-message-initial-message"
             >
               {initialMessage}
-            </div>
+            </MessageContainer>
           </div>
         </div>
       </div>
@@ -190,9 +191,13 @@ const ChatHistory = (props: Props) => {
         {getMessage(inProgressMessage)}
         {content === '' && (
           <div className={styles.answerWrapper}>
-            <div className={styles.answer} data-testid="ai-loading-answer">
+            <MessageContainer
+              as="div"
+              messageType={AiChatMessageType.AIMessage}
+              data-testid="ai-loading-answer"
+            >
               <LoadingMessage />
-            </div>
+            </MessageContainer>
           </div>
         )}
         <div className={styles.scrollAnchor} ref={scrollDivRef} />

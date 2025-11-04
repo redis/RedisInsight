@@ -3,7 +3,7 @@ import { AiChatMessageType } from 'uiSrc/slices/interfaces/aiAssistant'
 
 export const MessageContainer = styled.div<{
   messageType: AiChatMessageType
-  hasError: boolean
+  hasError?: boolean
 }>`
   overflow-wrap: break-word;
   padding: 8px 16px;
