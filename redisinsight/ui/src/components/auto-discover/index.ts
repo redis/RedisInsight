@@ -39,9 +39,11 @@ export const Footer = styled(FlexItem).attrs<{
 
 export const DatabaseContainer = styled(Col)`
   position: relative;
-  padding: 20px 14px 0 14px;
+  padding: ${({ theme }: { theme: Theme }) =>
+    `${theme.core.space.space250} ${theme.core.space.space200} 0 ${theme.core.space.space200}`};
   @media only screen and (min-width: 768px) {
-    padding: 30px 14px 0 30px;
+    padding: ${({ theme }: { theme: Theme }) =>
+      `${theme.core.space.space400} ${theme.core.space.space200} 0 ${theme.core.space.space400}`};
     max-width: calc(100vw - 95px);
   }
 `
