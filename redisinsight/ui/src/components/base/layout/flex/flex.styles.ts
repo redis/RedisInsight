@@ -187,6 +187,7 @@ export const flexItemStyles = {
   `,
   grow: css`
     flex-basis: 0;
+    min-width: 0;
   `,
   growSizes: {
     '1': css`

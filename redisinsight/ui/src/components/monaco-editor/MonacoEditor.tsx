@@ -1,4 +1,9 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, {
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import ReactMonacoEditor, { monaco as monacoEditor } from 'react-monaco-editor'
 import cx from 'classnames'
 import { merge } from 'lodash'
@@ -38,6 +43,7 @@ export interface CommonProps {
   onSubmitDedicatedEditor?: (langId: DSL) => void
   onCloseDedicatedEditor?: (langId: DSL) => void
   'data-testid'?: string
+  fullHeight?: boolean
 }
 
 export interface Props extends CommonProps {
@@ -75,6 +81,7 @@ const MonacoEditor = (props: Props) => {
     onSubmitDedicatedEditor,
     onCloseDedicatedEditor,
     'data-testid': dataTestId = 'monaco-editor',
+    fullHeight,
   } = props
 
   let contribution: Nullable<ISnippetController> = null
@@ -256,6 +263,7 @@ const MonacoEditor = (props: Props) => {
         disabled,
         [styles.isEditing]: isEditing && readOnly,
       })}
+      style={fullHeight ? { flex: '1 1 auto' } : undefined}
     >
       <InlineItemEditor
         onApply={handleApply}
@@ -268,6 +276,7 @@ const MonacoEditor = (props: Props) => {
           className={cx('inlineMonacoEditor', editorWrapperClassName)}
           data-testid={`wrapper-${dataTestId}`}
           ref={input}
+          style={fullHeight ? { height: '100%' } : undefined}
         >
           <ReactMonacoEditor
             language={language}
