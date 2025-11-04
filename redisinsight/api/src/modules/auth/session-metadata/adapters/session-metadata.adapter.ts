@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import { MessageMappingProperties } from '@nestjs/websockets';
 import { Observable } from 'rxjs';

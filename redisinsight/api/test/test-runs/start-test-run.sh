@@ -70,6 +70,9 @@ eval "ID=$ID RTE=$RTE docker compose -p $ID \
   -f $BASEDIR/$RTE/docker-compose.yml \
   --env-file $BASEDIR/$BUILD.build.env run --build --use-aliases test"
 
+# Remember exit code for tests
+TEST_EXIT_CODE=$?
+
 echo "Stop all containers... ${RTE}"
 eval "ID=$ID RTE=$RTE docker compose -p $ID \
   -f $BASEDIR/$BUILD.build.yml \
@@ -84,3 +87,5 @@ eval "ID=$ID RTE=$RTE docker compose -p $ID \
 
 echo "Removing test run docker network..."
 eval "docker network rm $ID || true"
+
+exit $TEST_EXIT_CODE

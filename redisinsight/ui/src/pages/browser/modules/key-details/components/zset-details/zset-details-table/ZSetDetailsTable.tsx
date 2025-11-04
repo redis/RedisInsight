@@ -496,7 +496,6 @@ const ZSetDetailsTable = (props: Props) => {
         <VirtualTable
           autoHeight
           tableRef={tableRef}
-          hideProgress
           expandable
           keyName={key}
           headerHeight={headerHeight}

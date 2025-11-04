@@ -8,7 +8,9 @@ export class TcpCloudAuthStrategy extends CloudAuthStrategy {
   private authPort = process.env.TCP_LOCAL_CLOUD_AUTH_PORT
     ? parseInt(process.env.TCP_LOCAL_CLOUD_AUTH_PORT)
     : 5542;
+
   private server: Server;
+
   private readonly logger = new Logger('TcpCloudAuthStrategy');
 
   constructor(private readonly cloudAuthService: CloudAuthService) {

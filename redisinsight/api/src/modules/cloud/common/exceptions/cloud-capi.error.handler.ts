@@ -13,7 +13,7 @@ export const wrapCloudCapiError = (
 
   if (error.response?.status === 401) {
     return new CloudCapiUnauthorizedException(message || error.message, {
-      cause: new Error(error.response?.data as string),
+      cause: error.response?.data,
     });
   }
 

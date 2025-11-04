@@ -1,10 +1,16 @@
 import React from 'react'
+import styled from 'styled-components'
 
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { TextArea } from 'uiSrc/components/base/inputs'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiTooltip } from 'uiSrc/components'
-import styles from './styles.module.scss'
+import { FlexGroup, FlexItem } from 'uiSrc/components/base/layout/flex'
+import { Text } from 'uiSrc/components/base/text'
+
+const PointerIcon = styled(RiIcon)`
+  cursor: pointer;
+`
 
 export interface Props {
   value: string
@@ -14,8 +20,8 @@ export interface Props {
 const ConnectionUrl = ({ value, onChange }: Props) => (
   <FormField
     label={
-      <div className={styles.connectionUrlInfo}>
-        <div>Connection URL</div>
+      <FlexGroup gap="s" align="center">
+        <Text>Connection URL</Text>
         <RiTooltip
           title="The following connection URLs are supported:"
           className="homePage_tooltip"
@@ -37,9 +43,11 @@ const ConnectionUrl = ({ value, onChange }: Props) => (
             </ul>
           }
         >
-          <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
+          <FlexItem>
+            <PointerIcon type="InfoIcon" />
+          </FlexItem>
         </RiTooltip>
-      </div>
+      </FlexGroup>
     }
   >
     <TextArea
@@ -48,7 +56,6 @@ const ConnectionUrl = ({ value, onChange }: Props) => (
       value={value}
       onChangeCapture={onChange}
       placeholder="redis://default@127.0.0.1:6379"
-      style={{ height: 88 }}
       data-testid="connection-url"
     />
   </FormField>

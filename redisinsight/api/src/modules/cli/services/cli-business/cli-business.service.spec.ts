@@ -66,7 +66,6 @@ describe('CliBusinessService', () => {
   let service: CliBusinessService;
   let databaseClientFactory: DatabaseClientFactory;
   let recommendationService;
-  let textFormatter: IOutputFormatterStrategy;
   let rawFormatter: IOutputFormatterStrategy;
   let analyticsService: MockType<CliAnalyticsService>;
 
@@ -110,9 +109,6 @@ describe('CliBusinessService', () => {
     const outputFormatterManager: OutputFormatterManager = get(
       service,
       'outputFormatterManager',
-    );
-    textFormatter = outputFormatterManager.getStrategy(
-      CliOutputFormatterTypes.Text,
     );
     rawFormatter = outputFormatterManager.getStrategy(
       CliOutputFormatterTypes.Raw,

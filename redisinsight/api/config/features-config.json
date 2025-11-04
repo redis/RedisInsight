@@ -121,6 +121,10 @@
     "vectorSearch": {
       "flag": false,
       "perc": [[0, 100]]
+    },
+    "databasesListV2": {
+      "flag": true,
+      "perc": [[0, 100]]
     }
   }
 }

@@ -1,6 +1,10 @@
 import { get } from 'lodash'
 import { Nullable } from 'uiSrc/utils'
-import { validateSchema, validateYamlSchema } from './validateYamlSchema'
+import {
+  validateSchema,
+  validateYamlSchema,
+  VALID_RESULT,
+} from './validateYamlSchema'
 
 interface PipelineValidationProps {
   config: string
@@ -28,10 +32,12 @@ export const validatePipeline = ({
   }>(
     (acc, j) => {
       const validation = validateYamlSchema(j.value, monacoJobsSchema)
-      const jobNameValidation = validateSchema(j.name, jobNameSchema, {
-        errorMessagePrefix: 'Job name',
-        includePathIntoErrorMessage: false,
-      })
+      const jobNameValidation = !jobNameSchema
+        ? VALID_RESULT
+        : validateSchema(j.name, jobNameSchema, {
+            errorMessagePrefix: 'Job name',
+            includePathIntoErrorMessage: false,
+          })
 
       if (!acc.jobsErrors[j.name]) {
         acc.jobsErrors[j.name] = new Set()

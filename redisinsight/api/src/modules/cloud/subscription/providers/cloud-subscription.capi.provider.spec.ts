@@ -12,10 +12,7 @@ import {
 } from 'src/__mocks__';
 import { CloudSubscriptionCapiProvider } from 'src/modules/cloud/subscription/providers/cloud-subscription.capi.provider';
 import { CloudSubscriptionType } from 'src/modules/cloud/subscription/models';
-import {
-  CloudApiUnauthorizedException,
-  CloudCapiUnauthorizedException,
-} from 'src/modules/cloud/common/exceptions';
+import { CloudCapiUnauthorizedException } from 'src/modules/cloud/common/exceptions';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 jest.mock('axios');

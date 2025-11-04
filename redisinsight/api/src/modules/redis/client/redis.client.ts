@@ -60,6 +60,7 @@ export abstract class RedisClient extends EventEmitter2 {
   public readonly id: string;
 
   protected _redisVersion: string | undefined;
+
   protected _isInfoCommandDisabled: boolean | undefined;
 
   protected lastTimeUsed: number;

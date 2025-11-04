@@ -775,7 +775,7 @@ export const resetSettings = async () => {
 
 export const enableAllDbFeatures = async () => {
   const rep = await getRepository(repositories.FEATURE);
-  await rep.delete({});
+  await rep.deleteAll();
   await rep.insert([{ name: 'insightsRecommendations', flag: true }]);
 };
 

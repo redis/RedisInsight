@@ -48,7 +48,7 @@ const DatabaseNotOpened = (props: Props) => {
                 }}
                 data-testid="tutorials-get-started-link"
               >
-                Create a free trial Redis Cloud database
+                Create a free Redis Cloud database
               </ExternalLink>
             )}
           </OAuthSsoHandlerDialog>

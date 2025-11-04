@@ -1,7 +1,8 @@
 import {
   RedisConnectionAuthUnsupportedException,
   RedisConnectionClusterNodesUnavailableException,
-  RedisConnectionFailedException, RedisConnectionIncorrectCertificateException,
+  RedisConnectionFailedException,
+  RedisConnectionIncorrectCertificateException,
   RedisConnectionSentinelMasterRequiredException,
   RedisConnectionTimeoutException,
   RedisConnectionUnauthorizedException,
@@ -53,7 +54,7 @@ describe('catch-redis-errors', () => {
         output: new RedisConnectionUnauthorizedException(),
       },
       {
-        error: new Error('ERR unknown command \'auth\''),
+        error: new Error("ERR unknown command 'auth'"),
         output: new RedisConnectionAuthUnsupportedException(),
       },
       {
@@ -79,31 +80,46 @@ describe('catch-redis-errors', () => {
         ),
       },
       {
-        error: { message: 'some message', code: RedisErrorCodes.ConnectionReset },
+        error: {
+          message: 'some message',
+          code: RedisErrorCodes.ConnectionReset,
+        },
         output: new RedisConnectionUnavailableException(
           ERROR_MESSAGES.INCORRECT_DATABASE_URL(urlPlaceholder),
         ),
       },
       {
-        error: { message: 'some message', code: CertificatesErrorCodes.IncorrectCertificates },
+        error: {
+          message: 'some message',
+          code: CertificatesErrorCodes.IncorrectCertificates,
+        },
         output: new RedisConnectionIncorrectCertificateException(
           ERROR_MESSAGES.INCORRECT_CERTIFICATES(urlPlaceholder),
         ),
       },
       {
-        error: { message: 'some message', code: CertificatesErrorCodes.DepthZeroSelfSignedCert },
+        error: {
+          message: 'some message',
+          code: CertificatesErrorCodes.DepthZeroSelfSignedCert,
+        },
         output: new RedisConnectionIncorrectCertificateException(
           ERROR_MESSAGES.INCORRECT_CERTIFICATES(urlPlaceholder),
         ),
       },
       {
-        error: { message: 'some message', code: CertificatesErrorCodes.SelfSignedCertInChain },
+        error: {
+          message: 'some message',
+          code: CertificatesErrorCodes.SelfSignedCertInChain,
+        },
         output: new RedisConnectionIncorrectCertificateException(
           ERROR_MESSAGES.INCORRECT_CERTIFICATES(urlPlaceholder),
         ),
       },
       {
-        error: { message: 'some message', code: CertificatesErrorCodes.OSSLError },
+        error: {
+          message: 'some message',
+          code: CertificatesErrorCodes.OSSLError,
+        },
         output: new RedisConnectionIncorrectCertificateException(
           ERROR_MESSAGES.INCORRECT_CERTIFICATES(urlPlaceholder),
         ),
@@ -133,10 +149,9 @@ describe('catch-redis-errors', () => {
         ),
       },
     ])('should handle %j', ({ error, output }) => {
-      expect(getRedisConnectionException(
-        error as ReplyError,
-        database,
-      )).toEqual(output);
+      expect(
+        getRedisConnectionException(error as ReplyError, database),
+      ).toEqual(output);
     });
   });
 });

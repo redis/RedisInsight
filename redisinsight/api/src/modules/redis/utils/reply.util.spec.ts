@@ -59,8 +59,6 @@ const mockRedisClusterNodesIPv6: IRedisClusterNode[] = [
   },
 ];
 
-
-
 const mockIncorrectString = '$6\r\nfoobar\r\n';
 
 describe('convertArrayReplyToObject', () => {

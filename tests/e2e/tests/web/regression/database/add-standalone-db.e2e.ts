@@ -71,7 +71,7 @@ test
             .click(myRedisDatabasePage.Toast.toastCloseButton);
 
         // Verify that user can see an indicator of databases that are added manually and not opened yet
-        await t.expect(myRedisDatabasePage.starFreeDbCheckbox.exists).ok('free trial db link is not displayed when db is added')
+        await t.expect(myRedisDatabasePage.starFreeDbCheckbox.exists).ok('free db link is not displayed when db is added')
         await myRedisDatabasePage.verifyDatabaseStatusIsVisible(databaseName);
         await myRedisDatabasePage.clickOnDBByName(databaseName);
 

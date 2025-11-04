@@ -5,7 +5,7 @@ import { debounce } from 'lodash'
 import { useLocation, useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
-import { ChevronLeftIcon } from 'uiSrc/components/base/icons'
+import { ChevronLeftIcon, RocketIcon } from 'uiSrc/components/base/icons'
 import { ExternalLink, HorizontalRule, LoadingContent } from 'uiSrc/components'
 import { RiPopover } from 'uiSrc/components/base'
 import { IEnablementAreaItem } from 'uiSrc/slices/interfaces'
@@ -16,7 +16,6 @@ import {
 } from 'uiSrc/telemetry'
 import { getTutorialCapability, Nullable } from 'uiSrc/utils'
 
-import RocketIcon from 'uiSrc/assets/img/icons/rocket.svg?react'
 import { appContextCapability } from 'uiSrc/slices/app/context'
 import {
   isShowCapabilityTutorialPopover,

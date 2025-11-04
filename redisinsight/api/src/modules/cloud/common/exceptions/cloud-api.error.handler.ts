@@ -23,7 +23,7 @@ export const wrapCloudApiError = (
   }
 
   if (response) {
-    const errorOptions = { cause: new Error(response?.data as string) };
+    const errorOptions = { cause: response?.data };
     switch (response?.status) {
       case 401:
         return new CloudApiUnauthorizedException(errorMessage, errorOptions);

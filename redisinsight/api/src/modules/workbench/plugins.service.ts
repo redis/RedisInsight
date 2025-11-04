@@ -7,7 +7,6 @@ import { PluginCommandExecution } from 'src/modules/workbench/models/plugin-comm
 import { plainToInstance } from 'class-transformer';
 import { PluginCommandsWhitelistProvider } from 'src/modules/workbench/providers/plugin-commands-whitelist.provider';
 import { CommandExecutionStatus } from 'src/modules/cli/dto/cli.dto';
-import { CommandExecutionResult } from 'src/modules/workbench/models/command-execution-result';
 import { CreatePluginStateDto } from 'src/modules/workbench/dto/create-plugin-state.dto';
 import { PluginState } from 'src/modules/workbench/models/plugin-state';
 import config from 'src/utils/config';

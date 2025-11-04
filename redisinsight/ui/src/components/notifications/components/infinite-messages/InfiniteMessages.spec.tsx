@@ -140,7 +140,7 @@ describe('INFINITE_MESSAGES', () => {
 
       // Wait for the notification to appear
       const title = await screen.findByText(
-        'You already have a free trial Redis Cloud subscription.',
+        'You already have a free Redis Cloud subscription.',
       )
       const description = await screen.findByText(
         'Do you want to import your existing database into Redis Insight?',
@@ -231,10 +231,10 @@ describe('INFINITE_MESSAGES', () => {
 
       // Wait for the notification to appear
       const title = await screen.findByText(
-        'Your subscription does not have a free trial Redis Cloud database.',
+        'Your subscription does not have a free Redis Cloud database.',
       )
       const description = await screen.findByText(
-        'Do you want to create a free trial database in your existing subscription?',
+        'Do you want to create a free database in your existing subscription?',
       )
       const createButton = await screen.findByRole('button', {
         name: /Create/,

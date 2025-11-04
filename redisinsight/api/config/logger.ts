@@ -6,10 +6,7 @@ import {
 } from 'nest-winston';
 import { join } from 'path';
 import config from 'src/utils/config';
-import {
-  prepareLogsData,
-  prettyFileFormat,
-} from 'src/utils/logsFormatter';
+import { prepareLogsData, prettyFileFormat } from 'src/utils/logsFormatter';
 
 const PATH_CONFIG = config.get('dir_path');
 const LOGGER_CONFIG = config.get('logger');

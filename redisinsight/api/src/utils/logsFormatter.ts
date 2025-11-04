@@ -14,14 +14,13 @@ type SanitizedError = {
   type: string;
   message: string;
   stack?: string;
-  cause?: ReturnType<typeof sanitizeError>;
+  cause?: unknown;
 };
 
-export const getOriginalErrorCause = (cause: unknown): Error | undefined => {
-  if (cause instanceof Error) {
-    return getOriginalErrorCause((cause as any).cause) || cause;
+export const getOriginalErrorCause = (cause: unknown): unknown => {
+  if (cause) {
+    return getOriginalErrorCause(cause['cause']) || cause;
   }
-  return undefined;
 };
 
 export const sanitizeError = (
@@ -30,11 +29,17 @@ export const sanitizeError = (
 ): SanitizedError | undefined => {
   if (!error) return undefined;
 
+  let cause = getOriginalErrorCause(error['cause']);
+
+  if (cause instanceof Error) {
+    cause = sanitizeError(cause, opts);
+  }
+
   return {
     type: error.constructor?.name ?? 'UnknownError',
     message: String(error.message ?? 'Unknown error'),
     stack: opts.omitSensitiveData ? undefined : error.stack,
-    cause: sanitizeError(getOriginalErrorCause((error as any).cause), opts),
+    cause,
   };
 };
 
@@ -86,7 +91,11 @@ export const prettyFileFormat = format.printf((info) => {
 });
 
 const MAX_DEPTH = 10;
-export const logDataToPlain = (value: any, seen = new WeakSet(), depth = 0): any => {
+export const logDataToPlain = (
+  value: any,
+  seen = new WeakSet(),
+  depth = 0,
+): any => {
   if (depth > MAX_DEPTH) return '[MaxDepthExceeded]';
 
   if (value === null || typeof value !== 'object' || value instanceof Error) {

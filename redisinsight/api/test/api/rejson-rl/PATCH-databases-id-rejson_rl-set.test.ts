@@ -50,104 +50,224 @@ describe('PATCH /databases/:instanceId/rejson-rl/set', () => {
   });
 
   describe('Common', () => {
-    [
-      {
-        name: 'Should modify item with empty value (from buff)',
-        data: {
-          keyName: {
-            type: 'Buffer',
-            data: [...Buffer.from(constants.TEST_REJSON_KEY_1)],
+    describe('re-json v1', () => {
+      requirements('rte.modules.rejson.version<20000');
+      [
+        {
+          name: 'Should modify item with empty value (from buff)',
+          data: {
+            keyName: {
+              type: 'Buffer',
+              data: [...Buffer.from(constants.TEST_REJSON_KEY_1)],
+            },
+            data: JSON.stringify(''),
+            path: 'test',
           },
-          data: JSON.stringify(''),
-          path: 'test',
+          statusCode: 200,
+          after: async () => {
+            expect(
+              JSON.parse(
+                await rte.data.executeCommand(
+                  'json.get',
+                  constants.TEST_REJSON_KEY_1,
+                  '.',
+                ),
+              ),
+            )
+              .to
+              .eql({test: ''});
+          },
         },
-        statusCode: 200,
-        after: async () => {
-          expect(
-            JSON.parse(
+        {
+          name: 'Should modify item with null value',
+          data: {
+            keyName: constants.TEST_REJSON_KEY_1,
+            data: JSON.stringify(null),
+            path: 'test',
+          },
+          statusCode: 200,
+          after: async () => {
+            expect(
+              JSON.parse(
+                await rte.data.executeCommand(
+                  'json.get',
+                  constants.TEST_REJSON_KEY_1,
+                  '.',
+                ),
+              ),
+            )
+              .to
+              .eql({test: null});
+          },
+        },
+        {
+          name: 'Should modify item with array in the root',
+          data: {
+            keyName: constants.TEST_REJSON_KEY_1,
+            data: JSON.stringify([1, 2]),
+            path: '.',
+          },
+          statusCode: 200,
+          after: async () => {
+            expect(
+              JSON.parse(
+                await rte.data.executeCommand(
+                  'json.get',
+                  constants.TEST_REJSON_KEY_1,
+                  '.',
+                ),
+              ),
+            )
+              .to
+              .eql([1, 2]);
+          },
+        },
+        {
+          name: 'Should modify item with object in the root',
+          data: {
+            keyName: constants.TEST_REJSON_KEY_1,
+            data: JSON.stringify({test: 'test'}),
+            path: '$',
+          },
+          statusCode: 200,
+          after: async () => {
+            expect(
               await rte.data.executeCommand(
                 'json.get',
                 constants.TEST_REJSON_KEY_1,
-                '$',
+                '.',
               ),
-            )[0],
-          ).to.eql({ test: '' });
+            )
+              .to
+              .eql(JSON.stringify({test: 'test'}));
+          },
         },
-      },
-      {
-        name: 'Should modify item with null value',
-        data: {
-          keyName: constants.TEST_REJSON_KEY_1,
-          data: JSON.stringify(null),
-          path: 'test',
-        },
-        statusCode: 200,
-        after: async () => {
-          expect(
-            JSON.parse(
-              await rte.data.executeCommand(
-                'json.get',
-                constants.TEST_REJSON_KEY_1,
-                '$',
-              ),
-            )[0],
-          ).to.eql({ test: null });
-        },
-      },
-      {
-        name: 'Should modify item with array in the root',
-        data: {
-          keyName: constants.TEST_REJSON_KEY_1,
-          data: JSON.stringify([1, 2]),
-          path: '$',
-        },
-        statusCode: 200,
-        after: async () => {
-          expect(
-            JSON.parse(
-              await rte.data.executeCommand(
-                'json.get',
-                constants.TEST_REJSON_KEY_1,
-                '$',
-              ),
-            )[0],
-          ).to.eql([1, 2]);
-        },
-      },
-      {
-        name: 'Should modify item with object in the root',
-        data: {
-          keyName: constants.TEST_REJSON_KEY_1,
-          data: JSON.stringify({ test: 'test' }),
-          path: '$',
-        },
-        statusCode: 200,
-        after: async () => {
-          expect(
-            await rte.data.executeCommand(
-              'json.get',
-              constants.TEST_REJSON_KEY_1,
-              '.',
-            ),
-          ).to.eql(JSON.stringify({ test: 'test' }));
-        },
-      },
-      {
-        name: 'Should return NotFound error if instance id does not exists',
-        endpoint: () => endpoint(constants.TEST_NOT_EXISTED_INSTANCE_ID),
-        data: {
-          keyName: constants.TEST_REJSON_KEY_1,
-          data: JSON.stringify(constants.getRandomString()),
-          path: '.',
-        },
-        statusCode: 404,
-        responseBody: {
+        {
+          name: 'Should return NotFound error if instance id does not exists',
+          endpoint: () => endpoint(constants.TEST_NOT_EXISTED_INSTANCE_ID),
+          data: {
+            keyName: constants.TEST_REJSON_KEY_1,
+            data: JSON.stringify(constants.getRandomString()),
+            path: '.',
+          },
           statusCode: 404,
-          error: 'Not Found',
-          message: 'Invalid database instance id.',
+          responseBody: {
+            statusCode: 404,
+            error: 'Not Found',
+            message: 'Invalid database instance id.',
+          },
         },
-      },
-    ].map(mainCheckFn);
+      ].map(mainCheckFn);
+    });
+    describe('re-json v2', () => {
+      requirements('rte.modules.rejson.version>=20000');
+      [
+        {
+          name: 'Should modify item with empty value (from buff)',
+          data: {
+            keyName: {
+              type: 'Buffer',
+              data: [...Buffer.from(constants.TEST_REJSON_KEY_1)],
+            },
+            data: JSON.stringify(''),
+            path: 'test',
+          },
+          statusCode: 200,
+          after: async () => {
+            expect(
+              JSON.parse(
+                await rte.data.executeCommand(
+                  'json.get',
+                  constants.TEST_REJSON_KEY_1,
+                  '$',
+                ),
+              )[0],
+            )
+              .to
+              .eql({test: ''});
+          },
+        },
+        {
+          name: 'Should modify item with null value',
+          data: {
+            keyName: constants.TEST_REJSON_KEY_1,
+            data: JSON.stringify(null),
+            path: 'test',
+          },
+          statusCode: 200,
+          after: async () => {
+            expect(
+              JSON.parse(
+                await rte.data.executeCommand(
+                  'json.get',
+                  constants.TEST_REJSON_KEY_1,
+                  '$',
+                ),
+              )[0],
+            )
+              .to
+              .eql({test: null});
+          },
+        },
+        {
+          name: 'Should modify item with array in the root',
+          data: {
+            keyName: constants.TEST_REJSON_KEY_1,
+            data: JSON.stringify([1, 2]),
+            path: '$',
+          },
+          statusCode: 200,
+          after: async () => {
+            expect(
+              JSON.parse(
+                await rte.data.executeCommand(
+                  'json.get',
+                  constants.TEST_REJSON_KEY_1,
+                  '$',
+                ),
+              )[0],
+            )
+              .to
+              .eql([1, 2]);
+          },
+        },
+        {
+          name: 'Should modify item with object in the root',
+          data: {
+            keyName: constants.TEST_REJSON_KEY_1,
+            data: JSON.stringify({test: 'test'}),
+            path: '$',
+          },
+          statusCode: 200,
+          after: async () => {
+            expect(
+              await rte.data.executeCommand(
+                'json.get',
+                constants.TEST_REJSON_KEY_1,
+                '.',
+              ),
+            )
+              .to
+              .eql(JSON.stringify({test: 'test'}));
+          },
+        },
+        {
+          name: 'Should return NotFound error if instance id does not exists',
+          endpoint: () => endpoint(constants.TEST_NOT_EXISTED_INSTANCE_ID),
+          data: {
+            keyName: constants.TEST_REJSON_KEY_1,
+            data: JSON.stringify(constants.getRandomString()),
+            path: '.',
+          },
+          statusCode: 404,
+          responseBody: {
+            statusCode: 404,
+            error: 'Not Found',
+            message: 'Invalid database instance id.',
+          },
+        },
+      ].map(mainCheckFn);
+    });
   });
 
   describe('ACL', () => {

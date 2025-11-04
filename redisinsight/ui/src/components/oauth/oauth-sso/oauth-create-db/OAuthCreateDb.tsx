@@ -129,7 +129,7 @@ const OAuthCreateDb = (props: Props) => {
                   <Text className={styles.subTitle}>Get started with</Text>
                   <Spacer size="s" />
                   <Title size="XL" className={styles.title}>
-                    Free trial Cloud database
+                    Free Redis Cloud database
                   </Title>
                   {form}
                   <div>
@@ -147,7 +147,7 @@ const OAuthCreateDb = (props: Props) => {
               <Text className={styles.subTitle}>Get your</Text>
               <Spacer size="s" />
               <Title size="XL" className={styles.title}>
-                Free trial Cloud database
+                Free Redis Cloud database
               </Title>
               <Spacer size="xl" />
               <Text textAlign="center" color="subdued">

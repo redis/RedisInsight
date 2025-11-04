@@ -21,7 +21,7 @@ export const RiTooltip = ({
   title,
   content,
   position,
-  delay,
+  delay = 250,
   anchorClassName,
   ...props
 }: RiTooltipProps) => (
