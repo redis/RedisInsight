@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   clusterSelector,
   resetDataRedisCluster,
   resetInstancesRedisCluster,
 } from 'uiSrc/slices/instances/cluster'
-import { Nullable, setTitle } from 'uiSrc/utils'
+import { setTitle } from 'uiSrc/utils'
 import { HomePageTemplate } from 'uiSrc/templates'
 import { BrowserStorageItem, FeatureFlags } from 'uiSrc/constants'
 import { resetKeys } from 'uiSrc/slices/browser/keys'
@@ -62,6 +62,10 @@ import DatabaseListHeader from './components/database-list-header'
 import EmptyMessage from './components/empty-message/EmptyMessage'
 import DatabasePanelDialog from './components/database-panel-dialog'
 import { ManageTagsModal } from './components/database-manage-tags-modal/ManageTagsModal'
+import {
+  HomePageDataProviderProvider,
+  useHomePageDataProvider,
+} from './contexts/HomePageDataProvider'
 
 import './styles.scss'
 import styles from './styles.module.scss'
@@ -73,7 +77,7 @@ enum OpenDialogName {
 }
 
 const HomePage = () => {
-  const [openDialog, setOpenDialog] = useState<Nullable<OpenDialogName>>(null)
+  const { openDialog, setOpenDialog } = useHomePageDataProvider()
 
   const dispatch = useDispatch()
 
@@ -83,6 +87,7 @@ const HomePage = () => {
   const { action, dbConnection } = useSelector(appRedirectionSelector)
   const { data: createDbContent } = useSelector(contentSelector)
   const {
+    [FeatureFlags.databasesListV2]: databasesListV2Feature,
     [FeatureFlags.enhancedCloudUI]: enhancedCloudUIFeature,
     [FeatureFlags.cloudAds]: cloudAdsFeature,
   } = useSelector(appFeatureFlagsFeaturesSelector)
@@ -112,6 +117,7 @@ const HomePage = () => {
       : []
   const isInstanceExists =
     instances.length > 0 || predefinedInstances.length > 0
+  const hideDbList = !isInstanceExists && !loading && !loadingChanging
 
   useEffect(() => {
     setTitle('Redis databases')
@@ -279,11 +285,12 @@ const HomePage = () => {
               />
             )}
             <div key="homePage" className="homePage">
-              {!isInstanceExists && !loading && !loadingChanging ? (
+              {hideDbList && (
                 <Card>
                   <EmptyMessage onAddInstanceClick={handleAddInstance} />
                 </Card>
-              ) : (
+              )}
+              {!hideDbList && !databasesListV2Feature?.flag && (
                 <DatabasesList
                   loading={loading}
                   instances={instances}
@@ -294,6 +301,7 @@ const HomePage = () => {
                   onManageInstanceTags={handleManageInstanceTags}
                 />
               )}
+              {!hideDbList && databasesListV2Feature?.flag && null}
             </div>
           </PageBody>
         </Page>
@@ -302,4 +310,10 @@ const HomePage = () => {
   )
 }
 
-export default HomePage
+const HomePageWithProvider = () => (
+  <HomePageDataProviderProvider>
+    <HomePage />
+  </HomePageDataProviderProvider>
+)
+
+export default HomePageWithProvider

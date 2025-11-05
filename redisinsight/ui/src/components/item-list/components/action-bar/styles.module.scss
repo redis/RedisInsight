@@ -6,6 +6,9 @@
 
 .container {
   position: fixed;
+  z-index: 1;
+  left: 50%;
+  transform: translate(-50%, -50%);
 
   width: 462px;
   height: 50px;
@@ -13,29 +16,4 @@
   border-radius: 20px;
   bottom: calc(9vh + 9px);
   padding-left: 5px;
-}
-
-.text {
-  font-size: 12px;
-}
-.actions {
-  span,
-  svg {
-    font-size: 14px !important;
-  }
-
-  svg {
-    width: 14px;
-    height: 14px;
-  }
-}
-
-.cross {
-  :global(button) {
-    margin-left: 15px;
-  }
-  svg {
-    width: 20px;
-    height: 20px;
-  }
 }

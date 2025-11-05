@@ -1,17 +1,17 @@
-/* eslint-disable arrow-body-style */
 import React from 'react'
 
 import { Tag } from 'uiSrc/slices/interfaces/tag'
 import { RiTooltip } from 'uiSrc/components'
-import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
-import styles from './styles.module.scss'
+import { Chip } from '@redis-ui/components'
+import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import { Text } from 'uiSrc/components/base/text'
 
 type TagsCellProps = {
-  tags: Tag[]
+  tags?: Tag[]
 }
 
 export const TagsCell = ({ tags }: TagsCellProps) => {
-  if (!tags[0]) {
+  if (!tags?.[0]) {
     return null
   }
 
@@ -19,30 +19,24 @@ export const TagsCell = ({ tags }: TagsCellProps) => {
   const remainingTagsCount = tags.length - 1
 
   return (
-    <div className={styles.tagsCell}>
-      <RiBadge
-        className={`${styles.tagBadge} ${styles.tagBadgeOverflow}`}
-        label={firstTagText}
-      />
+    <Row gap="s">
+      <Chip text={firstTagText} size="S" />
       {remainingTagsCount > 0 && (
         <RiTooltip
           position="top"
           content={
-            <div>
+            <Col>
               {tags.slice(1).map((tag) => (
-                <div key={tag.id}>
+                <Text key={tag.id}>
                   {tag.key} : {tag.value}
-                </div>
+                </Text>
               ))}
-            </div>
+            </Col>
           }
         >
-          <RiBadge
-            className={styles.tagBadge}
-            label={`+${remainingTagsCount}`}
-          />
+          <Chip text={`+${remainingTagsCount}`} size="S" />
         </RiTooltip>
       )}
-    </div>
+    </Row>
   )
 }
