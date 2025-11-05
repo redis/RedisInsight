@@ -2,11 +2,11 @@ import React from 'react'
 
 import { IProcessingPerformance } from 'uiSrc/slices/interfaces'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import Accordion from '../components/accordion'
-import Panel from '../components/panel'
 import VerticalDivider from '../components/vertical-divider'
 
-import styles from './styles.module.scss'
+import { Section } from '@redis-ui/components'
+import { Text } from 'uiSrc/components/base/text'
+import { StyledInfoPanel } from 'uiSrc/pages/rdi/statistics/status/styles'
 
 const InfoPanel = ({
   label,
@@ -17,23 +17,25 @@ const InfoPanel = ({
   value: number
   suffix: string
 }) => (
-  <FlexItem grow className={styles.infoPanel}>
-    <Row gap="m" responsive>
-      <FlexItem grow className={styles.infoLabel}>
-        {label}
+  <StyledInfoPanel grow>
+    <Row gap="m" responsive align="center">
+      <FlexItem grow>
+        <Text>{label}</Text>
       </FlexItem>
-      <FlexItem className={styles.infoValue}>{value}</FlexItem>
-      <FlexItem className={styles.infoSuffix}>{suffix}</FlexItem>
+      <FlexItem>
+        <Text color="primary">{value}</Text>
+      </FlexItem>
+      <FlexItem style={{ minWidth: 40 }}>
+        <Text size="s" color="ghost">
+          {suffix}
+        </Text>
+      </FlexItem>
     </Row>
-  </FlexItem>
+  </StyledInfoPanel>
 )
 
 interface Props {
   data: IProcessingPerformance
-  loading: boolean
-  onRefresh: () => void
-  onRefreshClicked: () => void
-  onChangeAutoRefresh: (enableAutoRefresh: boolean, refreshRate: string) => void
 }
 
 const ProcessingPerformance = ({
@@ -46,76 +48,72 @@ const ProcessingPerformance = ({
     readTimeAvg,
     totalTimeAvg,
   },
-  loading,
-  onRefresh,
-  onRefreshClicked,
-  onChangeAutoRefresh,
-}: Props) => (
-  <Panel>
-    <Accordion
-      id="processing-performance-info"
-      title="Processing performance information"
-      loading={loading}
-      onRefresh={onRefresh}
-      onRefreshClicked={onRefreshClicked}
-      onChangeAutoRefresh={onChangeAutoRefresh}
-      enableAutoRefreshDefault
-    >
-      <>
-        <Row responsive gap="s">
-          <FlexItem grow>
-            <Col gap="s">
-              <InfoPanel
-                label="Total batches"
-                value={totalBatches}
-                suffix="Total"
-              />
-              <InfoPanel
-                label="Batch size average"
-                value={batchSizeAvg}
-                suffix="MB"
-              />
-              <InfoPanel
-                label="Process time average"
-                value={processTimeAvg}
-                suffix="ms"
-              />
-            </Col>
-          </FlexItem>
-          <VerticalDivider />
-          <FlexItem grow>
-            <Col gap="s">
-              <InfoPanel
-                label="ACK time average"
-                value={ackTimeAvg}
-                suffix="sec"
-              />
-              <InfoPanel
-                label="Records per second average"
-                value={recPerSecAvg}
-                suffix="/sec"
-              />
-              <InfoPanel
-                label="Read time average"
-                value={readTimeAvg}
-                suffix="ms"
-              />
-            </Col>
-          </FlexItem>
-          <VerticalDivider />
-          <FlexItem grow>
-            <Row gap="s" align="start">
-              <InfoPanel
-                label="Total time average"
-                value={totalTimeAvg}
-                suffix="sec"
-              />
+}: Props) => {
+  return (
+    <Section.Compose collapsible defaultOpen id="processing-performance-info">
+      <Section.Header.Compose>
+        <Section.Header.Label label="Processing performance information" />
+        <Section.Header.CollapseIndicator />
+      </Section.Header.Compose>
+      <Section.Body
+        content={
+          <>
+            <Row responsive gap="s">
+              <FlexItem grow>
+                <Col gap="s">
+                  <InfoPanel
+                    label="Total batches"
+                    value={totalBatches}
+                    suffix="Total"
+                  />
+                  <InfoPanel
+                    label="Batch size average"
+                    value={batchSizeAvg}
+                    suffix="MB"
+                  />
+                  <InfoPanel
+                    label="Process time average"
+                    value={processTimeAvg}
+                    suffix="ms"
+                  />
+                </Col>
+              </FlexItem>
+              <VerticalDivider />
+              <FlexItem grow>
+                <Col gap="s">
+                  <InfoPanel
+                    label="ACK time average"
+                    value={ackTimeAvg}
+                    suffix="sec"
+                  />
+                  <InfoPanel
+                    label="Records per second average"
+                    value={recPerSecAvg}
+                    suffix="/sec"
+                  />
+                  <InfoPanel
+                    label="Read time average"
+                    value={readTimeAvg}
+                    suffix="ms"
+                  />
+                </Col>
+              </FlexItem>
+              <VerticalDivider />
+              <FlexItem grow>
+                <Row gap="s" align="start">
+                  <InfoPanel
+                    label="Total time average"
+                    value={totalTimeAvg}
+                    suffix="sec"
+                  />
+                </Row>
+              </FlexItem>
             </Row>
-          </FlexItem>
-        </Row>
-      </>
-    </Accordion>
-  </Panel>
-)
+          </>
+        }
+      />
+    </Section.Compose>
+  )
+}
 
 export default ProcessingPerformance
