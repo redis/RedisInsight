@@ -71,9 +71,8 @@ const OAuthSelectPlan = () => {
 
   const [plans, setPlans] = useState(plansInit || [])
   const [planIdSelected, setPlanIdSelected] = useState('')
-  const [providerSelected, setProviderSelected] = useState<
-    OAuthProvider | string
-  >(DEFAULT_PROVIDER)
+  const [providerSelected, setProviderSelected] =
+    useState<OAuthProvider>(DEFAULT_PROVIDER)
   const [rsProviderRegions, setRsProviderRegions] = useState(
     getProviderRegions(rsRegions, providerSelected as OAuthProvider),
   )
@@ -217,7 +216,9 @@ const OAuthSelectPlan = () => {
               <StyledProvidersSelectionGroup
                 boxes={oAuthProvidersBoxes}
                 value={providerSelected}
-                onChange={setProviderSelected}
+                onChange={(value: string) =>
+                  setProviderSelected(value as OAuthProvider)
+                }
               />
             </StyledProvidersSection>
 
