@@ -203,8 +203,8 @@ const render = (
   return rtlRender(ui, { wrapper, ...renderOptions })
 }
 
-const renderHook = (
-  hook: (initialProps: unknown) => unknown,
+const renderHook = <T,>(
+  hook: (initialProps: unknown) => T,
   {
     initialState,
     store = mockedStore,
