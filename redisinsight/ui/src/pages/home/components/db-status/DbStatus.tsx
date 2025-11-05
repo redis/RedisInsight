@@ -106,7 +106,10 @@ const DbStatus = (props: Props) => {
   if (isNew) {
     return (
       <RiTooltip content="New" position="top">
-        <div style={{ marginLeft: -10 }}>
+        <div
+          style={{ marginLeft: -10 }}
+          data-testid={`database-status-new-${id}`}
+        >
           <Indicator $color="blue" />
         </div>
       </RiTooltip>
