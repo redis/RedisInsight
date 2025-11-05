@@ -1,7 +1,7 @@
-import React, { useState } from "react"
+import React, { useState } from 'react'
 
-import { Text } from "uiSrc/components/base/text"
-import ImportFileModal from "uiSrc/components/import-file-modal"
+import { Text } from 'uiSrc/components/base/text'
+import ImportFileModal from 'uiSrc/components/import-file-modal'
 
 export interface Props {
   onClose: () => void
@@ -14,8 +14,8 @@ export interface Props {
 }
 
 const warningMessage =
-  "If a new pipeline is uploaded, existing pipeline configuration and transformation\n" +
-  "jobs will be overwritten. Changes will not be applied until the pipeline is deployed."
+  'If a new pipeline is uploaded, existing pipeline configuration and transformation\n' +
+  'jobs will be overwritten. Changes will not be applied until the pipeline is deployed.'
 
 const UploadDialog = ({
   onClose,
@@ -44,11 +44,11 @@ const UploadDialog = ({
       onSubmit={onConfirm}
       title={
         showWarning
-          ? "Upload a new pipeline"
-          : "Upload an archive with an RDI pipeline"
+          ? 'Upload a new pipeline'
+          : 'Upload an archive with an RDI pipeline'
       }
       resultsTitle={
-        !error ? "Pipeline has been uploaded" : "Failed to upload pipeline"
+        !error ? 'Pipeline has been uploaded' : 'Failed to upload pipeline'
       }
       submitResults={
         <Text>A new pipeline has been successfully uploaded.</Text>

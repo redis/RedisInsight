@@ -1,17 +1,17 @@
-import React from "react"
+import React from 'react'
 
-import { Nullable } from "uiSrc/utils"
-import { RiFilePicker, UploadWarning } from "uiSrc/components"
-import { Col, FlexItem } from "uiSrc/components/base/layout/flex"
-import { ColorText, Text } from "uiSrc/components/base/text"
-import { Loader, Modal } from "uiSrc/components/base/display"
-import { RiIcon } from "uiSrc/components/base/icons/RiIcon"
-import { CancelIcon } from "uiSrc/components/base/icons"
+import { Nullable } from 'uiSrc/utils'
+import { RiFilePicker, UploadWarning } from 'uiSrc/components'
+import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
+import { ColorText, Text } from 'uiSrc/components/base/text'
+import { Loader, Modal } from 'uiSrc/components/base/display'
+import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { CancelIcon } from 'uiSrc/components/base/icons'
 import {
   PrimaryButton,
   SecondaryButton,
-} from "uiSrc/components/base/forms/buttons"
-import styles from "./styles.module.scss"
+} from 'uiSrc/components/base/forms/buttons'
+import styles from './styles.module.scss'
 
 export interface Props<T> {
   onClose: () => void
@@ -62,7 +62,7 @@ const ImportFileModal = <T,>({
 
         <Modal.Content.Header.Compose>
           <Modal.Content.Header.Title data-testid="import-file-modal-title">
-            {!data && !error ? title : resultsTitle || "Import Results"}
+            {!data && !error ? title : resultsTitle || 'Import Results'}
           </Modal.Content.Header.Title>
         </Modal.Content.Header.Compose>
 
@@ -142,7 +142,7 @@ const ImportFileModal = <T,>({
                 disabled={isSubmitDisabled}
                 data-testid="submit-btn"
               >
-                {submitBtnText || "Import"}
+                {submitBtnText || 'Import'}
               </PrimaryButton>
             </Modal.Content.Footer.Group>
           )}

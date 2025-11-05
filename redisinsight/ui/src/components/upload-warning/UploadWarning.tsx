@@ -1,6 +1,6 @@
-import React from "react"
-import { Text } from "uiSrc/components/base/text"
-import { UploadWarningBanner } from "uiSrc/components/upload-warning/styles"
+import React from 'react'
+import { Text } from 'uiSrc/components/base/text'
+import { UploadWarningBanner } from 'uiSrc/components/upload-warning/styles'
 
 const UploadWarning = () => (
   <UploadWarningBanner

@@ -4,7 +4,8 @@
     {
       "files": ["**/*.ts", "**/*.tsx"],
       "options": {
-        "semi": false
+        "semi": false,
+        "singleQuote": true
       }
     }
   ]
