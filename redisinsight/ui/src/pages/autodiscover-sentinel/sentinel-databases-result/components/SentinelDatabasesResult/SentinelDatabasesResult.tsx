@@ -8,7 +8,7 @@ import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { Text } from 'uiSrc/components/base/text'
+import { ColorText, Text } from 'uiSrc/components/base/text'
 import { ColumnDef, Table } from 'uiSrc/components/base/layout/table'
 
 import {
@@ -74,24 +74,24 @@ const SentinelDatabasesResult = ({
   }
 
   const SummaryText = () => (
-    <div data-testid="summary">
-      <Text size="S" component="span" variant="semiBold">
+    <Text component="div" color="primary" data-testid="summary">
+      <ColorText variant="semiBold" size="S">
         Summary:&nbsp;
-      </Text>
+      </ColorText>
       {countSuccessAdded ? (
-        <Text size="S" component="span">
+        <ColorText size="S">
           Successfully added {countSuccessAdded}
           {' primary group(s)'}
           {countFailAdded ? '; ' : ' '}
-        </Text>
+        </ColorText>
       ) : null}
       {countFailAdded ? (
-        <Text size="S" component="span">
+        <ColorText size="S">
           Failed to add {countFailAdded}
           {' primary group(s)'}
-        </Text>
+        </ColorText>
       ) : null}
-    </div>
+    </Text>
   )
 
   return (

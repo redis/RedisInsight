@@ -35,7 +35,9 @@ export const Header = ({
         >
           {backButtonText}
         </EmptyButton>
-        <PageTitle data-testid="title">{title}</PageTitle>
+        <PageTitle color="primary" data-testid="title">
+          {title}
+        </PageTitle>
         {subTitle && (
           <FlexItem grow>
             <PageSubTitle>{subTitle}</PageSubTitle>
