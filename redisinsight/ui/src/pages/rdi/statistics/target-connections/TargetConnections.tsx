@@ -37,7 +37,7 @@ const getStatusColor = (status: string) => {
 
 const columns: ColumnDefinition<ConnectionData>[] = [
   {
-    size: 30,
+    size: 40,
     header: 'Status',
     id: 'status',
     accessorKey: 'status',
