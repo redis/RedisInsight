@@ -17,7 +17,6 @@ const defaultWrapper = css`
   height: 40px;
 `
 export const FilePickerWrapper = styled.div<FilePickerWrapperProps>`
-  max-width: 400px;
   width: 100%;
   position: relative;
   ${({ $large }) => ($large ? largeWrapper : defaultWrapper)}

@@ -1,17 +1,17 @@
-import React from 'react'
+import React from "react"
 
-import { Nullable } from 'uiSrc/utils'
-import { RiFilePicker, UploadWarning } from 'uiSrc/components'
-import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
-import { ColorText, Text } from 'uiSrc/components/base/text'
-import { Loader, Modal } from 'uiSrc/components/base/display'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { CancelIcon } from 'uiSrc/components/base/icons'
+import { Nullable } from "uiSrc/utils"
+import { RiFilePicker, UploadWarning } from "uiSrc/components"
+import { Col, FlexItem } from "uiSrc/components/base/layout/flex"
+import { ColorText, Text } from "uiSrc/components/base/text"
+import { Loader, Modal } from "uiSrc/components/base/display"
+import { RiIcon } from "uiSrc/components/base/icons/RiIcon"
+import { CancelIcon } from "uiSrc/components/base/icons"
 import {
   PrimaryButton,
   SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import styles from './styles.module.scss'
+} from "uiSrc/components/base/forms/buttons"
+import styles from "./styles.module.scss"
 
 export interface Props<T> {
   onClose: () => void
@@ -22,6 +22,7 @@ export interface Props<T> {
   submitResults: JSX.Element
   loading: boolean
   data: Nullable<T>
+  warning?: JSX.Element | null
   error?: string
   errorMessage?: string
   invalidMessage?: string
@@ -40,6 +41,7 @@ const ImportFileModal = <T,>({
   submitResults,
   loading,
   data,
+  warning,
   error,
   errorMessage,
   invalidMessage,
@@ -60,12 +62,13 @@ const ImportFileModal = <T,>({
 
         <Modal.Content.Header.Compose>
           <Modal.Content.Header.Title data-testid="import-file-modal-title">
-            {!data && !error ? title : resultsTitle || 'Import Results'}
+            {!data && !error ? title : resultsTitle || "Import Results"}
           </Modal.Content.Header.Title>
         </Modal.Content.Header.Compose>
 
-        <Modal.Content.Body.Compose>
-          <Col align="center">
+        <Modal.Content.Body.Compose width="61rem">
+          <Col gap="l">
+            {warning && <FlexItem>{warning}</FlexItem>}
             <FlexItem>
               {isShowForm && (
                 <>
@@ -105,18 +108,16 @@ const ImportFileModal = <T,>({
               {error && (
                 <div className={styles.result} data-testid="result-failed">
                   <RiIcon type="ToastCancelIcon" size="xxl" color="danger500" />
-                  <Text color="subdued" style={{ marginTop: 16 }}>
-                    {errorMessage}
-                  </Text>
-                  <Text color="subdued">{error}</Text>
+                  <Text style={{ marginTop: 16 }}>{errorMessage}</Text>
+                  <Text>{error}</Text>
                 </div>
               )}
-              {isShowForm && (
-                <FlexItem grow className={styles.uploadWarningContainer}>
-                  <UploadWarning />
-                </FlexItem>
-              )}
             </FlexItem>
+            {isShowForm && (
+              <FlexItem grow>
+                <UploadWarning />
+              </FlexItem>
+            )}
           </Col>
           {data && (
             <Modal.Content.Body
@@ -127,7 +128,7 @@ const ImportFileModal = <T,>({
         </Modal.Content.Body.Compose>
         <Modal.Content.Footer.Compose>
           {isShowForm && (
-            <>
+            <Modal.Content.Footer.Group>
               <SecondaryButton
                 size="l"
                 onClick={onClose}
@@ -141,9 +142,9 @@ const ImportFileModal = <T,>({
                 disabled={isSubmitDisabled}
                 data-testid="submit-btn"
               >
-                {submitBtnText || 'Import'}
+                {submitBtnText || "Import"}
               </PrimaryButton>
-            </>
+            </Modal.Content.Footer.Group>
           )}
           {data && <PrimaryButton onClick={onClose}>OK</PrimaryButton>}
         </Modal.Content.Footer.Compose>
