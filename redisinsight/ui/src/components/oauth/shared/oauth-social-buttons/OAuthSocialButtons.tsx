@@ -1,16 +1,13 @@
 import React from 'react'
-import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { oauthCloudPAgreementSelector } from 'uiSrc/slices/oauth/cloud'
 import { OAuthStrategy } from 'uiSrc/slices/interfaces'
 
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { FlexGroup, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout'
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from './styles.module.scss'
+import { StyledSocialButton } from './OAuthSocialButtons.styles'
 
 export interface Props {
   onClick: (authStrategy: OAuthStrategy) => void
@@ -22,21 +19,18 @@ export interface Props {
 const socialLinks = [
   {
     text: 'Google',
-    className: styles.googleButton,
     icon: 'GoogleSigninIcon',
     label: 'google-oauth',
     strategy: OAuthStrategy.Google,
   },
   {
     text: 'Github',
-    className: styles.githubButton,
     icon: 'GithubIcon',
     label: 'github-oauth',
     strategy: OAuthStrategy.GitHub,
   },
   {
     text: 'SSO',
-    className: styles.ssoButton,
     icon: 'SsoIcon',
     label: 'sso-oauth',
     strategy: OAuthStrategy.SSO,
@@ -53,10 +47,10 @@ const OAuthSocialButtons = (props: Props) => {
       gap="l"
       align="center"
       justify="between"
-      className={cx(styles.container, className)}
+      className={className}
       data-testid="oauth-container-social-buttons"
     >
-      {socialLinks.map(({ strategy, text, icon, label, className = '' }) => (
+      {socialLinks.map(({ strategy, text, icon, label }) => (
         <RiTooltip
           key={label}
           position="top"
@@ -64,12 +58,10 @@ const OAuthSocialButtons = (props: Props) => {
           content={agreement ? null : 'Acknowledge the agreement'}
           data-testid={`${label}-tooltip`}
         >
-          <EmptyButton
+          <StyledSocialButton
             variant="primary-inline"
             disabled={!agreement || disabled}
-            className={cx(styles.button, className, {
-              [styles.inline]: inline,
-            })}
+            $inline={inline}
             onClick={() => {
               onClick(strategy)
             }}
@@ -80,12 +72,12 @@ const OAuthSocialButtons = (props: Props) => {
               direction={inline ? 'row' : 'column'}
               align="center"
               justify="center"
+              gap="m"
             >
               <RiIcon type={icon as AllIconsType} />
-              <Spacer size="m" />
-              <Text className={styles.label}>{text}</Text>
+              <Text color="primary">{text}</Text>
             </FlexGroup>
-          </EmptyButton>
+          </StyledSocialButton>
         </RiTooltip>
       ))}
     </Row>
