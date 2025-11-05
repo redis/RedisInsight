@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from 'react'
+import { useMemo, useState, useCallback, useRef } from 'react'
 import { useSelector } from 'react-redux'
 
 import { Instance } from 'uiSrc/slices/interfaces'
@@ -9,7 +9,11 @@ import {
 } from 'uiSrc/components/base/layout/table'
 import { DatabaseListColumn } from 'uiSrc/constants'
 
-import { SELECT_COL_ID, BASE_COLUMNS } from '../DatabasesList.config'
+import {
+  SELECT_COL_ID,
+  BASE_COLUMNS,
+  ENABLE_PAGINATION_COUNT,
+} from '../DatabasesList.config'
 
 const useDatabaseListData = () => {
   const {
@@ -21,6 +25,11 @@ const useDatabaseListData = () => {
   const resetRowSelection = useCallback(() => {
     setRowSelection({})
   }, [])
+
+  const paginationEnabledRef = useRef(false)
+  paginationEnabledRef.current =
+    // Workaround: table breaks if pagination is disabled after it was previously enabled
+    paginationEnabledRef.current || instances.length > ENABLE_PAGINATION_COUNT
 
   const columns: ColumnDef<Instance>[] = useMemo(
     () =>
@@ -53,11 +62,11 @@ const useDatabaseListData = () => {
   }, [loading, instances.length])
 
   return {
-    instances,
     loading,
     columns,
     visibleInstances,
     selectedInstances,
+    paginationEnabled: paginationEnabledRef.current,
     rowSelection,
     emptyMessage,
     setRowSelection,

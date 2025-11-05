@@ -6,18 +6,15 @@ import {
   handleSortingChange,
 } from './methods/handlers'
 import BulkItemsActions from './components/BulkItemsActions/BulkItemsActions'
-import {
-  DEFAULT_SORTING,
-  ENABLE_PAGINATION_COUNT,
-} from './DatabasesList.config'
+import { DEFAULT_SORTING } from './DatabasesList.config'
 import useDatabaseListData from './hooks/useDatabaseListData'
 
 const DatabasesList = () => {
   const {
-    instances,
     columns,
     visibleInstances,
     selectedInstances,
+    paginationEnabled,
     rowSelection,
     emptyMessage,
     setRowSelection,
@@ -31,7 +28,7 @@ const DatabasesList = () => {
         columns={columns}
         stripedRows
         rowSelectionMode="multiple"
-        paginationEnabled={instances.length > ENABLE_PAGINATION_COUNT}
+        paginationEnabled={paginationEnabled}
         onRowClick={handleCheckConnectToInstance}
         emptyState={emptyMessage}
         onRowSelectionChange={setRowSelection}

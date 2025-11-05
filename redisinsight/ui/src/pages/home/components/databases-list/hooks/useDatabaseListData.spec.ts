@@ -6,7 +6,7 @@ import {
 } from 'uiSrc/utils/test-utils'
 import { DatabaseListColumn } from 'uiSrc/constants'
 import { Instance } from 'uiSrc/slices/interfaces'
-import { SELECT_COL_ID } from '../DatabasesList.config'
+import { SELECT_COL_ID, ENABLE_PAGINATION_COUNT } from '../DatabasesList.config'
 
 import useDatabaseListData from './useDatabaseListData'
 
@@ -75,12 +75,11 @@ const mockInstances: Instance[] = [
 ]
 
 describe('useDatabaseListData', () => {
-  it('should return instances data', () => {
+  it('should expose loading state', () => {
     const store = getStoreWith({ instances: mockInstances })
 
     const { result } = renderHook(() => useDatabaseListData(), { store })
 
-    expect(result.current.instances).toEqual(mockInstances)
     expect(result.current.loading).toBe(false)
   })
 
@@ -199,5 +198,45 @@ describe('useDatabaseListData', () => {
 
     const ids = result.current.columns.map((c) => c.id)
     expect(ids).toEqual([SELECT_COL_ID])
+  })
+
+  it('should disable pagination when instances count <= threshold', () => {
+    const instances: Instance[] = Array.from(
+      { length: ENABLE_PAGINATION_COUNT },
+      (_, i) => ({
+        id: `${i + 1}`,
+        name: `Instance ${i + 1}`,
+        host: 'h',
+        port: 6379,
+        modules: [],
+        version: null,
+        visible: true,
+      }),
+    )
+    const store = getStoreWith({ instances })
+
+    const { result } = renderHook(() => useDatabaseListData(), { store })
+
+    expect(result.current.paginationEnabled).toBe(false)
+  })
+
+  it('should enable pagination when instances count > threshold', () => {
+    const instances: Instance[] = Array.from(
+      { length: ENABLE_PAGINATION_COUNT + 1 },
+      (_, i) => ({
+        id: `${i + 1}`,
+        name: `Instance ${i + 1}`,
+        host: 'h',
+        port: 6379,
+        modules: [],
+        version: null,
+        visible: true,
+      }),
+    )
+    const store = getStoreWith({ instances })
+
+    const { result } = renderHook(() => useDatabaseListData(), { store })
+
+    expect(result.current.paginationEnabled).toBe(true)
   })
 })
