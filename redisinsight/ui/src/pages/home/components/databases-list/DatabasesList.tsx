@@ -21,6 +21,7 @@ const DatabasesList = () => {
     rowSelection,
     emptyMessage,
     setRowSelection,
+    resetRowSelection,
   } = useDatabaseListData()
 
   return (
@@ -39,12 +40,7 @@ const DatabasesList = () => {
         defaultSorting={DEFAULT_SORTING}
         maxHeight="60rem" // this enables vertical scroll
       />
-      <BulkItemsActions
-        items={selectedInstances}
-        onClose={() => {
-          setRowSelection({})
-        }}
-      />
+      <BulkItemsActions items={selectedInstances} onClose={resetRowSelection} />
     </>
   )
 }

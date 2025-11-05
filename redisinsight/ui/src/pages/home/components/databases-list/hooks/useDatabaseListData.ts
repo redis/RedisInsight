@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 
 import { Instance } from 'uiSrc/slices/interfaces'
@@ -18,6 +18,9 @@ const useDatabaseListData = () => {
     shownColumns,
   } = useSelector(instancesSelector)
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
+  const resetRowSelection = useCallback(() => {
+    setRowSelection({})
+  }, [])
 
   const columns: ColumnDef<Instance>[] = useMemo(
     () =>
@@ -58,6 +61,7 @@ const useDatabaseListData = () => {
     rowSelection,
     emptyMessage,
     setRowSelection,
+    resetRowSelection,
   }
 }
 
