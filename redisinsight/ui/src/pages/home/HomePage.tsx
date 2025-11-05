@@ -58,6 +58,7 @@ import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { Page, PageBody } from 'uiSrc/components/base/layout/page'
 import { Card } from 'uiSrc/components/base/layout'
 import DatabasesList from './components/database-list-component'
+import DatabasesListV2 from './components/databases-list/DatabasesList'
 import DatabaseListHeader from './components/database-list-header'
 import EmptyMessage from './components/empty-message/EmptyMessage'
 import DatabasePanelDialog from './components/database-panel-dialog'
@@ -301,7 +302,9 @@ const HomePage = () => {
                   onManageInstanceTags={handleManageInstanceTags}
                 />
               )}
-              {!hideDbList && databasesListV2Feature?.flag && null}
+              {!hideDbList && databasesListV2Feature?.flag && (
+                <DatabasesListV2 />
+              )}
             </div>
           </PageBody>
         </Page>
