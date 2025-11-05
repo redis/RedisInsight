@@ -8,7 +8,6 @@ import { Text } from 'uiSrc/components/base/text'
 
 import { StyledCellNameWrapper } from './DatabasesListCellName.styles'
 
-
 const DatabasesListCellName: IDatabaseListCell = ({ row }) => {
   const instance = row.original
   const {
@@ -24,13 +23,15 @@ const DatabasesListCellName: IDatabaseListCell = ({ row }) => {
 
   return (
     <StyledCellNameWrapper role="presentation" align="center" gap="xs">
-      <DbStatus
-        id={id}
-        isNew={newStatus}
-        lastConnection={lastConnection}
-        createdAt={createdAt}
-        isFree={cloudDetails?.free}
-      />
+      <div>
+        <DbStatus
+          id={id}
+          isNew={newStatus}
+          lastConnection={lastConnection}
+          createdAt={createdAt}
+          isFree={cloudDetails?.free}
+        />
+      </div>
 
       <RiTooltip
         position="bottom"
