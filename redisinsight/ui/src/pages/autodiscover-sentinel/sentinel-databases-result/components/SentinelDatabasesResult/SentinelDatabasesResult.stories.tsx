@@ -8,15 +8,7 @@ import {
   ModifiedSentinelMaster,
 } from 'uiSrc/slices/interfaces'
 import { ColumnDef } from 'uiSrc/components/base/layout/table'
-import { StyledContainer } from '../../../../../../../../.storybook/helpers/styles'
 import { colFactory } from '../../useSentinelDatabasesResultConfig'
-
-const meta: Meta<typeof SentinelDatabasesResult> = {
-  component: SentinelDatabasesResult,
-}
-
-export default meta
-type Story = StoryObj<typeof SentinelDatabasesResult>
 
 let mastersMock: ModifiedSentinelMaster[] = [
   {
@@ -32,6 +24,10 @@ let mastersMock: ModifiedSentinelMaster[] = [
     username: '',
     password: '',
     db: 1,
+    error: {
+      statusCode: 404,
+      name: 'Not Found',
+    },
   },
   {
     name: 'mymaster4',
@@ -87,19 +83,26 @@ let columnsMock: ColumnDef<ModifiedSentinelMaster>[] = colFactory(
   mastersMock.length - 2,
   mastersMock.length,
 )
+const meta: Meta<typeof SentinelDatabasesResult> = {
+  component: SentinelDatabasesResult,
+  args: {
+    columns: columnsMock,
+  },
+}
+
+export default meta
+type Story = StoryObj<typeof SentinelDatabasesResult>
 
 const DefaultRender = () => {
   let countSuccessAdded = mastersMock.length - 2
   return (
-    <StyledContainer paddingSize="m">
-      <SentinelDatabasesResult
-        onViewDatabases={action('onViewDatabases')}
-        columns={columnsMock}
-        masters={mastersMock}
-        countSuccessAdded={countSuccessAdded}
-        onBack={action('onBack')}
-      />
-    </StyledContainer>
+    <SentinelDatabasesResult
+      onViewDatabases={action('onViewDatabases')}
+      columns={columnsMock}
+      masters={mastersMock}
+      countSuccessAdded={countSuccessAdded}
+      onBack={action('onBack')}
+    />
   )
 }
 
@@ -107,10 +110,19 @@ export const Default: Story = {
   render: () => <DefaultRender />,
 }
 
-export const Empty: Story = {
+export const AllInvalid: Story = {
   args: {
     columns: columnsMock,
     masters: [],
     onBack: action('onBack'),
+  },
+}
+
+export const Empty: Story = {
+  args: {
+    columns: columnsMock,
+    masters: [mastersMock[0]],
+    onBack: action('onBack'),
+    countSuccessAdded: 0,
   },
 }

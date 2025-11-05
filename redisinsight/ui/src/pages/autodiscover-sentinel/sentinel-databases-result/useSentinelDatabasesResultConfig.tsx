@@ -89,33 +89,35 @@ export const colFactory = (
         row: {
           original: { status, message, name, loading = false },
         },
-      }) => (
-        <Row
-          data-testid={`status_${name}_${status}`}
-          align="center"
-          justify="start"
-        >
-          {loading && <Loader size="L" />}
-          {!loading && status === AddRedisDatabaseStatus.Success && (
-            <CellText>{message}</CellText>
-          )}
-          {!loading && status !== AddRedisDatabaseStatus.Success && (
-            <RiTooltip position="right" title="Error" content={message}>
-              <FlexItem direction="row" grow={false}>
-                <ColorText
-                  size="S"
-                  color="danger"
-                  style={{ cursor: 'pointer' }}
-                >
-                  Error
-                </ColorText>
-                <Spacer size="s" direction="horizontal" />
-                <RiIcon size="M" type="ToastDangerIcon" color="danger600" />
-              </FlexItem>
-            </RiTooltip>
-          )}
-        </Row>
-      ),
+      }) => {
+        return (
+          <Row
+            data-testid={`status_${name}_${status}`}
+            align="center"
+            justify="start"
+          >
+            {loading && <Loader size="L" />}
+            {!loading && status === AddRedisDatabaseStatus.Success && (
+              <CellText>{message}</CellText>
+            )}
+            {!loading && status !== AddRedisDatabaseStatus.Success && (
+              <RiTooltip position="right" title="Error" content={message}>
+                <FlexItem direction="row" grow={false}>
+                  <ColorText
+                    size="S"
+                    color="danger"
+                    style={{ cursor: 'pointer' }}
+                  >
+                    Error
+                  </ColorText>
+                  <Spacer size="s" direction="horizontal" />
+                  <RiIcon size="M" type="ToastDangerIcon" color="danger600" />
+                </FlexItem>
+              </RiTooltip>
+            )}
+          </Row>
+        )
+      },
     },
     {
       header: 'Primary Group',
@@ -346,30 +348,26 @@ export const useSentinelDatabasesResultConfig = () => {
   const [items, setItems] = useState<ModifiedSentinelMaster[]>([])
   const [isInvalid, setIsInvalid] = useState(true)
 
+  const dispatch = useDispatch()
+  const history = useHistory()
   const { data: masters } = useSelector(sentinelSelector)
+  const mastersLength = masters.length
 
   const countSuccessAdded = masters.filter(
     ({ status }) => status === AddRedisDatabaseStatus.Success,
   )?.length
 
-  const dispatch = useDispatch()
-  const history = useHistory()
-
   useEffect(() => {
-    setTitle('Redis Sentinel Primary Groups Added')
-    if (!masters.length) {
+    if (!mastersLength) {
       history.push(Pages.home)
+      return
     }
+    setTitle('Redis Sentinel Primary Groups Added')
 
+    setIsInvalid(true)
+    setItems(masters)
     dispatch(resetLoadedSentinel(LoadedSentinel.MastersAdded))
-  }, [])
-
-  useEffect(() => {
-    if (masters.length) {
-      setIsInvalid(true)
-      setItems(masters)
-    }
-  }, [masters])
+  }, [mastersLength])
 
   const handleAddInstance = useCallback(
     (masterName: string) => {
@@ -396,17 +394,22 @@ export const useSentinelDatabasesResultConfig = () => {
     (name: string, value: string) => {
       const [field, id] = name.split('-')
 
-      setItems((items) =>
-        items.map((item) => {
+      setItems((items) => {
+        const item = items.find((item) => item.id === id)
+        // @ts-ignore
+        if (!item || item[field] === value) {
+          return items
+        }
+        return items.map((item) => {
           if (item.id !== id) {
             return item
           }
 
           return { ...item, [field]: value }
-        }),
-      )
+        })
+      })
     },
-    [items],
+    [setItems],
   )
 
   const columns: ColumnDef<ModifiedSentinelMaster>[] = useMemo(() => {

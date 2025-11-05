@@ -105,7 +105,7 @@ const SentinelDatabasesResult = ({
 
         <Spacer size="m" />
         <DatabaseWrapper>
-          {!items.length || loading ? (
+          {items.length === 0 || loading ? (
             <Col full centered>
               <Text size="XL" variant="semiBold">
                 {message}
@@ -135,6 +135,7 @@ const SentinelDatabasesResult = ({
             size="m"
             onClick={handleViewDatabases}
             data-testid="btn-view-databases"
+            disabled={countSuccessAdded === 0}
           >
             View Databases
           </PrimaryButton>
