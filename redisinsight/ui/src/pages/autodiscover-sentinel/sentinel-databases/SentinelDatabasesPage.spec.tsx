@@ -31,7 +31,7 @@ describe('SentinelDatabasesPage', () => {
     expect(render(<SentinelDatabasesPage />)).toBeTruthy()
   })
 
-  it('should call onClose', () => {
+  it('should call onClose', async () => {
     const component = render(<SentinelDatabasesPage />)
     fireEvent.click(screen.getByTestId('btn-cancel'))
     fireEvent.click(screen.getByTestId('btn-cancel-proceed'))

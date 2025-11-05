@@ -1,9 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { map, pick } from 'lodash'
 
-import { dispatch } from 'uiSrc/slices/store'
-import { history } from 'uiSrc/Router'
 import { LoadedSentinel, ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import {
   createMastersSentinelAction,
@@ -32,6 +30,7 @@ import {
 import { RiIcon } from 'uiSrc/components/base/icons'
 
 import styles from '../styles.module.scss'
+import { useHistory } from 'react-router-dom'
 
 const handleCopy = (text = '') => {
   return navigator.clipboard.writeText(text)
@@ -56,17 +55,6 @@ const sendCancelEvent = () => {
   })
 }
 
-const handleClose = () => {
-  sendCancelEvent()
-  dispatch(resetDataSentinel())
-  history.push(Pages.home)
-}
-
-const handleBackAdding = () => {
-  sendCancelEvent()
-  dispatch(resetLoadedSentinel(LoadedSentinel.Masters))
-  history.push(Pages.home)
-}
 export const colFactory = (
   items: ModifiedSentinelMaster[],
   handleChangedInput: (name: string, value: string) => void,
@@ -236,7 +224,8 @@ export const useSentinelDatabasesConfig = () => {
   const { data: masters } = useSelector(sentinelSelector)
 
   const [selection, setSelection] = useState<ModifiedSentinelMaster[]>([])
-
+  const dispatch = useDispatch()
+  const history = useHistory()
   useEffect(() => {
     if (masters.length) {
       setItems(masters)
@@ -245,6 +234,17 @@ export const useSentinelDatabasesConfig = () => {
   }, [masters.length])
 
   useEffect(() => setTitle('Auto-Discover Redis Sentinel Primary Groups'), [])
+  const handleClose = useCallback(() => {
+    sendCancelEvent()
+    dispatch(resetDataSentinel())
+    history.push(Pages.home)
+  }, [dispatch, history])
+
+  const handleBackAdding = useCallback(() => {
+    sendCancelEvent()
+    dispatch(resetLoadedSentinel(LoadedSentinel.Masters))
+    history.push(Pages.home)
+  }, [dispatch, history])
 
   const handleSelectionChange = useCallback(
     (currentSelected: RowSelectionState) => {
