@@ -9,6 +9,8 @@ import {
 } from 'uiSrc/slices/interfaces'
 import { ColumnDef } from 'uiSrc/components/base/layout/table'
 import { colFactory } from '../../useSentinelDatabasesResultConfig'
+import { fn } from 'storybook/test'
+import { faker } from '@faker-js/faker'
 
 let mastersMock: ModifiedSentinelMaster[] = [
   {
@@ -113,6 +115,64 @@ const DefaultRender = () => {
 
 export const Default: Story = {
   render: () => <DefaultRender />,
+}
+
+export const WithManyRows: Story = {
+  render: () => {
+    const mastersMock: ModifiedSentinelMaster[] = Array.from(
+      { length: 100 },
+      (_, i) => {
+        const status = Object.values(AddRedisDatabaseStatus)[
+          Math.floor(
+            Math.random() * Object.values(AddRedisDatabaseStatus).length,
+          )
+        ]
+        return {
+          name: `mymaster${i}`,
+          status,
+          message: faker.lorem.sentence(),
+          host: faker.internet.ip(),
+          port: `${faker.internet.port()}`,
+          numberOfSlaves: Math.floor(Math.random() * 10) + 1,
+          id: i.toString(),
+          alias: `mymaster${i}`,
+          username: '',
+          password: '',
+          db: 1,
+          ...(status === AddRedisDatabaseStatus.Fail
+            ? {
+                error: {
+                  statusCode: 404,
+                  name: 'Not Found',
+                },
+              }
+            : {}),
+        }
+      },
+    )
+
+    const columnsMock = colFactory(
+      fn(),
+      fn(),
+      false,
+      mastersMock.filter((m) => m.status === AddRedisDatabaseStatus.Success)
+        .length,
+      mastersMock.length,
+    )
+
+    return (
+      <SentinelDatabasesResult
+        onViewDatabases={fn()}
+        onBack={fn()}
+        columns={columnsMock}
+        masters={mastersMock}
+        countSuccessAdded={
+          mastersMock.filter((m) => m.status === AddRedisDatabaseStatus.Success)
+            .length
+        }
+      />
+    )
+  },
 }
 
 export const AllValid: Story = {

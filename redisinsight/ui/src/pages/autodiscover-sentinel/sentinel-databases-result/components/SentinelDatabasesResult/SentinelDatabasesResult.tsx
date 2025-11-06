@@ -110,6 +110,7 @@ const SentinelDatabasesResult = ({
                 </Col>
               )}
               stripedRows
+              paginationEnabled={items?.length > 10}
             />
           )}
         </DatabaseWrapper>
