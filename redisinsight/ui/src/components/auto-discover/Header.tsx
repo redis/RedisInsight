@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react'
 
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
-import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
+import { ChevronLeftIcon } from 'uiSrc/components/base/icons'
 import {
   PageSubTitle,
   PageTitle,
@@ -29,7 +29,7 @@ export const Header = ({
     <Row align="center" justify="between" grow={false}>
       <Col align="start" justify="start" gap="m">
         <EmptyButton
-          icon={ArrowLeftIcon}
+          icon={ChevronLeftIcon}
           onClick={onBack}
           data-testid="btn-back-adding"
         >
