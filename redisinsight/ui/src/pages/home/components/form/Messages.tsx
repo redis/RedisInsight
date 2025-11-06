@@ -50,8 +50,7 @@ const MessageStandalone = () => (
 
 const MessageSentinel = () => (
   <Text
-    color="subdued"
-    size="s"
+    color="primary"
     className={styles.message}
     data-testid="summary"
   >
