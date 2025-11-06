@@ -88,5 +88,8 @@ static/
 .env*
 .npmrc
 
+# AI rules
+.windsurfrules
+.junie/
 *storybook.log
 storybook-static

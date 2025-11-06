@@ -3,6 +3,7 @@ import React, { Ref, useRef, useState } from 'react'
 import cx from 'classnames'
 import { isModifiedEvent } from 'uiSrc/services'
 
+import { Row } from 'uiSrc/components/base/layout/flex'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
@@ -99,12 +100,12 @@ const ChatForm = (props: Props) => {
               <div>
                 {validation.title && (
                   <>
-                    <Title size="XS">{validation.title}</Title>
+                    <Title size="S">{validation.title}</Title>
                     <Spacer size="s" />
                   </>
                 )}
                 {validation.content && (
-                  <Text size="xs">{validation.content}</Text>
+                  <Text size="m">{validation.content}</Text>
                 )}
               </div>
               {validation.icon}
@@ -150,21 +151,24 @@ const ChatForm = (props: Props) => {
           >
             <>
               {agreements}
-              <Spacer size="m" />
-              <PrimaryButton
-                size="s"
-                className={styles.agreementsAccept}
-                onClick={submitMessage}
-                onKeyDown={(e: React.KeyboardEvent) => e.stopPropagation()}
-                type="button"
-                data-testid="ai-accept-agreements"
-              >
-                I accept
-              </PrimaryButton>
+              <Spacer size="l" />
+              <Row justify="end">
+                <PrimaryButton
+                  size="s"
+                  className={styles.agreementsAccept}
+                  onClick={submitMessage}
+                  onKeyDown={(e: React.KeyboardEvent) => e.stopPropagation()}
+                  type="button"
+                  data-testid="ai-accept-agreements"
+                >
+                  I accept
+                </PrimaryButton>
+              </Row>
             </>
           </RiPopover>
         </form>
       </RiTooltip>
+      <Spacer size="xs" />
       <Text textAlign="center" size="xs" className={styles.agreementText}>
         Verify the accuracy of any information provided by Redis Copilot before
         using it

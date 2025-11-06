@@ -17,10 +17,17 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { InfoIcon } from 'uiSrc/components/base/icons'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { NumericInput, PasswordInput, TextInput } from 'uiSrc/components/base/inputs'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import {
+  FormField,
+  RiInfoIconProps,
+} from 'uiSrc/components/base/forms/FormField'
+import {
+  NumericInput,
+  PasswordInput,
+  TextInput,
+} from 'uiSrc/components/base/inputs'
 import { RiTooltip } from 'uiSrc/components'
+import { HostInfoTooltipContent } from '../../host-info-tooltip-content/HostInfoTooltipContent'
 
 export interface Props {
   host: string
@@ -52,6 +59,12 @@ const fieldDisplayNames: Values = {
   username: 'Admin Username',
   // deepcode ignore NoHardcodedPasswords: <Not a passowrd but "password" field placeholder>
   password: 'Admin Password',
+}
+
+const hostInfo: RiInfoIconProps = {
+  content: HostInfoTooltipContent({ includeAutofillInfo: true }),
+  placement: 'right',
+  maxWidth: '100%',
 }
 
 const ClusterConnectionForm = (props: Props) => {
@@ -119,42 +132,6 @@ const ClusterConnectionForm = (props: Props) => {
       event.stopPropagation()
     }
   }
-
-  const AppendHostName = () => (
-    <RiTooltip
-      title={
-        <div>
-          <p>
-            <b>Pasting a connection URL auto fills the database details.</b>
-          </p>
-          <p style={{ margin: 0, paddingTop: '10px' }}>
-            The following connection URLs are supported:
-          </p>
-        </div>
-      }
-      className="homePage_tooltip"
-      anchorClassName="inputAppendIcon"
-      position="right"
-      content={
-        <ul className="homePage_toolTipUl">
-          <li>
-            <span className="dot" />
-            redis://[[username]:[password]]@host:port
-          </li>
-          <li>
-            <span className="dot" />
-            rediss://[[username]:[password]]@host:port
-          </li>
-          <li>
-            <span className="dot" />
-            host:port
-          </li>
-        </ul>
-      }
-    >
-      <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
-    </RiTooltip>
-  )
 
   const CancelButton = ({ onClick }: { onClick: () => void }) => (
     <SecondaryButton
@@ -224,10 +201,7 @@ const ClusterConnectionForm = (props: Props) => {
         <WindowEvent event="keydown" handler={onKeyDown} />
         <Row responsive>
           <FlexItem grow={4}>
-            <FormField
-              label="Cluster Host*"
-              additionalText={<AppendHostName />}
-            >
+            <FormField label="Cluster Host" required infoIconProps={hostInfo}>
               <TextInput
                 name="host"
                 id="host"

@@ -1,7 +1,7 @@
 import { useFormikContext } from 'formik'
 import React from 'react'
 
-import { fireEvent, render, screen, waitFor } from 'uiSrc/utils/test-utils'
+import { render, screen, userEvent, waitFor } from 'uiSrc/utils/test-utils'
 import RdiConfigFileActionMenu from './RdiConfigFileActionMenu'
 
 jest.mock('formik')
@@ -26,7 +26,11 @@ describe('RdiConfigFileActionMenu', () => {
       'rdi-config-file-action-menu-trigger',
     ) as HTMLElement
     expect(actionBtn).toBeInTheDocument()
-    fireEvent.click(screen.getByTestId('rdi-config-file-action-menu-trigger'))
+
+    await userEvent.click(
+      screen.getByTestId('rdi-config-file-action-menu-trigger'),
+    )
+
     await waitFor(() => screen.getByTestId('upload-file-btn'))
     expect(screen.getByTestId('upload-file-btn')).toBeInTheDocument()
     expect(screen.getByTestId('upload-pipeline-btn')).toBeInTheDocument()

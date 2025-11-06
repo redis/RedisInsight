@@ -1,4 +1,5 @@
 import React from 'react'
+import styled from 'styled-components'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import {
   IBulkActionOverview,
@@ -14,10 +15,16 @@ import {
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Text, Title } from 'uiSrc/components/base/text'
-import styles from './styles.module.scss'
-import { Spacer } from '../base/layout'
+import { Spacer } from 'uiSrc/components/base/layout'
 
-// TODO: use i18n file for texts
+const Li = styled.li<React.HTMLAttributes<HTMLLIElement>>`
+  padding-bottom: 10px;
+
+  &:first-of-type {
+    padding-top: 10px;
+  }
+`
+
 export default {
   ADDED_NEW_INSTANCE: (instanceName: string) => ({
     title: 'Database has been added',
@@ -78,9 +85,11 @@ export default {
           <ul style={{ marginBottom: 0 }}>
             {instanceNames.slice(0, limitShowRemovedInstances).map((el, i) => (
               // eslint-disable-next-line react/no-array-index-key
-              <li className={styles.list} key={i}>
-                {formatNameShort(el)}
-              </li>
+              <Li key={i}>
+                <Text component="div" size="S">
+                  {formatNameShort(el)}
+                </Text>
+              </Li>
             ))}
             {instanceNames.length >= limitShowRemovedInstances && <li>...</li>}
           </ul>
@@ -103,9 +112,11 @@ export default {
           <ul style={{ marginBottom: 0 }}>
             {instanceNames.slice(0, limitShowRemovedInstances).map((el, i) => (
               // eslint-disable-next-line react/no-array-index-key
-              <li className={styles.list} key={i}>
-                {formatNameShort(el)}
-              </li>
+              <Li key={i}>
+                <Text component="div" size="S">
+                  {formatNameShort(el)}
+                </Text>
+              </Li>
             ))}
             {instanceNames.length >= limitShowRemovedInstances && <li>...</li>}
           </ul>
@@ -173,9 +184,11 @@ export default {
           <ul style={{ marginBottom: 0 }}>
             {listOfElements.slice(0, limitShowRemovedElements).map((el, i) => (
               // eslint-disable-next-line react/no-array-index-key
-              <li className={styles.list} key={i}>
-                {formatNameShort(bufferToString(el))}
-              </li>
+              <Li key={i}>
+                <Text component="div" size="S">
+                  {formatNameShort(bufferToString(el))}
+                </Text>
+              </Li>
             ))}
             {listOfElements.length >= limitShowRemovedElements && <li>...</li>}
           </ul>

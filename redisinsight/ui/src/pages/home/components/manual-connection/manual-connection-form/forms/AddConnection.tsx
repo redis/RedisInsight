@@ -10,8 +10,8 @@ import {
 import Divider from 'uiSrc/components/divider/Divider'
 import { BuildType } from 'uiSrc/constants/env'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
+import { Spacer } from 'uiSrc/components/base/layout'
 import DecompressionAndFormatters from './DecompressionAndFormatters'
-
 import { ManualFormTab } from '../constants'
 
 export interface Props {
@@ -49,17 +49,13 @@ const AddConnection = (props: Props) => {
             onHostNamePaste={onHostNamePaste}
             showFields={{ host: true, alias: true, port: true, timeout: true }}
           />
-          <Divider
-            colorVariable="separatorColor"
-            variant="fullWidth"
-            className="form__divider"
-          />
+          <Spacer size="l" />
+          <Divider />
+          <Spacer size="m" />
           <DbIndex formik={formik} />
-          <Divider
-            colorVariable="separatorColor"
-            variant="fullWidth"
-            className="form__divider"
-          />
+          <Spacer size="m" />
+          <Divider />
+          <Spacer size="m" />
           <ForceStandalone formik={formik} />
         </>
       )}
@@ -72,11 +68,9 @@ const AddConnection = (props: Props) => {
           />
           {buildType !== BuildType.RedisStack && (
             <>
-              <Divider
-                colorVariable="separatorColor"
-                variant="fullWidth"
-                className="form__divider"
-              />
+              <Spacer size="m" />
+              <Divider />
+              <Spacer size="m" />
               <SSHDetails formik={formik} />
             </>
           )}

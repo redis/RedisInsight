@@ -62,14 +62,8 @@
       padding-top: 0;
       padding-bottom: 0;
 
-      div {
-        line-height: 47px;
-        display: block;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+      div span:nth-child(2) {
         overflow: hidden;
-        width: 100%;
-        min-width: 40px;
       }
 
       :global(.euiToolTipAnchor) {

@@ -5,7 +5,6 @@ import React, {
   useEffect,
   useRef,
 } from 'react'
-import cx from 'classnames'
 
 import { throttle } from 'lodash'
 import {
@@ -21,7 +20,12 @@ import LoadingMessage from '../loading-message'
 import MarkdownMessage from '../markdown-message'
 import ErrorMessage from '../error-message'
 
-import styles from './styles.module.scss'
+import {
+  HistoryContainer,
+  HistoryWrapper,
+  MessageContainer,
+  MessageWrapper,
+} from './ChatHistory.styles'
 
 export interface Props {
   autoScroll?: boolean
@@ -113,25 +117,16 @@ const ChatHistory = (props: Props) => {
 
       return (
         <React.Fragment key={id}>
-          <div
-            className={cx({
-              [styles.answerWrapper]:
-                messageType === AiChatMessageType.AIMessage,
-              [styles.questionWrapper]:
-                messageType === AiChatMessageType.HumanMessage,
-            })}
-          >
-            <div
-              className={cx('jsx-markdown', {
-                [styles.answer]: messageType === AiChatMessageType.AIMessage,
-                [styles.question]:
-                  messageType === AiChatMessageType.HumanMessage,
-                [styles.error]: !!error,
-              })}
+          <MessageWrapper as="div" messageType={messageType}>
+            <MessageContainer
+              as="div"
+              className="jsx-markdown"
+              messageType={messageType}
+              hasError={!!error}
               data-testid={`ai-message-${messageType}_${id}`}
             >
               {error && (
-                <RiIcon type="ToastDangerIcon" className={styles.errorIcon} />
+                <RiIcon type="ToastDangerIcon" size="M" color="danger500" />
               )}
               {messageType === AiChatMessageType.HumanMessage ? (
                 content
@@ -144,8 +139,8 @@ const ChatHistory = (props: Props) => {
                   {content}
                 </MarkdownMessage>
               )}
-            </div>
-          </div>
+            </MessageContainer>
+          </MessageWrapper>
           <ErrorMessage error={error} onRestart={onRestart} />
         </React.Fragment>
       )
@@ -155,50 +150,51 @@ const ChatHistory = (props: Props) => {
 
   if (isLoading) {
     return (
-      <div className={cx(styles.wrapper, styles.loader)}>
+      <HistoryWrapper>
         <Loader size="xl" data-testid="ai-loading-spinner" />
-      </div>
+      </HistoryWrapper>
     )
   }
 
   if (history.length === 0) {
     return (
-      <div className={styles.wrapper}>
-        <div className={styles.history} data-testid="ai-chat-empty-history">
-          <div className={styles.answerWrapper}>
-            <div
-              className={styles.answer}
+      <HistoryWrapper>
+        <HistoryContainer as="div" data-testid="ai-chat-empty-history">
+          <MessageWrapper as="div" messageType={AiChatMessageType.AIMessage}>
+            <MessageContainer
+              as="div"
+              messageType={AiChatMessageType.AIMessage}
               data-testid="ai-message-initial-message"
             >
               {initialMessage}
-            </div>
-          </div>
-        </div>
-      </div>
+            </MessageContainer>
+          </MessageWrapper>
+        </HistoryContainer>
+      </HistoryWrapper>
     )
   }
 
   const { content } = inProgressMessage || {}
 
   return (
-    <div className={styles.wrapper}>
-      <div
-        ref={listRef}
-        className={styles.history}
-        data-testid="ai-chat-history"
-      >
+    <HistoryWrapper>
+      <HistoryContainer as="div" ref={listRef} data-testid="ai-chat-history">
         {history.map(getMessage)}
         {getMessage(inProgressMessage)}
         {content === '' && (
-          <div className={styles.answerWrapper}>
-            <div className={styles.answer} data-testid="ai-loading-answer">
+          <MessageWrapper as="div" messageType={AiChatMessageType.AIMessage}>
+            <MessageContainer
+              as="div"
+              messageType={AiChatMessageType.AIMessage}
+              data-testid="ai-loading-answer"
+            >
               <LoadingMessage />
-            </div>
-          </div>
+            </MessageContainer>
+          </MessageWrapper>
         )}
-        <div className={styles.scrollAnchor} ref={scrollDivRef} />
-      </div>
-    </div>
+        <div ref={scrollDivRef} />
+      </HistoryContainer>
+    </HistoryWrapper>
   )
 }
 

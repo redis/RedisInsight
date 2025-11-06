@@ -84,6 +84,7 @@ import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { EmptyButton, IconButton } from 'uiSrc/components/base/forms/buttons'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { RIResizeObserver } from 'uiSrc/components/base/utils'
+import { Row } from 'uiSrc/components/base/layout/flex'
 
 import DbStatus from '../db-status'
 import { TagsCell } from '../tags-cell/TagsCell'
@@ -394,7 +395,7 @@ const DatabasesListWrapper = (props: Props) => {
           const cellContent = replaceSpaces(name.substring(0, 200))
 
           return (
-            <div role="presentation">
+            <Row role="presentation" align="center" gap="xs">
               <DbStatus
                 id={id}
                 isNew={newStatus}
@@ -428,7 +429,7 @@ const DatabasesListWrapper = (props: Props) => {
                   <ColorText>{` ${getDbIndex(db)}`}</ColorText>
                 </Text>
               </RiTooltip>
-            </div>
+            </Row>
           )
         },
       },

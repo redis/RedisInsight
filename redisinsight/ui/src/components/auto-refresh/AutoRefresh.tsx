@@ -27,7 +27,7 @@ import {
 
 import styles from './styles.module.scss'
 
-const AutoRefreshInterval = styled.span<
+const AutoRefreshInterval = styled(ColorText)<
   HTMLAttributes<HTMLSpanElement> & {
     enableAutoRefresh: boolean
     disabled?: boolean
@@ -247,26 +247,34 @@ const AutoRefresh = ({
         [styles.enable]: !disabled && enableAutoRefresh,
       })}
       data-testid={getDataTestid('auto-refresh-container')}
+      // TODO: fix properly
+      style={{ lineHeight: 1 }}
     >
-      <FlexItem>
-        <ColorText size="s">
-          {displayText && (
-            <span data-testid={getDataTestid('refresh-message-label')}>
-              {enableAutoRefresh ? 'Auto refresh:' : 'Last refresh:'}
-            </span>
-          )}
-          {displayLastRefresh && (
-            <AutoRefreshInterval
-              disabled={disabled}
-              enableAutoRefresh={enableAutoRefresh}
-              className={cx('refresh-message-time')}
-              data-testid={getDataTestid('refresh-message')}
-            >
-              {` ${enableAutoRefresh ? refreshRateMessage : refreshMessage}`}
-            </AutoRefreshInterval>
-          )}
-        </ColorText>
-      </FlexItem>
+      {displayText && (
+        <FlexItem>
+          <ColorText
+            size="s"
+            component="span"
+            data-testid={getDataTestid('refresh-message-label')}
+          >
+            {enableAutoRefresh ? 'Auto refresh:' : 'Last refresh:'}
+          </ColorText>
+        </FlexItem>
+      )}
+      {displayLastRefresh && (
+        <FlexItem>
+          <AutoRefreshInterval
+            disabled={disabled}
+            enableAutoRefresh={enableAutoRefresh}
+            className={cx('refresh-message-time')}
+            data-testid={getDataTestid('refresh-message')}
+            component="span"
+            size="s"
+          >
+            {` ${enableAutoRefresh ? refreshRateMessage : refreshMessage}`}
+          </AutoRefreshInterval>
+        </FlexItem>
+      )}
       <FlexItem>
         <Row align="center" gap="none">
           <FlexItem>

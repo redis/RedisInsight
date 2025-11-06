@@ -117,14 +117,13 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
         }}
         button={
           <PrimaryButton
-            size="s"
             onClick={handleClickDeploy}
             icon={RocketIcon}
             disabled={disabled}
             loading={loading}
             data-testid="deploy-rdi-pipeline"
           >
-            Deploy Pipeline
+            Deploy
           </PrimaryButton>
         }
       >

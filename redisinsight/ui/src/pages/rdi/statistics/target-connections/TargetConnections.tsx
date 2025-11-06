@@ -5,11 +5,15 @@ import {
   StatisticsConnectionStatus,
 } from 'uiSrc/slices/interfaces'
 import { formatLongName } from 'uiSrc/utils'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { ColumnDefinition, Table } from 'uiSrc/components/base/layout/table'
 import { RiTooltip } from 'uiSrc/components'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import Accordion from '../components/accordion'
-import Panel from '../components/panel'
+import { Section } from '@redis-ui/components'
+import {
+  StyledRdiAnalyticsTable,
+  StyledRdiStatisticsSectionBody,
+} from 'uiSrc/pages/rdi/statistics/styles'
+import { StatusIndicator } from 'uiSrc/components/base/text/text.styles'
+import { Row } from 'uiSrc/components/base/layout/flex'
 
 type ConnectionData = {
   name: string
@@ -20,8 +24,20 @@ type ConnectionData = {
   user: string
 }
 
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case StatisticsConnectionStatus.connected:
+      return 'success'
+    case StatisticsConnectionStatus.notYetUsed:
+      return 'warning'
+    default:
+      return 'danger'
+  }
+}
+
 const columns: ColumnDefinition<ConnectionData>[] = [
   {
+    size: 40,
     header: 'Status',
     id: 'status',
     accessorKey: 'status',
@@ -30,12 +46,13 @@ const columns: ColumnDefinition<ConnectionData>[] = [
       row: {
         original: { status },
       },
-    }) =>
-      status === StatisticsConnectionStatus.connected ? (
-        <RiIcon type="ToastInfoIcon" color="success300" />
-      ) : (
-        <RiIcon type="ToastDangerIcon" color="danger600" />
-      ),
+    }) => (
+      <Row align="center" justify="center">
+        <RiTooltip content={status}>
+          <StatusIndicator $color={getStatusColor(status)} />
+        </RiTooltip>
+      </Row>
+    ),
   },
   {
     header: 'Name',
@@ -93,19 +110,21 @@ const TargetConnections = ({ data }: Props) => {
   })
 
   return (
-    <Panel>
-      <Accordion
-        id="target-connections"
-        title="Target connections"
-        hideAutoRefresh
-      >
-        <Table
-          columns={columns}
-          data={connections}
-          defaultSorting={[{ id: 'name', desc: false }]}
-        />
-      </Accordion>
-    </Panel>
+    <Section.Compose collapsible defaultOpen>
+      <Section.Header label="Target connections" />
+      <StyledRdiStatisticsSectionBody
+        content={
+          <StyledRdiAnalyticsTable
+            columns={columns}
+            data={connections}
+            defaultSorting={[{ id: 'name', desc: false }]}
+          >
+            <Table.Header />
+            <Table.Body />
+          </StyledRdiAnalyticsTable>
+        }
+      />
+    </Section.Compose>
   )
 }
 

@@ -1,11 +1,6 @@
 import React from 'react'
 import { instance, mock } from 'ts-mockito'
-import {
-  fireEvent,
-  render,
-  screen,
-  toggleAccordion,
-} from 'uiSrc/utils/test-utils'
+import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import { rdiTestConnectionsSelector } from 'uiSrc/slices/rdi/testConnections'
 
 import TestConnectionsPanel, { Props } from './TestConnectionsPanel'
@@ -88,12 +83,10 @@ describe('TestConnectionsPanel', () => {
     render(<TestConnectionsPanel {...instance(mockedProps)} />)
 
     expect(screen.getByText('Source connections')).toBeInTheDocument()
-    await toggleAccordion('failed-connections-closed')
     expect(screen.getByText('source')).toBeInTheDocument()
     expect(screen.getByText('Something bad happened')).toBeInTheDocument()
 
     expect(screen.getByText('Target connections')).toBeInTheDocument()
-    await toggleAccordion('success-connections-closed')
     expect(screen.getByText('Test-target-connection')).toBeInTheDocument()
     expect(screen.getByText('Successful')).toBeInTheDocument()
   })

@@ -1,25 +1,3 @@
-.tagsCell {
-  width: 100%;
-  display: flex;
-}
-
-.tagBadge {
-  color: var(--euiColorPrimary) !important;
-  background-color: var(--browserComponentActive) !important;
-  padding: 4px !important;
-  margin-left: 4px;
-  font-size: 14px;
-}
-
-.tagBadgeOverflow {
-  overflow: hidden;
-}
-
-.tooltipContent {
-  max-width: 200px;
-  word-wrap: break-word;
-}
-
 .filterByTagIcon {
   pointer-events: all;
   cursor: pointer;

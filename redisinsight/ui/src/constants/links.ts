@@ -17,7 +17,7 @@ export const EXTERNAL_LINKS = {
   rdiQuickStart:
     'https://redis.io/docs/latest/integrate/redis-data-integration/ingest/quick-start-guide/',
   rdiPipeline:
-    'https://redis.io/docs/latest/integrate/redis-data-integration/ingest/data-pipelines/data-pipelines/',
+    'https://redis.io/docs/latest/integrate/redis-data-integration/data-pipelines/',
   rdiPipelineTransforms:
     'https://redis.io/docs/latest/integrate/redis-data-integration/ingest/data-pipelines/transform-examples/',
   pubSub: 'https://redis.io/docs/latest/commands/psubscribe/',

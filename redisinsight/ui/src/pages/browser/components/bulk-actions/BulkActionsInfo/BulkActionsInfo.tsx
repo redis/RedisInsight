@@ -75,7 +75,7 @@ const BulkActionsInfo = (props: Props) => {
           )}
         </Row>
       </Col>
-      <Divider colorVariable="separatorColor" />
+      <Divider />
       {loading && (
         <BulkActionsProgressLine data-testid="progress-line">
           <div style={{ width: `${(total ? scanned / total : 0) * 100}%` }} />

@@ -102,40 +102,6 @@
   }
 }
 
-.homePage_tooltip {
-  width: 470px !important;
-  max-width: 470px !important;
-  font-size: 14px !important;
-  font-weight: 400 !important;
-  padding-left: 15px !important;
-  padding-top: 15px !important;
-
-  p {
-    opacity: 0.8 !important;
-  }
-}
-
-.homePage_toolTipUl {
-  font-weight: 300 !important;
-  opacity: 0.85;
-  padding-bottom: 10px;
-
-  li {
-    line-height: 20px;
-  }
-
-  .dot {
-    margin-left: 10px;
-  }
-
-  .dot::before {
-    font-size: 8px;
-    padding: 0 14px;
-    content: " \25CF";
-    vertical-align: middle;
-  }
-}
-
 .theme_DARK {
   .homePage {
     .databaseList {

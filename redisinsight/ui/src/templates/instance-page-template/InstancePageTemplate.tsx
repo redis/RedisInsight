@@ -20,6 +20,7 @@ import { ImperativePanelGroupHandle } from 'uiSrc/components/base/layout/resize'
 import { AppNavigation } from 'uiSrc/components'
 import { AppNavigationActionsProvider } from 'uiSrc/contexts/AppNavigationActionsProvider'
 import { Nullable } from 'uiSrc/utils'
+import { useNavigation } from 'uiSrc/components/navigation-menu/hooks/useNavigation'
 
 export const firstPanelId = 'main-component'
 export const secondPanelId = 'cli'
@@ -51,6 +52,7 @@ const InstancePageTemplate = (props: Props) => {
 
   const { isShowCli, isShowHelper } = useSelector(cliSettingsSelector)
   const { isShowMonitor } = useSelector(monitorSelector)
+  const { privateRoutes } = useNavigation()
 
   const ref = useRef<ImperativePanelGroupHandle>(null)
 
@@ -92,7 +94,11 @@ const InstancePageTemplate = (props: Props) => {
   return (
     <>
       <InstanceHeader />
-      <AppNavigation actions={actions} onChange={() => setActions(null)} />
+      <AppNavigation
+        actions={actions}
+        onChange={() => setActions(null)}
+        routes={privateRoutes}
+      />
       <Spacer size="m" />
       <ResizableContainer
         ref={ref}

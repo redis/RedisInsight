@@ -11,6 +11,7 @@ import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import OAuthForm from '../../shared/oauth-form/OAuthForm'
 import styles from './styles.module.scss'
+import { StyledAdvantagesContainerAbsolute } from '../../shared/styles'
 
 export interface Props {
   source?: Nullable<OAuthSocialSource>
@@ -38,7 +39,9 @@ const OAuthSignIn = (props: Props) => {
     <div className={styles.container} data-testid="oauth-container-signIn">
       <Row>
         <FlexItem grow className={styles.advantagesContainer}>
-          <OAuthAdvantages />
+          <StyledAdvantagesContainerAbsolute>
+            <OAuthAdvantages />
+          </StyledAdvantagesContainerAbsolute>
         </FlexItem>
         <FlexItem grow className={styles.socialContainer}>
           <OAuthForm

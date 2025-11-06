@@ -14,12 +14,14 @@ import {
 } from 'uiSrc/telemetry'
 import { RiTooltip } from 'uiSrc/components'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { Indicator } from 'uiSrc/components/base/text/text.styles'
 import {
   CHECK_CLOUD_DATABASE,
   WARNING_WITH_CAPABILITY,
   WARNING_WITHOUT_CAPABILITY,
 } from './texts'
 import styles from './styles.module.scss'
+import { IconWrapper } from './DbStatus.styles'
 
 export interface Props {
   id: string
@@ -76,7 +78,6 @@ const DbStatus = (props: Props) => {
       }
       position="right"
       className={styles.tooltip}
-      anchorClassName={cx(styles.statusAnchor, styles.warning)}
     >
       <div
         className={cx(styles.status, styles.warning)}
@@ -105,15 +106,10 @@ const DbStatus = (props: Props) => {
 
   if (isNew) {
     return (
-      <RiTooltip
-        content="New"
-        position="top"
-        anchorClassName={cx(styles.statusAnchor)}
-      >
-        <div
-          className={cx(styles.status, styles.new)}
-          data-testid={`database-status-new-${id}`}
-        />
+      <RiTooltip content="New" position="top">
+        <IconWrapper data-testid={`database-status-new-${id}`}>
+          <Indicator $color="blue" />
+        </IconWrapper>
       </RiTooltip>
     )
   }

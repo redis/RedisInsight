@@ -5,11 +5,11 @@ import {
   StyledAppNavigation,
   StyledAppNavigationContainer,
 } from './AppNavigation.styles'
-import { useNavigation } from '../hooks/useNavigation'
 import FeatureFlagComponent from 'uiSrc/components/feature-flag-component/FeatureFlagComponent'
 import { FeatureFlags } from 'uiSrc/constants'
 import { OnboardingTourOptions } from 'uiSrc/components/onboarding-tour'
 import NavigationTabTrigger from './AppNavigationTabTrigger'
+import { INavigations } from 'uiSrc/components/navigation-menu/navigation.types'
 
 type AppNavigationContainerProps = {
   children?: ReactNode
@@ -41,18 +41,18 @@ const AppNavigationContainer = ({
 )
 
 export type AppNavigationProps = {
+  routes: INavigations[]
   actions?: ReactNode
   onChange?: (tabValue: string) => void
 }
 
-const AppNavigation = ({ actions, onChange }: AppNavigationProps) => {
-  const { privateRoutes } = useNavigation()
-  const activeTab = privateRoutes.find((route) => route.isActivePage)
+const AppNavigation = ({ actions, onChange, routes }: AppNavigationProps) => {
+  const activeTab = routes.find((route) => route.isActivePage)
   const navTabs: (TabInfo & {
     isActivePage: boolean
     featureFlag?: FeatureFlags
     onboard?: OnboardingTourOptions
-  })[] = privateRoutes.map((route) => ({
+  })[] = routes.map((route) => ({
     label: route.tooltipText,
     content: '',
     value: route.pageName,
@@ -73,7 +73,7 @@ const AppNavigation = ({ actions, onChange }: AppNavigationProps) => {
         <Tabs.Compose
           value={activeTab?.pageName}
           onChange={(tabValue) => {
-            const tabNavItem = privateRoutes.find(
+            const tabNavItem = routes.find(
               (route) => route.pageName === tabValue,
             )
             if (tabNavItem) {

@@ -14,7 +14,7 @@ import { InfoIcon } from 'uiSrc/components/base/icons'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import styles from './styles.module.scss'
+import { StyledOAuthCOntainer } from './OAuthSsoForm.styles'
 
 export interface Props {
   onBack: () => void
@@ -85,14 +85,14 @@ const OAuthSsoForm = ({ onBack, onSubmit }: Props) => {
   )
 
   return (
-    <div className={styles.container} data-testid="oauth-container-sso-form">
-      <Title className={styles.title} size="S">
+    <StyledOAuthCOntainer gap="xxl" data-testid="oauth-container-sso-form">
+      <Title size="S" color="primary">
         Single Sign-On
       </Title>
       <form onSubmit={formik.handleSubmit}>
-        <Row>
-          <FlexItem>
-            <FormField className={styles.formRaw} label="Email">
+        <Row grow>
+          <FlexItem grow>
+            <FormField label="Email">
               <TextInput
                 name="email"
                 id="sso-email"
@@ -101,17 +101,14 @@ const OAuthSsoForm = ({ onBack, onSubmit }: Props) => {
                 value={formik.values.email}
                 autoComplete="off"
                 onChange={(value) => {
-                  formik.setFieldValue(
-                    'email',
-                    validateField(value.trim()),
-                  )
+                  formik.setFieldValue('email', validateField(value.trim()))
                 }}
               />
             </FormField>
           </FlexItem>
         </Row>
         <Spacer />
-        <Row justify="end">
+        <Row justify="end" gap="m">
           <FlexItem>
             <SecondaryButton
               type="button"
@@ -127,7 +124,7 @@ const OAuthSsoForm = ({ onBack, onSubmit }: Props) => {
           </FlexItem>
         </Row>
       </form>
-    </div>
+    </StyledOAuthCOntainer>
   )
 }
 

@@ -1,53 +1,15 @@
 .wrapper {
-  :global(.euiCheckbox) {
-    :global(.euiCheckbox__label) {
-      font: normal normal normal 12px/15px Graphik, sans-serif !important;
-      color: var(--htmlColor) !important;
-      padding-left: 20px !important;
-    }
-
-    :global(.euiCheckbox__square) {
-      width: 15px;
-      height: 15px;
-      padding: 0 !important;
-      border-width: 1px !important;
-      top: 0 !important;
-    }
-  }
-
   .list {
     list-style: initial;
-    padding-left: 32px;
+    padding-left: 24px;
     margin-top: 4px;
-
-    .listItem {
-      font: normal normal normal 12px/15px Graphik, sans-serif !important;
-      color: var(--euiTextSubduedColor);
-    }
   }
 
   &.small {
-    :global(.euiCheckbox) {
-      :global(.euiCheckbox__label) {
-        font: normal normal normal 10px/15px Graphik, sans-serif !important;
-        padding-left: 16px !important;
-      }
-
-      :global(.euiCheckbox__square) {
-        width: 12px;
-        height: 12px;
-        top: 3px !important;
-      }
-    }
-
     .list {
       list-style: initial;
-      padding-left: 28px;
+      padding-left: 18px;
       margin-top: 2px;
-
-      .listItem {
-        font: normal normal normal 10px/15px Graphik, sans-serif !important;
-      }
     }
   }
 }

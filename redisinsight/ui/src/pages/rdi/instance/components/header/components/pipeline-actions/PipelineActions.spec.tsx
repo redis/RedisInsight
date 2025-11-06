@@ -71,7 +71,7 @@ describe('PipelineActions', () => {
         collectorStatus={CollectorStatus.Ready}
       />,
     )
-    expect(screen.getByText('Stop Pipeline')).toBeInTheDocument()
+    expect(screen.getByText('Stop')).toBeInTheDocument()
   })
 
   it('should display startBtn if collectorStatus is not ready', () => {
@@ -81,7 +81,7 @@ describe('PipelineActions', () => {
         collectorStatus={CollectorStatus.NotReady}
       />,
     )
-    expect(screen.getByText('Start Pipeline')).toBeInTheDocument()
+    expect(screen.getByText('Start')).toBeInTheDocument()
   })
 
   it('should display startBtn if collectorStatus is not ready', () => {
@@ -91,7 +91,7 @@ describe('PipelineActions', () => {
         collectorStatus={CollectorStatus.NotReady}
       />,
     )
-    expect(screen.getByText('Start Pipeline')).toBeInTheDocument()
+    expect(screen.getByText('Start')).toBeInTheDocument()
   })
 
   it('should validate pipeline when schema, config, or jobs change', () => {
@@ -211,9 +211,15 @@ describe('PipelineActions', () => {
 
   describe('validation with new schema parameters', () => {
     it('should pass monacoJobsSchema and jobNameSchema to validatePipeline when available', () => {
-      const mockMonacoJobsSchema = { type: 'object', properties: { task: { type: 'string' } } }
-      const mockJobNameSchema = { type: 'string', pattern: '^[a-zA-Z][a-zA-Z0-9_]*$' }
-      
+      const mockMonacoJobsSchema = {
+        type: 'object',
+        properties: { task: { type: 'string' } },
+      }
+      const mockJobNameSchema = {
+        type: 'string',
+        pattern: '^[a-zA-Z][a-zA-Z0-9_]*$',
+      }
+
       ;(validatePipeline as jest.Mock).mockReturnValue({
         result: true,
         configValidationErrors: [],
@@ -268,7 +274,7 @@ describe('PipelineActions', () => {
     it('should include monacoJobsSchema and jobNameSchema in dependency array for validation effect', () => {
       // This test verifies that the useEffect dependency array includes the new schema parameters
       // by checking that different schema values trigger different validatePipeline calls
-      
+
       ;(validatePipeline as jest.Mock).mockReturnValue({
         result: true,
         configValidationErrors: [],
@@ -279,7 +285,10 @@ describe('PipelineActions', () => {
       ;(rdiPipelineSelector as jest.Mock).mockReturnValueOnce({
         loading: false,
         schema: 'test-schema',
-        monacoJobsSchema: { type: 'object', properties: { task: { type: 'string' } } },
+        monacoJobsSchema: {
+          type: 'object',
+          properties: { task: { type: 'string' } },
+        },
         jobNameSchema: { type: 'string', pattern: '^[a-zA-Z]+$' },
         config: 'test-config',
         jobs: 'test-jobs',
@@ -290,7 +299,10 @@ describe('PipelineActions', () => {
       // Verify that validatePipeline was called with all the correct parameters including schemas
       expect(validatePipeline).toHaveBeenCalledWith({
         schema: 'test-schema',
-        monacoJobsSchema: { type: 'object', properties: { task: { type: 'string' } } },
+        monacoJobsSchema: {
+          type: 'object',
+          properties: { task: { type: 'string' } },
+        },
         jobNameSchema: { type: 'string', pattern: '^[a-zA-Z]+$' },
         config: 'test-config',
         jobs: 'test-jobs',
