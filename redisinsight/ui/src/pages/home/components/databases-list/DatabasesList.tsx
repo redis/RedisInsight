@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 
 import { Table } from 'uiSrc/components/base/layout/table'
 import {
@@ -42,4 +42,4 @@ const DatabasesList = () => {
   )
 }
 
-export default DatabasesList
+export default memo(DatabasesList)

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 
 import {
   ActionBar,
@@ -51,4 +51,4 @@ const BulkItemsActions = ({ items, onClose }: BulkItemsActionsProps) => {
   )
 }
 
-export default BulkItemsActions
+export default memo(BulkItemsActions)
