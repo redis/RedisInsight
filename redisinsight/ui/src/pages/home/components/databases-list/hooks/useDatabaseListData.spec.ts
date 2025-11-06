@@ -1,4 +1,5 @@
 import { act } from '@testing-library/react'
+
 import {
   mockStore,
   initialStateDefault,
@@ -6,6 +7,8 @@ import {
 } from 'uiSrc/utils/test-utils'
 import { DatabaseListColumn } from 'uiSrc/constants'
 import { Instance } from 'uiSrc/slices/interfaces'
+import { DBInstanceFactory } from 'uiSrc/mocks/factories/database/DBInstance.factory'
+
 import { SELECT_COL_ID, ENABLE_PAGINATION_COUNT } from '../DatabasesList.config'
 
 import useDatabaseListData from './useDatabaseListData'
@@ -44,34 +47,9 @@ const getStoreWith = ({
 }
 
 const mockInstances: Instance[] = [
-  {
-    id: '1',
-    name: 'Instance A',
-    host: 'a.example',
-    port: 6379,
-    modules: [],
-    version: null,
-    visible: true,
-    tags: [{ id: '1', key: 'env', value: 'dev', createdAt: '', updatedAt: '' }],
-  },
-  {
-    id: '2',
-    name: 'Instance B',
-    host: 'b.example',
-    port: 6380,
-    modules: [],
-    version: null,
-    visible: false,
-  },
-  {
-    id: '3',
-    name: 'Instance C',
-    host: 'c.example',
-    port: 6381,
-    modules: [],
-    version: null,
-    visible: true,
-  },
+  DBInstanceFactory.build({ visible: true }),
+  DBInstanceFactory.build({ visible: false }),
+  DBInstanceFactory.build({ visible: true }),
 ]
 
 describe('useDatabaseListData', () => {

@@ -1,6 +1,7 @@
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import { dispatch } from 'uiSrc/slices/store'
 import { Instance } from 'uiSrc/slices/interfaces'
+import { DBInstanceFactory } from 'uiSrc/mocks/factories/database/DBInstance.factory'
 
 import {
   handleDeleteInstances,
@@ -46,15 +47,7 @@ jest.mock('uiSrc/slices/instances/instances', () => ({
     mockSetEditedInstance(...(args as any)),
 }))
 
-const instance: Instance = {
-  id: '1',
-  name: 'A',
-  host: 'h1',
-  port: 6379,
-  provider: 'LOCALHOST',
-  modules: [],
-  version: null,
-}
+const instance: Instance = DBInstanceFactory.build()
 
 describe('DatabasesListCellControls handlers', () => {
   beforeEach(() => {
@@ -80,8 +73,8 @@ describe('DatabasesListCellControls handlers', () => {
       expect.objectContaining({
         event: TelemetryEvent.CONFIG_DATABASES_SINGLE_DATABASE_DELETE_CLICKED,
         eventData: expect.objectContaining({
-          databaseId: '1',
-          provider: 'LOCALHOST',
+          databaseId: instance.id,
+          provider: instance.provider,
         }),
       }),
     )
@@ -102,8 +95,8 @@ describe('DatabasesListCellControls handlers', () => {
       expect.objectContaining({
         event: TelemetryEvent.CONFIG_DATABASES_DATABASE_EDIT_CLICKED,
         eventData: expect.objectContaining({
-          databaseId: '1',
-          provider: 'LOCALHOST',
+          databaseId: instance.id,
+          provider: instance.provider,
         }),
       }),
     )
@@ -121,8 +114,8 @@ describe('DatabasesListCellControls handlers', () => {
       expect.objectContaining({
         event: TelemetryEvent.CONFIG_DATABASES_DATABASE_MANAGE_TAGS_CLICKED,
         eventData: expect.objectContaining({
-          databaseId: '1',
-          provider: 'LOCALHOST',
+          databaseId: instance.id,
+          provider: instance.provider,
         }),
       }),
     )

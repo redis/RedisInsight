@@ -59,7 +59,7 @@ const renderWithProvider = () =>
     <HomePageDataProviderProvider>
       <>
         <Observer />
-        {React.createElement(DatabasesListCellControls as any, { row })}
+        <DatabasesListCellControls {...({ row } as any)} />
       </>
     </HomePageDataProviderProvider>,
   )
