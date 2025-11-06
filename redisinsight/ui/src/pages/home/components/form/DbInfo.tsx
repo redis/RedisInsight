@@ -16,6 +16,7 @@ import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional
 import styles from '../styles.module.scss'
 import { DbInfoGroup } from './DbInfo.styles'
 import { Row } from 'uiSrc/components/base/layout/flex'
+import { DbInfoLabelValue } from './types'
 
 export interface Props {
   connectionType?: ConnectionType
@@ -52,6 +53,35 @@ export const ListGroupItemLabelValue = ({
   />
 )
 
+const AppendEndpoints = ({
+  nodes,
+  host,
+  port,
+}: {
+  nodes: Endpoint[]
+  host: string
+  port: string
+}) => (
+  <RiTooltip
+    title="Host:port"
+    position="left"
+    anchorClassName={styles.anchorEndpoints}
+    content={
+      <ul className={styles.endpointsList}>
+        {nodes?.map(({ host: eHost, port: ePort }) => (
+          <li key={host + port}>
+            <Text>
+              {eHost}:{ePort};
+            </Text>
+          </li>
+        ))}
+      </ul>
+    }
+  >
+    <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
+  </RiTooltip>
+)
+
 const DbInfo = (props: Props) => {
   const {
     connectionType,
@@ -66,75 +96,60 @@ const DbInfo = (props: Props) => {
 
   const { server } = useSelector(appInfoSelector)
 
-  const AppendEndpoints = () => (
-    <RiTooltip
-      title="Host:port"
-      position="left"
-      anchorClassName={styles.anchorEndpoints}
-      content={
-        <ul className={styles.endpointsList}>
-          {nodes?.map(({ host: eHost, port: ePort }) => (
-            <li key={host + port}>
-              <Text>
-                {eHost}:{ePort};
-              </Text>
-            </li>
-          ))}
-        </ul>
-      }
-    >
-      <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
-    </RiTooltip>
-  )
+  const dbInfo: DbInfoLabelValue[] = [
+    {
+      label: 'Connection Type:',
+      value: capitalize(connectionType),
+      dataTestId: 'connection-type',
+      hide: isFromCloud,
+    },
+    {
+      label: 'Database Name from Provider:',
+      value: nameFromProvider,
+      dataTestId: 'db-name-from-provider',
+      hide: !nameFromProvider,
+    },
+    {
+      label: 'Host:',
+      value: host,
+      dataTestId: 'db-info-host',
+      additionalContent: !!nodes?.length && (
+        <AppendEndpoints nodes={nodes} host={host} port={port} />
+      ),
+    },
+    {
+      label: 'Port:',
+      value: port,
+      dataTestId: 'db-info-port',
+      hide: server?.buildType === BuildType.RedisStack || isFromCloud,
+    },
+    {
+      label: 'Database Index:',
+      value: db?.toString(),
+      dataTestId: 'db-index',
+      hide: !db,
+    },
+    {
+      label: 'Capabilities:',
+      value: <DatabaseListModules modules={modules} />,
+      dataTestId: 'capabilities',
+      hide: !modules?.length,
+    },
+  ]
 
   return (
     <DbInfoGroup flush maxWidth={false}>
-      {!isFromCloud && (
-        <ListGroupItemLabelValue
-          label="Connection Type:"
-          value={capitalize(connectionType)}
-          dataTestId="connection-type"
-        />
-      )}
-
-      {nameFromProvider && (
-        <ListGroupItemLabelValue
-          label="Database Name from Provider:"
-          value={nameFromProvider}
-          dataTestId="db-name-from-provider"
-        />
-      )}
-
-      <ListGroupItemLabelValue
-        label="Host:"
-        value={host}
-        dataTestId="db-info-host"
-        additionalContent={!!nodes?.length && <AppendEndpoints />}
-      />
-
-      {(server?.buildType === BuildType.RedisStack || isFromCloud) && (
-        <ListGroupItemLabelValue
-          label="Port:"
-          value={port}
-          dataTestId="db-info-port"
-        />
-      )}
-
-      {!!db && (
-        <ListGroupItemLabelValue
-          label="Database Index:"
-          value={db.toString()}
-          dataTestId="db-index"
-        />
-      )}
-
-      {!!modules?.length && (
-        <ListGroupItemLabelValue
-          label="Capabilities:"
-          value={<DatabaseListModules modules={modules} />}
-          dataTestId="capabilities"
-        />
-      )}
+      {dbInfo
+        .filter((item) => !item.hide)
+        .map((item) => (
+          <ListGroupItemLabelValue
+            key={item.label}
+            label={item.label}
+            value={item.value}
+            dataTestId={item.dataTestId}
+            additionalContent={item.additionalContent}
+          />
+        ))}
     </DbInfoGroup>
   )
 }
