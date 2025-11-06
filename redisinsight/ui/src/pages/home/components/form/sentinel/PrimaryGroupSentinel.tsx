@@ -2,7 +2,7 @@ import React from 'react'
 import { FormikProps } from 'formik'
 
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { TextInput } from 'uiSrc/components/base/inputs'
 
@@ -15,10 +15,10 @@ export interface Props {
 const PrimaryGroupSentinel = (props: Props) => {
   const { flexGroupClassName = '', flexItemClassName = '', formik } = props
   return (
-    <>
+    <Col gap="l">
       <Row gap="m" responsive className={flexGroupClassName}>
         <FlexItem grow className={flexItemClassName}>
-          <FormField label="Database Alias*">
+          <FormField label="Database alias" required>
             <TextInput
               name="name"
               id="name"
@@ -33,7 +33,7 @@ const PrimaryGroupSentinel = (props: Props) => {
       </Row>
       <Row gap="m" responsive className={flexGroupClassName}>
         <FlexItem grow className={flexItemClassName}>
-          <FormField label="Primary Group Name*">
+          <FormField label="Primary group name" required>
             <TextInput
               name="sentinelMasterName"
               id="sentinelMasterName"
@@ -47,7 +47,7 @@ const PrimaryGroupSentinel = (props: Props) => {
           </FormField>
         </FlexItem>
       </Row>
-    </>
+    </Col>
   )
 }
 

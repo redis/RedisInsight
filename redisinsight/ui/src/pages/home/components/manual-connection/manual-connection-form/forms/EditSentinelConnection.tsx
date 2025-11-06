@@ -12,7 +12,7 @@ import {
   TlsDetails,
 } from 'uiSrc/pages/home/components/form'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { Title } from 'uiSrc/components/base/text/Title'
@@ -45,38 +45,36 @@ const EditSentinelConnection = (props: Props) => {
   } = props
 
   const GeneralFormClodeMode = (
-    <>
+    <Col gap="l">
       <PrimaryGroupSentinel formik={formik} />
       <Divider />
-      <Title size="XS">Database</Title>
-      <Spacer size="s" />
+      <Title color="primary" size="M">
+        Database
+      </Title>
       <SentinelMasterDatabase
         formik={formik}
         db={db}
         isCloneMode={isCloneMode}
       />
       <Divider />
-      <Title size="XS">Sentinel</Title>
-      <Spacer size="s" />
+      <Title color="primary" size="M">
+        Sentinel
+      </Title>
       <DatabaseForm
         formik={formik}
         showFields={{ host: true, port: true, alias: false, timeout: false }}
         onHostNamePaste={onHostNamePaste}
       />
-      <Spacer size="m" />
       <Divider />
-      <Spacer size="m" />
       <DbIndex formik={formik} />
-      <Spacer size="m" />
-      <Divider />
-    </>
+    </Col>
   )
 
   const GeneralFormEditMode = (
-    <>
+    <Col gap="l">
       <Row gap="m">
         <FlexItem grow>
-          <FormField label="Database Alias*">
+          <FormField label="Database Alias" required>
             <TextInput
               name="name"
               id="name"
@@ -90,24 +88,25 @@ const EditSentinelConnection = (props: Props) => {
           </FormField>
         </FlexItem>
       </Row>
-      <Spacer size="s" />
       <Divider />
-      <Title size="XS">Database</Title>
-      <Spacer size="s" />
+      <Title color="primary" size="M">
+        Database
+      </Title>
       <SentinelMasterDatabase
         formik={formik}
         db={db}
         isCloneMode={isCloneMode}
       />
       <Divider />
-      <Title size="XS">Sentinel</Title>
-      <Spacer size="s" />
+      <Title color="primary" size="M">
+        Sentinel
+      </Title>
       <DatabaseForm
         formik={formik}
         showFields={{ host: false, port: true, alias: false, timeout: false }}
         onHostNamePaste={onHostNamePaste}
       />
-    </>
+    </Col>
   )
 
   return (
