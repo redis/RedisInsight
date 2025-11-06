@@ -13,6 +13,10 @@ export interface Props {
   loading: boolean
 }
 
+const warningMessage =
+  'If a new pipeline is uploaded, existing pipeline configuration and transformation' +
+  'jobs will be overwritten. Changes will not be applied until the pipeline is deployed.'
+
 const UploadDialog = ({
   onClose,
   onConfirm,
@@ -51,6 +55,11 @@ const UploadDialog = ({
       }
       loading={loading}
       data={isUploaded}
+      warning={
+        showWarning ? (
+          <Text data-testid="input-file-warning">{warningMessage}</Text>
+        ) : null
+      }
       error={error}
       errorMessage="There was a problem with the .zip file"
       isInvalid={false}
