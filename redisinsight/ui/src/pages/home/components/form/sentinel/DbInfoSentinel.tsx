@@ -1,17 +1,16 @@
 import React from 'react'
 import { capitalize } from 'lodash'
-import styled from 'styled-components'
 
 import { ConnectionType } from 'uiSrc/slices/interfaces'
 import { Nullable } from 'uiSrc/utils'
 import { SentinelMaster } from 'apiSrc/modules/redis-sentinel/models/sentinel-master'
 
 import { RiTooltip } from 'uiSrc/components/base/tooltip'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CopyIcon } from 'uiSrc/components/base/icons'
 
 import { DbInfoGroup } from '../DbInfo.styles'
 import { ListGroupItemLabelValue } from '../DbInfo'
+import { StyledCopyButton } from './DbInfoSentinel.styles'
 
 export interface Props {
   host?: string
@@ -20,15 +19,6 @@ export interface Props {
   nameFromProvider?: Nullable<string>
   sentinelMaster?: SentinelMaster
 }
-
-const StyledCopyButton = styled(IconButton)`
-  margin-bottom: 3px;
-  opacity: 0;
-
-  :hover {
-    opacity: 1;
-  }
-`
 
 const DbInfoSentinel = (props: Props) => {
   const { connectionType, nameFromProvider, sentinelMaster, host, port } = props
