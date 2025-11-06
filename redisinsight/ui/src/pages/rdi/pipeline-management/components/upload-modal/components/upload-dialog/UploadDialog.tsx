@@ -14,7 +14,7 @@ export interface Props {
 }
 
 const warningMessage =
-  'If a new pipeline is uploaded, existing pipeline configuration and transformation\n' +
+  'If a new pipeline is uploaded, existing pipeline configuration and transformation' +
   'jobs will be overwritten. Changes will not be applied until the pipeline is deployed.'
 
 const UploadDialog = ({

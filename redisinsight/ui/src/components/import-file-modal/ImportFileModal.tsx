@@ -66,87 +66,97 @@ const ImportFileModal = <T,>({
           </Modal.Content.Header.Title>
         </Modal.Content.Header.Compose>
 
-        <Modal.Content.Body.Compose width="61rem">
-          <Col gap="l">
-            {warning && <FlexItem>{warning}</FlexItem>}
-            <FlexItem>
-              {isShowForm && (
-                <>
-                  <RiFilePicker
-                    id="import-file-modal-filepicker"
-                    initialPromptText="Select or drag and drop a file"
-                    className={styles.fileDrop}
-                    isInvalid={isInvalid}
-                    onChange={onFileChange}
-                    display="large"
-                    accept={acceptedFileExtension}
-                    data-testid="import-file-modal-filepicker"
-                    aria-label="Select or drag and drop file"
-                  />
-                  {isInvalid && (
-                    <ColorText
-                      color="danger"
-                      className={styles.errorFileMsg}
-                      data-testid="input-file-error-msg"
-                    >
-                      {invalidMessage}
-                    </ColorText>
-                  )}
-                </>
-              )}
-              {loading && (
-                <div
-                  className={styles.loading}
-                  data-testid="file-loading-indicator"
-                >
-                  <Loader size="xl" />
-                  <Text color="subdued" style={{ marginTop: 12 }}>
-                    Uploading...
-                  </Text>
-                </div>
-              )}
-              {error && (
-                <div className={styles.result} data-testid="result-failed">
-                  <RiIcon type="ToastCancelIcon" size="xxl" color="danger500" />
-                  <Text style={{ marginTop: 16 }}>{errorMessage}</Text>
-                  <Text>{error}</Text>
-                </div>
-              )}
-            </FlexItem>
-            {isShowForm && (
-              <FlexItem grow>
-                <UploadWarning />
+        <Modal.Content.Body
+          width="610px"
+          content={
+            <Col gap="l">
+              {warning && <FlexItem>{warning}</FlexItem>}
+              <FlexItem>
+                {isShowForm && (
+                  <>
+                    <RiFilePicker
+                      id="import-file-modal-filepicker"
+                      initialPromptText="Select or drag and drop a file"
+                      className={styles.fileDrop}
+                      isInvalid={isInvalid}
+                      onChange={onFileChange}
+                      display="large"
+                      accept={acceptedFileExtension}
+                      data-testid="import-file-modal-filepicker"
+                      aria-label="Select or drag and drop file"
+                    />
+                    {isInvalid && (
+                      <ColorText
+                        color="danger"
+                        className={styles.errorFileMsg}
+                        data-testid="input-file-error-msg"
+                      >
+                        {invalidMessage}
+                      </ColorText>
+                    )}
+                  </>
+                )}
+                {loading && (
+                  <div
+                    className={styles.loading}
+                    data-testid="file-loading-indicator"
+                  >
+                    <Loader size="xl" />
+                    <Text color="subdued" style={{ marginTop: 12 }}>
+                      Uploading...
+                    </Text>
+                  </div>
+                )}
+                {error && (
+                  <div className={styles.result} data-testid="result-failed">
+                    <RiIcon
+                      type="ToastCancelIcon"
+                      size="xxl"
+                      color="danger500"
+                    />
+                    <Text style={{ marginTop: 16 }}>{errorMessage}</Text>
+                    <Text>{error}</Text>
+                  </div>
+                )}
               </FlexItem>
-            )}
-          </Col>
-          {data && (
-            <Modal.Content.Body
-              content={submitResults}
-              data-testid="result-succeeded"
-            />
-          )}
-        </Modal.Content.Body.Compose>
+              {isShowForm && (
+                <FlexItem grow>
+                  <UploadWarning />
+                </FlexItem>
+              )}
+            </Col>
+          }
+        />
+
+        {data && (
+          <Modal.Content.Body
+            content={submitResults}
+            data-testid="result-succeeded"
+          />
+        )}
         <Modal.Content.Footer.Compose>
-          {isShowForm && (
-            <Modal.Content.Footer.Group>
-              <SecondaryButton
-                size="l"
-                onClick={onClose}
-                data-testid="cancel-btn"
-              >
-                Cancel
-              </SecondaryButton>
-              <PrimaryButton
-                size="l"
-                onClick={onSubmit}
-                disabled={isSubmitDisabled}
-                data-testid="submit-btn"
-              >
-                {submitBtnText || 'Import'}
-              </PrimaryButton>
-            </Modal.Content.Footer.Group>
-          )}
-          {data && <PrimaryButton onClick={onClose}>OK</PrimaryButton>}
+          <Modal.Content.Footer.Group>
+            {isShowForm && (
+              <>
+                <SecondaryButton
+                  size="l"
+                  onClick={onClose}
+                  data-testid="cancel-btn"
+                >
+                  Cancel
+                </SecondaryButton>
+                <PrimaryButton
+                  size="l"
+                  onClick={onSubmit}
+                  disabled={isSubmitDisabled}
+                  data-testid="submit-btn"
+                >
+                  {submitBtnText || 'Import'}
+                </PrimaryButton>
+              </>
+            )}
+            {data && <PrimaryButton onClick={onClose}>OK</PrimaryButton>}
+          </Modal.Content.Footer.Group>
         </Modal.Content.Footer.Compose>
       </Modal.Content.Compose>
     </Modal.Compose>
