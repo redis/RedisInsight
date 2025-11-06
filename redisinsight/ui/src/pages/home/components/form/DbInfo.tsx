@@ -32,10 +32,12 @@ const ListGroupItemLabelValue = ({
   label,
   value,
   dataTestId,
+  additionalContent,
 }: {
   label: string
   value: string | React.ReactNode
   dataTestId?: string
+  additionalContent?: React.ReactNode
 }) => (
   <ListGroupItem
     label={
@@ -45,6 +47,7 @@ const ListGroupItemLabelValue = ({
           <Text color="primary" data-testid={dataTestId}>
             {value}
           </Text>
+          {additionalContent}
         </Row>
       </>
     }
@@ -84,9 +87,7 @@ const DbInfo = (props: Props) => {
     >
       <RiIcon
         type="InfoIcon"
-        color="informative400"
-        title=""
-        style={{ cursor: 'pointer' }}
+        style={{ cursor: "pointer" }}
       />
     </RiTooltip>
   )
@@ -108,26 +109,14 @@ const DbInfo = (props: Props) => {
           dataTestId="db-name-from-provider"
         />
       )}
-      <ListGroupItem
-        label={
-          <>
-            {/* TODO: reuse the list group item component once figure out the node list label part */}
-            {!!nodes?.length && <AppendEndpoints />}
-            <Text color="ghost" component="span">
-              Host:
-              <Text
-                style={{ marginLeft: '.8rem' }}
-                color="default"
-                className={styles.dbInfoListValue}
-                data-testid="db-info-host"
-                component="span"
-              >
-                {host}
-              </Text>
-            </Text>
-          </>
-        }
+
+      <ListGroupItemLabelValue
+        label="Host:"
+        value={host}
+        dataTestId="db-info-host"
+        additionalContent={!!nodes?.length && <AppendEndpoints />}
       />
+
       {(server?.buildType === BuildType.RedisStack || isFromCloud) && (
         <ListGroupItemLabelValue
           label="Port:"
