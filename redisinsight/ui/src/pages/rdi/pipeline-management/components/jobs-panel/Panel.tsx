@@ -227,7 +227,7 @@ const DryRunJobPanel = (props: Props) => {
             </Row>
           </FlexItem>
         </Row>
-        <Text color="primary">
+        <Text>
           Add input data to test the transformation logic.
         </Text>
       </FlexItem>
