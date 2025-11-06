@@ -6,6 +6,9 @@ import { Theme } from 'uiSrc/components/base/theme/types'
 export const DryRunPanelContainer = styled(Col)<
   React.ComponentProps<typeof Col> & { isFullScreen?: boolean }
 >`
+  border-left: 1px solid
+  ${({ theme }: { theme: Theme }) =>
+    theme.semantic.color.border.informative100};
   padding: 2.4rem;
   background-color: ${({ theme }: { theme: Theme }) =>
     theme.components.section.bgColor};
