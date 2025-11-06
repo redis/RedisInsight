@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
 
 import { FeatureFlagComponent, RiPopover, RiTooltip } from 'uiSrc/components'
 import { EmptyButton, IconButton } from 'uiSrc/components/base/forms/buttons'
@@ -16,7 +15,6 @@ import { FeatureFlags } from 'uiSrc/constants'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
 import { formatLongName } from 'uiSrc/utils'
-import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { HoverableIconButton } from './DatabasesListCellControls.styles'
 import {
@@ -42,9 +40,6 @@ const DatabasesListCellControls: IDatabaseListCell = ({ row }) => {
   const closePopover = () => setIsDeletePopoverOpen(false)
   const showPopover = () => setIsDeletePopoverOpen(true)
 
-  const { [FeatureFlags.databaseManagement]: databaseManagementFeature } =
-    useSelector(appFeatureFlagsFeaturesSelector)
-
   return (
     <Row
       justify="end"
@@ -52,7 +47,7 @@ const DatabasesListCellControls: IDatabaseListCell = ({ row }) => {
       gap="xs"
       onClick={(e) => e.stopPropagation()}
     >
-      {databaseManagementFeature?.flag && (
+      <FeatureFlagComponent name={FeatureFlags.databaseManagement}>
         <RiTooltip content="Manage Tags">
           <HoverableIconButton
             icon={TagIcon}
@@ -64,7 +59,7 @@ const DatabasesListCellControls: IDatabaseListCell = ({ row }) => {
             }}
           />
         </RiTooltip>
-      )}
+      </FeatureFlagComponent>
       {instance.cloudDetails && (
         <RiTooltip content="Go to Redis Cloud">
           <Link

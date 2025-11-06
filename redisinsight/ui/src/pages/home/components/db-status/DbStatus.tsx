@@ -21,6 +21,7 @@ import {
   WARNING_WITHOUT_CAPABILITY,
 } from './texts'
 import styles from './styles.module.scss'
+import { IconWrapper } from './DbStatus.styles'
 
 export interface Props {
   id: string
@@ -106,12 +107,9 @@ const DbStatus = (props: Props) => {
   if (isNew) {
     return (
       <RiTooltip content="New" position="top">
-        <div
-          style={{ marginLeft: -10 }}
-          data-testid={`database-status-new-${id}`}
-        >
+        <IconWrapper data-testid={`database-status-new-${id}`}>
           <Indicator $color="blue" />
-        </div>
+        </IconWrapper>
       </RiTooltip>
     )
   }

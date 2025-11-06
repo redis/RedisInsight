@@ -16,7 +16,7 @@ const DatabasesListCellHost: IDatabaseListCell = ({ row }) => {
 
   return (
     <HostPortContainer gap="m" data-testid="host-port">
-      <Text className="copyHostPortText">{text}</Text>
+      <Text>{text}</Text>
       <RiTooltip position="right" content="Copy">
         <IconButton
           icon={CopyIcon}

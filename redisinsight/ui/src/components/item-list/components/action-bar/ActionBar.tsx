@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import styles from './styles.module.scss'
+import { Container } from './ActionBar.styles'
 
 export interface Props {
   width?: number
@@ -13,7 +13,7 @@ export interface Props {
 }
 
 const ActionBar = ({ selectionCount, actions, onCloseActionBar }: Props) => (
-  <Row centered className={styles.container} gap="l">
+  <Container centered gap="l">
     <FlexItem>{`You selected: ${selectionCount} items`}</FlexItem>
     {actions?.map((action, index) => (
       <FlexItem key={`action-${index + 1}`}>{action}</FlexItem>
@@ -26,7 +26,7 @@ const ActionBar = ({ selectionCount, actions, onCloseActionBar }: Props) => (
         data-testid="cancel-selecting"
       />
     </FlexItem>
-  </Row>
+  </Container>
 )
 
 export default ActionBar

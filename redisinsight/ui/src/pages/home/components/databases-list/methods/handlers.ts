@@ -16,16 +16,16 @@ import { SortingState } from 'uiSrc/components/base/layout/table'
 import { history } from 'uiSrc/Router'
 import { localStorageService } from 'uiSrc/services'
 
+const connectToInstance = (id: string) => {
+  dispatch(resetRdiContext())
+  dispatch(setConnectedInstanceId(id))
+
+  history.push(Pages.browser(id))
+}
+
 export const handleCheckConnectToInstance = async (instance: Instance) => {
   const { id, provider, modules } = instance
   const { contextInstanceId } = appContextSelector(store.getState())
-
-  const connectToInstance = (id = '') => {
-    dispatch(resetRdiContext())
-    dispatch(setConnectedInstanceId(id))
-
-    history.push(Pages.browser(id))
-  }
 
   const modulesSummary = getRedisModulesSummary(modules)
   const infoData = await getRedisInfoSummary(id)
