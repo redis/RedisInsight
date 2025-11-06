@@ -1,15 +1,17 @@
 import React from 'react'
 import { capitalize } from 'lodash'
+import styled from 'styled-components'
 
 import { ConnectionType } from 'uiSrc/slices/interfaces'
 import { Nullable } from 'uiSrc/utils'
-import { ColorText, Text } from 'uiSrc/components/base/text'
-import { Item as ListGroupItem } from 'uiSrc/components/base/layout/list'
 import { SentinelMaster } from 'apiSrc/modules/redis-sentinel/models/sentinel-master'
-import SentinelHostPort from './SentinelHostPort'
 
-import styles from '../../styles.module.scss'
+import { RiTooltip } from 'uiSrc/components/base/tooltip'
+import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { CopyIcon } from 'uiSrc/components/base/icons'
+
 import { DbInfoGroup } from '../DbInfo.styles'
+import { ListGroupItemLabelValue } from '../DbInfo'
 
 export interface Props {
   host?: string
@@ -19,48 +21,62 @@ export interface Props {
   sentinelMaster?: SentinelMaster
 }
 
+const StyledCopyButton = styled(IconButton)`
+  margin-bottom: 3px;
+  opacity: 0;
+
+  :hover {
+    opacity: 1;
+  }
+`
+
 const DbInfoSentinel = (props: Props) => {
   const { connectionType, nameFromProvider, sentinelMaster, host, port } = props
+
+  const handleCopy = (text = '') => {
+    navigator.clipboard.writeText(text)
+  }
+
   return (
-    <DbInfoGroup flush>
-      <ListGroupItem
-        label={
-          <Text color="subdued" size="s">
-            Connection Type:
-            <ColorText color="default" className={styles.dbInfoListValue}>
-              {capitalize(connectionType)}
-            </ColorText>
-          </Text>
-        }
+    <DbInfoGroup flush maxWidth={false}>
+      <ListGroupItemLabelValue
+        label="Connection Type:"
+        value={capitalize(connectionType)}
+        dataTestId="connection-type"
       />
 
       {sentinelMaster?.name && (
-        <ListGroupItem
-          label={
-            <Text color="subdued" size="s">
-              Primary Group Name:
-              <ColorText color="default" className={styles.dbInfoListValue}>
-                {sentinelMaster?.name}
-              </ColorText>
-            </Text>
-          }
+        <ListGroupItemLabelValue
+          label="Primary Group Name:"
+          value={sentinelMaster?.name}
+          dataTestId="primary-group-name"
         />
       )}
 
       {nameFromProvider && (
-        <ListGroupItem
-          label={
-            <Text color="subdued" size="s">
-              Database Name from Provider:
-              <ColorText color="default" className={styles.dbInfoListValue}>
-                {nameFromProvider}
-              </ColorText>
-            </Text>
-          }
+        <ListGroupItemLabelValue
+          label="Database Name from Provider:"
+          value={nameFromProvider}
+          dataTestId="db-name-from-provider"
         />
       )}
 
-      {host && port && <SentinelHostPort host={host} port={port} />}
+      {host && port && (
+        <ListGroupItemLabelValue
+          label="Sentinel Host & Port:"
+          value={`${host}:${port}`}
+          dataTestId="host-and-port"
+          additionalContent={
+            <RiTooltip position="right" content="Copy">
+              <StyledCopyButton
+                icon={CopyIcon}
+                aria-label="Copy host:port"
+                onClick={() => handleCopy(`${host}:${port}`)}
+              />
+            </RiTooltip>
+          }
+        />
+      )}
     </DbInfoGroup>
   )
 }

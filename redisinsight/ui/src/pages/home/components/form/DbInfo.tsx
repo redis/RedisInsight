@@ -28,7 +28,7 @@ export interface Props {
   isFromCloud: boolean
 }
 
-const ListGroupItemLabelValue = ({
+export const ListGroupItemLabelValue = ({
   label,
   value,
   dataTestId,
@@ -41,15 +41,13 @@ const ListGroupItemLabelValue = ({
 }) => (
   <ListGroupItem
     label={
-      <>
-        <Row align="center" gap="m">
-          <Text color="ghost">{label}</Text>
-          <Text color="primary" data-testid={dataTestId}>
-            {value}
-          </Text>
-          {additionalContent}
-        </Row>
-      </>
+      <Row align="center" gap="m">
+        <Text color="ghost">{label}</Text>
+        <Text color="primary" data-testid={dataTestId}>
+          {value}
+        </Text>
+        {additionalContent}
+      </Row>
     }
   />
 )
@@ -85,10 +83,7 @@ const DbInfo = (props: Props) => {
         </ul>
       }
     >
-      <RiIcon
-        type="InfoIcon"
-        style={{ cursor: "pointer" }}
-      />
+      <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
     </RiTooltip>
   )
 
