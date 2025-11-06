@@ -62,7 +62,7 @@ export const ResultColumn = (
     id: 'message',
     accessorKey: 'message',
     enableSorting: true,
-    maxSize: addActions ? 250 : 110,
+    minSize: addActions ? 250 : 110,
     cell: ({
       row: {
         original: { status, message, name, error, alias, loading = false },

@@ -6,9 +6,9 @@ import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { ColorText, Text } from 'uiSrc/components/base/text'
+import { Text } from 'uiSrc/components/base/text'
 import { ColumnDef, Table } from 'uiSrc/components/base/layout/table'
 
 import {
@@ -18,6 +18,7 @@ import {
 } from 'uiSrc/components/auto-discover'
 import { Spacer } from 'uiSrc/components/base/layout'
 import { Header } from 'uiSrc/components/auto-discover/Header'
+import { SummaryText } from './Summary'
 
 export interface Props {
   countSuccessAdded: number
@@ -73,27 +74,6 @@ const SentinelDatabasesResult = ({
     setItems(itemsTemp)
   }
 
-  const SummaryText = () => (
-    <Text component="div" color="primary" data-testid="summary">
-      <ColorText variant="semiBold" size="S">
-        Summary:&nbsp;
-      </ColorText>
-      {countSuccessAdded ? (
-        <ColorText size="S">
-          Successfully added {countSuccessAdded}
-          {' primary group(s)'}
-          {countFailAdded ? '; ' : ' '}
-        </ColorText>
-      ) : null}
-      {countFailAdded ? (
-        <ColorText size="S">
-          Failed to add {countFailAdded}
-          {' primary group(s)'}
-        </ColorText>
-      ) : null}
-    </Text>
-  )
-
   return (
     <AutodiscoveryPageTemplate>
       <DatabaseContainer justify="start">
@@ -105,7 +85,7 @@ const SentinelDatabasesResult = ({
 
         <Spacer size="m" />
         <DatabaseWrapper>
-          {items.length === 0 || loading ? (
+          {loading ? (
             <Col full centered>
               <Text size="XL" variant="semiBold">
                 {message}
@@ -122,11 +102,22 @@ const SentinelDatabasesResult = ({
                   desc: false,
                 },
               ]}
+              emptyState={() => (
+                <Col centered full>
+                  <FlexItem padding={13}>
+                    <Text size="L">{message}</Text>
+                  </FlexItem>
+                </Col>
+              )}
+              stripedRows
             />
           )}
         </DatabaseWrapper>
         <MessageBar opened={!!countSuccessAdded || !!countFailAdded}>
-          <SummaryText />
+          <SummaryText
+            countSuccessAdded={countSuccessAdded}
+            countFailAdded={countFailAdded}
+          />
         </MessageBar>
       </DatabaseContainer>
       <Footer>
@@ -135,7 +126,6 @@ const SentinelDatabasesResult = ({
             size="m"
             onClick={handleViewDatabases}
             data-testid="btn-view-databases"
-            disabled={countSuccessAdded === 0}
           >
             View Databases
           </PrimaryButton>

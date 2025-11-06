@@ -87,6 +87,9 @@ const meta: Meta<typeof SentinelDatabasesResult> = {
   component: SentinelDatabasesResult,
   args: {
     columns: columnsMock,
+    countSuccessAdded: mastersMock.filter(
+      (m) => m.status === AddRedisDatabaseStatus.Success,
+    ).length,
   },
 }
 
@@ -94,13 +97,15 @@ export default meta
 type Story = StoryObj<typeof SentinelDatabasesResult>
 
 const DefaultRender = () => {
-  let countSuccessAdded = mastersMock.length - 2
   return (
     <SentinelDatabasesResult
       onViewDatabases={action('onViewDatabases')}
       columns={columnsMock}
       masters={mastersMock}
-      countSuccessAdded={countSuccessAdded}
+      countSuccessAdded={
+        mastersMock.filter((m) => m.status === AddRedisDatabaseStatus.Success)
+          .length
+      }
       onBack={action('onBack')}
     />
   )
@@ -110,18 +115,49 @@ export const Default: Story = {
   render: () => <DefaultRender />,
 }
 
+export const AllValid: Story = {
+  args: {
+    columns: colFactory(
+      action('onChangedInput'),
+      action('onAddInstance'),
+      false,
+      1,
+      1,
+    ),
+    countSuccessAdded: 1,
+    masters: [
+      mastersMock.find((m) => m.status === AddRedisDatabaseStatus.Success) ||
+        mastersMock[0],
+    ],
+    onBack: action('onBack'),
+  },
+}
+
 export const AllInvalid: Story = {
   args: {
-    columns: columnsMock,
-    masters: [],
+    columns: colFactory(
+      action('onChangedInput'),
+      action('onAddInstance'),
+      false,
+      0,
+      1,
+    ),
+    masters: [mastersMock[0]],
     onBack: action('onBack'),
+    countSuccessAdded: 0,
   },
 }
 
 export const Empty: Story = {
   args: {
-    columns: columnsMock,
-    masters: [mastersMock[0]],
+    columns: colFactory(
+      action('onChangedInput'),
+      action('onAddInstance'),
+      false,
+      0,
+      0,
+    ),
+    masters: [],
     onBack: action('onBack'),
     countSuccessAdded: 0,
   },
