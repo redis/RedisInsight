@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { map, pick } from 'lodash'
+import { useHistory } from 'react-router-dom'
 
 import { LoadedSentinel, ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import {
@@ -28,9 +29,6 @@ import {
   RowSelectionState,
 } from 'uiSrc/components/base/layout/table'
 import { RiIcon } from 'uiSrc/components/base/icons'
-
-import styles from '../styles.module.scss'
-import { useHistory } from 'react-router-dom'
 
 const handleCopy = (text = '') => {
   return navigator.clipboard.writeText(text)
@@ -65,7 +63,7 @@ export const colFactory = (
       id: 'name',
       accessorKey: 'name',
       enableSorting: true,
-      size: 211,
+      size: 200,
       cell: ({
         row: {
           original: { name },
@@ -77,7 +75,7 @@ export const colFactory = (
       id: 'alias',
       accessorKey: 'alias',
       enableSorting: true,
-      size: 285,
+      size: 200,
       cell: ({
         row: {
           original: { id, alias, name },
@@ -87,7 +85,6 @@ export const colFactory = (
           <InputFieldSentinel
             name={`alias-${id}`}
             value={alias || name}
-            className={styles.input}
             placeholder="Enter Database Alias"
             inputType={SentinelInputFieldType.Text}
             onChangedInput={handleChangedInput}
@@ -101,7 +98,6 @@ export const colFactory = (
       id: 'host',
       accessorKey: 'host',
       enableSorting: true,
-      size: 210,
       cell: ({
         row: {
           original: { host, port },
@@ -131,13 +127,12 @@ export const colFactory = (
       id: 'numberOfSlaves',
       accessorKey: 'numberOfSlaves',
       enableSorting: true,
-      size: 130,
+      size: 120,
     },
     {
       header: 'Username',
       id: 'username',
       accessorKey: 'username',
-      size: 285,
       cell: ({
         row: {
           original: { username, id },
@@ -147,7 +142,6 @@ export const colFactory = (
           <InputFieldSentinel
             value={username}
             name={`username-${id}`}
-            className={styles.input}
             placeholder="Enter Username"
             inputType={SentinelInputFieldType.Text}
             onChangedInput={handleChangedInput}
@@ -159,7 +153,6 @@ export const colFactory = (
       header: 'Password',
       id: 'password',
       accessorKey: 'password',
-      size: 285,
       cell: ({
         row: {
           original: { password, id },
@@ -169,7 +162,6 @@ export const colFactory = (
           <InputFieldSentinel
             value={password}
             name={`password-${id}`}
-            className={styles.input}
             placeholder="Enter Password"
             inputType={SentinelInputFieldType.Password}
             onChangedInput={handleChangedInput}
@@ -181,7 +173,7 @@ export const colFactory = (
       header: 'Database Index',
       id: 'db',
       accessorKey: 'db',
-      size: 200,
+      size: 140,
       cell: ({
         row: {
           original: { db = 0, id },
@@ -190,7 +182,6 @@ export const colFactory = (
         <div role="presentation">
           <InputFieldSentinel
             min={0}
-            className={styles.dbInfo}
             value={`${db}` || '0'}
             name={`db-${id}`}
             placeholder="Enter Index"
