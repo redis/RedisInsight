@@ -5,7 +5,7 @@ import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import { Row } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import {
   DestructiveButton,
@@ -13,7 +13,6 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { SearchInput } from 'uiSrc/components/base/inputs'
 import { Text } from 'uiSrc/components/base/text'
 import {
   ColumnDef,
@@ -23,12 +22,10 @@ import {
 import styles from '../styles.module.scss'
 import { Spacer } from 'uiSrc/components/base/layout'
 import {
+  DatabaseContainer,
   DatabaseWrapper,
   Footer,
-  PageSubTitle,
-  PageTitle,
-  SearchContainer,
-  SearchForm,
+  Header,
 } from 'uiSrc/components/auto-discover'
 
 export interface Props {
@@ -203,28 +200,18 @@ const RedisCloudDatabasesPage = ({
 
   return (
     <AutodiscoveryPageTemplate>
-      <div className="databaseContainer">
-        <PageTitle data-testid="title">Redis Cloud Databases</PageTitle>
-
-        <Row align="end" gap="s">
-          <PageSubTitle>
-            These are {items.length > 1 ? 'databases ' : 'database '}
+      <DatabaseContainer justify="start">
+        <Header
+          title="Redis Cloud Databases"
+          onBack={onBack}
+          onQueryChange={onQueryChange}
+          subTitle={`
+            These are ${items.length > 1 ? 'databases ' : 'database '}
             in your Redis Cloud. Select the
-            {items.length > 1 ? ' databases ' : ' database '} that you want to
-            add.
-          </PageSubTitle>
-        </Row>
-        <SearchContainer>
-          <SearchForm>
-            <SearchInput
-              placeholder="Search..."
-              onChange={onQueryChange}
-              aria-label="Search"
-              data-testid="search"
-            />
-          </SearchForm>
-        </SearchContainer>
-        <Spacer size="l" />
+            ${items.length > 1 ? ' databases ' : ' database '} that you want to
+            add.`}
+        />
+        <Spacer size="m" />
         <DatabaseWrapper>
           <Table
             rowSelectionMode="multiple"
@@ -243,20 +230,24 @@ const RedisCloudDatabasesPage = ({
             paginationEnabled={items.length > 10}
             stripedRows
             pageSizes={[5, 10, 25, 50, 100]}
+            emptyState={() => (
+              <Col centered full>
+                <FlexItem padding={13}>
+                  <Text size="L">{message}</Text>
+                </FlexItem>
+              </Col>
+            )}
           />
-          {!items.length && <Text size="S">{message}</Text>}
+          {!items.length && (
+            <Col centered full>
+              <Text size="L">{message}</Text>
+            </Col>
+          )}
         </DatabaseWrapper>
-      </div>
+      </DatabaseContainer>
       <Footer>
-        <Row justify="between">
-          <SecondaryButton
-            onClick={onBack}
-            className="btn-cancel btn-back"
-            data-testid="btn-back-to-adding"
-          >
-            Back to adding databases
-          </SecondaryButton>
-          <Row grow={false} gap="m">
+        <Row justify="end">
+          <Row gap="m" grow={false}>
             <CancelButton isPopoverOpen={isPopoverOpen} />
             <SubmitButton isDisabled={selection.length < 1} />
           </Row>

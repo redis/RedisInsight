@@ -20,14 +20,14 @@ import {
   RowSelectionState,
   Table,
 } from 'uiSrc/components/base/layout/table'
+import { Spacer } from 'uiSrc/components/base/layout'
 import {
   DatabaseContainer,
   DatabaseWrapper,
   Footer,
+  Header,
 } from 'uiSrc/components/auto-discover'
 
-import { Spacer } from 'uiSrc/components/base/layout'
-import { Header } from 'uiSrc/components/auto-discover/Header'
 import { getRowId } from '../../useSentinelDatabasesConfig'
 
 import styles from '../../../styles.module.scss'
@@ -214,6 +214,8 @@ const SentinelDatabases = ({
                 desc: false,
               },
             ]}
+            paginationEnabled={items.length > 10}
+            pageSizes={[5, 10, 25, 50, 100]}
             stripedRows
             emptyState={() => (
               <Col centered full>
