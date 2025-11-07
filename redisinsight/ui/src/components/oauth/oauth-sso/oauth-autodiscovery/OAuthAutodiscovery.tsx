@@ -116,12 +116,11 @@ const OAuthAutodiscovery = (props: Props) => {
     <StyledCreateDbSection justify="between" align="center">
       <Row align="center" gap="m">
         <CloudIcon size="L" />
-        <Text>Start FREE with Redis Cloud</Text>
+        <Text color="primary">Start FREE with Redis Cloud</Text>
       </Row>
       <OAuthSsoHandlerDialog>
         {(ssoCloudHandlerClick) => (
           <PrimaryButton
-            size="s"
             // todo: choose either href or on click
             // href={getUtmExternalLink(EXTERNAL_LINKS.tryFree, { campaign: '' })}
             // target="_blank"
@@ -153,15 +152,15 @@ const OAuthAutodiscovery = (props: Props) => {
       >
         {(form: React.ReactNode) => (
           <>
-            <StyledDiscoverText>
+            <StyledDiscoverText color="primary">
               Discover subscriptions and add your databases. A new Redis Cloud
               account will be created for you if you don’t have one.
             </StyledDiscoverText>
 
             <CreateFreeDb />
 
-            <Text>Get started with</Text>
-            <Title size="L">Redis Cloud account</Title>
+            <Text color="primary">Get started with</Text>
+            <Title size="L" color="primary">Redis Cloud account</Title>
 
             {form}
 

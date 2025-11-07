@@ -231,7 +231,7 @@ const CloudConnectionForm = (props: Props) => {
       <FeatureFlagComponent name={FeatureFlags.cloudSso}>
         <Col gap="l">
           <FlexItem grow>
-            <Text>Connect with</Text>
+            <Text color="primary">Connect with</Text>
           </FlexItem>
           <FlexItem grow>
             <RiRadioGroup
