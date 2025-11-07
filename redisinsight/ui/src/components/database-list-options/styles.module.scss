@@ -1,57 +1,6 @@
-.options {
-  padding-left: 7px;
-  display: flex;
-  align-items: center;
-}
+
 
 :global {
-  .options_icon {
-    display: inline-block;
-    width: 28px;
-    height: 28px;
-    border-radius: 14px;
-    cursor: pointer;
-    line-height: 24px;
-    text-align: center;
-    text-transform: uppercase;
-    margin-left: -7px;
-    color: #fff;
-
-    &:hover {
-      transform: translateY(-1px);
-    }
-    &:active {
-      transform: translateY(1px);
-    }
-  }
-
-  .option_icon_0 {
-    background-color: #293152;
-  }
-  .option_icon_1 {
-    background-color: #323e6c;
-  }
-  .option_icon_2 {
-    background-color: #465282;
-  }
-  .option_icon_3 {
-    background-color: #606c98;
-  }
-  .option_icon_4 {
-    background-color: #737fa8;
-  }
-  .option_icon_5 {
-    background-color: #8f99bc;
-    color: #202020;
-  }
-  .option_icon_6 {
-    background-color: #adb5d3;
-    color: #202020;
-  }
-  .option_icon_7 {
-    background-color: #cdd4ea;
-    color: #202020;
-  }
   .theme_LIGHT {
     .option_icon_0 {
       background-color: #587AB2;

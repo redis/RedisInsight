@@ -1,6 +1,5 @@
 import React from 'react'
 import { isString } from 'lodash'
-import cx from 'classnames'
 
 import { RiTooltip } from 'uiSrc/components'
 
@@ -13,7 +12,11 @@ import {
 import { ActiveActiveIcon, RedisonFlashIcon } from 'uiSrc/components/base/icons'
 import { IconButton, IconType } from 'uiSrc/components/base/forms/buttons'
 import { handleCopy } from 'uiSrc/utils'
-import styles from './styles.module.scss'
+import {
+  DatabaseListOptionsContainer,
+  OptionsIcon,
+  ValidOptionIndex,
+} from './DatabaseListOptions.styles'
 
 interface Props {
   options: Partial<any>
@@ -31,39 +34,35 @@ const Tooltip = ({
   icon,
   value,
   index,
-}: ITooltipProps) => (
-  <>
-    {contentProp ? (
-      <RiTooltip
-        content={
-          isString(value)
-            ? `Persistence: ${PersistencePolicy[value as keyof typeof PersistencePolicy]}`
-            : contentProp
-        }
-        position="top"
-        anchorClassName={styles.tooltip}
-      >
-        {icon ? (
-          <IconButton
-            icon={icon}
-            onClick={() => handleCopy(contentProp)}
-            aria-labelledby={`${contentProp}_module`}
-          />
-        ) : (
-          <div
-            className={cx('options_icon', `option_icon_${index}`)}
-            aria-labelledby={contentProp}
-            onClick={() => handleCopy(contentProp)}
-            onKeyDown={() => ({})}
-            role="presentation"
-          >
-            {contentProp.match(/\b(\w)/g)?.join('')}
-          </div>
-        )}
-      </RiTooltip>
-    ) : null}
-  </>
-)
+}: ITooltipProps) =>
+  contentProp ? (
+    <RiTooltip
+      content={
+        isString(value)
+          ? `Persistence: ${PersistencePolicy[value as keyof typeof PersistencePolicy]}`
+          : contentProp
+      }
+      position="top"
+    >
+      {icon ? (
+        <IconButton
+          icon={icon}
+          onClick={() => handleCopy(contentProp)}
+          aria-label={`${contentProp}_module`}
+        />
+      ) : (
+        <OptionsIcon
+          $icon={index as ValidOptionIndex}
+          aria-label={contentProp}
+          onClick={() => handleCopy(contentProp)}
+          onKeyDown={() => ({})}
+          role="presentation"
+        >
+          {contentProp.match(/\b(\w)/g)?.join('')}
+        </OptionsIcon>
+      )}
+    </RiTooltip>
+  ) : null
 
 type OptionContent = {
   icon?: IconType
@@ -137,7 +136,9 @@ const DatabaseListOptions = ({ options }: Props) => {
       return null
     })
 
-  return <div className={styles.options}>{optionsRender}</div>
+  return (
+    <DatabaseListOptionsContainer>{optionsRender}</DatabaseListOptionsContainer>
+  )
 }
 
 export default DatabaseListOptions

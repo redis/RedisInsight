@@ -51,7 +51,7 @@ export const colFactory = (instances: InstanceRedisCloud[]) => {
       id: 'name',
       accessorKey: 'name',
       enableSorting: true,
-      size: 250,
+      maxSize: 150,
       cell: ({
         row: {
           original: { name },
@@ -79,7 +79,7 @@ export const colFactory = (instances: InstanceRedisCloud[]) => {
       id: 'subscriptionId',
       accessorKey: 'subscriptionId',
       enableSorting: true,
-      size: 120,
+      maxSize: 120,
       cell: ({
         row: {
           original: { subscriptionId },
@@ -95,7 +95,7 @@ export const colFactory = (instances: InstanceRedisCloud[]) => {
       id: 'subscriptionName',
       accessorKey: 'subscriptionName',
       enableSorting: true,
-      size: 250,
+      minSize: 200,
       cell: ({
         row: {
           original: { subscriptionName: name },
@@ -123,7 +123,7 @@ export const colFactory = (instances: InstanceRedisCloud[]) => {
       id: 'subscriptionType',
       accessorKey: 'subscriptionType',
       enableSorting: true,
-      size: 100,
+      maxSize: 100,
       cell: ({
         row: {
           original: { subscriptionType },
@@ -139,7 +139,7 @@ export const colFactory = (instances: InstanceRedisCloud[]) => {
       id: 'status',
       accessorKey: 'status',
       enableSorting: true,
-      size: 100,
+      maxSize: 100,
       cell: ({
         row: {
           original: { status },
@@ -151,7 +151,7 @@ export const colFactory = (instances: InstanceRedisCloud[]) => {
       id: 'publicEndpoint',
       accessorKey: 'publicEndpoint',
       enableSorting: true,
-      size: 310,
+      minSize: 200,
       cell: ({
         row: {
           original: { publicEndpoint },
@@ -160,7 +160,16 @@ export const colFactory = (instances: InstanceRedisCloud[]) => {
         const text = publicEndpoint
         return (
           <CopyTextContainer>
-            <CopyPublicEndpointText>{text}</CopyPublicEndpointText>
+            <RiTooltip
+              delay={200}
+              position="bottom"
+              title="Endpoint"
+              anchorClassName="truncateText"
+              content={formatLongName(text)}
+            >
+              <CopyPublicEndpointText>{text}</CopyPublicEndpointText>
+            </RiTooltip>
+
             <RiTooltip
               delay={200}
               position="right"
@@ -181,7 +190,7 @@ export const colFactory = (instances: InstanceRedisCloud[]) => {
       id: 'modules',
       accessorKey: 'modules',
       enableSorting: true,
-      size: 120,
+      maxSize: 120,
       cell: function Modules({ row: { original: instance } }) {
         return (
           <DatabaseListModules
@@ -195,7 +204,7 @@ export const colFactory = (instances: InstanceRedisCloud[]) => {
       id: 'options',
       accessorKey: 'options',
       enableSorting: true,
-      size: 120,
+      maxSize: 120,
       cell: ({ row: { original: instance } }) => {
         const options = parseInstanceOptionsCloud(
           instance.databaseId,
