@@ -167,11 +167,11 @@ const ImportDatabase = (props: Props) => {
   return (
     <>
       <ScrollableWrapper data-testid="add-db_import">
-        <Col>
+        <Col gap="l">
           <FlexItem grow>
             {isShowForm && (
               <>
-                <Text color="subdued" size="s">
+                <Text>
                   Use a JSON file to import your database connections. Ensure
                   that you only use files from trusted sources to prevent the
                   risk of automatically executing malicious code.
