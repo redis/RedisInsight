@@ -15,10 +15,10 @@ const RdiHeader = ({ onRdiInstanceClick }: Props) => {
   const { data: instances } = useSelector(instancesSelector)
 
   return (
-    <div className="containerDl">
-      <Row className="contentDL" align="center" gap="s">
-        {instances.length > 0 && (
-          <>
+    <>
+      {instances.length > 0 && (
+        <div className="containerDl">
+          <Row className="contentDL" align="center" gap="s">
             <FlexItem>
               <PrimaryButton
                 onClick={onRdiInstanceClick}
@@ -30,11 +30,11 @@ const RdiHeader = ({ onRdiInstanceClick }: Props) => {
             <FlexItem className="searchContainer">
               <SearchRdiList />
             </FlexItem>
-          </>
-        )}
-      </Row>
-      <Spacer className="spacerDl" />
-    </div>
+          </Row>
+          <Spacer className="spacerDl" />
+        </div>
+      )}
+    </>
   )
 }
 
