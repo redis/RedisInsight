@@ -30,7 +30,9 @@ const FormDialog = (props: Props) => {
         onCancel={onClose}
       >
         <Modal.Content.Close icon={CancelIcon} onClick={onClose} />
-        <Modal.Content.Header.Title>{header}</Modal.Content.Header.Title>
+        <Modal.Content.Header.Compose>
+          <Modal.Content.Header.Title>{header}</Modal.Content.Header.Title>
+        </Modal.Content.Header.Compose>
         <StyledFormDialogContentBody content={children} />
         <Modal.Content.Footer.Compose>{footer}</Modal.Content.Footer.Compose>
       </StyledFormDialogContent>
