@@ -121,7 +121,6 @@ const CloudConnectionForm = (props: Props) => {
 
   const CancelButton = ({ onClick }: { onClick: () => void }) => (
     <SecondaryButton
-      size="s"
       className="btn-cancel"
       onClick={onClick}
       style={{ marginRight: 12 }}
@@ -148,7 +147,6 @@ const CloudConnectionForm = (props: Props) => {
       }
     >
       <PrimaryButton
-        size="s"
         type="submit"
         onClick={onClick}
         disabled={submitIsDisabled}
@@ -167,13 +165,13 @@ const CloudConnectionForm = (props: Props) => {
     const footerEl = document.getElementById('footerDatabaseForm')
     if (footerEl) {
       return ReactDOM.createPortal(
-        <div className="footerAddDatabase">
+        <Row justify="end" gap="m">
           {onClose && <CancelButton onClick={onClose} />}
           <SubmitButton
             onClick={formik.submitForm}
             submitIsDisabled={!submitIsEnable()}
           />
-        </div>,
+        </Row>,
         footerEl,
       )
     }
@@ -188,7 +186,7 @@ const CloudConnectionForm = (props: Props) => {
       <form onSubmit={formik.handleSubmit}>
         <Row responsive>
           <FlexItem grow>
-            <FormField label="API Account Key*">
+            <FormField label="API Account Key" required>
               <TextInput
                 name="accessKey"
                 id="accessKey"
@@ -207,7 +205,7 @@ const CloudConnectionForm = (props: Props) => {
         <Spacer size="l" />
         <Row responsive>
           <FlexItem grow>
-            <FormField label="API User Key*">
+            <FormField label="API User Key" required>
               <TextInput
                 name="secretKey"
                 id="secretKey"

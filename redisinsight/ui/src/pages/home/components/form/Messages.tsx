@@ -4,6 +4,8 @@ import { APPLICATION_NAME } from 'uiSrc/constants'
 import { Text } from 'uiSrc/components/base/text'
 
 import { getUtmExternalLink } from 'uiSrc/utils/links'
+import { Link } from 'uiSrc/components/base/link/Link'
+
 import { ExternalLink } from 'uiSrc/components'
 import styles from '../styles.module.scss'
 
@@ -12,13 +14,14 @@ const MessageCloudApiKeys = () => (
     {
       'Enter Redis Cloud API keys to discover and add databases. API keys can be enabled by following the steps mentioned in the '
     }
-
-    <ExternalLink
-      className={cx(styles.link, styles.external)}
+    <Link
+      variant="inline"
+      external
       href="https://docs.redis.com/latest/rc/api/get-started/enable-the-api/"
     >
-      documentation.
-    </ExternalLink>
+      documentation
+    </Link>
+    {'.'}
   </Text>
 )
 
