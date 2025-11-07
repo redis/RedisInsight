@@ -17,7 +17,6 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { InfoIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import { Loader } from 'uiSrc/components/base/display'
@@ -151,7 +150,6 @@ const ImportDatabase = (props: Props) => {
             onClick={onSubmit}
             loading={loading}
             disabled={isSubmitDisabled}
-            icon={isSubmitDisabled ? InfoIcon : undefined}
             data-testid="btn-submit"
           >
             Submit

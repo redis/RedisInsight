@@ -16,7 +16,6 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { InfoIcon } from 'uiSrc/components/base/icons'
 import {
   FormField,
   RiInfoIconProps,
@@ -163,7 +162,6 @@ const ClusterConnectionForm = (props: Props) => {
         onClick={onClick}
         disabled={submitIsDisabled}
         loading={loading}
-        icon={submitIsDisabled ? InfoIcon : undefined}
         data-testid="btn-submit"
       >
         Submit
