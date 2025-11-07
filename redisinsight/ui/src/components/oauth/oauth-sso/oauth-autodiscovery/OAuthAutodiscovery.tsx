@@ -78,7 +78,7 @@ const OAuthAutodiscovery = (props: Props) => {
     )
 
     return (
-      <div className={styles.container} data-testid="oauth-container-import">
+      <StyledContainer data-testid="oauth-container-import">
         <Text>
           Use{' '}
           <strong>
@@ -94,7 +94,7 @@ const OAuthAutodiscovery = (props: Props) => {
         >
           Discover
         </PrimaryButton>
-      </div>
+      </StyledContainer>
     )
   }
 
