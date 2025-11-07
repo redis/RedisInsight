@@ -8,7 +8,12 @@ import { AutoRefresh } from 'uiSrc/components'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { Nullable } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import {
+  Col,
+  FlexGroup,
+  FlexItem,
+  Row,
+} from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { EraserIcon, SettingsIcon } from 'uiSrc/components/base/icons'
 import {
@@ -16,12 +21,11 @@ import {
   IconButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { Text } from 'uiSrc/components/base/text'
+import { Text, Title } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 
 import SlowLogConfig from '../SlowLogConfig'
-import styles from './styles.module.scss'
-import { StyledInfoIcon } from './Actions.styles'
+import { StyledDatabaseName, StyledInfoIcon } from './Actions.styles'
 
 export interface Props {
   width: number
@@ -99,37 +103,32 @@ const Actions = (props: Props) => {
   }
 
   const ToolTipContent = (
-    <div className={styles.popoverContainer}>
-      <RiIcon
-        type="ToastDangerIcon"
-        color="attention600"
-        className={styles.warningIcon}
-      />
-      <div>
-        <Text size="m" component="div">
-          <h4 className={styles.popoverTitle}>
-            <b>Clear Slow Log?</b>
-          </h4>
-          <Text size="xs" color="subdued">
+    <FlexGroup direction="column" gap="l">
+      <Col gap="m">
+        <Title size="S" color="primary">
+          Clear Slow Log?
+        </Title>
+        <Col>
+          <Text size="m" color="primary">
             Slow Log will be cleared for&nbsp;
-            <span className={styles.popoverDBName}>{name}</span>
-            <br />
+            <StyledDatabaseName>{name}</StyledDatabaseName>
+          </Text>
+          <Text size="xs" color="secondary">
             NOTE: This is server configuration
           </Text>
-        </Text>
-        <div className={styles.popoverFooter}>
-          <DestructiveButton
-            size="small"
-            icon={EraserIcon}
-            onClick={() => handleClearClick()}
-            className={styles.popoverDeleteBtn}
-            data-testid="reset-confirm-btn"
-          >
-            Clear
-          </DestructiveButton>
-        </div>
-      </div>
-    </div>
+        </Col>
+      </Col>
+      <Row justify="end">
+        <DestructiveButton
+          size="small"
+          icon={EraserIcon}
+          onClick={() => handleClearClick()}
+          data-testid="reset-confirm-btn"
+        >
+          Clear
+        </DestructiveButton>
+      </Row>
+    </FlexGroup>
   )
 
   return (
@@ -140,7 +139,6 @@ const Actions = (props: Props) => {
           loading={loading}
           displayText={width > HIDE_REFRESH_LABEL_WIDTH}
           lastRefreshTime={lastRefreshTime}
-          containerClassName={styles.refreshContainer}
           onRefresh={() => onRefresh()}
           onEnableAutoRefresh={handleEnableAutoRefresh}
           onChangeAutoRefreshRate={handleChangeAutoRefreshRate}
@@ -184,11 +182,7 @@ const Actions = (props: Props) => {
             closePopover={closePopoverClear}
             panelPaddingSize="m"
             button={
-              <RiTooltip
-                position="left"
-                content="Clear Slow Log"
-                anchorClassName={styles.icon}
-              >
+              <RiTooltip position="left" content="Clear Slow Log">
                 <IconButton
                   icon={EraserIcon}
                   aria-label="Clear Slow Log"
