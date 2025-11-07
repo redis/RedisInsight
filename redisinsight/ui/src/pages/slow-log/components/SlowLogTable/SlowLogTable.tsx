@@ -12,7 +12,6 @@ import {
 } from 'uiSrc/components/base/layout/table'
 
 import { FormatedDate, RiTooltip } from 'uiSrc/components'
-import styles from '../styles.module.scss'
 
 import { SlowLog } from 'apiSrc/modules/slow-log/models'
 import { StyledTableWrapper } from './SlowLogTable.styles'
@@ -65,14 +64,8 @@ const SlowLogTable = (props: Props) => {
         const command = getValue() as string
 
         return (
-          <RiTooltip
-            position="bottom"
-            content={command}
-            anchorClassName={styles.commandTooltip}
-          >
-            <span className={styles.commandText} data-testid="command-value">
-              {command}
-            </span>
+          <RiTooltip position="bottom" content={command}>
+            <span data-testid="command-value">{command}</span>
           </RiTooltip>
         )
       },
