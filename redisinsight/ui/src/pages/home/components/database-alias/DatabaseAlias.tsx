@@ -8,6 +8,7 @@ import {
   ArrowLeftIcon,
   CopyIcon,
   DoubleChevronRightIcon,
+  RediStackMinIcon,
 } from 'uiSrc/components/base/icons'
 import { BuildType } from 'uiSrc/constants/env'
 import { appInfoSelector } from 'uiSrc/slices/app/info'
@@ -175,12 +176,7 @@ const DatabaseAlias = (props: Props) => {
                   }
                   position="bottom"
                 >
-                  <RiIcon
-                    type={
-                      theme === Theme.Dark
-                        ? 'RediStackDarkMinIcon'
-                        : 'RediStackLightMinIcon'
-                    }
+                  <RediStackMinIcon
                     className={styles.redistackIcon}
                     data-testid="redis-stack-icon"
                   />
@@ -224,7 +220,7 @@ const DatabaseAlias = (props: Props) => {
                           value={value}
                           maxLength={500}
                           loading={isLoading}
-                          onChange={value => onChange(value)}
+                          onChange={(value) => onChange(value)}
                           autoComplete="off"
                           data-testid="alias-input"
                         />

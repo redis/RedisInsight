@@ -80,6 +80,7 @@ const OAuthAutodiscovery = (props: Props) => {
           </strong>{' '}
           account to auto-discover subscriptions and add your databases.
         </Text>
+        <Spacer size="xl" />
         <PrimaryButton
           onClick={handleClickDiscover}
           disabled={isDiscoverDisabled}

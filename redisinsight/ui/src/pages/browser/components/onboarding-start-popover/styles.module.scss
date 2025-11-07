@@ -1,16 +1,4 @@
 .onboardingStartPopover {
-  width: 360px !important;
-
-  background-color: var(--euiTooltipBackgroundColor) !important;
-
-  :global(.euiPopover__panelArrow) {
-    display: none;
-  }
-}
-
-.onboardingActions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 16px;
+  width: 360px;
+  margin-right: 30px; // Dirty placement fix, to position popover in the bottom right corner of the screen, in line with the browser containers
 }

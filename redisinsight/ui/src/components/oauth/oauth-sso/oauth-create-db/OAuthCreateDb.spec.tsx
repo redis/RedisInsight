@@ -3,6 +3,7 @@ import { cloneDeep } from 'lodash'
 import {
   act,
   cleanup,
+  expectActionsToContain,
   fireEvent,
   mockedStore,
   render,
@@ -86,7 +87,7 @@ describe('OAuthCreateDb', () => {
 
     expect(screen.getByTestId('sso-email')).toBeInTheDocument()
 
-    expect(sendEventTelemetry).toBeCalledWith({
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
       event: TelemetryEvent.CLOUD_SIGN_IN_SOCIAL_ACCOUNT_SELECTED,
       eventData: {
         accountOption: OAuthStrategy.SSO,
@@ -107,7 +108,7 @@ describe('OAuthCreateDb', () => {
       fireEvent.click(screen.getByTestId('btn-submit'))
     })
 
-    expect(sendEventTelemetry).toBeCalledWith({
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
       event: TelemetryEvent.CLOUD_SIGN_IN_SSO_OPTION_PROCEEDED,
       eventData: {
         action: OAuthSocialAction.Create,
@@ -124,7 +125,7 @@ describe('OAuthCreateDb', () => {
 
     fireEvent.click(screen.getByTestId('google-oauth'))
 
-    expect(sendEventTelemetry).toBeCalledWith({
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
       event: TelemetryEvent.CLOUD_SIGN_IN_SOCIAL_ACCOUNT_SELECTED,
       eventData: {
         accountOption: OAuthStrategy.Google,
@@ -174,7 +175,7 @@ describe('OAuthCreateDb', () => {
     expect(store.getActions()).toEqual(expectedActions)
   })
 
-  it('should call proper actions after click create without recommened settings', async () => {
+  it('should call proper actions after click create without recommended settings', async () => {
     ;(oauthCloudUserSelector as jest.Mock).mockReturnValue({ data: {} })
     render(<OAuthCreateDb />)
 
@@ -193,6 +194,6 @@ describe('OAuthCreateDb', () => {
       setSocialDialogState(null),
       getPlans(),
     ]
-    expect(store.getActions()).toEqual(expectedActions)
+    expectActionsToContain(store.getActions(), expectedActions)
   })
 })

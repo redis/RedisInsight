@@ -22,31 +22,6 @@
   display: inline-block;
 }
 
-.dbInfoGroup {
-  max-width: 100% !important;
-  background-color: var(--euiColorLightestShade) !important;
-  border: 1px solid var(--separatorColor) !important;
-  padding: 10px 18px !important;
-  border-radius: 4px;
-
-  :global {
-    .euiListGroupItem__label {
-      pointer-events: none;
-      word-break: break-word;
-      white-space: initial;
-    }
-
-    .euiListGroupItem {
-      padding: 4px 0;
-      margin-top: 0 !important;
-    }
-  }
-}
-
-.dbInfoListValue {
-  margin-left: 10px;
-}
-
 .anchorEndpoints {
   pointer-events: auto !important;
 
@@ -105,10 +80,6 @@
 .message {
   font-family: 'Graphik', sans-serif;
   color: var(--euiTextSubduedColor) !important;
-
-  :global(.euiTextColor), :global(.euiLink) {
-    color: currentColor !important;
-  }
 }
 
 .link {

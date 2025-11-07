@@ -32,6 +32,7 @@ const DryRunJobTransformations = () => {
         value={transformations}
         wrapperClassName="rdi-dry-run__transformationsCode"
         data-testid="transformations-output"
+        fullHeight
       />
     </>
   )

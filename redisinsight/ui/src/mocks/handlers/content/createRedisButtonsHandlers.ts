@@ -1,16 +1,15 @@
-import { rest, RestHandler } from 'msw'
+import { http, HttpHandler, HttpResponse } from 'msw'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { ConnectionType } from 'uiSrc/slices/interfaces'
 import { getMswResourceURL } from 'uiSrc/utils/test-utils'
 
-const handlers: RestHandler[] = [
+const handlers: HttpHandler[] = [
   // fetchContentAction
-  rest.get(
+  http.get(
     getMswResourceURL(ApiEndpoints.CONTENT_CREATE_DATABASE),
-    async (req, res, ctx) =>
-      res(
-        ctx.status(200),
-        ctx.json([
+    async () => {
+      return HttpResponse.json(
+        [
           {
             id: 'e37cc441-a4f2-402c-8bdb-fc2413cbbaff',
             host: 'localhost',
@@ -64,8 +63,10 @@ const handlers: RestHandler[] = [
               name: 'mymaster',
             },
           },
-        ]),
-      ),
+        ],
+        { status: 200 },
+      )
+    },
   ),
 ]
 

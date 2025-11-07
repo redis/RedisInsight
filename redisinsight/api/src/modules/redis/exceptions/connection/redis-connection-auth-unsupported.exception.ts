@@ -11,11 +11,14 @@ export class RedisConnectionAuthUnsupportedException extends RedisConnectionFail
     message: string = ERROR_MESSAGES.COMMAND_NOT_SUPPORTED('auth'),
     options?: HttpExceptionOptions,
   ) {
-    super({
-      message,
-      error: 'RedisConnectionAuthUnsupportedException',
-      statusCode: RedisConnectionFailedStatusCode,
-      errorCode: CustomErrorCodes.RedisConnectionAuthUnsupported,
-    }, options);
+    super(
+      {
+        message,
+        error: 'RedisConnectionAuthUnsupportedException',
+        statusCode: RedisConnectionFailedStatusCode,
+        errorCode: CustomErrorCodes.RedisConnectionAuthUnsupported,
+      },
+      options,
+    );
   }
 }

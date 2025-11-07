@@ -1,13 +1,10 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
 import BulkDeleteSummaryButton from './BulkDeleteSummaryButton'
+import { render, screen } from 'uiSrc/utils/test-utils'
 
-const readBlobContent = (blob: Blob) =>
-  new Promise((resolve) => {
-    const reader = new FileReader()
-    reader.onload = () => resolve(reader.result)
-    reader.readAsText(blob)
-  })
+const readBlobContent = async (blob: Blob): Promise<string> => {
+  return blob.text()
+}
 
 const defaultRenderProps = {
   pattern: 'test-pattern',

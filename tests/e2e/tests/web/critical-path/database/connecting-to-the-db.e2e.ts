@@ -216,7 +216,7 @@ test
         const externalPageLinkNavigation = 'https://redis.io/try-free?utm_source=redisinsight&utm_medium=app&utm_campaign=navigation_menu';
 
         await t.expect(myRedisDatabasePage.dbNameList.exists).notOk('some db is added');
-        await t.expect(myRedisDatabasePage.tableRowContent.textContent).contains('Free trial Redis Cloud DB', `create free trial db row is not displayed`);
+        await t.expect(myRedisDatabasePage.tableRowContent.textContent).contains('Free Redis Cloud DB', `create free db row is not displayed`);
         await t.expect(myRedisDatabasePage.starFreeDbCheckbox.exists).ok('star checkbox is not displayed next to free db link');
         await t.expect(myRedisDatabasePage.portCloudDb.textContent).contains('Set up in a few clicks', `create free db row is not displayed`);
 

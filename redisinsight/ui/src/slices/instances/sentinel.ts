@@ -25,6 +25,7 @@ import {
 } from '../interfaces'
 import { AppDispatch, RootState } from '../store'
 import { addErrorNotification } from '../app/notifications'
+import type { ActionStatus } from 'src/common/models'
 
 export const initialState: InitialStateSentinel = {
   loading: false,
@@ -39,7 +40,7 @@ export const initialState: InitialStateSentinel = {
 
 export const initialStateSentinelStatus: CreateSentinelDatabaseResponse = {
   name: '',
-  status: AddRedisDatabaseStatus.Success,
+  status: AddRedisDatabaseStatus.Success as unknown as ActionStatus,
   message: '',
 }
 

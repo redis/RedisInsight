@@ -247,6 +247,7 @@ export interface IGlobalNotification {
 
 export interface InfiniteMessage {
   id: string
+  variation?: string
   variant?: ToastVariant
   className?: string
   message?: RiToastType['message']

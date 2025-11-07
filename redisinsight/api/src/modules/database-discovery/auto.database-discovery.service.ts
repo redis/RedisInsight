@@ -10,7 +10,6 @@ import {
 } from 'src/common/models';
 import { RedisClientFactory } from 'src/modules/redis/redis.client.factory';
 import { plainToInstance } from 'class-transformer';
-import { ConstantsProvider } from 'src/modules/constants/providers/constants.provider';
 
 @Injectable()
 export class AutoDatabaseDiscoveryService {

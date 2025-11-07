@@ -43,7 +43,10 @@ export class EncryptionService {
    */
   async isEncryptionAvailable(): Promise<boolean> {
     const strategies = await this.getAvailableEncryptionStrategies();
-    return strategies.length > 1 || (strategies.length === 1 && strategies[0] !== EncryptionStrategy.PLAIN);
+    return (
+      strategies.length > 1 ||
+      (strategies.length === 1 && strategies[0] !== EncryptionStrategy.PLAIN)
+    );
   }
 
   /**

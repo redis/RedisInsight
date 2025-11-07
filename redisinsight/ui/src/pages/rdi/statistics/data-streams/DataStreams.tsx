@@ -4,8 +4,11 @@ import { IDataStreams } from 'uiSrc/slices/interfaces'
 import { formatLongName } from 'uiSrc/utils'
 import { FormatedDate, RiTooltip } from 'uiSrc/components'
 import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
-import Accordion from '../components/accordion'
-import Panel from '../components/panel'
+import { Section } from '@redis-ui/components'
+import {
+  StyledRdiAnalyticsTable,
+  StyledRdiStatisticsSectionBody,
+} from 'uiSrc/pages/rdi/statistics/styles'
 
 type DataStreamsData = {
   name: string
@@ -22,10 +25,6 @@ type DataStreamsData = {
 
 interface Props {
   data: IDataStreams
-  loading: boolean
-  onRefresh: () => void
-  onRefreshClicked: () => void
-  onChangeAutoRefresh: (enableAutoRefresh: boolean, refreshRate: string) => void
 }
 
 const columns: ColumnDefinition<DataStreamsData>[] = [
@@ -99,10 +98,6 @@ const columns: ColumnDefinition<DataStreamsData>[] = [
 
 const DataStreams = ({
   data,
-  loading,
-  onRefresh,
-  onRefreshClicked,
-  onChangeAutoRefresh,
 }: Props) => {
   const dataStreams: DataStreamsData[] = Object.keys(data?.streams || {}).map(
     (key) => {
@@ -128,23 +123,21 @@ const DataStreams = ({
   }
 
   return (
-    <Panel>
-      <Accordion
-        id="data-streams"
-        title="Data streams overview"
-        hideAutoRefresh
-        loading={loading}
-        onRefresh={onRefresh}
-        onRefreshClicked={onRefreshClicked}
-        onChangeAutoRefresh={onChangeAutoRefresh}
-      >
-        <Table
-          columns={columns}
-          data={[...dataStreams, totalsRow]}
-          defaultSorting={[{ id: 'name', desc: false }]}
-        />
-      </Accordion>
-    </Panel>
+    <Section.Compose collapsible defaultOpen id="data-streams">
+      <Section.Header label="Data streams overview" />
+      <StyledRdiStatisticsSectionBody
+        content={
+          <StyledRdiAnalyticsTable
+            columns={columns}
+            data={[...dataStreams, totalsRow]}
+            defaultSorting={[{ id: 'name', desc: false }]}
+          >
+            <Table.Header />
+            <Table.Body />
+          </StyledRdiAnalyticsTable>
+        }
+      />
+    </Section.Compose>
   )
 }
 

@@ -69,6 +69,9 @@ export const defaultConfig = {
     localResourcesBaseUrl: process.env.RI_LOCAL_RESOURCES_BASE_URL,
     useLocalResources: booleanEnv('RI_USE_LOCAL_RESOURCES', false),
     indexedDbName: process.env.RI_INDEXED_DB_NAME || 'RI_LOCAL_STORAGE',
+    vectorSearchIndexedDbName:
+      process.env.RI_VECTOR_SEARCH_INDEXED_DB_NAME ||
+      'RI_VECTOR_SEARCH_STORAGE',
     truncatedStringPrefix:
       process.env.RI_CLIENTS_TRUNCATED_STRING_PREFIX ||
       '[Truncated due to length]',

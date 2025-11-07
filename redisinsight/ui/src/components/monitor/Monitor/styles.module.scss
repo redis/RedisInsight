@@ -18,11 +18,6 @@
 
   z-index: 10;
   overflow: auto;
-
-  &.isRunning {
-    outline: 1px solid var(--euiColorPrimary);
-    border-top-color: transparent;
-  }
 }
 
 .listWrapper {
@@ -91,13 +86,6 @@
   padding-bottom: 4px;
 }
 
-.saveLogContainer {
-  font:
-    normal normal normal 13px/18px Graphik,
-    sans-serif;
-  letter-spacing: -0.13px;
-  margin-bottom: 18px;
-}
 
 .startContentError {
   max-width: 298px;
@@ -152,10 +140,6 @@
   padding: 4px 0 18px;
 }
 
-.startTitleIcon svg {
-  width: 26px;
-  height: 26px;
-}
 
 .itemCommand {
   padding-right: 6px;
@@ -175,10 +159,6 @@
   max-width: 330px;
   width: max-content;
   color: var(--euiTextSubduedColorHover);
-}
-
-.iconWarning {
-  color: var(--euiColorWarningText) !important;
 }
 
 .item {

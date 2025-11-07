@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react'
-import cx from 'classnames'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import { sentinelSelector } from 'uiSrc/slices/instances/sentinel'
@@ -7,32 +6,37 @@ import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
   DestructiveButton,
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { InfoIcon } from 'uiSrc/components/base/icons'
-import { SearchInput } from 'uiSrc/components/base/inputs'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import {
+  ColumnDef,
+  RowSelectionState,
+  Table,
+} from 'uiSrc/components/base/layout/table'
+import {
+  DatabaseContainer,
   DatabaseWrapper,
   Footer,
-  PageSubTitle,
-  PageTitle,
-  SearchContainer,
-  SearchForm,
 } from 'uiSrc/components/auto-discover'
+
+import { Spacer } from 'uiSrc/components/base/layout'
+import { Header } from 'uiSrc/components/auto-discover/Header'
+import { getRowId } from '../../useSentinelDatabasesConfig'
 
 import styles from '../../../styles.module.scss'
 
 export interface Props {
-  columns: ColumnDefinition<ModifiedSentinelMaster>[]
+  columns: ColumnDef<ModifiedSentinelMaster>[]
   masters: ModifiedSentinelMaster[]
   selection: ModifiedSentinelMaster[]
+  onSelectionChange: (state: RowSelectionState) => void
   onClose: () => void
   onBack: () => void
   onSubmit: (databases: ModifiedSentinelMaster[]) => void
@@ -48,6 +52,7 @@ const notFoundMsg = 'Not found.'
 
 const SentinelDatabases = ({
   columns,
+  onSelectionChange,
   onClose,
   onBack,
   onSubmit,
@@ -55,6 +60,7 @@ const SentinelDatabases = ({
   selection,
 }: Props) => {
   const [items, setItems] = useState<ModifiedSentinelMaster[]>(masters)
+
   const [message, setMessage] = useState(loadingMsg)
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
 
@@ -86,7 +92,7 @@ const SentinelDatabases = ({
     if (!masters.length) {
       setMessage(notMastersMsg)
     }
-  }, [masters])
+  }, [masters.length])
 
   const onQueryChange = (term: string) => {
     const value = term?.toLowerCase()
@@ -117,7 +123,6 @@ const SentinelDatabases = ({
       button={
         <SecondaryButton
           onClick={showPopover}
-          color="secondary"
           className="btn-cancel"
           data-testid="btn-cancel"
         >
@@ -143,8 +148,8 @@ const SentinelDatabases = ({
   )
 
   const SubmitButton = ({ onClick }: { onClick: () => void }) => {
-    let title = null
-    let content = null
+    let title: string | null = null
+    let content: string | null = null
     const emptyAliases = selection.filter(({ alias }) => !alias)
 
     if (selection.length < 1) {
@@ -156,58 +161,51 @@ const SentinelDatabases = ({
       title = validationErrors.REQUIRED_TITLE(emptyAliases.length)
       content = 'Database Alias'
     }
+    const TooltipIcon = () => (
+      <RiTooltip position="top" title={title} content={<span>{content}</span>}>
+        <RiIcon type="InfoIcon" />
+      </RiTooltip>
+    )
 
     return (
-      <RiTooltip
-        position="top"
-        anchorClassName="euiToolTip__btn-disabled"
-        title={title}
-        content={isSubmitDisabled() ? <span>{content}</span> : null}
+      <PrimaryButton
+        type="submit"
+        onClick={onClick}
+        disabled={isSubmitDisabled()}
+        loading={loading}
+        icon={isSubmitDisabled() ? TooltipIcon : undefined}
+        data-testid="btn-add-primary-group"
       >
-        <PrimaryButton
-          type="submit"
-          onClick={onClick}
-          disabled={isSubmitDisabled()}
-          loading={loading}
-          icon={isSubmitDisabled() ? InfoIcon : undefined}
-          data-testid="btn-add-primary-group"
-        >
-          Add Primary Group
-        </PrimaryButton>
-      </RiTooltip>
+        Add Primary Group
+      </PrimaryButton>
     )
   }
 
   return (
     <AutodiscoveryPageTemplate>
-      <div className="databaseContainer">
-        <PageTitle data-testid="title">
-          Auto-Discover Redis Sentinel Primary Groups
-        </PageTitle>
-
-        <Row justify="between" align="center">
-          <FlexItem grow>
-            <PageSubTitle>
-              Redis Sentinel instance found. <br />
-              Here is a list of primary groups your Sentinel instance is
-              managing. Select the primary group(s) you want to add:
-            </PageSubTitle>
-          </FlexItem>
-          <SearchContainer>
-            <SearchForm>
-              <SearchInput
-                placeholder="Search..."
-                onChange={onQueryChange}
-                aria-label="Search"
-                data-testid="search"
-              />
-            </SearchForm>
-          </SearchContainer>
-        </Row>
-        <br />
-
+      <DatabaseContainer justify="start">
+        <Header
+          title="Auto-Discover Redis Sentinel Primary Groups"
+          onBack={onBack}
+          onQueryChange={onQueryChange}
+          subTitle={
+            masters.length > 0 && (
+              <>
+                Redis Sentinel instance found. <br />
+                Here is a list of primary groups your Sentinel instance is
+                managing. Select the primary group(s) you want to add:
+              </>
+            )
+          }
+        />
+        <Spacer size="m" />
         <DatabaseWrapper>
           <Table
+            rowSelectionMode="multiple"
+            // rowSelection={rowSelection}
+            onRowSelectionChange={onSelectionChange}
+            getRowCanSelect={(row) => getRowId(row.original) !== ''}
+            getRowId={getRowId}
             columns={columns}
             data={items}
             defaultSorting={[
@@ -216,31 +214,24 @@ const SentinelDatabases = ({
                 desc: false,
               },
             ]}
+            stripedRows
+            emptyState={() => (
+              <Col centered full>
+                <FlexItem padding={13}>
+                  <Text size="L">{message}</Text>
+                </FlexItem>
+              </Col>
+            )}
           />
-          {!items.length && (
-            <Text size="S" color="subdued">
-              {message}
-            </Text>
-          )}
           {!masters.length && (
-            <Text size="S" className={styles.notFoundMsg} color="subdued">
-              {notMastersMsg}
-            </Text>
+            <Col centered full>
+              <Text size="L">{notMastersMsg}</Text>
+            </Col>
           )}
         </DatabaseWrapper>
-      </div>
-      <Footer padding={4} grow>
-        <Row
-          justify="between"
-          className={cx(styles.footer, 'footerAddDatabase')}
-        >
-          <SecondaryButton
-            onClick={onBack}
-            className="btn-cancel btn-back"
-            data-testid="btn-back-to-adding"
-          >
-            Back to adding databases
-          </SecondaryButton>
+      </DatabaseContainer>
+      <Footer>
+        <Row justify="end">
           <Row gap="m" grow={false}>
             <CancelButton isPopoverOpen={isPopoverOpen} />
             <SubmitButton onClick={handleSubmit} />

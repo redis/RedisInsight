@@ -4,7 +4,7 @@ import {
   ConnectionType,
   HostingProvider,
 } from 'src/modules/database/entities/database.entity';
-import { getHostingProvider } from 'src/utils';
+import { getHostingProvider, getRedisConnectionException } from 'src/utils';
 import { Database } from 'src/modules/database/models/database';
 import { ClientContext, SessionMetadata } from 'src/common/models';
 import ERROR_MESSAGES from 'src/constants/error-messages';
@@ -23,6 +23,7 @@ import {
   isSentinel,
 } from 'src/modules/redis/utils';
 import { RedisClient } from 'src/modules/redis/client';
+import { ReplyError } from 'src/models';
 
 @Injectable()
 export class DatabaseFactory {
@@ -66,7 +67,10 @@ export class DatabaseFactory {
 
     if (await isSentinel(client)) {
       if (!database.sentinelMaster) {
-        throw new Error(RedisErrorCodes.SentinelParamsRequired);
+        throw getRedisConnectionException(
+          new ReplyError(RedisErrorCodes.SentinelParamsRequired),
+          database,
+        );
       }
       model = await this.createSentinelDatabaseModel(
         sessionMetadata,

@@ -12,7 +12,6 @@ import { RdiPipelineTabs } from 'uiSrc/slices/interfaces'
 import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
 import { getTooltipContent } from '../template-form/TemplateForm'
 import { INGEST_OPTION } from '../template-form/constants'
-import styles from './styles.module.scss'
 
 export interface TemplateButtonProps {
   value: string
@@ -54,7 +53,6 @@ const TemplateButton = ({ setFieldValue, value }: TemplateButtonProps) => {
       <SecondaryButton
         inverted
         size="s"
-        className={styles.btn}
         aria-label="Insert template"
         loading={loading}
         disabled={!templateOption || !!value}

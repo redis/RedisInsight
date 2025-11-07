@@ -78,8 +78,8 @@ describe('GET /features', () => {
           .catch(console.error);
 
         // remove all configs
-        await featureConfigRepository.delete({});
-        await featureRepository.delete({});
+        await featureConfigRepository.deleteAll();
+        await featureRepository.deleteAll();
         await waitForFlags(
           {
             features: {

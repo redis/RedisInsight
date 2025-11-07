@@ -5,7 +5,7 @@ import { FeatureFlags } from 'uiSrc/constants'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Spacer } from 'uiSrc/components/base/layout'
-import styles from './styles.module.scss'
+import { Row } from 'uiSrc/components/base/layout/flex'
 
 export interface Props {
   value?: boolean
@@ -17,11 +17,12 @@ const OAuthRecommendedSettings = (props: Props) => {
 
   return (
     <FeatureFlagComponent name={FeatureFlags.cloudSsoRecommendedSettings}>
-      <div className={styles.recommendedSettings}>
+      <Row align="start">
         <Checkbox
           id="ouath-recommended-settings"
           name="recommended-settings"
           label="Use a pre-selected provider and region"
+          labelSize="M"
           checked={value}
           onChange={(e) => onChange(e.target.checked)}
           data-testid="oauth-recommended-settings-checkbox"
@@ -36,11 +37,10 @@ const OAuthRecommendedSettings = (props: Props) => {
             </>
           }
           position="top"
-          anchorClassName={styles.recommendedSettingsToolTip}
         >
-          <RiIcon type="InfoIcon" size="s" />
+          <RiIcon type="InfoIcon" size="l" />
         </RiTooltip>
-      </div>
+      </Row>
       <Spacer size="s" />
     </FeatureFlagComponent>
   )

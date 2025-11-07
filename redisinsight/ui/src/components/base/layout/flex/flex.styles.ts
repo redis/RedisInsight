@@ -187,6 +187,7 @@ export const flexItemStyles = {
   `,
   grow: css`
     flex-basis: 0;
+    min-width: 0;
   `,
   growSizes: {
     '1': css`
@@ -221,46 +222,46 @@ export const flexItemStyles = {
     `,
   },
   padding: {
-    '0': css`
+    0: css`
       padding: ${({ theme }: { theme: Theme }) => theme.core.space.space000};
     `,
-    '1': css`
+    1: css`
       padding: ${({ theme }: { theme: Theme }) => theme.core.space.space010};
     `,
-    '2': css`
+    2: css`
       padding: ${({ theme }: { theme: Theme }) => theme.core.space.space025};
     `,
-    '3': css`
+    3: css`
       padding: ${({ theme }: { theme: Theme }) => theme.core.space.space050};
     `,
-    '4': css`
+    4: css`
       padding: ${({ theme }: { theme: Theme }) => theme.core.space.space100};
     `,
-    '5': css`
+    5: css`
       padding: ${({ theme }: { theme: Theme }) => theme.core.space.space150};
     `,
-    '6': css`
+    6: css`
       padding: ${({ theme }: { theme: Theme }) => theme.core.space.space200};
     `,
-    '7': css`
+    7: css`
       padding: ${({ theme }: { theme: Theme }) => theme.core.space.space250};
     `,
-    '8': css`
+    8: css`
       padding: ${({ theme }: { theme: Theme }) => theme.core.space.space300};
     `,
-    '9': css`
+    9: css`
       padding: ${({ theme }: { theme: Theme }) => theme.core.space.space400};
     `,
-    '10': css`
+    10: css`
       padding: ${({ theme }: { theme: Theme }) => theme.core.space.space500};
     `,
-    '11': css`
+    11: css`
       padding: ${({ theme }: { theme: Theme }) => theme.core.space.space550};
     `,
-    '12': css`
+    12: css`
       padding: ${({ theme }: { theme: Theme }) => theme.core.space.space600};
     `,
-    '13': css`
+    13: css`
       padding: ${({ theme }: { theme: Theme }) => theme.core.space.space800};
     `,
   },
@@ -284,33 +285,19 @@ export const VALID_GROW_VALUES = [
   10,
 ] as const
 
-export const VALID_PADDING_VALUES = [
-  null,
-  undefined,
-  true,
-  false,
-  0, // '0',
-  1, // '0.1rem: 1,25px',
-  2, // '0.2rem: 2,5px',
-  3, // '0.4rem: 5px',
-  4, // '0.8rem: 10px',
-  5, // '1.2rem: 15px',
-  6, // '1.6rem: 20px',
-  7, // '2rem: 25px',
-  8, // '2.4rem: 30px',
-  9, // '3.2rem: 40px',
-  10, // '4rem: 50px',
-  11, // '4.4rem: 55px',
-  12, // '4.8rem: 60px',
-  13, // '6.4rem: 80px',
-] as const
+export type PaddingType =
+  | keyof typeof flexItemStyles.padding
+  | null
+  | undefined
+  | true
+  | false
 
 export type FlexItemProps = React.HTMLAttributes<HTMLDivElement> &
   PropsWithChildren &
   CommonProps & {
     grow?: (typeof VALID_GROW_VALUES)[number]
     $direction?: (typeof dirValues)[number]
-    $padding?: (typeof VALID_PADDING_VALUES)[number]
+    $padding?: PaddingType
     $gap?: GapSizeType
   }
 
@@ -338,10 +325,7 @@ export const StyledFlexItem = styled.div<FlexItemProps>`
     if ($padding === true) {
       return flexItemStyles.padding['4'] // Default padding (space100)
     }
-    if (
-      typeof $padding === 'number' &&
-      flexItemStyles.padding[$padding] !== undefined
-    ) {
+    if (flexItemStyles.padding[$padding] !== undefined) {
       return flexItemStyles.padding[$padding]
     }
     return ''

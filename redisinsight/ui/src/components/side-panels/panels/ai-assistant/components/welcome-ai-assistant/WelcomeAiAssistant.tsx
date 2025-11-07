@@ -35,24 +35,27 @@ const WelcomeAiAssistant = () => {
         <OAuthForm action={OAuthSocialAction.SignIn} onClick={handleSsoClick}>
           {(form: React.ReactNode) => (
             <>
-              <Text style={{ lineHeight: '1.35' }}>
-                Welcome to Redis Copilot.
-              </Text>
+              <Title size="L" variant="semiBold" color="primary">
+                Welcome to Redis Copilot
+              </Title>
               <Spacer size="s" />
-              <Text style={{ lineHeight: '1.35' }}>
+              <Text size="s" color="secondary">
                 Learn about Redis and explore your data, in a conversational
                 manner.
               </Text>
               <Spacer size="s" />
-              <Text style={{ lineHeight: '1.35' }}>
+              <Text size="s" color="secondary">
                 Build faster with Redis Copilot.
               </Text>
-              <Spacer size="xl" />
-              <Title size="S">Sign in to get started.</Title>
+              <Spacer size="xxl" />
+              <Title size="XS" color="secondary">
+                Sign in to get started
+              </Title>
 
               <Spacer size="l" />
               {form}
               <Spacer />
+
               <div className={styles.agreement}>
                 <OAuthAgreement />
               </div>

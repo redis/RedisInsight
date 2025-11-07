@@ -6,11 +6,18 @@ type ValidationConfig = {
   includePathIntoErrorMessage?: boolean
 }
 
+type ValidationResult = {
+  valid: boolean
+  errors: string[]
+}
+
+export const VALID_RESULT: ValidationResult = { valid: true, errors: [] }
+
 export const validateSchema = (
   parsed: any,
   schema: any,
   config: ValidationConfig = {},
-): { valid: boolean; errors: string[] } => {
+): ValidationResult => {
   const errorMessagePrefix = config.errorMessagePrefix ?? 'Error:'
   const includePathIntoErrorMessage = config.includePathIntoErrorMessage ?? true
 
@@ -25,12 +32,12 @@ export const validateSchema = (
     const valid = validate(parsed)
 
     if (!valid) {
-      const errors = validate.errors?.map(
-        (err) => {
-          const pathMessage = includePathIntoErrorMessage ? ` (at ${err.instancePath || 'root'})` : ''
-          return `${[errorMessagePrefix]} ${err.message}${pathMessage}`
-        }
-      )
+      const errors = validate.errors?.map((err) => {
+        const pathMessage = includePathIntoErrorMessage
+          ? ` (at ${err.instancePath || 'root'})`
+          : ''
+        return `${[errorMessagePrefix]} ${err.message}${pathMessage}`
+      })
       return { valid: false, errors: errors || [] }
     }
 
@@ -43,7 +50,7 @@ export const validateSchema = (
 export const validateYamlSchema = (
   content: string,
   schema: any,
-): { valid: boolean; errors: string[] } => {
+): ValidationResult => {
   try {
     const parsed = yaml.load(content) as object
 

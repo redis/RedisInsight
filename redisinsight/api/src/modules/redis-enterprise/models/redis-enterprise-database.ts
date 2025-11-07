@@ -10,7 +10,7 @@ export enum RedisEnterprisePersistencePolicy {
 type IRedisEnterpriseDatabaseTag = {
   key: string;
   value: string;
-}
+};
 
 export interface IRedisEnterpriseDatabase {
   gradual_src_mode: string;

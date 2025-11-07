@@ -8,31 +8,6 @@
   justify-content: center;
 }
 
-.advantages {
-  align-items: stretch;
-  justify-content: space-between;
-}
-
-.logo {
-  height: auto;
-  width: 120px;
-  margin-bottom: 12px;
-}
-
-.title {
-  font-size: 18px;
-  font-weight: 400 !important;
-  color: var(--euiTextSubduedColor);
-
-  margin-bottom: 40px;
-}
-
-.advantageTitle {
-  font-size: 12px !important;
-  line-height: normal;
-}
-
-
 .advantage {
   display: flex;
   margin-top: 12px;
@@ -43,4 +18,3 @@
 .advantageIcon {
   margin-right: 6px;
 }
-

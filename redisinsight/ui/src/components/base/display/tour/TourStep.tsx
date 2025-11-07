@@ -61,7 +61,6 @@ export const TourStep = ({
   open,
   content,
   title,
-  onClose,
   placement = 'rightUp',
   className = '',
   children,

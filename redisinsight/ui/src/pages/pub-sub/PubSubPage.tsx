@@ -107,7 +107,7 @@ const PubSubPage = () => {
       <div className={styles.onboardAnchor}>
         <OnboardingTour
           options={ONBOARDING_FEATURES.FINISH}
-          anchorPosition="downCenter"
+          anchorPosition="downRight"
           panelClassName={styles.onboardPanel}
         >
           <span />

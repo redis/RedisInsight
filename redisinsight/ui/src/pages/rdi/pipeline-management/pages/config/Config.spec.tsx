@@ -1,6 +1,5 @@
 import React from 'react'
 import { cloneDeep } from 'lodash'
-import { AxiosError } from 'axios'
 import {
   rdiPipelineSelector,
   setChangedFile,
@@ -25,7 +24,10 @@ import {
   TelemetryEvent,
 } from 'uiSrc/telemetry'
 import { FileChangeType } from 'uiSrc/slices/interfaces'
-import { addErrorNotification } from 'uiSrc/slices/app/notifications'
+import {
+  addErrorNotification,
+  type IAddInstanceErrorPayload,
+} from 'uiSrc/slices/app/notifications'
 import Config from './Config'
 
 jest.mock('uiSrc/telemetry', () => ({
@@ -90,7 +92,7 @@ describe('Config', () => {
 
     render(<Config />)
 
-    expect(sendPageViewTelemetry).toBeCalledWith({
+    expect(sendPageViewTelemetry).toHaveBeenCalledWith({
       name: TelemetryPageView.RDI_CONFIG,
       eventData: {
         rdiInstanceId: 'rdiInstanceId',
@@ -215,7 +217,7 @@ describe('Config', () => {
             ),
           },
         },
-      } as AxiosError),
+      } as IAddInstanceErrorPayload),
     ]
 
     expect(store.getActions().slice(0, expectedActions.length)).toEqual(
@@ -248,8 +250,8 @@ describe('Config', () => {
     const { getByTestId } = render(<Config />)
 
     // check is btn has loader
-    const child = getByTestId('rdi-test-connection-btn').children[0].children[0]
-    expect(child.tagName.toLowerCase()).toEqual('svg')
+    const child = getByTestId('rdi-test-connection-btn')
+    expect(child.querySelector('svg')).toBeTruthy()
   })
 
   it('should render loader on btn', () => {
@@ -263,8 +265,8 @@ describe('Config', () => {
     const { getByTestId } = render(<Config />)
 
     // check is btn has loader
-    const child = getByTestId('rdi-test-connection-btn').children[0].children[0]
-    expect(child.tagName.toLowerCase()).toEqual('svg')
+    const child = getByTestId('rdi-test-connection-btn')
+    expect(child.querySelector('svg')).toBeTruthy()
   })
 
   it('should send telemetry event when clicking Test Connection button', async () => {

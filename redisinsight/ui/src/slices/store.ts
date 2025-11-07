@@ -1,4 +1,3 @@
-import { createBrowserHistory } from 'history'
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 
 import { getConfig } from 'uiSrc/config'
@@ -58,8 +57,6 @@ import appDbSettingsReducer from './app/db-settings'
 import tagsReducer from './instances/tags'
 
 const riConfig = getConfig()
-
-export const history = createBrowserHistory()
 
 export const rootReducer = combineReducers({
   app: combineReducers({
@@ -149,7 +146,9 @@ const store = configureStore({
   devTools: riConfig.app.env !== 'production',
 })
 
-export { store }
+const dispatch = store.dispatch
+
+export { store, dispatch }
 
 export type ReduxStore = typeof store
 export type RootState = ReturnType<typeof rootReducer>

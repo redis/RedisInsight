@@ -14,6 +14,7 @@ export type SpacerProps = CommonProps &
   HTMLAttributes<HTMLDivElement> & {
     children?: ReactNode
     size?: SpacerSize | ThemeSpacingKey
+    direction?: 'horizontal' | 'vertical'
   }
 
 export const spacerStyles: Record<SpacerSize, ReturnType<typeof css>> = {
@@ -54,7 +55,19 @@ const getSpacingValue = (
   return spacerStyles[size as SpacerSize]
 }
 
-export const StyledSpacer = styled.div<SpacerProps>`
+type StyledSpacerType = Omit<SpacerProps, 'direction'> & {
+  $direction: SpacerProps['direction']
+}
+
+export const StyledSpacer = styled.div<StyledSpacerType>`
   flex-shrink: 0;
-  height: ${({ size = 'l', theme }) => getSpacingValue(size, theme)};
+  ${({ $direction = 'vertical', size = 'l', theme }) => {
+    return $direction === 'horizontal'
+      ? css`
+          width: ${getSpacingValue(size, theme)};
+        `
+      : css`
+          height: ${getSpacingValue(size, theme)};
+        `
+  }}
 `

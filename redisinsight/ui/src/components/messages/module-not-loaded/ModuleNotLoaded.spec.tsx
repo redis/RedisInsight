@@ -53,7 +53,7 @@ describe('ModuleNotLoaded', () => {
     expect(render(<ModuleNotLoaded {...props} />)).toBeTruthy()
   })
 
-  it('should render free trial text when cloudAds feature is enabled and no free db exists', () => {
+  it('should render free text when cloudAds feature is enabled and no free db exists', () => {
     const { queryByText } = render(<ModuleNotLoaded {...props} />)
     expect(
       queryByText(

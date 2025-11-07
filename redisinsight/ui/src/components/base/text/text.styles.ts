@@ -14,6 +14,7 @@ export type EuiColorNames =
   | 'accent'
   | 'warning'
   | 'success'
+
 export type ColorType = BodyProps['color'] | EuiColorNames | (string & {})
 export interface MapProps extends HTMLAttributes<HTMLElement> {
   $color?: ColorType
@@ -106,6 +107,38 @@ export const Indicator = styled.div<
   background-color: ${({ $color }) => $color || 'inherit'};
 `
 
+const useStatusColorStyles = ({ $color }: MapProps = {}) => {
+  const theme = useTheme()
+  const colors = theme.semantic.color
+
+  const getColorValue = (color?: ColorType) => {
+    switch (color) {
+      case 'danger':
+        return colors.text.danger500
+      case 'warning':
+        return colors.text.attention500
+      case 'success':
+        return colors.text.success500
+      default:
+        return color // any supported color value e.g #fff
+    }
+  }
+
+  return css`
+    background-color: ${getColorValue($color)};
+  `
+}
+
+export const StatusIndicator = styled.div<
+  {
+    $color: ColorType
+  } & CommonProps
+>`
+  ${useStatusColorStyles};
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+`
 export const mapSize = (size: TextSizeType): BodyProps['size'] => {
   if (size === 'm') {
     return 'M'

@@ -98,6 +98,7 @@ const InsightsTrigger = (props: Props) => {
           onClick={handleClickTrigger}
           data-testid="insights-trigger"
           isOpen={isInsightsOpen}
+          aria-label="Insights-trigger"
         />
         {isHighlighted && instanceId && <BulbHighlighting />}
       </BulbWrapper>

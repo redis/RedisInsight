@@ -12,7 +12,7 @@ import {
   TlsDetails,
 } from 'uiSrc/pages/home/components/form'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { Title } from 'uiSrc/components/base/text/Title'
@@ -45,46 +45,36 @@ const EditSentinelConnection = (props: Props) => {
   } = props
 
   const GeneralFormClodeMode = (
-    <>
+    <Col gap="l">
       <PrimaryGroupSentinel formik={formik} />
-      <Divider
-        colorVariable="separatorColor"
-        variant="fullWidth"
-        className="form__divider"
-      />
-      <Title size="XS">Database</Title>
-      <Spacer size="s" />
+      <Divider />
+      <Title color="primary" size="M">
+        Database
+      </Title>
       <SentinelMasterDatabase
         formik={formik}
         db={db}
         isCloneMode={isCloneMode}
       />
-      <Divider
-        colorVariable="separatorColor"
-        variant="fullWidth"
-        className="form__divider"
-      />
-      <Title size="XS">Sentinel</Title>
-      <Spacer size="s" />
+      <Divider />
+      <Title color="primary" size="M">
+        Sentinel
+      </Title>
       <DatabaseForm
         formik={formik}
         showFields={{ host: true, port: true, alias: false, timeout: false }}
         onHostNamePaste={onHostNamePaste}
       />
-      <Divider
-        colorVariable="separatorColor"
-        variant="fullWidth"
-        className="form__divider"
-      />
+      <Divider />
       <DbIndex formik={formik} />
-    </>
+    </Col>
   )
 
   const GeneralFormEditMode = (
-    <>
+    <Col gap="l">
       <Row gap="m">
         <FlexItem grow>
-          <FormField label="Database Alias*">
+          <FormField label="Database Alias" required>
             <TextInput
               name="name"
               id="name"
@@ -98,32 +88,25 @@ const EditSentinelConnection = (props: Props) => {
           </FormField>
         </FlexItem>
       </Row>
-      <Spacer size="s" />
-      <Divider
-        colorVariable="separatorColor"
-        variant="fullWidth"
-        className="form__divider"
-      />
-      <Title size="XS">Database</Title>
-      <Spacer size="s" />
+      <Divider />
+      <Title color="primary" size="M">
+        Database
+      </Title>
       <SentinelMasterDatabase
         formik={formik}
         db={db}
         isCloneMode={isCloneMode}
       />
-      <Divider
-        colorVariable="separatorColor"
-        variant="fullWidth"
-        className="form__divider"
-      />
-      <Title size="XS">Sentinel</Title>
-      <Spacer size="s" />
+      <Divider />
+      <Title color="primary" size="M">
+        Sentinel
+      </Title>
       <DatabaseForm
         formik={formik}
         showFields={{ host: false, port: true, alias: false, timeout: false }}
         onHostNamePaste={onHostNamePaste}
       />
-    </>
+    </Col>
   )
 
   return (

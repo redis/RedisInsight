@@ -64,7 +64,8 @@ export class SettingsService {
 
       let defaultOptions: object;
       if (SERVER_CONFIG.acceptTermsAndConditions) {
-        const isEncryptionAvailable = await this.encryptionService.isEncryptionAvailable();
+        const isEncryptionAvailable =
+          await this.encryptionService.isEncryptionAvailable();
 
         defaultOptions = {
           data: {
@@ -77,7 +78,10 @@ export class SettingsService {
         };
       }
 
-      const agreements = await this.agreementRepository.getOrCreate(sessionMetadata, defaultOptions);
+      const agreements = await this.agreementRepository.getOrCreate(
+        sessionMetadata,
+        defaultOptions,
+      );
 
       this.logger.debug(
         'Succeed to get application settings.',
@@ -86,7 +90,8 @@ export class SettingsService {
 
       return classToClass(GetAppSettingsResponse, {
         ...settings?.data,
-        acceptTermsAndConditionsOverwritten: SERVER_CONFIG.acceptTermsAndConditions,
+        acceptTermsAndConditionsOverwritten:
+          SERVER_CONFIG.acceptTermsAndConditions,
         agreements: agreements?.version
           ? {
               ...agreements?.data,

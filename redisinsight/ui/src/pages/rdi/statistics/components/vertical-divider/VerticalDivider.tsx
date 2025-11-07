@@ -7,7 +7,6 @@ import styles from './styles.module.scss'
 const VerticalDivider = (props: any) => (
   <Divider
     className={styles.divider}
-    colorVariable="separatorColor"
     orientation="vertical"
     {...props}
   />

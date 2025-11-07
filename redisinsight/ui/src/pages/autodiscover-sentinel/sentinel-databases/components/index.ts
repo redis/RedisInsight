@@ -1,3 +1,5 @@
-import SentinelDatabases from './SentinelDatabases/SentinelDatabases'
+import SentinelDatabases from './SentinelDatabases'
+
+export { SentinelDatabases }
 
 export default SentinelDatabases

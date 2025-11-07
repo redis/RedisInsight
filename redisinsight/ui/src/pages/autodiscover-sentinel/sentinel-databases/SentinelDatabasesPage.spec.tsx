@@ -1,10 +1,6 @@
 import React from 'react'
-import { render, screen, fireEvent } from 'uiSrc/utils/test-utils'
-
-import { Table } from 'uiSrc/components/base/layout/table'
+import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import SentinelDatabasesPage from './SentinelDatabasesPage'
-import SentinelDatabases from './components'
-import { Props as SentinelDatabasesProps } from './components/SentinelDatabases/SentinelDatabases'
 
 jest.mock('uiSrc/slices/instances/sentinel', () => ({
   sentinelSelector: jest.fn().mockReturnValue({
@@ -25,63 +21,32 @@ jest.mock('uiSrc/slices/instances/sentinel', () => ({
   resetDataSentinel: jest.fn,
 }))
 
-jest.mock('./components', () => ({
-  __esModule: true,
-  namedExport: jest.fn(),
-  default: jest.fn(),
-}))
-
-const mockSentinelDatabases = (props: SentinelDatabasesProps) => (
-  <div>
-    <button
-      type="button"
-      onClick={() => props.onClose()}
-      data-testid="close-btn"
-    >
-      onClose
-    </button>
-    <button type="button" onClick={() => props.onBack()} data-testid="back-btn">
-      onBack
-    </button>
-    <button
-      type="button"
-      onClick={() => props.onSubmit([])}
-      data-testid="submit-btn"
-    >
-      onSubmit
-    </button>
-    <Table columns={props.columns} data={props.masters} />
-  </div>
-)
-
 /**
  * SentinelDatabasesPage tests
  *
  * @group component
  */
 describe('SentinelDatabasesPage', () => {
-  beforeAll(() => {
-    SentinelDatabases.mockImplementation(mockSentinelDatabases)
-  })
   it('should render', () => {
     expect(render(<SentinelDatabasesPage />)).toBeTruthy()
   })
 
-  it('should call onClose', () => {
+  it('should call onClose', async () => {
     const component = render(<SentinelDatabasesPage />)
-    fireEvent.click(screen.getByTestId('close-btn'))
+    fireEvent.click(screen.getByTestId('btn-cancel'))
+    fireEvent.click(screen.getByTestId('btn-cancel-proceed'))
     expect(component).toBeTruthy()
   })
 
   it('should call onBack', () => {
     const component = render(<SentinelDatabasesPage />)
-    fireEvent.click(screen.getByTestId('back-btn'))
+    fireEvent.click(screen.getByTestId('btn-back-adding'))
     expect(component).toBeTruthy()
   })
 
   it('should call onSubmit', () => {
     const component = render(<SentinelDatabasesPage />)
-    fireEvent.click(screen.getByTestId('submit-btn'))
+    fireEvent.click(screen.getByTestId('btn-add-primary-group'))
     expect(component).toBeTruthy()
   })
 

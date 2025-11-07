@@ -15,7 +15,6 @@ export interface Props {
 const ExplorePanelTemplate = (props: Props) => {
   const { children, panelClassName } = props
   const { openedPanel } = useSelector(sidePanelsSelector)
-
   return (
     <Row full className={styles.mainWrapper}>
       <Col className={cx(styles.mainPanel, { insightsOpen: !!openedPanel })}>

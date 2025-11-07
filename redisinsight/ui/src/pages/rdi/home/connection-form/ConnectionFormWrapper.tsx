@@ -5,7 +5,6 @@ import { Nullable } from 'uiSrc/utils'
 import { ModalHeaderProvider } from 'uiSrc/contexts/ModalTitleProvider'
 import ConnectionForm, { Props as ConnectionFormProps } from './ConnectionForm'
 
-import styles from './styles.module.scss'
 import { FooterDatabaseForm } from 'uiSrc/components/form-dialog/FooterDatabaseForm'
 
 export interface Props extends ConnectionFormProps {
@@ -24,11 +23,9 @@ const ConnectionFormWrapper = (props: Props) => {
       header={modalHeader ?? <Title size="M">Add endpoint</Title>}
       footer={<FooterDatabaseForm />}
     >
-      <div className={styles.bodyWrapper}>
-        <ModalHeaderProvider value={{ modalHeader, setModalHeader }}>
-          <ConnectionForm {...props} />
-        </ModalHeaderProvider>
-      </div>
+      <ModalHeaderProvider value={{ modalHeader, setModalHeader }}>
+        <ConnectionForm {...props} />
+      </ModalHeaderProvider>
     </FormDialog>
   )
 }

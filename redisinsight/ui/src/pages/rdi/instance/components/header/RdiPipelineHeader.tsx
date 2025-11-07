@@ -11,7 +11,16 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import CurrentPipelineStatus from './components/current-pipeline-status'
 
 import PipelineActions from './components/pipeline-actions'
-import styles from './styles.module.scss'
+import styled from 'styled-components'
+import { Theme } from 'uiSrc/components/base/theme/types'
+
+const StyledRdiPipelineHeader = styled(Row)`
+  padding: 0 16px;
+  border-bottom: 4px solid
+    ${({ theme }: { theme: Theme }) =>
+      theme.components.tabs.variants.default.tabsLine.color};
+  height: 58px;
+`
 
 const RdiPipelineHeader = () => {
   const [headerLoading, setHeaderLoading] = useState(true)
@@ -50,11 +59,7 @@ const RdiPipelineHeader = () => {
     : undefined
 
   return (
-    <Row
-      className={styles.wrapper}
-      align="center"
-      justify="between"
-    >
+    <StyledRdiPipelineHeader align="center" justify="between">
       <FlexItem grow>
         <CurrentPipelineStatus
           pipelineState={pipelineState}
@@ -66,7 +71,7 @@ const RdiPipelineHeader = () => {
         collectorStatus={collectorStatus}
         pipelineStatus={pipelineStatus}
       />
-    </Row>
+    </StyledRdiPipelineHeader>
   )
 }
 

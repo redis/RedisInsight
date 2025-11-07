@@ -115,7 +115,8 @@ export class GetAppSettingsResponse {
   batchSize: number = WORKBENCH_CONFIG.countBatch;
 
   @ApiProperty({
-    description: 'Flag indicating that terms and conditions are accepted via environment variable',
+    description:
+      'Flag indicating that terms and conditions are accepted via environment variable',
     type: Boolean,
     example: false,
   })

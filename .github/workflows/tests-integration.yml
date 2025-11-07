@@ -50,12 +50,13 @@ env:
   TEST_MEDIUM_DB_DUMP: ${{ secrets.TEST_MEDIUM_DB_DUMP }}
   TEST_BIG_DB_DUMP: ${{ secrets.TEST_BIG_DB_DUMP }}
   REPORT_NAME: 'report-it'
+  #  Disabled RTE for now. Need to prepare reasonable dataset to not take so much time for tests.
+  #  "oss-st-big": "OSS Standalone v6 and all modules and predefined amount of data inside (~3-4M)",
   ITESTS_NAMES: |
     {
       "oss-st-5": "OSS Standalone v5",
       "oss-st-5-pass": "OSS Standalone v5 with admin pass required",
       "oss-st-6": "OSS Standalone v6 and all modules",
-      "oss-st-big": "OSS Standalone v6 and all modules and predefined amount of data inside (~3-4M)",
       "mods-preview": "OSS Standalone and all preview modules",
       "oss-st-6-tls": "OSS Standalone v6 with TLS enabled",
       "oss-st-6-tls-auth": "OSS Standalone v6 with TLS auth required",
@@ -153,6 +154,15 @@ jobs:
           cp ./redisinsight/api/test/test-runs/coverage/test-run-result.xml ./itest/results/${{ matrix.rte }}.result.xml
           cp ./redisinsight/api/test/test-runs/coverage/test-run-coverage.json ./itest/coverages/${{ matrix.rte }}.coverage.json
 
+      - name: Process test results
+        if: always()
+        run: |
+          mkdir -p itest/coverages && mkdir -p itest/results
+
+          cp ./redisinsight/api/test/test-runs/coverage/test-run-result.json ./itest/results/${{ matrix.rte }}.result.json
+          cp ./redisinsight/api/test/test-runs/coverage/test-run-result.xml ./itest/results/${{ matrix.rte }}.result.xml
+          cp ./redisinsight/api/test/test-runs/coverage/test-run-coverage.json ./itest/coverages/${{ matrix.rte }}.coverage.json
+
       - name: Upload coverage files as artifact
         if: always()
         uses: actions/upload-artifact@v4
@@ -230,7 +240,7 @@ jobs:
           reporter: java-junit
           list-tests: 'failed'
           list-suites: 'failed'
-          fail-on-error: 'false'
+          fail-on-error: 'true'
 
       - name: Add link to report in the workflow summary
         if: always()

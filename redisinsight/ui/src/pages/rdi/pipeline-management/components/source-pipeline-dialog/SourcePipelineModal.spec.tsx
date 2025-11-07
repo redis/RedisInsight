@@ -6,7 +6,7 @@ import {
   render,
   fireEvent,
   screen,
-  initialStateDefault,
+  initialStateDefault, createMockedStore,
 } from 'uiSrc/utils/test-utils'
 import {
   getPipeline,
@@ -69,7 +69,7 @@ jest.mock('uiSrc/components/base/display', () => {
 let store: typeof mockedStore
 beforeEach(() => {
   cleanup()
-  store = cloneDeep(mockedStore)
+  store = createMockedStore()
   store.clearActions()
   ;(rdiPipelineSelector as jest.Mock).mockReturnValue({
     ...initialStateDefault.rdi.pipeline,
@@ -79,9 +79,11 @@ beforeEach(() => {
   })
 })
 
+const renderSourcePipelineDialog = () => render(<SourcePipelineDialog />, { store })
+
 describe('SourcePipelineDialog', () => {
   it('should not show dialog by default and not set isOpenDialog to true', () => {
-    render(<SourcePipelineDialog />)
+    renderSourcePipelineDialog()
 
     expect(
       screen.queryByTestId('file-source-pipeline-dialog'),
@@ -96,7 +98,7 @@ describe('SourcePipelineDialog', () => {
       isOpenDialog: true,
     })
 
-    render(<SourcePipelineDialog />)
+    renderSourcePipelineDialog()
 
     expect(
       screen.queryByTestId('file-source-pipeline-dialog'),
@@ -110,7 +112,7 @@ describe('SourcePipelineDialog', () => {
       data: { config: 'some config' },
     })
 
-    render(<SourcePipelineDialog />)
+    renderSourcePipelineDialog()
 
     expect(store.getActions()).toEqual([])
   })
@@ -122,7 +124,7 @@ describe('SourcePipelineDialog', () => {
       data: null,
     })
 
-    render(<SourcePipelineDialog />)
+    renderSourcePipelineDialog()
 
     expect(store.getActions()).toEqual([])
   })
@@ -134,7 +136,7 @@ describe('SourcePipelineDialog', () => {
       data: { config: '' },
     })
 
-    render(<SourcePipelineDialog />)
+    renderSourcePipelineDialog()
 
     expect(store.getActions()).toEqual([setPipelineDialogState(true)])
   })
@@ -153,7 +155,7 @@ describe('SourcePipelineDialog', () => {
     })
 
     it('should call proper actions after select fetch from server option', () => {
-      render(<SourcePipelineDialog />)
+      renderSourcePipelineDialog()
 
       fireEvent.click(screen.getByTestId('server-source-pipeline-dialog'))
 
@@ -170,7 +172,7 @@ describe('SourcePipelineDialog', () => {
     })
 
     it('should call proper actions after select empty pipeline  option', () => {
-      render(<SourcePipelineDialog />)
+      renderSourcePipelineDialog()
 
       fireEvent.click(screen.getByTestId('empty-source-pipeline-dialog'))
 
@@ -199,7 +201,7 @@ describe('SourcePipelineDialog', () => {
         isOpenDialog: true,
       })
 
-      render(<SourcePipelineDialog />)
+      renderSourcePipelineDialog()
 
       fireEvent.click(screen.getByTestId('file-source-pipeline-dialog'))
 

@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import cx from 'classnames'
 
 import {
   bulkActionsDeleteOverviewSelector,
@@ -26,12 +25,11 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { RefreshIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
-import { RiPopover } from 'uiSrc/components/base'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import BulkDeleteContent from '../BulkDeleteContent'
 import { isProcessedBulkAction } from '../../utils'
-
-import styles from './styles.module.scss'
+import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import { ConfirmationPopover } from 'uiSrc/components'
 
 export interface Props {
   onCancel: () => void
@@ -94,13 +92,12 @@ const BulkDeleteFooter = (props: Props) => {
   }
 
   return (
-    <div className={styles.container} data-testid="bulk-actions-delete">
+    <Col data-testid="bulk-actions-delete" grow>
       {status && <BulkDeleteContent />}
-      <div className={styles.footer}>
+      <Row align="end" justify="end" gap="s">
         {!loading && (
           <SecondaryButton
             onClick={handleCancel}
-            className={styles.cancelBtn}
             data-testid="bulk-action-cancel-btn"
           >
             {isProcessedBulkAction(status) ? 'Close' : 'Cancel'}
@@ -109,7 +106,6 @@ const BulkDeleteFooter = (props: Props) => {
         {loading && (
           <SecondaryButton
             onClick={handleStop}
-            className={styles.cancelBtn}
             data-testid="bulk-action-stop-btn"
           >
             Stop
@@ -117,13 +113,13 @@ const BulkDeleteFooter = (props: Props) => {
         )}
 
         {!isProcessedBulkAction(status) && (
-          <RiPopover
-            id="bulk-delete-warning-popover"
+          <ConfirmationPopover
             anchorPosition="upCenter"
+            ownFocus
             isOpen={isPopoverOpen}
             closePopover={() => setIsPopoverOpen(false)}
-            panelClassName={styles.panelPopover}
-            panelPaddingSize="none"
+            panelPaddingSize="m"
+            anchorClassName="deleteFieldPopover"
             button={
               <PrimaryButton
                 loading={loading}
@@ -134,33 +130,29 @@ const BulkDeleteFooter = (props: Props) => {
                 Delete
               </PrimaryButton>
             }
-          >
-            <Text
-              color="subdued"
-              className={styles.containerPopover}
-              data-testid="bulk-action-tooltip"
-            >
-              <RiIcon
-                type="ToastDangerIcon"
-                color="danger600"
-                className={styles.popoverIcon}
-              />
-              <div className={cx(styles.popoverItem, styles.popoverItemTitle)}>
-                Are you sure you want to perform this action?
-              </div>
-              <div className={styles.popoverItem}>
-                {`All keys with ${filter ? filter?.toUpperCase() : 'all'} key type and selected pattern will be deleted.`}
-              </div>
+            title={'Are you sure you want to perform this action?'}
+            message={
+              'This will delete all keys matching the selected type and pattern.'
+            }
+            appendInfo={
+              <Row align="center" gap="m">
+                <RiIcon size="xl" type="ToastDangerIcon" />
+                <Text size="s">
+                  Bulk deletion may impact performance and cause memory spikes.
+                  Avoid running in production.
+                </Text>
+              </Row>
+            }
+            confirmButton={
               <DestructiveButton
                 size="s"
-                className={styles.deleteApproveBtn}
                 onClick={handleDelete}
                 data-testid="bulk-action-apply-btn"
               >
                 Delete
               </DestructiveButton>
-            </Text>
-          </RiPopover>
+            }
+          />
         )}
         {isProcessedBulkAction(status) && (
           <PrimaryButton
@@ -171,8 +163,8 @@ const BulkDeleteFooter = (props: Props) => {
             Start New
           </PrimaryButton>
         )}
-      </div>
-    </div>
+      </Row>
+    </Col>
   )
 }
 

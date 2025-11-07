@@ -229,7 +229,7 @@ export const parseCustomError = (
       title = 'Database already exists'
       message = (
         <>
-          You already have a free trial Redis Cloud database running.
+          You already have a free Redis Cloud database running.
           <Spacer size="s" />
           Check out your
           <a

@@ -66,10 +66,12 @@ interface LoaderContainerProps {
   children?: ReactNode
   style?: React.CSSProperties
   className?: string
+  absolute?: boolean
 }
 
 export const LoaderContainer = styled.div<LoaderContainerProps>`
-  position: relative;
+  position: ${({ absolute }) => (absolute ? 'absolute' : 'relative')};
+  width: 100%;
   height: 3px;
   overflow: hidden;
   border-radius: 2px;

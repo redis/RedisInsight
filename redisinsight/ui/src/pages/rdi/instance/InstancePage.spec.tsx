@@ -3,7 +3,13 @@ import React from 'react'
 import reactRouterDom, { BrowserRouter } from 'react-router-dom'
 import { instance, mock } from 'ts-mockito'
 
-import { act, cleanup, mockedStore, render } from 'uiSrc/utils/test-utils'
+import {
+  act,
+  cleanup,
+  mockedStore,
+  render,
+  userEvent,
+} from 'uiSrc/utils/test-utils'
 import { resetKeys, resetPatternKeysData } from 'uiSrc/slices/browser/keys'
 import { setMonitorInitialState } from 'uiSrc/slices/cli/monitor'
 import { setInitialPubSubState } from 'uiSrc/slices/pubsub/pubsub'
@@ -203,6 +209,35 @@ describe('InstancePage', () => {
     )
   })
 
+  it('should navigate to rdi pipeline management page via clicking on navigation', async () => {
+    const pushMock = jest.fn()
+    reactRouterDom.useHistory = jest.fn().mockReturnValue({
+      push: pushMock,
+      block: jest.fn(() => jest.fn()),
+    })
+
+    reactRouterDom.useLocation = jest
+      .fn()
+      .mockReturnValue({ pathname: Pages.rdiStatistics(RDI_INSTANCE_ID_MOCK) })
+
+    const { getByRole } = render(
+      <BrowserRouter>
+        <InstancePage {...instance(mockedProps)} />
+      </BrowserRouter>,
+    )
+    expect(pushMock).not.toHaveBeenCalledWith(
+      Pages.rdiPipelineManagement(RDI_INSTANCE_ID_MOCK),
+    )
+    const analyticsTab = getByRole('tab', { name: 'Analytics' })
+    expect(analyticsTab).toBeInTheDocument()
+
+    await userEvent.click(analyticsTab)
+
+    expect(pushMock).not.toHaveBeenCalledWith(
+      Pages.rdiPipelineManagement(RDI_INSTANCE_ID_MOCK),
+    )
+  })
+
   it('should redirect to rdi pipeline statistics page', async () => {
     ;(appContextSelector as jest.Mock).mockReturnValue({
       contextRdiInstanceId: RDI_INSTANCE_ID_MOCK,
@@ -227,6 +262,37 @@ describe('InstancePage', () => {
     )
 
     expect(pushMock).toHaveBeenCalledWith(
+      Pages.rdiStatistics(RDI_INSTANCE_ID_MOCK),
+    )
+  })
+
+  it('should navigate to rdi pipeline analytics page via clicking on navigation', async () => {
+    const pushMock = jest.fn()
+    reactRouterDom.useHistory = jest.fn().mockReturnValue({
+      push: pushMock,
+      block: jest.fn(() => jest.fn()),
+    })
+
+    reactRouterDom.useLocation = jest
+      .fn()
+      .mockReturnValue({
+        pathname: Pages.rdiPipelineManagement(RDI_INSTANCE_ID_MOCK),
+      })
+
+    const { getByRole } = render(
+      <BrowserRouter>
+        <InstancePage {...instance(mockedProps)} />
+      </BrowserRouter>,
+    )
+    expect(pushMock).not.toHaveBeenCalledWith(
+      Pages.rdiStatistics(RDI_INSTANCE_ID_MOCK),
+    )
+    const pipelineTab = getByRole('tab', { name: 'Pipeline' })
+    expect(pipelineTab).toBeInTheDocument()
+
+    await userEvent.click(pipelineTab)
+
+    expect(pushMock).not.toHaveBeenCalledWith(
       Pages.rdiStatistics(RDI_INSTANCE_ID_MOCK),
     )
   })

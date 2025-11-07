@@ -247,7 +247,7 @@ const RedisCloudDatabasesPage = ({
           {!items.length && <Text size="S">{message}</Text>}
         </DatabaseWrapper>
       </div>
-      <Footer padding={4}>
+      <Footer>
         <Row justify="between">
           <SecondaryButton
             onClick={onBack}

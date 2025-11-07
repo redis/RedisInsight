@@ -1,6 +1,6 @@
 import { languages } from 'monaco-editor'
 import { curryRight } from 'lodash'
-import { Maybe } from 'uiSrc/utils'
+import { Maybe, sanitizeToken } from 'uiSrc/utils'
 import { IRedisCommand } from 'uiSrc/constants'
 
 const appendToken = (token: string, name: Maybe<string>) =>
@@ -17,7 +17,7 @@ export const generateQuery = (
   ): languages.IMonarchLanguageRule =>
     args?.length
       ? [
-          `(${args?.map(({ token }) => token).join('|')})\\b`,
+          `(${args?.map(({ token }) => sanitizeToken(token)).join('|')})\\b`,
           { token: 'function', next: appendTokenName(tokenName) },
         ]
       : [/_/, '']

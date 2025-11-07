@@ -2,6 +2,8 @@ import { Button } from '@redis-ui/components'
 import React from 'react'
 import { LoaderLargeIcon } from 'uiSrc/components/base/icons'
 import { BaseButtonProps } from 'uiSrc/components/base/forms/buttons/button.styles'
+import { Spacer } from 'uiSrc/components/base/layout'
+import styled from 'styled-components'
 
 type ButtonSize = 'small' | 'medium' | 'large'
 type SizeKey = 'small' | 's' | 'medium' | 'm' | 'large' | 'l'
@@ -35,7 +37,6 @@ export const BaseButton = ({
         icon={icon}
         iconSide={iconSide}
         loading={loading}
-        size={btnSize}
       />
       {children}
       <ButtonIcon
@@ -43,7 +44,6 @@ export const BaseButton = ({
         icon={icon}
         iconSide={iconSide}
         loading={loading}
-        size={btnSize}
       />
     </Button>
   )
@@ -61,7 +61,11 @@ export const IconSizes = {
   medium: '20px',
   large: '24px',
 }
-
+const Wrapper = styled.div`
+  svg {
+    display: block;
+  }
+`
 export const ButtonIcon = ({
   buttonSide,
   icon,
@@ -84,11 +88,12 @@ export const ButtonIcon = ({
   if (size) {
     iconSize = IconSizes[size]
   }
+  const spacer = <Spacer size="s" direction="horizontal" />
   return (
-    <Button.Icon
-      title={`button-icon ${iconSide}`}
-      icon={renderIcon}
-      customSize={iconSize}
-    />
+    <Wrapper>
+      {buttonSide === 'right' && spacer}
+      <Button.Icon icon={renderIcon} customSize={iconSize} />
+      {buttonSide === 'left' && spacer}
+    </Wrapper>
   )
 }

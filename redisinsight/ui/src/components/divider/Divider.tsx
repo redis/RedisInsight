@@ -1,42 +1,33 @@
 import React from 'react'
-import cx from 'classnames'
 
-import styles from './styles.module.scss'
+import {
+  StyledDividerWrapper,
+  StyledDivider,
+  DividerVariant,
+  DividerOrientation,
+} from './Divider.styles'
 
-export interface Props {
+export interface DividerProps {
+  orientation?: DividerOrientation
+  variant?: DividerVariant
   color?: string
-  colorVariable?: string
-  orientation?: 'horizontal' | 'vertical'
-  variant?: 'fullWidth' | 'middle' | 'half'
   className?: string
-  style?: any
 }
 
 const Divider = ({
   orientation,
   variant,
-  className,
   color,
-  colorVariable,
+  className,
   ...props
-}: Props) => (
-  <div
-    className={cx(
-      styles.divider,
-      styles[`divider-${variant || 'fullWidth'}`],
-      styles[`divider-${orientation || 'horizontal'}`],
-      className,
-    )}
-    {...props}
-  >
-    <hr
-      style={
-        color || colorVariable
-          ? { backgroundColor: color ?? `var(--${colorVariable})` }
-          : {}
-      }
+}: DividerProps) => (
+  <StyledDividerWrapper {...props}>
+    <StyledDivider
+      $variant={variant}
+      $orientation={orientation}
+      $color={color}
     />
-  </div>
+  </StyledDividerWrapper>
 )
 
 export default Divider

@@ -321,10 +321,12 @@ export class IoredisRedisConnectionStrategy extends RedisConnectionStrategy {
               e,
               clientMetadata,
             );
-            reject(getRedisConnectionException(
-              !isEmpty(e.lastNodeError) ? e.lastNodeError : e as ReplyError,
-              database,
-            ));
+            reject(
+              getRedisConnectionException(
+                !isEmpty(e.lastNodeError) ? e.lastNodeError : (e as ReplyError),
+                database,
+              ),
+            );
           });
           cluster.on('end', (): void => {
             this.logger.warn(

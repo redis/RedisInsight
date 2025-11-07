@@ -14,6 +14,10 @@ export interface Props {
 const RdiHeader = ({ onRdiInstanceClick }: Props) => {
   const { data: instances } = useSelector(instancesSelector)
 
+  if (instances.length === 0) {
+    return null
+  }
+
   return (
     <div className="containerDl">
       <Row className="contentDL" align="center" gap="s">
@@ -25,11 +29,9 @@ const RdiHeader = ({ onRdiInstanceClick }: Props) => {
             <span>+ Endpoint</span>
           </PrimaryButton>
         </FlexItem>
-        {instances.length > 0 && (
-          <FlexItem className="searchContainer">
-            <SearchRdiList />
-          </FlexItem>
-        )}
+        <FlexItem className="searchContainer">
+          <SearchRdiList />
+        </FlexItem>
       </Row>
       <Spacer className="spacerDl" />
     </div>

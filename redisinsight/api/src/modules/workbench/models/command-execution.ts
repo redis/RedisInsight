@@ -10,7 +10,7 @@ import {
 } from 'class-validator';
 import { CommandExecutionResult } from 'src/modules/workbench/models/command-execution-result';
 import { Expose, Type } from 'class-transformer';
-import { Default } from 'src/common/decorators';
+import { Default as DefaultDecorator } from 'src/common/decorators';
 
 export enum RunQueryMode {
   Raw = 'RAW',
@@ -87,7 +87,7 @@ export class CommandExecution {
       RunQueryMode,
     )}.`,
   })
-  @Default(RunQueryMode.ASCII)
+  @DefaultDecorator(RunQueryMode.ASCII)
   mode?: RunQueryMode;
 
   @ApiPropertyOptional({
@@ -102,7 +102,7 @@ export class CommandExecution {
       ResultsMode,
     )}.`,
   })
-  @Default(ResultsMode.Default)
+  @DefaultDecorator(ResultsMode.Default)
   resultsMode?: ResultsMode;
 
   @ApiPropertyOptional({
@@ -165,6 +165,6 @@ export class CommandExecution {
       CommandExecutionType,
     )}.`,
   })
-  @Default(CommandExecutionType.Workbench)
+  @DefaultDecorator(CommandExecutionType.Workbench)
   type?: CommandExecutionType;
 }

@@ -38,17 +38,24 @@ export const clientMetadataParamFactory = (
     uniqueId = req.params?.[options.uniqueIdParam];
   }
 
-  const clientMetadata = plainToInstance(ClientMetadata, {
-    sessionMetadata: sessionMetadataFromRequestExecutionContext(undefined, ctx),
-    databaseId,
-    uniqueId,
-    context: options?.context || ClientContext.Common,
-    db: options?.ignoreDbIndex
-      ? undefined
-      : req?.headers?.[API_HEADER_DATABASE_INDEX],
-  }, {
-    groups: ['security'],
-  });
+  const clientMetadata = plainToInstance(
+    ClientMetadata,
+    {
+      sessionMetadata: sessionMetadataFromRequestExecutionContext(
+        undefined,
+        ctx,
+      ),
+      databaseId,
+      uniqueId,
+      context: options?.context || ClientContext.Common,
+      db: options?.ignoreDbIndex
+        ? undefined
+        : req?.headers?.[API_HEADER_DATABASE_INDEX],
+    },
+    {
+      groups: ['security'],
+    },
+  );
 
   const errors = validator.validateSync(clientMetadata, {
     whitelist: false, // we need this to allow additional fields if needed for flexibility

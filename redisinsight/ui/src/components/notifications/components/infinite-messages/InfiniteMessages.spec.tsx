@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
+import { fireEvent, render, screen, act } from 'uiSrc/utils/test-utils'
 
 import { OAuthProvider } from 'uiSrc/components/oauth/oauth-select-plan/constants'
 import notificationsReducer, {
@@ -19,24 +19,22 @@ const createTestStore = () =>
       getDefaultMiddleware({ serializableCheck: false }),
   })
 
-const renderToast = (notification: InfiniteMessage) => {
+const renderToast = async (notification: InfiniteMessage) => {
   const store = createTestStore()
 
   render(
     <>
-      {/* <RiToaster /> */}
       <Notifications />
     </>,
     { store },
   )
-
-  store.dispatch(addInfiniteNotification(notification))
+  await act(async () => store.dispatch(addInfiniteNotification(notification)))
 }
 
 describe('INFINITE_MESSAGES', () => {
   describe('AUTHENTICATING', () => {
     it('should render message', async () => {
-      renderToast(INFINITE_MESSAGES.AUTHENTICATING())
+      await renderToast(INFINITE_MESSAGES.AUTHENTICATING())
 
       // Wait for the notification to appear
       const title = await screen.findByText('Authenticating…')
@@ -142,7 +140,7 @@ describe('INFINITE_MESSAGES', () => {
 
       // Wait for the notification to appear
       const title = await screen.findByText(
-        'You already have a free trial Redis Cloud subscription.',
+        'You already have a free Redis Cloud subscription.',
       )
       const description = await screen.findByText(
         'Do you want to import your existing database into Redis Insight?',
@@ -233,10 +231,10 @@ describe('INFINITE_MESSAGES', () => {
 
       // Wait for the notification to appear
       const title = await screen.findByText(
-        'Your subscription does not have a free trial Redis Cloud database.',
+        'Your subscription does not have a free Redis Cloud database.',
       )
       const description = await screen.findByText(
-        'Do you want to create a free trial database in your existing subscription?',
+        'Do you want to create a free database in your existing subscription?',
       )
       const createButton = await screen.findByRole('button', {
         name: /Create/,

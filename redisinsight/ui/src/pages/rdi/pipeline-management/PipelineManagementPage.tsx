@@ -21,7 +21,7 @@ import Navigation from 'uiSrc/pages/rdi/pipeline-management/components/navigatio
 import { removeInfiniteNotification } from 'uiSrc/slices/app/notifications'
 import { InfiniteMessagesIds } from 'uiSrc/components/notifications/components'
 import PipelinePageRouter from './PipelineManagementPageRouter'
-import styles from './styles.module.scss'
+import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 
 export interface Props {
   routes: IRoute[]
@@ -81,11 +81,15 @@ const PipelineManagementPage = ({ routes = [] }: Props) => {
   }, [pathname, lastViewedPage])
 
   return (
-    <div className={styles.wrapper}>
-      <Navigation />
+    <Row>
+      <FlexItem>
+        <Navigation />
+      </FlexItem>
       <SourcePipelineDialog />
-      <PipelinePageRouter routes={routes} />
-    </div>
+      <FlexItem grow>
+        <PipelinePageRouter routes={routes} />
+      </FlexItem>
+    </Row>
   )
 }
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import { fireEvent, screen, waitFor, within } from '@testing-library/react'
-import { cloneDeep, set } from 'lodash'
-import { rest } from 'msw'
+import { cloneDeep } from 'lodash'
+import { http, HttpResponse } from 'msw'
 import { mswServer } from 'uiSrc/mocks/server'
 import {
   getMswURL,
@@ -54,17 +54,17 @@ describe('instanceConnectionLost', () => {
         )
 
       mswServer.use(
-        rest.get(
+        http.get(
           getMswURL(`${ApiEndpoints.DATABASES}/instanceId/overview`),
-          async (_, res, ctx) => {
+          async () => {
             if (type === 'error') {
-              return res(
-                ctx.status(503),
-                ctx.json({ error: 'test', code: 'serviceUnavailable' }),
+              return HttpResponse.json(
+                { error: 'test', code: 'serviceUnavailable' },
+                { status: 503 },
               )
             }
 
-            return res(ctx.status(200), ctx.json(INSTANCES_MOCK))
+            return HttpResponse.json(INSTANCES_MOCK, { status: 200 })
           },
         ),
       )

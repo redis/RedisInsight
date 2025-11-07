@@ -20,6 +20,7 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { RiTooltip } from 'uiSrc/components'
+import { Row } from 'uiSrc/components/base/layout/flex'
 
 export interface Props {
   loading: boolean
@@ -92,16 +93,14 @@ const SentinelConnectionForm = (props: Props) => {
       content={getSubmitButtonContent(errors, submitIsDisabled)}
     >
       <PrimaryButton
-        size="s"
         type="submit"
         onClick={onClick}
         disabled={submitIsDisabled}
         loading={loading}
         icon={submitIsDisabled ? InfoIcon : undefined}
         data-testid="btn-submit"
-        style={{ marginLeft: 12 }}
       >
-        Discover Database
+        Discover database
       </PrimaryButton>
     </RiTooltip>
   )
@@ -111,10 +110,9 @@ const SentinelConnectionForm = (props: Props) => {
 
     if (footerEl) {
       return ReactDOM.createPortal(
-        <div className="footerAddDatabase">
+        <Row justify="end" gap="m" className="footerAddDatabase">
           {onClose && (
             <SecondaryButton
-              size="s"
               onClick={onClose}
               className="btn-cancel"
               data-testid="btn-cancel"
@@ -126,7 +124,7 @@ const SentinelConnectionForm = (props: Props) => {
             onClick={formik.submitForm}
             submitIsDisabled={submitIsDisable()}
           />
-        </div>,
+        </Row>,
         footerEl,
       )
     }

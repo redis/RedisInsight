@@ -1,7 +1,6 @@
 /* eslint-disable sonarjs/no-nested-template-literals */
 import styled, { css } from 'styled-components'
 import React, { forwardRef, InputHTMLAttributes } from 'react'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
 
 type FilePickerWrapperProps = InputHTMLAttributes<HTMLDivElement> & {
@@ -18,7 +17,6 @@ const defaultWrapper = css`
   height: 40px;
 `
 export const FilePickerWrapper = styled.div<FilePickerWrapperProps>`
-  max-width: 400px;
   width: 100%;
   position: relative;
   ${({ $large }) => ($large ? largeWrapper : defaultWrapper)}
@@ -79,8 +77,9 @@ export const FilePickerPrompt = styled.div<FilePickerWrapperProps>`
   ${promptPadding}
 
   ${({ $large }) => ($large ? promptLarge : promptDefault)}
-`
-
-export const FilePickerClearButton = styled(EmptyButton)`
-  pointer-events: auto; /* Undo the pointer-events: none applied to the enclosing prompt */
+  /* Ensure inner buttons are clickable above the FilePickerInput */
+  button {
+    pointer-events: auto;
+    z-index: 1;
+  }
 `

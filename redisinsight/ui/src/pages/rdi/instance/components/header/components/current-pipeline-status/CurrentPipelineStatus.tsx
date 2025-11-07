@@ -1,12 +1,19 @@
 import React from 'react'
 import { PipelineState } from 'uiSrc/slices/interfaces'
 import { formatLongName, Maybe } from 'uiSrc/utils'
-import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { IconProps } from 'uiSrc/components/base/icons'
+import { Icon, IconProps } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Loader } from 'uiSrc/components/base/display'
 import { RiTooltip } from 'uiSrc/components'
-import styles from './styles.module.scss'
+import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Text } from 'uiSrc/components/base/text'
+import {
+  IndicatorSyncingIcon,
+  IndicatorSyncedIcon,
+  IndicatorSyncstoppedIcon,
+  IndicatorSyncerrorIcon,
+} from '@redis-ui/icons'
+import { IconType } from 'uiSrc/components/base/forms/buttons'
 
 export interface Props {
   pipelineState?: PipelineState
@@ -23,31 +30,31 @@ const CurrentPipelineStatus = ({
     pipelineState: Maybe<PipelineState>,
   ): {
     label: string
-    icon: AllIconsType
+    icon: IconType
     iconColor: IconProps['color']
   } => {
     switch (pipelineState) {
       case PipelineState.InitialSync:
         return {
-          icon: 'IndicatorSyncingIcon',
+          icon: IndicatorSyncingIcon,
           iconColor: 'success300',
           label: 'Initial sync',
         }
       case PipelineState.CDC:
         return {
-          icon: 'IndicatorSyncedIcon',
-          iconColor: 'success300',
+          icon: IndicatorSyncedIcon,
+          iconColor: 'success500',
           label: 'Streaming',
         }
       case PipelineState.NotRunning:
         return {
-          icon: 'IndicatorXIcon',
+          icon: IndicatorSyncstoppedIcon,
           iconColor: 'attention500',
           label: 'Not running',
         }
       default:
         return {
-          icon: 'IndicatorErrorIcon',
+          icon: IndicatorSyncerrorIcon,
           iconColor: 'danger500',
           label: 'Error',
         }
@@ -57,22 +64,28 @@ const CurrentPipelineStatus = ({
   const errorTooltipContent = statusError && formatLongName(statusError)
 
   return (
-    <div className={styles.stateWrapper}>
-      <Title size="XS">Pipeline State:</Title>
-      {headerLoading ? (
-        <Loader size="m" style={{ marginLeft: '8px' }} />
-      ) : (
-        <RiTooltip
-          content={errorTooltipContent}
-          anchorClassName={statusError && styles.tooltip}
-        >
-          <div className={styles.stateBadge} data-testid="pipeline-state-badge">
-            <RiIcon type={stateInfo.icon} color={stateInfo.iconColor} />
-            <span>{stateInfo.label}</span>
-          </div>
-        </RiTooltip>
-      )}
-    </div>
+    <Row align="center" gap="m">
+      <FlexItem>
+        <Title size="XS" color="primary">
+          Pipeline state
+        </Title>
+      </FlexItem>
+      <FlexItem>
+        {headerLoading ? (
+          <Loader size="m" style={{ marginLeft: '8px' }} />
+        ) : (
+          <RiTooltip
+            content={errorTooltipContent}
+            anchorClassName={statusError}
+          >
+            <Row data-testid="pipeline-state-badge" gap="s" align="center">
+              <Icon icon={stateInfo.icon} color={stateInfo.iconColor} />
+              <Text>{stateInfo.label}</Text>
+            </Row>
+          </RiTooltip>
+        )}
+      </FlexItem>
+    </Row>
   )
 }
 

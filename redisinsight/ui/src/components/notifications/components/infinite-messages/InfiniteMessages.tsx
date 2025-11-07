@@ -20,6 +20,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+
 import styles from './styles.module.scss'
 
 export enum InfiniteMessagesIds {
@@ -38,11 +39,32 @@ const MANAGE_DB_LINK = getUtmExternalLink(EXTERNAL_LINKS.cloudConsole, {
   medium: UTM_MEDIUMS.Main,
 })
 
-// TODO: Refactor this type definition to work with the real parameters and their types we use in each message
-export const INFINITE_MESSAGES: Record<
-  string,
-  (...args: any[]) => InfiniteMessage
-> = {
+interface InfiniteMessagesType {
+  AUTHENTICATING: () => InfiniteMessage
+  PENDING_CREATE_DB: (step?: CloudJobStep) => InfiniteMessage
+  SUCCESS_CREATE_DB: (
+    details: Omit<CloudSuccessResult, 'resourceId'>,
+    onSuccess: () => void,
+    jobName: Maybe<CloudJobName>,
+  ) => InfiniteMessage
+  DATABASE_EXISTS: (
+    onSuccess?: () => void,
+    onClose?: () => void,
+  ) => InfiniteMessage
+  DATABASE_IMPORT_FORBIDDEN: (onClose?: () => void) => InfiniteMessage
+  SUBSCRIPTION_EXISTS: (
+    onSuccess?: () => void,
+    onClose?: () => void,
+  ) => InfiniteMessage
+  AUTO_CREATING_DATABASE: () => InfiniteMessage
+  APP_UPDATE_AVAILABLE: (
+    version: string,
+    onSuccess?: () => void,
+  ) => InfiniteMessage
+  SUCCESS_DEPLOY_PIPELINE: () => InfiniteMessage
+}
+
+export const INFINITE_MESSAGES: InfiniteMessagesType = {
   AUTHENTICATING: () => ({
     id: InfiniteMessagesIds.oAuthProgress,
     message: 'Authenticating…',
@@ -52,6 +74,7 @@ export const INFINITE_MESSAGES: Record<
   PENDING_CREATE_DB: (step?: CloudJobStep) => ({
     id: InfiniteMessagesIds.oAuthProgress,
     customIcon: LoaderLargeIcon,
+    variation: step,
     message: (
       <>
         {(step === CloudJobStep.Credentials || !step) &&
@@ -59,9 +82,9 @@ export const INFINITE_MESSAGES: Record<
         {step === CloudJobStep.Subscription &&
           'Processing Cloud subscriptions…'}
         {step === CloudJobStep.Database &&
-          'Creating a free trial Cloud database…'}
+          'Creating a free Redis Cloud database…'}
         {step === CloudJobStep.Import &&
-          'Importing a free trial Cloud database…'}
+          'Importing a free Redis Cloud database…'}
       </>
     ),
     description: (
@@ -90,6 +113,7 @@ export const INFINITE_MESSAGES: Record<
     return {
       id: InfiniteMessagesIds.oAuthSuccess,
       message: 'Congratulations!',
+      variant: 'success',
       description: (
         <>
           {text}
@@ -101,7 +125,7 @@ export const INFINITE_MESSAGES: Record<
           {!!details && (
             <>
               <Spacer size="m" />
-              <Divider variant="fullWidth" />
+              <Divider />
               <Spacer size="m" />
               <Row className={styles.detailsRow} justify="between">
                 <FlexItem>
@@ -141,11 +165,7 @@ export const INFINITE_MESSAGES: Record<
           <Spacer size="m" />
           <Row justify="between" align="center">
             <FlexItem>
-              <ExternalLink
-                href={MANAGE_DB_LINK}
-                iconSize="XS"
-                variant="inline"
-              >
+              <ExternalLink href={MANAGE_DB_LINK} iconSize="S" variant="inline">
                 Manage DB
               </ExternalLink>
             </FlexItem>
@@ -165,7 +185,7 @@ export const INFINITE_MESSAGES: Record<
   },
   DATABASE_EXISTS: (onSuccess?: () => void, onClose?: () => void) => ({
     id: InfiniteMessagesIds.databaseExists,
-    message: 'You already have a free trial Redis Cloud subscription.',
+    message: 'You already have a free Redis Cloud subscription.',
     description:
       'Do you want to import your existing database into Redis Insight?',
     actions: {
@@ -207,10 +227,9 @@ export const INFINITE_MESSAGES: Record<
   }),
   SUBSCRIPTION_EXISTS: (onSuccess?: () => void, onClose?: () => void) => ({
     id: InfiniteMessagesIds.subscriptionExists,
-    message:
-      'Your subscription does not have a free trial Redis Cloud database.',
+    message: 'Your subscription does not have a free Redis Cloud database.',
     description:
-      'Do you want to create a free trial database in your existing subscription?',
+      'Do you want to create a free database in your existing subscription?',
     actions: {
       primary: { label: 'Create', onClick: () => onSuccess?.() },
     },

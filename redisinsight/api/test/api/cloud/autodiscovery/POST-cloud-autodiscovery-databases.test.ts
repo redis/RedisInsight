@@ -174,9 +174,9 @@ describe('POST /cloud/autodiscovery/databases', () => {
               `/fixed/subscriptions/${mockImportCloudDatabaseDtoFixed.subscriptionId}/databases/${mockImportCloudDatabaseDtoFixed.databaseId}`,
             )
             .replyWithError({
+              message: 'Unauthorized for this action',
               response: {
                 status: 403,
-                data: { message: 'Unauthorized for this action' },
               },
             });
         },
@@ -206,6 +206,7 @@ describe('POST /cloud/autodiscovery/databases', () => {
               `/subscriptions/${mockImportCloudDatabaseDto.subscriptionId}/databases/${mockImportCloudDatabaseDto.databaseId}`,
             )
             .replyWithError({
+              message: ERROR_MESSAGES.UNAUTHORIZED,
               response: {
                 status: 401,
                 data: '',
@@ -238,9 +239,10 @@ describe('POST /cloud/autodiscovery/databases', () => {
               `/subscriptions/${mockImportCloudDatabaseDto.subscriptionId}/databases/${mockImportCloudDatabaseDto.databaseId}`,
             )
             .replyWithError({
+              message: ERROR_MESSAGES.NOT_FOUND,
               response: {
                 status: 404,
-                data: 'Database was not found',
+                data: ERROR_MESSAGES.NOT_FOUND,
               },
             });
         },

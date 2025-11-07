@@ -23,9 +23,7 @@ const MessageBar = ({ children, opened }: Props) => {
   return (
     <ContainerWrapper centered>
       <Container grow={false} centered gap="l">
-        <FlexItem grow className={styles.text}>
-          {children}
-        </FlexItem>
+        <FlexItem grow>{children}</FlexItem>
         <FlexItem className={styles.cross}>
           <IconButton
             icon={CancelSlimIcon}

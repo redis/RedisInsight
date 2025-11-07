@@ -44,7 +44,8 @@ export default {
     `Could not connect to ${url}, please check the CA or Client certificate.`,
   INCORRECT_CREDENTIALS: (url) =>
     `Could not connect to ${url}, please check the Username or Password.`,
-  DATABASE_DEFAULT_USER_DISABLED: 'Database does not have default user enabled.',
+  DATABASE_DEFAULT_USER_DISABLED:
+    'Database does not have default user enabled.',
   DATABASE_MANAGEMENT_IS_DISABLED:
     'Database connection management is disabled.',
   CA_CERT_EXIST: 'This ca certificate name is already in use.',
@@ -140,7 +141,7 @@ export default {
   CLOUD_TASK_NOT_FOUND: 'Cloud task was not found',
   CLOUD_DATABASE_IN_FAILED_STATE: 'Cloud database is in the failed state',
   CLOUD_DATABASE_IN_UNEXPECTED_STATE: 'Cloud database is in unexpected state',
-  CLOUD_DATABASE_ALREADY_EXISTS_FREE: 'Free trial database already exists',
+  CLOUD_DATABASE_ALREADY_EXISTS_FREE: 'Free database already exists',
   CLOUD_DATABASE_IMPORT_FORBIDDEN:
     'Adding your Redis Cloud database to Redis Insight is disabled due to a setting restricting database connection management.',
   CLOUD_PLAN_NOT_FOUND_FREE: 'Unable to find free cloud plan',
@@ -159,7 +160,8 @@ export default {
     'Encountered a timeout error while attempting to retrieve data',
   RDI_VALIDATION_ERROR: 'Validation error',
   INVALID_RDI_INSTANCE_ID: 'Invalid rdi instance id.',
-  UNSAFE_BIG_JSON_LENGTH: 'This JSON is too large. Try opening it with Redis Insight Desktop.',
+  UNSAFE_BIG_JSON_LENGTH:
+    'This JSON is too large. Try opening it with Redis Insight Desktop.',
 
   // database settings
   DATABASE_SETTINGS_NOT_FOUND: 'Could not find settings for this database',

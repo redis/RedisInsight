@@ -8,12 +8,7 @@ import { ExternalLink } from 'uiSrc/components'
 import styles from '../styles.module.scss'
 
 const MessageCloudApiKeys = () => (
-  <Text
-    color="subdued"
-    size="s"
-    className={styles.message}
-    data-testid="summary"
-  >
+  <Text data-testid="summary">
     {
       'Enter Redis Cloud API keys to discover and add databases. API keys can be enabled by following the steps mentioned in the '
     }
@@ -28,12 +23,7 @@ const MessageCloudApiKeys = () => (
 )
 
 const MessageStandalone = () => (
-  <Text
-    color="subdued"
-    size="s"
-    className={styles.message}
-    data-testid="summary"
-  >
+  <Text data-testid="summary">
     You can manually add your Redis databases. Enter host and port of your Redis
     database to add it to {APPLICATION_NAME}. &nbsp;
     <ExternalLink
@@ -49,12 +39,7 @@ const MessageStandalone = () => (
 )
 
 const MessageSentinel = () => (
-  <Text
-    color="subdued"
-    size="s"
-    className={styles.message}
-    data-testid="summary"
-  >
+  <Text data-testid="summary">
     You can automatically discover and add primary groups from your Redis
     Sentinel. Enter host and port of your Redis Sentinel to automatically
     discover your primary groups and add them to {APPLICATION_NAME}. &nbsp;
@@ -70,8 +55,8 @@ const MessageSentinel = () => (
   </Text>
 )
 
-const MessageEnterpriseSoftware = () => (
-  <Text size="s" data-testid="summary">
+const MessageEnterpriceSoftware = () => (
+  <Text data-testid="summary">
     Your Redis Software databases can be automatically added. Enter the
     connection details of your Redis Software Cluster to automatically discover
     your databases and add them to {APPLICATION_NAME}. &nbsp;

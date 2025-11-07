@@ -1,5 +1,4 @@
 import * as utils from 'src/utils';
-import { when } from 'jest-when';
 import { getAvailableEndpoints } from 'src/modules/database-discovery/utils/autodiscovery.util';
 import { Test, TestingModule } from '@nestjs/testing';
 import {

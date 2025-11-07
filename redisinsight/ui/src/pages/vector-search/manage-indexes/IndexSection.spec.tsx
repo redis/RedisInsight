@@ -1,6 +1,6 @@
 import React from 'react'
 import { Provider } from 'react-redux'
-import { rest } from 'msw'
+import { http, HttpResponse } from 'msw'
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import { mswServer } from 'uiSrc/mocks/server'
 import {
@@ -130,9 +130,11 @@ describe('IndexSection', () => {
 
     // Override the MSW handler to return an error for this test
     mswServer.use(
-      rest.post<IndexInfoDto>(
+      http.post<any, IndexInfoDto>(
         getMswURL(getUrl(INSTANCE_ID_MOCK, ApiEndpoints.REDISEARCH_INFO)),
-        async (_req, res, ctx) => res(ctx.status(200), ctx.json(mockIndexInfo)),
+        async () => {
+          return HttpResponse.json(mockIndexInfo, { status: 200 })
+        },
       ),
     )
 
@@ -183,9 +185,11 @@ describe('IndexSection', () => {
 
     // Override the MSW handler to return an error for this test
     mswServer.use(
-      rest.post<IndexInfoDto>(
+      http.post<any, IndexInfoDto>(
         getMswURL(getUrl(INSTANCE_ID_MOCK, ApiEndpoints.REDISEARCH_INFO)),
-        async (_req, res, ctx) => res(ctx.status(200), ctx.json(mockIndexInfo)),
+        async () => {
+          return HttpResponse.json(mockIndexInfo, { status: 200 })
+        },
       ),
     )
 
@@ -344,16 +348,16 @@ describe('IndexSection', () => {
     it('should handle deletion failure gracefully', async () => {
       // Override the MSW handler to return an error for this test
       mswServer.use(
-        rest.delete(
+        http.delete(
           getMswURL(getUrl(INSTANCE_ID_MOCK, ApiEndpoints.REDISEARCH)),
-          async (_req, res, ctx) =>
-            res(
-              ctx.status(500),
-              ctx.json({
+          async () =>
+            HttpResponse.json(
+              {
                 error: 'Internal Server Error',
                 statusCode: 500,
                 message: 'Failed to delete index',
-              }),
+              },
+              { status: 500 },
             ),
         ),
       )

@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import cx from 'classnames'
+import styled from 'styled-components'
+import { Theme } from '@redis-ui/styles'
+
+
 import { Nullable } from 'uiSrc/utils'
 import { UrlHandlingActions } from 'uiSrc/slices/interfaces/urlHandling'
 import { Instance } from 'uiSrc/slices/interfaces'
@@ -33,9 +36,14 @@ import { ModalHeaderProvider } from 'uiSrc/contexts/ModalTitleProvider'
 import ClusterConnectionFormWrapper from 'uiSrc/pages/home/components/cluster-connection'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
-import styles from './styles.module.scss'
+import { ChevronLeftIcon } from 'uiSrc/components/base/icons'
 import { FooterDatabaseForm } from 'uiSrc/components/form-dialog/FooterDatabaseForm'
+import { Title } from 'uiSrc/components/base/text'
+
+const ScrollableWrapper = styled.div`
+  height: 100%;
+  overflow: scroll;
+`
 
 export interface Props {
   editMode: boolean
@@ -169,7 +177,7 @@ const DatabasePanelDialog = (props: Props) => {
           <FlexItem>
             <IconButton
               onClick={handleClickBack}
-              icon={ArrowLeftIcon}
+              icon={ChevronLeftIcon}
               aria-label="back"
               data-testid="back-btn"
             />
@@ -187,22 +195,16 @@ const DatabasePanelDialog = (props: Props) => {
     <FormDialog
       isOpen
       onClose={onClose}
-      header={modalHeader ?? 'Add Database'}
+      header={modalHeader ?? <Title size="L">Add database</Title>}
       footer={<FooterDatabaseForm />}
     >
-      <div
-        className={cx(styles.bodyWrapper, 'container relative', {
-          addDbWrapper: !editMode,
-        })}
-      >
-        <div className={styles.formWrapper}>
-          <ModalHeaderProvider
-            value={{ modalHeader, setModalHeader: handleSetModalHeader }}
-          >
-            {Form()}
-          </ModalHeaderProvider>
-        </div>
-      </div>
+      <ScrollableWrapper>
+        <ModalHeaderProvider
+          value={{ modalHeader, setModalHeader: handleSetModalHeader }}
+        >
+          {Form()}
+        </ModalHeaderProvider>
+      </ScrollableWrapper>
     </FormDialog>
   )
 }

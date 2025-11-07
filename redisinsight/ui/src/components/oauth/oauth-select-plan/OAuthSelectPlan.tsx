@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { toNumber, filter, get, find, first } from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
-import cx from 'classnames'
 
 import {
   createFreeDbJob,
@@ -18,24 +17,41 @@ import { FeatureFlags } from 'uiSrc/constants'
 import { Region } from 'uiSrc/slices/interfaces'
 
 import {
-  EmptyButton,
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { ColorText, Text } from 'uiSrc/components/base/text'
+import { ColorText, Text, Title } from 'uiSrc/components/base/text'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { Modal } from 'uiSrc/components/base/display'
 import { CancelIcon } from 'uiSrc/components/base/icons'
 import { CloudSubscriptionPlanResponse } from 'apiSrc/modules/cloud/subscription/dto'
 import { OAuthProvider, OAuthProviders } from './constants'
-import styles from './styles.module.scss'
+import {
+  StyledFooter,
+  StyledModalContentBody,
+  StyledProvidersSection,
+  StyledProvidersSelectionGroup,
+  StyledRegion,
+  StyledRegionName,
+  StyledRegionSelectDescription,
+  StyledSubTitle,
+} from './OAuthSelectPlan.styles'
+import { BoxSelectionGroupBox, CountryFlag } from '@redis-ui/components'
 
 export const DEFAULT_REGIONS = ['us-east-2', 'asia-northeast1']
 export const DEFAULT_PROVIDER = OAuthProvider.AWS
 
 const getProviderRegions = (regions: Region[], provider: OAuthProvider) =>
   (find(regions, { provider }) || {}).regions || []
+
+const oAuthProvidersBoxes: BoxSelectionGroupBox<OAuthProvider>[] =
+  OAuthProviders.map(({ id, label, icon }) => ({
+    value: id,
+    label,
+    icon: () => <RiIcon type={icon} size="XL" />,
+  }))
 
 const OAuthSelectPlan = () => {
   const {
@@ -58,13 +74,15 @@ const OAuthSelectPlan = () => {
   const [providerSelected, setProviderSelected] =
     useState<OAuthProvider>(DEFAULT_PROVIDER)
   const [rsProviderRegions, setRsProviderRegions] = useState(
-    getProviderRegions(rsRegions, providerSelected),
+    getProviderRegions(rsRegions, providerSelected as OAuthProvider),
   )
 
   const dispatch = useDispatch()
 
   useEffect(() => {
-    setRsProviderRegions(getProviderRegions(rsRegions, providerSelected))
+    setRsProviderRegions(
+      getProviderRegions(rsRegions, providerSelected as OAuthProvider),
+    )
   }, [providerSelected, plansInit])
 
   useEffect(() => {
@@ -112,30 +130,31 @@ const OAuthSelectPlan = () => {
   const getOptionDisplay = (item: CloudSubscriptionPlanResponse) => {
     const {
       region = '',
-      details: { countryName = '', cityName = '' },
+      details: { countryName = '', cityName = '', flag = '' },
       provider,
     } = item
     const rsProviderRegions: string[] =
       find(rsRegions, { provider })?.regions || []
 
     return (
-      <Text
-        color="subdued"
-        size="s"
-        data-testid={`option-${region}`}
-        data-test-subj={`oauth-region-${region}`}
-      >
-        {`${countryName} (${cityName})`}
-        <ColorText className={styles.regionName}>{region}</ColorText>
-        {rsProviderRegions?.includes(region) && (
-          <ColorText
-            className={styles.rspreview}
-            data-testid={`rs-text-${region}`}
-          >
-            (Redis 7.2)
-          </ColorText>
-        )}
-      </Text>
+      <Row align="center" gap="s">
+        <CountryFlag countryCode={flag} />
+
+        <Text
+          color="primary"
+          data-testid={`option-${region}`}
+          data-test-subj={`oauth-region-${region}`}
+        >
+          {`${countryName} (${cityName})`}
+        </Text>
+
+        <Text color="secondary">
+          <StyledRegionName>{region}</StyledRegionName>
+          {rsProviderRegions?.includes(region) && (
+            <ColorText data-testid={`rs-text-${region}`}>(Redis 7.2)</ColorText>
+          )}
+        </Text>
+      </Row>
     )
   }
 
@@ -173,45 +192,38 @@ const OAuthSelectPlan = () => {
 
   return (
     <Modal.Compose open>
-      <Modal.Content.Compose className={styles.container} data-testid="oauth-select-plan-dialog">
-        <Modal.Content.Close icon={CancelIcon} onClick={handleOnClose} data-testid="oauth-select-plan-dialog-close-btn" />
+      <Modal.Content.Compose data-testid="oauth-select-plan-dialog">
+        <Modal.Content.Close
+          icon={CancelIcon}
+          onClick={handleOnClose}
+          data-testid="oauth-select-plan-dialog-close-btn"
+        />
         <Modal.Content.Header.Title>
-          Choose a cloud vendor
+          <Row justify="center">
+            <Title>Choose a cloud vendor</Title>
+          </Row>
         </Modal.Content.Header.Title>
         <Modal.Content.Body.Compose width="fit-content">
-          <section className={styles.content}>
-            <Text className={styles.subTitle}>
+          <StyledModalContentBody>
+            <StyledSubTitle color="default">
               Select a cloud vendor and region to complete the final step
-              towards your free trial Redis database. No credit card is
+              towards your free Redis Cloud database. No credit card is
               required.
-            </Text>
-            <section className={styles.providers}>
-              {OAuthProviders.map(({ icon, id, label }) => {
-                const Icon = () => (
-                  <RiIcon type={icon} size="original" style={{ width: 44 }} />
-                )
-                return (
-                  <div className={styles.provider} key={id}>
-                    {id === providerSelected && (
-                      <div className={cx(styles.providerActiveIcon)}>
-                        <RiIcon type="CheckThinIcon" />
-                      </div>
-                    )}
-                    <EmptyButton
-                      size="large"
-                      icon={Icon}
-                      onClick={() => setProviderSelected(id)}
-                      className={cx(styles.providerBtn, {
-                        [styles.activeProvider]: id === providerSelected,
-                      })}
-                    />
-                    <Text className={styles.providerLabel}>{label}</Text>
-                  </div>
-                )
-              })}
-            </section>
-            <section className={styles.region}>
-              <Text className={styles.regionLabel}>Region</Text>
+            </StyledSubTitle>
+
+            <StyledProvidersSection gap="m" direction="column" align="start">
+              <Text color="primary">Select cloud vendor</Text>
+              <StyledProvidersSelectionGroup
+                boxes={oAuthProvidersBoxes}
+                value={providerSelected}
+                onChange={(value: string) =>
+                  setProviderSelected(value as OAuthProvider)
+                }
+              />
+            </StyledProvidersSection>
+
+            <StyledRegion>
+              <Text color="secondary">Region</Text>
               <RiSelect
                 loading={loading}
                 disabled={loading || !regionOptions.length}
@@ -227,35 +239,32 @@ const OAuthSelectPlan = () => {
                 }}
               />
               {!regionOptions.length && (
-                <Text
-                  className={styles.selectDescription}
-                  data-testid="select-region-select-description"
-                >
+                <StyledRegionSelectDescription data-testid="select-region-select-description">
                   No regions available, try another vendor.
-                </Text>
+                </StyledRegionSelectDescription>
               )}
-            </section>
-            <footer className={styles.footer}>
-              <SecondaryButton
-                className={styles.button}
-                onClick={handleOnClose}
-                data-testid="close-oauth-select-plan-dialog"
-                aria-labelledby="close oauth select plan dialog"
-              >
-                Cancel
-              </SecondaryButton>
-              <PrimaryButton
-                disabled={loading || !planIdSelected}
-                loading={loading}
-                className={styles.button}
-                onClick={handleSubmit}
-                data-testid="submit-oauth-select-plan-dialog"
-                aria-labelledby="submit oauth select plan dialog"
-              >
-                Create database
-              </PrimaryButton>
-            </footer>
-          </section>
+            </StyledRegion>
+            <StyledFooter>
+              <Row justify="end" gap="m">
+                <SecondaryButton
+                  onClick={handleOnClose}
+                  data-testid="close-oauth-select-plan-dialog"
+                  aria-labelledby="close oauth select plan dialog"
+                >
+                  Cancel
+                </SecondaryButton>
+                <PrimaryButton
+                  disabled={loading || !planIdSelected}
+                  loading={loading}
+                  onClick={handleSubmit}
+                  data-testid="submit-oauth-select-plan-dialog"
+                  aria-labelledby="submit oauth select plan dialog"
+                >
+                  Create database
+                </PrimaryButton>
+              </Row>
+            </StyledFooter>
+          </StyledModalContentBody>
         </Modal.Content.Body.Compose>
       </Modal.Content.Compose>
     </Modal.Compose>

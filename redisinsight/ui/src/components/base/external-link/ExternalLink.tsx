@@ -1,7 +1,8 @@
 import React from 'react'
 import { IconProps } from 'uiSrc/components/base/icons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { Link, type RiLinkProps } from 'uiSrc/components/base/link/Link'
+import { type RiLinkProps } from 'uiSrc/components/base/link/Link'
+import { StyledExternalLink } from './ExternalLink.styles'
 
 export type Props = RiLinkProps & {
   href: string
@@ -22,15 +23,19 @@ const ExternalLink = (props: Props) => {
   } = props
 
   const ArrowIcon = () => (
-    <RiIcon type="ArrowDiagonalIcon" size={iconSize} color="informative400" />
+    <RiIcon
+      type="ArrowDiagonalIcon"
+      size={iconSize || size}
+      color="informative400"
+    />
   )
 
   return (
-    <Link {...rest} target="_blank" rel="noopener noreferrer">
+    <StyledExternalLink {...rest} target="_blank" rel="noopener noreferrer">
       {iconPosition === 'left' && <ArrowIcon />}
       {children}
       {iconPosition === 'right' && <ArrowIcon />}
-    </Link>
+    </StyledExternalLink>
   )
 }
 

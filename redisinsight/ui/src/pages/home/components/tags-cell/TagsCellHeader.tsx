@@ -6,7 +6,11 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiPopover } from 'uiSrc/components/base'
 import { SearchInput } from 'uiSrc/components/base/inputs'
 import { useFilterTags } from './useFilterTags'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import styles from './styles.module.scss'
+import { COLUMN_FIELD_NAME_MAP, DatabaseListColumn } from 'uiSrc/constants'
+
+const headerText = COLUMN_FIELD_NAME_MAP.get(DatabaseListColumn.Tags)
 
 export const TagsCellHeader = memo(() => {
   const {
@@ -22,18 +26,18 @@ export const TagsCellHeader = memo(() => {
   } = useFilterTags()
 
   if (!tagsData.length) {
-    return <div>Tags</div>
+    return <Row centered>{headerText}</Row>
   }
 
   return (
-    <div>
-      Tags{' '}
+    <Row centered>
+      {headerText}
       <RiPopover
         button={
           <RiIcon
             role="button"
-            type="FilterIcon"
-            size="m"
+            type="FilterTableIcon"
+            size="l"
             className={styles.filterByTagIcon}
             onClick={(e) => {
               e.stopPropagation()
@@ -53,7 +57,7 @@ export const TagsCellHeader = memo(() => {
               data-testid="tag-search"
               placeholder="Enter tag key or value"
               value={tagSearch}
-              onChange={value => {
+              onChange={(value) => {
                 setTagSearch(value)
               }}
             />
@@ -90,6 +94,6 @@ export const TagsCellHeader = memo(() => {
           ))}
         </div>
       </RiPopover>
-    </div>
+    </Row>
   )
 })

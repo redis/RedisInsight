@@ -49,7 +49,7 @@ const FilterNotAvailable = ({ onClose }: { onClose?: () => void }) => {
       {!!freeInstances.length && (
         <>
           <Text color="subdued">
-            Use your free trial all-in-one Redis Cloud database to start
+            Use your free all-in-one Redis Cloud database to start
             exploring these capabilities.
           </Text>
           <Spacer />
@@ -63,7 +63,7 @@ const FilterNotAvailable = ({ onClose }: { onClose?: () => void }) => {
       {!freeInstances.length && (
         <FeatureFlagComponent name={FeatureFlags.cloudAds}>
           <Text color="subdued">
-            Create a free trial Redis Stack database that supports filtering and
+            Create a free Redis Cloud database that supports filtering and
             extends the core capabilities of your Redis.
           </Text>
           <Spacer size="l" />

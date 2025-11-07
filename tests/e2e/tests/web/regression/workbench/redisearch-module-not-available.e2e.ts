@@ -21,13 +21,13 @@ fixture `Redisearch module not available`
         await t.click(browserPage.NavigationTabs.workbenchButton);
     });
 // Skipped as outdated after implementing RI-4230
-test.skip('Verify that user can see the "Create your free trial Redis database with RediSearch on Redis Cloud" button and click on it in Workbench when module in not loaded', async t => {
+test.skip('Verify that user can see the "Create your free Redis Cloud database with RediSearch on Redis Cloud" button and click on it in Workbench when module in not loaded', async t => {
     const link = 'https://redis.io/try-free/?utm_source=redis&utm_medium=app&utm_campaign=redisinsight_redisearch';
 
     // Send command with 'FT.'
     await workbenchPage.sendCommandInWorkbench(commandForSend);
     // Verify the button in the results
-    await t.expect(await workbenchPage.queryCardNoModuleButton.visible).ok('The "Create your free trial Redis database with RediSearch on Redis Cloud" button is not visible');
+    await t.expect(await workbenchPage.queryCardNoModuleButton.visible).ok('The "Create your free Redis Cloud database with RediSearch on Redis Cloud" button is not visible');
     // Click on the button in the results
     await t.click(workbenchPage.queryCardNoModuleButton);
     await t.expect(getPageUrl()).contains(link, 'The Try Redis Enterprise page is not opened');

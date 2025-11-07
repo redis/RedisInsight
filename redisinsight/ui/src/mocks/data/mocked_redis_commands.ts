@@ -1507,4 +1507,865 @@ export const MOCKED_REDIS_COMMANDS = {
     group: 'search',
     provider: 'redisearch',
   },
+  'FT.HYBRID': {
+    summary:
+      'Performs hybrid search combining text search and vector similarity search',
+    complexity:
+      'O(N+M) where N is the complexity of the text search and M is the complexity of the vector search',
+    arguments: [
+      {
+        name: 'index',
+        type: 'string',
+      },
+      {
+        name: 'search_clause',
+        type: 'block',
+        arguments: [
+          {
+            name: 'search',
+            type: 'pure-token',
+            token: 'SEARCH',
+          },
+          {
+            name: 'query',
+            type: 'string',
+          },
+          {
+            name: 'scorer',
+            type: 'string',
+            token: 'SCORER',
+            optional: true,
+          },
+          {
+            name: 'yield_score_as',
+            type: 'string',
+            token: 'YIELD_SCORE_AS',
+            optional: true,
+          },
+        ],
+      },
+      {
+        name: 'vsim_clause',
+        type: 'block',
+        arguments: [
+          {
+            name: 'vsim',
+            type: 'pure-token',
+            token: 'VSIM',
+          },
+          {
+            name: 'field',
+            type: 'string',
+          },
+          {
+            name: 'vector',
+            type: 'string',
+          },
+          {
+            name: 'vector_query_type',
+            type: 'oneof',
+            optional: true,
+            arguments: [
+              {
+                name: 'knn_clause',
+                type: 'block',
+                arguments: [
+                  {
+                    name: 'knn',
+                    type: 'pure-token',
+                    token: 'KNN',
+                  },
+                  {
+                    name: 'count',
+                    type: 'integer',
+                  },
+                  {
+                    name: 'k',
+                    type: 'integer',
+                    token: 'K',
+                  },
+                  {
+                    name: 'ef_runtime',
+                    type: 'integer',
+                    token: 'EF_RUNTIME',
+                    optional: true,
+                  },
+                  {
+                    name: 'yield_score_as',
+                    type: 'string',
+                    token: 'YIELD_SCORE_AS',
+                    optional: true,
+                  },
+                ],
+              },
+              {
+                name: 'range_clause',
+                type: 'block',
+                arguments: [
+                  {
+                    name: 'range',
+                    type: 'pure-token',
+                    token: 'RANGE',
+                  },
+                  {
+                    name: 'count',
+                    type: 'integer',
+                  },
+                  {
+                    name: 'radius',
+                    type: 'double',
+                    token: 'RADIUS',
+                  },
+                  {
+                    name: 'epsilon',
+                    type: 'double',
+                    token: 'EPSILON',
+                    optional: true,
+                  },
+                  {
+                    name: 'yield_score_as',
+                    type: 'string',
+                    token: 'YIELD_SCORE_AS',
+                    optional: true,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            name: 'filter',
+            type: 'string',
+            token: 'FILTER',
+            optional: true,
+          },
+        ],
+      },
+      {
+        name: 'combine',
+        type: 'block',
+        optional: true,
+        arguments: [
+          {
+            name: 'combine',
+            type: 'pure-token',
+            token: 'COMBINE',
+          },
+          {
+            name: 'method',
+            type: 'oneof',
+            arguments: [
+              {
+                name: 'rrf_method',
+                type: 'block',
+                arguments: [
+                  {
+                    name: 'rrf',
+                    type: 'pure-token',
+                    token: 'RRF',
+                  },
+                  {
+                    name: 'count',
+                    type: 'integer',
+                  },
+                  {
+                    name: 'constant',
+                    type: 'double',
+                    token: 'CONSTANT',
+                    optional: true,
+                  },
+                  {
+                    name: 'window',
+                    type: 'integer',
+                    token: 'WINDOW',
+                    optional: true,
+                  },
+                  {
+                    name: 'yield_score_as',
+                    type: 'string',
+                    token: 'YIELD_SCORE_AS',
+                    optional: true,
+                  },
+                ],
+              },
+              {
+                name: 'linear_method',
+                type: 'block',
+                arguments: [
+                  {
+                    name: 'linear',
+                    type: 'pure-token',
+                    token: 'LINEAR',
+                  },
+                  {
+                    name: 'count',
+                    type: 'integer',
+                  },
+                  {
+                    name: 'alpha',
+                    type: 'double',
+                    token: 'ALPHA',
+                  },
+                  {
+                    name: 'beta',
+                    type: 'double',
+                    token: 'BETA',
+                  },
+                  {
+                    name: 'window',
+                    type: 'integer',
+                    token: 'WINDOW',
+                    optional: true,
+                  },
+                  {
+                    name: 'yield_score_as',
+                    type: 'string',
+                    token: 'YIELD_SCORE_AS',
+                    optional: true,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        name: 'limit',
+        type: 'block',
+        optional: true,
+        arguments: [
+          {
+            name: 'limit',
+            type: 'pure-token',
+            token: 'LIMIT',
+          },
+          {
+            name: 'offset',
+            type: 'integer',
+          },
+          {
+            name: 'num',
+            type: 'integer',
+          },
+        ],
+      },
+      {
+        name: 'sorting',
+        type: 'oneof',
+        optional: true,
+        arguments: [
+          {
+            name: 'sortby',
+            type: 'block',
+            arguments: [
+              {
+                name: 'sortby',
+                type: 'string',
+                token: 'SORTBY',
+              },
+              {
+                name: 'order',
+                type: 'oneof',
+                optional: true,
+                arguments: [
+                  {
+                    name: 'asc',
+                    type: 'pure-token',
+                    token: 'ASC',
+                  },
+                  {
+                    name: 'desc',
+                    type: 'pure-token',
+                    token: 'DESC',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            name: 'nosort',
+            type: 'pure-token',
+            token: 'NOSORT',
+          },
+        ],
+      },
+      {
+        name: 'params',
+        type: 'block',
+        optional: true,
+        arguments: [
+          {
+            name: 'params',
+            type: 'pure-token',
+            token: 'PARAMS',
+          },
+          {
+            name: 'nargs',
+            type: 'integer',
+          },
+          {
+            name: 'values',
+            type: 'block',
+            multiple: true,
+            arguments: [
+              {
+                name: 'name',
+                type: 'string',
+              },
+              {
+                name: 'value',
+                type: 'string',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        name: 'timeout',
+        type: 'integer',
+        optional: true,
+        token: 'TIMEOUT',
+      },
+      {
+        name: 'format',
+        type: 'string',
+        optional: true,
+        token: 'FORMAT',
+      },
+      {
+        name: 'load',
+        type: 'block',
+        optional: true,
+        arguments: [
+          {
+            name: 'load',
+            type: 'pure-token',
+            token: 'LOAD',
+          },
+          {
+            name: 'count_or_all',
+            type: 'oneof',
+            arguments: [
+              {
+                name: 'count',
+                type: 'integer',
+              },
+              {
+                name: 'all',
+                type: 'pure-token',
+                token: '*',
+              },
+            ],
+          },
+          {
+            name: 'field',
+            type: 'string',
+            multiple: true,
+            optional: true,
+          },
+        ],
+      },
+      {
+        name: 'groupby',
+        type: 'block',
+        optional: true,
+        arguments: [
+          {
+            name: 'groupby',
+            type: 'pure-token',
+            token: 'GROUPBY',
+          },
+          {
+            name: 'nproperties',
+            type: 'integer',
+          },
+          {
+            name: 'property',
+            type: 'string',
+            multiple: true,
+          },
+          {
+            name: 'reduce',
+            type: 'block',
+            optional: true,
+            multiple: true,
+            arguments: [
+              {
+                name: 'reduce',
+                type: 'pure-token',
+                token: 'REDUCE',
+              },
+              {
+                name: 'function',
+                type: 'oneof',
+                arguments: [
+                  {
+                    name: 'count',
+                    type: 'pure-token',
+                    token: 'COUNT',
+                  },
+                  {
+                    name: 'count_distinct',
+                    type: 'pure-token',
+                    token: 'COUNT_DISTINCT',
+                  },
+                  {
+                    name: 'count_distinctish',
+                    type: 'pure-token',
+                    token: 'COUNT_DISTINCTISH',
+                  },
+                  {
+                    name: 'sum',
+                    type: 'pure-token',
+                    token: 'SUM',
+                  },
+                  {
+                    name: 'min',
+                    type: 'pure-token',
+                    token: 'MIN',
+                  },
+                  {
+                    name: 'max',
+                    type: 'pure-token',
+                    token: 'MAX',
+                  },
+                  {
+                    name: 'avg',
+                    type: 'pure-token',
+                    token: 'AVG',
+                  },
+                  {
+                    name: 'stddev',
+                    type: 'pure-token',
+                    token: 'STDDEV',
+                  },
+                  {
+                    name: 'quantile',
+                    type: 'pure-token',
+                    token: 'QUANTILE',
+                  },
+                  {
+                    name: 'tolist',
+                    type: 'pure-token',
+                    token: 'TOLIST',
+                  },
+                  {
+                    name: 'first_value',
+                    type: 'pure-token',
+                    token: 'FIRST_VALUE',
+                  },
+                  {
+                    name: 'random_sample',
+                    type: 'pure-token',
+                    token: 'RANDOM_SAMPLE',
+                  },
+                ],
+              },
+              {
+                name: 'nargs',
+                type: 'integer',
+              },
+              {
+                name: 'arg',
+                type: 'string',
+                multiple: true,
+              },
+              {
+                name: 'name',
+                type: 'string',
+                token: 'AS',
+                optional: true,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        name: 'apply',
+        type: 'block',
+        optional: true,
+        multiple: true,
+        arguments: [
+          {
+            name: 'expression',
+            type: 'string',
+            expression: true,
+            token: 'APPLY',
+            arguments: [
+              {
+                name: 'exists',
+                token: 'exists',
+                type: 'function',
+                summary: 'Checks whether a field exists in a document.',
+                arguments: [
+                  {
+                    token: 's',
+                  },
+                ],
+              },
+              {
+                name: 'log',
+                token: 'log',
+                type: 'function',
+                summary:
+                  'Return the logarithm of a number, property or subexpression',
+                arguments: [
+                  {
+                    token: 'x',
+                  },
+                ],
+              },
+              {
+                name: 'abs',
+                token: 'abs',
+                type: 'function',
+                summary: 'Return the absolute value of a numeric expression',
+                arguments: [
+                  {
+                    token: 'x',
+                  },
+                ],
+              },
+              {
+                name: 'ceil',
+                token: 'ceil',
+                type: 'function',
+                summary: 'Round to the smallest integer not less than x',
+                arguments: [
+                  {
+                    token: 'x',
+                  },
+                ],
+              },
+              {
+                name: 'floor',
+                token: 'floor',
+                type: 'function',
+                summary: 'Round to largest integer not greater than x',
+                arguments: [
+                  {
+                    token: 'x',
+                  },
+                ],
+              },
+              {
+                name: 'log2',
+                token: 'log2',
+                type: 'function',
+                summary: 'Return the logarithm of x to base 2',
+                arguments: [
+                  {
+                    token: 'x',
+                  },
+                ],
+              },
+              {
+                name: 'exp',
+                token: 'exp',
+                type: 'function',
+                summary: 'Return the exponent of x, e.g., e^x',
+                arguments: [
+                  {
+                    token: 'x',
+                  },
+                ],
+              },
+              {
+                name: 'sqrt',
+                token: 'sqrt',
+                type: 'function',
+                summary: 'Return the square root of x',
+                arguments: [
+                  {
+                    token: 'x',
+                  },
+                ],
+              },
+              {
+                name: 'upper',
+                token: 'upper',
+                type: 'function',
+                summary: 'Return the uppercase conversion of s',
+                arguments: [
+                  {
+                    token: 's',
+                  },
+                ],
+              },
+              {
+                name: 'lower',
+                token: 'lower',
+                type: 'function',
+                summary: 'Return the lowercase conversion of s',
+                arguments: [
+                  {
+                    token: 's',
+                  },
+                ],
+              },
+              {
+                name: 'startswith',
+                token: 'startswith',
+                type: 'function',
+                summary: 'Return 1 if s2 is the prefix of s1, 0 otherwise.',
+                arguments: [
+                  {
+                    token: 's1',
+                  },
+                  {
+                    token: 's2',
+                  },
+                ],
+              },
+              {
+                name: 'contains',
+                token: 'contains',
+                type: 'function',
+                summary:
+                  'Return the number of occurrences of s2 in s1, 0 otherwise. If s2 is an empty string, return length(s1) + 1.',
+                arguments: [
+                  {
+                    token: 's1',
+                  },
+                  {
+                    token: 's2',
+                  },
+                ],
+              },
+              {
+                name: 'strlen',
+                token: 'strlen',
+                type: 'function',
+                summary: 'Return the length of s',
+                arguments: [
+                  {
+                    token: 's',
+                  },
+                ],
+              },
+              {
+                name: 'substr',
+                token: 'substr',
+                type: 'function',
+                summary:
+                  'Return the substring of s, starting at offset and having count characters. If offset is negative, it represents the distance from the end of the string. If count is -1, it means "the rest of the string starting at offset".',
+                arguments: [
+                  {
+                    token: 's',
+                  },
+                  {
+                    token: 'offset',
+                  },
+                  {
+                    token: 'count',
+                  },
+                ],
+              },
+              {
+                name: 'format',
+                token: 'format',
+                type: 'function',
+                summary:
+                  'Use the arguments following fmt to format a string. Currently the only format argument supported is %s and it applies to all types of arguments.',
+                arguments: [
+                  {
+                    token: 'fmt',
+                  },
+                ],
+              },
+              {
+                name: 'matched_terms',
+                token: 'matched_terms',
+                type: 'function',
+                summary:
+                  'Return the query terms that matched for each record (up to 100), as a list. If a limit is specified, Redis will return the first N matches found, based on query order.',
+                arguments: [
+                  {
+                    token: 'max_terms=100',
+                    optional: true,
+                  },
+                ],
+              },
+              {
+                name: 'split',
+                token: 'split',
+                type: 'function',
+                summary:
+                  'Split a string by any character in the string sep, and strip any characters in strip. If only s is specified, it is split by commas and spaces are stripped. The output is an array.',
+                arguments: [
+                  {
+                    token: 's',
+                  },
+                ],
+              },
+              {
+                name: 'timefmt',
+                token: 'timefmt',
+                type: 'function',
+                summary:
+                  'Return a formatted time string based on a numeric timestamp value x.',
+                arguments: [
+                  {
+                    token: 'x',
+                  },
+                  {
+                    token: 'fmt',
+                    optional: true,
+                  },
+                ],
+              },
+              {
+                name: 'parsetime',
+                token: 'parsetime',
+                type: 'function',
+                summary:
+                  'The opposite of timefmt() - parse a time format using a given format string',
+                arguments: [
+                  {
+                    token: 'timesharing',
+                  },
+                  {
+                    token: 'fmt',
+                    optional: true,
+                  },
+                ],
+              },
+              {
+                name: 'day',
+                token: 'day',
+                type: 'function',
+                summary:
+                  'Round a Unix timestamp to midnight (00:00) start of the current day.',
+                arguments: [
+                  {
+                    token: 'timestamp',
+                  },
+                ],
+              },
+              {
+                name: 'hour',
+                token: 'hour',
+                type: 'function',
+                summary:
+                  'Round a Unix timestamp to the beginning of the current hour.',
+                arguments: [
+                  {
+                    token: 'timestamp',
+                  },
+                ],
+              },
+              {
+                name: 'minute',
+                token: 'minute',
+                type: 'function',
+                summary:
+                  'Round a Unix timestamp to the beginning of the current minute.',
+                arguments: [
+                  {
+                    token: 'timestamp',
+                  },
+                ],
+              },
+              {
+                name: 'month',
+                token: 'month',
+                type: 'function',
+                summary:
+                  'Round a unix timestamp to the beginning of the current month.',
+                arguments: [
+                  {
+                    token: 'timestamp',
+                  },
+                ],
+              },
+              {
+                name: 'dayofweek',
+                token: 'dayofweek',
+                type: 'function',
+                summary:
+                  'Convert a Unix timestamp to the day number (Sunday = 0).',
+                arguments: [
+                  {
+                    token: 'timestamp',
+                  },
+                ],
+              },
+              {
+                name: 'dayofmonth',
+                token: 'dayofmonth',
+                type: 'function',
+                summary:
+                  'Convert a Unix timestamp to the day of month number (1 .. 31).',
+                arguments: [
+                  {
+                    token: 'timestamp',
+                  },
+                ],
+              },
+              {
+                name: 'dayofyear',
+                token: 'dayofyear',
+                type: 'function',
+                summary:
+                  'Convert a Unix timestamp to the day of year number (0 .. 365).',
+                arguments: [
+                  {
+                    token: 'timestamp',
+                  },
+                ],
+              },
+              {
+                name: 'year',
+                token: 'year',
+                type: 'function',
+                summary:
+                  'Convert a Unix timestamp to the current year (e.g. 2018).',
+                arguments: [
+                  {
+                    token: 'timestamp',
+                  },
+                ],
+              },
+              {
+                name: 'monthofyear',
+                token: 'monthofyear',
+                type: 'function',
+                summary:
+                  'Convert a Unix timestamp to the current month (0 .. 11).',
+                arguments: [
+                  {
+                    token: 'timestamp',
+                  },
+                ],
+              },
+              {
+                name: 'geodistance',
+                token: 'geodistance',
+                type: 'function',
+                summary: 'Return distance in meters.',
+                arguments: [
+                  {
+                    token: '',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            name: 'name',
+            type: 'string',
+            token: 'AS',
+          },
+        ],
+      },
+      {
+        name: 'filter',
+        type: 'string',
+        optional: true,
+        expression: true,
+        token: 'FILTER',
+      },
+    ],
+    since: '8.4.0',
+    group: 'search',
+  },
 }
