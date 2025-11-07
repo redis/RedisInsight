@@ -43,7 +43,7 @@ export const ListGroupItemLabelValue = ({
   <ListGroupItem
     label={
       <Row align="center" gap="m">
-        <Text color="ghost">{label}</Text>
+        <Text color="secondary">{label}</Text>
         <Text color="primary" data-testid={dataTestId}>
           {value}
         </Text>
