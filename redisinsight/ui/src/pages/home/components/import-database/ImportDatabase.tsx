@@ -101,32 +101,30 @@ const ImportDatabase = (props: Props) => {
 
     if (error) {
       return ReactDOM.createPortal(
-        <div className="footerAddDatabase">
+        <Row justify="end" gap="m" data-testid="footer-import-database">
           <PrimaryButton
-            size="s"
             color="secondary"
             onClick={onClickRetry}
             data-testid="btn-retry"
           >
             Retry
           </PrimaryButton>
-        </div>,
+        </Row>,
         footerEl,
       )
     }
 
     if (data) {
       return ReactDOM.createPortal(
-        <div className="footerAddDatabase">
+        <Row justify="end" gap="m" data-testid="footer-import-database">
           <PrimaryButton
-            size="s"
             type="submit"
             onClick={handleOnClose}
             data-testid="btn-close"
           >
             Ok
           </PrimaryButton>
-        </div>,
+        </Row>,
         footerEl,
       )
     }
