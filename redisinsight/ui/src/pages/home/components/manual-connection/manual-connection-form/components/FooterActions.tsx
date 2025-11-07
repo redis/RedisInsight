@@ -50,7 +50,6 @@ const FooterActions = (props: Props) => {
       content={getSubmitButtonContent(errors, submitIsDisabled)}
     >
       <PrimaryButton
-        size="medium"
         type="submit"
         onClick={onClick}
         disabled={submitIsDisabled}
@@ -77,7 +76,6 @@ const FooterActions = (props: Props) => {
           content={getSubmitButtonContent(errors, submitIsDisable())}
         >
           <EmptyButton
-            size="medium"
             className="empty-btn"
             disabled={submitIsDisable()}
             icon={submitIsDisable() ? InfoIcon : undefined}
@@ -94,7 +92,6 @@ const FooterActions = (props: Props) => {
         <Row>
           {onClose && (
             <SecondaryButton
-              size="medium"
               onClick={onClose}
               className="btn-cancel"
               data-testid="btn-cancel"

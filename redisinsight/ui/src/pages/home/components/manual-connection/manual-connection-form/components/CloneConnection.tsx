@@ -27,7 +27,6 @@ const CloneConnection = (props: Props) => {
       <Row gap="m" justify="end" style={{ flexGrow: 0 }}>
         <FlexItem>
           <SecondaryButton
-            size="medium"
             aria-label="Clone database"
             data-testid="clone-db-btn"
             onClick={handleClickClone}
