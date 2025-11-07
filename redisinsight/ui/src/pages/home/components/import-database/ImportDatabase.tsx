@@ -133,9 +133,8 @@ const ImportDatabase = (props: Props) => {
     }
 
     return ReactDOM.createPortal(
-      <div className="footerAddDatabase">
+      <Row justify="end" gap="m" data-testid="footer-import-database">
         <SecondaryButton
-          size="s"
           className="btn-cancel"
           onClick={handleOnClose}
           style={{ marginRight: 12 }}
@@ -148,7 +147,6 @@ const ImportDatabase = (props: Props) => {
           content={isSubmitDisabled ? 'Upload a file' : undefined}
         >
           <PrimaryButton
-            size="s"
             type="submit"
             onClick={onSubmit}
             loading={loading}
@@ -159,7 +157,7 @@ const ImportDatabase = (props: Props) => {
             Submit
           </PrimaryButton>
         </RiTooltip>
-      </div>,
+      </Row>,
       footerEl,
     )
   }
