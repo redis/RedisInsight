@@ -13,6 +13,7 @@ const MessageCloudApiKeys = () => (
     <Link
       external
       variant="inline"
+      color="subdued"
       href="https://docs.redis.com/latest/rc/api/get-started/enable-the-api/"
     >
       documentation
@@ -28,6 +29,7 @@ const MessageStandalone = () => (
     <Link
       external
       variant="inline"
+      color="subdued"
       href={getUtmExternalLink(
         'https://redis.io/docs/latest/develop/connect/insight#connection-management',
         { campaign: 'redisinsight' },
@@ -46,6 +48,7 @@ const MessageSentinel = () => (
     <Link
       external
       variant="inline"
+      color="subdued"
       href={getUtmExternalLink(
         'https://redis.io/docs/latest/operate/oss_and_stack/management/sentinel/',
         { campaign: 'redisinsight' },
@@ -64,6 +67,7 @@ const MessageEnterpriceSoftware = () => (
     <Link
       external
       variant="inline"
+      color="subdued"
       href={getUtmExternalLink(
         'https://redis.io/redis-enterprise-software/overview/',
         { campaign: 'redisinsight' },
