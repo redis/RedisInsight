@@ -197,11 +197,8 @@ const CloudConnectionForm = (props: Props) => {
                 placeholder={fieldDisplayNames.accessKey}
                 value={formik.values.accessKey}
                 autoComplete="off"
-                onChange={value => {
-                  formik.setFieldValue(
-                    'accessKey',
-                    validateField(value.trim()),
-                  )
+                onChange={(value) => {
+                  formik.setFieldValue('accessKey', validateField(value.trim()))
                 }}
               />
             </FormField>
@@ -219,11 +216,8 @@ const CloudConnectionForm = (props: Props) => {
                 placeholder={fieldDisplayNames.secretKey}
                 value={formik.values.secretKey}
                 autoComplete="off"
-                onChange={value => {
-                  formik.setFieldValue(
-                    'secretKey',
-                    validateField(value.trim()),
-                  )
+                onChange={(value) => {
+                  formik.setFieldValue('secretKey', validateField(value.trim()))
                 }}
               />
             </FormField>
@@ -237,11 +231,9 @@ const CloudConnectionForm = (props: Props) => {
   return (
     <div className="getStartedForm eui-yScroll">
       <FeatureFlagComponent name={FeatureFlags.cloudSso}>
-        <Col gap="m">
+        <Col gap="l">
           <FlexItem grow>
-            <Text color="subdued" size="s">
-              Connect with:
-            </Text>
+            <Text>Connect with</Text>
           </FlexItem>
           <FlexItem grow>
             <RiRadioGroup
@@ -253,7 +245,7 @@ const CloudConnectionForm = (props: Props) => {
             />
           </FlexItem>
         </Col>
-        <Spacer size="m" />
+        <Spacer size="l" />
       </FeatureFlagComponent>
       {type === CloudConnectionOptions.Account && (
         <OAuthAutodiscovery
