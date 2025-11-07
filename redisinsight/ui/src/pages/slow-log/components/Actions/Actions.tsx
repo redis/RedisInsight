@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { DurationUnits } from 'uiSrc/constants'
@@ -22,6 +21,7 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 
 import SlowLogConfig from '../SlowLogConfig'
 import styles from './styles.module.scss'
+import { StyledInfoIcon } from './Actions.styles'
 
 export interface Props {
   width: number
@@ -133,8 +133,8 @@ const Actions = (props: Props) => {
   )
 
   return (
-    <Row className={styles.actions} gap="s" align="center">
-      <FlexItem grow={5} style={{ alignItems: 'flex-end' }}>
+    <Row gap="s" align="center">
+      <FlexItem>
         <AutoRefresh
           postfix="slowlog"
           loading={loading}
@@ -147,17 +147,18 @@ const Actions = (props: Props) => {
           testid="slowlog"
         />
       </FlexItem>
-      <FlexItem grow>
+
+      <FlexItem>
         <RiPopover
           ownFocus
           anchorPosition="downRight"
           isOpen={isPopoverConfigOpen}
           panelPaddingSize="m"
           closePopover={() => {}}
-          panelClassName={cx('popover-without-top-tail', styles.configWrapper)}
           button={
             <SecondaryButton
               size="small"
+              inverted
               icon={SettingsIcon}
               aria-label="Configure"
               onClick={() => showConfigPopover()}
@@ -173,8 +174,9 @@ const Actions = (props: Props) => {
           />
         </RiPopover>
       </FlexItem>
+
       {!isEmptySlowLog && (
-        <FlexItem grow>
+        <FlexItem>
           <RiPopover
             anchorPosition="leftCenter"
             ownFocus
@@ -200,11 +202,11 @@ const Actions = (props: Props) => {
           </RiPopover>
         </FlexItem>
       )}
-      <FlexItem grow>
+
+      <FlexItem>
         <RiTooltip
           title="Slow Log"
           position="bottom"
-          anchorClassName={styles.icon}
           content={
             <span data-testid="slowlog-tooltip-text">
               Slow Log is a list of slow operations for your Redis instance.
@@ -218,12 +220,9 @@ const Actions = (props: Props) => {
             </span>
           }
         >
-          <RiIcon
-            className={styles.infoIcon}
-            type="InfoIcon"
-            style={{ cursor: 'pointer' }}
-            data-testid="slow-log-tooltip-icon"
-          />
+          <StyledInfoIcon>
+            <RiIcon type="InfoIcon" data-testid="slow-log-tooltip-icon" />
+          </StyledInfoIcon>
         </RiTooltip>
       </FlexItem>
     </Row>

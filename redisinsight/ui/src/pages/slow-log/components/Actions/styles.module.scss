@@ -18,20 +18,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
-    &:hover {
-      color: var(--iconsDefaultHoverColor);
-    }
-
-    :global(.euiIcon) {
-      width: 18px;
-      height: 18px;
-    }
-
-    .infoIcon {
-      width: 20px;
-      height: 20px;
-    }
   }
 }
 
@@ -59,10 +45,4 @@
   .popoverDBName {
     color: var(--htmlColor);
   }
-}
-
-.configWrapper {
-  padding: 24px !important;
-  box-shadow: 0px 3px 15px #00000099;
-  background-color: var(--euiColorLightestShade) !important;
 }
