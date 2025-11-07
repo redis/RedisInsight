@@ -13,7 +13,7 @@ import {
 } from 'uiSrc/slices/instances/sentinel'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { Pages } from 'uiSrc/constants'
-import { handleCopy, setTitle } from 'uiSrc/utils'
+import { setTitle } from 'uiSrc/utils'
 import { CreateSentinelDatabaseDto } from 'apiSrc/modules/redis-sentinel/dto/create.sentinel.database.dto'
 import {
   ColumnDef,

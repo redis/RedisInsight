@@ -107,8 +107,7 @@ const ClusterConnectionForm = (props: Props) => {
 
     Object.entries(values).forEach(
       ([key, value]) =>
-        !value &&
-        Object.assign(errs, { [key]: fieldDisplayNames[key as keyof Values] }),
+        !value && Object.assign(errs, { [key]: fieldDisplayNames[key] }),
     )
 
     setErrors(errs)
@@ -189,9 +188,10 @@ const ClusterConnectionForm = (props: Props) => {
   }
 
   return (
-    <div className="getStartedForm" data-testid="add-db_cluster">
-      <MessageEnterpriseSoftware />
-      <Spacer size="l" />
+    <div className="getStartedForm eui-yScroll" data-testid="add-db_cluster">
+      <MessageEnterpriceSoftware />
+      <br />
+
       <form>
         <WindowEvent event="keydown" handler={onKeyDown} />
 

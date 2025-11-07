@@ -7,10 +7,7 @@ import {
 import { RiTooltip } from 'uiSrc/components'
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
-
-const handleCopy = (text = '') => {
-  return navigator.clipboard.writeText(text)
-}
+import { handleCopy } from 'uiSrc/utils'
 
 export const AddressColumn = (): ColumnDef<ModifiedSentinelMaster> => {
   return {

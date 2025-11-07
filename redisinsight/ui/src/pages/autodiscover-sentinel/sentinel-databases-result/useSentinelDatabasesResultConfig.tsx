@@ -15,7 +15,7 @@ import {
   LoadedSentinel,
   ModifiedSentinelMaster,
 } from 'uiSrc/slices/interfaces'
-import { handleCopy, removeEmpty, setTitle } from 'uiSrc/utils'
+import { removeEmpty, setTitle } from 'uiSrc/utils'
 import { pick } from 'lodash'
 import { ColumnDef } from 'uiSrc/components/base/layout/table'
 import {

@@ -76,5 +76,5 @@ export {
   MessageStandalone,
   MessageSentinel,
   MessageCloudApiKeys,
-  MessageEnterpriseSoftware,
+  MessageEnterpriceSoftware,
 }
