@@ -15,7 +15,7 @@ import { FeatureFlagComponent, OAuthSsoHandlerDialog } from 'uiSrc/components'
 import { RiPopover } from 'uiSrc/components/base'
 import { getPathToResource } from 'uiSrc/services/resourcesService'
 import { ContentCreateRedis } from 'uiSrc/slices/interfaces/content'
-import { HELP_LINKS } from 'uiSrc/pages/home/constants'
+import { CREATE_CLOUD_DB_ID, HELP_LINKS } from 'uiSrc/pages/home/constants'
 import { contentSelector } from 'uiSrc/slices/content/create-redis-buttons'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { getContentByFeature } from 'uiSrc/utils/content'
@@ -33,6 +33,7 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { ColumnsIcon } from 'uiSrc/components/base/icons'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
+import handleClickFreeCloudDb from '../database-list-component/methods/handleClickFreeCloudDb'
 import SearchDatabasesList from '../search-databases-list'
 
 import styles from './styles.module.scss'
@@ -62,7 +63,7 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
     }
 
     if (data?.cloud && !isEmpty(data.cloud)) {
-      setPromoData(getContentByFeature(data.cloud, featureFlags))
+      setPromoData(getContentByFeature(data.cloud as any, featureFlags))
     }
   }, [loading, data, featureFlags])
 
@@ -122,14 +123,28 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
     })
   }
 
-  const AddInstanceBtn = () => (
-    <PrimaryButton
-      onClick={handleOnAddDatabase}
-      className={styles.addInstanceBtn}
-      data-testid="add-redis-database-short"
+  const AddCloudInstanceButton = () => (
+    <FeatureFlagComponent
+      name={[FeatureFlags.enhancedCloudUI, FeatureFlags.cloudAds]}
     >
-      <span>+ Add Redis database</span>
-    </PrimaryButton>
+      <PrimaryButton
+        onClick={handleClickFreeCloudDb}
+        data-testid={`${CREATE_CLOUD_DB_ID}-button`}
+      >
+        + Create Free Cloud DB
+      </PrimaryButton>
+    </FeatureFlagComponent>
+  )
+
+  const AddLocalInstanceButton = () => (
+    <FeatureFlagComponent name={FeatureFlags.databaseManagement}>
+      <SecondaryButton
+        onClick={handleOnAddDatabase}
+        data-testid="add-redis-database-short"
+      >
+        + Connect Existing DB
+      </SecondaryButton>
+    </FeatureFlagComponent>
   )
 
   const CreateBtn = ({ content }: { content: ContentCreateRedis }) => {
@@ -191,10 +206,9 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
         responsive={false}
         gap="s"
       >
-        <FlexItem>
-          <FeatureFlagComponent name={FeatureFlags.databaseManagement}>
-            <AddInstanceBtn />
-          </FeatureFlagComponent>
+        <FlexItem direction="row" $gap="m">
+          <AddCloudInstanceButton />
+          <AddLocalInstanceButton />
         </FlexItem>
         {!loading && !isEmpty(data) && (
           <FlexItem className={cx(styles.promo)}>
