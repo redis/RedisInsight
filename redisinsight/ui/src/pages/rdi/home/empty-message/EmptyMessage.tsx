@@ -19,7 +19,7 @@ export interface Props {
 const EmptyMessage = ({ onAddInstanceClick }: Props) => {
   const { theme } = useContext(ThemeContext)
   return (
-    <EmptyPageContainer>
+    <EmptyPageContainer grow>
       <Col data-testid="empty-rdi-instance-list" align="center" gap="xxl">
         <Spacer size="space400" />
         <FlexItem>

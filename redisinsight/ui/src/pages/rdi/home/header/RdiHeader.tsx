@@ -14,27 +14,27 @@ export interface Props {
 const RdiHeader = ({ onRdiInstanceClick }: Props) => {
   const { data: instances } = useSelector(instancesSelector)
 
+  if (instances.length === 0) {
+    return null
+  }
+
   return (
-    <>
-      {instances.length > 0 && (
-        <div className="containerDl">
-          <Row className="contentDL" align="center" gap="s">
-            <FlexItem>
-              <PrimaryButton
-                onClick={onRdiInstanceClick}
-                data-testid="rdi-instance"
-              >
-                <span>+ Endpoint</span>
-              </PrimaryButton>
-            </FlexItem>
-            <FlexItem className="searchContainer">
-              <SearchRdiList />
-            </FlexItem>
-          </Row>
-          <Spacer className="spacerDl" />
-        </div>
-      )}
-    </>
+    <div className="containerDl">
+      <Row className="contentDL" align="center" gap="s">
+        <FlexItem>
+          <PrimaryButton
+            onClick={onRdiInstanceClick}
+            data-testid="rdi-instance"
+          >
+            <span>+ Endpoint</span>
+          </PrimaryButton>
+        </FlexItem>
+        <FlexItem className="searchContainer">
+          <SearchRdiList />
+        </FlexItem>
+      </Row>
+      <Spacer className="spacerDl" />
+    </div>
   )
 }
 
