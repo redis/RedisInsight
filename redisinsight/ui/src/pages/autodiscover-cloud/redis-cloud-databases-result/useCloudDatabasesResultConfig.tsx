@@ -1,14 +1,19 @@
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
+
+import { Pages } from 'uiSrc/constants'
 import {
-  addInstancesRedisCloud,
   cloudSelector,
-  fetchSubscriptionsRedisCloud,
   resetDataRedisCloud,
   resetLoadedRedisCloud,
 } from 'uiSrc/slices/instances/cloud'
-import { oauthCloudUserSelector } from 'uiSrc/slices/oauth/cloud'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import {
+  AddRedisDatabaseStatus,
+  InstanceRedisCloud,
+  LoadedCloud,
+  RedisCloudSubscriptionTypeText,
+} from 'uiSrc/slices/interfaces'
 import {
   formatLongName,
   handleCopy,
@@ -16,52 +21,51 @@ import {
   replaceSpaces,
   setTitle,
 } from 'uiSrc/utils'
-import { Pages } from 'uiSrc/constants'
-import {
-  InstanceRedisCloud,
-  LoadedCloud,
-  OAuthSocialAction,
-  RedisCloudSubscriptionTypeText,
-} from 'uiSrc/slices/interfaces'
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import {
-  ColumnDef,
-  RowSelectionState,
-} from 'uiSrc/components/base/layout/table'
 import {
   DatabaseListModules,
   DatabaseListOptions,
   RiTooltip,
 } from 'uiSrc/components'
-import styles from 'uiSrc/pages/autodiscover-cloud/redis-cloud-databases/styles.module.scss'
-import { getSelectionColumn } from 'uiSrc/pages/autodiscover-cloud/utils'
+import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { ColorText } from 'uiSrc/components/base/text'
+import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { ColumnDef } from 'uiSrc/components/base/layout/table'
+import styles from './styles.module.scss'
 import {
   CellText,
   CopyBtn,
   CopyPublicEndpointText,
   CopyTextContainer,
-  StatusColumnText,
 } from 'uiSrc/components/auto-discover'
 
-export const colFactory = (instances: InstanceRedisCloud[]) => {
+export const colFactory = (
+  instances: InstanceRedisCloud[] = [],
+  instancesForOptions: InstanceRedisCloud[] = [],
+): ColumnDef<InstanceRedisCloud>[] => {
+  const shouldShowCapabilities = instances.some(
+    (instance) => instance.modules?.length,
+  )
+  const shouldShowOptions = instances.some(
+    (instance) =>
+      instance.options &&
+      Object.values(instance.options).filter(Boolean).length,
+  )
   const columns: ColumnDef<InstanceRedisCloud>[] = [
-    getSelectionColumn<InstanceRedisCloud>(),
     {
       header: 'Database',
       id: 'name',
       accessorKey: 'name',
       enableSorting: true,
-      maxSize: 150,
-      cell: ({
+      maxSize: 120,
+      cell: function InstanceCell({
         row: {
           original: { name },
         },
-      }) => {
+      }) {
         const cellContent = replaceSpaces(name.substring(0, 200))
         return (
           <div role="presentation" data-testid={`db_name_${name}`}>
             <RiTooltip
-              delay={200}
               position="bottom"
               title="Database"
               className={styles.tooltipColumnName}
@@ -79,33 +83,23 @@ export const colFactory = (instances: InstanceRedisCloud[]) => {
       id: 'subscriptionId',
       accessorKey: 'subscriptionId',
       enableSorting: true,
-      maxSize: 120,
-      cell: ({
-        row: {
-          original: { subscriptionId },
-        },
-      }) => (
-        <CellText data-testid={`sub_id_${subscriptionId}`}>
-          {subscriptionId}
-        </CellText>
-      ),
+      maxSize: 150,
     },
     {
       header: 'Subscription',
       id: 'subscriptionName',
       accessorKey: 'subscriptionName',
       enableSorting: true,
-      minSize: 200,
-      cell: ({
+      maxSize: 270,
+      cell: function SubscriptionCell({
         row: {
           original: { subscriptionName: name },
         },
-      }) => {
+      }) {
         const cellContent = replaceSpaces(name.substring(0, 200))
         return (
           <div role="presentation">
             <RiTooltip
-              delay={200}
               position="bottom"
               title="Subscription"
               className={styles.tooltipColumnName}
@@ -123,40 +117,37 @@ export const colFactory = (instances: InstanceRedisCloud[]) => {
       id: 'subscriptionType',
       accessorKey: 'subscriptionType',
       enableSorting: true,
-      maxSize: 100,
+      size: 95,
       cell: ({
         row: {
           original: { subscriptionType },
         },
-      }) => (
-        <CellText>
-          {RedisCloudSubscriptionTypeText[subscriptionType!] ?? '-'}
-        </CellText>
-      ),
+      }) => RedisCloudSubscriptionTypeText[subscriptionType!] ?? '-',
     },
     {
       header: 'Status',
       id: 'status',
       accessorKey: 'status',
       enableSorting: true,
-      maxSize: 100,
+      size: 80,
       cell: ({
         row: {
           original: { status },
         },
-      }) => <StatusColumnText>{status}</StatusColumnText>,
+      }) => <CellText className="column_status">{status}</CellText>,
     },
     {
       header: 'Endpoint',
       id: 'publicEndpoint',
       accessorKey: 'publicEndpoint',
       enableSorting: true,
-      minSize: 200,
-      cell: ({
+      minSize: 250,
+      maxSize: 310,
+      cell: function PublicEndpoint({
         row: {
           original: { publicEndpoint },
         },
-      }) => {
+      }) {
         const text = publicEndpoint
         return (
           <CopyTextContainer>
@@ -170,7 +161,6 @@ export const colFactory = (instances: InstanceRedisCloud[]) => {
             </RiTooltip>
 
             <RiTooltip
-              delay={200}
               position="right"
               content="Copy"
               anchorClassName="copyPublicEndpointTooltip"
@@ -189,11 +179,11 @@ export const colFactory = (instances: InstanceRedisCloud[]) => {
       id: 'modules',
       accessorKey: 'modules',
       enableSorting: true,
-      maxSize: 120,
+      maxSize: 150,
       cell: function Modules({ row: { original: instance } }) {
         return (
           <DatabaseListModules
-            modules={instance.modules.map((name) => ({ name }))}
+            modules={instance.modules?.map((name) => ({ name }))}
           />
         )
       },
@@ -203,128 +193,106 @@ export const colFactory = (instances: InstanceRedisCloud[]) => {
       id: 'options',
       accessorKey: 'options',
       enableSorting: true,
-      maxSize: 120,
-      cell: ({ row: { original: instance } }) => {
+      maxSize: 180,
+      cell: function Options({ row: { original: instance } }) {
         const options = parseInstanceOptionsCloud(
           instance.databaseId,
-          instances || [],
+          instancesForOptions,
         )
         return <DatabaseListOptions options={options} />
       },
     },
+    {
+      header: 'Result',
+      id: 'messageAdded',
+      accessorKey: 'messageAdded',
+      enableSorting: true,
+      minSize: 110,
+      cell: function Message({
+        row: {
+          original: { statusAdded, messageAdded },
+        },
+      }) {
+        return (
+          <>
+            {statusAdded === AddRedisDatabaseStatus.Success ? (
+              <CellText>{messageAdded}</CellText>
+            ) : (
+              <RiTooltip
+                position="left"
+                title="Error"
+                content={messageAdded}
+                anchorClassName="truncateText"
+              >
+                <Row align="center" gap="s">
+                  <FlexItem>
+                    <RiIcon type="ToastDangerIcon" color="danger600" />
+                  </FlexItem>
+
+                  <FlexItem>
+                    <ColorText color="danger" className="flex-row" size="S">
+                      Error
+                    </ColorText>
+                  </FlexItem>
+                </Row>
+              </RiTooltip>
+            )}
+          </>
+        )
+      },
+    },
   ]
+
+  if (!shouldShowCapabilities) {
+    columns.splice(
+      columns.findIndex((col) => col.id === 'modules'),
+      1,
+    )
+  }
+
+  if (!shouldShowOptions) {
+    columns.splice(
+      columns.findIndex((col) => col.id === 'options'),
+      1,
+    )
+  }
 
   return columns
 }
 
-export const useCloudDatabasesConfig = () => {
+export const useCloudDatabasesResultConfig = () => {
   const dispatch = useDispatch()
   const history = useHistory()
 
-  const {
-    ssoFlow,
-    credentials,
-    loading,
-    data: instances,
-    dataAdded: instancesAdded,
-  } = useSelector(cloudSelector)
-
-  const { data: userOAuthProfile } = useSelector(oauthCloudUserSelector)
-
-  const currentAccountIdRef = useRef(userOAuthProfile?.id)
-  const ssoFlowRef = useRef(ssoFlow)
-
-  setTitle('Redis Cloud Databases')
-
-  const [selection, setSelection] = useState<InstanceRedisCloud[]>([])
-
-  const handleSelectionChange = (currentSelected: RowSelectionState) => {
-    debugger
-    const newSelection = instances?.filter((item) => {
-      const { id } = item
-      if (!id) {
-        return false
-      }
-      return currentSelected[id]
-    })
-    setSelection(newSelection || [])
-  }
+  const { data: instancesForOptions, dataAdded: instances } =
+    useSelector(cloudSelector)
 
   useEffect(() => {
-    if (instances === null) {
+    if (!instances.length) {
       history.push(Pages.home)
     }
+    setTitle('Redis Enterprise Databases Added')
+  }, [instances.length])
 
-    dispatch(resetLoadedRedisCloud(LoadedCloud.Instances))
-  }, [instances])
-
-  useEffect(() => {
-    if (ssoFlowRef.current !== OAuthSocialAction.Import) return
-
-    if (!userOAuthProfile) {
-      dispatch(resetDataRedisCloud())
-      history.push(Pages.home)
-      return
-    }
-
-    if (currentAccountIdRef.current !== userOAuthProfile?.id) {
-      dispatch(
-        fetchSubscriptionsRedisCloud(null, true, () => {
-          history.push(Pages.redisCloudSubscriptions)
-        }),
-      )
-    }
-  }, [userOAuthProfile])
-
-  useEffect(() => {
-    if (instancesAdded.length) {
-      history.push(Pages.redisCloudDatabasesResult)
-    }
-  }, [instancesAdded])
-
-  const sendCancelEvent = () => {
-    sendEventTelemetry({
-      event:
-        TelemetryEvent.CONFIG_DATABASES_REDIS_CLOUD_AUTODISCOVERY_CANCELLED,
-    })
-  }
-
-  const handleClose = () => {
-    sendCancelEvent()
+  const handleClose = useCallback(() => {
     dispatch(resetDataRedisCloud())
     history.push(Pages.home)
-  }
+  }, [dispatch, history])
 
-  const handleBackAdding = () => {
-    sendCancelEvent()
-    dispatch(resetLoadedRedisCloud(LoadedCloud.Instances))
+  const handleBackAdding = useCallback(() => {
+    dispatch(resetLoadedRedisCloud(LoadedCloud.InstancesAdded))
     history.push(Pages.home)
-  }
+  }, [dispatch, history])
 
-  const handleAddInstances = (
-    databases: Pick<
-      InstanceRedisCloud,
-      'subscriptionId' | 'databaseId' | 'free'
-    >[],
-  ) => {
-    dispatch(
-      addInstancesRedisCloud(
-        { databases, credentials },
-        ssoFlow === OAuthSocialAction.Import,
-      ),
-    )
-  }
-
-  const columns = useMemo(() => colFactory(instances || []), [instances])
+  const columns = useMemo(
+    () => colFactory(instances || [], instancesForOptions || []),
+    [instances, instancesForOptions],
+  )
 
   return {
-    columns,
-    selection,
     instances,
-    loading,
+    columns,
     handleClose,
     handleBackAdding,
-    handleAddInstances,
-    handleSelectionChange,
   }
 }

@@ -1,31 +1,26 @@
-import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect, useState } from 'react'
 import {
-  InstanceRedisCloud,
   AddRedisDatabaseStatus,
+  InstanceRedisCloud,
 } from 'uiSrc/slices/interfaces'
-import { cloudSelector } from 'uiSrc/slices/instances/cloud'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { SearchInput } from 'uiSrc/components/base/inputs'
-import { Text } from 'uiSrc/components/base/text'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { ColorText, Text } from 'uiSrc/components/base/text'
+import { ColumnDef, Table } from 'uiSrc/components/base/layout/table'
 import { Spacer } from 'uiSrc/components/base/layout'
 import {
+  DatabaseContainer,
   DatabaseWrapper,
   Footer,
-  PageTitle,
-  SearchForm,
+  Header,
 } from 'uiSrc/components/auto-discover'
 
 export interface Props {
-  columns: ColumnDefinition<InstanceRedisCloud>[]
+  instances: InstanceRedisCloud[]
+  columns: ColumnDef<InstanceRedisCloud>[]
   onView: () => void
   onBack: () => void
 }
@@ -33,11 +28,14 @@ export interface Props {
 const loadingMsg = 'loading...'
 const notFoundMsg = 'Not found'
 
-const RedisCloudDatabaseListResult = ({ columns, onBack, onView }: Props) => {
+const RedisCloudDatabaseListResult = ({
+  instances,
+  columns,
+  onBack,
+  onView,
+}: Props) => {
   const [items, setItems] = useState<InstanceRedisCloud[]>([])
   const [message, setMessage] = useState(loadingMsg)
-
-  const { dataAdded: instances } = useSelector(cloudSelector)
 
   useEffect(() => setItems(instances), [instances])
 
@@ -68,8 +66,8 @@ const RedisCloudDatabaseListResult = ({ columns, onBack, onView }: Props) => {
   }
 
   const SummaryText = () => (
-    <Text color="secondary" size="S">
-      <b>Summary: </b>
+    <Text size="M">
+      <ColorText variant="semiBold">Summary: </ColorText>{' '}
       {countSuccessAdded ? (
         <span>
           Successfully added {countSuccessAdded} database(s)
@@ -84,23 +82,13 @@ const RedisCloudDatabaseListResult = ({ columns, onBack, onView }: Props) => {
 
   return (
     <AutodiscoveryPageTemplate>
-      <div className="databaseContainer">
-        <PageTitle data-testid="title">
-          Redis Enterprise Databases Added
-        </PageTitle>
-        <Row justify="end" gap="s">
-          <FlexItem>
-            <SearchForm>
-              <SearchInput
-                placeholder="Search..."
-                onChange={onQueryChange}
-                aria-label="Search"
-                data-testid="search"
-              />
-            </SearchForm>
-          </FlexItem>
-        </Row>
-        <Spacer size="l" />
+      <DatabaseContainer>
+        <Header
+          title="Redis Enterprise Databases Added"
+          onBack={onBack}
+          onQueryChange={onQueryChange}
+        />
+        <Spacer size="m" />
         <DatabaseWrapper>
           <Table
             columns={columns}
@@ -111,23 +99,27 @@ const RedisCloudDatabaseListResult = ({ columns, onBack, onView }: Props) => {
                 desc: false,
               },
             ]}
+            paginationEnabled={items.length > 10}
+            stripedRows
+            pageSizes={[5, 10, 25, 50, 100]}
           />
-          {!items.length && <Text>{message}</Text>}
+          {!items.length && (
+            <Col centered full>
+              <Text size="L">{message}</Text>
+            </Col>
+          )}
         </DatabaseWrapper>
         <MessageBar opened={!!countSuccessAdded || !!countFailAdded}>
           <SummaryText />
         </MessageBar>
-      </div>
+      </DatabaseContainer>
       <Footer>
-        <Row justify="between">
-          <SecondaryButton
-            onClick={onBack}
-            className="btn-cancel btn-back"
-            data-testid="btn-back-to-adding"
+        <Row justify="end">
+          <PrimaryButton
+            onClick={onView}
+            data-testid="btn-view-databases"
+            disabled={items.length === 0}
           >
-            Back to adding databases
-          </SecondaryButton>
-          <PrimaryButton onClick={onView} data-testid="btn-view-databases">
             View Databases
           </PrimaryButton>
         </Row>
