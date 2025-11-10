@@ -1,14 +1,15 @@
 import React from 'react'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
-import ClickableAppendInfo from './ClickableAppendInfo'
+import SubscribeInformation from './SubscribeInformation'
 
-describe('ClickableAppendInfo', () => {
+describe('SubscribeInformation', () => {
   it('should render', () => {
-    expect(render(<ClickableAppendInfo />)).toBeTruthy()
+    expect(render(<SubscribeInformation />)).toBeTruthy()
   })
 
   it('should open popover on click', async () => {
-    render(<ClickableAppendInfo />)
+    render(<SubscribeInformation />)
+
     fireEvent.click(screen.getByTestId('append-info-icon'))
     expect(screen.getByTestId('pub-sub-examples')).toBeInTheDocument()
   })
