@@ -43,15 +43,15 @@ const Actions = (props: Props) => {
   const { name = '' } = useSelector(connectedInstanceSelector)
   const { loading, lastRefreshTime } = useSelector(slowLogSelector)
 
-  const [isPopoverClearOpen, setIsPopoverClearOpen] = useState(false)
+  const [isClearModalOpen, setIsClearModalOpen] = useState(false)
   const [isPopoverConfigOpen, setIsPopoverConfigOpen] = useState(false)
 
-  const showClearPopover = () => {
-    setIsPopoverClearOpen((isPopoverClearOpen) => !isPopoverClearOpen)
+  const showClearModal = () => {
+    setIsClearModalOpen((isClearModalOpen) => !isClearModalOpen)
   }
 
-  const closePopoverClear = () => {
-    setIsPopoverClearOpen(false)
+  const closeClearModal = () => {
+    setIsClearModalOpen(false)
   }
   const showConfigPopover = () => {
     setIsPopoverConfigOpen((isPopoverConfigOpen) => !isPopoverConfigOpen)
@@ -138,14 +138,14 @@ const Actions = (props: Props) => {
           <IconButton
             icon={EraserIcon}
             aria-label="Clear Slow Log"
-            onClick={() => showClearPopover()}
+            onClick={() => showClearModal()}
             data-testid="clear-btn"
           />
 
           <ClearSlowLogModal
             name={name}
-            isOpen={isPopoverClearOpen}
-            onClose={closePopoverClear}
+            isOpen={isClearModalOpen}
+            onClose={closeClearModal}
             onClear={onClear}
           />
         </>
