@@ -231,21 +231,17 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
                   </Text>
                 }
               >
-                <>
-                  <div>
-                    <StyledInput
-                      name="maxLen"
-                      id="maxLen"
-                      placeholder={`${DEFAULT_SLOWLOG_MAX_LEN}`}
-                      value={maxLen}
-                      onChange={(value) => {
-                        setMaxLen(validateNumber(value.trim()))
-                      }}
-                      autoComplete="off"
-                      data-testid="max-len-input"
-                    />
-                  </div>
-                </>
+                <StyledInput
+                  name="maxLen"
+                  id="maxLen"
+                  placeholder={`${DEFAULT_SLOWLOG_MAX_LEN}`}
+                  value={maxLen}
+                  onChange={(value) => {
+                    setMaxLen(validateNumber(value.trim()))
+                  }}
+                  autoComplete="off"
+                  data-testid="max-len-input"
+                />
               </FormField>
             </Col>
           </form>
