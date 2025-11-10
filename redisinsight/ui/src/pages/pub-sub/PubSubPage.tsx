@@ -19,6 +19,7 @@ import { MessagesListWrapper, PublishMessage } from './components'
 
 import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
 import { Theme } from 'uiSrc/components/base/theme/types'
+import { OnboardingWrapper } from './PubSubPage.styles'
 
 const FooterPanel = styled(FlexItem)`
   border-top: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
@@ -82,15 +83,14 @@ const PubSubPage = () => {
         <PublishMessage />
       </FooterPanel>
 
-      {/* TODO: Get rid of hardcoded values */}
-      <Col grow={false} align="end" style={{ marginRight: 28 }}>
+      <OnboardingWrapper grow={false}>
         <OnboardingTour
           options={ONBOARDING_FEATURES.FINISH}
           anchorPosition="downRight"
         >
           <span />
         </OnboardingTour>
-      </Col>
+      </OnboardingWrapper>
     </Col>
   )
 }

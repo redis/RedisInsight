@@ -3,12 +3,13 @@ import styled from 'styled-components'
 import { ConnectionType } from 'uiSrc/slices/interfaces'
 import { Text, Title } from 'uiSrc/components/base/text'
 import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
-import { Banner, RiImage } from 'uiSrc/components/base/display'
+import { Banner } from 'uiSrc/components/base/display'
 import { Spacer } from 'uiSrc/components/base/layout'
 import { CallOut } from 'uiSrc/components/base/display/call-out/CallOut'
 import LightBulbImage from 'uiSrc/assets/img/pub-sub/light-bulb.svg'
 
 import SubscribeForm from '../../subscribe-form'
+import { HeroImage } from './EmptyMessagesList.styles'
 
 export interface Props {
   connectionType?: ConnectionType
@@ -39,11 +40,7 @@ const EmptyMessagesList = ({
       justify="center"
       data-testid="empty-messages-list"
     >
-      <RiImage
-        src={LightBulbImage}
-        alt="Pub/Sub"
-        style={{ userSelect: 'none', pointerEvents: 'none' }}
-      />
+      <HeroImage src={LightBulbImage} alt="Pub/Sub" />
 
       <Spacer size="space800" />
 

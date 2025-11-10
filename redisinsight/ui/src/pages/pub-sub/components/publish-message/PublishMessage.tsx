@@ -16,6 +16,7 @@ import { ToastCheckIcon, Icon } from 'uiSrc/components/base/icons'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { Text } from 'uiSrc/components/base/text'
 import { HorizontalSpacer, Spacer } from 'uiSrc/components/base/layout'
+import { ChannelColumn } from './PublishMessage.styles'
 
 const HIDE_BADGE_TIMER = 3000
 
@@ -83,7 +84,7 @@ const PublishMessage = () => {
     <form onSubmit={onFormSubmit}>
       <Row justify="between" gap="xl" align="end">
         <Row grow={true}>
-          <Col grow={false} style={{ minWidth: 250 }}>
+          <ChannelColumn grow={false}>
             <Text>Channel name</Text>
             <Spacer size="s" />
             <FormField>
@@ -97,7 +98,7 @@ const PublishMessage = () => {
                 data-testid="field-channel-name"
               />
             </FormField>
-          </Col>
+          </ChannelColumn>
 
           <HorizontalSpacer size="m" />
 
