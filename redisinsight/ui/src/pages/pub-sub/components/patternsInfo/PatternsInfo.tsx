@@ -1,10 +1,11 @@
 import React from 'react'
-import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
-import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
+import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
 
+import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from './styles.module.scss'
+import { Row } from 'uiSrc/components/base/layout/flex'
+import { HorizontalSpacer } from 'uiSrc/components/base/layout'
 
 export interface PatternsInfoProps {
   channels?: string
@@ -17,29 +18,33 @@ const PatternsInfo = ({ channels }: PatternsInfoProps) => {
   }
 
   return (
-    <div className={styles.patternsContainer}>
-      <Text color="subdued" size="s" data-testid="patterns-count">
-        Patterns:&nbsp;{getChannelsCount()}{' '}
+    <Row grow={false} align="center">
+      <Text data-testid="patterns-count">
+        Patterns:&nbsp;{getChannelsCount()}
       </Text>
+
+      <HorizontalSpacer size="s" />
+
       <RiTooltip
-        anchorClassName={styles.appendIcon}
         position="right"
         title={
           <>
             {channels
               ?.trim()
               .split(' ')
-              .map((ch) => <p key={`${ch}`}>{ch}</p>)}
+              .map((ch) => <Text key={`${ch}`}>{ch}</Text>)}
           </>
         }
       >
         <RiIcon
           type="InfoIcon"
-          style={{ cursor: 'pointer' }}
+          // TODO: Remove marginTop
+          // Hack: for some reason this icon has extra height, which breaks flex alignment
+          style={{ cursor: 'pointer', marginTop: 4 }}
           data-testid="append-info-icon"
         />
       </RiTooltip>
-    </div>
+    </Row>
   )
 }
 
