@@ -18,7 +18,6 @@ import { Pages } from 'uiSrc/constants'
 import OAuthForm from 'uiSrc/components/oauth/shared/oauth-form'
 
 import { OAuthSsoHandlerDialog } from 'uiSrc/components'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
@@ -83,8 +82,7 @@ const OAuthAutodiscovery = (props: Props) => {
           Use{' '}
           <Text color="primary" variant="semiBold" component="span">
             {currentAccountName?.name} #{currentAccountId}
-          </Text>
-          {' '}
+          </Text>{' '}
           account to auto-discover subscriptions and add your databases.
         </Text>
         <Row justify="center">
@@ -162,7 +160,9 @@ const OAuthAutodiscovery = (props: Props) => {
             <CreateFreeDb />
 
             <Text color="primary">Get started with</Text>
-            <Title size="L" color="primary">Redis Cloud account</Title>
+            <Title size="L" color="primary">
+              Redis Cloud account
+            </Title>
 
             {form}
 

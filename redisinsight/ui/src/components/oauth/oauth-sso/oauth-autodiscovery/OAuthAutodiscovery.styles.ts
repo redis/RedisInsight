@@ -11,7 +11,7 @@ export const StyledContainer = styled(Col)``
 export const StyledCreateDbSection = styled(Row)`
   width: 100%;
   border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
-  border-radius: ${theme.core.space.space100}
+  border-radius: ${({ theme }) => theme.core.space.space100};
   padding-block: ${({ theme }) => theme.core.space.space100};
   padding-inline: ${({ theme }) => theme.core.space.space200};
 `
