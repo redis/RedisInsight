@@ -114,7 +114,10 @@ const SentinelDatabasesResult = ({
             />
           )}
         </DatabaseWrapper>
-        <MessageBar opened={!!countSuccessAdded || !!countFailAdded}>
+        <MessageBar
+          opened={!!countSuccessAdded || !!countFailAdded}
+          variant={!!countFailAdded ? 'attention' : 'success'}
+        >
           <SummaryText
             countSuccessAdded={countSuccessAdded}
             countFailAdded={countFailAdded}

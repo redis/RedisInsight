@@ -109,7 +109,10 @@ const RedisCloudDatabaseListResult = ({
             </Col>
           )}
         </DatabaseWrapper>
-        <MessageBar opened={!!countSuccessAdded || !!countFailAdded}>
+        <MessageBar
+          opened={!!countSuccessAdded || !!countFailAdded}
+          variant={!!countFailAdded ? 'attention' : 'success'}
+        >
           <SummaryText />
         </MessageBar>
       </DatabaseContainer>

@@ -92,7 +92,10 @@ const RedisClusterDatabasesResult = ({ columns, onBack, onView }: Props) => {
         </Title>
         <Row align="end" gap="s">
           <FlexItem grow>
-            <MessageBar opened={!!countSuccessAdded || !!countFailAdded}>
+            <MessageBar
+              opened={!!countSuccessAdded || !!countFailAdded}
+              variant={!!countFailAdded ? 'attention' : 'success'}
+            >
               <SummaryText />
             </MessageBar>
           </FlexItem>

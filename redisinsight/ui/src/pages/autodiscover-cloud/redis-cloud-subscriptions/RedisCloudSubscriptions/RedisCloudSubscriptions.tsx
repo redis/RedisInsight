@@ -292,7 +292,10 @@ const RedisCloudSubscriptions = ({
             </Col>
           )}
         </DatabaseWrapper>
-        <MessageBar opened={countStatusActive + countStatusFailed > 0}>
+        <MessageBar
+          opened={countStatusActive + countStatusFailed > 0}
+          variant={!!countStatusFailed ? 'attention' : 'success'}
+        >
           <SummaryText />
         </MessageBar>
       </DatabaseContainer>

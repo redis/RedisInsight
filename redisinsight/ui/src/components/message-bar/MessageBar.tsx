@@ -1,39 +1,40 @@
-import React, { useEffect, useState } from 'react'
-
-import { FlexItem } from 'uiSrc/components/base/layout/flex'
-import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import styles from './styles.module.scss'
-import { Container, ContainerWrapper } from './MessageBar.styles'
+import React, { useEffect } from 'react'
+import { riToast, RiToaster } from 'uiSrc/components/base/display/toast'
+import { ONE_HOUR } from 'uiSrc/components/notifications/constants'
 
 export interface Props {
   children?: React.ReactElement
   opened: boolean
+  variant?: 'success' | 'attention'
 }
 
-const MessageBar = ({ children, opened }: Props) => {
-  const [isOpen, setIsOpen] = useState(false)
+export const MessageBar = ({
+  children,
+  opened,
+  variant = 'success',
+}: Props) => {
   useEffect(() => {
-    setIsOpen(opened)
+    if (!opened) {
+      return
+    }
+    riToast(
+      {
+        message: children,
+      },
+      {
+        variant,
+        containerId: 'autodiscovery-message-bar',
+      },
+    )
   }, [opened])
 
-  if (!isOpen) {
-    return null
-  }
   return (
-    <ContainerWrapper centered>
-      <Container grow={false} centered gap="l">
-        <FlexItem grow>{children}</FlexItem>
-        <FlexItem className={styles.cross}>
-          <IconButton
-            icon={CancelSlimIcon}
-            aria-label="Close"
-            onClick={() => setIsOpen(false)}
-            data-testid="close-button"
-          />
-        </FlexItem>
-      </Container>
-    </ContainerWrapper>
+    <RiToaster
+      data-testid="autodiscovery-message-bar"
+      containerId="autodiscovery-message-bar"
+      autoClose={ONE_HOUR}
+      position="top-center"
+    />
   )
 }
 
