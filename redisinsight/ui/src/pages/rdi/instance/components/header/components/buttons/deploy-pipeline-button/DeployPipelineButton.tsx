@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
@@ -14,17 +13,14 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { createAxiosError, pipelineToJson } from 'uiSrc/utils'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { rdiErrorMessages } from 'uiSrc/pages/rdi/constants'
-import { ColorText, Text } from 'uiSrc/components/base/text'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { OutsideClickDetector } from 'uiSrc/components/base/utils'
+import { Text } from 'uiSrc/components/base/text'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { RocketIcon } from 'uiSrc/components/base/icons'
-import { Title } from 'uiSrc/components/base/text/Title'
+import { Icon, RocketIcon, InfoIcon } from 'uiSrc/components/base/icons'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from './styles.module.scss'
+import { RiTooltip } from 'uiSrc/components/base'
+import { Modal } from '@redis-ui/components'
+import { UploadWarningBanner } from 'uiSrc/components/upload-warning/styles'
 
 export interface Props {
   loading: boolean
@@ -33,7 +29,6 @@ export interface Props {
 }
 
 const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const [resetPipeline, setResetPipeline] = useState(false)
 
   const { config, jobs, resetChecked, isPipelineValid } =
@@ -60,7 +55,6 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
         jobsNumber: jobs?.length,
       },
     })
-    setIsPopoverOpen(false)
     setResetPipeline(false)
     const JSONValues = pipelineToJson({ config, jobs }, (errors) => {
       dispatch(
@@ -87,37 +81,16 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
     )
   }
 
-  const handleClosePopover = () => {
-    setIsPopoverOpen(false)
-  }
-
-  const handleClickDeploy = () => {
-    setIsPopoverOpen(true)
-  }
-
   const handleSelectReset = (reset: boolean) => {
     setResetPipeline(reset)
     dispatch(resetPipelineChecked(reset))
   }
 
   return (
-    <OutsideClickDetector onOutsideClick={handleClosePopover}>
-      <RiPopover
-        closePopover={handleClosePopover}
-        ownFocus
-        initialFocus={false}
-        className={styles.popoverAnchor}
-        panelClassName={cx('popoverLikeTooltip', styles.popover)}
-        anchorClassName={styles.popoverAnchor}
-        anchorPosition="upLeft"
-        isOpen={isPopoverOpen}
-        panelPaddingSize="m"
-        focusTrapProps={{
-          scrollLock: true,
-        }}
-        button={
+    <>
+      <Modal.Compose>
+        <Modal.Trigger>
           <PrimaryButton
-            onClick={handleClickDeploy}
             icon={RocketIcon}
             disabled={disabled}
             loading={loading}
@@ -125,69 +98,66 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
           >
             Deploy
           </PrimaryButton>
-        }
-      >
-        <Title size="XS">
-          {isPipelineValid ? (
-            <ColorText color="default">
-              Are you sure you want to deploy the pipeline?
-            </ColorText>
-          ) : (
-            <ColorText color="warning">
-              <RiIcon type="ToastDangerIcon" size="L" color="attention500" />
-              Your RDI pipeline contains errors. Are you sure you want to
-              continue?
-            </ColorText>
-          )}
-        </Title>
-        <Spacer size="s" />
-        <Text size="s">
-          When deployed, this local configuration will overwrite any existing
-          pipeline.
-        </Text>
-        <Spacer size="s" />
-        <Text size="s">
-          After deployment, consider flushing the target Redis database and
-          resetting the pipeline to ensure that all data is reprocessed.
-        </Text>
-        <Spacer size="s" />
-        <div className={styles.checkbox}>
-          <Checkbox
-            id="resetPipeline"
-            name="resetPipeline"
-            label="Reset"
-            className={cx(styles.resetPipelineCheckbox, {
-              [styles.checked]: resetPipeline,
-            })}
-            checked={resetPipeline}
-            onChange={(e) => handleSelectReset(e.target.checked)}
-            data-testid="reset-pipeline-checkbox"
-          />
+        </Modal.Trigger>
+        <Modal.Content.Compose>
+          <Modal.Content.Close />
+          <Modal.Content.Header title="Are you sure you want to deploy the pipeline?" />
+          <Modal.Content.Body
+            content={
+              <Col gap="l">
+                {!isPipelineValid && (
+                  <UploadWarningBanner
+                    message="Your RDI pipeline contains errors. Are you sure you want to continue?"
+                    show
+                    showIcon
+                    variant="attention"
+                  />
+                )}
+                <FlexItem>
+                  <Text>
+                    When deployed, this local configuration will overwrite any
+                    existing pipeline.
+                  </Text>
+                  <Text>
+                    After deployment, consider flushing the target Redis
+                    database and resetting the pipeline to ensure that all data
+                    is reprocessed.
+                  </Text>
+                </FlexItem>
+                <Row align="center">
+                  <Checkbox
+                    id="resetPipeline"
+                    name="resetPipeline"
+                    label="Reset"
+                    labelSize="M"
+                    checked={resetPipeline}
+                    onChange={(e) => handleSelectReset(e.target.checked)}
+                    data-testid="reset-pipeline-checkbox"
+                  />
 
-          <RiTooltip content="The pipeline will take a new snapshot of the data and process it, then continue tracking changes.">
-            <RiIcon
-              type="InfoIcon"
-              size="m"
-              style={{ cursor: 'pointer' }}
-              data-testid="reset-checkbox-info-icon"
-            />
-          </RiTooltip>
-        </div>
-        <Row gap="m" responsive justify="end">
-          <FlexItem>
+                  <RiTooltip content="The pipeline will take a new snapshot of the data and process it, then continue tracking changes.">
+                    <Icon
+                      icon={InfoIcon}
+                      data-testid="reset-checkbox-info-icon"
+                    />
+                  </RiTooltip>
+                </Row>
+              </Col>
+            }
+          />
+          <Modal.Content.Footer.Compose>
             <PrimaryButton
-              size="s"
+              size="l"
               color="secondary"
-              className={styles.popoverBtn}
               onClick={handleDeployPipeline}
               data-testid="deploy-confirm-btn"
             >
               Deploy
             </PrimaryButton>
-          </FlexItem>
-        </Row>
-      </RiPopover>
-    </OutsideClickDetector>
+          </Modal.Content.Footer.Compose>
+        </Modal.Content.Compose>
+      </Modal.Compose>
+    </>
   )
 }
 

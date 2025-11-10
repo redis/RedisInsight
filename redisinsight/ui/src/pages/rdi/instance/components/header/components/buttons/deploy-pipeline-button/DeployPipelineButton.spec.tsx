@@ -122,7 +122,7 @@ describe('DeployPipelineButton', () => {
     expect(screen.queryByTestId('deploy-confirm-btn')).toBeInTheDocument()
     expect(
       screen.queryByText('Are you sure you want to deploy the pipeline?'),
-    ).not.toBeInTheDocument()
+    ).toBeInTheDocument()
     expect(
       screen.queryByText(
         'Your RDI pipeline contains errors. Are you sure you want to continue?',
