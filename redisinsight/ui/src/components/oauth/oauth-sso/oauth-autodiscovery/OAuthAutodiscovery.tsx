@@ -78,22 +78,24 @@ const OAuthAutodiscovery = (props: Props) => {
     )
 
     return (
-      <StyledContainer data-testid="oauth-container-import">
+      <StyledContainer data-testid="oauth-container-import" gap="xl">
         <Text>
           Use{' '}
-          <strong>
+          <Text color="primary" variant="semiBold" component="span">
             {currentAccountName?.name} #{currentAccountId}
-          </strong>{' '}
+          </Text>
+          {' '}
           account to auto-discover subscriptions and add your databases.
         </Text>
-        <Spacer size="xl" />
-        <PrimaryButton
-          onClick={handleClickDiscover}
-          disabled={isDiscoverDisabled}
-          data-testid="oauth-discover-btn"
-        >
-          Discover
-        </PrimaryButton>
+        <Row justify="center">
+          <PrimaryButton
+            onClick={handleClickDiscover}
+            disabled={isDiscoverDisabled}
+            data-testid="oauth-discover-btn"
+          >
+            Discover
+          </PrimaryButton>
+        </Row>
       </StyledContainer>
     )
   }
