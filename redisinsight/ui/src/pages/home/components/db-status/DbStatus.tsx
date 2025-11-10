@@ -108,7 +108,7 @@ const DbStatus = (props: Props) => {
     return (
       <RiTooltip content="New" position="top">
         <IconWrapper data-testid={`database-status-new-${id}`}>
-          <Indicator $color="blue" />
+          <Indicator $color="var(--euiColorPrimary)" />
         </IconWrapper>
       </RiTooltip>
     )
