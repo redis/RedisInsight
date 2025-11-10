@@ -22,6 +22,8 @@ export const MessageBar = ({
         message: children,
       },
       {
+        // @ts-ignore
+        className: variant,
         variant,
         containerId: 'autodiscovery-message-bar',
       },
