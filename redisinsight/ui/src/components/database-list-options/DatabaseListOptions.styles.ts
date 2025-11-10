@@ -21,7 +21,6 @@ type OptionsIconProps = {
 
 const getIconStyle = ({ $icon, theme }: OptionsIconProps) => {
   // todo: move to theme
-  // const theme = useTheme()
   const customFgDarkColor = theme.semantic.color.text.primary50
   // const customFgDarkColor = '#202020'
   const customFgLightColor = theme.semantic.color.text.primary700
