@@ -31,7 +31,7 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { ColumnsIcon } from 'uiSrc/components/base/icons'
+import { ColumnsIcon, PlusIcon } from 'uiSrc/components/base/icons'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import handleClickFreeCloudDb from '../database-list-component/methods/handleClickFreeCloudDb'
 import SearchDatabasesList from '../search-databases-list'
@@ -130,8 +130,9 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
       <PrimaryButton
         onClick={handleClickFreeCloudDb}
         data-testid={`${CREATE_CLOUD_DB_ID}-button`}
+        icon={PlusIcon}
       >
-        + Create Free Cloud DB
+        Create Free Cloud database
       </PrimaryButton>
     </FeatureFlagComponent>
   )
@@ -141,8 +142,9 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
       <SecondaryButton
         onClick={handleOnAddDatabase}
         data-testid="add-redis-database-short"
+        icon={PlusIcon}
       >
-        + Connect Existing DB
+        Connect existing database
       </SecondaryButton>
     </FeatureFlagComponent>
   )
