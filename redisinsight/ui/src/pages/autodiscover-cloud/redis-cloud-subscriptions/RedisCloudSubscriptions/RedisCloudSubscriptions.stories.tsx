@@ -7,45 +7,15 @@ import { colFactory } from '../useCloudSubscriptionConfig'
 import {
   RedisCloudAccount,
   RedisCloudSubscription,
-  RedisCloudSubscriptionStatus,
-  RedisCloudSubscriptionType,
 } from 'uiSrc/slices/interfaces'
 import { RowSelectionState } from 'uiSrc/components/base/layout/table'
+import { RedisCloudSubscriptionFactory } from 'uiSrc/mocks/factories/cloud/RedisCloudSubscription.factory'
 
-const subscriptionsMock: RedisCloudSubscription[] = [
-  {
-    id: 12345678,
-    name: 'redis-15797.c52.us-east-1-4.ec2.cloud',
-    numberOfDatabases: 1,
-    provider: 'google',
-    region: 'us-east-1',
-    status: RedisCloudSubscriptionStatus.Active,
-    type: RedisCloudSubscriptionType.Fixed,
-    free: false,
-  },
-  {
-    id: 87654321,
-    name: 'redis-15797.c52.us-east-1-4.ec2.cloud...',
-    numberOfDatabases: 2,
-    provider: 'aws',
-    region: 'us-east-1',
-    status: RedisCloudSubscriptionStatus.Active,
-    type: RedisCloudSubscriptionType.Flexible,
-    free: true,
-  },
-  {
-    id: 23456789,
-    name: '#1386214 PRODUCTION-education-services',
-    numberOfDatabases: 0,
-    provider: 'aws',
-    region: 'us-east-1',
-    status: RedisCloudSubscriptionStatus.Pending,
-    type: RedisCloudSubscriptionType.Fixed,
-    free: false,
-  },
-]
+const subscriptionsMock: RedisCloudSubscription[] =
+  RedisCloudSubscriptionFactory.buildList(3)
+const subscriptions100: RedisCloudSubscription[] =
+  RedisCloudSubscriptionFactory.buildList(100)
 
-const columns = colFactory(subscriptionsMock)
 const emptyColumns = colFactory([])
 
 const accountMock: RedisCloudAccount = {
@@ -72,11 +42,19 @@ type Story = StoryObj<typeof meta>
 
 export const Empty: Story = {}
 
-const RenderStory = () => {
+const RenderStory = ({
+  account,
+  columns,
+  subscriptions,
+}: {
+  account: RedisCloudAccount
+  columns: ReturnType<typeof colFactory>
+  subscriptions: RedisCloudSubscription[]
+}) => {
   const [selection, setSelection] = useState<RedisCloudSubscription[]>([])
 
   const handleSelectionChange = (currentSelected: RowSelectionState) => {
-    const newSelection = subscriptionsMock.filter((item) => {
+    const newSelection = subscriptions.filter((item) => {
       const { id } = item
       if (!id) {
         return false
@@ -94,14 +72,30 @@ const RenderStory = () => {
       onSelectionChange={handleSelectionChange}
       selection={selection}
       columns={columns}
-      subscriptions={subscriptionsMock}
+      subscriptions={subscriptions}
       loading={false}
-      account={accountMock}
+      account={account}
       onSubmit={fn()}
     />
   )
 }
 
 export const WithSubscription: Story = {
-  render: () => <RenderStory />,
+  render: () => (
+    <RenderStory
+      account={accountMock}
+      columns={colFactory(subscriptionsMock)}
+      subscriptions={subscriptionsMock}
+    />
+  ),
+}
+
+export const With100Subscriptions: Story = {
+  render: () => (
+    <RenderStory
+      account={accountMock}
+      columns={colFactory(subscriptions100)}
+      subscriptions={subscriptions100}
+    />
+  ),
 }

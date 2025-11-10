@@ -64,6 +64,33 @@ const loadingMsg = 'loading...'
 const notFoundMsg = 'Not found'
 const noResultsMessage = 'Your Redis Cloud has no subscriptions available.'
 
+const Account = ({ account }: { account: RedisCloudAccount }) => (
+  <AccountWrapper>
+    <AccountItem>
+      <AccountItemTitle>Account ID:</AccountItemTitle>
+      <AccountValue data-testid="account-id" value={account?.accountId} />
+    </AccountItem>
+    <AccountItem>
+      <AccountItemTitle>Name:</AccountItemTitle>
+      <AccountValue data-testid="account-name" value={account?.accountName} />
+    </AccountItem>
+    <AccountItem>
+      <AccountItemTitle>Owner Name:</AccountItemTitle>
+      <AccountValue
+        data-testid="account-owner-name"
+        value={account?.ownerName}
+      />
+    </AccountItem>
+    <AccountItem>
+      <AccountItemTitle>Owner Email:</AccountItemTitle>
+      <AccountValue
+        data-testid="account-owner-email"
+        value={account?.ownerEmail}
+      />
+    </AccountItem>
+  </AccountWrapper>
+)
+
 const RedisCloudSubscriptions = ({
   subscriptions,
   selection,
@@ -229,32 +256,6 @@ const RedisCloudSubscriptions = ({
     </Text>
   )
 
-  const Account = () => (
-    <AccountWrapper>
-      <AccountItem>
-        <AccountItemTitle>Account ID:</AccountItemTitle>
-        <AccountValue data-testid="account-id" value={account?.accountId} />
-      </AccountItem>
-      <AccountItem>
-        <AccountItemTitle>Name:</AccountItemTitle>
-        <AccountValue data-testid="account-name" value={account?.accountName} />
-      </AccountItem>
-      <AccountItem>
-        <AccountItemTitle>Owner Name:</AccountItemTitle>
-        <AccountValue
-          data-testid="account-owner-name"
-          value={account?.ownerName}
-        />
-      </AccountItem>
-      <AccountItem>
-        <AccountItemTitle>Owner Email:</AccountItemTitle>
-        <AccountValue
-          data-testid="account-owner-email"
-          value={account?.ownerEmail}
-        />
-      </AccountItem>
-    </AccountWrapper>
-  )
   return (
     <AutodiscoveryPageTemplate>
       <DatabaseContainer justify="start">
@@ -265,7 +266,7 @@ const RedisCloudSubscriptions = ({
         />
         <Spacer size="m" />
         <DatabaseWrapper>
-          {account && <Account />}
+          {account && <Account account={account} />}
           <Spacer size="m" />
           <Table
             rowSelectionMode="multiple"

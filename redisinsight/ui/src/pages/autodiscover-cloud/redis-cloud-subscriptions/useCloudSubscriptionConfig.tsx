@@ -35,8 +35,7 @@ import {
   AlertStatusListItem,
 } from 'uiSrc/pages/autodiscover-cloud/redis-cloud-subscriptions/RedisCloudSubscriptions/RedisCloudSubscriptions.styles'
 import { RiTooltip } from 'uiSrc/components/base/tooltip'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { ToastDangerIcon } from 'uiSrc/components/base/icons'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import { getSelectionColumn } from 'uiSrc/pages/autodiscover-cloud/utils'
 import { CellText } from 'uiSrc/components/auto-discover'
 
@@ -97,12 +96,16 @@ export const colFactory = (
             position="right"
             className={styles.tooltipStatus}
           >
-            <IconButton
-              icon={ToastDangerIcon}
+            <RiIcon
+              type="ToastDangerIcon"
+              color="danger500"
+              size="m"
               aria-label="subscription alert"
             />
           </RiTooltip>
-        ) : null,
+        ) : (
+          <RiIcon type="CheckBoldIcon" color="success500" size="m" />
+        ),
     },
     {
       id: 'id',
