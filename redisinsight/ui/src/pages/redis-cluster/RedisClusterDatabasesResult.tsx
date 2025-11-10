@@ -1,30 +1,28 @@
-import React, { useState, useEffect } from 'react'
-import cx from 'classnames'
-import { useSelector } from 'react-redux'
+import React, { useEffect, useState } from 'react'
 
 import {
   AddRedisDatabaseStatus,
   InstanceRedisCluster,
 } from 'uiSrc/slices/interfaces'
 import { setTitle } from 'uiSrc/utils'
-import { clusterSelector } from 'uiSrc/slices/instances/cluster'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { ColorText, Text } from 'uiSrc/components/base/text'
+import { ColumnDef, Table } from 'uiSrc/components/base/layout/table'
 import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { SearchInput } from 'uiSrc/components/base/inputs'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
-import styles from './styles.module.scss'
+  DatabaseContainer,
+  DatabaseWrapper,
+  Footer,
+  Header,
+} from 'uiSrc/components/auto-discover'
+import { Spacer } from 'uiSrc/components/base/layout'
 
 export interface Props {
-  columns: ColumnDefinition<InstanceRedisCluster>[]
+  columns: ColumnDef<InstanceRedisCluster>[]
+  instances: InstanceRedisCluster[]
   onView: (sendEvent?: boolean) => void
   onBack: (sendEvent?: boolean) => void
 }
@@ -32,15 +30,22 @@ export interface Props {
 const loadingMsg = 'loading...'
 const notFoundMsg = 'Not found'
 
-const RedisClusterDatabasesResult = ({ columns, onBack, onView }: Props) => {
+const RedisClusterDatabasesResult = ({
+  columns,
+  instances,
+  onBack,
+  onView,
+}: Props) => {
   const [items, setItems] = useState<InstanceRedisCluster[]>([])
   const [message, setMessage] = useState(loadingMsg)
 
-  const { dataAdded: instances } = useSelector(clusterSelector)
+  useEffect(() => {
+    setTitle('Redis Enterprise Databases Added')
+  }, [])
 
-  setTitle('Redis Enterprise Databases Added')
-
-  useEffect(() => setItems(instances), [instances])
+  useEffect(() => {
+    setItems(instances)
+  }, [instances])
 
   const countSuccessAdded = instances.filter(
     ({ statusAdded }) => statusAdded === AddRedisDatabaseStatus.Success,
@@ -67,7 +72,7 @@ const RedisClusterDatabasesResult = ({ columns, onBack, onView }: Props) => {
 
   const SummaryText = () => (
     <Text>
-      <b>Summary: </b>
+      <ColorText variant="semiBold">Summary: </ColorText>
       {countSuccessAdded ? (
         <span>
           Successfully added {countSuccessAdded} database(s)
@@ -82,37 +87,28 @@ const RedisClusterDatabasesResult = ({ columns, onBack, onView }: Props) => {
 
   return (
     <AutodiscoveryPageTemplate>
-      <div className="databaseContainer">
-        <Title size="XXL" className={styles.title} data-testid="title">
+      <DatabaseContainer justify="start">
+        <Header
+          title={`
           Redis Enterprise
-          {countSuccessAdded + countFailAdded > 1
-            ? ' Databases '
-            : ' Database '}
+          ${
+            countSuccessAdded + countFailAdded > 1
+              ? ' Databases '
+              : ' Database '
+          }
           Added
-        </Title>
-        <Row align="end" gap="s">
-          <FlexItem grow>
-            <MessageBar
-              opened={!!countSuccessAdded || !!countFailAdded}
-              variant={!!countFailAdded ? 'attention' : 'success'}
-            >
-              <SummaryText />
-            </MessageBar>
-          </FlexItem>
-          <FlexItem>
-            <FormField className={styles.searchForm}>
-              <SearchInput
-                placeholder="Search..."
-                className={styles.search}
-                onChange={onQueryChange}
-                aria-label="Search"
-                data-testid="search"
-              />
-            </FormField>
-          </FlexItem>
-        </Row>
-        <br />
-        <div className="itemList databaseList clusterDatabaseListResult">
+          `}
+          onBack={onBack}
+          onQueryChange={onQueryChange}
+        />
+        <MessageBar
+          opened={!!countSuccessAdded || !!countFailAdded}
+          variant={!!countFailAdded ? 'attention' : 'success'}
+        >
+          <SummaryText />
+        </MessageBar>
+        <Spacer size="m" />
+        <DatabaseWrapper>
           <Table
             columns={columns}
             data={items}
@@ -122,21 +118,21 @@ const RedisClusterDatabasesResult = ({ columns, onBack, onView }: Props) => {
                 desc: false,
               },
             ]}
+            paginationEnabled={items.length > 10}
+            stripedRows
+            pageSizes={[5, 10, 25, 50, 100]}
+            emptyState={() => (
+              <Col centered full>
+                <FlexItem padding={13}>
+                  <Text size="L">{message}</Text>
+                </FlexItem>
+              </Col>
+            )}
           />
-          {!items.length && (
-            <Text className={styles.noDatabases}>{message}</Text>
-          )}
-        </div>
-      </div>
-      <FlexItem className={cx(styles.footer, 'footerAddDatabase')}>
-        <Row justify="between">
-          <SecondaryButton
-            onClick={() => onBack(false)}
-            className="btn-cancel btn-back"
-            data-testid="btn-back-to-adding"
-          >
-            Back to adding databases
-          </SecondaryButton>
+        </DatabaseWrapper>
+      </DatabaseContainer>
+      <Footer>
+        <Row justify="end">
           <PrimaryButton
             size="m"
             onClick={() => onView(false)}
@@ -145,7 +141,7 @@ const RedisClusterDatabasesResult = ({ columns, onBack, onView }: Props) => {
             View Databases
           </PrimaryButton>
         </Row>
-      </FlexItem>
+      </Footer>
     </AutodiscoveryPageTemplate>
   )
 }

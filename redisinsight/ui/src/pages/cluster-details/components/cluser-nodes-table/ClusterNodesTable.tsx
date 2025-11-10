@@ -1,10 +1,9 @@
-import { EuiIcon } from '@elastic/eui'
 import cx from 'classnames'
 import { map } from 'lodash'
 import React, { useState } from 'react'
 
 import { LoadingContent } from 'uiSrc/components/base/layout'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { Table, ColumnDef } from 'uiSrc/components/base/layout/table'
 import { formatBytes, Nullable } from 'uiSrc/utils'
 import { rgb } from 'uiSrc/utils/colors'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
@@ -21,7 +20,7 @@ const ClusterNodesTable = ({
   nodes: Nullable<ModifiedClusterNodes[]>
   loading: boolean
 }) => {
-  const [sort, setSort] = useState<PropertySort>({
+  const [sort, setSort] = useState({
     field: 'host',
     direction: 'asc',
   })
@@ -41,7 +40,7 @@ const ClusterNodesTable = ({
     </div>
   )
 
-  const columns: ColumnDefinition<ModifiedClusterNodes>[] = [
+  const columns: ColumnDef<ModifiedClusterNodes>[] = [
     {
       header: `${nodes?.length} Primary nodes`,
       id: 'host',
