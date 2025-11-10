@@ -13,7 +13,7 @@ import MessagesList from './MessagesList'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
-import { Spacer, HorizontalSpacer } from 'uiSrc/components/base/layout'
+import { HorizontalSpacer } from 'uiSrc/components/base/layout'
 import SubscribeForm from '../subscribe-form'
 import { InnerContainer, Wrapper } from './MessageListWrapper.styles'
 
@@ -48,23 +48,21 @@ const MessagesListWrapper = () => {
     return (
       <Wrapper>
         <Row align="center" justify="between" grow={false}>
-          <Row>
+          <Row gap="s">
             <Text>Messages:</Text>
-            <HorizontalSpacer size="s" />
             <Text>{messages.length}</Text>
           </Row>
 
-          <Row align="center" justify="end">
+          <Row align="center" justify="end" gap="s">
             <Text>Status:</Text>
-            <HorizontalSpacer size="s" />
             <SubscribeStatus isSubscribed={isSubscribed} />
-            <HorizontalSpacer />
+            <HorizontalSpacer size="s" />
 
             <SubscribeForm grow={false} />
           </Row>
         </Row>
 
-        <InnerContainer grow={true} data-testid="messages-list">
+        <InnerContainer grow={true} data-testid="messages-list" gap="m">
           <Row grow={false}>
             <Text>Timestamp</Text>
             <HorizontalSpacer />
@@ -73,20 +71,12 @@ const MessagesListWrapper = () => {
             <Text>Message</Text>
           </Row>
 
-          <Spacer />
-
           {hasMessages && (
-            <>
-              <AutoSizer>
-                {({ width, height }) => (
-                  <MessagesList
-                    items={messages}
-                    width={width}
-                    height={height}
-                  />
-                )}
-              </AutoSizer>
-            </>
+            <AutoSizer>
+              {({ width, height }) => (
+                <MessagesList items={messages} width={width} height={height} />
+              )}
+            </AutoSizer>
           )}
 
           {!hasMessages && (

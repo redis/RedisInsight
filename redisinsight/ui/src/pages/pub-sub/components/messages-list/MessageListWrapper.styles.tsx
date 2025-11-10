@@ -1,7 +1,7 @@
 import styled from 'styled-components'
-import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
+import { Col } from 'uiSrc/components/base/layout/flex'
 
-export const InnerContainer = styled(FlexItem)`
+export const InnerContainer = styled(Col)`
   background-color: ${({ theme }) =>
     theme.semantic.color.background.neutral300};
   border-radius: ${({ theme }) => theme.core.space.space100};
