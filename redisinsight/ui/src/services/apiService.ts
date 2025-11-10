@@ -78,8 +78,12 @@ export const cloudAuthInterceptor = (error: AxiosError) => {
 export const hostedAuthInterceptor = (error: AxiosError) => {
   const { response } = error
   if (response?.status === 401 && hostedApiBaseUrl) {
+    const noPermission =
+      (response?.data as any)?.message === 'Insufficient permissions'
     // provide the current path to redirect back to the same location after login
-    window.location.href = `${riConfig.app.unauthenticatedRedirect}${window.location.pathname}`
+    window.location.href = noPermission
+      ? riConfig.app.returnUrlBase!
+      : `${riConfig.app.unauthenticatedRedirect}${window.location.pathname}`
   }
   return Promise.reject(error)
 }
