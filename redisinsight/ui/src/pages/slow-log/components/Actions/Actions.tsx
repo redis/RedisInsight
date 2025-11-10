@@ -8,24 +8,18 @@ import { AutoRefresh } from 'uiSrc/components'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { Nullable } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import {
-  Col,
-  FlexGroup,
-  FlexItem,
-  Row,
-} from 'uiSrc/components/base/layout/flex'
+import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { EraserIcon, SettingsIcon } from 'uiSrc/components/base/icons'
 import {
-  DestructiveButton,
   IconButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { Text, Title } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 
 import SlowLogConfig from '../SlowLogConfig'
-import { StyledDatabaseName, StyledInfoIcon } from './Actions.styles'
+import { StyledInfoIcon } from './Actions.styles'
+import { ClearSlowLogModal } from '../ClearSlowLogModal/ClearSlowLogModal'
 
 export interface Props {
   width: number
@@ -67,11 +61,6 @@ const Actions = (props: Props) => {
     setIsPopoverConfigOpen(false)
   }
 
-  const handleClearClick = () => {
-    onClear()
-    closePopoverClear()
-  }
-
   const handleEnableAutoRefresh = (
     enableAutoRefresh: boolean,
     refreshRate: string,
@@ -101,35 +90,6 @@ const Actions = (props: Props) => {
       })
     }
   }
-
-  const ToolTipContent = (
-    <FlexGroup direction="column" gap="l">
-      <Col gap="m">
-        <Title size="S" color="primary">
-          Clear Slow Log?
-        </Title>
-        <Col>
-          <Text size="m" color="primary">
-            Slow Log will be cleared for&nbsp;
-            <StyledDatabaseName>{name}</StyledDatabaseName>
-          </Text>
-          <Text size="xs" color="secondary">
-            NOTE: This is server configuration
-          </Text>
-        </Col>
-      </Col>
-      <Row justify="end">
-        <DestructiveButton
-          size="small"
-          icon={EraserIcon}
-          onClick={() => handleClearClick()}
-          data-testid="reset-confirm-btn"
-        >
-          Clear
-        </DestructiveButton>
-      </Row>
-    </FlexGroup>
-  )
 
   return (
     <Row gap="s" align="center">
@@ -174,27 +134,21 @@ const Actions = (props: Props) => {
       </FlexItem>
 
       {!isEmptySlowLog && (
-        <FlexItem>
-          <RiPopover
-            anchorPosition="leftCenter"
-            ownFocus
+        <>
+          <IconButton
+            icon={EraserIcon}
+            aria-label="Clear Slow Log"
+            onClick={() => showClearPopover()}
+            data-testid="clear-btn"
+          />
+
+          <ClearSlowLogModal
+            name={name}
             isOpen={isPopoverClearOpen}
-            closePopover={closePopoverClear}
-            panelPaddingSize="m"
-            button={
-              <RiTooltip position="left" content="Clear Slow Log">
-                <IconButton
-                  icon={EraserIcon}
-                  aria-label="Clear Slow Log"
-                  onClick={() => showClearPopover()}
-                  data-testid="clear-btn"
-                />
-              </RiTooltip>
-            }
-          >
-            {ToolTipContent}
-          </RiPopover>
-        </FlexItem>
+            onClose={closePopoverClear}
+            onClear={onClear}
+          />
+        </>
       )}
 
       <FlexItem>
