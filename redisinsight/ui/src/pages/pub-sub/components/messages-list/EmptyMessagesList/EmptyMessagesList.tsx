@@ -39,25 +39,22 @@ const EmptyMessagesList = ({
       align="center"
       justify="center"
       data-testid="empty-messages-list"
+      gap="xxl"
     >
       <HeroImage src={LightBulbImage} alt="Pub/Sub" />
 
-      <Spacer size="space800" />
+      <Col align="center" justify="center" grow={false}>
+        <Title size="XXL">You are not subscribed</Title>
 
-      <Title size="XXL">You are not subscribed</Title>
+        <Spacer size="s" />
 
-      <Spacer size="s" />
-
-      <Text>
-        Subscribe to the Channel to see all the messages published to your
-        database
-      </Text>
-
-      <Spacer size="space800" />
+        <Text>
+          Subscribe to the Channel to see all the messages published to your
+          database
+        </Text>
+      </Col>
 
       <SubscribeForm grow={false} />
-
-      <Spacer size="space800" />
 
       <CallOut variant="attention">
         Running in production may decrease performance and memory available.
@@ -65,8 +62,6 @@ const EmptyMessagesList = ({
 
       {connectionType === ConnectionType.Cluster && isSpublishNotSupported && (
         <>
-          <Spacer size="space200" />
-
           <Banner
             data-testid="empty-messages-list-cluster"
             variant="attention"
