@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { map } from 'lodash'
 import {
   InstanceRedisCloud,
@@ -12,19 +12,17 @@ import MessageBar from 'uiSrc/components/message-bar/MessageBar'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 import {
-  Table,
   ColumnDef,
   RowSelectionState,
+  Table,
 } from 'uiSrc/components/base/layout/table'
 
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import {
   DestructiveButton,
-  EmptyButton,
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { SearchInput } from 'uiSrc/components/base/inputs'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import styles from '../styles.module.scss'
@@ -37,11 +35,9 @@ import {
   DatabaseContainer,
   DatabaseWrapper,
   Footer,
-  PageTitle,
-  SearchForm,
+  Header,
 } from 'uiSrc/components/auto-discover'
 import { canSelectRow } from 'uiSrc/pages/autodiscover-cloud/redis-cloud-subscriptions/useCloudSubscriptionConfig'
-import { ArrowLeftIcon } from '@redis-ui/icons'
 
 export interface Props {
   columns: ColumnDef<RedisCloudSubscription>[]
@@ -262,36 +258,14 @@ const RedisCloudSubscriptions = ({
   return (
     <AutodiscoveryPageTemplate>
       <DatabaseContainer justify="start">
-        <Row align="center" justify="between" grow={false}>
-          <Col align="start" justify="start">
-            <EmptyButton
-              icon={ArrowLeftIcon}
-              onClick={onBack}
-              className="btn-cancel btn-back"
-              data-testid="btn-back-adding"
-            >
-              Add databases
-            </EmptyButton>
-            <Spacer size="s" />
-            <PageTitle data-testid="title">Redis Cloud Subscriptions</PageTitle>
-          </Col>
-          <Row justify="end" gap="s" grow={false}>
-            <FlexItem>
-              <SearchForm>
-                <SearchInput
-                  placeholder="Search..."
-                  className={styles.search}
-                  onChange={onQueryChange}
-                  aria-label="Search"
-                  data-testid="search"
-                />
-              </SearchForm>
-            </FlexItem>
-          </Row>
-        </Row>
+        <Header
+          title="Redis Cloud Subscriptions"
+          onBack={onBack}
+          onQueryChange={onQueryChange}
+        />
         <Spacer size="m" />
         <DatabaseWrapper>
-          <Account />
+          {account && <Account />}
           <Spacer size="m" />
           <Table
             rowSelectionMode="multiple"
@@ -312,7 +286,9 @@ const RedisCloudSubscriptions = ({
             pageSizes={[5, 10, 25, 50, 100]}
           />
           {!items.length && (
-            <Text className={styles.noSubscriptions}>{message}</Text>
+            <Col centered full>
+              <Text size="L">{message}</Text>
+            </Col>
           )}
         </DatabaseWrapper>
         <MessageBar opened={countStatusActive + countStatusFailed > 0}>
@@ -322,7 +298,7 @@ const RedisCloudSubscriptions = ({
 
       <Footer>
         <Row justify="end">
-          <Row grow={false} gap="m">
+          <Row gap="m" grow={false}>
             <CancelButton isPopoverOpen={isPopoverOpen} />
             <SubmitButton isDisabled={(selection?.length || 0) < 1} />
           </Row>
