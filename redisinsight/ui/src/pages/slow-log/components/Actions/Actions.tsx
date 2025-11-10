@@ -18,7 +18,7 @@ import {
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 
 import SlowLogConfig from '../SlowLogConfig'
-import { StyledInfoIcon } from './Actions.styles'
+import { StyledInfoIconWrapper } from './Actions.styles'
 import { ClearSlowLogModal } from '../ClearSlowLogModal/ClearSlowLogModal'
 
 export interface Props {
@@ -168,9 +168,9 @@ const Actions = (props: Props) => {
             </span>
           }
         >
-          <StyledInfoIcon>
+          <StyledInfoIconWrapper>
             <RiIcon type="InfoIcon" data-testid="slow-log-tooltip-icon" />
-          </StyledInfoIcon>
+          </StyledInfoIconWrapper>
         </RiTooltip>
       </FlexItem>
     </Row>

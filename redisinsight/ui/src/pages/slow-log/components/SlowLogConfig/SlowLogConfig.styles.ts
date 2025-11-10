@@ -6,7 +6,7 @@ import { theme } from '@redis-ui/styles'
 export const StyledContainer = styled(Col)<{ $isCluster?: boolean }>`
   width: ${({ $isCluster }) => ($isCluster ? '394px' : '550px')};
   padding: ${theme.core.space.space200};
-  border-radius: 4px;
+  border-radius: ${theme.core.space.space050};
 `
 
 export const StyledInput = styled(TextInput)`
