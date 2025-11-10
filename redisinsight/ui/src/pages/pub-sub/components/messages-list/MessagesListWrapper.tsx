@@ -10,7 +10,20 @@ import { useConnectionType } from 'uiSrc/components/hooks/useConnectionType'
 import EmptyMessagesList from './EmptyMessagesList'
 import MessagesList from './MessagesList'
 
-import styles from './MessagesList/styles.module.scss'
+import { Row } from 'uiSrc/components/base/layout/flex'
+import { Text } from 'uiSrc/components/base/text'
+import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
+import { Spacer, HorizontalSpacer } from 'uiSrc/components/base/layout'
+import SubscribeForm from '../subscribe-form'
+import { InnerContainer, Wrapper } from './MessageListWrapper.styles'
+
+const SubscribeStatus = ({ isSubscribed }: { isSubscribed: boolean }) => {
+  if (!isSubscribed) {
+    return <RiBadge label="Unsubscribed" variant="default" />
+  }
+
+  return <RiBadge label="Subscribed" variant="success" />
+}
 
 const MessagesListWrapper = () => {
   const { messages = [], isSubscribed } = useSelector(pubSubSelector)
@@ -29,31 +42,68 @@ const MessagesListWrapper = () => {
     )
   }, [version])
 
+  const hasMessages = messages.length > 0
+
+  if (hasMessages || isSubscribed) {
+    return (
+      <Wrapper>
+        <Row align="center" justify="between" grow={false}>
+          <Row>
+            <Text>Messages:</Text>
+            <HorizontalSpacer size="s" />
+            <Text>{messages.length}</Text>
+          </Row>
+
+          <Row align="center" justify="end">
+            <Text>Status:</Text>
+            <HorizontalSpacer size="s" />
+            <SubscribeStatus isSubscribed={isSubscribed} />
+            <HorizontalSpacer />
+
+            <SubscribeForm grow={false} />
+          </Row>
+        </Row>
+
+        <InnerContainer grow={true} data-testid="messages-list">
+          <Row grow={false}>
+            <Text>Timestamp</Text>
+            <HorizontalSpacer />
+            <Text>Channel</Text>
+            <HorizontalSpacer />
+            <Text>Message</Text>
+          </Row>
+
+          <Spacer />
+
+          {hasMessages && (
+            <>
+              <AutoSizer>
+                {({ width, height }) => (
+                  <MessagesList
+                    items={messages}
+                    width={width}
+                    height={height}
+                  />
+                )}
+              </AutoSizer>
+            </>
+          )}
+
+          {!hasMessages && (
+            <Row grow={false} justify="center">
+              <Text>No messages published yet</Text>
+            </Row>
+          )}
+        </InnerContainer>
+      </Wrapper>
+    )
+  }
+
   return (
-    <>
-      {(messages.length > 0 || isSubscribed) && (
-        <div className={styles.wrapperContainer}>
-          <div className={styles.header} data-testid="messages-list">
-            <div className={styles.time}>Timestamp</div>
-            <div className={styles.channel}>Channel</div>
-            <div className={styles.message}>Message</div>
-          </div>
-          <div className={styles.listContainer}>
-            <AutoSizer>
-              {({ width, height }) => (
-                <MessagesList items={messages} width={width} height={height} />
-              )}
-            </AutoSizer>
-          </div>
-        </div>
-      )}
-      {messages.length === 0 && !isSubscribed && (
-        <EmptyMessagesList
-          isSpublishNotSupported={isSpublishNotSupported}
-          connectionType={connectionType}
-        />
-      )}
-    </>
+    <EmptyMessagesList
+      isSpublishNotSupported={isSpublishNotSupported}
+      connectionType={connectionType}
+    />
   )
 }
 

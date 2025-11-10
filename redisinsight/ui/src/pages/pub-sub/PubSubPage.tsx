@@ -15,33 +15,14 @@ import { OnboardingTour } from 'uiSrc/components'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { incrementOnboardStepAction } from 'uiSrc/slices/app/features'
 import { OnboardingSteps } from 'uiSrc/constants/onboarding'
-import {
-  MessagesListWrapper,
-  PublishMessage,
-  SubscriptionPanel,
-} from './components'
+import { MessagesListWrapper, PublishMessage } from './components'
 
-import styles from './styles.module.scss'
+import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
+import { Theme } from 'uiSrc/components/base/theme/types'
 
-// Styled components
-const MainContainer = styled.div<React.HTMLAttributes<HTMLDivElement>>`
-  border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
-  border-radius: 8px;
-`
-
-const ContentPanel = styled.div`
-  flex-grow: 1;
-`
-
-const HeaderPanel = styled.div`
-  padding: 12px 18px;
-  border-bottom: 1px solid var(--separatorColor);
-  border-color: ${({ theme }) => theme.semantic.color.border.neutral500};
-`
-
-const FooterPanel = styled.div`
-  margin-top: 16px;
-  padding: 10px 18px 28px;
+const FooterPanel = styled(FlexItem)`
+  border-top: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
+  padding: ${({ theme }: { theme: Theme }) => theme.core.space.space300};
 `
 
 const PubSubPage = () => {
@@ -92,28 +73,25 @@ const PubSubPage = () => {
   }
 
   return (
-    <MainContainer className={styles.main} data-testid="pub-sub-page">
-      <ContentPanel>
-        <HeaderPanel>
-          <SubscriptionPanel />
-        </HeaderPanel>
-        <div className={styles.tableWrapper}>
-          <MessagesListWrapper />
-        </div>
-      </ContentPanel>
-      <FooterPanel>
+    <Col data-testid="pub-sub-page" justify="between">
+      <FlexItem grow={true}>
+        <MessagesListWrapper />
+      </FlexItem>
+
+      <FooterPanel grow={false}>
         <PublishMessage />
       </FooterPanel>
-      <div className={styles.onboardAnchor}>
+
+      {/* TODO: Get rid of hardcoded values */}
+      <Col grow={false} align="end" style={{ marginRight: 28 }}>
         <OnboardingTour
           options={ONBOARDING_FEATURES.FINISH}
           anchorPosition="downRight"
-          panelClassName={styles.onboardPanel}
         >
           <span />
         </OnboardingTour>
-      </div>
-    </MainContainer>
+      </Col>
+    </Col>
   )
 }
 
