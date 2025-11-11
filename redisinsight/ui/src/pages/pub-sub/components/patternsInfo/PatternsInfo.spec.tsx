@@ -11,6 +11,7 @@ describe('PatternsInfo', () => {
     const content = 'hello'
     render(<PatternsInfo channels={content} />)
     expect(screen.getByText('Patterns: 1')).toBeInTheDocument()
+
     fireEvent.focus(screen.getByTestId('append-info-icon'))
     await waitFor(() => screen.getAllByText(content))
     expect(screen.getAllByText(content)[0]).toBeInTheDocument()

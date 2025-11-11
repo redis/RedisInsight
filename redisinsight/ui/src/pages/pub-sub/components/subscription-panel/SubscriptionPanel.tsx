@@ -24,9 +24,9 @@ import { RiTooltip } from 'uiSrc/components'
 import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import PatternsInfo from './components/patternsInfo'
 import ClickableAppendInfo from './components/clickable-append-info'
 import styles from './styles.module.scss'
+import PatternsInfo from '../patternsInfo'
 
 const SubscriptionPanel = () => {
   const { messages, isSubscribed, subscriptions, loading, count } =
@@ -110,7 +110,7 @@ const SubscriptionPanel = () => {
               <TextInput
                 value={channels}
                 disabled={isSubscribed}
-                onChange={value => setChannels(value)}
+                onChange={(value) => setChannels(value)}
                 onBlur={onFocusOut}
                 placeholder="Enter Pattern"
                 aria-label="channel names for filtering"

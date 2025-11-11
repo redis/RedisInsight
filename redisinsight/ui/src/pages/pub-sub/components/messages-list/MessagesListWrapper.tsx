@@ -7,6 +7,7 @@ import { pubSubSelector } from 'uiSrc/slices/pubsub/pubsub'
 import { isVersionHigherOrEquals } from 'uiSrc/utils'
 import { CommandsVersions } from 'uiSrc/constants/commandsVersions'
 import { useConnectionType } from 'uiSrc/components/hooks/useConnectionType'
+import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
 import EmptyMessagesList from './EmptyMessagesList'
 import MessagesList from './MessagesList'
 
@@ -15,6 +16,7 @@ import { Text } from 'uiSrc/components/base/text'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 import { HorizontalSpacer } from 'uiSrc/components/base/layout'
 import SubscribeForm from '../subscribe-form'
+import PatternsInfo from '../patternsInfo'
 import { InnerContainer, Wrapper } from './MessageListWrapper.styles'
 
 const SubscribeStatus = ({ isSubscribed }: { isSubscribed: boolean }) => {
@@ -26,9 +28,17 @@ const SubscribeStatus = ({ isSubscribed }: { isSubscribed: boolean }) => {
 }
 
 const MessagesListWrapper = () => {
-  const { messages = [], isSubscribed } = useSelector(pubSubSelector)
+  const {
+    messages = [],
+    isSubscribed,
+    subscriptions,
+  } = useSelector(pubSubSelector)
   const connectionType = useConnectionType()
   const { version } = useSelector(connectedInstanceOverviewSelector)
+
+  const channels = subscriptions?.length
+    ? subscriptions.map((sub) => sub.channel).join(' ')
+    : DEFAULT_SEARCH_MATCH
 
   const [isSpublishNotSupported, setIsSpublishNotSupported] =
     useState<boolean>(true)
@@ -48,9 +58,13 @@ const MessagesListWrapper = () => {
     return (
       <Wrapper>
         <Row align="center" justify="between" grow={false}>
-          <Row gap="s">
-            <Text>Messages:</Text>
-            <Text>{messages.length}</Text>
+          <Row align="center" gap="m">
+            <PatternsInfo channels={channels} />
+
+            <Row align="center" gap="s">
+              <Text>Messages:</Text>
+              <Text>{messages.length}</Text>
+            </Row>
           </Row>
 
           <Row align="center" justify="end" gap="s">
