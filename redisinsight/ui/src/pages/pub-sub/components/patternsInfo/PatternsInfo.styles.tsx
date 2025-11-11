@@ -3,7 +3,6 @@ import { RiIcon } from 'uiSrc/components/base/icons'
 
 export const InfoIcon = styled(RiIcon).attrs({
   type: 'InfoIcon',
-  size: 'l',
   'data-testid': 'append-info-icon',
 })`
   cursor: pointer;

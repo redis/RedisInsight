@@ -7,13 +7,13 @@ import {
 
 import { Button } from 'uiSrc/components/base/forms/buttons'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { TextInput } from 'uiSrc/components/base/inputs'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
 
 import { UserIcon, IndicatorExcludedIcon } from 'uiSrc/components/base/icons'
 import { FlexProps } from 'uiSrc/components/base/layout/flex/flex.styles'
 import SubscribeInformation from '../subscribe-information'
+import { TopicNameField } from './SubscribeForm.styles'
 
 export interface SubscribeFormProps extends Omit<FlexProps, 'direction'> {}
 
@@ -41,7 +41,7 @@ const SubscribeForm = (props: SubscribeFormProps) => {
   return (
     <Row align="center" gap="m" {...props}>
       <FormField>
-        <TextInput
+        <TopicNameField
           value={channels}
           disabled={isSubscribed}
           onChange={(value) => setChannels(value)}
@@ -49,7 +49,6 @@ const SubscribeForm = (props: SubscribeFormProps) => {
           placeholder="Enter Pattern"
           aria-label="channel names for filtering"
           data-testid="channels-input"
-          style={{ minWidth: 250 }}
         />
       </FormField>
 

@@ -3,9 +3,9 @@ import { RiTooltip } from 'uiSrc/components'
 import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
 
 import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { HorizontalSpacer } from 'uiSrc/components/base/layout'
+import { InfoIcon } from './PatternsInfo.styles'
 
 export interface PatternsInfoProps {
   channels?: string
@@ -36,13 +36,7 @@ const PatternsInfo = ({ channels }: PatternsInfoProps) => {
           </>
         }
       >
-        <RiIcon
-          type="InfoIcon"
-          // TODO: Remove marginTop
-          // Hack: for some reason this icon has extra height, which breaks flex alignment
-          style={{ cursor: 'pointer', marginTop: 4 }}
-          data-testid="append-info-icon"
-        />
+        <InfoIcon />
       </RiTooltip>
     </Row>
   )
