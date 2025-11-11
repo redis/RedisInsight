@@ -19,7 +19,7 @@ export const DatabaseColumn = (): ColumnDef<InstanceRedisCluster> => {
         original: { name },
       },
     }) => {
-      const cellContent = name
+      const cellContent = (name || '')
         .substring(0, 200)
         .replace(/\s\s/g, '\u00a0\u00a0')
       return (
@@ -30,7 +30,7 @@ export const DatabaseColumn = (): ColumnDef<InstanceRedisCluster> => {
             title="Database"
             className={styles.tooltipColumnName}
             anchorClassName="truncateText"
-            content={formatLongName(name)}
+            content={formatLongName(name || '')}
           >
             <CellText>{cellContent}</CellText>
           </RiTooltip>

@@ -1,11 +1,6 @@
 import React from 'react'
-import { instance, mock } from 'ts-mockito'
 import { render } from 'uiSrc/utils/test-utils'
-import RedisClusterDatabasesResult, {
-  Props,
-} from './RedisClusterDatabasesResult'
-
-const mockedProps = mock<Props>()
+import RedisClusterDatabasesResult from './RedisClusterDatabasesResult'
 
 describe('RedisClusterDatabasesResult', () => {
   it('should render', () => {
@@ -20,8 +15,10 @@ describe('RedisClusterDatabasesResult', () => {
     expect(
       render(
         <RedisClusterDatabasesResult
-          {...instance(mockedProps)}
           columns={columnsMock}
+          instances={[]}
+          onView={jest.fn()}
+          onBack={jest.fn()}
         />,
       ),
     ).toBeTruthy()
