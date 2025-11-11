@@ -88,75 +88,59 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
 
   return (
     <>
-      <Modal.Compose>
-        <Modal.Trigger>
-          <PrimaryButton
-            icon={RocketIcon}
-            disabled={disabled}
-            loading={loading}
-            data-testid="deploy-rdi-pipeline"
-          >
-            Deploy
-          </PrimaryButton>
-        </Modal.Trigger>
-        <Modal.Content.Compose>
-          <Modal.Content.Close />
-          <Modal.Content.Header title="Are you sure you want to deploy the pipeline?" />
-          <Modal.Content.Body
-            content={
-              <Col gap="l">
-                {!isPipelineValid && (
-                  <UploadWarningBanner
-                    message="Your RDI pipeline contains errors. Are you sure you want to continue?"
-                    show
-                    showIcon
-                    variant="attention"
-                  />
-                )}
-                <FlexItem>
-                  <Text>
-                    When deployed, this local configuration will overwrite any
-                    existing pipeline.
-                  </Text>
-                  <Text>
-                    After deployment, consider flushing the target Redis
-                    database and resetting the pipeline to ensure that all data
-                    is reprocessed.
-                  </Text>
-                </FlexItem>
-                <Row align="center">
-                  <Checkbox
-                    id="resetPipeline"
-                    name="resetPipeline"
-                    label="Reset"
-                    labelSize="M"
-                    checked={resetPipeline}
-                    onChange={(e) => handleSelectReset(e.target.checked)}
-                    data-testid="reset-pipeline-checkbox"
-                  />
+      <Modal
+        id="deploy-pipeline-modal"
+        title="Are you sure you want to deploy the pipeline?"
+        content={
+          <Col gap="l">
+            {!isPipelineValid && (
+              <UploadWarningBanner
+                message="Your RDI pipeline contains errors. Are you sure you want to continue?"
+                show
+                showIcon
+                variant="attention"
+              />
+            )}
+            <FlexItem>
+              <Text>
+                When deployed, this local configuration will overwrite any
+                existing pipeline.
+              </Text>
+              <Text>
+                After deployment, consider flushing the target Redis database
+                and resetting the pipeline to ensure that all data is
+                reprocessed.
+              </Text>
+            </FlexItem>
+            <Row align="center">
+              <Checkbox
+                id="resetPipeline"
+                name="resetPipeline"
+                label="Reset"
+                labelSize="M"
+                checked={resetPipeline}
+                onChange={(e) => handleSelectReset(e.target.checked)}
+                data-testid="reset-pipeline-checkbox"
+              />
 
-                  <RiTooltip content="The pipeline will take a new snapshot of the data and process it, then continue tracking changes.">
-                    <Icon
-                      icon={InfoIcon}
-                      data-testid="reset-checkbox-info-icon"
-                    />
-                  </RiTooltip>
-                </Row>
-              </Col>
-            }
-          />
-          <Modal.Content.Footer.Compose>
-            <PrimaryButton
-              size="l"
-              color="secondary"
-              onClick={handleDeployPipeline}
-              data-testid="deploy-confirm-btn"
-            >
-              Deploy
-            </PrimaryButton>
-          </Modal.Content.Footer.Compose>
-        </Modal.Content.Compose>
-      </Modal.Compose>
+              <RiTooltip content="The pipeline will take a new snapshot of the data and process it, then continue tracking changes.">
+                <Icon icon={InfoIcon} data-testid="reset-checkbox-info-icon" />
+              </RiTooltip>
+            </Row>
+          </Col>
+        }
+        primaryButtonText="Deploy"
+        onPrimaryButtonClick={handleDeployPipeline}
+      >
+        <PrimaryButton
+          icon={RocketIcon}
+          disabled={disabled}
+          loading={loading}
+          data-testid="deploy-rdi-pipeline"
+        >
+          Deploy
+        </PrimaryButton>
+      </Modal>
     </>
   )
 }
