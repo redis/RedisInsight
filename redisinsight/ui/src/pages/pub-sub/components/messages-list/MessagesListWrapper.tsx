@@ -19,14 +19,6 @@ import SubscribeForm from '../subscribe-form'
 import PatternsInfo from '../patternsInfo'
 import { InnerContainer, Wrapper } from './MessageListWrapper.styles'
 
-const SubscribeStatus = ({ isSubscribed }: { isSubscribed: boolean }) => {
-  if (!isSubscribed) {
-    return <RiBadge label="Unsubscribed" variant="default" />
-  }
-
-  return <RiBadge label="Subscribed" variant="success" />
-}
-
 const MessagesListWrapper = () => {
   const {
     messages = [],
@@ -69,7 +61,11 @@ const MessagesListWrapper = () => {
 
           <Row align="center" justify="end" gap="s">
             <Text>Status:</Text>
-            <SubscribeStatus isSubscribed={isSubscribed} />
+            {isSubscribed ? (
+              <RiBadge label="Subscribed" variant="success" />
+            ) : (
+              <RiBadge label="Unsubscribed" variant="default" />
+            )}
             <HorizontalSpacer size="s" />
 
             <SubscribeForm grow={false} />

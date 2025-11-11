@@ -6,34 +6,22 @@ import {
   UTM_CAMPAINGS,
   UTM_MEDIUMS,
 } from 'uiSrc/constants/links'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { RiPopover } from 'uiSrc/components/base'
 import { Col } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout'
+import { InfoIcon } from './SubscribeInformation.styles'
 
 const SubscribeInformation = () => (
   <RiPopover
     id="showPupSubExamples"
-    button={
-      <RiIcon
-        size="l"
-        type="InfoIcon"
-        // TODO: Remove marginTop
-        // Hack: for some reason this icon has extra height, which breaks flex alignment
-        style={{ cursor: 'pointer', marginTop: 4 }}
-        data-testid="append-info-icon"
-      />
-    }
+    button={<InfoIcon />}
     data-testid="pub-sub-examples"
   >
-    <Col>
+    <Col gap="l">
       <Text>
         Subscribe to one or more channels or patterns by entering them,
         separated by spaces.
       </Text>
-
-      <Spacer />
 
       <Text>
         Supported glob-style patterns are described&nbsp;

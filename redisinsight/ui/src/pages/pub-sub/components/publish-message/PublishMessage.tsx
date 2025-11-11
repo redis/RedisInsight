@@ -15,8 +15,11 @@ import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { ToastCheckIcon, Icon } from 'uiSrc/components/base/icons'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { Text } from 'uiSrc/components/base/text'
-import { HorizontalSpacer, Spacer } from 'uiSrc/components/base/layout'
-import { ChannelColumn } from './PublishMessage.styles'
+import {
+  ButtonWrapper,
+  ChannelColumn,
+  ResultWrapper,
+} from './PublishMessage.styles'
 
 const HIDE_BADGE_TIMER = 3000
 
@@ -78,10 +81,9 @@ const PublishMessage = () => {
   return (
     <form onSubmit={onFormSubmit}>
       <Row justify="between" gap="xl" align="end">
-        <Row grow={true}>
-          <ChannelColumn grow={false}>
+        <Row grow={true} gap="m">
+          <ChannelColumn grow={false} gap="s">
             <Text>Channel name</Text>
-            <Spacer size="s" />
             <FormField>
               <TextInput
                 name="channel"
@@ -95,11 +97,8 @@ const PublishMessage = () => {
             </FormField>
           </ChannelColumn>
 
-          <HorizontalSpacer size="m" />
-
-          <Col>
+          <Col gap="s">
             <Text>Message</Text>
-            <Spacer size="s" />
             <TextInput
               name="message"
               id="message"
@@ -113,7 +112,7 @@ const PublishMessage = () => {
         </Row>
 
         {isShowBadge && (
-          <Row grow={false} style={{ minHeight: 36 }} align="center">
+          <ResultWrapper grow={false} align="center">
             <Icon icon={ToastCheckIcon} color="success500" />
             <Text color="success">
               {getClientsText(
@@ -122,11 +121,11 @@ const PublishMessage = () => {
                   : undefined,
               )}
             </Text>
-          </Row>
+          </ResultWrapper>
         )}
 
         {!isShowBadge && (
-          <Row justify="end" grow={false} style={{ minWidth: 100 }}>
+          <ButtonWrapper justify="end" grow={false}>
             <FlexItem>
               <PrimaryButton
                 size="large"
@@ -136,7 +135,7 @@ const PublishMessage = () => {
                 Publish
               </PrimaryButton>
             </FlexItem>
-          </Row>
+          </ButtonWrapper>
         )}
       </Row>
     </form>
