@@ -28,7 +28,7 @@ import { RiRadioGroup } from 'uiSrc/components/base/forms/radio-group/RadioGroup
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { ICloudConnectionSubmit } from '../CloudConnectionFormWrapper'
 
-import styles from '../styles.module.scss'
+import { ScrollableWrapper } from '../../styles.module'
 
 export interface Props {
   accessKey: string
@@ -179,7 +179,7 @@ const CloudConnectionForm = (props: Props) => {
   }
 
   const CloudApiForm = (
-    <div className={styles.cloudApi} data-testid="add-db_cloud-api">
+    <div data-testid="add-db_cloud-api">
       <MessageCloudApiKeys />
       <Spacer />
       <WindowEvent event="keydown" handler={onKeyDown} />
@@ -227,7 +227,7 @@ const CloudConnectionForm = (props: Props) => {
   )
 
   return (
-    <div className="getStartedForm eui-yScroll">
+    <ScrollableWrapper>
       <FeatureFlagComponent name={FeatureFlags.cloudSso}>
         <Col gap="l">
           <FlexItem grow>
@@ -252,7 +252,7 @@ const CloudConnectionForm = (props: Props) => {
         />
       )}
       {type === CloudConnectionOptions.ApiKeys && CloudApiForm}
-    </div>
+    </ScrollableWrapper>
   )
 }
 
