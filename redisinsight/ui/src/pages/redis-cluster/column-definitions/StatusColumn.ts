@@ -7,5 +7,6 @@ export const StatusColumn = (): ColumnDef<InstanceRedisCluster> => {
     id: 'status',
     accessorKey: 'status',
     enableSorting: true,
+    size: 100,
   }
 }

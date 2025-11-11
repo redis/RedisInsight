@@ -15,6 +15,7 @@ export const getSelectionColumn = <T extends object>({
 }: Props = {}): ColumnDef<T> => {
   return {
     id,
+    maxSize: size,
     size,
     isHeaderCustom: true,
     header: ({ table }) => (

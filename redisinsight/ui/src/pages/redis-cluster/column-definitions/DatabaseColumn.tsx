@@ -2,15 +2,17 @@ import React from 'react'
 import { RiTooltip } from 'uiSrc/components'
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import { InstanceRedisCluster } from 'uiSrc/slices/interfaces'
-import styles from 'uiSrc/pages/redis-cluster/styles.module.scss'
 import { formatLongName } from 'uiSrc/utils'
-import { Text } from 'uiSrc/components/base/text'
+import { CellText } from 'uiSrc/components/auto-discover'
 
-export const NameColumn = (): ColumnDef<InstanceRedisCluster> => {
+import styles from '../styles.module.scss'
+
+export const DatabaseColumn = (): ColumnDef<InstanceRedisCluster> => {
   return {
     header: 'Database',
     id: 'name',
     accessorKey: 'name',
+    minSize: 180,
     enableSorting: true,
     cell: ({
       row: {
@@ -23,12 +25,14 @@ export const NameColumn = (): ColumnDef<InstanceRedisCluster> => {
       return (
         <div role="presentation" data-testid={`db_name_${name}`}>
           <RiTooltip
+            delay={200}
             position="bottom"
             title="Database"
             className={styles.tooltipColumnName}
+            anchorClassName="truncateText"
             content={formatLongName(name)}
           >
-            <Text>{cellContent}</Text>
+            <CellText>{cellContent}</CellText>
           </RiTooltip>
         </div>
       )

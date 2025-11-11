@@ -9,7 +9,7 @@ import { RiTooltip } from 'uiSrc/components'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { RiIcon } from 'uiSrc/components/base/icons'
 
-export const MessagesColumn = (): ColumnDef<InstanceRedisCluster> => {
+export const ResultColumn = (): ColumnDef<InstanceRedisCluster> => {
   return {
     header: 'Result',
     id: 'messageAdded',

@@ -15,9 +15,9 @@ import { InstanceRedisCluster } from 'uiSrc/slices/interfaces'
 import { ColumnDef } from 'uiSrc/components/base/layout/table'
 import {
   EndpointColumn,
-  MessagesColumn,
-  ModulesColumn,
-  NameColumn,
+  ResultColumn,
+  CapabilitiesColumn,
+  DatabaseColumn,
   OptionsColumn,
   SelectionColumn,
   StatusColumn,
@@ -25,17 +25,17 @@ import {
 
 export const colFactory = (instances: Nullable<InstanceRedisCluster[]>) => {
   const columns: ColumnDef<InstanceRedisCluster>[] = [
-    NameColumn(),
+    DatabaseColumn(),
     StatusColumn(),
     EndpointColumn(),
-    ModulesColumn(),
+    CapabilitiesColumn(),
     OptionsColumn(instances || []),
   ]
   if (instances && instances.length > 0) {
     columns.unshift(SelectionColumn())
   }
 
-  const messageColumn = MessagesColumn()
+  const messageColumn = ResultColumn()
   const columnsResult: ColumnDef<InstanceRedisCluster>[] = [
     ...columns,
     messageColumn,

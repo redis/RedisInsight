@@ -2,10 +2,12 @@ import React from 'react'
 import { RiTooltip } from 'uiSrc/components'
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import { InstanceRedisCluster } from 'uiSrc/slices/interfaces'
-import { handleCopy } from 'uiSrc/utils'
-import { Text } from 'uiSrc/components/base/text'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CopyIcon } from 'uiSrc/components/base/icons'
+import { formatLongName, handleCopy } from 'uiSrc/utils'
+import {
+  CopyBtn,
+  CopyPublicEndpointText,
+  CopyTextContainer,
+} from 'uiSrc/components/auto-discover'
 
 export const EndpointColumn = (): ColumnDef<InstanceRedisCluster> => {
   return {
@@ -21,21 +23,27 @@ export const EndpointColumn = (): ColumnDef<InstanceRedisCluster> => {
       const text = `${dnsName}:${port}`
       return (
         !!dnsName && (
-          <div className="host_port">
-            <Text className="copyHostPortText">{text}</Text>
+          <CopyTextContainer>
+            <RiTooltip
+              delay={200}
+              position="bottom"
+              title="Endpoint"
+              content={formatLongName(text)}
+            >
+              <CopyPublicEndpointText>{text}</CopyPublicEndpointText>
+            </RiTooltip>
+
             <RiTooltip
               position="right"
               content="Copy"
-              anchorClassName="copyHostPortTooltip"
+              anchorClassName="copyPublicEndpointTooltip"
             >
-              <IconButton
-                icon={CopyIcon}
-                aria-label="Copy host:port"
-                className="copyHostPortBtn"
+              <CopyBtn
+                aria-label="Copy public endpoint"
                 onClick={() => handleCopy(text)}
               />
             </RiTooltip>
-          </div>
+          </CopyTextContainer>
         )
       )
     },

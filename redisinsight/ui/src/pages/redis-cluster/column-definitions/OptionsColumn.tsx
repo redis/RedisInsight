@@ -12,6 +12,7 @@ export const OptionsColumn = (
     id: 'options',
     accessorKey: 'options',
     enableSorting: true,
+    maxSize: 180,
     cell: ({ row: { original: instance } }) => {
       const options = parseInstanceOptionsCluster(instance?.uid, instances)
       return <DatabaseListOptions options={options} />
