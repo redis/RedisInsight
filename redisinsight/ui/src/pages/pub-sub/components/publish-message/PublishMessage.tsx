@@ -20,14 +20,6 @@ import { ChannelColumn } from './PublishMessage.styles'
 
 const HIDE_BADGE_TIMER = 3000
 
-const PublishedMessages = ({ clients }: { clients: number | undefined }) => {
-  if (typeof clients !== 'number') {
-    return <Text color="success">Published</Text>
-  }
-
-  return <Text color="success">Published ({clients})</Text>
-}
-
 const PublishMessage = () => {
   const { channel: channelContext, message: messageContext } =
     useSelector(appContextPubSub)
@@ -80,6 +72,9 @@ const PublishMessage = () => {
     dispatch(publishMessageAction(instanceId, channel, message, onSuccess))
   }
 
+  const getClientsText = (clients?: number) =>
+    typeof clients !== 'number' ? 'Published' : `Published (${clients})`
+
   return (
     <form onSubmit={onFormSubmit}>
       <Row justify="between" gap="xl" align="end">
@@ -120,13 +115,13 @@ const PublishMessage = () => {
         {isShowBadge && (
           <Row grow={false} style={{ minHeight: 36 }} align="center">
             <Icon icon={ToastCheckIcon} color="success500" />
-            <PublishedMessages
-              clients={
+            <Text color="success">
+              {getClientsText(
                 connectionType !== ConnectionType.Cluster
                   ? affectedClients
-                  : undefined
-              }
-            />
+                  : undefined,
+              )}
+            </Text>
           </Row>
         )}
 
