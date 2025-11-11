@@ -1,5 +1,4 @@
 import React from 'react'
-import cx from 'classnames'
 import { differenceInDays } from 'date-fns'
 
 import { useSelector } from 'react-redux'
@@ -15,13 +14,13 @@ import {
 import { RiTooltip } from 'uiSrc/components'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Indicator } from 'uiSrc/components/base/text/text.styles'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import {
   CHECK_CLOUD_DATABASE,
   WARNING_WITH_CAPABILITY,
   WARNING_WITHOUT_CAPABILITY,
 } from './texts'
-import styles from './styles.module.scss'
-import { IconWrapper } from './DbStatus.styles'
+import { IconWrapper, InfoIcon } from './DbStatus.styles'
 
 export interface Props {
   id: string
@@ -77,14 +76,10 @@ const DbStatus = (props: Props) => {
         />
       }
       position="right"
-      className={styles.tooltip}
     >
-      <div
-        className={cx(styles.status, styles.warning)}
-        data-testid={`database-status-${type}-${id}`}
-      >
-        !
-      </div>
+      <IconWrapper data-testid={`database-status-${type}-${id}`}>
+        <InfoIcon />
+      </IconWrapper>
     </RiTooltip>
   )
 
@@ -133,10 +128,10 @@ const WarningTooltipContent = (props: WarningTooltipProps) => {
   })
 
   return (
-    <div className={styles.warningTooltipContent}>
+    <Row gap="l">
       <RiIcon type="AlarmIcon" customSize="50px" />
       <div>{content}</div>
-    </div>
+    </Row>
   )
 }
 
