@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
-import cx from 'classnames'
 import * as keys from 'uiSrc/constants/keys'
 import { resetInstanceUpdateAction } from 'uiSrc/slices/instances/instances'
 import { ConnectionType } from 'uiSrc/slices/interfaces'
@@ -34,7 +33,7 @@ import CloneConnection from './components/CloneConnection'
 import FooterActions from './components/FooterActions'
 import { AddConnection, EditConnection, EditSentinelConnection } from './forms'
 
-import styles from './styles.module.scss'
+import { ScrollableWrapper, ContentWrapper } from '../../styles.module'
 
 export interface Props {
   formFields: DbConnectionInfo
@@ -233,21 +232,18 @@ const ManualConnectionForm = (props: Props) => {
   )
 
   return (
-    <div
-      className={styles.container}
-      data-testid="add-db_manual"
-    >
+    <ContentWrapper data-testid="add-db_manual">
       {isEditMode &&
         !isCloneMode &&
         server?.buildType !== BuildType.RedisStack && (
           <CloneConnection id={id} setIsCloneMode={setIsCloneMode} />
         )}
-      <div className={cx('getStartedForm', styles.content)} ref={formRef}>
+      <ContentWrapper as="div" ref={formRef}>
         {!isEditMode && !isFromCloud && (
           <>
             <Tabs />
             <Spacer />
-            <div className="eui-yScroll">
+            <ScrollableWrapper>
               <AddConnection
                 activeTab={activeTab}
                 formik={formik}
@@ -257,7 +253,7 @@ const ManualConnectionForm = (props: Props) => {
                 caCertificates={caCertificates}
                 buildType={buildType}
               />
-            </div>
+            </ScrollableWrapper>
           </>
         )}
         {(isEditMode || isCloneMode || isFromCloud) &&
@@ -280,7 +276,7 @@ const ManualConnectionForm = (props: Props) => {
               )}
               <Tabs />
               <Spacer />
-              <div className="eui-yScroll">
+              <ScrollableWrapper>
                 <EditConnection
                   activeTab={activeTab}
                   isCloneMode={isCloneMode}
@@ -293,7 +289,7 @@ const ManualConnectionForm = (props: Props) => {
                   caCertificates={caCertificates}
                   buildType={buildType}
                 />
-              </div>
+              </ScrollableWrapper>
             </>
           )}
         {(isEditMode || isCloneMode) &&
@@ -313,7 +309,7 @@ const ManualConnectionForm = (props: Props) => {
               )}
               <Tabs />
               <Spacer />
-              <div className="eui-yScroll">
+              <ScrollableWrapper>
                 <EditSentinelConnection
                   activeTab={activeTab}
                   isCloneMode={isCloneMode}
@@ -324,12 +320,12 @@ const ManualConnectionForm = (props: Props) => {
                   caCertificates={caCertificates}
                   db={db}
                 />
-              </div>
+              </ScrollableWrapper>
             </>
           )}
-      </div>
+      </ContentWrapper>
       <Footer />
-    </div>
+    </ContentWrapper>
   )
 }
 
