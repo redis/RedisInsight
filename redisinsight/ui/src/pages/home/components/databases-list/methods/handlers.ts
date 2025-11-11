@@ -13,14 +13,14 @@ import { appContextSelector, resetRdiContext } from 'uiSrc/slices/app/context'
 import { BrowserStorageItem, Pages } from 'uiSrc/constants'
 import { store, dispatch } from 'uiSrc/slices/store'
 import { SortingState } from 'uiSrc/components/base/layout/table'
-import { history } from 'uiSrc/Router'
+import { navigate } from 'uiSrc/Router'
 import { localStorageService } from 'uiSrc/services'
 
 const connectToInstance = (id: string) => {
   dispatch(resetRdiContext())
   dispatch(setConnectedInstanceId(id))
 
-  history.push(Pages.browser(id))
+  navigate(Pages.browser(id))
 }
 
 export const handleCheckConnectToInstance = async (instance: Instance) => {
