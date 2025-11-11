@@ -25,6 +25,7 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import ResultsLog from './components/ResultsLog'
 
 import styles from './styles.module.scss'
+import { ScrollableWrapper } from '../styles.module'
 
 export interface Props {
   onClose: () => void
@@ -167,7 +168,7 @@ const ImportDatabase = (props: Props) => {
 
   return (
     <>
-      <div className={styles.formWrapper} data-testid="add-db_import">
+      <ScrollableWrapper data-testid="add-db_import">
         <Col>
           <FlexItem grow>
             {isShowForm && (
@@ -234,7 +235,7 @@ const ImportDatabase = (props: Props) => {
             </FlexItem>
           </Row>
         )}
-      </div>
+      </ScrollableWrapper>
       <Footer />
     </>
   )
