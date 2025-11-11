@@ -13,6 +13,7 @@ import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
 
 import { UserIcon, IndicatorExcludedIcon } from 'uiSrc/components/base/icons'
 import { FlexProps } from 'uiSrc/components/base/layout/flex/flex.styles'
+import SubscribeInformation from '../subscribe-information'
 
 export interface SubscribeFormProps extends Omit<FlexProps, 'direction'> {}
 
@@ -51,6 +52,8 @@ const SubscribeForm = (props: SubscribeFormProps) => {
           style={{ minWidth: 250 }}
         />
       </FormField>
+
+      <SubscribeInformation />
 
       <Button
         variant={isSubscribed ? 'secondary-ghost' : 'primary'}

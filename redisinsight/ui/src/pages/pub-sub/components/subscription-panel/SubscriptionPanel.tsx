@@ -24,9 +24,9 @@ import { RiTooltip } from 'uiSrc/components'
 import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import ClickableAppendInfo from './components/clickable-append-info'
-import styles from './styles.module.scss'
 import PatternsInfo from '../patternsInfo'
+import styles from './styles.module.scss'
+import SubscribeInformation from '../subscribe-information'
 
 const SubscriptionPanel = () => {
   const { messages, isSubscribed, subscriptions, loading, count } =
@@ -103,7 +103,7 @@ const SubscriptionPanel = () => {
       <FlexItem>
         <Row align="center">
           <FlexItem>
-            <ClickableAppendInfo />
+            <SubscribeInformation />
           </FlexItem>
           <FlexItem className={styles.channels}>
             <FormField>
