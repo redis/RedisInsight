@@ -1,5 +1,7 @@
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
+
 import {
   addInstancesRedisCloud,
   cloudSelector,
@@ -8,210 +10,41 @@ import {
   resetLoadedRedisCloud,
 } from 'uiSrc/slices/instances/cloud'
 import { oauthCloudUserSelector } from 'uiSrc/slices/oauth/cloud'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-import {
-  formatLongName,
-  handleCopy,
-  parseInstanceOptionsCloud,
-  replaceSpaces,
-  setTitle,
-} from 'uiSrc/utils'
+import { setTitle } from 'uiSrc/utils'
 import { Pages } from 'uiSrc/constants'
 import {
   InstanceRedisCloud,
   LoadedCloud,
   OAuthSocialAction,
-  RedisCloudSubscriptionTypeText,
 } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   ColumnDef,
   RowSelectionState,
 } from 'uiSrc/components/base/layout/table'
-import {
-  DatabaseListModules,
-  DatabaseListOptions,
-  RiTooltip,
-} from 'uiSrc/components'
-import styles from 'uiSrc/pages/autodiscover-cloud/redis-cloud-databases/styles.module.scss'
 import { getSelectionColumn } from 'uiSrc/pages/autodiscover-cloud/utils'
 import {
-  CellText,
-  CopyBtn,
-  CopyPublicEndpointText,
-  CopyTextContainer,
-  StatusColumnText,
-} from 'uiSrc/components/auto-discover'
+  DatabaseColumn,
+  EndpointColumn,
+  ModulesColumn,
+  OptionsColumn,
+  StatusDbColumn,
+  SubscriptionDbColumn,
+  SubscriptionIdColumn,
+  SubscriptionTypeColumn,
+} from '../column-definitions'
 
 export const colFactory = (instances: InstanceRedisCloud[]) => {
   const columns: ColumnDef<InstanceRedisCloud>[] = [
     getSelectionColumn<InstanceRedisCloud>(),
-    {
-      header: 'Database',
-      id: 'name',
-      accessorKey: 'name',
-      enableSorting: true,
-      maxSize: 150,
-      cell: ({
-        row: {
-          original: { name },
-        },
-      }) => {
-        const cellContent = replaceSpaces(name.substring(0, 200))
-        return (
-          <div role="presentation" data-testid={`db_name_${name}`}>
-            <RiTooltip
-              delay={200}
-              position="bottom"
-              title="Database"
-              className={styles.tooltipColumnName}
-              anchorClassName="truncateText"
-              content={formatLongName(name)}
-            >
-              <CellText>{cellContent}</CellText>
-            </RiTooltip>
-          </div>
-        )
-      },
-    },
-    {
-      header: 'Subscription ID',
-      id: 'subscriptionId',
-      accessorKey: 'subscriptionId',
-      enableSorting: true,
-      maxSize: 120,
-      cell: ({
-        row: {
-          original: { subscriptionId },
-        },
-      }) => (
-        <CellText data-testid={`sub_id_${subscriptionId}`}>
-          {subscriptionId}
-        </CellText>
-      ),
-    },
-    {
-      header: 'Subscription',
-      id: 'subscriptionName',
-      accessorKey: 'subscriptionName',
-      enableSorting: true,
-      minSize: 200,
-      cell: ({
-        row: {
-          original: { subscriptionName: name },
-        },
-      }) => {
-        const cellContent = replaceSpaces(name.substring(0, 200))
-        return (
-          <div role="presentation">
-            <RiTooltip
-              delay={200}
-              position="bottom"
-              title="Subscription"
-              className={styles.tooltipColumnName}
-              anchorClassName="truncateText"
-              content={formatLongName(name)}
-            >
-              <CellText>{cellContent}</CellText>
-            </RiTooltip>
-          </div>
-        )
-      },
-    },
-    {
-      header: 'Type',
-      id: 'subscriptionType',
-      accessorKey: 'subscriptionType',
-      enableSorting: true,
-      maxSize: 100,
-      cell: ({
-        row: {
-          original: { subscriptionType },
-        },
-      }) => (
-        <CellText>
-          {RedisCloudSubscriptionTypeText[subscriptionType!] ?? '-'}
-        </CellText>
-      ),
-    },
-    {
-      header: 'Status',
-      id: 'status',
-      accessorKey: 'status',
-      enableSorting: true,
-      maxSize: 100,
-      cell: ({
-        row: {
-          original: { status },
-        },
-      }) => <StatusColumnText>{status}</StatusColumnText>,
-    },
-    {
-      header: 'Endpoint',
-      id: 'publicEndpoint',
-      accessorKey: 'publicEndpoint',
-      enableSorting: true,
-      minSize: 200,
-      cell: ({
-        row: {
-          original: { publicEndpoint },
-        },
-      }) => {
-        const text = publicEndpoint
-        return (
-          <CopyTextContainer>
-            <RiTooltip
-              delay={200}
-              position="bottom"
-              title="Endpoint"
-              content={formatLongName(text)}
-            >
-              <CopyPublicEndpointText>{text}</CopyPublicEndpointText>
-            </RiTooltip>
-
-            <RiTooltip
-              delay={200}
-              position="right"
-              content="Copy"
-              anchorClassName="copyPublicEndpointTooltip"
-            >
-              <CopyBtn
-                aria-label="Copy public endpoint"
-                onClick={() => handleCopy(text)}
-              />
-            </RiTooltip>
-          </CopyTextContainer>
-        )
-      },
-    },
-    {
-      header: 'Capabilities',
-      id: 'modules',
-      accessorKey: 'modules',
-      enableSorting: true,
-      maxSize: 120,
-      cell: function Modules({ row: { original: instance } }) {
-        return (
-          <DatabaseListModules
-            modules={instance.modules.map((name) => ({ name }))}
-          />
-        )
-      },
-    },
-    {
-      header: 'Options',
-      id: 'options',
-      accessorKey: 'options',
-      enableSorting: true,
-      maxSize: 120,
-      cell: ({ row: { original: instance } }) => {
-        const options = parseInstanceOptionsCloud(
-          instance.databaseId,
-          instances || [],
-        )
-        return <DatabaseListOptions options={options} />
-      },
-    },
+    DatabaseColumn(),
+    SubscriptionIdColumn(),
+    SubscriptionDbColumn(),
+    SubscriptionTypeColumn(),
+    StatusDbColumn(),
+    EndpointColumn(),
+    ModulesColumn(),
+    OptionsColumn(instances),
   ]
 
   return columns

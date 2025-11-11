@@ -21,3 +21,17 @@ export const StatusColumn = (): ColumnDef<RedisCloudSubscription> => {
     ),
   }
 }
+/*
+    {
+      header: 'Status',
+      id: 'status',
+      accessorKey: 'status',
+      enableSorting: true,
+      maxSize: 100,
+      cell: ({
+        row: {
+          original: { status },
+        },
+      }) => <StatusColumnText>{status}</StatusColumnText>,
+    }
+ */
