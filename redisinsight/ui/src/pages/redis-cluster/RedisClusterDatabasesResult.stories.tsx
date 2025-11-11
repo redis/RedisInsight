@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { fn } from 'storybook/test'
 
-import { RedisClusterInstanceAddedFactory } from 'uiSrc/mocks/factories/cluster'
+import { RedisClusterInstanceAddedFactory } from 'uiSrc/mocks/factories/cluster/RedisClusterInstance.factory'
 import { AddRedisDatabaseStatus } from 'uiSrc/slices/interfaces'
 import RedisClusterDatabasesResult from './RedisClusterDatabasesResult'
 import { colFactory } from './useClusterDatabasesConfig'

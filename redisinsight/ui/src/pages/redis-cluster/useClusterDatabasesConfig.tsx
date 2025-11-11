@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 
@@ -8,167 +8,38 @@ import {
   resetDataRedisCluster,
   resetInstancesRedisCluster,
 } from 'uiSrc/slices/instances/cluster'
-import {
-  formatLongName,
-  handleCopy,
-  Maybe,
-  Nullable,
-  parseInstanceOptionsCluster,
-  setTitle,
-} from 'uiSrc/utils'
+import { Maybe, Nullable, setTitle } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { Pages } from 'uiSrc/constants'
-import {
-  AddRedisDatabaseStatus,
-  InstanceRedisCluster,
-} from 'uiSrc/slices/interfaces'
+import { InstanceRedisCluster } from 'uiSrc/slices/interfaces'
 import { ColumnDef } from 'uiSrc/components/base/layout/table'
 import {
-  DatabaseListModules,
-  DatabaseListOptions,
-  RiTooltip,
-} from 'uiSrc/components'
-import { ColorText, Text } from 'uiSrc/components/base/text'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CopyIcon, RiIcon } from 'uiSrc/components/base/icons'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-
-import styles from './styles.module.scss'
+  EndpointColumn,
+  MessagesColumn,
+  ModulesColumn,
+  NameColumn,
+  OptionsColumn,
+  SelectionColumn,
+  StatusColumn,
+} from './column-definitions'
 
 export const colFactory = (instances: Nullable<InstanceRedisCluster[]>) => {
   const columns: ColumnDef<InstanceRedisCluster>[] = [
-    {
-      header: 'Database',
-      id: 'name',
-      accessorKey: 'name',
-      enableSorting: true,
-      cell: ({
-        row: {
-          original: { name },
-        },
-      }) => {
-        const cellContent = name
-          .substring(0, 200)
-          .replace(/\s\s/g, '\u00a0\u00a0')
-        return (
-          <div role="presentation" data-testid={`db_name_${name}`}>
-            <RiTooltip
-              position="bottom"
-              title="Database"
-              className={styles.tooltipColumnName}
-              content={formatLongName(name)}
-            >
-              <Text>{cellContent}</Text>
-            </RiTooltip>
-          </div>
-        )
-      },
-    },
-    {
-      header: 'Status',
-      id: 'status',
-      accessorKey: 'status',
-      enableSorting: true,
-    },
-    {
-      header: 'Endpoint',
-      id: 'dnsName',
-      accessorKey: 'dnsName',
-      enableSorting: true,
-      cell: ({
-        row: {
-          original: { dnsName, port },
-        },
-      }) => {
-        const text = `${dnsName}:${port}`
-        return (
-          !!dnsName && (
-            <div className="host_port">
-              <Text className="copyHostPortText">{text}</Text>
-              <RiTooltip
-                position="right"
-                content="Copy"
-                anchorClassName="copyHostPortTooltip"
-              >
-                <IconButton
-                  icon={CopyIcon}
-                  aria-label="Copy host:port"
-                  className="copyHostPortBtn"
-                  onClick={() => handleCopy(text)}
-                />
-              </RiTooltip>
-            </div>
-          )
-        )
-      },
-    },
-    {
-      header: 'Capabilities',
-      id: 'modules',
-      accessorKey: 'modules',
-      enableSorting: true,
-      cell: function Modules({ row: { original: instance } }) {
-        return (
-          <DatabaseListModules
-            modules={instance?.modules?.map((name) => ({ name }))}
-          />
-        )
-      },
-    },
-    {
-      header: 'Options',
-      id: 'options',
-      accessorKey: 'options',
-      enableSorting: true,
-      cell: ({ row: { original: instance } }) => {
-        const options = parseInstanceOptionsCluster(
-          instance?.uid,
-          instances || [],
-        )
-        return <DatabaseListOptions options={options} />
-      },
-    },
+    NameColumn(),
+    StatusColumn(),
+    EndpointColumn(),
+    ModulesColumn(),
+    OptionsColumn(instances || []),
   ]
-
-  const messageColumn: ColumnDef<InstanceRedisCluster> = {
-    header: 'Result',
-    id: 'messageAdded',
-    accessorKey: 'messageAdded',
-    enableSorting: true,
-    cell: function Message({
-      row: {
-        original: { statusAdded, messageAdded },
-      },
-    }) {
-      return (
-        <>
-          {statusAdded === AddRedisDatabaseStatus.Success ? (
-            <Text>{messageAdded}</Text>
-          ) : (
-            <RiTooltip position="left" title="Error" content={messageAdded}>
-              <Row align="center" gap="s">
-                <FlexItem>
-                  <RiIcon type="ToastDangerIcon" color="danger600" />
-                </FlexItem>
-
-                <FlexItem>
-                  <ColorText
-                    color="danger"
-                    className="flex-row euiTextAlign--center"
-                  >
-                    Error
-                  </ColorText>
-                </FlexItem>
-              </Row>
-            </RiTooltip>
-          )}
-        </>
-      )
-    },
+  if (instances && instances.length > 0) {
+    columns.unshift(SelectionColumn())
   }
 
-  const columnsResult: ColumnDef<InstanceRedisCluster>[] = [...columns]
-  columnsResult.push(messageColumn)
+  const messageColumn = MessagesColumn()
+  const columnsResult: ColumnDef<InstanceRedisCluster>[] = [
+    ...columns,
+    messageColumn,
+  ]
   return [columns, columnsResult]
 }
 const sendCancelEvent = () => {
