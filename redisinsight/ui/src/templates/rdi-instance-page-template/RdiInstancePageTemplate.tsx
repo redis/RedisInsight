@@ -1,7 +1,6 @@
 import React from 'react'
 import { ExplorePanelTemplate } from 'uiSrc/templates'
-
-import styles from './styles.module.scss'
+import { RdiInstancePageContentContainer } from 'uiSrc/templates/rdi-instance-page-template/styles'
 
 export interface Props {
   children: React.ReactNode
@@ -11,9 +10,9 @@ const RdiInstancePageTemplate = (props: Props) => {
   const { children } = props
 
   return (
-    <div className={styles.content}>
+    <RdiInstancePageContentContainer>
       <ExplorePanelTemplate>{children}</ExplorePanelTemplate>
-    </div>
+    </RdiInstancePageContentContainer>
   )
 }
 
