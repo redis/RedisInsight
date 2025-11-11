@@ -21,7 +21,7 @@ const SubscribeForm = (props: SubscribeFormProps) => {
 
   const { isSubscribed, subscriptions, loading } = useSelector(pubSubSelector)
 
-  const [channels, setChannels] = useState(
+  const [channels, setChannels] = useState(() =>
     subscriptions?.length
       ? subscriptions.map((sub) => sub.channel).join(' ')
       : DEFAULT_SEARCH_MATCH,
