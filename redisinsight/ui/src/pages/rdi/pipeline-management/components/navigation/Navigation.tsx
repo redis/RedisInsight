@@ -4,7 +4,7 @@ import { useHistory, useLocation, useParams } from 'react-router-dom'
 
 import cx from 'classnames'
 import { RiTooltip } from 'uiSrc/components'
-import { ColorText } from 'uiSrc/components/base/text'
+import { ColorText, Title } from 'uiSrc/components/base/text'
 import { PageNames, Pages } from 'uiSrc/constants'
 import JobsTree from 'uiSrc/pages/rdi/pipeline-management/components/jobs-tree'
 import Tab from 'uiSrc/pages/rdi/pipeline-management/components/tab'
@@ -13,6 +13,12 @@ import { RdiPipelineTabs } from 'uiSrc/slices/interfaces/rdi'
 import { Nullable } from 'uiSrc/utils'
 
 import styles from './styles.module.scss'
+import styled from 'styled-components'
+import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
+import { Theme } from 'uiSrc/components/base/theme/types'
+import { NavigationPanelContainer } from 'uiSrc/pages/rdi/pipeline-management/components/navigation/styles'
+import ConfigNavigationTab from 'uiSrc/pages/rdi/pipeline-management/components/navigation/config-navigation-tab'
+import JobsNavigationTab from 'uiSrc/pages/rdi/pipeline-management/components/navigation/jobs-navigation-tab'
 
 const getSelectedTab = (path: string, rdiInstanceId: string) => {
   const tabsPath = path?.replace(
@@ -55,7 +61,7 @@ const Navigation = () => {
   }, [pathname, rdiInstanceId])
 
   const renderTabs = () => (
-    <>
+    <Col gap="m">
       <div
         role="button"
         tabIndex={0}
@@ -65,13 +71,14 @@ const Navigation = () => {
         data-testid={`rdi-nav-btn-${RdiPipelineTabs.Config}`}
       >
         <Tab
-          title="Configure pipeline"
+          title="Configuration"
           fileName="Configuration file"
           isSelected={selectedTab === RdiPipelineTabs.Config}
           data-testid={`rdi-pipeline-tab-${RdiPipelineTabs.Config}`}
           isLoading={loading}
           isValid={configValidationErrors.length === 0}
           validationErrors={configValidationErrors}
+          titleActions={<>+</>}
         >
           <div className={styles.dotWrapper}>
             {!!changes.config && (
@@ -101,18 +108,26 @@ const Navigation = () => {
           changes={changes}
         />
       </Tab>
-    </>
+    </Col>
   )
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.title}>
-        <ColorText component="div">Pipeline Management</ColorText>
-      </div>
-      <div className={styles.tabs} data-testid="rdi-pipeline-tabs">
-        {!loading && renderTabs()}
-      </div>
-    </div>
+    <NavigationPanelContainer gap="l">
+        <Title size="S" color="primary">
+          Pipeline management
+        </Title>
+        <ConfigNavigationTab
+          onSelectedTabChanged={onSelectedTabChanged}
+          isSelected={selectedTab === RdiPipelineTabs.Config}
+        />
+        <JobsNavigationTab
+          onSelectedTabChanged={onSelectedTabChanged}
+          isSelected={selectedTab === RdiPipelineTabs.Jobs}
+          path={decodeURIComponent(path)}
+          rdiInstanceId={rdiInstanceId}
+          changes={changes}
+        />
+    </NavigationPanelContainer>
   )
 }
 

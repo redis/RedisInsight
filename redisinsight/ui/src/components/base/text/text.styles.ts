@@ -113,6 +113,8 @@ const useStatusColorStyles = ({ $color }: MapProps = {}) => {
 
   const getColorValue = (color?: ColorType) => {
     switch (color) {
+      case 'informative':
+        return colors.text.informative400
       case 'danger':
         return colors.text.danger500
       case 'warning':
@@ -132,11 +134,12 @@ const useStatusColorStyles = ({ $color }: MapProps = {}) => {
 export const StatusIndicator = styled.div<
   {
     $color: ColorType
+    $diameter?: string
   } & CommonProps
 >`
   ${useStatusColorStyles};
-  width: 1rem;
-  height: 1rem;
+  width: ${({ $diameter }) => $diameter || '1rem'};
+  height: ${({ $diameter }) => $diameter || '1rem'};
   border-radius: 50%;
 `
 export const mapSize = (size: TextSizeType): BodyProps['size'] => {
