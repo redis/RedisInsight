@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import styled from 'styled-components'
-import { Theme } from '@redis-ui/styles'
-
 
 import { Nullable } from 'uiSrc/utils'
 import { UrlHandlingActions } from 'uiSrc/slices/interfaces/urlHandling'
@@ -40,10 +37,7 @@ import { ChevronLeftIcon } from 'uiSrc/components/base/icons'
 import { FooterDatabaseForm } from 'uiSrc/components/form-dialog/FooterDatabaseForm'
 import { Title } from 'uiSrc/components/base/text'
 
-const ScrollableWrapper = styled.div`
-  height: 100%;
-  overflow: scroll;
-`
+import { FixedWrapper } from '../styles.module'
 
 export interface Props {
   editMode: boolean
@@ -198,13 +192,13 @@ const DatabasePanelDialog = (props: Props) => {
       header={modalHeader ?? <Title size="L">Add database</Title>}
       footer={<FooterDatabaseForm />}
     >
-      <ScrollableWrapper>
+      <FixedWrapper>
         <ModalHeaderProvider
           value={{ modalHeader, setModalHeader: handleSetModalHeader }}
         >
           {Form()}
         </ModalHeaderProvider>
-      </ScrollableWrapper>
+      </FixedWrapper>
     </FormDialog>
   )
 }
