@@ -29,6 +29,8 @@ import {
 import { RiTooltip } from 'uiSrc/components'
 import { HostInfoTooltipContent } from '../../host-info-tooltip-content/HostInfoTooltipContent'
 
+import { ScrollableWrapper } from '../../styles.module'
+
 export interface Props {
   host: string
   port: string
@@ -187,10 +189,9 @@ const ClusterConnectionForm = (props: Props) => {
   }
 
   return (
-    <div className="getStartedForm eui-yScroll" data-testid="add-db_cluster">
+    <ScrollableWrapper data-testid="add-db_cluster">
       <MessageEnterpriceSoftware />
       <br />
-
       <form>
         <WindowEvent event="keydown" handler={onKeyDown} />
 
@@ -266,7 +267,7 @@ const ClusterConnectionForm = (props: Props) => {
         </Col>
       </form>
       <Footer />
-    </div>
+    </ScrollableWrapper>
   )
 }
 
