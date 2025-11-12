@@ -143,7 +143,6 @@ export const useCloudSubscriptionConfig = () => {
   const [selection, setSelection] = useState<RedisCloudSubscription[]>([])
 
   const handleSelectionChange = (currentSelected: RowSelectionState) => {
-    debugger
     const newSelection = subscriptions?.filter((item) => {
       const { id } = item
       if (!id) {
