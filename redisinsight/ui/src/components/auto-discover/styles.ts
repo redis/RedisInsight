@@ -51,7 +51,6 @@ export const DatabaseContainer = styled(Col)`
 export const DatabaseWrapper = styled.div`
   height: auto;
   scrollbar-width: thin;
-  //overflow: auto;
   padding: 1px 1px 75px;
   position: relative;
   background-color: ${({ theme }: { theme: Theme }) =>
