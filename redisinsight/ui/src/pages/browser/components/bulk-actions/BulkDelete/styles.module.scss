@@ -42,25 +42,6 @@
   bottom: 18px;
 }
 
-.placeholder {
-  max-width: 440px;
-  height: calc(100% - 45px);
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  white-space: pre-wrap;
-  margin: 0 auto;
-  justify-content: center;
-}
-
-.placeholderTitle {
-  color: var(--htmlColor) !important;
-  font-size: 16px !important;
-  line-height: 24px !important;
-  font-weight: 500 !important;
-  padding-bottom: 20px;
-}
-
 .bulkDeleteSummaryButtonWrapper {
   float: right;
   margin-top: 16px;

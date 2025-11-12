@@ -47,7 +47,7 @@ const BulkDeleteSummaryButton = ({
       data-testid="download-bulk-delete-report"
       {...rest}
     >
-      <Link download={getFileName()} href={fileUrl}>
+      <Link variant="inline" download={getFileName()} href={fileUrl}>
         {children}
       </Link>
     </SecondaryButton>

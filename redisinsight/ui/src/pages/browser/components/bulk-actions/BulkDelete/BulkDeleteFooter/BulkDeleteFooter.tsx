@@ -30,6 +30,7 @@ import BulkDeleteContent from '../BulkDeleteContent'
 import { isProcessedBulkAction } from '../../utils'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { ConfirmationPopover } from 'uiSrc/components'
+import { BulkDeleteFooterContainer } from './BulkDeleteFooter.styles'
 
 export interface Props {
   onCancel: () => void
@@ -92,9 +93,9 @@ const BulkDeleteFooter = (props: Props) => {
   }
 
   return (
-    <Col data-testid="bulk-actions-delete" grow>
+    <Col data-testid="bulk-actions-delete">
       {status && <BulkDeleteContent />}
-      <Row align="end" justify="end" gap="s">
+      <BulkDeleteFooterContainer align="end" justify="end" gap="l">
         {!loading && (
           <SecondaryButton
             onClick={handleCancel}
@@ -163,7 +164,7 @@ const BulkDeleteFooter = (props: Props) => {
             Start New
           </PrimaryButton>
         )}
-      </Row>
+      </BulkDeleteFooterContainer>
     </Col>
   )
 }

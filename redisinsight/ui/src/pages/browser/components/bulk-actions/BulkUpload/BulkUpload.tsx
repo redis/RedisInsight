@@ -33,6 +33,7 @@ import { RefreshIcon } from 'uiSrc/components/base/icons'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import { StyledContent, StyledFooter } from './BulkUpload.styles'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -106,11 +107,11 @@ const BulkUpload = (props: Props) => {
   }
 
   return (
-    <div className={styles.container} data-testid="bulk-upload-container">
+    <Col justify="between" data-testid="bulk-upload-container">
       {!isCompleted ? (
-        <Col gap="l" className={styles.content} align="start">
+        <StyledContent gap="l" align="start">
           <Row align="start" grow={false}>
-            <Text color="subdued">
+            <Text color="primary">
               Upload the text file with the list of Redis commands
             </Text>
             <RiTooltip
@@ -152,18 +153,14 @@ const BulkUpload = (props: Props) => {
             </ColorText>
           )}
           <UploadWarning />
-        </Col>
+        </StyledContent>
       ) : (
         <BulkActionsInfo
           loading={loading}
           status={status}
           progress={progress}
           title="Commands executed from file"
-          subTitle={
-            <div className="truncateText" style={{ paddingTop: 6 }}>
-              {fileName}
-            </div>
-          }
+          subTitle={<div className="truncateText">{fileName}</div>}
         >
           <BulkActionSummary
             type={BulkActionsType.Upload}
@@ -175,7 +172,8 @@ const BulkUpload = (props: Props) => {
           />
         </BulkActionsInfo>
       )}
-      <div className={styles.footer}>
+
+      <StyledFooter gap="l" justify="end" grow={false}>
         <SecondaryButton
           onClick={handleClickCancel}
           className={styles.cancelBtn}
@@ -189,7 +187,6 @@ const BulkUpload = (props: Props) => {
             anchorPosition="upCenter"
             isOpen={isPopoverOpen}
             closePopover={() => setIsPopoverOpen(false)}
-            panelClassName={styles.panelPopover}
             panelPaddingSize="none"
             button={
               <PrimaryButton
@@ -203,7 +200,6 @@ const BulkUpload = (props: Props) => {
             }
           >
             <Text
-              color="subdued"
               className={styles.containerPopover}
               data-testid="bulk-action-tooltip"
             >
@@ -235,8 +231,8 @@ const BulkUpload = (props: Props) => {
             Start New
           </PrimaryButton>
         )}
-      </div>
-    </div>
+      </StyledFooter>
+    </Col>
   )
 }
 

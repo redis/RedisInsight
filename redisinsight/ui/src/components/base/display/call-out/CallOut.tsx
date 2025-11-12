@@ -7,10 +7,10 @@ export type CallOutProps = Omit<React.ComponentProps<typeof Banner>, 'show'> & {
 
 export const CallOut = ({ children, ...rest }: CallOutProps) => (
   <Banner
-    {...rest}
     show
     showIcon={false}
     layoutVariant="banner"
     message={children}
+    {...rest}
   />
 )

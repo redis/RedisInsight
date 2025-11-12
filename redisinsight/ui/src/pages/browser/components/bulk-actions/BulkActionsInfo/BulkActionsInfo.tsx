@@ -2,9 +2,10 @@ import React from 'react'
 
 import { Maybe, Nullable } from 'uiSrc/utils'
 import Divider from 'uiSrc/components/divider/Divider'
-import { BulkActionsStatus, KeyTypes } from 'uiSrc/constants'
+import { BulkActionsStatus, KeyTypes, RedisDataType } from 'uiSrc/constants'
 import GroupBadge from 'uiSrc/components/group-badge/GroupBadge'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import { Text } from 'uiSrc/components/base/text'
 import {
   BulkActionsContainer,
   BulkActionsInfoFilter,
@@ -18,7 +19,7 @@ export interface Props {
   title?: string | React.ReactNode
   subTitle?: string | React.ReactNode
   loading: boolean
-  filter?: Nullable<KeyTypes>
+  filter?: Nullable<KeyTypes> | RedisDataType
   status: Maybe<BulkActionsStatus>
   search?: string
   progress?: {
@@ -48,32 +49,38 @@ const BulkActionsInfo = (props: Props) => {
         total={total}
         scanned={scanned}
       />
-      <Col gap="m">
-        <BulkActionsTitle color="subdued" $full>
+      <Col justify="between" gap="xxl">
+        <BulkActionsTitle color="primary" $full>
           {title}
         </BulkActionsTitle>
         {subTitle && (
-          <BulkActionsTitle color="subdued" $full>
+          <BulkActionsTitle color="primary" $full>
             {subTitle}
           </BulkActionsTitle>
         )}
-        <Row justify="start" align="center" gap="s">
-          {filter && (
-            <BulkActionsInfoFilter data-testid="bulk-actions-info-filter">
-              <div>Key type:</div>
-              <GroupBadge type={filter} />
-            </BulkActionsInfoFilter>
-          )}
-          {search && (
-            <BulkActionsInfoFilter data-testid="bulk-actions-info-search">
-              Pattern:
-              <BulkActionsInfoSearch color="subdued">
-                {' '}
-                {search}
-              </BulkActionsInfoSearch>
-            </BulkActionsInfoFilter>
-          )}
-        </Row>
+        {(filter || search) && (
+          <Row justify="start" align="center" gap="xxl">
+            {filter && (
+              <BulkActionsInfoFilter data-testid="bulk-actions-info-filter">
+                <Text size="s" color="primary">
+                  Key type:
+                </Text>
+                <GroupBadge type={filter} />
+              </BulkActionsInfoFilter>
+            )}
+            {search && (
+              <BulkActionsInfoFilter data-testid="bulk-actions-info-search">
+                <Text size="s" color="primary">
+                  Pattern:
+                </Text>
+                <BulkActionsInfoSearch color="primary">
+                  {' '}
+                  {search}
+                </BulkActionsInfoSearch>
+              </BulkActionsInfoFilter>
+            )}
+          </Row>
+        )}
       </Col>
       <Divider />
       {loading && (

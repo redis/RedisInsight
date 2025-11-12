@@ -10,6 +10,7 @@ import {
 } from 'uiSrc/slices/browser/bulkActions'
 import { keysSelector } from 'uiSrc/slices/browser/keys'
 import { getGroupTypeDisplay, NO_TYPE_NAME } from 'uiSrc/utils'
+import { Col } from 'uiSrc/components/base/layout/flex'
 
 import BulkDeleteFooter from './BulkDeleteFooter'
 import BulkDeleteSummary from './BulkDeleteSummary'
@@ -80,21 +81,19 @@ const BulkDelete = (props: Props) => {
       )}
 
       {showPlaceholder && (
-        <div
-          className={styles.placeholder}
+        <Col
+          gap="l"
+          justify="center"
+          align="center"
           data-testid="bulk-actions-placeholder"
         >
-          <Text color="subdued" className={styles.placeholderTitle}>
+          <Text size="XL" color="primary" variant="semiBold">
             No pattern or key type set
           </Text>
-          <Text
-            color="subdued"
-            className={styles.placeholderSummary}
-            style={{ textAlign: 'center' }}
-          >
+          <Text color="secondary">
             To perform a bulk action, set the pattern or select the key type
           </Text>
-        </div>
+        </Col>
       )}
     </>
   )

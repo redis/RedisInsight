@@ -12,6 +12,7 @@ import {
 import BulkActionSummary from 'uiSrc/pages/browser/components/bulk-actions/BulkActionSummary'
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
+import { Col } from 'uiSrc/components/base/layout/flex'
 
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from './styles.module.scss'
@@ -40,8 +41,8 @@ const BulkDeleteSummary = () => {
   return (
     <div className={styles.container}>
       {isUndefined(status) && (
-        <>
-          <Text size="m" variant="semiBold" className={styles.title}>
+        <Col gap="l">
+          <Text color="primary" size="m" variant="semiBold">
             <span>{title}</span>
             <RiTooltip
               position="right"
@@ -54,16 +55,12 @@ const BulkDeleteSummary = () => {
                 </Text>
               }
             >
-              <RiIcon
-                color="informative400"
-                type="InfoIcon"
-                data-testid="bulk-delete-tooltip"
-              />
+              <RiIcon type="InfoIcon" data-testid="bulk-delete-tooltip" />
             </RiTooltip>
           </Text>
           <Text
-            color="subdued"
-            size="XS"
+            color="primary"
+            size="S"
             className={styles.summaryApproximate}
             data-testid="bulk-delete-summary"
           >
@@ -71,7 +68,7 @@ const BulkDeleteSummary = () => {
             {`(${numberWithSpaces(scanned)}/${nullableNumberWithSpaces(total)}) `}
             {`and found ${numberWithSpaces(keys.length)} keys`}
           </Text>
-        </>
+        </Col>
       )}
       {!isUndefined(status) && (
         <BulkActionSummary
