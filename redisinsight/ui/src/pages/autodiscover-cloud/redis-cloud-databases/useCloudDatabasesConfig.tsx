@@ -61,24 +61,20 @@ export const useCloudDatabasesConfig = () => {
     data: instances,
     dataAdded: instancesAdded,
   } = useSelector(cloudSelector)
-
   const { data: userOAuthProfile } = useSelector(oauthCloudUserSelector)
 
   const currentAccountIdRef = useRef(userOAuthProfile?.id)
   const ssoFlowRef = useRef(ssoFlow)
 
-  setTitle('Redis Cloud Databases')
-
   const [selection, setSelection] = useState<InstanceRedisCloud[]>([])
 
   const handleSelectionChange = (currentSelected: RowSelectionState) => {
-    debugger
     const newSelection = instances?.filter((item) => {
-      const { id } = item
-      if (!id) {
+      const { databaseId } = item
+      if (!databaseId) {
         return false
       }
-      return currentSelected[id]
+      return currentSelected[databaseId]
     })
     setSelection(newSelection || [])
   }
@@ -87,6 +83,7 @@ export const useCloudDatabasesConfig = () => {
     if (instances === null) {
       history.push(Pages.home)
     }
+    setTitle('Redis Cloud Databases')
 
     dispatch(resetLoadedRedisCloud(LoadedCloud.Instances))
   }, [instances])

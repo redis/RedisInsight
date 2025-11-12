@@ -66,28 +66,6 @@ const RedisCloudDatabasesPage = ({
   const [items, setItems] = useState<InstanceRedisCloud[]>([])
   const [message, setMessage] = useState(loadingMsg)
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
-  const [rowSelection, setRowSelection] = useState<
-    Record<NonNullable<InstanceRedisCloud['id']>, boolean>
-  >({})
-
-  useEffect(() => {
-    if (!selection) return
-    setRowSelection(
-      selection.reduce(
-        (acc, item) => {
-          if (item.id) {
-            acc[item.id] = true
-          }
-          return acc
-        },
-        {} as Record<NonNullable<InstanceRedisCloud['id']>, boolean>,
-      ),
-    )
-  }, [selection])
-
-  // const history = useHistory()
-
-  // const { loading, data: instances } = useSelector(cloudSelector)
 
   useEffect(() => {
     if (instances !== null) {
@@ -98,12 +76,6 @@ const RedisCloudDatabasesPage = ({
       setMessage(noResultsMessage)
     }
   }, [instances, loading])
-
-  // useEffect(() => {
-  //   if (instances === null) {
-  //     history.push(Pages.home)
-  //   }
-  // }, [])
 
   const handleSubmit = () => {
     onSubmit(
@@ -215,10 +187,8 @@ const RedisCloudDatabasesPage = ({
         <DatabaseWrapper>
           <Table
             rowSelectionMode="multiple"
-            // getRowCanSelect={canSelectRow}
-            rowSelection={rowSelection}
             onRowSelectionChange={onSelectionChange}
-            getRowId={(row) => `${row.id}`}
+            getRowId={(row) => `${row.databaseId}`}
             columns={columns}
             data={items}
             defaultSorting={[

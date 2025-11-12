@@ -10,6 +10,7 @@ const RedisCloudDatabasesPage = () => {
     handleBackAdding,
     handleAddInstances,
     handleSelectionChange,
+    instances,
   } = useCloudDatabasesConfig()
 
   return (
@@ -19,7 +20,7 @@ const RedisCloudDatabasesPage = () => {
       onBack={handleBackAdding}
       onSubmit={handleAddInstances}
       columns={columns}
-      instances={[]}
+      instances={instances || []}
       loading={false}
       onSelectionChange={handleSelectionChange}
     />
