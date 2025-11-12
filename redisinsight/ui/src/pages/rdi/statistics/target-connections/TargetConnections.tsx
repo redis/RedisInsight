@@ -12,7 +12,7 @@ import {
   StyledRdiAnalyticsTable,
   StyledRdiStatisticsSectionBody,
 } from 'uiSrc/pages/rdi/statistics/styles'
-import { StatusIndicator } from 'uiSrc/components/base/text/text.styles'
+import { Indicator } from 'uiSrc/components/base/text/text.styles'
 import { Row } from 'uiSrc/components/base/layout/flex'
 
 type ConnectionData = {
@@ -49,7 +49,7 @@ const columns: ColumnDefinition<ConnectionData>[] = [
     }) => (
       <Row align="center" justify="center">
         <RiTooltip content={status}>
-          <StatusIndicator $color={getStatusColor(status)} />
+          <Indicator $color={getStatusColor(status)} />
         </RiTooltip>
       </Row>
     ),

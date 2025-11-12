@@ -92,19 +92,10 @@ const getAlignValue = (align?: MapProps['$align']) => {
 export const StyledColorText = styled(Typography.Body)<MapProps>`
   ${useColorTextStyles}
 `
+
 export const StyledText = styled(Typography.Body)<MapProps>`
   ${useColorTextStyles};
   ${({ $align }) => getAlignValue($align)};
-`
-export const Indicator = styled.div<
-  {
-    $color: ColorType
-  } & CommonProps
->`
-  width: 0.8rem;
-  height: 0.8rem;
-  border-radius: 50%;
-  background-color: ${({ $color }) => $color || 'inherit'};
 `
 
 const useStatusColorStyles = ({ $color }: MapProps = {}) => {
@@ -113,6 +104,8 @@ const useStatusColorStyles = ({ $color }: MapProps = {}) => {
 
   const getColorValue = (color?: ColorType) => {
     switch (color) {
+      case 'informative':
+        return colors.text.informative400
       case 'danger':
         return colors.text.danger500
       case 'warning':
@@ -129,16 +122,17 @@ const useStatusColorStyles = ({ $color }: MapProps = {}) => {
   `
 }
 
-export const StatusIndicator = styled.div<
+export const Indicator = styled.div<
   {
     $color: ColorType
   } & CommonProps
 >`
-  ${useStatusColorStyles};
-  width: 1rem;
-  height: 1rem;
+  width: 0.8rem;
+  height: 0.8rem;
   border-radius: 50%;
+  ${useStatusColorStyles};
 `
+
 export const mapSize = (size: TextSizeType): BodyProps['size'] => {
   if (size === 'm') {
     return 'M'
