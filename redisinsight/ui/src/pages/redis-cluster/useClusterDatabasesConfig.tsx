@@ -24,7 +24,7 @@ import {
 } from './column-definitions'
 
 export const colFactory = (instances: Nullable<InstanceRedisCluster[]>) => {
-  const columns: ColumnDef<InstanceRedisCluster>[] = [
+  let columns: ColumnDef<InstanceRedisCluster>[] = [
     DatabaseColumn(),
     StatusColumn(),
     EndpointColumn(),
@@ -40,6 +40,8 @@ export const colFactory = (instances: Nullable<InstanceRedisCluster[]>) => {
     ...columns,
     messageColumn,
   ]
+  // remove selection column from result columns
+  columnsResult.shift()
   return [columns, columnsResult]
 }
 const sendCancelEvent = () => {
