@@ -14,7 +14,11 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
-import { ColumnDef, Table } from 'uiSrc/components/base/layout/table'
+import {
+  ColumnDef,
+  RowSelectionState,
+  Table,
+} from 'uiSrc/components/base/layout/table'
 import styles from './styles.module.scss'
 import {
   DatabaseContainer,
@@ -95,15 +99,10 @@ const RedisClusterDatabases = ({
 
   const isSubmitDisabled = () => selection.length < 1
 
-  const selectionValue = {
-    onSelectionChange: (selected: InstanceRedisCluster) =>
-      setSelection((previous) => {
-        const isSelected = previous.some((item) => item.uid === selected.uid)
-        if (isSelected) {
-          return previous.filter((item) => item.uid !== selected.uid)
-        }
-        return [...previous, selected]
-      }),
+  const onSelectionChange = (selection: RowSelectionState) => {
+    // Map rowSelection state to the selected items list using uid as row id
+    const selectedItems = items.filter((i) => selection[`${i.uid}`])
+    setSelection(selectedItems)
   }
 
   const onQueryChange = (term: string) => {
@@ -170,7 +169,9 @@ const RedisClusterDatabases = ({
           <Table
             columns={columns}
             data={items}
-            onRowClick={selectionValue.onSelectionChange}
+            rowSelectionMode="multiple"
+            getRowId={(row) => `${row.uid}`}
+            onRowSelectionChange={onSelectionChange}
             defaultSorting={[
               {
                 id: 'name',
