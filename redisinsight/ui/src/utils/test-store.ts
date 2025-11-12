@@ -22,7 +22,7 @@ const getState: ReduxStore['getState'] = () => {
   return storeRef.getState()
 }
 
-const dispatch: ReduxStore['dispatch'] = (action: any) => {
+export const dispatch: ReduxStore['dispatch'] = (action: any) => {
   if (!storeRef) {
     throw new Error(
       'Store not initialized. Make sure store-dynamic is imported after store creation.',

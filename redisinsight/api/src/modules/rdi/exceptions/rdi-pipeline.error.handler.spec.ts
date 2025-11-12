@@ -8,7 +8,7 @@ import {
 } from 'src/modules/rdi/exceptions';
 import { CustomErrorCodes } from 'src/constants';
 import errorMessages from 'src/constants/error-messages';
-import { wrapRdiPipelineError } from './rdi-pipiline.error.handler';
+import { wrapRdiPipelineError } from './rdi-pipeline.error.handler';
 import { RdiPipelineForbiddenException } from './rdi-pipeline.forbidden.exception';
 
 describe('wrapRdiPipelineError', () => {

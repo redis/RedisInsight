@@ -22,6 +22,8 @@ import {
 import { RiTooltip } from 'uiSrc/components'
 import { Row } from 'uiSrc/components/base/layout/flex'
 
+import { ContentWrapper, ScrollableWrapper } from '../../styles.module'
+
 export interface Props {
   loading: boolean
   initialValues: DbConnectionInfo
@@ -132,12 +134,8 @@ const SentinelConnectionForm = (props: Props) => {
   }
 
   return (
-    <div
-      className="relative"
-      data-testid="add-db_sentinel"
-      style={{ height: '100%' }}
-    >
-      <div className="getStartedForm eui-yScroll" ref={formRef}>
+    <ContentWrapper data-testid="add-db_sentinel">
+      <ScrollableWrapper as="div" ref={formRef}>
         <MessageSentinel />
         <br />
         <form
@@ -163,9 +161,9 @@ const SentinelConnectionForm = (props: Props) => {
             caCertificates={caCertificates}
           />
         </form>
-      </div>
+      </ScrollableWrapper>
       <Footer />
-    </div>
+    </ContentWrapper>
   )
 }
 

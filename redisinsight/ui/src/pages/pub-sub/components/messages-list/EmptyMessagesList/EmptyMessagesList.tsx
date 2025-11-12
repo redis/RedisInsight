@@ -1,12 +1,13 @@
 import React from 'react'
-import cx from 'classnames'
-
 import { ConnectionType } from 'uiSrc/slices/interfaces'
-import { Text } from 'uiSrc/components/base/text'
+import { Text, Title } from 'uiSrc/components/base/text'
+import { Col } from 'uiSrc/components/base/layout/flex'
+import { Banner } from 'uiSrc/components/base/display'
+import { CallOut } from 'uiSrc/components/base/display/call-out/CallOut'
+import LightBulbImage from 'uiSrc/assets/img/pub-sub/light-bulb.svg'
 
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from './styles.module.scss'
-import { Row } from 'uiSrc/components/base/layout/flex'
+import SubscribeForm from '../../subscribe-form'
+import { HeroImage, InnerContainer, Wrapper } from './EmptyMessagesList.styles'
 
 export interface Props {
   connectionType?: ConnectionType
@@ -17,38 +18,42 @@ const EmptyMessagesList = ({
   connectionType,
   isSpublishNotSupported,
 }: Props) => (
-  <div className={styles.container} data-testid="empty-messages-list">
-    <div
-      className={cx(styles.content, {
-        [styles.contentCluster]: connectionType === ConnectionType.Cluster,
-      })}
+  <Wrapper>
+    <InnerContainer
+      align="center"
+      justify="center"
+      data-testid="empty-messages-list"
+      gap="xxl"
     >
-      <Text className={styles.title}>No messages to display</Text>
-      <Text className={styles.summary}>
-        Subscribe to the Channel to see all the messages published to your
-        database
-      </Text>
-      <Row>
-        <RiIcon type="ToastDangerIcon" className={styles.alertIcon} />
-        <Text className={styles.alert}>
-          Running in production may decrease performance and memory available
+      <HeroImage src={LightBulbImage} alt="Pub/Sub" />
+
+      <Col align="center" justify="center" grow={false} gap="s">
+        <Title size="XXL">You are not subscribed</Title>
+
+        <Text>
+          Subscribe to the Channel to see all the messages published to your
+          database
         </Text>
-      </Row>
+      </Col>
+
+      <SubscribeForm grow={false} />
+
+      <CallOut variant="attention">
+        Running in production may decrease performance and memory available.
+      </CallOut>
+
       {connectionType === ConnectionType.Cluster && isSpublishNotSupported && (
         <>
-          <div className={styles.separator} />
-          <Text
-            className={styles.cluster}
+          <Banner
             data-testid="empty-messages-list-cluster"
-          >
-            {'Messages published with '}
-            <span className={styles.badge}>SPUBLISH</span>
-            {' will not appear in this channel'}
-          </Text>
+            variant="attention"
+            showIcon={true}
+            message="Messages published with SPUBLISH will not appear in this channel"
+          />
         </>
       )}
-    </div>
-  </div>
+    </InnerContainer>
+  </Wrapper>
 )
 
 export default EmptyMessagesList

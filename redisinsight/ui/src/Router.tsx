@@ -14,7 +14,17 @@ if (RIPROXYPATH !== '') {
   MOUNT_PATH = RIPROXYPATH
 }
 
-export const history = createBrowserHistory({ basename: MOUNT_PATH })
+const history = createBrowserHistory({ basename: MOUNT_PATH })
+
+export const navigate = (path: string) => {
+  if (window.location.hash) {
+    // Electron (HashRouter)
+    window.location.hash = `#${path}`
+  } else {
+    // Web (BrowserRouter)
+    history.push(path)
+  }
+}
 
 const Router = ({ children }: Props) => (
   <ReactRouter history={history}>{children}</ReactRouter>

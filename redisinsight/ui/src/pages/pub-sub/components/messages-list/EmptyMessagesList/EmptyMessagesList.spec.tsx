@@ -1,44 +1,71 @@
 import React from 'react'
 import { ConnectionType } from 'uiSrc/slices/interfaces'
-import { render } from 'uiSrc/utils/test-utils'
+import { render, screen } from 'uiSrc/utils/test-utils'
 
 import EmptyMessagesList from './EmptyMessagesList'
 
 describe('EmptyMessagesList', () => {
-  it('should render', () => {
-    expect(render(<EmptyMessagesList isSpublishNotSupported />)).toBeTruthy()
+  it('renders base layout and copy', () => {
+    render(<EmptyMessagesList isSpublishNotSupported />)
+
+    expect(screen.getByTestId('empty-messages-list')).toBeInTheDocument()
+
+    expect(screen.getByText('You are not subscribed')).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        /Subscribe to the Channel to see all the messages published to your database/i,
+      ),
+    ).toBeInTheDocument()
+
+    expect(
+      screen.getByText(
+        /Running in production may decrease performance and memory available\./i,
+      ),
+    ).toBeInTheDocument()
   })
 
-  it('should render cluster info for Cluster connection type', () => {
-    const { queryByTestId } = render(
+  it('shows cluster banner only when Cluster AND isSpublishNotSupported=true', () => {
+    // visible when both conditions true
+    const { rerender } = render(
       <EmptyMessagesList
         connectionType={ConnectionType.Cluster}
         isSpublishNotSupported
       />,
     )
+    const banner = screen.getByTestId('empty-messages-list-cluster')
+    expect(banner).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        /Messages published with SPUBLISH will not appear in this channel/i,
+      ),
+    ).toBeInTheDocument()
 
-    expect(queryByTestId('empty-messages-list-cluster')).toBeInTheDocument()
-  })
-
-  it(' not render cluster info for Cluster connection type', () => {
-    const { queryByTestId } = render(
+    // hide when flag is false
+    rerender(
       <EmptyMessagesList
         connectionType={ConnectionType.Cluster}
         isSpublishNotSupported={false}
       />,
     )
+    expect(
+      screen.queryByTestId('empty-messages-list-cluster'),
+    ).not.toBeInTheDocument()
 
-    expect(queryByTestId('empty-messages-list-cluster')).not.toBeInTheDocument()
-  })
-
-  it('should not render cluster info for Cluster connection type', () => {
-    const { queryByTestId } = render(
+    // hide when connection is not Cluster
+    rerender(
       <EmptyMessagesList
         connectionType={ConnectionType.Standalone}
         isSpublishNotSupported
       />,
     )
+    expect(
+      screen.queryByTestId('empty-messages-list-cluster'),
+    ).not.toBeInTheDocument()
 
-    expect(queryByTestId('empty-messages-list-cluster')).not.toBeInTheDocument()
+    // also hide when connectionType is undefined
+    rerender(<EmptyMessagesList isSpublishNotSupported />)
+    expect(
+      screen.queryByTestId('empty-messages-list-cluster'),
+    ).not.toBeInTheDocument()
   })
 })

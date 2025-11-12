@@ -27,6 +27,8 @@ import ConnectionUrl from './components/connection-url'
 import { Values } from './constants'
 import { CustomHorizontalRule } from './AddDatabaseScreen.styles'
 
+import { ScrollableWrapper } from '../styles.module'
+
 export interface Props {
   onSelectOption: (type: AddDbType, db: Nullable<Record<string, any>>) => void
   onClose?: () => void
@@ -102,7 +104,7 @@ const AddDatabaseScreen = (props: Props) => {
   })
 
   return (
-    <div>
+    <ScrollableWrapper>
       <form onSubmit={formik.handleSubmit} data-testid="form">
         <Row responsive>
           <FlexItem grow>
@@ -170,7 +172,7 @@ const AddDatabaseScreen = (props: Props) => {
         onClickOption={handleProceedForm}
         onClose={onClose}
       />
-    </div>
+    </ScrollableWrapper>
   )
 }
 

@@ -10,7 +10,7 @@ import { FeatureFlagComponent, OAuthUserProfile } from 'uiSrc/components'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { CopilotTrigger, InsightsTrigger } from 'uiSrc/components/triggers'
 
-import { Flex, FlexItem } from 'uiSrc/components/base/layout/flex'
+import { FlexGroup, FlexItem } from 'uiSrc/components/base/layout/flex'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -33,27 +33,23 @@ const HomePageTemplate = (props: Props) => {
     <>
       <div className={styles.pageDefaultHeader}>
         <HomeTabs />
-        <Flex style={{ flexGrow: 0 }} gap="none" align="center">
+        <FlexGroup gap="s">
           {isAnyChatAvailable && (
             <FlexItem style={{ marginRight: 12 }}>
               <CopilotTrigger />
             </FlexItem>
           )}
-          <FlexItem grow>
+          <FlexItem>
             <InsightsTrigger source="home page" />
           </FlexItem>
           <FeatureFlagComponent
             name={[FeatureFlags.cloudSso, FeatureFlags.cloudAds]}
           >
-            <FlexItem
-              grow
-              style={{ marginLeft: 16 }}
-              data-testid="home-page-sso-profile"
-            >
+            <FlexItem data-testid="home-page-sso-profile">
               <OAuthUserProfile source={OAuthSocialSource.UserProfile} />
             </FlexItem>
           </FeatureFlagComponent>
-        </Flex>
+        </FlexGroup>
       </div>
       <div className={styles.pageWrapper}>
         <ExplorePanelTemplate panelClassName={styles.explorePanel}>

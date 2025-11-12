@@ -55,8 +55,6 @@ import {
   CONNECTION_TYPE_DISPLAY,
   ConnectionType,
   Instance,
-  OAuthSocialAction,
-  OAuthSocialSource,
 } from 'uiSrc/slices/interfaces'
 import {
   getRedisInfoSummary,
@@ -72,11 +70,8 @@ import {
   replaceSpaces,
 } from 'uiSrc/utils'
 
-import { setSSOFlow } from 'uiSrc/slices/instances/cloud'
-import { setSocialDialogState } from 'uiSrc/slices/oauth/cloud'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
-import { getUtmExternalLink } from 'uiSrc/utils/links'
-import { CREATE_CLOUD_DB_ID, HELP_LINKS } from 'uiSrc/pages/home/constants'
+import { CREATE_CLOUD_DB_ID } from 'uiSrc/pages/home/constants'
 
 import { Tag } from 'uiSrc/slices/interfaces/tag'
 import { FeatureFlagComponent } from 'uiSrc/components'
@@ -86,6 +81,7 @@ import { Link } from 'uiSrc/components/base/link/Link'
 import { RIResizeObserver } from 'uiSrc/components/base/utils'
 import { Row } from 'uiSrc/components/base/layout/flex'
 
+import handleClickFreeDb from './methods/handleClickFreeCloudDb'
 import DbStatus from '../db-status'
 import { TagsCell } from '../tags-cell/TagsCell'
 import { TagsCellHeader } from '../tags-cell/TagsCellHeader'
@@ -122,10 +118,8 @@ const DatabasesListWrapper = (props: Props) => {
   const { theme } = useContext(ThemeContext)
 
   const { contextInstanceId } = useSelector(appContextSelector)
-  const {
-    [FeatureFlags.cloudSso]: cloudSsoFeature,
-    [FeatureFlags.databaseManagement]: databaseManagementFeature,
-  } = useSelector(appFeatureFlagsFeaturesSelector)
+  const { [FeatureFlags.databaseManagement]: databaseManagementFeature } =
+    useSelector(appFeatureFlagsFeaturesSelector)
   const { shownColumns } = useSelector(instancesSelector)
 
   const [width, setWidth] = useState(0)
@@ -310,35 +304,6 @@ const DatabasesListWrapper = (props: Props) => {
     sendEventTelemetry({
       event: TelemetryEvent.CLOUD_LINK_CLICKED,
     })
-  }
-
-  const handleClickFreeDb = () => {
-    if (cloudSsoFeature?.flag) {
-      dispatch(setSSOFlow(OAuthSocialAction.Create))
-      dispatch(setSocialDialogState(OAuthSocialSource.DatabaseConnectionList))
-      sendEventTelemetry({
-        event: TelemetryEvent.CLOUD_FREE_DATABASE_CLICKED,
-        eventData: { source: OAuthSocialSource.DatabaseConnectionList },
-      })
-      return
-    }
-
-    sendEventTelemetry({
-      event: HELP_LINKS.cloud.event,
-      eventData: { source: HELP_LINKS.cloud.sources.databaseConnectionList },
-    })
-
-    const link = document.createElement('a')
-    link.setAttribute(
-      'href',
-      getUtmExternalLink(EXTERNAL_LINKS.tryFree, {
-        campaign: 'list_of_databases',
-      }),
-    )
-    link.setAttribute('target', '_blank')
-
-    link.click()
-    link.remove()
   }
 
   const getRowProps = (instance: Instance) => ({

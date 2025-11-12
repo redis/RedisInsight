@@ -31,9 +31,13 @@ describe('SlowLogTable', () => {
   })
 
   it('should render data', () => {
-    expect(
-      render(<SlowLogTable {...mockedProps} items={mockedData} />),
-    ).toBeTruthy()
-    expect(screen.getAllByLabelText(/^row$/)).toHaveLength(mockedData.length)
+    const { container } = render(
+      <SlowLogTable {...mockedProps} items={mockedData} />,
+    )
+
+    expect(container).toBeTruthy()
+
+    const rows = container.querySelectorAll('[data-row-type="regular"]')
+    expect(rows).toHaveLength(mockedData.length)
   })
 })

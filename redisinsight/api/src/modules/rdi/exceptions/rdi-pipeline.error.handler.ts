@@ -7,6 +7,7 @@ import {
   RdiPipelineValidationException,
 } from 'src/modules/rdi/exceptions';
 import { RdiPipelineForbiddenException } from './rdi-pipeline.forbidden.exception';
+import { RdiPipelineBadRequestException } from "src/modules/rdi/exceptions/rdi-pipeline.bad-request.exception";
 
 export const parseErrorMessage = (error: AxiosError<any>): string => {
   const data = error.response?.data;
@@ -33,6 +34,8 @@ export const wrapRdiPipelineError = (error: AxiosError<any>): HttpException => {
   if (response) {
     const errorOptions = response?.data?.detail;
     switch (response?.status) {
+      case 400:
+        return new RdiPipelineBadRequestException(message, errorOptions);
       case 401:
         return new RdiPipelineUnauthorizedException(message, errorOptions);
       case 403:

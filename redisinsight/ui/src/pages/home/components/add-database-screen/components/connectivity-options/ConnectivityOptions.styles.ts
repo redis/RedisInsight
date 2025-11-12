@@ -26,6 +26,7 @@ export const StyledConnectivityLink = styled(Link)`
     color: ${({ theme }) => theme.semantic.color.text.neutral800};
     opacity: 0.8;
     transform: translateY(-1px);
+    transition: transform 0.2s ease-in-out;
     box-shadow: none;
   }
 `

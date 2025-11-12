@@ -4,10 +4,13 @@ import { cloneDeep } from 'lodash'
 
 import { cleanup, fireEvent, mockedStore, render, screen } from 'uiSrc/utils/test-utils'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
-import { ConnectionType, Instance } from 'uiSrc/slices/interfaces'
+import { ConnectionType, Instance, OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { DatabaseListColumn } from 'uiSrc/constants'
 import { instancesSelector, setShownColumns } from 'uiSrc/slices/instances/instances'
+import { setSSOFlow } from 'uiSrc/slices/instances/cloud'
+import { setSocialDialogState } from 'uiSrc/slices/oauth/cloud'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { CREATE_CLOUD_DB_ID } from 'uiSrc/pages/home/constants'
 
 import DatabaseListHeader, { Props } from './DatabaseListHeader'
 
@@ -216,4 +219,38 @@ describe('DatabaseListHeader', () => {
       },
     })
   })
+
+  it('should dispatch SSO actions when clicking Create Free Cloud DB header button', () => {
+    const featureMock = appFeatureFlagsFeaturesSelector as jest.Mock
+
+    // Ensure the header button is visible and SSO path is taken
+    featureMock.mockReturnValue({
+      enhancedCloudUI: { flag: true },
+      cloudAds: { flag: true },
+      cloudSso: { flag: true },
+      databaseManagement: { flag: true },
+    })
+
+    render(<DatabaseListHeader {...instance(mockedProps)} />)
+
+    const btn = screen.getByTestId(`${CREATE_CLOUD_DB_ID}-button`)
+    expect(btn).toBeInTheDocument()
+
+    fireEvent.click(btn)
+
+    expect(store.getActions()).toEqual(
+      expect.arrayContaining([
+        setSSOFlow(OAuthSocialAction.Create),
+        setSocialDialogState(OAuthSocialSource.DatabaseConnectionList),
+      ]),
+    )
+
+    // Restore default flags for other tests
+    featureMock.mockReturnValue({
+      enhancedCloudUI: { flag: false },
+      databaseManagement: { flag: true },
+      cloudAds: { flag: true },
+    })
+  })
+
 })

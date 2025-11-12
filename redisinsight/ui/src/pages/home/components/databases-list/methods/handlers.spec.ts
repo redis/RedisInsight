@@ -59,7 +59,7 @@ jest.mock('uiSrc/slices/app/context', () => ({
 
 const mockHistoryPush = jest.fn()
 jest.mock('uiSrc/Router', () => ({
-  history: { push: jest.fn((...args) => mockHistoryPush(...args)) },
+  navigate: jest.fn((...args) => mockHistoryPush(...args)),
 }))
 
 const mockLocalStorageSet = jest.fn()
