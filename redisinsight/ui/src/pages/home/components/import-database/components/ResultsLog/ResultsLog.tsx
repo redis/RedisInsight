@@ -1,42 +1,61 @@
-import cx from 'classnames'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { ImportDatabasesData } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { Nullable } from 'uiSrc/utils'
-import { RICollapsibleNavGroup } from 'uiSrc/components/base/display'
-import { Col } from 'uiSrc/components/base/layout/flex'
+import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import { Text } from 'uiSrc/components/base/text'
 import TableResult from '../TableResult'
 
-import styles from './styles.module.scss'
+import { ImportDatabaseResultType } from 'uiSrc/constants'
+import { DataImportResult } from '../TableResult/TableResult'
+import { StyledCollapsibleNavGroup } from './ResultLog.styles'
 
-enum ResultsStatus {
-  Success = 'success',
-  Partial = 'partial',
-  Failed = 'failed',
-}
-
-export interface Props {
+interface Props {
   data: Nullable<ImportDatabasesData>
 }
 
+interface TableResultData {
+  type: ImportDatabaseResultType
+  title: string
+  data: DataImportResult[]
+}
+
 const ResultsLog = ({ data }: Props) => {
-  const [openedNav, setOpenedNav] = useState<string>('')
+  const [openedNav, setOpenedNav] =
+    useState<Nullable<ImportDatabaseResultType>>(null)
 
-  const onToggle = (length: number = 0, isOpen: boolean, name: string) => {
-    if (length === 0) return
-    setOpenedNav(isOpen ? name : '')
-
-    if (isOpen) {
+  useEffect(() => {
+    if (openedNav) {
       sendEventTelemetry({
         event: TelemetryEvent.CONFIG_DATABASES_REDIS_IMPORT_LOG_VIEWED,
         eventData: {
-          length,
-          name,
+          length:
+            collapsibleNavData.find((item) => item.type === openedNav)?.data
+              .length ?? 0,
+          name: openedNav,
         },
       })
     }
-  }
+  }, [openedNav])
+
+  const collapsibleNavData: TableResultData[] = [
+    {
+      type: ImportDatabaseResultType.Success,
+      title: 'Fully imported',
+      data: data?.success ?? [],
+    },
+    {
+      type: ImportDatabaseResultType.Partial,
+      title: 'Partially imported',
+      data: data?.partial ?? [],
+    },
+    {
+      type: ImportDatabaseResultType.Failed,
+      title: 'Failed to import',
+      data: data?.fail ?? [],
+    },
+  ]
 
   const CollapsibleNavTitle = ({
     title,
@@ -45,78 +64,33 @@ const ResultsLog = ({ data }: Props) => {
     title: string
     length: number
   }) => (
-    <div className={styles.collapsibleNavTitle}>
-      <span data-testid="nav-group-title">{title}:</span>
-      <span data-testid="number-of-dbs">{length}</span>
-    </div>
+    <Row gap="s">
+      <Text data-testid="nav-group-title">{title}:</Text>
+      <Text data-testid="number-of-dbs">{length}</Text>
+    </Row>
   )
 
-  const getNavGroupState = (name: ResultsStatus) =>
-    openedNav === name ? 'open' : 'closed'
+  const getNavGroupState = (type: ImportDatabaseResultType) =>
+    openedNav === type ? 'open' : 'closed'
 
   return (
-    <Col gap="s">
-      <RICollapsibleNavGroup
-        title={
-          <CollapsibleNavTitle
-            title="Fully imported"
-            length={data?.success?.length ?? 0}
-          />
-        }
-        className={cx(styles.collapsibleNav, ResultsStatus.Success, {
-          [styles.disabled]: !data?.success?.length,
-        })}
-        isCollapsible
-        initialIsOpen={false}
-        onToggle={(isOpen) =>
-          onToggle(data?.success?.length, isOpen, ResultsStatus.Success)
-        }
-        forceState={getNavGroupState(ResultsStatus.Success)}
-        data-testid={`success-results-${getNavGroupState(ResultsStatus.Success)}`}
-        id={`success-results-${getNavGroupState(ResultsStatus.Success)}`}
-      >
-        <TableResult data={data?.success ?? []} />
-      </RICollapsibleNavGroup>
-      <RICollapsibleNavGroup
-        title={
-          <CollapsibleNavTitle
-            title="Partially imported"
-            length={data?.partial?.length ?? 0}
-          />
-        }
-        className={cx(styles.collapsibleNav, ResultsStatus.Partial, {
-          [styles.disabled]: !data?.partial?.length,
-        })}
-        isCollapsible
-        initialIsOpen={false}
-        onToggle={(isOpen) =>
-          onToggle(data?.partial?.length, isOpen, ResultsStatus.Partial)
-        }
-        forceState={getNavGroupState(ResultsStatus.Partial)}
-        data-testid={`partial-results-${getNavGroupState(ResultsStatus.Partial)}`}
-      >
-        <TableResult data={data?.partial ?? []} />
-      </RICollapsibleNavGroup>
-      <RICollapsibleNavGroup
-        title={
-          <CollapsibleNavTitle
-            title="Failed to import"
-            length={data?.fail?.length ?? 0}
-          />
-        }
-        className={cx(styles.collapsibleNav, ResultsStatus.Failed, {
-          [styles.disabled]: !data?.fail?.length,
-        })}
-        isCollapsible
-        initialIsOpen={false}
-        onToggle={(isOpen) =>
-          onToggle(data?.fail?.length, isOpen, ResultsStatus.Failed)
-        }
-        forceState={getNavGroupState(ResultsStatus.Failed)}
-        data-testid={`failed-results-${getNavGroupState(ResultsStatus.Failed)}`}
-      >
-        <TableResult data={data?.fail ?? []} />
-      </RICollapsibleNavGroup>
+    <Col gap="l">
+      {collapsibleNavData.map((item) => (
+        <StyledCollapsibleNavGroup
+          key={item.type}
+          title={
+            <CollapsibleNavTitle title={item.title} length={item.data.length} />
+          }
+          data-testid={`${item.type}-results-${getNavGroupState(item.type)}`}
+          id={`${item.type}-results-${getNavGroupState(item.type)}`}
+          initialIsOpen={false}
+          onToggle={(isOpen) => setOpenedNav(isOpen ? item.type : null)}
+          forceState={getNavGroupState(item.type)}
+          open={openedNav === item.type}
+        >
+          <TableResult data={item.data} />
+        </StyledCollapsibleNavGroup>
+      ))}
     </Col>
   )
 }
