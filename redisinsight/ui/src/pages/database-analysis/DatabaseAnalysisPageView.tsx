@@ -10,6 +10,8 @@ import { Nullable } from 'uiSrc/utils'
 import { Col } from 'uiSrc/components/base/layout/flex'
 import { Theme } from 'uiSrc/components/base/theme/types'
 
+import './styles.module.scss'
+
 // Styled component for the main container with theme border
 const MainContainer = styled(Col)<React.HTMLAttributes<HTMLDivElement>>`
   height: 100%;
