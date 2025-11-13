@@ -36,4 +36,5 @@ export * from './datetime'
 export * from './sorting'
 export * from './databaseList'
 export * from './rdiList'
+export * from './importDatabasesTableResult'
 export { ApiEndpoints, BrowserStorageItem, ApiStatusCode, apiErrors }
