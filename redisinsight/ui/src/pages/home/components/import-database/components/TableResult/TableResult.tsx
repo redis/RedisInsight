@@ -1,10 +1,10 @@
 import React from 'react'
+
 import { Table, ColumnDef } from 'uiSrc/components/base/layout/table'
 import {
   ImportTableResultColumn,
   TABLE_IMPORT_RESULT_COLUMN_ID_HEADER_MAP,
 } from 'uiSrc/constants'
-
 import { ErrorImportResult } from 'uiSrc/slices/interfaces'
 
 export interface DataImportResult {
@@ -14,6 +14,7 @@ export interface DataImportResult {
   host?: string
   port?: number
 }
+
 export interface Props {
   data: Array<DataImportResult>
 }
@@ -41,6 +42,7 @@ const TableResult = (props: Props) => {
           original: { index },
         },
       }) => <span data-testid={`table-index-${index}`}>({index})</span>,
+      size: 50,
     },
     {
       header: TABLE_IMPORT_RESULT_COLUMN_ID_HEADER_MAP.get(
