@@ -187,7 +187,6 @@ const SummaryPerData = ({
         <Title size="M">SUMMARY PER DATA TYPE</Title>
         {extrapolation !== DEFAULT_EXTRAPOLATION && (
           <SwitchExtrapolateResults
-            color="subdued"
             title="Extrapolate results"
             checked={isExtrapolated}
             onCheckedChange={(checked) => {

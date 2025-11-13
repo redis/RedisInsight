@@ -1,12 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux'
 import React, { useEffect, useState } from 'react'
-import cx from 'classnames'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
 import {
   DEFAULT_EXTRAPOLATION,
   SectionName,
-} from 'uiSrc/pages/database-analysis'
+} from 'uiSrc/pages/database-analysis/constants'
 import {
   extrapolate,
   formatBytes,
@@ -25,11 +24,21 @@ import {
   dbAnalysisReportsSelector,
   setShowNoExpiryGroup,
 } from 'uiSrc/slices/analytics/dbAnalysis'
-import { SwitchInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { DatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
 
-import styles from './styles.module.scss'
+import {
+  SectionTitleWrapper,
+  SwitchExtrapolateResults,
+} from 'uiSrc/pages/database-analysis/components/styles'
+import {
+  Chart,
+  Container,
+  Content,
+  LoadingWrapper,
+  Switch,
+  TitleWrapper,
+} from './ExpirationGroupsView.styles'
 
 export interface Props {
   data: Nullable<DatabaseAnalysis>
@@ -83,12 +92,7 @@ const ExpirationGroupsView = (props: Props) => {
   }, [data?.expirationGroups, showNoExpiryGroup, isExtrapolated, extrapolation])
 
   if (loading) {
-    return (
-      <div
-        className={cx(styles.content, styles.loadingWrapper)}
-        data-testid="summary-per-ttl-loading"
-      />
-    )
+    return <LoadingWrapper data-testid="summary-per-ttl-loading" />
   }
 
   const onSwitchChange = (value: boolean) => {
@@ -107,16 +111,14 @@ const ExpirationGroupsView = (props: Props) => {
   const yCountTicks = DEFAULT_Y_TICKS
 
   return (
-    <div className={cx('section', styles.container)} data-testid="analysis-ttl">
-      <div className="section-title-wrapper">
-        <div className={styles.titleWrapper}>
+    <Container data-testid="analysis-ttl">
+      <SectionTitleWrapper>
+        <TitleWrapper>
           <Title size="M" className="section-title">
             MEMORY LIKELY TO BE FREED OVER TIME
           </Title>
           {extrapolation !== DEFAULT_EXTRAPOLATION && (
-            <SwitchInput
-              color="subdued"
-              className="switch-extrapolate-results"
+            <SwitchExtrapolateResults
               title="Extrapolate results"
               checked={isExtrapolated}
               onCheckedChange={(checked) => {
@@ -129,20 +131,18 @@ const ExpirationGroupsView = (props: Props) => {
               data-testid="extrapolate-results"
             />
           )}
-        </div>
-        <SwitchInput
-          color="subdued"
-          className={styles.switch}
+        </TitleWrapper>
+        <Switch
           title={'Show "No Expiry"'}
           checked={showNoExpiryGroup}
           onCheckedChange={onSwitchChange}
           data-testid="show-no-expiry-switch"
         />
-      </div>
-      <div className={cx('section-content', styles.content)}>
-        <div className={styles.chart}>
+      </SectionTitleWrapper>
+      <Content>
+        <Chart>
           <AutoSizer>
-            {({ width, height }) => (
+            {({ width = 0, height = 0 }) => (
               <BarChart
                 name="expiration-groups"
                 width={width}
@@ -167,9 +167,9 @@ const ExpirationGroupsView = (props: Props) => {
               />
             )}
           </AutoSizer>
-        </div>
-      </div>
-    </div>
+        </Chart>
+      </Content>
+    </Container>
   )
 }
 
