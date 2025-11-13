@@ -35,4 +35,5 @@ export * from './tutorials'
 export * from './datetime'
 export * from './sorting'
 export * from './databaseList'
+export * from './rdiList'
 export { ApiEndpoints, BrowserStorageItem, ApiStatusCode, apiErrors }

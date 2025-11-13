@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useEffect } from 'react'
+import { useSelector } from 'react-redux'
 
 import cx from 'classnames'
 import { RdiInstance } from 'uiSrc/slices/interfaces'
@@ -18,43 +18,44 @@ import {
 import HomePageTemplate from 'uiSrc/templates/home-page-template'
 import { setTitle } from 'uiSrc/utils'
 import { Page, PageBody } from 'uiSrc/components/base/layout/page'
-import { RIResizeObserver } from 'uiSrc/components/base/utils'
-import { Card } from 'uiSrc/components/base/layout'
 import { Rdi as RdiInstanceResponse } from 'apiSrc/modules/rdi/models/rdi'
+import { dispatch } from 'uiSrc/slices/store'
 import EmptyMessage from './empty-message/EmptyMessage'
 import ConnectionForm from './connection-form/ConnectionFormWrapper'
 import RdiHeader from './header/RdiHeader'
-import RdiInstancesListWrapper from './instance-list/RdiInstancesListWrapper'
+import RdiInstancesList from './components/rdi-instances-list/RdiInstancesList'
+import {
+  RdiPageDataProviderProvider,
+  useRdiPageDataProvider,
+} from './contexts/RdiPageDataProvider'
 
 import styles from './styles.module.scss'
 
+const handleOpenPage = (data: RdiInstance[]) => {
+  sendPageViewTelemetry({
+    name: TelemetryPageView.RDI_INSTANCES_PAGE,
+    eventData: {
+      instancesCount: data.length,
+    },
+  })
+}
+
 const RdiPage = () => {
-  const [width, setWidth] = useState(0)
-  const [isConnectionFormOpen, setIsConnectionFormOpen] = useState(false)
-  const [editInstance, setEditInstance] = useState<RdiInstance | null>(null)
+  const {
+    editInstance,
+    setEditInstance,
+    isConnectionFormOpen,
+    setIsConnectionFormOpen,
+  } = useRdiPageDataProvider()
 
   const { data, loading, loadingChanging } = useSelector(instancesSelector)
-
-  const dispatch = useDispatch()
+  const hideInstancesList = data.length === 0 && !loading && !loadingChanging
 
   useEffect(() => {
     dispatch(fetchInstancesAction(handleOpenPage))
 
     setTitle('Redis Data Integration')
   }, [])
-
-  const handleOpenPage = (data: RdiInstance[]) => {
-    sendPageViewTelemetry({
-      name: TelemetryPageView.RDI_INSTANCES_PAGE,
-      eventData: {
-        instancesCount: data.length,
-      },
-    })
-  }
-
-  const onResize = ({ width: innerWidth }: { width: number }) => {
-    setWidth(innerWidth)
-  }
 
   const handleFormSubmit = (instance: Partial<RdiInstance>) => {
     const onSuccess = () => {
@@ -110,48 +111,16 @@ const RdiPage = () => {
     })
   }
 
-  const handleEditInstance = (instance: RdiInstance) => {
-    setEditInstance(instance)
-    setIsConnectionFormOpen(true)
-  }
-
-  const handleDeleteInstance = () => {
-    setEditInstance(null)
-    setIsConnectionFormOpen(false)
-  }
-
-  const InstanceList = () =>
-    !data.length ? (
-      <>
-        {!loading && !loadingChanging && (
-          <EmptyMessage onAddInstanceClick={handleOpenConnectionForm} />
-        )}
-      </>
-    ) : (
-      <RIResizeObserver onResize={onResize}>
-        {(resizeRef) => (
-          <div
-            data-testid="rdi-instance-list"
-            className={styles.fullHeight}
-            ref={resizeRef}
-          >
-            <RdiInstancesListWrapper
-              width={width}
-              editedInstance={editInstance}
-              onEditInstance={handleEditInstance}
-              onDeleteInstances={handleDeleteInstance}
-            />
-          </div>
-        )}
-      </RIResizeObserver>
-    )
-
   return (
     <HomePageTemplate>
       <Page className={cx(styles.page, 'homePage')}>
         <PageBody component="div">
           <RdiHeader onRdiInstanceClick={handleOpenConnectionForm} />
-          <InstanceList />
+          {hideInstancesList ? (
+            <EmptyMessage onAddInstanceClick={handleOpenConnectionForm} />
+          ) : (
+            <RdiInstancesList />
+          )}
           <ConnectionForm
             isOpen={isConnectionFormOpen}
             onSubmit={handleFormSubmit}
@@ -165,4 +134,10 @@ const RdiPage = () => {
   )
 }
 
-export default RdiPage
+const RdiPageWithProvider = () => (
+  <RdiPageDataProviderProvider>
+    <RdiPage />
+  </RdiPageDataProviderProvider>
+)
+
+export default RdiPageWithProvider
