@@ -5,7 +5,7 @@ import { Theme } from 'uiSrc/components/base/theme/types'
 import { getApproximatePercentage, Maybe } from 'uiSrc/utils'
 import { isUndefined } from 'lodash'
 import { isProcessedBulkAction } from 'uiSrc/pages/browser/components/bulk-actions/utils'
-import { CallOut } from 'uiSrc/components/base/display/call-out/CallOut'
+import { Banner } from 'uiSrc/components/base/display'
 import { BulkActionsStatus } from 'uiSrc/constants'
 import { Props } from './BulkActionsInfo'
 
@@ -33,7 +33,7 @@ export const BulkActionsInfoSearch = styled(ColorText).attrs({
   word-break: break-all;
 `
 
-export const BulkActionsProgress = styled(CallOut)``
+export const BulkActionsProgress = styled(Banner)``
 
 export const BulkActionsProgressLine = styled.div<{
   children?: React.ReactNode
@@ -69,17 +69,24 @@ export const BulkActionsStatusDisplay = ({
 }) => {
   if (!isUndefined(status) && !isProcessedBulkAction(status)) {
     return (
-      <BulkActionsProgress data-testid="bulk-status-progress">
-        In progress:
-        <ColorText size="XS">{` ${getApproximatePercentage(total, scanned)}`}</ColorText>
-      </BulkActionsProgress>
+      <BulkActionsProgress
+        message={
+          <>
+            In progress:
+            <ColorText size="XS">{` ${getApproximatePercentage(total, scanned)}`}</ColorText>
+          </>
+        }
+        data-testid="bulk-status-progress"
+      />
     )
   }
   if (status === BulkActionsStatus.Aborted) {
     return (
-      <BulkActionsProgress variant="danger" data-testid="bulk-status-stopped">
-        Stopped: {getApproximatePercentage(total, scanned)}
-      </BulkActionsProgress>
+      <BulkActionsProgress
+        variant="danger"
+        message={<>Stopped: {getApproximatePercentage(total, scanned)}</>}
+        data-testid="bulk-status-stopped"
+      />
     )
   }
 
@@ -88,20 +95,18 @@ export const BulkActionsStatusDisplay = ({
       <BulkActionsProgress
         showIcon
         variant="success"
+        message="Action completed"
         data-testid="bulk-status-completed"
-      >
-        Action completed
-      </BulkActionsProgress>
+      />
     )
   }
   if (status === BulkActionsStatus.Disconnected) {
     return (
       <BulkActionsProgress
         variant="danger"
+        message={`Connection Lost: ${getApproximatePercentage(total, scanned)}`}
         data-testid="bulk-status-disconnected"
-      >
-        Connection Lost: {getApproximatePercentage(total, scanned)}
-      </BulkActionsProgress>
+      />
     )
   }
   return null
