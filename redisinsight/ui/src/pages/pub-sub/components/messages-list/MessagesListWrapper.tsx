@@ -17,37 +17,17 @@ import SubscribeForm from '../subscribe-form'
 import PatternsInfo from '../patternsInfo'
 import { Wrapper } from './MessageListWrapper.styles'
 import { ColumnDef, Table } from 'uiSrc/components/base/layout/table'
-import { FormatedDate } from 'uiSrc/components'
 import { IMessage } from 'apiSrc/modules/pub-sub/interfaces/message.interface'
+import {
+  ChannelColumn,
+  MessageColumn,
+  TimestampColumn,
+} from './column-definitions'
 
 const columns: ColumnDef<IMessage>[] = [
-  {
-    id: 'time',
-    header: 'Timestamp',
-    accessorKey: 'time',
-    size: 40,
-    cell: ({ getValue }) => {
-      const date = (getValue() as number) * 1000
-
-      return <FormatedDate date={date} />
-    },
-  },
-  {
-    id: 'channel',
-    header: `Channel`,
-    accessorKey: 'channel',
-    size: 30,
-    cell: ({ getValue }) => {
-      const channel = getValue() as number
-
-      return <Text>{channel}</Text>
-    },
-  },
-  {
-    id: 'message',
-    header: 'Message',
-    accessorKey: 'message',
-  },
+  TimestampColumn(),
+  ChannelColumn(),
+  MessageColumn(),
 ]
 
 const MessagesListWrapper = () => {
