@@ -77,9 +77,8 @@ export const BASE_COLUMNS: ColumnDef<RdiInstance>[] = [
   {
     id: RdiListColumn.Controls,
     accessorKey: RdiListColumn.Controls,
-    header: RDI_COLUMN_FIELD_NAME_MAP.get(RdiListColumn.Controls),
+    header: '',
     enableSorting: false,
-    // TODO: update design
     cell: RdiInstancesListCellControls,
   },
 ]

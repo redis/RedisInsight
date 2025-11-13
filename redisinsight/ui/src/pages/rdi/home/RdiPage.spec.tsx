@@ -22,6 +22,7 @@ import {
   waitForRiPopoverVisible,
   waitForStack,
 } from 'uiSrc/utils/test-utils'
+import { DEFAULT_RDI_SHOWN_COLUMNS } from 'uiSrc/constants'
 
 import { apiService } from 'uiSrc/services'
 import RdiPage from './RdiPage'
@@ -33,6 +34,7 @@ jest.mock('uiSrc/slices/rdi/instances', () => ({
   instancesSelector: jest.fn().mockReturnValue({
     loading: false,
     loadingChanging: false,
+    shownColumns: ['name', 'url', 'version', 'lastConnection', 'controls'],
     data: [
       {
         id: '1',
@@ -81,6 +83,7 @@ describe('RdiPage', () => {
   it('should render empty panel when initially loading', () => {
     ;(instancesSelector as jest.Mock).mockReturnValueOnce({
       loading: true,
+      shownColumns: DEFAULT_RDI_SHOWN_COLUMNS,
       data: [],
     })
     render(<RdiPage />)
@@ -96,6 +99,7 @@ describe('RdiPage', () => {
   it('should render empty message when no instances are found', () => {
     ;(instancesSelector as jest.Mock).mockReturnValueOnce({
       data: [],
+      shownColumns: DEFAULT_RDI_SHOWN_COLUMNS,
     })
     render(<RdiPage />)
 
@@ -115,6 +119,7 @@ describe('RdiPage', () => {
   it('should open connection form when using empty message button', async () => {
     ;(instancesSelector as jest.Mock).mockReturnValueOnce({
       loading: false,
+      shownColumns: DEFAULT_RDI_SHOWN_COLUMNS,
       data: [],
     })
     const { container } = render(<RdiPage />)

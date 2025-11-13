@@ -6,6 +6,7 @@ import {
 } from 'uiSrc/utils/test-utils'
 import { rdiInstanceFactory } from 'uiSrc/mocks/rdi/RdiInstance.factory'
 import { RdiInstance } from 'uiSrc/slices/interfaces'
+import { RdiListColumn } from 'uiSrc/constants'
 import useRdiInstancesListData from './useRdiInstancesListData'
 import {
   ENABLE_PAGINATION_COUNT,
@@ -15,9 +16,11 @@ import {
 const getStoreWith = ({
   instances,
   loading = false,
+  shownColumns,
 }: {
   instances: RdiInstance[]
   loading?: boolean
+  shownColumns?: RdiListColumn[]
 }) => {
   const state = {
     ...initialStateDefault,
@@ -27,6 +30,7 @@ const getStoreWith = ({
         ...initialStateDefault.rdi.instances,
         data: instances,
         loading,
+        ...(shownColumns ? { shownColumns } : {}),
       },
     },
   } as typeof initialStateDefault
@@ -163,5 +167,34 @@ describe('useRdiInstancesListData', () => {
     const { result } = renderHook(() => useRdiInstancesListData(), { store })
 
     expect(result.current.paginationEnabled).toBe(true)
+  })
+
+  it('should filter columns based on shownColumns from state', () => {
+    const store = getStoreWith({
+      instances: mockInstances,
+      shownColumns: [
+        RdiListColumn.Name,
+        RdiListColumn.Url,
+        RdiListColumn.Controls,
+      ],
+    })
+
+    const { result } = renderHook(() => useRdiInstancesListData(), { store })
+    const columnIds = result.current.columns.map((c) => c.id)
+
+    expect(columnIds).toEqual(
+      expect.arrayContaining([
+        SELECT_COL_ID,
+        RdiListColumn.Name,
+        RdiListColumn.Url,
+        RdiListColumn.Controls,
+      ]),
+    )
+    expect(columnIds).not.toEqual(
+      expect.arrayContaining([
+        RdiListColumn.Version,
+        RdiListColumn.LastConnection,
+      ]),
+    )
   })
 })

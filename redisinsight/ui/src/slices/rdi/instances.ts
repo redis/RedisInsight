@@ -2,7 +2,11 @@ import { first, map } from 'lodash'
 import { createSlice } from '@reduxjs/toolkit'
 
 import { AxiosError } from 'axios'
-import { ApiEndpoints } from 'uiSrc/constants'
+import {
+  ApiEndpoints,
+  DEFAULT_RDI_SHOWN_COLUMNS,
+  RdiListColumn,
+} from 'uiSrc/constants'
 import { apiService } from 'uiSrc/services'
 import successMessages from 'uiSrc/components/notifications/success-messages'
 import {
@@ -28,6 +32,7 @@ export const initialState: InitialStateRdiInstances = {
   loading: true,
   error: '',
   data: [],
+  shownColumns: DEFAULT_RDI_SHOWN_COLUMNS,
   connectedInstance: {
     id: '',
     name: '',
@@ -154,6 +159,10 @@ const instancesSlice = createSlice({
     updateConnectedInstance: (state, { payload }: { payload: RdiInstance }) => {
       state.connectedInstance = { ...state.connectedInstance, ...payload }
     },
+
+    setShownColumns: (state, { payload }: { payload: RdiListColumn[] }) => {
+      state.shownColumns = [...payload]
+    },
   },
 })
 
@@ -178,6 +187,7 @@ export const {
   setConnectedInstanceFailure,
   resetConnectedInstance,
   updateConnectedInstance,
+  setShownColumns,
 } = instancesSlice.actions
 
 // selectors

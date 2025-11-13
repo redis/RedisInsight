@@ -1,5 +1,3 @@
-export const RDI_LIST_STORAGE_KEY = 'rdi-list'
-
 export enum RdiListColumn {
   Name = 'name',
   Url = 'url',
@@ -13,5 +11,13 @@ export const RDI_COLUMN_FIELD_NAME_MAP = new Map<RdiListColumn, string>([
   [RdiListColumn.Url, 'URL'],
   [RdiListColumn.Version, 'RDI version'],
   [RdiListColumn.LastConnection, 'Last connection'],
-  [RdiListColumn.Controls, ''],
+  [RdiListColumn.Controls, 'Controls'],
 ])
+
+export const DEFAULT_RDI_SHOWN_COLUMNS = [
+  RdiListColumn.Name,
+  RdiListColumn.Url,
+  RdiListColumn.Version,
+  RdiListColumn.LastConnection,
+  RdiListColumn.Controls,
+]

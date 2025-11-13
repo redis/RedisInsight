@@ -12,7 +12,6 @@ import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import PromoLink from 'uiSrc/components/promo-link/PromoLink'
 
 import { FeatureFlagComponent, OAuthSsoHandlerDialog } from 'uiSrc/components'
-import { RiPopover } from 'uiSrc/components/base'
 import { getPathToResource } from 'uiSrc/services/resourcesService'
 import { ContentCreateRedis } from 'uiSrc/slices/interfaces/content'
 import { CREATE_CLOUD_DB_ID, HELP_LINKS } from 'uiSrc/pages/home/constants'
@@ -31,8 +30,8 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { ColumnsIcon, PlusIcon } from 'uiSrc/components/base/icons'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
+import { PlusIcon } from 'uiSrc/components/base/icons'
+import ColumnsConfigPopover from 'uiSrc/components/columns-config/ColumnsConfigPopover'
 import handleClickFreeCloudDb from '../database-list-component/methods/handleClickFreeCloudDb'
 import SearchDatabasesList from '../search-databases-list'
 
@@ -48,7 +47,6 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
   const { loading, data } = useSelector(contentSelector)
 
   const [promoData, setPromoData] = useState<ContentCreateRedis>()
-  const [columnsConfigShown, setColumnsConfigShown] = useState(false)
 
   const { theme } = useContext(ThemeContext)
   const { [FeatureFlags.enhancedCloudUI]: enhancedCloudUIFeature } =
@@ -95,31 +93,14 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
     handleClickLink(event, eventData)
   }
 
-  const toggleColumnsConfigVisibility = () =>
-    setColumnsConfigShown(!columnsConfigShown)
-
-  const changeShownColumns = (status: boolean, column: DatabaseListColumn) => {
-    const newColumns = status
-      ? [...shownColumns, column]
-      : shownColumns.filter((col) => col !== column)
-
-    dispatch(setShownColumns(newColumns))
-
-    const shown: DatabaseListColumn[] = []
-    const hidden: DatabaseListColumn[] = []
-
-    if (status) {
-      shown.push(column)
-    } else {
-      hidden.push(column)
-    }
-
+  const handleColumnsChange = (
+    next: DatabaseListColumn[],
+    diff: { shown: DatabaseListColumn[]; hidden: DatabaseListColumn[] },
+  ) => {
+    dispatch(setShownColumns(next))
     sendEventTelemetry({
       event: TelemetryEvent.DATABASE_LIST_COLUMNS_CLICKED,
-      eventData: {
-        shown,
-        hidden,
-      },
+      eventData: diff,
     })
   }
 
@@ -185,21 +166,6 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
     )
   }
 
-  const columnCheckboxes = Array.from(COLUMN_FIELD_NAME_MAP.entries()).map(
-    ([field, name]) => (
-      <Checkbox
-        key={`show-${field}`}
-        id={`show-${field}`}
-        name={`show-${field}`}
-        label={name}
-        checked={shownColumns.includes(field)}
-        disabled={shownColumns.includes(field) && shownColumns.length === 1}
-        onChange={(e) => changeShownColumns(e.target.checked, field)}
-        data-testid={`show-${field}`}
-      />
-    ),
-  )
-
   return (
     <div className={styles.containerDl}>
       <Row
@@ -226,43 +192,14 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
           </FlexItem>
         )}
         {instances.length > 0 && (
-          <FlexItem grow>
-            <Row justify="end" align="center" gap="s">
-              <FlexItem className={styles.columnsButtonItem}>
-                <RiPopover
-                  ownFocus={false}
-                  anchorPosition="downLeft"
-                  isOpen={columnsConfigShown}
-                  closePopover={() => setColumnsConfigShown(false)}
-                  data-testid="columns-config-popover"
-                  button={
-                    <SecondaryButton
-                      icon={ColumnsIcon}
-                      onClick={toggleColumnsConfigVisibility}
-                      className={styles.columnsButton}
-                      data-testid="btn-columns-config"
-                      aria-label="columns"
-                    >
-                      <span>Columns</span>
-                    </SecondaryButton>
-                  }
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '0.5rem',
-                    }}
-                  >
-                    {columnCheckboxes}
-                  </div>
-                </RiPopover>
-              </FlexItem>
-              <FlexItem>
-                <SearchDatabasesList />
-              </FlexItem>
-            </Row>
-          </FlexItem>
+          <Row justify="end" align="center" gap="l">
+            <ColumnsConfigPopover
+              columnsMap={COLUMN_FIELD_NAME_MAP}
+              shownColumns={shownColumns}
+              onChange={handleColumnsChange}
+            />
+            <SearchDatabasesList />
+          </Row>
         )}
       </Row>
       <Spacer className={styles.spacerDl} />
