@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import cx from 'classnames'
 import { Nullable } from 'uiSrc/utils'
 import { BulkActionsStatus, BulkActionsType } from 'uiSrc/constants'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
@@ -40,7 +39,6 @@ import {
   StyledPopoverIcon,
   StyledPopoverText,
 } from './BulkUpload.styles'
-import styles from './styles.module.scss'
 
 export interface Props {
   onCancel: () => void
@@ -178,7 +176,6 @@ const BulkUpload = (props: Props) => {
       <StyledFooter gap="l" justify="end" grow={false}>
         <SecondaryButton
           onClick={handleClickCancel}
-          className={styles.cancelBtn}
           data-testid="bulk-action-cancel-btn"
         >
           {isProcessedBulkAction(status) ? 'Close' : 'Cancel'}
