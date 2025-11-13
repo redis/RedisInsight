@@ -51,14 +51,23 @@ interface DonutChartTitleProps {
   testId: string
 }
 
-const DonutChartTitle = ({ icon, title, value, testId }: DonutChartTitleProps) => (
+const DonutChartTitle = ({
+  icon,
+  title,
+  value,
+  testId,
+}: DonutChartTitleProps) => (
   <Col align="center" grow={false} gap="xs">
     <Row align="center" gap="m" data-testid={`donut-title-${testId}`}>
       <RiIcon type={icon} size="m" />
       <Title size="XS">{title}</Title>
     </Row>
     <TitleSeparator />
-    <Text component="div" variant="semiBold" data-testid={`total-${testId}-value`}>
+    <Text
+      component="div"
+      variant="semiBold"
+      data-testid={`total-${testId}-value`}
+    >
       {String(value)}
     </Text>
   </Col>
@@ -67,6 +76,15 @@ const DonutChartTitle = ({ icon, title, value, testId }: DonutChartTitleProps) =
 const widthResponsiveSize = 1024
 const CHART_WITH_LABELS_WIDTH = 432
 const CHART_WIDTH = 320
+const getChartData = (t: SimpleTypeSummary): ChartData => ({
+  value: t.total,
+  name: getGroupTypeDisplay(t.type),
+  color:
+    t.type in GROUP_TYPES_COLORS
+      ? GROUP_TYPES_COLORS[t.type as GroupTypesColors]
+      : 'var(--defaultTypeColor)',
+  meta: { ...t },
+})
 
 const SummaryPerData = ({
   data,
@@ -79,16 +97,6 @@ const SummaryPerData = ({
   const [keysData, setKeysData] = useState<ChartData[]>([])
   const [isExtrapolated, setIsExtrapolated] = useState<boolean>(true)
   const [hideLabelTitle, setHideLabelTitle] = useState(false)
-
-  const getChartData = (t: SimpleTypeSummary) => ({
-    value: t.total,
-    name: getGroupTypeDisplay(t.type),
-    color:
-      t.type in GROUP_TYPES_COLORS
-        ? GROUP_TYPES_COLORS[t.type as GroupTypesColors]
-        : 'var(--defaultTypeColor)',
-    meta: { ...t },
-  })
 
   const updateChartSize = () => {
     setHideLabelTitle(globalThis.innerWidth < widthResponsiveSize)
@@ -108,8 +116,8 @@ const SummaryPerData = ({
 
   useEffect(() => {
     if (data && totalMemory && totalKeys) {
-      setMemoryData(totalMemory.types?.map(getChartData) as ChartData[])
-      setKeysData(totalKeys.types?.map(getChartData) as ChartData[])
+      setMemoryData(totalMemory.types?.map(getChartData))
+      setKeysData(totalKeys.types?.map(getChartData))
     }
   }, [data])
 
