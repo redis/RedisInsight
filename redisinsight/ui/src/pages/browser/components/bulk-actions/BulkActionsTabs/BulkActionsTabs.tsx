@@ -12,12 +12,12 @@ import {
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
 import { keysSelector } from 'uiSrc/slices/browser/keys'
-import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
-
+import { TabInfo } from 'uiSrc/components/base/layout/tabs'
 import { Text } from 'uiSrc/components/base/text'
-import styles from './styles.module.scss'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { Row } from 'uiSrc/components/base/layout/flex'
+
+import { StyledTabs } from './BulkActionsTabs.styles'
 
 export interface Props {
   onChangeType: (id: BulkActionsType) => void
@@ -68,7 +68,7 @@ const BulkActionsTabs = (props: Props) => {
         value: BulkActionsType.Upload,
         label: (
           <Row align="center" gap="m" grow={false}>
-            <RiIcon type="BulkUploadIcon" />
+            <RiIcon type="BulkUploadIcon" size="M" />
             <Text size="XS">Upload Data</Text>
           </Row>
         ),
@@ -79,11 +79,10 @@ const BulkActionsTabs = (props: Props) => {
   )
 
   return (
-    <Tabs
+    <StyledTabs
       tabs={tabs}
       value={type ?? undefined}
       onChange={onSelectedTabChanged}
-      className={styles.tabs}
       data-testid="bulk-actions-tabs"
     />
   )

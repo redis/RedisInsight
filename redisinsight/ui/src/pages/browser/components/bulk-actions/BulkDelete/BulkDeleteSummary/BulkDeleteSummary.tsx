@@ -12,10 +12,9 @@ import {
 import BulkActionSummary from 'uiSrc/pages/browser/components/bulk-actions/BulkActionSummary'
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
-import { Col } from 'uiSrc/components/base/layout/flex'
+import { Col, Row } from 'uiSrc/components/base/layout/flex'
 
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from './styles.module.scss'
 
 const BulkDeleteSummary = () => {
   const [title, setTitle] = useState<string>('')
@@ -39,14 +38,15 @@ const BulkDeleteSummary = () => {
   }, [scanned, total, keys])
 
   return (
-    <div className={styles.container}>
+    <div>
       {isUndefined(status) && (
         <Col gap="l">
-          <Text color="primary" size="m" variant="semiBold">
-            <span>{title}</span>
+          <Row gap="s">
+            <Text color="primary" size="m" variant="semiBold">
+              {title}
+            </Text>
             <RiTooltip
               position="right"
-              anchorClassName={styles.tooltipAnchor}
               content={
                 <Text size="XS">
                   Expected amount is estimated based on the number of keys
@@ -57,13 +57,8 @@ const BulkDeleteSummary = () => {
             >
               <RiIcon type="InfoIcon" data-testid="bulk-delete-tooltip" />
             </RiTooltip>
-          </Text>
-          <Text
-            color="primary"
-            size="S"
-            className={styles.summaryApproximate}
-            data-testid="bulk-delete-summary"
-          >
+          </Row>
+          <Text color="primary" size="S" data-testid="bulk-delete-summary">
             {`Scanned ${getApproximatePercentage(total, scanned)} `}
             {`(${numberWithSpaces(scanned)}/${nullableNumberWithSpaces(total)}) `}
             {`and found ${numberWithSpaces(keys.length)} keys`}

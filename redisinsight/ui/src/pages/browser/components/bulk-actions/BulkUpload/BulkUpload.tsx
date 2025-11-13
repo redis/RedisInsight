@@ -33,7 +33,13 @@ import { RefreshIcon } from 'uiSrc/components/base/icons'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
-import { StyledContent, StyledFooter } from './BulkUpload.styles'
+import {
+  StyledContent,
+  StyledFooter,
+  StyledPopoverContainer,
+  StyledPopoverIcon,
+  StyledPopoverText,
+} from './BulkUpload.styles'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -144,11 +150,7 @@ const BulkUpload = (props: Props) => {
             aria-label="Select or drag and drop file"
           />
           {isInvalid && (
-            <ColorText
-              color="danger"
-              className={styles.errorFileMsg}
-              data-testid="input-file-error-msg"
-            >
+            <ColorText color="danger" data-testid="input-file-error-msg">
               File should not exceed {MAX_MB_FILE} MB
             </ColorText>
           )}
@@ -199,27 +201,27 @@ const BulkUpload = (props: Props) => {
               </PrimaryButton>
             }
           >
-            <Text
-              className={styles.containerPopover}
-              data-testid="bulk-action-tooltip"
-            >
-              <RiIcon type="ToastDangerIcon" className={styles.popoverIcon} />
-              <div className={cx(styles.popoverItem, styles.popoverItemTitle)}>
-                Are you sure you want to perform this action?
-              </div>
-              <div className={styles.popoverItem}>
-                All commands from the file will be executed against your
-                database.
-              </div>
-              <PrimaryButton
-                size="s"
-                className={styles.uploadApproveBtn}
-                onClick={handleUpload}
-                data-testid="bulk-action-apply-btn"
-              >
-                Upload
-              </PrimaryButton>
-            </Text>
+            <StyledPopoverContainer gap="m">
+              <Col data-testid="bulk-action-tooltip" gap="s">
+                <StyledPopoverIcon type="ToastDangerIcon" />
+                <StyledPopoverText size="L" color="primary">
+                  Are you sure you want to perform this action?
+                </StyledPopoverText>
+                <StyledPopoverText size="M" color="secondary">
+                  All commands from the file will be executed against your
+                  database.
+                </StyledPopoverText>
+              </Col>
+              <Row justify="end">
+                <PrimaryButton
+                  size="s"
+                  onClick={handleUpload}
+                  data-testid="bulk-action-apply-btn"
+                >
+                  Upload
+                </PrimaryButton>
+              </Row>
+            </StyledPopoverContainer>
           </RiPopover>
         ) : (
           <PrimaryButton
