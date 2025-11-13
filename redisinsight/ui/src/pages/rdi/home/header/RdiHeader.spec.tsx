@@ -10,6 +10,7 @@ import {
 import { RdiListColumn } from 'uiSrc/constants'
 import { instancesSelector, setShownColumns } from 'uiSrc/slices/rdi/instances'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { rdiInstanceFactory } from 'uiSrc/mocks/rdi/RdiInstance.factory'
 import RdiHeader from './RdiHeader'
 
 jest.mock('uiSrc/slices/rdi/instances', () => ({
@@ -34,17 +35,7 @@ beforeEach(() => {
       RdiListColumn.Url,
       RdiListColumn.Controls,
     ],
-    data: [
-      {
-        id: '1',
-        name: 'rdi-1',
-        url: 'http://localhost:1234',
-        version: '1.0.0',
-        lastConnection: new Date(),
-        loading: false,
-        error: '',
-      },
-    ],
+    data: rdiInstanceFactory.buildList(1),
   })
 })
 
