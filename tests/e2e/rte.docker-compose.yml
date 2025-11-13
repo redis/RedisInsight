@@ -302,6 +302,7 @@ services:
   # redis enterprise
   redis-enterprise:
     logging: *logging
+    platform: linux/amd64
     build: ./rte/redis-enterprise
     cap_add:
       - sys_resource
