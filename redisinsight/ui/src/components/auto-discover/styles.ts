@@ -51,11 +51,10 @@ export const DatabaseContainer = styled(Col)`
 export const DatabaseWrapper = styled.div`
   height: auto;
   scrollbar-width: thin;
-  padding: 1px 1px 75px;
+  padding: ${({ theme }: { theme: Theme }) => theme.core.space.space010};
   position: relative;
   background-color: ${({ theme }: { theme: Theme }) =>
     theme.semantic.color.background.neutral100};
-  flex-grow: 1;
   overflow: hidden;
 `
 export const SelectAllCheckbox = styled(Checkbox)`

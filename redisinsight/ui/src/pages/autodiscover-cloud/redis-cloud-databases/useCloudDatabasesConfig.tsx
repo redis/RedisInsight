@@ -36,7 +36,6 @@ import {
 
 export const colFactory = (instances: InstanceRedisCloud[]) => {
   const columns: ColumnDef<InstanceRedisCloud>[] = [
-    getSelectionColumn<InstanceRedisCloud>(),
     DatabaseColumn(),
     SubscriptionIdColumn(),
     SubscriptionDbColumn(),
@@ -46,6 +45,9 @@ export const colFactory = (instances: InstanceRedisCloud[]) => {
     ModulesColumn(),
     OptionsColumn(instances),
   ]
+  if (instances.length) {
+    return [getSelectionColumn<InstanceRedisCloud>(), ...columns]
+  }
 
   return columns
 }

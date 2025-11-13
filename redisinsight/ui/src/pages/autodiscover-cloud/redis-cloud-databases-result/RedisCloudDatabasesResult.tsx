@@ -6,7 +6,7 @@ import {
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import { ColumnDef, Table } from 'uiSrc/components/base/layout/table'
@@ -102,12 +102,14 @@ const RedisCloudDatabaseListResult = ({
             paginationEnabled={items.length > 10}
             stripedRows
             pageSizes={[5, 10, 25, 50, 100]}
+            emptyState={() => (
+              <Col centered full>
+                <FlexItem padding={13}>
+                  <Text size="L">{message}</Text>
+                </FlexItem>
+              </Col>
+            )}
           />
-          {!items.length && (
-            <Col centered full>
-              <Text size="L">{message}</Text>
-            </Col>
-          )}
         </DatabaseWrapper>
         <MessageBar
           opened={!!countSuccessAdded || !!countFailAdded}

@@ -17,7 +17,7 @@ import {
   Table,
 } from 'uiSrc/components/base/layout/table'
 
-import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
   DestructiveButton,
   PrimaryButton,
@@ -64,30 +64,36 @@ const loadingMsg = 'loading...'
 const notFoundMsg = 'Not found'
 const noResultsMessage = 'Your Redis Cloud has no subscriptions available.'
 
-const Account = ({ account }: { account: RedisCloudAccount }) => (
+const Account = ({
+  account: { accountId, accountName, ownerEmail, ownerName },
+}: {
+  account: RedisCloudAccount
+}) => (
   <AccountWrapper>
-    <AccountItem>
-      <AccountItemTitle>Account ID:</AccountItemTitle>
-      <AccountValue data-testid="account-id" value={account?.accountId} />
-    </AccountItem>
-    <AccountItem>
-      <AccountItemTitle>Name:</AccountItemTitle>
-      <AccountValue data-testid="account-name" value={account?.accountName} />
-    </AccountItem>
-    <AccountItem>
-      <AccountItemTitle>Owner Name:</AccountItemTitle>
-      <AccountValue
-        data-testid="account-owner-name"
-        value={account?.ownerName}
-      />
-    </AccountItem>
-    <AccountItem>
-      <AccountItemTitle>Owner Email:</AccountItemTitle>
-      <AccountValue
-        data-testid="account-owner-email"
-        value={account?.ownerEmail}
-      />
-    </AccountItem>
+    {accountId && (
+      <AccountItem>
+        <AccountItemTitle>Account ID:</AccountItemTitle>
+        <AccountValue data-testid="account-id" value={accountId} />
+      </AccountItem>
+    )}
+    {accountName && (
+      <AccountItem>
+        <AccountItemTitle>Name:</AccountItemTitle>
+        <AccountValue data-testid="account-name" value={accountName} />
+      </AccountItem>
+    )}
+    {ownerName && (
+      <AccountItem>
+        <AccountItemTitle>Owner Name:</AccountItemTitle>
+        <AccountValue data-testid="account-owner-name" value={ownerName} />
+      </AccountItem>
+    )}
+    {ownerEmail && (
+      <AccountItem>
+        <AccountItemTitle>Owner Email:</AccountItemTitle>
+        <AccountValue data-testid="account-owner-email" value={ownerEmail} />
+      </AccountItem>
+    )}
   </AccountWrapper>
 )
 
@@ -106,24 +112,6 @@ const RedisCloudSubscriptions = ({
   const [items, setItems] = useState(subscriptions || [])
   const [message, setMessage] = useState(loadingMsg)
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
-  const [rowSelection, setRowSelection] = useState<
-    Record<NonNullable<RedisCloudSubscription['id']>, boolean>
-  >({})
-
-  useEffect(() => {
-    if (!selection) return
-    setRowSelection(
-      selection.reduce(
-        (acc, item) => {
-          if (item.id) {
-            acc[item.id] = true
-          }
-          return acc
-        },
-        {} as Record<NonNullable<RedisCloudSubscription['id']>, boolean>,
-      ),
-    )
-  }, [selection])
 
   useEffect(() => {
     if (subscriptions !== null) {
@@ -266,12 +254,15 @@ const RedisCloudSubscriptions = ({
         />
         <Spacer size="m" />
         <DatabaseWrapper>
-          {account && <Account account={account} />}
-          <Spacer size="m" />
+          {account && (
+            <>
+              <Account account={account} />
+              <Spacer size="m" />
+            </>
+          )}
           <Table
             rowSelectionMode="multiple"
             getRowCanSelect={canSelectRow}
-            rowSelection={rowSelection}
             onRowSelectionChange={onSelectionChange}
             getRowId={(row) => `${row.id}`}
             columns={columns}
@@ -285,12 +276,14 @@ const RedisCloudSubscriptions = ({
             paginationEnabled={items.length > 10}
             stripedRows
             pageSizes={[5, 10, 25, 50, 100]}
+            emptyState={() => (
+              <Col centered full>
+                <FlexItem padding={13}>
+                  <Text size="L">{message}</Text>
+                </FlexItem>
+              </Col>
+            )}
           />
-          {!items.length && (
-            <Col centered full>
-              <Text size="L">{message}</Text>
-            </Col>
-          )}
         </DatabaseWrapper>
         <MessageBar
           opened={countStatusActive + countStatusFailed > 0}
