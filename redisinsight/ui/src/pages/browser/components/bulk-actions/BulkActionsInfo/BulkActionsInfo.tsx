@@ -6,12 +6,13 @@ import { BulkActionsStatus, KeyTypes, RedisDataType } from 'uiSrc/constants'
 import GroupBadge from 'uiSrc/components/group-badge/GroupBadge'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
+
+import BulkActionsStatusDisplay from '../BulkActionsStatusDisplay'
 import {
   BulkActionsContainer,
   BulkActionsInfoFilter,
   BulkActionsInfoSearch,
   BulkActionsProgressLine,
-  BulkActionsStatusDisplay,
   BulkActionsTitle,
 } from './BulkActionsInfo.styles'
 
