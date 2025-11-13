@@ -23,7 +23,7 @@ import {
 import Recommendations from '../recommendations-view'
 import AnalysisDataView from '../analysis-data-view'
 
-import styles from './styles.module.scss'
+import { EmptyMessageContainer } from './DatabaseAnalysisTabs.styles'
 
 export interface Props {
   loading: boolean
@@ -64,6 +64,7 @@ const DatabaseAnalysisTabs = (props: Props) => {
             anchorPosition: 'downLeft',
           },
           viewTab === DatabaseAnalysisViewTab.Recommendations,
+          'analytics-recommendations-tab',
         ),
         value: DatabaseAnalysisViewTab.Recommendations,
         content: <Recommendations />,
@@ -102,22 +103,16 @@ const DatabaseAnalysisTabs = (props: Props) => {
 
   if (!loading && !reports?.length) {
     return (
-      <div
-        data-testid="empty-reports-wrapper"
-        className={styles.emptyMessageWrapper}
-      >
+      <EmptyMessageContainer data-testid="empty-reports-wrapper">
         <EmptyAnalysisMessage name={EmptyMessage.Reports} />
-      </div>
+      </EmptyMessageContainer>
     )
   }
   if (!loading && !!reports?.length && isNull(data?.totalKeys)) {
     return (
-      <div
-        data-testid="empty-encrypt-wrapper"
-        className={styles.emptyMessageWrapper}
-      >
+      <EmptyMessageContainer data-testid="empty-encrypt-wrapper">
         <EmptyAnalysisMessage name={EmptyMessage.Encrypt} />
-      </div>
+      </EmptyMessageContainer>
     )
   }
 

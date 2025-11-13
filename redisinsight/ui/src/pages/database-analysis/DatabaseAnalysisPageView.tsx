@@ -31,7 +31,6 @@ export const DatabaseAnalysisPageView = ({
   data,
   handleSelectAnalysis,
 }: Props) => {
-  console.log({ reports, selectedAnalysis, analysisLoading, data })
   return (
     <MainContainer data-testid="database-analysis-page">
       <Header
