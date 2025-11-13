@@ -13,5 +13,5 @@ export const SummaryContainer = styled(Row)`
 
 export const SummaryValue = styled(Text)`
   line-height: 24px;
-  font-weight: 500 !important;
+  font-weight: 500;
 `
