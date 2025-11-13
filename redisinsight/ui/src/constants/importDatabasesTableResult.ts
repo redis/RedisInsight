@@ -12,3 +12,9 @@ export const TABLE_IMPORT_RESULT_COLUMN_ID_HEADER_MAP = new Map<
   [ImportTableResultColumn.Host, 'Host:Port'],
   [ImportTableResultColumn.Errors, 'Result'],
 ])
+
+export enum ImportDatabaseResultType {
+  Success = 'success',
+  Partial = 'partial',
+  Failed = 'failed',
+}
