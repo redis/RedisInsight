@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import AutoSizer from 'react-virtualized-auto-sizer'
 
 import { connectedInstanceOverviewSelector } from 'uiSrc/slices/instances/instances'
 import { pubSubSelector } from 'uiSrc/slices/pubsub/pubsub'
@@ -9,7 +8,6 @@ import { CommandsVersions } from 'uiSrc/constants/commandsVersions'
 import { useConnectionType } from 'uiSrc/components/hooks/useConnectionType'
 import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
 import EmptyMessagesList from './EmptyMessagesList'
-import MessagesList from './MessagesList'
 
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
@@ -17,7 +15,40 @@ import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 import { HorizontalSpacer } from 'uiSrc/components/base/layout'
 import SubscribeForm from '../subscribe-form'
 import PatternsInfo from '../patternsInfo'
-import { InnerContainer, Wrapper } from './MessageListWrapper.styles'
+import { Wrapper } from './MessageListWrapper.styles'
+import { ColumnDef, Table } from 'uiSrc/components/base/layout/table'
+import { FormatedDate } from 'uiSrc/components'
+import { IMessage } from 'apiSrc/modules/pub-sub/interfaces/message.interface'
+
+const columns: ColumnDef<IMessage>[] = [
+  {
+    id: 'time',
+    header: 'Timestamp',
+    accessorKey: 'time',
+    size: 40,
+    cell: ({ getValue }) => {
+      const date = (getValue() as number) * 1000
+
+      return <FormatedDate date={date} />
+    },
+  },
+  {
+    id: 'channel',
+    header: `Channel`,
+    accessorKey: 'channel',
+    size: 30,
+    cell: ({ getValue }) => {
+      const channel = getValue() as number
+
+      return <Text>{channel}</Text>
+    },
+  },
+  {
+    id: 'message',
+    header: 'Message',
+    accessorKey: 'message',
+  },
+]
 
 const MessagesListWrapper = () => {
   const {
@@ -48,7 +79,7 @@ const MessagesListWrapper = () => {
 
   if (hasMessages || isSubscribed) {
     return (
-      <Wrapper>
+      <Wrapper gap="l">
         <Row align="center" justify="between" grow={false}>
           <Row align="center" gap="m">
             <PatternsInfo channels={channels} />
@@ -72,29 +103,15 @@ const MessagesListWrapper = () => {
           </Row>
         </Row>
 
-        <InnerContainer grow={true} data-testid="messages-list" gap="m">
-          <Row grow={false}>
-            <Text>Timestamp</Text>
-            <HorizontalSpacer />
-            <Text>Channel</Text>
-            <HorizontalSpacer />
-            <Text>Message</Text>
-          </Row>
-
-          {hasMessages && (
-            <AutoSizer>
-              {({ width, height }) => (
-                <MessagesList items={messages} width={width} height={height} />
-              )}
-            </AutoSizer>
-          )}
-
-          {!hasMessages && (
-            <Row grow={false} justify="center">
-              <Text>No messages published yet</Text>
-            </Row>
-          )}
-        </InnerContainer>
+        <div data-testid="messages-list">
+          <Table
+            columns={columns}
+            data={messages}
+            maxHeight="50vh"
+            stripedRows
+            emptyState="No messages published yet"
+          />
+        </div>
       </Wrapper>
     )
   }
