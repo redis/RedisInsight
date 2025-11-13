@@ -11,8 +11,6 @@ import { useConnectionType } from 'uiSrc/components/hooks/useConnectionType'
 
 import AnalyticsPageRouter from './AnalyticsPageRouter'
 
-import styles from './styles.module.scss'
-
 export interface Props {
   routes: any[]
 }
@@ -67,11 +65,7 @@ const AnalyticsPage = ({ routes = [] }: Props) => {
       pathname === Pages.analytics(instanceId) ? '' : pathname
   }, [pathname])
 
-  return (
-    <div className={styles.main}>
-      <AnalyticsPageRouter routes={routes} />
-    </div>
-  )
+  return <AnalyticsPageRouter routes={routes} />
 }
 
 export default AnalyticsPage
