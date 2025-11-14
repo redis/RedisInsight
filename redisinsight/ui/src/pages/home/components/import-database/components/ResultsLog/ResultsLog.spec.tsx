@@ -27,7 +27,7 @@ describe('ResultsLog', () => {
 
     expect(screen.getByTestId('success-results-closed')).toBeInTheDocument()
     expect(screen.getByTestId('partial-results-closed')).toBeInTheDocument()
-    expect(screen.getByTestId('failed-results-closed')).toBeInTheDocument()
+    expect(screen.getByTestId('fail-results-closed')).toBeInTheDocument()
   })
 
   it('should open and collapse other groups', () => {
@@ -45,12 +45,12 @@ describe('ResultsLog', () => {
     expect(screen.getByTestId('success-results-open')).toBeInTheDocument()
 
     expect(screen.getByTestId('partial-results-closed')).toBeInTheDocument()
-    expect(screen.getByTestId('failed-results-closed')).toBeInTheDocument()
+    expect(screen.getByTestId('fail-results-closed')).toBeInTheDocument()
 
     fireEvent.click(
-      within(screen.getByTestId('failed-results-closed')).getByRole('button'),
+      within(screen.getByTestId('fail-results-closed')).getByRole('button'),
     )
-    expect(screen.getByTestId('failed-results-open')).toBeInTheDocument()
+    expect(screen.getByTestId('fail-results-open')).toBeInTheDocument()
 
     expect(screen.getByTestId('partial-results-closed')).toBeInTheDocument()
     expect(screen.getByTestId('success-results-closed')).toBeInTheDocument()
@@ -60,7 +60,7 @@ describe('ResultsLog', () => {
     )
     expect(screen.getByTestId('partial-results-open')).toBeInTheDocument()
 
-    expect(screen.getByTestId('failed-results-closed')).toBeInTheDocument()
+    expect(screen.getByTestId('fail-results-closed')).toBeInTheDocument()
     expect(screen.getByTestId('success-results-closed')).toBeInTheDocument()
   })
 
@@ -87,7 +87,7 @@ describe('ResultsLog', () => {
       ),
     ).toHaveTextContent('1')
     expect(
-      within(screen.getByTestId('failed-results-closed')).getByTestId(
+      within(screen.getByTestId('fail-results-closed')).getByTestId(
         'number-of-dbs',
       ),
     ).toHaveTextContent('1')
