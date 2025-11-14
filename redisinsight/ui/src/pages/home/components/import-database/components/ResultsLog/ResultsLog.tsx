@@ -3,13 +3,14 @@ import React, { useEffect, useState } from 'react'
 import { ImportDatabasesData } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { Nullable } from 'uiSrc/utils'
-import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
-import TableResult from '../TableResult'
-
+import { RICollapsibleNavGroup } from 'uiSrc/components/base/display'
 import { ImportDatabaseResultType } from 'uiSrc/constants'
+
+import TableResult from '../TableResult'
 import { DataImportResult } from '../TableResult/TableResult'
-import { StyledCollapsibleNavGroup } from './ResultLog.styles'
+import { StyledColWrapper } from './ResultLog.styles'
 
 interface Props {
   data: Nullable<ImportDatabasesData>
@@ -74,9 +75,9 @@ const ResultsLog = ({ data }: Props) => {
     openedNav === type ? 'open' : 'closed'
 
   return (
-    <Col gap="l">
+    <StyledColWrapper gap="l">
       {collapsibleNavData.map((item) => (
-        <StyledCollapsibleNavGroup
+        <RICollapsibleNavGroup
           key={item.type}
           title={
             <CollapsibleNavTitle title={item.title} length={item.data.length} />
@@ -89,9 +90,9 @@ const ResultsLog = ({ data }: Props) => {
           open={openedNav === item.type}
         >
           <TableResult data={item.data} />
-        </StyledCollapsibleNavGroup>
+        </RICollapsibleNavGroup>
       ))}
-    </Col>
+    </StyledColWrapper>
   )
 }
 

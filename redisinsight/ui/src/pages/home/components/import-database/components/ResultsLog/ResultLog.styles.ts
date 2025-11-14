@@ -1,10 +1,10 @@
 import styled from 'styled-components'
 
-import { RICollapsibleNavGroup } from 'uiSrc/components/base/display'
+import { Col } from 'uiSrc/components/base/layout/flex'
 
-// Ideally this should be coming from the Section component
-// replacing the box-shadow with the border so it is not cut by the parent container
-export const StyledCollapsibleNavGroup = styled(RICollapsibleNavGroup)`
-  box-shadow: none;
-  border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral600};
+// Ideally this should not be needed, but the section component
+// will not let the parent cut the border, more precisely the box-shadow,
+// so we need to add padding to the parent container
+export const StyledColWrapper = styled(Col)`
+  padding: ${({ theme }) => theme.core.space.space025};
 `
