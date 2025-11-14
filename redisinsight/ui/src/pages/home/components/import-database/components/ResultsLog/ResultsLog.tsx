@@ -76,7 +76,7 @@ const ResultsLog = ({ data }: Props) => {
 
   return (
     <StyledColWrapper gap="l">
-      {collapsibleNavData.map((item) => (
+      {collapsibleNavData.filter((item) => item.data.length > 0).map((item) => (
         <RICollapsibleNavGroup
           key={item.type}
           title={
