@@ -210,7 +210,7 @@ const ImportDatabase = (props: Props) => {
                 <RiIcon
                   type="IndicatorXIcon"
                   color="danger600"
-                  customSize="50px"
+                  customSize="5rem"
                 />
                 <Text>Failed to add database connections</Text>
                 <Text>{error}</Text>
