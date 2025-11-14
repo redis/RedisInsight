@@ -4,12 +4,10 @@ import { fn } from 'storybook/test'
 
 import RedisCloudSubscriptions from './RedisCloudSubscriptions'
 import { colFactory } from '../utils/colFactory'
-import {
-  RedisCloudAccount,
-  RedisCloudSubscription,
-} from 'uiSrc/slices/interfaces'
+import { RedisCloudSubscription } from 'uiSrc/slices/interfaces'
 import { RowSelectionState } from 'uiSrc/components/base/layout/table'
 import { RedisCloudSubscriptionFactory } from 'uiSrc/mocks/factories/cloud/RedisCloudSubscription.factory'
+import { RedisCloudAccountFactory } from 'uiSrc/mocks/factories/cloud/RedisCloudAccount.factory'
 
 const subscriptionsMock: RedisCloudSubscription[] =
   RedisCloudSubscriptionFactory.buildList(3)
@@ -18,12 +16,7 @@ const subscriptions100: RedisCloudSubscription[] =
 
 const emptyColumns = colFactory([])
 
-const accountMock: RedisCloudAccount = {
-  accountId: 540769,
-  accountName: 'Maayan',
-  ownerName: 'Maayan Inc.',
-  ownerEmail: 'maayan.bar-tikva@redis.com',
-}
+const accountMock = RedisCloudAccountFactory.build()
 const meta: Meta<typeof RedisCloudSubscriptions> = {
   component: RedisCloudSubscriptions,
   args: {
