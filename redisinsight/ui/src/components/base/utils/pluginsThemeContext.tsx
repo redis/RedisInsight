@@ -4,6 +4,7 @@ import { CommonStyles, themeLight, themeDark } from '@redis-ui/styles'
 import 'modern-normalize/modern-normalize.css'
 import '@redis-ui/styles/normalized-styles.css'
 import '@redis-ui/styles/fonts.css'
+import { GlobalStyles } from 'uiSrc/styles/globalStyles'
 
 interface Props {
   children: React.ReactNode
@@ -31,6 +32,7 @@ export const ThemeProvider = ({ children }: Props) => {
     <PluginsThemeContext.Provider value={{ theme }}>
       <StyledThemeProvider theme={theme}>
         <CommonStyles />
+        <GlobalStyles />
         {children}
       </StyledThemeProvider>
     </PluginsThemeContext.Provider>

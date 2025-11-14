@@ -4,7 +4,7 @@ import { css, CSSObject, FlattenSimpleInterpolation } from 'styled-components'
  * Breakpoint values matching EUI breakpoints
  * Equivalent to $euiBreakpoints in SCSS
  */
-export const euiBreakpoints = {
+export const breakpoints = {
   xs: 0,
   s: 575,
   m: 768,
@@ -12,7 +12,7 @@ export const euiBreakpoints = {
   xl: 1200,
 } as const
 
-export type BreakpointKey = keyof typeof euiBreakpoints
+export type BreakpointKey = keyof typeof breakpoints
 
 /**
  * Media query helper for breakpoints
@@ -27,36 +27,38 @@ export type BreakpointKey = keyof typeof euiBreakpoints
  *   padding: 10px;
  *
  *   // For xs and s screens only
- *   ${euiBreakpoint('xs', 's')`
+ *   ${breakpoint('xs', 's')`
  *     padding: 5px;
  *   `}
  *
  *   // For m, l, and xl screens
- *   ${euiBreakpoint('m', 'l', 'xl')`
+ *   ${breakpoint('m', 'l', 'xl')`
  *     padding: 20px;
  *   `}
  * `
  * ```
  */
-export const euiBreakpoint = (...sizes: BreakpointKey[]) => {
+export const breakpoint = (...sizes: BreakpointKey[]) => {
   return (
     strings: TemplateStringsArray,
-    ...interpolations: Array<string | number | FlattenSimpleInterpolation | CSSObject>
+    ...interpolations: Array<
+      string | number | FlattenSimpleInterpolation | CSSObject
+    >
   ) => {
     const content = css(strings, ...interpolations)
-    const breakpointKeys = Object.keys(euiBreakpoints) as BreakpointKey[]
+    const breakpointKeys = Object.keys(breakpoints) as BreakpointKey[]
 
     return sizes.map((size) => {
       const index = breakpointKeys.indexOf(size)
 
       if (index === -1) {
         console.warn(
-          `euiBreakpoint(): '${size}' is not a valid breakpoint. Valid breakpoints are: ${breakpointKeys.join(', ')}`
+          `breakpoint(): '${size}' is not a valid breakpoint. Valid breakpoints are: ${breakpointKeys.join(', ')}`,
         )
         return ''
       }
 
-      const minSize = euiBreakpoints[size]
+      const minSize = breakpoints[size]
 
       // If it's the last breakpoint, don't set max-width
       if (index === breakpointKeys.length - 1) {
@@ -70,7 +72,7 @@ export const euiBreakpoint = (...sizes: BreakpointKey[]) => {
       // If it's the first breakpoint (xs), only set max-width
       if (index === 0) {
         const nextKey = breakpointKeys[index + 1]
-        const maxSize = euiBreakpoints[nextKey] - 1
+        const maxSize = breakpoints[nextKey] - 1
         return css`
           @media only screen and (max-width: ${maxSize}px) {
             ${content}
@@ -80,7 +82,7 @@ export const euiBreakpoint = (...sizes: BreakpointKey[]) => {
 
       // Otherwise, set both min and max width
       const nextKey = breakpointKeys[index + 1]
-      const maxSize = euiBreakpoints[nextKey] - 1
+      const maxSize = breakpoints[nextKey] - 1
       return css`
         @media only screen and (min-width: ${minSize}px) and (max-width: ${maxSize}px) {
           ${content}
@@ -121,7 +123,9 @@ export const euiBreakpoint = (...sizes: BreakpointKey[]) => {
 export const insightsOpen = (maxWidth: number = 1440) => {
   return (
     strings: TemplateStringsArray,
-    ...interpolations: Array<string | number | FlattenSimpleInterpolation | CSSObject>
+    ...interpolations: Array<
+      string | number | FlattenSimpleInterpolation | CSSObject
+    >
   ) => {
     const content = css(strings, ...interpolations)
     return css`
@@ -177,3 +181,34 @@ export const scrollbarStyles = (width: number = 16) => css`
   }
 `
 
+/**
+ * Text truncation with ellipsis mixin
+ * Equivalent to truncate pattern found in various components
+ *
+ * @returns CSS template with text truncation styling
+ *
+ * @example
+ * ```typescript
+ * const Label = styled.span`
+ *   ${truncateText}
+ *   max-width: 200px;
+ * `
+ *
+ * // Can also be used inline
+ * const Title = styled.h1`
+ *   font-size: 24px;
+ *   ${truncateText}
+ * `
+ * ```
+ */
+export const truncateText = css`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+  & > div,
+  & > span,
+  & > p {
+    max-width: 100%;
+  }
+`

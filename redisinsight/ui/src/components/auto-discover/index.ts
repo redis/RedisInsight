@@ -64,10 +64,14 @@ export const SelectAllCheckbox = styled(Checkbox)`
     margin: 0 !important;
   }
 `
-export const CellText = styled(Text).attrs({
-  size: 'M',
-  component: 'span',
-})`
+export const CellText = styled(Text).attrs<
+  Partial<React.ComponentProps<typeof Text>>
+>(({ size = 'M', component = 'span', color = 'default', ...props }) => ({
+  size,
+  component,
+  color,
+  ...props,
+}))`
   max-width: 100%;
   display: inline-block;
   width: auto;

@@ -3,7 +3,6 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 
-import { ColorText } from 'uiSrc/components/base/text'
 import { GroupBadge, RiTooltip } from 'uiSrc/components'
 import { Pages } from 'uiSrc/constants'
 import {
@@ -38,8 +37,9 @@ import {
 } from 'uiSrc/utils'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { TableTextBtn } from 'uiSrc/pages/database-analysis/components/base/TableTextBtn'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { Table, ColumnDef } from 'uiSrc/components/base/layout/table'
 import { Key } from 'apiSrc/modules/database-analysis/models/key'
+import { CellText } from 'uiSrc/components/auto-discover'
 
 export interface Props {
   data: Key[]
@@ -87,7 +87,7 @@ const TopKeysTable = ({
     history.push(Pages.browser(instanceId))
   }
 
-  const columns: ColumnDefinition<Key>[] = [
+  const columns: ColumnDef<Key>[] = [
     {
       header: 'Key Type',
       id: 'type',
@@ -110,8 +110,11 @@ const TopKeysTable = ({
           original: { name },
         },
       }) => {
-        const tooltipContent = formatLongName(name as string)
-        const cellContent = (name as string).substring(0, 200)
+        const maxLength = 35
+        const nameAsString = name as string
+        const tooltipContent = formatLongName(nameAsString)
+        const cellContent = nameAsString.substring(0, maxLength)
+        const isTruncated = nameAsString.length > maxLength
         return (
           <div data-testid="top-keys-table-name">
             <RiTooltip
@@ -119,11 +122,8 @@ const TopKeysTable = ({
               position="bottom"
               content={tooltipContent}
             >
-              <TableTextBtn
-                style={{ height: 'auto' }}
-                onClick={() => handleRedirect(name as string)}
-              >
-                {cellContent}
+              <TableTextBtn onClick={() => handleRedirect(nameAsString)}>
+                {`${cellContent}${isTruncated ? '...' : ''}`}
               </TableTextBtn>
             </RiTooltip>
           </div>
@@ -141,43 +141,31 @@ const TopKeysTable = ({
         },
       }) => {
         if (isNil(value)) {
-          return (
-            <ColorText
-              color="subdued"
-              style={{ maxWidth: '100%' }}
-              data-testid={`ttl-empty-${value}`}
-            >
-              -
-            </ColorText>
-          )
+          return <CellText data-testid={`ttl-empty-${value}`}>-</CellText>
         }
         if (value === -1) {
           return (
-            <ColorText color="subdued" data-testid={`ttl-no-limit-${name}`}>
-              No limit
-            </ColorText>
+            <CellText data-testid={`ttl-no-limit-${name}`}>No limit</CellText>
           )
         }
 
         return (
-          <span data-testid={`ttl-${name}`}>
-            <RiTooltip
-              title="Time to Live"
-              anchorClassName="truncateText"
-              position="bottom"
-              content={
-                <>
-                  {`${truncateTTLToSeconds(value)} s`}
-                  <br />
-                  {`(${truncateNumberToDuration(value)})`}
-                </>
-              }
-            >
-              <ColorText color="subdued">
-                {truncateNumberToFirstUnit(value)}
-              </ColorText>
-            </RiTooltip>
-          </span>
+          <RiTooltip
+            title="Time to Live"
+            anchorClassName="truncateText"
+            position="bottom"
+            content={
+              <>
+                {`${truncateTTLToSeconds(value)} s`}
+                <br />
+                {`(${truncateNumberToDuration(value)})`}
+              </>
+            }
+          >
+            <CellText data-testid={`ttl-${name}`}>
+              {truncateNumberToFirstUnit(value)}
+            </CellText>
+          </RiTooltip>
         )
       },
     },
@@ -192,15 +180,7 @@ const TopKeysTable = ({
         },
       }) => {
         if (isNil(value)) {
-          return (
-            <ColorText
-              color="subdued"
-              style={{ maxWidth: '100%' }}
-              data-testid={`size-empty-${value}`}
-            >
-              -
-            </ColorText>
-          )
+          return <CellText data-testid={`size-empty-${value}`}>-</CellText>
         }
         const [number, size] = formatBytes(value, 3, true)
         const isHighlight = isBigKey(type, HighlightType.Memory, value)
@@ -219,12 +199,11 @@ const TopKeysTable = ({
             }
             data-testid="usedMemory-tooltip"
           >
-            <ColorText
-              color="subdued"
+            <CellText
               data-testid={`nsp-usedMemory-value=${value}${isHighlight ? '-highlighted' : ''}`}
             >
               {number} {size}
-            </ColorText>
+            </CellText>
           </RiTooltip>
         )
       },
@@ -240,15 +219,7 @@ const TopKeysTable = ({
         },
       }) => {
         if (isNil(value)) {
-          return (
-            <ColorText
-              color="subdued"
-              style={{ maxWidth: '100%' }}
-              data-testid={`length-empty-${name}`}
-            >
-              -
-            </ColorText>
-          )
+          return <CellText data-testid={`length-empty-${name}`}>-</CellText>
         }
 
         const isHighlight = isBigKey(type, HighlightType.Length, value)
@@ -259,12 +230,11 @@ const TopKeysTable = ({
             }
             data-testid="usedMemory-tooltip"
           >
-            <ColorText
-              color="subdued"
+            <CellText
               data-testid={`length-value-${name}${isHighlight ? '-highlighted' : ''}`}
             >
               {numberWithSpaces(value)}
-            </ColorText>
+            </CellText>
           </RiTooltip>
         )
       },

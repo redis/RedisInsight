@@ -20,6 +20,7 @@ import { Provider } from 'react-redux'
 import { store } from 'uiSrc/slices/store'
 import Router from 'uiSrc/Router'
 import { StyledContainer } from './helpers/styles'
+import { GlobalStyles } from 'uiSrc/styles/globalStyles'
 
 const parameters: Parameters = {
   parameters: {
@@ -67,6 +68,7 @@ const preview: Preview = {
             <TooltipProvider>
               <RootStoryLayout storyContext={useStoryContext()}>
                 <CommonStyles />
+                <GlobalStyles />
                 <StyledContainer>
                   <Story />
                 </StyledContainer>

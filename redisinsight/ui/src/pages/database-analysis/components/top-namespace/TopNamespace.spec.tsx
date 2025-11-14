@@ -13,10 +13,32 @@ import {
   render,
   screen,
 } from 'uiSrc/utils/test-utils'
+import { DatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
 
 import TopNamespace, { Props } from './TopNamespace'
 
 const mockedProps = mock<Props>()
+
+const createMockedDatabaseAnalysis = (
+  overrides: Partial<DatabaseAnalysis> = {},
+): DatabaseAnalysis =>
+  ({
+    id: 'analysis-id',
+    databaseId: 'database-id',
+    filter: { match: '*', count: 10000 },
+    delimiter: ':',
+    progress: { total: 100, scanned: 100 },
+    createdAt: new Date('2023-01-01'),
+    totalKeys: { total: 100, types: [] },
+    totalMemory: { total: 1000000, types: [] },
+    topKeysNsp: [],
+    topMemoryNsp: [],
+    topKeysLength: [],
+    topKeysMemory: [],
+    expirationGroups: [],
+    recommendations: [],
+    ...overrides,
+  }) as DatabaseAnalysis
 
 let store: typeof mockedStore
 beforeEach(() => {
@@ -31,7 +53,7 @@ describe('TopNamespace', () => {
   })
 
   it('should render nsp-table-keys when click "btn-change-table-keys" ', () => {
-    const mockedData = {
+    const mockedData = createMockedDatabaseAnalysis({
       topKeysNsp: [
         {
           nsp: 'nsp_name',
@@ -48,7 +70,7 @@ describe('TopNamespace', () => {
           types: [{ type: 'hash', memory: 1, keys: 1 }],
         },
       ],
-    }
+    })
 
     const { queryByTestId } = render(
       <TopNamespace {...instance(mockedProps)} data={mockedData} />,
@@ -63,7 +85,7 @@ describe('TopNamespace', () => {
   })
 
   it('should render nsp-table-keys when click "btn-change-table-memory" and memory button should be disabled', () => {
-    const mockedData = {
+    const mockedData = createMockedDatabaseAnalysis({
       topKeysNsp: [
         {
           nsp: 'nsp_name',
@@ -80,7 +102,7 @@ describe('TopNamespace', () => {
           types: [{ type: 'hash', memory: 1, keys: 1 }],
         },
       ],
-    }
+    })
 
     const { queryByTestId } = render(
       <TopNamespace {...instance(mockedProps)} data={mockedData} />,
@@ -97,7 +119,7 @@ describe('TopNamespace', () => {
   })
 
   it('should render nsp-table-keys by default" ', () => {
-    const mockedData = {
+    const mockedData = createMockedDatabaseAnalysis({
       topKeysNsp: [
         {
           nsp: 'nsp_name',
@@ -114,7 +136,7 @@ describe('TopNamespace', () => {
           types: [{ type: 'hash', memory: 1, keys: 1 }],
         },
       ],
-    }
+    })
 
     const { queryByTestId } = render(
       <TopNamespace {...instance(mockedProps)} data={mockedData} />,
@@ -127,10 +149,10 @@ describe('TopNamespace', () => {
   })
 
   it('should not render tables when topMemoryNsp and topKeysNsp are empty array', () => {
-    const mockedData = {
+    const mockedData = createMockedDatabaseAnalysis({
       topKeysNsp: [],
       topMemoryNsp: [],
-    }
+    })
     const { queryByTestId } = render(
       <TopNamespace {...instance(mockedProps)} data={mockedData} />,
     )
@@ -140,7 +162,7 @@ describe('TopNamespace', () => {
   })
 
   it('should render loader when loading="true"', () => {
-    const mockedData = {
+    const mockedData = createMockedDatabaseAnalysis({
       topKeysNsp: [
         {
           nsp: 'nsp_name',
@@ -157,7 +179,7 @@ describe('TopNamespace', () => {
           types: [{ type: 'hash', memory: 1, keys: 1 }],
         },
       ],
-    }
+    })
     const { queryByTestId } = render(
       <TopNamespace {...instance(mockedProps)} loading data={mockedData} />,
     )
@@ -168,26 +190,26 @@ describe('TopNamespace', () => {
   })
 
   it('should render message when no namespaces', () => {
-    const mockedData = {
+    const mockedData = createMockedDatabaseAnalysis({
       topKeysNsp: [],
       topMemoryNsp: [],
-    }
+    })
     render(<TopNamespace {...instance(mockedProps)} data={mockedData} />)
 
     expect(screen.queryByTestId('top-namespaces-empty')).toBeInTheDocument()
   })
 
   it('should call proper actions and push history after click tree view link', async () => {
-    const mockedData = {
+    const mockedData = createMockedDatabaseAnalysis({
       topKeysNsp: [],
       topMemoryNsp: [],
-    }
+    })
     const pushMock = jest.fn()
     reactRouterDom.useHistory = jest.fn().mockReturnValue({ push: pushMock })
 
     render(<TopNamespace {...instance(mockedProps)} data={mockedData} />)
 
-    await act(() => {
+    await act(async () => {
       fireEvent.click(screen.getByTestId('tree-view-page-link'))
     })
 

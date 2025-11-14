@@ -1,12 +1,13 @@
 import React from 'react'
 import { instance, mock } from 'ts-mockito'
 import { render, screen } from 'uiSrc/utils/test-utils'
+import { Key } from 'apiSrc/modules/database-analysis/models/key'
 
-import Table, { Props } from './Table'
+import TopKeysTable, { Props } from './TopKeysTable'
 
 const mockedProps = mock<Props>()
 
-const mockData = [
+const mockData: Key[] = [
   {
     name: 'name',
     type: 'hash',
@@ -18,27 +19,27 @@ const mockData = [
     name: 'name_1',
     type: 'hash',
     memory: 1000,
-    length: null,
+    length: null as any,
     ttl: -1,
   },
 ]
 
 describe('Table', () => {
   it('should render', () => {
-    expect(render(<Table {...instance(mockedProps)} />)).toBeTruthy()
+    expect(render(<TopKeysTable {...instance(mockedProps)} />)).toBeTruthy()
   })
 
   it('should render', () => {
-    expect(render(<Table {...instance(mockedProps)} />)).toBeTruthy()
+    expect(render(<TopKeysTable {...instance(mockedProps)} />)).toBeTruthy()
   })
 
   it('should render table with 2 items', () => {
-    render(<Table {...instance(mockedProps)} data={mockData} />)
+    render(<TopKeysTable {...instance(mockedProps)} data={mockData} />)
     expect(screen.getAllByTestId('top-keys-table-name')).toHaveLength(2)
   })
 
   it('should render correct ttl', () => {
-    render(<Table {...instance(mockedProps)} data={mockData} />)
+    render(<TopKeysTable {...instance(mockedProps)} data={mockData} />)
     expect(screen.getByTestId('ttl-no-limit-name_1')).toHaveTextContent(
       'No limit',
     )
@@ -46,7 +47,7 @@ describe('Table', () => {
   })
 
   it('should render correct length', () => {
-    render(<Table {...instance(mockedProps)} data={mockData} />)
+    render(<TopKeysTable {...instance(mockedProps)} data={mockData} />)
     expect(screen.getByTestId('length-empty-name_1')).toHaveTextContent('-')
     expect(screen.getByTestId(/length-value-name/).textContent).toEqual(
       '100 000 000',
@@ -54,7 +55,7 @@ describe('Table', () => {
   })
 
   it('should highlight big keys', () => {
-    render(<Table {...instance(mockedProps)} data={mockData} />)
+    render(<TopKeysTable {...instance(mockedProps)} data={mockData} />)
     expect(
       screen.getByTestId('nsp-usedMemory-value=10000000-highlighted'),
     ).toBeInTheDocument()

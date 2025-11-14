@@ -31,11 +31,11 @@ import {
   setBrowserTreeDelimiter,
 } from 'uiSrc/slices/app/context'
 import { TableTextBtn } from 'uiSrc/pages/database-analysis/components/base/TableTextBtn'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
-import { ColorText } from 'uiSrc/components/base/text'
+import { Table, ColumnDef } from 'uiSrc/components/base/layout/table'
+import { CellText } from 'uiSrc/components/auto-discover'
 import { NspSummary } from 'apiSrc/modules/database-analysis/models'
 
-import styles from './styles.module.scss'
+import { ExpandedRowItem, TruncatedContent } from './TopNamespace.styles'
 
 export interface Props {
   data: Nullable<NspSummary[]>
@@ -97,12 +97,11 @@ const NameSpacesTable = ({
         const formatNumber = formatExtrapolation(number, isExtrapolated)
 
         return (
-          <div
-            className={styles.expanded}
+          <ExpandedRowItem
             key={type.type}
             data-testid={`expanded-${item.nsp}-${index}`}
           >
-            <div className="truncateText">
+            <TruncatedContent>
               <RiTooltip
                 title="Key Pattern"
                 position="bottom"
@@ -115,31 +114,31 @@ const NameSpacesTable = ({
                   {`${item.nsp}${delimiter}*`}
                 </TableTextBtn>
               </RiTooltip>
-            </div>
+            </TruncatedContent>
             <div>
               <GroupBadge type={type.type} />
             </div>
             <div>
-              <ColorText color="subdued" data-testid="usedMemory-value">
+              <CellText data-testid="usedMemory-value">
                 {formatNumber} {size}
-              </ColorText>
+              </CellText>
             </div>
             <div>
-              <ColorText color="subdued">
+              <CellText>
                 {extrapolate(
                   type.keys,
                   { extrapolation, apply: isExtrapolated },
                   (val: number) => numberWithSpaces(Math.round(val)),
                 )}
-              </ColorText>
+              </CellText>
             </div>
-          </div>
+          </ExpandedRowItem>
         )
       })}
     </div>
   )
 
-  const columns: ColumnDefinition<NspSummary>[] = [
+  const columns: ColumnDef<NspSummary>[] = [
     {
       header: 'Key Pattern',
       id: 'nsp',
@@ -155,19 +154,17 @@ const NameSpacesTable = ({
         const cellContent = textWithDelimiter?.substring(0, 200)
         const tooltipContent = formatLongName(textWithDelimiter)
         return (
-          <div className="truncateText">
-            <RiTooltip
-              title="Key Pattern"
-              position="bottom"
-              content={tooltipContent}
+          <RiTooltip
+            title="Key Pattern"
+            position="bottom"
+            content={tooltipContent}
+          >
+            <TableTextBtn
+              onClick={() => handleRedirect(nsp as string, filterType)}
             >
-              <TableTextBtn
-                onClick={() => handleRedirect(nsp as string, filterType)}
-              >
-                {cellContent}
-              </TableTextBtn>
-            </RiTooltip>
-          </div>
+              {cellContent}
+            </TableTextBtn>
+          </RiTooltip>
         )
       },
     },
@@ -215,12 +212,9 @@ const NameSpacesTable = ({
             content={`${formatValueBytes} B`}
             data-testid="usedMemory-tooltip"
           >
-            <ColorText
-              color="subdued"
-              data-testid={`nsp-usedMemory-value=${value}`}
-            >
+            <CellText data-testid={`nsp-usedMemory-value=${value}`}>
               {formatValue} {size}
-            </ColorText>
+            </CellText>
           </RiTooltip>
         )
       },
@@ -235,15 +229,13 @@ const NameSpacesTable = ({
           original: { keys: value },
         },
       }) => (
-        <span data-testid={`keys-value-${value}`}>
-          <ColorText color="subdued">
-            {extrapolate(
-              value,
-              { extrapolation, apply: isExtrapolated },
-              (val: number) => numberWithSpaces(Math.round(val)),
-            )}
-          </ColorText>
-        </span>
+        <CellText data-testid={`keys-value-${value}`}>
+          {extrapolate(
+            value,
+            { extrapolation, apply: isExtrapolated },
+            (val: number) => numberWithSpaces(Math.round(val)),
+          )}
+        </CellText>
       ),
     },
     {

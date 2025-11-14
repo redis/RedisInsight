@@ -2,6 +2,8 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import { Theme } from 'uiSrc/components/base/theme/types'
 import { SwitchInput } from 'uiSrc/components/base/inputs'
+import { Title } from 'uiSrc/components/base/text'
+import { Row } from 'uiSrc/components/base/layout/flex'
 
 export const Section = styled.div<React.HTMLAttributes<HTMLDivElement>>`
   border-radius: ${({ theme }: { theme: Theme }) => theme.core.space.space200};
@@ -21,11 +23,7 @@ export const sectionContent = css`
   margin: 0 auto;
 `
 
-export const SectionTitleWrapper = styled.div<
-  React.HTMLAttributes<HTMLDivElement>
->`
-  display: flex;
-  align-items: center;
+export const SectionTitleWrapper = styled(Row).attrs({ align: 'center' })`
   margin-bottom: ${({ theme }: { theme: Theme }) => theme.core.space.space250};
 `
 
@@ -33,6 +31,6 @@ export const SwitchExtrapolateResults = styled(SwitchInput)`
   margin-left: ${({ theme }: { theme: Theme }) => theme.core.space.space300};
 `
 
-export const SectionTitle = styled.div<React.HTMLAttributes<HTMLDivElement>>`
+export const SectionTitle = styled(Title)`
   display: inline-block;
 `

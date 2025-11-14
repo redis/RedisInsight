@@ -19,6 +19,7 @@ import {
   DEFAULT_THEME,
 } from '../constants'
 import { localStorageService, themeService } from '../services'
+import { GlobalStyles } from 'uiSrc/styles/globalStyles'
 
 interface Props {
   children: React.ReactNode
@@ -112,6 +113,7 @@ export class ThemeProvider extends React.Component<Props> {
       >
         <StyledThemeProvider theme={uiTheme}>
           <CommonStyles />
+          <GlobalStyles />
           {children}
         </StyledThemeProvider>
       </ThemeContext.Provider>
