@@ -7,19 +7,11 @@ interface RiTooltipContentProps {
   title?: React.ReactNode
   content: React.ReactNode
 }
-const renderTitle = (title: React.ReactNode) => {
-  if (!title) {
-    return null
-  }
-  if (typeof title === 'string') {
-    return <Title size="XS">{title}</Title>
-  }
-  return title
-}
+
 export const HoverContent = ({ title, content }: RiTooltipContentProps) => {
   return (
     <Col gap="s">
-      {renderTitle(title)}
+      {typeof title === 'string' ? <Title size="XS">{title}</Title> : title}
       {content}
     </Col>
   )
