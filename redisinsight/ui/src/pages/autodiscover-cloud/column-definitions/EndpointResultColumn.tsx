@@ -9,7 +9,7 @@ import {
 import { RiTooltip } from 'uiSrc/components'
 import { formatLongName, handleCopy } from 'uiSrc/utils'
 
-export const EndpointResultColumn = (): ColumnDef<InstanceRedisCloud> => {
+export const endpointResultColumn = (): ColumnDef<InstanceRedisCloud> => {
   return {
     header: 'Endpoint',
     id: 'publicEndpoint',

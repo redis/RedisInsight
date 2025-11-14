@@ -12,15 +12,15 @@ import { InstanceRedisCloud, LoadedCloud } from 'uiSrc/slices/interfaces'
 import { setTitle } from 'uiSrc/utils'
 import { ColumnDef } from 'uiSrc/components/base/layout/table'
 import {
-  DatabaseResultColumn,
-  SubscriptionIdResultColumn,
-  SubscriptionDbResultColumn,
-  SubscriptionTypeResultColumn,
-  StatusDbResultColumn,
-  EndpointResultColumn,
-  ModulesResultColumn,
-  OptionsResultColumn,
-  MessageResultColumn,
+  databaseResultColumn,
+  subscriptionIdResultColumn,
+  subscriptionDbResultColumn,
+  subscriptionTypeResultColumn,
+  statusDbResultColumn,
+  endpointResultColumn,
+  modulesResultColumn,
+  optionsResultColumn,
+  messageResultColumn,
 } from '../column-definitions'
 
 export const colFactory = (
@@ -36,15 +36,15 @@ export const colFactory = (
       Object.values(instance.options).filter(Boolean).length,
   )
   const columns: ColumnDef<InstanceRedisCloud>[] = [
-    DatabaseResultColumn(),
-    SubscriptionIdResultColumn(),
-    SubscriptionDbResultColumn(),
-    SubscriptionTypeResultColumn(),
-    StatusDbResultColumn(),
-    EndpointResultColumn(),
-    ModulesResultColumn(),
-    OptionsResultColumn(instancesForOptions),
-    MessageResultColumn(),
+    databaseResultColumn(),
+    subscriptionIdResultColumn(),
+    subscriptionDbResultColumn(),
+    subscriptionTypeResultColumn(),
+    statusDbResultColumn(),
+    endpointResultColumn(),
+    modulesResultColumn(),
+    optionsResultColumn(instancesForOptions),
+    messageResultColumn(),
   ]
 
   if (!shouldShowCapabilities) {

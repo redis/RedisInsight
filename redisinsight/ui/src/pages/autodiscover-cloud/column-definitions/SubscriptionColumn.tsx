@@ -6,7 +6,7 @@ import styles from 'uiSrc/pages/redis-cluster/styles.module.scss'
 import { formatLongName, replaceSpaces } from 'uiSrc/utils'
 import { CellText } from 'uiSrc/components/auto-discover'
 
-export const SubscriptionColumn = (): ColumnDef<RedisCloudSubscription> => {
+export const subscriptionColumn = (): ColumnDef<RedisCloudSubscription> => {
   return {
     id: 'name',
     accessorKey: 'name',

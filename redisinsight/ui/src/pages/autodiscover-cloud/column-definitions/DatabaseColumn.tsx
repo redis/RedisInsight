@@ -6,7 +6,7 @@ import React from 'react'
 import { ColumnDef } from 'uiSrc/components/base/layout/table'
 import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 
-export const DatabaseColumn = (): ColumnDef<InstanceRedisCloud> => {
+export const databaseColumn = (): ColumnDef<InstanceRedisCloud> => {
   return {
     header: 'Database',
     id: 'name',

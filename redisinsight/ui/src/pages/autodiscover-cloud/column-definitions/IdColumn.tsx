@@ -3,7 +3,7 @@ import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import { RedisCloudSubscription } from 'uiSrc/slices/interfaces'
 import { CellText } from 'uiSrc/components/auto-discover'
 
-export const IdColumn = (): ColumnDef<RedisCloudSubscription> => {
+export const idColumn = (): ColumnDef<RedisCloudSubscription> => {
   return {
     id: 'id',
     accessorKey: 'id',

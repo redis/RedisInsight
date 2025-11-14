@@ -26,15 +26,15 @@ import { Maybe, setTitle } from 'uiSrc/utils'
 import { Pages } from 'uiSrc/constants'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
-  AlertColumn,
-  IdColumn,
-  NumberOfDbsColumn,
-  ProviderColumn,
-  RegionColumn,
-  SelectionColumn,
-  StatusColumn,
-  SubscriptionColumn,
-  TypeColumn,
+  alertColumn,
+  idColumn,
+  numberOfDbsColumn,
+  providerColumn,
+  regionColumn,
+  selectionColumn,
+  statusColumn,
+  subscriptionColumn,
+  typeColumn,
 } from 'uiSrc/pages/autodiscover-cloud/column-definitions'
 
 export function canSelectRow({ original }: Row<RedisCloudSubscription>) {
@@ -48,17 +48,17 @@ export const colFactory = (
   items: RedisCloudSubscription[],
 ): ColumnDef<RedisCloudSubscription>[] => {
   const cols: ColumnDef<RedisCloudSubscription>[] = [
-    AlertColumn(),
-    IdColumn(),
-    SubscriptionColumn(),
-    TypeColumn(),
-    ProviderColumn(),
-    RegionColumn(),
-    NumberOfDbsColumn(),
-    StatusColumn(),
+    alertColumn(),
+    idColumn(),
+    subscriptionColumn(),
+    typeColumn(),
+    providerColumn(),
+    regionColumn(),
+    numberOfDbsColumn(),
+    statusColumn(),
   ]
   if (items.length > 0) {
-    cols.unshift(SelectionColumn())
+    cols.unshift(selectionColumn())
   }
   return cols
 }

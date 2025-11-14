@@ -3,7 +3,7 @@ import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 import { DatabaseListModules } from 'uiSrc/components'
 
-export const ModulesResultColumn = (): ColumnDef<InstanceRedisCloud> => {
+export const modulesResultColumn = (): ColumnDef<InstanceRedisCloud> => {
   return {
     header: 'Capabilities',
     id: 'modules',

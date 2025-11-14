@@ -4,7 +4,7 @@ import { RedisCloudSubscription } from 'uiSrc/slices/interfaces'
 import { CellText } from 'uiSrc/components/auto-discover'
 import { isNumber } from 'lodash'
 
-export const NumberOfDbsColumn = (): ColumnDef<RedisCloudSubscription> => {
+export const numberOfDbsColumn = (): ColumnDef<RedisCloudSubscription> => {
   return {
     id: 'numberOfDatabases',
     accessorKey: 'numberOfDatabases',

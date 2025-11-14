@@ -1,6 +1,6 @@
 import React from 'react'
 import RedisCloudDatabases from './RedisCloudDatabases'
-import { useCloudDatabasesConfig } from './useCloudDatabasesConfig'
+import { useCloudDatabasesConfig } from './hooks/useCloudDatabasesConfig'
 
 const RedisCloudDatabasesPage = () => {
   const {

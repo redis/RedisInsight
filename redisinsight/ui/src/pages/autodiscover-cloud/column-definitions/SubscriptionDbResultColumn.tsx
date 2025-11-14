@@ -6,7 +6,7 @@ import { RiTooltip } from 'uiSrc/components'
 import { CellText } from 'uiSrc/components/auto-discover'
 import styles from 'uiSrc/pages/autodiscover-cloud/redis-cloud-databases-result/styles.module.scss'
 
-export const SubscriptionDbResultColumn = (): ColumnDef<InstanceRedisCloud> => {
+export const subscriptionDbResultColumn = (): ColumnDef<InstanceRedisCloud> => {
   return {
     header: 'Subscription',
     id: 'subscriptionName',

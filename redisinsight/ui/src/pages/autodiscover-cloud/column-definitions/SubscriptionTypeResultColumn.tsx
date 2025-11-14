@@ -4,7 +4,7 @@ import {
   RedisCloudSubscriptionTypeText,
 } from 'uiSrc/slices/interfaces'
 
-export const SubscriptionTypeResultColumn =
+export const subscriptionTypeResultColumn =
   (): ColumnDef<InstanceRedisCloud> => {
     return {
       header: 'Type',

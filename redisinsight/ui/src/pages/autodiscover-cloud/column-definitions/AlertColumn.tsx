@@ -10,7 +10,7 @@ import { CellText } from 'uiSrc/components/auto-discover'
 import { AlertStatusContent } from 'uiSrc/pages/autodiscover-cloud/components/AlertStatusContent'
 import styles from 'uiSrc/pages/autodiscover-cloud/redis-cloud-subscriptions/styles.module.scss'
 
-export const AlertColumn = (): ColumnDef<RedisCloudSubscription> => {
+export const alertColumn = (): ColumnDef<RedisCloudSubscription> => {
   return {
     id: 'alert',
     accessorKey: 'alert',

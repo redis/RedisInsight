@@ -18,41 +18,12 @@ import {
   OAuthSocialAction,
 } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import {
-  ColumnDef,
-  RowSelectionState,
-} from 'uiSrc/components/base/layout/table'
-import { getSelectionColumn } from 'uiSrc/pages/autodiscover-cloud/utils'
-import {
-  DatabaseColumn,
-  EndpointColumn,
-  ModulesColumn,
-  OptionsColumn,
-  StatusDbColumn,
-  SubscriptionDbColumn,
-  SubscriptionIdColumn,
-  SubscriptionTypeColumn,
-} from '../column-definitions'
+import { RowSelectionState } from 'uiSrc/components/base/layout/table'
 
-export const colFactory = (instances: InstanceRedisCloud[]) => {
-  const columns: ColumnDef<InstanceRedisCloud>[] = [
-    DatabaseColumn(),
-    SubscriptionIdColumn(),
-    SubscriptionDbColumn(),
-    SubscriptionTypeColumn(),
-    StatusDbColumn(),
-    EndpointColumn(),
-    ModulesColumn(),
-    OptionsColumn(instances),
-  ]
-  if (instances.length) {
-    return [getSelectionColumn<InstanceRedisCloud>(), ...columns]
-  }
+import { UseCloudDatabasesConfigReturn } from './useCloudDatabasesConfig.types'
+import { colFactory } from '../utils/colFactory'
 
-  return columns
-}
-
-export const useCloudDatabasesConfig = () => {
+export const useCloudDatabasesConfig = (): UseCloudDatabasesConfigReturn => {
   const dispatch = useDispatch()
   const history = useHistory()
 
@@ -160,3 +131,4 @@ export const useCloudDatabasesConfig = () => {
     handleSelectionChange,
   }
 }
+

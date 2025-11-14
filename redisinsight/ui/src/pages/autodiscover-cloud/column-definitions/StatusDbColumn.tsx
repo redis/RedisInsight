@@ -3,7 +3,7 @@ import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 import { StatusColumnText } from 'uiSrc/components/auto-discover'
 
-export const StatusDbColumn = (): ColumnDef<InstanceRedisCloud> => {
+export const statusDbColumn = (): ColumnDef<InstanceRedisCloud> => {
   return {
     header: 'Status',
     id: 'status',

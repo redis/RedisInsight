@@ -10,7 +10,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { ColorText } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 
-export const MessageResultColumn = (): ColumnDef<InstanceRedisCloud> => {
+export const messageResultColumn = (): ColumnDef<InstanceRedisCloud> => {
   return {
     header: 'Result',
     id: 'messageAdded',

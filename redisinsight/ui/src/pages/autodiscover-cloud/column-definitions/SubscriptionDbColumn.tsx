@@ -6,7 +6,7 @@ import { formatLongName, replaceSpaces } from 'uiSrc/utils'
 import { RiTooltip } from 'uiSrc/components'
 import styles from 'uiSrc/pages/autodiscover-cloud/redis-cloud-databases/styles.module.scss'
 
-export const SubscriptionDbColumn = (): ColumnDef<InstanceRedisCloud> => {
+export const subscriptionDbColumn = (): ColumnDef<InstanceRedisCloud> => {
   return {
     header: 'Subscription',
     id: 'subscriptionName',

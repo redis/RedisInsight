@@ -6,7 +6,7 @@ import {
 } from 'uiSrc/slices/interfaces'
 import { CellText } from 'uiSrc/components/auto-discover'
 
-export const SubscriptionTypeColumn = (): ColumnDef<InstanceRedisCloud> => {
+export const subscriptionTypeColumn = (): ColumnDef<InstanceRedisCloud> => {
   return {
     header: 'Type',
     id: 'subscriptionType',

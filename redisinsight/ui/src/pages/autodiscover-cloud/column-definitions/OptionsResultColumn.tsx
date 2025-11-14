@@ -4,7 +4,7 @@ import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 import { DatabaseListOptions } from 'uiSrc/components'
 import { parseInstanceOptionsCloud } from 'uiSrc/utils'
 
-export const OptionsResultColumn = (
+export const optionsResultColumn = (
   instancesForOptions: InstanceRedisCloud[],
 ): ColumnDef<InstanceRedisCloud> => {
   return {
