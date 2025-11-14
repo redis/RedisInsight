@@ -5,11 +5,13 @@ import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 
 import { EndpointCell } from './components/EndpointCell/EndpointCell'
 
+export const ENDPOINT_COLUMN_ID = 'publicEndpoint' as const
+
 export const endpointColumn = (): ColumnDef<InstanceRedisCloud> => {
   return {
     header: 'Endpoint',
-    id: 'publicEndpoint',
-    accessorKey: 'publicEndpoint',
+    id: ENDPOINT_COLUMN_ID,
+    accessorKey: ENDPOINT_COLUMN_ID,
     enableSorting: true,
     minSize: 200,
     cell: ({

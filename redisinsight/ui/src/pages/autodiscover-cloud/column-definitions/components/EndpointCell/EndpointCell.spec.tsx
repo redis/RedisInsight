@@ -27,5 +27,23 @@ describe('EndpointCell', () => {
     expect(screen.getByText(endpoint)).toBeInTheDocument()
     expect(screen.getByLabelText('Copy public endpoint')).toBeInTheDocument()
   })
+
+  it('should render "-" when publicEndpoint is undefined', () => {
+    render(<EndpointCell publicEndpoint={undefined} />)
+
+    expect(screen.getByText('-')).toBeInTheDocument()
+    expect(
+      screen.queryByLabelText('Copy public endpoint'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('should render "-" when publicEndpoint is empty string', () => {
+    render(<EndpointCell publicEndpoint="" />)
+
+    expect(screen.getByText('-')).toBeInTheDocument()
+    expect(
+      screen.queryByLabelText('Copy public endpoint'),
+    ).not.toBeInTheDocument()
+  })
 })
 

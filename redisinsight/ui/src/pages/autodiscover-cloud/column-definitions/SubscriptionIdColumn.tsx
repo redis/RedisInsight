@@ -3,11 +3,13 @@ import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 import { CellText } from 'uiSrc/components/auto-discover'
 
+export const SUBSCRIPTION_ID_COLUMN_ID = 'subscriptionId' as const
+
 export const subscriptionIdColumn = (): ColumnDef<InstanceRedisCloud> => {
   return {
     header: 'Subscription ID',
-    id: 'subscriptionId',
-    accessorKey: 'subscriptionId',
+    id: SUBSCRIPTION_ID_COLUMN_ID,
+    accessorKey: SUBSCRIPTION_ID_COLUMN_ID,
     enableSorting: true,
     maxSize: 120,
     cell: ({

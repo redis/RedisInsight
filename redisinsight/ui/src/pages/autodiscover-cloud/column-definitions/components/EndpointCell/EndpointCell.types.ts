@@ -1,4 +1,4 @@
 export interface EndpointCellProps {
-  publicEndpoint: string
+  publicEndpoint?: string
 }
 
