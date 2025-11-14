@@ -1,13 +1,9 @@
 import React from 'react'
+
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
-import {
-  CopyBtn,
-  CopyPublicEndpointText,
-  CopyTextContainer,
-} from 'uiSrc/components/auto-discover'
-import { RiTooltip } from 'uiSrc/components'
-import { formatLongName, handleCopy } from 'uiSrc/utils'
+
+import { EndpointCell } from './components/EndpointCell/EndpointCell'
 
 export const endpointResultColumn = (): ColumnDef<InstanceRedisCloud> => {
   return {
@@ -17,35 +13,10 @@ export const endpointResultColumn = (): ColumnDef<InstanceRedisCloud> => {
     enableSorting: true,
     minSize: 250,
     maxSize: 310,
-    cell: function PublicEndpoint({
+    cell: ({
       row: {
         original: { publicEndpoint },
       },
-    }) {
-      const text = publicEndpoint
-      return (
-        <CopyTextContainer>
-          <RiTooltip
-            delay={200}
-            position="bottom"
-            title="Endpoint"
-            content={formatLongName(text)}
-          >
-            <CopyPublicEndpointText>{text}</CopyPublicEndpointText>
-          </RiTooltip>
-
-          <RiTooltip
-            position="right"
-            content="Copy"
-            anchorClassName="copyPublicEndpointTooltip"
-          >
-            <CopyBtn
-              aria-label="Copy public endpoint"
-              onClick={() => handleCopy(text)}
-            />
-          </RiTooltip>
-        </CopyTextContainer>
-      )
-    },
+    }) => <EndpointCell publicEndpoint={publicEndpoint} />,
   }
 }
