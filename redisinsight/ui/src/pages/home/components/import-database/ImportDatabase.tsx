@@ -121,7 +121,7 @@ const ImportDatabase = (props: Props) => {
             onClick={handleOnClose}
             data-testid="btn-close"
           >
-            Ok
+            OK
           </PrimaryButton>
         </Row>,
         footerEl,
