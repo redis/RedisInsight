@@ -6,7 +6,7 @@ export const DatabaseListOptionsContainer = styled.div`
   padding-left: 7px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 `
 
 export type ValidOptionIndex = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
