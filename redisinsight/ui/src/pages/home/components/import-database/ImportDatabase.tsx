@@ -133,7 +133,6 @@ const ImportDatabase = (props: Props) => {
         <SecondaryButton
           className="btn-cancel"
           onClick={handleOnClose}
-          style={{ marginRight: 12 }}
         >
           Cancel
         </SecondaryButton>
