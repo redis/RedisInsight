@@ -44,7 +44,9 @@ const PipelineManagementPage = ({ routes = [] }: Props) => {
   setTitle(`${rdiInstanceName} - Pipeline Management`)
 
   useEffect(() => {
-    dispatch(fetchRdiPipeline(rdiInstanceId))
+    if (!lastViewedPage?.startsWith(Pages.rdiPipelineManagement(rdiInstanceId))) {
+      dispatch(fetchRdiPipeline(rdiInstanceId))
+    }
     dispatch(fetchRdiPipelineSchema(rdiInstanceId))
     dispatch(fetchRdiPipelineJobFunctions(rdiInstanceId))
   }, [])
