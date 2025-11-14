@@ -58,40 +58,32 @@ const ResultsLog = ({ data }: Props) => {
     },
   ]
 
-  const CollapsibleNavTitle = ({
-    title,
-    length = 0,
-  }: {
-    title: string
-    length: number
-  }) => (
-    <Row gap="s">
-      <Text data-testid="nav-group-title">{title}:</Text>
-      <Text data-testid="number-of-dbs">{length}</Text>
-    </Row>
-  )
-
-  const getNavGroupState = (type: ImportDatabaseResultType) =>
-    openedNav === type ? 'open' : 'closed'
-
   return (
     <StyledColWrapper gap="l">
-      {collapsibleNavData.filter((item) => item.data.length > 0).map((item) => (
-        <RICollapsibleNavGroup
-          key={item.type}
-          title={
-            <CollapsibleNavTitle title={item.title} length={item.data.length} />
-          }
-          data-testid={`${item.type}-results-${getNavGroupState(item.type)}`}
-          id={`${item.type}-results-${getNavGroupState(item.type)}`}
-          initialIsOpen={false}
-          onToggle={(isOpen) => setOpenedNav(isOpen ? item.type : null)}
-          forceState={getNavGroupState(item.type)}
-          open={openedNav === item.type}
-        >
-          <TableResult data={item.data} />
-        </RICollapsibleNavGroup>
-      ))}
+      {collapsibleNavData
+        .filter((item) => item.data.length > 0)
+        .map((item) => {
+          const navState = openedNav === item.type ? 'open' : 'closed'
+          return (
+            <RICollapsibleNavGroup
+              key={item.type}
+              title={
+                <Row gap="s">
+                  <Text data-testid="nav-group-title">{item.title}:</Text>
+                  <Text data-testid="number-of-dbs">{item.data.length}</Text>
+                </Row>
+              }
+              data-testid={`${item.type}-results-${navState}`}
+              id={`${item.type}-results-${navState}`}
+              initialIsOpen={false}
+              onToggle={(isOpen) => setOpenedNav(isOpen ? item.type : null)}
+              forceState={navState}
+              open={openedNav === item.type}
+            >
+              <TableResult data={item.data} />
+            </RICollapsibleNavGroup>
+          )
+        })}
     </StyledColWrapper>
   )
 }
