@@ -5,11 +5,13 @@ import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 
 import { MessageResultCell } from './components/MessageResultCell/MessageResultCell'
 
+export const MESSAGE_RESULT_COLUMN_ID = 'messageAdded' as const
+
 export const messageResultColumn = (): ColumnDef<InstanceRedisCloud> => {
   return {
     header: 'Result',
-    id: 'messageAdded',
-    accessorKey: 'messageAdded',
+    id: MESSAGE_RESULT_COLUMN_ID,
+    accessorKey: MESSAGE_RESULT_COLUMN_ID,
     enableSorting: true,
     minSize: 110,
     cell: ({

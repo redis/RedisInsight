@@ -1,6 +1,6 @@
 import React from 'react'
 import RedisCloudDatabasesResult from './RedisCloudDatabasesResult'
-import { useCloudDatabasesResultConfig } from 'uiSrc/pages/autodiscover-cloud/redis-cloud-databases-result/useCloudDatabasesResultConfig'
+import { useCloudDatabasesResultConfig } from './hooks/useCloudDatabasesResultConfig'
 
 const RedisCloudDatabasesResultPage = () => {
   const { instances, columns, handleClose, handleBackAdding } =

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 
@@ -41,16 +41,19 @@ export const useCloudDatabasesConfig = (): UseCloudDatabasesConfigReturn => {
 
   const [selection, setSelection] = useState<InstanceRedisCloud[]>([])
 
-  const handleSelectionChange = (currentSelected: RowSelectionState) => {
-    const newSelection = instances?.filter((item) => {
-      const { databaseId } = item
-      if (!databaseId) {
-        return false
-      }
-      return currentSelected[databaseId]
-    })
-    setSelection(newSelection || [])
-  }
+  const handleSelectionChange = useCallback(
+    (currentSelected: RowSelectionState) => {
+      const newSelection = instances?.filter((item) => {
+        const { databaseId } = item
+        if (!databaseId) {
+          return false
+        }
+        return currentSelected[databaseId]
+      })
+      setSelection(newSelection || [])
+    },
+    [instances],
+  )
 
   useEffect(() => {
     if (instances === null) {
@@ -85,38 +88,41 @@ export const useCloudDatabasesConfig = (): UseCloudDatabasesConfigReturn => {
     }
   }, [instancesAdded])
 
-  const sendCancelEvent = () => {
+  const sendCancelEvent = useCallback(() => {
     sendEventTelemetry({
       event:
         TelemetryEvent.CONFIG_DATABASES_REDIS_CLOUD_AUTODISCOVERY_CANCELLED,
     })
-  }
+  }, [])
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     sendCancelEvent()
     dispatch(resetDataRedisCloud())
     history.push(Pages.home)
-  }
+  }, [dispatch, history, sendCancelEvent])
 
-  const handleBackAdding = () => {
+  const handleBackAdding = useCallback(() => {
     sendCancelEvent()
     dispatch(resetLoadedRedisCloud(LoadedCloud.Instances))
     history.push(Pages.home)
-  }
+  }, [dispatch, history, sendCancelEvent])
 
-  const handleAddInstances = (
-    databases: Pick<
-      InstanceRedisCloud,
-      'subscriptionId' | 'databaseId' | 'free'
-    >[],
-  ) => {
-    dispatch(
-      addInstancesRedisCloud(
-        { databases, credentials },
-        ssoFlow === OAuthSocialAction.Import,
-      ),
-    )
-  }
+  const handleAddInstances = useCallback(
+    (
+      databases: Pick<
+        InstanceRedisCloud,
+        'subscriptionId' | 'databaseId' | 'free'
+      >[],
+    ) => {
+      dispatch(
+        addInstancesRedisCloud(
+          { databases, credentials },
+          ssoFlow === OAuthSocialAction.Import,
+        ),
+      )
+    },
+    [dispatch, credentials, ssoFlow],
+  )
 
   const columns = useMemo(() => colFactory(instances || []), [instances])
 
@@ -131,4 +137,3 @@ export const useCloudDatabasesConfig = (): UseCloudDatabasesConfigReturn => {
     handleSelectionChange,
   }
 }
-

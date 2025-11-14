@@ -1,6 +1,7 @@
 import React from 'react'
+
 import RedisCloudSubscriptions from './RedisCloudSubscriptions/RedisCloudSubscriptions'
-import { useCloudSubscriptionConfig } from './useCloudSubscriptionConfig'
+import { useCloudSubscriptionConfig } from './hooks/useCloudSubscriptionConfig'
 
 const RedisCloudSubscriptionsPage = () => {
   const {

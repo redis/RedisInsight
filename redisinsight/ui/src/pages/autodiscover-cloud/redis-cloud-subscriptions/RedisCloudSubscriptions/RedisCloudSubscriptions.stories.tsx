@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { fn } from 'storybook/test'
 
 import RedisCloudSubscriptions from './RedisCloudSubscriptions'
-import { colFactory } from '../useCloudSubscriptionConfig'
+import { colFactory } from '../utils/colFactory'
 import {
   RedisCloudAccount,
   RedisCloudSubscription,

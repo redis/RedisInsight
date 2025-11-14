@@ -5,10 +5,12 @@ import { RedisCloudSubscription } from 'uiSrc/slices/interfaces'
 
 import { AlertCell } from './components/AlertCell/AlertCell'
 
+export const ALERT_COLUMN_ID = 'alert' as const
+
 export const alertColumn = (): ColumnDef<RedisCloudSubscription> => {
   return {
-    id: 'alert',
-    accessorKey: 'alert',
+    id: ALERT_COLUMN_ID,
+    accessorKey: ALERT_COLUMN_ID,
     header: '',
     enableResizing: false,
     enableSorting: false,

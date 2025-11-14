@@ -5,11 +5,13 @@ import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 
 import { SubscriptionCell } from './components/SubscriptionCell/SubscriptionCell'
 
+export const SUBSCRIPTION_DB_RESULT_COLUMN_ID = 'subscriptionName' as const
+
 export const subscriptionDbResultColumn = (): ColumnDef<InstanceRedisCloud> => {
   return {
     header: 'Subscription',
-    id: 'subscriptionName',
-    accessorKey: 'subscriptionName',
+    id: SUBSCRIPTION_DB_RESULT_COLUMN_ID,
+    accessorKey: SUBSCRIPTION_DB_RESULT_COLUMN_ID,
     enableSorting: true,
     maxSize: 270,
     cell: ({

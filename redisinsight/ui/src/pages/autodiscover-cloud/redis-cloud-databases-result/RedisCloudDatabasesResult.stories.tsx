@@ -17,7 +17,7 @@ import {
   RedisCloudInstanceFactoryOptionsFull,
   RedisCloudInstanceFactoryOptionsBackupSchedule,
 } from 'uiSrc/mocks/factories/cloud/RedisCloudInstance.factory'
-import { colFactory } from './useCloudDatabasesResultConfig'
+import { colFactory } from './utils/colFactory'
 import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
 
 const meta: Meta<typeof RedisCloudDatabasesResult> = {

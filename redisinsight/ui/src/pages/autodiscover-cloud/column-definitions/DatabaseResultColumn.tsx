@@ -1,37 +1,23 @@
 import React from 'react'
+
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
-import { formatLongName, replaceSpaces } from 'uiSrc/utils'
-import { RiTooltip } from 'uiSrc/components'
-import { CellText } from 'uiSrc/components/auto-discover'
-import styles from 'uiSrc/pages/autodiscover-cloud/redis-cloud-databases-result/styles.module.scss'
+
+import { DatabaseCell } from './components/DatabaseCell/DatabaseCell'
+
+export const DATABASE_RESULT_COLUMN_ID = 'name' as const
 
 export const databaseResultColumn = (): ColumnDef<InstanceRedisCloud> => {
   return {
     header: 'Database',
-    id: 'name',
-    accessorKey: 'name',
+    id: DATABASE_RESULT_COLUMN_ID,
+    accessorKey: DATABASE_RESULT_COLUMN_ID,
     enableSorting: true,
     maxSize: 120,
-    cell: function InstanceCell({
+    cell: ({
       row: {
         original: { name },
       },
-    }) {
-      const cellContent = replaceSpaces(name.substring(0, 200))
-      return (
-        <div role="presentation" data-testid={`db_name_${name}`}>
-          <RiTooltip
-            position="bottom"
-            title="Database"
-            className={styles.tooltipColumnName}
-            anchorClassName="truncateText"
-            content={formatLongName(name)}
-          >
-            <CellText>{cellContent}</CellText>
-          </RiTooltip>
-        </div>
-      )
-    },
+    }) => <DatabaseCell name={name} />,
   }
 }

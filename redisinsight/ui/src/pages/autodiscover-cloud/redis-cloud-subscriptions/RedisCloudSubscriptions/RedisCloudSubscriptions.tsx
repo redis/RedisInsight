@@ -37,7 +37,7 @@ import {
   Footer,
   Header,
 } from 'uiSrc/components/auto-discover'
-import { canSelectRow } from 'uiSrc/pages/autodiscover-cloud/redis-cloud-subscriptions/useCloudSubscriptionConfig'
+import { canSelectRow } from '../utils/canSelectRow'
 
 export interface Props {
   columns: ColumnDef<RedisCloudSubscription>[]

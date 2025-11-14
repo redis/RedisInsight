@@ -6,10 +6,12 @@ import {
 } from 'uiSrc/slices/interfaces'
 import { CellText } from 'uiSrc/components/auto-discover'
 
+export const STATUS_COLUMN_ID = 'status' as const
+
 export const statusColumn = (): ColumnDef<RedisCloudSubscription> => {
   return {
-    id: 'status',
-    accessorKey: 'status',
+    id: STATUS_COLUMN_ID,
+    accessorKey: STATUS_COLUMN_ID,
     header: 'Status',
     enableSorting: true,
     cell: ({
