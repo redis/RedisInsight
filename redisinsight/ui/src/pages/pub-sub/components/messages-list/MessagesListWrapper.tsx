@@ -18,6 +18,7 @@ import PatternsInfo from '../patternsInfo'
 import { Wrapper } from './MessageListWrapper.styles'
 import { Table } from 'uiSrc/components/base/layout/table'
 import { PUB_SUB_TABLE_COLUMNS } from './MessagesListTable/MessagesListTable.config'
+import { PubSubTableColumn } from './MessagesListTable/MessagesListTable.constants'
 
 const MessagesListWrapper = () => {
   const {
@@ -76,8 +77,10 @@ const MessagesListWrapper = () => {
           <Table
             columns={PUB_SUB_TABLE_COLUMNS}
             data={messages}
-            maxHeight="50vh"
             stripedRows
+            enableSorting
+            paginationEnabled
+            defaultSorting={[{ id: PubSubTableColumn.Timestamp, desc: true }]}
             emptyState="No messages published yet"
           />
         </div>
