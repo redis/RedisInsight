@@ -16,19 +16,8 @@ import { HorizontalSpacer } from 'uiSrc/components/base/layout'
 import SubscribeForm from '../subscribe-form'
 import PatternsInfo from '../patternsInfo'
 import { Wrapper } from './MessageListWrapper.styles'
-import { ColumnDef, Table } from 'uiSrc/components/base/layout/table'
-import { IMessage } from 'apiSrc/modules/pub-sub/interfaces/message.interface'
-import {
-  ChannelColumn,
-  MessageColumn,
-  TimestampColumn,
-} from './column-definitions'
-
-const columns: ColumnDef<IMessage>[] = [
-  TimestampColumn(),
-  ChannelColumn(),
-  MessageColumn(),
-]
+import { Table } from 'uiSrc/components/base/layout/table'
+import { PUB_SUB_TABLE_COLUMNS } from './MessagesListTable/MessagesListTable.config'
 
 const MessagesListWrapper = () => {
   const {
@@ -85,7 +74,7 @@ const MessagesListWrapper = () => {
 
         <div data-testid="messages-list">
           <Table
-            columns={columns}
+            columns={PUB_SUB_TABLE_COLUMNS}
             data={messages}
             maxHeight="50vh"
             stripedRows
