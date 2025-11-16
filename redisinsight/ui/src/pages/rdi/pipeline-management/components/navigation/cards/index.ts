@@ -1,4 +1,4 @@
 import ConfigurationCard from './ConfigurationCard'
-import JobsCard from './JobsCard'
+import JobsCard from './jobs/JobsCard'
 
 export { ConfigurationCard, JobsCard }
