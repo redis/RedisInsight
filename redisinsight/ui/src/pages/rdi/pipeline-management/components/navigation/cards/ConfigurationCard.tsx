@@ -22,8 +22,6 @@ const ConfigurationCard = ({
       title="Configuration"
       isSelected={isSelected}
       tabIndex={0}
-      // TODO: make sure we don't need this
-      onKeyDown={() => {}}
       onClick={handleClick}
       data-testid={`rdi-nav-btn-${RdiPipelineTabs.Config}`}
     >
