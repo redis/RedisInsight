@@ -6,11 +6,13 @@ type BaseCardContainerProps = React.HTMLAttributes<HTMLDivElement> & {
 }
 
 export const BaseCardContainer = styled.div<BaseCardContainerProps>`
-  // TODO: replace with semantic colors
-  border: 1px solid ${({ isSelected }) => (isSelected ? '#40A5CD' : '#B9C2C6')};
-  background-color: ${({ isSelected }) => (isSelected ? '#F2FBFF' : 'inherit')};
-  // 8px
+  border: 1px solid
+    ${({ isSelected, theme }) =>
+      isSelected
+        ? theme.semantic.color.text.informative400
+        : theme.semantic.color.border.neutral500};
+  background-color: ${({ isSelected, theme }) =>
+    isSelected ? theme.semantic.color.background.neutral200 : 'inherit'};
   border-radius: ${({ theme }: { theme: Theme }) => theme.core.space.space050};
-  // 10px
   padding: ${({ theme }: { theme: Theme }) => theme.core.space.space200};
 `
