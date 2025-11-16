@@ -7,9 +7,12 @@ import {
   render,
   screen,
   fireEvent,
+  act,
+  waitFor,
 } from 'uiSrc/utils/test-utils'
 
 import { rdiPipelineSelector as rdiPipelineSelectorMock } from 'uiSrc/slices/rdi/pipeline'
+import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import JobsCard, { JobsCardProps } from './JobsCard'
 
 const mockedProps = mock<JobsCardProps>()
@@ -24,16 +27,6 @@ beforeEach(() => {
 jest.mock('uiSrc/telemetry', () => ({
   ...jest.requireActual('uiSrc/telemetry'),
   sendEventTelemetry: jest.fn(),
-}))
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useParams: () => ({
-    rdiInstanceId: 'rdiInstanceId',
-  }),
-  useLocation: () => ({
-    pathname: '/integrate/rdiInstanceId/pipeline-management/jobs/job1',
-  }),
 }))
 
 jest.mock('uiSrc/slices/rdi/pipeline', () => ({
@@ -51,6 +44,7 @@ jest.mock('uiSrc/slices/rdi/pipeline', () => ({
 }))
 
 const mockedRdiPipelineSelector = rdiPipelineSelectorMock as jest.Mock
+const mockedSendEventTelemetry = sendEventTelemetry as jest.Mock
 
 describe('JobsCard', () => {
   it('should render with correct title', () => {
@@ -79,11 +73,74 @@ describe('JobsCard', () => {
     expect(screen.getByLabelText('add new job file')).toBeInTheDocument()
   })
 
-  it('should render job items', () => {
+  it('should render job actions', () => {
     render(<JobsCard {...instance(mockedProps)} />)
 
-    expect(screen.getByTestId('job-file-job1')).toBeInTheDocument()
-    expect(screen.getByTestId('job-file-job2')).toBeInTheDocument()
+    expect(screen.getByTestId('rdi-nav-job-actions-job1')).toBeInTheDocument()
+    expect(screen.getByTestId('edit-job-name-job1')).toBeInTheDocument()
+    expect(screen.getByTestId('delete-job-job1')).toBeInTheDocument()
+  })
+
+  it('should delete job', async () => {
+    render(<JobsCard {...instance(mockedProps)} />)
+
+    await act(() => {
+      fireEvent.click(screen.getByTestId('delete-job-job1'))
+    })
+
+    await act(() => {
+      fireEvent.click(screen.getByTestId('delete-confirm-btn'))
+    })
+
+    waitFor(() => {
+      expect(screen.queryByTestId('delete-job-job1')).not.toBeInTheDocument()
+    })
+  })
+
+  it('should not delete job when dismissed', async () => {
+    render(<JobsCard {...instance(mockedProps)} />)
+
+    await act(() => {
+      fireEvent.click(screen.getByTestId('delete-job-job1'))
+    })
+
+    await act(() => {
+      fireEvent.click(document)
+    })
+
+    waitFor(() => {
+      expect(screen.queryByTestId('delete-job-job1')).toBeInTheDocument()
+    })
+  })
+
+  it('should edit job name', async () => {
+    render(<JobsCard {...instance(mockedProps)} onSelect={jest.fn()} />)
+
+    await act(() => {
+      fireEvent.click(screen.getByTestId('edit-job-name-job1'))
+    })
+
+    waitFor(() => {
+      expect(screen.getByTestId('rdi-nav-job-edit-job1')).toBeInTheDocument()
+    })
+  })
+
+  it('should not edit job name when dismissed', async () => {
+    render(<JobsCard {...instance(mockedProps)} onSelect={jest.fn()} />)
+
+    await act(() => {
+      fireEvent.click(screen.getByTestId('edit-job-name-job1'))
+    })
+
+    await act(() => {
+      fireEvent.click(document)
+    })
+
+    waitFor(() => {
+      expect(
+        screen.queryByTestId('rdi-nav-job-edit-job1'),
+      ).not.toBeInTheDocument()
+    })
   })
 
   it('should show new job form when add button is clicked', () => {
@@ -143,6 +200,27 @@ describe('JobsCard', () => {
     ).not.toBeInTheDocument()
   })
 
+  it('should disable apply button when job name is invalid', async () => {
+    mockedRdiPipelineSelector.mockReturnValue({
+      loading: false,
+      error: '',
+      jobs: [{ name: 'job1', value: 'value' }],
+      jobsValidationErrors: { job1: ['Invalid name'] },
+      changes: {},
+    })
+
+    render(<JobsCard {...instance(mockedProps)} />)
+
+    await act(() => {
+      fireEvent.click(screen.getByTestId('edit-job-name-job1'))
+    })
+
+    const input = screen.getByTestId('inline-item-editor')
+    fireEvent.change(input, { target: { value: '' } }) // Invalid name
+
+    expect(screen.getByTestId('apply-btn')).toBeDisabled()
+  })
+
   it('should show changes indicator when job has changes', () => {
     mockedRdiPipelineSelector.mockReturnValue({
       loading: false,
@@ -165,5 +243,96 @@ describe('JobsCard', () => {
     expect(
       screen.queryByTestId('updated-file-job2-highlight'),
     ).not.toBeInTheDocument()
+  })
+
+  it('should call proper telemetry event when adding new job', async () => {
+    mockedSendEventTelemetry.mockImplementation(() => jest.fn())
+
+    mockedRdiPipelineSelector.mockReturnValue({
+      loading: false,
+      data: {
+        jobs: [
+          { name: 'job1', value: 'value1' },
+          { name: 'job2', value: 'value2' },
+        ],
+      },
+      jobs: [
+        { name: 'job1', value: 'value1' },
+        { name: 'job2', value: 'value2' },
+      ],
+      jobsValidationErrors: {},
+      changes: {},
+    })
+
+    render(<JobsCard {...instance(mockedProps)} />)
+
+    await act(() => {
+      fireEvent.click(screen.getByTestId('add-new-job'))
+    })
+
+    await act(() => {
+      fireEvent.change(screen.getByTestId('inline-item-editor'), {
+        target: { value: 'job3' },
+      })
+    })
+
+    await act(() => {
+      fireEvent.click(screen.getByTestId('apply-btn'))
+    })
+
+    expect(mockedSendEventTelemetry).toHaveBeenCalledWith({
+      event: TelemetryEvent.RDI_PIPELINE_JOB_CREATED,
+      eventData: {
+        rdiInstanceId: 'rdiInstanceId',
+        jobName: 'job3',
+      },
+    })
+  })
+
+  it('should call proper telemetry event when deleting job', async () => {
+    mockedSendEventTelemetry.mockImplementation(() => jest.fn())
+
+    render(<JobsCard {...instance(mockedProps)} />)
+
+    await act(() => {
+      fireEvent.click(screen.getByTestId('delete-job-job1'))
+    })
+
+    await act(() => {
+      fireEvent.click(screen.getByTestId('delete-confirm-btn'))
+    })
+
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
+      event: TelemetryEvent.RDI_PIPELINE_JOB_DELETED,
+      eventData: {
+        rdiInstanceId: 'rdiInstanceId',
+        jobName: 'job1',
+      },
+    })
+  })
+
+  // TODO: test this
+  it.skip('should push to config tab when deleting last job', async () => {
+    const mockOnSelect = jest.fn()
+
+    render(<JobsCard {...instance(mockedProps)} onSelect={mockOnSelect} />)
+
+    await act(() => {
+      fireEvent.click(screen.getByTestId('delete-job-job1'))
+    })
+
+    await act(() => {
+      fireEvent.click(screen.getByTestId('delete-confirm-btn'))
+    })
+
+    await act(() => {
+      fireEvent.click(screen.getByTestId('delete-job-job2'))
+    })
+
+    await act(() => {
+      fireEvent.click(screen.getByTestId('delete-confirm-btn'))
+    })
+
+    expect(mockOnSelect).toHaveBeenCalledWith('config')
   })
 })

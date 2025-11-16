@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useLocation, useParams } from 'react-router-dom'
 import { isNumber } from 'lodash'
 
 import { PageNames } from 'uiSrc/constants'
@@ -22,7 +23,6 @@ import { PlusIcon } from 'uiSrc/components/base/icons'
 import BaseCard, { BaseCardProps } from '../BaseCard'
 import JobNameForm from './JobNameForm'
 import JobItem from './JobsItem'
-import { useLocation, useParams } from 'react-router-dom'
 
 export type JobsCardProps = Omit<
   BaseCardProps,
