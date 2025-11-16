@@ -182,7 +182,6 @@ const JobsCard = (props: JobsCardProps) => {
           justify="between"
           data-testid={`job-file-${name}`}
         >
-          <div />
           {currentJobName === name ? (
             <JobNameForm
               name={name}

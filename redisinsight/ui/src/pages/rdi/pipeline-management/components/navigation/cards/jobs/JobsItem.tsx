@@ -73,9 +73,9 @@ const JobItem = ({
           >
             <Icon
               icon={ToastNotificationIcon}
-              data-testid="rdi-pipeline-nav__error"
               color="danger500"
               size="M"
+              data-testid={`rdi-pipeline-nav__error-${name}`}
             />
           </RiTooltip>
         )}
