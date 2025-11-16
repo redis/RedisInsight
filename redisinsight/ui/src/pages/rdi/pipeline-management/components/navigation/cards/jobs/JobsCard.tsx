@@ -22,19 +22,17 @@ import { PlusIcon } from 'uiSrc/components/base/icons'
 import BaseCard, { BaseCardProps } from '../BaseCard'
 import JobNameForm from './JobNameForm'
 import JobItem from './JobsItem'
+import { useLocation, useParams } from 'react-router-dom'
 
 export type JobsCardProps = Omit<
   BaseCardProps,
   'title' | 'children' | 'onSelect'
 > & {
   onSelect: (id: string) => void
-  path: string
-  rdiInstanceId: string
-  changes: Record<string, FileChangeType>
 }
 
 const JobsCard = (props: JobsCardProps) => {
-  const { onSelect, path, rdiInstanceId, changes = {}, isSelected } = props
+  const { onSelect, isSelected } = props
 
   const [currentJobName, setCurrentJobName] = useState<Nullable<string>>(null)
   const [isNewJob, setIsNewJob] = useState(false)
@@ -45,9 +43,14 @@ const JobsCard = (props: JobsCardProps) => {
     data,
     jobs = [],
     jobsValidationErrors,
+    changes = {},
   } = useSelector(rdiPipelineSelector)
 
   const dispatch = useDispatch()
+  const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
+  const { pathname } = useLocation()
+
+  const path = decodeURIComponent(pathname?.split('/').pop() || '')
 
   const handleDeleteClick = (name: string) => {
     dispatch(deletePipelineJob(name))
