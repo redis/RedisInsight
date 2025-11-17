@@ -2,22 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import { sentinelSelector } from 'uiSrc/slices/instances/sentinel'
-import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
-import validationErrors from 'uiSrc/constants/validationErrors'
+import { type ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import {
-  DestructiveButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { RiIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import {
-  ColumnDef,
-  RowSelectionState,
+  type ColumnDef,
+  type RowSelectionState,
   Table,
 } from 'uiSrc/components/base/layout/table'
 import { Spacer } from 'uiSrc/components/base/layout'
@@ -29,8 +20,12 @@ import {
 } from 'uiSrc/components/auto-discover'
 
 import { getRowId } from '../../useSentinelDatabasesConfig'
-
-import styles from '../../../styles.module.scss'
+import {
+  CancelButton,
+  SubmitButton,
+  EmptyState,
+  NoMastersMessage,
+} from './components'
 
 export interface Props {
   columns: ColumnDef<ModifiedSentinelMaster>[]
@@ -40,10 +35,6 @@ export interface Props {
   onClose: () => void
   onBack: () => void
   onSubmit: (databases: ModifiedSentinelMaster[]) => void
-}
-
-interface IPopoverProps {
-  isPopoverOpen: boolean
 }
 
 const loadingMsg = 'loading...'
@@ -113,74 +104,6 @@ const SentinelDatabases = ({
     setItems(itemsTemp)
   }
 
-  const CancelButton = ({ isPopoverOpen: popoverIsOpen }: IPopoverProps) => (
-    <RiPopover
-      anchorPosition="upCenter"
-      isOpen={popoverIsOpen}
-      closePopover={closePopover}
-      panelClassName={styles.panelCancelBtn}
-      panelPaddingSize="l"
-      button={
-        <SecondaryButton
-          onClick={showPopover}
-          className="btn-cancel"
-          data-testid="btn-cancel"
-        >
-          Cancel
-        </SecondaryButton>
-      }
-    >
-      <Text size="S">
-        Your changes have not been saved.&#10;&#13; Do you want to proceed to
-        the list of databases?
-      </Text>
-      <br />
-      <div>
-        <DestructiveButton
-          size="s"
-          onClick={onClose}
-          data-testid="btn-cancel-proceed"
-        >
-          Proceed
-        </DestructiveButton>
-      </div>
-    </RiPopover>
-  )
-
-  const SubmitButton = ({ onClick }: { onClick: () => void }) => {
-    let title: string | null = null
-    let content: string | null = null
-    const emptyAliases = selection.filter(({ alias }) => !alias)
-
-    if (selection.length < 1) {
-      title = validationErrors.SELECT_AT_LEAST_ONE('primary group')
-      content = validationErrors.NO_PRIMARY_GROUPS_SENTINEL
-    }
-
-    if (emptyAliases.length !== 0) {
-      title = validationErrors.REQUIRED_TITLE(emptyAliases.length)
-      content = 'Database Alias'
-    }
-    const TooltipIcon = () => (
-      <RiTooltip position="top" title={title} content={<span>{content}</span>}>
-        <RiIcon type="InfoIcon" />
-      </RiTooltip>
-    )
-
-    return (
-      <PrimaryButton
-        type="submit"
-        onClick={onClick}
-        disabled={isSubmitDisabled()}
-        loading={loading}
-        icon={isSubmitDisabled() ? TooltipIcon : undefined}
-        data-testid="btn-add-primary-group"
-      >
-        Add Primary Group
-      </PrimaryButton>
-    )
-  }
-
   return (
     <AutodiscoveryPageTemplate>
       <DatabaseContainer justify="start">
@@ -215,28 +138,27 @@ const SentinelDatabases = ({
               },
             ]}
             paginationEnabled={items.length > 10}
-            pageSizes={[5, 10, 25, 50, 100]}
             stripedRows
-            emptyState={() => (
-              <Col centered full>
-                <FlexItem padding={13}>
-                  <Text size="L">{message}</Text>
-                </FlexItem>
-              </Col>
-            )}
+            emptyState={() => <EmptyState message={message} />}
           />
-          {!masters.length && (
-            <Col centered full>
-              <Text size="L">{notMastersMsg}</Text>
-            </Col>
-          )}
+          {!masters.length && <NoMastersMessage message={notMastersMsg} />}
         </DatabaseWrapper>
       </DatabaseContainer>
       <Footer>
         <Row justify="end">
           <Row gap="m" grow={false}>
-            <CancelButton isPopoverOpen={isPopoverOpen} />
-            <SubmitButton onClick={handleSubmit} />
+            <CancelButton
+              isPopoverOpen={isPopoverOpen}
+              onClose={onClose}
+              onShowPopover={showPopover}
+              onClosePopover={closePopover}
+            />
+            <SubmitButton
+              selection={selection}
+              loading={loading}
+              onClick={handleSubmit}
+              isDisabled={isSubmitDisabled()}
+            />
           </Row>
         </Row>
       </Footer>
