@@ -67,10 +67,10 @@ export const TagSuggestions = ({
       <Title size="XS" color="primary">
         Suggestions
       </Title>
-      <ul>
+      <ul role="list">
         {tagsSuggestions.map((option) => (
           <li
-            role="option"
+            role="listitem"
             key={option.value}
             onClick={() => onChange(option.value)}
           >
