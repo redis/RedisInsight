@@ -310,29 +310,4 @@ describe('JobsCard', () => {
       },
     })
   })
-
-  // TODO: test this
-  it.skip('should push to config tab when deleting last job', async () => {
-    const mockOnSelect = jest.fn()
-
-    render(<JobsCard {...instance(mockedProps)} onSelect={mockOnSelect} />)
-
-    await act(() => {
-      fireEvent.click(screen.getByTestId('delete-job-job1'))
-    })
-
-    await act(() => {
-      fireEvent.click(screen.getByTestId('delete-confirm-btn'))
-    })
-
-    await act(() => {
-      fireEvent.click(screen.getByTestId('delete-job-job2'))
-    })
-
-    await act(() => {
-      fireEvent.click(screen.getByTestId('delete-confirm-btn'))
-    })
-
-    expect(mockOnSelect).toHaveBeenCalledWith('config')
-  })
 })
