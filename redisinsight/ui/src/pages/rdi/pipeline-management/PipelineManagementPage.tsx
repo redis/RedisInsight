@@ -21,7 +21,11 @@ import Navigation from 'uiSrc/pages/rdi/pipeline-management/components/navigatio
 import { removeInfiniteNotification } from 'uiSrc/slices/app/notifications'
 import { InfiniteMessagesIds } from 'uiSrc/components/notifications/components'
 import PipelinePageRouter from './PipelineManagementPageRouter'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Row } from 'uiSrc/components/base/layout/flex'
+import {
+  ContentContainer,
+  NavigationContainer,
+} from './PipelineManagementPage.styles'
 
 export interface Props {
   routes: IRoute[]
@@ -44,7 +48,9 @@ const PipelineManagementPage = ({ routes = [] }: Props) => {
   setTitle(`${rdiInstanceName} - Pipeline Management`)
 
   useEffect(() => {
-    if (!lastViewedPage?.startsWith(Pages.rdiPipelineManagement(rdiInstanceId))) {
+    if (
+      !lastViewedPage?.startsWith(Pages.rdiPipelineManagement(rdiInstanceId))
+    ) {
       dispatch(fetchRdiPipeline(rdiInstanceId))
     }
     dispatch(fetchRdiPipelineSchema(rdiInstanceId))
@@ -84,13 +90,13 @@ const PipelineManagementPage = ({ routes = [] }: Props) => {
 
   return (
     <Row>
-      <FlexItem>
+      <NavigationContainer>
         <Navigation />
-      </FlexItem>
+      </NavigationContainer>
       <SourcePipelineDialog />
-      <FlexItem grow>
+      <ContentContainer>
         <PipelinePageRouter routes={routes} />
-      </FlexItem>
+      </ContentContainer>
     </Row>
   )
 }
