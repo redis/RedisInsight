@@ -37,6 +37,8 @@ const JobItem = ({
 }: JobItemProps) => (
   <Row align="center" gap="s">
     <FlexItem>
+      {!hasChanges && <Indicator $color="transparent" />}
+
       {hasChanges && (
         <RiTooltip
           content="This file contains undeployed changes."
