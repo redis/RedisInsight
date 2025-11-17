@@ -280,7 +280,7 @@
     "html-entities": "^2.3.2",
     "html-react-parser": "^1.2.4",
     "java-object-serialization": "^0.1.2",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^4.1.1",
     "json-bigint": "^1.0.0",
     "json-dup-key-validator": "^1.0.3",
     "jsonpath": "^1.1.1",
