@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { map } from 'lodash'
 import {
-  InstanceRedisCloud,
-  RedisCloudAccount,
-  RedisCloudSubscription,
+  type InstanceRedisCloud,
+  type RedisCloudAccount,
+  type RedisCloudSubscription,
   RedisCloudSubscriptionStatus,
 } from 'uiSrc/slices/interfaces'
-import { Maybe, Nullable } from 'uiSrc/utils'
-import { LoadingContent, Spacer } from 'uiSrc/components/base/layout'
+import { type Maybe, type Nullable } from 'uiSrc/utils'
+import { Spacer } from 'uiSrc/components/base/layout'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 import {
-  ColumnDef,
-  RowSelectionState,
+  type ColumnDef,
+  type RowSelectionState,
   Table,
 } from 'uiSrc/components/base/layout/table'
 
@@ -27,17 +27,13 @@ import { ColorText, Text } from 'uiSrc/components/base/text'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import styles from '../styles.module.scss'
 import {
-  AccountItem,
-  AccountItemTitle,
-  AccountWrapper,
-} from './RedisCloudSubscriptions.styles'
-import {
   DatabaseContainer,
   DatabaseWrapper,
   Footer,
   Header,
 } from 'uiSrc/components/auto-discover'
 import { canSelectRow } from '../utils/canSelectRow'
+import { Account } from '../components'
 
 export interface Props {
   columns: ColumnDef<RedisCloudSubscription>[]
@@ -63,39 +59,6 @@ interface IPopoverProps {
 const loadingMsg = 'loading...'
 const notFoundMsg = 'Not found'
 const noResultsMessage = 'Your Redis Cloud has no subscriptions available.'
-
-const Account = ({
-  account: { accountId, accountName, ownerEmail, ownerName },
-}: {
-  account: RedisCloudAccount
-}) => (
-  <AccountWrapper>
-    {accountId && (
-      <AccountItem>
-        <AccountItemTitle>Account ID:</AccountItemTitle>
-        <AccountValue data-testid="account-id" value={accountId} />
-      </AccountItem>
-    )}
-    {accountName && (
-      <AccountItem>
-        <AccountItemTitle>Name:</AccountItemTitle>
-        <AccountValue data-testid="account-name" value={accountName} />
-      </AccountItem>
-    )}
-    {ownerName && (
-      <AccountItem>
-        <AccountItemTitle>Owner Name:</AccountItemTitle>
-        <AccountValue data-testid="account-owner-name" value={ownerName} />
-      </AccountItem>
-    )}
-    {ownerEmail && (
-      <AccountItem>
-        <AccountItemTitle>Owner Email:</AccountItemTitle>
-        <AccountValue data-testid="account-owner-email" value={ownerEmail} />
-      </AccountItem>
-    )}
-  </AccountWrapper>
-)
 
 const RedisCloudSubscriptions = ({
   subscriptions,
@@ -302,26 +265,6 @@ const RedisCloudSubscriptions = ({
         </Row>
       </Footer>
     </AutodiscoveryPageTemplate>
-  )
-}
-
-const AccountValue = ({
-  value,
-  ...rest
-}: {
-  value?: Nullable<string | number>
-}) => {
-  if (!value) {
-    return (
-      <div style={{ width: 80, height: 15 }}>
-        <LoadingContent lines={1} />
-      </div>
-    )
-  }
-  return (
-    <ColorText color="primary" size="M" {...rest}>
-      {value}
-    </ColorText>
   )
 }
 
