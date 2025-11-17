@@ -1,32 +1,28 @@
 import React, { useEffect, useState } from 'react'
 import { map } from 'lodash'
-import { Maybe } from 'uiSrc/utils'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { InstanceRedisCluster } from 'uiSrc/slices/interfaces'
+import type { Maybe } from 'uiSrc/utils'
+import { RiTooltip } from 'uiSrc/components/base'
+import type { InstanceRedisCluster } from 'uiSrc/slices/interfaces'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import { InfoIcon } from 'uiSrc/components/base/icons'
+import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import {
-  DestructiveButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { Text } from 'uiSrc/components/base/text'
-import {
-  ColumnDef,
-  RowSelectionState,
+  type ColumnDef,
+  type RowSelectionState,
   Table,
 } from 'uiSrc/components/base/layout/table'
-import styles from './styles.module.scss'
 import {
   DatabaseContainer,
   DatabaseWrapper,
+  EmptyState,
   Footer,
   Header,
 } from 'uiSrc/components/auto-discover'
 import { Spacer } from 'uiSrc/components/base/layout'
+import { CancelButton } from './components'
 
 interface Props {
   columns: ColumnDef<InstanceRedisCluster>[]
@@ -35,10 +31,6 @@ interface Props {
   onSubmit: (uids: Maybe<number>[]) => void
   instances: InstanceRedisCluster[]
   loading: boolean
-}
-
-interface IPopoverProps {
-  isPopoverOpen: boolean
 }
 
 const loadingMsg = 'loading...'
@@ -51,12 +43,10 @@ function getSubtitle(items: InstanceRedisCluster[]) {
     return null
   }
 
-  return `
-          These are the ${items.length > 1 ? 'databases ' : 'database '}
-          in your Redis Enterprise Cluster. Select the
-          ${items.length > 1 ? ' databases ' : ' database '} that you want
-          to add.
-          `
+  return `These are the ${items.length > 1 ? 'databases ' : 'database '}
+in your Redis Enterprise Cluster. Select the
+${items.length > 1 ? ' databases ' : ' database '} that you want
+to add.`
 }
 
 const RedisClusterDatabases = ({
@@ -121,40 +111,6 @@ const RedisClusterDatabases = ({
     setItems(itemsTemp)
   }
 
-  const CancelButton = ({ isPopoverOpen: popoverIsOpen }: IPopoverProps) => (
-    <RiPopover
-      anchorPosition="upCenter"
-      isOpen={popoverIsOpen}
-      closePopover={closePopover}
-      panelClassName={styles.panelCancelBtn}
-      panelPaddingSize="l"
-      button={
-        <SecondaryButton
-          onClick={showPopover}
-          className="btn-cancel"
-          data-testid="btn-back"
-        >
-          Cancel
-        </SecondaryButton>
-      }
-    >
-      <Text size="m">
-        Your changes have not been saved.&#10;&#13; Do you want to proceed to
-        the list of databases?
-      </Text>
-      <br />
-      <div>
-        <DestructiveButton
-          size="s"
-          onClick={onClose}
-          data-testid="btn-back-proceed"
-        >
-          Proceed
-        </DestructiveButton>
-      </div>
-    </RiPopover>
-  )
-
   return (
     <AutodiscoveryPageTemplate>
       <DatabaseContainer>
@@ -172,28 +128,21 @@ const RedisClusterDatabases = ({
             rowSelectionMode="multiple"
             getRowId={(row) => `${row.uid}`}
             onRowSelectionChange={onSelectionChange}
-            defaultSorting={[
-              {
-                id: 'name',
-                desc: false,
-              },
-            ]}
+            defaultSorting={[{ id: 'name', desc: false }]}
             paginationEnabled={items.length > 10}
             stripedRows
-            pageSizes={[5, 10, 25, 50, 100]}
-            emptyState={() => (
-              <Col centered full>
-                <FlexItem padding={13}>
-                  <Text size="L">{message}</Text>
-                </FlexItem>
-              </Col>
-            )}
+            emptyState={() => <EmptyState message={message} />}
           />
         </DatabaseWrapper>
       </DatabaseContainer>
       <Footer>
         <Row justify="end" gap="m">
-          <CancelButton isPopoverOpen={isPopoverOpen} />
+          <CancelButton
+            isPopoverOpen={isPopoverOpen}
+            onShowPopover={showPopover}
+            onClosePopover={closePopover}
+            onProceed={onClose}
+          />
           <RiTooltip
             position="top"
             anchorClassName="euiToolTip__btn-disabled"

@@ -20,14 +20,14 @@ import {
   RowSelectionState,
 } from 'uiSrc/components/base/layout/table'
 import {
-  PrimaryGroupColumn,
-  AliasColumn,
-  AddressColumn,
-  NumberOfReplicasColumn,
-  UsernameColumn,
-  PasswordColumn,
-  DbIndexColumn,
-  SelectionColumn,
+  primaryGroupColumn,
+  aliasColumn,
+  addressColumn,
+  numberOfReplicasColumn,
+  usernameColumn,
+  passwordColumn,
+  dbIndexColumn,
+  selectionColumn,
 } from './components/column-definitions'
 
 const updateSelection = (
@@ -51,16 +51,16 @@ export const colFactory = (
   handleChangedInput: (name: string, value: string) => void,
 ) => {
   const cols: ColumnDef<ModifiedSentinelMaster>[] = [
-    PrimaryGroupColumn(),
-    AliasColumn(handleChangedInput),
-    AddressColumn(),
-    NumberOfReplicasColumn(),
-    UsernameColumn(handleChangedInput),
-    PasswordColumn(handleChangedInput),
-    DbIndexColumn(handleChangedInput),
+    primaryGroupColumn(),
+    aliasColumn(handleChangedInput),
+    addressColumn(),
+    numberOfReplicasColumn(),
+    usernameColumn(handleChangedInput),
+    passwordColumn(handleChangedInput),
+    dbIndexColumn(handleChangedInput),
   ]
   if (items.length > 0) {
-    cols.unshift(SelectionColumn())
+    cols.unshift(selectionColumn())
   }
   return cols
 }

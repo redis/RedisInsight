@@ -2,23 +2,24 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import { sentinelSelector } from 'uiSrc/slices/instances/sentinel'
-import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
+import { type ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
-import { ColumnDef, Table } from 'uiSrc/components/base/layout/table'
+import { type ColumnDef, Table } from 'uiSrc/components/base/layout/table'
 
 import {
   DatabaseContainer,
   DatabaseWrapper,
+  EmptyState,
   Footer,
 } from 'uiSrc/components/auto-discover'
 import { Spacer } from 'uiSrc/components/base/layout'
 import { Header } from 'uiSrc/components/auto-discover/Header'
-import { SummaryText } from './Summary'
+import { SummaryText } from './components/Summary'
 
 export interface Props {
   countSuccessAdded: number
@@ -96,19 +97,8 @@ const SentinelDatabasesResult = ({
               rowSelectionMode={undefined}
               columns={columns}
               data={items}
-              defaultSorting={[
-                {
-                  id: 'message',
-                  desc: false,
-                },
-              ]}
-              emptyState={() => (
-                <Col centered full>
-                  <FlexItem padding={13}>
-                    <Text size="L">{message}</Text>
-                  </FlexItem>
-                </Col>
-              )}
+              defaultSorting={[{ id: 'message', desc: false }]}
+              emptyState={() => <EmptyState message={message} />}
               stripedRows
               paginationEnabled={items?.length > 10}
             />

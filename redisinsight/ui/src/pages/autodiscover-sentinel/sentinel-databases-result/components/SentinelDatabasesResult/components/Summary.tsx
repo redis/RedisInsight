@@ -1,13 +1,11 @@
-import { ColorText, Text } from 'uiSrc/components/base/text'
 import React from 'react'
+import { ColorText, Text } from 'uiSrc/components/base/text'
+import { type SummaryTextProps } from './SummaryTextProps.types'
 
 export const SummaryText = ({
   countSuccessAdded,
   countFailAdded,
-}: {
-  countSuccessAdded: number
-  countFailAdded: number
-}) => (
+}: SummaryTextProps) => (
   <Text component="div" color="primary" data-testid="summary">
     <ColorText variant="semiBold" size="S">
       Summary:&nbsp;
