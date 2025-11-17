@@ -1,7 +1,7 @@
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
-import { InstanceRedisCluster } from 'uiSrc/slices/interfaces'
+import { type InstanceRedisCluster } from 'uiSrc/slices/interfaces'
 
-export const StatusColumn = (): ColumnDef<InstanceRedisCluster> => {
+export const statusColumn = (): ColumnDef<InstanceRedisCluster> => {
   return {
     header: 'Status',
     id: 'status',
@@ -10,3 +10,4 @@ export const StatusColumn = (): ColumnDef<InstanceRedisCluster> => {
     size: 100,
   }
 }
+

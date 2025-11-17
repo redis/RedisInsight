@@ -11,31 +11,31 @@ import {
 import { Maybe, Nullable, setTitle } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { Pages } from 'uiSrc/constants'
-import { InstanceRedisCluster } from 'uiSrc/slices/interfaces'
-import { ColumnDef } from 'uiSrc/components/base/layout/table'
+import { type InstanceRedisCluster } from 'uiSrc/slices/interfaces'
+import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import {
-  EndpointColumn,
-  ResultColumn,
-  CapabilitiesColumn,
-  DatabaseColumn,
-  OptionsColumn,
-  SelectionColumn,
-  StatusColumn,
+  endpointColumn,
+  resultColumn,
+  capabilitiesColumn,
+  databaseColumn,
+  optionsColumn,
+  selectionColumn,
+  statusColumn,
 } from './column-definitions'
 
 export const colFactory = (instances: Nullable<InstanceRedisCluster[]>) => {
   let columns: ColumnDef<InstanceRedisCluster>[] = [
-    DatabaseColumn(),
-    StatusColumn(),
-    EndpointColumn(),
-    CapabilitiesColumn(),
-    OptionsColumn(instances || []),
+    databaseColumn(),
+    statusColumn(),
+    endpointColumn(),
+    capabilitiesColumn(),
+    optionsColumn(instances || []),
   ]
   if (instances && instances.length > 0) {
-    columns.unshift(SelectionColumn())
+    columns.unshift(selectionColumn())
   }
 
-  const messageColumn = ResultColumn()
+  const messageColumn = resultColumn()
   const columnsResult: ColumnDef<InstanceRedisCluster>[] = [
     ...columns,
     messageColumn,

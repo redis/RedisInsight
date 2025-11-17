@@ -3,7 +3,7 @@ import {
   AlertStatusDot,
   AlertStatusList,
   AlertStatusListItem,
-} from '../redis-cloud-subscriptions/RedisCloudSubscriptions/RedisCloudSubscriptions.styles'
+} from 'uiSrc/pages/autodiscover-cloud/redis-cloud-subscriptions/RedisCloudSubscriptions/RedisCloudSubscriptions.styles'
 
 export const AlertStatusContent = () => (
   <AlertStatusList gap="none" flush>

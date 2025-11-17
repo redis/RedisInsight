@@ -1,9 +1,9 @@
 import React from 'react'
 import { DatabaseListModules } from 'uiSrc/components'
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
-import { InstanceRedisCluster } from 'uiSrc/slices/interfaces'
+import { type InstanceRedisCluster } from 'uiSrc/slices/interfaces'
 
-export const CapabilitiesColumn = (): ColumnDef<InstanceRedisCluster> => {
+export const capabilitiesColumn = (): ColumnDef<InstanceRedisCluster> => {
   return {
     header: 'Capabilities',
     id: 'modules',
@@ -19,3 +19,4 @@ export const CapabilitiesColumn = (): ColumnDef<InstanceRedisCluster> => {
     },
   }
 }
+

@@ -1,10 +1,10 @@
 import React from 'react'
 import { DatabaseListOptions } from 'uiSrc/components'
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
-import { InstanceRedisCluster } from 'uiSrc/slices/interfaces'
+import { type InstanceRedisCluster } from 'uiSrc/slices/interfaces'
 import { parseInstanceOptionsCluster } from 'uiSrc/utils'
 
-export const OptionsColumn = (
+export const optionsColumn = (
   instances: InstanceRedisCluster[],
 ): ColumnDef<InstanceRedisCluster> => {
   return {
@@ -19,3 +19,4 @@ export const OptionsColumn = (
     },
   }
 }
+
