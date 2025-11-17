@@ -9,7 +9,6 @@ import {
 import { type Maybe, type Nullable } from 'uiSrc/utils'
 import { Spacer } from 'uiSrc/components/base/layout'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
-import validationErrors from 'uiSrc/constants/validationErrors'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 import {
   type ColumnDef,
@@ -17,15 +16,7 @@ import {
   Table,
 } from 'uiSrc/components/base/layout/table'
 
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import {
-  DestructiveButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { ColorText, Text } from 'uiSrc/components/base/text'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import styles from '../styles.module.scss'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import {
   DatabaseContainer,
   DatabaseWrapper,
@@ -33,7 +24,13 @@ import {
   Header,
 } from 'uiSrc/components/auto-discover'
 import { canSelectRow } from '../utils/canSelectRow'
-import { Account } from '../components'
+import {
+  Account,
+  CancelButton,
+  EmptyState,
+  SubmitButton,
+  SummaryText,
+} from '../components'
 
 export interface Props {
   columns: ColumnDef<RedisCloudSubscription>[]
@@ -50,10 +47,6 @@ export interface Props {
     >[],
   ) => void
   onSelectionChange: (state: RowSelectionState) => void
-}
-
-interface IPopoverProps {
-  isPopoverOpen: boolean
 }
 
 const loadingMsg = 'loading...'
@@ -126,87 +119,6 @@ const RedisCloudSubscriptions = ({
     setItems(itemsTemp)
   }
 
-  const CancelButton = ({ isPopoverOpen: popoverIsOpen }: IPopoverProps) => (
-    <RiPopover
-      anchorPosition="upCenter"
-      isOpen={popoverIsOpen}
-      closePopover={closePopover}
-      panelClassName={styles.panelCancelBtn}
-      panelPaddingSize="l"
-      button={
-        <SecondaryButton
-          onClick={showPopover}
-          className="btn-cancel"
-          data-testid="btn-cancel"
-        >
-          Cancel
-        </SecondaryButton>
-      }
-    >
-      <Text size="m">
-        Your changes have not been saved.&#10;&#13; Do you want to proceed to
-        the list of databases?
-      </Text>
-      <br />
-      <div>
-        <DestructiveButton
-          size="s"
-          onClick={onClose}
-          data-testid="btn-cancel-proceed"
-        >
-          Proceed
-        </DestructiveButton>
-      </div>
-    </RiPopover>
-  )
-
-  const SubmitButton = ({ isDisabled }: { isDisabled: boolean }) => (
-    <RiTooltip
-      position="top"
-      anchorClassName="euiToolTip__btn-disabled"
-      title={
-        isDisabled ? validationErrors.SELECT_AT_LEAST_ONE('subscription') : null
-      }
-      content={
-        isDisabled ? (
-          <span>{validationErrors.NO_SUBSCRIPTIONS_CLOUD}</span>
-        ) : null
-      }
-    >
-      <PrimaryButton
-        size="m"
-        disabled={isDisabled}
-        onClick={handleSubmit}
-        loading={loading}
-        data-testid="btn-show-databases"
-      >
-        Show databases
-      </PrimaryButton>
-    </RiTooltip>
-  )
-
-  const SummaryText = () => (
-    <Text size="M">
-      <ColorText variant="semiBold">Summary: </ColorText>
-      {countStatusActive ? (
-        <span>
-          Successfully discovered database(s) in {countStatusActive}
-          &nbsp;
-          {countStatusActive > 1 ? 'subscriptions' : 'subscription'}
-          .&nbsp;
-        </span>
-      ) : null}
-
-      {countStatusFailed ? (
-        <span>
-          Failed to discover database(s) in {countStatusFailed}
-          &nbsp;
-          {countStatusFailed > 1 ? 'subscriptions.' : ' subscription.'}
-        </span>
-      ) : null}
-    </Text>
-  )
-
   return (
     <AutodiscoveryPageTemplate>
       <DatabaseContainer justify="start">
@@ -238,29 +150,34 @@ const RedisCloudSubscriptions = ({
             ]}
             paginationEnabled={items.length > 10}
             stripedRows
-            pageSizes={[5, 10, 25, 50, 100]}
-            emptyState={() => (
-              <Col centered full>
-                <FlexItem padding={13}>
-                  <Text size="L">{message}</Text>
-                </FlexItem>
-              </Col>
-            )}
+            emptyState={() => <EmptyState message={message} />}
           />
         </DatabaseWrapper>
         <MessageBar
           opened={countStatusActive + countStatusFailed > 0}
           variant={!!countStatusFailed ? 'attention' : 'success'}
         >
-          <SummaryText />
+          <SummaryText
+            countStatusActive={countStatusActive}
+            countStatusFailed={countStatusFailed}
+          />
         </MessageBar>
       </DatabaseContainer>
 
       <Footer>
         <Row justify="end">
           <Row gap="m" grow={false}>
-            <CancelButton isPopoverOpen={isPopoverOpen} />
-            <SubmitButton isDisabled={(selection?.length || 0) < 1} />
+            <CancelButton
+              isPopoverOpen={isPopoverOpen}
+              onClose={onClose}
+              onShowPopover={showPopover}
+              onClosePopover={closePopover}
+            />
+            <SubmitButton
+              isDisabled={(selection?.length || 0) < 1}
+              loading={loading}
+              onClick={handleSubmit}
+            />
           </Row>
         </Row>
       </Footer>
