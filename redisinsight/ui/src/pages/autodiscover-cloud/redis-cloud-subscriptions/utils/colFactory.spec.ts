@@ -6,10 +6,9 @@ describe('colFactory', () => {
     const items: RedisCloudSubscription[] = []
     const columns = colFactory(items)
 
-    expect(columns).toHaveLength(8)
-    expect(columns[0].id).toBe('alert')
-    expect(columns[1].id).toBe('id')
-    expect(columns[2].id).toBe('name')
+    expect(columns).toHaveLength(7)
+    expect(columns[0].id).toBe('id')
+    expect(columns[1].id).toBe('name')
   })
 
   it('should return columns with selection column when items array has data', () => {

@@ -1,7 +1,7 @@
 import {
   RedisDefaultModules,
   AddRedisClusterDatabaseOptions,
-  InstanceRedisCloud,
+  type InstanceRedisCloud,
 } from 'uiSrc/slices/interfaces'
 import { colFactory } from './colFactory'
 import {

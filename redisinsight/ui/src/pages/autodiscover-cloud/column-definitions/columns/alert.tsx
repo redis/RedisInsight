@@ -1,9 +1,9 @@
 import React from 'react'
 
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
-import { RedisCloudSubscription } from 'uiSrc/slices/interfaces'
+import { type RedisCloudSubscription } from 'uiSrc/slices/interfaces'
 
-import { AlertCell } from './components/AlertCell/AlertCell'
+import { AlertCell } from '../components/AlertCell/AlertCell'
 
 export const ALERT_COLUMN_ID = 'alert' as const
 

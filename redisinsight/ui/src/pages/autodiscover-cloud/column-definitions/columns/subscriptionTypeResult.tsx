@@ -1,6 +1,6 @@
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import {
-  InstanceRedisCloud,
+  type InstanceRedisCloud,
   RedisCloudSubscriptionTypeText,
 } from 'uiSrc/slices/interfaces'
 

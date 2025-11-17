@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { ColumnDef } from 'uiSrc/components/base/layout/table'
-import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
+import { type ColumnDef } from 'uiSrc/components/base/layout/table'
+import { type InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 
-import { DatabaseCell } from './components/DatabaseCell/DatabaseCell'
+import { DatabaseCell } from '../components/DatabaseCell/DatabaseCell'
 
 export const DATABASE_COLUMN_ID = 'name' as const
 

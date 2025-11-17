@@ -1,9 +1,11 @@
 import React from 'react'
+
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import {
-  RedisCloudSubscription,
+  type RedisCloudSubscription,
   RedisCloudSubscriptionTypeText,
 } from 'uiSrc/slices/interfaces'
+
 import { CellText } from 'uiSrc/components/auto-discover'
 
 export const TYPE_COLUMN_ID = 'type' as const

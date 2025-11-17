@@ -1,5 +1,5 @@
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
-import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
+import { type InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 
 export const SUBSCRIPTION_ID_RESULT_COLUMN_ID = 'subscriptionId' as const
 

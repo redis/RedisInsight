@@ -1,9 +1,9 @@
 import React from 'react'
 
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
-import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
+import { type InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 
-import { SubscriptionCell } from './components/SubscriptionCell/SubscriptionCell'
+import { SubscriptionCell } from '../components/SubscriptionCell/SubscriptionCell'
 
 export const SUBSCRIPTION_DB_COLUMN_ID = 'subscriptionName' as const
 

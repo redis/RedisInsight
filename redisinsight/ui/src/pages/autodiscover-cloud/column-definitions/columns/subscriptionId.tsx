@@ -1,6 +1,6 @@
 import React from 'react'
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
-import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
+import { type InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 import { CellText } from 'uiSrc/components/auto-discover'
 
 export const SUBSCRIPTION_ID_COLUMN_ID = 'subscriptionId' as const

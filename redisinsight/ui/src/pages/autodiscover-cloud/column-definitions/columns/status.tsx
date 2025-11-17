@@ -1,9 +1,10 @@
 import React from 'react'
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import {
-  RedisCloudSubscription,
+  type RedisCloudSubscription,
   RedisCloudSubscriptionStatusText,
 } from 'uiSrc/slices/interfaces'
+
 import { CellText } from 'uiSrc/components/auto-discover'
 
 export const STATUS_COLUMN_ID = 'status' as const

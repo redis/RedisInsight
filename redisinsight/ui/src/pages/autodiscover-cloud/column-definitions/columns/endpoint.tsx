@@ -1,9 +1,9 @@
 import React from 'react'
 
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
-import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
+import { type InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 
-import { EndpointCell } from './components/EndpointCell/EndpointCell'
+import { EndpointCell } from '../components/EndpointCell/EndpointCell'
 
 export const ENDPOINT_COLUMN_ID = 'publicEndpoint' as const
 

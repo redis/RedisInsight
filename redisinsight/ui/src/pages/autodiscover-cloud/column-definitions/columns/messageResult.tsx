@@ -1,9 +1,9 @@
 import React from 'react'
 
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
-import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
+import { type InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 
-import { MessageResultCell } from './components/MessageResultCell/MessageResultCell'
+import { MessageResultCell } from '../components/MessageResultCell/MessageResultCell'
 
 export const MESSAGE_RESULT_COLUMN_ID = 'messageAdded' as const
 
