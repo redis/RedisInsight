@@ -64,6 +64,7 @@ const JobItem = ({
             {truncateText(name, 20)}
           </Text>
         </RiTooltip>
+
         {!isValid && (
           <RiTooltip
             position="right"
@@ -92,6 +93,7 @@ const JobItem = ({
             data-testid={`edit-job-name-${name}`}
           />
         </RiTooltip>
+
         <RiTooltip
           content="Delete job"
           position="top"
