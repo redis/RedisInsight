@@ -17,6 +17,10 @@ type JobNameFormProps = {
 }
 
 const buildValidationMessage = (text: string) => ({
+  // Validation messages are displayed by RiTooltip
+  // and we don't want them to have a title
+  // TODO: refactor this (inline editor should be responsible for displaying errors)
+  // only the message should be provided from this component
   title: '',
   content: (
     <Row align="center" gap="s">
