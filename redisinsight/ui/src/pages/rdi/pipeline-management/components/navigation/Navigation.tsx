@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useHistory, useLocation, useParams } from 'react-router-dom'
 
-import { Title } from 'uiSrc/components/base/text'
+import { Nullable } from 'uiSrc/utils'
 import { PageNames, Pages } from 'uiSrc/constants'
+import { Title } from 'uiSrc/components/base/text'
+import { Loader } from 'uiSrc/components/base/display'
+import { Col } from 'uiSrc/components/base/layout/flex'
 import { RdiPipelineTabs } from 'uiSrc/slices/interfaces/rdi'
 import { rdiPipelineSelector } from 'uiSrc/slices/rdi/pipeline'
-import { Nullable } from 'uiSrc/utils'
 
-import { NavigationContainer } from './Navigation.styles'
 import { ConfigurationCard, JobsCard } from './cards'
-import { Loader } from 'uiSrc/components/base/display'
 
 const getSelectedTab = (path: string, rdiInstanceId: string) => {
   const tabsPath = path?.replace(
@@ -50,7 +50,7 @@ const Navigation = () => {
   }, [pathname, rdiInstanceId])
 
   return (
-    <NavigationContainer gap="l">
+    <Col gap="l">
       <Title size="S" color="primary">
         Pipeline management
       </Title>
@@ -70,7 +70,7 @@ const Navigation = () => {
           />
         </>
       )}
-    </NavigationContainer>
+    </Col>
   )
 }
 
