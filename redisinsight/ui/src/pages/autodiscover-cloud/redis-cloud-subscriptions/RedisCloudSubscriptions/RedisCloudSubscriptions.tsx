@@ -20,17 +20,12 @@ import { Row } from 'uiSrc/components/base/layout/flex'
 import {
   DatabaseContainer,
   DatabaseWrapper,
+  EmptyState,
   Footer,
   Header,
 } from 'uiSrc/components/auto-discover'
 import { canSelectRow } from '../utils/canSelectRow'
-import {
-  Account,
-  CancelButton,
-  EmptyState,
-  SubmitButton,
-  SummaryText,
-} from '../components'
+import { Account, CancelButton, SubmitButton, SummaryText } from '../components'
 
 export interface Props {
   columns: ColumnDef<RedisCloudSubscription>[]

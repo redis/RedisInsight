@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from 'react'
-import {
-  AddRedisDatabaseStatus,
-  InstanceRedisCloud,
-} from 'uiSrc/slices/interfaces'
+import type { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
+import { AddRedisDatabaseStatus } from 'uiSrc/slices/interfaces'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { ColorText, Text } from 'uiSrc/components/base/text'
-import { ColumnDef, Table } from 'uiSrc/components/base/layout/table'
+import type { ColumnDef } from 'uiSrc/components/base/layout/table'
+import { Table } from 'uiSrc/components/base/layout/table'
 import { Spacer } from 'uiSrc/components/base/layout'
 import {
   DatabaseContainer,
   DatabaseWrapper,
+  EmptyState,
   Footer,
   Header,
 } from 'uiSrc/components/auto-discover'
+import { SummaryText } from './components'
 
 export interface Props {
   instances: InstanceRedisCloud[]
@@ -65,21 +65,6 @@ const RedisCloudDatabaseListResult = ({
     setItems(itemsTemp)
   }
 
-  const SummaryText = () => (
-    <Text size="M">
-      <ColorText variant="semiBold">Summary: </ColorText>{' '}
-      {countSuccessAdded ? (
-        <span>
-          Successfully added {countSuccessAdded} database(s)
-          {countFailAdded ? '. ' : '.'}
-        </span>
-      ) : null}
-      {countFailAdded ? (
-        <span>Failed to add {countFailAdded} database(s).</span>
-      ) : null}
-    </Text>
-  )
-
   return (
     <AutodiscoveryPageTemplate>
       <DatabaseContainer>
@@ -101,21 +86,17 @@ const RedisCloudDatabaseListResult = ({
             ]}
             paginationEnabled={items.length > 10}
             stripedRows
-            pageSizes={[5, 10, 25, 50, 100]}
-            emptyState={() => (
-              <Col centered full>
-                <FlexItem padding={13}>
-                  <Text size="L">{message}</Text>
-                </FlexItem>
-              </Col>
-            )}
+            emptyState={() => <EmptyState message={message} />}
           />
         </DatabaseWrapper>
         <MessageBar
           opened={!!countSuccessAdded || !!countFailAdded}
           variant={!!countFailAdded ? 'attention' : 'success'}
         >
-          <SummaryText />
+          <SummaryText
+            countSuccessAdded={countSuccessAdded}
+            countFailAdded={countFailAdded}
+          />
         </MessageBar>
       </DatabaseContainer>
       <Footer>

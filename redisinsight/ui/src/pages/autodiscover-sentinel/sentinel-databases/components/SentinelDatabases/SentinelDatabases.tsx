@@ -15,17 +15,13 @@ import { Spacer } from 'uiSrc/components/base/layout'
 import {
   DatabaseContainer,
   DatabaseWrapper,
+  EmptyState,
   Footer,
   Header,
 } from 'uiSrc/components/auto-discover'
 
 import { getRowId } from '../../useSentinelDatabasesConfig'
-import {
-  CancelButton,
-  SubmitButton,
-  EmptyState,
-  NoMastersMessage,
-} from './components'
+import { CancelButton, SubmitButton, NoMastersMessage } from './components'
 
 export interface Props {
   columns: ColumnDef<ModifiedSentinelMaster>[]
