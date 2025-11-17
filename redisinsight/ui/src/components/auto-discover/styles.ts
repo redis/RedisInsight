@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { Text, Title } from 'uiSrc/components/base/text'
