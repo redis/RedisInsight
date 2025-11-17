@@ -5,6 +5,8 @@ import { riToast } from 'uiSrc/components/base/display/toast'
 import MessageBar, { Props } from './MessageBar'
 
 const mockedProps = mock<Props>()
+const TOASTIFY_ATTENTION_CLASS = '.Toastify__toast--attention'
+const TOASTIFY_SUCCESS_CLASS = '.Toastify__toast--success'
 
 const renderMessageBar = async (
   children: React.ReactElement,
@@ -40,12 +42,14 @@ describe('MessageBar', () => {
   })
 
   it('should display toast with success variant by default', async () => {
-    const { getByTestId } = await renderMessageBar(
+    const { getByTestId, getByText } = await renderMessageBar(
       <p data-testid="default-variant">Default variant test</p>,
     )
 
     const toast = getByTestId('redisui-toast')
-    expect(toast.closest('.success')).toBeInTheDocument()
+
+    expect(getByText('Default variant test')).toBeInTheDocument()
+    expect(toast.closest(TOASTIFY_SUCCESS_CLASS)).toBeInTheDocument()
   })
 
   it('should display toast with attention variant when specified', async () => {
@@ -56,7 +60,7 @@ describe('MessageBar', () => {
     )
 
     const toast = getByTestId('redisui-toast')
-    expect(toast.closest('.attention')).toBeInTheDocument()
+    expect(toast.closest(TOASTIFY_ATTENTION_CLASS)).toBeInTheDocument()
   })
 
   it('should not display toast when opened is false', async () => {
