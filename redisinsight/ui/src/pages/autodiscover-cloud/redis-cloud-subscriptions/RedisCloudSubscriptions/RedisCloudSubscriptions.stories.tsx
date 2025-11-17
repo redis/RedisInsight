@@ -4,7 +4,10 @@ import { fn } from 'storybook/test'
 
 import RedisCloudSubscriptions from './RedisCloudSubscriptions'
 import { colFactory } from '../utils/colFactory'
-import { RedisCloudSubscription } from 'uiSrc/slices/interfaces'
+import {
+  RedisCloudAccount,
+  RedisCloudSubscription,
+} from 'uiSrc/slices/interfaces'
 import { RowSelectionState } from 'uiSrc/components/base/layout/table'
 import { RedisCloudSubscriptionFactory } from 'uiSrc/mocks/factories/cloud/RedisCloudSubscription.factory'
 import { RedisCloudAccountFactory } from 'uiSrc/mocks/factories/cloud/RedisCloudAccount.factory'
