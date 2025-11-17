@@ -11,7 +11,7 @@ export const NavigationContainer = styled(FlexItem).attrs({
     ${({ theme }: { theme: Theme }) =>
       theme.semantic.color.border.informative100};
   min-width: 300px;
-  max-width: 400px;
+  max-width: 450px;
 `
 
 export const ContentContainer = styled(FlexItem).attrs({
