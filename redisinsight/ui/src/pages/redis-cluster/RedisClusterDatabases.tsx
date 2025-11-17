@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { map } from 'lodash'
 import type { Maybe } from 'uiSrc/utils'
 import { RiTooltip } from 'uiSrc/components/base'
 import type { InstanceRedisCluster } from 'uiSrc/slices/interfaces'
@@ -49,6 +48,8 @@ ${items.length > 1 ? ' databases ' : ' database '} that you want
 to add.`
 }
 
+const hasSelection = (selection: RowSelectionState) =>
+  Object.values(selection).some(Boolean)
 const RedisClusterDatabases = ({
   columns,
   onClose,
@@ -61,7 +62,7 @@ const RedisClusterDatabases = ({
   const [message, setMessage] = useState(loadingMsg)
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
 
-  const [selection, setSelection] = useState<InstanceRedisCluster[]>([])
+  const [selection, setSelection] = useState<RowSelectionState>({})
 
   useEffect(() => {
     if (instances !== null) {
@@ -76,7 +77,11 @@ const RedisClusterDatabases = ({
   }, [instances])
 
   const handleSubmit = () => {
-    onSubmit(map(selection, 'uid'))
+    // Map rowSelection state to the selected items list using uid as row id
+    const selected = Object.entries(selection)
+      .filter(([_uid, isSelected]) => Boolean(isSelected))
+      .map(([uid]) => Number(uid))
+    onSubmit(selected)
   }
 
   const showPopover = () => {
@@ -87,12 +92,10 @@ const RedisClusterDatabases = ({
     setIsPopoverOpen(false)
   }
 
-  const isSubmitDisabled = () => selection.length < 1
+  const isSubmitDisabled = () => !hasSelection(selection)
 
   const onSelectionChange = (selection: RowSelectionState) => {
-    // Map rowSelection state to the selected items list using uid as row id
-    const selectedItems = items.filter((i) => selection[`${i.uid}`])
-    setSelection(selectedItems)
+    setSelection(selection)
   }
 
   const onQueryChange = (term: string) => {

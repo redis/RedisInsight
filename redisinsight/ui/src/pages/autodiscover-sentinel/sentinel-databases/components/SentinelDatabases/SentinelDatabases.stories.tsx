@@ -47,6 +47,7 @@ const DefaultRender = () => {
   const selection = Object.keys(rowSelection)
     .map((key) => mastersMock.find((master) => getRowId(master) === key))
     .filter((item): item is ModifiedSentinelMaster => Boolean(item))
+
   return (
     <SentinelDatabases
       selection={selection || []}

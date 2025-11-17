@@ -14,11 +14,11 @@ import { Pages } from 'uiSrc/constants'
 import { type InstanceRedisCluster } from 'uiSrc/slices/interfaces'
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import {
-  endpointColumn,
-  resultColumn,
   capabilitiesColumn,
   databaseColumn,
+  endpointColumn,
   optionsColumn,
+  resultColumn,
   selectionColumn,
   statusColumn,
 } from './column-definitions'
@@ -35,10 +35,9 @@ export const colFactory = (instances: Nullable<InstanceRedisCluster[]>) => {
     columns.unshift(selectionColumn())
   }
 
-  const messageColumn = resultColumn()
   const columnsResult: ColumnDef<InstanceRedisCluster>[] = [
     ...columns,
-    messageColumn,
+    resultColumn(),
   ]
   // remove selection column from result columns
   columnsResult.shift()
