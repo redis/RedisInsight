@@ -13,14 +13,19 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { VALID_TAG_KEY_REGEX, VALID_TAG_VALUE_REGEX } from './constants'
 import { TagInputField } from './TagInputField'
 import { getInvalidTagErrors } from './utils'
-import styles from './styles.module.scss'
+import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import {
+  HeaderWrapper,
+  TagFormRow,
+  TagFormWrapper,
+  WarningBannerWrapper,
+} from './ManageTagsModal.styles'
 
 export type ManageTagsModalProps = {
   instance: Instance
@@ -104,34 +109,28 @@ export const ManageTagsModal = ({
     <FormDialog
       isOpen
       onClose={onClose}
-      className={styles.manageTagsModal}
       header={
-        <div className={styles.header}>
-          <Title size="M">Manage tags for {instance.name}</Title>
-          <Spacer size="s" />
-          <Text size="s" color="subdued">
+        <Col gap="xl">
+          <Title size="L">Manage tags for {instance.name}</Title>
+          <Text size="m" color="subdued">
             Tags are key-value pairs that let you categorize your databases.
           </Text>
-        </div>
+        </Col>
       }
       footer={
         <>
           {(isCloudDb || isClusterDb) && (
-            <div className={styles.warning}>
-              <RiIcon
-                type="ToastNotificationIcon"
-                color="attention600"
-                size="m"
-              />
+            <WarningBannerWrapper>
+              <RiIcon type="ToastNotificationIcon" color="notice600" size="m" />
               <Text size="m">
                 Tag changes in Redis Insight apply locally and are not synced
                 with Redis {isCloudDb ? 'Cloud' : 'Software'}.
               </Text>
-            </div>
+            </WarningBannerWrapper>
           )}
-          <div className={styles.footer}>
+          <Row justify="end" gap="m">
             <SecondaryButton onClick={onClose} data-testid="close-button">
-              Close
+              Cancel
             </SecondaryButton>
             <PrimaryButton
               onClick={handleSave}
@@ -140,63 +139,66 @@ export const ManageTagsModal = ({
             >
               Save tags
             </PrimaryButton>
-          </div>
+          </Row>
         </>
       }
     >
-      <div className={styles.tagForm}>
-        <div className={styles.tagFormHeader}>
-          <div>Key</div>
-          <div>Value</div>
-        </div>
-        <div className={styles.tagFormBody}>
-          {tags.map((tag, index) => {
-            const { keyError, valueError } = getInvalidTagErrors(tags, index)
+      <Col gap="l">
+        <TagFormWrapper>
+          <HeaderWrapper>
+            <Text color="primary">Key</Text>
+            <Text color="primary">Value</Text>
+          </HeaderWrapper>
+          <Col gap="none">
+            {tags.map((tag, index) => {
+              const { keyError, valueError } = getInvalidTagErrors(tags, index)
 
-            return (
-              <div key={`tag-row-${index}`} className={styles.tagFormRow}>
-                <TagInputField
-                  errorMessage={keyError}
-                  value={tag.key}
-                  currentTagKeys={currentTagKeys}
-                  onChange={(value) => {
-                    handleTagChange(index, 'key', value)
-                  }}
-                  rightContent={<>:</>}
-                />
-                <TagInputField
-                  errorMessage={valueError}
-                  disabled={!tag.key || Boolean(keyError)}
-                  value={tag.value}
-                  currentTagKeys={currentTagKeys}
-                  suggestedTagKey={tag.key}
-                  onChange={(value) => {
-                    handleTagChange(index, 'value', value)
-                  }}
-                  rightContent={
-                    <RiIcon
-                      type="DeleteIcon"
-                      onClick={() => handleRemoveTag(index)}
-                      className={styles.deleteIcon}
-                      data-testid="remove-tag-button"
-                    />
-                  }
-                />
-              </div>
-            )
-          })}
+              return (
+                <TagFormRow key={`tag-row-${index}`}>
+                  <TagInputField
+                    errorMessage={keyError}
+                    value={tag.key}
+                    currentTagKeys={currentTagKeys}
+                    placeholder="Select a key or type your own"
+                    onChange={(value) => {
+                      handleTagChange(index, 'key', value)
+                    }}
+                    rightContent={<>:</>}
+                  />
+                  <TagInputField
+                    errorMessage={valueError}
+                    disabled={!tag.key || Boolean(keyError)}
+                    value={tag.value}
+                    currentTagKeys={currentTagKeys}
+                    suggestedTagKey={tag.key}
+                    placeholder="Select a value or type your own"
+                    onChange={(value) => {
+                      handleTagChange(index, 'value', value)
+                    }}
+                    rightContent={
+                      <RiIcon
+                        type="DeleteIcon"
+                        onClick={() => handleRemoveTag(index)}
+                        data-testid="remove-tag-button"
+                      />
+                    }
+                  />
+                </TagFormRow>
+              )
+            })}
+          </Col>
+        </TagFormWrapper>
+        <div>
+          <EmptyButton
+            icon={PlusIcon}
+            onClick={handleAddTag}
+            size="small"
+            data-testid="add-tag-button"
+          >
+            Add additional tag
+          </EmptyButton>
         </div>
-      </div>
-      <Spacer size="s" />
-      <EmptyButton
-        icon={PlusIcon}
-        onClick={handleAddTag}
-        size="small"
-        className={styles.addTagButton}
-        data-testid="add-tag-button"
-      >
-        Add additional tag
-      </EmptyButton>
+      </Col>
     </FormDialog>
   )
 }
