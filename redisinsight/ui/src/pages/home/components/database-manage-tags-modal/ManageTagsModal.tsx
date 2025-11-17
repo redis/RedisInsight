@@ -112,7 +112,7 @@ export const ManageTagsModal = ({
       header={
         <Col gap="xl">
           <Title size="L">Manage tags for {instance.name}</Title>
-          <Text size="m" color="subdued">
+          <Text size="m" color="secondary">
             Tags are key-value pairs that let you categorize your databases.
           </Text>
         </Col>

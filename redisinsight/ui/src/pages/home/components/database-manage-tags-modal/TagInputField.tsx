@@ -35,6 +35,7 @@ export const TagInputField = ({
           value={value}
           disabled={disabled}
           valid={!isInvalid ? false : undefined}
+          error={isInvalid ? errorMessage : undefined}
           onChange={(value) => onChange(value)}
           placeholder={placeholder}
           onFocusCapture={() => {

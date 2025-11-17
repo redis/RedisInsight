@@ -26,8 +26,7 @@ export const TagFormRow = styled(Row)`
   }
 `
 
-export const WarningBannerWrapper = styled.div`
-  display: flex;
+export const WarningBannerWrapper = styled(Row)`
   align-items: center;
   gap: ${({ theme }) => theme.core.space.space100};
   padding: 6px 12px;
@@ -44,8 +43,9 @@ export const HeaderWrapper = styled(Row)`
   > p {
     flex: 1;
     font-weight: bold;
-    padding: 12px 6px;
-    margin: 6px;
+    padding: ${({ theme }) =>
+      `${theme.core.space.space150} ${theme.core.space.space100}`};
+    margin: ${({ theme }) => theme.core.space.space050};
     margin-right: 10px;
   }
 
