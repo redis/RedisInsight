@@ -9,6 +9,7 @@ import {
 import { type Maybe, type Nullable } from 'uiSrc/utils'
 import { Spacer } from 'uiSrc/components/base/layout'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
+import { riToast } from 'uiSrc/components/base/display/toast'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 import {
   type ColumnDef,
@@ -150,7 +151,11 @@ const RedisCloudSubscriptions = ({
         </DatabaseWrapper>
         <MessageBar
           opened={countStatusActive + countStatusFailed > 0}
-          variant={!!countStatusFailed ? 'attention' : 'success'}
+          variant={
+            !!countStatusFailed
+              ? riToast.Variant.Attention
+              : riToast.Variant.Success
+          }
         >
           <SummaryText
             countStatusActive={countStatusActive}

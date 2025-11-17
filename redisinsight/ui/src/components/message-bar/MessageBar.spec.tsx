@@ -1,6 +1,7 @@
 import React from 'react'
 import { instance, mock } from 'ts-mockito'
 import { render, waitFor } from 'uiSrc/utils/test-utils'
+import { riToast } from 'uiSrc/components/base/display/toast'
 import MessageBar, { Props } from './MessageBar'
 
 const mockedProps = mock<Props>()
@@ -8,7 +9,7 @@ const mockedProps = mock<Props>()
 const renderMessageBar = async (
   children: React.ReactElement,
   opened = true,
-  variant?: 'success' | 'attention',
+  variant?: typeof riToast.Variant.Success | typeof riToast.Variant.Attention,
 ) => {
   const screen = render(
     <MessageBar {...instance(mockedProps)} opened={opened} variant={variant}>
@@ -51,7 +52,7 @@ describe('MessageBar', () => {
     const { getByTestId } = await renderMessageBar(
       <p data-testid="attention-variant">Attention variant test</p>,
       true,
-      'attention',
+      riToast.Variant.Attention,
     )
 
     const toast = getByTestId('redisui-toast')

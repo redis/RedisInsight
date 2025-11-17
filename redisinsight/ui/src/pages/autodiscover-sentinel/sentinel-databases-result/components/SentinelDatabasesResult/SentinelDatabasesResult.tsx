@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { sentinelSelector } from 'uiSrc/slices/instances/sentinel'
 import { type ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
+import { riToast } from 'uiSrc/components/base/display/toast'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
@@ -106,7 +107,11 @@ const SentinelDatabasesResult = ({
         </DatabaseWrapper>
         <MessageBar
           opened={!!countSuccessAdded || !!countFailAdded}
-          variant={!!countFailAdded ? 'attention' : 'success'}
+          variant={
+            !!countFailAdded
+              ? riToast.Variant.Attention
+              : riToast.Variant.Success
+          }
         >
           <SummaryText
             countSuccessAdded={countSuccessAdded}

@@ -5,30 +5,29 @@ import { ONE_HOUR } from 'uiSrc/components/notifications/constants'
 export interface Props {
   children?: React.ReactElement
   opened: boolean
-  variant?: 'success' | 'attention'
+  variant?: typeof riToast.Variant.Success | typeof riToast.Variant.Attention
 }
 
 export const MessageBar = ({
   children,
   opened,
-  variant = 'success',
+  variant = riToast.Variant.Success,
 }: Props) => {
   useEffect(() => {
     if (!opened) {
       return
     }
+
     riToast(
       {
         message: children,
       },
       {
-        // @ts-ignore
-        className: variant,
         variant,
         containerId: 'autodiscovery-message-bar',
       },
     )
-  }, [opened])
+  }, [opened, variant])
 
   return (
     <RiToaster

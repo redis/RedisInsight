@@ -4,6 +4,7 @@ import type { InstanceRedisCluster } from 'uiSrc/slices/interfaces'
 import { AddRedisDatabaseStatus } from 'uiSrc/slices/interfaces'
 import { setTitle } from 'uiSrc/utils'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
+import { riToast } from 'uiSrc/components/base/display/toast'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
 import { Row } from 'uiSrc/components/base/layout/flex'
@@ -87,7 +88,11 @@ const RedisClusterDatabasesResult = ({
         />
         <MessageBar
           opened={!!countSuccessAdded || !!countFailAdded}
-          variant={!!countFailAdded ? 'attention' : 'success'}
+          variant={
+            !!countFailAdded
+              ? riToast.Variant.Attention
+              : riToast.Variant.Success
+          }
         >
           <SummaryText
             countSuccessAdded={countSuccessAdded}
