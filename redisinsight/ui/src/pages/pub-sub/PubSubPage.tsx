@@ -15,7 +15,7 @@ import { OnboardingTour } from 'uiSrc/components'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { incrementOnboardStepAction } from 'uiSrc/slices/app/features'
 import { OnboardingSteps } from 'uiSrc/constants/onboarding'
-import { MessagesListWrapper, PublishMessage } from './components'
+import { MessagesListTable, PublishMessage } from './components'
 
 import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
 import { Theme } from 'uiSrc/components/base/theme/types'
@@ -76,7 +76,7 @@ const PubSubPage = () => {
   return (
     <Col data-testid="pub-sub-page" justify="between">
       <FlexItem grow={true}>
-        <MessagesListWrapper />
+        <MessagesListTable />
       </FlexItem>
 
       <FooterPanel grow={false}>

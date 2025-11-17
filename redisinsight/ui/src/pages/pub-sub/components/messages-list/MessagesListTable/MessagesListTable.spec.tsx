@@ -2,7 +2,7 @@ import React from 'react'
 import { render, screen } from 'uiSrc/utils/test-utils'
 
 import { pubSubSelector as pubSubSelectorMock } from 'uiSrc/slices/pubsub/pubsub'
-import MessagesListWrapper from './MessagesListWrapper'
+import MessagesListTable from './MessagesListTable'
 
 jest.mock('uiSrc/slices/pubsub/pubsub', () => ({
   ...jest.requireActual('uiSrc/slices/pubsub/pubsub'),
@@ -18,9 +18,9 @@ afterEach(() => {
   jest.clearAllMocks()
 })
 
-describe('MessagesListWrapper', () => {
+describe('MessagesListTable', () => {
   it('should render EmptyMessagesList by default', () => {
-    const { queryByTestId } = render(<MessagesListWrapper />)
+    const { queryByTestId } = render(<MessagesListTable />)
 
     expect(queryByTestId('messages-list')).not.toBeInTheDocument()
     expect(queryByTestId('empty-messages-list')).toBeInTheDocument()
@@ -32,7 +32,7 @@ describe('MessagesListWrapper', () => {
       messages: [],
     })
 
-    const { queryByTestId } = render(<MessagesListWrapper />)
+    const { queryByTestId } = render(<MessagesListTable />)
 
     expect(queryByTestId('messages-list')).toBeInTheDocument()
     expect(queryByTestId('empty-messages-list')).not.toBeInTheDocument()
@@ -44,7 +44,7 @@ describe('MessagesListWrapper', () => {
       messages: [{ time: 123, channel: 'channel', message: 'msg' }],
     })
 
-    render(<MessagesListWrapper />)
+    render(<MessagesListTable />)
 
     expect(screen.queryByTestId('messages-list')).toBeInTheDocument()
     expect(screen.queryByTestId('empty-messages-list')).not.toBeInTheDocument()
@@ -57,14 +57,14 @@ describe('MessagesListWrapper', () => {
       isSubscribed: false,
     })
 
-    render(<MessagesListWrapper />)
+    render(<MessagesListTable />)
     expect(screen.queryByText('msg')).toBeInTheDocument()
   })
 
   it('should render header with count and "Subscribed" badge when subscribed and no messages', () => {
     pubSubSelector.mockReturnValue({ isSubscribed: true, messages: [] })
 
-    render(<MessagesListWrapper />)
+    render(<MessagesListTable />)
 
     expect(screen.getByText('Messages:')).toBeInTheDocument()
     expect(screen.getByText('0')).toBeInTheDocument()
@@ -85,7 +85,7 @@ describe('MessagesListWrapper', () => {
     ]
     pubSubSelector.mockReturnValue({ isSubscribed: false, messages: items })
 
-    render(<MessagesListWrapper />)
+    render(<MessagesListTable />)
 
     expect(screen.getByText('Messages:')).toBeInTheDocument()
     expect(screen.getByText(String(items.length))).toBeInTheDocument()

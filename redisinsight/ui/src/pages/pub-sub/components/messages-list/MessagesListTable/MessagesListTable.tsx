@@ -7,20 +7,20 @@ import { isVersionHigherOrEquals } from 'uiSrc/utils'
 import { CommandsVersions } from 'uiSrc/constants/commandsVersions'
 import { useConnectionType } from 'uiSrc/components/hooks/useConnectionType'
 import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
-import EmptyMessagesList from './EmptyMessagesList'
+import EmptyMessagesList from '../EmptyMessagesList'
 
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 import { HorizontalSpacer } from 'uiSrc/components/base/layout'
-import SubscribeForm from '../subscribe-form'
-import PatternsInfo from '../patternsInfo'
-import { Wrapper } from './MessageListWrapper.styles'
+import SubscribeForm from '../../subscribe-form'
+import PatternsInfo from '../../patternsInfo'
+import { Wrapper } from './MessagesListTable.styles'
 import { Table } from 'uiSrc/components/base/layout/table'
-import { PUB_SUB_TABLE_COLUMNS } from './MessagesListTable/MessagesListTable.config'
-import { PubSubTableColumn } from './MessagesListTable/MessagesListTable.constants'
+import { PUB_SUB_TABLE_COLUMNS } from './MessagesListTable.config'
+import { PubSubTableColumn } from './MessagesListTable.constants'
 
-const MessagesListWrapper = () => {
+const MessagesListTable = () => {
   const {
     messages = [],
     isSubscribed,
@@ -96,4 +96,4 @@ const MessagesListWrapper = () => {
   )
 }
 
-export default MessagesListWrapper
+export default MessagesListTable
