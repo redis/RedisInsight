@@ -26,8 +26,11 @@ export const Tooltip = ({
   icon,
   value,
   index,
-}: ITooltipProps) =>
-  contentProp ? (
+}: ITooltipProps) => {
+  if (!contentProp) {
+    return null
+  }
+  return (
     <RiTooltip
       content={
         isPersistencePolicyKey(value)
@@ -54,4 +57,5 @@ export const Tooltip = ({
         </OptionsIcon>
       )}
     </RiTooltip>
-  ) : null
+  )
+}
