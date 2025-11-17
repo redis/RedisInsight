@@ -38,7 +38,8 @@ export const WarningBannerWrapper = styled.div`
 `
 
 export const HeaderWrapper = styled(Row)`
-  border-bottom: 1px solid var(--separatorColor);
+  border-bottom: 1px solid
+    ${({ theme }) => theme.semantic.color.border.neutral500};
 
   > p {
     flex: 1;
@@ -48,7 +49,8 @@ export const HeaderWrapper = styled(Row)`
     margin-right: 10px;
   }
 
-  :first-child {
-    border-right: 1px solid var(--separatorColor);
+  p:first-child {
+    border-right: 1px solid
+      ${({ theme }) => theme.semantic.color.border.neutral500};
   }
 `
