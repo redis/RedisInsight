@@ -19,7 +19,6 @@ export const EndpointCell = ({ publicEndpoint }: EndpointCellProps) => {
   return (
     <CopyTextContainer>
       <RiTooltip
-        delay={200}
         position="bottom"
         title="Endpoint"
         content={formatLongName(publicEndpoint)}
@@ -28,7 +27,6 @@ export const EndpointCell = ({ publicEndpoint }: EndpointCellProps) => {
       </RiTooltip>
 
       <RiTooltip
-        delay={200}
         position="right"
         content="Copy"
         anchorClassName="copyPublicEndpointTooltip"
@@ -41,4 +39,3 @@ export const EndpointCell = ({ publicEndpoint }: EndpointCellProps) => {
     </CopyTextContainer>
   )
 }
-

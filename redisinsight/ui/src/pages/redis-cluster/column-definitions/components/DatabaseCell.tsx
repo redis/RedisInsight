@@ -17,7 +17,6 @@ export const DatabaseCell = ({ name }: DatabaseCellProps) => {
   return (
     <div role="presentation" data-testid={`db_name_${name}`}>
       <RiTooltip
-        delay={200}
         position="bottom"
         title="Database"
         className={styles.tooltipColumnName}
@@ -29,4 +28,3 @@ export const DatabaseCell = ({ name }: DatabaseCellProps) => {
     </div>
   )
 }
-

@@ -13,15 +13,14 @@ export interface EndpointCellProps {
 }
 
 export const EndpointCell = ({ dnsName, port }: EndpointCellProps) => {
-    if (!dnsName) {
-        return null
-    }
-    const text = `${dnsName}:${port}`
+  if (!dnsName) {
+    return null
+  }
+  const text = `${dnsName}:${port}`
 
   return (
     <CopyTextContainer>
       <RiTooltip
-        delay={200}
         position="bottom"
         title="Endpoint"
         content={formatLongName(text)}
@@ -42,4 +41,3 @@ export const EndpointCell = ({ dnsName, port }: EndpointCellProps) => {
     </CopyTextContainer>
   )
 }
-

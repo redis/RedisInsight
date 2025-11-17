@@ -11,9 +11,12 @@ export const DatabaseCell = ({ name, className }: DatabaseCellProps) => {
   const cellContent = replaceSpaces(name.substring(0, 200))
 
   return (
-    <div role="presentation" data-testid={`db_name_${name}`} className={className}>
+    <div
+      role="presentation"
+      data-testid={`db_name_${name}`}
+      className={className}
+    >
       <RiTooltip
-        delay={200}
         position="bottom"
         title="Database"
         className={styles.tooltipColumnName}
@@ -25,4 +28,3 @@ export const DatabaseCell = ({ name, className }: DatabaseCellProps) => {
     </div>
   )
 }
-

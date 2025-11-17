@@ -7,13 +7,15 @@ import styles from 'uiSrc/pages/autodiscover-cloud/redis-cloud-databases/styles.
 
 import { SubscriptionCellProps } from './SubscriptionCell.types'
 
-export const SubscriptionCell = ({ name, className }: SubscriptionCellProps) => {
+export const SubscriptionCell = ({
+  name,
+  className,
+}: SubscriptionCellProps) => {
   const cellContent = replaceSpaces(name.substring(0, 200))
 
   return (
     <div role="presentation" className={className}>
       <RiTooltip
-        delay={200}
         position="bottom"
         title="Subscription"
         className={styles.tooltipColumnName}
@@ -25,4 +27,3 @@ export const SubscriptionCell = ({ name, className }: SubscriptionCellProps) => 
     </div>
   )
 }
-
