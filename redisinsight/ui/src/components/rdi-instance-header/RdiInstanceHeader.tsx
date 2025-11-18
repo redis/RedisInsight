@@ -15,6 +15,7 @@ import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { isAnyFeatureEnabled } from 'uiSrc/utils/features'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
+import { Link } from 'uiSrc/components/base/link/Link'
 import InstancesNavigationPopover from '../instance-header/components/instances-navigation-popover'
 import styles from './styles.module.scss'
 
@@ -43,22 +44,23 @@ const RdiInstanceHeader = () => {
         >
           <div>
             <RiTooltip position="bottom" content="My RDI instances">
-              <Text
-                className={styles.breadCrumbLink}
+              <Link
+                color="subdued"
+                underline
+                variant="inline"
                 aria-label="My RDI instances"
                 data-testid="my-rdi-instances-btn"
                 onClick={goHome}
-                onKeyDown={goHome}
               >
-                RDI instances
-              </Text>
+                Data integration
+              </Link>
             </RiTooltip>
           </div>
           <div style={{ flex: 1, overflow: 'hidden' }}>
             <div style={{ maxWidth: '100%' }}>
               <Row align="center">
                 <FlexItem>
-                  <Text className={styles.divider}>&#62;</Text>
+                  <Text className={styles.divider}>/</Text>
                 </FlexItem>
                 <FlexItem grow style={{ overflow: 'hidden' }}>
                   <InstancesNavigationPopover name={name} />
