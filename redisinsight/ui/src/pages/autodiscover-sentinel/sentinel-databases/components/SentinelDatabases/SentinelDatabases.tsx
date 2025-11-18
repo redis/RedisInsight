@@ -12,7 +12,7 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { RiIcon } from 'uiSrc/components/base/icons'
+import { InfoIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import {
@@ -161,23 +161,26 @@ const SentinelDatabases = ({
       title = validationErrors.REQUIRED_TITLE(emptyAliases.length)
       content = 'Database Alias'
     }
-    const TooltipIcon = () => (
-      <RiTooltip position="top" title={title} content={<span>{content}</span>}>
-        <RiIcon type="InfoIcon" />
-      </RiTooltip>
-    )
 
+    const disabled = isSubmitDisabled()
     return (
-      <PrimaryButton
-        type="submit"
-        onClick={onClick}
-        disabled={isSubmitDisabled()}
-        loading={loading}
-        icon={isSubmitDisabled() ? TooltipIcon : undefined}
-        data-testid="btn-add-primary-group"
+      <RiTooltip
+        position="top"
+        title={title}
+        content={disabled ? <span>{content}</span> : undefined}
+        disabled={!disabled}
       >
-        Add Primary Group
-      </PrimaryButton>
+        <PrimaryButton
+          type="submit"
+          onClick={onClick}
+          disabled={disabled}
+          loading={loading}
+          icon={disabled ? InfoIcon : undefined}
+          data-testid="btn-add-primary-group"
+        >
+          Add Primary Group
+        </PrimaryButton>
+      </RiTooltip>
     )
   }
 
