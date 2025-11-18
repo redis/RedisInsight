@@ -7,16 +7,16 @@ import ConfigurationCard, { ConfigurationCardProps } from './ConfigurationCard'
 
 const mockedProps = mock<ConfigurationCardProps>()
 
-const mockUseSelector = jest.fn()
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useSelector: () => mockUseSelector(),
+const mockUseConfigurationState = jest.fn()
+jest.mock('./hooks/useConfigurationState', () => ({
+  useConfigurationState: () => mockUseConfigurationState(),
 }))
 
 describe('ConfigurationCard', () => {
   beforeEach(() => {
-    mockUseSelector.mockReturnValue({
-      changes: {},
+    mockUseConfigurationState.mockReturnValue({
+      hasChanges: false,
+      isValid: true,
       configValidationErrors: [],
     })
   })
@@ -65,8 +65,9 @@ describe('ConfigurationCard', () => {
 
   describe('Changes indicator', () => {
     it('should not show changes indicator when no changes', () => {
-      mockUseSelector.mockReturnValue({
-        changes: {},
+      mockUseConfigurationState.mockReturnValue({
+        hasChanges: false,
+        isValid: true,
         configValidationErrors: [],
       })
 
@@ -78,8 +79,9 @@ describe('ConfigurationCard', () => {
     })
 
     it('should show changes indicator when config has changes', () => {
-      mockUseSelector.mockReturnValue({
-        changes: { config: 'modified' },
+      mockUseConfigurationState.mockReturnValue({
+        hasChanges: true,
+        isValid: true,
         configValidationErrors: [],
       })
 
@@ -93,8 +95,9 @@ describe('ConfigurationCard', () => {
 
   describe('Validation errors', () => {
     it('should not show error icon when config is valid', () => {
-      mockUseSelector.mockReturnValue({
-        changes: {},
+      mockUseConfigurationState.mockReturnValue({
+        hasChanges: false,
+        isValid: true,
         configValidationErrors: [],
       })
 
@@ -106,8 +109,9 @@ describe('ConfigurationCard', () => {
     })
 
     it('should show error icon when config has validation errors', () => {
-      mockUseSelector.mockReturnValue({
-        changes: {},
+      mockUseConfigurationState.mockReturnValue({
+        hasChanges: false,
+        isValid: false,
         configValidationErrors: [
           'Invalid configuration',
           'Missing required field',
@@ -122,8 +126,9 @@ describe('ConfigurationCard', () => {
     })
 
     it('should handle single validation error', () => {
-      mockUseSelector.mockReturnValue({
-        changes: {},
+      mockUseConfigurationState.mockReturnValue({
+        hasChanges: false,
+        isValid: false,
         configValidationErrors: ['Single error'],
       })
 
@@ -136,8 +141,9 @@ describe('ConfigurationCard', () => {
   })
 
   it('should show both changes indicator and error icon when config has changes and errors', () => {
-    mockUseSelector.mockReturnValue({
-      changes: { config: 'modified' },
+    mockUseConfigurationState.mockReturnValue({
+      hasChanges: true,
+      isValid: false,
       configValidationErrors: ['Invalid configuration'],
     })
 

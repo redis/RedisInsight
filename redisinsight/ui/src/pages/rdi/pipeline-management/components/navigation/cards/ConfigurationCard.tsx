@@ -1,13 +1,12 @@
 import React from 'react'
 import { RdiPipelineTabs } from 'uiSrc/slices/interfaces'
-import { useSelector } from 'react-redux'
 
-import { rdiPipelineSelector } from 'uiSrc/slices/rdi/pipeline'
 import { RiTooltip } from 'uiSrc/components'
 import { Indicator } from 'uiSrc/components/base/text/text.styles'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { Icon, ToastNotificationIcon } from 'uiSrc/components/base/icons'
+import { useConfigurationState } from './hooks'
 
 import BaseCard, { BaseCardProps } from './BaseCard'
 import ValidationErrorsList from '../../validation-errors-list/ValidationErrorsList'
@@ -23,14 +22,12 @@ const ConfigurationCard = ({
   onSelect,
   isSelected,
 }: ConfigurationCardProps) => {
-  const { changes, configValidationErrors } = useSelector(rdiPipelineSelector)
+  const { hasChanges, isValid, configValidationErrors } =
+    useConfigurationState()
 
   const handleClick = () => {
     onSelect(RdiPipelineTabs.Config)
   }
-
-  const hasChanges = !!changes.config
-  const isValid = configValidationErrors.length === 0
 
   return (
     <BaseCard
