@@ -6,7 +6,8 @@ export const ButtonWrapper = styled(Col)`
   flex: 1;
   align-items: center;
   justify-content: center;
-  padding: 12px 8px;
+  padding: ${({ theme }) =>
+    `${theme.core.space.space150} ${theme.core.space.space100}`};
   border-radius: ${({ theme }) => theme.core.space.space050};
   border: 1px solid ${({ theme }) => theme.color.dusk200};
 
