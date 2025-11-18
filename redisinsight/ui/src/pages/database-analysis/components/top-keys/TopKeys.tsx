@@ -38,7 +38,7 @@ const TopKeys = ({ data, loading }: Props) => {
           {topKeysLength.length < MAX_TOP_KEYS &&
           topKeysMemory?.length < MAX_TOP_KEYS
             ? 'TOP KEYS'
-            : `TOP ${MAX_TOP_KEYS}+ KEYS`}
+            : `TOP ${MAX_TOP_KEYS} KEYS`}
         </SectionTitle>
         <TextBtn
           $active={tableView === TableView.MEMORY}

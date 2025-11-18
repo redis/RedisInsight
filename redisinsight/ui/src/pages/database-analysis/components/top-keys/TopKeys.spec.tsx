@@ -1,6 +1,7 @@
 import React from 'react'
 import { instance, mock } from 'ts-mockito'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
+import { DatabaseAnalysisFactory } from 'uiSrc/mocks/factories/database-analysis/DatabaseAnalysis.factory'
 
 import TopKeys, { Props } from './TopKeys'
 
@@ -14,10 +15,10 @@ const mockKey = {
   ttl: -1,
 }
 
-const mockData = {
+const mockData = DatabaseAnalysisFactory.build({
   topKeysLength: [mockKey],
   topKeysMemory: [mockKey],
-}
+})
 
 describe('TopKeys', () => {
   it('should render', () => {
@@ -64,12 +65,12 @@ describe('TopKeys', () => {
   })
 
   it('should not render tables when topKeysLength and topKeysMemory are empty array', () => {
-    const mockData = {
+    const emptyMockData = DatabaseAnalysisFactory.build({
       topKeysLength: [],
       topKeysMemory: [],
-    }
+    })
     const { queryByTestId } = render(
-      <TopKeys {...instance(mockedProps)} data={mockData} />,
+      <TopKeys {...instance(mockedProps)} data={emptyMockData} />,
     )
 
     expect(queryByTestId('top-keys-table-memory')).not.toBeInTheDocument()
@@ -94,13 +95,13 @@ describe('TopKeys', () => {
   })
 
   it('should render TOP 15 KEYS title', () => {
-    const mockData = {
+    const largeMockData = DatabaseAnalysisFactory.build({
       topKeysLength: Array.from({ length: 15 }, () => mockKey),
       topKeysMemory: Array.from({ length: 15 }, () => mockKey),
-    }
+    })
 
     const { queryByText } = render(
-      <TopKeys {...instance(mockedProps)} data={mockData} />,
+      <TopKeys {...instance(mockedProps)} data={largeMockData} />,
     )
 
     expect(queryByText('TOP KEYS')).not.toBeInTheDocument()
