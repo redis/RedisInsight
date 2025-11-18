@@ -1,5 +1,5 @@
 import { renderHook } from 'uiSrc/utils/test-utils'
-import { rdiPipelineSelector } from 'uiSrc/slices/rdi/pipeline'
+import { rdiPipelineSelector, initialState } from 'uiSrc/slices/rdi/pipeline'
 import { IStateRdiPipeline, FileChangeType } from 'uiSrc/slices/interfaces'
 import { useConfigurationState } from './useConfigurationState'
 
@@ -12,14 +12,12 @@ const mockRdiPipelineSelector = rdiPipelineSelector as jest.MockedFunction<
   typeof rdiPipelineSelector
 >
 
-type MockRdiPipelineState = Pick<
-  IStateRdiPipeline,
-  'changes' | 'configValidationErrors'
->
-
-// Helper function to create mock state with only the properties we need
-const createMockState = (state: MockRdiPipelineState): IStateRdiPipeline =>
-  state as IStateRdiPipeline
+const createMockState = (
+  overrides: Partial<IStateRdiPipeline> = {},
+): IStateRdiPipeline => ({
+  ...initialState,
+  ...overrides,
+})
 
 describe('useConfigurationState', () => {
   beforeEach(() => {
