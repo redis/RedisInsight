@@ -237,7 +237,7 @@ const Job = (props: Props) => {
           </Text>
           {loading ? (
             <div data-testid="rdi-job-loading">
-              <Loader color="secondary" size="l" loaderText="Loading data..." />
+              <Loader color="secondary" size="l" loaderText="Loading..." />
             </div>
           ) : (
             <MonacoYaml
