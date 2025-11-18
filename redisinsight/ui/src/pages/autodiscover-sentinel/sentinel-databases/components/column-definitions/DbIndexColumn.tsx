@@ -4,12 +4,13 @@ import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/In
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import { RiIcon } from 'uiSrc/components/base/icons'
+import { ColumnDefinitionTitles } from './constants'
 
 export const DbIndexColumn = (
   handleChangedInput: (name: string, value: string) => void,
 ): ColumnDef<ModifiedSentinelMaster> => {
   return {
-    header: 'Database Index',
+    header: ColumnDefinitionTitles.DatabaseIndex,
     id: 'db',
     accessorKey: 'db',
     size: 140,

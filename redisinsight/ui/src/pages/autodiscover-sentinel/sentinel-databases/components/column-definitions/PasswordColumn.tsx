@@ -3,12 +3,13 @@ import { InputFieldSentinel } from 'uiSrc/components'
 import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/InputFieldSentinel'
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
+import { ColumnDefinitionTitles } from './constants'
 
 export const PasswordColumn = (
   handleChangedInput: (name: string, value: string) => void,
 ): ColumnDef<ModifiedSentinelMaster> => {
   return {
-    header: 'Password',
+    header: ColumnDefinitionTitles.Password,
     id: 'password',
     accessorKey: 'password',
     cell: ({
