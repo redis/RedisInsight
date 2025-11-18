@@ -126,6 +126,7 @@ const SourcePipelineDialog = () => {
             <Row gap="xxl">
               <ButtonWrapper
                 gap="s"
+                align='center'
                 role="button"
                 tabIndex={0}
                 onKeyDown={(event) => onEnter(event, onLoadPipeline)}
