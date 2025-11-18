@@ -19,6 +19,7 @@ export const AddressColumn = (): ColumnDef<ModifiedSentinelMaster> => {
     id: 'host',
     accessorKey: 'host',
     enableSorting: true,
+    minSize: 170,
     cell: ({
       row: {
         original: { host, port },
