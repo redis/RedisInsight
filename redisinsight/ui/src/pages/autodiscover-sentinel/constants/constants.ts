@@ -6,4 +6,5 @@ export enum ColumnDefinitionTitles {
   NumberOfReplicas = '# of replicas',
   Password = 'Password',
   PrimaryGroup = 'Primary group',
+  Result = 'Result',
 }

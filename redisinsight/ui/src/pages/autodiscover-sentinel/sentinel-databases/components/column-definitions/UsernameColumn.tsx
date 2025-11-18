@@ -3,7 +3,7 @@ import { InputFieldSentinel } from 'uiSrc/components'
 import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/InputFieldSentinel'
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
-import { ColumnDefinitionTitles } from './constants'
+import { ColumnDefinitionTitles } from 'uiSrc/pages/autodiscover-sentinel/constants/constants'
 
 export const UsernameColumn = (
   handleChangedInput: (name: string, value: string) => void,

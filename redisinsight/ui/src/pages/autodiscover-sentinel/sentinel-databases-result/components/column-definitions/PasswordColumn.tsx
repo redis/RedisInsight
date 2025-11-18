@@ -6,6 +6,7 @@ import {
   ModifiedSentinelMaster,
   AddRedisDatabaseStatus,
 } from 'uiSrc/slices/interfaces'
+import { ColumnDefinitionTitles } from 'uiSrc/pages/autodiscover-sentinel/constants/constants'
 
 export const PasswordColumn = (
   handleChangedInput: (name: string, value: string) => void,
@@ -16,7 +17,7 @@ export const PasswordColumn = (
   ) => boolean,
 ): ColumnDef<ModifiedSentinelMaster> => {
   return {
-    header: 'Password',
+    header: ColumnDefinitionTitles.Password,
     id: 'password',
     accessorKey: 'password',
     cell: ({

@@ -16,6 +16,7 @@ import { ApiStatusCode } from 'uiSrc/constants'
 import { ApiEncryptionErrors } from 'uiSrc/constants/apiErrors'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { ColumnDefinitionTitles } from 'uiSrc/pages/autodiscover-sentinel/constants/constants'
 
 const addError = (
   { name, error, alias, loading }: ModifiedSentinelMaster,
@@ -58,7 +59,7 @@ export const ResultColumn = (
   onAddInstance?: (name: string) => void,
 ): ColumnDef<ModifiedSentinelMaster> => {
   return {
-    header: 'Result',
+    header: ColumnDefinitionTitles.Result,
     id: 'message',
     accessorKey: 'message',
     enableSorting: true,

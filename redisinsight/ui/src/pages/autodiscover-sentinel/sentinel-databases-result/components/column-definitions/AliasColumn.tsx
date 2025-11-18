@@ -7,6 +7,7 @@ import {
   ModifiedSentinelMaster,
   AddRedisDatabaseStatus,
 } from 'uiSrc/slices/interfaces'
+import { ColumnDefinitionTitles } from 'uiSrc/pages/autodiscover-sentinel/constants/constants'
 
 export const AliasColumn = (
   handleChangedInput: (name: string, value: string) => void,
@@ -16,7 +17,7 @@ export const AliasColumn = (
   ) => boolean,
 ): ColumnDef<ModifiedSentinelMaster> => {
   return {
-    header: 'Database Alias*',
+    header: ColumnDefinitionTitles.Alias,
     id: 'alias',
     accessorKey: 'alias',
     enableSorting: true,

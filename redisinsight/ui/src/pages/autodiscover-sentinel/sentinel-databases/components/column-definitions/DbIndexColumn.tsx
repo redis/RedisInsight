@@ -5,7 +5,7 @@ import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/In
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import { RiIcon } from 'uiSrc/components/base/icons'
-import { ColumnDefinitionTitles } from './constants'
+import { ColumnDefinitionTitles } from 'uiSrc/pages/autodiscover-sentinel/constants/constants'
 import { Row } from 'uiSrc/components/base/layout/flex'
 
 const InputContainer = styled.div<React.HTMLAttributes<HTMLDivElement>>`

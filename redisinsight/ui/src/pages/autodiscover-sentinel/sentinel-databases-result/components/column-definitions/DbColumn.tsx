@@ -7,12 +7,13 @@ import {
   AddRedisDatabaseStatus,
 } from 'uiSrc/slices/interfaces'
 import { ApiStatusCode } from 'uiSrc/constants'
+import { ColumnDefinitionTitles } from 'uiSrc/pages/autodiscover-sentinel/constants/constants'
 
 export const DbColumn = (
   handleChangedInput: (name: string, value: string) => void,
 ): ColumnDef<ModifiedSentinelMaster> => {
   return {
-    header: 'Database Index',
+    header: ColumnDefinitionTitles.DatabaseIndex,
     id: 'db',
     accessorKey: 'db',
     size: 140,

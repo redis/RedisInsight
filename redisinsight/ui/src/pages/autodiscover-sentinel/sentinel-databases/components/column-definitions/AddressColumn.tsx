@@ -7,7 +7,7 @@ import {
 import { RiTooltip } from 'uiSrc/components'
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
-import { ColumnDefinitionTitles } from './constants'
+import { ColumnDefinitionTitles } from 'uiSrc/pages/autodiscover-sentinel/constants/constants'
 
 const handleCopy = (text = '') => {
   return navigator.clipboard.writeText(text)
