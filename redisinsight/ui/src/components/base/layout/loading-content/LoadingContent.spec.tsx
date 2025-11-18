@@ -1,5 +1,5 @@
 import React from 'react'
-import { render } from '@testing-library/react'
+import { render } from 'uiSrc/utils/test-utils'
 import LoadingContent from './LoadingContent'
 
 describe('LoadingContent', () => {
