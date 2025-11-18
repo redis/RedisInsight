@@ -23,6 +23,7 @@ import {
 } from 'uiSrc/components/base/icons'
 import { FileChangeType } from 'uiSrc/slices/interfaces'
 import { Modal } from 'uiSrc/components/base/display'
+import { Spacer } from 'uiSrc/components/base/layout'
 
 import { ButtonWrapper } from './SourcePipelineModal.styles'
 
@@ -109,13 +110,10 @@ const SourcePipelineDialog = () => {
   }
 
   return (
-    <Modal
-      open
-      title=""
-      width="520px"
-      onCancel={handleCloseDialog}
-      content={
-        <>
+    <Modal.Compose open onOpenChange={(open) => !open && handleCloseDialog()}>
+      <Modal.Content.Compose persistent>
+        <Modal.Content.Body.Compose>
+          <Spacer size="xl" />
           <Col gap="xxl">
             <Col align="center" justify="center">
               <Title size="L" color="primary">
@@ -167,9 +165,10 @@ const SourcePipelineDialog = () => {
               </ButtonWrapper>
             </Row>
           </Col>
-        </>
-      }
-    />
+          <Spacer size="xl" />
+        </Modal.Content.Body.Compose>
+      </Modal.Content.Compose>
+    </Modal.Compose>
   )
 }
 
