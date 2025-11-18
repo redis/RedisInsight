@@ -111,7 +111,7 @@ const SourcePipelineDialog = () => {
 
   return (
     <Modal.Compose open onOpenChange={(open) => !open && handleCloseDialog()}>
-      <Modal.Content.Compose persistent>
+      <Modal.Content.Compose>
         <Modal.Content.Body.Compose>
           <Spacer size="xl" />
           <Col gap="xxl">
