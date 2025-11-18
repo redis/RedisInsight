@@ -43,7 +43,7 @@ const WithDataRender = () => {
   )
 
   useEffect(() => {
-    dispatch(getDBAnalysisSuccess(data as any))
+    dispatch(getDBAnalysisSuccess(data))
     dispatch(loadDBAnalysisReportsSuccess(reports))
     dispatch(setSelectedAnalysisId(data.id))
   }, [dispatch, data, reports])

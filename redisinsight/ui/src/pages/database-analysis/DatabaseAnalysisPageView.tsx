@@ -1,23 +1,12 @@
 import React from 'react'
-import styled from 'styled-components'
-import Header from './components/header'
-import DatabaseAnalysisTabs from './components/data-nav-tabs'
 import {
   type DatabaseAnalysis,
   type ShortDatabaseAnalysis,
 } from 'apiSrc/modules/database-analysis/models'
 import { Nullable } from 'uiSrc/utils'
-import { Col } from 'uiSrc/components/base/layout/flex'
-import { Theme } from 'uiSrc/components/base/theme/types'
-
-import './styles.module.scss'
-
-// Styled component for the main container with theme border
-const MainContainer = styled(Col)<React.HTMLAttributes<HTMLDivElement>>`
-  height: 100%;
-  overflow: auto;
-  padding-inline: ${({ theme }: { theme: Theme }) => theme.core.space.space200};
-`
+import { MainContainer } from './components/styles'
+import { Header } from './components'
+import DatabaseAnalysisTabs from './components/data-nav-tabs'
 
 type Props = {
   reports: ShortDatabaseAnalysis[]
