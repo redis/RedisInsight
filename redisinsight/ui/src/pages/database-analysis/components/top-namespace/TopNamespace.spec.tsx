@@ -13,32 +13,18 @@ import {
   render,
   screen,
 } from 'uiSrc/utils/test-utils'
-import { DatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
+import { DatabaseAnalysisFactory } from 'uiSrc/mocks/factories/database-analysis/DatabaseAnalysis.factory'
 
 import TopNamespace, { Props } from './TopNamespace'
 
 const mockedProps = mock<Props>()
 
-const createMockedDatabaseAnalysis = (
-  overrides: Partial<DatabaseAnalysis> = {},
-): DatabaseAnalysis =>
-  ({
-    id: 'analysis-id',
-    databaseId: 'database-id',
-    filter: { match: '*', count: 10000 },
-    delimiter: ':',
-    progress: { total: 100, scanned: 100 },
-    createdAt: new Date('2023-01-01'),
-    totalKeys: { total: 100, types: [] },
-    totalMemory: { total: 1000000, types: [] },
-    topKeysNsp: [],
-    topMemoryNsp: [],
-    topKeysLength: [],
-    topKeysMemory: [],
-    expirationGroups: [],
-    recommendations: [],
-    ...overrides,
-  }) as DatabaseAnalysis
+const mockNspData = {
+  nsp: 'nsp_name' as any,
+  memory: 1,
+  keys: 1,
+  types: [{ type: 'hash', memory: 1, keys: 1 }],
+}
 
 let store: typeof mockedStore
 beforeEach(() => {
@@ -53,23 +39,9 @@ describe('TopNamespace', () => {
   })
 
   it('should render nsp-table-keys when click "btn-change-table-keys" ', () => {
-    const mockedData = createMockedDatabaseAnalysis({
-      topKeysNsp: [
-        {
-          nsp: 'nsp_name',
-          memory: 1,
-          keys: 1,
-          types: [{ type: 'hash', memory: 1, keys: 1 }],
-        },
-      ],
-      topMemoryNsp: [
-        {
-          nsp: 'nsp_name',
-          memory: 1,
-          keys: 1,
-          types: [{ type: 'hash', memory: 1, keys: 1 }],
-        },
-      ],
+    const mockedData = DatabaseAnalysisFactory.build({
+      topKeysNsp: [mockNspData],
+      topMemoryNsp: [mockNspData],
     })
 
     const { queryByTestId } = render(
@@ -85,23 +57,9 @@ describe('TopNamespace', () => {
   })
 
   it('should render nsp-table-keys when click "btn-change-table-memory" and memory button should be disabled', () => {
-    const mockedData = createMockedDatabaseAnalysis({
-      topKeysNsp: [
-        {
-          nsp: 'nsp_name',
-          memory: 1,
-          keys: 1,
-          types: [{ type: 'hash', memory: 1, keys: 1 }],
-        },
-      ],
-      topMemoryNsp: [
-        {
-          nsp: 'nsp_name',
-          memory: 1,
-          keys: 1,
-          types: [{ type: 'hash', memory: 1, keys: 1 }],
-        },
-      ],
+    const mockedData = DatabaseAnalysisFactory.build({
+      topKeysNsp: [mockNspData],
+      topMemoryNsp: [mockNspData],
     })
 
     const { queryByTestId } = render(
@@ -119,23 +77,9 @@ describe('TopNamespace', () => {
   })
 
   it('should render nsp-table-keys by default" ', () => {
-    const mockedData = createMockedDatabaseAnalysis({
-      topKeysNsp: [
-        {
-          nsp: 'nsp_name',
-          memory: 1,
-          keys: 1,
-          types: [{ type: 'hash', memory: 1, keys: 1 }],
-        },
-      ],
-      topMemoryNsp: [
-        {
-          nsp: 'nsp_name',
-          memory: 1,
-          keys: 1,
-          types: [{ type: 'hash', memory: 1, keys: 1 }],
-        },
-      ],
+    const mockedData = DatabaseAnalysisFactory.build({
+      topKeysNsp: [mockNspData],
+      topMemoryNsp: [mockNspData],
     })
 
     const { queryByTestId } = render(
@@ -149,7 +93,7 @@ describe('TopNamespace', () => {
   })
 
   it('should not render tables when topMemoryNsp and topKeysNsp are empty array', () => {
-    const mockedData = createMockedDatabaseAnalysis({
+    const mockedData = DatabaseAnalysisFactory.build({
       topKeysNsp: [],
       topMemoryNsp: [],
     })
@@ -162,23 +106,9 @@ describe('TopNamespace', () => {
   })
 
   it('should render loader when loading="true"', () => {
-    const mockedData = createMockedDatabaseAnalysis({
-      topKeysNsp: [
-        {
-          nsp: 'nsp_name',
-          memory: 1,
-          keys: 1,
-          types: [{ type: 'hash', memory: 1, keys: 1 }],
-        },
-      ],
-      topMemoryNsp: [
-        {
-          nsp: 'nsp_name',
-          memory: 1,
-          keys: 1,
-          types: [{ type: 'hash', memory: 1, keys: 1 }],
-        },
-      ],
+    const mockedData = DatabaseAnalysisFactory.build({
+      topKeysNsp: [mockNspData],
+      topMemoryNsp: [mockNspData],
     })
     const { queryByTestId } = render(
       <TopNamespace {...instance(mockedProps)} loading data={mockedData} />,
@@ -190,7 +120,7 @@ describe('TopNamespace', () => {
   })
 
   it('should render message when no namespaces', () => {
-    const mockedData = createMockedDatabaseAnalysis({
+    const mockedData = DatabaseAnalysisFactory.build({
       topKeysNsp: [],
       topMemoryNsp: [],
     })
@@ -200,7 +130,7 @@ describe('TopNamespace', () => {
   })
 
   it('should call proper actions and push history after click tree view link', async () => {
-    const mockedData = createMockedDatabaseAnalysis({
+    const mockedData = DatabaseAnalysisFactory.build({
       topKeysNsp: [],
       topMemoryNsp: [],
     })
