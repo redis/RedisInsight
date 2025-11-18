@@ -200,7 +200,7 @@ const DryRunJobPanel = (props: Props) => {
   return (
     <DryRunPanelContainer
       grow
-      gap="xxl"
+      gap="l"
       data-testid="dry-run-panel"
       isFullScreen={isFullScreen}
     >
