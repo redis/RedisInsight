@@ -19,8 +19,10 @@ import {
   mockedStore,
   render,
   screen,
+  waitForRiPopoverVisible,
   waitForStack,
 } from 'uiSrc/utils/test-utils'
+import { DEFAULT_RDI_SHOWN_COLUMNS } from 'uiSrc/constants'
 
 import { apiService } from 'uiSrc/services'
 import RdiPage from './RdiPage'
@@ -32,6 +34,7 @@ jest.mock('uiSrc/slices/rdi/instances', () => ({
   instancesSelector: jest.fn().mockReturnValue({
     loading: false,
     loadingChanging: false,
+    shownColumns: ['name', 'url', 'version', 'lastConnection', 'controls'],
     data: [
       {
         id: '1',
@@ -52,24 +55,6 @@ jest.mock('uiSrc/telemetry', () => ({
   sendPageViewTelemetry: jest.fn(),
   sendEventTelemetry: jest.fn(),
 }))
-
-jest.mock('uiSrc/components/base/display', () => {
-  const actual = jest.requireActual('uiSrc/components/base/display')
-
-  return {
-    ...actual,
-    Modal: {
-      ...actual.Modal,
-      Content: {
-        ...actual.Modal.Content,
-        Header: {
-          ...actual.Modal.Content.Header,
-          Title: jest.fn().mockReturnValue(null),
-        },
-      },
-    },
-  }
-})
 
 let storeMock: typeof mockedStore
 
@@ -98,11 +83,14 @@ describe('RdiPage', () => {
   it('should render empty panel when initially loading', () => {
     ;(instancesSelector as jest.Mock).mockReturnValueOnce({
       loading: true,
+      shownColumns: DEFAULT_RDI_SHOWN_COLUMNS,
       data: [],
     })
     render(<RdiPage />)
 
-    expect(screen.queryByTestId('rdi-instance-list')).not.toBeInTheDocument()
+    // New table-based list renders with an empty state "Loading..." but still exists
+    expect(screen.getByTestId('rdi-instance-list')).toBeInTheDocument()
+
     expect(
       screen.queryByTestId('empty-rdi-instance-list'),
     ).not.toBeInTheDocument()
@@ -111,6 +99,7 @@ describe('RdiPage', () => {
   it('should render empty message when no instances are found', () => {
     ;(instancesSelector as jest.Mock).mockReturnValueOnce({
       data: [],
+      shownColumns: DEFAULT_RDI_SHOWN_COLUMNS,
     })
     render(<RdiPage />)
 
@@ -130,6 +119,7 @@ describe('RdiPage', () => {
   it('should open connection form when using empty message button', async () => {
     ;(instancesSelector as jest.Mock).mockReturnValueOnce({
       loading: false,
+      shownColumns: DEFAULT_RDI_SHOWN_COLUMNS,
       data: [],
     })
     const { container } = render(<RdiPage />)
@@ -141,6 +131,8 @@ describe('RdiPage', () => {
   it('should open connection form when using edit button', async () => {
     const { container } = render(<RdiPage />)
 
+    fireEvent.click(screen.getByTestId('controls-button-1'))
+    await waitForRiPopoverVisible()
     fireEvent.click(screen.getByTestId('edit-instance-1'))
     expect(container.getElementsByClassName('hidden').length).toBe(0)
   })
@@ -164,6 +156,8 @@ describe('RdiPage', () => {
   it('should populate connection form with existing values when using edit button', async () => {
     render(<RdiPage />)
 
+    fireEvent.click(screen.getByTestId('controls-button-1'))
+    await waitForRiPopoverVisible()
     fireEvent.click(screen.getByTestId('edit-instance-1'))
     await screen.findByTestId('connection-form')
 
@@ -201,7 +195,9 @@ describe('RdiPage', () => {
   it('should clear password input when focused for an edited instance', async () => {
     render(<RdiPage />)
 
-    fireEvent.click(screen.getByTestId(/edit-instance-/))
+    fireEvent.click(screen.getByTestId('controls-button-1'))
+    await waitForRiPopoverVisible()
+    fireEvent.click(screen.getByTestId('edit-instance-1'))
     await screen.findByTestId('connection-form')
 
     await act(() => {
@@ -215,6 +211,8 @@ describe('RdiPage', () => {
   it('should call edit instance with proper data when editInstance is provided', async () => {
     render(<RdiPage />)
 
+    fireEvent.click(screen.getByTestId('controls-button-1'))
+    await waitForRiPopoverVisible()
     fireEvent.click(screen.getByTestId('edit-instance-1'))
     await screen.findByTestId('connection-form')
 
@@ -246,10 +244,10 @@ describe('RdiPage', () => {
   it('should not pass password when password did not changed', async () => {
     render(<RdiPage />)
 
+    fireEvent.click(screen.getByTestId('controls-button-1'))
+    await waitForRiPopoverVisible()
     fireEvent.click(screen.getByTestId('edit-instance-1'))
     await screen.findByTestId('connection-form')
-
-    screen.debug(undefined, 100_000)
 
     await act(() => {
       fireEvent.change(screen.getByTestId('connection-form-name-input'), {
@@ -318,6 +316,8 @@ describe('RdiPage', () => {
   it('should call proper telemetry when instance is submitted', async () => {
     render(<RdiPage />)
 
+    fireEvent.click(screen.getByTestId('controls-button-1'))
+    await waitForRiPopoverVisible()
     fireEvent.click(screen.getByTestId('edit-instance-1'))
     await screen.findByTestId('connection-form')
 
@@ -338,6 +338,8 @@ describe('RdiPage', () => {
   it('should call proper telemetry when connection form is closed', async () => {
     render(<RdiPage />)
 
+    fireEvent.click(screen.getByTestId('controls-button-1'))
+    await waitForRiPopoverVisible()
     fireEvent.click(screen.getByTestId('edit-instance-1'))
     await screen.findByTestId('connection-form')
 

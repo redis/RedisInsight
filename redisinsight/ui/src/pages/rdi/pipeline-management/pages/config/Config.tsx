@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 import { get, throttle } from 'lodash'
 
@@ -186,7 +185,7 @@ const Config = () => {
                 <Loader
                   color="secondary"
                   size="l"
-                  loaderText="Loading data..."
+                  loaderText="Loading..."
                 />
               </Col>
             ) : (

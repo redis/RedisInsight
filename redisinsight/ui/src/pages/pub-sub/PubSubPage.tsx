@@ -15,11 +15,11 @@ import { OnboardingTour } from 'uiSrc/components'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { incrementOnboardStepAction } from 'uiSrc/slices/app/features'
 import { OnboardingSteps } from 'uiSrc/constants/onboarding'
-import { MessagesListWrapper, PublishMessage } from './components'
+import { MessagesListTable, PublishMessage } from './components'
 
 import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
 import { Theme } from 'uiSrc/components/base/theme/types'
-import { OnboardingWrapper } from './PubSubPage.styles'
+import { MessagesListWrapper, OnboardingWrapper } from './PubSubPage.styles'
 
 const FooterPanel = styled(FlexItem)`
   border-top: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
@@ -75,9 +75,9 @@ const PubSubPage = () => {
 
   return (
     <Col data-testid="pub-sub-page" justify="between">
-      <FlexItem grow={true}>
-        <MessagesListWrapper />
-      </FlexItem>
+      <MessagesListWrapper grow={true}>
+        <MessagesListTable />
+      </MessagesListWrapper>
 
       <FooterPanel grow={false}>
         <PublishMessage />

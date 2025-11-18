@@ -50,7 +50,7 @@ import { loadInstances as loadRdiInstances } from 'uiSrc/slices/rdi/instances'
 
 import { clearExpertChatHistory } from 'uiSrc/slices/panels/aiAssistant'
 import { getAllPlugins } from 'uiSrc/slices/app/plugins'
-import { FeatureFlags } from 'uiSrc/constants'
+import { DEFAULT_RDI_SHOWN_COLUMNS, FeatureFlags } from 'uiSrc/constants'
 import { getDatabasesApiSpy } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
 import { RdiInstance } from 'uiSrc/slices/interfaces'
 import InstancePage, { Props } from './InstancePage'
@@ -316,7 +316,7 @@ describe('InstancePage', () => {
       loadingChanging: false,
       errorChanging: '',
       changedSuccessfully: false,
-      isPipelineLoaded: false,
+      shownColumns: DEFAULT_RDI_SHOWN_COLUMNS,
     })
     const mockFetchInstancesAction = jest.fn()
     jest

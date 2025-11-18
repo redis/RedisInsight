@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import cx from 'classnames'
 
 import {
   fetchPipelineStrategies,
@@ -17,7 +16,7 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { Text } from 'uiSrc/components/base/text'
+import { Title } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import {
   RiSelectOption,
@@ -26,7 +25,7 @@ import {
 } from 'uiSrc/components/base/forms/select/RiSelect'
 import { NO_TEMPLATE_VALUE, NO_OPTIONS, INGEST_OPTION } from './constants'
 
-import styles from './styles.module.scss'
+import { Col, Row } from 'uiSrc/components/base/layout/flex'
 
 export interface Props {
   setTemplate: (template: string) => void
@@ -164,45 +163,39 @@ const TemplateForm = (props: Props) => {
   }, [])
 
   return (
-    <div className={cx(styles.container)}>
-      <Text className={styles.title}>Select a template</Text>
-      <Spacer size="s" />
+    <Col gap="l">
+      <Title size="M" color="primary">
+        Select a template
+      </Title>
       <form>
         <Spacer size="xs" />
         {pipelineTypeOptions?.length > 1 && (
-          <FormField className={styles.formRow}>
-            <>
-              <div className={styles.rowLabel}>Pipeline type</div>
-              <RiSelect
-                options={pipelineTypeOptions}
-                valueRender={defaultValueRender}
-                value={selectedPipelineType}
-                onChange={(value) => setSelectedPipelineType(value)}
-                data-testid="pipeline-type-select"
-              />
-            </>
+          <FormField label="Pipeline type">
+            <RiSelect
+              options={pipelineTypeOptions}
+              valueRender={defaultValueRender}
+              value={selectedPipelineType}
+              onChange={(value) => setSelectedPipelineType(value)}
+              data-testid="pipeline-type-select"
+            />
           </FormField>
         )}
         {source === RdiPipelineTabs.Config && (
-          <FormField className={styles.formRow}>
-            <>
-              <div className={styles.rowLabel}>Database type</div>
-              <RiSelect
-                options={dbTypeOptions}
-                valueRender={defaultValueRender}
-                value={selectedDbType}
-                onChange={(value) => setSelectedDbType(value)}
-                data-testid="db-type-select"
-              />
-            </>
+          <FormField label="Database type">
+            <RiSelect
+              options={dbTypeOptions}
+              valueRender={defaultValueRender}
+              value={selectedDbType}
+              onChange={(value) => setSelectedDbType(value)}
+              data-testid="db-type-select"
+            />
           </FormField>
         )}
       </form>
-      <div className={styles.actions}>
+      <Row gap="m" justify="end">
         <SecondaryButton
           onClick={handleCancel}
-          size="s"
-          className={styles.btn}
+          size="m"
           data-testid="template-cancel-btn"
         >
           Cancel
@@ -210,21 +203,20 @@ const TemplateForm = (props: Props) => {
         <RiTooltip
           content={getTooltipContent(value, isNoTemplateOptions)}
           position="bottom"
-          className={styles.btn}
           anchorClassName="flex-row"
         >
           <PrimaryButton
             disabled={isNoTemplateOptions || !!value}
             onClick={handleApply}
             loading={loading}
-            size="s"
+            size="m"
             data-testid="template-apply-btn"
           >
             Apply
           </PrimaryButton>
         </RiTooltip>
-      </div>
-    </div>
+      </Row>
+    </Col>
   )
 }
 

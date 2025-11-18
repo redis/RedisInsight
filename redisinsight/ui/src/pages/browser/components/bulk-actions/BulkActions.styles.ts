@@ -25,7 +25,7 @@ export const BulkActionsHeader = styled(Row)`
 `
 
 export const BulkActionsScrollPanel = styled.div`
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: thin;
   height: 100%;

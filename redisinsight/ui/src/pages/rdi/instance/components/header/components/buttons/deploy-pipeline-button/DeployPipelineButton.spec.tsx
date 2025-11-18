@@ -7,6 +7,7 @@ import {
   mockedStore,
   render,
   screen,
+  within,
 } from 'uiSrc/utils/test-utils'
 import { rdiPipelineSelector } from 'uiSrc/slices/rdi/pipeline'
 import DeployPipelineButton, { Props } from './DeployPipelineButton'
@@ -58,7 +59,14 @@ describe('DeployPipelineButton', () => {
 
     it('should call proper telemetry on Deploy', () => {
       fireEvent.click(screen.getByTestId('deploy-rdi-pipeline'))
-      fireEvent.click(screen.getByTestId('deploy-confirm-btn'))
+
+      const confirmDeployButton = within(
+        screen.getByRole('dialog'),
+      ).getByLabelText('Deploy')
+      expect(confirmDeployButton).toBeInTheDocument()
+
+      fireEvent.click(confirmDeployButton)
+
       expect(sendEventTelemetry).toHaveBeenCalledWith({
         event: TelemetryEvent.RDI_DEPLOY_CLICKED,
         eventData: {
@@ -78,7 +86,13 @@ describe('DeployPipelineButton', () => {
       expect(el).toHaveAttribute('aria-checked', 'false')
       fireEvent.click(el)
       expect(el).toHaveAttribute('aria-checked', 'true')
-      fireEvent.click(screen.getByTestId('deploy-confirm-btn'))
+
+      const confirmDeployButton = within(
+        screen.getByRole('dialog'),
+      ).getByLabelText('Deploy')
+      expect(confirmDeployButton).toBeInTheDocument()
+
+      fireEvent.click(confirmDeployButton)
       expect(sendEventTelemetry).toHaveBeenCalledWith({
         event: TelemetryEvent.RDI_DEPLOY_CLICKED,
         eventData: {
@@ -97,7 +111,10 @@ describe('DeployPipelineButton', () => {
 
     fireEvent.click(screen.getByTestId('deploy-rdi-pipeline'))
 
-    expect(screen.queryByTestId('deploy-confirm-btn')).toBeInTheDocument()
+    const confirmDeployButton = within(
+      screen.getByRole('dialog'),
+    ).getByLabelText('Deploy')
+    expect(confirmDeployButton).toBeInTheDocument()
     expect(
       screen.queryByText('Are you sure you want to deploy the pipeline?'),
     ).toBeInTheDocument()
@@ -119,10 +136,13 @@ describe('DeployPipelineButton', () => {
 
     fireEvent.click(screen.getByTestId('deploy-rdi-pipeline'))
 
-    expect(screen.queryByTestId('deploy-confirm-btn')).toBeInTheDocument()
+    const confirmDeployButton = within(
+      screen.getByRole('dialog'),
+    ).getByLabelText('Deploy')
+    expect(confirmDeployButton).toBeInTheDocument()
     expect(
       screen.queryByText('Are you sure you want to deploy the pipeline?'),
-    ).not.toBeInTheDocument()
+    ).toBeInTheDocument()
     expect(
       screen.queryByText(
         'Your RDI pipeline contains errors. Are you sure you want to continue?',

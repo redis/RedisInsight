@@ -1,9 +1,11 @@
 import React from 'react'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 
+import { Table, ColumnDef } from 'uiSrc/components/base/layout/table'
+import {
+  ImportTableResultColumn,
+  TABLE_IMPORT_RESULT_COLUMN_ID_HEADER_MAP,
+} from 'uiSrc/constants'
 import { ErrorImportResult } from 'uiSrc/slices/interfaces'
-
-import styles from './styles.module.scss'
 
 export interface DataImportResult {
   index: number
@@ -12,6 +14,7 @@ export interface DataImportResult {
   host?: string
   port?: number
 }
+
 export interface Props {
   data: Array<DataImportResult>
 }
@@ -27,21 +30,26 @@ const TableResult = (props: Props) => {
     </ul>
   )
 
-  const columns: ColumnDefinition<DataImportResult>[] = [
+  const columns: ColumnDef<DataImportResult>[] = [
     {
-      header: '#',
-      id: 'index',
-      accessorKey: 'index',
+      header: TABLE_IMPORT_RESULT_COLUMN_ID_HEADER_MAP.get(
+        ImportTableResultColumn.Index,
+      ),
+      id: ImportTableResultColumn.Index,
+      accessorKey: ImportTableResultColumn.Index,
       cell: ({
         row: {
           original: { index },
         },
       }) => <span data-testid={`table-index-${index}`}>({index})</span>,
+      size: 50,
     },
     {
-      header: 'Host:Port',
-      id: 'host',
-      accessorKey: 'host',
+      header: TABLE_IMPORT_RESULT_COLUMN_ID_HEADER_MAP.get(
+        ImportTableResultColumn.Host,
+      ),
+      id: ImportTableResultColumn.Host,
+      accessorKey: ImportTableResultColumn.Host,
       cell: ({
         row: {
           original: { host, port, index },
@@ -53,8 +61,10 @@ const TableResult = (props: Props) => {
       ),
     },
     {
-      header: 'Result',
-      id: 'errors',
+      header: TABLE_IMPORT_RESULT_COLUMN_ID_HEADER_MAP.get(
+        ImportTableResultColumn.Errors,
+      ),
+      id: ImportTableResultColumn.Errors,
       accessorKey: 'errors',
       cell: ({
         row: {
@@ -74,11 +84,7 @@ const TableResult = (props: Props) => {
 
   if (data?.length === 0) return null
 
-  return (
-    <div className={styles.tableWrapper}>
-      <Table columns={columns} data={data} defaultSorting={[]} />
-    </div>
-  )
+  return <Table columns={columns} data={data} defaultSorting={[]} maxHeight="20rem" />
 }
 
 export default TableResult

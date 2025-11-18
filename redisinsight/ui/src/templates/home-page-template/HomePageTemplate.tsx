@@ -33,9 +33,9 @@ const HomePageTemplate = (props: Props) => {
     <>
       <div className={styles.pageDefaultHeader}>
         <HomeTabs />
-        <FlexGroup gap="s">
+        <FlexGroup gap="l">
           {isAnyChatAvailable && (
-            <FlexItem style={{ marginRight: 12 }}>
+            <FlexItem>
               <CopilotTrigger />
             </FlexItem>
           )}

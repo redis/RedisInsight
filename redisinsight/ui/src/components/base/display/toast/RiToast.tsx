@@ -10,7 +10,6 @@ import { ToastOptions as RcToastOptions } from 'react-toastify'
 import { CommonProps } from 'uiSrc/components/base/theme/types'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import { ColorType } from 'uiSrc/components/base/text/text.styles'
-import { Spacer } from '../../layout'
 
 type RiToastProps = React.ComponentProps<typeof Toast>
 export const RiToast = (props: RiToastProps) => <Toast {...props} />
@@ -35,7 +34,6 @@ export const riToast = (
     toastContent.message = (
       <Text size="M" variant="semiBold">
         <ColorText color={color}>{message}</ColorText>
-        <Spacer size="s" />
       </Text>
     )
   } else {
