@@ -5,21 +5,33 @@ import { InfoIcon, ToastDangerIcon } from 'uiSrc/components/base/icons'
 import RdiDeployErrorContent from './components/rdi-deploy-error-content'
 import { EncryptionErrorContent, DefaultErrorContent } from './components'
 import CloudCapiUnAuthorizedErrorContent from './components/cloud-capi-unauthorized'
+import { NotificationTextLengthThreshold } from 'uiSrc/components/notifications/constants'
+import { handleDownloadButton } from 'uiSrc/utils'
 
 export default {
-  DEFAULT: (text: any, onClose = () => {}, title: string = 'Error') => ({
-    'data-testid': 'toast-error',
-    customIcon: ToastDangerIcon,
-    message: title,
-    description: <DefaultErrorContent text={text} />,
-    actions: {
-      primary: {
-        label: 'OK',
-        closes: true,
-        onClick: onClose,
+  DEFAULT: (text: any, onClose = () => {}, title: string = 'Error') => {
+    const isSafeMessage =
+      text.length < NotificationTextLengthThreshold || typeof text !== 'string'
+
+    return {
+      'data-testid': 'toast-error',
+      customIcon: ToastDangerIcon,
+      message: title,
+      description: isSafeMessage ? (
+        <DefaultErrorContent text={text} />
+      ) : undefined,
+      actions: {
+        secondary: !isSafeMessage
+          ? {
+              label: 'Download full log',
+              closes: true,
+              onClick: () =>
+                handleDownloadButton(text, 'error-log.txt', onClose),
+            }
+          : undefined,
       },
-    },
-  }),
+    }
+  },
   ENCRYPTION: (onClose = () => {}, instanceId = '') => ({
     'data-testid': 'toast-error-encryption',
     customIcon: InfoIcon,
