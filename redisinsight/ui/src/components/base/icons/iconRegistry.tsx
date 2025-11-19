@@ -1,7 +1,4 @@
-import React, { useContext } from 'react'
-
-import { ThemeContext } from 'uiSrc/contexts/themeContext'
-import { Theme } from 'uiSrc/constants'
+import React from 'react'
 
 // Import all custom SVG assets
 import AlarmSvg from 'uiSrc/assets/img/alarm.svg?react'
@@ -137,16 +134,9 @@ import { Icon, IconProps } from './Icon'
 
 // Helper function to create icon component
 const createIconComponent =
-  (
-    SvgComponentLight: React.ComponentType<IconProps>,
-    SvgComponentDark: React.ComponentType<IconProps> = SvgComponentLight,
-  ) =>
-  (props: IconProps) => {
-    const { theme } = useContext(ThemeContext)
-    const icon = theme === Theme.Light ? SvgComponentLight : SvgComponentDark
-
-    return <Icon icon={icon} {...props} isSvg />
-  }
+  (SvgComponent: React.ComponentType<IconProps>) => (props: IconProps) => (
+    <Icon icon={SvgComponent} {...props} isSvg />
+  )
 
 // Re-export all library icons from @redis-ui/icons
 export * from '@redis-ui/icons'
@@ -275,11 +265,9 @@ export const RedisJSONLightIcon = createIconComponent(RedisJSONLight)
 export const RedisSearchDarkIcon = createIconComponent(RedisSearchDark)
 export const RedisSearchLightIcon = createIconComponent(RedisSearchLight)
 export const RediStackDarkLogoIcon = createIconComponent(RediStackDarkLogoSvg)
+export const RediStackDarkMinIcon = createIconComponent(RediStackDarkMinSvg)
 export const RediStackLightLogoIcon = createIconComponent(RediStackLightLogoSvg)
-export const RediStackMinIcon = createIconComponent(
-  RediStackLightMinLight,
-  RediStackDarkMinSvg,
-)
+export const RediStackLightMinIcon = createIconComponent(RediStackLightMinLight)
 export const RedisTimeSeriesDarkIcon = createIconComponent(RedisTimeSeriesDark)
 export const RedisTimeSeriesLightIcon =
   createIconComponent(RedisTimeSeriesLight)

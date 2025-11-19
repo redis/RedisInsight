@@ -34,7 +34,6 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { Card } from 'uiSrc/components/base/layout'
-import { RediStackMinIcon } from 'uiSrc/components/base/icons'
 
 import styles from './styles.module.scss'
 
@@ -107,7 +106,12 @@ const Recommendations = () => {
               data-testid={`${id}-redis-stack-link`}
             >
               <RiTooltip content="Redis Stack" position="top" anchorClassName="flex-row">
-                <RediStackMinIcon
+                <RiIcon
+                  type={
+                    theme === Theme.Dark
+                      ? 'RediStackDarkMinIcon'
+                      : 'RediStackLightMinIcon'
+                  }
                   className={styles.redisStackIcon}
                   data-testid={`${id}-redis-stack-icon`}
                 />

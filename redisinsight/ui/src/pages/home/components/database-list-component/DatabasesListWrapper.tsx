@@ -25,7 +25,6 @@ import {
   TagIcon,
   CopyIcon,
   RiIcon,
-  RediStackMinIcon,
 } from 'uiSrc/components/base/icons'
 import DatabaseListModules from 'uiSrc/components/database-list-modules/DatabaseListModules'
 import ItemList from 'uiSrc/components/item-list'
@@ -463,7 +462,14 @@ const DatabasesListWrapper = (props: Props) => {
                   <DatabaseListModules
                     content={
                       isRediStack ? (
-                        <RediStackMinIcon data-testid="redis-stack-icon" />
+                        <RiIcon
+                          type={
+                            theme === Theme.Dark
+                              ? 'RediStackDarkMinIcon'
+                              : 'RediStackLightMinIcon'
+                          }
+                          data-testid="redis-stack-icon"
+                        />
                       ) : undefined
                     }
                     tooltipTitle={
