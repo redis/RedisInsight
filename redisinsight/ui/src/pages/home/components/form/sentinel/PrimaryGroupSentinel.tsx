@@ -7,17 +7,15 @@ import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { TextInput } from 'uiSrc/components/base/inputs'
 
 export interface Props {
-  flexGroupClassName?: string
-  flexItemClassName?: string
   formik: FormikProps<DbConnectionInfo>
 }
 
 const PrimaryGroupSentinel = (props: Props) => {
-  const { flexGroupClassName = '', flexItemClassName = '', formik } = props
+  const { formik } = props
   return (
     <Col gap="l">
-      <Row gap="m" responsive className={flexGroupClassName}>
-        <FlexItem grow className={flexItemClassName}>
+      <Row gap="m" responsive>
+        <FlexItem grow>
           <FormField label="Database alias" required>
             <TextInput
               name="name"
@@ -31,8 +29,8 @@ const PrimaryGroupSentinel = (props: Props) => {
           </FormField>
         </FlexItem>
       </Row>
-      <Row gap="m" responsive className={flexGroupClassName}>
-        <FlexItem grow className={flexItemClassName}>
+      <Row gap="m" responsive>
+        <FlexItem grow>
           <FormField label="Primary group name" required>
             <TextInput
               name="sentinelMasterName"

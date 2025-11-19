@@ -11,21 +11,13 @@ import { FormField } from 'uiSrc/components/base/forms/FormField'
 import styles from '../../styles.module.scss'
 
 export interface Props {
-  flexGroupClassName?: string
-  flexItemClassName?: string
   formik: FormikProps<DbConnectionInfo>
   isCloneMode: boolean
   db: Nullable<number>
 }
 
 const SentinelMasterDatabase = (props: Props) => {
-  const {
-    db,
-    isCloneMode,
-    flexGroupClassName = '',
-    flexItemClassName = '',
-    formik,
-  } = props
+  const { db, isCloneMode, formik } = props
   return (
     <>
       {!!db && !isCloneMode && (
@@ -36,8 +28,8 @@ const SentinelMasterDatabase = (props: Props) => {
           </span>
         </Text>
       )}
-      <Row gap="m" responsive className={flexGroupClassName}>
-        <FlexItem grow className={flexItemClassName}>
+      <Row gap="m" responsive>
+        <FlexItem grow>
           <FormField label="Username">
             <TextInput
               name="sentinelMasterUsername"
@@ -45,13 +37,15 @@ const SentinelMasterDatabase = (props: Props) => {
               maxLength={200}
               placeholder="Enter Username"
               value={formik.values.sentinelMasterUsername ?? ''}
-              onChange={(value) => formik.setFieldValue('sentinelMasterUsername', value)}
+              onChange={(value) =>
+                formik.setFieldValue('sentinelMasterUsername', value)
+              }
               data-testid="sentinel-mater-username"
             />
           </FormField>
         </FlexItem>
 
-        <FlexItem grow className={flexItemClassName}>
+        <FlexItem grow>
           <FormField label="Password">
             <PasswordInput
               type="password"
