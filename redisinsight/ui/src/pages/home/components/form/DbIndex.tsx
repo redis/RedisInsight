@@ -49,26 +49,23 @@ const DbIndex = (props: Props) => {
       </Row>
 
       {formik.values.showDb && (
-        <>
-          <Spacer />
-          <Row gap="m" responsive>
-            <FlexItem grow className={styles.dbInput}>
-              <FormField label="Database Index">
-                <NumericInput
-                  autoValidate
-                  min={0}
-                  name="db"
-                  id="db"
-                  data-testid="db"
-                  placeholder="Enter Database Index"
-                  value={Number(formik.values.db)}
-                  onChange={(value) => formik.setFieldValue('db', value)}
-                />
-              </FormField>
-            </FlexItem>
-            <FlexItem grow />
-          </Row>
-        </>
+        <Row gap="m" responsive>
+          <FlexItem grow className={styles.dbInput}>
+            <FormField label="Database Index">
+              <NumericInput
+                autoValidate
+                min={0}
+                name="db"
+                id="db"
+                data-testid="db"
+                placeholder="Enter Database Index"
+                value={Number(formik.values.db)}
+                onChange={(value) => formik.setFieldValue('db', value)}
+              />
+            </FormField>
+          </FlexItem>
+          <FlexItem grow />
+        </Row>
       )}
     </>
   )
