@@ -4,17 +4,17 @@ import type { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 
 import { AliasCell } from '../components'
 import {
-  ColumnDefinitionIds,
-  ColumnDefinitionTitles,
+  SentinelDatabaseIds,
+  SentinelDatabaseTitles,
 } from 'uiSrc/pages/autodiscover-sentinel/constants/constants'
 
 export const aliasColumn = (
   handleChangedInput: (name: string, value: string) => void,
 ): ColumnDef<ModifiedSentinelMaster> => {
   return {
-    header: ColumnDefinitionTitles.Alias,
-    id: ColumnDefinitionIds.Alias,
-    accessorKey: ColumnDefinitionIds.Alias,
+    header: SentinelDatabaseTitles.Alias,
+    id: SentinelDatabaseIds.Alias,
+    accessorKey: SentinelDatabaseIds.Alias,
     enableSorting: true,
     size: 200,
     cell: ({

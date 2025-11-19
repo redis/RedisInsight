@@ -4,11 +4,14 @@ import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import { type InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 
 import { MessageResultCell } from '../components/MessageResultCell/MessageResultCell'
-import { AutoDiscoverCloudIds } from 'uiSrc/pages/autodiscover-cloud/constants/constants'
+import {
+  AutoDiscoverCloudIds,
+  AutoDiscoverCloudTitles,
+} from 'uiSrc/pages/autodiscover-cloud/constants/constants'
 
 export const messageResultColumn = (): ColumnDef<InstanceRedisCloud> => {
   return {
-    header: 'Result',
+    header: AutoDiscoverCloudTitles.Result,
     id: AutoDiscoverCloudIds.MessageAdded,
     accessorKey: AutoDiscoverCloudIds.MessageAdded,
     enableSorting: true,

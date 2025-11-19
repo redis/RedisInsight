@@ -1,10 +1,14 @@
 import React from 'react'
+
 import type { ColumnDef } from 'uiSrc/components/base/layout/table'
 import type {
   ModifiedSentinelMaster,
   AddRedisDatabaseStatus,
 } from 'uiSrc/slices/interfaces'
-
+import {
+  SentinelDatabaseIds,
+  SentinelDatabaseTitles,
+} from 'uiSrc/pages/autodiscover-sentinel/constants/constants'
 import { PasswordCell } from '../components'
 
 export const passwordColumn = (
@@ -16,9 +20,9 @@ export const passwordColumn = (
   ) => boolean,
 ): ColumnDef<ModifiedSentinelMaster> => {
   return {
-    header: 'Password',
-    id: 'password',
-    accessorKey: 'password',
+    header: SentinelDatabaseTitles.Password,
+    id: SentinelDatabaseIds.Password,
+    accessorKey: SentinelDatabaseIds.Password,
     cell: ({
       row: {
         original: { password, id, error, loading = false, status },

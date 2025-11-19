@@ -4,11 +4,14 @@ import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import { type InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 
 import { EndpointCell } from '../components/EndpointCell/EndpointCell'
-import { AutoDiscoverCloudIds } from 'uiSrc/pages/autodiscover-cloud/constants/constants'
+import {
+  AutoDiscoverCloudIds,
+  AutoDiscoverCloudTitles,
+} from 'uiSrc/pages/autodiscover-cloud/constants/constants'
 
 export const endpointResultColumn = (): ColumnDef<InstanceRedisCloud> => {
   return {
-    header: 'Endpoint',
+    header: AutoDiscoverCloudTitles.Endpoint,
     id: AutoDiscoverCloudIds.PublicEndpoint,
     accessorKey: AutoDiscoverCloudIds.PublicEndpoint,
     enableSorting: true,

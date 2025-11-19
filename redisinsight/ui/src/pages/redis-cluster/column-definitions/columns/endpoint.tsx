@@ -3,12 +3,16 @@ import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import { type InstanceRedisCluster } from 'uiSrc/slices/interfaces'
 
 import { EndpointCell } from '../components/EndpointCell'
+import {
+  RedisClusterIds,
+  RedisClusterTitles,
+} from 'uiSrc/pages/redis-cluster/constants/constants'
 
 export const endpointColumn = (): ColumnDef<InstanceRedisCluster> => {
   return {
-    header: 'Endpoint',
-    id: 'dnsName',
-    accessorKey: 'dnsName',
+    header: RedisClusterTitles.Endpoint,
+    id: RedisClusterIds.Endpoint,
+    accessorKey: RedisClusterIds.Endpoint,
     enableSorting: true,
     cell: ({
       row: {

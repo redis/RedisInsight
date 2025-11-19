@@ -2,11 +2,14 @@ import React from 'react'
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import { type InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 import { CellText } from 'uiSrc/components/auto-discover'
-import { AutoDiscoverCloudIds } from 'uiSrc/pages/autodiscover-cloud/constants/constants'
+import {
+  AutoDiscoverCloudIds,
+  AutoDiscoverCloudTitles,
+} from 'uiSrc/pages/autodiscover-cloud/constants/constants'
 
 export const subscriptionIdColumn = (): ColumnDef<InstanceRedisCloud> => {
   return {
-    header: 'Subscription ID',
+    header: AutoDiscoverCloudTitles.SubscriptionId,
     id: AutoDiscoverCloudIds.SubscriptionId,
     accessorKey: AutoDiscoverCloudIds.SubscriptionId,
     enableSorting: true,

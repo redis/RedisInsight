@@ -4,17 +4,17 @@ import type { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 
 import { DbIndexCell } from '../components'
 import {
-  ColumnDefinitionIds,
-  ColumnDefinitionTitles,
+  SentinelDatabaseIds,
+  SentinelDatabaseTitles,
 } from 'uiSrc/pages/autodiscover-sentinel/constants/constants'
 
 export const dbIndexColumn = (
   handleChangedInput: (name: string, value: string) => void,
 ): ColumnDef<ModifiedSentinelMaster> => {
   return {
-    header: ColumnDefinitionTitles.DatabaseIndex,
-    id: ColumnDefinitionIds.DatabaseIndex,
-    accessorKey: ColumnDefinitionIds.DatabaseIndex,
+    header: SentinelDatabaseTitles.DatabaseIndex,
+    id: SentinelDatabaseIds.DatabaseIndex,
+    accessorKey: SentinelDatabaseIds.DatabaseIndex,
     size: 140,
     cell: ({
       row: {

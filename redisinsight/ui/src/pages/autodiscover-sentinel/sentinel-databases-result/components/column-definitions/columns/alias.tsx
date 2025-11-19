@@ -1,10 +1,14 @@
 import React from 'react'
+
 import type { ColumnDef } from 'uiSrc/components/base/layout/table'
 import type {
   ModifiedSentinelMaster,
   AddRedisDatabaseStatus,
 } from 'uiSrc/slices/interfaces'
-
+import {
+  SentinelDatabaseIds,
+  SentinelDatabaseTitles,
+} from 'uiSrc/pages/autodiscover-sentinel/constants/constants'
 import { AliasCell } from '../components'
 
 export const aliasColumn = (
@@ -15,9 +19,9 @@ export const aliasColumn = (
   ) => boolean,
 ): ColumnDef<ModifiedSentinelMaster> => {
   return {
-    header: 'Database Alias*',
-    id: 'alias',
-    accessorKey: 'alias',
+    header: SentinelDatabaseTitles.Alias,
+    id: SentinelDatabaseIds.Alias,
+    accessorKey: SentinelDatabaseIds.Alias,
     enableSorting: true,
     cell: ({
       row: {

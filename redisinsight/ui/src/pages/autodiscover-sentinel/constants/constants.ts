@@ -1,4 +1,4 @@
-export enum ColumnDefinitionTitles {
+export enum SentinelDatabaseTitles {
   Address = 'Address',
   Alias = 'Database alias*',
   Username = 'Username',
@@ -9,7 +9,8 @@ export enum ColumnDefinitionTitles {
   Result = 'Result',
 }
 
-export enum ColumnDefinitionIds {
+export enum SentinelDatabaseIds {
+  Message = 'message',
   Address = 'host',
   Alias = 'alias',
   Username = 'username',

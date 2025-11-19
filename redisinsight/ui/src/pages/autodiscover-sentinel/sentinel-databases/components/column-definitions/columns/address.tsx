@@ -3,17 +3,17 @@ import React from 'react'
 import type { ColumnDef } from 'uiSrc/components/base/layout/table'
 import type { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import {
-  ColumnDefinitionIds,
-  ColumnDefinitionTitles,
+  SentinelDatabaseIds,
+  SentinelDatabaseTitles,
 } from 'uiSrc/pages/autodiscover-sentinel/constants/constants'
 
 import { AddressCell } from '../components'
 
 export const addressColumn = (): ColumnDef<ModifiedSentinelMaster> => {
   return {
-    header: ColumnDefinitionTitles.Address,
-    id: ColumnDefinitionIds.Address,
-    accessorKey: ColumnDefinitionIds.Address,
+    header: SentinelDatabaseTitles.Address,
+    id: SentinelDatabaseIds.Address,
+    accessorKey: SentinelDatabaseIds.Address,
     enableSorting: true,
     cell: ({
       row: {
