@@ -6,6 +6,6 @@ import {
 } from 'uiSrc/components/base/link/link.styles'
 export { type RiLinkProps }
 
-export const Link = ({ color, ...props }: RiLinkProps) => (
-  <StyledLink {...props} $color={color} />
+export const Link = ({ color, underline, ...props }: RiLinkProps) => (
+  <StyledLink {...props} $color={color} $underline={underline} />
 )

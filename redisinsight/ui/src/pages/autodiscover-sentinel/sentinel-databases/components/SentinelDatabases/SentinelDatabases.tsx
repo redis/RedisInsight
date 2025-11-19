@@ -109,11 +109,11 @@ const SentinelDatabases = ({
           onQueryChange={onQueryChange}
           subTitle={
             masters.length > 0 && (
-              <>
-                Redis Sentinel instance found. <br />
-                Here is a list of primary groups your Sentinel instance is
-                managing. Select the primary group(s) you want to add:
-              </>
+              <Text size="m">
+                Redis Sentinel instance found. Here is a list of primary groups
+                your Sentinel instance is managing. <br />
+                Select the primary group(s) you want to add:
+              </Text>
             )
           }
         />

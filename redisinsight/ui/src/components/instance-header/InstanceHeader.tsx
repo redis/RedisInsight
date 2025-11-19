@@ -44,6 +44,7 @@ import { EditIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { NumericInput } from 'uiSrc/components/base/inputs'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { Link } from 'uiSrc/components/base/link/Link'
 import InstancesNavigationPopover from './components/instances-navigation-popover'
 import styles from './styles.module.scss'
 
@@ -159,8 +160,10 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                       : 'Redis Databases'
                   }
                 >
-                  <Text
-                    className={styles.breadCrumbLink}
+                  <Link
+                    color="subdued"
+                    underline
+                    variant="inline"
                     aria-label={
                       server?.buildType === BuildType.RedisStack
                         ? 'Edit database'
@@ -168,10 +171,9 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                     }
                     data-testid="my-redis-db-btn"
                     onClick={goHome}
-                    onKeyDown={goHome}
                   >
                     Databases
-                  </Text>
+                  </Link>
                 </RiTooltip>
               </FeatureFlagComponent>
             </div>
