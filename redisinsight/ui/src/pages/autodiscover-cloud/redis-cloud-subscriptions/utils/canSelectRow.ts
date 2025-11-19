@@ -1,4 +1,3 @@
-import { Row } from 'uiSrc/components/base/layout/table'
 import {
   RedisCloudSubscription,
   RedisCloudSubscriptionStatus,
@@ -6,7 +5,9 @@ import {
 
 export function canSelectRow({
   original,
-}: Row<RedisCloudSubscription>): boolean {
+}: {
+  original: RedisCloudSubscription
+}): boolean {
   return (
     original.status === RedisCloudSubscriptionStatus.Active &&
     original.numberOfDatabases !== 0
