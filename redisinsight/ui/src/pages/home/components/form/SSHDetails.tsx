@@ -21,8 +21,6 @@ import { Text } from 'uiSrc/components/base/text/Text'
 import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
 
 export interface Props {
-  flexGroupClassName?: string
-  flexItemClassName?: string
   formik: FormikProps<DbConnectionInfo>
 }
 
@@ -42,33 +40,28 @@ const sshPassTypeOptions = [
 ]
 
 const SSHDetails = (props: Props) => {
-  const { flexGroupClassName = '', flexItemClassName = '', formik } = props
+  const { formik } = props
   const id = useGenerateId('', ' ssh')
 
   return (
     <Col gap="m">
-      <Row
-        className={flexGroupClassName}
-        align={!flexGroupClassName ? 'end' : undefined}
-      >
-        <FlexItem style={{ width: '230px' }} className={flexItemClassName}>
-          <FormField>
-            <Checkbox
-              id={id}
-              name="ssh"
-              label={<Text>Use SSH Tunnel</Text>}
-              checked={!!formik.values.ssh}
-              onChange={formik.handleChange}
-              data-testid="use-ssh"
-            />
-          </FormField>
-        </FlexItem>
+      <Row>
+        <FormField>
+          <Checkbox
+            id={id}
+            name="ssh"
+            label={<Text>Use SSH Tunnel</Text>}
+            checked={!!formik.values.ssh}
+            onChange={formik.handleChange}
+            data-testid="use-ssh"
+          />
+        </FormField>
       </Row>
 
       {formik.values.ssh && (
         <Col gap="l">
-          <Row gap="m" responsive className={flexGroupClassName}>
-            <FlexItem grow className={flexItemClassName}>
+          <Row gap="m" responsive>
+            <FlexItem grow>
               <FormField label="Host" required>
                 <TextInput
                   name="sshHost"
@@ -84,7 +77,7 @@ const SSHDetails = (props: Props) => {
                 />
               </FormField>
             </FlexItem>
-            <FlexItem grow className={flexItemClassName}>
+            <FlexItem grow>
               <FormField label="Port" required>
                 <NumericInput
                   autoValidate
@@ -101,8 +94,8 @@ const SSHDetails = (props: Props) => {
               </FormField>
             </FlexItem>
           </Row>
-          <Row responsive className={flexGroupClassName}>
-            <FlexItem grow className={flexItemClassName}>
+          <Row responsive>
+            <FlexItem grow>
               <FormField label="Username" required>
                 <TextInput
                   name="sshUsername"
@@ -122,8 +115,8 @@ const SSHDetails = (props: Props) => {
               </FormField>
             </FlexItem>
           </Row>
-          <Row responsive className={flexGroupClassName}>
-            <FlexItem grow className={flexItemClassName}>
+          <Row responsive>
+            <FlexItem grow>
               <RiRadioGroup
                 id="sshPassType"
                 items={sshPassTypeOptions}
@@ -135,8 +128,8 @@ const SSHDetails = (props: Props) => {
             </FlexItem>
           </Row>
           {formik.values.sshPassType === SshPassType.Password && (
-            <Row responsive className={flexGroupClassName}>
-              <FlexItem grow className={flexItemClassName}>
+            <Row responsive>
+              <FlexItem grow>
                 <FormField label="Password">
                   <PasswordInput
                     name="sshPassword"
@@ -164,8 +157,8 @@ const SSHDetails = (props: Props) => {
 
           {formik.values.sshPassType === SshPassType.PrivateKey && (
             <Col gap="l">
-              <Row responsive className={flexGroupClassName}>
-                <FlexItem grow className={flexItemClassName}>
+              <Row responsive>
+                <FlexItem grow>
                   <FormField label="Private Key" required>
                     <TextArea
                       name="sshPrivateKey"
@@ -191,8 +184,8 @@ const SSHDetails = (props: Props) => {
                   </FormField>
                 </FlexItem>
               </Row>
-              <Row responsive className={flexGroupClassName}>
-                <FlexItem grow className={flexItemClassName}>
+              <Row responsive>
+                <FlexItem grow>
                   <FormField label="Passphrase">
                     <PasswordInput
                       name="sshPassphrase"
