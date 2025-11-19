@@ -10,7 +10,7 @@ import 'modern-normalize/modern-normalize.css'
 import '@redis-ui/styles/normalized-styles.css'
 import '@redis-ui/styles/fonts.css'
 
-import { ipcThemeChange } from 'uiSrc/electron/utils'
+import { ipcThemeChange } from 'uiSrc/electron/utils/ipcThemeChange'
 import {
   BrowserStorageItem,
   Theme,
