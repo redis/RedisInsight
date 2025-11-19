@@ -1,0 +1,499 @@
+[
+  {
+    "compressor": "NONE",
+    "id": "85f3d430-6da3-4599-9df4-72f68da5a82e",
+    "host": "127.0.0.1",
+    "port": 8100,
+    "name": "OSS Standalone (latest with modules)",
+    "db": 0,
+    "username": "default",
+    "password": null,
+    "connectionType": "STANDALONE",
+    "nameFromProvider": null,
+    "provider": "REDIS_COMMUNITY_EDITION",
+    "lastConnection": "2025-11-19T12:26:01.041Z",
+    "modules": [
+      {
+        "name": "timeseries",
+        "version": 10616,
+        "semanticVersion": "1.6.16"
+      },
+      {
+        "name": "graph",
+        "version": 20815,
+        "semanticVersion": "2.8.15"
+      },
+      {
+        "name": "search",
+        "version": 999999,
+        "semanticVersion": "99.99.99"
+      },
+      {
+        "name": "ReJSON",
+        "version": 20011,
+        "semanticVersion": "2.0.11"
+      },
+      {
+        "name": "bf",
+        "version": 20209,
+        "semanticVersion": "2.2.9"
+      }
+    ],
+    "tls": false,
+    "tlsServername": null,
+    "verifyServerCert": null,
+    "caCert": null,
+    "clientCert": null,
+    "ssh": false,
+    "sshOptions": null,
+    "forceStandalone": false,
+    "tags": []
+  },
+  {
+    "compressor": "NONE",
+    "id": "792b278c-739f-44a2-ac81-8ecf8b831c32",
+    "host": "127.0.0.1",
+    "port": 8108,
+    "name": "OSS Standalone v7",
+    "db": 0,
+    "username": "default",
+    "password": null,
+    "connectionType": "STANDALONE",
+    "nameFromProvider": null,
+    "provider": "REDIS_COMMUNITY_EDITION",
+    "lastConnection": "2025-11-19T12:25:49.580Z",
+    "modules": [],
+    "tls": false,
+    "tlsServername": null,
+    "verifyServerCert": null,
+    "caCert": null,
+    "clientCert": null,
+    "ssh": false,
+    "sshOptions": null,
+    "forceStandalone": false,
+    "tags": []
+  },
+  {
+    "compressor": "NONE",
+    "id": "e9962be7-69ce-43bd-b078-483a2a99c99f",
+    "host": "127.0.0.1",
+    "port": 8105,
+    "name": "OSS Standalone Empty",
+    "db": 0,
+    "username": "default",
+    "password": null,
+    "connectionType": "STANDALONE",
+    "nameFromProvider": null,
+    "provider": "REDIS_COMMUNITY_EDITION",
+    "lastConnection": "2025-11-19T12:25:57.571Z",
+    "modules": [
+      {
+        "name": "ReJSON",
+        "version": 20011,
+        "semanticVersion": "2.0.11"
+      },
+      {
+        "name": "graph",
+        "version": 20815,
+        "semanticVersion": "2.8.15"
+      },
+      {
+        "name": "search",
+        "version": 999999,
+        "semanticVersion": "99.99.99"
+      },
+      {
+        "name": "timeseries",
+        "version": 10616,
+        "semanticVersion": "1.6.16"
+      },
+      {
+        "name": "bf",
+        "version": 20209,
+        "semanticVersion": "2.2.9"
+      }
+    ],
+    "tls": false,
+    "tlsServername": null,
+    "verifyServerCert": null,
+    "caCert": null,
+    "clientCert": null,
+    "ssh": false,
+    "sshOptions": null,
+    "forceStandalone": false,
+    "tags": []
+  },
+  {
+    "compressor": "NONE",
+    "id": "16cd9391-a573-4257-ae1c-043d290597e0",
+    "host": "127.0.0.1",
+    "port": 8103,
+    "name": "OSS Standalone Big",
+    "db": 0,
+    "username": "default",
+    "password": null,
+    "connectionType": "STANDALONE",
+    "nameFromProvider": null,
+    "provider": "REDIS_COMMUNITY_EDITION",
+    "lastConnection": "2025-11-19T12:25:59.442Z",
+    "modules": [
+      {
+        "name": "search",
+        "version": 999999,
+        "semanticVersion": "99.99.99"
+      },
+      {
+        "name": "rg",
+        "version": 10204,
+        "semanticVersion": "1.2.4"
+      },
+      {
+        "name": "bf",
+        "version": 20209,
+        "semanticVersion": "2.2.9"
+      },
+      {
+        "name": "ai",
+        "version": 10205,
+        "semanticVersion": "1.2.5"
+      },
+      {
+        "name": "graph",
+        "version": 20815,
+        "semanticVersion": "2.8.15"
+      },
+      {
+        "name": "ReJSON",
+        "version": 20011,
+        "semanticVersion": "2.0.11"
+      },
+      {
+        "name": "timeseries",
+        "version": 10616,
+        "semanticVersion": "1.6.16"
+      }
+    ],
+    "tls": false,
+    "tlsServername": null,
+    "verifyServerCert": null,
+    "caCert": null,
+    "clientCert": null,
+    "ssh": false,
+    "sshOptions": null,
+    "forceStandalone": false,
+    "tags": []
+  },
+  {
+    "compressor": "NONE",
+    "id": "f9a04117-7ad8-482e-af6c-4a8539b8ec7e",
+    "host": "127.0.0.1",
+    "port": 8106,
+    "name": "OSS Standalone RedisGears 2.0",
+    "db": 0,
+    "username": "default",
+    "password": null,
+    "connectionType": "STANDALONE",
+    "nameFromProvider": null,
+    "provider": "REDIS_COMMUNITY_EDITION",
+    "lastConnection": "2025-11-19T12:25:55.153Z",
+    "modules": [
+      {
+        "name": "redisgears_2",
+        "version": 999999
+      }
+    ],
+    "tls": false,
+    "tlsServername": null,
+    "verifyServerCert": null,
+    "caCert": null,
+    "clientCert": null,
+    "ssh": false,
+    "sshOptions": null,
+    "forceStandalone": false,
+    "tags": []
+  },
+  {
+    "compressor": "NONE",
+    "id": "51354de3-ee6f-4f12-92d4-81039f0dfa64",
+    "host": "127.0.0.1",
+    "port": 8200,
+    "name": "OSS Cluster v7",
+    "db": 0,
+    "username": "default",
+    "password": null,
+    "connectionType": "CLUSTER",
+    "nameFromProvider": null,
+    "provider": "REDIS_COMMUNITY_EDITION",
+    "lastConnection": "2025-11-19T12:45:45.846Z",
+    "modules": [
+      {
+        "name": "ReJSON",
+        "version": 10008,
+        "semanticVersion": "1.0.8"
+      },
+      {
+        "name": "search",
+        "version": 20013,
+        "semanticVersion": "2.0.13"
+      }
+    ],
+    "tls": false,
+    "tlsServername": null,
+    "verifyServerCert": null,
+    "caCert": null,
+    "clientCert": null,
+    "ssh": false,
+    "sshOptions": null,
+    "forceStandalone": false,
+    "tags": []
+  },
+  {
+    "compressor": "NONE",
+    "id": "163ff5d1-cc81-45dc-b6d2-577452027216",
+    "host": "127.0.0.1",
+    "port": 8101,
+    "name": "OSS Standalone v5",
+    "db": 0,
+    "username": "default",
+    "password": null,
+    "connectionType": "STANDALONE",
+    "nameFromProvider": null,
+    "provider": "REDIS_COMMUNITY_EDITION",
+    "lastConnection": "2025-11-19T12:25:51.133Z",
+    "modules": [],
+    "tls": false,
+    "tlsServername": null,
+    "verifyServerCert": null,
+    "caCert": null,
+    "clientCert": null,
+    "ssh": false,
+    "sshOptions": null,
+    "forceStandalone": false,
+    "tags": []
+  },
+  {
+    "compressor": "NONE",
+    "id": "862a26c2-43d7-4708-a3f4-ae63c1aa1c65",
+    "host": "127.0.0.1",
+    "port": 8109,
+    "name": "OSS Standalone v8",
+    "db": 0,
+    "username": "default",
+    "password": null,
+    "connectionType": "STANDALONE",
+    "nameFromProvider": null,
+    "provider": "REDIS_COMMUNITY_EDITION",
+    "lastConnection": "2025-11-19T12:25:47.850Z",
+    "modules": [
+      {
+        "name": "search",
+        "version": 79901,
+        "semanticVersion": "7.99.1"
+      },
+      {
+        "name": "ReJSON",
+        "version": 79901,
+        "semanticVersion": "7.99.1"
+      },
+      {
+        "name": "timeseries",
+        "version": 79901,
+        "semanticVersion": "7.99.1"
+      },
+      {
+        "name": "bf",
+        "version": 79901,
+        "semanticVersion": "7.99.1"
+      }
+    ],
+    "tls": false,
+    "tlsServername": null,
+    "verifyServerCert": null,
+    "caCert": null,
+    "clientCert": null,
+    "ssh": false,
+    "sshOptions": null,
+    "forceStandalone": false,
+    "tags": []
+  },
+  {
+    "compressor": "NONE",
+    "id": "d9873d56-5b75-4c6c-afb5-8322d93eef3d",
+    "host": "127.0.0.1",
+    "port": 8221,
+    "name": "OSS Cluster v7 with RediSearch",
+    "db": 0,
+    "username": "default",
+    "password": null,
+    "connectionType": "CLUSTER",
+    "nameFromProvider": null,
+    "provider": "REDIS_COMMUNITY_EDITION",
+    "lastConnection": "2025-11-19T12:46:16.309Z",
+    "modules": [
+      {
+        "name": "search",
+        "version": 999999,
+        "semanticVersion": "99.99.99"
+      },
+      {
+        "name": "ReJSON",
+        "version": 10008,
+        "semanticVersion": "1.0.8"
+      }
+    ],
+    "tls": false,
+    "tlsServername": null,
+    "verifyServerCert": null,
+    "caCert": null,
+    "clientCert": null,
+    "ssh": false,
+    "sshOptions": null,
+    "forceStandalone": false,
+    "tags": []
+  },
+  {
+    "compressor": "NONE",
+    "id": "459d7404-b0c1-4217-a7e5-3e1942e34612",
+    "host": "172.31.100.191",
+    "port": 6379,
+    "name": "OSS Cluster RedisGears 2.0",
+    "db": 0,
+    "username": "default",
+    "password": null,
+    "connectionType": "CLUSTER",
+    "nameFromProvider": null,
+    "provider": "REDIS_COMMUNITY_EDITION",
+    "lastConnection": "2025-11-19T12:49:30.187Z",
+    "modules": [
+      {
+        "name": "redisgears_2",
+        "version": 999999
+      }
+    ],
+    "tls": false,
+    "tlsServername": null,
+    "verifyServerCert": null,
+    "caCert": null,
+    "clientCert": null,
+    "ssh": false,
+    "sshOptions": null,
+    "forceStandalone": false,
+    "tags": []
+  },
+  {
+    "compressor": "NONE",
+    "id": "8781d79a-784c-40e3-bfd0-7cb5140c01da",
+    "host": "127.0.0.1",
+    "port": 28100,
+    "name": "Sentinel - primary-group-2",
+    "db": 0,
+    "username": null,
+    "password": "password",
+    "connectionType": "SENTINEL",
+    "nameFromProvider": null,
+    "provider": "REDIS_COMMUNITY_EDITION",
+    "lastConnection": "2025-11-19T12:51:18.340Z",
+    "sentinelMaster": {
+      "name": "primary-group-2",
+      "username": null,
+      "password": null
+    },
+    "modules": [],
+    "tls": null,
+    "tlsServername": null,
+    "verifyServerCert": null,
+    "caCert": null,
+    "clientCert": null,
+    "ssh": null,
+    "sshOptions": null,
+    "forceStandalone": null,
+    "tags": []
+  },
+  {
+    "compressor": "NONE",
+    "id": "c8fcde68-a462-4005-96ef-a6b824903108",
+    "host": "127.0.0.1",
+    "port": 28100,
+    "name": "Sentinel - primary-group-1",
+    "db": 0,
+    "username": null,
+    "password": "password",
+    "connectionType": "SENTINEL",
+    "nameFromProvider": null,
+    "provider": "REDIS_COMMUNITY_EDITION",
+    "lastConnection": "2025-11-19T12:51:12.609Z",
+    "sentinelMaster": {
+      "name": "primary-group-1",
+      "username": null,
+      "password": null
+    },
+    "modules": [],
+    "tls": null,
+    "tlsServername": null,
+    "verifyServerCert": null,
+    "caCert": null,
+    "clientCert": null,
+    "ssh": null,
+    "sshOptions": null,
+    "forceStandalone": null,
+    "tags": []
+  },
+  {
+    "compressor": "NONE",
+    "id": "6486d1ac-2a80-48d2-8cd9-0747552f8b7a",
+    "host": "172.31.100.109",
+    "port": 6379,
+    "name": "SSH Server",
+    "db": 0,
+    "username": null,
+    "password": null,
+    "connectionType": "STANDALONE",
+    "nameFromProvider": null,
+    "provider": "REDIS_COMMUNITY_EDITION",
+    "lastConnection": "2025-11-19T13:21:59.492Z",
+    "modules": [
+      {
+        "name": "search",
+        "version": 999999,
+        "semanticVersion": "99.99.99"
+      },
+      {
+        "name": "ReJSON",
+        "version": 20011,
+        "semanticVersion": "2.0.11"
+      },
+      {
+        "name": "timeseries",
+        "version": 10616,
+        "semanticVersion": "1.6.16"
+      },
+      {
+        "name": "graph",
+        "version": 20815,
+        "semanticVersion": "2.8.15"
+      },
+      {
+        "name": "bf",
+        "version": 20209,
+        "semanticVersion": "2.2.9"
+      }
+    ],
+    "tls": false,
+    "tlsServername": null,
+    "verifyServerCert": null,
+    "caCert": null,
+    "clientCert": null,
+    "ssh": true,
+    "sshOptions": {
+      "id": "71207769-d1d0-48df-8c2e-161137a43648",
+      "host": "localhost",
+      "port": 2222,
+      "username": "u",
+      "password": "pass",
+      "privateKey": null,
+      "passphrase": null
+    },
+    "forceStandalone": false,
+    "tags": []
+  }
+]

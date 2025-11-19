@@ -20,7 +20,13 @@ docker-compose -f rte.networks.docker-compose.yml -f vpn.docker-compose.yml up -
 - **Import** into your OpenVPN client and Connect
 - **Verify**: `ping 172.31.100.221` should work
 
-### 4. Ready to Test!
+### 4. Import Pre-configured Databases (Optional)
+For quick setup, import all databases at once:
+- **File**: `tests/e2e/rte/RedisInsight_Connections.json`
+- **In RedisInsight**: Datasbes → + Connect existing database → Import → Select the JSON file
+- **Includes**: 12+ pre-configured connections (standalone, clusters, sentinel, SSH tunnel example)
+
+### 5. Ready to Test!
 All Redis environments are now accessible. See below for connection details.
 
 ---
