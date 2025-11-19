@@ -113,7 +113,7 @@ const InstancesNavigationPopover = ({ name }: Props) => {
   return (
     <RiPopover
       ownFocus
-      anchorPosition="downRight"
+      anchorPosition="downLeft"
       panelPaddingSize="none"
       isOpen={isPopoverOpen}
       closePopover={() => showPopover()}
