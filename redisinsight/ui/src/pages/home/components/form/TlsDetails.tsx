@@ -20,8 +20,7 @@ import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { deleteCaCertificateAction } from 'uiSrc/slices/instances/caCerts'
 import { deleteClientCertAction } from 'uiSrc/slices/instances/clientCerts'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { TextArea, TextInput } from 'uiSrc/components/base/inputs'
@@ -185,7 +184,7 @@ const TlsDetails = (props: Props) => {
   const verifyTlsId = useGenerateId('', ' verifyServerTlsCert')
   const isTlsAuthId = useGenerateId('', ' is_tls_client_auth_required')
   return (
-    <>
+    <Col gap="l">
       <Row gap="m">
         <FlexItem>
           <FormField>
@@ -202,8 +201,7 @@ const TlsDetails = (props: Props) => {
       </Row>
 
       {formik.values.tls && (
-        <>
-          <Spacer />
+        <Col gap="l">
           <Row gap="m">
             <FlexItem grow={1}>
               <Checkbox
@@ -223,31 +221,27 @@ const TlsDetails = (props: Props) => {
             </FlexItem>
           </Row>
           {formik.values.sni && (
-            <>
-              <Spacer />
-              <Row gap="m">
-                <FlexItem grow>
-                  <FormField label="Server Name" required>
-                    <TextInput
-                      name="servername"
-                      id="servername"
-                      maxLength={200}
-                      placeholder="Enter Server Name"
-                      value={formik.values.servername ?? ''}
-                      onChange={(value) =>
-                        formik.setFieldValue(
-                          'servername',
-                          validateField(value.trim()),
-                        )
-                      }
-                      data-testid="sni-servername"
-                    />
-                  </FormField>
-                </FlexItem>
-              </Row>
-            </>
+            <Row gap="m">
+              <FlexItem grow>
+                <FormField label="Server Name" required>
+                  <TextInput
+                    name="servername"
+                    id="servername"
+                    maxLength={200}
+                    placeholder="Enter Server Name"
+                    value={formik.values.servername ?? ''}
+                    onChange={(value) =>
+                      formik.setFieldValue(
+                        'servername',
+                        validateField(value.trim()),
+                      )
+                    }
+                    data-testid="sni-servername"
+                  />
+                </FormField>
+              </FlexItem>
+            </Row>
           )}
-          <Spacer />
           <Row gap="m" responsive>
             <FlexItem
               grow
@@ -263,11 +257,10 @@ const TlsDetails = (props: Props) => {
               />
             </FlexItem>
           </Row>
-        </>
+        </Col>
       )}
       {formik.values.tls && (
-        <div className="boxSection">
-          <Spacer />
+        <Col gap="l"  >
           <Row gap="m" responsive>
             <FlexItem>
               <FormField
@@ -316,53 +309,41 @@ const TlsDetails = (props: Props) => {
 
           {formik.values.tls &&
             formik.values.selectedCaCertName === ADD_NEW_CA_CERT && (
-              <>
-                <Spacer />
-                <Row gap="m" responsive>
-                  <FlexItem grow>
-                    <FormField label="Certificate" required>
-                      <TextArea
-                        name="newCaCert"
-                        id="newCaCert"
-                        value={formik.values.newCaCert ?? ''}
-                        onChangeCapture={formik.handleChange}
-                        placeholder="Enter CA Certificate"
-                        data-testid="new-ca-cert"
-                      />
-                    </FormField>
-                  </FlexItem>
-                </Row>
-              </>
+              <Row gap="m" responsive>
+                <FlexItem grow>
+                  <FormField label="Certificate" required>
+                    <TextArea
+                      name="newCaCert"
+                      id="newCaCert"
+                      value={formik.values.newCaCert ?? ''}
+                      onChangeCapture={formik.handleChange}
+                      placeholder="Enter CA Certificate"
+                      data-testid="new-ca-cert"
+                    />
+                  </FormField>
+                </FlexItem>
+              </Row>
             )}
-        </div>
+        </Col>
       )}
       {formik.values.tls && (
-        <>
-          <Spacer />
-          <Row responsive>
-            <FlexItem grow>
-              <Checkbox
-                id={isTlsAuthId}
-                name="tlsClientAuthRequired"
-                label="Requires TLS Client Authentication"
-                checked={!!formik.values.tlsClientAuthRequired}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  formik.setFieldValue(
-                    'tlsClientAuthRequired',
-                    e.target.checked,
-                  )
-                }
-                data-testid="tls-required-checkbox"
-              />
-            </FlexItem>
-          </Row>
-        </>
+        <Row responsive>
+          <FlexItem grow>
+            <Checkbox
+              id={isTlsAuthId}
+              name="tlsClientAuthRequired"
+              label="Requires TLS Client Authentication"
+              checked={!!formik.values.tlsClientAuthRequired}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                formik.setFieldValue('tlsClientAuthRequired', e.target.checked)
+              }
+              data-testid="tls-required-checkbox"
+            />
+          </FlexItem>
+        </Row>
       )}
       {formik.values.tls && formik.values.tlsClientAuthRequired && (
-        <div
-          className={cx('boxSection', styles.tslBoxSection)}
-          style={{ marginTop: 15 }}
-        >
+        <Col gap="l">
           <Row gap="m" responsive>
             <FlexItem grow>
               <FormField label="Client Certificate" required>
@@ -406,8 +387,7 @@ const TlsDetails = (props: Props) => {
           {formik.values.tls &&
             formik.values.tlsClientAuthRequired &&
             formik.values.selectedTlsClientCertId === 'ADD_NEW' && (
-              <>
-                <Spacer />
+              <Col gap="l">
                 <Row gap="m" responsive>
                   <FlexItem grow>
                     <FormField label="Certificate" required>
@@ -423,7 +403,6 @@ const TlsDetails = (props: Props) => {
                     </FormField>
                   </FlexItem>
                 </Row>
-                <Spacer />
                 <Row gap="m" responsive>
                   <FlexItem grow>
                     <FormField label="Private Key" required>
@@ -438,11 +417,11 @@ const TlsDetails = (props: Props) => {
                     </FormField>
                   </FlexItem>
                 </Row>
-              </>
+              </Col>
             )}
-        </div>
+        </Col>
       )}
-    </>
+    </Col>
   )
 }
 
