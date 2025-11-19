@@ -2556,10 +2556,10 @@
     "@react-hook/latest" "^1.0.2"
     "@react-hook/passive-layout-effect" "^1.2.0"
 
-"@redis-ui/components@^39.18.0":
-  version "39.18.0"
-  resolved "https://registry.yarnpkg.com/@redis-ui/components/-/components-39.18.0.tgz#b5fb63e4fbcf9e25d9c56eb7bcd3232b539a37c4"
-  integrity sha512-o+I8nN+S4C++924w/hy6q4RyfEwvWqb7c+6vr1QxxZ9+aZcBMatyw/QW8yKnGHhP5IOB4Dm4SHIVYisTXbaSuA==
+"@redis-ui/components@^41.2.9", "@redis-ui/components@^41.3.7":
+  version "41.3.7"
+  resolved "https://registry.yarnpkg.com/@redis-ui/components/-/components-41.3.7.tgz#ef41229845dae5859fdb8ebdf3319ffba4447b30"
+  integrity sha512-0wS1CQk7rQX5B7VqFJLMy+GAQo4lkMu6QefAHSi16nUyPmSbAGin/VLFZp2gTI4/DFgpZF2t08W4bKOzVVJG9Q==
   dependencies:
     "@radix-ui/react-checkbox" "^1.0.3"
     "@radix-ui/react-collapsible" "^1.0.3"
@@ -2583,27 +2583,26 @@
     type-fest "^3.13.1"
     virtua "^0.36.3"
 
-"@redis-ui/icons@^6.1.1":
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/@redis-ui/icons/-/icons-6.1.1.tgz#100dfb7fdb4fa810ab85d9ddbd6ed75ed755f1fe"
-  integrity sha512-KzxU7cCcArOfE3cGX59Dd3FDDkQAp1QLupcj9nvXj+zOoPkaCdGELeAFL5l8glo7eY/6pyQl5VTR4XQ3d12mjQ==
+"@redis-ui/icons@^6.3.11", "@redis-ui/icons@^6.3.17":
+  version "6.3.17"
+  resolved "https://registry.yarnpkg.com/@redis-ui/icons/-/icons-6.3.17.tgz#d444997b43b9c815dde33f23ed0bd0bfed601311"
+  integrity sha512-H5bXBZmUG3sNUWMcI7p/VPshiu1roRsiRuTCdY8Avw1ardfs7zAdJKBohmX4OCwSjsv/KKTP2UzXh3wOdCh6Ew==
 
-"@redis-ui/styles@^12.8.0", "@redis-ui/styles@^12.9.0":
-  version "12.9.0"
-  resolved "https://registry.yarnpkg.com/@redis-ui/styles/-/styles-12.9.0.tgz#41dc32db88079e79e61d99676f3c1116b4d6fdf9"
-  integrity sha512-tHiRisLBJNQBAEuxyTIIs2HLSVI3kB53AZp+L22T7aJCBqJ/P24jwfsSI4znUzH4aN3yEyXBwaDclPXuq986ew==
+"@redis-ui/styles@^13.2.0":
+  version "13.2.0"
+  resolved "https://registry.yarnpkg.com/@redis-ui/styles/-/styles-13.2.0.tgz#62d29906e0ffbce3baa4197f682e12919d9ed8c8"
+  integrity sha512-OetVR/bpCUO00tJlYyhat8HJbIyvxm0bJa94AyDsjHuln+852HqOZyHASKXsIOXBfQLgGREZBz+cKZYId8aNgA==
   dependencies:
     color-alpha "^2.0.0"
     polished "^4.3.1"
 
-"@redis-ui/table@^2.18.0":
-  version "2.18.0"
-  resolved "https://registry.yarnpkg.com/@redis-ui/table/-/table-2.18.0.tgz#d8f22a3902a72ff7e140a2e3b77d6941bd6b6bc2"
-  integrity sha512-LkU0oco+uOfGCHi6n3yqwTgQP4i0xPbeF5k5heDRynmX55P9pOtNR6qxzSBu/gV5IQGOGVzfjcgHY/oFdSHqvA==
+"@redis-ui/table@^2.23.2":
+  version "2.23.2"
+  resolved "https://registry.yarnpkg.com/@redis-ui/table/-/table-2.23.2.tgz#96e5497866d80313f0db759f973c139e04932bbb"
+  integrity sha512-afhLkWLHk3yi/s9qL6aSGt2rqAPEnvJUfbPJPcgXi2EXG04csFk7Pyd0L4GoWSAH3wAYWfxybCZOIxjI7rhIzA==
   dependencies:
-    "@redis-ui/components" "^39.18.0"
-    "@redis-ui/icons" "^6.1.1"
-    "@redis-ui/styles" "^12.8.0"
+    "@redis-ui/components" "^41.2.9"
+    "@redis-ui/icons" "^6.3.11"
     "@tanstack/react-table" "^8.9.8"
     type-fest "^3.13.1"
 
