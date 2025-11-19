@@ -5,13 +5,12 @@ import { type RedisCloudSubscription } from 'uiSrc/slices/interfaces'
 
 import { CellText } from 'uiSrc/components/auto-discover'
 import { isNumber } from 'lodash'
-
-export const NUMBER_OF_DBS_COLUMN_ID = 'numberOfDatabases' as const
+import { AutoDiscoverCloudIds } from 'uiSrc/pages/autodiscover-cloud/constants/constants'
 
 export const numberOfDbsColumn = (): ColumnDef<RedisCloudSubscription> => {
   return {
-    id: NUMBER_OF_DBS_COLUMN_ID,
-    accessorKey: NUMBER_OF_DBS_COLUMN_ID,
+    id: AutoDiscoverCloudIds.NumberOfDatabases,
+    accessorKey: AutoDiscoverCloudIds.NumberOfDatabases,
     header: '# databases',
     enableSorting: true,
     cell: ({

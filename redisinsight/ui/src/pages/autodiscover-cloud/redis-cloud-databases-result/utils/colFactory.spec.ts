@@ -4,18 +4,8 @@ import {
   type InstanceRedisCloud,
 } from 'uiSrc/slices/interfaces'
 import { colFactory } from './colFactory'
-import {
-  DATABASE_RESULT_COLUMN_ID,
-  SUBSCRIPTION_ID_RESULT_COLUMN_ID,
-  SUBSCRIPTION_DB_RESULT_COLUMN_ID,
-  SUBSCRIPTION_TYPE_RESULT_COLUMN_ID,
-  STATUS_DB_RESULT_COLUMN_ID,
-  ENDPOINT_RESULT_COLUMN_ID,
-  MODULES_RESULT_COLUMN_ID,
-  OPTIONS_RESULT_COLUMN_ID,
-  MESSAGE_RESULT_COLUMN_ID,
-} from '../../column-definitions'
 import { RedisCloudInstanceFactory } from 'uiSrc/mocks/factories/cloud/RedisCloudInstance.factory'
+import { AutoDiscoverCloudIds } from 'uiSrc/pages/autodiscover-cloud/constants/constants'
 
 describe('colFactory', () => {
   it('should return base columns without modules and options when instances array is empty', () => {
@@ -25,13 +15,13 @@ describe('colFactory', () => {
 
     expect(columns).toHaveLength(7)
     expect(columns.map((col) => col.id)).toEqual([
-      DATABASE_RESULT_COLUMN_ID,
-      SUBSCRIPTION_ID_RESULT_COLUMN_ID,
-      SUBSCRIPTION_DB_RESULT_COLUMN_ID,
-      SUBSCRIPTION_TYPE_RESULT_COLUMN_ID,
-      STATUS_DB_RESULT_COLUMN_ID,
-      ENDPOINT_RESULT_COLUMN_ID,
-      MESSAGE_RESULT_COLUMN_ID,
+      AutoDiscoverCloudIds.Name,
+      AutoDiscoverCloudIds.SubscriptionId,
+      AutoDiscoverCloudIds.SubscriptionName,
+      AutoDiscoverCloudIds.SubscriptionType,
+      AutoDiscoverCloudIds.Status,
+      AutoDiscoverCloudIds.PublicEndpoint,
+      AutoDiscoverCloudIds.MessageAdded,
     ])
   })
 
@@ -45,13 +35,13 @@ describe('colFactory', () => {
 
     expect(columns).toHaveLength(7)
     expect(columns.map((col) => col.id)).toEqual([
-      DATABASE_RESULT_COLUMN_ID,
-      SUBSCRIPTION_ID_RESULT_COLUMN_ID,
-      SUBSCRIPTION_DB_RESULT_COLUMN_ID,
-      SUBSCRIPTION_TYPE_RESULT_COLUMN_ID,
-      STATUS_DB_RESULT_COLUMN_ID,
-      ENDPOINT_RESULT_COLUMN_ID,
-      MESSAGE_RESULT_COLUMN_ID,
+      AutoDiscoverCloudIds.Name,
+      AutoDiscoverCloudIds.SubscriptionId,
+      AutoDiscoverCloudIds.SubscriptionName,
+      AutoDiscoverCloudIds.SubscriptionType,
+      AutoDiscoverCloudIds.Status,
+      AutoDiscoverCloudIds.PublicEndpoint,
+      AutoDiscoverCloudIds.MessageAdded,
     ])
   })
 
@@ -67,9 +57,9 @@ describe('colFactory', () => {
     const columns = colFactory(instances, instances)
 
     expect(columns).toHaveLength(8)
-    expect(columns.map((col) => col.id)).toContain(MODULES_RESULT_COLUMN_ID)
-    expect(columns[6].id).toBe(MODULES_RESULT_COLUMN_ID)
-    expect(columns.map((col) => col.id)).not.toContain(OPTIONS_RESULT_COLUMN_ID)
+    expect(columns.map((col) => col.id)).toContain(AutoDiscoverCloudIds.Modules)
+    expect(columns[6].id).toBe(AutoDiscoverCloudIds.Modules)
+    expect(columns.map((col) => col.id)).not.toContain(AutoDiscoverCloudIds.Options)
   })
 
   it('should include options column when at least one instance has options with truthy values', () => {
@@ -87,9 +77,9 @@ describe('colFactory', () => {
     const columns = colFactory(instances, instances)
 
     expect(columns).toHaveLength(8)
-    expect(columns.map((col) => col.id)).toContain(OPTIONS_RESULT_COLUMN_ID)
-    expect(columns[6].id).toBe(OPTIONS_RESULT_COLUMN_ID)
-    expect(columns.map((col) => col.id)).not.toContain(MODULES_RESULT_COLUMN_ID)
+    expect(columns.map((col) => col.id)).toContain(AutoDiscoverCloudIds.Options)
+    expect(columns[6].id).toBe(AutoDiscoverCloudIds.Options)
+    expect(columns.map((col) => col.id)).not.toContain(AutoDiscoverCloudIds.Modules)
   })
   it('should include both modules and options columns when instances have both', () => {
     const instances = RedisCloudInstanceFactory.buildList(1, {
@@ -103,15 +93,15 @@ describe('colFactory', () => {
 
     expect(columns).toHaveLength(9)
     expect(columns.map((col) => col.id)).toEqual([
-      DATABASE_RESULT_COLUMN_ID,
-      SUBSCRIPTION_ID_RESULT_COLUMN_ID,
-      SUBSCRIPTION_DB_RESULT_COLUMN_ID,
-      SUBSCRIPTION_TYPE_RESULT_COLUMN_ID,
-      STATUS_DB_RESULT_COLUMN_ID,
-      ENDPOINT_RESULT_COLUMN_ID,
-      MODULES_RESULT_COLUMN_ID,
-      OPTIONS_RESULT_COLUMN_ID,
-      MESSAGE_RESULT_COLUMN_ID,
+      AutoDiscoverCloudIds.Name,
+      AutoDiscoverCloudIds.SubscriptionId,
+      AutoDiscoverCloudIds.SubscriptionName,
+      AutoDiscoverCloudIds.SubscriptionType,
+      AutoDiscoverCloudIds.Status,
+      AutoDiscoverCloudIds.PublicEndpoint,
+      AutoDiscoverCloudIds.Modules,
+      AutoDiscoverCloudIds.Options,
+      AutoDiscoverCloudIds.MessageAdded,
     ])
   })
 
@@ -126,7 +116,7 @@ describe('colFactory', () => {
       instancesWithModules,
     )
     expect(columnsWithModules[columnsWithModules.length - 1].id).toBe(
-      MESSAGE_RESULT_COLUMN_ID,
+      AutoDiscoverCloudIds.MessageAdded,
     )
 
     const instancesWithOptions = RedisCloudInstanceFactory.buildList(1, {
@@ -139,7 +129,7 @@ describe('colFactory', () => {
       instancesWithOptions,
     )
     expect(columnsWithOptions[columnsWithOptions.length - 1].id).toBe(
-      MESSAGE_RESULT_COLUMN_ID,
+      AutoDiscoverCloudIds.MessageAdded,
     )
 
     const instancesWithBoth = RedisCloudInstanceFactory.buildList(1, {
@@ -149,7 +139,7 @@ describe('colFactory', () => {
 
     const columnsWithBoth = colFactory(instancesWithBoth, instancesWithBoth)
     expect(columnsWithBoth[columnsWithBoth.length - 1].id).toBe(
-      MESSAGE_RESULT_COLUMN_ID,
+      AutoDiscoverCloudIds.MessageAdded,
     )
   })
 })

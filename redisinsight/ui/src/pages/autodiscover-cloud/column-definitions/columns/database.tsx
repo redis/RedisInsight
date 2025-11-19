@@ -4,14 +4,13 @@ import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import { type InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 
 import { DatabaseCell } from '../components/DatabaseCell/DatabaseCell'
-
-export const DATABASE_COLUMN_ID = 'name' as const
+import { AutoDiscoverCloudIds } from 'uiSrc/pages/autodiscover-cloud/constants/constants'
 
 export const databaseColumn = (): ColumnDef<InstanceRedisCloud> => {
   return {
     header: 'Database',
-    id: DATABASE_COLUMN_ID,
-    accessorKey: DATABASE_COLUMN_ID,
+    id: AutoDiscoverCloudIds.Name,
+    accessorKey: AutoDiscoverCloudIds.Name,
     enableSorting: true,
     maxSize: 150,
     cell: ({

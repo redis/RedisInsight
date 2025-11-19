@@ -4,13 +4,12 @@ import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import { type RedisCloudSubscription } from 'uiSrc/slices/interfaces'
 
 import { CellText } from 'uiSrc/components/auto-discover'
-
-export const PROVIDER_COLUMN_ID = 'provider' as const
+import { AutoDiscoverCloudIds } from 'uiSrc/pages/autodiscover-cloud/constants/constants'
 
 export const providerColumn = (): ColumnDef<RedisCloudSubscription> => {
   return {
-    id: PROVIDER_COLUMN_ID,
-    accessorKey: PROVIDER_COLUMN_ID,
+    id: AutoDiscoverCloudIds.Provider,
+    accessorKey: AutoDiscoverCloudIds.Provider,
     header: 'Cloud provider',
     enableSorting: true,
     cell: ({

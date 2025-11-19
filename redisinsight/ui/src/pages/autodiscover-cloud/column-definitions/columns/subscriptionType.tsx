@@ -7,14 +7,13 @@ import {
 } from 'uiSrc/slices/interfaces'
 
 import { CellText } from 'uiSrc/components/auto-discover'
-
-export const SUBSCRIPTION_TYPE_COLUMN_ID = 'subscriptionType' as const
+import { AutoDiscoverCloudIds } from 'uiSrc/pages/autodiscover-cloud/constants/constants'
 
 export const subscriptionTypeColumn = (): ColumnDef<InstanceRedisCloud> => {
   return {
     header: 'Type',
-    id: SUBSCRIPTION_TYPE_COLUMN_ID,
-    accessorKey: SUBSCRIPTION_TYPE_COLUMN_ID,
+    id: AutoDiscoverCloudIds.SubscriptionType,
+    accessorKey: AutoDiscoverCloudIds.SubscriptionType,
     enableSorting: true,
     maxSize: 100,
     cell: ({

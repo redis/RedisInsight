@@ -19,6 +19,7 @@ import {
   Footer,
   Header,
 } from 'uiSrc/components/auto-discover'
+import { Text } from 'uiSrc/components/base/text'
 
 import { getRowId } from '../../useSentinelDatabasesConfig'
 import { CancelButton, SubmitButton, NoMastersMessage } from './components'

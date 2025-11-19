@@ -5,16 +5,15 @@ import { type InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 
 import { DatabaseListOptions } from 'uiSrc/components'
 import { parseInstanceOptionsCloud } from 'uiSrc/utils'
-
-export const OPTIONS_COLUMN_ID = 'options' as const
+import { AutoDiscoverCloudIds } from 'uiSrc/pages/autodiscover-cloud/constants/constants'
 
 export const optionsColumn = (
   instances: InstanceRedisCloud[],
 ): ColumnDef<InstanceRedisCloud> => {
   return {
     header: 'Options',
-    id: OPTIONS_COLUMN_ID,
-    accessorKey: OPTIONS_COLUMN_ID,
+    id: AutoDiscoverCloudIds.Options,
+    accessorKey: AutoDiscoverCloudIds.Options,
     enableSorting: true,
     maxSize: 120,
     cell: ({ row: { original: instance } }) => {
