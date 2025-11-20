@@ -5,11 +5,10 @@ export type RiAccordionProps = Omit<ComponentProps<typeof Section>, 'label'> & {
   label: ReactNode
   actions?: ReactNode
   collapsible?: SectionProps['collapsible']
-  actionButtonText?: SectionProps['actionButtonText']
-  collapsedInfo?: SectionProps['collapsedInfo']
+  actionButtonText?: ReactNode
   content?: SectionProps['content']
   children?: SectionProps['content']
-  onAction?: SectionProps['onAction']
+  onAction?: () => void
 }
 
 const RiAccordionLabel = ({ label }: Pick<RiAccordionProps, 'label'>) => {
@@ -38,7 +37,7 @@ const RiAccordionActions = ({
       {actionButtonText}
     </Section.Header.ActionButton>
     {actions}
-    <Section.Header.CollapseIndicator />
+    <Section.Header.CollapseButton />
   </Section.Header.Group>
 )
 
@@ -48,7 +47,6 @@ export const RiAccordion = ({
   label,
   onAction,
   actionButtonText,
-  collapsedInfo,
   children,
   actions,
   collapsible = true,
@@ -61,7 +59,6 @@ export const RiAccordion = ({
     collapsible={collapsible}
   >
     <Section.Header.Compose
-      collapsedInfo={collapsedInfo}
       id={`ri-accordion-${id}`}
       data-testid={`ri-accordion-header-${id}`}
     >
@@ -76,9 +73,8 @@ export const RiAccordion = ({
         data-testid={`ri-accordion-actions-${id}`}
       />
     </Section.Header.Compose>
-    <Section.Body
-      content={children ?? content}
-      data-testid={`ri-accordion-body-${id}`}
-    />
+    <Section.Body data-testid={`ri-accordion-body-${id}`}>
+      {children ?? content}
+    </Section.Body>
   </Section.Compose>
 )
