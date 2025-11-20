@@ -1,6 +1,11 @@
 import React, { useState } from 'react'
 import styled, { ThemeProvider } from 'styled-components'
-import { themeDark, themeLight, themeOld } from '@redis-ui/styles'
+import {
+  themeDark,
+  themeLight,
+  themeLight2,
+  themeDark2,
+} from '@redis-ui/styles'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { Title } from 'uiSrc/components/base/text/Title'
@@ -65,14 +70,18 @@ export const PlaygroundPage = () => {
                   onChange={(event) => {
                     let theme = uiTheme
                     switch (event.target.value) {
+                      case 'd2':
+                        theme = themeDark2
+                        break
+                      case 'l2':
+                        theme = themeLight2
+                        break
                       case 'd':
                         theme = themeDark
                         break
                       case 'l':
-                        theme = themeLight
-                        break
                       default:
-                        theme = themeOld
+                        theme = themeLight
                     }
                     setUiTheme(theme)
                   }}

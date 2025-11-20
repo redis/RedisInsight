@@ -16,7 +16,7 @@ const StyledColorContainer = styled(Col).attrs({
   height: 600px;
   overflow-y: auto;
   background-color: ${({ theme }: { theme: ThemeType }) =>
-    theme.semantic.color.background.neutral300};
+    theme.semantic.color.background.neutral100};
 `
 
 const StyledColorItem = styled(Col).attrs({
@@ -25,7 +25,7 @@ const StyledColorItem = styled(Col).attrs({
   align: 'center',
 })`
   background-color: ${({ theme }: { theme: ThemeType }) =>
-    theme.semantic.color.background.neutral300};
+    theme.semantic.color.background.neutral200};
   opacity: 0.8;
   padding: 5px;
   min-width: 100;
@@ -97,7 +97,7 @@ const ColorSection = ({
 
 export const Colors = () => {
   const theme = useTheme()
-  const { color: rootColors, semantic } = theme
+  const { semantic } = theme
   const { color: semanticColors } = semantic
   const [search, setSearch] = useState('')
   // Create regex pattern: each character from search with .* in between
@@ -124,9 +124,6 @@ export const Colors = () => {
     },
     {} as Record<string, Record<string, string>>,
   )
-  const filteredRootColors = Object.entries(rootColors).filter(([colorName]) =>
-    !search ? true : regex.test(colorName),
-  )
 
   return (
     <StyledColorContainer>
@@ -143,15 +140,13 @@ export const Colors = () => {
             <ColorText size="XL" color="accent" variant="italic">
               {search}
             </ColorText>
-            :&nbsp;&nbsp;found {filteredRootColors.length + semanticCount}{' '}
-            colors
+            :&nbsp;&nbsp;found {semanticCount} colors
           </Text>
         ) : (
-          <Text>{filteredRootColors.length + semanticCount} colors</Text>
+          <Text>{semanticCount} colors</Text>
         )}
       </Row>
 
-      <ColorSection title="Root colors" colors={filteredRootColors} />
       <ColorSectionTitle title="Semantic colors" />
       {Object.entries(filteredSemanticColors).map(([colorSection, colors]) => (
         <ColorSection
