@@ -13,7 +13,7 @@ import { Spacer } from 'uiSrc/components/base/layout'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { CellContext } from 'uiSrc/components/base/layout/table'
 
-import { AddErrorButton } from '../AddErrorButton/AddErrorButton'
+import { AddErrorButton } from 'uiSrc/pages/autodiscover-sentinel/components/columns/AddErrorButton/AddErrorButton'
 import type {
   ResultCellRendererProps,
   ResultCellProps,

@@ -1,15 +1,15 @@
 import React from 'react'
 import { InputFieldSentinel } from 'uiSrc/components'
-import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/InputFieldSentinel'
 import {
   AddRedisDatabaseStatus,
   ModifiedSentinelMaster,
 } from 'uiSrc/slices/interfaces'
+import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/InputFieldSentinel'
 
-import type { UsernameCellRendererProps } from './UsernameCell.types'
 import { errorNotAuth, getMetaProps } from 'uiSrc/utils/column'
 import { CellContext } from 'uiSrc/components/base/layout/table'
-import { HandleChangedInputProps } from 'uiSrc/pages/autodiscover-sentinel/sentinel-databases/components/columns/types'
+import { HandleChangedInputProps } from '../types'
+import { UsernameResultCellRendererProps } from './UsernameCell.types'
 
 export const UsernameCellRenderer = ({
   username,
@@ -19,7 +19,7 @@ export const UsernameCellRenderer = ({
   status,
   handleChangedInput,
   isInvalid,
-}: UsernameCellRendererProps) => {
+}: UsernameResultCellRendererProps) => {
   if (
     errorNotAuth(error, status) ||
     status === AddRedisDatabaseStatus.Success
@@ -42,7 +42,7 @@ export const UsernameCellRenderer = ({
   )
 }
 
-export const UsernameCell = ({
+export const UsernameResultCell = ({
   row,
   column,
 }: CellContext<ModifiedSentinelMaster, unknown>) => {

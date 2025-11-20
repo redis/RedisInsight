@@ -1,6 +1,6 @@
 import type { AddRedisDatabaseStatus } from 'uiSrc/slices/interfaces'
 
-export interface PasswordCellRendererProps {
+export interface PasswordResultCellRendererProps {
   password?: string
   id?: string
   error?: string | object | null

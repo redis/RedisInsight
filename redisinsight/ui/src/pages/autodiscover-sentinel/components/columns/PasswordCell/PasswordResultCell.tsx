@@ -6,10 +6,10 @@ import {
   ModifiedSentinelMaster,
 } from 'uiSrc/slices/interfaces'
 
-import type { PasswordCellRendererProps } from './PasswordCell.types'
+import type { PasswordResultCellRendererProps } from './PasswordResultCell.types'
 import { errorNotAuth, getMetaProps } from 'uiSrc/utils/column'
 import { CellContext } from 'uiSrc/components/base/layout/table'
-import { HandleChangedInputProps } from 'uiSrc/pages/autodiscover-sentinel/sentinel-databases/components/columns/types'
+import { HandleChangedInputProps } from 'uiSrc/pages/autodiscover-sentinel/components/columns/types'
 
 export const PasswordCellRenderer = ({
   password = '',
@@ -19,7 +19,7 @@ export const PasswordCellRenderer = ({
   status,
   handleChangedInput,
   isInvalid,
-}: PasswordCellRendererProps) => {
+}: PasswordResultCellRendererProps) => {
   if (
     errorNotAuth(error, status) ||
     status === AddRedisDatabaseStatus.Success
@@ -41,7 +41,7 @@ export const PasswordCellRenderer = ({
   )
 }
 
-export const PasswordCell = ({
+export const PasswordResultCell = ({
   row,
   column,
 }: CellContext<ModifiedSentinelMaster, unknown>) => {

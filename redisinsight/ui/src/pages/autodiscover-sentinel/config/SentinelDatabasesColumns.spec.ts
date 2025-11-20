@@ -1,7 +1,7 @@
-import { getColumns } from './getColumns'
+import { sentinelDatabasesColumnsConfig } from './SentinelDatabasesColumns.config'
 import { SentinelDatabaseIds } from 'uiSrc/pages/autodiscover-sentinel/constants/constants'
 
-describe('getColumns', () => {
+describe('SentinelDatabasesColumns.config', () => {
   const mockHandleChangedInput = jest.fn((_name: string, _value: string) => {
     // Mock implementation
   })
@@ -11,7 +11,7 @@ describe('getColumns', () => {
   })
 
   it('should return all required column definitions in correct order', () => {
-    const columns = getColumns(mockHandleChangedInput)
+    const columns = sentinelDatabasesColumnsConfig(mockHandleChangedInput)
 
     const columnIds = columns.map((col) => col.id)
 
@@ -28,7 +28,7 @@ describe('getColumns', () => {
   })
 
   it('should include selection column as first column', () => {
-    const columns = getColumns(mockHandleChangedInput)
+    const columns = sentinelDatabasesColumnsConfig(mockHandleChangedInput)
 
     expect(columns).toHaveLength(8)
     expect(columns[0].id).toBe('row-selection')
@@ -38,7 +38,7 @@ describe('getColumns', () => {
   })
 
   it('should pass handleChangedInput via meta.props for columns that need it', () => {
-    const columns = getColumns(mockHandleChangedInput)
+    const columns = sentinelDatabasesColumnsConfig(mockHandleChangedInput)
 
     const aliasColumn = columns.find(
       (col) => col.id === SentinelDatabaseIds.Alias,
@@ -68,7 +68,7 @@ describe('getColumns', () => {
   })
 
   it('should not include meta.props for columns that do not need it', () => {
-    const columns = getColumns(mockHandleChangedInput)
+    const columns = sentinelDatabasesColumnsConfig(mockHandleChangedInput)
 
     const primaryGroupColumn = columns.find(
       (col) => col.id === SentinelDatabaseIds.PrimaryGroup,

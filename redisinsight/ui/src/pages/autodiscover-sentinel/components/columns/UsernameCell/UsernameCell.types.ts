@@ -1,6 +1,11 @@
 import type { AddRedisDatabaseStatus } from 'uiSrc/slices/interfaces'
 
 export interface UsernameCellRendererProps {
+  username: string
+  id: string
+  handleChangedInput: (name: string, value: string) => void
+}
+export interface UsernameResultCellRendererProps {
   username?: string
   id?: string
   loading?: boolean

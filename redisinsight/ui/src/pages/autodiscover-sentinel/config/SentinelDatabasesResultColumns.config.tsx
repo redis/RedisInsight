@@ -3,18 +3,18 @@ import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import {
   SentinelDatabaseIds,
   SentinelDatabaseTitles,
-} from 'uiSrc/pages/autodiscover-sentinel/constants/constants'
-import { PrimaryGroupCell } from 'uiSrc/pages/autodiscover-sentinel/sentinel-databases/components/columns'
+} from '../constants/constants'
 import {
   AddressCell,
-  AliasCell,
+  PrimaryGroupCell,
+  AliasResultCell,
   DbCell,
-  PasswordCell,
   ResultCell,
-  UsernameCell,
-} from '../columns'
+  UsernameResultCell,
+  PasswordResultCell,
+} from '../components/columns'
 
-export const getColumns = (
+export const sentinelDatabasesResultColumnsConfig = (
   handleChangedInput: (name: string, value: string) => void,
   handleAddInstance: (masterName: string) => void,
   isInvalid: boolean,
@@ -49,7 +49,7 @@ export const getColumns = (
       id: SentinelDatabaseIds.Alias,
       accessorKey: SentinelDatabaseIds.Alias,
       enableSorting: true,
-      cell: AliasCell,
+      cell: AliasResultCell,
       meta: {
         props: { handleChangedInput },
       },
@@ -72,7 +72,7 @@ export const getColumns = (
       header: SentinelDatabaseTitles.Username,
       id: SentinelDatabaseIds.Username,
       accessorKey: SentinelDatabaseIds.Username,
-      cell: UsernameCell,
+      cell: UsernameResultCell,
       meta: {
         props: { handleChangedInput, isInvalid },
       },
@@ -81,7 +81,7 @@ export const getColumns = (
       header: SentinelDatabaseTitles.Password,
       id: SentinelDatabaseIds.Password,
       accessorKey: SentinelDatabaseIds.Password,
-      cell: PasswordCell,
+      cell: PasswordResultCell,
       meta: {
         props: { handleChangedInput, isInvalid },
       },

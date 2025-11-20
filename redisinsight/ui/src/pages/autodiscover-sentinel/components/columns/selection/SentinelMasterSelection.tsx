@@ -1,6 +1,6 @@
 import React from 'react'
 import { Table, type HeaderContext } from 'uiSrc/components/base/layout/table'
-import { SentinelMasterListCellType } from 'uiSrc/pages/autodiscover-sentinel/sentinel-databases/components/columns/types'
+import { SentinelMasterListCellType } from 'uiSrc/pages/autodiscover-sentinel/components/columns/types'
 import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 
 export const SentinelMasterSelectionRow: SentinelMasterListCellType = ({

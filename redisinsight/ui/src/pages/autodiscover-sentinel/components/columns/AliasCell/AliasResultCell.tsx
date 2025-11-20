@@ -2,21 +2,20 @@ import React from 'react'
 import { CellText } from 'uiSrc/components/auto-discover'
 import { InputFieldSentinel } from 'uiSrc/components'
 import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/InputFieldSentinel'
-
-import type { AliasCellRendererProps } from './AliasCell.types'
 import { errorNotAuth, getMetaProps } from 'uiSrc/utils/column'
 import { CellContext } from 'uiSrc/components/base/layout/table'
 import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
-import { HandleChangedInputProps } from 'uiSrc/pages/autodiscover-sentinel/sentinel-databases/components/columns/types'
+import { HandleChangedInputProps } from '../types'
+import { AliasResultCellRendererProps } from './AliasCell.types'
 
-export const AliasCellRenderer = ({
+export const AliasResultCellRenderer = ({
   id = '',
   alias,
   error,
   loading = false,
   status,
   handleChangedInput,
-}: AliasCellRendererProps) => {
+}: AliasResultCellRendererProps) => {
   if (errorNotAuth(error, status)) {
     return <CellText>{alias}</CellText>
   }
@@ -33,14 +32,14 @@ export const AliasCellRenderer = ({
   )
 }
 
-export const AliasCell = ({
+export const AliasResultCell = ({
   row,
   column,
 }: CellContext<ModifiedSentinelMaster, unknown>) => {
   const { id, alias, error, loading = false, status } = row.original
   const { handleChangedInput } = getMetaProps<HandleChangedInputProps>(column)
   return (
-    <AliasCellRenderer
+    <AliasResultCellRenderer
       id={id}
       alias={alias}
       error={error}

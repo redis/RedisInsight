@@ -18,7 +18,7 @@ import {
 import { removeEmpty, setTitle } from 'uiSrc/utils'
 import { pick } from 'lodash'
 import { ColumnDef } from 'uiSrc/components/base/layout/table'
-import { getColumns } from './components/utils/getColumns'
+import { sentinelDatabasesResultColumnsConfig } from '../config/SentinelDatabasesResultColumns.config'
 
 export const useSentinelDatabasesResultConfig = () => {
   const [items, setItems] = useState<ModifiedSentinelMaster[]>([])
@@ -100,7 +100,7 @@ export const useSentinelDatabasesResultConfig = () => {
   )
 
   const columns: ColumnDef<ModifiedSentinelMaster>[] = useMemo(() => {
-    return getColumns(
+    return sentinelDatabasesResultColumnsConfig(
       handleChangedInput,
       handleAddInstance,
       isInvalid,

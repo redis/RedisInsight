@@ -9,7 +9,7 @@ import {
 
 import type { DbCellRendererProps } from './DbCell.types'
 import { CellContext } from 'uiSrc/components/base/layout/table'
-import { HandleChangedInputProps } from 'uiSrc/pages/autodiscover-sentinel/sentinel-databases/components/columns/types'
+import { HandleChangedInputProps } from 'uiSrc/pages/autodiscover-sentinel/components/columns/types'
 import { getMetaProps } from 'uiSrc/utils/column'
 
 export const DbCellRenderer = ({

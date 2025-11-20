@@ -6,10 +6,10 @@ import { SentinelMasterFactory } from 'uiSrc/mocks/factories/sentinel/SentinelMa
 import SentinelDatabases from './SentinelDatabases'
 import type { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import { RowSelectionState } from '@redis-ui/table'
-import { getColumns } from 'uiSrc/pages/autodiscover-sentinel/sentinel-databases/components/utils/getColumns'
+import { sentinelDatabasesColumnsConfig } from 'uiSrc/pages/autodiscover-sentinel/config/SentinelDatabasesColumns.config'
 import { getRowId } from '../../useSentinelDatabasesConfig'
 
-const emptyColumnsMock = getColumns(fn())
+const emptyColumnsMock = sentinelDatabasesColumnsConfig(fn())
 
 const meta: Meta<typeof SentinelDatabases> = {
   component: SentinelDatabases,
@@ -27,33 +27,17 @@ const meta: Meta<typeof SentinelDatabases> = {
 export default meta
 type Story = StoryObj<typeof SentinelDatabases>
 
-const DefaultRender = () => {
-  const mastersMock: ModifiedSentinelMaster[] = [
-    SentinelMasterFactory.build({
-      id: '1',
-      name: 'mymaster',
-      alias: 'mymaster',
-    }),
-    SentinelMasterFactory.build({
-      name: 'mymaster2',
-      alias: 'mymaster2',
-    }),
-    SentinelMasterFactory.build({
-      name: 'mymaster3',
-      alias: 'mymaster3',
-    }),
-  ]
-  let columnsMock = getColumns(mastersMock, () => {})
+const DefaultRender = ({ masters }: { masters: ModifiedSentinelMaster[] }) => {
+  let columnsMock = sentinelDatabasesColumnsConfig(fn())
   const [rowSelection, setSelection] = useState<RowSelectionState>({})
   const selection = Object.keys(rowSelection)
-    .map((key) => mastersMock.find((master) => getRowId(master) === key))
+    .map((key) => masters.find((master) => getRowId(master) === key))
     .filter((item): item is ModifiedSentinelMaster => Boolean(item))
-
   return (
     <SentinelDatabases
       selection={selection || []}
       columns={columnsMock}
-      masters={mastersMock}
+      masters={masters}
       onClose={meta.args?.onClose!}
       onBack={meta.args?.onBack!}
       onSubmit={meta.args?.onSubmit!}
@@ -65,7 +49,24 @@ const DefaultRender = () => {
 }
 
 export const Default: Story = {
-  render: () => <DefaultRender />,
+  render: () => {
+    const mastersMock: ModifiedSentinelMaster[] = [
+      SentinelMasterFactory.build({
+        id: '1',
+        name: 'mymaster',
+        alias: 'mymaster',
+      }),
+      SentinelMasterFactory.build({
+        name: 'mymaster2',
+        alias: 'mymaster2',
+      }),
+      SentinelMasterFactory.build({
+        name: 'mymaster3',
+        alias: 'mymaster3',
+      }),
+    ]
+    return <DefaultRender masters={mastersMock} />
+  },
   play: async ({ canvas, userEvent, args, step }) => {
     await step('Ensure render', async () => {
       await expect(canvas.getByTestId('row-selection')).toBeInTheDocument()
@@ -103,39 +104,20 @@ export const Default: Story = {
   },
 }
 
-const With1000ItemsRender = () => {
-  const mastersMock: ModifiedSentinelMaster[] = Array.from(
-    { length: 1000 },
-    (_, index) =>
-      SentinelMasterFactory.build({
-        id: String(index + 1),
-        name: `mymaster${index + 1}`,
-        alias: `mymaster${index + 1}`,
-      }),
-  )
-  let columnsMock = getColumns(fn())
-  const [rowSelection, setSelection] = useState<RowSelectionState>({})
-  const selection = Object.keys(rowSelection)
-    .map((key) => mastersMock.find((master) => getRowId(master) === key))
-    .filter((item): item is ModifiedSentinelMaster => Boolean(item))
-
-  return (
-    <SentinelDatabases
-      selection={selection || []}
-      columns={columnsMock}
-      masters={mastersMock}
-      onClose={meta.args?.onClose!}
-      onBack={meta.args?.onBack!}
-      onSubmit={meta.args?.onSubmit!}
-      onSelectionChange={(sel) => {
-        setSelection(sel)
-      }}
-    />
-  )
-}
-
 export const With1000Items: Story = {
-  render: () => <With1000ItemsRender />,
+  render: () => {
+    const mastersMock: ModifiedSentinelMaster[] = Array.from(
+      { length: 1000 },
+      (_, index) =>
+        SentinelMasterFactory.build({
+          id: String(index + 1),
+          name: `mymaster${index + 1}`,
+          alias: `mymaster${index + 1}`,
+        }),
+    )
+
+    return <DefaultRender masters={mastersMock} />
+  },
 }
 
 export const Empty: Story = {

@@ -3,7 +3,7 @@ import { type ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import {
   SentinelDatabaseIds,
   SentinelDatabaseTitles,
-} from 'uiSrc/pages/autodiscover-sentinel/constants/constants'
+} from '../constants/constants'
 
 import {
   AddressCell,
@@ -14,9 +14,9 @@ import {
   SentinelMasterSelectionHeader,
   SentinelMasterSelectionRow,
   UsernameCell,
-} from '../columns'
+} from '../components/columns'
 
-export const getColumns = (
+export const sentinelDatabasesColumnsConfig = (
   handleChangedInput: (name: string, value: string) => void,
 ): ColumnDef<ModifiedSentinelMaster>[] => {
   return [
@@ -50,6 +50,7 @@ export const getColumns = (
       id: SentinelDatabaseIds.Address,
       accessorKey: SentinelDatabaseIds.Address,
       enableSorting: true,
+      minSize: 200,
       cell: AddressCell,
     },
     {

@@ -14,9 +14,9 @@ import {
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { Pages } from 'uiSrc/constants'
 import { setTitle } from 'uiSrc/utils'
-import { CreateSentinelDatabaseDto } from 'apiSrc/modules/redis-sentinel/dto/create.sentinel.database.dto'
 import { RowSelectionState } from 'uiSrc/components/base/layout/table'
-import { getColumns } from 'uiSrc/pages/autodiscover-sentinel/sentinel-databases/components/utils/getColumns'
+import { CreateSentinelDatabaseDto } from 'apiSrc/modules/redis-sentinel/dto/create.sentinel.database.dto'
+import { sentinelDatabasesColumnsConfig } from 'uiSrc/pages/autodiscover-sentinel/config/SentinelDatabasesColumns.config'
 
 const updateSelection = (
   selected: ModifiedSentinelMaster[],
@@ -128,7 +128,7 @@ export const useSentinelDatabasesConfig = () => {
 
   const shouldRenderSelection = items.length > 0
   const columns = useMemo(() => {
-    const cols = getColumns(handleChangedInput)
+    const cols = sentinelDatabasesColumnsConfig(handleChangedInput)
     if (!shouldRenderSelection) {
       cols.splice(0, 1)
     }
