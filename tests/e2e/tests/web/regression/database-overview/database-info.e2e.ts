@@ -31,7 +31,7 @@ test('Verify that user can see DB name, endpoint, connection type, Redis version
     await t.expect(browserPage.OverviewPanel.databaseInfoToolTip.textContent).match(version, 'User can not see Redis version in tooltip');
     await t.expect(browserPage.OverviewPanel.databaseInfoToolTip.textContent).contains('Default', 'User can not see user name in tooltip');
     // Verify that user can see the tooltip by hovering on index control switcher
-    await t.expect(browserPage.OverviewPanel.databaseInfoToolTip.textContent).contains('Logical Databases', 'Logical Databases text not displayed in tooltip');
+    await t.expect(browserPage.OverviewPanel.databaseInfoToolTip.textContent).contains('Logical databases', 'Logical Databases text not displayed in tooltip');
     await t.expect(browserPage.OverviewPanel.databaseInfoToolTip.textContent).contains(logicalDbText, 'Logical Databases text not displayed in tooltip');
 
     // Verify that user can see an (i) icon next to the database name on Browser and Workbench pages
