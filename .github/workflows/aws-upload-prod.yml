@@ -52,9 +52,9 @@ jobs:
       - name: Init variables
         run: |
           latestYmlFileName="latest.yml"
-          downloadLatestFolderPath="public/latest"
-          upgradeLatestFolderPath="public/upgrades"
-          releasesFolderPath="public/releases"
+          downloadLatestFolderPath="public/latest-new"
+          upgradeLatestFolderPath="public/upgrades-new"
+          releasesFolderPath="public/releases-new"
           appName=$(jq -r '.productName' electron-builder.json)
           appVersion=$(jq -r '.version' redisinsight/package.json)
 
