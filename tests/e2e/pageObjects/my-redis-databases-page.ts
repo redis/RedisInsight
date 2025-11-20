@@ -35,9 +35,9 @@ export class MyRedisDatabasePage extends BaseOverviewPage {
     popoverHeader = Selector('#formModalHeader');
     submitChangesButton = Selector('[data-testid=btn-submit]');
     promoButton = Selector('[data-testid=promo-btn]');
-    sortByDatabaseAlias = Selector('span').withAttribute('title', 'Database Alias');
-    sortByHostAndPort = Selector('span').withAttribute('title', 'Host:Port');
-    sortByConnectionType = Selector('span').withAttribute('title', 'Connection Type');
+    sortByDatabaseAlias = Selector('table th').withText('Database Alias');
+    sortByHostAndPort = Selector('table th').withText('Host:Port');
+    sortByConnectionType = Selector('table th').withText('Connection Type');
     importDatabasesBtn = Selector('[data-testid=option-btn-import]');
     retryImportBtn = Selector('[data-testid=btn-retry]');
     removeImportedFileBtn = Selector('[aria-label="Clear selected files"]');
