@@ -12,29 +12,27 @@ export const ComponentBadge = styled(RiBadge)<{ isActive?: boolean }>`
     pointer-events: none;
   }
 
+  background-color: transparent !important;
+
   ${({ isActive, theme }) => {
-    console.log('theme', theme)
     // TODO: try to replace with semantic colors once the palette is bigger.
     const bgColorActive =
       theme.name === 'dark'
-        ? theme.semantic.color.background.primary300
-        : theme.semantic.color.background.primary300
+        ? theme.semantic.color.background.primary400
+        : theme.semantic.color.background.primary400
     const bgColorHover =
       theme.name === 'dark'
         ? theme.semantic.color.background.primary500
-        : theme.semantic.color.background.primary200
+        : theme.semantic.color.background.primary300
 
-    const color =
-      theme.name === 'dark'
-        ? theme.semantic.color.text.primary600
-        : theme.semantic.color.text.primary600
+    const textColorActiveHover = theme.semantic.color.text.primary50
 
     return `
     ${isActive ? `background-color: ${bgColorActive} !important;` : ''}
-    ${isActive ? `color: ${color} !important;` : ''}
+    ${isActive ? `color: ${textColorActiveHover} !important;` : ''}
     &:hover {
       background-color: ${bgColorHover} !important;
-      color: ${color} !important;
+      color: ${textColorActiveHover} !important;
     }
   `
   }}
