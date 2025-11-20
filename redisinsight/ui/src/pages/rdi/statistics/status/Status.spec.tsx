@@ -1,15 +1,10 @@
 import React from 'react'
 
 import { render, screen } from 'uiSrc/utils/test-utils'
-import { IRdiPipelineStatus } from 'uiSrc/slices/interfaces'
+import { rdiPipelineStatusFactory } from 'uiSrc/mocks/factories/rdi/RdiPipelineStatus.factory'
 import Status from './Status'
 
-const mockedProps: IRdiPipelineStatus = {
-  rdiVersion: '1.2.3',
-  address: '127.0.0.1:6379',
-  runStatus: 'running',
-  syncMode: 'CDC',
-}
+const mockedProps = rdiPipelineStatusFactory.build()
 
 describe('Status', () => {
   it('should render', () => {
@@ -31,22 +26,13 @@ describe('Status', () => {
     expect(screen.getByText('Sync mode')).toBeInTheDocument()
   })
 
-  it('should render all status values correctly', () => {
-    render(<Status data={mockedProps} />)
-
-    expect(screen.getByText('1.2.3')).toBeInTheDocument()
-    expect(screen.getByText('127.0.0.1:6379')).toBeInTheDocument()
-    expect(screen.getByText('running')).toBeInTheDocument()
-    expect(screen.getByText('CDC')).toBeInTheDocument()
-  })
-
   it('should render with different data values', () => {
-    const customProps: IRdiPipelineStatus = {
+    const customProps = rdiPipelineStatusFactory.build({
       rdiVersion: '2.0.0',
       address: 'localhost:6380',
       runStatus: 'stopped',
       syncMode: 'initial-sync',
-    }
+    })
 
     render(<Status data={customProps} />)
 
@@ -57,12 +43,12 @@ describe('Status', () => {
   })
 
   it('should handle empty string values', () => {
-    const emptyProps: IRdiPipelineStatus = {
+    const emptyProps = rdiPipelineStatusFactory.build({
       rdiVersion: '',
       address: '',
       runStatus: '',
       syncMode: '',
-    }
+    })
 
     render(<Status data={emptyProps} />)
 
