@@ -1,0 +1,33 @@
+export enum AutoDiscoverCloudIds {
+  Alert = 'alert',
+  Name = 'name',
+  PublicEndpoint = 'publicEndpoint',
+  Id = 'id',
+  MessageAdded = 'messageAdded',
+  Modules = 'modules',
+  NumberOfDatabases = 'numberOfDatabases',
+  Options = 'options',
+  Provider = 'provider',
+  Region = 'region',
+  Status = 'status',
+  SubscriptionName = 'subscriptionName',
+  SubscriptionId = 'subscriptionId',
+  SubscriptionType = 'subscriptionType',
+  Type = 'type',
+}
+
+export enum AutoDiscoverCloudTitles {
+  Id = 'Id',
+  Database = 'Database',
+  Endpoint = 'Endpoint',
+  Result = 'Result',
+  Capabilities = 'Capabilities',
+  NumberOfDatabases = '# databases',
+  Options = 'Options',
+  Provider = 'Cloud provider',
+  Region = 'Region',
+  Status = 'Status',
+  Subscription = 'Subscription',
+  SubscriptionId = 'Subscription id',
+  Type = 'Type',
+}

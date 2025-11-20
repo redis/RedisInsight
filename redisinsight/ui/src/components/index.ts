@@ -26,7 +26,6 @@ import PagePlaceholder from './page-placeholder'
 import BulkActionsConfig from './bulk-actions-config'
 import OnboardingTour from './onboarding-tour'
 import CodeBlock from './code-block'
-import ShowChildByCondition from './show-child-by-condition'
 import FeatureFlagComponent from './feature-flag-component'
 import AutoRefresh from './auto-refresh'
 import ConfirmationPopover from './confirmation-popover'
@@ -75,7 +74,6 @@ export {
   BulkActionsConfig,
   OnboardingTour,
   CodeBlock,
-  ShowChildByCondition,
   RecommendationVoting,
   RecommendationCopyComponent,
   FeatureFlagComponent,

@@ -10,19 +10,6 @@
   & > div {
     display: flex;
   }
-
-  .breadCrumbLink {
-    color: var(--euiColorPrimary) !important;
-    font-size: 14px !important;
-    line-height: 20px;
-    font-weight: 400;
-    cursor: pointer;
-    text-decoration: underline;
-
-    &:hover {
-      text-decoration: none;
-    }
-  }
 }
 
 .rdiName {

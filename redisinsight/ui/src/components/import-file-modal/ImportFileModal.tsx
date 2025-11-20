@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Nullable } from 'uiSrc/utils'
 import { RiFilePicker, UploadWarning } from 'uiSrc/components'
-import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import { Loader, Modal } from 'uiSrc/components/base/display'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
@@ -137,7 +137,7 @@ const ImportFileModal = <T,>({
         <Modal.Content.Footer.Compose>
           <Modal.Content.Footer.Group>
             {isShowForm && (
-              <>
+              <Row gap="m" justify="end">
                 <SecondaryButton
                   size="l"
                   onClick={onClose}
@@ -153,7 +153,7 @@ const ImportFileModal = <T,>({
                 >
                   {submitBtnText || 'Import'}
                 </PrimaryButton>
-              </>
+              </Row>
             )}
             {data && <PrimaryButton onClick={onClose}>OK</PrimaryButton>}
           </Modal.Content.Footer.Group>

@@ -11,6 +11,7 @@ type TagInputFieldProps = {
   suggestedTagKey?: string
   rightContent?: React.ReactNode
   errorMessage?: string
+  placeholder?: string
   onChange: (value: string) => void
 }
 
@@ -21,6 +22,7 @@ export const TagInputField = ({
   suggestedTagKey,
   rightContent,
   errorMessage,
+  placeholder,
   onChange,
 }: TagInputFieldProps) => {
   const isInvalid = Boolean(errorMessage)
@@ -29,33 +31,33 @@ export const TagInputField = ({
   return (
     <div>
       <RiTooltip content={errorMessage} position="top">
-        <div>
-          <TextInput
-            value={value}
-            disabled={disabled}
-            valid={!isInvalid}
-            onChange={(value) => onChange(value)}
-            onFocusCapture={() => {
-              setIsFocused(true)
-            }}
-            onBlurCapture={() => {
-              setTimeout(() => {
-                isFocused && setIsFocused(false)
-              }, 150)
+        <TextInput
+          value={value}
+          disabled={disabled}
+          valid={!isInvalid ? false : undefined}
+          error={isInvalid ? errorMessage : undefined}
+          onChange={(value) => onChange(value)}
+          placeholder={placeholder}
+          onFocusCapture={() => {
+            setIsFocused(true)
+          }}
+          onBlurCapture={() => {
+            setTimeout(() => {
+              isFocused && setIsFocused(false)
+            }, 150)
+          }}
+        />
+        {isFocused && !isInvalid && (
+          <TagSuggestions
+            targetKey={suggestedTagKey}
+            searchTerm={value}
+            currentTagKeys={currentTagKeys}
+            onChange={(value) => {
+              setIsFocused(false)
+              onChange(value)
             }}
           />
-          {isFocused && !isInvalid && (
-            <TagSuggestions
-              targetKey={suggestedTagKey}
-              searchTerm={value}
-              currentTagKeys={currentTagKeys}
-              onChange={(value) => {
-                setIsFocused(false)
-                onChange(value)
-              }}
-            />
-          )}
-        </div>
+        )}
       </RiTooltip>
       {rightContent}
     </div>

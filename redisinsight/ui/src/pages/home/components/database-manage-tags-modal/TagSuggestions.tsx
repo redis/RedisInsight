@@ -1,11 +1,15 @@
 import React, { useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { EuiSelectable, EuiSelectableOption } from '@elastic/eui'
 import { uniqBy } from 'lodash'
 import { tagsSelector } from 'uiSrc/slices/instances/tags'
-import { Text } from 'uiSrc/components/base/text'
+import { Text, Title } from 'uiSrc/components/base/text'
 import { presetTagSuggestions } from './constants'
-import styles from './styles.module.scss'
+import { SuggestionsListWrapper } from './TagSuggestions.styles'
+
+type SelectOption = {
+  label: string
+  value: string
+}
 
 export type TagSuggestionsProps = {
   targetKey?: string
@@ -21,8 +25,7 @@ export const TagSuggestions = ({
   onChange,
 }: TagSuggestionsProps) => {
   const { data: allTags } = useSelector(tagsSelector)
-  const tagsSuggestions: EuiSelectableOption<{ value: string }>[] =
-    useMemo(() => {
+  const tagsSuggestions: SelectOption[] = useMemo(() => {
       const options = uniqBy(presetTagSuggestions.concat(allTags), (tag) =>
         targetKey ? tag.value : tag.key,
       )
@@ -60,28 +63,21 @@ export const TagSuggestions = ({
   }
 
   return (
-    <EuiSelectable
-      data-testid="tag-suggestions"
-      options={tagsSuggestions}
-      singleSelection
-      listProps={{ showIcons: false }}
-      className={styles.suggestions}
-      onChange={(options) => {
-        const value = options.find((o) => o.checked)?.value
-
-        if (value) {
-          onChange(value)
-        }
-      }}
-    >
-      {(list) => (
-        <>
-          <Text size="m" color="subdued" className={styles.suggestionsTitle}>
-            Suggestions
-          </Text>
-          {list}
-        </>
-      )}
-    </EuiSelectable>
+    <SuggestionsListWrapper data-testid="tag-suggestions">
+      <Title size="XS" color="primary">
+        Suggestions
+      </Title>
+      <ul role="list">
+        {tagsSuggestions.map((option) => (
+          <li
+            role="listitem"
+            key={option.value}
+            onClick={() => onChange(option.value)}
+          >
+            <Text>{option.label}</Text>
+          </li>
+        ))}
+      </ul>
+    </SuggestionsListWrapper>
   )
 }

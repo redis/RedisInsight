@@ -1,30 +1,28 @@
-import React, { useState, useEffect } from 'react'
-import cx from 'classnames'
-import { useSelector } from 'react-redux'
+import React, { useEffect, useState } from 'react'
 
-import {
-  AddRedisDatabaseStatus,
-  InstanceRedisCluster,
-} from 'uiSrc/slices/interfaces'
+import type { InstanceRedisCluster } from 'uiSrc/slices/interfaces'
+import { AddRedisDatabaseStatus } from 'uiSrc/slices/interfaces'
 import { setTitle } from 'uiSrc/utils'
-import { clusterSelector } from 'uiSrc/slices/instances/cluster'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
+import { riToast } from 'uiSrc/components/base/display/toast'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Row } from 'uiSrc/components/base/layout/flex'
+import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { type ColumnDef, Table } from 'uiSrc/components/base/layout/table'
 import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { SearchInput } from 'uiSrc/components/base/inputs'
-import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
-import styles from './styles.module.scss'
+  DatabaseContainer,
+  DatabaseWrapper,
+  EmptyState,
+  Footer,
+  Header,
+} from 'uiSrc/components/auto-discover'
+import { Spacer } from 'uiSrc/components/base/layout'
+import { SummaryText } from './components'
 
 export interface Props {
-  columns: ColumnDefinition<InstanceRedisCluster>[]
+  columns: ColumnDef<InstanceRedisCluster>[]
+  instances: InstanceRedisCluster[]
   onView: (sendEvent?: boolean) => void
   onBack: (sendEvent?: boolean) => void
 }
@@ -32,15 +30,22 @@ export interface Props {
 const loadingMsg = 'loading...'
 const notFoundMsg = 'Not found'
 
-const RedisClusterDatabasesResult = ({ columns, onBack, onView }: Props) => {
+const RedisClusterDatabasesResult = ({
+  columns,
+  instances,
+  onBack,
+  onView,
+}: Props) => {
   const [items, setItems] = useState<InstanceRedisCluster[]>([])
   const [message, setMessage] = useState(loadingMsg)
 
-  const { dataAdded: instances } = useSelector(clusterSelector)
+  useEffect(() => {
+    setTitle('Redis Enterprise Databases Added')
+  }, [])
 
-  setTitle('Redis Enterprise Databases Added')
-
-  useEffect(() => setItems(instances), [instances])
+  useEffect(() => {
+    setItems(instances)
+  }, [instances])
 
   const countSuccessAdded = instances.filter(
     ({ statusAdded }) => statusAdded === AddRedisDatabaseStatus.Success,
@@ -65,75 +70,49 @@ const RedisClusterDatabasesResult = ({ columns, onBack, onView }: Props) => {
     setItems(itemsTemp)
   }
 
-  const SummaryText = () => (
-    <Text>
-      <b>Summary: </b>
-      {countSuccessAdded ? (
-        <span>
-          Successfully added {countSuccessAdded} database(s)
-          {countFailAdded ? '. ' : '.'}
-        </span>
-      ) : null}
-      {countFailAdded ? (
-        <span>Failed to add {countFailAdded} database(s).</span>
-      ) : null}
-    </Text>
-  )
-
   return (
     <AutodiscoveryPageTemplate>
-      <div className="databaseContainer">
-        <Title size="XXL" className={styles.title} data-testid="title">
+      <DatabaseContainer justify="start">
+        <Header
+          title={`
           Redis Enterprise
-          {countSuccessAdded + countFailAdded > 1
-            ? ' Databases '
-            : ' Database '}
+          ${
+            countSuccessAdded + countFailAdded > 1
+              ? ' Databases '
+              : ' Database '
+          }
           Added
-        </Title>
-        <Row align="end" gap="s">
-          <FlexItem grow>
-            <MessageBar opened={!!countSuccessAdded || !!countFailAdded}>
-              <SummaryText />
-            </MessageBar>
-          </FlexItem>
-          <FlexItem>
-            <FormField className={styles.searchForm}>
-              <SearchInput
-                placeholder="Search..."
-                className={styles.search}
-                onChange={onQueryChange}
-                aria-label="Search"
-                data-testid="search"
-              />
-            </FormField>
-          </FlexItem>
-        </Row>
-        <br />
-        <div className="itemList databaseList clusterDatabaseListResult">
+          `}
+          onBack={onBack}
+          onQueryChange={onQueryChange}
+        />
+        <MessageBar
+          opened={!!countSuccessAdded || !!countFailAdded}
+          variant={
+            !!countFailAdded
+              ? riToast.Variant.Attention
+              : riToast.Variant.Success
+          }
+        >
+          <SummaryText
+            countSuccessAdded={countSuccessAdded}
+            countFailAdded={countFailAdded}
+          />
+        </MessageBar>
+        <Spacer size="m" />
+        <DatabaseWrapper>
           <Table
             columns={columns}
             data={items}
-            defaultSorting={[
-              {
-                id: 'name',
-                desc: false,
-              },
-            ]}
+            defaultSorting={[{ id: 'name', desc: false }]}
+            paginationEnabled={items.length > 10}
+            stripedRows
+            emptyState={() => <EmptyState message={message} />}
           />
-          {!items.length && (
-            <Text className={styles.noDatabases}>{message}</Text>
-          )}
-        </div>
-      </div>
-      <FlexItem className={cx(styles.footer, 'footerAddDatabase')}>
-        <Row justify="between">
-          <SecondaryButton
-            onClick={() => onBack(false)}
-            className="btn-cancel btn-back"
-            data-testid="btn-back-to-adding"
-          >
-            Back to adding databases
-          </SecondaryButton>
+        </DatabaseWrapper>
+      </DatabaseContainer>
+      <Footer>
+        <Row justify="end">
           <PrimaryButton
             size="m"
             onClick={() => onView(false)}
@@ -142,7 +121,7 @@ const RedisClusterDatabasesResult = ({ columns, onBack, onView }: Props) => {
             View Databases
           </PrimaryButton>
         </Row>
-      </FlexItem>
+      </Footer>
     </AutodiscoveryPageTemplate>
   )
 }

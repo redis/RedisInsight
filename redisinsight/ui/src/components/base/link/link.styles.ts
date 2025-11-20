@@ -19,10 +19,12 @@ export type ColorType = LinkProps['color'] | EuiColorNames | (string & {})
 
 export type RiLinkProps = Omit<LinkProps, 'color'> & {
   color?: ColorType
+  underline?: boolean
 }
 
 type MapProps = RiLinkProps & {
   $color?: ColorType
+  $underline?: boolean
 }
 
 export const useColorTextStyles = ({ $color }: MapProps = {}) => {
@@ -65,9 +67,11 @@ export const useColorTextStyles = ({ $color }: MapProps = {}) => {
 
 export const StyledLink = styled(RedisUiLink)<MapProps>`
   ${useColorTextStyles};
-  text-decoration: none !important;
+  text-decoration: ${({ $underline }) =>
+    $underline ? 'underline' : 'none'} !important;
   & > span {
-    text-decoration: none !important;
+    text-decoration: ${({ $underline }) =>
+      $underline ? 'underline' : 'none'} !important;
   }
   &:hover {
     text-decoration: underline !important;

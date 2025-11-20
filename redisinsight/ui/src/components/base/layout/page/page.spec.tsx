@@ -44,12 +44,7 @@ describe('RIPage', () => {
         <Page direction="row" restrictWidth style={{ width: '1000px' }} />,
       )
 
-      expect(container.firstChild).toHaveStyle('flex-direction: column')
-    })
-    it(`can be column`, () => {
-      const { container } = render(<Page direction="column" />)
-
-      expect(container.firstChild).toHaveStyle('flex-direction: column')
+      expect(container.firstChild).toHaveStyle('flex-direction: row')
     })
   })
 

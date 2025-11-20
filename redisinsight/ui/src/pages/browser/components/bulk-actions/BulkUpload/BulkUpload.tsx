@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import cx from 'classnames'
 import { Nullable } from 'uiSrc/utils'
 import { BulkActionsStatus, BulkActionsType } from 'uiSrc/constants'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
@@ -33,7 +32,13 @@ import { RefreshIcon } from 'uiSrc/components/base/icons'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
-import styles from './styles.module.scss'
+import {
+  StyledContent,
+  StyledFooter,
+  StyledPopoverContainer,
+  StyledPopoverIcon,
+  StyledPopoverText,
+} from './BulkUpload.styles'
 
 export interface Props {
   onCancel: () => void
@@ -106,11 +111,11 @@ const BulkUpload = (props: Props) => {
   }
 
   return (
-    <div className={styles.container} data-testid="bulk-upload-container">
+    <Col justify="between" data-testid="bulk-upload-container">
       {!isCompleted ? (
-        <Col gap="l" className={styles.content} align="start">
+        <StyledContent gap="l" align="start">
           <Row align="start" grow={false}>
-            <Text color="subdued">
+            <Text color="primary">
               Upload the text file with the list of Redis commands
             </Text>
             <RiTooltip
@@ -143,27 +148,19 @@ const BulkUpload = (props: Props) => {
             aria-label="Select or drag and drop file"
           />
           {isInvalid && (
-            <ColorText
-              color="danger"
-              className={styles.errorFileMsg}
-              data-testid="input-file-error-msg"
-            >
+            <ColorText color="danger" data-testid="input-file-error-msg">
               File should not exceed {MAX_MB_FILE} MB
             </ColorText>
           )}
           <UploadWarning />
-        </Col>
+        </StyledContent>
       ) : (
         <BulkActionsInfo
           loading={loading}
           status={status}
           progress={progress}
           title="Commands executed from file"
-          subTitle={
-            <div className="truncateText" style={{ paddingTop: 6 }}>
-              {fileName}
-            </div>
-          }
+          subTitle={<div className="truncateText">{fileName}</div>}
         >
           <BulkActionSummary
             type={BulkActionsType.Upload}
@@ -175,10 +172,10 @@ const BulkUpload = (props: Props) => {
           />
         </BulkActionsInfo>
       )}
-      <div className={styles.footer}>
+
+      <StyledFooter gap="l" justify="end" grow={false}>
         <SecondaryButton
           onClick={handleClickCancel}
-          className={styles.cancelBtn}
           data-testid="bulk-action-cancel-btn"
         >
           {isProcessedBulkAction(status) ? 'Close' : 'Cancel'}
@@ -189,7 +186,6 @@ const BulkUpload = (props: Props) => {
             anchorPosition="upCenter"
             isOpen={isPopoverOpen}
             closePopover={() => setIsPopoverOpen(false)}
-            panelClassName={styles.panelPopover}
             panelPaddingSize="none"
             button={
               <PrimaryButton
@@ -202,28 +198,27 @@ const BulkUpload = (props: Props) => {
               </PrimaryButton>
             }
           >
-            <Text
-              color="subdued"
-              className={styles.containerPopover}
-              data-testid="bulk-action-tooltip"
-            >
-              <RiIcon type="ToastDangerIcon" className={styles.popoverIcon} />
-              <div className={cx(styles.popoverItem, styles.popoverItemTitle)}>
-                Are you sure you want to perform this action?
-              </div>
-              <div className={styles.popoverItem}>
-                All commands from the file will be executed against your
-                database.
-              </div>
-              <PrimaryButton
-                size="s"
-                className={styles.uploadApproveBtn}
-                onClick={handleUpload}
-                data-testid="bulk-action-apply-btn"
-              >
-                Upload
-              </PrimaryButton>
-            </Text>
+            <StyledPopoverContainer gap="m">
+              <Col data-testid="bulk-action-tooltip" gap="s">
+                <StyledPopoverIcon type="ToastDangerIcon" />
+                <StyledPopoverText size="L" color="primary">
+                  Are you sure you want to perform this action?
+                </StyledPopoverText>
+                <StyledPopoverText size="M" color="secondary">
+                  All commands from the file will be executed against your
+                  database.
+                </StyledPopoverText>
+              </Col>
+              <Row justify="end">
+                <PrimaryButton
+                  size="s"
+                  onClick={handleUpload}
+                  data-testid="bulk-action-apply-btn"
+                >
+                  Upload
+                </PrimaryButton>
+              </Row>
+            </StyledPopoverContainer>
           </RiPopover>
         ) : (
           <PrimaryButton
@@ -235,8 +230,8 @@ const BulkUpload = (props: Props) => {
             Start New
           </PrimaryButton>
         )}
-      </div>
-    </div>
+      </StyledFooter>
+    </Col>
   )
 }
 

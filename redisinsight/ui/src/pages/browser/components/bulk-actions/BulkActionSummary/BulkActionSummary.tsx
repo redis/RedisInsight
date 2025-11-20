@@ -5,7 +5,8 @@ import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { millisecondsFormat } from 'uiSrc/utils'
 import { BulkActionsType } from 'uiSrc/constants'
 import { Text } from 'uiSrc/components/base/text'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { SummaryContainer, SummaryValue } from './BulkActionSummary.styles'
 
 export interface Props {
   type?: BulkActionsType
@@ -16,15 +17,6 @@ export interface Props {
   'data-testid': string
 }
 
-const SummaryContainer = styled(Row)`
-  padding-top: 18px;
-`
-const SummaryValue = styled(Text)`
-  font-size: 18px !important;
-  line-height: 24px;
-  font-weight: 500 !important;
-`
-
 const BulkActionSummary = ({
   type = BulkActionsType.Delete,
   processed = 0,
@@ -33,26 +25,45 @@ const BulkActionSummary = ({
   duration = 0,
   'data-testid': testId,
 }: Props) => (
-  <SummaryContainer data-testid={testId} gap="xl">
-    <FlexItem>
-      <SummaryValue>{numberWithSpaces(processed)}</SummaryValue>
-      <SummaryValue color="subdued">
-        {type === BulkActionsType.Delete ? 'Keys' : 'Commands'} Processed
-      </SummaryValue>
-    </FlexItem>
-    <FlexItem>
-      <SummaryValue>{numberWithSpaces(succeed)}</SummaryValue>
-      <SummaryValue color="subdued">Success</SummaryValue>
-    </FlexItem>
-    <FlexItem>
-      <SummaryValue>{numberWithSpaces(failed)}</SummaryValue>
-      <SummaryValue color="subdued">Errors</SummaryValue>
-    </FlexItem>
-    <FlexItem>
-      <SummaryValue>{millisecondsFormat(duration, 'H:mm:ss.SSS')}</SummaryValue>
-      <SummaryValue color="subdued">Time Taken</SummaryValue>
-    </FlexItem>
-  </SummaryContainer>
+  <Col gap="xxl">
+    <Text color="primary" size="m" variant="semiBold">
+      Results
+    </Text>
+    <SummaryContainer data-testid={testId} gap="xl">
+      <FlexItem grow>
+        <SummaryValue color="primary" size="L">
+          {numberWithSpaces(processed)}
+        </SummaryValue>
+        <SummaryValue color="secondary" size="s">
+          {type === BulkActionsType.Delete ? 'Keys' : 'Commands'} Processed
+        </SummaryValue>
+      </FlexItem>
+      <FlexItem grow>
+        <SummaryValue color="primary" size="L">
+          {numberWithSpaces(succeed)}
+        </SummaryValue>
+        <SummaryValue color="secondary" size="s">
+          Success
+        </SummaryValue>
+      </FlexItem>
+      <FlexItem grow>
+        <SummaryValue color="primary" size="L">
+          {numberWithSpaces(failed)}
+        </SummaryValue>
+        <SummaryValue color="secondary" size="s">
+          Errors
+        </SummaryValue>
+      </FlexItem>
+      <FlexItem grow>
+        <SummaryValue color="primary" size="L">
+          {millisecondsFormat(duration, 'H:mm:ss.SSS')}
+        </SummaryValue>
+        <SummaryValue color="secondary" size="s">
+          Time Taken
+        </SummaryValue>
+      </FlexItem>
+    </SummaryContainer>
+  </Col>
 )
 
 export default BulkActionSummary

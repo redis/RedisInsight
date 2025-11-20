@@ -3,6 +3,12 @@ import { isNull } from 'lodash'
 import React, { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 
+import {
+  handleCopy as handleCopyUtil,
+  formatLongName,
+  isEqualBuffers,
+  stringToBuffer,
+} from 'uiSrc/utils'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor/InlineItemEditor'
 import { TEXT_UNPRINTABLE_CHARACTERS } from 'uiSrc/constants'
 import { AddCommonFieldsFormConfig } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
@@ -19,7 +25,6 @@ import {
   sendEventTelemetry,
   TelemetryEvent,
 } from 'uiSrc/telemetry'
-import { formatLongName, isEqualBuffers, stringToBuffer } from 'uiSrc/utils'
 
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
@@ -123,7 +128,7 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
     keyInputIsEditing: boolean,
     keyNameInputRef: React.RefObject<HTMLInputElement>,
   ) => {
-    navigator.clipboard.writeText(text)
+    handleCopyUtil(text)
 
     if (keyInputIsEditing) {
       keyNameInputRef?.current?.focus()

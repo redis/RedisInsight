@@ -32,8 +32,7 @@ import styled from 'styled-components'
 import { Theme } from 'uiSrc/components/base/theme/types'
 
 const VerticalDelimiter = styled(FlexItem)`
-  border: ${({ theme }: { theme: Theme }) =>
-    theme.components.appBar.separator};
+  border: ${({ theme }: { theme: Theme }) => theme.components.appBar.separator};
   align-self: stretch;
 `
 
@@ -167,19 +166,21 @@ const PipelineActions = ({ collectorStatus, pipelineStatus }: Props) => {
       </FlexItem>
       <VerticalDelimiter />
       <FlexItem>
-        {collectorStatus === CollectorStatus.Ready ? (
+        {collectorStatus === CollectorStatus.Ready &&
+        action !== PipelineAction.Start ? (
           <StopPipelineButton
             onClick={onStopPipeline}
             disabled={disabled}
             loading={isLoadingBtn(PipelineAction.Stop)}
           />
-        ) : (
+        ) : collectorStatus !== CollectorStatus.Ready &&
+          action !== PipelineAction.Stop ? (
           <StartPipelineButton
             onClick={onStartPipeline}
             disabled={disabled}
             loading={isLoadingBtn(PipelineAction.Start)}
           />
-        )}
+        ) : null}
       </FlexItem>
       <FlexItem>
         <DeployPipelineButton

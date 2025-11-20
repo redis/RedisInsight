@@ -1,12 +1,12 @@
 const handlePasteHostName = (
   onHostNamePaste: (text: string) => boolean,
   e: React.ClipboardEvent & {
-    originalEvent: {
+    originalEvent?: {
       clipboardData: DataTransfer | null
     }
   },
 ) => {
-  const clipboardData = e.clipboardData || e.originalEvent.clipboardData
+  const clipboardData = e.clipboardData || e.originalEvent?.clipboardData
   /*
    * If the details were autofilled, stop the default behaviour
    * which would trigger a redundant onChange event. Autofill happens

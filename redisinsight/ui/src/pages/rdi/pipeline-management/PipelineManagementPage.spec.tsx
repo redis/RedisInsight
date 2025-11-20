@@ -8,6 +8,8 @@ import {
   cleanup,
   mockedStore,
   createMockedStore,
+  expectActionsToContain,
+  expectActionsToNotContain,
 } from 'uiSrc/utils/test-utils'
 import {
   appContextPipelineManagement,
@@ -29,6 +31,9 @@ jest.mock('uiSrc/slices/app/context', () => ({
 }))
 
 jest.mock('formik')
+
+const MOCK_RDI_ID = 'id1'
+const MOCK_RDI_ID2 = 'id2'
 
 let store: typeof mockedStore
 beforeEach(() => {
@@ -102,5 +107,46 @@ describe('PipelineManagementPage', () => {
     expect(store.getActions().slice(0, expectedActions.length)).toEqual(
       expectedActions,
     )
+  })
+
+  describe('pipeline state', () => {
+    it('should fetch pipeline when context is empty', () => {
+      ;(appContextPipelineManagement as jest.Mock).mockReturnValueOnce({
+        lastViewedPage: '',
+      })
+      reactRouterDom.useParams = jest.fn().mockReturnValue({
+        rdiInstanceId: MOCK_RDI_ID,
+      })
+
+      renderPipelineManagement(instance(mockedProps))
+
+      expectActionsToContain(store.getActions(), [getPipeline()])
+    })
+
+    it('should fetch pipeline when context stores different visited RDI instance', () => {
+      ;(appContextPipelineManagement as jest.Mock).mockReturnValueOnce({
+        lastViewedPage: '',
+      })
+      reactRouterDom.useParams = jest.fn().mockReturnValue({
+        rdiInstanceId: MOCK_RDI_ID2,
+      })
+
+      renderPipelineManagement(instance(mockedProps))
+
+      expectActionsToContain(store.getActions(), [getPipeline()])
+    })
+
+    it('should not fetch pipeline when context stores the same visited RDI instance', () => {
+      ;(appContextPipelineManagement as jest.Mock).mockReturnValueOnce({
+        lastViewedPage: Pages.rdiPipelineConfig(MOCK_RDI_ID),
+      })
+      reactRouterDom.useParams = jest.fn().mockReturnValue({
+        rdiInstanceId: MOCK_RDI_ID,
+      })
+
+      renderPipelineManagement(instance(mockedProps))
+
+      expectActionsToNotContain(store.getActions(), [getPipeline()])
+    })
   })
 })

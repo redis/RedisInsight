@@ -4,6 +4,7 @@ import {
   screen,
   userEvent,
   waitForRiPopoverVisible,
+  waitFor,
 } from 'uiSrc/utils/test-utils'
 import { Instance } from 'uiSrc/slices/interfaces'
 import {
@@ -117,5 +118,31 @@ describe('DatabasesListCellControls component', () => {
 
     expect(mockHandleDeleteInstances).toHaveBeenCalledWith(instance)
     expect(openDialogSpy).toHaveBeenLastCalledWith(null)
+  })
+
+  it('should close controls popover after confirming delete (closeControlsPopover)', async () => {
+    renderWithProvider()
+
+    // Open controls popover
+    await userEvent.click(screen.getByTestId(`controls-button-${instance.id}`))
+    await waitForRiPopoverVisible()
+    expect(await screen.findByTestId(`edit-instance-${instance.id}`)).toBeInTheDocument()
+
+    // Trigger delete flow
+    await userEvent.click(
+      await screen.findByTestId(`delete-instance-${instance.id}-icon`),
+    )
+    await waitForRiPopoverVisible() // wait for confirmation popover
+
+    // Confirm deletion -> this calls closeControlsPopover inside handleDeleteItem
+    await userEvent.click(
+      await screen.findByTestId(`delete-instance-${instance.id}`),
+      { pointerEventsCheck: 0 },
+    )
+
+    // Assert the controls popover content is gone (popover closed)
+    await waitFor(() =>
+      expect(screen.queryByTestId(`edit-instance-${instance.id}`)).not.toBeInTheDocument(),
+    )
   })
 })

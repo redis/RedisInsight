@@ -12,6 +12,7 @@ import {
 
 import { AllIconsType } from 'uiSrc/components/base/icons/RiIcon'
 import { IconProps } from 'uiSrc/components/base/icons'
+import { Theme } from 'uiSrc/components/base/theme/types'
 
 export const ListClassNames = {
   listItem: 'RI-list-group-item',
@@ -25,9 +26,6 @@ export const ListClassNames = {
 
 export const MAX_FORM_WIDTH = 400
 
-export const GAP_SIZES = ['none', 's', 'm'] as const
-export type ListGroupGapSize = (typeof GAP_SIZES)[number]
-
 export type ListGroupProps = HTMLAttributes<HTMLUListElement> & {
   className?: string
   /**
@@ -40,7 +38,7 @@ export type ListGroupProps = HTMLAttributes<HTMLUListElement> & {
    * Spacing between list items
    * @default s
    */
-  gap?: ListGroupGapSize
+  gap?: keyof typeof listStyles.gap
 
   /**
    * Sets the max-width of the page.
@@ -55,14 +53,12 @@ export type ListGroupProps = HTMLAttributes<HTMLUListElement> & {
 
 export const listStyles = {
   gap: {
-    none: css`
-      gap: 0;
-    `,
+    none: 'gap: 0;',
     s: css`
-      gap: var(--gap-s);
+      gap: ${({ theme }: { theme: Theme }) => theme.core.space.space100};
     `,
     m: css`
-      gap: var(--gap-m);
+      gap: ${({ theme }: { theme: Theme }) => theme.core.space.space150};
     `,
   },
   flush: css`
@@ -78,7 +74,7 @@ export const listStyles = {
 
 export const StyledGroup = styled.ul<
   Omit<ListGroupProps, 'gap' | 'flush' | 'maxWidth'> & {
-    $gap?: ListGroupGapSize
+    $gap?: keyof typeof listStyles.gap
     $flush?: boolean
   }
 >`

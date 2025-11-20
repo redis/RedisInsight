@@ -8,9 +8,11 @@ interface RiTooltipContentProps {
   content: React.ReactNode
 }
 
-export const HoverContent = ({ title, content }: RiTooltipContentProps) => (
-  <Col gap="s">
-    {title && <Title size="XS">{title}</Title>}
-    {content}
-  </Col>
-)
+export const HoverContent = ({ title, content }: RiTooltipContentProps) => {
+  return (
+    <Col gap="s">
+      {typeof title === 'string' ? <Title size="XS">{title}</Title> : title}
+      {content}
+    </Col>
+  )
+}

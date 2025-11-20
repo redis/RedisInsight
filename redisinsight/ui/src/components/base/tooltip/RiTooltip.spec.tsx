@@ -2,6 +2,7 @@ import React from 'react'
 import { fireEvent, screen, act } from '@testing-library/react'
 import { render, waitForRiTooltipVisible } from 'uiSrc/utils/test-utils'
 import { RiTooltip, RiTooltipProps } from './RITooltip'
+import { HoverContent } from './HoverContent'
 
 const TestButton = () => (
   <button type="button" data-testid="tooltip-trigger">
@@ -189,5 +190,79 @@ describe('RiTooltip', () => {
 
     // Should not render tooltip for undefined content
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()
+  })
+})
+
+describe('HoverContent', () => {
+  it('should render only content when title is falsy', () => {
+    render(<HoverContent title={null} content="Test content" />)
+
+    expect(screen.getByText('Test content')).toBeInTheDocument()
+    expect(screen.queryByRole('heading')).not.toBeInTheDocument()
+  })
+
+  it('should render only content when title is undefined', () => {
+    render(<HoverContent title={undefined} content="Test content" />)
+
+    expect(screen.getByText('Test content')).toBeInTheDocument()
+    expect(screen.queryByRole('heading')).not.toBeInTheDocument()
+  })
+
+  it('should render title as Title component when title is a plain string', () => {
+    render(<HoverContent title="Plain Title" content="Test content" />)
+
+    const titleElement = screen.getByText('Plain Title')
+    expect(titleElement).toBeInTheDocument()
+    expect(titleElement.tagName).toBe('DIV')
+    expect(screen.getByText('Test content')).toBeInTheDocument()
+  })
+
+  it('should render custom node as-is when title is a React node', () => {
+    const customTitle = (
+      <div data-testid="custom-title-node">
+        <strong>Custom</strong> Title
+      </div>
+    )
+
+    render(<HoverContent title={customTitle} content="Test content" />)
+
+    const customNode = screen.getByTestId('custom-title-node')
+    expect(customNode).toBeInTheDocument()
+    expect(screen.getByText('Custom')).toBeInTheDocument()
+    expect(screen.getByText('Test content')).toBeInTheDocument()
+
+    // Verify the custom node is NOT wrapped in a Title component
+    // Title component would create a heading element (h1-h6)
+    expect(customNode.parentElement?.tagName).not.toMatch(/^H[1-6]$/)
+
+    // Verify the custom node structure is preserved exactly
+    expect(customNode.tagName).toBe('DIV')
+    expect(customNode.querySelector('strong')).toBeInTheDocument()
+  })
+
+  it('should render content with React node', () => {
+    const customContent = (
+      <div data-testid="custom-content-node">
+        <p>Paragraph 1</p>
+        <p>Paragraph 2</p>
+      </div>
+    )
+
+    render(<HoverContent title="Title" content={customContent} />)
+
+    expect(screen.getByText('Title')).toBeInTheDocument()
+    expect(screen.getByTestId('custom-content-node')).toBeInTheDocument()
+    expect(screen.getByText('Paragraph 1')).toBeInTheDocument()
+    expect(screen.getByText('Paragraph 2')).toBeInTheDocument()
+  })
+
+  it('should use Col component with gap="s"', () => {
+    const { container } = render(
+      <HoverContent title="Title" content="Content" />,
+    )
+
+    // Col component should be present as the wrapper
+    const colElement = container.firstChild
+    expect(colElement).toBeInTheDocument()
   })
 })

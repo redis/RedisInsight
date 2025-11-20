@@ -57,7 +57,7 @@ describe('RedisClusterDatabasesPage', () => {
   it('should render', () => {
     ;(clusterSelector as jest.Mock).mockReturnValueOnce({
       data: [],
-      dataAdded: [{}],
+      dataAdded: [],
     })
 
     expect(render(<RedisClusterDatabasesPage />)).toBeTruthy()

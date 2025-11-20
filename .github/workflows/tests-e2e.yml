@@ -7,6 +7,7 @@ on:
         description: Enable SSH Debug (IT and E2E)
         default: false
         type: boolean
+        required: false
 
 permissions:
   actions: read

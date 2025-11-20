@@ -1,14 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { map, pick } from 'lodash'
-import { useSelector } from 'react-redux'
-import { useHistory } from 'react-router-dom'
 
-import { cloudSelector } from 'uiSrc/slices/instances/cloud'
 import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 import validationErrors from 'uiSrc/constants/validationErrors'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
 
-import { Row } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import {
   DestructiveButton,
@@ -16,24 +13,27 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import { Pages } from 'uiSrc/constants'
-import { SearchInput } from 'uiSrc/components/base/inputs'
 import { Text } from 'uiSrc/components/base/text'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import {
+  ColumnDef,
+  RowSelectionState,
+  Table,
+} from 'uiSrc/components/base/layout/table'
 import styles from '../styles.module.scss'
 import { Spacer } from 'uiSrc/components/base/layout'
 import {
+  DatabaseContainer,
   DatabaseWrapper,
   Footer,
-  PageSubTitle,
-  PageTitle,
-  SearchContainer,
-  SearchForm,
+  Header,
 } from 'uiSrc/components/auto-discover'
 
 export interface Props {
-  columns: ColumnDefinition<InstanceRedisCloud>[]
+  columns: ColumnDef<InstanceRedisCloud>[]
+  instances: InstanceRedisCloud[]
   selection: InstanceRedisCloud[]
+  loading: boolean
+  onSelectionChange: (currentSelected: RowSelectionState) => void
   onClose: () => void
   onBack: () => void
   onSubmit: (
@@ -51,11 +51,14 @@ interface IPopoverProps {
 const loadingMsg = 'loading...'
 const notFoundMsg = 'Not found'
 const noResultsMessage =
-  'Your Redis Enterprise Сloud has no databases available'
+  'Your Redis Enterprise Cloud has no databases available'
 
 const RedisCloudDatabasesPage = ({
   columns,
   selection,
+  instances,
+  loading,
+  onSelectionChange,
   onClose,
   onBack,
   onSubmit,
@@ -64,27 +67,15 @@ const RedisCloudDatabasesPage = ({
   const [message, setMessage] = useState(loadingMsg)
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
 
-  const history = useHistory()
-
-  const { loading, data: instances } = useSelector(cloudSelector)
-
   useEffect(() => {
     if (instances !== null) {
       setItems(instances)
     }
-  }, [instances])
 
-  useEffect(() => {
-    if (instances === null) {
-      history.push(Pages.home)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (instances?.length === 0) {
+    if (instances?.length === 0 && !loading) {
       setMessage(noResultsMessage)
     }
-  }, [instances])
+  }, [instances, loading])
 
   const handleSubmit = () => {
     onSubmit(
@@ -181,30 +172,23 @@ const RedisCloudDatabasesPage = ({
 
   return (
     <AutodiscoveryPageTemplate>
-      <div className="databaseContainer">
-        <PageTitle data-testid="title">Redis Cloud Databases</PageTitle>
-
-        <Row align="end" gap="s">
-          <PageSubTitle>
-            These are {items.length > 1 ? 'databases ' : 'database '}
+      <DatabaseContainer justify="start">
+        <Header
+          title="Redis Cloud Databases"
+          onBack={onBack}
+          onQueryChange={onQueryChange}
+          subTitle={`
+            These are ${items.length > 1 ? 'databases ' : 'database '}
             in your Redis Cloud. Select the
-            {items.length > 1 ? ' databases ' : ' database '} that you want to
-            add.
-          </PageSubTitle>
-        </Row>
-        <SearchContainer>
-          <SearchForm>
-            <SearchInput
-              placeholder="Search..."
-              onChange={onQueryChange}
-              aria-label="Search"
-              data-testid="search"
-            />
-          </SearchForm>
-        </SearchContainer>
-        <Spacer size="l" />
+            ${items.length > 1 ? ' databases ' : ' database '} that you want to
+            add.`}
+        />
+        <Spacer size="m" />
         <DatabaseWrapper>
           <Table
+            rowSelectionMode="multiple"
+            onRowSelectionChange={onSelectionChange}
+            getRowId={(row) => `${row.databaseId}`}
             columns={columns}
             data={items}
             defaultSorting={[
@@ -213,20 +197,27 @@ const RedisCloudDatabasesPage = ({
                 desc: false,
               },
             ]}
+            paginationEnabled={items.length > 10}
+            stripedRows
+            pageSizes={[5, 10, 25, 50, 100]}
+            emptyState={() => (
+              <Col centered full>
+                <FlexItem padding={13}>
+                  <Text size="L">{message}</Text>
+                </FlexItem>
+              </Col>
+            )}
           />
-          {!items.length && <Text size="S">{message}</Text>}
+          {!items.length && (
+            <Col centered full>
+              <Text size="L">{message}</Text>
+            </Col>
+          )}
         </DatabaseWrapper>
-      </div>
+      </DatabaseContainer>
       <Footer>
-        <Row justify="between">
-          <SecondaryButton
-            onClick={onBack}
-            className="btn-cancel btn-back"
-            data-testid="btn-back-to-adding"
-          >
-            Back to adding databases
-          </SecondaryButton>
-          <Row grow={false} gap="m">
+        <Row justify="end">
+          <Row gap="m" grow={false}>
             <CancelButton isPopoverOpen={isPopoverOpen} />
             <SubmitButton isDisabled={selection.length < 1} />
           </Row>

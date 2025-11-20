@@ -459,6 +459,18 @@ const expectActionsToContain = (
   expect(actualActions).toEqual(expect.arrayContaining(expectedActions))
 }
 
+/**
+ * Helper function to check if actions are not contained within actual store actions
+ * @param actualActions - The actual actions dispatched to the store
+ * @param expectedActions - The expected actions that should not be presented
+ */
+const expectActionsToNotContain = (
+  actualActions: any[],
+  expectedActions: any[],
+) => {
+  expect(actualActions).not.toEqual(expect.arrayContaining(expectedActions))
+}
+
 // re-export everything
 export * from '@testing-library/react'
 // override render method
@@ -473,4 +485,5 @@ export {
   waitForRiTooltipHidden,
   waitForRiPopoverVisible,
   expectActionsToContain,
+  expectActionsToNotContain,
 }

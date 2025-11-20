@@ -1,6 +1,7 @@
 import React from 'react'
+
 import RedisCloudSubscriptions from './RedisCloudSubscriptions/RedisCloudSubscriptions'
-import { useCloudSubscriptionConfig } from './useCloudSubscriptionConfig'
+import { useCloudSubscriptionConfig } from './hooks/useCloudSubscriptionConfig'
 
 const RedisCloudSubscriptionsPage = () => {
   const {
@@ -14,6 +15,7 @@ const RedisCloudSubscriptionsPage = () => {
     handleClose,
     handleBackAdding,
     handleLoadInstances,
+    handleSelectionChange,
   } = useCloudSubscriptionConfig()
 
   return (
@@ -27,6 +29,7 @@ const RedisCloudSubscriptionsPage = () => {
       onClose={handleClose}
       onBack={handleBackAdding}
       onSubmit={handleLoadInstances}
+      onSelectionChange={handleSelectionChange}
     />
   )
 }

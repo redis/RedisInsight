@@ -34,11 +34,13 @@ const suffix = '_db_instance'
 const DatabasesListCellControls: IDatabaseListCell = ({ row }) => {
   const instance = row.original
   const { setOpenDialog } = useHomePageDataProvider()
+  const [isControlsPopoverOpen, setControlsPopoverOpen] = useState(false)
   const [isDeletePopoverOpen, setIsDeletePopoverOpen] = useState(false)
 
   const deletingId = isDeletePopoverOpen ? `${instance.id + suffix}` : ''
-  const closePopover = () => setIsDeletePopoverOpen(false)
-  const showPopover = () => setIsDeletePopoverOpen(true)
+  const closeControlsPopover = () => setControlsPopoverOpen(false)
+  const closeDeletePopover = () => setIsDeletePopoverOpen(false)
+  const showDeletePopover = () => setIsDeletePopoverOpen(true)
 
   return (
     <Row
@@ -77,6 +79,9 @@ const DatabasesListCellControls: IDatabaseListCell = ({ row }) => {
           ownFocus
           anchorPosition="leftUp"
           panelPaddingSize="s"
+          isOpen={isControlsPopoverOpen}
+          closePopover={closeControlsPopover}
+          onOpenChange={setControlsPopoverOpen}
           button={
             <IconButton
               icon={MoreactionsIcon}
@@ -106,12 +111,13 @@ const DatabasesListCellControls: IDatabaseListCell = ({ row }) => {
               item={instance.id}
               suffix={suffix}
               deleting={deletingId}
-              closePopover={closePopover}
+              closePopover={closeDeletePopover}
               updateLoading={false}
-              showPopover={showPopover}
+              showPopover={showDeletePopover}
               handleDeleteItem={() => {
                 handleDeleteInstances(instance)
                 setOpenDialog(null)
+                closeControlsPopover()
               }}
               handleButtonClick={() => handleClickDeleteInstance(instance)}
               testid={`delete-instance-${instance.id}`}

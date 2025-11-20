@@ -1,43 +1,35 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { map } from 'lodash'
 import {
-  InstanceRedisCloud,
-  RedisCloudAccount,
-  RedisCloudSubscription,
+  type InstanceRedisCloud,
+  type RedisCloudAccount,
+  type RedisCloudSubscription,
   RedisCloudSubscriptionStatus,
 } from 'uiSrc/slices/interfaces'
-import { Maybe, Nullable } from 'uiSrc/utils'
-import { LoadingContent, Spacer } from 'uiSrc/components/base/layout'
+import { type Maybe, type Nullable } from 'uiSrc/utils'
+import { Spacer } from 'uiSrc/components/base/layout'
 import MessageBar from 'uiSrc/components/message-bar/MessageBar'
-import validationErrors from 'uiSrc/constants/validationErrors'
+import { riToast } from 'uiSrc/components/base/display/toast'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import {
+  type ColumnDef,
+  type RowSelectionState,
+  Table,
+} from 'uiSrc/components/base/layout/table'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import {
-  DestructiveButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { InfoIcon } from 'uiSrc/components/base/icons'
-import { SearchInput } from 'uiSrc/components/base/inputs'
-import { ColorText, Text } from 'uiSrc/components/base/text'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
-import styles from '../styles.module.scss'
-import {
-  AccountItem,
-  AccountItemTitle,
-  AccountWrapper,
-} from './RedisCloudSubscriptions.styles'
-import {
+  DatabaseContainer,
   DatabaseWrapper,
+  EmptyState,
   Footer,
-  PageTitle,
-  SearchForm,
+  Header,
 } from 'uiSrc/components/auto-discover'
+import { canSelectRow } from '../utils/canSelectRow'
+import { Account, CancelButton, SubmitButton, SummaryText } from '../components'
 
 export interface Props {
-  columns: ColumnDefinition<RedisCloudSubscription>[]
+  columns: ColumnDef<RedisCloudSubscription>[]
   subscriptions: Nullable<RedisCloudSubscription[]>
   selection: Nullable<RedisCloudSubscription[]>
   loading: boolean
@@ -50,10 +42,7 @@ export interface Props {
       Pick<InstanceRedisCloud, 'subscriptionId' | 'subscriptionType' | 'free'>
     >[],
   ) => void
-}
-
-interface IPopoverProps {
-  isPopoverOpen: boolean
+  onSelectionChange: (state: RowSelectionState) => void
 }
 
 const loadingMsg = 'loading...'
@@ -69,6 +58,7 @@ const RedisCloudSubscriptions = ({
   onClose,
   onBack,
   onSubmit,
+  onSelectionChange,
 }: Props) => {
   // const subscriptions = [];
   const [items, setItems] = useState(subscriptions || [])
@@ -125,140 +115,27 @@ const RedisCloudSubscriptions = ({
     setItems(itemsTemp)
   }
 
-  const CancelButton = ({ isPopoverOpen: popoverIsOpen }: IPopoverProps) => (
-    <RiPopover
-      anchorPosition="upCenter"
-      isOpen={popoverIsOpen}
-      closePopover={closePopover}
-      panelClassName={styles.panelCancelBtn}
-      panelPaddingSize="l"
-      button={
-        <SecondaryButton
-          onClick={showPopover}
-          className="btn-cancel"
-          data-testid="btn-cancel"
-        >
-          Cancel
-        </SecondaryButton>
-      }
-    >
-      <Text size="m">
-        Your changes have not been saved.&#10;&#13; Do you want to proceed to
-        the list of databases?
-      </Text>
-      <br />
-      <div>
-        <DestructiveButton
-          size="s"
-          onClick={onClose}
-          data-testid="btn-cancel-proceed"
-        >
-          Proceed
-        </DestructiveButton>
-      </div>
-    </RiPopover>
-  )
-
-  const SubmitButton = ({ isDisabled }: { isDisabled: boolean }) => (
-    <RiTooltip
-      position="top"
-      anchorClassName="euiToolTip__btn-disabled"
-      title={
-        isDisabled ? validationErrors.SELECT_AT_LEAST_ONE('subscription') : null
-      }
-      content={
-        isDisabled ? (
-          <span>{validationErrors.NO_SUBSCRIPTIONS_CLOUD}</span>
-        ) : null
-      }
-    >
-      <PrimaryButton
-        size="m"
-        disabled={isDisabled}
-        onClick={handleSubmit}
-        loading={loading}
-        icon={isDisabled ? InfoIcon : undefined}
-        data-testid="btn-show-databases"
-      >
-        Show databases
-      </PrimaryButton>
-    </RiTooltip>
-  )
-
-  const SummaryText = () => (
-    <Text color="secondary" size="S">
-      <b>Summary: </b>
-      {countStatusActive ? (
-        <span>
-          Successfully discovered database(s) in {countStatusActive}
-          &nbsp;
-          {countStatusActive > 1 ? 'subscriptions' : 'subscription'}
-          .&nbsp;
-        </span>
-      ) : null}
-
-      {countStatusFailed ? (
-        <span>
-          Failed to discover database(s) in {countStatusFailed}
-          &nbsp;
-          {countStatusFailed > 1 ? 'subscriptions.' : ' subscription.'}
-        </span>
-      ) : null}
-    </Text>
-  )
-
-  const Account = () => (
-    <>
-      <AccountItem>
-        <AccountItemTitle>Account ID:&nbsp;</AccountItemTitle>
-        <AccountValue data-testid="account-id" value={account?.accountId} />
-      </AccountItem>
-      <AccountItem>
-        <AccountItemTitle>Name:&nbsp;</AccountItemTitle>
-        <AccountValue data-testid="account-name" value={account?.accountName} />
-      </AccountItem>
-      <AccountItem>
-        <AccountItemTitle>Owner Name:&nbsp;</AccountItemTitle>
-        <AccountValue
-          data-testid="account-owner-name"
-          value={account?.ownerName}
-        />
-      </AccountItem>
-      <AccountItem>
-        <AccountItemTitle>Owner Email:&nbsp;</AccountItemTitle>
-        <AccountValue
-          data-testid="account-owner-email"
-          value={account?.ownerEmail}
-        />
-      </AccountItem>
-    </>
-  )
   return (
     <AutodiscoveryPageTemplate>
-      <div className="databaseContainer">
-        <PageTitle data-testid="title">Redis Cloud Subscriptions</PageTitle>
-
-        <Row justify="end" gap="s">
-          <FlexItem>
-            <SearchForm>
-              <SearchInput
-                placeholder="Search..."
-                className={styles.search}
-                onChange={onQueryChange}
-                aria-label="Search"
-                data-testid="search"
-              />
-            </SearchForm>
-          </FlexItem>
-        </Row>
-        <br />
-
+      <DatabaseContainer justify="start">
+        <Header
+          title="Redis Cloud Subscriptions"
+          onBack={onBack}
+          onQueryChange={onQueryChange}
+        />
+        <Spacer size="m" />
         <DatabaseWrapper>
-          <AccountWrapper>
-            <Account />
-          </AccountWrapper>
-          <Spacer size="m" />
+          {account && (
+            <>
+              <Account account={account} />
+              <Spacer size="m" />
+            </>
+          )}
           <Table
+            rowSelectionMode="multiple"
+            getRowCanSelect={canSelectRow}
+            onRowSelectionChange={onSelectionChange}
+            getRowId={(row) => `${row.id}`}
             columns={columns}
             data={items}
             defaultSorting={[
@@ -267,55 +144,44 @@ const RedisCloudSubscriptions = ({
                 desc: false,
               },
             ]}
-            paginationEnabled
+            paginationEnabled={items.length > 10}
             stripedRows
-            pageSizes={[5, 10, 25, 50, 100]}
+            emptyState={() => <EmptyState message={message} />}
           />
-          {!items.length && (
-            <Text className={styles.noSubscriptions}>{message}</Text>
-          )}
         </DatabaseWrapper>
-        <MessageBar opened={countStatusActive + countStatusFailed > 0}>
-          <SummaryText />
+        <MessageBar
+          opened={countStatusActive + countStatusFailed > 0}
+          variant={
+            !!countStatusFailed
+              ? riToast.Variant.Attention
+              : riToast.Variant.Success
+          }
+        >
+          <SummaryText
+            countStatusActive={countStatusActive}
+            countStatusFailed={countStatusFailed}
+          />
         </MessageBar>
-      </div>
+      </DatabaseContainer>
 
       <Footer>
-        <Row justify="between">
-          <SecondaryButton
-            onClick={onBack}
-            className="btn-cancel btn-back"
-            data-testid="btn-back-adding"
-          >
-            Back to adding databases
-          </SecondaryButton>
-          <Row grow={false} gap="m">
-            <CancelButton isPopoverOpen={isPopoverOpen} />
-            <SubmitButton isDisabled={(selection?.length || 0) < 1} />
+        <Row justify="end">
+          <Row gap="m" grow={false}>
+            <CancelButton
+              isPopoverOpen={isPopoverOpen}
+              onClose={onClose}
+              onShowPopover={showPopover}
+              onClosePopover={closePopover}
+            />
+            <SubmitButton
+              isDisabled={(selection?.length || 0) < 1}
+              loading={loading}
+              onClick={handleSubmit}
+            />
           </Row>
         </Row>
       </Footer>
     </AutodiscoveryPageTemplate>
-  )
-}
-
-const AccountValue = ({
-  value,
-  ...rest
-}: {
-  value?: Nullable<string | number>
-}) => {
-  if (!value) {
-    return (
-      <div style={{ width: 80, height: 15 }}>
-        <LoadingContent lines={1} />
-      </div>
-    )
-  }
-  return (
-    <ColorText color="subdued" size="XS" {...rest}>
-      {value}
-    </ColorText>
   )
 }
 

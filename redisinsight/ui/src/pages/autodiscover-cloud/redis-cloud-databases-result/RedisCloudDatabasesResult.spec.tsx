@@ -1,9 +1,6 @@
 import React from 'react'
-import { instance, mock } from 'ts-mockito'
 import { render } from 'uiSrc/utils/test-utils'
-import RedisCloudDatabasesResult, { Props } from './RedisCloudDatabasesResult'
-
-const mockedProps = mock<Props>()
+import RedisCloudDatabasesResult from './RedisCloudDatabasesResult'
 
 describe('RedisCloudDatabasesResult', () => {
   it('should render', () => {
@@ -18,8 +15,10 @@ describe('RedisCloudDatabasesResult', () => {
     expect(
       render(
         <RedisCloudDatabasesResult
-          {...instance(mockedProps)}
           columns={columnsMock}
+          instances={[]}
+          onView={jest.fn()}
+          onBack={jest.fn()}
         />,
       ),
     ).toBeTruthy()

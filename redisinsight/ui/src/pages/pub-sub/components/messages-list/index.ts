@@ -1,3 +1,3 @@
-import MessagesListWrapper from './MessagesListWrapper'
+import MessagesListTable from './MessagesListTable/MessagesListTable'
 
-export default MessagesListWrapper
+export default MessagesListTable

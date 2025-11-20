@@ -1,9 +1,6 @@
 import React from 'react'
-import { instance, mock } from 'ts-mockito'
 import { render } from 'uiSrc/utils/test-utils'
-import RedisCloudDatabases, { Props } from './RedisCloudDatabases'
-
-const mockedProps = mock<Props>()
+import RedisCloudDatabases from './RedisCloudDatabases'
 
 describe('RedisCloudDatabases', () => {
   it('should render', () => {
@@ -19,8 +16,13 @@ describe('RedisCloudDatabases', () => {
       render(
         <RedisCloudDatabases
           selection={[]}
-          {...instance(mockedProps)}
           columns={columnsMock}
+          instances={[]}
+          loading={false}
+          onSelectionChange={jest.fn()}
+          onClose={jest.fn()}
+          onBack={jest.fn()}
+          onSubmit={jest.fn()}
         />,
       ),
     ).toBeTruthy()

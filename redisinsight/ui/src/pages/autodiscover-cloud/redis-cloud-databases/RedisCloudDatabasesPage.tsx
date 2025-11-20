@@ -1,6 +1,9 @@
 import React from 'react'
+import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 import RedisCloudDatabases from './RedisCloudDatabases'
-import { useCloudDatabasesConfig } from './useCloudDatabasesConfig'
+import { useCloudDatabasesConfig } from './hooks/useCloudDatabasesConfig'
+
+const EMPTY_INSTANCES: InstanceRedisCloud[] = []
 
 const RedisCloudDatabasesPage = () => {
   const {
@@ -9,6 +12,8 @@ const RedisCloudDatabasesPage = () => {
     handleClose,
     handleBackAdding,
     handleAddInstances,
+    handleSelectionChange,
+    instances,
   } = useCloudDatabasesConfig()
 
   return (
@@ -18,6 +23,9 @@ const RedisCloudDatabasesPage = () => {
       onBack={handleBackAdding}
       onSubmit={handleAddInstances}
       columns={columns}
+      instances={instances || EMPTY_INSTANCES}
+      loading={false}
+      onSelectionChange={handleSelectionChange}
     />
   )
 }

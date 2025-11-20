@@ -1,13 +1,11 @@
 import React, { ComponentProps } from 'react'
-
 import { Loader as RedisLoader } from '@redis-ui/components'
-import { useTheme, theme } from '@redis-ui/styles'
-
-type Space = typeof theme.core.space
+import { useTheme } from '@redis-ui/styles'
+import { Theme } from 'uiSrc/components/base/theme/types'
 
 export type RedisLoaderProps = ComponentProps<typeof RedisLoader>
 
-const convertSizeToPx = (tShirtSize: string, space: Space) => {
+const convertSizeToPx = (tShirtSize: string, space: Theme['core']['space']) => {
   switch (tShirtSize.toLowerCase()) {
     case 's':
       return space.space050

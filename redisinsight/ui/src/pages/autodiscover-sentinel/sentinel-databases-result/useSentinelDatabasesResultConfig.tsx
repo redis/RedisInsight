@@ -19,14 +19,14 @@ import { removeEmpty, setTitle } from 'uiSrc/utils'
 import { pick } from 'lodash'
 import { ColumnDef } from 'uiSrc/components/base/layout/table'
 import {
-  AliasColumn,
-  DbColumn,
-  AddressColumn,
-  NumberOfReplicasColumn,
-  PasswordColumn,
-  PrimaryGroupColumn,
-  ResultColumn,
-  UsernameColumn,
+  aliasColumn,
+  dbColumn,
+  addressColumn,
+  numberOfReplicasColumn,
+  passwordColumn,
+  primaryGroupColumn,
+  resultColumn,
+  usernameColumn,
 } from './components/column-definitions'
 
 // Define an interface for the error object
@@ -55,14 +55,14 @@ export const colFactory = (
   itemsLength: number,
 ) => {
   const cols: ColumnDef<ModifiedSentinelMaster>[] = [
-    ResultColumn(countSuccessAdded !== itemsLength, handleAddInstance),
-    PrimaryGroupColumn(),
-    AliasColumn(handleChangedInput, errorNotAuth),
-    AddressColumn(),
-    NumberOfReplicasColumn(),
-    UsernameColumn(handleChangedInput, isInvalid, errorNotAuth),
-    PasswordColumn(handleChangedInput, isInvalid, errorNotAuth),
-    DbColumn(handleChangedInput),
+    resultColumn(countSuccessAdded !== itemsLength, handleAddInstance),
+    primaryGroupColumn(),
+    aliasColumn(handleChangedInput, errorNotAuth),
+    addressColumn(),
+    numberOfReplicasColumn(),
+    usernameColumn(handleChangedInput, isInvalid, errorNotAuth),
+    passwordColumn(handleChangedInput, isInvalid, errorNotAuth),
+    dbColumn(handleChangedInput),
   ]
 
   return cols
