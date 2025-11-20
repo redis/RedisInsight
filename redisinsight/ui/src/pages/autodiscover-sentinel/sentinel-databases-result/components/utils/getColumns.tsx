@@ -12,7 +12,7 @@ import {
   PasswordCell,
   ResultCell,
   UsernameCell,
-} from '../column-definitions/components'
+} from '../columns'
 
 export const getColumns = (
   handleChangedInput: (name: string, value: string) => void,
