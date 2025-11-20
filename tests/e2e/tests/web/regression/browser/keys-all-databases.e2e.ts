@@ -78,7 +78,9 @@ test
     .before(async() => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneBigConfig);
     })('Verify that user can scroll key virtualized table and see keys info displayed', async() => {
-        const listItems = browserPage.virtualTableContainer.find(browserPage.cssVirtualTableRow);
+        // Force switch to list view
+        await t.click(browserPage.browserViewButton);
+        const listItems = browserPage.keysContainer.find(browserPage.cssVirtualTableRow);
         const maxNumberOfScrolls = 15;
         let numberOfScrolls = 0;
 
