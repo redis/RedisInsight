@@ -13,7 +13,11 @@ export class PubSubPage extends InstancePage {
     //COMPONENTS
     subscribeStatus = Selector('[data-testid=subscribe-status-text]');
     messages = Selector('[data-testid="messages-list"] tr');
-    totalMessagesCount = Selector('[data-testid=messages-count]');
+    messagesTable = Selector('[data-testid="messages-list"] table]')
+    messagesTableBottomNav = Selector('[data-testid="messages-list"] nav[data-role=pagination]')
+    messagesTableFirstPageBtn = Selector('[data-testid="messages-list"] nav[data-role=pagination] button[title="First page"]')
+    messagesTableLastPageBtn = Selector('[data-testid="messages-list"] nav[data-role=pagination] button[title="Last page"]')
+    totalMessagesCount = Selector('[data-testid=pub-sub-messages-count]');
     pubSubPageContainer = Selector('[data-testid=pub-sub-page]');
     clientBadge = Selector('[data-testid=affected-clients-badge]');
     clearButtonTooltip = Selector('[data-radix-popper-content-wrapper]');
