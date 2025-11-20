@@ -63,7 +63,6 @@ export const ResultCellRenderer = ({
 
 export const ResultCell = ({
   row,
-  column,
 }: CellContext<ModifiedSentinelMaster, unknown>) => {
   return <ResultCellRenderer {...row.original} />
 }
