@@ -3,7 +3,7 @@ import { InstancePage } from './instance-page';
 
 export class PubSubPage extends InstancePage {
     //CSS Selectors
-    cssSelectorMessage = '[data-testid^=row]';
+    cssSelectorMessage = '[data-testid="messages-list"] tr';
     //-------------------------------------------------------------------------------------------
     //DECLARATION OF SELECTORS
     //*Declare all elements/components of the relevant page.
@@ -12,7 +12,7 @@ export class PubSubPage extends InstancePage {
     //-------------------------------------------------------------------------------------------
     //COMPONENTS
     subscribeStatus = Selector('[data-testid=subscribe-status-text]');
-    messages = Selector('[data-testid^=row]');
+    messages = Selector('[data-testid="messages-list"] tr');
     totalMessagesCount = Selector('[data-testid=messages-count]');
     pubSubPageContainer = Selector('[data-testid=pub-sub-page]');
     clientBadge = Selector('[data-testid=affected-clients-badge]');
@@ -30,7 +30,7 @@ export class PubSubPage extends InstancePage {
     channelsSubscribeInput = Selector('[data-testid=channels-input]');
 
     patternsCount = Selector('[data-testid=patterns-count]');
-    messageCount = Selector('[data-testid=messages-count]');
+    messageCount = Selector('[data-testid=pub-sub-messages-count]');
 
     /**
      * Publish message in pubsub

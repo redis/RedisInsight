@@ -56,7 +56,9 @@ const MessagesListTable = () => {
 
             <Row align="center" gap="s">
               <Text>Messages:</Text>
-              <Text>{messages.length}</Text>
+              <Text data-testid="pub-sub-messages-count">
+                {messages.length}
+              </Text>
             </Row>
           </Row>
 
