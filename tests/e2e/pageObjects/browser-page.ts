@@ -245,7 +245,7 @@ export class BrowserPage extends InstancePage {
     jsonValue = Selector('[data-testid=value-as-json]');
     stringValueAsJson = Selector(this.cssJsonValue);
     // POPUPS
-    changeValueWarning = Selector('[data-testid=approve-popover]');
+    changeValueWarning = Selector('[data-testid=confirm-popover]');
     // TABLE
     keyListItem = Selector('[role=rowgroup] [role=row]');
     // Dialog
