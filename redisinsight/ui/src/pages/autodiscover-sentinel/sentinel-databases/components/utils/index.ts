@@ -15,3 +15,8 @@ export const getMetaAction = <TData, TValue = unknown>(
   )
 }
 
+export const getMetaProps = <TProps = Record<string, any>>(
+  column: Column<any, any>,
+): TProps => {
+  return (column.columnDef?.meta?.props as TProps) || ({} as TProps)
+}

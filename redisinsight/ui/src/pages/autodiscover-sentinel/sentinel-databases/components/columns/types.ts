@@ -7,6 +7,11 @@ export type SentinelMasterListCellTypeProps = CellContext<
   ModifiedSentinelMaster,
   unknown
 >
+
 export type SentinelMasterListCellType = (
   props: SentinelMasterListCellTypeProps,
 ) => ReactElement<any, any> | null
+
+export type HandleChangedInputProps = {
+  handleChangedInput: (name: string, value: string) => void
+}

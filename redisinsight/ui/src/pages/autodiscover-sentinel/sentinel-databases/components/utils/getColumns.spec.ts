@@ -37,7 +37,7 @@ describe('getColumns', () => {
     expect(columns[0].size).toBe(50)
   })
 
-  it('should pass handleChangedInput via meta.action for columns that need it', () => {
+  it('should pass handleChangedInput via meta.props for columns that need it', () => {
     const columns = getColumns(mockHandleChangedInput)
 
     const aliasColumn = columns.find(
@@ -52,14 +52,22 @@ describe('getColumns', () => {
     const dbIndexColumn = columns.find(
       (col) => col.id === SentinelDatabaseIds.DatabaseIndex,
     )
-
-    expect(aliasColumn?.meta?.action).toBe(mockHandleChangedInput)
-    expect(usernameColumn?.meta?.action).toBe(mockHandleChangedInput)
-    expect(passwordColumn?.meta?.action).toBe(mockHandleChangedInput)
-    expect(dbIndexColumn?.meta?.action).toBe(mockHandleChangedInput)
+    debugger
+    expect(usernameColumn?.meta?.props.handleChangedInput).toBe(
+      mockHandleChangedInput,
+    )
+    expect(passwordColumn?.meta?.props.handleChangedInput).toBe(
+      mockHandleChangedInput,
+    )
+    expect(dbIndexColumn?.meta?.props.handleChangedInput).toBe(
+      mockHandleChangedInput,
+    )
+    expect(aliasColumn?.meta?.props.handleChangedInput).toBe(
+      mockHandleChangedInput,
+    )
   })
 
-  it('should not include meta.action for columns that do not need it', () => {
+  it('should not include meta.props for columns that do not need it', () => {
     const columns = getColumns(mockHandleChangedInput)
 
     const primaryGroupColumn = columns.find(
@@ -72,8 +80,8 @@ describe('getColumns', () => {
       (col) => col.id === SentinelDatabaseIds.NumberOfReplicas,
     )
 
-    expect(primaryGroupColumn?.meta?.action).toBeUndefined()
-    expect(addressColumn?.meta?.action).toBeUndefined()
-    expect(numberOfReplicasColumn?.meta?.action).toBeUndefined()
+    expect(primaryGroupColumn?.meta?.props).toBeUndefined()
+    expect(addressColumn?.meta?.props).toBeUndefined()
+    expect(numberOfReplicasColumn?.meta?.props).toBeUndefined()
   })
 })

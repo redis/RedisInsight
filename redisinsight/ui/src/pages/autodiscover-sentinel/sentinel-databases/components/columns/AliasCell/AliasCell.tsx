@@ -4,9 +4,10 @@ import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/In
 
 import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import { CellContext } from 'uiSrc/components/base/layout/table'
-import { getMetaAction } from '../../utils'
+import { getMetaProps } from '../../utils'
 
 import type { AliasCellRendererProps } from './AliasCell.types'
+import { HandleChangedInputProps } from '../types'
 
 export const AliasCellRenderer = ({
   id,
@@ -31,10 +32,7 @@ export const AliasCell = ({
   column,
 }: CellContext<ModifiedSentinelMaster, unknown>) => {
   const { id, alias, name } = row.original
-  const handleChangedInput = getMetaAction(column) as (
-    name: string,
-    value: string,
-  ) => void
+  const { handleChangedInput } = getMetaProps<HandleChangedInputProps>(column)
   return (
     <AliasCellRenderer
       id={id}

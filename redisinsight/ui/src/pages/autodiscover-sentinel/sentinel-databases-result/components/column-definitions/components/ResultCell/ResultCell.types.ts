@@ -1,6 +1,6 @@
 import type { AddRedisDatabaseStatus } from 'uiSrc/slices/interfaces'
 
-export interface ResultCellProps {
+export interface ResultCellRendererProps {
   status?: AddRedisDatabaseStatus
   message?: string
   name: string

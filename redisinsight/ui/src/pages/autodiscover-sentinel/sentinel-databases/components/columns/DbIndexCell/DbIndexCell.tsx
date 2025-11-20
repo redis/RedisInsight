@@ -6,7 +6,8 @@ import { RiIcon } from 'uiSrc/components/base/icons'
 import type { DbIndexCellProps } from './DbIndexCell.types'
 import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import { CellContext } from 'uiSrc/components/base/layout/table'
-import { getMetaAction } from '../../utils'
+import { getMetaProps } from '../../utils'
+import { HandleChangedInputProps } from '../types'
 
 export const DbIndexCellRenderer = ({
   db = 0,
@@ -39,10 +40,7 @@ export const DbIndexCell = ({
   column,
 }: CellContext<ModifiedSentinelMaster, unknown>) => {
   const { db = 0, id } = row.original
-  const handleChangedInput = getMetaAction(column) as (
-    name: string,
-    value: string,
-  ) => void
+  const { handleChangedInput } = getMetaProps<HandleChangedInputProps>(column)
   return (
     <DbIndexCellRenderer
       db={db}

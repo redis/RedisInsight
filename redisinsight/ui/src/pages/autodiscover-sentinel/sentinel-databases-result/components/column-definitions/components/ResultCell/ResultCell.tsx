@@ -2,17 +2,21 @@ import React from 'react'
 
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Loader } from 'uiSrc/components/base/display'
-import { AddRedisDatabaseStatus } from 'uiSrc/slices/interfaces'
+import {
+  AddRedisDatabaseStatus,
+  ModifiedSentinelMaster,
+} from 'uiSrc/slices/interfaces'
 import { CellText } from 'uiSrc/components/auto-discover'
 import { RiTooltip } from 'uiSrc/components'
 import { ColorText } from 'uiSrc/components/base/text'
 import { Spacer } from 'uiSrc/components/base/layout'
 import { RiIcon } from 'uiSrc/components/base/icons'
+import { CellContext } from 'uiSrc/components/base/layout/table'
 
 import { AddErrorButton } from '../AddErrorButton/AddErrorButton'
-import type { ResultCellProps } from './ResultCell.types'
+import type { ResultCellRendererProps } from './ResultCell.types'
 
-export const ResultCell = ({
+export const ResultCellRenderer = ({
   status,
   message = '',
   name,
@@ -21,7 +25,7 @@ export const ResultCell = ({
   loading = false,
   addActions,
   onAddInstance,
-}: ResultCellProps) => {
+}: ResultCellRendererProps) => {
   return (
     <Row
       data-testid={`status_${name}_${status}`}
@@ -55,4 +59,11 @@ export const ResultCell = ({
       )}
     </Row>
   )
+}
+
+export const ResultCell = ({
+  row,
+  column,
+}: CellContext<ModifiedSentinelMaster, unknown>) => {
+  return <ResultCellRenderer {...row.original} />
 }

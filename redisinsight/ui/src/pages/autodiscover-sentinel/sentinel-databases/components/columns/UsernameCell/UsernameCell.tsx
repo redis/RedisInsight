@@ -5,7 +5,8 @@ import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/In
 import type { UsernameCellRendererProps } from './UsernameCell.types'
 import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import { CellContext } from 'uiSrc/components/base/layout/table'
-import { getMetaAction } from 'uiSrc/pages/autodiscover-sentinel/sentinel-databases/components/utils'
+import { getMetaProps } from 'uiSrc/pages/autodiscover-sentinel/sentinel-databases/components/utils'
+import { HandleChangedInputProps } from '../types'
 
 export const UsernameCellRenderer = ({
   username,
@@ -28,10 +29,7 @@ export const UsernameCell = ({
   column,
 }: CellContext<ModifiedSentinelMaster, unknown>) => {
   const { username, id } = row.original
-  const handleChangedInput = getMetaAction(column) as (
-    name: string,
-    value: string,
-  ) => void
+  const { handleChangedInput } = getMetaProps<HandleChangedInputProps>(column)
   return (
     <UsernameCellRenderer
       username={username!}

@@ -43,9 +43,7 @@ export const getColumns = (
       enableSorting: true,
       size: 200,
       cell: AliasCell,
-      meta: {
-        action: handleChangedInput,
-      },
+      meta: { props: { handleChangedInput } },
     },
     {
       header: SentinelDatabaseTitles.Address,
@@ -66,18 +64,14 @@ export const getColumns = (
       id: SentinelDatabaseIds.Username,
       accessorKey: SentinelDatabaseIds.Username,
       cell: UsernameCell,
-      meta: {
-        action: handleChangedInput,
-      },
+      meta: { props: { handleChangedInput } },
     },
     {
       header: SentinelDatabaseTitles.Password,
       id: SentinelDatabaseIds.Password,
       accessorKey: SentinelDatabaseIds.Password,
       cell: PasswordCell,
-      meta: {
-        action: handleChangedInput,
-      },
+      meta: { props: { handleChangedInput } },
     },
     {
       header: SentinelDatabaseTitles.DatabaseIndex,
@@ -85,9 +79,7 @@ export const getColumns = (
       accessorKey: SentinelDatabaseIds.DatabaseIndex,
       size: 140,
       cell: DbIndexCell,
-      meta: {
-        action: handleChangedInput,
-      },
+      meta: { props: { handleChangedInput } },
     },
   ]
 }

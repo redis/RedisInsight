@@ -6,7 +6,6 @@ export * from '@redis-ui/table'
 export type AnyFunction = (...args: any[]) => any
 
 declare module '@tanstack/react-table' {
-  interface ColumnMeta<TData extends RowData, TValue> {
-    action?: AnyFunction
-  }
+  interface ColumnMeta<TData extends RowData, TValue>
+    extends Record<string, any> {}
 }
