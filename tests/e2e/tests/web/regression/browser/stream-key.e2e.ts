@@ -25,7 +25,7 @@ fixture `Stream key`
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
     })
     .afterEach(async() => {
-        // await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
+        await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
     });
 test('Verify that user can see a Stream in a table format', async t => {
     const streamFields = [
