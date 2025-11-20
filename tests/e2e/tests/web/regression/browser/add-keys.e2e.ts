@@ -55,8 +55,10 @@ test('Verify that user can create different types(string, number, null, array, b
 });
 // https://redislabs.atlassian.net/browse/RI-3995
 test
-    .before(async() => {
+    .before(async(t) => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneBigConfig);
+        // Force switch to list view
+        await t.click(browserPage.browserViewButton);
     })
     .after(async() => {
         let commandString = 'DEL';
