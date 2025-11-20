@@ -5,7 +5,7 @@ import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/In
 import type { UsernameCellRendererProps } from './UsernameCell.types'
 import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import { CellContext } from 'uiSrc/components/base/layout/table'
-import { getMetaProps } from 'uiSrc/pages/autodiscover-sentinel/sentinel-databases/components/utils'
+import { getMetaProps } from 'uiSrc/utils/column'
 import { HandleChangedInputProps } from '../types'
 
 export const UsernameCellRenderer = ({

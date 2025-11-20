@@ -1,11 +1,17 @@
 import React from 'react'
 import { InputFieldSentinel } from 'uiSrc/components'
 import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/InputFieldSentinel'
-import { AddRedisDatabaseStatus } from 'uiSrc/slices/interfaces'
+import {
+  AddRedisDatabaseStatus,
+  ModifiedSentinelMaster,
+} from 'uiSrc/slices/interfaces'
 
-import type { UsernameCellProps } from './UsernameCell.types'
+import type { UsernameCellRendererProps } from './UsernameCell.types'
+import { errorNotAuth, getMetaProps } from 'uiSrc/utils/column'
+import { CellContext } from 'uiSrc/components/base/layout/table'
+import { HandleChangedInputProps } from 'uiSrc/pages/autodiscover-sentinel/sentinel-databases/components/columns/types'
 
-export const UsernameCell = ({
+export const UsernameCellRenderer = ({
   username,
   id,
   loading = false,
@@ -13,8 +19,7 @@ export const UsernameCell = ({
   status,
   handleChangedInput,
   isInvalid,
-  errorNotAuth,
-}: UsernameCellProps) => {
+}: UsernameCellRendererProps) => {
   if (
     errorNotAuth(error, status) ||
     status === AddRedisDatabaseStatus.Success
@@ -34,5 +39,26 @@ export const UsernameCell = ({
         onChangedInput={handleChangedInput}
       />
     </div>
+  )
+}
+
+export const UsernameCell = ({
+  row,
+  column,
+}: CellContext<ModifiedSentinelMaster, unknown>) => {
+  const { username, id, loading = false, error, status } = row.original
+  const { handleChangedInput, isInvalid } = getMetaProps<
+    HandleChangedInputProps & { isInvalid: boolean }
+  >(column)
+  return (
+    <UsernameCellRenderer
+      username={username}
+      id={id}
+      loading={loading}
+      error={error}
+      status={status}
+      handleChangedInput={handleChangedInput}
+      isInvalid={isInvalid}
+    />
   )
 }

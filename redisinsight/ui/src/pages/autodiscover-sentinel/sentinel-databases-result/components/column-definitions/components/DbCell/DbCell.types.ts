@@ -1,6 +1,6 @@
 import type { AddRedisDatabaseStatus } from 'uiSrc/slices/interfaces'
 
-export interface DbCellProps {
+export interface DbCellRendererProps {
   db?: number
   id?: string
   loading?: boolean

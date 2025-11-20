@@ -14,7 +14,11 @@ import { RiIcon } from 'uiSrc/components/base/icons'
 import { CellContext } from 'uiSrc/components/base/layout/table'
 
 import { AddErrorButton } from '../AddErrorButton/AddErrorButton'
-import type { ResultCellRendererProps } from './ResultCell.types'
+import type {
+  ResultCellRendererProps,
+  ResultCellProps,
+} from './ResultCell.types'
+import { getMetaProps } from 'uiSrc/utils/column'
 
 export const ResultCellRenderer = ({
   status,
@@ -63,6 +67,15 @@ export const ResultCellRenderer = ({
 
 export const ResultCell = ({
   row,
+  column,
 }: CellContext<ModifiedSentinelMaster, unknown>) => {
-  return <ResultCellRenderer {...row.original} />
+  const { onAddInstance, addActions } = getMetaProps<ResultCellProps>(column)
+
+  return (
+    <ResultCellRenderer
+      {...row.original}
+      onAddInstance={onAddInstance}
+      addActions={addActions}
+    />
+  )
 }

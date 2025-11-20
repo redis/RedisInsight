@@ -2,18 +2,24 @@ import React from 'react'
 import { InputFieldSentinel } from 'uiSrc/components'
 import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/InputFieldSentinel'
 import { ApiStatusCode } from 'uiSrc/constants'
-import { AddRedisDatabaseStatus } from 'uiSrc/slices/interfaces'
+import {
+  AddRedisDatabaseStatus,
+  ModifiedSentinelMaster,
+} from 'uiSrc/slices/interfaces'
 
-import type { DbCellProps } from './DbCell.types'
+import type { DbCellRendererProps } from './DbCell.types'
+import { CellContext } from 'uiSrc/components/base/layout/table'
+import { HandleChangedInputProps } from 'uiSrc/pages/autodiscover-sentinel/sentinel-databases/components/columns/types'
+import { getMetaProps } from 'uiSrc/utils/column'
 
-export const DbCell = ({
+export const DbCellRenderer = ({
   db,
   id = '',
   loading = false,
   status,
   error,
   handleChangedInput,
-}: DbCellProps) => {
+}: DbCellRendererProps) => {
   if (status === AddRedisDatabaseStatus.Success) {
     return db !== undefined ? <span>{db}</span> : <i>not assigned</i>
   }
@@ -35,5 +41,23 @@ export const DbCell = ({
         onChangedInput={handleChangedInput}
       />
     </div>
+  )
+}
+
+export const DbCell = ({
+  row,
+  column,
+}: CellContext<ModifiedSentinelMaster, unknown>) => {
+  const { db, id, loading = false, status, error } = row.original
+  const { handleChangedInput } = getMetaProps<HandleChangedInputProps>(column)
+  return (
+    <DbCellRenderer
+      db={db}
+      id={id}
+      loading={loading}
+      status={status}
+      error={error}
+      handleChangedInput={handleChangedInput}
+    />
   )
 }

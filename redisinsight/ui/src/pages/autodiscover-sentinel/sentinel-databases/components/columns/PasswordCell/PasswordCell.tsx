@@ -4,7 +4,7 @@ import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/In
 
 import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import { CellContext } from 'uiSrc/components/base/layout/table'
-import { getMetaProps } from '../../utils'
+import { getMetaProps } from 'uiSrc/utils/column'
 import type { HandleChangedInputProps } from '../types'
 import type { PasswordCellRendererProps } from './PasswordCell.types'
 

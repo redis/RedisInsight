@@ -1,4 +1,4 @@
-export interface AddressCellProps {
+export interface AddressCellRendererProps {
   host?: string
   port?: string
 }

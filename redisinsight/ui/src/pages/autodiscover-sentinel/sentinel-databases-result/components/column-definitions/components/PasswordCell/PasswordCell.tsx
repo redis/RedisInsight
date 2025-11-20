@@ -1,11 +1,17 @@
 import React from 'react'
 import { InputFieldSentinel } from 'uiSrc/components'
 import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/InputFieldSentinel'
-import { AddRedisDatabaseStatus } from 'uiSrc/slices/interfaces'
+import {
+  AddRedisDatabaseStatus,
+  ModifiedSentinelMaster,
+} from 'uiSrc/slices/interfaces'
 
-import type { PasswordCellProps } from './PasswordCell.types'
+import type { PasswordCellRendererProps } from './PasswordCell.types'
+import { errorNotAuth, getMetaProps } from 'uiSrc/utils/column'
+import { CellContext } from 'uiSrc/components/base/layout/table'
+import { HandleChangedInputProps } from 'uiSrc/pages/autodiscover-sentinel/sentinel-databases/components/columns/types'
 
-export const PasswordCell = ({
+export const PasswordCellRenderer = ({
   password = '',
   id = '',
   error,
@@ -13,8 +19,7 @@ export const PasswordCell = ({
   status,
   handleChangedInput,
   isInvalid,
-  errorNotAuth,
-}: PasswordCellProps) => {
+}: PasswordCellRendererProps) => {
   if (
     errorNotAuth(error, status) ||
     status === AddRedisDatabaseStatus.Success
@@ -33,5 +38,26 @@ export const PasswordCell = ({
         onChangedInput={handleChangedInput}
       />
     </div>
+  )
+}
+
+export const PasswordCell = ({
+  row,
+  column,
+}: CellContext<ModifiedSentinelMaster, unknown>) => {
+  const { password, id, error, loading = false, status } = row.original
+  const { handleChangedInput, isInvalid } = getMetaProps<
+    HandleChangedInputProps & { isInvalid: boolean }
+  >(column)
+  return (
+    <PasswordCellRenderer
+      password={password}
+      id={id}
+      error={error}
+      loading={loading}
+      status={status}
+      handleChangedInput={handleChangedInput}
+      isInvalid={isInvalid}
+    />
   )
 }

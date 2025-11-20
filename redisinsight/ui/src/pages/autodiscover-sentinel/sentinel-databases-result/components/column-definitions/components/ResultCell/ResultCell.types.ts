@@ -10,3 +10,8 @@ export interface ResultCellRendererProps {
   addActions?: boolean
   onAddInstance?: (name: string) => void
 }
+
+export interface ResultCellProps {
+  onAddInstance?: (name: string) => void
+  addActions?: boolean
+}

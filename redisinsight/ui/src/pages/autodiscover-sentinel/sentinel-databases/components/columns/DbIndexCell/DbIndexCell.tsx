@@ -6,7 +6,7 @@ import { RiIcon } from 'uiSrc/components/base/icons'
 import type { DbIndexCellProps } from './DbIndexCell.types'
 import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import { CellContext } from 'uiSrc/components/base/layout/table'
-import { getMetaProps } from '../../utils'
+import { getMetaProps } from 'uiSrc/utils/column'
 import { HandleChangedInputProps } from '../types'
 
 export const DbIndexCellRenderer = ({
