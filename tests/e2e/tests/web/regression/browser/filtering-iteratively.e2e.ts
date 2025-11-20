@@ -14,9 +14,11 @@ let keys: string[];
 fixture `Filtering iteratively in Browser page`
     .meta({ type: 'regression' })
     .page(commonUrl)
-    .beforeEach(async() => {
+    .beforeEach(async(t) => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         await browserPage.Cli.sendCommandInCli('flushdb');
+        // Force switch to list view
+        await t.click(browserPage.browserViewButton);
     })
     .afterEach(async() => {
         // Clear and delete database
@@ -50,8 +52,10 @@ test
     });
 test
     .meta({ rte: rte.ossCluster })
-    .before(async() => {
+    .before(async(t) => {
         await databaseHelper.acceptLicenseTermsAndAddOSSClusterDatabase(ossClusterConfig);
+        // Force switch to list view
+        await t.click(browserPage.browserViewButton);
     })
     .after(async() => {
         // Clear and delete database
@@ -73,9 +77,11 @@ test
     });
 test
     .meta({ rte: rte.standalone })
-    .before(async() => {
+    .before(async(t) => {
         // Add Big standalone DB
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneBigConfig);
+        // Force switch to list view
+        await t.click(browserPage.browserViewButton);
     })('Verify that user use Scan More in DB with 10-50 millions of keys (when search by pattern/)', async t => {
         // Search all string keys
         await browserPage.searchByKeyName('*');
