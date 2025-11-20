@@ -218,7 +218,7 @@ export class BrowserPage extends InstancePage {
     keyListTable = Selector('[data-testid=keyList-table]');
     keyListMessage = Selector('[data-testid=no-result-found-msg]');
     keyDetailsTable = Selector('[data-testid=key-details]');
-    keyNameFormDetails = Selector('[data-testid=key-name-text]');
+    keyNameFormDetails = Selector('p[data-testid=edit-key-input]');
     keyDetailsTTL = Selector('[data-testid=key-ttl-text]');
     progressLine = Selector('div.euiProgress');
     progressKeyList = Selector('[data-testid=progress-key-list]');
