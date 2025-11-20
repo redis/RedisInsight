@@ -54,7 +54,7 @@ jobs:
           latestYmlFileName="latest.yml"
           downloadLatestFolderPath="public/latest-new"
           upgradeLatestFolderPath="public/upgrades-new"
-          releasesFolderPath="public/releases-new"
+          releasesFolderPath="public/releases"
           appName=$(jq -r '.productName' electron-builder.json)
           appVersion=$(jq -r '.version' redisinsight/package.json)
 
