@@ -215,6 +215,7 @@ export class BrowserPage extends InstancePage {
     keysSummary = Selector('[data-testid=keys-summary]');
     multiSearchArea = Selector(this.cssFilteringLabel);
     keyDetailsHeader = Selector('[data-testid=key-details-header]');
+    keysContainer = Selector('[id=keys]');
     keyListTable = Selector('[data-testid=keyList-table]');
     keyListMessage = Selector('[data-testid=no-result-found-msg]');
     keyDetailsTable = Selector('[data-testid=key-details]');
