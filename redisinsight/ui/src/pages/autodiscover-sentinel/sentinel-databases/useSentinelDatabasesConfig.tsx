@@ -15,20 +15,8 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { Pages } from 'uiSrc/constants'
 import { setTitle } from 'uiSrc/utils'
 import { CreateSentinelDatabaseDto } from 'apiSrc/modules/redis-sentinel/dto/create.sentinel.database.dto'
-import {
-  ColumnDef,
-  RowSelectionState,
-} from 'uiSrc/components/base/layout/table'
-import {
-  primaryGroupColumn,
-  aliasColumn,
-  addressColumn,
-  numberOfReplicasColumn,
-  usernameColumn,
-  passwordColumn,
-  dbIndexColumn,
-  selectionColumn,
-} from './components/column-definitions'
+import { RowSelectionState } from 'uiSrc/components/base/layout/table'
+import { getColumns } from 'uiSrc/pages/autodiscover-sentinel/sentinel-databases/components/utils/getColumns'
 
 const updateSelection = (
   selected: ModifiedSentinelMaster[],
@@ -45,24 +33,6 @@ const sendCancelEvent = () => {
     event:
       TelemetryEvent.CONFIG_DATABASES_REDIS_SENTINEL_AUTODISCOVERY_CANCELLED,
   })
-}
-export const colFactory = (
-  items: ModifiedSentinelMaster[],
-  handleChangedInput: (name: string, value: string) => void,
-) => {
-  const cols: ColumnDef<ModifiedSentinelMaster>[] = [
-    primaryGroupColumn(),
-    aliasColumn(handleChangedInput),
-    addressColumn(),
-    numberOfReplicasColumn(),
-    usernameColumn(handleChangedInput),
-    passwordColumn(handleChangedInput),
-    dbIndexColumn(handleChangedInput),
-  ]
-  if (items.length > 0) {
-    cols.unshift(selectionColumn())
-  }
-  return cols
 }
 
 export const getRowId = (row: ModifiedSentinelMaster) => row.id || ''
@@ -156,10 +126,14 @@ export const useSentinelDatabasesConfig = () => {
     [setItems],
   )
 
-  const columns: ColumnDef<ModifiedSentinelMaster>[] = useMemo(
-    () => colFactory(items, handleChangedInput),
-    [handleChangedInput, items.length],
-  )
+  const shouldRenderSelection = items.length > 0
+  const columns = useMemo(() => {
+    const cols = getColumns(handleChangedInput)
+    if (!shouldRenderSelection) {
+      cols.splice(0, 1)
+    }
+    return cols
+  }, [handleChangedInput, shouldRenderSelection])
 
   return {
     columns,

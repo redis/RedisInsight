@@ -1,4 +1,4 @@
-export interface AliasCellProps {
+export interface AliasCellRendererProps {
   id?: string
   alias?: string
   name?: string
