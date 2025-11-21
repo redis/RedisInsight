@@ -60,7 +60,8 @@ jobs:
   # Remove artifacts from github actions
   remove-artifacts:
     name: Remove artifacts
-    needs: [aws-upload-prod, e2e-docker-tests, e2e-appimage-tests]
+    # needs: [aws-upload-prod, e2e-docker-tests, e2e-appimage-tests]
+    needs: [aws-upload-prod]
     if: always()
     runs-on: ubuntu-latest
 
