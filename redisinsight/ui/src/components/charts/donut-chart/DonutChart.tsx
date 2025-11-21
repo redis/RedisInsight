@@ -7,7 +7,12 @@ import { Nullable, truncateNumberToRange } from 'uiSrc/utils'
 import { rgb, RGBColor } from 'uiSrc/utils/colors'
 import { getPercentage } from 'uiSrc/utils/numbers'
 
-import styles from './styles.module.scss'
+import {
+  Wrapper,
+  InnerTextContainer,
+  Tooltip,
+  StyledSVG,
+} from './DonutChart.styles'
 
 export interface ChartData {
   value: number
@@ -149,12 +154,15 @@ const DonutChart = (props: IProps) => {
 
     d3.select(svgRef.current).select('g').remove()
 
+    const svgElement = svgRef.current
+    const existingClasses = svgElement?.getAttribute('class') || ''
+
     const svg = d3
       .select(svgRef.current)
       .attr('width', width)
       .attr('height', height)
       .attr('data-testid', `donut-svg-${name}`)
-      .attr('class', cx(classNames?.chart))
+      .attr('class', cx(existingClasses, classNames?.chart))
       .append('g')
       .attr('transform', `translate(${width / 2},${height / 2})`)
 
@@ -169,7 +177,7 @@ const DonutChart = (props: IProps) => {
       .attr('fill', (d) =>
         isString(d.data.color) ? d.data.color : rgb(d.data.color),
       )
-      .attr('class', cx(styles.arc, classNames?.arc))
+      .attr('class', cx('donut-arc', classNames?.arc))
       .on('mouseenter mousemove', onMouseEnterSlice)
       .on('mouseleave', onMouseLeaveSlice)
 
@@ -179,7 +187,7 @@ const DonutChart = (props: IProps) => {
       .data(dataReady)
       .enter()
       .append('text')
-      .attr('class', cx(styles.chartLabel, classNames?.arcLabel))
+      .attr('class', cx('donut-label', classNames?.arcLabel))
       .attr('transform', getLabelPosition)
       .text((d) =>
         isShowLabel(d) && !hideLabelTitle ? `${d.data.name}: ` : '',
@@ -206,7 +214,7 @@ const DonutChart = (props: IProps) => {
 
         return truncateNumberToRange(d.value)
       })
-      .attr('class', cx(styles.chartLabelValue, classNames?.arcLabelValue))
+      .attr('class', cx('donut-label-value', classNames?.arcLabelValue))
   }, [data, hideLabelTitle])
 
   if (!data.length || sum === 0) {
@@ -214,19 +222,19 @@ const DonutChart = (props: IProps) => {
   }
 
   return (
-    <div className={styles.wrapper} data-testid={`donut-${name}`}>
-      <svg ref={svgRef} />
-      <div
-        className={cx(styles.tooltip, classNames?.tooltip)}
+    <Wrapper data-testid={`donut-${name}`}>
+      <StyledSVG ref={svgRef} />
+      <Tooltip
+        className={cx(classNames?.tooltip)}
         data-testid="chart-value-tooltip"
         ref={tooltipRef}
       >
         {renderTooltip && hoveredData
           ? renderTooltip(hoveredData)
           : hoveredData?.value || ''}
-      </div>
-      {title && <div className={styles.innerTextContainer}>{title}</div>}
-    </div>
+      </Tooltip>
+      {title && <InnerTextContainer>{title}</InnerTextContainer>}
+    </Wrapper>
   )
 }
 

@@ -4,8 +4,9 @@ import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
 import { ViteEjsPlugin } from 'vite-plugin-ejs';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
-import path, { resolve } from 'path'
-import { fileURLToPath } from 'url'
+import path, { resolve } from 'path';
+import { fileURLToPath } from 'url';
+import { defaultConfig } from '../config/default';
 
 const riPlugins = [
   { name: 'redisearch', entry: 'src/main.tsx' },
@@ -94,7 +95,7 @@ export default defineConfig({
               '/main.scss',
               '/App.scss',
               '/packages/clients-list/src/styles/styles.scss',
-              '/packages/redisearch/src/styles/styles.scss'
+              '/packages/redisearch/src/styles/styles.scss',
             ];
             if (skipFiles.every((file) => !filename.endsWith(file))) {
               return `
@@ -112,6 +113,8 @@ export default defineConfig({
   define: {
     global: 'globalThis',
     'process.env': {},
+    // setup default riConfig since it might be used in constants
+    riConfig: defaultConfig,
   },
 });
 

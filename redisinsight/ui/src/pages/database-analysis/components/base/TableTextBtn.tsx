@@ -1,43 +1,21 @@
 import styled, { css } from 'styled-components'
 import React from 'react'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
+import { Theme } from 'uiSrc/components/base/theme/types'
 
-const expandedStyle = css`
+const expandedStyle = css<{ theme: Theme }>`
   padding: 0 20px 0 12px;
-  color: var(--euiTextSubduedColor) !important;
-
-  &:hover,
-  &:focus {
-    color: var(--euiTextSubduedColorHover) !important;
-  }
 `
-/**
- * Text button component in top namespaces table
- *
- * This is how we can implement custom styles
- */
-export const TableTextBtn = styled(EmptyButton)<
+
+export const TableTextBtn = styled(EmptyButton).attrs({
+  variant: 'primary-inline',
+})<
   React.ComponentProps<typeof EmptyButton> & {
     $expanded?: boolean
+    theme: Theme
   }
 >`
-  width: max-content;
-
-  &:hover,
-  &:focus {
-    background-color: transparent !important;
-    text-decoration: underline;
-    color: var(--euiTextSubduedColorHover);
-  }
-  padding: 0;
-  font:
-    normal normal normal 13px/17px Graphik,
-    sans-serif;
-  color: var(--buttonSecondaryTextColor) !important;
-  ${({ $expanded }) => {
-    if (!$expanded) {
-      return ''
-    }
-    return expandedStyle
-  }}
+  max-width: calc(100% - 20px);
+  width: auto;
+  ${({ $expanded }) => $expanded && expandedStyle}
 `

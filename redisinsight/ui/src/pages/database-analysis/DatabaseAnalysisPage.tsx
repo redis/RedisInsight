@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import styled from 'styled-components'
 
 import {
-  dbAnalysisSelector,
   dbAnalysisReportsSelector,
+  dbAnalysisSelector,
   fetchDBAnalysisAction,
   fetchDBAnalysisReportsHistory,
   setSelectedAnalysisId,
@@ -17,27 +16,15 @@ import {
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { AnalyticsViewTab } from 'uiSrc/slices/interfaces/analytics'
 import {
-  sendPageViewTelemetry,
   sendEventTelemetry,
-  TelemetryPageView,
+  sendPageViewTelemetry,
   TelemetryEvent,
+  TelemetryPageView,
 } from 'uiSrc/telemetry'
 import { formatLongName, getDbIndex, setTitle } from 'uiSrc/utils'
+import { DatabaseAnalysisPageView } from './DatabaseAnalysisPageView'
 
-import Header from './components/header'
-import DatabaseAnalysisTabs from './components/data-nav-tabs'
-import styles from './styles.module.scss'
-
-// Styled component for the main container with theme border
-const MainContainer = styled.div<React.HTMLAttributes<HTMLDivElement>>`
-  border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
-  border-radius: ${({ theme }) => theme.components.semanticContainer.sizes.M.borderRadius};
-  padding: ${({ theme }) => theme.components.semanticContainer.sizes.M.padding};
-  height: 100%;
-  overflow: auto;
-`
-
-const DatabaseAnalysisPage = () => {
+export const DatabaseAnalysisPage = () => {
   const { viewTab } = useSelector(analyticsSettingsSelector)
   const { loading: analysisLoading, data } = useSelector(dbAnalysisSelector)
   const { data: reports, selectedAnalysis } = useSelector(
@@ -101,20 +88,13 @@ const DatabaseAnalysisPage = () => {
   }
 
   return (
-    <MainContainer className={styles.main} data-testid="database-analysis-page">
-      <Header
-        items={reports}
-        selectedValue={selectedAnalysis}
-        onChangeSelectedAnalysis={handleSelectAnalysis}
-        progress={data?.progress}
-        analysisLoading={analysisLoading}
-      />
-      <DatabaseAnalysisTabs
-        loading={analysisLoading}
-        reports={reports}
-        data={data}
-      />
-    </MainContainer>
+    <DatabaseAnalysisPageView
+      reports={reports}
+      selectedAnalysis={selectedAnalysis}
+      analysisLoading={analysisLoading}
+      data={data}
+      handleSelectAnalysis={handleSelectAnalysis}
+    />
   )
 }
 

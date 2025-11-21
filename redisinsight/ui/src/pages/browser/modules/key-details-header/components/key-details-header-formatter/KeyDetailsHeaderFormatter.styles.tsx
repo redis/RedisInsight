@@ -3,6 +3,7 @@ import { ComponentProps } from 'react'
 import { ColorText } from 'uiSrc/components/base/text'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { insightsOpen } from 'uiSrc/styles/mixins'
 
 type KeyDetailsSelectProps = ComponentProps<typeof RiSelect> & {
   $fullWidth?: boolean
@@ -41,12 +42,10 @@ const ControlsIcon = styled(RiIcon)`
   margin-left: 3px;
   margin-top: 2px;
 
-  :global(.insightsOpen) {
-    @media only screen and (max-width: 1440px) {
-      width: 18px !important;
-      height: 18px !important;
-    }
-  }
+  ${insightsOpen(1440)`
+    width: 18px !important;
+    height: 18px !important;
+  `}
 `
 
 const Container = styled.div<{

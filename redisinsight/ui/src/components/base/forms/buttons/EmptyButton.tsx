@@ -22,22 +22,26 @@ export const EmptyButton = ({
   ...rest
 }: ButtonProps) => (
   <TextButton {...rest}>
-    <Row justify={justify} gap="m" align="center">
-      <ButtonIcon
-        buttonSide="left"
-        icon={icon}
-        iconSide={iconSide}
-        loading={loading}
-        size={size}
-      />
-      {children}
-      <ButtonIcon
-        buttonSide="right"
-        icon={icon}
-        iconSide={iconSide}
-        loading={loading}
-        size={size}
-      />
-    </Row>
+    {icon ? (
+      <Row justify={justify} gap="m" align="center">
+        <ButtonIcon
+          buttonSide="left"
+          icon={icon}
+          iconSide={iconSide}
+          loading={loading}
+          size={size}
+        />
+        {children}
+        <ButtonIcon
+          buttonSide="right"
+          icon={icon}
+          iconSide={iconSide}
+          loading={loading}
+          size={size}
+        />
+      </Row>
+    ) : (
+      children
+    )}
   </TextButton>
 )

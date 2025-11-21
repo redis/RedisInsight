@@ -8,16 +8,14 @@ import { StyledPanel } from 'uiSrc/pages/rdi/statistics/status/styles'
 import { Text, Title } from 'uiSrc/components/base/text'
 
 const StatusItem = ({ label, value }: { label: string; value: string }) => (
-  <FlexItem grow>
-    <Row gap="m" responsive>
-      <FlexItem grow>
-        <Text>{label}</Text>
-      </FlexItem>
-      <FlexItem grow>
-        <Text color="primary">{value}</Text>
-      </FlexItem>
-    </Row>
-  </FlexItem>
+  <Row gap="m" responsive>
+    <FlexItem grow>
+      <Text>{label}</Text>
+    </FlexItem>
+    <FlexItem grow>
+      <Text color="primary">{value}</Text>
+    </FlexItem>
+  </Row>
 )
 
 interface Props {
@@ -34,13 +32,13 @@ const Status = ({ data }: Props) => {
           General info
         </Title>
         <Row gap="m" responsive>
-          <StatusItem label="RDI DB Version" value={rdiVersion} />
+          <StatusItem label="RDI version" value={rdiVersion} />
           <VerticalDivider />
-          <StatusItem label="Address" value={address} />
+          <StatusItem label="RDI database address" value={address} />
           <VerticalDivider />
           <StatusItem label="Run status" value={runStatus} />
           <VerticalDivider />
-          <StatusItem label="Sync Mode" value={syncMode} />
+          <StatusItem label="Sync mode" value={syncMode} />
         </Row>
       </Col>
     </StyledPanel>

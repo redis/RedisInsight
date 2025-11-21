@@ -109,6 +109,7 @@ const AppNavigation = ({ actions, onChange, routes }: AppNavigationProps) => {
 
                 return (
                   <NavigationTabTrigger
+                    key={key}
                     value={value}
                     label={label}
                     disabled={disabled}

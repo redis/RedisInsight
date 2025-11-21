@@ -1,15 +1,12 @@
-import cx from 'classnames'
 import React from 'react'
 
-import { CommandGroup, KeyTypes, GROUP_TYPES_COLORS } from 'uiSrc/constants'
+import { CommandGroup, GROUP_TYPES_COLORS, KeyTypes } from 'uiSrc/constants'
 import { getGroupTypeDisplay } from 'uiSrc/utils'
 
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
-import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 
-import styles from './styles.module.scss'
+import { DeleteButton, StyledGroupBadge } from './GroupBadge.styles'
 
 export interface Props {
   type: KeyTypes | CommandGroup | string
@@ -29,41 +26,36 @@ const GroupBadge = ({
   // @ts-ignore
   const backgroundColor = GROUP_TYPES_COLORS[type] ?? 'var(--defaultTypeColor)'
   return (
-    <RiBadge
+    <StyledGroupBadge
+      $withDeleteBtn={!!onDelete}
+      $compressed={!!compressed}
       variant="light"
-      style={{
-        backgroundColor,
-        padding: 10,
-      }}
-      className={cx(styles.badgeWrapper, className, {
-        [styles.withDeleteBtn]: onDelete,
-        [styles.compressed]: compressed,
-      })}
+      $color={backgroundColor}
+      className={className}
       title={undefined}
       data-testid={`badge-${type}_${name}`}
     >
       {!compressed && (
         <Text
-          style={{ color: 'var(--euiTextSubduedColorHover)' }}
+          color="#ffffff"
           className="text-uppercase"
           variant="semiBold"
           size="S"
+          component="span"
         >
           {getGroupTypeDisplay(type)}
         </Text>
       )}
       {onDelete && (
-        <IconButton
+        <DeleteButton
           size="XS"
           icon={CancelSlimIcon}
-          color="primary"
           aria-label="Delete"
           onClick={() => onDelete(type)}
-          className={styles.deleteIcon}
           data-testid={`${type}-delete-btn`}
         />
       )}
-    </RiBadge>
+    </StyledGroupBadge>
   )
 }
 

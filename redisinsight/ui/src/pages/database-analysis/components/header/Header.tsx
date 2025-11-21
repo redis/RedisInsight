@@ -1,9 +1,6 @@
 import React from 'react'
-import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-
-import styled from 'styled-components'
 import { CaretRightIcon } from 'uiSrc/components/base/icons'
 import { createNewAnalysis } from 'uiSrc/slices/analytics/dbAnalysis'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
@@ -24,16 +21,12 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { HideFor } from 'uiSrc/components/base/utils/ShowHide'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { ShortDatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
 import { AnalysisProgress } from 'apiSrc/modules/database-analysis/models/analysis-progress'
 
 import styles from './styles.module.scss'
+import { Container, HeaderSelect, InfoIcon } from './Header.styles'
 
-const HeaderSelect = styled(RiSelect)`
-  border: 0 none;
-`
 export interface Props {
   items: ShortDatabaseAnalysis[]
   selectedValue: Nullable<string>
@@ -88,19 +81,13 @@ const Header = (props: Props) => {
   return (
     <div data-testid="db-analysis-header">
       <AnalyticsTabs />
-      <Row
-        className={styles.container}
-        align="center"
-        justify={items.length ? 'between' : 'end'}
-      >
+      <Container justify={items.length ? 'between' : 'end'}>
         {!!items.length && (
           <FlexItem>
             <Row align="center" wrap>
               <HideFor sizes={['xs', 's']}>
                 <FlexItem>
-                  <Text className={styles.text} size="s">
-                    Report generated on:
-                  </Text>
+                  <Text size="s">Report generated on:</Text>
                 </FlexItem>
               </HideFor>
               <FlexItem grow>
@@ -117,11 +104,7 @@ const Header = (props: Props) => {
               {!!progress && (
                 <FlexItem>
                   <Text
-                    className={cx(
-                      styles.progress,
-                      styles.text,
-                      styles.progressContainer,
-                    )}
+                    className={styles.progress}
                     size="s"
                     data-testid="bulk-delete-summary"
                   >
@@ -132,15 +115,14 @@ const Header = (props: Props) => {
                           ? undefined
                           : 'warning'
                       }
-                      className={cx(styles.progress, styles.text)}
+                      className={styles.progress}
                       size="s"
                       data-testid="analysis-progress"
                     >
-                      {'Scanned '}
-                      {getApproximatePercentage(
+                      {`Scanned ${getApproximatePercentage(
                         progress.total,
                         progress.processed,
-                      )}
+                      )}`}
                     </Text>
                     {` (${numberWithSpaces(progress.processed)}`}/
                     {numberWithSpaces(progress.total)}
@@ -152,43 +134,33 @@ const Header = (props: Props) => {
           </FlexItem>
         )}
         <FlexItem>
-          <Row align="center">
-            <FlexItem grow>
-              <PrimaryButton
-                aria-label="New reports"
-                data-testid="start-database-analysis-btn"
-                icon={CaretRightIcon}
-                iconSide="left"
-                disabled={analysisLoading}
-                onClick={handleClick}
-              >
-                New Report
-              </PrimaryButton>
-            </FlexItem>
-            <FlexItem style={{ paddingLeft: 6 }}>
-              <RiTooltip
-                position="bottom"
-                anchorClassName={styles.tooltipAnchor}
-                className={styles.tooltip}
-                title="Database Analysis"
-                data-testid="db-new-reports-tooltip"
-                content={
-                  connectionType === ConnectionType.Cluster
-                    ? ANALYZE_CLUSTER_TOOLTIP_MESSAGE
-                    : ANALYZE_TOOLTIP_MESSAGE
-                }
-              >
-                <RiIcon
-                  className={styles.infoIcon}
-                  type="InfoIcon"
-                  size="l"
-                  data-testid="db-new-reports-icon"
-                />
-              </RiTooltip>
-            </FlexItem>
+          <Row justify="end" align="center" gap="s">
+            <PrimaryButton
+              aria-label="New reports"
+              data-testid="start-database-analysis-btn"
+              icon={CaretRightIcon}
+              iconSide="left"
+              disabled={analysisLoading}
+              onClick={handleClick}
+            >
+              New Report
+            </PrimaryButton>
+            <RiTooltip
+              position="bottom"
+              anchorClassName={styles.tooltipAnchor}
+              title="Database Analysis"
+              data-testid="db-new-reports-tooltip"
+              content={
+                connectionType === ConnectionType.Cluster
+                  ? ANALYZE_CLUSTER_TOOLTIP_MESSAGE
+                  : ANALYZE_TOOLTIP_MESSAGE
+              }
+            >
+              <InfoIcon data-testid="db-new-reports-icon" />
+            </RiTooltip>
           </Row>
         </FlexItem>
-      </Row>
+      </Container>
     </div>
   )
 }

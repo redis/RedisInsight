@@ -4,7 +4,11 @@ import cx from 'classnames'
 import { curryRight, flow, toNumber } from 'lodash'
 
 import { formatBytes, toBytes } from 'uiSrc/utils'
-import styles from './styles.module.scss'
+import {
+  Wrapper,
+  StyledSVG,
+  TooltipGlobalStyles,
+} from './BarChart.styles'
 
 export interface BarChartData {
   y: number
@@ -88,7 +92,7 @@ const BarChart = (props: IProps) => {
     const tooltip = d3
       .select('body')
       .append('div')
-      .attr('class', cx(styles.tooltip, classNames?.tooltip || ''))
+      .attr('class', cx('bar-chart-tooltip', classNames?.tooltip || ''))
       .style('opacity', 0)
 
     d3.select(svgRef.current).select('g').remove()
@@ -143,7 +147,7 @@ const BarChart = (props: IProps) => {
     if (divideLastColumn) {
       svg
         .append('line')
-        .attr('class', cx(styles.dashedLine, classNames?.dashedLine))
+        .attr('class', cx('bar-chart-dashed-line', classNames?.dashedLine))
         .attr('x1', xAxis(cleanedData.length - 2.3))
         .attr('x2', xAxis(cleanedData.length - 2.3))
         .attr('y1', 0)
@@ -198,7 +202,7 @@ const BarChart = (props: IProps) => {
       .data(cleanedData)
       .enter()
       .append('rect')
-      .attr('class', cx(styles.bar, classNames?.bar))
+      .attr('class', cx('bar-chart-bar', classNames?.bar))
       .attr('x', (d) => xAxis(d.index))
       .attr('width', barWidth)
       // set minimal height for Bar
@@ -236,12 +240,12 @@ const BarChart = (props: IProps) => {
   }
 
   return (
-    <div
-      className={styles.wrapper}
-      style={{ width: propWidth, height: propHeight }}
-    >
-      <svg ref={svgRef} className={styles.svg} />
-    </div>
+    <>
+      <TooltipGlobalStyles />
+      <Wrapper style={{ width: propWidth, height: propHeight }}>
+        <StyledSVG ref={svgRef} />
+      </Wrapper>
+    </>
   )
 }
 

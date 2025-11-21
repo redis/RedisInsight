@@ -10,7 +10,7 @@ import 'modern-normalize/modern-normalize.css'
 import '@redis-ui/styles/normalized-styles.css'
 import '@redis-ui/styles/fonts.css'
 
-import { ipcThemeChange } from 'uiSrc/electron/utils'
+import { ipcThemeChange } from 'uiSrc/electron/utils/ipcThemeChange'
 import {
   BrowserStorageItem,
   Theme,
@@ -19,6 +19,7 @@ import {
   DEFAULT_THEME,
 } from '../constants'
 import { localStorageService, themeService } from '../services'
+import { GlobalStyles } from 'uiSrc/styles/globalStyles'
 
 interface Props {
   children: React.ReactNode
@@ -112,6 +113,7 @@ export class ThemeProvider extends React.Component<Props> {
       >
         <StyledThemeProvider theme={uiTheme}>
           <CommonStyles />
+          <GlobalStyles />
           {children}
         </StyledThemeProvider>
       </ThemeContext.Provider>

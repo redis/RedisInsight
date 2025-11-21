@@ -1,13 +1,15 @@
 import React from 'react'
-
-import { LoadingContent } from 'uiSrc/components/base/layout'
-import styles from './styles.module.scss'
+import {
+  Container,
+  TableLoaderTable,
+  TableLoaderTitle,
+} from './TableLoader.styles'
 
 const TableLoader = () => (
-  <div className={styles.container} data-testid="table-loader">
-    <LoadingContent className={styles.title} lines={1} />
-    <LoadingContent className={styles.table} lines={3} />
-  </div>
+  <Container data-testid="table-loader">
+    <TableLoaderTitle lines={1} />
+    <TableLoaderTable lines={3} />
+  </Container>
 )
 
 export default TableLoader
