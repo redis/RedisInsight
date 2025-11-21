@@ -1,3 +1,4 @@
+import React from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
 import RedisCloudDatabasesResult from './RedisCloudDatabasesResult'
@@ -8,12 +9,15 @@ import {
   RedisCloudInstanceFactoryWithModules,
   RedisCloudInstanceFactoryOptionsFull,
 } from 'uiSrc/mocks/factories/cloud/RedisCloudInstance.factory'
-import { getRedisCloudDatabasesResultColumns } from '../config/RedisCloudDatabasesResult.config'
+import { redisCloudDatabasesResultColumns } from '../config/RedisCloudDatabasesResult.config'
 import { AutoDiscoverCloudIds } from 'uiSrc/pages/autodiscover-cloud/constants/constants'
 import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
+import type { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
+import { store } from 'uiSrc/slices/store'
+import { loadInstancesRedisCloudSuccess } from 'uiSrc/slices/instances/cloud'
 
 const getFilteredColumns = (instances: any[]) => {
-  const allColumns = getRedisCloudDatabasesResultColumns(instances)
+  const allColumns = redisCloudDatabasesResultColumns
 
   const shouldShowCapabilities = instances.some(
     (instance) => instance.modules?.length,
@@ -33,6 +37,21 @@ const getFilteredColumns = (instances: any[]) => {
     }
     return true
   })
+}
+
+const createStoreDecorator = (
+  instancesForOptions: InstanceRedisCloud[] = [],
+) => {
+  return (Story: any) => {
+    store.dispatch(
+      loadInstancesRedisCloudSuccess({
+        data: instancesForOptions,
+        credentials: null,
+      }),
+    )
+
+    return <Story />
+  }
 }
 
 const meta: Meta<typeof RedisCloudDatabasesResult> = {
@@ -58,6 +77,7 @@ export const MixedResults: Story = {
     instances: mixedInstances,
     columns: mixedColumns,
   },
+  decorators: [createStoreDecorator(mixedInstances)],
 }
 
 const successInstances = RedisCloudInstanceFactorySuccess.buildList(8)
@@ -67,6 +87,7 @@ export const AllSuccess: Story = {
     instances: successInstances,
     columns: successColumns,
   },
+  decorators: [createStoreDecorator(successInstances)],
 }
 
 const failInstances = RedisCloudInstanceFactoryFail.buildList(8)
@@ -76,6 +97,7 @@ export const AllFailed: Story = {
     instances: failInstances,
     columns: failColumns,
   },
+  decorators: [createStoreDecorator(failInstances)],
 }
 
 const withModulesInstances = RedisCloudInstanceFactoryWithModules([
@@ -89,6 +111,7 @@ export const WithModules: Story = {
     instances: withModulesInstances,
     columns: withModulesColumns,
   },
+  decorators: [createStoreDecorator(withModulesInstances)],
 }
 
 const withOptionsInstances = RedisCloudInstanceFactoryOptionsFull.buildList(8)
@@ -98,4 +121,5 @@ export const WithOptions: Story = {
     instances: withOptionsInstances,
     columns: withOptionsColumns,
   },
+  decorators: [createStoreDecorator(withOptionsInstances)],
 }

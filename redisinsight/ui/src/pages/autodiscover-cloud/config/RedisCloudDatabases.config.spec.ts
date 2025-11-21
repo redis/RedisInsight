@@ -1,15 +1,9 @@
-import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 import { redisCloudDatabasesColumns } from './RedisCloudDatabases.config'
 import { AutoDiscoverCloudIds } from '../constants/constants'
 
 describe('RedisCloudDatabases.config', () => {
   it('should return all column definitions in correct order', () => {
-    const instances: InstanceRedisCloud[] = [
-      { databaseId: 1, name: 'test-db' } as any,
-    ]
-    const columns = redisCloudDatabasesColumns(instances)
-
-    const columnIds = columns.map((col) => col.id)
+    const columnIds = redisCloudDatabasesColumns.map((col) => col.id)
 
     expect(columnIds).toEqual([
       AutoDiscoverCloudIds.SelectionDatabases,
@@ -24,18 +18,11 @@ describe('RedisCloudDatabases.config', () => {
     ])
   })
 
-  it('should pass instances via meta.props for options column', () => {
-    const instances: InstanceRedisCloud[] = [
-      { databaseId: 1, name: 'test-db' } as any,
-      { databaseId: 2, name: 'test-db-2' } as any,
-    ]
-
-    const columns = redisCloudDatabasesColumns(instances)
-
-    const optionsColumn = columns.find(
+  it('should include OptionsCell without meta.props', () => {
+    const optionsColumn = redisCloudDatabasesColumns.find(
       (col) => col.id === AutoDiscoverCloudIds.Options,
     )
-    expect(optionsColumn?.meta?.props.instances).toBe(instances)
+    expect(optionsColumn?.cell).toBeDefined()
+    expect(optionsColumn?.meta).toBeUndefined()
   })
 })
-

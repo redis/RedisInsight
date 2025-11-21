@@ -17,9 +17,7 @@ import {
   AutoDiscoverCloudTitles,
 } from '../constants/constants'
 
-export const redisCloudDatabasesColumns = (
-  instances: InstanceRedisCloud[],
-): ColumnDef<InstanceRedisCloud>[] => [
+export const redisCloudDatabasesColumns: ColumnDef<InstanceRedisCloud>[] = [
   getSelectionColumn<InstanceRedisCloud>({
     id: AutoDiscoverCloudIds.SelectionDatabases,
   }),
@@ -86,10 +84,5 @@ export const redisCloudDatabasesColumns = (
     enableSorting: true,
     maxSize: 120,
     cell: OptionsCell,
-    meta: {
-      props: {
-        instances,
-      },
-    },
   },
 ]

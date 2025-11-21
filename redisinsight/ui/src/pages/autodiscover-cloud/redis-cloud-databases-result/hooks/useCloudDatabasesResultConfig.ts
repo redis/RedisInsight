@@ -10,7 +10,7 @@ import {
 } from 'uiSrc/slices/instances/cloud'
 import { LoadedCloud } from 'uiSrc/slices/interfaces'
 import { setTitle } from 'uiSrc/utils'
-import { getRedisCloudDatabasesResultColumns } from '../../config/RedisCloudDatabasesResult.config'
+import { redisCloudDatabasesResultColumns } from '../../config/RedisCloudDatabasesResult.config'
 import { AutoDiscoverCloudIds } from 'uiSrc/pages/autodiscover-cloud/constants/constants'
 import { UseCloudDatabasesResultConfigReturn } from './useCloudDatabasesResultConfig.types'
 
@@ -19,8 +19,7 @@ export const useCloudDatabasesResultConfig =
     const dispatch = useDispatch()
     const history = useHistory()
 
-    const { data: instancesForOptions, dataAdded: instances } =
-      useSelector(cloudSelector)
+    const { dataAdded: instances } = useSelector(cloudSelector)
 
     useEffect(() => {
       if (!instances.length) {
@@ -41,9 +40,6 @@ export const useCloudDatabasesResultConfig =
 
     const columns = useMemo(() => {
       const items = instances || []
-      const allColumns = getRedisCloudDatabasesResultColumns(
-        instancesForOptions || [],
-      )
 
       const shouldShowCapabilities = items.some(
         (instance) => instance.modules?.length,
@@ -55,10 +51,10 @@ export const useCloudDatabasesResultConfig =
       )
 
       if (shouldShowCapabilities && shouldShowOptions) {
-        return allColumns
+        return redisCloudDatabasesResultColumns
       }
 
-      return allColumns.filter((col) => {
+      return redisCloudDatabasesResultColumns.filter((col) => {
         if (
           col.id === AutoDiscoverCloudIds.Modules &&
           !shouldShowCapabilities
@@ -70,7 +66,7 @@ export const useCloudDatabasesResultConfig =
         }
         return true
       })
-    }, [instances, instancesForOptions])
+    }, [instances])
 
     return {
       instances,

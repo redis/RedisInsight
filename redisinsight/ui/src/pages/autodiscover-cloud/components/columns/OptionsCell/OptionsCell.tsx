@@ -1,22 +1,19 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 
 import { DatabaseListOptions } from 'uiSrc/components'
 import { parseInstanceOptionsCloud } from 'uiSrc/utils'
 import { CellContext } from 'uiSrc/components/base/layout/table'
 import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
-import { getMetaProps } from 'uiSrc/utils/column'
+import { cloudSelector } from 'uiSrc/slices/instances/cloud'
 
-interface OptionsCellProps {
-  instances: InstanceRedisCloud[]
-}
-
-export const OptionsCell = ({
-  row,
-  column,
-}: CellContext<InstanceRedisCloud, unknown>) => {
+export const OptionsCell = ({ row }: CellContext<InstanceRedisCloud, unknown>) => {
+  const { data: instancesForOptions } = useSelector(cloudSelector)
   const { databaseId } = row.original
-  const { instances } = getMetaProps<OptionsCellProps>(column)
-  const options = parseInstanceOptionsCloud(databaseId, instances || [])
+  const options = parseInstanceOptionsCloud(
+    databaseId,
+    instancesForOptions || [],
+  )
   return <DatabaseListOptions options={options} />
 }
 

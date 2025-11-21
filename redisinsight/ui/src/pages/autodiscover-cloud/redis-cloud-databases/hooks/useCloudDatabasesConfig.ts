@@ -127,11 +127,11 @@ export const useCloudDatabasesConfig = (): UseCloudDatabasesConfigReturn => {
 
   const columns = useMemo(() => {
     const items = instances || []
-    const allColumns = redisCloudDatabasesColumns(items)
+
     if (items.length > 0) {
-      return allColumns
+      return redisCloudDatabasesColumns
     }
-    return allColumns.filter(
+    return redisCloudDatabasesColumns.filter(
       (col) => col.id !== AutoDiscoverCloudIds.SelectionDatabases,
     )
   }, [instances])
