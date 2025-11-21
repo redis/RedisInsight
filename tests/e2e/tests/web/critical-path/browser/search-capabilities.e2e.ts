@@ -78,6 +78,8 @@ test
     .before(async() => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         keyName = Common.generateWord(10);
+        // Force switch to list view
+        await t.click(browserPage.browserViewButton);
     })
     .after(async() => {
         // Clear and delete database
@@ -148,6 +150,8 @@ test
 test
     .before(async() => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneBigConfig);
+        // Force switch to list view
+        await t.click(browserPage.browserViewButton);
     })
     .after(async() => {
         // Clear and delete database
