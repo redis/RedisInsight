@@ -1,13 +1,15 @@
 import React from 'react'
 
-import { AddRedisDatabaseStatus } from 'uiSrc/slices/interfaces'
+import {
+  AddRedisDatabaseStatus,
+  InstanceRedisCloud,
+} from 'uiSrc/slices/interfaces'
 import { CellText } from 'uiSrc/components/auto-discover'
 import { RiTooltip } from 'uiSrc/components'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { ColorText } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { CellContext } from 'uiSrc/components/base/layout/table'
-import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 
 import type { MessageResultCellRendererProps } from './MessageResultCell.types'
 
@@ -56,4 +58,3 @@ export const MessageResultCell = ({
     />
   )
 }
-
