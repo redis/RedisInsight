@@ -5,7 +5,6 @@ import { useParams } from 'react-router-dom'
 
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
-  fetchRdiPipeline,
   rdiPipelineSelector,
   setChangedFile,
 } from 'uiSrc/slices/rdi/pipeline'
@@ -18,7 +17,6 @@ import { Text, Title } from 'uiSrc/components/base/text'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import {
   ContractsIcon,
-  DownloadIcon,
   UploadIcon,
 } from 'uiSrc/components/base/icons'
 import { FileChangeType } from 'uiSrc/slices/interfaces'
@@ -33,7 +31,6 @@ export const EMPTY_PIPELINE = {
 }
 
 export enum PipelineSourceOptions {
-  SERVER = 'download from server',
   FILE = 'upload from file',
   NEW = 'new pipeline',
 }
@@ -65,12 +62,6 @@ const SourcePipelineDialog = () => {
         option,
       },
     })
-  }
-
-  const onLoadPipeline = () => {
-    dispatch(fetchRdiPipeline(rdiInstanceId))
-    onSelect(PipelineSourceOptions.SERVER)
-    dispatch(setPipelineDialogState(false))
   }
 
   const onStartNewPipeline = () => {
@@ -124,20 +115,6 @@ const SourcePipelineDialog = () => {
               </Title>
             </Col>
             <Row gap="xxl">
-              <ButtonWrapper
-                gap="s"
-                align='center'
-                role="button"
-                tabIndex={0}
-                onKeyDown={(event) => onEnter(event, onLoadPipeline)}
-                onClick={onLoadPipeline}
-                data-testid="server-source-pipeline-dialog"
-              >
-                <DownloadIcon size="XL" />
-                <Text color="primary" size="S" textAlign="center">
-                  Download from server
-                </Text>
-              </ButtonWrapper>
               <ButtonWrapper
                 gap="s"
                 role="button"
