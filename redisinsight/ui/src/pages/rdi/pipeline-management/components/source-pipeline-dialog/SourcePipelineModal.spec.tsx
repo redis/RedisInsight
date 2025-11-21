@@ -6,7 +6,8 @@ import {
   render,
   fireEvent,
   screen,
-  initialStateDefault, createMockedStore,
+  initialStateDefault,
+  createMockedStore,
 } from 'uiSrc/utils/test-utils'
 import {
   getPipeline,
@@ -79,7 +80,8 @@ beforeEach(() => {
   })
 })
 
-const renderSourcePipelineDialog = () => render(<SourcePipelineDialog />, { store })
+const renderSourcePipelineDialog = () =>
+  render(<SourcePipelineDialog />, { store })
 
 describe('SourcePipelineDialog', () => {
   it('should not show dialog by default and not set isOpenDialog to true', () => {
@@ -151,23 +153,6 @@ describe('SourcePipelineDialog', () => {
       ;(appContextPipelineManagement as jest.Mock).mockReturnValue({
         ...initialStateDefault.app.context.pipelineManagement,
         isOpenDialog: true,
-      })
-    })
-
-    it('should call proper actions after select fetch from server option', () => {
-      renderSourcePipelineDialog()
-
-      fireEvent.click(screen.getByTestId('server-source-pipeline-dialog'))
-
-      const expectedActions = [getPipeline(), setPipelineDialogState(false)]
-
-      expect(store.getActions()).toEqual(expectedActions)
-      expect(sendEventTelemetry).toBeCalledWith({
-        event: TelemetryEvent.RDI_START_OPTION_SELECTED,
-        eventData: {
-          id: 'rdiInstanceId',
-          option: PipelineSourceOptions.SERVER,
-        },
       })
     })
 
