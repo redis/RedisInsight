@@ -21,7 +21,8 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { RowSelectionState } from 'uiSrc/components/base/layout/table'
 
 import { UseCloudDatabasesConfigReturn } from './useCloudDatabasesConfig.types'
-import { colFactory } from '../utils/colFactory'
+import { redisCloudDatabasesColumns } from '../../config/RedisCloudDatabases.config'
+import { AutoDiscoverCloudIds } from 'uiSrc/pages/autodiscover-cloud/constants/constants'
 
 export const useCloudDatabasesConfig = (): UseCloudDatabasesConfigReturn => {
   const dispatch = useDispatch()
@@ -124,7 +125,16 @@ export const useCloudDatabasesConfig = (): UseCloudDatabasesConfigReturn => {
     [dispatch, credentials, ssoFlow],
   )
 
-  const columns = useMemo(() => colFactory(instances || []), [instances])
+  const columns = useMemo(() => {
+    const items = instances || []
+    const allColumns = redisCloudDatabasesColumns(items)
+    if (items.length > 0) {
+      return allColumns
+    }
+    return allColumns.filter(
+      (col) => col.id !== AutoDiscoverCloudIds.SelectionDatabases,
+    )
+  }, [instances])
 
   return {
     columns,

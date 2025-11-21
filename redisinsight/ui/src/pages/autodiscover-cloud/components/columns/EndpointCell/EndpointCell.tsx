@@ -8,10 +8,14 @@ import {
 } from 'uiSrc/components/auto-discover'
 import { RiTooltip } from 'uiSrc/components'
 import { formatLongName, handleCopy } from 'uiSrc/utils'
+import { CellContext } from 'uiSrc/components/base/layout/table'
+import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 
-import { EndpointCellProps } from './EndpointCell.types'
+import type { EndpointCellRendererProps } from './EndpointCell.types'
 
-export const EndpointCell = ({ publicEndpoint }: EndpointCellProps) => {
+export const EndpointCellRenderer = ({
+  publicEndpoint,
+}: EndpointCellRendererProps) => {
   if (!publicEndpoint) {
     return <CellText>-</CellText>
   }
@@ -38,4 +42,11 @@ export const EndpointCell = ({ publicEndpoint }: EndpointCellProps) => {
       </RiTooltip>
     </CopyTextContainer>
   )
+}
+
+export const EndpointCell = ({
+  row,
+}: CellContext<InstanceRedisCloud, unknown>) => {
+  const { publicEndpoint } = row.original
+  return <EndpointCellRenderer publicEndpoint={publicEndpoint} />
 }

@@ -11,6 +11,7 @@ import {
   resetDataRedisCloud,
   resetLoadedRedisCloud,
 } from 'uiSrc/slices/instances/cloud'
+import { AutoDiscoverCloudIds } from 'uiSrc/pages/autodiscover-cloud/constants/constants'
 
 import { useCloudDatabasesConfig } from './useCloudDatabasesConfig'
 
@@ -30,8 +31,8 @@ describe('useCloudDatabasesConfig', () => {
     const { result } = renderHook(() => useCloudDatabasesConfig(), { store })
 
     expect(result.current.columns).toHaveLength(9)
-    expect(result.current.columns[0].id).toBe('row-selection')
-    expect(result.current.columns[1].id).toBe('name')
+    expect(result.current.columns[0].id).toBe(AutoDiscoverCloudIds.SelectionDatabases)
+    expect(result.current.columns[1].id).toBe(AutoDiscoverCloudIds.Name)
     expect(result.current.selection).toEqual([])
     expect(result.current.instances).toHaveLength(2)
     expect(result.current.loading).toBe(false)
@@ -41,7 +42,7 @@ describe('useCloudDatabasesConfig', () => {
     expect(typeof result.current.handleSelectionChange).toBe('function')
   })
 
-  it('should return columns without selection when instances array is empty', () => {
+  it('should filter out selection column when instances array is empty', () => {
     const state = cloneDeep(initialStateDefault)
     state.connections.cloud.data = []
     const store = mockStore(state)
@@ -49,7 +50,7 @@ describe('useCloudDatabasesConfig', () => {
     const { result } = renderHook(() => useCloudDatabasesConfig(), { store })
 
     expect(result.current.columns).toHaveLength(8)
-    expect(result.current.columns[0].id).toBe('name')
+    expect(result.current.columns[0].id).toBe(AutoDiscoverCloudIds.Name)
   })
 
   describe('handleSelectionChange', () => {

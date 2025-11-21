@@ -3,13 +3,16 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { fn } from 'storybook/test'
 
 import RedisCloudDatabases from './'
-import { colFactory } from '../utils/colFactory'
+import { redisCloudDatabasesColumns } from '../../config/RedisCloudDatabases.config'
 
 import { RowSelectionState } from 'uiSrc/components/base/layout/table'
 import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 import { RedisCloudInstanceFactory } from 'uiSrc/mocks/factories/cloud/RedisCloudInstance.factory'
+import { AutoDiscoverCloudIds } from 'uiSrc/pages/autodiscover-cloud/constants/constants'
 
-const emptyColumns = colFactory([])
+const emptyColumns = redisCloudDatabasesColumns([]).filter(
+  (col) => col.id !== AutoDiscoverCloudIds.SelectionDatabases,
+)
 
 const meta: Meta<typeof RedisCloudDatabases> = {
   component: RedisCloudDatabases,
@@ -31,7 +34,7 @@ export const Empty: Story = {}
 const RenderStory = () => {
   const instancesMock: InstanceRedisCloud[] =
     RedisCloudInstanceFactory.buildList(6)
-  const columns = colFactory(instancesMock)
+  const columns = redisCloudDatabasesColumns(instancesMock)
   const [selection, setSelection] = useState<InstanceRedisCloud[]>([])
 
   const handleSelectionChange = (currentSelected: RowSelectionState) => {

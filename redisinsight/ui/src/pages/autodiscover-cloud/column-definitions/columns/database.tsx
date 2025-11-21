@@ -3,7 +3,7 @@ import React from 'react'
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import { type InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 
-import { DatabaseCell } from '../components/DatabaseCell/DatabaseCell'
+import { DatabaseCell } from 'uiSrc/pages/autodiscover-cloud/components/columns/DatabaseCell/DatabaseCell'
 import {
   AutoDiscoverCloudIds,
   AutoDiscoverCloudTitles,
@@ -16,10 +16,6 @@ export const databaseColumn = (): ColumnDef<InstanceRedisCloud> => {
     accessorKey: AutoDiscoverCloudIds.Name,
     enableSorting: true,
     maxSize: 150,
-    cell: ({
-      row: {
-        original: { name },
-      },
-    }) => <DatabaseCell name={name} />,
+    cell: DatabaseCell,
   }
 }
