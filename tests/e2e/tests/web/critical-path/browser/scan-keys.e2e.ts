@@ -29,8 +29,10 @@ fixture `Browser - Specify Keys to Scan`
     .meta({ type: 'critical_path', rte: rte.standalone })
     .page(commonUrl)
     .clientScripts({ content: `(${explicitErrorHandler.toString()})()` })
-    .beforeEach(async() => {
+    .beforeEach(async(t) => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
+        // Force switch to list view
+        await t.click(browserPage.browserViewButton);
     })
     .afterEach(async t => {
         //Clear and delete database
