@@ -72,8 +72,8 @@ const DownloadFromServerModal = (props: Props) => {
         <Modal.Content.Close />
         <Modal.Content.Header title="Download a pipeline from the server" />
         <Modal.Content.Body.Compose>
-          When downloading a new pipeline from the server, it will overwrite the
-          existing one displayed in Redis Insight.
+          When downloading the pipeline configuration from the server, it will
+          overwrite the existing one displayed in Redis Insight.
         </Modal.Content.Body.Compose>
         <Modal.Content.Footer.Compose>
           <Download
