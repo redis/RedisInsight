@@ -62,7 +62,12 @@ const MessagesListTable = () => {
             </Row>
           </Row>
 
-          <Row align="center" justify="end" gap="s">
+          <Row
+            align="center"
+            justify="end"
+            gap="s"
+            data-testid="pub-sub-status"
+          >
             <Text>Status:</Text>
             {isSubscribed ? (
               <RiBadge label="Subscribed" variant="success" />

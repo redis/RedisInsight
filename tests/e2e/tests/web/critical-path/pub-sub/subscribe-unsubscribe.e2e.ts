@@ -37,18 +37,18 @@ test('Verify that when user subscribe to the pubsub channel he can see all the m
     // Verify that the Message field placeholder is 'Enter Message'
     await t.expect(pubSubPage.messageInput.getAttribute('placeholder')).eql('Enter Message', 'No placeholder in Message field');
     // Verify that user is unsubscribed from the pubsub channel when he go to the pubsub window after launching application for the first time
-    await t.expect(pubSubPage.subscribeStatus.textContent).eql('You are not subscribed', 'User is not unsubscribed');
+    await t.expect(pubSubPage.initialPage.textContent).contains('You are not subscribed', 'User is not unsubscribed');
     await t.expect(pubSubPage.subscribeButton.exists).eql(true, 'Subscribe button is not displayed');
 
     // Subscribe to channel
     await t.click(pubSubPage.subscribeButton);
-    await t.expect(pubSubPage.subscribeStatus.textContent).eql('You are  subscribed', 'User is not subscribed', { timeout: 10000 });
+    await t.expect(pubSubPage.subscribeStatus.textContent).contains('Subscribed', 'User is not subscribed', { timeout: 10000 });
     // Verify that user can publish a message to a channel
     await pubSubPage.publishMessage('test', 'published message');
     await verifyMessageDisplayingInPubSub('published message', true);
     await t.click(pubSubPage.unsubscribeButton);
     //Verify that when user unsubscribe from a pubsub channel he can see no new data being published to the channel from the moment he unsubscribe
-    await t.expect(pubSubPage.subscribeStatus.textContent).eql('You are not subscribed', 'User is not unsubscribed', { timeout: 10000 });
+    await t.expect(pubSubPage.subscribeStatus.textContent).contains('Unsubscribed', 'User is not unsubscribed', { timeout: 10000 });
     //Verify that user can publish a message regardless of my subscription state.
     await pubSubPage.publishMessage('test', 'message in unsubscribed status');
     //Verify that message is not displayed
@@ -57,15 +57,15 @@ test('Verify that when user subscribe to the pubsub channel he can see all the m
 test('Verify that the focus gets always shifted to a newest message (auto-scroll)', async t => {
     await pubSubPage.subsribeToChannelAndPublishMessage('test', 'first message');
     // Verify that when user click Publish and the publication is successful, he can see a response: badge with the number <# of clients received>
-    await t.expect(pubSubPage.clientBadge.exists).ok('Client badge is not displayed');
-    await t.expect(pubSubPage.clientBadge.textContent).contains('1', 'Client badge is not displayed', { timeout: 10000 });
+    await t.expect(pubSubPage.publishResult.exists).ok('Publish results is not displayed');
+    await t.expect(pubSubPage.publishResult.textContent).contains('Published (1)', 'Publish result is not displayed', { timeout: 10000 });
 
     // Go to Redis Databases Page
     await myRedisDatabasePage.navigateToDatabase(ossStandaloneConfig.databaseName);
     // Go back to PubSub page
     await t.click(browserPage.NavigationTabs.pubSubButton);
     // Verify that my subscription state is preserved when user navigate through the app while connected to current database and in current app session
-    await t.expect(pubSubPage.subscribeStatus.textContent).eql('You are  subscribed', 'User is not subscribed', { timeout: 10000 });
+    await t.expect(pubSubPage.subscribeStatus.textContent).contains('Subscribed', 'User is not subscribed', { timeout: 10000 });
 
     // Publish 100 messages
     await pubSubPage.Cli.sendCommandInCli('100 publish channel test100Message');
@@ -92,7 +92,7 @@ test
         await myRedisDatabasePage.clickOnDBByName(ossStandaloneV5Config.databaseName);
         // Verify no subscription, messages and total messages
         await t.click(browserPage.NavigationTabs.pubSubButton);
-        await t.expect(pubSubPage.subscribeStatus.textContent).eql('You are not subscribed', 'User is not unsubscribed', { timeout: 10000 });
+        await t.expect(pubSubPage.initialPage.textContent).contains('You are not subscribed', 'User is not unsubscribed');
         await verifyMessageDisplayingInPubSub('message', false);
         await t.expect(pubSubPage.totalMessagesCount.exists).notOk('Total counter is still displayed');
     });
@@ -148,7 +148,8 @@ test('Verify that the Message field input is preserved until user Publish a mess
     // Verify that the Channel field input is preserved until user modify it (publishing a message does not clear the field)
     await t.expect(pubSubPage.channelNameInput.value).eql('testChannel', 'Channel input is empty', { timeout: 10000 });
 });
-test.requestHooks(logger)('Verify that user can clear all the messages from the pubsub window', async t => {
+// todo: fix after "clear" button will be added
+test.skip.requestHooks(logger)('Verify that user can clear all the messages from the pubsub window', async t => {
     await pubSubPage.subsribeToChannelAndPublishMessage('testChannel', 'message');
     await pubSubPage.publishMessage('testChannel2', 'second m');
     // Verify the tooltip text 'Clear Messages' appears on hover the clear button

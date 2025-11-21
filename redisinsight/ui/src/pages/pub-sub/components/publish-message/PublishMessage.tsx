@@ -112,7 +112,11 @@ const PublishMessage = () => {
         </Row>
 
         {isShowBadge && (
-          <ResultWrapper grow={false} align="center">
+          <ResultWrapper
+            grow={false}
+            align="center"
+            data-testid="publish-result"
+          >
             <Icon icon={ToastCheckIcon} color="success500" />
             <Text color="success">
               {getClientsText(
