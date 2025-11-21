@@ -9,7 +9,9 @@ export const ModulesCell = ({
 }: CellContext<InstanceRedisCloud, unknown>) => {
   const { modules } = row.original
   return (
-    <DatabaseListModules modules={modules.map((name) => ({ name }))} />
+    <DatabaseListModules
+      modules={modules?.map((name) => ({ name }))}
+    />
   )
 }
 

@@ -10,7 +10,8 @@ import {
 } from 'uiSrc/slices/instances/cloud'
 import { LoadedCloud } from 'uiSrc/slices/interfaces'
 import { setTitle } from 'uiSrc/utils'
-import { colFactory } from '../utils/colFactory'
+import { getRedisCloudDatabasesResultColumns } from '../../config/RedisCloudDatabasesResult.config'
+import { AutoDiscoverCloudIds } from 'uiSrc/pages/autodiscover-cloud/constants/constants'
 import { UseCloudDatabasesResultConfigReturn } from './useCloudDatabasesResultConfig.types'
 
 export const useCloudDatabasesResultConfig =
@@ -38,10 +39,38 @@ export const useCloudDatabasesResultConfig =
       history.push(Pages.home)
     }, [dispatch, history])
 
-    const columns = useMemo(
-      () => colFactory(instances || [], instancesForOptions || []),
-      [instances, instancesForOptions],
-    )
+    const columns = useMemo(() => {
+      const items = instances || []
+      const allColumns = getRedisCloudDatabasesResultColumns(
+        instancesForOptions || [],
+      )
+
+      const shouldShowCapabilities = items.some(
+        (instance) => instance.modules?.length,
+      )
+      const shouldShowOptions = items.some(
+        (instance) =>
+          instance.options &&
+          Object.values(instance.options).filter(Boolean).length,
+      )
+
+      if (shouldShowCapabilities && shouldShowOptions) {
+        return allColumns
+      }
+
+      return allColumns.filter((col) => {
+        if (
+          col.id === AutoDiscoverCloudIds.Modules &&
+          !shouldShowCapabilities
+        ) {
+          return false
+        }
+        if (col.id === AutoDiscoverCloudIds.Options && !shouldShowOptions) {
+          return false
+        }
+        return true
+      })
+    }, [instances, instancesForOptions])
 
     return {
       instances,

@@ -8,8 +8,32 @@ import {
   RedisCloudInstanceFactoryWithModules,
   RedisCloudInstanceFactoryOptionsFull,
 } from 'uiSrc/mocks/factories/cloud/RedisCloudInstance.factory'
-import { colFactory } from './utils/colFactory'
+import { getRedisCloudDatabasesResultColumns } from '../config/RedisCloudDatabasesResult.config'
+import { AutoDiscoverCloudIds } from 'uiSrc/pages/autodiscover-cloud/constants/constants'
 import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
+
+const getFilteredColumns = (instances: any[]) => {
+  const allColumns = getRedisCloudDatabasesResultColumns(instances)
+
+  const shouldShowCapabilities = instances.some(
+    (instance) => instance.modules?.length,
+  )
+  const shouldShowOptions = instances.some(
+    (instance) =>
+      instance.options &&
+      Object.values(instance.options).filter(Boolean).length,
+  )
+
+  return allColumns.filter((col) => {
+    if (col.id === AutoDiscoverCloudIds.Modules && !shouldShowCapabilities) {
+      return false
+    }
+    if (col.id === AutoDiscoverCloudIds.Options && !shouldShowOptions) {
+      return false
+    }
+    return true
+  })
+}
 
 const meta: Meta<typeof RedisCloudDatabasesResult> = {
   component: RedisCloudDatabasesResult,
@@ -28,7 +52,7 @@ type Story = StoryObj<typeof meta>
 export const Empty: Story = {}
 
 const mixedInstances = RedisCloudInstanceFactory.buildList(10)
-const mixedColumns = colFactory(mixedInstances, mixedInstances)
+const mixedColumns = getFilteredColumns(mixedInstances)
 export const MixedResults: Story = {
   args: {
     instances: mixedInstances,
@@ -37,7 +61,7 @@ export const MixedResults: Story = {
 }
 
 const successInstances = RedisCloudInstanceFactorySuccess.buildList(8)
-const successColumns = colFactory(successInstances, successInstances)
+const successColumns = getFilteredColumns(successInstances)
 export const AllSuccess: Story = {
   args: {
     instances: successInstances,
@@ -46,7 +70,7 @@ export const AllSuccess: Story = {
 }
 
 const failInstances = RedisCloudInstanceFactoryFail.buildList(8)
-const failColumns = colFactory(failInstances, failInstances)
+const failColumns = getFilteredColumns(failInstances)
 export const AllFailed: Story = {
   args: {
     instances: failInstances,
@@ -59,10 +83,7 @@ const withModulesInstances = RedisCloudInstanceFactoryWithModules([
   RedisDefaultModules.ReJSON,
   RedisDefaultModules.TimeSeries,
 ]).buildList(8)
-const withModulesColumns = colFactory(
-  withModulesInstances,
-  withModulesInstances,
-)
+const withModulesColumns = getFilteredColumns(withModulesInstances)
 export const WithModules: Story = {
   args: {
     instances: withModulesInstances,
@@ -71,10 +92,7 @@ export const WithModules: Story = {
 }
 
 const withOptionsInstances = RedisCloudInstanceFactoryOptionsFull.buildList(8)
-const withOptionsColumns = colFactory(
-  withOptionsInstances,
-  withOptionsInstances,
-)
+const withOptionsColumns = getFilteredColumns(withOptionsInstances)
 export const WithOptions: Story = {
   args: {
     instances: withOptionsInstances,

@@ -6,13 +6,15 @@ import { RiTooltip } from 'uiSrc/components'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { ColorText } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { CellContext } from 'uiSrc/components/base/layout/table'
+import { InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 
-import { MessageResultCellProps } from './MessageResultCell.types'
+import type { MessageResultCellRendererProps } from './MessageResultCell.types'
 
-export const MessageResultCell = ({
+export const MessageResultCellRenderer = ({
   statusAdded,
   messageAdded = '',
-}: MessageResultCellProps) => {
+}: MessageResultCellRendererProps) => {
   if (!statusAdded) {
     return <CellText>-</CellText>
   }
@@ -40,6 +42,18 @@ export const MessageResultCell = ({
         </FlexItem>
       </Row>
     </RiTooltip>
+  )
+}
+
+export const MessageResultCell = ({
+  row,
+}: CellContext<InstanceRedisCloud, unknown>) => {
+  const { statusAdded, messageAdded } = row.original
+  return (
+    <MessageResultCellRenderer
+      statusAdded={statusAdded}
+      messageAdded={messageAdded}
+    />
   )
 }
 

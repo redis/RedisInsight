@@ -1,15 +1,16 @@
 import React from 'react'
+import { fireEvent, act } from '@testing-library/react'
 
-import { render, screen } from 'uiSrc/utils/test-utils'
+import { render, screen, waitForRiTooltipVisible } from 'uiSrc/utils/test-utils'
 import { AddRedisDatabaseStatus } from 'uiSrc/slices/interfaces'
 
-import { MessageResultCell } from './MessageResultCell'
+import { MessageResultCellRenderer } from './MessageResultCell'
 
-describe('MessageResultCell', () => {
+describe('MessageResultCellRenderer', () => {
   it('should render success message when status is success', () => {
     const message = 'Database added successfully'
     render(
-      <MessageResultCell
+      <MessageResultCellRenderer
         statusAdded={AddRedisDatabaseStatus.Success}
         messageAdded={message}
       />,
@@ -18,22 +19,33 @@ describe('MessageResultCell', () => {
     expect(screen.getByText(message)).toBeInTheDocument()
   })
 
-  it('should render error icon and text when status is not success', () => {
+  it('should render error icon and text when status is not success', async () => {
     const message = 'Failed to add database'
     render(
-      <MessageResultCell
+      <MessageResultCellRenderer
         statusAdded={AddRedisDatabaseStatus.Fail}
         messageAdded={message}
       />,
     )
 
     expect(screen.getByText('Error')).toBeInTheDocument()
+
+    const errorText = screen.getByText('Error')
+    const tooltipWrapper = errorText.closest('span')
+    expect(tooltipWrapper).toBeInTheDocument()
+
+    await act(async () => {
+      fireEvent.focus(tooltipWrapper!)
+    })
+    await waitForRiTooltipVisible()
+
+    expect(screen.getByText(message)).toBeInTheDocument()
   })
 
   it('should not render success message when status is fail', () => {
     const message = 'Failed to add database'
     render(
-      <MessageResultCell
+      <MessageResultCellRenderer
         statusAdded={AddRedisDatabaseStatus.Fail}
         messageAdded={message}
       />,
@@ -44,7 +56,10 @@ describe('MessageResultCell', () => {
 
   it('should render dash when statusAdded is undefined', () => {
     render(
-      <MessageResultCell statusAdded={undefined} messageAdded="Some message" />,
+      <MessageResultCellRenderer
+        statusAdded={undefined}
+        messageAdded="Some message"
+      />,
     )
 
     expect(screen.getByText('-')).toBeInTheDocument()
@@ -52,7 +67,7 @@ describe('MessageResultCell', () => {
 
   it('should handle missing messageAdded gracefully', () => {
     const { container } = render(
-      <MessageResultCell
+      <MessageResultCellRenderer
         statusAdded={AddRedisDatabaseStatus.Success}
         messageAdded={undefined}
       />,
@@ -63,4 +78,3 @@ describe('MessageResultCell', () => {
     expect(cellText?.textContent).toBe('')
   })
 })
-
