@@ -1,15 +1,22 @@
 import React from 'react'
 
 import { RiTooltip } from 'uiSrc/components'
-import { RedisCloudSubscriptionStatus } from 'uiSrc/slices/interfaces'
+import {
+  RedisCloudSubscription,
+  RedisCloudSubscriptionStatus,
+} from 'uiSrc/slices/interfaces'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { CellText } from 'uiSrc/components/auto-discover'
 import { AlertStatusContent } from 'uiSrc/pages/autodiscover-cloud/components/AlertStatusContent'
 import styles from 'uiSrc/pages/autodiscover-cloud/redis-cloud-subscriptions/styles.module.scss'
+import { CellContext } from 'uiSrc/components/base/layout/table'
 
-import { AlertCellProps } from './AlertCell.types'
+import type { AlertCellRendererProps } from './AlertCell.types'
 
-export const AlertCell = ({ status, numberOfDatabases }: AlertCellProps) => {
+export const AlertCellRenderer = ({
+  status,
+  numberOfDatabases,
+}: AlertCellRendererProps) => {
   const isUnavailable =
     status !== RedisCloudSubscriptionStatus.Active || numberOfDatabases === 0
 
@@ -36,5 +43,14 @@ export const AlertCell = ({ status, numberOfDatabases }: AlertCellProps) => {
   }
 
   return <RiIcon type="CheckBoldIcon" color="success500" size="m" />
+}
+
+export const AlertCell = ({
+  row,
+}: CellContext<RedisCloudSubscription, unknown>) => {
+  const { status, numberOfDatabases } = row.original
+  return (
+    <AlertCellRenderer status={status} numberOfDatabases={numberOfDatabases} />
+  )
 }
 

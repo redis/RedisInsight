@@ -3,12 +3,12 @@ import React from 'react'
 import { render, screen } from 'uiSrc/utils/test-utils'
 import { RedisCloudSubscriptionStatus } from 'uiSrc/slices/interfaces'
 
-import { AlertCell } from './AlertCell'
+import { AlertCellRenderer } from './AlertCell'
 
-describe('AlertCell', () => {
+describe('AlertCellRenderer', () => {
   it('should render success icon when subscription is active and has databases', () => {
     render(
-      <AlertCell
+      <AlertCellRenderer
         status={RedisCloudSubscriptionStatus.Active}
         numberOfDatabases={5}
       />,
@@ -20,7 +20,7 @@ describe('AlertCell', () => {
 
   it('should render warning icon when subscription is not active', () => {
     render(
-      <AlertCell
+      <AlertCellRenderer
         status={RedisCloudSubscriptionStatus.Deleting}
         numberOfDatabases={5}
       />,
@@ -32,7 +32,7 @@ describe('AlertCell', () => {
 
   it('should render warning icon when subscription has no databases', () => {
     render(
-      <AlertCell
+      <AlertCellRenderer
         status={RedisCloudSubscriptionStatus.Active}
         numberOfDatabases={0}
       />,
@@ -44,7 +44,7 @@ describe('AlertCell', () => {
 
   it('should render warning icon when subscription is not active and has no databases', () => {
     render(
-      <AlertCell
+      <AlertCellRenderer
         status={RedisCloudSubscriptionStatus.Error}
         numberOfDatabases={0}
       />,

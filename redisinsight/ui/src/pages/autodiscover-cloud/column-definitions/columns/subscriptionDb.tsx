@@ -3,7 +3,7 @@ import React from 'react'
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import { type InstanceRedisCloud } from 'uiSrc/slices/interfaces'
 
-import { SubscriptionCell } from '../components/SubscriptionCell/SubscriptionCell'
+import { SubscriptionCellRenderer } from 'uiSrc/pages/autodiscover-cloud/components/columns/SubscriptionCell/SubscriptionCell'
 import {
   AutoDiscoverCloudIds,
   AutoDiscoverCloudTitles,
@@ -20,6 +20,6 @@ export const subscriptionDbColumn = (): ColumnDef<InstanceRedisCloud> => {
       row: {
         original: { subscriptionName: name },
       },
-    }) => <SubscriptionCell name={name} />,
+    }) => <SubscriptionCellRenderer name={name} />,
   }
 }

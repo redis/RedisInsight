@@ -1,6 +1,5 @@
-export * from './AlertCell/AlertCell'
+export * from 'uiSrc/pages/autodiscover-cloud/components/columns/AlertCell/AlertCell'
 export * from './DatabaseCell/DatabaseCell'
 export * from './EndpointCell/EndpointCell'
 export * from './MessageResultCell/MessageResultCell'
-export * from './SubscriptionCell/SubscriptionCell'
-
+export * from 'uiSrc/pages/autodiscover-cloud/components/columns/SubscriptionCell/SubscriptionCell'

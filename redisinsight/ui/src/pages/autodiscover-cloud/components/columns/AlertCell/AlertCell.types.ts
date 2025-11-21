@@ -1,6 +1,6 @@
 import { RedisCloudSubscription } from 'uiSrc/slices/interfaces'
 
-export interface AlertCellProps {
+export interface AlertCellRendererProps {
   status: RedisCloudSubscription['status']
   numberOfDatabases: RedisCloudSubscription['numberOfDatabases']
 }

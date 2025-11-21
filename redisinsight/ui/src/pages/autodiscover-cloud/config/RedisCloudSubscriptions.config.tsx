@@ -10,8 +10,7 @@ import {
 
 import { CellText } from 'uiSrc/components/auto-discover'
 import { getSelectionColumn } from 'uiSrc/pages/autodiscover-cloud/utils'
-import { AlertCell } from 'uiSrc/pages/autodiscover-cloud/column-definitions/components/AlertCell/AlertCell'
-import { SubscriptionCell } from 'uiSrc/pages/autodiscover-cloud/column-definitions/components/SubscriptionCell/SubscriptionCell'
+import { AlertCell, SubscriptionCell } from '../components/columns'
 import {
   AutoDiscoverCloudIds,
   AutoDiscoverCloudTitles,
@@ -29,11 +28,7 @@ export const redisCloudSubscriptionsColumns: ColumnDef<RedisCloudSubscription>[]
       enableResizing: false,
       enableSorting: false,
       size: 50,
-      cell: ({
-        row: {
-          original: { status, numberOfDatabases },
-        },
-      }) => <AlertCell status={status} numberOfDatabases={numberOfDatabases} />,
+      cell: AlertCell,
     },
     {
       id: AutoDiscoverCloudIds.Id,
@@ -52,11 +47,7 @@ export const redisCloudSubscriptionsColumns: ColumnDef<RedisCloudSubscription>[]
       accessorKey: AutoDiscoverCloudIds.Name,
       header: AutoDiscoverCloudTitles.Subscription,
       enableSorting: true,
-      cell: ({
-        row: {
-          original: { name },
-        },
-      }) => <SubscriptionCell name={name} />,
+      cell: SubscriptionCell,
     },
     {
       id: AutoDiscoverCloudIds.Type,

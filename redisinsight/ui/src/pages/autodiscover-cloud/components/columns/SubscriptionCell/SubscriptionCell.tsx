@@ -4,13 +4,15 @@ import { formatLongName, replaceSpaces } from 'uiSrc/utils'
 import { RiTooltip } from 'uiSrc/components'
 import { CellText } from 'uiSrc/components/auto-discover'
 import styles from 'uiSrc/pages/autodiscover-cloud/redis-cloud-databases/styles.module.scss'
+import { CellContext } from 'uiSrc/components/base/layout/table'
+import { RedisCloudSubscription } from 'uiSrc/slices/interfaces'
 
-import { SubscriptionCellProps } from './SubscriptionCell.types'
+import type { SubscriptionCellRendererProps } from './SubscriptionCell.types'
 
-export const SubscriptionCell = ({
+export const SubscriptionCellRenderer = ({
   name,
   className,
-}: SubscriptionCellProps) => {
+}: SubscriptionCellRendererProps) => {
   const cellContent = replaceSpaces(name.substring(0, 200))
 
   return (
@@ -26,4 +28,11 @@ export const SubscriptionCell = ({
       </RiTooltip>
     </div>
   )
+}
+
+export const SubscriptionCell = ({
+  row,
+}: CellContext<RedisCloudSubscription, unknown>) => {
+  const { name } = row.original
+  return <SubscriptionCellRenderer name={name} />
 }
