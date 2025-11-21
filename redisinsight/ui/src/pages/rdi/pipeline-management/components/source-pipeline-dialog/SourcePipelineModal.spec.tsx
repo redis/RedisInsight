@@ -72,12 +72,12 @@ beforeEach(() => {
   cleanup()
   store = createMockedStore()
   store.clearActions()
-    ; (rdiPipelineSelector as jest.Mock).mockReturnValue({
-      ...initialStateDefault.rdi.pipeline,
-    })
-    ; (appContextPipelineManagement as jest.Mock).mockReturnValue({
-      ...initialStateDefault.app.context.pipelineManagement,
-    })
+  ;(rdiPipelineSelector as jest.Mock).mockReturnValue({
+    ...initialStateDefault.rdi.pipeline,
+  })
+  ;(appContextPipelineManagement as jest.Mock).mockReturnValue({
+    ...initialStateDefault.app.context.pipelineManagement,
+  })
 })
 
 const renderSourcePipelineDialog = () =>
@@ -95,7 +95,7 @@ describe('SourcePipelineDialog', () => {
   })
 
   it('should show dialog when isOpenDialog flag is true', () => {
-    ; (appContextPipelineManagement as jest.Mock).mockReturnValue({
+    ;(appContextPipelineManagement as jest.Mock).mockReturnValue({
       ...initialStateDefault.app.context.pipelineManagement,
       isOpenDialog: true,
     })
@@ -108,7 +108,7 @@ describe('SourcePipelineDialog', () => {
   })
 
   it('should not show dialog when there is deployed pipeline on a server', () => {
-    ; (rdiPipelineSelector as jest.Mock).mockReturnValue({
+    ;(rdiPipelineSelector as jest.Mock).mockReturnValue({
       ...initialStateDefault.rdi.pipeline,
       loading: false,
       data: { config: 'some config' },
@@ -120,7 +120,7 @@ describe('SourcePipelineDialog', () => {
   })
 
   it('should not show dialog when config is fetching', () => {
-    ; (rdiPipelineSelector as jest.Mock).mockReturnValue({
+    ;(rdiPipelineSelector as jest.Mock).mockReturnValue({
       ...initialStateDefault.rdi.pipeline,
       loading: true,
       data: null,
@@ -132,7 +132,7 @@ describe('SourcePipelineDialog', () => {
   })
 
   it('should show dialog when there is no pipeline on a server', () => {
-    ; (rdiPipelineSelector as jest.Mock).mockReturnValue({
+    ;(rdiPipelineSelector as jest.Mock).mockReturnValue({
       ...initialStateDefault.rdi.pipeline,
       loading: false,
       data: { config: '' },
@@ -147,13 +147,13 @@ describe('SourcePipelineDialog', () => {
     const sendEventTelemetryMock = jest.fn()
 
     beforeEach(() => {
-      ; (sendEventTelemetry as jest.Mock).mockImplementation(
+      ;(sendEventTelemetry as jest.Mock).mockImplementation(
         () => sendEventTelemetryMock,
       )
-        ; (appContextPipelineManagement as jest.Mock).mockReturnValue({
-          ...initialStateDefault.app.context.pipelineManagement,
-          isOpenDialog: true,
-        })
+      ;(appContextPipelineManagement as jest.Mock).mockReturnValue({
+        ...initialStateDefault.app.context.pipelineManagement,
+        isOpenDialog: true,
+      })
     })
 
     it('should call proper actions after select empty pipeline  option', () => {
@@ -178,13 +178,13 @@ describe('SourcePipelineDialog', () => {
 
     it('should call proper telemetry event after select empty pipeline option', () => {
       const sendEventTelemetryMock = jest.fn()
-        ; (sendEventTelemetry as jest.Mock).mockImplementation(
-          () => sendEventTelemetryMock,
-        )
-        ; (appContextPipelineManagement as jest.Mock).mockReturnValue({
-          ...initialStateDefault.app.context.pipelineManagement,
-          isOpenDialog: true,
-        })
+      ;(sendEventTelemetry as jest.Mock).mockImplementation(
+        () => sendEventTelemetryMock,
+      )
+      ;(appContextPipelineManagement as jest.Mock).mockReturnValue({
+        ...initialStateDefault.app.context.pipelineManagement,
+        isOpenDialog: true,
+      })
 
       renderSourcePipelineDialog()
 
