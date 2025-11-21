@@ -3,7 +3,7 @@ name: ❗ Release (prod)
 on:
   push:
     branches:
-      - 'latest'
+      - 'test-v3-prod-release'
 
 jobs:
   tests-prod:
