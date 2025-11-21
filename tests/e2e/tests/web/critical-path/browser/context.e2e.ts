@@ -5,6 +5,7 @@ import { Common } from '../../../../helpers/common';
 import { KeyTypesTexts, rte } from '../../../../helpers/constants';
 import { DatabaseAPIRequests } from '../../../../helpers/api/api-database';
 import { verifySearchFilterValue } from '../../../../helpers/keys';
+import { t } from 'testcafe'
 
 const myRedisDatabasePage = new MyRedisDatabasePage();
 const browserPage = new BrowserPage();
@@ -20,6 +21,8 @@ fixture `Browser Context`
     .page(commonUrl)
     .beforeEach(async() => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
+        // Force switch to list view
+        await t.click(browserPage.browserViewButton);
     })
 // Update after resolving https://redislabs.atlassian.net/browse/RI-3299
 test.skip('Verify that user can see saved CLI size on Browser page when he returns back to Browser page', async t => {
@@ -87,6 +90,8 @@ test('Verify that user can see saved executed commands in CLI on Browser page wh
 test
     .before(async() => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneBigConfig);
+        // Force switch to list view
+        await t.click(browserPage.browserViewButton);
     })('Verify that user can see key details selected when he returns back to Browser page', async t => {
         // Scroll keys elements
         const scrollY = 1000;
