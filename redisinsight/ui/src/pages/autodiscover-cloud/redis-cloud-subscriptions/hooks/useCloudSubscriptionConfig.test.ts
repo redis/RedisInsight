@@ -15,6 +15,7 @@ import {
   resetDataRedisCloud,
   resetLoadedRedisCloud,
 } from 'uiSrc/slices/instances/cloud'
+import { AutoDiscoverCloudIds } from 'uiSrc/pages/autodiscover-cloud/constants/constants'
 
 import { useCloudSubscriptionConfig } from './useCloudSubscriptionConfig'
 
@@ -38,7 +39,9 @@ describe('useCloudSubscriptionConfig', () => {
     const { result } = renderHook(() => useCloudSubscriptionConfig(), { store })
 
     expect(result.current.columns).toHaveLength(9)
-    expect(result.current.columns[0].id).toBe('row-selection')
+    expect(result.current.columns[0].id).toBe(AutoDiscoverCloudIds.Selection)
+    expect(result.current.columns[1].id).toBe(AutoDiscoverCloudIds.Alert)
+    expect(result.current.columns[2].id).toBe(AutoDiscoverCloudIds.Id)
     expect(result.current.subscriptions).toHaveLength(1)
     expect(result.current.selection).toEqual([])
     expect(result.current.loading).toBe(false)
@@ -192,7 +195,7 @@ describe('useCloudSubscriptionConfig', () => {
     expect(result.current.selection.map((s) => s.id)).toEqual([1, 3])
   })
 
-  it('should return 7 columns when subscriptions array is empty', () => {
+  it('should filter out selection and alert columns when subscriptions array is empty', () => {
     const state = cloneDeep(initialStateDefault)
     state.connections.cloud.subscriptions = []
     const store = mockStore(state)
@@ -200,6 +203,7 @@ describe('useCloudSubscriptionConfig', () => {
     const { result } = renderHook(() => useCloudSubscriptionConfig(), { store })
 
     expect(result.current.columns).toHaveLength(7)
-    expect(result.current.columns[0].id).toBe('id')
+    expect(result.current.columns[0].id).toBe(AutoDiscoverCloudIds.Id)
+    expect(result.current.columns[1].id).toBe(AutoDiscoverCloudIds.Name)
   })
 })

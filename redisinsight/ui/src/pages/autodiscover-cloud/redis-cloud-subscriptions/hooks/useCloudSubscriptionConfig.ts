@@ -21,8 +21,9 @@ import { Maybe, setTitle } from 'uiSrc/utils'
 import { Pages } from 'uiSrc/constants'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
-import { colFactory } from '../utils/colFactory'
+import { redisCloudSubscriptionsColumns } from '../../config/RedisCloudSubscriptions.config'
 import { UseCloudSubscriptionConfigReturn } from './useCloudSubscriptionConfig.types'
+import { AutoDiscoverCloudIds } from 'uiSrc/pages/autodiscover-cloud/constants/constants'
 
 export const useCloudSubscriptionConfig =
   (): UseCloudSubscriptionConfigReturn => {
@@ -123,10 +124,17 @@ export const useCloudSubscriptionConfig =
       [subscriptions],
     )
 
-    const columns = useMemo(
-      () => colFactory(subscriptions || []),
-      [subscriptions],
-    )
+    const columns = useMemo(() => {
+      const items = subscriptions || []
+      if (items.length > 0) {
+        return redisCloudSubscriptionsColumns
+      }
+      return redisCloudSubscriptionsColumns.filter(
+        (col) =>
+          col.id !== AutoDiscoverCloudIds.Selection &&
+          col.id !== AutoDiscoverCloudIds.Alert,
+      )
+    }, [subscriptions])
 
     return {
       columns,

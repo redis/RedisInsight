@@ -1,4 +1,5 @@
 export enum AutoDiscoverCloudIds {
+  Selection = 'autodiscover-cloud-selection',
   Alert = 'alert',
   Name = 'name',
   PublicEndpoint = 'publicEndpoint',

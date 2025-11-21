@@ -3,21 +3,24 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { fn } from 'storybook/test'
 
 import RedisCloudSubscriptions from './RedisCloudSubscriptions'
-import { colFactory } from '../utils/colFactory'
+import { redisCloudSubscriptionsColumns } from '../../config/RedisCloudSubscriptions.config'
 import {
   RedisCloudAccount,
   RedisCloudSubscription,
 } from 'uiSrc/slices/interfaces'
-import { RowSelectionState } from 'uiSrc/components/base/layout/table'
+import {
+  RowSelectionState,
+  ColumnDef,
+} from 'uiSrc/components/base/layout/table'
 import { RedisCloudSubscriptionFactory } from 'uiSrc/mocks/factories/cloud/RedisCloudSubscription.factory'
 import { RedisCloudAccountFactory } from 'uiSrc/mocks/factories/cloud/RedisCloudAccount.factory'
+import { AutoDiscoverCloudIds } from 'uiSrc/pages/autodiscover-cloud/constants/constants'
 
-const subscriptionsMock: RedisCloudSubscription[] =
-  RedisCloudSubscriptionFactory.buildList(3)
-const subscriptions100: RedisCloudSubscription[] =
-  RedisCloudSubscriptionFactory.buildList(100)
-
-const emptyColumns = colFactory([])
+const emptyColumns = redisCloudSubscriptionsColumns.filter(
+  (col) =>
+    col.id !== AutoDiscoverCloudIds.Selection &&
+    col.id !== AutoDiscoverCloudIds.Alert,
+)
 
 const accountMock = RedisCloudAccountFactory.build()
 const meta: Meta<typeof RedisCloudSubscriptions> = {
@@ -44,7 +47,7 @@ const RenderStory = ({
   subscriptions,
 }: {
   account: RedisCloudAccount
-  columns: ReturnType<typeof colFactory>
+  columns: ColumnDef<RedisCloudSubscription>[]
   subscriptions: RedisCloudSubscription[]
 }) => {
   const [selection, setSelection] = useState<RedisCloudSubscription[]>([])
@@ -77,21 +80,29 @@ const RenderStory = ({
 }
 
 export const WithSubscription: Story = {
-  render: () => (
-    <RenderStory
-      account={accountMock}
-      columns={colFactory(subscriptionsMock)}
-      subscriptions={subscriptionsMock}
-    />
-  ),
+  render: () => {
+    const subscriptionsMock: RedisCloudSubscription[] =
+      RedisCloudSubscriptionFactory.buildList(3)
+    return (
+      <RenderStory
+        account={accountMock}
+        columns={redisCloudSubscriptionsColumns}
+        subscriptions={subscriptionsMock}
+      />
+    )
+  },
 }
 
 export const With100Subscriptions: Story = {
-  render: () => (
-    <RenderStory
-      account={accountMock}
-      columns={colFactory(subscriptions100)}
-      subscriptions={subscriptions100}
-    />
-  ),
+  render: () => {
+    const subscriptionsMock: RedisCloudSubscription[] =
+      RedisCloudSubscriptionFactory.buildList(100)
+    return (
+      <RenderStory
+        account={accountMock}
+        columns={redisCloudSubscriptionsColumns}
+        subscriptions={subscriptionsMock}
+      />
+    )
+  },
 }
