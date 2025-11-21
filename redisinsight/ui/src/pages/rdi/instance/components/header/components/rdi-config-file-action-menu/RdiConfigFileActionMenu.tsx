@@ -34,7 +34,7 @@ const RdiConfigFileActionMenu = () => {
           onClose={closeMenu}
           trigger={
             <Menu.Content.Item
-              text="Download from server"
+              text="Download deployed pipeline"
               icon={DownloadIcon}
               onClick={(e) => e.preventDefault()}
               aria-labelledby="Upload pipeline button"
@@ -46,7 +46,7 @@ const RdiConfigFileActionMenu = () => {
           onClose={closeMenu}
           trigger={
             <Menu.Content.Item
-              text="Upload from file"
+              text="Import pipeline from ZIP file"
               icon={UploadIcon}
               onClick={(e) => e.preventDefault()}
               aria-labelledby="Upload file button"
@@ -57,7 +57,7 @@ const RdiConfigFileActionMenu = () => {
         <Download
           trigger={
             <Menu.Content.Item
-              text="Save to file"
+              text="Save pipeline to ZIP file"
               icon={SaveIcon}
               aria-labelledby="Download pipeline button"
               data-testid="download-pipeline-btn"
