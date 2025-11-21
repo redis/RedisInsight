@@ -30,7 +30,7 @@ test('Verify Command Helper search and filter', async t => {
     await t.expect(browserPage.CommandHelper.cliHelperOutputTitles.count).gt(0, 'List of commands were not found');
     // Clear search input
     // todo: add proper attr to html
-    const clearButton = browserPage.CommandHelper.cliHelper.find('button title').withExactText('Cancel').parent('button');
+    const clearButton = browserPage.CommandHelper.cliHelper.find('button[title=Reset]');
     await t.click(clearButton);
     // Verify that when user clears the input in the Search of CLI Helper (via x icon), he can see the default screen with proper the text
     await t.expect(browserPage.CommandHelper.cliHelperText.textContent).eql(defaultHelperText, 'Default text for CLI Helper is not shown');
