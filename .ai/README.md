@@ -35,10 +35,23 @@ AI tools can access external services (JIRA, Confluence, GitHub) via MCP configu
    ```
 
 4. **Verify your setup:**
+
+   **For Cursor users:**
+
+   - Restart Cursor to load the new MCP configuration
+   - Ask the AI: "Can you list all available MCP tools and test them?"
+   - The AI should be able to access JIRA, Confluence, GitHub, and other configured services
+
+   **For Augment users:**
+
    ```bash
-   # For Augment users:
-   auggie --mcp-config mcp.json "go over all my mcp tools and make sure they work as expected"
+   npx @augmentcode/auggie --mcp-config mcp.json "go over all my mcp tools and make sure they work as expected"
    ```
+
+   **For GitHub Copilot users:**
+
+   - Note: GitHub Copilot does not currently support MCP integration
+   - MCP services (JIRA, Confluence, etc.) will not be available in Copilot
 
 ### Available MCP Services
 
@@ -109,7 +122,7 @@ yarn test:cov            # Run tests with coverage
 # Code Quality
 yarn lint                # Lint all code
 yarn type-check:ui       # TypeScript type checking
-yarn prettier:fix        # Fix formatting
+yarn prettier:fix        # Fix formatting on the changed files
 ```
 
 ### Before Every Commit
@@ -137,7 +150,7 @@ yarn prettier:fix        # Fix formatting
 
 ## Redis-Specific Context
 
-- Support all Redis data types: String, Hash, List, Set, Sorted Set, Stream, JSON
+- Support all Redis data types: String, Hash, List, Set, Sorted Set, Vector Set, Stream, JSON
 - Handle Redis modules: RedisJSON, RediSearch, RedisTimeSeries, RedisGraph
 - Connection types: Standalone, Cluster, Sentinel
 - Features: Workbench, Data Browser, Profiler, SlowLog, Pub/Sub
@@ -158,7 +171,7 @@ When helping with RedisInsight development:
 
 ### DON'T:
 
-- ❌ Use `console.log` (use proper logging)
+- ❌ Use `console.log`
 - ❌ Add unnecessary comments
 - ❌ Ignore linting errors
 - ❌ Skip tests
