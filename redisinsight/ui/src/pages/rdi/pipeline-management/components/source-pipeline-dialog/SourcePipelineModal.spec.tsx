@@ -1,5 +1,4 @@
 import React from 'react'
-import { cloneDeep } from 'lodash'
 import {
   cleanup,
   mockedStore,
@@ -10,7 +9,6 @@ import {
   createMockedStore,
 } from 'uiSrc/utils/test-utils'
 import {
-  getPipeline,
   rdiPipelineSelector,
   setChangedFile,
 } from 'uiSrc/slices/rdi/pipeline'
