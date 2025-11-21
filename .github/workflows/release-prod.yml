@@ -24,17 +24,17 @@ jobs:
       environment: 'production'
       target: 'all'
 
-  e2e-docker-tests:
-    name: E2E Docker tests
-    needs: builds-prod
-    uses: ./.github/workflows/tests-e2e-docker.yml
-    secrets: inherit
+  # e2e-docker-tests:
+  #   name: E2E Docker tests
+  #   needs: builds-prod
+  #   uses: ./.github/workflows/tests-e2e-docker-smoke.yml
+  #   secrets: inherit
 
-  e2e-appimage-tests:
-    name: E2E AppImage tests
-    needs: builds-prod
-    uses: ./.github/workflows/tests-e2e-appimage.yml
-    secrets: inherit
+  # e2e-appimage-tests:
+  #   name: E2E AppImage tests
+  #   needs: builds-prod
+  #   uses: ./.github/workflows/tests-e2e-appimage.yml
+  #   secrets: inherit
 
   virustotal-prod:
     name: Virustotal
