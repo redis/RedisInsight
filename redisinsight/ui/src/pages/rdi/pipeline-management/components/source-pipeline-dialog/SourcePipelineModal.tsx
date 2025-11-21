@@ -125,7 +125,7 @@ const SourcePipelineDialog = () => {
               >
                 <UploadIcon size="XL" />
                 <Text color="primary" size="S" textAlign="center">
-                  Upload from file
+                  Import pipeline from ZIP file
                 </Text>
               </ButtonWrapper>
               <ButtonWrapper
