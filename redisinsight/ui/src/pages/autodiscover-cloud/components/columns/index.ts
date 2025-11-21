@@ -1,2 +1,8 @@
 export { AlertCell } from './AlertCell/AlertCell'
 export { SubscriptionCell } from './SubscriptionCell/SubscriptionCell'
+export { IdCell } from './IdCell/IdCell'
+export { TypeCell } from './TypeCell/TypeCell'
+export { ProviderCell } from './ProviderCell/ProviderCell'
+export { RegionCell } from './RegionCell/RegionCell'
+export { NumberOfDatabasesCell } from './NumberOfDatabasesCell/NumberOfDatabasesCell'
+export { StatusCell } from './StatusCell/StatusCell'
