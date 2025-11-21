@@ -93,3 +93,6 @@ static/
 .junie/
 *storybook.log
 storybook-static
+
+# MCP Environment Configuration (contains secrets)
+.env.mcp
