@@ -1,5 +1,16 @@
 # Redis Insight Testcafe e2e tests
 
+## 📚 Redis Test Environments
+
+For a complete guide to all available Redis environments (standalone, clusters, sentinel, etc.), see **[REDIS_ENVIRONMENTS.md](./REDIS_ENVIRONMENTS.md)**
+
+This includes:
+- Connection details for 15+ Redis environments
+- VPN setup for cluster access
+- SSH tunneling configuration
+
+---
+
 ### Before run tests run next commands
 
 ## start application:
