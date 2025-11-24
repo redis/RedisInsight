@@ -1,12 +1,14 @@
 import React from 'react'
+import styled from 'styled-components'
 import { RiTooltip } from 'uiSrc/components'
 import { formatLongName } from 'uiSrc/utils'
 import { CellText } from 'uiSrc/components/auto-discover'
 import { CellContext } from 'uiSrc/components/base/layout/table'
 import { InstanceRedisCluster } from 'uiSrc/slices/interfaces'
 
-// FIXME: find a way to rework RiTooltip without the need of using module.scss
-import styles from './styles.module.scss'
+const StyledTooltip = styled(RiTooltip)`
+  max-width: 370px;
+`
 
 export const DatabaseCell = ({
   row,
@@ -18,15 +20,14 @@ export const DatabaseCell = ({
 
   return (
     <div role="presentation" data-testid={`db_name_${name}`}>
-      <RiTooltip
+      <StyledTooltip
         position="bottom"
         title="Database"
-        className={styles.tooltipColumnName}
         anchorClassName="truncateText"
-        content={formatLongName(name || '')}
+        content={formatLongName(name || '').repeat(10)}
       >
         <CellText>{cellContent}</CellText>
-      </RiTooltip>
+      </StyledTooltip>
     </div>
   )
 }
