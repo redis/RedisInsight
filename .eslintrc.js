@@ -368,7 +368,6 @@ module.exports = {
         'react/prop-types': 'off',
         'import/order': 'off',
         'prefer-const': 'off',
-        'prettier/prettier': 'off',
         'prefer-destructuring': 'off',
         // REDUNDANT: These are OFF by default in newer Airbnb config
         // 'react/jsx-boolean-value': 'off',
