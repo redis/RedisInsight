@@ -21,6 +21,7 @@ feature/
 ├── feature.service.ts          # Business logic
 ├── feature.service.spec.ts     # Service tests
 ├── feature.controller.spec.ts  # Controller tests
+├── feature.types.ts            # Interfaces and types related to the feature
 ├── dto/                        # Data transfer objects
 │   ├── create-feature.dto.ts
 │   ├── update-feature.dto.ts
@@ -40,6 +41,7 @@ feature/
 - **Services**: `feature.service.ts`
 - **DTOs**: `create-feature.dto.ts`, `update-feature.dto.ts`
 - **Entities**: `feature.entity.ts`
+- **Interfaces and types**: `feature.types.ts`
 - **Tests**: `feature.service.spec.ts`
 - **Constants**: `feature.constants.ts`
 - **Exceptions**: `feature-not-found.exception.ts`

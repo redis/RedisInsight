@@ -18,7 +18,7 @@ ComponentName/
   ComponentName.tsx          # Main component
   ComponentName.style.ts     # Styled-components styles
   ComponentName.types.ts     # TypeScript interfaces
-  ComponentName.test.tsx     # Tests
+  ComponentName.spec.tsx     # Tests
   ComponentName.constants.ts # Constants
   ComponentName.story.tsx    # Storybook examples
   hooks/                     # Custom hooks
