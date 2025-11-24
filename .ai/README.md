@@ -57,14 +57,11 @@ AI tools can access external services (JIRA, Confluence, GitHub) via MCP configu
 
 The `mcp.json` file configures these services:
 
-- **git** - Git operations (status, diff, log, branch management)
 - **github** - GitHub integration (issues, PRs, repository operations)
 - **memory** - Persistent context storage across sessions
 - **sequential-thinking** - Enhanced reasoning for complex tasks
 - **context-7** - Advanced context management
 - **atlassian** - JIRA (RI-XXX tickets) and Confluence integration
-
-**Note**: Never commit `.env.mcp` to version control (it's in `.gitignore`)!
 
 ## Structure
 
@@ -76,8 +73,8 @@ The `mcp.json` file configures these services:
 │   ├── frontend.md                   # React, Redux, UI patterns
 │   ├── backend.md                    # NestJS, API patterns
 │   ├── testing.md                    # Testing standards
-│   ├── branches.md              # Branch naming conventions
-│   ├── commits.md            # Commit message guidelines
+│   ├── branches.md                   # Branch naming conventions
+│   ├── commits.md                    # Commit message guidelines
 │   └── pull-requests.md              # Pull request process
 └── commands/                         # AI workflow commands
     ├── commit-message.md             # Commit message generation
@@ -111,80 +108,17 @@ redisinsight/
 └── tests/       # E2E tests (Playwright)
 ```
 
-## Quick Reference
+## Detailed Guidelines
 
-### Essential Commands
+All detailed development standards, coding practices, and workflows are maintained in modular files:
 
-```bash
-# Development
-yarn dev:ui              # Start UI dev server
-yarn dev:api             # Start API dev server
-yarn dev:desktop         # Start full Electron app
-
-# Testing
-yarn test                # Run UI tests
-yarn test:api            # Run API tests
-yarn test:cov            # Run tests with coverage
-
-# Code Quality
-yarn lint                # Lint all code
-yarn type-check:ui       # TypeScript type checking
-yarn prettier:fix        # Fix formatting on the changed files
-```
-
-### Before Every Commit
-
-1. ✅ Run linter: `yarn lint`
-2. ✅ Run tests: `yarn test && yarn test:api`
-3. ✅ Check types: `yarn type-check:ui`
-4. ✅ Fix formatting: `yarn prettier:fix`
-
-### Key Principles
-
-- **Quality over speed** - Write maintainable, testable code
-- **Always run linter** after changes
-- **No semicolons** in TypeScript files
-- **Use styled-components** for styling (migrating from SCSS modules)
-- **Use faker** for test data generation
-- **Never use fixed timeouts** in tests
-- **Test coverage** must meet thresholds (80% statements/lines)
-
-## Module Aliases
-
-- `uiSrc/*` → `redisinsight/ui/src/*`
-- `apiSrc/*` → `redisinsight/api/src/*`
-- `desktopSrc/*` → `redisinsight/desktop/src/*`
-
-## Redis-Specific Context
-
-- Support all Redis data types: String, Hash, List, Set, Sorted Set, Vector Set, Stream, JSON
-- Handle Redis modules: RedisJSON, RediSearch, RedisTimeSeries, RedisGraph
-- Connection types: Standalone, Cluster, Sentinel
-- Features: Workbench, Data Browser, Profiler, SlowLog, Pub/Sub
-
-## For AI Assistants
-
-When helping with RedisInsight development:
-
-### DO:
-
-- ✅ Follow established patterns in the codebase
-- ✅ Run linter and tests before suggesting code is complete
-- ✅ Use proper TypeScript types (avoid `any`)
-- ✅ Write tests for all new features
-- ✅ Consider performance and accessibility
-- ✅ Handle errors properly
-- ✅ Reference relevant existing code
-
-### DON'T:
-
-- ❌ Use `console.log`
-- ❌ Add unnecessary comments
-- ❌ Ignore linting errors
-- ❌ Skip tests
-- ❌ Use deprecated APIs
-- ❌ Mutate Redux state directly
-- ❌ Use magic numbers or unclear names
+- **Code Quality Standards**: See `.ai/rules/code-quality.md`
+- **Frontend Patterns**: See `.ai/rules/frontend.md`
+- **Backend Patterns**: See `.ai/rules/backend.md`
+- **Testing Standards**: See `.ai/rules/testing.md`
+- **Branch Naming**: See `.ai/rules/branches.md`
+- **Commit Messages**: See `.ai/rules/commits.md`
+- **Pull Request Process**: See `.ai/rules/pull-requests.md`
 
 ## Updating These Rules
 
