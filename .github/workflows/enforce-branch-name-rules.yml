@@ -20,7 +20,9 @@ jobs:
                 "${{ github.head_ref }}" != fe/* && \
                 "${{ github.head_ref }}" != be/* && \
                 "${{ github.head_ref }}" != e2e/* && \
+                "${{ github.head_ref }}" != test/* && \
+                "${{ github.head_ref }}" != docs/* && \
                 "${{ github.head_ref }}" != ric/* ]]; then
-            echo "❌ Pull requests to 'main' are only allowed from 'feature/**', 'bugfix/**', 'release/**', 'dependabot/**', 'latest' or 'ric/**' branches."
+            echo "❌ Pull requests to 'main' are only allowed from 'feature/**', 'bugfix/**', 'release/**', 'dependabot/**', 'latest', 'test/**', 'docs/**', or 'ric/**' branches."
             exit 1
           fi
