@@ -129,10 +129,7 @@ export const useSentinelDatabasesConfig = () => {
   const shouldRenderSelection = items.length > 0
   const columns = useMemo(() => {
     const cols = sentinelDatabasesColumnsConfig(handleChangedInput)
-    if (!shouldRenderSelection) {
-      cols.splice(0, 1)
-    }
-    return cols
+    return shouldRenderSelection ? cols : cols.slice(1)
   }, [handleChangedInput, shouldRenderSelection])
 
   return {

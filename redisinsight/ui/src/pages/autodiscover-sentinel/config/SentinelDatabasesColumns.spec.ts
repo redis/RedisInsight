@@ -52,7 +52,6 @@ describe('SentinelDatabasesColumns.config', () => {
     const dbIndexColumn = columns.find(
       (col) => col.id === SentinelDatabaseIds.DatabaseIndex,
     )
-    debugger
     expect(usernameColumn?.meta?.props.handleChangedInput).toBe(
       mockHandleChangedInput,
     )
