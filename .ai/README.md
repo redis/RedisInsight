@@ -27,13 +27,6 @@ AI tools can access external services (JIRA, Confluence, GitHub) via MCP configu
 
 3. **Edit `.env.mcp` with your credentials:**
 
-   ```bash
-   ATLASSIAN_DOMAIN=your-domain.atlassian.net
-   ATLASSIAN_EMAIL=your-email@example.com
-   ATLASSIAN_API_TOKEN=your-api-token-here
-   ATLASSIAN_JIRA_PROJECT=RI
-   ```
-
 4. **Verify your setup:**
 
    **For Cursor users:**
