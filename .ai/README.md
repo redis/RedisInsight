@@ -69,20 +69,27 @@ The `mcp.json` file configures these services:
 ## Structure
 
 ```
-.ai/
-├── README.md                         # This file
-├── rules/                            # Development rules and standards
-│   ├── 01-CODE_QUALITY.md           # Linting, formatting, TypeScript
-│   ├── 02-FRONTEND.md               # React, Redux, styled-components, component structure
-│   ├── 03-BACKEND.md                # NestJS, API patterns
-│   ├── 04-TESTING.md                # Testing standards and practices
-│   └── 05-WORKFLOW.md               # Git workflow, commits, dev process
+.ai/                                  # 🎯 Single source of truth
+├── README.md                         # Overview & quick reference
+├── rules/                            # Development standards (modular)
+│   ├── code-quality.md               # Linting, TypeScript standards
+│   ├── frontend.md                   # React, Redux, UI patterns
+│   ├── backend.md                    # NestJS, API patterns
+│   ├── testing.md                    # Testing standards
+│   ├── branches.md              # Branch naming conventions
+│   ├── commits.md            # Commit message guidelines
+│   └── pull-requests.md              # Pull request process
 └── commands/                         # AI workflow commands
-    ├── pr/
-    │   ├── review.md                # PR review workflow
-    │   └── plan.md                  # PR planning workflow
-    ├── commit-message.md            # Commit message generation
-    └── run-ui-tests.md              # Custom test runner usage
+    ├── commit-message.md             # Commit message generation
+    └── pull-request-review.md        # PR review workflow
+
+# Symlinks (all AI tools read from .ai/)
+.cursor/
+  ├── rules/ -> ../.ai/rules/         # Cursor AI (rules)
+  └── commands/ -> ../.ai/commands/   # Cursor AI (commands)
+.augment/ -> .ai/                     # Augment AI
+.windsurfrules -> .ai/                # Windsurf AI
+.github/copilot-instructions.md       # GitHub Copilot
 ```
 
 ## Project Overview
