@@ -1,0 +1,12 @@
+.tooltipColumnName {
+  max-width: 370px !important;
+
+  * {
+    line-height: 1.19;
+    font-size: 14px !important;
+
+    &:not(:global(.euiToolTip__title)) {
+      font-weight: 300 !important;
+    }
+  }
+}

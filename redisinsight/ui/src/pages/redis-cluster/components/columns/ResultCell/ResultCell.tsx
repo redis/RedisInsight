@@ -1,16 +1,15 @@
 import React from 'react'
-import { type AddRedisDatabaseStatus } from 'uiSrc/slices/interfaces'
+import { InstanceRedisCluster } from 'uiSrc/slices/interfaces'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { RiIcon } from 'uiSrc/components/base/icons'
+import { CellContext } from 'uiSrc/components/base/layout/table'
 
-export interface ResultCellProps {
-  statusAdded: AddRedisDatabaseStatus | undefined
-  messageAdded: string | undefined
-}
-
-export const ResultCell = ({ statusAdded, messageAdded }: ResultCellProps) => {
+export const ResultCell = ({
+  row,
+}: CellContext<InstanceRedisCluster, unknown>) => {
+  const { statusAdded, messageAdded } = row.original
   if (statusAdded === 'success') {
     return <Text>{messageAdded}</Text>
   }

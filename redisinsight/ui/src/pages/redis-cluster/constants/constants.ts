@@ -1,4 +1,5 @@
 export enum RedisClusterIds {
+  Selection = 'redis-cluster-selection',
   Capabilities = 'modules',
   Name = 'name',
   Endpoint = 'dnsName',

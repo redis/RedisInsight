@@ -16,7 +16,7 @@ describe('SentinelDatabasesColumns.config', () => {
     const columnIds = columns.map((col) => col.id)
 
     expect(columnIds).toEqual([
-      'row-selection',
+      SentinelDatabaseIds.Selection,
       SentinelDatabaseIds.PrimaryGroup,
       SentinelDatabaseIds.Alias,
       SentinelDatabaseIds.Address,
@@ -31,7 +31,7 @@ describe('SentinelDatabasesColumns.config', () => {
     const columns = sentinelDatabasesColumnsConfig(mockHandleChangedInput)
 
     expect(columns).toHaveLength(8)
-    expect(columns[0].id).toBe('row-selection')
+    expect(columns[0].id).toBe(SentinelDatabaseIds.Selection)
     expect(columns[0].isHeaderCustom).toBe(true)
     expect(columns[0].maxSize).toBe(50)
     expect(columns[0].size).toBe(50)

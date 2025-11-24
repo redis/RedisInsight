@@ -3,15 +3,46 @@ import { fn } from 'storybook/test'
 
 import { RedisClusterInstanceFactory } from 'uiSrc/mocks/factories/cluster/RedisClusterInstance.factory'
 import RedisClusterDatabases from './RedisClusterDatabases'
-import { colFactory } from './useClusterDatabasesConfig'
+import { redisClusterDatabasesColumns } from './config/RedisClusterDatabases.config'
+import { RedisClusterIds } from './constants/constants'
+import type { InstanceRedisCluster } from 'uiSrc/slices/interfaces'
+import type { ColumnDef } from 'uiSrc/components/base/layout/table'
 
-const emptyInstances: [] = []
+const emptyInstances: InstanceRedisCluster[] = []
 const mockInstances = RedisClusterInstanceFactory.buildList(5)
 const mockManyInstances = RedisClusterInstanceFactory.buildList(15)
 
-const [emptyColumns] = colFactory(emptyInstances)
-const [columnsWithData] = colFactory(mockInstances)
-const [columnsWithManyData] = colFactory(mockManyInstances)
+const getColumns = (
+  instances: InstanceRedisCluster[],
+): ColumnDef<InstanceRedisCluster>[] => {
+  const items = instances || []
+  const shouldShowSelection = items.length > 0
+  const shouldShowCapabilities = items.some(
+    (instance) => instance.modules?.length,
+  )
+  const shouldShowOptions = items.some(
+    (instance) =>
+      instance.options &&
+      Object.values(instance.options).filter(Boolean).length,
+  )
+
+  return redisClusterDatabasesColumns.filter((col) => {
+    if (col.id === RedisClusterIds.Selection && !shouldShowSelection) {
+      return false
+    }
+    if (col.id === RedisClusterIds.Capabilities && !shouldShowCapabilities) {
+      return false
+    }
+    if (col.id === RedisClusterIds.Options && !shouldShowOptions) {
+      return false
+    }
+    return col.id !== RedisClusterIds.Result
+  })
+}
+
+const emptyColumns = getColumns(emptyInstances)
+const columnsWithData = getColumns(mockInstances)
+const columnsWithManyData = getColumns(mockManyInstances)
 
 const meta: Meta<typeof RedisClusterDatabases> = {
   component: RedisClusterDatabases,

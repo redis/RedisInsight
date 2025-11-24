@@ -2,14 +2,16 @@ import React from 'react'
 import { RiTooltip } from 'uiSrc/components'
 import { formatLongName } from 'uiSrc/utils'
 import { CellText } from 'uiSrc/components/auto-discover'
+import { CellContext } from 'uiSrc/components/base/layout/table'
+import { InstanceRedisCluster } from 'uiSrc/slices/interfaces'
 
-import styles from '../../styles.module.scss'
+// FIXME: find a way to rework RiTooltip without the need of using module.scss
+import styles from './styles.module.scss'
 
-export interface DatabaseCellProps {
-  name: string
-}
-
-export const DatabaseCell = ({ name }: DatabaseCellProps) => {
+export const DatabaseCell = ({
+  row,
+}: CellContext<InstanceRedisCluster, unknown>) => {
+  const { name } = row.original
   const cellContent = (name || '')
     .substring(0, 200)
     .replace(/\s\s/g, '\u00a0\u00a0')

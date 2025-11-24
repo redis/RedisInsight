@@ -26,4 +26,3 @@ export function errorNotAuth(
     status === AddRedisDatabaseStatus.Success
   )
 }
-

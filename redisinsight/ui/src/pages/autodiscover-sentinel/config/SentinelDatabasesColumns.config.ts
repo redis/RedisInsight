@@ -1,18 +1,17 @@
 import { ColumnDef } from 'uiSrc/components/base/layout/table'
 import { type ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
+import { selectionColumn } from 'uiSrc/components/base/layout/table/columns/selection'
+
 import {
   SentinelDatabaseIds,
   SentinelDatabaseTitles,
 } from '../constants/constants'
-
 import {
   AddressCell,
   AliasCell,
   DbIndexCell,
   PasswordCell,
   PrimaryGroupCell,
-  SentinelMasterSelectionHeader,
-  SentinelMasterSelectionRow,
   UsernameCell,
 } from '../components/columns'
 
@@ -20,14 +19,7 @@ export const sentinelDatabasesColumnsConfig = (
   handleChangedInput: (name: string, value: string) => void,
 ): ColumnDef<ModifiedSentinelMaster>[] => {
   return [
-    {
-      id: 'row-selection',
-      maxSize: 50,
-      size: 50,
-      isHeaderCustom: true,
-      header: SentinelMasterSelectionHeader,
-      cell: SentinelMasterSelectionRow,
-    },
+    { ...selectionColumn, id: SentinelDatabaseIds.Selection },
     {
       header: SentinelDatabaseTitles.PrimaryGroup,
       id: SentinelDatabaseIds.PrimaryGroup,

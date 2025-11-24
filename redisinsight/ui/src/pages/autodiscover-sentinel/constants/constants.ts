@@ -10,6 +10,7 @@ export enum SentinelDatabaseTitles {
 }
 
 export enum SentinelDatabaseIds {
+  Selection = 'sentinel-master-selection',
   Message = 'message',
   Address = 'host',
   Alias = 'alias',

@@ -1,16 +1,15 @@
 import { type ColumnDef } from 'uiSrc/components/base/layout/table'
 import { type InstanceRedisCloud } from 'uiSrc/slices/interfaces'
-
-import { getSelectionColumn } from 'uiSrc/pages/autodiscover-cloud/utils'
+import { selectionColumn } from 'uiSrc/components/base/layout/table/columns/selection'
 import {
   DatabaseCell,
-  SubscriptionIdCell,
-  SubscriptionDbCell,
-  SubscriptionTypeCell,
   DatabaseStatusCell,
   EndpointCell,
   ModulesCell,
   OptionsCell,
+  SubscriptionDbCell,
+  SubscriptionIdCell,
+  SubscriptionTypeCell,
 } from '../components/columns'
 import {
   AutoDiscoverCloudIds,
@@ -18,9 +17,7 @@ import {
 } from '../constants/constants'
 
 export const redisCloudDatabasesColumns: ColumnDef<InstanceRedisCloud>[] = [
-  getSelectionColumn<InstanceRedisCloud>({
-    id: AutoDiscoverCloudIds.SelectionDatabases,
-  }),
+  { ...selectionColumn, id: AutoDiscoverCloudIds.SelectionDatabases },
   {
     header: AutoDiscoverCloudTitles.Database,
     id: AutoDiscoverCloudIds.Name,

@@ -9,7 +9,3 @@ export { PrimaryGroupCell } from './PrimaryGroupCell/PrimaryGroupCell'
 export { UsernameCell } from './UsernameCell/UsernameCell'
 export { ResultCell } from './ResultCell/ResultCell'
 export { UsernameResultCell } from './UsernameCell/UsernameResultCell'
-export {
-  SentinelMasterSelectionHeader,
-  SentinelMasterSelectionRow,
-} from './selection/SentinelMasterSelection'

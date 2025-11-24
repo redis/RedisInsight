@@ -6,13 +6,11 @@ import {
   CopyPublicEndpointText,
   CopyTextContainer,
 } from 'uiSrc/components/auto-discover'
+import { CellContext } from 'uiSrc/components/base/layout/table'
+import { InstanceRedisCluster } from 'uiSrc/slices/interfaces'
 
-export interface EndpointCellProps {
-  dnsName: string
-  port: number
-}
-
-export const EndpointCell = ({ dnsName, port }: EndpointCellProps) => {
+export const EndpointCell = ({ row }: CellContext<InstanceRedisCluster, unknown>) => {
+  const { dnsName, port } = row.original
   if (!dnsName) {
     return null
   }
@@ -41,3 +39,4 @@ export const EndpointCell = ({ dnsName, port }: EndpointCellProps) => {
     </CopyTextContainer>
   )
 }
+

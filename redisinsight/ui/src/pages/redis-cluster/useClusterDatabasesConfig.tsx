@@ -8,47 +8,19 @@ import {
   resetDataRedisCluster,
   resetInstancesRedisCluster,
 } from 'uiSrc/slices/instances/cluster'
-import { Maybe, Nullable, setTitle } from 'uiSrc/utils'
+import { Maybe, setTitle } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { Pages } from 'uiSrc/constants'
-import { type InstanceRedisCluster } from 'uiSrc/slices/interfaces'
-import { type ColumnDef } from 'uiSrc/components/base/layout/table'
-import {
-  capabilitiesColumn,
-  databaseColumn,
-  endpointColumn,
-  optionsColumn,
-  resultColumn,
-  selectionColumn,
-  statusColumn,
-} from './column-definitions'
+import { redisClusterDatabasesColumns } from './config/RedisClusterDatabases.config'
+import { RedisClusterIds } from './constants/constants'
 
-export const colFactory = (instances: Nullable<InstanceRedisCluster[]>) => {
-  let columns: ColumnDef<InstanceRedisCluster>[] = [
-    databaseColumn(),
-    statusColumn(),
-    endpointColumn(),
-    capabilitiesColumn(),
-    optionsColumn(instances || []),
-  ]
-  if (instances && instances.length > 0) {
-    columns.unshift(selectionColumn())
-  }
-
-  const columnsResult: ColumnDef<InstanceRedisCluster>[] = [
-    ...columns,
-    resultColumn(),
-  ]
-  // remove selection column from result columns
-  columnsResult.shift()
-  return [columns, columnsResult]
-}
 const sendCancelEvent = () => {
   sendEventTelemetry({
     event:
       TelemetryEvent.CONFIG_DATABASES_REDIS_SOFTWARE_AUTODISCOVERY_CANCELLED,
   })
 }
+
 export const useClusterDatabasesConfig = () => {
   const dispatch = useDispatch()
   const history = useHistory()
@@ -85,13 +57,46 @@ export const useClusterDatabasesConfig = () => {
     (uids: Maybe<number>[]) => {
       dispatch(addInstancesRedisCluster({ uids, credentials }))
     },
-    [dispatch],
+    [dispatch, credentials],
   )
 
-  const [columns, columnsResult] = useMemo(
-    () => colFactory(instances),
-    [instances],
-  )
+  const [columns, columnsResult] = useMemo(() => {
+    const items = instances || []
+
+    const shouldShowSelection = items.length > 0
+    const shouldShowCapabilities = items.some(
+      (instance) => instance.modules?.length,
+    )
+    const shouldShowOptions = items.some(
+      (instance) =>
+        instance.options &&
+        Object.values(instance.options).filter(Boolean).length,
+    )
+
+    const cols = redisClusterDatabasesColumns.filter((col) => {
+      if (col.id === RedisClusterIds.Selection && !shouldShowSelection) {
+        return false
+      }
+      if (col.id === RedisClusterIds.Capabilities && !shouldShowCapabilities) {
+        return false
+      }
+      if (col.id === RedisClusterIds.Options && !shouldShowOptions) {
+        return false
+      }
+      return col.id !== RedisClusterIds.Result
+    })
+    const resultColumn = redisClusterDatabasesColumns.find(
+      (col) => col.id === RedisClusterIds.Result,
+    )
+    const colsResult = [
+      ...redisClusterDatabasesColumns.filter((col) => {
+        return col.id !== RedisClusterIds.Selection
+      }),
+      resultColumn,
+    ]
+
+    return [cols, colsResult]
+  }, [instances])
 
   return {
     columns,
