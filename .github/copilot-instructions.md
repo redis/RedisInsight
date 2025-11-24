@@ -8,7 +8,7 @@ This project uses a centralized AI rules structure. All detailed guidelines, sta
 
 ### Core Development Rules
 
-- **Code Quality**: `.ai/rules/01-CODE_QUALITY.md`
+- **Code Quality**: `.ai/rules/code-quality.md`
 
   - ESLint configuration (Airbnb base)
   - Prettier formatting standards
@@ -16,7 +16,7 @@ This project uses a centralized AI rules structure. All detailed guidelines, sta
   - Import organization
   - SonarJS complexity rules
 
-- **Frontend Development**: `.ai/rules/02-FRONTEND.md`
+- **Frontend Development**: `.ai/rules/frontend.md`
 
   - React 18 patterns and best practices
   - Redux Toolkit state management
@@ -25,7 +25,7 @@ This project uses a centralized AI rules structure. All detailed guidelines, sta
   - Internal UI component wrappers (never import from @redis-ui directly)
   - Elastic UI deprecation (use Redis UI wrappers)
 
-- **Backend Development**: `.ai/rules/03-BACKEND.md`
+- **Backend Development**: `.ai/rules/backend.md`
 
   - NestJS module architecture
   - Service and controller patterns
@@ -33,7 +33,7 @@ This project uses a centralized AI rules structure. All detailed guidelines, sta
   - Error handling
   - Redis integration patterns
 
-- **Testing Standards**: `.ai/rules/04-TESTING.md`
+- **Testing Standards**: `.ai/rules/testing.md`
 
   - Jest and Testing Library patterns
   - Component testing with renderComponent helper
@@ -42,18 +42,22 @@ This project uses a centralized AI rules structure. All detailed guidelines, sta
   - Backend testing with NestJS
   - E2E testing with Playwright
 
-- **Git Workflow**: `.ai/rules/05-WORKFLOW.md`
+- **Branch Naming**: `.ai/rules/branches.md`
+
   - Branch naming conventions (type/RI-XXX/title or type/XXX/title)
+
+- **Commit Messages**: `.ai/rules/commits.md`
+
   - Commit message format (Conventional Commits)
+
+- **Pull Requests**: `.ai/rules/pull-requests.md`
   - PR process and review guidelines
   - Pre-commit checklist
 
 ### Commands and Workflows
 
-- **PR Planning**: `.ai/commands/pr/plan.md`
-- **PR Review**: `.ai/commands/pr/review.md`
 - **Commit Message Generation**: `.ai/commands/commit-message.md`
-- **UI Test Runner**: `.ai/commands/run-ui-tests.md`
+- **PR Review**: `.ai/commands/pull-request-review.md`
 
 ## 🎯 Project Overview
 
