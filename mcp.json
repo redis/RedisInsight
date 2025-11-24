@@ -1,11 +1,6 @@
 {
   "$schema": "https://modelcontextprotocol.io/schema/mcp.json",
   "mcpServers": {
-    "git": {
-      "command": "uvx",
-      "args": ["mcp-server-git"],
-      "description": "Git operations for the RedisInsight repository including status, diff, log, and branch management"
-    },
     "github": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-github"],
