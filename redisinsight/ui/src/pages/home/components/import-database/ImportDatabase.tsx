@@ -130,10 +130,7 @@ const ImportDatabase = (props: Props) => {
 
     return ReactDOM.createPortal(
       <Row justify="end" gap="m" data-testid="footer-import-database">
-        <SecondaryButton
-          className="btn-cancel"
-          onClick={handleOnClose}
-        >
+        <SecondaryButton className="btn-cancel" onClick={handleOnClose}>
           Cancel
         </SecondaryButton>
         <RiTooltip

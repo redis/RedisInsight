@@ -4,7 +4,11 @@ import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/In
 
 import type { PasswordCellProps } from './PasswordCell.types'
 
-export const PasswordCell = ({ password, id, handleChangedInput }: PasswordCellProps) => (
+export const PasswordCell = ({
+  password,
+  id,
+  handleChangedInput,
+}: PasswordCellProps) => (
   <div role="presentation">
     <InputFieldSentinel
       value={password}

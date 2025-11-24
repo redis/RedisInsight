@@ -137,7 +137,10 @@ const EditablePopover = (props: Props) => {
           {content}
           <FlexItem style={{ marginLeft: '-19px' }}>
             {isDelayed && (
-              <Loader className={cx(editBtnClassName, styles.spinner)} size="m" />
+              <Loader
+                className={cx(editBtnClassName, styles.spinner)}
+                size="m"
+              />
             )}
             {(isPopoverOpen || isHovering) && !isDelayed && button}
           </FlexItem>

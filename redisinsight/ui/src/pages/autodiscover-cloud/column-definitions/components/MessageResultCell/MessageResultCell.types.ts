@@ -4,4 +4,3 @@ export interface MessageResultCellProps {
   statusAdded?: AddRedisDatabaseStatus
   messageAdded?: string
 }
-

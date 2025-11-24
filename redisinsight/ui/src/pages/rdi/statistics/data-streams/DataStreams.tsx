@@ -96,9 +96,7 @@ const columns: ColumnDefinition<DataStreamsData>[] = [
   },
 ]
 
-const DataStreams = ({
-  data,
-}: Props) => {
+const DataStreams = ({ data }: Props) => {
   const dataStreams: DataStreamsData[] = Object.keys(data?.streams || {}).map(
     (key) => {
       const dataStream = data.streams[key]

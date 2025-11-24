@@ -201,7 +201,9 @@ const Config = () => {
     const appliedConsents = config?.agreements
     dispatch(
       setSettingsPopupState(
-        config?.acceptTermsAndConditionsOverwritten ? false : isDifferentConsentsExists(specConsents, appliedConsents),
+        config?.acceptTermsAndConditionsOverwritten
+          ? false
+          : isDifferentConsentsExists(specConsents, appliedConsents),
       ),
     )
   }

@@ -8,10 +8,7 @@ import {
   initialStateDefault,
   createMockedStore,
 } from 'uiSrc/utils/test-utils'
-import {
-  rdiPipelineSelector,
-  setChangedFile,
-} from 'uiSrc/slices/rdi/pipeline'
+import { rdiPipelineSelector, setChangedFile } from 'uiSrc/slices/rdi/pipeline'
 import {
   appContextPipelineManagement,
   setPipelineDialogState,

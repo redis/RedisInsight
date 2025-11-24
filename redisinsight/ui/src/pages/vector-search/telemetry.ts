@@ -84,7 +84,9 @@ export const collectCreateIndexStepTelemetry = (instanceId: string): void => {
   })
 }
 
-export const collectCreateIndexErrorStepTelemetry = (instanceId: string): void => {
+export const collectCreateIndexErrorStepTelemetry = (
+  instanceId: string,
+): void => {
   sendEventTelemetry({
     event: TelemetryEvent.VECTOR_SEARCH_ONBOARDING_CREATE_INDEX_ERROR,
     eventData: {

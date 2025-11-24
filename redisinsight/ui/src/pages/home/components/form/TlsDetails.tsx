@@ -260,7 +260,7 @@ const TlsDetails = (props: Props) => {
         </Col>
       )}
       {formik.values.tls && (
-        <Col gap="l"  >
+        <Col gap="l">
           <Row gap="m" responsive>
             <FlexItem>
               <FormField

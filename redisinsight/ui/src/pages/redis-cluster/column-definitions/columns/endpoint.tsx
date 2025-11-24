@@ -21,4 +21,3 @@ export const endpointColumn = (): ColumnDef<InstanceRedisCluster> => {
     }) => <EndpointCell dnsName={dnsName} port={port} />,
   }
 }
-

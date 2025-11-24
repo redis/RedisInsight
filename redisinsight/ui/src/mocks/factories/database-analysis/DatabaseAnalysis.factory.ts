@@ -163,5 +163,3 @@ export const buildDatabaseAnalysisWithNamespaces = () =>
     ] as any,
     delimiter: ':',
   })
-
-

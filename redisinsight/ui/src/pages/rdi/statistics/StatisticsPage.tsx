@@ -123,7 +123,6 @@ const StatisticsPage = () => {
 
   const { data: statisticsData } = statisticsResults
 
-
   return (
     <div className={styles.pageContainer}>
       <Col gap="xxl" style={{ padding: 16 }}>

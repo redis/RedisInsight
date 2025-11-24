@@ -159,7 +159,6 @@ export const ActionsContainer = styled(Row)<ActionsContainerProps>`
   ${({ $design }) => designs[$design || 'default']}
 `
 
-
 export const StyledTextInput = styled(TextInput)<{
   $width?: string
   $height?: string

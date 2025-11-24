@@ -278,9 +278,7 @@ export const getSubmitButtonContent = (
   if (errorsArr.length > maxErrorsCount) {
     errorsArr.splice(maxErrorsCount, errorsArr.length, ['...'])
   }
-  return submitIsDisabled ? (
-    <span>{errorsArr}</span>
-  ) : null
+  return submitIsDisabled ? <span>{errorsArr}</span> : null
 }
 
 export const getFormValues = (instance?: Nullable<Record<string, any>>) => ({

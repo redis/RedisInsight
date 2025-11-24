@@ -5,11 +5,13 @@ import { HorizontalSpacer } from './horizontal-spacer'
 describe('HorizontalSpacer', () => {
   it('should render with different sizes correctly', () => {
     const sizes = ['xs', 's', 'm', 'l', 'xl', 'xxl'] as const
-    
-    sizes.forEach(size => {
+
+    sizes.forEach((size) => {
       const { container } = render(<HorizontalSpacer size={size} />)
-      const spacer = container.querySelector('.RI-horizontal-spacer') as HTMLElement
-      
+      const spacer = container.querySelector(
+        '.RI-horizontal-spacer',
+      ) as HTMLElement
+
       if (size === 'xl') {
         expect(spacer).toHaveStyle('width: calc(var(--base) * 2.25)')
       } else {
@@ -22,7 +24,7 @@ describe('HorizontalSpacer', () => {
     const { getByText } = render(
       <HorizontalSpacer size="s">
         <span>Test content</span>
-      </HorizontalSpacer>
+      </HorizontalSpacer>,
     )
     const content = getByText('Test content')
     expect(content).toBeInTheDocument()
@@ -31,19 +33,23 @@ describe('HorizontalSpacer', () => {
 
   it('should apply custom className', () => {
     const { container } = render(<HorizontalSpacer className="custom-class" />)
-    const spacer = container.querySelector('.RI-horizontal-spacer') as HTMLElement
-    
+    const spacer = container.querySelector(
+      '.RI-horizontal-spacer',
+    ) as HTMLElement
+
     expect(spacer).toHaveClass('RI-horizontal-spacer')
     expect(spacer).toHaveClass('custom-class')
   })
 
   it('should pass through custom props', () => {
     const { container } = render(
-      <HorizontalSpacer data-testid="my-spacer" id="spacer-id" />
+      <HorizontalSpacer data-testid="my-spacer" id="spacer-id" />,
     )
-    const spacer = container.querySelector('.RI-horizontal-spacer') as HTMLElement
-    
+    const spacer = container.querySelector(
+      '.RI-horizontal-spacer',
+    ) as HTMLElement
+
     expect(spacer).toHaveAttribute('data-testid', 'my-spacer')
     expect(spacer).toHaveAttribute('id', 'spacer-id')
   })
-}) 
+})
