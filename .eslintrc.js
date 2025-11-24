@@ -6,7 +6,12 @@ module.exports = {
     node: true,
     browser: true,
   },
-  extends: ['airbnb-typescript', 'prettier', 'plugin:prettier/recommended', 'plugin:storybook/recommended'],
+  extends: [
+    'airbnb-typescript',
+    'prettier',
+    'plugin:prettier/recommended',
+    'plugin:storybook/recommended',
+  ],
   plugins: ['@typescript-eslint', 'import', 'prettier'],
   parser: '@typescript-eslint/parser',
   rules: {
@@ -429,5 +434,6 @@ module.exports = {
     'electron-builder-mas.js',
     'jest-resolver.js',
     'resources/resources.d.ts',
+    'stories/**',
   ],
 };
