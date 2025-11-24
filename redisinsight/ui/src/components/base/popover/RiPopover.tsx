@@ -18,6 +18,7 @@ export const RiPopover = ({
   panelClassName,
   className,
   maxWidth = '100%',
+  standalone = false,
   ...props
 }: RiPopoverProps) => {
   // Warn if both button and trigger are provided
@@ -41,15 +42,20 @@ export const RiPopover = ({
   const activeClassName = className ?? panelClassName
 
   // Render trigger element
-  // For new API (trigger): React elements render directly, scalars wrap in span
-  // For old API (button): Always wrap in span (backwards compatibility)
-  const triggerElement =
-    trigger !== undefined && React.isValidElement(activeTrigger) ? (
-      activeTrigger
-    ) : (
-      <span className={anchorClassName}>{activeTrigger}</span>
-    )
+  // If standalone is true, the trigger will be standalone and will not be wrapped in a span
+  // for this to work properly, ether base trigger element is `div`, `span` etc. (base dom element)
+  // or a component that forwards ref
+  const triggerElement = standalone ? (
+    activeTrigger
+  ) : (
+    <span className={anchorClassName}>{activeTrigger}</span>
+  )
 
+  const placement =
+    anchorPosition && anchorPositionMap[anchorPosition]?.placement
+  const align = anchorPosition && anchorPositionMap[anchorPosition]?.align
+  // TODO: maybe use wrapped popover instead of inline style?!
+  const padding = panelPaddingSize && panelPaddingSizeMap[panelPaddingSize]
   return (
     <Popover
       {...props}
@@ -66,11 +72,11 @@ export const RiPopover = ({
       className={activeClassName}
       maxWidth={maxWidth}
       style={{
-        padding: panelPaddingSize && panelPaddingSizeMap[panelPaddingSize],
+        padding,
       }}
       autoFocus={ownFocus}
-      placement={anchorPosition && anchorPositionMap[anchorPosition]?.placement}
-      align={anchorPosition && anchorPositionMap[anchorPosition]?.align}
+      placement={placement}
+      align={align}
     >
       {triggerElement}
     </Popover>

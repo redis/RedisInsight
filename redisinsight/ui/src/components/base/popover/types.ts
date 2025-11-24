@@ -27,9 +27,11 @@ export type RiPopoverProps = Omit<
   anchorPosition?: AnchorPosition
   panelPaddingSize?: PanelPaddingSize
   anchorClassName?: string
-  /* @deprecated - use @see{className} - this is popover content wrapper class name */
+  /* @deprecated - use @see {@link className} - this is popover content wrapper class name */
   panelClassName?: string
-  // new preferred prop for popover content wrapper class name (optional)
+  /* new preferred prop for popover content wrapper class name (optional) */
   className?: string
   'data-testid'?: string
+  /* if true, the trigger will be standalone and will not be wrapped in a span */
+  standalone?: boolean
 }
