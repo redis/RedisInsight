@@ -7,7 +7,7 @@ import {
   RdiPipelineValidationException,
 } from 'src/modules/rdi/exceptions';
 import { RdiPipelineForbiddenException } from './rdi-pipeline.forbidden.exception';
-import { RdiPipelineBadRequestException } from "src/modules/rdi/exceptions/rdi-pipeline.bad-request.exception";
+import { RdiPipelineBadRequestException } from 'src/modules/rdi/exceptions/rdi-pipeline.bad-request.exception';
 
 export const parseErrorMessage = (error: AxiosError<any>): string => {
   const data = error.response?.data;
