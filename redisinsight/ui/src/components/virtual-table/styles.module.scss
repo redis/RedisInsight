@@ -102,9 +102,6 @@ $footerHeight: 38px;
   :global(.table-row-selected) {
     background: var(--browserComponentActive) !important;
 
-    * {
-      color: var(--euiColorFullShade) !important;
-    }
 
     & > div:first-of-type {
       border-left: 3px solid transparent;
