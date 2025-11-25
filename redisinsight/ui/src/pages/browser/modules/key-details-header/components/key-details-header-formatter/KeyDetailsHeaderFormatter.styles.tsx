@@ -59,14 +59,6 @@ const Container = styled.div<{
   transition: transform 0.3s ease;
   overflow: hidden;
 
-  &:hover {
-    transform: translateY(-1px);
-  }
-
-  &:active {
-    transform: translateY(1px);
-  }
-
   [class*='TriggerContainer'] {
     height: 100%;
   }
