@@ -20,12 +20,9 @@ import { TutorialsIds } from 'uiSrc/constants'
 
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Title } from 'uiSrc/components/base/text/Title'
-import { RiImage } from 'uiSrc/components/base/display'
-import { Row } from 'uiSrc/components/base/layout/flex'
+import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import LoadSampleData from '../load-sample-data'
-import { AddKeysManuallyButton } from './NoKeysFound.styles'
-
-import styles from './styles.module.scss'
+import { AddKeysManuallyButton, StyledImage } from './NoKeysFound.styles'
 
 export interface Props {
   onAddKeyPanel: (value: boolean) => void
@@ -61,10 +58,10 @@ const NoKeysFound = (props: Props) => {
   }
 
   return (
-    <div className={styles.container} data-testid="no-result-found-msg">
-      <RiImage className={styles.img} src={NoDataImg} alt="no results" />
+    <Col align="center" data-testid="no-result-found-msg">
+      <StyledImage src={NoDataImg} alt="no results" />
       <Spacer />
-      <Title color="primary" className={styles.title} size="S">
+      <Title color="primary" size="XL">
         Let&apos;s start working
       </Title>
       <Spacer />
@@ -77,7 +74,7 @@ const NoKeysFound = (props: Props) => {
           + Add key manually
         </AddKeysManuallyButton>
       </Row>
-    </div>
+    </Col>
   )
 }
 
