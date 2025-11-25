@@ -21,6 +21,8 @@ import { TutorialsIds } from 'uiSrc/constants'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import { PlusIcon } from 'uiSrc/components/base/icons'
+
 import LoadSampleData from '../load-sample-data'
 import { AddKeysManuallyButton, StyledImage } from './NoKeysFound.styles'
 
@@ -68,10 +70,11 @@ const NoKeysFound = (props: Props) => {
       <Row gap="m" align="center">
         <LoadSampleData onSuccess={onSuccessLoadData} />
         <AddKeysManuallyButton
+          icon={PlusIcon}
           onClick={() => onAddKeyPanel(true)}
           data-testid="add-key-msg-btn"
         >
-          + Add key manually
+          Add key manually
         </AddKeysManuallyButton>
       </Row>
     </Col>
