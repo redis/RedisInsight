@@ -11,20 +11,4 @@
   .title {
     font-size: 28px !important;
   }
-
-  .addKey {
-    height: 36px !important;
-    width: auto !important;
-    margin-left: 12px;
-
-    transition: color ease 0.3s, background-color ease 0.3s, transform ease 0.3s;
-
-    &:hover {
-      transform: translateY(-1px) !important;
-    }
-
-    :global(.euiButton__text) {
-      font-size: 14px !important;
-    }
-  }
 }

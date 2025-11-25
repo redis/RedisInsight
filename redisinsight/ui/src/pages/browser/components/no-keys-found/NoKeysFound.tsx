@@ -19,11 +19,11 @@ import { SCAN_TREE_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { TutorialsIds } from 'uiSrc/constants'
 
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { RiImage } from 'uiSrc/components/base/display'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import LoadSampleData from '../load-sample-data'
+import { AddKeysManuallyButton } from './NoKeysFound.styles'
 
 import styles from './styles.module.scss'
 
@@ -68,15 +68,14 @@ const NoKeysFound = (props: Props) => {
         Let&apos;s start working
       </Title>
       <Spacer />
-      <Row gap="m">
+      <Row gap="m" align="center">
         <LoadSampleData onSuccess={onSuccessLoadData} />
-        <EmptyButton
+        <AddKeysManuallyButton
           onClick={() => onAddKeyPanel(true)}
-          className={styles.addKey}
           data-testid="add-key-msg-btn"
         >
           + Add key manually
-        </EmptyButton>
+        </AddKeysManuallyButton>
       </Row>
     </div>
   )
