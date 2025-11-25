@@ -256,6 +256,7 @@ const QueryCardHeader = (props: Props) => {
           anchorClassName={styles.changeViewWrapper}
         >
           <RiIcon
+            size="m"
             type={theme === Theme.Dark ? iconDark : iconLight}
             data-testid={`view-type-selected-${value}-${id}`}
           />
@@ -263,7 +264,7 @@ const QueryCardHeader = (props: Props) => {
       ),
       dropdownDisplay: (
         <div className={cx(styles.dropdownOption)}>
-          <RiIcon type={theme === Theme.Dark ? iconDark : iconLight} />
+          <RiIcon type={theme === Theme.Dark ? iconDark : iconLight} size="m" />
           <span>{truncateText(text, 20)}</span>
         </div>
       ),
