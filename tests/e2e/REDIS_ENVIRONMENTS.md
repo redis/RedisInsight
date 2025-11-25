@@ -12,7 +12,7 @@ docker-compose -f rte.docker-compose.yml up -d
 
 ### 2. Start VPN (Required for Clusters and Sentinel)
 ```bash
-docker-compose -f rte.networks.docker-compose.yml -f vpn.docker-compose.yml up -d
+docker-compose -f vpn.docker-compose.yml up -d
 ```
 
 ### 3. Connect to VPN
