@@ -192,5 +192,5 @@ export const useInfiniteNotifications = () => {
         clearTimeout(autoDismissTimeoutRef.current)
       }
     }
-  }, [notificationsData, dispatch])
+  }, [notificationsData])
 }
