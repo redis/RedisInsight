@@ -1,13 +1,3 @@
-.baseGroup {
-  background-color: var(--browserTableRowEven);
-
-  :global {
-    .group-header {
-      font-weight: 500 !important;
-    }
-  }
-}
-
 .innerContainer {
   @include eui.scrollBar;
   overflow: auto;
