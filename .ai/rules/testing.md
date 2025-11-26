@@ -1,3 +1,7 @@
+---
+alwaysApply: true
+---
+
 # Testing Standards and Practices
 
 ## Core Principles

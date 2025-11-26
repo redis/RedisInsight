@@ -1,3 +1,7 @@
+---
+alwaysApply: true
+---
+
 # Commit Message Guidelines
 
 Follow **Conventional Commits** format:

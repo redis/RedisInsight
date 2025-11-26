@@ -1,3 +1,7 @@
+---
+alwaysApply: true
+---
+
 # Frontend Development (React/Redux)
 
 ## Component Structure

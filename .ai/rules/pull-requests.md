@@ -1,3 +1,7 @@
+---
+alwaysApply: true
+---
+
 # Pull Request Guidelines
 
 ## Creating a PR

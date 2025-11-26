@@ -1,3 +1,7 @@
+---
+alwaysApply: true
+---
+
 # Branch Naming Conventions
 
 Use lowercase kebab-case with type prefix and issue/ticket identifier:

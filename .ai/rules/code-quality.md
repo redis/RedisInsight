@@ -1,3 +1,7 @@
+---
+alwaysApply: true
+---
+
 # Code Quality Standards
 
 ## Critical Rules

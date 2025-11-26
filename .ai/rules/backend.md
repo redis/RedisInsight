@@ -1,3 +1,7 @@
+---
+alwaysApply: true
+---
+
 # Backend Development (NestJS/API)
 
 ## Module Structure
