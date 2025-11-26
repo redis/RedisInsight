@@ -26,6 +26,7 @@ const CreateTutorialLink = () => {
       underline
       size="S"
       variant="inline"
+      color="subdued"
       onClick={onClickReadMore}
       href={EXTERNAL_LINKS.guidesRepo}
       data-testid="read-more-link"
