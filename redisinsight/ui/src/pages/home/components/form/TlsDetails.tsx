@@ -191,7 +191,8 @@ const TlsDetails = (props: Props) => {
             <Checkbox
               id={sslId}
               name="tls"
-              label={<Text>Use TLS</Text>}
+              label="Use TLS"
+              labelSize="M"
               checked={!!formik.values.tls}
               onChange={formik.handleChange}
               data-testid="tls"
@@ -207,6 +208,7 @@ const TlsDetails = (props: Props) => {
               <Checkbox
                 id={sni}
                 name="sni"
+                labelSize="M"
                 label="Use SNI"
                 checked={!!formik.values.sni}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => {
@@ -251,6 +253,7 @@ const TlsDetails = (props: Props) => {
                 id={verifyTlsId}
                 name="verifyServerTlsCert"
                 label="Verify TLS Certificate"
+                labelSize="M"
                 checked={!!formik.values.verifyServerTlsCert}
                 onChange={formik.handleChange}
                 data-testid="verify-tls-cert"
@@ -333,6 +336,7 @@ const TlsDetails = (props: Props) => {
               id={isTlsAuthId}
               name="tlsClientAuthRequired"
               label="Requires TLS Client Authentication"
+              labelSize="M"
               checked={!!formik.values.tlsClientAuthRequired}
               onChange={(e: ChangeEvent<HTMLInputElement>) =>
                 formik.setFieldValue('tlsClientAuthRequired', e.target.checked)
