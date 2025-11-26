@@ -31,6 +31,13 @@ Describe how to test the changes.
 Closes #RI-123
 ```
 
+**PR Description Guidelines:**
+
+- **Keep it concise** - Avoid verbose descriptions
+- **Focus on high-level changes** - Don't list every code change in the #What section
+- **Brief and to the point** - The diff shows the details; describe the "why" and "what" at a high level
+- **Technical decisions** - Only mention significant architectural or design decisions if relevant
+
 ## Review Process
 
 ### As PR Author
