@@ -22,7 +22,7 @@ export const StyledInnerSidePanel = styled(Col)<{ isFullScreen?: boolean }>`
   background-color: ${({ theme }) =>
     theme.semantic.color.background.neutral100};
   border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
-  border-radius: 8px;
+  border-radius: ${({ theme }) => theme.core.space.space100};
   padding: ${({ theme }) => theme.core.space.space100};
   height: 100%;
 `
