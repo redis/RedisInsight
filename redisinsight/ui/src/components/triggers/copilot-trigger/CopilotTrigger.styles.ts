@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 
 import { FlexGroup } from 'uiSrc/components/base/layout/flex'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
@@ -20,10 +20,8 @@ export const CopilotIconButton = styled(IconButton)<
     color: ${({ theme }) => theme.semantic.color.text.attention600};
   }
 
-  ${({ isOpen }) =>
-    isOpen &&
-    css`
-      background-color: ${({ theme }) =>
-        theme.semantic.color.background.primary200};
-    `}
+  ${({ isOpen, theme }) =>
+    isOpen
+      ? `background-color: ${theme.semantic.color.background.primary200};`
+      : ''}
 `

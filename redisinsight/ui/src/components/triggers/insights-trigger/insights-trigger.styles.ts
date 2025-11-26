@@ -1,14 +1,14 @@
-import styled, { css } from "styled-components"
+import styled from 'styled-components'
 
-import { IconButton } from "uiSrc/components/base/forms/buttons"
-import { IconButtonProps } from "uiSrc/components/base/forms/buttons/IconButton"
+import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { IconButtonProps } from 'uiSrc/components/base/forms/buttons/IconButton'
 
 export const BulbWrapper = styled.div`
   position: relative;
 `
 
 export const BulbHighlighting = styled.span`
-  // TODO: Using the background color from the previous value until there is an appropriate color 
+  // TODO: Using the background color from the previous value until there is an appropriate color
   // from the pallete to use for both light and dark themes.
   background-color: #ffaf2b;
   position: absolute;
@@ -31,10 +31,8 @@ export const BulbIconButton = styled(IconButton)<
     height: 21px;
   }
 
-  ${({ isOpen }) =>
-    isOpen &&
-    css`
-      background-color: ${({ theme }) =>
-        theme.semantic.color.background.primary200} !important;
-    `}
+  ${({ isOpen, theme }) =>
+    isOpen
+      ? `background-color: ${theme.semantic.color.background.primary200} !important;`
+      : ''}
 `
