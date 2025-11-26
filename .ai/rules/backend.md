@@ -62,10 +62,6 @@ export const FEATURE_ERROR_MESSAGES = {
 } as const;
 ```
 
-### Barrel Files
-
-Use barrel files (`index.ts`) for exporting **3 or more** related items only.
-
 ### Imports Order
 
 1. Node.js built-in modules
@@ -157,28 +153,6 @@ this.logger.error('Error message', error.stack, { context })
 - Handle errors gracefully
 - Log Redis operations
 - Use try-catch for error handling
-
-## Database Operations
-
-### Transactions
-
-Use QueryRunner for transactions:
-
-```typescript
-const queryRunner = this.dataSource.createQueryRunner();
-await queryRunner.connect();
-await queryRunner.startTransaction();
-
-try {
-  // operations
-  await queryRunner.commitTransaction();
-} catch (error) {
-  await queryRunner.rollbackTransaction();
-  throw error;
-} finally {
-  await queryRunner.release();
-}
-```
 
 ## Code Quality
 
