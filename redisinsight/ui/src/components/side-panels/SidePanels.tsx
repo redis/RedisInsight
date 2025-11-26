@@ -32,7 +32,7 @@ import { isAnyFeatureEnabled } from 'uiSrc/utils/features'
 
 import { CopilotPanel, InsightsPanel } from './components'
 
-import { StyledInnerSidePanel, StyledSidePanel } from './styles.module'
+import { StyledInnerSidePanel, StyledSidePanel } from './SidePanels.styles'
 
 export interface Props {
   panelClassName?: string
