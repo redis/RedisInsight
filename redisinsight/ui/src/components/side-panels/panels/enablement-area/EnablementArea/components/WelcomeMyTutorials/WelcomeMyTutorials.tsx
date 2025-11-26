@@ -3,29 +3,25 @@ import React from 'react'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Card } from 'uiSrc/components/base/layout'
 import CreateTutorialLink from '../CreateTutorialLink'
-
-import styles from './styles.module.scss'
+import { StyledRow } from './styles.module'
 
 export interface Props {
   handleOpenUpload: () => void
 }
 
 const WelcomeMyTutorials = ({ handleOpenUpload }: Props) => (
-  <div className={styles.wrapper} data-testid="welcome-my-tutorials">
-    <Card className={styles.panel}>
-      <div className={styles.link}>
-        <CreateTutorialLink />
-      </div>
+  <Card data-testid="welcome-my-tutorials">
+    <StyledRow justify="around">
+      <CreateTutorialLink />
       <PrimaryButton
-        className={styles.btnSubmit}
         size="s"
         onClick={() => handleOpenUpload()}
         data-testid="upload-tutorial-btn"
       >
-        + Upload <span className={styles.hideText}>tutorial</span>
+        + Upload tutorial
       </PrimaryButton>
-    </Card>
-  </div>
+    </StyledRow>
+  </Card>
 )
 
 export default WelcomeMyTutorials
