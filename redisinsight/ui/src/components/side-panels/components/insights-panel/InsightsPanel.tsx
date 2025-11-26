@@ -18,7 +18,8 @@ import {
   TELEMETRY_EMPTY_VALUE,
   TelemetryEvent,
 } from 'uiSrc/telemetry'
-import { Col } from 'uiSrc/components/base/layout/flex'
+import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import { Text } from 'uiSrc/components/base/text'
 import styles from 'uiSrc/components/side-panels/styles.module.scss'
 
 export interface Props {
@@ -90,9 +91,9 @@ const InsightsPanel = (props: Props) => {
         onClose={onClose}
         panelName="insights"
       >
-        <div className={styles.titleWrapper}>
-          <span className={styles.title}>Insights</span>
-        </div>
+        <Row>
+          <Text size="L" color="primary">Insights</Text>
+        </Row>
       </Header>
       <Col className={styles.body}>
         <Tabs

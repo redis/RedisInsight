@@ -32,7 +32,6 @@ import { isAnyFeatureEnabled } from 'uiSrc/utils/features'
 
 import { CopilotPanel, InsightsPanel } from './components'
 
-import styles from './styles.module.scss'
 import { StyledInnerSidePanel, StyledSidePanel } from './styles.module'
 
 export interface Props {
