@@ -277,7 +277,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
       deleteRunner.processIterationResults(keys, results);
 
       expect(addProcessedSpy).toHaveBeenCalledWith(3);
-      expect(addKeysSpy).toHaveBeenCalledWith(keys);
+      expect(addKeysSpy).toHaveBeenCalledWith([keys[0], keys[2]]);
 
       expect(addSuccessSpy).toHaveBeenNthCalledWith(1, 1); // first call
       expect(addSuccessSpy).toHaveBeenNthCalledWith(2, 1); // second call
