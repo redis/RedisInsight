@@ -32,12 +32,12 @@ import {
   appFeatureOnboardingSelector,
 } from 'uiSrc/slices/app/features'
 import { OnboardingSteps } from 'uiSrc/constants/onboarding'
-import { Spacer } from 'uiSrc/components/base/layout'
 import { FormValues } from '../UploadTutorialForm/UploadTutorialForm'
 
 import Group from '../Group'
 import InternalLink from '../InternalLink'
 import PlainText from '../PlainText'
+import { Col } from 'uiSrc/components/base/layout/flex'
 import UploadTutorialForm from '../UploadTutorialForm'
 import WelcomeMyTutorials from '../WelcomeMyTutorials'
 
@@ -180,17 +180,14 @@ const Navigation = (props: Props) => {
             {...args}
           >
             {isCustomTutorials && actions?.includes(EAItemActions.Create) && (
-              <div className={styles.customTuturoialsForm}>
+              <div>
                 {!isCreateOpen && children?.length === 0 && (
-                  <div>
+                  <Col gap="l">
                     <WelcomeMyTutorials
                       handleOpenUpload={() => setIsCreateOpen(true)}
                     />
-                    <Spacer />
-                    <div className={styles.uploadWarningContainer}>
-                      <UploadWarning />
-                    </div>
-                  </div>
+                    <UploadWarning />
+                  </Col>
                 )}
                 {isCreateOpen && (
                   <UploadTutorialForm
