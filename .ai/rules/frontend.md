@@ -20,7 +20,7 @@ Each component in its own directory under `**/ComponentName`:
 ```
 ComponentName/
   ComponentName.tsx          # Main component
-  ComponentName.style.ts     # Styled-components styles
+  ComponentName.styles.ts    # Styled-components styles (PascalCase)
   ComponentName.types.ts     # TypeScript interfaces
   ComponentName.spec.tsx     # Tests
   ComponentName.constants.ts # Constants
@@ -41,7 +41,7 @@ ComponentName/
 1. External dependencies (`react`, `redux`, etc.)
 2. Internal modules (aliases)
 3. Local imports (types, constants, hooks)
-4. Styles (always last: `import * as S from './Component.style'`)
+4. Styles (always last: `import { Container } from './Component.styles'`)
 
 ### Barrel Files
 
@@ -51,21 +51,75 @@ Use barrel files (`index.ts`) only when exporting **3 or more** items. Make sure
 
 **We are migrating to styled-components** (deprecating SCSS modules).
 
-### Encapsulate Styles in .style.ts
+### Encapsulate Styles in .styles.ts
 
-Keep all component styles in dedicated `.style.ts` files using styled-components.
+Keep all component styles in dedicated `.styles.ts` files using styled-components. Use PascalCase for the filename to match the component name:
+
+```
+ComponentName/
+  ComponentName.tsx
+  ComponentName.styles.ts  # ✅ PascalCase
+  # Not component-name.styles.ts ❌
+```
 
 ### Import Pattern
 
 ```typescript
-import * as S from './Component.style'
+import { Container, Title, Content } from './Component.styles'
 
 return (
-  <S.Container>
-    <S.Title>Title</S.Title>
-    <S.Content>Content</S.Content>
-  </S.Container>
+  <Container>
+    <Title>Title</Title>
+    <Content>Content</Content>
+  </Container>
 )
+```
+
+### Use Layout Components Instead of div
+
+**Prefer `FlexGroup` over `div`** when creating flex containers:
+
+```typescript
+// ✅ GOOD: Use FlexGroup
+import { FlexGroup } from 'uiSrc/components/base/layout/flex'
+
+export const Wrapper = styled(FlexGroup)`
+  user-select: none;
+`
+
+// Usage: Pass layout props as component props
+<Wrapper align="center" justify="end">
+  {children}
+</Wrapper>
+
+// ❌ BAD: Using div with hardcoded flex properties
+export const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+`
+```
+
+### Pass Layout Props as Component Props
+
+**Don't hardcode layout properties** in styled components when using layout components like `FlexGroup`. Pass them as props instead:
+
+```typescript
+// ✅ GOOD: Pass props in JSX
+export const Wrapper = styled(FlexGroup)`
+  user-select: none;
+`
+
+<Wrapper align="center" justify="end">
+  {children}
+</Wrapper>
+
+// ❌ BAD: Hardcoding in styled component
+export const Wrapper = styled(FlexGroup)`
+  align-items: center;
+  justify-content: flex-end;
+  user-select: none;
+`
 ```
 
 ### Conditional Styling
@@ -76,6 +130,38 @@ Use `$` prefix for transient props that shouldn't pass to DOM:
 export const Button = styled.button<{ $isActive?: boolean }>`
   background-color: ${({ $isActive }) => ($isActive ? '#007bff' : '#6c757d')};
 `;
+```
+
+### Avoid !important
+
+**Never use `!important` in styled-components**. Styled-components handles CSS specificity through component hierarchy. If you need to override styles, use more specific selectors or adjust the component structure:
+
+```typescript
+// ✅ GOOD: Rely on CSS specificity
+export const IconButton = styled(IconButton)<{ isOpen: boolean }>`
+  ${({ isOpen }) =>
+    isOpen &&
+    css`
+      background-color: ${({ theme }) =>
+        theme.semantic.color.background.primary200};
+    `}
+`;
+
+// ❌ BAD: Using !important
+export const IconButton = styled(IconButton)`
+  background-color: ${({ theme }) =>
+    theme.semantic.color.background.primary200} !important;
+`;
+```
+
+### Verify Type System Compatibility
+
+When using layout components or other typed components, verify your prop values match the type system:
+
+```typescript
+// Check the component's type definitions
+// FlexGroup accepts: align?: 'center' | 'stretch' | 'baseline' | 'start' | 'end'
+// Use valid values from the type system
 ```
 
 ## State Management (Redux)
@@ -234,3 +320,5 @@ Create a test store with `configureStore` for components connected to Redux.
 4. **Type Safety**: Always define proper types, never `any`
 5. **Testability**: Structure for easy testing with `renderComponent` helper
 6. **Styled Components**: Prefer styled-components over SCSS modules
+7. **Layout Components**: Use FlexGroup instead of div for flex containers, pass layout props as component props
+8. **Type Safety**: Verify prop values match component type definitions (e.g., FlexGroup's align/justify values)
