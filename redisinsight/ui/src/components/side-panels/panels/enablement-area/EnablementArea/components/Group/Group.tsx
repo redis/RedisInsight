@@ -136,10 +136,6 @@ const Group = (props: Props) => {
         </Row>
       }
       onOpenChange={handleOpen}
-      style={{
-        whiteSpace: 'nowrap',
-        width: 'auto',
-      }}
       className={cx({ withBorder })}
       actions={isShowActions ? actionsContent : null}
     >
