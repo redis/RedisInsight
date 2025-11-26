@@ -17,7 +17,11 @@ import SubscribeForm from '../../subscribe-form'
 import PatternsInfo from '../../patternsInfo'
 import { Wrapper } from './MessagesListTable.styles'
 import { Table } from 'uiSrc/components/base/layout/table'
-import { PUB_SUB_TABLE_COLUMNS } from './MessagesListTable.config'
+import {
+  getDefaultPagination,
+  handlePaginationChange,
+  PUB_SUB_TABLE_COLUMNS,
+} from './MessagesListTable.config'
 import { PubSubTableColumn } from './MessagesListTable.constants'
 
 const MessagesListTable = () => {
@@ -81,6 +85,8 @@ const MessagesListTable = () => {
             enableSorting
             paginationEnabled
             defaultSorting={[{ id: PubSubTableColumn.Timestamp, desc: true }]}
+            onPaginationChange={handlePaginationChange}
+            defaultPagination={getDefaultPagination()}
             emptyState="No messages published yet"
           />
         </div>

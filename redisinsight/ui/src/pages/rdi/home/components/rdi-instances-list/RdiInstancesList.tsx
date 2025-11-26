@@ -5,7 +5,9 @@ import { Table } from 'uiSrc/components/base/layout/table'
 import useRdiInstancesListData from './hooks/useRdiInstancesListData'
 import {
   handleCheckConnectToRdiInstance,
+  handlePaginationChange,
   handleSortingChange,
+  getDefaultPagination,
 } from './methods/handlers'
 import { getDefaultSorting } from './methods/sortingAdapters'
 import BulkItemsActions from './components/BulkItemsActions/BulkItemsActions'
@@ -36,6 +38,8 @@ const RdiInstancesList = () => {
         rowSelection={rowSelection}
         onSortingChange={handleSortingChange}
         defaultSorting={getDefaultSorting()}
+        onPaginationChange={handlePaginationChange}
+        defaultPagination={getDefaultPagination()}
         maxHeight="60rem"
       />
       <BulkItemsActions items={selectedInstances} onClose={resetRowSelection} />
