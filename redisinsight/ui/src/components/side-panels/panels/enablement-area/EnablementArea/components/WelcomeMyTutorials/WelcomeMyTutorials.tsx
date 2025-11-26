@@ -3,7 +3,7 @@ import React from 'react'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Card } from 'uiSrc/components/base/layout'
 import CreateTutorialLink from '../CreateTutorialLink'
-import { StyledRow } from './styles.module'
+import { StyledRow, TutorialText } from './styles.module'
 
 export interface Props {
   handleOpenUpload: () => void
@@ -18,7 +18,7 @@ const WelcomeMyTutorials = ({ handleOpenUpload }: Props) => (
         onClick={() => handleOpenUpload()}
         data-testid="upload-tutorial-btn"
       >
-        + Upload tutorial
+        + Upload <TutorialText>tutorial</TutorialText>
       </PrimaryButton>
     </StyledRow>
   </Card>
