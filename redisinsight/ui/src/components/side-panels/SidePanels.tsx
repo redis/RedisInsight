@@ -33,6 +33,7 @@ import { isAnyFeatureEnabled } from 'uiSrc/utils/features'
 import { CopilotPanel, InsightsPanel } from './components'
 
 import styles from './styles.module.scss'
+import { StyledInnerSidePanel, StyledSidePanel } from './styles.module'
 
 export interface Props {
   panelClassName?: string
@@ -148,13 +149,12 @@ const SidePanelsWrapper = (props: Props) => {
   return (
     <>
       {!!openedPanel && (
-        <div
-          className={cx(styles.panel, panelClassName, {
-            [styles.fullScreen]: isFullScreen,
-          })}
+        <StyledSidePanel
+          isFullScreen={isFullScreen}
+          className={cx(panelClassName)}
           data-testid={`side-panels-${openedPanel}`}
         >
-          <div className={styles.panelInner}>
+          <StyledInnerSidePanel>
             {openedPanel === SidePanels.AiAssistant && (
               <CopilotPanel
                 isFullScreen={isFullScreen}
@@ -169,8 +169,8 @@ const SidePanelsWrapper = (props: Props) => {
                 onClose={handleClose}
               />
             )}
-          </div>
-        </div>
+          </StyledInnerSidePanel>
+        </StyledSidePanel>
       )}
     </>
   )

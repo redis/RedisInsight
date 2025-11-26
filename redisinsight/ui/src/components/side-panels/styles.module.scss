@@ -1,29 +1,5 @@
 $animation-duration: 300ms;
 
-.panel {
-  height: 100%;
-  width: 100%;
-  padding-right: 16px;
-
-  &.fullScreen {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    padding-left: 16px;
-    z-index: 1001;
-  }
-}
-
-.panelInner {
-  background-color: var(--euiColorEmptyShade);
-  height: 100%;
-  width: 100%;
-
-  display: flex;
-  flex-direction: column;
-}
-
 .titleWrapper {
   display: flex;
   flex-grow: 1;
