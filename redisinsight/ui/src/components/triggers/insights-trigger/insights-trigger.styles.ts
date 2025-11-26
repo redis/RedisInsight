@@ -10,7 +10,7 @@ export const BulbWrapper = styled.div`
 export const BulbHighlighting = styled.span`
   // TODO: Using the background color from the previous value until there is an appropriate color
   // from the pallete to use for both light and dark themes.
-  background-color: #ffaf2b;
+  background-color: ${({ theme }) => theme.semantic.color.text.attention600};
   position: absolute;
   left: 5px;
   top: 5px;
