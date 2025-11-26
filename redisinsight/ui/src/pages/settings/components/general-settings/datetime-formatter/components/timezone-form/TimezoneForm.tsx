@@ -62,19 +62,17 @@ const TimezoneForm = () => {
 
   return (
     <form onSubmit={formik.handleSubmit} data-testid="format-timezone-form">
-      <div>
-        <RiSelect
-          style={{ width: 240 }}
-          options={timezoneOptions.map((option) => ({
-            ...option,
-            'data-test-subj': `zone-option-${option.value}`,
-          }))}
-          value={formik.values.timezone}
-          valueRender={defaultValueRender}
-          onChange={(option) => onTimezoneChange(option)}
-          data-test-subj="select-timezone"
-        />
-      </div>
+      <RiSelect
+        style={{ width: 240 }}
+        options={timezoneOptions.map((option) => ({
+          ...option,
+          'data-test-subj': `zone-option-${option.value}`,
+        }))}
+        value={formik.values.timezone}
+        valueRender={defaultValueRender}
+        onChange={(option) => onTimezoneChange(option)}
+        data-test-subj="select-timezone"
+      />
     </form>
   )
 }
