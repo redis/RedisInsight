@@ -9,8 +9,8 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { InfiniteMessagesIds } from '../components'
 import { defaultContainerId, ONE_HOUR } from '../constants'
 
-const DISPLAY_THROTTLE = 3000 // 3 seconds - minimum time between displaying notifications
-const AUTO_DISMISS_DELAY = 30000 // 30 seconds - wait before auto-dismissing when no notifications remain
+const DISPLAY_THROTTLE = 3_000 // 3 seconds - minimum time between displaying notifications
+const AUTO_DISMISS_DELAY = 5_000 // 5 seconds - wait before auto-dismissing when no notifications remain
 
 const showNotification = (notification: InfiniteMessage) => {
   if (!notification) {
