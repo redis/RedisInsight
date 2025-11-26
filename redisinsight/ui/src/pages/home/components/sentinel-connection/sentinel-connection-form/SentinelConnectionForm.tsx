@@ -22,7 +22,7 @@ import {
 import { RiTooltip } from 'uiSrc/components'
 import { Row } from 'uiSrc/components/base/layout/flex'
 
-import { ContentWrapper, ScrollableWrapper } from '../../styles.module'
+import { ContentWrapper, ScrollableWrapper } from '../../ManualConnection.styles'
 
 export interface Props {
   loading: boolean

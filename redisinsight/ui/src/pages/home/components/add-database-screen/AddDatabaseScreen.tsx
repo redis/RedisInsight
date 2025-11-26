@@ -27,7 +27,7 @@ import ConnectionUrl from './components/connection-url'
 import { Values } from './constants'
 import { CustomHorizontalRule } from './AddDatabaseScreen.styles'
 
-import { ScrollableWrapper } from '../styles.module'
+import { ScrollableWrapper } from '../ManualConnection.styles'
 
 export interface Props {
   onSelectOption: (type: AddDbType, db: Nullable<Record<string, any>>) => void

@@ -23,7 +23,7 @@ import { ColorText, Text } from 'uiSrc/components/base/text'
 import { Loader } from 'uiSrc/components/base/display'
 import ResultsLog from './components/ResultsLog'
 
-import { ScrollableWrapper } from '../styles.module'
+import { ScrollableWrapper } from '../ManualConnection.styles'
 
 export interface Props {
   onClose: () => void

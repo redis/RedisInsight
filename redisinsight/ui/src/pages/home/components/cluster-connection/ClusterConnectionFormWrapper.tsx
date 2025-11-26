@@ -16,7 +16,7 @@ import { useModalHeader } from 'uiSrc/contexts/ModalTitleProvider'
 import { Title } from 'uiSrc/components/base/text/Title'
 import ClusterConnectionForm from './cluster-connection-form/ClusterConnectionForm'
 
-import { ContentWrapper } from '../styles.module'
+import { ContentWrapper } from '../ManualConnection.styles'
 
 export interface Props {
   onClose?: () => void
