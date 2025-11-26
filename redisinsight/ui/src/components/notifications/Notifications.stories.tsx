@@ -27,32 +27,7 @@ const meta: Meta<typeof Notifications> = {
     },
   ],
 }
-/*
-- 10:32:30.550 notifications.ts:168 addInfiniteNotification {id: 'oAuthProgress', variation: 'credentials', message: {…}, description: {…}, customIcon: ƒ}
-- 10:32:30.551 notifications.ts:171 addInfiniteNotification add {id: 'oAuthProgress', variation: 'credentials', message: {…}, description: {…}, customIcon: ƒ}
-- 10:32:30.572 notifications.ts:168 addInfiniteNotification {id: 'oAuthProgress', variation: undefined, message: {…}, description: {…}, customIcon: ƒ}
-- 10:32:30.573 notifications.ts:174 addInfiniteNotification update {id: 'oAuthProgress', variation: undefined, message: {…}, description: {…}, customIcon: ƒ}
-- 10:32:32.078 notifications.ts:168 addInfiniteNotification {id: 'oAuthProgress', variation: 'subscription', message: {…}, description: {…}, customIcon: ƒ}
-- 10:32:32.079 notifications.ts:174 addInfiniteNotification update {id: 'oAuthProgress', variation: 'subscription', message: {…}, description: {…}, customIcon: ƒ}
-- 10:32:34.953 notifications.ts:168 addInfiniteNotification {id: 'subscriptionExists', message: 'Your subscription does not have a free Redis Cloud database.', description: 'Do you want to create a free database in your existing subscription?', actions: {…}, onClose: ƒ}
-- 10:32:34.953 notifications.ts:171 addInfiniteNotification add {id: 'subscriptionExists', message: 'Your subscription does not have a free Redis Cloud database.', description: 'Do you want to create a free database in your existing subscription?', actions: {…}, onClose: ƒ}
-- 10:32:34.954 notifications.ts:188 removeInfiniteNotification oAuthProgress
-- 10:32:34.954 notifications.ts:190 removeInfiniteNotification remove oAuthProgress
-- 10:32:34.955 notifications.ts:194 removeInfiniteNotification removed [Proxy(Object)]
-- 10:32:38.996 notifications.ts:168 addInfiniteNotification {id: 'subscriptionExists', message: 'Your subscription does not have a free Redis Cloud database.', description: 'Do you want to create a free database in your existing subscription?', actions: {…}, onClose: ƒ}
-- 10:32:38.997 notifications.ts:174 addInfiniteNotification update {id: 'subscriptionExists', message: 'Your subscription does not have a free Redis Cloud database.', description: 'Do you want to create a free database in your existing subscription?', actions: {…}, onClose: ƒ}
-- 10:32:38.998 notifications.ts:188 removeInfiniteNotification oAuthProgress
-- 10:32:49.035 notifications.ts:188 removeInfiniteNotification subscriptionExists
-- 10:32:49.035 notifications.ts:190 removeInfiniteNotification remove subscriptionExists
-- 10:32:49.035 notifications.ts:194 removeInfiniteNotification removed []
-- 10:33:01.764 notifications.ts:188 removeInfiniteNotification subscriptionExists
-- 10:33:01.764 notifications.ts:168 addInfiniteNotification {id: 'oAuthProgress', variation: 'credentials', message: {…}, description: {…}, customIcon: ƒ}
-- 10:33:01.764 notifications.ts:171 addInfiniteNotification add {id: 'oAuthProgress', variation: 'credentials', message: {…}, description: {…}, customIcon: ƒ}
-- 10:33:05.810 notifications.ts:188 removeInfiniteNotification subscriptionExists
-- 10:33:18.123 notifications.ts:188 removeInfiniteNotification oAuthProgress
-- 10:33:18.123 notifications.ts:190 removeInfiniteNotification remove oAuthProgress
-- 10:33:18.123 notifications.ts:194 removeInfiniteNotification removed []
- */
+/* Captured some logs of sequence of notifications for testing purposes, simulated here with setTimeout */
 type SampleNotification =
   | { ts: number; type: 'add'; nf: InfiniteMessage }
   | { ts: number; type: 'rm'; nf: string }
