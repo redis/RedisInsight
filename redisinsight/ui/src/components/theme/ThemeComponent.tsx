@@ -1,18 +1,21 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import {
   BrowserStorageItem,
   Theme,
   THEME_MATCH_MEDIA_DARK,
 } from 'uiSrc/constants'
 import { localStorageService } from 'uiSrc/services'
-import { ThemeContext } from 'uiSrc/contexts/themeContext'
+import { useThemeContext } from 'uiSrc/contexts/themeContext'
 
 const ThemeComponent = () => {
-  const themeContext = useContext(ThemeContext)
+  const themeContext = useThemeContext()
   useEffect(() => {
-    const handler = (event) => {
+    const handler = () => {
       let theme = localStorageService.get(BrowserStorageItem.theme)
-      if (theme === Theme.System) {
+      if (
+        themeContext.theme === Theme.System &&
+        themeContext.usingSystemTheme
+      ) {
         themeContext.changeTheme(theme)
       }
     }

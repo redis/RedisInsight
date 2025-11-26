@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { ThemeProvider as StyledThemeProvider } from 'styled-components'
 import {
   theme as redisUiOldTheme,
@@ -119,6 +119,14 @@ export class ThemeProvider extends React.Component<Props> {
       </ThemeContext.Provider>
     )
   }
+}
+
+export const useThemeContext = () => {
+  const context = useContext(ThemeContext)
+  if (context === undefined) {
+    throw new Error('useThemeContext must be used within a ThemeProvider')
+  }
+  return context
 }
 
 export default ThemeProvider
