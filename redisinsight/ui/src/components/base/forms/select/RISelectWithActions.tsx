@@ -5,8 +5,9 @@ export type SelectOptionActions = {
   actions?: JSX.Element
 }
 
-export interface Props extends SelectProps {
+export type Props = SelectProps & {
   options: (SelectOption & SelectOptionActions)[]
+  'data-testid'?: string
 }
 
 const CustomOptionWithAction = ({ option, content, ...restProps }: any) => {
@@ -28,9 +29,11 @@ const CustomOptionWithAction = ({ option, content, ...restProps }: any) => {
 }
 
 export const RISelectWithActions = (props: Props) => {
+  const { 'data-testid': dataTestId, ...restProps } = props
+
   return (
-    <Select.Compose {...props}>
-      <Select.Trigger />
+    <Select.Compose {...restProps}>
+      <Select.Trigger data-testid={dataTestId} />
       <Select.Content.Compose>
         <Select.Content.OptionList optionComponent={CustomOptionWithAction} />
       </Select.Content.Compose>
