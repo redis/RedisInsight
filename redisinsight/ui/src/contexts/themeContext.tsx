@@ -124,13 +124,9 @@ export class ThemeProvider extends React.Component<Props> {
     )
   }
 }
-
+ 
 export const useThemeContext = () => {
-  const context = useContext(ThemeContext)
-  if (context === undefined) {
-    throw new Error('useThemeContext must be used within a ThemeProvider')
-  }
-  return context
+  return useContext(ThemeContext)
 }
 
 export default ThemeProvider
