@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import {
   BrowserStorageItem,
   Theme,
@@ -9,11 +9,17 @@ import { useThemeContext } from 'uiSrc/contexts/themeContext'
 
 const ThemeComponent = () => {
   const themeContext = useThemeContext()
+  const themeContextRef = useRef(themeContext)
+
+  // Keep the ref updated with current context values
+  themeContextRef.current = themeContext
+
   useEffect(() => {
+    // TODO: do we really need this?
     const handler = () => {
       let theme = localStorageService.get(BrowserStorageItem.theme)
-      if (theme === Theme.System && themeContext.usingSystemTheme) {
-        themeContext.changeTheme(theme)
+      if (theme === Theme.System && themeContextRef.current.usingSystemTheme) {
+        themeContextRef.current.changeTheme(theme)
       }
     }
 

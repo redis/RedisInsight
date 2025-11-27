@@ -44,6 +44,10 @@ export const defaultState = {
   },
 }
 
+export const isValidTheme = (theme: unknown): theme is Theme => {
+  return typeof theme === 'string' && THEME_NAMES.includes(theme as Theme)
+}
+
 export const ThemeContext = React.createContext(defaultState)
 
 export class ThemeProvider extends React.Component<Props> {
@@ -57,7 +61,7 @@ export class ThemeProvider extends React.Component<Props> {
 
     if (queryTheme) {
       theme = queryTheme
-    } else if (storedThemeValue && THEME_NAMES.includes(storedThemeValue)) {
+    } else if (storedThemeValue && isValidTheme(storedThemeValue)) {
       theme = storedThemeValue
     }
 
