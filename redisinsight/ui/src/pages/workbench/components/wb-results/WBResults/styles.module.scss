@@ -1,12 +1,10 @@
 .wrapper {
   flex: 1;
-  height: calc(100% - var(--border-radius-medium));
   width: 100%;
+  height: 100%;
   background-color: var(--euiColorEmptyShade);
   border: 1px solid var(--euiColorLightShade);
   border-radius: var(--border-radius-medium);
-  // HACK: to fix rectangle like view in rounded borders wrapper
-  padding-bottom: var(--border-radius-medium);
 
   display: flex;
   flex-direction: column;
