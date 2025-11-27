@@ -12,6 +12,9 @@ import { CopilotTrigger, InsightsTrigger } from 'uiSrc/components/triggers'
 
 import { FlexGroup, FlexItem } from 'uiSrc/components/base/layout/flex'
 import styles from './styles.module.scss'
+import { ProgressBarLoader } from 'uiSrc/components/base/display'
+import { instancesSelector as databaseInstancesSelector } from 'uiSrc/slices/instances/instances'
+import { instancesSelector as rdiInstancesSelector } from 'uiSrc/slices/rdi/instances'
 
 export interface Props {
   children: React.ReactNode
@@ -29,8 +32,16 @@ const HomePageTemplate = (props: Props) => {
     documentationChatFeature,
   ])
 
+  const { loading: instancesLoading } = useSelector(databaseInstancesSelector)
+  const { loading: rdiLoading } = useSelector(rdiInstancesSelector)
+
+  const loading = instancesLoading || rdiLoading
+
   return (
     <>
+      {loading && (
+        <ProgressBarLoader color="primary" data-testid="progress-key-stream" />
+      )}
       <div className={styles.pageDefaultHeader}>
         <HomeTabs />
         <FlexGroup gap="l">

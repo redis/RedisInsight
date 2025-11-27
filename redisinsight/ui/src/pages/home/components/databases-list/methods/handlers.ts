@@ -27,6 +27,15 @@ export const handleCheckConnectToInstance = async (instance: Instance) => {
   const { id, provider, modules } = instance
   const { contextInstanceId } = appContextSelector(store.getState())
 
+  dispatch(
+    checkConnectToInstanceAction(
+      id,
+      connectToInstance,
+      undefined,
+      contextInstanceId !== id,
+    ),
+  )
+
   const modulesSummary = getRedisModulesSummary(modules)
   const infoData = await getRedisInfoSummary(id)
 
@@ -40,15 +49,6 @@ export const handleCheckConnectToInstance = async (instance: Instance) => {
       ...infoData,
     },
   })
-
-  dispatch(
-    checkConnectToInstanceAction(
-      id,
-      connectToInstance,
-      undefined,
-      contextInstanceId !== id,
-    ),
-  )
 }
 
 export const handleSortingChange = (sorting: SortingState) => {

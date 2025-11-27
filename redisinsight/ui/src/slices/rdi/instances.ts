@@ -29,7 +29,7 @@ import {
 } from '../interfaces/rdi'
 
 export const initialState: InitialStateRdiInstances = {
-  loading: true,
+  loading: false,
   error: '',
   data: [],
   shownColumns: DEFAULT_RDI_SHOWN_COLUMNS,
