@@ -84,7 +84,7 @@ export const useInfiniteNotifications = () => {
   const currentToastRef = useRef<ReturnType<typeof riToast> | null>(null)
   const pendingNotificationRef = useRef<InfiniteMessage | null>(null)
   const displayTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const autoDismissTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const autoDismissTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const previousNotificationsLengthRef = useRef<number>(0)
 
   const displayNotification = (notification: InfiniteMessage) => {
