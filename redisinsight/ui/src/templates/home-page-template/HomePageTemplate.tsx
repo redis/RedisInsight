@@ -40,7 +40,7 @@ const HomePageTemplate = (props: Props) => {
   return (
     <>
       {loading && (
-        <ProgressBarLoader color="primary" data-testid="progress-key-stream" />
+        <ProgressBarLoader color="primary" data-testid="progress-key-stream" absolute />
       )}
       <div className={styles.pageDefaultHeader}>
         <HomeTabs />
