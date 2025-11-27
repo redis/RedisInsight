@@ -34,10 +34,3 @@ export const SwitchExtrapolateResults = styled(SwitchInput)`
 export const SectionTitle = styled(Title)`
   display: inline-block;
 `
-
-// Styled component for the main container with theme border
-export const MainContainer = styled(Col)<React.HTMLAttributes<HTMLDivElement>>`
-  height: 100%;
-  overflow: auto;
-  padding-inline: ${({ theme }: { theme: Theme }) => theme.core.space.space200};
-`
