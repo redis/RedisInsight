@@ -224,6 +224,7 @@
     "supertest": "^4.0.2",
     "terser-webpack-plugin": "^5.3.10",
     "text-encoding": "^0.7.0",
+    "tidewave": "^0.5.5",
     "ts-jest": "^29.2.5",
     "ts-loader": "^9.5.1",
     "ts-mockito": "^2.6.1",
