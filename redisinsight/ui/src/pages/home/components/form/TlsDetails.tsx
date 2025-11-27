@@ -138,6 +138,7 @@ const TlsDetails = (props: Props) => {
   certificates?.forEach((cert) => {
     optionsCertsClient.push({
       value: `${cert.id}`,
+      label: cert.name,
       actions: (
         <PopoverDelete
           header={cert.name}
