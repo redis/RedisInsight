@@ -31,7 +31,7 @@ import { useBulkActionReport } from './hooks/useBulkActionReport'
 const BulkActionsConfig = () => {
   const { id: instanceId = '', db } = useSelector(connectedInstanceSelector)
   const { isConnected } = useSelector(bulkActionsSelector)
-  const { isActionTriggered: isDeleteTriggered } = useSelector(
+  const { isActionTriggered: isDeleteTriggered, downloadLog: enableReporting } = useSelector(
     bulkActionsDeleteSelector,
   )
   const { filter, search } = useSelector(keysSelector)
@@ -41,8 +41,6 @@ const BulkActionsConfig = () => {
     token,
     query: { instanceId },
   })
-  // TODO: this should be coming from UI state
-  const enableReporting = true
 
   const { startReporting } = useBulkActionReport({
     socket: socketRef.current,

@@ -33,6 +33,7 @@ export const initialState: StateBulkActions = {
     loading: false,
     error: '',
     overview: null,
+    downloadLog: true,
   },
   bulkUpload: {
     loading: false,
@@ -77,6 +78,9 @@ const bulkActionsSlice = createSlice({
     },
     toggleBulkDeleteActionTriggered: (state) => {
       state.bulkDelete.isActionTriggered = !state.bulkDelete.isActionTriggered
+    },
+    setBulkDeleteDownloadLog: (state, { payload }: PayloadAction<boolean>) => {
+      state.bulkDelete.downloadLog = payload
     },
     setDeleteOverview: (
       state,
@@ -153,6 +157,7 @@ export const {
   toggleBulkActions,
   disconnectBulkDeleteAction,
   toggleBulkDeleteActionTriggered,
+  setBulkDeleteDownloadLog,
   setDeleteOverview,
   setDeleteOverviewStatus,
   setBulkActionsInitialState,
