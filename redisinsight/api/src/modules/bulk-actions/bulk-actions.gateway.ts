@@ -75,6 +75,30 @@ export class BulkActionsGateway
     return this.service.abort(dto);
   }
 
+  @SubscribeMessage(BulkActionsServerEvents.SubscribeBulkActionReport)
+  subscribeBulkActionReport(
+    @ConnectedSocket() socket: Socket,
+    @Body() dto: BulkActionIdDto,
+  ) {
+    this.logger.debug('Subscribing to bulk action report.');
+    return this.service.subscribeToReport(socket, dto.id);
+  }
+
+  @SubscribeMessage(BulkActionsServerEvents.UnsubscribeBulkActionReport)
+  unsubscribeBulkActionReport(
+    @ConnectedSocket() socket: Socket,
+    @Body() dto: BulkActionIdDto,
+  ) {
+    this.logger.debug('Unsubscribing from bulk action report.');
+    return this.service.unsubscribeFromReport(socket, dto.id);
+  }
+
+  @SubscribeMessage(BulkActionsServerEvents.StartBulkActionExecution)
+  startBulkActionExecution(@Body() dto: BulkActionIdDto) {
+    this.logger.debug('Starting bulk action execution.');
+    return this.service.startExecution(dto.id);
+  }
+
   async handleConnection(socket: Socket): Promise<void> {
     this.logger.debug(`Client connected: ${socket.id}`);
   }

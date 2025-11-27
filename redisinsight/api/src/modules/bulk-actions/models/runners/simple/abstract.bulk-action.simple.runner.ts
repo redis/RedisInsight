@@ -89,14 +89,20 @@ export abstract class AbstractBulkActionSimpleRunner extends AbstractBulkActionR
     this.summary.addKeys(keys.filter((_, index) => !res[index][0]));
 
     const errors = [];
+    const successfulKeys = [];
 
     res.forEach(([err], i) => {
       if (err) {
         errors.push({ key: keys[i], error: err.message });
       } else {
         this.summary.addSuccess(1);
+        successfulKeys.push(keys[i]);
       }
     });
+
+    if (successfulKeys.length > 0) {
+      this.bulkAction.emitDeletedKeys(successfulKeys);
+    }
 
     this.summary.addErrors(errors);
   }

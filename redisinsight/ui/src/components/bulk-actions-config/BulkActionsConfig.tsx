@@ -28,6 +28,7 @@ import {
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { appCsrfSelector } from 'uiSrc/slices/app/csrf'
 import { useIoConnection } from 'uiSrc/services/hooks/useIoConnection'
+import { useBulkActionReport } from './hooks/useBulkActionReport'
 
 const BulkActionsConfig = () => {
   const { id: instanceId = '', db } = useSelector(connectedInstanceSelector)
@@ -41,6 +42,15 @@ const BulkActionsConfig = () => {
   const connectIo = useIoConnection(getSocketApiUrl('bulk-actions'), {
     token,
     query: { instanceId },
+  })
+  // TODO: this should be coming from UI state
+  const enableReporting = true
+
+  const { startReporting } = useBulkActionReport({
+    socket: socketRef.current,
+    enableReporting,
+    search,
+    filter: filter || undefined,
   })
 
   const dispatch = useDispatch()
@@ -57,7 +67,13 @@ const BulkActionsConfig = () => {
       clearTimeout(retryTimer)
       dispatch(setBulkActionConnected(true))
 
-      emitBulkDelete(`${Date.now()}`)
+      const bulkActionId = `${Date.now()}`
+
+      emitBulkDelete(bulkActionId)
+
+      setTimeout(() => {
+        startReporting(bulkActionId)
+      }, 200)
     })
 
     // Catch connect error
@@ -101,6 +117,7 @@ const BulkActionsConfig = () => {
           type: filter,
           match: search || '*',
         },
+        enableReporting,
       },
       onBulkDeleting,
     )
@@ -146,6 +163,7 @@ const BulkActionsConfig = () => {
       }
     })
   }
+
 
   const onBulkDeleteAborted = (data: any) => {
     dispatch(setBulkDeleteLoading(false))

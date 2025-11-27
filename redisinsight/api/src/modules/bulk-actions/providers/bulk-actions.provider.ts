@@ -49,6 +49,7 @@ export class BulkActionsProvider {
       dto.filter,
       socket,
       this.analytics,
+      dto.enableReporting ?? true,
     );
 
     this.bulkActions.set(dto.id, bulkAction);
@@ -66,8 +67,6 @@ export class BulkActionsProvider {
       client,
       BulkActionsProvider.getSimpleRunnerClass(dto),
     );
-
-    bulkAction.start().catch();
 
     return bulkAction;
   }
@@ -140,5 +139,19 @@ export class BulkActionsProvider {
     this.logger.debug(`Aborted ${aborted} bulk actions`);
 
     return aborted;
+  }
+
+  /**
+   * Start execution for a deferred bulk action
+   * @param id
+   */
+  async startExecution(id: string): Promise<BulkAction> {
+    const bulkAction = this.get(id);
+
+    this.logger.debug(`Starting deferred execution for bulk action ${id}`);
+
+    bulkAction.start().catch();
+
+    return bulkAction;
   }
 }
