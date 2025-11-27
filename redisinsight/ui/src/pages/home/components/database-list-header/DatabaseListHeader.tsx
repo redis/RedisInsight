@@ -27,6 +27,7 @@ import {
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import {
+  EmptyButton,
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
@@ -111,22 +112,22 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
       <PrimaryButton
         onClick={handleClickFreeCloudDb}
         data-testid={`${CREATE_CLOUD_DB_ID}-button`}
-        icon={PlusIcon}
       >
-        Create Free Cloud database
+        Create free Cloud database
       </PrimaryButton>
     </FeatureFlagComponent>
   )
 
   const AddLocalInstanceButton = () => (
     <FeatureFlagComponent name={FeatureFlags.databaseManagement}>
-      <SecondaryButton
+      <EmptyButton
+        variant="primary"
         onClick={handleOnAddDatabase}
         data-testid="add-redis-database-short"
         icon={PlusIcon}
       >
         Connect existing database
-      </SecondaryButton>
+      </EmptyButton>
     </FeatureFlagComponent>
   )
 
