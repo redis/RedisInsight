@@ -14,7 +14,6 @@ import { Col, Row } from 'uiSrc/components/base/layout/flex'
 
 import BulkDeleteFooter from './BulkDeleteFooter'
 import BulkDeleteSummary from './BulkDeleteSummary'
-import BulkDeleteSummaryButton from './BulkDeleteSummaryButton'
 import BulkActionsInfo from '../BulkActionsInfo'
 
 export interface Props {
@@ -60,22 +59,6 @@ const BulkDelete = (props: Props) => {
           >
             <Col gap="l">
               <BulkDeleteSummary />
-
-              {isCompleted && (
-                <Row justify="end">
-                  <BulkDeleteSummaryButton
-                    deletedKeys={deletedKeys}
-                    pattern={searchPattern}
-                    keysType={
-                      keysType === NO_TYPE_NAME
-                        ? REPORTED_NO_TYPE_NAME
-                        : keysType
-                    }
-                  >
-                    Keys deleted
-                  </BulkDeleteSummaryButton>
-                </Row>
-              )}
             </Col>
           </BulkActionsInfo>
           <BulkDeleteFooter onCancel={onCancel} />

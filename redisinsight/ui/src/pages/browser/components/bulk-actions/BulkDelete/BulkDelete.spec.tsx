@@ -27,23 +27,7 @@ jest.mock('uiSrc/slices/browser/keys', () => ({
   }),
 }))
 
-jest.mock('./BulkDeleteSummaryButton', () => {
-  // eslint-disable-next-line global-require
-  const React = require('react')
-  const MockComponent = ({ keysType }: any) =>
-    React.createElement(
-      'div',
-      {
-        'data-testid': 'summary-button',
-      },
-      `Mocked Summary Button with keysType: ${keysType}`,
-    )
 
-  return {
-    __esModule: true,
-    default: MockComponent,
-  }
-})
 
 const mockedProps: Props = {
   onCancel: jest.fn(),

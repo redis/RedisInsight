@@ -17,8 +17,6 @@ export class BulkActionSummary {
 
   private keys: Array<RedisString> = [];
 
-  private hasMoreKeys: boolean = false;
-
   private totalKeysProcessed: number = 0;
 
   private readonly maxStoredKeys: number = BULK_ACTIONS_CONFIG.summaryKeysLimit;
@@ -51,10 +49,6 @@ export class BulkActionSummary {
     if (remaining > 0) {
       const keysToStore = keys.slice(0, remaining);
       this.keys.push(...keysToStore);
-    }
-
-    if (this.totalKeysProcessed > this.maxStoredKeys) {
-      this.hasMoreKeys = true;
     }
   }
 

@@ -7,11 +7,9 @@ import {
   bulkActionsSelector,
   disconnectBulkDeleteAction,
   setBulkActionConnected,
-  setBulkActionsInitialState,
   setBulkDeleteLoading,
   setDeleteOverview,
   setDeleteOverviewStatus,
-  setLoading,
 } from 'uiSrc/slices/browser/bulkActions'
 import { getSocketApiUrl, Nullable } from 'uiSrc/utils'
 import { sessionStorageService } from 'uiSrc/services'
@@ -28,11 +26,12 @@ import {
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { appCsrfSelector } from 'uiSrc/slices/app/csrf'
 import { useIoConnection } from 'uiSrc/services/hooks/useIoConnection'
+import { useBulkActionReport } from './hooks/useBulkActionReport'
 
 const BulkActionsConfig = () => {
   const { id: instanceId = '', db } = useSelector(connectedInstanceSelector)
   const { isConnected } = useSelector(bulkActionsSelector)
-  const { isActionTriggered: isDeleteTriggered } = useSelector(
+  const { isActionTriggered: isDeleteTriggered, downloadLog: enableReporting } = useSelector(
     bulkActionsDeleteSelector,
   )
   const { filter, search } = useSelector(keysSelector)
@@ -41,6 +40,13 @@ const BulkActionsConfig = () => {
   const connectIo = useIoConnection(getSocketApiUrl('bulk-actions'), {
     token,
     query: { instanceId },
+  })
+
+  const { startReporting } = useBulkActionReport({
+    socket: socketRef.current,
+    enableReporting,
+    search,
+    filter: filter || undefined,
   })
 
   const dispatch = useDispatch()
@@ -57,7 +63,13 @@ const BulkActionsConfig = () => {
       clearTimeout(retryTimer)
       dispatch(setBulkActionConnected(true))
 
-      emitBulkDelete(`${Date.now()}`)
+      const bulkActionId = `${Date.now()}`
+
+      emitBulkDelete(bulkActionId)
+
+      setTimeout(() => {
+        startReporting(bulkActionId)
+      }, 200)
     })
 
     // Catch connect error
@@ -101,17 +113,9 @@ const BulkActionsConfig = () => {
           type: filter,
           match: search || '*',
         },
+        enableReporting,
       },
       onBulkDeleting,
-    )
-  }
-
-  const getBulkAction = (id: string) => {
-    dispatch(setLoading(true))
-    socketRef.current?.emit(
-      BulkActionsServerEvent.Get,
-      { id: `${id}` },
-      fetchBulkAction,
     )
   }
 
@@ -122,13 +126,6 @@ const BulkActionsConfig = () => {
       { id: `${id}` },
       onBulkDeleteAborted,
     )
-  }
-
-  const fetchBulkAction = (data: any) => {
-    if (data.status === BulkActionsServerEvent.Error) {
-      sessionStorageService.set(BrowserStorageItem.bulkActionDeleteId, '')
-      dispatch(setBulkActionsInitialState())
-    }
   }
 
   const onBulkDeleting = (data: any) => {

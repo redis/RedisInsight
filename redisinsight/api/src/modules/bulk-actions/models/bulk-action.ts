@@ -2,6 +2,7 @@ import { debounce } from 'lodash';
 import {
   BulkActionStatus,
   BulkActionType,
+  BulkActionsClientEvents,
 } from 'src/modules/bulk-actions/constants';
 import { BulkActionFilter } from 'src/modules/bulk-actions/models/bulk-action-filter';
 import { Socket } from 'socket.io';
@@ -14,6 +15,7 @@ import { IBulkActionOverview } from 'src/modules/bulk-actions/interfaces/bulk-ac
 import { BulkActionsAnalytics } from 'src/modules/bulk-actions/bulk-actions.analytics';
 import { RedisClient, RedisClientNodeRole } from 'src/modules/redis/client';
 import { SessionMetadata } from 'src/common/models';
+import { RedisString } from 'src/common/constants';
 
 export class BulkAction implements IBulkAction {
   private logger: Logger = new Logger('BulkAction');
@@ -30,6 +32,10 @@ export class BulkAction implements IBulkAction {
 
   private readonly debounce: Function;
 
+  private reportSubscribers: Set<Socket> = new Set();
+
+  private totalKeysEmitted: number = 0;
+
   constructor(
     private readonly id: string,
     private readonly databaseId: string,
@@ -37,6 +43,7 @@ export class BulkAction implements IBulkAction {
     private readonly filter: BulkActionFilter,
     private readonly socket: Socket,
     private readonly analytics: BulkActionsAnalytics,
+    private readonly enableReporting: boolean = true,
   ) {
     this.debounce = debounce(this.sendOverview.bind(this), 1000, {
       maxWait: 1000,
@@ -178,6 +185,7 @@ export class BulkAction implements IBulkAction {
         if (!this.endTime) {
           this.endTime = Date.now();
         }
+        this.emitReportComplete();
       // eslint-disable-next-line no-fallthrough
       default:
         this.changeState();
@@ -215,6 +223,90 @@ export class BulkAction implements IBulkAction {
       this.socket.emit('overview', overview);
     } catch (e) {
       this.logger.error('Unable to send overview', e, sessionMetadata);
+    }
+  }
+
+  subscribeToReport(socket: Socket): void {
+    this.reportSubscribers.add(socket);
+  }
+
+  unsubscribeFromReport(socket: Socket): void {
+    this.reportSubscribers.delete(socket);
+  }
+
+  emitDeletedKeys(keys: RedisString[]): void {
+    this.totalKeysEmitted += keys.length;
+
+    if (
+      this.enableReporting &&
+      this.reportSubscribers.size > 0 &&
+      keys.length > 0
+    ) {
+      const keyStrings = keys.map((key) => Buffer.from(key).toString());
+
+      this.reportSubscribers.forEach((socket) => {
+        try {
+          socket.emit(BulkActionsClientEvents.ReportKeys, {
+            keys: keyStrings,
+            count: keyStrings.length,
+            totalEmitted: this.totalKeysEmitted,
+          });
+        } catch (error) {
+          this.logger.error(
+            `Failed to emit keys batch to socket ${socket.id}:`,
+            error,
+          );
+          this.reportSubscribers.delete(socket);
+        }
+      });
+    }
+  }
+
+  emitReportReady(): void {
+    if (this.reportSubscribers.size > 0) {
+      this.logger.debug(
+        `Emitting report ready to ${this.reportSubscribers.size} subscribers`,
+      );
+      this.reportSubscribers.forEach((socket) => {
+        try {
+          socket.emit(BulkActionsClientEvents.ReportReady, {
+            bulkActionId: this.id,
+            status: this.status,
+          });
+        } catch (error) {
+          this.logger.error(
+            `Failed to emit report ready to socket ${socket.id}:`,
+            error,
+          );
+          this.reportSubscribers.delete(socket);
+        }
+      });
+    }
+  }
+
+  emitReportComplete(): void {
+    if (this.reportSubscribers.size > 0) {
+      const overview = this.getOverview();
+      this.logger.debug(
+        `Emitting report completion to ${this.reportSubscribers.size} subscribers. Status: ${overview.status}`,
+      );
+      this.reportSubscribers.forEach((socket) => {
+        try {
+          socket.emit(BulkActionsClientEvents.ReportComplete, {
+            status: overview.status,
+            summary: overview.summary,
+            totalKeysEmitted: this.totalKeysEmitted,
+          });
+        } catch (error) {
+          this.logger.error(
+            `Failed to emit completion to socket ${socket.id}:`,
+            error,
+          );
+          this.reportSubscribers.delete(socket);
+        }
+      });
+    } else {
+      this.logger.debug(`Bulk action completed but no report subscribers`);
     }
   }
 }

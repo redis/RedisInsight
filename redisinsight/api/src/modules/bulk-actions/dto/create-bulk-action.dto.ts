@@ -1,6 +1,7 @@
 import { BulkActionFilter } from 'src/modules/bulk-actions/models/bulk-action-filter';
 import { BulkActionType } from 'src/modules/bulk-actions/constants';
 import {
+  IsBoolean,
   IsEnum,
   IsNotEmpty,
   IsNumber,
@@ -35,4 +36,8 @@ export class CreateBulkActionDto extends BulkActionIdDto {
   @Min(0)
   @Max(2147483647)
   db?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  enableReporting?: boolean;
 }

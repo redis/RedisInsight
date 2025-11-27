@@ -4,6 +4,15 @@ export enum BulkActionsServerEvent {
   Abort = 'abort',
   Overview = 'overview',
   Error = 'error',
+  SubscribeReport = 'subscribe-bulk-action-report',
+  UnsubscribeReport = 'unsubscribe-bulk-action-report',
+  StartExecution = 'start-bulk-action-execution',
+}
+
+export enum BulkActionsClientEvent {
+  ReportKeys = 'report-keys',
+  ReportComplete = 'report-complete',
+  ReportReady = 'report-ready',
 }
 
 export enum BulkActionsType {
