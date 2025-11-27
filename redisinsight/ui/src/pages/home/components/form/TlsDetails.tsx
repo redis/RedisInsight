@@ -3,11 +3,7 @@ import cx from 'classnames'
 import { FormikProps } from 'formik'
 
 import { useDispatch } from 'react-redux'
-import {
-  Nullable,
-  validateCertName,
-  validateField,
-} from 'uiSrc/utils'
+import { Nullable, validateCertName, validateField } from 'uiSrc/utils'
 import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
 
 import {

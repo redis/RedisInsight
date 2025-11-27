@@ -21,17 +21,16 @@ export const RiPopover = ({
   customOutsideDetector,
   ...props
 }: RiPopoverProps) => {
-  let popoverContent = children
-
-  if (children && customOutsideDetector) {
-    popoverContent = (
+  const popoverContent =
+    children && customOutsideDetector ? (
       <OutsideClickDetector
         onOutsideClick={(event) => closePopover?.(event as any)}
       >
         {children as JSX.Element}
       </OutsideClickDetector>
+    ) : (
+      children
     )
-  }
 
   return (
     <Popover
