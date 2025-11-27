@@ -27,6 +27,7 @@ import {
 import { ColorScheme, getRGBColorByScheme, RGBColor } from 'uiSrc/utils/colors'
 
 import { ConnectionType } from 'uiSrc/slices/interfaces'
+import { AnalysisPageContainer } from 'uiSrc/pages/database-analysis/components/analysis-page-container'
 import {
   ClusterDetailsHeader,
   ClusterDetailsGraphics,
@@ -134,13 +135,13 @@ const ClusterDetailsPage = () => {
   }
 
   return (
-    <div className={styles.main} data-testid="cluster-details-page">
+    <AnalysisPageContainer data-testid="cluster-details-page">
       <ClusterDetailsHeader />
       <div className={styles.wrapper}>
         <ClusterDetailsGraphics nodes={nodes} loading={loading} />
         <ClusterNodesTable nodes={nodes} loading={loading} />
       </div>
-    </div>
+    </AnalysisPageContainer>
   )
 }
 

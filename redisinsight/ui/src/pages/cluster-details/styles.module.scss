@@ -1,7 +1,3 @@
-.main {
-  height: 100%;
-}
-
 .wrapper {
   @include eui.scrollBar;
   overflow-y: auto;
