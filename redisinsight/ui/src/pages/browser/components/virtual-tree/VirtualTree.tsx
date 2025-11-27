@@ -279,7 +279,8 @@ const VirtualTree = (props: Props) => {
                 <ProgressBarLoader
                   color="primary"
                   data-testid="progress-key-tree"
-                  style={{ width }}
+                  absolute
+                  style={{ width, zIndex: 1 }}
                 />
               )}
               <Tree
