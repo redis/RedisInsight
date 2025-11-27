@@ -33,8 +33,7 @@ import {
   ClusterDetailsGraphics,
   ClusterNodesTable,
 } from './components'
-
-import styles from './styles.module.scss'
+import { Wrapper } from './ClusterDetailsPage.styles'
 
 export interface ModifiedClusterNodes extends ClusterNodeDetails {
   letter: string
@@ -137,10 +136,10 @@ const ClusterDetailsPage = () => {
   return (
     <AnalysisPageContainer data-testid="cluster-details-page">
       <ClusterDetailsHeader />
-      <div className={styles.wrapper}>
+      <Wrapper>
         <ClusterDetailsGraphics nodes={nodes} loading={loading} />
         <ClusterNodesTable nodes={nodes} loading={loading} />
-      </div>
+      </Wrapper>
     </AnalysisPageContainer>
   )
 }

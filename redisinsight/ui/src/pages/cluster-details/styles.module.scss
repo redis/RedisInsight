@@ -1,8 +1,0 @@
-.wrapper {
-  @include eui.scrollBar;
-  overflow-y: auto;
-  overflow-x: hidden;
-  max-height: calc(100% - 134px);
-
-  max-width: 1920px;
-}
