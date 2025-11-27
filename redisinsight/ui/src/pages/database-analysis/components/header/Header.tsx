@@ -8,8 +8,8 @@ import { getApproximatePercentage } from 'uiSrc/utils/validations'
 import { appContextDbConfig } from 'uiSrc/slices/app/context'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { ConnectionType } from 'uiSrc/slices/interfaces'
-import AnalyticsTabs from 'uiSrc/components/analytics-tabs'
 import { comboBoxToArray, getDbIndex, Nullable } from 'uiSrc/utils'
+import { AnalyticsPageHeader } from 'uiSrc/pages/database-analysis/components/analytics-page-header'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   ANALYZE_CLUSTER_TOOLTIP_MESSAGE,
@@ -80,87 +80,93 @@ const Header = (props: Props) => {
 
   return (
     <div data-testid="db-analysis-header">
-      <AnalyticsTabs />
-      <Container justify={items.length ? 'between' : 'end'}>
-        {!!items.length && (
-          <FlexItem>
-            <Row align="center" wrap>
-              <HideFor sizes={['xs', 's']}>
-                <FlexItem>
-                  <Text size="s">Report generated on:</Text>
-                </FlexItem>
-              </HideFor>
-              <FlexItem grow>
-                <HeaderSelect
-                  options={analysisOptions}
-                  valueRender={({ option }) =>
-                    option.inputDisplay as JSX.Element
-                  }
-                  value={selectedValue ?? ''}
-                  onChange={(value: string) => onChangeSelectedAnalysis(value)}
-                  data-testid="select-report"
-                />
-              </FlexItem>
-              {!!progress && (
-                <FlexItem>
-                  <Text
-                    className={styles.progress}
-                    size="s"
-                    data-testid="bulk-delete-summary"
-                  >
-                    <Text
-                      component="span"
-                      color={
-                        progress.total === progress.processed
-                          ? undefined
-                          : 'warning'
+      <AnalyticsPageHeader
+        actions={
+          <Container justify={items.length ? 'between' : 'end'} gap="l">
+            {!!items.length && (
+              <FlexItem>
+                <Row align="center" wrap>
+                  <HideFor sizes={['xs', 's']}>
+                    <FlexItem>
+                      <Text size="s">Report generated on:</Text>
+                    </FlexItem>
+                  </HideFor>
+                  <FlexItem grow>
+                    <HeaderSelect
+                      options={analysisOptions}
+                      valueRender={({ option }) =>
+                        option.inputDisplay as JSX.Element
                       }
-                      className={styles.progress}
-                      size="s"
-                      data-testid="analysis-progress"
-                    >
-                      {`Scanned ${getApproximatePercentage(
-                        progress.total,
-                        progress.processed,
-                      )}`}
-                    </Text>
-                    {` (${numberWithSpaces(progress.processed)}`}/
-                    {numberWithSpaces(progress.total)}
-                    {' keys) '}
-                  </Text>
-                </FlexItem>
-              )}
-            </Row>
-          </FlexItem>
-        )}
-        <FlexItem>
-          <Row justify="end" align="center" gap="s">
-            <PrimaryButton
-              aria-label="New reports"
-              data-testid="start-database-analysis-btn"
-              icon={CaretRightIcon}
-              iconSide="left"
-              disabled={analysisLoading}
-              onClick={handleClick}
-            >
-              New Report
-            </PrimaryButton>
-            <RiTooltip
-              position="bottom"
-              anchorClassName={styles.tooltipAnchor}
-              title="Database Analysis"
-              data-testid="db-new-reports-tooltip"
-              content={
-                connectionType === ConnectionType.Cluster
-                  ? ANALYZE_CLUSTER_TOOLTIP_MESSAGE
-                  : ANALYZE_TOOLTIP_MESSAGE
-              }
-            >
-              <InfoIcon data-testid="db-new-reports-icon" />
-            </RiTooltip>
-          </Row>
-        </FlexItem>
-      </Container>
+                      value={selectedValue ?? ''}
+                      onChange={(value: string) =>
+                        onChangeSelectedAnalysis(value)
+                      }
+                      data-testid="select-report"
+                    />
+                  </FlexItem>
+                  {!!progress && (
+                    <FlexItem>
+                      <Text
+                        className={styles.progress}
+                        size="s"
+                        data-testid="bulk-delete-summary"
+                      >
+                        <Text
+                          component="span"
+                          color={
+                            progress.total === progress.processed
+                              ? undefined
+                              : 'warning'
+                          }
+                          className={styles.progress}
+                          size="s"
+                          data-testid="analysis-progress"
+                        >
+                          {`Scanned ${getApproximatePercentage(
+                            progress.total,
+                            progress.processed,
+                          )}`}
+                        </Text>
+                        {` (${numberWithSpaces(progress.processed)}`}/
+                        {numberWithSpaces(progress.total)}
+                        {' keys) '}
+                      </Text>
+                    </FlexItem>
+                  )}
+                </Row>
+              </FlexItem>
+            )}
+            <FlexItem>
+              <Row justify="end" align="center" gap="s">
+                <PrimaryButton
+                  aria-label="New reports"
+                  data-testid="start-database-analysis-btn"
+                  icon={CaretRightIcon}
+                  iconSide="left"
+                  size="small"
+                  disabled={analysisLoading}
+                  onClick={handleClick}
+                >
+                  New Report
+                </PrimaryButton>
+                <RiTooltip
+                  position="bottom"
+                  anchorClassName={styles.tooltipAnchor}
+                  title="Database Analysis"
+                  data-testid="db-new-reports-tooltip"
+                  content={
+                    connectionType === ConnectionType.Cluster
+                      ? ANALYZE_CLUSTER_TOOLTIP_MESSAGE
+                      : ANALYZE_TOOLTIP_MESSAGE
+                  }
+                >
+                  <InfoIcon data-testid="db-new-reports-icon" />
+                </RiTooltip>
+              </Row>
+            </FlexItem>
+          </Container>
+        }
+      />
     </div>
   )
 }

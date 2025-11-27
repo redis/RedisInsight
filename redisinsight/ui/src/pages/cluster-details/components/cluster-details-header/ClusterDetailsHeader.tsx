@@ -15,10 +15,10 @@ import {
   ConnectionType,
   CONNECTION_TYPE_DISPLAY,
 } from 'uiSrc/slices/interfaces'
-import AnalyticsTabs from 'uiSrc/components/analytics-tabs'
 import { clusterDetailsSelector } from 'uiSrc/slices/analytics/clusterDetails'
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
+import { AnalyticsPageHeader } from 'uiSrc/pages/database-analysis/components/analytics-page-header'
 
 import styles from './styles.module.scss'
 
@@ -91,8 +91,7 @@ const ClusterDetailsHeader = () => {
 
   return (
     <div className={styles.container} data-testid="cluster-details-header">
-      <AnalyticsTabs />
-
+      <AnalyticsPageHeader />
       {loading && !data && (
         <div className={styles.loading} data-testid="cluster-details-loading">
           <LoadingContent lines={2} />

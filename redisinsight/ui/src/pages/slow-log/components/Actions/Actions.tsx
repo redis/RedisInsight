@@ -11,10 +11,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { EraserIcon, SettingsIcon } from 'uiSrc/components/base/icons'
-import {
-  IconButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { IconButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 
 import SlowLogConfig from '../SlowLogConfig'
@@ -114,16 +111,15 @@ const Actions = (props: Props) => {
           panelPaddingSize="m"
           closePopover={() => {}}
           button={
-            <SecondaryButton
+            <PrimaryButton
               size="small"
-              inverted
               icon={SettingsIcon}
               aria-label="Configure"
               onClick={() => showConfigPopover()}
               data-testid="configure-btn"
             >
               Configure
-            </SecondaryButton>
+            </PrimaryButton>
           }
         >
           <SlowLogConfig
