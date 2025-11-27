@@ -19,7 +19,6 @@ import {
 } from './components'
 import { ThemeProvider } from './contexts/themeContext'
 import MainComponent from './components/main/MainComponent'
-import ThemeComponent from './components/theme/ThemeComponent'
 import MonacoEnvironmentInitializer from './components/MonacoEnvironmentInitializer/MonacoEnvironmentInitializer'
 import GlobalDialogs from './components/global-dialogs'
 import NotFoundErrorPage from './pages/not-found-error/NotFoundErrorPage'
@@ -51,7 +50,6 @@ const App = ({ children }: { children?: ReactElement[] }) => {
   }, [serverLoading])
   return (
     <div className="main-container">
-      <ThemeComponent />
       <MonacoEnvironmentInitializer />
       <Switch>
         <Route exact path={Pages.notFound} component={NotFoundErrorPage} />
