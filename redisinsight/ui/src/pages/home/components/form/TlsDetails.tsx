@@ -23,10 +23,7 @@ import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { TextArea, TextInput } from 'uiSrc/components/base/inputs'
-import {
-  SelectValueRender,
-  RiSelectOption,
-} from 'uiSrc/components/base/forms/select/RiSelect'
+import { RiSelectOption } from 'uiSrc/components/base/forms/select/RiSelect'
 import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
 import styles from '../styles.module.scss'
 import { RISelectWithActions } from 'uiSrc/components/base/forms/select/RISelectWithActions'
@@ -44,12 +41,6 @@ export interface Props {
   certificates?: Certificate[]
 }
 
-const valueRender: SelectValueRender = ({ option, isOptionValue }) => {
-  if (isOptionValue) {
-    return (option.dropdownDisplay ?? option.inputDisplay) as JSX.Element
-  }
-  return option.inputDisplay as JSX.Element
-}
 const TlsDetails = (props: Props) => {
   const dispatch = useDispatch()
   const { formik, caCertificates, certificates } = props
@@ -253,7 +244,6 @@ const TlsDetails = (props: Props) => {
                   placeholder="Select CA certificate"
                   value={formik.values.selectedCaCertName ?? NO_CA_CERT}
                   options={optionsCertsCA}
-                  valueRender={valueRender}
                   onChange={(value) => {
                     formik.setFieldValue(
                       'selectedCaCertName',
@@ -335,7 +325,6 @@ const TlsDetails = (props: Props) => {
                   placeholder="Select certificate"
                   value={formik.values.selectedTlsClientCertId}
                   options={optionsCertsClient}
-                  valueRender={valueRender}
                   onChange={(value) => {
                     formik.setFieldValue('selectedTlsClientCertId', value)
                   }}
