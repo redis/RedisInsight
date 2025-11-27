@@ -17,6 +17,7 @@ export const InnerContainer = styled(Col)`
 `
 
 export const Wrapper = styled(FlexItem)`
-  margin: ${({ theme }) => theme.core.space.space500};
+  margin: ${({ theme }) =>
+    `${theme.core.space.space050} ${theme.core.space.space200}`};
   height: 100%;
 `
