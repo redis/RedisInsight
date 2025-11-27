@@ -25,4 +25,5 @@ export type RiPopoverProps = Omit<
   anchorClassName?: string
   panelClassName?: string
   'data-testid'?: string
+  customOutsideDetector?: boolean
 }

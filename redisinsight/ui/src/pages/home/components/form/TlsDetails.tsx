@@ -5,7 +5,6 @@ import { FormikProps } from 'formik'
 import { useDispatch } from 'react-redux'
 import {
   Nullable,
-  truncateText,
   validateCertName,
   validateField,
 } from 'uiSrc/utils'
@@ -25,21 +24,26 @@ import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { TextArea, TextInput } from 'uiSrc/components/base/inputs'
 import {
-  RiSelect,
   SelectValueRender,
   RiSelectOption,
 } from 'uiSrc/components/base/forms/select/RiSelect'
 import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
-import { Text } from 'uiSrc/components/base/text/Text'
 import styles from '../styles.module.scss'
+import { RISelectWithActions } from 'uiSrc/components/base/forms/select/RISelectWithActions'
 
 const suffix = '_tls_details'
 
+export interface Certificate {
+  id: string
+  name: string
+}
+
 export interface Props {
   formik: FormikProps<DbConnectionInfo>
-  caCertificates?: { id: string; name: string }[]
-  certificates?: { id: number; name: string }[]
+  caCertificates?: Certificate[]
+  certificates?: Certificate[]
 }
+
 const valueRender: SelectValueRender = ({ option, isOptionValue }) => {
   if (isOptionValue) {
     return (option.dropdownDisplay ?? option.inputDisplay) as JSX.Element
@@ -93,46 +97,33 @@ const TlsDetails = (props: Props) => {
   const optionsCertsCA: RiSelectOption[] = [
     {
       value: NO_CA_CERT,
-      inputDisplay: <span>No CA Certificate</span>,
-      dropdownDisplay: null,
+      label: 'No CA Certificate',
     },
     {
       value: ADD_NEW_CA_CERT,
-      inputDisplay: <span>Add new CA certificate</span>,
-      dropdownDisplay: null,
+      label: 'Add new CA certificate',
     },
   ]
 
   caCertificates?.forEach((cert) => {
     optionsCertsCA.push({
       value: cert.id,
-      inputDisplay: (
-        <span className={styles.selectedOptionWithLongTextSupport}>
-          {cert.name}
-        </span>
-      ),
-      dropdownDisplay: (
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <div>{truncateText(cert.name, 25)}</div>
-          <PopoverDelete
-            header={cert.name}
-            text="will be removed from RedisInsight."
-            item={cert.id}
-            suffix={suffix}
-            deleting={activeCertId ?? ''}
-            closePopover={closePopover}
-            updateLoading={false}
-            showPopover={showPopover}
-            handleDeleteItem={handleDeleteCaCert}
-            testid={`delete-ca-cert-${cert.id}`}
-          />
-        </div>
+      label: cert.name,
+      actions: (
+        <PopoverDelete
+          header={cert.name}
+          text="will be removed from RedisInsight."
+          item={cert.id}
+          suffix={suffix}
+          deleting={activeCertId ?? ''}
+          closePopover={closePopover}
+          updateLoading={false}
+          showPopover={showPopover}
+          handleDeleteItem={handleDeleteCaCert}
+          testid={`delete-ca-cert-${cert.id}`}
+          persistent
+          customOutsideDetector
+        />
       ),
     })
   })
@@ -140,41 +131,28 @@ const TlsDetails = (props: Props) => {
   const optionsCertsClient: RiSelectOption[] = [
     {
       value: 'ADD_NEW',
-      inputDisplay: <span>Add new certificate</span>,
-      dropdownDisplay: null,
+      label: 'Add new certificate',
     },
   ]
 
   certificates?.forEach((cert) => {
     optionsCertsClient.push({
       value: `${cert.id}`,
-      inputDisplay: (
-        <span className={styles.selectedOptionWithLongTextSupport}>
-          {cert.name}
-        </span>
-      ),
-      dropdownDisplay: (
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <div>{truncateText(cert.name, 25)}</div>
-          <PopoverDelete
-            header={cert.name}
-            text="will be removed from RedisInsight."
-            item={cert.id}
-            suffix={suffix}
-            deleting={activeCertId}
-            closePopover={closePopover}
-            updateLoading={false}
-            showPopover={showPopover}
-            handleDeleteItem={handleDeleteClientCert}
-            testid={`delete-client-cert-${cert.id}`}
-          />
-        </div>
+      actions: (
+        <PopoverDelete
+          header={cert.name}
+          text="will be removed from RedisInsight."
+          item={cert.id}
+          suffix={suffix}
+          deleting={activeCertId}
+          closePopover={closePopover}
+          updateLoading={false}
+          showPopover={showPopover}
+          handleDeleteItem={handleDeleteClientCert}
+          testid={`delete-client-cert-${cert.id}`}
+          persistent
+          customOutsideDetector
+        />
       ),
     })
   })
@@ -263,15 +241,14 @@ const TlsDetails = (props: Props) => {
         </Col>
       )}
       {formik.values.tls && (
-        <Col gap="l"  >
+        <Col gap="l">
           <Row gap="m" responsive>
-            <FlexItem>
+            <FlexItem grow>
               <FormField
                 label="CA Certificate"
                 required={formik.values.verifyServerTlsCert}
               >
-                <RiSelect
-                  name="selectedCaCertName"
+                <RISelectWithActions
                   placeholder="Select CA certificate"
                   value={formik.values.selectedCaCertName ?? NO_CA_CERT}
                   options={optionsCertsCA}
@@ -288,26 +265,28 @@ const TlsDetails = (props: Props) => {
             </FlexItem>
 
             {formik.values.tls &&
-              formik.values.selectedCaCertName === ADD_NEW_CA_CERT && (
-                <FlexItem grow>
-                  <FormField label="Name" required>
-                    <TextInput
-                      name="newCaCertName"
-                      id="newCaCertName"
-                      maxLength={200}
-                      placeholder="Enter CA Certificate Name"
-                      value={formik.values.newCaCertName ?? ''}
-                      onChange={(value) =>
-                        formik.setFieldValue(
-                          'newCaCertName',
-                          validateCertName(value),
-                        )
-                      }
-                      data-testid="qa-ca-cert"
-                    />
-                  </FormField>
-                </FlexItem>
-              )}
+            formik.values.selectedCaCertName === ADD_NEW_CA_CERT ? (
+              <FlexItem grow>
+                <FormField label="Name" required>
+                  <TextInput
+                    name="newCaCertName"
+                    id="newCaCertName"
+                    maxLength={200}
+                    placeholder="Enter CA Certificate Name"
+                    value={formik.values.newCaCertName ?? ''}
+                    onChange={(value) =>
+                      formik.setFieldValue(
+                        'newCaCertName',
+                        validateCertName(value),
+                      )
+                    }
+                    data-testid="qa-ca-cert"
+                  />
+                </FormField>
+              </FlexItem>
+            ) : (
+              <FlexItem grow />
+            )}
           </Row>
 
           {formik.values.tls &&
@@ -351,7 +330,7 @@ const TlsDetails = (props: Props) => {
           <Row gap="m" responsive>
             <FlexItem grow>
               <FormField label="Client Certificate" required>
-                <RiSelect
+                <RISelectWithActions
                   placeholder="Select certificate"
                   value={formik.values.selectedTlsClientCertId}
                   options={optionsCertsClient}
@@ -365,27 +344,29 @@ const TlsDetails = (props: Props) => {
             </FlexItem>
 
             {formik.values.tls &&
-              formik.values.tlsClientAuthRequired &&
-              formik.values.selectedTlsClientCertId === 'ADD_NEW' && (
-                <FlexItem grow>
-                  <FormField label="Name" required>
-                    <TextInput
-                      name="newTlsCertPairName"
-                      id="newTlsCertPairName"
-                      maxLength={200}
-                      placeholder="Enter Client Certificate Name"
-                      value={formik.values.newTlsCertPairName ?? ''}
-                      onChange={(value) =>
-                        formik.setFieldValue(
-                          'newTlsCertPairName', // same as the name prop passed a few lines above
-                          validateCertName(value),
-                        )
-                      }
-                      data-testid="new-tsl-cert-pair-name"
-                    />
-                  </FormField>
-                </FlexItem>
-              )}
+            formik.values.tlsClientAuthRequired &&
+            formik.values.selectedTlsClientCertId === 'ADD_NEW' ? (
+              <FlexItem grow>
+                <FormField label="Name" required>
+                  <TextInput
+                    name="newTlsCertPairName"
+                    id="newTlsCertPairName"
+                    maxLength={200}
+                    placeholder="Enter Client Certificate Name"
+                    value={formik.values.newTlsCertPairName ?? ''}
+                    onChange={(value) =>
+                      formik.setFieldValue(
+                        'newTlsCertPairName', // same as the name prop passed a few lines above
+                        validateCertName(value),
+                      )
+                    }
+                    data-testid="new-tsl-cert-pair-name"
+                  />
+                </FormField>
+              </FlexItem>
+            ) : (
+              <FlexItem grow />
+            )}
           </Row>
 
           {formik.values.tls &&

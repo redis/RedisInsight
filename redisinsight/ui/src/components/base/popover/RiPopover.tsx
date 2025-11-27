@@ -4,6 +4,7 @@ import { Popover } from '@redis-ui/components'
 import * as keys from 'uiSrc/constants/keys'
 import { RiPopoverProps } from './types'
 import { anchorPositionMap, panelPaddingSizeMap } from './config'
+import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 
 export const RiPopover = ({
   isOpen,
@@ -16,29 +17,46 @@ export const RiPopover = ({
   anchorClassName,
   panelClassName,
   maxWidth = '100%',
+  persistent,
+  customOutsideDetector,
   ...props
-}: RiPopoverProps) => (
-  <Popover
-    {...props}
-    open={isOpen}
-    onClickOutside={closePopover}
-    onKeyDown={(event) => {
-      // Close on escape press
-      if (event.key === keys.ESCAPE) {
-        closePopover?.(event as any)
-      }
-    }}
-    content={children}
-    // Props passed to the children wrapper:
-    className={panelClassName}
-    maxWidth={maxWidth}
-    style={{
-      padding: panelPaddingSize && panelPaddingSizeMap[panelPaddingSize],
-    }}
-    autoFocus={ownFocus}
-    placement={anchorPosition && anchorPositionMap[anchorPosition]?.placement}
-    align={anchorPosition && anchorPositionMap[anchorPosition]?.align}
-  >
-    <span className={anchorClassName}>{button}</span>
-  </Popover>
-)
+}: RiPopoverProps) => {
+  let popoverContent = children
+
+  if (children && customOutsideDetector) {
+    popoverContent = (
+      <OutsideClickDetector
+        onOutsideClick={(event) => closePopover?.(event as any)}
+      >
+        {children as JSX.Element}
+      </OutsideClickDetector>
+    )
+  }
+
+  return (
+    <Popover
+      {...props}
+      open={isOpen}
+      onClickOutside={customOutsideDetector ? undefined : closePopover}
+      onKeyDown={(event) => {
+        // Close on escape press
+        if (event.key === keys.ESCAPE) {
+          closePopover?.(event as any)
+        }
+      }}
+      persistent={persistent}
+      content={popoverContent}
+      // Props passed to the children wrapper:
+      className={panelClassName}
+      maxWidth={maxWidth}
+      style={{
+        padding: panelPaddingSize && panelPaddingSizeMap[panelPaddingSize],
+      }}
+      autoFocus={ownFocus}
+      placement={anchorPosition && anchorPositionMap[anchorPosition]?.placement}
+      align={anchorPosition && anchorPositionMap[anchorPosition]?.align}
+    >
+      <span className={anchorClassName}>{button}</span>
+    </Popover>
+  )
+}
