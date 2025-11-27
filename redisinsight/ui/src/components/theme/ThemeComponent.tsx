@@ -12,10 +12,7 @@ const ThemeComponent = () => {
   useEffect(() => {
     const handler = () => {
       let theme = localStorageService.get(BrowserStorageItem.theme)
-      if (
-        themeContext.theme === Theme.System &&
-        themeContext.usingSystemTheme
-      ) {
+      if (theme === Theme.System && themeContext.usingSystemTheme) {
         themeContext.changeTheme(theme)
       }
     }
