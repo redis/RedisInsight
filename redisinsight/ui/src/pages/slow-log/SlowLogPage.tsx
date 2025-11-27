@@ -32,14 +32,14 @@ import {
 import { AnalyticsViewTab } from 'uiSrc/slices/interfaces/analytics'
 
 import { FormatedDate } from 'uiSrc/components'
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Text, Title } from 'uiSrc/components/base/text'
 import { defaultValueRender } from 'uiSrc/components/base/forms/select/RiSelect'
 import { SlowLog } from 'apiSrc/modules/slow-log/models'
+import { AnalysisPageContainer } from 'uiSrc/pages/database-analysis/components/analysis-page-container'
 
 import { Actions, EmptySlowLog, SlowLogTable } from './components'
 
-import styles from './styles.module.scss'
 import { StyledSelect } from './SlowLogPage.styles'
 
 const HIDE_TIMESTAMP_FROM_WIDTH = 850
@@ -142,11 +142,11 @@ const SlowLogPage = () => {
   const isEmptySlowLog = !data.length
 
   return (
-    <Col className={styles.main} data-testid="slow-log-page">
+    <AnalysisPageContainer data-testid="slow-log-page">
       <AutoSizer disableHeight>
         {({ width }) => (
           <div style={{ width }}>
-            <Row className={styles.header} align="center" justify="between">
+            <Row align="center" justify="between">
               <FlexItem>
                 <AnalyticsTabs />
               </FlexItem>
@@ -181,11 +181,7 @@ const SlowLogPage = () => {
               </FlexItem>
             </Row>
 
-            <Row
-              className={styles.actionsLine}
-              align="center"
-              justify="between"
-            >
+            <Row align="center" justify="between">
               <FlexItem>
                 <Title size="L" color="primary">
                   Slow Log
@@ -245,7 +241,7 @@ const SlowLogPage = () => {
           durationUnit={durationUnit}
         />
       )}
-    </Col>
+    </AnalysisPageContainer>
   )
 }
 
