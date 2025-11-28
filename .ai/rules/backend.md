@@ -141,6 +141,43 @@ Use appropriate exception types:
 - `ConflictException` - 409
 - `InternalServerErrorException` - 500
 
+### Custom Exceptions
+
+**Prefer custom exceptions over generic ones** when you need:
+
+- Consistent error codes for frontend handling
+- Specific error messages from constants
+- Consistent error structure across the codebase
+
+Create custom exceptions following existing patterns:
+
+```typescript
+// src/modules/feature/exceptions/feature-invalid.exception.ts
+import {
+  HttpException,
+  HttpExceptionOptions,
+  HttpStatus,
+} from '@nestjs/common';
+import ERROR_MESSAGES from 'src/constants/error-messages';
+import { CustomErrorCodes } from 'src/constants';
+
+export class FeatureInvalidException extends HttpException {
+  constructor(
+    message = ERROR_MESSAGES.FEATURE_INVALID,
+    options?: HttpExceptionOptions,
+  ) {
+    const response = {
+      message,
+      statusCode: HttpStatus.BAD_REQUEST,
+      error: 'FeatureInvalid',
+      errorCode: CustomErrorCodes.FeatureInvalid,
+    };
+
+    super(response, response.statusCode, options);
+  }
+}
+```
+
 ### Error Logging
 
 ```typescript

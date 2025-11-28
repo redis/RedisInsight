@@ -15,6 +15,7 @@ import { WaitForActiveDatabaseCloudJob } from 'src/modules/cloud/job/jobs/wait-f
 import { CloudJobName } from 'src/modules/cloud/job/constants';
 import { CloudJobStatus, CloudJobStep } from 'src/modules/cloud/job/models';
 import {
+  CloudDatabaseEndpointInvalidException,
   CloudDatabaseImportForbiddenException,
   CloudJobUnexpectedErrorException,
   CloudTaskNoResourceIdException,
@@ -30,6 +31,7 @@ import { ClientContext, SessionMetadata } from 'src/common/models';
 import { DatabaseInfoService } from 'src/modules/database/database-info.service';
 import { FeatureService } from 'src/modules/feature/feature.service';
 import { KnownFeatures } from 'src/modules/feature/constants';
+import { isValidCloudDatabaseEndpoint } from 'src/modules/cloud/database/utils';
 
 const cloudConfig = config.get('cloud');
 
@@ -137,6 +139,10 @@ export class CreateFreeDatabaseCloudJob extends CloudJob {
       }
 
       const { publicEndpoint, name, password } = cloudDatabase;
+
+      if (!isValidCloudDatabaseEndpoint(publicEndpoint)) {
+        throw new CloudDatabaseEndpointInvalidException();
+      }
 
       const [host, port] = publicEndpoint.split(':');
 
