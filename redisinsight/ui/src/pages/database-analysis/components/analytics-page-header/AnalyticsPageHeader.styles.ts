@@ -1,14 +1,12 @@
 import styled from 'styled-components'
 import { Row } from 'uiSrc/components/base/layout/flex'
-import { Theme } from 'uiSrc/components/base/theme/types'
-
-const getBorderColor = (theme: Theme) =>
-  theme.name === 'dark' ? theme.color.dark600 : theme.color.dusk150
 
 export const HeaderContainer = styled.div`
   width: 100%;
-  border-bottom: 4px solid
-    ${({ theme }: { theme: Theme }) => getBorderColor(theme)}; /* Mimic the tabs border width and color */
+  border-bottom: ${({ theme }) => {
+    const { tabsLine } = theme.components.tabs.variants.default
+    return `${tabsLine.size} solid ${tabsLine.color}`
+  }};
 `
 
 export const HeaderContent = styled(Row).attrs({
