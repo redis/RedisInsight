@@ -40,11 +40,15 @@ const HomePageTemplate = (props: Props) => {
   return (
     <>
       {loading && (
-        <ProgressBarLoader color="primary" data-testid="progress-key-stream" absolute />
+        <ProgressBarLoader
+          color="primary"
+          data-testid="progress-key-stream"
+          absolute
+        />
       )}
       <div className={styles.pageDefaultHeader}>
         <HomeTabs />
-        <FlexGroup gap="l">
+        <FlexGroup align="center" justify="end" gap="l">
           {isAnyChatAvailable && (
             <FlexItem>
               <CopilotTrigger />
