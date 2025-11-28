@@ -1,10 +1,8 @@
 import styled from 'styled-components'
 
-type DivProps = {
-  children: React.ReactNode
-}
-
-export const ClusterDetailsPageWrapper = styled.div<DivProps>`
+export const ClusterDetailsPageWrapper = styled.div<
+  React.HTMLAttributes<HTMLDivElement>
+>`
   height: 100%;
   padding: 0 1.6rem;
 `

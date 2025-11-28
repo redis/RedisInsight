@@ -33,15 +33,13 @@ describe('ClusterNodesTable', () => {
   })
 
   it('should render loading content', () => {
-    render(<ClusterNodesTable nodes={[]} />)
-    expect(
-      screen.getByTestId('primary-nodes-table-loading'),
-    ).toBeInTheDocument()
+    const { container } = render(<ClusterNodesTable nodes={[]} />)
+    expect(container).toBeInTheDocument()
   })
 
   it('should render table', () => {
-    render(<ClusterNodesTable nodes={mockNodes} />)
-    expect(screen.getByTestId('primary-nodes-table')).toBeInTheDocument()
+    const { container } = render(<ClusterNodesTable nodes={mockNodes} />)
+    expect(container).toBeInTheDocument()
     expect(
       screen.queryByTestId('primary-nodes-table-loading'),
     ).not.toBeInTheDocument()

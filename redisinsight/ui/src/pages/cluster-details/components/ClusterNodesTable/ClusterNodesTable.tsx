@@ -8,18 +8,15 @@ import {
 } from './ClusterNodesTable.constants'
 import { ClusterNodesEmptyState } from './components/ClusterNodesEmptyState/ClusterNodesEmptyState'
 import { ClusterNodesTableProps } from './ClusterNodesTable.types'
-import * as S from './ClusterNodesTable.styles'
 
 const ClusterNodesTable = ({ nodes }: ClusterNodesTableProps) => (
-  <S.TableWrapper data-testid="primary-nodes-table">
-    <Table
-      columns={DEFAULT_CLUSTER_NODES_COLUMNS}
-      data={nodes}
-      defaultSorting={DEFAULT_SORTING}
-      emptyState={ClusterNodesEmptyState}
-      maxHeight="20rem"
-    />
-  </S.TableWrapper>
+  <Table
+    columns={DEFAULT_CLUSTER_NODES_COLUMNS}
+    data={nodes}
+    defaultSorting={DEFAULT_SORTING}
+    emptyState={ClusterNodesEmptyState}
+    maxHeight="20rem"
+  />
 )
 
 export default ClusterNodesTable
