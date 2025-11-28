@@ -3,6 +3,7 @@ import {
   Logger,
   ServiceUnavailableException,
 } from '@nestjs/common';
+import { CloudDatabaseEndpointInvalidException } from 'src/modules/cloud/job/exceptions';
 import { uniqBy } from 'lodash';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import {
@@ -29,6 +30,7 @@ import {
   CloudDatabase,
   CloudDatabaseStatus,
 } from 'src/modules/cloud/database/models';
+import { isValidCloudDatabaseEndpoint } from 'src/modules/cloud/database/utils';
 import config from 'src/utils/config';
 
 const cloudConfig = config.get('cloud');
@@ -214,6 +216,16 @@ export class CloudAutodiscoveryService {
               const exception = new ServiceUnavailableException(
                 ERROR_MESSAGES.DATABASE_IS_INACTIVE,
               );
+              return {
+                ...dto,
+                status: ActionStatus.Fail,
+                message: exception.message,
+                error: exception?.getResponse(),
+                databaseDetails: database,
+              };
+            }
+            if (!isValidCloudDatabaseEndpoint(publicEndpoint)) {
+              const exception = new CloudDatabaseEndpointInvalidException();
               return {
                 ...dto,
                 status: ActionStatus.Fail,
