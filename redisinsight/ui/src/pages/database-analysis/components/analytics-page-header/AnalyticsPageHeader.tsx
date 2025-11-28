@@ -8,10 +8,7 @@ import {
   TabsWrapper,
 } from './AnalyticsPageHeader.styles'
 
-export const AnalyticsPageHeader = ({
-  actions,
-  children,
-}: AnalyticsPageHeaderProps) => (
+export const AnalyticsPageHeader = ({ actions }: AnalyticsPageHeaderProps) => (
   <HeaderContainer>
     <HeaderContent>
       <FlexItem>
@@ -21,6 +18,5 @@ export const AnalyticsPageHeader = ({
       </FlexItem>
       {actions && <FlexItem>{actions}</FlexItem>}
     </HeaderContent>
-    {children}
   </HeaderContainer>
 )
