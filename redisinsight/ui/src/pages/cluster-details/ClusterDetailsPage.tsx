@@ -33,7 +33,7 @@ import {
   ClusterNodesTable,
 } from './components'
 
-import styles from './styles.module.scss'
+import * as S from './ClusterDetailsPage.styles'
 
 export interface ModifiedClusterNodes extends ClusterNodeDetails {
   letter: string
@@ -42,6 +42,7 @@ export interface ModifiedClusterNodes extends ClusterNodeDetails {
 }
 
 const POLLING_INTERVAL = 5_000
+const EMPTY_NODES: ModifiedClusterNodes[] = []
 
 const ClusterDetailsPage = () => {
   let interval: NodeJS.Timeout
@@ -134,13 +135,13 @@ const ClusterDetailsPage = () => {
   }
 
   return (
-    <div className={styles.main} data-testid="cluster-details-page">
+    <S.ClusterDetailsPageWrapper data-testid="cluster-details-page">
       <ClusterDetailsHeader />
-      <div className={styles.wrapper}>
+      <S.ClusterDetailsPageContent>
         <ClusterDetailsGraphics nodes={nodes} loading={loading} />
-        <ClusterNodesTable nodes={nodes} loading={loading} />
-      </div>
-    </div>
+        <ClusterNodesTable nodes={loading || !nodes ? EMPTY_NODES : nodes} />
+      </S.ClusterDetailsPageContent>
+    </S.ClusterDetailsPageWrapper>
   )
 }
 
