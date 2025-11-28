@@ -16,6 +16,8 @@ export enum KeyTypes {
 export enum ModulesKeyTypes {
   Graph = 'graphdata',
   TimeSeries = 'TSDB-TYPE',
+  Vector = 'VEC',
+  VectorSet = 'vectorset',
 }
 
 export const GROUP_TYPES_DISPLAY = Object.freeze({
@@ -28,6 +30,8 @@ export const GROUP_TYPES_DISPLAY = Object.freeze({
   [KeyTypes.JSON]: 'JSON',
   [KeyTypes.Stream]: 'Stream',
   [ModulesKeyTypes.TimeSeries]: 'Time Series',
+  [ModulesKeyTypes.Vector]: 'Vector',
+  [ModulesKeyTypes.VectorSet]: 'Vector Set',
   [CommandGroup.Bitmap]: 'Bitmap',
   [CommandGroup.Cluster]: 'Cluster',
   [CommandGroup.Connection]: 'Connection',
@@ -61,6 +65,8 @@ export const GROUP_TYPES_COLORS = Object.freeze({
   [KeyTypes.Stream]: 'var(--typeStreamColor)',
   [ModulesKeyTypes.Graph]: 'var(--typeGraphColor)',
   [ModulesKeyTypes.TimeSeries]: 'var(--typeTimeSeriesColor)',
+  [ModulesKeyTypes.Vector]: 'var(--typeVectorColor)',
+  [ModulesKeyTypes.VectorSet]: 'var(--typeVectorSetColor)',
   [CommandGroup.SortedSet]: 'var(--groupSortedSetColor)',
   [CommandGroup.Bitmap]: 'var(--groupBitmapColor)',
   [CommandGroup.Cluster]: 'var(--groupClusterColor)',

@@ -54,4 +54,14 @@ export const FILTER_KEY_TYPE_OPTIONS = [
     value: ModulesKeyTypes.TimeSeries,
     color: GROUP_TYPES_COLORS[ModulesKeyTypes.TimeSeries],
   },
+  {
+    text: 'Vector',
+    value: ModulesKeyTypes.Vector,
+    color: GROUP_TYPES_COLORS[ModulesKeyTypes.Vector],
+  },
+  {
+    text: 'Vector Set',
+    value: ModulesKeyTypes.VectorSet,
+    color: GROUP_TYPES_COLORS[ModulesKeyTypes.VectorSet],
+  },
 ]
