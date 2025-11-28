@@ -251,18 +251,16 @@ describe('AbstractBulkActionSimpleRunner', () => {
 
   describe('processIterationResults', () => {
     let addProcessedSpy;
-    let addKeysSpy;
     let addSuccessSpy;
     let addErrorsSpy;
 
     beforeEach(() => {
       addProcessedSpy = jest.spyOn(deleteRunner['summary'], 'addProcessed');
-      addKeysSpy = jest.spyOn(deleteRunner['summary'], 'addKeys');
       addSuccessSpy = jest.spyOn(deleteRunner['summary'], 'addSuccess');
       addErrorsSpy = jest.spyOn(deleteRunner['summary'], 'addErrors');
     });
 
-    it('should add keys to the summary and correctly process results', () => {
+    it('should correctly process results and update summary counters', () => {
       const keys = [
         Buffer.from('key1'),
         Buffer.from('key2'),
@@ -277,7 +275,6 @@ describe('AbstractBulkActionSimpleRunner', () => {
       deleteRunner.processIterationResults(keys, results);
 
       expect(addProcessedSpy).toHaveBeenCalledWith(3);
-      expect(addKeysSpy).toHaveBeenCalledWith([keys[0], keys[2]]);
 
       expect(addSuccessSpy).toHaveBeenNthCalledWith(1, 1); // first call
       expect(addSuccessSpy).toHaveBeenNthCalledWith(2, 1); // second call

@@ -13,7 +13,10 @@ jest.mock('uiSrc/slices/browser/bulkActions', () => ({
     loading: false,
   }),
   bulkActionsDeleteSummarySelector: jest.fn().mockReturnValue({
-    keys: ['key1', 'key2'],
+    processed: 100,
+    succeed: 98,
+    failed: 2,
+    errors: [],
   }),
 }))
 

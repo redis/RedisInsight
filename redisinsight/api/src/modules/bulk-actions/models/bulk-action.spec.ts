@@ -139,7 +139,6 @@ describe('AbstractBulkActionSimpleRunner', () => {
         succeed: 0,
         failed: 0,
         errors: [],
-        keys: [],
       });
 
       await new Promise((res) => setTimeout(res, 100));
@@ -167,7 +166,6 @@ describe('AbstractBulkActionSimpleRunner', () => {
         succeed: 0,
         failed: 0,
         errors: [],
-        keys: [],
       });
 
       await new Promise((res) => setTimeout(res, 100));
@@ -195,7 +193,6 @@ describe('AbstractBulkActionSimpleRunner', () => {
         succeed: 0,
         failed: 0,
         errors: [],
-        keys: [],
       });
 
       await new Promise((res) => setTimeout(res, 100));
@@ -238,7 +235,6 @@ describe('AbstractBulkActionSimpleRunner', () => {
         succeed: 900_000,
         failed: 100_000,
         errors: generateMockBulkActionErrors(500, false),
-        keys: [],
       });
     });
     it('should return overview for cluster', async () => {
@@ -259,7 +255,6 @@ describe('AbstractBulkActionSimpleRunner', () => {
         succeed: 2_700_000,
         failed: 300_000,
         errors: generateMockBulkActionErrors(500, false),
-        keys: [],
       });
     });
   });
@@ -292,7 +287,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
           succeed: 90,
           failed: 10,
           errors: [],
-          keys: ['key1', 'key2'],
+          keys: [],
         }),
       };
       mockSummary2 = {
@@ -301,7 +296,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
           succeed: 180,
           failed: 20,
           errors: [],
-          keys: ['key3'],
+          keys: [],
         }),
       };
       mockSummary3 = {
@@ -310,7 +305,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
           succeed: 270,
           failed: 30,
           errors: [],
-          keys: ['key4', 'key5', 'key6'],
+          keys: [],
         }),
       };
 
@@ -331,21 +326,13 @@ describe('AbstractBulkActionSimpleRunner', () => {
       bulkAction['status'] = BulkActionStatus.Completed;
     });
 
-    it('should correctly concatenate keys from all runners', async () => {
+    it('should correctly aggregate summary data from all runners', async () => {
       const overview = bulkAction.getOverview();
 
-      // Convert to a Set to make the test order-independent
-      const expectedKeys = new Set([
-        'key1',
-        'key2',
-        'key3',
-        'key4',
-        'key5',
-        'key6',
-      ]);
-      const actualKey = new Set(overview.summary.keys);
-
-      expect(actualKey).toEqual(expectedKeys);
+      expect(overview.summary.processed).toBeGreaterThan(0);
+      expect(overview.summary.succeed).toBeGreaterThan(0);
+      expect(overview.summary.failed).toBeGreaterThan(0);
+      expect(Array.isArray(overview.summary.errors)).toBe(true);
     });
   });
 

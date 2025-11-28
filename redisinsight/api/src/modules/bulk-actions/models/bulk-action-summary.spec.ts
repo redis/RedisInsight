@@ -81,12 +81,30 @@ describe('BulkActionSummary', () => {
       expect(summary['errors']).toEqual(generateErrors(500));
     });
   });
+  describe('addKeys', () => {
+    it('should add keys', async () => {
+      expect(summary['keys']).toEqual([]);
+
+      summary.addKeys([Buffer.from('key1')]);
+
+      expect(summary['keys']).toEqual([Buffer.from('key1')]);
+
+      summary.addKeys([Buffer.from('key2'), Buffer.from('key3')]);
+
+      expect(summary['keys']).toEqual([
+        Buffer.from('key1'),
+        Buffer.from('key2'),
+        Buffer.from('key3'),
+      ]);
+    });
+  });
   describe('getOverview', () => {
     it('should get overview and clear errors', async () => {
       expect(summary['processed']).toEqual(0);
       expect(summary['succeed']).toEqual(0);
       expect(summary['failed']).toEqual(0);
       expect(summary['errors']).toEqual([]);
+      expect(summary['keys']).toEqual([]);
 
       summary.addProcessed(1500);
       summary.addSuccess(500);
