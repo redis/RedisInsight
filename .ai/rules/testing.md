@@ -422,6 +422,30 @@ jest.mock('uiSrc/services/api', () => ({
 }));
 ```
 
+### Parameterized Tests with `it.each`
+
+**Use `it.each` for multiple tests with the same body but different inputs:**
+
+```typescript
+// ✅ GOOD: Parameterized tests
+it.each([
+  { description: 'null', value: null },
+  { description: 'undefined', value: undefined },
+  { description: 'empty string', value: '' },
+  { description: 'whitespace only', value: '   ' },
+])('should return error when input is $description', async ({ value }) => {
+  const result = await service.processInput(value);
+  expect(result.status).toBe('error');
+});
+```
+
+**Benefits:**
+
+- DRY: Single test body shared across all cases
+- Maintainability: Changes to test logic only need to be made once
+- Readability: Test cases are clearly defined in a table
+- Easier to extend: Adding new test cases is just adding a new row
+
 ### Test Edge Cases
 
 Always test:

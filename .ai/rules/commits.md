@@ -62,6 +62,7 @@ chore: upgrade React to version 18.2
 - Atomic changes (one logical change per commit)
 - Reference issue/ticket in body
 - Explain **why**, not just **what**
+- **Keep it concise** - Don't list every file change in the body
 
 ```bash
 feat(ui): add user profile editing
