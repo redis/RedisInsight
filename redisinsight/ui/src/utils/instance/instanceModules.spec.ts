@@ -228,8 +228,6 @@ describe('instanceModules', () => {
   })
 
   describe('convert number to semantic version', () => {
-    // These tests verify the behavior through ensureSemanticVersion since convertToSemanticVersion is not exported
-
     it('should convert 6-digit version correctly', () => {
       const mockModule: AdditionalRedisModule = {
         name: 'TestModule',
