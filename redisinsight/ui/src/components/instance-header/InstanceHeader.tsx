@@ -218,7 +218,7 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                     )}
                   </FlexItem>
                   {databases > 1 && (
-                    <FlexItem style={{ padding: '4px 0 4px 12px' }}>
+                    <FlexItem style={{ paddingLeft: 12 }}>
                       <div
                         style={{
                           display: 'flex',
