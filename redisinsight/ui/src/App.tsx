@@ -8,6 +8,7 @@ import { removePagePlaceholder } from 'uiSrc/utils'
 import MonacoLanguages from 'uiSrc/components/monaco-laguages'
 import AppInit from 'uiSrc/components/init/AppInit'
 import { Page, PageBody } from 'uiSrc/components/base/layout/page'
+import { useSystemThemeListener } from 'uiSrc/services/hooks/useSystemThemeListener'
 import { Pages, Theme } from './constants'
 import { themeService } from './services'
 import {
@@ -48,6 +49,7 @@ const App = ({ children }: { children?: ReactElement[] }) => {
       removePagePlaceholder()
     }
   }, [serverLoading])
+  useSystemThemeListener()
   return (
     <div className="main-container">
       <MonacoEnvironmentInitializer />
