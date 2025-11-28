@@ -2558,10 +2558,10 @@
     type-fest "^3.13.1"
     virtua "^0.36.3"
 
-"@redis-ui/icons@^6.1.1":
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/@redis-ui/icons/-/icons-6.1.1.tgz#100dfb7fdb4fa810ab85d9ddbd6ed75ed755f1fe"
-  integrity sha512-KzxU7cCcArOfE3cGX59Dd3FDDkQAp1QLupcj9nvXj+zOoPkaCdGELeAFL5l8glo7eY/6pyQl5VTR4XQ3d12mjQ==
+"@redis-ui/icons@^6.1.1", "@redis-ui/icons@^6.3.17":
+  version "6.3.17"
+  resolved "https://registry.yarnpkg.com/@redis-ui/icons/-/icons-6.3.17.tgz#d444997b43b9c815dde33f23ed0bd0bfed601311"
+  integrity sha512-H5bXBZmUG3sNUWMcI7p/VPshiu1roRsiRuTCdY8Avw1ardfs7zAdJKBohmX4OCwSjsv/KKTP2UzXh3wOdCh6Ew==
 
 "@redis-ui/styles@^12.8.0", "@redis-ui/styles@^12.9.0":
   version "12.9.0"
