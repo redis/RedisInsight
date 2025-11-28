@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react'
 import { Theme, THEME_MATCH_MEDIA_DARK } from 'uiSrc/constants'
 import { useThemeContext } from 'uiSrc/contexts/themeContext'
 
-const mediaQuery = window.matchMedia?.(THEME_MATCH_MEDIA_DARK)
+let mediaQuery = window.matchMedia?.(THEME_MATCH_MEDIA_DARK)
 
 /**
  * Hook that listens to OS system theme changes
@@ -16,6 +16,10 @@ export const useSystemThemeListener = () => {
   }, [changeTheme, usingSystemTheme])
 
   useEffect(() => {
+    if (!mediaQuery) {
+      // Initialize mediaQuery if not done already because window might not be defined when module is loaded
+      mediaQuery = window.matchMedia?.(THEME_MATCH_MEDIA_DARK)
+    }
     // Only listen if using system theme
     if (usingSystemTheme) {
       if (!mediaQuery) {
