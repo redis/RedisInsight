@@ -16,6 +16,7 @@ import DefaultPluginDarkSvg from 'uiSrc/assets/img/workbench/default_view_dark.s
 import DefaultPluginLightSvg from 'uiSrc/assets/img/workbench/default_view_light.svg?react'
 import DislikeSvg from 'uiSrc/assets/img/icons/dislike.svg?react'
 import ExtendSvg from 'uiSrc/assets/img/icons/extend.svg?react'
+import FolderOpenSvg from 'uiSrc/assets/img/icons/folder_open.svg?react'
 import GithubHelpCenterSVG from 'uiSrc/assets/img/github.svg?react'
 import GroupModeSvg from 'uiSrc/assets/img/icons/group_mode.svg?react'
 import KeyboardShortcutsSvg from 'uiSrc/assets/img/icons/keyboard-shortcuts.svg?react'
@@ -179,6 +180,7 @@ export const DefaultPluginDarkIcon = createIconComponent(DefaultPluginDarkSvg)
 export const DefaultPluginLightIcon = createIconComponent(DefaultPluginLightSvg)
 export const DislikeIcon = createIconComponent(DislikeSvg)
 export const ExtendIcon = createIconComponent(ExtendSvg)
+export const FolderOpenIcon = createIconComponent(FolderOpenSvg)
 export const GithubHelpCenterIcon = createIconComponent(GithubHelpCenterSVG)
 export const GroupModeIcon = createIconComponent(GroupModeSvg)
 export const KeyboardShortcutsIcon = createIconComponent(KeyboardShortcutsSvg)
