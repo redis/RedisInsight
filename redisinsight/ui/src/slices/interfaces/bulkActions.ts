@@ -18,6 +18,7 @@ export interface StateBulkActions {
     loading: boolean
     error: string
     overview: Nullable<IBulkActionOverview>
+    generateReport: boolean
   }
   bulkUpload: {
     loading: boolean

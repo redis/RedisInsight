@@ -90,10 +90,16 @@ export abstract class AbstractBulkActionSimpleRunner extends AbstractBulkActionR
     const errors = [];
 
     res.forEach(([err], i) => {
+      const keyName = keys[i].toString();
+
       if (err) {
         errors.push({ key: keys[i], error: err.message });
+        // Write error to report stream
+        this.bulkAction.writeToReport(keyName, false, err.message);
       } else {
         this.summary.addSuccess(1);
+        // Write success to report stream
+        this.bulkAction.writeToReport(keyName, true);
       }
     });
 

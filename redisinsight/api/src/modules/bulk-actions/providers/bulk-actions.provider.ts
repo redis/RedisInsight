@@ -49,6 +49,7 @@ export class BulkActionsProvider {
       dto.filter,
       socket,
       this.analytics,
+      dto.generateReport,
     );
 
     this.bulkActions.set(dto.id, bulkAction);

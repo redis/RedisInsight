@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Socket } from 'socket.io-client'
 
@@ -28,11 +28,13 @@ import {
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { appCsrfSelector } from 'uiSrc/slices/app/csrf'
 import { useIoConnection } from 'uiSrc/services/hooks/useIoConnection'
+import { IBulkActionOverview } from 'uiSrc/slices/interfaces'
+import { getBaseUrl } from 'uiSrc/services/apiService'
 
 const BulkActionsConfig = () => {
   const { id: instanceId = '', db } = useSelector(connectedInstanceSelector)
   const { isConnected } = useSelector(bulkActionsSelector)
-  const { isActionTriggered: isDeleteTriggered } = useSelector(
+  const { isActionTriggered: isDeleteTriggered, generateReport } = useSelector(
     bulkActionsDeleteSelector,
   )
   const { filter, search } = useSelector(keysSelector)
@@ -44,6 +46,17 @@ const BulkActionsConfig = () => {
   })
 
   const dispatch = useDispatch()
+
+  const triggerDownload = useCallback((downloadUrl: string) => {
+    const link = document.createElement('a')
+    // Build full URL using API base URL
+    link.href = `${getBaseUrl()}${downloadUrl}`
+    link.download = 'bulk-delete-report.txt'
+    link.style.display = 'none'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }, [])
 
   useEffect(() => {
     if (!isDeleteTriggered || !instanceId || socketRef.current?.connected) {
@@ -101,8 +114,20 @@ const BulkActionsConfig = () => {
           type: filter,
           match: search || '*',
         },
+        generateReport,
       },
-      onBulkDeleting,
+      (response: IBulkActionOverview | { status: string; error: unknown }) => {
+        onBulkDeleting(response)
+
+        // Trigger download if report generation is enabled
+        if (
+          generateReport &&
+          'downloadUrl' in response &&
+          response.downloadUrl
+        ) {
+          triggerDownload(response.downloadUrl)
+        }
+      },
     )
   }
 
