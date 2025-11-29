@@ -1,5 +1,10 @@
 import { RedisString } from 'src/common/constants';
 import { IBulkActionSummaryOverview } from 'src/modules/bulk-actions/interfaces/bulk-action-summary-overview.interface';
+import config, { Config } from 'src/utils/config';
+
+const BULK_ACTIONS_CONFIG = config.get(
+  'bulk_actions',
+) as Config['bulk_actions'];
 
 export class BulkActionSummary {
   private processed: number = 0;
@@ -11,6 +16,12 @@ export class BulkActionSummary {
   private errors: Array<Record<string, string>> = [];
 
   private keys: Array<RedisString> = [];
+
+  private hasMoreKeys: boolean = false;
+
+  private totalKeysProcessed: number = 0;
+
+  private readonly maxStoredKeys: number = BULK_ACTIONS_CONFIG.summaryKeysLimit;
 
   addProcessed(count: number) {
     this.processed += count;
@@ -33,7 +44,18 @@ export class BulkActionSummary {
   }
 
   addKeys(keys: Array<RedisString>) {
-    this.keys.push(...keys);
+    this.totalKeysProcessed += keys.length;
+
+    const remaining = this.maxStoredKeys - this.keys.length;
+
+    if (remaining > 0) {
+      const keysToStore = keys.slice(0, remaining);
+      this.keys.push(...keysToStore);
+    }
+
+    if (this.totalKeysProcessed > this.maxStoredKeys) {
+      this.hasMoreKeys = true;
+    }
   }
 
   getOverview(): IBulkActionSummaryOverview {

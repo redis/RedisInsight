@@ -451,4 +451,8 @@ export default {
     queryMaxNestedElements:
       parseInt(process.env.RI_AI_QUERY_MAX_NESTED_ELEMENTS, 10) || 25,
   },
+  bulk_actions: {
+    summaryKeysLimit:
+      parseInt(process.env.RI_BULK_ACTIONS_SUMMARY_KEYS_LIMIT, 10) || 10_000,
+  },
 };

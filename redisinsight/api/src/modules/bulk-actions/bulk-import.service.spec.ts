@@ -176,12 +176,11 @@ describe('BulkImportService', () => {
     });
     it('should return all failed in case of global error', async () => {
       mockStandaloneRedisClient.sendPipeline.mockRejectedValueOnce(new Error());
-      expect(
-        await service['executeBatch'](
-          mockStandaloneRedisClient,
-          mockBatchCommands,
-        ),
-      ).toEqual({
+      const result = await service['executeBatch'](
+        mockStandaloneRedisClient,
+        mockBatchCommands,
+      );
+      expect(result.getOverview()).toEqual({
         ...mockSummary.getOverview(),
         succeed: 0,
         failed: mockSummary.getOverview().processed,
