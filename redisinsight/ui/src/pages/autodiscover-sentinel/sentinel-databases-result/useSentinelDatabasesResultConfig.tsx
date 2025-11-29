@@ -18,55 +18,7 @@ import {
 import { removeEmpty, setTitle } from 'uiSrc/utils'
 import { pick } from 'lodash'
 import { ColumnDef } from 'uiSrc/components/base/layout/table'
-import {
-  aliasColumn,
-  dbColumn,
-  addressColumn,
-  numberOfReplicasColumn,
-  passwordColumn,
-  primaryGroupColumn,
-  resultColumn,
-  usernameColumn,
-} from './components/column-definitions'
-
-// Define an interface for the error object
-interface ErrorWithStatusCode {
-  statusCode?: number
-  name?: string
-  [key: string]: any
-}
-
-function errorNotAuth(
-  error?: string | ErrorWithStatusCode | null,
-  status?: AddRedisDatabaseStatus,
-) {
-  return (
-    (typeof error === 'object' &&
-      error?.statusCode !== ApiStatusCode.Unauthorized) ||
-    status === AddRedisDatabaseStatus.Success
-  )
-}
-
-export const colFactory = (
-  handleChangedInput: (name: string, value: string) => void,
-  handleAddInstance: (masterName: string) => void,
-  isInvalid: boolean,
-  countSuccessAdded: number,
-  itemsLength: number,
-) => {
-  const cols: ColumnDef<ModifiedSentinelMaster>[] = [
-    resultColumn(countSuccessAdded !== itemsLength, handleAddInstance),
-    primaryGroupColumn(),
-    aliasColumn(handleChangedInput, errorNotAuth),
-    addressColumn(),
-    numberOfReplicasColumn(),
-    usernameColumn(handleChangedInput, isInvalid, errorNotAuth),
-    passwordColumn(handleChangedInput, isInvalid, errorNotAuth),
-    dbColumn(handleChangedInput),
-  ]
-
-  return cols
-}
+import { getColumns } from './components/utils/getColumns'
 
 export const useSentinelDatabasesResultConfig = () => {
   const [items, setItems] = useState<ModifiedSentinelMaster[]>([])
@@ -148,7 +100,7 @@ export const useSentinelDatabasesResultConfig = () => {
   )
 
   const columns: ColumnDef<ModifiedSentinelMaster>[] = useMemo(() => {
-    return colFactory(
+    return getColumns(
       handleChangedInput,
       handleAddInstance,
       isInvalid,

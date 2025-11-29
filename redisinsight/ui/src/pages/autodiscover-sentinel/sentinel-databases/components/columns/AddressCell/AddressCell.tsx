@@ -7,9 +7,14 @@ import {
 import { RiTooltip } from 'uiSrc/components'
 import { handleCopy } from 'uiSrc/utils'
 
-import type { AddressCellProps } from './AddressCell.types'
+import type { AddressCellRendererProps } from './AddressCell.types'
+import { CellContext } from 'uiSrc/components/base/layout/table'
+import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 
-export const AddressCell = ({ host, port }: AddressCellProps) => {
+export const AddressCellRenderer = ({
+  host,
+  port,
+}: AddressCellRendererProps) => {
   if (!host || !port) {
     return null
   }
@@ -31,4 +36,11 @@ export const AddressCell = ({ host, port }: AddressCellProps) => {
       </RiTooltip>
     </CopyTextContainer>
   )
+}
+
+export const AddressCell = ({
+  row,
+}: CellContext<ModifiedSentinelMaster, unknown>) => {
+  const { host, port } = row.original
+  return <AddressCellRenderer host={host} port={port} />
 }
