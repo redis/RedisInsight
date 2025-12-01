@@ -16,4 +16,5 @@ export interface IBulkActionOverview {
   progress: IBulkActionProgressOverview;
   summary: IBulkActionSummaryOverview;
   downloadUrl?: string;
+  error?: string;
 }

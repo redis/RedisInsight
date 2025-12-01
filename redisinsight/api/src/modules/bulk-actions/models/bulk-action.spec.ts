@@ -448,6 +448,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
         {
           ...mockBulkActionOverviewMatcher,
           status: 'failed',
+          error: 'some error',
         },
         new Error('some error'),
       );
@@ -696,6 +697,75 @@ describe('AbstractBulkActionSimpleRunner', () => {
         await waitPromise;
 
         expect(bulkActionWithReport['streamingResponse']).toBe(mockResponse);
+      });
+
+      it('should reject with timeout error when stream is not set in time', async () => {
+        jest.useFakeTimers();
+
+        const bulkActionWithReport = new BulkAction(
+          mockCreateBulkActionDto.id,
+          mockCreateBulkActionDto.databaseId,
+          mockCreateBulkActionDto.type,
+          mockBulkActionFilter,
+          mockSocket,
+          mockBulkActionsAnalytics() as any,
+          true,
+        );
+
+        const waitPromise = bulkActionWithReport['waitForStreamIfNeeded']();
+
+        jest.advanceTimersByTime(BulkAction['STREAM_TIMEOUT_MS'] + 100);
+
+        await expect(waitPromise).rejects.toThrow(
+          'Unable to start report download. Please try again.',
+        );
+
+        jest.useRealTimers();
+      });
+
+      it('should resolve immediately when streamingResponse is already set', async () => {
+        const bulkActionWithReport = new BulkAction(
+          mockCreateBulkActionDto.id,
+          mockCreateBulkActionDto.databaseId,
+          mockCreateBulkActionDto.type,
+          mockBulkActionFilter,
+          mockSocket,
+          mockBulkActionsAnalytics() as any,
+          true,
+        );
+
+        bulkActionWithReport.setStreamingResponse(mockResponse);
+
+        await bulkActionWithReport['waitForStreamIfNeeded']();
+
+        expect(bulkActionWithReport['streamingResponse']).toBe(mockResponse);
+      });
+
+      it('should clear timeout when stream is set before timeout', async () => {
+        jest.useFakeTimers();
+
+        const bulkActionWithReport = new BulkAction(
+          mockCreateBulkActionDto.id,
+          mockCreateBulkActionDto.databaseId,
+          mockCreateBulkActionDto.type,
+          mockBulkActionFilter,
+          mockSocket,
+          mockBulkActionsAnalytics() as any,
+          true,
+        );
+
+        const waitPromise = bulkActionWithReport['waitForStreamIfNeeded']();
+
+        jest.advanceTimersByTime(100);
+        bulkActionWithReport.setStreamingResponse(mockResponse);
+
+        await waitPromise;
+
+        jest.advanceTimersByTime(BulkAction['STREAM_TIMEOUT_MS']);
+
+        expect(bulkActionWithReport['streamingResponse']).toBe(mockResponse);
+
+        jest.useRealTimers();
       });
     });
   });

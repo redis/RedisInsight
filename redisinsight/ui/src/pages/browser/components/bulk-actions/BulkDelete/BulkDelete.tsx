@@ -26,6 +26,7 @@ const BulkDelete = (props: Props) => {
     status,
     filter: { match, type: filterType },
     progress,
+    error,
   } = useSelector(bulkActionsDeleteOverviewSelector) ?? { filter: {} }
 
   const [showPlaceholder, setShowPlaceholder] = useState<boolean>(
@@ -48,6 +49,7 @@ const BulkDelete = (props: Props) => {
             filter={isUndefined(filterType) ? filter : filterType}
             status={status}
             progress={progress}
+            error={error}
           >
             <Col gap="l">
               <BulkDeleteSummary />

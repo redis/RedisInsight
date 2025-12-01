@@ -114,6 +114,8 @@ export class BulkAction implements IBulkAction {
     }
   }
 
+  private static readonly STREAM_TIMEOUT_MS = 5_000;
+
   private async waitForStreamIfNeeded(): Promise<void> {
     if (!this.generateReport) {
       return;
@@ -123,8 +125,16 @@ export class BulkAction implements IBulkAction {
       return;
     }
 
-    return new Promise((resolve) => {
-      this.streamReadyResolver = resolve;
+    return new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        this.streamReadyResolver = null;
+        reject(new Error('Unable to start report download. Please try again.'));
+      }, BulkAction.STREAM_TIMEOUT_MS);
+
+      this.streamReadyResolver = () => {
+        clearTimeout(timeout);
+        resolve();
+      };
     });
   }
 
@@ -241,6 +251,10 @@ export class BulkAction implements IBulkAction {
       overview.downloadUrl = this.getDownloadUrl();
     }
 
+    if (this.error) {
+      overview.error = this.error.message;
+    }
+
     return overview;
   }
 
@@ -273,7 +287,10 @@ export class BulkAction implements IBulkAction {
         if (!this.endTime) {
           this.endTime = Date.now();
         }
-      // eslint-disable-next-line no-fallthrough
+        // Queue the state change, then flush immediately for terminal states
+        this.changeState();
+        (this.debounce as ReturnType<typeof debounce>).flush();
+        break;
       default:
         this.changeState();
     }

@@ -13,12 +13,14 @@ export interface BulkActionsStatusDisplayProps {
   status: Props['status']
   total: Maybe<number>
   scanned: Maybe<number>
+  error?: string
 }
 
 export const BulkActionsStatusDisplay = ({
   status,
   total,
   scanned,
+  error,
 }: BulkActionsStatusDisplayProps) => {
   if (!isUndefined(status) && !isProcessedBulkAction(status)) {
     return (
@@ -51,6 +53,16 @@ export const BulkActionsStatusDisplay = ({
         variant="success"
         message="Action completed"
         data-testid="bulk-status-completed"
+      />
+    )
+  }
+
+  if (status === BulkActionsStatus.Failed) {
+    return (
+      <Banner
+        variant="danger"
+        message={error || 'Action failed'}
+        data-testid="bulk-status-failed"
       />
     )
   }

@@ -28,6 +28,7 @@ export interface Props {
     scanned: Maybe<number>
   }
   children?: React.ReactNode
+  error?: string
 }
 
 const BulkActionsInfo = (props: Props) => {
@@ -40,6 +41,7 @@ const BulkActionsInfo = (props: Props) => {
     progress,
     title = 'Delete Keys with',
     subTitle,
+    error,
   } = props
   const { total = 0, scanned = 0 } = progress || {}
 
@@ -49,6 +51,7 @@ const BulkActionsInfo = (props: Props) => {
         status={status}
         total={total}
         scanned={scanned}
+        error={error}
       />
       <Col justify="between" gap="xxl">
         <BulkActionsTitle color="primary" $full>
