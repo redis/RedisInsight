@@ -7,7 +7,7 @@ const ICON_PATH = app.isPackaged
   : path.join(__dirname, '../resources', 'icon.png')
 
 const appVersionPrefix = config.isEnterprise ? 'Enterprise - ' : ''
-const appVersion = app.getVersion() || '2.69.9'
+const appVersion = app.getVersion() || '2.69.10'
 const appVersionSuffix = !config.isProduction
   ? `-dev-${process.getCreationTime()}`
   : ''
