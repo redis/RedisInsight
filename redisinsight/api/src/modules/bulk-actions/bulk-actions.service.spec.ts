@@ -110,4 +110,61 @@ describe('BulkActionsService', () => {
       expect(bulkActionProvider.abortUsersBulkActions).toHaveBeenCalledTimes(1);
     });
   });
+
+  describe('streamReport', () => {
+    let mockResponse: any;
+    let mockBulkActionWithReport: any;
+
+    beforeEach(() => {
+      mockResponse = {
+        setHeader: jest.fn(),
+        write: jest.fn(),
+        end: jest.fn(),
+      };
+
+      mockBulkActionWithReport = {
+        setStreamingResponse: jest.fn(),
+        isReportEnabled: jest.fn().mockReturnValue(true),
+      };
+    });
+
+    it('should throw NotFoundException when bulk action not found', async () => {
+      bulkActionProvider.get = jest.fn().mockReturnValue(null);
+
+      await expect(
+        service.streamReport('non-existent-id', mockResponse),
+      ).rejects.toThrow('Bulk action not found');
+    });
+
+    it('should throw BadRequestException when report not enabled', async () => {
+      mockBulkActionWithReport.isReportEnabled.mockReturnValue(false);
+      bulkActionProvider.get = jest.fn().mockReturnValue(mockBulkActionWithReport);
+
+      await expect(
+        service.streamReport('bulk-action-id', mockResponse),
+      ).rejects.toThrow('Report generation was not enabled for this bulk action');
+    });
+
+    it('should set headers and attach stream to bulk action', async () => {
+      bulkActionProvider.get = jest.fn().mockReturnValue(mockBulkActionWithReport);
+
+      await service.streamReport('bulk-action-id', mockResponse);
+
+      expect(mockResponse.setHeader).toHaveBeenCalledWith(
+        'Content-Type',
+        'text/plain',
+      );
+      expect(mockResponse.setHeader).toHaveBeenCalledWith(
+        'Content-Disposition',
+        'attachment; filename="bulk-delete-report.txt"',
+      );
+      expect(mockResponse.setHeader).toHaveBeenCalledWith(
+        'Transfer-Encoding',
+        'chunked',
+      );
+      expect(mockBulkActionWithReport.setStreamingResponse).toHaveBeenCalledWith(
+        mockResponse,
+      );
+    });
+  });
 });

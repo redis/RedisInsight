@@ -1,6 +1,10 @@
 import { Socket } from 'socket.io';
 import { Response } from 'express';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { BulkActionsProvider } from 'src/modules/bulk-actions/providers/bulk-actions.provider';
 import { CreateBulkActionDto } from 'src/modules/bulk-actions/dto/create-bulk-action.dto';
 import { BulkActionIdDto } from 'src/modules/bulk-actions/dto/bulk-action-id.dto';
@@ -53,6 +57,10 @@ export class BulkActionsService {
    */
   async streamReport(id: string, res: Response): Promise<void> {
     const bulkAction = this.bulkActionsProvider.get(id);
+
+    if (!bulkAction) {
+      throw new NotFoundException('Bulk action not found');
+    }
 
     if (!bulkAction.isReportEnabled()) {
       throw new BadRequestException(

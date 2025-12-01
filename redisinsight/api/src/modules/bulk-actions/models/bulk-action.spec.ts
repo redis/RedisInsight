@@ -475,4 +475,223 @@ describe('AbstractBulkActionSimpleRunner', () => {
       expect(bulkAction.getId()).toEqual(bulkAction['id']);
     });
   });
+
+  describe('Report streaming', () => {
+    let mockResponse: any;
+
+    beforeEach(() => {
+      mockResponse = {
+        write: jest.fn(),
+        end: jest.fn(),
+      };
+    });
+
+    describe('isReportEnabled', () => {
+      it('should return false when generateReport is not set', () => {
+        expect(bulkAction.isReportEnabled()).toBe(false);
+      });
+
+      it('should return true when generateReport is true', () => {
+        const bulkActionWithReport = new BulkAction(
+          mockCreateBulkActionDto.id,
+          mockCreateBulkActionDto.databaseId,
+          mockCreateBulkActionDto.type,
+          mockBulkActionFilter,
+          mockSocket,
+          mockBulkActionsAnalytics() as any,
+          true,
+        );
+        expect(bulkActionWithReport.isReportEnabled()).toBe(true);
+      });
+    });
+
+    describe('setStreamingResponse', () => {
+      it('should set streaming response and resolve promise', () => {
+        const bulkActionWithReport = new BulkAction(
+          mockCreateBulkActionDto.id,
+          mockCreateBulkActionDto.databaseId,
+          mockCreateBulkActionDto.type,
+          mockBulkActionFilter,
+          mockSocket,
+          mockBulkActionsAnalytics() as any,
+          true,
+        );
+
+        bulkActionWithReport.setStreamingResponse(mockResponse);
+
+        expect(bulkActionWithReport['streamingResponse']).toBe(mockResponse);
+      });
+
+      it('should write header when response is set', () => {
+        const bulkActionWithReport = new BulkAction(
+          mockCreateBulkActionDto.id,
+          mockCreateBulkActionDto.databaseId,
+          mockCreateBulkActionDto.type,
+          mockBulkActionFilter,
+          mockSocket,
+          mockBulkActionsAnalytics() as any,
+          true,
+        );
+
+        bulkActionWithReport.setStreamingResponse(mockResponse);
+
+        expect(mockResponse.write).toHaveBeenCalled();
+        const headerCall = mockResponse.write.mock.calls[0][0];
+        expect(headerCall).toContain('Bulk Delete Report');
+        expect(headerCall).toContain('Command Executed for each key:');
+      });
+    });
+
+    describe('writeToReport', () => {
+      it('should not write when streaming response is not set', () => {
+        bulkAction.writeToReport('testKey', true);
+        // No error thrown, just no-op
+      });
+
+      it('should write success entry to stream', () => {
+        const bulkActionWithReport = new BulkAction(
+          mockCreateBulkActionDto.id,
+          mockCreateBulkActionDto.databaseId,
+          mockCreateBulkActionDto.type,
+          mockBulkActionFilter,
+          mockSocket,
+          mockBulkActionsAnalytics() as any,
+          true,
+        );
+        bulkActionWithReport['streamingResponse'] = mockResponse;
+
+        bulkActionWithReport.writeToReport('testKey', true);
+
+        expect(mockResponse.write).toHaveBeenCalledWith('testKey - OK\n');
+      });
+
+      it('should write error entry to stream', () => {
+        const bulkActionWithReport = new BulkAction(
+          mockCreateBulkActionDto.id,
+          mockCreateBulkActionDto.databaseId,
+          mockCreateBulkActionDto.type,
+          mockBulkActionFilter,
+          mockSocket,
+          mockBulkActionsAnalytics() as any,
+          true,
+        );
+        bulkActionWithReport['streamingResponse'] = mockResponse;
+
+        bulkActionWithReport.writeToReport('testKey', false, 'NOPERM');
+
+        expect(mockResponse.write).toHaveBeenCalledWith(
+          'testKey - Error: NOPERM\n',
+        );
+      });
+
+      it('should write unknown error when error message not provided', () => {
+        const bulkActionWithReport = new BulkAction(
+          mockCreateBulkActionDto.id,
+          mockCreateBulkActionDto.databaseId,
+          mockCreateBulkActionDto.type,
+          mockBulkActionFilter,
+          mockSocket,
+          mockBulkActionsAnalytics() as any,
+          true,
+        );
+        bulkActionWithReport['streamingResponse'] = mockResponse;
+
+        bulkActionWithReport.writeToReport('testKey', false);
+
+        expect(mockResponse.write).toHaveBeenCalledWith(
+          'testKey - Error: Unknown error\n',
+        );
+      });
+    });
+
+    describe('finalizeReport', () => {
+      it('should not finalize when streaming response is not set', () => {
+        bulkAction['finalizeReport']();
+        // No error thrown, just no-op
+      });
+
+      it('should write summary and close stream', () => {
+        const bulkActionWithReport = new BulkAction(
+          mockCreateBulkActionDto.id,
+          mockCreateBulkActionDto.databaseId,
+          mockCreateBulkActionDto.type,
+          mockBulkActionFilter,
+          mockSocket,
+          mockBulkActionsAnalytics() as any,
+          true,
+        );
+        bulkActionWithReport['streamingResponse'] = mockResponse;
+        bulkActionWithReport['status'] = BulkActionStatus.Completed;
+
+        bulkActionWithReport['finalizeReport']();
+
+        expect(mockResponse.write).toHaveBeenCalled();
+        expect(mockResponse.end).toHaveBeenCalled();
+
+        const summaryCall = mockResponse.write.mock.calls[0][0];
+        expect(summaryCall).toContain('Summary');
+        expect(summaryCall).toContain('Processed:');
+        expect(summaryCall).toContain('Succeeded:');
+        expect(summaryCall).toContain('Failed:');
+        expect(summaryCall).toContain('Status:');
+      });
+    });
+
+    describe('getOverview with downloadUrl', () => {
+      it('should not include downloadUrl when generateReport is false', () => {
+        const overview = bulkAction.getOverview();
+        expect(overview.downloadUrl).toBeUndefined();
+      });
+
+      it('should include downloadUrl when generateReport is true', () => {
+        const bulkActionWithReport = new BulkAction(
+          mockCreateBulkActionDto.id,
+          mockCreateBulkActionDto.databaseId,
+          mockCreateBulkActionDto.type,
+          mockBulkActionFilter,
+          mockSocket,
+          mockBulkActionsAnalytics() as any,
+          true,
+        );
+
+        const overview = bulkActionWithReport.getOverview();
+
+        expect(overview.downloadUrl).toBe(
+          `databases/${mockCreateBulkActionDto.databaseId}/bulk-actions/${mockCreateBulkActionDto.id}/report/download`,
+        );
+      });
+    });
+
+    describe('waitForStreamIfNeeded', () => {
+      it('should resolve immediately when generateReport is false', async () => {
+        await bulkAction['waitForStreamIfNeeded']();
+        // Should not hang
+      });
+
+      it('should wait for stream when generateReport is true', async () => {
+        const bulkActionWithReport = new BulkAction(
+          mockCreateBulkActionDto.id,
+          mockCreateBulkActionDto.databaseId,
+          mockCreateBulkActionDto.type,
+          mockBulkActionFilter,
+          mockSocket,
+          mockBulkActionsAnalytics() as any,
+          true,
+        );
+
+        // Start waiting in background
+        const waitPromise = bulkActionWithReport['waitForStreamIfNeeded']();
+
+        // Set streaming response after a short delay
+        setTimeout(() => {
+          bulkActionWithReport.setStreamingResponse(mockResponse);
+        }, 10);
+
+        // Wait should resolve after setStreamingResponse is called
+        await waitPromise;
+
+        expect(bulkActionWithReport['streamingResponse']).toBe(mockResponse);
+      });
+    });
+  });
 });

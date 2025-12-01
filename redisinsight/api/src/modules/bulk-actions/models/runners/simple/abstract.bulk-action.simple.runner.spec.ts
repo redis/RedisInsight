@@ -253,11 +253,13 @@ describe('AbstractBulkActionSimpleRunner', () => {
     let addProcessedSpy;
     let addSuccessSpy;
     let addErrorsSpy;
+    let writeToReportSpy;
 
     beforeEach(() => {
       addProcessedSpy = jest.spyOn(deleteRunner['summary'], 'addProcessed');
       addSuccessSpy = jest.spyOn(deleteRunner['summary'], 'addSuccess');
       addErrorsSpy = jest.spyOn(deleteRunner['summary'], 'addErrors');
+      writeToReportSpy = jest.spyOn(bulkAction, 'writeToReport');
     });
 
     it('should correctly process results and update summary counters', () => {
@@ -284,6 +286,31 @@ describe('AbstractBulkActionSimpleRunner', () => {
           error: mockRESPError,
         },
       ]);
+    });
+
+    it('should call writeToReport for each key result', () => {
+      const keys = [
+        Buffer.from('key1'),
+        Buffer.from('key2'),
+        Buffer.from('key3'),
+      ];
+      const results: [Error | null, number | null][] = [
+        [null, 1], // Success
+        [mockReplyError, null], // Error
+        [null, 1], // Success
+      ];
+
+      deleteRunner.processIterationResults(keys, results);
+
+      expect(writeToReportSpy).toHaveBeenCalledTimes(3);
+      expect(writeToReportSpy).toHaveBeenNthCalledWith(1, 'key1', true);
+      expect(writeToReportSpy).toHaveBeenNthCalledWith(
+        2,
+        'key2',
+        false,
+        mockRESPError,
+      );
+      expect(writeToReportSpy).toHaveBeenNthCalledWith(3, 'key3', true);
     });
   });
 });
