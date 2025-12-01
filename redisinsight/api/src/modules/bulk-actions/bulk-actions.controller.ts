@@ -35,4 +35,3 @@ export class BulkActionsController {
     await this.service.streamReport(id, res);
   }
 }
-

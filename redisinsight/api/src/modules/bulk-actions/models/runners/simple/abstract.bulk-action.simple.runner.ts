@@ -92,11 +92,9 @@ export abstract class AbstractBulkActionSimpleRunner extends AbstractBulkActionR
 
       if (err) {
         this.summary.addFailed(1);
-        // Write error to report stream
         this.bulkAction.writeToReport(keyName, false, err.message);
       } else {
         this.summary.addSuccess(1);
-        // Write success to report stream
         this.bulkAction.writeToReport(keyName, true);
       }
     });

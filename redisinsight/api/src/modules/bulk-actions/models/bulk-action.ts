@@ -114,9 +114,6 @@ export class BulkAction implements IBulkAction {
     }
   }
 
-  /**
-   * Wait for streaming response to be attached if report generation is enabled
-   */
   private async waitForStreamIfNeeded(): Promise<void> {
     if (!this.generateReport) {
       return;
@@ -131,9 +128,6 @@ export class BulkAction implements IBulkAction {
     });
   }
 
-  /**
-   * Check if report generation is enabled
-   */
   isReportEnabled(): boolean {
     return this.generateReport;
   }
@@ -145,7 +139,6 @@ export class BulkAction implements IBulkAction {
   setStreamingResponse(res: Response): void {
     this.streamingResponse = res;
 
-    // Write report header
     this.writeReportHeader();
 
     // Resolve the promise if bulk action is waiting
@@ -155,9 +148,6 @@ export class BulkAction implements IBulkAction {
     }
   }
 
-  /**
-   * Write report header
-   */
   private writeReportHeader(): void {
     if (!this.streamingResponse) return;
 
@@ -172,9 +162,6 @@ export class BulkAction implements IBulkAction {
     this.streamingResponse.write(header);
   }
 
-  /**
-   * Write a key result to the report stream
-   */
   writeToReport(keyName: string, success: boolean, error?: string): void {
     if (!this.streamingResponse) return;
 
@@ -185,9 +172,6 @@ export class BulkAction implements IBulkAction {
     this.streamingResponse.write(line);
   }
 
-  /**
-   * Finalize the report with summary and close the stream
-   */
   private finalizeReport(): void {
     if (!this.streamingResponse) return;
 
@@ -209,9 +193,6 @@ export class BulkAction implements IBulkAction {
     this.streamingResponse.end();
   }
 
-  /**
-   * Get overview for BulkAction with progress details and summary
-   */
   getOverview(): IBulkActionOverview {
     const progress = this.runners
       .map((runner) => runner.getProgress().getOverview())
@@ -268,10 +249,6 @@ export class BulkAction implements IBulkAction {
     return overview;
   }
 
-  /**
-   * Get download URL for the report
-   * Route: /databases/:dbInstance/bulk-actions/:id/report/download
-   */
   private getDownloadUrl(): string {
     return `databases/${this.databaseId}/bulk-actions/${this.id}/report/download`;
   }

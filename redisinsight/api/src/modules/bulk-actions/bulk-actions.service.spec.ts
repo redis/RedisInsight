@@ -138,17 +138,24 @@ describe('BulkActionsService', () => {
 
     it('should throw BadRequestException when report not enabled', async () => {
       mockBulkActionWithReport.isReportEnabled.mockReturnValue(false);
-      bulkActionProvider.get = jest.fn().mockReturnValue(mockBulkActionWithReport);
+      bulkActionProvider.get = jest
+        .fn()
+        .mockReturnValue(mockBulkActionWithReport);
 
       await expect(
         service.streamReport('bulk-action-id', mockResponse),
-      ).rejects.toThrow('Report generation was not enabled for this bulk action');
+      ).rejects.toThrow(
+        'Report generation was not enabled for this bulk action',
+      );
     });
 
     it('should set headers and attach stream to bulk action', async () => {
-      bulkActionProvider.get = jest.fn().mockReturnValue(mockBulkActionWithReport);
+      bulkActionProvider.get = jest
+        .fn()
+        .mockReturnValue(mockBulkActionWithReport);
       const mockTimestamp = '1733056800000'; // 2024-12-01T10:00:00.000Z
-      const expectedFilename = 'bulk-delete-report-2024-12-01T10-00-00-000Z.txt';
+      const expectedFilename =
+        'bulk-delete-report-2024-12-01T10-00-00-000Z.txt';
 
       await service.streamReport(mockTimestamp, mockResponse);
 
@@ -164,9 +171,9 @@ describe('BulkActionsService', () => {
         'Transfer-Encoding',
         'chunked',
       );
-      expect(mockBulkActionWithReport.setStreamingResponse).toHaveBeenCalledWith(
-        mockResponse,
-      );
+      expect(
+        mockBulkActionWithReport.setStreamingResponse,
+      ).toHaveBeenCalledWith(mockResponse);
     });
   });
 });
