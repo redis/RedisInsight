@@ -9,7 +9,7 @@ const expandedStyle = css<{ theme: Theme }>`
 
 export const TableTextBtn = styled(EmptyButton).attrs({
   variant: 'primary-inline',
-})<
+}) <
   React.ComponentProps<typeof EmptyButton> & {
     $expanded?: boolean
     theme: Theme
@@ -17,9 +17,11 @@ export const TableTextBtn = styled(EmptyButton).attrs({
 >`
   max-width: calc(100% - 20px);
   width: auto;
+  color: ${({ theme }) => theme.semantic.color.text.primary600};
   text-decoration: underline;
 
-  &:hover {
+  &:hover,
+  &:focus {
     text-decoration: none;
   }
 
