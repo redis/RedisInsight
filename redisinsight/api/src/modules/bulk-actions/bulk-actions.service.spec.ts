@@ -153,7 +153,7 @@ describe('BulkActionsService', () => {
       bulkActionProvider.get = jest
         .fn()
         .mockReturnValue(mockBulkActionWithReport);
-      const mockTimestamp = '1733056800000'; // 2024-12-01T10:00:00.000Z
+      const mockTimestamp = '1733047200000'; // 2024-12-01T10:00:00.000Z
       const expectedFilename =
         'bulk-delete-report-2024-12-01T10-00-00-000Z.txt';
 
