@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 
 import * as keys from 'uiSrc/constants/keys'
-import { TextInput } from 'uiSrc/components/base/inputs'
 import { GroupBadge, RiTooltip } from 'uiSrc/components'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 import { Nullable } from 'uiSrc/utils'
@@ -18,43 +17,15 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { ProgressBarLoader } from 'uiSrc/components/base/display'
+import {
+  StyledAutoSuggestions,
+  StyledClearHistory,
+  StyledMultiSearch,
+  StyledMultiSearchWrapper,
+  StyledSearchInput,
+  StyledSuggestion,
+} from './MultiSearch.styles'
 import styles from './styles.module.scss'
-import styled from 'styled-components'
-import { Theme } from 'uiSrc/components/base/theme/types'
-
-interface StyledMultiSearchProps extends React.HTMLAttributes<HTMLDivElement> {
-  $isFocused: boolean
-}
-
-const StyledMultiSearch = styled.div<StyledMultiSearchProps>`
-  border: 1px solid
-    ${({ theme, $isFocused }: { theme: Theme; $isFocused: boolean }) =>
-      $isFocused
-        ? theme.components.input.states.focused.borderColor
-        : theme.components.input.states.normal.borderColor};
-  background-color: ${({ theme }: { theme: Theme }) =>
-    theme.components.input.states.normal.bgColor};
-  border-radius: 4px;
-`
-const StyledAutoSuggestions = styled.div<React.HTMLAttributes<HTMLDivElement>>`
-  background-color: ${({ theme }: { theme: Theme }) =>
-    theme.components.select.dropdown.bgColor};
-  border-color: ${({ theme }: { theme: Theme }) =>
-    theme.components.select.states.disabled.borderColor};
-`
-const StyledSuggestion = styled.li<React.HTMLAttributes<HTMLLIElement>>`
-  &:hover {
-    background: ${({ theme }: { theme: Theme }) =>
-      theme.components.select.dropdown.option.states.highlighted.bgColor};
-  }
-`
-
-const StyledClearHistory = styled.li<React.HTMLAttributes<HTMLDivElement>>`
-  &:hover {
-    background: ${({ theme }: { theme: Theme }) =>
-      theme.components.select.dropdown.option.states.highlighted.bgColor};
-  }
-`
 
 interface MultiSearchSuggestion {
   options: null | Array<{
@@ -201,18 +172,14 @@ const MultiSearch = (props: Props) => {
 
   return (
     <OutsideClickDetector onOutsideClick={exitAutoSuggestions}>
-      <div
+      <StyledMultiSearchWrapper
+        align="center"
         className={cx(styles.multiSearchWrapper, className)}
         onKeyDown={handleKeyDown}
         role="presentation"
         data-testid="multi-search"
       >
-        <StyledMultiSearch
-          $isFocused={isInputFocus}
-          className={cx(styles.multiSearch, {
-            [styles.isFocused]: isInputFocus,
-          })}
-        >
+        <StyledMultiSearch align="center" gap="m" $isFocused={isInputFocus}>
           <div>
             {options.map((option) => (
               <GroupBadge
@@ -223,8 +190,7 @@ const MultiSearch = (props: Props) => {
               />
             ))}
           </div>
-          <TextInput
-            className={styles.multiSearchInput}
+          <StyledSearchInput
             placeholder={placeholder}
             value={value}
             onKeyDown={handleKeyDown}
@@ -289,7 +255,6 @@ const MultiSearch = (props: Props) => {
               </ul>
               <StyledClearHistory
                 role="presentation"
-                className={styles.clearHistory}
                 onClick={() =>
                   handleDeleteSuggestion(
                     suggestionOptions?.map((item) => item.id),
@@ -344,7 +309,7 @@ const MultiSearch = (props: Props) => {
           )}
           {!disableSubmit && SubmitBtn()}
         </StyledMultiSearch>
-      </div>
+      </StyledMultiSearchWrapper>
     </OutsideClickDetector>
   )
 }
