@@ -61,7 +61,6 @@ const mockSummary: BulkActionSummary = Object.assign(new BulkActionSummary(), {
   succeed: 100,
   failed: 0,
   errors: [],
-  keys: [],
 });
 
 const mockEmptySummary: BulkActionSummary = Object.assign(
@@ -71,7 +70,6 @@ const mockEmptySummary: BulkActionSummary = Object.assign(
     succeed: 0,
     failed: 0,
     errors: [],
-    keys: [],
   },
 );
 
@@ -80,7 +78,6 @@ const mockSummaryWithErrors = Object.assign(new BulkActionSummary(), {
   succeed: 99,
   failed: 1,
   errors: [],
-  keys: [],
 });
 
 const mockImportResult: IBulkActionOverview = {
@@ -258,7 +255,6 @@ describe('BulkImportService', () => {
           processed: 10_000,
           succeed: 10_000,
           failed: 0,
-          keys: [],
         }),
       );
       expect(
@@ -285,7 +281,6 @@ describe('BulkImportService', () => {
           processed: 0,
           succeed: 0,
           failed: 0,
-          keys: [],
         }),
       );
       expect(
