@@ -14,7 +14,7 @@ export class PubSubPage extends InstancePage {
     initialPage = Selector('[data-testid=pub-sub-page] [data-testid="empty-messages-list"]')
     subscribeStatus = Selector('[data-testid=pub-sub-status]');
     messages = Selector('[data-testid="messages-list"] tr');
-    messagesTable = Selector('[data-testid="messages-list"] table]')
+    messagesTable = Selector('[data-testid="messages-list"] table')
     messagesTableBottomNav = Selector('[data-testid="messages-list"] nav[data-role=pagination]')
     messagesTableFirstPageBtn = Selector('[data-testid="messages-list"] nav[data-role=pagination] button[title="First page"]')
     messagesTableLastPageBtn = Selector('[data-testid="messages-list"] nav[data-role=pagination] button[title="Last page"]')
