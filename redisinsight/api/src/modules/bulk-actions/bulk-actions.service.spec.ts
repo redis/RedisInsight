@@ -147,8 +147,10 @@ describe('BulkActionsService', () => {
 
     it('should set headers and attach stream to bulk action', async () => {
       bulkActionProvider.get = jest.fn().mockReturnValue(mockBulkActionWithReport);
+      const mockTimestamp = '1733056800000'; // 2024-12-01T10:00:00.000Z
+      const expectedFilename = 'bulk-delete-report-2024-12-01T10-00-00-000Z.txt';
 
-      await service.streamReport('bulk-action-id', mockResponse);
+      await service.streamReport(mockTimestamp, mockResponse);
 
       expect(mockResponse.setHeader).toHaveBeenCalledWith(
         'Content-Type',
@@ -156,7 +158,7 @@ describe('BulkActionsService', () => {
       );
       expect(mockResponse.setHeader).toHaveBeenCalledWith(
         'Content-Disposition',
-        'attachment; filename="bulk-delete-report.txt"',
+        `attachment; filename="${expectedFilename}"`,
       );
       expect(mockResponse.setHeader).toHaveBeenCalledWith(
         'Transfer-Encoding',

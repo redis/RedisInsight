@@ -69,10 +69,11 @@ export class BulkActionsService {
     }
 
     // Set headers for file download
+    const timestamp = new Date(Number(id)).toISOString().replace(/[:.]/g, '-');
     res.setHeader('Content-Type', 'text/plain');
     res.setHeader(
       'Content-Disposition',
-      'attachment; filename="bulk-delete-report.txt"',
+      `attachment; filename="bulk-delete-report-${timestamp}.txt"`,
     );
     res.setHeader('Transfer-Encoding', 'chunked');
 

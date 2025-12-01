@@ -51,7 +51,6 @@ const BulkActionsConfig = () => {
     const link = document.createElement('a')
     // Build full URL using API base URL
     link.href = `${getBaseUrl()}${downloadUrl}`
-    link.download = 'bulk-delete-report.txt'
     link.style.display = 'none'
     document.body.appendChild(link)
     link.click()
