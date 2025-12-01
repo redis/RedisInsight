@@ -87,13 +87,11 @@ export abstract class AbstractBulkActionSimpleRunner extends AbstractBulkActionR
   ) {
     this.summary.addProcessed(res.length);
 
-    const errors = [];
-
     res.forEach(([err], i) => {
       const keyName = keys[i].toString();
 
       if (err) {
-        errors.push({ key: keys[i], error: err.message });
+        this.summary.addFailed(1);
         // Write error to report stream
         this.bulkAction.writeToReport(keyName, false, err.message);
       } else {
@@ -102,7 +100,5 @@ export abstract class AbstractBulkActionSimpleRunner extends AbstractBulkActionR
         this.bulkAction.writeToReport(keyName, true);
       }
     });
-
-    this.summary.addErrors(errors);
   }
 }
