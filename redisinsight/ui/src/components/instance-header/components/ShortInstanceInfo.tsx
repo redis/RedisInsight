@@ -43,9 +43,7 @@ const ShortInstanceInfo = ({ info, databases, modules }: Props) => {
 
   const getIcon = (name: string) => {
     const icon: AllIconsType =
-      DEFAULT_MODULES_INFO[name as RedisDefaultModules]?.[
-        theme === Theme.Dark ? 'iconDark' : 'iconLight'
-      ]
+      DEFAULT_MODULES_INFO[name as RedisDefaultModules]?.icon
     if (icon) {
       return icon
     }

@@ -41,7 +41,7 @@ describe('DatabaseListModules', () => {
 
     const module = queryByTestId(`${term}_module`)
 
-    await act(() => {
+    await act(async () => {
       module && fireEvent.click(module)
     })
 
