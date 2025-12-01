@@ -79,7 +79,7 @@
     "date-fns": "^2.29.3",
     "detect-port": "^1.5.1",
     "dotenv": "^16.0.0",
-    "express": "5.0.1",
+    "express": "5.2.0",
     "fs-extra": "^10.0.0",
     "ioredis": "^5.2.2",
     "is-glob": "^4.0.1",
