@@ -132,16 +132,11 @@ export class BulkAction implements IBulkAction {
     return this.generateReport;
   }
 
-  /**
-   * Set the streaming response for report generation
-   * This is called when the download endpoint is hit
-   */
   setStreamingResponse(res: Response): void {
     this.streamingResponse = res;
 
     this.writeReportHeader();
 
-    // Resolve the promise if bulk action is waiting
     if (this.streamReadyResolver) {
       this.streamReadyResolver();
       this.streamReadyResolver = null;
