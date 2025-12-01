@@ -24,7 +24,6 @@ import {
 } from 'uiSrc/telemetry'
 import { formatLongName, getDbIndex, setTitle } from 'uiSrc/utils'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
-import AnalyticsTabs from 'uiSrc/components/analytics-tabs'
 import {
   analyticsSettingsSelector,
   setAnalyticsViewTab,
@@ -32,15 +31,17 @@ import {
 import { AnalyticsViewTab } from 'uiSrc/slices/interfaces/analytics'
 
 import { FormatedDate } from 'uiSrc/components'
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Text, Title } from 'uiSrc/components/base/text'
 import { defaultValueRender } from 'uiSrc/components/base/forms/select/RiSelect'
 import { SlowLog } from 'apiSrc/modules/slow-log/models'
+import { AnalysisPageContainer } from 'uiSrc/pages/database-analysis/components/analysis-page-container'
+import { AnalyticsPageHeader } from 'uiSrc/pages/database-analysis/components/analytics-page-header'
 
 import { Actions, EmptySlowLog, SlowLogTable } from './components'
 
-import styles from './styles.module.scss'
-import { StyledSelect } from './SlowLogPage.styles'
+import { StyledSelect, ContentWrapper } from './SlowLogPage.styles'
+import { Container } from '../database-analysis/components/header/Header.styles'
 
 const HIDE_TIMESTAMP_FROM_WIDTH = 850
 const DEFAULT_COUNT_VALUE = '50'
@@ -142,17 +143,13 @@ const SlowLogPage = () => {
   const isEmptySlowLog = !data.length
 
   return (
-    <Col className={styles.main} data-testid="slow-log-page">
+    <AnalysisPageContainer data-testid="slow-log-page">
       <AutoSizer disableHeight>
         {({ width }) => (
           <div style={{ width }}>
-            <Row className={styles.header} align="center" justify="between">
-              <FlexItem>
-                <AnalyticsTabs />
-              </FlexItem>
-
-              <FlexItem>
-                <Row align="center" gap="xl">
+            <AnalyticsPageHeader
+              actions={
+                <Container align="center" gap="xl">
                   {connectionType !== ConnectionType.Cluster && config && (
                     <Text size="s" color="secondary" data-testid="config-info">
                       Execution time:{' '}
@@ -177,75 +174,78 @@ const SlowLogPage = () => {
                     onClear={onClearSlowLogs}
                     onRefresh={getSlowLogs}
                   />
-                </Row>
-              </FlexItem>
-            </Row>
-
-            <Row
-              className={styles.actionsLine}
-              align="center"
-              justify="between"
-            >
-              <FlexItem>
-                <Title size="L" color="primary">
-                  Slow Log
-                </Title>
-              </FlexItem>
-              <FlexItem>
-                <Row align="center" gap="xs">
-                  <FlexItem>
-                    <Text size="s" color="primary">
-                      {connectionType === ConnectionType.Cluster
-                        ? 'Display per node:'
-                        : 'Display up to:'}
-                    </Text>
-                  </FlexItem>
-                  <FlexItem>
-                    <StyledSelect
-                      options={countOptions}
-                      valueRender={defaultValueRender}
-                      value={count}
-                      onChange={(value) => setCount(value)}
-                      data-testid="count-select"
-                    />
-                  </FlexItem>
-                  {width > HIDE_TIMESTAMP_FROM_WIDTH && (
-                    <FlexItem style={{ marginLeft: 12 }}>
-                      <Text
-                        size="s"
-                        color="secondary"
-                        data-testid="entries-from-timestamp"
-                      >
-                        ({data.length} entries
-                        {lastTimestamp && (
-                          <>
-                            <span>&nbsp;from &nbsp;</span>
-                            <FormatedDate date={lastTimestamp * 1000} />
-                          </>
-                        )}
-                        )
-                      </Text>
-                    </FlexItem>
-                  )}
-                </Row>
-              </FlexItem>
-            </Row>
+                </Container>
+              }
+            />
           </div>
         )}
       </AutoSizer>
-      {isEmptySlowLog ? (
-        <EmptySlowLog
-          slowlogLogSlowerThan={slowlogLogSlowerThan}
-          durationUnit={durationUnit}
-        />
-      ) : (
-        <SlowLogTable
-          items={data}
-          loading={loading}
-          durationUnit={durationUnit}
-        />
-      )}
-    </Col>
+      <ContentWrapper>
+        <AutoSizer disableHeight>
+          {({ width }) => (
+            <div style={{ width }}>
+              <Row align="center" justify="between">
+                <FlexItem>
+                  <Title size="L" color="primary">
+                    Slow Log
+                  </Title>
+                </FlexItem>
+                <FlexItem>
+                  <Row align="center" gap="xs">
+                    <FlexItem>
+                      <Text size="s" color="primary">
+                        {connectionType === ConnectionType.Cluster
+                          ? 'Display per node:'
+                          : 'Display up to:'}
+                      </Text>
+                    </FlexItem>
+                    <FlexItem>
+                      <StyledSelect
+                        options={countOptions}
+                        valueRender={defaultValueRender}
+                        value={count}
+                        onChange={(value) => setCount(value)}
+                        data-testid="count-select"
+                      />
+                    </FlexItem>
+                    {width > HIDE_TIMESTAMP_FROM_WIDTH && (
+                      <FlexItem style={{ marginLeft: 12 }}>
+                        <Text
+                          size="s"
+                          color="secondary"
+                          data-testid="entries-from-timestamp"
+                        >
+                          ({data.length} entries
+                          {lastTimestamp && (
+                            <>
+                              <span>&nbsp;from &nbsp;</span>
+                              <FormatedDate date={lastTimestamp * 1000} />
+                            </>
+                          )}
+                          )
+                        </Text>
+                      </FlexItem>
+                    )}
+                  </Row>
+                </FlexItem>
+              </Row>
+            </div>
+          )}
+        </AutoSizer>
+        {isEmptySlowLog ? (
+          <EmptySlowLog
+            slowlogLogSlowerThan={slowlogLogSlowerThan}
+            durationUnit={durationUnit}
+          />
+        ) : (
+          <SlowLogTable
+            items={data}
+            loading={loading}
+            durationUnit={durationUnit}
+          />
+        )}
+      </ContentWrapper>
+    </AnalysisPageContainer>
   )
 }
 

@@ -222,3 +222,18 @@ export const Empty: Story = {
     countSuccessAdded: 0,
   },
 }
+
+export const NoNotificationWhenMastersAreNotProvided: Story = {
+  args: {
+    columns: colFactory(
+      action('onChangedInput'),
+      action('onAddInstance'),
+      false,
+      0,
+      0,
+    ),
+    masters: [],
+    onBack: action('onBack'),
+    countSuccessAdded: 2,
+  },
+}

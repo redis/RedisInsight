@@ -122,6 +122,85 @@ export const Wrapper = styled(FlexGroup)`
 `
 ```
 
+### Use Gap Prop Instead of Custom Margins
+
+**Prefer `gap` prop on layout components** instead of custom margins for spacing between elements:
+
+```typescript
+// ✅ GOOD: Use gap prop
+<Row align="center" justify="between" gap="l">
+  <FlexItem>Item 1</FlexItem>
+  <FlexItem>Item 2</FlexItem>
+</Row>
+```
+
+### Use Theme Spacing Instead of Magic Numbers
+
+**Always use theme spacing values** instead of hardcoded pixel values:
+
+```typescript
+// ✅ GOOD: Use theme spacing
+export const Container = styled(Row)`
+  height: ${({ theme }) => theme.core.space.space500};
+  padding: 0 ${({ theme }) => theme.core.space.space200};
+  margin-bottom: ${({ theme }) => theme.core.space.space200};
+`;
+
+// ❌ BAD: Using magic numbers
+export const Container = styled(Row)`
+  height: 64px;
+  padding: 0 16px;
+  margin-bottom: 16px;
+`;
+```
+
+### Use Semantic Colors from Theme
+
+**Always use semantic colors** from the theme instead of CSS variables or hardcoded colors:
+
+```typescript
+// ✅ GOOD: Use semantic colors
+export const Header = styled(Row)`
+  background-color: ${({ theme }) =>
+    theme.semantic.color.background.neutral100};
+  border-bottom: 1px solid
+    ${({ theme }) => theme.semantic.color.border.neutral500};
+`;
+
+// ❌ BAD: Using deprecated EUI CSS variables
+export const Header = styled(Row)`
+  background-color: var(--euiColorEmptyShade);
+  border-bottom: 1px solid var(--separatorColor);
+`;
+```
+
+### Use Layout Components (Row/Col/FlexGroup) Instead of div
+
+**Prefer layout components** from the layout system instead of regular `div` elements:
+
+```typescript
+// ✅ GOOD: Use Row component
+import { Row } from 'uiSrc/components/base/layout/flex'
+
+export const PageHeader = styled(Row)`
+  height: ${({ theme }) => theme.core.space.space500};
+  background-color: ${({ theme }) =>
+    theme.semantic.color.background.neutral100};
+`
+
+<PageHeader align="center" justify="between" gap="l">
+  {children}
+</PageHeader>
+
+// ❌ BAD: Using div with flex properties
+export const PageHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+`
+```
+
 ### Conditional Styling
 
 Use `$` prefix for transient props that shouldn't pass to DOM:

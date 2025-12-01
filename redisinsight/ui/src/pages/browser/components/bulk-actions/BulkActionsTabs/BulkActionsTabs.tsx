@@ -14,8 +14,6 @@ import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
 import { keysSelector } from 'uiSrc/slices/browser/keys'
 import { TabInfo } from 'uiSrc/components/base/layout/tabs'
 import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons'
-import { Row } from 'uiSrc/components/base/layout/flex'
 
 import { StyledTabs } from './BulkActionsTabs.styles'
 
@@ -56,22 +54,12 @@ const BulkActionsTabs = (props: Props) => {
     () => [
       {
         value: BulkActionsType.Delete,
-        label: (
-          <Row align="center" gap="m" grow={false}>
-            <RiIcon type="DeleteIcon" />
-            <Text size="XS">Delete Keys</Text>
-          </Row>
-        ),
+        label: <Text size="S">Delete Keys</Text>,
         content: null,
       },
       {
         value: BulkActionsType.Upload,
-        label: (
-          <Row align="center" gap="m" grow={false}>
-            <RiIcon type="BulkUploadIcon" size="M" />
-            <Text size="XS">Upload Data</Text>
-          </Row>
-        ),
+        label: <Text size="S">Upload Data</Text>,
         content: null,
       },
     ],

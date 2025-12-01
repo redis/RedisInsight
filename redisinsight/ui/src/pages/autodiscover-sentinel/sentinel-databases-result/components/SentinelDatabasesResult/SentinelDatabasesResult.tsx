@@ -45,7 +45,9 @@ const SentinelDatabasesResult = ({
 
   const { loading } = useSelector(sentinelSelector)
 
-  const countFailAdded = masters?.length - countSuccessAdded
+  const countFailAdded = masters?.length
+    ? masters.length - countSuccessAdded
+    : 0
 
   useEffect(() => {
     if (masters.length) {
@@ -105,19 +107,21 @@ const SentinelDatabasesResult = ({
             />
           )}
         </DatabaseWrapper>
-        <MessageBar
-          opened={!!countSuccessAdded || !!countFailAdded}
-          variant={
-            !!countFailAdded
-              ? riToast.Variant.Attention
-              : riToast.Variant.Success
-          }
-        >
-          <SummaryText
-            countSuccessAdded={countSuccessAdded}
-            countFailAdded={countFailAdded}
-          />
-        </MessageBar>
+        {!!masters?.length && (
+          <MessageBar
+            opened={!!countSuccessAdded || !!countFailAdded}
+            variant={
+              !!countFailAdded
+                ? riToast.Variant.Attention
+                : riToast.Variant.Success
+            }
+          >
+            <SummaryText
+              countSuccessAdded={countSuccessAdded}
+              countFailAdded={countFailAdded}
+            />
+          </MessageBar>
+        )}
       </DatabaseContainer>
       <Footer>
         <Row justify="end">
