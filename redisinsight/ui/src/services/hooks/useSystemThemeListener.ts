@@ -28,7 +28,9 @@ export const useSystemThemeListener = () => {
       mediaQuery.addEventListener('change', handleSystemThemeChange)
     }
     return () => {
-      mediaQuery.removeEventListener('change', handleSystemThemeChange)
+      if (mediaQuery) {
+        mediaQuery.removeEventListener('change', handleSystemThemeChange)
+      }
     }
   }, [usingSystemTheme])
 }
