@@ -33,7 +33,7 @@ export const NoNamespaceBtn = styled(EmptyButton)`
 export const ExpandedRowItem = styled.div<React.HTMLAttributes<HTMLDivElement>>`
   display: flex;
   height: 42px;
-  padding-left: ${({ theme }) => theme.core.space.space300};
+  padding-left: ${({ theme }) => theme.core.space.space150};
 
   & > div {
     display: flex;
@@ -43,5 +43,5 @@ export const ExpandedRowItem = styled.div<React.HTMLAttributes<HTMLDivElement>>`
 `
 export const TruncatedContent = styled(Row)`
   ${truncateText}
-  padding-left: ${({ theme }) => theme.core.space.space300};
+  padding-left: ${({ theme }) => theme.core.space.space150};
 `
