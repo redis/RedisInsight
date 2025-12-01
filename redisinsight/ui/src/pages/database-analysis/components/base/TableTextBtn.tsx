@@ -17,5 +17,11 @@ export const TableTextBtn = styled(EmptyButton).attrs({
 >`
   max-width: calc(100% - 20px);
   width: auto;
+  text-decoration: underline;
+
+  &:hover {
+    text-decoration: none;
+  }
+
   ${({ $expanded }) => $expanded && expandedStyle}
 `

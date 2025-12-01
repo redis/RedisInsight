@@ -43,4 +43,5 @@ export const TruncatedContent = styled(Row).attrs({
   align: 'center',
 })`
   ${truncateText}
+  padding-left: ${({ theme }) => theme.core.space.space300};
 `
