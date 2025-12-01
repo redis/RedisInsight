@@ -13,7 +13,7 @@ services:
       dockerfile: ./test/test-runs/test.Dockerfile
     tty: true
     volumes:
-      - shared-data:/usr/src/app/test/test-runs/coverage
+      - shared-data:/usr/src/app/coverage
       - shared-data:/root/.redisinsight-v2.0
       - shared-data:/data
     depends_on:
@@ -57,5 +57,5 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: ../../${COV_FOLDER}
+      device: ${COV_FOLDER}
       o: bind

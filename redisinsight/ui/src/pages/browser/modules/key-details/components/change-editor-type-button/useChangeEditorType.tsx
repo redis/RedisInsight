@@ -7,7 +7,6 @@ import {
   rejsonSelector,
   setEditorType,
 } from 'uiSrc/slices/browser/rejson'
-
 import { EditorType } from 'uiSrc/slices/interfaces'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 
@@ -17,7 +16,6 @@ export const useChangeEditorType = () => {
   const { [FeatureFlags.envDependent]: envDependentFeature } = useSelector(
     appFeatureFlagsFeaturesSelector,
   )
-
   const selectedKey = useSelector(selectedKeyDataSelector)?.name
 
   const isTextEditorDisabled = !isWithinThreshold && !envDependentFeature?.flag

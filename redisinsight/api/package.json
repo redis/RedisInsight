@@ -35,7 +35,7 @@
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ./config/ormconfig.ts",
     "test:api": "cross-env NODE_ENV=test ts-mocha --paths --config ./test/api/.mocharc.yml",
     "test:api:cov": "nyc --reporter=html --reporter=text --reporter=text-summary yarn run test:api",
-    "test:api:ci:cov": "cross-env NODE_ENV=test nyc --temp-dir coverage/.nyc_output --report-dir coverage --instrument -r text -r text-summary -r html yarn run test:api --reporter mocha-multi-reporters --reporter-options configFile=test/api/reporters.json; echo 'Exit code from tests:' $? > coverage/debug.log; echo 'NYC tests completed, checking .nyc_output...' >> coverage/debug.log; ls -la coverage/.nyc_output >> coverage/debug.log 2>&1; echo 'Running NYC merge...' >> coverage/debug.log; nyc merge coverage/.nyc_output coverage/test-run-coverage.json >> coverage/debug.log 2>&1; echo 'NYC merge exit code:' $? >> coverage/debug.log; echo 'NYC merge completed!' >> coverage/debug.log; ls -la coverage/test-run-coverage.json >> coverage/debug.log 2>&1",
+    "test:api:ci:cov": "cross-env nyc -r text -r text-summary -r html yarn run test:api --reporter mocha-multi-reporters --reporter-options configFile=test/api/reporters.json && nyc merge .nyc_output ./coverage/test-run-coverage.json",
     "typeorm:migrate": "cross-env NODE_ENV=staging yarn typeorm migration:generate ./migration/migration",
     "typeorm:run": "yarn typeorm migration:run",
     "typeorm:run:stage": "cross-env NODE_ENV=staging yarn typeorm migration:run"
@@ -149,7 +149,6 @@
     "tsconfig-paths-webpack-plugin": "^3.3.0",
     "typescript": "^4.8.2"
   },
-
   "jest": {
     "moduleFileExtensions": [
       "js",
