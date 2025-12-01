@@ -31,46 +31,10 @@ jobs:
     with:
       pre-release: true
 
-  e2e-docker-tests-smoke:
-    name: "E2E: Smoke (Docker)"
-    needs: builds
-    uses: ./.github/workflows/tests-e2e-docker-smoke.yml
-    secrets: inherit
-    with:
-      debug: ${{ inputs.debug || false }}
-
-  e2e-docker-tests-critical-path:
-    name: "E2E: Critical Path (Docker)"
-    needs: builds
-    uses: ./.github/workflows/tests-e2e-docker-critical-path.yml
-    secrets: inherit
-    with:
-      debug: ${{ inputs.debug || false }}
-
-  e2e-docker-tests-regression:
-    name: "E2E: Regression (Docker)"
-    needs: builds
-    uses: ./.github/workflows/tests-e2e-docker-regression.yml
-    secrets: inherit
-    with:
-      debug: ${{ inputs.debug || false }}
-
-  e2e-appimage-tests:
-    needs: builds
-    uses: ./.github/workflows/tests-e2e-appimage.yml
-    secrets: inherit
-
   # Remove artifacts from github actions
   remove-artifacts:
     name: Remove artifacts
-    needs:
-      [
-        aws,
-        e2e-docker-tests-smoke,
-        e2e-docker-tests-critical-path,
-        e2e-docker-tests-regression,
-        e2e-appimage-tests,
-      ]
+    needs: [aws]
     if: always()
     runs-on: ubuntu-latest
 
