@@ -3,7 +3,7 @@ name: ❗ Release (prod)
 on:
   push:
     branches:
-      - 'latest'
+      - "latest"
 
 jobs:
   tests-prod:
@@ -11,7 +11,7 @@ jobs:
     uses: ./.github/workflows/tests.yml
     secrets: inherit
     with:
-      group_tests: 'without_e2e'
+      group_tests: "without_e2e"
       short_rte_list: false
       pre_release: true
 
@@ -21,8 +21,8 @@ jobs:
     needs: tests-prod
     secrets: inherit
     with:
-      environment: 'production'
-      target: 'all'
+      environment: "production"
+      target: "all"
 
   e2e-docker-tests-smoke:
     name: "E2E: Smoke (Docker)"
@@ -78,7 +78,14 @@ jobs:
   # Remove artifacts from github actions
   remove-artifacts:
     name: Remove artifacts
-    needs: [aws-upload-prod, e2e-docker-tests, e2e-appimage-tests]
+    needs:
+      [
+        aws-upload-prod,
+        e2e-docker-tests-smoke,
+        e2e-docker-tests-critical-path,
+        e2e-docker-tests-regression,
+        e2e-appimage-tests,
+      ]
     if: always()
     runs-on: ubuntu-latest
 

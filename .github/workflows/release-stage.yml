@@ -3,7 +3,7 @@ name: 📖 Release (stage)
 on:
   push:
     branches:
-      - 'release/**'
+      - "release/**"
 
 jobs:
   tests:
@@ -20,8 +20,8 @@ jobs:
     needs: tests
     secrets: inherit
     with:
-      environment: 'staging'
-      target: 'all'
+      environment: "staging"
+      target: "all"
 
   aws:
     uses: ./.github/workflows/aws-upload-dev.yml
@@ -63,7 +63,14 @@ jobs:
   # Remove artifacts from github actions
   remove-artifacts:
     name: Remove artifacts
-    needs: [aws, e2e-docker-tests, e2e-appimage-tests]
+    needs:
+      [
+        aws,
+        e2e-docker-tests-smoke,
+        e2e-docker-tests-critical-path,
+        e2e-docker-tests-regression,
+        e2e-appimage-tests,
+      ]
     if: always()
     runs-on: ubuntu-latest
 
