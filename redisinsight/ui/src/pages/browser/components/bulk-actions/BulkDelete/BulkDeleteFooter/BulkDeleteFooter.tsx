@@ -6,6 +6,7 @@ import {
   bulkActionsDeleteOverviewSelector,
   setBulkDeleteStartAgain,
   toggleBulkDeleteActionTriggered,
+  setBulkDeleteGenerateReport,
   bulkActionsDeleteSelector,
 } from 'uiSrc/slices/browser/bulkActions'
 import { keysDataSelector, keysSelector } from 'uiSrc/slices/browser/keys'
@@ -29,7 +30,8 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import BulkDeleteContent from '../BulkDeleteContent'
 import { isProcessedBulkAction } from '../../utils'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
-import { ConfirmationPopover } from 'uiSrc/components'
+import { ConfirmationPopover, RiTooltip } from 'uiSrc/components'
+import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { BulkDeleteFooterContainer } from './BulkDeleteFooter.styles'
 
 export interface Props {
@@ -41,7 +43,7 @@ const BulkDeleteFooter = (props: Props) => {
   const { instanceId = '' } = useParams<{ instanceId: string }>()
   const { filter, search } = useSelector(keysSelector)
   const { scanned, total } = useSelector(keysDataSelector)
-  const { loading } = useSelector(bulkActionsDeleteSelector)
+  const { loading, generateReport } = useSelector(bulkActionsDeleteSelector)
   const { status } = useSelector(bulkActionsDeleteOverviewSelector) ?? {}
 
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false)
@@ -93,9 +95,37 @@ const BulkDeleteFooter = (props: Props) => {
   }
 
   return (
-    <Col data-testid="bulk-actions-delete">
+    <Col data-testid="bulk-actions-delete" justify="end">
       {status && <BulkDeleteContent />}
-      <BulkDeleteFooterContainer align="end" justify="end" gap="l">
+
+      <BulkDeleteFooterContainer
+        align="center"
+        justify="end"
+        gap="l"
+        grow={false}
+      >
+        <Row grow={false}>
+          <Checkbox
+            checked={generateReport}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              dispatch(setBulkDeleteGenerateReport(e.target.checked))
+            }
+            label="Download report"
+            data-testid="download-report-checkbox"
+          />
+
+          <RiTooltip
+            content="Download a detailed report of deleted keys."
+            position="left"
+          >
+            <RiIcon
+              type="InfoIcon"
+              // TODO: fixes for the icon positioning
+              style={{ display: 'flex', alignItems: 'center' }}
+            />
+          </RiTooltip>
+        </Row>
+
         {!loading && (
           <SecondaryButton
             onClick={handleCancel}
