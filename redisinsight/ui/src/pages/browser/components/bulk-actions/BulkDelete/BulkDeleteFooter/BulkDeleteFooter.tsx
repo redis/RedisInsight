@@ -27,7 +27,6 @@ import {
 import { RefreshIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import BulkDeleteContent from '../BulkDeleteContent'
 import { isProcessedBulkAction } from '../../utils'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { ConfirmationPopover, RiTooltip } from 'uiSrc/components'
@@ -96,8 +95,6 @@ const BulkDeleteFooter = (props: Props) => {
 
   return (
     <Col data-testid="bulk-actions-delete" justify="end">
-      {status && <BulkDeleteContent />}
-
       <BulkDeleteFooterContainer
         align="center"
         justify="end"
