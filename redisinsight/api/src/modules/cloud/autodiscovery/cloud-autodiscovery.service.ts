@@ -30,7 +30,6 @@ import {
   CloudDatabase,
   CloudDatabaseStatus,
 } from 'src/modules/cloud/database/models';
-import { isValidCloudDatabaseEndpoint } from 'src/modules/cloud/database/utils';
 import config from 'src/utils/config';
 
 const cloudConfig = config.get('cloud');
@@ -224,7 +223,7 @@ export class CloudAutodiscoveryService {
                 databaseDetails: database,
               };
             }
-            if (!isValidCloudDatabaseEndpoint(publicEndpoint)) {
+            if (!publicEndpoint) {
               const exception = new CloudDatabaseEndpointInvalidException();
               return {
                 ...dto,

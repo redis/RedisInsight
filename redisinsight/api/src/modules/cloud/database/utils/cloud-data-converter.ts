@@ -17,14 +17,6 @@ export function convertRedisCloudModuleName(name: string): string {
   return REDIS_CLOUD_MODULES_NAMES[name] ?? name;
 }
 
-export function isValidCloudDatabaseEndpoint(
-  publicEndpoint: string | null | undefined,
-): boolean {
-  return (
-    !!publicEndpoint && !!publicEndpoint.trim() && publicEndpoint.includes(':')
-  );
-}
-
 export const parseCloudDatabaseCapiResponse = (
   database: ICloudCapiDatabase,
   tags: ICloudCapiDatabaseTag[],

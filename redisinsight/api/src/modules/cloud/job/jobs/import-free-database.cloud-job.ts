@@ -20,7 +20,6 @@ import {
   CloudDatabaseEndpointInvalidException,
   CloudDatabaseImportForbiddenException,
 } from 'src/modules/cloud/job/exceptions';
-import { isValidCloudDatabaseEndpoint } from 'src/modules/cloud/database/utils';
 
 const cloudConfig = config.get('cloud');
 
@@ -86,7 +85,7 @@ export class ImportFreeDatabaseCloudJob extends CloudJob {
 
     const { publicEndpoint, name, password } = cloudDatabase;
 
-    if (!isValidCloudDatabaseEndpoint(publicEndpoint)) {
+    if (!publicEndpoint) {
       throw new CloudDatabaseEndpointInvalidException();
     }
 

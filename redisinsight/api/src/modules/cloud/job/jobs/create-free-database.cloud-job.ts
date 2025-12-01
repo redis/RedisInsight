@@ -31,7 +31,6 @@ import { ClientContext, SessionMetadata } from 'src/common/models';
 import { DatabaseInfoService } from 'src/modules/database/database-info.service';
 import { FeatureService } from 'src/modules/feature/feature.service';
 import { KnownFeatures } from 'src/modules/feature/constants';
-import { isValidCloudDatabaseEndpoint } from 'src/modules/cloud/database/utils';
 
 const cloudConfig = config.get('cloud');
 
@@ -140,7 +139,7 @@ export class CreateFreeDatabaseCloudJob extends CloudJob {
 
       const { publicEndpoint, name, password } = cloudDatabase;
 
-      if (!isValidCloudDatabaseEndpoint(publicEndpoint)) {
+      if (!publicEndpoint) {
         throw new CloudDatabaseEndpointInvalidException();
       }
 

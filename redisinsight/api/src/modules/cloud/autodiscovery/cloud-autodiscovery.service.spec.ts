@@ -375,18 +375,6 @@ describe('CloudAutodiscoveryService', () => {
         description: 'undefined',
         publicEndpoint: undefined,
       },
-      {
-        description: 'empty string',
-        publicEndpoint: '',
-      },
-      {
-        description: 'whitespace only',
-        publicEndpoint: '   ',
-      },
-      {
-        description: 'does not contain colon',
-        publicEndpoint: 'hostname',
-      },
     ])(
       'should return error when publicEndpoint is $description',
       async ({ publicEndpoint }) => {
