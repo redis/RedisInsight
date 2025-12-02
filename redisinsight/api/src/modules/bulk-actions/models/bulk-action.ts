@@ -143,14 +143,19 @@ export class BulkAction implements IBulkAction {
   }
 
   setStreamingResponse(res: Response): void {
+    // If stream arrives too late (after timeout/failure), immediately end it
+    if (!this.streamReadyResolver) {
+      res.write('Unable to generate report. Please try again.\n');
+      res.end();
+      return;
+    }
+
     this.streamingResponse = res;
 
     this.writeReportHeader();
 
-    if (this.streamReadyResolver) {
-      this.streamReadyResolver();
-      this.streamReadyResolver = null;
-    }
+    this.streamReadyResolver();
+    this.streamReadyResolver = null;
   }
 
   private writeReportHeader(): void {
