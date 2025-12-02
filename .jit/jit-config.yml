@@ -1,0 +1,14 @@
+# Jit Security Plan Configuration
+# https://docs.jit.io/
+
+name: RedisInsight Security Plan
+
+# Exclusions from security scans
+exclude:
+  paths:
+    - __mocks__/**
+    - redisinsight/api/src/__mocks__/**
+    - tests/**
+    - redisinsight/api/test/**
+    - '*.spec.ts'
+    - '*.spec.tsx'
