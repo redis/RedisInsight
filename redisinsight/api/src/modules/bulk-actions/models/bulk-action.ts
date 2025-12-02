@@ -167,12 +167,13 @@ export class BulkAction implements IBulkAction {
     this.streamingResponse.write(header);
   }
 
-  writeToReport(keyName: string, success: boolean, error?: string): void {
+  writeToReport(keyName: Buffer, success: boolean, error?: string): void {
     if (!this.streamingResponse) return;
 
+    const keyNameStr = keyName.toString();
     const line = success
-      ? `${keyName} - OK\n`
-      : `${keyName} - Error: ${error || 'Unknown error'}\n`;
+      ? `${keyNameStr} - OK\n`
+      : `${keyNameStr} - Error: ${error || 'Unknown error'}\n`;
 
     this.streamingResponse.write(line);
   }

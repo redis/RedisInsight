@@ -550,7 +550,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
 
     describe('writeToReport', () => {
       it('should not write when streaming response is not set', () => {
-        bulkAction.writeToReport('testKey', true);
+        bulkAction.writeToReport(Buffer.from('testKey'), true);
         // No error thrown, just no-op
       });
 
@@ -566,7 +566,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
         );
         bulkActionWithReport['streamingResponse'] = mockResponse;
 
-        bulkActionWithReport.writeToReport('testKey', true);
+        bulkActionWithReport.writeToReport(Buffer.from('testKey'), true);
 
         expect(mockResponse.write).toHaveBeenCalledWith('testKey - OK\n');
       });
@@ -583,7 +583,11 @@ describe('AbstractBulkActionSimpleRunner', () => {
         );
         bulkActionWithReport['streamingResponse'] = mockResponse;
 
-        bulkActionWithReport.writeToReport('testKey', false, 'NOPERM');
+        bulkActionWithReport.writeToReport(
+          Buffer.from('testKey'),
+          false,
+          'NOPERM',
+        );
 
         expect(mockResponse.write).toHaveBeenCalledWith(
           'testKey - Error: NOPERM\n',
@@ -602,7 +606,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
         );
         bulkActionWithReport['streamingResponse'] = mockResponse;
 
-        bulkActionWithReport.writeToReport('testKey', false);
+        bulkActionWithReport.writeToReport(Buffer.from('testKey'), false);
 
         expect(mockResponse.write).toHaveBeenCalledWith(
           'testKey - Error: Unknown error\n',

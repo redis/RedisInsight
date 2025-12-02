@@ -267,14 +267,14 @@ describe('AbstractBulkActionSimpleRunner', () => {
       deleteRunner.processIterationResults(keys, results);
 
       expect(writeToReportSpy).toHaveBeenCalledTimes(3);
-      expect(writeToReportSpy).toHaveBeenNthCalledWith(1, 'key1', true);
+      expect(writeToReportSpy).toHaveBeenNthCalledWith(1, keys[0], true);
       expect(writeToReportSpy).toHaveBeenNthCalledWith(
         2,
-        'key2',
+        keys[1],
         false,
         mockRESPError,
       );
-      expect(writeToReportSpy).toHaveBeenNthCalledWith(3, 'key3', true);
+      expect(writeToReportSpy).toHaveBeenNthCalledWith(3, keys[2], true);
     });
   });
 });

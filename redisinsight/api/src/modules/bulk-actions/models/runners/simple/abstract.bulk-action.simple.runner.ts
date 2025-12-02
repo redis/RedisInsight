@@ -88,7 +88,7 @@ export abstract class AbstractBulkActionSimpleRunner extends AbstractBulkActionR
     this.summary.addProcessed(res.length);
 
     res.forEach(([err], i) => {
-      const keyName = keys[i].toString();
+      const keyName = keys[i];
 
       if (err) {
         this.summary.addFailed(1);

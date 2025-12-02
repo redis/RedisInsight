@@ -7,5 +7,5 @@ export interface IBulkAction {
   getFilter(): BulkActionFilter;
   changeState(): void;
   getSocket(): Socket;
-  writeToReport(keyName: string, success: boolean, error?: string): void;
+  writeToReport(keyName: Buffer, success: boolean, error?: string): void;
 }
