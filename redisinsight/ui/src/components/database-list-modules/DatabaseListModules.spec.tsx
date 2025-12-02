@@ -6,7 +6,8 @@ import {
 } from 'uiSrc/slices/interfaces'
 import { fireEvent, render, act } from 'uiSrc/utils/test-utils'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
-import { DatabaseListModules, DatabaseListModulesProps } from './DatabaseListModules'
+import { DatabaseListModules } from './DatabaseListModules'
+import { DatabaseListModulesProps } from './DatabaseListModules.types'
 
 const mockedProps = mock<DatabaseListModulesProps>()
 
