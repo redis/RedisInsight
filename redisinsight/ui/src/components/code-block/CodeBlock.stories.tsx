@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
-import CodeBlock from './CodeBlock'
+import CodeBlock from "./index"
 
-const codeBlockMeta = {
+const codeBlockMeta: Meta<typeof CodeBlock> = {
   component: CodeBlock,
-} satisfies Meta<typeof CodeBlock>
+}
 
 export default codeBlockMeta
 

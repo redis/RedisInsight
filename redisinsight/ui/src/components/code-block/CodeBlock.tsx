@@ -1,10 +1,9 @@
 import React, { HTMLAttributes, useMemo } from 'react'
 import cx from 'classnames'
 
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CopyIcon } from 'uiSrc/components/base/icons'
-import { useInnerText } from 'uiSrc/components/base/utils/hooks/inner-text'
-import styles from './styles.module.scss'
+import { CopyButton } from "uiSrc/components/copy-button"
+import { useInnerText } from "uiSrc/components/base/utils/hooks/inner-text"
+import styles from "./styles.module.scss"
 
 export interface Props extends HTMLAttributes<HTMLPreElement> {
   children: React.ReactNode
@@ -14,16 +13,12 @@ export interface Props extends HTMLAttributes<HTMLPreElement> {
 
 const CodeBlock = (props: Props) => {
   const { isCopyable, className, children, ...rest } = props
-  const [innerTextRef, innerTextString] = useInnerText('')
+  const [innerTextRef, innerTextString] = useInnerText("")
 
   const innerText = useMemo(
-    () => innerTextString?.replace(/[\r\n?]{2}|\n\n/g, '\n') || '',
+    () => innerTextString?.replace(/[\r\n?]{2}|\n\n/g, "\n") || "",
     [innerTextString],
   )
-
-  const handleCopyClick = () => {
-    navigator?.clipboard?.writeText(innerText)
-  }
 
   return (
     <div className={cx(styles.wrapper, { [styles.isCopyable]: isCopyable })}>
@@ -31,13 +26,14 @@ const CodeBlock = (props: Props) => {
         {children}
       </pre>
       {isCopyable && (
-        <IconButton
-          onClick={handleCopyClick}
-          className={styles.copyBtn}
-          icon={CopyIcon}
-          data-testid="copy-code-btn"
-          aria-label="copy code"
-        />
+        <span className={styles.copyBtn}>
+          <CopyButton
+            copy={innerText}
+            withTooltip={false}
+            data-testid="copy-code"
+            aria-label="copy code"
+          />
+        </span>
       )}
     </div>
   )

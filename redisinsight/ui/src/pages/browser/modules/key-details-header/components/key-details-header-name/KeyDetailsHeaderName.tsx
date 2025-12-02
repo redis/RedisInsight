@@ -187,7 +187,7 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
             copy={key!}
             onCopy={handleCopy}
             id={COPY_KEY_NAME_ICON}
-            tooltipClassName={styles.copyKey}
+            tooltipConfig={{ anchorClassName: styles.copyKey }}
             data-testid="copy-key-name"
             aria-label="Copy Key Name"
           />

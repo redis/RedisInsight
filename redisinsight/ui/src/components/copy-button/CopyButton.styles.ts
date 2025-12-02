@@ -21,6 +21,6 @@ interface StyledCopiedBadgeProps {
 export const StyledCopiedBadge = styled(RiBadge)<StyledCopiedBadgeProps>`
   border-color: transparent;
   background-color: transparent;
-  animation: ${fadeOut} ${({ $fadeOutDuration }) => $fadeOutDuration}ms ease-out
-    forwards;
+  animation: ${fadeOut} ${({ $fadeOutDuration }) => $fadeOutDuration}ms
+    ease-in-out forwards;
 `
