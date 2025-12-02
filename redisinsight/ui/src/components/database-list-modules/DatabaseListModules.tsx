@@ -4,17 +4,17 @@ import {
   IDatabaseModule,
   sortModules,
   transformModule,
-} from 'uiSrc/utils/modules'
+} from "uiSrc/utils/modules"
+import { RiTooltip } from "uiSrc/components"
+import { AdditionalRedisModule } from "apiSrc/modules/database/models/additional.redis.module"
 
-import { RiTooltip } from 'uiSrc/components'
-import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
+import { DatabaseModulesList } from "./components/DatabaseModulesList"
+import { DatabaseModuleContent } from "./components/DatabaseModuleContent"
+import { StyledContainer } from "./DatabaseListModules.styles"
 
-import { DatabaseModulesList } from './components/DatabaseModulesList'
-import { StyledContainer } from './DatabaseListModules.styles'
-import styles from './styles.module.scss'
-import { DatabaseModuleContent } from 'uiSrc/components/database-list-modules/components/DatabaseModuleContent'
+import styles from "./styles.module.scss"
 
-export interface Props {
+export interface DatabaseListModulesProps {
   content?: JSX.Element
   modules: AdditionalRedisModule[]
   inCircle?: boolean
@@ -24,7 +24,7 @@ export interface Props {
   withoutStyles?: boolean
 }
 
-const DatabaseListModules = React.memo((props: Props) => {
+export const DatabaseListModules = React.memo((props: DatabaseListModulesProps) => {
   const {
     content,
     modules,
@@ -58,8 +58,8 @@ const DatabaseListModules = React.memo((props: Props) => {
         ...newModules.slice(0, maxViewModules),
         {
           icon: null,
-          content: '',
-          moduleName: '',
+          content: "",
+          moduleName: "",
           abbreviation: `+${hiddenCount}`,
         },
       ]
@@ -103,5 +103,3 @@ const DatabaseListModules = React.memo((props: Props) => {
     </StyledContainer>
   )
 })
-
-export default DatabaseListModules

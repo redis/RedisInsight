@@ -27,7 +27,7 @@ import {
   RiIcon,
   RediStackMinIcon,
 } from 'uiSrc/components/base/icons'
-import DatabaseListModules from 'uiSrc/components/database-list-modules/DatabaseListModules'
+import { DatabaseListModules } from 'uiSrc/components/database-list-modules/DatabaseListModules'
 import ItemList from 'uiSrc/components/item-list'
 import {
   BrowserStorageItem,
