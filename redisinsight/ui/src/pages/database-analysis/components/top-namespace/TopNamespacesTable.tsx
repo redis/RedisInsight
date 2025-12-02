@@ -101,7 +101,7 @@ const NameSpacesTable = ({
             key={type.type}
             data-testid={`expanded-${item.nsp}-${index}`}
           >
-            <TruncatedContent>
+            <TruncatedContent align="center">
               <RiTooltip
                 title="Key Pattern"
                 position="bottom"
