@@ -46,17 +46,21 @@ export const handleCheckConnectToRdiInstance = (instance: RdiInstance) => {
   )
 }
 
+export const sendCopyUrlTelemetry = async (id?: string) => {
+  return sendEventTelemetry({
+    event: TelemetryEvent.RDI_INSTANCE_URL_COPIED,
+    eventData: { id },
+  })
+}
+
 export const handleCopyUrl = (
   e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  url = '',
+  url = "",
   id?: string,
 ) => {
   e.stopPropagation()
   navigator.clipboard?.writeText(url)
-  sendEventTelemetry({
-    event: TelemetryEvent.RDI_INSTANCE_URL_COPIED,
-    eventData: { id },
-  })
+  sendCopyUrlTelemetry(id)
 }
 
 export const handlePaginationChange = (paginationState: PaginationState) =>
