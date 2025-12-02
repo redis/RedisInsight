@@ -1,22 +1,18 @@
-import React from 'react'
-import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons'
+import React from "react"
 
+import { RiIcon } from "uiSrc/components/base/icons"
+
+import { DatabaseModuleContentItemProps } from "./DatabaseModuleContentItem.types"
 import {
   StyledAbbreviationText,
   StyledContentItemRow,
   StyledContentText,
-} from './DatabaseModuleContentItem.styles'
-
-export interface DatabaseModuleContentItemProps {
-  icon?: AllIconsType
-  content?: string
-  abbreviation?: string
-}
+} from "./DatabaseModuleContentItem.styles"
 
 export const DatabaseModuleContentItem = ({
   icon,
   content,
-  abbreviation = '',
+  abbreviation = "",
 }: DatabaseModuleContentItemProps) => {
   const hasIcon = !!icon
   const hasContent = !!content
@@ -32,3 +28,4 @@ export const DatabaseModuleContentItem = ({
     </StyledContentItemRow>
   )
 }
+

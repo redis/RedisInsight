@@ -7,10 +7,11 @@ import {
 } from 'uiSrc/utils/modules'
 import { RiTooltip } from 'uiSrc/components'
 
-import { DatabaseModulesList } from './components/DatabaseModulesList'
-import { DatabaseModuleContent } from './components/DatabaseModuleContent'
+import { DatabaseModulesList, DatabaseModuleContent } from './components'
 import { DatabaseListModulesProps } from './DatabaseListModules.types'
 import { StyledContainer } from './DatabaseListModules.styles'
+
+export type { DatabaseListModulesProps }
 
 import styles from './styles.module.scss'
 

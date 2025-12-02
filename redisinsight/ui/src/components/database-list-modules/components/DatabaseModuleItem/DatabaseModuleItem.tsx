@@ -1,21 +1,12 @@
-import React from 'react'
+import React from "react"
 
-import { AllIconsType } from 'uiSrc/components/base/icons'
-
-import { StyledIconButton, StyledColorText } from './DatabaseModuleItem.styles'
-
-export interface DatabaseModuleItemProps {
-  abbreviation?: string
-  icon?: AllIconsType | null
-  content?: string
-  inCircle?: boolean
-  onCopy?: (text: string) => void
-}
+import { DatabaseModuleItemProps } from "./DatabaseModuleItem.types"
+import { StyledIconButton, StyledColorText } from "./DatabaseModuleItem.styles"
 
 export const DatabaseModuleItem = ({
-  abbreviation = '',
+  abbreviation = "",
   icon,
-  content = '',
+  content = "",
   inCircle,
   onCopy,
 }: DatabaseModuleItemProps) => {
@@ -46,3 +37,4 @@ export const DatabaseModuleItem = ({
     </span>
   )
 }
+

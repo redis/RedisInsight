@@ -1,18 +1,11 @@
 import React from 'react'
 
 import { RiTooltip } from 'uiSrc/components'
-import { IDatabaseModule } from 'uiSrc/utils/modules'
-
-import { DatabaseModuleItem } from './DatabaseModuleItem'
 import { handleCopy } from 'uiSrc/utils'
-import { DatabaseModuleContentItem } from 'uiSrc/components/database-list-modules/components/DatabaseModuleContentItem'
 
-export interface DatabaseModulesListProps {
-  modules: IDatabaseModule[]
-  contentItems: IDatabaseModule[]
-  inCircle?: boolean
-  anchorClassName?: string
-}
+import { DatabaseModuleContentItem } from 'uiSrc/components/database-list-modules/components'
+import { DatabaseModuleItem } from '../DatabaseModuleItem/DatabaseModuleItem'
+import { DatabaseModulesListProps } from './DatabaseModulesList.types'
 
 export const DatabaseModulesList = ({
   modules,

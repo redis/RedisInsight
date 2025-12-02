@@ -1,11 +1,7 @@
 import React from 'react'
-import { IDatabaseModule } from 'uiSrc/utils'
 
-import { DatabaseModuleContentItem } from './DatabaseModuleContentItem'
-
-export interface DatabaseModuleContentProps {
-  modules: IDatabaseModule[]
-}
+import { DatabaseModuleContentItem } from 'uiSrc/components/database-list-modules/components'
+import { DatabaseModuleContentProps } from './DatabaseModuleContent.types'
 
 export const DatabaseModuleContent = ({
   modules,

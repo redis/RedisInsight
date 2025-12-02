@@ -1,7 +1,7 @@
-import styled from 'styled-components'
+import styled from "styled-components"
 
-import { Row } from 'uiSrc/components/base/layout/flex'
-import { ColorText } from 'uiSrc/components/base/text'
+import { Row } from "uiSrc/components/base/layout/flex"
+import { ColorText } from "uiSrc/components/base/text"
 
 export const StyledContentItemRow = styled(Row)`
   &:not(:last-of-type) {
