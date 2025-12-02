@@ -1,11 +1,8 @@
 import React from 'react'
 import type { Parameters, Preview } from '@storybook/react-vite'
 import { withThemeFromJSXProvider } from '@storybook/addon-themes'
-import {
-  createGlobalStyle,
-  ThemeProvider as StyledThemeProvider,
-} from 'styled-components'
-import { CommonStyles, themeDark, themeLight, themeOld } from '@redis-ui/styles'
+import { ThemeProvider as StyledThemeProvider } from 'styled-components'
+import { CommonStyles, themeDark, themeLight } from '@redis-ui/styles'
 import 'modern-normalize/modern-normalize.css'
 import '@redis-ui/styles/normalized-styles.css'
 import '@redis-ui/styles/fonts.css'
@@ -14,8 +11,6 @@ import { RootStoryLayout } from './RootStoryLayout'
 import { StoryContextProvider } from './Story.context'
 import { useStoryContext } from 'storybook/internal/preview-api'
 import { TooltipProvider } from '@redis-ui/components'
-import { type Theme } from 'uiSrc/components/base/theme/types'
-// import { store } from 'uiSrc/utils/test-utils'
 import { Provider } from 'react-redux'
 import { store } from 'uiSrc/slices/store'
 import Router from 'uiSrc/Router'
@@ -51,13 +46,6 @@ const parameters: Parameters = {
   },
 }
 
-const GlobalStoryStyles = createGlobalStyle`
-  .sb-show-main, .docs-story {
-    background: ${({ theme }: { theme: Theme }) => theme.globals.body.bgColor};
-    color: ${({ theme }: { theme: Theme }) => theme.components.typography.colors.primary};
-  }
-`
-
 const preview: Preview = {
   parameters,
   decorators: [
@@ -85,7 +73,6 @@ const preview: Preview = {
       },
       defaultTheme: 'light',
       Provider: StyledThemeProvider,
-      GlobalStyles: GlobalStoryStyles,
     }),
   ],
 }
