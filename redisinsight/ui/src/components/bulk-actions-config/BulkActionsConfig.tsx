@@ -13,8 +13,7 @@ import {
   setDeleteOverviewStatus,
   setLoading,
 } from 'uiSrc/slices/browser/bulkActions'
-import { getSocketApiUrl, Nullable } from 'uiSrc/utils'
-import { triggerDownloadFromUrl } from 'uiSrc/utils/dom'
+import { getSocketApiUrl, Nullable, triggerDownloadFromUrl } from 'uiSrc/utils'
 import { sessionStorageService } from 'uiSrc/services'
 import { keysSelector } from 'uiSrc/slices/browser/keys'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
@@ -29,7 +28,6 @@ import {
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { appCsrfSelector } from 'uiSrc/slices/app/csrf'
 import { useIoConnection } from 'uiSrc/services/hooks/useIoConnection'
-import { IBulkActionOverview } from 'uiSrc/slices/interfaces'
 import { getBaseUrl } from 'uiSrc/services/apiService'
 
 const BulkActionsConfig = () => {
@@ -106,18 +104,7 @@ const BulkActionsConfig = () => {
         },
         generateReport,
       },
-      (response: IBulkActionOverview | { status: string; error: unknown }) => {
-        onBulkDeleting(response)
-
-        // Trigger download if report generation is enabled
-        if (
-          generateReport &&
-          'downloadUrl' in response &&
-          response.downloadUrl
-        ) {
-          triggerDownloadFromUrl(`${getBaseUrl()}${response.downloadUrl}`)
-        }
-      },
+      onBulkDeleting,
     )
   }
 
@@ -150,6 +137,11 @@ const BulkActionsConfig = () => {
     if (data.status === BulkActionsServerEvent.Error) {
       dispatch(disconnectBulkDeleteAction())
       dispatch(addErrorNotification({ response: { data: data.error } }))
+    }
+
+    // Trigger download if report URL is provided
+    if ('downloadUrl' in data && data.downloadUrl) {
+      triggerDownloadFromUrl(`${getBaseUrl()}${data.downloadUrl}`)
     }
 
     socketRef.current?.on(BulkActionsServerEvent.Overview, (payload: any) => {
