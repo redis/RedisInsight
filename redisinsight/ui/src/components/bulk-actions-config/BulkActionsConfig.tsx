@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Socket } from 'socket.io-client'
 
@@ -14,6 +14,7 @@ import {
   setLoading,
 } from 'uiSrc/slices/browser/bulkActions'
 import { getSocketApiUrl, Nullable } from 'uiSrc/utils'
+import { triggerDownloadFromUrl } from 'uiSrc/utils/dom'
 import { sessionStorageService } from 'uiSrc/services'
 import { keysSelector } from 'uiSrc/slices/browser/keys'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
@@ -46,16 +47,6 @@ const BulkActionsConfig = () => {
   })
 
   const dispatch = useDispatch()
-
-  const triggerDownload = useCallback((downloadUrl: string) => {
-    const link = document.createElement('a')
-    // Build full URL using API base URL
-    link.href = `${getBaseUrl()}${downloadUrl}`
-    link.style.display = 'none'
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }, [])
 
   useEffect(() => {
     if (!isDeleteTriggered || !instanceId || socketRef.current?.connected) {
@@ -124,7 +115,7 @@ const BulkActionsConfig = () => {
           'downloadUrl' in response &&
           response.downloadUrl
         ) {
-          triggerDownload(response.downloadUrl)
+          triggerDownloadFromUrl(`${getBaseUrl()}${response.downloadUrl}`)
         }
       },
     )
