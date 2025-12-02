@@ -82,7 +82,6 @@ const preview: Preview = {
       themes: {
         light: themeLight,
         dark: themeDark,
-        obsolete: themeOld,
       },
       defaultTheme: 'light',
       Provider: StyledThemeProvider,
