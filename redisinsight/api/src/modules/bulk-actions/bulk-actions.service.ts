@@ -75,6 +75,7 @@ export class BulkActionsService {
       'Content-Disposition',
       `attachment; filename="bulk-delete-report-${timestamp}.txt"`,
     );
+    res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
     res.setHeader('Transfer-Encoding', 'chunked');
 
     // Attach the response stream to the bulk action

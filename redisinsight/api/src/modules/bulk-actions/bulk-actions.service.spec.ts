@@ -168,6 +168,10 @@ describe('BulkActionsService', () => {
         `attachment; filename="${expectedFilename}"`,
       );
       expect(mockResponse.setHeader).toHaveBeenCalledWith(
+        'Access-Control-Expose-Headers',
+        'Content-Disposition',
+      );
+      expect(mockResponse.setHeader).toHaveBeenCalledWith(
         'Transfer-Encoding',
         'chunked',
       );
