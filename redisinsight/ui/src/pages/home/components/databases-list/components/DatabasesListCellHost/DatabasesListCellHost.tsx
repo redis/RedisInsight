@@ -1,13 +1,11 @@
 import React from 'react'
 
-import { RiTooltip } from 'uiSrc/components'
-import { Text } from 'uiSrc/components/base/text'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CopyIcon } from 'uiSrc/components/base/icons'
+import { CopyButton } from 'uiSrc/components/copy-button'
 
-import { handleCopyToClipboard } from './methods/handlers'
+import { sendCopyTelemetry } from './methods/handlers'
 import { IDatabaseListCell } from '../../DatabasesList.types'
 import { HostPortContainer } from './DatabasesListCellHost.styles'
+import { CellText } from 'uiSrc/components/auto-discover'
 
 const DatabasesListCellHost: IDatabaseListCell = ({ row }) => {
   const instance = row.original
@@ -16,14 +14,12 @@ const DatabasesListCellHost: IDatabaseListCell = ({ row }) => {
 
   return (
     <HostPortContainer gap="m" data-testid="host-port">
-      <Text>{text}</Text>
-      <RiTooltip position="right" content="Copy">
-        <IconButton
-          icon={CopyIcon}
-          aria-label="Copy host:port"
-          onClick={(e) => handleCopyToClipboard(e, text, id)}
-        />
-      </RiTooltip>
+      <CellText>{text}</CellText>
+      <CopyButton
+        copy={text}
+        aria-label="Copy host:port"
+        onCopy={() => sendCopyTelemetry(id)}
+      />
     </HostPortContainer>
   )
 }

@@ -1,5 +1,14 @@
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
+export const sendCopyTelemetry = async (databaseId?: string) => {
+  return sendEventTelemetry({
+    event: TelemetryEvent.CONFIG_DATABASES_HOST_PORT_COPIED,
+    eventData: {
+      databaseId,
+    },
+  })
+}
+
 export const handleCopyToClipboard = (
   e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   text = '',
@@ -7,10 +16,5 @@ export const handleCopyToClipboard = (
 ) => {
   e.stopPropagation()
   navigator.clipboard?.writeText(text)
-  sendEventTelemetry({
-    event: TelemetryEvent.CONFIG_DATABASES_HOST_PORT_COPIED,
-    eventData: {
-      databaseId,
-    },
-  })
+  sendCopyTelemetry(databaseId)
 }
