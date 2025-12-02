@@ -64,10 +64,6 @@
 .nodeSelected {
   border-left-color: var(--browserComponentActive) !important;
   background-color: var(--browserComponentActive) !important;
-
-  .nodeContent * {
-    color: var(--euiColorFullShade) !important;
-  }
 }
 
 .nodeIcon {
