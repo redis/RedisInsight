@@ -18,6 +18,7 @@ export const resultColumn = (
     accessorKey: SentinelDatabaseIds.Message,
     enableSorting: true,
     minSize: addActions ? 250 : 110,
+    meta: {},
     cell: ({
       row: {
         original: { status, message, name, error, alias, loading = false },

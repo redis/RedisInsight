@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import { sentinelSelector } from 'uiSrc/slices/instances/sentinel'
@@ -163,4 +163,4 @@ const SentinelDatabases = ({
   )
 }
 
-export default SentinelDatabases
+export default memo(SentinelDatabases)

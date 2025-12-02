@@ -4,8 +4,16 @@ import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/In
 import { RiIcon } from 'uiSrc/components/base/icons'
 
 import type { DbIndexCellProps } from './DbIndexCell.types'
+import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
+import { CellContext } from 'uiSrc/components/base/layout/table'
+import { getMetaProps } from '../../utils'
+import { HandleChangedInputProps } from '../types'
 
-export const DbIndexCell = ({ db = 0, id, handleChangedInput }: DbIndexCellProps) => (
+export const DbIndexCellRenderer = ({
+  db = 0,
+  id,
+  handleChangedInput,
+}: DbIndexCellProps) => (
   <div role="presentation">
     <InputFieldSentinel
       min={0}
@@ -26,3 +34,18 @@ export const DbIndexCell = ({ db = 0, id, handleChangedInput }: DbIndexCellProps
     />
   </div>
 )
+
+export const DbIndexCell = ({
+  row,
+  column,
+}: CellContext<ModifiedSentinelMaster, unknown>) => {
+  const { db = 0, id } = row.original
+  const { handleChangedInput } = getMetaProps<HandleChangedInputProps>(column)
+  return (
+    <DbIndexCellRenderer
+      db={db}
+      id={id!}
+      handleChangedInput={handleChangedInput}
+    />
+  )
+}
