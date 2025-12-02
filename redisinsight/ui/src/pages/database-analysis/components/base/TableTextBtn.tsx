@@ -9,7 +9,7 @@ const expandedStyle = css<{ theme: Theme }>`
 
 export const TableTextBtn = styled(EmptyButton).attrs({
   variant: 'primary-inline',
-}) <
+})<
   React.ComponentProps<typeof EmptyButton> & {
     $expanded?: boolean
     theme: Theme
