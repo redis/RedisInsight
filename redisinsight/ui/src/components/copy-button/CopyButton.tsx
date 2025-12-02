@@ -10,15 +10,17 @@ import { CopyButtonProps } from './CopyButton.types'
 
 const DEFAULT_TOOLTIP_CONTENT = "Copy"
 
+interface ButtonWithTooltipProps {
+  button: React.ReactNode
+  withTooltip: boolean
+  tooltipConfig: CopyButtonProps["tooltipConfig"]
+}
+
 const ButtonWithTooltip = ({
   button,
   withTooltip,
   tooltipConfig,
-}: {
-  button: React.ReactNode
-  withTooltip: boolean
-  tooltipConfig: CopyButtonProps["tooltipConfig"]
-}) => {
+}: ButtonWithTooltipProps) => {
   if (withTooltip) {
     return (
       <RiTooltip

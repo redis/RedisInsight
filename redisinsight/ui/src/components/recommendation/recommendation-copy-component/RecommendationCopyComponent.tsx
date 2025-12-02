@@ -5,11 +5,10 @@ import styled from 'styled-components'
 import { bufferToString } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
-import { Text } from 'uiSrc/components/base/text'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CopyIcon } from 'uiSrc/components/base/icons'
-import { FlexGroup } from 'uiSrc/components/base/layout/flex'
-import { HorizontalSpacer } from 'uiSrc/components/base/layout'
+import { CopyButton } from "uiSrc/components/copy-button"
+import { Text } from "uiSrc/components/base/text"
+import { FlexGroup } from "uiSrc/components/base/layout/flex"
+import { HorizontalSpacer } from "uiSrc/components/base/layout"
 
 const StyledWrapper = styled.div`
   margin-top: 15px;
@@ -52,7 +51,7 @@ const RecommendationCopyComponent = ({
   telemetryEvent,
   provider,
 }: IProps) => {
-  const { instanceId = '' } = useParams<{ instanceId: string }>()
+  const { instanceId = "" } = useParams<{ instanceId: string }>()
 
   const formattedName = bufferToString(keyName)
 
@@ -67,7 +66,6 @@ const RecommendationCopyComponent = ({
         provider,
       },
     })
-    navigator?.clipboard?.writeText(formattedName)
   }
 
   return (
@@ -81,10 +79,11 @@ const RecommendationCopyComponent = ({
         >
           {formattedName}
         </StyledKeyName>
-        <IconButton
-          onClick={handleCopy}
-          icon={CopyIcon}
-          data-testid="copy-key-name-btn"
+        <CopyButton
+          copy={formattedName}
+          onCopy={handleCopy}
+          withTooltip={false}
+          data-testid="copy-key-name"
           aria-label="copy key name"
         />
         <HorizontalSpacer size="xs" />

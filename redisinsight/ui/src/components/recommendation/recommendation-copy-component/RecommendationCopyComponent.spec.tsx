@@ -19,6 +19,12 @@ const mockProvider = 'PROVIDER'
 const mockTelemetryEvent = 'recommendationName'
 
 describe('RecommendationCopyComponent', () => {
+  beforeEach(() => {
+    Object.assign(navigator, {
+      clipboard: { writeText: jest.fn() },
+    })
+  })
+
   it('should render', () => {
     expect(
       render(<RecommendationCopyComponent {...instance(mockedProps)} />),
