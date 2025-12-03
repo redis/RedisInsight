@@ -222,6 +222,7 @@ const RemoveListElements = (props: Props) => {
 
   const InfoBoxTooltip = () => (
     <RiTooltip
+      interactive
       position="left"
       content={HelpTexts.REMOVING_MULTIPLE_ELEMENTS_NOT_SUPPORT}
     >

@@ -13,6 +13,7 @@ import { InfoIcon } from './SubscribeInformation.styles'
 
 const SubscribeInformation = () => (
   <RiTooltip
+    interactive
     data-testid="pub-sub-examples"
     content={
       <Col gap="l">

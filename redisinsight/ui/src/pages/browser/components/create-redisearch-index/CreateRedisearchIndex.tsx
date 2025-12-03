@@ -177,6 +177,7 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
 
   const IdentifierInfo = () => (
     <RiTooltip
+      interactive
       position="top"
       content={
         <>
