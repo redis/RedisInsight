@@ -22,4 +22,6 @@ export interface CopyButtonProps {
   tooltipConfig?: Omit<RiTooltipProps, 'children'>
   /** Class name for the component, can override with Styled Components */
   className?: string
+  /** Whether the button is disabled */
+  disabled?: boolean
 }

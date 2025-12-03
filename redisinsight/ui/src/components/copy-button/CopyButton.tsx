@@ -46,6 +46,7 @@ export const CopyButton = ({
   withTooltip = true,
   tooltipConfig,
   className,
+  disabled = false,
 }: CopyButtonProps) => {
   const [isCopied, setIsCopied] = useState(false)
 
@@ -80,6 +81,7 @@ export const CopyButton = ({
       id={id}
       aria-label={buttonAriaLabel}
       onClick={handleCopyClick}
+      disabled={disabled}
       data-testid={`${dataTestId}-btn`}
     />
   )

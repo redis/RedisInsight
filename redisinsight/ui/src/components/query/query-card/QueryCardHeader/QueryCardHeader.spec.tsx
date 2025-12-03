@@ -118,7 +118,7 @@ describe('QueryCardHeader', () => {
       emptyCommand: true,
     })
 
-    expect(screen.getByTestId('copy-command')).toBeDisabled()
+    expect(screen.getByTestId('copy-command-btn')).toBeDisabled()
   })
 
   it('should hide Profiler button', async () => {
@@ -153,7 +153,7 @@ describe('QueryCardHeader', () => {
       })
 
       await act(async () => {
-        fireEvent.click(screen.getByTestId('copy-command'))
+        fireEvent.click(screen.getByTestId('copy-command-btn'))
       })
 
       // Verify telemetry event is sent
@@ -264,7 +264,7 @@ describe('QueryCardHeader', () => {
       )
 
       await act(async () => {
-        fireEvent.click(screen.getByTestId('copy-command'))
+        fireEvent.click(screen.getByTestId('copy-command-btn'))
       })
 
       // Verify telemetry event is sent
