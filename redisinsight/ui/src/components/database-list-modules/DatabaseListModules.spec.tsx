@@ -4,7 +4,7 @@ import {
   RedisDefaultModules,
   DATABASE_LIST_MODULES_TEXT,
 } from 'uiSrc/slices/interfaces'
-import { fireEvent, render, act } from 'uiSrc/utils/test-utils'
+import { fireEvent, render } from 'uiSrc/utils/test-utils'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
 import { DatabaseListModules } from './DatabaseListModules'
 import { DatabaseListModulesProps } from './DatabaseListModules.types'
@@ -33,27 +33,22 @@ describe('DatabaseListModules', () => {
     ).toBeTruthy()
   })
 
-  it('copy module name', async () => {
+  it('should copy module name to clipboard when clicked', async () => {
+    const writeTextMock = jest.fn()
+    Object.assign(navigator, {
+      clipboard: { writeText: writeTextMock },
+    })
+
     const { queryByTestId } = render(
       <DatabaseListModules {...instance(mockedProps)} modules={modulesMock} />,
     )
 
     const term = DATABASE_LIST_MODULES_TEXT[RedisDefaultModules.Search]
-
     const module = queryByTestId(`${term}_module`)
+    expect(module).toBeInTheDocument()
 
-    await act(async () => {
-      module && fireEvent.click(module)
-    })
+    fireEvent.click(module!)
 
-    // queryByTestId
-    expect(
-      render(
-        <DatabaseListModules
-          {...instance(mockedProps)}
-          modules={modulesMock}
-        />,
-      ),
-    ).toBeTruthy()
+    expect(writeTextMock).toHaveBeenCalledWith(term)
   })
 })
