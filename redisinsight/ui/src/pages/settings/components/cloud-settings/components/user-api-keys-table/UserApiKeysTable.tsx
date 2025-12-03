@@ -15,16 +15,12 @@ import {
 import { removeCapiKeyAction } from 'uiSrc/slices/oauth/cloud'
 import { Text } from 'uiSrc/components/base/text'
 
-import {
-  EmptyButton,
-  IconButton,
-  PrimaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { CopyIcon } from 'uiSrc/components/base/icons'
+import { EmptyButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { CopyButton } from 'uiSrc/components/copy-button'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Title } from 'uiSrc/components/base/text/Title'
-import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
+import { Table, ColumnDef } from 'uiSrc/components/base/layout/table'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import styles from './styles.module.scss'
@@ -38,8 +34,7 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
   const [deleting, setDeleting] = useState('')
   const dispatch = useDispatch()
 
-  const handleCopy = (value: string) => {
-    navigator?.clipboard?.writeText(value)
+  const handleCopy = () => {
     sendEventTelemetry({
       event: TelemetryEvent.SETTINGS_CLOUD_API_KEY_NAME_COPIED,
     })
@@ -72,7 +67,7 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
     )
   }
 
-  const columns: ColumnDefinition<CloudCapiKey>[] = [
+  const columns: ColumnDef<CloudCapiKey>[] = [
     {
       header: 'API Key Name',
       id: 'name',
@@ -152,19 +147,17 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
           original: { id, name },
         },
       }) => (
-        <div>
-          <RiTooltip
-            content="Copy API Key Name"
-            anchorClassName={styles.copyBtnAnchor}
-          >
-            <IconButton
-              icon={CopyIcon}
-              aria-label="Copy API key"
-              onClick={() => handleCopy(name || '')}
-              style={{ marginRight: 4 }}
-              data-testid={`copy-api-key-${name}`}
-            />
-          </RiTooltip>
+        <Row align="center" justify="start" grow={false} gap="s">
+          <CopyButton
+            copy={name || ''}
+            onCopy={handleCopy}
+            aria-label="Copy API key"
+            successLabel=""
+            tooltipConfig={{
+              content: 'Copy API Key Name',
+            }}
+            data-testid={`copy-api-key-${name}`}
+          />
           <PopoverDelete
             header={
               <>
@@ -196,7 +189,7 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
             handleDeleteItem={() => handleDeleteApiKey(id, name)}
             handleButtonClick={handleClickDeleteApiKey}
           />
-        </div>
+        </Row>
       ),
     },
   ]

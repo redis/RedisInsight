@@ -86,6 +86,7 @@ export const CopyButton = ({
 
   return (
     <StyledTooltipContainer
+      grow={false}
       align="center"
       className={className}
       justify="center"
