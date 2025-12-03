@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { handleCopy as handleCopyUtil } from 'uiSrc/utils'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CopyIcon } from 'uiSrc/components/base/icons'
-import { RiTooltip } from 'uiSrc/components'
+import { RiTooltip } from 'uiSrc/components/base/tooltip'
 import { StyledCopiedBadge, StyledTooltipContainer } from './CopyButton.styles'
 import { CopyButtonProps } from './CopyButton.types'
 
