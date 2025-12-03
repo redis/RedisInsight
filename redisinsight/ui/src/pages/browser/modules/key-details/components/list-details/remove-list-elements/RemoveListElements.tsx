@@ -270,10 +270,10 @@ const RemoveListElements = (props: Props) => {
                 </FormField>
               </FlexItem>
 
-              {!canRemoveMultiple ? (
-                <FlexItem>{InfoBoxTooltip()}</FlexItem>
-              ) : (
-                <></>
+              {!canRemoveMultiple && (
+                <FlexItem>
+                  <InfoBoxTooltip />
+                </FlexItem>
               )}
             </Row>
           </Row>
