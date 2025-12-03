@@ -1,11 +1,11 @@
 import React from 'react'
 
-import { CopyButton } from "uiSrc/components/copy-button"
-import { Text } from "uiSrc/components/base/text"
-import { lastConnectionFormat } from "uiSrc/utils"
-import { RdiListColumn } from "uiSrc/constants"
+import { CopyButton } from 'uiSrc/components/copy-button'
+import { Text } from 'uiSrc/components/base/text'
+import { lastConnectionFormat } from 'uiSrc/utils'
+import { RdiListColumn } from 'uiSrc/constants'
 
-import { sendCopyUrlTelemetry } from "../../methods/handlers"
+import { sendCopyUrlTelemetry } from '../../methods/handlers'
 import { IRdiListCell } from '../../RdiInstancesList.types'
 import { CellContainer } from './RdiInstancesListCell.styles'
 
