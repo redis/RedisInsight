@@ -17,6 +17,7 @@ import { RdiInstance } from 'uiSrc/slices/interfaces'
 import { TableStorageKey } from 'uiSrc/constants/storage'
 
 import { sortingStateToPropertySort } from './sortingAdapters'
+import { handleCopy } from 'uiSrc/utils'
 
 export const handleSortingChange = (sorting: SortingState) => {
   if (!sorting.length) return
@@ -55,11 +56,11 @@ export const sendCopyUrlTelemetry = async (id?: string) => {
 
 export const handleCopyUrl = (
   e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  url = "",
+  url = '',
   id?: string,
 ) => {
   e.stopPropagation()
-  navigator.clipboard?.writeText(url)
+  handleCopy(url)
   sendCopyUrlTelemetry(id)
 }
 

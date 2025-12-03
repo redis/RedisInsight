@@ -68,6 +68,7 @@ import {
   lastConnectionFormat,
   Nullable,
   replaceSpaces,
+  handleCopy as handleCopyUtil,
 } from 'uiSrc/utils'
 
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
@@ -164,7 +165,7 @@ const DatabasesListWrapper = (props: Props) => {
   }, [instances, search])
 
   const handleCopy = (text = '', databaseId?: string) => {
-    navigator.clipboard?.writeText(text)
+    handleCopyUtil(text)
     sendEventTelemetry({
       event: TelemetryEvent.CONFIG_DATABASES_HOST_PORT_COPIED,
       eventData: {
