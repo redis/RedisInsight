@@ -98,6 +98,7 @@ export const CopyBtnWrapper = styled(CopyButton)`
   top: 0;
   opacity: 0;
   transition: opacity 0.25s ease-in-out;
+  height: 100%;
 `
 
 export const CopyTextContainer = styled.div`
@@ -110,6 +111,5 @@ export const CopyTextContainer = styled.div`
 
   &:hover ${CopyBtn}, &:hover ${CopyBtnWrapper} {
     opacity: 1;
-    height: auto;
   }
 `
