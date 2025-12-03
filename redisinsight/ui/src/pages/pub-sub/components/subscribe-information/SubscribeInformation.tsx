@@ -7,37 +7,38 @@ import {
   UTM_MEDIUMS,
 } from 'uiSrc/constants/links'
 import { Link } from 'uiSrc/components/base/link/Link'
-import { RiPopover } from 'uiSrc/components/base'
+import { RiTooltip } from 'uiSrc/components/base'
 import { Col } from 'uiSrc/components/base/layout/flex'
 import { InfoIcon } from './SubscribeInformation.styles'
 
 const SubscribeInformation = () => (
-  <RiPopover
-    id="showPupSubExamples"
-    button={<InfoIcon />}
+  <RiTooltip
     data-testid="pub-sub-examples"
-  >
-    <Col gap="l">
-      <Text>
-        Subscribe to one or more channels or patterns by entering them,
-        separated by spaces.
-      </Text>
+    content={
+      <Col gap="l">
+        <Text>
+          Subscribe to one or more channels or patterns by entering them,
+          separated by spaces.
+        </Text>
 
-      <Text>
-        Supported glob-style patterns are described&nbsp;
-        <Link
-          variant="inline"
-          target="_blank"
-          href={getUtmExternalLink(EXTERNAL_LINKS.pubSub, {
-            medium: UTM_MEDIUMS.Main,
-            campaign: UTM_CAMPAINGS.PubSub,
-          })}
-        >
-          here.
-        </Link>
-      </Text>
-    </Col>
-  </RiPopover>
+        <Text>
+          Supported glob-style patterns are described&nbsp;
+          <Link
+            variant="inline"
+            target="_blank"
+            href={getUtmExternalLink(EXTERNAL_LINKS.pubSub, {
+              medium: UTM_MEDIUMS.Main,
+              campaign: UTM_CAMPAINGS.PubSub,
+            })}
+          >
+            here.
+          </Link>
+        </Text>
+      </Col>
+    }
+  >
+    <InfoIcon />
+  </RiTooltip>
 )
 
 export default SubscribeInformation

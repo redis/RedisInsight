@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import cx from 'classnames'
 import { toNumber } from 'lodash'
 
 import { Text } from 'uiSrc/components/base/text'
@@ -41,7 +40,7 @@ import { DeleteIcon } from 'uiSrc/components/base/icons'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
-import { RiPopover } from 'uiSrc/components/base'
+import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { DeleteListElementsDto } from 'apiSrc/modules/browser/list/dto'
 
@@ -79,7 +78,7 @@ const RemoveListElements = (props: Props) => {
     useState<ListElementDestination>(TAIL_DESTINATION)
   const [isFormValid, setIsFormValid] = useState<boolean>(true)
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false)
-  const [isInfoPopoverOpen, setIsInfoPopoverOpen] = useState<boolean>(false)
+
   const [canRemoveMultiple, setCanRemoveMultiple] = useState<boolean>(true)
   const { name: selectedKey = '', length } = useSelector(
     selectedKeyDataSelector,
@@ -221,28 +220,18 @@ const RemoveListElements = (props: Props) => {
     </RiPopover>
   )
 
-  const InfoBoxPopover = () => (
-    <RiPopover
-      panelClassName={cx('popoverLikeTooltip')}
-      anchorPosition="leftCenter"
-      isOpen={isInfoPopoverOpen}
-      closePopover={() => setIsInfoPopoverOpen(false)}
-      button={
-        <RiIcon
-          className={styles.infoIcon}
-          type="InfoIcon"
-          onClick={() =>
-            setIsInfoPopoverOpen((isPopoverOpen) => !isPopoverOpen)
-          }
-          style={{ cursor: 'pointer' }}
-          data-testid="info-tooltip-icon"
-        />
-      }
+  const InfoBoxTooltip = () => (
+    <RiTooltip
+      position="left"
+      content={HelpTexts.REMOVING_MULTIPLE_ELEMENTS_NOT_SUPPORT}
     >
-      <div className={styles.popover}>
-        {HelpTexts.REMOVING_MULTIPLE_ELEMENTS_NOT_SUPPORT}
-      </div>
-    </RiPopover>
+      <RiIcon
+        className={styles.infoIcon}
+        type="InfoIcon"
+        style={{ cursor: 'pointer' }}
+        data-testid="info-tooltip-icon"
+      />
+    </RiTooltip>
   )
 
   return (
@@ -281,7 +270,7 @@ const RemoveListElements = (props: Props) => {
               </FlexItem>
 
               {!canRemoveMultiple ? (
-                <FlexItem>{InfoBoxPopover()}</FlexItem>
+                <FlexItem>{InfoBoxTooltip()}</FlexItem>
               ) : (
                 <></>
               )}

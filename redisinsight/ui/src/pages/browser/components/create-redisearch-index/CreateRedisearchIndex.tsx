@@ -1,5 +1,4 @@
 import { EuiComboBoxOptionOption } from '@elastic/eui/src/components/combo_box/types'
-import cx from 'classnames'
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
@@ -28,7 +27,7 @@ import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { HealthText, Text } from 'uiSrc/components/base/text'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
-import { RiPopover } from 'uiSrc/components/base'
+import { RiTooltip } from 'uiSrc/components/base'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { CreateRedisearchIndexDto } from 'apiSrc/modules/browser/redisearch/dto'
 import { Panel } from 'uiSrc/components/panel'
@@ -89,7 +88,7 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
     initialFieldValue(fieldTypeOptions),
   ])
 
-  const [isInfoPopoverOpen, setIsInfoPopoverOpen] = useState<boolean>(false)
+
 
   const lastAddedIdentifier = useRef<HTMLInputElement>(null)
   const prevCountFields = useRef<number>(0)
@@ -177,43 +176,37 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
     fields.length === 1 && !item.identifier.length
 
   const IdentifierInfo = () => (
-    <RiPopover
-      anchorPosition="upCenter"
-      isOpen={isInfoPopoverOpen}
-      panelClassName={cx('popoverLikeTooltip')}
-      closePopover={() => setIsInfoPopoverOpen(false)}
-      button={
-        <IconButton
-          icon={InfoIcon}
-          id="identifier-info-icon"
-          aria-label="identifier info icon"
-          data-testid="identifier-info-icon"
-          onClick={() =>
-            setIsInfoPopoverOpen((isPopoverOpen) => !isPopoverOpen)
-          }
-        />
+    <RiTooltip
+      position="top"
+      content={
+        <>
+          <Link
+            variant="inline"
+            size="S"
+            href={getUtmExternalLink(
+              'https://redis.io/commands/ft.create/#SCHEMA',
+              {
+                campaign: 'browser_search',
+              },
+            )}
+            target="_blank"
+          >
+            Declares
+          </Link>
+          {' fields to index. '}
+          {keyTypeSelected === RedisearchIndexKeyType.HASH
+            ? 'Enter a hash field name.'
+            : 'Enter a JSON path expression.'}
+        </>
       }
     >
-      <>
-        <Link
-          variant="inline"
-          size="S"
-          href={getUtmExternalLink(
-            'https://redis.io/commands/ft.create/#SCHEMA',
-            {
-              campaign: 'browser_search',
-            },
-          )}
-          target="_blank"
-        >
-          Declares
-        </Link>
-        {' fields to index. '}
-        {keyTypeSelected === RedisearchIndexKeyType.HASH
-          ? 'Enter a hash field name.'
-          : 'Enter a JSON path expression.'}
-      </>
-    </RiPopover>
+      <IconButton
+        icon={InfoIcon}
+        id="identifier-info-icon"
+        aria-label="identifier info icon"
+        data-testid="identifier-info-icon"
+      />
+    </RiTooltip>
   )
 
   return (
