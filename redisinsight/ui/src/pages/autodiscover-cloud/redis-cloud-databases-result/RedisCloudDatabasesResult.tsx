@@ -58,7 +58,7 @@ const RedisCloudDatabaseListResult = ({
         item.subscriptionId?.toString()?.indexOf(value) !== -1 ||
         item.subscriptionName?.toLowerCase().indexOf(value) !== -1 ||
         item.databaseId?.toString()?.indexOf(value) !== -1 ||
-        item.statusAdded?.toLowerCase()?.indexOf(value) !== -1,
+        (item.statusAdded || '').toLowerCase().indexOf(value) !== -1,
     )
 
     if (!itemsTemp.length) {
