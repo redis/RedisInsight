@@ -1,10 +1,8 @@
 import styled from 'styled-components'
 
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-
-export const StyledCopyButton = styled(IconButton)`
-  margin-bottom: 3px;
+export const StyledCopyContainer = styled.div`
   opacity: 0;
+  transition: opacity 0.25s ease-in-out;
 
   :hover {
     opacity: 1;
