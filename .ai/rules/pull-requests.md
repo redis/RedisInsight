@@ -6,6 +6,10 @@ alwaysApply: true
 
 ## Creating a PR
 
+### Labels
+
+When creating PRs with AI assistance, always add the **"AI-Made"** label.
+
 ### PR Title
 
 Include issue number at the start:
