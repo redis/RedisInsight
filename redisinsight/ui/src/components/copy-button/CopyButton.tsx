@@ -3,37 +3,13 @@ import React, { useEffect, useState } from 'react'
 import { handleCopy as handleCopyUtil } from 'uiSrc/utils'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CopyIcon } from 'uiSrc/components/base/icons'
-import { RiTooltip } from 'uiSrc/components/base/tooltip'
+
+import { ButtonWithTooltip } from './components'
 import { StyledCopiedBadge, StyledTooltipContainer } from './CopyButton.styles'
 import { CopyButtonProps } from './CopyButton.types'
 
 const DEFAULT_TOOLTIP_CONTENT = 'Copy'
 
-interface ButtonWithTooltipProps {
-  button: React.ReactNode
-  withTooltip: boolean
-  tooltipConfig: CopyButtonProps['tooltipConfig']
-}
-
-const ButtonWithTooltip = ({
-  button,
-  withTooltip,
-  tooltipConfig,
-}: ButtonWithTooltipProps) => {
-  if (withTooltip) {
-    return (
-      <RiTooltip
-        position="right"
-        content={DEFAULT_TOOLTIP_CONTENT}
-        {...tooltipConfig}
-      >
-        {button}
-      </RiTooltip>
-    )
-  }
-
-  return <>{button}</>
-}
 export const CopyButton = ({
   onCopy,
   id,
