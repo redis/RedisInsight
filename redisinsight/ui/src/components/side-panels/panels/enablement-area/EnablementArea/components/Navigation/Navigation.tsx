@@ -39,7 +39,6 @@ import InternalLink from '../InternalLink'
 import PlainText from '../PlainText'
 import { Col } from 'uiSrc/components/base/layout/flex'
 import UploadTutorialForm from '../UploadTutorialForm'
-import WelcomeMyTutorials from '../WelcomeMyTutorials'
 
 import styles from './styles.module.scss'
 
@@ -179,24 +178,21 @@ const Navigation = (props: Props) => {
             }
             {...args}
           >
-            {isCustomTutorials && actions?.includes(EAItemActions.Create) && (
-              <div>
-                {!isCreateOpen && children?.length === 0 && (
-                  <Col gap="l">
-                    <WelcomeMyTutorials
-                      handleOpenUpload={() => setIsCreateOpen(true)}
-                    />
-                    <UploadWarning />
-                  </Col>
-                )}
-                {isCreateOpen && (
+            {isCustomTutorials &&
+              actions?.includes(EAItemActions.Create) &&
+              (children?.length === 0 ? (
+                <Col gap="l">
+                  <UploadTutorialForm onSubmit={submitCreate} />
+                  <UploadWarning />
+                </Col>
+              ) : (
+                isCreateOpen && (
                   <UploadTutorialForm
                     onSubmit={submitCreate}
                     onCancel={() => setIsCreateOpen(false)}
                   />
-                )}
-              </div>
-            )}
+                )
+              ))}
             {renderTreeView(
               children ? getManifestItems(children) : [],
               {

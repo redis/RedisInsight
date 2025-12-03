@@ -33,7 +33,7 @@ const DeleteTutorialButton = (props: Props) => {
       panelPaddingSize="l"
       button={
         <div
-          className="group-header__btn group-header__delete-btn"
+          className="group-header__btn"
           role="presentation"
           onClick={handleClickDelete}
           data-testid={`delete-tutorial-icon-${id}`}

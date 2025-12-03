@@ -41,18 +41,6 @@
         }
       }
 
-      &__delete-btn {
-        svg {
-          width: 14px;
-          height: 14px;
-        }
-
-        &:hover {
-          color: var(--euiColorPrimaryText);
-          background-color: var(--euiColorSecondary);
-        }
-      }
-
       .euiIcon {
         margin-right: 4px;
       }

@@ -97,12 +97,12 @@ const Group = (props: Props) => {
           >
             <RiTooltip content="Upload Tutorial">
               <div
-                className="group-header__btn group-header__create-btn"
+                className="group-header__btn"
                 role="presentation"
                 onClick={handleCreate}
                 data-testid="open-upload-tutorial-btn"
               >
-                <RiIcon type="PlusSlimIcon" />
+                <RiIcon type="PlusSlimIcon" size="m" />
               </div>
             </RiTooltip>
           </OnboardingTour>

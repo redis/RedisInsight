@@ -9,6 +9,7 @@ import validationErrors from 'uiSrc/constants/validationErrors'
 import { RiFilePicker, RiTooltip } from 'uiSrc/components'
 
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import {
   PrimaryButton,
   SecondaryButton,
@@ -16,6 +17,7 @@ import {
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import CreateTutorialLink from '../CreateTutorialLink'
+import { Wrapper } from './UploadTutorialForm.styles'
 import styles from './styles.module.scss'
 
 export interface FormValues {
@@ -75,70 +77,67 @@ const UploadTutorialForm = (props: Props) => {
   }
 
   return (
-    <div className={styles.outerWrapper}>
-      <div className={styles.wrapper} data-testid="upload-tutorial-form">
-        <Text>Add new Tutorial</Text>
-        <Spacer size="m" />
-        <div>
-          <div className={styles.uploadFileWrapper}>
-            <RiFilePicker
-              id="import-tutorial"
-              initialPromptText="Select or drop a file"
-              className={styles.fileDrop}
-              onChange={handleFileChange}
-              display="large"
-              accept=".zip"
-              data-testid="import-tutorial"
-              aria-label="Select or drop file"
-            />
-          </div>
-          <div className={styles.hr}>OR</div>
-          <TextInput
-            placeholder="GitHub link to tutorials"
-            value={formik.values.link}
-            onChange={(value) => formik.setFieldValue('link', value)}
-            className={styles.input}
-            data-testid="tutorial-link-field"
+    <Wrapper className={styles.wrapper} data-testid="upload-tutorial-form">
+      <Text>Add new tutorial</Text>
+      <Spacer size="m" />
+      <div>
+        <div className={styles.uploadFileWrapper}>
+          <RiFilePicker
+            id="import-tutorial"
+            initialPromptText="Select or drop a file"
+            className={styles.fileDrop}
+            onChange={handleFileChange}
+            display="large"
+            accept=".zip"
+            data-testid="import-tutorial"
+            aria-label="Select or drop file"
           />
-          <Spacer size="l" />
-          <div className={styles.footer}>
-            <CreateTutorialLink />
-            <div className={styles.footerButtons}>
+        </div>
+        <div className={styles.hr}>OR</div>
+        <TextInput
+          placeholder="GitHub link to tutorials"
+          value={formik.values.link}
+          onChange={(value) => formik.setFieldValue('link', value)}
+          className={styles.input}
+          data-testid="tutorial-link-field"
+        />
+        <Spacer size="l" />
+        <div className={styles.footer}>
+          <CreateTutorialLink />
+          <Row align="center" justify="end" gap="s">
+            {onCancel && (
               <SecondaryButton
                 size="s"
-                onClick={() => onCancel?.()}
+                onClick={() => onCancel()}
                 data-testid="cancel-upload-tutorial-btn"
               >
                 Cancel
               </SecondaryButton>
-              <RiTooltip
-                position="top"
-                anchorClassName="euiToolTip__btn-disabled"
-                title={
-                  isSubmitDisabled
-                    ? validationErrors.REQUIRED_TITLE(
-                        Object.keys(errors).length,
-                      )
-                    : null
-                }
-                content={getSubmitButtonContent(isSubmitDisabled)}
+            )}
+            <RiTooltip
+              position="top"
+              anchorClassName="euiToolTip__btn-disabled"
+              title={
+                isSubmitDisabled
+                  ? validationErrors.REQUIRED_TITLE(Object.keys(errors).length)
+                  : null
+              }
+              content={getSubmitButtonContent(isSubmitDisabled)}
+            >
+              <PrimaryButton
+                size="s"
+                onClick={() => formik.handleSubmit()}
+                icon={isSubmitDisabled ? InfoIcon : undefined}
+                disabled={isSubmitDisabled}
+                data-testid="submit-upload-tutorial-btn"
               >
-                <PrimaryButton
-                  className={styles.btnSubmit}
-                  size="s"
-                  onClick={() => formik.handleSubmit()}
-                  icon={isSubmitDisabled ? InfoIcon : undefined}
-                  disabled={isSubmitDisabled}
-                  data-testid="submit-upload-tutorial-btn"
-                >
-                  Submit
-                </PrimaryButton>
-              </RiTooltip>
-            </div>
-          </div>
+                Submit
+              </PrimaryButton>
+            </RiTooltip>
+          </Row>
         </div>
       </div>
-    </div>
+    </Wrapper>
   )
 }
 
