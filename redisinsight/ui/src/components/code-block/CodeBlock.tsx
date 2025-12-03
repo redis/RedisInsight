@@ -1,9 +1,9 @@
 import React, { HTMLAttributes, useMemo } from 'react'
 import cx from 'classnames'
 
-import { CopyButton } from "uiSrc/components/copy-button"
-import { useInnerText } from "uiSrc/components/base/utils/hooks/inner-text"
-import styles from "./styles.module.scss"
+import { CopyButton } from 'uiSrc/components/copy-button'
+import { useInnerText } from 'uiSrc/components/base/utils/hooks/inner-text'
+import styles from './styles.module.scss'
 
 export interface Props extends HTMLAttributes<HTMLPreElement> {
   children: React.ReactNode
@@ -13,10 +13,10 @@ export interface Props extends HTMLAttributes<HTMLPreElement> {
 
 const CodeBlock = (props: Props) => {
   const { isCopyable, className, children, ...rest } = props
-  const [innerTextRef, innerTextString] = useInnerText("")
+  const [innerTextRef, innerTextString] = useInnerText('')
 
   const innerText = useMemo(
-    () => innerTextString?.replace(/[\r\n?]{2}|\n\n/g, "\n") || "",
+    () => innerTextString?.replace(/[\r\n?]{2}|\n\n/g, '\n') || '',
     [innerTextString],
   )
 
