@@ -5,10 +5,10 @@ import styled from 'styled-components'
 import { bufferToString } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
-import { CopyButton } from "uiSrc/components/copy-button"
-import { Text } from "uiSrc/components/base/text"
-import { FlexGroup } from "uiSrc/components/base/layout/flex"
-import { HorizontalSpacer } from "uiSrc/components/base/layout"
+import { CopyButton } from 'uiSrc/components/copy-button'
+import { Text } from 'uiSrc/components/base/text'
+import { FlexGroup } from 'uiSrc/components/base/layout/flex'
+import { HorizontalSpacer } from 'uiSrc/components/base/layout'
 
 const StyledWrapper = styled.div`
   margin-top: 15px;
@@ -51,7 +51,7 @@ const RecommendationCopyComponent = ({
   telemetryEvent,
   provider,
 }: IProps) => {
-  const { instanceId = "" } = useParams<{ instanceId: string }>()
+  const { instanceId = '' } = useParams<{ instanceId: string }>()
 
   const formattedName = bufferToString(keyName)
 
