@@ -1,8 +1,9 @@
 # Implementation Plan: \[Tutorials] Custom tutorials buttons are not aligned
 
-**JIRA Ticket:** [RI-7767](https://redislabs.atlassian.net/browse/RI-7767)
+**JIRA Ticket:** [RI-7767](https://redislabs.atlassian.net/browse/RI-7767) (Bug Fix)
 **Plan Date:** 2025-12-03
 **Planner:** Augment Agent
+**Branch:** `fe/bugfix/RI-7767/custom-tutorials-buttons-alignment`
 
 ***
 
@@ -552,10 +553,12 @@ Some spacings and alignments in the custom tutorials section are not good. The U
 
 This can be implemented as a **single PR** since:
 
-* Changes are related to the same feature (custom tutorials UX improvement)
+* Changes are related to the same bug fix (custom tutorials UX improvement)
 * All changes are in the same area (enablement area components)
 * Risk is manageable with thorough testing
 * Easier to review as one cohesive change
+
+**Branch:** `fe/bugfix/RI-7767/custom-tutorials-buttons-alignment`
 
 **PR Title:** `RI-7767 Remove welcome screen and fix custom tutorials alignment`
 
