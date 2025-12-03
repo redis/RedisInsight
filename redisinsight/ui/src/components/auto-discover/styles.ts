@@ -6,6 +6,7 @@ import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CopyIcon } from 'uiSrc/components/base/icons'
+import { CopyButton } from 'uiSrc/components/copy-button'
 
 export const PageTitle = styled(Title).attrs({
   size: 'L',
@@ -90,6 +91,15 @@ export const CopyBtn = styled(IconButton).attrs({
   transition: opacity 0.25s ease-in-out;
 `
 
+export const CopyBtnWrapper = styled(CopyButton)`
+  margin-left: 15px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  opacity: 0;
+  transition: opacity 0.25s ease-in-out;
+`
+
 export const CopyTextContainer = styled.div`
   height: 24px;
   line-height: 24px;
@@ -97,10 +107,8 @@ export const CopyTextContainer = styled.div`
   max-width: 100%;
   padding-right: 34px;
   position: relative;
-  * {
-  }
 
-  &:hover ${CopyBtn} {
+  &:hover ${CopyBtn}, &:hover ${CopyBtnWrapper} {
     opacity: 1;
     height: auto;
   }

@@ -20,4 +20,6 @@ export interface CopyButtonProps {
   withTooltip?: boolean
   /** Tooltip configuration options */
   tooltipConfig?: Omit<RiTooltipProps, 'children'>
+  /** Class name for the component, can override with Styled Components */
+  className?: string
 }

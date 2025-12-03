@@ -1,10 +1,10 @@
 import React from 'react'
 import { RiTooltip } from 'uiSrc/components'
-import { formatLongName, handleCopy } from 'uiSrc/utils'
+import { formatLongName } from 'uiSrc/utils'
 import {
-  CopyBtn,
   CopyPublicEndpointText,
   CopyTextContainer,
+  CopyBtnWrapper,
 } from 'uiSrc/components/auto-discover'
 
 export interface EndpointCellProps {
@@ -28,16 +28,11 @@ export const EndpointCell = ({ dnsName, port }: EndpointCellProps) => {
         <CopyPublicEndpointText>{text}</CopyPublicEndpointText>
       </RiTooltip>
 
-      <RiTooltip
-        position="right"
-        content="Copy"
-        anchorClassName="copyPublicEndpointTooltip"
-      >
-        <CopyBtn
-          aria-label="Copy public endpoint"
-          onClick={() => handleCopy(text)}
-        />
-      </RiTooltip>
+      <CopyBtnWrapper
+        copy={text}
+        aria-label="Copy public endpoint"
+        successLabel=""
+      />
     </CopyTextContainer>
   )
 }
