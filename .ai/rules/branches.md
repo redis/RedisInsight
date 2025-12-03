@@ -29,17 +29,19 @@ ric/RI-666/custom-prefix
 
 ## Allowed Branch Types (GitHub Actions Enforced)
 
-- `feature/` - New features and refactoring
-- `bugfix/` - Bug fixes
-- `fe/feature/` - Frontend-only features
-- `fe/bugfix/` - Frontend-only bug fixes
-- `be/feature/` - Backend-only features
-- `be/bugfix/` - Backend-only bug fixes
+- `feature/` - New features and refactoring (affects multiple areas)
+- `bugfix/` - Bug fixes (affects multiple areas)
+- `fe/feature/` - Frontend-only features (only `redisinsight/ui/` folder)
+- `fe/bugfix/` - Frontend-only bug fixes (only `redisinsight/ui/` folder)
+- `be/feature/` - Backend-only features (only `redisinsight/api/` folder)
+- `be/bugfix/` - Backend-only bug fixes (only `redisinsight/api/` folder)
 - `docs/` - Documentation changes
 - `test/` - Test-related changes
 - `e2e/` - End-to-end test changes
 - `release/` - Release branches
 - `ric/` - Custom prefix for special cases
+
+**Note:** When a bug fix affects only the `redisinsight/ui/` folder, use `fe/bugfix/` prefix instead of `bugfix/`.
 
 ## Issue References
 
