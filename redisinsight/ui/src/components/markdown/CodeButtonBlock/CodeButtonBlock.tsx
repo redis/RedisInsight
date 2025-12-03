@@ -8,6 +8,7 @@ import {
   getCommandsForExecution,
   getUnsupportedModulesFromQuery,
   truncateText,
+  handleCopy as handleCopyUtil,
 } from 'uiSrc/utils'
 import {
   BooleanParams,
@@ -28,7 +29,12 @@ import { ButtonLang } from 'uiSrc/utils/formatters/markdown/remarkCode'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
-import { PlayIcon, CheckBoldIcon, CopyIcon } from 'uiSrc/components/base/icons'
+import {
+  PlayIcon,
+  CheckBoldIcon,
+  CopyIcon,
+  ToastCheckIcon,
+} from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
 
@@ -67,7 +73,8 @@ const CodeButtonBlock = (props: Props) => {
   const [highlightedContent, setHighlightedContent] = useState('')
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [isRunned, setIsRunned] = useState(false)
+  const [isRan, setIsRan] = useState(false)
+  const [isCopied, setIsCopied] = useState(false)
 
   const { instanceId } = useParams<{ instanceId: string }>()
 
@@ -102,16 +109,27 @@ const CodeButtonBlock = (props: Props) => {
 
   const handleCopy = () => {
     const query = getCommandsForExecution(content)?.join('\n') || ''
-    navigator?.clipboard?.writeText(query)
+    handleCopyUtil(query)
+    setIsCopied(true)
     onCopy?.()
   }
+
+  useEffect(() => {
+    if (isCopied) {
+      const timeout = setTimeout(() => {
+        setIsCopied(false)
+      }, 1000)
+      return () => clearTimeout(timeout)
+    }
+    return undefined
+  }, [isCopied])
 
   const runQuery = () => {
     setIsLoading(true)
     onApply?.(params, () => {
       setIsLoading(false)
-      setIsRunned(true)
-      setTimeout(() => setIsRunned(false), FINISHED_COMMAND_INDICATOR_TIME_MS)
+      setIsRan(true)
+      setTimeout(() => setIsRan(false), FINISHED_COMMAND_INDICATOR_TIME_MS)
     })
   }
 
@@ -172,7 +190,8 @@ const CodeButtonBlock = (props: Props) => {
         <FlexItem className={styles.actions}>
           <EmptyButton
             onClick={handleCopy}
-            icon={CopyIcon}
+            icon={isCopied ? ToastCheckIcon : CopyIcon}
+            disabled={isCopied}
             size="small"
             className={cx(styles.actionBtn, styles.copyBtn)}
             data-testid={`copy-btn-${label}`}
@@ -199,10 +218,10 @@ const CodeButtonBlock = (props: Props) => {
                 >
                   <EmptyButton
                     onClick={handleRunClicked}
-                    icon={isRunned ? CheckBoldIcon : PlayIcon}
+                    icon={isRan ? CheckBoldIcon : PlayIcon}
                     iconSide="right"
                     size="small"
-                    disabled={isLoading || isRunned}
+                    disabled={isLoading || isRan}
                     loading={isLoading}
                     className={cx(styles.actionBtn, styles.runBtn)}
                     {...rest}
