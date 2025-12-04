@@ -9,8 +9,8 @@ export const GroupHeaderButton = styled.div<
   align-items: center;
   justify-content: center;
 
-  width: 24px;
-  height: 24px;
+  width: ${({ theme }: { theme: Theme }) => theme.core.space.space300};
+  height: ${({ theme }: { theme: Theme }) => theme.core.space.space300};
   border-radius: ${({ theme }: { theme: Theme }) => theme.core.space.space050};
   cursor: pointer;
 
