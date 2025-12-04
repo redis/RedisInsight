@@ -2,11 +2,13 @@ import React, { useState } from 'react'
 import { useFormik } from 'formik'
 import { FormikErrors } from 'formik/dist/types'
 import { isEmpty } from 'lodash'
+import cx from 'classnames'
 
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { Nullable } from 'uiSrc/utils'
 import validationErrors from 'uiSrc/constants/validationErrors'
-import { RiFilePicker, RiTooltip } from 'uiSrc/components'
+import { RiFilePicker, RiTooltip, OnboardingTour } from 'uiSrc/components'
+import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Row } from 'uiSrc/components/base/layout/flex'
@@ -29,10 +31,11 @@ export interface FormValues {
 export interface Props {
   onSubmit: (data: FormValues) => void
   onCancel?: () => void
+  isPageOpened?: boolean
 }
 
 const UploadTutorialForm = (props: Props) => {
-  const { onSubmit, onCancel } = props
+  const { onSubmit, onCancel, isPageOpened } = props
   const [errors, setErrors] = useState<FormikErrors<FormValues>>({})
 
   const initialValues: FormValues = {
@@ -79,7 +82,15 @@ const UploadTutorialForm = (props: Props) => {
 
   return (
     <S.Wrapper className={styles.wrapper} data-testid="upload-tutorial-form">
-      <Text>Add new tutorial</Text>
+      <OnboardingTour
+        options={ONBOARDING_FEATURES.EXPLORE_CUSTOM_TUTORIALS}
+        anchorPosition="downLeft"
+        anchorWrapperClassName="onboardingPopoverAnchor"
+        panelClassName={cx({ hide: isPageOpened })}
+        preventPropagation
+      >
+        <Text>Add new tutorial</Text>
+      </OnboardingTour>
       <Spacer size="m" />
       <div>
         <div className={styles.uploadFileWrapper}>

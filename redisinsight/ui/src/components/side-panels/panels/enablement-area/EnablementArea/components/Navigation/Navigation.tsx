@@ -171,7 +171,6 @@ const Navigation = (props: Props) => {
             )}
             onCreate={() => setIsCreateOpen((v) => !v)}
             onDelete={onDeleteCustomTutorial}
-            isPageOpened={isInternalPageVisible}
             hasChildren={hasChildren}
             forceState={
               isCustomTutorials && isCustomTutorialsOnboarding
@@ -184,7 +183,10 @@ const Navigation = (props: Props) => {
               actions?.includes(EAItemActions.Create) &&
               (children?.length === 0 ? (
                 <Col gap="l">
-                  <UploadTutorialForm onSubmit={submitCreate} />
+                  <UploadTutorialForm
+                    onSubmit={submitCreate}
+                    isPageOpened={isInternalPageVisible}
+                  />
                   <UploadWarning />
                 </Col>
               ) : (
@@ -192,6 +194,7 @@ const Navigation = (props: Props) => {
                   <UploadTutorialForm
                     onSubmit={submitCreate}
                     onCancel={() => setIsCreateOpen(false)}
+                    isPageOpened={isInternalPageVisible}
                   />
                 )
               ))}

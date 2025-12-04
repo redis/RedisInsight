@@ -10,11 +10,10 @@ import {
 } from 'uiSrc/telemetry'
 import { workbenchCustomTutorialsSelector } from 'uiSrc/slices/workbench/wb-custom-tutorials'
 import { EAItemActions } from 'uiSrc/constants'
-import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 
 import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
-import { RiTooltip, OnboardingTour } from 'uiSrc/components'
+import { RiTooltip } from 'uiSrc/components'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 
@@ -34,7 +33,6 @@ export interface Props {
   initialIsOpen?: boolean
   forceState?: 'open' | 'closed'
   onToggle?: (isOpen: boolean) => void
-  isPageOpened?: boolean
   isShowActions?: boolean
   isShowFolder?: boolean
   hasChildren?: boolean
@@ -53,7 +51,6 @@ const Group = (props: Props) => {
     onToggle,
     onCreate,
     onDelete,
-    isPageOpened,
     isShowFolder,
     hasChildren = true,
   } = props
@@ -92,23 +89,15 @@ const Group = (props: Props) => {
       {actions?.includes(EAItemActions.Create) &&
         hasChildren &&
         (isGroupOpen || forceState === 'open') && (
-          <OnboardingTour
-            options={ONBOARDING_FEATURES.EXPLORE_CUSTOM_TUTORIALS}
-            anchorPosition="downLeft"
-            anchorWrapperClassName="onboardingPopoverAnchor"
-            panelClassName={cx({ hide: isPageOpened })}
-            preventPropagation
-          >
-            <RiTooltip content="Upload tutorial">
-              <S.GroupHeaderButton
-                role="presentation"
-                onClick={handleCreate}
-                data-testid="open-upload-tutorial-btn"
-              >
-                <RiIcon type="PlusSlimIcon" size="m" />
-              </S.GroupHeaderButton>
-            </RiTooltip>
-          </OnboardingTour>
+          <RiTooltip content="Upload tutorial">
+            <S.GroupHeaderButton
+              role="presentation"
+              onClick={handleCreate}
+              data-testid="open-upload-tutorial-btn"
+            >
+              <RiIcon type="PlusSlimIcon" size="m" />
+            </S.GroupHeaderButton>
+          </RiTooltip>
         )}
       {actions?.includes(EAItemActions.Delete) && (
         <DeleteTutorialButton
