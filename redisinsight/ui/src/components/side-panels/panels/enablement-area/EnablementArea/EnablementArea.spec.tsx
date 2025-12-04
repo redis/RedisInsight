@@ -192,7 +192,7 @@ describe('EnablementArea', () => {
       expect(screen.getByTestId('upload-tutorial-form')).toBeInTheDocument()
     })
 
-    it('should render open form with tutorials', () => {
+    it('should render form directly when no tutorials', () => {
       const customTutorials = [
         { ...MOCK_CUSTOM_TUTORIALS_ITEMS[0], children: [] },
       ]
@@ -202,9 +202,6 @@ describe('EnablementArea', () => {
           customTutorials={customTutorials}
         />,
       )
-      expect(screen.getByTestId('welcome-my-tutorials')).toBeInTheDocument()
-
-      fireEvent.click(screen.getByTestId('upload-tutorial-btn'))
       expect(screen.getByTestId('upload-tutorial-form')).toBeInTheDocument()
     })
 
@@ -254,17 +251,6 @@ describe('EnablementArea', () => {
       )
     })
 
-    it('should not render welcome screen if at least one tutorial uploaded', () => {
-      render(
-        <EnablementArea
-          {...instance(mockedProps)}
-          customTutorials={MOCK_CUSTOM_TUTORIALS_ITEMS}
-        />,
-      )
-      expect(
-        screen.queryByTestId('welcome-my-tutorials'),
-      ).not.toBeInTheDocument()
-    })
   })
 
   describe('Telemetry', () => {
