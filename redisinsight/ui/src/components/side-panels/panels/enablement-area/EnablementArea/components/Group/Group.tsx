@@ -20,6 +20,7 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 
 import DeleteTutorialButton from '../DeleteTutorialButton'
 
+import * as S from './Group.styles'
 import './styles.scss'
 
 export interface Props {
@@ -98,15 +99,14 @@ const Group = (props: Props) => {
             panelClassName={cx({ hide: isPageOpened })}
             preventPropagation
           >
-            <RiTooltip content="Upload Tutorial">
-              <div
-                className="group-header__btn"
+            <RiTooltip content="Upload tutorial">
+              <S.GroupHeaderButton
                 role="presentation"
                 onClick={handleCreate}
                 data-testid="open-upload-tutorial-btn"
               >
                 <RiIcon type="PlusSlimIcon" size="m" />
-              </div>
+              </S.GroupHeaderButton>
             </RiTooltip>
           </OnboardingTour>
         )}

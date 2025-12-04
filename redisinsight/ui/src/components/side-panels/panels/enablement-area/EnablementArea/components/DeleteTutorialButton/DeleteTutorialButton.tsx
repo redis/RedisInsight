@@ -7,6 +7,8 @@ import { DeleteIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiPopover } from 'uiSrc/components/base'
+
+import * as S from '../Group/Group.styles'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -32,14 +34,13 @@ const DeleteTutorialButton = (props: Props) => {
       closePopover={() => setIsPopoverDeleteOpen(false)}
       panelPaddingSize="l"
       button={
-        <div
-          className="group-header__btn"
+        <S.GroupHeaderButton
           role="presentation"
           onClick={handleClickDelete}
           data-testid={`delete-tutorial-icon-${id}`}
         >
           <RiIcon size="m" type="DeleteIcon" />
-        </div>
+        </S.GroupHeaderButton>
       }
       onClick={(e) => e.stopPropagation()}
       data-testid={`delete-tutorial-popover-${id}`}
