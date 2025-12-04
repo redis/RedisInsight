@@ -3,5 +3,6 @@ import { Col } from 'uiSrc/components/base/layout/flex'
 
 export const ItemsWrapper = styled(Col)`
   overflow: auto;
-  max-height: 174px;
+  flex: 1;
+  min-height: 0;
 `

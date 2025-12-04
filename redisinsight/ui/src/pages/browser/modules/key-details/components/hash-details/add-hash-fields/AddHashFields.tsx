@@ -36,7 +36,7 @@ import {
   HashFieldDto,
 } from 'apiSrc/modules/browser/hash/dto'
 
-import styles from './styles.module.scss'
+import { EntryContent } from '../../common/AddKeysContainer.styled'
 
 export interface Props {
   isExpireFieldsAvailable?: boolean
@@ -165,7 +165,7 @@ const AddHashFields = (props: Props) => {
 
   return (
     <Col gap="m">
-      <div className={styles.container}>
+      <EntryContent>
         <AddMultipleFields
           items={fields}
           isClearDisabled={isClearDisabled}
@@ -231,7 +231,7 @@ const AddHashFields = (props: Props) => {
             </Row>
           )}
         </AddMultipleFields>
-      </div>
+      </EntryContent>
       <Row justify="end" gap="m">
         <FlexItem>
           <div>

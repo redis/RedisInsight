@@ -30,7 +30,8 @@ import {
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import styles from './styles.module.scss'
+
+import { EntryContent } from '../../common/AddKeysContainer.styled'
 
 export interface Props {
   closePanel: (isCancelled?: boolean) => void
@@ -135,7 +136,7 @@ const AddSetMembers = (props: Props) => {
 
   return (
     <Col gap="m">
-      <div className={styles.container}>
+      <EntryContent>
         <AddMultipleFields
           items={members}
           isClearDisabled={isClearDisabled}
@@ -165,7 +166,7 @@ const AddSetMembers = (props: Props) => {
             </Row>
           )}
         </AddMultipleFields>
-      </div>
+      </EntryContent>
       <Row justify="end" gap="xl">
         <FlexItem>
           <SecondaryButton

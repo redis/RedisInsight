@@ -10,6 +10,6 @@ export const TimeStampInfoIcon = styled(RiIcon).attrs({ type: 'InfoIcon' })`
 `
 
 export const StreamGroupContent = styled(Col)`
-  max-height: 234px;
+  max-height: calc(50vh - 100px);
   scroll-padding-bottom: 30px;
 `

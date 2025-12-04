@@ -26,7 +26,8 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { TextInput } from 'uiSrc/components/base/inputs'
-import styles from './styles.module.scss'
+
+import { EntryContent } from '../../common/AddKeysContainer.styled'
 
 export interface Props {
   closePanel: (isCancelled?: boolean) => void
@@ -176,7 +177,7 @@ const AddZsetMembers = (props: Props) => {
 
   return (
     <Col gap="m">
-      <div className={styles.container}>
+      <EntryContent>
         <AddMultipleFields
           items={members}
           isClearDisabled={isClearDisabled}
@@ -225,7 +226,7 @@ const AddZsetMembers = (props: Props) => {
             </Row>
           )}
         </AddMultipleFields>
-      </div>
+      </EntryContent>
       <Row justify="end" gap="l">
         <FlexItem>
           <div>

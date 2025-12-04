@@ -31,7 +31,7 @@ export const AddKeysContainer = styled.div<
   }
 `
 export const EntryContent = styled(Col)`
-  max-height: 234px;
+  max-height: calc(50vh - 100px);
   scroll-padding-bottom: 60px;
   overflow-y: auto;
 `
