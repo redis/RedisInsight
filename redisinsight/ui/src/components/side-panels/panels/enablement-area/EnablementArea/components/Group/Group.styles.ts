@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Theme } from '@redis-ui/styles'
+import { Theme } from 'uiSrc/components/base/theme/types'
 
 export const GroupHeaderButton = styled.div<
   React.HTMLAttributes<HTMLDivElement>

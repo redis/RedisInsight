@@ -17,7 +17,8 @@ import {
 import { InfoIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import CreateTutorialLink from '../CreateTutorialLink'
-import { Wrapper } from './UploadTutorialForm.styles'
+
+import * as S from './UploadTutorialForm.styles'
 import styles from './styles.module.scss'
 
 export interface FormValues {
@@ -77,7 +78,7 @@ const UploadTutorialForm = (props: Props) => {
   }
 
   return (
-    <Wrapper className={styles.wrapper} data-testid="upload-tutorial-form">
+    <S.Wrapper className={styles.wrapper} data-testid="upload-tutorial-form">
       <Text>Add new tutorial</Text>
       <Spacer size="m" />
       <div>
@@ -137,7 +138,7 @@ const UploadTutorialForm = (props: Props) => {
           </Row>
         </div>
       </div>
-    </Wrapper>
+    </S.Wrapper>
   )
 }
 
