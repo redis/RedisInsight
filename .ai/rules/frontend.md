@@ -64,6 +64,23 @@ ComponentName/
 
 ### Import Pattern
 
+Keep all component styles in dedicated .style.ts files and import them with a namespace.
+
+#### ✅ Good
+
+```typescript
+import * as S from './Component.styles'
+
+return (
+  <S.Container>
+    <S.Title>Title</S.Title>
+    <S.Content>Content</S.Content>
+  </S.Container>
+)
+```
+
+#### ❌ Bad
+
 ```typescript
 import { Container, Title, Content } from './Component.styles'
 
