@@ -89,6 +89,17 @@ const Navigation = (props: Props) => {
     [],
   )
 
+  // Open form when onboarding is triggered and form is not visible
+  useEffect(() => {
+    if (
+      isCustomTutorialsOnboarding &&
+      customTutorials?.length > 0 &&
+      !isCreateOpen
+    ) {
+      setIsCreateOpen(true)
+    }
+  }, [isCustomTutorialsOnboarding, customTutorials?.length, isCreateOpen])
+
   const submitCreate = ({ file, link }: FormValues) => {
     const formData = new FormData()
 
