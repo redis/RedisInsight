@@ -8,7 +8,7 @@ import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiPopover } from 'uiSrc/components/base'
 
-import * as S from '../Group/Group.styles'
+import * as S from './DeleteTutorialButton.styles'
 import styles from './styles.module.scss'
 
 export interface Props {
