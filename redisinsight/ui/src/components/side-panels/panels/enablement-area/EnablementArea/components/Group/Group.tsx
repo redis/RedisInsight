@@ -36,6 +36,7 @@ export interface Props {
   isPageOpened?: boolean
   isShowActions?: boolean
   isShowFolder?: boolean
+  hasChildren?: boolean
 }
 
 const Group = (props: Props) => {
@@ -53,6 +54,7 @@ const Group = (props: Props) => {
     onDelete,
     isPageOpened,
     isShowFolder,
+    hasChildren = true,
   } = props
   const { deleting: deletingCustomTutorials } = useSelector(
     workbenchCustomTutorialsSelector,
@@ -87,6 +89,7 @@ const Group = (props: Props) => {
   const actionsContent = (
     <>
       {actions?.includes(EAItemActions.Create) &&
+        hasChildren &&
         (isGroupOpen || forceState === 'open') && (
           <OnboardingTour
             options={ONBOARDING_FEATURES.EXPLORE_CUSTOM_TUTORIALS}

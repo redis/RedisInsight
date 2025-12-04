@@ -156,6 +156,7 @@ const Navigation = (props: Props) => {
     const currentManifestPath = `${manifestPath}/${key}`
 
     const isCustomTutorials = id === CUSTOM_TUTORIALS_ID && level === 0
+    const hasChildren = (children?.length ?? 0) > 0
 
     switch (type) {
       case EnablementAreaComponent.Group:
@@ -171,6 +172,7 @@ const Navigation = (props: Props) => {
             onCreate={() => setIsCreateOpen((v) => !v)}
             onDelete={onDeleteCustomTutorial}
             isPageOpened={isInternalPageVisible}
+            hasChildren={hasChildren}
             forceState={
               isCustomTutorials && isCustomTutorialsOnboarding
                 ? 'open'
