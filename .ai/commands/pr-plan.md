@@ -62,6 +62,14 @@ Use `sequential-thinking` tool for complex analysis. Break down into thoughts:
 
 Create a comprehensive Markdown document and save it to `docs/pr-plan-{ticket-id}-{brief-description}.md` using the `write` tool.
 
+**IMPORTANT: Planner Detection**
+- Detect which AI tool is being used (Cursor, Augment, or other)
+- Set the **Planner** field to:
+  - "Cursor Agent" if running in Cursor
+  - "Augment Agent" if running in Augment
+  - "[Tool Name] Agent" for other tools
+- You can infer the tool from context, user messages, or environment
+
 **The document structure MUST include all sections below:**
 
 ```markdown
@@ -71,7 +79,7 @@ Create a comprehensive Markdown document and save it to `docs/pr-plan-{ticket-id
 **Epic:** [EPIC-XXX](link) (if applicable)
 **Parent:** [PARENT-XXX](link) (if applicable)
 **Plan Date:** [Date]
-**Planner:** Augment Agent
+**Planner:** [Detect and set: Cursor Agent / Augment Agent / [Tool Name] Agent]
 
 ---
 
