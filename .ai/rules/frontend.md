@@ -66,10 +66,13 @@ ComponentName/
 
 Keep all component styles in dedicated .style.ts files and import them with a namespace.
 
+**CRITICAL: `import * as S` is reserved for local styles only** (e.g., from `ComponentName.styles.ts`). When you need to use styled components from external components, create a local styles file that re-exports them.
+
 #### ✅ Good
 
 ```typescript
-import * as S from './Component.styles'
+// ComponentName.tsx
+import * as S from './ComponentName.styles'
 
 return (
   <S.Container>
@@ -77,19 +80,19 @@ return (
     <S.Content>Content</S.Content>
   </S.Container>
 )
+
+// ComponentName.styles.ts (when re-exporting from external component)
+export { ExternalStyledComponent } from '../ExternalComponent/ExternalComponent.styles'
 ```
 
 #### ❌ Bad
 
 ```typescript
-import { Container, Title, Content } from './Component.styles'
+// ❌ BAD: Importing styled components directly from external component
+import * as S from '../ExternalComponent/ExternalComponent.styles'
 
-return (
-  <Container>
-    <Title>Title</Title>
-    <Content>Content</Content>
-  </Container>
-)
+// ❌ BAD: Named imports instead of namespace
+import { Container, Title, Content } from './Component.styles'
 ```
 
 ### Use Layout Components Instead of div
