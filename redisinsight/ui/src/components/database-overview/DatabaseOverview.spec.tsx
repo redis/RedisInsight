@@ -35,7 +35,6 @@ const defaultMockHook = () => ({
   usedMemoryPercent: undefined,
   handleEnableAutoRefresh: jest.fn(),
   handleRefresh: jest.fn(),
-  handleRefreshClick: jest.fn(),
 })
 
 describe('DatabaseOverview', () => {
