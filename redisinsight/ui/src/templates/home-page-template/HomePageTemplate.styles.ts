@@ -22,4 +22,5 @@ export const PageWrapper = styled.div`
 
 export const ExplorePanelWrapper = styled.div`
   padding-bottom: ${({ theme }: { theme: Theme }) => theme.core.space.space200};
+  height: 100%;
 `
