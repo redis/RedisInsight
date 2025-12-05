@@ -1,8 +1,12 @@
 # GitHub Copilot Instructions for RedisInsight
 
-> **📚 All development rules and guidelines are in the `.ai/` directory**
+> **🎯 Start here: Read `AGENTS.md` at the repository root for essential commands, testing instructions, and quick reference**
 
-This project uses a centralized AI rules structure. All detailed guidelines, standards, and workflows are maintained in the `.ai/` directory as the single source of truth.
+This project uses a centralized AI rules structure:
+
+- **`AGENTS.md`** (repository root) - Entry point with commands, testing, and boundaries
+- **`.ai/rules/`** - Detailed development standards organized by topic
+- **`.ai/commands/`** - AI workflow commands and templates
 
 ## 📂 Rules Structure
 
@@ -10,8 +14,6 @@ This project uses a centralized AI rules structure. All detailed guidelines, sta
 
 - **Code Quality**: `.ai/rules/code-quality.md`
 
-  - ESLint configuration (Airbnb base)
-  - Prettier formatting standards
   - TypeScript best practices
   - Import organization
   - SonarJS complexity rules
@@ -56,8 +58,9 @@ This project uses a centralized AI rules structure. All detailed guidelines, sta
 
 ### Commands and Workflows
 
-- **Commit Message Generation**: `.ai/commands/commit-message.md`
-- **PR Review**: `.ai/commands/pull-request-review.md`
+- **PR Plan**: `.ai/commands/pr-plan.md` - Analyze JIRA tickets (RI-XXX) and create detailed implementation plans
+- **Commit Message Generation**: `.ai/commands/commit-message.md` - Generate commit messages following Conventional Commits
+- **PR Review**: `.ai/commands/pull-request-review.md` - Review pull requests and provide feedback
 
 ## 🎯 Project Overview
 
@@ -76,8 +79,9 @@ This project uses a centralized AI rules structure. All detailed guidelines, sta
 
 ## 📖 Additional Documentation
 
-For a comprehensive introduction and quick reference, see: `.ai/README.md`
+- **For AI agents**: Start with `AGENTS.md` at repository root
+- **For human developers**: See `.ai/README.md` for setup and overview
 
 ---
 
-**Note**: This is a minimal reference file. GitHub Copilot cannot read the referenced files directly, but developers can access the full guidelines in the `.ai/` directory. Other AI tools (Cursor, Augment, Windsurf) access these rules via symlinks.
+**Note**: This is a minimal reference file. GitHub Copilot cannot read the referenced files directly, but developers can access the full guidelines. Other AI tools (Cursor, Augment, Windsurf) access these rules via symlinks and can read `AGENTS.md` directly.
