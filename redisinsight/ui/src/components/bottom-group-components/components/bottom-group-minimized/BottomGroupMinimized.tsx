@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import styled from 'styled-components'
 
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import {
@@ -24,7 +23,6 @@ import { FeatureFlags } from 'uiSrc/constants'
 import { Text } from 'uiSrc/components/base/text'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { HideFor, ShowFor } from 'uiSrc/components/base/utils/ShowHide'
-import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 import {
   CliIcon,
   DocumentationIcon,
@@ -32,51 +30,10 @@ import {
 } from 'uiSrc/components/base/icons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from '../../styles.module.scss'
-
-const ComponentBadge = styled(RiBadge)<{ isActive?: boolean }>`
-  background-color: transparent !important;
-  color: var(--euiTextSubduedColor) !important;
-  height: 18px !important;
-  border: none !important;
-  cursor: pointer;
-  user-select: none;
-
-  &[title] {
-    pointer-events: none;
-  }
-
-  ${({ isActive, theme }) => {
-    // TODO: try to replace with semantic colors once the palette is bigger. 
-    const bgColorActive =
-      theme.name === 'dark' ? theme.color.azure600 : theme.color.azure200
-    const bgColorHover =
-      theme.name === 'dark' ? theme.color.azure500 : theme.color.azure300
-
-    const color =
-      theme.name === 'dark' ? theme.color.azure200 : theme.color.azure600
-
-    return `
-    ${isActive ? `background-color: ${bgColorActive} !important;` : ''}
-    ${isActive ? `color: ${color} !important;` : ''}
-    &:hover {
-      background-color: ${bgColorHover} !important;
-      color: ${color} !important;
-    }
-  `
-  }}
-`
-
-const ContainerMinimized = styled.div`
-  display: flex;
-  align-items: center;
-  padding-left: ${({ theme }) => theme.core.space.space050};
-  height: 26px;
-  line-height: 26px;
-  border-left: 1px solid
-    ${({ theme }) => theme.semantic.color.border.neutral500};
-  border-right: 1px solid
-    ${({ theme }) => theme.semantic.color.border.neutral500};
-`
+import {
+  ComponentBadge,
+  ContainerMinimized,
+} from './ButtonGroupMinimized.styles'
 
 const BottomGroupMinimized = () => {
   const { instanceId = '' } = useParams<{ instanceId: string }>()
@@ -138,11 +95,7 @@ const BottomGroupMinimized = () => {
   return (
     <ContainerMinimized>
       <Row align="center" responsive={false} style={{ height: '100%' }} gap="s">
-        <FlexItem
-          className={styles.componentBadgeItem}
-          onClick={handleExpandCli}
-          data-testid="expand-cli"
-        >
+        <FlexItem onClick={handleExpandCli} data-testid="expand-cli">
           <ComponentBadge
             withIcon
             icon={CliIcon}
@@ -156,7 +109,6 @@ const BottomGroupMinimized = () => {
         </FlexItem>
 
         <FlexItem
-          className={styles.componentBadgeItem}
           onClick={handleExpandHelper}
           data-testid="expand-command-helper"
         >
@@ -172,11 +124,7 @@ const BottomGroupMinimized = () => {
           />
         </FlexItem>
         <FeatureFlagComponent name={FeatureFlags.envDependent}>
-          <FlexItem
-            className={styles.componentBadgeItem}
-            onClick={handleExpandMonitor}
-            data-testid="expand-monitor"
-          >
+          <FlexItem onClick={handleExpandMonitor} data-testid="expand-monitor">
             <ComponentBadge
               withIcon
               icon={ProfilerIcon}
