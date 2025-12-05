@@ -30,7 +30,6 @@ const DatabaseOverview = () => {
     isBdbPackages,
     lastRefreshTime,
     handleEnableAutoRefresh,
-    handleRefreshClick,
     handleRefresh,
   } = useDatabaseOverview()
 
@@ -102,7 +101,6 @@ const DatabaseOverview = () => {
                       DATABASE_OVERVIEW_MINIMUM_REFRESH_INTERVAL,
                     )}
                     onRefresh={handleRefresh}
-                    onRefreshClicked={handleRefreshClick}
                     onEnableAutoRefresh={handleEnableAutoRefresh}
                   />
                 </FlexItem>

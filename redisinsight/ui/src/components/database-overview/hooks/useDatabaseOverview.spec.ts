@@ -6,7 +6,6 @@ import {
   renderHook,
 } from 'uiSrc/utils/test-utils'
 import { getDatabaseConfigInfo } from 'uiSrc/slices/instances/instances'
-import { setConnectivityError } from 'uiSrc/slices/app/connectivity'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { useDatabaseOverview } from './useDatabaseOverview'
 
@@ -97,7 +96,6 @@ describe('useDatabaseOverview', () => {
     expect(data.isBdbPackages).toBeUndefined()
     expect(data.usedMemoryPercent).toBeUndefined()
     expect(typeof data.handleRefresh).toBe('function')
-    expect(typeof data.handleRefreshClick).toBe('function')
     expect(typeof data.handleEnableAutoRefresh).toBe('function')
   })
 
@@ -156,19 +154,6 @@ describe('useDatabaseOverview', () => {
 
     const actions = mockedStore.getActions()
     expect(actions).toContainEqual(getDatabaseConfigInfo())
-  })
-
-  it('should handle refresh click correctly', () => {
-    // Clear previous actions
-    mockedStore.clearActions()
-
-    const data = renderHelper(mockedStore)
-    act(() => {
-      data.handleRefreshClick()
-    })
-
-    const actions = mockedStore.getActions()
-    expect(actions).toContainEqual(setConnectivityError(null))
   })
 
   it('should send telemetry event when auto-refresh is enabled', () => {

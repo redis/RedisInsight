@@ -46,6 +46,7 @@ import {
   setPipelineJobs,
 } from 'uiSrc/slices/rdi/pipeline'
 import { resetOutput } from 'uiSrc/slices/cli/cli-output'
+import { setConnectivityError } from 'uiSrc/slices/app/connectivity'
 import { SearchMode } from '../interfaces/keys'
 import {
   AppWorkspace,
@@ -448,6 +449,7 @@ export function resetDatabaseContext() {
     dispatch(setRedisearchInitialState())
     dispatch(setInitialRecommendationsState())
     dispatch(clearExpertChatHistory())
+    dispatch(setConnectivityError(null))
     setTimeout(() => {
       dispatch(resetOutput())
     }, 0)
