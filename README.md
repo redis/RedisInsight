@@ -74,6 +74,32 @@ With Redis Insight you can now also extend the core functionality by building yo
 
 - [Plugin Documentation](https://github.com/RedisInsight/RedisInsight/wiki/Plugin-Documentation)
 
+## AI-Powered Development
+
+Redis Insight integrates with AI-powered development tools to enhance the development experience:
+
+### Tidewave
+
+[Tidewave](https://tidewave.ai/) is an AI coding agent that enables interactive UI development. It allows AI agents to modify React components while providing real-time visual feedback directly in your browser.
+
+**Key Features:**
+- Point-and-click UI element selection for AI prompting
+- Real-time UI modifications with immediate visual feedback
+- Integration with popular AI coding agents (Claude Code, OpenAI Codex, GitHub Copilot)
+- Shared development environment with contextual browser testing
+
+**Quick Start:**
+```bash
+# Start RedisInsight development servers
+yarn dev:api    # Terminal 1
+yarn dev:ui     # Terminal 2
+
+# Start Tidewave
+tidewave --allow-remote-access --allowed-origins=http://localhost:8080  # Terminal 3
+```
+
+For detailed setup and usage instructions, see [AI Development Tools Documentation](docs/development/ai-tools.md).
+
 ## Contributing
 
 If you would like to contribute to the code base or fix and issue, please consult the wiki.

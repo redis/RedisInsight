@@ -10,6 +10,8 @@ import istanbul from 'vite-plugin-istanbul';
 import { fileURLToPath, URL } from 'url';
 import path from 'path';
 import { defaultConfig } from './src/config/default';
+import tidewave from 'tidewave/vite-plugin';
+
 
 const isElectron = defaultConfig.app.type === 'ELECTRON';
 // set path to index.tsx in the index.html
@@ -34,6 +36,7 @@ if (defaultConfig.api.hostedBase) {
 export default defineConfig({
   base,
   plugins: [
+    tidewave(),
     react(),
     svgr({ include: ['**/*.svg?react'] }),
     reactClickToComponent(),
@@ -89,6 +92,9 @@ export default defineConfig({
     port: 8080,
     fs: {
       allow: ['..', '../../node_modules/monaco-editor', 'static', 'defaults'],
+    },
+    proxy: {
+      "/tidewave": `http://localhost:5540` // your backend port
     },
   },
   envPrefix: 'RI_',
