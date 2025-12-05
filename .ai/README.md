@@ -1,11 +1,73 @@
 # RedisInsight AI Development Rules
 
-This directory contains the **single source of truth** for AI-assisted development rules and workflows in RedisInsight. These rules are used by multiple AI coding assistants:
+This directory contains the **single source of truth** for AI-assisted development rules and workflows in RedisInsight.
+
+## Overview
+
+This repository uses a centralized approach to AI development rules:
+
+- **`AGENTS.md`** (at repository root) - Entry point for AI agents with essential commands, testing instructions, and quick reference
+- **`.ai/rules/`** - Detailed development standards organized by topic
+- **`.ai/commands/`** - AI workflow commands and templates
+
+These rules are used by multiple AI coding assistants:
 
 - **Cursor** (via symlinks: `.cursor/rules/` and `.cursor/commands/`)
 - **Augment** (via symlink: `.augment/`)
 - **Windsurf** (via symlink: `.windsurfrules`)
 - **GitHub Copilot** (via file: `.github/copilot-instructions.md`)
+
+## Structure
+
+```
+AGENTS.md                              # 🎯 AI agent entry point
+.ai/                                   # Single source of truth
+├── README.md                          # This file (human-readable overview)
+├── rules/                             # Development standards (modular)
+│   ├── code-quality.md                # Linting, TypeScript standards
+│   ├── frontend.md                    # React, Redux, UI patterns
+│   ├── backend.md                     # NestJS, API patterns
+│   ├── testing.md                     # Testing standards
+│   ├── branches.md                    # Branch naming conventions
+│   ├── commits.md                     # Commit message guidelines
+│   └── pull-requests.md               # Pull request process
+└── commands/                          # AI workflow commands
+    ├── pr-plan.md                     # JIRA ticket implementation planning
+    ├── commit-message.md              # Commit message generation
+    └── pull-request-review.md         # PR review workflow
+
+# Symlinks (all AI tools read from .ai/)
+.cursor/
+  ├── rules/ -> ../.ai/rules/          # Cursor AI (rules)
+  └── commands/ -> ../.ai/commands/  # Cursor AI (commands)
+.augment/ -> .ai/                      # Augment AI
+.windsurfrules -> .ai/                 # Windsurf AI
+.github/copilot-instructions.md        # GitHub Copilot
+```
+
+## For AI Agents
+
+**Start here**: Read `AGENTS.md` at the repository root for:
+
+- Setup and build commands
+- Code quality standards
+- Testing instructions
+- Git workflow guidelines
+- Boundaries and best practices
+
+**Then refer to**: `.ai/rules/` for detailed guidelines on specific topics.
+
+## For Human Developers
+
+This directory contains comprehensive development standards that are automatically used by AI coding assistants. The rules are organized into modular files for easy maintenance:
+
+- **Code Quality Standards**: `.ai/rules/code-quality.md` - TypeScript standards, import organization, best practices
+- **Frontend Patterns**: `.ai/rules/frontend.md` - React, Redux, styled-components, UI component usage
+- **Backend Patterns**: `.ai/rules/backend.md` - NestJS, dependency injection, API patterns
+- **Testing Standards**: `.ai/rules/testing.md` - Testing patterns, faker usage, test helpers
+- **Branch Naming**: `.ai/rules/branches.md` - Branch naming conventions
+- **Commit Messages**: `.ai/rules/commits.md` - Commit message guidelines (Conventional Commits)
+- **Pull Request Process**: `.ai/rules/pull-requests.md` - PR creation and review guidelines
 
 ## MCP (Model Context Protocol) Setup
 
@@ -25,7 +87,7 @@ AI tools can access external services (JIRA, Confluence, GitHub) via MCP configu
    - Create a classic token by pressing the first "Create Token" button
    - Copy the token
 
-3. **Edit `.env.mcp` with your credentials:**
+3. **Edit `.env.mcp` with your credentials**
 
 4. **Verify your setup:**
 
@@ -56,69 +118,13 @@ The `mcp.json` file configures these services:
 - **context-7** - Advanced context management
 - **atlassian** - JIRA (RI-XXX tickets) and Confluence integration
 
-## Structure
-
-```
-.ai/                                  # 🎯 Single source of truth
-├── README.md                         # Overview & quick reference
-├── rules/                            # Development standards (modular)
-│   ├── code-quality.md               # Linting, TypeScript standards
-│   ├── frontend.md                   # React, Redux, UI patterns
-│   ├── backend.md                    # NestJS, API patterns
-│   ├── testing.md                    # Testing standards
-│   ├── branches.md                   # Branch naming conventions
-│   ├── commits.md                    # Commit message guidelines
-│   └── pull-requests.md              # Pull request process
-└── commands/                         # AI workflow commands
-    ├── commit-message.md             # Commit message generation
-    └── pull-request-review.md        # PR review workflow
-
-# Symlinks (all AI tools read from .ai/)
-.cursor/
-  ├── rules/ -> ../.ai/rules/         # Cursor AI (rules)
-  └── commands/ -> ../.ai/commands/   # Cursor AI (commands)
-.augment/ -> .ai/                     # Augment AI
-.windsurfrules -> .ai/                # Windsurf AI
-.github/copilot-instructions.md       # GitHub Copilot
-```
-
-## Project Overview
-
-**RedisInsight** is a desktop application for Redis database management built with:
-
-- **Frontend**: React 18, TypeScript, Redux Toolkit, Elastic UI, Monaco Editor, Vite
-- **Backend**: NestJS, TypeScript, Node.js
-- **Desktop**: Electron for cross-platform distribution
-- **Testing**: Jest, Testing Library, Playwright
-
-**Architecture**:
-
-```
-redisinsight/
-├── ui/          # React frontend (Vite + TypeScript)
-├── api/         # NestJS backend (TypeScript)
-├── desktop/     # Electron main process
-└── tests/       # E2E tests (Playwright)
-```
-
-## Detailed Guidelines
-
-All detailed development standards, coding practices, and workflows are maintained in modular files:
-
-- **Code Quality Standards**: See `.ai/rules/code-quality.md`
-- **Frontend Patterns**: See `.ai/rules/frontend.md`
-- **Backend Patterns**: See `.ai/rules/backend.md`
-- **Testing Standards**: See `.ai/rules/testing.md`
-- **Branch Naming**: See `.ai/rules/branches.md`
-- **Commit Messages**: See `.ai/rules/commits.md`
-- **Pull Request Process**: See `.ai/rules/pull-requests.md`
-
 ## Updating These Rules
 
 To update AI rules:
 
 1. **Edit files in `.ai/` only** (never edit symlinked files directly)
-2. Changes automatically propagate to all AI tools
-3. Commit changes to version control
+2. **Update `AGENTS.md`** if you change commands, testing instructions, or boundaries
+3. Changes automatically propagate to all AI tools via symlinks
+4. Commit changes to version control
 
 **Remember**: These rules exist to maintain code quality and consistency. Follow them, but also use good judgment.
