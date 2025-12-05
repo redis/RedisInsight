@@ -19,33 +19,35 @@ export const TagInputField = ({
 
   return (
     <div>
-      <TextInput
-        value={value}
-        disabled={disabled}
-        valid={!isInvalid ? false : undefined}
-        error={isInvalid ? errorMessage : undefined}
-        onChange={(value) => onChange(value)}
-        placeholder={placeholder}
-        onFocusCapture={() => {
-          setIsFocused(true)
-        }}
-        onBlurCapture={() => {
-          setTimeout(() => {
-            isFocused && setIsFocused(false)
-          }, 150)
-        }}
-      />
-      {isFocused && !isInvalid && (
-        <TagSuggestions
-          targetKey={suggestedTagKey}
-          searchTerm={value}
-          currentTagKeys={currentTagKeys}
-          onChange={(value) => {
-            setIsFocused(false)
-            onChange(value)
+      <span>
+        <TextInput
+          value={value}
+          disabled={disabled}
+          valid={!isInvalid ? false : undefined}
+          error={isInvalid ? errorMessage : undefined}
+          onChange={(value) => onChange(value)}
+          placeholder={placeholder}
+          onFocusCapture={() => {
+            setIsFocused(true)
+          }}
+          onBlurCapture={() => {
+            setTimeout(() => {
+              isFocused && setIsFocused(false)
+            }, 150)
           }}
         />
-      )}
+        {isFocused && !isInvalid && (
+          <TagSuggestions
+            targetKey={suggestedTagKey}
+            searchTerm={value}
+            currentTagKeys={currentTagKeys}
+            onChange={(value) => {
+              setIsFocused(false)
+              onChange(value)
+            }}
+          />
+        )}
+      </span>
       {rightContent}
     </div>
   )
