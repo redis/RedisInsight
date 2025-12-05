@@ -22,7 +22,10 @@ const DeleteTutorialButton = (props: Props) => {
   const { id, label, onDelete, isLoading } = props
   const [isPopoverDeleteOpen, setIsPopoverDeleteOpen] = useState<boolean>(false)
 
-  const handleClickDelete = () => {
+  const handleClickDelete = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    e.stopPropagation()
     setIsPopoverDeleteOpen((v) => !v)
   }
 
