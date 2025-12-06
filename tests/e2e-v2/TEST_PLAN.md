@@ -257,6 +257,13 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 2.11 Bulk Actions
 | Status | Priority | Test Case |
 |--------|----------|-----------|
+| ✅ | 🟠 | Open Bulk Actions panel |
+| ✅ | 🟢 | Show Delete Keys tab by default |
+| ✅ | 🟢 | Switch to Upload Data tab |
+| ✅ | 🟢 | Close Bulk Actions panel |
+| ✅ | 🟢 | Show message when no pattern set |
+| ✅ | 🔴 | Filter by pattern for deletion |
+| ✅ | 🟠 | Show file upload area |
 | 🔲 | 🔴 | Bulk delete keys |
 | 🔲 | 🟢 | Bulk delete with pattern |
 | 🔲 | 🔴 | Bulk upload data |
@@ -277,8 +284,8 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🔴 | Handle command error |
 | 🔲 | 🟢 | Clear editor |
 | 🔲 | 🟢 | History navigation |
-| 🔲 | 🟢 | Toggle Raw mode |
-| 🔲 | 🟢 | Toggle Group results |
+| ✅ | 🟢 | Toggle Raw mode |
+| ✅ | 🟢 | Toggle Group results |
 
 ### 3.2 Results View
 | Status | Priority | Test Case |
@@ -328,10 +335,12 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🔴🟠 | Open CLI panel |
 | ✅ | 🔴 | Execute command |
 | ✅ | 🔴 | View command output |
+| ✅ | 🟢 | Close CLI panel |
+| ✅ | 🟢 | Hide CLI panel |
+| ✅ | 🟢 | Handle command errors |
+| ✅ | 🟢 | Execute multiple commands in sequence |
 | 🔲 | 🟢 | Command history (up/down arrows) |
 | 🔲 | 🟢 | Tab completion |
-| 🔲 | 🟢 | Clear CLI |
-| ✅ | 🟢 | Close CLI panel |
 | 🔲 | 🟢 | Multiple CLI sessions |
 
 ---

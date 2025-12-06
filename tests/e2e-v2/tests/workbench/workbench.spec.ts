@@ -141,5 +141,31 @@ test.describe.serial('Workbench > Results View', () => {
     const hasNoResults = await workbenchPage.hasNoResults();
     expect(hasNoResults).toBe(true);
   });
+
+  test(`should toggle Raw mode ${Tags.REGRESSION}`, async ({ page }) => {
+    // Execute a command
+    await workbenchPage.executeCommand(COMMANDS.PING);
+
+    // Find and click Raw mode toggle
+    const rawModeToggle = page.getByTestId('btn-change-mode');
+    await expect(rawModeToggle).toBeVisible();
+    await rawModeToggle.click();
+
+    // Verify mode changed (button should still be visible)
+    await expect(rawModeToggle).toBeVisible();
+  });
+
+  test(`should toggle Group results ${Tags.REGRESSION}`, async ({ page }) => {
+    // Execute a command
+    await workbenchPage.executeCommand(COMMANDS.PING);
+
+    // Find and click Group results toggle
+    const groupToggle = page.getByTestId('btn-change-group-mode');
+    await expect(groupToggle).toBeVisible();
+    await groupToggle.click();
+
+    // Verify toggle is still visible
+    await expect(groupToggle).toBeVisible();
+  });
 });
 

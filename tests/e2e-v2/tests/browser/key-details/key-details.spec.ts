@@ -280,9 +280,11 @@ test.describe('Browser > Key Details', () => {
       // Edit element at index 0
       await browserPage.keyDetails.editListElement(0, 'edited-value');
 
-      // Verify element was edited
-      const elementValue = await browserPage.keyDetails.getListElementByIndex(0);
-      expect(elementValue).toBe('edited-value');
+      // Verify element was edited (use polling to avoid race condition)
+      await expect(async () => {
+        const elementValue = await browserPage.keyDetails.getListElementByIndex(0);
+        expect(elementValue).toBe('edited-value');
+      }).toPass({ timeout: 10000 });
     });
 
     test(`should remove list element ${Tags.CRITICAL}`, async ({ apiHelper }) => {

@@ -93,5 +93,33 @@ test.describe.serial('CLI > Panel', () => {
     // But expand button should still be visible
     await expect(cliPanel.expandButton).toBeVisible();
   });
+
+  test(`should handle command errors ${Tags.REGRESSION}`, async ({ cliPanel }) => {
+    await cliPanel.open();
+
+    // Execute an invalid command
+    await cliPanel.executeCommand('INVALIDCOMMAND');
+
+    // Verify output shows error
+    const hasError = await cliPanel.outputContains('ERR');
+    expect(hasError).toBe(true);
+  });
+
+  test(`should execute multiple commands in sequence ${Tags.REGRESSION}`, async ({ cliPanel }) => {
+    await cliPanel.open();
+
+    // Execute SET
+    await cliPanel.executeCommand('SET cli_test_key test_value');
+    const hasOk = await cliPanel.outputContains('OK');
+    expect(hasOk).toBe(true);
+
+    // Execute GET
+    await cliPanel.executeCommand('GET cli_test_key');
+    const hasValue = await cliPanel.outputContains('test_value');
+    expect(hasValue).toBe(true);
+
+    // Cleanup
+    await cliPanel.executeCommand('DEL cli_test_key');
+  });
 });
 
