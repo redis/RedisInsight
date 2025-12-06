@@ -1,10 +1,15 @@
 import { test as base } from '@playwright/test';
-import { DatabasesPage } from '../pages';
+import { DatabasesPage, BrowserPage } from '../pages';
 import { ApiHelper } from '../helpers/api';
 
 type Fixtures = {
   databasesPage: DatabasesPage;
   apiHelper: ApiHelper;
+  /**
+   * Browser page fixture - requires databaseId to be set
+   * Use createBrowserPage for dynamic database IDs
+   */
+  createBrowserPage: (databaseId: string) => BrowserPage;
 };
 
 export const test = base.extend<Fixtures>({
@@ -17,6 +22,10 @@ export const test = base.extend<Fixtures>({
     const helper = new ApiHelper();
     await use(helper);
     await helper.dispose();
+  },
+
+  createBrowserPage: async ({ page }, use) => {
+    await use((databaseId: string) => new BrowserPage(page, databaseId));
   },
 });
 

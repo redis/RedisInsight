@@ -67,7 +67,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 
 ---
 
-## 2. Browser Page (🔲 Not Implemented)
+## 2. Browser Page (⏳ Partially Implemented)
 
 ### 2.1 Key List View
 | Status | Priority | Test Case |
@@ -89,18 +89,19 @@ The test plan is organized by feature area, with tests categorized by priority:
 | 🔲 | 🟢 | Configure delimiter |
 | 🔲 | 🟢 | Sort tree nodes |
 
-### 2.3 Add Keys
+### 2.3 Add Keys (✅ Implemented)
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🔴🟠 | Add String key |
-| 🔲 | 🔴 | Add Hash key |
-| 🔲 | 🔴 | Add List key |
-| 🔲 | 🔴 | Add Set key |
-| 🔲 | 🔴 | Add Sorted Set (ZSet) key |
-| 🔲 | 🔴 | Add Stream key |
-| 🔲 | 🔴 | Add JSON key |
+| ✅ | 🔴🟠 | Add String key |
+| ✅ | 🔴🟠 | Add Hash key |
+| ✅ | 🟠 | Add List key |
+| ✅ | 🟠 | Add Set key |
+| ✅ | 🟠 | Add Sorted Set (ZSet) key |
+| ✅ | 🟠 | Add Stream key |
+| ✅ | 🟠 | Add JSON key |
 | 🔲 | 🟢 | Add key with TTL |
-| 🔲 | 🟢 | Validate key name (required) |
+| ✅ | 🟢 | Validate key name (required) |
+| ✅ | 🟢 | Cancel add key dialog |
 
 ### 2.4 Key Details - String
 | Status | Priority | Test Case |

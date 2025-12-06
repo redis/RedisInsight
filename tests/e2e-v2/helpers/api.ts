@@ -113,6 +113,48 @@ export class ApiHelper {
   }
 
   /**
+   * Delete keys matching a pattern in a database
+   * Uses SCAN + DEL to avoid blocking
+   */
+  async deleteKeysByPattern(databaseId: string, pattern: string): Promise<number> {
+    const ctx = await this.getContext();
+
+    // First, scan for keys matching the pattern
+    const scanResponse = await ctx.post(`/api/databases/${databaseId}/keys`, {
+      data: {
+        cursor: '0',
+        count: 10000,
+        match: pattern,
+      },
+    });
+
+    if (!scanResponse.ok()) {
+      // If scan fails, it might be because there are no keys - that's OK
+      return 0;
+    }
+
+    const scanResult = await scanResponse.json();
+    const keys = scanResult.keys || [];
+
+    if (keys.length === 0) {
+      return 0;
+    }
+
+    // Delete the keys
+    const keyNames = keys.map((k: { name: string }) => k.name);
+    const deleteResponse = await ctx.delete(`/api/databases/${databaseId}/keys`, {
+      data: { keys: keyNames },
+    });
+
+    if (!deleteResponse.ok()) {
+      // Ignore delete errors - keys might already be gone
+      return 0;
+    }
+
+    return keyNames.length;
+  }
+
+  /**
    * Cleanup resources
    */
   async dispose(): Promise<void> {
