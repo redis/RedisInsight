@@ -149,5 +149,26 @@ export class AnalyticsPage extends BasePage {
     const match = tabText?.match(/Tips \((\d+)\)/);
     return match ? parseInt(match[1], 10) : 0;
   }
+
+  /**
+   * Refresh slow log
+   */
+  async refreshSlowLog(): Promise<void> {
+    // Find the refresh button in the slow log section
+    const refreshBtn = this.page.locator('[data-testid*="refresh"]').first();
+    await refreshBtn.click();
+    // Wait for the "Last refresh: now" text to appear
+    await this.page.getByText(/Last refresh:.*now/).waitFor({ state: 'visible', timeout: 5000 });
+  }
+
+  /**
+   * Get last refresh time text
+   */
+  async getLastRefreshText(): Promise<string> {
+    const lastRefreshElement = this.page.locator('[class*="last-refresh"]').or(
+      this.page.getByText(/Last refresh:/).locator('..')
+    );
+    return await lastRefreshElement.textContent() || '';
+  }
 }
 

@@ -2,6 +2,7 @@ import { Page, Locator } from '@playwright/test';
 import { BasePage } from '../BasePage';
 import { Editor } from './components/Editor';
 import { ResultsPanel } from './components/ResultsPanel';
+import { ProfilerPanel } from './ProfilerPanel';
 
 /**
  * Workbench Page Object
@@ -11,6 +12,7 @@ export class WorkbenchPage extends BasePage {
   // Components
   readonly editor: Editor;
   readonly resultsPanel: ResultsPanel;
+  readonly profilerPanel: ProfilerPanel;
 
   // Main elements
   readonly workbenchTab: Locator;
@@ -35,6 +37,7 @@ export class WorkbenchPage extends BasePage {
     // Initialize components
     this.editor = new Editor(page);
     this.resultsPanel = new ResultsPanel(page);
+    this.profilerPanel = new ProfilerPanel(page);
 
     // Main elements
     this.workbenchTab = page.getByRole('tab', { name: 'Workbench' });

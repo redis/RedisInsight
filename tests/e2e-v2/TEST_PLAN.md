@@ -115,7 +115,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🔴 | Delete multiple databases |
 | 🔲 | 🟢 | Edit database connection |
 | 🔲 | 🟢 | Clone database connection |
-| 🔲 | 🔴 | Connect to database |
+| ✅ | 🔴 | Connect to database |
 | 🔲 | 🟢 | Database connection status indicator |
 
 ### 1.4 Pagination (when > 15 databases)
@@ -157,7 +157,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟠 | Click on key to view details |
 | ✅ | 🟢 | Refresh key list |
 | ✅ | 🟢 | Show no results message for non-matching pattern |
-| 🔲 | 🔴 | Delete key |
+| ✅ | 🔴 | Delete key |
 | 🔲 | 🟢 | Delete multiple keys (bulk) |
 | 🔲 | 🟠 | Search by Values of Keys |
 | 🔲 | 🟢 | Configure columns visibility |
@@ -193,18 +193,18 @@ The test plan is organized by feature area, with tests categorized by priority:
 | Status | Priority | Test Case |
 |--------|----------|-----------|
 | ✅ | 🔴🟠 | View string value |
-| 🔲 | 🔴 | Edit string value |
+| ✅ | 🔴 | Edit string value |
 | 🔲 | 🟢 | View/edit TTL |
 | 🔲 | 🟢 | Copy value |
 | 🔲 | 🟢 | Change value format (text/binary/hex) |
 
-### 2.5 Key Details - Hash
+### 2.5 Key Details - Hash (✅ Implemented)
 | Status | Priority | Test Case |
 |--------|----------|-----------|
 | ✅ | 🔴🟠 | View hash fields |
-| 🔲 | 🔴 | Add hash field |
-| 🔲 | 🔴 | Edit hash field |
-| 🔲 | 🔴 | Delete hash field |
+| ✅ | 🔴 | Add hash field |
+| ✅ | 🔴 | Edit hash field |
+| ✅ | 🔴 | Delete hash field |
 | 🔲 | 🟢 | Search hash fields |
 | 🔲 | 🟢 | Pagination |
 
@@ -212,9 +212,9 @@ The test plan is organized by feature area, with tests categorized by priority:
 | Status | Priority | Test Case |
 |--------|----------|-----------|
 | ✅ | 🔴🟠 | View list elements |
-| 🔲 | 🔴 | Add element (LPUSH/RPUSH) |
-| 🔲 | 🔴 | Edit list element |
-| 🔲 | 🔴 | Remove element |
+| ✅ | 🔴 | Add element (LPUSH/RPUSH) |
+| ✅ | 🔴 | Edit list element |
+| ✅ | 🔴 | Remove element |
 | 🔲 | 🟢 | Search by index |
 
 ### 2.7 Key Details - Set
@@ -300,11 +300,13 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 3.4 Profiler (Bottom Panel)
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🔴 | Start profiler |
-| 🔲 | 🔴 | Stop profiler |
+| ✅ | 🔴 | Start profiler |
+| ✅ | 🔴 | Stop profiler |
 | 🔲 | 🟢 | Toggle Save Log |
-| 🔲 | 🟢 | View profiler warning |
-| 🔲 | 🟢 | Hide/close profiler panel |
+| ✅ | 🟢 | View profiler warning |
+| ✅ | 🟢 | Hide/close profiler panel |
+| ✅ | 🟢 | Reset profiler |
+| ✅ | 🟠 | Open profiler panel |
 
 ### 3.5 Command Helper (Bottom Panel)
 | Status | Priority | Test Case |
@@ -359,7 +361,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | Status | Priority | Test Case |
 |--------|----------|-----------|
 | ✅ | 🔴🟠 | View slow log entries |
-| 🔲 | 🔴 | Refresh slow log |
+| ✅ | 🔴 | Refresh slow log |
 | ✅ | 🟢 | Clear slow log button visible |
 | ✅ | 🟢 | Configure slow log button visible |
 | 🔲 | 🟢 | Sort entries |
@@ -426,35 +428,37 @@ The test plan is organized by feature area, with tests categorized by priority:
 
 ---
 
-## 8. Vector Search (🔲 Not Implemented)
+## 8. Vector Search (⏸️ Skipped - Feature not ready)
 
 ### 8.1 Index Management
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🔴🟠 | View indexes |
-| 🔲 | 🔴 | Create index |
-| 🔲 | 🔴 | Delete index |
-| 🔲 | 🟢 | View index info |
+| ⏸️ | 🔴🟠 | View indexes |
+| ⏸️ | 🔴 | Create index |
+| ⏸️ | 🔴 | Delete index |
+| ⏸️ | 🟢 | View index info |
 
 ### 8.2 Query
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🔴🟠 | Execute vector search query |
-| 🔲 | 🔴 | View search results |
-| 🔲 | 🟢 | Save query |
-| 🔲 | 🟢 | Load saved query |
+| ⏸️ | 🔴🟠 | Execute vector search query |
+| ⏸️ | 🔴 | View search results |
+| ⏸️ | 🟢 | Save query |
+| ⏸️ | 🟢 | Load saved query |
 
 ---
 
-## 9. Redis Cloud Integration (🔲 Not Implemented)
+## 9. Redis Cloud Integration (⏸️ Skipped)
+
+> **Note**: Requires Redis Cloud account credentials. Skipped - external dependency.
 
 ### 9.1 Auto-Discovery
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🔴 | Connect to Redis Cloud account |
-| 🔲 | 🔴 | View subscriptions |
-| 🔲 | 🔴 | View databases |
-| 🔲 | 🔴 | Add cloud database to list |
+| ⏸️ | 🔴 | Connect to Redis Cloud account |
+| ⏸️ | 🔴 | View subscriptions |
+| ⏸️ | 🔴 | View databases |
+| ⏸️ | 🔴 | Add cloud database to list |
 
 ---
 

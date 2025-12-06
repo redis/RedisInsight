@@ -93,6 +93,26 @@ test.describe('Browser > Key Details', () => {
 
       await expect(browserPage.keyDetails.editValueButton).toBeVisible();
     });
+
+    test(`should edit String value ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+      const keyData = getStringKeyData({ value: 'original-value' });
+      const newValue = 'updated-value-after-edit';
+
+      // Create key with original value
+      await apiHelper.createStringKey(databaseId, keyData.keyName, keyData.value);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Edit the value
+      await browserPage.keyDetails.editStringValue(newValue);
+
+      // Verify the value was updated
+      const updatedValue = await browserPage.keyDetails.getStringValue();
+      expect(updatedValue).toContain(newValue);
+    });
   });
 
   test.describe('Hash Key Details', () => {
@@ -123,6 +143,63 @@ test.describe('Browser > Key Details', () => {
       await browserPage.keyDetails.waitForKeyDetails();
 
       await expect(browserPage.keyDetails.addFieldsButton).toBeVisible();
+    });
+
+    test(`should add hash field ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+      const keyData = getHashKeyData({ fields: [{ field: 'existingField', value: 'existingValue' }] });
+      const newFieldName = 'newField';
+      const newFieldValue = 'newValue';
+
+      await apiHelper.createHashKey(databaseId, keyData.keyName, keyData.fields);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Add new field
+      await browserPage.keyDetails.addHashField(newFieldName, newFieldValue);
+
+      // Verify field was added
+      const fieldExists = await browserPage.keyDetails.hashFieldExists(newFieldName);
+      expect(fieldExists).toBe(true);
+    });
+
+    test(`should edit hash field ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+      const keyData = getHashKeyData({ fields: [{ field: 'editableField', value: 'originalValue' }] });
+      const newValue = 'updatedValue';
+
+      await apiHelper.createHashKey(databaseId, keyData.keyName, keyData.fields);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Edit the field
+      await browserPage.keyDetails.editHashField('editableField', newValue);
+
+      // Verify value was updated
+      const value = await browserPage.keyDetails.getHashFieldValue('editableField');
+      expect(value).toContain(newValue);
+    });
+
+    test(`should delete hash field ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+      const keyData = getHashKeyData({ fields: [{ field: 'fieldToDelete', value: 'value' }, { field: 'keepField', value: 'keepValue' }] });
+
+      await apiHelper.createHashKey(databaseId, keyData.keyName, keyData.fields);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Delete the field
+      await browserPage.keyDetails.deleteHashField('fieldToDelete');
+
+      // Verify field was deleted
+      const fieldExists = await browserPage.keyDetails.hashFieldExists('fieldToDelete');
+      expect(fieldExists).toBe(false);
     });
   });
 
@@ -170,6 +247,60 @@ test.describe('Browser > Key Details', () => {
       await browserPage.keyDetails.waitForKeyDetails();
 
       await expect(browserPage.keyDetails.addElementButton).toBeVisible();
+    });
+
+    test(`should add list element ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+      const keyData = getListKeyData({ elements: ['existing-element'] });
+
+      await apiHelper.createListKey(databaseId, keyData.keyName, keyData.elements);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Add new element to tail
+      await browserPage.keyDetails.addListElement('new-element');
+
+      // Verify element was added
+      const elements = await browserPage.keyDetails.getListElements();
+      expect(elements).toContain('new-element');
+    });
+
+    test(`should edit list element ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+      const keyData = getListKeyData({ elements: ['original-value'] });
+
+      await apiHelper.createListKey(databaseId, keyData.keyName, keyData.elements);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Edit element at index 0
+      await browserPage.keyDetails.editListElement(0, 'edited-value');
+
+      // Verify element was edited
+      const elementValue = await browserPage.keyDetails.getListElementByIndex(0);
+      expect(elementValue).toBe('edited-value');
+    });
+
+    test(`should remove list element ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+      const keyData = getListKeyData({ elements: ['element-1', 'element-2', 'element-3'] });
+
+      await apiHelper.createListKey(databaseId, keyData.keyName, keyData.elements);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Remove 1 element from tail
+      await browserPage.keyDetails.removeListElements(1);
+
+      // Verify element count decreased
+      const elementCount = await browserPage.keyDetails.getListElementCount();
+      expect(elementCount).toBe(2);
     });
   });
 

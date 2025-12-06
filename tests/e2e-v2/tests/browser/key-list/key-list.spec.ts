@@ -153,5 +153,33 @@ test.describe.serial('Browser > Key List', () => {
     const noKeysVisible = await browserPage.keyList.isNoKeysMessageVisible();
     expect(noKeysVisible).toBe(true);
   });
+
+  test(`should delete key ${Tags.CRITICAL}`, async ({ page, apiHelper }) => {
+    // Create a key to delete
+    const keyToDelete = `${TEST_KEY_PREFIX}delete-me-${Date.now()}`;
+    await apiHelper.createStringKey(databaseId, keyToDelete, 'delete-test-value');
+
+    // Refresh to see the new key
+    await browserPage.keyList.refresh();
+    await page.waitForLoadState('networkidle');
+
+    // Search for the key
+    await browserPage.keyList.searchKeys(keyToDelete);
+    await page.waitForLoadState('networkidle');
+
+    // Click on the key to open details
+    const keyItem = page.getByRole('treeitem', { name: new RegExp(keyToDelete) });
+    await keyItem.click();
+    await browserPage.keyDetails.waitForKeyDetails();
+
+    // Delete the key
+    await browserPage.keyDetails.deleteKey();
+
+    // Verify key is gone - the key should no longer exist
+    // After deletion, the key details panel closes
+    // Check that the key is not in the list anymore
+    const keyExists = await browserPage.keyList.keyExists(keyToDelete);
+    expect(keyExists).toBe(false);
+  });
 });
 

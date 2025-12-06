@@ -27,6 +27,9 @@ export class KeyDetails {
   // String-specific
   readonly stringValue: Locator;
   readonly editValueButton: Locator;
+  readonly stringEditTextbox: Locator;
+  readonly applyEditButton: Locator;
+  readonly cancelEditButton: Locator;
 
   // Hash-specific
   readonly addFieldsButton: Locator;
@@ -83,6 +86,9 @@ export class KeyDetails {
     // String-specific
     this.stringValue = page.getByTestId('string-value');
     this.editValueButton = page.getByTestId('edit-key-value-btn');
+    this.stringEditTextbox = page.getByPlaceholder('Enter Value');
+    this.applyEditButton = page.getByTestId('apply-btn');
+    this.cancelEditButton = page.getByTestId('cancel-btn');
 
     // Hash-specific
     this.addFieldsButton = page.getByRole('button', { name: 'Add Fields' });
@@ -148,6 +154,11 @@ export class KeyDetails {
 
   async deleteKey(): Promise<void> {
     await this.deleteKeyButton.click();
+    // Wait for confirmation dialog and confirm
+    await this.page.getByRole('dialog').waitFor({ state: 'visible', timeout: 5000 });
+    await this.page.getByRole('dialog').getByRole('button', { name: 'Delete' }).click();
+    // Wait for the key details to close (key was deleted)
+    await this.page.getByTestId('key-details-header').waitFor({ state: 'hidden', timeout: 10000 });
   }
 
   // String methods
@@ -160,6 +171,24 @@ export class KeyDetails {
     await this.editValueButton.click();
   }
 
+  async editStringValue(newValue: string): Promise<void> {
+    // Click edit button to enter edit mode
+    await this.editValueButton.click();
+    // Wait for textbox to appear
+    await this.stringEditTextbox.waitFor({ state: 'visible' });
+    // Clear and fill new value
+    await this.stringEditTextbox.fill(newValue);
+    // Click apply
+    await this.applyEditButton.click();
+    // Wait for edit mode to close (textbox disappears)
+    await this.stringEditTextbox.waitFor({ state: 'hidden', timeout: 5000 });
+  }
+
+  async cancelStringEdit(): Promise<void> {
+    await this.cancelEditButton.click();
+    await this.stringEditTextbox.waitFor({ state: 'hidden', timeout: 5000 });
+  }
+
   // Hash methods
   async getHashFieldCount(): Promise<number> {
     const rows = this.hashFieldsGrid.locator('[role="row"]');
@@ -169,6 +198,56 @@ export class KeyDetails {
 
   async clickAddFields(): Promise<void> {
     await this.addFieldsButton.click();
+  }
+
+  async addHashField(fieldName: string, fieldValue: string): Promise<void> {
+    // Click Add Fields button
+    await this.page.getByRole('button', { name: 'Add Fields' }).click();
+    // Fill in field name and value
+    await this.page.getByPlaceholder('Enter Field').fill(fieldName);
+    await this.page.getByPlaceholder('Enter Value').fill(fieldValue);
+    // Click Save
+    await this.page.getByRole('button', { name: 'Save' }).click();
+    // Wait for the form to close
+    await this.page.getByPlaceholder('Enter Field').waitFor({ state: 'hidden', timeout: 5000 });
+  }
+
+  async editHashField(fieldName: string, newValue: string): Promise<void> {
+    // Click on the row to show edit button
+    const row = this.hashFieldsGrid.locator('[role="row"]').filter({ hasText: fieldName });
+    await row.click();
+    // Click edit button
+    await this.page.getByTestId(`hash_edit-btn-${fieldName}`).click();
+    // Fill new value
+    await this.page.getByPlaceholder('Enter Value').fill(newValue);
+    // Click apply
+    await this.page.getByTestId('apply-btn').click();
+    // Wait for edit mode to close
+    await this.page.getByPlaceholder('Enter Value').waitFor({ state: 'hidden', timeout: 5000 });
+  }
+
+  async deleteHashField(fieldName: string): Promise<void> {
+    // Find the row with the field name
+    const row = this.hashFieldsGrid.locator('[role="row"]').filter({ hasText: fieldName });
+    // Click the remove field button in that row
+    const removeButton = row.getByRole('button', { name: 'Remove field' });
+    await removeButton.click();
+    // Confirm deletion in the dialog - use testid for the confirmation button
+    await this.page.getByTestId(`remove-hash-button-${fieldName}`).click();
+    // Wait for the field to be removed
+    await row.waitFor({ state: 'hidden', timeout: 5000 });
+  }
+
+  async getHashFieldValue(fieldName: string): Promise<string> {
+    const row = this.hashFieldsGrid.locator('[role="row"]').filter({ hasText: fieldName });
+    // Value is in the second gridcell
+    const valueCell = row.locator('[role="gridcell"]').nth(1);
+    return await valueCell.innerText();
+  }
+
+  async hashFieldExists(fieldName: string): Promise<boolean> {
+    const row = this.hashFieldsGrid.locator('[role="row"]').filter({ hasText: fieldName });
+    return (await row.count()) > 0;
   }
 
   // List methods
@@ -198,6 +277,63 @@ export class KeyDetails {
 
   async clickRemoveElements(): Promise<void> {
     await this.removeElementButton.click();
+  }
+
+  async addListElement(element: string, position: 'head' | 'tail' = 'tail'): Promise<void> {
+    await this.addElementButton.click();
+    // Select position if not default
+    if (position === 'head') {
+      await this.page.getByRole('combobox').filter({ hasText: 'Push to' }).click();
+      await this.page.getByRole('option', { name: 'Push to head' }).click();
+    }
+    await this.page.getByPlaceholder('Enter Element').fill(element);
+    await this.page.getByRole('button', { name: 'Save' }).click();
+    // Wait for the form to close
+    await this.page.getByPlaceholder('Enter Element').waitFor({ state: 'hidden', timeout: 5000 });
+  }
+
+  async editListElement(index: number, newValue: string): Promise<void> {
+    // Click on the row to show edit button
+    const row = this.listGrid.locator('[role="row"]').filter({ hasText: new RegExp(`^${index}`) });
+    await row.click();
+    // Click edit button using testid pattern: list_edit-btn-{index}
+    await this.page.getByTestId(`list_edit-btn-${index}`).click();
+    // Clear and fill new value using testid pattern: list_value-editor-{index}
+    const textbox = this.page.getByTestId(`list_value-editor-${index}`);
+    await textbox.clear();
+    await textbox.fill(newValue);
+    // Apply changes using testid: apply-btn
+    await this.page.getByTestId('apply-btn').click();
+    // Wait for edit mode to close
+    await textbox.waitFor({ state: 'hidden', timeout: 5000 });
+  }
+
+  async removeListElements(count: number, position: 'head' | 'tail' = 'tail'): Promise<void> {
+    await this.removeElementButton.click();
+    // Select position if not default
+    if (position === 'head') {
+      await this.page.getByRole('combobox').filter({ hasText: 'Remove from' }).click();
+      await this.page.getByRole('option', { name: 'Remove from head' }).click();
+    }
+    const countInput = this.page.getByPlaceholder('Enter Count*');
+    await countInput.fill(count.toString());
+    // Wait for the Remove button to be enabled and click it
+    const removeBtn = this.page.getByTestId('remove-elements-btn');
+    await removeBtn.waitFor({ state: 'visible' });
+    await expect(removeBtn).toBeEnabled({ timeout: 5000 });
+    await removeBtn.click();
+    // Confirm in the dialog
+    const confirmBtn = this.page.getByTestId('remove-submit');
+    await confirmBtn.waitFor({ state: 'visible' });
+    await confirmBtn.click();
+    // Wait for the form to close
+    await countInput.waitFor({ state: 'hidden', timeout: 5000 });
+  }
+
+  async getListElementByIndex(index: number): Promise<string> {
+    const row = this.listGrid.locator('[role="row"]').filter({ hasText: new RegExp(`^${index}`) });
+    const valueCell = row.locator('[role="gridcell"]').nth(1);
+    return await valueCell.innerText();
   }
 
   // Set methods

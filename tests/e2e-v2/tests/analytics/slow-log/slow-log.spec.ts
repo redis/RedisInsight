@@ -85,6 +85,23 @@ test.describe('Analytics > Slow Log', () => {
 
       await expect(analyticsPage.displayUpToDropdown).toBeVisible();
     });
+
+    test(`should refresh slow log ${Tags.CRITICAL}`, async ({
+      createAnalyticsPage,
+      page,
+    }) => {
+      const analyticsPage = createAnalyticsPage();
+      await analyticsPage.gotoSlowLog(databaseId);
+
+      // Wait for initial load
+      await expect(analyticsPage.slowLogTable).toBeVisible();
+
+      // Click refresh button
+      await analyticsPage.refreshSlowLog();
+
+      // Verify "Last refresh: now" is visible
+      await expect(page.getByText(/Last refresh:.*now/)).toBeVisible();
+    });
   });
 
   test.describe('Navigate to Slow Log', () => {
