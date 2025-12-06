@@ -7,6 +7,17 @@ argument-hint: <url> [focus-area]
 
 Use Playwright MCP browser tools to explore a page, discover testable functionality, and generate comprehensive E2E tests.
 
+## Test Plan Reference
+
+**IMPORTANT:** Before generating tests, check the test plan at `tests/e2e-v2/TEST_PLAN.md`:
+- ✅ = Already implemented (skip or update)
+- 🔲 = Not implemented (create new tests)
+- 🔴 = Critical priority
+- 🟠 = Smoke priority
+- 🟢 = Regression priority
+
+After generating tests, **update the TEST_PLAN.md** to mark tests as ✅ implemented.
+
 ## Input
 
 1. **URL** (required) - The page to explore (e.g., `http://localhost:8080`, `http://localhost:8080/browser`)
@@ -198,3 +209,36 @@ During exploration, look for:
 @generate-e2e-test http://localhost:8080/workbench
 ```
 
+## Post-Generation: Update Test Plan
+
+After generating tests, update `tests/e2e-v2/TEST_PLAN.md`:
+
+1. Change status from `🔲` to `✅` for implemented tests
+2. Add any new test cases discovered during exploration
+3. Note any blockers or issues in the Notes section
+
+Example update:
+```markdown
+| ✅ | 🔴🟠 | Add String key |  <!-- Changed from 🔲 to ✅ -->
+```
+
+## Feature-to-URL Mapping
+
+Use this reference to navigate to features in the test plan:
+
+| Test Plan Section | URL Pattern |
+|-------------------|-------------|
+| 1. Database Management | `http://localhost:8080` |
+| 2. Browser Page | `http://localhost:8080/{dbId}/browser` |
+| 3. Workbench | `http://localhost:8080/{dbId}/workbench` |
+| 4. CLI | (Panel on any database page) |
+| 5. Pub/Sub | `http://localhost:8080/{dbId}/pub-sub` |
+| 6.1 Slow Log | `http://localhost:8080/{dbId}/analytics/slowlog` |
+| 6.2 Database Analysis | `http://localhost:8080/{dbId}/analytics/database-analysis` |
+| 6.3 Cluster Details | `http://localhost:8080/{dbId}/analytics/cluster-details` |
+| 7. Settings | `http://localhost:8080/settings` |
+| 8. Vector Search | `http://localhost:8080/{dbId}/vector-search` |
+| 9. Redis Cloud | `http://localhost:8080/redis-cloud/*` |
+| 10. Sentinel | `http://localhost:8080/sentinel/*` |
+
+**Note:** Replace `{dbId}` with an actual database UUID after connecting.

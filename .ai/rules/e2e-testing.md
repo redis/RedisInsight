@@ -4,10 +4,21 @@
 
 All E2E tests are in `tests/e2e-v2/`. This is a **standalone package** - no imports from `redisinsight/ui/` or `redisinsight/api/`.
 
+## Test Plan
+
+**Always refer to `tests/e2e-v2/TEST_PLAN.md`** for:
+- Test coverage status (✅ implemented, 🔲 not implemented)
+- Test priorities (🔴 critical, 🟠 smoke, 🟢 regression)
+- Feature implementation order
+- Test data requirements
+
+**After implementing tests, update TEST_PLAN.md** to mark tests as ✅.
+
 ## Project Structure
 
 ```
 tests/e2e-v2/
+├── TEST_PLAN.md         # Master test plan with coverage status
 ├── config/              # Configuration (env, databases, tags)
 │   ├── databases/       # Database configs by type
 │   └── tags.ts          # Test tags (@smoke, @critical, etc.)
@@ -201,3 +212,64 @@ ENV=ci npm test             # CI environment
 ENV=staging npm test        # Staging environment
 ```
 
+## Test Isolation (IMPORTANT)
+
+Tests that share database state should use:
+
+### 1. Serial Execution
+
+```typescript
+test.describe.serial('Feature Name', () => {
+  // Tests run sequentially within this describe block
+});
+```
+
+### 2. Unique Prefixes Per Test File
+
+```typescript
+let uniquePrefix: string;
+
+test.beforeEach(async ({ apiHelper }) => {
+  const uniqueId = `${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 8)}`;
+  uniquePrefix = `test-feature-${uniqueId}`;
+  // Create test data with uniquePrefix
+});
+
+test.afterEach(async ({ apiHelper }) => {
+  // Only clean up this test's data
+  await apiHelper.deleteDatabasesByPattern(new RegExp(`^${uniquePrefix}`));
+});
+```
+
+### 3. Wait for Page Load
+
+```typescript
+test.beforeEach(async ({ featurePage }) => {
+  await featurePage.goto();
+  await featurePage.expectElementVisible(expectedElement);
+});
+```
+
+## Test Plan Priorities
+
+When implementing tests, follow this priority order from `TEST_PLAN.md`:
+
+1. **Phase 1** - Core: Browser (keys), Workbench, CLI
+2. **Phase 2** - Key Types: List, Set, ZSet, Stream, JSON
+3. **Phase 3** - Analytics: Slow Log, DB Analysis, Pub/Sub
+4. **Phase 4** - Advanced: Settings, Cluster, Vector Search
+5. **Phase 5** - Integrations: Redis Cloud, Sentinel
+
+## Feature-to-Path Mapping
+
+| Feature | Test Path | Page Object Path |
+|---------|-----------|------------------|
+| Database List | `tests/databases/list/` | `pages/databases/` |
+| Add Database | `tests/databases/add/` | `pages/databases/` |
+| Import Database | `tests/databases/import/` | `pages/databases/` |
+| Browser Keys | `tests/browser/keys/` | `pages/browser/` |
+| Workbench | `tests/workbench/` | `pages/workbench/` |
+| Pub/Sub | `tests/pubsub/` | `pages/pubsub/` |
+| Slow Log | `tests/analytics/slowlog/` | `pages/analytics/` |
+| DB Analysis | `tests/analytics/analysis/` | `pages/analytics/` |
+| Settings | `tests/settings/` | `pages/settings/` |
