@@ -65,7 +65,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | 🔲 | 🟢 | Show correct row count "Showing X out of Y rows" |
 | 🔲 | 🟢 | Pagination buttons disabled state (first/previous on page 1) |
 
-### 1.3 Import/Export
+### 1.5 Import/Export
 | Status | Priority | Test Case |
 |--------|----------|-----------|
 | ✅ | 🟠 | Open import dialog |
@@ -362,6 +362,49 @@ The test plan is organized by feature area, with tests categorized by priority:
 
 ---
 
+## 11. RDI - Redis Data Integration (⏸️ Skipped)
+
+> **Note:** RDI tests are skipped due to external dependencies (requires RDI backend services).
+> These tests should be run in environments with RDI infrastructure available.
+
+### 11.1 RDI Instance Management
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🔴 | Add RDI instance |
+| 🔲 | 🔴 | Connect to RDI instance |
+| 🔲 | 🔴 | View RDI instance list |
+| 🔲 | 🟠 | Edit RDI instance |
+| 🔲 | 🟠 | Delete RDI instance |
+| 🔲 | 🟢 | Test RDI connection |
+
+### 11.2 RDI Pipeline
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🔴 | View pipeline status |
+| 🔲 | 🔴 | Start pipeline |
+| 🔲 | 🔴 | Stop pipeline |
+| 🔲 | 🟠 | Reset pipeline |
+| 🔲 | 🟢 | View pipeline statistics |
+
+### 11.3 RDI Jobs
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🔴 | View jobs list |
+| 🔲 | 🔴 | Deploy job |
+| 🔲 | 🟠 | Edit job configuration |
+| 🔲 | 🟠 | Delete job |
+| 🔲 | 🟢 | Dry run job |
+
+### 11.4 RDI Configuration
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🔴 | View configuration |
+| 🔲 | 🔴 | Edit configuration |
+| 🔲 | 🟠 | Deploy configuration |
+| 🔲 | 🟢 | Download template |
+
+---
+
 ## Test Implementation Priority
 
 ### Phase 1 - Core Functionality (First)
@@ -386,6 +429,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### Phase 5 - Integrations
 1. Redis Cloud
 2. Sentinel
+3. RDI (requires external dependencies - skipped in standard CI)
 
 ---
 
