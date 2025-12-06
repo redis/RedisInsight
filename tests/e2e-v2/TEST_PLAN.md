@@ -53,6 +53,18 @@ The test plan is organized by feature area, with tests categorized by priority:
 | 🔲 | 🔴 | Connect to database |
 | 🔲 | 🟢 | Database connection status indicator |
 
+### 1.4 Pagination (when > 15 databases)
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟠 | Show pagination when > 15 databases |
+| 🔲 | 🟢 | Navigate to next page |
+| 🔲 | 🟢 | Navigate to previous page |
+| 🔲 | 🟢 | Navigate to first/last page |
+| 🔲 | 🟢 | Change items per page (10, 25, 50, 100) |
+| 🔲 | 🟢 | Select page from dropdown |
+| 🔲 | 🟢 | Show correct row count "Showing X out of Y rows" |
+| 🔲 | 🟢 | Pagination buttons disabled state (first/previous on page 1) |
+
 ### 1.3 Import/Export
 | Status | Priority | Test Case |
 |--------|----------|-----------|
