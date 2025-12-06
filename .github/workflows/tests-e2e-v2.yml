@@ -1,0 +1,169 @@
+name: E2E Tests (Playwright v2)
+
+on:
+  pull_request:
+    types: [labeled, synchronize]
+
+# Only run when PR has 'e2e-v2' label
+jobs:
+  check-label:
+    runs-on: ubuntu-latest
+    outputs:
+      should_run: ${{ steps.check.outputs.should_run }}
+    steps:
+      - name: Check for e2e-v2 label
+        id: check
+        run: |
+          if [[ "${{ contains(github.event.pull_request.labels.*.name, 'e2e-v2') }}" == "true" ]]; then
+            echo "should_run=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_run=false" >> $GITHUB_OUTPUT
+            echo "Skipping E2E v2 tests - PR does not have 'e2e-v2' label"
+          fi
+
+  e2e-tests:
+    name: E2E Playwright v2 Tests
+    needs: check-label
+    if: needs.check-label.outputs.should_run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # Can be extended for multiple browsers
+        browser: [chromium]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: tests/e2e-v2/package-lock.json
+
+      - name: Install dependencies
+        working-directory: tests/e2e-v2
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        working-directory: tests/e2e-v2
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+
+      - name: Download Docker Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-builds
+          path: ./release
+
+      - name: Load Docker image
+        run: docker image load -i ./release/docker/docker-linux-alpine.amd64.tar
+
+      - name: Start Redis Test Environment
+        run: |
+          docker compose -p e2e-rte \
+            -f tests/e2e/rte.docker-compose.yml \
+            up --detach --force-recreate
+
+      - name: Start RedisInsight
+        run: |
+          docker compose -p e2e-ri \
+            -f tests/e2e/docker.web.docker-compose.yml \
+            up --detach --force-recreate
+          sleep 30
+
+      - name: Run E2E Tests
+        working-directory: tests/e2e-v2
+        env:
+          RI_BASE_URL: http://localhost:8080
+          RI_API_URL: http://localhost:5540
+          CI: true
+        run: npx playwright test --project=${{ matrix.browser }}
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-v2-results-${{ matrix.browser }}
+          path: |
+            tests/e2e-v2/test-results/
+            tests/e2e-v2/playwright-report/
+          retention-days: 7
+
+      - name: Cleanup Redis Test Environment
+        if: always()
+        run: |
+          docker compose -p e2e-rte \
+            -f tests/e2e/rte.docker-compose.yml \
+            down --volumes --remove-orphans
+
+      - name: Cleanup RedisInsight
+        if: always()
+        run: |
+          docker compose -p e2e-ri \
+            -f tests/e2e/docker.web.docker-compose.yml \
+            down --volumes --remove-orphans
+
+  e2e-smoke:
+    name: E2E Smoke Tests (Quick)
+    needs: check-label
+    if: needs.check-label.outputs.should_run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: tests/e2e-v2/package-lock.json
+
+      - name: Install dependencies
+        working-directory: tests/e2e-v2
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        working-directory: tests/e2e-v2
+        run: npx playwright install --with-deps chromium
+
+      - name: Download Docker Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-builds
+          path: ./release
+
+      - name: Load Docker image
+        run: docker image load -i ./release/docker/docker-linux-alpine.amd64.tar
+
+      - name: Start Redis Test Environment
+        run: |
+          docker compose -p e2e-rte \
+            -f tests/e2e/rte.docker-compose.yml \
+            up --detach --force-recreate
+
+      - name: Start RedisInsight
+        run: |
+          docker compose -p e2e-ri \
+            -f tests/e2e/docker.web.docker-compose.yml \
+            up --detach --force-recreate
+          sleep 30
+
+      - name: Run Smoke Tests Only
+        working-directory: tests/e2e-v2
+        env:
+          RI_BASE_URL: http://localhost:8080
+          RI_API_URL: http://localhost:5540
+          CI: true
+        run: npm run test:smoke
+
+      - name: Cleanup
+        if: always()
+        run: |
+          docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml down --volumes --remove-orphans
+          docker compose -p e2e-ri -f tests/e2e/docker.web.docker-compose.yml down --volumes --remove-orphans
+
