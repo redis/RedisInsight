@@ -2,6 +2,7 @@ import { Page, Locator } from '@playwright/test';
 import { BasePage } from '../BasePage';
 import { AddDatabaseDialog } from './components/AddDatabaseDialog';
 import { DatabaseList } from './components/DatabaseList';
+import { ImportDatabaseDialog } from './components/ImportDatabaseDialog';
 import { AddDatabaseConfig } from '../../types';
 
 /**
@@ -12,9 +13,12 @@ export class DatabasesPage extends BasePage {
   // Component POMs
   readonly addDatabaseDialog: AddDatabaseDialog;
   readonly databaseList: DatabaseList;
+  readonly importDatabaseDialog: ImportDatabaseDialog;
 
   // Page-level elements
   readonly connectDatabaseButton: Locator;
+  readonly createCloudDatabaseButton: Locator;
+  readonly importFromFileButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -22,9 +26,12 @@ export class DatabasesPage extends BasePage {
     // Initialize component POMs
     this.addDatabaseDialog = new AddDatabaseDialog(page);
     this.databaseList = new DatabaseList(page);
+    this.importDatabaseDialog = new ImportDatabaseDialog(page);
 
     // Page-level elements
     this.connectDatabaseButton = page.getByTestId('add-redis-database-short');
+    this.createCloudDatabaseButton = page.getByRole('button', { name: /create free cloud database/i });
+    this.importFromFileButton = page.getByTestId('option-btn-import');
   }
 
   /**
@@ -48,6 +55,22 @@ export class DatabasesPage extends BasePage {
   async addDatabase(config: AddDatabaseConfig): Promise<void> {
     await this.openAddDatabaseDialog();
     await this.addDatabaseDialog.addDatabase(config);
+  }
+
+  /**
+   * Open the Import from file dialog
+   */
+  async openImportDialog(): Promise<void> {
+    await this.openAddDatabaseDialog();
+    await this.importFromFileButton.click();
+  }
+
+  /**
+   * Import databases from file - full flow
+   */
+  async importDatabasesFromFile(filePath: string): Promise<{ success: number; failed: number }> {
+    await this.openImportDialog();
+    return this.importDatabaseDialog.importFile(filePath);
   }
 
   // Delegate common operations to components for backward compatibility
