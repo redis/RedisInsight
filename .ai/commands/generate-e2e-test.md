@@ -180,6 +180,40 @@ During exploration, look for:
 - [ ] Validation messages
 - [ ] `data-testid` attributes for stable selectors
 
+## Key UI Patterns Discovered
+
+### Browser Page
+
+**View Modes:**
+- **List view**: Uses `grid` with `row`/`gridcell`, shows "Total: X"
+- **Tree view**: Uses `treeitem` elements, shows "Results: X"
+
+**Common TestIDs:**
+- `btn-add-key` - Add key button
+- `select-key-type` - Key type dropdown in Add Key dialog
+- `select-filter-key-type` - Key type filter dropdown
+- `view-type-browser-btn` - List view button
+- `view-type-list-btn` - Tree view button
+- `search-btn` - Search button
+- `back-right-panel-btn` - Back button
+
+**Key List Patterns:**
+```typescript
+// List view - find key by gridcell
+page.getByRole('gridcell', { name: keyName })
+
+// Tree view - find key by treeitem (name includes type, key, TTL, size)
+page.getByRole('treeitem', { name: new RegExp(keyName) })
+
+// Wait for keys to load (handles both views)
+page.getByText(/Total:|Results:/).first()
+```
+
+**Add Key Dialog:**
+- Key type dropdown: `getByTestId('select-key-type')`
+- Key type options: `getByRole('option', { name: type, exact: true })`
+- Form fields use placeholders like "Enter Field", "Enter Value", "Enter Member"
+
 ## Test Generation Checklist
 
 - [ ] Page object extends `BasePage`

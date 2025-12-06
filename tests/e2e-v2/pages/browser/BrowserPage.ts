@@ -83,10 +83,11 @@ export class BrowserPage extends BasePage {
 
   async waitForLoad(): Promise<void> {
     await this.page.waitForLoadState('domcontentloaded');
-    // Wait for either key list to load or no keys message
+    // Wait for either key list to load (Total: or Results:) or no keys message
     await Promise.race([
       this.keyList.waitForKeysLoaded(),
       this.page.getByText(/no keys/i).waitFor({ timeout: 30000 }).catch(() => {}),
+      this.page.getByText(/Total:\s*0/).waitFor({ timeout: 30000 }).catch(() => {}),
     ]);
   }
 

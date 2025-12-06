@@ -67,17 +67,19 @@ The test plan is organized by feature area, with tests categorized by priority:
 
 ---
 
-## 2. Browser Page (⏳ Partially Implemented)
+## 2. Browser Page (✅ Partially Implemented)
 
 ### 2.1 Key List View
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🔴🟠 | View key list |
-| 🔲 | 🔴 | Search/filter keys |
-| 🔲 | 🟢 | Filter by key type |
-| 🔲 | 🟢 | Scan with pattern |
-| 🔲 | 🔴 | Refresh key list |
-| 🔲 | 🟢 | View key count |
+| ✅ | 🔴🟠 | View key list |
+| ✅ | 🔴🟠 | Search/filter keys by pattern |
+| ✅ | 🟠 | Filter by key type |
+| ✅ | 🟢 | Filter keys by exact name |
+| ✅ | 🟢 | Clear search filter |
+| ✅ | 🟠 | Click on key to view details |
+| ✅ | 🟢 | Refresh key list |
+| ✅ | 🟢 | Show no results message for non-matching pattern |
 | 🔲 | 🔴 | Delete key |
 | 🔲 | 🟢 | Delete multiple keys (bulk) |
 

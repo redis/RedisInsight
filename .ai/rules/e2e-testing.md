@@ -183,24 +183,66 @@ export const test = base.extend<Fixtures>({
 });
 ```
 
+## UI Exploration with Playwright MCP
+
+**Before writing tests, use Playwright MCP to explore the UI** and discover:
+- Actual testIds used in the application
+- Element roles and accessible names
+- Page structure and component hierarchy
+
+### Exploration Workflow
+
+1. **Navigate to the page**: `browser_navigate_Playwright` to `http://localhost:8080`
+2. **Take snapshot**: `browser_snapshot_Playwright` to see element tree
+3. **Click elements**: `browser_click_Playwright` to interact and explore
+4. **Wait for changes**: `browser_wait_for_Playwright` for async content
+
+### Key Discoveries from UI Exploration
+
+**Common TestIDs:**
+- `btn-add-key` - Add key button
+- `select-key-type` - Key type dropdown in Add Key dialog
+- `select-filter-key-type` - Key type filter dropdown
+- `view-type-browser-btn` - List view button
+- `view-type-list-btn` - Tree view button
+- `search-btn` - Search button
+- `back-right-panel-btn` - Back button
+
+**View Modes:**
+- **List view**: Uses `grid` with `row`/`gridcell`, shows "Total: X"
+- **Tree view**: Uses `treeitem` elements, shows "Results: X"
+
+**Key List Patterns:**
+```typescript
+// List view - find key by gridcell
+page.getByRole('gridcell', { name: keyName })
+
+// Tree view - find key by treeitem (name includes type, key, TTL, size)
+page.getByRole('treeitem', { name: new RegExp(keyName) })
+```
+
 ## Best Practices
 
 ### ✅ DO
 
+- **Explore UI with Playwright MCP before writing tests**
 - Use `data-testid` attributes for stable selectors
 - Use `getByRole`, `getByLabel` for accessible elements
-- Wait for elements with `expect().toBeVisible()`
+- Wait for elements with `waitFor({ state: 'visible' })`
 - Clean up test data in `afterEach`
 - Tag all tests with appropriate tags
 - Use API for setup, UI for assertions
+- Handle both List view and Tree view in key assertions
 
 ### ❌ DON'T
 
+- Write tests without exploring the actual UI first
 - Use fixed timeouts (`waitForTimeout`)
 - Use CSS selectors for dynamic content
 - Leave test data after tests
 - Import from `redisinsight/ui/` or `redisinsight/api/`
 - Hardcode test data (use faker)
+- Assume element structure without verification
 
 ## Running Tests
 

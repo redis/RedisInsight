@@ -23,11 +23,17 @@ export class KeyList {
 
   // Results info
   readonly resultsCount: Locator;
+  readonly totalCount: Locator;
   readonly scannedCount: Locator;
   readonly lastRefresh: Locator;
 
   // Key list container
   readonly keyListContainer: Locator;
+  readonly container: Locator;
+  readonly noKeysMessage: Locator;
+
+  // Key type filter dropdown
+  readonly keyTypeFilterDropdown: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -35,31 +41,39 @@ export class KeyList {
     // Filter controls - use testid for specificity
     this.filterByNameButton = page.getByRole('button', { name: /filter by key name/i });
     this.searchByValuesButton = page.getByRole('button', { name: /search by values/i });
-    this.keyTypeFilter = page.locator('[data-testid="key-type-filter"]');
+    this.keyTypeFilter = page.getByTestId('select-filter-key-type');
+    this.keyTypeFilterDropdown = page.locator('[role="listbox"]');
     this.searchInput = page.getByPlaceholder('Filter by Key Name or Pattern');
     this.searchButton = page.getByTestId('search-btn');
 
     // View controls
-    this.listViewButton = page.getByRole('button', { name: /list view/i });
-    this.treeViewButton = page.getByRole('button', { name: /tree view/i });
+    this.listViewButton = page.getByTestId('view-type-browser-btn');
+    this.treeViewButton = page.getByTestId('view-type-list-btn');
     this.columnsButton = page.getByRole('button', { name: 'columns' });
-    this.refreshButton = page.locator('[data-testid="refresh-keys-btn"]');
+    this.refreshButton = page.getByRole('button', { name: /refresh/i }).first();
     this.treeSettingsButton = page.getByRole('button', { name: /tree view settings/i });
 
     // Results info
     this.resultsCount = page.getByText(/Results:/);
+    this.totalCount = page.getByText(/Total:/);
     this.scannedCount = page.getByText(/Scanned/);
     this.lastRefresh = page.getByText(/Last refresh:/);
 
-    // Key list
-    this.keyListContainer = page.locator('[data-testid="virtual-list"], [role="tree"]');
+    // Key list container
+    this.keyListContainer = page.locator('[data-testid="virtual-list"], [role="tree"], [role="grid"]');
+    this.container = page.locator('[data-testid="virtual-list"], [role="tree"], [role="grid"]');
+    this.noKeysMessage = page.getByText(/no keys/i);
   }
 
   /**
    * Wait for keys to load
+   * Handles both List view (Total:) and Tree view (Results:)
    */
   async waitForKeysLoaded(timeout = 30000): Promise<void> {
-    await expect(this.resultsCount).toBeVisible({ timeout });
+    // Wait for either "Total:" (List view) or "Results:" (Tree view)
+    await expect(
+      this.page.getByText(/Total:|Results:/).first(),
+    ).toBeVisible({ timeout });
   }
 
   /**
@@ -83,7 +97,10 @@ export class KeyList {
    */
   async filterByType(type: KeyType | 'All Key Types'): Promise<void> {
     await this.keyTypeFilter.click();
-    await this.page.getByRole('option', { name: type }).click();
+    // Wait for dropdown to appear
+    await this.keyTypeFilterDropdown.waitFor({ state: 'visible' });
+    // Use exact match for type to avoid "Set" matching "Sorted Set"
+    await this.page.getByRole('option', { name: type, exact: true }).click();
   }
 
   /**
@@ -104,16 +121,48 @@ export class KeyList {
    * Click on a key by name
    */
   async clickKey(keyName: string): Promise<void> {
-    await this.page.getByRole('treeitem', { name: new RegExp(keyName) }).click();
+    // Try grid row first (list view), then treeitem (tree view)
+    const gridRow = this.page.getByRole('row', { name: new RegExp(keyName) });
+    const treeItem = this.page.getByRole('treeitem', { name: new RegExp(keyName) });
+
+    if (await gridRow.isVisible()) {
+      await gridRow.click();
+    } else {
+      await treeItem.click();
+    }
   }
 
   /**
    * Check if key exists in list
+   * Handles both List view (grid) and Tree view (treeitem)
    */
-  async keyExists(keyName: string): Promise<boolean> {
+  async keyExists(keyName: string, timeout = 5000): Promise<boolean> {
     try {
-      await expect(this.page.getByRole('treeitem', { name: new RegExp(keyName) })).toBeVisible({ timeout: 5000 });
-      return true;
+      // Escape special regex characters in key name
+      const escapedKeyName = keyName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+      // Try grid cell first (list view) - look for exact key name in gridcell
+      const gridCell = this.page.getByRole('gridcell', { name: keyName });
+
+      // Try treeitem (tree view) - key name appears in the treeitem accessible name
+      const treeItem = this.page.getByRole('treeitem', { name: new RegExp(escapedKeyName) });
+
+      // Wait briefly for either to appear using waitFor
+      try {
+        await gridCell.waitFor({ state: 'visible', timeout });
+        return true;
+      } catch {
+        // Grid cell not found, try treeitem
+      }
+
+      try {
+        await treeItem.waitFor({ state: 'visible', timeout });
+        return true;
+      } catch {
+        // Treeitem not found either
+      }
+
+      return false;
     } catch {
       return false;
     }
@@ -127,11 +176,35 @@ export class KeyList {
   }
 
   /**
+   * Get total count text
+   */
+  async getTotalCountText(): Promise<string | null> {
+    return this.totalCount.textContent();
+  }
+
+  /**
    * Refresh the key list
    */
   async refresh(): Promise<void> {
     await this.refreshButton.click();
-    await this.waitForKeysLoaded();
+  }
+
+  /**
+   * Check if no keys message is visible
+   */
+  async isNoKeysMessageVisible(): Promise<boolean> {
+    try {
+      // Check for various "no keys" indicators
+      const noKeysText = this.page.getByText(/no keys|no results|0 keys/i);
+      const totalZero = this.page.getByText(/Total:\s*0/);
+
+      const noKeysVisible = await noKeysText.isVisible().catch(() => false);
+      const totalZeroVisible = await totalZero.isVisible().catch(() => false);
+
+      return noKeysVisible || totalZeroVisible;
+    } catch {
+      return false;
+    }
   }
 }
 
