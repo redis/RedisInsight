@@ -154,5 +154,118 @@ test.describe('Navigation & Global UI', () => {
       expect(await navigationPage.isNotificationCenterOpen()).toBe(false);
     });
   });
+
+  test.describe('Copilot Panel', () => {
+    test(`should open Copilot panel ${Tags.SMOKE}`, async ({
+      navigationPage,
+    }) => {
+      await navigationPage.goto();
+      await navigationPage.openCopilotPanel();
+
+      const isOpen = await navigationPage.isCopilotPanelOpen();
+      expect(isOpen).toBe(true);
+    });
+
+    test(`should close Copilot panel ${Tags.REGRESSION}`, async ({
+      navigationPage,
+    }) => {
+      await navigationPage.goto();
+      await navigationPage.openCopilotPanel();
+
+      // Verify it's open
+      expect(await navigationPage.isCopilotPanelOpen()).toBe(true);
+
+      // Close it
+      await navigationPage.closeCopilotPanel();
+
+      // Verify it's closed
+      expect(await navigationPage.isCopilotPanelOpen()).toBe(false);
+    });
+
+    test(`should show sign-in options ${Tags.REGRESSION}`, async ({
+      navigationPage,
+    }) => {
+      await navigationPage.goto();
+      await navigationPage.openCopilotPanel();
+
+      await expect(navigationPage.copilotGoogleSignIn).toBeVisible();
+      await expect(navigationPage.copilotGithubSignIn).toBeVisible();
+      await expect(navigationPage.copilotSsoSignIn).toBeVisible();
+    });
+
+    test(`should show terms checkbox ${Tags.REGRESSION}`, async ({
+      navigationPage,
+    }) => {
+      await navigationPage.goto();
+      await navigationPage.openCopilotPanel();
+
+      await expect(navigationPage.copilotTermsCheckbox).toBeVisible();
+    });
+  });
+
+  test.describe('Insights Panel', () => {
+    test(`should open Insights panel ${Tags.SMOKE}`, async ({
+      navigationPage,
+    }) => {
+      await navigationPage.goto();
+      await navigationPage.openInsightsPanel();
+
+      const isOpen = await navigationPage.isInsightsPanelOpen();
+      expect(isOpen).toBe(true);
+    });
+
+    test(`should close Insights panel ${Tags.REGRESSION}`, async ({
+      navigationPage,
+    }) => {
+      await navigationPage.goto();
+      await navigationPage.openInsightsPanel();
+
+      // Verify it's open
+      expect(await navigationPage.isInsightsPanelOpen()).toBe(true);
+
+      // Close it
+      await navigationPage.closeInsightsPanel();
+
+      // Verify it's closed
+      expect(await navigationPage.isInsightsPanelOpen()).toBe(false);
+    });
+
+    test(`should show Tutorials tab ${Tags.REGRESSION}`, async ({
+      navigationPage,
+    }) => {
+      await navigationPage.goto();
+      await navigationPage.openInsightsPanel();
+
+      await expect(navigationPage.insightsTutorialsTab).toBeVisible();
+    });
+
+    test(`should show Tips tab ${Tags.REGRESSION}`, async ({
+      navigationPage,
+    }) => {
+      await navigationPage.goto();
+      await navigationPage.openInsightsPanel();
+
+      await expect(navigationPage.insightsTipsTab).toBeVisible();
+    });
+
+    test(`should switch to Tips tab ${Tags.REGRESSION}`, async ({
+      navigationPage,
+    }) => {
+      await navigationPage.goto();
+      await navigationPage.openInsightsPanel();
+      await navigationPage.switchToTipsTab();
+
+      await expect(navigationPage.insightsTipsTab).toHaveAttribute('aria-selected', 'true');
+    });
+
+    test(`should show My tutorials section ${Tags.REGRESSION}`, async ({
+      navigationPage,
+    }) => {
+      await navigationPage.goto();
+      await navigationPage.openInsightsPanel();
+
+      await expect(navigationPage.insightsMyTutorials).toBeVisible();
+    });
+  });
 });
 

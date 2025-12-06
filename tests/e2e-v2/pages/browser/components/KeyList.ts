@@ -51,7 +51,7 @@ export class KeyList {
     this.treeViewButton = page.getByTestId('view-type-list-btn');
     this.columnsButton = page.getByRole('button', { name: 'columns' });
     this.refreshButton = page.getByRole('button', { name: /refresh/i }).first();
-    this.treeSettingsButton = page.getByRole('button', { name: /tree view settings/i });
+    this.treeSettingsButton = page.getByTestId('tree-view-settings-btn');
 
     // Results info
     this.resultsCount = page.getByText(/Results:/);
@@ -205,6 +205,85 @@ export class KeyList {
     } catch {
       return false;
     }
+  }
+
+  /**
+   * Check if tree view is active
+   */
+  async isTreeViewActive(): Promise<boolean> {
+    const isActive = await this.treeViewButton.getAttribute('class');
+    return isActive?.includes('active') || false;
+  }
+
+  /**
+   * Check if list view is active
+   */
+  async isListViewActive(): Promise<boolean> {
+    const isActive = await this.listViewButton.getAttribute('class');
+    return isActive?.includes('active') || false;
+  }
+
+  /**
+   * Open tree view settings dialog
+   */
+  async openTreeViewSettings(): Promise<void> {
+    await this.treeSettingsButton.click();
+    // Wait for dialog to appear
+    await this.page.getByRole('dialog').waitFor({ state: 'visible' });
+  }
+
+  /**
+   * Get folder by name in tree view
+   */
+  getFolderByName(folderName: string): Locator {
+    return this.page.getByRole('treeitem', { name: new RegExp(`Folder ${folderName}`) });
+  }
+
+  /**
+   * Expand folder in tree view
+   */
+  async expandFolder(folderName: string): Promise<void> {
+    const folder = this.getFolderByName(folderName);
+    await folder.click();
+    // Wait for chevron to change to down
+    await this.page.getByRole('treeitem', { name: new RegExp(`Chevron Down.*${folderName}`) }).waitFor({ state: 'visible' });
+  }
+
+  /**
+   * Collapse folder in tree view
+   */
+  async collapseFolder(folderName: string): Promise<void> {
+    const folder = this.getFolderByName(folderName);
+    await folder.click();
+    // Wait for chevron to change to right
+    await this.page.getByRole('treeitem', { name: new RegExp(`Chevron Right.*${folderName}`) }).waitFor({ state: 'visible' });
+  }
+
+  /**
+   * Check if folder is expanded
+   */
+  async isFolderExpanded(folderName: string): Promise<boolean> {
+    const expandedFolder = this.page.getByRole('treeitem', { name: new RegExp(`Chevron Down.*${folderName}`) });
+    return expandedFolder.isVisible();
+  }
+
+  /**
+   * Get folder percentage text
+   */
+  async getFolderPercentage(folderName: string): Promise<string | null> {
+    const folder = this.getFolderByName(folderName);
+    const percentageElement = folder.locator('div').filter({ hasText: /\d+%|<1%/ }).first();
+    return percentageElement.textContent();
+  }
+
+  /**
+   * Get folder count
+   */
+  async getFolderCount(folderName: string): Promise<string | null> {
+    const folder = this.getFolderByName(folderName);
+    // The count is the last number in the folder row
+    const countElement = folder.locator('div').last();
+    return countElement.textContent();
   }
 }
 

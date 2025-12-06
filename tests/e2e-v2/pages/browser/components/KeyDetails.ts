@@ -359,6 +359,28 @@ export class KeyDetails {
     await this.addMembersButton.click();
   }
 
+  async addSetMember(member: string): Promise<void> {
+    await this.addMembersButton.click();
+    const memberInput = this.page.getByTestId('member-name');
+    await memberInput.fill(member);
+    await this.page.getByTestId('save-members-btn').click();
+    // Wait for the form to close
+    await memberInput.waitFor({ state: 'hidden', timeout: 5000 });
+  }
+
+  async removeSetMember(member: string): Promise<void> {
+    const removeBtn = this.page.getByTestId(`set-remove-btn-${member}-icon`);
+    await removeBtn.click();
+    // Confirm in the dialog - the confirm button has the same testid without -icon
+    const confirmBtn = this.page.getByTestId(`set-remove-btn-${member}`);
+    await confirmBtn.waitFor({ state: 'visible' });
+    await confirmBtn.click();
+    // Wait for the dialog to close
+    await confirmBtn.waitFor({ state: 'hidden', timeout: 5000 });
+    // Wait for the row to be removed from the grid
+    await this.page.getByTestId(`set-remove-btn-${member}-icon`).waitFor({ state: 'hidden', timeout: 5000 });
+  }
+
   // ZSet (Sorted Set) methods
   async getZSetMemberCount(): Promise<number> {
     await this.zsetGrid.waitFor({ state: 'visible' });
@@ -381,6 +403,30 @@ export class KeyDetails {
 
   async clickSortByScore(): Promise<void> {
     await this.scoreSortButton.click();
+  }
+
+  async addZSetMember(member: string, score: string): Promise<void> {
+    await this.addMembersButton.click();
+    const memberInput = this.page.getByTestId('member-name');
+    const scoreInput = this.page.getByTestId('member-score');
+    await memberInput.fill(member);
+    await scoreInput.fill(score);
+    await this.page.getByTestId('save-members-btn').click();
+    // Wait for the form to close
+    await memberInput.waitFor({ state: 'hidden', timeout: 5000 });
+  }
+
+  async removeZSetMember(member: string): Promise<void> {
+    const removeBtn = this.page.getByTestId(`zset-remove-button-${member}-icon`);
+    await removeBtn.click();
+    // Confirm in the dialog - the confirm button has the same testid without -icon
+    const confirmBtn = this.page.getByTestId(`zset-remove-button-${member}`);
+    await confirmBtn.waitFor({ state: 'visible' });
+    await confirmBtn.click();
+    // Wait for the dialog to close
+    await confirmBtn.waitFor({ state: 'hidden', timeout: 5000 });
+    // Wait for the row to be removed from the grid
+    await this.page.getByTestId(`zset-remove-button-${member}-icon`).waitFor({ state: 'hidden', timeout: 5000 });
   }
 
   // Stream methods
@@ -412,6 +458,51 @@ export class KeyDetails {
     return selected === 'true';
   }
 
+  async addStreamEntry(fieldName: string, fieldValue: string): Promise<string> {
+    await this.newEntryButton.click();
+    // Entry ID is auto-generated with '*', just fill field and value
+    const fieldInput = this.page.getByTestId('field-name');
+    const valueInput = this.page.getByTestId('field-value');
+    await fieldInput.fill(fieldName);
+    await valueInput.fill(fieldValue);
+    await this.page.getByTestId('save-elements-btn').click();
+    // Wait for the form to close
+    await fieldInput.waitFor({ state: 'hidden', timeout: 5000 });
+    // Return the entry ID (we can't know it in advance since it's auto-generated)
+    return '*';
+  }
+
+  async removeStreamEntry(entryId: string): Promise<void> {
+    const removeBtn = this.page.getByTestId(`remove-entry-button-${entryId}-icon`);
+    await removeBtn.click();
+    // Confirm in the dialog
+    const confirmBtn = this.page.getByTestId(`remove-entry-button-${entryId}`);
+    await confirmBtn.waitFor({ state: 'visible' });
+    await confirmBtn.click();
+    // Wait for the dialog to close
+    await confirmBtn.waitFor({ state: 'hidden', timeout: 5000 });
+    // Wait for the entry to be removed
+    await this.page.getByTestId(`remove-entry-button-${entryId}-icon`).waitFor({ state: 'hidden', timeout: 5000 });
+  }
+
+  async getStreamEntryIds(): Promise<string[]> {
+    // Get all entry IDs from the stream
+    const entries = this.page.locator('[data-testid^="stream-entry-"][data-testid$="-date"]');
+    const count = await entries.count();
+    const ids: string[] = [];
+    for (let i = 0; i < count; i++) {
+      const testid = await entries.nth(i).getAttribute('data-testid');
+      if (testid) {
+        // Extract entry ID from testid like "stream-entry-1747742800051-0-date"
+        const match = testid.match(/stream-entry-(.+)-date/);
+        if (match) {
+          ids.push(match[1]);
+        }
+      }
+    }
+    return ids;
+  }
+
   // JSON methods
   async isJsonContentVisible(): Promise<boolean> {
     // JSON content is displayed in the json-details container
@@ -439,6 +530,47 @@ export class KeyDetails {
   async getJsonRemoveButtons(): Promise<number> {
     const removeButtons = this.page.getByRole('button', { name: 'Remove field' });
     return await removeButtons.count();
+  }
+
+  async addJsonField(key: string, value: string): Promise<void> {
+    // Get initial count before adding
+    const initialCount = await this.page.getByTestId('json-scalar-value').count();
+
+    await this.addJsonFieldButton.click();
+    const keyInput = this.page.getByTestId('json-key');
+    const valueInput = this.page.getByTestId('json-value');
+    await keyInput.waitFor({ state: 'visible' });
+    await keyInput.fill(key);
+    await valueInput.fill(value);
+    await this.page.getByTestId('apply-btn').click();
+
+    // Wait for the new field to appear (count should increase)
+    await this.page.waitForFunction(
+      (expectedCount) => {
+        const elements = document.querySelectorAll('[data-testid="json-scalar-value"]');
+        return elements.length > expectedCount;
+      },
+      initialCount,
+      { timeout: 5000 },
+    );
+  }
+
+  async removeJsonField(): Promise<void> {
+    // Click the first remove button
+    const removeBtn = this.page.getByTestId('remove-icon').first();
+    await removeBtn.click();
+    // Confirm in the dialog
+    const confirmBtn = this.page.getByTestId('json-remove-btn');
+    await confirmBtn.waitFor({ state: 'visible' });
+    await confirmBtn.click();
+    // Wait for the dialog to close
+    await confirmBtn.waitFor({ state: 'hidden', timeout: 5000 });
+  }
+
+  async getJsonFieldCount(): Promise<number> {
+    // Count the number of JSON scalar values
+    const fields = this.page.getByTestId('json-scalar-value');
+    return await fields.count();
   }
 }
 

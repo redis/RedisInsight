@@ -349,6 +349,44 @@ test.describe('Browser > Key Details', () => {
 
       await expect(browserPage.keyDetails.addMembersButton).toBeVisible();
     });
+
+    test(`should add set member ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+      const keyData = getSetKeyData({ members: ['existing-member'] });
+      const newMember = 'new-member-' + Date.now();
+
+      await apiHelper.createSetKey(databaseId, keyData.keyName, keyData.members);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Add new member
+      await browserPage.keyDetails.addSetMember(newMember);
+
+      // Verify member count increased
+      const memberCount = await browserPage.keyDetails.getSetMemberCount();
+      expect(memberCount).toBe(2);
+    });
+
+    test(`should remove set member ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+      const memberToRemove = 'member-to-remove';
+      const keyData = getSetKeyData({ members: [memberToRemove, 'member-to-keep'] });
+
+      await apiHelper.createSetKey(databaseId, keyData.keyName, keyData.members);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Remove member
+      await browserPage.keyDetails.removeSetMember(memberToRemove);
+
+      // Verify member count decreased
+      const memberCount = await browserPage.keyDetails.getSetMemberCount();
+      expect(memberCount).toBe(1);
+    });
   });
 
   test.describe('Sorted Set (ZSet) Key Details', () => {
@@ -401,6 +439,52 @@ test.describe('Browser > Key Details', () => {
       await browserPage.keyDetails.waitForKeyDetails();
 
       await expect(browserPage.keyDetails.addMembersButton).toBeVisible();
+    });
+
+    test(`should add sorted set member with score ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+      const keyData = getZSetKeyData({
+        members: [{ member: 'existing-member', score: '10' }],
+      });
+      const newMember = 'new-member-' + Date.now();
+      const newScore = '50';
+
+      await apiHelper.createZSetKey(databaseId, keyData.keyName, keyData.members);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Add new member
+      await browserPage.keyDetails.addZSetMember(newMember, newScore);
+
+      // Verify member count increased
+      const memberCount = await browserPage.keyDetails.getZSetMemberCount();
+      expect(memberCount).toBe(2);
+    });
+
+    test(`should remove sorted set member ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+      const memberToRemove = 'member-to-remove';
+      const keyData = getZSetKeyData({
+        members: [
+          { member: memberToRemove, score: '10' },
+          { member: 'member-to-keep', score: '20' },
+        ],
+      });
+
+      await apiHelper.createZSetKey(databaseId, keyData.keyName, keyData.members);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Remove member
+      await browserPage.keyDetails.removeZSetMember(memberToRemove);
+
+      // Verify member count decreased
+      const memberCount = await browserPage.keyDetails.getZSetMemberCount();
+      expect(memberCount).toBe(1);
     });
   });
 
@@ -464,6 +548,53 @@ test.describe('Browser > Key Details', () => {
 
       await expect(browserPage.keyDetails.newEntryButton).toBeVisible();
     });
+
+    test(`should add stream entry ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+      const keyData = getStreamKeyData();
+
+      await apiHelper.createStreamKey(databaseId, keyData.keyName, keyData.fields);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Get initial entry count
+      const initialIds = await browserPage.keyDetails.getStreamEntryIds();
+      const initialCount = initialIds.length;
+
+      // Add new entry
+      await browserPage.keyDetails.addStreamEntry('new-field', 'new-value');
+
+      // Wait for entry count to increase (use polling to avoid race condition)
+      await expect(async () => {
+        const newIds = await browserPage.keyDetails.getStreamEntryIds();
+        expect(newIds.length).toBe(initialCount + 1);
+      }).toPass({ timeout: 10000 });
+    });
+
+    test(`should remove stream entry ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+      const keyData = getStreamKeyData();
+
+      await apiHelper.createStreamKey(databaseId, keyData.keyName, keyData.fields);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Get entry IDs
+      const entryIds = await browserPage.keyDetails.getStreamEntryIds();
+      expect(entryIds.length).toBeGreaterThan(0);
+
+      // Remove the first entry
+      const entryToRemove = entryIds[0];
+      await browserPage.keyDetails.removeStreamEntry(entryToRemove);
+
+      // Verify entry count decreased
+      const newIds = await browserPage.keyDetails.getStreamEntryIds();
+      expect(newIds.length).toBe(entryIds.length - 1);
+    });
   });
 
   test.describe('JSON Key Details', () => {
@@ -512,6 +643,29 @@ test.describe('Browser > Key Details', () => {
       await browserPage.keyDetails.waitForKeyDetails();
 
       await expect(browserPage.keyDetails.addJsonFieldButton).toBeVisible();
+    });
+
+    test(`should add JSON field ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+      const keyData = getJsonKeyData({
+        value: JSON.stringify({ existing: 'value' }),
+      });
+
+      await apiHelper.createJsonKey(databaseId, keyData.keyName, keyData.value);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Get initial field count
+      const initialCount = await browserPage.keyDetails.getJsonFieldCount();
+
+      // Add new field - key must be wrapped in quotes, value must be valid JSON
+      await browserPage.keyDetails.addJsonField('"newKey"', '"newValue"');
+
+      // Verify field count increased
+      const newCount = await browserPage.keyDetails.getJsonFieldCount();
+      expect(newCount).toBe(initialCount + 1);
     });
   });
 });

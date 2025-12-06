@@ -55,21 +55,21 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 0.4 Copilot Panel
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟠 | Open Copilot panel |
-| 🔲 | 🟢 | Close Copilot panel |
+| ✅ | 🟠 | Open Copilot panel |
+| ✅ | 🟢 | Close Copilot panel |
 | 🔲 | 🟢 | Open full screen mode |
-| 🔲 | 🟢 | View sign-in options (Google, GitHub, SSO) |
-| 🔲 | 🟢 | Accept terms checkbox |
+| ✅ | 🟢 | View sign-in options (Google, GitHub, SSO) |
+| ✅ | 🟢 | Accept terms checkbox |
 
 ### 0.5 Insights Panel
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟠 | Open Insights panel |
-| 🔲 | 🟢 | Close Insights panel |
-| 🔲 | 🟢 | Switch to Tutorials tab |
-| 🔲 | 🟢 | Switch to Tips tab |
+| ✅ | 🟠 | Open Insights panel |
+| ✅ | 🟢 | Close Insights panel |
+| ✅ | 🟢 | Switch to Tutorials tab |
+| ✅ | 🟢 | Switch to Tips tab |
 | 🔲 | 🟢 | Expand/collapse tutorial folders |
-| 🔲 | 🟢 | View My tutorials section |
+| ✅ | 🟢 | View My tutorials section |
 
 ---
 
@@ -164,16 +164,16 @@ The test plan is organized by feature area, with tests categorized by priority:
 | 🔲 | 🟢 | Configure auto-refresh |
 | 🔲 | 🟢 | View database stats (CPU, Keys, Memory, Clients) |
 
-### 2.2 Key Tree View
+### 2.2 Key Tree View (✅ Implemented)
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟠 | Switch to tree view |
-| 🔲 | 🟢 | Expand/collapse tree nodes |
-| 🔲 | 🟢 | Configure delimiter |
-| 🔲 | 🟢 | Sort tree nodes |
-| 🔲 | 🟢 | View folder percentage and count |
+| ✅ | 🟠 | Switch to tree view |
+| ✅ | 🟢 | Expand/collapse tree nodes |
+| ✅ | 🟢 | Configure delimiter |
+| ✅ | 🟢 | Sort tree nodes |
+| ✅ | 🟢 | View folder percentage and count |
 | 🔲 | 🟢 | Scan more keys |
-| 🔲 | 🟢 | Open tree view settings |
+| ✅ | 🟢 | Open tree view settings |
 
 ### 2.3 Add Keys (✅ Implemented)
 | Status | Priority | Test Case |
@@ -217,29 +217,30 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🔴 | Remove element |
 | 🔲 | 🟢 | Search by index |
 
-### 2.7 Key Details - Set
+### 2.7 Key Details - Set (✅ Implemented)
 | Status | Priority | Test Case |
 |--------|----------|-----------|
 | ✅ | 🔴🟠 | View set members |
-| 🔲 | 🔴 | Add member |
-| 🔲 | 🔴 | Remove member |
+| ✅ | 🔴 | Add member |
+| ✅ | 🔴 | Remove member |
 | 🔲 | 🟢 | Search members |
 
-### 2.8 Key Details - Sorted Set
+### 2.8 Key Details - Sorted Set (✅ Implemented)
 | Status | Priority | Test Case |
 |--------|----------|-----------|
 | ✅ | 🔴🟠 | View sorted set members |
-| 🔲 | 🔴 | Add member with score |
+| ✅ | 🔴 | Add member with score |
 | 🔲 | 🔴 | Edit member score |
-| 🔲 | 🔴 | Remove member |
+| ✅ | 🔴 | Remove member |
 | 🔲 | 🟢 | Search members |
 | 🔲 | 🟢 | Sort by score/member |
 
-### 2.9 Key Details - Stream
+### 2.9 Key Details - Stream (✅ Implemented)
 | Status | Priority | Test Case |
 |--------|----------|-----------|
 | ✅ | 🔴🟠 | View stream entries |
-| 🔲 | 🔴 | Add stream entry |
+| ✅ | 🔴 | Add stream entry |
+| ✅ | 🔴 | Remove stream entry |
 | ✅ | 🟢 | View consumer groups |
 | 🔲 | 🟢 | Add consumer group |
 | 🔲 | 🟢 | View consumers |
@@ -311,11 +312,11 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 3.5 Command Helper (Bottom Panel)
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟠 | Open Command Helper panel |
-| 🔲 | 🟢 | Search for a command |
-| 🔲 | 🟢 | Filter commands by category |
+| ✅ | 🟠 | Open Command Helper panel |
+| ✅ | 🟢 | Search for a command |
+| ✅ | 🟢 | Filter commands by category |
 | 🔲 | 🟢 | View command details |
-| 🔲 | 🟢 | Hide/close Command Helper panel |
+| ✅ | 🟢 | Hide/close Command Helper panel |
 
 ---
 
