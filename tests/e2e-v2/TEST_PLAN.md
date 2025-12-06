@@ -2,6 +2,8 @@
 
 This document outlines the comprehensive E2E testing strategy for RedisInsight features.
 
+> **📋 Rules**: Before implementing tests, read [`.ai/rules/e2e-testing.md`](../../.ai/rules/e2e-testing.md) for coding standards, patterns, and best practices.
+
 ## Overview
 
 The test plan is organized by feature area, with tests categorized by priority:
@@ -14,6 +16,54 @@ The test plan is organized by feature area, with tests categorized by priority:
 - ✅ Implemented
 - 🔲 Not implemented
 - ⏳ In progress
+
+---
+
+## 0. Navigation & Global UI (🔲 Not Implemented)
+
+### 0.1 Main Navigation
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🔴🟠 | Navigate to home via Redis logo |
+| 🔲 | 🟢 | Navigate to Settings page |
+| 🔲 | 🟢 | Navigate to GitHub repo link |
+| 🔲 | 🟢 | Navigate to Redis Cloud (try-free link) |
+
+### 0.2 Help Menu
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟠 | Open Help Center |
+| 🔲 | 🟢 | View Keyboard Shortcuts |
+| 🔲 | 🟢 | Reset Onboarding |
+| 🔲 | 🟢 | Navigate to Release Notes |
+| 🔲 | 🟢 | Navigate to Provide Feedback (GitHub issues) |
+
+### 0.3 Notification Center
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟠 | Open Notification Center |
+| 🔲 | 🟢 | View notification badge count |
+| 🔲 | 🟢 | View notification list |
+| 🔲 | 🟢 | Click notification links |
+
+### 0.4 Copilot Panel
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟠 | Open Copilot panel |
+| 🔲 | 🟢 | Close Copilot panel |
+| 🔲 | 🟢 | Open full screen mode |
+| 🔲 | 🟢 | View sign-in options (Google, GitHub, SSO) |
+| 🔲 | 🟢 | Accept terms checkbox |
+
+### 0.5 Insights Panel
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟠 | Open Insights panel |
+| 🔲 | 🟢 | Close Insights panel |
+| 🔲 | 🟢 | Switch to Tutorials tab |
+| 🔲 | 🟢 | Switch to Tips tab |
+| 🔲 | 🟢 | Expand/collapse tutorial folders |
+| 🔲 | 🟢 | View My tutorials section |
 
 ---
 
@@ -32,6 +82,15 @@ The test plan is organized by feature area, with tests categorized by priority:
 | 🔲 | 🟢 | Validate required fields |
 | 🔲 | 🟢 | Test connection before saving |
 | 🔲 | 🟢 | Cancel add database |
+| 🔲 | 🟢 | Add database via Connection URL |
+| 🔲 | 🟢 | Open Connection settings from URL form |
+| 🔲 | 🟢 | Configure timeout setting |
+| 🔲 | 🟢 | Select logical database |
+| 🔲 | 🟢 | Force standalone connection |
+| 🔲 | 🟢 | Enable automatic data decompression |
+| 🔲 | 🟢 | Configure key name format (Unicode/ASCII/etc) |
+| 🔲 | 🟢 | Add database via Redis Sentinel option |
+| 🔲 | 🟢 | Add database via Redis Software option |
 
 ### 1.2 Database List
 | Status | Priority | Test Case |
@@ -94,6 +153,10 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Show no results message for non-matching pattern |
 | 🔲 | 🔴 | Delete key |
 | 🔲 | 🟢 | Delete multiple keys (bulk) |
+| 🔲 | 🟠 | Search by Values of Keys |
+| 🔲 | 🟢 | Configure columns visibility |
+| 🔲 | 🟢 | Configure auto-refresh |
+| 🔲 | 🟢 | View database stats (CPU, Keys, Memory, Clients) |
 
 ### 2.2 Key Tree View
 | Status | Priority | Test Case |
@@ -102,6 +165,9 @@ The test plan is organized by feature area, with tests categorized by priority:
 | 🔲 | 🟢 | Expand/collapse tree nodes |
 | 🔲 | 🟢 | Configure delimiter |
 | 🔲 | 🟢 | Sort tree nodes |
+| 🔲 | 🟢 | View folder percentage and count |
+| 🔲 | 🟢 | Scan more keys |
+| 🔲 | 🟢 | Open tree view settings |
 
 ### 2.3 Add Keys (✅ Implemented)
 | Status | Priority | Test Case |
@@ -204,6 +270,8 @@ The test plan is organized by feature area, with tests categorized by priority:
 | 🔲 | 🔴 | Handle command error |
 | 🔲 | 🟢 | Clear editor |
 | 🔲 | 🟢 | History navigation |
+| 🔲 | 🟢 | Toggle Raw mode |
+| 🔲 | 🟢 | Toggle Group results |
 
 ### 3.2 Results View
 | Status | Priority | Test Case |
@@ -215,13 +283,31 @@ The test plan is organized by feature area, with tests categorized by priority:
 | 🔲 | 🟢 | Expand/collapse results |
 | 🔲 | 🟢 | Clear results |
 
-### 3.3 Profiler/Monitor Mode
+### 3.3 Tutorials
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟠 | Open Intro to search tutorial |
+| 🔲 | 🟢 | Open Basic use cases tutorial |
+| 🔲 | 🟢 | Open Intro to vector search tutorial |
+| 🔲 | 🟢 | Click Explore button |
+
+### 3.4 Profiler (Bottom Panel)
 | Status | Priority | Test Case |
 |--------|----------|-----------|
 | 🔲 | 🔴 | Start profiler |
 | 🔲 | 🔴 | Stop profiler |
-| 🔲 | 🟢 | Filter profiler output |
-| 🔲 | 🟢 | Clear profiler output |
+| 🔲 | 🟢 | Toggle Save Log |
+| 🔲 | 🟢 | View profiler warning |
+| 🔲 | 🟢 | Hide/close profiler panel |
+
+### 3.5 Command Helper (Bottom Panel)
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟠 | Open Command Helper panel |
+| 🔲 | 🟢 | Search for a command |
+| 🔲 | 🟢 | Filter commands by category |
+| 🔲 | 🟢 | View command details |
+| 🔲 | 🟢 | Hide/close Command Helper panel |
 
 ---
 
@@ -301,21 +387,35 @@ The test plan is organized by feature area, with tests categorized by priority:
 |--------|----------|-----------|
 | 🔲 | 🟠 | View settings page |
 | 🔲 | 🔴 | Change theme (light/dark/system) |
-| 🔲 | 🟢 | Change date/time format |
+| 🔲 | 🟢 | Toggle show notifications |
+| 🔲 | 🟢 | Change date/time format (pre-selected) |
+| 🔲 | 🟢 | Change date/time format (custom) |
+| 🔲 | 🟢 | Change time zone |
+
+### 7.2 Privacy Settings
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟢 | View privacy settings |
 | 🔲 | 🟢 | Enable/disable analytics |
 
-### 7.2 Workbench Settings
+### 7.3 Workbench Settings
 | Status | Priority | Test Case |
 |--------|----------|-----------|
 | 🔲 | 🟢 | Change editor font size |
 | 🔲 | 🟢 | Enable/disable auto-complete |
 | 🔲 | 🟢 | Configure command timeout |
 
-### 7.3 Advanced Settings
+### 7.4 Redis Cloud Settings
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟢 | Configure key scan count |
-| 🔲 | 🟢 | Configure pipeline batch size |
+| 🔲 | 🟢 | View Redis Cloud settings |
+| 🔲 | 🟢 | Configure cloud account |
+
+### 7.5 Advanced Settings
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟢 | Configure keys to scan in List view |
+| 🔲 | 🟢 | View advanced settings warning |
 
 ---
 

@@ -209,18 +209,22 @@ export const test = base.extend<Fixtures>({
 - Form field placeholders → use with `page.getByPlaceholder()`
 - Text content patterns → use with `page.getByText()`
 
-### Document Patterns in TEST_PLAN.md
+### Use Discovered Patterns in Page Objects
 
-After exploring a feature, add a "UI Patterns" subsection under that feature in `TEST_PLAN.md`:
+After exploring, use discovered patterns directly in Page Object locators:
 
-```markdown
-### Feature Name
-| Status | Priority | Test Case |
-...
+```typescript
+// Use data-testid when available
+this.addButton = page.getByTestId('btn-add-key');
 
-#### UI Patterns
-- **Element**: `page.getByTestId('element-id')` or `page.getByRole('button', { name: 'text' })`
+// Use role + name for accessible elements
+this.submitButton = page.getByRole('button', { name: 'Submit' });
+
+// Use placeholder for form fields
+this.searchInput = page.getByPlaceholder('Search...');
 ```
+
+**Note**: Keep TEST_PLAN.md as a simple visual list of test cases. Document UI patterns in Page Object comments if needed.
 
 ## Best Practices
 
