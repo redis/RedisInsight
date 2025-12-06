@@ -163,5 +163,33 @@ test.describe.serial('Database List > Bulk Actions', () => {
 
       await expect(databaseList.exportButton).toBeVisible();
     });
+
+    test(`should export selected databases ${Tags.CRITICAL}`, async ({ databasesPage }) => {
+      const { databaseList, page } = databasesPage;
+
+      // Select a database
+      await databaseList.selectRow(dbNames.first);
+
+      // Click export button
+      await databaseList.exportButton.click();
+
+      // Verify export dialog appears
+      const exportDialog = page.getByRole('dialog');
+      await expect(exportDialog).toBeVisible();
+      await expect(exportDialog.getByText(/will be exported/)).toBeVisible();
+
+      // Verify export passwords checkbox is visible
+      const exportPasswordsCheckbox = page.getByRole('checkbox', { name: 'Export passwords' });
+      await expect(exportPasswordsCheckbox).toBeVisible();
+
+      // Start download and wait for it
+      const downloadPromise = page.waitForEvent('download');
+      await page.getByTestId('export-selected-dbs').click();
+      const download = await downloadPromise;
+
+      // Verify download started
+      expect(download.suggestedFilename()).toContain('RedisInsight');
+      expect(download.suggestedFilename()).toContain('.json');
+    });
   });
 });

@@ -181,5 +181,39 @@ test.describe.serial('Browser > Key List', () => {
     const keyExists = await browserPage.keyList.keyExists(keyToDelete);
     expect(keyExists).toBe(false);
   });
+
+  test(`should switch to Search by Values mode ${Tags.SMOKE}`, async ({ page }) => {
+    // Click on Search by Values of Keys button
+    const searchByValuesBtn = page.getByTestId('search-mode-redisearch-btn');
+    await searchByValuesBtn.click();
+
+    // Verify the mode switched - should show index selector
+    await expect(page.getByTestId('select-search-mode')).toBeVisible();
+    await expect(page.getByText('Select Index')).toBeVisible();
+  });
+
+  test(`should show message when no index selected ${Tags.REGRESSION}`, async ({ page }) => {
+    // Switch to Search by Values mode
+    const searchByValuesBtn = page.getByTestId('search-mode-redisearch-btn');
+    await searchByValuesBtn.click();
+
+    // Should show message to select index
+    await expect(page.getByTestId('no-result-select-index')).toBeVisible();
+    await expect(page.getByText(/Select an index/)).toBeVisible();
+  });
+
+  test(`should switch back to Filter by Key Name mode ${Tags.REGRESSION}`, async ({ page }) => {
+    // First switch to Search by Values mode
+    const searchByValuesBtn = page.getByTestId('search-mode-redisearch-btn');
+    await searchByValuesBtn.click();
+    await expect(page.getByTestId('select-search-mode')).toBeVisible();
+
+    // Switch back to Filter by Key Name mode
+    const filterByKeyBtn = page.getByTestId('search-mode-pattern-btn');
+    await filterByKeyBtn.click();
+
+    // Verify we're back to key name filter mode
+    await expect(page.getByPlaceholder('Filter by Key Name or Pattern')).toBeVisible();
+  });
 });
 

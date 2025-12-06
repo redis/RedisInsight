@@ -113,8 +113,8 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Select multiple databases |
 | ✅ | 🟢 | Select all databases |
 | ✅ | 🔴 | Delete multiple databases |
-| 🔲 | 🟢 | Edit database connection |
-| 🔲 | 🟢 | Clone database connection |
+| ✅ | 🟢 | Edit database connection |
+| ✅ | 🟢 | Clone database connection |
 | ✅ | 🔴 | Connect to database |
 | 🔲 | 🟢 | Database connection status indicator |
 
@@ -138,7 +138,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🔴 | Import multiple databases |
 | ✅ | 🟢 | Show success count after import |
 | ✅ | 🟢 | Cancel import dialog |
-| 🔲 | 🔴 | Export databases |
+| ✅ | 🔴 | Export databases |
 | 🔲 | 🟢 | Import with errors (partial success) |
 | 🔲 | 🟢 | Import invalid file format |
 
@@ -159,7 +159,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Show no results message for non-matching pattern |
 | ✅ | 🔴 | Delete key |
 | 🔲 | 🟢 | Delete multiple keys (bulk) |
-| 🔲 | 🟠 | Search by Values of Keys |
+| ✅ | 🟠 | Search by Values of Keys |
 | 🔲 | 🟢 | Configure columns visibility |
 | 🔲 | 🟢 | Configure auto-refresh |
 | 🔲 | 🟢 | View database stats (CPU, Keys, Memory, Clients) |
@@ -230,7 +230,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 |--------|----------|-----------|
 | ✅ | 🔴🟠 | View sorted set members |
 | ✅ | 🔴 | Add member with score |
-| 🔲 | 🔴 | Edit member score |
+| ✅ | 🔴 | Edit member score |
 | ✅ | 🔴 | Remove member |
 | 🔲 | 🟢 | Search members |
 | 🔲 | 🟢 | Sort by score/member |
@@ -249,7 +249,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | Status | Priority | Test Case |
 |--------|----------|-----------|
 | ✅ | 🔴🟠 | View JSON value |
-| 🔲 | 🔴 | Edit JSON value |
+| ✅ | 🔴 | Edit JSON value |
 | 🔲 | 🟢 | Add JSON path |
 | 🔲 | 🟢 | Delete JSON path |
 | 🔲 | 🟢 | Expand/collapse JSON tree |
@@ -264,9 +264,9 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Show message when no pattern set |
 | ✅ | 🔴 | Filter by pattern for deletion |
 | ✅ | 🟠 | Show file upload area |
-| 🔲 | 🔴 | Bulk delete keys |
-| 🔲 | 🟢 | Bulk delete with pattern |
-| 🔲 | 🔴 | Bulk upload data |
+| ✅ | 🔴 | Bulk delete keys |
+| ✅ | 🟢 | Bulk delete with pattern |
+| ✅ | 🔴 | Bulk upload data |
 | 🔲 | 🟢 | View bulk action progress |
 
 ---
@@ -296,14 +296,17 @@ The test plan is organized by feature area, with tests categorized by priority:
 | 🔲 | 🟢 | Copy result |
 | 🔲 | 🟢 | Expand/collapse results |
 | ✅ | 🟢 | Clear results |
+| ✅ | 🟢 | Re-run command |
+| ✅ | 🟢 | Delete command result |
 
 ### 3.3 Tutorials
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟠 | Open Intro to search tutorial |
-| 🔲 | 🟢 | Open Basic use cases tutorial |
+| ✅ | 🟠 | Open Intro to search tutorial |
+| ✅ | 🟢 | Open Basic use cases tutorial |
 | 🔲 | 🟢 | Open Intro to vector search tutorial |
-| 🔲 | 🟢 | Click Explore button |
+| ✅ | 🟢 | Click Explore button |
+| ✅ | 🟢 | Close insights panel |
 
 ### 3.4 Profiler (Bottom Panel)
 | Status | Priority | Test Case |
@@ -322,7 +325,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟠 | Open Command Helper panel |
 | ✅ | 🟢 | Search for a command |
 | ✅ | 🟢 | Filter commands by category |
-| 🔲 | 🟢 | View command details |
+| ✅ | 🟢 | View command details |
 | ✅ | 🟢 | Hide/close Command Helper panel |
 
 ---
@@ -339,7 +342,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Hide CLI panel |
 | ✅ | 🟢 | Handle command errors |
 | ✅ | 🟢 | Execute multiple commands in sequence |
-| 🔲 | 🟢 | Command history (up/down arrows) |
+| ✅ | 🟢 | Command history (up/down arrows) |
 | 🔲 | 🟢 | Tab completion |
 | 🔲 | 🟢 | Multiple CLI sessions |
 
@@ -352,7 +355,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 |--------|----------|-----------|
 | ✅ | 🔴🟠 | Subscribe to channel |
 | ✅ | 🔴 | Subscribe with pattern |
-| 🔲 | 🔴 | Receive messages |
+| ✅ | 🔴 | Receive messages |
 | ✅ | 🔴 | Unsubscribe |
 | 🔲 | 🟢 | Multiple subscriptions |
 | 🔲 | 🟢 | Clear messages |

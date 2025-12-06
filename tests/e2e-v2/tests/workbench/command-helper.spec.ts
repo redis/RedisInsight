@@ -81,5 +81,51 @@ test.describe('Workbench > Command Helper', () => {
     // Search input should have the value
     await expect(commandHelper.searchInput).toHaveValue('GET');
   });
+
+  test(`should view command details ${Tags.REGRESSION}`, async ({ page }) => {
+    await commandHelper.open();
+
+    // Search for GET command
+    await commandHelper.searchCommand('GET');
+
+    // Click on the GET command link
+    await page.getByRole('link', { name: 'GET', exact: true }).click();
+
+    // Verify command details are shown
+    await expect(page.getByTestId('cli-helper-title-args')).toBeVisible();
+    await expect(page.getByTestId('cli-helper-title-args')).toHaveText('GET key');
+
+    // Verify summary is shown
+    await expect(page.getByTestId('cli-helper-summary')).toBeVisible();
+    await expect(page.getByTestId('cli-helper-summary')).toContainText('Returns the string value');
+
+    // Verify arguments section is shown
+    await expect(page.getByTestId('cli-helper-arguments')).toBeVisible();
+
+    // Verify since version is shown
+    await expect(page.getByTestId('cli-helper-since')).toBeVisible();
+  });
+
+  test(`should go back to command list from details ${Tags.REGRESSION}`, async ({ page }) => {
+    await commandHelper.open();
+
+    // Search for GET command
+    await commandHelper.searchCommand('GET');
+
+    // Click on the GET command link
+    await page.getByRole('link', { name: 'GET', exact: true }).click();
+
+    // Verify we're in details view
+    await expect(page.getByTestId('cli-helper-title-args')).toBeVisible();
+
+    // Click back button
+    await page.getByTestId('cli-helper-back-to-list-btn').click();
+
+    // Verify we're back to the list (details should not be visible)
+    await expect(page.getByTestId('cli-helper-title-args')).not.toBeVisible();
+
+    // Search input should still have the value
+    await expect(commandHelper.searchInput).toHaveValue('GET');
+  });
 });
 

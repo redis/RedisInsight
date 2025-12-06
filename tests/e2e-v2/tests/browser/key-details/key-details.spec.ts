@@ -160,9 +160,11 @@ test.describe('Browser > Key Details', () => {
       // Add new field
       await browserPage.keyDetails.addHashField(newFieldName, newFieldValue);
 
-      // Verify field was added
-      const fieldExists = await browserPage.keyDetails.hashFieldExists(newFieldName);
-      expect(fieldExists).toBe(true);
+      // Wait for field to be added (use polling to avoid race condition)
+      await expect(async () => {
+        const fieldExists = await browserPage.keyDetails.hashFieldExists(newFieldName);
+        expect(fieldExists).toBe(true);
+      }).toPass({ timeout: 10000 });
     });
 
     test(`should edit hash field ${Tags.CRITICAL}`, async ({ apiHelper }) => {
@@ -460,9 +462,11 @@ test.describe('Browser > Key Details', () => {
       // Add new member
       await browserPage.keyDetails.addZSetMember(newMember, newScore);
 
-      // Verify member count increased
-      const memberCount = await browserPage.keyDetails.getZSetMemberCount();
-      expect(memberCount).toBe(2);
+      // Wait for member count to increase (use polling to avoid race condition)
+      await expect(async () => {
+        const memberCount = await browserPage.keyDetails.getZSetMemberCount();
+        expect(memberCount).toBe(2);
+      }).toPass({ timeout: 10000 });
     });
 
     test(`should remove sorted set member ${Tags.CRITICAL}`, async ({ apiHelper }) => {
@@ -487,6 +491,32 @@ test.describe('Browser > Key Details', () => {
       // Verify member count decreased
       const memberCount = await browserPage.keyDetails.getZSetMemberCount();
       expect(memberCount).toBe(1);
+    });
+
+    test(`should edit sorted set member score ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+      const keyData = getZSetKeyData({
+        members: [
+          { member: 'member-a', score: '10' },
+          { member: 'member-b', score: '20' },
+        ],
+      });
+      const newScore = '99.5';
+
+      await apiHelper.createZSetKey(databaseId, keyData.keyName, keyData.members);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Edit the score of the first member (index 0)
+      await browserPage.keyDetails.editZSetMemberScore(0, newScore);
+
+      // Verify the score was updated (use polling to avoid race condition)
+      await expect(async () => {
+        const score = await browserPage.keyDetails.getZSetMemberScore(0);
+        expect(score).toContain(newScore);
+      }).toPass({ timeout: 10000 });
     });
   });
 
@@ -665,9 +695,34 @@ test.describe('Browser > Key Details', () => {
       // Add new field - key must be wrapped in quotes, value must be valid JSON
       await browserPage.keyDetails.addJsonField('"newKey"', '"newValue"');
 
-      // Verify field count increased
-      const newCount = await browserPage.keyDetails.getJsonFieldCount();
-      expect(newCount).toBe(initialCount + 1);
+      // Wait for field count to increase (use polling to avoid race condition)
+      await expect(async () => {
+        const newCount = await browserPage.keyDetails.getJsonFieldCount();
+        expect(newCount).toBe(initialCount + 1);
+      }).toPass({ timeout: 10000 });
+    });
+
+    test(`should edit JSON value ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+      const keyData = getJsonKeyData({
+        value: JSON.stringify({ field1: 'originalValue', field2: 'anotherValue' }),
+      });
+      const newValue = '"updatedValue"';
+
+      await apiHelper.createJsonKey(databaseId, keyData.keyName, keyData.value);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Edit the first JSON value (index 0)
+      await browserPage.keyDetails.editJsonValue(0, newValue);
+
+      // Verify the value was updated (use polling to avoid race condition)
+      await expect(async () => {
+        const value = await browserPage.keyDetails.getJsonValue(0);
+        expect(value).toContain('updatedValue');
+      }).toPass({ timeout: 10000 });
     });
   });
 });

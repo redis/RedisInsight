@@ -121,5 +121,42 @@ test.describe.serial('CLI > Panel', () => {
     // Cleanup
     await cliPanel.executeCommand('DEL cli_test_key');
   });
+
+  test(`should navigate command history with up/down arrows ${Tags.REGRESSION}`, async ({
+    page,
+    cliPanel,
+  }) => {
+    await cliPanel.open();
+
+    // Execute first command
+    await cliPanel.executeCommand('PING');
+    const hasPong = await cliPanel.outputContains('PONG');
+    expect(hasPong).toBe(true);
+
+    // Execute second command
+    await cliPanel.executeCommand('INFO server');
+    const hasInfo = await cliPanel.outputContains('redis_version');
+    expect(hasInfo).toBe(true);
+
+    // Focus on command input
+    await cliPanel.commandInput.focus();
+
+    // Press up arrow to get previous command
+    await page.keyboard.press('ArrowUp');
+
+    // Verify the command input shows the previous command
+    const cliText = await cliPanel.container.innerText();
+    expect(cliText).toContain('INFO server');
+
+    // Press up arrow again to get the first command
+    await page.keyboard.press('ArrowUp');
+    const cliText2 = await cliPanel.container.innerText();
+    expect(cliText2).toContain('PING');
+
+    // Press down arrow to go back to second command
+    await page.keyboard.press('ArrowDown');
+    const cliText3 = await cliPanel.container.innerText();
+    expect(cliText3).toContain('INFO server');
+  });
 });
 

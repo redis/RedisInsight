@@ -160,6 +160,37 @@ test.describe('Pub/Sub', () => {
       await pubsubPage.messageInput.fill(message);
       await expect(pubsubPage.messageInput).toHaveValue(message);
     });
+
+    test(`should receive published message ${Tags.CRITICAL}`, async ({
+      page,
+      createPubSubPage,
+    }) => {
+      const pubsubPage = createPubSubPage();
+      await pubsubPage.goto(databaseId);
+
+      const channelName = `test-channel-${faker.string.alphanumeric(6)}`;
+      const message = `Hello-${faker.string.alphanumeric(8)}`;
+
+      // Subscribe first
+      await pubsubPage.subscribe('*');
+      expect(await pubsubPage.isSubscribed()).toBe(true);
+
+      // Publish a message
+      await pubsubPage.publish(channelName, message);
+
+      // Wait for message to appear in the table
+      await expect(async () => {
+        const messagesCount = await pubsubPage.getMessagesCount();
+        expect(messagesCount).toBeGreaterThan(0);
+      }).toPass({ timeout: 10000 });
+
+      // Verify the message content is visible
+      await expect(page.getByText(message)).toBeVisible();
+      await expect(page.getByText(channelName)).toBeVisible();
+
+      // Cleanup
+      await pubsubPage.unsubscribe();
+    });
   });
 });
 

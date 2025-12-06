@@ -167,5 +167,134 @@ test.describe.serial('Workbench > Results View', () => {
     // Verify toggle is still visible
     await expect(groupToggle).toBeVisible();
   });
+
+  test(`should re-run command ${Tags.REGRESSION}`, async ({ page }) => {
+    // Clear any existing results first
+    const clearButton = page.getByTestId('clear-history-btn');
+    if (await clearButton.isVisible()) {
+      await clearButton.click();
+    }
+
+    // Execute a command first
+    await workbenchPage.executeCommand(COMMANDS.PING);
+
+    // Verify result exists
+    let resultCount = await workbenchPage.resultsPanel.getResultCount();
+    expect(resultCount).toBe(1);
+
+    // Click re-run button
+    const reRunButton = page.getByTestId('re-run-command');
+    await expect(reRunButton).toBeVisible();
+    await reRunButton.click();
+
+    // Wait for result count to increase
+    await expect(async () => {
+      const newCount = await workbenchPage.resultsPanel.getResultCount();
+      expect(newCount).toBe(2);
+    }).toPass({ timeout: 10000 });
+  });
+
+  test(`should delete command result ${Tags.REGRESSION}`, async ({ page }) => {
+    // Clear any existing results first
+    const clearButton = page.getByTestId('clear-history-btn');
+    if (await clearButton.isVisible()) {
+      await clearButton.click();
+    }
+
+    // Execute a command first
+    await workbenchPage.executeCommand(COMMANDS.PING);
+
+    // Verify result exists
+    let resultCount = await workbenchPage.resultsPanel.getResultCount();
+    expect(resultCount).toBe(1);
+
+    // Click delete button
+    const deleteButton = page.getByTestId('delete-command');
+    await expect(deleteButton).toBeVisible();
+    await deleteButton.click();
+
+    // Verify result is deleted
+    await expect(async () => {
+      const newCount = await workbenchPage.resultsPanel.getResultCount();
+      expect(newCount).toBe(0);
+    }).toPass({ timeout: 10000 });
+  });
+});
+
+test.describe.serial('Workbench > Tutorials', () => {
+  let databaseId: string;
+  let workbenchPage: WorkbenchPage;
+
+  test.beforeAll(async ({ apiHelper }) => {
+    const config = getStandaloneConfig();
+    const database = await apiHelper.createDatabase(config);
+    databaseId = database.id;
+  });
+
+  test.afterAll(async ({ apiHelper }) => {
+    if (databaseId) {
+      await apiHelper.deleteDatabase(databaseId);
+    }
+  });
+
+  test.beforeEach(async ({ page, createWorkbenchPage }) => {
+    await page.goto(`/${databaseId}/workbench`);
+    workbenchPage = createWorkbenchPage(databaseId);
+    await workbenchPage.waitForLoad();
+  });
+
+  test(`should open Intro to search tutorial ${Tags.SMOKE}`, async ({ page }) => {
+    // Click on Intro to search tutorial button
+    const tutorialButton = page.getByTestId('query-tutorials-link_sq-intro');
+    await expect(tutorialButton).toBeVisible();
+    await tutorialButton.click();
+
+    // Verify insights panel opens with tutorial content
+    const insightsPanel = page.getByTestId('side-panels-insights');
+    await expect(insightsPanel).toBeVisible();
+
+    // Verify tutorial tab is selected
+    const tutorialsTab = page.getByRole('tab', { name: 'Tutorials' });
+    await expect(tutorialsTab).toHaveAttribute('aria-selected', 'true');
+  });
+
+  test(`should open Basic use cases tutorial ${Tags.REGRESSION}`, async ({ page }) => {
+    // Click on Basic use cases tutorial button
+    const tutorialButton = page.getByTestId('query-tutorials-link_redis_use_cases_basic');
+    await expect(tutorialButton).toBeVisible();
+    await tutorialButton.click();
+
+    // Verify insights panel opens
+    const insightsPanel = page.getByTestId('side-panels-insights');
+    await expect(insightsPanel).toBeVisible();
+  });
+
+  test(`should click Explore button ${Tags.REGRESSION}`, async ({ page }) => {
+    // Click on Explore button in the no results area
+    const exploreButton = page.getByTestId('no-results-explore-btn');
+    await expect(exploreButton).toBeVisible();
+    await exploreButton.click();
+
+    // Verify insights panel opens
+    const insightsPanel = page.getByTestId('side-panels-insights');
+    await expect(insightsPanel).toBeVisible();
+  });
+
+  test(`should close insights panel ${Tags.REGRESSION}`, async ({ page }) => {
+    // Open insights panel first
+    const tutorialButton = page.getByTestId('query-tutorials-link_sq-intro');
+    await tutorialButton.click();
+
+    // Verify panel is open
+    const insightsPanel = page.getByTestId('side-panels-insights');
+    await expect(insightsPanel).toBeVisible();
+
+    // Close the panel
+    const closeButton = page.getByTestId('close-insights-btn');
+    await closeButton.click();
+
+    // Verify panel is closed
+    await expect(insightsPanel).not.toBeVisible();
+  });
 });
 

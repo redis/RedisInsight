@@ -183,6 +183,17 @@ export class KeyList {
   }
 
   /**
+   * Get key count as number
+   */
+  async getKeyCount(): Promise<number> {
+    const text = await this.getResultsCountText();
+    if (!text) return 0;
+    // Extract number from "Results: X." or "Total: X"
+    const match = text.match(/(\d+)/);
+    return match ? parseInt(match[1], 10) : 0;
+  }
+
+  /**
    * Refresh the key list
    */
   async refresh(): Promise<void> {

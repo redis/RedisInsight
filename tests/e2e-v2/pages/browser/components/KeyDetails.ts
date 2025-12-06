@@ -429,6 +429,34 @@ export class KeyDetails {
     await this.page.getByTestId(`zset-remove-button-${member}-icon`).waitFor({ state: 'hidden', timeout: 5000 });
   }
 
+  async editZSetMemberScore(rowIndex: number, newScore: string): Promise<void> {
+    // Click on the score cell to show edit button
+    const rows = this.zsetGrid.locator('[role="row"]').filter({ hasNot: this.page.locator('[role="columnheader"]') });
+    const row = rows.nth(rowIndex);
+    const scoreCell = row.locator('[role="gridcell"]').nth(1);
+    await scoreCell.click();
+    // Wait for edit button to appear and click it
+    const editButton = this.page.getByRole('button', { name: 'Edit field' });
+    await editButton.waitFor({ state: 'visible', timeout: 5000 });
+    await editButton.click();
+    // Fill new score in the textbox
+    const scoreInput = this.page.getByPlaceholder('Enter Score');
+    await scoreInput.waitFor({ state: 'visible', timeout: 5000 });
+    await scoreInput.clear();
+    await scoreInput.fill(newScore);
+    // Apply changes
+    await this.page.getByTestId('apply-btn').click();
+    // Wait for edit mode to close
+    await scoreInput.waitFor({ state: 'hidden', timeout: 5000 });
+  }
+
+  async getZSetMemberScore(rowIndex: number): Promise<string> {
+    const rows = this.zsetGrid.locator('[role="row"]').filter({ hasNot: this.page.locator('[role="columnheader"]') });
+    const row = rows.nth(rowIndex);
+    const scoreCell = row.locator('[role="gridcell"]').nth(1);
+    return await scoreCell.innerText();
+  }
+
   // Stream methods
   async getStreamEntryCount(): Promise<number> {
     // Stream entries are displayed differently - look for entry ID elements
@@ -571,6 +599,28 @@ export class KeyDetails {
     // Count the number of JSON scalar values
     const fields = this.page.getByTestId('json-scalar-value');
     return await fields.count();
+  }
+
+  async editJsonValue(fieldIndex: number, newValue: string): Promise<void> {
+    // Click on the JSON scalar value to enter edit mode
+    const scalarValues = this.page.getByTestId('json-scalar-value');
+    const targetValue = scalarValues.nth(fieldIndex);
+    await targetValue.click();
+    // Fill new value in the textbox
+    const valueInput = this.page.getByPlaceholder('Enter JSON value');
+    await valueInput.waitFor({ state: 'visible', timeout: 5000 });
+    await valueInput.clear();
+    await valueInput.fill(newValue);
+    // Apply changes
+    await this.page.getByTestId('apply-btn').click();
+    // Wait for edit mode to close
+    await valueInput.waitFor({ state: 'hidden', timeout: 5000 });
+  }
+
+  async getJsonValue(fieldIndex: number): Promise<string> {
+    const scalarValues = this.page.getByTestId('json-scalar-value');
+    const targetValue = scalarValues.nth(fieldIndex);
+    return await targetValue.innerText();
   }
 }
 
