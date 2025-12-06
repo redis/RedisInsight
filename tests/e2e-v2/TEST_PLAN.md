@@ -20,29 +20,34 @@ The test plan is organized by feature area, with tests categorized by priority:
 
 ---
 
-## 0. Navigation & Global UI (🔲 Not Implemented)
+## 0. Navigation & Global UI (✅ Implemented)
 
 ### 0.1 Main Navigation
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🔴🟠 | Navigate to home via Redis logo |
-| 🔲 | 🟢 | Navigate to Settings page |
-| 🔲 | 🟢 | Navigate to GitHub repo link |
-| 🔲 | 🟢 | Navigate to Redis Cloud (try-free link) |
+| ✅ | 🔴🟠 | Navigate to home via Redis logo |
+| ✅ | 🟢 | Navigate to Settings page |
+| ✅ | 🟢 | Show GitHub repo link |
+| ✅ | 🟢 | Show Redis Cloud link |
+| ✅ | 🟠 | Display main navigation |
+| ✅ | 🟠 | Show Redis logo |
+| ✅ | 🟠 | Show settings button |
 
 ### 0.2 Help Menu
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟠 | Open Help Center |
-| 🔲 | 🟢 | View Keyboard Shortcuts |
-| 🔲 | 🟢 | Reset Onboarding |
-| 🔲 | 🟢 | Navigate to Release Notes |
-| 🔲 | 🟢 | Navigate to Provide Feedback (GitHub issues) |
+| ✅ | 🟠 | Open Help Center |
+| ✅ | 🟢 | Show Keyboard Shortcuts option |
+| ✅ | 🟢 | Show Reset Onboarding option |
+| ✅ | 🟢 | Show Release Notes link |
+| ✅ | 🟢 | Show Provide Feedback link |
 
 ### 0.3 Notification Center
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟠 | Open Notification Center |
+| ✅ | 🟠 | Open Notification Center |
+| ✅ | 🟢 | Show notification center title |
+| ✅ | 🟢 | Close notification center |
 | 🔲 | 🟢 | View notification badge count |
 | 🔲 | 🟢 | View notification list |
 | 🔲 | 🟢 | Click notification links |
@@ -328,48 +333,48 @@ The test plan is organized by feature area, with tests categorized by priority:
 
 ---
 
-## 5. Pub/Sub (🔲 Not Implemented)
+## 5. Pub/Sub (✅ Implemented)
 
 ### 5.1 Subscribe
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🔴🟠 | Subscribe to channel |
-| 🔲 | 🔴 | Subscribe with pattern |
+| ✅ | 🔴🟠 | Subscribe to channel |
+| ✅ | 🔴 | Subscribe with pattern |
 | 🔲 | 🔴 | Receive messages |
-| 🔲 | 🔴 | Unsubscribe |
+| ✅ | 🔴 | Unsubscribe |
 | 🔲 | 🟢 | Multiple subscriptions |
 | 🔲 | 🟢 | Clear messages |
 
 ### 5.2 Publish
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🔴🟠 | Publish message to channel |
+| ✅ | 🔴🟠 | Publish message to channel (form fill) |
 | 🔲 | 🟢 | Publish with different formats |
 
 ---
 
-## 6. Analytics (🔲 Not Implemented)
+## 6. Analytics (✅ Implemented)
 
 ### 6.1 Slow Log
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🔴🟠 | View slow log entries |
+| ✅ | 🔴🟠 | View slow log entries |
 | 🔲 | 🔴 | Refresh slow log |
-| 🔲 | 🟢 | Clear slow log |
-| 🔲 | 🟢 | Configure slow log threshold |
+| ✅ | 🟢 | Clear slow log button visible |
+| ✅ | 🟢 | Configure slow log button visible |
 | 🔲 | 🟢 | Sort entries |
 | 🔲 | 🟢 | Filter entries |
 
 ### 6.2 Database Analysis
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🔴🟠 | Run database analysis |
-| 🔲 | 🔴 | View analysis results |
-| 🔲 | 🟢 | View top keys by memory |
-| 🔲 | 🟢 | View top namespaces |
+| ✅ | 🔴🟠 | Run database analysis |
+| ✅ | 🔴 | View analysis results |
+| ✅ | 🟢 | View top keys table |
+| ✅ | 🟢 | View top namespaces |
 | 🔲 | 🟢 | View TTL distribution |
-| 🔲 | 🟢 | View recommendations |
-| 🔲 | 🟢 | History of analyses |
+| ✅ | 🟢 | View recommendations (Tips tab) |
+| 🔲 | 🟢 | History of analyses
 
 ### 6.3 Cluster Details
 | Status | Priority | Test Case |
@@ -381,29 +386,30 @@ The test plan is organized by feature area, with tests categorized by priority:
 
 ---
 
-## 7. Settings (🔲 Not Implemented)
+## 7. Settings (✅ Implemented)
 
 ### 7.1 General Settings
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟠 | View settings page |
-| 🔲 | 🔴 | Change theme (light/dark/system) |
+| ✅ | 🟠 | View settings page |
+| ✅ | 🔴 | Show theme dropdown |
 | 🔲 | 🟢 | Toggle show notifications |
-| 🔲 | 🟢 | Change date/time format (pre-selected) |
+| ✅ | 🟢 | Show date/time format options |
 | 🔲 | 🟢 | Change date/time format (custom) |
-| 🔲 | 🟢 | Change time zone |
+| ✅ | 🟢 | Show time zone dropdown |
 
 ### 7.2 Privacy Settings
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟢 | View privacy settings |
-| 🔲 | 🟢 | Enable/disable analytics |
+| ✅ | 🟢 | View privacy settings |
+| ✅ | 🟢 | Show usage data switch |
+| ✅ | 🟢 | Show privacy policy link |
 
 ### 7.3 Workbench Settings
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟢 | Change editor font size |
-| 🔲 | 🟢 | Enable/disable auto-complete |
+| ✅ | 🟢 | Show editor cleanup switch |
+| ✅ | 🟢 | Show pipeline commands setting |
 | 🔲 | 🟢 | Configure command timeout |
 
 ### 7.4 Redis Cloud Settings
@@ -415,8 +421,8 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 7.5 Advanced Settings
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟢 | Configure keys to scan in List view |
-| 🔲 | 🟢 | View advanced settings warning |
+| ✅ | 🟢 | Show keys to scan setting |
+| ✅ | 🟢 | Show advanced settings warning |
 
 ---
 

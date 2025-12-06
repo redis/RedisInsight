@@ -1,5 +1,5 @@
 import { test as base } from '@playwright/test';
-import { DatabasesPage, BrowserPage, WorkbenchPage, CliPanel } from '../pages';
+import { DatabasesPage, BrowserPage, WorkbenchPage, CliPanel, AnalyticsPage, PubSubPage, SettingsPage, NavigationPage } from '../pages';
 import { ApiHelper } from '../helpers/api';
 
 type Fixtures = {
@@ -19,6 +19,24 @@ type Fixtures = {
    * CLI panel fixture - shared across pages
    */
   cliPanel: CliPanel;
+  /**
+   * Analytics page fixture - requires databaseId to be set
+   * Use createAnalyticsPage for dynamic database IDs
+   */
+  createAnalyticsPage: () => AnalyticsPage;
+  /**
+   * Pub/Sub page fixture - requires databaseId to be set
+   * Use createPubSubPage for dynamic database IDs
+   */
+  createPubSubPage: () => PubSubPage;
+  /**
+   * Settings page fixture
+   */
+  settingsPage: SettingsPage;
+  /**
+   * Navigation page fixture
+   */
+  navigationPage: NavigationPage;
 };
 
 export const test = base.extend<Fixtures>({
@@ -44,6 +62,22 @@ export const test = base.extend<Fixtures>({
 
   cliPanel: async ({ page }, use) => {
     await use(new CliPanel(page));
+  },
+
+  createAnalyticsPage: async ({ page }, use) => {
+    await use(() => new AnalyticsPage(page));
+  },
+
+  createPubSubPage: async ({ page }, use) => {
+    await use(() => new PubSubPage(page));
+  },
+
+  settingsPage: async ({ page }, use) => {
+    await use(new SettingsPage(page));
+  },
+
+  navigationPage: async ({ page }, use) => {
+    await use(new NavigationPage(page));
   },
 });
 
