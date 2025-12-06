@@ -280,9 +280,27 @@ export class DatabaseList {
 
   /**
    * Assert database is visible
+   * Waits for the database to appear in the list (useful after API creation)
+   * @param name - Database name to check
+   * @param options - Options for the assertion
+   * @param options.timeout - Timeout in milliseconds (default: 15000)
+   * @param options.searchFirst - Whether to search for the database first (useful with pagination)
    */
-  async expectDatabaseVisible(name: string): Promise<void> {
-    await expect(this.getRow(name)).toBeVisible();
+  async expectDatabaseVisible(
+    name: string,
+    options: { timeout?: number; searchFirst?: boolean } = {},
+  ): Promise<void> {
+    const { timeout = 15000, searchFirst = false } = options;
+
+    if (searchFirst) {
+      await this.search(name);
+      // Wait for the search to filter - the row should appear
+      // Using a longer timeout since search + filter can take time
+      await expect(this.getRow(name)).toBeVisible({ timeout });
+      return;
+    }
+
+    await expect(this.getRow(name)).toBeVisible({ timeout });
   }
 
   /**

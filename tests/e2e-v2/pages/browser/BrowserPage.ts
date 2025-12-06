@@ -1,6 +1,6 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from '../BasePage';
-import { AddKeyDialog, KeyList } from './components';
+import { AddKeyDialog, KeyDetails, KeyList } from './components';
 
 /**
  * Browser Page Object
@@ -11,6 +11,7 @@ export class BrowserPage extends BasePage {
 
   // Components
   readonly addKeyDialog: AddKeyDialog;
+  readonly keyDetails: KeyDetails;
   readonly keyList: KeyList;
 
   // Navigation tabs
@@ -46,6 +47,7 @@ export class BrowserPage extends BasePage {
 
     // Initialize components
     this.addKeyDialog = new AddKeyDialog(page);
+    this.keyDetails = new KeyDetails(page);
     this.keyList = new KeyList(page);
 
     // Navigation tabs

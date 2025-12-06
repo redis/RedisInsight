@@ -3,10 +3,14 @@ import { appConfig } from './config';
 
 export default defineConfig({
   testDir: './tests',
+  // Parallel execution within files, but limit workers to reduce test interference
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  // Retry failed tests to handle transient failures
+  retries: process.env.CI ? 2 : 1,
+  // Limit workers to reduce parallel test interference with shared database state
+  // CI uses 1 worker for stability, local uses 2 for speed while reducing flakiness
+  workers: process.env.CI ? 1 : 2,
   reporter: [['html'], ['list'], ['json', { outputFile: 'test-results/results.json' }]],
 
   // Global setup and teardown

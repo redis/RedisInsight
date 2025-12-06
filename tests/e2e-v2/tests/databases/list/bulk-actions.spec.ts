@@ -23,10 +23,14 @@ test.describe.serial('Database List > Bulk Actions', () => {
     await apiHelper.createDatabase(getStandaloneConfig({ name: dbNames.second }));
     await apiHelper.createDatabase(getStandaloneConfig({ name: dbNames.third }));
 
+    // Navigate and reload to ensure the list shows newly created databases
     await databasesPage.goto();
+    await databasesPage.reload();
 
-    // Wait for the first database to be visible to ensure the page has loaded
-    await databasesPage.databaseList.expectDatabaseVisible(dbNames.first);
+    // Wait for the first database to be visible (search first to handle pagination)
+    await databasesPage.databaseList.expectDatabaseVisible(dbNames.first, { searchFirst: true });
+    // Clear search for the actual test
+    await databasesPage.databaseList.clearSearch();
   });
 
   test.afterEach(async ({ apiHelper }) => {
@@ -38,6 +42,9 @@ test.describe.serial('Database List > Bulk Actions', () => {
     test(`should select single database ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ databasesPage }) => {
       const { databaseList } = databasesPage;
 
+      // Filter to show only our test databases
+      await databaseList.search(uniquePrefix);
+
       await databaseList.selectRow(dbNames.first);
 
       expect(await databaseList.isRowSelected(dbNames.first)).toBe(true);
@@ -47,6 +54,9 @@ test.describe.serial('Database List > Bulk Actions', () => {
 
     test(`should select multiple databases ${Tags.REGRESSION}`, async ({ databasesPage }) => {
       const { databaseList } = databasesPage;
+
+      // Filter to show only our test databases
+      await databaseList.search(uniquePrefix);
 
       await databaseList.selectRow(dbNames.first);
       await databaseList.selectRow(dbNames.second);
@@ -58,6 +68,9 @@ test.describe.serial('Database List > Bulk Actions', () => {
 
     test(`should unselect database ${Tags.REGRESSION}`, async ({ databasesPage }) => {
       const { databaseList } = databasesPage;
+
+      // Filter to show only our test databases
+      await databaseList.search(uniquePrefix);
 
       await databaseList.selectRow(dbNames.first);
       await databaseList.selectRow(dbNames.second);
@@ -91,6 +104,9 @@ test.describe.serial('Database List > Bulk Actions', () => {
     test(`should cancel selection ${Tags.REGRESSION}`, async ({ databasesPage }) => {
       const { databaseList } = databasesPage;
 
+      // Filter to show only our test databases
+      await databaseList.search(uniquePrefix);
+
       await databaseList.selectRow(dbNames.first);
       await databaseList.selectRow(dbNames.second);
       await databaseList.cancelSelection();
@@ -105,18 +121,25 @@ test.describe.serial('Database List > Bulk Actions', () => {
     test(`should delete multiple selected databases ${Tags.CRITICAL}`, async ({ databasesPage }) => {
       const { databaseList } = databasesPage;
 
+      // Filter to show only our test databases
+      await databaseList.search(uniquePrefix);
+
       await databaseList.selectRow(dbNames.first);
       await databaseList.selectRow(dbNames.second);
       await databaseList.deleteSelected();
 
-      // Verify databases are removed
+      // Verify databases are removed (clear search first to check full list)
+      await databaseList.clearSearch();
       await databaseList.expectDatabaseNotVisible(dbNames.first);
       await databaseList.expectDatabaseNotVisible(dbNames.second);
-      await databaseList.expectDatabaseVisible(dbNames.third);
+      await databaseList.expectDatabaseVisible(dbNames.third, { searchFirst: true });
     });
 
     test(`should show delete confirmation dialog ${Tags.REGRESSION}`, async ({ databasesPage }) => {
       const { databaseList } = databasesPage;
+
+      // Filter to show only our test databases
+      await databaseList.search(uniquePrefix);
 
       await databaseList.selectRow(dbNames.first);
       await databaseList.bulkDeleteButton.click();

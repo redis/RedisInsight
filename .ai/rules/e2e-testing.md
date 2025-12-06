@@ -297,26 +297,24 @@ test.beforeEach(async ({ featurePage }) => {
 });
 ```
 
-## Test Plan Priorities
-
-When implementing tests, follow this priority order from `TEST_PLAN.md`:
-
-1. **Phase 1** - Core: Browser (keys), Workbench, CLI
-2. **Phase 2** - Key Types: List, Set, ZSet, Stream, JSON
-3. **Phase 3** - Analytics: Slow Log, DB Analysis, Pub/Sub
-4. **Phase 4** - Advanced: Settings, Cluster, Vector Search
-5. **Phase 5** - Integrations: Redis Cloud, Sentinel
-
 ## Feature-to-Path Mapping
+
+Follow this naming convention for test and page object paths:
 
 | Feature | Test Path | Page Object Path |
 |---------|-----------|------------------|
 | Database List | `tests/databases/list/` | `pages/databases/` |
 | Add Database | `tests/databases/add/` | `pages/databases/` |
 | Import Database | `tests/databases/import/` | `pages/databases/` |
-| Browser Keys | `tests/browser/keys/` | `pages/browser/` |
+| Browser - Key List | `tests/browser/key-list/` | `pages/browser/` |
+| Browser - Add Key | `tests/browser/add-key/` | `pages/browser/` |
+| Browser - Key Details | `tests/browser/key-details/` | `pages/browser/` |
 | Workbench | `tests/workbench/` | `pages/workbench/` |
+| CLI | `tests/cli/` | `pages/cli/` |
 | Pub/Sub | `tests/pubsub/` | `pages/pubsub/` |
-| Slow Log | `tests/analytics/slowlog/` | `pages/analytics/` |
+| Slow Log | `tests/analytics/slow-log/` | `pages/analytics/` |
 | DB Analysis | `tests/analytics/analysis/` | `pages/analytics/` |
 | Settings | `tests/settings/` | `pages/settings/` |
+| Navigation | `tests/navigation/` | `pages/navigation/` |
+
+**Note**: Refer to `TEST_PLAN.md` for implementation priorities and test coverage status.

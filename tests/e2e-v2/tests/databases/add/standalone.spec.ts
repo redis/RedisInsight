@@ -1,4 +1,4 @@
-import { test, expect } from '../../../fixtures/base';
+import { test } from '../../../fixtures/base';
 import { getStandaloneConfig, TEST_DB_PREFIX } from '../../../test-data/databases';
 import { Tags } from '../../../config';
 
@@ -24,7 +24,8 @@ test.describe.serial('Add Database > Standalone', () => {
 
     await databasesPage.addDatabase(config);
 
-    await expect(databasesPage.databaseList.getRow(config.name)).toBeVisible();
+    // Search for the database to handle pagination
+    await databasesPage.databaseList.expectDatabaseVisible(config.name, { searchFirst: true });
   });
 
   test(`should add database with no auth ${Tags.REGRESSION}`, async ({ databasesPage }) => {
@@ -36,7 +37,8 @@ test.describe.serial('Add Database > Standalone', () => {
 
     await databasesPage.addDatabase(config);
 
-    await expect(databasesPage.databaseList.getRow(config.name)).toBeVisible();
+    // Search for the database to handle pagination
+    await databasesPage.databaseList.expectDatabaseVisible(config.name, { searchFirst: true });
   });
 
   test(`should add database with username only ${Tags.REGRESSION}`, async ({ databasesPage }) => {
@@ -48,7 +50,8 @@ test.describe.serial('Add Database > Standalone', () => {
 
     await databasesPage.addDatabase(config);
 
-    await expect(databasesPage.databaseList.getRow(config.name)).toBeVisible();
+    // Search for the database to handle pagination
+    await databasesPage.databaseList.expectDatabaseVisible(config.name, { searchFirst: true });
   });
 
   test(`should add database with username and password ${Tags.REGRESSION}`, async ({ databasesPage }) => {
@@ -60,6 +63,7 @@ test.describe.serial('Add Database > Standalone', () => {
 
     await databasesPage.addDatabase(config);
 
-    await expect(databasesPage.databaseList.getRow(config.name)).toBeVisible();
+    // Search for the database to handle pagination
+    await databasesPage.databaseList.expectDatabaseVisible(config.name, { searchFirst: true });
   });
 });

@@ -25,10 +25,14 @@ test.describe.serial('Database List > Search', () => {
     await apiHelper.createDatabase(getStandaloneConfig({ name: dbNames.gamma }));
     await apiHelper.createDatabase(getStandaloneConfig({ name: dbNames.unique }));
 
+    // Navigate and reload to ensure the list shows newly created databases
     await databasesPage.goto();
+    await databasesPage.reload();
 
-    // Wait for the first database to be visible to ensure the page has loaded
-    await databasesPage.databaseList.expectDatabaseVisible(dbNames.alpha);
+    // Wait for the first database to be visible (search first to handle pagination)
+    await databasesPage.databaseList.expectDatabaseVisible(dbNames.alpha, { searchFirst: true });
+    // Clear search for the actual test
+    await databasesPage.databaseList.clearSearch();
   });
 
   test.afterEach(async ({ apiHelper }) => {

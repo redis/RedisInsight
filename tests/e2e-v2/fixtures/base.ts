@@ -1,5 +1,5 @@
 import { test as base } from '@playwright/test';
-import { DatabasesPage, BrowserPage } from '../pages';
+import { DatabasesPage, BrowserPage, WorkbenchPage, CliPanel } from '../pages';
 import { ApiHelper } from '../helpers/api';
 
 type Fixtures = {
@@ -10,6 +10,15 @@ type Fixtures = {
    * Use createBrowserPage for dynamic database IDs
    */
   createBrowserPage: (databaseId: string) => BrowserPage;
+  /**
+   * Workbench page fixture - requires databaseId to be set
+   * Use createWorkbenchPage for dynamic database IDs
+   */
+  createWorkbenchPage: (databaseId: string) => WorkbenchPage;
+  /**
+   * CLI panel fixture - shared across pages
+   */
+  cliPanel: CliPanel;
 };
 
 export const test = base.extend<Fixtures>({
@@ -26,6 +35,15 @@ export const test = base.extend<Fixtures>({
 
   createBrowserPage: async ({ page }, use) => {
     await use((databaseId: string) => new BrowserPage(page, databaseId));
+  },
+
+  createWorkbenchPage: async ({ page }, use) => {
+    // databaseId is used for navigation context but WorkbenchPage doesn't need it directly
+    await use((_databaseId: string) => new WorkbenchPage(page));
+  },
+
+  cliPanel: async ({ page }, use) => {
+    await use(new CliPanel(page));
   },
 });
 

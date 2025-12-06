@@ -16,10 +16,15 @@ test.describe.serial('Database List > Column Configuration', () => {
 
     // Create a test database to have data in the list
     await apiHelper.createDatabase(getStandaloneConfig({ name: dbName }));
-    await databasesPage.goto();
 
-    // Wait for the database to be visible to ensure the page has loaded
-    await databasesPage.databaseList.expectDatabaseVisible(dbName);
+    // Navigate and reload to ensure the list shows newly created databases
+    await databasesPage.goto();
+    await databasesPage.reload();
+
+    // Wait for the database to be visible (search first to handle pagination)
+    await databasesPage.databaseList.expectDatabaseVisible(dbName, { searchFirst: true });
+    // Clear search for the actual test
+    await databasesPage.databaseList.clearSearch();
   });
 
   test.afterEach(async ({ apiHelper }) => {

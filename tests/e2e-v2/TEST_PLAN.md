@@ -16,6 +16,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 - ✅ Implemented
 - 🔲 Not implemented
 - ⏳ In progress
+- ⏸️ Skipped
 
 ---
 
@@ -186,7 +187,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 2.4 Key Details - String
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🔴🟠 | View string value |
+| ✅ | 🔴🟠 | View string value |
 | 🔲 | 🔴 | Edit string value |
 | 🔲 | 🟢 | View/edit TTL |
 | 🔲 | 🟢 | Copy value |
@@ -195,7 +196,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 2.5 Key Details - Hash
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🔴🟠 | View hash fields |
+| ✅ | 🔴🟠 | View hash fields |
 | 🔲 | 🔴 | Add hash field |
 | 🔲 | 🔴 | Edit hash field |
 | 🔲 | 🔴 | Delete hash field |
@@ -257,17 +258,17 @@ The test plan is organized by feature area, with tests categorized by priority:
 
 ---
 
-## 3. Workbench (🔲 Not Implemented)
+## 3. Workbench (� In Progress)
 
 ### 3.1 Command Execution
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🔴🟠 | Execute single Redis command |
-| 🔲 | 🔴 | Execute multiple commands |
-| 🔲 | 🔴 | View command result |
+| ✅ | 🔴🟠 | Execute single Redis command |
+| ✅ | 🔴 | Execute multiple commands |
+| ✅ | 🔴 | View command result |
 | 🔲 | 🟢 | Command autocomplete |
 | 🔲 | 🟢 | Command syntax highlighting |
-| 🔲 | 🔴 | Handle command error |
+| ✅ | 🔴 | Handle command error |
 | 🔲 | 🟢 | Clear editor |
 | 🔲 | 🟢 | History navigation |
 | 🔲 | 🟢 | Toggle Raw mode |
@@ -276,12 +277,12 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 3.2 Results View
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🔴🟠 | View text result |
+| ✅ | 🔴🟠 | View text result |
 | 🔲 | 🟢 | View table result |
 | 🔲 | 🟢 | View JSON result |
 | 🔲 | 🟢 | Copy result |
 | 🔲 | 🟢 | Expand/collapse results |
-| 🔲 | 🟢 | Clear results |
+| ✅ | 🟢 | Clear results |
 
 ### 3.3 Tutorials
 | Status | Priority | Test Case |
@@ -311,18 +312,18 @@ The test plan is organized by feature area, with tests categorized by priority:
 
 ---
 
-## 4. CLI (🔲 Not Implemented)
+## 4. CLI (� In Progress)
 
 ### 4.1 CLI Panel
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🔴🟠 | Open CLI panel |
-| 🔲 | 🔴 | Execute command |
-| 🔲 | 🔴 | View command output |
+| ✅ | 🔴🟠 | Open CLI panel |
+| ✅ | 🔴 | Execute command |
+| ✅ | 🔴 | View command output |
 | 🔲 | 🟢 | Command history (up/down arrows) |
 | 🔲 | 🟢 | Tab completion |
 | 🔲 | 🟢 | Clear CLI |
-| 🔲 | 🟢 | Close CLI panel |
+| ✅ | 🟢 | Close CLI panel |
 | 🔲 | 🟢 | Multiple CLI sessions |
 
 ---

@@ -113,6 +113,36 @@ export class ApiHelper {
   }
 
   /**
+   * Create a String key via API
+   */
+  async createStringKey(databaseId: string, keyName: string, value: string): Promise<void> {
+    const ctx = await this.getContext();
+    const response = await ctx.post(`/api/databases/${databaseId}/string`, {
+      data: { keyName, value },
+    });
+
+    if (!response.ok()) {
+      const body = await response.text();
+      throw new Error(`Failed to create string key: ${response.status()} - ${body}`);
+    }
+  }
+
+  /**
+   * Create a Hash key via API
+   */
+  async createHashKey(databaseId: string, keyName: string, fields: { field: string; value: string }[]): Promise<void> {
+    const ctx = await this.getContext();
+    const response = await ctx.post(`/api/databases/${databaseId}/hash`, {
+      data: { keyName, fields },
+    });
+
+    if (!response.ok()) {
+      const body = await response.text();
+      throw new Error(`Failed to create hash key: ${response.status()} - ${body}`);
+    }
+  }
+
+  /**
    * Delete keys matching a pattern in a database
    * Uses SCAN + DEL to avoid blocking
    */
