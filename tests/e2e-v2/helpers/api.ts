@@ -143,6 +143,92 @@ export class ApiHelper {
   }
 
   /**
+   * Create a List key via API
+   * Uses the POST /list endpoint with elements array
+   */
+  async createListKey(databaseId: string, keyName: string, elements: string[]): Promise<void> {
+    const ctx = await this.getContext();
+    const response = await ctx.post(`/api/databases/${databaseId}/list`, {
+      data: { keyName, elements, destination: 'TAIL' },
+    });
+
+    if (!response.ok()) {
+      const body = await response.text();
+      throw new Error(`Failed to create list key: ${response.status()} - ${body}`);
+    }
+  }
+
+  /**
+   * Create a Set key via API
+   */
+  async createSetKey(databaseId: string, keyName: string, members: string[]): Promise<void> {
+    const ctx = await this.getContext();
+    const response = await ctx.post(`/api/databases/${databaseId}/set`, {
+      data: { keyName, members },
+    });
+
+    if (!response.ok()) {
+      const body = await response.text();
+      throw new Error(`Failed to create set key: ${response.status()} - ${body}`);
+    }
+  }
+
+  /**
+   * Create a Sorted Set (ZSet) key via API
+   * Uses the POST /zSet endpoint with members array containing {name, score}
+   */
+  async createZSetKey(databaseId: string, keyName: string, members: { member: string; score: string }[]): Promise<void> {
+    const ctx = await this.getContext();
+    const response = await ctx.post(`/api/databases/${databaseId}/zSet`, {
+      data: { keyName, members: members.map((m) => ({ name: m.member, score: parseFloat(m.score) })) },
+    });
+
+    if (!response.ok()) {
+      const body = await response.text();
+      throw new Error(`Failed to create zset key: ${response.status()} - ${body}`);
+    }
+  }
+
+  /**
+   * Create a Stream key via API
+   * Uses the POST /streams endpoint with entries array containing {id, fields}
+   * Fields should be {name, value} pairs
+   */
+  async createStreamKey(
+    databaseId: string,
+    keyName: string,
+    fields: { field: string; value: string }[],
+    entryId: string = '*',
+  ): Promise<void> {
+    const ctx = await this.getContext();
+    // Convert field/value to name/value format expected by API
+    const formattedFields = fields.map((f) => ({ name: f.field, value: f.value }));
+    const response = await ctx.post(`/api/databases/${databaseId}/streams`, {
+      data: { keyName, entries: [{ id: entryId, fields: formattedFields }] },
+    });
+
+    if (!response.ok()) {
+      const body = await response.text();
+      throw new Error(`Failed to create stream key: ${response.status()} - ${body}`);
+    }
+  }
+
+  /**
+   * Create a JSON key via API
+   */
+  async createJsonKey(databaseId: string, keyName: string, value: string): Promise<void> {
+    const ctx = await this.getContext();
+    const response = await ctx.post(`/api/databases/${databaseId}/rejson-rl`, {
+      data: { keyName, data: value },
+    });
+
+    if (!response.ok()) {
+      const body = await response.text();
+      throw new Error(`Failed to create json key: ${response.status()} - ${body}`);
+    }
+  }
+
+  /**
    * Delete keys matching a pattern in a database
    * Uses SCAN + DEL to avoid blocking
    */

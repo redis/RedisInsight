@@ -4,6 +4,11 @@ import { getStandaloneConfig } from '../../../test-data/databases';
 import {
   getStringKeyData,
   getHashKeyData,
+  getListKeyData,
+  getSetKeyData,
+  getZSetKeyData,
+  getStreamKeyData,
+  getJsonKeyData,
   TEST_KEY_PREFIX,
 } from '../../../test-data/browser';
 import { BrowserPage } from '../../../pages';
@@ -121,8 +126,262 @@ test.describe('Browser > Key Details', () => {
     });
   });
 
-  // Note: Close key details panel test is skipped due to complex UI state management
-  // The close button behavior varies depending on the panel state (collapsed vs expanded key list)
-  // TODO: Investigate and implement proper close functionality test
+  test.describe('List Key Details', () => {
+    test(`should display List key details ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+      const keyData = getListKeyData();
+
+      // Create list key via API
+      await apiHelper.createListKey(databaseId, keyData.keyName, keyData.elements);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Verify key details are displayed
+      await expect(browserPage.keyDetails.keyName).toContainText(keyData.keyName);
+      const keyType = await browserPage.keyDetails.getKeyType();
+      expect(keyType.toLowerCase()).toBe('list');
+    });
+
+    test(`should show list elements ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+      const keyData = getListKeyData({ elements: ['element-1', 'element-2', 'element-3'] });
+
+      await apiHelper.createListKey(databaseId, keyData.keyName, keyData.elements);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Verify elements are displayed
+      const elementCount = await browserPage.keyDetails.getListElementCount();
+      expect(elementCount).toBe(3);
+    });
+
+    test(`should show Add Elements button for List ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+      const keyData = getListKeyData();
+
+      await apiHelper.createListKey(databaseId, keyData.keyName, keyData.elements);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      await expect(browserPage.keyDetails.addElementButton).toBeVisible();
+    });
+  });
+
+  test.describe('Set Key Details', () => {
+    test(`should display Set key details ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+      const keyData = getSetKeyData();
+
+      // Create set key via API
+      await apiHelper.createSetKey(databaseId, keyData.keyName, keyData.members);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Verify key details are displayed
+      await expect(browserPage.keyDetails.keyName).toContainText(keyData.keyName);
+      const keyType = await browserPage.keyDetails.getKeyType();
+      expect(keyType.toLowerCase()).toBe('set');
+    });
+
+    test(`should show set members ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+      const keyData = getSetKeyData({ members: ['member-1', 'member-2', 'member-3'] });
+
+      await apiHelper.createSetKey(databaseId, keyData.keyName, keyData.members);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Verify members are displayed
+      const memberCount = await browserPage.keyDetails.getSetMemberCount();
+      expect(memberCount).toBe(3);
+    });
+
+    test(`should show Add Members button for Set ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+      const keyData = getSetKeyData();
+
+      await apiHelper.createSetKey(databaseId, keyData.keyName, keyData.members);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      await expect(browserPage.keyDetails.addMembersButton).toBeVisible();
+    });
+  });
+
+  test.describe('Sorted Set (ZSet) Key Details', () => {
+    test(`should display Sorted Set key details ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+      const keyData = getZSetKeyData();
+
+      // Create zset key via API
+      await apiHelper.createZSetKey(databaseId, keyData.keyName, keyData.members);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Verify key details are displayed
+      await expect(browserPage.keyDetails.keyName).toContainText(keyData.keyName);
+      const keyType = await browserPage.keyDetails.getKeyType();
+      expect(keyType.toLowerCase()).toBe('sorted set');
+    });
+
+    test(`should show sorted set members with scores ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+      const keyData = getZSetKeyData({
+        members: [
+          { member: 'member-a', score: '10' },
+          { member: 'member-b', score: '20' },
+          { member: 'member-c', score: '30' },
+        ],
+      });
+
+      await apiHelper.createZSetKey(databaseId, keyData.keyName, keyData.members);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Verify members are displayed
+      const memberCount = await browserPage.keyDetails.getZSetMemberCount();
+      expect(memberCount).toBe(3);
+    });
+
+    test(`should show Add Members button for Sorted Set ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+      const keyData = getZSetKeyData();
+
+      await apiHelper.createZSetKey(databaseId, keyData.keyName, keyData.members);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      await expect(browserPage.keyDetails.addMembersButton).toBeVisible();
+    });
+  });
+
+  test.describe('Stream Key Details', () => {
+    test(`should display Stream key details ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+      const keyData = getStreamKeyData();
+
+      // Create stream key via API
+      await apiHelper.createStreamKey(databaseId, keyData.keyName, keyData.fields);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Verify key details are displayed
+      await expect(browserPage.keyDetails.keyName).toContainText(keyData.keyName);
+      const keyType = await browserPage.keyDetails.getKeyType();
+      expect(keyType.toLowerCase()).toBe('stream');
+    });
+
+    test(`should show Stream Data tab ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+      const keyData = getStreamKeyData();
+
+      await apiHelper.createStreamKey(databaseId, keyData.keyName, keyData.fields);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Verify Stream Data tab is visible and selected
+      await expect(browserPage.keyDetails.streamDataTab).toBeVisible();
+      const isSelected = await browserPage.keyDetails.isStreamDataTabSelected();
+      expect(isSelected).toBe(true);
+    });
+
+    test(`should show Consumer Groups tab ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+      const keyData = getStreamKeyData();
+
+      await apiHelper.createStreamKey(databaseId, keyData.keyName, keyData.fields);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Verify Consumer Groups tab is visible
+      await expect(browserPage.keyDetails.consumerGroupsTab).toBeVisible();
+    });
+
+    test(`should show New Entry button for Stream ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+      const keyData = getStreamKeyData();
+
+      await apiHelper.createStreamKey(databaseId, keyData.keyName, keyData.fields);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      await expect(browserPage.keyDetails.newEntryButton).toBeVisible();
+    });
+  });
+
+  test.describe('JSON Key Details', () => {
+    test(`should display JSON key details ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+      const keyData = getJsonKeyData();
+
+      // Create JSON key via API
+      await apiHelper.createJsonKey(databaseId, keyData.keyName, keyData.value);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Verify key details are displayed
+      await expect(browserPage.keyDetails.keyName).toContainText(keyData.keyName);
+      const keyType = await browserPage.keyDetails.getKeyType();
+      expect(keyType.toLowerCase()).toBe('json');
+    });
+
+    test(`should show JSON content ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+      const keyData = getJsonKeyData({
+        value: JSON.stringify({ name: 'test', value: 123 }),
+      });
+
+      await apiHelper.createJsonKey(databaseId, keyData.keyName, keyData.value);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Verify JSON content is visible
+      const isVisible = await browserPage.keyDetails.isJsonContentVisible();
+      expect(isVisible).toBe(true);
+    });
+
+    test(`should show Add field button for JSON ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+      const keyData = getJsonKeyData();
+
+      await apiHelper.createJsonKey(databaseId, keyData.keyName, keyData.value);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      await expect(browserPage.keyDetails.addJsonFieldButton).toBeVisible();
+    });
+  });
 });
 

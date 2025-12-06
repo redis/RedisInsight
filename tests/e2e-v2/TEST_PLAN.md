@@ -206,7 +206,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 2.6 Key Details - List
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🔴🟠 | View list elements |
+| ✅ | 🔴🟠 | View list elements |
 | 🔲 | 🔴 | Add element (LPUSH/RPUSH) |
 | 🔲 | 🔴 | Edit list element |
 | 🔲 | 🔴 | Remove element |
@@ -215,7 +215,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 2.7 Key Details - Set
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🔴🟠 | View set members |
+| ✅ | 🔴🟠 | View set members |
 | 🔲 | 🔴 | Add member |
 | 🔲 | 🔴 | Remove member |
 | 🔲 | 🟢 | Search members |
@@ -223,7 +223,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 2.8 Key Details - Sorted Set
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🔴🟠 | View sorted set members |
+| ✅ | 🔴🟠 | View sorted set members |
 | 🔲 | 🔴 | Add member with score |
 | 🔲 | 🔴 | Edit member score |
 | 🔲 | 🔴 | Remove member |
@@ -233,16 +233,16 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 2.9 Key Details - Stream
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🔴🟠 | View stream entries |
+| ✅ | 🔴🟠 | View stream entries |
 | 🔲 | 🔴 | Add stream entry |
-| 🔲 | 🟢 | View consumer groups |
+| ✅ | 🟢 | View consumer groups |
 | 🔲 | 🟢 | Add consumer group |
 | 🔲 | 🟢 | View consumers |
 
 ### 2.10 Key Details - JSON
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🔴🟠 | View JSON value |
+| ✅ | 🔴🟠 | View JSON value |
 | 🔲 | 🔴 | Edit JSON value |
 | 🔲 | 🟢 | Add JSON path |
 | 🔲 | 🟢 | Delete JSON path |
