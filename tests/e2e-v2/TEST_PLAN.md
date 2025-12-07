@@ -92,6 +92,9 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Open Connection settings from URL form |
 | ✅ | 🟢 | Configure timeout setting |
 | ✅ | 🟢 | Select logical database |
+| 🔲 | 🟢 | Logical database index displayed in database list |
+| 🔲 | 🟢 | Logical database index displayed in database header |
+| 🔲 | 🟢 | Logical database index displayed in edit form |
 | ✅ | 🟢 | Force standalone connection |
 | ✅ | 🟢 | Enable automatic data decompression |
 | ✅ | 🟢 | Configure key name format (Unicode/ASCII/etc) |
@@ -128,6 +131,21 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Clone database connection |
 | ✅ | 🔴 | Connect to database |
 | 🔲 | 🟢 | Database connection status indicator |
+| 🔲 | 🟢 | Search by database name |
+| 🔲 | 🟢 | Search by host |
+| 🔲 | 🟢 | Search by port |
+| 🔲 | 🟢 | Search by connection type (OSS Cluster, Sentinel) |
+| 🔲 | 🟢 | Search by last connection time |
+| 🔲 | 🟢 | Verify Redis Stack icon displayed for databases with modules |
+
+### 1.3 Clone Database
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟠 | Clone standalone database with pre-populated form |
+| 🔲 | 🟢 | Clone OSS Cluster database |
+| 🔲 | 🟢 | Clone Sentinel database |
+| 🔲 | 🟢 | Verify "New Connection" badge on cloned database |
+| 🔲 | 🟢 | Verify cloned database appears in list after creation |
 
 ### 1.4 Pagination (when > 15 databases)
 | Status | Priority | Test Case |
@@ -205,6 +223,13 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | View folder percentage and count |
 | ✅ | 🟢 | Scan more keys (covered by "should show scan more button when searching" test) |
 | ✅ | 🟢 | Open tree view settings |
+| 🔲 | 🟢 | Tree view mode state persists after page refresh |
+| 🔲 | 🟢 | Filter state preserved when switching between Browser and Tree view |
+| 🔲 | 🟢 | Key type filter state preserved when switching views |
+| 🔲 | 🟢 | Configure multiple delimiters in tree view |
+| 🔲 | 🟢 | Cancel delimiter change reverts to previous value |
+| 🔲 | 🟢 | Verify namespace tooltip shows key pattern and delimiter |
+| 🔲 | 🟢 | Scan DB by 10K keys in tree view |
 
 ### 2.3 Add Keys (✅ Implemented)
 | Status | Priority | Test Case |
@@ -278,6 +303,27 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Add consumer group |
 | ⏭️ | 🟢 | View consumers (N/A - requires active consumers which need external client) |
 
+### 2.9.1 Stream Consumer Groups
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟠 | Create consumer group with Entry ID "0" (from beginning) |
+| 🔲 | 🟠 | Create consumer group with Entry ID "$" (new messages only) |
+| 🔲 | 🟢 | Create consumer group with custom Entry ID |
+| 🔲 | 🟢 | View consumer group columns (Group Name, Consumers, Pending, Last Delivered ID) |
+| 🔲 | 🟢 | View consumer information columns (Consumer Name, Pending, Idle Time) |
+| 🔲 | 🟢 | Delete consumer from consumer group |
+| 🔲 | 🟢 | Delete consumer group |
+| 🔲 | 🟢 | Edit Last Delivered ID for consumer group |
+
+### 2.9.2 Stream Pending Messages
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟠 | View pending messages for consumer |
+| 🔲 | 🟢 | Acknowledge pending message |
+| 🔲 | 🟢 | Claim pending message |
+| 🔲 | 🟢 | Claim pending message with idle time parameter |
+| 🔲 | 🟢 | Force claim pending message |
+
 ### 2.10 Key Details - JSON
 | Status | Priority | Test Case |
 |--------|----------|-----------|
@@ -315,10 +361,14 @@ The test plan is organized by feature area, with tests categorized by priority:
 | 🔲 | 🟢 | View value in Java serialized format |
 | 🔲 | 🟢 | View value in PHP serialized format |
 | 🔲 | 🟢 | View value in Pickle format |
+| 🔲 | 🟢 | View value in DateTime/timestamp format |
 | 🔲 | 🟢 | Confirm conversion between formats is smooth |
 | 🔲 | 🟢 | Confirm non-editable formats disable inline editing |
 | 🔲 | 🟢 | Confirm tooltip explains conversion errors |
 | 🔲 | 🟢 | Confirm switching formats for large keys (>10MB) doesn't freeze UI |
+| 🔲 | 🟢 | Edit value in JSON format and save |
+| 🔲 | 🟢 | Edit value in PHP serialized format and save |
+| 🔲 | 🟢 | Verify bigInt values display correctly |
 
 ### 2.13 Search Keys (Search Index)
 | Status | Priority | Test Case |
@@ -326,6 +376,39 @@ The test plan is organized by feature area, with tests categorized by priority:
 | 🔲 | 🟠 | Create a new search index from index creation form |
 | 🔲 | 🟠 | Select existing index and search by indexed fields |
 | 🔲 | 🟢 | Perform search by full key name with exact match |
+| 🔲 | 🟢 | Create index with FT.CREATE command with multiple prefixes |
+| 🔲 | 🟢 | Switch between RediSearch mode and pattern mode |
+| 🔲 | 🟢 | View tooltip explaining RediSearch mode |
+| 🔲 | 🟢 | Search by index in Browser view |
+| 🔲 | 🟢 | Search by index in Tree view |
+| 🔲 | 🟢 | View filter history for RediSearch queries |
+| 🔲 | 🟢 | Verify context persistence for RediSearch across navigation |
+| 🔲 | 🟢 | Display "No Redis Query Engine" message when module not available |
+| 🔲 | 🟢 | Delete search index with FT.DROPINDEX |
+
+### 2.14 Key Filtering Patterns
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟠 | Filter keys with asterisk (*) wildcard |
+| 🔲 | 🟢 | Filter keys with question mark (?) single character wildcard |
+| 🔲 | 🟢 | Filter keys with [xy] character class (matches x or y) |
+| 🔲 | 🟢 | Filter keys with [^x] negated character class |
+| 🔲 | 🟢 | Filter keys with [a-z] character range |
+| 🔲 | 🟢 | Escape special characters in filter pattern |
+| 🔲 | 🟢 | Clear filter button removes key type and pattern filters |
+| 🔲 | 🟢 | Filter exact key name in large database (10M+ keys) |
+| 🔲 | 🟢 | Filter by pattern in large database (10M+ keys) |
+| 🔲 | 🟢 | Filter by key type in large database |
+
+### 2.15 Browser Context
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟠 | Browser context preserved when navigating to Settings and back |
+| 🔲 | 🟢 | Key filter preserved when navigating away and back |
+| 🔲 | 🟢 | Selected key details preserved when navigating away and back |
+| 🔲 | 🟢 | CLI command history preserved in context |
+| 🔲 | 🟢 | Context cleared when page is reloaded |
+| 🔲 | 🟢 | Context cleared when navigating to different database |
 
 ---
 
@@ -346,6 +429,24 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Toggle Group results |
 | 🔲 | 🟢 | Confirm command history persists after page refresh or session restart |
 | 🔲 | 🟢 | Re-run a previous command from history |
+| 🔲 | 🟢 | Run commands with quantifier (e.g., "10 RANDOMKEY") |
+| 🔲 | 🟢 | View group summary (X Command(s) - Y success, Z error(s)) |
+| 🔲 | 🟢 | View full list of commands with results in group mode |
+| 🔲 | 🟢 | Copy all commands from group result |
+| 🔲 | 🟢 | View group results in full screen mode |
+| 🔲 | 🟢 | Original datetime preserved in history after page refresh |
+| 🔲 | 🟢 | Display message when result exceeds 1MB after refresh |
+| 🔲 | 🟢 | History limited to 30 commands (oldest replaced by newest) |
+| 🔲 | 🟢 | Quick-access to command history with Up Arrow |
+| 🔲 | 🟢 | Use Non-Redis Editor with Shift+Space |
+
+### 3.1.1 Workbench Context
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟠 | CLI state preserved when navigating to other pages |
+| 🔲 | 🟢 | Editor input preserved when navigating away |
+| 🔲 | 🟢 | Context cleared when page is reloaded |
+| 🔲 | 🟢 | Insights panel state preserved when navigating |
 
 ### 3.2 Results View
 | Status | Priority | Test Case |
@@ -501,6 +602,18 @@ The test plan is organized by feature area, with tests categorized by priority:
 | 🔲 | 🟢 | Confirm extrapolation toggle adjusts charted values |
 | 🔲 | 🟢 | Confirm analysis distinguishes between scanned and estimated data |
 | 🔲 | 🟢 | Confirm responsiveness on large datasets |
+| 🔲 | 🟢 | Sort namespaces by key pattern |
+| 🔲 | 🟢 | Sort namespaces by memory |
+| 🔲 | 🟢 | Sort namespaces by number of keys |
+| 🔲 | 🟢 | Filter namespace to Browser view |
+| 🔲 | 🟢 | Display "No namespaces" message with Tree View link |
+| 🔲 | 🟢 | Toggle "No Expiry" in TTL distribution graph |
+| 🔲 | 🟢 | View analysis history (up to 5 reports) |
+| 🔲 | 🟢 | Vote recommendation as useful |
+| 🔲 | 🟢 | Vote recommendation as not useful |
+| 🔲 | 🟢 | Expand/collapse recommendation details |
+| 🔲 | 🟢 | View recommendation labels (code changes, configuration changes) |
+| 🔲 | 🟢 | Open tutorial from recommendation |
 
 ### 6.2.1 Profiler
 | Status | Priority | Test Case |
@@ -522,6 +635,12 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ⏭️ | 🟢 | View node details |
 | ⏭️ | 🟢 | View slot distribution |
 | ⏭️ | 🟢 | Refresh cluster info |
+| ⏭️ | 🟢 | View Overview tab by default for OSS Cluster |
+| ⏭️ | 🟢 | View cluster header info (Type, Version, User) |
+| ⏭️ | 🟢 | View cluster uptime |
+| ⏭️ | 🟢 | View primary node statistics table |
+| ⏭️ | 🟢 | View columns (Commands/s, Clients, Total Keys, Network Input/Output, Total Memory) |
+| ⏭️ | 🟢 | Verify dynamic values update in statistics table |
 
 ---
 
@@ -711,6 +830,24 @@ The test plan is organized by feature area, with tests categorized by priority:
 | 🔲 | 🟢 | "Use recommended settings" auto-selects telemetry and encryption |
 | 🔲 | 🟢 | Decline analytics confirms telemetry events not sent |
 | 🔲 | 🟢 | Confirm onboarding progresses correctly |
+| 🔲 | 🟢 | Reset onboarding from Help Center |
+| 🔲 | 🟢 | Onboarding step: Browser |
+| 🔲 | 🟢 | Onboarding step: Tree view |
+| 🔲 | 🟢 | Onboarding step: Filter and search |
+| 🔲 | 🟢 | Onboarding step: CLI (panel opens) |
+| 🔲 | 🟢 | Onboarding step: Command Helper (panel opens) |
+| 🔲 | 🟢 | Onboarding step: Profiler (panel opens) |
+| 🔲 | 🟢 | Onboarding step: Try Workbench (shows CLIENT LIST or FT.INFO) |
+| 🔲 | 🟢 | Onboarding step: Explore and learn more |
+| 🔲 | 🟢 | Onboarding step: Upload your tutorials |
+| 🔲 | 🟢 | Onboarding step: Database Analysis |
+| 🔲 | 🟢 | Onboarding step: Slow Log |
+| 🔲 | 🟢 | Onboarding step: Pub/Sub |
+| 🔲 | 🟢 | Onboarding step: Great job! (final step) |
+| 🔲 | 🟢 | Skip tour button completes onboarding |
+| 🔲 | 🟢 | Back button navigates to previous step |
+| 🔲 | 🟢 | Onboarding state persists after page refresh |
+| 🔲 | 🟢 | Final step closes when navigating to another page |
 
 ### 12.4 Redis Cloud Conversion Funnel
 | Status | Priority | Test Case |
@@ -726,6 +863,42 @@ The test plan is organized by feature area, with tests categorized by priority:
 |--------|----------|-----------|
 | 🔲 | 🟢 | Open Settings and update general preferences (theme, telemetry) |
 | 🔲 | 🟢 | Confirm edits apply immediately across UI |
+
+### 12.6 Deep Linking (URL Handling)
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟠 | Add database via redisinsight://databases/connect?redisUrl=... |
+| 🔲 | 🟢 | Auto-connect to database with redirect to workbench |
+| 🔲 | 🟢 | Open specific tutorial via tutorial parameter |
+| 🔲 | 🟢 | Cloud parameters (cloudBdbId, subscriptionType, planMemoryLimit, memoryLimitMeasurementUnit) |
+| 🔲 | 🟢 | Onboarding parameter opens onboarding flow |
+| 🔲 | 🟢 | Copilot parameter opens AI assistant |
+| 🔲 | 🟢 | Invalid URL shows error message |
+| 🔲 | 🟢 | URL with missing required parameters shows validation error |
+
+### 12.7 Keyboard Shortcuts
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟠 | Open keyboard shortcuts panel from Help Center |
+| 🔲 | 🟢 | View CLI shortcuts section |
+| 🔲 | 🟢 | View Workbench shortcuts section |
+| 🔲 | 🟢 | Up arrow navigates command history in CLI |
+| 🔲 | 🟢 | Shift+Space opens Non-Redis Editor |
+| 🔲 | 🟢 | Close shortcuts panel |
+
+### 12.8 Live Recommendations
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟠 | View live recommendations in Insights panel |
+| 🔲 | 🟢 | Recommendations are database-specific |
+| 🔲 | 🟢 | Vote recommendation as useful |
+| 🔲 | 🟢 | Vote recommendation as not useful |
+| 🔲 | 🟢 | Hide recommendation |
+| 🔲 | 🟢 | Snooze recommendation |
+| 🔲 | 🟢 | Expand/collapse recommendation details |
+| 🔲 | 🟢 | View recommendation labels (code changes, configuration changes) |
+| 🔲 | 🟢 | Open tutorial from recommendation |
+| 🔲 | 🟢 | Recommendations sync with Database Analysis recommendations |
 
 ---
 
