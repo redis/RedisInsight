@@ -232,5 +232,58 @@ export class AnalyticsPage extends BasePage {
   async toggleShowNoExpiry(): Promise<void> {
     await this.showNoExpirySwitch.click();
   }
+
+  /**
+   * Open slow log configuration dialog
+   */
+  async openSlowLogConfig(): Promise<void> {
+    await this.configureButton.click();
+    await this.page.getByText('slowlog-log-slower-than').waitFor({ state: 'visible' });
+  }
+
+  /**
+   * Set slowlog-log-slower-than threshold value
+   * @param value - The threshold value
+   * @param unit - The unit ('msec' or 'µs')
+   */
+  async setSlowLogThreshold(value: string, unit: 'msec' | 'µs' = 'msec'): Promise<void> {
+    const thresholdInput = this.page.getByRole('textbox', { name: 'slowlog-log-slower-than' });
+    await thresholdInput.clear();
+    await thresholdInput.fill(value);
+
+    // Select unit if different from current
+    const unitCombobox = this.page.getByRole('combobox').filter({ hasText: /msec|µs/ });
+    const currentUnit = await unitCombobox.textContent();
+    if (currentUnit && !currentUnit.includes(unit)) {
+      await unitCombobox.click();
+      await this.page.getByRole('option', { name: unit }).click();
+    }
+  }
+
+  /**
+   * Save slow log configuration
+   */
+  async saveSlowLogConfig(): Promise<void> {
+    await this.page.getByTestId('slowlog-config-save-btn').click();
+    // Wait for dialog to close
+    await this.page.getByText('slowlog-log-slower-than').waitFor({ state: 'hidden', timeout: 5000 });
+  }
+
+  /**
+   * Cancel slow log configuration
+   */
+  async cancelSlowLogConfig(): Promise<void> {
+    await this.page.getByTestId('slowlog-config-cancel-btn').click();
+  }
+
+  /**
+   * Get current execution time threshold from the header
+   */
+  async getExecutionTimeThreshold(): Promise<string> {
+    const text = await this.executionTimeText.textContent();
+    // Extract the number from "Execution time: X msec, Max length: Y"
+    const match = text?.match(/Execution time:\s*([\d.]+)\s*msec/);
+    return match ? match[1] : '';
+  }
 }
 

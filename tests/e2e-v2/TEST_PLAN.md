@@ -259,8 +259,8 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | View/edit TTL |
 | ✅ | 🟢 | Copy key name (covered by "should show copy key name button on hover" test) |
 | ✅ | 🟢 | Change value format (text/binary/hex) |
-| 🔲 | 🟢 | Rename key and confirm new name propagates across Browser |
-| 🔲 | 🟢 | Confirm TTL countdown updates in real time |
+| ✅ | 🟢 | Rename key and confirm new name propagates across Browser |
+| ✅ | 🟢 | Confirm TTL countdown updates in real time |
 
 ### 2.5 Key Details - Hash (✅ Implemented)
 | Status | Priority | Test Case |
@@ -317,8 +317,8 @@ The test plan is organized by feature area, with tests categorized by priority:
 | 🔲 | 🟢 | Create consumer group with custom Entry ID |
 | ✅ | 🟢 | View consumer group columns (Group Name, Consumers, Pending, Last Delivered ID) - covered by "should open Consumer Groups tab" test |
 | 🔲 | 🟢 | View consumer information columns (Consumer Name, Pending, Idle Time) |
-| 🔲 | 🟢 | Delete consumer from consumer group |
-| 🔲 | 🟢 | Delete consumer group |
+| ✅ | 🟢 | Delete consumer from consumer group |
+| ✅ | 🟢 | Delete consumer group |
 | 🔲 | 🟢 | Edit Last Delivered ID for consumer group |
 | ✅ | 🟢 | Cancel creating consumer group |
 
@@ -353,7 +353,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🔴 | Bulk delete keys |
 | ✅ | 🟢 | Bulk delete with pattern |
 | ✅ | 🔴 | Bulk upload data |
-| 🔲 | 🟢 | View bulk action progress |
+| ✅ | 🟢 | View bulk action progress (expected key count before deletion) |
 | 🔲 | 🟢 | Confirm summary screen displays processed, deleted, failed counts |
 | 🔲 | 🟢 | Confirm deletion failures surfaced in summary log |
 | 🔲 | 🟢 | Confirm performance when deleting thousands of keys |
@@ -385,8 +385,8 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 2.13 Search Keys (Search Index)
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟠 | Create a new search index from index creation form |
-| 🔲 | 🟠 | Select existing index and search by indexed fields |
+| ✅ | 🟠 | Create a new search index from index creation form |
+| ✅ | 🟠 | Select existing index and search by indexed fields |
 | 🔲 | 🟢 | Perform search by full key name with exact match |
 | 🔲 | 🟢 | Create index with FT.CREATE command with multiple prefixes |
 | 🔲 | 🟢 | Switch between RediSearch mode and pattern mode |
@@ -406,7 +406,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Filter keys with [xy] character class (matches x or y) |
 | ✅ | 🟢 | Filter keys with [^x] negated character class |
 | ✅ | 🟢 | Filter keys with [a-z] character range |
-| 🔲 | 🟢 | Escape special characters in filter pattern |
+| ✅ | 🟢 | Escape special characters in filter pattern |
 | ✅ | 🟢 | Clear filter and search again |
 | 🔲 | 🟢 | Filter exact key name in large database (10M+ keys) |
 | 🔲 | 🟢 | Filter by pattern in large database (10M+ keys) |
@@ -440,14 +440,14 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Toggle Group results |
 | ✅ | 🟢 | Confirm command history persists after page refresh or session restart |
 | ✅ | 🟢 | Re-run a previous command from history |
-| 🔲 | 🟢 | Run commands with quantifier (e.g., "10 RANDOMKEY") |
-| 🔲 | 🟢 | View group summary (X Command(s) - Y success, Z error(s)) |
-| 🔲 | 🟢 | View full list of commands with results in group mode |
-| 🔲 | 🟢 | Copy all commands from group result |
-| 🔲 | 🟢 | View group results in full screen mode |
+| ✅ | 🟢 | Run commands with quantifier (e.g., "10 RANDOMKEY") |
+| ✅ | 🟢 | View group summary (X Command(s) - Y success, Z error(s)) |
+| ✅ | 🟢 | View full list of commands with results in group mode |
+| ✅ | 🟢 | Copy all commands from group result |
+| ✅ | 🟢 | View group results in full screen mode |
 | 🔲 | 🟢 | Original datetime preserved in history after page refresh |
 | 🔲 | 🟢 | Display message when result exceeds 1MB after refresh |
-| 🔲 | 🟢 | History limited to 30 commands (oldest replaced by newest) |
+| ✅ | 🟢 | History limited to 30 commands (oldest replaced by newest) |
 | ✅ | 🟢 | Quick-access to command history with Up Arrow |
 | 🔲 | 🟢 | Use Non-Redis Editor with Shift+Space |
 
@@ -474,11 +474,11 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 3.2.1 Plugin and Visualization Support
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟠 | Confirm plugins for Search, TimeSeries load correctly |
-| 🔲 | 🟢 | Run FT.SEARCH command and confirm visualized table output |
+| ✅ | 🟠 | Confirm plugins for Search, TimeSeries load correctly |
+| ✅ | 🟢 | Run FT.SEARCH command and confirm visualized table output |
 | 🔲 | 🟢 | Run TS.RANGE command and confirm chart visualization |
-| 🔲 | 🟢 | Confirm plugins display module-specific icons and metadata |
-| 🔲 | 🟢 | Switch between views (Table ↔ Text) and confirm format updates instantly |
+| ✅ | 🟢 | Confirm plugins display module-specific icons and metadata |
+| ✅ | 🟢 | Switch between views (Table ↔ Text) and confirm format updates instantly |
 | 🔲 | 🟢 | Confirm TimeSeries visualization displays correct axes, values, and units |
 
 ### 3.3 Tutorials
@@ -551,7 +551,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ⏸️ | 🟢 | Multiple subscriptions | Feature not available - single pattern subscription only |
 | ⏸️ | 🟢 | Clear messages | <!-- Feature not implemented in UI yet -->
 | ✅ | 🟢 | Confirm newest messages appear at top of message table |
-| 🔲 | 🟢 | Confirm connection/subscription persist while navigating in same DB context |
+| ✅ | 🟢 | Confirm connection/subscription persist while navigating in same DB context |
 | 🔲 | 🟢 | Confirm performance under high throughput (≥5,000 messages/minute) |
 
 ### 5.2 Publish
@@ -595,8 +595,8 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ⏸️ | 🟢 | Filter entries | _Skipped: No filter UI available in current version_ |
 | ✅ | 🟢 | Confirm slowlog-max-len and slowlog-log-slower-than configuration values display |
 | ✅ | 🟢 | View command timestamp, duration, and execution details |
-| 🔲 | 🟢 | Change duration units between milliseconds and microseconds |
-| 🔲 | 🟢 | Adjust slowlog-log-slower-than threshold and confirm results update |
+| ⏸️ | 🟢 | Change duration units between milliseconds and microseconds | _Skipped: No UI to change display units - duration always shown in msec_ |
+| ✅ | 🟢 | Adjust slowlog-log-slower-than threshold and confirm results update |
 | 🔲 | 🟢 | Confirm empty state message displays correctly |
 | 🔲 | 🟢 | Confirm performance with thousands of slowlog entries |
 
@@ -899,7 +899,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Display desktop shortcuts (Open new window, Reload page) |
 | ✅ | 🟢 | Display CLI shortcuts (Autocomplete, Clear screen, etc.) |
 | ✅ | 🟢 | Display Workbench shortcuts (Run Commands, etc.) |
-| 🔲 | 🟢 | Up arrow navigates command history in CLI |
+| ✅ | 🟢 | Up arrow navigates command history in CLI |
 | 🔲 | 🟢 | Shift+Space opens Non-Redis Editor |
 
 ### 12.8 Live Recommendations

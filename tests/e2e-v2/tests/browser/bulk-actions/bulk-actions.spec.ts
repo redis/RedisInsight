@@ -130,6 +130,50 @@ test.describe('Browser > Bulk Actions', () => {
         expect(count).toBe(0);
       }).toPass({ timeout: 10000 });
     });
+
+    test(`should show expected key count before deletion ${Tags.REGRESSION}`, async ({
+      page,
+      apiHelper,
+    }) => {
+      // Use unique prefix for this test run
+      const uniqueId = Date.now().toString(36);
+      const testPrefix = `${bulkDeletePrefix}count-${uniqueId}-`;
+
+      // Create test keys
+      const keysToCreate = 3;
+      for (let i = 0; i < keysToCreate; i++) {
+        const keyData = getStringKeyData({ keyName: `${testPrefix}${i}` });
+        await apiHelper.createStringKey(databaseId, keyData.keyName, keyData.value);
+      }
+
+      // Refresh and search for the keys
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(`${testPrefix}*`);
+
+      // Wait for keys to appear
+      await expect(async () => {
+        const count = await browserPage.keyList.getKeyCount();
+        expect(count).toBe(keysToCreate);
+      }).toPass({ timeout: 10000 });
+
+      // Open bulk actions panel
+      await browserPage.bulkActionsPanel.open();
+
+      // Verify expected key count is displayed
+      await expect(page.getByText(/Expected amount:/i)).toBeVisible({ timeout: 10000 });
+      const expectedCount = await browserPage.bulkActionsPanel.getExpectedKeyCount();
+      expect(expectedCount).toBe(keysToCreate);
+
+      // Verify scan progress is shown in the bulk-delete-summary element
+      await expect(page.getByTestId('bulk-delete-summary')).toBeVisible();
+      const summaryText = await page.getByTestId('bulk-delete-summary').textContent();
+      expect(summaryText).toContain('Scanned');
+      expect(summaryText).toContain(`found ${keysToCreate} keys`);
+
+      // Clean up
+      await browserPage.bulkActionsPanel.close();
+      await apiHelper.deleteKeysByPattern(databaseId, `${testPrefix}*`);
+    });
   });
 
   test.describe('Upload Data', () => {

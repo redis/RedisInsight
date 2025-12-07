@@ -123,9 +123,14 @@ export class BulkActionsPanel {
   }
 
   async getExpectedKeyCount(): Promise<number> {
-    const infoText = await this.deleteInfo.innerText();
-    const match = infoText.match(/Expected amount:\s*(\d+)\s*keys/);
-    return match ? parseInt(match[1], 10) : 0;
+    // The expected key count is shown in the bulk delete summary area
+    // Format: "Expected amount: X keys" or "Expected amount: ~X keys"
+    const expectedText = await this.page.getByText(/Expected amount:/i).textContent();
+    if (!expectedText) return 0;
+    const match = expectedText.match(/Expected amount:\s*~?(\d[\d\s]*)\s*keys/i);
+    if (!match) return 0;
+    // Remove spaces from number (e.g., "1 000" -> "1000")
+    return parseInt(match[1].replace(/\s/g, ''), 10);
   }
 
   async uploadFile(filePath: string): Promise<void> {

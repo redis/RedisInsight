@@ -205,5 +205,63 @@ test.describe('Analytics > Slow Log', () => {
       await expect(page.getByText(/Execution time:.*msec.*Max length:/)).toBeVisible();
     });
   });
+
+  test.describe('Configuration', () => {
+    test(`should adjust slowlog-log-slower-than threshold ${Tags.REGRESSION}`, async ({
+      createAnalyticsPage,
+      page,
+    }) => {
+      const analyticsPage = createAnalyticsPage();
+      await analyticsPage.gotoSlowLog(databaseId);
+
+      // Get initial threshold value
+      const initialThreshold = await analyticsPage.getExecutionTimeThreshold();
+
+      // Open configuration dialog
+      await analyticsPage.openSlowLogConfig();
+
+      // Set a new threshold value (different from current)
+      const newThreshold = initialThreshold === '10' ? '20' : '10';
+      await analyticsPage.setSlowLogThreshold(newThreshold);
+
+      // Save configuration
+      await analyticsPage.saveSlowLogConfig();
+
+      // Verify the threshold was updated in the header
+      await expect(page.getByText(new RegExp(`Execution time:\\s*${newThreshold}\\s*msec`))).toBeVisible();
+
+      // Restore original threshold
+      await analyticsPage.openSlowLogConfig();
+      await analyticsPage.setSlowLogThreshold(initialThreshold);
+      await analyticsPage.saveSlowLogConfig();
+
+      // Verify restored
+      await expect(page.getByText(new RegExp(`Execution time:\\s*${initialThreshold}\\s*msec`))).toBeVisible();
+    });
+
+    test(`should open and cancel configuration dialog ${Tags.REGRESSION}`, async ({
+      createAnalyticsPage,
+      page,
+    }) => {
+      const analyticsPage = createAnalyticsPage();
+      await analyticsPage.gotoSlowLog(databaseId);
+
+      // Get initial threshold value
+      const initialThreshold = await analyticsPage.getExecutionTimeThreshold();
+
+      // Open configuration dialog
+      await analyticsPage.openSlowLogConfig();
+
+      // Change the value
+      const newThreshold = initialThreshold === '10' ? '50' : '10';
+      await analyticsPage.setSlowLogThreshold(newThreshold);
+
+      // Cancel instead of save
+      await analyticsPage.cancelSlowLogConfig();
+
+      // Verify the threshold was NOT changed
+      await expect(page.getByText(new RegExp(`Execution time:\\s*${initialThreshold}\\s*msec`))).toBeVisible();
+    });
+  });
 });
 

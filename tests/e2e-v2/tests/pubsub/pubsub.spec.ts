@@ -331,6 +331,42 @@ test.describe('Pub/Sub', () => {
       // Cleanup
       await pubsubPage.unsubscribe();
     });
+
+    test(`should persist subscription while navigating in same DB context ${Tags.REGRESSION}`, async ({
+      page,
+      createPubSubPage,
+    }) => {
+      const pubsubPage = createPubSubPage();
+      await pubsubPage.goto(databaseId);
+
+      const channel = `test-${faker.string.alphanumeric(6)}`;
+      const message = `msg-${faker.string.alphanumeric(8)}`;
+
+      // Subscribe first
+      await pubsubPage.subscribe('*');
+      expect(await pubsubPage.isSubscribed()).toBe(true);
+
+      // Publish a message
+      await pubsubPage.publish(channel, message);
+      await expect(page.getByText(message)).toBeVisible();
+
+      // Navigate to Browser tab
+      await page.getByRole('tab', { name: 'Browse' }).click();
+      // Wait for browser page to load (either list or tree view)
+      await expect(page.getByRole('tab', { name: 'Browse' })).toHaveAttribute('aria-selected', 'true');
+
+      // Navigate back to Pub/Sub tab
+      await page.getByRole('tab', { name: 'Pub/Sub' }).click();
+
+      // Verify subscription is still active
+      expect(await pubsubPage.isSubscribed()).toBe(true);
+
+      // Verify the previous message is still visible
+      await expect(page.getByText(message)).toBeVisible();
+
+      // Cleanup
+      await pubsubPage.unsubscribe();
+    });
   });
 });
 

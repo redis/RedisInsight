@@ -169,6 +169,108 @@ test.describe('Browser > Stream Consumer Groups', () => {
       page.getByText('Your Key has no Consumer Groups available'),
     ).toBeVisible();
   });
+
+  test(`should delete consumer group ${Tags.REGRESSION}`, async ({
+    page,
+    createBrowserPage,
+    cliPanel,
+  }) => {
+    const browserPage: BrowserPage = createBrowserPage(databaseId);
+    const groupName = `test-group-${faker.string.alphanumeric(6)}`;
+
+    // Create a consumer group using CLI
+    await cliPanel.open();
+    await cliPanel.executeCommand(
+      `XGROUP CREATE ${streamKey} ${groupName} 0 MKSTREAM`,
+    );
+    await cliPanel.close();
+
+    // Search for the stream key
+    await browserPage.keyList.searchKeys(streamKey);
+
+    // Click on the stream key
+    await browserPage.keyList.clickKey(streamKey);
+
+    // Click on Consumer Groups tab
+    await page.getByRole('tab', { name: 'Consumer Groups' }).click();
+
+    // Verify consumer group is visible
+    await expect(page.getByRole('gridcell', { name: groupName })).toBeVisible();
+
+    // Click the remove button for the consumer group
+    await page
+      .getByTestId(`remove-groups-button-${groupName}-icon`)
+      .click();
+
+    // Confirm deletion in the popup
+    await page.getByTestId(`remove-groups-button-${groupName}`).click();
+
+    // Verify success toast
+    await expect(page.getByText('Group has been removed')).toBeVisible();
+
+    // Verify empty state message (group was deleted)
+    await expect(
+      page.getByText('Your Key has no Consumer Groups available'),
+    ).toBeVisible();
+  });
+
+  test(`should delete consumer from consumer group ${Tags.REGRESSION}`, async ({
+    page,
+    createBrowserPage,
+    cliPanel,
+  }) => {
+    const browserPage: BrowserPage = createBrowserPage(databaseId);
+    const groupName = `test-group-${faker.string.alphanumeric(6)}`;
+    const consumerName = `test-consumer-${faker.string.alphanumeric(6)}`;
+
+    // Create a consumer group and consumer using CLI
+    await cliPanel.open();
+    await cliPanel.executeCommand(
+      `XGROUP CREATE ${streamKey} ${groupName} 0 MKSTREAM`,
+    );
+    // Read a message to create a consumer
+    await cliPanel.executeCommand(
+      `XREADGROUP GROUP ${groupName} ${consumerName} COUNT 1 STREAMS ${streamKey} >`,
+    );
+    await cliPanel.close();
+
+    // Search for the stream key
+    await browserPage.keyList.searchKeys(streamKey);
+
+    // Click on the stream key
+    await browserPage.keyList.clickKey(streamKey);
+
+    // Click on Consumer Groups tab
+    await page.getByRole('tab', { name: 'Consumer Groups' }).click();
+
+    // Wait for consumer groups to load and click on the group
+    await expect(page.getByRole('gridcell', { name: groupName })).toBeVisible();
+    await page.getByRole('gridcell', { name: groupName }).click();
+
+    // Wait for consumers tab to appear
+    await expect(page.getByRole('tab', { name: groupName })).toBeVisible();
+
+    // Verify consumer is visible
+    await expect(
+      page.getByTestId(`stream-consumer-${consumerName}`),
+    ).toBeVisible();
+
+    // Click the remove button for the consumer (use force to bypass row click interception)
+    await page
+      .getByTestId(`remove-consumer-button-${consumerName}-icon`)
+      .click({ force: true });
+
+    // Confirm deletion in the popup
+    await page.getByTestId(`remove-consumer-button-${consumerName}`).click();
+
+    // Verify success toast
+    await expect(page.getByText('Consumer has been removed')).toBeVisible();
+
+    // Verify consumer is no longer visible (empty state or consumer removed)
+    await expect(
+      page.getByTestId(`stream-consumer-${consumerName}`),
+    ).not.toBeVisible();
+  });
 });
 
 test.describe('Browser > Stream Pending Messages', () => {

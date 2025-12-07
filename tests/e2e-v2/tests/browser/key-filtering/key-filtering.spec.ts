@@ -125,6 +125,33 @@ test.describe.serial('Browser > Key Filtering Patterns', () => {
     });
   });
 
+  test.describe('Special Characters', () => {
+    test(`should escape special characters in filter pattern ${Tags.REGRESSION}`, async ({
+      cliPanel,
+    }) => {
+      // Create a key with special characters (asterisk in the name)
+      const specialKeyName = `${TEST_KEY_PREFIX}special*key-${uniqueSuffix}`;
+      await cliPanel.open();
+      await cliPanel.executeCommand(`SET "${specialKeyName}" "test-value"`);
+      await cliPanel.hide();
+
+      // Refresh the key list
+      await browserPage.keyList.refresh();
+
+      // Search for the key with escaped asterisk (using backslash)
+      // In Redis KEYS pattern, \* matches a literal asterisk
+      await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}special\\*key-${uniqueSuffix}`);
+      await browserPage.page.waitForTimeout(500);
+
+      // Verify the key with literal asterisk is found
+      await expect(browserPage.keyList.getKeyRow(specialKeyName)).toBeVisible();
+
+      // Clean up the special key
+      await cliPanel.open();
+      await cliPanel.executeCommand(`DEL "${specialKeyName}"`);
+    });
+  });
+
   test.describe('Filter Controls', () => {
     test(`should clear filter and search again ${Tags.REGRESSION}`, async () => {
       // First apply a filter for filter-* keys

@@ -113,6 +113,86 @@ test.describe('Browser > Key Details', () => {
       const updatedValue = await browserPage.keyDetails.getStringValue();
       expect(updatedValue).toContain(newValue);
     });
+
+    test(`should rename key and confirm new name propagates ${Tags.REGRESSION}`, async ({
+      apiHelper,
+    }) => {
+      const keyData = getStringKeyData();
+      const newKeyName = `${TEST_KEY_PREFIX}renamed-${Date.now()}`;
+
+      // Create key with original name
+      await apiHelper.createStringKey(databaseId, keyData.keyName, keyData.value);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Rename the key
+      await browserPage.keyDetails.renameKey(newKeyName);
+
+      // Verify the key name was updated in the details panel
+      await expect(browserPage.keyDetails.keyName).toContainText(newKeyName);
+
+      // Verify the key appears in the key list with new name
+      await browserPage.keyList.searchKeys(newKeyName);
+      const newKeyExists = await browserPage.keyList.keyExists(newKeyName);
+      expect(newKeyExists).toBe(true);
+
+      // Verify the old key name no longer exists
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      const oldKeyExists = await browserPage.keyList.keyExists(keyData.keyName);
+      expect(oldKeyExists).toBe(false);
+    });
+
+    test(`should confirm TTL countdown updates in real time ${Tags.REGRESSION}`, async ({
+      page,
+      cliPanel,
+    }) => {
+      const keyName = `${TEST_KEY_PREFIX}ttl-test-${Date.now()}`;
+      const ttlSeconds = 60; // Set TTL to 60 seconds
+
+      // Create key with TTL using CLI (SET key value EX seconds)
+      await cliPanel.open();
+      await cliPanel.executeCommand(`SET ${keyName} "test-value" EX ${ttlSeconds}`);
+      await cliPanel.hide();
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyName);
+      await browserPage.keyList.clickKey(keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Get initial TTL value
+      const initialTtl = await browserPage.keyDetails.getTtlValue();
+      // TTL should show something like "TTL:60" or "TTL:59"
+      expect(initialTtl).toMatch(/TTL:\d+/);
+
+      // Extract the initial TTL number
+      const initialTtlMatch = initialTtl.match(/TTL:(\d+)/);
+      expect(initialTtlMatch).not.toBeNull();
+      const initialTtlNumber = parseInt(initialTtlMatch![1], 10);
+
+      // Wait for 3 seconds
+      await page.waitForTimeout(3000);
+
+      // Click the key refresh button (in key details panel)
+      await page.getByTestId('key-refresh-btn').click();
+      await page.waitForTimeout(500);
+
+      // Get updated TTL value
+      const updatedTtl = await browserPage.keyDetails.getTtlValue();
+      const updatedTtlMatch = updatedTtl.match(/TTL:(\d+)/);
+      expect(updatedTtlMatch).not.toBeNull();
+      const updatedTtlNumber = parseInt(updatedTtlMatch![1], 10);
+
+      // Verify TTL has decreased (should be at least 2 seconds less)
+      expect(updatedTtlNumber).toBeLessThan(initialTtlNumber);
+      expect(initialTtlNumber - updatedTtlNumber).toBeGreaterThanOrEqual(2);
+
+      // Cleanup
+      await cliPanel.open();
+      await cliPanel.executeCommand(`DEL ${keyName}`);
+    });
   });
 
   test.describe('Hash Key Details', () => {

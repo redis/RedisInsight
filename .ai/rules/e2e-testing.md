@@ -259,6 +259,21 @@ ENV=ci npm test             # CI environment
 ENV=staging npm test        # Staging environment
 ```
 
+## Code Quality (IMPORTANT)
+
+**Always run linter and type checker after making changes:**
+
+```bash
+npm run lint                # ESLint check
+npx tsc --noEmit            # TypeScript type check
+```
+
+Both must pass before committing. Common issues:
+- Unused variables/imports
+- Missing return types
+- `any` types (avoid when possible)
+- Null/undefined handling (use proper types like `Promise<string | null>`)
+
 ## Test Isolation (IMPORTANT)
 
 Tests that share database state should use:

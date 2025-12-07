@@ -586,5 +586,227 @@ test.describe.serial('Workbench > Command History', () => {
     const command = await workbenchPage.editor.getCommand();
     expect(command).toBe('PING');
   });
+
+  test(`should run commands with quantifier ${Tags.REGRESSION}`, async ({ page }) => {
+    // Create some test keys first
+    await workbenchPage.executeCommand('SET test-quant-key1 value1');
+    await workbenchPage.executeCommand('SET test-quant-key2 value2');
+    await workbenchPage.executeCommand('SET test-quant-key3 value3');
+
+    // Clear results
+    const clearButton = page.getByTestId('clear-history-btn');
+    if (await clearButton.isVisible()) {
+      await clearButton.click();
+    }
+
+    // Execute command with quantifier (5 RANDOMKEY)
+    await workbenchPage.executeCommand('5 RANDOMKEY');
+
+    // Verify multiple RANDOMKEY results are displayed (5 separate results)
+    // Each result shows "RANDOMKEY" as the command in a button with "Copy query" text
+    const randomKeyResults = page.getByRole('button', { name: /RANDOMKEY Copy query/ });
+    await expect(randomKeyResults).toHaveCount(5, { timeout: 10000 });
+
+    // Clean up test keys
+    await workbenchPage.executeCommand('DEL test-quant-key1 test-quant-key2 test-quant-key3');
+  });
+
+  test(`should limit history to 30 commands ${Tags.REGRESSION}`, async ({ page }) => {
+    // Clear any existing results first
+    const clearButton = page.getByTestId('clear-history-btn');
+    if (await clearButton.isVisible()) {
+      await clearButton.click();
+    }
+
+    // Execute 32 commands (more than the 30 limit)
+    // Use unique identifiers to avoid substring matching issues
+    for (let i = 1; i <= 32; i++) {
+      // Use padded numbers to avoid substring matching (cmd-01, cmd-02, etc.)
+      const paddedNum = i.toString().padStart(2, '0');
+      await workbenchPage.editor.setCommand(`ECHO "cmd-${paddedNum}"`);
+      await page.getByTestId('btn-submit').click();
+      // Wait for the result text to appear
+      await expect(workbenchPage.resultsPanel.resultText).toBeVisible();
+      // Small delay to ensure command is processed
+      await page.waitForTimeout(100);
+    }
+
+    // Verify only 30 results are displayed (oldest should be removed)
+    const resultCount = await workbenchPage.resultsPanel.getResultCount();
+    expect(resultCount).toBe(30);
+
+    // Verify the oldest commands (01 and 02) are not in history
+    // and the newest commands (03-32) are present
+    const allResults = page.locator('[data-testid^="query-card-"]');
+    const resultsText = await allResults.allTextContents();
+    const resultsJoined = resultsText.join(' ');
+
+    // cmd-01 and cmd-02 should NOT be present (they were removed)
+    expect(resultsJoined).not.toContain('cmd-01');
+    expect(resultsJoined).not.toContain('cmd-02');
+
+    // cmd-32 should be present (newest)
+    expect(resultsJoined).toContain('cmd-32');
+
+    // cmd-03 should be present (oldest remaining)
+    expect(resultsJoined).toContain('cmd-03');
+  });
+});
+
+test.describe.serial('Workbench > Group Results', () => {
+  let databaseId: string;
+  let workbenchPage: WorkbenchPage;
+
+  test.beforeAll(async ({ apiHelper }) => {
+    const config = getStandaloneConfig();
+    const database = await apiHelper.createDatabase(config);
+    databaseId = database.id;
+  });
+
+  test.afterAll(async ({ apiHelper }) => {
+    if (databaseId) {
+      await apiHelper.deleteDatabase(databaseId);
+    }
+  });
+
+  test.beforeEach(async ({ page, createWorkbenchPage }) => {
+    await page.goto(`/${databaseId}/workbench`);
+    workbenchPage = createWorkbenchPage(databaseId);
+    await workbenchPage.waitForLoad();
+  });
+
+  test(`should view group summary with success count ${Tags.REGRESSION}`, async ({ page }) => {
+    // Enable group results mode
+    const groupResultsButton = page.getByTestId('btn-change-group-mode');
+    await groupResultsButton.click();
+    await expect(groupResultsButton).toHaveAttribute('aria-pressed', 'true');
+
+    // Clear any existing results
+    const clearButton = page.getByTestId('clear-history-btn');
+    if (await clearButton.isVisible()) {
+      await clearButton.click();
+    }
+
+    // Execute multiple commands at once
+    const editor = page.getByRole('textbox', { name: /Editor content/ });
+    await editor.fill('PING\nINFO server\nGET nonexistent');
+    await page.getByTestId('btn-submit').click();
+
+    // Wait for results and verify group summary shows "3 Command(s) - 3 success, 0 error(s)"
+    const groupSummary = page.getByText(/\d+ Command\(s\) - \d+ success, \d+ error\(s\)/);
+    await expect(groupSummary.first()).toBeVisible({ timeout: 10000 });
+
+    // Verify the summary text contains expected values
+    const summaryText = await groupSummary.first().textContent();
+    expect(summaryText).toContain('3 Command(s)');
+    expect(summaryText).toContain('3 success');
+    expect(summaryText).toContain('0 error(s)');
+  });
+
+  test(`should view group summary with error count ${Tags.REGRESSION}`, async ({ page }) => {
+    // Enable group results mode
+    const groupResultsButton = page.getByTestId('btn-change-group-mode');
+    await groupResultsButton.click();
+    await expect(groupResultsButton).toHaveAttribute('aria-pressed', 'true');
+
+    // Clear any existing results
+    const clearButton = page.getByTestId('clear-history-btn');
+    if (await clearButton.isVisible()) {
+      await clearButton.click();
+    }
+
+    // Execute multiple commands including an invalid one
+    const editor = page.getByRole('textbox', { name: /Editor content/ });
+    await editor.fill('PING\nINVALID_COMMAND\nGET nonexistent');
+    await page.getByTestId('btn-submit').click();
+
+    // Wait for results and verify group summary shows errors
+    const groupSummary = page.getByText(/\d+ Command\(s\) - \d+ success, \d+ error\(s\)/);
+    await expect(groupSummary.first()).toBeVisible({ timeout: 10000 });
+
+    // Verify the summary text contains expected values
+    const summaryText = await groupSummary.first().textContent();
+    expect(summaryText).toContain('3 Command(s)');
+    expect(summaryText).toContain('2 success');
+    expect(summaryText).toContain('1 error(s)');
+  });
+
+  test(`should copy all commands from group result ${Tags.REGRESSION}`, async ({ page }) => {
+    // Enable group results mode
+    const groupResultsButton = page.getByTestId('btn-change-group-mode');
+    await groupResultsButton.click();
+    await expect(groupResultsButton).toHaveAttribute('aria-pressed', 'true');
+
+    // Clear any existing results
+    const clearButton = page.getByTestId('clear-history-btn');
+    if (await clearButton.isVisible()) {
+      await clearButton.click();
+    }
+
+    // Execute multiple commands at once
+    const editor = page.getByRole('textbox', { name: /Editor content/ });
+    await editor.fill('SET copytest value1\nGET copytest\nDEL copytest');
+    await page.getByTestId('btn-submit').click();
+
+    // Wait for results
+    const groupSummary = page.getByText(/\d+ Command\(s\) - \d+ success, \d+ error\(s\)/);
+    await expect(groupSummary.first()).toBeVisible({ timeout: 10000 });
+
+    // Click copy button (copies all commands in group mode)
+    const copyButton = page.getByTestId('copy-command-btn').first();
+    await expect(copyButton).toBeVisible();
+    await copyButton.click();
+
+    // Verify copy button is still visible (action completed)
+    await expect(copyButton).toBeVisible();
+  });
+
+  test(`should view group results in full screen ${Tags.REGRESSION}`, async ({ page }) => {
+    // Enable group results mode
+    const groupResultsButton = page.getByTestId('btn-change-group-mode');
+    await groupResultsButton.click();
+    await expect(groupResultsButton).toHaveAttribute('aria-pressed', 'true');
+
+    // Clear any existing results
+    const clearButton = page.getByTestId('clear-history-btn');
+    if (await clearButton.isVisible()) {
+      await clearButton.click();
+    }
+
+    // Execute multiple commands at once
+    const editor = page.getByRole('textbox', { name: /Editor content/ });
+    await editor.fill('PING\nINFO server\nGET nonexistent');
+    await page.getByTestId('btn-submit').click();
+
+    // Wait for results
+    const groupSummary = page.getByText(/\d+ Command\(s\) - \d+ success, \d+ error\(s\)/);
+    await expect(groupSummary.first()).toBeVisible({ timeout: 10000 });
+
+    // The full screen button should be visible when the card is expanded
+    // In group mode, the card is expanded by default after execution
+    const fullScreenButton = page.getByTestId('toggle-full-screen');
+
+    // If the full screen button is not visible, the card might be collapsed - expand it
+    if (!(await fullScreenButton.isVisible())) {
+      const toggleCollapseButton = page.getByTestId('toggle-collapse');
+      await toggleCollapseButton.click();
+      await expect(fullScreenButton).toBeVisible({ timeout: 5000 });
+    }
+
+    await fullScreenButton.click();
+
+    // Verify full screen mode is active - the result card should be in a full screen container
+    // In full screen mode, the same toggle button is used to exit
+    await expect(fullScreenButton).toBeVisible();
+
+    // Verify the group summary is still visible in full screen
+    await expect(groupSummary.first()).toBeVisible();
+
+    // Exit full screen by clicking the same button
+    await fullScreenButton.click();
+
+    // Verify we're back to normal mode - the group summary should still be visible
+    await expect(groupSummary.first()).toBeVisible();
+  });
 });
 

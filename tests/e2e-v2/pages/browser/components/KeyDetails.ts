@@ -159,6 +159,22 @@ export class KeyDetails {
     return await this.keyName.innerText();
   }
 
+  async renameKey(newKeyName: string): Promise<void> {
+    // Click on the key name to enter edit mode
+    await this.keyName.click();
+    // Wait for the edit input to appear
+    const keyNameInput = this.page.getByRole('textbox', { name: 'Enter Key Name' });
+    await keyNameInput.waitFor({ state: 'visible' });
+    // Clear and fill the new key name
+    await keyNameInput.clear();
+    await keyNameInput.fill(newKeyName);
+    // Click Apply button
+    const applyButton = this.page.getByRole('button', { name: 'Apply' });
+    await applyButton.click();
+    // Wait for the edit mode to close
+    await keyNameInput.waitFor({ state: 'hidden', timeout: 5000 });
+  }
+
   async close(): Promise<void> {
     // Try to click the back button first (when key list is collapsed)
     // If not visible, click the close key button (when key list is visible)
