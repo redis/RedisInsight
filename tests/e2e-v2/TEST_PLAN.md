@@ -93,7 +93,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Configure timeout setting |
 | ✅ | 🟢 | Select logical database |
 | ✅ | 🟢 | Logical database index displayed in database list |
-| 🔲 | 🟢 | Logical database index displayed in database header |
+| ✅ | 🟢 | Logical database index displayed in database header |
 | 🔲 | 🟢 | Logical database index displayed in edit form |
 | ✅ | 🟢 | Force standalone connection |
 | ✅ | 🟢 | Enable automatic data decompression |
@@ -232,9 +232,9 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Tree view mode state persists after page refresh |
 | ✅ | 🟢 | Filter state preserved when switching between Browser and Tree view |
 | ✅ | 🟢 | Key type filter state preserved when switching views |
-| 🔲 | 🟢 | Configure multiple delimiters in tree view |
-| 🔲 | 🟢 | Cancel delimiter change reverts to previous value |
-| 🔲 | 🟢 | Verify namespace tooltip shows key pattern and delimiter |
+| ✅ | 🟢 | Configure multiple delimiters in tree view |
+| ✅ | 🟢 | Cancel delimiter change reverts to previous value |
+| ✅ | 🟢 | Verify namespace tooltip shows key pattern and delimiter |
 | 🔲 | 🟢 | Scan DB by 10K keys in tree view |
 
 ### 2.3 Add Keys (✅ Implemented)
@@ -617,15 +617,16 @@ The test plan is organized by feature area, with tests categorized by priority:
 | 🔲 | 🟢 | Sort namespaces by key pattern |
 | ✅ | 🟢 | Sort namespaces by memory |
 | ✅ | 🟢 | Sort namespaces by number of keys |
-| 🔲 | 🟢 | Filter namespace to Browser view |
+| ✅ | 🟢 | Filter namespace to Browser view |
 | 🔲 | 🟢 | Display "No namespaces" message with Tree View link |
 | ✅ | 🟢 | Toggle "No Expiry" in TTL distribution graph |
 | ✅ | 🟢 | View analysis history (up to 5 reports) |
-| 🔲 | 🟢 | Vote recommendation as useful |
-| 🔲 | 🟢 | Vote recommendation as not useful |
-| 🔲 | 🟢 | Expand/collapse recommendation details |
-| 🔲 | 🟢 | View recommendation labels (code changes, configuration changes) |
-| 🔲 | 🟢 | Open tutorial from recommendation |
+| ✅ | 🟢 | View voting section for recommendations |
+| ⏸️ | 🟢 | Vote recommendation as useful | Voting buttons disabled - requires telemetry enabled |
+| ⏸️ | 🟢 | Vote recommendation as not useful | Voting buttons disabled - requires telemetry enabled |
+| ✅ | 🟢 | Expand/collapse recommendation details |
+| ✅ | 🟢 | View recommendation labels (code changes, configuration changes) |
+| ✅ | 🟢 | Open tutorial from recommendation |
 
 ### 6.2.1 Profiler
 | Status | Priority | Test Case |
@@ -873,8 +874,8 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 12.5 App Settings
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟢 | Open Settings and update general preferences (theme, telemetry) |
-| 🔲 | 🟢 | Confirm edits apply immediately across UI |
+| ✅ | 🟢 | Open Settings and update general preferences (theme, notifications) |
+| ✅ | 🟢 | Confirm edits apply immediately across UI |
 
 ### 12.6 Deep Linking (URL Handling)
 | Status | Priority | Test Case |
@@ -908,11 +909,11 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟠 | View live recommendations in Insights panel |
 | ✅ | 🟢 | Recommendations are database-specific (shown after analysis) |
 | ✅ | 🟢 | View recommendation voting options |
-| 🔲 | 🟢 | Vote recommendation as not useful |
-| 🔲 | 🟢 | Hide recommendation |
-| 🔲 | 🟢 | Snooze recommendation |
+| ⏸️ | 🟢 | Vote recommendation as not useful | Voting buttons disabled - requires telemetry enabled |
+| ⏸️ | 🟢 | Hide recommendation | Hide/snooze only in Database Analysis Tips tab |
+| ⏸️ | 🟢 | Snooze recommendation | Hide/snooze only in Database Analysis Tips tab |
 | ✅ | 🟢 | Expand/collapse recommendation details |
-| 🔲 | 🟢 | View recommendation labels (code changes, configuration changes) |
+| ✅ | 🟢 | View recommendation labels (code changes, configuration changes) |
 | ✅ | 🟢 | Open tutorial from recommendation |
 | 🔲 | 🟢 | Recommendations sync with Database Analysis recommendations |
 

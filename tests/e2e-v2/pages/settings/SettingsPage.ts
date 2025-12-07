@@ -201,5 +201,35 @@ export class SettingsPage extends BasePage {
   async getDatePreviewValue(): Promise<string> {
     return await this.datePreview.inputValue();
   }
+
+  /**
+   * Get current theme value
+   */
+  async getCurrentTheme(): Promise<string> {
+    return await this.themeDropdown.textContent() || '';
+  }
+
+  /**
+   * Change theme
+   */
+  async changeTheme(theme: 'Light Theme' | 'Dark Theme' | 'System Theme'): Promise<void> {
+    await this.themeDropdown.click();
+    await this.page.getByRole('option', { name: theme }).click();
+  }
+
+  /**
+   * Toggle notification switch
+   */
+  async toggleNotifications(): Promise<void> {
+    await this.notificationSwitch.click();
+  }
+
+  /**
+   * Check if notifications are enabled
+   */
+  async areNotificationsEnabled(): Promise<boolean> {
+    const checked = await this.notificationSwitch.getAttribute('aria-checked');
+    return checked === 'true';
+  }
 }
 

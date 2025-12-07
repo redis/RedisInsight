@@ -257,4 +257,44 @@ test.describe.serial('Add Database > Standalone', () => {
     });
     await expect(row).toBeVisible({ timeout: 15000 });
   });
+
+  test(`should display logical database index in browser header ${Tags.REGRESSION}`, async ({
+    databasesPage,
+    createBrowserPage,
+    apiHelper,
+  }) => {
+    const config = getStandaloneConfig({
+      name: `${uniquePrefix}-header-db2`,
+    });
+
+    // Open dialog and go to connection settings
+    await databasesPage.openAddDatabaseDialog();
+    await databasesPage.addDatabaseDialog.openConnectionSettings();
+    await databasesPage.addDatabaseDialog.fillForm(config);
+
+    // Enable logical database selection and set index to 2
+    await databasesPage.addDatabaseDialog.selectLogicalDatabaseCheckbox.click();
+    await databasesPage.addDatabaseDialog.databaseIndexInput.fill('2');
+
+    // Submit the form
+    await databasesPage.addDatabaseDialog.submit();
+
+    // Wait for success toast
+    await databasesPage.page.waitForSelector('text=Database has been added', { timeout: 10000 });
+
+    // Get the database ID from the API
+    const databases = await apiHelper.getDatabases();
+    const createdDb = databases.find((db) => db.name === config.name);
+    expect(createdDb).toBeDefined();
+
+    // Navigate to the browser page for this database (don't wait for full load since db2 is empty)
+    const browserPage = createBrowserPage(createdDb!.id);
+    await browserPage.page.goto(`/${createdDb!.id}/browser`);
+    await browserPage.page.waitForLoadState('domcontentloaded');
+
+    // Verify the logical database button shows "db2" in the header
+    await expect(browserPage.logicalDatabaseButton).toBeVisible({ timeout: 15000 });
+    const dbIndex = await browserPage.getLogicalDatabaseIndex();
+    expect(dbIndex).toBe('db2');
+  });
 });

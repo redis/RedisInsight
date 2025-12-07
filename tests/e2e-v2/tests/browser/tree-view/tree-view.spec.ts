@@ -97,9 +97,28 @@ test.describe('Browser > Tree View', () => {
       // Should show Chevron Right again (collapsed)
       await expect(page.getByRole('treeitem').filter({ has: page.getByRole('img', { name: 'Chevron Right' }) }).first()).toBeVisible();
     });
+
+    test(`should show namespace tooltip with key pattern and delimiter ${Tags.REGRESSION}`, async ({ page }) => {
+      // Find a folder in tree view
+      const folder = page.getByRole('treeitem').filter({ has: page.getByRole('img', { name: 'Folder' }) }).first();
+
+      // Hover over the folder to trigger tooltip
+      await folder.hover();
+
+      // Wait for tooltip to appear
+      const tooltip = page.getByRole('tooltip');
+      await expect(tooltip).toBeVisible();
+
+      // Tooltip should contain the key pattern with delimiter (e.g., "bicycle:*")
+      // The pattern format is: namespace + delimiter + "*"
+      await expect(tooltip).toContainText(/\w+:\*/);
+
+      // Tooltip should also show key count (e.g., "10 key(s)")
+      await expect(tooltip).toContainText(/\d+ key\(s\)/);
+    });
   });
 
-  test.describe('Tree View Settings', () => {
+  test.describe.serial('Tree View Settings', () => {
     test.beforeEach(async ({ page }) => {
       await browserPage.keyList.switchToTreeView();
       // Wait for tree items to load
@@ -135,6 +154,72 @@ test.describe('Browser > Tree View', () => {
 
       // Dialog should be hidden
       await expect(page.getByRole('dialog')).toBeHidden();
+    });
+
+    test(`should change sort by option ${Tags.REGRESSION}`, async ({ page }) => {
+      await browserPage.keyList.openTreeViewSettings();
+
+      // Change sort by to Key name DESC
+      const sortByDropdown = page.getByRole('combobox', { name: 'Sort by' });
+      await sortByDropdown.click();
+      await page.getByRole('option', { name: 'Key name DESC' }).click();
+
+      // Verify the dropdown shows the new value
+      await expect(sortByDropdown).toContainText('Key name DESC');
+
+      // Cancel to not affect other tests
+      await page.getByRole('button', { name: 'Cancel' }).click();
+    });
+
+    test(`should configure multiple delimiters ${Tags.REGRESSION}`, async ({ page }) => {
+      await browserPage.keyList.openTreeViewSettings();
+
+      const dialog = page.getByRole('dialog');
+      const removeButtons = dialog.getByRole('button', { name: 'Remove' });
+
+      // Initially should have 1 delimiter (":") with 1 Remove button
+      await expect(removeButtons).toHaveCount(1);
+
+      // Add a second delimiter "-"
+      const delimiterInput = page.getByRole('textbox', { name: 'Delimiter' });
+      await delimiterInput.fill('-');
+      await delimiterInput.press('Enter');
+
+      // Now should have 2 delimiters with 2 Remove buttons
+      await expect(removeButtons).toHaveCount(2);
+
+      // Cancel to not affect other tests
+      await browserPage.keyList.cancelTreeViewSettings();
+    });
+
+    test(`should cancel delimiter change and revert to previous value ${Tags.REGRESSION}`, async ({ page }) => {
+      await browserPage.keyList.openTreeViewSettings();
+
+      const dialog = page.getByRole('dialog');
+      const removeButtons = dialog.getByRole('button', { name: 'Remove' });
+
+      // Initially should have 1 delimiter
+      await expect(removeButtons).toHaveCount(1);
+
+      // Add a new delimiter
+      const delimiterInput = page.getByRole('textbox', { name: 'Delimiter' });
+      await delimiterInput.fill('/');
+      await delimiterInput.press('Enter');
+
+      // Now should have 2 delimiters
+      await expect(removeButtons).toHaveCount(2);
+
+      // Cancel the changes
+      await browserPage.keyList.cancelTreeViewSettings();
+
+      // Re-open settings and verify the delimiter was reverted
+      await browserPage.keyList.openTreeViewSettings();
+
+      // Should only have the original delimiter (1 Remove button)
+      await expect(removeButtons).toHaveCount(1);
+
+      // Close the dialog
+      await browserPage.keyList.cancelTreeViewSettings();
     });
   });
 

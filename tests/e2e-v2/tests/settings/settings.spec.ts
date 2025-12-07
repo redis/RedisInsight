@@ -226,5 +226,52 @@ test.describe('Settings', () => {
       await expect(settingsPage.createCloudDbButton).toBeVisible();
     });
   });
+
+  test.describe('Update Settings', () => {
+    test(`should change theme and apply immediately ${Tags.REGRESSION}`, async ({
+      settingsPage,
+      page,
+    }) => {
+      await settingsPage.goto();
+      await settingsPage.expandGeneral();
+
+      // Get current theme
+      const currentTheme = await settingsPage.getCurrentTheme();
+
+      // Change to a different theme
+      const newTheme = currentTheme.includes('Light') ? 'Dark Theme' : 'Light Theme';
+      await settingsPage.changeTheme(newTheme as 'Light Theme' | 'Dark Theme');
+
+      // Wait for theme to apply
+      await page.waitForTimeout(500);
+
+      // Verify theme changed
+      const updatedTheme = await settingsPage.getCurrentTheme();
+      expect(updatedTheme).toContain(newTheme.replace(' Theme', ''));
+
+      // Restore original theme
+      await settingsPage.changeTheme(currentTheme as 'Light Theme' | 'Dark Theme' | 'System Theme');
+    });
+
+    test(`should toggle notifications setting ${Tags.REGRESSION}`, async ({
+      settingsPage,
+    }) => {
+      await settingsPage.goto();
+      await settingsPage.expandGeneral();
+
+      // Get current state
+      const initialState = await settingsPage.areNotificationsEnabled();
+
+      // Toggle notifications
+      await settingsPage.toggleNotifications();
+
+      // Verify state changed
+      const newState = await settingsPage.areNotificationsEnabled();
+      expect(newState).toBe(!initialState);
+
+      // Restore original state
+      await settingsPage.toggleNotifications();
+    });
+  });
 });
 

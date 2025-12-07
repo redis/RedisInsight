@@ -343,5 +343,58 @@ export class KeyList {
     const countElement = folder.locator('div').last();
     return countElement.textContent();
   }
+
+  /**
+   * Get current delimiter from tree view settings
+   */
+  async getCurrentDelimiter(): Promise<string> {
+    const delimiterChip = this.page.getByRole('dialog').locator('[class*="chip"]').first();
+    const text = await delimiterChip.textContent();
+    return text?.replace('Remove', '').trim() || '';
+  }
+
+  /**
+   * Add delimiter in tree view settings
+   */
+  async addDelimiter(delimiter: string): Promise<void> {
+    const delimiterInput = this.page.getByRole('textbox', { name: 'Delimiter' });
+    await delimiterInput.fill(delimiter);
+    await delimiterInput.press('Enter');
+  }
+
+  /**
+   * Remove delimiter in tree view settings
+   */
+  async removeDelimiter(delimiter: string): Promise<void> {
+    const delimiterChip = this.page.getByRole('dialog').locator(`[class*="chip"]`).filter({ hasText: delimiter });
+    await delimiterChip.getByRole('button', { name: 'Remove' }).click();
+  }
+
+  /**
+   * Apply tree view settings
+   */
+  async applyTreeViewSettings(): Promise<void> {
+    await this.page.getByRole('button', { name: 'Apply' }).click();
+    // Wait for dialog to close
+    await this.page.getByRole('dialog').waitFor({ state: 'hidden' });
+  }
+
+  /**
+   * Cancel tree view settings
+   */
+  async cancelTreeViewSettings(): Promise<void> {
+    await this.page.getByRole('button', { name: 'Cancel' }).click();
+    // Wait for dialog to close
+    await this.page.getByRole('dialog').waitFor({ state: 'hidden' });
+  }
+
+  /**
+   * Change sort by option in tree view settings
+   */
+  async changeSortBy(option: string): Promise<void> {
+    const sortByDropdown = this.page.getByRole('combobox', { name: 'Sort by' });
+    await sortByDropdown.click();
+    await this.page.getByRole('option', { name: option }).click();
+  }
 }
 

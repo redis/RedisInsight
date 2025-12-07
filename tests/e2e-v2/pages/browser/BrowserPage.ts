@@ -28,6 +28,7 @@ export class BrowserPage extends BasePage {
   // Database info
   readonly databaseName: Locator;
   readonly databaseSelector: Locator;
+  readonly logicalDatabaseButton: Locator;
   readonly cpuUsage: Locator;
   readonly commandsPerSec: Locator;
   readonly totalMemory: Locator;
@@ -65,6 +66,7 @@ export class BrowserPage extends BasePage {
     // Database info
     this.databaseName = page.locator('[data-testid="db-name"], [data-testid="database-name"]');
     this.databaseSelector = page.getByRole('button', { name: /db0/i });
+    this.logicalDatabaseButton = page.getByRole('button', { name: /^db\d+$/i });
     this.cpuUsage = page.locator('[data-testid="cpu-usage"]');
     this.commandsPerSec = page.locator('[data-testid="commands-per-sec"]');
     this.totalMemory = page.locator('[data-testid="total-memory"]');
@@ -132,6 +134,30 @@ export class BrowserPage extends BasePage {
   async expectKeyNotInList(keyName: string): Promise<void> {
     const exists = await this.keyList.keyExists(keyName);
     expect(exists).toBe(false);
+  }
+
+  /**
+   * Get the logical database index displayed in the header
+   * @returns The logical database index (e.g., "db0", "db1") or null if not visible
+   */
+  async getLogicalDatabaseIndex(): Promise<string | null> {
+    try {
+      const button = this.logicalDatabaseButton;
+      if (await button.isVisible()) {
+        const text = await button.textContent();
+        return text?.trim() || null;
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Check if the logical database button is visible in the header
+   */
+  async isLogicalDatabaseButtonVisible(): Promise<boolean> {
+    return this.logicalDatabaseButton.isVisible();
   }
 }
 

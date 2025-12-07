@@ -37,6 +37,16 @@ export class AnalyticsPage extends BasePage {
   readonly showNoExpirySwitch: Locator;
   readonly reportHistorySelect: Locator;
 
+  // Tips/Recommendations elements
+  readonly codeChangesLabel: Locator;
+  readonly configChangesLabel: Locator;
+  readonly upgradeLabel: Locator;
+  readonly recommendationAccordions: Locator;
+  readonly tutorialButton: Locator;
+  readonly votingSection: Locator;
+  readonly likeButton: Locator;
+  readonly dislikeButton: Locator;
+
   constructor(page: Page) {
     super(page);
 
@@ -70,6 +80,16 @@ export class AnalyticsPage extends BasePage {
     this.ttlDistributionChart = page.getByTestId('analysis-ttl');
     this.showNoExpirySwitch = page.getByTestId('show-no-expiry-switch');
     this.reportHistorySelect = page.getByTestId('select-report');
+
+    // Tips/Recommendations elements
+    this.codeChangesLabel = page.getByText('Code Changes');
+    this.configChangesLabel = page.getByText('Configuration Changes');
+    this.upgradeLabel = page.getByText('Upgrade');
+    this.recommendationAccordions = page.locator('[data-testid$="-accordion"]');
+    this.tutorialButton = page.getByRole('button', { name: 'Tutorial' });
+    this.votingSection = page.getByText('Is this useful?');
+    this.likeButton = page.getByRole('button', { name: 'vote useful' }).first();
+    this.dislikeButton = page.getByRole('button', { name: 'vote useful' }).last();
   }
 
   /**
@@ -313,6 +333,80 @@ export class AnalyticsPage extends BasePage {
     // Extract the number from "Execution time: X msec, Max length: Y"
     const match = text?.match(/Execution time:\s*([\d.]+)\s*msec/);
     return match ? match[1] : '';
+  }
+
+  // ===== Tips/Recommendations Methods =====
+
+  /**
+   * Click on Tips tab
+   */
+  async clickTipsTab(): Promise<void> {
+    await this.tipsTab.click();
+    await this.tipsTab.waitFor({ state: 'visible' });
+  }
+
+  /**
+   * Get count of recommendation accordions
+   */
+  async getRecommendationCount(): Promise<number> {
+    return this.recommendationAccordions.count();
+  }
+
+  /**
+   * Check if recommendation labels are visible
+   */
+  async areRecommendationLabelsVisible(): Promise<{
+    codeChanges: boolean;
+    configChanges: boolean;
+    upgrade: boolean;
+  }> {
+    return {
+      codeChanges: await this.codeChangesLabel.isVisible(),
+      configChanges: await this.configChangesLabel.isVisible(),
+      upgrade: await this.upgradeLabel.isVisible(),
+    };
+  }
+
+  /**
+   * Expand or collapse a recommendation by index
+   */
+  async toggleRecommendation(index: number): Promise<void> {
+    const accordion = this.recommendationAccordions.nth(index);
+    const button = accordion.locator('button[aria-expanded]');
+    await button.click();
+  }
+
+  /**
+   * Check if a recommendation is expanded
+   */
+  async isRecommendationExpanded(index: number): Promise<boolean> {
+    const accordion = this.recommendationAccordions.nth(index);
+    const button = accordion.locator('button[aria-expanded]');
+    const expanded = await button.getAttribute('aria-expanded');
+    return expanded === 'true';
+  }
+
+  /**
+   * Check if tutorial button is visible for any recommendation
+   */
+  async hasTutorialButton(): Promise<boolean> {
+    const count = await this.tutorialButton.count();
+    return count > 0;
+  }
+
+  /**
+   * Click tutorial button for first recommendation that has one
+   */
+  async clickTutorialButton(): Promise<void> {
+    await this.tutorialButton.first().click();
+  }
+
+  /**
+   * Check if voting section is visible
+   */
+  async isVotingSectionVisible(): Promise<boolean> {
+    const count = await this.votingSection.count();
+    return count > 0;
   }
 }
 
