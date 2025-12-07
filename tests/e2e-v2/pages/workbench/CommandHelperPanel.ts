@@ -1,10 +1,11 @@
 import { Page, Locator } from '@playwright/test';
-import { BasePage } from '../BasePage';
 
 /**
  * Page Object for Command Helper panel (bottom panel)
+ * Note: This is a component, not a standalone page
  */
-export class CommandHelperPanel extends BasePage {
+export class CommandHelperPanel {
+  readonly page: Page;
   readonly expandButton: Locator;
   readonly panelContainer: Locator;
   readonly panelTitle: Locator;
@@ -16,7 +17,7 @@ export class CommandHelperPanel extends BasePage {
   readonly commandDetails: Locator;
 
   constructor(page: Page) {
-    super(page);
+    this.page = page;
 
     this.expandButton = page.getByTestId('expand-command-helper');
     this.panelContainer = page.locator('[class*="command-helper"]').filter({ hasText: 'Command Helper' });

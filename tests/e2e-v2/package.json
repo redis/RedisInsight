@@ -17,7 +17,14 @@
     "test:report": "playwright show-report",
     "test:codegen": "playwright codegen http://localhost:8080",
     "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix"
+    "lint:fix": "eslint . --ext .ts --fix",
+    "type-check": "tsc --noEmit",
+    "prepare": "cd ../.. && husky tests/e2e-v2/.husky"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --cache --fix"
+    ]
   },
   "devDependencies": {
     "@faker-js/faker": "^9.3.0",
@@ -26,6 +33,8 @@
     "@typescript-eslint/eslint-plugin": "^8.18.1",
     "@typescript-eslint/parser": "^8.18.1",
     "eslint": "^8.57.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.10",
     "typescript": "^5.7.2"
   },
   "dependencies": {

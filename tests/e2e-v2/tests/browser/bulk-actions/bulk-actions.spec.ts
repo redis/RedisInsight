@@ -178,7 +178,7 @@ test.describe('Browser > Bulk Actions', () => {
       } finally {
         // Cleanup: delete the test key and temp file
         fs.unlinkSync(tempFile);
-        await apiHelper.deleteKeysByPattern(testKey);
+        await apiHelper.deleteKeysByPattern(databaseId, testKey);
       }
     });
   });

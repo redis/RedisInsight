@@ -21,7 +21,7 @@ test.describe('Browser > Tree View', () => {
     }
   });
 
-  test.beforeEach(async ({ page, createBrowserPage }) => {
+  test.beforeEach(async ({ createBrowserPage }) => {
     browserPage = createBrowserPage(databaseId);
     await browserPage.goto();
     await browserPage.keyList.waitForKeysLoaded();

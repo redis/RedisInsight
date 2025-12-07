@@ -69,6 +69,17 @@ export class AnalyticsPage extends BasePage {
   }
 
   /**
+   * Navigate to Analytics page - defaults to Slow Log
+   * @param databaseId - The database ID to navigate to
+   */
+  async goto(databaseId?: string): Promise<void> {
+    if (!databaseId) {
+      throw new Error('databaseId is required - use goto(databaseId)');
+    }
+    await this.gotoSlowLog(databaseId);
+  }
+
+  /**
    * Navigate to Slow Log page
    */
   async gotoSlowLog(databaseId: string): Promise<void> {

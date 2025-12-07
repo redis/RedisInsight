@@ -131,7 +131,7 @@ test.describe.serial('Workbench > Results View', () => {
     await workbenchPage.executeCommand(COMMANDS.PING);
 
     // Verify result exists
-    let resultCount = await workbenchPage.resultsPanel.getResultCount();
+    const resultCount = await workbenchPage.resultsPanel.getResultCount();
     expect(resultCount).toBeGreaterThan(0);
 
     // Clear results
@@ -179,7 +179,7 @@ test.describe.serial('Workbench > Results View', () => {
     await workbenchPage.executeCommand(COMMANDS.PING);
 
     // Verify result exists
-    let resultCount = await workbenchPage.resultsPanel.getResultCount();
+    const resultCount = await workbenchPage.resultsPanel.getResultCount();
     expect(resultCount).toBe(1);
 
     // Click re-run button
@@ -205,7 +205,7 @@ test.describe.serial('Workbench > Results View', () => {
     await workbenchPage.executeCommand(COMMANDS.PING);
 
     // Verify result exists
-    let resultCount = await workbenchPage.resultsPanel.getResultCount();
+    const resultCount = await workbenchPage.resultsPanel.getResultCount();
     expect(resultCount).toBe(1);
 
     // Click delete button

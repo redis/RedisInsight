@@ -36,7 +36,7 @@ test.describe('Browser > Key Details', () => {
     }
   });
 
-  test.beforeEach(async ({ page, createBrowserPage }) => {
+  test.beforeEach(async ({ createBrowserPage }) => {
     browserPage = createBrowserPage(databaseId);
     await browserPage.goto();
   });

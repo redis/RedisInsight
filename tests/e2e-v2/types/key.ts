@@ -37,7 +37,7 @@ export interface StreamKeyData extends BaseKeyData {
 }
 
 export interface JsonKeyData extends BaseKeyData {
-  value: string | object;
+  value: string;
 }
 
 export type KeyData =

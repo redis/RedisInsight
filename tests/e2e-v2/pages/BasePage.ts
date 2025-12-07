@@ -26,8 +26,9 @@ export abstract class BasePage {
   /**
    * Navigate to this page's URL
    * Must be implemented by each page
+   * @param options - Optional navigation options (e.g., databaseId)
    */
-  abstract goto(): Promise<void>;
+  abstract goto(...args: unknown[]): Promise<void>;
 
   /**
    * Wait for page to be fully loaded
