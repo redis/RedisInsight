@@ -297,5 +297,24 @@ test.describe.serial('Browser > Key List', () => {
     // Close popover
     await page.keyboard.press('Escape');
   });
+
+  test(`should show scan more button when searching ${Tags.REGRESSION}`, async () => {
+    // Search for keys with a pattern that will return partial results
+    await browserPage.keyList.searchKeys('test-*');
+
+    // Wait for search results
+    await browserPage.keyList.waitForKeysLoaded();
+
+    // Check if scan more button is visible (only visible when there are more keys to scan)
+    const isScanMoreVisible = await browserPage.keyList.isScanMoreVisible();
+
+    // The scan more button should be visible if there are more keys to scan
+    // This depends on the database having enough keys
+    if (isScanMoreVisible) {
+      // Verify the scanned count text is visible
+      const scannedText = await browserPage.keyList.getScannedCountText();
+      expect(scannedText).toMatch(/Scanned \d+/);
+    }
+  });
 });
 

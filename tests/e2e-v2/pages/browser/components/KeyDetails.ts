@@ -24,6 +24,7 @@ export class KeyDetails {
   readonly autoRefreshButton: Locator;
   readonly backButton: Locator;
   readonly closeKeyButton: Locator;
+  readonly copyKeyNameButton: Locator;
 
   // Format dropdown
   readonly formatDropdown: Locator;
@@ -57,6 +58,9 @@ export class KeyDetails {
   readonly streamDataTab: Locator;
   readonly consumerGroupsTab: Locator;
   readonly streamEntries: Locator;
+  readonly newGroupButton: Locator;
+  readonly consumerGroupsGrid: Locator;
+  readonly noConsumerGroupsMessage: Locator;
 
   // JSON-specific
   readonly jsonContent: Locator;
@@ -89,6 +93,7 @@ export class KeyDetails {
     this.autoRefreshButton = page.getByTestId('key-auto-refresh-config-btn');
     this.backButton = page.getByTestId('back-right-panel-btn');
     this.closeKeyButton = page.getByTestId('close-key-btn');
+    this.copyKeyNameButton = page.getByRole('button', { name: 'Copy Key Name' });
 
     // Format dropdown
     this.formatDropdown = page.getByTestId('select-format-key-value');
@@ -122,6 +127,9 @@ export class KeyDetails {
     this.streamDataTab = page.getByRole('tab', { name: 'Stream Data' });
     this.consumerGroupsTab = page.getByRole('tab', { name: 'Consumer Groups' });
     this.streamEntries = page.locator('[data-testid="stream-entries-container"]');
+    this.newGroupButton = page.getByRole('button', { name: 'New Group' });
+    this.consumerGroupsGrid = page.locator('grid').filter({ hasText: /Group Name/ });
+    this.noConsumerGroupsMessage = page.getByText('Your Key has no Consumer Groups available.');
 
     // JSON-specific
     this.jsonContent = page.getByTestId('json-details');
@@ -169,6 +177,25 @@ export class KeyDetails {
     await this.page.getByRole('dialog').getByRole('button', { name: 'Delete' }).click();
     // Wait for the key details to close (key was deleted)
     await this.page.getByTestId('key-details-header').waitFor({ state: 'hidden', timeout: 10000 });
+  }
+
+  async copyKeyName(): Promise<void> {
+    // Hover over the key name to reveal the copy button
+    await this.keyName.hover();
+    // Wait for the copy button to appear and click it
+    await this.copyKeyNameButton.waitFor({ state: 'visible', timeout: 5000 });
+    await this.copyKeyNameButton.click();
+  }
+
+  async isCopyKeyNameButtonVisible(): Promise<boolean> {
+    // Hover over the key name to reveal the copy button
+    await this.keyName.hover();
+    try {
+      await this.copyKeyNameButton.waitFor({ state: 'visible', timeout: 3000 });
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   async getTtlValue(): Promise<string> {
@@ -681,6 +708,73 @@ export class KeyDetails {
     return ids;
   }
 
+  // Consumer Group methods
+  async clickNewGroup(): Promise<void> {
+    await this.newGroupButton.click();
+  }
+
+  async addConsumerGroup(groupName: string, id: string = '$'): Promise<void> {
+    await this.consumerGroupsTab.click();
+    await this.newGroupButton.click();
+    // Fill in the group name
+    const groupNameInput = this.page.getByPlaceholder('Enter Group Name*');
+    await groupNameInput.waitFor({ state: 'visible' });
+    await groupNameInput.fill(groupName);
+    // Fill in the ID (default is $)
+    const idInput = this.page.getByPlaceholder('ID*');
+    await idInput.clear();
+    await idInput.fill(id);
+    // Click Save
+    await this.page.getByRole('button', { name: 'Save' }).click();
+    // Wait for the form to close
+    await groupNameInput.waitFor({ state: 'hidden', timeout: 5000 });
+  }
+
+  async getConsumerGroupCount(): Promise<number> {
+    // Count rows in the consumer groups grid (excluding header)
+    const rows = this.page.locator('[role="row"]').filter({ hasText: /^\d+$/ });
+    return await rows.count();
+  }
+
+  async isConsumerGroupVisible(groupName: string): Promise<boolean> {
+    // Look for the group name in a gridcell
+    const groupCell = this.page.getByRole('gridcell', { name: groupName });
+    try {
+      await groupCell.waitFor({ state: 'visible', timeout: 5000 });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async isNoConsumerGroupsMessageVisible(): Promise<boolean> {
+    try {
+      await this.noConsumerGroupsMessage.waitFor({ state: 'visible', timeout: 3000 });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async clickConsumerGroup(groupName: string): Promise<void> {
+    const groupRow = this.page.getByRole('row', { name: new RegExp(groupName) });
+    await groupRow.click();
+  }
+
+  async getConsumerGroupNames(): Promise<string[]> {
+    // Get all group names from the consumer groups grid
+    const groupCells = this.page.locator('[role="gridcell"]').filter({ hasText: /^[a-zA-Z0-9_-]+$/ });
+    const count = await groupCells.count();
+    const names: string[] = [];
+    for (let i = 0; i < count; i++) {
+      const text = await groupCells.nth(i).innerText();
+      if (text && !text.match(/^\d+$/)) {
+        names.push(text);
+      }
+    }
+    return names;
+  }
+
   // JSON methods
   async isJsonContentVisible(): Promise<boolean> {
     // JSON content is displayed in the json-details container
@@ -735,14 +829,15 @@ export class KeyDetails {
 
   async removeJsonField(): Promise<void> {
     // Click the first remove button
-    const removeBtn = this.page.getByTestId('remove-icon').first();
+    const removeBtn = this.page.getByRole('button', { name: 'Remove field' }).first();
     await removeBtn.click();
-    // Confirm in the dialog
-    const confirmBtn = this.page.getByTestId('json-remove-btn');
-    await confirmBtn.waitFor({ state: 'visible' });
+    // Confirm in the dialog - the button is labeled "Remove"
+    const dialog = this.page.getByRole('dialog');
+    await dialog.waitFor({ state: 'visible' });
+    const confirmBtn = dialog.getByRole('button', { name: 'Remove' });
     await confirmBtn.click();
     // Wait for the dialog to close
-    await confirmBtn.waitFor({ state: 'hidden', timeout: 5000 });
+    await dialog.waitFor({ state: 'hidden', timeout: 5000 });
   }
 
   async getJsonFieldCount(): Promise<number> {

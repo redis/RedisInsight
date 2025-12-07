@@ -26,6 +26,7 @@ export class KeyList {
   readonly totalCount: Locator;
   readonly scannedCount: Locator;
   readonly lastRefresh: Locator;
+  readonly scanMoreButton: Locator;
 
   // Key list container
   readonly keyListContainer: Locator;
@@ -58,6 +59,7 @@ export class KeyList {
     this.totalCount = page.getByText(/Total:/);
     this.scannedCount = page.getByText(/Scanned/);
     this.lastRefresh = page.getByText(/Last refresh:/);
+    this.scanMoreButton = page.getByTestId('scan-more');
 
     // Key list container
     this.keyListContainer = page.locator('[data-testid="virtual-list"], [role="tree"], [role="grid"]');
@@ -101,6 +103,33 @@ export class KeyList {
     await this.keyTypeFilterDropdown.waitFor({ state: 'visible' });
     // Use exact match for type to avoid "Set" matching "Sorted Set"
     await this.page.getByRole('option', { name: type, exact: true }).click();
+  }
+
+  /**
+   * Click scan more button to load more keys
+   */
+  async scanMore(): Promise<void> {
+    await this.scanMoreButton.click();
+  }
+
+  /**
+   * Check if scan more button is visible
+   */
+  async isScanMoreVisible(): Promise<boolean> {
+    try {
+      await this.scanMoreButton.waitFor({ state: 'visible', timeout: 3000 });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Get scanned count text (e.g., "Scanned 1 000 / 3 274")
+   */
+  async getScannedCountText(): Promise<string> {
+    await this.scannedCount.waitFor({ state: 'visible' });
+    return await this.scannedCount.innerText();
   }
 
   /**

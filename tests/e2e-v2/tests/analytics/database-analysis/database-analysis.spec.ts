@@ -128,6 +128,80 @@ test.describe('Analytics > Database Analysis', () => {
       // Should show top keys table
       await expect(analyticsPage.topKeysTable).toBeVisible();
     });
+
+    test(`should show TTL distribution chart ${Tags.REGRESSION}`, async ({
+      createAnalyticsPage,
+    }) => {
+      const analyticsPage = createAnalyticsPage();
+      await analyticsPage.gotoDatabaseAnalysis(databaseId);
+
+      // Generate report if not already visible
+      const hasReport = await analyticsPage.isReportVisible();
+      if (!hasReport) {
+        await analyticsPage.clickNewReport();
+        await analyticsPage.waitForReportGenerated();
+      }
+
+      // Should show TTL distribution chart
+      const isTtlVisible = await analyticsPage.isTtlDistributionVisible();
+      expect(isTtlVisible).toBe(true);
+    });
+
+    test(`should toggle show no expiry in TTL chart ${Tags.REGRESSION}`, async ({
+      createAnalyticsPage,
+    }) => {
+      const analyticsPage = createAnalyticsPage();
+      await analyticsPage.gotoDatabaseAnalysis(databaseId);
+
+      // Generate report if not already visible
+      const hasReport = await analyticsPage.isReportVisible();
+      if (!hasReport) {
+        await analyticsPage.clickNewReport();
+        await analyticsPage.waitForReportGenerated();
+      }
+
+      // Should have the show no expiry switch visible
+      await expect(analyticsPage.showNoExpirySwitch).toBeVisible();
+
+      // Toggle should be clickable
+      await analyticsPage.toggleShowNoExpiry();
+    });
+
+    test(`should show report history dropdown ${Tags.REGRESSION}`, async ({
+      createAnalyticsPage,
+    }) => {
+      const analyticsPage = createAnalyticsPage();
+      await analyticsPage.gotoDatabaseAnalysis(databaseId);
+
+      // Generate report if not already visible
+      const hasReport = await analyticsPage.isReportVisible();
+      if (!hasReport) {
+        await analyticsPage.clickNewReport();
+        await analyticsPage.waitForReportGenerated();
+      }
+
+      // Should show report history select
+      const isHistoryVisible = await analyticsPage.isReportHistoryVisible();
+      expect(isHistoryVisible).toBe(true);
+    });
+
+    test(`should have at least one report in history ${Tags.REGRESSION}`, async ({
+      createAnalyticsPage,
+    }) => {
+      const analyticsPage = createAnalyticsPage();
+      await analyticsPage.gotoDatabaseAnalysis(databaseId);
+
+      // Generate report if not already visible
+      const hasReport = await analyticsPage.isReportVisible();
+      if (!hasReport) {
+        await analyticsPage.clickNewReport();
+        await analyticsPage.waitForReportGenerated();
+      }
+
+      // Get report count from dropdown
+      const reportCount = await analyticsPage.getReportHistoryCount();
+      expect(reportCount).toBeGreaterThan(0);
+    });
   });
 
   test.describe('Navigate to Database Analysis', () => {

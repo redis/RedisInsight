@@ -31,6 +31,9 @@ export class AnalyticsPage extends BasePage {
   readonly memoryChart: Locator;
   readonly keysChart: Locator;
   readonly scannedKeysText: Locator;
+  readonly ttlDistributionChart: Locator;
+  readonly showNoExpirySwitch: Locator;
+  readonly reportHistorySelect: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -60,6 +63,9 @@ export class AnalyticsPage extends BasePage {
     this.memoryChart = page.locator('img').filter({ hasText: /Memory/ }).first();
     this.keysChart = page.locator('img').filter({ hasText: /Keys/ }).first();
     this.scannedKeysText = page.getByText(/Scanned \d+%/);
+    this.ttlDistributionChart = page.getByTestId('analysis-ttl');
+    this.showNoExpirySwitch = page.getByTestId('show-no-expiry-switch');
+    this.reportHistorySelect = page.getByTestId('select-report');
   }
 
   /**
@@ -169,6 +175,51 @@ export class AnalyticsPage extends BasePage {
       this.page.getByText(/Last refresh:/).locator('..')
     );
     return await lastRefreshElement.textContent() || '';
+  }
+
+  /**
+   * Check if TTL distribution chart is visible
+   */
+  async isTtlDistributionVisible(): Promise<boolean> {
+    try {
+      await this.ttlDistributionChart.waitFor({ state: 'visible', timeout: 5000 });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Check if report history select is visible
+   */
+  async isReportHistoryVisible(): Promise<boolean> {
+    try {
+      await this.reportHistorySelect.waitFor({ state: 'visible', timeout: 5000 });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Get report history options count
+   */
+  async getReportHistoryCount(): Promise<number> {
+    // Click to open the dropdown
+    await this.reportHistorySelect.click();
+    // Count the options
+    const options = this.page.getByRole('option');
+    const count = await options.count();
+    // Close dropdown by pressing Escape
+    await this.page.keyboard.press('Escape');
+    return count;
+  }
+
+  /**
+   * Toggle show no expiry switch
+   */
+  async toggleShowNoExpiry(): Promise<void> {
+    await this.showNoExpirySwitch.click();
   }
 }
 

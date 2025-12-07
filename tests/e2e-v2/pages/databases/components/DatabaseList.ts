@@ -17,6 +17,17 @@ export class DatabaseList {
   readonly bulkDeleteButton: Locator;
   readonly cancelSelectingButton: Locator;
 
+  // Pagination elements
+  readonly paginationNav: Locator;
+  readonly paginationFirstPageButton: Locator;
+  readonly paginationLastPageButton: Locator;
+  readonly paginationPreviousButton: Locator;
+  readonly paginationNextButton: Locator;
+  readonly paginationPageInfo: Locator;
+  readonly paginationRowCount: Locator;
+  readonly paginationItemsPerPage: Locator;
+  readonly paginationPageSelect: Locator;
+
   constructor(page: Page) {
     this.page = page;
     this.list = page.getByTestId('databases-list');
@@ -29,6 +40,17 @@ export class DatabaseList {
     this.exportButton = page.getByRole('button', { name: 'Export' });
     this.bulkDeleteButton = page.getByRole('button', { name: 'Delete' });
     this.cancelSelectingButton = page.getByRole('button', { name: 'Cancel selecting' });
+
+    // Pagination elements
+    this.paginationNav = page.getByRole('navigation', { name: 'Pagination' });
+    this.paginationFirstPageButton = this.paginationNav.getByRole('button', { name: 'first page' });
+    this.paginationLastPageButton = this.paginationNav.getByRole('button', { name: 'last page' });
+    this.paginationPreviousButton = this.paginationNav.getByRole('button', { name: 'previous page' });
+    this.paginationNextButton = this.paginationNav.getByRole('button', { name: 'next page' });
+    this.paginationPageInfo = this.paginationNav.locator('p').filter({ hasText: /\d+ of \d+/ });
+    this.paginationRowCount = this.paginationNav.locator('p').filter({ hasText: /Showing \d+ out of \d+ rows/ });
+    this.paginationItemsPerPage = this.paginationNav.getByRole('combobox', { name: 'Items per page:' });
+    this.paginationPageSelect = this.paginationNav.getByRole('combobox', { name: 'Page', exact: true });
   }
 
   /**
@@ -327,5 +349,107 @@ export class DatabaseList {
     } else {
       await expect(this.selectionCounter).toContainText(count.toString());
     }
+  }
+
+  // ==================== PAGINATION ====================
+
+  /**
+   * Check if pagination is visible
+   */
+  async isPaginationVisible(): Promise<boolean> {
+    return await this.paginationNav.isVisible().catch(() => false);
+  }
+
+  /**
+   * Go to first page
+   */
+  async goToFirstPage(): Promise<void> {
+    await this.paginationFirstPageButton.click();
+  }
+
+  /**
+   * Go to last page
+   */
+  async goToLastPage(): Promise<void> {
+    await this.paginationLastPageButton.click();
+  }
+
+  /**
+   * Go to next page
+   */
+  async goToNextPage(): Promise<void> {
+    await this.paginationNextButton.click();
+  }
+
+  /**
+   * Go to previous page
+   */
+  async goToPreviousPage(): Promise<void> {
+    await this.paginationPreviousButton.click();
+  }
+
+  /**
+   * Check if next page button is enabled
+   */
+  async isNextPageEnabled(): Promise<boolean> {
+    return await this.paginationNextButton.isEnabled().catch(() => false);
+  }
+
+  /**
+   * Check if previous page button is enabled
+   */
+  async isPreviousPageEnabled(): Promise<boolean> {
+    return await this.paginationPreviousButton.isEnabled().catch(() => false);
+  }
+
+  /**
+   * Check if first page button is enabled
+   */
+  async isFirstPageEnabled(): Promise<boolean> {
+    return await this.paginationFirstPageButton.isEnabled().catch(() => false);
+  }
+
+  /**
+   * Check if last page button is enabled
+   */
+  async isLastPageEnabled(): Promise<boolean> {
+    return await this.paginationLastPageButton.isEnabled().catch(() => false);
+  }
+
+  /**
+   * Get the row count text (e.g., "Showing 10 out of 20 rows")
+   */
+  async getRowCountText(): Promise<string> {
+    return (await this.paginationRowCount.textContent()) || '';
+  }
+
+  /**
+   * Get current items per page value
+   */
+  async getItemsPerPage(): Promise<string> {
+    return (await this.paginationItemsPerPage.textContent()) || '';
+  }
+
+  /**
+   * Set items per page
+   */
+  async setItemsPerPage(value: '10' | '25' | '50' | '100'): Promise<void> {
+    await this.paginationItemsPerPage.click();
+    await this.page.getByRole('option', { name: value }).click();
+  }
+
+  /**
+   * Get current page number from page select
+   */
+  async getCurrentPage(): Promise<string> {
+    return (await this.paginationPageSelect.textContent()) || '';
+  }
+
+  /**
+   * Select a specific page from dropdown
+   */
+  async selectPage(pageNumber: string): Promise<void> {
+    await this.paginationPageSelect.click();
+    await this.page.getByRole('option', { name: pageNumber }).click();
   }
 }

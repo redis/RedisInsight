@@ -21,6 +21,8 @@ export class SettingsPage extends BasePage {
   readonly dateFormatRadioPreselected: Locator;
   readonly dateFormatRadioCustom: Locator;
   readonly dateFormatDropdown: Locator;
+  readonly customDateFormatInput: Locator;
+  readonly customDateFormatSaveButton: Locator;
   readonly timezoneDropdown: Locator;
   readonly datePreview: Locator;
 
@@ -57,18 +59,19 @@ export class SettingsPage extends BasePage {
 
     // General settings
     this.themeDropdown = page.getByRole('combobox', { name: /color theme/i });
-    this.notificationSwitch = page.locator('[data-testid="switch-option-notification"]').or(
-      page.getByRole('switch').filter({ hasText: /notification/i })
-    );
+    // The notification switch is inside a container with "Show notification" text
+    this.notificationSwitch = page.locator('div').filter({ hasText: /^Show notification$/ }).locator('..').getByRole('switch');
     this.dateFormatRadioPreselected = page.getByRole('radio', { name: 'Pre-selected formats' });
     this.dateFormatRadioCustom = page.getByRole('radio', { name: 'Custom' });
     this.dateFormatDropdown = page.locator('[data-testid="select-datetime-format"]').or(
       page.getByRole('combobox').filter({ hasText: /HH:mm/i })
     );
+    this.customDateFormatInput = page.getByTestId('custom-datetime-input');
+    this.customDateFormatSaveButton = page.getByTestId('datetime-custom-btn');
     this.timezoneDropdown = page.locator('[data-testid="select-timezone"]').or(
       page.getByRole('combobox').filter({ hasText: /Match System/i })
     );
-    this.datePreview = page.getByRole('textbox').filter({ hasText: /\d{2}:\d{2}:\d{2}/ });
+    this.datePreview = page.getByTestId('data-preview');
 
     // Privacy settings
     this.usageDataSwitch = page.locator('[data-testid="switch-option-analytics"]').or(
@@ -179,6 +182,24 @@ export class SettingsPage extends BasePage {
   async isRedisCloudExpanded(): Promise<boolean> {
     const expanded = await this.redisCloudButton.getAttribute('aria-expanded');
     return expanded === 'true';
+  }
+
+  /**
+   * Set custom date format
+   */
+  async setCustomDateFormat(format: string): Promise<void> {
+    await this.dateFormatRadioCustom.click();
+    await this.customDateFormatInput.waitFor({ state: 'visible' });
+    await this.customDateFormatInput.clear();
+    await this.customDateFormatInput.fill(format);
+    await this.customDateFormatSaveButton.click();
+  }
+
+  /**
+   * Get date preview value
+   */
+  async getDatePreviewValue(): Promise<string> {
+    return await this.datePreview.inputValue();
   }
 }
 

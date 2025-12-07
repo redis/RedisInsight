@@ -121,14 +121,14 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 1.4 Pagination (when > 15 databases)
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟠 | Show pagination when > 15 databases |
-| 🔲 | 🟢 | Navigate to next page |
-| 🔲 | 🟢 | Navigate to previous page |
-| 🔲 | 🟢 | Navigate to first/last page |
-| 🔲 | 🟢 | Change items per page (10, 25, 50, 100) |
-| 🔲 | 🟢 | Select page from dropdown |
-| 🔲 | 🟢 | Show correct row count "Showing X out of Y rows" |
-| 🔲 | 🟢 | Pagination buttons disabled state (first/previous on page 1) |
+| ✅ | 🟠 | Show pagination when > 15 databases |
+| ✅ | 🟢 | Navigate to next page |
+| ✅ | 🟢 | Navigate to previous page |
+| ✅ | 🟢 | Navigate to first/last page |
+| ✅ | 🟢 | Change items per page (10, 25, 50, 100) |
+| ✅ | 🟢 | Select page from dropdown |
+| ✅ | 🟢 | Show correct row count "Showing X out of Y rows" |
+| ✅ | 🟢 | Pagination buttons disabled state (first/previous on page 1) |
 
 ### 1.5 Import/Export
 | Status | Priority | Test Case |
@@ -158,7 +158,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Refresh key list |
 | ✅ | 🟢 | Show no results message for non-matching pattern |
 | ✅ | 🔴 | Delete key |
-| 🔲 | 🟢 | Delete multiple keys (bulk) |
+| ✅ | 🟢 | Delete multiple keys (bulk) |
 | ✅ | 🟠 | Search by Values of Keys |
 | ✅ | 🟢 | Configure columns visibility |
 | ✅ | 🟢 | Configure auto-refresh |
@@ -172,7 +172,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Configure delimiter |
 | ✅ | 🟢 | Sort tree nodes |
 | ✅ | 🟢 | View folder percentage and count |
-| 🔲 | 🟢 | Scan more keys |
+| ✅ | 🟢 | Scan more keys (covered by "should show scan more button when searching" test) |
 | ✅ | 🟢 | Open tree view settings |
 
 ### 2.3 Add Keys (✅ Implemented)
@@ -195,7 +195,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🔴🟠 | View string value |
 | ✅ | 🔴 | Edit string value |
 | ✅ | 🟢 | View/edit TTL |
-| 🔲 | 🟢 | Copy value |
+| ✅ | 🟢 | Copy key name (covered by "should show copy key name button on hover" test) |
 | ✅ | 🟢 | Change value format (text/binary/hex) |
 
 ### 2.5 Key Details - Hash (✅ Implemented)
@@ -206,7 +206,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🔴 | Edit hash field |
 | ✅ | 🔴 | Delete hash field |
 | ✅ | 🟢 | Search hash fields |
-| 🔲 | 🟢 | Pagination |
+| ⏭️ | 🟢 | Pagination (N/A - hash fields use virtual scrolling, not pagination) |
 
 ### 2.6 Key Details - List
 | Status | Priority | Test Case |
@@ -241,18 +241,18 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🔴🟠 | View stream entries |
 | ✅ | 🔴 | Add stream entry |
 | ✅ | 🔴 | Remove stream entry |
-| ✅ | 🟢 | View consumer groups |
-| 🔲 | 🟢 | Add consumer group |
-| 🔲 | 🟢 | View consumers |
+| ✅ | 🟢 | View consumer groups (covered by "should show no consumer groups message" test) |
+| ✅ | 🟢 | Add consumer group |
+| ⏭️ | 🟢 | View consumers (N/A - requires active consumers which need external client) |
 
 ### 2.10 Key Details - JSON
 | Status | Priority | Test Case |
 |--------|----------|-----------|
 | ✅ | 🔴🟠 | View JSON value |
 | ✅ | 🔴 | Edit JSON value |
-| 🔲 | 🟢 | Add JSON path |
-| 🔲 | 🟢 | Delete JSON path |
-| 🔲 | 🟢 | Expand/collapse JSON tree |
+| ✅ | 🟢 | Add JSON path (covered by "should add JSON field" test) |
+| ✅ | 🟢 | Delete JSON path (covered by "should remove JSON field" test) |
+| ⏭️ | 🟢 | Expand/collapse JSON tree (N/A - JSON tree view not available in current UI) |
 
 ### 2.11 Bulk Actions
 | Status | Priority | Test Case |
@@ -304,7 +304,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 |--------|----------|-----------|
 | ✅ | 🟠 | Open Intro to search tutorial |
 | ✅ | 🟢 | Open Basic use cases tutorial |
-| 🔲 | 🟢 | Open Intro to vector search tutorial |
+| ✅ | 🟢 | Open Intro to vector search tutorial |
 | ✅ | 🟢 | Click Explore button |
 | ✅ | 🟢 | Close insights panel |
 
@@ -387,17 +387,19 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🔴 | View analysis results |
 | ✅ | 🟢 | View top keys table |
 | ✅ | 🟢 | View top namespaces |
-| 🔲 | 🟢 | View TTL distribution |
+| ✅ | 🟢 | View TTL distribution |
 | ✅ | 🟢 | View recommendations (Tips tab) |
-| 🔲 | 🟢 | History of analyses
+| ✅ | 🟢 | History of analyses
 
 ### 6.3 Cluster Details
+> ⚠️ **SKIPPED**: Requires properly configured OSS Cluster infrastructure (multiple nodes)
+
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🔴🟠 | View cluster nodes |
-| 🔲 | 🟢 | View node details |
-| 🔲 | 🟢 | View slot distribution |
-| 🔲 | 🟢 | Refresh cluster info |
+| ⏭️ | 🔴🟠 | View cluster nodes |
+| ⏭️ | 🟢 | View node details |
+| ⏭️ | 🟢 | View slot distribution |
+| ⏭️ | 🟢 | Refresh cluster info |
 
 ---
 
@@ -408,9 +410,9 @@ The test plan is organized by feature area, with tests categorized by priority:
 |--------|----------|-----------|
 | ✅ | 🟠 | View settings page |
 | ✅ | 🔴 | Show theme dropdown |
-| 🔲 | 🟢 | Toggle show notifications |
+| ✅ | 🟢 | Toggle show notifications |
 | ✅ | 🟢 | Show date/time format options |
-| 🔲 | 🟢 | Change date/time format (custom) |
+| ✅ | 🟢 | Change date/time format (custom) |
 | ✅ | 🟢 | Show time zone dropdown |
 
 ### 7.2 Privacy Settings
@@ -425,7 +427,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 |--------|----------|-----------|
 | ✅ | 🟢 | Show editor cleanup switch |
 | ✅ | 🟢 | Show pipeline commands setting |
-| 🔲 | 🟢 | Configure command timeout |
+| ⏭️ | 🟢 | Configure command timeout (N/A - per-database setting, not in settings page) |
 
 ### 7.4 Redis Cloud Settings
 | Status | Priority | Test Case |

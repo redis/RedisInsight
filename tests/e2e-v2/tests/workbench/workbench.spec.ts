@@ -473,6 +473,21 @@ test.describe.serial('Workbench > Tutorials', () => {
     await expect(insightsPanel).toBeVisible();
   });
 
+  test(`should open Intro to vector search tutorial ${Tags.REGRESSION}`, async ({ page }) => {
+    // Click on Intro to vector search tutorial button
+    const tutorialButton = page.getByTestId('query-tutorials-link_vss-intro');
+    await expect(tutorialButton).toBeVisible();
+    await tutorialButton.click();
+
+    // Verify insights panel opens with tutorial content
+    const insightsPanel = page.getByTestId('side-panels-insights');
+    await expect(insightsPanel).toBeVisible();
+
+    // Verify tutorial tab is selected
+    const tutorialsTab = page.getByRole('tab', { name: 'Tutorials' });
+    await expect(tutorialsTab).toHaveAttribute('aria-selected', 'true');
+  });
+
   test(`should close insights panel ${Tags.REGRESSION}`, async ({ page }) => {
     // Open insights panel first
     const tutorialButton = page.getByTestId('query-tutorials-link_sq-intro');

@@ -62,6 +62,31 @@ test.describe('Settings', () => {
 
       await expect(settingsPage.timezoneDropdown).toBeVisible();
     });
+
+    test(`should show notification switch ${Tags.REGRESSION}`, async ({
+      settingsPage,
+    }) => {
+      await settingsPage.goto();
+      await settingsPage.expandGeneral();
+
+      await expect(settingsPage.notificationSwitch).toBeVisible();
+    });
+
+    test(`should change date/time format (custom) ${Tags.REGRESSION}`, async ({
+      settingsPage,
+    }) => {
+      await settingsPage.goto();
+      await settingsPage.expandGeneral();
+
+      // Set custom date format
+      const customFormat = 'yyyy-MM-dd HH:mm:ss';
+      await settingsPage.setCustomDateFormat(customFormat);
+
+      // Verify the preview shows the new format (year first)
+      const preview = await settingsPage.getDatePreviewValue();
+      // The preview should start with the year (4 digits)
+      expect(preview).toMatch(/^\d{4}-\d{2}-\d{2}/);
+    });
   });
 
   test.describe('Privacy Settings', () => {

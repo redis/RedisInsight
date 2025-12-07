@@ -791,9 +791,13 @@ test.describe('Browser > Key Details', () => {
       await browserPage.keyList.clickKey(keyData.keyName);
       await browserPage.keyDetails.waitForKeyDetails();
 
-      // Get initial entry count
-      const initialIds = await browserPage.keyDetails.getStreamEntryIds();
-      const initialCount = initialIds.length;
+      // Wait for initial entries to load (stream is created with 1 entry)
+      let initialCount = 0;
+      await expect(async () => {
+        const initialIds = await browserPage.keyDetails.getStreamEntryIds();
+        initialCount = initialIds.length;
+        expect(initialCount).toBeGreaterThan(0);
+      }).toPass({ timeout: 10000 });
 
       // Add new entry
       await browserPage.keyDetails.addStreamEntry('new-field', 'new-value');
@@ -826,6 +830,43 @@ test.describe('Browser > Key Details', () => {
       // Verify entry count decreased
       const newIds = await browserPage.keyDetails.getStreamEntryIds();
       expect(newIds.length).toBe(entryIds.length - 1);
+    });
+
+    test(`should add consumer group ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+      const keyData = getStreamKeyData();
+      const groupName = `test-group-${Date.now()}`;
+
+      await apiHelper.createStreamKey(databaseId, keyData.keyName, keyData.fields);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Add consumer group
+      await browserPage.keyDetails.addConsumerGroup(groupName);
+
+      // Verify consumer group is visible
+      const isVisible = await browserPage.keyDetails.isConsumerGroupVisible(groupName);
+      expect(isVisible).toBe(true);
+    });
+
+    test(`should show no consumer groups message ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+      const keyData = getStreamKeyData();
+
+      await apiHelper.createStreamKey(databaseId, keyData.keyName, keyData.fields);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Switch to consumer groups tab
+      await browserPage.keyDetails.clickConsumerGroupsTab();
+
+      // Verify no consumer groups message is visible
+      const isMessageVisible = await browserPage.keyDetails.isNoConsumerGroupsMessageVisible();
+      expect(isMessageVisible).toBe(true);
     });
   });
 
@@ -924,6 +965,32 @@ test.describe('Browser > Key Details', () => {
         expect(value).toContain('updatedValue');
       }).toPass({ timeout: 10000 });
     });
+
+    test(`should remove JSON field ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+      const keyData = getJsonKeyData({
+        value: JSON.stringify({ field1: 'value1', field2: 'value2', field3: 'value3' }),
+      });
+
+      await apiHelper.createJsonKey(databaseId, keyData.keyName, keyData.value);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Get initial field count
+      const initialCount = await browserPage.keyDetails.getJsonFieldCount();
+      expect(initialCount).toBe(3);
+
+      // Remove a field
+      await browserPage.keyDetails.removeJsonField();
+
+      // Verify field count decreased (use polling to avoid race condition)
+      await expect(async () => {
+        const newCount = await browserPage.keyDetails.getJsonFieldCount();
+        expect(newCount).toBe(initialCount - 1);
+      }).toPass({ timeout: 10000 });
+    });
   });
 
   test.describe('TTL Management', () => {
@@ -994,6 +1061,25 @@ test.describe('Browser > Key Details', () => {
         const newFormat = await browserPage.keyDetails.getValueFormat();
         expect(newFormat).toContain('HEX');
       }).toPass({ timeout: 5000 });
+    });
+  });
+
+  test.describe('Copy Key Name', () => {
+    test(`should show copy key name button on hover ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+      const keyData = getStringKeyData();
+
+      // Create key via API
+      await apiHelper.createStringKey(databaseId, keyData.keyName, keyData.value);
+
+      // Refresh key list and click on the key
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Verify copy button appears on hover
+      const isVisible = await browserPage.keyDetails.isCopyKeyNameButtonVisible();
+      expect(isVisible).toBe(true);
     });
   });
 });
