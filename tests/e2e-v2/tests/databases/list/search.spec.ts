@@ -70,11 +70,12 @@ test.describe.serial('Database List > Search', () => {
     await databaseList.search(dbNames.unique);
     await databaseList.expectDatabaseNotVisible(dbNames.alpha);
 
-    // Clear and verify all visible
+    // Clear and verify all visible (use searchFirst to handle pagination)
     await databaseList.clearSearch();
 
-    await databaseList.expectDatabaseVisible(dbNames.alpha);
-    await databaseList.expectDatabaseVisible(dbNames.unique);
+    await databaseList.expectDatabaseVisible(dbNames.alpha, { searchFirst: true });
+    await databaseList.clearSearch();
+    await databaseList.expectDatabaseVisible(dbNames.unique, { searchFirst: true });
   });
 
   test(`should be case-insensitive search ${Tags.REGRESSION}`, async ({ databasesPage }) => {

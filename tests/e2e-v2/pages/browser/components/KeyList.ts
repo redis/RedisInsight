@@ -206,13 +206,16 @@ export class KeyList {
   async isNoKeysMessageVisible(): Promise<boolean> {
     try {
       // Check for various "no keys" indicators
-      const noKeysText = this.page.getByText(/no keys|no results|0 keys/i);
-      const totalZero = this.page.getByText(/Total:\s*0/);
+      // Use first() to handle multiple matches
+      const noKeysText = this.page.getByText(/no keys|no results found|0 keys/i).first();
+      const totalZero = this.page.getByText(/Total:\s*0/).first();
+      const resultsZero = this.page.getByText(/Results:\s*0/).first();
 
       const noKeysVisible = await noKeysText.isVisible().catch(() => false);
       const totalZeroVisible = await totalZero.isVisible().catch(() => false);
+      const resultsZeroVisible = await resultsZero.isVisible().catch(() => false);
 
-      return noKeysVisible || totalZeroVisible;
+      return noKeysVisible || totalZeroVisible || resultsZeroVisible;
     } catch {
       return false;
     }

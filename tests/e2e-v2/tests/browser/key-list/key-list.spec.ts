@@ -215,5 +215,87 @@ test.describe.serial('Browser > Key List', () => {
     // Verify we're back to key name filter mode
     await expect(page.getByPlaceholder('Filter by Key Name or Pattern')).toBeVisible();
   });
+
+  test(`should display database stats in header ${Tags.REGRESSION}`, async ({ page }) => {
+    // Verify CPU usage is displayed
+    const cpuUsage = page.getByTestId('overview-cpu');
+    await expect(cpuUsage).toBeVisible();
+    await expect(cpuUsage).toContainText('%');
+
+    // Verify connected clients is displayed
+    const connectedClients = page.getByTestId('overview-connected-clients');
+    await expect(connectedClients).toBeVisible();
+
+    // Verify total memory is displayed
+    const totalMemory = page.getByTestId('overview-total-memory');
+    await expect(totalMemory).toBeVisible();
+    await expect(totalMemory).toContainText(/MB|KB|GB/);
+
+    // Verify total keys is displayed
+    const totalKeys = page.getByTestId('overview-total-keys');
+    await expect(totalKeys).toBeVisible();
+
+    // Verify commands per second is displayed
+    const commandsPerSec = page.getByTestId('overview-commands-sec');
+    await expect(commandsPerSec).toBeVisible();
+  });
+
+  test(`should configure columns visibility ${Tags.REGRESSION}`, async ({ page }) => {
+    // Click on Columns button
+    const columnsButton = page.getByTestId('btn-columns-actions');
+    await columnsButton.click();
+
+    // Verify columns popover is visible
+    const keySizeCheckbox = page.getByRole('checkbox', { name: 'Key size' });
+    await expect(keySizeCheckbox).toBeVisible();
+    await expect(keySizeCheckbox).toBeChecked();
+
+    const ttlCheckbox = page.getByRole('checkbox', { name: 'TTL' });
+    await expect(ttlCheckbox).toBeVisible();
+    await expect(ttlCheckbox).toBeChecked();
+
+    // Toggle Key size off
+    await keySizeCheckbox.click();
+    await expect(keySizeCheckbox).not.toBeChecked();
+
+    // Toggle Key size back on
+    await keySizeCheckbox.click();
+    await expect(keySizeCheckbox).toBeChecked();
+
+    // Close popover
+    await page.keyboard.press('Escape');
+  });
+
+  test(`should configure auto-refresh ${Tags.REGRESSION}`, async ({ page }) => {
+    // Click on Auto-refresh config button
+    const autoRefreshButton = page.getByTestId('keys-auto-refresh-config-btn');
+    await autoRefreshButton.click();
+
+    // Verify auto-refresh popover is visible
+    const autoRefreshSwitch = page.getByTestId('keys-auto-refresh-switch');
+    await expect(autoRefreshSwitch).toBeVisible();
+
+    // Verify refresh rate is displayed
+    await expect(page.getByText('Refresh rate:')).toBeVisible();
+    await expect(page.getByText(/\d+\.\d+ s/)).toBeVisible();
+
+    // Ensure auto-refresh is off first (if it's on, turn it off)
+    const isChecked = await autoRefreshSwitch.isChecked();
+    if (isChecked) {
+      await autoRefreshSwitch.click();
+    }
+
+    // Verify switch is now off
+    await expect(autoRefreshSwitch).not.toBeChecked();
+
+    // Toggle auto-refresh on
+    await autoRefreshSwitch.click();
+
+    // Verify switch is now on
+    await expect(autoRefreshSwitch).toBeChecked();
+
+    // Close popover
+    await page.keyboard.press('Escape');
+  });
 });
 

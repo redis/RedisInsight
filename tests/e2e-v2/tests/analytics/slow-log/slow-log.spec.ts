@@ -121,5 +121,43 @@ test.describe('Analytics > Slow Log', () => {
       await expect(analyticsPage.slowLogTab).toHaveAttribute('aria-selected', 'true');
     });
   });
+
+  test.describe('Sort Entries', () => {
+    test(`should sort entries by duration ${Tags.REGRESSION}`, async ({
+      createAnalyticsPage,
+      page,
+    }) => {
+      const analyticsPage = createAnalyticsPage();
+      await analyticsPage.gotoSlowLog(databaseId);
+
+      // Wait for table to load
+      await expect(analyticsPage.slowLogTable).toBeVisible();
+
+      // Click on Duration column header to sort
+      const durationHeader = page.getByRole('button', { name: 'Duration, msec' });
+      await durationHeader.click();
+
+      // Verify sorting indicator appears
+      await expect(page.getByText(/Sorted by Duration/)).toBeVisible();
+    });
+
+    test(`should sort entries by timestamp ${Tags.REGRESSION}`, async ({
+      createAnalyticsPage,
+      page,
+    }) => {
+      const analyticsPage = createAnalyticsPage();
+      await analyticsPage.gotoSlowLog(databaseId);
+
+      // Wait for table to load
+      await expect(analyticsPage.slowLogTable).toBeVisible();
+
+      // Click on Timestamp column header to sort
+      const timestampHeader = page.getByRole('button', { name: 'Timestamp' });
+      await timestampHeader.click();
+
+      // Verify sorting indicator appears
+      await expect(page.getByText(/Sorted by Timestamp/)).toBeVisible();
+    });
+  });
 });
 

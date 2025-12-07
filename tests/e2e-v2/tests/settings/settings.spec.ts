@@ -153,5 +153,53 @@ test.describe('Settings', () => {
       await expect(settingsPage.keysToScanText).toBeVisible();
     });
   });
+
+  test.describe('Redis Cloud Settings', () => {
+    test(`should expand Redis Cloud settings section ${Tags.REGRESSION}`, async ({
+      settingsPage,
+    }) => {
+      await settingsPage.goto();
+      await settingsPage.expandRedisCloud();
+
+      const isExpanded = await settingsPage.isRedisCloudExpanded();
+      expect(isExpanded).toBe(true);
+    });
+
+    test(`should show API user keys section ${Tags.REGRESSION}`, async ({
+      settingsPage,
+    }) => {
+      await settingsPage.goto();
+      await settingsPage.expandRedisCloud();
+
+      await expect(settingsPage.apiUserKeysText).toBeVisible();
+    });
+
+    test(`should show Remove all API keys button ${Tags.REGRESSION}`, async ({
+      settingsPage,
+    }) => {
+      await settingsPage.goto();
+      await settingsPage.expandRedisCloud();
+
+      await expect(settingsPage.removeApiKeysButton).toBeVisible();
+    });
+
+    test(`should show Autodiscover button ${Tags.REGRESSION}`, async ({
+      settingsPage,
+    }) => {
+      await settingsPage.goto();
+      await settingsPage.expandRedisCloud();
+
+      await expect(settingsPage.autodiscoverButton).toBeVisible();
+    });
+
+    test(`should show Create Redis Cloud database button ${Tags.REGRESSION}`, async ({
+      settingsPage,
+    }) => {
+      await settingsPage.goto();
+      await settingsPage.expandRedisCloud();
+
+      await expect(settingsPage.createCloudDbButton).toBeVisible();
+    });
+  });
 });
 

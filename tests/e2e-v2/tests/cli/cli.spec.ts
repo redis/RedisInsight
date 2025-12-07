@@ -158,5 +158,25 @@ test.describe.serial('CLI > Panel', () => {
     const cliText3 = await cliPanel.container.innerText();
     expect(cliText3).toContain('INFO server');
   });
+
+  test(`should autocomplete commands with Tab key ${Tags.REGRESSION}`, async ({
+    page,
+    cliPanel,
+  }) => {
+    await cliPanel.open();
+
+    // Focus on command input
+    await cliPanel.commandInput.focus();
+
+    // Type partial command
+    await page.keyboard.type('PI');
+
+    // Press Tab to autocomplete
+    await page.keyboard.press('Tab');
+
+    // Verify the command was autocompleted to PING
+    const cliText = await cliPanel.container.innerText();
+    expect(cliText).toContain('PING');
+  });
 });
 

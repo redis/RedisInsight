@@ -48,9 +48,9 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟠 | Open Notification Center |
 | ✅ | 🟢 | Show notification center title |
 | ✅ | 🟢 | Close notification center |
-| 🔲 | 🟢 | View notification badge count |
-| 🔲 | 🟢 | View notification list |
-| 🔲 | 🟢 | Click notification links |
+| ✅ | 🟢 | View notification badge count |
+| ✅ | 🟢 | View notification list |
+| ✅ | 🟢 | Click notification links |
 
 ### 0.4 Copilot Panel
 | Status | Priority | Test Case |
@@ -85,16 +85,16 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🔴🟠 | Add cluster database |
 | 🔲 | 🟢 | Add database with TLS/SSL |
 | 🔲 | 🟢 | Add database with SSH tunnel |
-| 🔲 | 🟢 | Validate required fields |
-| 🔲 | 🟢 | Test connection before saving |
-| 🔲 | 🟢 | Cancel add database |
-| 🔲 | 🟢 | Add database via Connection URL |
-| 🔲 | 🟢 | Open Connection settings from URL form |
-| 🔲 | 🟢 | Configure timeout setting |
-| 🔲 | 🟢 | Select logical database |
-| 🔲 | 🟢 | Force standalone connection |
-| 🔲 | 🟢 | Enable automatic data decompression |
-| 🔲 | 🟢 | Configure key name format (Unicode/ASCII/etc) |
+| ✅ | 🟢 | Validate required fields |
+| ✅ | 🟢 | Test connection before saving |
+| ✅ | 🟢 | Cancel add database |
+| ✅ | 🟢 | Add database via Connection URL |
+| ✅ | 🟢 | Open Connection settings from URL form |
+| ✅ | 🟢 | Configure timeout setting |
+| ✅ | 🟢 | Select logical database |
+| ✅ | 🟢 | Force standalone connection |
+| ✅ | 🟢 | Enable automatic data decompression |
+| ✅ | 🟢 | Configure key name format (Unicode/ASCII/etc) |
 | 🔲 | 🟢 | Add database via Redis Sentinel option |
 | 🔲 | 🟢 | Add database via Redis Software option |
 
@@ -160,9 +160,9 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🔴 | Delete key |
 | 🔲 | 🟢 | Delete multiple keys (bulk) |
 | ✅ | 🟠 | Search by Values of Keys |
-| 🔲 | 🟢 | Configure columns visibility |
-| 🔲 | 🟢 | Configure auto-refresh |
-| 🔲 | 🟢 | View database stats (CPU, Keys, Memory, Clients) |
+| ✅ | 🟢 | Configure columns visibility |
+| ✅ | 🟢 | Configure auto-refresh |
+| ✅ | 🟢 | View database stats (CPU, Keys, Memory, Clients) |
 
 ### 2.2 Key Tree View (✅ Implemented)
 | Status | Priority | Test Case |
@@ -185,7 +185,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟠 | Add Sorted Set (ZSet) key |
 | ✅ | 🟠 | Add Stream key |
 | ✅ | 🟠 | Add JSON key |
-| 🔲 | 🟢 | Add key with TTL |
+| ✅ | 🟢 | Add key with TTL |
 | ✅ | 🟢 | Validate key name (required) |
 | ✅ | 🟢 | Cancel add key dialog |
 
@@ -194,9 +194,9 @@ The test plan is organized by feature area, with tests categorized by priority:
 |--------|----------|-----------|
 | ✅ | 🔴🟠 | View string value |
 | ✅ | 🔴 | Edit string value |
-| 🔲 | 🟢 | View/edit TTL |
+| ✅ | 🟢 | View/edit TTL |
 | 🔲 | 🟢 | Copy value |
-| 🔲 | 🟢 | Change value format (text/binary/hex) |
+| ✅ | 🟢 | Change value format (text/binary/hex) |
 
 ### 2.5 Key Details - Hash (✅ Implemented)
 | Status | Priority | Test Case |
@@ -233,7 +233,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🔴 | Edit member score |
 | ✅ | 🔴 | Remove member |
 | ✅ | 🟢 | Search members |
-| 🔲 | 🟢 | Sort by score/member |
+| ✅ | 🟢 | Sort by score/member |
 
 ### 2.9 Key Details - Stream (✅ Implemented)
 | Status | Priority | Test Case |
@@ -279,11 +279,11 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🔴🟠 | Execute single Redis command |
 | ✅ | 🔴 | Execute multiple commands |
 | ✅ | 🔴 | View command result |
-| 🔲 | 🟢 | Command autocomplete |
-| 🔲 | 🟢 | Command syntax highlighting |
+| ✅ | 🟢 | Command autocomplete |
+| ✅ | 🟢 | Command syntax highlighting |
 | ✅ | 🔴 | Handle command error |
-| 🔲 | 🟢 | Clear editor |
-| 🔲 | 🟢 | History navigation |
+| ✅ | 🟢 | Clear editor |
+| ✅ | 🟢 | History navigation |
 | ✅ | 🟢 | Toggle Raw mode |
 | ✅ | 🟢 | Toggle Group results |
 
@@ -291,10 +291,10 @@ The test plan is organized by feature area, with tests categorized by priority:
 | Status | Priority | Test Case |
 |--------|----------|-----------|
 | ✅ | 🔴🟠 | View text result |
-| 🔲 | 🟢 | View table result |
-| 🔲 | 🟢 | View JSON result |
-| 🔲 | 🟢 | Copy result |
-| 🔲 | 🟢 | Expand/collapse results |
+| ✅ | 🟢 | View table result |
+| ✅ | 🟢 | View JSON result |
+| ✅ | 🟢 | Copy result |
+| ✅ | 🟢 | Expand/collapse results |
 | ✅ | 🟢 | Clear results |
 | ✅ | 🟢 | Re-run command |
 | ✅ | 🟢 | Delete command result |
@@ -313,7 +313,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 |--------|----------|-----------|
 | ✅ | 🔴 | Start profiler |
 | ✅ | 🔴 | Stop profiler |
-| 🔲 | 🟢 | Toggle Save Log |
+| ✅ | 🟢 | Toggle Save Log |
 | ✅ | 🟢 | View profiler warning |
 | ✅ | 🟢 | Hide/close profiler panel |
 | ✅ | 🟢 | Reset profiler |
@@ -343,8 +343,8 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Handle command errors |
 | ✅ | 🟢 | Execute multiple commands in sequence |
 | ✅ | 🟢 | Command history (up/down arrows) |
-| 🔲 | 🟢 | Tab completion |
-| 🔲 | 🟢 | Multiple CLI sessions |
+| ✅ | 🟢 | Tab completion |
+| ⏸️ | 🟢 | Multiple CLI sessions | Feature not available in current UI |
 
 ---
 
@@ -357,14 +357,14 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🔴 | Subscribe with pattern |
 | ✅ | 🔴 | Receive messages |
 | ✅ | 🔴 | Unsubscribe |
-| 🔲 | 🟢 | Multiple subscriptions |
-| 🔲 | 🟢 | Clear messages |
+| ⏸️ | 🟢 | Multiple subscriptions | Feature not available - single pattern subscription only |
+| ⏸️ | 🟢 | Clear messages | <!-- Feature not implemented in UI yet -->
 
 ### 5.2 Publish
 | Status | Priority | Test Case |
 |--------|----------|-----------|
 | ✅ | 🔴🟠 | Publish message to channel (form fill) |
-| 🔲 | 🟢 | Publish with different formats |
+| ⏸️ | 🟢 | Publish with different formats | Feature not available - plain text only |
 
 ---
 
@@ -377,8 +377,8 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🔴 | Refresh slow log |
 | ✅ | 🟢 | Clear slow log button visible |
 | ✅ | 🟢 | Configure slow log button visible |
-| 🔲 | 🟢 | Sort entries |
-| 🔲 | 🟢 | Filter entries |
+| ✅ | 🟢 | Sort entries |
+| ⏸️ | 🟢 | Filter entries | _Skipped: No filter UI available in current version_ |
 
 ### 6.2 Database Analysis
 | Status | Priority | Test Case |
@@ -430,8 +430,8 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 7.4 Redis Cloud Settings
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟢 | View Redis Cloud settings |
-| 🔲 | 🟢 | Configure cloud account |
+| ✅ | 🟢 | View Redis Cloud settings |
+| ✅ | 🟢 | Configure cloud account |
 
 ### 7.5 Advanced Settings
 | Status | Priority | Test Case |

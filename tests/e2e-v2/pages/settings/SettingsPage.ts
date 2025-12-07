@@ -36,6 +36,12 @@ export class SettingsPage extends BasePage {
   readonly advancedWarning: Locator;
   readonly keysToScanText: Locator;
 
+  // Redis Cloud settings
+  readonly apiUserKeysText: Locator;
+  readonly removeApiKeysButton: Locator;
+  readonly autodiscoverButton: Locator;
+  readonly createCloudDbButton: Locator;
+
   constructor(page: Page) {
     super(page);
 
@@ -46,7 +52,7 @@ export class SettingsPage extends BasePage {
     this.generalButton = page.getByRole('button', { name: 'General' });
     this.privacyButton = page.getByRole('button', { name: 'Privacy' });
     this.workbenchButton = page.getByRole('button', { name: 'Workbench' });
-    this.redisCloudButton = page.getByRole('button', { name: 'Redis Cloud' });
+    this.redisCloudButton = page.getByRole('button', { name: 'Redis Cloud', exact: true });
     this.advancedButton = page.getByRole('button', { name: 'Advanced' });
 
     // General settings
@@ -79,6 +85,12 @@ export class SettingsPage extends BasePage {
     // Advanced settings
     this.advancedWarning = page.getByRole('alert').filter({ hasText: /Advanced settings/i });
     this.keysToScanText = page.getByRole('heading', { name: 'Keys to Scan in List view' });
+
+    // Redis Cloud settings
+    this.apiUserKeysText = page.getByText('API user keys', { exact: true });
+    this.removeApiKeysButton = page.getByRole('button', { name: 'Remove all API keys' });
+    this.autodiscoverButton = page.getByRole('button', { name: 'Autodiscover' });
+    this.createCloudDbButton = page.getByRole('button', { name: 'Create Redis Cloud database' });
   }
 
   /**
@@ -150,6 +162,22 @@ export class SettingsPage extends BasePage {
    */
   async isAdvancedExpanded(): Promise<boolean> {
     const expanded = await this.advancedButton.getAttribute('aria-expanded');
+    return expanded === 'true';
+  }
+
+  /**
+   * Expand Redis Cloud settings section
+   */
+  async expandRedisCloud(): Promise<void> {
+    await this.redisCloudButton.click();
+    await this.apiUserKeysText.waitFor({ state: 'visible', timeout: 5000 });
+  }
+
+  /**
+   * Check if Redis Cloud section is expanded
+   */
+  async isRedisCloudExpanded(): Promise<boolean> {
+    const expanded = await this.redisCloudButton.getAttribute('aria-expanded');
     return expanded === 'true';
   }
 }

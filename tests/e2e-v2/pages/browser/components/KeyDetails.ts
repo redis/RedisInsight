@@ -14,6 +14,10 @@ export class KeyDetails {
   readonly keyType: Locator;
   readonly keyName: Locator;
   readonly keyInfo: Locator;
+  readonly ttlValue: Locator;
+  readonly ttlEditInput: Locator;
+  readonly ttlApplyButton: Locator;
+  readonly ttlCancelButton: Locator;
 
   // Actions
   readonly deleteKeyButton: Locator;
@@ -72,6 +76,12 @@ export class KeyDetails {
     this.keyName = page.getByTestId('key-details-header').locator('p').nth(1);
     // Key info (size, length, ttl)
     this.keyInfo = page.getByTestId('key-size-text');
+    // TTL value - displayed as "TTL:No limit" or "TTL:60" etc.
+    this.ttlValue = page.getByTestId('key-ttl-text');
+    // TTL edit controls
+    this.ttlEditInput = page.getByRole('textbox', { name: /no limit/i });
+    this.ttlApplyButton = page.getByRole('button', { name: 'Apply' });
+    this.ttlCancelButton = page.getByRole('button', { name: 'Cancel editing' });
 
     // Actions - Back button closes the panel (when key list is collapsed)
     // Close key button closes the panel (when key list is visible)
@@ -159,6 +169,50 @@ export class KeyDetails {
     await this.page.getByRole('dialog').getByRole('button', { name: 'Delete' }).click();
     // Wait for the key details to close (key was deleted)
     await this.page.getByTestId('key-details-header').waitFor({ state: 'hidden', timeout: 10000 });
+  }
+
+  async getTtlValue(): Promise<string> {
+    await this.ttlValue.waitFor({ state: 'visible' });
+    return await this.ttlValue.innerText();
+  }
+
+  async editTtl(ttlSeconds: string): Promise<void> {
+    // Click on TTL to open edit mode
+    await this.ttlValue.click();
+    // Wait for the edit input to appear - use the textbox with "No limit" placeholder
+    const ttlInput = this.page.getByRole('textbox', { name: /no limit/i });
+    await ttlInput.waitFor({ state: 'visible' });
+    // Clear and fill the new TTL value
+    await ttlInput.clear();
+    await ttlInput.fill(ttlSeconds);
+    // Click Apply button
+    await this.ttlApplyButton.click();
+    // Wait for the edit mode to close
+    await ttlInput.waitFor({ state: 'hidden', timeout: 5000 });
+  }
+
+  async getValueFormat(): Promise<string> {
+    await this.formatDropdown.waitFor({ state: 'visible', timeout: 10000 });
+    // Click on format dropdown to open it and see the selected value
+    await this.formatDropdown.click();
+    // Find the selected option (it will have aria-selected="true")
+    const selectedOption = this.page.locator('[role="option"][aria-selected="true"]');
+    await selectedOption.waitFor({ state: 'visible' });
+    const format = await selectedOption.innerText();
+    // Close the dropdown by pressing Escape
+    await this.page.keyboard.press('Escape');
+    return format;
+  }
+
+  async changeValueFormat(format: string): Promise<void> {
+    // Click on format dropdown to open it
+    await this.formatDropdown.click();
+    // Wait for dropdown options to appear and click the desired format
+    const option = this.page.getByRole('option', { name: format });
+    await option.waitFor({ state: 'visible' });
+    await option.click();
+    // Wait for dropdown to close
+    await option.waitFor({ state: 'hidden', timeout: 5000 });
   }
 
   // String methods
@@ -524,6 +578,33 @@ export class KeyDetails {
     const searchInput = this.zsetGrid.getByPlaceholder('Search');
     await searchInput.fill(searchTerm);
     await searchInput.press('Enter');
+  }
+
+  async toggleZSetSortOrder(): Promise<void> {
+    // Click the sort button in the Score column header
+    const sortButton = this.page.getByTestId('header-sorting-button');
+    await sortButton.click();
+  }
+
+  async getZSetSortOrder(): Promise<'asc' | 'desc'> {
+    // Check if the sort button shows Arrow Up (ascending) or Arrow Down (descending)
+    const arrowUp = this.zsetGrid.getByRole('button', { name: 'Arrow Up' });
+    if (await arrowUp.isVisible()) {
+      return 'asc';
+    }
+    return 'desc';
+  }
+
+  async getZSetScores(): Promise<string[]> {
+    await this.zsetGrid.waitFor({ state: 'visible' });
+    const rows = this.zsetGrid.locator('[role="row"]').filter({ hasNot: this.page.locator('[role="columnheader"]') });
+    const count = await rows.count();
+    const scores: string[] = [];
+    for (let i = 0; i < count; i++) {
+      const score = await rows.nth(i).locator('[role="gridcell"]').nth(1).innerText();
+      scores.push(score);
+    }
+    return scores;
   }
 
   // Stream methods

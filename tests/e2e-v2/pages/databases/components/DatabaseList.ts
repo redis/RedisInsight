@@ -293,10 +293,18 @@ export class DatabaseList {
     const { timeout = 15000, searchFirst = false } = options;
 
     if (searchFirst) {
-      await this.search(name);
-      // Wait for the search to filter - the row should appear
-      // Using a longer timeout since search + filter can take time
-      await expect(this.getRow(name)).toBeVisible({ timeout });
+      // Use toPass() for retry logic - the database list may need to refresh
+      // This handles race conditions when the database was just added
+      await expect(async () => {
+        // Clear any existing search first
+        await this.clearSearch();
+        // Small wait for UI to update
+        await this.page.waitForTimeout(100);
+        // Search for the database
+        await this.search(name);
+        // Check if the row is visible
+        await expect(this.getRow(name)).toBeVisible({ timeout: 2000 });
+      }).toPass({ timeout, intervals: [500, 1000, 2000] });
       return;
     }
 

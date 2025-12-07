@@ -153,6 +153,28 @@ test.describe('Navigation & Global UI', () => {
       // Verify it's closed
       expect(await navigationPage.isNotificationCenterOpen()).toBe(false);
     });
+
+    test(`should show notification list ${Tags.REGRESSION}`, async ({
+      navigationPage,
+    }) => {
+      await navigationPage.goto();
+      await navigationPage.openNotificationCenter();
+
+      // Verify notification items are visible
+      const notificationCount = await navigationPage.getNotificationCount();
+      expect(notificationCount).toBeGreaterThan(0);
+    });
+
+    test(`should show notification links ${Tags.REGRESSION}`, async ({
+      navigationPage,
+    }) => {
+      await navigationPage.goto();
+      await navigationPage.openNotificationCenter();
+
+      // Verify notification links are visible
+      const hasLinks = await navigationPage.hasNotificationLinks();
+      expect(hasLinks).toBe(true);
+    });
   });
 
   test.describe('Copilot Panel', () => {

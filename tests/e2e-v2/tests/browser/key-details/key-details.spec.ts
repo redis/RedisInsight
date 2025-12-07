@@ -322,9 +322,11 @@ test.describe('Browser > Key Details', () => {
       // Add new element to tail
       await browserPage.keyDetails.addListElement('new-element');
 
-      // Verify element was added
-      const elements = await browserPage.keyDetails.getListElements();
-      expect(elements).toContain('new-element');
+      // Verify element was added (use polling to avoid race condition)
+      await expect(async () => {
+        const elements = await browserPage.keyDetails.getListElements();
+        expect(elements).toContain('new-element');
+      }).toPass({ timeout: 10000 });
     });
 
     test(`should edit list element ${Tags.CRITICAL}`, async ({ apiHelper }) => {
@@ -674,6 +676,48 @@ test.describe('Browser > Key Details', () => {
         expect(otherMemberHidden).toBe(true);
       }).toPass({ timeout: 10000 });
     });
+
+    test(`should sort sorted set by score ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+      const keyData = getZSetKeyData({
+        members: [
+          { member: 'member-a', score: '10' },
+          { member: 'member-b', score: '5' },
+          { member: 'member-c', score: '20' },
+        ],
+      });
+
+      await apiHelper.createZSetKey(databaseId, keyData.keyName, keyData.members);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Verify initial sort order is ascending
+      await expect(async () => {
+        const sortOrder = await browserPage.keyDetails.getZSetSortOrder();
+        expect(sortOrder).toBe('asc');
+      }).toPass({ timeout: 10000 });
+
+      // Get initial scores (should be ascending: 5, 10, 20)
+      const initialScores = await browserPage.keyDetails.getZSetScores();
+      expect(initialScores).toEqual(['5', '10', '20']);
+
+      // Toggle sort order to descending
+      await browserPage.keyDetails.toggleZSetSortOrder();
+
+      // Verify sort order changed to descending
+      await expect(async () => {
+        const sortOrder = await browserPage.keyDetails.getZSetSortOrder();
+        expect(sortOrder).toBe('desc');
+      }).toPass({ timeout: 10000 });
+
+      // Verify scores are now in descending order (20, 10, 5)
+      await expect(async () => {
+        const scores = await browserPage.keyDetails.getZSetScores();
+        expect(scores).toEqual(['20', '10', '5']);
+      }).toPass({ timeout: 10000 });
+    });
   });
 
   test.describe('Stream Key Details', () => {
@@ -879,6 +923,77 @@ test.describe('Browser > Key Details', () => {
         const value = await browserPage.keyDetails.getJsonValue(0);
         expect(value).toContain('updatedValue');
       }).toPass({ timeout: 10000 });
+    });
+  });
+
+  test.describe('TTL Management', () => {
+    test(`should view TTL value ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+      const keyData = getStringKeyData();
+
+      // Create key via API
+      await apiHelper.createStringKey(databaseId, keyData.keyName, keyData.value);
+
+      // Refresh key list and click on the key
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Verify TTL is displayed as "No limit" for keys without TTL
+      const ttlText = await browserPage.keyDetails.getTtlValue();
+      expect(ttlText).toContain('No limit');
+    });
+
+    test(`should edit TTL value ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+      const keyData = getStringKeyData();
+      const newTtl = '120';
+
+      // Create key via API
+      await apiHelper.createStringKey(databaseId, keyData.keyName, keyData.value);
+
+      // Refresh key list and click on the key
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Edit TTL
+      await browserPage.keyDetails.editTtl(newTtl);
+
+      // Verify TTL was updated (use polling to avoid race condition)
+      await expect(async () => {
+        const ttlText = await browserPage.keyDetails.getTtlValue();
+        // TTL should now show a number (may be slightly less than 120 due to time passing)
+        expect(ttlText).not.toContain('No limit');
+      }).toPass({ timeout: 10000 });
+    });
+  });
+
+  test.describe('Value Format', () => {
+    test(`should change value format ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+      const keyData = getStringKeyData();
+
+      // Create key via API
+      await apiHelper.createStringKey(databaseId, keyData.keyName, keyData.value);
+
+      // Refresh key list and click on the key
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Verify default format is Unicode
+      const initialFormat = await browserPage.keyDetails.getValueFormat();
+      expect(initialFormat).toContain('Unicode');
+
+      // Change format to HEX
+      await browserPage.keyDetails.changeValueFormat('HEX');
+
+      // Verify format changed
+      await expect(async () => {
+        const newFormat = await browserPage.keyDetails.getValueFormat();
+        expect(newFormat).toContain('HEX');
+      }).toPass({ timeout: 5000 });
     });
   });
 });

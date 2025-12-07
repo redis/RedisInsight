@@ -178,6 +178,14 @@ export class NavigationPage extends BasePage {
   }
 
   /**
+   * Check if notification center has links
+   */
+  async hasNotificationLinks(): Promise<boolean> {
+    const links = await this.notificationDialog.locator('a').all();
+    return links.length > 0;
+  }
+
+  /**
    * Open Copilot panel
    */
   async openCopilotPanel(): Promise<void> {

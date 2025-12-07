@@ -1,4 +1,4 @@
-import { test, expect } from '../../../fixtures/base';
+import { test } from '../../../fixtures/base';
 import { getClusterConfig, TEST_DB_PREFIX } from '../../../test-data/databases';
 import { Tags } from '../../../config';
 
@@ -24,6 +24,7 @@ test.describe.serial('Add Database > Cluster', () => {
 
     await databasesPage.addDatabase(config);
 
-    await expect(databasesPage.databaseList.getRow(config.name)).toBeVisible();
+    // Search for the database to handle pagination and parallel test interference
+    await databasesPage.databaseList.expectDatabaseVisible(config.name, { searchFirst: true });
   });
 });

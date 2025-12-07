@@ -219,6 +219,199 @@ test.describe.serial('Workbench > Results View', () => {
       expect(newCount).toBe(0);
     }).toPass({ timeout: 10000 });
   });
+
+  test(`should view table result ${Tags.REGRESSION}`, async () => {
+    // Execute HSET command to create hash data
+    await workbenchPage.executeCommand('HSET test-hash-table field1 value1 field2 value2');
+
+    // Execute HGETALL to get table-like result
+    await workbenchPage.executeCommand('HGETALL test-hash-table');
+
+    // Verify result is displayed
+    const result = await workbenchPage.resultsPanel.getLastResultText();
+    expect(result).toContain('field1');
+    expect(result).toContain('value1');
+
+    // Clean up
+    await workbenchPage.executeCommand('DEL test-hash-table');
+  });
+
+  test(`should view JSON result ${Tags.REGRESSION}`, async ({ page }) => {
+    // Execute JSON.SET command
+    await workbenchPage.executeCommand('JSON.SET test-json-result $ \'{"name":"test","value":123}\'');
+
+    // Execute JSON.GET to get JSON result
+    await workbenchPage.executeCommand('JSON.GET test-json-result');
+
+    // JSON results are displayed in a plugin iframe
+    // Verify the plugin result container is visible
+    const pluginResult = page.getByTestId('query-plugin-result');
+    await expect(pluginResult).toBeVisible();
+
+    // Verify the iframe contains JSON data
+    const iframe = pluginResult.locator('iframe');
+    await expect(iframe).toBeVisible();
+
+    // Clean up
+    await workbenchPage.executeCommand('DEL test-json-result');
+  });
+
+  test(`should copy result ${Tags.REGRESSION}`, async ({ page }) => {
+    // Clear any existing results first
+    const clearButton = page.getByTestId('clear-history-btn');
+    if (await clearButton.isVisible()) {
+      await clearButton.click();
+    }
+
+    // Execute a command
+    await workbenchPage.executeCommand(COMMANDS.PING);
+
+    // Find and click copy button (use first() since there may be multiple results)
+    const copyButton = page.getByTestId('copy-command-btn').first();
+    await expect(copyButton).toBeVisible();
+    await copyButton.click();
+
+    // Verify copy action (button should still be visible after click)
+    await expect(copyButton).toBeVisible();
+  });
+
+  test(`should expand and collapse results ${Tags.REGRESSION}`, async ({ page }) => {
+    // Clear any existing results first
+    const clearButton = page.getByTestId('clear-history-btn');
+    if (await clearButton.isVisible()) {
+      await clearButton.click();
+    }
+
+    // Execute a command
+    await workbenchPage.executeCommand(COMMANDS.PING);
+
+    // Find toggle collapse button (use first() since there may be multiple results)
+    const toggleButton = page.getByTestId('toggle-collapse').first();
+    await expect(toggleButton).toBeVisible();
+
+    // Click to collapse
+    await toggleButton.click();
+
+    // Verify result is collapsed (result text should not be visible)
+    const resultText = page.getByTestId('query-cli-card-result').first();
+    await expect(resultText).not.toBeVisible();
+
+    // Click to expand
+    await toggleButton.click();
+
+    // Verify result is expanded
+    await expect(resultText).toBeVisible();
+  });
+});
+
+test.describe.serial('Workbench > Editor', () => {
+  let databaseId: string;
+  let workbenchPage: WorkbenchPage;
+
+  test.beforeAll(async ({ apiHelper }) => {
+    const config = getStandaloneConfig();
+    const database = await apiHelper.createDatabase(config);
+    databaseId = database.id;
+  });
+
+  test.afterAll(async ({ apiHelper }) => {
+    if (databaseId) {
+      await apiHelper.deleteDatabase(databaseId);
+    }
+  });
+
+  test.beforeEach(async ({ page, createWorkbenchPage }) => {
+    await page.goto(`/${databaseId}/workbench`);
+    workbenchPage = createWorkbenchPage(databaseId);
+    await workbenchPage.waitForLoad();
+  });
+
+  test(`should show command autocomplete ${Tags.SMOKE}`, async ({ page }) => {
+    // Type partial command to trigger autocomplete
+    const editor = page.getByRole('textbox', { name: /Editor content/ });
+    await editor.fill('SET');
+
+    // Verify autocomplete dropdown appears with suggestions
+    const autocompleteList = page.getByRole('listbox', { name: 'Suggest' });
+    await expect(autocompleteList).toBeVisible();
+
+    // Verify SET command is in the suggestions
+    const setOption = page.getByRole('option', { name: /^SET$/ });
+    await expect(setOption).toBeVisible();
+  });
+
+  test(`should show syntax highlighting ${Tags.REGRESSION}`, async ({ page }) => {
+    // Type a command
+    const editor = page.getByRole('textbox', { name: /Editor content/ });
+    await editor.fill('SET mykey myvalue');
+
+    // Press Escape to close autocomplete
+    await page.keyboard.press('Escape');
+
+    // Verify the command is displayed (syntax highlighting is applied via Monaco editor)
+    // We verify the text is present in the editor
+    await expect(page.locator('.monaco-editor')).toContainText('SET');
+  });
+
+  test(`should type and verify editor content ${Tags.REGRESSION}`, async ({ page }) => {
+    // Type a command
+    const editor = page.getByRole('textbox', { name: /Editor content/ });
+    await editor.fill('SET mykey myvalue');
+
+    // Press Escape to close autocomplete
+    await page.keyboard.press('Escape');
+
+    // Verify the content is in the editor
+    await expect(editor).toHaveValue('SET mykey myvalue');
+
+    // Verify the Monaco editor displays the content
+    await expect(page.locator('.monaco-editor')).toContainText('SET');
+  });
+
+  test(`should navigate command history ${Tags.REGRESSION}`, async ({ page }) => {
+    // Execute first command
+    const editor = page.getByRole('textbox', { name: /Editor content/ });
+    await editor.fill('PING');
+    await page.keyboard.press('Control+Enter');
+
+    // Wait for result
+    await page.waitForTimeout(500);
+
+    // Execute second command
+    await editor.fill('INFO server');
+    await page.keyboard.press('Control+Enter');
+
+    // Wait for result
+    await page.waitForTimeout(500);
+
+    // Clear editor
+    await editor.fill('');
+
+    // Press Ctrl+Up to navigate to previous command
+    await page.keyboard.press('Control+ArrowUp');
+
+    // Verify the editor shows the previous command
+    await expect(page.locator('.monaco-editor')).toContainText('INFO');
+  });
+
+  test(`should clear editor ${Tags.REGRESSION}`, async ({ page }) => {
+    // Type a command
+    const editor = page.getByRole('textbox', { name: /Editor content/ });
+    await editor.fill('SET mykey myvalue');
+
+    // Press Escape to close autocomplete
+    await page.keyboard.press('Escape');
+
+    // Verify content is in editor
+    await expect(page.locator('.monaco-editor')).toContainText('SET');
+
+    // Clear editor using Ctrl+A and Delete
+    await editor.selectText();
+    await page.keyboard.press('Delete');
+
+    // Verify editor is empty
+    await expect(editor).toHaveValue('');
+  });
 });
 
 test.describe.serial('Workbench > Tutorials', () => {

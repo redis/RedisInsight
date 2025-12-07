@@ -121,5 +121,22 @@ test.describe.serial('Workbench > Profiler', () => {
     // Verify profiler panel is closed
     await expect(workbenchPage.profilerPanel.startButton).not.toBeVisible();
   });
+
+  test(`should toggle save log switch ${Tags.REGRESSION}`, async () => {
+    await workbenchPage.profilerPanel.open();
+
+    // Verify save log switch is visible
+    await expect(workbenchPage.profilerPanel.saveLogSwitch).toBeVisible();
+
+    // Get initial state
+    const initialState = await workbenchPage.profilerPanel.saveLogSwitch.isChecked();
+
+    // Toggle save log
+    await workbenchPage.profilerPanel.toggleSaveLog();
+
+    // Verify state changed
+    const newState = await workbenchPage.profilerPanel.saveLogSwitch.isChecked();
+    expect(newState).toBe(!initialState);
+  });
 });
 

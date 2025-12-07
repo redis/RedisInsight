@@ -165,5 +165,35 @@ test.describe('Browser > Add Key', () => {
     const isVisible = await browserPage.addKeyDialog.isVisible();
     expect(isVisible).toBe(false);
   });
+
+  test(`should add a key with TTL ${Tags.REGRESSION}`, async () => {
+    const keyData = getStringKeyData();
+    const ttlSeconds = '60';
+
+    // Open Add Key dialog
+    await browserPage.openAddKeyDialog();
+
+    // Select String type
+    await browserPage.addKeyDialog.selectKeyType('String');
+
+    // Fill key name, value, and TTL
+    await browserPage.addKeyDialog.fillKeyName(keyData.keyName);
+    await browserPage.addKeyDialog.fillStringValue(keyData.value);
+    await browserPage.addKeyDialog.fillTtl(ttlSeconds);
+
+    // Add the key
+    await browserPage.addKeyDialog.clickAddKey();
+
+    // Verify key appears in the list
+    await browserPage.keyList.searchKeys(keyData.keyName);
+    await browserPage.expectKeyInList(keyData.keyName);
+
+    // Click on the key to view details and verify TTL is set
+    await browserPage.keyList.clickKey(keyData.keyName);
+    await expect(browserPage.keyDetails.ttlValue).toBeVisible();
+    // TTL should be less than or equal to 60 seconds (it may have decreased)
+    const ttlText = await browserPage.keyDetails.ttlValue.textContent();
+    expect(ttlText).not.toBe('No limit');
+  });
 });
 

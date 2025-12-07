@@ -158,6 +158,9 @@ test.describe.serial('Database List > Bulk Actions', () => {
     test(`should show export button when databases selected ${Tags.REGRESSION}`, async ({ databasesPage }) => {
       const { databaseList } = databasesPage;
 
+      // Filter to show only our test databases
+      await databaseList.search(uniquePrefix);
+
       // Initially export button might not be visible without selection
       await databaseList.selectRow(dbNames.first);
 
@@ -166,6 +169,9 @@ test.describe.serial('Database List > Bulk Actions', () => {
 
     test(`should export selected databases ${Tags.CRITICAL}`, async ({ databasesPage }) => {
       const { databaseList, page } = databasesPage;
+
+      // Filter to show only our test databases
+      await databaseList.search(uniquePrefix);
 
       // Select a database
       await databaseList.selectRow(dbNames.first);
