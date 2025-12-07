@@ -330,5 +330,93 @@ test.describe('Navigation & Global UI', () => {
       await expect(navigationPage.getTutorialFolder('Data structures explained')).toBeVisible();
     });
   });
+
+  test.describe('Keyboard Shortcuts', () => {
+    test(`should open keyboard shortcuts dialog ${Tags.SMOKE}`, async ({
+      navigationPage,
+    }) => {
+      await navigationPage.goto();
+      await navigationPage.openKeyboardShortcuts();
+
+      const isOpen = await navigationPage.isKeyboardShortcutsOpen();
+      expect(isOpen).toBe(true);
+    });
+
+    test(`should show Desktop application shortcuts section ${Tags.SMOKE}`, async ({
+      navigationPage,
+    }) => {
+      await navigationPage.goto();
+      await navigationPage.openKeyboardShortcuts();
+
+      await expect(navigationPage.shortcutsDesktopSection).toBeVisible();
+    });
+
+    test(`should show CLI shortcuts section ${Tags.SMOKE}`, async ({
+      navigationPage,
+    }) => {
+      await navigationPage.goto();
+      await navigationPage.openKeyboardShortcuts();
+
+      await expect(navigationPage.shortcutsCliSection).toBeVisible();
+    });
+
+    test(`should show Workbench shortcuts section ${Tags.SMOKE}`, async ({
+      navigationPage,
+    }) => {
+      await navigationPage.goto();
+      await navigationPage.openKeyboardShortcuts();
+
+      await expect(navigationPage.shortcutsWorkbenchSection).toBeVisible();
+    });
+
+    test(`should close keyboard shortcuts dialog ${Tags.REGRESSION}`, async ({
+      navigationPage,
+    }) => {
+      await navigationPage.goto();
+      await navigationPage.openKeyboardShortcuts();
+
+      // Verify it's open
+      expect(await navigationPage.isKeyboardShortcutsOpen()).toBe(true);
+
+      // Close it
+      await navigationPage.closeKeyboardShortcuts();
+
+      // Verify it's closed
+      expect(await navigationPage.isKeyboardShortcutsOpen()).toBe(false);
+    });
+
+    test(`should display desktop shortcuts ${Tags.REGRESSION}`, async ({
+      navigationPage,
+    }) => {
+      await navigationPage.goto();
+      await navigationPage.openKeyboardShortcuts();
+
+      // Desktop section should have at least 2 shortcuts (Open new window, Reload page)
+      const count = await navigationPage.getShortcutCount('desktop');
+      expect(count).toBeGreaterThanOrEqual(2);
+    });
+
+    test(`should display CLI shortcuts ${Tags.REGRESSION}`, async ({
+      navigationPage,
+    }) => {
+      await navigationPage.goto();
+      await navigationPage.openKeyboardShortcuts();
+
+      // CLI section should have at least 5 shortcuts
+      const count = await navigationPage.getShortcutCount('cli');
+      expect(count).toBeGreaterThanOrEqual(5);
+    });
+
+    test(`should display Workbench shortcuts ${Tags.REGRESSION}`, async ({
+      navigationPage,
+    }) => {
+      await navigationPage.goto();
+      await navigationPage.openKeyboardShortcuts();
+
+      // Workbench section should have at least 6 shortcuts
+      const count = await navigationPage.getShortcutCount('workbench');
+      expect(count).toBeGreaterThanOrEqual(6);
+    });
+  });
 });
 

@@ -121,7 +121,22 @@ export class DatabaseList {
     const row = this.getRow(name);
     await row.hover();
     await row.getByTestId(/controls-button/).click();
-    await this.page.getByRole('menuitem', { name: /edit database/i }).click();
+    // The menu item is a button with accessible name "Edit instance" but visible text "Edit database"
+    await this.page.getByRole('button', { name: /edit instance/i }).click();
+  }
+
+  /**
+   * Open the clone database dialog for a database
+   * This opens the Edit dialog first, then clicks Clone Connection
+   */
+  async openCloneDialog(name: string): Promise<void> {
+    await this.edit(name);
+    // Wait for the Edit dialog to appear
+    await this.page.getByRole('dialog', { name: /edit database/i }).waitFor({ state: 'visible' });
+    // Click the Clone Connection button
+    await this.page.getByTestId('clone-db-btn').click();
+    // Wait for the Clone dialog to appear
+    await this.page.getByRole('dialog', { name: /clone database/i }).waitFor({ state: 'visible' });
   }
 
   /**

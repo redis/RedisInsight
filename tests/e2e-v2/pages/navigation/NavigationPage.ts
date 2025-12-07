@@ -21,6 +21,14 @@ export class NavigationPage extends BasePage {
   readonly releaseNotesLink: Locator;
   readonly resetOnboardingButton: Locator;
 
+  // Keyboard shortcuts dialog
+  readonly shortcutsDialog: Locator;
+  readonly shortcutsTitle: Locator;
+  readonly shortcutsCloseButton: Locator;
+  readonly shortcutsDesktopSection: Locator;
+  readonly shortcutsCliSection: Locator;
+  readonly shortcutsWorkbenchSection: Locator;
+
   // Notification center
   readonly notificationDialog: Locator;
   readonly notificationCenterTitle: Locator;
@@ -65,9 +73,17 @@ export class NavigationPage extends BasePage {
     // Help menu items
     this.helpMenuDialog = page.getByRole('dialog').filter({ hasText: 'Help Center' });
     this.provideFeedbackLink = page.getByRole('link', { name: /Provide Feedback/i });
-    this.keyboardShortcutsButton = page.getByText('Keyboard Shortcuts');
+    this.keyboardShortcutsButton = page.getByTestId('shortcuts-btn');
     this.releaseNotesLink = page.getByRole('link', { name: 'Release Notes' });
     this.resetOnboardingButton = page.getByText('Reset Onboarding');
+
+    // Keyboard shortcuts dialog
+    this.shortcutsDialog = page.getByRole('dialog', { name: 'Shortcuts' });
+    this.shortcutsTitle = this.shortcutsDialog.getByText('Shortcuts', { exact: true });
+    this.shortcutsCloseButton = this.shortcutsDialog.getByRole('button', { name: 'close drawer' });
+    this.shortcutsDesktopSection = this.shortcutsDialog.getByText('Desktop application');
+    this.shortcutsCliSection = this.shortcutsDialog.getByText('CLI', { exact: true });
+    this.shortcutsWorkbenchSection = this.shortcutsDialog.getByText('Workbench', { exact: true });
 
     // Notification center
     this.notificationDialog = page.getByRole('dialog').filter({ hasText: 'Notification Center' });
@@ -288,6 +304,52 @@ export class NavigationPage extends BasePage {
    */
   async clickTutorialFolder(name: string): Promise<void> {
     await this.getTutorialFolder(name).click();
+  }
+
+  /**
+   * Open keyboard shortcuts dialog from help menu
+   */
+  async openKeyboardShortcuts(): Promise<void> {
+    await this.openHelpMenu();
+    await this.keyboardShortcutsButton.click();
+    await this.shortcutsDialog.waitFor({ state: 'visible', timeout: 5000 });
+  }
+
+  /**
+   * Close keyboard shortcuts dialog
+   */
+  async closeKeyboardShortcuts(): Promise<void> {
+    await this.shortcutsCloseButton.click();
+    await this.shortcutsDialog.waitFor({ state: 'hidden', timeout: 5000 });
+  }
+
+  /**
+   * Check if keyboard shortcuts dialog is open
+   */
+  async isKeyboardShortcutsOpen(): Promise<boolean> {
+    return this.shortcutsDialog.isVisible();
+  }
+
+  /**
+   * Get shortcut table rows for a section
+   */
+  getShortcutRows(section: 'desktop' | 'cli' | 'workbench'): Locator {
+    const sectionLocator = {
+      desktop: this.shortcutsDesktopSection,
+      cli: this.shortcutsCliSection,
+      workbench: this.shortcutsWorkbenchSection,
+    }[section];
+
+    // Get the table that follows the section header
+    return sectionLocator.locator('..').locator('table tbody tr');
+  }
+
+  /**
+   * Get shortcut count for a section
+   */
+  async getShortcutCount(section: 'desktop' | 'cli' | 'workbench'): Promise<number> {
+    const rows = await this.getShortcutRows(section).all();
+    return rows.length;
   }
 }
 

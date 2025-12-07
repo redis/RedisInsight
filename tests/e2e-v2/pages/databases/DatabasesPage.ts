@@ -1,6 +1,7 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from '../BasePage';
 import { AddDatabaseDialog } from './components/AddDatabaseDialog';
+import { CloneDatabaseDialog } from './components/CloneDatabaseDialog';
 import { DatabaseList } from './components/DatabaseList';
 import { ImportDatabaseDialog } from './components/ImportDatabaseDialog';
 import { AddDatabaseConfig } from '../../types';
@@ -12,6 +13,7 @@ import { AddDatabaseConfig } from '../../types';
 export class DatabasesPage extends BasePage {
   // Component POMs
   readonly addDatabaseDialog: AddDatabaseDialog;
+  readonly cloneDatabaseDialog: CloneDatabaseDialog;
   readonly databaseList: DatabaseList;
   readonly importDatabaseDialog: ImportDatabaseDialog;
 
@@ -25,6 +27,7 @@ export class DatabasesPage extends BasePage {
 
     // Initialize component POMs
     this.addDatabaseDialog = new AddDatabaseDialog(page);
+    this.cloneDatabaseDialog = new CloneDatabaseDialog(page);
     this.databaseList = new DatabaseList(page);
     this.importDatabaseDialog = new ImportDatabaseDialog(page);
 

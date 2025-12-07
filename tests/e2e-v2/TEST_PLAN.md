@@ -141,7 +141,11 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 1.3 Clone Database
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟠 | Clone standalone database with pre-populated form |
+| ✅ | 🟠 | Clone standalone database with pre-populated form |
+| ✅ | 🟠 | Clone database with same name |
+| ✅ | 🟠 | Clone database with new name |
+| ✅ | 🟢 | Cancel clone operation |
+| ✅ | 🟢 | Go back to edit dialog from clone dialog |
 | 🔲 | 🟢 | Clone OSS Cluster database |
 | 🔲 | 🟢 | Clone Sentinel database |
 | 🔲 | 🟢 | Verify "New Connection" badge on cloned database |
@@ -879,12 +883,16 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 12.7 Keyboard Shortcuts
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟠 | Open keyboard shortcuts panel from Help Center |
-| 🔲 | 🟢 | View CLI shortcuts section |
-| 🔲 | 🟢 | View Workbench shortcuts section |
+| ✅ | 🟠 | Open keyboard shortcuts panel from Help Center |
+| ✅ | 🟠 | View Desktop application shortcuts section |
+| ✅ | 🟠 | View CLI shortcuts section |
+| ✅ | 🟠 | View Workbench shortcuts section |
+| ✅ | 🟢 | Close shortcuts panel |
+| ✅ | 🟢 | Display desktop shortcuts (Open new window, Reload page) |
+| ✅ | 🟢 | Display CLI shortcuts (Autocomplete, Clear screen, etc.) |
+| ✅ | 🟢 | Display Workbench shortcuts (Run Commands, etc.) |
 | 🔲 | 🟢 | Up arrow navigates command history in CLI |
 | 🔲 | 🟢 | Shift+Space opens Non-Redis Editor |
-| 🔲 | 🟢 | Close shortcuts panel |
 
 ### 12.8 Live Recommendations
 | Status | Priority | Test Case |
