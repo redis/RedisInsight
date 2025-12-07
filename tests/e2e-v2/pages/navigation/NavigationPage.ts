@@ -46,6 +46,7 @@ export class NavigationPage extends BasePage {
   readonly insightsTutorialsTab: Locator;
   readonly insightsTipsTab: Locator;
   readonly insightsMyTutorials: Locator;
+  readonly insightsRedisTutorials: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -89,10 +90,11 @@ export class NavigationPage extends BasePage {
     this.insightsPanel = page.locator('[class*="insights"]').filter({ hasText: 'Insights' });
     this.insightsTitle = page.getByText('Insights').first();
     this.insightsCloseButton = page.getByTestId('close-insights-btn');
-    this.insightsFullScreenButton = page.getByRole('button', { name: 'Open full screen' });
+    this.insightsFullScreenButton = page.getByTestId('fullScreen-insights-btn');
     this.insightsTutorialsTab = page.getByRole('tab', { name: 'Tutorials' });
     this.insightsTipsTab = page.getByRole('tab', { name: 'Tips' });
     this.insightsMyTutorials = page.getByRole('button', { name: 'My tutorials' });
+    this.insightsRedisTutorials = page.getByRole('button', { name: 'Redis tutorials' });
   }
 
   /**
@@ -233,6 +235,51 @@ export class NavigationPage extends BasePage {
    */
   async switchToTipsTab(): Promise<void> {
     await this.insightsTipsTab.click();
+  }
+
+  /**
+   * Open Insights panel in full screen mode
+   */
+  async openInsightsFullScreen(): Promise<void> {
+    await this.insightsFullScreenButton.click();
+  }
+
+  /**
+   * Check if Insights panel is in full screen mode
+   */
+  async isInsightsFullScreen(): Promise<boolean> {
+    // When in full screen, the button has 'active' state
+    const isActive = await this.insightsFullScreenButton.getAttribute('class');
+    return isActive?.includes('active') ?? false;
+  }
+
+  /**
+   * Toggle Redis tutorials folder (expand/collapse)
+   */
+  async toggleRedisTutorials(): Promise<void> {
+    await this.insightsRedisTutorials.click();
+  }
+
+  /**
+   * Check if Redis tutorials folder is expanded
+   */
+  async isRedisTutorialsExpanded(): Promise<boolean> {
+    const expanded = await this.insightsRedisTutorials.getAttribute('aria-expanded');
+    return expanded === 'true';
+  }
+
+  /**
+   * Get tutorial folder by name
+   */
+  getTutorialFolder(name: string): Locator {
+    return this.page.getByRole('button', { name: new RegExp(`Folder ${name}`, 'i') });
+  }
+
+  /**
+   * Click on a tutorial folder
+   */
+  async clickTutorialFolder(name: string): Promise<void> {
+    await this.getTutorialFolder(name).click();
   }
 }
 

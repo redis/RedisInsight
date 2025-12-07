@@ -266,6 +266,47 @@ test.describe('Navigation & Global UI', () => {
 
       await expect(navigationPage.insightsMyTutorials).toBeVisible();
     });
+
+    test(`should show full screen button ${Tags.REGRESSION}`, async ({
+      navigationPage,
+    }) => {
+      await navigationPage.goto();
+      await navigationPage.openInsightsPanel();
+
+      // Verify full screen button is visible
+      await expect(navigationPage.insightsFullScreenButton).toBeVisible();
+    });
+
+    test(`should expand/collapse tutorial folders ${Tags.REGRESSION}`, async ({
+      navigationPage,
+    }) => {
+      await navigationPage.goto();
+      await navigationPage.openInsightsPanel();
+
+      // Redis tutorials should be expanded by default
+      expect(await navigationPage.isRedisTutorialsExpanded()).toBe(true);
+
+      // Collapse Redis tutorials
+      await navigationPage.toggleRedisTutorials();
+      expect(await navigationPage.isRedisTutorialsExpanded()).toBe(false);
+
+      // Expand Redis tutorials again
+      await navigationPage.toggleRedisTutorials();
+      expect(await navigationPage.isRedisTutorialsExpanded()).toBe(true);
+    });
+
+    test(`should show tutorial folder contents ${Tags.REGRESSION}`, async ({
+      navigationPage,
+    }) => {
+      await navigationPage.goto();
+      await navigationPage.openInsightsPanel();
+
+      // Verify tutorial folders are visible
+      await expect(navigationPage.getTutorialFolder('Redis basic and RAG use cases')).toBeVisible();
+      await expect(navigationPage.getTutorialFolder('Vector search examples')).toBeVisible();
+      await expect(navigationPage.getTutorialFolder('How to query your data')).toBeVisible();
+      await expect(navigationPage.getTutorialFolder('Data structures explained')).toBeVisible();
+    });
   });
 });
 

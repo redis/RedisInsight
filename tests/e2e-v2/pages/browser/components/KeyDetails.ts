@@ -246,8 +246,32 @@ export class KeyDetails {
   }
 
   async hashFieldExists(fieldName: string): Promise<boolean> {
-    const row = this.hashFieldsGrid.locator('[role="row"]').filter({ hasText: fieldName });
-    return (await row.count()) > 0;
+    // Look for the field in gridcells (data cells), not in header rows
+    const fieldCell = this.hashFieldsGrid.locator('[role="gridcell"]').filter({ hasText: fieldName });
+    return (await fieldCell.count()) > 0;
+  }
+
+  async searchHashFields(searchTerm: string): Promise<void> {
+    // Click the search button to open search input
+    await this.page.getByTestId('search-button').click();
+    // Fill the search input
+    const searchInput = this.page.getByTestId('search');
+    await searchInput.fill(searchTerm);
+    await searchInput.press('Enter');
+  }
+
+  async clearHashFieldSearch(): Promise<void> {
+    // Click the reset button inside the hash details grid to clear search
+    // The reset button is inside the search input container in the grid header
+    const resetButton = this.hashFieldsGrid.locator('button[title="Reset"]');
+    if (await resetButton.isVisible()) {
+      await resetButton.click();
+    }
+  }
+
+  async isNoResultsMessageVisible(): Promise<boolean> {
+    const noResults = this.page.getByText('No results found.');
+    return await noResults.isVisible();
   }
 
   // List methods
@@ -336,6 +360,22 @@ export class KeyDetails {
     return await valueCell.innerText();
   }
 
+  async listElementExists(elementValue: string): Promise<boolean> {
+    // Look for the element in gridcells (data cells), not in header rows
+    const elementCell = this.listGrid.locator('[role="gridcell"]').filter({ hasText: elementValue });
+    return (await elementCell.count()) > 0;
+  }
+
+  async searchListByIndex(index: string): Promise<void> {
+    // Click the search button to open search input
+    const searchButton = this.listGrid.getByRole('button', { name: 'Search index' });
+    await searchButton.click();
+    // Fill the search input
+    const searchInput = this.listGrid.getByPlaceholder('Search');
+    await searchInput.fill(index);
+    await searchInput.press('Enter');
+  }
+
   // Set methods
   async getSetMemberCount(): Promise<number> {
     await this.setGrid.waitFor({ state: 'visible' });
@@ -379,6 +419,19 @@ export class KeyDetails {
     await confirmBtn.waitFor({ state: 'hidden', timeout: 5000 });
     // Wait for the row to be removed from the grid
     await this.page.getByTestId(`set-remove-btn-${member}-icon`).waitFor({ state: 'hidden', timeout: 5000 });
+  }
+
+  async setMemberExists(memberName: string): Promise<boolean> {
+    // Look for the member in gridcells (data cells), not in header rows
+    const memberCell = this.setGrid.locator('[role="gridcell"]').filter({ hasText: memberName });
+    return (await memberCell.count()) > 0;
+  }
+
+  async searchSetMembers(searchTerm: string): Promise<void> {
+    // For Set, the search input is always visible in the header
+    const searchInput = this.setGrid.getByPlaceholder('Search');
+    await searchInput.fill(searchTerm);
+    await searchInput.press('Enter');
   }
 
   // ZSet (Sorted Set) methods
@@ -455,6 +508,22 @@ export class KeyDetails {
     const row = rows.nth(rowIndex);
     const scoreCell = row.locator('[role="gridcell"]').nth(1);
     return await scoreCell.innerText();
+  }
+
+  async zsetMemberExists(memberName: string): Promise<boolean> {
+    // Look for the member in gridcells (data cells), not in header rows
+    const memberCell = this.zsetGrid.locator('[role="gridcell"]').filter({ hasText: memberName });
+    return (await memberCell.count()) > 0;
+  }
+
+  async searchZSetMembers(searchTerm: string): Promise<void> {
+    // Click the search button to open search input
+    const searchButton = this.zsetGrid.getByRole('button', { name: 'Search name' });
+    await searchButton.click();
+    // Fill the search input
+    const searchInput = this.zsetGrid.getByPlaceholder('Search');
+    await searchInput.fill(searchTerm);
+    await searchInput.press('Enter');
   }
 
   // Stream methods

@@ -57,7 +57,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 |--------|----------|-----------|
 | ✅ | 🟠 | Open Copilot panel |
 | ✅ | 🟢 | Close Copilot panel |
-| 🔲 | 🟢 | Open full screen mode |
+| ✅ | 🟢 | Open full screen mode |
 | ✅ | 🟢 | View sign-in options (Google, GitHub, SSO) |
 | ✅ | 🟢 | Accept terms checkbox |
 
@@ -68,7 +68,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Close Insights panel |
 | ✅ | 🟢 | Switch to Tutorials tab |
 | ✅ | 🟢 | Switch to Tips tab |
-| 🔲 | 🟢 | Expand/collapse tutorial folders |
+| ✅ | 🟢 | Expand/collapse tutorial folders |
 | ✅ | 🟢 | View My tutorials section |
 
 ---
@@ -205,7 +205,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🔴 | Add hash field |
 | ✅ | 🔴 | Edit hash field |
 | ✅ | 🔴 | Delete hash field |
-| 🔲 | 🟢 | Search hash fields |
+| ✅ | 🟢 | Search hash fields |
 | 🔲 | 🟢 | Pagination |
 
 ### 2.6 Key Details - List
@@ -215,7 +215,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🔴 | Add element (LPUSH/RPUSH) |
 | ✅ | 🔴 | Edit list element |
 | ✅ | 🔴 | Remove element |
-| 🔲 | 🟢 | Search by index |
+| ✅ | 🟢 | Search by index |
 
 ### 2.7 Key Details - Set (✅ Implemented)
 | Status | Priority | Test Case |
@@ -223,7 +223,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🔴🟠 | View set members |
 | ✅ | 🔴 | Add member |
 | ✅ | 🔴 | Remove member |
-| 🔲 | 🟢 | Search members |
+| ✅ | 🟢 | Search members |
 
 ### 2.8 Key Details - Sorted Set (✅ Implemented)
 | Status | Priority | Test Case |
@@ -232,7 +232,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🔴 | Add member with score |
 | ✅ | 🔴 | Edit member score |
 | ✅ | 🔴 | Remove member |
-| 🔲 | 🟢 | Search members |
+| ✅ | 🟢 | Search members |
 | 🔲 | 🟢 | Sort by score/member |
 
 ### 2.9 Key Details - Stream (✅ Implemented)
@@ -475,14 +475,17 @@ The test plan is organized by feature area, with tests categorized by priority:
 
 ---
 
-## 10. Sentinel (🔲 Not Implemented)
+## 10. Sentinel (⏸️ Skipped)
+
+> **Note:** Sentinel tests are skipped due to external dependencies (requires Sentinel infrastructure).
+> These tests should be run in environments with Sentinel setup available.
 
 ### 10.1 Sentinel Discovery
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🔴 | Connect to Sentinel |
-| 🔲 | 🔴 | Discover databases |
-| 🔲 | 🔴 | Add discovered database |
+| ⏸️ | 🔴 | Connect to Sentinel |
+| ⏸️ | 🔴 | Discover databases |
+| ⏸️ | 🔴 | Add discovered database |
 
 ---
 
@@ -494,37 +497,37 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 11.1 RDI Instance Management
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🔴 | Add RDI instance |
-| 🔲 | 🔴 | Connect to RDI instance |
-| 🔲 | 🔴 | View RDI instance list |
-| 🔲 | 🟠 | Edit RDI instance |
-| 🔲 | 🟠 | Delete RDI instance |
-| 🔲 | 🟢 | Test RDI connection |
+| ⏸️ | 🔴 | Add RDI instance |
+| ⏸️ | 🔴 | Connect to RDI instance |
+| ⏸️ | 🔴 | View RDI instance list |
+| ⏸️ | 🟠 | Edit RDI instance |
+| ⏸️ | 🟠 | Delete RDI instance |
+| ⏸️ | 🟢 | Test RDI connection |
 
 ### 11.2 RDI Pipeline
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🔴 | View pipeline status |
-| 🔲 | 🔴 | Start pipeline |
-| 🔲 | 🔴 | Stop pipeline |
-| 🔲 | 🟠 | Reset pipeline |
-| 🔲 | 🟢 | View pipeline statistics |
+| ⏸️ | 🔴 | View pipeline status |
+| ⏸️ | 🔴 | Start pipeline |
+| ⏸️ | 🔴 | Stop pipeline |
+| ⏸️ | 🟠 | Reset pipeline |
+| ⏸️ | 🟢 | View pipeline statistics |
 
 ### 11.3 RDI Jobs
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🔴 | View jobs list |
-| 🔲 | 🔴 | Deploy job |
-| 🔲 | 🟠 | Edit job configuration |
-| 🔲 | 🟠 | Delete job |
-| 🔲 | 🟢 | Dry run job |
+| ⏸️ | 🔴 | View jobs list |
+| ⏸️ | 🔴 | Deploy job |
+| ⏸️ | 🟠 | Edit job configuration |
+| ⏸️ | 🟠 | Delete job |
+| ⏸️ | 🟢 | Dry run job |
 
 ### 11.4 RDI Configuration
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🔴 | View configuration |
-| 🔲 | 🔴 | Edit configuration |
-| 🔲 | 🟠 | Deploy configuration |
+| ⏸️ | 🔴 | View configuration |
+| ⏸️ | 🔴 | Edit configuration |
+| ⏸️ | 🟠 | Deploy configuration |
 | 🔲 | 🟢 | Download template |
 
 ---

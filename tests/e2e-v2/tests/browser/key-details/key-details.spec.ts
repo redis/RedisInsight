@@ -181,9 +181,11 @@ test.describe('Browser > Key Details', () => {
       // Edit the field
       await browserPage.keyDetails.editHashField('editableField', newValue);
 
-      // Verify value was updated
-      const value = await browserPage.keyDetails.getHashFieldValue('editableField');
-      expect(value).toContain(newValue);
+      // Verify value was updated (use polling to avoid race condition)
+      await expect(async () => {
+        const value = await browserPage.keyDetails.getHashFieldValue('editableField');
+        expect(value).toContain(newValue);
+      }).toPass({ timeout: 10000 });
     });
 
     test(`should delete hash field ${Tags.CRITICAL}`, async ({ apiHelper }) => {
@@ -202,6 +204,62 @@ test.describe('Browser > Key Details', () => {
       // Verify field was deleted
       const fieldExists = await browserPage.keyDetails.hashFieldExists('fieldToDelete');
       expect(fieldExists).toBe(false);
+    });
+
+    test(`should search hash fields ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+      const keyData = getHashKeyData({
+        fields: [
+          { field: 'uniqueSearchField', value: 'value1' },
+          { field: 'anotherField', value: 'value2' },
+          { field: 'thirdField', value: 'value3' },
+        ],
+      });
+
+      await apiHelper.createHashKey(databaseId, keyData.keyName, keyData.fields);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Verify all fields are initially visible
+      await expect(async () => {
+        const allFieldsExist = await browserPage.keyDetails.hashFieldExists('uniqueSearchField') &&
+          await browserPage.keyDetails.hashFieldExists('anotherField') &&
+          await browserPage.keyDetails.hashFieldExists('thirdField');
+        expect(allFieldsExist).toBe(true);
+      }).toPass({ timeout: 10000 });
+
+      // Search for a specific field
+      await browserPage.keyDetails.searchHashFields('uniqueSearchField');
+
+      // Verify only matching field is shown (use polling to handle async search)
+      await expect(async () => {
+        const searchableExists = await browserPage.keyDetails.hashFieldExists('uniqueSearchField');
+        const otherFieldHidden = !(await browserPage.keyDetails.hashFieldExists('anotherField'));
+        expect(searchableExists).toBe(true);
+        expect(otherFieldHidden).toBe(true);
+      }).toPass({ timeout: 10000 });
+    });
+
+    test(`should show no results message when search has no matches ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+      const keyData = getHashKeyData({ fields: [{ field: 'existingField', value: 'value' }] });
+
+      await apiHelper.createHashKey(databaseId, keyData.keyName, keyData.fields);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Search for non-existent field
+      await browserPage.keyDetails.searchHashFields('nonexistent');
+
+      // Verify no results message is shown (use polling to handle async search)
+      await expect(async () => {
+        const noResults = await browserPage.keyDetails.isNoResultsMessageVisible();
+        expect(noResults).toBe(true);
+      }).toPass({ timeout: 10000 });
     });
   });
 
@@ -306,6 +364,36 @@ test.describe('Browser > Key Details', () => {
       const elementCount = await browserPage.keyDetails.getListElementCount();
       expect(elementCount).toBe(2);
     });
+
+    test(`should search list by index ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+      const keyData = getListKeyData({
+        elements: ['element-at-0', 'element-at-1', 'element-at-2', 'element-at-3'],
+      });
+
+      await apiHelper.createListKey(databaseId, keyData.keyName, keyData.elements);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Verify all elements are initially visible
+      await expect(async () => {
+        const elementCount = await browserPage.keyDetails.getListElementCount();
+        expect(elementCount).toBe(4);
+      }).toPass({ timeout: 10000 });
+
+      // Search for a specific index
+      await browserPage.keyDetails.searchListByIndex('2');
+
+      // Verify only the element at index 2 is shown
+      await expect(async () => {
+        const elementExists = await browserPage.keyDetails.listElementExists('element-at-2');
+        const otherElementHidden = !(await browserPage.keyDetails.listElementExists('element-at-0'));
+        expect(elementExists).toBe(true);
+        expect(otherElementHidden).toBe(true);
+      }).toPass({ timeout: 10000 });
+    });
   });
 
   test.describe('Set Key Details', () => {
@@ -390,6 +478,38 @@ test.describe('Browser > Key Details', () => {
       // Verify member count decreased
       const memberCount = await browserPage.keyDetails.getSetMemberCount();
       expect(memberCount).toBe(1);
+    });
+
+    test(`should search set members ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+      const keyData = getSetKeyData({
+        members: ['uniqueSearchMember', 'anotherMember', 'thirdMember'],
+      });
+
+      await apiHelper.createSetKey(databaseId, keyData.keyName, keyData.members);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Verify all members are initially visible
+      await expect(async () => {
+        const allMembersExist = await browserPage.keyDetails.setMemberExists('uniqueSearchMember') &&
+          await browserPage.keyDetails.setMemberExists('anotherMember') &&
+          await browserPage.keyDetails.setMemberExists('thirdMember');
+        expect(allMembersExist).toBe(true);
+      }).toPass({ timeout: 10000 });
+
+      // Search for a specific member
+      await browserPage.keyDetails.searchSetMembers('uniqueSearchMember');
+
+      // Verify only matching member is shown
+      await expect(async () => {
+        const searchableExists = await browserPage.keyDetails.setMemberExists('uniqueSearchMember');
+        const otherMemberHidden = !(await browserPage.keyDetails.setMemberExists('anotherMember'));
+        expect(searchableExists).toBe(true);
+        expect(otherMemberHidden).toBe(true);
+      }).toPass({ timeout: 10000 });
     });
   });
 
@@ -516,6 +636,42 @@ test.describe('Browser > Key Details', () => {
       await expect(async () => {
         const score = await browserPage.keyDetails.getZSetMemberScore(0);
         expect(score).toContain(newScore);
+      }).toPass({ timeout: 10000 });
+    });
+
+    test(`should search sorted set members ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+      const keyData = getZSetKeyData({
+        members: [
+          { member: 'uniqueSearchZMember', score: '10' },
+          { member: 'anotherZMember', score: '20' },
+          { member: 'thirdZMember', score: '30' },
+        ],
+      });
+
+      await apiHelper.createZSetKey(databaseId, keyData.keyName, keyData.members);
+
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(keyData.keyName);
+      await browserPage.keyList.clickKey(keyData.keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      // Verify all members are initially visible
+      await expect(async () => {
+        const allMembersExist = await browserPage.keyDetails.zsetMemberExists('uniqueSearchZMember') &&
+          await browserPage.keyDetails.zsetMemberExists('anotherZMember') &&
+          await browserPage.keyDetails.zsetMemberExists('thirdZMember');
+        expect(allMembersExist).toBe(true);
+      }).toPass({ timeout: 10000 });
+
+      // Search for a specific member
+      await browserPage.keyDetails.searchZSetMembers('uniqueSearchZMember');
+
+      // Verify only matching member is shown
+      await expect(async () => {
+        const searchableExists = await browserPage.keyDetails.zsetMemberExists('uniqueSearchZMember');
+        const otherMemberHidden = !(await browserPage.keyDetails.zsetMemberExists('anotherZMember'));
+        expect(searchableExists).toBe(true);
+        expect(otherMemberHidden).toBe(true);
       }).toPass({ timeout: 10000 });
     });
   });
