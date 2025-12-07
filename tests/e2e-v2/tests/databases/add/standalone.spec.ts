@@ -226,4 +226,35 @@ test.describe.serial('Add Database > Standalone', () => {
     await expect(databasesPage.addDatabaseDialog.portInput).toBeVisible();
     await expect(databasesPage.addDatabaseDialog.databaseAliasInput).toBeVisible();
   });
+
+  test(`should add database with logical database index ${Tags.REGRESSION}`, async ({ databasesPage }) => {
+    const config = getStandaloneConfig({
+      name: `${uniquePrefix}-db1`,
+    });
+
+    // Open dialog and go to connection settings
+    await databasesPage.openAddDatabaseDialog();
+    await databasesPage.addDatabaseDialog.openConnectionSettings();
+    await databasesPage.addDatabaseDialog.fillForm(config);
+
+    // Enable logical database selection and set index to 1
+    await databasesPage.addDatabaseDialog.selectLogicalDatabaseCheckbox.click();
+    await databasesPage.addDatabaseDialog.databaseIndexInput.fill('1');
+
+    // Submit the form
+    await databasesPage.addDatabaseDialog.submit();
+
+    // Wait for success toast
+    await databasesPage.page.waitForSelector('text=Database has been added', { timeout: 10000 });
+
+    // Search for the database to handle pagination
+    // Note: The database name in the list includes [db1] suffix for logical database index
+    await databasesPage.databaseList.search(config.name);
+
+    // Verify the database is visible with the [db1] suffix indicating logical database index
+    const row = databasesPage.page.locator('table tbody tr').filter({
+      hasText: new RegExp(`${config.name}.*\\[db1\\]`),
+    });
+    await expect(row).toBeVisible({ timeout: 15000 });
+  });
 });

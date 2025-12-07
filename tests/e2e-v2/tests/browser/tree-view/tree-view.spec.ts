@@ -164,6 +164,88 @@ test.describe('Browser > Tree View', () => {
       // List view should still be active (grid visible)
       await expect(page.getByRole('grid')).toBeVisible();
     });
+
+    test(`should preserve filter state when switching between Browser and Tree view ${Tags.REGRESSION}`, async ({
+      page,
+      apiHelper,
+    }) => {
+      // Create test keys with a specific pattern
+      const testPrefix = `test-filter-${Date.now()}`;
+      await apiHelper.createStringKey(databaseId, `${testPrefix}:key1`, 'value1');
+      await apiHelper.createStringKey(databaseId, `${testPrefix}:key2`, 'value2');
+
+      try {
+        // Ensure we're in list view
+        await browserPage.keyList.switchToListView();
+        await expect(page.getByRole('grid')).toBeVisible();
+
+        // Apply a filter pattern
+        await browserPage.keyList.searchKeys(`${testPrefix}*`);
+        await browserPage.keyList.waitForKeysLoaded();
+
+        // Verify filter is applied (should show filtered results)
+        const searchInput = browserPage.keyList.searchInput;
+        await expect(searchInput).toHaveValue(`${testPrefix}*`);
+
+        // Switch to tree view
+        await browserPage.keyList.switchToTreeView();
+        await expect(page.getByRole('treeitem').first()).toBeVisible();
+
+        // Verify filter is still applied in tree view
+        await expect(searchInput).toHaveValue(`${testPrefix}*`);
+
+        // Switch back to list view
+        await browserPage.keyList.switchToListView();
+        await expect(page.getByRole('grid')).toBeVisible();
+
+        // Verify filter is still applied
+        await expect(searchInput).toHaveValue(`${testPrefix}*`);
+      } finally {
+        // Clean up test keys
+        await apiHelper.deleteKeysByPattern(databaseId, `${testPrefix}*`);
+      }
+    });
+
+    test(`should preserve key type filter when switching views ${Tags.REGRESSION}`, async ({
+      page,
+      apiHelper,
+    }) => {
+      // Create test keys of different types
+      const testPrefix = `test-type-${Date.now()}`;
+      await apiHelper.createStringKey(databaseId, `${testPrefix}:string`, 'value');
+      await apiHelper.createHashKey(databaseId, `${testPrefix}:hash`, [{ field: 'field', value: 'value' }]);
+
+      try {
+        // Ensure we're in list view
+        await browserPage.keyList.switchToListView();
+        await expect(page.getByRole('grid')).toBeVisible();
+
+        // Apply key type filter for String
+        await browserPage.keyList.filterByType('String');
+        await browserPage.keyList.waitForKeysLoaded();
+
+        // Verify filter is applied (dropdown shows String)
+        const keyTypeFilter = browserPage.keyList.keyTypeFilter;
+        await expect(keyTypeFilter).toContainText('String');
+
+        // Switch to tree view
+        await browserPage.keyList.switchToTreeView();
+        await expect(page.getByRole('treeitem').first()).toBeVisible();
+
+        // Verify key type filter is still applied
+        await expect(keyTypeFilter).toContainText('String');
+
+        // Switch back to list view
+        await browserPage.keyList.switchToListView();
+        await expect(page.getByRole('grid')).toBeVisible();
+
+        // Verify key type filter is still applied
+        await expect(keyTypeFilter).toContainText('String');
+      } finally {
+        // Clean up test keys
+        await apiHelper.deleteKeysByPattern(databaseId, `${testPrefix}*`);
+      }
+    });
   });
 });
 

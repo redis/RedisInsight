@@ -41,6 +41,9 @@ export class PubSubPage extends BasePage {
   // Warning message
   readonly productionWarning: Locator;
 
+  // Cluster mode banner
+  readonly clusterSpublishBanner: Locator;
+
   constructor(page: Page) {
     super(page);
 
@@ -53,7 +56,7 @@ export class PubSubPage extends BasePage {
     this.unsubscribeButton = page.getByRole('button', { name: 'Unsubscribe' });
     this.notSubscribedMessage = page.getByText('You are not subscribed');
     this.messagesContainer = page.getByTestId('pubsub-messages').or(page.locator('[data-testid*="pubsub"]'));
-    this.clearMessagesButton = page.getByRole('button', { name: /clear/i });
+    this.clearMessagesButton = page.getByTestId('clear-pubsub-btn');
 
     // Publish section
     this.channelNameInput = page.getByPlaceholder('Enter Channel Name');
@@ -78,6 +81,9 @@ export class PubSubPage extends BasePage {
 
     // Warning message
     this.productionWarning = page.getByText('Running in production may decrease performance');
+
+    // Cluster mode banner
+    this.clusterSpublishBanner = page.getByTestId('empty-messages-list-cluster');
   }
 
   /**

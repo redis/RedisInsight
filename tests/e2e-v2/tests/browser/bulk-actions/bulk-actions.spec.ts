@@ -174,6 +174,66 @@ test.describe('Browser > Bulk Actions', () => {
       await browserPage.bulkActionsPanel.close();
       await apiHelper.deleteKeysByPattern(databaseId, `${testPrefix}*`);
     });
+
+    test(`should display summary screen with processed, success, and error counts ${Tags.REGRESSION}`, async ({
+      page,
+      apiHelper,
+    }) => {
+      // Use unique prefix for this test run
+      const uniqueId = Date.now().toString(36);
+      const testPrefix = `${bulkDeletePrefix}summary-${uniqueId}-`;
+
+      // Create test keys for bulk deletion
+      const keysToCreate = 5;
+      for (let i = 0; i < keysToCreate; i++) {
+        const keyData = getStringKeyData({ keyName: `${testPrefix}${i}` });
+        await apiHelper.createStringKey(databaseId, keyData.keyName, keyData.value);
+      }
+
+      // Refresh and search for the keys
+      await browserPage.keyList.refresh();
+      await browserPage.keyList.searchKeys(`${testPrefix}*`);
+
+      // Wait for keys to appear
+      await expect(async () => {
+        const count = await browserPage.keyList.getKeyCount();
+        expect(count).toBe(keysToCreate);
+      }).toPass({ timeout: 10000 });
+
+      // Open bulk actions panel
+      await browserPage.bulkActionsPanel.open();
+
+      // Perform bulk delete
+      await browserPage.bulkActionsPanel.performBulkDelete();
+
+      // Verify summary screen is displayed with correct counts
+      // Check for "Action completed" alert
+      await expect(page.getByText('Action completed')).toBeVisible({ timeout: 10000 });
+
+      // Get the bulk actions info panel
+      const bulkActionsInfo = page.getByTestId('bulk-actions-info');
+
+      // Verify "Results" section is visible (use exact match to avoid "Results:")
+      await expect(bulkActionsInfo.getByText('Results', { exact: true })).toBeVisible();
+
+      // Verify "Keys Processed" count
+      await expect(bulkActionsInfo.getByText('Keys Processed')).toBeVisible();
+
+      // Verify "Success" count
+      await expect(bulkActionsInfo.getByText('Success')).toBeVisible();
+
+      // Verify "Errors" count (should be 0)
+      await expect(bulkActionsInfo.getByText('Errors')).toBeVisible();
+
+      // Verify "Time Taken" is displayed
+      await expect(bulkActionsInfo.getByText('Time Taken')).toBeVisible();
+
+      // Verify "Start New" button is available
+      await expect(page.getByRole('button', { name: 'Start New' })).toBeVisible();
+
+      // Verify "Close" button is available (use testid to avoid conflict with panel close button)
+      await expect(page.getByTestId('bulk-action-cancel-btn')).toBeVisible();
+    });
   });
 
   test.describe('Upload Data', () => {

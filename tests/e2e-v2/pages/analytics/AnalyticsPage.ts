@@ -19,6 +19,8 @@ export class AnalyticsPage extends BasePage {
   readonly refreshButton: Locator;
   readonly displayUpToDropdown: Locator;
   readonly executionTimeText: Locator;
+  readonly slowLogEmptyState: Locator;
+  readonly slowLogEmptyStateMessage: Locator;
 
   // Database Analysis elements
   readonly newReportButton: Locator;
@@ -51,6 +53,8 @@ export class AnalyticsPage extends BasePage {
     this.refreshButton = page.getByTestId('refresh-slowlog-btn').or(page.locator('[data-testid*="refresh"]').first());
     this.displayUpToDropdown = page.getByRole('combobox').filter({ hasText: /^\d+$/ });
     this.executionTimeText = page.getByText(/Execution time:/);
+    this.slowLogEmptyState = page.getByText('No Slow Logs found');
+    this.slowLogEmptyStateMessage = page.getByText(/Either no commands exceeding/);
 
     // Database Analysis elements
     this.newReportButton = page.getByTestId('start-database-analysis-btn');
@@ -231,6 +235,31 @@ export class AnalyticsPage extends BasePage {
    */
   async toggleShowNoExpiry(): Promise<void> {
     await this.showNoExpirySwitch.click();
+  }
+
+  /**
+   * Clear slow log entries
+   */
+  async clearSlowLog(): Promise<void> {
+    await this.clearSlowLogButton.click();
+    // Wait for confirmation dialog
+    await this.page.getByText('Clear slow log').waitFor({ state: 'visible' });
+    // Click Clear button in dialog
+    await this.page.getByTestId('reset-confirm-btn').click();
+    // Wait for dialog to close
+    await this.page.getByText('Clear slow log').waitFor({ state: 'hidden', timeout: 5000 });
+  }
+
+  /**
+   * Check if slow log empty state is visible
+   */
+  async isSlowLogEmpty(): Promise<boolean> {
+    try {
+      await this.slowLogEmptyState.waitFor({ state: 'visible', timeout: 3000 });
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   /**

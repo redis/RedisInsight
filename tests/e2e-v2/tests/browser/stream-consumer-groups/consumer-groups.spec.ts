@@ -139,6 +139,42 @@ test.describe('Browser > Stream Consumer Groups', () => {
     await expect(page.getByRole('gridcell', { name: groupName })).toBeVisible();
   });
 
+  test(`should create consumer group with custom Entry ID ${Tags.REGRESSION}`, async ({
+    page,
+    createBrowserPage,
+  }) => {
+    const browserPage: BrowserPage = createBrowserPage(databaseId);
+    const groupName = `test-group-${faker.string.alphanumeric(6)}`;
+
+    // Search for the stream key
+    await browserPage.keyList.searchKeys(streamKey);
+
+    // Click on the stream key (handle both list view and tree view)
+    await browserPage.keyList.clickKey(streamKey);
+
+    // Click on Consumer Groups tab
+    await page.getByRole('tab', { name: 'Consumer Groups' }).click();
+
+    // Click New Group button
+    await page.getByTestId('add-key-value-items-btn').click();
+
+    // Fill in group name
+    await page.getByRole('textbox', { name: 'Enter Group Name*' }).fill(groupName);
+
+    // Use a custom Entry ID - "0-1" is a valid format that means "from the first entry"
+    // This is different from "0" (which means from the beginning) and "$" (new messages only)
+    const customEntryId = '0-1';
+    const idField = page.getByRole('textbox', { name: 'ID*' });
+    await idField.clear();
+    await idField.fill(customEntryId);
+
+    // Click Save
+    await page.getByRole('button', { name: 'Save' }).click();
+
+    // Verify group is created and visible in the list (consumer groups are in a grid)
+    await expect(page.getByRole('gridcell', { name: groupName })).toBeVisible();
+  });
+
   test(`should cancel creating consumer group ${Tags.REGRESSION}`, async ({
     page,
     createBrowserPage,

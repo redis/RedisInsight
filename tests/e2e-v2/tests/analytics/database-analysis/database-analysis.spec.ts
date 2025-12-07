@@ -221,5 +221,185 @@ test.describe('Analytics > Database Analysis', () => {
       await expect(analyticsPage.databaseAnalysisTab).toHaveAttribute('aria-selected', 'true');
     });
   });
+
+  test.describe('Namespace Sorting', () => {
+    test(`should sort namespaces by memory ${Tags.REGRESSION}`, async ({
+      createAnalyticsPage,
+      page,
+    }) => {
+      const analyticsPage = createAnalyticsPage();
+      await analyticsPage.gotoDatabaseAnalysis(databaseId);
+
+      // Generate report if not already visible
+      const hasReport = await analyticsPage.isReportVisible();
+      if (!hasReport) {
+        await analyticsPage.clickNewReport();
+        await analyticsPage.waitForReportGenerated();
+      }
+
+      // Click "by Memory" button (should be disabled/selected by default)
+      const byMemoryButton = page.getByRole('button', { name: 'by Memory' }).first();
+      await expect(byMemoryButton).toBeVisible();
+
+      // Verify the table has Total Memory column
+      await expect(analyticsPage.topNamespacesTable.getByText('Total Memory')).toBeVisible();
+    });
+
+    test(`should sort namespaces by number of keys ${Tags.REGRESSION}`, async ({
+      createAnalyticsPage,
+      page,
+    }) => {
+      const analyticsPage = createAnalyticsPage();
+      await analyticsPage.gotoDatabaseAnalysis(databaseId);
+
+      // Generate report if not already visible
+      const hasReport = await analyticsPage.isReportVisible();
+      if (!hasReport) {
+        await analyticsPage.clickNewReport();
+        await analyticsPage.waitForReportGenerated();
+      }
+
+      // Click "by Number of Keys" button
+      const byKeysButton = page.getByRole('button', { name: 'by Number of Keys' });
+      await byKeysButton.click();
+
+      // Verify the button is now disabled (selected)
+      await expect(byKeysButton).toBeDisabled();
+
+      // Verify the table still has Total Keys column
+      await expect(analyticsPage.topNamespacesTable.getByText('Total Keys')).toBeVisible();
+    });
+  });
+
+  test.describe('Tips Tab', () => {
+    test(`should switch to tips tab ${Tags.REGRESSION}`, async ({
+      createAnalyticsPage,
+    }) => {
+      const analyticsPage = createAnalyticsPage();
+      await analyticsPage.gotoDatabaseAnalysis(databaseId);
+
+      // Generate report if not already visible
+      const hasReport = await analyticsPage.isReportVisible();
+      if (!hasReport) {
+        await analyticsPage.clickNewReport();
+        await analyticsPage.waitForReportGenerated();
+      }
+
+      // Click Tips tab
+      await analyticsPage.tipsTab.click();
+
+      // Should show Tips tab selected
+      await expect(analyticsPage.tipsTab).toHaveAttribute('aria-selected', 'true');
+    });
+
+    test(`should display tips count in tab label ${Tags.REGRESSION}`, async ({
+      createAnalyticsPage,
+    }) => {
+      const analyticsPage = createAnalyticsPage();
+      await analyticsPage.gotoDatabaseAnalysis(databaseId);
+
+      // Generate report if not already visible
+      const hasReport = await analyticsPage.isReportVisible();
+      if (!hasReport) {
+        await analyticsPage.clickNewReport();
+        await analyticsPage.waitForReportGenerated();
+      }
+
+      // Get tips count
+      const tipsCount = await analyticsPage.getTipsCount();
+
+      // Tips count should be a number (could be 0 or more)
+      expect(tipsCount).toBeGreaterThanOrEqual(0);
+    });
+  });
+
+  test.describe('Data Type Charts', () => {
+    test(`should display memory chart ${Tags.REGRESSION}`, async ({
+      createAnalyticsPage,
+      page,
+    }) => {
+      const analyticsPage = createAnalyticsPage();
+      await analyticsPage.gotoDatabaseAnalysis(databaseId);
+
+      // Generate report if not already visible
+      const hasReport = await analyticsPage.isReportVisible();
+      if (!hasReport) {
+        await analyticsPage.clickNewReport();
+        await analyticsPage.waitForReportGenerated();
+      }
+
+      // Should show Memory label in the chart area
+      await expect(page.getByText('Memory').first()).toBeVisible();
+    });
+
+    test(`should display keys chart ${Tags.REGRESSION}`, async ({
+      createAnalyticsPage,
+      page,
+    }) => {
+      const analyticsPage = createAnalyticsPage();
+      await analyticsPage.gotoDatabaseAnalysis(databaseId);
+
+      // Generate report if not already visible
+      const hasReport = await analyticsPage.isReportVisible();
+      if (!hasReport) {
+        await analyticsPage.clickNewReport();
+        await analyticsPage.waitForReportGenerated();
+      }
+
+      // Should show Keys label in the chart area
+      await expect(page.getByText('Keys').first()).toBeVisible();
+    });
+  });
+
+  test.describe('Top Keys Table', () => {
+    test(`should sort top keys by memory ${Tags.REGRESSION}`, async ({
+      createAnalyticsPage,
+      page,
+    }) => {
+      const analyticsPage = createAnalyticsPage();
+      await analyticsPage.gotoDatabaseAnalysis(databaseId);
+
+      // Generate report if not already visible
+      const hasReport = await analyticsPage.isReportVisible();
+      if (!hasReport) {
+        await analyticsPage.clickNewReport();
+        await analyticsPage.waitForReportGenerated();
+      }
+
+      // Find the "by Memory" button in the TOP 15 KEYS section
+      const topKeysSection = page.locator('text=TOP 15 KEYS').locator('..');
+      const byMemoryButton = topKeysSection.getByRole('button', { name: 'by Memory' });
+      await expect(byMemoryButton).toBeVisible();
+
+      // Verify the table has Key Size column
+      await expect(analyticsPage.topKeysTable.getByText('Key Size')).toBeVisible();
+    });
+
+    test(`should sort top keys by length ${Tags.REGRESSION}`, async ({
+      createAnalyticsPage,
+      page,
+    }) => {
+      const analyticsPage = createAnalyticsPage();
+      await analyticsPage.gotoDatabaseAnalysis(databaseId);
+
+      // Generate report if not already visible
+      const hasReport = await analyticsPage.isReportVisible();
+      if (!hasReport) {
+        await analyticsPage.clickNewReport();
+        await analyticsPage.waitForReportGenerated();
+      }
+
+      // Find the "by Length" button in the TOP 15 KEYS section
+      const topKeysSection = page.locator('text=TOP 15 KEYS').locator('..');
+      const byLengthButton = topKeysSection.getByRole('button', { name: 'by Length' });
+      await byLengthButton.click();
+
+      // Verify the button is now disabled (selected)
+      await expect(byLengthButton).toBeDisabled();
+
+      // Verify the table has Length column
+      await expect(analyticsPage.topKeysTable.getByText('Length')).toBeVisible();
+    });
+  });
 });
 

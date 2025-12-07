@@ -206,6 +206,39 @@ test.describe('Analytics > Slow Log', () => {
     });
   });
 
+  test.describe('Empty State', () => {
+    test(`should display empty state message when no slow log entries ${Tags.REGRESSION}`, async ({
+      createAnalyticsPage,
+    }) => {
+      const analyticsPage = createAnalyticsPage();
+      await analyticsPage.gotoSlowLog(databaseId);
+
+      // Check if slow log is empty or has entries
+      const isEmpty = await analyticsPage.isSlowLogEmpty();
+
+      if (isEmpty) {
+        // Verify empty state is displayed
+        await expect(analyticsPage.slowLogEmptyState).toBeVisible();
+        await expect(analyticsPage.slowLogEmptyStateMessage).toBeVisible();
+
+        // Verify the message contains expected text
+        await expect(analyticsPage.slowLogEmptyStateMessage).toContainText('Either no commands exceeding');
+        await expect(analyticsPage.slowLogEmptyStateMessage).toContainText('Slow Log is disabled');
+      } else {
+        // If there are entries, clear them first
+        await analyticsPage.clearSlowLog();
+
+        // Verify empty state is displayed after clearing
+        await expect(analyticsPage.slowLogEmptyState).toBeVisible();
+        await expect(analyticsPage.slowLogEmptyStateMessage).toBeVisible();
+
+        // Verify the message contains expected text
+        await expect(analyticsPage.slowLogEmptyStateMessage).toContainText('Either no commands exceeding');
+        await expect(analyticsPage.slowLogEmptyStateMessage).toContainText('Slow Log is disabled');
+      }
+    });
+  });
+
   test.describe('Configuration', () => {
     test(`should adjust slowlog-log-slower-than threshold ${Tags.REGRESSION}`, async ({
       createAnalyticsPage,

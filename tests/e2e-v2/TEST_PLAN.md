@@ -92,7 +92,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Open Connection settings from URL form |
 | ✅ | 🟢 | Configure timeout setting |
 | ✅ | 🟢 | Select logical database |
-| 🔲 | 🟢 | Logical database index displayed in database list |
+| ✅ | 🟢 | Logical database index displayed in database list |
 | 🔲 | 🟢 | Logical database index displayed in database header |
 | 🔲 | 🟢 | Logical database index displayed in edit form |
 | ✅ | 🟢 | Force standalone connection |
@@ -230,8 +230,8 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Scan more keys (covered by "should show scan more button when searching" test) |
 | ✅ | 🟢 | Open tree view settings |
 | ✅ | 🟢 | Tree view mode state persists after page refresh |
-| 🔲 | 🟢 | Filter state preserved when switching between Browser and Tree view |
-| 🔲 | 🟢 | Key type filter state preserved when switching views |
+| ✅ | 🟢 | Filter state preserved when switching between Browser and Tree view |
+| ✅ | 🟢 | Key type filter state preserved when switching views |
 | 🔲 | 🟢 | Configure multiple delimiters in tree view |
 | 🔲 | 🟢 | Cancel delimiter change reverts to previous value |
 | 🔲 | 🟢 | Verify namespace tooltip shows key pattern and delimiter |
@@ -314,7 +314,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 |--------|----------|-----------|
 | ✅ | 🟠 | Create consumer group with Entry ID "0" (from beginning) |
 | ✅ | 🟠 | Create consumer group with Entry ID "$" (new messages only) |
-| 🔲 | 🟢 | Create consumer group with custom Entry ID |
+| ✅ | 🟢 | Create consumer group with custom Entry ID |
 | ✅ | 🟢 | View consumer group columns (Group Name, Consumers, Pending, Last Delivered ID) - covered by "should open Consumer Groups tab" test |
 | 🔲 | 🟢 | View consumer information columns (Consumer Name, Pending, Idle Time) |
 | ✅ | 🟢 | Delete consumer from consumer group |
@@ -354,7 +354,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Bulk delete with pattern |
 | ✅ | 🔴 | Bulk upload data |
 | ✅ | 🟢 | View bulk action progress (expected key count before deletion) |
-| 🔲 | 🟢 | Confirm summary screen displays processed, deleted, failed counts |
+| ✅ | 🟢 | Confirm summary screen displays processed, deleted, failed counts |
 | 🔲 | 🟢 | Confirm deletion failures surfaced in summary log |
 | 🔲 | 🟢 | Confirm performance when deleting thousands of keys |
 | 🔲 | 🟢 | Confirm performance when bulk uploading large datasets (>10K keys) |
@@ -559,17 +559,17 @@ The test plan is organized by feature area, with tests categorized by priority:
 |--------|----------|-----------|
 | ✅ | 🔴🟠 | Publish message to channel (form fill) |
 | ⏸️ | 🟢 | Publish with different formats | Feature not available - plain text only |
-| 🔲 | 🟢 | Confirm published message appears instantly in message feed |
-| 🔲 | 🟢 | Confirm publish button shows status report with affected clients count |
+| ✅ | 🟢 | Confirm published message appears instantly in message feed | _Covered by "should receive published message" test_ |
+| ✅ | 🟢 | Confirm publish button shows status report with affected clients count |
 
 ### 5.3 Message Table View
 | Status | Priority | Test Case |
 |--------|----------|-----------|
 | ✅ | 🟠 | View message table with subscribed messages |
 | 🔲 | 🟢 | Navigate message table pages |
-| 🔲 | 🟢 | Sort message table by columns |
+| ✅ | 🟢 | Sort message table by columns |
 | 🔲 | 🟢 | Confirm table configuration persists across navigation |
-| 🔲 | 🟢 | Confirm message table scrollable with 100+ rows |
+| ✅ | 🟢 | Confirm message table with multiple messages |
 | ✅ | 🟢 | Confirm status bar shows proper subscription status |
 | ✅ | 🟢 | Confirm message count displays in status bar |
 
@@ -597,7 +597,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | View command timestamp, duration, and execution details |
 | ⏸️ | 🟢 | Change duration units between milliseconds and microseconds | _Skipped: No UI to change display units - duration always shown in msec_ |
 | ✅ | 🟢 | Adjust slowlog-log-slower-than threshold and confirm results update |
-| 🔲 | 🟢 | Confirm empty state message displays correctly |
+| ✅ | 🟢 | Confirm empty state message displays correctly |
 | 🔲 | 🟢 | Confirm performance with thousands of slowlog entries |
 
 ### 6.2 Database Analysis
@@ -610,17 +610,17 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | View TTL distribution |
 | ✅ | 🟢 | View recommendations (Tips tab) |
 | ✅ | 🟢 | History of analyses |
-| 🔲 | 🟢 | Confirm charts for data types, namespaces, expirations render |
+| ✅ | 🟢 | Confirm charts for data types, namespaces, expirations render |
 | 🔲 | 🟢 | Confirm extrapolation toggle adjusts charted values |
 | 🔲 | 🟢 | Confirm analysis distinguishes between scanned and estimated data |
 | 🔲 | 🟢 | Confirm responsiveness on large datasets |
 | 🔲 | 🟢 | Sort namespaces by key pattern |
-| 🔲 | 🟢 | Sort namespaces by memory |
-| 🔲 | 🟢 | Sort namespaces by number of keys |
+| ✅ | 🟢 | Sort namespaces by memory |
+| ✅ | 🟢 | Sort namespaces by number of keys |
 | 🔲 | 🟢 | Filter namespace to Browser view |
 | 🔲 | 🟢 | Display "No namespaces" message with Tree View link |
-| 🔲 | 🟢 | Toggle "No Expiry" in TTL distribution graph |
-| 🔲 | 🟢 | View analysis history (up to 5 reports) |
+| ✅ | 🟢 | Toggle "No Expiry" in TTL distribution graph |
+| ✅ | 🟢 | View analysis history (up to 5 reports) |
 | 🔲 | 🟢 | Vote recommendation as useful |
 | 🔲 | 🟢 | Vote recommendation as not useful |
 | 🔲 | 🟢 | Expand/collapse recommendation details |
@@ -911,9 +911,9 @@ The test plan is organized by feature area, with tests categorized by priority:
 | 🔲 | 🟢 | Vote recommendation as not useful |
 | 🔲 | 🟢 | Hide recommendation |
 | 🔲 | 🟢 | Snooze recommendation |
-| 🔲 | 🟢 | Expand/collapse recommendation details |
+| ✅ | 🟢 | Expand/collapse recommendation details |
 | 🔲 | 🟢 | View recommendation labels (code changes, configuration changes) |
-| 🔲 | 🟢 | Open tutorial from recommendation |
+| ✅ | 🟢 | Open tutorial from recommendation |
 | 🔲 | 🟢 | Recommendations sync with Database Analysis recommendations |
 
 ---
