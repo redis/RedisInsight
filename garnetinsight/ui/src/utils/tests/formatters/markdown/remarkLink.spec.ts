@@ -80,7 +80,7 @@ describe('remarkLink', () => {
     expect(codeNode).toEqual({
       ...codeNode,
       type: 'html',
-      value: '<GarnetinsightLink url="workbench" text="Workbench" size="S" />',
+      value: '<GarnetInsightLink url="workbench" text="Workbench" size="S" />',
     })
   })
 })

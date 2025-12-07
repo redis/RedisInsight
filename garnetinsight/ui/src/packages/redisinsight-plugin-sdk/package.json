@@ -13,10 +13,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Garnetinsight/Garnetinsight/tree/main/garnetinsight/ui/src/packages/garnetinsight-plugin-sdk"
+    "url": "https://github.com/Vijay-Nirmal/Garnetinsight/tree/main/garnetinsight/ui/src/packages/garnetinsight-plugin-sdk"
   },
   "bugs": {
-    "url": "https://github.com/Garnetinsight/Garnetinsight/issues"
+    "url": "https://github.com/Vijay-Nirmal/Garnetinsight/issues"
   },
   "main": "index.js"
 }

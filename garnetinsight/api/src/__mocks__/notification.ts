@@ -21,7 +21,7 @@ export const mockGlobalNotificationsJson = {
       body:
         'Would you like to see specific features added or have a bug to report? ' +
         '<p>' +
-        ' <a href="https://github.com/Garnetinsight/Garnetinsight/issues" target="_blank">Share</a> ' +
+        ' <a href="https://github.com/Vijay-Nirmal/Garnetinsight/issues" target="_blank">Share</a> ' +
         'it with us! <p> ' +
         'And <b>star</b> the repository if you like Garnetinsight!',
       category: 'feedback',

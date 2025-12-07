@@ -61,7 +61,7 @@ describe('RecommendationVoting', () => {
       document.querySelector('[data-test-subj="github-repo-link"]'),
     ).toHaveAttribute(
       'href',
-      'https://github.com/Garnetinsight/Garnetinsight/issues/new/choose',
+      'https://github.com/Vijay-Nirmal/Garnetinsight/issues/new/choose',
     )
   })
 

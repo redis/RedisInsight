@@ -7,7 +7,7 @@
   "description": "Garnet Insight",
   "main": "./dist/main/main.js",
   "author": {
-    "name": "Redis Ltd.",
+    "name": "Vijay Nirmal",
     "email": "support@redis.com",
     "url": "https://redis.com/redis-enterprise/redis-insight"
   },

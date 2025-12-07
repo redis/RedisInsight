@@ -15,7 +15,7 @@ export interface Props {
   size?: RiLinkProps['size']
 }
 
-const GarnetinsightLink = (props: Props) => {
+const GarnetInsightLink = (props: Props) => {
   const { url, text, size } = props
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
@@ -63,4 +63,4 @@ const GarnetinsightLink = (props: Props) => {
   )
 }
 
-export default GarnetinsightLink
+export default GarnetInsightLink

@@ -24,9 +24,9 @@ const RedisLogoIcon = styled.span`
   @media only screen and (min-width: 768px) {
     height: 72px;
   }
-  svg {
+  svg, img {
     width: 30px;
-    height: 34px;
+    height: auto;
   }
 `
 

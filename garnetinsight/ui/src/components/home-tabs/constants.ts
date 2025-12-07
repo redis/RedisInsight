@@ -13,13 +13,13 @@ const tabs: HomeTab[] = [
     content: null,
     path: Pages.home,
   },
-  {
+  /*{
     value: 'rdi-instances',
     label: 'Redis Data Integration',
     content: null,
     path: Pages.rdi,
     featureFlag: FeatureFlags.rdi,
-  },
+  },*/
 ]
 
 export { tabs }

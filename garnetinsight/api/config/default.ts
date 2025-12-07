@@ -234,7 +234,7 @@ export default {
   tutorials: {
     updateUrl:
       process.env.RI_TUTORIALS_UPDATE_URL ||
-      'https://github.com/Garnetinsight/Tutorials/releases/download/2.42',
+      'https://github.com/Vijay-Nirmal/Tutorials/releases/download/2.42',
     zip: process.env.RI_TUTORIALS_ZIP || dataZipFileName,
     buildInfo: process.env.RI_TUTORIALS_INFO || buildInfoFileName,
     devMode: !!process.env.RI_TUTORIALS_PATH,
@@ -242,7 +242,7 @@ export default {
   content: {
     updateUrl:
       process.env.RI_CONTENT_UPDATE_URL ||
-      'https://github.com/Garnetinsight/Statics/releases/download/2.54',
+      'https://github.com/Vijay-Nirmal/Statics/releases/download/2.54',
     zip: process.env.RI_CONTENT_ZIP || dataZipFileName,
     buildInfo: process.env.RI_CONTENT_INFO || buildInfoFileName,
     devMode: !!process.env.RI_CONTENT_PATH,
@@ -251,7 +251,7 @@ export default {
     updateUrl:
       process.env.RI_NOTIFICATION_DEV_PATH ||
       process.env.RI_NOTIFICATION_UPDATE_URL ||
-      'https://github.com/Garnetinsight/Notifications/releases/download/latest/notifications.json',
+      'https://github.com/Vijay-Nirmal/Notifications/releases/download/latest/notifications.json',
     syncInterval:
       parseInt(process.env.RI_NOTIFICATION_SYNC_INTERVAL, 10) || 60 * 60 * 1000,
     queryLimit: parseInt(process.env.RI_NOTIFICATION_QUERY_LIMIT, 10) || 20,

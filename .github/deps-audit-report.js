@@ -11,7 +11,7 @@ function generateSlackMessage(summary) {
     text:
       `DEPS AUDIT: *${DEPS}* result (Branch: *${process.env.GITHUB_REF_NAME}*)` +
       `\nScanned ${summary.totalDependencies} dependencies` +
-      `\n<https://github.com/Garnetinsight/Garnetinsight/actions/runs/${process.env.GITHUB_RUN_ID}|View on Github Actions>`,
+      `\n<https://github.com/Vijay-Nirmal/Garnetinsight/actions/runs/${process.env.GITHUB_RUN_ID}|View on Github Actions>`,
     attachments: [],
   };
 

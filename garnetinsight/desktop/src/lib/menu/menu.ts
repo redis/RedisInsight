@@ -200,7 +200,7 @@ export class MenuBuilder {
           label: 'License Terms',
           click() {
             shell.openExternal(
-              'https://github.com/Garnetinsight/Garnetinsight/blob/main/LICENSE',
+              'https://github.com/Vijay-Nirmal/Garnetinsight/blob/main/LICENSE',
             )
           },
         },
@@ -208,7 +208,7 @@ export class MenuBuilder {
           label: 'Submit a Bug or Idea',
           click() {
             shell.openExternal(
-              'https://github.com/Garnetinsight/Garnetinsight/issues',
+              'https://github.com/Vijay-Nirmal/Garnetinsight/issues',
             )
           },
         },
@@ -323,7 +323,7 @@ export class MenuBuilder {
             label: 'License Terms',
             click() {
               shell.openExternal(
-                'https://github.com/Garnetinsight/Garnetinsight/blob/main/LICENSE',
+                'https://github.com/Vijay-Nirmal/Garnetinsight/blob/main/LICENSE',
               )
             },
           },
@@ -331,16 +331,14 @@ export class MenuBuilder {
             label: 'Submit a Bug or Idea',
             click() {
               shell.openExternal(
-                'https://github.com/Garnetinsight/Garnetinsight/issues',
+                'https://github.com/Vijay-Nirmal/Garnetinsight/issues',
               )
             },
           },
           {
             label: 'Learn More',
             click() {
-              shell.openExternal(
-                'https://aka.ms/garnet-portal
-              )
+              shell.openExternal('https://aka.ms/garnet-portal')
             },
           },
           { type: 'separator' },

@@ -1,22 +1,22 @@
 import React from 'react'
 
 import { AddDbType } from 'uiSrc/pages/home/constants'
-import { FeatureFlagComponent, OAuthSsoHandlerDialog } from 'uiSrc/components'
-import { getUtmExternalLink } from 'uiSrc/utils/links'
-import { EXTERNAL_LINKS, UTM_CAMPAINGS } from 'uiSrc/constants/links'
-import { FeatureFlags } from 'uiSrc/constants'
-import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
-import { Col, FlexItem, Grid, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { Text } from 'uiSrc/components/base/text/Text'
-import { RiIcon } from 'uiSrc/components/base/icons'
-import { CONNECTIVITY_OPTIONS } from '../../constants'
+// import { FeatureFlagComponent, OAuthSsoHandlerDialog } from 'uiSrc/components'
+// import { getUtmExternalLink } from 'uiSrc/utils/links'
+// import { EXTERNAL_LINKS, UTM_CAMPAINGS } from 'uiSrc/constants/links'
+// import { FeatureFlags } from 'uiSrc/constants'
+// import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
+// import { Col, FlexItem, Grid, Row } from 'uiSrc/components/base/layout/flex'
+// import { Spacer } from 'uiSrc/components/base/layout/spacer'
+// import { Text } from 'uiSrc/components/base/text/Text'
+// import { RiIcon } from 'uiSrc/components/base/icons'
+// import { CONNECTIVITY_OPTIONS } from '../../constants'
 
-import {
-  StyledBadge,
-  StyledConnectivityLink,
-  StyledIcon,
-} from './ConnectivityOptions.styles'
+// import {
+//   StyledBadge,
+//   StyledConnectivityLink,
+//   StyledIcon,
+// } from './ConnectivityOptions.styles'
 
 export interface Props {
   onClickOption: (type: AddDbType) => void
@@ -24,11 +24,11 @@ export interface Props {
 }
 
 const ConnectivityOptions = (props: Props) => {
-  const { onClickOption, onClose } = props
+  // const { onClickOption, onClose } = props
 
   return (
     <>
-      <section>
+      {/* <section>
         <Text color="primary">Get started with Redis Cloud account</Text>
         <Spacer />
         <Grid gap="l" columns={3} responsive>
@@ -93,7 +93,7 @@ const ConnectivityOptions = (props: Props) => {
             </FlexItem>
           ))}
         </Grid>
-      </section>
+      </section> */}
     </>
   )
 }

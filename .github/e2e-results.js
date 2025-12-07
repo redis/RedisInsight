@@ -13,7 +13,7 @@ const results = {
   message: {
     text:
       `*E2ETest - ${appBuildType}${parallelNodeInfo}* (Branch: *${process.env.GITHUB_REF_NAME}*)` +
-      `\n<https://github.com/Garnetinsight/Garnetinsight/actions/runs/${process.env.GITHUB_RUN_ID}|View on Github Actions>`,
+      `\n<https://github.com/Vijay-Nirmal/Garnetinsight/actions/runs/${process.env.GITHUB_RUN_ID}|View on Github Actions>`,
     attachments: [],
   },
 };

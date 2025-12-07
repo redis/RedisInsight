@@ -17,7 +17,7 @@ Absolute path button:
 
 External:
 
-![Garnet Insight screen external](https://github.com/Garnetinsight/Garnetinsight/blob/main/.github/garnetinsight_browser.png?raw=true)
+![Garnet Insight screen external](https://github.com/Vijay-Nirmal/Garnetinsight/blob/main/.github/garnetinsight_browser.png?raw=true)
 
 Invalid absolute path button:
 

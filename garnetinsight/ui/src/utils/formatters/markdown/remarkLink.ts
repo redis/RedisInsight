@@ -23,7 +23,7 @@ export const remarkLink = (): ((tree: Node) => void) => (tree: any) => {
       const [text] = node.children || []
       const url = node.url.replace('garnetinsight:', '')
       node.type = 'html'
-      node.value = `<GarnetinsightLink url="${url}" text="${text?.value || 'Redis Cloud'}" size="S" />`
+      node.value = `<GarnetInsightLink url="${url}" text="${text?.value || 'Redis Cloud'}" size="S" />`
     }
   })
 }

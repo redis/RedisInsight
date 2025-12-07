@@ -1,6 +1,6 @@
-[![Release](https://img.shields.io/github/v/release/Garnetinsight/Garnetinsight.svg?sort=semver)](https://github.com/Garnetinsight/Garnetinsight/releases)
+[![Release](https://img.shields.io/github/v/release/Garnetinsight/Garnetinsight.svg?sort=semver)](https://github.com/Vijay-Nirmal/Garnetinsight/releases)
 
-# <img src="https://github.com/Garnetinsight/Garnetinsight/blob/main/resources/icon.png" alt="logo" width="25"/> Garnet Insight - Developer GUI for Garnet, by Microsoft.
+# <img src="https://github.com/Vijay-Nirmal/Garnetinsight/blob/main/resources/icon.png" alt="logo" width="25"/> Garnet Insight - Developer GUI for Garnet
 
 [![Forum](https://img.shields.io/badge/Forum-Garnetinsight-red)](https://forum.redis.com/c/garnetinsight/65)
 [![Discord](https://img.shields.io/discord/697882427875393627?style=flat-square)](https://discord.gg/QUkjSsk)
@@ -24,16 +24,16 @@ Garnet Insight is an intuitive and efficient GUI for Garnet, allowing you to int
 - Interactive tutorials to learn easily, among other things, how to leverage the native JSON data structure supporting structured querying and full-text search, including vector similarity search for your AI use cases
 - Contextualised recommendations to optimize performance and memory usage. The list of recommendations gets updated as you interact with your database
 - Profiler - analyze every command sent to Redis in real-time
-- SlowLog - analyze slow operations in Redis instances based on the [Slowlog](https://github.com/Garnetinsight/Garnetinsight/releases#:~:text=results%20of%20the-,Slowlog,-command%20to%20analyze) command
+- SlowLog - analyze slow operations in Redis instances based on the [Slowlog](https://github.com/Vijay-Nirmal/Garnetinsight/releases#:~:text=results%20of%20the-,Slowlog,-command%20to%20analyze) command
 - Pub/Sub - support for [Redis pub/sub](https://redis.io/docs/latest/develop/interact/pubsub/), enabling subscription to channels and posting messages to channels
 - Bulk actions - Delete the keys in bulk based on the filters set in Browser or Tree view
 - Workbench - advanced command line interface with intelligent command auto-complete, complex data visualizations and support for the raw mode
 - Command auto-complete support for [search and query](https://redis.io/search/) capability, [JSON](https://redis.io/json/) and [time series](https://redis.io/timeseries/) data structures
 - Visualizations of your [search and query](https://redis.io/search/) indexes and results.
-- Ability to build [your own data visualization plugins](https://github.com/Garnetinsight/Packages)
-- Officially supported for Garnet, [Azure Cosmos DB Garnet Cache](https://aka.ms/garnet-portal). Works with Microsoft Azure Cache for Redis
+- Ability to build [your own data visualization plugins](https://github.com/Vijay-Nirmal/Packages)
+- Officially supported for [Azure Cosmos DB Garnet Cache](https://aka.ms/garnet-portal).
 
-Check out the [release notes](https://github.com/Garnetinsight/Garnetinsight/releases).
+Check out the [release notes](https://github.com/Vijay-Nirmal/Garnetinsight/releases).
 
 ## Get started with Garnet Insight
 
@@ -44,19 +44,19 @@ This repository includes the code for Garnet Insight. Check out the [blogpost](h
 Garnet Insight is available as a free download [aka.ms/garnet-portal](https://aka.ms/garnet-portal).
 You can also find it on the Microsoft Store, Apple App Store, Snapcraft, Flathub, and as a [Docker image](https://hub.docker.com/r/redis/garnetinsight).
 
-Additionally, you can use [Redis for VS Code](https://github.com/Garnetinsight/Redis-for-VS-Code), our official Visual Studio Code extension.
+Additionally, you can use [Redis for VS Code](https://github.com/Vijay-Nirmal/Redis-for-VS-Code), our official Visual Studio Code extension.
 
 ### Build
 
 Alternatively you can also build from source. See our wiki for instructions.
 
-- [How to build](https://github.com/Garnetinsight/Garnetinsight/wiki/How-to-build-and-contribute)
+- [How to build](https://github.com/Vijay-Nirmal/Garnetinsight/wiki/How-to-build-and-contribute)
 
 ## How to debug
 
 If you have any issues occurring in Garnet Insight, you can follow the steps below to get more information about the errors and find their root cause.
 
-- [How to debug](https://github.com/Garnetinsight/Garnetinsight/wiki/How-to-debug)
+- [How to debug](https://github.com/Vijay-Nirmal/Garnetinsight/wiki/How-to-debug)
 
 ## Garnet Insight API (only for Docker)
 
@@ -64,21 +64,21 @@ If you are running Garnet Insight from [Docker](https://hub.docker.com/r/redis/g
 
 ## Feedback
 
-- Request a new [feature](https://github.com/Garnetinsight/Garnetinsight/issues/new?assignees=&labels=&template=feature_request.md&title=%5BFeature+Request%5D%3A)
-- Upvote [popular feature requests](https://github.com/Garnetinsight/Garnetinsight/issues?q=is%3Aopen+is%3Aissue+label%3Afeature+sort%3Areactions-%2B1-desc)
-- File a [bug](https://github.com/Garnetinsight/Garnetinsight/issues/new?assignees=&labels=&template=bug_report.md&title=%5BBug%5D%3A)
+- Request a new [feature](https://github.com/Vijay-Nirmal/Garnetinsight/issues/new?assignees=&labels=&template=feature_request.md&title=%5BFeature+Request%5D%3A)
+- Upvote [popular feature requests](https://github.com/Vijay-Nirmal/Garnetinsight/issues?q=is%3Aopen+is%3Aissue+label%3Afeature+sort%3Areactions-%2B1-desc)
+- File a [bug](https://github.com/Vijay-Nirmal/Garnetinsight/issues/new?assignees=&labels=&template=bug_report.md&title=%5BBug%5D%3A)
 
 ## Garnet Insight Plugins
 
 With Garnet Insight you can now also extend the core functionality by building your own data visualizations. See our wiki for more information.
 
-- [Plugin Documentation](https://github.com/Garnetinsight/Garnetinsight/wiki/Plugin-Documentation)
+- [Plugin Documentation](https://github.com/Vijay-Nirmal/Garnetinsight/wiki/Plugin-Documentation)
 
 ## Contributing
 
 If you would like to contribute to the code base or fix and issue, please consult the wiki.
 
-- [How to build and contribute](https://github.com/Garnetinsight/Garnetinsight/wiki/How-to-build-and-contribute)
+- [How to build and contribute](https://github.com/Vijay-Nirmal/Garnetinsight/wiki/How-to-build-and-contribute)
 
 ## API documentation
 

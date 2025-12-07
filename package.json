@@ -66,15 +66,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Garnetinsight/Garnetinsight.git"
+    "url": "git+https://github.com/Vijay-Nirmal/Garnetinsight.git"
   },
   "author": {
-    "name": "Redis Ltd.",
+    "name": "Vijay Nirmal",
     "email": "support@redis.com",
     "url": "https://redis.com/redis-enterprise/redis-insight"
   },
   "bugs": {
-    "url": "https://github.com/Garnetinsight/Garnetinsight/issues"
+    "url": "https://github.com/Vijay-Nirmal/Garnetinsight/issues"
   },
   "keywords": [
     "garnetinsight",
@@ -87,7 +87,7 @@
     "webpack",
     "vite"
   ],
-  "homepage": "https://github.com/Garnetinsight/Garnetinsight#readme",
+  "homepage": "https://github.com/Vijay-Nirmal/Garnetinsight#readme",
   "resolutions": {
     "**/trim": "0.0.3",
     "word-wrap": "1.2.4",

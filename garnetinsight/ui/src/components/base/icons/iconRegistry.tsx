@@ -33,7 +33,7 @@ import PlusInCircleSvg from 'uiSrc/assets/img/icons/plus_in_circle.svg?react'
 import ProfilerSvg from 'uiSrc/assets/img/icons/profiler.svg?react'
 import RawModeSvg from 'uiSrc/assets/img/icons/raw_mode.svg?react'
 import RedisDbBlueSvg from 'uiSrc/assets/img/icons/redis_db_blue.svg?react'
-import RedisLogoFullSvg from 'uiSrc/assets/img/logo.svg?react'
+import GarnetLogoPng from 'uiSrc/assets/img/garnet-logo.png'
 import RedisLogoSvg from 'uiSrc/assets/img/logo_small.svg?react'
 import ResetSvg from 'uiSrc/assets/img/rdi/reset.svg?react'
 import ShrinkSvg from 'uiSrc/assets/img/icons/shrink.svg?react'
@@ -163,7 +163,6 @@ export {
   GoogleSigninIcon,
   SsoIcon,
   GithubIcon,
-  RedisLogoDarkMinIcon,
 } from '@redis-ui/icons/multicolor'
 
 // Common icons
@@ -205,7 +204,16 @@ export const ProfilerIcon = createIconComponent(ProfilerSvg)
 export const RawModeIcon = createIconComponent(RawModeSvg)
 export const RedisDbBlueIcon = createIconComponent(RedisDbBlueSvg)
 export const RedisLogo = createIconComponent(RedisLogoSvg)
-export const RedisLogoFullIcon = createIconComponent(RedisLogoFullSvg)
+const GarnetLogoFullImg = ({ color, width, height, style, ...props }: any) => (
+  <img
+    src={GarnetLogoPng}
+    alt="Garnet Logo"
+    style={{ ...style, width, height: 'auto' }}
+    {...props}
+  />
+)
+export const RedisLogoFullIcon = createIconComponent(GarnetLogoFullImg)
+export const RedisLogoDarkMinIcon = createIconComponent(GarnetLogoFullImg)
 export const RiResetIcon = createIconComponent(ResetSvg)
 export const RiStarsIcon = createIconComponent(StarsSvg)
 export const RiStopIcon = createIconComponent(StopIconSvg)

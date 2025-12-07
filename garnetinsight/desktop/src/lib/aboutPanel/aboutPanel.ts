@@ -15,6 +15,6 @@ const appVersionSuffix = !config.isProduction
 export const AboutPanelOptions = {
   applicationName: 'Garnet Insight',
   applicationVersion: `${appVersionPrefix}${appVersion}${appVersionSuffix}`,
-  copyright: `Copyright © ${new Date().getFullYear()} Redis Ltd.`,
+  copyright: `Copyright © ${new Date().getFullYear()} Vijay Nirmal`,
   iconPath: ICON_PATH,
 }

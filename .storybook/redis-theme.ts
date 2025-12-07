@@ -5,7 +5,7 @@ export default create({
 
   brandTitle: 'Redis UI',
   brandUrl: 'https://github.com/redislabsdev/redis-ui',
-  brandImage: 'logo.svg',
+  brandImage: 'garnet-logo.png',
   brandTarget: '_blank',
 
   colorPrimary: '#001D2D',

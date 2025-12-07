@@ -131,7 +131,7 @@ test
         }
     })('Verify that user can upload tutorial with URL with manifest.json', async t => {
         const labelFromManifest = 'Working with JSON label';
-        const link = 'https://github.com/Garnetinsight/Garnetinsight/raw/9155d0241f6937c213893a29fe24c2f560cd48f3/tests/e2e/test-data/upload-tutorials/TutorialsWithManifest.zip';
+        const link = 'https://github.com/Vijay-Nirmal/Garnetinsight/raw/9155d0241f6937c213893a29fe24c2f560cd48f3/tests/e2e/test-data/upload-tutorials/TutorialsWithManifest.zip';
         internalLinkName1 = 'manifest-id';
         tutorialName = 'Tutorials with manifest';
         const summary = 'Summary for JSON';

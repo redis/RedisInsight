@@ -11,7 +11,7 @@ Data visualization provided by the plugin is rendered within the
 Workbench results area and is based on the executed command, ie. a certain
 Redis command can generate its own custom data visualization.
 
-We have included the following [plugin package example](https://github.com/Garnetinsight/Garnetinsight/tree/main/garnetinsight/ui/src/packages/clients-list) for your reference: running the CLIENT LIST command presents the output in a tabular format for easier reading.
+We have included the following [plugin package example](https://github.com/Vijay-Nirmal/Garnetinsight/tree/main/garnetinsight/ui/src/packages/clients-list) for your reference: running the CLIENT LIST command presents the output in a tabular format for easier reading.
 
 ## Wiki
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import RedisLogo from 'uiSrc/assets/img/logo.svg'
+import RedisLogo from 'uiSrc/assets/img/garnet-logo.png'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
@@ -12,7 +12,7 @@ import styles from './styles.module.scss'
 
 const OAuthAdvantages = () => (
   <div className={styles.container} data-testid="oauth-advantages">
-    <RiImage src={RedisLogo} alt="Redis logo" $size="s" />
+    <RiImage src={RedisLogo} alt="Redis logo" $size="s" style={{ height: 'auto' }} />
     <Title size="M">Cloud</Title>
     <Spacer size="space600" />
     <Col justify="between" align="stretch" grow={false} gap="m">

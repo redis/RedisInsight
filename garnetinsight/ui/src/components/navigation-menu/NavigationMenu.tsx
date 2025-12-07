@@ -79,10 +79,10 @@ const NavigationMenu = () => {
         <RedisLogo isRdiWorkspace={isRdiWorkspace} />
       </SideBarContainer>
       <SideBarFooter className={styles.footer}>
-        <FeatureFlagComponent name={FeatureFlags.envDependent} enabledByDefault>
+        {/* <FeatureFlagComponent name={FeatureFlags.envDependent} enabledByDefault>
           <CreateCloud />
           <NotificationMenu />
-        </FeatureFlagComponent>
+        </FeatureFlagComponent> */}
         <FeatureFlagComponent name={FeatureFlags.envDependent} enabledByDefault>
           <HelpMenu />
         </FeatureFlagComponent>

@@ -2,13 +2,13 @@ import { CloudSsoUtmCampaign, OAuthSocialSource } from 'uiSrc/slices/interfaces'
 
 export const EXTERNAL_LINKS = {
   redisIo: 'https://redis.io',
-  githubRepo: 'https://github.com/Garnetinsight/Garnetinsight',
-  githubIssues: 'https://github.com/Garnetinsight/Garnetinsight/issues',
-  releaseNotes: 'https://github.com/Garnetinsight/Garnetinsight/releases',
+  githubRepo: 'https://github.com/Vijay-Nirmal/Garnetinsight',
+  githubIssues: 'https://github.com/Vijay-Nirmal/Garnetinsight/issues',
+  releaseNotes: 'https://github.com/Vijay-Nirmal/Garnetinsight/releases',
   userSurvey: 'https://www.surveymonkey.com/r/garnetinsight',
   recommendationFeedback:
-    'https://github.com/Garnetinsight/Garnetinsight/issues/new/choose',
-  guidesRepo: 'https://github.com/Garnetinsight/Tutorials',
+    'https://github.com/Vijay-Nirmal/Garnetinsight/issues/new/choose',
+  guidesRepo: 'https://github.com/Vijay-Nirmal/Tutorials',
   redisStack:
     'https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/',
   cloudConsole: 'https://aka.ms/garnet-portal',

@@ -67,7 +67,7 @@ Simple example of the `package.json` file with required and optional fields:
 ```json
 {
   "author": {
-    "name": "Redis Ltd.",
+    "name": "Vijay Nirmal",
     "email": "support@redis.com",
     "url": "https://redis.com/redis-enterprise/redis-insight"
   },
@@ -125,8 +125,8 @@ consistency with plugin visualisations and the entire application.
 
 Find the example of the plugin here.
 
-- [Client List Plugin README](https://github.com/Garnetinsight/Packages/blob/main/clients-list-example/README.md)
-- [Client List Plugin dir](https://github.com/Garnetinsight/Packages/blob/main/clients-list-example/)
+- [Client List Plugin README](https://github.com/Vijay-Nirmal/Packages/blob/main/clients-list-example/README.md)
+- [Client List Plugin dir](https://github.com/Vijay-Nirmal/Packages/blob/main/clients-list-example/)
 
 ### Available parameters
 

@@ -51,7 +51,7 @@ docker compose -p test-docker -f rte.docker-compose.yml up --force-recreate --de
 
 ### Docker Build
 
-- Build the Docker image locally or trigger a [GitHub Action](https://github.com/Garnetinsight/Garnetinsight/actions/workflows/manual-build.yml) to build and download the artifact (`docker-linux-alpine.amd64.tar`).
+- Build the Docker image locally or trigger a [GitHub Action](https://github.com/Vijay-Nirmal/Garnetinsight/actions/workflows/manual-build.yml) to build and download the artifact (`docker-linux-alpine.amd64.tar`).
 - Load the image:
   ```shell
   docker load -i docker-linux-alpine.amd64.tar

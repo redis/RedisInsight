@@ -15,7 +15,7 @@ yarn start
 These commands will install dependencies and start the server.
 
 _Note_: Base styles are included to `index.html`
-from [Garnetinsight](https://github.com/Garnetinsight/Garnetinsight) repository.
+from [Garnetinsight](https://github.com/Vijay-Nirmal/Garnetinsight) repository.
 
 _From Garnet Insight Repo_:
 This command will generate the `vendor` folder with styles and fonts of the core app. Add this folder
@@ -38,5 +38,5 @@ yarn
 yarn build
 ```
 
-[Add](https://github.com/Garnetinsight/Garnetinsight/blob/main/docs/plugins/installation.md) the package.json file and the
+[Add](https://github.com/Vijay-Nirmal/Garnetinsight/blob/main/docs/plugins/installation.md) the package.json file and the
 `dist` folder to the folder with your plugin, which should be located in the `plugins` folder.

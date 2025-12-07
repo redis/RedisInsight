@@ -15,7 +15,7 @@ fixture `Shortcuts`
         await databaseHelper.acceptLicenseTerms();
     });
 test('Verify that user can see a summary of Shortcuts by clicking "Keyboard Shortcuts" button in Help Center', async t => {
-    // const link = 'https://github.com/Garnetinsight/Garnetinsight/releases';
+    // const link = 'https://github.com/Vijay-Nirmal/Garnetinsight/releases';
 
     // Click on help center icon and verify panel
     await t.click(myRedisDatabasePage.NavigationPanel.helpCenterButton);

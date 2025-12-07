@@ -352,7 +352,7 @@ const ONBOARDING_FEATURES = {
             </Link>{' '}
             data models such as documents, graphs, and time series. Or you{' '}
             <Link
-              href="https://github.com/Garnetinsight/Packages"
+              href="https://github.com/Vijay-Nirmal/Packages"
               target="_blank"
               rel="noreferrer"
               variant="inline"

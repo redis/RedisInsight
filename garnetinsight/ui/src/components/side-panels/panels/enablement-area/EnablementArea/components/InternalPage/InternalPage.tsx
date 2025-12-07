@@ -26,7 +26,7 @@ import {
   Image,
   RedisUploadButton,
   CloudLink,
-  GarnetinsightLink,
+  GarnetInsightLink,
 } from 'uiSrc/components/markdown'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
@@ -72,7 +72,7 @@ const InternalPage = (props: Props) => {
     Code,
     RedisUploadButton,
     CloudLink,
-    GarnetinsightLink,
+    GarnetInsightLink,
     ExternalLink,
   }
   const containerRef = useRef<HTMLDivElement>(null)

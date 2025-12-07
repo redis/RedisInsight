@@ -310,7 +310,7 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
               size="S"
               color="secondary"
               target="_blank"
-              href="https://github.com/Garnetinsight/Garnetinsight/blob/main/LICENSE"
+              href="https://github.com/Vijay-Nirmal/Garnetinsight/blob/main/LICENSE"
             >
               Server Side Public License
             </Link>

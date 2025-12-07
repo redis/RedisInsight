@@ -1,7 +1,7 @@
 {
   "productName": "Garnet Insight",
   "appId": "org.RedisLabs.GarnetInsight-V2",
-  "copyright": "Copyright © 2024 Redis Ltd.",
+  "copyright": "Copyright © 2024 Vijay Nirmal",
   "files": ["dist", "node_modules", "package.json"],
   "artifactName": "Garnet-Insight-${os}-${arch}.${ext}",
   "compression": "normal",
@@ -83,7 +83,7 @@
     "target": ["nsis"],
     "artifactName": "Garnet-Insight-${os}-installer.${ext}",
     "icon": "resources/icon.ico",
-    "legalTrademarks": "Redis Inc., Redis Labs Inc."
+    "legalTrademarks": "Vijay Nirmal"
   },
   "nsis": {
     "oneClick": false,
@@ -110,7 +110,7 @@
         "arch": ["x64"]
       }
     ],
-    "synopsis": "Garnet GUI by Redis Ltd.",
+    "synopsis": "Garnet GUI by Vijay Nirmal",
     "category": "Development",
     "artifactName": "Garnet-Insight-${os}-${arch}.${ext}",
     "desktop": {

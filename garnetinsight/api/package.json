@@ -4,7 +4,7 @@
   "description": "Garnet Insight API",
   "private": true,
   "author": {
-    "name": "Redis Ltd.",
+    "name": "Vijay Nirmal",
     "email": "support@redis.com",
     "url": "https://redis.com/redis-enterprise/redis-insight"
   },
@@ -53,7 +53,8 @@
     "supertest/**/form-data": "^4.0.4",
     "@nestjs/cli/glob": "11.1.0",
     "@nestjs/swagger/js-yaml": "4.1.1",
-    "**/multer": "^2.0.2"
+    "**/multer": "^2.0.2",
+    "node-gyp": "12.1.0"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.20",
