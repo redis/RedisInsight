@@ -12,30 +12,29 @@ import { BrowserPage } from '../../../pages';
 test.describe.serial('Browser > Key List', () => {
   let databaseId: string;
   let browserPage: BrowserPage;
+  // Use unique suffix to avoid conflicts with other test runs
+  const uniqueSuffix = `kl-${Date.now().toString(36)}`;
 
   // Create test keys with specific names for filtering tests
   const testKeys = [
-    `${TEST_KEY_PREFIX}filter-string-1`,
-    `${TEST_KEY_PREFIX}filter-string-2`,
-    `${TEST_KEY_PREFIX}filter-hash-1`,
-    `${TEST_KEY_PREFIX}unique-key-xyz`,
+    `${TEST_KEY_PREFIX}filter-string-1-${uniqueSuffix}`,
+    `${TEST_KEY_PREFIX}filter-string-2-${uniqueSuffix}`,
+    `${TEST_KEY_PREFIX}filter-hash-1-${uniqueSuffix}`,
+    `${TEST_KEY_PREFIX}unique-key-xyz-${uniqueSuffix}`,
   ];
 
   test.beforeAll(async ({ apiHelper }) => {
-    // Create a test database
-    const config = getStandaloneConfig({ name: 'test-key-list-db' });
+    // Create a test database with unique name
+    const dbName = `test-key-list-${Date.now().toString(36)}`;
+    const config = getStandaloneConfig({ name: dbName });
     const db = await apiHelper.createDatabase(config);
     databaseId = db.id;
 
-    // Create test keys via Redis CLI
-    const { exec } = await import('child_process');
-    const { promisify } = await import('util');
-    const execAsync = promisify(exec);
-
-    await execAsync(`redis-cli -h 127.0.0.1 -p 6379 SET "${testKeys[0]}" "value1"`);
-    await execAsync(`redis-cli -h 127.0.0.1 -p 6379 SET "${testKeys[1]}" "value2"`);
-    await execAsync(`redis-cli -h 127.0.0.1 -p 6379 HSET "${testKeys[2]}" field1 value1`);
-    await execAsync(`redis-cli -h 127.0.0.1 -p 6379 SET "${testKeys[3]}" "unique"`);
+    // Create test keys via API
+    await apiHelper.createStringKey(databaseId, testKeys[0], 'value1');
+    await apiHelper.createStringKey(databaseId, testKeys[1], 'value2');
+    await apiHelper.createHashKey(databaseId, testKeys[2], [{ field: 'field1', value: 'value1' }]);
+    await apiHelper.createStringKey(databaseId, testKeys[3], 'unique');
   });
 
   test.afterAll(async ({ apiHelper }) => {
@@ -68,8 +67,8 @@ test.describe.serial('Browser > Key List', () => {
   });
 
   test(`should search keys by pattern ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ page }) => {
-    // Search for test keys with pattern
-    await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}filter*`);
+    // Search for test keys with pattern including unique suffix
+    await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}filter*-${uniqueSuffix}`);
 
     // Wait for search to complete
     await page.waitForLoadState('networkidle');
@@ -90,8 +89,8 @@ test.describe.serial('Browser > Key List', () => {
   });
 
   test(`should filter keys by type ${Tags.SMOKE}`, async ({ page }) => {
-    // First search for test keys
-    await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}filter*`);
+    // First search for test keys with unique suffix
+    await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}filter*-${uniqueSuffix}`);
     await page.waitForLoadState('networkidle');
 
     // Filter by Hash type

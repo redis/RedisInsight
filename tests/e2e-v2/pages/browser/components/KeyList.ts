@@ -198,6 +198,21 @@ export class KeyList {
   }
 
   /**
+   * Get key row locator by name
+   * Returns a locator that can be used for assertions (visible/not visible)
+   */
+  getKeyRow(keyName: string): Locator {
+    // Escape special regex characters in key name
+    const escapedKeyName = keyName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    // Return locator for grid cell (list view) or treeitem (tree view)
+    // Use or() to combine both selectors
+    return this.page
+      .getByRole('gridcell', { name: keyName })
+      .or(this.page.getByRole('treeitem', { name: new RegExp(escapedKeyName) }));
+  }
+
+  /**
    * Get results count text
    */
   async getResultsCountText(): Promise<string | null> {

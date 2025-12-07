@@ -1,0 +1,138 @@
+import { test, expect } from '../../../fixtures/base';
+import { Tags } from '../../../config';
+import { getStandaloneConfig } from '../../../test-data/databases';
+import { TEST_KEY_PREFIX } from '../../../test-data/browser';
+import { BrowserPage } from '../../../pages';
+
+/**
+ * Key Filtering Patterns Tests
+ *
+ * Tests the ability to filter keys using various patterns including
+ * wildcards, character classes, and escaping special characters.
+ */
+// Use serial to ensure tests share the same database and keys
+test.describe.serial('Browser > Key Filtering Patterns', () => {
+  let databaseId: string;
+  let browserPage: BrowserPage;
+  // Use a unique suffix per test run to avoid conflicts
+  const uniqueSuffix = `kfp-${Date.now().toString(36)}`;
+
+  // Define test keys with specific naming for pattern testing
+  const testKeys = {
+    prefix1: `${TEST_KEY_PREFIX}filter-a-${uniqueSuffix}`,
+    prefix2: `${TEST_KEY_PREFIX}filter-b-${uniqueSuffix}`,
+    prefix3: `${TEST_KEY_PREFIX}filter-c-${uniqueSuffix}`,
+    numbered1: `${TEST_KEY_PREFIX}item1-${uniqueSuffix}`,
+    numbered2: `${TEST_KEY_PREFIX}item2-${uniqueSuffix}`,
+    numbered3: `${TEST_KEY_PREFIX}item3-${uniqueSuffix}`,
+  };
+
+  test.beforeAll(async ({ apiHelper }) => {
+    // Create a test database with unique name for this test run
+    const dbName = `test-key-filtering-${Date.now().toString(36)}`;
+    const config = getStandaloneConfig({ name: dbName });
+    const db = await apiHelper.createDatabase(config);
+    databaseId = db.id;
+
+    // Create test keys via API
+    for (const [, keyName] of Object.entries(testKeys)) {
+      await apiHelper.createStringKey(databaseId, keyName, 'test-value');
+    }
+  });
+
+  test.afterAll(async ({ apiHelper }) => {
+    // Clean up the test database
+    if (databaseId) {
+      await apiHelper.deleteKeysByPattern(databaseId, `${TEST_KEY_PREFIX}*`);
+      await apiHelper.deleteDatabase(databaseId);
+    }
+  });
+
+  test.beforeEach(async ({ createBrowserPage }) => {
+    browserPage = createBrowserPage(databaseId);
+    await browserPage.goto();
+  });
+
+  test.describe('Wildcard Patterns', () => {
+    test(`should filter keys with asterisk (*) wildcard ${Tags.SMOKE}`, async () => {
+      // Search for keys matching the pattern with asterisk and unique suffix
+      await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}filter-*-${uniqueSuffix}`);
+
+      // Wait for results
+      await browserPage.page.waitForTimeout(500);
+
+      // Verify that filter keys matching the pattern are shown
+      await expect(browserPage.keyList.getKeyRow(testKeys.prefix1)).toBeVisible();
+
+      // Verify numbered keys are not shown (different pattern)
+      await expect(browserPage.keyList.getKeyRow(testKeys.numbered1)).not.toBeVisible();
+    });
+
+    test(`should filter keys with question mark (?) single character wildcard ${Tags.REGRESSION}`, async () => {
+      // Search for keys matching the pattern with ? wildcard (matches single char)
+      await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}item?-${uniqueSuffix}`);
+
+      // Wait for results
+      await browserPage.page.waitForTimeout(500);
+
+      // Verify that keys with single character match are shown
+      await expect(browserPage.keyList.getKeyRow(testKeys.numbered1)).toBeVisible();
+      await expect(browserPage.keyList.getKeyRow(testKeys.numbered2)).toBeVisible();
+      await expect(browserPage.keyList.getKeyRow(testKeys.numbered3)).toBeVisible();
+    });
+
+    test(`should filter keys with [xy] character class ${Tags.REGRESSION}`, async () => {
+      // Search for keys with character class [ab] (matches a or b)
+      await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}filter-[ab]-${uniqueSuffix}`);
+
+      // Wait for results
+      await browserPage.page.waitForTimeout(500);
+
+      // Verify that keys matching a or b are shown
+      await expect(browserPage.keyList.getKeyRow(testKeys.prefix1)).toBeVisible();
+      await expect(browserPage.keyList.getKeyRow(testKeys.prefix2)).toBeVisible();
+
+      // Verify key with c is not shown
+      await expect(browserPage.keyList.getKeyRow(testKeys.prefix3)).not.toBeVisible();
+    });
+
+    test(`should filter keys with [a-z] character range ${Tags.REGRESSION}`, async () => {
+      // Search for keys with character range [a-c]
+      await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}filter-[a-c]-${uniqueSuffix}`);
+
+      // Wait for results
+      await browserPage.page.waitForTimeout(500);
+
+      // Verify that all filter keys are shown (a, b, c are all in range)
+      await expect(browserPage.keyList.getKeyRow(testKeys.prefix1)).toBeVisible();
+      await expect(browserPage.keyList.getKeyRow(testKeys.prefix2)).toBeVisible();
+      await expect(browserPage.keyList.getKeyRow(testKeys.prefix3)).toBeVisible();
+    });
+  });
+
+  test.describe('Filter Controls', () => {
+    test(`should clear filter and search again ${Tags.REGRESSION}`, async () => {
+      // First apply a filter for filter-* keys
+      await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}filter-*`);
+      await browserPage.page.waitForTimeout(500);
+
+      // Verify filter is applied - filter keys should be visible
+      await expect(browserPage.keyList.getKeyRow(testKeys.prefix1)).toBeVisible();
+
+      // Clear the search
+      await browserPage.keyList.clearSearch();
+      await browserPage.page.waitForTimeout(500);
+
+      // Now search for item keys only
+      await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}item*-${uniqueSuffix}`);
+      await browserPage.page.waitForTimeout(500);
+
+      // Verify numbered keys are visible after new search
+      await expect(browserPage.keyList.getKeyRow(testKeys.numbered1)).toBeVisible();
+
+      // Verify filter keys are NOT visible (different pattern)
+      await expect(browserPage.keyList.getKeyRow(testKeys.prefix1)).not.toBeVisible();
+    });
+  });
+});
+

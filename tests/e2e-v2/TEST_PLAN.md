@@ -359,7 +359,12 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 2.12 Value Formatters
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟠 | Switch between formats: JSON, ASCII, Hex, Binary |
+| ✅ | 🟠 | Display format dropdown |
+| ✅ | 🟠 | Switch to ASCII format |
+| ✅ | 🟠 | Switch to HEX format |
+| ✅ | 🟠 | Switch to Binary format |
+| ✅ | 🟠 | Switch to JSON format |
+| ✅ | 🟢 | Show all format options in dropdown |
 | 🔲 | 🟢 | View value in Msgpack format |
 | 🔲 | 🟢 | View value in Protobuf format |
 | 🔲 | 🟢 | View value in Java serialized format |
@@ -393,13 +398,13 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 2.14 Key Filtering Patterns
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟠 | Filter keys with asterisk (*) wildcard |
-| 🔲 | 🟢 | Filter keys with question mark (?) single character wildcard |
-| 🔲 | 🟢 | Filter keys with [xy] character class (matches x or y) |
+| ✅ | 🟠 | Filter keys with asterisk (*) wildcard |
+| ✅ | 🟢 | Filter keys with question mark (?) single character wildcard |
+| ✅ | 🟢 | Filter keys with [xy] character class (matches x or y) |
 | 🔲 | 🟢 | Filter keys with [^x] negated character class |
-| 🔲 | 🟢 | Filter keys with [a-z] character range |
+| ✅ | 🟢 | Filter keys with [a-z] character range |
 | 🔲 | 🟢 | Escape special characters in filter pattern |
-| 🔲 | 🟢 | Clear filter button removes key type and pattern filters |
+| ✅ | 🟢 | Clear filter and search again |
 | 🔲 | 🟢 | Filter exact key name in large database (10M+ keys) |
 | 🔲 | 🟢 | Filter by pattern in large database (10M+ keys) |
 | 🔲 | 🟢 | Filter by key type in large database |
@@ -407,11 +412,10 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 2.15 Browser Context
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟠 | Browser context preserved when navigating to Settings and back |
-| 🔲 | 🟢 | Key filter preserved when navigating away and back |
-| 🔲 | 🟢 | Selected key details preserved when navigating away and back |
+| ✅ | 🟠 | Browser context preserved when switching tabs |
+| ✅ | 🟢 | Selected key details preserved when switching tabs |
+| ✅ | 🟢 | Context cleared when page is reloaded |
 | 🔲 | 🟢 | CLI command history preserved in context |
-| 🔲 | 🟢 | Context cleared when page is reloaded |
 | 🔲 | 🟢 | Context cleared when navigating to different database |
 
 ---
@@ -447,9 +451,9 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 3.1.1 Workbench Context
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟠 | CLI state preserved when navigating to other pages |
-| 🔲 | 🟢 | Editor input preserved when navigating away |
-| 🔲 | 🟢 | Context cleared when page is reloaded |
+| ✅ | 🟠 | Editor content preserved when switching tabs |
+| ✅ | 🟢 | Command results preserved when switching tabs |
+| ✅ | 🟢 | Context cleared when page is reloaded |
 | 🔲 | 🟢 | Insights panel state preserved when navigating |
 
 ### 3.2 Results View
