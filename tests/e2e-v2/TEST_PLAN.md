@@ -180,8 +180,10 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 1.6 Database Tags
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟠 | Add descriptive tags to a database |
-| 🔲 | 🟢 | Remove tags from a database |
+| ✅ | 🟠 | Add descriptive tags to a database |
+| ✅ | 🟢 | Remove tags from a database |
+| ✅ | 🟢 | Open tags dialog for a database |
+| ✅ | 🟢 | Cancel adding a tag |
 | 🔲 | 🟢 | Import tags automatically from Redis Cloud databases |
 
 ### 1.7 Certificate and Encryption Handling

@@ -4,6 +4,7 @@ import { AddDatabaseDialog } from './components/AddDatabaseDialog';
 import { CloneDatabaseDialog } from './components/CloneDatabaseDialog';
 import { DatabaseList } from './components/DatabaseList';
 import { ImportDatabaseDialog } from './components/ImportDatabaseDialog';
+import { TagsDialog } from './components/TagsDialog';
 import { AddDatabaseConfig } from '../../types';
 
 /**
@@ -16,6 +17,7 @@ export class DatabasesPage extends BasePage {
   readonly cloneDatabaseDialog: CloneDatabaseDialog;
   readonly databaseList: DatabaseList;
   readonly importDatabaseDialog: ImportDatabaseDialog;
+  readonly tagsDialog: TagsDialog;
 
   // Page-level elements
   readonly connectDatabaseButton: Locator;
@@ -30,6 +32,7 @@ export class DatabasesPage extends BasePage {
     this.cloneDatabaseDialog = new CloneDatabaseDialog(page);
     this.databaseList = new DatabaseList(page);
     this.importDatabaseDialog = new ImportDatabaseDialog(page);
+    this.tagsDialog = new TagsDialog(page);
 
     // Page-level elements
     this.connectDatabaseButton = page.getByTestId('add-redis-database-short');
