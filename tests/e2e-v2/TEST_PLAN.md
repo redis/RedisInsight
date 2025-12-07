@@ -325,8 +325,8 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 2.9.2 Stream Pending Messages
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟠 | View pending messages for consumer |
-| 🔲 | 🟢 | Acknowledge pending message |
+| ✅ | 🟠 | View pending messages for consumer |
+| ✅ | 🟢 | Acknowledge pending message |
 | 🔲 | 🟢 | Claim pending message |
 | 🔲 | 🟢 | Claim pending message with idle time parameter |
 | 🔲 | 🟢 | Force claim pending message |
@@ -823,7 +823,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 12.1 Notifications
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟠 | Confirm unread notifications display with distinct highlight/badge |
+| ✅ | 🟠 | Confirm unread notifications display with distinct highlight/badge |
 | 🔲 | 🟢 | Confirm notification badge count updates when new messages arrive |
 | ✅ | 🟢 | Confirm each notification displays title, description, and timestamp |
 

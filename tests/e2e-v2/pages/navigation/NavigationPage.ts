@@ -33,6 +33,9 @@ export class NavigationPage extends BasePage {
   readonly notificationDialog: Locator;
   readonly notificationCenterTitle: Locator;
   readonly notificationItems: Locator;
+  readonly unreadBadge: Locator;
+  readonly unreadNotifications: Locator;
+  readonly readNotifications: Locator;
 
   // Copilot panel
   readonly copilotTrigger: Locator;
@@ -73,9 +76,9 @@ export class NavigationPage extends BasePage {
     this.cloudLink = page.getByRole('link', { name: 'cloud-db-icon' });
     this.notificationMenuButton = page.getByTestId('notification-menu-button');
     this.helpMenuButton = page.getByTestId('help-menu-button');
-    this.settingsButton = page.getByTestId('settings-page-btn').or(
-      page.locator('[data-testid="Settings page button"]')
-    );
+    this.settingsButton = page
+      .getByTestId('settings-page-btn')
+      .or(page.locator('[data-testid="Settings page button"]'));
     this.githubLink = page.getByRole('link', { name: 'github-repo-icon' });
 
     // Help menu items
@@ -97,6 +100,9 @@ export class NavigationPage extends BasePage {
     this.notificationDialog = page.getByRole('dialog').filter({ hasText: 'Notification Center' });
     this.notificationCenterTitle = page.getByText('Notification Center');
     this.notificationItems = this.notificationDialog.locator('[class*="notification"]');
+    this.unreadBadge = page.getByTestId('total-unread-badge');
+    this.unreadNotifications = page.locator('[data-testid^="notification-item-unread"]');
+    this.readNotifications = page.locator('[data-testid^="notification-item-read"]');
 
     // Copilot panel
     this.copilotTrigger = page.getByTestId('copilot-trigger');
@@ -215,6 +221,34 @@ export class NavigationPage extends BasePage {
   async hasNotificationLinks(): Promise<boolean> {
     const links = await this.notificationDialog.locator('a').all();
     return links.length > 0;
+  }
+
+  /**
+   * Check if unread badge is visible
+   */
+  async isUnreadBadgeVisible(): Promise<boolean> {
+    return this.unreadBadge.isVisible();
+  }
+
+  /**
+   * Get unread badge count
+   */
+  async getUnreadBadgeCount(): Promise<string | null> {
+    return this.unreadBadge.textContent();
+  }
+
+  /**
+   * Get number of unread notifications in the center
+   */
+  async getUnreadNotificationCount(): Promise<number> {
+    return this.unreadNotifications.count();
+  }
+
+  /**
+   * Get number of read notifications in the center
+   */
+  async getReadNotificationCount(): Promise<number> {
+    return this.readNotifications.count();
   }
 
   /**
@@ -439,4 +473,3 @@ export class NavigationPage extends BasePage {
     await snoozeButton.click();
   }
 }
-

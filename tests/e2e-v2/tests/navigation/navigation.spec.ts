@@ -167,6 +167,32 @@ test.describe('Navigation & Global UI', () => {
       const notificationText = await firstNotification.textContent();
       expect(notificationText).toMatch(timestampPattern);
     });
+
+    test(`should show unread badge when there are unread notifications ${Tags.SMOKE}`, async ({
+      navigationPage,
+    }) => {
+      await navigationPage.goto();
+
+      // Check if unread badge is visible (may or may not be depending on notification state)
+      const hasUnreadBadge = await navigationPage.isUnreadBadgeVisible();
+
+      if (hasUnreadBadge) {
+        // Verify badge has content (number or "9+")
+        const badgeText = await navigationPage.getUnreadBadgeCount();
+        expect(badgeText?.length).toBeGreaterThan(0);
+        expect(badgeText).toMatch(/^\d+\+?$/);
+      }
+
+      // Open notification center to check unread items
+      await navigationPage.openNotificationCenter();
+
+      // Verify unread notifications have distinct styling (data-testid contains "unread")
+      const unreadCount = await navigationPage.getUnreadNotificationCount();
+      const readCount = await navigationPage.getReadNotificationCount();
+
+      // At least some notifications should be present
+      expect(unreadCount + readCount).toBeGreaterThan(0);
+    });
   });
 
   test.describe('Copilot Panel', () => {

@@ -171,3 +171,131 @@ test.describe('Browser > Stream Consumer Groups', () => {
   });
 });
 
+test.describe('Browser > Stream Pending Messages', () => {
+  let databaseId: string;
+  let streamKey: string;
+  let groupName: string;
+  let consumerName: string;
+
+  test.beforeAll(async ({ apiHelper }) => {
+    // Get or create a database for testing
+    const databases = await apiHelper.getDatabases();
+    if (databases.length === 0) {
+      const db = await apiHelper.createDatabase({
+        name: 'test-stream-pending',
+        host: '127.0.0.1',
+        port: 6379,
+      });
+      databaseId = db.id;
+    } else {
+      databaseId = databases[0].id;
+    }
+  });
+
+  test.beforeEach(async ({ page, cliPanel }) => {
+    // Create a unique stream key for each test
+    streamKey = `test-stream-pending-${faker.string.alphanumeric(8)}`;
+    groupName = `test-group-${faker.string.alphanumeric(6)}`;
+    consumerName = `test-consumer-${faker.string.alphanumeric(6)}`;
+
+    // Navigate to browser page
+    await page.goto(`/${databaseId}/browser`);
+    await page.waitForLoadState('networkidle');
+
+    // Create a stream with messages and a consumer group with pending messages
+    await cliPanel.open();
+    // Add multiple messages to stream
+    await cliPanel.executeCommand(`XADD ${streamKey} * field1 value1`);
+    await cliPanel.executeCommand(`XADD ${streamKey} * field2 value2`);
+    await cliPanel.executeCommand(`XADD ${streamKey} * field3 value3`);
+    // Create consumer group starting from beginning
+    await cliPanel.executeCommand(
+      `XGROUP CREATE ${streamKey} ${groupName} 0 MKSTREAM`,
+    );
+    // Read messages to create pending entries for consumer
+    await cliPanel.executeCommand(
+      `XREADGROUP GROUP ${groupName} ${consumerName} COUNT 2 STREAMS ${streamKey} >`,
+    );
+    await cliPanel.close();
+  });
+
+  test.afterEach(async ({ cliPanel }) => {
+    // Clean up
+    await cliPanel.open();
+    await cliPanel.executeCommand(`DEL ${streamKey}`);
+    await cliPanel.close();
+  });
+
+  test(`should view pending messages for consumer ${Tags.SMOKE}`, async ({
+    page,
+    createBrowserPage,
+  }) => {
+    const browserPage: BrowserPage = createBrowserPage(databaseId);
+
+    // Search for the stream key
+    await browserPage.keyList.searchKeys(streamKey);
+
+    // Click on the stream key
+    await browserPage.keyList.clickKey(streamKey);
+
+    // Click on Consumer Groups tab
+    await page.getByRole('tab', { name: 'Consumer Groups' }).click();
+
+    // Wait for consumer groups to load
+    await expect(page.getByRole('gridcell', { name: groupName })).toBeVisible();
+
+    // Click on the consumer group row to expand it
+    await page.getByRole('gridcell', { name: groupName }).click();
+
+    // Wait for consumers tab to appear and show the group name
+    await expect(page.getByRole('tab', { name: groupName })).toBeVisible();
+
+    // Click on consumer to see pending messages
+    await page.getByTestId(`stream-consumer-${consumerName}`).click();
+
+    // Verify the consumer name tab appears
+    await expect(page.getByRole('tab', { name: consumerName })).toBeVisible();
+
+    // Verify pending messages are displayed (should have 2 pending)
+    const pendingRows = page.locator('[data-testid^="stream-message-"]');
+    await expect(pendingRows.first()).toBeVisible();
+    const count = await pendingRows.count();
+    expect(count).toBeGreaterThanOrEqual(1);
+  });
+
+  test(`should acknowledge pending message ${Tags.REGRESSION}`, async ({
+    page,
+    createBrowserPage,
+  }) => {
+    const browserPage: BrowserPage = createBrowserPage(databaseId);
+
+    // Navigate to pending messages view
+    await browserPage.keyList.searchKeys(streamKey);
+    await browserPage.keyList.clickKey(streamKey);
+    await page.getByRole('tab', { name: 'Consumer Groups' }).click();
+    await expect(page.getByRole('gridcell', { name: groupName })).toBeVisible();
+    await page.getByRole('gridcell', { name: groupName }).click();
+    await expect(page.getByRole('tab', { name: groupName })).toBeVisible();
+    await page.getByTestId(`stream-consumer-${consumerName}`).click();
+    await expect(page.getByRole('tab', { name: consumerName })).toBeVisible();
+
+    // Get initial pending count
+    const pendingRows = page.locator('[data-testid^="stream-message-"]');
+    await expect(pendingRows.first()).toBeVisible();
+    const initialCount = await pendingRows.count();
+
+    // Click ACK button on first pending message
+    const ackButton = page.getByTestId('acknowledge-btn').first();
+    await ackButton.click();
+
+    // Confirm acknowledgement
+    await page.getByTestId('acknowledge-submit').click();
+
+    // Verify pending count decreased
+    await expect(async () => {
+      const newCount = await pendingRows.count();
+      expect(newCount).toBeLessThan(initialCount);
+    }).toPass({ timeout: 5000 });
+  });
+});
+
