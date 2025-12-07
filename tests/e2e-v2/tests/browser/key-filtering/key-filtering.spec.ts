@@ -108,6 +108,21 @@ test.describe.serial('Browser > Key Filtering Patterns', () => {
       await expect(browserPage.keyList.getKeyRow(testKeys.prefix2)).toBeVisible();
       await expect(browserPage.keyList.getKeyRow(testKeys.prefix3)).toBeVisible();
     });
+
+    test(`should filter keys with [^x] negated character class ${Tags.REGRESSION}`, async () => {
+      // Search for keys with negated character class [^a] (matches anything except 'a')
+      await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}filter-[^a]-${uniqueSuffix}`);
+
+      // Wait for results
+      await browserPage.page.waitForTimeout(500);
+
+      // Verify that keys NOT matching 'a' are shown (b and c)
+      await expect(browserPage.keyList.getKeyRow(testKeys.prefix2)).toBeVisible();
+      await expect(browserPage.keyList.getKeyRow(testKeys.prefix3)).toBeVisible();
+
+      // Verify key with 'a' is NOT shown
+      await expect(browserPage.keyList.getKeyRow(testKeys.prefix1)).not.toBeVisible();
+    });
   });
 
   test.describe('Filter Controls', () => {

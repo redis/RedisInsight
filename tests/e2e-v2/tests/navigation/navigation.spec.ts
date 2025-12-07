@@ -3,26 +3,19 @@ import { Tags } from '../../config';
 
 test.describe('Navigation & Global UI', () => {
   test.describe('Main Navigation', () => {
-    test(`should display main navigation ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({
-      navigationPage,
-    }) => {
+    test(`should display main navigation ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ navigationPage }) => {
       await navigationPage.goto();
 
       await expect(navigationPage.mainNavigation).toBeVisible();
     });
 
-    test(`should show Redis logo ${Tags.SMOKE}`, async ({
-      navigationPage,
-    }) => {
+    test(`should show Redis logo ${Tags.SMOKE}`, async ({ navigationPage }) => {
       await navigationPage.goto();
 
       await expect(navigationPage.redisLogo).toBeVisible();
     });
 
-    test(`should navigate to home via Redis logo ${Tags.CRITICAL}`, async ({
-      navigationPage,
-      page,
-    }) => {
+    test(`should navigate to home via Redis logo ${Tags.CRITICAL}`, async ({ navigationPage, page }) => {
       // Navigate to settings first
       await page.goto('/settings');
       await page.waitForURL('**/settings');
@@ -34,36 +27,27 @@ test.describe('Navigation & Global UI', () => {
       await expect(page).toHaveURL(/\/$/);
     });
 
-    test(`should show settings button ${Tags.SMOKE}`, async ({
-      navigationPage,
-    }) => {
+    test(`should show settings button ${Tags.SMOKE}`, async ({ navigationPage }) => {
       await navigationPage.goto();
 
       await expect(navigationPage.settingsButton).toBeVisible();
     });
 
-    test(`should navigate to settings page ${Tags.CRITICAL}`, async ({
-      navigationPage,
-      page,
-    }) => {
+    test(`should navigate to settings page ${Tags.CRITICAL}`, async ({ navigationPage, page }) => {
       await navigationPage.goto();
       await navigationPage.goToSettings();
 
       await expect(page).toHaveURL(/\/settings/);
     });
 
-    test(`should show GitHub link ${Tags.REGRESSION}`, async ({
-      navigationPage,
-    }) => {
+    test(`should show GitHub link ${Tags.REGRESSION}`, async ({ navigationPage }) => {
       await navigationPage.goto();
 
       await expect(navigationPage.githubLink).toBeVisible();
       await expect(navigationPage.githubLink).toHaveAttribute('href', 'https://github.com/RedisInsight/RedisInsight');
     });
 
-    test(`should show Redis Cloud link ${Tags.REGRESSION}`, async ({
-      navigationPage,
-    }) => {
+    test(`should show Redis Cloud link ${Tags.REGRESSION}`, async ({ navigationPage }) => {
       await navigationPage.goto();
 
       await expect(navigationPage.cloudLink).toBeVisible();
@@ -71,9 +55,7 @@ test.describe('Navigation & Global UI', () => {
   });
 
   test.describe('Help Menu', () => {
-    test(`should open help menu ${Tags.SMOKE}`, async ({
-      navigationPage,
-    }) => {
+    test(`should open help menu ${Tags.SMOKE}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openHelpMenu();
 
@@ -81,36 +63,28 @@ test.describe('Navigation & Global UI', () => {
       expect(isOpen).toBe(true);
     });
 
-    test(`should show Provide Feedback link ${Tags.REGRESSION}`, async ({
-      navigationPage,
-    }) => {
+    test(`should show Provide Feedback link ${Tags.REGRESSION}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openHelpMenu();
 
       await expect(navigationPage.provideFeedbackLink).toBeVisible();
     });
 
-    test(`should show Keyboard Shortcuts option ${Tags.REGRESSION}`, async ({
-      navigationPage,
-    }) => {
+    test(`should show Keyboard Shortcuts option ${Tags.REGRESSION}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openHelpMenu();
 
       await expect(navigationPage.keyboardShortcutsButton).toBeVisible();
     });
 
-    test(`should show Release Notes link ${Tags.REGRESSION}`, async ({
-      navigationPage,
-    }) => {
+    test(`should show Release Notes link ${Tags.REGRESSION}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openHelpMenu();
 
       await expect(navigationPage.releaseNotesLink).toBeVisible();
     });
 
-    test(`should show Reset Onboarding option ${Tags.REGRESSION}`, async ({
-      navigationPage,
-    }) => {
+    test(`should show Reset Onboarding option ${Tags.REGRESSION}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openHelpMenu();
 
@@ -119,9 +93,7 @@ test.describe('Navigation & Global UI', () => {
   });
 
   test.describe('Notification Center', () => {
-    test(`should open notification center ${Tags.SMOKE}`, async ({
-      navigationPage,
-    }) => {
+    test(`should open notification center ${Tags.SMOKE}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openNotificationCenter();
 
@@ -129,18 +101,14 @@ test.describe('Navigation & Global UI', () => {
       expect(isOpen).toBe(true);
     });
 
-    test(`should show notification center title ${Tags.REGRESSION}`, async ({
-      navigationPage,
-    }) => {
+    test(`should show notification center title ${Tags.REGRESSION}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openNotificationCenter();
 
       await expect(navigationPage.notificationCenterTitle).toBeVisible();
     });
 
-    test(`should close notification center ${Tags.REGRESSION}`, async ({
-      navigationPage,
-    }) => {
+    test(`should close notification center ${Tags.REGRESSION}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openNotificationCenter();
 
@@ -154,9 +122,7 @@ test.describe('Navigation & Global UI', () => {
       expect(await navigationPage.isNotificationCenterOpen()).toBe(false);
     });
 
-    test(`should show notification list ${Tags.REGRESSION}`, async ({
-      navigationPage,
-    }) => {
+    test(`should show notification list ${Tags.REGRESSION}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openNotificationCenter();
 
@@ -165,9 +131,7 @@ test.describe('Navigation & Global UI', () => {
       expect(notificationCount).toBeGreaterThan(0);
     });
 
-    test(`should show notification links ${Tags.REGRESSION}`, async ({
-      navigationPage,
-    }) => {
+    test(`should show notification links ${Tags.REGRESSION}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openNotificationCenter();
 
@@ -175,12 +139,38 @@ test.describe('Navigation & Global UI', () => {
       const hasLinks = await navigationPage.hasNotificationLinks();
       expect(hasLinks).toBe(true);
     });
+
+    test(`should display notification with title, description, and timestamp ${Tags.REGRESSION}`, async ({
+      navigationPage,
+    }) => {
+      await navigationPage.goto();
+      await navigationPage.openNotificationCenter();
+
+      // Verify notification dialog is visible
+      await expect(navigationPage.notificationDialog).toBeVisible();
+
+      // Get the first notification item
+      const firstNotification = navigationPage.notificationDialog.locator('> div > div > div').nth(1);
+
+      // Verify notification has title (first text element)
+      const title = firstNotification.locator('div').first();
+      await expect(title).toBeVisible();
+      const titleText = await title.textContent();
+      expect(titleText?.length).toBeGreaterThan(0);
+
+      // Verify notification has description (paragraph element)
+      const description = firstNotification.locator('p').first();
+      await expect(description).toBeVisible();
+
+      // Verify notification has timestamp (date format like "18 Aug 2025")
+      const timestampPattern = /\d{1,2}\s+\w{3}\s+\d{4}/;
+      const notificationText = await firstNotification.textContent();
+      expect(notificationText).toMatch(timestampPattern);
+    });
   });
 
   test.describe('Copilot Panel', () => {
-    test(`should open Copilot panel ${Tags.SMOKE}`, async ({
-      navigationPage,
-    }) => {
+    test(`should open Copilot panel ${Tags.SMOKE}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openCopilotPanel();
 
@@ -188,9 +178,7 @@ test.describe('Navigation & Global UI', () => {
       expect(isOpen).toBe(true);
     });
 
-    test(`should close Copilot panel ${Tags.REGRESSION}`, async ({
-      navigationPage,
-    }) => {
+    test(`should close Copilot panel ${Tags.REGRESSION}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openCopilotPanel();
 
@@ -204,9 +192,7 @@ test.describe('Navigation & Global UI', () => {
       expect(await navigationPage.isCopilotPanelOpen()).toBe(false);
     });
 
-    test(`should show sign-in options ${Tags.REGRESSION}`, async ({
-      navigationPage,
-    }) => {
+    test(`should show sign-in options ${Tags.REGRESSION}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openCopilotPanel();
 
@@ -215,9 +201,7 @@ test.describe('Navigation & Global UI', () => {
       await expect(navigationPage.copilotSsoSignIn).toBeVisible();
     });
 
-    test(`should show terms checkbox ${Tags.REGRESSION}`, async ({
-      navigationPage,
-    }) => {
+    test(`should show terms checkbox ${Tags.REGRESSION}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openCopilotPanel();
 
@@ -226,9 +210,7 @@ test.describe('Navigation & Global UI', () => {
   });
 
   test.describe('Insights Panel', () => {
-    test(`should open Insights panel ${Tags.SMOKE}`, async ({
-      navigationPage,
-    }) => {
+    test(`should open Insights panel ${Tags.SMOKE}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openInsightsPanel();
 
@@ -236,9 +218,7 @@ test.describe('Navigation & Global UI', () => {
       expect(isOpen).toBe(true);
     });
 
-    test(`should close Insights panel ${Tags.REGRESSION}`, async ({
-      navigationPage,
-    }) => {
+    test(`should close Insights panel ${Tags.REGRESSION}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openInsightsPanel();
 
@@ -252,27 +232,21 @@ test.describe('Navigation & Global UI', () => {
       expect(await navigationPage.isInsightsPanelOpen()).toBe(false);
     });
 
-    test(`should show Tutorials tab ${Tags.REGRESSION}`, async ({
-      navigationPage,
-    }) => {
+    test(`should show Tutorials tab ${Tags.REGRESSION}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openInsightsPanel();
 
       await expect(navigationPage.insightsTutorialsTab).toBeVisible();
     });
 
-    test(`should show Tips tab ${Tags.REGRESSION}`, async ({
-      navigationPage,
-    }) => {
+    test(`should show Tips tab ${Tags.REGRESSION}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openInsightsPanel();
 
       await expect(navigationPage.insightsTipsTab).toBeVisible();
     });
 
-    test(`should switch to Tips tab ${Tags.REGRESSION}`, async ({
-      navigationPage,
-    }) => {
+    test(`should switch to Tips tab ${Tags.REGRESSION}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openInsightsPanel();
       await navigationPage.switchToTipsTab();
@@ -280,18 +254,14 @@ test.describe('Navigation & Global UI', () => {
       await expect(navigationPage.insightsTipsTab).toHaveAttribute('aria-selected', 'true');
     });
 
-    test(`should show My tutorials section ${Tags.REGRESSION}`, async ({
-      navigationPage,
-    }) => {
+    test(`should show My tutorials section ${Tags.REGRESSION}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openInsightsPanel();
 
       await expect(navigationPage.insightsMyTutorials).toBeVisible();
     });
 
-    test(`should show full screen button ${Tags.REGRESSION}`, async ({
-      navigationPage,
-    }) => {
+    test(`should show full screen button ${Tags.REGRESSION}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openInsightsPanel();
 
@@ -299,9 +269,7 @@ test.describe('Navigation & Global UI', () => {
       await expect(navigationPage.insightsFullScreenButton).toBeVisible();
     });
 
-    test(`should expand/collapse tutorial folders ${Tags.REGRESSION}`, async ({
-      navigationPage,
-    }) => {
+    test(`should expand/collapse tutorial folders ${Tags.REGRESSION}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openInsightsPanel();
 
@@ -317,9 +285,7 @@ test.describe('Navigation & Global UI', () => {
       expect(await navigationPage.isRedisTutorialsExpanded()).toBe(true);
     });
 
-    test(`should show tutorial folder contents ${Tags.REGRESSION}`, async ({
-      navigationPage,
-    }) => {
+    test(`should show tutorial folder contents ${Tags.REGRESSION}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openInsightsPanel();
 
@@ -332,9 +298,7 @@ test.describe('Navigation & Global UI', () => {
   });
 
   test.describe('Keyboard Shortcuts', () => {
-    test(`should open keyboard shortcuts dialog ${Tags.SMOKE}`, async ({
-      navigationPage,
-    }) => {
+    test(`should open keyboard shortcuts dialog ${Tags.SMOKE}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openKeyboardShortcuts();
 
@@ -342,36 +306,28 @@ test.describe('Navigation & Global UI', () => {
       expect(isOpen).toBe(true);
     });
 
-    test(`should show Desktop application shortcuts section ${Tags.SMOKE}`, async ({
-      navigationPage,
-    }) => {
+    test(`should show Desktop application shortcuts section ${Tags.SMOKE}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openKeyboardShortcuts();
 
       await expect(navigationPage.shortcutsDesktopSection).toBeVisible();
     });
 
-    test(`should show CLI shortcuts section ${Tags.SMOKE}`, async ({
-      navigationPage,
-    }) => {
+    test(`should show CLI shortcuts section ${Tags.SMOKE}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openKeyboardShortcuts();
 
       await expect(navigationPage.shortcutsCliSection).toBeVisible();
     });
 
-    test(`should show Workbench shortcuts section ${Tags.SMOKE}`, async ({
-      navigationPage,
-    }) => {
+    test(`should show Workbench shortcuts section ${Tags.SMOKE}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openKeyboardShortcuts();
 
       await expect(navigationPage.shortcutsWorkbenchSection).toBeVisible();
     });
 
-    test(`should close keyboard shortcuts dialog ${Tags.REGRESSION}`, async ({
-      navigationPage,
-    }) => {
+    test(`should close keyboard shortcuts dialog ${Tags.REGRESSION}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openKeyboardShortcuts();
 
@@ -385,9 +341,7 @@ test.describe('Navigation & Global UI', () => {
       expect(await navigationPage.isKeyboardShortcutsOpen()).toBe(false);
     });
 
-    test(`should display desktop shortcuts ${Tags.REGRESSION}`, async ({
-      navigationPage,
-    }) => {
+    test(`should display desktop shortcuts ${Tags.REGRESSION}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openKeyboardShortcuts();
 
@@ -396,9 +350,7 @@ test.describe('Navigation & Global UI', () => {
       expect(count).toBeGreaterThanOrEqual(2);
     });
 
-    test(`should display CLI shortcuts ${Tags.REGRESSION}`, async ({
-      navigationPage,
-    }) => {
+    test(`should display CLI shortcuts ${Tags.REGRESSION}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openKeyboardShortcuts();
 
@@ -407,9 +359,7 @@ test.describe('Navigation & Global UI', () => {
       expect(count).toBeGreaterThanOrEqual(5);
     });
 
-    test(`should display Workbench shortcuts ${Tags.REGRESSION}`, async ({
-      navigationPage,
-    }) => {
+    test(`should display Workbench shortcuts ${Tags.REGRESSION}`, async ({ navigationPage }) => {
       await navigationPage.goto();
       await navigationPage.openKeyboardShortcuts();
 
@@ -419,4 +369,3 @@ test.describe('Navigation & Global UI', () => {
     });
   });
 });
-

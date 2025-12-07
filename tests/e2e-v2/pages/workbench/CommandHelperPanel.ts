@@ -74,5 +74,64 @@ export class CommandHelperPanel {
   async clearSearch(): Promise<void> {
     await this.searchInput.clear();
   }
+
+  /**
+   * Get command title with arguments (e.g., "GET key")
+   */
+  getCommandTitle(): Locator {
+    return this.page.getByTestId('cli-helper-title-args');
+  }
+
+  /**
+   * Get command summary
+   */
+  getCommandSummary(): Locator {
+    return this.page.getByTestId('cli-helper-summary');
+  }
+
+  /**
+   * Check if command details are displayed
+   */
+  async isCommandDetailsVisible(): Promise<boolean> {
+    return this.getCommandTitle().isVisible();
+  }
+
+  /**
+   * Get the command name from the details view
+   */
+  async getDisplayedCommandName(): Promise<string> {
+    const title = await this.getCommandTitle().textContent();
+    // Command title is in format "COMMAND args" - get the first word
+    return title?.split(' ')[0] ?? '';
+  }
+
+  /**
+   * Click on "Read more" link if visible
+   */
+  async clickReadMore(): Promise<void> {
+    const readMoreLink = this.page.getByTestId('cli-helper-read-more');
+    await readMoreLink.click();
+  }
+
+  /**
+   * Check if "Read more" link is visible
+   */
+  async isReadMoreVisible(): Promise<boolean> {
+    return this.page.getByTestId('cli-helper-read-more').isVisible();
+  }
+
+  /**
+   * Get helper message (e.g., "Enter any command in CLI or use search to see detailed information.")
+   */
+  getHelperMessage(): Locator {
+    return this.page.locator('text=Enter any command in CLI or use search to see detailed information');
+  }
+
+  /**
+   * Check if default helper message is visible
+   */
+  async isDefaultMessageVisible(): Promise<boolean> {
+    return this.getHelperMessage().isVisible();
+  }
 }
 

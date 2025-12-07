@@ -506,3 +506,85 @@ test.describe.serial('Workbench > Tutorials', () => {
   });
 });
 
+test.describe.serial('Workbench > Command History', () => {
+  let databaseId: string;
+  let workbenchPage: WorkbenchPage;
+
+  test.beforeAll(async ({ apiHelper }) => {
+    const config = getStandaloneConfig();
+    const database = await apiHelper.createDatabase(config);
+    databaseId = database.id;
+  });
+
+  test.afterAll(async ({ apiHelper }) => {
+    if (databaseId) {
+      await apiHelper.deleteDatabase(databaseId);
+    }
+  });
+
+  test.beforeEach(async ({ page, createWorkbenchPage }) => {
+    await page.goto(`/${databaseId}/workbench`);
+    workbenchPage = createWorkbenchPage(databaseId);
+    await workbenchPage.waitForLoad();
+  });
+
+  test(`should persist command history after page refresh ${Tags.REGRESSION}`, async ({ page }) => {
+    // Execute a command
+    await workbenchPage.executeCommand('PING');
+    await expect(workbenchPage.resultsPanel.resultText).toBeVisible();
+
+    // Refresh the page
+    await page.reload();
+    await workbenchPage.waitForLoad();
+
+    // Command history should be preserved - use Up Arrow to access it
+    await workbenchPage.editor.container.click();
+    await page.keyboard.press('ArrowUp');
+
+    // Verify the previous command is loaded in the editor
+    const command = await workbenchPage.editor.getCommand();
+    expect(command).toBe('PING');
+  });
+
+  test(`should re-run a previous command from history ${Tags.REGRESSION}`, async ({ page }) => {
+    // Execute a command
+    await workbenchPage.executeCommand('PING');
+    await expect(workbenchPage.resultsPanel.resultText).toBeVisible();
+
+    // Get initial result count
+    const initialCount = await workbenchPage.resultsPanel.getResultCount();
+
+    // Clear the editor
+    await workbenchPage.editor.clear();
+
+    // Click on the re-run button in the results panel
+    const reRunButton = page.getByTestId('re-run-command').first();
+    await expect(reRunButton).toBeVisible();
+    await reRunButton.click();
+
+    // Wait for new result to appear
+    await workbenchPage.resultsPanel.waitForNewResult(initialCount);
+
+    // Verify command was re-run (new result appears)
+    const newCount = await workbenchPage.resultsPanel.getResultCount();
+    expect(newCount).toBeGreaterThan(initialCount);
+  });
+
+  test(`should access command history with Up Arrow ${Tags.REGRESSION}`, async ({ page }) => {
+    // Execute a command
+    await workbenchPage.executeCommand('PING');
+    await expect(workbenchPage.resultsPanel.resultText).toBeVisible();
+
+    // Clear the editor
+    await workbenchPage.editor.clear();
+
+    // Press Up Arrow to access history
+    await workbenchPage.editor.container.click();
+    await page.keyboard.press('ArrowUp');
+
+    // Verify the previous command is loaded in the editor
+    const command = await workbenchPage.editor.getCommand();
+    expect(command).toBe('PING');
+  });
+});
+

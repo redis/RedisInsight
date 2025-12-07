@@ -137,5 +137,33 @@ test.describe('Browser > Tree View', () => {
       await expect(page.getByRole('dialog')).toBeHidden();
     });
   });
+
+  test.describe('View State Persistence', () => {
+    test(`should persist tree view mode after page refresh ${Tags.REGRESSION}`, async ({ page }) => {
+      // Switch to tree view
+      await browserPage.keyList.switchToTreeView();
+      await expect(page.getByRole('treeitem').first()).toBeVisible();
+
+      // Refresh the page
+      await page.reload();
+      await browserPage.keyList.waitForKeysLoaded();
+
+      // Tree view should still be active (tree items visible)
+      await expect(page.getByRole('treeitem').first()).toBeVisible();
+    });
+
+    test(`should persist list view mode after page refresh ${Tags.REGRESSION}`, async ({ page }) => {
+      // Ensure we're in list view
+      await browserPage.keyList.switchToListView();
+      await expect(page.getByRole('grid')).toBeVisible();
+
+      // Refresh the page
+      await page.reload();
+      await browserPage.keyList.waitForKeysLoaded();
+
+      // List view should still be active (grid visible)
+      await expect(page.getByRole('grid')).toBeVisible();
+    });
+  });
 });
 

@@ -106,5 +106,36 @@ test.describe.serial('Workbench > Context Preservation', () => {
     // After reload, editor should not contain our test command
     expect(editorContent).not.toContain(testCommand);
   });
+
+  test(`should preserve Insights panel state when navigating ${Tags.REGRESSION}`, async ({
+    page,
+  }) => {
+    // Wait for the page to fully load
+    await page.waitForLoadState('networkidle');
+
+    // Open Insights panel using button role with accessible name
+    const insightsButton = page.getByRole('button', { name: 'Insights-trigger' });
+    await expect(insightsButton).toBeVisible({ timeout: 10000 });
+    await insightsButton.click();
+    await page.waitForTimeout(500);
+
+    // Verify Insights panel is open by checking for the Insights title and tabs
+    const insightsTitle = page.getByText('Insights').first();
+    await expect(insightsTitle).toBeVisible();
+    const tutorialsTab = page.getByRole('tab', { name: 'Tutorials' });
+    await expect(tutorialsTab).toBeVisible();
+
+    // Navigate to Browser tab
+    await page.getByRole('tab', { name: 'Browse' }).click();
+    await page.waitForTimeout(500);
+
+    // Navigate back to Workbench tab
+    await page.getByRole('tab', { name: 'Workbench' }).click();
+    await page.waitForTimeout(500);
+
+    // Verify Insights panel is still open
+    await expect(insightsTitle).toBeVisible();
+    await expect(tutorialsTab).toBeVisible();
+  });
 });
 

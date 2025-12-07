@@ -229,7 +229,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | View folder percentage and count |
 | ✅ | 🟢 | Scan more keys (covered by "should show scan more button when searching" test) |
 | ✅ | 🟢 | Open tree view settings |
-| 🔲 | 🟢 | Tree view mode state persists after page refresh |
+| ✅ | 🟢 | Tree view mode state persists after page refresh |
 | 🔲 | 🟢 | Filter state preserved when switching between Browser and Tree view |
 | 🔲 | 🟢 | Key type filter state preserved when switching views |
 | 🔲 | 🟢 | Configure multiple delimiters in tree view |
@@ -312,14 +312,15 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 2.9.1 Stream Consumer Groups
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟠 | Create consumer group with Entry ID "0" (from beginning) |
-| 🔲 | 🟠 | Create consumer group with Entry ID "$" (new messages only) |
+| ✅ | 🟠 | Create consumer group with Entry ID "0" (from beginning) |
+| ✅ | 🟠 | Create consumer group with Entry ID "$" (new messages only) |
 | 🔲 | 🟢 | Create consumer group with custom Entry ID |
-| 🔲 | 🟢 | View consumer group columns (Group Name, Consumers, Pending, Last Delivered ID) |
+| ✅ | 🟢 | View consumer group columns (Group Name, Consumers, Pending, Last Delivered ID) - covered by "should open Consumer Groups tab" test |
 | 🔲 | 🟢 | View consumer information columns (Consumer Name, Pending, Idle Time) |
 | 🔲 | 🟢 | Delete consumer from consumer group |
 | 🔲 | 🟢 | Delete consumer group |
 | 🔲 | 🟢 | Edit Last Delivered ID for consumer group |
+| ✅ | 🟢 | Cancel creating consumer group |
 
 ### 2.9.2 Stream Pending Messages
 | Status | Priority | Test Case |
@@ -403,7 +404,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟠 | Filter keys with asterisk (*) wildcard |
 | ✅ | 🟢 | Filter keys with question mark (?) single character wildcard |
 | ✅ | 🟢 | Filter keys with [xy] character class (matches x or y) |
-| 🔲 | 🟢 | Filter keys with [^x] negated character class |
+| ✅ | 🟢 | Filter keys with [^x] negated character class |
 | ✅ | 🟢 | Filter keys with [a-z] character range |
 | 🔲 | 🟢 | Escape special characters in filter pattern |
 | ✅ | 🟢 | Clear filter and search again |
@@ -417,8 +418,8 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟠 | Browser context preserved when switching tabs |
 | ✅ | 🟢 | Selected key details preserved when switching tabs |
 | ✅ | 🟢 | Context cleared when page is reloaded |
-| 🔲 | 🟢 | CLI command history preserved in context |
-| 🔲 | 🟢 | Context cleared when navigating to different database |
+| ✅ | 🟢 | CLI command history preserved in context |
+| ✅ | 🟢 | Context cleared when navigating to different database |
 
 ---
 
@@ -437,8 +438,8 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | History navigation |
 | ✅ | 🟢 | Toggle Raw mode |
 | ✅ | 🟢 | Toggle Group results |
-| 🔲 | 🟢 | Confirm command history persists after page refresh or session restart |
-| 🔲 | 🟢 | Re-run a previous command from history |
+| ✅ | 🟢 | Confirm command history persists after page refresh or session restart |
+| ✅ | 🟢 | Re-run a previous command from history |
 | 🔲 | 🟢 | Run commands with quantifier (e.g., "10 RANDOMKEY") |
 | 🔲 | 🟢 | View group summary (X Command(s) - Y success, Z error(s)) |
 | 🔲 | 🟢 | View full list of commands with results in group mode |
@@ -447,7 +448,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | 🔲 | 🟢 | Original datetime preserved in history after page refresh |
 | 🔲 | 🟢 | Display message when result exceeds 1MB after refresh |
 | 🔲 | 🟢 | History limited to 30 commands (oldest replaced by newest) |
-| 🔲 | 🟢 | Quick-access to command history with Up Arrow |
+| ✅ | 🟢 | Quick-access to command history with Up Arrow |
 | 🔲 | 🟢 | Use Non-Redis Editor with Shift+Space |
 
 ### 3.1.1 Workbench Context
@@ -456,7 +457,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟠 | Editor content preserved when switching tabs |
 | ✅ | 🟢 | Command results preserved when switching tabs |
 | ✅ | 🟢 | Context cleared when page is reloaded |
-| 🔲 | 🟢 | Insights panel state preserved when navigating |
+| ✅ | 🟢 | Insights panel state preserved when navigating |
 
 ### 3.2 Results View
 | Status | Priority | Test Case |
@@ -531,10 +532,10 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 4.2 Command Helper Integration
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟠 | Type command in CLI; confirm Command Helper updates dynamically |
-| 🔲 | 🟢 | Filter helper results by command category (Keys, Strings, JSON, Search) |
-| 🔲 | 🟢 | Open "Read more" link and confirm redirection to Redis.io documentation |
-| 🔲 | 🟢 | Confirm helper displays module-specific commands (FT., JSON., TS.*) |
+| ✅ | 🟠 | Type command in CLI; confirm Command Helper updates dynamically |
+| ✅ | 🟢 | Filter helper results by command category (Keys, Strings, JSON, Search) |
+| ✅ | 🟢 | Open "Read more" link and confirm redirection to Redis.io documentation |
+| ✅ | 🟢 | Confirm helper displays module-specific commands (FT., JSON., TS.*) |
 
 ---
 
@@ -549,7 +550,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🔴 | Unsubscribe |
 | ⏸️ | 🟢 | Multiple subscriptions | Feature not available - single pattern subscription only |
 | ⏸️ | 🟢 | Clear messages | <!-- Feature not implemented in UI yet -->
-| 🔲 | 🟢 | Confirm newest messages appear at top of message table |
+| ✅ | 🟢 | Confirm newest messages appear at top of message table |
 | 🔲 | 🟢 | Confirm connection/subscription persist while navigating in same DB context |
 | 🔲 | 🟢 | Confirm performance under high throughput (≥5,000 messages/minute) |
 
@@ -592,8 +593,8 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Configure slow log button visible |
 | ✅ | 🟢 | Sort entries |
 | ⏸️ | 🟢 | Filter entries | _Skipped: No filter UI available in current version_ |
-| 🔲 | 🟢 | Confirm slowlog-max-len and slowlog-log-slower-than configuration values display |
-| 🔲 | 🟢 | View command timestamp, duration, and execution details |
+| ✅ | 🟢 | Confirm slowlog-max-len and slowlog-log-slower-than configuration values display |
+| ✅ | 🟢 | View command timestamp, duration, and execution details |
 | 🔲 | 🟢 | Change duration units between milliseconds and microseconds |
 | 🔲 | 🟢 | Adjust slowlog-log-slower-than threshold and confirm results update |
 | 🔲 | 🟢 | Confirm empty state message displays correctly |
@@ -824,7 +825,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 |--------|----------|-----------|
 | 🔲 | 🟠 | Confirm unread notifications display with distinct highlight/badge |
 | 🔲 | 🟢 | Confirm notification badge count updates when new messages arrive |
-| 🔲 | 🟢 | Confirm each notification displays title, description, and timestamp |
+| ✅ | 🟢 | Confirm each notification displays title, description, and timestamp |
 
 ### 12.2 Telemetry & Analytics
 | Status | Priority | Test Case |

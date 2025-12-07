@@ -77,6 +77,27 @@ export class CliPanel {
   }
 
   /**
+   * Type a command in the CLI without executing it
+   * This triggers the Command Helper integration
+   */
+  async typeCommand(command: string): Promise<void> {
+    // Focus on the command input
+    await this.commandInput.focus();
+    // Type the command character by character to trigger updates
+    await this.page.keyboard.type(command, { delay: 50 });
+  }
+
+  /**
+   * Clear the current command input
+   */
+  async clearInput(): Promise<void> {
+    await this.commandInput.focus();
+    // Select all and delete
+    await this.page.keyboard.press('Control+a');
+    await this.page.keyboard.press('Backspace');
+  }
+
+  /**
    * Get the CLI output text
    */
   async getOutput(): Promise<string> {

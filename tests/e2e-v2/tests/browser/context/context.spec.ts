@@ -102,5 +102,65 @@ test.describe.serial('Browser > Context Preservation', () => {
     const searchValue = await browserPage.keyList.searchInput.inputValue();
     expect(searchValue === '' || searchValue === '*').toBe(true);
   });
+
+  test(`should preserve CLI command history when switching tabs ${Tags.REGRESSION}`, async ({
+    page,
+    cliPanel,
+  }) => {
+    // Open CLI panel
+    await cliPanel.open();
+
+    // Execute a command
+    await cliPanel.executeCommand('PING');
+    await page.waitForTimeout(500);
+
+    // Verify PONG response
+    await expect(page.getByText('PONG')).toBeVisible();
+
+    // Navigate to Workbench tab
+    await page.getByRole('tab', { name: 'Workbench' }).click();
+    await page.waitForTimeout(500);
+
+    // Navigate back to Browser tab
+    await page.getByRole('tab', { name: 'Browse' }).click();
+    await page.waitForTimeout(500);
+
+    // CLI should still be open and show the previous output
+    const isOpen = await cliPanel.isOpen();
+    expect(isOpen).toBe(true);
+
+    // The PONG response should still be visible
+    await expect(page.getByText('PONG')).toBeVisible();
+  });
+
+  test(`should clear context when navigating to different database ${Tags.REGRESSION}`, async ({
+    page,
+    apiHelper,
+  }) => {
+    // Apply a search filter
+    await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}context*`);
+    await page.waitForTimeout(500);
+
+    // Verify the filter is applied
+    await expect(browserPage.keyList.searchInput).toHaveValue(`${TEST_KEY_PREFIX}context*`);
+
+    // Create another database to navigate to
+    const otherDbName = `test-context-other-${Date.now().toString(36)}`;
+    const otherConfig = getStandaloneConfig({ name: otherDbName });
+    const otherDb = await apiHelper.createDatabase(otherConfig);
+
+    try {
+      // Navigate to the other database
+      await page.goto(`/${otherDb.id}/browser`);
+      await page.waitForLoadState('networkidle');
+
+      // Verify the filter is cleared (default is empty or *)
+      const searchValue = await browserPage.keyList.searchInput.inputValue();
+      expect(searchValue === '' || searchValue === '*').toBe(true);
+    } finally {
+      // Clean up the other database
+      await apiHelper.deleteDatabase(otherDb.id);
+    }
+  });
 });
 

@@ -159,5 +159,51 @@ test.describe('Analytics > Slow Log', () => {
       await expect(page.getByText(/Sorted by Timestamp/)).toBeVisible();
     });
   });
+
+  test.describe('Entry Details', () => {
+    test(`should display command timestamp, duration, and execution details ${Tags.REGRESSION}`, async ({
+      createAnalyticsPage,
+      page,
+    }) => {
+      const analyticsPage = createAnalyticsPage();
+      await analyticsPage.gotoSlowLog(databaseId);
+
+      // Wait for table to load
+      await expect(analyticsPage.slowLogTable).toBeVisible();
+
+      // Verify table has the expected columns
+      await expect(page.getByRole('columnheader', { name: 'Timestamp' })).toBeVisible();
+      await expect(page.getByRole('columnheader', { name: 'Duration, msec' })).toBeVisible();
+      await expect(page.getByRole('columnheader', { name: 'Command' })).toBeVisible();
+
+      // Verify first row has timestamp in expected format (YYYY-MM-DD HH:MM:SS)
+      const firstRow = analyticsPage.slowLogTable.locator('tbody tr').first();
+      const timestampCell = firstRow.locator('td').first();
+      const timestampText = await timestampCell.textContent();
+      expect(timestampText).toMatch(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/);
+
+      // Verify duration cell has numeric value
+      const durationCell = firstRow.locator('td').nth(1);
+      const durationText = await durationCell.textContent();
+      expect(durationText).toMatch(/[\d\s,.]+/);
+
+      // Verify command cell has content
+      const commandCell = firstRow.locator('td').nth(2);
+      const commandText = await commandCell.textContent();
+      expect(commandText?.length).toBeGreaterThan(0);
+    });
+
+    test(`should display configuration values ${Tags.REGRESSION}`, async ({
+      createAnalyticsPage,
+      page,
+    }) => {
+      const analyticsPage = createAnalyticsPage();
+      await analyticsPage.gotoSlowLog(databaseId);
+
+      // Verify execution time and max length configuration is displayed
+      // Format: "Execution time: X msec, Max length: Y"
+      await expect(page.getByText(/Execution time:.*msec.*Max length:/)).toBeVisible();
+    });
+  });
 });
 

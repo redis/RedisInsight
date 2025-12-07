@@ -291,6 +291,46 @@ test.describe('Pub/Sub', () => {
       // Cleanup
       await pubsubPage.unsubscribe();
     });
+
+    test(`should show newest messages at top of message table ${Tags.REGRESSION}`, async ({
+      page,
+      createPubSubPage,
+    }) => {
+      const pubsubPage = createPubSubPage();
+      await pubsubPage.goto(databaseId);
+
+      const channel = `test-${faker.string.alphanumeric(6)}`;
+      const firstMessage = `first-${faker.string.alphanumeric(8)}`;
+      const secondMessage = `second-${faker.string.alphanumeric(8)}`;
+
+      // Subscribe first
+      await pubsubPage.subscribe('*');
+      expect(await pubsubPage.isSubscribed()).toBe(true);
+
+      // Publish first message
+      await pubsubPage.publish(channel, firstMessage);
+      await expect(page.getByText(firstMessage)).toBeVisible();
+
+      // Wait a bit to ensure timestamp difference
+      await page.waitForTimeout(500);
+
+      // Publish second message
+      await pubsubPage.publish(channel, secondMessage);
+      await expect(page.getByText(secondMessage)).toBeVisible();
+
+      // Get all message rows from the table body and verify order (newest first)
+      const messagesTable = page.getByRole('table').filter({ hasText: /Channel|Message/ });
+      const messageRows = messagesTable.locator('tbody tr');
+      const rowCount = await messageRows.count();
+      expect(rowCount).toBeGreaterThanOrEqual(2);
+
+      // The first row (index 0) should contain the second (newest) message
+      const firstRowText = await messageRows.first().textContent();
+      expect(firstRowText).toContain(secondMessage);
+
+      // Cleanup
+      await pubsubPage.unsubscribe();
+    });
   });
 });
 
