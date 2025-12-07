@@ -97,6 +97,17 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Configure key name format (Unicode/ASCII/etc) |
 | 🔲 | 🟢 | Add database via Redis Sentinel option |
 | 🔲 | 🟢 | Add database via Redis Software option |
+| 🔲 | 🟢 | Auto-discover databases from Redis Software |
+| 🔲 | 🟢 | Auto-discover Redis Cloud databases after signing in |
+| 🔲 | 🟢 | Add databases using Cloud API keys |
+| 🔲 | 🟢 | Check connection state persists across app restarts |
+
+### 1.1.1 Connection Security
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟢 | Add database using SSH tunneling |
+| 🔲 | 🟢 | Connect using SNI configuration |
+| 🔲 | 🟢 | Connect with TLS using CA, client, and private key certificates |
 
 ### 1.2 Database List
 | Status | Priority | Test Case |
@@ -141,6 +152,26 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🔴 | Export databases |
 | 🔲 | 🟢 | Import with errors (partial success) |
 | 🔲 | 🟢 | Import invalid file format |
+| 🔲 | 🟢 | Confirm database tags are exported/imported correctly |
+| 🔲 | 🟢 | Confirm import summary distinguishes Fully/Partially Imported and Failed |
+
+### 1.6 Database Tags
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟠 | Add descriptive tags to a database |
+| 🔲 | 🟢 | Remove tags from a database |
+| 🔲 | 🟢 | Import tags automatically from Redis Cloud databases |
+
+### 1.7 Certificate and Encryption Handling
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟢 | Store credentials encrypted in local keychain when encryption enabled |
+| 🔲 | 🟢 | Display warning when encryption disabled and credentials stored as plaintext |
+
+### 1.8 Decompression
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟢 | Confirm setting a decompression type works |
 
 ---
 
@@ -197,6 +228,8 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | View/edit TTL |
 | ✅ | 🟢 | Copy key name (covered by "should show copy key name button on hover" test) |
 | ✅ | 🟢 | Change value format (text/binary/hex) |
+| 🔲 | 🟢 | Rename key and confirm new name propagates across Browser |
+| 🔲 | 🟢 | Confirm TTL countdown updates in real time |
 
 ### 2.5 Key Details - Hash (✅ Implemented)
 | Status | Priority | Test Case |
@@ -268,6 +301,31 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Bulk delete with pattern |
 | ✅ | 🔴 | Bulk upload data |
 | 🔲 | 🟢 | View bulk action progress |
+| 🔲 | 🟢 | Confirm summary screen displays processed, deleted, failed counts |
+| 🔲 | 🟢 | Confirm deletion failures surfaced in summary log |
+| 🔲 | 🟢 | Confirm performance when deleting thousands of keys |
+| 🔲 | 🟢 | Confirm performance when bulk uploading large datasets (>10K keys) |
+
+### 2.12 Value Formatters
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟠 | Switch between formats: JSON, ASCII, Hex, Binary |
+| 🔲 | 🟢 | View value in Msgpack format |
+| 🔲 | 🟢 | View value in Protobuf format |
+| 🔲 | 🟢 | View value in Java serialized format |
+| 🔲 | 🟢 | View value in PHP serialized format |
+| 🔲 | 🟢 | View value in Pickle format |
+| 🔲 | 🟢 | Confirm conversion between formats is smooth |
+| 🔲 | 🟢 | Confirm non-editable formats disable inline editing |
+| 🔲 | 🟢 | Confirm tooltip explains conversion errors |
+| 🔲 | 🟢 | Confirm switching formats for large keys (>10MB) doesn't freeze UI |
+
+### 2.13 Search Keys (Search Index)
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟠 | Create a new search index from index creation form |
+| 🔲 | 🟠 | Select existing index and search by indexed fields |
+| 🔲 | 🟢 | Perform search by full key name with exact match |
 
 ---
 
@@ -286,6 +344,8 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | History navigation |
 | ✅ | 🟢 | Toggle Raw mode |
 | ✅ | 🟢 | Toggle Group results |
+| 🔲 | 🟢 | Confirm command history persists after page refresh or session restart |
+| 🔲 | 🟢 | Re-run a previous command from history |
 
 ### 3.2 Results View
 | Status | Priority | Test Case |
@@ -298,6 +358,16 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Clear results |
 | ✅ | 🟢 | Re-run command |
 | ✅ | 🟢 | Delete command result |
+
+### 3.2.1 Plugin and Visualization Support
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟠 | Confirm plugins for Search, TimeSeries load correctly |
+| 🔲 | 🟢 | Run FT.SEARCH command and confirm visualized table output |
+| 🔲 | 🟢 | Run TS.RANGE command and confirm chart visualization |
+| 🔲 | 🟢 | Confirm plugins display module-specific icons and metadata |
+| 🔲 | 🟢 | Switch between views (Table ↔ Text) and confirm format updates instantly |
+| 🔲 | 🟢 | Confirm TimeSeries visualization displays correct axes, values, and units |
 
 ### 3.3 Tutorials
 | Status | Priority | Test Case |
@@ -345,10 +415,19 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Command history (up/down arrows) |
 | ✅ | 🟢 | Tab completion |
 | ⏸️ | 🟢 | Multiple CLI sessions | Feature not available in current UI |
+| 🔲 | 🟢 | Run commands on Cluster databases and confirm transparent node redirection |
+
+### 4.2 Command Helper Integration
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟠 | Type command in CLI; confirm Command Helper updates dynamically |
+| 🔲 | 🟢 | Filter helper results by command category (Keys, Strings, JSON, Search) |
+| 🔲 | 🟢 | Open "Read more" link and confirm redirection to Redis.io documentation |
+| 🔲 | 🟢 | Confirm helper displays module-specific commands (FT., JSON., TS.*) |
 
 ---
 
-## 5. Pub/Sub (✅ Implemented)
+## 5. Pub/Sub (✅ Partially Implemented)
 
 ### 5.1 Subscribe
 | Status | Priority | Test Case |
@@ -359,12 +438,34 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🔴 | Unsubscribe |
 | ⏸️ | 🟢 | Multiple subscriptions | Feature not available - single pattern subscription only |
 | ⏸️ | 🟢 | Clear messages | <!-- Feature not implemented in UI yet -->
+| 🔲 | 🟢 | Confirm newest messages appear at top of message table |
+| 🔲 | 🟢 | Confirm connection/subscription persist while navigating in same DB context |
+| 🔲 | 🟢 | Confirm performance under high throughput (≥5,000 messages/minute) |
 
 ### 5.2 Publish
 | Status | Priority | Test Case |
 |--------|----------|-----------|
 | ✅ | 🔴🟠 | Publish message to channel (form fill) |
 | ⏸️ | 🟢 | Publish with different formats | Feature not available - plain text only |
+| 🔲 | 🟢 | Confirm published message appears instantly in message feed |
+| 🔲 | 🟢 | Confirm publish button shows status report with affected clients count |
+
+### 5.3 Message Table View
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟠 | View message table with subscribed messages |
+| 🔲 | 🟢 | Navigate message table pages |
+| 🔲 | 🟢 | Sort message table by columns |
+| 🔲 | 🟢 | Confirm table configuration persists across navigation |
+| 🔲 | 🟢 | Confirm message table scrollable with 100+ rows |
+| 🔲 | 🟢 | Confirm status bar shows proper subscription status |
+
+### 5.4 Cluster Mode (Pub/Sub)
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟠 | Confirm info message about SPUBLISH on welcome screen |
+| 🔲 | 🟢 | Confirm status report doesn't show affected clients in cluster mode |
+| ⏸️ | 🟢 | SPUBLISH messages visibility | _Note: Use SSUBSCRIBE in Workbench_ |
 
 ---
 
@@ -379,6 +480,12 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Configure slow log button visible |
 | ✅ | 🟢 | Sort entries |
 | ⏸️ | 🟢 | Filter entries | _Skipped: No filter UI available in current version_ |
+| 🔲 | 🟢 | Confirm slowlog-max-len and slowlog-log-slower-than configuration values display |
+| 🔲 | 🟢 | View command timestamp, duration, and execution details |
+| 🔲 | 🟢 | Change duration units between milliseconds and microseconds |
+| 🔲 | 🟢 | Adjust slowlog-log-slower-than threshold and confirm results update |
+| 🔲 | 🟢 | Confirm empty state message displays correctly |
+| 🔲 | 🟢 | Confirm performance with thousands of slowlog entries |
 
 ### 6.2 Database Analysis
 | Status | Priority | Test Case |
@@ -389,7 +496,22 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | View top namespaces |
 | ✅ | 🟢 | View TTL distribution |
 | ✅ | 🟢 | View recommendations (Tips tab) |
-| ✅ | 🟢 | History of analyses
+| ✅ | 🟢 | History of analyses |
+| 🔲 | 🟢 | Confirm charts for data types, namespaces, expirations render |
+| 🔲 | 🟢 | Confirm extrapolation toggle adjusts charted values |
+| 🔲 | 🟢 | Confirm analysis distinguishes between scanned and estimated data |
+| 🔲 | 🟢 | Confirm responsiveness on large datasets |
+
+### 6.2.1 Profiler
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| ✅ | 🔴 | Start profiler |
+| ✅ | 🔴 | Stop profiler |
+| ✅ | 🟢 | Toggle Save Log |
+| ✅ | 🟢 | View profiler warning |
+| 🔲 | 🟢 | Observe live command feed without delay |
+| 🔲 | 🟢 | Toggle "Save Logs" and confirm local temp log file creation |
+| 🔲 | 🟢 | Test profiler behavior under heavy load (thousands of commands/minute) |
 
 ### 6.3 Cluster Details
 > ⚠️ **SKIPPED**: Requires properly configured OSS Cluster infrastructure (multiple nodes)
@@ -505,6 +627,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ⏸️ | 🟠 | Edit RDI instance |
 | ⏸️ | 🟠 | Delete RDI instance |
 | ⏸️ | 🟢 | Test RDI connection |
+| ⏸️ | 🟢 | Error message displayed for invalid/non-existent RDI instance |
 
 ### 11.2 RDI Pipeline
 | Status | Priority | Test Case |
@@ -514,6 +637,11 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ⏸️ | 🔴 | Stop pipeline |
 | ⏸️ | 🟠 | Reset pipeline |
 | ⏸️ | 🟢 | View pipeline statistics |
+| ⏸️ | 🟢 | Popover displayed for Reset button |
+| ⏸️ | 🟢 | Popover displayed for Stop button |
+| ⏸️ | 🟢 | Deploy successfully deploys configuration with success notification |
+| ⏸️ | 🟢 | Pipeline state: Not running / Streaming |
+| ⏸️ | 🟢 | Show loading indicators when waiting for action |
 
 ### 11.3 RDI Jobs
 | Status | Priority | Test Case |
@@ -523,6 +651,10 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ⏸️ | 🟠 | Edit job configuration |
 | ⏸️ | 🟠 | Delete job |
 | ⏸️ | 🟢 | Dry run job |
+| ⏸️ | 🟢 | Add job via side menu |
+| ⏸️ | 🟢 | Delete job via side menu |
+| ⏸️ | 🟢 | Job shows unsaved changes indicator (blue) |
+| ⏸️ | 🟢 | Job shows error indicator (red icon with hover details) |
 
 ### 11.4 RDI Configuration
 | Status | Priority | Test Case |
@@ -531,6 +663,69 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ⏸️ | 🔴 | Edit configuration |
 | ⏸️ | 🟠 | Deploy configuration |
 | 🔲 | 🟢 | Download template |
+| ⏸️ | 🟢 | Configuration shows unsaved changes indicator |
+| ⏸️ | 🟢 | Configuration shows error indicator with hover details |
+| ⏸️ | 🟢 | Insert template button opens menu |
+| ⏸️ | 🟢 | Apply template only works on empty editor |
+
+### 11.5 RDI Control Menu
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| ⏸️ | 🟢 | Download deployed pipeline action |
+| ⏸️ | 🟢 | Import pipeline from ZIP file |
+| ⏸️ | 🟢 | Upload from file allows only ZIP files |
+| ⏸️ | 🟢 | Save to file (ZIP) successfully |
+
+### 11.6 RDI Analytics
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| ⏸️ | 🟢 | Auto-refresh opens configuration panel |
+| ⏸️ | 🟢 | Auto-refresh can be disabled |
+| ⏸️ | 🟢 | Display data based on pipeline metrics |
+| ⏸️ | 🟢 | Test connection opens panel with results |
+| ⏸️ | 🟢 | Test connection displays all targets and sources |
+
+---
+
+## 12. Miscellaneous
+
+### 12.1 Notifications
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟠 | Confirm unread notifications display with distinct highlight/badge |
+| 🔲 | 🟢 | Confirm notification badge count updates when new messages arrive |
+| 🔲 | 🟢 | Confirm each notification displays title, description, and timestamp |
+
+### 12.2 Telemetry & Analytics
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟢 | Trigger key events and confirm telemetry records correctly |
+| 🔲 | 🟢 | Confirm telemetry payloads contain Database ID, Timestamp, Event Type |
+| 🔲 | 🟢 | Confirm telemetry events appear in analytics console/local logs |
+| 🔲 | 🟢 | Disable telemetry in Settings and confirm no new events logged |
+
+### 12.3 EULA & Onboarding
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟠 | First launch shows EULA & Privacy Agreement dialog |
+| 🔲 | 🟢 | "Use recommended settings" auto-selects telemetry and encryption |
+| 🔲 | 🟢 | Decline analytics confirms telemetry events not sent |
+| 🔲 | 🟢 | Confirm onboarding progresses correctly |
+
+### 12.4 Redis Cloud Conversion Funnel
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| ⏸️ | 🟠 | User signs up with Google/GitHub → account, subscription, DB created → redirected to RI |
+| ⏸️ | 🟢 | Existing Redis Cloud user without DB → free DB created → connection prompt |
+| ⏸️ | 🟢 | All CTAs to Redis Cloud complete successfully (including tutorials) |
+| ⏸️ | 🟢 | All CTAs pass UTM parameters correctly to Redis Cloud |
+| ⏸️ | 🟢 | Telemetry events for conversion funnel are successful |
+
+### 12.5 App Settings
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟢 | Open Settings and update general preferences (theme, telemetry) |
+| 🔲 | 🟢 | Confirm edits apply immediately across UI |
 
 ---
 
