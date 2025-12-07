@@ -4,4 +4,5 @@ playwright-report/
 playwright/.cache/
 .env
 *.log
+.eslintcache
 
