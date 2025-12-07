@@ -1,0 +1,59 @@
+{
+  "name": "garnetinsight-api",
+  "version": "2.1.0",
+  "description": "Garnetinsight API",
+  "author": "Artyom Podymov <artyom.podymov@softeq.com>,",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "nest build",
+    "build:prod": "rimraf dist && nest build && cross-env NODE_ENV=production",
+    "build:stage": "rimraf dist && nest build && cross-env NODE_ENV=staging",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "start": "nest start",
+    "start:dev": "cross-env NODE_ENV=development nest start --watch",
+    "start:debug": "nest start --debug --watch",
+    "start:stage": "rimraf dist && nest build && cross-env NODE_ENV=staging node dist/src/main",
+    "start:prod": "rimraf dist && nest build && cross-env NODE_ENV=production node dist/src/main",
+    "test": "../../node_modules/.bin/jest -w 1",
+    "test:watch": "jest --watch -w 1",
+    "test:cov": "../../node_modules/.bin/jest --coverage -w 1",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand -w 1",
+    "test:e2e": "jest --config ./test/jest-e2e.json -w 1",
+    "typeorm": "ts-node -r tsconfig-paths/register ../../node_modules/typeorm/cli.js --config ./config/ormconfig.ts",
+    "typeorm:migrate": "cross-env NODE_ENV=production yarn typeorm migration:generate -- -n migration",
+    "typeorm:run": "yarn typeorm migration:run"
+  },
+  "dependencies": {
+    "sql.js": "^1.4.0"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^7.5.4",
+    "cross-env": "^7.0.3",
+    "jest": "^26.6.3",
+    "jest-when": "^3.2.1",
+    "rimraf": "^3.0.2"
+  },
+  "jest": {
+    "moduleFileExtensions": ["js", "json", "ts"],
+    "rootDir": "src",
+    "testRegex": ".spec.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "coverageDirectory": "../coverage",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      ".entity.ts$",
+      ".spec.ts$"
+    ],
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "src/(.*)": "<rootDir>/$1",
+      "apiSrc/(.*)": "<rootDir>/$1",
+      "tests/(.*)": "<rootDir>/__tests__/$1"
+    },
+    "setupFilesAfterEnv": ["../test/jest.setup.ts"]
+  }
+}

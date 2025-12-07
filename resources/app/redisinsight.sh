@@ -1,3 +1,3 @@
 #!/bin/sh
 
-open /Applications/RedisInsight-preview
+open /Applications/Garnetinsight-preview

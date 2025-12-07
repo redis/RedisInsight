@@ -62,11 +62,11 @@ runs:
 
     # TODO: matrix?
     # Javascript dependencies
-    - name: Install dependencies for redisinsight package.js
+    - name: Install dependencies for garnetinsight package.js
       # if: ${{ contains(inputs.skip-electron-deps, '1') }}
       uses: ./.github/actions/install-deps
       with:
-        dir-path: './redisinsight'
+        dir-path: './garnetinsight'
         keytar-host-mirror: ${{ inputs.keytar-host-mirror }}
         sqlite3-host-mirror: ${{ inputs.sqlite3-host-mirror }}
 
@@ -74,7 +74,7 @@ runs:
       # if: ${{ !contains(inputs.skip-backend-deps, '1') }}
       uses: ./.github/actions/install-deps
       with:
-        dir-path: './redisinsight/api'
+        dir-path: './garnetinsight/api'
 
     - name: Install dependencies for root package.js
       # if: ${{ contains(inputs.skip-electron-deps, '1') }}

@@ -4,12 +4,12 @@
     "github": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-github"],
-      "description": "GitHub integration for managing issues, pull requests, and repository operations for RedisInsight/RedisInsight"
+      "description": "GitHub integration for managing issues, pull requests, and repository operations for Garnetinsight/Garnetinsight"
     },
     "memory": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-memory"],
-      "description": "Persistent memory for storing context about the RedisInsight project across sessions"
+      "description": "Persistent memory for storing context about the Garnetinsight project across sessions"
     },
     "sequential-thinking": {
       "command": "npx",

@@ -1,0 +1,36 @@
+# Base compose file that includes all BE, RTE builds
+version: '3.4'
+
+x-constants:
+  - &apiRoot ./../../
+
+services:
+  test:
+    cap_add:
+      - ipc_lock
+    build:
+      context: *apiRoot
+      dockerfile: ./test/test-runs/test.Dockerfile
+    tty: true
+    volumes:
+      - ${COV_FOLDER}:/usr/src/app/coverage
+      - ${COV_FOLDER}:/root/.garnetinsight-v2.0
+    depends_on:
+      - redis
+    environment:
+      RI_REDIS_CLIENTS_FORCE_STRATEGY: ${RI_REDIS_CLIENTS_FORCE_STRATEGY}
+      CERTS_FOLDER: '/root/.garnetinsight-v2.0'
+      RI_PRE_SETUP_DATABASES_PATH: '/root/.garnetinsight-v2.0/databases.json'
+      TEST_REDIS_HOST: 'redis'
+      NODE_ENV: 'test'
+      RI_REQUEST_TIMEOUT: '25000'
+      RI_DATA_DIR: '/usr/src/app/coverage/data'
+      TEST_DATA_DIR: '/usr/src/app/coverage/data'
+
+  # dummy service to prevent docker validation errors
+  app:
+    image: node:20.14-alpine
+
+networks:
+  default:
+    name: ${ID}

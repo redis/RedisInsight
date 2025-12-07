@@ -1,0 +1,27 @@
+{
+  "name": "garnetinsight",
+  "appName": "Garnet Insight",
+  "productName": "Garnetinsight",
+  "private": true,
+  "version": "3.0.0",
+  "description": "Garnet Insight",
+  "main": "./dist/main/main.js",
+  "author": {
+    "name": "Redis Ltd.",
+    "email": "support@redis.com",
+    "url": "https://redis.com/redis-enterprise/redis-insight"
+  },
+  "scripts": {
+    "postinstall": "npx patch-package"
+  },
+  "resolutions": {
+    "**/semver": "^7.5.2",
+    "sqlite3/**/tar": "^6.2.1",
+    "**/cpu-features": "file:./api/stubs/cpu-features"
+  },
+  "dependencies": {
+    "keytar": "^7.9.0",
+    "sqlite3": "5.1.7",
+    "tunnel-ssh": "^5.1.2"
+  }
+}

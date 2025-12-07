@@ -1,0 +1,16 @@
+{
+  "author": {
+    "name": "Redis Ltd.",
+    "email": "support@redis.com",
+    "url": "https://redis.com/redis-enterprise/redis-insight"
+  },
+  "bugs": {
+    "url": "https://github.com/"
+  },
+  "description": "Garnet Insight common packages for plugins",
+  "main": "./index.js",
+  "name": "common",
+  "version": "0.0.1",
+  "visualizations": [],
+  "dependencies": {}
+}

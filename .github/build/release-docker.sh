@@ -3,8 +3,8 @@ set -e
 
 HELP="Args:
 -v - Semver (3.0.0)
--d - Build image repository (Ex: -d redisinsight)
--r - Target repository (Ex: -r redis/redisinsight)
+-d - Build image repository (Ex: -d garnetinsight)
+-r - Target repository (Ex: -r redis/garnetinsight)
 "
 
 while getopts "v:d:r:h:" opt; do

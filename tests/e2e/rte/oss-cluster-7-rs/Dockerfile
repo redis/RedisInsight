@@ -8,7 +8,7 @@ COPY --from=rejson /usr/lib/redis/modules/rejson.so /etc/redis/modules/
 CMD ls -la
 RUN ls -la /etc/redis/modules
 
-ADD https://s3.amazonaws.com/redisinsight.test/public/rte/modules/redisearch-coord/redisearch-coord.so.tar.gz .
+ADD https://s3.amazonaws.com/garnetinsight.test/public/rte/modules/redisearch-coord/redisearch-coord.so.tar.gz .
 
 RUN ls -la
 RUN ls -la /etc/redis/modules

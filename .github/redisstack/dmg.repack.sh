@@ -4,7 +4,7 @@ set -e
 ARCH=${ARCH:-x64}
 WORKING_DIRECTORY=$(pwd)
 TAR_NAME="Redis-Insight-app-darwin.$ARCH.tar.gz"
-RI_APP_FOLDER_NAME="Redis Insight.app"
+RI_APP_FOLDER_NAME="Garnet Insight.app"
 TMP_FOLDER="/tmp/$RI_APP_FOLDER_NAME"
 
 rm -rf "$TMP_FOLDER"

@@ -1,43 +1,43 @@
 @echo off
 
 :: =============== Plugins ===============
-set PLUGINS_DIR=".\redisinsight\api\static\plugins"
-set PLUGINS_VENDOR_DIR=".\redisinsight\api\static\resources\plugins"
+set PLUGINS_DIR=".\garnetinsight\api\static\plugins"
+set PLUGINS_VENDOR_DIR=".\garnetinsight\api\static\resources\plugins"
 
 :: Default plugins assets
-call sass ".\redisinsight\ui\src\styles\main_plugin.scss" ".\vendor\global_styles.css" --style=compressed --no-source-map
-call sass ".\redisinsight\ui\src\styles\themes\dark_theme\darkTheme.scss" ".\vendor\dark_theme.css" --style=compressed --no-source-map
-call sass ".\redisinsight\ui\src\styles\themes\light_theme\lightTheme.scss" ".\vendor\light_theme.css" --style=compressed --no-source-map
-xcopy ".\redisinsight\ui\src\assets\fonts\graphik" ".\vendor\fonts\" /s /e /y
-xcopy ".\redisinsight\ui\src\assets\fonts\inconsolata" ".\vendor\fonts\" /s /e /y
+call sass ".\garnetinsight\ui\src\styles\main_plugin.scss" ".\vendor\global_styles.css" --style=compressed --no-source-map
+call sass ".\garnetinsight\ui\src\styles\themes\dark_theme\darkTheme.scss" ".\vendor\dark_theme.css" --style=compressed --no-source-map
+call sass ".\garnetinsight\ui\src\styles\themes\light_theme\lightTheme.scss" ".\vendor\light_theme.css" --style=compressed --no-source-map
+xcopy ".\garnetinsight\ui\src\assets\fonts\graphik" ".\vendor\fonts\" /s /e /y
+xcopy ".\garnetinsight\ui\src\assets\fonts\inconsolata" ".\vendor\fonts\" /s /e /y
 if not exist %PLUGINS_VENDOR_DIR% mkdir %PLUGINS_VENDOR_DIR%
 xcopy ".\vendor\." "%PLUGINS_VENDOR_DIR%" /s /e /y
 
 :: Install developing tools for plugins
-set PACKAGES_DIR=".\redisinsight\ui\src\packages"
+set PACKAGES_DIR=".\garnetinsight\ui\src\packages"
 call yarn --cwd "%PACKAGES_DIR%"
 
 :: Install plugins dependencies
-set REDISEARCH_DIR=".\redisinsight\ui\src\packages\redisearch"
+set REDISEARCH_DIR=".\garnetinsight\ui\src\packages\redisearch"
 call yarn --cwd "%REDISEARCH_DIR%"
 
-set REDISGRAPH_DIR=".\redisinsight\ui\src\packages\redisgraph"
+set REDISGRAPH_DIR=".\garnetinsight\ui\src\packages\redisgraph"
 call yarn --cwd "%REDISGRAPH_DIR%"
 
-set REDISTIMESERSIES_DIR=".\redisinsight\ui\src\packages\redistimeseries-app"
+set REDISTIMESERSIES_DIR=".\garnetinsight\ui\src\packages\redistimeseries-app"
 call yarn --cwd "%REDISTIMESERSIES_DIR%"
 
-set RI_EXPLIAIN_DIR=".\redisinsight\ui\src\packages\ri-explain"
+set RI_EXPLIAIN_DIR=".\garnetinsight\ui\src\packages\ri-explain"
 call yarn --cwd "%RI_EXPLIAIN_DIR%"
 
-set CLIENTS_LIST_DIR=".\redisinsight\ui\src\packages\clients-list"
+set CLIENTS_LIST_DIR=".\garnetinsight\ui\src\packages\clients-list"
 call yarn --cwd "%CLIENTS_LIST_DIR%"
 
 ::  Build all plugins and common libraries
 call yarn --cwd "%PACKAGES_DIR%" build
 
 :: Copy common libraries to plugins
-set COMMON_DIR=".\redisinsight\ui\src\packages\common"
+set COMMON_DIR=".\garnetinsight\ui\src\packages\common"
 if not exist "%PLUGINS_DIR%\common" mkdir "%PLUGINS_DIR%\common"
 xcopy /E /Y "%COMMON_DIR%\index*.js" "%PLUGINS_DIR%\common"
 copy "%COMMON_DIR%\package.json" "%PLUGINS_DIR%\common\"

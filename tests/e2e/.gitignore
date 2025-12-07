@@ -2,9 +2,9 @@ plugins
 report
 results
 remote
-.redisinsight
-.redisinsight-v2
-.redisinsight-app
+.garnetinsight
+.garnetinsight-v2
+.garnetinsight-app
 .redis-insight
 rihomedir
 rdi

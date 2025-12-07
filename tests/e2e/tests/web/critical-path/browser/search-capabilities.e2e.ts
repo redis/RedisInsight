@@ -190,9 +190,9 @@ test
         // Verify that user can navigate by link to create a Redis db
         await t.click(browserPage.redisearchFreeLink);
         await Common.checkURLContainsText(externalPageLinkFirst);
-        await Common.checkURLContainsText('utm_source=redisinsight');
+        await Common.checkURLContainsText('utm_source=garnetinsight');
         await Common.checkURLContainsText('utm_medium=app');
-        await Common.checkURLContainsText('utm_campaign=redisinsight_browser_search');
+        await Common.checkURLContainsText('utm_campaign=garnetinsight_browser_search');
     });
 test.requestHooks(logger)
     .before(async() => {

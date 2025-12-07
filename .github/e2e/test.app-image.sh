@@ -30,6 +30,6 @@ docker compose -f tests/e2e/rte.docker-compose.yml up --force-recreate -d -V
 TEST_DEBUG=0
 [ "$TEST_DEBUG" = "1" ] && export DEBUG=testcafe:*
 export COMMON_URL=$(tail -n 1 apppath)/resources/app.asar/dist/renderer/index.html
-export ELECTRON_PATH=$(tail -n 1 apppath)/redisinsight
+export ELECTRON_PATH=$(tail -n 1 apppath)/garnetinsight
 export RI_SOCKETS_CORS=true
 yarn --cwd tests/e2e dotenv -e .desktop.env yarn --cwd tests/e2e test:desktop:ci

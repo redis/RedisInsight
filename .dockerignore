@@ -13,4 +13,4 @@
 **/.temp_cache
 **/.nyc_output
 
-redisinsight/main.prod.js
+garnetinsight/main.prod.js

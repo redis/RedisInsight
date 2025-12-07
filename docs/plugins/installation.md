@@ -1,6 +1,6 @@
 # Plugin installation & Usage
 
-This document describes the guides to add `plugins` for the Workbench to Redis Insight.
+This document describes the guides to add `plugins` for the Workbench to Garnet Insight.
 
 ## Installation guide
 
@@ -22,7 +22,7 @@ page and run Redis command relevant for this visualization.
 The plugin may contain different visualizations for any Redis commands.
 Below you can find a guide to see command results in the uploaded plugin visualization:
 
-1. Open Redis Insight
+1. Open Garnet Insight
 2. Open a database added
 3. Open the Workbench
 4. Run the Redis command relevant for the plugin visualization

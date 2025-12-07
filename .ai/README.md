@@ -1,6 +1,6 @@
-# RedisInsight AI Development Rules
+# Garnetinsight AI Development Rules
 
-This directory contains the **single source of truth** for AI-assisted development rules and workflows in RedisInsight. These rules are used by multiple AI coding assistants:
+This directory contains the **single source of truth** for AI-assisted development rules and workflows in Garnetinsight. These rules are used by multiple AI coding assistants:
 
 - **Cursor** (via symlinks: `.cursor/rules/` and `.cursor/commands/`)
 - **Augment** (via symlink: `.augment/`)
@@ -84,7 +84,7 @@ The `mcp.json` file configures these services:
 
 ## Project Overview
 
-**RedisInsight** is a desktop application for Redis database management built with:
+**Garnetinsight** is a desktop application for Redis database management built with:
 
 - **Frontend**: React 18, TypeScript, Redux Toolkit, Elastic UI, Monaco Editor, Vite
 - **Backend**: NestJS, TypeScript, Node.js
@@ -94,7 +94,7 @@ The `mcp.json` file configures these services:
 **Architecture**:
 
 ```
-redisinsight/
+garnetinsight/
 ├── ui/          # React frontend (Vite + TypeScript)
 ├── api/         # NestJS backend (TypeScript)
 ├── desktop/     # Electron main process

@@ -49,15 +49,15 @@ jobs:
       # TODO: Is it needed?
       # - run: |
       #     mkdir electron
-      #     CURRENT_VERSION=$(jq -r ".version" redisinsight/package.json)
+      #     CURRENT_VERSION=$(jq -r ".version" garnetinsight/package.json)
       #     echo "Build version: $CURRENT_VERSION"
-      #     cp ./redisinsight/package.json ./electron/package.json
+      #     cp ./garnetinsight/package.json ./electron/package.json
       #     echo "$VERSION" > electron/version
       #     exit 0
       # - uses: actions/download-artifact@v4.1.0
       #   with:
       #     path: "."
-      # - run: cp ./electron/package.json ./redisinsight/
+      # - run: cp ./electron/package.json ./garnetinsight/
 
       - name: Install plugins dependencies and build plugins
         run: yarn build:statics

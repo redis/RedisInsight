@@ -11,7 +11,7 @@ const myRedisDatabasePage = new MyRedisDatabasePage();
 const databaseHelper = new DatabaseHelper();
 const databaseAPIRequests = new DatabaseAPIRequests();
 
-const externalPageLink = 'https://www.surveymonkey.com/r/redisinsight';
+const externalPageLink = 'https://www.surveymonkey.com/r/garnetinsight';
 
 fixture `User Survey`
     .meta({
@@ -28,7 +28,7 @@ test('Verify that user can use survey link', async t => {
     await t.expect(browserPage.userSurveyLink.visible).ok('Survey Link is not displayed');
 
     await t.click(browserPage.userSurveyLink);
-    // Verify that when users click on RI survey, they are redirected to https://www.surveymonkey.com/r/redisinsight
+    // Verify that when users click on RI survey, they are redirected to https://www.surveymonkey.com/r/garnetinsight
     await Common.checkURL(externalPageLink);
     await goBackHistory();
     // Workbench page

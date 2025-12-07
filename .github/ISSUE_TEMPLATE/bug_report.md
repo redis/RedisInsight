@@ -16,4 +16,4 @@ assignees: ''
 
 **Screenshots** (Paste or drag-and-drop a screenshot or a link to a recording)
 
-**Additional context** (Operating system, version of Redis Insight, Redis database version, Redis module version, database type, connection type, logs, or any other information)
+**Additional context** (Operating system, version of Garnet Insight, Redis database version, Redis module version, database type, connection type, logs, or any other information)

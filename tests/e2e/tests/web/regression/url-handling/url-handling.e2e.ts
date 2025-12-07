@@ -20,7 +20,7 @@ function generateLink(params: Record<string, any>): string {
     return (new URL(`?from=${from}`, commonUrl)).toString();
 }
 
-const redisConnect = 'redisinsight://databases/connect';
+const redisConnect = 'garnetinsight://databases/connect';
 
 fixture `Add DB from SM`
     .meta({ type: 'critical_path', rte: rte.none })

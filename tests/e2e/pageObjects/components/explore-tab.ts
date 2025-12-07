@@ -35,7 +35,7 @@ export class ExploreTab {
     uploadDataBulkBtn = Selector('[data-testid=upload-data-bulk-btn]');
     uploadDataBulkApplyBtn = Selector('[data-testid=upload-data-bulk-apply-btn]');
     downloadFileBtn = Selector('[data-testid=download-redis-upload-file]');
-    tutorialLink = Selector('[data-testid=redisinsight-link]');
+    tutorialLink = Selector('[data-testid=garnetinsight-link]');
 
     //CSS
     cssTutorialDeleteIcon = '[data-testid^=delete-tutorial-icon-]';

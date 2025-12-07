@@ -160,7 +160,7 @@ standards with good test coverage.
 ## High Priority Issues
 
 1. **Missing Input Validation** (Security)
-   - File: `redisinsight/api/src/user/user.service.ts:45`
+   - File: `garnetinsight/api/src/user/user.service.ts:45`
    - Issue: Email validation missing on backend
    - Recommendation: Add class-validator decorator to DTO
 
@@ -168,12 +168,12 @@ standards with good test coverage.
 
 1. **Performance Concern** (Performance)
 
-   - File: `redisinsight/ui/src/components/UserProfile.tsx:78`
+   - File: `garnetinsight/ui/src/components/UserProfile.tsx:78`
    - Issue: Inline function in render
    - Recommendation: Extract to useCallback
 
 2. **Test Flakiness Risk** (Testing)
-   - File: `redisinsight/ui/src/components/UserProfile.spec.tsx:45`
+   - File: `garnetinsight/ui/src/components/UserProfile.spec.tsx:45`
    - Issue: Direct state check without waitFor
    - Recommendation: Wrap assertion in waitFor
 

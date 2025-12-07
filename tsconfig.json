@@ -27,25 +27,25 @@
     "skipLibCheck": true,
     "types": ["node", "vite/client"],
     "paths": {
-      "uiSrc/*": ["redisinsight/ui/src/*"],
-      "apiSrc/*": ["redisinsight/api/src/*"],
-      "src/*": ["redisinsight/api/src/*"],
-      "desktopSrc/*": ["redisinsight/desktop/src/*"],
-      "tests/*": ["redisinsight/ui/__tests__/*"]
+      "uiSrc/*": ["garnetinsight/ui/src/*"],
+      "apiSrc/*": ["garnetinsight/api/src/*"],
+      "src/*": ["garnetinsight/api/src/*"],
+      "desktopSrc/*": ["garnetinsight/desktop/src/*"],
+      "tests/*": ["garnetinsight/ui/__tests__/*"]
     }
   },
   "include": [
-    "redisinsight/ui/src/**/*",
-    "redisinsight/ui/index.tsx",
-    "redisinsight/ui/indexElectron.tsx",
-    "redisinsight/desktop/**/*",
-    "redisinsight/ui/vite-env.d.ts",
+    "garnetinsight/ui/src/**/*",
+    "garnetinsight/ui/index.tsx",
+    "garnetinsight/ui/indexElectron.tsx",
+    "garnetinsight/desktop/**/*",
+    "garnetinsight/ui/vite-env.d.ts",
     "jest.config.cjs",
     "tests/playwright/**/*"
   ],
   "exclude": [
-    "redisinsight/desktop/dll/*",
-    "./redisinsight/api",
+    "garnetinsight/desktop/dll/*",
+    "./garnetinsight/api",
     "**/main.prod.js",
     "**/renderer.prod.js",
     "./release",

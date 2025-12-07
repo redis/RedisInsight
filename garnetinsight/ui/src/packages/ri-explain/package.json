@@ -1,0 +1,64 @@
+{
+  "author": {
+    "name": "Redis Ltd.",
+    "email": "support@redis.com",
+    "url": "https://redis.com/redis-enterprise/redis-insight"
+  },
+  "bugs": {
+    "url": "https://github.com/"
+  },
+  "description": "Show Profile/Explain Visualization",
+  "source": "./src/main.tsx",
+  "styles": "./dist/styles.css",
+  "main": "./dist/index.js",
+  "name": "explain-plugin",
+  "version": "0.0.2",
+  "scripts": {
+    "dev": "vite -c ../vite.config.mjs"
+  },
+  "targets": {
+    "main": false,
+    "module": {
+      "includeNodeModules": true
+    }
+  },
+  "visualizations": [
+    {
+      "id": "profile-explain-viz",
+      "name": "Visualization",
+      "activationMethod": "renderCore",
+      "matchCommands": [
+        "FT.EXPLAIN",
+        "FT.EXPLAINCLI",
+        "FT.PROFILE",
+        "GRAPH.EXPLAIN",
+        "GRAPH.PROFILE"
+      ],
+      "iconDark": "./dist/profile_icon_dark.svg",
+      "iconLight": "./dist/profile_icon_light.svg",
+      "description": "Profile/Explain plugin Visualization",
+      "default": true
+    }
+  ],
+  "devDependencies": {
+    "vite": "file:../node_modules/vite"
+  },
+  "dependencies": {
+    "@antv/hierarchy": "^0.6.8",
+    "@antv/x6": "^2.1.3",
+    "@antv/x6-react-shape": "^2.1.0",
+    "@elastic/eui": "34.6.0",
+    "@emotion/react": "^11.7.1",
+    "classnames": "^2.3.1",
+    "prop-types": "^15.8.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "garnetinsight-plugin-sdk": "^1.1.0",
+    "uuid": "^9.0.0"
+  },
+  "resolutions": {
+    "trim": "0.0.3",
+    "@elastic/eui/**/prismjs": "~1.30.0",
+    "**/semver": "^7.5.2"
+  }
+}

@@ -62,7 +62,7 @@ test
     })('Verify that user can upload tutorial with local zip file without manifest.json', async t => {
         // Verify that user can upload custom tutorials on docker version
         internalLinkName1 = 'probably-1';
-        const imageExternalPath = 'Redis Insight screen external';
+        const imageExternalPath = 'Garnet Insight screen external';
 
         // Verify that user can see the “MY TUTORIALS” section in the Enablement area.
         await browserPage.NavigationHeader.togglePanel(true);
@@ -105,7 +105,7 @@ test
         /* Uncomment after fix https://redislabs.atlassian.net/browse/RI-4486
         also need to add in probably-1.md file:
         Relative:
-        ![RedisInsight screen relative](../_images/image.png) */
+        ![Garnetinsight screen relative](../_images/image.png) */
         // Verify that user can see image in custom tutorials by providing relative path in md file
         // const imageRelative = await workbenchPage.getTutorialImageByAlt(imageRelativePath);
         // await workbenchPage.waitUntilImageRendered(imageRelative);
@@ -131,7 +131,7 @@ test
         }
     })('Verify that user can upload tutorial with URL with manifest.json', async t => {
         const labelFromManifest = 'Working with JSON label';
-        const link = 'https://github.com/RedisInsight/RedisInsight/raw/9155d0241f6937c213893a29fe24c2f560cd48f3/tests/e2e/test-data/upload-tutorials/TutorialsWithManifest.zip';
+        const link = 'https://github.com/Garnetinsight/Garnetinsight/raw/9155d0241f6937c213893a29fe24c2f560cd48f3/tests/e2e/test-data/upload-tutorials/TutorialsWithManifest.zip';
         internalLinkName1 = 'manifest-id';
         tutorialName = 'Tutorials with manifest';
         const summary = 'Summary for JSON';
@@ -304,7 +304,7 @@ test
         // Open existing database
         await myRedisDatabasePage.clickOnDBByName(ossStandaloneConfigEmpty.databaseName);
 
-        // Verify that user can use '[link](redisinsight:_?tutorialId={tutorialId})' syntax to cross-reference tutorials
+        // Verify that user can use '[link](garnetinsight:_?tutorialId={tutorialId})' syntax to cross-reference tutorials
         await t.click(tutorials.tutorialLink.withText('link2AnalyticsPageWithTutorial'));
         await t.expect(tutorials.getTutorialByName('INTRODUCTION').exists).ok('Tutorial not opened by link');
         await t.expect(memoryEfficiencyPage.analysisPage.visible).ok('Analysis page is not opened by link');

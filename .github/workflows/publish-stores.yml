@@ -31,19 +31,19 @@ jobs:
           DOCKER_V1_PASS: ${{ secrets.DOCKER_V1_PASS }}
           DOCKER_V1_REPO: ${{ secrets.DOCKER_V1_REPO }}
         run: |
-          appVersion=$(jq -r '.version' redisinsight/package.json)
+          appVersion=$(jq -r '.version' garnetinsight/package.json)
 
           docker login -u $DOCKER_USER -p $DOCKER_PASS
 
           ./.github/build/release-docker.sh \
-          -d redisinsight \
+          -d garnetinsight \
           -r $DOCKER_REPO \
           -v $appVersion
 
           docker login -u $DOCKER_V1_USER -p $DOCKER_V1_PASS
 
           ./.github/build/release-docker.sh \
-          -d redisinsight \
+          -d garnetinsight \
           -r $DOCKER_V1_REPO \
           -v $appVersion
 

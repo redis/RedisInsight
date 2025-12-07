@@ -67,11 +67,11 @@ jobs:
           base: ${{ github.ref }}
           filters: |
             frontend:
-              - 'redisinsight/ui/**'
+              - 'garnetinsight/ui/**'
             backend:
-              - 'redisinsight/api/**'
+              - 'garnetinsight/api/**'
             desktop:
-              - 'redisinsight/desktop/**'
+              - 'garnetinsight/desktop/**'
 
   frontend-tests:
     needs: changes

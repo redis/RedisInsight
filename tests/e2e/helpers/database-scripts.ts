@@ -3,7 +3,7 @@ import {workingDirectory} from '../helpers/conf';
 import {promisify} from "util";
 import {createTimeout} from "./utils";
 
-const dbPath = `${workingDirectory}/redisinsight.db`;
+const dbPath = `${workingDirectory}/garnetinsight.db`;
 
 export class DatabaseScripts {
     /**

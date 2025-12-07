@@ -7,7 +7,7 @@ import { Text } from 'uiSrc/components/base/text'
 import { type Theme as ThemeType } from 'uiSrc/components/base/theme/types'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { SearchInput } from 'uiSrc/components/base/inputs'
-import { ColorText } from '../../redisinsight/ui/src/components/base/text'
+import { ColorText } from '../../garnetinsight/ui/src/components/base/text'
 
 const skip = [
   'IconProps',

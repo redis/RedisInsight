@@ -15,7 +15,7 @@ fixture `Shortcuts`
         await databaseHelper.acceptLicenseTerms();
     });
 test('Verify that user can see a summary of Shortcuts by clicking "Keyboard Shortcuts" button in Help Center', async t => {
-    // const link = 'https://github.com/RedisInsight/RedisInsight/releases';
+    // const link = 'https://github.com/Garnetinsight/Garnetinsight/releases';
 
     // Click on help center icon and verify panel
     await t.click(myRedisDatabasePage.NavigationPanel.helpCenterButton);
@@ -36,7 +36,7 @@ test('Verify that user can see a summary of Shortcuts by clicking "Keyboard Shor
     await t.click(myRedisDatabasePage.NavigationPanel.helpCenterButton);
     await t.click(myRedisDatabasePage.NavigationPanel.HelpCenter.helpCenterReleaseNotesButton);
     // Verify redirected link opening Release Notes in Help Center
-    await Common.checkURL('https://github.com/redis/RedisInsight/releases');
+    await Common.checkURL('https://github.com/redis/Garnetinsight/releases');
 });
 test('Verify that user can see description of the “up” shortcut in the Help Center > Keyboard Shortcuts > Workbench table', async t => {
     const description = [

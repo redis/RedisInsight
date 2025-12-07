@@ -1,0 +1,20 @@
+{
+  "name": "garnetinsight",
+  "appName": "Garnet Insight",
+  "productName": "Garnet Insight",
+  "version": "2.66.0",
+  "description": "Garnet Insight",
+  "author": {
+    "name": "Redis Ltd.",
+    "email": "support@redis.com",
+    "url": "https://redis.com/redis-enterprise/redis-insight"
+  },
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "stats": "NODE_OPTIONS=--max_old_space_size=8192 npx vite-bundle-visualizer --open -o ./dist-stats.html --sourcemap"
+  },
+  "resolutions": {
+    "**/form-data": "^4.0.4"
+  }
+}

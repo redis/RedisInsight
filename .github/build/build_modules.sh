@@ -21,22 +21,22 @@ echo "Libc: $LIBC"
 echo "npm target libc: $npm_config_target_libc"
 echo "Filname: $FILENAME"
 
-rm -rf redisinsight/api/node_modules
+rm -rf garnetinsight/api/node_modules
 
 npm_config_arch="$ARCH" \
 npm_config_target_arch="$ARCH" \
 npm_config_platform="$PLATFORM" \
 npm_config_target_platform="$PLATFORM" \
-yarn --cwd ./redisinsight/api install --production
+yarn --cwd ./garnetinsight/api install --production
 
-cp redisinsight/api/.yarnclean.prod redisinsight/api/.yarnclean
-yarn --cwd ./redisinsight/api autoclean --force
+cp garnetinsight/api/.yarnclean.prod garnetinsight/api/.yarnclean
+yarn --cwd ./garnetinsight/api autoclean --force
 
-rm -rf redisinsight/build.zip
+rm -rf garnetinsight/build.zip
 
-cp LICENSE ./redisinsight
+cp LICENSE ./garnetinsight
 
-cd redisinsight && tar -czf build.tar.gz \
+cd garnetinsight && tar -czf build.tar.gz \
 --exclude="api/node_modules/**/build/node_gyp_bins/python3" \
 api/node_modules \
 api/dist \
@@ -45,7 +45,7 @@ LICENSE \
 && cd ..
 
 mkdir -p release/web
-cp redisinsight/build.tar.gz release/web/"$FILENAME"
+cp garnetinsight/build.tar.gz release/web/"$FILENAME"
 
 # Minify build via esbuild
 echo "Start minifing workflow"
@@ -53,12 +53,12 @@ npm_config_arch="$ARCH" \
 npm_config_target_arch="$ARCH" \
 npm_config_platform="$PLATFORM" \
 npm_config_target_platform="$PLATFORM" \
-yarn --cwd ./redisinsight/api install
-yarn --cwd ./redisinsight/api minify:prod
+yarn --cwd ./garnetinsight/api install
+yarn --cwd ./garnetinsight/api minify:prod
 
 
-PACKAGE_JSON_PATH="./redisinsight/api/package.json"
-APP_PACKAGE_JSON_PATH="./redisinsight/package.json"
+PACKAGE_JSON_PATH="./garnetinsight/api/package.json"
+APP_PACKAGE_JSON_PATH="./garnetinsight/package.json"
 
 # Extract dependencies from the app package.json
 BINARY_PACKAGES=$(jq -r '.dependencies | keys[]' "$APP_PACKAGE_JSON_PATH" | jq -R -s -c 'split("\n")[:-1]')
@@ -78,11 +78,11 @@ npm_config_arch="$ARCH" \
 npm_config_target_arch="$ARCH" \
 npm_config_platform="$PLATFORM" \
 npm_config_target_platform="$PLATFORM" \
-yarn --cwd ./redisinsight/api install --production
-yarn --cwd ./redisinsight/api autoclean --force
+yarn --cwd ./garnetinsight/api install --production
+yarn --cwd ./garnetinsight/api autoclean --force
 
 # Compress minified build
-cd redisinsight && tar -czf build-mini.tar.gz \
+cd garnetinsight && tar -czf build-mini.tar.gz \
 --exclude="api/node_modules/**/build/node_gyp_bins/python3" \
 api/node_modules \
 api/dist-minified \
@@ -91,8 +91,8 @@ LICENSE \
 && cd ..
 
 mkdir -p release/web-mini
-cp redisinsight/build-mini.tar.gz release/web-mini/"$FILENAME"
+cp garnetinsight/build-mini.tar.gz release/web-mini/"$FILENAME"
 
 # Restore the original package.json and yarn.lock
-git restore redisinsight/api/yarn.lock redisinsight/api/package.json
+git restore garnetinsight/api/yarn.lock garnetinsight/api/package.json
 

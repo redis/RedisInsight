@@ -34,11 +34,11 @@ export class SsoAuthorization {
             const parts = currentUrl.split('?');
             const modifiedUrl = parts.length > 1 ? parts[1] : currentUrl;
 
-            const protocol = 'redisinsight://';
+            const protocol = 'garnetinsight://';
             const callbackUrl = 'cloud/oauth/callback';
             const redirectUrl = `${protocol}${callbackUrl}?${modifiedUrl}`;
 
-            await this.openRedisInsightWithDeeplink(redirectUrl);
+            await this.openGarnetinsightWithDeeplink(redirectUrl);
         } catch (error) {
             console.error('Error during SSO:', error);
             // Take a screenshot if there's an error
@@ -59,22 +59,22 @@ export class SsoAuthorization {
     }
 
     /**
-     * Open Redis Insight electron app using deeplink
+     * Open Garnet Insight electron app using deeplink
      * @param redirectUrl The redirect url for deeplink
      */
-    static async openRedisInsightWithDeeplink(redirectUrl: string) {
+    static async openGarnetinsightWithDeeplink(redirectUrl: string) {
         if (process.platform === 'linux') {
             console.log('redirectUrl: ', redirectUrl);
             exec(`xdg-open "${redirectUrl}"`, (error, stdout, stderr) => {
                 if (error) {
-                    console.error('Error opening Redis Insight on Linux:', error);
+                    console.error('Error opening Garnet Insight on Linux:', error);
                     return;
                 }
-                console.log('Redis Insight opened successfully:', stdout);
+                console.log('Garnet Insight opened successfully:', stdout);
             });
         } else {
             const open = (await import('open')).default;
-            await open(redirectUrl, { app: { name: 'Redis Insight' } });
+            await open(redirectUrl, { app: { name: 'Garnet Insight' } });
         }
     }
 

@@ -27,29 +27,29 @@ if (!semverRegex.test(newVersion)) {
 
 const filesToUpdate = [
   {
-    path: path.join(__dirname, '../redisinsight/package.json'),
+    path: path.join(__dirname, '../garnetinsight/package.json'),
     regex: /"version":\s*"([^"]+)"/,
     replacement: (match, p1) => match.replace(p1, newVersion),
   },
   {
-    path: path.join(__dirname, '../redisinsight/api/package.json'),
+    path: path.join(__dirname, '../garnetinsight/api/package.json'),
     regex: /"version":\s*"([^"]+)"/,
     replacement: (match, p1) => match.replace(p1, newVersion),
   },
   {
-    path: path.join(__dirname, '../redisinsight/api/config/default.ts'),
+    path: path.join(__dirname, '../garnetinsight/api/config/default.ts'),
     regex: /appVersion:\s*process\.env\.RI_APP_VERSION\s*\|\|\s*'([^']+)'/,
     replacement: (match, p1) => match.replace(p1, newVersion),
   },
   {
-    path: path.join(__dirname, '../redisinsight/api/config/swagger.ts'),
+    path: path.join(__dirname, '../garnetinsight/api/config/swagger.ts'),
     regex: /version:\s*'([^']+)'/,
     replacement: (match, p1) => match.replace(p1, newVersion),
   },
   {
     path: path.join(
       __dirname,
-      '../redisinsight/desktop/src/lib/aboutPanel/aboutPanel.ts',
+      '../garnetinsight/desktop/src/lib/aboutPanel/aboutPanel.ts',
     ),
     regex: /app\.getVersion\(\)\s*\|\|\s*'([^']+)'/,
     replacement: (match, p1) => match.replace(p1, newVersion),

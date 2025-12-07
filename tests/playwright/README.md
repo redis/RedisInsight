@@ -1,6 +1,6 @@
-# RedisInsight Playwright Tests
+# Garnetinsight Playwright Tests
 
-This project contains end-to-end tests for RedisInsight using [Playwright](https://playwright.dev/). It supports running tests against three different RedisInsight builds:
+This project contains end-to-end tests for Garnetinsight using [Playwright](https://playwright.dev/). It supports running tests against three different Garnetinsight builds:
 
 - **Docker Build**
 - **Electron Build**
@@ -35,7 +35,7 @@ Before running any tests, make sure you have the dependencies installed:
 ## Prerequisites
 
 - Docker installed and running.
-- Redis test environment and RedisInsight configurations from the `tests/e2e` project.
+- Redis test environment and Garnetinsight configurations from the `tests/e2e` project.
 
 ## Environment-Specific Setup and Test Execution
 
@@ -51,7 +51,7 @@ docker compose -p test-docker -f rte.docker-compose.yml up --force-recreate --de
 
 ### Docker Build
 
-- Build the Docker image locally or trigger a [GitHub Action](https://github.com/RedisInsight/RedisInsight/actions/workflows/manual-build.yml) to build and download the artifact (`docker-linux-alpine.amd64.tar`).
+- Build the Docker image locally or trigger a [GitHub Action](https://github.com/Garnetinsight/Garnetinsight/actions/workflows/manual-build.yml) to build and download the artifact (`docker-linux-alpine.amd64.tar`).
 - Load the image:
   ```shell
   docker load -i docker-linux-alpine.amd64.tar

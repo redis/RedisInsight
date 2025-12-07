@@ -1,23 +1,23 @@
 #!/bin/bash
 set -e
 
-OLD_INSTALL_PATH="/opt/Redis Insight"
-NEW_INSTALL_PATH="/opt/redisinsight"
-SYMLINK_PATH="/usr/bin/redisinsight"
-DESKTOP_FILE="/usr/share/applications/redisinsight.desktop"
+OLD_INSTALL_PATH="/opt/Garnet Insight"
+NEW_INSTALL_PATH="/opt/garnetinsight"
+SYMLINK_PATH="/usr/bin/garnetinsight"
+DESKTOP_FILE="/usr/share/applications/garnetinsight.desktop"
 
-RUNNING_PIDS=$(pgrep -f "$NEW_INSTALL_PATH/redisinsight" || pgrep -f "$OLD_INSTALL_PATH/redisinsight" || true)
+RUNNING_PIDS=$(pgrep -f "$NEW_INSTALL_PATH/garnetinsight" || pgrep -f "$OLD_INSTALL_PATH/garnetinsight" || true)
 
 for PID in $RUNNING_PIDS; do
-    echo "Found running RedisInsight instance (PID: $PID), terminating..."
+    echo "Found running GarnetInsight instance (PID: $PID), terminating..."
     kill $PID 2>/dev/null || true
 done
 
 sleep 2
 
-REMAINING_PIDS=$(pgrep -f "$NEW_INSTALL_PATH/redisinsight" || pgrep -f "$OLD_INSTALL_PATH/redisinsight" || true)
+REMAINING_PIDS=$(pgrep -f "$NEW_INSTALL_PATH/garnetinsight" || pgrep -f "$OLD_INSTALL_PATH/garnetinsight" || true)
 for PID in $REMAINING_PIDS; do
-    echo "Force killing remaining RedisInsight instance (PID: $PID)..."
+    echo "Force killing remaining GarnetInsight instance (PID: $PID)..."
     kill -9 $PID 2>/dev/null || true
 done
 
@@ -41,4 +41,4 @@ if command -v update-desktop-database >/dev/null 2>&1; then
     update-desktop-database 2>/dev/null || true
 fi
 
-echo "RedisInsight cleanup completed successfully" 
+echo "GarnetInsight cleanup completed successfully" 

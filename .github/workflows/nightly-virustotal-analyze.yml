@@ -11,7 +11,7 @@ on:
       file_url:
         description: "Provide a file URL for single file scanning (required for 'single' mode)"
         required: false
-        default: 'https://s3.amazonaws.com/redisinsight.download/public/latest/Redis-Insight-mac-arm64.dmg'
+        default: 'https://s3.amazonaws.com/garnetinsight.download/public/latest/Redis-Insight-mac-arm64.dmg'
         type: string
   schedule:
     - cron: '0 0 * * *'
@@ -19,11 +19,11 @@ on:
 env:
   VIRUSTOTAL_API_KEY: ${{ secrets.VIRUSTOTAL_API_KEY }}
   DEFAULT_FILES: |
-    https://s3.amazonaws.com/redisinsight.download/public/latest/Redis-Insight-mac-x64.dmg
-    https://s3.amazonaws.com/redisinsight.download/public/latest/Redis-Insight-mac-arm64.dmg
-    https://s3.amazonaws.com/redisinsight.download/public/latest/Redis-Insight-win-installer.exe
-    https://s3.amazonaws.com/redisinsight.download/public/latest/Redis-Insight-linux-x86_64.AppImage
-    https://s3.amazonaws.com/redisinsight.download/public/latest/Redis-Insight-linux-amd64.deb
+    https://s3.amazonaws.com/garnetinsight.download/public/latest/Redis-Insight-mac-x64.dmg
+    https://s3.amazonaws.com/garnetinsight.download/public/latest/Redis-Insight-mac-arm64.dmg
+    https://s3.amazonaws.com/garnetinsight.download/public/latest/Redis-Insight-win-installer.exe
+    https://s3.amazonaws.com/garnetinsight.download/public/latest/Redis-Insight-linux-x86_64.AppImage
+    https://s3.amazonaws.com/garnetinsight.download/public/latest/Redis-Insight-linux-amd64.deb
 
 jobs:
   analyze:

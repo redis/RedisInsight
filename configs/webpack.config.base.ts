@@ -1,7 +1,7 @@
 import webpack from 'webpack'
 import TsconfigPathsPlugins from 'tsconfig-paths-webpack-plugin'
 import webpackPaths from './webpack.paths'
-import { dependencies as externals } from '../redisinsight/package.json'
+import { dependencies as externals } from '../garnetinsight/package.json'
 import { resolve } from 'path'
 
 const configuration: webpack.Configuration = {
@@ -43,7 +43,7 @@ const configuration: webpack.Configuration = {
     plugins: [new TsconfigPathsPlugins()],
     alias: {
       'class-transformer': resolve(
-        './redisinsight/api/node_modules/class-transformer/cjs',
+        './garnetinsight/api/node_modules/class-transformer/cjs',
       ),
     },
   },

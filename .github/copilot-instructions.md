@@ -1,4 +1,4 @@
-# GitHub Copilot Instructions for RedisInsight
+# GitHub Copilot Instructions for Garnetinsight
 
 > **📚 All development rules and guidelines are in the `.ai/` directory**
 
@@ -70,9 +70,9 @@ This project uses a centralized AI rules structure. All detailed guidelines, sta
 
 **Module Aliases:**
 
-- `uiSrc/*` → `redisinsight/ui/src/*`
-- `apiSrc/*` → `redisinsight/api/src/*`
-- `desktopSrc/*` → `redisinsight/desktop/src/*`
+- `uiSrc/*` → `garnetinsight/ui/src/*`
+- `apiSrc/*` → `garnetinsight/api/src/*`
+- `desktopSrc/*` → `garnetinsight/desktop/src/*`
 
 ## 📖 Additional Documentation
 

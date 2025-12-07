@@ -1,9 +1,9 @@
 {
-  "productName": "Redis Insight",
-  "appId": "org.RedisLabs.RedisInsight-V2",
+  "productName": "Garnet Insight",
+  "appId": "org.RedisLabs.GarnetInsight-V2",
   "copyright": "Copyright © 2024 Redis Ltd.",
   "files": ["dist", "node_modules", "package.json"],
-  "artifactName": "Redis-Insight-${os}-${arch}.${ext}",
+  "artifactName": "Garnet-Insight-${os}-${arch}.${ext}",
   "compression": "normal",
   "npmRebuild": false,
   "nodeGypRebuild": false,
@@ -11,9 +11,9 @@
   "asarUnpack": ["node_modules/keytar", "node_modules/sqlite3"],
   "protocols": [
     {
-      "name": "RedisInsight",
+      "name": "GarnetInsight",
       "role": "Viewer",
-      "schemes": ["redisinsight"]
+      "schemes": ["garnetinsight"]
     }
   ],
   "mac": {
@@ -32,7 +32,7 @@
     "hardenedRuntime": true,
     "darkModeSupport": true,
     "icon": "resources/icons/1024x1024.png",
-    "artifactName": "Redis-Insight-${os}-${arch}.${ext}",
+    "artifactName": "Garnet-Insight-${os}-${arch}.${ext}",
     "entitlements": "resources/entitlements.mac.plist",
     "entitlementsInherit": "resources/entitlements.mac.plist",
     "gatekeeperAssess": false
@@ -49,7 +49,7 @@
       "Contents/Resources/app.asar.unpacked/node_modules/sqlite3/build/Release/node_sqlite3.node",
       "Contents/Resources/app.asar.unpacked/node_modules/keytar/build/Release/keytar.node"
     ],
-    "artifactName": "Redis-Insight-${os}-${arch}-mas.${ext}"
+    "artifactName": "Garnet-Insight-${os}-${arch}-mas.${ext}"
   },
   "masDev": {
     "mergeASARs": false,
@@ -63,7 +63,7 @@
       "Contents/Resources/app.asar.unpacked/node_modules/sqlite3/build/Release/node_sqlite3.node",
       "Contents/Resources/app.asar.unpacked/node_modules/keytar/build/Release/keytar.node"
     ],
-    "artifactName": "Redis-Insight-${os}-${arch}-masDev.${ext}"
+    "artifactName": "Garnet-Insight-${os}-${arch}-masDev.${ext}"
   },
   "dmg": {
     "contents": [
@@ -81,7 +81,7 @@
   },
   "win": {
     "target": ["nsis"],
-    "artifactName": "Redis-Insight-${os}-installer.${ext}",
+    "artifactName": "Garnet-Insight-${os}-installer.${ext}",
     "icon": "resources/icon.ico",
     "legalTrademarks": "Redis Inc., Redis Labs Inc."
   },
@@ -110,14 +110,14 @@
         "arch": ["x64"]
       }
     ],
-    "synopsis": "Redis GUI by Redis Ltd.",
+    "synopsis": "Garnet GUI by Redis Ltd.",
     "category": "Development",
-    "artifactName": "Redis-Insight-${os}-${arch}.${ext}",
+    "artifactName": "Garnet-Insight-${os}-${arch}.${ext}",
     "desktop": {
       "entry": {
-        "Name": "Redis Insight",
+        "Name": "Garnet Insight",
         "Type": "Application",
-        "Comment": "Redis GUI by Redis Ltd"
+        "Comment": "Garnet GUI by Redis Ltd"
       }
     }
   },
@@ -166,30 +166,30 @@
     ]
   },
   "directories": {
-    "app": "redisinsight",
+    "app": "garnetinsight",
     "buildResources": "resources",
     "output": "release"
   },
   "extraResources": [
     "./resources/**",
     {
-      "from": "./redisinsight/api/static",
+      "from": "./garnetinsight/api/static",
       "to": "static",
       "filter": ["**/*"]
     },
     {
-      "from": "./redisinsight/api/defaults",
+      "from": "./garnetinsight/api/defaults",
       "to": "defaults",
       "filter": ["**/*"]
     },
     {
-      "from": "./redisinsight/api/data",
+      "from": "./garnetinsight/api/data",
       "to": "data",
       "filter": ["**/*"]
     },
     {
       "from": "LICENSE",
-      "to": "LICENSE.redisinsight.txt"
+      "to": "LICENSE.garnetinsight.txt"
     },
     {
       "from": "./resources/app",

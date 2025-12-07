@@ -32,7 +32,7 @@ runs:
     - name: Add certs to the keychain
       shell: bash
       env:
-        KEYCHAIN: redisinsight.keychain
+        KEYCHAIN: garnetinsight.keychain
         CSC_KEY_PASSWORD: ${{ inputs.CSC_KEY_PASSWORD }}
         CSC_MAS_PASSWORD: ${{ inputs.CSC_MAS_PASSWORD }}
         CSC_MAC_INSTALLER_PASSWORD: ${{ inputs.CSC_MAC_INSTALLER_PASSWORD }}

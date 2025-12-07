@@ -212,8 +212,8 @@ test
         await databaseHelper.acceptLicenseTerms();
     })
     .skip('Verify that create free cloud db is displayed always', async t => {
-        const externalPageLinkList = 'https://redis.io/try-free?utm_source=redisinsight&utm_medium=app&utm_campaign=list_of_databases';
-        const externalPageLinkNavigation = 'https://redis.io/try-free?utm_source=redisinsight&utm_medium=app&utm_campaign=navigation_menu';
+        const externalPageLinkList = 'https://redis.io/try-free?utm_source=garnetinsight&utm_medium=app&utm_campaign=list_of_databases';
+        const externalPageLinkNavigation = 'https://redis.io/try-free?utm_source=garnetinsight&utm_medium=app&utm_campaign=navigation_menu';
 
         await t.expect(myRedisDatabasePage.dbNameList.exists).notOk('some db is added');
         await t.expect(myRedisDatabasePage.tableRowContent.textContent).contains('Free Redis Cloud DB', `create free db row is not displayed`);

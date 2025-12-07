@@ -34,39 +34,39 @@ async function generateBuildSummary() {
     // Mapping file names to Markdown links and categories
     const fileMappings = {
       'Redis-Insight-mac-arm64.dmg': {
-        name: 'Redis Insight for Mac (arm64 DMG)',
+        name: 'Garnet Insight for Mac (arm64 DMG)',
         category: Categories.MacOS,
       },
       'Redis-Insight-mac-x64.dmg': {
-        name: 'Redis Insight for Mac (x64 DMG)',
+        name: 'Garnet Insight for Mac (x64 DMG)',
         category: Categories.MacOS,
       },
       'Redis-Insight-win-installer.exe': {
-        name: 'Redis Insight Windows Installer (exe)',
+        name: 'Garnet Insight Windows Installer (exe)',
         category: Categories.Windows,
       },
       'Redis-Insight-linux-x86_64.AppImage': {
-        name: 'Redis Insight for Linux (AppImage)',
+        name: 'Garnet Insight for Linux (AppImage)',
         category: Categories.Linux,
       },
       'Redis-Insight-linux-amd64.deb': {
-        name: 'Redis Insight for Linux (deb)',
+        name: 'Garnet Insight for Linux (deb)',
         category: Categories.Linux,
       },
       'Redis-Insight-linux-amd64.snap': {
-        name: 'Redis Insight for Linux (snap)',
+        name: 'Garnet Insight for Linux (snap)',
         category: Categories.Linux,
       },
       'Redis-Insight-linux-x86_64.rpm': {
-        name: 'Redis Insight for Linux (rpm)',
+        name: 'Garnet Insight for Linux (rpm)',
         category: Categories.Linux,
       },
       'docker/docker-linux-alpine.amd64.tar': {
-        name: 'Redis Insight Docker Image (amd64)',
+        name: 'Garnet Insight Docker Image (amd64)',
         category: Categories.Docker,
       },
       'docker/docker-linux-alpine.arm64.tar': {
-        name: 'Redis Insight Docker Image (arm64)',
+        name: 'Garnet Insight Docker Image (arm64)',
         category: Categories.Docker,
       },
     };

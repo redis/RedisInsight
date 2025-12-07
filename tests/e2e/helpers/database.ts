@@ -71,7 +71,7 @@ export class DatabaseHelper {
             .ok('User is not on the second step of Sentinel flow', {
                 timeout: 10000
             });
-        // Select Master Groups and Add to Redis Insight
+        // Select Master Groups and Add to Garnet Insight
         await discoverMasterGroupsPage.addMasterGroups();
         await t.click(autoDiscoverREDatabases.viewDatabasesButton);
     }

@@ -5,7 +5,7 @@ logs
 *.log
 
 # Tests coverage results
-redisinsight/api/test/test-runs/coverage
+garnetinsight/api/test/test-runs/coverage
 
 # Runtime data
 pids
@@ -57,8 +57,8 @@ package.json
 *.scss.d.ts
 
 # temp folders - remove in future after fix all issues
-redisinsight/ui/src/packages/redisgraph
-redisinsight/ui/src/packages/redistimeseries-app
+garnetinsight/ui/src/packages/redisgraph
+garnetinsight/ui/src/packages/redistimeseries-app
 
 /report
 __mocks__

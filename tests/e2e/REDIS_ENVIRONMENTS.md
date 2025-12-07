@@ -1,6 +1,6 @@
 # Redis Test Environments - Connection Guide
 
-This document lists all available Redis environments for testing RedisInsight.
+This document lists all available Redis environments for testing Garnetinsight.
 
 ## 🚀 Quick Start
 
@@ -22,8 +22,8 @@ docker-compose -f vpn.docker-compose.yml up -d
 
 ### 4. Import Pre-configured Databases (Optional)
 For quick setup, import all databases at once:
-- **File**: `tests/e2e/rte/RedisInsight_Connections.json`
-- **In RedisInsight**: Datasbes → + Connect existing database → Import → Select the JSON file
+- **File**: `tests/e2e/rte/Garnetinsight_Connections.json`
+- **In Garnetinsight**: Datasbes → + Connect existing database → Import → Select the JSON file
 - **Includes**: 12+ pre-configured connections (standalone, clusters, sentinel, SSH tunnel example)
 
 ### 5. Ready to Test!

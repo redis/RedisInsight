@@ -18,8 +18,8 @@ RUN apk update && apk upgrade --no-cache libcrypto3 libssl3
 WORKDIR /usr/src/app
 
 # copy artifacts built in previous stage to this one
-ADD $DIST /usr/src/app/redisinsight
-RUN ls -la /usr/src/app/redisinsight
+ADD $DIST /usr/src/app/garnetinsight
+RUN ls -la /usr/src/app/garnetinsight
 
 # folder to store local database, plugins, logs and all other files
 RUN mkdir -p /data && chown -R node:node /data
@@ -35,4 +35,4 @@ EXPOSE 5540
 USER node
 
 # serve the application 🚀
-ENTRYPOINT ["./docker-entry.sh", "node", "redisinsight/api/dist/src/main"]
+ENTRYPOINT ["./docker-entry.sh", "node", "garnetinsight/api/dist/src/main"]

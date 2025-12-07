@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redis Query Engine plugin</title>
+
+    <script type="module" src="./src/main.tsx"></script>
+    <!-- Run Conditions-->
+    <% if(isDev){ %>
+    <link
+      rel="stylesheet"
+      href="https://s3.us-east-1.amazonaws.com/garnetinsight.test/public/plugins/static/global_styles.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://s3.us-east-1.amazonaws.com/garnetinsight.test/public/plugins/static/dark_theme.css"
+    />
+    <!-- <link rel="stylesheet" href="https://s3.us-east-1.amazonaws.com/garnetinsight.test/public/plugins/static/light_theme.css" /> -->
+    <% } %>
+  </head>
+  <body class="theme_DARK">
+    <div id="app"></div>
+  </body>
+</html>

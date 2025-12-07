@@ -18,12 +18,12 @@
       "request": "launch",
       "name": "Debug API Integration Tests",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/redisinsight/api/node_modules/ts-mocha/bin/ts-mocha",
+      "program": "${workspaceFolder}/garnetinsight/api/node_modules/ts-mocha/bin/ts-mocha",
       "args": ["--paths", "--config", "./test/api/.mocharc.yml"],
       "env": {
         "NODE_ENV": "test"
       },
-      "cwd": "${workspaceFolder}/redisinsight/api",
+      "cwd": "${workspaceFolder}/garnetinsight/api",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
     }

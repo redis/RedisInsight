@@ -62,7 +62,7 @@ module.exports = {
   overrides: [
     // Backend/API specific rules
     {
-      files: ['redisinsight/api/**/*.ts', 'redisinsight/api/**/*.js'],
+      files: ['garnetinsight/api/**/*.ts', 'garnetinsight/api/**/*.js'],
       env: {
         node: true,
         browser: false,
@@ -100,14 +100,14 @@ module.exports = {
         'prefer-const': 'error',
       },
       parserOptions: {
-        project: path.join(__dirname, 'redisinsight/api/tsconfig.json'),
+        project: path.join(__dirname, 'garnetinsight/api/tsconfig.json'),
       },
     },
     // Backend test files
     {
       files: [
-        'redisinsight/api/**/*.spec.ts',
-        'redisinsight/api/**/__mocks__/**/*',
+        'garnetinsight/api/**/*.spec.ts',
+        'garnetinsight/api/**/__mocks__/**/*',
       ],
       rules: {
         'sonarjs/no-duplicate-string': 0,
@@ -118,10 +118,10 @@ module.exports = {
     // Frontend/UI specific rules
     {
       files: [
-        'redisinsight/ui/**/*.ts',
-        'redisinsight/ui/**/*.tsx',
-        'redisinsight/ui/**/*.js',
-        'redisinsight/ui/**/*.jsx',
+        'garnetinsight/ui/**/*.ts',
+        'garnetinsight/ui/**/*.tsx',
+        'garnetinsight/ui/**/*.js',
+        'garnetinsight/ui/**/*.jsx',
       ],
       env: {
         browser: true,
@@ -233,7 +233,7 @@ module.exports = {
     },
     // UI test files
     {
-      files: ['redisinsight/ui/**/*.spec.ts', 'redisinsight/ui/**/*.spec.tsx'],
+      files: ['garnetinsight/ui/**/*.spec.ts', 'garnetinsight/ui/**/*.spec.tsx'],
       env: {
         jest: true,
       },
@@ -257,7 +257,7 @@ module.exports = {
     },
     // Temporary disable some rules for API
     {
-      files: ['redisinsight/api/**/*.ts', 'redisinsight/api/esbuild.js'],
+      files: ['garnetinsight/api/**/*.ts', 'garnetinsight/api/esbuild.js'],
       rules: {
         semi: 'off',
         '@typescript-eslint/semi': 'off',
@@ -291,9 +291,9 @@ module.exports = {
     },
     // Temporary (maybe) disable some rules for API tests
     {
-      files: ['redisinsight/api/test/**/*.ts'],
+      files: ['garnetinsight/api/test/**/*.ts'],
       // In order to lint just the test files
-      // make sure there's no override on 'redisinsight/api'
+      // make sure there's no override on 'garnetinsight/api'
       // a.k.a. comment the above section
       rules: {
         '@typescript-eslint/no-loop-func': 'off',
@@ -355,7 +355,7 @@ module.exports = {
     },
     // Temporary disable some rules for UI
     {
-      files: ['redisinsight/ui/**/*.ts*'],
+      files: ['garnetinsight/ui/**/*.ts*'],
       rules: {
         'sonarjs/cognitive-complexity': 'off',
         '@typescript-eslint/no-unused-vars': 'off',
@@ -383,9 +383,9 @@ module.exports = {
     // Temporary disable some rules for UI packages
     {
       // In order to lint just UI packages
-      // make sure there's no override on 'redisinsight/ui'
+      // make sure there's no override on 'garnetinsight/ui'
       // a.k.a. comment the above section
-      files: ['redisinsight/ui/src/packages/**/*.ts*'],
+      files: ['garnetinsight/ui/src/packages/**/*.ts*'],
       rules: {
         'import/extensions': 'off',
         'react/prop-types': 'off',
@@ -419,11 +419,11 @@ module.exports = {
     'dist',
     'node_modules',
     'release',
-    'redisinsight/ui/src/packages/**/icons/*.js*',
-    'redisinsight/ui/src/packages/**',
-    'redisinsight/api/report/**',
-    'redisinsight/api/static/**',
-    'redisinsight/api/migration/**',
+    'garnetinsight/ui/src/packages/**/icons/*.js*',
+    'garnetinsight/ui/src/packages/**',
+    'garnetinsight/api/report/**',
+    'garnetinsight/api/static/**',
+    'garnetinsight/api/migration/**',
     // Config files that don't need linting
     '.eslintrc.js',
     'electron-builder-mas.js',

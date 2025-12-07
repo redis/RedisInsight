@@ -63,8 +63,8 @@ test
             .click(myRedisDatabasePage.exportSelectedDbsBtn)
             .wait(2000);
 
-        // Verify that user can see “RedisInsight_connections_{timestamp}” as the default file name
-        foundExportedFiles = await databasesActions.findFilesByFileStarts(fileDownloadPath, 'RedisInsight_connections_');
+        // Verify that user can see “Garnetinsight_connections_{timestamp}” as the default file name
+        foundExportedFiles = await databasesActions.findFilesByFileStarts(fileDownloadPath, 'Garnetinsight_connections_');
         // Verify that user can export database with passwords and client certificates with “Export database passwords and client certificates” control selected
         await t.expect(foundExportedFiles.length).gt(0, 'The Exported file not saved');
 
@@ -128,7 +128,7 @@ test
             .click(myRedisDatabasePage.exportSelectedDbsBtn)
             .wait(2000);
 
-        foundExportedFiles = await databasesActions.findFilesByFileStarts(fileDownloadPath, 'RedisInsight_connections_');
+        foundExportedFiles = await databasesActions.findFilesByFileStarts(fileDownloadPath, 'Garnetinsight_connections_');
         const parsedExportedJson = databasesActions.parseDbJsonByPath(joinPath(fileDownloadPath, foundExportedFiles[0]));
         // Verify that user can export databases without database passwords and client key when “Export passwords” control not selected
         for (const db of parsedExportedJson) {

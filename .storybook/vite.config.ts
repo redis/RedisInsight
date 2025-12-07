@@ -42,9 +42,9 @@ export default defineConfig({
       '@redislabsdev/redis-ui-styles': '@redis-ui/styles',
       '@redislabsdev/redis-ui-icons': '@redis-ui/icons',
       '@redislabsdev/redis-ui-table': '@redis-ui/table',
-      uiSrc: fileURLToPath(new URL('../redisinsight/ui/src', import.meta.url)),
+      uiSrc: fileURLToPath(new URL('../garnetinsight/ui/src', import.meta.url)),
       apiSrc: fileURLToPath(
-        new URL('../redisinsight/api/src', import.meta.url),
+        new URL('../garnetinsight/api/src', import.meta.url),
       ),
     },
   },
@@ -82,7 +82,7 @@ export default defineConfig({
     include: ['monaco-editor', 'monaco-yaml/yaml.worker'],
     exclude: [
       'react-json-tree',
-      'redisinsight-plugin-sdk',
+      'garnetinsight-plugin-sdk',
       'plotly.js-dist-min',
       '@antv/x6',
       '@antv/x6-react-shape',

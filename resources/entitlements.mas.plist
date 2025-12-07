@@ -22,10 +22,10 @@
     <true/>
     <key>com.apple.security.application-groups</key>
     <array>
-    <string>UUK47G4BAZ.com.redis.RedisInsight</string>
+    <string>UUK47G4BAZ.com.redis.Garnetinsight</string>
     </array>
     <key>com.apple.application-identifier</key>
-    <string>UUK47G4BAZ.com.redis.RedisInsight</string>
+    <string>UUK47G4BAZ.com.redis.Garnetinsight</string>
     <key>com.apple.developer.team-identifier</key>
     <string>UUK47G4BAZ</string>
   </dict>

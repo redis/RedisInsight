@@ -1,4 +1,4 @@
-# Redis Insight Testcafe e2e tests
+# Garnet Insight Testcafe e2e tests
 
 ## 📚 Redis Test Environments
 

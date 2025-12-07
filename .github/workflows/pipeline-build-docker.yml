@@ -83,11 +83,11 @@ jobs:
           --build-arg DIST=release/web/Redis-Insight-web-linux-musl.x64.tar.gz \
           --build-arg NODE_ENV="$ENV" \
           --build-arg RI_SEGMENT_WRITE_KEY="$RI_SEGMENT_WRITE_KEY" \
-          -t redisinsight:amd64 \
+          -t garnetinsight:amd64 \
           .
 
           mkdir -p release/docker
-          docker image save -o release/docker/docker-linux-alpine.amd64.tar redisinsight:amd64
+          docker image save -o release/docker/docker-linux-alpine.amd64.tar garnetinsight:amd64
 
       - name: Build Docker (arm64)
         if: ${{ !inputs.for_e2e_tests }}
@@ -99,11 +99,11 @@ jobs:
           --build-arg DIST=release/web/Redis-Insight-web-linux-musl.arm64.tar.gz \
           --build-arg NODE_ENV="$ENV" \
           --build-arg RI_SEGMENT_WRITE_KEY="$RI_SEGMENT_WRITE_KEY" \
-          -t redisinsight:arm64 \
+          -t garnetinsight:arm64 \
           .
 
           mkdir -p release/docker
-          docker image save -o release/docker/docker-linux-alpine.arm64.tar redisinsight:arm64
+          docker image save -o release/docker/docker-linux-alpine.arm64.tar garnetinsight:arm64
 
       - uses: actions/upload-artifact@v4
         name: Upload docker builds

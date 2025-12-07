@@ -45,7 +45,7 @@ jobs:
       - name: Upload builds to s3 bucket pre-releasea sub folder
         if: inputs.pre-release
         run: |
-          APP_VERSION=$(jq -r '.version' redisinsight/package.json)
+          APP_VERSION=$(jq -r '.version' garnetinsight/package.json)
           SUB_PATH="pre-release/${APP_VERSION}"
 
           echo "SUB_PATH=${SUB_PATH}" >> $GITHUB_ENV

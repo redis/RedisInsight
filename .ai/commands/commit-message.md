@@ -1,6 +1,6 @@
 # Commit Message Generation
 
-Generate concise, meaningful commit messages following RedisInsight conventions.
+Generate concise, meaningful commit messages following Garnetinsight conventions.
 
 ## Format
 

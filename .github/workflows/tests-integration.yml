@@ -138,7 +138,7 @@ jobs:
 
       - name: Make sure coverage dir exists
         # Important: this directory is mounted on both the `app` and `test` Docker containers.
-        run: mkdir -p ./redisinsight/api/test/test-runs/coverage
+        run: mkdir -p ./garnetinsight/api/test/test-runs/coverage
 
       - name: Run tests
         timeout-minutes: 20
@@ -147,21 +147,21 @@ jobs:
             export RI_REDIS_CLIENTS_FORCE_STRATEGY=${{ inputs.redis_client }}
           fi
 
-          ./redisinsight/api/test/test-runs/start-test-run.sh -r ${{ matrix.rte }} -t ${{ inputs.build }}
+          ./garnetinsight/api/test/test-runs/start-test-run.sh -r ${{ matrix.rte }} -t ${{ inputs.build }}
           mkdir -p itest/coverages && mkdir -p itest/results
 
-          cp ./redisinsight/api/test/test-runs/coverage/test-run-result.json ./itest/results/${{ matrix.rte }}.result.json
-          cp ./redisinsight/api/test/test-runs/coverage/test-run-result.xml ./itest/results/${{ matrix.rte }}.result.xml
-          cp ./redisinsight/api/test/test-runs/coverage/test-run-coverage.json ./itest/coverages/${{ matrix.rte }}.coverage.json
+          cp ./garnetinsight/api/test/test-runs/coverage/test-run-result.json ./itest/results/${{ matrix.rte }}.result.json
+          cp ./garnetinsight/api/test/test-runs/coverage/test-run-result.xml ./itest/results/${{ matrix.rte }}.result.xml
+          cp ./garnetinsight/api/test/test-runs/coverage/test-run-coverage.json ./itest/coverages/${{ matrix.rte }}.coverage.json
 
       - name: Process test results
         if: always()
         run: |
           mkdir -p itest/coverages && mkdir -p itest/results
 
-          cp ./redisinsight/api/test/test-runs/coverage/test-run-result.json ./itest/results/${{ matrix.rte }}.result.json
-          cp ./redisinsight/api/test/test-runs/coverage/test-run-result.xml ./itest/results/${{ matrix.rte }}.result.xml
-          cp ./redisinsight/api/test/test-runs/coverage/test-run-coverage.json ./itest/coverages/${{ matrix.rte }}.coverage.json
+          cp ./garnetinsight/api/test/test-runs/coverage/test-run-result.json ./itest/results/${{ matrix.rte }}.result.json
+          cp ./garnetinsight/api/test/test-runs/coverage/test-run-result.xml ./itest/results/${{ matrix.rte }}.result.xml
+          cp ./garnetinsight/api/test/test-runs/coverage/test-run-coverage.json ./itest/coverages/${{ matrix.rte }}.coverage.json
 
       - name: Upload coverage files as artifact
         if: always()
@@ -174,7 +174,7 @@ jobs:
         if: always()
         run: |
           echo "=== Checking source coverage directory ==="
-          ls -la ./redisinsight/api/test/test-runs/coverage/ || echo "Source coverage directory doesn't exist"
+          ls -la ./garnetinsight/api/test/test-runs/coverage/ || echo "Source coverage directory doesn't exist"
 
           echo "=== Checking test result files ==="
           ls -la ./itest/results/ || echo "Results directory doesn't exist"
@@ -184,7 +184,7 @@ jobs:
           ls -la .
 
           XML_FILE="./itest/results/${{ matrix.rte }}.result.xml"
-          SOURCE_XML="./redisinsight/api/test/test-runs/coverage/test-run-result.xml"
+          SOURCE_XML="./garnetinsight/api/test/test-runs/coverage/test-run-result.xml"
 
           echo "=== Checking source XML file ==="
           if [ -f "$SOURCE_XML" ]; then
@@ -274,7 +274,7 @@ jobs:
         run: |
           npx nyc report -t ./coverages -r text -r text-summary
           sudo mkdir -p /usr/src/app
-          sudo cp -a ./redisinsight/api/. /usr/src/app/
+          sudo cp -a ./garnetinsight/api/. /usr/src/app/
           sudo cp -R ./coverages /usr/src/app && sudo chmod 777 -R /usr/src/app
           cd /usr/src/app && npx nyc report -t ./coverages -r text -r text-summary > integration-coverage.txt
           cp integration-coverage.txt $GITHUB_WORKSPACE/integration-coverage.txt

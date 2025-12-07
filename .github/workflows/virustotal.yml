@@ -101,7 +101,7 @@ jobs:
       - name: Send Url to scan
         if: needs.download_artifacts.outputs.artifact_exists == 'false'
         run: |
-          url="https://download.redisinsight.redis.com/latest/${{ matrix.artifact }}"
+          url="https://download.garnetinsight.redis.com/latest/${{ matrix.artifact }}"
 
           echo "Url to check: ${url}"
 

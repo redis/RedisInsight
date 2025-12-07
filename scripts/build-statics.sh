@@ -4,44 +4,44 @@ set -e
 pluginsOnlyInstall="${pluginsOnlyInstall:-0}"
 
 # =============== Plugins ===============
-PLUGINS_DIR="./redisinsight/api/static/plugins"
-PLUGINS_VENDOR_DIR="./redisinsight/api/static/resources/plugins"
+PLUGINS_DIR="./garnetinsight/api/static/plugins"
+PLUGINS_VENDOR_DIR="./garnetinsight/api/static/resources/plugins"
 
 # Default plugins assets
-sass "./redisinsight/ui/src/styles/main_plugin.scss" "./vendor/global_styles.css" --style=compressed --no-source-map;
-sass "./redisinsight/ui/src/styles/themes/dark_theme/darkTheme.scss" "./vendor/dark_theme.css" --style=compressed --no-source-map;
-sass "./redisinsight/ui/src/styles/themes/light_theme/lightTheme.scss" "./vendor/light_theme.css" --style=compressed --no-source-map;
-cp -R "./redisinsight/ui/src/assets/fonts/graphik/" "./vendor/fonts"
-cp -R "./redisinsight/ui/src/assets/fonts/inconsolata/" "./vendor/fonts"
+sass "./garnetinsight/ui/src/styles/main_plugin.scss" "./vendor/global_styles.css" --style=compressed --no-source-map;
+sass "./garnetinsight/ui/src/styles/themes/dark_theme/darkTheme.scss" "./vendor/dark_theme.css" --style=compressed --no-source-map;
+sass "./garnetinsight/ui/src/styles/themes/light_theme/lightTheme.scss" "./vendor/light_theme.css" --style=compressed --no-source-map;
+cp -R "./garnetinsight/ui/src/assets/fonts/graphik/" "./vendor/fonts"
+cp -R "./garnetinsight/ui/src/assets/fonts/inconsolata/" "./vendor/fonts"
 mkdir -p "${PLUGINS_VENDOR_DIR}"
 cp -R "./vendor/." "${PLUGINS_VENDOR_DIR}"
 
 
 # Install developing tools for plugins
-PACKAGES_DIR="./redisinsight/ui/src/packages"
+PACKAGES_DIR="./garnetinsight/ui/src/packages"
 yarn --cwd "${PACKAGES_DIR}"
 
 # Install plugins dependencies
-REDISEARCH_DIR="./redisinsight/ui/src/packages/redisearch"
+REDISEARCH_DIR="./garnetinsight/ui/src/packages/redisearch"
 yarn --cwd "${REDISEARCH_DIR}"
 
-REDISGRAPH_DIR="./redisinsight/ui/src/packages/redisgraph"
+REDISGRAPH_DIR="./garnetinsight/ui/src/packages/redisgraph"
 yarn --cwd "${REDISGRAPH_DIR}"
 
-REDISTIMESERIES_DIR="./redisinsight/ui/src/packages/redistimeseries-app"
+REDISTIMESERIES_DIR="./garnetinsight/ui/src/packages/redistimeseries-app"
 yarn --cwd "${REDISTIMESERIES_DIR}"
 
-RI_EXPLIAIN_DIR="./redisinsight/ui/src/packages/ri-explain"
+RI_EXPLIAIN_DIR="./garnetinsight/ui/src/packages/ri-explain"
 yarn --cwd "${RI_EXPLIAIN_DIR}"
 
-CLIENTS_LIST_DIR="./redisinsight/ui/src/packages/clients-list"
+CLIENTS_LIST_DIR="./garnetinsight/ui/src/packages/clients-list"
 yarn --cwd "${CLIENTS_LIST_DIR}"
 
 # Build all plugins and common libraries
 NODE_OPTIONS=--max_old_space_size=4096 yarn --cwd "${PACKAGES_DIR}" build
 
 # Copy common libraries to plugins
-COMMON_DIR="./redisinsight/ui/src/packages/common"
+COMMON_DIR="./garnetinsight/ui/src/packages/common"
 if [ $pluginsOnlyInstall != 1 ]; then
   mkdir -p "${PLUGINS_DIR}/common"
   cp -R "${COMMON_DIR}/index"*.js "${COMMON_DIR}/package.json" "${PLUGINS_DIR}/common"

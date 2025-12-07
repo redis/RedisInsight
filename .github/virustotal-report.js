@@ -8,7 +8,7 @@ const results = {
   message: {
     text:
       `*Virustotal checks* (Branch: *${process.env.GITHUB_REF_NAME}*)` +
-      `\n<https://github.com/RedisInsight/RedisInsight/actions/runs/${process.env.GITHUB_RUN_ID}|View on Github Actions>`,
+      `\n<https://github.com/Garnetinsight/Garnetinsight/actions/runs/${process.env.GITHUB_RUN_ID}|View on Github Actions>`,
     attachments: [],
   },
 };

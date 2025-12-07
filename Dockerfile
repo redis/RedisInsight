@@ -21,16 +21,16 @@ WORKDIR /usr/src/app
 # restore node_modules for front-end
 COPY package.json yarn.lock tsconfig.json ./
 COPY patches ./patches
-COPY redisinsight/ui/vite.config.mjs ./redisinsight/ui/
-COPY redisinsight/ui/src/config ./redisinsight/ui/src/config
+COPY garnetinsight/ui/vite.config.mjs ./garnetinsight/ui/
+COPY garnetinsight/ui/src/config ./garnetinsight/ui/src/config
 RUN SKIP_POSTINSTALL=1 yarn install
 
 # prepare backend by copying scripts/configs and installing node modules
 # this is required to build the static assets
 COPY configs ./configs
 COPY scripts ./scripts
-COPY redisinsight ./redisinsight
-RUN yarn --cwd redisinsight/api install
+COPY garnetinsight ./garnetinsight
+RUN yarn --cwd garnetinsight/api install
 
 # build the frontend, static assets, and backend api
 RUN yarn build:ui
@@ -39,9 +39,9 @@ RUN yarn build:api
 
 # install backend _again_ to build native modules and remove dev dependencies,
 # then run autoclean to remove additional unnecessary files
-RUN yarn --cwd ./redisinsight/api install --production
-COPY ./redisinsight/api/.yarnclean.prod ./redisinsight/api/.yarnclean
-RUN yarn --cwd ./redisinsight/api autoclean --force
+RUN yarn --cwd ./garnetinsight/api install --production
+COPY ./garnetinsight/api/.yarnclean.prod ./garnetinsight/api/.yarnclean
+RUN yarn --cwd ./garnetinsight/api autoclean --force
 
 FROM node:22.12.0-alpine
 
@@ -62,9 +62,9 @@ RUN apk update && apk upgrade --no-cache libcrypto3 libssl3
 WORKDIR /usr/src/app
 
 # copy artifacts built in previous stage to this one
-COPY --from=build --chown=node:node /usr/src/app/redisinsight/api/dist ./redisinsight/api/dist
-COPY --from=build --chown=node:node /usr/src/app/redisinsight/api/node_modules ./redisinsight/api/node_modules
-COPY --from=build --chown=node:node /usr/src/app/redisinsight/ui/dist ./redisinsight/ui/dist
+COPY --from=build --chown=node:node /usr/src/app/garnetinsight/api/dist ./garnetinsight/api/dist
+COPY --from=build --chown=node:node /usr/src/app/garnetinsight/api/node_modules ./garnetinsight/api/node_modules
+COPY --from=build --chown=node:node /usr/src/app/garnetinsight/ui/dist ./garnetinsight/ui/dist
 
 # folder to store local database, plugins, logs and all other files
 RUN mkdir -p /data && chown -R node:node /data
@@ -80,4 +80,4 @@ EXPOSE 5540
 USER node
 
 # serve the application 🚀
-ENTRYPOINT ["./docker-entry.sh", "node", "redisinsight/api/dist/src/main"]
+ENTRYPOINT ["./docker-entry.sh", "node", "garnetinsight/api/dist/src/main"]

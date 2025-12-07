@@ -21,26 +21,26 @@ export XDG_DATA_DIRS="$(pwd)/ri-test:$XDG_DATA_DIRS"
 mkdir -p tests/e2e/remote
 mkdir -p tests/e2e/rdi
 
-# Create a custom .desktop file for RedisInsight
-cat > ri-test/redisinsight.desktop <<EOL
+# Create a custom .desktop file for Garnetinsight
+cat > ri-test/garnetinsight.desktop <<EOL
 [Desktop Entry]
 Version=1.0
-Name=RedisInsight
-Exec=$(pwd)/ri-test/redisinsight %u
+Name=Garnetinsight
+Exec=$(pwd)/ri-test/garnetinsight %u
 Icon=$(pwd)/ri-test/resources/app.asar/img/icon.png
 Type=Application
 Terminal=false
-MimeType=x-scheme-handler/redisinsight;
+MimeType=x-scheme-handler/garnetinsight;
 EOL
 
 # Copy the .desktop file to the local applications directory
-cp ri-test/redisinsight.desktop "$HOME/.local/share/applications"
+cp ri-test/garnetinsight.desktop "$HOME/.local/share/applications"
 
 # Update the desktop database with custom directory
 update-desktop-database "$(pwd)/ri-test/"
 
-# Register the RedisInsight deeplink protocol
-xdg-mime default redisinsight.desktop x-scheme-handler/redisinsight
+# Register the Garnetinsight deeplink protocol
+xdg-mime default garnetinsight.desktop x-scheme-handler/garnetinsight
 
 # Run rte
 docker compose -f tests/e2e/rte.docker-compose.yml build
@@ -49,6 +49,6 @@ docker compose -f tests/e2e/rte.docker-compose.yml up --force-recreate -d -V
 
 # Run tests
 COMMON_URL=$(pwd)/ri-test/resources/app.asar/dist/renderer/index.html \
-ELECTRON_PATH=$(pwd)/ri-test/redisinsight \
+ELECTRON_PATH=$(pwd)/ri-test/garnetinsight \
 RI_SOCKETS_CORS=true \
 yarn --cwd tests/e2e dotenv -e .desktop.env yarn --cwd tests/e2e test:desktop:ci

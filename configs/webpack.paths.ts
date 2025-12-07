@@ -2,7 +2,7 @@ const path = require('path')
 
 const rootPath = path.join(__dirname, '..')
 
-const riPath = path.join(rootPath, 'redisinsight')
+const riPath = path.join(rootPath, 'garnetinsight')
 
 const apiPath = path.join(riPath, 'api')
 const uiPath = path.join(riPath, 'ui')

@@ -37,7 +37,7 @@ jobs:
         run: |
           chmod +x .github/build/sum_sha256.sh
           .github/build/sum_sha256.sh
-          applicationVersion=$(jq -r '.version' redisinsight/package.json)
+          applicationVersion=$(jq -r '.version' garnetinsight/package.json)
 
           aws s3 cp release/ s3://${AWS_BUCKET_NAME}/private/${applicationVersion} --recursive
 
@@ -56,7 +56,7 @@ jobs:
           upgradeLatestFolderPath="public/upgrades-v3"
           releasesFolderPath="public/releases"
           appName=$(jq -r '.productName' electron-builder.json)
-          appVersion=$(jq -r '.version' redisinsight/package.json)
+          appVersion=$(jq -r '.version' garnetinsight/package.json)
 
           echo "downloadLatestFolderPath=${downloadLatestFolderPath}" >> $GITHUB_ENV
           echo "upgradeLatestFolderPath=${upgradeLatestFolderPath}" >> $GITHUB_ENV

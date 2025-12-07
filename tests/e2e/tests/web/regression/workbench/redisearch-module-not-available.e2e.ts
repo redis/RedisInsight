@@ -22,7 +22,7 @@ fixture `Redisearch module not available`
     });
 // Skipped as outdated after implementing RI-4230
 test.skip('Verify that user can see the "Create your free Redis Cloud database with RediSearch on Redis Cloud" button and click on it in Workbench when module in not loaded', async t => {
-    const link = 'https://redis.io/try-free/?utm_source=redis&utm_medium=app&utm_campaign=redisinsight_redisearch';
+    const link = 'https://redis.io/try-free/?utm_source=redis&utm_medium=app&utm_campaign=garnetinsight_redisearch';
 
     // Send command with 'FT.'
     await workbenchPage.sendCommandInWorkbench(commandForSend);

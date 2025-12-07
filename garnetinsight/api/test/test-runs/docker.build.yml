@@ -1,0 +1,61 @@
+# Base compose file that includes all BE, RTE builds
+version: '3.4'
+
+x-constants:
+  - &apiRoot ./../../
+
+services:
+  test:
+    cap_add:
+      - ipc_lock
+    build:
+      context: *apiRoot
+      dockerfile: ./test/test-runs/test.Dockerfile
+    tty: true
+    volumes:
+      - shared-data:/usr/src/app/test/test-runs/coverage
+      - shared-data:/root/.garnetinsight-v2.0
+      - shared-data:/data
+    depends_on:
+      - redis
+      - app
+    environment:
+      RI_REDIS_CLIENTS_FORCE_STRATEGY: ${RI_REDIS_CLIENTS_FORCE_STRATEGY}
+      CERTS_FOLDER: '/root/.garnetinsight-v2.0'
+      RI_PRE_SETUP_DATABASES_PATH: '/root/.garnetinsight-v2.0/databases.json'
+      TEST_REDIS_HOST: 'redis'
+      RI_DB_SYNC: 'true'
+      TEST_BE_SERVER: ${TEST_BE_SERVER}
+      TEST_LOCAL_DB_FILE_PATH: '/root/.garnetinsight-v2.0/garnetinsight.db'
+      RI_SECRET_STORAGE_PASSWORD: 'somepassword'
+  app:
+    cap_add:
+      - ipc_lock
+    image: ${APP_IMAGE}
+    depends_on:
+      - redis
+    volumes:
+      - shared-data:/root/.garnetinsight-v2.0
+      - shared-data:/data
+    environment:
+      RI_REDIS_CLIENTS_FORCE_STRATEGY: ${RI_REDIS_CLIENTS_FORCE_STRATEGY}
+      CERTS_FOLDER: '/root/.garnetinsight-v2.0'
+      RI_PRE_SETUP_DATABASES_PATH: '/root/.garnetinsight-v2.0/databases.json'
+      RI_DB_SYNC: 'true'
+      RI_DB_MIGRATIONS: 'false'
+      RI_APP_FOLDER_NAME: '.garnetinsight-v2.0'
+      RI_SECRET_STORAGE_PASSWORD: 'somepassword'
+      RI_NOTIFICATION_UPDATE_URL: 'https://s3.amazonaws.com/garnetinsight.test/public/tests/notifications.json'
+      RI_FEATURES_CONFIG_URL: 'http://test:5551/remote/features-config.json'
+
+networks:
+  default:
+    name: ${ID}
+
+volumes:
+  shared-data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ../../${COV_FOLDER}
+      o: bind

@@ -56,7 +56,7 @@ const rdiInstance3: RdiInstance = {
     password: '111',
     version: '1.2'
 };
-const urlTooltipText = 'The RDI machine servers REST API via port 443. Ensure that Redis Insight can access the RDI host over port 443.';
+const urlTooltipText = 'The RDI machine servers REST API via port 443. Ensure that Garnet Insight can access the RDI host over port 443.';
 const usernameTooltipText = 'The RDI REST API authentication is using the RDI REDIS username and password.';
 const passwordTooltipText = 'The RDI REST API authentication is using the RDI REDIS username and password.';
 //skip the tests until rdi integration is added
@@ -78,7 +78,7 @@ test('Verify that user can add and remove RDI', async() => {
     await t.click(rdiInstancesListPage.addRdiInstanceButton);
     // Verify that URL input contains placeholder "Enter the RDI host IP as: https://[IP-Address]" on adding RDI panel
     await t.expect(rdiInstancesListPage.AddRdiInstanceDialog.urlInput.getAttribute('placeholder')).eql('Enter the RDI host IP as: https://[IP-Address]', 'Invalid placeholder for URL input');
-    // Verify that URL input contains icon with tooltip "The RDI machine servers REST API via port 443. Ensure that Redis Insight can access the RDI host over port 443." on adding RDI panel
+    // Verify that URL input contains icon with tooltip "The RDI machine servers REST API via port 443. Ensure that Garnet Insight can access the RDI host over port 443." on adding RDI panel
     await t.hover(rdiInstancesListPage.AddRdiInstanceDialog.urlInputInfoIcon);
     await browserActions.verifyTooltipContainsText(urlTooltipText, true);
 

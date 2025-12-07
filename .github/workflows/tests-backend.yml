@@ -29,7 +29,7 @@ jobs:
         run: |
           FILENAME=api.prod.deps.audit.json
 
-          yarn --cwd redisinsight/api audit --groups dependencies --json > $FILENAME || true &&
+          yarn --cwd garnetinsight/api audit --groups dependencies --json > $FILENAME || true &&
           FILENAME=$FILENAME DEPS="API prod" node .github/deps-audit-report.js &&
           curl -H "Content-type: application/json" --data @slack.$FILENAME -H "Authorization: Bearer $SLACK_AUDIT_REPORT_KEY" -X POST https://slack.com/api/chat.postMessage
 
@@ -37,7 +37,7 @@ jobs:
         run: |
           FILENAME=api.dev.deps.audit.json
 
-          yarn --cwd redisinsight/api audit --groups devDependencies --json > $FILENAME || true &&
+          yarn --cwd garnetinsight/api audit --groups devDependencies --json > $FILENAME || true &&
           FILENAME=$FILENAME DEPS="API dev" node .github/deps-audit-report.js &&
           curl -H "Content-type: application/json" --data @slack.$FILENAME -H "Authorization: Bearer $SLACK_AUDIT_REPORT_KEY" -X POST https://slack.com/api/chat.postMessage
 
@@ -52,14 +52,14 @@ jobs:
 
       - name: Unit tests API
         timeout-minutes: 20
-        run: yarn --cwd redisinsight/api/ test:cov --ci --silent
+        run: yarn --cwd garnetinsight/api/ test:cov --ci --silent
 
       - name: Upload Test Report
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: ${{ env.REPORT_NAME }}
-          path: redisinsight/api/report
+          path: garnetinsight/api/report
 
       - name: Get current date
         id: date

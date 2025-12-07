@@ -1,6 +1,6 @@
 # Plugin development
 
-This document describes the guides to develop your own plugin for the Redis Insight Workbench.
+This document describes the guides to develop your own plugin for the Garnet Insight Workbench.
 
 ## How it works
 
@@ -118,15 +118,15 @@ const renderVisualization = (props: Props) => {
 export default { renderVisualization };
 ```
 
-Each plugin iframe has basic styles of Redis Insight application, including fonts and color schemes.
+Each plugin iframe has basic styles of Garnet Insight application, including fonts and color schemes.
 
 It is recommended to use the React & [Elastic UI library](https://elastic.github.io/eui/#/) for
 consistency with plugin visualisations and the entire application.
 
 Find the example of the plugin here.
 
-- [Client List Plugin README](https://github.com/RedisInsight/Packages/blob/main/clients-list-example/README.md)
-- [Client List Plugin dir](https://github.com/RedisInsight/Packages/blob/main/clients-list-example/)
+- [Client List Plugin README](https://github.com/Garnetinsight/Packages/blob/main/clients-list-example/README.md)
+- [Client List Plugin dir](https://github.com/Garnetinsight/Packages/blob/main/clients-list-example/)
 
 ### Available parameters
 
@@ -139,7 +139,7 @@ const { baseUrl, appVersion } = config;
 
 // modules - the list of modules of the current database
 // baseUrl - url for your plugin folder - can be used to include your assets
-// appVersion - version of the Redis Insight application
+// appVersion - version of the Garnet Insight application
 ```
 
 ### Plugin rendering
@@ -189,9 +189,9 @@ export default { renderVisualization };
 
 ## Plugin communication
 
-Use the [redisinsight-plugin-sdk](https://www.npmjs.com/package/redisinsight-plugin-sdk), which is a third party library,
+Use the [garnetinsight-plugin-sdk](https://www.npmjs.com/package/garnetinsight-plugin-sdk), which is a third party library,
 to communicate with the main app.
 
 Find the list and
 description of methods called in the
-[README.md](../../redisinsight/ui/src/packages/redisinsight-plugin-sdk/README.md).
+[README.md](../../garnetinsight/ui/src/packages/garnetinsight-plugin-sdk/README.md).

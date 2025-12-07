@@ -4,4 +4,4 @@ paths-ignore:
   - '**/*.spec.ts'
   - '**/*.spec.tsx'
   - '**/__mocks__/**'
-  - './redisinsight/api/test'
+  - './garnetinsight/api/test'

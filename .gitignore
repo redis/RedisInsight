@@ -41,21 +41,21 @@ my.inputs
 release
 main.prod.js
 main.prod.js.map
-redisinsight/ui/main.prod.js
-redisinsight/ui/main.prod.js.map
+garnetinsight/ui/main.prod.js
+garnetinsight/ui/main.prod.js.map
 renderer.prod.js
 renderer.prod.js.map
-redisinsight/ui/style.css
-redisinsight/ui/style.css.map
-redisinsight/ui/dist
-redisinsight/api/commands
-redisinsight/api/guides
-redisinsight/api/report
-redisinsight/api/reports
-redisinsight/api/dist-minified
-redisinsight/api/tutorials
-redisinsight/api/content
-redisinsight/ui/dist-stats.html
+garnetinsight/ui/style.css
+garnetinsight/ui/style.css.map
+garnetinsight/ui/dist
+garnetinsight/api/commands
+garnetinsight/api/guides
+garnetinsight/api/report
+garnetinsight/api/reports
+garnetinsight/api/dist-minified
+garnetinsight/api/tutorials
+garnetinsight/api/content
+garnetinsight/ui/dist-stats.html
 report
 reports
 distWeb
@@ -63,19 +63,19 @@ dll
 main.js
 main.js.map
 vendor
-redisinsight/main.js.LICENSE.txt
-redisinsight/main.prod.js.LICENSE.txt
+garnetinsight/main.js.LICENSE.txt
+garnetinsight/main.prod.js.LICENSE.txt
 licenses
-redisinsight/ui/src/packages/common/index*
+garnetinsight/ui/src/packages/common/index*
 
 
 # E2E tests report
 /tests/e2e/report
 /tests/e2e/results
 /tests/e2e/remote
-/tests/e2e/.redisinsight-v2
-/tests/e2e/.redisinsight-app
-/tests/e2e/.redisinsight-insight
+/tests/e2e/.garnetinsight-v2
+/tests/e2e/.garnetinsight-app
+/tests/e2e/.garnetinsight-insight
 
 # Parcel
 .parcel-cache

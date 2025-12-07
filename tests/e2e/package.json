@@ -1,13 +1,13 @@
 {
-  "name": "redisinsight",
+  "name": "garnetinsight",
   "version": "1.0.0",
   "description": "End-to-end tests",
   "private": true,
   "main": "index.js",
   "scripts": {
     "test:live": "testcafe --live chrome ",
-    "start:api": "cross-env yarn --cwd ../../redisinsight/api start:prod",
-    "build:api": "yarn --cwd ../../redisinsight/api build:prod",
+    "start:api": "cross-env yarn --cwd ../../garnetinsight/api start:prod",
+    "build:api": "yarn --cwd ../../garnetinsight/api build:prod",
     "build:statics": "cross-env E2E=true yarn --cwd ../../ build:statics",
     "build:statics:win": "cross-env E2E=true yarn --cwd ../../ build:statics:win",
     "build:ui": "yarn --cwd ../../ build:ui",

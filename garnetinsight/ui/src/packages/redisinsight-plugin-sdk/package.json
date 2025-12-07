@@ -1,0 +1,22 @@
+{
+  "name": "garnetinsight-plugin-sdk",
+  "description": "Redis API for creating packages for Redis v.2 application",
+  "license": "MIT",
+  "keywords": [
+    "redis",
+    "redis-gui"
+  ],
+  "version": "1.1.0",
+  "author": {
+    "name": "Redis",
+    "email": "garnetinsight@redis.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Garnetinsight/Garnetinsight/tree/main/garnetinsight/ui/src/packages/garnetinsight-plugin-sdk"
+  },
+  "bugs": {
+    "url": "https://github.com/Garnetinsight/Garnetinsight/issues"
+  },
+  "main": "index.js"
+}

@@ -4,7 +4,7 @@ Welcome! This short guide explains how to contribute effectively and pass all re
 
 ## Submitting an issue
 
-- If you find a bug, please submit an issue to our GitHub [repository](https://github.com/redis/RedisInsight/issues).
+- If you find a bug, please submit an issue to our GitHub [repository](https://github.com/redis/Garnetinsight/issues).
 - Before submitting, search the issue tracker to see if your problem already exists. Existing issues may already have workarounds or ongoing fixes.
 
 ## Branch Naming Convention
@@ -37,7 +37,7 @@ _Note: It will trigger only checks related to the back-end_
 
 Use the following procedure to submit a pull request:
 
-1. Fork RedisInsight on GitHub (_[How to fork a repo?](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo)_)
+1. Fork Garnetinsight on GitHub (_[How to fork a repo?](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo)_)
 
 2. Create a branch from `main` (see [Branch Naming](#branch-naming-convention))
 
@@ -59,4 +59,4 @@ Try to provide as much descrtiption behind the context of your changes and how t
 
 Done :)
 
-By following these conventions, you help us keep RedisInsight stable, reliable, and easy to maintain. Thank you for contributing!
+By following these conventions, you help us keep Garnetinsight stable, reliable, and easy to maintain. Thank you for contributing!

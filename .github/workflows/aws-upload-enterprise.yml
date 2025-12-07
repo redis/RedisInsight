@@ -39,7 +39,7 @@ jobs:
 
       - name: Renaming builds
         run: |
-          APP_VERSION=$(jq -r '.version' redisinsight/package.json)
+          APP_VERSION=$(jq -r '.version' garnetinsight/package.json)
           VERSION="${APP_VERSION//./-}"
           TARGET_DIR=./release
           PREFIX="Redis-Insight"
@@ -97,7 +97,7 @@ jobs:
       - name: Upload builds to s3 bucket pre-release sub folder
         if: ${{ inputs.environment == 'production' }}
         run: |
-          APP_VERSION=$(jq -r '.version' redisinsight/package.json)
+          APP_VERSION=$(jq -r '.version' garnetinsight/package.json)
 
           aws s3 cp release/ s3://${AWS_BUCKET_NAME_PROD}/releases/${APP_VERSION} --recursive
           aws s3 cp release/ s3://${AWS_BUCKET_NAME_PROD}/latest --recursive

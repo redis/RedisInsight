@@ -25,8 +25,8 @@ function generateLink(params: Record<string, any>, connectType: string, url: str
     return (new URL(`?from=${from}`, url)).toString();
 }
 
-const redisConnect = 'redisinsight://databases/connect';
-const redisOpen = 'redisinsight://open';
+const redisConnect = 'garnetinsight://databases/connect';
+const redisOpen = 'garnetinsight://open';
 
 fixture `Add DB from SM`
     .meta({ type: 'critical_path', rte: rte.none })
@@ -55,7 +55,7 @@ test
         await t.expect(workbenchPage.submitCommandButton.exists).ok('Redirection to Workbench is not correct');
     });
 
-//Verify that RedisInsight can work with the encoded redis URLs passed from Cloud via deep linking.
+//Verify that Garnetinsight can work with the encoded redis URLs passed from Cloud via deep linking.
 test
     .before(async()  => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneRedisGears);

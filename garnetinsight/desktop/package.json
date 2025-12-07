@@ -1,0 +1,11 @@
+{
+  "name": "garnetinsight",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "cross-env ELECTRON_DEV=true ELECTRON_ENABLE_LOGGING=true ELECTRON_DEBUG_LOGGING=true ELECTRON_ENABLE_STACK_DUMPING=true NODE_ENV=development yarn build && yarn build:preload && yarn build:renderer && electron . --enable-logging --inspect=5858",
+    "build": "cross-env ELECTRON_DEV=true ELECTRON_ENABLE_LOGGING=true ELECTRON_DEBUG_LOGGING=true ELECTRON_ENABLE_STACK_DUMPING=true NODE_ENV=development vite build --config vite.main.config.ts",
+    "build:preload": "cross-env ELECTRON_DEV=true ELECTRON_ENABLE_LOGGING=true ELECTRON_DEBUG_LOGGING=true ELECTRON_ENABLE_STACK_DUMPING=true NODE_ENV=development vite build --config vite.preload.config.ts",
+    "build:renderer": "cross-env ELECTRON_DEV=true ELECTRON_ENABLE_LOGGING=true ELECTRON_DEBUG_LOGGING=true ELECTRON_ENABLE_STACK_DUMPING=true NODE_ENV=development vite build --config vite.renderer.config.ts"
+  }
+}

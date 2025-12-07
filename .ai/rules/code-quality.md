@@ -33,9 +33,9 @@ alwaysApply: true
 
 ### Module Aliases
 
-- `uiSrc/*` → `redisinsight/ui/src/*`
-- `apiSrc/*` → `redisinsight/api/src/*`
-- `desktopSrc/*` → `redisinsight/desktop/src/*`
+- `uiSrc/*` → `garnetinsight/ui/src/*`
+- `apiSrc/*` → `garnetinsight/api/src/*`
+- `desktopSrc/*` → `garnetinsight/desktop/src/*`
 
 ✅ **Use aliases**: `import { Button } from 'uiSrc/components/Button'`  
 ❌ **Avoid relative**: `import { Button } from '../../../ui/src/components/Button'`

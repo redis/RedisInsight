@@ -10,8 +10,8 @@ const config: StorybookConfig = {
   stories: [
     '../stories/**/*.mdx',
     '../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)',
-    '../redisinsight/ui/src/**/*.stories.@(js|jsx|mjs|ts|tsx)',
-    '../redisinsight/ui/src/**/*.mdx',
+    '../garnetinsight/ui/src/**/*.stories.@(js|jsx|mjs|ts|tsx)',
+    '../garnetinsight/ui/src/**/*.mdx',
   ],
   addons: [
     '@storybook/addon-a11y',
