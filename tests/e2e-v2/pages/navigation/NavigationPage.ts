@@ -56,6 +56,14 @@ export class NavigationPage extends BasePage {
   readonly insightsMyTutorials: Locator;
   readonly insightsRedisTutorials: Locator;
 
+  // Live Recommendations (Tips tab)
+  readonly noRecommendationsScreen: Locator;
+  readonly showHiddenCheckbox: Locator;
+  readonly analyzeDatabaseLink: Locator;
+  readonly recommendationVoting: Locator;
+  readonly likeVoteButton: Locator;
+  readonly dislikeVoteButton: Locator;
+
   constructor(page: Page) {
     super(page);
 
@@ -108,9 +116,17 @@ export class NavigationPage extends BasePage {
     this.insightsCloseButton = page.getByTestId('close-insights-btn');
     this.insightsFullScreenButton = page.getByTestId('fullScreen-insights-btn');
     this.insightsTutorialsTab = page.getByRole('tab', { name: 'Tutorials' });
-    this.insightsTipsTab = page.getByRole('tab', { name: 'Tips' });
+    this.insightsTipsTab = page.getByRole('tab', { name: /Tips/ });
     this.insightsMyTutorials = page.getByRole('button', { name: 'My tutorials' });
     this.insightsRedisTutorials = page.getByRole('button', { name: 'Redis tutorials' });
+
+    // Live Recommendations (Tips tab)
+    this.noRecommendationsScreen = page.getByTestId('no-recommendations-screen');
+    this.showHiddenCheckbox = page.getByTestId('checkbox-show-hidden');
+    this.analyzeDatabaseLink = page.getByTestId('insights-db-analysis-link');
+    this.recommendationVoting = page.getByTestId('recommendation-voting');
+    this.likeVoteButton = page.getByTestId('like-vote-btn');
+    this.dislikeVoteButton = page.getByTestId('dislike-vote-btn');
   }
 
   /**
@@ -350,6 +366,77 @@ export class NavigationPage extends BasePage {
   async getShortcutCount(section: 'desktop' | 'cli' | 'workbench'): Promise<number> {
     const rows = await this.getShortcutRows(section).all();
     return rows.length;
+  }
+
+  // ===== Live Recommendations Methods =====
+
+  /**
+   * Check if the no recommendations welcome screen is visible
+   */
+  async isNoRecommendationsScreenVisible(): Promise<boolean> {
+    return this.noRecommendationsScreen.isVisible();
+  }
+
+  /**
+   * Get a recommendation accordion by name
+   */
+  getRecommendation(name: string): Locator {
+    return this.page.getByTestId(`${name}-accordion`);
+  }
+
+  /**
+   * Check if a recommendation is visible
+   */
+  async isRecommendationVisible(name: string): Promise<boolean> {
+    return this.getRecommendation(name).isVisible();
+  }
+
+  /**
+   * Get count of visible recommendations
+   */
+  async getRecommendationCount(): Promise<number> {
+    // Count elements with data-testid ending in '-accordion' in the tips panel
+    const accordions = this.page.locator('[data-testid$="-accordion"]');
+    return accordions.count();
+  }
+
+  /**
+   * Click analyze database link to trigger recommendations
+   */
+  async clickAnalyzeDatabase(): Promise<void> {
+    await this.analyzeDatabaseLink.click();
+  }
+
+  /**
+   * Get the tips count from the tab label (e.g., "Tips (4)" returns 4)
+   */
+  async getTipsCount(): Promise<number> {
+    const text = await this.insightsTipsTab.innerText();
+    const match = text.match(/Tips\s*\((\d+)\)/);
+    return match ? parseInt(match[1], 10) : 0;
+  }
+
+  /**
+   * Toggle show hidden recommendations checkbox
+   */
+  async toggleShowHidden(): Promise<void> {
+    await this.showHiddenCheckbox.click();
+  }
+
+  /**
+   * Hide a recommendation by name
+   */
+  async hideRecommendation(name: string): Promise<void> {
+    const hideButton = this.getRecommendation(name).getByRole('button', { name: 'hide/unhide tip' });
+    await hideButton.click();
+  }
+
+  /**
+   * Snooze a recommendation by name
+   */
+  async snoozeRecommendation(name: string): Promise<void> {
+    const snoozeButton = this.getRecommendation(name).getByRole('button', { name: 'snooze tip' });
+    await snoozeButton.click();
   }
 }
 

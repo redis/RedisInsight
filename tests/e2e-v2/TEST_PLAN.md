@@ -562,12 +562,13 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 5.3 Message Table View
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟠 | View message table with subscribed messages |
+| ✅ | 🟠 | View message table with subscribed messages |
 | 🔲 | 🟢 | Navigate message table pages |
 | 🔲 | 🟢 | Sort message table by columns |
 | 🔲 | 🟢 | Confirm table configuration persists across navigation |
 | 🔲 | 🟢 | Confirm message table scrollable with 100+ rows |
-| 🔲 | 🟢 | Confirm status bar shows proper subscription status |
+| ✅ | 🟢 | Confirm status bar shows proper subscription status |
+| ✅ | 🟢 | Confirm message count displays in status bar |
 
 ### 5.4 Cluster Mode (Pub/Sub)
 | Status | Priority | Test Case |
@@ -901,9 +902,9 @@ The test plan is organized by feature area, with tests categorized by priority:
 ### 12.8 Live Recommendations
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟠 | View live recommendations in Insights panel |
-| 🔲 | 🟢 | Recommendations are database-specific |
-| 🔲 | 🟢 | Vote recommendation as useful |
+| ✅ | 🟠 | View live recommendations in Insights panel |
+| ✅ | 🟢 | Recommendations are database-specific (shown after analysis) |
+| ✅ | 🟢 | View recommendation voting options |
 | 🔲 | 🟢 | Vote recommendation as not useful |
 | 🔲 | 🟢 | Hide recommendation |
 | 🔲 | 🟢 | Snooze recommendation |

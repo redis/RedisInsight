@@ -23,8 +23,20 @@ export class PubSubPage extends BasePage {
   readonly publishButton: Locator;
 
   // Messages table/list
+  readonly messagesList: Locator;
   readonly messagesTable: Locator;
   readonly messageRows: Locator;
+
+  // Status section
+  readonly statusSection: Locator;
+  readonly messagesCount: Locator;
+  readonly subscribedBadge: Locator;
+  readonly unsubscribedBadge: Locator;
+
+  // Table columns (headers)
+  readonly timestampHeader: Locator;
+  readonly channelHeader: Locator;
+  readonly messageHeader: Locator;
 
   // Warning message
   readonly productionWarning: Locator;
@@ -49,8 +61,20 @@ export class PubSubPage extends BasePage {
     this.publishButton = page.getByRole('button', { name: 'Publish' });
 
     // Messages table/list
+    this.messagesList = page.getByTestId('messages-list');
     this.messagesTable = page.getByRole('table').filter({ hasText: /Channel|Message/ });
     this.messageRows = this.messagesTable.locator('tbody tr');
+
+    // Status section
+    this.statusSection = page.getByTestId('pub-sub-status');
+    this.messagesCount = page.getByTestId('pub-sub-messages-count');
+    this.subscribedBadge = page.getByText('Subscribed', { exact: true });
+    this.unsubscribedBadge = page.getByText('Unsubscribed', { exact: true });
+
+    // Table headers
+    this.timestampHeader = this.messagesTable.getByRole('columnheader', { name: 'Timestamp' });
+    this.channelHeader = this.messagesTable.getByRole('columnheader', { name: 'Channel' });
+    this.messageHeader = this.messagesTable.getByRole('columnheader', { name: 'Message' });
 
     // Warning message
     this.productionWarning = page.getByText('Running in production may decrease performance');
@@ -146,6 +170,55 @@ export class PubSubPage extends BasePage {
    */
   async waitForMessage(messageText: string, timeout: number = 10000): Promise<void> {
     await this.page.getByText(messageText).waitFor({ state: 'visible', timeout });
+  }
+
+  /**
+   * Get the displayed messages count from the status bar
+   */
+  async getDisplayedMessagesCount(): Promise<number> {
+    const text = await this.messagesCount.innerText();
+    return parseInt(text, 10);
+  }
+
+  /**
+   * Check if message table is visible
+   */
+  async isMessageTableVisible(): Promise<boolean> {
+    try {
+      await this.messagesList.waitFor({ state: 'visible', timeout: 2000 });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Click on a table column header to sort
+   */
+  async sortByColumn(columnName: 'Timestamp' | 'Channel' | 'Message'): Promise<void> {
+    const header = this.messagesTable.getByRole('columnheader', { name: columnName });
+    await header.click();
+  }
+
+  /**
+   * Get cell text by row and column index
+   */
+  async getCellText(rowIndex: number, columnIndex: number): Promise<string> {
+    const row = this.messageRows.nth(rowIndex);
+    const cell = row.locator('td').nth(columnIndex);
+    return cell.innerText();
+  }
+
+  /**
+   * Check if status badge shows "Subscribed"
+   */
+  async isStatusSubscribed(): Promise<boolean> {
+    try {
+      await this.subscribedBadge.waitFor({ state: 'visible', timeout: 2000 });
+      return true;
+    } catch {
+      return false;
+    }
   }
 }
 
