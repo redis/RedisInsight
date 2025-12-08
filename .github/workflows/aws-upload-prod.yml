@@ -22,8 +22,8 @@ jobs:
         uses: actions/upload-artifact/merge@v4
         with:
           name: 'all-builds'
-          pattern: '*-builds'
-          delete-merged: true
+          pattern: '*-builds*'
+          delete-merged: false
 
       - name: Download builds
         uses: actions/download-artifact@v4
