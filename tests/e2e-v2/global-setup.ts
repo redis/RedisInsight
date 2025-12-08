@@ -1,6 +1,7 @@
 import { request } from '@playwright/test';
 import { appConfig } from './config';
 import { ApiHelper } from './helpers/api';
+import './types/global';
 
 /**
  * Global setup runs before all tests
@@ -8,6 +9,9 @@ import { ApiHelper } from './helpers/api';
  * - Cleans up any leftover test data
  */
 async function globalSetup(): Promise<void> {
+  // Record start time for duration tracking
+  globalThis.__TEST_START_TIME__ = Date.now();
+
   console.log('\n🚀 Running global setup...');
 
   // Verify the application is running

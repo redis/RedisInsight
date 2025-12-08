@@ -131,9 +131,9 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Clone database connection |
 | ✅ | 🔴 | Connect to database |
 | 🔲 | 🟢 | Database connection status indicator |
-| 🔲 | 🟢 | Search by database name |
-| 🔲 | 🟢 | Search by host |
-| 🔲 | 🟢 | Search by port |
+| ✅ | 🟢 | Search by database name |
+| ✅ | 🟢 | Search by host |
+| ✅ | 🟢 | Search by port |
 | 🔲 | 🟢 | Search by connection type (OSS Cluster, Sentinel) |
 | 🔲 | 🟢 | Search by last connection time |
 | 🔲 | 🟢 | Verify Redis Stack icon displayed for databases with modules |
@@ -149,7 +149,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | 🔲 | 🟢 | Clone OSS Cluster database |
 | 🔲 | 🟢 | Clone Sentinel database |
 | 🔲 | 🟢 | Verify "New Connection" badge on cloned database |
-| 🔲 | 🟢 | Verify cloned database appears in list after creation |
+| ✅ | 🟢 | Verify cloned database appears in list after creation |
 
 ### 1.4 Pagination (when > 15 databases)
 | Status | Priority | Test Case |
@@ -316,10 +316,10 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟠 | Create consumer group with Entry ID "$" (new messages only) |
 | ✅ | 🟢 | Create consumer group with custom Entry ID |
 | ✅ | 🟢 | View consumer group columns (Group Name, Consumers, Pending, Last Delivered ID) - covered by "should open Consumer Groups tab" test |
-| 🔲 | 🟢 | View consumer information columns (Consumer Name, Pending, Idle Time) |
+| ✅ | 🟢 | View consumer information columns (Consumer Name, Pending, Idle Time) |
 | ✅ | 🟢 | Delete consumer from consumer group |
 | ✅ | 🟢 | Delete consumer group |
-| 🔲 | 🟢 | Edit Last Delivered ID for consumer group |
+| ✅ | 🟢 | Edit Last Delivered ID for consumer group |
 | ✅ | 🟢 | Cancel creating consumer group |
 
 ### 2.9.2 Stream Pending Messages
@@ -327,9 +327,9 @@ The test plan is organized by feature area, with tests categorized by priority:
 |--------|----------|-----------|
 | ✅ | 🟠 | View pending messages for consumer |
 | ✅ | 🟢 | Acknowledge pending message |
-| 🔲 | 🟢 | Claim pending message |
-| 🔲 | 🟢 | Claim pending message with idle time parameter |
-| 🔲 | 🟢 | Force claim pending message |
+| ✅ | 🟢 | Claim pending message |
+| ✅ | 🟢 | Claim pending message with idle time parameter |
+| ✅ | 🟢 | Force claim pending message |
 
 ### 2.10 Key Details - JSON
 | Status | Priority | Test Case |
@@ -396,7 +396,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | 🔲 | 🟢 | View filter history for RediSearch queries |
 | 🔲 | 🟢 | Verify context persistence for RediSearch across navigation |
 | 🔲 | 🟢 | Display "No Redis Query Engine" message when module not available |
-| 🔲 | 🟢 | Delete search index with FT.DROPINDEX |
+| ✅ | 🟢 | Delete search index with FT.DROPINDEX |
 
 ### 2.14 Key Filtering Patterns
 | Status | Priority | Test Case |
@@ -445,7 +445,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | View full list of commands with results in group mode |
 | ✅ | 🟢 | Copy all commands from group result |
 | ✅ | 🟢 | View group results in full screen mode |
-| 🔲 | 🟢 | Original datetime preserved in history after page refresh |
+| ✅ | 🟢 | Original datetime preserved in history after page refresh |
 | 🔲 | 🟢 | Display message when result exceeds 1MB after refresh |
 | ✅ | 🟢 | History limited to 30 commands (oldest replaced by newest) |
 | ✅ | 🟢 | Quick-access to command history with Up Arrow |
@@ -568,7 +568,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟠 | View message table with subscribed messages |
 | 🔲 | 🟢 | Navigate message table pages |
 | ✅ | 🟢 | Sort message table by columns |
-| 🔲 | 🟢 | Confirm table configuration persists across navigation |
+| ✅ | 🟢 | Confirm table configuration persists across navigation |
 | ✅ | 🟢 | Confirm message table with multiple messages |
 | ✅ | 🟢 | Confirm status bar shows proper subscription status |
 | ✅ | 🟢 | Confirm message count displays in status bar |
@@ -614,7 +614,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | 🔲 | 🟢 | Confirm extrapolation toggle adjusts charted values |
 | 🔲 | 🟢 | Confirm analysis distinguishes between scanned and estimated data |
 | 🔲 | 🟢 | Confirm responsiveness on large datasets |
-| 🔲 | 🟢 | Sort namespaces by key pattern |
+| ✅ | 🟢 | Sort namespaces by key pattern |
 | ✅ | 🟢 | Sort namespaces by memory |
 | ✅ | 🟢 | Sort namespaces by number of keys |
 | ✅ | 🟢 | Filter namespace to Browser view |

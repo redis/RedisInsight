@@ -142,5 +142,65 @@ test.describe('Browser > Search Indexes', () => {
     await workbenchPage.executeCommand(`FT.DROPINDEX ${testIndexName}`);
     await workbenchPage.executeCommand(`DEL ${testPrefix}:item1 ${testPrefix}:item2`);
   });
+
+  test(`should delete search index with FT.DROPINDEX ${Tags.REGRESSION}`, async ({
+    page,
+    createBrowserPage,
+    createWorkbenchPage,
+  }) => {
+    browserPage = createBrowserPage(databaseId);
+    const workbenchPage = createWorkbenchPage(databaseId);
+    const dropIndexName = `idx_drop_${faker.string.alphanumeric(6)}`;
+    const dropPrefix = `test-drop-${faker.string.alphanumeric(6)}`;
+
+    await browserPage.goto();
+    await browserPage.keyList.waitForKeysLoaded();
+
+    // Create test data and index via Workbench
+    await page.getByRole('tab', { name: 'Workbench' }).click();
+    await workbenchPage.waitForLoad();
+    await workbenchPage.executeCommand(`HSET ${dropPrefix}:item1 name "Test Item" price 100`);
+    await workbenchPage.executeCommand(
+      `FT.CREATE ${dropIndexName} ON HASH PREFIX 1 ${dropPrefix}: SCHEMA name TEXT price NUMERIC`,
+    );
+
+    // Go back to browser
+    await page.getByRole('tab', { name: 'Browse' }).click();
+    await browserPage.keyList.waitForKeysLoaded();
+
+    // Switch to search mode and verify index exists
+    await page.getByTestId('search-mode-redisearch-btn').click();
+    await page.getByTestId('select-search-mode').click();
+    await expect(page.getByRole('option', { name: dropIndexName })).toBeVisible();
+    await page.keyboard.press('Escape'); // Close dropdown
+
+    // Delete the index via Workbench
+    await page.getByRole('tab', { name: 'Workbench' }).click();
+    await workbenchPage.waitForLoad();
+    await workbenchPage.executeCommand(`FT.DROPINDEX ${dropIndexName}`);
+
+    // Verify the command succeeded
+    await expect(page.getByText('OK')).toBeVisible();
+
+    // Go back to browser - don't wait for keys, we're in search mode
+    await page.getByRole('tab', { name: 'Browse' }).click();
+
+    // Wait for the search mode UI to be visible
+    await expect(page.getByTestId('select-search-mode')).toBeVisible();
+
+    // Open the index dropdown
+    await page.getByTestId('select-search-mode').click();
+
+    // Verify the index is no longer in the dropdown
+    await expect(page.getByRole('option', { name: dropIndexName })).not.toBeVisible();
+
+    // Close the dropdown before navigating away
+    await page.keyboard.press('Escape');
+
+    // Clean up test data
+    await page.getByRole('tab', { name: 'Workbench' }).click();
+    await workbenchPage.waitForLoad();
+    await workbenchPage.executeCommand(`DEL ${dropPrefix}:item1`);
+  });
 });
 

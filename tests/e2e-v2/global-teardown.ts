@@ -1,8 +1,10 @@
-import { ApiHelper } from './helpers/api';
+import { ApiHelper, formatDuration } from './helpers';
+import './types/global';
 
 /**
  * Global teardown runs after all tests
  * - Cleans up test data created during tests
+ * - Reports total test duration
  */
 async function globalTeardown(): Promise<void> {
   console.log('\n🧹 Running global teardown...');
@@ -21,6 +23,12 @@ async function globalTeardown(): Promise<void> {
     console.warn('   ⚠️ Could not clean up test databases:', error);
   } finally {
     await apiHelper.dispose();
+  }
+
+  // Calculate and display total duration
+  if (globalThis.__TEST_START_TIME__) {
+    const duration = Date.now() - globalThis.__TEST_START_TIME__;
+    console.log(`\n⏱️  Total test duration: ${formatDuration(duration)}`);
   }
 
   console.log('✅ Global teardown complete\n');

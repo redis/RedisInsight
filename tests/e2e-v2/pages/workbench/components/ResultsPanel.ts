@@ -118,5 +118,22 @@ export class ResultsPanel {
     const timeValue = this.page.getByTestId('command-execution-time-value').first();
     return timeValue.innerText();
   }
+
+  /**
+   * Get datetime of result by index (0 = most recent)
+   */
+  async getDateTimeByIndex(index: number): Promise<string> {
+    const resultCard = this.resultCards.nth(index);
+    const dateTime = resultCard.locator('[data-testid="command-execution-date-time"]');
+    await dateTime.waitFor({ state: 'visible', timeout: 5000 });
+    return dateTime.innerText();
+  }
+
+  /**
+   * Get datetime of the most recent result
+   */
+  async getLastDateTime(): Promise<string> {
+    return this.getDateTimeByIndex(0);
+  }
 }
 

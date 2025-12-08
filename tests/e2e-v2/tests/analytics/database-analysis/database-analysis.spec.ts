@@ -269,6 +269,34 @@ test.describe('Analytics > Database Analysis', () => {
       // Verify the table still has Total Keys column
       await expect(analyticsPage.topNamespacesTable.getByText('Total Keys')).toBeVisible();
     });
+
+    test(`should sort namespaces by key pattern ${Tags.REGRESSION}`, async ({
+      createAnalyticsPage,
+      page,
+    }) => {
+      const analyticsPage = createAnalyticsPage();
+      await analyticsPage.gotoDatabaseAnalysis(databaseId);
+
+      // Generate report if not already visible
+      const hasReport = await analyticsPage.isReportVisible();
+      if (!hasReport) {
+        await analyticsPage.clickNewReport();
+        await analyticsPage.waitForReportGenerated();
+      }
+
+      // Click "Key Pattern" column header to sort ascending
+      const keyPatternHeader = page.getByRole('button', { name: 'Key Pattern' });
+      await keyPatternHeader.click();
+
+      // Verify sorting indicator shows ascending
+      await expect(page.getByText('Sorted by Key Pattern ascending')).toBeVisible();
+
+      // Click again to sort descending
+      await keyPatternHeader.click();
+
+      // Verify sorting indicator shows descending
+      await expect(page.getByText('Sorted by Key Pattern descending')).toBeVisible();
+    });
   });
 
   test.describe('Tips Tab', () => {

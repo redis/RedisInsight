@@ -432,6 +432,50 @@ test.describe('Pub/Sub', () => {
       await pubsubPage.unsubscribe();
     });
 
+    test(`should persist table configuration across navigation ${Tags.REGRESSION}`, async ({
+      page,
+      createPubSubPage,
+    }) => {
+      const pubsubPage = createPubSubPage();
+      await pubsubPage.goto(databaseId);
+
+      // Create messages with different channel names
+      const channelA = `aaa-persist-${faker.string.alphanumeric(4)}`;
+      const channelZ = `zzz-persist-${faker.string.alphanumeric(4)}`;
+      const messageA = `msg-a-${faker.string.alphanumeric(6)}`;
+      const messageZ = `msg-z-${faker.string.alphanumeric(6)}`;
+
+      // Subscribe first
+      await pubsubPage.subscribe('*');
+      expect(await pubsubPage.isSubscribed()).toBe(true);
+
+      // Publish messages to different channels
+      await pubsubPage.publish(channelA, messageA);
+      await expect(page.getByText(messageA)).toBeVisible();
+
+      await pubsubPage.publish(channelZ, messageZ);
+      await expect(page.getByText(messageZ)).toBeVisible();
+
+      // Sort by Channel column
+      await pubsubPage.sortByColumn('Channel');
+      await page.waitForTimeout(500);
+
+      // Navigate to Browser tab
+      await page.getByRole('tab', { name: 'Browse' }).click();
+      await expect(page.getByRole('tab', { name: 'Browse' })).toHaveAttribute('aria-selected', 'true');
+
+      // Navigate back to Pub/Sub tab
+      await page.getByRole('tab', { name: 'Pub/Sub' }).click();
+      await expect(page.getByRole('tab', { name: 'Pub/Sub' })).toHaveAttribute('aria-selected', 'true');
+
+      // Verify messages are still visible (table configuration persisted)
+      await expect(page.getByText(channelA)).toBeVisible();
+      await expect(page.getByText(channelZ)).toBeVisible();
+
+      // Cleanup
+      await pubsubPage.unsubscribe();
+    });
+
     // TODO: Enable this test when clear messages button is implemented in the UI
     // The clear button (data-testid="clear-pubsub-btn") is not yet available in the codebase
     test.skip(`should clear messages when clear button is clicked ${Tags.REGRESSION}`, async ({

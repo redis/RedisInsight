@@ -546,6 +546,34 @@ test.describe.serial('Workbench > Command History', () => {
     expect(command).toBe('PING');
   });
 
+  test(`should preserve original datetime in history after page refresh ${Tags.REGRESSION}`, async ({
+    page,
+  }) => {
+    // Execute a command
+    await workbenchPage.executeCommand('PING');
+    await expect(workbenchPage.resultsPanel.resultText).toBeVisible();
+
+    // Get the original datetime
+    const originalDateTime = await workbenchPage.resultsPanel.getLastDateTime();
+    expect(originalDateTime).toBeTruthy();
+
+    // Wait a moment to ensure time would change if not preserved
+    await page.waitForTimeout(2000);
+
+    // Refresh the page
+    await page.reload();
+    await workbenchPage.waitForLoad();
+
+    // Wait for results to load - results are persisted after refresh
+    await expect(workbenchPage.resultsPanel.container).toBeVisible({ timeout: 15000 });
+
+    // Get the datetime after refresh
+    const datetimeAfterRefresh = await workbenchPage.resultsPanel.getLastDateTime();
+
+    // Verify the original datetime is preserved (not updated to current time)
+    expect(datetimeAfterRefresh).toBe(originalDateTime);
+  });
+
   test(`should re-run a previous command from history ${Tags.REGRESSION}`, async ({ page }) => {
     // Execute a command
     await workbenchPage.executeCommand('PING');

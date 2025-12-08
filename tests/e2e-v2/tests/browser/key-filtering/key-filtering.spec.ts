@@ -154,8 +154,8 @@ test.describe.serial('Browser > Key Filtering Patterns', () => {
 
   test.describe('Filter Controls', () => {
     test(`should clear filter and search again ${Tags.REGRESSION}`, async () => {
-      // First apply a filter for filter-* keys
-      await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}filter-*`);
+      // First apply a filter for filter-* keys with unique suffix
+      await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}filter-*-${uniqueSuffix}`);
       await browserPage.page.waitForTimeout(500);
 
       // Verify filter is applied - filter keys should be visible
