@@ -23,7 +23,7 @@ import { Modal } from 'uiSrc/components/base/display/modal'
 import { UploadWarningBanner } from 'uiSrc/components/upload-warning/styles'
 
 export interface Props {
-  loading: boolean
+  loading?: boolean
   disabled: boolean
   onReset: () => void
 }

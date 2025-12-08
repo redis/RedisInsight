@@ -5,8 +5,8 @@ import { useHistory, useLocation, useParams } from 'react-router-dom'
 import { Nullable } from 'uiSrc/utils'
 import { PageNames, Pages } from 'uiSrc/constants'
 import { Title } from 'uiSrc/components/base/text'
-import { Loader } from 'uiSrc/components/base/display'
 import { Col } from 'uiSrc/components/base/layout/flex'
+import { LoadingContent } from 'uiSrc/components/base'
 import { RdiPipelineTabs } from 'uiSrc/slices/interfaces/rdi'
 import { rdiPipelineSelector } from 'uiSrc/slices/rdi/pipeline'
 
@@ -55,7 +55,7 @@ const Navigation = () => {
         Pipeline management
       </Title>
 
-      {loading && <Loader size="xl" />}
+      {loading && <LoadingContent lines={4} />}
 
       {!loading && (
         <>

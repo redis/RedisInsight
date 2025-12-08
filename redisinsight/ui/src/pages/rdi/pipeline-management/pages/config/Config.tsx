@@ -202,7 +202,8 @@ const Config = () => {
           <Row grow={false} justify="end">
             <PrimaryButton
               onClick={testConnections}
-              loading={testingConnections || pipelineLoading}
+              loading={testingConnections}
+              disabled={pipelineLoading}
               aria-labelledby="test target connections"
               data-testid="rdi-test-connection-btn"
             >
