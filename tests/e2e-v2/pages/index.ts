@@ -7,3 +7,4 @@ export { AnalyticsPage } from './analytics';
 export { PubSubPage } from './pubsub';
 export { SettingsPage } from './settings';
 export { NavigationPage } from './navigation';
+export { EulaPage } from './eula';

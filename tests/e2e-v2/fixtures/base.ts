@@ -1,5 +1,15 @@
 import { test as base } from '@playwright/test';
-import { DatabasesPage, BrowserPage, WorkbenchPage, CliPanel, AnalyticsPage, PubSubPage, SettingsPage, NavigationPage } from '../pages';
+import {
+  DatabasesPage,
+  BrowserPage,
+  WorkbenchPage,
+  CliPanel,
+  AnalyticsPage,
+  PubSubPage,
+  SettingsPage,
+  NavigationPage,
+  EulaPage,
+} from '../pages';
 import { ApiHelper } from '../helpers/api';
 
 type Fixtures = {
@@ -37,18 +47,27 @@ type Fixtures = {
    * Navigation page fixture
    */
   navigationPage: NavigationPage;
+  /**
+   * EULA page fixture - for testing EULA/consent popup
+   * Note: Most tests should use apiHelper.ensureEulaAccepted() instead
+   */
+  eulaPage: EulaPage;
 };
 
 export const test = base.extend<Fixtures>({
-  databasesPage: async ({ page }, use) => {
-    await use(new DatabasesPage(page));
-  },
-
+  // Ensure EULA is accepted before each test (via API)
+  // This runs automatically for all tests using the apiHelper fixture
   // eslint-disable-next-line no-empty-pattern
   apiHelper: async ({}, use) => {
     const helper = new ApiHelper();
+    // Ensure EULA is accepted so tests don't get blocked by popup
+    await helper.ensureEulaAccepted();
     await use(helper);
     await helper.dispose();
+  },
+
+  databasesPage: async ({ page }, use) => {
+    await use(new DatabasesPage(page));
   },
 
   createBrowserPage: async ({ page }, use) => {
@@ -78,6 +97,10 @@ export const test = base.extend<Fixtures>({
 
   navigationPage: async ({ page }, use) => {
     await use(new NavigationPage(page));
+  },
+
+  eulaPage: async ({ page }, use) => {
+    await use(new EulaPage(page));
   },
 });
 

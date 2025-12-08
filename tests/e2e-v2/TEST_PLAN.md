@@ -836,14 +836,37 @@ The test plan is organized by feature area, with tests categorized by priority:
 | 🔲 | 🟢 | Confirm telemetry events appear in analytics console/local logs |
 | 🔲 | 🟢 | Disable telemetry in Settings and confirm no new events logged |
 
-### 12.3 EULA & Onboarding
+### 12.3 EULA & Privacy Settings
+
+> **Special Test Requirements:**
+> - EULA tests require fresh app state (no agreements stored)
+> - EULA popup blocks all UI interactions until accepted
+> - **Must run in isolation** - before other tests or in separate test run
+> - UI shows popup when: `config.agreements = null` OR consent key missing OR `spec.since > applied.version`
+> - **Reset via API:** `DELETE /api/settings/agreements` - resets agreements to null, triggering EULA popup on next page load
+> - **Auto-accept via env:** `RI_ACCEPT_TERMS_AND_CONDITIONS=true` - bypasses EULA popup entirely
+> - **Test file:** `tests/settings/eula/eula.spec.ts`
+
 | Status | Priority | Test Case |
 |--------|----------|-----------|
-| 🔲 | 🟠 | First launch shows EULA & Privacy Agreement dialog |
-| 🔲 | 🟢 | "Use recommended settings" auto-selects telemetry and encryption |
+| ✅ | 🔴 | First launch shows EULA & Privacy Agreement dialog |
+| ✅ | 🟠 | Submit button disabled until EULA checkbox checked |
+| ✅ | 🟠 | "Use recommended settings" toggle auto-selects telemetry and encryption |
+| ✅ | 🟢 | Encryption checkbox enabled by default |
+| ✅ | 🟢 | Analytics checkbox respects "Use recommended settings" toggle |
+| 🔲 | 🟢 | Notifications checkbox available |
+| ✅ | 🟢 | EULA link opens Redis license page |
+| ✅ | 🟢 | Privacy policy link works |
+| ✅ | 🟢 | Accepting EULA stores agreement version in database |
+| 🔲 | 🟢 | Version bump shows EULA popup again |
 | 🔲 | 🟢 | Decline analytics confirms telemetry events not sent |
-| 🔲 | 🟢 | Confirm onboarding progresses correctly |
-| 🔲 | 🟢 | Reset onboarding from Help Center |
+
+### 12.4 Onboarding Tour
+
+| Status | Priority | Test Case |
+|--------|----------|-----------|
+| 🔲 | 🟠 | Onboarding starts after EULA acceptance (first database connection) |
+| 🔲 | 🟠 | Reset onboarding from Help Menu |
 | 🔲 | 🟢 | Onboarding step: Browser |
 | 🔲 | 🟢 | Onboarding step: Tree view |
 | 🔲 | 🟢 | Onboarding step: Filter and search |
@@ -859,10 +882,11 @@ The test plan is organized by feature area, with tests categorized by priority:
 | 🔲 | 🟢 | Onboarding step: Great job! (final step) |
 | 🔲 | 🟢 | Skip tour button completes onboarding |
 | 🔲 | 🟢 | Back button navigates to previous step |
+| 🔲 | 🟢 | Next button advances to next step |
 | 🔲 | 🟢 | Onboarding state persists after page refresh |
 | 🔲 | 🟢 | Final step closes when navigating to another page |
 
-### 12.4 Redis Cloud Conversion Funnel
+### 12.5 Redis Cloud Conversion Funnel
 | Status | Priority | Test Case |
 |--------|----------|-----------|
 | ⏸️ | 🟠 | User signs up with Google/GitHub → account, subscription, DB created → redirected to RI |
@@ -871,13 +895,13 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ⏸️ | 🟢 | All CTAs pass UTM parameters correctly to Redis Cloud |
 | ⏸️ | 🟢 | Telemetry events for conversion funnel are successful |
 
-### 12.5 App Settings
+### 12.6 App Settings
 | Status | Priority | Test Case |
 |--------|----------|-----------|
 | ✅ | 🟢 | Open Settings and update general preferences (theme, notifications) |
 | ✅ | 🟢 | Confirm edits apply immediately across UI |
 
-### 12.6 Deep Linking (URL Handling)
+### 12.7 Deep Linking (URL Handling)
 | Status | Priority | Test Case |
 |--------|----------|-----------|
 | 🔲 | 🟠 | Add database via redisinsight://databases/connect?redisUrl=... |
@@ -889,7 +913,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | 🔲 | 🟢 | Invalid URL shows error message |
 | 🔲 | 🟢 | URL with missing required parameters shows validation error |
 
-### 12.7 Keyboard Shortcuts
+### 12.8 Keyboard Shortcuts
 | Status | Priority | Test Case |
 |--------|----------|-----------|
 | ✅ | 🟠 | Open keyboard shortcuts panel from Help Center |
@@ -903,7 +927,7 @@ The test plan is organized by feature area, with tests categorized by priority:
 | ✅ | 🟢 | Up arrow navigates command history in CLI |
 | 🔲 | 🟢 | Shift+Space opens Non-Redis Editor |
 
-### 12.8 Live Recommendations
+### 12.9 Live Recommendations
 | Status | Priority | Test Case |
 |--------|----------|-----------|
 | ✅ | 🟠 | View live recommendations in Insights panel |

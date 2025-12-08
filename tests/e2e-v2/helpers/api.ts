@@ -271,6 +271,78 @@ export class ApiHelper {
   }
 
   /**
+   * Get current app settings
+   */
+  async getSettings(): Promise<{
+    agreements: {
+      eula: boolean;
+      analytics: boolean;
+      encryption: boolean;
+      notifications: boolean;
+      version: string;
+    } | null;
+  }> {
+    const ctx = await this.getContext();
+    const response = await ctx.get('/api/settings');
+
+    if (!response.ok()) {
+      const body = await response.text();
+      throw new Error(`Failed to get settings: ${response.status()} - ${body}`);
+    }
+
+    return response.json();
+  }
+
+  /**
+   * Reset agreements to trigger EULA popup
+   */
+  async resetAgreements(): Promise<void> {
+    const ctx = await this.getContext();
+    const response = await ctx.delete('/api/settings/agreements');
+
+    if (!response.ok()) {
+      const body = await response.text();
+      throw new Error(`Failed to reset agreements: ${response.status()} - ${body}`);
+    }
+  }
+
+  /**
+   * Accept EULA and set agreements via API
+   */
+  async acceptEula(options?: {
+    analytics?: boolean;
+    encryption?: boolean;
+    notifications?: boolean;
+  }): Promise<void> {
+    const ctx = await this.getContext();
+    const response = await ctx.patch('/api/settings', {
+      data: {
+        agreements: {
+          eula: true,
+          analytics: options?.analytics ?? false,
+          encryption: options?.encryption ?? true,
+          notifications: options?.notifications ?? false,
+        },
+      },
+    });
+
+    if (!response.ok()) {
+      const body = await response.text();
+      throw new Error(`Failed to accept EULA: ${response.status()} - ${body}`);
+    }
+  }
+
+  /**
+   * Ensure EULA is accepted (check first, accept if needed)
+   */
+  async ensureEulaAccepted(): Promise<void> {
+    const settings = await this.getSettings();
+    if (!settings.agreements || !settings.agreements.eula) {
+      await this.acceptEula();
+    }
+  }
+
+  /**
    * Cleanup resources
    */
   async dispose(): Promise<void> {
