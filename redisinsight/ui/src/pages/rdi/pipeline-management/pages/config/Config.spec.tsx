@@ -239,7 +239,7 @@ describe('Config', () => {
     expect(screen.getByTestId('rdi-config-loading')).toBeInTheDocument()
   })
 
-  it('should render loader on btn', () => {
+  it('should not render loader on btn for pipeline loading', () => {
     const rdiPipelineSelectorMock = jest.fn().mockReturnValue({
       loading: true,
     })
@@ -251,10 +251,11 @@ describe('Config', () => {
 
     // check is btn has loader
     const child = getByTestId('rdi-test-connection-btn')
-    expect(child.querySelector('svg')).toBeTruthy()
+    const icon = child.querySelector('svg')
+    expect(icon).not.toBeInTheDocument()
   })
 
-  it('should render loader on btn', () => {
+  it('should render loader on btn when testing connection', () => {
     const rdiTestConnectionsSelectorMock = jest.fn().mockReturnValue({
       loading: true,
     })
