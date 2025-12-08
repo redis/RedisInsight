@@ -126,12 +126,29 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: macos-builds-${{ matrix.arch }}
+          if-no-files-found: warn
           path: |
             ./release/Redis-Insight*${{ matrix.arch }}.dmg
             ./release/Redis-Insight*${{ matrix.arch }}.dmg.blockmap
             ./release/Redis-Insight*${{ matrix.arch }}.zip
-            ./release/Redis-Insight*.pkg
             ./release/*-mac.yml
+
+      - name: Upload macos MAS package
+        if: matrix.arch == 'arm64'
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-builds-mas
+          if-no-files-found: warn
+          path: |
+            ./release/Redis-Insight*.pkg
+
+      - name: Upload redisstack artifacts
+        if: vars.ENV == 'production' && inputs.target == vars.ALL
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-redisstack-${{ matrix.arch }}
+          if-no-files-found: warn
+          path: |
             ./release/redisstack
 
     env:
