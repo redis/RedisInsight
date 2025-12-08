@@ -70,6 +70,7 @@ export const mockAppSettingsInitial = Object.assign(
 export const mockAgreementsRepository = jest.fn(() => ({
   getOrCreate: jest.fn(),
   update: jest.fn(),
+  reset: jest.fn(),
 }));
 
 export const mockSettingsRepository = jest.fn(() => ({

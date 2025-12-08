@@ -406,4 +406,27 @@ describe('SettingsService', () => {
       });
     });
   });
+
+  describe('resetAgreements', () => {
+    it('should reset agreements successfully', async () => {
+      agreementsRepository.reset.mockResolvedValue(undefined);
+
+      await service.resetAgreements(mockSessionMetadata);
+
+      expect(agreementsRepository.reset).toHaveBeenCalledWith(
+        mockSessionMetadata,
+      );
+    });
+
+    it('should throw InternalServerError when reset fails', async () => {
+      agreementsRepository.reset.mockRejectedValue(new Error('some error'));
+
+      try {
+        await service.resetAgreements(mockSessionMetadata);
+        fail();
+      } catch (err) {
+        expect(err).toBeInstanceOf(InternalServerErrorException);
+      }
+    });
+  });
 });

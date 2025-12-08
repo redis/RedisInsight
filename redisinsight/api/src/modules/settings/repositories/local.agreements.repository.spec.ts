@@ -146,4 +146,33 @@ describe('LocalAgreementsRepository', () => {
       });
     });
   });
+
+  describe('reset', () => {
+    it('should reset agreements to null when entity exists', async () => {
+      const existingEntity = Object.assign(new AgreementsEntity(), {
+        id: 1,
+        version: '1.0.6',
+        data: JSON.stringify({ eula: true, analytics: true }),
+      });
+      repository.findOneBy.mockResolvedValueOnce(existingEntity);
+
+      await service.reset(mockSessionMetadata);
+
+      expect(repository.findOneBy).toHaveBeenCalledWith({});
+      expect(repository.save).toHaveBeenCalledWith({
+        ...existingEntity,
+        version: null,
+        data: null,
+      });
+    });
+
+    it('should do nothing when no entity exists', async () => {
+      repository.findOneBy.mockResolvedValueOnce(null);
+
+      await service.reset(mockSessionMetadata);
+
+      expect(repository.findOneBy).toHaveBeenCalledWith({});
+      expect(repository.save).not.toHaveBeenCalled();
+    });
+  });
 });

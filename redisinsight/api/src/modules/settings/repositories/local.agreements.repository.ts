@@ -56,4 +56,13 @@ export class LocalAgreementsRepository extends AgreementsRepository {
 
     return this.getOrCreate(sessionMetadata);
   }
+
+  async reset(sessionMetadata: SessionMetadata): Promise<void> {
+    const entity = await this.repository.findOneBy({});
+    if (entity) {
+      entity.version = null;
+      entity.data = null;
+      await this.repository.save(entity);
+    }
+  }
 }

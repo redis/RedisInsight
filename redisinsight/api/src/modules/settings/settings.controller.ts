@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Patch,
   UsePipes,
@@ -74,5 +75,16 @@ export class SettingsController {
     @Body() dto: UpdateSettingsDto,
   ): Promise<GetAppSettingsResponse> {
     return this.settingsService.updateAppSettings(sessionMetadata, dto);
+  }
+
+  @Delete('/agreements')
+  @ApiEndpoint({
+    description: 'Reset user agreements to trigger EULA popup again',
+    statusCode: 200,
+  })
+  async resetAgreements(
+    @RequestSessionMetadata() sessionMetadata: SessionMetadata,
+  ): Promise<void> {
+    return this.settingsService.resetAgreements(sessionMetadata);
   }
 }

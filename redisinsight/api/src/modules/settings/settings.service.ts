@@ -260,6 +260,30 @@ export class SettingsService {
     return agreementsSpec;
   }
 
+  /**
+   * Reset agreements to trigger EULA popup again
+   * Used for E2E testing
+   */
+  public async resetAgreements(
+    sessionMetadata: SessionMetadata,
+  ): Promise<void> {
+    this.logger.debug('Resetting application agreements.', sessionMetadata);
+    try {
+      await this.agreementRepository.reset(sessionMetadata);
+      this.logger.debug(
+        'Succeed to reset application agreements.',
+        sessionMetadata,
+      );
+    } catch (error) {
+      this.logger.error(
+        'Failed to reset application agreements.',
+        error,
+        sessionMetadata,
+      );
+      throw new InternalServerErrorException();
+    }
+  }
+
   private async updateAgreements(
     sessionMetadata: SessionMetadata,
     dtoAgreements: Map<string, boolean> = new Map(),

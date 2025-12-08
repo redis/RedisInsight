@@ -15,4 +15,5 @@ export abstract class AgreementsRepository {
     sessionMetadata: SessionMetadata,
     agreements: Agreements,
   ): Promise<Agreements>;
+  abstract reset(sessionMetadata: SessionMetadata): Promise<void>;
 }
