@@ -100,10 +100,11 @@ jobs:
     if: always()
 
   # Remove artifacts from github actions
+  # TODO: Re-enable after testing sqlite3 x64 fix
   remove-artifacts:
     name: Remove artifacts
     needs: [aws-upload]
-    if: always()
+    if: false  # Temporarily disabled to keep artifacts for download
     runs-on: ubuntu-latest
 
     steps:
