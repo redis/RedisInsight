@@ -108,7 +108,7 @@ jest.mock('uiSrc/slices/rdi/statistics', () => ({
     loading: false,
     results: {
       status: 'success',
-      data: CONNECTIONS_DATA
+      data: CONNECTIONS_DATA,
     },
   }),
 }))
@@ -151,7 +151,7 @@ describe('StatisticsPage', () => {
       loading: false,
       results: {
         status: null,
-        data: CONNECTIONS_DATA
+        data: CONNECTIONS_DATA,
       },
     })
     render(<StatisticsPage />)
@@ -170,12 +170,14 @@ describe('StatisticsPage', () => {
     expect(screen.getByTestId('empty-pipeline')).toBeInTheDocument()
   })
 
-    it('renders statistics sections when status is success and data exists', () => {
+  it('renders statistics sections when status is success and data exists', async () => {
     render(<StatisticsPage />)
 
     // Check that statistics sections are rendered instead of empty state
     expect(screen.queryByTestId('empty-pipeline')).not.toBeInTheDocument()
-    expect(screen.getByTestId('processing-performance-info-refresh-btn')).toBeInTheDocument()
+    expect(
+      await screen.findByTestId('processing-performance-info-refresh-btn'),
+    ).toBeInTheDocument()
   })
 
   it('should call proper telemetry on page view', () => {
@@ -189,11 +191,11 @@ describe('StatisticsPage', () => {
     })
   })
 
-  it('should call proper telemetry event when refresh is clicked for processing performance section', () => {
+  it('should call proper telemetry event when refresh is clicked for processing performance section', async () => {
     render(<StatisticsPage />)
 
     fireEvent.click(
-      screen.getByTestId('processing-performance-info-refresh-btn'),
+      await screen.findByTestId('processing-performance-info-refresh-btn'),
     )
 
     expect(sendEventTelemetry).toBeCalledWith({
@@ -238,7 +240,9 @@ describe('StatisticsPage', () => {
 
     const testid = 'processing-performance-info'
 
-    await userEvent.click(screen.getByTestId(`${testid}-auto-refresh-config-btn`))
+    await userEvent.click(
+      await screen.findByTestId(`${testid}-auto-refresh-config-btn`),
+    )
     await waitForRiPopoverVisible()
     await userEvent.click(screen.getByTestId(`${testid}-auto-refresh-switch`)) // disabled
 
@@ -258,7 +262,9 @@ describe('StatisticsPage', () => {
 
     const testid = 'processing-performance-info'
 
-    await userEvent.click(screen.getByTestId(`${testid}-auto-refresh-config-btn`))
+    await userEvent.click(
+      await screen.findByTestId(`${testid}-auto-refresh-config-btn`),
+    )
     await waitForRiPopoverVisible()
     await userEvent.click(screen.getByTestId(`${testid}-auto-refresh-switch`)) // disabled
     await userEvent.click(screen.getByTestId(`${testid}-auto-refresh-switch`)) // enabled
