@@ -2,6 +2,28 @@
 
 Standalone Playwright E2E test suite for RedisInsight.
 
+## Documentation
+
+| Document | Purpose |
+|----------|---------|
+| [`TEST_PLAN.md`](./TEST_PLAN.md) | Test coverage status and priorities |
+| [`.ai/rules/e2e-testing.md`](../../.ai/rules/e2e-testing.md) | Standards and patterns for writing tests |
+
+### AI Commands
+
+Use these commands with Augment AI to generate and fix tests:
+
+| Command | Description |
+|---------|-------------|
+| `@e2e-generate <url> [focus]` | Explore UI with Playwright MCP and generate tests |
+| `@e2e-fix <test-pattern>` | Run tests and fix failures |
+
+Example:
+```
+@e2e-generate http://localhost:8080/browser "add key"
+@e2e-fix "Analytics > Slow Log"
+```
+
 ## Prerequisites
 
 1. Start Redis instances using Docker Compose:
