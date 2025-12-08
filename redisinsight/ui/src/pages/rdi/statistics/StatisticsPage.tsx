@@ -19,18 +19,17 @@ import { formatLongName, Nullable, setTitle } from 'uiSrc/utils'
 import { setLastPageContext } from 'uiSrc/slices/app/context'
 import { PageNames } from 'uiSrc/constants'
 import { Loader } from 'uiSrc/components/base/display'
-import { IRdiStatistics, RdiPipelineStatus } from 'uiSrc/slices/interfaces'
+import { type IRdiStatistics, RdiPipelineStatus } from 'uiSrc/slices/interfaces'
 
+import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { AutoRefresh } from 'uiSrc/components'
 import Clients from './clients'
 import DataStreams from './data-streams'
 import Empty from './empty'
 import ProcessingPerformance from './processing-performance'
 import Status from './status'
 import TargetConnections from './target-connections'
-
-import styles from './styles.module.scss'
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { AutoRefresh } from 'uiSrc/components'
+import * as S from './StatisticsPage.styles'
 
 const shouldShowStatistics = (data: Nullable<IRdiStatistics>) =>
   data?.status === RdiPipelineStatus.Success && !!data?.data
@@ -123,60 +122,61 @@ const StatisticsPage = () => {
 
   const { data: statisticsData } = statisticsResults
 
-
   return (
-    <div className={styles.pageContainer}>
-      <Col gap="xxl" style={{ padding: 16 }}>
+    <S.Container>
+      <S.ContentWrapper gap="xxl">
         {pageLoading && (
-          <div className={styles.cover}>
+          <S.LoadingState centered>
             <Loader size="xl" />
-          </div>
+          </S.LoadingState>
         )}
         {!shouldShowStatistics(statisticsResults) ? (
           // TODO add loader
           <Empty rdiInstanceId={rdiInstanceId} />
         ) : (
-          <>
-            <Row justify="end">
-              <FlexItem>
-                <AutoRefresh
-                  postfix="processing-performance-info"
-                  displayText
-                  loading={isStatisticsLoading}
-                  lastRefreshTime={lastRefreshTime}
-                  enableAutoRefreshDefault
-                  testid="processing-performance-info"
-                  onRefresh={() => {
-                    setLastRefreshTime(Date.now())
-                    onRefresh('processing_performance')
-                  }}
-                  onRefreshClicked={() =>
-                    onRefreshClicked('processing_performance')
-                  }
-                  onEnableAutoRefresh={(
-                    enableAutoRefresh: boolean,
-                    refreshRate: string,
-                  ) =>
-                    onChangeAutoRefresh(
-                      'processing_performance',
-                      enableAutoRefresh,
-                      refreshRate,
-                    )
-                  }
-                />
-              </FlexItem>
-            </Row>
-            <Status data={statisticsData.rdiPipelineStatus} />
-            <ProcessingPerformance
-              data={statisticsData.processingPerformance}
-            />
-            <TargetConnections data={statisticsData.connections} />
-            <DataStreams data={statisticsData.dataStreams} />
-            <Clients data={statisticsData.clients} />
-          </>
+          !pageLoading && (
+            <>
+              <Row justify="end">
+                <FlexItem>
+                  <AutoRefresh
+                    postfix="processing-performance-info"
+                    displayText
+                    loading={isStatisticsLoading}
+                    lastRefreshTime={lastRefreshTime}
+                    enableAutoRefreshDefault
+                    testid="processing-performance-info"
+                    onRefresh={() => {
+                      setLastRefreshTime(Date.now())
+                      onRefresh('processing_performance')
+                    }}
+                    onRefreshClicked={() =>
+                      onRefreshClicked('processing_performance')
+                    }
+                    onEnableAutoRefresh={(
+                      enableAutoRefresh: boolean,
+                      refreshRate: string,
+                    ) =>
+                      onChangeAutoRefresh(
+                        'processing_performance',
+                        enableAutoRefresh,
+                        refreshRate,
+                      )
+                    }
+                  />
+                </FlexItem>
+              </Row>
+              <Status data={statisticsData.rdiPipelineStatus} />
+              <ProcessingPerformance
+                data={statisticsData.processingPerformance}
+              />
+              <TargetConnections data={statisticsData.connections} />
+              <DataStreams data={statisticsData.dataStreams} />
+              <Clients data={statisticsData.clients} />
+            </>
+          )
         )}
-      </Col>
-    </div>
+      </S.ContentWrapper>
+    </S.Container>
   )
 }
 
