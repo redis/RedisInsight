@@ -225,6 +225,7 @@ export class CloudAuthService {
       {
         accessToken: tokens.access_token,
         refreshToken: tokens.refresh_token,
+        idToken: tokens.id_token,
         idpType: authRequest.idpType,
       },
     );
