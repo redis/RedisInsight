@@ -25,9 +25,17 @@ on:
 
 jobs:
   build:
-    name: Build macos
-    runs-on: macos-14
+    name: Build macos (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
     environment: ${{ inputs.environment }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x64
+            runner: macos-15
+          - arch: arm64
+            runner: macos-14
     steps:
       - uses: actions/checkout@v4
 
@@ -62,9 +70,16 @@ jobs:
         run: |
           unset CSC_LINK
 
-          yarn package:prod
-          yarn package:mas
+          yarn package:prod --mac --${{ matrix.arch }}
           rm -rf release/mac
+
+      # Build MAS only on arm64 runner (universal build)
+      - name: Build macos MAS (prod)
+        if: vars.ENV == 'production' && inputs.target == vars.ALL && matrix.arch == 'arm64'
+        run: |
+          unset CSC_LINK
+
+          yarn package:mas
           mv release/mas-universal/Redis-Insight-mac-universal-mas.pkg release/Redis-Insight-mac-universal-mas.pkg
 
       - name: Build macos dmg (staging)
@@ -75,9 +90,16 @@ jobs:
           echo $APP_BUNDLE_VERSION
           echo $CSC_KEYCHAIN
 
-          yarn package:stage && yarn package:mas
+          yarn package:stage --mac --${{ matrix.arch }}
           rm -rf release/mac
 
+      # Build MAS only on arm64 runner (universal build)
+      - name: Build macos MAS (staging)
+        if: (vars.ENV == 'staging' || vars.ENV == 'development') && inputs.target == vars.ALL && matrix.arch == 'arm64'
+        run: |
+          unset CSC_LINK
+
+          yarn package:mas
           mv release/mas-universal/Redis-Insight-mac-universal-mas.pkg release/Redis-Insight-mac-universal-mas.pkg
 
       # handle manual builds
@@ -88,9 +110,9 @@ jobs:
           target=$(echo "${{inputs.target}}" | grep -oE 'build_macos_[^ ]+' | sed 's/build_macos_/dmg:/' | paste -sd ' ' -)
 
           if [ "${{ vars.ENV == 'production' }}" == "true" ]; then
-            yarn package:prod --mac $target
+            yarn package:prod --mac $target --${{ matrix.arch }}
           else
-            yarn package:stage --mac $target
+            yarn package:stage --mac $target --${{ matrix.arch }}
           fi
 
           rm -rf release/mac
@@ -98,19 +120,16 @@ jobs:
       - name: Repack dmg to tar
         if: vars.ENV == 'production' && inputs.target == vars.ALL
         run: |
-          ARCH=x64 ./.github/redisstack/dmg.repack.sh
-          ARCH=arm64 ./.github/redisstack/dmg.repack.sh
+          ARCH=${{ matrix.arch }} ./.github/redisstack/dmg.repack.sh
 
       - name: Upload macos packages
         uses: actions/upload-artifact@v4
         with:
-          name: macos-builds
+          name: macos-builds-${{ matrix.arch }}
           path: |
-            ./release/Redis-Insight*x64.dmg
-            ./release/Redis-Insight*x64.dmg.blockmap
-            ./release/Redis-Insight*.zip
-            ./release/Redis-Insight*arm64.dmg
-            ./release/Redis-Insight*arm64.dmg.blockmap
+            ./release/Redis-Insight*${{ matrix.arch }}.dmg
+            ./release/Redis-Insight*${{ matrix.arch }}.dmg.blockmap
+            ./release/Redis-Insight*${{ matrix.arch }}.zip
             ./release/Redis-Insight*.pkg
             ./release/*-mac.yml
             ./release/redisstack
