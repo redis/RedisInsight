@@ -73,6 +73,26 @@ const getHeadersTests = [
     input: { csrf: 'csrf-token' },
     expected: { ...mockDefaultCloudApiHeaders, 'x-csrf-token': 'csrf-token' },
   },
+  {
+    input: { idToken: 'id-token-value' },
+    expected: {
+      ...mockDefaultCloudApiHeaders,
+      'Sm-Id-Token': 'id-token-value',
+    },
+  },
+  {
+    input: {
+      accessToken: 'jwt-token',
+      idToken: 'id-token-value',
+      csrf: 'csrf-token',
+    },
+    expected: {
+      ...mockDefaultCloudApiHeaders,
+      authorization: 'Bearer jwt-token',
+      'x-csrf-token': 'csrf-token',
+      'Sm-Id-Token': 'id-token-value',
+    },
+  },
 ];
 
 const mockedResult = 'mockedResult';

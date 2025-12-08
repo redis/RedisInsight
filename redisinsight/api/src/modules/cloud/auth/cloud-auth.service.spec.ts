@@ -283,6 +283,37 @@ describe('CloudAuthService', () => {
       );
       expect(service['authRequests'].size).toEqual(0);
     });
+    it('should store idToken in session when present in token response', async () => {
+      expect(service['authRequests'].size).toEqual(1);
+      await service['callback'](mockCloudAuthGoogleCallbackQueryObject);
+      expect(sessionService.updateSessionData).toHaveBeenCalledWith(
+        mockCloudAuthGoogleRequest.sessionMetadata.sessionId,
+        {
+          accessToken: mockTokenResponse.access_token,
+          refreshToken: mockTokenResponse.refresh_token,
+          idToken: mockTokenResponse.id_token,
+          idpType: mockCloudAuthGoogleRequest.idpType,
+        },
+      );
+    });
+    it('should handle missing idToken gracefully', async () => {
+      const tokenResponseWithoutIdToken = {
+        access_token: mockCloudAccessTokenNew,
+        refresh_token: mockCloudRefreshTokenNew,
+      };
+      spy.mockResolvedValue(tokenResponseWithoutIdToken);
+      expect(service['authRequests'].size).toEqual(1);
+      await service['callback'](mockCloudAuthGoogleCallbackQueryObject);
+      expect(sessionService.updateSessionData).toHaveBeenCalledWith(
+        mockCloudAuthGoogleRequest.sessionMetadata.sessionId,
+        {
+          accessToken: tokenResponseWithoutIdToken.access_token,
+          refreshToken: tokenResponseWithoutIdToken.refresh_token,
+          idToken: undefined,
+          idpType: mockCloudAuthGoogleRequest.idpType,
+        },
+      );
+    });
     it('should throw an error if error field in query parameters (CloudOauthMisconfigurationException)', async () => {
       expect(service['authRequests'].size).toEqual(1);
       await expect(
