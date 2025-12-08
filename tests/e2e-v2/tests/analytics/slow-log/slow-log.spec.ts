@@ -41,10 +41,13 @@ test.describe('Analytics > Slow Log', () => {
       const analyticsPage = createAnalyticsPage();
       await analyticsPage.gotoSlowLog(databaseId);
 
-      // Table should be visible
+      // Generate slow log entries by setting threshold to 0 (logs all commands)
+      await analyticsPage.generateSlowLogEntries();
+
+      // Table should now be visible with entries
       await expect(analyticsPage.slowLogTable).toBeVisible();
 
-      // Should have some entries (from previous operations)
+      // Should have some entries
       const hasEntries = await analyticsPage.hasSlowLogEntries();
       expect(hasEntries).toBe(true);
     });
@@ -68,11 +71,14 @@ test.describe('Analytics > Slow Log', () => {
       await expect(analyticsPage.configureButton).toBeVisible();
     });
 
-    test(`should show clear slow log button ${Tags.REGRESSION}`, async ({
+    test(`should show clear slow log button when entries exist ${Tags.REGRESSION}`, async ({
       createAnalyticsPage,
     }) => {
       const analyticsPage = createAnalyticsPage();
       await analyticsPage.gotoSlowLog(databaseId);
+
+      // Generate entries first (Clear button only visible when there are entries)
+      await analyticsPage.generateSlowLogEntries();
 
       await expect(analyticsPage.clearSlowLogButton).toBeVisible();
     });
@@ -93,7 +99,10 @@ test.describe('Analytics > Slow Log', () => {
       const analyticsPage = createAnalyticsPage();
       await analyticsPage.gotoSlowLog(databaseId);
 
-      // Wait for initial load
+      // Generate entries first so we have something to refresh
+      await analyticsPage.generateSlowLogEntries();
+
+      // Wait for table to load
       await expect(analyticsPage.slowLogTable).toBeVisible();
 
       // Click refresh button
@@ -130,6 +139,9 @@ test.describe('Analytics > Slow Log', () => {
       const analyticsPage = createAnalyticsPage();
       await analyticsPage.gotoSlowLog(databaseId);
 
+      // Generate entries first
+      await analyticsPage.generateSlowLogEntries();
+
       // Wait for table to load
       await expect(analyticsPage.slowLogTable).toBeVisible();
 
@@ -147,6 +159,9 @@ test.describe('Analytics > Slow Log', () => {
     }) => {
       const analyticsPage = createAnalyticsPage();
       await analyticsPage.gotoSlowLog(databaseId);
+
+      // Generate entries first
+      await analyticsPage.generateSlowLogEntries();
 
       // Wait for table to load
       await expect(analyticsPage.slowLogTable).toBeVisible();
@@ -167,6 +182,9 @@ test.describe('Analytics > Slow Log', () => {
     }) => {
       const analyticsPage = createAnalyticsPage();
       await analyticsPage.gotoSlowLog(databaseId);
+
+      // Generate entries first
+      await analyticsPage.generateSlowLogEntries();
 
       // Wait for table to load
       await expect(analyticsPage.slowLogTable).toBeVisible();

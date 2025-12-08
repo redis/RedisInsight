@@ -287,7 +287,8 @@ export class AnalyticsPage extends BasePage {
    */
   async openSlowLogConfig(): Promise<void> {
     await this.configureButton.click();
-    await this.page.getByText('slowlog-log-slower-than').waitFor({ state: 'visible' });
+    // Wait for dialog to appear by checking for the save button
+    await this.page.getByTestId('slowlog-config-save-btn').waitFor({ state: 'visible' });
   }
 
   /**
@@ -314,8 +315,8 @@ export class AnalyticsPage extends BasePage {
    */
   async saveSlowLogConfig(): Promise<void> {
     await this.page.getByTestId('slowlog-config-save-btn').click();
-    // Wait for dialog to close
-    await this.page.getByText('slowlog-log-slower-than').waitFor({ state: 'hidden', timeout: 5000 });
+    // Wait for dialog to close by checking the save button is hidden
+    await this.page.getByTestId('slowlog-config-save-btn').waitFor({ state: 'hidden', timeout: 5000 });
   }
 
   /**
@@ -323,6 +324,8 @@ export class AnalyticsPage extends BasePage {
    */
   async cancelSlowLogConfig(): Promise<void> {
     await this.page.getByTestId('slowlog-config-cancel-btn').click();
+    // Wait for dialog to close
+    await this.page.getByTestId('slowlog-config-cancel-btn').waitFor({ state: 'hidden', timeout: 5000 });
   }
 
   /**
@@ -333,6 +336,40 @@ export class AnalyticsPage extends BasePage {
     // Extract the number from "Execution time: X msec, Max length: Y"
     const match = text?.match(/Execution time:\s*([\d.]+)\s*msec/);
     return match ? match[1] : '';
+  }
+
+  /**
+   * Generate slow log entries by temporarily setting threshold to 0 and running commands
+   * This ensures there are entries available for testing
+   */
+  async generateSlowLogEntries(): Promise<void> {
+    // Check if we already have entries
+    const isEmpty = await this.isSlowLogEmpty();
+    if (!isEmpty) {
+      return; // Already have entries
+    }
+
+    // Get current threshold to restore later
+    const originalThreshold = await this.getExecutionTimeThreshold();
+
+    // Set threshold to 0 to log all commands
+    await this.openSlowLogConfig();
+    await this.setSlowLogThreshold('0');
+    await this.saveSlowLogConfig();
+
+    // Wait a moment for config to apply
+    await this.page.waitForTimeout(500);
+
+    // Refresh to generate some slow log entries (the refresh itself creates entries)
+    await this.refreshSlowLog();
+
+    // Wait for entries to appear
+    await this.slowLogTable.waitFor({ state: 'visible', timeout: 10000 });
+
+    // Restore original threshold
+    await this.openSlowLogConfig();
+    await this.setSlowLogThreshold(originalThreshold || '10');
+    await this.saveSlowLogConfig();
   }
 
   // ===== Tips/Recommendations Methods =====
