@@ -102,7 +102,6 @@
     "@elastic/eui/**/prismjs": "~1.30.0",
     "vite/esbuild": "^0.25.0",
     "react-router-dom/react-router/path-to-regexp": "^1.9.0",
-    "node-abi": "^4.24.0",
     "**/form-data": "^4.0.4"
   },
   "devDependencies": {
