@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { get, filter, map, keyBy, sum, sumBy, isNumber } from 'lodash';
 import {
   getTotalKeys,
@@ -15,6 +15,8 @@ import { DatabaseOverviewKeyspace } from '../constants/overview';
 
 @Injectable()
 export class DatabaseOverviewProvider {
+  private readonly logger = new Logger(DatabaseOverviewProvider.name);
+
   private previousCpuStats = new Map();
 
   /**
@@ -47,6 +49,13 @@ export class DatabaseOverviewProvider {
       totalKeysPerDb = calculatedTotalKeysPerDb;
     }
 
+    const cpuUsagePercentage = this.calculateCpuUsage(
+      clientMetadata.databaseId,
+      nodesInfo,
+    );
+
+    const maxCpuUsagePercentage = await this.calculateMaxCpuPercentage(client);
+
     return {
       version: this.getVersion(nodesInfo),
       serverName: this.getServerName(nodesInfo),
@@ -57,10 +66,8 @@ export class DatabaseOverviewProvider {
       opsPerSecond: this.calculateOpsPerSec(nodesInfo),
       networkInKbps: this.calculateNetworkIn(nodesInfo),
       networkOutKbps: this.calculateNetworkOut(nodesInfo),
-      cpuUsagePercentage: this.calculateCpuUsage(
-        clientMetadata.databaseId,
-        nodesInfo,
-      ),
+      cpuUsagePercentage,
+      maxCpuUsagePercentage,
     };
   }
 
@@ -292,6 +299,73 @@ export class DatabaseOverviewProvider {
   }
 
   /**
+   * Calculates maximum CPU percentage based on number of nodes/shards
+   * For clusters: max = number of primary nodes * 100% (always returned, no cap)
+   * For standalone: detect I/O threads via CONFIG GET (no estimation)
+   *
+   * Example of calculation:
+   * 2 shards: 2 * 100 = 200%
+   * 4 threads: 4 * 100 = 400%
+   */
+  private async calculateMaxCpuPercentage(
+    client: RedisClient,
+  ): Promise<number | undefined> {
+    // For cluster, return the number of primary nodes * 100%
+    if (client.getConnectionType() === RedisClientConnectionType.CLUSTER) {
+      try {
+        const primaryNodes = await client.nodes(RedisClientNodeRole.PRIMARY);
+        const maxCpu = primaryNodes.length * 100;
+
+        return maxCpu;
+      } catch (error) {
+        // If we can't get nodes, fall through to standalone logic
+        this.logger.warn(
+          'Error occurred when trying to calculate max CPU usage percentage for cluster',
+          error,
+        );
+      }
+    }
+
+    // For standalone, detect I/O threads via CONFIG GET
+    try {
+      const ioThreadsResult = await client.call([
+        'config',
+        'get',
+        'io-threads',
+      ]);
+
+      if (
+        ioThreadsResult &&
+        Array.isArray(ioThreadsResult) &&
+        ioThreadsResult.length >= 2
+      ) {
+        const ioThreadsValue = ioThreadsResult[1];
+        let ioThreads: number;
+
+        if (typeof ioThreadsValue === 'string') {
+          ioThreads = parseInt(ioThreadsValue, 10);
+        } else if (typeof ioThreadsValue === 'number') {
+          ioThreads = ioThreadsValue;
+        } else {
+          // If it's a Buffer, convert to string first
+          ioThreads = parseInt(ioThreadsValue?.toString() || '1', 10);
+        }
+
+        if (ioThreads > 1) {
+          return ioThreads * 100;
+        }
+      }
+    } catch (error) {
+      this.logger.warn(
+        'Error occurred when trying to calculate max CPU usage percentage',
+        error,
+      );
+    }
+
+    return undefined;
+  }
+
+  /**
    * Calculates sum of cpu usage in percentage for all shards
    * CPU% = ((used_cpu_sys_t2+used_cpu_user_t2)-(used_cpu_sys_t1+used_cpu_user_t1)) / (t2-t1)
    *
@@ -356,9 +430,7 @@ export class DatabaseOverviewProvider {
           return 0;
         }
 
-        // sometimes it is possible to have CPU usage greater than 100%
-        // it could happen because we are getting database up time in seconds when CPU usage time in milliseconds
-        return usage > 100 ? 100 : usage;
+        return usage;
       }),
     );
   }

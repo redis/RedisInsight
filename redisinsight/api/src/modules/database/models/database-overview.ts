@@ -64,6 +64,13 @@ export class DatabaseOverview {
   })
   cpuUsagePercentage?: number;
 
+  @ApiPropertyOptional({
+    description:
+      'Maximum CPU usage percentage when multiple threads/shards are present (%)',
+    type: Number,
+  })
+  maxCpuUsagePercentage?: number;
+
   @ApiProperty({
     description: 'Database server name',
     type: String,
