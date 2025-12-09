@@ -5,9 +5,6 @@
   "files": ["dist", "node_modules", "package.json"],
   "artifactName": "Redis-Insight-${os}-${arch}.${ext}",
   "compression": "normal",
-  "npmRebuild": false,
-  "nodeGypRebuild": false,
-  "buildDependenciesFromSource": false,
   "asarUnpack": ["node_modules/keytar", "node_modules/sqlite3"],
   "protocols": [
     {
