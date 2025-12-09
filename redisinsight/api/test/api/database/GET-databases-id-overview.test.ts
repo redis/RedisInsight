@@ -9,6 +9,7 @@ import {
   getMainCheckFn,
 } from '../deps';
 import { Joi } from '../../helpers/test';
+import { parseClusterNodesResponse } from '../../helpers/utils';
 const { localDb, request, server, constants, rte } = deps;
 
 const endpoint = (id = constants.TEST_INSTANCE_ID) =>
@@ -26,6 +27,7 @@ const responseSchema = Joi.object()
     networkInKbps: Joi.number().allow(null),
     networkOutKbps: Joi.number().integer().allow(null),
     cpuUsagePercentage: Joi.number().allow(null),
+    maxCpuUsagePercentage: Joi.number().allow(null),
   })
   .required()
   .strict();
@@ -82,6 +84,31 @@ describe(`GET /${constants.API.DATABASES}/:id/overview`, () => {
           expect(body.networkInKbps).to.not.eql(undefined);
           expect(body.networkOutKbps).to.not.eql(undefined);
           expect(body.usedMemory).to.not.eql(undefined);
+        },
+      },
+    ].map(mainCheckFn);
+  });
+
+  describe('Cluster', () => {
+    requirements('rte.type=CLUSTER');
+
+    [
+      {
+        name: 'Should include maxCpuUsagePercentage for cluster based on primary nodes',
+        responseSchema,
+        checkFn: async ({ body }) => {
+          expect(body.version).to.eql(rte.env.version);
+          expect(body).to.have.property('maxCpuUsagePercentage');
+
+          // Get the actual number of primary nodes from the cluster
+          const clusterNodesResponse = await rte.client.cluster('NODES');
+          const clusterNodes = parseClusterNodesResponse(clusterNodesResponse);
+          const primaryNodesCount = clusterNodes.filter(
+            (node) => !node.replicaOf || node.replicaOf === '-',
+          ).length;
+          const expectedMaxCpu = primaryNodesCount * 100;
+
+          expect(body.maxCpuUsagePercentage).to.eql(expectedMaxCpu);
         },
       },
     ].map(mainCheckFn);
