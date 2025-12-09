@@ -11,6 +11,7 @@ import { DatabaseOverviewProvider } from 'src/modules/database/providers/databas
 import * as Utils from 'src/modules/redis/utils/keys.util';
 import { DatabaseOverviewKeyspace } from 'src/modules/database/constants/overview';
 import { convertRedisInfoReplyToObject } from 'src/utils';
+import { RedisClientNodeRole } from 'src/modules/redis/client';
 
 const mockServerInfo = {
   redis_version: '6.2.4',
@@ -247,7 +248,7 @@ describe('OverviewService', () => {
           cpuUsagePercentage: 50,
         });
       });
-      it('check for cpu max value = 100', async () => {
+      it('check for cpu max value > 100', async () => {
         spyGetNodeInfo.mockResolvedValueOnce(mockNodeInfo);
         spyGetNodeInfo.mockResolvedValueOnce({
           ...mockNodeInfo,
@@ -270,6 +271,7 @@ describe('OverviewService', () => {
           ),
         ).toEqual({
           ...mockDatabaseOverview,
+          maxCpuUsagePercentage: undefined,
         });
 
         expect(
@@ -280,7 +282,8 @@ describe('OverviewService', () => {
           ),
         ).toEqual({
           ...mockDatabaseOverview,
-          cpuUsagePercentage: 100,
+          cpuUsagePercentage: 101.002,
+          maxCpuUsagePercentage: undefined,
         });
       });
       it('should not return cpu (undefined) when used_cpu_sys = 0', async () => {
@@ -325,6 +328,38 @@ describe('OverviewService', () => {
             db2: 1,
           },
         });
+      });
+      it('should include maxCpuUsagePercentage for standalone with I/O threads', async () => {
+        when(standaloneClient.getInfo).mockResolvedValue(
+          convertRedisInfoReplyToObject(mockStandaloneRedisInfoReply),
+        );
+        when(standaloneClient.call).mockResolvedValue(['io-threads', '4']);
+
+        spyGetNodeInfo.mockResolvedValue(mockNodeInfo);
+
+        const result = await service.getOverview(
+          mockClientMetadata,
+          standaloneClient,
+          mockCurrentKeyspace,
+        );
+
+        expect(result.maxCpuUsagePercentage).toBe(400);
+      });
+      it('should not include maxCpuUsagePercentage when I/O threads detection fails', async () => {
+        when(standaloneClient.getInfo).mockResolvedValue(
+          convertRedisInfoReplyToObject(mockStandaloneRedisInfoReply),
+        );
+        when(standaloneClient.call).mockRejectedValue(new Error('ACL error'));
+
+        spyGetNodeInfo.mockResolvedValue(mockNodeInfo);
+
+        const result = await service.getOverview(
+          mockClientMetadata,
+          standaloneClient,
+          mockCurrentKeyspace,
+        );
+
+        expect(result.maxCpuUsagePercentage).toBeUndefined();
       });
     });
     describe('Cluster', () => {
@@ -380,6 +415,7 @@ describe('OverviewService', () => {
           networkOutKbps: 6,
           opsPerSecond: 6,
           cpuUsagePercentage: null,
+          maxCpuUsagePercentage: 600,
         });
         expect(spyCalculateTotalKeys).toHaveBeenCalledTimes(0);
         expect(spyCalculateNodesTotalKeys).toHaveBeenCalledTimes(1);
@@ -465,7 +501,169 @@ describe('OverviewService', () => {
           networkOutKbps: 6,
           opsPerSecond: 6,
           cpuUsagePercentage: 300,
+          maxCpuUsagePercentage: 600,
         });
+      });
+      it('should include maxCpuUsagePercentage for cluster with 4 nodes', async () => {
+        const mockPrimaryNodes = [
+          { options: { host: 'localhost', port: 7001 } },
+          { options: { host: 'localhost', port: 7002 } },
+          { options: { host: 'localhost', port: 7003 } },
+          { options: { host: 'localhost', port: 7004 } },
+        ];
+
+        when(clusterClient.getConnectionType).mockReturnValue('CLUSTER' as any);
+        when(clusterClient.nodes)
+          .calledWith(RedisClientNodeRole.PRIMARY)
+          .mockResolvedValue(mockPrimaryNodes);
+        when(clusterClient.getInfo).mockResolvedValue(
+          convertRedisInfoReplyToObject(mockStandaloneRedisInfoReply),
+        );
+
+        spyGetNodeInfo.mockResolvedValue(mockNodeInfo);
+
+        const result = await service.getOverview(
+          mockClientMetadata,
+          clusterClient,
+          mockCurrentKeyspace,
+        );
+
+        expect(result.maxCpuUsagePercentage).toBe(400);
+      });
+    });
+  });
+
+  describe('calculateMaxCpuPercentage', () => {
+    describe('Cluster', () => {
+      it('should return max CPU based on number of primary nodes (4 nodes = 400%)', async () => {
+        const mockPrimaryNodes = [
+          { options: { host: 'localhost', port: 7001 } },
+          { options: { host: 'localhost', port: 7002 } },
+          { options: { host: 'localhost', port: 7003 } },
+          { options: { host: 'localhost', port: 7004 } },
+        ];
+
+        when(clusterClient.getConnectionType).mockReturnValue('CLUSTER' as any);
+        when(clusterClient.nodes)
+          .calledWith(RedisClientNodeRole.PRIMARY)
+          .mockResolvedValue(mockPrimaryNodes);
+
+        const result = await (service as any).calculateMaxCpuPercentage(
+          clusterClient,
+        );
+
+        expect(result).toBe(400);
+      });
+
+      it('should return max CPU for single node cluster (100%)', async () => {
+        const mockPrimaryNodes = [
+          { options: { host: 'localhost', port: 7001 } },
+        ];
+
+        when(clusterClient.getConnectionType).mockReturnValue('CLUSTER' as any);
+        when(clusterClient.nodes)
+          .calledWith(RedisClientNodeRole.PRIMARY)
+          .mockResolvedValue(mockPrimaryNodes);
+
+        const result = await (service as any).calculateMaxCpuPercentage(
+          clusterClient,
+        );
+
+        expect(result).toBe(100);
+      });
+
+      it('should return undefined if cluster nodes call fails', async () => {
+        when(clusterClient.getConnectionType).mockReturnValue('CLUSTER' as any);
+        when(clusterClient.nodes)
+          .calledWith(RedisClientNodeRole.PRIMARY)
+          .mockRejectedValue(new Error('Connection failed'));
+
+        const result = await (service as any).calculateMaxCpuPercentage(
+          clusterClient,
+        );
+
+        expect(result).toBeUndefined();
+      });
+    });
+
+    describe('Standalone', () => {
+      it('should return max CPU when I/O threads are detected (4 threads = 400%)', async () => {
+        when(standaloneClient.call).mockResolvedValue(['io-threads', '4']);
+
+        const result = await (service as any).calculateMaxCpuPercentage(
+          standaloneClient,
+        );
+
+        expect(result).toBe(400);
+        expect(standaloneClient.call).toHaveBeenCalledWith([
+          'config',
+          'get',
+          'io-threads',
+        ]);
+      });
+
+      it('should return undefined when I/O threads = 1', async () => {
+        when(standaloneClient.call).mockResolvedValue(['io-threads', '1']);
+
+        const result = await (service as any).calculateMaxCpuPercentage(
+          standaloneClient,
+        );
+
+        expect(result).toBeUndefined();
+      });
+
+      it('should return undefined when CONFIG GET returns empty array', async () => {
+        when(standaloneClient.call).mockResolvedValue([]);
+
+        const result = await (service as any).calculateMaxCpuPercentage(
+          standaloneClient,
+        );
+
+        expect(result).toBeUndefined();
+      });
+
+      it('should return undefined when CONFIG GET returns invalid format', async () => {
+        when(standaloneClient.call).mockResolvedValue(['io-threads']);
+
+        const result = await (service as any).calculateMaxCpuPercentage(
+          standaloneClient,
+        );
+
+        expect(result).toBeUndefined();
+      });
+
+      it('should handle ACL/permission errors gracefully and return undefined', async () => {
+        const loggerWarnSpy = jest.spyOn(service['logger'], 'warn');
+        const aclError = new Error('NOAUTH Authentication required');
+        when(standaloneClient.call).mockRejectedValue(aclError);
+
+        const result = await (service as any).calculateMaxCpuPercentage(
+          standaloneClient,
+        );
+
+        expect(result).toBeUndefined();
+        expect(loggerWarnSpy).toHaveBeenCalledWith(
+          'Error occurred when trying to calculate max CPU usage percentage',
+          aclError,
+        );
+        loggerWarnSpy.mockRestore();
+      });
+
+      it('should handle network errors gracefully and return undefined', async () => {
+        const loggerWarnSpy = jest.spyOn(service['logger'], 'warn');
+        const networkError = new Error('Connection timeout');
+        when(standaloneClient.call).mockRejectedValue(networkError);
+
+        const result = await (service as any).calculateMaxCpuPercentage(
+          standaloneClient,
+        );
+
+        expect(result).toBeUndefined();
+        expect(loggerWarnSpy).toHaveBeenCalledWith(
+          'Error occurred when trying to calculate max CPU usage percentage',
+          networkError,
+        );
+        loggerWarnSpy.mockRestore();
       });
     });
   });
