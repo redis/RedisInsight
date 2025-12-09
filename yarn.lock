@@ -11363,10 +11363,10 @@ node-abi@^3.45.0:
   dependencies:
     semver "^7.3.5"
 
-node-abi@^4.12.0:
-  version "4.12.0"
-  resolved "https://registry.yarnpkg.com/node-abi/-/node-abi-4.12.0.tgz#2e24da338f07a09beeb2d7ad840aa83d94345c3e"
-  integrity sha512-bPSN9a/qIEiURzVVO/I7P/8oPeYTSl+vnvVZBXM/8XerKOgA3dMAIUjl+a+lz9VwTowwSKS3EMsgz/vWDXOkuQ==
+node-abi@^4.24.0:
+  version "4.24.0"
+  resolved "https://registry.yarnpkg.com/node-abi/-/node-abi-4.24.0.tgz#fcc1b4c645ffb4c0f39e2dbfb9c41698ba7e782e"
+  integrity sha512-u2EC1CeNe25uVtX3EZbdQ275c74zdZmmpzrHEQh2aIYqoVjlglfUpOX9YY85x1nlBydEKDVaSmMNhR7N82Qj8A==
   dependencies:
     semver "^7.6.3"
 
