@@ -321,6 +321,7 @@ export interface DatabaseConfigInfo {
   networkInKbps?: Nullable<number>
   networkOutKbps?: Nullable<number>
   cpuUsagePercentage?: Nullable<number>
+  maxCpuUsagePercentage?: Nullable<number>
   serverName?: Nullable<string>
   cloudDetails?: {
     cloudId: number
