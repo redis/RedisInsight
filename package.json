@@ -102,6 +102,7 @@
     "@elastic/eui/**/prismjs": "~1.30.0",
     "vite/esbuild": "^0.25.0",
     "react-router-dom/react-router/path-to-regexp": "^1.9.0",
+    "node-abi": "^4.24.0",
     "**/form-data": "^4.0.4"
   },
   "devDependencies": {
@@ -109,7 +110,7 @@
     "@babel/preset-env": "^7.23.2",
     "@babel/preset-react": "^7.22.15",
     "@babel/preset-typescript": "^7.23.2",
-    "@electron/rebuild": "^3.7.1",
+    "@electron/rebuild": "^4.0.1",
     "@faker-js/faker": "^8.4.1",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
     "@storybook/addon-a11y": "^9.1.11",
