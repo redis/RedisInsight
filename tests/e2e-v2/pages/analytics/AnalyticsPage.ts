@@ -94,28 +94,31 @@ export class AnalyticsPage extends BasePage {
 
   /**
    * Navigate to Analytics page - defaults to Slow Log
-   * @param databaseId - The database ID to navigate to
+   * @param databaseId - The ID of the database to navigate to
    */
-  async goto(databaseId?: string): Promise<void> {
-    if (!databaseId) {
-      throw new Error('databaseId is required - use goto(databaseId)');
-    }
+  async goto(databaseId: string): Promise<void> {
     await this.gotoSlowLog(databaseId);
   }
 
   /**
-   * Navigate to Slow Log page
+   * Navigate to Slow Log page via UI
+   * @param databaseId - The ID of the database to navigate to
    */
   async gotoSlowLog(databaseId: string): Promise<void> {
-    await this.page.goto(`/${databaseId}/analytics/slowlog`);
+    await this.gotoDatabase(databaseId);
+    await this.gotoAnalytics();
+    await this.slowLogTab.click();
     await this.slowLogTab.waitFor({ state: 'visible' });
   }
 
   /**
-   * Navigate to Database Analysis page
+   * Navigate to Database Analysis page via UI
+   * @param databaseId - The ID of the database to navigate to
    */
   async gotoDatabaseAnalysis(databaseId: string): Promise<void> {
-    await this.page.goto(`/${databaseId}/analytics/database-analysis`);
+    await this.gotoDatabase(databaseId);
+    await this.gotoAnalytics();
+    await this.databaseAnalysisTab.click();
     await this.databaseAnalysisTab.waitFor({ state: 'visible' });
   }
 

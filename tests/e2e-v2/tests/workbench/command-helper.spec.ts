@@ -1,31 +1,29 @@
 import { test, expect } from '../../fixtures/base';
 import { Tags } from '../../config';
 import { CommandHelperPanel } from '../../pages/workbench';
+import { getStandaloneConfig } from '../../test-data/databases';
+import { DatabaseInstance } from '../../types';
 
 test.describe('Workbench > Command Helper', () => {
-  let databaseId: string;
+  let database: DatabaseInstance;
   let commandHelper: CommandHelperPanel;
 
   test.beforeAll(async ({ apiHelper }) => {
-    // Get or create a database for testing
-    const databases = await apiHelper.getDatabases();
-    if (databases.length === 0) {
-      const db = await apiHelper.createDatabase({
-        name: 'test-command-helper',
-        host: '127.0.0.1',
-        port: 6379,
-      });
-      databaseId = db.id;
-    } else {
-      databaseId = databases[0].id;
+    // Create a database for testing
+    const config = getStandaloneConfig({ name: 'test-command-helper' });
+    database = await apiHelper.createDatabase(config);
+  });
+
+  test.afterAll(async ({ apiHelper }) => {
+    // Clean up database
+    if (database?.id) {
+      await apiHelper.deleteDatabase(database.id);
     }
   });
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, workbenchPage }) => {
     commandHelper = new CommandHelperPanel(page);
-    // Navigate to workbench
-    await page.goto(`/${databaseId}/workbench`);
-    await page.waitForLoadState('networkidle');
+    await workbenchPage.goto(database.id);
   });
 
   test(`should open Command Helper panel ${Tags.SMOKE}`, async () => {

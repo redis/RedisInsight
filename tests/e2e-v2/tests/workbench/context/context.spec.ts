@@ -1,7 +1,7 @@
 import { test, expect } from '../../../fixtures/base';
 import { Tags } from '../../../config';
 import { getStandaloneConfig } from '../../../test-data/databases';
-import { WorkbenchPage } from '../../../pages';
+import { DatabaseInstance } from '../../../types';
 
 /**
  * Workbench Context Tests
@@ -10,32 +10,27 @@ import { WorkbenchPage } from '../../../pages';
  * when navigating between tabs.
  */
 test.describe.serial('Workbench > Context Preservation', () => {
-  let databaseId: string;
-  let workbenchPage: WorkbenchPage;
+  let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
     // Create a test database with unique name
     const dbName = `test-wb-context-${Date.now().toString(36)}`;
     const config = getStandaloneConfig({ name: dbName });
-    const db = await apiHelper.createDatabase(config);
-    databaseId = db.id;
+    database = await apiHelper.createDatabase(config);
   });
 
   test.afterAll(async ({ apiHelper }) => {
     // Clean up
-    if (databaseId) {
-      await apiHelper.deleteDatabase(databaseId);
+    if (database?.id) {
+      await apiHelper.deleteDatabase(database.id);
     }
   });
 
-  test.beforeEach(async ({ page, createWorkbenchPage }) => {
-    // Navigate to the database first
-    await page.goto(`/${databaseId}/workbench`);
-    workbenchPage = createWorkbenchPage(databaseId);
-    await workbenchPage.waitForLoad();
+  test.beforeEach(async ({ workbenchPage }) => {
+    await workbenchPage.goto(database.id);
   });
 
-  test(`should preserve editor content when switching tabs ${Tags.SMOKE}`, async ({ page }) => {
+  test(`should preserve editor content when switching tabs ${Tags.SMOKE}`, async ({ page, workbenchPage }) => {
     // Type a command in the editor
     const testCommand = 'PING';
     await workbenchPage.editor.setCommand(testCommand);
@@ -59,6 +54,7 @@ test.describe.serial('Workbench > Context Preservation', () => {
 
   test(`should preserve command results when switching tabs ${Tags.REGRESSION}`, async ({
     page,
+    workbenchPage,
   }) => {
     // Execute a command
     await workbenchPage.executeCommand('PING');
@@ -83,7 +79,7 @@ test.describe.serial('Workbench > Context Preservation', () => {
     expect(preservedCount).toBe(1);
   });
 
-  test(`should clear context when page is reloaded ${Tags.REGRESSION}`, async ({ page }) => {
+  test(`should clear context when page is reloaded ${Tags.REGRESSION}`, async ({ page, workbenchPage }) => {
     // Type a command in the editor
     const testCommand = 'INFO';
     await workbenchPage.editor.setCommand(testCommand);

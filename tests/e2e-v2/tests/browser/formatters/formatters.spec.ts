@@ -2,7 +2,7 @@ import { test, expect } from '../../../fixtures/base';
 import { Tags } from '../../../config';
 import { getStandaloneConfig } from '../../../test-data/databases';
 import { getStringKeyData, TEST_KEY_PREFIX } from '../../../test-data/browser';
-import { BrowserPage } from '../../../pages';
+import { DatabaseInstance } from '../../../types';
 
 /**
  * Value Formatters Tests
@@ -11,39 +11,36 @@ import { BrowserPage } from '../../../pages';
  * in the Browser key details view.
  */
 test.describe('Browser > Value Formatters', () => {
-  let databaseId: string;
-  let browserPage: BrowserPage;
+  let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
     // Create a test database for all tests in this file
     const config = getStandaloneConfig({ name: 'test-formatters-db' });
-    const db = await apiHelper.createDatabase(config);
-    databaseId = db.id;
+    database = await apiHelper.createDatabase(config);
   });
 
   test.afterAll(async ({ apiHelper }) => {
     // Clean up the test database
-    if (databaseId) {
-      await apiHelper.deleteDatabase(databaseId);
+    if (database?.id) {
+      await apiHelper.deleteDatabase(database.id);
     }
   });
 
-  test.beforeEach(async ({ createBrowserPage }) => {
-    browserPage = createBrowserPage(databaseId);
-    await browserPage.goto();
+  test.beforeEach(async ({ browserPage }) => {
+    await browserPage.goto(database.id);
   });
 
   test.afterEach(async ({ apiHelper }) => {
     // Clean up test keys created during the test
-    await apiHelper.deleteKeysByPattern(databaseId, `${TEST_KEY_PREFIX}*`);
+    await apiHelper.deleteKeysByPattern(database.id, `${TEST_KEY_PREFIX}*`);
   });
 
   test.describe('Format Selection', () => {
-    test(`should display format dropdown ${Tags.SMOKE}`, async ({ apiHelper }) => {
+    test(`should display format dropdown ${Tags.SMOKE}`, async ({ browserPage, apiHelper }) => {
       const keyData = getStringKeyData({ value: '{"name":"test","value":123}' });
 
       // Create key via API
-      await apiHelper.createStringKey(databaseId, keyData.keyName, keyData.value);
+      await apiHelper.createStringKey(database.id, keyData.keyName, keyData.value);
 
       // Refresh and navigate to key
       await browserPage.keyList.refresh();
@@ -55,10 +52,10 @@ test.describe('Browser > Value Formatters', () => {
       await expect(browserPage.keyDetails.formatDropdown).toBeVisible();
     });
 
-    test(`should switch to ASCII format ${Tags.SMOKE}`, async ({ apiHelper }) => {
+    test(`should switch to ASCII format ${Tags.SMOKE}`, async ({ browserPage, apiHelper }) => {
       const keyData = getStringKeyData({ value: 'Hello World' });
 
-      await apiHelper.createStringKey(databaseId, keyData.keyName, keyData.value);
+      await apiHelper.createStringKey(database.id, keyData.keyName, keyData.value);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -73,10 +70,10 @@ test.describe('Browser > Value Formatters', () => {
       expect(currentFormat).toBe('ASCII');
     });
 
-    test(`should switch to HEX format ${Tags.SMOKE}`, async ({ apiHelper }) => {
+    test(`should switch to HEX format ${Tags.SMOKE}`, async ({ browserPage, apiHelper }) => {
       const keyData = getStringKeyData({ value: 'test hex value' });
 
-      await apiHelper.createStringKey(databaseId, keyData.keyName, keyData.value);
+      await apiHelper.createStringKey(database.id, keyData.keyName, keyData.value);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -91,10 +88,10 @@ test.describe('Browser > Value Formatters', () => {
       expect(currentFormat).toBe('HEX');
     });
 
-    test(`should switch to Binary format ${Tags.SMOKE}`, async ({ apiHelper }) => {
+    test(`should switch to Binary format ${Tags.SMOKE}`, async ({ browserPage, apiHelper }) => {
       const keyData = getStringKeyData({ value: 'binary test' });
 
-      await apiHelper.createStringKey(databaseId, keyData.keyName, keyData.value);
+      await apiHelper.createStringKey(database.id, keyData.keyName, keyData.value);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -109,10 +106,10 @@ test.describe('Browser > Value Formatters', () => {
       expect(currentFormat).toBe('Binary');
     });
 
-    test(`should switch to JSON format ${Tags.SMOKE}`, async ({ apiHelper }) => {
+    test(`should switch to JSON format ${Tags.SMOKE}`, async ({ browserPage, apiHelper }) => {
       const keyData = getStringKeyData({ value: '{"valid":"json"}' });
 
-      await apiHelper.createStringKey(databaseId, keyData.keyName, keyData.value);
+      await apiHelper.createStringKey(database.id, keyData.keyName, keyData.value);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -133,11 +130,12 @@ test.describe('Browser > Value Formatters', () => {
 
   test.describe('Format Options', () => {
     test(`should show all format options in dropdown ${Tags.REGRESSION}`, async ({
+      browserPage,
       apiHelper,
     }) => {
       const keyData = getStringKeyData();
 
-      await apiHelper.createStringKey(databaseId, keyData.keyName, keyData.value);
+      await apiHelper.createStringKey(database.id, keyData.keyName, keyData.value);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);

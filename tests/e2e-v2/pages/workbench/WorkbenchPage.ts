@@ -57,9 +57,13 @@ export class WorkbenchPage extends BasePage {
     this.exploreButton = page.getByTestId('no-results-explore-btn');
   }
 
-  async goto(): Promise<void> {
-    // Navigate to workbench by clicking the tab
-    await this.workbenchTab.click();
+  /**
+   * Navigate to Workbench page for a specific database
+   * @param databaseId - The ID of the database to navigate to
+   */
+  async goto(databaseId: string): Promise<void> {
+    await this.gotoDatabase(databaseId);
+    await this.gotoWorkbench();
     await this.waitForLoad();
   }
 

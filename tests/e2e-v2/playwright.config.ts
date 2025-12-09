@@ -1,5 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-import { appConfig } from './config';
+import { appConfig, isElectron } from './config';
 
 export default defineConfig({
   testDir: './tests',
@@ -10,7 +10,8 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 1,
   // Limit workers to reduce parallel test interference with shared database state
   // CI uses 1 worker for stability, local uses 2 for speed while reducing flakiness
-  workers: process.env.CI ? 1 : 2,
+  // Electron tests should always use 1 worker (single app instance)
+  workers: isElectron ? 1 : process.env.CI ? 1 : 2,
   reporter: [['html'], ['list'], ['json', { outputFile: 'test-results/results.json' }]],
 
   // Global setup and teardown
@@ -18,19 +19,27 @@ export default defineConfig({
   globalTeardown: './global-teardown.ts',
 
   use: {
-    baseURL: appConfig.baseUrl,
+    // baseURL is only used for browser tests, not Electron
+    baseURL: isElectron ? undefined : appConfig.baseUrl,
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
     viewport: { width: 1920, height: 1080 },
   },
-  projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
-  ],
-  timeout: 60000,
+  projects: isElectron
+    ? [
+        {
+          name: 'electron',
+          // Electron tests don't use browser devices
+        },
+      ]
+    : [
+        {
+          name: 'chromium',
+          use: { ...devices['Desktop Chrome'] },
+        },
+      ],
+  timeout: isElectron ? 120000 : 60000, // Electron needs more time for app startup
   expect: {
     timeout: 10000,
   },

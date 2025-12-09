@@ -1,55 +1,40 @@
 import { test, expect } from '../../../fixtures/base';
 import { Tags } from '../../../config';
 import { standaloneConfig } from '../../../config/databases/standalone';
+import { DatabaseInstance } from '../../../types';
+import { TEST_DB_PREFIX } from '../../../test-data/databases';
 
 test.describe('Analytics > Database Analysis', () => {
-  let databaseId: string;
+  let database: DatabaseInstance;
+  const dbName = `${TEST_DB_PREFIX}analysis-db`;
 
   test.beforeAll(async ({ apiHelper }) => {
-    // Get or create a database for testing
-    const databases = await apiHelper.getDatabases();
-    const existingDb = databases.find(
-      (db) => db.host === standaloneConfig.host && db.port === standaloneConfig.port
-    );
+    database = await apiHelper.createDatabase({
+      name: dbName,
+      host: standaloneConfig.host,
+      port: standaloneConfig.port,
+    });
+  });
 
-    if (existingDb) {
-      databaseId = existingDb.id;
-    } else {
-      const db = await apiHelper.createDatabase({
-        name: 'test-analysis-db',
-        host: standaloneConfig.host,
-        port: standaloneConfig.port,
-      });
-      databaseId = db.id;
-    }
+  test.afterAll(async ({ apiHelper }) => {
+    await apiHelper.deleteDatabase(database.id);
   });
 
   test.describe('View Database Analysis', () => {
-    test(`should display database analysis page ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({
-      createAnalyticsPage,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoDatabaseAnalysis(databaseId);
+    test.beforeEach(async ({ analyticsPage }) => {
+      await analyticsPage.gotoDatabaseAnalysis(database.id);
+    });
 
+    test(`should display database analysis page ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ analyticsPage }) => {
       await expect(analyticsPage.databaseAnalysisTab).toBeVisible();
       await expect(analyticsPage.databaseAnalysisTab).toHaveAttribute('aria-selected', 'true');
     });
 
-    test(`should show new report button ${Tags.SMOKE}`, async ({
-      createAnalyticsPage,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoDatabaseAnalysis(databaseId);
-
+    test(`should show new report button ${Tags.SMOKE}`, async ({ analyticsPage }) => {
       await expect(analyticsPage.newReportButton).toBeVisible();
     });
 
-    test(`should generate analysis report ${Tags.CRITICAL}`, async ({
-      createAnalyticsPage,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoDatabaseAnalysis(databaseId);
-
+    test(`should generate analysis report ${Tags.CRITICAL}`, async ({ analyticsPage }) => {
       // Click New Report
       await analyticsPage.clickNewReport();
 
@@ -60,12 +45,7 @@ test.describe('Analytics > Database Analysis', () => {
       await expect(analyticsPage.scannedKeysText).toBeVisible();
     });
 
-    test(`should show data summary tab after analysis ${Tags.CRITICAL}`, async ({
-      createAnalyticsPage,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoDatabaseAnalysis(databaseId);
-
+    test(`should show data summary tab after analysis ${Tags.CRITICAL}`, async ({ analyticsPage }) => {
       // Generate report if not already visible
       const hasReport = await analyticsPage.isReportVisible();
       if (!hasReport) {
@@ -78,12 +58,7 @@ test.describe('Analytics > Database Analysis', () => {
       await expect(analyticsPage.dataSummaryTab).toHaveAttribute('aria-selected', 'true');
     });
 
-    test(`should show tips tab ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoDatabaseAnalysis(databaseId);
-
+    test(`should show tips tab ${Tags.REGRESSION}`, async ({ analyticsPage }) => {
       // Generate report if not already visible
       const hasReport = await analyticsPage.isReportVisible();
       if (!hasReport) {
@@ -95,12 +70,7 @@ test.describe('Analytics > Database Analysis', () => {
       await expect(analyticsPage.tipsTab).toBeVisible();
     });
 
-    test(`should show top namespaces table ${Tags.CRITICAL}`, async ({
-      createAnalyticsPage,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoDatabaseAnalysis(databaseId);
-
+    test(`should show top namespaces table ${Tags.CRITICAL}`, async ({ analyticsPage }) => {
       // Generate report if not already visible
       const hasReport = await analyticsPage.isReportVisible();
       if (!hasReport) {
@@ -112,12 +82,7 @@ test.describe('Analytics > Database Analysis', () => {
       await expect(analyticsPage.topNamespacesTable).toBeVisible();
     });
 
-    test(`should show top keys table ${Tags.CRITICAL}`, async ({
-      createAnalyticsPage,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoDatabaseAnalysis(databaseId);
-
+    test(`should show top keys table ${Tags.CRITICAL}`, async ({ analyticsPage }) => {
       // Generate report if not already visible
       const hasReport = await analyticsPage.isReportVisible();
       if (!hasReport) {
@@ -129,12 +94,7 @@ test.describe('Analytics > Database Analysis', () => {
       await expect(analyticsPage.topKeysTable).toBeVisible();
     });
 
-    test(`should show TTL distribution chart ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoDatabaseAnalysis(databaseId);
-
+    test(`should show TTL distribution chart ${Tags.REGRESSION}`, async ({ analyticsPage }) => {
       // Generate report if not already visible
       const hasReport = await analyticsPage.isReportVisible();
       if (!hasReport) {
@@ -147,12 +107,7 @@ test.describe('Analytics > Database Analysis', () => {
       expect(isTtlVisible).toBe(true);
     });
 
-    test(`should toggle show no expiry in TTL chart ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoDatabaseAnalysis(databaseId);
-
+    test(`should toggle show no expiry in TTL chart ${Tags.REGRESSION}`, async ({ analyticsPage }) => {
       // Generate report if not already visible
       const hasReport = await analyticsPage.isReportVisible();
       if (!hasReport) {
@@ -167,12 +122,7 @@ test.describe('Analytics > Database Analysis', () => {
       await analyticsPage.toggleShowNoExpiry();
     });
 
-    test(`should show report history dropdown ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoDatabaseAnalysis(databaseId);
-
+    test(`should show report history dropdown ${Tags.REGRESSION}`, async ({ analyticsPage }) => {
       // Generate report if not already visible
       const hasReport = await analyticsPage.isReportVisible();
       if (!hasReport) {
@@ -185,12 +135,7 @@ test.describe('Analytics > Database Analysis', () => {
       expect(isHistoryVisible).toBe(true);
     });
 
-    test(`should have at least one report in history ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoDatabaseAnalysis(databaseId);
-
+    test(`should have at least one report in history ${Tags.REGRESSION}`, async ({ analyticsPage }) => {
       // Generate report if not already visible
       const hasReport = await analyticsPage.isReportVisible();
       if (!hasReport) {
@@ -205,13 +150,9 @@ test.describe('Analytics > Database Analysis', () => {
   });
 
   test.describe('Navigate to Database Analysis', () => {
-    test(`should navigate from Slow Log to Database Analysis ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-
+    test(`should navigate from Slow Log to Database Analysis ${Tags.REGRESSION}`, async ({ analyticsPage }) => {
       // Start at Slow Log
-      await analyticsPage.gotoSlowLog(databaseId);
+      await analyticsPage.gotoSlowLog(database.id);
       await expect(analyticsPage.slowLogTab).toHaveAttribute('aria-selected', 'true');
 
       // Click Database Analysis tab
@@ -223,13 +164,11 @@ test.describe('Analytics > Database Analysis', () => {
   });
 
   test.describe('Namespace Sorting', () => {
-    test(`should sort namespaces by memory ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-      page,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoDatabaseAnalysis(databaseId);
+    test.beforeEach(async ({ analyticsPage }) => {
+      await analyticsPage.gotoDatabaseAnalysis(database.id);
+    });
 
+    test(`should sort namespaces by memory ${Tags.REGRESSION}`, async ({ page, analyticsPage }) => {
       // Generate report if not already visible
       const hasReport = await analyticsPage.isReportVisible();
       if (!hasReport) {
@@ -245,13 +184,7 @@ test.describe('Analytics > Database Analysis', () => {
       await expect(analyticsPage.topNamespacesTable.getByText('Total Memory')).toBeVisible();
     });
 
-    test(`should sort namespaces by number of keys ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-      page,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoDatabaseAnalysis(databaseId);
-
+    test(`should sort namespaces by number of keys ${Tags.REGRESSION}`, async ({ page, analyticsPage }) => {
       // Generate report if not already visible
       const hasReport = await analyticsPage.isReportVisible();
       if (!hasReport) {
@@ -270,13 +203,7 @@ test.describe('Analytics > Database Analysis', () => {
       await expect(analyticsPage.topNamespacesTable.getByText('Total Keys')).toBeVisible();
     });
 
-    test(`should sort namespaces by key pattern ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-      page,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoDatabaseAnalysis(databaseId);
-
+    test(`should sort namespaces by key pattern ${Tags.REGRESSION}`, async ({ page, analyticsPage }) => {
       // Generate report if not already visible
       const hasReport = await analyticsPage.isReportVisible();
       if (!hasReport) {
@@ -300,12 +227,12 @@ test.describe('Analytics > Database Analysis', () => {
   });
 
   test.describe('Tips Tab', () => {
-    test(`should switch to tips tab ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoDatabaseAnalysis(databaseId);
+    test.beforeEach(async ({ analyticsPage }) => {
+      await analyticsPage.gotoDatabaseAnalysis(database.id);
 
+    });
+
+    test(`should switch to tips tab ${Tags.REGRESSION}`, async ({ analyticsPage }) => {
       // Generate report if not already visible
       const hasReport = await analyticsPage.isReportVisible();
       if (!hasReport) {
@@ -320,12 +247,7 @@ test.describe('Analytics > Database Analysis', () => {
       await expect(analyticsPage.tipsTab).toHaveAttribute('aria-selected', 'true');
     });
 
-    test(`should display tips count in tab label ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoDatabaseAnalysis(databaseId);
-
+    test(`should display tips count in tab label ${Tags.REGRESSION}`, async ({ analyticsPage }) => {
       // Generate report if not already visible
       const hasReport = await analyticsPage.isReportVisible();
       if (!hasReport) {
@@ -342,13 +264,12 @@ test.describe('Analytics > Database Analysis', () => {
   });
 
   test.describe('Data Type Charts', () => {
-    test(`should display memory chart ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-      page,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoDatabaseAnalysis(databaseId);
+    test.beforeEach(async ({ analyticsPage }) => {
+      await analyticsPage.gotoDatabaseAnalysis(database.id);
 
+    });
+
+    test(`should display memory chart ${Tags.REGRESSION}`, async ({ page, analyticsPage }) => {
       // Generate report if not already visible
       const hasReport = await analyticsPage.isReportVisible();
       if (!hasReport) {
@@ -360,13 +281,7 @@ test.describe('Analytics > Database Analysis', () => {
       await expect(page.getByText('Memory').first()).toBeVisible();
     });
 
-    test(`should display keys chart ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-      page,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoDatabaseAnalysis(databaseId);
-
+    test(`should display keys chart ${Tags.REGRESSION}`, async ({ page, analyticsPage }) => {
       // Generate report if not already visible
       const hasReport = await analyticsPage.isReportVisible();
       if (!hasReport) {
@@ -380,13 +295,12 @@ test.describe('Analytics > Database Analysis', () => {
   });
 
   test.describe('Top Keys Table', () => {
-    test(`should sort top keys by memory ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-      page,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoDatabaseAnalysis(databaseId);
+    test.beforeEach(async ({ analyticsPage }) => {
+      await analyticsPage.gotoDatabaseAnalysis(database.id);
 
+    });
+
+    test(`should sort top keys by memory ${Tags.REGRESSION}`, async ({ page, analyticsPage }) => {
       // Generate report if not already visible
       const hasReport = await analyticsPage.isReportVisible();
       if (!hasReport) {
@@ -403,13 +317,7 @@ test.describe('Analytics > Database Analysis', () => {
       await expect(analyticsPage.topKeysTable.getByText('Key Size')).toBeVisible();
     });
 
-    test(`should sort top keys by length ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-      page,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoDatabaseAnalysis(databaseId);
-
+    test(`should sort top keys by length ${Tags.REGRESSION}`, async ({ page, analyticsPage }) => {
       // Generate report if not already visible
       const hasReport = await analyticsPage.isReportVisible();
       if (!hasReport) {
@@ -431,14 +339,16 @@ test.describe('Analytics > Database Analysis', () => {
   });
 
   test.describe('Namespace Navigation', () => {
+    test.beforeEach(async ({ analyticsPage }) => {
+      await analyticsPage.gotoDatabaseAnalysis(database.id);
+
+    });
+
     test(`should filter namespace to Browser view ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-      createBrowserPage,
+      browserPage,
+      analyticsPage,
       page,
     }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoDatabaseAnalysis(databaseId);
-
       // Generate report if not already visible
       const hasReport = await analyticsPage.isReportVisible();
       if (!hasReport) {
@@ -464,7 +374,6 @@ test.describe('Analytics > Database Analysis', () => {
       await page.waitForURL(/\/browser/);
 
       // Verify we're on the Browser page
-      const browserPage = createBrowserPage(databaseId);
       await expect(browserPage.browseTab).toHaveAttribute('aria-selected', 'true');
 
       // Verify the filter is applied with the namespace pattern
@@ -476,12 +385,12 @@ test.describe('Analytics > Database Analysis', () => {
   });
 
   test.describe('Recommendations (Tips Tab)', () => {
-    test(`should display recommendation labels ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoDatabaseAnalysis(databaseId);
+    test.beforeEach(async ({ analyticsPage }) => {
+      await analyticsPage.gotoDatabaseAnalysis(database.id);
 
+    });
+
+    test(`should display recommendation labels ${Tags.REGRESSION}`, async ({ analyticsPage }) => {
       // Generate report if not already visible
       const hasReport = await analyticsPage.isReportVisible();
       if (!hasReport) {
@@ -500,12 +409,7 @@ test.describe('Analytics > Database Analysis', () => {
       expect(hasAnyLabel).toBe(true);
     });
 
-    test(`should expand and collapse recommendation ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoDatabaseAnalysis(databaseId);
-
+    test(`should expand and collapse recommendation ${Tags.REGRESSION}`, async ({ analyticsPage }) => {
       // Generate report if not already visible
       const hasReport = await analyticsPage.isReportVisible();
       if (!hasReport) {
@@ -542,12 +446,7 @@ test.describe('Analytics > Database Analysis', () => {
       expect(isExpandedAgain).toBe(true);
     });
 
-    test(`should show voting section for recommendations ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoDatabaseAnalysis(databaseId);
-
+    test(`should show voting section for recommendations ${Tags.REGRESSION}`, async ({ analyticsPage }) => {
       // Generate report if not already visible
       const hasReport = await analyticsPage.isReportVisible();
       if (!hasReport) {
@@ -570,12 +469,7 @@ test.describe('Analytics > Database Analysis', () => {
       expect(hasVoting).toBe(true);
     });
 
-    test(`should show tutorial button for applicable recommendations ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoDatabaseAnalysis(databaseId);
-
+    test(`should show tutorial button for applicable recommendations ${Tags.REGRESSION}`, async ({ analyticsPage }) => {
       // Generate report if not already visible
       const hasReport = await analyticsPage.isReportVisible();
       if (!hasReport) {

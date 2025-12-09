@@ -100,8 +100,9 @@ export class SettingsPage extends BasePage {
    * Navigate to Settings page
    */
   async goto(): Promise<void> {
-    await this.page.goto('/settings');
-    await this.waitForLoad();
+    // TODO: maybe don't need to go home first
+    await this.gotoHome();
+    await this.gotoSettings();
   }
 
   /**

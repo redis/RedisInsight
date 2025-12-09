@@ -16,8 +16,9 @@ test.describe('Navigation & Global UI', () => {
     });
 
     test(`should navigate to home via Redis logo ${Tags.CRITICAL}`, async ({ navigationPage, page }) => {
-      // Navigate to settings first
-      await page.goto('/settings');
+      // Navigate to settings first via UI
+      await navigationPage.goto();
+      await navigationPage.goToSettings();
       await page.waitForURL('**/settings');
 
       // Click Redis logo

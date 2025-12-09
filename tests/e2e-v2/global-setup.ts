@@ -1,12 +1,16 @@
 import { request } from '@playwright/test';
-import { appConfig } from './config';
+import { appConfig, isElectron } from './config';
 import { ApiHelper } from './helpers/api';
 import './types/global';
 
 /**
  * Global setup runs before all tests
- * - Verifies the application is running
+ * - Verifies the application is running (browser mode only)
  * - Cleans up any leftover test data
+ *
+ * Note: In Electron mode, we skip health checks because the Electron app
+ * is launched by Playwright fixtures AFTER global setup runs.
+ * The API won't be available until the Electron app starts.
  */
 async function globalSetup(): Promise<void> {
   // Record start time for duration tracking
@@ -14,7 +18,16 @@ async function globalSetup(): Promise<void> {
 
   console.log('\n🚀 Running global setup...');
 
-  // Verify the application is running
+  // TODO: unify for both web and electron
+  // In Electron mode, skip health checks - the app isn't running yet
+  // The Electron app (with its internal API) is launched by fixtures
+  if (isElectron) {
+    console.log('   ℹ️  Electron mode: skipping health checks (app launches via fixtures)');
+    console.log('✅ Global setup complete\n');
+    return;
+  }
+
+  // Browser mode: Verify the application is running
   console.log(`   Checking app at ${appConfig.baseUrl}...`);
   const context = await request.newContext({
     baseURL: appConfig.baseUrl,

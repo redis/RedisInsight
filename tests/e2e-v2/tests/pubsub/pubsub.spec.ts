@@ -3,9 +3,10 @@ import { Tags } from '../../config';
 import { standaloneConfig } from '../../config/databases/standalone';
 import { clusterConfig } from '../../config/databases/cluster';
 import { faker } from '@faker-js/faker';
+import { DatabaseInstance } from '../../types';
 
 test.describe('Pub/Sub', () => {
-  let databaseId: string;
+  let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
     // Get or create a database for testing
@@ -15,173 +16,172 @@ test.describe('Pub/Sub', () => {
     );
 
     if (existingDb) {
-      databaseId = existingDb.id;
+      database = existingDb;
     } else {
-      const db = await apiHelper.createDatabase({
+      database = await apiHelper.createDatabase({
         name: 'test-pubsub-db',
         host: standaloneConfig.host,
         port: standaloneConfig.port,
       });
-      databaseId = db.id;
     }
   });
 
   test.describe('Page Display', () => {
     test(`should display pub/sub page ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({
-      createPubSubPage,
+      pubSubPage,
     }) => {
-      const pubsubPage = createPubSubPage();
-      await pubsubPage.goto(databaseId);
+      await pubSubPage.goto(database.id);
 
-      await expect(pubsubPage.pubsubTab).toBeVisible();
-      await expect(pubsubPage.pubsubTab).toHaveAttribute('aria-selected', 'true');
+
+      await expect(pubSubPage.pubsubTab).toBeVisible();
+      await expect(pubSubPage.pubsubTab).toHaveAttribute('aria-selected', 'true');
     });
 
     test(`should show not subscribed message initially ${Tags.SMOKE}`, async ({
-      createPubSubPage,
+      pubSubPage,
     }) => {
-      const pubsubPage = createPubSubPage();
-      await pubsubPage.goto(databaseId);
+      await pubSubPage.goto(database.id);
 
-      const isNotSubscribed = await pubsubPage.isNotSubscribedMessageVisible();
+
+      const isNotSubscribed = await pubSubPage.isNotSubscribedMessageVisible();
       expect(isNotSubscribed).toBe(true);
     });
 
     test(`should show subscribe button ${Tags.SMOKE}`, async ({
-      createPubSubPage,
+      pubSubPage,
     }) => {
-      const pubsubPage = createPubSubPage();
-      await pubsubPage.goto(databaseId);
+      await pubSubPage.goto(database.id);
 
-      await expect(pubsubPage.subscribeButton).toBeVisible();
+
+      await expect(pubSubPage.subscribeButton).toBeVisible();
     });
 
     test(`should show pattern input with default value ${Tags.REGRESSION}`, async ({
-      createPubSubPage,
+      pubSubPage,
     }) => {
-      const pubsubPage = createPubSubPage();
-      await pubsubPage.goto(databaseId);
+      await pubSubPage.goto(database.id);
 
-      await expect(pubsubPage.patternInput).toBeVisible();
-      await expect(pubsubPage.patternInput).toHaveValue('*');
+
+      await expect(pubSubPage.patternInput).toBeVisible();
+      await expect(pubSubPage.patternInput).toHaveValue('*');
     });
 
     test(`should show publish section ${Tags.REGRESSION}`, async ({
-      createPubSubPage,
+      pubSubPage,
     }) => {
-      const pubsubPage = createPubSubPage();
-      await pubsubPage.goto(databaseId);
+      await pubSubPage.goto(database.id);
 
-      await expect(pubsubPage.channelNameInput).toBeVisible();
-      await expect(pubsubPage.messageInput).toBeVisible();
-      await expect(pubsubPage.publishButton).toBeVisible();
+
+      await expect(pubSubPage.channelNameInput).toBeVisible();
+      await expect(pubSubPage.messageInput).toBeVisible();
+      await expect(pubSubPage.publishButton).toBeVisible();
     });
 
     test(`should show production warning ${Tags.REGRESSION}`, async ({
-      createPubSubPage,
+      pubSubPage,
     }) => {
-      const pubsubPage = createPubSubPage();
-      await pubsubPage.goto(databaseId);
+      await pubSubPage.goto(database.id);
 
-      await expect(pubsubPage.productionWarning).toBeVisible();
+
+      await expect(pubSubPage.productionWarning).toBeVisible();
     });
   });
 
   test.describe('Subscribe', () => {
     test(`should subscribe to channel pattern ${Tags.CRITICAL}`, async ({
-      createPubSubPage,
+      pubSubPage,
     }) => {
-      const pubsubPage = createPubSubPage();
-      await pubsubPage.goto(databaseId);
+      await pubSubPage.goto(database.id);
+
 
       // Subscribe with default pattern
-      await pubsubPage.subscribe('*');
+      await pubSubPage.subscribe('*');
 
       // Should show unsubscribe button (meaning we're subscribed)
-      const isSubscribed = await pubsubPage.isSubscribed();
+      const isSubscribed = await pubSubPage.isSubscribed();
       expect(isSubscribed).toBe(true);
 
       // Cleanup - unsubscribe
-      await pubsubPage.unsubscribe();
+      await pubSubPage.unsubscribe();
     });
 
     test(`should unsubscribe from channel ${Tags.CRITICAL}`, async ({
-      createPubSubPage,
+      pubSubPage,
     }) => {
-      const pubsubPage = createPubSubPage();
-      await pubsubPage.goto(databaseId);
+      await pubSubPage.goto(database.id);
+
 
       // Subscribe first
-      await pubsubPage.subscribe('test-channel-*');
+      await pubSubPage.subscribe('test-channel-*');
 
       // Verify subscribed
-      expect(await pubsubPage.isSubscribed()).toBe(true);
+      expect(await pubSubPage.isSubscribed()).toBe(true);
 
       // Unsubscribe
-      await pubsubPage.unsubscribe();
+      await pubSubPage.unsubscribe();
 
       // Verify unsubscribed
-      expect(await pubsubPage.isSubscribed()).toBe(false);
+      expect(await pubSubPage.isSubscribed()).toBe(false);
     });
 
     test(`should subscribe with custom pattern ${Tags.REGRESSION}`, async ({
-      createPubSubPage,
+      pubSubPage,
     }) => {
       const customPattern = `test-${faker.string.alphanumeric(6)}-*`;
-      const pubsubPage = createPubSubPage();
-      await pubsubPage.goto(databaseId);
+      await pubSubPage.goto(database.id);
+
 
       // Subscribe with custom pattern
-      await pubsubPage.subscribe(customPattern);
+      await pubSubPage.subscribe(customPattern);
 
       // Should be subscribed
-      const isSubscribed = await pubsubPage.isSubscribed();
+      const isSubscribed = await pubSubPage.isSubscribed();
       expect(isSubscribed).toBe(true);
 
       // Cleanup
-      await pubsubPage.unsubscribe();
+      await pubSubPage.unsubscribe();
     });
   });
 
   test.describe('Publish', () => {
     test(`should be able to fill publish form ${Tags.REGRESSION}`, async ({
-      createPubSubPage,
+      pubSubPage,
     }) => {
-      const pubsubPage = createPubSubPage();
-      await pubsubPage.goto(databaseId);
+      await pubSubPage.goto(database.id);
+
 
       const channelName = `test-channel-${faker.string.alphanumeric(6)}`;
       const message = faker.lorem.sentence();
 
       // Fill channel name
-      await pubsubPage.channelNameInput.fill(channelName);
-      await expect(pubsubPage.channelNameInput).toHaveValue(channelName);
+      await pubSubPage.channelNameInput.fill(channelName);
+      await expect(pubSubPage.channelNameInput).toHaveValue(channelName);
 
       // Fill message
-      await pubsubPage.messageInput.fill(message);
-      await expect(pubsubPage.messageInput).toHaveValue(message);
+      await pubSubPage.messageInput.fill(message);
+      await expect(pubSubPage.messageInput).toHaveValue(message);
     });
 
     test(`should receive published message ${Tags.CRITICAL}`, async ({
       page,
-      createPubSubPage,
+      pubSubPage,
     }) => {
-      const pubsubPage = createPubSubPage();
-      await pubsubPage.goto(databaseId);
+      await pubSubPage.goto(database.id);
+
 
       const channelName = `test-channel-${faker.string.alphanumeric(6)}`;
       const message = `Hello-${faker.string.alphanumeric(8)}`;
 
       // Subscribe first
-      await pubsubPage.subscribe('*');
-      expect(await pubsubPage.isSubscribed()).toBe(true);
+      await pubSubPage.subscribe('*');
+      expect(await pubSubPage.isSubscribed()).toBe(true);
 
       // Publish a message
-      await pubsubPage.publish(channelName, message);
+      await pubSubPage.publish(channelName, message);
 
       // Wait for message to appear in the table
       await expect(async () => {
-        const messagesCount = await pubsubPage.getMessagesCount();
+        const messagesCount = await pubSubPage.getMessagesCount();
         expect(messagesCount).toBeGreaterThan(0);
       }).toPass({ timeout: 10000 });
 
@@ -190,158 +190,158 @@ test.describe('Pub/Sub', () => {
       await expect(page.getByText(channelName)).toBeVisible();
 
       // Cleanup
-      await pubsubPage.unsubscribe();
+      await pubSubPage.unsubscribe();
     });
 
     test(`should show status report with affected clients count after publish ${Tags.REGRESSION}`, async ({
       page,
-      createPubSubPage,
+      pubSubPage,
     }) => {
-      const pubsubPage = createPubSubPage();
-      await pubsubPage.goto(databaseId);
+      await pubSubPage.goto(database.id);
+
 
       const channelName = `test-channel-${faker.string.alphanumeric(6)}`;
       const message = `msg-${faker.string.alphanumeric(8)}`;
 
       // Subscribe first (so we have at least 1 client)
-      await pubsubPage.subscribe('*');
-      expect(await pubsubPage.isSubscribed()).toBe(true);
+      await pubSubPage.subscribe('*');
+      expect(await pubSubPage.isSubscribed()).toBe(true);
 
       // Publish a message
-      await pubsubPage.publish(channelName, message);
+      await pubSubPage.publish(channelName, message);
 
       // Verify the toast shows "Published (N)" where N is the affected clients count
       // The toast should show at least 1 client (our subscription)
       await expect(page.getByText(/Published \(\d+\)/)).toBeVisible({ timeout: 5000 });
 
       // Cleanup
-      await pubsubPage.unsubscribe();
+      await pubSubPage.unsubscribe();
     });
   });
 
   test.describe('Message Table View', () => {
     test(`should view message table with subscribed messages ${Tags.SMOKE}`, async ({
       page,
-      createPubSubPage,
+      pubSubPage,
     }) => {
-      const pubsubPage = createPubSubPage();
-      await pubsubPage.goto(databaseId);
+      await pubSubPage.goto(database.id);
+
 
       const channelName = `test-channel-${faker.string.alphanumeric(6)}`;
       const message = `msg-${faker.string.alphanumeric(8)}`;
 
       // Subscribe first
-      await pubsubPage.subscribe('*');
-      expect(await pubsubPage.isSubscribed()).toBe(true);
+      await pubSubPage.subscribe('*');
+      expect(await pubSubPage.isSubscribed()).toBe(true);
 
       // Publish a message
-      await pubsubPage.publish(channelName, message);
+      await pubSubPage.publish(channelName, message);
 
       // Wait for message table to appear
-      await expect(pubsubPage.messagesList).toBeVisible();
+      await expect(pubSubPage.messagesList).toBeVisible();
 
       // Verify table headers are visible
-      await expect(pubsubPage.timestampHeader).toBeVisible();
-      await expect(pubsubPage.channelHeader).toBeVisible();
-      await expect(pubsubPage.messageHeader).toBeVisible();
+      await expect(pubSubPage.timestampHeader).toBeVisible();
+      await expect(pubSubPage.channelHeader).toBeVisible();
+      await expect(pubSubPage.messageHeader).toBeVisible();
 
       // Verify message count is displayed
-      await expect(pubsubPage.messagesCount).toBeVisible();
+      await expect(pubSubPage.messagesCount).toBeVisible();
 
       // Verify the message is in the table
       await expect(page.getByText(message)).toBeVisible();
 
       // Cleanup
-      await pubsubPage.unsubscribe();
+      await pubSubPage.unsubscribe();
     });
 
     test(`should show status bar with subscription status ${Tags.REGRESSION}`, async ({
       page,
-      createPubSubPage,
+      pubSubPage,
     }) => {
-      const pubsubPage = createPubSubPage();
-      await pubsubPage.goto(databaseId);
+      await pubSubPage.goto(database.id);
+
 
       const channel = `test-${faker.string.alphanumeric(6)}`;
       const uniqueMessage = `unique-msg-${faker.string.alphanumeric(10)}`;
 
       // Subscribe to see the status bar
-      await pubsubPage.subscribe('*');
+      await pubSubPage.subscribe('*');
 
       // Publish a message so the table appears (needed to see status bar)
-      await pubsubPage.publish(channel, uniqueMessage);
+      await pubSubPage.publish(channel, uniqueMessage);
 
       // Wait for the specific message to appear in the table
       await expect(page.getByText(uniqueMessage)).toBeVisible();
 
       // Status section should show "Subscribed" badge
-      await expect(pubsubPage.statusSection).toBeVisible();
-      const isStatusSubscribed = await pubsubPage.isStatusSubscribed();
+      await expect(pubSubPage.statusSection).toBeVisible();
+      const isStatusSubscribed = await pubSubPage.isStatusSubscribed();
       expect(isStatusSubscribed).toBe(true);
 
       // Messages count should be visible and at least 1
-      await expect(pubsubPage.messagesCount).toBeVisible();
-      const count = await pubsubPage.getDisplayedMessagesCount();
+      await expect(pubSubPage.messagesCount).toBeVisible();
+      const count = await pubSubPage.getDisplayedMessagesCount();
       expect(count).toBeGreaterThanOrEqual(1);
 
       // Unsubscribe
-      await pubsubPage.unsubscribe();
+      await pubSubPage.unsubscribe();
 
       // Status should change to "Unsubscribed" (visible because we have messages)
-      await expect(pubsubPage.unsubscribedBadge).toBeVisible();
+      await expect(pubSubPage.unsubscribedBadge).toBeVisible();
     });
 
     test(`should show message count in status bar ${Tags.REGRESSION}`, async ({
       page,
-      createPubSubPage,
+      pubSubPage,
     }) => {
-      const pubsubPage = createPubSubPage();
-      await pubsubPage.goto(databaseId);
+      await pubSubPage.goto(database.id);
+
 
       // Subscribe first
-      await pubsubPage.subscribe('*');
+      await pubSubPage.subscribe('*');
 
       // Publish a message with unique content
       const channel = `test-${faker.string.alphanumeric(6)}`;
       const uniqueMsg = `msg-${faker.string.alphanumeric(10)}`;
-      await pubsubPage.publish(channel, uniqueMsg);
+      await pubSubPage.publish(channel, uniqueMsg);
 
       // Wait for the message to appear
       await expect(page.getByText(uniqueMsg)).toBeVisible();
 
       // Verify messages count is visible and shows at least 1
-      await expect(pubsubPage.messagesCount).toBeVisible();
-      const count = await pubsubPage.getDisplayedMessagesCount();
+      await expect(pubSubPage.messagesCount).toBeVisible();
+      const count = await pubSubPage.getDisplayedMessagesCount();
       expect(count).toBeGreaterThanOrEqual(1);
 
       // Cleanup
-      await pubsubPage.unsubscribe();
+      await pubSubPage.unsubscribe();
     });
 
     test(`should show newest messages at top of message table ${Tags.REGRESSION}`, async ({
       page,
-      createPubSubPage,
+      pubSubPage,
     }) => {
-      const pubsubPage = createPubSubPage();
-      await pubsubPage.goto(databaseId);
+      await pubSubPage.goto(database.id);
+
 
       const channel = `test-${faker.string.alphanumeric(6)}`;
       const firstMessage = `first-${faker.string.alphanumeric(8)}`;
       const secondMessage = `second-${faker.string.alphanumeric(8)}`;
 
       // Subscribe first
-      await pubsubPage.subscribe('*');
-      expect(await pubsubPage.isSubscribed()).toBe(true);
+      await pubSubPage.subscribe('*');
+      expect(await pubSubPage.isSubscribed()).toBe(true);
 
       // Publish first message
-      await pubsubPage.publish(channel, firstMessage);
+      await pubSubPage.publish(channel, firstMessage);
       await expect(page.getByText(firstMessage)).toBeVisible();
 
       // Wait a bit to ensure timestamp difference
       await page.waitForTimeout(500);
 
       // Publish second message
-      await pubsubPage.publish(channel, secondMessage);
+      await pubSubPage.publish(channel, secondMessage);
       await expect(page.getByText(secondMessage)).toBeVisible();
 
       // Get all message rows from the table body and verify order (newest first)
@@ -355,25 +355,25 @@ test.describe('Pub/Sub', () => {
       expect(firstRowText).toContain(secondMessage);
 
       // Cleanup
-      await pubsubPage.unsubscribe();
+      await pubSubPage.unsubscribe();
     });
 
     test(`should persist subscription while navigating in same DB context ${Tags.REGRESSION}`, async ({
       page,
-      createPubSubPage,
+      pubSubPage,
     }) => {
-      const pubsubPage = createPubSubPage();
-      await pubsubPage.goto(databaseId);
+      await pubSubPage.goto(database.id);
+
 
       const channel = `test-${faker.string.alphanumeric(6)}`;
       const message = `msg-${faker.string.alphanumeric(8)}`;
 
       // Subscribe first
-      await pubsubPage.subscribe('*');
-      expect(await pubsubPage.isSubscribed()).toBe(true);
+      await pubSubPage.subscribe('*');
+      expect(await pubSubPage.isSubscribed()).toBe(true);
 
       // Publish a message
-      await pubsubPage.publish(channel, message);
+      await pubSubPage.publish(channel, message);
       await expect(page.getByText(message)).toBeVisible();
 
       // Navigate to Browser tab
@@ -385,21 +385,21 @@ test.describe('Pub/Sub', () => {
       await page.getByRole('tab', { name: 'Pub/Sub' }).click();
 
       // Verify subscription is still active
-      expect(await pubsubPage.isSubscribed()).toBe(true);
+      expect(await pubSubPage.isSubscribed()).toBe(true);
 
       // Verify the previous message is still visible
       await expect(page.getByText(message)).toBeVisible();
 
       // Cleanup
-      await pubsubPage.unsubscribe();
+      await pubSubPage.unsubscribe();
     });
 
     test(`should sort message table by channel column ${Tags.REGRESSION}`, async ({
       page,
-      createPubSubPage,
+      pubSubPage,
     }) => {
-      const pubsubPage = createPubSubPage();
-      await pubsubPage.goto(databaseId);
+      await pubSubPage.goto(database.id);
+
 
       // Create messages with different channel names for sorting
       const channelA = `aaa-channel-${faker.string.alphanumeric(4)}`;
@@ -408,18 +408,18 @@ test.describe('Pub/Sub', () => {
       const messageZ = `msg-z-${faker.string.alphanumeric(6)}`;
 
       // Subscribe first
-      await pubsubPage.subscribe('*');
-      expect(await pubsubPage.isSubscribed()).toBe(true);
+      await pubSubPage.subscribe('*');
+      expect(await pubSubPage.isSubscribed()).toBe(true);
 
       // Publish messages to different channels
-      await pubsubPage.publish(channelA, messageA);
+      await pubSubPage.publish(channelA, messageA);
       await expect(page.getByText(messageA)).toBeVisible();
 
-      await pubsubPage.publish(channelZ, messageZ);
+      await pubSubPage.publish(channelZ, messageZ);
       await expect(page.getByText(messageZ)).toBeVisible();
 
       // Click on Channel header to sort
-      await pubsubPage.sortByColumn('Channel');
+      await pubSubPage.sortByColumn('Channel');
 
       // Wait for sort to apply
       await page.waitForTimeout(500);
@@ -429,15 +429,15 @@ test.describe('Pub/Sub', () => {
       await expect(page.getByText(channelZ)).toBeVisible();
 
       // Cleanup
-      await pubsubPage.unsubscribe();
+      await pubSubPage.unsubscribe();
     });
 
     test(`should persist table configuration across navigation ${Tags.REGRESSION}`, async ({
       page,
-      createPubSubPage,
+      pubSubPage,
     }) => {
-      const pubsubPage = createPubSubPage();
-      await pubsubPage.goto(databaseId);
+      await pubSubPage.goto(database.id);
+
 
       // Create messages with different channel names
       const channelA = `aaa-persist-${faker.string.alphanumeric(4)}`;
@@ -446,18 +446,18 @@ test.describe('Pub/Sub', () => {
       const messageZ = `msg-z-${faker.string.alphanumeric(6)}`;
 
       // Subscribe first
-      await pubsubPage.subscribe('*');
-      expect(await pubsubPage.isSubscribed()).toBe(true);
+      await pubSubPage.subscribe('*');
+      expect(await pubSubPage.isSubscribed()).toBe(true);
 
       // Publish messages to different channels
-      await pubsubPage.publish(channelA, messageA);
+      await pubSubPage.publish(channelA, messageA);
       await expect(page.getByText(messageA)).toBeVisible();
 
-      await pubsubPage.publish(channelZ, messageZ);
+      await pubSubPage.publish(channelZ, messageZ);
       await expect(page.getByText(messageZ)).toBeVisible();
 
       // Sort by Channel column
-      await pubsubPage.sortByColumn('Channel');
+      await pubSubPage.sortByColumn('Channel');
       await page.waitForTimeout(500);
 
       // Navigate to Browser tab
@@ -473,78 +473,78 @@ test.describe('Pub/Sub', () => {
       await expect(page.getByText(channelZ)).toBeVisible();
 
       // Cleanup
-      await pubsubPage.unsubscribe();
+      await pubSubPage.unsubscribe();
     });
 
     // TODO: Enable this test when clear messages button is implemented in the UI
     // The clear button (data-testid="clear-pubsub-btn") is not yet available in the codebase
     test.skip(`should clear messages when clear button is clicked ${Tags.REGRESSION}`, async ({
       page,
-      createPubSubPage,
+      pubSubPage,
     }) => {
-      const pubsubPage = createPubSubPage();
-      await pubsubPage.goto(databaseId);
+      await pubSubPage.goto(database.id);
+
 
       const channel = `test-${faker.string.alphanumeric(6)}`;
       const message = `msg-${faker.string.alphanumeric(8)}`;
 
       // Subscribe first
-      await pubsubPage.subscribe('*');
-      expect(await pubsubPage.isSubscribed()).toBe(true);
+      await pubSubPage.subscribe('*');
+      expect(await pubSubPage.isSubscribed()).toBe(true);
 
       // Publish a message
-      await pubsubPage.publish(channel, message);
+      await pubSubPage.publish(channel, message);
       await expect(page.getByText(message)).toBeVisible();
 
       // Verify message count is at least 1
-      const countBefore = await pubsubPage.getDisplayedMessagesCount();
+      const countBefore = await pubSubPage.getDisplayedMessagesCount();
       expect(countBefore).toBeGreaterThanOrEqual(1);
 
       // Click clear messages button
-      await pubsubPage.clearMessagesButton.click();
+      await pubSubPage.clearMessagesButton.click();
 
       // Verify messages are cleared (count should be 0)
       await expect(async () => {
-        const countAfter = await pubsubPage.getDisplayedMessagesCount();
+        const countAfter = await pubSubPage.getDisplayedMessagesCount();
         expect(countAfter).toBe(0);
       }).toPass({ timeout: 5000 });
 
       // Cleanup
-      await pubsubPage.unsubscribe();
+      await pubSubPage.unsubscribe();
     });
 
     test(`should handle message table with multiple messages ${Tags.REGRESSION}`, async ({
       page,
-      createPubSubPage,
+      pubSubPage,
     }) => {
-      const pubsubPage = createPubSubPage();
-      await pubsubPage.goto(databaseId);
+      await pubSubPage.goto(database.id);
+
 
       const channel = `test-${faker.string.alphanumeric(6)}`;
 
       // Subscribe first
-      await pubsubPage.subscribe('*');
-      expect(await pubsubPage.isSubscribed()).toBe(true);
+      await pubSubPage.subscribe('*');
+      expect(await pubSubPage.isSubscribed()).toBe(true);
 
       // Publish a few messages to verify table handles multiple rows
       const messageCount = 5;
       for (let i = 0; i < messageCount; i++) {
-        await pubsubPage.publish(channel, `msg-${i}-${faker.string.alphanumeric(6)}`);
+        await pubSubPage.publish(channel, `msg-${i}-${faker.string.alphanumeric(6)}`);
         // Wait for each message to appear before publishing next
         await page.waitForTimeout(200);
       }
 
       // Verify messages count is displayed
-      await expect(pubsubPage.messagesCount).toBeVisible();
-      const count = await pubsubPage.getDisplayedMessagesCount();
+      await expect(pubSubPage.messagesCount).toBeVisible();
+      const count = await pubSubPage.getDisplayedMessagesCount();
       expect(count).toBeGreaterThanOrEqual(messageCount);
 
       // Verify the message table has multiple rows
-      const rowCount = await pubsubPage.getMessagesCount();
+      const rowCount = await pubSubPage.getMessagesCount();
       expect(rowCount).toBeGreaterThanOrEqual(messageCount);
 
       // Cleanup
-      await pubsubPage.unsubscribe();
+      await pubSubPage.unsubscribe();
     });
   });
 });
@@ -553,7 +553,7 @@ test.describe('Pub/Sub', () => {
 // These tests are skipped by default as they require specific infrastructure
 // To run these tests, ensure a Redis Cluster is available at the configured host:port
 test.describe.skip('Pub/Sub > Cluster Mode', () => {
-  let clusterDatabaseId: string;
+  let clusterDatabase: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
     // Get or create a cluster database for testing
@@ -563,46 +563,43 @@ test.describe.skip('Pub/Sub > Cluster Mode', () => {
     );
 
     if (existingDb) {
-      clusterDatabaseId = existingDb.id;
+      clusterDatabase = existingDb;
     } else {
-      const db = await apiHelper.createDatabase({
+      clusterDatabase = await apiHelper.createDatabase({
         name: 'test-pubsub-cluster-db',
         host: clusterConfig.host,
         port: clusterConfig.port,
       });
-      clusterDatabaseId = db.id;
     }
   });
 
   test(`should show SPUBLISH info message on welcome screen for cluster ${Tags.SMOKE}`, async ({
-    createPubSubPage,
+    pubSubPage,
   }) => {
-    const pubsubPage = createPubSubPage();
-    await pubsubPage.goto(clusterDatabaseId);
+    await pubSubPage.goto(clusterDatabase.id);
 
     // Verify the SPUBLISH banner is visible for cluster mode
-    await expect(pubsubPage.clusterSpublishBanner).toBeVisible();
-    await expect(pubsubPage.clusterSpublishBanner).toContainText(
+    await expect(pubSubPage.clusterSpublishBanner).toBeVisible();
+    await expect(pubSubPage.clusterSpublishBanner).toContainText(
       'Messages published with SPUBLISH will not appear in this channel'
     );
   });
 
   test(`should not show affected clients count in cluster mode ${Tags.REGRESSION}`, async ({
-    createPubSubPage,
+    pubSubPage,
     page,
   }) => {
-    const pubsubPage = createPubSubPage();
-    await pubsubPage.goto(clusterDatabaseId);
+    await pubSubPage.goto(clusterDatabase.id);
 
     const channelName = `test-cluster-channel-${faker.string.alphanumeric(6)}`;
     const message = `cluster-msg-${faker.string.alphanumeric(8)}`;
 
     // Subscribe first
-    await pubsubPage.subscribe('*');
-    expect(await pubsubPage.isSubscribed()).toBe(true);
+    await pubSubPage.subscribe('*');
+    expect(await pubSubPage.isSubscribed()).toBe(true);
 
     // Publish a message
-    await pubsubPage.publish(channelName, message);
+    await pubSubPage.publish(channelName, message);
 
     // In cluster mode, the "Published" badge should not show the affected clients count
     // It should just show "Published" without a number in parentheses
@@ -614,6 +611,6 @@ test.describe.skip('Pub/Sub > Cluster Mode', () => {
     await expect(publishedWithCount).not.toBeVisible();
 
     // Cleanup
-    await pubsubPage.unsubscribe();
+    await pubSubPage.unsubscribe();
   });
 });

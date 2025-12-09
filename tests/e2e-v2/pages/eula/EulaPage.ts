@@ -51,7 +51,7 @@ export class EulaPage extends BasePage {
   }
 
   async goto(): Promise<void> {
-    await this.page.goto('/');
+    await this.gotoHome();
   }
 
   /**

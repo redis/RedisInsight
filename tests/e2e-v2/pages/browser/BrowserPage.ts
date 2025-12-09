@@ -7,8 +7,6 @@ import { AddKeyDialog, BulkActionsPanel, KeyDetails, KeyList } from './component
  * Main page for browsing Redis keys
  */
 export class BrowserPage extends BasePage {
-  readonly databaseId: string;
-
   // Components
   readonly addKeyDialog: AddKeyDialog;
   readonly bulkActionsPanel: BulkActionsPanel;
@@ -43,9 +41,8 @@ export class BrowserPage extends BasePage {
   readonly keyDetailsPanel: Locator;
   readonly noKeySelectedMessage: Locator;
 
-  constructor(page: Page, databaseId: string) {
+  constructor(page: Page) {
     super(page);
-    this.databaseId = databaseId;
 
     // Initialize components
     this.addKeyDialog = new AddKeyDialog(page);
@@ -82,8 +79,12 @@ export class BrowserPage extends BasePage {
     this.noKeySelectedMessage = page.getByText(/Select the key from the list/);
   }
 
-  async goto(): Promise<void> {
-    await this.page.goto(`/${this.databaseId}/browser`);
+  /**
+   * Navigate to Browser page for a specific database
+   * @param databaseId - The ID of the database to navigate to
+   */
+  async goto(databaseId: string): Promise<void> {
+    await this.gotoDatabase(databaseId);
     await this.waitForLoad();
   }
 

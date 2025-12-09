@@ -139,8 +139,7 @@ export class NavigationPage extends BasePage {
    * Navigate to home page
    */
   async goto(): Promise<void> {
-    await this.page.goto('/');
-    await this.waitForLoad();
+    await this.gotoHome();
   }
 
   /**
@@ -188,8 +187,7 @@ export class NavigationPage extends BasePage {
    * Navigate to settings page
    */
   async goToSettings(): Promise<void> {
-    await this.settingsButton.click();
-    await this.page.waitForURL('**/settings');
+    await this.gotoSettings();
   }
 
   /**

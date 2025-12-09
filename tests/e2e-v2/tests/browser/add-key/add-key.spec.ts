@@ -11,7 +11,7 @@ import {
   getJsonKeyData,
   TEST_KEY_PREFIX,
 } from '../../../test-data/browser';
-import { BrowserPage } from '../../../pages';
+import { DatabaseInstance } from '../../../types';
 
 /**
  * Browser > Add Key Tests
@@ -19,34 +19,31 @@ import { BrowserPage } from '../../../pages';
  * Tests for adding different key types via the Add Key dialog
  */
 test.describe('Browser > Add Key', () => {
-  let databaseId: string;
-  let browserPage: BrowserPage;
+  let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
     // Create a test database for all tests in this file
     const config = getStandaloneConfig({ name: 'test-add-key-db' });
-    const db = await apiHelper.createDatabase(config);
-    databaseId = db.id;
+    database = await apiHelper.createDatabase(config);
   });
 
   test.afterAll(async ({ apiHelper }) => {
     // Clean up the test database
-    if (databaseId) {
-      await apiHelper.deleteDatabase(databaseId);
+    if (database?.id) {
+      await apiHelper.deleteDatabase(database.id);
     }
   });
 
-  test.beforeEach(async ({ createBrowserPage }) => {
-    browserPage = createBrowserPage(databaseId);
-    await browserPage.goto();
+  test.beforeEach(async ({ browserPage }) => {
+    await browserPage.goto(database.id);
   });
 
   test.afterEach(async ({ apiHelper }) => {
     // Clean up test keys created during the test
-    await apiHelper.deleteKeysByPattern(databaseId, `${TEST_KEY_PREFIX}*`);
+    await apiHelper.deleteKeysByPattern(database.id, `${TEST_KEY_PREFIX}*`);
   });
 
-  test(`should add a String key ${Tags.SMOKE} ${Tags.CRITICAL}`, async () => {
+  test(`should add a String key ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ browserPage }) => {
     const keyData = getStringKeyData();
 
     // Open Add Key dialog
@@ -67,7 +64,7 @@ test.describe('Browser > Add Key', () => {
     await browserPage.expectKeyInList(keyData.keyName);
   });
 
-  test(`should add a Hash key ${Tags.SMOKE} ${Tags.CRITICAL}`, async () => {
+  test(`should add a Hash key ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ browserPage }) => {
     const keyData = getHashKeyData();
 
     await browserPage.openAddKeyDialog();
@@ -80,7 +77,7 @@ test.describe('Browser > Add Key', () => {
     await browserPage.expectKeyInList(keyData.keyName);
   });
 
-  test(`should add a List key ${Tags.SMOKE}`, async () => {
+  test(`should add a List key ${Tags.SMOKE}`, async ({ browserPage }) => {
     const keyData = getListKeyData();
 
     await browserPage.openAddKeyDialog();
@@ -93,7 +90,7 @@ test.describe('Browser > Add Key', () => {
     await browserPage.expectKeyInList(keyData.keyName);
   });
 
-  test(`should add a Set key ${Tags.SMOKE}`, async () => {
+  test(`should add a Set key ${Tags.SMOKE}`, async ({ browserPage }) => {
     const keyData = getSetKeyData();
 
     await browserPage.openAddKeyDialog();
@@ -106,7 +103,7 @@ test.describe('Browser > Add Key', () => {
     await browserPage.expectKeyInList(keyData.keyName);
   });
 
-  test(`should add a Sorted Set key ${Tags.SMOKE}`, async () => {
+  test(`should add a Sorted Set key ${Tags.SMOKE}`, async ({ browserPage }) => {
     const keyData = getZSetKeyData();
 
     await browserPage.openAddKeyDialog();
@@ -119,7 +116,7 @@ test.describe('Browser > Add Key', () => {
     await browserPage.expectKeyInList(keyData.keyName);
   });
 
-  test(`should add a Stream key ${Tags.SMOKE}`, async () => {
+  test(`should add a Stream key ${Tags.SMOKE}`, async ({ browserPage }) => {
     const keyData = getStreamKeyData();
 
     await browserPage.openAddKeyDialog();
@@ -132,7 +129,7 @@ test.describe('Browser > Add Key', () => {
     await browserPage.expectKeyInList(keyData.keyName);
   });
 
-  test(`should add a JSON key ${Tags.SMOKE}`, async () => {
+  test(`should add a JSON key ${Tags.SMOKE}`, async ({ browserPage }) => {
     const keyData = getJsonKeyData();
 
     await browserPage.openAddKeyDialog();
@@ -145,7 +142,7 @@ test.describe('Browser > Add Key', () => {
     await browserPage.expectKeyInList(keyData.keyName);
   });
 
-  test(`should show Add Key button disabled when key name is empty ${Tags.REGRESSION}`, async () => {
+  test(`should show Add Key button disabled when key name is empty ${Tags.REGRESSION}`, async ({ browserPage }) => {
     await browserPage.openAddKeyDialog();
     await browserPage.addKeyDialog.selectKeyType('String');
     await browserPage.addKeyDialog.fillStringValue('some value');
@@ -154,7 +151,7 @@ test.describe('Browser > Add Key', () => {
     await browserPage.addKeyDialog.expectAddKeyDisabled();
   });
 
-  test(`should cancel adding a key ${Tags.REGRESSION}`, async () => {
+  test(`should cancel adding a key ${Tags.REGRESSION}`, async ({ browserPage }) => {
     const keyData = getStringKeyData();
 
     await browserPage.openAddKeyDialog();
@@ -166,7 +163,7 @@ test.describe('Browser > Add Key', () => {
     expect(isVisible).toBe(false);
   });
 
-  test(`should add a key with TTL ${Tags.REGRESSION}`, async () => {
+  test(`should add a key with TTL ${Tags.REGRESSION}`, async ({ browserPage }) => {
     const keyData = getStringKeyData();
     const ttlSeconds = '60';
 

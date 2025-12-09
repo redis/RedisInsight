@@ -3,6 +3,8 @@ import { Page, Locator, expect } from '@playwright/test';
 /**
  * Base Page Object class with common functionality
  * All page objects should extend this class
+ *
+ * Navigation is UI-based for cross-platform compatibility (browser + Electron)
  */
 export abstract class BasePage {
   readonly page: Page;
@@ -21,6 +23,107 @@ export abstract class BasePage {
     this.toastSuccess = page.locator('.toast-success, [data-testid="toast-success"]');
     this.toastError = page.locator('.toast-error, [data-testid="toast-error"]');
     this.toastContainer = page.locator('.Toastify, [data-testid="toast-container"]');
+  }
+
+  // ===========================================
+  // Navigation Methods (UI-based, works on all platforms)
+  // ===========================================
+
+  /**
+   * Navigate to the home page (databases list)
+   * Uses UI navigation (click logo) for cross-platform compatibility
+   *
+   * Handles different URL patterns:
+   * - Browser mode: http://localhost:8080/ or http://localhost:8080
+   * - Electron mode: file://...#/ (hash-based routing)
+   * - Blank page: about:blank (browser initial state)
+   */
+  async gotoHome(): Promise<void> {
+    // TODO: optimize this - doesn't look right
+    const currentUrl = this.page.url();
+
+    // If we're on a blank page (browser mode initial state), we need to navigate first
+    // In Electron mode, the app starts at the home page automatically
+    if (currentUrl === 'about:blank' || currentUrl === '') {
+      // Navigate to home page - this works in browser mode with baseURL
+      await this.page.goto('/');
+      await this.page.waitForLoadState('domcontentloaded');
+      await this.page.getByTestId('home-tabs').waitFor({ state: 'visible', timeout: 10000 });
+      return;
+    }
+
+    // Check if already on home page:
+    // - Browser: ends with / or port number
+    // - Electron: ends with #/ (hash-based routing)
+    const isHomePage =
+      currentUrl.endsWith('/') ||
+      currentUrl.endsWith('#/') ||
+      currentUrl.match(/:\d+\/?$/) ||
+      currentUrl.match(/:\d+#\/?$/);
+
+    if (isHomePage) {
+      await this.page.getByTestId('home-tabs').waitFor({ state: 'visible', timeout: 10000 });
+      return;
+    }
+
+    // Click the Redis logo to navigate home (works on both browser and Electron)
+    // The logo has accessible name "Redis Logo Dark Min" or similar
+    await this.page.getByRole('link', { name: /Redis Logo/i }).first().click();
+    // Wait for home page to load - look for the home tabs (Redis Databases / RDI)
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.getByTestId('home-tabs').waitFor({ state: 'visible', timeout: 10000 });
+  }
+
+  /**
+   * Navigate to the settings page
+   * Uses UI navigation for cross-platform compatibility
+   */
+  async gotoSettings(): Promise<void> {
+    await this.page.getByTestId('settings-page-btn').click();
+    await this.waitForLoad();
+  }
+
+  /**
+   * Navigate to a specific database instance (opens Browser page)
+   * @param databaseId - ID of the database to connect to
+   */
+  async gotoDatabase(databaseId: string): Promise<void> {
+    await this.gotoHome();
+    await this.page.getByTestId(`instance-name-${databaseId}`).click();
+    await this.waitForLoad();
+  }
+
+  /**
+   * Navigate to Workbench for the currently connected database
+   */
+  async gotoWorkbench(): Promise<void> {
+    await this.page.getByRole('tab', { name: 'Workbench' }).click();
+    await this.waitForLoad();
+  }
+
+  /**
+   * Navigate to Browser for the currently connected database
+   */
+  async gotoBrowser(): Promise<void> {
+    await this.page.getByRole('tab', { name: 'Browse' }).click();
+    await this.waitForLoad();
+  }
+
+  /**
+   * Navigate to Pub/Sub for the currently connected database
+   */
+  async gotoPubSub(): Promise<void> {
+    await this.page.getByRole('tab', { name: 'Pub/Sub' }).click();
+    await this.waitForLoad();
+  }
+
+  /**
+   * Navigate to Analytics page (from within a connected database)
+   * Clicks the "Analyze" tab in the database navigation
+   */
+  async gotoAnalytics(): Promise<void> {
+    await this.page.getByRole('tab', { name: 'Analyze' }).click();
+    await this.waitForLoad();
   }
 
   /**

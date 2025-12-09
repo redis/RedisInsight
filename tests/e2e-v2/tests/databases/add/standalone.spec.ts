@@ -260,7 +260,7 @@ test.describe.serial('Add Database > Standalone', () => {
 
   test(`should display logical database index in browser header ${Tags.REGRESSION}`, async ({
     databasesPage,
-    createBrowserPage,
+    browserPage,
     apiHelper,
   }) => {
     const config = getStandaloneConfig({
@@ -282,15 +282,13 @@ test.describe.serial('Add Database > Standalone', () => {
     // Wait for success toast
     await databasesPage.page.waitForSelector('text=Database has been added', { timeout: 10000 });
 
-    // Get the database ID from the API
+    // Get the database from the API
     const databases = await apiHelper.getDatabases();
     const createdDb = databases.find((db) => db.name === config.name);
     expect(createdDb).toBeDefined();
 
-    // Navigate to the browser page for this database (don't wait for full load since db2 is empty)
-    const browserPage = createBrowserPage(createdDb!.id);
-    await browserPage.page.goto(`/${createdDb!.id}/browser`);
-    await browserPage.page.waitForLoadState('domcontentloaded');
+    // Navigate to the browser page for this database via UI
+    await browserPage.goto(createdDb!.id);
 
     // Verify the logical database button shows "db2" in the header
     await expect(browserPage.logicalDatabaseButton).toBeVisible({ timeout: 15000 });

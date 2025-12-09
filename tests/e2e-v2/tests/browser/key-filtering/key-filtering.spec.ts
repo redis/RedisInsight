@@ -2,7 +2,7 @@ import { test, expect } from '../../../fixtures/base';
 import { Tags } from '../../../config';
 import { getStandaloneConfig } from '../../../test-data/databases';
 import { TEST_KEY_PREFIX } from '../../../test-data/browser';
-import { BrowserPage } from '../../../pages';
+import { DatabaseInstance } from '../../../types';
 
 /**
  * Key Filtering Patterns Tests
@@ -12,8 +12,7 @@ import { BrowserPage } from '../../../pages';
  */
 // Use serial to ensure tests share the same database and keys
 test.describe.serial('Browser > Key Filtering Patterns', () => {
-  let databaseId: string;
-  let browserPage: BrowserPage;
+  let database: DatabaseInstance;
   // Use a unique suffix per test run to avoid conflicts
   const uniqueSuffix = `kfp-${Date.now().toString(36)}`;
 
@@ -31,30 +30,28 @@ test.describe.serial('Browser > Key Filtering Patterns', () => {
     // Create a test database with unique name for this test run
     const dbName = `test-key-filtering-${Date.now().toString(36)}`;
     const config = getStandaloneConfig({ name: dbName });
-    const db = await apiHelper.createDatabase(config);
-    databaseId = db.id;
+    database = await apiHelper.createDatabase(config);
 
     // Create test keys via API
     for (const [, keyName] of Object.entries(testKeys)) {
-      await apiHelper.createStringKey(databaseId, keyName, 'test-value');
+      await apiHelper.createStringKey(database.id, keyName, 'test-value');
     }
   });
 
   test.afterAll(async ({ apiHelper }) => {
     // Clean up the test database
-    if (databaseId) {
-      await apiHelper.deleteKeysByPattern(databaseId, `${TEST_KEY_PREFIX}*`);
-      await apiHelper.deleteDatabase(databaseId);
+    if (database?.id) {
+      await apiHelper.deleteKeysByPattern(database.id, `${TEST_KEY_PREFIX}*`);
+      await apiHelper.deleteDatabase(database.id);
     }
   });
 
-  test.beforeEach(async ({ createBrowserPage }) => {
-    browserPage = createBrowserPage(databaseId);
-    await browserPage.goto();
+  test.beforeEach(async ({ browserPage }) => {
+    await browserPage.goto(database.id);
   });
 
   test.describe('Wildcard Patterns', () => {
-    test(`should filter keys with asterisk (*) wildcard ${Tags.SMOKE}`, async () => {
+    test(`should filter keys with asterisk (*) wildcard ${Tags.SMOKE}`, async ({ browserPage }) => {
       // Search for keys matching the pattern with asterisk and unique suffix
       await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}filter-*-${uniqueSuffix}`);
 
@@ -68,7 +65,7 @@ test.describe.serial('Browser > Key Filtering Patterns', () => {
       await expect(browserPage.keyList.getKeyRow(testKeys.numbered1)).not.toBeVisible();
     });
 
-    test(`should filter keys with question mark (?) single character wildcard ${Tags.REGRESSION}`, async () => {
+    test(`should filter keys with question mark (?) single character wildcard ${Tags.REGRESSION}`, async ({ browserPage }) => {
       // Search for keys matching the pattern with ? wildcard (matches single char)
       await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}item?-${uniqueSuffix}`);
 
@@ -81,7 +78,7 @@ test.describe.serial('Browser > Key Filtering Patterns', () => {
       await expect(browserPage.keyList.getKeyRow(testKeys.numbered3)).toBeVisible();
     });
 
-    test(`should filter keys with [xy] character class ${Tags.REGRESSION}`, async () => {
+    test(`should filter keys with [xy] character class ${Tags.REGRESSION}`, async ({ browserPage }) => {
       // Search for keys with character class [ab] (matches a or b)
       await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}filter-[ab]-${uniqueSuffix}`);
 
@@ -96,7 +93,7 @@ test.describe.serial('Browser > Key Filtering Patterns', () => {
       await expect(browserPage.keyList.getKeyRow(testKeys.prefix3)).not.toBeVisible();
     });
 
-    test(`should filter keys with [a-z] character range ${Tags.REGRESSION}`, async () => {
+    test(`should filter keys with [a-z] character range ${Tags.REGRESSION}`, async ({ browserPage }) => {
       // Search for keys with character range [a-c]
       await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}filter-[a-c]-${uniqueSuffix}`);
 
@@ -109,7 +106,7 @@ test.describe.serial('Browser > Key Filtering Patterns', () => {
       await expect(browserPage.keyList.getKeyRow(testKeys.prefix3)).toBeVisible();
     });
 
-    test(`should filter keys with [^x] negated character class ${Tags.REGRESSION}`, async () => {
+    test(`should filter keys with [^x] negated character class ${Tags.REGRESSION}`, async ({ browserPage }) => {
       // Search for keys with negated character class [^a] (matches anything except 'a')
       await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}filter-[^a]-${uniqueSuffix}`);
 
@@ -127,6 +124,7 @@ test.describe.serial('Browser > Key Filtering Patterns', () => {
 
   test.describe('Special Characters', () => {
     test(`should escape special characters in filter pattern ${Tags.REGRESSION}`, async ({
+      browserPage,
       cliPanel,
     }) => {
       // Create a key with special characters (asterisk in the name)
@@ -153,7 +151,7 @@ test.describe.serial('Browser > Key Filtering Patterns', () => {
   });
 
   test.describe('Filter Controls', () => {
-    test(`should clear filter and search again ${Tags.REGRESSION}`, async () => {
+    test(`should clear filter and search again ${Tags.REGRESSION}`, async ({ browserPage }) => {
       // First apply a filter for filter-* keys with unique suffix
       await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}filter-*-${uniqueSuffix}`);
       await browserPage.page.waitForTimeout(500);

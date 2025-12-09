@@ -41,11 +41,10 @@ export class DatabasesPage extends BasePage {
   }
 
   /**
-   * Navigate to the databases page
+   * Navigate to the databases page (home)
    */
   async goto(): Promise<void> {
-    await this.page.goto('/');
-    await this.waitForLoad();
+    await this.gotoHome();
   }
 
   /**

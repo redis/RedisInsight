@@ -1,33 +1,30 @@
 import { expect, test } from '../../../fixtures/base';
 import { Tags } from '../../../config';
-import { WorkbenchPage } from '../../../pages/workbench/WorkbenchPage';
 import { getStandaloneConfig } from '../../../test-data/databases';
 import { faker } from '@faker-js/faker';
+import { DatabaseInstance } from '../../../types';
 
 test.describe('Workbench > Plugins', () => {
-  let databaseId: string;
-  let workbenchPage: WorkbenchPage;
+  let database: DatabaseInstance;
   const testPrefix = `test-plugin-${faker.string.alphanumeric(6)}`;
   const testIndexName = `idx_plugin_${faker.string.alphanumeric(6)}`;
 
   test.beforeAll(async ({ apiHelper }) => {
     const config = getStandaloneConfig({ name: 'test-plugins-db' });
-    const db = await apiHelper.createDatabase(config);
-    databaseId = db.id;
+    database = await apiHelper.createDatabase(config);
   });
 
   test.afterAll(async ({ apiHelper }) => {
-    await apiHelper.deleteDatabase(databaseId);
+    if (database?.id) {
+      await apiHelper.deleteDatabase(database.id);
+    }
   });
 
   test(`should display FT.SEARCH results in table format ${Tags.SMOKE}`, async ({
     page,
-    createWorkbenchPage,
+    workbenchPage,
   }) => {
-    // Navigate directly to workbench
-    await page.goto(`/${databaseId}/workbench`);
-    workbenchPage = createWorkbenchPage(databaseId);
-    await workbenchPage.waitForLoad();
+    await workbenchPage.goto(database.id);
 
     // Create test data and index
     await workbenchPage.executeCommand(`HSET ${testPrefix}:item1 name "Test Item 1" price 100`);
@@ -62,12 +59,9 @@ test.describe('Workbench > Plugins', () => {
 
   test(`should display FT.INFO results in plugin format ${Tags.REGRESSION}`, async ({
     page,
-    createWorkbenchPage,
+    workbenchPage,
   }) => {
-    // Navigate directly to workbench
-    await page.goto(`/${databaseId}/workbench`);
-    workbenchPage = createWorkbenchPage(databaseId);
-    await workbenchPage.waitForLoad();
+    await workbenchPage.goto(database.id);
 
     // Create a simple index
     const indexName = `idx_info_${faker.string.alphanumeric(6)}`;
@@ -98,12 +92,9 @@ test.describe('Workbench > Plugins', () => {
 
   test(`should switch between Table and Text view ${Tags.REGRESSION}`, async ({
     page,
-    createWorkbenchPage,
+    workbenchPage,
   }) => {
-    // Navigate directly to workbench
-    await page.goto(`/${databaseId}/workbench`);
-    workbenchPage = createWorkbenchPage(databaseId);
-    await workbenchPage.waitForLoad();
+    await workbenchPage.goto(database.id);
 
     // Create test data and index
     const prefix = `test-view-${faker.string.alphanumeric(6)}`;

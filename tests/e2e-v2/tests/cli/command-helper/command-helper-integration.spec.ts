@@ -2,34 +2,33 @@ import { test, expect } from '../../../fixtures/base';
 import { Tags } from '../../../config';
 import { CliPanel } from '../../../pages/cli';
 import { CommandHelperPanel } from '../../../pages/workbench';
+import { getStandaloneConfig } from '../../../test-data/databases';
+import { DatabaseInstance } from '../../../types';
 
 test.describe('CLI > Command Helper Integration', () => {
-  let databaseId: string;
+  let database: DatabaseInstance;
   let cli: CliPanel;
   let commandHelper: CommandHelperPanel;
 
   test.beforeAll(async ({ apiHelper }) => {
-    // Get or create a database for testing
-    const databases = await apiHelper.getDatabases();
-    if (databases.length === 0) {
-      const db = await apiHelper.createDatabase({
-        name: 'test-cli-helper',
-        host: '127.0.0.1',
-        port: 6379,
-      });
-      databaseId = db.id;
-    } else {
-      databaseId = databases[0].id;
+    // Create a database for testing
+    const config = getStandaloneConfig({ name: 'test-cli-helper' });
+    database = await apiHelper.createDatabase(config);
+  });
+
+  test.afterAll(async ({ apiHelper }) => {
+    // Clean up database
+    if (database?.id) {
+      await apiHelper.deleteDatabase(database.id);
     }
   });
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, browserPage }) => {
     cli = new CliPanel(page);
     commandHelper = new CommandHelperPanel(page);
 
     // Navigate to browser page (CLI is available there)
-    await page.goto(`/${databaseId}/browser`);
-    await page.waitForLoadState('networkidle');
+    await browserPage.goto(database.id);
   });
 
   test(`should update Command Helper when typing command in CLI ${Tags.SMOKE}`, async () => {

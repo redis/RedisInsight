@@ -1,34 +1,26 @@
 import { test, expect } from '../../fixtures/base';
 import { Tags } from '../../config';
 import { getStandaloneConfig } from '../../test-data/databases';
+import { DatabaseInstance } from '../../types';
 
 test.describe.serial('CLI > Panel', () => {
-  let databaseId: string;
+  let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
     // Create a database for testing
     const config = getStandaloneConfig();
-    const database = await apiHelper.createDatabase(config);
-    databaseId = database.id;
+    database = await apiHelper.createDatabase(config);
   });
 
   test.afterAll(async ({ apiHelper }) => {
     // Clean up database
-    if (databaseId) {
-      await apiHelper.deleteDatabase(databaseId);
+    if (database?.id) {
+      await apiHelper.deleteDatabase(database.id);
     }
   });
 
-  test.beforeEach(async ({ page }) => {
-    // Navigate to the database browser page
-    await page.goto(`/${databaseId}/browser`);
-    await page.waitForLoadState('domcontentloaded');
-    // Wait for the page to fully load (key list or no keys message)
-    await Promise.race([
-      page.getByText(/Total:/i).waitFor({ timeout: 30000 }),
-      page.getByText(/Results:/i).waitFor({ timeout: 30000 }),
-      page.getByText(/no keys/i).waitFor({ timeout: 30000 }),
-    ]).catch(() => {});
+  test.beforeEach(async ({ browserPage }) => {
+    await browserPage.goto(database.id);
   });
 
   test(`should open CLI panel ${Tags.CRITICAL} ${Tags.SMOKE}`, async ({ cliPanel }) => {

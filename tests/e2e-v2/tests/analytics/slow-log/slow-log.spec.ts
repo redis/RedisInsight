@@ -1,46 +1,36 @@
 import { test, expect } from '../../../fixtures/base';
 import { Tags } from '../../../config';
 import { standaloneConfig } from '../../../config/databases/standalone';
+import { DatabaseInstance } from '../../../types';
+import { TEST_DB_PREFIX } from '../../../test-data/databases';
 
-test.describe('Analytics > Slow Log', () => {
-  let databaseId: string;
+test.describe.serial('Analytics > Slow Log', () => {
+  let database: DatabaseInstance;
+  const dbName = `${TEST_DB_PREFIX}slow-log-db`;
 
   test.beforeAll(async ({ apiHelper }) => {
-    // Get or create a database for testing
-    const databases = await apiHelper.getDatabases();
-    const existingDb = databases.find(
-      (db) => db.host === standaloneConfig.host && db.port === standaloneConfig.port
-    );
+    database = await apiHelper.createDatabase({
+      name: dbName,
+      host: standaloneConfig.host,
+      port: standaloneConfig.port,
+    });
+  });
 
-    if (existingDb) {
-      databaseId = existingDb.id;
-    } else {
-      const db = await apiHelper.createDatabase({
-        name: 'test-slow-log-db',
-        host: standaloneConfig.host,
-        port: standaloneConfig.port,
-      });
-      databaseId = db.id;
-    }
+  test.afterAll(async ({ apiHelper }) => {
+    await apiHelper.deleteDatabase(database.id);
   });
 
   test.describe('View Slow Log', () => {
-    test(`should display slow log page ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({
-      createAnalyticsPage,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoSlowLog(databaseId);
+    test.beforeEach(async ({ analyticsPage }) => {
+      await analyticsPage.gotoSlowLog(database.id);
+    });
 
+    test(`should display slow log page ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ analyticsPage }) => {
       await expect(analyticsPage.slowLogTab).toBeVisible();
       await expect(analyticsPage.slowLogTab).toHaveAttribute('aria-selected', 'true');
     });
 
-    test(`should show slow log table with entries ${Tags.CRITICAL}`, async ({
-      createAnalyticsPage,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoSlowLog(databaseId);
-
+    test(`should show slow log table with entries ${Tags.CRITICAL}`, async ({ analyticsPage }) => {
       // Generate slow log entries by setting threshold to 0 (logs all commands)
       await analyticsPage.generateSlowLogEntries();
 
@@ -52,53 +42,27 @@ test.describe('Analytics > Slow Log', () => {
       expect(hasEntries).toBe(true);
     });
 
-    test(`should show execution time configuration ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoSlowLog(databaseId);
-
+    test(`should show execution time configuration ${Tags.REGRESSION}`, async ({ analyticsPage }) => {
       // Should show execution time text
       await expect(analyticsPage.executionTimeText).toBeVisible();
     });
 
-    test(`should show configure button ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoSlowLog(databaseId);
-
+    test(`should show configure button ${Tags.REGRESSION}`, async ({ analyticsPage }) => {
       await expect(analyticsPage.configureButton).toBeVisible();
     });
 
-    test(`should show clear slow log button when entries exist ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoSlowLog(databaseId);
-
+    test(`should show clear slow log button when entries exist ${Tags.REGRESSION}`, async ({ analyticsPage }) => {
       // Generate entries first (Clear button only visible when there are entries)
       await analyticsPage.generateSlowLogEntries();
 
       await expect(analyticsPage.clearSlowLogButton).toBeVisible();
     });
 
-    test(`should show display up to dropdown ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoSlowLog(databaseId);
-
+    test(`should show display up to dropdown ${Tags.REGRESSION}`, async ({ analyticsPage }) => {
       await expect(analyticsPage.displayUpToDropdown).toBeVisible();
     });
 
-    test(`should refresh slow log ${Tags.CRITICAL}`, async ({
-      createAnalyticsPage,
-      page,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoSlowLog(databaseId);
-
+    test(`should refresh slow log ${Tags.CRITICAL}`, async ({ page, analyticsPage }) => {
       // Generate entries first so we have something to refresh
       await analyticsPage.generateSlowLogEntries();
 
@@ -114,13 +78,13 @@ test.describe('Analytics > Slow Log', () => {
   });
 
   test.describe('Navigate to Slow Log', () => {
-    test(`should navigate from Database Analysis to Slow Log ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
+    test.beforeEach(async ({ analyticsPage }) => {
+      await analyticsPage.gotoSlowLog(database.id);
+    });
 
+    test(`should navigate from Database Analysis to Slow Log ${Tags.REGRESSION}`, async ({ analyticsPage }) => {
       // Start at Database Analysis
-      await analyticsPage.gotoDatabaseAnalysis(databaseId);
+      await analyticsPage.gotoDatabaseAnalysis(database.id);
       await expect(analyticsPage.databaseAnalysisTab).toHaveAttribute('aria-selected', 'true');
 
       // Click Slow Log tab
@@ -132,13 +96,12 @@ test.describe('Analytics > Slow Log', () => {
   });
 
   test.describe('Sort Entries', () => {
-    test(`should sort entries by duration ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-      page,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoSlowLog(databaseId);
+    test.beforeEach(async ({ analyticsPage }) => {
+      await analyticsPage.gotoSlowLog(database.id);
 
+    });
+
+    test(`should sort entries by duration ${Tags.REGRESSION}`, async ({ page, analyticsPage }) => {
       // Generate entries first
       await analyticsPage.generateSlowLogEntries();
 
@@ -153,13 +116,7 @@ test.describe('Analytics > Slow Log', () => {
       await expect(page.getByText(/Sorted by Duration/)).toBeVisible();
     });
 
-    test(`should sort entries by timestamp ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-      page,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoSlowLog(databaseId);
-
+    test(`should sort entries by timestamp ${Tags.REGRESSION}`, async ({ page, analyticsPage }) => {
       // Generate entries first
       await analyticsPage.generateSlowLogEntries();
 
@@ -176,13 +133,12 @@ test.describe('Analytics > Slow Log', () => {
   });
 
   test.describe('Entry Details', () => {
-    test(`should display command timestamp, duration, and execution details ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-      page,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoSlowLog(databaseId);
+    test.beforeEach(async ({ analyticsPage }) => {
+      await analyticsPage.gotoSlowLog(database.id);
 
+    });
+
+    test(`should display command timestamp, duration, and execution details ${Tags.REGRESSION}`, async ({ page, analyticsPage }) => {
       // Generate entries first
       await analyticsPage.generateSlowLogEntries();
 
@@ -211,13 +167,7 @@ test.describe('Analytics > Slow Log', () => {
       expect(commandText?.length).toBeGreaterThan(0);
     });
 
-    test(`should display configuration values ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-      page,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoSlowLog(databaseId);
-
+    test(`should display configuration values ${Tags.REGRESSION}`, async ({ page }) => {
       // Verify execution time and max length configuration is displayed
       // Format: "Execution time: X msec, Max length: Y"
       await expect(page.getByText(/Execution time:.*msec.*Max length:/)).toBeVisible();
@@ -225,12 +175,12 @@ test.describe('Analytics > Slow Log', () => {
   });
 
   test.describe('Empty State', () => {
-    test(`should display empty state message when no slow log entries ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoSlowLog(databaseId);
+    test.beforeEach(async ({ analyticsPage }) => {
+      await analyticsPage.gotoSlowLog(database.id);
 
+    });
+
+    test(`should display empty state message when no slow log entries ${Tags.REGRESSION}`, async ({ analyticsPage }) => {
       // Check if slow log is empty or has entries
       const isEmpty = await analyticsPage.isSlowLogEmpty();
 
@@ -258,13 +208,12 @@ test.describe('Analytics > Slow Log', () => {
   });
 
   test.describe('Configuration', () => {
-    test(`should adjust slowlog-log-slower-than threshold ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-      page,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoSlowLog(databaseId);
+    test.beforeEach(async ({ analyticsPage }) => {
+      await analyticsPage.gotoSlowLog(database.id);
 
+    });
+
+    test(`should adjust slowlog-log-slower-than threshold ${Tags.REGRESSION}`, async ({ page, analyticsPage }) => {
       // Get initial threshold value
       const initialThreshold = await analyticsPage.getExecutionTimeThreshold();
 
@@ -290,13 +239,7 @@ test.describe('Analytics > Slow Log', () => {
       await expect(page.getByText(new RegExp(`Execution time:\\s*${initialThreshold}\\s*msec`))).toBeVisible();
     });
 
-    test(`should open and cancel configuration dialog ${Tags.REGRESSION}`, async ({
-      createAnalyticsPage,
-      page,
-    }) => {
-      const analyticsPage = createAnalyticsPage();
-      await analyticsPage.gotoSlowLog(databaseId);
-
+    test(`should open and cancel configuration dialog ${Tags.REGRESSION}`, async ({ page, analyticsPage }) => {
       // Get initial threshold value
       const initialThreshold = await analyticsPage.getExecutionTimeThreshold();
 

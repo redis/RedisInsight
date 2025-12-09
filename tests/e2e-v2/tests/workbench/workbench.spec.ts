@@ -1,35 +1,30 @@
 import { test, expect } from '../../fixtures/base';
-import { WorkbenchPage } from '../../pages';
 import { Tags } from '../../config';
 import { COMMANDS, EXPECTED_RESULTS, getWorkbenchTestData, getInvalidCommand } from '../../test-data/workbench';
 import { getStandaloneConfig } from '../../test-data/databases';
+import { DatabaseInstance } from '../../types';
 
 test.describe.serial('Workbench > Command Execution', () => {
-  let databaseId: string;
-  let workbenchPage: WorkbenchPage;
+  let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
     // Create a database for testing
     const config = getStandaloneConfig();
-    const database = await apiHelper.createDatabase(config);
-    databaseId = database.id;
+    database = await apiHelper.createDatabase(config);
   });
 
   test.afterAll(async ({ apiHelper }) => {
     // Clean up database
-    if (databaseId) {
-      await apiHelper.deleteDatabase(databaseId);
+    if (database?.id) {
+      await apiHelper.deleteDatabase(database.id);
     }
   });
 
-  test.beforeEach(async ({ page, createWorkbenchPage }) => {
-    // Navigate to the database first
-    await page.goto(`/${databaseId}/workbench`);
-    workbenchPage = createWorkbenchPage(databaseId);
-    await workbenchPage.waitForLoad();
+  test.beforeEach(async ({ workbenchPage }) => {
+    await workbenchPage.goto(database.id);
   });
 
-  test(`should execute single Redis command ${Tags.CRITICAL} ${Tags.SMOKE}`, async () => {
+  test(`should execute single Redis command ${Tags.CRITICAL} ${Tags.SMOKE}`, async ({ workbenchPage }) => {
     // Execute PING command
     await workbenchPage.executeCommand(COMMANDS.PING);
 
@@ -38,7 +33,7 @@ test.describe.serial('Workbench > Command Execution', () => {
     expect(result).toBe(EXPECTED_RESULTS.PING);
   });
 
-  test(`should view command result ${Tags.CRITICAL}`, async () => {
+  test(`should view command result ${Tags.CRITICAL}`, async ({ workbenchPage }) => {
     // Execute a command
     await workbenchPage.executeCommand(COMMANDS.PING);
 
@@ -50,7 +45,7 @@ test.describe.serial('Workbench > Command Execution', () => {
     expect(executionTime).toMatch(/\d+(\.\d+)?\s*msec/);
   });
 
-  test(`should execute multiple commands ${Tags.CRITICAL}`, async () => {
+  test(`should execute multiple commands ${Tags.CRITICAL}`, async ({ workbenchPage }) => {
     // Clear any existing results first
     await workbenchPage.clearResults();
 
@@ -67,7 +62,7 @@ test.describe.serial('Workbench > Command Execution', () => {
     expect(resultCount).toBe(2);
   });
 
-  test(`should handle command error ${Tags.CRITICAL}`, async () => {
+  test(`should handle command error ${Tags.CRITICAL}`, async ({ workbenchPage }) => {
     // Execute invalid command
     const invalidCommand = getInvalidCommand();
     await workbenchPage.executeCommand(invalidCommand);
@@ -77,7 +72,7 @@ test.describe.serial('Workbench > Command Execution', () => {
     expect(result).toContain('ERR');
   });
 
-  test(`should execute SET and GET commands ${Tags.SMOKE}`, async () => {
+  test(`should execute SET and GET commands ${Tags.SMOKE}`, async ({ workbenchPage }) => {
     const testData = getWorkbenchTestData();
 
     // Execute SET command
@@ -96,28 +91,24 @@ test.describe.serial('Workbench > Command Execution', () => {
 });
 
 test.describe.serial('Workbench > Results View', () => {
-  let databaseId: string;
-  let workbenchPage: WorkbenchPage;
+  let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
     const config = getStandaloneConfig();
-    const database = await apiHelper.createDatabase(config);
-    databaseId = database.id;
+    database = await apiHelper.createDatabase(config);
   });
 
   test.afterAll(async ({ apiHelper }) => {
-    if (databaseId) {
-      await apiHelper.deleteDatabase(databaseId);
+    if (database?.id) {
+      await apiHelper.deleteDatabase(database.id);
     }
   });
 
-  test.beforeEach(async ({ page, createWorkbenchPage }) => {
-    await page.goto(`/${databaseId}/workbench`);
-    workbenchPage = createWorkbenchPage(databaseId);
-    await workbenchPage.waitForLoad();
+  test.beforeEach(async ({ workbenchPage }) => {
+    await workbenchPage.goto(database.id);
   });
 
-  test(`should view text result ${Tags.CRITICAL} ${Tags.SMOKE}`, async () => {
+  test(`should view text result ${Tags.CRITICAL} ${Tags.SMOKE}`, async ({ workbenchPage }) => {
     // Execute PING command
     await workbenchPage.executeCommand(COMMANDS.PING);
 
@@ -126,7 +117,7 @@ test.describe.serial('Workbench > Results View', () => {
     expect(result).toBe(EXPECTED_RESULTS.PING);
   });
 
-  test(`should clear results ${Tags.REGRESSION}`, async () => {
+  test(`should clear results ${Tags.REGRESSION}`, async ({ workbenchPage }) => {
     // Execute a command first
     await workbenchPage.executeCommand(COMMANDS.PING);
 
@@ -142,7 +133,7 @@ test.describe.serial('Workbench > Results View', () => {
     expect(hasNoResults).toBe(true);
   });
 
-  test(`should toggle Raw mode ${Tags.REGRESSION}`, async ({ page }) => {
+  test(`should toggle Raw mode ${Tags.REGRESSION}`, async ({ page, workbenchPage }) => {
     // Execute a command
     await workbenchPage.executeCommand(COMMANDS.PING);
 
@@ -155,7 +146,7 @@ test.describe.serial('Workbench > Results View', () => {
     await expect(rawModeToggle).toBeVisible();
   });
 
-  test(`should toggle Group results ${Tags.REGRESSION}`, async ({ page }) => {
+  test(`should toggle Group results ${Tags.REGRESSION}`, async ({ page, workbenchPage }) => {
     // Execute a command
     await workbenchPage.executeCommand(COMMANDS.PING);
 
@@ -168,7 +159,7 @@ test.describe.serial('Workbench > Results View', () => {
     await expect(groupToggle).toBeVisible();
   });
 
-  test(`should re-run command ${Tags.REGRESSION}`, async ({ page }) => {
+  test(`should re-run command ${Tags.REGRESSION}`, async ({ page, workbenchPage }) => {
     // Clear any existing results first
     const clearButton = page.getByTestId('clear-history-btn');
     if (await clearButton.isVisible()) {
@@ -194,7 +185,7 @@ test.describe.serial('Workbench > Results View', () => {
     }).toPass({ timeout: 10000 });
   });
 
-  test(`should delete command result ${Tags.REGRESSION}`, async ({ page }) => {
+  test(`should delete command result ${Tags.REGRESSION}`, async ({ page, workbenchPage }) => {
     // Clear any existing results first
     const clearButton = page.getByTestId('clear-history-btn');
     if (await clearButton.isVisible()) {
@@ -220,7 +211,7 @@ test.describe.serial('Workbench > Results View', () => {
     }).toPass({ timeout: 10000 });
   });
 
-  test(`should view table result ${Tags.REGRESSION}`, async () => {
+  test(`should view table result ${Tags.REGRESSION}`, async ({ workbenchPage }) => {
     // Execute HSET command to create hash data
     await workbenchPage.executeCommand('HSET test-hash-table field1 value1 field2 value2');
 
@@ -236,7 +227,7 @@ test.describe.serial('Workbench > Results View', () => {
     await workbenchPage.executeCommand('DEL test-hash-table');
   });
 
-  test(`should view JSON result ${Tags.REGRESSION}`, async ({ page }) => {
+  test(`should view JSON result ${Tags.REGRESSION}`, async ({ page, workbenchPage }) => {
     // Execute JSON.SET command
     await workbenchPage.executeCommand('JSON.SET test-json-result $ \'{"name":"test","value":123}\'');
 
@@ -256,7 +247,7 @@ test.describe.serial('Workbench > Results View', () => {
     await workbenchPage.executeCommand('DEL test-json-result');
   });
 
-  test(`should copy result ${Tags.REGRESSION}`, async ({ page }) => {
+  test(`should copy result ${Tags.REGRESSION}`, async ({ page, workbenchPage }) => {
     // Clear any existing results first
     const clearButton = page.getByTestId('clear-history-btn');
     if (await clearButton.isVisible()) {
@@ -275,7 +266,7 @@ test.describe.serial('Workbench > Results View', () => {
     await expect(copyButton).toBeVisible();
   });
 
-  test(`should expand and collapse results ${Tags.REGRESSION}`, async ({ page }) => {
+  test(`should expand and collapse results ${Tags.REGRESSION}`, async ({ page, workbenchPage }) => {
     // Clear any existing results first
     const clearButton = page.getByTestId('clear-history-btn');
     if (await clearButton.isVisible()) {
@@ -305,25 +296,21 @@ test.describe.serial('Workbench > Results View', () => {
 });
 
 test.describe.serial('Workbench > Editor', () => {
-  let databaseId: string;
-  let workbenchPage: WorkbenchPage;
+  let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
     const config = getStandaloneConfig();
-    const database = await apiHelper.createDatabase(config);
-    databaseId = database.id;
+    database = await apiHelper.createDatabase(config);
   });
 
   test.afterAll(async ({ apiHelper }) => {
-    if (databaseId) {
-      await apiHelper.deleteDatabase(databaseId);
+    if (database?.id) {
+      await apiHelper.deleteDatabase(database.id);
     }
   });
 
-  test.beforeEach(async ({ page, createWorkbenchPage }) => {
-    await page.goto(`/${databaseId}/workbench`);
-    workbenchPage = createWorkbenchPage(databaseId);
-    await workbenchPage.waitForLoad();
+  test.beforeEach(async ({ workbenchPage }) => {
+    await workbenchPage.goto(database.id);
   });
 
   test(`should show command autocomplete ${Tags.SMOKE}`, async ({ page }) => {
@@ -415,25 +402,21 @@ test.describe.serial('Workbench > Editor', () => {
 });
 
 test.describe.serial('Workbench > Tutorials', () => {
-  let databaseId: string;
-  let workbenchPage: WorkbenchPage;
+  let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
     const config = getStandaloneConfig();
-    const database = await apiHelper.createDatabase(config);
-    databaseId = database.id;
+    database = await apiHelper.createDatabase(config);
   });
 
   test.afterAll(async ({ apiHelper }) => {
-    if (databaseId) {
-      await apiHelper.deleteDatabase(databaseId);
+    if (database?.id) {
+      await apiHelper.deleteDatabase(database.id);
     }
   });
 
-  test.beforeEach(async ({ page, createWorkbenchPage }) => {
-    await page.goto(`/${databaseId}/workbench`);
-    workbenchPage = createWorkbenchPage(databaseId);
-    await workbenchPage.waitForLoad();
+  test.beforeEach(async ({ workbenchPage }) => {
+    await workbenchPage.goto(database.id);
   });
 
   test(`should open Intro to search tutorial ${Tags.SMOKE}`, async ({ page }) => {
@@ -507,28 +490,24 @@ test.describe.serial('Workbench > Tutorials', () => {
 });
 
 test.describe.serial('Workbench > Command History', () => {
-  let databaseId: string;
-  let workbenchPage: WorkbenchPage;
+  let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
     const config = getStandaloneConfig();
-    const database = await apiHelper.createDatabase(config);
-    databaseId = database.id;
+    database = await apiHelper.createDatabase(config);
   });
 
   test.afterAll(async ({ apiHelper }) => {
-    if (databaseId) {
-      await apiHelper.deleteDatabase(databaseId);
+    if (database?.id) {
+      await apiHelper.deleteDatabase(database.id);
     }
   });
 
-  test.beforeEach(async ({ page, createWorkbenchPage }) => {
-    await page.goto(`/${databaseId}/workbench`);
-    workbenchPage = createWorkbenchPage(databaseId);
-    await workbenchPage.waitForLoad();
+  test.beforeEach(async ({ workbenchPage }) => {
+    await workbenchPage.goto(database.id);
   });
 
-  test(`should persist command history after page refresh ${Tags.REGRESSION}`, async ({ page }) => {
+  test(`should persist command history after page refresh ${Tags.REGRESSION}`, async ({ page, workbenchPage }) => {
     // Execute a command
     await workbenchPage.executeCommand('PING');
     await expect(workbenchPage.resultsPanel.resultText).toBeVisible();
@@ -548,6 +527,7 @@ test.describe.serial('Workbench > Command History', () => {
 
   test(`should preserve original datetime in history after page refresh ${Tags.REGRESSION}`, async ({
     page,
+    workbenchPage,
   }) => {
     // Execute a command
     await workbenchPage.executeCommand('PING');
@@ -574,7 +554,7 @@ test.describe.serial('Workbench > Command History', () => {
     expect(datetimeAfterRefresh).toBe(originalDateTime);
   });
 
-  test(`should re-run a previous command from history ${Tags.REGRESSION}`, async ({ page }) => {
+  test(`should re-run a previous command from history ${Tags.REGRESSION}`, async ({ page, workbenchPage }) => {
     // Execute a command
     await workbenchPage.executeCommand('PING');
     await expect(workbenchPage.resultsPanel.resultText).toBeVisible();
@@ -598,7 +578,7 @@ test.describe.serial('Workbench > Command History', () => {
     expect(newCount).toBeGreaterThan(initialCount);
   });
 
-  test(`should access command history with Up Arrow ${Tags.REGRESSION}`, async ({ page }) => {
+  test(`should access command history with Up Arrow ${Tags.REGRESSION}`, async ({ page, workbenchPage }) => {
     // Execute a command
     await workbenchPage.executeCommand('PING');
     await expect(workbenchPage.resultsPanel.resultText).toBeVisible();
@@ -615,7 +595,7 @@ test.describe.serial('Workbench > Command History', () => {
     expect(command).toBe('PING');
   });
 
-  test(`should run commands with quantifier ${Tags.REGRESSION}`, async ({ page }) => {
+  test(`should run commands with quantifier ${Tags.REGRESSION}`, async ({ page, workbenchPage }) => {
     // Create some test keys first
     await workbenchPage.executeCommand('SET test-quant-key1 value1');
     await workbenchPage.executeCommand('SET test-quant-key2 value2');
@@ -639,7 +619,7 @@ test.describe.serial('Workbench > Command History', () => {
     await workbenchPage.executeCommand('DEL test-quant-key1 test-quant-key2 test-quant-key3');
   });
 
-  test(`should limit history to 30 commands ${Tags.REGRESSION}`, async ({ page }) => {
+  test(`should limit history to 30 commands ${Tags.REGRESSION}`, async ({ page, workbenchPage }) => {
     // Clear any existing results first
     const clearButton = page.getByTestId('clear-history-btn');
     if (await clearButton.isVisible()) {
@@ -682,25 +662,21 @@ test.describe.serial('Workbench > Command History', () => {
 });
 
 test.describe.serial('Workbench > Group Results', () => {
-  let databaseId: string;
-  let workbenchPage: WorkbenchPage;
+  let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
     const config = getStandaloneConfig();
-    const database = await apiHelper.createDatabase(config);
-    databaseId = database.id;
+    database = await apiHelper.createDatabase(config);
   });
 
   test.afterAll(async ({ apiHelper }) => {
-    if (databaseId) {
-      await apiHelper.deleteDatabase(databaseId);
+    if (database?.id) {
+      await apiHelper.deleteDatabase(database.id);
     }
   });
 
-  test.beforeEach(async ({ page, createWorkbenchPage }) => {
-    await page.goto(`/${databaseId}/workbench`);
-    workbenchPage = createWorkbenchPage(databaseId);
-    await workbenchPage.waitForLoad();
+  test.beforeEach(async ({ workbenchPage }) => {
+    await workbenchPage.goto(database.id);
   });
 
   test(`should view group summary with success count ${Tags.REGRESSION}`, async ({ page }) => {

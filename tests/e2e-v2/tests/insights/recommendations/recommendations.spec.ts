@@ -11,18 +11,17 @@ import { getStandaloneConfig } from '../../../test-data/databases';
  */
 test.describe('Insights > Live Recommendations', () => {
   test(`should open Tips tab in Insights panel ${Tags.SMOKE}`, async ({
-    page,
     navigationPage,
     apiHelper,
+    browserPage,
   }) => {
     // Create a database for this test
     const config = getStandaloneConfig({ name: 'test-tips-tab' });
     const db = await apiHelper.createDatabase(config);
 
     try {
-      // Navigate to the database browser
-      await page.goto(`/${db.id}/browser`);
-      await page.waitForLoadState('networkidle');
+      // Navigate to the database browser via UI
+      await browserPage.goto(db.id);
 
       // Open Insights panel
       await navigationPage.openInsightsPanel();
@@ -42,15 +41,15 @@ test.describe('Insights > Live Recommendations', () => {
     page,
     navigationPage,
     apiHelper,
+    browserPage,
   }) => {
     // Create a fresh database with no analysis history
     const config = getStandaloneConfig({ name: 'test-no-recs' });
     const freshDb = await apiHelper.createDatabase(config);
 
     try {
-      // Navigate to the fresh database
-      await page.goto(`/${freshDb.id}/browser`);
-      await page.waitForLoadState('networkidle');
+      // Navigate to the fresh database via UI
+      await browserPage.goto(freshDb.id);
 
       // Open Insights panel and switch to Tips
       await navigationPage.openInsightsPanel();
@@ -69,15 +68,15 @@ test.describe('Insights > Live Recommendations', () => {
     page,
     navigationPage,
     apiHelper,
+    browserPage,
   }) => {
     // Create a database for analysis
     const config = getStandaloneConfig({ name: 'test-analysis-recs' });
     const db = await apiHelper.createDatabase(config);
 
     try {
-      // Navigate to the database browser
-      await page.goto(`/${db.id}/browser`);
-      await page.waitForLoadState('networkidle');
+      // Navigate to the database browser via UI
+      await browserPage.goto(db.id);
 
       // Open Insights panel and switch to Tips
       await navigationPage.openInsightsPanel();
@@ -115,15 +114,15 @@ test.describe('Insights > Live Recommendations', () => {
     page,
     navigationPage,
     apiHelper,
+    browserPage,
   }) => {
     // Create a database and run analysis
     const config = getStandaloneConfig({ name: 'test-voting' });
     const db = await apiHelper.createDatabase(config);
 
     try {
-      // Navigate to the database browser
-      await page.goto(`/${db.id}/browser`);
-      await page.waitForLoadState('networkidle');
+      // Navigate to the database browser via UI
+      await browserPage.goto(db.id);
 
       // Open Insights panel and switch to Tips
       await navigationPage.openInsightsPanel();
@@ -166,15 +165,15 @@ test.describe('Insights > Live Recommendations', () => {
     page,
     navigationPage,
     apiHelper,
+    browserPage,
   }) => {
     // Create a database and run analysis
     const config = getStandaloneConfig({ name: 'test-expand-rec' });
     const db = await apiHelper.createDatabase(config);
 
     try {
-      // Navigate to the database browser
-      await page.goto(`/${db.id}/browser`);
-      await page.waitForLoadState('networkidle');
+      // Navigate to the database browser via UI
+      await browserPage.goto(db.id);
 
       // Open Insights panel and switch to Tips
       await navigationPage.openInsightsPanel();
@@ -226,15 +225,15 @@ test.describe('Insights > Live Recommendations', () => {
     page,
     navigationPage,
     apiHelper,
+    browserPage,
   }) => {
     // Create a database and run analysis
     const config = getStandaloneConfig({ name: 'test-tutorial-rec' });
     const db = await apiHelper.createDatabase(config);
 
     try {
-      // Navigate to the database browser
-      await page.goto(`/${db.id}/browser`);
-      await page.waitForLoadState('networkidle');
+      // Navigate to the database browser via UI
+      await browserPage.goto(db.id);
 
       // Open Insights panel and switch to Tips
       await navigationPage.openInsightsPanel();

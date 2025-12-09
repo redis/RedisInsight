@@ -58,6 +58,8 @@ Environment variables:
 
 ## Running Tests
 
+### Browser Tests (Default)
+
 ```bash
 # Run all tests
 npm test
@@ -86,6 +88,92 @@ npm run test:report
 
 # Generate test code
 npm run test:codegen
+```
+
+### Electron Desktop Tests
+
+Run tests against the Electron desktop build instead of the browser.
+
+#### Prerequisites
+
+1. Build the Electron app from the root directory:
+   ```bash
+   yarn package:prod
+   ```
+
+2. Set the `ELECTRON_EXECUTABLE_PATH` environment variable to point to the built executable.
+
+#### Platform-Specific Paths
+
+| Platform | Executable Path |
+|----------|-----------------|
+| macOS arm64 | `release/mac-arm64/Redis Insight.app/Contents/MacOS/Redis Insight` |
+| macOS x64 | `release/mac-x64/Redis Insight.app/Contents/MacOS/Redis Insight` |
+| Linux | `release/linux-unpacked/redisinsight` |
+| Windows | `release/win-unpacked/Redis Insight.exe` |
+
+#### Running Electron Tests
+
+```bash
+# Run all tests against Electron (macOS arm64 example)
+ELECTRON_EXECUTABLE_PATH="../../release/mac-arm64/Redis Insight.app/Contents/MacOS/Redis Insight" npm test
+
+# Run smoke tests against Electron
+ELECTRON_EXECUTABLE_PATH="../../release/mac-arm64/Redis Insight.app/Contents/MacOS/Redis Insight" npm run test:smoke
+
+# Run specific test file
+ELECTRON_EXECUTABLE_PATH="../../release/mac-arm64/Redis Insight.app/Contents/MacOS/Redis Insight" npm test -- tests/navigation/navigation.spec.ts
+
+# Run with headed mode (watch the app)
+ELECTRON_EXECUTABLE_PATH="../../release/mac-arm64/Redis Insight.app/Contents/MacOS/Redis Insight" npm test -- --headed
+
+# Debug mode
+ELECTRON_EXECUTABLE_PATH="../../release/mac-arm64/Redis Insight.app/Contents/MacOS/Redis Insight" npm run test:debug
+```
+
+#### Using npm Scripts
+
+For convenience, you can also use the dedicated Electron scripts:
+
+```bash
+# Set the path once
+export ELECTRON_EXECUTABLE_PATH="../../release/mac-arm64/Redis Insight.app/Contents/MacOS/Redis Insight"
+
+# Run Electron tests
+npm run test:electron
+npm run test:electron:smoke
+npm run test:electron:debug
+```
+
+#### Electron Test Considerations
+
+- **Single worker**: Electron tests run with 1 worker (sequential execution)
+- **Longer timeouts**: Electron tests have 120s timeout (vs 60s for browser)
+- **UI-based navigation**: All navigation uses UI clicks (works for both browser and Electron)
+- **Same test files**: Browser and Electron tests use the same test files
+
+#### Navigation Methods
+
+All navigation is UI-based for consistency across platforms. `BasePage` provides:
+
+```typescript
+// Available in all page objects:
+await this.gotoHome();              // Databases list
+await this.gotoSettings();          // Settings page
+await this.gotoDatabase('mydb');    // Connect to specific database
+await this.gotoBrowser();           // Browser (within connected db)
+await this.gotoWorkbench();         // Workbench (within connected db)
+await this.gotoPubSub();            // Pub/Sub (within connected db)
+await this.gotoAnalytics();         // Analytics (within connected db)
+```
+
+Page-specific `goto()` methods use these centralized methods:
+
+```typescript
+// SettingsPage.ts
+async goto(): Promise<void> {
+  await this.gotoSettings();
+}
 ```
 
 ## Test Tags

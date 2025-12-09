@@ -1,7 +1,7 @@
 import { test, expect } from '../../fixtures/base';
 import { Tags } from '../../config';
 import { getStandaloneConfig } from '../../test-data/databases';
-import { WorkbenchPage } from '../../pages';
+import { DatabaseInstance } from '../../types';
 
 /**
  * Workbench > Profiler Tests
@@ -9,29 +9,24 @@ import { WorkbenchPage } from '../../pages';
  * Tests for the Profiler panel functionality
  */
 test.describe.serial('Workbench > Profiler', () => {
-  let databaseId: string;
-  let workbenchPage: WorkbenchPage;
+  let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
     const config = getStandaloneConfig({ name: 'test-profiler-db' });
-    const db = await apiHelper.createDatabase(config);
-    databaseId = db.id;
+    database = await apiHelper.createDatabase(config);
   });
 
   test.afterAll(async ({ apiHelper }) => {
-    if (databaseId) {
-      await apiHelper.deleteDatabase(databaseId);
+    if (database?.id) {
+      await apiHelper.deleteDatabase(database.id);
     }
   });
 
-  test.beforeEach(async ({ page, createWorkbenchPage }) => {
-    workbenchPage = createWorkbenchPage(databaseId);
-    // Navigate to the database first
-    await page.goto(`/${databaseId}/workbench`);
-    await workbenchPage.waitForLoad();
+  test.beforeEach(async ({ workbenchPage }) => {
+    await workbenchPage.goto(database.id);
   });
 
-  test(`should open profiler panel ${Tags.SMOKE}`, async () => {
+  test(`should open profiler panel ${Tags.SMOKE}`, async ({ workbenchPage }) => {
     // Open profiler panel
     await workbenchPage.profilerPanel.open();
 
@@ -40,7 +35,7 @@ test.describe.serial('Workbench > Profiler', () => {
     expect(isVisible).toBe(true);
   });
 
-  test(`should show profiler warning message ${Tags.REGRESSION}`, async () => {
+  test(`should show profiler warning message ${Tags.REGRESSION}`, async ({ workbenchPage }) => {
     await workbenchPage.profilerPanel.open();
 
     // Verify warning message is visible
@@ -48,7 +43,7 @@ test.describe.serial('Workbench > Profiler', () => {
     expect(isWarningVisible).toBe(true);
   });
 
-  test(`should start profiler ${Tags.CRITICAL}`, async () => {
+  test(`should start profiler ${Tags.CRITICAL}`, async ({ workbenchPage }) => {
     await workbenchPage.profilerPanel.open();
 
     // Start profiler
@@ -59,7 +54,7 @@ test.describe.serial('Workbench > Profiler', () => {
     expect(isRunning).toBe(true);
   });
 
-  test(`should stop profiler ${Tags.CRITICAL}`, async () => {
+  test(`should stop profiler ${Tags.CRITICAL}`, async ({ workbenchPage }) => {
     await workbenchPage.profilerPanel.open();
 
     // Start profiler first
@@ -75,7 +70,7 @@ test.describe.serial('Workbench > Profiler', () => {
     await expect(workbenchPage.profilerPanel.runningTimeText).toBeVisible();
   });
 
-  test(`should show reset button after stopping ${Tags.REGRESSION}`, async () => {
+  test(`should show reset button after stopping ${Tags.REGRESSION}`, async ({ workbenchPage }) => {
     await workbenchPage.profilerPanel.open();
 
     // Start and stop profiler
@@ -87,7 +82,7 @@ test.describe.serial('Workbench > Profiler', () => {
     await expect(workbenchPage.profilerPanel.resetButton).toBeVisible();
   });
 
-  test(`should reset profiler ${Tags.REGRESSION}`, async () => {
+  test(`should reset profiler ${Tags.REGRESSION}`, async ({ workbenchPage }) => {
     await workbenchPage.profilerPanel.open();
 
     // Start and stop profiler
@@ -102,7 +97,7 @@ test.describe.serial('Workbench > Profiler', () => {
     await expect(workbenchPage.profilerPanel.startButton).toBeVisible();
   });
 
-  test(`should hide profiler panel ${Tags.REGRESSION}`, async () => {
+  test(`should hide profiler panel ${Tags.REGRESSION}`, async ({ workbenchPage }) => {
     await workbenchPage.profilerPanel.open();
 
     // Hide profiler panel
@@ -112,7 +107,7 @@ test.describe.serial('Workbench > Profiler', () => {
     await expect(workbenchPage.profilerPanel.startButton).not.toBeVisible();
   });
 
-  test(`should close profiler panel ${Tags.REGRESSION}`, async () => {
+  test(`should close profiler panel ${Tags.REGRESSION}`, async ({ workbenchPage }) => {
     await workbenchPage.profilerPanel.open();
 
     // Close profiler panel
@@ -122,7 +117,7 @@ test.describe.serial('Workbench > Profiler', () => {
     await expect(workbenchPage.profilerPanel.startButton).not.toBeVisible();
   });
 
-  test(`should toggle save log switch ${Tags.REGRESSION}`, async () => {
+  test(`should toggle save log switch ${Tags.REGRESSION}`, async ({ workbenchPage }) => {
     await workbenchPage.profilerPanel.open();
 
     // Verify save log switch is visible

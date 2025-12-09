@@ -9,7 +9,7 @@
  */
 
 // App configuration
-export { appConfig } from './app';
+export { appConfig, isElectron } from './app';
 
 // Database configurations
 export * from './databases';

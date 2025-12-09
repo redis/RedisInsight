@@ -2,7 +2,7 @@ import { test, expect } from '../../../fixtures/base';
 import { Tags } from '../../../config';
 import { getStandaloneConfig } from '../../../test-data/databases';
 import { TEST_KEY_PREFIX } from '../../../test-data/browser';
-import { BrowserPage } from '../../../pages';
+import { DatabaseInstance } from '../../../types';
 
 /**
  * Browser > Key List Tests
@@ -10,8 +10,7 @@ import { BrowserPage } from '../../../pages';
  * Tests for key list view, search, filter, and delete operations
  */
 test.describe.serial('Browser > Key List', () => {
-  let databaseId: string;
-  let browserPage: BrowserPage;
+  let database: DatabaseInstance;
   // Use unique suffix to avoid conflicts with other test runs
   const uniqueSuffix = `kl-${Date.now().toString(36)}`;
 
@@ -27,28 +26,26 @@ test.describe.serial('Browser > Key List', () => {
     // Create a test database with unique name
     const dbName = `test-key-list-${Date.now().toString(36)}`;
     const config = getStandaloneConfig({ name: dbName });
-    const db = await apiHelper.createDatabase(config);
-    databaseId = db.id;
+    database = await apiHelper.createDatabase(config);
 
     // Create test keys via API
-    await apiHelper.createStringKey(databaseId, testKeys[0], 'value1');
-    await apiHelper.createStringKey(databaseId, testKeys[1], 'value2');
-    await apiHelper.createHashKey(databaseId, testKeys[2], [{ field: 'field1', value: 'value1' }]);
-    await apiHelper.createStringKey(databaseId, testKeys[3], 'unique');
+    await apiHelper.createStringKey(database.id, testKeys[0], 'value1');
+    await apiHelper.createStringKey(database.id, testKeys[1], 'value2');
+    await apiHelper.createHashKey(database.id, testKeys[2], [{ field: 'field1', value: 'value1' }]);
+    await apiHelper.createStringKey(database.id, testKeys[3], 'unique');
   });
 
   test.afterAll(async ({ apiHelper }) => {
     // Clean up test keys
-    await apiHelper.deleteKeysByPattern(databaseId, `${TEST_KEY_PREFIX}*`);
+    await apiHelper.deleteKeysByPattern(database.id, `${TEST_KEY_PREFIX}*`);
     // Clean up test database
-    if (databaseId) {
-      await apiHelper.deleteDatabase(databaseId);
+    if (database?.id) {
+      await apiHelper.deleteDatabase(database.id);
     }
   });
 
-  test.beforeEach(async ({ page, createBrowserPage }) => {
-    browserPage = createBrowserPage(databaseId);
-    await browserPage.goto();
+  test.beforeEach(async ({ page, browserPage }) => {
+    await browserPage.goto(database.id);
     // Wait for page to fully load
     await page.waitForLoadState('networkidle');
   });
@@ -66,7 +63,7 @@ test.describe.serial('Browser > Key List', () => {
     await expect(page.getByText(/Results:/)).toBeVisible();
   });
 
-  test(`should search keys by pattern ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ page }) => {
+  test(`should search keys by pattern ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ page, browserPage }) => {
     // Search for test keys with pattern including unique suffix
     await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}filter*-${uniqueSuffix}`);
 
@@ -78,7 +75,7 @@ test.describe.serial('Browser > Key List', () => {
     expect(keyExists).toBe(true);
   });
 
-  test(`should filter keys by exact name ${Tags.REGRESSION}`, async ({ page }) => {
+  test(`should filter keys by exact name ${Tags.REGRESSION}`, async ({ page, browserPage }) => {
     // Search for a specific unique key
     await browserPage.keyList.searchKeys(testKeys[3]);
     await page.waitForLoadState('networkidle');
@@ -88,7 +85,7 @@ test.describe.serial('Browser > Key List', () => {
     expect(keyExists).toBe(true);
   });
 
-  test(`should filter keys by type ${Tags.SMOKE}`, async ({ page }) => {
+  test(`should filter keys by type ${Tags.SMOKE}`, async ({ page, browserPage }) => {
     // First search for test keys with unique suffix
     await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}filter*-${uniqueSuffix}`);
     await page.waitForLoadState('networkidle');
@@ -102,7 +99,7 @@ test.describe.serial('Browser > Key List', () => {
     expect(hashKeyExists).toBe(true);
   });
 
-  test(`should clear search filter ${Tags.REGRESSION}`, async ({ page }) => {
+  test(`should clear search filter ${Tags.REGRESSION}`, async ({ page, browserPage }) => {
     // First apply a filter
     await browserPage.keyList.searchKeys(testKeys[3]);
     await page.waitForLoadState('networkidle');
@@ -115,7 +112,7 @@ test.describe.serial('Browser > Key List', () => {
     await expect(page.getByText(/Results:/)).toBeVisible();
   });
 
-  test(`should click on key to view details ${Tags.SMOKE}`, async ({ page }) => {
+  test(`should click on key to view details ${Tags.SMOKE}`, async ({ page, browserPage }) => {
     // Search for a specific key
     await browserPage.keyList.searchKeys(testKeys[0]);
     await page.waitForLoadState('networkidle');
@@ -130,7 +127,7 @@ test.describe.serial('Browser > Key List', () => {
     await expect(page.getByText('value1')).toBeVisible({ timeout: 10000 });
   });
 
-  test(`should refresh key list ${Tags.REGRESSION}`, async ({ page }) => {
+  test(`should refresh key list ${Tags.REGRESSION}`, async ({ page, browserPage }) => {
     // Click refresh button
     await browserPage.keyList.refresh();
     await page.waitForLoadState('networkidle');
@@ -143,7 +140,7 @@ test.describe.serial('Browser > Key List', () => {
     expect(hasTreeItem || hasGrid).toBe(true);
   });
 
-  test(`should show no results message for non-matching pattern ${Tags.REGRESSION}`, async ({ page }) => {
+  test(`should show no results message for non-matching pattern ${Tags.REGRESSION}`, async ({ page, browserPage }) => {
     // Search for non-existent key pattern
     await browserPage.keyList.searchKeys('nonexistent-key-pattern-xyz-123');
     await page.waitForLoadState('networkidle');
@@ -153,10 +150,10 @@ test.describe.serial('Browser > Key List', () => {
     expect(noKeysVisible).toBe(true);
   });
 
-  test(`should delete key ${Tags.CRITICAL}`, async ({ page, apiHelper }) => {
+  test(`should delete key ${Tags.CRITICAL}`, async ({ page, browserPage, apiHelper }) => {
     // Create a key to delete
     const keyToDelete = `${TEST_KEY_PREFIX}delete-me-${Date.now()}`;
-    await apiHelper.createStringKey(databaseId, keyToDelete, 'delete-test-value');
+    await apiHelper.createStringKey(database.id, keyToDelete, 'delete-test-value');
 
     // Refresh to see the new key
     await browserPage.keyList.refresh();
@@ -297,7 +294,7 @@ test.describe.serial('Browser > Key List', () => {
     await page.keyboard.press('Escape');
   });
 
-  test(`should show scan more button when searching ${Tags.REGRESSION}`, async () => {
+  test(`should show scan more button when searching ${Tags.REGRESSION}`, async ({ browserPage }) => {
     // Search for keys with a pattern that will return partial results
     await browserPage.keyList.searchKeys('test-*');
 

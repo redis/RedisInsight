@@ -1,31 +1,28 @@
 import { expect, test } from '../../../fixtures/base';
 import { Tags } from '../../../config';
-import { BrowserPage } from '../../../pages/browser/BrowserPage';
 import { getStandaloneConfig } from '../../../test-data/databases';
 import { faker } from '@faker-js/faker';
+import { DatabaseInstance } from '../../../types';
 
 test.describe('Browser > Search Indexes', () => {
-  let databaseId: string;
-  let browserPage: BrowserPage;
+  let database: DatabaseInstance;
   const testIndexName = `idx_test_${faker.string.alphanumeric(6)}`;
   const testPrefix = `test-search-${faker.string.alphanumeric(6)}`;
 
   test.beforeAll(async ({ apiHelper }) => {
     const config = getStandaloneConfig({ name: 'test-search-indexes-db' });
-    const db = await apiHelper.createDatabase(config);
-    databaseId = db.id;
+    database = await apiHelper.createDatabase(config);
   });
 
   test.afterAll(async ({ apiHelper }) => {
-    await apiHelper.deleteDatabase(databaseId);
+    await apiHelper.deleteDatabase(database.id);
   });
 
   test(`should open create index form from search mode ${Tags.SMOKE}`, async ({
     page,
-    createBrowserPage,
+    browserPage,
   }) => {
-    browserPage = createBrowserPage(databaseId);
-    await browserPage.goto();
+    await browserPage.goto(database.id);
     await browserPage.keyList.waitForKeysLoaded();
 
     // Click on Search by Values button to switch to RediSearch mode
@@ -60,10 +57,9 @@ test.describe('Browser > Search Indexes', () => {
 
   test(`should display create index form fields ${Tags.SMOKE}`, async ({
     page,
-    createBrowserPage,
+    browserPage,
   }) => {
-    browserPage = createBrowserPage(databaseId);
-    await browserPage.goto();
+    await browserPage.goto(database.id);
     await browserPage.keyList.waitForKeysLoaded();
 
     // Switch to search mode
@@ -96,12 +92,10 @@ test.describe('Browser > Search Indexes', () => {
 
   test(`should select existing index and display results ${Tags.SMOKE}`, async ({
     page,
-    createBrowserPage,
-    createWorkbenchPage,
+    browserPage,
+    workbenchPage,
   }) => {
-    browserPage = createBrowserPage(databaseId);
-    const workbenchPage = createWorkbenchPage(databaseId);
-    await browserPage.goto();
+    await browserPage.goto(database.id);
     await browserPage.keyList.waitForKeysLoaded();
 
     // First create test data and index via Workbench
@@ -145,15 +139,13 @@ test.describe('Browser > Search Indexes', () => {
 
   test(`should delete search index with FT.DROPINDEX ${Tags.REGRESSION}`, async ({
     page,
-    createBrowserPage,
-    createWorkbenchPage,
+    browserPage,
+    workbenchPage,
   }) => {
-    browserPage = createBrowserPage(databaseId);
-    const workbenchPage = createWorkbenchPage(databaseId);
     const dropIndexName = `idx_drop_${faker.string.alphanumeric(6)}`;
     const dropPrefix = `test-drop-${faker.string.alphanumeric(6)}`;
 
-    await browserPage.goto();
+    await browserPage.goto(database.id);
     await browserPage.keyList.waitForKeysLoaded();
 
     // Create test data and index via Workbench

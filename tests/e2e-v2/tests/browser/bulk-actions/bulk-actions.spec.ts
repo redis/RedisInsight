@@ -2,28 +2,25 @@ import { test, expect } from '../../../fixtures/base';
 import { Tags } from '../../../config';
 import { getStandaloneConfig } from '../../../test-data/databases';
 import { getStringKeyData } from '../../../test-data/browser';
-import { BrowserPage } from '../../../pages/browser';
+import { DatabaseInstance } from '../../../types';
 
 test.describe('Browser > Bulk Actions', () => {
-  let databaseId: string;
-  let browserPage: BrowserPage;
+  let database: DatabaseInstance;
   const bulkDeletePrefix = 'test-bulk-delete-';
 
   test.beforeAll(async ({ apiHelper }) => {
     const config = getStandaloneConfig();
-    const database = await apiHelper.createDatabase(config);
-    databaseId = database.id;
+    database = await apiHelper.createDatabase(config);
   });
 
   test.afterAll(async ({ apiHelper }) => {
-    if (databaseId) {
-      await apiHelper.deleteDatabase(databaseId);
+    if (database?.id) {
+      await apiHelper.deleteDatabase(database.id);
     }
   });
 
-  test.beforeEach(async ({ createBrowserPage }) => {
-    browserPage = createBrowserPage(databaseId);
-    await browserPage.goto();
+  test.beforeEach(async ({ browserPage }) => {
+    await browserPage.goto(database.id);
   });
 
   test.describe('Panel', () => {
@@ -75,7 +72,7 @@ test.describe('Browser > Bulk Actions', () => {
   });
 
   test.describe('Delete Keys', () => {
-    test(`should filter by pattern for deletion ${Tags.CRITICAL}`, async ({ page }) => {
+    test(`should filter by pattern for deletion ${Tags.CRITICAL}`, async ({ page, browserPage }) => {
       await page.getByTestId('btn-bulk-actions').click();
 
       // Set a filter pattern first in the main search
@@ -88,7 +85,7 @@ test.describe('Browser > Bulk Actions', () => {
       await expect(page.getByText('No pattern or key type set')).not.toBeVisible();
     });
 
-    test(`should bulk delete keys by pattern ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+    test(`should bulk delete keys by pattern ${Tags.CRITICAL}`, async ({ browserPage, apiHelper }) => {
       // Use unique prefix for this test run
       const uniqueId = Date.now().toString(36);
       const testPrefix = `${bulkDeletePrefix}${uniqueId}-`;
@@ -97,7 +94,7 @@ test.describe('Browser > Bulk Actions', () => {
       const keysToCreate = 3;
       for (let i = 0; i < keysToCreate; i++) {
         const keyData = getStringKeyData({ keyName: `${testPrefix}${i}` });
-        await apiHelper.createStringKey(databaseId, keyData.keyName, keyData.value);
+        await apiHelper.createStringKey(database.id, keyData.keyName, keyData.value);
       }
 
       // Refresh and search for the keys
@@ -133,6 +130,7 @@ test.describe('Browser > Bulk Actions', () => {
 
     test(`should show expected key count before deletion ${Tags.REGRESSION}`, async ({
       page,
+      browserPage,
       apiHelper,
     }) => {
       // Use unique prefix for this test run
@@ -143,7 +141,7 @@ test.describe('Browser > Bulk Actions', () => {
       const keysToCreate = 3;
       for (let i = 0; i < keysToCreate; i++) {
         const keyData = getStringKeyData({ keyName: `${testPrefix}${i}` });
-        await apiHelper.createStringKey(databaseId, keyData.keyName, keyData.value);
+        await apiHelper.createStringKey(database.id, keyData.keyName, keyData.value);
       }
 
       // Refresh and search for the keys
@@ -172,11 +170,12 @@ test.describe('Browser > Bulk Actions', () => {
 
       // Clean up
       await browserPage.bulkActionsPanel.close();
-      await apiHelper.deleteKeysByPattern(databaseId, `${testPrefix}*`);
+      await apiHelper.deleteKeysByPattern(database.id, `${testPrefix}*`);
     });
 
     test(`should display summary screen with processed, success, and error counts ${Tags.REGRESSION}`, async ({
       page,
+      browserPage,
       apiHelper,
     }) => {
       // Use unique prefix for this test run
@@ -187,7 +186,7 @@ test.describe('Browser > Bulk Actions', () => {
       const keysToCreate = 5;
       for (let i = 0; i < keysToCreate; i++) {
         const keyData = getStringKeyData({ keyName: `${testPrefix}${i}` });
-        await apiHelper.createStringKey(databaseId, keyData.keyName, keyData.value);
+        await apiHelper.createStringKey(database.id, keyData.keyName, keyData.value);
       }
 
       // Refresh and search for the keys
@@ -245,7 +244,7 @@ test.describe('Browser > Bulk Actions', () => {
       await expect(page.getByText(/Select or drag/i)).toBeVisible();
     });
 
-    test(`should bulk upload data from file ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+    test(`should bulk upload data from file ${Tags.CRITICAL}`, async ({ browserPage, apiHelper }) => {
       const uniqueId = Date.now().toString(36);
       const testKey = `${bulkDeletePrefix}upload-${uniqueId}`;
       const testValue = `test-value-${uniqueId}`;
@@ -282,7 +281,7 @@ test.describe('Browser > Bulk Actions', () => {
       } finally {
         // Cleanup: delete the test key and temp file
         fs.unlinkSync(tempFile);
-        await apiHelper.deleteKeysByPattern(databaseId, testKey);
+        await apiHelper.deleteKeysByPattern(database.id, testKey);
       }
     });
   });

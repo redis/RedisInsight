@@ -87,14 +87,12 @@ export class PubSubPage extends BasePage {
   }
 
   /**
-   * Navigate to Pub/Sub page
-   * @param databaseId - The database ID to navigate to
+   * Navigate to Pub/Sub page via UI
+   * @param databaseId - The ID of the database to navigate to
    */
-  async goto(databaseId?: string): Promise<void> {
-    if (!databaseId) {
-      throw new Error('databaseId is required - use goto(databaseId)');
-    }
-    await this.page.goto(`/${databaseId}/pub-sub`);
+  async goto(databaseId: string): Promise<void> {
+    await this.gotoDatabase(databaseId);
+    await this.gotoPubSub();
     await this.pubsubTab.waitFor({ state: 'visible' });
   }
 

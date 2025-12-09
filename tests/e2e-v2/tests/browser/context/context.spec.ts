@@ -2,7 +2,7 @@ import { test, expect } from '../../../fixtures/base';
 import { Tags } from '../../../config';
 import { getStandaloneConfig } from '../../../test-data/databases';
 import { TEST_KEY_PREFIX } from '../../../test-data/browser';
-import { BrowserPage } from '../../../pages';
+import { DatabaseInstance } from '../../../types';
 
 /**
  * Browser Context Tests
@@ -11,8 +11,7 @@ import { BrowserPage } from '../../../pages';
  * when navigating between tabs within the browser.
  */
 test.describe.serial('Browser > Context Preservation', () => {
-  let databaseId: string;
-  let browserPage: BrowserPage;
+  let database: DatabaseInstance;
   const uniqueSuffix = `ctx-${Date.now().toString(36)}`;
 
   // Test key for context tests
@@ -22,27 +21,25 @@ test.describe.serial('Browser > Context Preservation', () => {
     // Create a test database with unique name
     const dbName = `test-context-${Date.now().toString(36)}`;
     const config = getStandaloneConfig({ name: dbName });
-    const db = await apiHelper.createDatabase(config);
-    databaseId = db.id;
+    database = await apiHelper.createDatabase(config);
 
     // Create a test key
-    await apiHelper.createStringKey(databaseId, testKey, 'test-value');
+    await apiHelper.createStringKey(database.id, testKey, 'test-value');
   });
 
   test.afterAll(async ({ apiHelper }) => {
     // Clean up
-    if (databaseId) {
-      await apiHelper.deleteKeysByPattern(databaseId, `${TEST_KEY_PREFIX}*`);
-      await apiHelper.deleteDatabase(databaseId);
+    if (database?.id) {
+      await apiHelper.deleteKeysByPattern(database.id, `${TEST_KEY_PREFIX}*`);
+      await apiHelper.deleteDatabase(database.id);
     }
   });
 
-  test.beforeEach(async ({ createBrowserPage }) => {
-    browserPage = createBrowserPage(databaseId);
-    await browserPage.goto();
+  test.beforeEach(async ({ browserPage }) => {
+    await browserPage.goto(database.id);
   });
 
-  test(`should preserve browser context when switching tabs ${Tags.SMOKE}`, async ({ page }) => {
+  test(`should preserve browser context when switching tabs ${Tags.SMOKE}`, async ({ page, browserPage }) => {
     // Apply a search filter
     await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}context*`);
     await page.waitForTimeout(500);
@@ -62,7 +59,7 @@ test.describe.serial('Browser > Context Preservation', () => {
     await expect(browserPage.keyList.searchInput).toHaveValue(`${TEST_KEY_PREFIX}context*`);
   });
 
-  test(`should preserve selected key when switching tabs ${Tags.REGRESSION}`, async ({ page }) => {
+  test(`should preserve selected key when switching tabs ${Tags.REGRESSION}`, async ({ page, browserPage }) => {
     // Search for the test key
     await browserPage.keyList.searchKeys(testKey);
     await page.waitForTimeout(500);
@@ -86,7 +83,7 @@ test.describe.serial('Browser > Context Preservation', () => {
     await expect(browserPage.keyDetails.keyName).toHaveText(testKey);
   });
 
-  test(`should clear context when page is reloaded ${Tags.REGRESSION}`, async ({ page }) => {
+  test(`should clear context when page is reloaded ${Tags.REGRESSION}`, async ({ page, browserPage }) => {
     // Apply a search filter
     await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}context*`);
     await page.waitForTimeout(500);
@@ -136,6 +133,7 @@ test.describe.serial('Browser > Context Preservation', () => {
   test(`should clear context when navigating to different database ${Tags.REGRESSION}`, async ({
     page,
     apiHelper,
+    browserPage,
   }) => {
     // Apply a search filter
     await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}context*`);
@@ -150,9 +148,8 @@ test.describe.serial('Browser > Context Preservation', () => {
     const otherDb = await apiHelper.createDatabase(otherConfig);
 
     try {
-      // Navigate to the other database
-      await page.goto(`/${otherDb.id}/browser`);
-      await page.waitForLoadState('networkidle');
+      // Navigate to the other database via UI
+      await browserPage.goto(otherDb.id);
 
       // Verify the filter is cleared (default is empty or *)
       const searchValue = await browserPage.keyList.searchInput.inputValue();

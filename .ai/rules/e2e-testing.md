@@ -38,6 +38,8 @@ tests/e2e-v2/
 
 ### Always Extend BasePage
 
+Page objects are **stateless** - they don't store database objects. Pass `databaseId` to navigation methods.
+
 ```typescript
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from '../BasePage';
@@ -50,8 +52,10 @@ export class MyPage extends BasePage {
     this.myButton = page.getByTestId('my-button');
   }
 
-  async goto(): Promise<void> {
-    await this.page.goto('/my-page');
+  // Pass databaseId as parameter - don't store it in the class
+  async goto(databaseId: string): Promise<void> {
+    await this.gotoHome();
+    await this.connectToDatabase(databaseId);
     await this.waitForLoad();
   }
 }
@@ -87,29 +91,91 @@ tests/
         └── cluster.spec.ts
 ```
 
-### Test Template
+### Test Setup Pattern
+
+Use simple, explicit setup with clear separation of concerns. **Page objects are fixtures** - they don't store database state. Pass `databaseId` to `goto()` methods.
 
 ```typescript
 import { test, expect } from '../../../fixtures/base';
-import { getTestConfig } from '../../../test-data/{feature}';
 import { Tags } from '../../../config';
+import { standaloneConfig } from '../../../config/databases/standalone';
+import { DatabaseInstance } from '../../../types';
 
 test.describe('Feature > Action', () => {
-  test.beforeEach(async ({ featurePage }) => {
-    await featurePage.goto();
+  let database: DatabaseInstance;
+
+  // Setup: Create database once for all tests
+  test.beforeAll(async ({ apiHelper }) => {
+    database = await apiHelper.createDatabase({
+      name: 'test-feature-db',
+      host: standaloneConfig.host,
+      port: standaloneConfig.port,
+    });
   });
 
-  test.afterEach(async ({ apiHelper }) => {
-    await apiHelper.deleteTestData();
+  // Teardown: Clean up database after all tests
+  test.afterAll(async ({ apiHelper }) => {
+    await apiHelper.deleteDatabase(database.id);
   });
 
-  test(`should do something ${Tags.SMOKE}`, async ({ featurePage }) => {
-    const config = getTestConfig();
+  test.describe('Sub-feature', () => {
+    // Navigation: Pass databaseId to goto() - page is a fixture
+    test.beforeEach(async ({ featurePage }) => {
+      await featurePage.goto(database.id);
+    });
 
-    await featurePage.doAction(config);
+    // Tests receive page fixtures they need
+    test(`should do something ${Tags.SMOKE}`, async ({ featurePage }) => {
+      await featurePage.doAction();
+      await expect(featurePage.result).toBeVisible();
+    });
 
-    await expect(featurePage.result).toBeVisible();
+    // Tests that need both page and apiHelper
+    test(`should create and verify ${Tags.SMOKE}`, async ({ featurePage, apiHelper }) => {
+      await apiHelper.createKey(database.id, 'test-key', 'value');
+      await featurePage.refresh();
+      await expect(featurePage.keyList).toContainText('test-key');
+    });
   });
+});
+```
+
+### Key Principles
+
+1. **`beforeAll`** - Create database/test data via API (runs once)
+2. **`afterAll`** - Clean up database/test data via API (runs once)
+3. **`beforeEach`** - Navigate to page via UI using `goto(databaseId)` (runs before each test)
+4. **Individual tests** - Receive page fixtures they need in the signature
+5. **Page objects are stateless** - Don't store database objects in pages, pass IDs to methods
+
+### Avoid These Anti-Patterns
+
+```typescript
+// ❌ BAD: Storing database in page object
+const browserPage = createBrowserPage(database);  // OLD pattern - don't use
+
+// ✅ GOOD: Pass databaseId to goto()
+await browserPage.goto(database.id);
+
+// ❌ BAD: Using page fixture without declaring it in test signature
+test('should work', async () => {
+  await browserPage.doSomething();  // browserPage is undefined!
+});
+
+// ✅ GOOD: Declare fixtures in test signature
+test('should work', async ({ browserPage }) => {
+  await browserPage.doSomething();
+});
+
+// ❌ BAD: Navigation inside each test
+test('should work', async ({ browserPage }) => {
+  await browserPage.goto(database.id);  // Should be in beforeEach
+  // ...
+});
+
+// ❌ BAD: Using test.describe.serial when not needed
+test.describe.serial('Feature', () => { // Use regular describe unless tests truly depend on each other
+  // ...
 });
 ```
 
@@ -231,6 +297,7 @@ this.searchInput = page.getByPlaceholder('Search...');
 ### ✅ DO
 
 - **Explore UI with Playwright MCP before writing tests**
+- **Use Page Object navigation methods** (e.g., `browserPage.goto()`, `workbenchPage.goto()`)
 - Use `data-testid` attributes for stable selectors
 - Use `getByRole`, `getByLabel` for accessible elements
 - Wait for elements with `waitFor({ state: 'visible' })`
@@ -241,6 +308,7 @@ this.searchInput = page.getByPlaceholder('Search...');
 
 ### ❌ DON'T
 
+- **NEVER use `page.goto()` directly** - tests must work in both browser and Electron
 - Write tests without exploring the actual UI first
 - Use fixed timeouts (`waitForTimeout`)
 - Use CSS selectors for dynamic content
@@ -248,6 +316,38 @@ this.searchInput = page.getByPlaceholder('Search...');
 - Import from `redisinsight/ui/` or `redisinsight/api/`
 - Hardcode test data (use faker)
 - Assume element structure without verification
+
+## Navigation (IMPORTANT)
+
+**All navigation must use UI-based methods, NOT URL navigation.**
+
+Tests must work in both browser mode (http://localhost:8080) and Electron mode (no baseURL). Direct `page.goto()` calls fail in Electron because there's no baseURL.
+
+### ✅ Correct Navigation Pattern
+
+```typescript
+// Use Page Object's goto() method
+test.beforeEach(async ({ createBrowserPage }) => {
+  browserPage = createBrowserPage(database);
+  await browserPage.goto();  // Uses UI navigation internally
+});
+
+// Use BasePage navigation methods
+await browserPage.gotoHome();       // Click Redis logo
+await browserPage.gotoWorkbench();  // Click Workbench tab
+await browserPage.gotoBrowser();    // Click Browse tab
+await browserPage.gotoPubSub();     // Click Pub/Sub tab
+await browserPage.gotoSettings();   // Navigate to settings via UI
+```
+
+### ❌ Incorrect Navigation Pattern
+
+```typescript
+// NEVER do this - fails in Electron
+await page.goto(`/${database.id}/browser`);
+await page.goto('/settings');
+await page.goto('/');
+```
 
 ## Running Tests
 
@@ -276,39 +376,43 @@ Both must pass before committing. Common issues:
 
 ## Test Isolation (IMPORTANT)
 
-Tests that share database state should use:
+Tests should be isolated and not depend on execution order:
 
-### 1. Serial Execution
+### 1. Shared Database with beforeAll/afterAll
 
 ```typescript
-test.describe.serial('Feature Name', () => {
-  // Tests run sequentially within this describe block
+test.describe('Feature Name', () => {
+  let database: DatabaseInstance;
+
+  test.beforeAll(async ({ apiHelper }) => {
+    database = await apiHelper.createDatabase({ name: 'test-feature-db', ... });
+  });
+
+  test.afterAll(async ({ apiHelper }) => {
+    await apiHelper.deleteDatabase(database.id);
+  });
+
+  // Tests can run in parallel - they share the database but don't modify shared state
 });
 ```
 
-### 2. Unique Prefixes Per Test File
+### 2. Use Serial Only When Tests Truly Depend on Each Other
 
 ```typescript
-let uniquePrefix: string;
-
-test.beforeEach(async ({ apiHelper }) => {
-  const uniqueId = `${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 8)}`;
-  uniquePrefix = `test-feature-${uniqueId}`;
-  // Create test data with uniquePrefix
-});
-
-test.afterEach(async ({ apiHelper }) => {
-  // Only clean up this test's data
-  await apiHelper.deleteDatabasesByPattern(new RegExp(`^${uniquePrefix}`));
+// Only use .serial when tests modify state that subsequent tests depend on
+test.describe.serial('Workflow that modifies state', () => {
+  test('step 1: create item', ...);
+  test('step 2: modify item created in step 1', ...);
+  test('step 3: delete item', ...);
 });
 ```
 
-### 3. Wait for Page Load
+### 3. Unique Test Data Per Test (when needed)
 
 ```typescript
-test.beforeEach(async ({ featurePage }) => {
-  await featurePage.goto();
-  await featurePage.expectElementVisible(expectedElement);
+test('should create unique item', async ({ apiHelper }) => {
+  const uniqueName = `test-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+  // Use uniqueName for this test's data
 });
 ```
 

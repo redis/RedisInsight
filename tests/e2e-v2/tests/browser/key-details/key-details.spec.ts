@@ -11,7 +11,7 @@ import {
   getJsonKeyData,
   TEST_KEY_PREFIX,
 } from '../../../test-data/browser';
-import { BrowserPage } from '../../../pages';
+import { DatabaseInstance } from '../../../types';
 
 /**
  * Browser > Key Details Tests
@@ -19,39 +19,36 @@ import { BrowserPage } from '../../../pages';
  * Tests for viewing and interacting with key details panel
  */
 test.describe('Browser > Key Details', () => {
-  let databaseId: string;
-  let browserPage: BrowserPage;
+  let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
     // Create a test database for all tests in this file
     const config = getStandaloneConfig({ name: 'test-key-details-db' });
-    const db = await apiHelper.createDatabase(config);
-    databaseId = db.id;
+    database = await apiHelper.createDatabase(config);
   });
 
   test.afterAll(async ({ apiHelper }) => {
     // Clean up the test database
-    if (databaseId) {
-      await apiHelper.deleteDatabase(databaseId);
+    if (database?.id) {
+      await apiHelper.deleteDatabase(database.id);
     }
   });
 
-  test.beforeEach(async ({ createBrowserPage }) => {
-    browserPage = createBrowserPage(databaseId);
-    await browserPage.goto();
+  test.beforeEach(async ({ browserPage }) => {
+    await browserPage.goto(database.id);
   });
 
   test.afterEach(async ({ apiHelper }) => {
     // Clean up test keys created during the test
-    await apiHelper.deleteKeysByPattern(databaseId, `${TEST_KEY_PREFIX}*`);
+    await apiHelper.deleteKeysByPattern(database.id, `${TEST_KEY_PREFIX}*`);
   });
 
   test.describe('String Key Details', () => {
-    test(`should display String key details ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+    test(`should display String key details ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ apiHelper, browserPage }) => {
       const keyData = getStringKeyData();
 
       // Create key via API for faster test setup
-      await apiHelper.createStringKey(databaseId, keyData.keyName, keyData.value);
+      await apiHelper.createStringKey(database.id, keyData.keyName, keyData.value);
 
       // Refresh key list and click on the key
       await browserPage.keyList.refresh();
@@ -66,10 +63,10 @@ test.describe('Browser > Key Details', () => {
       await expect(browserPage.keyDetails.stringValue).toBeVisible();
     });
 
-    test(`should show String key value ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+    test(`should show String key value ${Tags.REGRESSION}`, async ({ apiHelper, browserPage }) => {
       const keyData = getStringKeyData({ value: 'test-value-12345' });
 
-      await apiHelper.createStringKey(databaseId, keyData.keyName, keyData.value);
+      await apiHelper.createStringKey(database.id, keyData.keyName, keyData.value);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -81,10 +78,10 @@ test.describe('Browser > Key Details', () => {
       expect(value).toContain('test-value-12345');
     });
 
-    test(`should show Edit Value button for String ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+    test(`should show Edit Value button for String ${Tags.REGRESSION}`, async ({ apiHelper, browserPage }) => {
       const keyData = getStringKeyData();
 
-      await apiHelper.createStringKey(databaseId, keyData.keyName, keyData.value);
+      await apiHelper.createStringKey(database.id, keyData.keyName, keyData.value);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -94,12 +91,12 @@ test.describe('Browser > Key Details', () => {
       await expect(browserPage.keyDetails.editValueButton).toBeVisible();
     });
 
-    test(`should edit String value ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+    test(`should edit String value ${Tags.CRITICAL}`, async ({ apiHelper, browserPage }) => {
       const keyData = getStringKeyData({ value: 'original-value' });
       const newValue = 'updated-value-after-edit';
 
       // Create key with original value
-      await apiHelper.createStringKey(databaseId, keyData.keyName, keyData.value);
+      await apiHelper.createStringKey(database.id, keyData.keyName, keyData.value);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -116,12 +113,13 @@ test.describe('Browser > Key Details', () => {
 
     test(`should rename key and confirm new name propagates ${Tags.REGRESSION}`, async ({
       apiHelper,
+      browserPage,
     }) => {
       const keyData = getStringKeyData();
       const newKeyName = `${TEST_KEY_PREFIX}renamed-${Date.now()}`;
 
       // Create key with original name
-      await apiHelper.createStringKey(databaseId, keyData.keyName, keyData.value);
+      await apiHelper.createStringKey(database.id, keyData.keyName, keyData.value);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -148,6 +146,7 @@ test.describe('Browser > Key Details', () => {
     test(`should confirm TTL countdown updates in real time ${Tags.REGRESSION}`, async ({
       page,
       cliPanel,
+      browserPage,
     }) => {
       const keyName = `${TEST_KEY_PREFIX}ttl-test-${Date.now()}`;
       const ttlSeconds = 60; // Set TTL to 60 seconds
@@ -196,11 +195,11 @@ test.describe('Browser > Key Details', () => {
   });
 
   test.describe('Hash Key Details', () => {
-    test(`should display Hash key details ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+    test(`should display Hash key details ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ apiHelper, browserPage }) => {
       const keyData = getHashKeyData();
 
       // Create hash key via API
-      await apiHelper.createHashKey(databaseId, keyData.keyName, keyData.fields);
+      await apiHelper.createHashKey(database.id, keyData.keyName, keyData.fields);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -212,10 +211,10 @@ test.describe('Browser > Key Details', () => {
       await expect(browserPage.keyDetails.hashFieldsGrid).toBeVisible();
     });
 
-    test(`should show Add Fields button for Hash ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+    test(`should show Add Fields button for Hash ${Tags.REGRESSION}`, async ({ apiHelper, browserPage }) => {
       const keyData = getHashKeyData();
 
-      await apiHelper.createHashKey(databaseId, keyData.keyName, keyData.fields);
+      await apiHelper.createHashKey(database.id, keyData.keyName, keyData.fields);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -225,12 +224,12 @@ test.describe('Browser > Key Details', () => {
       await expect(browserPage.keyDetails.addFieldsButton).toBeVisible();
     });
 
-    test(`should add hash field ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+    test(`should add hash field ${Tags.CRITICAL}`, async ({ apiHelper, browserPage }) => {
       const keyData = getHashKeyData({ fields: [{ field: 'existingField', value: 'existingValue' }] });
       const newFieldName = 'newField';
       const newFieldValue = 'newValue';
 
-      await apiHelper.createHashKey(databaseId, keyData.keyName, keyData.fields);
+      await apiHelper.createHashKey(database.id, keyData.keyName, keyData.fields);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -247,11 +246,11 @@ test.describe('Browser > Key Details', () => {
       }).toPass({ timeout: 10000 });
     });
 
-    test(`should edit hash field ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+    test(`should edit hash field ${Tags.CRITICAL}`, async ({ apiHelper, browserPage }) => {
       const keyData = getHashKeyData({ fields: [{ field: 'editableField', value: 'originalValue' }] });
       const newValue = 'updatedValue';
 
-      await apiHelper.createHashKey(databaseId, keyData.keyName, keyData.fields);
+      await apiHelper.createHashKey(database.id, keyData.keyName, keyData.fields);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -268,10 +267,10 @@ test.describe('Browser > Key Details', () => {
       }).toPass({ timeout: 10000 });
     });
 
-    test(`should delete hash field ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+    test(`should delete hash field ${Tags.CRITICAL}`, async ({ apiHelper, browserPage }) => {
       const keyData = getHashKeyData({ fields: [{ field: 'fieldToDelete', value: 'value' }, { field: 'keepField', value: 'keepValue' }] });
 
-      await apiHelper.createHashKey(databaseId, keyData.keyName, keyData.fields);
+      await apiHelper.createHashKey(database.id, keyData.keyName, keyData.fields);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -286,7 +285,7 @@ test.describe('Browser > Key Details', () => {
       expect(fieldExists).toBe(false);
     });
 
-    test(`should search hash fields ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+    test(`should search hash fields ${Tags.REGRESSION}`, async ({ apiHelper, browserPage }) => {
       const keyData = getHashKeyData({
         fields: [
           { field: 'uniqueSearchField', value: 'value1' },
@@ -295,7 +294,7 @@ test.describe('Browser > Key Details', () => {
         ],
       });
 
-      await apiHelper.createHashKey(databaseId, keyData.keyName, keyData.fields);
+      await apiHelper.createHashKey(database.id, keyData.keyName, keyData.fields);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -322,10 +321,10 @@ test.describe('Browser > Key Details', () => {
       }).toPass({ timeout: 10000 });
     });
 
-    test(`should show no results message when search has no matches ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+    test(`should show no results message when search has no matches ${Tags.REGRESSION}`, async ({ apiHelper, browserPage }) => {
       const keyData = getHashKeyData({ fields: [{ field: 'existingField', value: 'value' }] });
 
-      await apiHelper.createHashKey(databaseId, keyData.keyName, keyData.fields);
+      await apiHelper.createHashKey(database.id, keyData.keyName, keyData.fields);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -344,11 +343,11 @@ test.describe('Browser > Key Details', () => {
   });
 
   test.describe('List Key Details', () => {
-    test(`should display List key details ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+    test(`should display List key details ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ apiHelper, browserPage }) => {
       const keyData = getListKeyData();
 
       // Create list key via API
-      await apiHelper.createListKey(databaseId, keyData.keyName, keyData.elements);
+      await apiHelper.createListKey(database.id, keyData.keyName, keyData.elements);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -361,10 +360,10 @@ test.describe('Browser > Key Details', () => {
       expect(keyType.toLowerCase()).toBe('list');
     });
 
-    test(`should show list elements ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+    test(`should show list elements ${Tags.REGRESSION}`, async ({ apiHelper, browserPage }) => {
       const keyData = getListKeyData({ elements: ['element-1', 'element-2', 'element-3'] });
 
-      await apiHelper.createListKey(databaseId, keyData.keyName, keyData.elements);
+      await apiHelper.createListKey(database.id, keyData.keyName, keyData.elements);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -376,10 +375,10 @@ test.describe('Browser > Key Details', () => {
       expect(elementCount).toBe(3);
     });
 
-    test(`should show Add Elements button for List ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+    test(`should show Add Elements button for List ${Tags.REGRESSION}`, async ({ apiHelper, browserPage }) => {
       const keyData = getListKeyData();
 
-      await apiHelper.createListKey(databaseId, keyData.keyName, keyData.elements);
+      await apiHelper.createListKey(database.id, keyData.keyName, keyData.elements);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -389,10 +388,10 @@ test.describe('Browser > Key Details', () => {
       await expect(browserPage.keyDetails.addElementButton).toBeVisible();
     });
 
-    test(`should add list element ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+    test(`should add list element ${Tags.CRITICAL}`, async ({ apiHelper, browserPage }) => {
       const keyData = getListKeyData({ elements: ['existing-element'] });
 
-      await apiHelper.createListKey(databaseId, keyData.keyName, keyData.elements);
+      await apiHelper.createListKey(database.id, keyData.keyName, keyData.elements);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -409,10 +408,10 @@ test.describe('Browser > Key Details', () => {
       }).toPass({ timeout: 10000 });
     });
 
-    test(`should edit list element ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+    test(`should edit list element ${Tags.CRITICAL}`, async ({ apiHelper, browserPage }) => {
       const keyData = getListKeyData({ elements: ['original-value'] });
 
-      await apiHelper.createListKey(databaseId, keyData.keyName, keyData.elements);
+      await apiHelper.createListKey(database.id, keyData.keyName, keyData.elements);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -429,10 +428,10 @@ test.describe('Browser > Key Details', () => {
       }).toPass({ timeout: 10000 });
     });
 
-    test(`should remove list element ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+    test(`should remove list element ${Tags.CRITICAL}`, async ({ apiHelper, browserPage }) => {
       const keyData = getListKeyData({ elements: ['element-1', 'element-2', 'element-3'] });
 
-      await apiHelper.createListKey(databaseId, keyData.keyName, keyData.elements);
+      await apiHelper.createListKey(database.id, keyData.keyName, keyData.elements);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -447,12 +446,12 @@ test.describe('Browser > Key Details', () => {
       expect(elementCount).toBe(2);
     });
 
-    test(`should search list by index ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+    test(`should search list by index ${Tags.REGRESSION}`, async ({ apiHelper, browserPage }) => {
       const keyData = getListKeyData({
         elements: ['element-at-0', 'element-at-1', 'element-at-2', 'element-at-3'],
       });
 
-      await apiHelper.createListKey(databaseId, keyData.keyName, keyData.elements);
+      await apiHelper.createListKey(database.id, keyData.keyName, keyData.elements);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -479,11 +478,11 @@ test.describe('Browser > Key Details', () => {
   });
 
   test.describe('Set Key Details', () => {
-    test(`should display Set key details ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+    test(`should display Set key details ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ apiHelper, browserPage }) => {
       const keyData = getSetKeyData();
 
       // Create set key via API
-      await apiHelper.createSetKey(databaseId, keyData.keyName, keyData.members);
+      await apiHelper.createSetKey(database.id, keyData.keyName, keyData.members);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -496,10 +495,10 @@ test.describe('Browser > Key Details', () => {
       expect(keyType.toLowerCase()).toBe('set');
     });
 
-    test(`should show set members ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+    test(`should show set members ${Tags.REGRESSION}`, async ({ apiHelper, browserPage }) => {
       const keyData = getSetKeyData({ members: ['member-1', 'member-2', 'member-3'] });
 
-      await apiHelper.createSetKey(databaseId, keyData.keyName, keyData.members);
+      await apiHelper.createSetKey(database.id, keyData.keyName, keyData.members);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -511,10 +510,10 @@ test.describe('Browser > Key Details', () => {
       expect(memberCount).toBe(3);
     });
 
-    test(`should show Add Members button for Set ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+    test(`should show Add Members button for Set ${Tags.REGRESSION}`, async ({ apiHelper, browserPage }) => {
       const keyData = getSetKeyData();
 
-      await apiHelper.createSetKey(databaseId, keyData.keyName, keyData.members);
+      await apiHelper.createSetKey(database.id, keyData.keyName, keyData.members);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -524,11 +523,11 @@ test.describe('Browser > Key Details', () => {
       await expect(browserPage.keyDetails.addMembersButton).toBeVisible();
     });
 
-    test(`should add set member ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+    test(`should add set member ${Tags.CRITICAL}`, async ({ apiHelper, browserPage }) => {
       const keyData = getSetKeyData({ members: ['existing-member'] });
       const newMember = 'new-member-' + Date.now();
 
-      await apiHelper.createSetKey(databaseId, keyData.keyName, keyData.members);
+      await apiHelper.createSetKey(database.id, keyData.keyName, keyData.members);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -543,11 +542,11 @@ test.describe('Browser > Key Details', () => {
       expect(memberCount).toBe(2);
     });
 
-    test(`should remove set member ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+    test(`should remove set member ${Tags.CRITICAL}`, async ({ apiHelper, browserPage }) => {
       const memberToRemove = 'member-to-remove';
       const keyData = getSetKeyData({ members: [memberToRemove, 'member-to-keep'] });
 
-      await apiHelper.createSetKey(databaseId, keyData.keyName, keyData.members);
+      await apiHelper.createSetKey(database.id, keyData.keyName, keyData.members);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -562,12 +561,12 @@ test.describe('Browser > Key Details', () => {
       expect(memberCount).toBe(1);
     });
 
-    test(`should search set members ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+    test(`should search set members ${Tags.REGRESSION}`, async ({ apiHelper, browserPage }) => {
       const keyData = getSetKeyData({
         members: ['uniqueSearchMember', 'anotherMember', 'thirdMember'],
       });
 
-      await apiHelper.createSetKey(databaseId, keyData.keyName, keyData.members);
+      await apiHelper.createSetKey(database.id, keyData.keyName, keyData.members);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -596,11 +595,11 @@ test.describe('Browser > Key Details', () => {
   });
 
   test.describe('Sorted Set (ZSet) Key Details', () => {
-    test(`should display Sorted Set key details ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+    test(`should display Sorted Set key details ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ apiHelper, browserPage }) => {
       const keyData = getZSetKeyData();
 
       // Create zset key via API
-      await apiHelper.createZSetKey(databaseId, keyData.keyName, keyData.members);
+      await apiHelper.createZSetKey(database.id, keyData.keyName, keyData.members);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -613,7 +612,7 @@ test.describe('Browser > Key Details', () => {
       expect(keyType.toLowerCase()).toBe('sorted set');
     });
 
-    test(`should show sorted set members with scores ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+    test(`should show sorted set members with scores ${Tags.REGRESSION}`, async ({ apiHelper, browserPage }) => {
       const keyData = getZSetKeyData({
         members: [
           { member: 'member-a', score: '10' },
@@ -622,7 +621,7 @@ test.describe('Browser > Key Details', () => {
         ],
       });
 
-      await apiHelper.createZSetKey(databaseId, keyData.keyName, keyData.members);
+      await apiHelper.createZSetKey(database.id, keyData.keyName, keyData.members);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -634,10 +633,10 @@ test.describe('Browser > Key Details', () => {
       expect(memberCount).toBe(3);
     });
 
-    test(`should show Add Members button for Sorted Set ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+    test(`should show Add Members button for Sorted Set ${Tags.REGRESSION}`, async ({ apiHelper, browserPage }) => {
       const keyData = getZSetKeyData();
 
-      await apiHelper.createZSetKey(databaseId, keyData.keyName, keyData.members);
+      await apiHelper.createZSetKey(database.id, keyData.keyName, keyData.members);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -647,14 +646,14 @@ test.describe('Browser > Key Details', () => {
       await expect(browserPage.keyDetails.addMembersButton).toBeVisible();
     });
 
-    test(`should add sorted set member with score ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+    test(`should add sorted set member with score ${Tags.CRITICAL}`, async ({ apiHelper, browserPage }) => {
       const keyData = getZSetKeyData({
         members: [{ member: 'existing-member', score: '10' }],
       });
       const newMember = 'new-member-' + Date.now();
       const newScore = '50';
 
-      await apiHelper.createZSetKey(databaseId, keyData.keyName, keyData.members);
+      await apiHelper.createZSetKey(database.id, keyData.keyName, keyData.members);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -671,7 +670,7 @@ test.describe('Browser > Key Details', () => {
       }).toPass({ timeout: 10000 });
     });
 
-    test(`should remove sorted set member ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+    test(`should remove sorted set member ${Tags.CRITICAL}`, async ({ apiHelper, browserPage }) => {
       const memberToRemove = 'member-to-remove';
       const keyData = getZSetKeyData({
         members: [
@@ -680,7 +679,7 @@ test.describe('Browser > Key Details', () => {
         ],
       });
 
-      await apiHelper.createZSetKey(databaseId, keyData.keyName, keyData.members);
+      await apiHelper.createZSetKey(database.id, keyData.keyName, keyData.members);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -695,7 +694,7 @@ test.describe('Browser > Key Details', () => {
       expect(memberCount).toBe(1);
     });
 
-    test(`should edit sorted set member score ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+    test(`should edit sorted set member score ${Tags.CRITICAL}`, async ({ apiHelper, browserPage }) => {
       const keyData = getZSetKeyData({
         members: [
           { member: 'member-a', score: '10' },
@@ -704,7 +703,7 @@ test.describe('Browser > Key Details', () => {
       });
       const newScore = '99.5';
 
-      await apiHelper.createZSetKey(databaseId, keyData.keyName, keyData.members);
+      await apiHelper.createZSetKey(database.id, keyData.keyName, keyData.members);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -721,7 +720,7 @@ test.describe('Browser > Key Details', () => {
       }).toPass({ timeout: 10000 });
     });
 
-    test(`should search sorted set members ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+    test(`should search sorted set members ${Tags.REGRESSION}`, async ({ apiHelper, browserPage }) => {
       const keyData = getZSetKeyData({
         members: [
           { member: 'uniqueSearchZMember', score: '10' },
@@ -730,7 +729,7 @@ test.describe('Browser > Key Details', () => {
         ],
       });
 
-      await apiHelper.createZSetKey(databaseId, keyData.keyName, keyData.members);
+      await apiHelper.createZSetKey(database.id, keyData.keyName, keyData.members);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -757,7 +756,7 @@ test.describe('Browser > Key Details', () => {
       }).toPass({ timeout: 10000 });
     });
 
-    test(`should sort sorted set by score ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+    test(`should sort sorted set by score ${Tags.REGRESSION}`, async ({ apiHelper, browserPage }) => {
       const keyData = getZSetKeyData({
         members: [
           { member: 'member-a', score: '10' },
@@ -766,7 +765,7 @@ test.describe('Browser > Key Details', () => {
         ],
       });
 
-      await apiHelper.createZSetKey(databaseId, keyData.keyName, keyData.members);
+      await apiHelper.createZSetKey(database.id, keyData.keyName, keyData.members);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -801,11 +800,11 @@ test.describe('Browser > Key Details', () => {
   });
 
   test.describe('Stream Key Details', () => {
-    test(`should display Stream key details ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+    test(`should display Stream key details ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ apiHelper, browserPage }) => {
       const keyData = getStreamKeyData();
 
       // Create stream key via API
-      await apiHelper.createStreamKey(databaseId, keyData.keyName, keyData.fields);
+      await apiHelper.createStreamKey(database.id, keyData.keyName, keyData.fields);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -818,10 +817,10 @@ test.describe('Browser > Key Details', () => {
       expect(keyType.toLowerCase()).toBe('stream');
     });
 
-    test(`should show Stream Data tab ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+    test(`should show Stream Data tab ${Tags.REGRESSION}`, async ({ apiHelper, browserPage }) => {
       const keyData = getStreamKeyData();
 
-      await apiHelper.createStreamKey(databaseId, keyData.keyName, keyData.fields);
+      await apiHelper.createStreamKey(database.id, keyData.keyName, keyData.fields);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -834,10 +833,10 @@ test.describe('Browser > Key Details', () => {
       expect(isSelected).toBe(true);
     });
 
-    test(`should show Consumer Groups tab ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+    test(`should show Consumer Groups tab ${Tags.REGRESSION}`, async ({ apiHelper, browserPage }) => {
       const keyData = getStreamKeyData();
 
-      await apiHelper.createStreamKey(databaseId, keyData.keyName, keyData.fields);
+      await apiHelper.createStreamKey(database.id, keyData.keyName, keyData.fields);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -848,10 +847,10 @@ test.describe('Browser > Key Details', () => {
       await expect(browserPage.keyDetails.consumerGroupsTab).toBeVisible();
     });
 
-    test(`should show New Entry button for Stream ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+    test(`should show New Entry button for Stream ${Tags.REGRESSION}`, async ({ apiHelper, browserPage }) => {
       const keyData = getStreamKeyData();
 
-      await apiHelper.createStreamKey(databaseId, keyData.keyName, keyData.fields);
+      await apiHelper.createStreamKey(database.id, keyData.keyName, keyData.fields);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -861,10 +860,10 @@ test.describe('Browser > Key Details', () => {
       await expect(browserPage.keyDetails.newEntryButton).toBeVisible();
     });
 
-    test(`should add stream entry ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+    test(`should add stream entry ${Tags.CRITICAL}`, async ({ apiHelper, browserPage }) => {
       const keyData = getStreamKeyData();
 
-      await apiHelper.createStreamKey(databaseId, keyData.keyName, keyData.fields);
+      await apiHelper.createStreamKey(database.id, keyData.keyName, keyData.fields);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -889,10 +888,10 @@ test.describe('Browser > Key Details', () => {
       }).toPass({ timeout: 10000 });
     });
 
-    test(`should remove stream entry ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+    test(`should remove stream entry ${Tags.CRITICAL}`, async ({ apiHelper, browserPage }) => {
       const keyData = getStreamKeyData();
 
-      await apiHelper.createStreamKey(databaseId, keyData.keyName, keyData.fields);
+      await apiHelper.createStreamKey(database.id, keyData.keyName, keyData.fields);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -912,11 +911,11 @@ test.describe('Browser > Key Details', () => {
       expect(newIds.length).toBe(entryIds.length - 1);
     });
 
-    test(`should add consumer group ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+    test(`should add consumer group ${Tags.REGRESSION}`, async ({ apiHelper, browserPage }) => {
       const keyData = getStreamKeyData();
       const groupName = `test-group-${Date.now()}`;
 
-      await apiHelper.createStreamKey(databaseId, keyData.keyName, keyData.fields);
+      await apiHelper.createStreamKey(database.id, keyData.keyName, keyData.fields);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -931,10 +930,10 @@ test.describe('Browser > Key Details', () => {
       expect(isVisible).toBe(true);
     });
 
-    test(`should show no consumer groups message ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+    test(`should show no consumer groups message ${Tags.REGRESSION}`, async ({ apiHelper, browserPage }) => {
       const keyData = getStreamKeyData();
 
-      await apiHelper.createStreamKey(databaseId, keyData.keyName, keyData.fields);
+      await apiHelper.createStreamKey(database.id, keyData.keyName, keyData.fields);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -951,11 +950,11 @@ test.describe('Browser > Key Details', () => {
   });
 
   test.describe('JSON Key Details', () => {
-    test(`should display JSON key details ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+    test(`should display JSON key details ${Tags.SMOKE} ${Tags.CRITICAL}`, async ({ apiHelper, browserPage }) => {
       const keyData = getJsonKeyData();
 
       // Create JSON key via API
-      await apiHelper.createJsonKey(databaseId, keyData.keyName, keyData.value);
+      await apiHelper.createJsonKey(database.id, keyData.keyName, keyData.value);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -968,12 +967,12 @@ test.describe('Browser > Key Details', () => {
       expect(keyType.toLowerCase()).toBe('json');
     });
 
-    test(`should show JSON content ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+    test(`should show JSON content ${Tags.REGRESSION}`, async ({ apiHelper, browserPage }) => {
       const keyData = getJsonKeyData({
         value: JSON.stringify({ name: 'test', value: 123 }),
       });
 
-      await apiHelper.createJsonKey(databaseId, keyData.keyName, keyData.value);
+      await apiHelper.createJsonKey(database.id, keyData.keyName, keyData.value);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -985,10 +984,10 @@ test.describe('Browser > Key Details', () => {
       expect(isVisible).toBe(true);
     });
 
-    test(`should show Add field button for JSON ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+    test(`should show Add field button for JSON ${Tags.REGRESSION}`, async ({ apiHelper, browserPage }) => {
       const keyData = getJsonKeyData();
 
-      await apiHelper.createJsonKey(databaseId, keyData.keyName, keyData.value);
+      await apiHelper.createJsonKey(database.id, keyData.keyName, keyData.value);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -998,12 +997,12 @@ test.describe('Browser > Key Details', () => {
       await expect(browserPage.keyDetails.addJsonFieldButton).toBeVisible();
     });
 
-    test(`should add JSON field ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+    test(`should add JSON field ${Tags.CRITICAL}`, async ({ apiHelper, browserPage }) => {
       const keyData = getJsonKeyData({
         value: JSON.stringify({ existing: 'value' }),
       });
 
-      await apiHelper.createJsonKey(databaseId, keyData.keyName, keyData.value);
+      await apiHelper.createJsonKey(database.id, keyData.keyName, keyData.value);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -1023,13 +1022,13 @@ test.describe('Browser > Key Details', () => {
       }).toPass({ timeout: 10000 });
     });
 
-    test(`should edit JSON value ${Tags.CRITICAL}`, async ({ apiHelper }) => {
+    test(`should edit JSON value ${Tags.CRITICAL}`, async ({ apiHelper, browserPage }) => {
       const keyData = getJsonKeyData({
         value: JSON.stringify({ field1: 'originalValue', field2: 'anotherValue' }),
       });
       const newValue = '"updatedValue"';
 
-      await apiHelper.createJsonKey(databaseId, keyData.keyName, keyData.value);
+      await apiHelper.createJsonKey(database.id, keyData.keyName, keyData.value);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -1046,12 +1045,12 @@ test.describe('Browser > Key Details', () => {
       }).toPass({ timeout: 10000 });
     });
 
-    test(`should remove JSON field ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+    test(`should remove JSON field ${Tags.REGRESSION}`, async ({ apiHelper, browserPage }) => {
       const keyData = getJsonKeyData({
         value: JSON.stringify({ field1: 'value1', field2: 'value2', field3: 'value3' }),
       });
 
-      await apiHelper.createJsonKey(databaseId, keyData.keyName, keyData.value);
+      await apiHelper.createJsonKey(database.id, keyData.keyName, keyData.value);
 
       await browserPage.keyList.refresh();
       await browserPage.keyList.searchKeys(keyData.keyName);
@@ -1074,11 +1073,11 @@ test.describe('Browser > Key Details', () => {
   });
 
   test.describe('TTL Management', () => {
-    test(`should view TTL value ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+    test(`should view TTL value ${Tags.REGRESSION}`, async ({ apiHelper, browserPage }) => {
       const keyData = getStringKeyData();
 
       // Create key via API
-      await apiHelper.createStringKey(databaseId, keyData.keyName, keyData.value);
+      await apiHelper.createStringKey(database.id, keyData.keyName, keyData.value);
 
       // Refresh key list and click on the key
       await browserPage.keyList.refresh();
@@ -1091,12 +1090,12 @@ test.describe('Browser > Key Details', () => {
       expect(ttlText).toContain('No limit');
     });
 
-    test(`should edit TTL value ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+    test(`should edit TTL value ${Tags.REGRESSION}`, async ({ apiHelper, browserPage }) => {
       const keyData = getStringKeyData();
       const newTtl = '120';
 
       // Create key via API
-      await apiHelper.createStringKey(databaseId, keyData.keyName, keyData.value);
+      await apiHelper.createStringKey(database.id, keyData.keyName, keyData.value);
 
       // Refresh key list and click on the key
       await browserPage.keyList.refresh();
@@ -1117,11 +1116,11 @@ test.describe('Browser > Key Details', () => {
   });
 
   test.describe('Value Format', () => {
-    test(`should change value format ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+    test(`should change value format ${Tags.REGRESSION}`, async ({ apiHelper, browserPage }) => {
       const keyData = getStringKeyData();
 
       // Create key via API
-      await apiHelper.createStringKey(databaseId, keyData.keyName, keyData.value);
+      await apiHelper.createStringKey(database.id, keyData.keyName, keyData.value);
 
       // Refresh key list and click on the key
       await browserPage.keyList.refresh();
@@ -1145,11 +1144,11 @@ test.describe('Browser > Key Details', () => {
   });
 
   test.describe('Copy Key Name', () => {
-    test(`should show copy key name button on hover ${Tags.REGRESSION}`, async ({ apiHelper }) => {
+    test(`should show copy key name button on hover ${Tags.REGRESSION}`, async ({ apiHelper, browserPage }) => {
       const keyData = getStringKeyData();
 
       // Create key via API
-      await apiHelper.createStringKey(databaseId, keyData.keyName, keyData.value);
+      await apiHelper.createStringKey(database.id, keyData.keyName, keyData.value);
 
       // Refresh key list and click on the key
       await browserPage.keyList.refresh();

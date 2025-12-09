@@ -1,4 +1,9 @@
-import { test as base } from '@playwright/test';
+import {
+  test as base,
+  ElectronApplication,
+  Page,
+  _electron as electron,
+} from '@playwright/test';
 import {
   DatabasesPage,
   BrowserPage,
@@ -11,34 +16,40 @@ import {
   EulaPage,
 } from '../pages';
 import { ApiHelper } from '../helpers/api';
+import { appConfig, isElectron } from '../config';
+
+type ElectronFixtures = {
+  electronApp: ElectronApplication;
+  page: Page;
+};
 
 type Fixtures = {
   databasesPage: DatabasesPage;
   apiHelper: ApiHelper;
   /**
-   * Browser page fixture - requires databaseId to be set
-   * Use createBrowserPage for dynamic database IDs
+   * Browser page fixture
+   * Use browserPage.goto(databaseId) to navigate
    */
-  createBrowserPage: (databaseId: string) => BrowserPage;
+  browserPage: BrowserPage;
   /**
-   * Workbench page fixture - requires databaseId to be set
-   * Use createWorkbenchPage for dynamic database IDs
+   * Workbench page fixture
+   * Use workbenchPage.goto(databaseId) to navigate
    */
-  createWorkbenchPage: (databaseId: string) => WorkbenchPage;
+  workbenchPage: WorkbenchPage;
   /**
    * CLI panel fixture - shared across pages
    */
   cliPanel: CliPanel;
   /**
-   * Analytics page fixture - requires databaseId to be set
-   * Use createAnalyticsPage for dynamic database IDs
+   * Analytics page fixture
+   * Use analyticsPage.goto(databaseId) to navigate
    */
-  createAnalyticsPage: () => AnalyticsPage;
+  analyticsPage: AnalyticsPage;
   /**
-   * Pub/Sub page fixture - requires databaseId to be set
-   * Use createPubSubPage for dynamic database IDs
+   * Pub/Sub page fixture
+   * Use pubSubPage.goto(databaseId) to navigate
    */
-  createPubSubPage: () => PubSubPage;
+  pubSubPage: PubSubPage;
   /**
    * Settings page fixture
    */
@@ -54,14 +65,21 @@ type Fixtures = {
   eulaPage: EulaPage;
 };
 
-export const test = base.extend<Fixtures>({
+// TODO: check old playwright fixture
+/**
+ * Browser-based test fixtures (default)
+ */
+const browserTest = base.extend<Fixtures>({
   // Ensure EULA is accepted before each test (via API)
   // This runs automatically for all tests using the apiHelper fixture
   // eslint-disable-next-line no-empty-pattern
   apiHelper: async ({}, use) => {
     const helper = new ApiHelper();
-    // Ensure EULA is accepted so tests don't get blocked by popup
-    await helper.ensureEulaAccepted();
+    // In browser mode, ensure EULA is accepted via API before tests
+    // In Electron mode, this is handled separately after the app launches
+    if (!isElectron) {
+      await helper.ensureEulaAccepted();
+    }
     await use(helper);
     await helper.dispose();
   },
@@ -70,25 +88,24 @@ export const test = base.extend<Fixtures>({
     await use(new DatabasesPage(page));
   },
 
-  createBrowserPage: async ({ page }, use) => {
-    await use((databaseId: string) => new BrowserPage(page, databaseId));
+  browserPage: async ({ page }, use) => {
+    await use(new BrowserPage(page));
   },
 
-  createWorkbenchPage: async ({ page }, use) => {
-    // databaseId is used for navigation context but WorkbenchPage doesn't need it directly
-    await use((_databaseId: string) => new WorkbenchPage(page));
+  workbenchPage: async ({ page }, use) => {
+    await use(new WorkbenchPage(page));
   },
 
   cliPanel: async ({ page }, use) => {
     await use(new CliPanel(page));
   },
 
-  createAnalyticsPage: async ({ page }, use) => {
-    await use(() => new AnalyticsPage(page));
+  analyticsPage: async ({ page }, use) => {
+    await use(new AnalyticsPage(page));
   },
 
-  createPubSubPage: async ({ page }, use) => {
-    await use(() => new PubSubPage(page));
+  pubSubPage: async ({ page }, use) => {
+    await use(new PubSubPage(page));
   },
 
   settingsPage: async ({ page }, use) => {
@@ -104,4 +121,99 @@ export const test = base.extend<Fixtures>({
   },
 });
 
+/**
+ * Electron-based test fixtures for desktop app testing
+ *
+ * Important: In Electron mode, the apiHelper depends on page (which depends on
+ * electronApp) to ensure the app is running before any API calls are made.
+ */
+const electronTest = browserTest.extend<ElectronFixtures>({
+  // Electron app - launched per test
+  // eslint-disable-next-line no-empty-pattern
+  electronApp: async ({}, use) => {
+    if (!appConfig.electronExecutablePath) {
+      throw new Error(
+        'ELECTRON_EXECUTABLE_PATH environment variable is required for Electron tests',
+      );
+    }
+
+    console.log(
+      `Launching Electron app: ${appConfig.electronExecutablePath}`,
+    );
+
+    const electronApp = await electron.launch({
+      executablePath: appConfig.electronExecutablePath,
+      args: ['--no-sandbox'],
+      timeout: 60000,
+    });
+
+    // Log Electron console messages for debugging
+    electronApp.on('console', (msg) => {
+      console.log(`[Electron] ${msg.type()}: ${msg.text()}`);
+    });
+
+    // Wait for app to fully initialize and API to be ready
+    console.log('Waiting for Electron app to initialize...');
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+
+    // Wait for API to be available (Electron starts its own API server)
+    const apiHelper = new ApiHelper();
+    let apiReady = false;
+    for (let i = 0; i < 30; i++) {
+      try {
+        await apiHelper.getDatabases();
+        apiReady = true;
+        console.log('Electron API is ready');
+        break;
+      } catch {
+        console.log(`Waiting for Electron API... (attempt ${i + 1}/30)`);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+    }
+    await apiHelper.dispose();
+
+    if (!apiReady) {
+      throw new Error('Electron API did not become available within 30 seconds');
+    }
+
+    await use(electronApp);
+
+    console.log('Closing Electron app...');
+    await electronApp.close();
+  },
+
+  // Page from Electron app
+  page: async ({ electronApp }, use) => {
+    const electronPage = await electronApp.firstWindow();
+
+    // Wait for the app to be ready
+    await electronPage.waitForLoadState('domcontentloaded');
+
+    // Small delay for UI to stabilize
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    await use(electronPage);
+  },
+
+  // Override apiHelper to ensure EULA is accepted after Electron app is running
+  // The page dependency ensures electronApp is launched first
+  apiHelper: async ({ page }, use) => {
+    // page dependency ensures the Electron app is running before we use the API
+    void page; // Ensure dependency is used
+
+    const helper = new ApiHelper();
+    // Ensure EULA is accepted
+    await helper.ensureEulaAccepted();
+    await use(helper);
+    await helper.dispose();
+  },
+});
+
+/**
+ * Test fixture that automatically selects browser or Electron mode
+ * based on ELECTRON_EXECUTABLE_PATH environment variable
+ */
+export const test = isElectron ? electronTest : browserTest;
+
 export { expect } from '@playwright/test';
+export { isElectron };

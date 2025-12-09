@@ -1,41 +1,38 @@
 import { test, expect } from '../../../fixtures/base';
 import { Tags } from '../../../config';
-import { BrowserPage } from '../../../pages';
+import { DatabaseInstance } from '../../../types';
 
 test.describe('Browser > Tree View', () => {
-  let databaseId: string;
-  let browserPage: BrowserPage;
+  let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
     // Get or create a database for testing
     const databases = await apiHelper.getDatabases();
     if (databases.length === 0) {
-      const db = await apiHelper.createDatabase({
+      database = await apiHelper.createDatabase({
         name: 'test-tree-view',
         host: '127.0.0.1',
         port: 6379,
       });
-      databaseId = db.id;
     } else {
-      databaseId = databases[0].id;
+      database = databases[0];
     }
   });
 
-  test.beforeEach(async ({ createBrowserPage }) => {
-    browserPage = createBrowserPage(databaseId);
-    await browserPage.goto();
+  test.beforeEach(async ({ browserPage }) => {
+    await browserPage.goto(database.id);
     await browserPage.keyList.waitForKeysLoaded();
   });
 
   test.describe('View Switching', () => {
-    test(`should switch to tree view ${Tags.SMOKE}`, async ({ page }) => {
+    test(`should switch to tree view ${Tags.SMOKE}`, async ({ page, browserPage }) => {
       await browserPage.keyList.switchToTreeView();
 
       // Tree view should show tree items (folders or keys)
       await expect(page.getByRole('treeitem').first()).toBeVisible();
     });
 
-    test(`should switch back to list view ${Tags.REGRESSION}`, async ({ page }) => {
+    test(`should switch back to list view ${Tags.REGRESSION}`, async ({ page, browserPage }) => {
       // First switch to tree view
       await browserPage.keyList.switchToTreeView();
       await expect(page.getByRole('treeitem').first()).toBeVisible();
@@ -49,7 +46,7 @@ test.describe('Browser > Tree View', () => {
   });
 
   test.describe('Tree Structure', () => {
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, browserPage }) => {
       await browserPage.keyList.switchToTreeView();
       // Wait for tree items to load
       await expect(page.getByRole('treeitem').first()).toBeVisible();
@@ -119,34 +116,34 @@ test.describe('Browser > Tree View', () => {
   });
 
   test.describe.serial('Tree View Settings', () => {
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, browserPage }) => {
       await browserPage.keyList.switchToTreeView();
       // Wait for tree items to load
       await expect(page.getByRole('treeitem').first()).toBeVisible();
     });
 
-    test(`should open tree view settings ${Tags.SMOKE}`, async ({ page }) => {
+    test(`should open tree view settings ${Tags.SMOKE}`, async ({ page, browserPage }) => {
       await browserPage.keyList.openTreeViewSettings();
 
       // Dialog should be visible
       await expect(page.getByRole('dialog')).toBeVisible();
     });
 
-    test(`should show delimiter setting ${Tags.REGRESSION}`, async ({ page }) => {
+    test(`should show delimiter setting ${Tags.REGRESSION}`, async ({ page, browserPage }) => {
       await browserPage.keyList.openTreeViewSettings();
 
       // Delimiter input should be visible (it's a textbox with label "Delimiter")
       await expect(page.getByRole('textbox', { name: 'Delimiter' })).toBeVisible();
     });
 
-    test(`should show sort by dropdown ${Tags.REGRESSION}`, async ({ page }) => {
+    test(`should show sort by dropdown ${Tags.REGRESSION}`, async ({ page, browserPage }) => {
       await browserPage.keyList.openTreeViewSettings();
 
       // Sort by dropdown should be visible
       await expect(page.getByRole('combobox', { name: 'Sort by' })).toBeVisible();
     });
 
-    test(`should close settings with Cancel ${Tags.REGRESSION}`, async ({ page }) => {
+    test(`should close settings with Cancel ${Tags.REGRESSION}`, async ({ page, browserPage }) => {
       await browserPage.keyList.openTreeViewSettings();
 
       // Click Cancel
@@ -156,7 +153,7 @@ test.describe('Browser > Tree View', () => {
       await expect(page.getByRole('dialog')).toBeHidden();
     });
 
-    test(`should change sort by option ${Tags.REGRESSION}`, async ({ page }) => {
+    test(`should change sort by option ${Tags.REGRESSION}`, async ({ page, browserPage }) => {
       await browserPage.keyList.openTreeViewSettings();
 
       // Change sort by to Key name DESC
@@ -171,7 +168,7 @@ test.describe('Browser > Tree View', () => {
       await page.getByRole('button', { name: 'Cancel' }).click();
     });
 
-    test(`should configure multiple delimiters ${Tags.REGRESSION}`, async ({ page }) => {
+    test(`should configure multiple delimiters ${Tags.REGRESSION}`, async ({ page, browserPage }) => {
       await browserPage.keyList.openTreeViewSettings();
 
       const dialog = page.getByRole('dialog');
@@ -192,7 +189,7 @@ test.describe('Browser > Tree View', () => {
       await browserPage.keyList.cancelTreeViewSettings();
     });
 
-    test(`should cancel delimiter change and revert to previous value ${Tags.REGRESSION}`, async ({ page }) => {
+    test(`should cancel delimiter change and revert to previous value ${Tags.REGRESSION}`, async ({ page, browserPage }) => {
       await browserPage.keyList.openTreeViewSettings();
 
       const dialog = page.getByRole('dialog');
@@ -224,7 +221,7 @@ test.describe('Browser > Tree View', () => {
   });
 
   test.describe('View State Persistence', () => {
-    test(`should persist tree view mode after page refresh ${Tags.REGRESSION}`, async ({ page }) => {
+    test(`should persist tree view mode after page refresh ${Tags.REGRESSION}`, async ({ page, browserPage }) => {
       // Switch to tree view
       await browserPage.keyList.switchToTreeView();
       await expect(page.getByRole('treeitem').first()).toBeVisible();
@@ -237,7 +234,7 @@ test.describe('Browser > Tree View', () => {
       await expect(page.getByRole('treeitem').first()).toBeVisible();
     });
 
-    test(`should persist list view mode after page refresh ${Tags.REGRESSION}`, async ({ page }) => {
+    test(`should persist list view mode after page refresh ${Tags.REGRESSION}`, async ({ page, browserPage }) => {
       // Ensure we're in list view
       await browserPage.keyList.switchToListView();
       await expect(page.getByRole('grid')).toBeVisible();
@@ -252,12 +249,13 @@ test.describe('Browser > Tree View', () => {
 
     test(`should preserve filter state when switching between Browser and Tree view ${Tags.REGRESSION}`, async ({
       page,
+      browserPage,
       apiHelper,
     }) => {
       // Create test keys with a specific pattern
       const testPrefix = `test-filter-${Date.now()}`;
-      await apiHelper.createStringKey(databaseId, `${testPrefix}:key1`, 'value1');
-      await apiHelper.createStringKey(databaseId, `${testPrefix}:key2`, 'value2');
+      await apiHelper.createStringKey(database.id, `${testPrefix}:key1`, 'value1');
+      await apiHelper.createStringKey(database.id, `${testPrefix}:key2`, 'value2');
 
       try {
         // Ensure we're in list view
@@ -287,18 +285,19 @@ test.describe('Browser > Tree View', () => {
         await expect(searchInput).toHaveValue(`${testPrefix}*`);
       } finally {
         // Clean up test keys
-        await apiHelper.deleteKeysByPattern(databaseId, `${testPrefix}*`);
+        await apiHelper.deleteKeysByPattern(database.id, `${testPrefix}*`);
       }
     });
 
     test(`should preserve key type filter when switching views ${Tags.REGRESSION}`, async ({
       page,
+      browserPage,
       apiHelper,
     }) => {
       // Create test keys of different types
       const testPrefix = `test-type-${Date.now()}`;
-      await apiHelper.createStringKey(databaseId, `${testPrefix}:string`, 'value');
-      await apiHelper.createHashKey(databaseId, `${testPrefix}:hash`, [{ field: 'field', value: 'value' }]);
+      await apiHelper.createStringKey(database.id, `${testPrefix}:string`, 'value');
+      await apiHelper.createHashKey(database.id, `${testPrefix}:hash`, [{ field: 'field', value: 'value' }]);
 
       try {
         // Ensure we're in list view
@@ -328,7 +327,7 @@ test.describe('Browser > Tree View', () => {
         await expect(keyTypeFilter).toContainText('String');
       } finally {
         // Clean up test keys
-        await apiHelper.deleteKeysByPattern(databaseId, `${testPrefix}*`);
+        await apiHelper.deleteKeysByPattern(database.id, `${testPrefix}*`);
       }
     });
   });

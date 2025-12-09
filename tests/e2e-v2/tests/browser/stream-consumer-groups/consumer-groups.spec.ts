@@ -1,34 +1,32 @@
 import { test, expect } from '../../../fixtures/base';
 import { Tags } from '../../../config';
 import { faker } from '@faker-js/faker';
-import { BrowserPage } from '../../../pages';
+import { DatabaseInstance } from '../../../types';
 
 test.describe('Browser > Stream Consumer Groups', () => {
-  let databaseId: string;
+  let database: DatabaseInstance;
   let streamKey: string;
 
   test.beforeAll(async ({ apiHelper }) => {
     // Get or create a database for testing
     const databases = await apiHelper.getDatabases();
     if (databases.length === 0) {
-      const db = await apiHelper.createDatabase({
+      database = await apiHelper.createDatabase({
         name: 'test-stream-consumer-groups',
         host: '127.0.0.1',
         port: 6379,
       });
-      databaseId = db.id;
     } else {
-      databaseId = databases[0].id;
+      database = databases[0];
     }
   });
 
-  test.beforeEach(async ({ page, cliPanel }) => {
+  test.beforeEach(async ({ cliPanel, browserPage }) => {
     // Create a unique stream key for each test
     streamKey = `test-stream-cg-${faker.string.alphanumeric(8)}`;
 
-    // Navigate to browser page
-    await page.goto(`/${databaseId}/browser`);
-    await page.waitForLoadState('networkidle');
+    // Navigate to browser page via UI
+    await browserPage.goto(database.id);
 
     // Create a stream key using CLI
     await cliPanel.open();
@@ -45,9 +43,8 @@ test.describe('Browser > Stream Consumer Groups', () => {
 
   test(`should open Consumer Groups tab for stream key ${Tags.SMOKE}`, async ({
     page,
-    createBrowserPage,
+    browserPage,
   }) => {
-    const browserPage: BrowserPage = createBrowserPage(databaseId);
 
     // Search for the stream key
     await browserPage.keyList.searchKeys(streamKey);
@@ -74,9 +71,9 @@ test.describe('Browser > Stream Consumer Groups', () => {
 
   test(`should create consumer group with Entry ID "$" (new messages only) ${Tags.SMOKE}`, async ({
     page,
-    createBrowserPage,
+    browserPage,
   }) => {
-    const browserPage: BrowserPage = createBrowserPage(databaseId);
+
     const groupName = `test-group-${faker.string.alphanumeric(6)}`;
 
     // Search for the stream key
@@ -107,9 +104,9 @@ test.describe('Browser > Stream Consumer Groups', () => {
 
   test(`should create consumer group with Entry ID "0" (from beginning) ${Tags.SMOKE}`, async ({
     page,
-    createBrowserPage,
+    browserPage,
   }) => {
-    const browserPage: BrowserPage = createBrowserPage(databaseId);
+
     const groupName = `test-group-${faker.string.alphanumeric(6)}`;
 
     // Search for the stream key
@@ -141,9 +138,9 @@ test.describe('Browser > Stream Consumer Groups', () => {
 
   test(`should create consumer group with custom Entry ID ${Tags.REGRESSION}`, async ({
     page,
-    createBrowserPage,
+    browserPage,
   }) => {
-    const browserPage: BrowserPage = createBrowserPage(databaseId);
+
     const groupName = `test-group-${faker.string.alphanumeric(6)}`;
 
     // Search for the stream key
@@ -177,9 +174,9 @@ test.describe('Browser > Stream Consumer Groups', () => {
 
   test(`should cancel creating consumer group ${Tags.REGRESSION}`, async ({
     page,
-    createBrowserPage,
+    browserPage,
   }) => {
-    const browserPage: BrowserPage = createBrowserPage(databaseId);
+
     const groupName = `test-group-${faker.string.alphanumeric(6)}`;
 
     // Search for the stream key
@@ -208,10 +205,10 @@ test.describe('Browser > Stream Consumer Groups', () => {
 
   test(`should delete consumer group ${Tags.REGRESSION}`, async ({
     page,
-    createBrowserPage,
+    browserPage,
     cliPanel,
   }) => {
-    const browserPage: BrowserPage = createBrowserPage(databaseId);
+
     const groupName = `test-group-${faker.string.alphanumeric(6)}`;
 
     // Create a consumer group using CLI
@@ -252,10 +249,10 @@ test.describe('Browser > Stream Consumer Groups', () => {
 
   test(`should delete consumer from consumer group ${Tags.REGRESSION}`, async ({
     page,
-    createBrowserPage,
+    browserPage,
     cliPanel,
   }) => {
-    const browserPage: BrowserPage = createBrowserPage(databaseId);
+
     const groupName = `test-group-${faker.string.alphanumeric(6)}`;
     const consumerName = `test-consumer-${faker.string.alphanumeric(6)}`;
 
@@ -310,10 +307,10 @@ test.describe('Browser > Stream Consumer Groups', () => {
 
   test(`should view consumer information columns (Consumer Name, Pending, Idle Time) ${Tags.REGRESSION}`, async ({
     page,
-    createBrowserPage,
+    browserPage,
     cliPanel,
   }) => {
-    const browserPage: BrowserPage = createBrowserPage(databaseId);
+
     const groupName = `test-group-${faker.string.alphanumeric(6)}`;
     const consumerName = `test-consumer-${faker.string.alphanumeric(6)}`;
 
@@ -366,10 +363,10 @@ test.describe('Browser > Stream Consumer Groups', () => {
 
   test(`should edit Last Delivered ID for consumer group ${Tags.REGRESSION}`, async ({
     page,
-    createBrowserPage,
+    browserPage,
     cliPanel,
   }) => {
-    const browserPage: BrowserPage = createBrowserPage(databaseId);
+
     const groupName = `test-group-${faker.string.alphanumeric(6)}`;
 
     // Create a consumer group using CLI with initial ID "0"
@@ -424,7 +421,7 @@ test.describe('Browser > Stream Consumer Groups', () => {
 });
 
 test.describe('Browser > Stream Pending Messages', () => {
-  let databaseId: string;
+  let database: DatabaseInstance;
   let streamKey: string;
   let groupName: string;
   let consumerName: string;
@@ -433,26 +430,24 @@ test.describe('Browser > Stream Pending Messages', () => {
     // Get or create a database for testing
     const databases = await apiHelper.getDatabases();
     if (databases.length === 0) {
-      const db = await apiHelper.createDatabase({
+      database = await apiHelper.createDatabase({
         name: 'test-stream-pending',
         host: '127.0.0.1',
         port: 6379,
       });
-      databaseId = db.id;
     } else {
-      databaseId = databases[0].id;
+      database = databases[0];
     }
   });
 
-  test.beforeEach(async ({ page, cliPanel }) => {
+  test.beforeEach(async ({ cliPanel, browserPage }) => {
     // Create a unique stream key for each test
     streamKey = `test-stream-pending-${faker.string.alphanumeric(8)}`;
     groupName = `test-group-${faker.string.alphanumeric(6)}`;
     consumerName = `test-consumer-${faker.string.alphanumeric(6)}`;
 
-    // Navigate to browser page
-    await page.goto(`/${databaseId}/browser`);
-    await page.waitForLoadState('networkidle');
+    // Navigate to browser page via UI
+    await browserPage.goto(database.id);
 
     // Create a stream with messages and a consumer group with pending messages
     await cliPanel.open();
@@ -480,9 +475,9 @@ test.describe('Browser > Stream Pending Messages', () => {
 
   test(`should view pending messages for consumer ${Tags.SMOKE}`, async ({
     page,
-    createBrowserPage,
+    browserPage,
   }) => {
-    const browserPage: BrowserPage = createBrowserPage(databaseId);
+
 
     // Search for the stream key
     await browserPage.keyList.searchKeys(streamKey);
@@ -517,9 +512,9 @@ test.describe('Browser > Stream Pending Messages', () => {
 
   test(`should acknowledge pending message ${Tags.REGRESSION}`, async ({
     page,
-    createBrowserPage,
+    browserPage,
   }) => {
-    const browserPage: BrowserPage = createBrowserPage(databaseId);
+
 
     // Navigate to pending messages view
     await browserPage.keyList.searchKeys(streamKey);
@@ -552,10 +547,10 @@ test.describe('Browser > Stream Pending Messages', () => {
 
   test(`should claim pending message ${Tags.REGRESSION}`, async ({
     page,
-    createBrowserPage,
+    browserPage,
     cliPanel,
   }) => {
-    const browserPage: BrowserPage = createBrowserPage(databaseId);
+
 
     // Create a stream with two consumers (Alice and Bob) each with a pending message
     const claimStreamKey = `test-claim-stream-${faker.string.alphanumeric(8)}`;
@@ -615,10 +610,10 @@ test.describe('Browser > Stream Pending Messages', () => {
 
   test(`should claim pending message with idle time parameter ${Tags.REGRESSION}`, async ({
     page,
-    createBrowserPage,
+    browserPage,
     cliPanel,
   }) => {
-    const browserPage: BrowserPage = createBrowserPage(databaseId);
+
 
     // Create a stream with two consumers
     const claimStreamKey = `test-claim-idle-${faker.string.alphanumeric(8)}`;
@@ -675,10 +670,10 @@ test.describe('Browser > Stream Pending Messages', () => {
 
   test(`should force claim pending message ${Tags.REGRESSION}`, async ({
     page,
-    createBrowserPage,
+    browserPage,
     cliPanel,
   }) => {
-    const browserPage: BrowserPage = createBrowserPage(databaseId);
+
 
     // Create a stream with two consumers
     const claimStreamKey = `test-force-claim-${faker.string.alphanumeric(8)}`;
