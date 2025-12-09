@@ -34,10 +34,11 @@ runs:
       uses: actions/setup-node@v4.0.4
       with:
         node-version: '22.12.0'
-        # disable cache for windows
-        # https://github.com/actions/setup-node/issues/975
-        cache: ${{ runner.os != 'Windows' && 'yarn' || '' }}
-        cache-dependency-path: ${{ runner.os != 'Windows' && '**/yarn.lock' || '' }}
+        # Disable yarn cache for macOS to avoid cross-architecture cache issues
+        # (x64 vs arm64 native modules like sqlite3)
+        # Windows cache is also disabled: https://github.com/actions/setup-node/issues/975
+        cache: ${{ runner.os == 'Linux' && 'yarn' || '' }}
+        cache-dependency-path: ${{ runner.os == 'Linux' && '**/yarn.lock' || '' }}
 
     - name: Setup Python
       # if: ${{ contains(inputs.skip-electron-deps, '1') }}
