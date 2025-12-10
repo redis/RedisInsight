@@ -80,6 +80,24 @@ jobs:
 
           mv release/mas-universal/Redis-Insight-mac-universal-mas.pkg release/Redis-Insight-mac-universal-mas.pkg
 
+      - name: Debug - Show native binary locations in MAS build
+        if: (vars.ENV == 'staging' || vars.ENV == 'development') && inputs.target == vars.ALL && always()
+        run: |
+          echo "=== Native binaries in mas-universal ==="
+          find release/mas-universal -name "*.node" -type f 2>/dev/null || echo "No .node files found in mas-universal"
+
+          echo ""
+          echo "=== sqlite3 directory structure ==="
+          find release/mas-universal -path "*sqlite3*" -type f 2>/dev/null | head -20 || echo "No sqlite3 files found"
+
+          echo ""
+          echo "=== keytar directory structure ==="
+          find release/mas-universal -path "*keytar*" -type f 2>/dev/null | head -20 || echo "No keytar files found"
+
+          echo ""
+          echo "=== app.asar.unpacked node_modules structure ==="
+          ls -la "release/mas-universal/Redis Insight.app/Contents/Resources/app.asar.unpacked/node_modules/" 2>/dev/null || echo "app.asar.unpacked/node_modules not found"
+
       # handle manual builds
       - name: Build macos dmg (custom)
         if: inputs.target != vars.ALL
