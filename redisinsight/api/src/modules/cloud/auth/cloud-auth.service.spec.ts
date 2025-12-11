@@ -427,6 +427,57 @@ describe('CloudAuthService', () => {
         {
           accessToken: mockCloudAccessTokenNew,
           refreshToken: mockCloudRefreshTokenNew,
+          idToken: mockTokenResponseNew.id_token,
+          idpType: mockCloudApiAuthDto.idpType,
+          csrf: null,
+          apiSessionId: null,
+        },
+      );
+    });
+
+    it('should store idToken in session when present in token response', async () => {
+      mockedAxios.post.mockResolvedValueOnce({ data: mockTokenResponseNew });
+
+      await service['renewTokens'](
+        mockSessionMetadata,
+        mockCloudApiAuthDto.idpType,
+        mockCloudApiAuthDto.refreshToken,
+      );
+
+      expect(sessionService.updateSessionData).toHaveBeenCalledWith(
+        mockSessionMetadata.sessionId,
+        {
+          accessToken: mockCloudAccessTokenNew,
+          refreshToken: mockCloudRefreshTokenNew,
+          idToken: mockTokenResponseNew.id_token,
+          idpType: mockCloudApiAuthDto.idpType,
+          csrf: null,
+          apiSessionId: null,
+        },
+      );
+    });
+
+    it('should handle missing idToken gracefully', async () => {
+      const tokenResponseWithoutIdToken = {
+        access_token: mockCloudAccessTokenNew,
+        refresh_token: mockCloudRefreshTokenNew,
+      };
+      mockedAxios.post.mockResolvedValueOnce({
+        data: tokenResponseWithoutIdToken,
+      });
+
+      await service['renewTokens'](
+        mockSessionMetadata,
+        mockCloudApiAuthDto.idpType,
+        mockCloudApiAuthDto.refreshToken,
+      );
+
+      expect(sessionService.updateSessionData).toHaveBeenCalledWith(
+        mockSessionMetadata.sessionId,
+        {
+          accessToken: tokenResponseWithoutIdToken.access_token,
+          refreshToken: tokenResponseWithoutIdToken.refresh_token,
+          idToken: undefined,
           idpType: mockCloudApiAuthDto.idpType,
           csrf: null,
           apiSessionId: null,

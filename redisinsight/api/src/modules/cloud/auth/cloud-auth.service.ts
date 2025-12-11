@@ -345,6 +345,7 @@ export class CloudAuthService {
       await this.sessionService.updateSessionData(sessionMetadata.sessionId, {
         accessToken: data.access_token,
         refreshToken: data.refresh_token,
+        idToken: data.id_token,
         idpType,
         csrf: null,
         apiSessionId: null,
