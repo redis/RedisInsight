@@ -82,7 +82,7 @@ jobs:
 
       # handle manual builds
       - name: Build macos dmg (custom)
-        if: inputs.target != vars.ALL
+        if: inputs.target != vars.ALL && !contains(inputs.target, 'build_macos_mas')
         run: |
           unset CSC_LINK
           target=$(echo "${{inputs.target}}" | grep -oE 'build_macos_[^ ]+' | sed 's/build_macos_/dmg:/' | paste -sd ' ' -)
@@ -94,6 +94,25 @@ jobs:
           fi
 
           rm -rf release/mac
+
+      # handle MAS manual builds
+      - name: Build macos MAS (custom)
+        if: inputs.target != vars.ALL && contains(inputs.target, 'build_macos_mas')
+        run: |
+          unset CSC_LINK
+
+          # MAS requires the app to be built first (without creating DMG packages)
+          ts-node ./scripts/prebuild.js dist
+
+          if [ "${{ vars.ENV == 'production' }}" == "true" ]; then
+            yarn build:prod
+          else
+            yarn build:stage
+          fi
+
+          yarn package:mas
+          rm -rf release/mac
+          mv release/mas-universal/Redis-Insight-mac-universal-mas.pkg release/Redis-Insight-mac-universal-mas.pkg
 
       - name: Repack dmg to tar
         if: vars.ENV == 'production' && inputs.target == vars.ALL

@@ -26,6 +26,11 @@ on:
         type: boolean
         required: false
 
+      build_macos_mas:
+        description: Build macOS MAS (Mac App Store)
+        type: boolean
+        required: false
+
       build_linux_appimage_x64:
         description: Build Linux AppImage x64
         type: boolean
