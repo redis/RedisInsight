@@ -49,13 +49,6 @@ export class DatabaseOverviewProvider {
       totalKeysPerDb = calculatedTotalKeysPerDb;
     }
 
-    const cpuUsagePercentage = this.calculateCpuUsage(
-      clientMetadata.databaseId,
-      nodesInfo,
-    );
-
-    const maxCpuUsagePercentage = await this.calculateMaxCpuPercentage(client);
-
     return {
       version: this.getVersion(nodesInfo),
       serverName: this.getServerName(nodesInfo),
@@ -66,8 +59,11 @@ export class DatabaseOverviewProvider {
       opsPerSecond: this.calculateOpsPerSec(nodesInfo),
       networkInKbps: this.calculateNetworkIn(nodesInfo),
       networkOutKbps: this.calculateNetworkOut(nodesInfo),
-      cpuUsagePercentage,
-      maxCpuUsagePercentage,
+      cpuUsagePercentage: this.calculateCpuUsage(
+        clientMetadata.databaseId,
+        nodesInfo,
+      ),
+      maxCpuUsagePercentage: await this.calculateMaxCpuPercentage(client),
     };
   }
 
@@ -304,6 +300,7 @@ export class DatabaseOverviewProvider {
    * For standalone: detect I/O threads via CONFIG GET (no estimation)
    *
    * Example of calculation:
+   * 1 standalone: 1 * 100 = 100%
    * 2 shards: 2 * 100 = 200%
    * 4 threads: 4 * 100 = 400%
    */
@@ -328,33 +325,16 @@ export class DatabaseOverviewProvider {
 
     // For standalone, detect I/O threads via CONFIG GET
     try {
-      const ioThreadsResult = await client.call([
-        'config',
-        'get',
-        'io-threads',
-      ]);
+      const ioThreadsResult = await client.call(
+        ['config', 'get', 'io-threads'],
+        {
+          replyEncoding: 'utf8',
+        },
+      );
 
-      if (
-        ioThreadsResult &&
-        Array.isArray(ioThreadsResult) &&
-        ioThreadsResult.length >= 2
-      ) {
-        const ioThreadsValue = ioThreadsResult[1];
-        let ioThreads: number;
+      const ioThreads = parseInt(ioThreadsResult?.[1] || '1', 10);
 
-        if (typeof ioThreadsValue === 'string') {
-          ioThreads = parseInt(ioThreadsValue, 10);
-        } else if (typeof ioThreadsValue === 'number') {
-          ioThreads = ioThreadsValue;
-        } else {
-          // If it's a Buffer, convert to string first
-          ioThreads = parseInt(ioThreadsValue?.toString() || '1', 10);
-        }
-
-        if (ioThreads > 1) {
-          return ioThreads * 100;
-        }
-      }
+      return ioThreads * 100;
     } catch (error) {
       this.logger.warn(
         'Error occurred when trying to calculate max CPU usage percentage',

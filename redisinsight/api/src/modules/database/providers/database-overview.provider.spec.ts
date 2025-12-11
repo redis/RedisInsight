@@ -114,6 +114,7 @@ describe('OverviewService', () => {
           totalKeysPerDb: undefined,
           usedMemory: 1000000,
           cpuUsagePercentage: undefined,
+          maxCpuUsagePercentage: 100,
           opsPerSecond: undefined,
           networkInKbps: undefined,
           networkOutKbps: undefined,
@@ -139,6 +140,7 @@ describe('OverviewService', () => {
           totalKeysPerDb: undefined,
           usedMemory: 1000000,
           cpuUsagePercentage: undefined,
+          maxCpuUsagePercentage: 100,
           opsPerSecond: undefined,
           networkInKbps: undefined,
           networkOutKbps: undefined,
@@ -162,6 +164,7 @@ describe('OverviewService', () => {
           ...mockDatabaseOverview,
           totalKeys: 0,
           totalKeysPerDb: undefined,
+          maxCpuUsagePercentage: 100,
         });
       });
       it('should return total 3 and empty total per db object (even when role is not master)', async () => {
@@ -185,6 +188,7 @@ describe('OverviewService', () => {
           ...mockDatabaseOverview,
           totalKeys: 3,
           totalKeysPerDb: undefined,
+          maxCpuUsagePercentage: 100,
         });
       });
       it('should not return particular fields when metrics are not available', async () => {
@@ -210,6 +214,7 @@ describe('OverviewService', () => {
           usedMemory: undefined,
           totalKeysPerDb: undefined,
           connectedClients: undefined,
+          maxCpuUsagePercentage: 100,
         });
       });
       it('check for cpu on second attempt', async () => {
@@ -235,6 +240,7 @@ describe('OverviewService', () => {
           ),
         ).toEqual({
           ...mockDatabaseOverview,
+          maxCpuUsagePercentage: 100,
         });
 
         expect(
@@ -246,6 +252,7 @@ describe('OverviewService', () => {
         ).toEqual({
           ...mockDatabaseOverview,
           cpuUsagePercentage: 50,
+          maxCpuUsagePercentage: 100,
         });
       });
       it('check for cpu max value > 100', async () => {
@@ -271,7 +278,7 @@ describe('OverviewService', () => {
           ),
         ).toEqual({
           ...mockDatabaseOverview,
-          maxCpuUsagePercentage: undefined,
+          maxCpuUsagePercentage: 100,
         });
 
         expect(
@@ -283,7 +290,7 @@ describe('OverviewService', () => {
         ).toEqual({
           ...mockDatabaseOverview,
           cpuUsagePercentage: 101.002,
-          maxCpuUsagePercentage: undefined,
+          maxCpuUsagePercentage: 100,
         });
       });
       it('should not return cpu (undefined) when used_cpu_sys = 0', async () => {
@@ -309,6 +316,7 @@ describe('OverviewService', () => {
         ).toEqual({
           ...mockDatabaseOverview,
           cpuUsagePercentage: undefined,
+          maxCpuUsagePercentage: 100,
         });
       });
       it('should full data of keyspace if query keyspace = "full" ', async () => {
@@ -327,6 +335,7 @@ describe('OverviewService', () => {
             db1: 0,
             db2: 1,
           },
+          maxCpuUsagePercentage: 100,
         });
       });
       it('should include maxCpuUsagePercentage for standalone with I/O threads', async () => {
@@ -572,7 +581,7 @@ describe('OverviewService', () => {
         expect(result).toBe(100);
       });
 
-      it('should return undefined if cluster nodes call fails', async () => {
+      it('should return 100% if cluster nodes call fails', async () => {
         when(clusterClient.getConnectionType).mockReturnValue('CLUSTER' as any);
         when(clusterClient.nodes)
           .calledWith(RedisClientNodeRole.PRIMARY)
@@ -582,7 +591,7 @@ describe('OverviewService', () => {
           clusterClient,
         );
 
-        expect(result).toBeUndefined();
+        expect(result).toBe(100);
       });
     });
 
@@ -595,41 +604,40 @@ describe('OverviewService', () => {
         );
 
         expect(result).toBe(400);
-        expect(standaloneClient.call).toHaveBeenCalledWith([
-          'config',
-          'get',
-          'io-threads',
-        ]);
+        expect(standaloneClient.call).toHaveBeenCalledWith(
+          ['config', 'get', 'io-threads'],
+          { replyEncoding: 'utf8' },
+        );
       });
 
-      it('should return undefined when I/O threads = 1', async () => {
+      it('should return 100% when I/O threads = 1', async () => {
         when(standaloneClient.call).mockResolvedValue(['io-threads', '1']);
 
         const result = await (service as any).calculateMaxCpuPercentage(
           standaloneClient,
         );
 
-        expect(result).toBeUndefined();
+        expect(result).toBe(100);
       });
 
-      it('should return undefined when CONFIG GET returns empty array', async () => {
+      it('should return 100% when CONFIG GET returns empty array', async () => {
         when(standaloneClient.call).mockResolvedValue([]);
 
         const result = await (service as any).calculateMaxCpuPercentage(
           standaloneClient,
         );
 
-        expect(result).toBeUndefined();
+        expect(result).toBe(100);
       });
 
-      it('should return undefined when CONFIG GET returns invalid format', async () => {
+      it('should return 100% when CONFIG GET returns invalid format', async () => {
         when(standaloneClient.call).mockResolvedValue(['io-threads']);
 
         const result = await (service as any).calculateMaxCpuPercentage(
           standaloneClient,
         );
 
-        expect(result).toBeUndefined();
+        expect(result).toBe(100);
       });
 
       it('should handle ACL/permission errors gracefully and return undefined', async () => {
