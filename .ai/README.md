@@ -71,7 +71,7 @@ This directory contains comprehensive development standards that are automatical
 
 ## MCP (Model Context Protocol) Setup
 
-AI tools can access external services (JIRA, Confluence, GitHub) via MCP configuration.
+AI tools can access external services (JIRA, Confluence, GitHub, Figma) via MCP configuration.
 
 ### Initial Setup
 
@@ -87,7 +87,10 @@ AI tools can access external services (JIRA, Confluence, GitHub) via MCP configu
    - Create a classic token by pressing the first "Create Token" button
    - Copy the token
 
-3. **Edit `.env.mcp` with your credentials**
+3. **Edit `.env.mcp` with your credentials:**
+
+   - Add your JIRA and Confluence API tokens
+   - Note: Figma MCP server uses OAuth authentication and doesn't require API keys
 
 4. **Verify your setup:**
 
@@ -95,7 +98,8 @@ AI tools can access external services (JIRA, Confluence, GitHub) via MCP configu
 
    - Restart Cursor to load the new MCP configuration
    - Ask the AI: "Can you list all available MCP tools and test them?"
-   - The AI should be able to access JIRA, Confluence, GitHub, and other configured services
+   - The AI should be able to access JIRA, Confluence, GitHub, Figma, and other configured services
+   - **For Figma**: On first use, you'll be prompted to authenticate via OAuth flow in your browser
 
    **For Augment users:**
 
@@ -116,7 +120,8 @@ The `mcp.json` file configures these services:
 - **memory** - Persistent context storage across sessions
 - **sequential-thinking** - Enhanced reasoning for complex tasks
 - **context-7** - Advanced context management
-- **atlassian** - JIRA (RI-XXX tickets) and Confluence integration
+- **atlassian** - JIRA (RI-XXX tickets) and Confluence integration (requires API tokens in `.env.mcp`)
+- **figma** - Figma design files, frames, and layers (uses OAuth authentication - no API key needed)
 
 ## Updating These Rules
 
