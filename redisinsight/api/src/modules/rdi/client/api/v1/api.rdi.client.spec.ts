@@ -11,9 +11,17 @@ import {
   mockRdiUnauthorizedError,
 } from 'src/__mocks__';
 import { sign } from 'jsonwebtoken';
-import { ApiRdiClient } from './api.rdi.client';
-import { RdiDyRunJobStatus, RdiPipeline, RdiStatisticsStatus } from '../models';
-import { PipelineActions, RdiUrl, TOKEN_THRESHOLD } from '../constants';
+import { ApiRdiClient } from 'src/modules/rdi/client/api/v1/api.rdi.client';
+import {
+  RdiDyRunJobStatus,
+  RdiPipeline,
+  RdiStatisticsStatus,
+} from 'src/modules/rdi/models';
+import {
+  PipelineActions,
+  RdiUrl,
+  TOKEN_THRESHOLD,
+} from 'src/modules/rdi/constants';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 jest.mock('axios');

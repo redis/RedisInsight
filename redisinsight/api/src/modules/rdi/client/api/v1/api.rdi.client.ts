@@ -26,6 +26,9 @@ import {
   RdiPipelineInternalServerErrorException,
   parseErrorMessage,
   wrapRdiPipelineError,
+  RdiResetPipelineFailedException,
+  RdiStartPipelineFailedException,
+  RdiStopPipelineFailedException,
 } from 'src/modules/rdi/exceptions';
 import {
   RdiPipeline,
@@ -42,9 +45,6 @@ import {
   convertApiDataToRdiPipeline,
   convertRdiPipelineToApiPayload,
 } from 'src/modules/rdi/utils/pipeline.util';
-import { RdiResetPipelineFailedException } from '../exceptions/rdi-reset-pipeline-failed.exception';
-import { RdiStartPipelineFailedException } from '../exceptions/rdi-start-pipeline-failed.exception';
-import { RdiStopPipelineFailedException } from '../exceptions/rdi-stop-pipeline-failed.exception';
 
 interface ConnectionsConfig {
   sources: Record<string, Record<string, unknown>>;
@@ -53,7 +53,7 @@ interface ConnectionsConfig {
 export class ApiRdiClient extends RdiClient {
   protected readonly client: AxiosInstance;
 
-  private readonly logger = new Logger('ApiRdiClient');
+  protected readonly logger = new Logger('ApiRdiClient');
 
   private auth: { jwt: string; exp: number };
 

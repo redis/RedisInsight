@@ -4,7 +4,7 @@ import {
   RdiPipeline,
   RdiStatisticsData,
 } from 'src/modules/rdi/models';
-import { ApiRdiClient } from 'src/modules/rdi/client/api.rdi.client';
+import { ApiRdiClient } from 'src/modules/rdi/client/api/v1/api.rdi.client';
 import { RdiEntity } from 'src/modules/rdi/entities/rdi.entity';
 import { EncryptionStrategy } from 'src/modules/encryption/models';
 import { RdiDryRunJobDto } from 'src/modules/rdi/dto';
