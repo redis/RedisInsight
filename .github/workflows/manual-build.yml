@@ -26,6 +26,11 @@ on:
         type: boolean
         required: false
 
+      include_macos_zip:
+        description: Include macOS zip files
+        type: boolean
+        required: false
+
       build_linux_appimage_x64:
         description: Build Linux AppImage x64
         type: boolean
@@ -86,6 +91,7 @@ jobs:
       debug: ${{ inputs.debug }}
       environment: ${{ inputs.environment }}
       enterprise: false
+      include_macos_zip: ${{ inputs.include_macos_zip }}
 
   aws-upload:
     uses: ./.github/workflows/aws-upload-dev.yml

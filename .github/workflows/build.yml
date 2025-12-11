@@ -22,6 +22,11 @@ on:
         description: Enterprise build
         type: boolean
 
+      include_macos_zip:
+        description: Include macOS zip files
+        type: boolean
+        default: false
+
 jobs:
   build-linux:
     if: contains(inputs.target, 'linux') || inputs.target == 'all'
@@ -42,6 +47,7 @@ jobs:
       target: ${{ inputs.target }}
       debug: ${{ inputs.debug }}
       enterprise: ${{ inputs.enterprise }}
+      include_zip: ${{ inputs.include_macos_zip }}
 
   build-windows:
     if: contains(inputs.target, 'windows') || inputs.target == 'all'

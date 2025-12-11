@@ -23,6 +23,11 @@ on:
         description: Enterprise build
         type: boolean
 
+      include_zip:
+        description: Include zip files for auto-updater
+        type: boolean
+        default: false
+
 jobs:
   build:
     name: Build macos
@@ -86,6 +91,12 @@ jobs:
         run: |
           unset CSC_LINK
           target=$(echo "${{inputs.target}}" | grep -oE 'build_macos_[^ ]+' | sed 's/build_macos_/dmg:/' | paste -sd ' ' -)
+
+          # Optionally include zip targets for auto-updater
+          if [ "${{ inputs.include_zip }}" == "true" ]; then
+            zip_target=$(echo "${{inputs.target}}" | grep -oE 'build_macos_[^ ]+' | sed 's/build_macos_/zip:/' | paste -sd ' ' -)
+            target="$target $zip_target"
+          fi
 
           if [ "${{ vars.ENV == 'production' }}" == "true" ]; then
             yarn package:prod --mac $target
