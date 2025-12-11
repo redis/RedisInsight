@@ -368,7 +368,7 @@ describe('OverviewService', () => {
           mockCurrentKeyspace,
         );
 
-        expect(result.maxCpuUsagePercentage).toBeUndefined();
+        expect(result.maxCpuUsagePercentage).toBe(100);
       });
     });
     describe('Cluster', () => {
@@ -515,11 +515,20 @@ describe('OverviewService', () => {
       });
       it('should include maxCpuUsagePercentage for cluster with 4 nodes', async () => {
         const mockPrimaryNodes = [
-          { options: { host: 'localhost', port: 7001 } },
-          { options: { host: 'localhost', port: 7002 } },
-          { options: { host: 'localhost', port: 7003 } },
-          { options: { host: 'localhost', port: 7004 } },
+          { call: jest.fn(), options: { host: 'localhost', port: 7001 } },
+          { call: jest.fn(), options: { host: 'localhost', port: 7002 } },
+          { call: jest.fn(), options: { host: 'localhost', port: 7003 } },
+          { call: jest.fn(), options: { host: 'localhost', port: 7004 } },
         ];
+
+        // Mock io-threads = 1 (default) for each node
+        mockPrimaryNodes.forEach((node) => {
+          when(node.call)
+            .calledWith(['config', 'get', 'io-threads'], {
+              replyEncoding: 'utf8',
+            })
+            .mockResolvedValue(['io-threads', '1']);
+        });
 
         when(clusterClient.getConnectionType).mockReturnValue('CLUSTER' as any);
         when(clusterClient.nodes)
@@ -546,11 +555,20 @@ describe('OverviewService', () => {
     describe('Cluster', () => {
       it('should return max CPU based on number of primary nodes (4 nodes = 400%)', async () => {
         const mockPrimaryNodes = [
-          { options: { host: 'localhost', port: 7001 } },
-          { options: { host: 'localhost', port: 7002 } },
-          { options: { host: 'localhost', port: 7003 } },
-          { options: { host: 'localhost', port: 7004 } },
+          { call: jest.fn(), options: { host: 'localhost', port: 7001 } },
+          { call: jest.fn(), options: { host: 'localhost', port: 7002 } },
+          { call: jest.fn(), options: { host: 'localhost', port: 7003 } },
+          { call: jest.fn(), options: { host: 'localhost', port: 7004 } },
         ];
+
+        // Mock io-threads = 1 (default) for each node
+        mockPrimaryNodes.forEach((node) => {
+          when(node.call)
+            .calledWith(['config', 'get', 'io-threads'], {
+              replyEncoding: 'utf8',
+            })
+            .mockResolvedValue(['io-threads', '1']);
+        });
 
         when(clusterClient.getConnectionType).mockReturnValue('CLUSTER' as any);
         when(clusterClient.nodes)
@@ -566,8 +584,15 @@ describe('OverviewService', () => {
 
       it('should return max CPU for single node cluster (100%)', async () => {
         const mockPrimaryNodes = [
-          { options: { host: 'localhost', port: 7001 } },
+          { call: jest.fn(), options: { host: 'localhost', port: 7001 } },
         ];
+
+        // Mock io-threads = 1 (default) for the node
+        when(mockPrimaryNodes[0].call)
+          .calledWith(['config', 'get', 'io-threads'], {
+            replyEncoding: 'utf8',
+          })
+          .mockResolvedValue(['io-threads', '1']);
 
         when(clusterClient.getConnectionType).mockReturnValue('CLUSTER' as any);
         when(clusterClient.nodes)
@@ -581,7 +606,7 @@ describe('OverviewService', () => {
         expect(result).toBe(100);
       });
 
-      it('should return 100% if cluster nodes call fails', async () => {
+      it('should return undefined if cluster nodes call fails', async () => {
         when(clusterClient.getConnectionType).mockReturnValue('CLUSTER' as any);
         when(clusterClient.nodes)
           .calledWith(RedisClientNodeRole.PRIMARY)
@@ -591,7 +616,44 @@ describe('OverviewService', () => {
           clusterClient,
         );
 
-        expect(result).toBe(100);
+        expect(result).toBeUndefined();
+      });
+
+      it('should sum io-threads across all primary nodes (3 nodes with 4, 2, 1 threads = 700%)', async () => {
+        const mockPrimaryNodes = [
+          { call: jest.fn(), options: { host: 'localhost', port: 7001 } },
+          { call: jest.fn(), options: { host: 'localhost', port: 7002 } },
+          { call: jest.fn(), options: { host: 'localhost', port: 7003 } },
+        ];
+
+        // Mock different io-threads for each node
+        when(mockPrimaryNodes[0].call)
+          .calledWith(['config', 'get', 'io-threads'], {
+            replyEncoding: 'utf8',
+          })
+          .mockResolvedValue(['io-threads', '4']);
+        when(mockPrimaryNodes[1].call)
+          .calledWith(['config', 'get', 'io-threads'], {
+            replyEncoding: 'utf8',
+          })
+          .mockResolvedValue(['io-threads', '2']);
+        when(mockPrimaryNodes[2].call)
+          .calledWith(['config', 'get', 'io-threads'], {
+            replyEncoding: 'utf8',
+          })
+          .mockResolvedValue(['io-threads', '1']);
+
+        when(clusterClient.getConnectionType).mockReturnValue('CLUSTER' as any);
+        when(clusterClient.nodes)
+          .calledWith(RedisClientNodeRole.PRIMARY)
+          .mockResolvedValue(mockPrimaryNodes);
+
+        const result = await (service as any).calculateMaxCpuPercentage(
+          clusterClient,
+        );
+
+        // (4 + 2 + 1) * 100 = 700%
+        expect(result).toBe(700);
       });
     });
 
@@ -640,7 +702,7 @@ describe('OverviewService', () => {
         expect(result).toBe(100);
       });
 
-      it('should handle ACL/permission errors gracefully and return undefined', async () => {
+      it('should handle ACL/permission errors gracefully and return 100%', async () => {
         const loggerWarnSpy = jest.spyOn(service['logger'], 'warn');
         const aclError = new Error('NOAUTH Authentication required');
         when(standaloneClient.call).mockRejectedValue(aclError);
@@ -649,15 +711,15 @@ describe('OverviewService', () => {
           standaloneClient,
         );
 
-        expect(result).toBeUndefined();
+        expect(result).toBe(100);
         expect(loggerWarnSpy).toHaveBeenCalledWith(
-          'Error occurred when trying to calculate max CPU usage percentage',
+          'Error getting io-threads, defaulting to 1 thread',
           aclError,
         );
         loggerWarnSpy.mockRestore();
       });
 
-      it('should handle network errors gracefully and return undefined', async () => {
+      it('should handle network errors gracefully and return 100%', async () => {
         const loggerWarnSpy = jest.spyOn(service['logger'], 'warn');
         const networkError = new Error('Connection timeout');
         when(standaloneClient.call).mockRejectedValue(networkError);
@@ -666,9 +728,9 @@ describe('OverviewService', () => {
           standaloneClient,
         );
 
-        expect(result).toBeUndefined();
+        expect(result).toBe(100);
         expect(loggerWarnSpy).toHaveBeenCalledWith(
-          'Error occurred when trying to calculate max CPU usage percentage',
+          'Error getting io-threads, defaulting to 1 thread',
           networkError,
         );
         loggerWarnSpy.mockRestore();

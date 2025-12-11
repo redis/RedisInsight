@@ -295,54 +295,69 @@ export class DatabaseOverviewProvider {
   }
 
   /**
-   * Calculates maximum CPU percentage based on number of nodes/shards
-   * For clusters: max = number of primary nodes * 100% (always returned, no cap)
-   * For standalone: detect I/O threads via CONFIG GET (no estimation)
-   *
-   * Example of calculation:
-   * 1 standalone: 1 * 100 = 100%
-   * 2 shards: 2 * 100 = 200%
-   * 4 threads: 4 * 100 = 400%
+   * Gets the io-threads configuration for a Redis client/node
+   * Returns the number of io-threads, defaulting to 1 if detection fails
+   * @param nodeClient The Redis client to query
+   * @returns The number of io-threads (defaults to 1)
    */
-  private async calculateMaxCpuPercentage(
-    client: RedisClient,
-  ): Promise<number | undefined> {
-    // For cluster, return the number of primary nodes * 100%
-    if (client.getConnectionType() === RedisClientConnectionType.CLUSTER) {
-      try {
-        const primaryNodes = await client.nodes(RedisClientNodeRole.PRIMARY);
-        const maxCpu = primaryNodes.length * 100;
-
-        return maxCpu;
-      } catch (error) {
-        // If we can't get nodes, fall through to standalone logic
-        this.logger.warn(
-          'Error occurred when trying to calculate max CPU usage percentage for cluster',
-          error,
-        );
-      }
-    }
-
-    // For standalone, detect I/O threads via CONFIG GET
+  private async getIoThreadsForNode(nodeClient: RedisClient): Promise<number> {
     try {
-      const ioThreadsResult = await client.call(
+      const ioThreadsResult = await nodeClient.call(
         ['config', 'get', 'io-threads'],
         {
           replyEncoding: 'utf8',
         },
       );
 
-      const ioThreads = parseInt(ioThreadsResult?.[1] || '1', 10);
-
-      return ioThreads * 100;
+      return parseInt(ioThreadsResult?.[1] || '1', 10);
     } catch (error) {
       this.logger.warn(
-        'Error occurred when trying to calculate max CPU usage percentage',
+        'Error getting io-threads, defaulting to 1 thread',
         error,
       );
+      return 1;
+    }
+  }
+
+  /**
+   * Calculates maximum CPU percentage based on number of nodes/shards
+   * For clusters: sum of io-threads across all primary nodes * 100%
+   * For standalone: detect I/O threads via CONFIG GET
+   *
+   * Example of calculation:
+   * 1 standalone with 4 threads: 4 * 100 = 400%
+   * 3 shards, each with 4 threads: (4+4+4) * 100 = 1200%
+   * 3 shards, default (1 thread each): (1+1+1) * 100 = 300%
+   */
+  private async calculateMaxCpuPercentage(
+    client: RedisClient,
+  ): Promise<number | undefined> {
+    // For cluster, sum io-threads across all primary nodes
+    if (client.getConnectionType() === RedisClientConnectionType.CLUSTER) {
+      try {
+        const primaryNodes = await client.nodes(RedisClientNodeRole.PRIMARY);
+        let totalIoThreads = 0;
+
+        // Get io-threads for each primary node
+        for (const node of primaryNodes) {
+          const ioThreads = await this.getIoThreadsForNode(node);
+          totalIoThreads += ioThreads;
+        }
+
+        return totalIoThreads * 100;
+      } catch (error) {
+        // If we can't get nodes, return undefined (don't fall through to standalone logic)
+        this.logger.warn(
+          'Error occurred when trying to calculate max CPU usage percentage for cluster',
+          error,
+        );
+        return undefined;
+      }
     }
 
-    return undefined;
+    // For standalone, detect I/O threads via CONFIG GET
+    const ioThreads = await this.getIoThreadsForNode(client);
+    return ioThreads * 100;
   }
 
   /**
