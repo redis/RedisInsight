@@ -15,6 +15,7 @@ import hashReducer from './browser/hash'
 import listReducer from './browser/list'
 import rejsonReducer from './browser/rejson'
 import streamReducer from './browser/stream'
+import vectorsetReducer from './browser/vectorset'
 import bulkActionsReducer from './browser/bulkActions'
 import notificationsReducer from './app/notifications'
 import cliSettingsReducer from './cli/cli-settings'
@@ -91,6 +92,7 @@ export const rootReducer = combineReducers({
     list: listReducer,
     rejson: rejsonReducer,
     stream: streamReducer,
+    vectorset: vectorsetReducer,
     bulkActions: bulkActionsReducer,
     redisearch: redisearchReducer,
   }),
