@@ -9,7 +9,10 @@ import {
 } from 'src/modules/redis/client';
 import { RedisString } from 'src/common/constants';
 import { ClientMetadata } from 'src/common/models';
-import { BrowserToolHashCommands } from 'src/modules/browser/constants/browser-tool-commands';
+import {
+  BrowserToolHashCommands,
+  BrowserToolVectorSetCommands,
+} from 'src/modules/browser/constants/browser-tool-commands';
 
 // should return array (same as original reply)
 Redis.Command.setReplyTransformer(
@@ -29,6 +32,10 @@ export abstract class IoredisClient extends RedisClient {
     client.addBuiltinCommand(BrowserToolHashCommands.HPersist);
     // fix not existing command in pipeline
     client.addBuiltinCommand(BrowserToolHashCommands.HGETALL);
+    // VectorSet module commands
+    Object.values(BrowserToolVectorSetCommands).forEach((cmd) => {
+      client.addBuiltinCommand(cmd);
+    });
   }
 
   static prepareCommandOptions(options: IRedisClientCommandOptions): any {

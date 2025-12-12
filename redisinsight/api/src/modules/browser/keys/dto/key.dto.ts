@@ -1,7 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsDefined } from 'class-validator';
-import { IsRedisString, RedisStringType } from 'src/common/decorators';
-import { RedisString } from 'src/common/constants';
+import { ApiProperty } from '@nestjs/swagger'
+import { IsDefined } from 'class-validator'
+import { IsRedisString, RedisStringType } from 'src/common/decorators'
+import { RedisString } from 'src/common/constants'
 
 export enum RedisDataType {
   String = 'string',
@@ -13,6 +13,7 @@ export enum RedisDataType {
   JSON = 'ReJSON-RL',
   Graph = 'graphdata',
   TS = 'TSDB-TYPE',
+  VectorSet = 'vectorset',
 }
 
 export class KeyDto {
@@ -23,5 +24,5 @@ export class KeyDto {
   @IsDefined()
   @IsRedisString()
   @RedisStringType()
-  keyName: RedisString;
+  keyName: RedisString
 }

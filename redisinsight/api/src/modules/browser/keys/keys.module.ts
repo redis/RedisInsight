@@ -15,6 +15,7 @@ import { StreamKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strateg
 import { StringKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/string.key-info.strategy';
 import { TsKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/ts.key-info.strategy';
 import { UnsupportedKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/unsupported.key-info.strategy';
+import { VectorSetKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/vector-set.key-info.strategy';
 import { ZSetKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/z-set.key-info.strategy';
 
 @Module({})
@@ -50,6 +51,7 @@ export class KeysModule {
         StringKeyInfoStrategy,
         TsKeyInfoStrategy,
         UnsupportedKeyInfoStrategy,
+        VectorSetKeyInfoStrategy,
         ZSetKeyInfoStrategy,
       ],
     };
