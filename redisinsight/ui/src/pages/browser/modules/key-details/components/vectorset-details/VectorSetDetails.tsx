@@ -12,6 +12,7 @@ import {
 } from 'uiSrc/slices/browser/vectorset'
 import { AppDispatch } from 'uiSrc/slices/store'
 import type { VectorSetDetailsProps } from './VectorSetDetails.types'
+import { VectorSetHeader } from './components/vectorset-header'
 import { AddItemsAction } from '../key-details-actions'
 import { KeyDetailsSubheader } from '../key-details-subheader/KeyDetailsSubheader'
 
@@ -57,6 +58,7 @@ const VectorSetDetails = (props: VectorSetDetailsProps) => {
   return (
     <Col className="fluid relative" justify="between">
       <KeyDetailsHeader {...props} key="key-details-header" />
+      <VectorSetHeader data-testid="vectorset-header" />
       <KeyDetailsSubheader keyType={keyType} Actions={Actions} />
       <FlexItem
         grow
