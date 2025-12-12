@@ -15,6 +15,7 @@ import {
 import { ClientMetadata } from 'src/common/models';
 import { RedisString } from 'src/common/constants';
 import {
+  AddElementsToVectorSetDto,
   CreateVectorSetWithExpireDto,
   DeleteVectorSetElementsDto,
   DeleteVectorSetElementsResponse,
@@ -22,10 +23,11 @@ import {
   GetVectorSetElementsResponse,
   SearchVectorSetDto,
   SearchVectorSetResponse,
+  SearchResultDto,
   GetVectorSetElementDetailsDto,
   UpdateVectorSetElementAttributesDto,
+  VectorSetElementDto,
   VectorSetElementResponse,
-  SearchResultDto,
 } from 'src/modules/browser/vector-set/dto';
 import {
   VectorFormat,
@@ -110,6 +112,43 @@ export class VectorSetService {
   }
 
   /**
+   * Build VADD commands for elements
+   * Shared logic between create and add operations
+   */
+  private buildVAddCommands(
+    keyName: RedisString,
+    elements: VectorSetElementDto[],
+  ): RedisClientCommand[] {
+    // VADD syntax: VADD key (FP32 | VALUES count) vector element [options]
+    return elements.map((element) => {
+      const format = element.format ?? VectorFormat.VALUES;
+
+      if (format === VectorFormat.FP32) {
+        // FP32 format: binary blob
+        const vectorBlob = element.vector as RedisString;
+        return [
+          BrowserToolVectorSetCommands.VAdd,
+          keyName,
+          'FP32',
+          vectorBlob,
+          element.name,
+        ];
+      }
+
+      // VALUES format: array of numbers
+      const vectorArray = element.vector as number[];
+      return [
+        BrowserToolVectorSetCommands.VAdd,
+        keyName,
+        'VALUES',
+        vectorArray.length.toString(),
+        ...vectorArray.map(String),
+        element.name,
+      ];
+    });
+  }
+
+  /**
    * Create a new vector set with elements
    */
   public async createVectorSet(
@@ -124,34 +163,10 @@ export class VectorSetService {
 
       await checkIfKeyExists(keyName, client);
 
-      // Build VADD commands for each element
-      // VADD syntax: VADD key (FP32 | VALUES count) vector element [options]
-      const commands: RedisClientCommand[] = elements.map((element) => {
-        const format = element.format ?? VectorFormat.VALUES;
-
-        if (format === VectorFormat.FP32) {
-          // FP32 format: binary blob
-          const vectorBlob = element.vector as RedisString;
-          return [
-            BrowserToolVectorSetCommands.VAdd,
-            keyName,
-            'FP32',
-            vectorBlob,
-            element.name,
-          ];
-        }
-
-        // VALUES format: array of numbers
-        const vectorArray = element.vector as number[];
-        return [
-          BrowserToolVectorSetCommands.VAdd,
-          keyName,
-          'VALUES',
-          vectorArray.length.toString(),
-          ...vectorArray.map(String),
-          element.name,
-        ];
-      });
+      const commands: RedisClientCommand[] = this.buildVAddCommands(
+        keyName,
+        elements,
+      );
 
       // Add EXPIRE command if needed
       if (expire) {
@@ -171,6 +186,44 @@ export class VectorSetService {
       }
       this.logger.error(
         'Failed to create VectorSet data type.',
+        error,
+        clientMetadata,
+      );
+      throw catchAclError(error);
+    }
+  }
+
+  /**
+   * Add elements to an existing vector set
+   */
+  public async addElements(
+    clientMetadata: ClientMetadata,
+    dto: AddElementsToVectorSetDto,
+  ): Promise<void> {
+    try {
+      this.logger.debug('Adding elements to VectorSet.', clientMetadata);
+      const { keyName, elements } = dto;
+      const client: RedisClient =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+
+      const commands: RedisClientCommand[] = this.buildVAddCommands(
+        keyName,
+        elements,
+      );
+
+      const transactionResults = await client.sendPipeline(commands);
+      catchMultiTransactionError(transactionResults);
+
+      this.logger.debug(
+        'Succeed to add elements to VectorSet.',
+        clientMetadata,
+      );
+    } catch (error) {
+      if (error?.message.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      this.logger.error(
+        'Failed to add elements to VectorSet.',
         error,
         clientMetadata,
       );
@@ -447,7 +500,9 @@ export class VectorSetService {
       }
       if (withAttribs) {
         const attrsJson = response[i + offset];
-        resultData.attributes = attrsJson ? JSON.parse(String(attrsJson)) : null;
+        resultData.attributes = attrsJson
+          ? JSON.parse(String(attrsJson))
+          : null;
       }
 
       results.push(plainToInstance(SearchResultDto, resultData));

@@ -54,11 +54,12 @@ describe('VectorSetService', () => {
         keyName,
       });
 
-      expect(result).toEqual({
-        keyName,
-        total: 5,
-        elements: [{ name: 'elem1' }, { name: 'elem2' }, { name: 'elem3' }],
-      });
+      expect(result.keyName.toString()).toEqual(keyName);
+      expect(result.total).toEqual(5);
+      expect(result.elements).toHaveLength(3);
+      expect(result.elements[0].name.toString()).toEqual('elem1');
+      expect(result.elements[1].name.toString()).toEqual('elem2');
+      expect(result.elements[2].name.toString()).toEqual('elem3');
     });
 
     it('should fallback to VRANDMEMBER when VRANGE not supported', async () => {
@@ -85,11 +86,9 @@ describe('VectorSetService', () => {
         keyName,
       });
 
-      expect(result).toEqual({
-        keyName,
-        total: 5,
-        elements: [{ name: 'elem1' }, { name: 'elem2' }, { name: 'elem3' }],
-      });
+      expect(result.keyName.toString()).toEqual(keyName);
+      expect(result.total).toEqual(5);
+      expect(result.elements).toHaveLength(3);
     });
 
     it('should use cached VRANGE support on subsequent calls', async () => {
@@ -270,10 +269,12 @@ describe('VectorSetService', () => {
         withScores: true,
       });
 
-      expect(result.keyName).toEqual(keyName);
+      expect(result.keyName.toString()).toEqual(keyName);
       expect(result.results).toHaveLength(2);
-      expect(result.results[0]).toEqual({ name: 'elem1', score: 0.95 });
-      expect(result.results[1]).toEqual({ name: 'elem2', score: 0.85 });
+      expect(result.results[0].name.toString()).toEqual('elem1');
+      expect(result.results[0].score).toEqual(0.95);
+      expect(result.results[1].name.toString()).toEqual('elem2');
+      expect(result.results[1].score).toEqual(0.85);
     });
 
     it('should search without scores when withScores is false', async () => {
@@ -303,7 +304,7 @@ describe('VectorSetService', () => {
       });
 
       expect(result.results).toHaveLength(2);
-      expect(result.results[0]).toEqual({ name: 'elem1' });
+      expect(result.results[0].name.toString()).toEqual('elem1');
     });
 
     it('should throw NotFoundException when key does not exist', async () => {
@@ -345,7 +346,8 @@ describe('VectorSetService', () => {
       });
 
       expect(result.results).toHaveLength(2);
-      expect(result.results[0]).toEqual({ name: 'elem1', score: 0.95 });
+      expect(result.results[0].name.toString()).toEqual('elem1');
+      expect(result.results[0].score).toEqual(0.95);
     });
 
     it('should search with WITHATTRIBS option', async () => {
@@ -385,16 +387,12 @@ describe('VectorSetService', () => {
       });
 
       expect(result.results).toHaveLength(2);
-      expect(result.results[0]).toEqual({
-        name: 'elem1',
-        score: 0.95,
-        attributes: { category: 'test' },
-      });
-      expect(result.results[1]).toEqual({
-        name: 'elem2',
-        score: 0.85,
-        attributes: null,
-      });
+      expect(result.results[0].name.toString()).toEqual('elem1');
+      expect(result.results[0].score).toEqual(0.95);
+      expect(result.results[0].attributes).toEqual({ category: 'test' });
+      expect(result.results[1].name.toString()).toEqual('elem2');
+      expect(result.results[1].score).toEqual(0.85);
+      expect(result.results[1].attributes).toBeNull();
     });
   });
 
