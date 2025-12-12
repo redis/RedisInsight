@@ -119,6 +119,13 @@ export enum SortOrder {
   DESC = 'DESC',
 }
 
+// Query types for VSIM search (matches backend VectorSearchQueryType enum)
+export enum VectorSearchQueryType {
+  ELE = 'ELE',
+  VALUES = 'VALUES',
+  FP32 = 'FP32',
+}
+
 export interface LengthNamingByType {
   [key: string]: string
 }
