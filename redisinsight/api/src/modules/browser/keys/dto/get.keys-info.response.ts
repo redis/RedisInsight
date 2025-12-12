@@ -2,6 +2,15 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { RedisStringType } from 'src/common/decorators';
 import { RedisString } from 'src/common/constants';
 
+export interface VectorSetInfo {
+  'quant-type'?: string;
+  'vector-dim'?: number;
+  size?: number;
+  'max-level'?: number;
+  'vset-uid'?: number;
+  'hnsw-max-node-uid'?: number;
+}
+
 export class GetKeyInfoResponse {
   @ApiProperty({
     type: String,
@@ -34,4 +43,10 @@ export class GetKeyInfoResponse {
     description: 'The length of the value stored in a key.',
   })
   length?: number;
+
+  @ApiPropertyOptional({
+    description:
+      'Vector set info from VINFO command (for vector set keys only).',
+  })
+  vinfo?: VectorSetInfo;
 }
