@@ -147,7 +147,16 @@ export interface VectorSetInfo {
   size: number;
   vectorDim: number;
   quantType: string;
-  metadata?: Record<string, any>;
+  maxLevel?: number;
+  vsetUid?: number;
+  hnswMaxNodeUid?: number;
+}
+
+// Query types for VSIM search (matches backend VectorSearchQueryType enum)
+export enum VectorSearchQueryType {
+  ELE = 'ELE', // Search by existing element name
+  VALUES = 'VALUES', // Search by vector as number array
+  FP32 = 'FP32', // Search by vector as binary FP32 string
 }
 
 export interface StateVectorSet {
@@ -203,6 +212,7 @@ import {
   VectorSetElement,
   VectorSetSearchResult,
   VectorSetInfo,
+  VectorSearchQueryType,
 } from 'uiSrc/slices/interfaces/vectorset';
 import successMessages from 'uiSrc/components/notifications/success-messages';
 import {
@@ -492,12 +502,16 @@ export function fetchVectorSetInfo(key: RedisResponseBuffer) {
         { keyName: key },
       );
 
+      // vinfo object contains Redis VINFO properties with kebab-case keys:
+      // 'quant-type', 'vector-dim', 'size', 'max-level', 'vset-uid', 'hnsw-max-node-uid'
       dispatch(
         loadVectorSetInfoSuccess({
           size: data.length || 0,
-          vectorDim: data.vectorDim || 0,
-          quantType: data.quantType || 'unknown',
-          metadata: data,
+          vectorDim: data.vinfo?.['vector-dim'] || 0,
+          quantType: data.vinfo?.['quant-type'] || 'unknown',
+          maxLevel: data.vinfo?.['max-level'],
+          vsetUid: data.vinfo?.['vset-uid'],
+          hnswMaxNodeUid: data.vinfo?.['hnsw-max-node-uid'],
         }),
       );
     } catch (error) {
@@ -522,11 +536,12 @@ export function searchVectorSetByVector(
       const state = stateInit();
       const { id: databaseId } = state.connections.connectedInstance;
 
-      // Call dedicated search endpoint (backend handles VSIM command)
+      // Call dedicated search endpoint with VALUES query type
       const { data } = await apiService.post<SearchVectorSetResponse>(
         `databases/${databaseId}/vector-set/search`,
         {
           keyName: key,
+          queryType: VectorSearchQueryType.VALUES,
           vector,
           count,
           ef,
@@ -541,8 +556,55 @@ export function searchVectorSetByVector(
         event: TelemetryEvent.BROWSER_VECTORSET_SEARCH,
         eventData: {
           databaseId: stateInit().connections.instances?.connectedInstance?.id,
-          resultsCount: results.length,
+          resultsCount: data.results.length,
           hasFilter: !!filter,
+        },
+      });
+    } catch (error) {
+      const errorMessage = getApiErrorMessage(error);
+      dispatch(addErrorNotification(error));
+      dispatch(searchVectorSetFailure(errorMessage));
+    }
+  };
+}
+
+export function searchVectorSetByElement(
+  key: RedisResponseBuffer,
+  element: string,
+  count: number = 10,
+  ef: number = 200,
+  filter?: string,
+) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    dispatch(searchVectorSet(null)); // No vector query for element search
+
+    try {
+      const state = stateInit();
+      const { id: databaseId } = state.connections.connectedInstance;
+
+      // Call dedicated search endpoint with ELE query type
+      const { data } = await apiService.post<SearchVectorSetResponse>(
+        `databases/${databaseId}/vector-set/search`,
+        {
+          keyName: key,
+          queryType: VectorSearchQueryType.ELE,
+          element,
+          count,
+          ef,
+          filter,
+          withScores: true,
+        },
+      );
+
+      dispatch(searchVectorSetSuccess(data.results));
+
+      sendEventTelemetry({
+        event: TelemetryEvent.BROWSER_VECTORSET_SEARCH,
+        eventData: {
+          databaseId: stateInit().connections.instances?.connectedInstance?.id,
+          resultsCount: data.results.length,
+          hasFilter: !!filter,
+          queryType: 'element',
         },
       });
     } catch (error) {
@@ -681,25 +743,9 @@ export function updateVectorSetElementAttributes(
   };
 }
 
-// Helper: Parse VINFO response (key-value pairs)
-function parseVInfoResponse(raw: string[]): Record<string, any> {
-  const result: Record<string, any> = {};
-  for (let i = 0; i < raw.length; i += 2) {
-    result[raw[i]] = raw[i + 1];
-  }
-  return result;
-}
-
-// Helper: Parse VSIM WITHSCORES response
-function parseSearchResults(
-  raw: string[],
-): Array<{ name: string; score: number }> {
-  const results = [];
-  for (let i = 0; i < raw.length; i += 2) {
-    results.push({ name: raw[i], score: parseFloat(raw[i + 1]) });
-  }
-  return results;
-}
+// Note: Parsing helpers are not needed on frontend since dedicated API endpoints
+// return properly structured responses. The backend handles all Redis command
+// parsing in VectorSetService.
 ```
 
 ---
@@ -832,17 +878,23 @@ const VectorSetHeader = () => {
     <S.HeaderContainer>
       <Row gap="l" align="center">
         <FlexItem>
-          <Text size="s" color="subdued">Vector Dimension:</Text>
+          <Text size="s" color="secondary">Vector Dimension:</Text>
           <Badge>{info.vectorDim}</Badge>
         </FlexItem>
         <FlexItem>
-          <Text size="s" color="subdued">Quantization:</Text>
+          <Text size="s" color="secondary">Quantization:</Text>
           <Badge>{info.quantType}</Badge>
         </FlexItem>
         <FlexItem>
-          <Text size="s" color="subdued">Size:</Text>
-          <Badge>{info.size} bytes</Badge>
+          <Text size="s" color="secondary">Elements:</Text>
+          <Badge>{info.size}</Badge>
         </FlexItem>
+        {info.maxLevel !== undefined && (
+          <FlexItem>
+            <Text size="s" color="secondary">Max Level:</Text>
+            <Badge>{info.maxLevel}</Badge>
+          </FlexItem>
+        )}
       </Row>
     </S.HeaderContainer>
   )
@@ -861,7 +913,7 @@ import debounce from 'lodash/debounce'
 
 import {
   searchVectorSetByVector,
-  searchVectorSetByElement,
+  searchVectorSetByElement, // NEW: Search by element name (ELE query type)
   clearSearch,
   vectorsetSearchSelector,
   vectorsetInfoSelector,
@@ -931,8 +983,9 @@ const VectorSetSearch = ({ keyName, onSearchModeChange }: Props) => {
 
     setError('')
     onSearchModeChange(true)
-    dispatch(searchVectorSetByElement(keyName, elementInput.trim()))
-  }, [elementInput, keyName])
+    // Uses ELE query type to find vectors similar to an existing element
+    dispatch(searchVectorSetByElement(keyName, elementInput.trim(), count, ef, filter || undefined))
+  }, [elementInput, keyName, count, ef, filter])
 
   const handleSearch = searchMode === 'vector' ? handleVectorSearch : handleElementSearch
 
@@ -1040,7 +1093,7 @@ const VectorSetSearch = ({ keyName, onSearchModeChange }: Props) => {
         )}
 
         {query && results.length > 0 && (
-          <Text size="s" color="subdued">
+          <Text size="s" color="secondary">
             Found {results.length} {searchMode === 'vector' ? 'similar vectors' : 'matching elements'}
           </Text>
         )}
@@ -1123,7 +1176,7 @@ const FilterAutoSuggest = ({ label, placeholder, value, onChange, keyName }: Pro
       {showSuggestions && attributeKeys.length > 0 && (
         <S.SuggestionsPopover>
           <Col gap="xs">
-            <Text size="xs" color="subdued">Available attributes:</Text>
+            <Text size="xs" color="secondary">Available attributes:</Text>
             {attributeKeys.map((attr) => (
               <S.SuggestionItem
                 key={attr}
@@ -1136,7 +1189,7 @@ const FilterAutoSuggest = ({ label, placeholder, value, onChange, keyName }: Pro
         </S.SuggestionsPopover>
       )}
 
-      <Text size="xs" color="subdued">
+      <Text size="xs" color="secondary">
         Syntax: .field == "value", .num {'>'} 5, .a and .b, .x in ["a","b"]
       </Text>
     </S.Container>
@@ -1279,7 +1332,7 @@ const VectorSetTable = ({ onRemoveKey, isSearchMode }: Props) => {
 
       {!isSearchMode && (
         <S.Footer>
-          <Text size="s" color="subdued">
+          <Text size="s" color="secondary">
             Showing {elements.length} of {total} elements
           </Text>
         </S.Footer>
@@ -1331,7 +1384,7 @@ const VectorDisplay = ({ vector, elementName, maxDisplay = 5 }: Props) => {
   return (
     <S.VectorContainer>
       <Row gap="xs" wrap="wrap">
-        <Text size="s" color="subdued">[</Text>
+        <Text size="s" color="secondary">[</Text>
         {displayVector.map((n, i) => (
           <S.VectorValue key={i}>
             {formatNumber(n)}
@@ -1339,9 +1392,9 @@ const VectorDisplay = ({ vector, elementName, maxDisplay = 5 }: Props) => {
           </S.VectorValue>
         ))}
         {!expanded && hasMore && (
-          <Text size="s" color="subdued">... +{vector.length - maxDisplay} more</Text>
+          <Text size="s" color="secondary">... +{vector.length - maxDisplay} more</Text>
         )}
-        <Text size="s" color="subdued">]</Text>
+        <Text size="s" color="secondary">]</Text>
       </Row>
 
       <Row gap="xs">
