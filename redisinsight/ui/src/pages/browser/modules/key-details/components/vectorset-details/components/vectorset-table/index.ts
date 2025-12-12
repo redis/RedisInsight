@@ -1,2 +1,1 @@
 export { VectorSetTable } from './VectorSetTable'
-

@@ -20,6 +20,7 @@ import type {
   SearchQueryType,
 } from './VectorSetSearch.types'
 import * as S from './VectorSetSearch.styles'
+import { parseVectorInput } from '../../utils'
 
 const SEARCH_TYPE_OPTIONS = [
   { value: VectorSearchQueryType.ELE, label: 'By Element' },
@@ -41,34 +42,6 @@ const VectorSetSearch = ({ onSearch, onClear }: VectorSetSearchProps) => {
   const [vectorInput, setVectorInput] = useState('')
   const [count, setCount] = useState(DEFAULT_COUNT.toString())
 
-  const parseVector = useCallback((input: string): number[] | null => {
-    try {
-      const trimmed = input.trim()
-      if (!trimmed) return null
-
-      // Handle JSON array format: [1.0, 2.0, 3.0]
-      if (trimmed.startsWith('[')) {
-        const parsed = JSON.parse(trimmed)
-        if (
-          Array.isArray(parsed) &&
-          parsed.every((n) => typeof n === 'number')
-        ) {
-          return parsed
-        }
-        return null
-      }
-
-      // Handle comma-separated format: 1.0, 2.0, 3.0
-      const values = trimmed.split(',').map((v) => parseFloat(v.trim()))
-      if (values.every((n) => !Number.isNaN(n))) {
-        return values
-      }
-      return null
-    } catch {
-      return null
-    }
-  }, [])
-
   const handleSearch = useCallback(() => {
     if (!keyName) return
 
@@ -80,22 +53,13 @@ const VectorSetSearch = ({ onSearch, onClear }: VectorSetSearchProps) => {
         searchVectorSetByElement(keyName, elementName.trim(), countValue),
       )
     } else {
-      const vector = parseVector(vectorInput)
+      const vector = parseVectorInput(vectorInput)
       if (!vector || vector.length === 0) return
       dispatch(searchVectorSetByVector(keyName, vector, countValue))
     }
 
     onSearch()
-  }, [
-    keyName,
-    searchType,
-    elementName,
-    vectorInput,
-    count,
-    dispatch,
-    parseVector,
-    onSearch,
-  ])
+  }, [keyName, searchType, elementName, vectorInput, count, dispatch, onSearch])
 
   const handleClear = useCallback(() => {
     setElementName('')
@@ -117,7 +81,7 @@ const VectorSetSearch = ({ onSearch, onClear }: VectorSetSearchProps) => {
     loading ||
     (searchType === VectorSearchQueryType.ELE
       ? !elementName.trim()
-      : !parseVector(vectorInput))
+      : !parseVectorInput(vectorInput))
 
   return (
     <S.Container

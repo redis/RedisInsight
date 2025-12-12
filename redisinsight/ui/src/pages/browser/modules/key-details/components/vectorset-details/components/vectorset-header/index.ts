@@ -1,2 +1,1 @@
 export { VectorSetHeader } from './VectorSetHeader'
-

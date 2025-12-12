@@ -15,8 +15,10 @@ import type { VectorSetDetailsProps } from './VectorSetDetails.types'
 import { VectorSetHeader } from './components/vectorset-header'
 import { VectorSetTable } from './components/vectorset-table'
 import { VectorSetSearch } from './components/vectorset-search'
+import { AddVectorSetElements } from './components/add-vectorset-elements'
 import { AddItemsAction } from '../key-details-actions'
 import { KeyDetailsSubheader } from '../key-details-subheader/KeyDetailsSubheader'
+import { AddKeysContainer } from '../common/AddKeysContainer.styled'
 
 const VectorSetDetails = (props: VectorSetDetailsProps) => {
   const keyType = KeyTypes.VectorSet
@@ -82,12 +84,9 @@ const VectorSetDetails = (props: VectorSetDetailsProps) => {
           </FlexItem>
         )}
         {isAddItemPanelOpen && (
-          <div>
-            {/* TODO: AddVectorSetElement will be added in a later task */}
-            <button type="button" onClick={() => closeAddItemPanel(true)}>
-              Close
-            </button>
-          </div>
+          <AddKeysContainer>
+            <AddVectorSetElements closePanel={closeAddItemPanel} />
+          </AddKeysContainer>
         )}
       </FlexItem>
     </Col>
