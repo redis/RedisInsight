@@ -143,3 +143,7 @@ export const mapSize = (size: TextSizeType): BodyProps['size'] => {
   }
   return size
 }
+
+export const StyledCodeText = styled(Typography.Code)`
+  ${useColorTextStyles};
+`
