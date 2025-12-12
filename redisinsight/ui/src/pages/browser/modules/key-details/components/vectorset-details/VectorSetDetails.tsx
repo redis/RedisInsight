@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
@@ -14,6 +14,7 @@ import { AppDispatch } from 'uiSrc/slices/store'
 import type { VectorSetDetailsProps } from './VectorSetDetails.types'
 import { VectorSetHeader } from './components/vectorset-header'
 import { VectorSetTable } from './components/vectorset-table'
+import { VectorSetSearch } from './components/vectorset-search'
 import { AddItemsAction } from '../key-details-actions'
 import { KeyDetailsSubheader } from '../key-details-subheader/KeyDetailsSubheader'
 
@@ -27,6 +28,7 @@ const VectorSetDetails = (props: VectorSetDetailsProps) => {
   const keyName = selectedKeyData?.name
 
   const [isAddItemPanelOpen, setIsAddItemPanelOpen] = useState<boolean>(false)
+  const [isSearchMode, setIsSearchMode] = useState<boolean>(false)
 
   useEffect(() => {
     if (keyName) {
@@ -48,6 +50,14 @@ const VectorSetDetails = (props: VectorSetDetailsProps) => {
     }
   }
 
+  const handleSearch = useCallback(() => {
+    setIsSearchMode(true)
+  }, [])
+
+  const handleClearSearch = useCallback(() => {
+    setIsSearchMode(false)
+  }, [])
+
   const Actions = ({ width }: { width: number }) => (
     <AddItemsAction
       title="Add Elements"
@@ -60,11 +70,15 @@ const VectorSetDetails = (props: VectorSetDetailsProps) => {
     <Col className="fluid relative" justify="between">
       <KeyDetailsHeader {...props} key="key-details-header" />
       <VectorSetHeader data-testid="vectorset-header" />
+      <VectorSetSearch onSearch={handleSearch} onClear={handleClearSearch} />
       <KeyDetailsSubheader keyType={keyType} Actions={Actions} />
       <FlexItem grow className="key-details-body" key="key-details-body">
         {!loading && (
           <FlexItem grow style={{ height: '100%' }}>
-            <VectorSetTable onRemoveKey={onRemoveKey} />
+            <VectorSetTable
+              onRemoveKey={onRemoveKey}
+              isSearchMode={isSearchMode}
+            />
           </FlexItem>
         )}
         {isAddItemPanelOpen && (
