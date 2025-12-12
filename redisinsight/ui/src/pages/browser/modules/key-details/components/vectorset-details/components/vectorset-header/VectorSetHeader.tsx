@@ -14,7 +14,7 @@ const VectorSetHeader = ({ 'data-testid': testId }: VectorSetHeaderProps) => {
   if (!info) return null
 
   return (
-    <S.HeaderContainer gap="l" align="center" data-testid={testId}>
+    <S.HeaderContainer gap="l" align="center" data-testid={testId} grow={false}>
       <S.InfoItem>
         <Text size="s" color="secondary">
           Vector Dimension:

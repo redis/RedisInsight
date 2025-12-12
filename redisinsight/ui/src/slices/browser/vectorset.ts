@@ -34,7 +34,7 @@ import {
   addErrorNotification,
   IAddInstanceErrorPayload,
 } from '../app/notifications'
-import { RedisResponseBuffer } from '../interfaces'
+import { RedisResponseBuffer, RedisString } from '../interfaces'
 
 export const initialState: StateVectorSet = {
   loading: false,
@@ -180,12 +180,16 @@ const vectorsetSlice = createSlice({
     },
     removeElementsFromList: (
       state,
-      { payload }: PayloadAction<RedisResponseBuffer[]>,
+      { payload }: PayloadAction<RedisString[]>,
     ) => {
       remove(
         state.data.elements,
         (element) =>
-          payload.findIndex((item) => isEqualBuffers(item, element.name)) > -1,
+          payload.findIndex((item) =>
+            typeof item === 'string'
+              ? bufferToString(element.name) === item
+              : isEqualBuffers(item, element.name),
+          ) > -1,
       )
       state.data.total = state.data.total - payload.length
     },
@@ -488,7 +492,7 @@ export function addVectorSetElements(
 
 export function deleteVectorSetElements(
   key: RedisResponseBuffer,
-  elements: RedisResponseBuffer[],
+  elements: RedisString[],
   onSuccessAction?: (newTotal: number) => void,
 ) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {

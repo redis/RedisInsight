@@ -13,15 +13,16 @@ import {
 import { AppDispatch } from 'uiSrc/slices/store'
 import type { VectorSetDetailsProps } from './VectorSetDetails.types'
 import { VectorSetHeader } from './components/vectorset-header'
+import { VectorSetTable } from './components/vectorset-table'
 import { AddItemsAction } from '../key-details-actions'
 import { KeyDetailsSubheader } from '../key-details-subheader/KeyDetailsSubheader'
 
 const VectorSetDetails = (props: VectorSetDetailsProps) => {
   const keyType = KeyTypes.VectorSet
-  const { onOpenAddItemPanel, onCloseAddItemPanel } = props
+  const { onRemoveKey, onOpenAddItemPanel, onCloseAddItemPanel } = props
 
   const dispatch = useDispatch<AppDispatch>()
-  const { loading, data } = useSelector(vectorsetSelector)
+  const { loading } = useSelector(vectorsetSelector)
   const selectedKeyData = useSelector(selectedKeyDataSelector)
   const keyName = selectedKeyData?.name
 
@@ -60,18 +61,10 @@ const VectorSetDetails = (props: VectorSetDetailsProps) => {
       <KeyDetailsHeader {...props} key="key-details-header" />
       <VectorSetHeader data-testid="vectorset-header" />
       <KeyDetailsSubheader keyType={keyType} Actions={Actions} />
-      <FlexItem
-        grow
-        className="key-details-body"
-        key="key-details-body"
-        style={{ height: 300 }}
-      >
+      <FlexItem grow className="key-details-body" key="key-details-body">
         {!loading && (
           <FlexItem grow style={{ height: '100%' }}>
-            {/* TODO: VectorSetDetailsTable will be added in a later task */}
-            <div style={{ padding: '16px' }}>
-              Vector Set: {data.total} elements
-            </div>
+            <VectorSetTable onRemoveKey={onRemoveKey} />
           </FlexItem>
         )}
         {isAddItemPanelOpen && (
