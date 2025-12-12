@@ -17,6 +17,7 @@ import { SetDetails } from '../set-details'
 import { HashDetails } from '../hash-details'
 import { ListDetails } from '../list-details'
 import { StreamDetails } from '../stream-details'
+import { VectorSetDetails } from '../vectorset-details'
 
 export interface Props extends KeyDetailsHeaderProps {
   onOpenAddItemPanel: () => void
@@ -36,6 +37,7 @@ const DynamicTypeDetails = (props: Props) => {
     [KeyTypes.List]: <ListDetails {...props} />,
     [KeyTypes.ReJSON]: <RejsonDetailsWrapper {...props} />,
     [KeyTypes.Stream]: <StreamDetails {...props} />,
+    [KeyTypes.VectorSet]: <VectorSetDetails {...props} />,
   }
 
   if (isTruncatedString(keyProp)) {
