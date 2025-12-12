@@ -73,6 +73,14 @@ enum ApiEndpoints {
   STREAM_CLAIM_PENDING_MESSAGES = 'streams/consumer-groups/consumers/pending-messages/claim',
   STREAM_ACK_PENDING_ENTRIES = 'streams/consumer-groups/consumers/pending-messages/ack',
 
+  VECTOR_SET = 'vector-set',
+  VECTOR_SET_GET_ELEMENTS = 'vector-set/get-elements',
+  VECTOR_SET_SEARCH = 'vector-set/search',
+  VECTOR_SET_ELEMENTS = 'vector-set/elements',
+  VECTOR_SET_ELEMENT_VECTOR = 'vector-set/element/vector',
+  VECTOR_SET_ELEMENT_ATTRIBUTES = 'vector-set/element/attributes',
+  VECTOR_SET_ATTRIBUTES = 'vector-set/attributes',
+
   INFO = 'info',
   CLI_BLOCKING_COMMANDS = 'info/cli-blocking-commands',
   CLI_UNSUPPORTED_COMMANDS = 'info/cli-unsupported-commands',

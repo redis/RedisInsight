@@ -16,6 +16,7 @@ export const GlobalStyles = createGlobalStyle<{ theme: Theme }>`
     --typeStringColor: #6a1dc3;
     --typeReJSONColor: #3f4b5f;
     --typeStreamColor: #6a741b;
+    --typeVectorSetColor: #9b59b6;
     --typeGraphColor: #14708d;
     --typeTimeSeriesColor: #6e6e6e;
 

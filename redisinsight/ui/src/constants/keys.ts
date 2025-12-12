@@ -11,6 +11,7 @@ export enum KeyTypes {
   ReJSON = 'ReJSON-RL',
   JSON = 'json',
   Stream = 'stream',
+  VectorSet = 'vectorset',
 }
 
 export enum ModulesKeyTypes {
@@ -27,6 +28,7 @@ export const GROUP_TYPES_DISPLAY = Object.freeze({
   [KeyTypes.ReJSON]: 'JSON',
   [KeyTypes.JSON]: 'JSON',
   [KeyTypes.Stream]: 'Stream',
+  [KeyTypes.VectorSet]: 'Vector Set',
   [ModulesKeyTypes.TimeSeries]: 'Time Series',
   [CommandGroup.Bitmap]: 'Bitmap',
   [CommandGroup.Cluster]: 'Cluster',
@@ -59,6 +61,7 @@ export const GROUP_TYPES_COLORS = Object.freeze({
   [KeyTypes.ReJSON]: 'var(--typeReJSONColor)',
   [KeyTypes.JSON]: 'var(--typeReJSONColor)',
   [KeyTypes.Stream]: 'var(--typeStreamColor)',
+  [KeyTypes.VectorSet]: 'var(--typeVectorSetColor)',
   [ModulesKeyTypes.Graph]: 'var(--typeGraphColor)',
   [ModulesKeyTypes.TimeSeries]: 'var(--typeTimeSeriesColor)',
   [CommandGroup.SortedSet]: 'var(--groupSortedSetColor)',
@@ -184,6 +187,7 @@ export const ENDPOINT_BASED_ON_KEY_TYPE = Object.freeze({
   [KeyTypes.List]: ApiEndpoints.LIST,
   [KeyTypes.ReJSON]: ApiEndpoints.REJSON,
   [KeyTypes.Stream]: ApiEndpoints.STREAMS,
+  [KeyTypes.VectorSet]: ApiEndpoints.VECTOR_SET,
 })
 
 export type EndpointBasedOnKeyType = keyof typeof ENDPOINT_BASED_ON_KEY_TYPE
