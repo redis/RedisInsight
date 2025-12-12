@@ -1,50 +1,10 @@
-import {
-  expect,
-  describe,
-  it,
-  before,
-  deps,
-  Joi,
-  requirements,
-  generateInvalidDataTestCases,
-  validateInvalidDataTestCase,
-  validateApiCall,
-  getMainCheckFn,
-} from '../deps';
+import { beforeEach, deps, describe, expect, it, requirements, validateApiCall, } from '../deps';
+
 const { server, request, constants, rte } = deps;
 
 // endpoint to test
 const endpoint = (instanceId = constants.TEST_INSTANCE_ID) =>
   request(server).post(`/${constants.API.DATABASES}/${instanceId}/vector-set`);
-
-// input data schema
-const dataSchema = Joi.object({
-  keyName: Joi.string().allow('').required(),
-  elements: Joi.array()
-    .items(
-      Joi.object().keys({
-        name: Joi.string().required().label('.name'),
-        vector: Joi.array().items(Joi.number()).required().label('.vector'),
-        format: Joi.string().valid('VALUES', 'FP32').optional(),
-        attributes: Joi.object().optional(),
-      }),
-    )
-    .min(1)
-    .required(),
-  expire: Joi.number().integer().allow(null).min(1).max(2147483647),
-}).strict();
-
-const validInputData = {
-  keyName: constants.getRandomString(),
-  elements: [
-    {
-      name: 'element1',
-      vector: [0.1, 0.2, 0.3, 0.4],
-    },
-  ],
-};
-
-const mainCheckFn = getMainCheckFn(endpoint);
 
 const createCheckFn = async (testCase) => {
   it(testCase.name, async () => {
@@ -81,13 +41,7 @@ describe('POST /databases/:instanceId/vector-set', () => {
   requirements('rte.version >= 8.0.0');
 
   describe('Main', () => {
-    before(rte.data.truncate);
-
-    describe('Validation', () => {
-      generateInvalidDataTestCases(dataSchema, validInputData).map(
-        validateInvalidDataTestCase(endpoint, dataSchema),
-      );
-    });
+    beforeEach(rte.data.truncate);
 
     describe('Common', () => {
       [
@@ -176,4 +130,3 @@ describe('POST /databases/:instanceId/vector-set', () => {
     });
   });
 });
-

@@ -4,6 +4,7 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 import { catchAclError, catchMultiTransactionError } from 'src/utils';
 import { RedisErrorCodes } from 'src/constants';
 import ERROR_MESSAGES from 'src/constants/error-messages';
@@ -23,6 +24,8 @@ import {
   SearchVectorSetResponse,
   GetVectorSetElementDetailsDto,
   UpdateVectorSetElementAttributesDto,
+  VectorSetElementResponse,
+  SearchResultDto,
 } from 'src/modules/browser/vector-set/dto';
 import {
   VectorFormat,
@@ -122,6 +125,7 @@ export class VectorSetService {
       await checkIfKeyExists(keyName, client);
 
       // Build VADD commands for each element
+      // VADD syntax: VADD key (FP32 | VALUES count) vector element [options]
       const commands: RedisClientCommand[] = elements.map((element) => {
         const format = element.format ?? VectorFormat.VALUES;
 
@@ -131,9 +135,9 @@ export class VectorSetService {
           return [
             BrowserToolVectorSetCommands.VAdd,
             keyName,
-            element.name,
             'FP32',
             vectorBlob,
+            element.name,
           ];
         }
 
@@ -142,10 +146,10 @@ export class VectorSetService {
         return [
           BrowserToolVectorSetCommands.VAdd,
           keyName,
-          element.name,
           'VALUES',
           vectorArray.length.toString(),
           ...vectorArray.map(String),
+          element.name,
         ];
       });
 
@@ -233,18 +237,20 @@ export class VectorSetService {
         throw new NotFoundException(ERROR_MESSAGES.KEY_NOT_EXIST);
       }
 
-      const elements = elementNames.map((name) => ({ name }));
+      const elements = elementNames.map((name) =>
+        plainToInstance(VectorSetElementResponse, { name }),
+      );
 
       this.logger.debug(
         `Succeed to get elements using ${usedCommand}.`,
         clientMetadata,
       );
 
-      return {
+      return plainToInstance(GetVectorSetElementsResponse, {
         keyName,
         total,
         elements,
-      };
+      });
     } catch (error) {
       this.logger.error(
         'Failed to get elements of the VectorSet data type.',
@@ -392,10 +398,10 @@ export class VectorSetService {
 
       this.logger.debug('Succeed to search VectorSet.', clientMetadata);
 
-      return {
+      return plainToInstance(SearchVectorSetResponse, {
         keyName,
         results,
-      };
+      });
     } catch (error) {
       this.logger.error('Failed to search VectorSet.', error, clientMetadata);
       if (error.message?.includes(RedisErrorCodes.WrongType)) {
@@ -409,11 +415,11 @@ export class VectorSetService {
    * Parse VSIM response based on options
    */
   private parseSearchResponse(
-    response: string[],
+    response: RedisString[],
     withScores: boolean,
     withAttribs: boolean,
-  ): Array<{ name: string; score?: number; attributes?: Record<string, any> }> {
-    const results = [];
+  ): SearchResultDto[] {
+    const results: SearchResultDto[] = [];
     if (!response) return results;
 
     // Determine step size based on options
@@ -426,8 +432,8 @@ export class VectorSetService {
     if (withAttribs) step += 1;
 
     for (let i = 0; i < response.length; i += step) {
-      const result: {
-        name: string;
+      const resultData: {
+        name: RedisString;
         score?: number;
         attributes?: Record<string, any>;
       } = {
@@ -436,15 +442,15 @@ export class VectorSetService {
 
       let offset = 1;
       if (withScores) {
-        result.score = parseFloat(response[i + offset]);
+        resultData.score = parseFloat(String(response[i + offset]));
         offset += 1;
       }
       if (withAttribs) {
         const attrsJson = response[i + offset];
-        result.attributes = attrsJson ? JSON.parse(attrsJson) : null;
+        resultData.attributes = attrsJson ? JSON.parse(String(attrsJson)) : null;
       }
 
-      results.push(result);
+      results.push(plainToInstance(SearchResultDto, resultData));
     }
 
     return results;

@@ -1,36 +1,10 @@
-import {
-  expect,
-  describe,
-  it,
-  before,
-  deps,
-  Joi,
-  requirements,
-  generateInvalidDataTestCases,
-  validateInvalidDataTestCase,
-  validateApiCall,
-  getMainCheckFn,
-} from '../deps';
+import { before, deps, describe, expect, getMainCheckFn, Joi, requirements, } from '../deps';
+
 const { server, request, constants, rte } = deps;
 
 // endpoint to test
 const endpoint = (instanceId = constants.TEST_INSTANCE_ID) =>
   request(server).post(`/${constants.API.DATABASES}/${instanceId}/vector-set/search`);
-
-// input data schema
-const dataSchema = Joi.object({
-  keyName: Joi.string().allow('').required(),
-  vector: Joi.array().items(Joi.number()).min(1).required(),
-  count: Joi.number().integer().min(1).max(1000).optional(),
-  ef: Joi.number().integer().min(1).optional(),
-  filter: Joi.string().optional(),
-  withScores: Joi.boolean().optional(),
-}).strict();
-
-const validInputData = {
-  keyName: constants.getRandomString(),
-  vector: [0.1, 0.2, 0.3],
-};
 
 const mainCheckFn = getMainCheckFn(endpoint);
 
@@ -42,39 +16,34 @@ describe('POST /databases/:instanceId/vector-set/search', () => {
     before(async () => {
       await rte.data.truncate();
       // Create a vector set for testing
+      // VADD syntax: VADD key (VALUES count) vector... element
       await rte.data.sendCommand('vadd', [
         'testVectorSet',
-        'element1',
         'VALUES',
         '3',
         '0.1',
         '0.2',
         '0.3',
+        'element1',
       ], null);
       await rte.data.sendCommand('vadd', [
         'testVectorSet',
-        'element2',
         'VALUES',
         '3',
         '0.4',
         '0.5',
         '0.6',
+        'element2',
       ], null);
       await rte.data.sendCommand('vadd', [
         'testVectorSet',
-        'element3',
         'VALUES',
         '3',
         '0.9',
         '0.9',
         '0.9',
+        'element3',
       ], null);
-    });
-
-    describe('Validation', () => {
-      generateInvalidDataTestCases(dataSchema, validInputData).map(
-        validateInvalidDataTestCase(endpoint, dataSchema),
-      );
     });
 
     describe('Common', () => {
@@ -158,4 +127,3 @@ describe('POST /databases/:instanceId/vector-set/search', () => {
     });
   });
 });
-

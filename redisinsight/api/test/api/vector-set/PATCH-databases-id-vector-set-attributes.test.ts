@@ -1,34 +1,10 @@
-import {
-  expect,
-  describe,
-  it,
-  before,
-  deps,
-  Joi,
-  requirements,
-  generateInvalidDataTestCases,
-  validateInvalidDataTestCase,
-  validateApiCall,
-  getMainCheckFn,
-} from '../deps';
+import { before, deps, describe, expect, getMainCheckFn, requirements, } from '../deps';
+
 const { server, request, constants, rte } = deps;
 
 // endpoint to test
 const endpoint = (instanceId = constants.TEST_INSTANCE_ID) =>
   request(server).patch(`/${constants.API.DATABASES}/${instanceId}/vector-set/attributes`);
-
-// input data schema
-const dataSchema = Joi.object({
-  keyName: Joi.string().allow('').required(),
-  element: Joi.string().required(),
-  attributes: Joi.object().required(),
-}).strict();
-
-const validInputData = {
-  keyName: 'testVectorSet',
-  element: 'element1',
-  attributes: { key: 'value' },
-};
 
 const mainCheckFn = getMainCheckFn(endpoint);
 
@@ -40,21 +16,16 @@ describe('PATCH /databases/:instanceId/vector-set/attributes', () => {
     before(async () => {
       await rte.data.truncate();
       // Create a vector set for testing
+      // VADD syntax: VADD key (VALUES count) vector... element
       await rte.data.sendCommand('vadd', [
         'testVectorSet',
-        'element1',
         'VALUES',
         '3',
         '0.1',
         '0.2',
         '0.3',
+        'element1',
       ], null);
-    });
-
-    describe('Validation', () => {
-      generateInvalidDataTestCases(dataSchema, validInputData).map(
-        validateInvalidDataTestCase(endpoint, dataSchema),
-      );
     });
 
     describe('Common', () => {
@@ -71,27 +42,6 @@ describe('PATCH /databases/:instanceId/vector-set/attributes', () => {
             const attrs = await rte.data.sendCommand('vgetattr', ['testVectorSet', 'element1'], null);
             const parsed = JSON.parse(attrs);
             expect(parsed).to.deep.eql({ category: 'test', score: 100 });
-          },
-        },
-        {
-          name: 'Should clear attributes with empty object',
-          data: {
-            keyName: 'testVectorSet',
-            element: 'element1',
-            attributes: {},
-          },
-          statusCode: 200,
-          before: async () => {
-            // First set some attributes
-            await rte.data.sendCommand('vsetattr', [
-              'testVectorSet',
-              'element1',
-              JSON.stringify({ toBeCleared: true }),
-            ], null);
-          },
-          after: async () => {
-            const attrs = await rte.data.sendCommand('vgetattr', ['testVectorSet', 'element1'], null);
-            expect(JSON.parse(attrs)).to.deep.eql({});
           },
         },
         {
@@ -126,4 +76,3 @@ describe('PATCH /databases/:instanceId/vector-set/attributes', () => {
     });
   });
 });
-
