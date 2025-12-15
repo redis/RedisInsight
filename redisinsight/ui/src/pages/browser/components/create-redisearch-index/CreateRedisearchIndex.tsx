@@ -70,6 +70,7 @@ const StyledContent = styled(Col)`
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
+  scrollbar-width: thin;
   overscroll-behavior: contain;
 `
 
