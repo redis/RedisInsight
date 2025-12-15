@@ -72,7 +72,6 @@ const StyledContent = styled(Col)`
   overflow-y: auto;
   scrollbar-width: thin;
   overscroll-behavior: contain;
-  padding-bottom: ${({ theme }) => theme.core.space.space400};
 `
 
 const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
