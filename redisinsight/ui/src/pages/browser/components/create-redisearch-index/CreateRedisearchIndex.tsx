@@ -269,47 +269,51 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
             <Text>Identifier</Text>
             {IdentifierInfo()}
           </Row>
-          <AddMultipleFields
-            items={fields}
-            isClearDisabled={isClearDisabled}
-            onClickRemove={onClickRemove}
-            onClickAdd={addField}
-          >
-            {(item, index) => (
-              <Row align="center" gap="m">
-                <FlexItem grow>
-                  <FormField>
-                    <TextInput
-                      name={`identifier-${item.id}`}
-                      id={`identifier-${item.id}`}
-                      placeholder="Enter Identifier"
-                      value={item.identifier}
-                      onChange={(value) =>
-                        handleFieldChange('identifier', item.id, value)
-                      }
-                      ref={
-                        index === fields.length - 1 ? lastAddedIdentifier : null
-                      }
-                      autoComplete="off"
-                      data-testid={`identifier-${item.id}`}
-                    />
-                  </FormField>
-                </FlexItem>
-                <FlexItem grow>
-                  <FormField>
-                    <RiSelect
-                      options={fieldTypeOptions}
-                      value={item.fieldType}
-                      onChange={(value: string) =>
-                        handleFieldChange('fieldType', item.id, value)
-                      }
-                      data-testid={`field-type-${item.id}`}
-                    />
-                  </FormField>
-                </FlexItem>
-              </Row>
-            )}
-          </AddMultipleFields>
+          <div>
+            <AddMultipleFields
+              items={fields}
+              isClearDisabled={isClearDisabled}
+              onClickRemove={onClickRemove}
+              onClickAdd={addField}
+            >
+              {(item, index) => (
+                <Row align="center" gap="m">
+                  <FlexItem grow>
+                    <FormField>
+                      <TextInput
+                        name={`identifier-${item.id}`}
+                        id={`identifier-${item.id}`}
+                        placeholder="Enter Identifier"
+                        value={item.identifier}
+                        onChange={(value) =>
+                          handleFieldChange('identifier', item.id, value)
+                        }
+                        ref={
+                          index === fields.length - 1
+                            ? lastAddedIdentifier
+                            : null
+                        }
+                        autoComplete="off"
+                        data-testid={`identifier-${item.id}`}
+                      />
+                    </FormField>
+                  </FlexItem>
+                  <FlexItem grow>
+                    <FormField>
+                      <RiSelect
+                        options={fieldTypeOptions}
+                        value={item.fieldType}
+                        onChange={(value: string) =>
+                          handleFieldChange('fieldType', item.id, value)
+                        }
+                        data-testid={`field-type-${item.id}`}
+                      />
+                    </FormField>
+                  </FlexItem>
+                </Row>
+              )}
+            </AddMultipleFields>
+          </div>
         </Col>
       </StyledContent>
       <HorizontalRule margin="xs" colorVariable="separatorColor" />
