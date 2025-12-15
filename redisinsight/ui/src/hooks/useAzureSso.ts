@@ -191,6 +191,42 @@ export const azureSsoStore = {
   },
 
   /**
+   * Force refresh the token (for testing)
+   */
+  forceRefreshToken: async (): Promise<string | null> => {
+    // eslint-disable-next-line no-console
+    console.log('[Azure SSO] Force refreshing token...')
+
+    try {
+      const result = await ipcAzureSsoRefreshToken({ forceRefresh: true })
+
+      // eslint-disable-next-line no-console
+      console.log('[Azure SSO] Force refresh result:', JSON.stringify(result, null, 2))
+
+      if (result?.status === 'succeed' && result?.data) {
+        const newUser: AzureSsoUser = {
+          upn: result.data.upn,
+          oid: result.data.oid,
+          accessToken: result.data.accessToken,
+          expiresOn: new Date(result.data.expiresOn).toISOString(),
+        }
+        azureSsoStore.setUser(newUser)
+        // eslint-disable-next-line no-console
+        console.log('[Azure SSO] Token force refreshed successfully')
+        return newUser.accessToken
+      }
+
+      // eslint-disable-next-line no-console
+      console.log('[Azure SSO] Force refresh failed:', result?.message || result)
+      return null
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('[Azure SSO] Force refresh error:', e)
+      return null
+    }
+  },
+
+  /**
    * Logout - clear local state and MSAL cache
    */
   logout: async (): Promise<void> => {

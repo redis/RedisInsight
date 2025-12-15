@@ -408,25 +408,30 @@ export const initAzureSsoHandlers = () => {
   })
 
   // Silent token refresh
-  ipcMain.handle(IpcInvokeEvent.azureSsoRefreshToken, async () => {
-    try {
-      log.info('[Azure SSO] Attempting silent token refresh')
+  ipcMain.handle(
+    IpcInvokeEvent.azureSsoRefreshToken,
+    async (_event, options?: { forceRefresh?: boolean }) => {
+      try {
+        const forceRefresh = options?.forceRefresh ?? false
+        log.info(
+          `[Azure SSO] Attempting silent token refresh (force: ${forceRefresh})`,
+        )
 
-      const account = await getCachedAccount()
-      if (!account) {
-        log.info('[Azure SSO] No cached account found')
-        return {
-          status: AzureSsoAuthStatus.Failed,
-          message: 'No cached account',
+        const account = await getCachedAccount()
+        if (!account) {
+          log.info('[Azure SSO] No cached account found')
+          return {
+            status: AzureSsoAuthStatus.Failed,
+            message: 'No cached account',
+          }
         }
-      }
 
-      const pca = await getMsalClient()
-      const tokenResponse = await pca.acquireTokenSilent({
-        account,
-        scopes: AZURE_CONFIG.SCOPES,
-        forceRefresh: false, // Only refresh if expired
-      })
+        const pca = await getMsalClient()
+        const tokenResponse = await pca.acquireTokenSilent({
+          account,
+          scopes: AZURE_CONFIG.SCOPES,
+          forceRefresh,
+        })
 
       // Persist updated cache
       await persistCache()

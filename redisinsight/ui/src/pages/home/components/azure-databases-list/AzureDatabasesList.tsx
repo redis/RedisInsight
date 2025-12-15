@@ -38,6 +38,23 @@ const AzureDatabasesList = () => {
   const { isLoggedIn } = useAzureSsoStore()
   const { resources, loading, error } = useAzureResources()
   const [connectingId, setConnectingId] = useState<string | null>(null)
+  const [isRefreshingToken, setIsRefreshingToken] = useState(false)
+
+  const handleForceRefreshToken = useCallback(async () => {
+    setIsRefreshingToken(true)
+    try {
+      const newToken = await azureSsoStore.forceRefreshToken()
+      if (newToken) {
+        // eslint-disable-next-line no-alert
+        alert('Token refreshed successfully! Check console for details.')
+      } else {
+        // eslint-disable-next-line no-alert
+        alert('Token refresh failed. Check console for details.')
+      }
+    } finally {
+      setIsRefreshingToken(false)
+    }
+  }, [])
 
   const handleRefresh = useCallback(async () => {
     const accessToken = await azureSsoStore.getValidAccessToken()
@@ -174,14 +191,23 @@ const AzureDatabasesList = () => {
         <Text style={{ fontWeight: 'bold' }}>
           Azure Redis Databases ({flattenedDatabases.length})
         </Text>
-        <EmptyButton
-          onClick={handleRefresh}
-          disabled={loading}
-          icon={RefreshIcon}
-          data-testid="azure-refresh-btn"
-        >
-          Refresh
-        </EmptyButton>
+        <Row gap="s">
+          <EmptyButton
+            onClick={handleRefresh}
+            disabled={loading}
+            icon={RefreshIcon}
+            data-testid="azure-refresh-btn"
+          >
+            Refresh
+          </EmptyButton>
+          <EmptyButton
+            onClick={handleForceRefreshToken}
+            disabled={isRefreshingToken}
+            data-testid="azure-force-refresh-token-btn"
+          >
+            {isRefreshingToken ? 'Refreshing...' : '🔑 Force Refresh Token'}
+          </EmptyButton>
+        </Row>
       </Row>
       <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
         {flattenedDatabases.map((db) => {
