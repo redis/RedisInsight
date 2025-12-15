@@ -1,4 +1,5 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { Loader } from 'uiSrc/components/base/display'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
@@ -9,12 +10,33 @@ import {
   useAzureSsoStore,
   azureResourcesStore,
   AzureRedisResource,
+  AzureRedisDatabase,
 } from 'uiSrc/hooks/useAzureSso'
-import { fetchAzureRedisResources } from 'uiSrc/electron/components/ConfigAzureSso/ConfigAzureSso'
+import {
+  fetchAzureRedisResources,
+  getAzureRedisConnectionDetails,
+} from 'uiSrc/electron/components/ConfigAzureSso/ConfigAzureSso'
+import { createInstanceStandaloneAction } from 'uiSrc/slices/instances/instances'
+import { Instance } from 'uiSrc/slices/interfaces'
+import { AppDispatch } from 'uiSrc/slices/store'
+
+interface FlattenedDatabase {
+  id: string
+  name: string
+  type: 'standard' | 'enterprise'
+  host: string
+  port: number
+  subscription: string
+  location: string
+  resource: AzureRedisResource
+  database: AzureRedisDatabase | null
+}
 
 const AzureDatabasesList = () => {
+  const dispatch = useDispatch<AppDispatch>()
   const { isLoggedIn, user } = useAzureSsoStore()
   const { resources, loading, error } = useAzureResources()
+  const [connectingId, setConnectingId] = useState<string | null>(null)
 
   const handleRefresh = useCallback(async () => {
     if (!user?.accessToken) return
@@ -28,6 +50,48 @@ const AzureDatabasesList = () => {
       azureResourcesStore.setError('Failed to refresh resources')
     }
   }, [user?.accessToken])
+
+  const handleConnect = useCallback(async (db: FlattenedDatabase) => {
+    if (!user?.accessToken) return
+
+    setConnectingId(db.id)
+
+    try {
+      const connectionDetails = await getAzureRedisConnectionDetails(
+        db.resource,
+        db.database,
+        user.accessToken,
+      )
+
+      if (!connectionDetails) {
+        // eslint-disable-next-line no-console
+        console.error('[Azure] Failed to get connection details')
+        setConnectingId(null)
+        return
+      }
+
+      const payload: Partial<Instance> = {
+        name: connectionDetails.name,
+        host: connectionDetails.host,
+        port: connectionDetails.port,
+        tls: connectionDetails.tls,
+        password: connectionDetails.password,
+        verifyServerCert: false,
+      }
+
+      dispatch(createInstanceStandaloneAction(
+        payload as Instance,
+        undefined,
+        () => {
+          setConnectingId(null)
+        },
+      ))
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('[Azure] Error connecting:', err)
+      setConnectingId(null)
+    }
+  }, [user?.accessToken, dispatch])
 
   // Don't show anything if not logged in
   if (!isLoggedIn) {
@@ -60,15 +124,7 @@ const AzureDatabasesList = () => {
   }
 
   // Flatten resources to include both standard and enterprise databases
-  const flattenedDatabases: Array<{
-    id: string
-    name: string
-    type: 'standard' | 'enterprise'
-    host: string
-    port: number
-    subscription: string
-    location: string
-  }> = []
+  const flattenedDatabases: FlattenedDatabase[] = []
 
   resources.forEach((resource: AzureRedisResource) => {
     if (resource.resourceType === 'Microsoft.Cache/redis') {
@@ -81,6 +137,8 @@ const AzureDatabasesList = () => {
         port: resource.properties?.sslPort || 6380,
         subscription: resource.subscriptionName,
         location: resource.location,
+        resource,
+        database: null,
       })
     } else if (resource.resourceType === 'Microsoft.Cache/redisEnterprise') {
       // Enterprise Redis - each database is a separate entry
@@ -93,6 +151,8 @@ const AzureDatabasesList = () => {
           port: db.properties?.port || 10000,
           subscription: resource.subscriptionName,
           location: resource.location,
+          resource,
+          database: db,
         })
       })
     }
@@ -114,38 +174,46 @@ const AzureDatabasesList = () => {
         </EmptyButton>
       </Row>
       <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
-        {flattenedDatabases.map((db) => (
-          <Row
-            key={db.id}
-            align="center"
-            justify="between"
-            style={{
-              padding: '8px 12px',
-              marginBottom: '4px',
-              backgroundColor: '#f5f5f5',
-              borderRadius: '4px',
-              cursor: 'pointer',
-            }}
-          >
-            <div>
-              <Text style={{ fontWeight: 500 }}>{db.name}</Text>
-              <Text style={{ fontSize: '12px', color: '#666' }}>
-                {db.host}:{db.port} • {db.subscription} • {db.location}
-              </Text>
-            </div>
-            <Text
+        {flattenedDatabases.map((db) => {
+          const isConnecting = connectingId === db.id
+          return (
+            <Row
+              key={db.id}
+              align="center"
+              justify="between"
+              onClick={() => !isConnecting && handleConnect(db)}
               style={{
-                fontSize: '11px',
-                padding: '2px 6px',
-                borderRadius: '3px',
-                backgroundColor: db.type === 'enterprise' ? '#0066cc' : '#009900',
-                color: 'white',
+                padding: '8px 12px',
+                marginBottom: '4px',
+                backgroundColor: isConnecting ? '#e0e0e0' : '#f5f5f5',
+                borderRadius: '4px',
+                cursor: isConnecting ? 'wait' : 'pointer',
+                opacity: isConnecting ? 0.7 : 1,
               }}
             >
-              {db.type}
-            </Text>
-          </Row>
-        ))}
+              <div>
+                <Text style={{ fontWeight: 500 }}>{db.name}</Text>
+                <Text style={{ fontSize: '12px', color: '#666' }}>
+                  {db.host}:{db.port} • {db.subscription} • {db.location}
+                </Text>
+              </div>
+              <Row align="center" gap="s">
+                {isConnecting && <Loader size="s" />}
+                <Text
+                  style={{
+                    fontSize: '11px',
+                    padding: '2px 6px',
+                    borderRadius: '3px',
+                    backgroundColor: db.type === 'enterprise' ? '#0066cc' : '#009900',
+                    color: 'white',
+                  }}
+                >
+                  {db.type}
+                </Text>
+              </Row>
+            </Row>
+          )
+        })}
       </div>
     </div>
   )
