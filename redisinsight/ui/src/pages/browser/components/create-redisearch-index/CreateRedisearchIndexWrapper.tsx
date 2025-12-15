@@ -39,8 +39,8 @@ const CreateRedisearchIndexWrapper = ({
   onCreateIndex,
 }: Props) => (
   <StyledCreateRedisearchIndexWrapper data-testid="create-index-panel">
-    <StyledHeader>
-      <Spacer size="m" />
+    <Spacer size="m" />
+    <StyledHeader gap="xl">
       <Row justify="between">
         <Title size="M">New Index</Title>
         {!arePanelsCollapsed && (
@@ -55,7 +55,6 @@ const CreateRedisearchIndexWrapper = ({
           </RiTooltip>
         )}
       </Row>
-      <Spacer size="xl" />
       <FlexItem>
         <Text size="s">
           Use CLI or Workbench to create more advanced indexes. See more details
@@ -73,9 +72,8 @@ const CreateRedisearchIndexWrapper = ({
           </Link>
         </Text>
       </FlexItem>
-      <Spacer size="xl" />
     </StyledHeader>
-    <HorizontalRule margin="xs" colorVariable="separatorColor" />
+    <HorizontalRule margin="l" colorVariable="separatorColor" />
     <CreateRedisearchIndex
       onCreateIndex={onCreateIndex}
       onClosePanel={onClosePanel}

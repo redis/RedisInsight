@@ -89,8 +89,6 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
     initialFieldValue(fieldTypeOptions),
   ])
 
-
-
   const lastAddedIdentifier = useRef<HTMLInputElement>(null)
   const prevCountFields = useRef<number>(0)
 
@@ -213,8 +211,7 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
 
   return (
     <>
-      <StyledContent gap="xl">
-        <Spacer size="xs" />
+      <StyledContent gap="l">
         <Row gap="m" grow={false}>
           <FlexItem grow>
             <FormField label="Index Name">
@@ -263,11 +260,11 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
             />
           </FlexItem>
         </Row>
-        <HorizontalRule margin="s" colorVariable="separatorColor" />
-        <Col grow={false} gap="s">
+        <HorizontalRule margin="m" colorVariable="separatorColor" />
+        <Col grow={false} gap="m">
           <Row align="center" gap="xs">
             <Text>Identifier</Text>
-            {IdentifierInfo()}
+            <IdentifierInfo />
           </Row>
           <div>
             <AddMultipleFields
