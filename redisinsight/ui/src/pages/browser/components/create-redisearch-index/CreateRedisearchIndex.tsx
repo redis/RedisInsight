@@ -31,7 +31,7 @@ import { RiTooltip } from 'uiSrc/components/base'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { CreateRedisearchIndexDto } from 'apiSrc/modules/browser/redisearch/dto'
 import { Panel } from 'uiSrc/components/panel'
-import { HorizontalRule, Spacer } from 'uiSrc/components/base/layout'
+import { HorizontalRule } from 'uiSrc/components/base/layout'
 
 import { KEY_TYPE_OPTIONS, RedisearchIndexKeyType } from './constants'
 
@@ -72,6 +72,7 @@ const StyledContent = styled(Col)`
   overflow-y: auto;
   scrollbar-width: thin;
   overscroll-behavior: contain;
+  padding-bottom: ${({ theme }) => theme.core.space.space400};
 `
 
 const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
