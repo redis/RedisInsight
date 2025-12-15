@@ -33,6 +33,9 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { PlusIcon } from 'uiSrc/components/base/icons'
 import ColumnsConfigPopover from 'uiSrc/components/columns-config/ColumnsConfigPopover'
+import { Text } from 'uiSrc/components/base/text'
+import { ipcAzureSsoAuth } from 'uiSrc/electron/utils'
+import { useAzureSsoStore } from 'uiSrc/hooks/useAzureSso'
 import handleClickFreeCloudDb from '../database-list-component/methods/handleClickFreeCloudDb'
 import SearchDatabasesList from '../search-databases-list'
 
@@ -46,6 +49,7 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
   const { data: instances, shownColumns } = useSelector(instancesSelector)
   const featureFlags = useSelector(appFeatureFlagsFeaturesSelector)
   const { loading, data } = useSelector(contentSelector)
+  const { user: azureUser, isLoggedIn: isAzureLoggedIn, logout: azureLogout } = useAzureSsoStore()
 
   const [promoData, setPromoData] = useState<ContentCreateRedis>()
 
@@ -131,6 +135,48 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
     </FeatureFlagComponent>
   )
 
+  const handleAzureSsoClick = async () => {
+    try {
+      await ipcAzureSsoAuth()
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('Azure SSO error:', e)
+    }
+  }
+
+  const handleAzureLogout = () => {
+    azureLogout()
+    // eslint-disable-next-line no-console
+    console.log('[Azure SSO] Logged out')
+  }
+
+  const AzureSsoButton = () => {
+    if (isAzureLoggedIn && azureUser) {
+      return (
+        <Row align="center" gap="s">
+          <Text data-testid="azure-sso-user">
+            {azureUser.upn}
+          </Text>
+          <EmptyButton
+            onClick={handleAzureLogout}
+            data-testid="azure-sso-logout"
+          >
+            Logout
+          </EmptyButton>
+        </Row>
+      )
+    }
+
+    return (
+      <SecondaryButton
+        onClick={handleAzureSsoClick}
+        data-testid="azure-sso-button"
+      >
+        Login with Azure
+      </SecondaryButton>
+    )
+  }
+
   const CreateBtn = ({ content }: { content: ContentCreateRedis }) => {
     if (!isShowPromoBtn) return null
 
@@ -178,6 +224,7 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
         <FlexItem direction="row" $gap="m">
           <AddCloudInstanceButton />
           <AddLocalInstanceButton />
+          <AzureSsoButton />
         </FlexItem>
         {!loading && !isEmpty(data) && (
           <FlexItem className={cx(styles.promo)}>
