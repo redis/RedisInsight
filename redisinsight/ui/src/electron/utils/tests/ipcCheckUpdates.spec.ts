@@ -11,7 +11,7 @@ beforeEach(() => {
   store.clearActions()
   window.app = {
     ipc: { invoke: invokeMock },
-  }
+  } as any
 })
 
 describe('ipcCheckUpdates', () => {
