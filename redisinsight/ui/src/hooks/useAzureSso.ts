@@ -1,6 +1,13 @@
 import { useState, useEffect, useCallback } from 'react'
+import {
+  ipcAzureSsoRefreshToken,
+  ipcAzureSsoLogout,
+} from 'uiSrc/electron/utils'
 
 const AZURE_SSO_STORAGE_KEY = 'azure_sso_user'
+
+// Buffer time before expiration to trigger refresh (5 minutes)
+const TOKEN_REFRESH_BUFFER_MS = 5 * 60 * 1000
 
 export interface AzureSsoUser {
   upn: string
@@ -99,7 +106,7 @@ const listeners = new Set<(user: AzureSsoUser | null) => void>()
 export const azureSsoStore = {
   getUser: (): AzureSsoUser | null => {
     if (globalUser) return globalUser
-    
+
     const stored = localStorage.getItem(AZURE_SSO_STORAGE_KEY)
     if (stored) {
       try {
@@ -130,6 +137,72 @@ export const azureSsoStore = {
     listeners.add(listener)
     return () => listeners.delete(listener)
   },
+
+  /**
+   * Get a valid access token, refreshing if needed.
+   * Returns null if refresh fails (user needs to re-login).
+   */
+  getValidAccessToken: async (): Promise<string | null> => {
+    const user = azureSsoStore.getUser()
+
+    if (!user) {
+      return null
+    }
+
+    const expiresOn = new Date(user.expiresOn)
+    const now = new Date()
+
+    // Check if token is still valid (with buffer)
+    if (expiresOn.getTime() - now.getTime() > TOKEN_REFRESH_BUFFER_MS) {
+      return user.accessToken
+    }
+
+    // Token is expired or about to expire, try to refresh
+    // eslint-disable-next-line no-console
+    console.log('[Azure SSO] Token expired or expiring soon, refreshing...')
+
+    try {
+      const result = await ipcAzureSsoRefreshToken()
+
+      if (result?.status === 'succeed' && result?.data) {
+        const newUser: AzureSsoUser = {
+          upn: result.data.upn,
+          oid: result.data.oid,
+          accessToken: result.data.accessToken,
+          expiresOn: new Date(result.data.expiresOn).toISOString(),
+        }
+        azureSsoStore.setUser(newUser)
+        // eslint-disable-next-line no-console
+        console.log('[Azure SSO] Token refreshed successfully')
+        return newUser.accessToken
+      }
+
+      // Refresh failed, clear user state
+      // eslint-disable-next-line no-console
+      console.log('[Azure SSO] Token refresh failed, user needs to re-login')
+      azureSsoStore.setUser(null)
+      return null
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('[Azure SSO] Token refresh error:', e)
+      azureSsoStore.setUser(null)
+      return null
+    }
+  },
+
+  /**
+   * Logout - clear local state and MSAL cache
+   */
+  logout: async (): Promise<void> => {
+    try {
+      await ipcAzureSsoLogout()
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('[Azure SSO] Logout error:', e)
+    }
+    azureSsoStore.setUser(null)
+    azureResourcesStore.clear()
+  },
 }
 
 // Hook that uses the store
@@ -149,7 +222,8 @@ export const useAzureSsoStore = () => {
     user,
     isLoggedIn: !!user,
     login: (userData: AzureSsoUser) => azureSsoStore.setUser(userData),
-    logout: () => azureSsoStore.setUser(null),
+    logout: () => azureSsoStore.logout(),
+    getValidAccessToken: () => azureSsoStore.getValidAccessToken(),
   }
 }
 

@@ -4,6 +4,8 @@ enum IpcInvokeEvent {
   getAppVersion = 'app:get:version',
   cloudOauth = 'cloud:oauth',
   azureSsoOauth = 'azure:sso:oauth',
+  azureSsoRefreshToken = 'azure:sso:refresh-token',
+  azureSsoLogout = 'azure:sso:logout',
   windowOpen = 'window:open',
   themeChange = 'theme:change',
   appRestart = 'app:restart',

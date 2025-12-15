@@ -1,12 +1,15 @@
 import http, { Server } from 'http'
 import { URL } from 'url'
-import { ipcMain, WebContents } from 'electron'
+import path from 'path'
+import fs from 'fs'
+import { ipcMain, WebContents, app } from 'electron'
 import log from 'electron-log'
 import open from 'open'
 import {
   PublicClientApplication,
   CryptoProvider,
   LogLevel,
+  AccountInfo,
 } from '@azure/msal-node'
 import { wrapErrorMessageSensitiveData } from 'desktopSrc/utils'
 
@@ -30,6 +33,10 @@ const getAuthority = () =>
   `https://login.microsoftonline.com/${AZURE_CONFIG.TENANT_ID}`
 const getRedirectUri = () => `http://localhost:${AZURE_CONFIG.REDIRECT_PORT}`
 
+// Token cache file path
+const getCacheFilePath = () =>
+  path.join(app.getPath('userData'), 'azure-msal-cache.json')
+
 // Store for pending auth requests
 interface PendingAuthRequest {
   verifier: string
@@ -38,6 +45,9 @@ interface PendingAuthRequest {
 }
 
 const pendingAuthRequests = new Map<string, PendingAuthRequest>()
+
+// Persistent MSAL client instance
+let msalClient: PublicClientApplication | null = null
 
 export enum AzureSsoAuthStatus {
   Succeed = 'succeed',
@@ -56,7 +66,94 @@ export interface AzureSsoAuthResult {
   }
 }
 
-// Create MSAL client
+// Load token cache from file
+const loadTokenCache = (): string | null => {
+  try {
+    const cachePath = getCacheFilePath()
+    if (fs.existsSync(cachePath)) {
+      return fs.readFileSync(cachePath, 'utf-8')
+    }
+  } catch (e) {
+    log.error('[Azure SSO] Error loading token cache:', e)
+  }
+  return null
+}
+
+// Save token cache to file
+const saveTokenCache = (cache: string) => {
+  try {
+    const cachePath = getCacheFilePath()
+    fs.writeFileSync(cachePath, cache, 'utf-8')
+    log.info('[Azure SSO] Token cache saved')
+  } catch (e) {
+    log.error('[Azure SSO] Error saving token cache:', e)
+  }
+}
+
+// Clear token cache
+const clearTokenCache = () => {
+  try {
+    const cachePath = getCacheFilePath()
+    if (fs.existsSync(cachePath)) {
+      fs.unlinkSync(cachePath)
+      log.info('[Azure SSO] Token cache cleared')
+    }
+  } catch (e) {
+    log.error('[Azure SSO] Error clearing token cache:', e)
+  }
+}
+
+// Create or get MSAL client with persistent cache
+const getMsalClient = async (): Promise<PublicClientApplication> => {
+  if (msalClient) {
+    return msalClient
+  }
+
+  msalClient = new PublicClientApplication({
+    auth: {
+      clientId: AZURE_CONFIG.CLIENT_ID,
+      authority: getAuthority(),
+    },
+    system: {
+      loggerOptions: {
+        logLevel: LogLevel.Warning,
+        loggerCallback: (_level: LogLevel, message: string) => {
+          log.info(`[MSAL] ${message}`)
+        },
+      },
+    },
+  })
+
+  // Load existing cache
+  const cachedData = loadTokenCache()
+  if (cachedData) {
+    msalClient.getTokenCache().deserialize(cachedData)
+    log.info('[Azure SSO] Token cache loaded')
+  }
+
+  return msalClient
+}
+
+// Save cache after token operations
+const persistCache = async () => {
+  if (msalClient) {
+    const cacheData = msalClient.getTokenCache().serialize()
+    saveTokenCache(cacheData)
+  }
+}
+
+// Get cached account
+const getCachedAccount = async (): Promise<AccountInfo | null> => {
+  const pca = await getMsalClient()
+  const accounts = await pca.getTokenCache().getAllAccounts()
+  if (accounts.length > 0) {
+    log.info(`[Azure SSO] Found ${accounts.length} cached account(s)`)
+    return accounts[0]
+  }
+  return null
+}
+
+// Create MSAL client (legacy - for code exchange only)
 const createMsalClient = () =>
   new PublicClientApplication({
     auth: {
@@ -159,15 +256,18 @@ const startCallbackServer = (
           return
         }
 
-        // Exchange code for tokens
+        // Exchange code for tokens using persistent client
         try {
-          const pca = createMsalClient()
+          const pca = await getMsalClient()
           const tokenResponse = await pca.acquireTokenByCode({
             code,
             redirectUri: getRedirectUri(),
             codeVerifier: verifier,
             scopes: AZURE_CONFIG.SCOPES,
           })
+
+          // Persist the cache with refresh token
+          await persistCache()
 
           const claims = tokenResponse.idTokenClaims as Record<string, any>
           const oid = claims?.oid || claims?.sub || ''
@@ -259,6 +359,7 @@ const getErrorHtml = (error: string, description: string) => `
 `
 
 export const initAzureSsoHandlers = () => {
+  // OAuth login flow
   ipcMain.handle(IpcInvokeEvent.azureSsoOauth, async (event) => {
     try {
       log.info('[Azure SSO] Starting OAuth flow')
@@ -303,6 +404,83 @@ export const initAzureSsoHandlers = () => {
       const [currentWindow] = getWindows().values()
       currentWindow?.webContents.send(IpcOnEvent.azureSsoOauthCallback, error)
       return error
+    }
+  })
+
+  // Silent token refresh
+  ipcMain.handle(IpcInvokeEvent.azureSsoRefreshToken, async () => {
+    try {
+      log.info('[Azure SSO] Attempting silent token refresh')
+
+      const account = await getCachedAccount()
+      if (!account) {
+        log.info('[Azure SSO] No cached account found')
+        return {
+          status: AzureSsoAuthStatus.Failed,
+          message: 'No cached account',
+        }
+      }
+
+      const pca = await getMsalClient()
+      const tokenResponse = await pca.acquireTokenSilent({
+        account,
+        scopes: AZURE_CONFIG.SCOPES,
+        forceRefresh: false, // Only refresh if expired
+      })
+
+      // Persist updated cache
+      await persistCache()
+
+      const claims = tokenResponse.idTokenClaims as Record<string, any>
+      const oid = claims?.oid || claims?.sub || account.localAccountId
+      const upn = claims?.preferred_username || account.username || ''
+
+      log.info('[Azure SSO] Token refreshed successfully')
+
+      return {
+        status: AzureSsoAuthStatus.Succeed,
+        data: {
+          accessToken: tokenResponse.accessToken,
+          expiresOn: tokenResponse.expiresOn || new Date(),
+          oid,
+          upn,
+        },
+      }
+    } catch (e: any) {
+      log.error('[Azure SSO] Silent token refresh failed:', e?.message)
+      return {
+        status: AzureSsoAuthStatus.Failed,
+        message: e?.message || 'Token refresh failed',
+      }
+    }
+  })
+
+  // Logout - clear cache
+  ipcMain.handle(IpcInvokeEvent.azureSsoLogout, async () => {
+    try {
+      log.info('[Azure SSO] Logging out')
+
+      // Clear the MSAL cache
+      const pca = await getMsalClient()
+      const accounts = await pca.getTokenCache().getAllAccounts()
+      for (const account of accounts) {
+        await pca.getTokenCache().removeAccount(account)
+      }
+
+      // Clear persisted cache file
+      clearTokenCache()
+
+      // Reset client
+      msalClient = null
+
+      log.info('[Azure SSO] Logout successful')
+      return { status: AzureSsoAuthStatus.Succeed }
+    } catch (e: any) {
+      log.error('[Azure SSO] Logout error:', e)
+      return {
+        status: AzureSsoAuthStatus.Failed,
+        message: e?.message || 'Logout failed',
+      }
     }
   })
 

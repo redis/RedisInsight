@@ -9,6 +9,7 @@ import {
   useAzureResources,
   useAzureSsoStore,
   azureResourcesStore,
+  azureSsoStore,
   AzureRedisResource,
   AzureRedisDatabase,
 } from 'uiSrc/hooks/useAzureSso'
@@ -34,25 +35,34 @@ interface FlattenedDatabase {
 
 const AzureDatabasesList = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { isLoggedIn, user } = useAzureSsoStore()
+  const { isLoggedIn } = useAzureSsoStore()
   const { resources, loading, error } = useAzureResources()
   const [connectingId, setConnectingId] = useState<string | null>(null)
 
   const handleRefresh = useCallback(async () => {
-    if (!user?.accessToken) return
+    const accessToken = await azureSsoStore.getValidAccessToken()
+    if (!accessToken) {
+      azureResourcesStore.setError('Session expired. Please login again.')
+      return
+    }
 
     azureResourcesStore.setLoading(true)
-    const result = await fetchAzureRedisResources(user.accessToken)
+    const result = await fetchAzureRedisResources(accessToken)
 
     if (result.isComplete) {
       azureResourcesStore.setResources(result.resources)
     } else {
       azureResourcesStore.setError('Failed to refresh resources')
     }
-  }, [user?.accessToken])
+  }, [])
 
   const handleConnect = useCallback(async (db: FlattenedDatabase) => {
-    if (!user?.accessToken) return
+    const accessToken = await azureSsoStore.getValidAccessToken()
+    if (!accessToken) {
+      // eslint-disable-next-line no-console
+      console.error('[Azure] Session expired')
+      return
+    }
 
     setConnectingId(db.id)
 
@@ -60,7 +70,7 @@ const AzureDatabasesList = () => {
       const connectionDetails = await getAzureRedisConnectionDetails(
         db.resource,
         db.database,
-        user.accessToken,
+        accessToken,
       )
 
       if (!connectionDetails) {
@@ -91,7 +101,7 @@ const AzureDatabasesList = () => {
       console.error('[Azure] Error connecting:', err)
       setConnectingId(null)
     }
-  }, [user?.accessToken, dispatch])
+  }, [dispatch])
 
   // Don't show anything if not logged in
   if (!isLoggedIn) {
