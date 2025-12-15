@@ -34,7 +34,7 @@ import { fetchCustomTutorials } from 'uiSrc/slices/workbench/wb-custom-tutorials
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { fetchContentRecommendations } from 'uiSrc/slices/recommendations/recommendations'
 import { fetchGuideLinksAction } from 'uiSrc/slices/content/guide-links'
-import { setCapability } from 'uiSrc/slices/app/context'
+import { setCapability, setDbConfig } from 'uiSrc/slices/app/context'
 
 import { fetchProfile } from 'uiSrc/slices/oauth/cloud'
 import { fetchDBSettings } from 'uiSrc/slices/app/db-settings'
@@ -99,6 +99,8 @@ const Config = () => {
               BrowserStorageItem.dbConfig + payload.id,
               payload.data,
             )
+            // Update Redux state with the fetched config
+            dispatch(setDbConfig(payload.data))
           },
         ),
       )
@@ -201,7 +203,9 @@ const Config = () => {
     const appliedConsents = config?.agreements
     dispatch(
       setSettingsPopupState(
-        config?.acceptTermsAndConditionsOverwritten ? false : isDifferentConsentsExists(specConsents, appliedConsents),
+        config?.acceptTermsAndConditionsOverwritten
+          ? false
+          : isDifferentConsentsExists(specConsents, appliedConsents),
       ),
     )
   }
