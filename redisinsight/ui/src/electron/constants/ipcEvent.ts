@@ -5,6 +5,7 @@ enum IpcInvokeEvent {
   cloudOauth = 'cloud:oauth',
   azureSsoOauth = 'azure:sso:oauth',
   azureSsoRefreshToken = 'azure:sso:refresh-token',
+  azureSsoGetRedisToken = 'azure:sso:get-redis-token',
   azureSsoLogout = 'azure:sso:logout',
   windowOpen = 'window:open',
   themeChange = 'theme:change',

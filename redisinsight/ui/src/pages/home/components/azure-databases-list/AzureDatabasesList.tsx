@@ -25,6 +25,7 @@ interface FlattenedDatabase {
   id: string
   name: string
   type: 'standard' | 'enterprise'
+  authType: 'accessKey' | 'entraId'
   host: string
   port: number
   subscription: string
@@ -97,13 +98,25 @@ const AzureDatabasesList = () => {
         return
       }
 
+      // Build connection payload based on auth type
       const payload: Partial<Instance> = {
         name: connectionDetails.name,
         host: connectionDetails.host,
         port: connectionDetails.port,
         tls: connectionDetails.tls,
-        password: connectionDetails.password,
         verifyServerCert: false,
+      }
+
+      if (connectionDetails.authType === 'entraId') {
+        // Entra ID auth: use OID as username, token as password
+        const user = azureSsoStore.getUser()
+        payload.username = user?.oid
+        payload.password = connectionDetails.accessToken
+        // eslint-disable-next-line no-console
+        console.log('[Azure] Using Entra ID auth with OID:', user?.oid)
+      } else {
+        // Access key auth: use the access key as password
+        payload.password = connectionDetails.password
       }
 
       dispatch(createInstanceStandaloneAction(
@@ -155,11 +168,12 @@ const AzureDatabasesList = () => {
 
   resources.forEach((resource: AzureRedisResource) => {
     if (resource.resourceType === 'Microsoft.Cache/redis') {
-      // Standard Redis
+      // Standard Redis - always uses access keys
       flattenedDatabases.push({
         id: resource.id,
         name: resource.name,
         type: 'standard',
+        authType: 'accessKey',
         host: resource.properties?.hostName || 'N/A',
         port: resource.properties?.sslPort || 6380,
         subscription: resource.subscriptionName,
@@ -170,10 +184,14 @@ const AzureDatabasesList = () => {
     } else if (resource.resourceType === 'Microsoft.Cache/redisEnterprise') {
       // Enterprise Redis - each database is a separate entry
       resource.databases?.forEach((db) => {
+        // Check if access keys are enabled or if Entra ID auth is used
+        const accessKeysEnabled = db.properties?.accessKeysAuthentication === 'Enabled'
+
         flattenedDatabases.push({
           id: db.id,
           name: `${resource.name}/${db.name}`,
           type: 'enterprise',
+          authType: accessKeysEnabled ? 'accessKey' : 'entraId',
           host: resource.properties?.hostName || 'N/A',
           port: db.properties?.port || 10000,
           subscription: resource.subscriptionName,
@@ -235,6 +253,17 @@ const AzureDatabasesList = () => {
               </div>
               <Row align="center" gap="s">
                 {isConnecting && <Loader size="s" />}
+                <Text
+                  style={{
+                    fontSize: '11px',
+                    padding: '2px 6px',
+                    borderRadius: '3px',
+                    backgroundColor: db.authType === 'entraId' ? '#6b21a8' : '#666',
+                    color: 'white',
+                  }}
+                >
+                  {db.authType === 'entraId' ? '🔐 Entra ID' : '🔑 Key'}
+                </Text>
                 <Text
                   style={{
                     fontSize: '11px',

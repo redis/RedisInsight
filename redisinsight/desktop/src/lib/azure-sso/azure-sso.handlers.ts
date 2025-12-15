@@ -21,12 +21,15 @@ const AZURE_CONFIG = {
   CLIENT_ID: 'f9895a25-74d6-40ca-ba97-a547ea0b5717',
   TENANT_ID: 'be18ca4e-bb52-4385-8b6a-0ecfb7e7033c',
   REDIRECT_PORT: 5541,
+  // Management API scopes (for listing resources, fetching keys)
   SCOPES: [
     'openid',
     'profile',
     'offline_access',
     'https://management.azure.com/user_impersonation',
   ],
+  // Redis scopes (for Entra ID auth to Redis) - must be requested separately
+  REDIS_SCOPES: ['https://redis.azure.com/.default'],
 }
 
 const getAuthority = () =>
@@ -456,6 +459,49 @@ export const initAzureSsoHandlers = () => {
       return {
         status: AzureSsoAuthStatus.Failed,
         message: e?.message || 'Token refresh failed',
+      }
+    }
+  })
+
+  // Get Redis token - separate token for Entra ID Redis auth
+  ipcMain.handle(IpcInvokeEvent.azureSsoGetRedisToken, async () => {
+    try {
+      log.info('[Azure SSO] Acquiring Redis token')
+
+      const pca = await getMsalClient()
+      const accounts = await pca.getTokenCache().getAllAccounts()
+
+      if (accounts.length === 0) {
+        log.warn('[Azure SSO] No accounts found for Redis token')
+        return {
+          status: AzureSsoAuthStatus.Failed,
+          message: 'No Azure account found. Please login first.',
+        }
+      }
+
+      const account = accounts[0]
+
+      const tokenResponse = await pca.acquireTokenSilent({
+        account,
+        scopes: AZURE_CONFIG.REDIS_SCOPES,
+      })
+
+      await persistCache()
+
+      log.info('[Azure SSO] Redis token acquired successfully')
+
+      return {
+        status: AzureSsoAuthStatus.Succeed,
+        data: {
+          accessToken: tokenResponse.accessToken,
+          expiresOn: tokenResponse.expiresOn || new Date(),
+        },
+      }
+    } catch (e: any) {
+      log.error('[Azure SSO] Failed to acquire Redis token:', e?.message)
+      return {
+        status: AzureSsoAuthStatus.Failed,
+        message: e?.message || 'Failed to acquire Redis token',
       }
     }
   })

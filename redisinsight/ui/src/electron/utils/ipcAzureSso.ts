@@ -7,6 +7,9 @@ export const ipcAzureSsoAuth = async () => {
 export const ipcAzureSsoRefreshToken = async (options?: { forceRefresh?: boolean }) =>
   window.app?.ipc?.invoke?.(IpcInvokeEvent.azureSsoRefreshToken, options)
 
+export const ipcAzureSsoGetRedisToken = async () =>
+  window.app?.ipc?.invoke?.(IpcInvokeEvent.azureSsoGetRedisToken)
+
 export const ipcAzureSsoLogout = async () =>
   window.app?.ipc?.invoke?.(IpcInvokeEvent.azureSsoLogout)
 

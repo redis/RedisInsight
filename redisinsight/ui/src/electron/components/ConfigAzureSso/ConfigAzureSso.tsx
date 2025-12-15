@@ -5,6 +5,7 @@ import {
   addErrorNotification,
 } from 'uiSrc/slices/app/notifications'
 import { azureSsoStore, azureResourcesStore } from 'uiSrc/hooks/useAzureSso'
+import { ipcAzureSsoGetRedisToken } from 'uiSrc/electron/utils/ipcAzureSso'
 
 interface AzureSsoAuthResult {
   status: 'succeed' | 'failed'
@@ -121,16 +122,26 @@ export const getAzureRedisConnectionDetails = async (
         console.error('[Azure SSO] Failed to fetch access keys:', await keysResponse.text())
         return null
       }
-      // Entra ID (AAD) authentication
+      // Entra ID (AAD) authentication - need a separate Redis-scoped token
       // eslint-disable-next-line no-console
-      console.log('[Azure SSO] Using Entra ID authentication')
+      console.log('[Azure SSO] Using Entra ID authentication, fetching Redis token...')
+
+      const redisTokenResult = await ipcAzureSsoGetRedisToken()
+      if (redisTokenResult?.status !== 'succeed' || !redisTokenResult?.data?.accessToken) {
+        // eslint-disable-next-line no-console
+        console.error('[Azure SSO] Failed to get Redis token:', redisTokenResult?.message)
+        return null
+      }
+
+      // eslint-disable-next-line no-console
+      console.log('[Azure SSO] Redis token acquired successfully')
 
       return {
         host,
         port,
         tls,
         authType: 'entraId',
-        accessToken,
+        accessToken: redisTokenResult.data.accessToken,
         name: `${resource.name}/${database.name}`,
         resourceType: 'enterprise',
       }
