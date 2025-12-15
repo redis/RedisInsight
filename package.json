@@ -249,6 +249,7 @@
     "yarn-deduplicate": "^3.1.0"
   },
   "dependencies": {
+    "@azure/msal-node": "^3.8.4",
     "@elastic/datemath": "^5.0.3",
     "@elastic/eui": "34.6.0",
     "@redis-ui/components": "^39.18.0",
