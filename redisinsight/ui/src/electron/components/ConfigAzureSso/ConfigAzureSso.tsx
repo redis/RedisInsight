@@ -4,7 +4,7 @@ import {
   addMessageNotification,
   addErrorNotification,
 } from 'uiSrc/slices/app/notifications'
-import { azureSsoStore } from 'uiSrc/hooks/useAzureSso'
+import { azureSsoStore, azureResourcesStore } from 'uiSrc/hooks/useAzureSso'
 
 interface AzureSsoAuthResult {
   status: 'succeed' | 'failed'
@@ -197,7 +197,7 @@ const logProgress = (progress: FetchProgress) => {
   )
 }
 
-const fetchAzureRedisResources = async (accessToken: string) => {
+export const fetchAzureRedisResources = async (accessToken: string) => {
   const progress: FetchProgress = {
     phase: 'Starting',
     subscriptionsTotal: 0,
@@ -440,31 +440,24 @@ const ConfigAzureSso = () => {
         }),
       )
 
+      // Set loading state
+      azureResourcesStore.setLoading(true)
+
       // Fetch Azure Redis resources
       const fetchResult = await fetchAzureRedisResources(accessToken)
 
       if (fetchResult?.isComplete) {
+        // Store resources in the global store
+        azureResourcesStore.setResources(fetchResult.resources)
+
         dispatch(
           addMessageNotification({
             title: 'Azure Resources Loaded',
-            message: `Found ${fetchResult.resources.length} Redis resources. Check console for details.`,
+            message: `Found ${fetchResult.resources.length} Redis resources.`,
           }),
         )
-
-        // TEST: Try to get connection details for ri-team
-        const riTeam = fetchResult.resources.find((r: any) => r.name === 'ri-team')
-        if (riTeam && riTeam.databases?.length > 0) {
-          // eslint-disable-next-line no-console
-          console.log('[Azure SSO] 🧪 TEST: Getting connection details for ri-team...')
-          const connectionDetails = await getAzureRedisConnectionDetails(
-            riTeam,
-            riTeam.databases[0], // default database
-            accessToken,
-          )
-          // eslint-disable-next-line no-console
-          console.log('[Azure SSO] 🧪 TEST: ri-team connection details:', connectionDetails)
-        }
       } else {
+        azureResourcesStore.setError('Failed to fetch some Azure resources')
         dispatch(
           addErrorNotification({
             response: {

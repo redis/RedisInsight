@@ -64,6 +64,7 @@ import DatabaseListHeader from './components/database-list-header'
 import EmptyMessage from './components/empty-message/EmptyMessage'
 import DatabasePanelDialog from './components/database-panel-dialog'
 import { ManageTagsModal } from './components/database-manage-tags-modal/ManageTagsModal'
+import AzureDatabasesList from './components/azure-databases-list'
 import {
   HomePageDataProviderProvider,
   useHomePageDataProvider,
@@ -288,6 +289,7 @@ const HomePage = () => {
               />
             )}
             <div key="homePage" className="homePage">
+              <AzureDatabasesList />
               {hideDbList && (
                 <Card>
                   <EmptyMessage onAddInstanceClick={handleAddInstance} />

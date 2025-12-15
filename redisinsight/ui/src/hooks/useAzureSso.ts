@@ -9,6 +9,49 @@ export interface AzureSsoUser {
   expiresOn: string
 }
 
+export interface AzureRedisResource {
+  id: string
+  name: string
+  type: string
+  resourceType: 'Microsoft.Cache/redis' | 'Microsoft.Cache/redisEnterprise'
+  location: string
+  subscriptionName: string
+  subscriptionId: string
+  properties?: {
+    hostName?: string
+    sslPort?: number
+    port?: number
+    redisVersion?: string
+    sku?: {
+      name: string
+      family?: string
+      capacity?: number
+    }
+  }
+  sku?: {
+    name: string
+    capacity?: number
+  }
+  databases?: AzureRedisDatabase[]
+}
+
+export interface AzureRedisDatabase {
+  id: string
+  name: string
+  properties?: {
+    port?: number
+    clientProtocol?: string
+    clusteringPolicy?: string
+    accessKeysAuthentication?: 'Enabled' | 'Disabled'
+  }
+}
+
+export interface AzureResourcesState {
+  resources: AzureRedisResource[]
+  loading: boolean
+  error: string | null
+}
+
 export const useAzureSso = () => {
   const [user, setUser] = useState<AzureSsoUser | null>(null)
 
@@ -91,7 +134,7 @@ export const azureSsoStore = {
 
 // Hook that uses the store
 export const useAzureSsoStore = () => {
-  const [user, setUser] = useState<AzureSsoUser | null>(() => 
+  const [user, setUser] = useState<AzureSsoUser | null>(() =>
     azureSsoStore.getUser()
   )
 
@@ -108,5 +151,66 @@ export const useAzureSsoStore = () => {
     login: (userData: AzureSsoUser) => azureSsoStore.setUser(userData),
     logout: () => azureSsoStore.setUser(null),
   }
+}
+
+// Resources store - separate from user store
+let globalResourcesState: AzureResourcesState = {
+  resources: [],
+  loading: false,
+  error: null,
+}
+const resourcesListeners = new Set<(state: AzureResourcesState) => void>()
+
+export const azureResourcesStore = {
+  getState: (): AzureResourcesState => globalResourcesState,
+
+  setLoading: (loading: boolean) => {
+    globalResourcesState = { ...globalResourcesState, loading }
+    resourcesListeners.forEach((listener) => listener(globalResourcesState))
+  },
+
+  setResources: (resources: AzureRedisResource[]) => {
+    globalResourcesState = {
+      resources,
+      loading: false,
+      error: null,
+    }
+    resourcesListeners.forEach((listener) => listener(globalResourcesState))
+  },
+
+  setError: (error: string) => {
+    globalResourcesState = {
+      ...globalResourcesState,
+      loading: false,
+      error,
+    }
+    resourcesListeners.forEach((listener) => listener(globalResourcesState))
+  },
+
+  clear: () => {
+    globalResourcesState = { resources: [], loading: false, error: null }
+    resourcesListeners.forEach((listener) => listener(globalResourcesState))
+  },
+
+  subscribe: (listener: (state: AzureResourcesState) => void) => {
+    resourcesListeners.add(listener)
+    return () => resourcesListeners.delete(listener)
+  },
+}
+
+// Hook for Azure resources
+export const useAzureResources = () => {
+  const [state, setState] = useState<AzureResourcesState>(() =>
+    azureResourcesStore.getState()
+  )
+
+  useEffect(() => {
+    const unsubscribe = azureResourcesStore.subscribe(setState)
+    return () => {
+      unsubscribe()
+    }
+  }, [])
+
+  return state
 }
 
