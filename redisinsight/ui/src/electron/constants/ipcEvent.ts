@@ -3,6 +3,7 @@ enum IpcInvokeEvent {
   deleteStoreValue = 'store:delete:value',
   getAppVersion = 'app:get:version',
   cloudOauth = 'cloud:oauth',
+  azureOauth = 'azure:oauth',
   windowOpen = 'window:open',
   themeChange = 'theme:change',
   appRestart = 'app:restart',
