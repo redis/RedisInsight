@@ -4,6 +4,7 @@ export enum AddDbType {
   sentinel,
   software,
   import,
+  azure,
 }
 
 export enum CloudConnectionOptions {
