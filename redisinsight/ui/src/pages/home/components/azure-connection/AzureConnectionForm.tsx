@@ -103,10 +103,11 @@ const AzureConnectionForm = (props: Props) => {
 
       const payload = {
         name: database.name,
-        host: database.host,
+        host: data.host || database.host,
         port: data.port || database.port,
-        password: data.accessKey,
-        tls: true,
+        password: data.password,
+        username: data.username,
+        tls: data.tls ?? true,
       }
 
       await apiService.post('/databases', payload)
