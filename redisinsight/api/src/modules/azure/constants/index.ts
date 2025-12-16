@@ -1,9 +1,9 @@
 // Azure OAuth Configuration
 // These are PoC values - in production, these should come from config/env
 export const AZURE_CONFIG = {
-  CLIENT_ID: 'f9895a25-74d6-40ca-ba97-a547ea0b5717',
+  CLIENT_ID: '61f3d82d-2bf3-432a-ba1b-c056e4cf0fd0',
   TENANT_ID: 'be18ca4e-bb52-4385-8b6a-0ecfb7e7033c',
-  REDIRECT_URI: 'http://localhost:5541/azure/oauth/callback',
+  REDIRECT_URI: 'http://localhost:5540/api/azure/oauth/callback',
   // Management API scopes (for listing resources, fetching keys)
   MANAGEMENT_SCOPES: [
     'openid',

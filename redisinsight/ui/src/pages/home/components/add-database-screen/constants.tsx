@@ -26,6 +26,12 @@ export const CONNECTIVITY_OPTIONS: ConnectivityOption[] = [
     icon: 'RedisSoftwareIcon',
   },
   {
+    id: 'azure',
+    title: 'Azure Cache',
+    type: AddDbType.azure,
+    icon: "CloudIcon",
+  },
+  {
     id: 'import',
     title: 'Import from file',
     type: AddDbType.import,

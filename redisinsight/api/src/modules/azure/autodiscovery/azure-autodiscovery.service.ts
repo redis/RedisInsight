@@ -171,6 +171,10 @@ export class AzureAutodiscoveryService {
       );
 
       for (const db of dbResponse.data.value || []) {
+        // Azure location needs to be normalized (lowercase, no spaces)
+        const normalizedLocation = cluster.location
+          .toLowerCase()
+          .replace(/\s+/g, '');
         databases.push({
           id: db.id,
           name: `${cluster.name}/${db.name}`,
@@ -181,8 +185,8 @@ export class AzureAutodiscoveryService {
           type: 'enterprise',
           host:
             db.properties?.clusteringPolicy === 'EnterpriseCluster'
-              ? `${cluster.name}.${cluster.location}.redisenterprise.cache.azure.net`
-              : `${cluster.name}-${db.name}.${cluster.location}.redisenterprise.cache.azure.net`,
+              ? `${cluster.name}.${normalizedLocation}.redisenterprise.cache.azure.net`
+              : `${cluster.name}-${db.name}.${normalizedLocation}.redisenterprise.cache.azure.net`,
           port: db.properties?.port || 10000,
           provisioningState: db.properties?.provisioningState,
           sku: cluster.sku,
