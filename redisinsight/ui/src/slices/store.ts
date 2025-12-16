@@ -55,6 +55,7 @@ import rdiStatisticsReducer from './rdi/statistics'
 import aiAssistantReducer from './panels/aiAssistant'
 import appDbSettingsReducer from './app/db-settings'
 import tagsReducer from './instances/tags'
+import azureReducer from './azure/azure'
 
 const riConfig = getConfig()
 
@@ -137,6 +138,7 @@ export const rootReducer = combineReducers({
     testConnections: rdiTestConnectionsReducer,
     statistics: rdiStatisticsReducer,
   }),
+  azure: azureReducer,
 })
 
 const store = configureStore({
