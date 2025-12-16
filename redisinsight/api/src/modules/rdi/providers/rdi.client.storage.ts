@@ -50,6 +50,7 @@ export class RdiClientStorage {
     if (
       !rdiClientMetadata.id ||
       !rdiClientMetadata.sessionMetadata?.sessionId ||
+      !rdiClientMetadata.sessionMetadata?.accountId ||
       !rdiClientMetadata.sessionMetadata.userId
     ) {
       throw new BadRequestException(

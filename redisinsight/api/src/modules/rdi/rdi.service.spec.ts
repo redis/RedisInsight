@@ -179,17 +179,16 @@ describe('RdiService', () => {
         password: 'pass',
         username: 'user',
       };
-      const sessionMetadata = { userId: '123', sessionId: '789' };
       repository.create.mockResolvedValue(mockRdi);
       rdiClientFactory.createClient.mockReturnValue({
         getPipelineStatus: validGetPipelineStatus,
       });
 
-      const result = await service.create(sessionMetadata, dto);
+      const result = await service.create(mockSessionMetadata, dto);
 
       expect(result.name).toEqual(dto.name);
       expect(rdiClientFactory.createClient).toHaveBeenCalledWith(
-        { sessionMetadata, id: expect.any(String) },
+        { sessionMetadata: mockSessionMetadata, id: expect.any(String) },
         expect.any(Rdi),
       );
     });
@@ -201,14 +200,13 @@ describe('RdiService', () => {
         password: 'pass',
         username: 'user',
       };
-      const sessionMetadata = { userId: '123', sessionId: '789' };
       const error = new AxiosError('Create failed');
       repository.create.mockRejectedValue(error);
       rdiClientFactory.createClient.mockRejectedValue(error);
 
-      await expect(service.create(sessionMetadata, dto)).rejects.toThrowError(
-        wrapRdiPipelineError(error),
-      );
+      await expect(
+        service.create(mockSessionMetadata, dto),
+      ).rejects.toThrowError(wrapRdiPipelineError(error));
     });
 
     it('should get the RDI version', async () => {
@@ -218,14 +216,13 @@ describe('RdiService', () => {
         password: 'pass',
         username: 'user',
       };
-      const sessionMetadata = { userId: '123', sessionId: '789' };
 
       repository.create.mockResolvedValue(mockRdi);
       rdiClientFactory.createClient.mockReturnValue({
         getPipelineStatus: validGetPipelineStatus,
       });
 
-      await service.create(sessionMetadata, dto);
+      await service.create(mockSessionMetadata, dto);
 
       expect(repository.create).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -241,7 +238,6 @@ describe('RdiService', () => {
         password: 'pass',
         username: 'user',
       };
-      const sessionMetadata = { userId: '123', sessionId: '789' };
 
       repository.create.mockResolvedValue(mockRdi);
       rdiClientFactory.createClient.mockResolvedValue({
@@ -253,7 +249,7 @@ describe('RdiService', () => {
           }),
       });
 
-      await service.create(sessionMetadata, dto);
+      await service.create(mockSessionMetadata, dto);
 
       expect(repository.create).toHaveBeenCalledWith(
         expect.objectContaining({

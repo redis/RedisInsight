@@ -16,6 +16,7 @@ export const sessionMetadataFromRequest = (
   request: Request,
 ): SessionMetadata => {
   const userId = request.res?.locals?.session?.data?.userId.toString();
+  const accountId = request.res?.locals?.session?.data?.accountId.toString();
   const sessionId = request.res?.locals?.session?.data?.sessionId.toString();
   const data = omit(request.res?.locals?.session?.data, [
     'userId',
@@ -28,6 +29,7 @@ export const sessionMetadataFromRequest = (
 
   const requestSession = {
     userId,
+    accountId,
     data,
     sessionId,
     correlationId,

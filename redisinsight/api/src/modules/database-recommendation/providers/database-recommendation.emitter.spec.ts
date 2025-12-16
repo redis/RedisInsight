@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import {
   mockDatabaseRecommendation,
   mockDatabaseRecommendationRepository,
+  mockSessionMetadata,
   MockType,
 } from 'src/__mocks__';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -15,11 +16,6 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const mockEventEmitter = {
   emit: jest.fn(),
-};
-
-const mockSessionMetadata = {
-  userId: '1',
-  sessionId: 'abc',
 };
 
 describe('DatabaseRecommendationEmitter', () => {
