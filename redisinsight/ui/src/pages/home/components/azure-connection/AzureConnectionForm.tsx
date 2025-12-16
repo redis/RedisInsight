@@ -4,17 +4,18 @@ import { useHistory } from 'react-router-dom'
 
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { Text, Title } from 'uiSrc/components/base/text/Text'
+import { Text, Title } from 'uiSrc/components/base/text'
 import {
   EmptyButton,
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { Spinner } from 'uiSrc/components/base/spinner/Spinner'
+import { Loader } from 'uiSrc/components/base/display'
 import { IpcInvokeEvent } from 'uiSrc/electron/constants'
 import { Pages } from 'uiSrc/constants'
 import { apiService } from 'uiSrc/services'
-import { addSuccessNotification } from 'uiSrc/slices/app/notifications'
+import { addMessageNotification } from 'uiSrc/slices/app/notifications'
+import successMessages from 'uiSrc/components/notifications/success-messages'
 import { fetchInstancesAction } from 'uiSrc/slices/instances/instances'
 import {
   azureSelector,
@@ -69,12 +70,7 @@ const AzureConnectionForm = (props: Props) => {
     try {
       const { data } = await apiService.post(
         '/azure/databases/connection-details',
-        {
-          subscriptionId: database.subscriptionId,
-          resourceGroup: database.resourceGroup,
-          name: database.name,
-          type: database.type,
-        },
+        database,
       )
 
       const payload = {
@@ -87,7 +83,7 @@ const AzureConnectionForm = (props: Props) => {
 
       await apiService.post('/databases', payload)
 
-      dispatch(addSuccessNotification({ title: `Database "${database.name}" added successfully` }))
+      dispatch(addMessageNotification(successMessages.ADDED_NEW_INSTANCE(database.name)))
       dispatch(fetchInstancesAction())
       history.push(Pages.home)
       onClose?.()
@@ -99,7 +95,7 @@ const AzureConnectionForm = (props: Props) => {
   if (loading) {
     return (
       <Container align="center" justify="center">
-        <Spinner />
+        <Loader size="xl" />
         <Spacer />
         <Text>Checking authentication status...</Text>
       </Container>
@@ -152,7 +148,7 @@ const AzureConnectionForm = (props: Props) => {
 
         {databasesLoading ? (
           <Row justify="center">
-            <Spinner />
+            <Loader size="xl" />
           </Row>
         ) : databases.length === 0 ? (
           <Text color="secondary">
