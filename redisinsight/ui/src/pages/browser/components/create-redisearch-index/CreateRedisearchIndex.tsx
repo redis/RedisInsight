@@ -88,8 +88,6 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
     initialFieldValue(fieldTypeOptions),
   ])
 
-
-
   const lastAddedIdentifier = useRef<HTMLInputElement>(null)
   const prevCountFields = useRef<number>(0)
 
@@ -180,10 +178,10 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
       interactive
       position="top"
       content={
-        <>
+        <Text>
           <Link
             variant="inline"
-            size="S"
+            size="M"
             href={getUtmExternalLink(
               'https://redis.io/commands/ft.create/#SCHEMA',
               {
@@ -198,7 +196,7 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
           {keyTypeSelected === RedisearchIndexKeyType.HASH
             ? 'Enter a hash field name.'
             : 'Enter a JSON path expression.'}
-        </>
+        </Text>
       }
     >
       <IconButton
