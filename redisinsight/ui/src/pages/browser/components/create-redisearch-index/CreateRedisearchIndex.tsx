@@ -264,7 +264,7 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
         <Col grow={false} gap="m">
           <Row align="center" gap="xs">
             <Text>Identifier</Text>
-            <IdentifierInfo />
+            {IdentifierInfo()}
           </Row>
           <div>
             <AddMultipleFields
