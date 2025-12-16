@@ -176,14 +176,6 @@ export class AzureAutodiscoveryService {
           .toLowerCase()
           .replace(/\s+/g, '');
 
-        // Log the database response to debug hostname
-        this.logger.debug('Enterprise database response:', {
-          clusterName: cluster.name,
-          dbName: db.name,
-          properties: db.properties,
-          clusterProperties: cluster.properties,
-        });
-
         // Use hostName from cluster properties if available
         const host =
           cluster.hostName ||
