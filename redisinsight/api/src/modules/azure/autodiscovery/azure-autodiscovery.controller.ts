@@ -1,0 +1,78 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  HttpStatus,
+  HttpException,
+} from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { AzureAutodiscoveryService } from './azure-autodiscovery.service';
+import { AzureAuthService } from '../auth/azure-auth.service';
+import {
+  AzureSubscription,
+  AzureRedisDatabase,
+  AzureConnectionDetails,
+} from '../models/azure-resource.models';
+
+const DEFAULT_SESSION_ID = 'default';
+
+@ApiTags('Azure')
+@Controller('azure')
+export class AzureAutodiscoveryController {
+  constructor(
+    private readonly autodiscoveryService: AzureAutodiscoveryService,
+    private readonly authService: AzureAuthService,
+  ) {}
+
+  private ensureAuthenticated(): void {
+    if (!this.authService.isLoggedIn(DEFAULT_SESSION_ID)) {
+      throw new HttpException(
+        'Not authenticated with Azure',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+  }
+
+  @Get('subscriptions')
+  @ApiOperation({ summary: 'List Azure subscriptions' })
+  @ApiResponse({ status: 200, description: 'Returns list of subscriptions' })
+  @ApiResponse({ status: 401, description: 'Not authenticated' })
+  async listSubscriptions(): Promise<AzureSubscription[]> {
+    this.ensureAuthenticated();
+    return this.autodiscoveryService.listSubscriptions();
+  }
+
+  @Get('databases')
+  @ApiOperation({ summary: 'List all Azure Redis databases' })
+  @ApiResponse({ status: 200, description: 'Returns list of databases' })
+  @ApiResponse({ status: 401, description: 'Not authenticated' })
+  async listDatabases(): Promise<AzureRedisDatabase[]> {
+    this.ensureAuthenticated();
+    return this.autodiscoveryService.listDatabases();
+  }
+
+  @Post('databases/connection-details')
+  @ApiOperation({ summary: 'Get connection details for a database' })
+  @ApiBody({ description: 'Database object' })
+  @ApiResponse({ status: 200, description: 'Returns connection details' })
+  @ApiResponse({ status: 401, description: 'Not authenticated' })
+  @ApiResponse({ status: 404, description: 'Failed to get connection details' })
+  async getConnectionDetails(
+    @Body() database: AzureRedisDatabase,
+  ): Promise<AzureConnectionDetails> {
+    this.ensureAuthenticated();
+
+    const details =
+      await this.autodiscoveryService.getConnectionDetails(database);
+
+    if (!details) {
+      throw new HttpException(
+        'Failed to get connection details',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return details;
+  }
+}
