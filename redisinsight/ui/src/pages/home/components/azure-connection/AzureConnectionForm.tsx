@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 
@@ -14,7 +14,10 @@ import { Loader } from 'uiSrc/components/base/display'
 import { IpcInvokeEvent } from 'uiSrc/electron/constants'
 import { Pages } from 'uiSrc/constants'
 import { apiService } from 'uiSrc/services'
-import { addMessageNotification } from 'uiSrc/slices/app/notifications'
+import {
+  addErrorNotification,
+  addMessageNotification,
+} from 'uiSrc/slices/app/notifications'
 import successMessages from 'uiSrc/components/notifications/success-messages'
 import { fetchInstancesAction } from 'uiSrc/slices/instances/instances'
 import {
@@ -43,6 +46,31 @@ const AzureConnectionForm = (props: Props) => {
   const history = useHistory()
   const { isLoggedIn, loading, user, databases, databasesLoading } =
     useSelector(azureSelector)
+
+  // Handle Azure OAuth callback from Electron deep link
+  const handleAzureOauthCallback = useCallback(
+    (_e: any, response: { status: string; error?: string }) => {
+      if (response.status === 'succeed') {
+        // Refresh auth status after successful OAuth
+        dispatch(checkAzureAuthStatus())
+      } else if (response.status === 'failed' && response.error) {
+        dispatch(
+          addErrorNotification({
+            response: {
+              data: { message: response.error },
+              status: 400,
+            },
+          } as any),
+        )
+      }
+    },
+    [dispatch],
+  )
+
+  useEffect(() => {
+    // Register callback for Azure OAuth
+    window.app?.azureOauthCallback?.(handleAzureOauthCallback)
+  }, [handleAzureOauthCallback])
 
   useEffect(() => {
     dispatch(checkAzureAuthStatus())
