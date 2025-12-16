@@ -175,6 +175,23 @@ export class AzureAutodiscoveryService {
         const normalizedLocation = cluster.location
           .toLowerCase()
           .replace(/\s+/g, '');
+
+        // Log the database response to debug hostname
+        this.logger.debug('Enterprise database response:', {
+          clusterName: cluster.name,
+          dbName: db.name,
+          properties: db.properties,
+          clusterProperties: cluster.properties,
+        });
+
+        // Use hostName from cluster properties if available
+        const host =
+          cluster.hostName ||
+          cluster.properties?.hostName ||
+          (db.properties?.clusteringPolicy === 'EnterpriseCluster'
+            ? `${cluster.name}.${normalizedLocation}.redisenterprise.cache.azure.net`
+            : `${cluster.name}-${db.name}.${normalizedLocation}.redisenterprise.cache.azure.net`);
+
         databases.push({
           id: db.id,
           name: `${cluster.name}/${db.name}`,
@@ -183,10 +200,7 @@ export class AzureAutodiscoveryService {
           resourceGroup,
           location: cluster.location,
           type: 'enterprise',
-          host:
-            db.properties?.clusteringPolicy === 'EnterpriseCluster'
-              ? `${cluster.name}.${normalizedLocation}.redisenterprise.cache.azure.net`
-              : `${cluster.name}-${db.name}.${normalizedLocation}.redisenterprise.cache.azure.net`,
+          host,
           port: db.properties?.port || 10000,
           provisioningState: db.properties?.provisioningState,
           sku: cluster.sku,
