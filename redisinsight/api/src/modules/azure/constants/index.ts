@@ -3,7 +3,8 @@
 export const AZURE_CONFIG = {
   CLIENT_ID: '61f3d82d-2bf3-432a-ba1b-c056e4cf0fd0',
   TENANT_ID: 'be18ca4e-bb52-4385-8b6a-0ecfb7e7033c',
-  REDIRECT_URI: 'http://localhost:5540/api/azure/oauth/callback',
+  // Deep link redirect for Electron app
+  REDIRECT_URI: 'redisinsight://azure/oauth/callback',
   // Management API scopes (for listing resources, fetching keys)
   MANAGEMENT_SCOPES: [
     'openid',
