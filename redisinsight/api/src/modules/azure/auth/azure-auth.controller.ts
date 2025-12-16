@@ -1,5 +1,13 @@
-import { Controller, Get, Post, Query, Res, HttpStatus } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Query,
+  Body,
+  Res,
+  HttpStatus,
+} from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { Response } from 'express';
 import { AzureAuthService } from './azure-auth.service';
 import { AzureAuthStatus } from '../models/azure-auth.models';
@@ -51,6 +59,26 @@ export class AzureAuthController {
         `/?azure_error=${encodeURIComponent(result.message || 'Authentication failed')}`,
       );
     }
+  }
+
+  @Post('auth/callback')
+  @ApiOperation({ summary: 'OAuth callback endpoint (for Electron deep link)' })
+  @ApiBody({ description: 'OAuth callback data with code and state' })
+  @ApiResponse({ status: 200, description: 'Authentication successful' })
+  @ApiResponse({ status: 400, description: 'Authentication failed' })
+  async handleCallbackPost(
+    @Body() body: { code: string; state?: string },
+  ): Promise<{ status: string; message?: string }> {
+    const result = await this.authService.handleCallback(
+      body.code,
+      body.state,
+      DEFAULT_SESSION_ID,
+    );
+
+    if (result.status === AzureAuthStatus.Succeed) {
+      return { status: 'success' };
+    }
+    return { status: 'failed', message: result.message };
   }
 
   @Get('auth/status')
