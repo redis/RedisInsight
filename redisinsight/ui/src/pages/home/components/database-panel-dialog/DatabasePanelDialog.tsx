@@ -27,6 +27,7 @@ import SentinelConnectionWrapper from 'uiSrc/pages/home/components/sentinel-conn
 import AddDatabaseScreen from 'uiSrc/pages/home/components/add-database-screen'
 
 import CloudConnectionFormWrapper from 'uiSrc/pages/home/components/cloud-connection'
+import { AzureConnectionFormWrapper } from 'uiSrc/pages/home/components/azure-connection'
 import ImportDatabase from 'uiSrc/pages/home/components/import-database'
 import { FormDialog } from 'uiSrc/components'
 import { ModalHeaderProvider } from 'uiSrc/contexts/ModalTitleProvider'
@@ -157,6 +158,9 @@ const DatabasePanelDialog = (props: Props) => {
       )}
       {connectionType === AddDbType.software && (
         <ClusterConnectionFormWrapper {...props} />
+      )}
+      {connectionType === AddDbType.azure && (
+        <AzureConnectionFormWrapper onClose={onClose} />
       )}
     </>
   )
