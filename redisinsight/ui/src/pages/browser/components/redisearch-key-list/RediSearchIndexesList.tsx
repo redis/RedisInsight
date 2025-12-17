@@ -182,6 +182,7 @@ const RediSearchIndexesList = (props: Props) => {
   }
 
   const handleRefreshKeyDown = (e: React.KeyboardEvent) => {
+    if (loading) return
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault()
       e.stopPropagation()
