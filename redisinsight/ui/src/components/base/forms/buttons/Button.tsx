@@ -1,6 +1,6 @@
 import { Button } from '@redis-ui/components'
 import React from 'react'
-import { LoaderLargeIcon } from 'uiSrc/components/base/icons'
+import { LoaderLargeIcon, iconWithoutCustomColor } from 'uiSrc/components/base/icons'
 import { BaseButtonProps } from 'uiSrc/components/base/forms/buttons/button.styles'
 import { Spacer } from 'uiSrc/components/base/layout'
 import styled from 'styled-components'
@@ -66,6 +66,7 @@ const Wrapper = styled.div`
     display: block;
   }
 `
+
 export const ButtonIcon = ({
   buttonSide,
   icon,
@@ -92,7 +93,7 @@ export const ButtonIcon = ({
   return (
     <Wrapper>
       {buttonSide === 'right' && spacer}
-      <Button.Icon icon={renderIcon} customSize={iconSize} />
+      <Button.Icon icon={iconWithoutCustomColor(renderIcon)} customSize={iconSize} />
       {buttonSide === 'left' && spacer}
     </Wrapper>
   )
