@@ -32,10 +32,12 @@ export const NoKeySelected = (props: Props) => {
   const NoKeysSelectedMessage = () => (
     <>
       {totalKeys > 0 ? (
-        <span data-testid="select-key-message">
-          Select the key from the list on the left to see the details of the
-          key.
-        </span>
+        <Text textAlign="center">
+          <span data-testid="select-key-message">
+            Select the key from the list on the left to see the details of the
+            key.
+          </span>
+        </Text>
       ) : (
         <ExploreGuides />
       )}
@@ -59,13 +61,13 @@ export const NoKeySelected = (props: Props) => {
       </RiTooltip>
 
       <div className={styles.placeholder}>
-        <Text textAlign="center">
-          {error ? (
+        {error ? (
+          <Text textAlign="center">
             <span data-testid="no-keys-selected-text">{error}</span>
-          ) : (
-            !!keysLastRefreshTime && <NoKeysSelectedMessage />
-          )}
-        </Text>
+          </Text>
+        ) : (
+          !!keysLastRefreshTime && <NoKeysSelectedMessage />
+        )}
       </div>
     </>
   )

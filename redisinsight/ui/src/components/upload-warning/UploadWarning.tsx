@@ -5,7 +5,7 @@ import { UploadWarningBanner } from 'uiSrc/components/upload-warning/styles'
 const UploadWarning = () => (
   <UploadWarningBanner
     message={
-      <Text size="s">
+      <Text size="s" component="span">
         Use files only from trusted authors to avoid automatic execution of
         malicious code.
       </Text>
