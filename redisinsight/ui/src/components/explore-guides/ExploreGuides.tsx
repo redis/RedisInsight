@@ -55,6 +55,7 @@ const ExploreGuides = () => {
         <FlexGroup gap="l" wrap justify="center" className={styles.guides}>
           {data.map(({ title, tutorialId, icon }) => (
             <SecondaryButton
+              key={tutorialId}
               inverted
               tabIndex={0}
               onClick={() => handleLinkClick(tutorialId)}
