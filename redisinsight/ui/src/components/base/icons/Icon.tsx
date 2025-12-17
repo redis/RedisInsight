@@ -37,6 +37,35 @@ function isValidIconColor(
   return color in theme.semantic.color.icon
 }
 
+/**
+ * Cache for memoized icon components to prevent creating new component
+ * types on every render, which would cause unmount/remount cycles.
+ */
+const filteredIconCache = new WeakMap<React.ComponentType<any>, React.ComponentType<any>>()
+
+/**
+ * Filters out customColor prop that some parent components
+ * (like Button.Icon, SideBar.Item.Icon) pass to icons, which causes
+ * React warnings when passed to SVG elements that don't support it.
+ *
+ * Uses WeakMap caching to ensure the same input icon always returns
+ * the same wrapped component, preventing React reconciliation issues.
+ */
+export const iconWithoutCustomColor = (IconComponent: React.ComponentType<any>) => {
+  const cached = filteredIconCache.get(IconComponent)
+  if (cached) {
+    return cached
+  }
+
+  const FilteredIcon = ({ customColor: _customColor, ...iconProps }: any) => (
+    <IconComponent {...iconProps} />
+  )
+  FilteredIcon.displayName = `Filtered(${IconComponent.displayName || IconComponent.name || 'Icon'})`
+
+  filteredIconCache.set(IconComponent, FilteredIcon)
+  return FilteredIcon
+}
+
 export const Icon = ({
   icon: IconComponent,
   isSvg = false,
