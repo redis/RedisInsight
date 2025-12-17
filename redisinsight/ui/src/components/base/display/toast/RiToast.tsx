@@ -32,8 +32,8 @@ export const riToast = (
       color = 'subdued'
     }
     toastContent.message = (
-      <Text size="M" variant="semiBold">
-        <ColorText color={color}>{message}</ColorText>
+      <Text size="M" variant="semiBold" component="span">
+        <ColorText color={color} component="span">{message}</ColorText>
       </Text>
     )
   } else {

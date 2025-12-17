@@ -14,7 +14,7 @@ import {
 } from 'uiSrc/utils'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Text, Title } from 'uiSrc/components/base/text'
+import { Text } from 'uiSrc/components/base/text'
 import { Spacer } from 'uiSrc/components/base/layout'
 
 const Li = styled.li<React.HTMLAttributes<HTMLLIElement>>`
@@ -256,12 +256,12 @@ export default {
     return {
       title: (
         <>
-          <Title size="S">Action completed</Title>
+          <Text component="span" variant="semiBold">Action completed</Text>
           {fileName ? (
             <>
               <Spacer size="s" />
-              <Text>Commands executed from file:</Text>
-              <Text>{formatLongName(fileName, 34, 5)}</Text>
+              <Text component="span">Commands executed from file:</Text>
+              <Text component="span">{formatLongName(fileName, 34, 5)}</Text>
             </>
           ) : null}
           <Spacer size="m" />
@@ -270,22 +270,22 @@ export default {
       message: (
         <Row align="start" gap="xl">
           <FlexItem>
-            <Text>{numberWithSpaces(processed)}</Text>
-            <Text size="xs">Commands Processed</Text>
+            <Text component="span">{numberWithSpaces(processed)}</Text>
+            <Text component="span" size="xs">Commands Processed</Text>
           </FlexItem>
           <FlexItem>
-            <Text>{numberWithSpaces(succeed)}</Text>
-            <Text size="xs">Success</Text>
+            <Text component="span">{numberWithSpaces(succeed)}</Text>
+            <Text component="span" size="xs">Success</Text>
           </FlexItem>
           <FlexItem>
-            <Text>{numberWithSpaces(failed)}</Text>
-            <Text size="xs">Errors</Text>
+            <Text component="span">{numberWithSpaces(failed)}</Text>
+            <Text component="span" size="xs">Errors</Text>
           </FlexItem>
           <FlexItem>
-            <Text>
+            <Text component="span">
               {millisecondsFormat(data?.duration || 0, 'H:mm:ss.SSS')}
             </Text>
-            <Text size="xs">Time Taken</Text>
+            <Text component="span" size="xs">Time Taken</Text>
           </FlexItem>
         </Row>
       ),
