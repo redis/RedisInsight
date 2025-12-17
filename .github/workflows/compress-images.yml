@@ -8,6 +8,10 @@ on:
       - '**.jpeg'
       - '**.png'
       - '**.webp'
+    branches-ignore:
+      - 'latest'
+      - 'release/*'
+      - 'ric/*'
 jobs:
   build:
     # Only run on Pull Requests within the same repository, and not from forks.
