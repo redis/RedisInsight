@@ -48,9 +48,9 @@ export const BASE_COLUMNS: ColumnDef<Instance>[] = [
     isHeaderCustom: true,
     enableSorting: false,
     header: Table.HeaderMultiRowSelectionButton,
-    cell: (props) => (
+    cell: ({ row }) => (
       <Table.RowSelectionButton
-        {...props}
+        row={row}
         onClick={(e: any) => e.stopPropagation()}
       />
     ),
