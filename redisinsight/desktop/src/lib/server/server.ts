@@ -5,8 +5,11 @@ import { configMain as config } from 'desktopSrc/config'
 import { createAuthStrategy } from 'desktopSrc/lib/auth/auth.factory'
 import { AuthStrategy } from 'desktopSrc/lib/auth/auth.interface'
 import { AbstractWindowAuthStrategy } from 'apiSrc/modules/auth/window-auth/strategies/abstract.window.auth.strategy'
+// eslint-disable-next-line import/extensions -- api/dist doesn't exist in CI
 import { WindowAuthModule } from '../../../../api/dist/src/modules/auth/window-auth/window-auth.module'
+// eslint-disable-next-line import/extensions -- api/dist doesn't exist in CI
 import { WindowAuthService } from '../../../../api/dist/src/modules/auth/window-auth/window-auth.service'
+// eslint-disable-next-line import/extensions -- api/dist doesn't exist in CI
 import server from '../../../../api/dist/src/main'
 import { getWindows } from '../window'
 
