@@ -395,13 +395,6 @@ module.exports = {
         'prefer-destructuring': 'off',
       },
     },
-    // Temporary disable some rules for Playwright tests
-    {
-      files: ['tests/playwright/**/*.ts*'],
-      rules: {
-        'prettier/prettier': 'off',
-      },
-    },
   ],
   parserOptions: {
     project: './tsconfig.json',
