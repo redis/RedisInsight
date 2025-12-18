@@ -88,8 +88,6 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
     initialFieldValue(fieldTypeOptions),
   ])
 
-
-
   const lastAddedIdentifier = useRef<HTMLInputElement>(null)
   const prevCountFields = useRef<number>(0)
 

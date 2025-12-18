@@ -41,7 +41,11 @@ beforeEach(() => {
   store.clearActions()
 })
 
-const sideBarWithHelpMenu = <SideBar isExpanded={false}><HelpMenu /></SideBar>
+const sideBarWithHelpMenu = (
+  <SideBar isExpanded={false}>
+    <HelpMenu />
+  </SideBar>
+)
 
 describe('HelpMenu', () => {
   it('should render', () => {

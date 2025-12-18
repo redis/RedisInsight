@@ -15,7 +15,6 @@ import { CreateRejsonRlWithExpireDto } from 'apiSrc/modules/browser/rejson-rl/dt
 
 import { AddJSONFormConfig as config } from '../constants/fields-config'
 
-
 export interface Props {
   keyName: string
   keyTTL: Maybe<number>

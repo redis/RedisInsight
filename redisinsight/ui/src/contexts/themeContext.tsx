@@ -124,7 +124,7 @@ export class ThemeProvider extends React.Component<Props> {
     )
   }
 }
- 
+
 export const useThemeContext = () => {
   return useContext(ThemeContext)
 }

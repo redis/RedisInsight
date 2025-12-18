@@ -4,10 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import {
-  rdiPipelineSelector,
-  setChangedFile,
-} from 'uiSrc/slices/rdi/pipeline'
+import { rdiPipelineSelector, setChangedFile } from 'uiSrc/slices/rdi/pipeline'
 import {
   appContextPipelineManagement,
   setPipelineDialogState,
@@ -15,10 +12,7 @@ import {
 import UploadModal from 'uiSrc/pages/rdi/pipeline-management/components/upload-modal/UploadModal'
 import { Text, Title } from 'uiSrc/components/base/text'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
-import {
-  ContractsIcon,
-  UploadIcon,
-} from 'uiSrc/components/base/icons'
+import { ContractsIcon, UploadIcon } from 'uiSrc/components/base/icons'
 import { FileChangeType } from 'uiSrc/slices/interfaces'
 import { Modal } from 'uiSrc/components/base/display'
 import { Spacer } from 'uiSrc/components/base/layout'

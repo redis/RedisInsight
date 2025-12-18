@@ -46,7 +46,7 @@ const ComponentBadge = styled(RiBadge)<{ isActive?: boolean }>`
   }
 
   ${({ isActive, theme }) => {
-    // TODO: try to replace with semantic colors once the palette is bigger. 
+    // TODO: try to replace with semantic colors once the palette is bigger.
     const bgColorActive =
       theme.name === 'dark' ? theme.color.azure600 : theme.color.azure200
     const bgColorHover =

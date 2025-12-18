@@ -17,18 +17,18 @@ export const CONNECTIVITY_OPTIONS: ConnectivityOption[] = [
     id: 'sentinel',
     title: 'Redis Sentinel',
     type: AddDbType.sentinel,
-    icon: "ShieldIcon",
+    icon: 'ShieldIcon',
   },
   {
     id: 'software',
     title: 'Redis Software',
     type: AddDbType.software,
-    icon: "RedisSoftwareIcon",
+    icon: 'RedisSoftwareIcon',
   },
   {
     id: 'import',
     title: 'Import from file',
     type: AddDbType.import,
-    icon: "DownloadIcon",
+    icon: 'DownloadIcon',
   },
 ]

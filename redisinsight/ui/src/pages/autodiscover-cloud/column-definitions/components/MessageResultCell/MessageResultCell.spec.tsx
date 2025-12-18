@@ -63,4 +63,3 @@ describe('MessageResultCell', () => {
     expect(cellText?.textContent).toBe('')
   })
 })
-

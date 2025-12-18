@@ -4,7 +4,10 @@ import { Input as RedisInput, TooltipProvider } from '@redis-ui/components'
 
 export type RedisInputProps = ComponentProps<typeof RedisInput>
 
-const TextInput = forwardRef<React.ElementRef<typeof RedisInput>, RedisInputProps>((props, ref) => {
+const TextInput = forwardRef<
+  React.ElementRef<typeof RedisInput>,
+  RedisInputProps
+>((props, ref) => {
   // eslint-disable-next-line react/destructuring-assignment
   if (props.error) {
     return (

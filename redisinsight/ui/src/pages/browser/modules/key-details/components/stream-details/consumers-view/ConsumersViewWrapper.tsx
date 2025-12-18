@@ -169,7 +169,9 @@ const ConsumersViewWrapper = (props: Props) => {
       className: styles.cell,
       headerClassName: 'streamItemHeader',
       headerCellClassName: 'truncateText',
-      render: (cellData: number) => <Text color="secondary">{numberWithSpaces(cellData)}</Text>,
+      render: (cellData: number) => (
+        <Text color="secondary">{numberWithSpaces(cellData)}</Text>
+      ),
     },
     {
       id: 'actions',
