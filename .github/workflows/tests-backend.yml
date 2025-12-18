@@ -41,15 +41,6 @@ jobs:
           FILENAME=$FILENAME DEPS="API dev" node .github/deps-audit-report.js &&
           curl -H "Content-type: application/json" --data @slack.$FILENAME -H "Authorization: Bearer $SLACK_AUDIT_REPORT_KEY" -X POST https://slack.com/api/chat.postMessage
 
-      - name: Code analysis
-        run: |
-          FILENAME=api.lint.audit.json
-          WORKDIR="."
-
-          yarn lint:api -f json -o $FILENAME || true &&
-          FILENAME=$FILENAME WORKDIR=$WORKDIR TARGET="API" node .github/lint-report.js &&
-          curl -H "Content-type: application/json" --data @$WORKDIR/slack.$FILENAME -H "Authorization: Bearer $SLACK_AUDIT_REPORT_KEY" -X POST https://slack.com/api/chat.postMessage
-
       - name: Unit tests API
         timeout-minutes: 20
         run: yarn --cwd redisinsight/api/ test:cov --ci --silent
