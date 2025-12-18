@@ -16,6 +16,11 @@ inputs:
     default: '0'
     required: false
 
+  skip-system-deps:
+    description: Skip install system dependencies (libsecret, rpm, etc.)
+    default: '0'
+    required: false
+
   keytar-host-mirror:
     description: Keytar binary host mirror
     required: false
@@ -58,16 +63,14 @@ runs:
         python-version: '3.11'
 
     - name: Install linux libraries
-      if: ${{ runner.os == 'Linux' }}
-      # if: ${{ runner.os == 'Linux' && !contains(inputs.skip-electron-deps, '1') }}
+      if: ${{ runner.os == 'Linux' && inputs.skip-system-deps != '1' }}
       shell: bash
       run: |
         sudo apt-get update -qy
         sudo apt-get install -qy libsecret-1-dev rpm
 
     - name: Install macos libraries
-      if: ${{ runner.os == 'macOS' }}
-      # if: ${{ runner.os == 'macOS' && !contains(inputs.skip-electron-deps, '1') }}
+      if: ${{ runner.os == 'macOS' && inputs.skip-system-deps != '1' }}
       shell: bash
       run: |
         brew install libsecret
