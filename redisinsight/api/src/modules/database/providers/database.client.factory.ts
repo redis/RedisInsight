@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Optional } from '@nestjs/common';
 import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
 import { DatabaseAnalytics } from 'src/modules/database/database.analytics';
 import { DatabaseService } from 'src/modules/database/database.service';
@@ -10,9 +10,14 @@ import {
   RedisClientFactory,
 } from 'src/modules/redis/redis.client.factory';
 import { RedisClientStorage } from 'src/modules/redis/redis.client.storage';
-import { RedisConnectionFailedException } from 'src/modules/redis/exceptions/connection';
+import {
+  RedisConnectionFailedException,
+  RedisConnectionUnauthorizedException,
+} from 'src/modules/redis/exceptions/connection';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { DatabaseConnectionEvent } from 'src/modules/database/constants/events';
+import { AzureAutodiscoveryService } from 'src/modules/azure/autodiscovery/azure-autodiscovery.service';
+import { Database } from 'src/modules/database/models/database';
 
 type IsClientConnectingMap = {
   [key: string]: boolean;
@@ -40,7 +45,89 @@ export class DatabaseClientFactory {
     private readonly redisClientStorage: RedisClientStorage,
     private readonly redisClientFactory: RedisClientFactory,
     private readonly eventEmitter: EventEmitter2,
+    @Optional()
+    private readonly azureAutodiscoveryService?: AzureAutodiscoveryService,
   ) {}
+
+  /**
+   * Check if host matches Azure Redis patterns
+   */
+  private isAzureHost(host: string): boolean {
+    return (
+      host.endsWith('.redis.cache.windows.net') ||
+      host.endsWith('.redisenterprise.cache.azure.net') ||
+      host.endsWith('.redis.azure.net')
+    );
+  }
+
+  /**
+   * Try to refresh Azure credentials for a database
+   * Returns updated database if successful, null otherwise
+   */
+  private async tryRefreshAzureCredentials(
+    clientMetadata: ClientMetadata,
+    database: Database,
+  ): Promise<Database | null> {
+    if (!this.azureAutodiscoveryService || !this.isAzureHost(database.host)) {
+      return null;
+    }
+
+    this.logger.warn(
+      `Attempting to refresh Azure credentials for ${database.host}`,
+    );
+
+    try {
+      // Find the database in Azure by host
+      const azureDatabases =
+        await this.azureAutodiscoveryService.listDatabases();
+      const azureDb = azureDatabases.find((db) => db.host === database.host);
+
+      if (!azureDb) {
+        this.logger.warn(
+          `Database ${database.host} not found in Azure subscriptions`,
+        );
+        return null;
+      }
+
+      // Get fresh connection details
+      const connectionDetails =
+        await this.azureAutodiscoveryService.getConnectionDetails(azureDb);
+
+      if (!connectionDetails) {
+        this.logger.warn(
+          `Failed to get connection details for ${database.host}`,
+        );
+        return null;
+      }
+
+      // Update database with new credentials
+      await this.repository.update(
+        clientMetadata.sessionMetadata,
+        database.id,
+        {
+          password: connectionDetails.password,
+          username: connectionDetails.username,
+        },
+      );
+
+      this.logger.log(
+        `Successfully refreshed Azure credentials for ${database.host}`,
+      );
+
+      // Return updated database
+      return {
+        ...database,
+        password: connectionDetails.password,
+        username: connectionDetails.username,
+      };
+    } catch (error) {
+      this.logger.error(
+        `Failed to refresh Azure credentials for ${database.host}`,
+        error,
+      );
+      return null;
+    }
+  }
 
   private async processGetClient(
     clientId: string,
@@ -126,13 +213,15 @@ export class DatabaseClientFactory {
    * ! Will be not automatically closed by idle time
    * @param clientMetadata
    * @param options
+   * @param retryWithAzureRefresh - whether to retry with Azure credential refresh on auth failure
    */
   async createClient(
     clientMetadata: ClientMetadata,
     options?: IRedisConnectionOptions,
+    retryWithAzureRefresh: boolean = true,
   ): Promise<RedisClient> {
     this.logger.debug('Creating new redis client.', clientMetadata);
-    const database = await this.databaseService.get(
+    let database = await this.databaseService.get(
       clientMetadata.sessionMetadata,
       clientMetadata.databaseId,
     );
@@ -158,6 +247,33 @@ export class DatabaseClientFactory {
       return client;
     } catch (error) {
       this.logger.error('Failed to create database client', error);
+
+      // If auth failed and it's an Azure host, try to refresh credentials
+      const isUnauthorized =
+        error instanceof RedisConnectionUnauthorizedException;
+      const isAzure = this.isAzureHost(database.host);
+      this.logger.warn(
+        `Azure token refresh check: retryWithAzureRefresh=${retryWithAzureRefresh}, isUnauthorized=${isUnauthorized}, isAzure=${isAzure}, host=${database.host}`,
+      );
+
+      if (retryWithAzureRefresh && isUnauthorized && isAzure) {
+        this.logger.warn(
+          'Auth failed for Azure database, attempting credential refresh',
+        );
+
+        const updatedDatabase = await this.tryRefreshAzureCredentials(
+          clientMetadata,
+          database,
+        );
+
+        if (updatedDatabase) {
+          // Retry connection with refreshed credentials (but don't retry again)
+          this.logger.warn(
+            'Retrying connection with refreshed Azure credentials',
+          );
+          return this.createClient(clientMetadata, options, false);
+        }
+      }
 
       if (error instanceof RedisConnectionFailedException) {
         this.eventEmitter.emit(
