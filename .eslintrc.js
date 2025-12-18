@@ -314,7 +314,6 @@ module.exports = {
         'sonarjs/no-duplicate-string': 'off',
         'sonarjs/prefer-immediate-return': 'off',
         'sonarjs/cognitive-complexity': 'off',
-        'prettier/prettier': 'off',
         'max-len': 'off',
         'prefer-destructuring': 'off',
         'prefer-const': 'off',
