@@ -102,6 +102,7 @@ export class RdiClientStorage {
       !client.id ||
       !client.metadata.sessionMetadata?.sessionId ||
       !client.metadata.sessionMetadata.userId ||
+      !client.metadata.sessionMetadata.accountId ||
       !client.metadata.id
     ) {
       throw new BadRequestException(
