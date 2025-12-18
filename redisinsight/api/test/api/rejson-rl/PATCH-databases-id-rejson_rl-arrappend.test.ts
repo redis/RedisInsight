@@ -83,9 +83,7 @@ describe('PATCH /databases/:instanceId/rejson-rl/arrappend', () => {
                 '.',
               ),
             );
-            expect(json)
-              .to
-              .eql([...constants.TEST_REJSON_VALUE_2, [1, 2]]);
+            expect(json).to.eql([...constants.TEST_REJSON_VALUE_2, [1, 2]]);
           },
         },
         {
@@ -104,9 +102,7 @@ describe('PATCH /databases/:instanceId/rejson-rl/arrappend', () => {
                 '[1]',
               ),
             );
-            expect(json)
-              .to
-              .eql([1, 2]);
+            expect(json).to.eql([1, 2]);
           },
           after: async () => {
             const json = JSON.parse(
@@ -116,12 +112,10 @@ describe('PATCH /databases/:instanceId/rejson-rl/arrappend', () => {
                 '.',
               ),
             );
-            expect(json)
-              .to
-              .eql([
-                ...constants.TEST_REJSON_VALUE_2,
-                [1, 2, null, 'somestring'],
-              ]);
+            expect(json).to.eql([
+              ...constants.TEST_REJSON_VALUE_2,
+              [1, 2, null, 'somestring'],
+            ]);
           },
         },
         {
@@ -177,9 +171,7 @@ describe('PATCH /databases/:instanceId/rejson-rl/arrappend', () => {
                 '$',
               ),
             );
-            expect(json[0])
-              .to
-              .eql([...constants.TEST_REJSON_VALUE_2, [1, 2]]);
+            expect(json[0]).to.eql([...constants.TEST_REJSON_VALUE_2, [1, 2]]);
           },
         },
         {
@@ -198,9 +190,7 @@ describe('PATCH /databases/:instanceId/rejson-rl/arrappend', () => {
                 '$[1]',
               ),
             );
-            expect(json[0])
-              .to
-              .eql([1, 2]);
+            expect(json[0]).to.eql([1, 2]);
           },
           after: async () => {
             const json = JSON.parse(
@@ -210,12 +200,10 @@ describe('PATCH /databases/:instanceId/rejson-rl/arrappend', () => {
                 '$',
               ),
             );
-            expect(json[0])
-              .to
-              .eql([
-                ...constants.TEST_REJSON_VALUE_2,
-                [1, 2, null, 'somestring'],
-              ]);
+            expect(json[0]).to.eql([
+              ...constants.TEST_REJSON_VALUE_2,
+              [1, 2, null, 'somestring'],
+            ]);
           },
         },
         {
