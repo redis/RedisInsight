@@ -12,6 +12,8 @@ jobs:
 
       - name: Install dependencies
         uses: ./.github/actions/install-all-build-libs
+        with:
+          skip-system-deps: '1'
 
       - name: Run ESLint
         run: yarn lint
