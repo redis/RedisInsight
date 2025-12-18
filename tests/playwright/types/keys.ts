@@ -8,16 +8,18 @@
  * @param field The field of the key
  */
 export type AddNewKeyParameters = {
-    keyName: string,
-    value?: string,
-    TTL?: string,
-    members?: string,
-    scores?: string,
-    field?: string,
-    fields?: [{
-        field?: string,
-        valuse?: string
-    }]
+    keyName: string
+    value?: string
+    TTL?: string
+    members?: string
+    scores?: string
+    field?: string
+    fields?: [
+        {
+            field?: string
+            valuse?: string
+        },
+    ]
 }
 
 /**
@@ -29,9 +31,9 @@ export type AddNewKeyParameters = {
 
  */
 export type HashKeyParameters = {
-    keyName: string,
+    keyName: string
     fields: {
-        field: string,
+        field: string
         value: string
     }[]
 }
@@ -44,11 +46,11 @@ export type HashKeyParameters = {
  * @param fields The Array with fields
  */
 export type StreamKeyParameters = {
-    keyName: string,
+    keyName: string
     entries: {
-        id: string,
+        id: string
         fields: {
-            name: string,
+            name: string
             value: string
         }[]
     }[]
@@ -60,7 +62,7 @@ export type StreamKeyParameters = {
  * @param members The Array with members
  */
 export type SetKeyParameters = {
-    keyName: string,
+    keyName: string
     members: string[]
 }
 
@@ -72,9 +74,9 @@ export type SetKeyParameters = {
  * @param id The id of the member
  */
 export type SortedSetKeyParameters = {
-    keyName: string,
+    keyName: string
     members: {
-        name: string,
+        name: string
         score: number
     }[]
 }
@@ -85,7 +87,7 @@ export type SortedSetKeyParameters = {
  * @param element The element in list
  */
 export type ListKeyParameters = {
-    keyName: string,
+    keyName: string
     element: string
 }
 
@@ -95,7 +97,7 @@ export type ListKeyParameters = {
  * @param value The value in the string
  */
 export type StringKeyParameters = {
-    keyName: string,
+    keyName: string
     value: string
 }
 
@@ -114,15 +116,15 @@ export type StringKeyParameters = {
  */
 
 export type AddKeyArguments = {
-    keysCount?: number,
-    fieldsCount?: number,
-    elementsCount?: number,
-    membersCount?: number,
-    keyName?: string,
-    keyNameStartWith?: string,
-    fieldStartWith?: string,
-    fieldValueStartWith?: string,
-    elementStartWith?: string,
+    keysCount?: number
+    fieldsCount?: number
+    elementsCount?: number
+    membersCount?: number
+    keyName?: string
+    keyNameStartWith?: string
+    fieldStartWith?: string
+    fieldValueStartWith?: string
+    elementStartWith?: string
     memberStartWith?: string
 }
 
@@ -132,6 +134,6 @@ export type AddKeyArguments = {
  * @param keyName The name of the key
  */
 export type KeyData = {
-    textType: string,
+    textType: string
     keyName: string
 }[]
