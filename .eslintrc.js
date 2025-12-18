@@ -6,7 +6,12 @@ module.exports = {
     node: true,
     browser: true,
   },
-  extends: ['airbnb-typescript', 'prettier', 'plugin:prettier/recommended', 'plugin:storybook/recommended'],
+  extends: [
+    'airbnb-typescript',
+    'prettier',
+    'plugin:prettier/recommended',
+    'plugin:storybook/recommended',
+  ],
   plugins: ['@typescript-eslint', 'import', 'prettier'],
   parser: '@typescript-eslint/parser',
   rules: {
