@@ -1,13 +1,11 @@
 import React, { useState } from 'react'
-import { FlexItem, Grid } from 'uiSrc/components/base/layout/flex'
+import styled from 'styled-components'
+import { Col, FlexItem, Grid, Row } from 'uiSrc/components/base/layout/flex'
 import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import * as Icons from 'uiSrc/components/base/icons/iconRegistry'
-import styled from 'styled-components'
-import { Text } from 'uiSrc/components/base/text'
+import { ColorText, Text } from 'uiSrc/components/base/text'
 import { type Theme as ThemeType } from 'uiSrc/components/base/theme/types'
-import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { SearchInput } from 'uiSrc/components/base/inputs'
-import { ColorText } from '../../redisinsight/ui/src/components/base/text'
 
 const skip = [
   'IconProps',
