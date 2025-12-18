@@ -20,7 +20,10 @@ const Empty = ({ rdiInstanceId }: Props) => {
 
   return (
     <Panel>
-      <div className={styles.emptyPipelineContainer} data-testid="empty-pipeline">
+      <div
+        className={styles.emptyPipelineContainer}
+        data-testid="empty-pipeline"
+      >
         <RiImage src={EmptyPipelineIcon} alt="empty" $size="s" />
         <Spacer size="xl" />
         <Text>No pipeline deployed yet</Text>

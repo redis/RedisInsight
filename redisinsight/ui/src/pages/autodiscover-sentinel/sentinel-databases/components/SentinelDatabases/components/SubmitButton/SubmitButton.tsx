@@ -6,7 +6,13 @@ import validationErrors from 'uiSrc/constants/validationErrors'
 
 import { type SubmitButtonProps } from './SubmitButton.types'
 
-const TooltipIcon = ({ title, content }: { title: string | null; content: string | null }) => (
+const TooltipIcon = ({
+  title,
+  content,
+}: {
+  title: string | null
+  content: string | null
+}) => (
   <RiTooltip position="top" title={title} content={<span>{content}</span>}>
     <RiIcon type="InfoIcon" />
   </RiTooltip>
@@ -38,11 +44,14 @@ export const SubmitButton = ({
       onClick={onClick}
       disabled={isDisabled}
       loading={loading}
-      icon={isDisabled ? () => <TooltipIcon title={title} content={content} /> : undefined}
+      icon={
+        isDisabled
+          ? () => <TooltipIcon title={title} content={content} />
+          : undefined
+      }
       data-testid="btn-add-primary-group"
     >
       Add Primary Group
     </PrimaryButton>
   )
 }
-

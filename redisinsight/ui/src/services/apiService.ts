@@ -90,8 +90,8 @@ export const hostedAuthInterceptor = (error: AxiosError) => {
 
 export const isConnectivityError = (
   status?: number,
-  data?: { code?: string; error?: string }
-): boolean  => {
+  data?: { code?: string; error?: string },
+): boolean => {
   if (!status || !data) {
     return false
   }
@@ -100,7 +100,10 @@ export const isConnectivityError = (
     case 424:
       return !!data.error?.startsWith?.('RedisConnection')
     case 503:
-      return data.code === 'serviceUnavailable' || data.error === 'Service Unavailable'
+      return (
+        data.code === 'serviceUnavailable' ||
+        data.error === 'Service Unavailable'
+      )
     default:
       return false
   }
@@ -119,7 +122,10 @@ export const connectivityErrorsInterceptor = (error: AxiosError) => {
   if (isConnectivityError(response?.status, responseData)) {
     let message
 
-    if (responseData?.errorCode === CustomErrorCodes.RedisConnectionDefaultUserDisabled) {
+    if (
+      responseData?.errorCode ===
+      CustomErrorCodes.RedisConnectionDefaultUserDisabled
+    ) {
       message = responseData?.message
     }
 
@@ -131,7 +137,9 @@ export const connectivityErrorsInterceptor = (error: AxiosError) => {
     )
 
     if (isConnectedToDatabase && isErrorTargetsConnectedDatabase) {
-      store?.dispatch<any>(setConnectivityError(message || ApiErrors.ConnectionLost))
+      store?.dispatch<any>(
+        setConnectivityError(message || ApiErrors.ConnectionLost),
+      )
     }
   }
 

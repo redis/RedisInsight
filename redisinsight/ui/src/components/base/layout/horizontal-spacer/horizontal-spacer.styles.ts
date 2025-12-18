@@ -23,4 +23,4 @@ export const StyledHorizontalSpacer = styled.div<HorizontalSpacerProps>`
   flex-shrink: 0;
   width: ${({ size = 'l' }) => horizontalSpacerStyles[size]};
   display: inline-block;
-` 
+`

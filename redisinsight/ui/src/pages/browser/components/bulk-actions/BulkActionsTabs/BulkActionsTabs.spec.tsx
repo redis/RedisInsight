@@ -53,6 +53,5 @@ describe('BulkActionsTabs', () => {
       },
     })
     ;(sendEventTelemetry as jest.Mock).mockRestore()
-
   })
 })

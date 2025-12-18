@@ -137,9 +137,7 @@ describe('DatabasesListWrapper', () => {
         {...instance(mockedProps)}
         instances={mockInstances}
         predefinedInstances={
-          [
-            { id: CREATE_CLOUD_DB_ID, name: 'Create free db' },
-          ] as Instance[]
+          [{ id: CREATE_CLOUD_DB_ID, name: 'Create free db' }] as Instance[]
         }
       />,
     )
@@ -155,9 +153,7 @@ describe('DatabasesListWrapper', () => {
         {...instance(mockedProps)}
         instances={mockInstances}
         predefinedInstances={
-          [
-            { id: CREATE_CLOUD_DB_ID, name: 'Create free db' },
-          ] as Instance[]
+          [{ id: CREATE_CLOUD_DB_ID, name: 'Create free db' }] as Instance[]
         }
       />,
     )

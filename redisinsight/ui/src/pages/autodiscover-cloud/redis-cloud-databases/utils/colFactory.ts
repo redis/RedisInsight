@@ -12,7 +12,9 @@ import {
   subscriptionTypeColumn,
 } from '../../column-definitions'
 
-export const colFactory = (instances: InstanceRedisCloud[]): ColumnDef<InstanceRedisCloud>[] => {
+export const colFactory = (
+  instances: InstanceRedisCloud[],
+): ColumnDef<InstanceRedisCloud>[] => {
   const columns: ColumnDef<InstanceRedisCloud>[] = [
     databaseColumn(),
     subscriptionIdColumn(),
@@ -30,4 +32,3 @@ export const colFactory = (instances: InstanceRedisCloud[]): ColumnDef<InstanceR
 
   return columns
 }
-

@@ -92,7 +92,9 @@ const InsightsPanel = (props: Props) => {
         panelName="insights"
       >
         <Row>
-          <Text size="L" color="primary">Insights</Text>
+          <Text size="L" color="primary">
+            Insights
+          </Text>
         </Row>
       </Header>
       <Col className={styles.body}>

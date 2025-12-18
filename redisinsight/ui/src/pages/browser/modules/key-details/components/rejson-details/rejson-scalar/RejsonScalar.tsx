@@ -101,11 +101,11 @@ const RejsonScalar = (props: JSONScalarProps) => {
                         height: `24px`,
                       },
                       input: {
-                        height: `24px !important`
+                        height: `24px !important`,
                       },
                       actionsContainer: {
-                        height: `24px`
-                      }
+                        height: `24px`,
+                      },
                     }}
                     initialValue={changedValue}
                     controlsPosition="right"

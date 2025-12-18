@@ -11,4 +11,3 @@ export const EmptyState = ({ message }: EmptyStateProps) => (
     </FlexItem>
   </Col>
 )
-

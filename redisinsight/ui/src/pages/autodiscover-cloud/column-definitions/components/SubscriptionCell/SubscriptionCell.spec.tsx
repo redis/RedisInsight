@@ -40,4 +40,3 @@ describe('SubscriptionCell', () => {
     expect(element).toBeInTheDocument()
   })
 })
-

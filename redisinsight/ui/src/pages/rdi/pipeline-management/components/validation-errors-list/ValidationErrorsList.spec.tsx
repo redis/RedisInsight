@@ -6,14 +6,14 @@ import ValidationErrorsList, { Props } from './ValidationErrorsList'
 describe('ValidationErrorsList', () => {
   it('should render', () => {
     const props: Props = {
-      validationErrors: []
+      validationErrors: [],
     }
     expect(render(<ValidationErrorsList {...props} />)).toBeTruthy()
   })
 
   it('should not render anything when validationErrors is undefined', () => {
     const props: Props = {
-      validationErrors: undefined as any
+      validationErrors: undefined as any,
     }
     const { container } = render(<ValidationErrorsList {...props} />)
 
@@ -22,7 +22,7 @@ describe('ValidationErrorsList', () => {
 
   it('should render a single validation error', () => {
     const props: Props = {
-      validationErrors: ['Invalid configuration format']
+      validationErrors: ['Invalid configuration format'],
     }
     render(<ValidationErrorsList {...props} />)
 
@@ -36,8 +36,8 @@ describe('ValidationErrorsList', () => {
       validationErrors: [
         'Missing required field: name',
         'Invalid data type for age',
-        'Email format is incorrect'
-      ]
+        'Email format is incorrect',
+      ],
     }
     render(<ValidationErrorsList {...props} />)
 
@@ -50,7 +50,7 @@ describe('ValidationErrorsList', () => {
 
   it('should render validation errors as list items within a Text component', () => {
     const props: Props = {
-      validationErrors: ['Error message 1', 'Error message 2']
+      validationErrors: ['Error message 1', 'Error message 2'],
     }
     render(<ValidationErrorsList {...props} />)
 
@@ -69,19 +69,25 @@ describe('ValidationErrorsList', () => {
       validationErrors: [
         'Error with <script>alert("xss")</script>',
         'Error with & special characters',
-        'Error with "quotes" and \'apostrophes\''
-      ]
+        'Error with "quotes" and \'apostrophes\'',
+      ],
     }
     render(<ValidationErrorsList {...props} />)
 
-    expect(screen.getByText('Error with <script>alert("xss")</script>')).toBeInTheDocument()
-    expect(screen.getByText('Error with & special characters')).toBeInTheDocument()
-    expect(screen.getByText('Error with "quotes" and \'apostrophes\'')).toBeInTheDocument()
+    expect(
+      screen.getByText('Error with <script>alert("xss")</script>'),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText('Error with & special characters'),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText('Error with "quotes" and \'apostrophes\''),
+    ).toBeInTheDocument()
   })
 
   it('should handle empty string errors', () => {
     const props: Props = {
-      validationErrors: ['', 'Valid error message', '']
+      validationErrors: ['', 'Valid error message', ''],
     }
     render(<ValidationErrorsList {...props} />)
 

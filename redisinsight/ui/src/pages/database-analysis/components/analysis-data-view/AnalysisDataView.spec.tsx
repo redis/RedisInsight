@@ -9,7 +9,13 @@ import { SectionName } from 'uiSrc/pages/database-analysis'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { formatBytes, getGroupTypeDisplay } from 'uiSrc/utils'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
-import { fireEvent, userEvent, render, screen, within } from 'uiSrc/utils/test-utils'
+import {
+  fireEvent,
+  userEvent,
+  render,
+  screen,
+  within,
+} from 'uiSrc/utils/test-utils'
 
 import AnalysisDataView from './AnalysisDataView'
 

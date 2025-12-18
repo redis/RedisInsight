@@ -11,7 +11,7 @@ const meta: Meta<typeof GroupBadge> = {
   decorators: [
     (Story) => (
       <div style={{ padding: '20px' }}>
-          <Story />
+        <Story />
       </div>
     ),
   ],

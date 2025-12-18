@@ -1,7 +1,10 @@
 import React from 'react'
 
 import { RiPopover } from 'uiSrc/components/base'
-import { DestructiveButton, SecondaryButton } from 'uiSrc/components/base/forms/buttons'
+import {
+  DestructiveButton,
+  SecondaryButton,
+} from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
 import styles from './CancelButton.style'
 
@@ -30,8 +33,8 @@ export const CancelButton = ({
     }
   >
     <Text size="m">
-      Your changes have not been saved.&#10;&#13; Do you want to proceed to
-      the list of databases?
+      Your changes have not been saved.&#10;&#13; Do you want to proceed to the
+      list of databases?
     </Text>
     <br />
     <div>
@@ -45,4 +48,3 @@ export const CancelButton = ({
     </div>
   </RiPopover>
 )
-

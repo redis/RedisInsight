@@ -4,7 +4,11 @@ import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/In
 
 import type { UsernameCellProps } from './UsernameCell.types'
 
-export const UsernameCell = ({ username, id, handleChangedInput }: UsernameCellProps) => (
+export const UsernameCell = ({
+  username,
+  id,
+  handleChangedInput,
+}: UsernameCellProps) => (
   <div role="presentation">
     <InputFieldSentinel
       value={username}

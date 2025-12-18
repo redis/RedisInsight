@@ -4,11 +4,7 @@ import cx from 'classnames'
 import { curryRight, flow, toNumber } from 'lodash'
 
 import { formatBytes, toBytes } from 'uiSrc/utils'
-import {
-  Wrapper,
-  StyledSVG,
-  TooltipGlobalStyles,
-} from './BarChart.styles'
+import { Wrapper, StyledSVG, TooltipGlobalStyles } from './BarChart.styles'
 
 export interface BarChartData {
   y: number

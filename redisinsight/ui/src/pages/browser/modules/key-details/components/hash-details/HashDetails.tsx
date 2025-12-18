@@ -81,10 +81,7 @@ const HashDetails = (props: Props) => {
             onChange={(e) => handleSelectShow(e.target.checked)}
             data-testid="test-check-ttl"
           />
-          <Divider
-            className={styles.divider}
-            orientation="vertical"
-          />
+          <Divider className={styles.divider} orientation="vertical" />
         </>
       )}
       <AddItemsAction
