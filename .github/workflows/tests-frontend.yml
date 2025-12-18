@@ -17,7 +17,7 @@ jobs:
       - name: Install all libs and dependencies
         uses: ./.github/actions/install-all-build-libs
         with:
-          skip-backend-deps: '1'
+          skip-system-deps: '1'
 
       - name: UI PROD dependencies audit
         run: |

@@ -23,7 +23,7 @@ jobs:
       - name: Install all libs and dependencies for BE
         uses: ./.github/actions/install-all-build-libs
         with:
-          skip-electron-deps: '1'
+          skip-system-deps: '1'
 
       - name: API PROD dependencies scan
         run: |

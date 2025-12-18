@@ -1,21 +1,6 @@
 name: Install all libraries action
 description: Install all libraries and dependencies
 inputs:
-  skip-electron-deps:
-    description: Skip install electron dependencies
-    default: '0'
-    required: false
-
-  skip-backend-deps:
-    description: Skip install backend dependencies
-    default: '0'
-    required: false
-
-  skip-postinstall:
-    description: Skip postinstall
-    default: '0'
-    required: false
-
   skip-system-deps:
     description: Skip install system dependencies (libsecret, rpm, etc.)
     default: '0'
@@ -29,12 +14,9 @@ inputs:
     description: SQLite3 binary host mirror
     required: false
 
-#TODO: check !contains
-
 runs:
   using: 'composite'
   steps:
-    # OS libraries
     - name: Setup Node
       uses: actions/setup-node@v4.0.4
       with:
@@ -57,7 +39,6 @@ runs:
           node-modules-${{ runner.os }}-
 
     - name: Setup Python
-      # if: ${{ contains(inputs.skip-electron-deps, '1') }}
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
