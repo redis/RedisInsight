@@ -8,11 +8,10 @@ module.exports = {
   },
   extends: [
     'airbnb-typescript',
-    'prettier',
     'plugin:prettier/recommended',
     'plugin:storybook/recommended',
   ],
-  plugins: ['@typescript-eslint', 'import', 'prettier'],
+  plugins: ['@typescript-eslint', 'import'],
   parser: '@typescript-eslint/parser',
   rules: {
     quotes: [2, 'single', { avoidEscape: true }],
@@ -72,12 +71,8 @@ module.exports = {
         node: true,
         browser: false,
       },
-      extends: [
-        'airbnb-typescript/base',
-        'prettier',
-        'plugin:prettier/recommended',
-      ],
-      plugins: ['@typescript-eslint', 'sonarjs', 'import', 'prettier'],
+      extends: ['airbnb-typescript/base', 'plugin:prettier/recommended'],
+      plugins: ['@typescript-eslint', 'sonarjs', 'import'],
       rules: {
         'max-len': ['warn', 120],
         '@typescript-eslint/return-await': 'off',
@@ -135,7 +130,6 @@ module.exports = {
       extends: [
         'airbnb-typescript',
         'airbnb/hooks',
-        'prettier',
         'plugin:prettier/recommended',
       ],
       plugins: [
@@ -145,13 +139,11 @@ module.exports = {
         'react',
         'react-hooks',
         'jsx-a11y',
-        'prettier',
       ],
       parserOptions: {
         ecmaVersion: 2020,
         sourceType: 'module',
         project: path.join(__dirname, 'tsconfig.json'),
-        createDefaultProgram: true,
       },
       rules: {
         radix: 'off',
@@ -404,7 +396,6 @@ module.exports = {
     project: './tsconfig.json',
     ecmaVersion: 2020,
     sourceType: 'module',
-    createDefaultProgram: true,
   },
   settings: {
     react: {
