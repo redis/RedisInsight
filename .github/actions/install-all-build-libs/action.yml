@@ -39,6 +39,18 @@ runs:
         cache: ${{ runner.os != 'Windows' && 'yarn' || '' }}
         cache-dependency-path: ${{ runner.os != 'Windows' && '**/yarn.lock' || '' }}
 
+    - name: Cache node_modules
+      id: cache-node-modules
+      uses: actions/cache@v4
+      with:
+        path: |
+          node_modules
+          redisinsight/node_modules
+          redisinsight/api/node_modules
+        key: node-modules-${{ runner.os }}-${{ hashFiles('yarn.lock', 'redisinsight/yarn.lock', 'redisinsight/api/yarn.lock') }}
+        restore-keys: |
+          node-modules-${{ runner.os }}-
+
     - name: Setup Python
       # if: ${{ contains(inputs.skip-electron-deps, '1') }}
       uses: actions/setup-python@v5
@@ -60,10 +72,9 @@ runs:
       run: |
         brew install libsecret
 
-    # TODO: matrix?
-    # Javascript dependencies
+    # Javascript dependencies (skip if cache was restored)
     - name: Install dependencies for redisinsight package.js
-      # if: ${{ contains(inputs.skip-electron-deps, '1') }}
+      if: steps.cache-node-modules.outputs.cache-hit != 'true'
       uses: ./.github/actions/install-deps
       with:
         dir-path: './redisinsight'
@@ -71,13 +82,13 @@ runs:
         sqlite3-host-mirror: ${{ inputs.sqlite3-host-mirror }}
 
     - name: Install dependencies for BE package.js
-      # if: ${{ !contains(inputs.skip-backend-deps, '1') }}
+      if: steps.cache-node-modules.outputs.cache-hit != 'true'
       uses: ./.github/actions/install-deps
       with:
         dir-path: './redisinsight/api'
 
     - name: Install dependencies for root package.js
-      # if: ${{ contains(inputs.skip-electron-deps, '1') }}
+      if: steps.cache-node-modules.outputs.cache-hit != 'true'
       uses: ./.github/actions/install-deps
       with:
         dir-path: './'
