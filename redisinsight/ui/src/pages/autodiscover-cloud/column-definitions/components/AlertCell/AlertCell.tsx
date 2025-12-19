@@ -37,4 +37,3 @@ export const AlertCell = ({ status, numberOfDatabases }: AlertCellProps) => {
 
   return <RiIcon type="CheckBoldIcon" color="success500" size="m" />
 }
-

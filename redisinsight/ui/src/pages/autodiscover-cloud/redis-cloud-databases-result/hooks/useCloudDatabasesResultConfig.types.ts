@@ -7,4 +7,3 @@ export interface UseCloudDatabasesResultConfigReturn {
   handleClose: () => void
   handleBackAdding: () => void
 }
-

@@ -109,7 +109,9 @@ describe('InstancesNavigationPopover', () => {
     render(<InstancesNavigationPopover name="db" />)
 
     fireEvent.click(screen.getByTestId('nav-instance-popover-btn'))
-    expect(screen.getByText(`${InstancesTabs.Databases} (0)`)).toBeInTheDocument()
+    expect(
+      screen.getByText(`${InstancesTabs.Databases} (0)`),
+    ).toBeInTheDocument()
 
     fireEvent.mouseDown(screen.getByText(`${InstancesTabs.RDI} (2)`))
     expect(screen.getByText('Redis Data Integration page')).toBeInTheDocument()

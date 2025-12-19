@@ -182,11 +182,7 @@ const Config = () => {
           <FlexItem grow>
             {pipelineLoading ? (
               <Col grow data-testid="rdi-config-loading">
-                <Loader
-                  color="secondary"
-                  size="l"
-                  loaderText="Loading..."
-                />
+                <Loader color="secondary" size="l" loaderText="Loading..." />
               </Col>
             ) : (
               <MonacoYaml

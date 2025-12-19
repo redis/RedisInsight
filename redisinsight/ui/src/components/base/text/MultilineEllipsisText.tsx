@@ -24,7 +24,7 @@ const multiLineEllipsisStyles = {
   },
 }
 
-const MultilineEllipsisText = styled(ColorText) <{
+const MultilineEllipsisText = styled(ColorText)<{
   lineCount?: number
   lineHeight?: LineHeightType
   paddingBlock?: PaddingBlockType

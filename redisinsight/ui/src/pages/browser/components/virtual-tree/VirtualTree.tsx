@@ -1,9 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { debounce, get, set } from 'lodash'
 import { TreeWalker, TreeWalkerValue, FixedSizeTree as Tree } from 'react-vtree'
@@ -20,7 +15,11 @@ import {
 } from 'uiSrc/constants'
 import { RedisResponseBuffer, RedisString } from 'uiSrc/slices/interfaces'
 import { fetchKeysMetadataTree } from 'uiSrc/slices/browser/keys'
-import { Loader, ProgressBarLoader, RiImage } from 'uiSrc/components/base/display'
+import {
+  Loader,
+  ProgressBarLoader,
+  RiImage,
+} from 'uiSrc/components/base/display'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { GetKeyInfoResponse } from 'apiSrc/modules/browser/keys/dto'
 
@@ -69,7 +68,7 @@ const VirtualTree = (props: Props) => {
     onStatusOpen,
     onStatusSelected,
     setConstructingTree,
-    webworkerFn = () => { },
+    webworkerFn = () => {},
     onDeleteClicked,
     onDeleteLeaf,
   } = props
@@ -302,10 +301,7 @@ const VirtualTree = (props: Props) => {
               data-testid="virtual-tree-spinner"
             >
               <div className={styles.loadingBody}>
-                <Loader
-                  size="xl"
-                  className={styles.loadingSpinner}
-                />
+                <Loader size="xl" className={styles.loadingSpinner} />
                 {loadingIcon ? (
                   <RiImage
                     className={styles.loadingIcon}

@@ -680,7 +680,8 @@ describe(`PATCH /databases/:id`, () => {
           },
           responseBody: {
             statusCode: 424,
-            message: 'Could not connect to redis:6379, please check the CA or Client certificate.',
+            message:
+              'Could not connect to redis:6379, please check the CA or Client certificate.',
             error: 'RedisConnectionIncorrectCertificateException',
           },
         });
@@ -708,7 +709,8 @@ describe(`PATCH /databases/:id`, () => {
           },
           responseBody: {
             statusCode: 424,
-            message: 'Could not connect to redis:6379, please check the CA or Client certificate.',
+            message:
+              'Could not connect to redis:6379, please check the CA or Client certificate.',
             error: 'RedisConnectionIncorrectCertificateException',
           },
         });
@@ -1064,7 +1066,7 @@ describe(`PATCH /databases/:id`, () => {
           responseBody: {
             error: 'RedisConnectionIncorrectCertificateException',
             statusCode: 424,
-            errorCode: 10907
+            errorCode: 10907,
           },
         });
       });

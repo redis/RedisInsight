@@ -170,9 +170,9 @@ const SSHDetails = (props: Props) => {
                         formik.values.sshPrivateKey === true
                           ? SECURITY_FIELD
                           : (formik?.values?.sshPrivateKey?.replace(
-                            /./g,
-                            '•',
-                          ) ?? '')
+                              /./g,
+                              '•',
+                            ) ?? '')
                       }
                       onChangeCapture={formik.handleChange}
                       onFocus={() => {

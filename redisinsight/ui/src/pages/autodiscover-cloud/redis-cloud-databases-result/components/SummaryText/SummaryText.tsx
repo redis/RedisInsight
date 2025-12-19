@@ -3,7 +3,10 @@ import React from 'react'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import type { SummaryTextProps } from './SummaryText.types'
 
-export const SummaryText = ({ countSuccessAdded, countFailAdded }: SummaryTextProps) => (
+export const SummaryText = ({
+  countSuccessAdded,
+  countFailAdded,
+}: SummaryTextProps) => (
   <Text size="M">
     <ColorText variant="semiBold">Summary: </ColorText>{' '}
     {countSuccessAdded ? (
@@ -17,4 +20,3 @@ export const SummaryText = ({ countSuccessAdded, countFailAdded }: SummaryTextPr
     ) : null}
   </Text>
 )
-

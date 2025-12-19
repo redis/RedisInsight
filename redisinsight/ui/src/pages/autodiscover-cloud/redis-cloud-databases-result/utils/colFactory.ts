@@ -46,4 +46,3 @@ export const colFactory = (
 
   return columns
 }
-

@@ -4,4 +4,3 @@ export interface CancelButtonProps {
   onClosePopover: () => void
   onProceed: () => void
 }
-

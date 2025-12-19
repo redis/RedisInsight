@@ -184,4 +184,3 @@ describe('handleDownloadButton', () => {
     expect(mockAnchor.click).toHaveBeenCalled()
   })
 })
-

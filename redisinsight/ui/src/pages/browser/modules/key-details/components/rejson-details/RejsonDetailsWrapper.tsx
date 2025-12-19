@@ -2,10 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { isUndefined } from 'lodash'
 
-import {
-  rejsonDataSelector,
-  rejsonSelector,
-} from 'uiSrc/slices/browser/rejson'
+import { rejsonDataSelector, rejsonSelector } from 'uiSrc/slices/browser/rejson'
 import {
   selectedKeyDataSelector,
   keysSelector,

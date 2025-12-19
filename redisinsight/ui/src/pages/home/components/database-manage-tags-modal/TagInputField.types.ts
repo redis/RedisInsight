@@ -8,4 +8,3 @@ export type TagInputFieldProps = {
   placeholder?: string
   onChange: (value: string) => void
 }
-

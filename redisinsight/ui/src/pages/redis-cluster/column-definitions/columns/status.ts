@@ -14,4 +14,3 @@ export const statusColumn = (): ColumnDef<InstanceRedisCluster> => {
     size: 100,
   }
 }
-

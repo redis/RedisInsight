@@ -1,12 +1,12 @@
-import React from "react"
+import React from 'react'
 
-import { DatabaseModuleItemProps } from "./DatabaseModuleItem.types"
-import { StyledIconButton, StyledColorText } from "./DatabaseModuleItem.styles"
+import { DatabaseModuleItemProps } from './DatabaseModuleItem.types'
+import { StyledIconButton, StyledColorText } from './DatabaseModuleItem.styles'
 
 export const DatabaseModuleItem = ({
-  abbreviation = "",
+  abbreviation = '',
   icon,
-  content = "",
+  content = '',
   inCircle,
   onCopy,
 }: DatabaseModuleItemProps) => {
@@ -37,4 +37,3 @@ export const DatabaseModuleItem = ({
     </span>
   )
 }
-

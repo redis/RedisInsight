@@ -84,7 +84,14 @@ const TableResult = (props: Props) => {
 
   if (data?.length === 0) return null
 
-  return <Table columns={columns} data={data} defaultSorting={[]} maxHeight="20rem" />
+  return (
+    <Table
+      columns={columns}
+      data={data}
+      defaultSorting={[]}
+      maxHeight="20rem"
+    />
+  )
 }
 
 export default TableResult

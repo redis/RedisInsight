@@ -42,7 +42,7 @@ Object.defineProperty(window, 'File', {
 
 beforeAll(() => {
   mswServer.listen({
-    onUnhandledRequest: 'bypass'
+    onUnhandledRequest: 'bypass',
   })
 })
 

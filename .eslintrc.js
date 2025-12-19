@@ -6,8 +6,12 @@ module.exports = {
     node: true,
     browser: true,
   },
-  extends: ['airbnb-typescript', 'prettier', 'plugin:prettier/recommended', 'plugin:storybook/recommended'],
-  plugins: ['@typescript-eslint', 'import', 'prettier'],
+  extends: [
+    'airbnb-typescript',
+    'plugin:prettier/recommended',
+    'plugin:storybook/recommended',
+  ],
+  plugins: ['@typescript-eslint', 'import'],
   parser: '@typescript-eslint/parser',
   rules: {
     quotes: [2, 'single', { avoidEscape: true }],
@@ -67,12 +71,8 @@ module.exports = {
         node: true,
         browser: false,
       },
-      extends: [
-        'airbnb-typescript/base',
-        'prettier',
-        'plugin:prettier/recommended',
-      ],
-      plugins: ['@typescript-eslint', 'sonarjs', 'import', 'prettier'],
+      extends: ['airbnb-typescript/base', 'plugin:prettier/recommended'],
+      plugins: ['@typescript-eslint', 'sonarjs', 'import'],
       rules: {
         'max-len': ['warn', 120],
         '@typescript-eslint/return-await': 'off',
@@ -130,7 +130,6 @@ module.exports = {
       extends: [
         'airbnb-typescript',
         'airbnb/hooks',
-        'prettier',
         'plugin:prettier/recommended',
       ],
       plugins: [
@@ -140,13 +139,11 @@ module.exports = {
         'react',
         'react-hooks',
         'jsx-a11y',
-        'prettier',
       ],
       parserOptions: {
         ecmaVersion: 2020,
         sourceType: 'module',
         project: path.join(__dirname, 'tsconfig.json'),
-        createDefaultProgram: true,
       },
       rules: {
         radix: 'off',
@@ -309,7 +306,6 @@ module.exports = {
         'sonarjs/no-duplicate-string': 'off',
         'sonarjs/prefer-immediate-return': 'off',
         'sonarjs/cognitive-complexity': 'off',
-        'prettier/prettier': 'off',
         'max-len': 'off',
         'prefer-destructuring': 'off',
         'prefer-const': 'off',
@@ -363,7 +359,6 @@ module.exports = {
         'react/prop-types': 'off',
         'import/order': 'off',
         'prefer-const': 'off',
-        'prettier/prettier': 'off',
         'prefer-destructuring': 'off',
         // REDUNDANT: These are OFF by default in newer Airbnb config
         // 'react/jsx-boolean-value': 'off',
@@ -396,19 +391,11 @@ module.exports = {
         'prefer-destructuring': 'off',
       },
     },
-    // Temporary disable some rules for Playwright tests
-    {
-      files: ['tests/playwright/**/*.ts*'],
-      rules: {
-        'prettier/prettier': 'off',
-      },
-    },
   ],
   parserOptions: {
     project: './tsconfig.json',
     ecmaVersion: 2020,
     sourceType: 'module',
-    createDefaultProgram: true,
   },
   settings: {
     react: {

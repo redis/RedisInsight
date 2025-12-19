@@ -17,9 +17,7 @@ export const SubmitButton = ({
       isDisabled ? validationErrors.SELECT_AT_LEAST_ONE('subscription') : null
     }
     content={
-      isDisabled ? (
-        <span>{validationErrors.NO_SUBSCRIPTIONS_CLOUD}</span>
-      ) : null
+      isDisabled ? <span>{validationErrors.NO_SUBSCRIPTIONS_CLOUD}</span> : null
     }
   >
     <PrimaryButton
@@ -33,4 +31,3 @@ export const SubmitButton = ({
     </PrimaryButton>
   </RiTooltip>
 )
-

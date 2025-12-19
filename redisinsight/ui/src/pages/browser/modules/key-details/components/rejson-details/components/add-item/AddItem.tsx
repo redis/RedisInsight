@@ -109,8 +109,7 @@ const AddItem = (props: Props) => {
                     value={key}
                     error={error || undefined}
                     placeholder="Enter JSON key"
-                    onChange={setKey
-                    }
+                    onChange={setKey}
                     data-testid="json-key"
                   />
                 </FlexItem>
@@ -121,9 +120,7 @@ const AddItem = (props: Props) => {
                   value={value}
                   placeholder="Enter JSON value"
                   error={error || undefined}
-                  onChange={value =>
-                    setValue(value)
-                  }
+                  onChange={(value) => setValue(value)}
                   data-testid="json-value"
                 />
               </FlexItem>

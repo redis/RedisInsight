@@ -21,4 +21,3 @@ export const resultColumn = (): ColumnDef<InstanceRedisCluster> => {
     }) => <ResultCell statusAdded={statusAdded} messageAdded={messageAdded} />,
   }
 }
-

@@ -121,7 +121,7 @@ const DbInfo = (props: Props) => {
       label: 'Port:',
       value: port,
       dataTestId: 'db-info-port',
-      hide: (server?.buildType !== BuildType.RedisStack) && !isFromCloud,
+      hide: server?.buildType !== BuildType.RedisStack && !isFromCloud,
     },
     {
       label: 'Database Index:',

@@ -26,11 +26,7 @@ import HighlightedFeature from '../hightlighted-feature/HighlightedFeature'
 import styles from './styles.module.scss'
 
 const NavigationMenu = () => {
-  const {
-    isRdiWorkspace,
-    publicRoutes,
-    highlightedPages,
-  } = useNavigation()
+  const { isRdiWorkspace, publicRoutes, highlightedPages } = useNavigation()
 
   const renderPublicNavItem = (nav: INavigations) => {
     const fragment = (

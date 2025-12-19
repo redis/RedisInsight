@@ -48,7 +48,9 @@ export class RdiInstancesListPage extends BaseOverviewPage {
 
         // Use getByTestId for selectors with data-testid
         this.addRdiInstanceButton = page.getByTestId('rdi-instance')
-        this.addRdiFromEmptyListBtn = page.getByTestId('empty-rdi-instance-button')
+        this.addRdiFromEmptyListBtn = page.getByTestId(
+            'empty-rdi-instance-button',
+        )
         this.quickstartBtn = page.getByTestId('empty-rdi-quickstart-button')
 
         this.rdiInstanceRow = page.locator('[class*=euiTableRow-isSelectable]')
@@ -58,20 +60,23 @@ export class RdiInstancesListPage extends BaseOverviewPage {
         this.searchInput = page.getByTestId('search-rdi-instance-list')
 
         // Selector using data-test-subj remains as locator
-        this.sortBy = page.locator('[data-test-subj=tableHeaderSortButton] span')
+        this.sortBy = page.locator(
+            '[data-test-subj=tableHeaderSortButton] span',
+        )
 
         // CSS selectors (kept as string constants)
         this.cssRdiAlias = '[data-test-subj=rdi-alias-column]'
         this.cssUrl = '[data-testid=url]'
         this.cssRdiVersion = '[data-test-subj=rdi-instance-version-column]'
-        this.cssLastConnection = '[data-test-subj=rdi-instance-last-connection-column]'
+        this.cssLastConnection =
+            '[data-test-subj=rdi-instance-last-connection-column]'
 
         // These selectors are assumed. Adjust the test IDs as per your application.
         this.deleteRowButton = page.getByTestId('delete-row-button')
         this.confirmDeleteButton = page.getByTestId('confirm-delete-button')
         this.editRowButton = page.getByTestId('edit-row-button')
         this.Toast = {
-            toastCloseButton: page.getByTestId('toast-close-button')
+            toastCloseButton: page.getByTestId('toast-close-button'),
         }
     }
 
@@ -84,14 +89,20 @@ export class RdiInstancesListPage extends BaseOverviewPage {
         await this.AddRdiInstanceDialog.rdiAliasInput.fill(instanceValue.alias)
         await this.AddRdiInstanceDialog.urlInput.fill(instanceValue.url)
         if (instanceValue.username) {
-            await this.AddRdiInstanceDialog.usernameInput.fill(instanceValue.username)
+            await this.AddRdiInstanceDialog.usernameInput.fill(
+                instanceValue.username,
+            )
         }
         if (instanceValue.password) {
-            await this.AddRdiInstanceDialog.passwordInput.fill(instanceValue.password)
+            await this.AddRdiInstanceDialog.passwordInput.fill(
+                instanceValue.password,
+            )
         }
         await this.AddRdiInstanceDialog.addInstanceButton.click()
         // Wait for the dialog to close after adding the Rdi instance
-        await this.AddRdiInstanceDialog.connectToRdiForm.waitFor({ state: 'hidden' })
+        await this.AddRdiInstanceDialog.connectToRdiForm.waitFor({
+            state: 'hidden',
+        })
     }
 
     /**
@@ -99,10 +110,22 @@ export class RdiInstancesListPage extends BaseOverviewPage {
      * @param index Index of Rdi instance.
      */
     async getRdiInstanceValuesByIndex(index: number): Promise<RdiInstance> {
-        const alias = await this.rdiInstanceRow.nth(index).locator(this.cssRdiAlias).innerText()
-        const currentLastConnection = await this.rdiInstanceRow.nth(0).locator(this.cssLastConnection).innerText()
-        const currentVersion = await this.rdiInstanceRow.nth(0).locator(this.cssRdiVersion).innerText()
-        const currentUrl = await this.rdiInstanceRow.nth(0).locator(this.cssUrl).innerText()
+        const alias = await this.rdiInstanceRow
+            .nth(index)
+            .locator(this.cssRdiAlias)
+            .innerText()
+        const currentLastConnection = await this.rdiInstanceRow
+            .nth(0)
+            .locator(this.cssLastConnection)
+            .innerText()
+        const currentVersion = await this.rdiInstanceRow
+            .nth(0)
+            .locator(this.cssRdiVersion)
+            .innerText()
+        const currentUrl = await this.rdiInstanceRow
+            .nth(0)
+            .locator(this.cssUrl)
+            .innerText()
 
         const rdiInstance: RdiInstance = {
             alias,
@@ -176,7 +199,10 @@ export class RdiInstancesListPage extends BaseOverviewPage {
         const rdis: string[] = []
         const count = await this.rdiInstanceRow.count()
         for (let i = 0; i < count; i += 1) {
-            const name = await this.rdiInstanceRow.nth(i).locator(this.cssRdiAlias).innerText()
+            const name = await this.rdiInstanceRow
+                .nth(i)
+                .locator(this.cssRdiAlias)
+                .innerText()
             rdis.push(name)
         }
         return rdis

@@ -273,11 +273,9 @@ describe('InstancePage', () => {
       block: jest.fn(() => jest.fn()),
     })
 
-    reactRouterDom.useLocation = jest
-      .fn()
-      .mockReturnValue({
-        pathname: Pages.rdiPipelineManagement(RDI_INSTANCE_ID_MOCK),
-      })
+    reactRouterDom.useLocation = jest.fn().mockReturnValue({
+      pathname: Pages.rdiPipelineManagement(RDI_INSTANCE_ID_MOCK),
+    })
 
     const { getByRole } = render(
       <BrowserRouter>
