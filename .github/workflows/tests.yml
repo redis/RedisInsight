@@ -73,13 +73,17 @@ jobs:
             desktop:
               - 'redisinsight/desktop/**'
 
+  lint:
+    uses: ./.github/workflows/lint.yml
+    secrets: inherit
+
   frontend-tests:
-    needs: changes
+    needs: [changes, lint]
     if: |
-      startsWith(github.ref_name, 'fe/') || 
-      startsWith(github.ref_name, 'fe-be/') || 
-      startsWith(github.ref_name, 'feature/') || 
-      startsWith(github.ref_name, 'bugfix/') || 
+      startsWith(github.ref_name, 'fe/') ||
+      startsWith(github.ref_name, 'fe-be/') ||
+      startsWith(github.ref_name, 'feature/') ||
+      startsWith(github.ref_name, 'bugfix/') ||
       startsWith(github.ref_name, 'ric/') ||
       contains(github.event.pull_request.labels.*.name, 'run-all-tests') ||
       contains(github.event.pull_request.labels.*.name, 'run-frontend-tests')
@@ -95,12 +99,12 @@ jobs:
       type: unit
 
   backend-tests:
-    needs: changes
+    needs: [changes, lint]
     if: |
-      startsWith(github.ref_name, 'be/') || 
-      startsWith(github.ref_name, 'fe-be/') || 
-      startsWith(github.ref_name, 'feature/') || 
-      startsWith(github.ref_name, 'bugfix/') || 
+      startsWith(github.ref_name, 'be/') ||
+      startsWith(github.ref_name, 'fe-be/') ||
+      startsWith(github.ref_name, 'feature/') ||
+      startsWith(github.ref_name, 'bugfix/') ||
       startsWith(github.ref_name, 'ric/') ||
       contains(github.event.pull_request.labels.*.name, 'run-all-tests') ||
       contains(github.event.pull_request.labels.*.name, 'run-backend-tests')
@@ -116,12 +120,12 @@ jobs:
       type: unit
 
   integration-tests:
-    needs: changes
+    needs: [changes, lint]
     if: |
-      startsWith(github.ref_name, 'be/') || 
-      startsWith(github.ref_name, 'fe-be/') || 
-      startsWith(github.ref_name, 'feature/') || 
-      startsWith(github.ref_name, 'bugfix/') || 
+      startsWith(github.ref_name, 'be/') ||
+      startsWith(github.ref_name, 'fe-be/') ||
+      startsWith(github.ref_name, 'feature/') ||
+      startsWith(github.ref_name, 'bugfix/') ||
       startsWith(github.ref_name, 'ric/') ||
       contains(github.event.pull_request.labels.*.name, 'run-all-tests') ||
       contains(github.event.pull_request.labels.*.name, 'run-integration-tests')
