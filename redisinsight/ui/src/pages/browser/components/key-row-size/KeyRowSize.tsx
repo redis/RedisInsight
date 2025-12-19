@@ -31,6 +31,7 @@ const KeyRowSize = (props: Props) => {
   if (!size) {
     return (
       <Text
+        component="div"
         color="secondary"
         size="s"
         className={cx(styles.keySize)}
@@ -43,6 +44,7 @@ const KeyRowSize = (props: Props) => {
   return (
     <>
       <Text
+        component="div"
         color="secondary"
         size="s"
         className={cx(styles.keySize, 'moveOnHoverKey', {

@@ -147,7 +147,7 @@ const BottomGroupMinimized = () => {
             withIcon
             icon={CliIcon}
             label={
-              <Text size="S" variant="semiBold">
+              <Text size="S" variant="semiBold" component="span">
                 CLI
               </Text>
             }
@@ -164,7 +164,7 @@ const BottomGroupMinimized = () => {
             withIcon
             icon={DocumentationIcon}
             label={
-              <Text size="S" variant="semiBold">
+              <Text size="S" variant="semiBold" component="span">
                 Command Helper
               </Text>
             }
@@ -181,7 +181,7 @@ const BottomGroupMinimized = () => {
               withIcon
               icon={ProfilerIcon}
               label={
-                <Text size="S" variant="semiBold">
+                <Text size="S" variant="semiBold" component="span">
                   Profiler
                 </Text>
               }

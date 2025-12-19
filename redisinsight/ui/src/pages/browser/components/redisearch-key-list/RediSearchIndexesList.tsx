@@ -30,7 +30,6 @@ import {
 import { localStorageService } from 'uiSrc/services'
 import { BrowserStorageItem } from 'uiSrc/constants'
 
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { PlusIcon, ResetIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
 import {
@@ -182,6 +181,15 @@ const RediSearchIndexesList = (props: Props) => {
     return option.inputDisplay as JSX.Element
   }
 
+  const handleRefreshKeyDown = (e: React.KeyboardEvent) => {
+    if (loading) return
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      e.stopPropagation()
+      dispatch(fetchRedisearchListAction())
+    }
+  }
+
   return (
     <S.Container>
       <RiSelect.Compose
@@ -198,19 +206,20 @@ const RediSearchIndexesList = (props: Props) => {
           />
           <RiSelect.Trigger.LoadingIndicator loading={loading} />
           <RiSelect.Trigger.Arrow data-testid="select-index-arrow" />
-          <div style={{ zIndex: 6 }}>
-            <RiTooltip content="Refresh Indexes">
-              <IconButton
-                size="M"
-                icon={ResetIcon}
-                disabled={loading}
-                onClick={handleRefresh}
-                aria-label="refresh indexes list"
-                data-testid="refresh-indexes-btn"
-                onPointerDown={(e) => e.stopPropagation()}
-              />
-            </RiTooltip>
-          </div>
+          <RiTooltip content="Refresh Indexes">
+            <S.RefreshAction
+              role="button"
+              tabIndex={loading ? -1 : 0}
+              aria-disabled={loading}
+              aria-label="refresh indexes list"
+              onClick={handleRefresh}
+              onKeyDown={handleRefreshKeyDown}
+              onPointerDown={(e) => e.stopPropagation()}
+              data-testid="refresh-indexes-btn"
+            >
+              <ResetIcon size="M" />
+            </S.RefreshAction>
+          </RiTooltip>
         </RiSelect.Trigger.Compose>
         <RiSelect.Content optionValueRender={selectValueRender} />
       </RiSelect.Compose>
