@@ -291,7 +291,7 @@ describe('statistics.transformers', () => {
       expect(result.columns).toContainEqual({
         id: 'status',
         header: 'Status',
-        cellType: 'status',
+        type: 'status',
       });
       expect(result.columns).toContainEqual({
         id: 'host_port',

@@ -162,29 +162,29 @@ describe('transformer.util', () => {
       ]);
     });
 
-    it('should include cellType when provided', () => {
+    it('should include type when provided', () => {
       const data = [{ status: 'connected', name: 'test' }];
       const customColumns = {
-        status: { header: 'Status', cellType: 'status' },
+        status: { header: 'Status', type: 'status' },
       };
       const result = generateColumns(data, customColumns);
 
       expect(result).toEqual([
-        { id: 'status', header: 'Status', cellType: 'status' },
+        { id: 'status', header: 'Status', type: 'status' },
         { id: 'name', header: 'Name' },
       ]);
     });
 
-    it('should auto-generate header when only cellType is provided', () => {
+    it('should auto-generate header when only type is provided', () => {
       const data = [{ connection_status: 'active' }];
-      const customColumns = { connection_status: { cellType: 'status' } };
+      const customColumns = { connection_status: { type: 'status' } };
       const result = generateColumns(data, customColumns);
 
       expect(result).toEqual([
         {
           id: 'connection_status',
           header: 'Connection status',
-          cellType: 'status',
+          type: 'status',
         },
       ]);
     });
@@ -194,7 +194,7 @@ describe('transformer.util', () => {
         { id: '1', status: 'ok', user_name: 'John', host_port: 'localhost' },
       ];
       const customColumns = {
-        status: { cellType: 'status' },
+        status: { type: 'status' },
         user_name: 'Username',
         host_port: { header: 'Host:port' },
       };
@@ -202,7 +202,7 @@ describe('transformer.util', () => {
 
       expect(result).toEqual([
         { id: 'id', header: 'Id' },
-        { id: 'status', header: 'Status', cellType: 'status' },
+        { id: 'status', header: 'Status', type: 'status' },
         { id: 'user_name', header: 'Username' },
         { id: 'host_port', header: 'Host:port' },
       ]);
