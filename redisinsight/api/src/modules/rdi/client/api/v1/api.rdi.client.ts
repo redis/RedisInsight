@@ -34,17 +34,17 @@ import {
   RdiPipeline,
   RdiStatisticsResult,
   RdiStatisticsStatus,
-  RdiStatisticsData,
   RdiClientMetadata,
   Rdi,
 } from 'src/modules/rdi/models';
-import { convertKeysToCamelCase } from 'src/utils/base.helper';
 import { RdiPipelineTimeoutException } from 'src/modules/rdi/exceptions/rdi-pipeline.timeout-error.exception';
 import * as https from 'https';
 import {
   convertApiDataToRdiPipeline,
   convertRdiPipelineToApiPayload,
 } from 'src/modules/rdi/utils/pipeline.util';
+import { GetStatisticsResponse } from 'src/modules/rdi/client/api/v1/responses';
+import { transformStatisticsResponse } from 'src/modules/rdi/client/api/v1/transformers';
 
 interface ConnectionsConfig {
   sources: Record<string, Record<string, unknown>>;
@@ -273,16 +273,18 @@ export class ApiRdiClient extends RdiClient {
     }
   }
 
-  async getStatistics(sections?: string): Promise<RdiStatisticsResult> {
+  async getStatistics(): Promise<RdiStatisticsResult> {
     try {
-      const { data } = await this.client.get(RdiUrl.GetStatistics, {
-        params: { sections },
-      });
+      const { data } = await this.client.get<GetStatisticsResponse>(
+        RdiUrl.GetStatistics,
+      );
 
-      return {
+      return plainToInstance(RdiStatisticsResult, {
         status: RdiStatisticsStatus.Success,
-        data: plainToInstance(RdiStatisticsData, convertKeysToCamelCase(data)),
-      };
+        data: {
+          sections: transformStatisticsResponse(data),
+        },
+      });
     } catch (e) {
       const message: string = parseErrorMessage(e);
       return { status: RdiStatisticsStatus.Fail, error: message };
