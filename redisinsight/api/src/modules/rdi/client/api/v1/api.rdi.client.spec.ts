@@ -7,7 +7,6 @@ import {
   mockRdiJobsSchema,
   mockRdiPipeline,
   mockRdiSchema,
-  mockRdiStatisticsData,
   mockRdiUnauthorizedError,
 } from 'src/__mocks__';
 import { sign } from 'jsonwebtoken';
@@ -632,19 +631,37 @@ describe('ApiRdiClient', () => {
   });
 
   describe('getStatistics', () => {
-    it('should return success status and data when API call succeeds', async () => {
-      const response = {
-        data: mockRdiStatisticsData,
+    it('should return success status and transformed data when API call succeeds', async () => {
+      const mockApiResponse = {
+        rdi_pipeline_status: {
+          rdi_version: '1.0.0',
+          address: 'redis://localhost:6379',
+          run_status: 'running',
+          sync_mode: 'streaming',
+        },
+        processing_performance: {
+          total_batches: 100,
+          batch_size_avg: 1.5,
+          process_time_avg: 50,
+          ack_time_avg: 0.5,
+          read_time_avg: 10,
+          rec_per_sec_avg: 1000,
+          total_time_avg: 60,
+        },
+        connections: {},
+        data_streams: { totals: {}, streams: {} },
+        clients: {},
+        offsets: {},
+        snapshot_status: 'completed',
       };
-      mockedAxios.get.mockResolvedValue(response);
+      mockedAxios.get.mockResolvedValue({ data: mockApiResponse });
 
-      const result = await client.getStatistics('section1,section2');
+      const result = await client.getStatistics();
 
-      expect(mockedAxios.get).toHaveBeenCalledWith(RdiUrl.GetStatistics, {
-        params: { sections: 'section1,section2' },
-      });
+      expect(mockedAxios.get).toHaveBeenCalledWith(RdiUrl.GetStatistics);
       expect(result.status).toBe(RdiStatisticsStatus.Success);
-      expect(result.data).toEqual(mockRdiStatisticsData);
+      expect(result.data).toBeDefined();
+      expect(result.data.sections).toHaveLength(5);
     });
 
     it('should return fail status and error message when API call fails', async () => {
@@ -652,9 +669,7 @@ describe('ApiRdiClient', () => {
 
       const result = await client.getStatistics();
 
-      expect(mockedAxios.get).toHaveBeenCalledWith(RdiUrl.GetStatistics, {
-        params: {},
-      });
+      expect(mockedAxios.get).toHaveBeenCalledWith(RdiUrl.GetStatistics);
       expect(result.status).toBe(RdiStatisticsStatus.Fail);
       expect(result.error).toBe(mockRdiUnauthorizedError.message);
     });
