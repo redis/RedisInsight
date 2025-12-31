@@ -30,11 +30,11 @@ export class RdiStatisticsColumn {
   header: string;
 
   @ApiPropertyOptional({
-    description: 'Cell type for custom rendering',
+    description: 'Column type for custom rendering',
     type: String,
   })
   @Expose()
-  cellType?: string;
+  type?: string;
 }
 
 export class RdiStatisticsTableSection {

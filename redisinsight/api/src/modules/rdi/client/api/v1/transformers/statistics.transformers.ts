@@ -111,10 +111,15 @@ export const transformDataStreamsStatistics = (
     }),
   );
 
+  // Custom column configuration for date formatting
+  const customColumns = {
+    last_arrival: { header: 'Last arrival', type: 'date' },
+  };
+
   return plainToInstance(RdiStatisticsTableSection, {
     name: 'Data Streams',
     view: RdiStatisticsViewType.Table,
-    columns: generateColumns(streamsArray),
+    columns: generateColumns(streamsArray, customColumns),
     data: streamsArray,
     footer: {
       name: 'Total',
@@ -168,9 +173,9 @@ export const transformConnectionsStatistics = (
     }),
   );
 
-  // Custom column headers and cell types
+  // Custom column headers and types
   const customColumns = {
-    status: { header: 'Status', cellType: 'status' },
+    status: { header: 'Status', type: 'status' },
     host_port: { header: 'Host:port' },
     user: { header: 'Username' },
   };

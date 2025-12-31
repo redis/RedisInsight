@@ -40,10 +40,10 @@ const mockRdiApiResponse = {
     },
   },
   data_streams: {
-    totals: { total: 300 },
+    totals: { total: 300, last_arrival: '' },
     streams: {
-      stream1: { total: 100 },
-      stream2: { total: 200 },
+      stream1: { total: 100, last_arrival: '2024-01-15T10:30:00Z' },
+      stream2: { total: 200, last_arrival: '2024-01-16T11:45:00Z' },
     },
   },
   clients: {
@@ -76,7 +76,7 @@ const expectedTransformedResponse = {
       name: 'Target Connections',
       view: 'table',
       columns: [
-        { id: 'status', header: 'Status', cellType: 'status' },
+        { id: 'status', header: 'Status', type: 'status' },
         { id: 'name', header: 'Name' },
         { id: 'type', header: 'Type' },
         { id: 'host_port', header: 'Host:port' },
@@ -100,12 +100,13 @@ const expectedTransformedResponse = {
       columns: [
         { id: 'name', header: 'Name' },
         { id: 'total', header: 'Total' },
+        { id: 'last_arrival', header: 'Last arrival', type: 'date' },
       ],
       data: [
-        { name: 'stream1', total: 100 },
-        { name: 'stream2', total: 200 },
+        { name: 'stream1', total: 100, last_arrival: '2024-01-15T10:30:00Z' },
+        { name: 'stream2', total: 200, last_arrival: '2024-01-16T11:45:00Z' },
       ],
-      footer: { name: 'Total', total: 300 },
+      footer: { name: 'Total', total: 300, last_arrival: '' },
     },
     {
       name: 'Clients',
@@ -122,7 +123,7 @@ const expectedTransformedResponse = {
 const statisticsColumnSchema = Joi.object().keys({
   id: Joi.string().required(),
   header: Joi.string().required(),
-  cellType: Joi.string().valid('status').optional(),
+  type: Joi.string().valid('status', 'date').optional(),
 });
 
 const statisticsTableSectionSchema = Joi.object().keys({

@@ -1,12 +1,12 @@
 interface ColumnConfig {
   header?: string;
-  cellType?: string;
+  type?: string;
 }
 
 interface Column {
   id: string;
   header: string;
-  cellType?: string;
+  type?: string;
 }
 
 /**
@@ -35,7 +35,7 @@ export const generateHeaderFromFieldName = (fieldName: string): string => {
  * Generates column definitions from data entries
  * @param data - Array of data objects
  * @param customColumns - Optional custom column definitions to override auto-generated ones
- *                        Can be a string (header only) or an object with header and cellType
+ *                        Can be a string (header only) or an object with header and type
  */
 export const generateColumns = (
   data: Record<string, unknown>[],
@@ -55,7 +55,7 @@ export const generateColumns = (
     return {
       id: fieldName,
       header: config.header || generateHeaderFromFieldName(fieldName),
-      ...(config.cellType && { cellType: config.cellType }),
+      ...(config.type && { type: config.type }),
     };
   });
 };
