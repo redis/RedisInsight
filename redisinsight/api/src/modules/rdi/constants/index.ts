@@ -22,6 +22,8 @@ export enum RdiUrl {
 export const RdiUrlV2 = {
   GetInfo: 'api/v2/info',
   GetPipelines: 'api/v2/pipelines',
+  GetMetricsCollections: (name: string) =>
+    `api/v2/pipelines/${name}/metric-collections`,
 };
 
 export const IDLE_THRESHOLD = 10 * 60 * 1000; // 10 min
