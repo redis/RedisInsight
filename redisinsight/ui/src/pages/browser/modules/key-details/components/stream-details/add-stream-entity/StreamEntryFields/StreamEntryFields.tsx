@@ -11,6 +11,7 @@ import { Text } from 'uiSrc/components/base/text'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { streamIDTooltipText } from 'uiSrc/constants/texts'
 import { EntryIdContainer, FieldsWrapper } from '../AddStreamEntries.styles'
+import { InlineRow } from './StreamEntryFields.styles'
 import {
   StreamGroupContent,
   TimeStampInfoIcon,
@@ -117,7 +118,7 @@ const StreamEntryFields = (props: Props) => {
         <FormField
           label={config.entryId.label}
           additionalText={
-            <Row align="center" gap="s">
+            <InlineRow align="center" gap="s">
               <RiTooltip
                 anchorClassName="inputAppendIcon"
                 className={styles.entryIdTooltip}
@@ -128,16 +129,21 @@ const StreamEntryFields = (props: Props) => {
                 <TimeStampInfoIcon />
               </RiTooltip>
               {!showEntryError && (
-                <Text size="XS" color="primary">
+                <Text component="span" size="XS" color="primary">
                   Timestamp - Sequence Number or *
                 </Text>
               )}
               {showEntryError && (
-                <Text size="XS" color="danger" data-testid="stream-entry-error">
+                <Text
+                  component="span"
+                  size="XS"
+                  color="danger"
+                  data-testid="stream-entry-error"
+                >
                   {entryIdError}
                 </Text>
               )}
-            </Row>
+            </InlineRow>
           }
         >
           <TextInput
