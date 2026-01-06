@@ -116,7 +116,16 @@ const KeyTree = forwardRef((props: Props, ref) => {
       // remove key name from parents
       parents.pop()
 
-      parents.forEach((parent) => handleStatusOpen(parent, true))
+      if (parents.length === 0) return
+
+      // Batch all parent updates into a single state update
+      const newOpenNodes: { [key: string]: boolean } = { ...statusOpen }
+      parents.forEach((parent) => {
+        newOpenNodes[parent] = true
+      })
+
+      setStatusOpen(newOpenNodes)
+      dispatch(setBrowserTreeNodesOpen(newOpenNodes))
     }
   }
 
@@ -155,18 +164,16 @@ const KeyTree = forwardRef((props: Props, ref) => {
   }
 
   const handleStatusOpen = (name: string, value: boolean) => {
-    setStatusOpen((prevState) => {
-      const newState = { ...prevState }
-      // add or remove opened node
-      if (!value) {
-        delete newState[name]
-      } else {
-        newState[name] = value
-      }
+    const newState = { ...statusOpen }
+    // add or remove opened node
+    if (!value) {
+      delete newState[name]
+    } else {
+      newState[name] = value
+    }
 
-      dispatch(setBrowserTreeNodesOpen(newState))
-      return newState
-    })
+    setStatusOpen(newState)
+    dispatch(setBrowserTreeNodesOpen(newState))
   }
 
   const handleStatusSelected = (name: RedisString) => {
