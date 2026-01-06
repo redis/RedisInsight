@@ -15,6 +15,14 @@ jobs:
         with:
           skip-system-deps: '1'
 
+      - name: Restore ESLint cache
+        uses: actions/cache@v4
+        with:
+          path: .eslintcache
+          key: eslint-${{ runner.os }}-${{ github.ref_name }}
+          restore-keys: |
+            eslint-${{ runner.os }}-
+
       - name: Run ESLint
         run: yarn lint
 
