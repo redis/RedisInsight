@@ -47,6 +47,7 @@ const KeyRowTTL = (props: Props) => {
   }
   return (
     <Text
+      component="div"
       className={cx(styles.keyTTL, 'moveOnHoverKey', {
         hide: deletePopoverId === rowId,
       })}

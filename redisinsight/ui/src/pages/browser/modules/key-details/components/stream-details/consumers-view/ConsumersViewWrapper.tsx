@@ -127,7 +127,7 @@ const ConsumersViewWrapper = (props: Props) => {
         const cellContent = viewName.substring(0, 200)
         const tooltipContent = formatLongName(viewName)
         return (
-          <Text style={{ maxWidth: '100%' }} color="secondary">
+          <Text component="div" style={{ maxWidth: '100%' }} color="secondary">
             <div
               style={{ display: 'flex' }}
               className="truncateText"

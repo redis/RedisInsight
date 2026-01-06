@@ -55,6 +55,7 @@ const EditableInput = (props: Props) => {
         data-testid={`${testIdPrefix}_content-value-${field}`}
       >
         <Text
+          component="div"
           color="secondary"
           style={{ maxWidth: '100%', whiteSpace: 'break-spaces' }}
         >
