@@ -43,11 +43,11 @@ const ExploreGuides = () => {
 
   return (
     <div data-testid="explore-guides">
-      <Title color="primary" size="S">
+      <Title color="primary" size="S" textAlign="center">
         <span>Here&apos;s a good starting point</span>
       </Title>
       <Spacer size="s" />
-      <Text color="primary">
+      <Text color="primary" textAlign="center">
         Explore the amazing world of Redis with our interactive guides
       </Text>
       <Spacer size="xl" />
