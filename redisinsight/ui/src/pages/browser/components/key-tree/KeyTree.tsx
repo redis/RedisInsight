@@ -164,16 +164,18 @@ const KeyTree = forwardRef((props: Props, ref) => {
   }
 
   const handleStatusOpen = (name: string, value: boolean) => {
-    const newState = { ...statusOpen }
-    // add or remove opened node
-    if (!value) {
-      delete newState[name]
-    } else {
-      newState[name] = value
-    }
+    setStatusOpen((prevState) => {
+      const newState = { ...prevState }
+      // add or remove opened node
+      if (!value) {
+        delete newState[name]
+      } else {
+        newState[name] = value
+      }
 
-    setStatusOpen(newState)
-    dispatch(setBrowserTreeNodesOpen(newState))
+      dispatch(setBrowserTreeNodesOpen(newState))
+      return newState
+    })
   }
 
   const handleStatusSelected = (name: RedisString) => {
