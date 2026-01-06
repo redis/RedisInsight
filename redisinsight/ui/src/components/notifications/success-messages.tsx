@@ -272,30 +272,22 @@ export default {
       message: (
         <Row align="start" gap="xl">
           <FlexItem>
-            <Text component="span">{numberWithSpaces(processed)}</Text>
-            <Text component="span" size="xs">
-              Commands Processed
-            </Text>
+            <Text>{numberWithSpaces(processed)}</Text>
+            <Text size="xs">Commands Processed</Text>
           </FlexItem>
           <FlexItem>
-            <Text component="span">{numberWithSpaces(succeed)}</Text>
-            <Text component="span" size="xs">
-              Success
-            </Text>
+            <Text>{numberWithSpaces(succeed)}</Text>
+            <Text size="xs">Success</Text>
           </FlexItem>
           <FlexItem>
-            <Text component="span">{numberWithSpaces(failed)}</Text>
-            <Text component="span" size="xs">
-              Errors
-            </Text>
+            <Text>{numberWithSpaces(failed)}</Text>
+            <Text size="xs">Errors</Text>
           </FlexItem>
           <FlexItem>
-            <Text component="span">
+            <Text>
               {millisecondsFormat(data?.duration || 0, 'H:mm:ss.SSS')}
             </Text>
-            <Text component="span" size="xs">
-              Time Taken
-            </Text>
+            <Text size="xs">Time Taken</Text>
           </FlexItem>
         </Row>
       ),
