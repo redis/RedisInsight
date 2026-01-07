@@ -6,11 +6,7 @@ module.exports = {
     node: true,
     browser: true,
   },
-  extends: [
-    'airbnb-typescript',
-    'plugin:prettier/recommended',
-    'plugin:storybook/recommended',
-  ],
+  extends: ['airbnb-typescript', 'plugin:prettier/recommended'],
   plugins: ['@typescript-eslint', 'import'],
   parser: '@typescript-eslint/parser',
   rules: {
@@ -234,6 +230,15 @@ module.exports = {
       env: {
         jest: true,
       },
+    },
+    // Storybook files only
+    {
+      files: [
+        'stories/**/*.@(ts|tsx|js|jsx)',
+        '**/*.stories.@(ts|tsx|js|jsx)',
+        '**/*.story.@(ts|tsx|js|jsx)',
+      ],
+      extends: ['plugin:storybook/recommended'],
     },
     // TypeScript files (general) - MUST BE LAST to override other rules
     {
