@@ -10,6 +10,7 @@ import 'uiSrc/styles/main.scss'
 migrateLocalStorageData()
 listenPluginsEvents()
 
+// test something
 const rootEl = document.getElementById('root')
 const root = createRoot(rootEl!)
 root.render(
