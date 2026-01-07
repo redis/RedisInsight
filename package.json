@@ -54,7 +54,8 @@
     "test:cov:component": "jest ./redisinsight/ui --group=component --coverage -w 1",
     "type-check:ui": "tsc --project redisinsight/ui --noEmit",
     "sb": "storybook dev -p 6006",
-    "build-sb": "storybook build"
+    "build-sb": "storybook build",
+    "prepare": "husky"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -196,6 +197,7 @@
     "google-auth-library": "^9.0.0",
     "googleapis": "^125.0.0",
     "html-webpack-plugin": "^5.6.0",
+    "husky": "^9.1.7",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
