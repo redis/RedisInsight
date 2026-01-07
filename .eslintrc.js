@@ -234,6 +234,7 @@ module.exports = {
     // Storybook files only
     {
       files: [
+        '.storybook/**/*.@(ts|tsx|js|jsx)',
         'stories/**/*.@(ts|tsx|js|jsx)',
         '**/*.stories.@(ts|tsx|js|jsx)',
         '**/*.story.@(ts|tsx|js|jsx)',
