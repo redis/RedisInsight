@@ -127,22 +127,9 @@
     "afterRemove": "scripts/deb-before-remove.sh"
   },
   "snap": {
-    "base": "core22",
+    "plugs": ["default", "password-manager-service"],
     "confinement": "strict",
-    "grade": "stable",
-    "plugs": [
-      "network",
-      "opengl",
-      "wayland",
-      "x11",
-      "gsettings",
-      "password-manager-service"
-    ],
-    "environment": {
-      "ELECTRON_OZONE_PLATFORM_HINT": "auto",
-      "GDK_BACKEND": "x11,wayland",
-      "GTK_USE_PORTAL": "1"
-    }
+    "stagePackages": ["default"]
   },
   "flatpak": {
     "runtimeVersion": "20.08",
