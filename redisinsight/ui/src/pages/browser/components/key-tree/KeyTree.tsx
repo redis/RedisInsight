@@ -118,14 +118,15 @@ const KeyTree = forwardRef((props: Props, ref) => {
 
       if (parents.length === 0) return
 
-      // Batch all parent updates into a single state update
-      const newOpenNodes: { [key: string]: boolean } = { ...statusOpen }
-      parents.forEach((parent) => {
-        newOpenNodes[parent] = true
+      // Use functional update to avoid stale closure issues
+      setStatusOpen((prevState) => {
+        const newOpenNodes = { ...prevState }
+        parents.forEach((parent) => {
+          newOpenNodes[parent] = true
+        })
+        dispatch(setBrowserTreeNodesOpen(newOpenNodes))
+        return newOpenNodes
       })
-
-      setStatusOpen(newOpenNodes)
-      dispatch(setBrowserTreeNodesOpen(newOpenNodes))
     }
   }
 
