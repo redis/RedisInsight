@@ -1,11 +1,10 @@
 import React from 'react'
 
-import styled from 'styled-components'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { millisecondsFormat } from 'uiSrc/utils'
 import { BulkActionsType } from 'uiSrc/constants'
 import { Text } from 'uiSrc/components/base/text'
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
 import { SummaryContainer, SummaryValue } from './BulkActionSummary.styles'
 
 export interface Props {

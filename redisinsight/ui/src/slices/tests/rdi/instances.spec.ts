@@ -10,7 +10,6 @@ import reducer, {
   setConnectedInstance,
   setConnectedInstanceSuccess,
   setConnectedInstanceFailure,
-  resetConnectedInstance,
   setDefaultInstance,
   setDefaultInstanceSuccess,
   setDefaultInstanceFailure,

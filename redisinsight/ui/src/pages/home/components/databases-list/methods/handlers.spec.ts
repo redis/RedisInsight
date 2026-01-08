@@ -25,12 +25,7 @@ jest.mock('uiSrc/telemetry', () => {
 })
 
 const mockCheckConnectToInstanceAction = jest.fn(
-  (
-    id: string,
-    onSuccess?: (id: string) => void,
-    _onFail?: () => void,
-    _cond?: boolean,
-  ) => {
+  (id: string, onSuccess?: (id: string) => void) => {
     onSuccess?.(id) // simulate success immediately
     return { type: 'MOCK_CHECK_CONNECT', payload: { id } }
   },

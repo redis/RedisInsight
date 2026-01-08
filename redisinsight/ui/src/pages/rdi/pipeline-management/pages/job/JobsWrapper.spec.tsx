@@ -1,6 +1,5 @@
 import React from 'react'
 import reactRouterDom from 'react-router-dom'
-import { useFormikContext } from 'formik'
 import { cloneDeep } from 'lodash'
 import { AxiosError } from 'axios'
 
@@ -9,7 +8,6 @@ import {
   getPipelineStrategies,
   rdiPipelineSelector,
   setChangedFile,
-  setPipelineJobs,
   updatePipelineJob,
 } from 'uiSrc/slices/rdi/pipeline'
 import {

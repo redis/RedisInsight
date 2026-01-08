@@ -7,11 +7,9 @@ import {
   bulkActionsSelector,
   disconnectBulkDeleteAction,
   setBulkActionConnected,
-  setBulkActionsInitialState,
   setBulkDeleteLoading,
   setDeleteOverview,
   setDeleteOverviewStatus,
-  setLoading,
 } from 'uiSrc/slices/browser/bulkActions'
 import { getSocketApiUrl, Nullable, triggerDownloadFromUrl } from 'uiSrc/utils'
 import { sessionStorageService } from 'uiSrc/services'
@@ -108,15 +106,6 @@ const BulkActionsConfig = () => {
     )
   }
 
-  const getBulkAction = (id: string) => {
-    dispatch(setLoading(true))
-    socketRef.current?.emit(
-      BulkActionsServerEvent.Get,
-      { id: `${id}` },
-      fetchBulkAction,
-    )
-  }
-
   const abortBulkDelete = (id: string) => {
     dispatch(setBulkDeleteLoading(true))
     socketRef.current?.emit(
@@ -124,13 +113,6 @@ const BulkActionsConfig = () => {
       { id: `${id}` },
       onBulkDeleteAborted,
     )
-  }
-
-  const fetchBulkAction = (data: any) => {
-    if (data.status === BulkActionsServerEvent.Error) {
-      sessionStorageService.set(BrowserStorageItem.bulkActionDeleteId, '')
-      dispatch(setBulkActionsInitialState())
-    }
   }
 
   const onBulkDeleting = (data: any) => {

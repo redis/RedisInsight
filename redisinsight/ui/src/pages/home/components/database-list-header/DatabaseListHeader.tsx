@@ -26,11 +26,7 @@ import {
 } from 'uiSrc/constants'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  EmptyButton,
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { EmptyButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { PlusIcon } from 'uiSrc/components/base/icons'
 import ColumnsConfigPopover from 'uiSrc/components/columns-config/ColumnsConfigPopover'
 import handleClickFreeCloudDb from '../database-list-component/methods/handleClickFreeCloudDb'
