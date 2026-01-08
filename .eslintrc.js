@@ -190,6 +190,14 @@ module.exports = {
         'no-unneeded-ternary': 'error',
         'prefer-template': 'error',
         'prefer-const': 'error',
+        '@typescript-eslint/no-unused-vars': [
+          'error',
+          {
+            argsIgnorePattern: '^_',
+            varsIgnorePattern: '^_',
+            destructuredArrayIgnorePattern: '^_',
+          },
+        ],
         'import/order': [
           1,
           {
