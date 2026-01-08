@@ -19,9 +19,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .eslintcache
-          key: eslint-${{ runner.os }}-${{ github.ref_name }}
+          key: eslint-${{ runner.os }}-${{ hashFiles('.eslintrc.js') }}-${{ github.ref_name }}
           restore-keys: |
-            eslint-${{ runner.os }}-
+            eslint-${{ runner.os }}-${{ hashFiles('.eslintrc.js') }}-
 
       - name: Run ESLint
         run: yarn lint
