@@ -18,7 +18,7 @@ const Divider = ({
   orientation,
   variant,
   color,
-  className,
+  className: _className,
   ...props
 }: DividerProps) => (
   <StyledDividerWrapper {...props}>

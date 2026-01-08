@@ -9,7 +9,11 @@ export type IconType = ButtonProps['icon']
 export type IconButtonProps = Omit<ButtonProps, 'icon'> & {
   icon: IconType | string
 }
-export const IconButton = ({ icon, size, ...props }: IconButtonProps) => {
+export const IconButton = ({
+  icon,
+  size: _size,
+  ...props
+}: IconButtonProps) => {
   let buttonIcon: IconType
   if (typeof icon === 'string') {
     buttonIcon = Icons[icon as AllIconsType]

@@ -61,7 +61,8 @@ const CodeButtonBlock = (props: Props) => {
     lang,
     onApply,
     label,
-    className,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    className: _className,
     params,
     content,
     onCopy,
