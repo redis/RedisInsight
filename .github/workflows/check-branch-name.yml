@@ -1,0 +1,36 @@
+name: Check Branch Name
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-branch-name:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch name
+        run: |
+          BRANCH="${{ github.head_ref }}"
+          echo "Source branch: $BRANCH"
+
+          if [[ "$BRANCH" == feature/* || \
+                "$BRANCH" == bugfix/* || \
+                "$BRANCH" == release/* || \
+                "$BRANCH" == dependabot/* || \
+                "$BRANCH" == latest || \
+                "$BRANCH" == fe/* || \
+                "$BRANCH" == be/* || \
+                "$BRANCH" == e2e/* || \
+                "$BRANCH" == test/* || \
+                "$BRANCH" == docs/* || \
+                "$BRANCH" == ric/* ]]; then
+            echo "✅ Branch '$BRANCH' matches known patterns. Tests will run automatically based on branch prefix."
+          else
+            echo "ℹ️ Branch '$BRANCH' does not match known patterns (feature/**, bugfix/**, release/**, fe/**, be/**, etc.)."
+            echo "ℹ️ Tests will not run automatically. Use labels to trigger tests:"
+            echo "   - 'run-all-tests' - Run all tests"
+            echo "   - 'run-frontend-tests' - Run frontend tests only"
+            echo "   - 'run-backend-tests' - Run backend tests only"
+            echo "   - 'run-integration-tests' - Run integration tests only"
+          fi
