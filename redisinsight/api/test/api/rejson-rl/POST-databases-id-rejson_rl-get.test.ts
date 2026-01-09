@@ -7,7 +7,6 @@ import {
   generateInvalidDataTestCases,
   validateInvalidDataTestCase,
   getMainCheckFn,
-  expect,
 } from '../deps';
 const { server, request, constants, rte } = deps;
 

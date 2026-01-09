@@ -29,7 +29,7 @@ const endpoint = () =>
 
 const mainCheckFn = async (testCase) => {
   it(testCase.name, async () => {
-    const { body } = await validateApiCall({
+    await validateApiCall({
       endpoint,
       ...testCase,
     });

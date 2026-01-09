@@ -231,11 +231,6 @@ describe('POST /databases/test', () => {
     describe('TLS AUTH', function () {
       requirements('rte.tls', 'rte.tlsAuth');
 
-      let existingCACertId,
-        existingClientCertId,
-        existingCACertName,
-        existingClientCertName;
-
       after(localDb.initAgreements);
 
       it('Test standalone instance and verify users certs (new certificates)', async () => {
@@ -281,11 +276,6 @@ describe('POST /databases/test', () => {
     requirements('rte.type=STANDALONE', 'rte.ssh');
     describe('TLS AUTH', function () {
       requirements('rte.tls', 'rte.tlsAuth');
-
-      let existingCACertId,
-        existingClientCertId,
-        existingCACertName,
-        existingClientCertName;
 
       after(localDb.initAgreements);
 

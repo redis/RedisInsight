@@ -866,18 +866,14 @@ describe('POST /databases', () => {
     describe('TLS AUTH', function () {
       requirements('rte.tls', 'rte.tlsAuth');
 
-      let existingCACertId,
-        existingClientCertId,
-        existingCACertName,
-        existingClientCertName;
+      let existingCACertId, existingClientCertId;
 
       after(localDb.initAgreements);
 
       it('Create standalone instance and verify users certs + ssh (basic)', async () => {
         const dbName = constants.getRandomString();
-        const newCaName = (existingCACertName = constants.getRandomString());
-        const newClientCertName = (existingClientCertName =
-          constants.getRandomString());
+        const newCaName = constants.getRandomString();
+        const newClientCertName = constants.getRandomString();
         // preconditions
         expect(await localDb.getInstanceByName(dbName)).to.eql(null);
 
@@ -1277,7 +1273,7 @@ describe('POST /databases', () => {
       it('Should create instance tls and create new CA cert', async () => {
         const dbName = constants.getRandomString();
 
-        const { body } = await validateApiCall({
+        await validateApiCall({
           endpoint,
           statusCode: 201,
           data: {

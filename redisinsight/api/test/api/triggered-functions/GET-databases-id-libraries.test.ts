@@ -1,6 +1,6 @@
 import { describe, deps, requirements, _, getMainCheckFn } from '../deps';
 import { Joi } from '../../helpers/test';
-const { request, server, constants, rte } = deps;
+const { request, server, constants } = deps;
 
 // endpoint to test
 const endpoint = (instanceId = constants.TEST_INSTANCE_ID) =>

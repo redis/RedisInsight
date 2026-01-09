@@ -1,6 +1,6 @@
 import { describe, expect, deps, before, _, getMainCheckFn } from '../deps';
 import { Joi, requirements } from '../../helpers/test';
-const { localDb, request, server, constants, rte } = deps;
+const { localDb, request, server, constants } = deps;
 
 const endpoint = () =>
   request(server).post(`/${constants.API.DATABASES}/export`);

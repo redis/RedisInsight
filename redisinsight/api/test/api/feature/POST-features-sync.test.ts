@@ -19,11 +19,10 @@ const endpoint = () => request(server).post('/features/sync');
 const mainCheckFn = getMainCheckFn(endpoint);
 
 let featureConfigRepository;
-let featureRepository;
 describe('POST /features/sync', () => {
   before(async () => {
     featureConfigRepository = await getRepository(repositories.FEATURES_CONFIG);
-    featureRepository = await getRepository(repositories.FEATURE);
+    await getRepository(repositories.FEATURE);
   });
 
   [

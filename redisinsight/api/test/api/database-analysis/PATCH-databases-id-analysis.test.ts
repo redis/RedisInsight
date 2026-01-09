@@ -9,7 +9,7 @@ import {
   validateInvalidDataTestCase,
 } from '../deps';
 import { analysisSchema } from './constants';
-const { localDb, request, server, constants, rte } = deps;
+const { localDb, request, server, constants } = deps;
 
 const endpoint = (
   instanceId = constants.TEST_INSTANCE_ID,
@@ -32,7 +32,6 @@ const validInputData = {
 
 const responseSchema = analysisSchema;
 const mainCheckFn = getMainCheckFn(endpoint);
-let repository;
 
 describe('PATCH /databases/:instanceId/analysis/:id', () => {
   before(

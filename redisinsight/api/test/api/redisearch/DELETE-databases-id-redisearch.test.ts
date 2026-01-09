@@ -10,7 +10,7 @@ import {
   getMainCheckFn,
 } from '../deps';
 
-const { server, request, constants, rte, localDb } = deps;
+const { server, request, constants, rte } = deps;
 
 // API endpoint to test
 const endpoint = (instanceId = constants.TEST_INSTANCE_ID) =>

@@ -71,7 +71,7 @@ describe('monitor', function () {
           constants.TEST_NOT_EXISTED_INSTANCE_ID,
         );
         await new Promise((resolve, reject) => {
-          client.emit('monitor', (ack) => {
+          client.emit('monitor', () => {
             reject('Should fail');
           });
           client.on('exception', reject);

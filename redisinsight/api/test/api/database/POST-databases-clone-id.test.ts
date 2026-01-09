@@ -112,7 +112,6 @@ describe(`POST /databases/clone/:id`, () => {
     ].map(mainCheckFn);
   });
   describe('Common', () => {
-    const dbName = constants.getRandomString();
     [
       {
         name: 'Should return 424 error if incorrect connection data provided',
