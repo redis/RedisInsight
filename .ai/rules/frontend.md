@@ -369,6 +369,24 @@ import { EuiButton } from '@elastic/eui';
 - ❌ Do not import directly from `@redis-ui/*`
 - ❌ Do not add new Elastic UI imports
 
+## Icons
+
+**⚠️ IMPORTANT**: Always use icons from Redis UI library instead of custom SVGs.
+
+### Icon Usage
+
+- **Use Redis UI icons** from `@redis-ui/icons` via `iconRegistry.tsx`
+- Icons are automatically exported via `export * from '@redis-ui/icons'` in `iconRegistry.tsx`
+- Use `RiIcon` component with icon type: `<RiIcon type="FolderOpenIcon" />`
+- **DO NOT create custom SVG icons** - check if the icon exists in Redis UI library first
+
+### Custom Icons (Exception)
+
+Only create custom SVG icons if:
+
+- The icon doesn't exist in Redis UI library
+- It's a project-specific icon that won't be added to the library
+
 ## Testing Components
 
 ### Always Use Shared `renderComponent` Helper
