@@ -1,5 +1,14 @@
 const path = require('path');
 
+const noUnusedVarsConfig = [
+  'error',
+  {
+    argsIgnorePattern: '^_',
+    varsIgnorePattern: '^_',
+    destructuredArrayIgnorePattern: '^_',
+  },
+];
+
 module.exports = {
   root: true,
   env: {
@@ -74,13 +83,7 @@ module.exports = {
         '@typescript-eslint/return-await': 'off',
         '@typescript-eslint/dot-notation': 'off',
         'import/no-extraneous-dependencies': 'off',
-        '@typescript-eslint/no-unused-vars': [
-          'error',
-          {
-            argsIgnorePattern: '^_',
-            varsIgnorePattern: '^_',
-          },
-        ],
+        '@typescript-eslint/no-unused-vars': noUnusedVarsConfig,
         // SonarJS rules (manually enabled since v2.x doesn't have recommended config)
         'sonarjs/cognitive-complexity': ['error', 15],
         'sonarjs/no-duplicate-string': 'error',
@@ -190,14 +193,7 @@ module.exports = {
         'no-unneeded-ternary': 'error',
         'prefer-template': 'error',
         'prefer-const': 'error',
-        '@typescript-eslint/no-unused-vars': [
-          'error',
-          {
-            argsIgnorePattern: '^_',
-            varsIgnorePattern: '^_',
-            destructuredArrayIgnorePattern: '^_',
-          },
-        ],
+        '@typescript-eslint/no-unused-vars': noUnusedVarsConfig,
         'import/order': [
           1,
           {
