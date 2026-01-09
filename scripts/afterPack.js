@@ -37,12 +37,6 @@ exports.default = async function afterPack(context) {
     version: FuseVersion.V1,
     // Disable ELECTRON_RUN_AS_NODE to prevent sandbox bypass (RED-174764)
     [FuseV1Options.RunAsNode]: false,
-    // Disable NODE_OPTIONS environment variable
-    [FuseV1Options.EnableNodeOptionsEnvironmentVariable]: false,
-    // Disable --inspect CLI arguments
-    [FuseV1Options.EnableNodeCliInspectArguments]: false,
-    // Enable cookie encryption
-    [FuseV1Options.EnableCookieEncryption]: true,
   });
 
   console.log('Electron fuses flipped successfully');
