@@ -381,22 +381,6 @@ module.exports = {
         // 'no-template-curly-in-string': 'off',
       },
     },
-    // Temporary disable some rules for UI packages
-    {
-      // In order to lint just UI packages
-      // make sure there's no override on 'redisinsight/ui'
-      // a.k.a. comment the above section
-      files: ['redisinsight/ui/src/packages/**/*.ts*'],
-      rules: {
-        'import/extensions': 'off',
-        'react/prop-types': 'off',
-        'react-hooks/rules-of-hooks': 'off',
-        'sonarjs/cognitive-complexity': 'off',
-        'max-len': 'off',
-        '@typescript-eslint/no-unused-vars': 'off',
-        'prefer-destructuring': 'off',
-      },
-    },
   ],
   parserOptions: {
     project: './tsconfig.json',
