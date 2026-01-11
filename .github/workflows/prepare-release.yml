@@ -1,0 +1,428 @@
+name: Prepare Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release version (e.g., 3.0.3)
+        required: true
+        type: string
+      source_branch:
+        description: Source branch to create release from (default: main)
+        required: false
+        type: string
+        default: 'main'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-dependencies:
+    name: Update Dependencies
+    runs-on: ubuntu-latest
+    outputs:
+      pr_number: ${{ steps.create-pr.outputs.pr_number || '' }}
+      branch_name: ${{ steps.create-branch.outputs.branch_name || '' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_branch || 'main' }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create update-dependencies branch
+        id: create-branch
+        run: |
+          BRANCH_NAME="dev/update-dependencies"
+          git checkout -b "$BRANCH_NAME"
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          echo "Created branch: $BRANCH_NAME"
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Check for security vulnerabilities
+        id: check-vulnerabilities
+        run: |
+          # Check for vulnerabilities using yarn audit
+          yarn audit --level moderate --json > audit-results.json 2>&1 || true
+          
+          # Parse audit results to count vulnerabilities
+          if [ -f audit-results.json ]; then
+            # Extract vulnerability count from JSON output
+            VULN_COUNT=$(cat audit-results.json | grep -c '"type":"auditAdvisory"' || echo "0")
+            echo "vulnerability_count=$VULN_COUNT" >> $GITHUB_OUTPUT
+            
+            if [ "$VULN_COUNT" -eq "0" ]; then
+              echo "No vulnerabilities found. Skipping dependency update."
+              echo "skip_update=true" >> $GITHUB_OUTPUT
+            else
+              echo "Found $VULN_COUNT vulnerabilities. Proceeding with update."
+              echo "skip_update=false" >> $GITHUB_OUTPUT
+              
+              # Extract vulnerable package names
+              cat audit-results.json | grep -o '"module_name":"[^"]*"' | cut -d'"' -f4 | sort -u > vulnerable-packages.txt || true
+            fi
+          else
+            echo "Could not parse audit results. Proceeding with general update."
+            echo "skip_update=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Update dependencies
+        if: steps.check-vulnerabilities.outputs.skip_update != 'true'
+        run: |
+          # Strategy: Update all dependencies to latest compatible versions
+          # This will resolve most security vulnerabilities
+          
+          # Update root dependencies
+          yarn upgrade --latest || yarn upgrade || true
+          
+          # Update UI dependencies
+          cd redisinsight/ui
+          yarn upgrade --latest || yarn upgrade || true
+          cd ../..
+          
+          # Update API dependencies  
+          cd redisinsight/api
+          yarn upgrade --latest || yarn upgrade || true
+          cd ../..
+          
+          # Reinstall to ensure lockfile is updated
+          yarn install
+
+      - name: Commit dependency updates
+        if: steps.check-vulnerabilities.outputs.skip_update != 'true'
+        run: |
+          git add package.json yarn.lock redisinsight/package.json redisinsight/yarn.lock redisinsight/ui/package.json redisinsight/api/package.json || true
+          
+          if git diff --staged --quiet; then
+            echo "No changes to commit. Skipping commit."
+            echo "has_changes=false" >> $GITHUB_ENV
+          else
+            git commit -m "chore: update dependencies to resolve security vulnerabilities
+
+          - Updated npm dependencies to address security vulnerabilities
+          - Automated update via GitHub Actions"
+            echo "has_changes=true" >> $GITHUB_ENV
+          fi
+
+      - name: Push branch
+        if: steps.check-vulnerabilities.outputs.skip_update != 'true' && env.has_changes == 'true'
+        run: |
+          git push origin dev/update-dependencies
+
+      - name: Create Pull Request
+        id: create-pr
+        if: steps.check-vulnerabilities.outputs.skip_update != 'true' && env.has_changes == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: pr } = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'chore: update dependencies to resolve security vulnerabilities',
+              head: 'dev/update-dependencies',
+              base: '${{ inputs.source_branch || "main" }}',
+              body: `## What
+
+            This PR updates npm dependencies to resolve security vulnerabilities.
+
+            ## Changes
+
+            - Updated npm dependencies using yarn upgrade
+            - Resolved security vulnerabilities identified by yarn audit
+
+            ## Testing
+
+            - [ ] Run \`yarn install\` locally
+            - [ ] Verify no breaking changes
+            - [ ] Run tests: \`yarn test\` and \`yarn test:api\`
+
+            ---
+            *This PR was automatically created by the Prepare Release workflow*`,
+            });
+            
+            console.log(`Created PR #${pr.number}: ${pr.html_url}`);
+            return pr.number;
+
+      - name: Skip message
+        if: steps.check-vulnerabilities.outputs.skip_update == 'true' || env.has_changes != 'true'
+        run: |
+          echo "Skipping dependency update PR creation - no vulnerabilities found or no changes to commit"
+
+  bump-version:
+    name: Bump Version
+    needs: update-dependencies
+    runs-on: ubuntu-latest
+    outputs:
+      pr_number: ${{ steps.create-pr.outputs.pr_number || '' }}
+      branch_name: ${{ steps.create-branch.outputs.branch_name || '' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_branch || 'main' }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Checkout latest source branch
+        run: |
+          git fetch origin ${{ inputs.source_branch || 'main' }}:refs/remotes/origin/${{ inputs.source_branch || 'main' }}
+          git checkout ${{ inputs.source_branch || 'main' }}
+          git pull origin ${{ inputs.source_branch || 'main' }}
+
+      - name: Wait for dependency PR to merge (if exists)
+        if: needs.update-dependencies.outputs.pr_number != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = ${{ needs.update-dependencies.outputs.pr_number }};
+            if (prNumber) {
+              console.log(`Waiting for PR #${prNumber} to be merged...`);
+              console.log(`PR URL: https://github.com/${{ github.repository }}/pull/${prNumber}`);
+              
+              // Poll for PR merge status
+              let merged = false;
+              let attempts = 0;
+              const maxAttempts = 120; // 10 minutes max wait (allows time for review)
+              
+              while (!merged && attempts < maxAttempts) {
+                try {
+                  const { data: pr } = await github.rest.pulls.get({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    pull_number: prNumber,
+                  });
+                  
+                  if (pr.merged) {
+                    merged = true;
+                    console.log(`✅ PR #${prNumber} has been merged!`);
+                    break;
+                  }
+                  
+                  if (pr.state === 'closed' && !pr.merged) {
+                    throw new Error(`PR #${prNumber} was closed without being merged. Please check the PR status.`);
+                  }
+                  
+                  console.log(`⏳ PR #${prNumber} not yet merged. Waiting... (attempt ${attempts + 1}/${maxAttempts})`);
+                  await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds
+                  attempts++;
+                } catch (error) {
+                  if (error.message.includes('closed without being merged')) {
+                    throw error;
+                  }
+                  console.log(`Error checking PR status: ${error.message}. Retrying...`);
+                  await new Promise(resolve => setTimeout(resolve, 5000));
+                  attempts++;
+                }
+              }
+              
+              if (!merged) {
+                throw new Error(`PR #${prNumber} was not merged within the timeout period (10 minutes). Please merge it manually and re-run this workflow from the "bump-version" job.`);
+              }
+            } else {
+              console.log('No dependency PR was created (no vulnerabilities found or no changes). Proceeding with version bump.');
+            }
+
+      - name: Create version bump branch
+        id: create-branch
+        run: |
+          VERSION="${{ inputs.version }}"
+          BRANCH_NAME="feature/bump-to-${VERSION}"
+          git checkout -b "$BRANCH_NAME"
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          echo "Created branch: $BRANCH_NAME"
+
+      - name: Bump version
+        run: |
+          VERSION="${{ inputs.version }}"
+          node scripts/update-version.js "$VERSION"
+
+      - name: Commit version bump
+        run: |
+          git add -A
+          git commit -m "chore: bump version to v${{ inputs.version }}
+
+          - Updated version to ${{ inputs.version }} in all necessary files
+          - Automated version bump via GitHub Actions"
+
+      - name: Push branch
+        run: |
+          git push origin feature/bump-to-${{ inputs.version }}
+
+      - name: Create Pull Request
+        id: create-pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const version = '${{ inputs.version }}';
+            const baseBranch = '${{ inputs.source_branch || "main" }}';
+            const dependencyPrNumber = ${{ needs.update-dependencies.outputs.pr_number || 'null' }};
+            
+            let body = `## What
+
+            Prepares v${version} release by updating version references across app, API, and metadata.
+
+            ## Changes
+
+            - Bumps \`version\` to \`${version}\` in \`redisinsight/package.json\` and \`api/package.json\`
+            - Updates \`server.appVersion\` default to \`${version}\` in \`api/config/default.ts\`
+            - Sets Swagger \`info.version\` to \`${version}\` in \`api/config/swagger.ts\`
+            - Updates desktop About panel fallback \`appVersion\` to \`${version}\`
+            - Refreshes release script help text with new semver example
+
+            ## Testing
+
+            - [ ] Verify version is updated in all files
+            - [ ] Run \`yarn build\` to ensure no build errors
+            - [ ] Check that version appears correctly in the app
+
+            ---
+            *This PR was automatically created by the Prepare Release workflow*`;
+            
+            if (dependencyPrNumber) {
+              body += `\n\n---\n\nDepends on #${dependencyPrNumber} (dependency updates)`;
+            }
+            
+            const { data: pr } = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Bump version to v${version}`,
+              head: `feature/bump-to-${version}`,
+              base: baseBranch,
+              body: body,
+            });
+            
+            console.log(`Created PR #${pr.number}: ${pr.html_url}`);
+            return pr.number;
+
+  wait-for-version-bump:
+    name: Wait for Version Bump PR Merge
+    needs: bump-version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for version bump PR to merge
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = ${{ needs.bump-version.outputs.pr_number }};
+            console.log(`Waiting for PR #${prNumber} to be merged...`);
+            
+            // Poll for PR merge status
+            let merged = false;
+            let attempts = 0;
+            const maxAttempts = 120; // 10 minutes max wait
+            
+            while (!merged && attempts < maxAttempts) {
+              const { data: pr } = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+              });
+              
+              if (pr.merged) {
+                merged = true;
+                console.log(`PR #${prNumber} has been merged!`);
+                break;
+              }
+              
+              console.log(`PR #${prNumber} not yet merged. Waiting... (attempt ${attempts + 1}/${maxAttempts})`);
+              await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds
+              attempts++;
+            }
+            
+            if (!merged) {
+              throw new Error(`PR #${prNumber} was not merged within the timeout period. Please merge it manually and re-run this workflow from the "create-release-branch" job.`);
+            }
+
+  create-release-branch:
+    name: Create Release Branch
+    needs: [wait-for-version-bump]
+    runs-on: ubuntu-latest
+    outputs:
+      branch_name: ${{ steps.create-branch.outputs.branch_name }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_branch || 'main' }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create release branch
+        id: create-branch
+        run: |
+          VERSION="${{ inputs.version }}"
+          BRANCH_NAME="release/${VERSION}"
+          git checkout -b "$BRANCH_NAME"
+          git push origin "$BRANCH_NAME"
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          echo "Created and pushed release branch: $BRANCH_NAME"
+
+  create-release-pr:
+    name: Create Release PR
+    needs: create-release-branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Pull Request to latest
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const version = '${{ inputs.version }}';
+            const releaseBranch = 'release/${version}';
+            
+            const { data: pr } = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Release ${version}`,
+              head: releaseBranch,
+              base: 'latest',
+              body: `## Release ${version}
+
+            This PR merges the release branch \`${releaseBranch}\` into \`latest\` to trigger the production release workflow.
+
+            ## Checklist
+
+            - [ ] All tests pass
+            - [ ] Release notes are prepared
+            - [ ] Jira tickets are assigned to this release
+            - [ ] Regression testing completed
+            - [ ] Ready for production release
+
+            ## Next Steps
+
+            Once this PR is merged, the [Release (prod)](https://github.com/${{ github.repository }}/actions/workflows/release-prod.yml) workflow will be automatically triggered.
+
+            ---
+            *This PR was automatically created by the Prepare Release workflow*`,
+            });
+            
+            console.log(`Created PR #${pr.number}: ${pr.html_url}`);
+            console.log(`\n## Summary`);
+            console.log(`- Release branch: ${releaseBranch}`);
+            console.log(`- PR to latest: #${pr.number}`);
+            console.log(`- PR URL: ${pr.html_url}`);
