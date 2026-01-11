@@ -1,0 +1,167 @@
+name: Extract Checksums
+description: Extract SHA-256 checksums from latest-*.yml files in S3 and format them for release notes
+
+inputs:
+  aws_bucket_name:
+    description: AWS S3 bucket name
+    required: true
+  application_version:
+    description: Application version (e.g., 3.0.0)
+    required: true
+  aws_access_key_id:
+    description: AWS access key ID
+    required: true
+  aws_secret_access_key:
+    description: AWS secret access key
+    required: true
+  aws_default_region:
+    description: AWS default region
+    required: true
+
+outputs:
+  checksums_markdown:
+    description: Formatted checksums in markdown table format
+  checksums_json:
+    description: Checksums in JSON format
+
+runs:
+  using: composite
+  steps:
+    - name: Configure AWS credentials
+      shell: bash
+      env:
+        AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
+        AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
+        AWS_DEFAULT_REGION: ${{ inputs.aws_default_region }}
+      run: |
+        mkdir -p ~/.aws
+        echo "[default]" > ~/.aws/credentials
+        echo "aws_access_key_id = $AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
+        echo "aws_secret_access_key = $AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
+        echo "[default]" > ~/.aws/config
+        echo "region = $AWS_DEFAULT_REGION" >> ~/.aws/config
+
+    - name: Download latest-*.yml files from S3
+      shell: bash
+      run: |
+        aws s3 cp s3://${{ inputs.aws_bucket_name }}/public/releases/${{ inputs.application_version }}/ ./checksums/ \
+          --recursive \
+          --exclude "*" \
+          --include "latest-*.yml" || true
+
+        # Also check in latest directory as fallback
+        if [ ! -f checksums/latest-mac.yml ] && [ ! -f checksums/latest-linux.yml ] && [ ! -f checksums/latest.yml ]; then
+          echo "Checking latest directory as fallback..."
+          aws s3 cp s3://${{ inputs.aws_bucket_name }}/public/latest-v3/ ./checksums/ \
+            --recursive \
+            --exclude "*" \
+            --include "latest-*.yml" || true
+        fi
+
+    - name: Extract checksums and generate markdown
+      id: extract-checksums
+      shell: bash
+      run: |
+        mkdir -p checksums
+        cd checksums
+
+        # Initialize arrays
+        declare -A checksums
+
+        # Process latest-mac.yml
+        if [ -f latest-mac.yml ]; then
+          echo "Processing latest-mac.yml..."
+          
+          # Extract Intel Mac checksum
+          intel_sha=$(grep -A 5 "Redis-Insight-mac-x64.dmg" latest-mac.yml | grep "sha512:" | awk '{print $2}' | tr -d '"' || echo "")
+          if [ -n "$intel_sha" ]; then
+            checksums["MacOS Intel"]="$intel_sha"
+          fi
+          
+          # Extract Apple Silicon Mac checksum
+          arm_sha=$(grep -A 5 "Redis-Insight-mac-arm64.dmg" latest-mac.yml | grep "sha512:" | awk '{print $2}' | tr -d '"' || echo "")
+          if [ -n "$arm_sha" ]; then
+            checksums["MacOS Apple Silicon"]="$arm_sha"
+          fi
+        fi
+
+        # Process latest-linux.yml
+        if [ -f latest-linux.yml ]; then
+          echo "Processing latest-linux.yml..."
+          
+          # Extract AppImage checksum
+          appimage_sha=$(grep -A 5 "Redis-Insight-linux-x86_64.AppImage" latest-linux.yml | grep "sha512:" | awk '{print $2}' | tr -d '"' || echo "")
+          if [ -n "$appimage_sha" ]; then
+            checksums["Linux AppImage"]="$appimage_sha"
+          fi
+          
+          # Extract Debian checksum
+          deb_sha=$(grep -A 5 "Redis-Insight-linux-amd64.deb" latest-linux.yml | grep "sha512:" | awk '{print $2}' | tr -d '"' || echo "")
+          if [ -n "$deb_sha" ]; then
+            checksums["Linux Debian"]="$deb_sha"
+          fi
+          
+          # Extract RPM checksum
+          rpm_sha=$(grep -A 5 "Redis-Insight-linux-x86_64.rpm" latest-linux.yml | grep "sha512:" | awk '{print $2}' | tr -d '"' || echo "")
+          if [ -n "$rpm_sha" ]; then
+            checksums["Linux RPM"]="$rpm_sha"
+          fi
+        fi
+
+        # Process latest.yml (Windows)
+        if [ -f latest.yml ]; then
+          echo "Processing latest.yml (Windows)..."
+          
+          # Extract Windows installer checksum
+          win_sha=$(grep -A 5 "Redis-Insight-win-installer.exe" latest.yml | grep "sha512:" | awk '{print $2}' | tr -d '"' || echo "")
+          if [ -n "$win_sha" ]; then
+            checksums["Windows"]="$win_sha"
+          fi
+        fi
+
+        # Generate markdown table
+        {
+          echo "**SHA-512 Checksums**"
+          echo "| Package | SHA-512 |"
+          echo "| ------------------- | ----------------------------------------------------------------- |"
+          
+          for package in "Windows" "Linux AppImage" "Linux Debian" "Linux RPM" "MacOS Intel" "MacOS Apple Silicon"; do
+            if [ -n "${checksums[$package]}" ]; then
+              echo "| $package | \`${checksums[$package]}\` |"
+            fi
+          done
+        } > checksums_markdown.txt
+
+        # Generate JSON
+        {
+          echo "{"
+          first=true
+          for package in "Windows" "Linux AppImage" "Linux Debian" "Linux RPM" "MacOS Intel" "MacOS Apple Silicon"; do
+            if [ -n "${checksums[$package]}" ]; then
+              if [ "$first" = true ]; then
+                first=false
+              else
+                echo ","
+              fi
+              echo -n "  \"$package\": \"${checksums[$package]}\""
+            fi
+          done
+          echo ""
+          echo "}"
+        } > checksums.json
+
+        # Output markdown
+        checksums_md=$(cat checksums_markdown.txt)
+        echo "checksums_markdown<<EOF" >> $GITHUB_OUTPUT
+        echo "$checksums_md" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+        # Output JSON
+        checksums_json=$(cat checksums.json)
+        echo "checksums_json<<EOF" >> $GITHUB_OUTPUT
+        echo "$checksums_json" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+        # Display for debugging
+        echo "Extracted checksums:"
+        cat checksums_markdown.txt

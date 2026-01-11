@@ -1,0 +1,85 @@
+name: Release Checklist
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: Release version (e.g., 3.0.0)
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release version (e.g., 3.0.0)
+        required: true
+        type: string
+
+jobs:
+  create-checklist:
+    name: Create Release Checklist Issue
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create release checklist issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const version = '${{ inputs.version || github.event.inputs.version }}';
+            const checklist = `
+            # Release Checklist for ${version}
+
+            Use this checklist to track the release process for version ${version}.
+
+            ## Prerequisites
+            - [ ] Resolve security vulnerabilities (Dependabot)
+            - [ ] Bump version using \`node scripts/update-version.js ${version}\`
+            - [ ] Create release branch \`release/${version}\`
+
+            ## Stage Release
+            - [ ] Release (stage) workflow produced builds for all platforms
+            - [ ] Perform quick regression testing on the release branch
+            - [ ] Assign all tickets to Jira release (use workflow: Assign Jira Fix Versions)
+            - [ ] Fix critical issues via hotfixes if needed
+
+            ## Prepare Release Notes
+            - [ ] Generate release notes (use workflow: Generate Release Notes)
+            - [ ] Create draft release notes in GitHub
+            - [ ] Create pull request with release notes for redis.io
+
+            ## Production Release
+            - [ ] Merge release branch to \`latest\` branch
+            - [ ] Release (prod) workflow produced **private** builds
+            - [ ] Perform quick regression testing on production artifacts
+            - [ ] Approve production build to make artifacts **public**
+            - [ ] Extract checksums (use workflow: Extract Checksums)
+            - [ ] Update checksums in release notes (GitHub and redis.io)
+
+            ## Publish Release
+            - [ ] Publish release notes on GitHub
+            - [ ] Merge release notes PR for redis.io
+            - [ ] Publish to stores (Docker, Snapcraft, etc.)
+            - [ ] Mark release as "released" in Jira
+
+            ## Post Release
+            - [ ] Merge \`latest\` branch to \`main\` to sync branches
+            - [ ] Respond to GitHub issues related to release
+            - [ ] Monitor adoption rate in Amplitude
+
+            ---
+            *This checklist was auto-generated for version ${version}*
+            `;
+
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Release Checklist: ${version}`,
+              body: checklist,
+              labels: ['release', 'checklist']
+            });
+
+            console.log(`Created checklist issue: ${issue.data.html_url}`);
+            return issue.data.number;

@@ -1,0 +1,194 @@
+name: Assign Jira Fix Version
+description: Automatically assign fix version to Jira tickets based on PRs merged to release branch
+
+inputs:
+  jira_base_url:
+    description: Jira base URL (e.g., https://redislabs.atlassian.net)
+    required: true
+  jira_email:
+    description: Jira user email
+    required: true
+  jira_api_token:
+    description: Jira API token
+    required: true
+  jira_project:
+    description: Jira project key (e.g., RI)
+    required: true
+  fix_version:
+    description: Fix version to assign (e.g., 3.0.0)
+    required: true
+  github_token:
+    description: GitHub token for API access
+    required: true
+  base_branch:
+    description: Base branch to compare against
+    required: false
+    default: 'main'
+  dry_run:
+    description: If true, only log what would be done without making changes
+    required: false
+    default: 'false'
+
+outputs:
+  tickets_assigned:
+    description: Number of tickets assigned
+  tickets_found:
+    description: Number of tickets found in PRs
+
+runs:
+  using: composite
+  steps:
+    - name: Extract Jira ticket IDs from PRs
+      id: extract-tickets
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+        BASE_BRANCH: ${{ inputs.base_branch }}
+      run: |
+        echo "Extracting Jira ticket IDs from PRs merged to release branch..."
+
+        # Get PRs merged to the current branch
+        PRS=$(gh pr list --state merged --base "$BASE_BRANCH" --json number,title,mergedAt --limit 100)
+
+        # Extract ticket IDs (format: RI-1234)
+        TICKET_REGEX="(RI-[0-9]+)"
+        TICKETS=$(echo "$PRS" | grep -oE "$TICKET_REGEX" | sort -u | tr '\n' ' ')
+
+        echo "Found tickets: $TICKETS"
+        echo "tickets=$TICKETS" >> $GITHUB_OUTPUT
+
+        # Count tickets
+        TICKET_COUNT=$(echo "$TICKETS" | wc -w)
+        echo "ticket_count=$TICKET_COUNT" >> $GITHUB_OUTPUT
+
+    - name: Get or create Jira fix version
+      id: jira-version
+      shell: bash
+      env:
+        JIRA_BASE_URL: ${{ inputs.jira_base_url }}
+        JIRA_EMAIL: ${{ inputs.jira_email }}
+        JIRA_API_TOKEN: ${{ inputs.jira_api_token }}
+        JIRA_PROJECT: ${{ inputs.jira_project }}
+        FIX_VERSION: ${{ inputs.fix_version }}
+      run: |
+        echo "Checking if fix version '$FIX_VERSION' exists in Jira..."
+
+        # Get project versions
+        VERSIONS=$(curl -s -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
+          "$JIRA_BASE_URL/rest/api/3/project/$JIRA_PROJECT/versions" \
+          -H "Accept: application/json")
+
+        # Check if version exists
+        VERSION_ID=$(echo "$VERSIONS" | jq -r ".[] | select(.name == \"$FIX_VERSION\") | .id" | head -1)
+
+        if [ -z "$VERSION_ID" ] || [ "$VERSION_ID" = "null" ]; then
+          echo "Version '$FIX_VERSION' not found. Creating it..."
+          
+          if [ "${{ inputs.dry_run }}" != "true" ]; then
+            # Create version
+            VERSION_DATA=$(jq -n \
+              --arg name "$FIX_VERSION" \
+              --arg project "$JIRA_PROJECT" \
+              '{name: $name, project: $project, released: false, archived: false}')
+            
+            RESPONSE=$(curl -s -w "\n%{http_code}" -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
+              -X POST \
+              "$JIRA_BASE_URL/rest/api/3/version" \
+              -H "Accept: application/json" \
+              -H "Content-Type: application/json" \
+              -d "$VERSION_DATA")
+            
+            HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+            BODY=$(echo "$RESPONSE" | sed '$d')
+            
+            if [ "$HTTP_CODE" = "201" ]; then
+              VERSION_ID=$(echo "$BODY" | jq -r '.id')
+              echo "Created version '$FIX_VERSION' with ID: $VERSION_ID"
+            else
+              echo "Error creating version: HTTP $HTTP_CODE"
+              echo "$BODY"
+              exit 1
+            fi
+          else
+            echo "[DRY RUN] Would create version '$FIX_VERSION'"
+            VERSION_ID="dry-run-id"
+          fi
+        else
+          echo "Version '$FIX_VERSION' already exists with ID: $VERSION_ID"
+        fi
+
+        echo "version_id=$VERSION_ID" >> $GITHUB_OUTPUT
+
+    - name: Assign fix version to tickets
+      id: assign-version
+      shell: bash
+      env:
+        JIRA_BASE_URL: ${{ inputs.jira_base_url }}
+        JIRA_EMAIL: ${{ inputs.jira_email }}
+        JIRA_API_TOKEN: ${{ inputs.jira_api_token }}
+        FIX_VERSION: ${{ inputs.fix_version }}
+        VERSION_ID: ${{ steps.jira-version.outputs.version_id }}
+        DRY_RUN: ${{ inputs.dry_run }}
+      run: |
+        TICKETS="${{ steps.extract-tickets.outputs.tickets }}"
+        ASSIGNED_COUNT=0
+
+        if [ -z "$TICKETS" ]; then
+          echo "No tickets found to assign."
+          echo "assigned_count=0" >> $GITHUB_OUTPUT
+          exit 0
+        fi
+
+        for TICKET in $TICKETS; do
+          echo "Processing ticket: $TICKET"
+          
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "[DRY RUN] Would assign fix version '$FIX_VERSION' to $TICKET"
+            ASSIGNED_COUNT=$((ASSIGNED_COUNT + 1))
+          else
+            # Get current fix versions
+            ISSUE=$(curl -s -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
+              "$JIRA_BASE_URL/rest/api/3/issue/$TICKET" \
+              -H "Accept: application/json")
+            
+            CURRENT_VERSIONS=$(echo "$ISSUE" | jq -r '.fields.fixVersions[]?.id // empty')
+            
+            # Check if version is already assigned
+            if echo "$CURRENT_VERSIONS" | grep -q "$VERSION_ID"; then
+              echo "  ✓ Fix version already assigned to $TICKET"
+            else
+              # Add version to existing versions
+              VERSION_ARRAY=$(echo "$CURRENT_VERSIONS" | jq -R -s -c 'split("\n") | map(select(. != "")) | map({id: .})')
+              VERSION_ARRAY=$(echo "$VERSION_ARRAY" | jq ". + [{id: \"$VERSION_ID\"}]")
+              
+              # Update issue
+              UPDATE_DATA=$(jq -n \
+                --argjson versions "$VERSION_ARRAY" \
+                '{fields: {fixVersions: $versions}}')
+              
+              RESPONSE=$(curl -s -w "\n%{http_code}" -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
+                -X PUT \
+                "$JIRA_BASE_URL/rest/api/3/issue/$TICKET" \
+                -H "Accept: application/json" \
+                -H "Content-Type: application/json" \
+                -d "$UPDATE_DATA")
+              
+              HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+              
+              if [ "$HTTP_CODE" = "204" ]; then
+                echo "  ✓ Assigned fix version '$FIX_VERSION' to $TICKET"
+                ASSIGNED_COUNT=$((ASSIGNED_COUNT + 1))
+              else
+                BODY=$(echo "$RESPONSE" | sed '$d')
+                echo "  ✗ Error assigning version to $TICKET: HTTP $HTTP_CODE"
+                echo "$BODY"
+              fi
+            fi
+          fi
+        done
+
+        echo "assigned_count=$ASSIGNED_COUNT" >> $GITHUB_OUTPUT
+        echo ""
+        echo "Summary:"
+        echo "  Tickets found: ${{ steps.extract-tickets.outputs.ticket_count }}"
+        echo "  Tickets assigned: $ASSIGNED_COUNT"

@@ -1,0 +1,57 @@
+name: Extract Checksums
+
+on:
+  workflow_call:
+    inputs:
+      application_version:
+        description: Application version (e.g., 3.0.0)
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      application_version:
+        description: Application version (e.g., 3.0.0)
+        required: true
+        type: string
+
+env:
+  AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
+
+jobs:
+  extract-checksums:
+    name: Extract Checksums
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract checksums from S3
+        id: extract
+        uses: ./.github/actions/extract-checksums
+        with:
+          aws_bucket_name: ${{ env.AWS_BUCKET_NAME }}
+          application_version: ${{ inputs.application_version || github.event.inputs.application_version }}
+          aws_access_key_id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws_default_region: ${{ env.AWS_DEFAULT_REGION }}
+
+      - name: Display checksums
+        run: |
+          echo "## Checksums for version ${{ inputs.application_version || github.event.inputs.application_version }}"
+          echo ""
+          echo "${{ steps.extract.outputs.checksums_markdown }}"
+
+      - name: Save checksums to file
+        run: |
+          echo "${{ steps.extract.outputs.checksums_markdown }}" > checksums.md
+          echo "${{ steps.extract.outputs.checksums_json }}" > checksums.json
+
+      - name: Upload checksums artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: checksums
+          path: |
+            checksums.md
+            checksums.json

@@ -1,0 +1,75 @@
+name: Assign Jira Fix Versions
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: Release version (e.g., 3.0.0)
+        required: true
+        type: string
+      base_branch:
+        description: Base branch for comparison (default: main)
+        required: false
+        type: string
+        default: 'main'
+      dry_run:
+        description: If true, only log what would be done
+        required: false
+        type: boolean
+        default: false
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release version (e.g., 3.0.0)
+        required: true
+        type: string
+      base_branch:
+        description: Base branch for comparison (default: main)
+        required: false
+        type: string
+        default: 'main'
+      dry_run:
+        description: If true, only log what would be done
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  assign-tickets:
+    name: Assign Jira Fix Versions
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup GitHub CLI
+        uses: actions/setup-cli@v1
+        with:
+          cli: gh
+          version: 'latest'
+
+      - name: Authenticate GitHub CLI
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+
+      - name: Assign fix version to Jira tickets
+        id: assign
+        uses: ./.github/actions/assign-jira-fix-version
+        with:
+          jira_base_url: ${{ secrets.JIRA_BASE_URL || 'https://redislabs.atlassian.net' }}
+          jira_email: ${{ secrets.JIRA_EMAIL }}
+          jira_api_token: ${{ secrets.JIRA_API_TOKEN }}
+          jira_project: ${{ secrets.JIRA_PROJECT || 'RI' }}
+          fix_version: ${{ inputs.version || github.event.inputs.version }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          base_branch: ${{ inputs.base_branch || github.event.inputs.base_branch || 'main' }}
+          dry_run: ${{ inputs.dry_run || github.event.inputs.dry_run || 'false' }}
+
+      - name: Summary
+        run: |
+          echo "## Jira Ticket Assignment Summary"
+          echo ""
+          echo "- Tickets found: ${{ steps.assign.outputs.tickets_found }}"
+          echo "- Tickets assigned: ${{ steps.assign.outputs.tickets_assigned }}"
