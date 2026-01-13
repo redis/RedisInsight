@@ -8,7 +8,7 @@ exclude:
   paths:
     - __mocks__/**
     - redisinsight/api/src/__mocks__/**
-    - tests/**
+    - '**/tests/**'
     - redisinsight/api/test/**
     - '**/*.spec.ts'
     - '**/*.spec.tsx'
