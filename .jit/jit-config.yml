@@ -10,5 +10,5 @@ exclude:
     - redisinsight/api/src/__mocks__/**
     - tests/**
     - redisinsight/api/test/**
-    - '*.spec.ts'
-    - '*.spec.tsx'
+    - '**/*.spec.ts'
+    - '**/*.spec.tsx'
