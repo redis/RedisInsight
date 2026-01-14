@@ -93,7 +93,6 @@
     "allowToChangeInstallationDirectory": true
   },
   "linux": {
-    "executableName": "redisinsight",
     "icon": "./resources/icons",
     "target": [
       {

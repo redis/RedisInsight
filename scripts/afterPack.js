@@ -27,8 +27,9 @@ exports.default = async function afterPack(context) {
   } else if (electronPlatformName === 'win32') {
     electronBinaryPath = path.join(appOutDir, `${productFilename}.exe`);
   } else {
-    // Linux
-    electronBinaryPath = path.join(appOutDir, productFilename);
+    // Linux - the actual executable is 'redisinsight' (lowercase, no space)
+    // electron-builder sanitizes productName for the binary name
+    electronBinaryPath = path.join(appOutDir, 'redisinsight');
   }
 
   console.log(`Flipping Electron fuses for: ${electronBinaryPath}`);
