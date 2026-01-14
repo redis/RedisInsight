@@ -29,7 +29,7 @@ export const CONNECTIVITY_OPTIONS: ConnectivityOption[] = [
     id: 'azure',
     title: 'Azure Cache',
     type: AddDbType.azure,
-    icon: "CloudIcon",
+    icon: 'CloudIcon',
   },
   {
     id: 'import',

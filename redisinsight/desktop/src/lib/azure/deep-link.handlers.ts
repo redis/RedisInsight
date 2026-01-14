@@ -11,4 +11,3 @@ export const azureDeepLinkHandler = async (url: UrlWithParsedQuery) => {
       log.warn('Unknown azure deep link pathname', url?.pathname)
   }
 }
-

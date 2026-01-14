@@ -60,7 +60,10 @@ export const azureOauthCallback = async (url: UrlWithParsedQuery) => {
       focusWindow(currentWindow)
     }
   } catch (e) {
-    log.error('Azure OAuth callback error:', wrapErrorMessageSensitiveData(e as Error))
+    log.error(
+      'Azure OAuth callback error:',
+      wrapErrorMessageSensitiveData(e as Error),
+    )
     const error: AzureAuthResponse = {
       status: 'failed',
       error: (e as Error).message,
@@ -69,4 +72,3 @@ export const azureOauthCallback = async (url: UrlWithParsedQuery) => {
     currentWindow?.webContents.send(IpcOnEvent.azureOauthCallback, error)
   }
 }
-
