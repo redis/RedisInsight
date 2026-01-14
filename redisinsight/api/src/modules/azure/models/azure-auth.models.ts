@@ -8,6 +8,8 @@ export interface AzureUserInfo {
   upn: string;
   name?: string;
   email?: string;
+  /** MSAL account ID for token refresh (homeAccountId) */
+  homeAccountId: string;
 }
 
 export interface AzureTokens {

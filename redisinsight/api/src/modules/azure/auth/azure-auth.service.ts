@@ -148,6 +148,7 @@ export class AzureAuthService {
         upn: claims?.preferred_username || response.account?.username || '',
         name: claims?.name,
         email: claims?.email,
+        homeAccountId: response.account?.homeAccountId || '',
       };
 
       // Store session
@@ -234,9 +235,13 @@ export class AzureAuthService {
   }
 
   /**
-   * Get a Redis-scoped token for Entra ID auth
+   * Get a Redis-scoped token for Entra ID auth.
+   * Uses session to find account if accountId not provided.
    */
-  async getRedisToken(sessionId: string): Promise<string | null> {
+  async getRedisToken(sessionId: string): Promise<{
+    token: string;
+    expiresOn: Date;
+  } | null> {
     const session = this.sessions.get(sessionId);
 
     if (!session) {
@@ -244,26 +249,50 @@ export class AzureAuthService {
       return null;
     }
 
+    return this.getRedisTokenByAccountId(session.user.homeAccountId);
+  }
+
+  /**
+   * Get a Redis-scoped token for a specific Azure account.
+   * Used for proactive token refresh.
+   */
+  async getRedisTokenByAccountId(
+    accountId: string,
+  ): Promise<{ token: string; expiresOn: Date } | null> {
+    if (!accountId) {
+      this.logger.warn('No account ID provided for Redis token');
+      return null;
+    }
+
     try {
       const pca = await this.getMsalClient();
       const accounts = await pca.getTokenCache().getAllAccounts();
 
-      if (accounts.length === 0) {
-        this.logger.warn('No accounts in cache for Redis token');
+      // Find the specific account
+      const account = accounts.find((a) => a.homeAccountId === accountId);
+
+      if (!account) {
+        this.logger.warn(`Account ${accountId} not found in MSAL cache`);
         return null;
       }
 
       const response = await pca.acquireTokenSilent({
-        account: accounts[0],
+        account,
         scopes: [...AZURE_CONFIG.REDIS_SCOPES],
       });
 
       await this.persistCache();
 
-      this.logger.log('Redis token acquired successfully');
-      return response.accessToken;
+      this.logger.log(`Redis token acquired for account ${accountId}`);
+      return {
+        token: response.accessToken,
+        expiresOn: response.expiresOn || new Date(),
+      };
     } catch (error: any) {
-      this.logger.error('Failed to acquire Redis token', error?.message);
+      this.logger.error(
+        `Failed to acquire Redis token for account ${accountId}`,
+        error?.message,
+      );
       return null;
     }
   }

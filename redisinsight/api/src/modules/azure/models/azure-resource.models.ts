@@ -32,4 +32,16 @@ export interface AzureConnectionDetails {
   username?: string;
   tls: boolean;
   authType: 'accessKey' | 'entraId';
+  /** Token expiration time for Entra ID authentication (ISO string) */
+  tokenExpiresAt?: string;
+  /** MSAL account ID for token refresh (homeAccountId) */
+  azureAccountId?: string;
+  /** Azure subscription ID */
+  subscriptionId: string;
+  /** Azure subscription display name */
+  subscriptionName: string;
+  /** Azure resource group name */
+  resourceGroup: string;
+  /** Full Azure resource ID */
+  resourceId: string;
 }

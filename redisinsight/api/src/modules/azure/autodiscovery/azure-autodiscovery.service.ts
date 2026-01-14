@@ -266,6 +266,10 @@ export class AzureAutodiscoveryService {
         password: primaryKey,
         tls: true,
         authType: 'accessKey',
+        subscriptionId: database.subscriptionId,
+        subscriptionName: database.subscriptionName,
+        resourceGroup: database.resourceGroup,
+        resourceId: database.id,
       };
     } catch (error: any) {
       this.logger.error(
@@ -279,13 +283,6 @@ export class AzureAutodiscoveryService {
   private async getEntraIdConnectionDetails(
     database: AzureRedisDatabase,
   ): Promise<AzureConnectionDetails | null> {
-    const redisToken = await this.authService.getRedisToken(DEFAULT_SESSION_ID);
-
-    if (!redisToken) {
-      this.logger.error('Failed to get Redis token for Entra ID auth');
-      return null;
-    }
-
     const session = this.authService.getSession(DEFAULT_SESSION_ID);
 
     if (!session) {
@@ -293,13 +290,27 @@ export class AzureAutodiscoveryService {
       return null;
     }
 
+    const redisTokenResult =
+      await this.authService.getRedisToken(DEFAULT_SESSION_ID);
+
+    if (!redisTokenResult) {
+      this.logger.error('Failed to get Redis token for Entra ID auth');
+      return null;
+    }
+
     return {
       host: database.host,
       port: database.port,
-      password: redisToken,
+      password: redisTokenResult.token,
       username: session.user.oid,
       tls: true,
       authType: 'entraId',
+      tokenExpiresAt: redisTokenResult.expiresOn.toISOString(),
+      azureAccountId: session.user.homeAccountId,
+      subscriptionId: database.subscriptionId,
+      subscriptionName: database.subscriptionName,
+      resourceGroup: database.resourceGroup,
+      resourceId: database.id,
     };
   }
 }
