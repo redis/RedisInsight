@@ -52,6 +52,21 @@ export class AzureAutodiscoveryController {
     return this.autodiscoveryService.listDatabases();
   }
 
+  @Post('subscriptions/databases')
+  @ApiOperation({ summary: 'List Redis databases in a specific subscription' })
+  @ApiBody({ description: 'Subscription object' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns list of databases in subscription',
+  })
+  @ApiResponse({ status: 401, description: 'Not authenticated' })
+  async listDatabasesInSubscription(
+    @Body() subscription: AzureSubscription,
+  ): Promise<AzureRedisDatabase[]> {
+    this.ensureAuthenticated();
+    return this.autodiscoveryService.listDatabasesInSubscription(subscription);
+  }
+
   @Post('databases/connection-details')
   @ApiOperation({ summary: 'Get connection details for a database' })
   @ApiBody({ description: 'Database object' })
