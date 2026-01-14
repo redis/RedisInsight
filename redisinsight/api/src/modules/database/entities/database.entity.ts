@@ -235,6 +235,11 @@ export class DatabaseEntity {
   cloudDetails: CloudDatabaseDetailsEntity;
 
   @Expose()
+  @Column({ nullable: true, type: 'text' })
+  @DataAsJsonString()
+  providerDetails: string;
+
+  @Expose()
   @OneToOne(() => DatabaseSettingsEntity, (dbSettings) => dbSettings.database, {
     eager: true,
     onDelete: 'CASCADE',

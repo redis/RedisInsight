@@ -54,6 +54,7 @@ import { KeyNameFormatAdded1742303245547 } from './1742303245547-key-name-format
 import { CascadeTags1743432519891 } from './1743432519891-cascade-tags';
 import { EncryptTags1743606395647 } from './1743606395647-encrypt-tags';
 import { UpdateProviderNames1755086732238 } from './1755086732238-update-provider-names';
+import { ProviderDetails1755100000000 } from './1755100000000-provider-details';
 
 export default [
   initialMigration1614164490968,
@@ -112,4 +113,5 @@ export default [
   CascadeTags1743432519891,
   EncryptTags1743606395647,
   UpdateProviderNames1755086732238,
+  ProviderDetails1755100000000,
 ];
