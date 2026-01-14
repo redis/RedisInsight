@@ -58,4 +58,3 @@ export function isAzureEntraIdAuth(
 ): boolean {
   return isAzureProviderDetails(details) && details.authType === 'entraId';
 }
-
