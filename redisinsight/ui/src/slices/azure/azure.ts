@@ -9,6 +9,13 @@ export interface AzureUserInfo {
   oid: string
   upn: string
   name?: string
+  homeAccountId?: string
+}
+
+export interface AzureSubscription {
+  subscriptionId: string
+  displayName: string
+  state: string
 }
 
 export interface AzureDatabase {
@@ -30,6 +37,9 @@ export interface AzureState {
   isLoggedIn: boolean
   loading: boolean
   user: AzureUserInfo | null
+  subscriptions: AzureSubscription[]
+  subscriptionsLoading: boolean
+  selectedSubscription: AzureSubscription | null
   databases: AzureDatabase[]
   databasesLoading: boolean
   error: string | null
@@ -39,6 +49,9 @@ const initialState: AzureState = {
   isLoggedIn: false,
   loading: false,
   user: null,
+  subscriptions: [],
+  subscriptionsLoading: false,
+  selectedSubscription: null,
   databases: [],
   databasesLoading: false,
   error: null,
@@ -62,21 +75,41 @@ const azureSlice = createSlice({
     setAzureLoggedOut: (state) => {
       state.isLoggedIn = false
       state.user = null
+      state.subscriptions = []
+      state.selectedSubscription = null
+      state.databases = []
+    },
+    setAzureSubscriptionsLoading: (
+      state,
+      { payload }: PayloadAction<boolean>,
+    ) => {
+      state.subscriptionsLoading = payload
+    },
+    setAzureSubscriptions: (
+      state,
+      { payload }: PayloadAction<AzureSubscription[]>,
+    ) => {
+      state.subscriptions = payload
+      state.subscriptionsLoading = false
+    },
+    setAzureSelectedSubscription: (
+      state,
+      { payload }: PayloadAction<AzureSubscription | null>,
+    ) => {
+      state.selectedSubscription = payload
       state.databases = []
     },
     setAzureDatabasesLoading: (state, { payload }: PayloadAction<boolean>) => {
       state.databasesLoading = payload
     },
-    setAzureDatabases: (
-      state,
-      { payload }: PayloadAction<AzureDatabase[]>,
-    ) => {
+    setAzureDatabases: (state, { payload }: PayloadAction<AzureDatabase[]>) => {
       state.databases = payload
       state.databasesLoading = false
     },
     setAzureError: (state, { payload }: PayloadAction<string | null>) => {
       state.error = payload
       state.loading = false
+      state.subscriptionsLoading = false
       state.databasesLoading = false
     },
     resetAzureState: () => initialState,
@@ -87,6 +120,9 @@ export const {
   setAzureLoading,
   setAzureLoggedIn,
   setAzureLoggedOut,
+  setAzureSubscriptionsLoading,
+  setAzureSubscriptions,
+  setAzureSelectedSubscription,
   setAzureDatabasesLoading,
   setAzureDatabases,
   setAzureError,
@@ -125,6 +161,36 @@ export const logoutAzure = () => async (dispatch: AppDispatch) => {
   }
 }
 
+export const fetchAzureSubscriptions = () => async (dispatch: AppDispatch) => {
+  dispatch(setAzureSubscriptionsLoading(true))
+  try {
+    const { data, status } = await apiService.get('/azure/subscriptions')
+    if (isStatusSuccessful(status)) {
+      dispatch(setAzureSubscriptions(data))
+    }
+  } catch (error) {
+    dispatch(addErrorNotification(error as AxiosError))
+    dispatch(setAzureSubscriptionsLoading(false))
+  }
+}
+
+export const fetchAzureDatabasesInSubscription =
+  (subscription: AzureSubscription) => async (dispatch: AppDispatch) => {
+    dispatch(setAzureDatabasesLoading(true))
+    try {
+      const { data, status } = await apiService.post(
+        '/azure/subscriptions/databases',
+        subscription,
+      )
+      if (isStatusSuccessful(status)) {
+        dispatch(setAzureDatabases(data))
+      }
+    } catch (error) {
+      dispatch(addErrorNotification(error as AxiosError))
+      dispatch(setAzureDatabasesLoading(false))
+    }
+  }
+
 export const fetchAzureDatabases = () => async (dispatch: AppDispatch) => {
   dispatch(setAzureDatabasesLoading(true))
   try {
@@ -139,4 +205,3 @@ export const fetchAzureDatabases = () => async (dispatch: AppDispatch) => {
 }
 
 export default azureSlice.reducer
-

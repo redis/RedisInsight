@@ -23,9 +23,12 @@ import { fetchInstancesAction } from 'uiSrc/slices/instances/instances'
 import {
   azureSelector,
   checkAzureAuthStatus,
-  fetchAzureDatabases,
+  fetchAzureSubscriptions,
+  fetchAzureDatabasesInSubscription,
+  setAzureSelectedSubscription,
   logoutAzure,
   AzureDatabase,
+  AzureSubscription,
 } from 'uiSrc/slices/azure/azure'
 import { ScrollableWrapper } from '../ManualConnection.styles'
 import {
@@ -44,8 +47,16 @@ const AzureConnectionForm = (props: Props) => {
   const { onClose } = props
   const dispatch = useDispatch()
   const history = useHistory()
-  const { isLoggedIn, loading, user, databases, databasesLoading } =
-    useSelector(azureSelector)
+  const {
+    isLoggedIn,
+    loading,
+    user,
+    subscriptions,
+    subscriptionsLoading,
+    selectedSubscription,
+    databases,
+    databasesLoading,
+  } = useSelector(azureSelector)
 
   // Handle Azure OAuth callback from Electron deep link
   const handleAzureOauthCallback = useCallback(
@@ -78,7 +89,7 @@ const AzureConnectionForm = (props: Props) => {
 
   useEffect(() => {
     if (isLoggedIn) {
-      dispatch(fetchAzureDatabases())
+      dispatch(fetchAzureSubscriptions())
     }
   }, [isLoggedIn, dispatch])
 
@@ -91,7 +102,20 @@ const AzureConnectionForm = (props: Props) => {
   }
 
   const handleRefresh = () => {
-    dispatch(fetchAzureDatabases())
+    if (selectedSubscription) {
+      dispatch(fetchAzureDatabasesInSubscription(selectedSubscription))
+    } else {
+      dispatch(fetchAzureSubscriptions())
+    }
+  }
+
+  const handleSelectSubscription = (subscription: AzureSubscription) => {
+    dispatch(setAzureSelectedSubscription(subscription))
+    dispatch(fetchAzureDatabasesInSubscription(subscription))
+  }
+
+  const handleBackToSubscriptions = () => {
+    dispatch(setAzureSelectedSubscription(null))
   }
 
   const handleConnect = async (database: AzureDatabase) => {
@@ -112,7 +136,11 @@ const AzureConnectionForm = (props: Props) => {
 
       await apiService.post('/databases', payload)
 
-      dispatch(addMessageNotification(successMessages.ADDED_NEW_INSTANCE(database.name)))
+      dispatch(
+        addMessageNotification(
+          successMessages.ADDED_NEW_INSTANCE(database.name),
+        ),
+      )
       dispatch(fetchInstancesAction())
       history.push(Pages.home)
       onClose?.()
@@ -153,13 +181,80 @@ const AzureConnectionForm = (props: Props) => {
     )
   }
 
+  // Subscription selection view
+  if (!selectedSubscription) {
+    return (
+      <ScrollableWrapper>
+        <Container gap="l">
+          <Row justify="between" align="center">
+            <Title size="L" color="primary">
+              Select Subscription
+            </Title>
+            <Row gap="m">
+              <EmptyButton
+                onClick={handleRefresh}
+                disabled={subscriptionsLoading}
+              >
+                Refresh
+              </EmptyButton>
+              <SecondaryButton onClick={handleLogout}>Sign out</SecondaryButton>
+            </Row>
+          </Row>
+
+          {user && (
+            <UserInfo gap="s">
+              <Text variant="semiBold">{user.name || user.upn}</Text>
+              <Text color="secondary">{user.upn}</Text>
+            </UserInfo>
+          )}
+
+          {subscriptionsLoading ? (
+            <Row justify="center">
+              <Loader size="xl" />
+            </Row>
+          ) : subscriptions.length === 0 ? (
+            <Text color="secondary">
+              No Azure subscriptions found for your account.
+            </Text>
+          ) : (
+            <DatabaseList gap="s">
+              {subscriptions.map((sub) => (
+                <DatabaseItem
+                  key={sub.subscriptionId}
+                  justify="between"
+                  align="center"
+                  onClick={() => handleSelectSubscription(sub)}
+                  data-testid={`azure-sub-${sub.subscriptionId}`}
+                >
+                  <Col gap="xs">
+                    <Text variant="semiBold">{sub.displayName}</Text>
+                    <Text color="secondary" size="s">
+                      {sub.subscriptionId}
+                    </Text>
+                  </Col>
+                  <FlexItem>
+                    <PrimaryButton size="s">Select</PrimaryButton>
+                  </FlexItem>
+                </DatabaseItem>
+              ))}
+            </DatabaseList>
+          )}
+        </Container>
+      </ScrollableWrapper>
+    )
+  }
+
+  // Database list view for selected subscription
   return (
     <ScrollableWrapper>
       <Container gap="l">
         <Row justify="between" align="center">
-          <Title size="L" color="primary">
-            Azure Databases
-          </Title>
+          <Row gap="m" align="center">
+            <EmptyButton onClick={handleBackToSubscriptions}>←</EmptyButton>
+            <Title size="L" color="primary">
+              {selectedSubscription.displayName}
+            </Title>
+          </Row>
           <Row gap="m">
             <EmptyButton onClick={handleRefresh} disabled={databasesLoading}>
               Refresh
@@ -181,7 +276,7 @@ const AzureConnectionForm = (props: Props) => {
           </Row>
         ) : databases.length === 0 ? (
           <Text color="secondary">
-            No Azure Cache for Redis databases found in your subscriptions.
+            No Azure Cache for Redis databases found in this subscription.
           </Text>
         ) : (
           <DatabaseList gap="s">
@@ -202,7 +297,7 @@ const AzureConnectionForm = (props: Props) => {
                     {db.host}:{db.port}
                   </Text>
                   <Text color="secondary" size="s">
-                    {db.subscriptionName} / {db.resourceGroup}
+                    {db.resourceGroup}
                   </Text>
                 </Col>
                 <FlexItem>
@@ -218,4 +313,3 @@ const AzureConnectionForm = (props: Props) => {
 }
 
 export default AzureConnectionForm
-

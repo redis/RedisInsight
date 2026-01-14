@@ -12,4 +12,3 @@ const AzureConnectionFormWrapper = (props: Props) => {
 }
 
 export default AzureConnectionFormWrapper
-

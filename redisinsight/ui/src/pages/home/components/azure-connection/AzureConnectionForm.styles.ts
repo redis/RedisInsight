@@ -7,7 +7,8 @@ export const Container = styled(Col)`
 
 export const UserInfo = styled(Row)`
   padding: ${({ theme }) => theme.core.space.space200};
-  background-color: ${({ theme }) => theme.semantic.color.background.neutral100};
+  background-color: ${({ theme }) =>
+    theme.semantic.color.background.neutral100};
   border-radius: ${({ theme }) => theme.core.space.space100};
 `
 
@@ -19,7 +20,8 @@ export const DatabaseItem = styled(Row)`
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: ${({ theme }) => theme.semantic.color.background.neutral100};
+    background-color: ${({ theme }) =>
+      theme.semantic.color.background.neutral100};
   }
 `
 
@@ -41,4 +43,3 @@ export const TypeBadge = styled.span<{ $type: 'standard' | 'enterprise' }>`
       ? theme.semantic.color.text.notice
       : theme.semantic.color.text.primary};
 `
-
