@@ -6,19 +6,28 @@ import {
   Body,
   Res,
   HttpStatus,
+  Logger,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { Response } from 'express';
 import { AzureAuthService } from './azure-auth.service';
 import { AzureAuthStatus } from '../models/azure-auth.models';
-
-// Default session ID for single-user desktop app
-const DEFAULT_SESSION_ID = 'default';
+import { AzureDatabaseTokenService } from '../azure-database-token.service';
+import {
+  DEFAULT_SESSION_ID,
+  DEFAULT_USER_ID,
+  DEFAULT_ACCOUNT_ID,
+} from 'src/common/constants';
 
 @ApiTags('Azure')
 @Controller('azure')
 export class AzureAuthController {
-  constructor(private readonly authService: AzureAuthService) {}
+  private readonly logger = new Logger(AzureAuthController.name);
+
+  constructor(
+    private readonly authService: AzureAuthService,
+    private readonly databaseTokenService: AzureDatabaseTokenService,
+  ) {}
 
   @Get('auth/login')
   @ApiOperation({ summary: 'Get Azure OAuth authorization URL' })
@@ -52,6 +61,11 @@ export class AzureAuthController {
     );
 
     if (result.status === AzureAuthStatus.Succeed) {
+      // Proactively refresh tokens for existing Azure databases
+      await this.refreshDatabaseTokensAfterLogin(
+        result.data?.user?.homeAccountId,
+      );
+
       // Redirect to frontend with success
       res.redirect('/?azure_auth=success');
     } else {
@@ -68,7 +82,11 @@ export class AzureAuthController {
   @ApiResponse({ status: 400, description: 'Authentication failed' })
   async handleCallbackPost(
     @Body() body: { code: string; state?: string },
-  ): Promise<{ status: string; message?: string }> {
+  ): Promise<{
+    status: string;
+    message?: string;
+    databasesRefreshed?: number;
+  }> {
     const result = await this.authService.handleCallback(
       body.code,
       body.state,
@@ -76,7 +94,15 @@ export class AzureAuthController {
     );
 
     if (result.status === AzureAuthStatus.Succeed) {
-      return { status: 'success' };
+      // Proactively refresh tokens for existing Azure databases
+      const refreshSummary = await this.refreshDatabaseTokensAfterLogin(
+        result.data?.user?.homeAccountId,
+      );
+
+      return {
+        status: 'success',
+        databasesRefreshed: refreshSummary?.refreshed ?? 0,
+      };
     }
     return { status: 'failed', message: result.message };
   }
@@ -150,5 +176,42 @@ export class AzureAuthController {
     }
 
     res.json({ accessToken: token });
+  }
+
+  /**
+   * Refresh tokens for existing Azure databases after successful login
+   */
+  private async refreshDatabaseTokensAfterLogin(azureAccountId?: string) {
+    if (!azureAccountId) {
+      return null;
+    }
+
+    try {
+      const sessionMetadata = {
+        sessionId: DEFAULT_SESSION_ID,
+        userId: DEFAULT_USER_ID,
+        accountId: DEFAULT_ACCOUNT_ID,
+      };
+
+      const summary =
+        await this.databaseTokenService.refreshDatabasesForAccount(
+          sessionMetadata,
+          azureAccountId,
+        );
+
+      if (summary.totalFound > 0) {
+        this.logger.log(
+          `Proactive token refresh: ${summary.refreshed}/${summary.totalFound} databases refreshed`,
+        );
+      }
+
+      return summary;
+    } catch (error: any) {
+      this.logger.error(
+        'Failed to refresh database tokens after login',
+        error?.message,
+      );
+      return null;
+    }
   }
 }
