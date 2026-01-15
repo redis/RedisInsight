@@ -125,6 +125,20 @@ const AzureConnectionForm = (props: Props) => {
         database,
       )
 
+      // Build providerDetails for Azure Entra ID token refresh support
+      const providerDetails =
+        data.authType === 'entraId'
+          ? {
+              subscriptionId: data.subscriptionId,
+              subscriptionName: data.subscriptionName,
+              resourceGroup: data.resourceGroup,
+              resourceId: data.resourceId,
+              authType: data.authType,
+              tokenExpiresAt: data.tokenExpiresAt,
+              azureAccountId: data.azureAccountId,
+            }
+          : undefined
+
       const payload = {
         name: database.name,
         host: data.host || database.host,
@@ -132,6 +146,7 @@ const AzureConnectionForm = (props: Props) => {
         password: data.password,
         username: data.username,
         tls: data.tls ?? true,
+        ...(providerDetails && { providerDetails }),
       }
 
       await apiService.post('/databases', payload)
