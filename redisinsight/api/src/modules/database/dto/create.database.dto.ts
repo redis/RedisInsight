@@ -50,6 +50,7 @@ export class CreateDatabaseDto extends PickType(Database, [
   'ssh',
   'compressor',
   'cloudDetails',
+  'providerDetails',
   'forceStandalone',
   'keyNameFormat',
 ] as const) {
