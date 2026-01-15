@@ -108,15 +108,21 @@ describe('lz4', () => {
 
     describe('uint32 (0xce)', () => {
       it('should read 65536', () => {
-        expect(readMsgpackInt(new Uint8Array([0xce, 0x00, 0x01, 0x00, 0x00]))).toBe(65536)
+        expect(
+          readMsgpackInt(new Uint8Array([0xce, 0x00, 0x01, 0x00, 0x00])),
+        ).toBe(65536)
       })
 
       it('should read large number', () => {
-        expect(readMsgpackInt(new Uint8Array([0xce, 0x00, 0x0f, 0x42, 0x40]))).toBe(1000000)
+        expect(
+          readMsgpackInt(new Uint8Array([0xce, 0x00, 0x0f, 0x42, 0x40])),
+        ).toBe(1000000)
       })
 
       it('should return null if buffer too short', () => {
-        expect(readMsgpackInt(new Uint8Array([0xce, 0x00, 0x01, 0x00]))).toBeNull()
+        expect(
+          readMsgpackInt(new Uint8Array([0xce, 0x00, 0x01, 0x00])),
+        ).toBeNull()
       })
     })
 
@@ -146,11 +152,15 @@ describe('lz4', () => {
 
     describe('int32 (0xd2)', () => {
       it('should read -1', () => {
-        expect(readMsgpackInt(new Uint8Array([0xd2, 0xff, 0xff, 0xff, 0xff]))).toBe(-1)
+        expect(
+          readMsgpackInt(new Uint8Array([0xd2, 0xff, 0xff, 0xff, 0xff])),
+        ).toBe(-1)
       })
 
       it('should read negative number', () => {
-        expect(readMsgpackInt(new Uint8Array([0xd2, 0xff, 0xf0, 0xbd, 0xc0]))).toBe(-1000000)
+        expect(
+          readMsgpackInt(new Uint8Array([0xd2, 0xff, 0xf0, 0xbd, 0xc0])),
+        ).toBe(-1000000)
       })
     })
 
@@ -190,4 +200,3 @@ describe('lz4', () => {
     })
   })
 })
-

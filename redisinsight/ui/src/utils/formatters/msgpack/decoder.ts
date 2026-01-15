@@ -39,7 +39,11 @@ function postProcessLz4(value: unknown, decoder: Unpackr): unknown {
   }
 
   // Recursively process objects
-  if (typeof value === 'object' && value !== null && !(value instanceof Uint8Array)) {
+  if (
+    typeof value === 'object' &&
+    value !== null &&
+    !(value instanceof Uint8Array)
+  ) {
     const result: Record<string, unknown> = {}
     for (const [key, val] of Object.entries(value)) {
       result[key] = postProcessLz4(val, decoder)
@@ -67,4 +71,3 @@ export function decodeMsgpackWithLz4(buffer: Uint8Array): unknown {
   const decoded = decoder.unpack(buffer)
   return postProcessLz4(decoded, decoder)
 }
-

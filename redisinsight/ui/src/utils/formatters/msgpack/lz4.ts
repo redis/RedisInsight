@@ -85,4 +85,3 @@ export function decompressLz4(
   )
   return new Uint8Array(dst.slice(0, actualSize))
 }
-

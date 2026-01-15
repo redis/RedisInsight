@@ -3,4 +3,3 @@
  */
 
 export { decodeMsgpackWithLz4 } from './decoder'
-

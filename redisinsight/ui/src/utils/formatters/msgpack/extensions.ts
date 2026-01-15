@@ -22,11 +22,7 @@
 
 import { addExtension } from 'msgpackr'
 
-import {
-  Lz4SizeMarker,
-  LZ4_SIZE_MARKER,
-  readMsgpackInt,
-} from './lz4'
+import { Lz4SizeMarker, LZ4_SIZE_MARKER, readMsgpackInt } from './lz4'
 
 // Extension type codes used by .NET MessagePack-CSharp
 const LZ4_BLOCK_ARRAY_TYPE = 98
@@ -97,4 +93,3 @@ export function registerLz4Extensions(): void {
 
 // Register extensions when this module is imported
 registerLz4Extensions()
-
