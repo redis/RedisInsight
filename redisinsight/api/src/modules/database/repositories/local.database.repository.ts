@@ -126,6 +126,7 @@ export class LocalDatabaseRepository extends DatabaseRepository {
         'd.modules',
         'd.lastConnection',
         'd.provider',
+        'd.providerDetails',
         'd.version',
         'cd',
         'd.createdAt',
