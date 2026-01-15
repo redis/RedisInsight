@@ -25,8 +25,15 @@ export class AzureAutodiscoveryController {
     private readonly authService: AzureAuthService,
   ) {}
 
-  private ensureAuthenticated(): void {
-    if (!this.authService.isLoggedIn(DEFAULT_SESSION_ID)) {
+  private async ensureAuthenticated(): Promise<void> {
+    let isLoggedIn = this.authService.isLoggedIn(DEFAULT_SESSION_ID);
+
+    // Try to recover session from MSAL cache
+    if (!isLoggedIn) {
+      isLoggedIn = await this.authService.tryRecoverSession(DEFAULT_SESSION_ID);
+    }
+
+    if (!isLoggedIn) {
       throw new HttpException(
         'Not authenticated with Azure',
         HttpStatus.UNAUTHORIZED,
@@ -39,7 +46,7 @@ export class AzureAutodiscoveryController {
   @ApiResponse({ status: 200, description: 'Returns list of subscriptions' })
   @ApiResponse({ status: 401, description: 'Not authenticated' })
   async listSubscriptions(): Promise<AzureSubscription[]> {
-    this.ensureAuthenticated();
+    await this.ensureAuthenticated();
     return this.autodiscoveryService.listSubscriptions();
   }
 
@@ -48,7 +55,7 @@ export class AzureAutodiscoveryController {
   @ApiResponse({ status: 200, description: 'Returns list of databases' })
   @ApiResponse({ status: 401, description: 'Not authenticated' })
   async listDatabases(): Promise<AzureRedisDatabase[]> {
-    this.ensureAuthenticated();
+    await this.ensureAuthenticated();
     return this.autodiscoveryService.listDatabases();
   }
 
@@ -63,7 +70,7 @@ export class AzureAutodiscoveryController {
   async listDatabasesInSubscription(
     @Body() subscription: AzureSubscription,
   ): Promise<AzureRedisDatabase[]> {
-    this.ensureAuthenticated();
+    await this.ensureAuthenticated();
     return this.autodiscoveryService.listDatabasesInSubscription(subscription);
   }
 
@@ -76,7 +83,7 @@ export class AzureAutodiscoveryController {
   async getConnectionDetails(
     @Body() database: AzureRedisDatabase,
   ): Promise<AzureConnectionDetails> {
-    this.ensureAuthenticated();
+    await this.ensureAuthenticated();
 
     const details =
       await this.autodiscoveryService.getConnectionDetails(database);

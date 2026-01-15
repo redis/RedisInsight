@@ -91,7 +91,12 @@ export class AzureAuthController {
     isLoggedIn: boolean;
     user?: { oid: string; upn: string; name?: string };
   }> {
-    const isLoggedIn = this.authService.isLoggedIn(DEFAULT_SESSION_ID);
+    let isLoggedIn = this.authService.isLoggedIn(DEFAULT_SESSION_ID);
+
+    // Try to recover session from MSAL cache if not logged in
+    if (!isLoggedIn) {
+      isLoggedIn = await this.authService.tryRecoverSession(DEFAULT_SESSION_ID);
+    }
 
     if (!isLoggedIn) {
       return { isLoggedIn: false };

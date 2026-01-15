@@ -305,10 +305,65 @@ export class AzureAuthService {
   }
 
   /**
-   * Check if user is logged in
+   * Check if user is logged in.
+   * Also attempts to recover session from MSAL cache if not in memory.
    */
   isLoggedIn(sessionId: string): boolean {
     return this.sessions.has(sessionId);
+  }
+
+  /**
+   * Try to recover session from MSAL cache.
+   * Useful when in-memory session is lost but MSAL cache has valid tokens.
+   */
+  async tryRecoverSession(sessionId: string): Promise<boolean> {
+    if (this.sessions.has(sessionId)) {
+      return true;
+    }
+
+    try {
+      const pca = await this.getMsalClient();
+      const accounts = await pca.getTokenCache().getAllAccounts();
+
+      if (accounts.length === 0) {
+        return false;
+      }
+
+      // Try to get a token silently to verify the session is still valid
+      const account = accounts[0];
+      const response = await pca.acquireTokenSilent({
+        account,
+        scopes: [...AZURE_CONFIG.MANAGEMENT_SCOPES],
+      });
+
+      if (!response) {
+        return false;
+      }
+
+      // Recover the session
+      const user: AzureUserInfo = {
+        oid: account.localAccountId,
+        upn: account.username,
+        name: account.name || undefined,
+        homeAccountId: account.homeAccountId,
+      };
+
+      this.sessions.set(sessionId, {
+        user,
+        tokens: {
+          accessToken: response.accessToken,
+          expiresOn: response.expiresOn || new Date(),
+        },
+      });
+
+      this.logger.log(`Recovered session ${sessionId} from MSAL cache`);
+      return true;
+    } catch (error: any) {
+      this.logger.warn(
+        `Failed to recover session from MSAL cache: ${error?.message}`,
+      );
+      return false;
+    }
   }
 
   /**
