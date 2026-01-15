@@ -28,6 +28,28 @@ import { Lz4SizeMarker, LZ4_SIZE_MARKER, readMsgpackInt } from './lz4'
 const LZ4_BLOCK_ARRAY_TYPE = 98
 const LZ4_BLOCK_TYPE = 99
 
+// Maximum allowed uncompressed size (100MB) to prevent memory exhaustion
+const MAX_UNCOMPRESSED_SIZE = 100_000_000
+
+const isValidSize = (size: number): boolean =>
+  size > 0 && size < MAX_UNCOMPRESSED_SIZE
+
+/**
+ * Extension handler for LZ4Block (type 99)
+ * Format: 4-byte big-endian size + compressed data
+ */
+function handleLz4BlockExt(data: Uint8Array): Lz4SizeMarker {
+  if (data.length >= 5) {
+    const view = new DataView(data.buffer, data.byteOffset, data.byteLength)
+    const size = view.getInt32(0, false)
+    if (isValidSize(size)) {
+      const compressedData = data.slice(4)
+      return { [LZ4_SIZE_MARKER]: true, size, compressedData }
+    }
+  }
+  return { [LZ4_SIZE_MARKER]: true, size: 0 }
+}
+
 /**
  * Extension handler for LZ4BlockArray (type 98)
  *
@@ -38,46 +60,29 @@ const LZ4_BLOCK_TYPE = 99
 function handleLz4BlockArrayExt(data: Uint8Array): Lz4SizeMarker {
   // Try to read as msgpack integer first (array format)
   const msgpackSize = readMsgpackInt(data)
-  if (msgpackSize !== null && msgpackSize > 0 && msgpackSize < 100_000_000) {
+  if (msgpackSize !== null && isValidSize(msgpackSize)) {
     // Looks like a reasonable size - this is likely the array format
     // where compressed data will be the next element in the parent array
     return { [LZ4_SIZE_MARKER]: true, size: msgpackSize }
   }
 
-  // Try inline format: 4-byte big-endian size + compressed data
-  if (data.length >= 5) {
-    const view = new DataView(data.buffer, data.byteOffset, data.byteLength)
-    const size = view.getInt32(0, false)
-    if (size > 0 && size < 100_000_000) {
-      const compressedData = data.slice(4)
-      return { [LZ4_SIZE_MARKER]: true, size, compressedData }
-    }
+  // Try inline format (same as LZ4Block type 99)
+  const inlineResult = handleLz4BlockExt(data)
+  if (inlineResult.compressedData) {
+    return inlineResult
   }
 
-  // Fallback: treat first byte(s) as size
-  return { [LZ4_SIZE_MARKER]: true, size: data[0] }
-}
-
-/**
- * Extension handler for LZ4Block (type 99)
- * Format: 4-byte big-endian size + compressed data
- */
-function handleLz4BlockExt(data: Uint8Array): Lz4SizeMarker {
-  if (data.length >= 5) {
-    const view = new DataView(data.buffer, data.byteOffset, data.byteLength)
-    const size = view.getInt32(0, false)
-    const compressedData = data.slice(4)
-    return { [LZ4_SIZE_MARKER]: true, size, compressedData }
-  }
-  return { [LZ4_SIZE_MARKER]: true, size: 0 }
+  // Fallback: treat first byte as size, or 0 if empty
+  return { [LZ4_SIZE_MARKER]: true, size: data.length > 0 ? data[0] : 0 }
 }
 
 /**
  * Register extension handlers globally
  *
- * NOTE: This has side effects - it affects all Unpackr instances.
- * The handlers return marker objects that must be post-processed
- * by decodeMsgpackWithLz4() to actually decompress the data.
+ * NOTE: This has side effects - it modifies the global msgpackr state.
+ * After registration, ALL decode() calls will return Lz4SizeMarker objects
+ * for LZ4 extension types. Code using decode() directly must handle these
+ * markers or use decodeMsgpackWithLz4() instead.
  */
 export function registerLz4Extensions(): void {
   addExtension({
