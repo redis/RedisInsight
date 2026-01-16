@@ -19,7 +19,7 @@ import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
 
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { RiTooltip } from 'uiSrc/components'
-import { SubscribeFormProps } from './SubscribeForm.types'
+import type { SubscribeFormProps } from './SubscribeForm.types'
 import * as S from './SubscribeForm.styles'
 import SubscribeInformation from '../subscribe-information'
 

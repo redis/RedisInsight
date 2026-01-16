@@ -91,7 +91,7 @@ const MessagesListTable = () => {
             stripedRows
             enableSorting
             paginationEnabled
-            defaultSorting={[{ id: PubSubTableColumn.Timestamp, desc: false }]}
+            defaultSorting={[{ id: PubSubTableColumn.Timestamp, desc: true }]}
             onPaginationChange={handlePaginationChange}
             defaultPagination={getDefaultPagination()}
             emptyState="No messages published yet"
