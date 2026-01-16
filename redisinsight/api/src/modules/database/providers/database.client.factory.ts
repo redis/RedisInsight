@@ -13,13 +13,6 @@ import { RedisClientStorage } from 'src/modules/redis/redis.client.storage';
 import { RedisConnectionFailedException } from 'src/modules/redis/exceptions/connection';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { DatabaseConnectionEvent } from 'src/modules/database/constants/events';
-import { Database } from 'src/modules/database/models/database';
-import {
-  isAzureEntraIdAuth,
-  AzureProviderDetails,
-} from 'src/modules/database/models/provider-details';
-import { AzureAuthService } from 'src/modules/azure/auth/azure-auth.service';
-import { TOKEN_REFRESH_BUFFER_MS } from 'src/modules/azure/constants';
 
 type IsClientConnectingMap = {
   [key: string]: boolean;
@@ -47,7 +40,6 @@ export class DatabaseClientFactory {
     private readonly redisClientStorage: RedisClientStorage,
     private readonly redisClientFactory: RedisClientFactory,
     private readonly eventEmitter: EventEmitter2,
-    private readonly azureAuthService: AzureAuthService,
   ) {}
 
   private async processGetClient(
@@ -108,8 +100,6 @@ export class DatabaseClientFactory {
     const client = await this.redisClientStorage.getByMetadata(clientMetadata);
 
     if (client) {
-      // Proactive token refresh for Azure Entra ID databases
-      await this.ensureAzureTokenValid(clientMetadata, client);
       return client;
     }
 
@@ -142,13 +132,10 @@ export class DatabaseClientFactory {
     options?: IRedisConnectionOptions,
   ): Promise<RedisClient> {
     this.logger.debug('Creating new redis client.', clientMetadata);
-    let database = await this.databaseService.get(
+    const database = await this.databaseService.get(
       clientMetadata.sessionMetadata,
       clientMetadata.databaseId,
     );
-
-    // Refresh Azure token before creating client if needed
-    database = await this.refreshAzureTokenIfNeeded(clientMetadata, database);
 
     try {
       const client = await this.redisClientFactory.createClient(
@@ -198,178 +185,5 @@ export class DatabaseClientFactory {
 
     const client = await this.redisClientStorage.getByMetadata(clientMetadata);
     return this.redisClientStorage.remove(client?.id);
-  }
-
-  /**
-   * Proactively refresh Azure Entra ID token if it's expiring soon.
-   * This ensures seamless connection without authentication errors.
-   */
-  private async ensureAzureTokenValid(
-    clientMetadata: ClientMetadata,
-    client: RedisClient,
-  ): Promise<void> {
-    let database: Database;
-
-    try {
-      database = await this.databaseService.get(
-        clientMetadata.sessionMetadata,
-        clientMetadata.databaseId,
-      );
-    } catch {
-      // Database not found, skip refresh
-      return;
-    }
-
-    const providerDetails = database.providerDetails as
-      | AzureProviderDetails
-      | undefined;
-
-    // Only process Azure Entra ID databases
-    if (!isAzureEntraIdAuth(providerDetails)) {
-      return;
-    }
-
-    const { tokenExpiresAt, azureAccountId } = providerDetails;
-
-    // No expiry info or account ID, skip refresh
-    if (!tokenExpiresAt || !azureAccountId) {
-      return;
-    }
-
-    const expiresAt = new Date(tokenExpiresAt).getTime();
-    const now = Date.now();
-    const expiresIn = expiresAt - now;
-
-    // Token still valid beyond buffer threshold
-    if (expiresIn > TOKEN_REFRESH_BUFFER_MS) {
-      return;
-    }
-
-    this.logger.log(
-      `Azure token expiring soon for ${database.host}, refreshing...`,
-    );
-
-    try {
-      const tokenResult =
-        await this.azureAuthService.getRedisTokenByAccountId(azureAccountId);
-
-      if (!tokenResult) {
-        this.logger.warn(
-          `Failed to refresh Azure token for ${database.host} - user may need to re-authenticate`,
-        );
-        return;
-      }
-
-      // Re-authenticate on existing connection
-      await client.sendCommand(['AUTH', database.username, tokenResult.token]);
-
-      // Update database record with new token and expiry
-      await this.repository.update(
-        clientMetadata.sessionMetadata,
-        database.id,
-        {
-          password: tokenResult.token,
-          providerDetails: {
-            ...providerDetails,
-            tokenExpiresAt: tokenResult.expiresOn.toISOString(),
-          },
-        },
-      );
-
-      this.logger.log(
-        `Successfully refreshed Azure token for ${database.host}`,
-      );
-    } catch (error: any) {
-      this.logger.error(
-        `Error refreshing Azure token for ${database.host}`,
-        error?.message,
-      );
-      // Don't throw - let the operation proceed with the existing token
-      // If it fails, the user will see an auth error
-    }
-  }
-
-  /**
-   * Refresh Azure Entra ID token if needed before creating a new client.
-   * Returns the database with updated credentials if refresh was needed.
-   */
-  private async refreshAzureTokenIfNeeded(
-    clientMetadata: ClientMetadata,
-    database: Database,
-  ): Promise<Database> {
-    const providerDetails = database.providerDetails as
-      | AzureProviderDetails
-      | undefined;
-
-    // Only process Azure Entra ID databases
-    if (!isAzureEntraIdAuth(providerDetails)) {
-      return database;
-    }
-
-    const { tokenExpiresAt, azureAccountId } = providerDetails;
-
-    // No expiry info or account ID, skip refresh
-    if (!tokenExpiresAt || !azureAccountId) {
-      return database;
-    }
-
-    const expiresAt = new Date(tokenExpiresAt).getTime();
-    const now = Date.now();
-    const expiresIn = expiresAt - now;
-
-    // Token still valid beyond buffer threshold
-    if (expiresIn > TOKEN_REFRESH_BUFFER_MS) {
-      return database;
-    }
-
-    this.logger.log(
-      `Azure token expired or expiring soon for ${database.host}, refreshing before connection...`,
-    );
-
-    try {
-      const tokenResult =
-        await this.azureAuthService.getRedisTokenByAccountId(azureAccountId);
-
-      if (!tokenResult) {
-        this.logger.warn(
-          `Failed to refresh Azure token for ${database.host} - user may need to re-authenticate`,
-        );
-        return database;
-      }
-
-      // Update database record with new token and expiry
-      await this.repository.update(
-        clientMetadata.sessionMetadata,
-        database.id,
-        {
-          password: tokenResult.token,
-          providerDetails: {
-            ...providerDetails,
-            tokenExpiresAt: tokenResult.expiresOn.toISOString(),
-          },
-        },
-      );
-
-      this.logger.log(
-        `Successfully refreshed Azure token for ${database.host}`,
-      );
-
-      // Return database with updated password for client creation
-      return {
-        ...database,
-        password: tokenResult.token,
-        providerDetails: {
-          ...providerDetails,
-          tokenExpiresAt: tokenResult.expiresOn.toISOString(),
-        },
-      };
-    } catch (error: any) {
-      this.logger.error(
-        `Error refreshing Azure token for ${database.host}`,
-        error?.message,
-      );
-      // Return original database - connection may fail with expired token
-      return database;
-    }
   }
 }

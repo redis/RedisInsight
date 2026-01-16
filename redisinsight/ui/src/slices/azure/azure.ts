@@ -204,4 +204,24 @@ export const fetchAzureDatabases = () => async (dispatch: AppDispatch) => {
   }
 }
 
+/**
+ * Ensure Azure token is valid for a database before connecting.
+ * This should be called before connecting to an Azure Entra ID database.
+ * Returns true if the token is valid/refreshed, false if not an Azure DB or refresh failed.
+ */
+export const ensureAzureDatabaseToken = async (
+  databaseId: string,
+): Promise<boolean> => {
+  try {
+    const { status } = await apiService.get(
+      `/azure/auth/ensure-database-token/${databaseId}`,
+    )
+    return isStatusSuccessful(status)
+  } catch {
+    // Token refresh failed - this is expected for non-Azure databases
+    // or when re-authentication is needed
+    return false
+  }
+}
+
 export default azureSlice.reducer

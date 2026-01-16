@@ -23,4 +23,5 @@ export const API_VERSION_REDIS = '2023-08-01';
 export const API_VERSION_REDIS_ENTERPRISE = '2024-09-01-preview';
 
 // Token refresh buffer (refresh 5 minutes before expiry)
-export const TOKEN_REFRESH_BUFFER_MS = 5 * 60 * 1000;
+export const TOKEN_REFRESH_BUFFER_SECONDS = 5 * 60;
+export const TOKEN_REFRESH_BUFFER_MS = TOKEN_REFRESH_BUFFER_SECONDS * 1000;

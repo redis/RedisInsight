@@ -305,6 +305,23 @@ export class AzureAuthService {
   }
 
   /**
+   * Get the current logged-in Azure account ID (homeAccountId).
+   * Returns null if not logged in.
+   */
+  getLoggedInAccountId(sessionId: string): string | null {
+    const session = this.sessions.get(sessionId);
+    return session?.user?.homeAccountId || null;
+  }
+
+  /**
+   * Check if the given account ID matches the currently logged-in user.
+   */
+  isAccountLoggedIn(sessionId: string, accountId: string): boolean {
+    const loggedInAccountId = this.getLoggedInAccountId(sessionId);
+    return loggedInAccountId !== null && loggedInAccountId === accountId;
+  }
+
+  /**
    * Check if user is logged in.
    * Also attempts to recover session from MSAL cache if not in memory.
    */

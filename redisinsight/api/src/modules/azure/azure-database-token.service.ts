@@ -125,13 +125,9 @@ export class AzureDatabaseTokenService {
         };
       }
 
-      // Update database with new token
+      // Update database with new token (expiration is decoded from JWT, no need to store it)
       await this.databaseRepository.update(sessionMetadata, databaseId, {
         password: tokenResult.token,
-        providerDetails: {
-          ...providerDetails,
-          tokenExpiresAt: tokenResult.expiresOn.toISOString(),
-        },
       });
 
       this.logger.debug(`Refreshed token for database ${databaseName}`);

@@ -23,11 +23,14 @@ export interface AzureProviderDetails {
   /** Authentication type used for connection */
   authType: AzureAuthType;
 
-  /** Token expiration time for Entra ID authentication (ISO string) */
-  tokenExpiresAt?: string;
-
   /** MSAL account ID for token refresh (homeAccountId) */
   azureAccountId?: string;
+
+  /**
+   * @deprecated Token expiration is now decoded from the JWT token.
+   * Kept for backward compatibility with existing databases.
+   */
+  tokenExpiresAt?: string;
 }
 
 /**

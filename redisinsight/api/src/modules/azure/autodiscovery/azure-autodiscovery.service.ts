@@ -298,6 +298,7 @@ export class AzureAutodiscoveryService {
       return null;
     }
 
+    // Note: tokenExpiresAt is not stored - we decode expiration from JWT when needed
     return {
       host: database.host,
       port: database.port,
@@ -305,7 +306,6 @@ export class AzureAutodiscoveryService {
       username: session.user.oid,
       tls: true,
       authType: 'entraId',
-      tokenExpiresAt: redisTokenResult.expiresOn.toISOString(),
       azureAccountId: session.user.homeAccountId,
       subscriptionId: database.subscriptionId,
       subscriptionName: database.subscriptionName,

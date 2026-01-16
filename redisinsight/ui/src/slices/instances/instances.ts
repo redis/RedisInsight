@@ -33,6 +33,7 @@ import { ExportDatabase } from 'apiSrc/modules/database/models/export-database'
 
 import { fetchMastersSentinelAction } from './sentinel'
 import { fetchTags } from './tags'
+import { ensureAzureDatabaseToken } from '../azure/azure'
 import { AppDispatch, RootState } from '../store'
 import {
   addErrorNotification,
@@ -799,6 +800,11 @@ export function checkConnectToInstanceAction(
     dispatch(setDefaultInstance())
     resetInstance && dispatch(resetConnectedInstance())
     try {
+      // Ensure Azure token is valid before connecting (if applicable)
+      // This call will refresh the token if needed for Azure Entra ID databases
+      // We await this to prevent race condition with the actual connection
+      await ensureAzureDatabaseToken(id)
+
       const result = await instancesService.connectInstance(id)
 
       if (result) {
