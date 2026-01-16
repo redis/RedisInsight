@@ -119,7 +119,7 @@ const Group = (props: Props) => {
       label={
         <Row align="end" justify="start" gap="s">
           {isShowFolder && (
-            <RiIcon type={isGroupOpen ? 'KnowledgeBaseIcon' : 'FolderIcon'} />
+            <RiIcon type={isGroupOpen ? 'FolderOpenIcon' : 'FolderIcon'} />
           )}
 
           <Text className="group-header" size="m">
