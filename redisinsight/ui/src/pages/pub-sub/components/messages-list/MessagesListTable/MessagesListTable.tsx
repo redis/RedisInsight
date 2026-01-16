@@ -7,22 +7,22 @@ import { isVersionHigherOrEquals } from 'uiSrc/utils'
 import { CommandsVersions } from 'uiSrc/constants/commandsVersions'
 import { useConnectionType } from 'uiSrc/components/hooks/useConnectionType'
 import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
-import EmptyMessagesList from '../EmptyMessagesList'
 
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 import { HorizontalSpacer } from 'uiSrc/components/base/layout'
-import SubscribeForm from '../../subscribe-form'
-import PatternsInfo from '../../patternsInfo'
-import { Wrapper } from './MessagesListTable.styles'
 import { Table } from 'uiSrc/components/base/layout/table'
+import { Wrapper } from './MessagesListTable.styles'
 import {
   getDefaultPagination,
   handlePaginationChange,
   PUB_SUB_TABLE_COLUMNS,
 } from './MessagesListTable.config'
 import { PubSubTableColumn } from './MessagesListTable.constants'
+import PatternsInfo from '../../patternsInfo'
+import SubscribeForm from '../../subscribe-form'
+import EmptyMessagesList from '../EmptyMessagesList'
 
 const MessagesListTable = () => {
   const {
