@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Inject, forwardRef } from '@nestjs/common';
 import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
 import { AzureAuthService } from './auth/azure-auth.service';
 import {
@@ -12,6 +12,7 @@ import {
   DEFAULT_USER_ID,
   DEFAULT_ACCOUNT_ID,
 } from 'src/common/constants';
+import { RedisClientStorage } from 'src/modules/redis/redis.client.storage';
 
 interface RefreshTimer {
   timer: NodeJS.Timeout;
@@ -39,7 +40,21 @@ export class AzureTokenRefreshManager {
   constructor(
     private readonly databaseRepository: DatabaseRepository,
     private readonly azureAuthService: AzureAuthService,
-  ) {}
+    @Inject(forwardRef(() => RedisClientStorage))
+    private readonly redisClientStorage: RedisClientStorage,
+  ) {
+    // Debug: Log timer state every 10 seconds
+    setInterval(() => {
+      this.logger.warn('========== REFRESH TIMERS DEBUG ==========');
+      this.logger.warn(`Total timers: ${this.refreshTimers.size}`);
+      this.refreshTimers.forEach((timer, dbId) => {
+        this.logger.warn(
+          `  DB: ${dbId} | Clients: ${[...timer.clientIds].join(', ')}`,
+        );
+      });
+      this.logger.warn('===========================================');
+    }, 10000);
+  }
 
   /**
    * Called when a Redis client is stored in the client storage.
@@ -125,6 +140,59 @@ export class AzureTokenRefreshManager {
     return this.refreshTimers.size;
   }
 
+  /**
+   * Get debug info about all active timers
+   */
+  getTimersDebugInfo(): { databaseId: string; clientCount: number }[] {
+    const info: { databaseId: string; clientCount: number }[] = [];
+    this.refreshTimers.forEach((timer, dbId) => {
+      info.push({ databaseId: dbId, clientCount: timer.clientIds.size });
+    });
+    return info;
+  }
+
+  /**
+   * Force refresh token for a database (for testing/debugging).
+   * Triggers immediate token refresh regardless of expiration time.
+   */
+  async forceRefresh(databaseId: string): Promise<void> {
+    // Debug: log what's currently in the map
+    this.logger.warn(
+      `[DEBUG] Current timers: ${JSON.stringify(this.getTimersDebugInfo())}`,
+    );
+    this.logger.warn(`[DEBUG] Looking for databaseId: "${databaseId}"`);
+
+    const existing = this.refreshTimers.get(databaseId);
+    if (!existing) {
+      this.logger.warn(`No active timer found for database ${databaseId}`);
+      return;
+    }
+
+    const sessionMetadata = {
+      sessionId: DEFAULT_SESSION_ID,
+      userId: DEFAULT_USER_ID,
+      accountId: DEFAULT_ACCOUNT_ID,
+    };
+
+    const database = await this.databaseRepository.get(
+      sessionMetadata,
+      databaseId,
+    );
+
+    const providerDetails = database.providerDetails as
+      | AzureProviderDetails
+      | undefined;
+
+    if (!isAzureEntraIdAuth(providerDetails)) {
+      this.logger.warn(`Database ${databaseId} is not Azure Entra ID`);
+      return;
+    }
+
+    // Cancel existing timer and refresh immediately
+    clearTimeout(existing.timer);
+    await this.refreshToken(databaseId, providerDetails);
+  }
+
   private async scheduleTokenRefresh(
     clientId: string,
     databaseId: string,
@@ -193,6 +261,12 @@ export class AzureTokenRefreshManager {
 
     this.logger.warn(`Refreshing token for database ${databaseId}...`);
 
+    const sessionMetadata = {
+      sessionId: DEFAULT_SESSION_ID,
+      userId: DEFAULT_USER_ID,
+      accountId: DEFAULT_ACCOUNT_ID,
+    };
+
     try {
       const tokenResult =
         await this.azureAuthService.getRedisTokenByAccountId(azureAccountId);
@@ -205,11 +279,12 @@ export class AzureTokenRefreshManager {
         return;
       }
 
-      const sessionMetadata = {
-        sessionId: DEFAULT_SESSION_ID,
-        userId: DEFAULT_USER_ID,
-        accountId: DEFAULT_ACCOUNT_ID,
-      };
+      // Get the database to retrieve the username (OID)
+      const database = await this.databaseRepository.get(
+        sessionMetadata,
+        databaseId,
+      );
+      const username = database.username || azureAccountId;
 
       // Update database with new token
       await this.databaseRepository.update(sessionMetadata, databaseId, {
@@ -220,8 +295,11 @@ export class AzureTokenRefreshManager {
         `Token refreshed for database ${databaseId}, expires at ${tokenResult.expiresOn.toISOString()}`,
       );
 
-      // Schedule next refresh, preserving existing client IDs
+      // Re-authenticate existing clients with the new token
       const clientIds = existing?.clientIds || new Set<string>();
+      await this.reAuthenticateClients(clientIds, username, tokenResult.token);
+
+      // Schedule next refresh, preserving existing client IDs
       await this.scheduleNextRefresh(
         databaseId,
         tokenResult.token,
@@ -234,6 +312,36 @@ export class AzureTokenRefreshManager {
       );
       this.refreshTimers.delete(databaseId);
     }
+  }
+
+  /**
+   * Re-authenticate existing Redis clients with a new token.
+   * Sends AUTH command to each connected client.
+   */
+  private async reAuthenticateClients(
+    clientIds: Set<string>,
+    username: string,
+    newToken: string,
+  ): Promise<void> {
+    this.logger.warn(
+      `Re-authenticating ${clientIds.size} clients with username: ${username}`,
+    );
+
+    const reAuthPromises = [...clientIds].map(async (clientId) => {
+      try {
+        const client = await this.redisClientStorage.get(clientId);
+        if (client && client.isConnected()) {
+          await client.sendCommand(['AUTH', username, newToken]);
+          this.logger.warn(`Re-authenticated client ${clientId}`);
+        }
+      } catch (error: any) {
+        this.logger.warn(
+          `Failed to re-authenticate client ${clientId}: ${error?.message}`,
+        );
+      }
+    });
+
+    await Promise.all(reAuthPromises);
   }
 
   private async scheduleNextRefresh(
