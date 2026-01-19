@@ -1,8 +1,8 @@
 ***
 
 description: Generate release notes from JIRA tickets for a specific version
-argument-hint: <version> \[jira-query-or-csv-file]
---------------------------------------------------
+argument-hint: <version> \[jira-filter-link-or-jql-or-csv-file]
+---------------------------------------------------------------
 
 Generate release notes for RedisInsight releases based on JIRA tickets.
 
@@ -24,11 +24,25 @@ The version should be in semantic versioning format (e.g., `3.0.2`).
 
 **Ticket data can be provided in one of these ways:**
 
-1. **JIRA Query**: If a JIRA query is provided (e.g., `project = RI AND parent = RI-1234`), use the JIRA MCP tools to fetch tickets
-2. **CSV File**: If a CSV file path is provided, parse it to extract ticket information
+1. **JIRA Filter Link** (PREFERRED): If a JIRA filter link is provided:
+   * **Detection**: Check if the input starts with `http://` or `https://` and contains `atlassian.net` and `jql=`
+   * **Example**: `https://redislabs.atlassian.net/jira/software/c/projects/RED/issues?jql=project%20%3D%20RedisInsight...`
+   * Extract the JQL query from the URL (decode URL-encoded parameters)
+   * Use JIRA MCP tools to fetch all tickets matching the filter
+   * For each ticket, fetch complete details including:
+     * Issue key, summary, type, status, priority
+     * Labels (check for "Github-Issue" label)
+     * Description
+     * All custom fields and metadata needed for categorization
+   * Process the tickets the same way as CSV data
+
+2. **JIRA Query (JQL)**: If a raw JQL query is provided (e.g., `project = RI AND parent = RI-1234`), use the JIRA MCP tools to fetch tickets with full details
+
+3. **CSV File**: If a CSV file path is provided, parse it to extract ticket information
    * To export from JIRA: Go to JIRA → Search for issues → Run your JQL query → Export → CSV
    * The CSV will contain all ticket information needed for generation
-3. **Ticket Keys**: If specific ticket keys are provided (e.g., `RI-5678,RI-7777`), fetch each ticket individually
+
+4. **Ticket Keys**: If specific ticket keys are provided (e.g., `RI-5678,RI-7777`), fetch each ticket individually with full details
 
 ## 2. Fetch and Categorize Tickets
 
@@ -154,7 +168,10 @@ Show a summary of:
 ## Examples
 
 ```bash
-# Generate from JIRA query
+# Generate from JIRA filter link (PREFERRED)
+generate-release-notes 3.0.3 "https://redislabs.atlassian.net/jira/software/c/projects/RED/issues?jql=project%20%3D%20RedisInsight..."
+
+# Generate from JIRA query (JQL)
 generate-release-notes 3.0.2 "project = RI AND parent = RI-1234"
 
 # Generate from CSV export
@@ -163,6 +180,51 @@ generate-release-notes 3.0.2 /path/to/jira-export.csv
 # Generate from ticket keys
 generate-release-notes 3.0.2 RI-5678,RI-7777,RI-8888
 ```
+
+## JIRA Filter Link Processing
+
+When a JIRA filter link is provided:
+
+1. **Parse the URL**: Extract the JQL query from the `jql` parameter
+   * Example: `https://redislabs.atlassian.net/jira/software/c/projects/RED/issues?jql=project%20%3D%20RedisInsight%20AND%20status%20%3D%20Closed`
+   * Extract: `project = RedisInsight AND status = Closed` (URL decode the parameter)
+   * Use Node.js `URL` and `decodeURIComponent()` to decode URL-encoded parameters
+   * Example code:
+     ```javascript
+     const { URL } = require('url');
+     const url = new URL(jiraFilterLink);
+     const jql = decodeURIComponent(url.searchParams.get('jql'));
+     ```
+
+2. **Fetch tickets**: Use JIRA MCP tools or the provided Node.js script to fetch all tickets matching the JQL query
+   * **Option 1**: Try using available JIRA MCP tools (check available tools with `list_mcp_resources`)
+     * Common tools might be: `jira_search`, `jira_get_project_issues`, or similar
+   * **Option 2**: Use the Node.js script: `node scripts/fetch-jira-tickets.js <jira-filter-url>`
+     * The script uses JIRA REST API directly with credentials from `.env.mcp`
+     * It outputs JSON that can be parsed and processed
+
+3. **Fetch full details**: For each ticket returned, fetch complete information:
+   * **Basic fields**: key, summary, type, status, priority, description
+   * **Labels**: Extract all labels and check for "Github-Issue" label (critical for filtering)
+   * **Custom fields**: Any additional fields needed for categorization
+   * **Links**: Check for linked GitHub pull requests or issues
+   * **Metadata**: Created date, updated date, resolved date, assignee, reporter
+
+4. **Transform to CSV-like structure**: Convert the fetched ticket data into a structure similar to CSV format:
+   ```javascript
+   {
+       'Issue key': 'RI-7894',
+       'Summary': 'Fix default database sorting...',
+       'Issue Type': 'Bug',
+       'Status': 'Closed',
+       'Priority': 'Medium',
+       'Labels': ['Github-Issue', 'Github-Issue-Notification'],
+       'Description': 'Full description text...',
+       // ... other fields
+   }
+   ```
+
+5. **Process**: Use the same categorization and filtering logic as CSV processing
 
 ## Notes
 
