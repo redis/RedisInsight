@@ -25,6 +25,7 @@ import {
 } from 'src/modules/database/models/provider-details';
 import { TOKEN_REFRESH_BUFFER_SECONDS } from '../constants';
 import { isJwtExpired, getJwtExpiration } from './utils/jwt.utils';
+import { AzureTokenRefreshManager } from '../azure-token-refresh.manager';
 
 @ApiTags('Azure')
 @Controller('azure')
@@ -34,6 +35,7 @@ export class AzureAuthController {
   constructor(
     private readonly authService: AzureAuthService,
     private readonly databaseRepository: DatabaseRepository,
+    private readonly tokenRefreshManager: AzureTokenRefreshManager,
   ) {}
 
   @Get('auth/login')
@@ -343,6 +345,33 @@ export class AzureAuthController {
         error: 'Failed to refresh token',
         details: error?.message,
       });
+    }
+  }
+
+  @Post('auth/force-refresh/:databaseId')
+  @ApiOperation({
+    summary: '[DEBUG] Force token refresh for a database',
+    description:
+      'Triggers immediate token refresh regardless of expiration time. For testing only.',
+  })
+  @ApiResponse({ status: 200, description: 'Token refreshed successfully' })
+  @ApiResponse({ status: 400, description: 'No active timer for database' })
+  async forceTokenRefresh(
+    @Param('databaseId') databaseId: string,
+  ): Promise<{ status: string; message: string }> {
+    this.logger.warn(`[DEBUG] Force refresh requested for ${databaseId}`);
+
+    try {
+      await this.tokenRefreshManager.forceRefresh(databaseId);
+      return {
+        status: 'success',
+        message: `Token refresh triggered for database ${databaseId}`,
+      };
+    } catch (error: any) {
+      return {
+        status: 'error',
+        message: error?.message || 'Failed to trigger refresh',
+      };
     }
   }
 }

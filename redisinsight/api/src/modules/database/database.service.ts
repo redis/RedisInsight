@@ -244,7 +244,7 @@ export class DatabaseService {
     try {
       database = await this.merge(oldDatabase, dto);
 
-      if (DatabaseService.isConnectionAffected(dto)) {
+      if (false) {
         if (DatabaseService.isEndpointAffected(dto)) {
           database.provider = undefined;
         }

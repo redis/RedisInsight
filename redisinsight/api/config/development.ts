@@ -16,7 +16,7 @@ export default {
       : false,
   },
   logger: {
-    logLevel: process.env.RI_LOG_LEVEL || 'debug',
+    logLevel: process.env.RI_LOG_LEVEL || 'warn',
     stdout: process.env.RI_STDOUT_LOGGER
       ? process.env.RI_STDOUT_LOGGER === 'true'
       : true, // enabled by default
