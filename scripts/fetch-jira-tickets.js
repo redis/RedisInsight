@@ -22,7 +22,9 @@ function getJiraCredentials() {
   /** Get JIRA credentials from .env.mcp file. */
   const envFile = '.env.mcp';
   if (!fs.existsSync(envFile)) {
-    throw new Error(`Credentials file ${envFile} not found. Please set up JIRA credentials.`);
+    throw new Error(
+      `Credentials file ${envFile} not found. Please set up JIRA credentials.`,
+    );
   }
 
   const credentials = {};
@@ -39,7 +41,7 @@ function getJiraCredentials() {
   }
 
   const required = ['JIRA_URL', 'JIRA_USERNAME', 'JIRA_API_TOKEN'];
-  const missing = required.filter(key => !credentials[key]);
+  const missing = required.filter((key) => !credentials[key]);
   if (missing.length > 0) {
     throw new Error(`Missing required credentials: ${missing.join(', ')}`);
   }
@@ -165,7 +167,9 @@ function fetchJiraTickets(jqlQuery, credentials) {
                 Status: issue.fields?.status?.name || '',
                 Priority: issue.fields?.priority?.name || '',
                 Labels: issue.fields?.labels || [],
-                Description: extractTextFromAdf(issue.fields?.description || ''),
+                Description: extractTextFromAdf(
+                  issue.fields?.description || '',
+                ),
                 Created: issue.fields?.created || '',
                 Updated: issue.fields?.updated || '',
                 Resolved: issue.fields?.resolved || '',
@@ -183,7 +187,9 @@ function fetchJiraTickets(jqlQuery, credentials) {
               fetchPage();
             }
           } catch (error) {
-            reject(new Error(`Failed to parse JSON response: ${error.message}`));
+            reject(
+              new Error(`Failed to parse JSON response: ${error.message}`),
+            );
           }
         });
       });
@@ -235,4 +241,9 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { parseJiraFilterUrl, getJiraCredentials, fetchJiraTickets, extractTextFromAdf };
+module.exports = {
+  parseJiraFilterUrl,
+  getJiraCredentials,
+  fetchJiraTickets,
+  extractTextFromAdf,
+};
