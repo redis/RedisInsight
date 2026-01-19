@@ -34,6 +34,14 @@ The version should be in semantic versioning format (e.g., `3.0.2`).
 
 For each ticket, analyze its essence to categorize it:
 
+### Exclusion Rules
+
+**Exclude entirely (do not include in any section):**
+
+* **Spike tickets**: If issue type is "Spike", exclude from release notes
+* **POC tickets**: If "POC" appears in the title or description (indicating proof-of-concept that is not implemented), exclude from release notes
+* These tickets are not ready for release and should not be mentioned
+
 ### Categorization Logic
 
 **Bug indicators:**
@@ -41,6 +49,13 @@ For each ticket, analyze its essence to categorize it:
 * Issue type contains "bug" or "defect"
 * Summary contains: "fix", "bug", "error", "issue", "broken", "crash", "fail"
 * Labels contain "bug" or "defect"
+
+**IMPORTANT: Bugs/Bug fixes section filter:**
+
+* **Only tickets with the "Github-Issue" label should be included in the Bugs/Bug fixes section**
+* When processing tickets from JIRA query or CSV, filter bugs to only include those with the "Github-Issue" label
+* Other bug tickets (without this label) should be excluded from the Bugs/Bug fixes section
+* **Bugs with Github-Issue label should ONLY appear in the Bugs section, NOT in Headlines or Details sections**
 
 **Feature indicators:**
 
@@ -60,8 +75,9 @@ Use the template from `docs/release-notes/RELEASE_NOTES_TEMPLATE.md` as a refere
 
 ### Format Selection
 
-* **If only bugs**: Use simple "Bug fixes" section only
+* **If only bugs (with "Github-Issue" label)**: Use simple "Bug fixes" section only
 * **If features/improvements exist**: Use full format with "Headlines", "Details", and "Bugs" sections
+  * Note: The "Bugs" section should only include tickets with the "Github-Issue" label
 
 ### Release Notes Structure
 
@@ -80,6 +96,7 @@ Use the template from `docs/release-notes/RELEASE_NOTES_TEMPLATE.md` as a refere
 * [#ISSUE-NUMBER](https://github.com/redis/RedisInsight/issues/ISSUE-NUMBER) [Summary] (for GitHub issues, use link format)
 
 ### Bugs (if features exist) OR Bug fixes (if only bugs - see 3.0.2 example)
+* **IMPORTANT: Only include tickets with the "Github-Issue" label in this section**
 * [Short description of problem and fix] (for JIRA tickets, don't include ticket ID)
 * [#ISSUE-NUMBER](https://github.com/redis/RedisInsight/issues/ISSUE-NUMBER) [Summary] (for GitHub issues, use link format)
 
@@ -149,6 +166,9 @@ generate-release-notes 3.0.2 RI-5678,RI-7777,RI-8888
 
 ## Notes
 
+* **Exclusions**: Exclude Spike tickets and POC tickets (where "POC" appears in title/description indicating not implemented) entirely from release notes
+* **Bugs/Bug fixes section**: **ONLY include tickets with the "Github-Issue" label**. Filter the provided JIRA tickets/CSV to only include bugs that have this label. Other bug tickets should be excluded from this section.
+* **Bugs in Headlines/Details**: Bugs with Github-Issue label should NOT appear in Headlines or Details sections - they should ONLY appear in the Bugs section
 * **JIRA tickets**: Do NOT include ticket IDs. Instead, provide a very short description of the problem and fix based on:
   * JIRA ticket description (what was the issue and how it was resolved)
   * GitHub pull request linked to the ticket (if available)
