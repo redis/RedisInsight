@@ -17,7 +17,7 @@ export const BulbHighlighting = styled.span`
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  border: 1px solid ${({ theme }) => theme.color.gray100};
+  border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral100};
 `
 
 export const BulbIconButton = styled(IconButton)<
