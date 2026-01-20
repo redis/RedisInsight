@@ -150,16 +150,15 @@ export const VectorSearchCreateIndex = ({
     }
   }, [success, error])
 
+  const stepperSteps = [{ label: 'Adding data' }, { label: 'Create Index' }]
+
   return (
     <VectorSearchScreenWrapper direction="column" justify="between">
       <VectorSearchScreenHeader direction="row" padding={8}>
         <Title size="M" data-testid="title">
           New vector search
         </Title>
-        <Stepper currentStep={step - 1} title="test">
-          <Stepper.Step>Adding data</Stepper.Step>
-          <Stepper.Step>Create Index</Stepper.Step>
-        </Stepper>
+        <Stepper currentStep={step - 1} title="test" steps={stepperSteps} />
       </VectorSearchScreenHeader>
       <VectorSearchScreenContent direction="column" grow={1} padding={8}>
         <StepContent
