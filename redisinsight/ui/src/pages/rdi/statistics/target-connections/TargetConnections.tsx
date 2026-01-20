@@ -5,9 +5,9 @@ import {
   StatisticsConnectionStatus,
 } from 'uiSrc/slices/interfaces'
 import { formatLongName } from 'uiSrc/utils'
-import { ColumnDefinition, Table } from 'uiSrc/components/base/layout/table'
+import { ColumnDef, Table } from 'uiSrc/components/base/layout/table'
 import { RiTooltip } from 'uiSrc/components'
-import { Section } from '@redis-ui/components'
+import { Section } from 'uiSrc/components/base/display'
 import {
   StyledRdiAnalyticsTable,
   StyledRdiStatisticsSectionBody,
@@ -35,7 +35,7 @@ const getStatusColor = (status: string) => {
   }
 }
 
-const columns: ColumnDefinition<ConnectionData>[] = [
+const columns: ColumnDef<ConnectionData>[] = [
   {
     size: 40,
     header: 'Status',
@@ -95,7 +95,7 @@ const columns: ColumnDefinition<ConnectionData>[] = [
   },
 ]
 
-interface Props {
+export interface Props {
   data: IConnections
 }
 
@@ -110,20 +110,18 @@ const TargetConnections = ({ data }: Props) => {
   })
 
   return (
-    <Section.Compose collapsible defaultOpen>
+    <Section.Compose collapsible defaultOpen id="target-connections">
       <Section.Header label="Target connections" />
-      <StyledRdiStatisticsSectionBody
-        content={
-          <StyledRdiAnalyticsTable
-            columns={columns}
-            data={connections}
-            defaultSorting={[{ id: 'name', desc: false }]}
-          >
-            <Table.Header />
-            <Table.Body />
-          </StyledRdiAnalyticsTable>
-        }
-      />
+      <StyledRdiStatisticsSectionBody>
+        <StyledRdiAnalyticsTable
+          columns={columns}
+          data={connections}
+          defaultSorting={[{ id: 'name', desc: false }]}
+        >
+          <Table.Header />
+          <Table.Body />
+        </StyledRdiAnalyticsTable>
+      </StyledRdiStatisticsSectionBody>
     </Section.Compose>
   )
 }
