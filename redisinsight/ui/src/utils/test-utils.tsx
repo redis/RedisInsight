@@ -10,6 +10,7 @@ import {
   renderHook as rtlRenderHook,
   waitFor,
   screen,
+  within,
 } from '@testing-library/react'
 
 import { ThemeProvider } from 'styled-components'
@@ -308,8 +309,11 @@ export const waitForStack = async (timeout = 0) => {
 export const toggleAccordion = async (testId: string) => {
   const accordion = screen.getByTestId(testId)
   expect(accordion).toBeInTheDocument()
-  const btn = accordion.querySelector('button')
-  await userEvent.click(btn!)
+  // Find the collapse button by aria-label (RiAccordion renders ActionButton before CollapseButton)
+  const btn = within(accordion).getByLabelText(
+    /Expand Section|Collapse Section/,
+  )
+  await userEvent.click(btn)
 }
 
 // mock useHistory
