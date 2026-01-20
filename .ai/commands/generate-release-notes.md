@@ -6,6 +6,22 @@ argument-hint: <version> \[jira-filter-link-or-jql-or-csv-file]
 
 Generate release notes for RedisInsight releases based on JIRA tickets.
 
+## Examples
+
+```bash
+# Generate from JIRA filter link (PREFERRED)
+generate-release-notes 3.0.3 "https://redislabs.atlassian.net/jira/software/c/projects/RED/issues?jql=project%20%3D%20RedisInsight..."
+
+# Generate from JIRA query (JQL)
+generate-release-notes 3.0.2 "project = RI AND parent = RI-1234"
+
+# Generate from CSV export
+generate-release-notes 3.0.2 /path/to/jira-export.csv
+
+# Generate from ticket keys
+generate-release-notes 3.0.2 RI-5678,RI-7777,RI-8888
+```
+
 **Always reference the GitHub releases page as the source of truth for format and style:**
 https://github.com/redis/RedisInsight/releases
 
@@ -93,6 +109,17 @@ Use the template from `docs/release-notes/RELEASE_NOTES_TEMPLATE.md` as a refere
 * **If features/improvements exist**: Use full format with "Headlines", "Details", and "Bugs" sections
   * Note: The "Bugs" section should only include tickets with the "Github-Issue" label
 
+### Section Organization Rules
+
+**IMPORTANT: Avoid duplication between sections:**
+
+* **Tickets with "Github-Issue" label**: These should **ONLY** appear in the "Bugs" section, never in "Headlines" or "Details" sections
+* **No duplication**: Items in the Bugs section must not appear in Headlines or Details sections
+* **Headlines and Details relationship**:
+  * Headlines should contain short summaries of the most important user-facing features and improvements
+  * Details can expand on Headlines items with more information, or include additional features/improvements not mentioned in Headlines
+  * The same item can appear in both Headlines (short summary) and Details (full description), but items from Bugs section must not appear in either
+
 ### Release Notes Structure
 
 **Reference format from GitHub releases:** https://github.com/redis/RedisInsight/releases
@@ -114,7 +141,7 @@ Use the template from `docs/release-notes/RELEASE_NOTES_TEMPLATE.md` as a refere
 * [Short description of problem and fix] (for JIRA tickets, don't include ticket ID)
 * [#ISSUE-NUMBER](https://github.com/redis/RedisInsight/issues/ISSUE-NUMBER) [Summary] (for GitHub issues, use link format)
 
-**SHA-256 Checksums** or **SHA-512 Checksums**
+**SHA-512 Checksums**
 
 https://redis.io/docs/latest/develop/tools/insight/release-notes/v.[VERSION]/
 
@@ -125,7 +152,7 @@ https://redis.io/docs/latest/develop/tools/insight/release-notes/v.[VERSION]/
 
 * **For JIRA tickets**: Do NOT include ticket IDs (like #1234 or #RI-1234). Instead, provide a very short description of what was the problem and what was fixed. This information can be found in the JIRA ticket description or the GitHub pull request linked to the ticket.
 * **For GitHub issues**: Use actual links in format `[#5678](https://github.com/redis/RedisInsight/issues/5678)` (not just `#5678` or `#RI-5678`)
-* Use "SHA-256 Checksums" for older releases, "SHA-512 Checksums" for newer ones
+* Use "SHA-512 Checksums" for all releases
 * Keep descriptions concise and user-focused
 * Headlines should highlight the most impactful user-facing changes
 
@@ -165,52 +192,24 @@ Show a summary of:
 * Which format was used (simple vs. full)
 * File location
 
-## Examples
-
-```bash
-# Generate from JIRA filter link (PREFERRED)
-generate-release-notes 3.0.3 "https://redislabs.atlassian.net/jira/software/c/projects/RED/issues?jql=project%20%3D%20RedisInsight..."
-
-# Generate from JIRA query (JQL)
-generate-release-notes 3.0.2 "project = RI AND parent = RI-1234"
-
-# Generate from CSV export
-generate-release-notes 3.0.2 /path/to/jira-export.csv
-
-# Generate from ticket keys
-generate-release-notes 3.0.2 RI-5678,RI-7777,RI-8888
-```
-
 ## JIRA Filter Link Processing
 
 When a JIRA filter link is provided:
 
-1. **Parse the URL**: Extract the JQL query from the `jql` parameter
-   * Example: `https://redislabs.atlassian.net/jira/software/c/projects/RED/issues?jql=project%20%3D%20RedisInsight%20AND%20status%20%3D%20Closed`
-   * Extract: `project = RedisInsight AND status = Closed` (URL decode the parameter)
-   * Use Node.js `URL` and `decodeURIComponent()` to decode URL-encoded parameters
-   * Example code:
-     ```javascript
-     const { URL } = require('url');
-     const url = new URL(jiraFilterLink);
-     const jql = decodeURIComponent(url.searchParams.get('jql'));
-     ```
+1. **Parse the URL and fetch tickets**: Extract the JQL query from the `jql` parameter in the URL and use JIRA MCP tools to fetch all tickets matching the query
+   * Example URL: `https://redislabs.atlassian.net/jira/software/c/projects/RED/issues?jql=project%20%3D%20RedisInsight%20AND%20status%20%3D%20Closed`
+   * Extract and decode: `project = RedisInsight AND status = Closed`
+   * Use available JIRA MCP tools (check with `list_mcp_resources`) such as `jira_search` or `jira_get_project_issues`
+   * If MCP tools are not available, use JIRA REST API directly with credentials from `.env.mcp`
 
-2. **Fetch tickets**: Use JIRA MCP tools or the provided Node.js script to fetch all tickets matching the JQL query
-   * **Option 1**: Try using available JIRA MCP tools (check available tools with `list_mcp_resources`)
-     * Common tools might be: `jira_search`, `jira_get_project_issues`, or similar
-   * **Option 2**: Use the Node.js script: `node scripts/fetch-jira-tickets.js <jira-filter-url>`
-     * The script uses JIRA REST API directly with credentials from `.env.mcp`
-     * It outputs JSON that can be parsed and processed
-
-3. **Fetch full details**: For each ticket returned, fetch complete information:
+2. **Fetch full details**: For each ticket returned, fetch complete information:
    * **Basic fields**: key, summary, type, status, priority, description
    * **Labels**: Extract all labels and check for "Github-Issue" label (critical for filtering)
    * **Custom fields**: Any additional fields needed for categorization
    * **Links**: Check for linked GitHub pull requests or issues
    * **Metadata**: Created date, updated date, resolved date, assignee, reporter
 
-4. **Transform to CSV-like structure**: Convert the fetched ticket data into a structure similar to CSV format:
+3. **Transform to CSV-like structure**: Convert the fetched ticket data into a structure similar to CSV format:
    ```javascript
    {
        'Issue key': 'RI-7894',
@@ -224,18 +223,10 @@ When a JIRA filter link is provided:
    }
    ```
 
-5. **Process**: Use the same categorization and filtering logic as CSV processing
+4. **Process**: Use the same categorization and filtering logic as CSV processing
 
 ## Notes
 
-* **Exclusions**: Exclude Spike tickets and POC tickets (where "POC" appears in title/description indicating not implemented) entirely from release notes
-* **Bugs/Bug fixes section**: **ONLY include tickets with the "Github-Issue" label**. Filter the provided JIRA tickets/CSV to only include bugs that have this label. Other bug tickets should be excluded from this section.
-* **Bugs in Headlines/Details**: Bugs with Github-Issue label should NOT appear in Headlines or Details sections - they should ONLY appear in the Bugs section
-* **JIRA tickets**: Do NOT include ticket IDs. Instead, provide a very short description of the problem and fix based on:
-  * JIRA ticket description (what was the issue and how it was resolved)
-  * GitHub pull request linked to the ticket (if available)
-  * Example: "Fixed tooltip layout issue where the link was displayed on a separate row" instead of "#1234 \[Index] Create index identifier tooltip..."
-* **GitHub issues**: Use actual links in format `[#5678](https://github.com/redis/RedisInsight/issues/5678)` (not just `#5678` or `#RI-5678`) - match the format from GitHub releases
 * Keep summaries concise, user-focused, and descriptive
 * For Headlines section, prioritize the most impactful user-facing changes (see 3.0.0 example)
 * Ensure all closed tickets are included if they match the criteria

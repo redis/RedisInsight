@@ -15,7 +15,9 @@ function parseJiraFilterUrl(urlString) {
   if (!jql) {
     throw new Error('No JQL parameter found in URL');
   }
-  return decodeURIComponent(jql);
+  // URLSearchParams.get() already returns URL-decoded values per URL Standard
+  // No need for additional decodeURIComponent() call
+  return jql;
 }
 
 function getJiraCredentials() {
@@ -134,7 +136,8 @@ function fetchJiraTickets(jqlQuery, credentials) {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        rejectUnauthorized: false, // For development - allows self-signed certificates
+        // TLS certificate verification is enabled by default (rejectUnauthorized defaults to true)
+        // This ensures secure connections and prevents man-in-the-middle attacks
       };
 
       const req = https.request(options, (res) => {
@@ -191,6 +194,11 @@ function fetchJiraTickets(jqlQuery, credentials) {
               new Error(`Failed to parse JSON response: ${error.message}`),
             );
           }
+        });
+
+        // Add error handler for response stream to prevent hanging promises
+        res.on('error', (error) => {
+          reject(new Error(`Error reading response: ${error.message}`));
         });
       });
 
