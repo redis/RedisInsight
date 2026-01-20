@@ -1,9 +1,6 @@
 import React from 'react'
 
-import {
-  IConnections,
-  StatisticsConnectionStatus,
-} from 'uiSrc/slices/interfaces'
+import { StatisticsConnectionStatus } from 'uiSrc/slices/interfaces'
 import { formatLongName } from 'uiSrc/utils'
 import { ColumnDef, Table } from 'uiSrc/components/base/layout/table'
 import { RiTooltip } from 'uiSrc/components'
@@ -12,17 +9,12 @@ import {
   StyledRdiAnalyticsTable,
   StyledRdiStatisticsSectionBody,
 } from 'uiSrc/pages/rdi/statistics/styles'
-import { Indicator } from 'uiSrc/components/base/text/text.styles'
+import * as S from 'uiSrc/components/base/text/text.styles'
 import { Row } from 'uiSrc/components/base/layout/flex'
-
-type ConnectionData = {
-  name: string
-  status: string
-  type: string
-  hostPort: string
-  database: string
-  user: string
-}
+import {
+  ConnectionData,
+  TargetConnectionsProps,
+} from './TargetConnections.types'
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -49,7 +41,7 @@ const columns: ColumnDef<ConnectionData>[] = [
     }) => (
       <Row align="center" justify="center">
         <RiTooltip content={status}>
-          <Indicator $color={getStatusColor(status)} />
+          <S.Indicator $color={getStatusColor(status)} />
         </RiTooltip>
       </Row>
     ),
@@ -95,11 +87,7 @@ const columns: ColumnDef<ConnectionData>[] = [
   },
 ]
 
-export interface Props {
-  data: IConnections
-}
-
-const TargetConnections = ({ data }: Props) => {
+const TargetConnections = ({ data }: TargetConnectionsProps) => {
   const connections: ConnectionData[] = Object.keys(data).map((key) => {
     const connection = data[key]
     return {
