@@ -12,6 +12,7 @@ import {
   initialStateDefault,
   mockStore,
   userEvent,
+  within,
 } from 'uiSrc/utils/test-utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
@@ -53,11 +54,27 @@ beforeEach(() => {
 const PROVIDER = 'REDIS_CLOUD'
 
 describe('Recommendation', () => {
+  const getAccordionToggleButton = (name: string) =>
+    within(screen.getByTestId(`${name}-accordion`)).getByLabelText(
+      /Expand Section|Collapse Section/,
+    )
+
+  // Helper to check if accordion body content is hidden (either not visible or not in DOM)
+  // The @redis-ui/components Section removes content from DOM when collapsed
+  const expectBodyHidden = (testId: string) => {
+    const element = screen.queryByTestId(testId)
+    if (element) {
+      expect(element).not.toBeVisible()
+      return
+    }
+    expect(element).not.toBeInTheDocument()
+  }
+
   it('should render', () => {
     expect(render(<Recommendation {...instanceMock} />)).toBeTruthy()
   })
 
-  it('should render content if recommendation is not read', () => {
+  it('should render content if recommendation is not read', async () => {
     render(
       <Recommendation
         {...instanceMock}
@@ -67,27 +84,25 @@ describe('Recommendation', () => {
       />,
     )
 
+    // isRead={false} means defaultOpen={true}, so accordion is already open
     expect(screen.getByTestId('recommendation-voting')).toBeInTheDocument()
     expect(screen.getByTestId('searchJSON-to-tutorial-btn')).toBeInTheDocument()
   })
 
   it('should render RecommendationVoting', async () => {
-    // initial state open
+    // initial state open (isRead defaults to undefined, so !isRead = true)
     render(<Recommendation {...instanceMock} name="searchJSON" />)
     // accordion button
-    const button = screen.getByTestId(
-      'ri-accordion-header-searchJSON',
-    ) as HTMLButtonElement
+    const button = getAccordionToggleButton('searchJSON')
     expect(screen.queryByTestId('recommendation-voting')).toBeInTheDocument()
     expect(button).toBeInTheDocument()
     // close accordion
-    fireEvent.click(button)
+    await userEvent.click(button)
 
-    expect(
-      screen.queryByTestId('recommendation-voting'),
-    ).not.toBeInTheDocument()
+    // Content is removed from DOM when accordion is closed
+    expectBodyHidden('recommendation-voting')
     // open accordion
-    fireEvent.click(button)
+    await userEvent.click(button)
 
     expect(screen.queryByTestId('recommendation-voting')).toBeInTheDocument()
   })
@@ -108,9 +123,7 @@ describe('Recommendation', () => {
       />,
     )
 
-    await userEvent.click(
-      getByTestId('ri-accordion-header-searchJSON') as HTMLButtonElement,
-    )
+    await userEvent.click(getAccordionToggleButton('searchJSON'))
     await userEvent.click(getByTestId('searchJSON-to-tutorial-btn'))
 
     expect(pushMock).toHaveBeenCalledWith({ search: 'path=tutorials/path' })
@@ -131,7 +144,7 @@ describe('Recommendation', () => {
     reactRouterDom.useHistory = jest.fn().mockReturnValue({ push: pushMock })
     ;(findTutorialPath as jest.Mock).mockImplementation(() => 'path')
 
-    const { getByTestId } = render(
+    render(
       <Recommendation
         {...instanceMock}
         isRead
@@ -141,9 +154,7 @@ describe('Recommendation', () => {
       />,
     )
 
-    await userEvent.click(
-      getByTestId('ri-accordion-header-searchJSON') as HTMLButtonElement,
-    )
+    await userEvent.click(getAccordionToggleButton('searchJSON'))
     fireEvent.click(screen.getByTestId('searchJSON-to-tutorial-btn'))
 
     expect(pushMock).toHaveBeenCalledWith({
@@ -167,7 +178,7 @@ describe('Recommendation', () => {
     reactRouterDom.useHistory = jest.fn().mockReturnValue({ push: pushMock })
     ;(findTutorialPath as jest.Mock).mockImplementation(() => 'path')
 
-    const { getByTestId } = render(
+    render(
       <Recommendation
         {...instanceMock}
         isRead
@@ -177,9 +188,7 @@ describe('Recommendation', () => {
       />,
     )
 
-    await userEvent.click(
-      getByTestId('ri-accordion-header-searchJSON') as HTMLButtonElement,
-    )
+    await userEvent.click(getAccordionToggleButton('searchJSON'))
     fireEvent.click(screen.getByTestId('searchJSON-to-tutorial-btn'))
 
     expect(pushMock).toHaveBeenCalledWith({
