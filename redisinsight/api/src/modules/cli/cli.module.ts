@@ -5,6 +5,7 @@ import { CommandsJsonProvider } from 'src/modules/commands/commands-json.provide
 import config from 'src/utils/config';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
 import { DatabaseAnalytics } from 'src/modules/database/database.analytics';
+import { CredentialsModule } from 'src/modules/database/credentials';
 import { CliController } from './controllers/cli.controller';
 import { CliBusinessService } from './services/cli-business/cli-business.service';
 import { CliAnalyticsService } from './services/cli-analytics/cli-analytics.service';
@@ -12,7 +13,7 @@ import { CliAnalyticsService } from './services/cli-analytics/cli-analytics.serv
 const COMMANDS_CONFIGS = config.get('commands');
 
 @Module({
-  imports: [CommandsModule],
+  imports: [CommandsModule, CredentialsModule],
   controllers: [CliController],
   providers: [
     CliBusinessService,

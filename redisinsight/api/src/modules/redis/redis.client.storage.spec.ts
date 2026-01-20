@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   generateMockRedisClient,
+  mockAzureTokenRefreshManager,
   mockDatabase,
   mockInvalidClientMetadataError,
   mockInvalidSessionMetadataError,
@@ -15,6 +16,7 @@ import { RedisClientStorage } from 'src/modules/redis/redis.client.storage';
 import apiConfig from 'src/utils/config';
 import { BadRequestException } from '@nestjs/common';
 import { RedisClient } from 'src/modules/redis/client';
+import { AzureTokenRefreshManager } from 'src/modules/azure/azure-token-refresh.manager';
 
 const REDIS_CLIENTS_CONFIG = apiConfig.get('redis_clients');
 
@@ -62,7 +64,13 @@ describe('RedisClientStorage', () => {
     jest.clearAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [RedisClientStorage],
+      providers: [
+        RedisClientStorage,
+        {
+          provide: AzureTokenRefreshManager,
+          useFactory: mockAzureTokenRefreshManager,
+        },
+      ],
     }).compile();
 
     service = await module.get(RedisClientStorage);

@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import {
+  mockAzureTokenRefreshManager,
   mockCommonClientMetadata,
+  mockCredentialResolver,
   mockDatabase,
   mockDatabaseAnalytics,
   mockDatabaseRepository,
@@ -33,6 +35,8 @@ import { RedisConnectionTimeoutException } from 'src/modules/redis/exceptions/co
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { DatabaseConnectionEvent } from 'src/modules/database/constants/events';
 import { InternalServerErrorException } from '@nestjs/common';
+import { CredentialResolver } from 'src/modules/database/credentials';
+import { AzureTokenRefreshManager } from 'src/modules/azure/azure-token-refresh.manager';
 
 describe('DatabaseClientFactory', () => {
   let service: DatabaseClientFactory;
@@ -77,6 +81,14 @@ describe('DatabaseClientFactory', () => {
         {
           provide: EventEmitter2,
           useValue: mockEventEmitter,
+        },
+        {
+          provide: CredentialResolver,
+          useFactory: mockCredentialResolver,
+        },
+        {
+          provide: AzureTokenRefreshManager,
+          useFactory: mockAzureTokenRefreshManager,
         },
       ],
     }).compile();

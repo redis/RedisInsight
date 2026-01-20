@@ -47,3 +47,4 @@ export * from './rdi';
 export * from './workbench';
 export * from './utm';
 export * from './event-emitter';
+export * from './azure';
