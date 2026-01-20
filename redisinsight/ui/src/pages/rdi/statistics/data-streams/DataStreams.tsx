@@ -2,7 +2,7 @@ import React from 'react'
 
 import { IDataStreams } from 'uiSrc/slices/interfaces'
 import { Table } from 'uiSrc/components/base/layout/table'
-import { Section } from '@redis-ui/components'
+import { Section } from 'uiSrc/components/base/display'
 import {
   StyledRdiAnalyticsTable,
   StyledRdiStatisticsSectionBody,
@@ -40,19 +40,20 @@ const DataStreams = ({ data }: Props) => {
 
   return (
     <Section.Compose collapsible defaultOpen id="data-streams">
-      <Section.Header label="Data streams overview" />
-      <StyledRdiStatisticsSectionBody
-        content={
-          <StyledRdiAnalyticsTable
-            columns={columns}
-            data={[...dataStreams, totalsRow]}
-            defaultSorting={[{ id: 'name', desc: false }]}
-          >
-            <Table.Header />
-            <Table.Body />
-          </StyledRdiAnalyticsTable>
-        }
-      />
+      <Section.Header.Compose>
+        <Section.Header.Label label="Data streams overview" />
+        <Section.Header.CollapseButton />
+      </Section.Header.Compose>
+      <StyledRdiStatisticsSectionBody>
+        <StyledRdiAnalyticsTable
+          columns={columns}
+          data={[...dataStreams, totalsRow]}
+          defaultSorting={[{ id: 'name', desc: false }]}
+        >
+          <Table.Header />
+          <Table.Body />
+        </StyledRdiAnalyticsTable>
+      </StyledRdiStatisticsSectionBody>
     </Section.Compose>
   )
 }
