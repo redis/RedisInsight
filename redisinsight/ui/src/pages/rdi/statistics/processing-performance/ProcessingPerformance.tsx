@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Section } from '@redis-ui/components'
+import { Section } from 'uiSrc/components/base/display'
 import { IProcessingPerformance } from 'uiSrc/slices/interfaces'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 
@@ -55,63 +55,59 @@ const ProcessingPerformance = ({
         <Section.Header.Label label="Processing performance information" />
         <Section.Header.CollapseButton />
       </Section.Header.Compose>
-      <Section.Body
-        content={
-          <>
-            <Row responsive gap="s">
-              <FlexItem grow>
-                <Col gap="s">
-                  <InfoPanel
-                    label="Total batches"
-                    value={totalBatches}
-                    suffix="Total"
-                  />
-                  <InfoPanel
-                    label="Batch size average"
-                    value={batchSizeAvg}
-                    suffix="MB"
-                  />
-                  <InfoPanel
-                    label="Process time average"
-                    value={processTimeAvg}
-                    suffix="ms"
-                  />
-                </Col>
-              </FlexItem>
-              <VerticalDivider />
-              <FlexItem grow>
-                <Col gap="s">
-                  <InfoPanel
-                    label="ACK time average"
-                    value={ackTimeAvg}
-                    suffix="sec"
-                  />
-                  <InfoPanel
-                    label="Records per second average"
-                    value={recPerSecAvg}
-                    suffix="/sec"
-                  />
-                  <InfoPanel
-                    label="Read time average"
-                    value={readTimeAvg}
-                    suffix="ms"
-                  />
-                </Col>
-              </FlexItem>
-              <VerticalDivider />
-              <FlexItem grow>
-                <Row gap="s" align="start">
-                  <InfoPanel
-                    label="Total time average"
-                    value={totalTimeAvg}
-                    suffix="sec"
-                  />
-                </Row>
-              </FlexItem>
+      <Section.Body>
+        <Row responsive gap="s">
+          <FlexItem grow>
+            <Col gap="s">
+              <InfoPanel
+                label="Total batches"
+                value={totalBatches}
+                suffix="Total"
+              />
+              <InfoPanel
+                label="Batch size average"
+                value={batchSizeAvg}
+                suffix="MB"
+              />
+              <InfoPanel
+                label="Process time average"
+                value={processTimeAvg}
+                suffix="ms"
+              />
+            </Col>
+          </FlexItem>
+          <VerticalDivider />
+          <FlexItem grow>
+            <Col gap="s">
+              <InfoPanel
+                label="ACK time average"
+                value={ackTimeAvg}
+                suffix="sec"
+              />
+              <InfoPanel
+                label="Records per second average"
+                value={recPerSecAvg}
+                suffix="/sec"
+              />
+              <InfoPanel
+                label="Read time average"
+                value={readTimeAvg}
+                suffix="ms"
+              />
+            </Col>
+          </FlexItem>
+          <VerticalDivider />
+          <FlexItem grow>
+            <Row gap="s" align="start">
+              <InfoPanel
+                label="Total time average"
+                value={totalTimeAvg}
+                suffix="sec"
+              />
             </Row>
-          </>
-        }
-      />
+          </FlexItem>
+        </Row>
+      </Section.Body>
     </Section.Compose>
   )
 }
