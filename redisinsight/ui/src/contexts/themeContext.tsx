@@ -1,10 +1,6 @@
 import React, { useContext } from 'react'
 import { ThemeProvider as StyledThemeProvider } from 'styled-components'
-import {
-  theme as redisUiOldTheme,
-  CommonStyles,
-  themesDefault,
-} from '@redis-ui/styles'
+import { CommonStyles, themesDefault } from '@redis-ui/styles'
 import 'modern-normalize/modern-normalize.css'
 import '@redis-ui/styles/normalized-styles.css'
 import '@redis-ui/styles/fonts.css'
@@ -101,12 +97,7 @@ export class ThemeProvider extends React.Component<Props> {
   render() {
     const { children } = this.props
     const { theme, usingSystemTheme }: any = this.state
-    const uiTheme =
-      theme === Theme.Dark
-        ? themeDark
-        : theme === Theme.Light
-          ? themeLight
-          : redisUiOldTheme
+    const uiTheme = theme === Theme.Dark ? themeDark : themeLight
     return (
       <ThemeContext.Provider
         value={{
