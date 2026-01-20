@@ -44,7 +44,7 @@ The version should be in semantic versioning format (e.g., `3.0.2`).
    * **Detection**: Check if the input starts with `http://` or `https://` and contains `atlassian.net` and `jql=`
    * **Example**: `https://redislabs.atlassian.net/jira/software/c/projects/RED/issues?jql=project%20%3D%20RedisInsight...`
    * Extract the JQL query from the URL (decode URL-encoded parameters)
-   * Use JIRA MCP tools to fetch all tickets matching the filter
+   * **Use the JavaScript script `scripts/fetch-jira-tickets.js` to fetch all tickets matching the filter** (or JIRA MCP tools if available)
    * For each ticket, fetch complete details including:
      * Issue key, summary, type, status, priority
      * Labels (check for "Github-Issue" label)
@@ -196,11 +196,11 @@ Show a summary of:
 
 When a JIRA filter link is provided:
 
-1. **Parse the URL and fetch tickets**: Extract the JQL query from the `jql` parameter in the URL and use JIRA MCP tools to fetch all tickets matching the query
+1. **Parse the URL and fetch tickets**: Extract the JQL query from the `jql` parameter in the URL and use the JavaScript script `scripts/fetch-jira-tickets.js` to fetch all tickets matching the query
    * Example URL: `https://redislabs.atlassian.net/jira/software/c/projects/RED/issues?jql=project%20%3D%20RedisInsight%20AND%20status%20%3D%20Closed`
    * Extract and decode: `project = RedisInsight AND status = Closed`
-   * Use available JIRA MCP tools (check with `list_mcp_resources`) such as `jira_search` or `jira_get_project_issues`
-   * If MCP tools are not available, use JIRA REST API directly with credentials from `.env.mcp`
+   * **Use `node scripts/fetch-jira-tickets.js <jira-filter-url>` to fetch tickets** (the script uses JIRA REST API with credentials from `.env.mcp`)
+   * Alternatively, if JIRA MCP tools are available, use them (check with `list_mcp_resources`) such as `jira_search` or `jira_get_project_issues`
 
 2. **Fetch full details**: For each ticket returned, fetch complete information:
    * **Basic fields**: key, summary, type, status, priority, description
