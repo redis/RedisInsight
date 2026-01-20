@@ -222,7 +222,7 @@ const GroupsViewWrapper = (props: Props) => {
         const cellContent = viewName.substring(0, 200)
         const tooltipContent = formatLongName(viewName)
         return (
-          <Text style={{ maxWidth: '100%' }} color="secondary">
+          <Text component="div" style={{ maxWidth: '100%' }} color="secondary">
             <div
               style={{ display: 'flex' }}
               className="truncateText"
@@ -252,13 +252,8 @@ const GroupsViewWrapper = (props: Props) => {
       headerClassName: 'streamItemHeader',
       headerCellClassName: 'truncateText',
       render: function Name(_name: string, { consumers }: IConsumerGroup) {
-        return (
-          <Text color="secondary">
-            {consumers}
-          </Text>
-        )
+        return <Text color="secondary">{consumers}</Text>
       },
-
     },
     {
       id: 'pending',
@@ -287,7 +282,7 @@ const GroupsViewWrapper = (props: Props) => {
         )
 
         return (
-          <Text style={{ maxWidth: '100%' }} color="secondary">
+          <Text component="div" style={{ maxWidth: '100%' }} color="secondary">
             <div
               style={{ display: 'flex' }}
               className="truncateText"
@@ -378,7 +373,7 @@ const GroupsViewWrapper = (props: Props) => {
                 id="id"
                 placeholder="ID*"
                 value={editValue}
-                onChange={value =>
+                onChange={(value) =>
                   setEditValue(validateConsumerGroupId(value))
                 }
                 onBlur={() => setIsIdFocused(false)}

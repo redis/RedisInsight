@@ -100,20 +100,24 @@ const Recommendations = () => {
     >
       <FlexItem onClick={onRedisStackClick}>
         {redisStack && (
-            <Link
-              target="_blank"
-              href={EXTERNAL_LINKS.redisStack}
-              className={styles.redisStackLink}
-              data-testid={`${id}-redis-stack-link`}
+          <Link
+            target="_blank"
+            href={EXTERNAL_LINKS.redisStack}
+            className={styles.redisStackLink}
+            data-testid={`${id}-redis-stack-link`}
+          >
+            <RiTooltip
+              content="Redis Stack"
+              position="top"
+              anchorClassName="flex-row"
             >
-              <RiTooltip content="Redis Stack" position="top" anchorClassName="flex-row">
-                <RediStackMinIcon
-                  className={styles.redisStackIcon}
-                  data-testid={`${id}-redis-stack-icon`}
-                />
-              </RiTooltip>
-            </Link>
-          )}
+              <RediStackMinIcon
+                className={styles.redisStackIcon}
+                data-testid={`${id}-redis-stack-icon`}
+              />
+            </RiTooltip>
+          </Link>
+        )}
       </FlexItem>
       <FlexItem>{title}</FlexItem>
     </Row>

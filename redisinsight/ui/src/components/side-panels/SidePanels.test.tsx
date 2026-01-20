@@ -211,9 +211,7 @@ describe('SidePanels', () => {
     }))
 
     render(<SidePanels />)
-    expect(
-      screen.getByText(/^Tips \(7\)$/),
-    ).toBeVisible()
+    expect(screen.getByText(/^Tips \(7\)$/)).toBeVisible()
   })
 
   it('should call proper telemetry events on close panel', () => {

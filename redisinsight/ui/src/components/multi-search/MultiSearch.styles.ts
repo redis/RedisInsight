@@ -43,7 +43,9 @@ export const StyledMultiSearch = styled(Row)<StyledMultiSearchProps>`
  * Auto-suggestions dropdown container
  * Replaces: .autoSuggestions
  */
-export const StyledAutoSuggestions = styled.div<React.HTMLAttributes<HTMLDivElement>>`
+export const StyledAutoSuggestions = styled.div<
+  React.HTMLAttributes<HTMLDivElement>
+>`
   background-color: ${({ theme }) => theme.components.select.dropdown.bgColor};
   border: 1px solid
     ${({ theme }) => theme.components.select.states.disabled.borderColor};

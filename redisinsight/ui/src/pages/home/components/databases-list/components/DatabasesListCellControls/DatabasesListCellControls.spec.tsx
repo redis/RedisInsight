@@ -126,7 +126,9 @@ describe('DatabasesListCellControls component', () => {
     // Open controls popover
     await userEvent.click(screen.getByTestId(`controls-button-${instance.id}`))
     await waitForRiPopoverVisible()
-    expect(await screen.findByTestId(`edit-instance-${instance.id}`)).toBeInTheDocument()
+    expect(
+      await screen.findByTestId(`edit-instance-${instance.id}`),
+    ).toBeInTheDocument()
 
     // Trigger delete flow
     await userEvent.click(
@@ -142,7 +144,9 @@ describe('DatabasesListCellControls component', () => {
 
     // Assert the controls popover content is gone (popover closed)
     await waitFor(() =>
-      expect(screen.queryByTestId(`edit-instance-${instance.id}`)).not.toBeInTheDocument(),
+      expect(
+        screen.queryByTestId(`edit-instance-${instance.id}`),
+      ).not.toBeInTheDocument(),
     )
   })
 })

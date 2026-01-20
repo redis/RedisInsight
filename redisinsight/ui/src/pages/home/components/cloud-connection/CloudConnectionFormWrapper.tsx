@@ -43,7 +43,8 @@ const CloudConnectionFormWrapper = ({ onClose }: Props) => {
 
   const formSubmit = (credentials: ICloudConnectionSubmit) => {
     sendEventTelemetry({
-      event: TelemetryEvent.CONFIG_DATABASES_REDIS_CLOUD_AUTODISCOVERY_SUBMITTED,
+      event:
+        TelemetryEvent.CONFIG_DATABASES_REDIS_CLOUD_AUTODISCOVERY_SUBMITTED,
     })
     dispatch(setSSOFlow(undefined))
     dispatch(fetchSubscriptionsRedisCloud(credentials, false, onSuccess))

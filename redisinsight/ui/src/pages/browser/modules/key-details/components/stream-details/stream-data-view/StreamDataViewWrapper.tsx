@@ -344,7 +344,12 @@ const StreamDataViewWrapper = (props: Props) => {
               </div>
             </Text>
           )}
-          <Text size="s" style={{ maxWidth: '100%' }} className="truncateText">
+          <Text
+            component="div"
+            size="s"
+            style={{ maxWidth: '100%' }}
+            className="truncateText"
+          >
             <div
               className="streamItemId truncateText"
               data-testid={`stream-entry-${id}`}

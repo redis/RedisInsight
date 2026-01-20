@@ -59,7 +59,9 @@ describe('colFactory', () => {
     expect(columns).toHaveLength(8)
     expect(columns.map((col) => col.id)).toContain(AutoDiscoverCloudIds.Modules)
     expect(columns[6].id).toBe(AutoDiscoverCloudIds.Modules)
-    expect(columns.map((col) => col.id)).not.toContain(AutoDiscoverCloudIds.Options)
+    expect(columns.map((col) => col.id)).not.toContain(
+      AutoDiscoverCloudIds.Options,
+    )
   })
 
   it('should include options column when at least one instance has options with truthy values', () => {
@@ -79,7 +81,9 @@ describe('colFactory', () => {
     expect(columns).toHaveLength(8)
     expect(columns.map((col) => col.id)).toContain(AutoDiscoverCloudIds.Options)
     expect(columns[6].id).toBe(AutoDiscoverCloudIds.Options)
-    expect(columns.map((col) => col.id)).not.toContain(AutoDiscoverCloudIds.Modules)
+    expect(columns.map((col) => col.id)).not.toContain(
+      AutoDiscoverCloudIds.Modules,
+    )
   })
   it('should include both modules and options columns when instances have both', () => {
     const instances = RedisCloudInstanceFactory.buildList(1, {

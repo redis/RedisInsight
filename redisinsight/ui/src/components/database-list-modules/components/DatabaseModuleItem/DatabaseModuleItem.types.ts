@@ -1,4 +1,4 @@
-import type { AllIconsType } from "uiSrc/components/base/icons"
+import type { AllIconsType } from 'uiSrc/components/base/icons'
 
 export interface DatabaseModuleItemProps {
   abbreviation?: string
@@ -7,4 +7,3 @@ export interface DatabaseModuleItemProps {
   inCircle?: boolean
   onCopy?: (text: string) => void
 }
-

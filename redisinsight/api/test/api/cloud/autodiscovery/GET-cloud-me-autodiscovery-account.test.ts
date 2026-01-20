@@ -5,22 +5,13 @@ import {
   Joi,
   nock,
   getMainCheckFn,
-  serverConfig,
 } from '../../deps';
-import {
-  mockCloudAccountInfo,
-  mockCloudApiCsrfToken,
-  mockCloudApiUser,
-  mockCloudCapiAccount,
-} from 'src/__mocks__';
-import { CustomErrorCodes } from 'src/constants';
+import { mockCloudAccountInfo, mockCloudCapiAccount } from 'src/__mocks__';
 import {
   initApiCapiKeysEnsureNockScope,
-  initApiUserProfileNockScope,
-  initSMApiNockScope,
   initSMCapiNockScope,
 } from '../constants';
-const { request, server, constants } = deps;
+const { request, server } = deps;
 
 const endpoint = () => request(server).get(`/cloud/me/autodiscovery/account`);
 

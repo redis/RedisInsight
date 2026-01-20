@@ -5,7 +5,11 @@ import {
   Session,
   SessionMetadata,
 } from 'src/common/models/session';
-import { DEFAULT_SESSION_ID, DEFAULT_USER_ID } from 'src/common/constants';
+import {
+  DEFAULT_ACCOUNT_ID,
+  DEFAULT_SESSION_ID,
+  DEFAULT_USER_ID,
+} from 'src/common/constants';
 import { SessionService } from 'src/modules/session/session.service';
 import { plainToInstance } from 'class-transformer';
 
@@ -19,6 +23,7 @@ export class SingleUserAuthMiddleware implements NestMiddleware {
         plainToInstance(Session, {
           id: DEFAULT_SESSION_ID,
           userId: DEFAULT_USER_ID,
+          accountId: DEFAULT_ACCOUNT_ID,
           data: {
             cloud: {
               accessToken: process.env.MOCK_AKEY || undefined,
@@ -34,6 +39,7 @@ export class SingleUserAuthMiddleware implements NestMiddleware {
       data: <ISessionMetadata>Object.freeze(
         plainToInstance(SessionMetadata, {
           userId: DEFAULT_USER_ID,
+          accountId: DEFAULT_ACCOUNT_ID,
           sessionId: DEFAULT_SESSION_ID,
         }),
       ),

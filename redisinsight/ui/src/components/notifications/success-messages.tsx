@@ -14,7 +14,7 @@ import {
 } from 'uiSrc/utils'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Text, Title } from 'uiSrc/components/base/text'
+import { Text } from 'uiSrc/components/base/text'
 import { Spacer } from 'uiSrc/components/base/layout'
 
 const Li = styled.li<React.HTMLAttributes<HTMLLIElement>>`
@@ -256,12 +256,14 @@ export default {
     return {
       title: (
         <>
-          <Title size="S">Action completed</Title>
+          <Text component="span" variant="semiBold">
+            Action completed
+          </Text>
           {fileName ? (
             <>
               <Spacer size="s" />
-              <Text>Commands executed from file:</Text>
-              <Text>{formatLongName(fileName, 34, 5)}</Text>
+              <Text component="span">Commands executed from file:</Text>
+              <Text component="span">{formatLongName(fileName, 34, 5)}</Text>
             </>
           ) : null}
           <Spacer size="m" />

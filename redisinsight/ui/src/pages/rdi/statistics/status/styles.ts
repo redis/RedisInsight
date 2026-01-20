@@ -15,6 +15,6 @@ export const StyledInfoPanel = styled(FlexItem)`
     theme.components.section.header.backgroundColor};
   border-radius: 0.4rem;
   padding: 8px 16px;
-  border: 1px solid ${({ theme }: { theme: Theme }) =>
-    theme.components.section.separator.color };
+  border: 1px solid
+    ${({ theme }: { theme: Theme }) => theme.components.section.separator.color};
 `

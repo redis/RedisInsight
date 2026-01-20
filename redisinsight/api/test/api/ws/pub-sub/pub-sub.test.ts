@@ -122,7 +122,7 @@ describe('pub-sub', function () {
               resolve(null);
             });
 
-            client.on('s:channel-b', (data) => {
+            client.on('s:channel-b', () => {
               reject(
                 new Error('Should not receive message-a in this listener-b'),
               );
@@ -316,7 +316,7 @@ describe('pub-sub', function () {
 
       expect(client instanceof Socket).to.eql(true);
 
-      await new Promise((resolve, reject) => {
+      await new Promise((resolve) => {
         client.emit('subscribe', { subscriptions: [subscription] }, (ack) => {
           expect(ack.status).to.eql('error');
           expect(ack.error.status).to.eql(403);
@@ -333,7 +333,7 @@ describe('pub-sub', function () {
 
       expect(client instanceof Socket).to.eql(true);
 
-      await new Promise((resolve, reject) => {
+      await new Promise((resolve) => {
         client.emit('subscribe', { subscriptions: [pSubscription] }, (ack) => {
           expect(ack.status).to.eql('error');
           expect(ack.error.status).to.eql(403);

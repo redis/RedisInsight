@@ -6,7 +6,7 @@ import {
   mockAiHistoryApiResponse,
 } from 'src/__mocks__';
 
-const { server, request, rte } = deps;
+const { server, request } = deps;
 
 // endpoint to test
 const endpoint = (id: string = mockAiChatId) =>

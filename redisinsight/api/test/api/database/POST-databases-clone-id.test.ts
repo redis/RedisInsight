@@ -112,7 +112,6 @@ describe(`POST /databases/clone/:id`, () => {
     ].map(mainCheckFn);
   });
   describe('Common', () => {
-    const dbName = constants.getRandomString();
     [
       {
         name: 'Should return 424 error if incorrect connection data provided',
@@ -436,7 +435,8 @@ describe(`POST /databases/clone/:id`, () => {
           },
           responseBody: {
             statusCode: 424,
-            message: 'Could not connect to redis:6379, please check the CA or Client certificate.',
+            message:
+              'Could not connect to redis:6379, please check the CA or Client certificate.',
             error: 'RedisConnectionIncorrectCertificateException',
           },
         });
@@ -464,7 +464,8 @@ describe(`POST /databases/clone/:id`, () => {
           },
           responseBody: {
             statusCode: 424,
-            message: 'Could not connect to redis:6379, please check the CA or Client certificate.',
+            message:
+              'Could not connect to redis:6379, please check the CA or Client certificate.',
             error: 'RedisConnectionIncorrectCertificateException',
           },
         });

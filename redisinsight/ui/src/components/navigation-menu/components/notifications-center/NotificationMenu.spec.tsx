@@ -25,7 +25,11 @@ beforeEach(() => {
   store.clearActions()
 })
 
-const sideBarWithNotificationMenu = <SideBar isExpanded={false}><NotificationMenu /></SideBar>
+const sideBarWithNotificationMenu = (
+  <SideBar isExpanded={false}>
+    <NotificationMenu />
+  </SideBar>
+)
 
 describe('NotificationMenu', () => {
   it('should render', () => {

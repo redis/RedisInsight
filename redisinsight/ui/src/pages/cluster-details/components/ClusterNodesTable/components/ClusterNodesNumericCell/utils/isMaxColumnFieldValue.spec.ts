@@ -145,4 +145,3 @@ describe('isMaxColumnFieldValue', () => {
     expect(isMaxColumnFieldValue('value', 10.5, data)).toBe(false)
   })
 })
-

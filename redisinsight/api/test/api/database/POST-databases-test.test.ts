@@ -198,7 +198,8 @@ describe('POST /databases/test', () => {
           },
           responseBody: {
             statusCode: 424,
-            message: 'Could not connect to redis:6379, please check the CA or Client certificate.',
+            message:
+              'Could not connect to redis:6379, please check the CA or Client certificate.',
             error: 'RedisConnectionIncorrectCertificateException',
           },
         });
@@ -220,7 +221,8 @@ describe('POST /databases/test', () => {
           },
           responseBody: {
             statusCode: 424,
-            message: 'Could not connect to redis:6379, please check the CA or Client certificate.',
+            message:
+              'Could not connect to redis:6379, please check the CA or Client certificate.',
             error: 'RedisConnectionIncorrectCertificateException',
           },
         });
@@ -228,11 +230,6 @@ describe('POST /databases/test', () => {
     });
     describe('TLS AUTH', function () {
       requirements('rte.tls', 'rte.tlsAuth');
-
-      let existingCACertId,
-        existingClientCertId,
-        existingCACertName,
-        existingClientCertName;
 
       after(localDb.initAgreements);
 
@@ -279,11 +276,6 @@ describe('POST /databases/test', () => {
     requirements('rte.type=STANDALONE', 'rte.ssh');
     describe('TLS AUTH', function () {
       requirements('rte.tls', 'rte.tlsAuth');
-
-      let existingCACertId,
-        existingClientCertId,
-        existingCACertName,
-        existingClientCertName;
 
       after(localDb.initAgreements);
 

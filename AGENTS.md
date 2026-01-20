@@ -54,6 +54,19 @@ yarn test:api          # Run all API tests
 yarn --cwd tests/e2e test
 ```
 
+### Run Specific Frontend Tests
+
+```bash
+# Run a specific test file
+node 'node_modules/.bin/jest' 'redisinsight/ui/src/path/to/Component.spec.tsx' -c 'jest.config.cjs'
+
+# Run a specific test by name (use -t flag)
+node 'node_modules/.bin/jest' 'redisinsight/ui/src/path/to/Component.spec.tsx' -c 'jest.config.cjs' -t 'test name pattern'
+
+# Example:
+node 'node_modules/.bin/jest' 'redisinsight/ui/src/slices/tests/browser/keys.spec.ts' -c 'jest.config.cjs' -t 'refreshKeyInfoAction'
+```
+
 ### Before Committing
 
 **ALWAYS run these before committing:**

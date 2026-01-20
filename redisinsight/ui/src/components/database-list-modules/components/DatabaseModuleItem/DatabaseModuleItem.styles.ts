@@ -1,12 +1,12 @@
-import styled, { css } from "styled-components"
+import styled, { css } from 'styled-components'
 
 import {
   IconButton,
   type IconButtonProps,
-} from "uiSrc/components/base/forms/buttons/IconButton"
-import { ColorText } from "uiSrc/components/base/text"
-import { Theme } from "uiSrc/components/base/theme/types"
-import type { ColorTextProps } from "uiSrc/components/base/text/text.styles"
+} from 'uiSrc/components/base/forms/buttons/IconButton'
+import { ColorText } from 'uiSrc/components/base/text'
+import { Theme } from 'uiSrc/components/base/theme/types'
+import type { ColorTextProps } from 'uiSrc/components/base/text/text.styles'
 
 type StyledIconButtonProps = IconButtonProps & { $inCircle?: boolean }
 
@@ -49,4 +49,3 @@ export const StyledColorText = styled(ColorText)<StyledColorTextProps>`
 
   ${({ $inCircle }) => $inCircle && inCircleStyles}
 `
-

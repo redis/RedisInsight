@@ -116,7 +116,17 @@ const KeyTree = forwardRef((props: Props, ref) => {
       // remove key name from parents
       parents.pop()
 
-      parents.forEach((parent) => handleStatusOpen(parent, true))
+      if (parents.length === 0) return
+
+      // Use functional update to avoid stale closure issues
+      setStatusOpen((prevState) => {
+        const newOpenNodes = { ...prevState }
+        parents.forEach((parent) => {
+          newOpenNodes[parent] = true
+        })
+        dispatch(setBrowserTreeNodesOpen(newOpenNodes))
+        return newOpenNodes
+      })
     }
   }
 

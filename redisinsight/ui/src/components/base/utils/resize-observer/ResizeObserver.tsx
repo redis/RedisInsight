@@ -14,7 +14,6 @@ export const RIResizeObserver: React.FC<RIResizeObserverProps> = ({
   useEffect(() => {
     const element = containerRef.current
     if (element) {
-
       const observer = new window.ResizeObserver(([entry]) => {
         const { width, height } = entry.contentRect
         onResize({ width, height })

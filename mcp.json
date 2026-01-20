@@ -32,6 +32,10 @@
         "ghcr.io/sooperset/mcp-atlassian:latest"
       ],
       "description": "Atlassian MCP server for managing JIRA projects (RI-XXX tickets) and Confluence content"
+    },
+    "figma": {
+      "url": "https://mcp.figma.com/mcp",
+      "description": "Figma MCP server for accessing design files, frames, and layers. Copy a Figma frame/layer link to provide design context in prompts."
     }
   }
 }

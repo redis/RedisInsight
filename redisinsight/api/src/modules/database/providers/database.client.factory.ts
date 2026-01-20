@@ -62,7 +62,7 @@ export class DatabaseClientFactory {
     try {
       this.logger.debug('Creating new client', { clientId });
       const newClient = await this.createClient(clientMetadata);
-      this.redisClientStorage.set(newClient);
+      await this.redisClientStorage.set(newClient);
 
       resolve(newClient);
 

@@ -1,5 +1,4 @@
 import { RdiUrl } from 'src/modules/rdi/constants';
-import { sign } from 'jsonwebtoken';
 import { describe, expect, deps, getMainCheckFn } from '../../deps';
 import { nock } from '../../../helpers/test';
 import { CustomErrorCodes } from 'src/constants';

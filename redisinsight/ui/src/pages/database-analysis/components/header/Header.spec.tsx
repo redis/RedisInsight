@@ -135,7 +135,11 @@ describe('DatabaseAnalysisHeader', () => {
 
   it('should show "Analyze" text on the start analysis button', async () => {
     render(
-      <Header {...instance(mockedProps)} items={mockReports} progress={mockProgress} />,
+      <Header
+        {...instance(mockedProps)}
+        items={mockReports}
+        progress={mockProgress}
+      />,
     )
 
     const analizeButtonId = screen.getByTestId('start-database-analysis-btn')

@@ -123,7 +123,7 @@ describe('PATCH /settings', () => {
         data: { scanThreshold: null, theme: null, batchSize: null },
         responseSchema,
         checkFn: ({ body }) => {
-          const { agreements, ...defaultSettings } =
+          const { agreements: _agreements, ...defaultSettings } =
             constants.APP_DEFAULT_SETTINGS;
 
           expect(body).to.include(defaultSettings);
@@ -159,7 +159,7 @@ describe('PATCH /settings', () => {
         data: { agreements: allAcceptedAgreements },
         responseSchema,
         checkFn: ({ body }) => {
-          const { agreements, ...defaultSettings } =
+          const { agreements: _agreements, ...defaultSettings } =
             constants.APP_DEFAULT_SETTINGS;
 
           expect(body).to.include(defaultSettings);
@@ -175,7 +175,7 @@ describe('PATCH /settings', () => {
         data: { agreements: { analytics: false } },
         responseSchema,
         checkFn: ({ body }) => {
-          const { agreements, ...defaultSettings } =
+          const { agreements: _agreements, ...defaultSettings } =
             constants.APP_DEFAULT_SETTINGS;
 
           expect(body).to.include(defaultSettings);

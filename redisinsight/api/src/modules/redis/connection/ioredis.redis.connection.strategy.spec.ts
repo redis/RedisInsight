@@ -218,6 +218,18 @@ describe('IoredisRedisConnectionStrategy', () => {
         .then(fail)
         .catch(checkError(done));
     });
+    it('should include family: 0 for dual-stack IPv4/IPv6 support', (done) => {
+      service
+        .createStandaloneClient(mockClientMetadata, mockDatabase, {})
+        .then(() => {
+          expect(spyRedis).toHaveBeenCalledWith(
+            expect.objectContaining({ family: 0 }),
+          );
+          done();
+        });
+
+      process.nextTick(() => mockIoredisNativeClient.emit('ready'));
+    });
   });
 
   describe('createClusterClient', () => {

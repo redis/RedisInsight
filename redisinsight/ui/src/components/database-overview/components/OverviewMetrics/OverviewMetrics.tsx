@@ -29,6 +29,7 @@ interface Props {
     networkInKbps?: Nullable<number>
     networkOutKbps?: Nullable<number>
     cpuUsagePercentage?: Nullable<number>
+    maxCpuUsagePercentage?: Nullable<number>
     totalKeysPerDb?: Nullable<{ [key: string]: number }>
     cloudDetails?: {
       cloudId: number
@@ -58,10 +59,45 @@ export interface IMetric {
   children?: Array<IMetric>
 }
 
+export function getCpuDisplayValue(
+  cpuUsagePercentage: number | null,
+): string | null {
+  return cpuUsagePercentage !== null
+    ? `${truncatePercentage(cpuUsagePercentage, 2)} %`
+    : null
+}
+
+export function getCpuTooltipValue(
+  cpuUsagePercentage: number | null,
+  maxCpuUsagePercentage?: number | null,
+): string | null {
+  const hasMaxCpu =
+    maxCpuUsagePercentage !== undefined &&
+    maxCpuUsagePercentage !== null &&
+    maxCpuUsagePercentage > 100
+
+  if (hasMaxCpu && cpuUsagePercentage !== null) {
+    return `${truncatePercentage(cpuUsagePercentage, 4)}% / ${maxCpuUsagePercentage}%`
+  }
+
+  if (cpuUsagePercentage !== null) {
+    return `${truncatePercentage(cpuUsagePercentage, 4)}%`
+  }
+
+  return null
+}
+
 function getCpuUsage(
   cpuUsagePercentage: number | null,
   theme: string,
+  maxCpuUsagePercentage?: number | null,
 ): IMetric {
+  const displayValue = getCpuDisplayValue(cpuUsagePercentage)
+  const tooltipValue = getCpuTooltipValue(
+    cpuUsagePercentage,
+    maxCpuUsagePercentage,
+  )
+
   return {
     id: 'overview-cpu',
     title: 'CPU',
@@ -76,8 +112,7 @@ function getCpuUsage(
           'Calculating in progress'
         ) : (
           <>
-            <b>{truncatePercentage(cpuUsagePercentage, 4)}</b>
-            &nbsp;%
+            <b>{tooltipValue}</b>
           </>
         ),
     },
@@ -97,7 +132,7 @@ function getCpuUsage(
           </div>
         </>
       ) : (
-        `${truncatePercentage(cpuUsagePercentage, 2)} %`
+        displayValue
       ),
   }
 }
@@ -348,6 +383,7 @@ export const getOverviewMetrics = ({
     totalKeys,
     connectedClients,
     cpuUsagePercentage,
+    maxCpuUsagePercentage,
     opsPerSecond,
     networkInKbps,
     networkOutKbps,
@@ -359,7 +395,9 @@ export const getOverviewMetrics = ({
 
   // CPU
   if (!isUndefined(cpuUsagePercentage)) {
-    availableItems.push(getCpuUsage(cpuUsagePercentage, theme))
+    availableItems.push(
+      getCpuUsage(cpuUsagePercentage, theme, maxCpuUsagePercentage),
+    )
   }
 
   if (!isUndefined(opsPerSecond)) {

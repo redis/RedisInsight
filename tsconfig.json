@@ -41,7 +41,8 @@
     "redisinsight/desktop/**/*",
     "redisinsight/ui/vite-env.d.ts",
     "jest.config.cjs",
-    "tests/playwright/**/*"
+    "tests/playwright/**/*",
+    "stories/**/*"
   ],
   "exclude": [
     "redisinsight/desktop/dll/*",

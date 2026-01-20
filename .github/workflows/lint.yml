@@ -1,0 +1,31 @@
+name: Lint
+
+on:
+  workflow_call:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: ESLint
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        uses: ./.github/actions/install-all-build-libs
+        with:
+          skip-system-deps: '1'
+
+      - name: Restore ESLint cache
+        uses: actions/cache@v4
+        with:
+          path: .eslintcache
+          key: eslint-${{ runner.os }}-${{ hashFiles('.eslintrc.js') }}-${{ github.ref_name }}
+          restore-keys: |
+            eslint-${{ runner.os }}-${{ hashFiles('.eslintrc.js') }}-
+
+      - name: Run ESLint
+        run: yarn lint

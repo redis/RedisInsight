@@ -79,6 +79,7 @@ export abstract class RdiClient {
 
     const uId = [
       cm.sessionMetadata?.userId || empty,
+      cm.sessionMetadata?.accountId || empty,
       cm.sessionMetadata?.sessionId || empty,
       cm.sessionMetadata?.uniqueId || empty,
     ].join(separator);

@@ -1,7 +1,6 @@
 import {
   expect,
   describe,
-  it,
   before,
   deps,
   Joi,
@@ -9,7 +8,6 @@ import {
   requirements,
   generateInvalidDataTestCases,
   validateInvalidDataTestCase,
-  validateApiCall,
   getMainCheckFn,
 } from '../deps';
 const { server, request, constants, rte } = deps;

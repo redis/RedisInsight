@@ -22,4 +22,3 @@ export const databaseColumn = (): ColumnDef<InstanceRedisCluster> => {
     }) => <DatabaseCell name={name} />,
   }
 }
-

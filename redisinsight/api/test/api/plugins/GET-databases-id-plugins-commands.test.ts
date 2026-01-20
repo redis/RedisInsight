@@ -1,6 +1,6 @@
 import { describe, it, deps, validateApiCall, before, expect } from '../deps';
 import { Joi } from '../../helpers/test';
-const { localDb, request, server, constants, rte } = deps;
+const { localDb, request, server, constants } = deps;
 
 const endpoint = (instanceId = constants.TEST_INSTANCE_ID) =>
   request(server).get(
