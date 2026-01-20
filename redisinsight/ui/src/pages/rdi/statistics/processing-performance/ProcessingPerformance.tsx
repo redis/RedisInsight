@@ -1,12 +1,12 @@
 import React from 'react'
 
+import { Section } from '@redis-ui/components'
 import { IProcessingPerformance } from 'uiSrc/slices/interfaces'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import VerticalDivider from '../components/vertical-divider'
 
-import { Section } from '@redis-ui/components'
 import { Text } from 'uiSrc/components/base/text'
 import { StyledInfoPanel } from 'uiSrc/pages/rdi/statistics/status/styles'
+import VerticalDivider from '../components/vertical-divider'
 
 const InfoPanel = ({
   label,
@@ -53,7 +53,7 @@ const ProcessingPerformance = ({
     <Section.Compose collapsible defaultOpen id="processing-performance-info">
       <Section.Header.Compose>
         <Section.Header.Label label="Processing performance information" />
-        <Section.Header.CollapseIndicator />
+        <Section.Header.CollapseButton />
       </Section.Header.Compose>
       <Section.Body
         content={
