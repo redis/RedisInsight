@@ -13,7 +13,7 @@ import {
 } from '@testing-library/react'
 
 import { ThemeProvider } from 'styled-components'
-import { themeLight } from '@redis-ui/styles'
+import { theme } from '@redis-ui/styles'
 import userEvent from '@testing-library/user-event'
 import type { RootState, ReduxStore } from 'uiSrc/slices/store'
 import { initialState as initialStateInstances } from 'uiSrc/slices/instances/instances'
@@ -193,7 +193,7 @@ const render = (
   }
 
   const Wrapper = ({ children }: { children: JSX.Element }) => (
-    <ThemeProvider theme={themeLight}>
+    <ThemeProvider theme={theme}>
       <Provider store={store}>{children}</Provider>
     </ThemeProvider>
   )

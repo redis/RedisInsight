@@ -3,14 +3,14 @@ import { ThemeProvider as StyledThemeProvider } from 'styled-components'
 import {
   theme as redisUiOldTheme,
   CommonStyles,
-  themeLight,
-  themeDark,
+  themesDefault,
 } from '@redis-ui/styles'
 import 'modern-normalize/modern-normalize.css'
 import '@redis-ui/styles/normalized-styles.css'
 import '@redis-ui/styles/fonts.css'
 
 import { ipcThemeChange } from 'uiSrc/electron/utils/ipcThemeChange'
+import { GlobalStyles } from 'uiSrc/styles/globalStyles'
 import {
   BrowserStorageItem,
   Theme,
@@ -19,12 +19,12 @@ import {
   DEFAULT_THEME,
 } from '../constants'
 import { localStorageService, themeService } from '../services'
-import { GlobalStyles } from 'uiSrc/styles/globalStyles'
 
 interface Props {
   children: React.ReactNode
 }
 
+const { light: themeLight, dark: themeDark } = themesDefault
 const THEME_NAMES = THEMES.map(({ value }) => value)
 
 const getQueryTheme = () => {
