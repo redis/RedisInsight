@@ -24,7 +24,8 @@ export const StyledDisabledBar = styled.div`
   /* Theme adjustments TODO: add radii scale */
   border-radius: ${({ theme }) => theme.core.space.space025};
   /* Theme adjustments TODO: border width scale */
-  border-bottom: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
+  border-bottom: 1px solid
+    ${({ theme }) => theme.semantic.color.border.neutral500};
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 `
