@@ -49,7 +49,7 @@ export class AzureEntraIdCredentialStrategy implements CredentialStrategy {
 
     return {
       ...database,
-      username: database.username, // TODO: maybe get this from MSAL as well
+      username: tokenResult.username,
       password: tokenResult.token,
     };
   }

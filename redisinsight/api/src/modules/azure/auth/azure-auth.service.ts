@@ -254,11 +254,12 @@ export class AzureAuthService {
 
   /**
    * Get a Redis-scoped token for a specific Azure account.
-   * Used for proactive token refresh.
+   * Used for proactive token refresh and credential resolution.
+   * Returns the token, expiration, and username (OID) for Redis AUTH.
    */
   async getRedisTokenByAccountId(
     accountId: string,
-  ): Promise<{ token: string; expiresOn: Date } | null> {
+  ): Promise<{ token: string; expiresOn: Date; username: string } | null> {
     if (!accountId) {
       this.logger.warn('No account ID provided for Redis token');
       return null;
@@ -287,6 +288,8 @@ export class AzureAuthService {
       return {
         token: response.accessToken,
         expiresOn: response.expiresOn || new Date(),
+        // Use the Object ID (localAccountId) as username for Redis AUTH
+        username: account.localAccountId,
       };
     } catch (error: any) {
       this.logger.error(
