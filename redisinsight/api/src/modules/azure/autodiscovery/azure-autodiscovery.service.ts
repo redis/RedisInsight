@@ -12,8 +12,10 @@ import {
   AzureRedisDatabase,
   AzureConnectionDetails,
 } from '../models/azure-resource.models';
+import { asyncPoolSettled } from '../utils/async-pool';
 
 const DEFAULT_SESSION_ID = 'default';
+const MAX_CONCURRENT_REQUESTS = 20;
 
 @Injectable()
 export class AzureAutodiscoveryService {
@@ -66,22 +68,28 @@ export class AzureAutodiscoveryService {
   }
 
   /**
-   * List all Redis databases across all subscriptions
+   * List all Redis databases across all subscriptions.
+   * Fetches databases from multiple subscriptions in parallel with concurrency limit.
    */
   async listDatabases(): Promise<AzureRedisDatabase[]> {
     const subscriptions = await this.listSubscriptions();
-    const databases: AzureRedisDatabase[] = [];
 
-    for (const sub of subscriptions) {
-      const subDatabases = await this.listDatabasesInSubscription(sub);
-      databases.push(...subDatabases);
-    }
+    this.logger.log(
+      `Fetching databases from ${subscriptions.length} subscriptions (max ${MAX_CONCURRENT_REQUESTS} concurrent)`,
+    );
 
-    return databases;
+    const results = await asyncPoolSettled(
+      subscriptions,
+      (sub) => this.listDatabasesInSubscription(sub),
+      MAX_CONCURRENT_REQUESTS,
+    );
+
+    return results.flat();
   }
 
   /**
-   * List Redis databases in a specific subscription
+   * List Redis databases in a specific subscription.
+   * Fetches standard and enterprise Redis in parallel.
    */
   async listDatabasesInSubscription(
     subscription: AzureSubscription,
@@ -92,46 +100,74 @@ export class AzureAutodiscoveryService {
       return [];
     }
 
-    const databases: AzureRedisDatabase[] = [];
+    // Fetch standard and enterprise Redis in parallel
+    const [standardDatabases, enterpriseDatabases] = await Promise.all([
+      this.fetchStandardRedis(client, subscription),
+      this.fetchEnterpriseRedis(client, subscription),
+    ]);
 
-    // Fetch standard Azure Cache for Redis
+    return [...standardDatabases, ...enterpriseDatabases];
+  }
+
+  /**
+   * Fetch standard Azure Cache for Redis instances in a subscription.
+   */
+  private async fetchStandardRedis(
+    client: AxiosInstance,
+    subscription: AzureSubscription,
+  ): Promise<AzureRedisDatabase[]> {
     try {
-      const standardResponse = await client.get(
+      const response = await client.get(
         `/subscriptions/${subscription.subscriptionId}/providers/Microsoft.Cache/redis?api-version=${API_VERSION_REDIS}`,
       );
 
-      for (const redis of standardResponse.data.value || []) {
-        databases.push(this.mapStandardRedis(redis, subscription));
-      }
+      return (response.data.value || []).map((redis: any) =>
+        this.mapStandardRedis(redis, subscription),
+      );
     } catch (error: any) {
       this.logger.warn(
         `Failed to list standard Redis in ${subscription.displayName}`,
         error?.message,
       );
+      return [];
     }
+  }
 
-    // Fetch Azure Managed Redis / Redis Enterprise
+  /**
+   * Fetch Azure Managed Redis / Redis Enterprise instances in a subscription.
+   * Fetches databases from multiple clusters in parallel.
+   */
+  private async fetchEnterpriseRedis(
+    client: AxiosInstance,
+    subscription: AzureSubscription,
+  ): Promise<AzureRedisDatabase[]> {
     try {
-      const enterpriseResponse = await client.get(
+      const response = await client.get(
         `/subscriptions/${subscription.subscriptionId}/providers/Microsoft.Cache/redisEnterprise?api-version=${API_VERSION_REDIS_ENTERPRISE}`,
       );
 
-      for (const cluster of enterpriseResponse.data.value || []) {
-        const clusterDatabases = await this.listEnterpriseDatabases(
-          client,
-          cluster,
-          subscription,
-        );
-        databases.push(...clusterDatabases);
+      const clusters = response.data.value || [];
+
+      if (clusters.length === 0) {
+        return [];
       }
+
+      // Fetch databases from all clusters in parallel
+      const results = await asyncPoolSettled(
+        clusters,
+        (cluster: any) =>
+          this.listEnterpriseDatabases(client, cluster, subscription),
+        MAX_CONCURRENT_REQUESTS,
+      );
+
+      return results.flat();
     } catch (error: any) {
       this.logger.warn(
         `Failed to list enterprise Redis in ${subscription.displayName}`,
         error?.message,
       );
+      return [];
     }
-
-    return databases;
   }
 
   private mapStandardRedis(
