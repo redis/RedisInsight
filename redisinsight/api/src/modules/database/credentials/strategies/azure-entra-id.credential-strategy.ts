@@ -1,4 +1,5 @@
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 import { Database } from 'src/modules/database/models/database';
 import { isAzureEntraIdAuth } from 'src/modules/database/models/provider-details';
 import { AzureAuthService } from 'src/modules/azure/auth/azure-auth.service';
@@ -47,10 +48,17 @@ export class AzureEntraIdCredentialStrategy implements CredentialStrategy {
       `Token acquired for database ${database.id}, expires at ${tokenResult.expiresOn.toISOString()}`,
     );
 
-    return {
-      ...database,
-      username: tokenResult.username,
-      password: tokenResult.token,
-    };
+    // Use plainToInstance to ensure the result is a proper Database class instance
+    const resolved = plainToInstance(
+      Database,
+      {
+        ...database,
+        username: tokenResult.username,
+        password: tokenResult.token,
+      },
+      { excludeExtraneousValues: true, groups: ['security'] },
+    );
+
+    return resolved;
   }
 }
