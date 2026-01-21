@@ -237,11 +237,10 @@ const clearStoreActions = (actions: any[]) => {
   const newActions = map(actions, (action) => {
     const newAction = { ...action }
     if (newAction?.payload) {
-      const payload =
-        {
-          ...first<any>(newAction.payload),
-          key: '',
-        } || {}
+      const payload = {
+        ...first<any>(newAction.payload),
+        key: '',
+      }
       newAction.payload = [payload]
     }
     return newAction
