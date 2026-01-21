@@ -19,12 +19,12 @@ export const StyledText = styled(Text)`
 
 export const StyledDisabledBar = styled.div`
   padding: ${({ theme }) => theme.core.space.space025} 0;
-  background: ${({ theme }) => theme.color.dusk100};
-  color: ${({ theme }) => theme.color.dusk400};
+  background: ${({ theme }) => theme.semantic.color.background.secondary100};
+  color: ${({ theme }) => theme.semantic.color.text.secondary400};
   /* Theme adjustments TODO: add radii scale */
   border-radius: ${({ theme }) => theme.core.space.space025};
   /* Theme adjustments TODO: border width scale */
-  border-bottom: 1px solid ${({ theme }) => theme.color.gray500};
+  border-bottom: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 `

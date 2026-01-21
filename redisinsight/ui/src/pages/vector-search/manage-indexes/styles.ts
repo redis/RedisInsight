@@ -9,7 +9,7 @@ export const Title = styled(Text)`
   margin-top: ${({ theme }) => theme.core?.space.space100};
   margin-bottom: ${({ theme }) => theme.core?.space.space100};
   font-weight: bold;
-  color: ${({ theme }) => theme.color.danger500};
+  color: ${({ theme }) => theme.semantic.color.text.danger500};
 `
 
 export const IconWrapper = styled.div`
