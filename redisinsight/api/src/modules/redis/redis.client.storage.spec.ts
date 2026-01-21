@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import {
   generateMockRedisClient,
-  mockAzureTokenRefreshManager,
   mockDatabase,
   mockInvalidClientMetadataError,
   mockInvalidSessionMetadataError,
@@ -16,7 +16,6 @@ import { RedisClientStorage } from 'src/modules/redis/redis.client.storage';
 import apiConfig from 'src/utils/config';
 import { BadRequestException } from '@nestjs/common';
 import { RedisClient } from 'src/modules/redis/client';
-import { AzureTokenRefreshManager } from 'src/modules/azure/azure-token-refresh.manager';
 
 const REDIS_CLIENTS_CONFIG = apiConfig.get('redis_clients');
 
@@ -60,15 +59,21 @@ describe('RedisClientStorage', () => {
     sessionMetadata: { userId: 'u2', sessionId: 's4', accountId: 'a3' },
   });
 
+  let mockEventEmitter: jest.Mocked<EventEmitter2>;
+
   beforeEach(async () => {
     jest.clearAllMocks();
+
+    mockEventEmitter = {
+      emit: jest.fn(),
+    } as unknown as jest.Mocked<EventEmitter2>;
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         RedisClientStorage,
         {
-          provide: AzureTokenRefreshManager,
-          useFactory: mockAzureTokenRefreshManager,
+          provide: EventEmitter2,
+          useValue: mockEventEmitter,
         },
       ],
     }).compile();

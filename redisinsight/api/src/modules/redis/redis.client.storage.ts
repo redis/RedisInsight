@@ -1,8 +1,12 @@
 import { isMatch, sum } from 'lodash';
-import { Injectable, Logger, Inject, forwardRef } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { RedisClient } from 'src/modules/redis/client';
 import { ClientMetadata } from 'src/common/models';
-import { AzureTokenRefreshManager } from 'src/modules/azure/azure-token-refresh.manager';
+import {
+  RedisClientEvents,
+  RedisClientLifecycleEvent,
+} from 'src/modules/redis/constants';
 import apiConfig from 'src/utils/config';
 
 const REDIS_CLIENTS_CONFIG = apiConfig.get('redis_clients');
@@ -15,10 +19,7 @@ export class RedisClientStorage {
 
   private readonly syncInterval: NodeJS.Timeout;
 
-  constructor(
-    @Inject(forwardRef(() => AzureTokenRefreshManager))
-    private readonly azureTokenRefreshManager: AzureTokenRefreshManager,
-  ) {
+  constructor(private readonly eventEmitter: EventEmitter2) {
     this.syncInterval = setInterval(
       this.syncClients.bind(this),
       REDIS_CLIENTS_CONFIG.syncInterval,
@@ -41,11 +42,7 @@ export class RedisClientStorage {
     try {
       this.clients.forEach((client) => {
         if (client.isIdle()) {
-          // Cancel any scheduled Azure token refresh
-          this.azureTokenRefreshManager.onClientRemoved(
-            client.id,
-            client.clientMetadata.databaseId,
-          );
+          this.emitClientRemoved(client.id, client.clientMetadata.databaseId);
 
           client
             .disconnect()
@@ -58,6 +55,22 @@ export class RedisClientStorage {
     } catch (e) {
       // ignore errors;
     }
+  }
+
+  /**
+   * Emit client stored event for lifecycle listeners
+   */
+  private emitClientStored(clientId: string, databaseId: string): void {
+    const event: RedisClientLifecycleEvent = { clientId, databaseId };
+    this.eventEmitter.emit(RedisClientEvents.ClientStored, event);
+  }
+
+  /**
+   * Emit client removed event for lifecycle listeners
+   */
+  private emitClientRemoved(clientId: string, databaseId: string): void {
+    const event: RedisClientLifecycleEvent = { clientId, databaseId };
+    this.eventEmitter.emit(RedisClientEvents.ClientRemoved, event);
   }
 
   /**
@@ -132,8 +145,8 @@ export class RedisClientStorage {
         return this.get(id);
       }
 
-      // Notify manager that existing client is being replaced
-      this.azureTokenRefreshManager.onClientRemoved(
+      // Notify listeners that existing client is being replaced
+      this.emitClientRemoved(
         existingClient.id,
         existingClient.clientMetadata.databaseId,
       );
@@ -142,11 +155,8 @@ export class RedisClientStorage {
 
     this.clients.set(id, client);
 
-    // Notify Azure token refresh manager about new client
-    // This is async but we don't need to wait for it
-    this.azureTokenRefreshManager
-      .onClientStored(id, client.clientMetadata.databaseId)
-      .catch((e) => this.logger.warn('Failed to setup Azure token refresh', e));
+    // Notify listeners about new client (e.g., for token refresh setup)
+    this.emitClientStored(id, client.clientMetadata.databaseId);
 
     return client;
   }
@@ -160,11 +170,7 @@ export class RedisClientStorage {
     const client = this.clients.get(id);
 
     if (client) {
-      // Cancel any scheduled Azure token refresh
-      this.azureTokenRefreshManager.onClientRemoved(
-        id,
-        client.clientMetadata.databaseId,
-      );
+      this.emitClientRemoved(id, client.clientMetadata.databaseId);
 
       await client
         .disconnect()
