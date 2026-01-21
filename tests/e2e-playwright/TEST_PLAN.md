@@ -19,7 +19,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ---
 
-## 0. Navigation & Global UI (🔲 Not Implemented)
+## 0. Navigation & Global UI
 
 ### 0.1 Main Navigation
 | Status | Group | Test Case |
@@ -72,7 +72,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ---
 
-## 1. Database Management (🔲 Not Implemented)
+## 1. Database Management
 
 ### 1.1 Add Database
 | Status | Group | Test Case |
@@ -198,7 +198,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ---
 
-## 2. Browser Page (🔲 Not Implemented)
+## 2. Browser Page
 
 ### 2.1 Key List View
 | Status | Group | Test Case |
@@ -218,7 +218,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | Configure auto-refresh |
 | 🔲 | main | View database stats (CPU, Keys, Memory, Clients) |
 
-### 2.2 Key Tree View (🔲 Not Implemented)
+### 2.2 Key Tree View
 | Status | Group | Test Case |
 |--------|-------|-----------|
 | 🔲 | main | Switch to tree view |
@@ -236,7 +236,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | Verify namespace tooltip shows key pattern and delimiter |
 | 🔲 | main | Scan DB by 10K keys in tree view |
 
-### 2.3 Add Keys (🔲 Not Implemented)
+### 2.3 Add Keys
 | Status | Group | Test Case |
 |--------|-------|-----------|
 | 🔲 | main | Add String key |
@@ -261,7 +261,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | Rename key and confirm new name propagates across Browser |
 | 🔲 | main | Confirm TTL countdown updates in real time |
 
-### 2.5 Key Details - Hash (🔲 Not Implemented)
+### 2.5 Key Details - Hash
 | Status | Group | Test Case |
 |--------|-------|-----------|
 | 🔲 | main | View hash fields |
@@ -280,7 +280,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | Remove element |
 | 🔲 | main | Search by index |
 
-### 2.7 Key Details - Set (🔲 Not Implemented)
+### 2.7 Key Details - Set
 | Status | Group | Test Case |
 |--------|-------|-----------|
 | 🔲 | main | View set members |
@@ -288,7 +288,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | Remove member |
 | 🔲 | main | Search members |
 
-### 2.8 Key Details - Sorted Set (🔲 Not Implemented)
+### 2.8 Key Details - Sorted Set
 | Status | Group | Test Case |
 |--------|-------|-----------|
 | 🔲 | main | View sorted set members |
@@ -298,7 +298,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | Search members |
 | 🔲 | main | Sort by score/member |
 
-### 2.9 Key Details - Stream (🔲 Not Implemented)
+### 2.9 Key Details - Stream
 | Status | Group | Test Case |
 |--------|-------|-----------|
 | 🔲 | main | View stream entries |
@@ -422,7 +422,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ---
 
-## 3. Workbench (🔲 Not Implemented)
+## 3. Workbench
 
 ### 3.1 Command Execution
 | Status | Group | Test Case |
@@ -511,7 +511,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ---
 
-## 4. CLI (🔲 Not Implemented)
+## 4. CLI
 
 ### 4.1 CLI Panel
 | Status | Group | Test Case |
@@ -538,7 +538,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ---
 
-## 5. Pub/Sub (🔲 Not Implemented)
+## 5. Pub/Sub
 
 ### 5.1 Subscribe
 | Status | Group | Test Case |
@@ -581,7 +581,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ---
 
-## 6. Analytics (🔲 Not Implemented)
+## 6. Analytics
 
 ### 6.1 Slow Log
 | Status | Group | Test Case |
@@ -639,7 +639,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | Test profiler behavior under heavy load (thousands of commands/minute) |
 
 ### 6.3 Cluster Details
-> ⚠️ **SKIPPED**: Requires properly configured OSS Cluster infrastructure (multiple nodes)
+> ⚠️ Requires properly configured OSS Cluster infrastructure (multiple nodes)
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -656,7 +656,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ---
 
-## 7. Settings (🔲 Not Implemented)
+## 7. Settings
 
 ### 7.1 General Settings
 | Status | Group | Test Case |
@@ -696,7 +696,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ---
 
-## 8. Vector Search (🔲 Not Implemented)
+## 8. Vector Search
 
 ### 8.1 Index Management
 | Status | Group | Test Case |
@@ -716,9 +716,9 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ---
 
-## 9. Redis Cloud Integration (🔲 Not Implemented)
+## 9. Redis Cloud Integration
 
-> **Note**: Requires Redis Cloud account credentials. Skipped - external dependency.
+> ⚠️ Requires Redis Cloud account credentials.
 
 ### 9.1 Auto-Discovery
 | Status | Group | Test Case |
@@ -730,9 +730,9 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ---
 
-## 10. Sentinel (🔲 Not Implemented)
+## 10. Sentinel
 
-> **Note:** Sentinel tests are skipped due to external dependencies (requires Sentinel infrastructure).
+> ⚠️ Sentinel tests require external dependencies (requires Sentinel infrastructure).
 > These tests should be run in environments with Sentinel setup available.
 
 ### 10.1 Sentinel Discovery
@@ -744,9 +744,9 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ---
 
-## 11. RDI - Redis Data Integration (🔲 Not Implemented)
+## 11. RDI - Redis Data Integration
 
-> **Note:** RDI tests are skipped due to external dependencies (requires RDI backend services).
+> ⚠️ RDI require external dependencies (requires RDI backend services).
 > These tests should be run in environments with RDI infrastructure available.
 
 ### 11.1 RDI Instance Management
@@ -967,7 +967,8 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | Verify all Redis Stack modules listed (Query Engine, Graph, Probabilistic, JSON, Time Series) |
 
 ### 12.12 Feature Flags / Remote Config
-> ⏸️ **Skipped**: Internal testing feature - remote config management
+> ⚠️ Internal testing feature - remote config management
+
 | Status | Group | Test Case |
 |--------|-------|-----------|
 | 🔲 | main | Apply default config when remote config version is lower |
@@ -1009,7 +1010,8 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | Command results ordered most recent on top |
 
 ### 12.16 Cypher / Graph Syntax (FalkorDB)
-> ⏸️ **Skipped**: Requires FalkorDB/Graph module
+> ⚠️ Requires FalkorDB/Graph module
+
 | Status | Group | Test Case |
 |--------|-------|-----------|
 | 🔲 | main | Open Cypher popover editor with "Use Cypher Syntax" |
