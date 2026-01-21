@@ -26,7 +26,7 @@ const constructKeysToTreeTests: any[] = [
 ]
 
 const removeIds = (nodes: any[]) =>
-  nodes.map(({ children, id, ...rest }) => ({
+  nodes.map(({ children, id: _id, ...rest }) => ({
     ...rest,
     children: removeIds(children),
   }))

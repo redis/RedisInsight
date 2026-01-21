@@ -109,7 +109,8 @@ export const Colors = () => {
 
   const filteredSemanticColors = Object.keys(semanticColors).reduce(
     (acc, colorSection) => {
-      const tempColors = semanticColors[colorSection as keyof typeof semanticColors]
+      const tempColors =
+        semanticColors[colorSection as keyof typeof semanticColors]
       Object.entries(tempColors).forEach(([colorName, color]) => {
         if (!search || regex.test(colorName)) {
           semanticCount++
@@ -123,18 +124,8 @@ export const Colors = () => {
     },
     {} as Record<string, Record<string, string>>,
   )
-  const filteredRootColors = Object.entries(rootColors).filter(
-    ([colorName]) => {
-      if (!search) {
-        return true
-      }
-      // Create regex pattern: each character from search with .* in between
-      // Escape special regex characters
-      const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-      const pattern = escapedSearch.split('').join('.*')
-      const regex = new RegExp(pattern, 'i')
-      return regex.test(colorName)
-    },
+  const filteredRootColors = Object.entries(rootColors).filter(([colorName]) =>
+    !search ? true : regex.test(colorName),
   )
 
   return (

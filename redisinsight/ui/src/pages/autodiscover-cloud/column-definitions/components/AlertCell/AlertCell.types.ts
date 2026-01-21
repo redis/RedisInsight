@@ -4,4 +4,3 @@ export interface AlertCellProps {
   status: RedisCloudSubscription['status']
   numberOfDatabases: RedisCloudSubscription['numberOfDatabases']
 }
-

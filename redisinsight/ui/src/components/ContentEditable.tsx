@@ -47,7 +47,7 @@ const onPaste = (e: React.ClipboardEvent) => {
 }
 
 export default function ContentEditable({
-  ref,
+  ref: _ref,
   onChange,
   onInput,
   onBlur,

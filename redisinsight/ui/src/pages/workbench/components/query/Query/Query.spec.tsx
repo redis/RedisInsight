@@ -7,7 +7,6 @@ import {
   mockedStore,
   render,
   screen,
-  waitFor,
 } from 'uiSrc/utils/test-utils'
 import Query, { Props } from './Query'
 

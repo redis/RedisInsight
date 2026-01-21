@@ -30,6 +30,19 @@ describe('FeatureService', () => {
 
 ## Frontend Testing (Jest + Testing Library)
 
+### Running Specific Tests
+
+```bash
+# Run a specific test file
+node 'node_modules/.bin/jest' 'redisinsight/ui/src/path/to/Component.spec.tsx' -c 'jest.config.cjs'
+
+# Run a specific test by name (use -t flag)
+node 'node_modules/.bin/jest' 'redisinsight/ui/src/path/to/Component.spec.tsx' -c 'jest.config.cjs' -t 'test name pattern'
+
+# Example:
+node 'node_modules/.bin/jest' 'redisinsight/ui/src/slices/tests/browser/keys.spec.ts' -c 'jest.config.cjs' -t 'refreshKeyInfoAction'
+```
+
 ### CRITICAL: Always Use Shared `renderComponent` Helper
 
 **Create a `renderComponent` helper for each component test file**:

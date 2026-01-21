@@ -383,7 +383,7 @@ const VirtualTable = (props: IProps) => {
           className={styles.tableRowCell}
           style={{ justifyContent: column.alignment, whiteSpace: 'normal' }}
         >
-          <Text style={{ maxWidth: '100%' }}>
+          <Text component="div" style={{ maxWidth: '100%' }}>
             <div
               style={{ display: 'flex' }}
               className={column.truncateText ? 'truncateText' : ''}
@@ -501,7 +501,7 @@ const VirtualTable = (props: IProps) => {
       {noItemsMessage && (
         <div className={styles.placeholder}>
           <Text textAlign="center" size="m">
-            <div>{loading ? 'loading...' : noItemsMessage}</div>
+            {loading ? 'loading...' : noItemsMessage}
           </Text>
         </div>
       )}

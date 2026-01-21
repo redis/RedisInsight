@@ -3,6 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import { Socket } from 'socket.io';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import { SessionMetadataAdapter } from 'src/modules/auth/session-metadata/adapters/session-metadata.adapter';
+import { mockDefaultSessionMetadata } from 'src/__mocks__';
 
 const createBaseBindMessageHandlersMock = () => {
   const mockBaseBindMessageHandlers = jest.fn();
@@ -58,10 +59,7 @@ describe('Session metadata adapater', () => {
 
     expect(mockBaseBindMessageHandlers).toHaveBeenCalledTimes(1);
     expect(mockSocket.data).toEqual({
-      sessionMetadata: {
-        sessionId: '1',
-        userId: '1',
-      },
+      sessionMetadata: mockDefaultSessionMetadata,
     });
     expect(mockSocket.join).toHaveBeenCalledTimes(1);
     expect(mockSocket.join).toHaveBeenCalledWith('user:1');

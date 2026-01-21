@@ -19,7 +19,7 @@ import {
 } from 'uiSrc/pages/workbench/constants'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { IRedisCommand } from 'uiSrc/constants'
-import { generateDetail, removeNotSuggestedArgs } from './query'
+import { generateDetail } from './query'
 import { buildSuggestion } from './monaco'
 
 export const asSuggestionsRef = (

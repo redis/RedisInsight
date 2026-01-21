@@ -15,7 +15,6 @@ import {
 
 import { FeatureFlags } from 'uiSrc/constants'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
-import { appContextSelector } from 'uiSrc/slices/app/context'
 import NavigationMenu from './NavigationMenu'
 
 let store: typeof mockedStore
@@ -180,7 +179,7 @@ describe('NavigationMenu', () => {
       }))
       render(<NavigationMenu />)
 
-      const githubBtn = screen.getByTestId("github-repo-btn")
+      const githubBtn = screen.getByTestId('github-repo-btn')
       expect(githubBtn).toBeTruthy()
       expect(githubBtn?.getAttribute('href')).toEqual(EXTERNAL_LINKS.githubRepo)
     })

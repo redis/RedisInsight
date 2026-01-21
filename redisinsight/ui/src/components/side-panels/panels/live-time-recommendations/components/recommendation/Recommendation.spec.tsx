@@ -15,7 +15,10 @@ import {
 } from 'uiSrc/utils/test-utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
-import {updateRecommendation, updateRecommendationSuccess} from 'uiSrc/slices/recommendations/recommendations'
+import {
+  updateRecommendation,
+  updateRecommendationSuccess,
+} from 'uiSrc/slices/recommendations/recommendations'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
 import { MOCK_RECOMMENDATIONS } from 'uiSrc/constants/mocks/mock-recommendations'
 import { findTutorialPath } from 'uiSrc/utils'
@@ -214,7 +217,10 @@ describe('Recommendation', () => {
       )
     })
 
-    const expectedActions = [updateRecommendation(), updateRecommendationSuccess({})]
+    const expectedActions = [
+      updateRecommendation(),
+      updateRecommendationSuccess({}),
+    ]
 
     expect(store.getActions()).toEqual(expectedActions)
     expect(screen.getByTestId('toggle-hide-searchJSON-btn')).toBeInTheDocument()

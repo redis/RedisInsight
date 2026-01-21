@@ -23,9 +23,14 @@ describe('RedisLogo', () => {
       `app.features.featureFlags.features.${FeatureFlags.envDependent}`,
       { flag: true },
     )
-    render(<SideBar isExpanded={false}><RedisLogo isRdiWorkspace={false} /></SideBar>, {
-      store: mockStore(initialStoreState),
-    })
+    render(
+      <SideBar isExpanded={false}>
+        <RedisLogo isRdiWorkspace={false} />
+      </SideBar>,
+      {
+        store: mockStore(initialStoreState),
+      },
+    )
 
     expect(screen.getByTestId('redis-logo-link')).toBeInTheDocument()
   })
@@ -36,9 +41,14 @@ describe('RedisLogo', () => {
       `app.features.featureFlags.features.${FeatureFlags.envDependent}`,
       { flag: false },
     )
-    render(<SideBar isExpanded={false}><RedisLogo isRdiWorkspace={false} /></SideBar>, {
-      store: mockStore(initialStoreState),
-    })
+    render(
+      <SideBar isExpanded={false}>
+        <RedisLogo isRdiWorkspace={false} />
+      </SideBar>,
+      {
+        store: mockStore(initialStoreState),
+      },
+    )
 
     expect(screen.queryByTestId('redis-logo-link')).not.toBeInTheDocument()
   })

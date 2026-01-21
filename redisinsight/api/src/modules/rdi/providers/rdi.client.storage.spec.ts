@@ -8,6 +8,7 @@ import { SessionMetadata } from 'src/common/models';
 const mockClientMetadata1 = {
   sessionMetadata: {
     userId: 'u1',
+    accountId: 'a1',
     sessionId: 's1',
   },
   id: 'id1',
@@ -16,6 +17,7 @@ const mockClientMetadata1 = {
 const mockNotExistClientMetadata = {
   sessionMetadata: {
     userId: 'not exist',
+    accountId: 'not exist',
     sessionId: 'not exist',
   },
   id: 'not exist',
@@ -24,15 +26,19 @@ const mockNotExistClientMetadata = {
 const mockRdiClient1 = generateMockRdiClient(mockClientMetadata1);
 const mockRdiClient2 = generateMockRdiClient({
   ...mockClientMetadata1,
-  sessionMetadata: { userId: 'u2', sessionId: 's1' },
+  sessionMetadata: { userId: 'u2', sessionId: 's1', accountId: 'a2' },
 });
 const mockRdiClient3 = generateMockRdiClient({
   ...mockClientMetadata1,
-  sessionMetadata: { userId: 'u2', sessionId: 's3' },
+  sessionMetadata: { userId: 'u2', sessionId: 's3', accountId: 'a2' },
 });
 const mockRdiClient4 = generateMockRdiClient({
   ...mockClientMetadata1,
   id: 'id2',
+});
+const mockRdiClient5 = generateMockRdiClient({
+  ...mockClientMetadata1,
+  sessionMetadata: { userId: 'u2', sessionId: 's3', accountId: 'a3' },
 });
 
 describe('RdiClientStorage', () => {
@@ -49,6 +55,7 @@ describe('RdiClientStorage', () => {
     service['clients'].set(mockRdiClient2.id, mockRdiClient2);
     service['clients'].set(mockRdiClient3.id, mockRdiClient3);
     service['clients'].set(mockRdiClient4.id, mockRdiClient4);
+    service['clients'].set(mockRdiClient5.id, mockRdiClient5);
   });
 
   afterEach(() => {
@@ -57,20 +64,20 @@ describe('RdiClientStorage', () => {
 
   describe('syncClients', () => {
     it('should not remove any client since no idle time passed', async () => {
-      expect(service['clients'].size).toEqual(4);
+      expect(service['clients'].size).toEqual(5);
 
       service['syncClients']();
 
-      expect(service['clients'].size).toEqual(4);
+      expect(service['clients'].size).toEqual(5);
     });
 
     it('should remove client with exceeded time in idle', async () => {
-      expect(service['clients'].size).toEqual(4);
+      expect(service['clients'].size).toEqual(5);
       const toDelete = service['clients'].get(mockRdiClient1.id);
       toDelete['lastUsed'] = Date.now() - IDLE_THRESHOLD - 1;
       service['syncClients']();
 
-      expect(service['clients'].size).toEqual(3);
+      expect(service['clients'].size).toEqual(4);
       expect(service['clients'].get(mockRdiClient1.id)).toEqual(undefined);
     });
 
@@ -231,18 +238,18 @@ describe('RdiClientStorage', () => {
 
     describe('delete', () => {
       it('should remove only one', async () => {
-        expect(service['clients'].size).toEqual(4);
+        expect(service['clients'].size).toEqual(5);
         const result = await service.delete(mockRdiClient1.id);
 
         expect(result).toEqual(1);
-        expect(service['clients'].size).toEqual(3);
+        expect(service['clients'].size).toEqual(4);
         expect(service['clients'].get(mockRdiClient1.id)).toEqual(undefined);
       });
       it('should not fail in case when no client found', async () => {
         const result = await service.delete('not-existing');
 
         expect(result).toEqual(0);
-        expect(service['clients'].size).toEqual(4);
+        expect(service['clients'].size).toEqual(5);
       });
     });
 
@@ -250,7 +257,7 @@ describe('RdiClientStorage', () => {
       it('should correctly find clients for particular rdi instance', async () => {
         const result = service['findClientsById'](mockClientMetadata1.id);
 
-        expect(result.length).toEqual(3);
+        expect(result.length).toEqual(4);
         result.forEach((id) => {
           expect(service['clients'].get(id)['metadata'].id).toEqual(
             mockClientMetadata1.id,
@@ -258,7 +265,7 @@ describe('RdiClientStorage', () => {
         });
 
         expect(await service.deleteManyByRdiId(mockClientMetadata1.id)).toEqual(
-          3,
+          4,
         );
         expect(service['clients'].size).toEqual(1);
       });
@@ -269,7 +276,7 @@ describe('RdiClientStorage', () => {
         expect(result).toEqual([]);
 
         expect(await service.deleteManyByRdiId('not existing')).toEqual(0);
-        expect(service['clients'].size).toEqual(4);
+        expect(service['clients'].size).toEqual(5);
       });
     });
   });

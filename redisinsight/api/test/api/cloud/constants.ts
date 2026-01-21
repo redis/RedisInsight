@@ -40,7 +40,6 @@ export const initApiUserProfileNockScope = (
 
 export const initApiCapiKeysEnsureNockScope = (
   apiNockScope = initSMApiNockScope(),
-  persist = true,
 ) => {
   return initApiUserProfileNockScope(apiNockScope, true)
     .get('/accounts/cloud-api/cloudApiKeys')

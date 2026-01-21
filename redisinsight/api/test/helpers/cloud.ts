@@ -46,7 +46,7 @@ export const initCloudDatabase = async () => {
       (!subscription || !['pending', 'active'].includes(subscription.status)) &&
       Date.now() - startTime < ttlThreshold
     ) {
-      subscription = await new Promise((resolve, reject) => {
+      subscription = await new Promise((resolve) => {
         setTimeout(
           async () => {
             const subscription = await getSubscriptionByName(
@@ -73,7 +73,7 @@ export const initCloudDatabase = async () => {
         subscription.status !== 'active' &&
         Date.now() - startTime < ttlThreshold
       ) {
-        subscription = await new Promise((resolve, reject) => {
+        subscription = await new Promise((resolve) => {
           setTimeout(
             async () => {
               const subscription = await getSubscriptionByName(
@@ -109,7 +109,7 @@ export const initCloudDatabase = async () => {
         !database.publicEndpoint &&
         Date.now() - startTime < ttlThreshold
       ) {
-        database = await new Promise((resolve, reject) => {
+        database = await new Promise((resolve) => {
           setTimeout(
             async () => {
               const database = await getDatabaseByName(

@@ -429,7 +429,7 @@ describe('POST /databases/import', () => {
             'file',
             Buffer.from(
               JSON.stringify(
-                new Array(10).fill(1).map((c, idx) => {
+                new Array(10).fill(1).map(() => {
                   return {
                     ...baseDatabaseData,
                     tls: true,
@@ -472,7 +472,7 @@ describe('POST /databases/import', () => {
             'file',
             Buffer.from(
               JSON.stringify(
-                new Array(10).fill(1).map((c, idx) => {
+                new Array(10).fill(1).map(() => {
                   return {
                     ...baseDatabaseData,
                     tls: true,
@@ -581,7 +581,7 @@ describe('POST /databases/import', () => {
             'file',
             Buffer.from(
               JSON.stringify(
-                new Array(10).fill(1).map((c, idx) => {
+                new Array(10).fill(1).map(() => {
                   return {
                     ...baseDatabaseData,
                     tls: true,
@@ -641,7 +641,7 @@ describe('POST /databases/import', () => {
             'file',
             Buffer.from(
               JSON.stringify(
-                new Array(10).fill(1).map((c, idx) => {
+                new Array(10).fill(1).map(() => {
                   return {
                     ...baseDatabaseData,
                     tls: true,

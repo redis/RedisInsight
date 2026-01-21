@@ -96,3 +96,5 @@ storybook-static
 
 # MCP Environment Configuration (contains secrets)
 .env.mcp
+
+.eslintcache

@@ -17,7 +17,7 @@ jobs:
       - name: Install all libs and dependencies
         uses: ./.github/actions/install-all-build-libs
         with:
-          skip-backend-deps: '1'
+          skip-system-deps: '1'
 
       - name: UI PROD dependencies audit
         run: |
@@ -34,19 +34,6 @@ jobs:
           yarn audit --groups devDependencies --json > $FILENAME || true &&
           FILENAME=$FILENAME DEPS="UI dev" node .github/deps-audit-report.js &&
           curl -H "Content-type: application/json" --data @slack.$FILENAME -H "Authorization: Bearer $SLACK_AUDIT_REPORT_KEY" -X POST https://slack.com/api/chat.postMessage
-
-      - name: Code analysis
-        run: |
-          FILENAME=ui.lint.audit.json
-          WORKDIR="."
-
-          yarn lint:ui -f json -o $FILENAME || true &&
-          FILENAME=$FILENAME WORKDIR=$WORKDIR TARGET="UI" node .github/lint-report.js &&
-          curl -H "Content-type: application/json" --data @$WORKDIR/slack.$FILENAME -H "Authorization: Bearer $SLACK_AUDIT_REPORT_KEY" -X POST https://slack.com/api/chat.postMessage
-
-          yarn lint -f json -o $FILENAME || true &&
-          FILENAME=$FILENAME WORKDIR=$WORKDIR TARGET="REST" node .github/lint-report.js &&
-          curl -H "Content-type: application/json" --data @$WORKDIR/slack.$FILENAME -H "Authorization: Bearer $SLACK_AUDIT_REPORT_KEY" -X POST https://slack.com/api/chat.postMessage
 
       - name: Unit tests UI
         timeout-minutes: 30

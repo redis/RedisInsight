@@ -5,7 +5,11 @@ import { RiIcon } from 'uiSrc/components/base/icons'
 
 import type { DbIndexCellProps } from './DbIndexCell.types'
 
-export const DbIndexCell = ({ db = 0, id, handleChangedInput }: DbIndexCellProps) => (
+export const DbIndexCell = ({
+  db = 0,
+  id,
+  handleChangedInput,
+}: DbIndexCellProps) => (
   <div role="presentation">
     <InputFieldSentinel
       min={0}

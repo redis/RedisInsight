@@ -120,7 +120,8 @@ describe('DatabaseClientFactory', () => {
     it('should only instantiate a single client per unique client metadata', async () => {
       const mockClientMetadata2: ClientMetadata = {
         sessionMetadata: {
-          userId: '4',
+          userId: 'user-4',
+          accountId: 'acc-4',
           sessionId: uuidv4(),
         },
         databaseId: uuidv4(),
@@ -162,7 +163,8 @@ describe('DatabaseClientFactory', () => {
     it('should reject multiple failed calls with the same error instance', async () => {
       const mockCommonClientMetadata2: ClientMetadata = {
         sessionMetadata: {
-          userId: '4',
+          userId: 'user-4',
+          accountId: 'acc-4',
           sessionId: uuidv4(),
         },
         databaseId: uuidv4(),

@@ -117,8 +117,8 @@ const ModuleNotLoadedMinimalized = (props: Props) => {
           ) : (
             <>
               <Text color="subdued" size="s">
-                Use your free all-in-one Redis Cloud database to start
-                exploring these capabilities.
+                Use your free all-in-one Redis Cloud database to start exploring
+                these capabilities.
               </Text>
               <Spacer size="s" />
               <OAuthConnectFreeDb

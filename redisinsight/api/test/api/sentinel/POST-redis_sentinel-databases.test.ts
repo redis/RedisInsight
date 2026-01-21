@@ -234,16 +234,11 @@ describe('POST /redis-sentinel/databases', () => {
   });
   describe('TLS AUTH', () => {
     requirements('rte.tlsAuth');
-    let existingCACertId,
-      existingClientCertId,
-      existingCACertName,
-      existingClientCertName;
 
     it('Create sentinel database (tls)', async () => {
       const dbName = constants.getRandomString();
-      const newCaName = (existingCACertName = constants.getRandomString());
-      const newClientCertName = (existingClientCertName =
-        constants.getRandomString());
+      const newCaName = constants.getRandomString();
+      const newClientCertName = constants.getRandomString();
 
       await validateApiCall({
         endpoint,
@@ -305,9 +300,8 @@ describe('POST /redis-sentinel/databases', () => {
       });
 
       const dbName = constants.getRandomString();
-      const newCaName = (existingCACertName = constants.getRandomString());
-      const newClientCertName = (existingClientCertName =
-        constants.getRandomString());
+      const newCaName = constants.getRandomString();
+      const newClientCertName = constants.getRandomString();
 
       await validateApiCall({
         endpoint,

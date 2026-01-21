@@ -5,6 +5,7 @@ import { Expose } from 'class-transformer';
 
 export interface ISessionMetadata {
   userId: string;
+  accountId: string;
   sessionId: string;
   uniqueId?: string;
 }
@@ -14,6 +15,11 @@ export class SessionMetadata implements ISessionMetadata {
   @IsNotEmpty()
   @IsString()
   userId: string;
+
+  @Expose()
+  @IsNotEmpty()
+  @IsString()
+  accountId: string;
 
   @Expose()
   @IsObject()
@@ -45,7 +51,11 @@ export class SessionMetadata implements ISessionMetadata {
    * @param sessionMetadata
    */
   static validate(sessionMetadata: SessionMetadata) {
-    if (!sessionMetadata?.sessionId || !sessionMetadata?.userId) {
+    if (
+      !sessionMetadata?.sessionId ||
+      !sessionMetadata?.userId ||
+      !sessionMetadata?.accountId
+    ) {
       throw new BadRequestException(ERROR_MESSAGES.INVALID_SESSION_METADATA);
     }
   }

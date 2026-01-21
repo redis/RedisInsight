@@ -24,7 +24,11 @@ describe('RISelectWithActions', () => {
       ]
 
       const { container } = render(
-        <RISelectWithActions options={options} value="1" onChange={jest.fn()} />,
+        <RISelectWithActions
+          options={options}
+          value="1"
+          onChange={jest.fn()}
+        />,
       )
 
       expect(container).toBeInTheDocument()
@@ -45,7 +49,13 @@ describe('RISelectWithActions', () => {
         }),
       ]
 
-      render(<RISelectWithActions options={options} value="1" onChange={jest.fn()} />)
+      render(
+        <RISelectWithActions
+          options={options}
+          value="1"
+          onChange={jest.fn()}
+        />,
+      )
 
       expect(screen.getByRole('combobox')).toBeInTheDocument()
     })
@@ -70,7 +80,13 @@ describe('RISelectWithActions', () => {
         }),
       ]
 
-      render(<RISelectWithActions options={options} value="1" onChange={jest.fn()} />)
+      render(
+        <RISelectWithActions
+          options={options}
+          value="1"
+          onChange={jest.fn()}
+        />,
+      )
 
       expect(screen.getByRole('combobox')).toBeInTheDocument()
     })
@@ -99,7 +115,13 @@ describe('RISelectWithActions', () => {
         }),
       ]
 
-      render(<RISelectWithActions options={options} value="1" onChange={jest.fn()} />)
+      render(
+        <RISelectWithActions
+          options={options}
+          value="1"
+          onChange={jest.fn()}
+        />,
+      )
 
       expect(screen.getByRole('combobox')).toBeInTheDocument()
     })
@@ -124,7 +146,11 @@ describe('RISelectWithActions', () => {
       // with onPointerDown, onPointerUp, and onClick stopPropagation handlers
       // This ensures clicking actions won't close the select dropdown
       const { container } = render(
-        <RISelectWithActions options={options} value="1" onChange={jest.fn()} />,
+        <RISelectWithActions
+          options={options}
+          value="1"
+          onChange={jest.fn()}
+        />,
       )
 
       expect(container).toBeInTheDocument()
@@ -139,7 +165,11 @@ describe('RISelectWithActions', () => {
       // The component passes CustomOptionWithAction as optionComponent
       // to Select.Content.OptionList
       const { container } = render(
-        <RISelectWithActions options={options} value={options[0].value} onChange={jest.fn()} />,
+        <RISelectWithActions
+          options={options}
+          value={options[0].value}
+          onChange={jest.fn()}
+        />,
       )
 
       expect(container.querySelector('[role="combobox"]')).toBeInTheDocument()
@@ -165,7 +195,13 @@ describe('RISelectWithActions', () => {
         }),
       ]
 
-      render(<RISelectWithActions options={options} value="1" onChange={jest.fn()} />)
+      render(
+        <RISelectWithActions
+          options={options}
+          value="1"
+          onChange={jest.fn()}
+        />,
+      )
 
       expect(screen.getByRole('combobox')).toBeInTheDocument()
     })
@@ -192,7 +228,13 @@ describe('RISelectWithActions', () => {
         }),
       ]
 
-      render(<RISelectWithActions options={options} value="1" onChange={jest.fn()} />)
+      render(
+        <RISelectWithActions
+          options={options}
+          value="1"
+          onChange={jest.fn()}
+        />,
+      )
 
       expect(screen.getByRole('combobox')).toBeInTheDocument()
     })
@@ -233,7 +275,13 @@ describe('RISelectWithActions', () => {
         }),
       ]
 
-      render(<RISelectWithActions options={options} value="1" onChange={jest.fn()} />)
+      render(
+        <RISelectWithActions
+          options={options}
+          value="1"
+          onChange={jest.fn()}
+        />,
+      )
 
       expect(screen.getByRole('combobox')).toBeInTheDocument()
       expect(screen.getByText('No actions')).toBeInTheDocument()
@@ -262,7 +310,13 @@ describe('RISelectWithActions', () => {
         }),
       ]
 
-      render(<RISelectWithActions options={options} value="1" onChange={jest.fn()} />)
+      render(
+        <RISelectWithActions
+          options={options}
+          value="1"
+          onChange={jest.fn()}
+        />,
+      )
 
       expect(screen.getByRole('combobox')).toBeInTheDocument()
     })
@@ -272,7 +326,11 @@ describe('RISelectWithActions', () => {
     it('should use Select.Compose as root component', () => {
       const options = selectOptionFactory.buildList(2)
       const { container } = render(
-        <RISelectWithActions options={options} value={options[0].value} onChange={jest.fn()} />,
+        <RISelectWithActions
+          options={options}
+          value={options[0].value}
+          onChange={jest.fn()}
+        />,
       )
 
       // Verify the select structure is rendered
@@ -297,7 +355,11 @@ describe('RISelectWithActions', () => {
     it('should render Select.Trigger inside Select.Compose', () => {
       const options = selectOptionFactory.buildList(2)
       render(
-        <RISelectWithActions options={options} value={options[0].value} onChange={jest.fn()} />,
+        <RISelectWithActions
+          options={options}
+          value={options[0].value}
+          onChange={jest.fn()}
+        />,
       )
 
       const trigger = screen.getByRole('combobox')

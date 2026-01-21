@@ -54,7 +54,7 @@ export abstract class RedisConnectionStrategy {
 
   /**
    * Generates client name based on clientMetadata fields
-   * redisinsight-<context>-<databaseId>-[dbIndex]-[uniqueId]-[userId]-[sessionId]-[sessionUniqueId]
+   * redisinsight-<context>-<databaseId>-[dbIndex]-[uniqueId]-[userId]-[accountId]-[sessionId]-[sessionUniqueId]
    * Examples:
    *  cli: redisinsight-cli-658a47c1-0-fa32-de45-457a-5837
    *  browser: redisinsight-browser-658a47c1-0--de45-457a-18db
@@ -68,6 +68,7 @@ export abstract class RedisConnectionStrategy {
       clientMetadata?.db >= 0 ? clientMetadata.db : '',
       clientMetadata?.uniqueId || '',
       clientMetadata?.sessionMetadata?.userId || '',
+      clientMetadata?.sessionMetadata?.accountId || '',
       clientMetadata?.sessionMetadata?.sessionId || '',
       clientMetadata?.sessionMetadata?.uniqueId || '',
     ]

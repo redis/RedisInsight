@@ -5,7 +5,12 @@ import {
 } from 'src/common/models';
 import { mockDatabase } from 'src/__mocks__/databases';
 import { v4 as uuidv4 } from 'uuid';
-import { mockUserId } from 'src/__mocks__/user';
+import { mockAccountId, mockUserId } from 'src/__mocks__/user';
+import {
+  DEFAULT_ACCOUNT_ID,
+  DEFAULT_SESSION_ID,
+  DEFAULT_USER_ID,
+} from 'src/common/constants';
 
 export type MockType<T> = {
   [P in keyof T]: jest.Mock<any>;
@@ -61,7 +66,14 @@ export const mockRepository = jest.fn(() => ({
 
 export const mockSessionMetadata: SessionMetadata = {
   userId: mockUserId,
+  accountId: mockAccountId,
   sessionId: uuidv4(),
+};
+
+export const mockDefaultSessionMetadata: SessionMetadata = {
+  userId: DEFAULT_USER_ID,
+  accountId: DEFAULT_ACCOUNT_ID,
+  sessionId: DEFAULT_SESSION_ID,
 };
 
 export const mockClientMetadata: ClientMetadata = {
