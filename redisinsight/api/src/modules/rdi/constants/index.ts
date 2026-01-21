@@ -19,6 +19,11 @@ export enum RdiUrl {
   Action = 'api/v1/actions',
 }
 
+export const RdiUrlV2 = {
+  GetInfo: 'api/v2/info',
+  GetPipelines: 'api/v2/pipelines',
+};
+
 export const IDLE_THRESHOLD = 10 * 60 * 1000; // 10 min
 export const RDI_TIMEOUT = 30_000; // 30 sec
 export const TOKEN_THRESHOLD = 2 * 60 * 1000; // 2 min
