@@ -22,6 +22,7 @@ import {
 interface RefreshTimer {
   timer: NodeJS.Timeout;
   clientIds: Set<string>;
+  scheduledRefreshAt: Date;
 }
 
 /**
@@ -51,9 +52,12 @@ export class AzureTokenRefreshManager {
     setInterval(() => {
       this.logger.warn('========== REFRESH TIMERS DEBUG ==========');
       this.logger.warn(`Total timers: ${this.refreshTimers.size}`);
-      this.refreshTimers.forEach((timer, dbId) => {
+      this.refreshTimers.forEach((timerInfo, dbId) => {
+        const refreshIn = Math.round(
+          (timerInfo.scheduledRefreshAt.getTime() - Date.now()) / 1000 / 60,
+        );
         this.logger.warn(
-          `  DB: ${dbId} | Clients: ${[...timer.clientIds].join(', ')}`,
+          `  DB: ${dbId} | Refresh in: ${refreshIn} min | Clients: ${[...timerInfo.clientIds].join(', ')}`,
         );
       });
       this.logger.warn('===========================================');
@@ -251,6 +255,7 @@ export class AzureTokenRefreshManager {
     this.refreshTimers.set(databaseId, {
       timer,
       clientIds: new Set([clientId]),
+      scheduledRefreshAt: new Date(Date.now() + delayMs),
     });
   }
 
@@ -384,6 +389,10 @@ export class AzureTokenRefreshManager {
       await this.refreshToken(databaseId, providerDetails);
     }, delayMs);
 
-    this.refreshTimers.set(databaseId, { timer, clientIds });
+    this.refreshTimers.set(databaseId, {
+      timer,
+      clientIds,
+      scheduledRefreshAt: new Date(Date.now() + delayMs),
+    });
   }
 }
