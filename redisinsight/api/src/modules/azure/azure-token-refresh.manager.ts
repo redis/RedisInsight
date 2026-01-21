@@ -1,4 +1,5 @@
-import { Injectable, Logger, Inject, forwardRef } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { OnEvent } from '@nestjs/event-emitter';
 import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
 import { AzureAuthService } from './auth/azure-auth.service';
 import {
@@ -13,6 +14,10 @@ import {
   DEFAULT_ACCOUNT_ID,
 } from 'src/common/constants';
 import { RedisClientStorage } from 'src/modules/redis/redis.client.storage';
+import {
+  RedisClientEvents,
+  RedisClientLifecycleEvent,
+} from 'src/modules/redis/constants';
 
 interface RefreshTimer {
   timer: NodeJS.Timeout;
@@ -21,8 +26,8 @@ interface RefreshTimer {
 
 /**
  * Manages automatic token refresh for Azure Entra ID authenticated Redis clients.
- * Integrates with RedisClientStorage to track active connections and refresh tokens
- * before they expire.
+ * Listens to Redis client lifecycle events to track active connections and
+ * refresh tokens before they expire.
  *
  * Tracks by databaseId to avoid duplicate refreshes when multiple clients
  * (Browser, Common, etc.) are connected to the same database.
@@ -40,7 +45,6 @@ export class AzureTokenRefreshManager {
   constructor(
     private readonly databaseRepository: DatabaseRepository,
     private readonly azureAuthService: AzureAuthService,
-    @Inject(forwardRef(() => RedisClientStorage))
     private readonly redisClientStorage: RedisClientStorage,
   ) {
     // Debug: Log timer state every 10 seconds
@@ -57,10 +61,13 @@ export class AzureTokenRefreshManager {
   }
 
   /**
-   * Called when a Redis client is stored in the client storage.
+   * Handle Redis client stored event.
    * Checks if the database uses Azure Entra ID auth and schedules token refresh.
    */
-  async onClientStored(clientId: string, databaseId: string): Promise<void> {
+  @OnEvent(RedisClientEvents.ClientStored)
+  async handleClientStored(event: RedisClientLifecycleEvent): Promise<void> {
+    const { clientId, databaseId } = event;
+
     try {
       // Check if we already have a refresh timer for this database
       const existingTimer = this.refreshTimers.get(databaseId);
@@ -112,10 +119,13 @@ export class AzureTokenRefreshManager {
   }
 
   /**
-   * Called when a Redis client is removed from the client storage.
+   * Handle Redis client removed event.
    * Only cancels the refresh timer when all clients for a database are removed.
    */
-  onClientRemoved(clientId: string, databaseId: string): void {
+  @OnEvent(RedisClientEvents.ClientRemoved)
+  handleClientRemoved(event: RedisClientLifecycleEvent): void {
+    const { clientId, databaseId } = event;
+
     const existing = this.refreshTimers.get(databaseId);
     if (!existing) {
       return;
