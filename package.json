@@ -284,7 +284,7 @@
     "json-dup-key-validator": "^1.0.3",
     "jsonpath": "^1.1.1",
     "jszip": "^3.10.1",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "lz4js": "^0.2.0",
     "modern-normalize": "^3.0.1",
     "monaco-editor": "^0.48.0",
