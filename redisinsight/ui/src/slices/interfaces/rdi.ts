@@ -52,8 +52,8 @@ export interface IRdiPipelineStrategies {
 }
 
 export enum StatisticsConnectionStatus {
-  notYetUsed = 'not yet used',
-  connected = 'connected',
+  NotYetUsed = 'not yet used',
+  Connected = 'connected',
 }
 
 export enum RdiPipelineStatus {

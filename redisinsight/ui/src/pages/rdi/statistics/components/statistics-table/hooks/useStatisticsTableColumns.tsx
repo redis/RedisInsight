@@ -15,9 +15,9 @@ const MAX_LENGTH = 30
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case StatisticsConnectionStatus.connected:
+    case StatisticsConnectionStatus.Connected:
       return 'success'
-    case StatisticsConnectionStatus.notYetUsed:
+    case StatisticsConnectionStatus.NotYetUsed:
       return 'warning'
     default:
       return 'danger'
