@@ -3,7 +3,7 @@ name: 📖 Release (stage)
 on:
   push:
     branches:
-      - "release/**"
+      - 'release/**'
 
 jobs:
   tests:
@@ -20,8 +20,8 @@ jobs:
     needs: tests
     secrets: inherit
     with:
-      environment: "staging"
-      target: "all"
+      environment: 'staging'
+      target: 'all'
 
   aws:
     uses: ./.github/workflows/aws-upload-dev.yml
