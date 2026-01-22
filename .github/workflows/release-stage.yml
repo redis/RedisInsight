@@ -42,3 +42,26 @@ jobs:
       - uses: actions/checkout@v4
       - name: Remove all artifacts
         uses: ./.github/actions/remove-artifacts # Remove artifacts from github actions
+
+  approve-production-release:
+    name: Approve production release
+    needs: [tests, builds, aws, remove-artifacts]
+    if: |
+      always() &&
+      needs.tests.result == 'success' &&
+      needs.builds.result == 'success' &&
+      needs.aws.result == 'success' &&
+      needs.remove-artifacts.result == 'success'
+    runs-on: ubuntu-latest
+    environment: 'production-approve'
+    steps:
+      - name: Approval for production release
+        run: echo "Production release approved for branch ${{ github.ref_name }}"
+
+  release-prod:
+    name: Release to production
+    needs: [approve-production-release]
+    uses: ./.github/workflows/release-prod.yml
+    secrets: inherit
+    with:
+      release_ref: ${{ github.ref_name }}
