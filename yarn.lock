@@ -2556,10 +2556,10 @@
     "@react-hook/latest" "^1.0.2"
     "@react-hook/passive-layout-effect" "^1.2.0"
 
-"@redis-ui/components@^41.11.0", "@redis-ui/components@^41.5.0":
-  version "41.11.0"
-  resolved "https://registry.yarnpkg.com/@redis-ui/components/-/components-41.11.0.tgz#10ab01a272c4ae58fc2fee064ca365d07118fb41"
-  integrity sha512-FK4IYB+gxe9yNJCQbGW2CG1osRHYpNQvhxpoNQpoAC3XabOEzNZdY/tjk/c2Zf5JTWI69PvOClgzJI1aDT7tuQ==
+"@redis-ui/components@^42.0.0":
+  version "42.0.0"
+  resolved "https://registry.yarnpkg.com/@redis-ui/components/-/components-42.0.0.tgz#3a0015ae8c11ee1ac729bff2b6e5f13192deff03"
+  integrity sha512-uJDhBpu+ZIQADSwA3EHrMjgsqO3ugoqU94TXqNz19b9KVZ7+zuePFTVqyLkQWIFpZ7sIDEsdVyuxgeILOC5qUw==
   dependencies:
     "@radix-ui/react-checkbox" "^1.0.3"
     "@radix-ui/react-collapsible" "^1.0.3"
@@ -2588,20 +2588,20 @@
   resolved "https://registry.yarnpkg.com/@redis-ui/icons/-/icons-6.7.0.tgz#7f53cb6ca2aeeb569bc355f8a87420fcdf3879c4"
   integrity sha512-XcEV6oVk/ZntgdNyqeuMAs5cU1jqFZzWZWMpfCLU48boSEQM3/Ox1qHkkSFm2m2ObiQSI90z61vAhkZkKReweA==
 
-"@redis-ui/styles@^14.5.3":
-  version "14.5.3"
-  resolved "https://registry.yarnpkg.com/@redis-ui/styles/-/styles-14.5.3.tgz#29baeacbcc79cdbe68abdeb8136c65272bced247"
-  integrity sha512-VttCd2TX3k94L/8sgupLy5bFvbH6p3u/cyI+OokW+uBfbKiwCfsf50vqeOjxqfcoy2Ss9aKNTV3p8zIlFGAcMA==
+"@redis-ui/styles@^14.6.0":
+  version "14.6.0"
+  resolved "https://registry.yarnpkg.com/@redis-ui/styles/-/styles-14.6.0.tgz#54fb4b7e12d63a0a950d0f38ceecec89fc0c432f"
+  integrity sha512-SMByS2sLVSWqUwQrIvVv8dMdpGsW8k8ZUHbk1c/J9906Mzkc3F2sBDCwNdOVsr4qSuzcEsnfqvOs4ITWfIXB7g==
   dependencies:
     color-alpha "^2.0.0"
     polished "^4.3.1"
 
-"@redis-ui/table@^3.3.2":
-  version "3.3.2"
-  resolved "https://registry.yarnpkg.com/@redis-ui/table/-/table-3.3.2.tgz#44ec208088f6d9804467c6a78daf703e3eaf0481"
-  integrity sha512-Oft5Fzofic2VoWEEFYGzLIS38vEwCwqC8QHbkuo87a+kgoAv9bUAv4JnYR7gaUFFy9JSHeIP4+eoUKQJOERdtg==
+"@redis-ui/table@^3.4.1":
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/@redis-ui/table/-/table-3.4.1.tgz#5c881bb9f0e2ed26d78039efaf0dbee2b294e066"
+  integrity sha512-sDF4qriLdtEotnjzUPv0ncOin9bsaPp6U9X0QvRdXuM207TITvLP8TlK3zSUm7N0aUH6ATJTxr5wczuHYATmqw==
   dependencies:
-    "@redis-ui/components" "^41.5.0"
+    "@redis-ui/components" "^42.0.0"
     "@redis-ui/icons" "^6.6.0"
     "@tanstack/react-table" "^8.9.8"
     type-fest "^3.13.1"

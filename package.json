@@ -251,10 +251,10 @@
   "dependencies": {
     "@elastic/datemath": "^5.0.3",
     "@elastic/eui": "34.6.0",
-    "@redis-ui/components": "^41.11.0",
+    "@redis-ui/components": "^42.0.0",
     "@redis-ui/icons": "^6.7.0",
-    "@redis-ui/styles": "^14.5.3",
-    "@redis-ui/table": "^3.3.2",
+    "@redis-ui/styles": "^14.6.0",
+    "@redis-ui/table": "^3.4.1",
     "@reduxjs/toolkit": "^1.6.2",
     "@stablelib/snappy": "^1.0.2",
     "@types/json-dup-key-validator": "^1.0.2",
