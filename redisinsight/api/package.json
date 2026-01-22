@@ -86,7 +86,7 @@
     "json-bigint": "^1.0.0",
     "jsonwebtoken": "^9.0.2",
     "keytar": "^7.9.0",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.23",
     "nest-winston": "^1.10.2",
     "nestjs-form-data": "~1.9.93",
     "node-version-compare": "^1.0.3",
