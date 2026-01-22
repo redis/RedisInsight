@@ -28,7 +28,7 @@ export const CodeBlocKWrapper = styled.div`
   padding-top: ${({ theme }) => theme.core.space.space100};
 
   border: 1px solid;
-  border-color: ${({ theme }) => theme.color.dusk200};
+  border-color: ${({ theme }) => theme.semantic.color.border.neutral200};
   border-radius: 8px;
 
   background: ${({ theme }) => theme.semantic.color.background.neutral200};

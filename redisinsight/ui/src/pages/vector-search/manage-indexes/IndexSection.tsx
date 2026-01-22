@@ -9,16 +9,17 @@ import {
   deleteRedisearchIndexAction,
   fetchRedisearchInfoAction,
 } from 'uiSrc/slices/browser/redisearch'
+import { parseIndexSummaryInfo } from 'uiSrc/pages/vector-search/manage-indexes/utils/indexSection'
 import {
   IndexInfoDto,
   IndexDeleteRequestBodyDto,
 } from 'apiSrc/modules/browser/redisearch/dto'
 import { IndexAttributesList } from './IndexAttributesList'
+import DeleteConfirmationButton from './DeleteConfirmationButton'
 import {
   collectManageIndexesDeleteTelemetry,
   collectManageIndexesDetailsToggleTelemetry,
 } from '../telemetry'
-import DeleteConfirmationButton from './DeleteConfirmationButton'
 
 export interface IndexSectionProps extends Omit<SectionProps, 'label'> {
   index: RedisString
@@ -38,13 +39,19 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
   useEffect(() => {
     dispatch(
       fetchRedisearchInfoAction(indexName, (data) => {
-        const indexInfo = data as unknown as IndexInfoDto
+        const indexInfoDto = data as unknown as IndexInfoDto
 
-        setIndexInfo(indexInfo)
-        setIndexSummaryInfo(parseIndexSummaryInfo(indexInfo))
+        setIndexInfo(indexInfoDto)
+        setIndexSummaryInfo(parseIndexSummaryInfo(indexInfoDto))
       }),
     )
   }, [indexName, dispatch])
+
+  const onDeletedIndexSuccess = () => {
+    collectManageIndexesDeleteTelemetry({
+      instanceId,
+    })
+  }
 
   const handleDelete = () => {
     const data: IndexDeleteRequestBodyDto = {
@@ -52,12 +59,6 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
     }
 
     dispatch(deleteRedisearchIndexAction(data, onDeletedIndexSuccess))
-  }
-
-  const onDeletedIndexSuccess = () => {
-    collectManageIndexesDeleteTelemetry({
-      instanceId,
-    })
   }
 
   const handleOpenChange = (open: boolean) => {
@@ -76,13 +77,7 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
       data-testid={`manage-indexes-list--item--${indexName}`}
       {...rest}
     >
-      <Section.Header.Compose
-        collapsedInfo={
-          <div data-testid="index-collapsed-info">
-            <CategoryValueList categoryValueList={indexSummaryInfo} />
-          </div>
-        }
-      >
+      <Section.Header.Compose>
         <Section.Header.Group>
           <Section.Header.Label label={formatLongName(indexName)} />
           {/* // TODO: Add FieldTag component to list the types of the different fields */}
@@ -95,36 +90,17 @@ export const IndexSection = ({ index, ...rest }: IndexSectionProps) => {
               onConfirm={handleDelete}
             />
           </Section.Header.ActionButton>
-          <Section.Header.CollapseIndicator />
+          <Section.Header.CollapseButton />
         </Section.Header.Group>
       </Section.Header.Compose>
-      <Section.Body content={<IndexAttributesList indexInfo={indexInfo} />} />
+      <Section.Body>
+        <IndexAttributesList indexInfo={indexInfo} />
+      </Section.Body>
+      <Section.SummaryBar>
+        <div data-testid="index-collapsed-info">
+          <CategoryValueList categoryValueList={indexSummaryInfo} />
+        </div>
+      </Section.SummaryBar>
     </Section.Compose>
   )
 }
-
-const parseIndexSummaryInfo = (
-  indexInfo: IndexInfoDto,
-): CategoryValueListItem[] => [
-  {
-    category: 'Records',
-    value: indexInfo?.num_records?.toString() || '',
-    key: 'num_records',
-  },
-  {
-    category: 'Terms',
-    value: indexInfo?.num_terms?.toString() || '',
-    key: 'num_terms',
-  },
-  {
-    category: 'Fields',
-    value: indexInfo?.attributes?.length.toString() || '',
-    key: 'num_fields',
-  },
-  // TODO: Date info not available in IndexInfoDto
-  // {
-  //   category: 'Date',
-  //   value: '',
-  //   key: 'date',
-  // },
-]

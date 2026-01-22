@@ -23,7 +23,7 @@ export const StyledContainer = styled.div`
   flex: 1;
   width: 100%;
   overflow: auto;
-  color: ${({ theme }) => theme.color.gray700};
+  color: ${({ theme }) => theme.semantic.color.text.neutral700};
 `
 
 export const StyledHeader = styled.div`

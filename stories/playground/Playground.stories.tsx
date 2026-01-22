@@ -5,11 +5,12 @@ import { Theme } from './Theme'
 import { Colors } from './Colors'
 import { Gallery } from './Gallery'
 
-export default {
+const meta: Meta<typeof PlaygroundPage> = {
   title: 'Playground',
   component: PlaygroundPage,
   tags: ['skip-test', '!autodocs', '!dev'],
-} satisfies Meta<typeof PlaygroundPage>
+}
+export default meta
 
 export const ThemeStory: StoryObj = {
   render: () => <Theme />,

@@ -1,15 +1,6 @@
-import React, { ComponentProps, isValidElement, ReactNode } from 'react'
-import { Section, SectionProps } from '@redis-ui/components'
-
-export type RiAccordionProps = Omit<ComponentProps<typeof Section>, 'label'> & {
-  label: ReactNode
-  actions?: ReactNode
-  collapsible?: SectionProps['collapsible']
-  actionButtonText?: ReactNode
-  content?: SectionProps['content']
-  children?: SectionProps['content']
-  onAction?: () => void
-}
+import React, { isValidElement } from 'react'
+import { Section } from '@redis-ui/components'
+import { RiAccordionActionsProps, RiAccordionProps } from './RiAccordion.types'
 
 const RiAccordionLabel = ({ label }: Pick<RiAccordionProps, 'label'>) => {
   if (!label) {
@@ -21,11 +12,6 @@ const RiAccordionLabel = ({ label }: Pick<RiAccordionProps, 'label'>) => {
   // Ensure we always return a valid JSX element by wrapping non-JSX values
   return isValidElement(label) ? label : <>{label}</>
 }
-
-type RiAccordionActionsProps = Pick<
-  RiAccordionProps,
-  'actionButtonText' | 'actions' | 'onAction'
->
 
 const RiAccordionActions = ({
   actionButtonText,

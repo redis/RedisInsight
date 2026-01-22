@@ -8,10 +8,10 @@ export const ButtonWrapper = styled(Col)`
   padding: ${({ theme }) =>
     `${theme.core.space.space150} ${theme.core.space.space100}`};
   border-radius: ${({ theme }) => theme.core.space.space050};
-  border: 1px solid ${({ theme }) => theme.color.dusk200};
+  border: 1px solid ${({ theme }) => theme.semantic.color.border.secondary300};
 
   &:hover,
   &:focus {
-    border: 1px solid ${({ theme }) => theme.color.dusk700};
+    border: 1px solid ${({ theme }) => theme.semantic.color.border.secondary400};
   }
 `

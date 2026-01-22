@@ -30,7 +30,7 @@ export const VectorSearchScreenHeader = styled(FlexItem)`
   justify-content: space-between;
   align-items: center;
   border: 1px solid;
-  border-color: ${({ theme }) => theme.color?.dusk200};
+  border-color: ${({ theme }) => theme.semantic.color.border.neutral200};
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
 `
@@ -39,12 +39,12 @@ export const VectorSearchScreenContent = styled(FlexItem)`
   gap: ${({ theme }) => theme.core?.space.space550};
   border: 1px solid;
   border-top: none;
-  border-color: ${({ theme }) => theme.color?.dusk200};
+  border-color: ${({ theme }) => theme.semantic.color.border.neutral200};
 `
 
 export const VectorSearchScreenSideBarWrapper = styled(FlexItem)`
   border: 1px solid;
-  border-color: ${({ theme }) => theme.color?.dusk200};
+  border-color: ${({ theme }) => theme.semantic.color.border.neutral200};
   border-top: none;
   justify-content: space-between;
   border-bottom-left-radius: 8px;
@@ -66,7 +66,7 @@ export const VectorSearchScreenBlockWrapper = styled(FlexItem)`
   justify-content: space-between;
   align-items: center;
   border: 1px solid;
-  border-color: ${({ theme }) => theme.color?.dusk200};
+  border-color: ${({ theme }) => theme.semantic.color.border.neutral200};
   border-radius: ${({ theme }) => theme.core?.space.space100};
   gap: ${({ theme }) => theme.core?.space.space200};
 `
