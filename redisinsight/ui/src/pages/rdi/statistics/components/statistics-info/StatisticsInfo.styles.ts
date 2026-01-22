@@ -8,4 +8,3 @@ export const Panel = styled(BasePanel)`
   border-radius: ${({ theme }: { theme: Theme }) =>
     theme.components.section.borderRadius};
 `
-

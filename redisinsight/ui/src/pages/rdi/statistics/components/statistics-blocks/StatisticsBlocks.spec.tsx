@@ -23,13 +23,41 @@ describe('StatisticsBlocks', () => {
   it('should render all block labels, values, and units', () => {
     const mockData = StatisticsBlocksSectionFactory.build({
       data: [
-        StatisticsBlockItemFactory.build({ label: 'Total batches', value: 100, units: 'Total' }),
-        StatisticsBlockItemFactory.build({ label: 'Batch size average', value: 1.5, units: 'MB' }),
-        StatisticsBlockItemFactory.build({ label: 'Process time average', value: 50, units: 'ms' }),
-        StatisticsBlockItemFactory.build({ label: 'ACK time average', value: 0.5, units: 'sec' }),
-        StatisticsBlockItemFactory.build({ label: 'Read time average', value: 10, units: 'ms' }),
-        StatisticsBlockItemFactory.build({ label: 'Records per second average', value: 1000, units: 'sec' }),
-        StatisticsBlockItemFactory.build({ label: 'Total time average', value: 60, units: 'ms' }),
+        StatisticsBlockItemFactory.build({
+          label: 'Total batches',
+          value: 100,
+          units: 'Total',
+        }),
+        StatisticsBlockItemFactory.build({
+          label: 'Batch size average',
+          value: 1.5,
+          units: 'MB',
+        }),
+        StatisticsBlockItemFactory.build({
+          label: 'Process time average',
+          value: 50,
+          units: 'ms',
+        }),
+        StatisticsBlockItemFactory.build({
+          label: 'ACK time average',
+          value: 0.5,
+          units: 'sec',
+        }),
+        StatisticsBlockItemFactory.build({
+          label: 'Read time average',
+          value: 10,
+          units: 'ms',
+        }),
+        StatisticsBlockItemFactory.build({
+          label: 'Records per second average',
+          value: 1000,
+          units: 'sec',
+        }),
+        StatisticsBlockItemFactory.build({
+          label: 'Total time average',
+          value: 60,
+          units: 'ms',
+        }),
       ],
     })
 
@@ -74,7 +102,13 @@ describe('StatisticsBlocks', () => {
   it('should render single block in one column', () => {
     const mockData = StatisticsBlocksSectionFactory.build({
       name: 'Single Block',
-      data: [StatisticsBlockItemFactory.build({ label: 'Test Label', value: 42, units: 'items' })],
+      data: [
+        StatisticsBlockItemFactory.build({
+          label: 'Test Label',
+          value: 42,
+          units: 'items',
+        }),
+      ],
     })
 
     render(<StatisticsBlocks data={mockData} />)
@@ -89,12 +123,36 @@ describe('StatisticsBlocks', () => {
     const mockData = StatisticsBlocksSectionFactory.build({
       name: 'Six Blocks',
       data: [
-        StatisticsBlockItemFactory.build({ label: 'Block 1', value: 1, units: 'u1' }),
-        StatisticsBlockItemFactory.build({ label: 'Block 2', value: 2, units: 'u2' }),
-        StatisticsBlockItemFactory.build({ label: 'Block 3', value: 3, units: 'u3' }),
-        StatisticsBlockItemFactory.build({ label: 'Block 4', value: 4, units: 'u4' }),
-        StatisticsBlockItemFactory.build({ label: 'Block 5', value: 5, units: 'u5' }),
-        StatisticsBlockItemFactory.build({ label: 'Block 6', value: 6, units: 'u6' }),
+        StatisticsBlockItemFactory.build({
+          label: 'Block 1',
+          value: 1,
+          units: 'u1',
+        }),
+        StatisticsBlockItemFactory.build({
+          label: 'Block 2',
+          value: 2,
+          units: 'u2',
+        }),
+        StatisticsBlockItemFactory.build({
+          label: 'Block 3',
+          value: 3,
+          units: 'u3',
+        }),
+        StatisticsBlockItemFactory.build({
+          label: 'Block 4',
+          value: 4,
+          units: 'u4',
+        }),
+        StatisticsBlockItemFactory.build({
+          label: 'Block 5',
+          value: 5,
+          units: 'u5',
+        }),
+        StatisticsBlockItemFactory.build({
+          label: 'Block 6',
+          value: 6,
+          units: 'u6',
+        }),
       ],
     })
 
@@ -113,9 +171,21 @@ describe('StatisticsBlocks', () => {
     const mockData = StatisticsBlocksSectionFactory.build({
       name: 'Decimal Values',
       data: [
-        StatisticsBlockItemFactory.build({ label: 'Zero value', value: 0, units: 'count' }),
-        StatisticsBlockItemFactory.build({ label: 'Small decimal', value: 0.001, units: 'sec' }),
-        StatisticsBlockItemFactory.build({ label: 'Large number', value: 999999, units: 'records' }),
+        StatisticsBlockItemFactory.build({
+          label: 'Zero value',
+          value: 0,
+          units: 'count',
+        }),
+        StatisticsBlockItemFactory.build({
+          label: 'Small decimal',
+          value: 0.001,
+          units: 'sec',
+        }),
+        StatisticsBlockItemFactory.build({
+          label: 'Large number',
+          value: 999999,
+          units: 'records',
+        }),
       ],
     })
 
@@ -140,4 +210,3 @@ describe('StatisticsBlocks', () => {
     expect(section).toBeInTheDocument()
   })
 })
-

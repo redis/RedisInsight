@@ -43,8 +43,18 @@ describe('StatisticsTable', () => {
         { id: 'type', header: 'Type' },
       ],
       data: [
-        { status: 'connected', name: 'target1', host: 'localhost:6379', type: 'redis' },
-        { status: 'not yet used', name: 'target2', host: 'localhost:6380', type: 'redis' },
+        {
+          status: 'connected',
+          name: 'target1',
+          host: 'localhost:6379',
+          type: 'redis',
+        },
+        {
+          status: 'not yet used',
+          name: 'target2',
+          host: 'localhost:6380',
+          type: 'redis',
+        },
       ],
     })
 
@@ -65,8 +75,18 @@ describe('StatisticsTable', () => {
         { id: 'type', header: 'Type' },
       ],
       data: [
-        { status: 'connected', name: 'target1', host: 'localhost:6379', type: 'redis' },
-        { status: 'not yet used', name: 'target2', host: 'localhost:6380', type: 'redis' },
+        {
+          status: 'connected',
+          name: 'target1',
+          host: 'localhost:6379',
+          type: 'redis',
+        },
+        {
+          status: 'not yet used',
+          name: 'target2',
+          host: 'localhost:6380',
+          type: 'redis',
+        },
       ],
     })
 
@@ -91,8 +111,22 @@ describe('StatisticsTable', () => {
         { id: 'user', header: 'User' },
       ],
       data: [
-        { id: 'client1', addr: '127.0.0.1', name: 'Client 1', ageSec: 11, idleSec: 5, user: 'user1' },
-        { id: 'client2', addr: '127.0.0.2', name: 'Client 2', ageSec: 20, idleSec: 12, user: 'user2' },
+        {
+          id: 'client1',
+          addr: '127.0.0.1',
+          name: 'Client 1',
+          ageSec: 11,
+          idleSec: 5,
+          user: 'user1',
+        },
+        {
+          id: 'client2',
+          addr: '127.0.0.2',
+          name: 'Client 2',
+          ageSec: 20,
+          idleSec: 12,
+          user: 'user2',
+        },
       ],
     })
 
@@ -118,13 +152,50 @@ describe('StatisticsTable', () => {
         { id: 'filtered', header: 'Filtered' },
         { id: 'rejected', header: 'Rejected' },
         { id: 'deduplicated', header: 'Deduplicated' },
-        { id: 'last_arrival', header: 'Last arrival', type: StatisticsCellType.Date },
+        {
+          id: 'last_arrival',
+          header: 'Last arrival',
+          type: StatisticsCellType.Date,
+        },
       ],
       data: [
-        { name: 'stream1', total: 11, pending: 5, inserted: 3, updated: 2, deleted: 1, filtered: 0, rejected: 0, deduplicated: 0, last_arrival: '2022-01-01' },
-        { name: 'stream2', total: 20, pending: 10, inserted: 6, updated: 4, deleted: 2, filtered: 0, rejected: 0, deduplicated: 0, last_arrival: '2022-01-02' },
+        {
+          name: 'stream1',
+          total: 11,
+          pending: 5,
+          inserted: 3,
+          updated: 2,
+          deleted: 1,
+          filtered: 0,
+          rejected: 0,
+          deduplicated: 0,
+          last_arrival: '2022-01-01',
+        },
+        {
+          name: 'stream2',
+          total: 20,
+          pending: 10,
+          inserted: 6,
+          updated: 4,
+          deleted: 2,
+          filtered: 0,
+          rejected: 0,
+          deduplicated: 0,
+          last_arrival: '2022-01-02',
+        },
       ],
-      footer: { name: 'Totals', total: 31, pending: 15, inserted: 9, updated: 6, deleted: 3, filtered: 0, rejected: 0, deduplicated: 0, last_arrival: '' },
+      footer: {
+        name: 'Totals',
+        total: 31,
+        pending: 15,
+        inserted: 9,
+        updated: 6,
+        deleted: 3,
+        filtered: 0,
+        rejected: 0,
+        deduplicated: 0,
+        last_arrival: '',
+      },
     })
 
     render(<StatisticsTable data={mockData} />)
@@ -192,7 +263,9 @@ describe('StatisticsTable', () => {
     render(<StatisticsTable data={mockData} />)
 
     // Should show truncated value (formatLongName with maxLength=30, endPartLength=0, separator='...')
-    expect(screen.getByText('this_is_a_very_long_stream_...')).toBeInTheDocument()
+    expect(
+      screen.getByText('this_is_a_very_long_stream_...'),
+    ).toBeInTheDocument()
     // Full value should not be visible as text (only in tooltip)
     expect(screen.queryByText(longValue)).not.toBeInTheDocument()
   })
@@ -211,7 +284,13 @@ describe('StatisticsTable', () => {
 
   it('should format date values using FormatedDate component when type is date', () => {
     const mockData = StatisticsTableSectionFactory.build({
-      columns: [{ id: 'last_arrival', header: 'Last arrival', type: StatisticsCellType.Date }],
+      columns: [
+        {
+          id: 'last_arrival',
+          header: 'Last arrival',
+          type: StatisticsCellType.Date,
+        },
+      ],
       data: [{ last_arrival: '2024-01-15T10:30:00Z' }],
     })
 
@@ -222,4 +301,3 @@ describe('StatisticsTable', () => {
     expect(screen.getByRole('cell')).toBeInTheDocument()
   })
 })
-

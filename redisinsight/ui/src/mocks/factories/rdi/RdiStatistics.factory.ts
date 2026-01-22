@@ -17,13 +17,14 @@ export const StatisticsInfoItemFactory = Factory.define<{
   value: faker.lorem.word(),
 }))
 
-export const StatisticsInfoSectionFactory = Factory.define<IStatisticsInfoSection>(
-  () => ({
+export const StatisticsInfoSectionFactory =
+  Factory.define<IStatisticsInfoSection>(() => ({
     name: faker.lorem.words(2),
     view: RdiStatisticsViewType.Info,
-    data: StatisticsInfoItemFactory.buildList(faker.number.int({ min: 1, max: 5 })),
-  }),
-)
+    data: StatisticsInfoItemFactory.buildList(
+      faker.number.int({ min: 1, max: 5 }),
+    ),
+  }))
 
 export const StatisticsBlockItemFactory = Factory.define<{
   label: string
@@ -35,21 +36,24 @@ export const StatisticsBlockItemFactory = Factory.define<{
   units: faker.helpers.arrayElement(['Total', 'MB', 'ms', 'sec', 'records']),
 }))
 
-export const StatisticsBlocksSectionFactory = Factory.define<IStatisticsBlocksSection>(
-  () => ({
+export const StatisticsBlocksSectionFactory =
+  Factory.define<IStatisticsBlocksSection>(() => ({
     name: faker.lorem.words(2),
     view: RdiStatisticsViewType.Blocks,
-    data: StatisticsBlockItemFactory.buildList(faker.number.int({ min: 1, max: 7 })),
+    data: StatisticsBlockItemFactory.buildList(
+      faker.number.int({ min: 1, max: 7 }),
+    ),
+  }))
+
+export const StatisticsColumnFactory = Factory.define<IStatisticsColumn>(
+  () => ({
+    id: faker.string.alpha(10),
+    header: faker.lorem.word(),
   }),
 )
 
-export const StatisticsColumnFactory = Factory.define<IStatisticsColumn>(() => ({
-  id: faker.string.alpha(10),
-  header: faker.lorem.word(),
-}))
-
-export const StatisticsTableSectionFactory = Factory.define<IStatisticsTableSection>(
-  () => {
+export const StatisticsTableSectionFactory =
+  Factory.define<IStatisticsTableSection>(() => {
     const columns = [
       { id: 'status', header: 'Status', type: StatisticsCellType.Status },
       { id: 'name', header: 'Name' },
@@ -60,12 +64,17 @@ export const StatisticsTableSectionFactory = Factory.define<IStatisticsTableSect
       name: faker.lorem.words(2),
       view: RdiStatisticsViewType.Table,
       columns,
-      data: Array.from({ length: faker.number.int({ min: 1, max: 5 }) }, () => ({
-        status: faker.helpers.arrayElement(['connected', 'not yet used', 'disconnected']),
-        name: faker.lorem.word(),
-        host: `${faker.internet.ip()}:${faker.internet.port()}`,
-      })),
+      data: Array.from(
+        { length: faker.number.int({ min: 1, max: 5 }) },
+        () => ({
+          status: faker.helpers.arrayElement([
+            'connected',
+            'not yet used',
+            'disconnected',
+          ]),
+          name: faker.lorem.word(),
+          host: `${faker.internet.ip()}:${faker.internet.port()}`,
+        }),
+      ),
     }
-  },
-)
-
+  })

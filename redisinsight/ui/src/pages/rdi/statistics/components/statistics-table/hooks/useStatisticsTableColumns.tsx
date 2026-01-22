@@ -85,4 +85,3 @@ const useStatisticsTableColumns = (
   )
 
 export default useStatisticsTableColumns
-
