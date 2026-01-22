@@ -2,7 +2,6 @@
   "productName": "Redis Insight",
   "appId": "org.RedisLabs.RedisInsight-V2",
   "copyright": "Copyright © 2024 Redis Ltd.",
-  "afterPack": "./scripts/afterPack.js",
   "files": ["dist", "node_modules", "package.json"],
   "artifactName": "Redis-Insight-${os}-${arch}.${ext}",
   "compression": "normal",
@@ -14,6 +13,9 @@
       "schemes": ["redisinsight"]
     }
   ],
+  "electronFuses": {
+    "runAsNode": false
+  },
   "mac": {
     "target": [
       {
