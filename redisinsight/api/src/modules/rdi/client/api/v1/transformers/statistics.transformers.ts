@@ -175,6 +175,7 @@ export const transformConnectionsStatistics = (
 
   // Custom column headers and types
   const customColumns = {
+    // todo: add type enum in the future
     status: { header: 'Status', type: 'status' },
     host_port: { header: 'Host:port' },
     user: { header: 'Username' },
