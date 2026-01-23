@@ -15,7 +15,7 @@ import {
 import { asyncPoolSettled } from '../utils/async-pool';
 
 const DEFAULT_SESSION_ID = 'default';
-const MAX_CONCURRENT_REQUESTS = 20;
+const MAX_CONCURRENT_REQUESTS = 10;
 
 @Injectable()
 export class AzureAutodiscoveryService {
@@ -65,22 +65,6 @@ export class AzureAutodiscoveryService {
       this.logger.error('Failed to list subscriptions', error?.message);
       return [];
     }
-  }
-
-  /**
-   * List all Redis databases across all subscriptions.
-   * Fetches databases from multiple subscriptions in parallel with concurrency limit.
-   */
-  async listDatabases(): Promise<AzureRedisDatabase[]> {
-    const subscriptions = await this.listSubscriptions();
-
-    const results = await asyncPoolSettled(
-      subscriptions,
-      (sub) => this.listDatabasesInSubscription(sub),
-      MAX_CONCURRENT_REQUESTS,
-    );
-
-    return results.flat();
   }
 
   /**
