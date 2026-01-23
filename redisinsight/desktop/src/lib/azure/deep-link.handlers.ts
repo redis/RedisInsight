@@ -1,16 +1,14 @@
 import log from 'electron-log'
-import axios from 'axios'
 import { UrlWithParsedQuery } from 'url'
-import { configMain as config } from 'desktopSrc/config'
 import { wrapErrorMessageSensitiveData } from 'desktopSrc/utils'
 import { getWindows } from 'desktopSrc/lib/window/browserWindow'
 import { IpcOnEvent } from 'uiSrc/electron/constants'
-
-const getApiBase = () => `http://localhost:${config.getApiPort()}/api`
+import { AzureAuthStatus } from 'apiSrc/modules/azure/constants'
+import { getAzureAuthService } from './azure-auth.service.provider'
 
 /**
  * Handle Azure OAuth callback from deep link.
- * Forwards the authorization code to the backend API.
+ * Calls the AzureAuthService directly to exchange the authorization code.
  */
 const azureOauthCallback = async (url: UrlWithParsedQuery) => {
   const [currentWindow] = getWindows().values()
@@ -27,29 +25,40 @@ const azureOauthCallback = async (url: UrlWithParsedQuery) => {
     if (error) {
       log.error('Azure OAuth error:', error, errorDescription)
       currentWindow?.webContents.send(IpcOnEvent.azureOauthCallback, {
-        status: 'failed',
+        status: AzureAuthStatus.Failed,
         error: errorDescription || error,
       })
       return
     }
 
-    if (!code) {
-      log.error('Azure OAuth callback missing authorization code')
+    if (!code || !state) {
+      log.error('Azure OAuth callback missing code or state')
       currentWindow?.webContents.send(IpcOnEvent.azureOauthCallback, {
-        status: 'failed',
-        error: 'Missing authorization code',
+        status: AzureAuthStatus.Failed,
+        error: 'Missing authorization code or state',
       })
       return
     }
 
-    // Forward to backend API
-    const response = await axios.get(`${getApiBase()}/azure/auth/callback`, {
-      params: { code, state },
-    })
+    // Call the service directly
+    const azureAuthService = getAzureAuthService()
+    if (!azureAuthService) {
+      log.error('AzureAuthService not available')
+      currentWindow?.webContents.send(IpcOnEvent.azureOauthCallback, {
+        status: AzureAuthStatus.Failed,
+        error: 'Azure auth service not initialized',
+      })
+      return
+    }
+
+    const result = await azureAuthService.handleCallback(
+      code as string,
+      state as string,
+    )
 
     currentWindow?.webContents.send(IpcOnEvent.azureOauthCallback, {
-      status: 'succeed',
-      data: response.data,
+      status: result.status,
+      account: result.account,
     })
     currentWindow?.focus()
   } catch (e) {
@@ -58,7 +67,7 @@ const azureOauthCallback = async (url: UrlWithParsedQuery) => {
       wrapErrorMessageSensitiveData(e as Error),
     )
     currentWindow?.webContents.send(IpcOnEvent.azureOauthCallback, {
-      status: 'failed',
+      status: AzureAuthStatus.Failed,
       error: (e as Error).message,
     })
   }
