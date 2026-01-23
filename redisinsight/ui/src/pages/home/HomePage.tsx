@@ -56,7 +56,7 @@ import { UrlHandlingActions } from 'uiSrc/slices/interfaces/urlHandling'
 import { CREATE_CLOUD_DB_ID } from 'uiSrc/pages/home/constants'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 
-import { Page, PageBody } from 'uiSrc/components/base/layout/page'
+import { PageBody } from 'uiSrc/components/base/layout/page'
 import { Card } from 'uiSrc/components/base/layout'
 import DatabasesList from './components/database-list-component'
 import DatabasesListV2 from './components/databases-list/DatabasesList'
@@ -69,8 +69,7 @@ import {
   useHomePageDataProvider,
 } from './contexts/HomePageDataProvider'
 
-import './styles.scss'
-import styles from './styles.module.scss'
+import * as S from './HomePage.styles'
 
 enum OpenDialogName {
   AddDatabase = 'add',
@@ -257,8 +256,8 @@ const HomePage = () => {
 
   return (
     <HomePageTemplate>
-      <div className={styles.pageWrapper}>
-        <Page className={styles.page}>
+      <S.PageWrapper>
+        <S.Page>
           <PageBody component="div">
             <DatabaseListHeader
               key="instance-controls"
@@ -287,7 +286,7 @@ const HomePage = () => {
                 onClose={handleClose}
               />
             )}
-            <div key="homePage" className="homePage">
+            <S.HomePageContent key="homePage">
               {hideDbList && (
                 <Card>
                   <EmptyMessage onAddInstanceClick={handleAddInstance} />
@@ -307,10 +306,10 @@ const HomePage = () => {
               {!hideDbList && databasesListV2Feature?.flag && (
                 <DatabasesListV2 />
               )}
-            </div>
+            </S.HomePageContent>
           </PageBody>
-        </Page>
-      </div>
+        </S.Page>
+      </S.PageWrapper>
     </HomePageTemplate>
   )
 }
