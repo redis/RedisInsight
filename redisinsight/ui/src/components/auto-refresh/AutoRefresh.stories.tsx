@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import React from 'react'
-import AutoRefresh from './index'
 import {
   DATABASE_OVERVIEW_MINIMUM_REFRESH_INTERVAL,
   DATABASE_OVERVIEW_REFRESH_INTERVAL,
 } from 'uiSrc/constants'
-import { StyledContainer } from '../../../../../.storybook/helpers/styles'
+import AutoRefresh from './index'
 
 const meta = {
   component: AutoRefresh,
@@ -15,9 +14,9 @@ const meta = {
   decorators: [
     (Story) => {
       return (
-        <StyledContainer>
+        <div style={{ width: '300px' }}>
           <Story />
-        </StyledContainer>
+        </div>
       )
     },
   ],

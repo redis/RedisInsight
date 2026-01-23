@@ -1,96 +1,31 @@
-import React, { HTMLAttributes, useEffect, useState } from 'react'
-import cx from 'classnames'
-import styled from 'styled-components'
+import React, { useCallback, useEffect, useState } from 'react'
 import { ChevronDownIcon, ResetIcon } from 'uiSrc/components/base/icons'
 import {
   errorValidateRefreshRateNumber,
   MIN_REFRESH_RATE,
-  Nullable,
   validateRefreshRateNumber,
 } from 'uiSrc/utils'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
 import { localStorageService } from 'uiSrc/services'
 import { BrowserStorageItem } from 'uiSrc/constants'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { ColorText } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { SwitchInput } from 'uiSrc/components/base/inputs'
-import { RiPopover, RiTooltip } from 'uiSrc/components/base'
+import { RiPopover } from 'uiSrc/components/base'
+import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import {
   DEFAULT_REFRESH_RATE,
   DURATION_FIRST_REFRESH_TIME,
+  getDataTestid,
+  getLastRefreshDelta,
   getTextByRefreshTime,
   MINUTE,
   NOW,
 } from './utils'
 
-import styles from './styles.module.scss'
-
-const AutoRefreshInterval = styled(ColorText)<
-  HTMLAttributes<HTMLSpanElement> & {
-    enableAutoRefresh: boolean
-    disabled?: boolean
-  }
->`
-  color: ${({ disabled, enableAutoRefresh, theme }) =>
-    !disabled && enableAutoRefresh
-      ? theme.semantic.color.text.primary400
-      : 'inherit'};
-  opacity: ${({ disabled }) => (disabled ? '0.5' : 'inherit')};
-`
-
-const AutoRefreshButton = styled(IconButton)<{
-  enableAutoRefresh: boolean
-  disabled?: boolean
-}>`
-  color: ${({ theme, disabled, enableAutoRefresh }) =>
-    !disabled && enableAutoRefresh
-      ? theme.semantic.color.text.primary400
-      : 'inherit'};
-`
-
-const AutoRefreshConfigButton = styled(IconButton)<{
-  isPopoverOpen: boolean
-}>`
-    svg {
-      width: 10px;
-      height: 10px;
-    }
-
-    background-color: ${({ theme, isPopoverOpen }) =>
-      isPopoverOpen
-        ? theme.semantic.color.background.neutral100
-        : 'transparent'};
-  }
-`
-
-export interface Props {
-  postfix: string
-  loading: boolean
-  displayText?: boolean
-  displayLastRefresh?: boolean
-  lastRefreshTime: Nullable<number>
-  testid?: string
-  containerClassName?: string
-  turnOffAutoRefresh?: boolean
-  onRefresh: (forceRefresh?: boolean) => void
-  onRefreshClicked?: () => void
-  onEnableAutoRefresh?: (
-    enableAutoRefresh: boolean,
-    refreshRate: string,
-  ) => void
-  onChangeAutoRefreshRate?: (
-    enableAutoRefresh: boolean,
-    refreshRate: string,
-  ) => void
-  minimumRefreshRate?: number
-  defaultRefreshRate?: string
-  iconSize?: 'S' | 'M' | 'L'
-  disabled?: boolean
-  disabledRefreshButtonMessage?: string
-  enableAutoRefreshDefault?: boolean
-}
+import * as S from './AutoRefresh.styles'
+import { AutoRefreshProps } from './AutoRefresh.types'
 
 const TIMEOUT_TO_UPDATE_REFRESH_TIME = 1_000 * MINUTE // once a minute
 
@@ -113,7 +48,7 @@ const AutoRefresh = ({
   minimumRefreshRate,
   defaultRefreshRate,
   enableAutoRefreshDefault = false,
-}: Props) => {
+}: AutoRefreshProps) => {
   let intervalText: NodeJS.Timeout
   let intervalRefresh: NodeJS.Timeout
 
@@ -128,12 +63,14 @@ const AutoRefresh = ({
   )
   const [editingRate, setEditingRate] = useState(false)
 
-  const onButtonClick = () =>
-    setIsPopoverOpen((isPopoverOpen) => !isPopoverOpen)
-  const closePopover = () => {
+  const getTestId = getDataTestid(testid)
+
+  const onButtonClick = () => setIsPopoverOpen((open) => !open)
+
+  const closePopover = useCallback(() => {
     setEnableAutoRefresh(enableAutoRefresh)
     setIsPopoverOpen(false)
-  }
+  }, [enableAutoRefresh])
 
   useEffect(() => {
     const refreshRateStorage =
@@ -151,6 +88,34 @@ const AutoRefresh = ({
     }
   }, [turnOffAutoRefresh])
 
+  const updateLastRefresh = useCallback(() => {
+    const delta = getLastRefreshDelta(lastRefreshTime)
+    const text = getTextByRefreshTime(delta, lastRefreshTime ?? 0)
+    if (lastRefreshTime) {
+      setRefreshMessage(text)
+    }
+  }, [lastRefreshTime])
+
+  const handleRefresh = useCallback(
+    (forceRefresh = false) => {
+      onRefresh(forceRefresh)
+    },
+    [onRefresh],
+  )
+
+  const updateAutoRefreshText = useCallback(
+    (refreshInterval: string) => {
+      if (enableAutoRefresh) {
+        setRefreshRateMessage(
+          // more than 1 minute
+          +refreshInterval > MINUTE
+            ? `${Math.floor(+refreshInterval / MINUTE)} min`
+            : `${refreshInterval} s`,
+        )
+      }
+    },
+    [enableAutoRefresh],
+  )
   // update refresh label text
   useEffect(() => {
     const delta = getLastRefreshDelta(lastRefreshTime)
@@ -189,73 +154,53 @@ const AutoRefresh = ({
     return () => clearInterval(intervalRefresh)
   }, [enableAutoRefresh, refreshRate, loading, disabled, lastRefreshTime])
 
-  const getLastRefreshDelta = (time: Nullable<number>) =>
-    (Date.now() - (time || 0)) / 1_000
-
-  const getDataTestid = (suffix: string) =>
-    testid ? `${testid}-${suffix}` : suffix
-
-  const updateLastRefresh = () => {
-    const delta = getLastRefreshDelta(lastRefreshTime)
-    const text = getTextByRefreshTime(delta, lastRefreshTime ?? 0)
-    lastRefreshTime && setRefreshMessage(text)
-  }
-
-  const updateAutoRefreshText = (refreshRate: string) => {
-    enableAutoRefresh &&
-      setRefreshRateMessage(
-        // more than 1 minute
-        +refreshRate > MINUTE
-          ? `${Math.floor(+refreshRate / MINUTE)} min`
-          : `${refreshRate} s`,
+  const handleApplyAutoRefreshRate = useCallback(
+    (initValue: string) => {
+      const minRefreshRate = minimumRefreshRate || MIN_REFRESH_RATE
+      const value =
+        +initValue >= minRefreshRate ? initValue : `${minRefreshRate}`
+      setRefreshRate(value)
+      setEditingRate(false)
+      localStorageService.set(
+        BrowserStorageItem.autoRefreshRate + postfix,
+        value,
       )
-  }
+      onChangeAutoRefreshRate?.(enableAutoRefresh, value)
+    },
+    [minimumRefreshRate, postfix, onChangeAutoRefreshRate, enableAutoRefresh],
+  )
 
-  const handleApplyAutoRefreshRate = (initValue: string) => {
-    const minRefreshRate = minimumRefreshRate || MIN_REFRESH_RATE
-    const value = +initValue >= minRefreshRate ? initValue : `${minRefreshRate}`
-    setRefreshRate(value)
+  const handleDeclineAutoRefreshRate = useCallback(() => {
     setEditingRate(false)
-    localStorageService.set(BrowserStorageItem.autoRefreshRate + postfix, value)
-    onChangeAutoRefreshRate?.(enableAutoRefresh, value)
-  }
+  }, [])
 
-  const handleDeclineAutoRefreshRate = () => {
-    setEditingRate(false)
-  }
-
-  const handleRefresh = (forceRefresh = false) => {
-    onRefresh(forceRefresh)
-  }
-
-  const handleRefreshClick = () => {
+  const handleRefreshClick = useCallback(() => {
     handleRefresh(true)
     onRefreshClicked?.()
-  }
+  }, [handleRefresh, onRefreshClicked])
 
-  const onChangeEnableAutoRefresh = (value: boolean) => {
-    setEnableAutoRefresh(value)
-
-    onEnableAutoRefresh?.(value, refreshRate)
-  }
+  const onChangeEnableAutoRefresh = useCallback(
+    (value: boolean) => {
+      setEnableAutoRefresh(value)
+      onEnableAutoRefresh?.(value, refreshRate)
+    },
+    [onEnableAutoRefresh, refreshRate],
+  )
 
   return (
-    <Row
+    <S.Container
+      justify="start"
       align="center"
-      gap="m"
-      className={cx(containerClassName, {
-        [styles.enable]: !disabled && enableAutoRefresh,
-      })}
-      data-testid={getDataTestid('auto-refresh-container')}
-      // TODO: fix properly
-      style={{ lineHeight: 1 }}
+      gap="s"
+      className={containerClassName}
+      data-testid={getTestId('auto-refresh-container')}
     >
       {displayText && (
         <FlexItem>
           <ColorText
             size="s"
-            component="span"
-            data-testid={getDataTestid('refresh-message-label')}
+            color="primary"
+            data-testid={getTestId('refresh-message-label')}
           >
             {enableAutoRefresh ? 'Auto refresh:' : 'Last refresh:'}
           </ColorText>
@@ -263,117 +208,115 @@ const AutoRefresh = ({
       )}
       {displayLastRefresh && (
         <FlexItem>
-          <AutoRefreshInterval
-            disabled={disabled}
-            enableAutoRefresh={enableAutoRefresh}
-            className={cx('refresh-message-time')}
-            data-testid={getDataTestid('refresh-message')}
-            component="span"
+          <S.AutoRefreshInterval
+            color="primary"
+            $disabled={disabled}
+            data-testid={getTestId('refresh-message')}
             size="s"
           >
             {` ${enableAutoRefresh ? refreshRateMessage : refreshMessage}`}
-          </AutoRefreshInterval>
+          </S.AutoRefreshInterval>
         </FlexItem>
       )}
       <FlexItem>
         <Row align="center" gap="none">
           <FlexItem>
-            <RiTooltip
+            <S.StyledTooltip
               title={!disabled && 'Last Refresh'}
-              className={styles.tooltip}
               position="top"
               content={disabled ? disabledRefreshButtonMessage : refreshMessage}
-              data-testid={getDataTestid('refresh-tooltip')}
+              data-testid={getTestId('refresh-tooltip')}
             >
-              <AutoRefreshButton
-                enableAutoRefresh={enableAutoRefresh}
+              <IconButton
                 size={iconSize}
                 icon={ResetIcon}
                 disabled={loading || disabled}
                 onClick={handleRefreshClick}
                 onMouseEnter={updateLastRefresh}
-                className={cx('auto-refresh-btn')}
-                aria-labelledby={getDataTestid('refresh-btn')?.replaceAll?.(
+                aria-labelledby={getTestId('refresh-btn')?.replaceAll?.(
                   '-',
                   ' ',
                 )}
-                data-testid={getDataTestid('refresh-btn')}
+                data-testid={getTestId('refresh-btn')}
               />
-            </RiTooltip>
+            </S.StyledTooltip>
           </FlexItem>
           <FlexItem>
             <RiPopover
               ownFocus={false}
               anchorPosition="downCenter"
               isOpen={isPopoverOpen}
-              anchorClassName={styles.anchorWrapper}
-              panelClassName={cx(styles.popoverWrapper, {
-                [styles.popoverWrapperEditing]: editingRate,
-              })}
               closePopover={closePopover}
               button={
-                <AutoRefreshConfigButton
-                  isPopoverOpen={isPopoverOpen}
+                <IconButton
                   disabled={disabled}
-                  size="XS"
+                  size="S"
                   icon={ChevronDownIcon}
                   aria-label="Auto-refresh config popover"
-                  className={cx(styles.anchorBtn, {
-                    [styles.anchorBtnOpen]: isPopoverOpen,
-                  })}
                   onClick={onButtonClick}
-                  data-testid={getDataTestid('auto-refresh-config-btn')}
+                  data-testid={getTestId('auto-refresh-config-btn')}
                 />
               }
             >
-              <SwitchInput
-                title="Auto Refresh"
-                checked={enableAutoRefresh}
-                onCheckedChange={onChangeEnableAutoRefresh}
-                className={styles.switchOption}
-                data-testid={getDataTestid('auto-refresh-switch')}
-              />
-              <div className={styles.inputContainer}>
-                <div className={styles.inputLabel}>Refresh rate:</div>
-                {!editingRate && (
-                  <ColorText
-                    className={styles.refreshRateText}
-                    onClick={() => setEditingRate(true)}
-                    data-testid={getDataTestid('refresh-rate')}
-                  >
-                    {`${refreshRate} s`}
-                    <div className={styles.refreshRatePencil}>
-                      <RiIcon type="EditIcon" />
-                    </div>
+              <S.PopoverWrapper gap="m">
+                <div>
+                  <SwitchInput
+                    title="Auto Refresh"
+                    checked={enableAutoRefresh}
+                    onCheckedChange={onChangeEnableAutoRefresh}
+                    data-testid={getTestId('auto-refresh-switch')}
+                  />
+                </div>
+                <S.InputContainer
+                  grow={false}
+                  align="center"
+                  justify="start"
+                  gap="xs"
+                >
+                  <ColorText size="m" color="primary">
+                    Refresh rate:
                   </ColorText>
-                )}
-                {editingRate && (
-                  <>
-                    <div
-                      className={styles.input}
-                      data-testid={getDataTestid('auto-refresh-rate-input')}
+                  {!editingRate && (
+                    <S.RefreshRateText
+                      size="m"
+                      color="primary"
+                      onClick={() => setEditingRate(true)}
+                      data-testid={getTestId('refresh-rate')}
                     >
-                      <InlineItemEditor
-                        initialValue={refreshRate}
-                        fieldName="refreshRate"
-                        placeholder={DEFAULT_REFRESH_RATE}
-                        isLoading={loading}
-                        validation={validateRefreshRateNumber}
-                        disableByValidation={errorValidateRefreshRateNumber}
-                        onDecline={() => handleDeclineAutoRefreshRate()}
-                        onApply={(value) => handleApplyAutoRefreshRate(value)}
-                      />
-                    </div>
-                    <ColorText>{' s'}</ColorText>
-                  </>
-                )}
-              </div>
+                      {`${refreshRate} s`}
+                      <S.PencilIcon>
+                        <RiIcon type="EditIcon" size="m" />
+                      </S.PencilIcon>
+                    </S.RefreshRateText>
+                  )}
+                  {editingRate && (
+                    <>
+                      <S.InputWrapper
+                        data-testid={getTestId('auto-refresh-rate-input')}
+                      >
+                        <InlineItemEditor
+                          initialValue={refreshRate}
+                          fieldName="refreshRate"
+                          placeholder={DEFAULT_REFRESH_RATE}
+                          isLoading={loading}
+                          validation={validateRefreshRateNumber}
+                          disableByValidation={errorValidateRefreshRateNumber}
+                          onDecline={() => handleDeclineAutoRefreshRate()}
+                          onApply={(value) => handleApplyAutoRefreshRate(value)}
+                        />
+                      </S.InputWrapper>
+                      <ColorText>{' s'}</ColorText>
+                    </>
+                  )}
+                </S.InputContainer>
+              </S.PopoverWrapper>
             </RiPopover>
           </FlexItem>
         </Row>
       </FlexItem>
-    </Row>
+    </S.Container>
   )
 }
 
-export default React.memo(AutoRefresh)
+export default AutoRefresh
+// export default React.memo(AutoRefresh)
