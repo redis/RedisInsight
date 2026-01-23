@@ -1,7 +1,7 @@
 {
   "productName": "Redis Insight",
   "appId": "org.RedisLabs.RedisInsight-V2",
-  "copyright": "Copyright © 2024 Redis Ltd.",
+  "copyright": "Copyright © 2026 Redis Ltd.",
   "files": ["dist", "node_modules", "package.json"],
   "artifactName": "Redis-Insight-${os}-${arch}.${ext}",
   "compression": "normal",
