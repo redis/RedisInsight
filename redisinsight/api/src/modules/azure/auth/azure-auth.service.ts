@@ -10,6 +10,7 @@ import {
   AZURE_REDIS_SCOPE,
   AZURE_MANAGEMENT_SCOPE,
   AZURE_OAUTH_REDIRECT_PATH,
+  AZURE_OAUTH_SCOPES,
   AzureAuthStatus,
 } from '../constants';
 
@@ -114,7 +115,7 @@ export class AzureAuthService {
     this.authRequests.set(state, verifier);
 
     const authUrl = await pca.getAuthCodeUrl({
-      scopes: [AZURE_REDIS_SCOPE, AZURE_MANAGEMENT_SCOPE, 'offline_access'],
+      scopes: AZURE_OAUTH_SCOPES,
       redirectUri: AZURE_OAUTH_REDIRECT_PATH,
       codeChallenge: challenge,
       codeChallengeMethod: 'S256',
@@ -146,7 +147,7 @@ export class AzureAuthService {
     try {
       const result = await pca.acquireTokenByCode({
         code,
-        scopes: [AZURE_REDIS_SCOPE, AZURE_MANAGEMENT_SCOPE, 'offline_access'],
+        scopes: AZURE_OAUTH_SCOPES,
         redirectUri: AZURE_OAUTH_REDIRECT_PATH,
         codeVerifier: verifier,
       });

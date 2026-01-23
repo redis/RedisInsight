@@ -21,6 +21,25 @@ export const AZURE_MANAGEMENT_SCOPE = 'https://management.azure.com/.default';
 export const AZURE_OAUTH_REDIRECT_PATH = 'redisinsight://azure/oauth/callback';
 
 /**
+ * Scopes requested during the initial OAuth login flow.
+ *
+ * IMPORTANT: Azure AD does not allow requesting scopes from multiple resources
+ * (e.g., redis.azure.com AND management.azure.com) in a single authorization request.
+ * This results in error AADSTS70011: "static scope limit exceeded".
+ *
+ * We request only the Redis scope during login. The Management scope can be
+ * acquired later using acquireTokenSilent() when needed.
+ *
+ * @see https://learn.microsoft.com/en-us/entra/identity-platform/scopes-oidc
+ */
+export const AZURE_OAUTH_SCOPES = [
+  AZURE_REDIS_SCOPE,
+  'offline_access', // Required for refresh tokens
+  'openid', // Required for ID token
+  'profile', // Required for user info (name, etc.)
+];
+
+/**
  * Azure auth status values
  */
 export enum AzureAuthStatus {
