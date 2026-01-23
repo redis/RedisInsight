@@ -2,16 +2,23 @@ import { plainToInstance } from 'class-transformer';
 import { Logger } from '@nestjs/common';
 import { RdiUrlV2 } from 'src/modules/rdi/constants';
 import {
+  parseErrorMessage,
   RdiPipelineInternalServerErrorException,
   wrapRdiPipelineError,
 } from 'src/modules/rdi/exceptions';
-import { RdiInfo } from 'src/modules/rdi/models';
+import {
+  RdiInfo,
+  RdiStatisticsResult,
+  RdiStatisticsStatus,
+} from 'src/modules/rdi/models';
 
 import { ApiRdiClient } from 'src/modules/rdi/client/api/v1/api.rdi.client';
 import {
   GetInfoResponse,
+  GetMetricsCollectionResponse,
   GetPipelinesResponse,
 } from 'src/modules/rdi/client/api/v2/responses';
+import { transformMetricsCollectionResponse } from 'src/modules/rdi/client/api/v2/transformers';
 
 export class ApiV2RdiClient extends ApiRdiClient {
   protected readonly logger = new Logger('ApiV2RdiClient');
@@ -73,6 +80,37 @@ export class ApiV2RdiClient extends ApiRdiClient {
       this.selectedPipeline = data[0].name;
     } catch (e) {
       throw wrapRdiPipelineError(e);
+    }
+  }
+
+  /**
+   * Retrieves statistics for the selected pipeline.
+   *
+   * This method fetches statistics for the currently selected pipeline. The statistics
+   * include detailed information about the pipeline's performance, data processing,
+   * and other relevant metrics.
+   *
+   * @returns {Promise<RdiStatisticsResult>} A promise that resolves to an RdiStatisticsResult
+   *                                        object containing the pipeline statistics
+   *
+   * @example
+   * const stats = await client.getStatistics();
+   */
+  async getStatistics(): Promise<RdiStatisticsResult> {
+    try {
+      const { data } = await this.client.get<GetMetricsCollectionResponse>(
+        RdiUrlV2.GetMetricsCollections(this.selectedPipeline),
+      );
+
+      return plainToInstance(RdiStatisticsResult, {
+        status: RdiStatisticsStatus.Success,
+        data: {
+          sections: transformMetricsCollectionResponse(data),
+        },
+      });
+    } catch (e) {
+      const message: string = parseErrorMessage(e);
+      return { status: RdiStatisticsStatus.Fail, error: message };
     }
   }
 }
