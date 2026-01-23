@@ -74,10 +74,6 @@ export class AzureAutodiscoveryService {
   async listDatabases(): Promise<AzureRedisDatabase[]> {
     const subscriptions = await this.listSubscriptions();
 
-    this.logger.log(
-      `Fetching databases from ${subscriptions.length} subscriptions (max ${MAX_CONCURRENT_REQUESTS} concurrent)`,
-    );
-
     const results = await asyncPoolSettled(
       subscriptions,
       (sub) => this.listDatabasesInSubscription(sub),
@@ -326,19 +322,13 @@ export class AzureAutodiscoveryService {
       return null;
     }
 
-    const redisTokenResult =
-      await this.authService.getRedisToken(DEFAULT_SESSION_ID);
-
-    if (!redisTokenResult) {
-      this.logger.error('Failed to get Redis token for Entra ID auth');
-      return null;
-    }
-
-    // Note: tokenExpiresAt is not stored - we decode expiration from JWT when needed
+    // Don't include the token here - the credential resolver in DatabaseFactory
+    // will fetch a fresh token on-demand using the azureAccountId in providerDetails.
+    // This ensures single source of truth for token management.
     return {
       host: database.host,
       port: database.port,
-      password: redisTokenResult.token,
+      // password intentionally omitted - fetched on-demand by credential resolver
       username: session.user.oid,
       tls: true,
       authType: 'entraId',

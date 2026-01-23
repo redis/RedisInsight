@@ -106,7 +106,7 @@ export class AzureDatabaseTokenService {
   }
 
   private async refreshDatabaseToken(
-    sessionMetadata: SessionMetadata,
+    _sessionMetadata: SessionMetadata,
     databaseId: string,
     databaseName: string,
     providerDetails: AzureProviderDetails,
@@ -125,10 +125,9 @@ export class AzureDatabaseTokenService {
         };
       }
 
-      // Update database with new token (expiration is decoded from JWT, no need to store it)
-      await this.databaseRepository.update(sessionMetadata, databaseId, {
-        password: tokenResult.token,
-      });
+      // Note: We don't persist the token to the database.
+      // The credential resolver fetches fresh tokens on-demand at connection time.
+      // This refresh just ensures the MSAL cache has a valid token.
 
       this.logger.debug(`Refreshed token for database ${databaseName}`);
 

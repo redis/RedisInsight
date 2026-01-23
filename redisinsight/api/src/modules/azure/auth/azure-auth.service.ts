@@ -284,7 +284,6 @@ export class AzureAuthService {
 
       await this.persistCache();
 
-      this.logger.log(`Redis token acquired for account ${accountId}`);
       return {
         token: response.accessToken,
         expiresOn: response.expiresOn || new Date(),

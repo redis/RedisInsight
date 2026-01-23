@@ -27,10 +27,6 @@ export class AzureEntraIdCredentialStrategy implements CredentialStrategy {
       );
     }
 
-    this.logger.debug(
-      `Resolving Azure Entra ID credentials for database ${database.id}`,
-    );
-
     const tokenResult = await this.azureAuthService.getRedisTokenByAccountId(
       providerDetails.azureAccountId,
     );
@@ -44,21 +40,15 @@ export class AzureEntraIdCredentialStrategy implements CredentialStrategy {
       );
     }
 
-    this.logger.debug(
-      `Token acquired for database ${database.id}, expires at ${tokenResult.expiresOn.toISOString()}`,
-    );
-
     // Use plainToInstance to ensure the result is a proper Database class instance
-    const resolved = plainToInstance(
+    return plainToInstance(
       Database,
       {
         ...database,
         username: tokenResult.username,
         password: tokenResult.token,
       },
-      { excludeExtraneousValues: true, groups: ['security'] },
+      { groups: ['security'] },
     );
-
-    return resolved;
   }
 }
