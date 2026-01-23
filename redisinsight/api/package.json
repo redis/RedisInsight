@@ -56,6 +56,7 @@
     "**/multer": "^2.0.2"
   },
   "dependencies": {
+    "@azure/msal-node": "^5.0.2",
     "@nestjs/common": "^11.0.20",
     "@nestjs/core": "^11.0.20",
     "@nestjs/event-emitter": "^3.0.1",
@@ -115,6 +116,7 @@
     "@types/express": "^5.0.0",
     "@types/ioredis-mock": "^8",
     "@types/jest": "^29.5.14",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/lodash": "^4.14.167",
     "@types/node": "^18.11.18",
     "@types/ssh2": "^1.11.6",
