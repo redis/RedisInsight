@@ -1,14 +1,13 @@
 import React, { memo } from 'react'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiPopover } from 'uiSrc/components/base'
 import { SearchInput } from 'uiSrc/components/base/inputs'
-import { useFilterTags } from './useFilterTags'
 import { Row } from 'uiSrc/components/base/layout/flex'
-import styles from './styles.module.scss'
 import { COLUMN_FIELD_NAME_MAP, DatabaseListColumn } from 'uiSrc/constants'
+
+import { useFilterTags } from './useFilterTags'
+import * as S from './TagsCellHeader.styles'
 
 const headerText = COLUMN_FIELD_NAME_MAP.get(DatabaseListColumn.Tags)
 
@@ -34,11 +33,10 @@ export const TagsCellHeader = memo(() => {
       {headerText}
       <RiPopover
         button={
-          <RiIcon
+          <S.FilterByTagIcon
             role="button"
             type="FilterTableIcon"
             size="l"
-            className={styles.filterByTagIcon}
             onClick={(e) => {
               e.stopPropagation()
               onPopoverToggle()
@@ -65,9 +63,8 @@ export const TagsCellHeader = memo(() => {
           <Spacer size="m" />
           {Object.keys(groupedTags).map((key) => (
             <div key={key}>
-              <Checkbox
+              <S.FilterTagCheckbox
                 id={key}
-                className={styles.filterTagLabel}
                 label={key}
                 checked={groupedTags[key].every((value) =>
                   selectedTags.has(`${key}:${value}`),
@@ -78,9 +75,8 @@ export const TagsCellHeader = memo(() => {
               />
               {groupedTags[key].map((value) => (
                 <div key={value} style={{ margin: '10px 0 0 20px' }}>
-                  <Checkbox
+                  <S.FilterTagCheckbox
                     id={`${key}:${value}`}
-                    className={styles.filterTagLabel}
                     data-testid={`${key}:${value}`}
                     label={value}
                     checked={selectedTags.has(`${key}:${value}`)}

@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { isEmpty } from 'lodash'
-import cx from 'classnames'
 
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
@@ -25,14 +24,12 @@ import {
   FeatureFlags,
 } from 'uiSrc/constants'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { EmptyButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { PlusIcon } from 'uiSrc/components/base/icons'
 import ColumnsConfigPopover from 'uiSrc/components/columns-config/ColumnsConfigPopover'
+import * as S from './DatabaseListHeader.styles'
 import handleClickFreeCloudDb from './handleClickFreeCloudDb'
 import SearchDatabasesList from '../search-databases-list'
-
-import styles from './styles.module.scss'
 
 export interface Props {
   onAddInstance: () => void
@@ -164,19 +161,14 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
   }
 
   return (
-    <div className={styles.containerDl}>
-      <Row
-        className={styles.contentDL}
-        align="center"
-        responsive={false}
-        gap="s"
-      >
+    <S.Container>
+      <S.ContentRow align="center" responsive={false} gap="s">
         <FlexItem direction="row" $gap="m">
           <AddCloudInstanceButton />
           <AddLocalInstanceButton />
         </FlexItem>
         {!loading && !isEmpty(data) && (
-          <FlexItem className={cx(styles.promo)}>
+          <S.Promo>
             <Row align="center" gap="s">
               {promoData && (
                 <FeatureFlagComponent name={FeatureFlags.cloudAds}>
@@ -186,7 +178,7 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
                 </FeatureFlagComponent>
               )}
             </Row>
-          </FlexItem>
+          </S.Promo>
         )}
         {instances.length > 0 && (
           <Row justify="end" align="center" gap="l">
@@ -198,9 +190,9 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
             <SearchDatabasesList />
           </Row>
         )}
-      </Row>
-      <Spacer className={styles.spacerDl} />
-    </div>
+      </S.ContentRow>
+      <S.SpacerDl />
+    </S.Container>
   )
 }
 

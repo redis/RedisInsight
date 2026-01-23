@@ -4,11 +4,12 @@ import { FormikProps } from 'formik'
 import { Nullable } from 'uiSrc/utils'
 import { SECURITY_FIELD } from 'uiSrc/constants'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { ColorText, Text } from 'uiSrc/components/base/text'
+import { ColorText } from 'uiSrc/components/base/text'
 import { PasswordInput, TextInput } from 'uiSrc/components/base/inputs'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import styles from '../../styles.module.scss'
+
+import * as S from '../Form.styles'
 
 export interface Props {
   formik: FormikProps<DbConnectionInfo>
@@ -21,12 +22,12 @@ const SentinelMasterDatabase = (props: Props) => {
   return (
     <>
       {!!db && !isCloneMode && (
-        <Text color="subdued" className={styles.sentinelCollapsedField}>
+        <S.SentinelCollapsedField color="subdued">
           Database Index:
           <span style={{ paddingLeft: 5 }}>
             <ColorText>{db}</ColorText>
           </span>
-        </Text>
+        </S.SentinelCollapsedField>
       )}
       <Row gap="m" responsive>
         <FlexItem grow>

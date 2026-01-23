@@ -10,12 +10,12 @@ import { ConnectionType } from 'uiSrc/slices/interfaces'
 import { Nullable } from 'uiSrc/utils'
 import { Item as ListGroupItem } from 'uiSrc/components/base/layout/list'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import { Endpoint } from 'apiSrc/common/models'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
 
-import styles from '../styles.module.scss'
 import { DbInfoGroup } from './DbInfo.styles'
-import { Row } from 'uiSrc/components/base/layout/flex'
+import * as S from './Form.styles'
 import { DbInfoLabelValue } from './types'
 
 export interface Props {
@@ -65,9 +65,8 @@ const AppendEndpoints = ({
   <RiTooltip
     title="Host:port"
     position="left"
-    anchorClassName={styles.anchorEndpoints}
     content={
-      <ul className={styles.endpointsList}>
+      <S.EndpointsList>
         {nodes?.map(({ host: eHost, port: ePort }) => (
           <li key={host + port}>
             <Text>
@@ -75,10 +74,12 @@ const AppendEndpoints = ({
             </Text>
           </li>
         ))}
-      </ul>
+      </S.EndpointsList>
     }
   >
-    <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
+    <S.AnchorEndpoints>
+      <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
+    </S.AnchorEndpoints>
   </RiTooltip>
 )
 
