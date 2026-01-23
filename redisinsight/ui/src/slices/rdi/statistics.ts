@@ -31,7 +31,7 @@ const rdiStatisticsSlice = createSlice({
       state.loading = false
       state.error = ''
       state.results = {
-        data: { ...state?.results?.data, ...payload.data },
+        data: payload.data,
         status: payload.status,
       }
     },

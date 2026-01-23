@@ -57,7 +57,7 @@ export abstract class RdiClient {
     config: object,
   ): Promise<RdiTestConnectionsResponseDto>;
 
-  abstract getStatistics(sections?: string): Promise<RdiStatisticsResult>;
+  abstract getStatistics(): Promise<RdiStatisticsResult>;
 
   abstract getPipelineStatus(): Promise<any>;
 

@@ -32,7 +32,6 @@ describe('RdiStatisticsService', () => {
       id: '123',
       sessionMetadata: undefined,
     };
-    const sections = 'section1,section2';
 
     it('should call getOrCreate on RdiClientProvider with correct arguments', async () => {
       const client = {
@@ -40,7 +39,7 @@ describe('RdiStatisticsService', () => {
       };
       rdiClientProvider.getOrCreate.mockResolvedValue(client);
 
-      await service.getStatistics(rdiClientMetadata, sections);
+      await service.getStatistics(rdiClientMetadata);
 
       expect(rdiClientProvider.getOrCreate).toHaveBeenCalledWith(
         rdiClientMetadata,
@@ -53,9 +52,9 @@ describe('RdiStatisticsService', () => {
       };
       rdiClientProvider.getOrCreate.mockResolvedValue(client);
 
-      await service.getStatistics(rdiClientMetadata, sections);
+      await service.getStatistics(rdiClientMetadata);
 
-      expect(client.getStatistics).toHaveBeenCalledWith(sections);
+      expect(client.getStatistics).toHaveBeenCalledTimes(1);
     });
 
     it('should return the result of getStatistics on RdiClient', async () => {
@@ -67,7 +66,7 @@ describe('RdiStatisticsService', () => {
       };
       rdiClientProvider.getOrCreate.mockResolvedValue(client);
 
-      const result = await service.getStatistics(rdiClientMetadata, sections);
+      const result = await service.getStatistics(rdiClientMetadata);
 
       expect(result).toEqual(expectedResult);
     });

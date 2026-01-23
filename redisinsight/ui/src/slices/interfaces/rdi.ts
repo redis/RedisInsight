@@ -52,65 +52,8 @@ export interface IRdiPipelineStrategies {
 }
 
 export enum StatisticsConnectionStatus {
-  notYetUsed = 'not yet used',
-  connected = 'connected',
-}
-
-export interface IConnections {
-  [key: string]: {
-    host: string
-    port: number
-    status: StatisticsConnectionStatus
-    type: string
-    database: string
-    user: string
-  }
-}
-
-export interface IDataStreamsData {
-  total: number
-  pending: number
-  inserted: number
-  updated: number
-  deleted: number
-  filtered: number
-  rejected: number
-  deduplicated: number
-  lastArrival?: string
-}
-
-export interface IDataStreams {
-  totals: IDataStreamsData
-  streams: {
-    [key: string]: IDataStreamsData
-  }
-}
-
-export interface IProcessingPerformance {
-  totalBatches: number
-  batchSizeAvg: number
-  readTimeAvg: number
-  processTimeAvg: number
-  ackTimeAvg: number
-  totalTimeAvg: number
-  recPerSecAvg: number
-}
-
-export interface IRdiPipelineStatus {
-  rdiVersion: string
-  address: string
-  runStatus: string
-  syncMode: string
-}
-
-export interface IClients {
-  [key: string]: {
-    addr: string
-    name: string
-    ageSec: number
-    idleSec: number
-    user: string
-  }
+  NotYetUsed = 'not yet used',
+  Connected = 'connected',
 }
 
 export enum RdiPipelineStatus {
@@ -118,15 +61,67 @@ export enum RdiPipelineStatus {
   Failed = 'failed',
 }
 
+export enum RdiStatisticsViewType {
+  Table = 'table',
+  Blocks = 'blocks',
+  Info = 'info',
+}
+
+export enum StatisticsCellType {
+  Status = 'status',
+  Date = 'date',
+}
+
+export interface IStatisticsColumn {
+  id: string
+  header: string
+  type?: StatisticsCellType
+}
+
+export interface IStatisticsTableSection {
+  name: string
+  view: RdiStatisticsViewType.Table
+  columns: IStatisticsColumn[]
+  data: Record<string, unknown>[]
+  footer?: Record<string, unknown>
+}
+
+export interface IStatisticsBlockItem {
+  label: string
+  value: number
+  units: string
+}
+
+export interface IStatisticsBlocksSection {
+  name: string
+  view: RdiStatisticsViewType.Blocks
+  data: IStatisticsBlockItem[]
+}
+
+export interface IStatisticsInfoItem {
+  label: string
+  value: string
+}
+
+export interface IStatisticsInfoSection {
+  name: string
+  view: RdiStatisticsViewType.Info
+  data: IStatisticsInfoItem[]
+}
+
+export type IStatisticsSection =
+  | IStatisticsTableSection
+  | IStatisticsBlocksSection
+  | IStatisticsInfoSection
+
+export interface IRdiStatisticsData {
+  sections: IStatisticsSection[]
+}
+
 export interface IRdiStatistics {
   status: RdiPipelineStatus
-  data: {
-    connections: IConnections
-    dataStreams: IDataStreams
-    processingPerformance: IProcessingPerformance
-    rdiPipelineStatus: IRdiPipelineStatus
-    clients: IClients
-  }
+  data?: IRdiStatisticsData
+  error?: string
 }
 
 export enum FileChangeType {
