@@ -2,11 +2,25 @@ import React from 'react'
 import { instance, mock } from 'ts-mockito'
 import { cloneDeep } from 'lodash'
 
-import { cleanup, fireEvent, mockedStore, render, screen } from 'uiSrc/utils/test-utils'
+import {
+  cleanup,
+  fireEvent,
+  mockedStore,
+  render,
+  screen,
+} from 'uiSrc/utils/test-utils'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
-import { ConnectionType, Instance, OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
+import {
+  ConnectionType,
+  Instance,
+  OAuthSocialAction,
+  OAuthSocialSource,
+} from 'uiSrc/slices/interfaces'
 import { DatabaseListColumn } from 'uiSrc/constants'
-import { instancesSelector, setShownColumns } from 'uiSrc/slices/instances/instances'
+import {
+  instancesSelector,
+  setShownColumns,
+} from 'uiSrc/slices/instances/instances'
 import { setSSOFlow } from 'uiSrc/slices/instances/cloud'
 import { setSocialDialogState } from 'uiSrc/slices/oauth/cloud'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
@@ -28,8 +42,8 @@ const mockInstances: Instance[] = [
     modules: [],
     version: null,
     lastConnection: new Date('2021-04-22T09:03:56.917Z'),
-    provider: 'provider'
-  }
+    provider: 'provider',
+  },
 ]
 
 const mockedProps = mock<Props>()
@@ -98,9 +112,8 @@ let store: typeof mockedStore
 beforeEach(() => {
   cleanup()
   store = cloneDeep(mockedStore)
-  store.clearActions();
-
-  (instancesSelector as jest.Mock).mockReturnValue({
+  store.clearActions()
+  ;(instancesSelector as jest.Mock).mockReturnValue({
     loading: false,
     shownColumns: ['name', 'host', 'controls'],
     data: [...mockInstances],
@@ -162,13 +175,13 @@ describe('DatabaseListHeader', () => {
     const popover = await screen.findByTestId('columns-config-popover')
     expect(popover).toBeInTheDocument()
 
-    mockShownColumns.forEach(column => {
+    mockShownColumns.forEach((column) => {
       const checkbox = screen.getByTestId(`show-${column}`)
       expect(checkbox).toBeInTheDocument()
       expect(checkbox).toBeChecked()
     })
 
-    mockHiddenColumns.forEach(column => {
+    mockHiddenColumns.forEach((column) => {
       const checkbox = screen.getByTestId(`show-${column}`)
       expect(checkbox).toBeInTheDocument()
       expect(checkbox).not.toBeChecked()
@@ -190,7 +203,10 @@ describe('DatabaseListHeader', () => {
     fireEvent.click(checkbox)
 
     const expectedActions = [setShownColumns(['host', 'controls'])]
-    expect(store.getActions()).toEqual([...afterRenderActions, ...expectedActions])
+    expect(store.getActions()).toEqual([
+      ...afterRenderActions,
+      ...expectedActions,
+    ])
   })
 
   it('should log telemetry event when columns config changed', async () => {
@@ -213,9 +229,7 @@ describe('DatabaseListHeader', () => {
       event: TelemetryEvent.DATABASE_LIST_COLUMNS_CLICKED,
       eventData: {
         shown: [],
-        hidden: [
-          DatabaseListColumn.Host,
-        ]
+        hidden: [DatabaseListColumn.Host],
       },
     })
   })
@@ -252,5 +266,4 @@ describe('DatabaseListHeader', () => {
       cloudAds: { flag: true },
     })
   })
-
 })

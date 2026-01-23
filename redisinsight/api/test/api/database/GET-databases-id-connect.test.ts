@@ -1,11 +1,4 @@
-import {
-  describe,
-  it,
-  deps,
-  validateApiCall,
-  before,
-  getMainCheckFn,
-} from '../deps';
+import { describe, deps, before, getMainCheckFn } from '../deps';
 const { localDb, request, server, constants } = deps;
 
 const endpoint = (id = constants.TEST_INSTANCE_ID) =>

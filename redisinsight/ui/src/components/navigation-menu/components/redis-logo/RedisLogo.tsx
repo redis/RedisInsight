@@ -37,7 +37,9 @@ export const RedisLogo = ({ isRdiWorkspace }: Props) => {
   if (!envDependent?.flag) {
     return (
       <RedisLogoIcon>
-        <SideBarItemIcon height="50px" width="50px"
+        <SideBarItemIcon
+          height="50px"
+          width="50px"
           aria-label="Redis Insight Homepage"
           icon={RedisLogoDarkMinIcon}
           centered

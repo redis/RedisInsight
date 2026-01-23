@@ -9,12 +9,10 @@ const testRdiId = 'someTEST_statistics';
 const notExistedRdiId = 'notExisted';
 const testRdiUrl = 'http://rdilocal.test';
 
-const endpoint = (id: string, sections = null) => {
-  let url = `/${constants.API.RDI}/${id || testRdiId}/statistics`;
-  if (sections) {
-    url += `?sections=${sections}`;
-  }
-  return request(server).get(url);
+const endpoint = (id: string) => {
+  return request(server).get(
+    `/${constants.API.RDI}/${id || testRdiId}/statistics`,
+  );
 };
 
 // Mock response in the OLD format (what RDI API returns)

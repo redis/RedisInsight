@@ -9,7 +9,9 @@ import StatisticsInfo from './StatisticsInfo'
 
 describe('StatisticsInfo', () => {
   it('should render section title', () => {
-    const mockData = StatisticsInfoSectionFactory.build({ name: 'General info' })
+    const mockData = StatisticsInfoSectionFactory.build({
+      name: 'General info',
+    })
 
     render(<StatisticsInfo data={mockData} />)
 
@@ -55,7 +57,9 @@ describe('StatisticsInfo', () => {
   it('should render single info item correctly', () => {
     const mockData = StatisticsInfoSectionFactory.build({
       name: 'Single Item',
-      data: [StatisticsInfoItemFactory.build({ label: 'Status', value: 'active' })],
+      data: [
+        StatisticsInfoItemFactory.build({ label: 'Status', value: 'active' }),
+      ],
     })
 
     render(<StatisticsInfo data={mockData} />)
@@ -81,4 +85,3 @@ describe('StatisticsInfo', () => {
     expect(screen.getByText('Address')).toBeInTheDocument()
   })
 })
-

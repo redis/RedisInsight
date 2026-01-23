@@ -627,7 +627,7 @@ export const createIncorrectDatabaseInstances = async () => {
   });
 };
 
-export const createAclInstance = async (rte, server): Promise<void> => {
+export const createAclInstance = async (rte, _server): Promise<void> => {
   const rep = await getRepository(repositories.DATABASE);
   const instance: any = {
     id: constants.TEST_INSTANCE_ACL_ID,

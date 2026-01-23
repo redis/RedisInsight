@@ -26,10 +26,7 @@ const StatisticsTable = ({ data }: Props) => {
       <Section.Header label={name} />
       <S.SectionBody
         content={
-          <S.StatisticsTable
-            columns={tableColumns}
-            data={dataWithFooter}
-          >
+          <S.StatisticsTable columns={tableColumns} data={dataWithFooter}>
             <Table.Header />
             <Table.Body />
           </S.StatisticsTable>

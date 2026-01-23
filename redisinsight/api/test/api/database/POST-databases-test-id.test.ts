@@ -317,7 +317,8 @@ describe(`POST /databases/test/:id`, () => {
           },
           responseBody: {
             statusCode: 424,
-            message: 'Could not connect to redis:6379, please check the CA or Client certificate.',
+            message:
+              'Could not connect to redis:6379, please check the CA or Client certificate.',
             error: 'RedisConnectionIncorrectCertificateException',
           },
         });
@@ -345,7 +346,8 @@ describe(`POST /databases/test/:id`, () => {
           },
           responseBody: {
             statusCode: 424,
-            message: 'Could not connect to redis:6379, please check the CA or Client certificate.',
+            message:
+              'Could not connect to redis:6379, please check the CA or Client certificate.',
             error: 'RedisConnectionIncorrectCertificateException',
           },
         });

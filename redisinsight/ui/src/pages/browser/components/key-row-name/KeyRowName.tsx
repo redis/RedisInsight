@@ -32,6 +32,7 @@ const KeyRowName = (props: Props) => {
   return (
     <div className={styles.keyName}>
       <Text
+        component="div"
         color="secondary"
         style={{ maxWidth: '100%', display: 'flex', paddingRight: 16 }}
       >

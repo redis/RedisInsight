@@ -182,7 +182,7 @@ setStoreRef(mockedStore)
 const render = (
   ui: JSX.Element,
   {
-    initialState,
+    initialState: _initialState,
     store = mockedStore,
     withRouter,
     ...renderOptions
@@ -206,7 +206,7 @@ const render = (
 const renderHook = <T,>(
   hook: (initialProps: unknown) => T,
   {
-    initialState,
+    initialState: _initialState,
     store = mockedStore,
     withRouter,
     ...renderOptions

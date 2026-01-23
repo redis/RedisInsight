@@ -1502,6 +1502,34 @@ describe('keys slice', () => {
         ]
         expect(store.getActions()).toEqual(expectedActions)
       })
+
+      it('should reset key info and clear selected key when key not found (404)', async () => {
+        // Arrange
+        const keyName = stringToBuffer('deletedKey')
+        const errorMessage = 'Key with this name does not exist.'
+        const responsePayload = {
+          response: {
+            status: 404,
+            data: { message: errorMessage },
+          },
+        }
+
+        apiService.post = jest.fn().mockRejectedValue(responsePayload)
+
+        // Act
+        await store.dispatch<any>(refreshKeyInfoAction(keyName))
+
+        // Assert
+        const expectedActions = [
+          refreshKeyInfo(),
+          refreshKeyInfoFail(),
+          addErrorNotification(responsePayload as AxiosError),
+          resetKeyInfo(),
+          deletePatternKeyFromList(keyName),
+          setBrowserSelectedKey(null),
+        ]
+        expect(store.getActions()).toEqual(expectedActions)
+      })
     })
 
     describe('addHashKey', () => {

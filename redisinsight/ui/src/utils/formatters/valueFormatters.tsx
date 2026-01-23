@@ -1,4 +1,4 @@
-import { decode, encode } from 'msgpackr'
+import { encode } from 'msgpackr'
 // eslint-disable-next-line import/order
 import { Buffer } from 'buffer'
 import { isUndefined, get } from 'lodash'
@@ -14,6 +14,7 @@ import {
   KeyValueFormat,
   TimezoneOption,
 } from 'uiSrc/constants'
+import { decodeMsgpackWithLz4 } from './msgpack'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import {
   anyToBuffer,
@@ -103,7 +104,8 @@ const formattingBuffer = (
       return bufferToJSON(reply, props as FormattingProps)
     case KeyValueFormat.Msgpack: {
       try {
-        const decoded = decode(Uint8Array.from(reply.data))
+        const data = Uint8Array.from(reply.data)
+        const decoded = decodeMsgpackWithLz4(data)
         const value = JSONBigInt.stringify(decoded)
         return JSONViewer({ value, ...props })
       } catch (e) {
@@ -244,7 +246,7 @@ const bufferToSerializedFormat = (
       return bufferToFloat64Array(value.data as Uint8Array)
     case KeyValueFormat.Msgpack: {
       try {
-        const decoded = decode(Uint8Array.from(value.data))
+        const decoded = decodeMsgpackWithLz4(Uint8Array.from(value.data))
         const stringified = JSON.stringify(decoded)
         return reSerializeJSON(stringified, space)
       } catch (e) {

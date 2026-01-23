@@ -41,4 +41,3 @@ const StatisticsInfo = ({ data }: Props) => {
 }
 
 export default StatisticsInfo
-

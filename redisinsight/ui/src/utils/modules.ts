@@ -83,7 +83,11 @@ export const getDbWithModuleLoaded = (
 export const transformModule = (
   additionalModule: AdditionalRedisModule,
 ): IDatabaseModule => {
-  const { name: propName, semanticVersion = '', version = '' } = additionalModule
+  const {
+    name: propName,
+    semanticVersion = '',
+    version = '',
+  } = additionalModule
 
   const isValidModuleKey = Object.values(RedisDefaultModules).includes(
     propName as RedisDefaultModules,

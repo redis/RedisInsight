@@ -8,7 +8,6 @@ export type BaseCardProps = {
   children: ReactNode
   titleActions?: ReactNode
   isSelected: boolean
-  isLoading?: boolean
 } & React.HTMLAttributes<HTMLDivElement>
 
 const BaseCard = ({
@@ -16,7 +15,6 @@ const BaseCard = ({
   children,
   titleActions,
   isSelected,
-  isLoading = false,
   ...restProps
 }: BaseCardProps) => (
   <BaseCardContainer {...restProps} role="button" isSelected={isSelected}>

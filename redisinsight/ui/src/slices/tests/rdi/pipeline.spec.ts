@@ -66,7 +66,6 @@ import { INFINITE_MESSAGES } from 'uiSrc/components/notifications/components'
 import { FileChangeType, PipelineAction } from 'uiSrc/slices/interfaces'
 import { parseJMESPathFunctions } from 'uiSrc/utils'
 import successMessages from 'uiSrc/components/notifications/success-messages'
-import { value } from 'jsonpath'
 
 let store: typeof mockedStore
 

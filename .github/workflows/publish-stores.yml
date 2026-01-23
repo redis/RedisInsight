@@ -20,7 +20,7 @@ jobs:
       - name: Download Docker images
         run: |
           mkdir release
-          aws s3 cp s3://${AWS_BUCKET_NAME}/public/latest/docker ./release --recursive
+          aws s3 cp s3://${AWS_BUCKET_NAME}/public/latest-v3/docker ./release --recursive
 
       - name: Publish docker
         env:
@@ -60,7 +60,7 @@ jobs:
         id: snap
         run: |
           mkdir release
-          aws s3 cp s3://${AWS_BUCKET_NAME}/public/latest/${SNAPCRAFT_FILE_NAME} ./release
+          aws s3 cp s3://${AWS_BUCKET_NAME}/public/latest-v3/${SNAPCRAFT_FILE_NAME} ./release
           echo "snap-path=$(readlink -e ./release/${SNAPCRAFT_FILE_NAME})" >> "$GITHUB_OUTPUT"
 
       - uses: snapcore/action-publish@v1

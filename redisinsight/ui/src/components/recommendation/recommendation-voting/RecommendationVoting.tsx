@@ -35,9 +35,7 @@ const RecommendationVoting = ({
       gap={live ? 'none' : 'l'}
       data-testid="recommendation-voting"
     >
-      <Text size="m">
-        Is this useful?
-      </Text>
+      <Text size="m">Is this useful?</Text>
       <div className="voteContent">
         {Object.values(Vote).map((option) => (
           <VoteOption

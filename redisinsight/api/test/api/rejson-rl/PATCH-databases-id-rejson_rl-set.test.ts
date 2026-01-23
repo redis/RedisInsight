@@ -1,14 +1,12 @@
 import {
   expect,
   describe,
-  it,
   before,
   deps,
   Joi,
   requirements,
   generateInvalidDataTestCases,
   validateInvalidDataTestCase,
-  validateApiCall,
   getMainCheckFn,
 } from '../deps';
 const { server, request, constants, rte } = deps;
@@ -73,9 +71,7 @@ describe('PATCH /databases/:instanceId/rejson-rl/set', () => {
                   '.',
                 ),
               ),
-            )
-              .to
-              .eql({test: ''});
+            ).to.eql({ test: '' });
           },
         },
         {
@@ -95,9 +91,7 @@ describe('PATCH /databases/:instanceId/rejson-rl/set', () => {
                   '.',
                 ),
               ),
-            )
-              .to
-              .eql({test: null});
+            ).to.eql({ test: null });
           },
         },
         {
@@ -117,16 +111,14 @@ describe('PATCH /databases/:instanceId/rejson-rl/set', () => {
                   '.',
                 ),
               ),
-            )
-              .to
-              .eql([1, 2]);
+            ).to.eql([1, 2]);
           },
         },
         {
           name: 'Should modify item with object in the root',
           data: {
             keyName: constants.TEST_REJSON_KEY_1,
-            data: JSON.stringify({test: 'test'}),
+            data: JSON.stringify({ test: 'test' }),
             path: '$',
           },
           statusCode: 200,
@@ -137,9 +129,7 @@ describe('PATCH /databases/:instanceId/rejson-rl/set', () => {
                 constants.TEST_REJSON_KEY_1,
                 '.',
               ),
-            )
-              .to
-              .eql(JSON.stringify({test: 'test'}));
+            ).to.eql(JSON.stringify({ test: 'test' }));
           },
         },
         {
@@ -182,9 +172,7 @@ describe('PATCH /databases/:instanceId/rejson-rl/set', () => {
                   '$',
                 ),
               )[0],
-            )
-              .to
-              .eql({test: ''});
+            ).to.eql({ test: '' });
           },
         },
         {
@@ -204,9 +192,7 @@ describe('PATCH /databases/:instanceId/rejson-rl/set', () => {
                   '$',
                 ),
               )[0],
-            )
-              .to
-              .eql({test: null});
+            ).to.eql({ test: null });
           },
         },
         {
@@ -226,16 +212,14 @@ describe('PATCH /databases/:instanceId/rejson-rl/set', () => {
                   '$',
                 ),
               )[0],
-            )
-              .to
-              .eql([1, 2]);
+            ).to.eql([1, 2]);
           },
         },
         {
           name: 'Should modify item with object in the root',
           data: {
             keyName: constants.TEST_REJSON_KEY_1,
-            data: JSON.stringify({test: 'test'}),
+            data: JSON.stringify({ test: 'test' }),
             path: '$',
           },
           statusCode: 200,
@@ -246,9 +230,7 @@ describe('PATCH /databases/:instanceId/rejson-rl/set', () => {
                 constants.TEST_REJSON_KEY_1,
                 '.',
               ),
-            )
-              .to
-              .eql(JSON.stringify({test: 'test'}));
+            ).to.eql(JSON.stringify({ test: 'test' }));
           },
         },
         {

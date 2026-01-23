@@ -57,7 +57,7 @@ export abstract class RdiClient {
     config: object,
   ): Promise<RdiTestConnectionsResponseDto>;
 
-  abstract getStatistics(sections?: string): Promise<RdiStatisticsResult>;
+  abstract getStatistics(): Promise<RdiStatisticsResult>;
 
   abstract getPipelineStatus(): Promise<any>;
 
@@ -79,6 +79,7 @@ export abstract class RdiClient {
 
     const uId = [
       cm.sessionMetadata?.userId || empty,
+      cm.sessionMetadata?.accountId || empty,
       cm.sessionMetadata?.sessionId || empty,
       cm.sessionMetadata?.uniqueId || empty,
     ].join(separator);

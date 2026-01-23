@@ -1,18 +1,8 @@
 name: Install all libraries action
 description: Install all libraries and dependencies
 inputs:
-  skip-electron-deps:
-    description: Skip install electron dependencies
-    default: '0'
-    required: false
-
-  skip-backend-deps:
-    description: Skip install backend dependencies
-    default: '0'
-    required: false
-
-  skip-postinstall:
-    description: Skip postinstall
+  skip-system-deps:
+    description: Skip install system dependencies (libsecret, rpm, etc.)
     default: '0'
     required: false
 
@@ -24,12 +14,9 @@ inputs:
     description: SQLite3 binary host mirror
     required: false
 
-#TODO: check !contains
-
 runs:
   using: 'composite'
   steps:
-    # OS libraries
     - name: Setup Node
       uses: actions/setup-node@v4.0.4
       with:
@@ -39,31 +26,39 @@ runs:
         cache: ${{ runner.os != 'Windows' && 'yarn' || '' }}
         cache-dependency-path: ${{ runner.os != 'Windows' && '**/yarn.lock' || '' }}
 
+    - name: Cache node_modules
+      id: cache-node-modules
+      uses: actions/cache@v4
+      with:
+        path: |
+          node_modules
+          redisinsight/node_modules
+          redisinsight/api/node_modules
+        key: node-modules-${{ runner.os }}-${{ hashFiles('yarn.lock', 'redisinsight/yarn.lock', 'redisinsight/api/yarn.lock') }}
+        restore-keys: |
+          node-modules-${{ runner.os }}-
+
     - name: Setup Python
-      # if: ${{ contains(inputs.skip-electron-deps, '1') }}
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
 
     - name: Install linux libraries
-      if: ${{ runner.os == 'Linux' }}
-      # if: ${{ runner.os == 'Linux' && !contains(inputs.skip-electron-deps, '1') }}
+      if: ${{ runner.os == 'Linux' && inputs.skip-system-deps != '1' }}
       shell: bash
       run: |
         sudo apt-get update -qy
         sudo apt-get install -qy libsecret-1-dev rpm
 
     - name: Install macos libraries
-      if: ${{ runner.os == 'macOS' }}
-      # if: ${{ runner.os == 'macOS' && !contains(inputs.skip-electron-deps, '1') }}
+      if: ${{ runner.os == 'macOS' && inputs.skip-system-deps != '1' }}
       shell: bash
       run: |
         brew install libsecret
 
-    # TODO: matrix?
-    # Javascript dependencies
+    # Javascript dependencies (skip if cache was restored)
     - name: Install dependencies for redisinsight package.js
-      # if: ${{ contains(inputs.skip-electron-deps, '1') }}
+      if: steps.cache-node-modules.outputs.cache-hit != 'true'
       uses: ./.github/actions/install-deps
       with:
         dir-path: './redisinsight'
@@ -71,13 +66,13 @@ runs:
         sqlite3-host-mirror: ${{ inputs.sqlite3-host-mirror }}
 
     - name: Install dependencies for BE package.js
-      # if: ${{ !contains(inputs.skip-backend-deps, '1') }}
+      if: steps.cache-node-modules.outputs.cache-hit != 'true'
       uses: ./.github/actions/install-deps
       with:
         dir-path: './redisinsight/api'
 
     - name: Install dependencies for root package.js
-      # if: ${{ contains(inputs.skip-electron-deps, '1') }}
+      if: steps.cache-node-modules.outputs.cache-hit != 'true'
       uses: ./.github/actions/install-deps
       with:
         dir-path: './'

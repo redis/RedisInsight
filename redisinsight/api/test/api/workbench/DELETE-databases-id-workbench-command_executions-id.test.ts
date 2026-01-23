@@ -1,5 +1,5 @@
 import { expect, describe, deps, getMainCheckFn } from '../deps';
-const { server, request, constants, rte, localDb } = deps;
+const { server, request, constants, localDb } = deps;
 
 // endpoint to test
 const endpoint = (

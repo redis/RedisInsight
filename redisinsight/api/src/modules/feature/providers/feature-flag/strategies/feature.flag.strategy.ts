@@ -14,6 +14,11 @@ import { Feature } from 'src/modules/feature/model/feature';
 import { IFeatureFlag } from 'src/modules/feature/constants';
 import { SessionMetadata } from 'src/common/models';
 import { filterVersion } from 'src/utils/feature-version-filter.helper';
+import {
+  DEFAULT_ACCOUNT_ID,
+  DEFAULT_SESSION_ID,
+  DEFAULT_USER_ID,
+} from 'src/common/constants';
 
 const PATH_CONFIG = config.get('dir_path') as Config['dir_path'];
 
@@ -76,8 +81,9 @@ export abstract class FeatureFlagStrategy {
       // todo: [USER_CONTEXT] temporary workaround
       const appSettings = await this.settingsService
         .getAppSettings({
-          userId: '1',
-          sessionId: '1',
+          userId: DEFAULT_USER_ID,
+          accountId: DEFAULT_ACCOUNT_ID,
+          sessionId: DEFAULT_SESSION_ID,
         })
         .catch(null);
 

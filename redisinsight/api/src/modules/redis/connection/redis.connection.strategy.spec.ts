@@ -10,6 +10,7 @@ describe('RedisConnectionStrategy', () => {
       uniqueId: 'uniqueCM',
       sessionMetadata: {
         userId: 'userSM',
+        accountId: 'accountSM',
         sessionId: 'sessionSM',
         uniqueId: 'uniqueSM',
       },
@@ -19,7 +20,7 @@ describe('RedisConnectionStrategy', () => {
       RedisConnectionStrategy.generateRedisConnectionName(clientMetadata);
 
     expect(result).toBe(
-      'redisinsight-browser-db123-2-uniquecm-usersm-sessionsm-uniquesm',
+      'redisinsight-browser-db123-2-uniquecm-usersm-accountsm-sessionsm-uniquesm',
     );
   });
 
@@ -33,7 +34,7 @@ describe('RedisConnectionStrategy', () => {
       const result =
         RedisConnectionStrategy.generateRedisConnectionName(clientMetadata);
 
-      expect(result).toBe('redisinsight-custom------');
+      expect(result).toBe('redisinsight-custom-------');
     },
   );
 });

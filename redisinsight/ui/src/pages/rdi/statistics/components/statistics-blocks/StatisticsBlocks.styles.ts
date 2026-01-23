@@ -11,4 +11,3 @@ export const InfoPanel = styled(FlexItem)`
   border: 1px solid
     ${({ theme }: { theme: Theme }) => theme.components.section.separator.color};
 `
-

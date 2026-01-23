@@ -32,7 +32,9 @@ const StatisticsBlocks = ({ data }: Props) => {
       content={
         <Row responsive gap="s" align="start">
           {columns.flatMap((columnBlocks, columnIndex) => [
-            columnIndex > 0 && <VerticalDivider key={`divider-${columnIndex}`} />,
+            columnIndex > 0 && (
+              <VerticalDivider key={`divider-${columnIndex}`} />
+            ),
             <FlexItem key={columnIndex} grow>
               <Col gap="s">
                 {columnBlocks.map((block) => (

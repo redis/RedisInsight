@@ -3,7 +3,11 @@ import type { SelectOption, SelectValueRender } from '@redis-ui/components'
 import React from 'react'
 
 export { Select as RiSelect } from '@redis-ui/components'
-export type { SelectOption, SelectValueRender, SelectValueRenderParams } from '@redis-ui/components'
+export type {
+  SelectOption,
+  SelectValueRender,
+  SelectValueRenderParams,
+} from '@redis-ui/components'
 
 // Define our extended type
 export type RiSelectOption = SelectOption & {

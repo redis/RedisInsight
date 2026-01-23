@@ -1,16 +1,13 @@
 import {
   expect,
   describe,
-  it,
   before,
   deps,
   Joi,
   requirements,
   generateInvalidDataTestCases,
   validateInvalidDataTestCase,
-  validateApiCall,
   getMainCheckFn,
-  JoiRedisString,
 } from '../deps';
 const { server, request, constants, rte } = deps;
 

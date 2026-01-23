@@ -3,4 +3,3 @@ export interface SubmitButtonProps {
   loading: boolean
   onClick: () => void
 }
-

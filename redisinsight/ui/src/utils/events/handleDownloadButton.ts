@@ -13,7 +13,11 @@
  * @param filename - The desired name (with extension) of the downloaded file.
  * @param onSuccess - Optional callback executed after the download trigger completes.
  */
-export const handleDownloadButton = (data: string, filename: string, onSuccess?: () => void) => {
+export const handleDownloadButton = (
+  data: string,
+  filename: string,
+  onSuccess?: () => void,
+) => {
   try {
     const blob = new Blob([data], { type: 'text/plain' })
     const url = URL.createObjectURL(blob)

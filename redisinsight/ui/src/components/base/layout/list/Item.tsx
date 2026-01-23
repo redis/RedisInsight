@@ -18,7 +18,7 @@ const Item = ({
   isActive,
   isDisabled,
   className,
-  children,
+  children: _children,
   onClick,
   iconType,
   iconProps,

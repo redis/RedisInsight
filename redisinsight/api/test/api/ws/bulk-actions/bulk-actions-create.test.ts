@@ -36,7 +36,7 @@ describe('bulk-actions', function () {
         new Array(10).fill(1).map(
           () =>
             new Promise((res, rej) => {
-              client.emit('create', createDto, (ack, err) => {
+              client.emit('create', createDto, (ack) => {
                 if (ack.status === 'error') {
                   errors += 1;
                 } else {

@@ -23,7 +23,7 @@ jobs:
       - name: Install all libs and dependencies for BE
         uses: ./.github/actions/install-all-build-libs
         with:
-          skip-electron-deps: '1'
+          skip-system-deps: '1'
 
       - name: API PROD dependencies scan
         run: |
@@ -40,15 +40,6 @@ jobs:
           yarn --cwd redisinsight/api audit --groups devDependencies --json > $FILENAME || true &&
           FILENAME=$FILENAME DEPS="API dev" node .github/deps-audit-report.js &&
           curl -H "Content-type: application/json" --data @slack.$FILENAME -H "Authorization: Bearer $SLACK_AUDIT_REPORT_KEY" -X POST https://slack.com/api/chat.postMessage
-
-      - name: Code analysis
-        run: |
-          FILENAME=api.lint.audit.json
-          WORKDIR="."
-
-          yarn lint:api -f json -o $FILENAME || true &&
-          FILENAME=$FILENAME WORKDIR=$WORKDIR TARGET="API" node .github/lint-report.js &&
-          curl -H "Content-type: application/json" --data @$WORKDIR/slack.$FILENAME -H "Authorization: Bearer $SLACK_AUDIT_REPORT_KEY" -X POST https://slack.com/api/chat.postMessage
 
       - name: Unit tests API
         timeout-minutes: 20

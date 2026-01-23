@@ -4,7 +4,12 @@ import { SentinelInputFieldType } from 'uiSrc/components/input-field-sentinel/In
 
 import type { AliasCellProps } from './AliasCell.types'
 
-export const AliasCell = ({ id, alias, name, handleChangedInput }: AliasCellProps) => (
+export const AliasCell = ({
+  id,
+  alias,
+  name,
+  handleChangedInput,
+}: AliasCellProps) => (
   <div role="presentation">
     <InputFieldSentinel
       name={`alias-${id}`}

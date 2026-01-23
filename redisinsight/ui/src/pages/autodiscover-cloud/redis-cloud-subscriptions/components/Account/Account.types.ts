@@ -9,4 +9,3 @@ export interface AccountValueProps {
   value?: Nullable<string | number>
   'data-testid'?: string
 }
-
