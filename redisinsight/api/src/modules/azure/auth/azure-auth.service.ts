@@ -101,6 +101,7 @@ export class AzureAuthService {
     const challenge = generateCodeChallenge(verifier);
     const state = generateUuid();
 
+    this.authRequests.clear();
     this.authRequests.set(state, verifier);
 
     const authUrl = await pca.getAuthCodeUrl({
@@ -198,49 +199,26 @@ export class AzureAuthService {
     }
   }
 
-  /**
-   * Get a Redis access token for a specific account.
-   * Uses silent token acquisition with cached refresh token.
-   */
   async getRedisTokenByAccountId(
     accountId: string,
   ): Promise<AzureTokenResult | null> {
-    try {
-      const pca = this.getMsalClient();
-      const cache = pca.getTokenCache();
-      const accounts = await cache.getAllAccounts();
-
-      const account = accounts.find((a) => a.homeAccountId === accountId);
-      if (!account) {
-        this.logger.warn(`Account not found: ${accountId}`);
-        return null;
-      }
-
-      const result = await pca.acquireTokenSilent({
-        account,
-        scopes: [AZURE_REDIS_SCOPE],
-      });
-
-      if (!result?.accessToken || !result?.expiresOn) {
-        return null;
-      }
-
-      return {
-        token: result.accessToken,
-        expiresOn: result.expiresOn,
-        account: result.account,
-      };
-    } catch (error: any) {
-      this.logger.error(
-        `Failed to get Redis token for ${accountId}: ${error.message}`,
-      );
-      return null;
-    }
+    return this.getTokenByAccountId(accountId, AZURE_REDIS_SCOPE);
   }
 
   async getManagementTokenByAccountId(
     accountId: string,
   ): Promise<AzureTokenResult | null> {
+    return this.getTokenByAccountId(accountId, AZURE_MANAGEMENT_SCOPE);
+  }
+
+  /**
+   * Get an access token for a specific account and scope.
+   * Uses silent token acquisition with cached refresh token.
+   */
+  private async getTokenByAccountId(
+    accountId: string,
+    scope: string,
+  ): Promise<AzureTokenResult | null> {
     try {
       const pca = this.getMsalClient();
       const cache = pca.getTokenCache();
@@ -254,10 +232,10 @@ export class AzureAuthService {
 
       const result = await pca.acquireTokenSilent({
         account,
-        scopes: [AZURE_MANAGEMENT_SCOPE],
+        scopes: [scope],
       });
 
-      if (!result?.accessToken || !result?.expiresOn) {
+      if (!result?.accessToken || !result?.expiresOn || !result?.account) {
         return null;
       }
 
@@ -268,7 +246,7 @@ export class AzureAuthService {
       };
     } catch (error: any) {
       this.logger.error(
-        `Failed to get Management token for ${accountId}: ${error.message}`,
+        `Failed to get token for ${accountId}: ${error.message}`,
       );
       return null;
     }

@@ -48,8 +48,19 @@ export class AzureAuthController {
   async callback(
     @Query('code') code: string,
     @Query('state') state: string,
+    @Query('error') error: string,
+    @Query('error_description') errorDescription: string,
   ): Promise<{ status: AzureAuthStatus; message?: string }> {
     this.logger.log('Handling Azure OAuth callback');
+
+    // Handle OAuth errors from Azure (user denial, consent issues, etc.)
+    if (error) {
+      this.logger.error(`Azure OAuth error: ${error}, ${errorDescription}`);
+      return {
+        status: AzureAuthStatus.Failed,
+        message: errorDescription || error,
+      };
+    }
 
     if (!code || !state) {
       return {
