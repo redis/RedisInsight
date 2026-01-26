@@ -67,20 +67,22 @@ describe('AzureAuthService', () => {
   });
 
   describe('handleCallback', () => {
-    it('should return failed status for unknown state', async () => {
+    it('should return failed status with error for unknown state', async () => {
       const result = await service.handleCallback('auth-code', 'unknown-state');
 
       expect(result.status).toBe(AzureAuthStatus.Failed);
+      expect(result.error).toBe('Invalid or expired authentication state');
       expect(result.account).toBeUndefined();
     });
 
-    it('should return failed status when token acquisition fails', async () => {
+    it('should return failed status with error when token acquisition fails', async () => {
       mockPca.acquireTokenByCode.mockRejectedValue(new Error('Token error'));
 
       const { state } = await service.getAuthorizationUrl();
       const result = await service.handleCallback('auth-code', state);
 
       expect(result.status).toBe(AzureAuthStatus.Failed);
+      expect(result.error).toBe('Token error');
     });
 
     it('should clean up state after callback', async () => {
@@ -92,6 +94,7 @@ describe('AzureAuthService', () => {
       // Second call with same state should fail (state was cleaned up)
       const result = await service.handleCallback('auth-code', state);
       expect(result.status).toBe(AzureAuthStatus.Failed);
+      expect(result.error).toBe('Invalid or expired authentication state');
     });
 
     it('should return success status with account on successful token acquisition', async () => {
@@ -106,6 +109,7 @@ describe('AzureAuthService', () => {
 
       expect(result.status).toBe(AzureAuthStatus.Succeed);
       expect(result.account).toEqual(mockAccount);
+      expect(result.error).toBeUndefined();
     });
   });
 

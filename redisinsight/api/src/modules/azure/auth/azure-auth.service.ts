@@ -108,13 +108,20 @@ export class AzureAuthService {
   async handleCallback(
     code: string,
     state: string,
-  ): Promise<{ status: AzureAuthStatus; account?: AccountInfo }> {
+  ): Promise<{
+    status: AzureAuthStatus;
+    account?: AccountInfo;
+    error?: string;
+  }> {
     const pca = this.getMsalClient();
 
     const verifier = this.authRequests.get(state);
     if (!verifier) {
       this.logger.warn(`No auth request found for state: ${state}`);
-      return { status: AzureAuthStatus.Failed };
+      return {
+        status: AzureAuthStatus.Failed,
+        error: 'Invalid or expired authentication state',
+      };
     }
 
     // Clean up the auth request
@@ -138,7 +145,10 @@ export class AzureAuthService {
       };
     } catch (error: any) {
       this.logger.error(`Token acquisition failed: ${error.message}`);
-      return { status: AzureAuthStatus.Failed };
+      return {
+        status: AzureAuthStatus.Failed,
+        error: error.message || 'Token acquisition failed',
+      };
     }
   }
 
