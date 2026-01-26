@@ -209,8 +209,8 @@ const AutoRefresh = ({
       {displayLastRefresh && (
         <FlexItem>
           <S.AutoRefreshInterval
-            color="primary"
             $disabled={disabled}
+            $enableAutoRefresh={enableAutoRefresh}
             data-testid={getTestId('refresh-message')}
             size="s"
           >

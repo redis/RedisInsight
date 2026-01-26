@@ -11,9 +11,14 @@ export const Container = styled(Row)`
 export const AutoRefreshInterval = styled(ColorText)<
   HTMLAttributes<HTMLSpanElement> & {
     $disabled?: boolean
+    $enableAutoRefresh?: boolean
   }
 >`
   opacity: ${({ $disabled }) => ($disabled ? '0.5' : 'inherit')};
+  color: ${({ theme, $enableAutoRefresh, $disabled }) =>
+    $enableAutoRefresh && !$disabled
+      ? theme.semantic.color.text.primary400
+      : 'inherit'};
 `
 
 export const StyledTooltip = styled(RiTooltip)`
