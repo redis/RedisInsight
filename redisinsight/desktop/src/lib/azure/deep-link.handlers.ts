@@ -65,10 +65,10 @@ const azureOauthCallback = async (url: UrlWithParsedQuery) => {
     // Use direct service call in production, HTTP in development
     let result
     if (config.isDevelopment) {
-      log.info('Using HTTP callback handler (development mode)')
+      log.debug('Using HTTP callback handler (development mode)')
       result = await handleCallbackViaHttp(code as string, state as string)
     } else {
-      log.info('Using service callback handler (production mode)')
+      log.debug('Using service callback handler (production mode)')
       result = await handleCallbackViaService(code as string, state as string)
     }
 
