@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { compact, first } from 'lodash'
-import cx from 'classnames'
 import MonacoEditor, { monaco as monacoEditor } from 'react-monaco-editor'
 import { useParams } from 'react-router-dom'
 
@@ -73,7 +72,7 @@ import {
   SYNTAX_WIDGET_ID,
   TUTORIALS,
 } from './constants'
-import styles from './styles.module.scss'
+import * as S from './Query.styles'
 
 export interface Props {
   query: string
@@ -729,21 +728,15 @@ const Query = (props: Props) => {
   const isLoading = loading || processing
 
   return (
-    <div className={styles.wrapper}>
-      <div
-        className={cx(styles.container, {
-          [styles.disabled]: isDedicatedEditorOpen,
-        })}
+    <S.Wrapper>
+      <S.Container
+        $disabled={isDedicatedEditorOpen}
         onKeyDown={handleKeyDown}
         role="textbox"
         tabIndex={0}
         data-testid="main-input-container-area"
       >
-        <div
-          className={styles.input}
-          data-testid="query-input-container"
-          ref={input}
-        >
+        <S.Input data-testid="query-input-container" ref={input}>
           <MonacoEditor
             language={MonacoLanguage.Redis as string}
             theme={theme === Theme.Dark ? 'dark' : 'light'}
@@ -753,8 +746,8 @@ const Query = (props: Props) => {
             onChange={onChange}
             editorDidMount={editorDidMount}
           />
-        </div>
-        <div className={styles.queryFooter}>
+        </S.Input>
+        <S.QueryFooter>
           {useLiteActions ? (
             <QueryLiteActions
               isLoading={isLoading}
@@ -778,8 +771,8 @@ const Query = (props: Props) => {
               />
             </>
           )}
-        </div>
-      </div>
+        </S.QueryFooter>
+      </S.Container>
       {isDedicatedEditorOpen && (
         <DedicatedEditor
           initialHeight={input?.current?.scrollHeight || 0}
@@ -789,7 +782,7 @@ const Query = (props: Props) => {
           onCancel={onCancelDedicatedEditor}
         />
       )}
-    </div>
+    </S.Wrapper>
   )
 }
 
