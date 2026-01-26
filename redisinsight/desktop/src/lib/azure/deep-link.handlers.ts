@@ -5,8 +5,14 @@ import { configMain as config } from 'desktopSrc/config'
 import { wrapErrorMessageSensitiveData } from 'desktopSrc/utils'
 import { getWindows } from 'desktopSrc/lib/window/browserWindow'
 import { IpcOnEvent } from 'uiSrc/electron/constants'
-import { AzureAuthStatus } from 'apiSrc/modules/azure/constants'
+import {
+  AzureAuthStatus,
+  AZURE_OAUTH_REDIRECT_PATH,
+} from 'apiSrc/modules/azure/constants'
 import { getAzureAuthService } from './azure-auth.service.provider'
+
+// Extract pathname from redirect URI (e.g., '/oauth/callback' from 'redisinsight://azure/oauth/callback')
+const AZURE_OAUTH_CALLBACK_PATH = new URL(AZURE_OAUTH_REDIRECT_PATH).pathname
 
 /**
  * Handle callback via direct service call (production mode).
@@ -91,7 +97,7 @@ const azureOauthCallback = async (url: UrlWithParsedQuery) => {
 
 export const azureDeepLinkHandler = async (url: UrlWithParsedQuery) => {
   switch (url?.pathname) {
-    case '/oauth/callback':
+    case AZURE_OAUTH_CALLBACK_PATH:
       await azureOauthCallback(url)
       break
     default:
