@@ -11,6 +11,7 @@ let beApp: any = null
  */
 export const initAzureAuthServiceProvider = (app: any): void => {
   beApp = app
+  azureAuthService = null // Reset cached service when app is re-initialized
   log.debug('[Azure Auth] Service provider initialized with backend app')
 }
 
