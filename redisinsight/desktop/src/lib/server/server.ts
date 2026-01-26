@@ -62,7 +62,6 @@ export const launchApiServer = async () => {
       authStrategy = createAuthStrategy(apiApp)
       await authStrategy.initialize()
 
-      // Initialize Azure auth service provider
       initAzureAuthServiceProvider(apiApp)
 
       log.info('[Server] Production server initialized')

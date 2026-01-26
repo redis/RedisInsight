@@ -16,7 +16,6 @@ export const initAzureAuthServiceProvider = (app: any): void => {
 
 /**
  * Get the AzureAuthService instance from the backend app.
- * Lazily initializes the service on first call.
  */
 export const getAzureAuthService = (): AzureAuthService | null => {
   if (azureAuthService) {

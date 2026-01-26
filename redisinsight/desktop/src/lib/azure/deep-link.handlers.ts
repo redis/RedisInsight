@@ -32,10 +32,6 @@ const handleCallbackViaHttp = async (code: string, state: string) => {
   return response.data
 }
 
-/**
- * Handle Azure OAuth callback from deep link.
- * Uses direct service call in production, HTTP in development.
- */
 const azureOauthCallback = async (url: UrlWithParsedQuery) => {
   const [currentWindow] = getWindows().values()
 
@@ -93,13 +89,6 @@ const azureOauthCallback = async (url: UrlWithParsedQuery) => {
   }
 }
 
-/**
- * Handle Azure deep link URLs.
- * Routes to appropriate handler based on pathname.
- *
- * Supported paths:
- * - /oauth/callback - OAuth authorization code callback
- */
 export const azureDeepLinkHandler = async (url: UrlWithParsedQuery) => {
   switch (url?.pathname) {
     case '/oauth/callback':
