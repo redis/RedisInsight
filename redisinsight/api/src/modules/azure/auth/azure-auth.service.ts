@@ -195,12 +195,35 @@ export class AzureAuthService {
     }
   }
 
+  /**
+   * Get an access token for Azure Cache for Redis.
+   *
+   * This token is used to authenticate directly with Azure Redis databases
+   * using Entra ID (Azure AD) authentication instead of access keys.
+   *
+   * @see https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-azure-active-directory-for-authentication
+   */
   async getRedisTokenByAccountId(
     accountId: string,
   ): Promise<AzureTokenResult | null> {
     return this.getTokenByAccountId(accountId, AZURE_REDIS_SCOPE);
   }
 
+  /**
+   * Get an access token for Azure Resource Manager (ARM) API.
+   *
+   * This token is used to call Azure Management APIs for autodiscovery:
+   * - List subscriptions the user has access to
+   * - List Azure Cache for Redis instances in each subscription
+   * - Get connection details (host, port, SSL settings)
+   *
+   * Note: Azure AD doesn't allow requesting tokens for multiple resources
+   * (redis.azure.com AND management.azure.com) in a single OAuth request.
+   * We request the Redis scope during login and acquire this scope silently
+   * when needed for autodiscovery.
+   *
+   * @see https://learn.microsoft.com/en-us/rest/api/redis/
+   */
   async getManagementTokenByAccountId(
     accountId: string,
   ): Promise<AzureTokenResult | null> {
