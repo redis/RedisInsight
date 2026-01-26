@@ -86,7 +86,7 @@ export class AzureAuthService {
 
     this.pca = new PublicClientApplication(msalConfig);
 
-    this.logger.log('MSAL initialized successfully');
+    this.logger.debug('MSAL client initialized');
     return this.pca;
   }
 
@@ -111,7 +111,7 @@ export class AzureAuthService {
       state,
     });
 
-    this.logger.log('Generated authorization URL');
+    this.logger.debug('Generated authorization URL');
     return { url: authUrl, state };
   }
 
