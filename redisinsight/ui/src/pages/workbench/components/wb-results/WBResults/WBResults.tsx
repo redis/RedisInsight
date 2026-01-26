@@ -1,5 +1,4 @@
 import React from 'react'
-import cx from 'classnames'
 
 import { CodeButtonParams } from 'uiSrc/constants'
 import { ProfileQueryType } from 'uiSrc/pages/workbench/constants'
@@ -14,7 +13,7 @@ import { DeleteIcon } from 'uiSrc/components/base/icons'
 import { ProgressBarLoader } from 'uiSrc/components/base/display'
 import WbNoResultsMessage from '../../wb-no-results-message'
 
-import styles from './styles.module.scss'
+import * as S from './WBResults.styles'
 
 /** @deprecated Use QueryResultsProps from 'uiSrc/components/query/query-results' instead. */
 export interface Props {
@@ -77,25 +76,23 @@ const WBResults = (props: Props) => {
   }
 
   return (
-    <div className={styles.wrapper}>
+    <S.Wrapper>
       {!isResultsLoaded && (
         <ProgressBarLoader color="primary" data-testid="progress-wb-history" />
       )}
       {!!items?.length && (
-        <div className={styles.header}>
+        <S.Header align="center" justify="end" grow={false}>
           <EmptyButton
-            size="small"
             icon={DeleteIcon}
-            className={styles.clearAllBtn}
             onClick={() => onAllQueriesDelete?.()}
             disabled={clearing || processing}
             data-testid="clear-history-btn"
           >
             Clear Results
           </EmptyButton>
-        </div>
+        </S.Header>
       )}
-      <div className={cx(styles.container)}>
+      <S.Container>
         <div ref={scrollDivRef} />
         {items?.length
           ? items.map(
@@ -153,8 +150,8 @@ const WBResults = (props: Props) => {
             )
           : null}
         {isResultsLoaded && !items.length && <WbNoResultsMessage />}
-      </div>
-    </div>
+      </S.Container>
+    </S.Wrapper>
   )
 }
 

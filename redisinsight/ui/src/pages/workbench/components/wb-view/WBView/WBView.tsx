@@ -1,6 +1,5 @@
 import React, { Ref, useCallback, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import cx from 'classnames'
 import { isEmpty } from 'lodash'
 import { useParams } from 'react-router-dom'
 
@@ -33,8 +32,7 @@ import { toggleOpenWBResult } from 'uiSrc/slices/workbench/wb-results'
 import QueryWrapper from '../../query'
 import { workbenchResultsTelemetry } from '../../../telemetry.constants'
 import WbNoResultsMessage from '../../wb-no-results-message'
-
-import styles from './styles.module.scss'
+import * as S from './WBView.styles'
 
 const verticalPanelIds = {
   firstPanelId: 'scriptingArea',
@@ -207,9 +205,9 @@ const WBView = (props: Props) => {
   }
 
   return (
-    <div className={cx('workbenchPage', styles.container)}>
-      <div className={styles.main}>
-        <div className={styles.content}>
+    <S.Container className="workbenchPage">
+      <S.Main>
+        <S.Content>
           <ResizableContainer
             onLayout={onVerticalPanelWidthChange}
             direction="vertical"
@@ -217,7 +215,6 @@ const WBView = (props: Props) => {
             <ResizablePanel
               id={verticalPanelIds.firstPanelId}
               minSize={30}
-              className={styles.queryPanel}
               defaultSize={panelSizes && panelSizes[0] ? panelSizes[0] : 20}
             >
               <QueryWrapper
@@ -242,7 +239,6 @@ const WBView = (props: Props) => {
               minSize={10}
               maxSize={70}
               defaultSize={panelSizes && panelSizes[1] ? panelSizes[1] : 80}
-              className={cx(styles.queryResults, styles.queryResultsPanel)}
             >
               <QueryResultsProvider telemetry={workbenchResultsTelemetry}>
                 <QueryResults
@@ -263,9 +259,9 @@ const WBView = (props: Props) => {
               </QueryResultsProvider>
             </ResizablePanel>
           </ResizableContainer>
-        </div>
-      </div>
-    </div>
+        </S.Content>
+      </S.Main>
+    </S.Container>
   )
 }
 
