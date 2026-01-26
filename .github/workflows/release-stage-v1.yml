@@ -1,9 +1,10 @@
-name: 📖 Release (stage)
+name: 📖 Release (stage) [v1 - DISABLED]
 
+# This workflow is disabled to prevent conflicts with release-stage.yml
+# It needs to be triggered manually instead of when pushing to a release branch
+# to be deleted once release-stage.yml is tested and working
 on:
-  push:
-    branches:
-      - "release/**"
+  workflow_call:
 
 jobs:
   tests:
