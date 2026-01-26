@@ -37,7 +37,7 @@ import successMessages from 'uiSrc/components/notifications/success-messages'
 import { parseCustomError } from 'uiSrc/utils'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { Banner } from 'uiSrc/components/base/display'
-import { useVectorSearchOnboarding } from 'uiSrc/pages/vector-search/context/VectorSearchOnboardingContext'
+import { useVectorSearchOnboarding } from 'uiSrc/pages/vector-search-deprecated/context/VectorSearchOnboardingContext'
 
 const stepNextButton: IStepNextButton[] = [
   {

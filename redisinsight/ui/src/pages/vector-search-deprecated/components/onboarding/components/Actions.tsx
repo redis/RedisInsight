@@ -1,9 +1,9 @@
 import React from 'react'
 
 import { EmptyButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import useStartWizard from 'uiSrc/pages/vector-search/hooks/useStartWizard'
+import useStartWizard from 'uiSrc/pages/vector-search-deprecated/hooks/useStartWizard'
 import { StyledActions } from '../VectorSearchOnboarding.styles'
-import { useVectorSearchOnboarding } from 'uiSrc/pages/vector-search/context/VectorSearchOnboardingContext'
+import { useVectorSearchOnboarding } from 'uiSrc/pages/vector-search-deprecated/context/VectorSearchOnboardingContext'
 
 const Actions: React.FC = () => {
   const startOnboardingWizard = useStartWizard()

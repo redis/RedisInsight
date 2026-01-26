@@ -12,7 +12,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { Pages } from 'uiSrc/constants'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/analytics/dbAnalysisHistoryHandlers'
-import { VectorSearchOnboardingProvider } from 'uiSrc/pages/vector-search/context/VectorSearchOnboardingContext'
+import { VectorSearchOnboardingProvider } from 'uiSrc/pages/vector-search-deprecated/context/VectorSearchOnboardingContext'
 import {
   VectorSearchCreateIndex,
   VectorSearchCreateIndexProps,

@@ -4,11 +4,13 @@ import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import {
   VectorSearchOnboardingContext,
   VectorSearchOnboardingContextType,
-} from 'uiSrc/pages/vector-search/context/VectorSearchOnboardingContext'
+} from 'uiSrc/pages/vector-search-deprecated/context/VectorSearchOnboardingContext'
 import Actions from './Actions'
-import useStartWizard from 'uiSrc/pages/vector-search/hooks/useStartWizard'
+import useStartWizard from 'uiSrc/pages/vector-search-deprecated/hooks/useStartWizard'
 
-jest.mock('uiSrc/pages/vector-search/hooks/useStartWizard', () => jest.fn())
+jest.mock('uiSrc/pages/vector-search-deprecated/hooks/useStartWizard', () =>
+  jest.fn(),
+)
 
 const renderActionsComponent = (
   contextValue?: Partial<VectorSearchOnboardingContextType>,

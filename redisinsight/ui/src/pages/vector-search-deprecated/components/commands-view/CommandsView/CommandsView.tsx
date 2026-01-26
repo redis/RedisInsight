@@ -11,7 +11,7 @@ import { RunQueryMode, ResultsMode } from 'uiSrc/slices/interfaces/workbench'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { DeleteIcon } from 'uiSrc/components/base/icons'
 import { ProgressBarLoader } from 'uiSrc/components/base/display'
-import { collectTelemetryQueryReRun } from 'uiSrc/pages/vector-search/telemetry'
+import { collectTelemetryQueryReRun } from 'uiSrc/pages/vector-search-deprecated/telemetry'
 import QueryCard from '../../QueryCard'
 
 import {

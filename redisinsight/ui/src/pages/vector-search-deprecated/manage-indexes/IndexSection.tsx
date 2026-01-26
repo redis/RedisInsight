@@ -9,7 +9,7 @@ import {
   deleteRedisearchIndexAction,
   fetchRedisearchInfoAction,
 } from 'uiSrc/slices/browser/redisearch'
-import { parseIndexSummaryInfo } from 'uiSrc/pages/vector-search/manage-indexes/utils/indexSection'
+import { parseIndexSummaryInfo } from 'uiSrc/pages/vector-search-deprecated/manage-indexes/utils/indexSection'
 import {
   IndexInfoDto,
   IndexDeleteRequestBodyDto,
