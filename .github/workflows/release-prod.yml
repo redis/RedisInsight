@@ -7,7 +7,6 @@ on:
         description: 'Branch to release from'
         required: true
         type: string
-        default: 'release/**'
 
 jobs:
   tests-prod:
