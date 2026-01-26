@@ -14,21 +14,7 @@ import {
   AZURE_OAUTH_SCOPES,
   AzureAuthStatus,
 } from '../constants';
-
-export interface AzureTokenResult {
-  token: string;
-  expiresOn: Date;
-  account: AccountInfo;
-}
-
-export interface AzureAuthStatusResponse {
-  authenticated: boolean;
-  accounts: Array<{
-    id: string;
-    username: string;
-    name?: string;
-  }>;
-}
+import { AzureTokenResult, AzureAuthStatusResponse } from './models';
 
 /**
  * PKCE (Proof Key for Code Exchange) utilities.
