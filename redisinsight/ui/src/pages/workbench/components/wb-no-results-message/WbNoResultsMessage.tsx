@@ -11,7 +11,7 @@ import { InsightsPanelTabs, SidePanels } from 'uiSrc/slices/interfaces/insights'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import BulbImg from 'uiSrc/assets/img/workbench/bulb.svg'
-import ArrowToGuidesIcon from 'uiSrc/assets/img/workbench/arrow-to-guides.svg?react'
+import ArrowToGuidesIconSvg from 'uiSrc/assets/img/workbench/arrow-to-guides.svg?react'
 
 import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
@@ -19,10 +19,9 @@ import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { LightBulbIcon } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
-import { Card } from 'uiSrc/components/base/layout'
-
-import styles from './styles.module.scss'
 import { Panel } from 'uiSrc/components/panel'
+
+import * as S from './WBNoResultsMessage.styles'
 
 const WbNoResultsMessage = () => {
   const { provider } = useSelector(connectedInstanceSelector)
@@ -45,11 +44,8 @@ const WbNoResultsMessage = () => {
   }
 
   return (
-    <div className={styles.noResults} data-testid="wb_no-results">
-      <Text
-        className={styles.noResultsTitle}
-        data-testid="wb_no-results__title"
-      >
+    <S.NoResults data-testid="wb_no-results">
+      <Text size="xs" data-testid="wb_no-results__title">
         No results to display yet
       </Text>
       <Title style={{ marginTop: 12, fontSize: 28 }}>
@@ -60,22 +56,18 @@ const WbNoResultsMessage = () => {
       </Title>
       <Spacer />
 
-      <Card className={styles.noResultsPanel}>
-        <ArrowToGuidesIcon className={styles.arrowToGuides} />
+      <S.NoResultsPanel>
+        <S.ArrowToGuides as={ArrowToGuidesIconSvg} />
         <Panel gap="m" responsive>
           <FlexItem>
-            <img
-              className={styles.noResultsIcon}
+            <S.NoResultsIcon
               src={BulbImg}
               alt="no results"
               data-testid="wb_no-results__icon"
             />
           </FlexItem>
           <FlexItem grow>
-            <Text
-              className={styles.noResultsText}
-              data-testid="wb_no-results__summary"
-            >
+            <Text size="s" data-testid="wb_no-results__summary">
               Try Workbench with our interactive Tutorials to learn how Redis
               can solve your use cases.
             </Text>
@@ -84,7 +76,6 @@ const WbNoResultsMessage = () => {
               <PrimaryButton
                 icon={LightBulbIcon}
                 onClick={() => handleOpenInsights()}
-                className={styles.exploreBtn}
                 data-testid="no-results-explore-btn"
               >
                 Explore
@@ -96,8 +87,8 @@ const WbNoResultsMessage = () => {
             </Text>
           </FlexItem>
         </Panel>
-      </Card>
-    </div>
+      </S.NoResultsPanel>
+    </S.NoResults>
   )
 }
 

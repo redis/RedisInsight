@@ -48,4 +48,5 @@ export const QueryFooter = styled(Row).attrs({
   justify: 'between',
 })`
   margin-top: ${({ theme }) => theme.core.space.space200};
+  flex-shrink: 0;
 `
