@@ -318,5 +318,4 @@ const AutoRefresh = ({
   )
 }
 
-export default AutoRefresh
-// export default React.memo(AutoRefresh)
+export default React.memo(AutoRefresh)
