@@ -1,5 +1,7 @@
 import log from 'electron-log'
+import axios from 'axios'
 import { UrlWithParsedQuery } from 'url'
+import { configMain as config } from 'desktopSrc/config'
 import { wrapErrorMessageSensitiveData } from 'desktopSrc/utils'
 import { getWindows } from 'desktopSrc/lib/window/browserWindow'
 import { IpcOnEvent } from 'uiSrc/electron/constants'
@@ -7,8 +9,32 @@ import { AzureAuthStatus } from 'apiSrc/modules/azure/constants'
 import { getAzureAuthService } from './azure-auth.service.provider'
 
 /**
+ * Handle callback via direct service call (production mode).
+ * In production, the API is embedded in the Electron app.
+ */
+const handleCallbackViaService = async (code: string, state: string) => {
+  const azureAuthService = getAzureAuthService()
+  if (!azureAuthService) {
+    throw new Error('Azure auth service not initialized')
+  }
+  return azureAuthService.handleCallback(code, state)
+}
+
+/**
+ * Handle callback via HTTP request (development mode).
+ * In development, the API runs as a separate process.
+ */
+const handleCallbackViaHttp = async (code: string, state: string) => {
+  const apiBase = `http://localhost:${config.getApiPort()}/api`
+  const response = await axios.get(`${apiBase}/azure/auth/callback`, {
+    params: { code, state },
+  })
+  return response.data
+}
+
+/**
  * Handle Azure OAuth callback from deep link.
- * Calls the AzureAuthService directly to exchange the authorization code.
+ * Uses direct service call in production, HTTP in development.
  */
 const azureOauthCallback = async (url: UrlWithParsedQuery) => {
   const [currentWindow] = getWindows().values()
@@ -40,21 +66,15 @@ const azureOauthCallback = async (url: UrlWithParsedQuery) => {
       return
     }
 
-    // Call the service directly
-    const azureAuthService = getAzureAuthService()
-    if (!azureAuthService) {
-      log.error('AzureAuthService not available')
-      currentWindow?.webContents.send(IpcOnEvent.azureOauthCallback, {
-        status: AzureAuthStatus.Failed,
-        error: 'Azure auth service not initialized',
-      })
-      return
+    // Use direct service call in production, HTTP in development
+    let result
+    if (config.isDevelopment) {
+      log.info('Using HTTP callback handler (development mode)')
+      result = await handleCallbackViaHttp(code as string, state as string)
+    } else {
+      log.info('Using service callback handler (production mode)')
+      result = await handleCallbackViaService(code as string, state as string)
     }
-
-    const result = await azureAuthService.handleCallback(
-      code as string,
-      state as string,
-    )
 
     currentWindow?.webContents.send(IpcOnEvent.azureOauthCallback, {
       status: result.status,

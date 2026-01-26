@@ -1,6 +1,8 @@
 import log from 'electron-log'
+import { AzureAuthService } from '../../../../api/dist/src/modules/azure/auth/azure-auth.service'
+import { AzureModule } from '../../../../api/dist/src/modules/azure/azure.module'
 
-let azureAuthService: any = null
+let azureAuthService: AzureAuthService | null = null
 let beApp: any = null
 
 /**
@@ -15,11 +17,8 @@ export const initAzureAuthServiceProvider = (app: any): void => {
 /**
  * Get the AzureAuthService instance from the backend app.
  * Lazily initializes the service on first call.
- *
- * Uses dynamic require to avoid loading api/dist modules at startup
- * (before the API is built).
  */
-export const getAzureAuthService = (): any => {
+export const getAzureAuthService = (): AzureAuthService | null => {
   if (azureAuthService) {
     return azureAuthService
   }
@@ -30,17 +29,7 @@ export const getAzureAuthService = (): any => {
   }
 
   try {
-    // Dynamic require to avoid loading at module initialization time
-    // eslint-disable-next-line global-require, import/extensions
-    const {
-      AzureAuthModule,
-    } = require('../../../../api/dist/src/modules/azure/auth/azure-auth.module')
-    // eslint-disable-next-line global-require, import/extensions
-    const {
-      AzureAuthService,
-    } = require('../../../../api/dist/src/modules/azure/auth/azure-auth.service')
-
-    azureAuthService = beApp.select(AzureAuthModule).get(AzureAuthService)
+    azureAuthService = beApp.select(AzureModule).get(AzureAuthService)
     log.info('[Azure Auth] Service obtained from backend app')
     return azureAuthService
   } catch (err) {
