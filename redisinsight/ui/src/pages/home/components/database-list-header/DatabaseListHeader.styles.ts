@@ -10,7 +10,7 @@ export const SpacerDl = styled(Spacer)`
   height: ${({ theme }) => theme.core.space.space150};
 
   @media screen and (max-width: 767px) {
-    height: ${({ theme }) => theme.core.space.space075};
+    height: ${({ theme }) => theme.core.space.space100};
   }
 `
 
