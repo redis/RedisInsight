@@ -50,7 +50,7 @@ export class AzureAuthController {
     @Query('state') state: string,
     @Query('error') error: string,
     @Query('error_description') errorDescription: string,
-  ): Promise<{ status: AzureAuthStatus; message?: string }> {
+  ) {
     this.logger.log('Handling Azure OAuth callback');
 
     // Handle OAuth errors from Azure (user denial, consent issues, etc.)
@@ -58,26 +58,18 @@ export class AzureAuthController {
       this.logger.error(`Azure OAuth error: ${error}, ${errorDescription}`);
       return {
         status: AzureAuthStatus.Failed,
-        message: errorDescription || error,
+        error: errorDescription || error,
       };
     }
 
     if (!code || !state) {
       return {
         status: AzureAuthStatus.Failed,
-        message: 'Missing code or state parameter',
+        error: 'Missing code or state parameter',
       };
     }
 
-    const result = await this.azureAuthService.handleCallback(code, state);
-
-    return {
-      status: result.status,
-      message:
-        result.status === AzureAuthStatus.Succeed
-          ? `Authenticated as ${result.account?.username}`
-          : 'Authentication failed',
-    };
+    return this.azureAuthService.handleCallback(code, state);
   }
 
   @Get('status')
