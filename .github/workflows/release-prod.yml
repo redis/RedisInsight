@@ -24,8 +24,8 @@ jobs:
     needs: tests-prod
     secrets: inherit
     with:
-      environment: 'production'
-      target: 'all'
+      environment: "production"
+      target: "all"
 
   virustotal-prod:
     name: Virustotal
