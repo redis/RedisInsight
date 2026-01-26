@@ -39,8 +39,7 @@ export class AzureAuthController {
   @Get('callback')
   @ApiOperation({
     summary: 'Handle OAuth callback',
-    description:
-      'Exchanges authorization code for tokens. Called by deep link handler.',
+    description: 'Exchanges authorization code for tokens.',
   })
   @ApiResponse({
     status: 200,

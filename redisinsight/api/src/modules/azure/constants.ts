@@ -1,4 +1,10 @@
 /**
+ * Azure AD authority URL for multi-tenant authentication.
+ * Uses 'common' endpoint to allow any Azure AD tenant.
+ */
+export const AZURE_AUTHORITY = 'https://login.microsoftonline.com/common';
+
+/**
  * Azure App Registration Client ID.
  */
 export const AZURE_CLIENT_ID = '61f3d82d-2bf3-432a-ba1b-c056e4cf0fd0';

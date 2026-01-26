@@ -6,6 +6,7 @@ import {
   AccountInfo,
 } from '@azure/msal-node';
 import {
+  AZURE_AUTHORITY,
   AZURE_CLIENT_ID,
   AZURE_REDIS_SCOPE,
   AZURE_MANAGEMENT_SCOPE,
@@ -14,18 +15,12 @@ import {
   AzureAuthStatus,
 } from '../constants';
 
-/**
- * Result of a token acquisition
- */
 export interface AzureTokenResult {
   token: string;
   expiresOn: Date;
   account: AccountInfo;
 }
 
-/**
- * Azure authentication status response
- */
 export interface AzureAuthStatusResponse {
   authenticated: boolean;
   accounts: Array<{
@@ -38,7 +33,7 @@ export interface AzureAuthStatusResponse {
 /**
  * PKCE (Proof Key for Code Exchange) utilities.
  *
- * Note: MSAL Node v3.x exported CryptoProvider for PKCE generation, but v5.x
+ * Note: MSAL Node <5.x exported CryptoProvider for PKCE generation, but v5.x
  * removed it from the public API. We use Node's built-in crypto module instead,
  * following RFC 7636 (https://tools.ietf.org/html/rfc7636#section-4).
  */
@@ -77,11 +72,7 @@ export class AzureAuthService {
    */
   private authRequests: Map<string, string> = new Map();
 
-  /**
-   * Initialize MSAL Public Client Application.
-   * Called lazily on first use.
-   */
-  private initializeMsal(): PublicClientApplication {
+  private getMsalClient(): PublicClientApplication {
     if (this.pca) {
       return this.pca;
     }
@@ -89,7 +80,7 @@ export class AzureAuthService {
     const msalConfig: Configuration = {
       auth: {
         clientId: AZURE_CLIENT_ID,
-        authority: 'https://login.microsoftonline.com/common',
+        authority: AZURE_AUTHORITY,
       },
     };
 
@@ -104,14 +95,12 @@ export class AzureAuthService {
    * Returns URL to redirect user to Microsoft login.
    */
   async getAuthorizationUrl(): Promise<{ url: string; state: string }> {
-    const pca = this.initializeMsal();
+    const pca = this.getMsalClient();
 
-    // Generate PKCE codes
     const verifier = generateCodeVerifier();
     const challenge = generateCodeChallenge(verifier);
     const state = generateUuid();
 
-    // Store verifier for later use in callback
     this.authRequests.set(state, verifier);
 
     const authUrl = await pca.getAuthCodeUrl({
@@ -133,7 +122,7 @@ export class AzureAuthService {
     code: string,
     state: string,
   ): Promise<{ status: AzureAuthStatus; account?: AccountInfo }> {
-    const pca = this.initializeMsal();
+    const pca = this.getMsalClient();
 
     const verifier = this.authRequests.get(state);
     if (!verifier) {
@@ -166,12 +155,9 @@ export class AzureAuthService {
     }
   }
 
-  /**
-   * Get current authentication status and list of accounts.
-   */
   async getStatus(): Promise<AzureAuthStatusResponse> {
     try {
-      const pca = this.initializeMsal();
+      const pca = this.getMsalClient();
       const cache = pca.getTokenCache();
       const accounts = await cache.getAllAccounts();
 
@@ -197,7 +183,7 @@ export class AzureAuthService {
    */
   async logout(accountId: string): Promise<void> {
     try {
-      const pca = this.initializeMsal();
+      const pca = this.getMsalClient();
       const cache = pca.getTokenCache();
       const accounts = await cache.getAllAccounts();
 
@@ -220,7 +206,7 @@ export class AzureAuthService {
     accountId: string,
   ): Promise<AzureTokenResult | null> {
     try {
-      const pca = this.initializeMsal();
+      const pca = this.getMsalClient();
       const cache = pca.getTokenCache();
       const accounts = await cache.getAllAccounts();
 
@@ -252,15 +238,11 @@ export class AzureAuthService {
     }
   }
 
-  /**
-   * Get a Management API access token for a specific account.
-   * Used for autodiscovery of Azure Redis resources.
-   */
   async getManagementTokenByAccountId(
     accountId: string,
   ): Promise<AzureTokenResult | null> {
     try {
-      const pca = this.initializeMsal();
+      const pca = this.getMsalClient();
       const cache = pca.getTokenCache();
       const accounts = await cache.getAllAccounts();
 
