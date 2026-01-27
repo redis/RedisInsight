@@ -16,6 +16,8 @@ import { store } from 'uiSrc/slices/store'
 import Router from 'uiSrc/Router'
 import { StyledContainer } from './helpers/styles'
 import { GlobalStyles } from 'uiSrc/styles/globalStyles'
+import MonacoEnvironmentInitializer from 'uiSrc/components/MonacoEnvironmentInitializer/MonacoEnvironmentInitializer'
+import MonacoLanguages from 'uiSrc/components/monaco-laguages'
 
 const parameters: Parameters = {
   parameters: {
@@ -51,12 +53,14 @@ const preview: Preview = {
   decorators: [
     (Story) => (
       <StoryContextProvider value={useStoryContext()}>
+        <MonacoEnvironmentInitializer />
         <Router>
           <Provider store={store}>
             <TooltipProvider>
               <RootStoryLayout storyContext={useStoryContext()}>
                 <CommonStyles />
                 <GlobalStyles />
+                <MonacoLanguages />
                 <StyledContainer>
                   <Story />
                 </StyledContainer>
