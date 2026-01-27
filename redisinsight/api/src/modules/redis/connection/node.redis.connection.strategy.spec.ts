@@ -1,17 +1,13 @@
 import { Test } from '@nestjs/testing';
 import * as redis from 'redis';
-import * as fs from 'fs/promises';
+import * as tlsUtil from 'src/modules/redis/utils/tls.util';
 import {
   mockCaCertificateCertificatePlain,
-  mockCaCertificatePath,
   mockClientCertificateCertificatePlain,
   mockClientCertificateKeyPlain,
-  mockClientCertificatePath,
-  mockClientKeyPath,
   mockClientMetadata,
   mockDatabase,
   mockDatabaseWithTlsAuth,
-  mockDatabaseWithTlsAuthCertPaths,
   mockDatabaseWithTlsCertPaths,
   mockSshTunnelProvider,
 } from 'src/__mocks__';
@@ -24,8 +20,9 @@ jest.mock('redis', () => ({
   createClient: jest.fn(),
 }));
 
-jest.mock('fs/promises', () => ({
-  readFile: jest.fn(),
+jest.mock('src/modules/redis/utils/tls.util', () => ({
+  getCertificateContent: jest.fn(),
+  getKeyContent: jest.fn(),
 }));
 
 describe('NodeRedisConnectionStrategy', () => {
@@ -78,16 +75,33 @@ describe('NodeRedisConnectionStrategy', () => {
   });
 
   describe('getTLSConfig', () => {
-    const mockReadFile = fs.readFile as jest.Mock;
+    const mockGetCertificateContent =
+      tlsUtil.getCertificateContent as jest.Mock;
+    const mockGetKeyContent = tlsUtil.getKeyContent as jest.Mock;
 
     beforeEach(() => {
-      mockReadFile.mockReset();
+      mockGetCertificateContent.mockReset();
+      mockGetKeyContent.mockReset();
     });
 
-    it('should use certificate content when no path is specified', async () => {
+    it('should use getCertificateContent and getKeyContent utilities', async () => {
+      mockGetCertificateContent
+        .mockResolvedValueOnce(mockCaCertificateCertificatePlain)
+        .mockResolvedValueOnce(mockClientCertificateCertificatePlain);
+      mockGetKeyContent.mockResolvedValue(mockClientCertificateKeyPlain);
+
       const result = await service['getTLSConfig'](mockDatabaseWithTlsAuth);
 
-      expect(mockReadFile).not.toHaveBeenCalled();
+      expect(mockGetCertificateContent).toHaveBeenCalledTimes(2);
+      expect(mockGetCertificateContent).toHaveBeenCalledWith(
+        mockDatabaseWithTlsAuth.caCert,
+      );
+      expect(mockGetCertificateContent).toHaveBeenCalledWith(
+        mockDatabaseWithTlsAuth.clientCert,
+      );
+      expect(mockGetKeyContent).toHaveBeenCalledWith(
+        mockDatabaseWithTlsAuth.clientCert,
+      );
       expect(result).toEqual(
         expect.objectContaining({
           ca: [mockCaCertificateCertificatePlain],
@@ -97,56 +111,27 @@ describe('NodeRedisConnectionStrategy', () => {
       );
     });
 
-    it('should read CA certificate from file path when certificatePath is specified', async () => {
-      const mockCertFromFile = '-----BEGIN CERTIFICATE-----\nFROM_FILE';
-      mockReadFile.mockResolvedValue(mockCertFromFile);
+    it('should handle CA certificate only (no client cert)', async () => {
+      mockGetCertificateContent.mockResolvedValue(
+        mockCaCertificateCertificatePlain,
+      );
 
       const result = await service['getTLSConfig'](
         mockDatabaseWithTlsCertPaths,
       );
 
-      expect(mockReadFile).toHaveBeenCalledWith(mockCaCertificatePath, 'utf8');
+      expect(mockGetCertificateContent).toHaveBeenCalledTimes(1);
+      expect(mockGetKeyContent).not.toHaveBeenCalled();
       expect(result).toEqual(
         expect.objectContaining({
-          ca: [mockCertFromFile],
+          ca: [mockCaCertificateCertificatePlain],
         }),
       );
     });
 
-    it('should read client certificate and key from file paths when paths are specified', async () => {
-      const mockCertFromFile = '-----BEGIN CERTIFICATE-----\nCA_FROM_FILE';
-      const mockClientCertFromFile =
-        '-----BEGIN CERTIFICATE-----\nCLIENT_FROM_FILE';
-      const mockKeyFromFile = '-----BEGIN PRIVATE KEY-----\nKEY_FROM_FILE';
-
-      mockReadFile
-        .mockResolvedValueOnce(mockCertFromFile)
-        .mockResolvedValueOnce(mockClientCertFromFile)
-        .mockResolvedValueOnce(mockKeyFromFile);
-
-      const result = await service['getTLSConfig'](
-        mockDatabaseWithTlsAuthCertPaths,
-      );
-
-      expect(mockReadFile).toHaveBeenCalledTimes(3);
-      expect(mockReadFile).toHaveBeenCalledWith(mockCaCertificatePath, 'utf8');
-      expect(mockReadFile).toHaveBeenCalledWith(
-        mockClientCertificatePath,
-        'utf8',
-      );
-      expect(mockReadFile).toHaveBeenCalledWith(mockClientKeyPath, 'utf8');
-      expect(result).toEqual(
-        expect.objectContaining({
-          ca: [mockCertFromFile],
-          cert: mockClientCertFromFile,
-          key: mockKeyFromFile,
-        }),
-      );
-    });
-
-    it('should throw error when certificate file cannot be read', async () => {
+    it('should throw error when getCertificateContent fails', async () => {
       const fileError = new Error('ENOENT: no such file or directory');
-      mockReadFile.mockRejectedValue(fileError);
+      mockGetCertificateContent.mockRejectedValue(fileError);
 
       await expect(
         service['getTLSConfig'](mockDatabaseWithTlsCertPaths),
@@ -154,6 +139,11 @@ describe('NodeRedisConnectionStrategy', () => {
     });
 
     it('should include basic TLS config options', async () => {
+      mockGetCertificateContent
+        .mockResolvedValueOnce(mockCaCertificateCertificatePlain)
+        .mockResolvedValueOnce(mockClientCertificateCertificatePlain);
+      mockGetKeyContent.mockResolvedValue(mockClientCertificateKeyPlain);
+
       const result = await service['getTLSConfig'](mockDatabaseWithTlsAuth);
 
       expect(result).toEqual(

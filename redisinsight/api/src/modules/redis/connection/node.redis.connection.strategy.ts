@@ -1,4 +1,3 @@
-import { readFile } from 'fs/promises';
 import { RedisConnectionStrategy } from 'src/modules/redis/connection/redis.connection.strategy';
 import serverConfig from 'src/utils/config';
 import { ClientMetadata, Endpoint } from 'src/common/models';
@@ -15,7 +14,11 @@ import { ConnectionOptions } from 'tls';
 import { ClusterNodeRedisClient, RedisClient } from 'src/modules/redis/client';
 import { StandaloneNodeRedisClient } from 'src/modules/redis/client/node-redis/standalone.node-redis.client';
 import { SshTunnel } from 'src/modules/ssh/models/ssh-tunnel';
-import { discoverClusterNodes } from 'src/modules/redis/utils';
+import {
+  discoverClusterNodes,
+  getCertificateContent,
+  getKeyContent,
+} from 'src/modules/redis/utils';
 
 const REDIS_CLIENTS_CONFIG = serverConfig.get('redis_clients');
 
@@ -146,32 +149,24 @@ export class NodeRedisConnectionStrategy extends RedisConnectionStrategy {
    * @private
    */
   private async getTLSConfig(database: Database): Promise<ConnectionOptions> {
-    let config: ConnectionOptions;
-    config = {
+    let config: ConnectionOptions = {
       rejectUnauthorized: database.verifyServerCert,
       checkServerIdentity: this.dummyFn.bind(this),
       servername: database.tlsServername || undefined,
     };
+
     if (database.caCert) {
-      const caCertContent = database.caCert.certificatePath
-        ? await readFile(database.caCert.certificatePath, 'utf8')
-        : database.caCert.certificate;
       config = {
         ...config,
-        ca: [caCertContent],
+        ca: [await getCertificateContent(database.caCert)],
       };
     }
+
     if (database.clientCert) {
-      const certContent = database.clientCert.certificatePath
-        ? await readFile(database.clientCert.certificatePath, 'utf8')
-        : database.clientCert.certificate;
-      const keyContent = database.clientCert.keyPath
-        ? await readFile(database.clientCert.keyPath, 'utf8')
-        : database.clientCert.key;
       config = {
         ...config,
-        cert: certContent,
-        key: keyContent,
+        cert: await getCertificateContent(database.clientCert),
+        key: await getKeyContent(database.clientCert),
       };
     }
 
