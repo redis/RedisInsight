@@ -1,0 +1,315 @@
+import { Injectable, Logger } from '@nestjs/common';
+import axios, { AxiosInstance } from 'axios';
+import { PromisePool } from '@supercharge/promise-pool';
+import { AzureAuthService } from '../auth/azure-auth.service';
+import {
+  AZURE_API_BASE,
+  AUTODISCOVERY_MAX_CONCURRENT_REQUESTS,
+  AzureApiUrls,
+  AzureRedisType,
+  AzureAuthType,
+  AzureAccessKeysStatus,
+} from '../constants';
+import {
+  AzureSubscription,
+  AzureRedisDatabase,
+  AzureConnectionDetails,
+} from '../models';
+
+@Injectable()
+export class AzureAutodiscoveryService {
+  private readonly logger = new Logger(AzureAutodiscoveryService.name);
+
+  constructor(private readonly authService: AzureAuthService) {}
+
+  private async getAuthenticatedClient(
+    accountId: string,
+  ): Promise<AxiosInstance | null> {
+    const tokenResult =
+      await this.authService.getManagementTokenByAccountId(accountId);
+
+    if (!tokenResult) {
+      this.logger.warn('No valid management token available');
+      return null;
+    }
+
+    return axios.create({
+      baseURL: AZURE_API_BASE,
+      headers: {
+        Authorization: `Bearer ${tokenResult.token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+  }
+
+  async listSubscriptions(accountId: string): Promise<AzureSubscription[]> {
+    const client = await this.getAuthenticatedClient(accountId);
+
+    if (!client) {
+      return [];
+    }
+
+    try {
+      const response = await client.get(AzureApiUrls.subscriptions());
+
+      return (response.data.value || []).map((sub: any) => ({
+        subscriptionId: sub.subscriptionId,
+        displayName: sub.displayName,
+        state: sub.state,
+      }));
+    } catch (error: any) {
+      this.logger.warn('Failed to list subscriptions', error?.message);
+      return [];
+    }
+  }
+
+  async listDatabasesInSubscription(
+    accountId: string,
+    subscriptionId: string,
+  ): Promise<AzureRedisDatabase[]> {
+    const client = await this.getAuthenticatedClient(accountId);
+
+    if (!client) {
+      return [];
+    }
+
+    const [standardDatabases, enterpriseDatabases] = await Promise.all([
+      this.fetchStandardRedis(client, subscriptionId),
+      this.fetchEnterpriseRedis(client, subscriptionId),
+    ]);
+
+    return [...standardDatabases, ...enterpriseDatabases];
+  }
+
+  async getConnectionDetails(
+    accountId: string,
+    database: AzureRedisDatabase,
+  ): Promise<AzureConnectionDetails | null> {
+    const client = await this.getAuthenticatedClient(accountId);
+
+    if (!client) {
+      return null;
+    }
+
+    // For enterprise with access keys disabled, use Entra ID
+    if (
+      database.type === AzureRedisType.Enterprise &&
+      database.accessKeysAuthentication === AzureAccessKeysStatus.Disabled
+    ) {
+      return this.getEntraIdConnectionDetails(accountId, database);
+    }
+
+    return this.getAccessKeyConnectionDetails(client, database);
+  }
+
+  private async fetchStandardRedis(
+    client: AxiosInstance,
+    subscriptionId: string,
+  ): Promise<AzureRedisDatabase[]> {
+    try {
+      const response = await client.get(
+        AzureApiUrls.standardRedisInSubscription(subscriptionId),
+      );
+
+      return (response.data.value || []).map((redis: any) =>
+        this.mapStandardRedis(redis, subscriptionId),
+      );
+    } catch (error: any) {
+      this.logger.warn(
+        `Failed to list standard Redis in subscription ${subscriptionId}`,
+        error?.message,
+      );
+      return [];
+    }
+  }
+
+  private async fetchEnterpriseRedis(
+    client: AxiosInstance,
+    subscriptionId: string,
+  ): Promise<AzureRedisDatabase[]> {
+    try {
+      const response = await client.get(
+        AzureApiUrls.enterpriseRedisInSubscription(subscriptionId),
+      );
+
+      const clusters = response.data.value || [];
+
+      if (clusters.length === 0) {
+        return [];
+      }
+
+      const { results } = await PromisePool.for(clusters)
+        .withConcurrency(AUTODISCOVERY_MAX_CONCURRENT_REQUESTS)
+        .handleError((error, cluster: any) => {
+          this.logger.warn(
+            `Failed to fetch databases for cluster ${cluster?.name}`,
+            error?.message,
+          );
+        })
+        .process((cluster: any) =>
+          this.listEnterpriseDatabases(client, cluster, subscriptionId),
+        );
+
+      return results.flat();
+    } catch (error: any) {
+      this.logger.warn(
+        `Failed to list enterprise Redis in subscription ${subscriptionId}`,
+        error?.message,
+      );
+      return [];
+    }
+  }
+
+  private mapStandardRedis(
+    redis: any,
+    subscriptionId: string,
+  ): AzureRedisDatabase {
+    const resourceGroup = this.extractResourceGroup(redis.id);
+
+    return {
+      id: redis.id,
+      name: redis.name,
+      subscriptionId,
+      resourceGroup,
+      location: redis.location,
+      type: AzureRedisType.Standard,
+      host:
+        redis.properties?.hostName || `${redis.name}.redis.cache.windows.net`,
+      port: redis.properties?.port || 6379,
+      sslPort: redis.properties?.sslPort || 6380,
+      provisioningState: redis.properties?.provisioningState,
+      sku: redis.properties?.sku,
+    };
+  }
+
+  private async listEnterpriseDatabases(
+    client: AxiosInstance,
+    cluster: any,
+    subscriptionId: string,
+  ): Promise<AzureRedisDatabase[]> {
+    const resourceGroup = this.extractResourceGroup(cluster.id);
+    const databases: AzureRedisDatabase[] = [];
+
+    try {
+      const dbResponse = await client.get(
+        AzureApiUrls.enterpriseDatabases(
+          subscriptionId,
+          resourceGroup,
+          cluster.name,
+        ),
+      );
+
+      for (const db of dbResponse.data.value || []) {
+        const normalizedLocation = cluster.location
+          .toLowerCase()
+          .replace(/\s+/g, '');
+
+        const host =
+          cluster.hostName ||
+          cluster.properties?.hostName ||
+          (db.properties?.clusteringPolicy === 'EnterpriseCluster'
+            ? `${cluster.name}.${normalizedLocation}.redisenterprise.cache.azure.net`
+            : `${cluster.name}-${db.name}.${normalizedLocation}.redisenterprise.cache.azure.net`);
+
+        databases.push({
+          id: db.id,
+          name: `${cluster.name}/${db.name}`,
+          subscriptionId,
+          resourceGroup,
+          location: cluster.location,
+          type: AzureRedisType.Enterprise,
+          host,
+          port: db.properties?.port || 10000,
+          provisioningState: db.properties?.provisioningState,
+          sku: cluster.sku,
+          accessKeysAuthentication: db.properties?.accessKeysAuthentication,
+        });
+      }
+    } catch (error: any) {
+      this.logger.warn(
+        `Failed to list databases in cluster ${cluster.name}`,
+        error?.message,
+      );
+    }
+
+    return databases;
+  }
+
+  private extractResourceGroup(resourceId: string): string {
+    const match = resourceId.match(/resourceGroups\/([^/]+)/i);
+    return match ? match[1] : '';
+  }
+
+  private async getAccessKeyConnectionDetails(
+    client: AxiosInstance,
+    database: AzureRedisDatabase,
+  ): Promise<AzureConnectionDetails | null> {
+    try {
+      let keysUrl: string;
+
+      if (database.type === AzureRedisType.Standard) {
+        keysUrl = AzureApiUrls.standardRedisKeys(
+          database.subscriptionId,
+          database.resourceGroup,
+          database.name,
+        );
+      } else {
+        const [clusterName] = database.name.split('/');
+        keysUrl = AzureApiUrls.enterpriseRedisKeys(
+          database.subscriptionId,
+          database.resourceGroup,
+          clusterName,
+        );
+      }
+
+      const response = await client.post(keysUrl);
+      const primaryKey =
+        response.data.primaryKey || response.data.keys?.[0]?.value;
+
+      return {
+        host: database.host,
+        port:
+          database.type === AzureRedisType.Standard
+            ? database.sslPort || 6380
+            : database.port,
+        password: primaryKey,
+        tls: true,
+        authType: AzureAuthType.AccessKey,
+        subscriptionId: database.subscriptionId,
+        resourceGroup: database.resourceGroup,
+        resourceId: database.id,
+      };
+    } catch (error: any) {
+      this.logger.warn(
+        `Failed to get access keys for ${database.name}`,
+        error?.message,
+      );
+      return null;
+    }
+  }
+
+  private async getEntraIdConnectionDetails(
+    accountId: string,
+    database: AzureRedisDatabase,
+  ): Promise<AzureConnectionDetails | null> {
+    const tokenResult =
+      await this.authService.getRedisTokenByAccountId(accountId);
+
+    if (!tokenResult) {
+      this.logger.warn('No valid Redis token for Entra ID auth');
+      return null;
+    }
+
+    return {
+      host: database.host,
+      port: database.port,
+      username: tokenResult.account.localAccountId,
+      tls: true,
+      authType: AzureAuthType.EntraId,
+      azureAccountId: accountId,
+      subscriptionId: database.subscriptionId,
+      resourceGroup: database.resourceGroup,
+      resourceId: database.id,
+    };
+  }
+}
