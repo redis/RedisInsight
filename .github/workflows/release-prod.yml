@@ -54,9 +54,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.release_ref }}
+      - uses: actions/checkout@v4
       - name: Remove all artifacts
         uses: ./.github/actions/remove-artifacts
