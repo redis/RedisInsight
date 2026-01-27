@@ -1,3 +1,4 @@
+import { readFile } from 'fs/promises';
 import { RedisConnectionStrategy } from 'src/modules/redis/connection/redis.connection.strategy';
 import serverConfig from 'src/utils/config';
 import { ClientMetadata, Endpoint } from 'src/common/models';
@@ -152,16 +153,25 @@ export class NodeRedisConnectionStrategy extends RedisConnectionStrategy {
       servername: database.tlsServername || undefined,
     };
     if (database.caCert) {
+      const caCertContent = database.caCert.certificatePath
+        ? await readFile(database.caCert.certificatePath, 'utf8')
+        : database.caCert.certificate;
       config = {
         ...config,
-        ca: [database.caCert.certificate],
+        ca: [caCertContent],
       };
     }
     if (database.clientCert) {
+      const certContent = database.clientCert.certificatePath
+        ? await readFile(database.clientCert.certificatePath, 'utf8')
+        : database.clientCert.certificate;
+      const keyContent = database.clientCert.keyPath
+        ? await readFile(database.clientCert.keyPath, 'utf8')
+        : database.clientCert.key;
       config = {
         ...config,
-        cert: database.clientCert.certificate,
-        key: database.clientCert.key,
+        cert: certContent,
+        key: keyContent,
       };
     }
 

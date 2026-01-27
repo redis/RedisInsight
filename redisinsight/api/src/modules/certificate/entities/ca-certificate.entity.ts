@@ -21,6 +21,10 @@ export class CaCertificateEntity {
 
   @Expose()
   @Column({ nullable: true })
+  certificatePath: string;
+
+  @Expose()
+  @Column({ nullable: true })
   isPreSetup: boolean;
 
   @OneToMany(() => DatabaseEntity, (database) => database.caCert)

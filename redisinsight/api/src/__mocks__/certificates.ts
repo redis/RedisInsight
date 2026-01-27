@@ -110,3 +110,24 @@ export const mockClientCertificateRepository = jest.fn(() => ({
 export const mockClientCertificateService = jest.fn(() => ({
   get: jest.fn().mockResolvedValue(mockClientCertificate),
 }));
+
+// ================== Path-based Certificates ==================
+export const mockCaCertificatePath = '/path/to/ca.pem';
+export const mockClientCertificatePath = '/path/to/client.pem';
+export const mockClientKeyPath = '/path/to/client-key.pem';
+
+export const mockCaCertificateWithPath = Object.assign(new CaCertificate(), {
+  id: mockCaCertificateId,
+  name: 'ca-cert-with-path',
+  certificatePath: mockCaCertificatePath,
+});
+
+export const mockClientCertificateWithPath = Object.assign(
+  new ClientCertificate(),
+  {
+    id: mockClientCertificateId,
+    name: 'client-cert-with-path',
+    certificatePath: mockClientCertificatePath,
+    keyPath: mockClientKeyPath,
+  },
+);

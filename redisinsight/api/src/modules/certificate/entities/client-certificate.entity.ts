@@ -21,7 +21,15 @@ export class ClientCertificateEntity {
 
   @Expose()
   @Column({ nullable: true })
+  certificatePath: string;
+
+  @Expose()
+  @Column({ nullable: true })
   key: string;
+
+  @Expose()
+  @Column({ nullable: true })
+  keyPath: string;
 
   @Expose()
   @Column({ nullable: true })

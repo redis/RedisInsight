@@ -1,7 +1,9 @@
 import { Database } from 'src/modules/database/models/database';
 import {
   mockCaCertificate,
+  mockCaCertificateWithPath,
   mockClientCertificate,
+  mockClientCertificateWithPath,
 } from 'src/__mocks__/certificates';
 import { SentinelMaster } from 'src/modules/redis-sentinel/models/sentinel-master';
 import {
@@ -194,6 +196,20 @@ export const mockDatabaseWithTlsAuthEntity = Object.assign(
     clientCert: mockClientCertificate, // !not client cert entity since it managed on own repository
   },
 );
+
+// Path-based TLS certificates (for automatic rotation)
+export const mockDatabaseWithTlsCertPaths = Object.assign(new Database(), {
+  ...mockDatabaseWithAuth,
+  tls: true,
+  verifyServerCert: true,
+  tlsServername: 'some.local',
+  caCert: mockCaCertificateWithPath,
+});
+
+export const mockDatabaseWithTlsAuthCertPaths = Object.assign(new Database(), {
+  ...mockDatabaseWithTlsCertPaths,
+  clientCert: mockClientCertificateWithPath,
+});
 
 export const mockDatabaseWithTags = Object.assign(new Database(), {
   ...mockDatabase,

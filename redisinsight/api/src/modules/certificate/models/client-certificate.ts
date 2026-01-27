@@ -21,23 +21,43 @@ export class ClientCertificate {
   @IsString({ always: true })
   name: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Certificate body',
     type: String,
   })
   @Expose({ groups: ['security'] })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString({ always: true })
-  certificate: string;
+  certificate?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
+    description:
+      'File path to the certificate. When specified, the certificate will be read from this path at connection time.',
+    type: String,
+  })
+  @Expose()
+  @IsOptional()
+  @IsString({ always: true })
+  certificatePath?: string;
+
+  @ApiPropertyOptional({
     description: 'Key body',
     type: String,
   })
   @Expose({ groups: ['security'] })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString({ always: true })
-  key: string;
+  key?: string;
+
+  @ApiPropertyOptional({
+    description:
+      'File path to the private key. When specified, the key will be read from this path at connection time.',
+    type: String,
+  })
+  @Expose()
+  @IsOptional()
+  @IsString({ always: true })
+  keyPath?: string;
 
   @ApiPropertyOptional({
     description:
