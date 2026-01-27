@@ -73,22 +73,75 @@ const createMockEnterpriseDatabase = (
 
 const createMockDatabase = (
   type: AzureRedisType = AzureRedisType.Standard,
-): AzureRedisDatabase => ({
-  id: faker.string.uuid(),
-  name: faker.word.noun(),
-  subscriptionId: faker.string.uuid(),
-  resourceGroup: faker.word.noun(),
-  location: faker.location.city(),
-  type,
-  host: faker.internet.domainName(),
-  port: type === AzureRedisType.Standard ? 6379 : 10000,
-  sslPort: type === AzureRedisType.Standard ? 6380 : undefined,
-  provisioningState: 'Succeeded',
-  accessKeysAuthentication:
-    type === AzureRedisType.Enterprise
-      ? AzureAccessKeysStatus.Enabled
-      : undefined,
+): AzureRedisDatabase => {
+  const subscriptionId = faker.string.uuid();
+  const resourceGroup = faker.word.noun();
+  const name = faker.word.noun();
+  const provider =
+    type === AzureRedisType.Standard
+      ? 'Microsoft.Cache/redis'
+      : 'Microsoft.Cache/redisEnterprise';
+  const id = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/${provider}/${name}`;
+
+  return {
+    id,
+    name,
+    subscriptionId,
+    resourceGroup,
+    location: faker.location.city(),
+    type,
+    host: faker.internet.domainName(),
+    port: type === AzureRedisType.Standard ? 6379 : 10000,
+    sslPort: type === AzureRedisType.Standard ? 6380 : undefined,
+    provisioningState: 'Succeeded',
+    accessKeysAuthentication:
+      type === AzureRedisType.Enterprise
+        ? AzureAccessKeysStatus.Enabled
+        : undefined,
+  };
+};
+
+// Helper to create raw API response that maps to the database
+const createStandardRedisApiResponse = (database: AzureRedisDatabase) => ({
+  id: database.id,
+  name: database.name,
+  location: database.location,
+  properties: {
+    hostName: database.host,
+    port: database.port,
+    sslPort: database.sslPort,
+    provisioningState: database.provisioningState,
+    sku: database.sku,
+  },
 });
+
+const createEnterpriseClusterApiResponse = (database: AzureRedisDatabase) => {
+  const clusterName = database.name.split('/')[0];
+  const clusterId = database.id.replace(/\/databases\/[^/]+$/, '');
+  return {
+    id: clusterId,
+    name: clusterName,
+    location: database.location,
+    sku: database.sku,
+    properties: {
+      hostName: database.host,
+    },
+  };
+};
+
+const createEnterpriseDatabaseApiResponse = (database: AzureRedisDatabase) => {
+  const dbName = database.name.split('/')[1] || 'default';
+  return {
+    id: database.id,
+    name: dbName,
+    properties: {
+      port: database.port,
+      provisioningState: database.provisioningState,
+      accessKeysAuthentication: database.accessKeysAuthentication,
+      clusteringPolicy: 'EnterpriseCluster',
+    },
+  };
+};
 
 describe('AzureAutodiscoveryService', () => {
   let service: AzureAutodiscoveryService;
@@ -164,6 +217,18 @@ describe('AzureAutodiscoveryService', () => {
 
   describe('listDatabasesInSubscription', () => {
     const subscriptionId = faker.string.uuid();
+
+    it('should return empty array when subscription ID is invalid', async () => {
+      const result = await service.listDatabasesInSubscription(
+        'account-id',
+        'invalid-subscription-id',
+      );
+
+      expect(result).toEqual([]);
+      expect(
+        mockAuthService.getManagementTokenByAccountId,
+      ).not.toHaveBeenCalled();
+    });
 
     it('should return empty array when no token available', async () => {
       mockAuthService.getManagementTokenByAccountId.mockResolvedValue(null);
@@ -250,7 +315,10 @@ describe('AzureAutodiscoveryService', () => {
       mockAuthService.getManagementTokenByAccountId.mockResolvedValue(null);
       const database = createMockDatabase();
 
-      const result = await service.getConnectionDetails('account-id', database);
+      const result = await service.getConnectionDetails(
+        'account-id',
+        database.id,
+      );
 
       expect(result).toBeNull();
     });
@@ -258,17 +326,25 @@ describe('AzureAutodiscoveryService', () => {
     it('should return access key connection details for standard Redis', async () => {
       const database = createMockDatabase(AzureRedisType.Standard);
       const primaryKey = faker.string.alphanumeric(44);
+      const apiResponse = createStandardRedisApiResponse(database);
 
       mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
         token: 'mock-token',
         expiresOn: new Date(),
         account: createMockAccount(),
       });
+      // Mock get calls for listDatabasesInSubscription (standard + enterprise)
+      mockAxiosInstance.get
+        .mockResolvedValueOnce({ data: { value: [apiResponse] } })
+        .mockResolvedValueOnce({ data: { value: [] } });
       mockAxiosInstance.post.mockResolvedValue({
         data: { primaryKey },
       });
 
-      const result = await service.getConnectionDetails('account-id', database);
+      const result = await service.getConnectionDetails(
+        'account-id',
+        database.id,
+      );
 
       expect(result).not.toBeNull();
       expect(result!.authType).toBe(AzureAuthType.AccessKey);
@@ -281,17 +357,27 @@ describe('AzureAutodiscoveryService', () => {
       database.name = 'cluster-name/default';
       database.accessKeysAuthentication = AzureAccessKeysStatus.Enabled;
       const primaryKey = faker.string.alphanumeric(44);
+      const clusterResponse = createEnterpriseClusterApiResponse(database);
+      const dbResponse = createEnterpriseDatabaseApiResponse(database);
 
       mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
         token: 'mock-token',
         expiresOn: new Date(),
         account: createMockAccount(),
       });
+      // Mock get calls: standard (empty), enterprise clusters, enterprise databases
+      mockAxiosInstance.get
+        .mockResolvedValueOnce({ data: { value: [] } })
+        .mockResolvedValueOnce({ data: { value: [clusterResponse] } })
+        .mockResolvedValueOnce({ data: { value: [dbResponse] } });
       mockAxiosInstance.post.mockResolvedValue({
         data: { keys: [{ value: primaryKey }] },
       });
 
-      const result = await service.getConnectionDetails('account-id', database);
+      const result = await service.getConnectionDetails(
+        'account-id',
+        database.id,
+      );
 
       expect(result).not.toBeNull();
       expect(result!.authType).toBe(AzureAuthType.AccessKey);
@@ -300,21 +386,32 @@ describe('AzureAutodiscoveryService', () => {
 
     it('should return Entra ID connection details for enterprise Redis with keys disabled', async () => {
       const database = createMockDatabase(AzureRedisType.Enterprise);
+      database.name = 'cluster-name/default';
       database.accessKeysAuthentication = AzureAccessKeysStatus.Disabled;
       const mockAccount = createMockAccount();
+      const clusterResponse = createEnterpriseClusterApiResponse(database);
+      const dbResponse = createEnterpriseDatabaseApiResponse(database);
 
       mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
         token: 'mock-token',
         expiresOn: new Date(),
         account: mockAccount,
       });
+      // Mock get calls: standard (empty), enterprise clusters, enterprise databases
+      mockAxiosInstance.get
+        .mockResolvedValueOnce({ data: { value: [] } })
+        .mockResolvedValueOnce({ data: { value: [clusterResponse] } })
+        .mockResolvedValueOnce({ data: { value: [dbResponse] } });
       mockAuthService.getRedisTokenByAccountId.mockResolvedValue({
         token: 'redis-token',
         expiresOn: new Date(),
         account: mockAccount,
       });
 
-      const result = await service.getConnectionDetails('account-id', database);
+      const result = await service.getConnectionDetails(
+        'account-id',
+        database.id,
+      );
 
       expect(result).not.toBeNull();
       expect(result!.authType).toBe(AzureAuthType.EntraId);
@@ -324,21 +421,55 @@ describe('AzureAutodiscoveryService', () => {
 
     it('should return null when Redis token not available for Entra ID auth', async () => {
       const database = createMockDatabase(AzureRedisType.Enterprise);
+      database.name = 'cluster-name/default';
       database.accessKeysAuthentication = AzureAccessKeysStatus.Disabled;
+      const clusterResponse = createEnterpriseClusterApiResponse(database);
+      const dbResponse = createEnterpriseDatabaseApiResponse(database);
 
       mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
         token: 'mock-token',
         expiresOn: new Date(),
         account: createMockAccount(),
       });
+      // Mock get calls: standard (empty), enterprise clusters, enterprise databases
+      mockAxiosInstance.get
+        .mockResolvedValueOnce({ data: { value: [] } })
+        .mockResolvedValueOnce({ data: { value: [clusterResponse] } })
+        .mockResolvedValueOnce({ data: { value: [dbResponse] } });
       mockAuthService.getRedisTokenByAccountId.mockResolvedValue(null);
 
-      const result = await service.getConnectionDetails('account-id', database);
+      const result = await service.getConnectionDetails(
+        'account-id',
+        database.id,
+      );
 
       expect(result).toBeNull();
     });
 
     it('should return null when access key fetch fails', async () => {
+      const database = createMockDatabase(AzureRedisType.Standard);
+      const apiResponse = createStandardRedisApiResponse(database);
+
+      mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
+        token: 'mock-token',
+        expiresOn: new Date(),
+        account: createMockAccount(),
+      });
+      // Mock get calls for listDatabasesInSubscription (standard + enterprise)
+      mockAxiosInstance.get
+        .mockResolvedValueOnce({ data: { value: [apiResponse] } })
+        .mockResolvedValueOnce({ data: { value: [] } });
+      mockAxiosInstance.post.mockRejectedValue(new Error('API error'));
+
+      const result = await service.getConnectionDetails(
+        'account-id',
+        database.id,
+      );
+
+      expect(result).toBeNull();
+    });
+
+    it('should return null when database is not found', async () => {
       const database = createMockDatabase(AzureRedisType.Standard);
 
       mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
@@ -346,9 +477,32 @@ describe('AzureAutodiscoveryService', () => {
         expiresOn: new Date(),
         account: createMockAccount(),
       });
-      mockAxiosInstance.post.mockRejectedValue(new Error('API error'));
+      // Mock get calls to return empty lists (database not found)
+      mockAxiosInstance.get
+        .mockResolvedValueOnce({ data: { value: [] } })
+        .mockResolvedValueOnce({ data: { value: [] } });
 
-      const result = await service.getConnectionDetails('account-id', database);
+      const result = await service.getConnectionDetails(
+        'account-id',
+        database.id,
+      );
+
+      expect(result).toBeNull();
+    });
+
+    it('should return null when resource ID format is invalid', async () => {
+      const invalidDatabaseId = 'invalid-resource-id';
+
+      mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
+        token: 'mock-token',
+        expiresOn: new Date(),
+        account: createMockAccount(),
+      });
+
+      const result = await service.getConnectionDetails(
+        'account-id',
+        invalidDatabaseId,
+      );
 
       expect(result).toBeNull();
     });

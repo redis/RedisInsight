@@ -78,6 +78,10 @@ export const API_VERSION_REDIS_ENTERPRISE = '2025-07-01';
 
 export const AUTODISCOVERY_MAX_CONCURRENT_REQUESTS = 20;
 
+// Azure subscription IDs are standard UUIDs (8-4-4-4-12 hex pattern)
+export const AZURE_SUBSCRIPTION_ID_REGEX =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export const AzureApiUrls = {
   subscriptions: () =>
     `/subscriptions?api-version=${API_VERSION_SUBSCRIPTIONS}`,

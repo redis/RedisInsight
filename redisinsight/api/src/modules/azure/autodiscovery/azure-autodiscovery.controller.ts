@@ -1,22 +1,15 @@
 import {
   Controller,
   Get,
-  Post,
-  Body,
   Query,
   Param,
   HttpStatus,
   HttpException,
 } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiBody,
-  ApiQuery,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { AzureAutodiscoveryService } from './azure-autodiscovery.service';
 import { AzureAuthService } from '../auth/azure-auth.service';
+import { AZURE_SUBSCRIPTION_ID_REGEX } from '../constants';
 import {
   AzureSubscription,
   AzureRedisDatabase,
@@ -30,6 +23,15 @@ export class AzureAutodiscoveryController {
     private readonly autodiscoveryService: AzureAutodiscoveryService,
     private readonly authService: AzureAuthService,
   ) {}
+
+  private validateSubscriptionId(subscriptionId: string): void {
+    if (!subscriptionId || !AZURE_SUBSCRIPTION_ID_REGEX.test(subscriptionId)) {
+      throw new HttpException(
+        'Invalid subscription ID format',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
 
   private async ensureAuthenticated(accountId: string): Promise<void> {
     const status = await this.authService.getStatus();
@@ -75,11 +77,13 @@ export class AzureAutodiscoveryController {
     status: 200,
     description: 'Returns list of databases in subscription',
   })
+  @ApiResponse({ status: 400, description: 'Invalid subscription ID format' })
   @ApiResponse({ status: 401, description: 'Not authenticated' })
   async listDatabasesInSubscription(
     @Query('accountId') accountId: string,
     @Param('subscriptionId') subscriptionId: string,
   ): Promise<AzureRedisDatabase[]> {
+    this.validateSubscriptionId(subscriptionId);
     await this.ensureAuthenticated(accountId);
     return this.autodiscoveryService.listDatabasesInSubscription(
       accountId,
@@ -87,25 +91,28 @@ export class AzureAutodiscoveryController {
     );
   }
 
-  @Post('databases/connection-details')
+  @Get('databases/connection-details')
   @ApiOperation({ summary: 'Get connection details for a database' })
   @ApiQuery({
     name: 'accountId',
     description: 'Azure account ID (homeAccountId)',
   })
-  @ApiBody({ description: 'Database object' })
+  @ApiQuery({
+    name: 'databaseId',
+    description: 'Azure resource ID of the database',
+  })
   @ApiResponse({ status: 200, description: 'Returns connection details' })
   @ApiResponse({ status: 401, description: 'Not authenticated' })
   @ApiResponse({ status: 404, description: 'Failed to get connection details' })
   async getConnectionDetails(
     @Query('accountId') accountId: string,
-    @Body() database: AzureRedisDatabase,
+    @Query('databaseId') databaseId: string,
   ): Promise<AzureConnectionDetails> {
     await this.ensureAuthenticated(accountId);
 
     const details = await this.autodiscoveryService.getConnectionDetails(
       accountId,
-      database,
+      databaseId,
     );
 
     if (!details) {

@@ -5,6 +5,7 @@ import { AzureAuthService } from '../auth/azure-auth.service';
 import {
   AZURE_API_BASE,
   AUTODISCOVERY_MAX_CONCURRENT_REQUESTS,
+  AZURE_SUBSCRIPTION_ID_REGEX,
   AzureApiUrls,
   AzureRedisType,
   AzureAuthType,
@@ -21,6 +22,10 @@ export class AzureAutodiscoveryService {
   private readonly logger = new Logger(AzureAutodiscoveryService.name);
 
   constructor(private readonly authService: AzureAuthService) {}
+
+  private isValidSubscriptionId(subscriptionId: string): boolean {
+    return !!subscriptionId && AZURE_SUBSCRIPTION_ID_REGEX.test(subscriptionId);
+  }
 
   private async getAuthenticatedClient(
     accountId: string,
@@ -67,6 +72,11 @@ export class AzureAutodiscoveryService {
     accountId: string,
     subscriptionId: string,
   ): Promise<AzureRedisDatabase[]> {
+    if (!this.isValidSubscriptionId(subscriptionId)) {
+      this.logger.warn(`Invalid subscription ID format: ${subscriptionId}`);
+      return [];
+    }
+
     const client = await this.getAuthenticatedClient(accountId);
 
     if (!client) {
@@ -83,8 +93,15 @@ export class AzureAutodiscoveryService {
 
   async getConnectionDetails(
     accountId: string,
-    database: AzureRedisDatabase,
+    databaseId: string,
   ): Promise<AzureConnectionDetails | null> {
+    const database = await this.findDatabaseById(accountId, databaseId);
+
+    if (!database) {
+      this.logger.warn(`Database not found: ${databaseId}`);
+      return null;
+    }
+
     const client = await this.getAuthenticatedClient(accountId);
 
     if (!client) {
@@ -100,6 +117,32 @@ export class AzureAutodiscoveryService {
     }
 
     return this.getAccessKeyConnectionDetails(client, database);
+  }
+
+  private async findDatabaseById(
+    accountId: string,
+    resourceId: string,
+  ): Promise<AzureRedisDatabase | null> {
+    if (!resourceId) {
+      return null;
+    }
+
+    // Extract subscription ID from resource ID
+    // Format: /subscriptions/{subscriptionId}/resourceGroups/...
+    const subscriptionMatch = resourceId.match(/^\/subscriptions\/([^/]+)\//i);
+
+    if (!subscriptionMatch) {
+      this.logger.warn(`Invalid resource ID format: ${resourceId}`);
+      return null;
+    }
+
+    const subscriptionId = subscriptionMatch[1];
+    const databases = await this.listDatabasesInSubscription(
+      accountId,
+      subscriptionId,
+    );
+
+    return databases.find((db) => db.id === resourceId) || null;
   }
 
   private async fetchStandardRedis(
