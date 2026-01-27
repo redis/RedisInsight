@@ -2862,11 +2862,6 @@
     "@storybook/global" "^5.0.0"
     "@storybook/react-dom-shim" "9.1.11"
 
-"@supercharge/promise-pool@^3.2.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@supercharge/promise-pool/-/promise-pool-3.2.0.tgz#a6ab4afdf798e453a6bb51c4ae340852e1266af8"
-  integrity sha512-pj0cAALblTZBPtMltWOlZTQSLT07jIaFNeM8TWoJD1cQMgDB9mcMlVMoetiB35OzNJpqQ2b+QEtwiR9f20mADg==
-
 "@svgr/babel-plugin-add-jsx-attribute@8.0.0":
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/@svgr/babel-plugin-add-jsx-attribute/-/babel-plugin-add-jsx-attribute-8.0.0.tgz#4001f5d5dd87fa13303e36ee106e3ff3a7eb8b22"
