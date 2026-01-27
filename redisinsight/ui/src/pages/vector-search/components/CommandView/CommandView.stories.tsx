@@ -24,8 +24,6 @@ const withRedisCommands = (Story: React.ComponentType) => {
 }
 
 // Decorator to fill available space
-// Docs page: fits iframe height (controlled by iframeHeight parameter)
-// Standalone: fills viewport
 const withFlexContainer = (Story: React.ComponentType) => (
   <div
     style={{
