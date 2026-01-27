@@ -9,7 +9,6 @@ import {
   AzureApiUrls,
   AzureRedisType,
   AzureAuthType,
-  AzureAccessKeysStatus,
 } from '../constants';
 import {
   AzureSubscription,
@@ -102,18 +101,23 @@ export class AzureAutodiscoveryService {
       return null;
     }
 
+    // Try Entra ID first
+    const entraIdDetails = await this.getEntraIdConnectionDetails(
+      accountId,
+      database,
+    );
+
+    if (entraIdDetails) {
+      return entraIdDetails;
+    }
+
+    // Fall back to Access Key
+    this.logger.debug('Entra ID auth failed, falling back to Access Key');
+
     const client = await this.getAuthenticatedClient(accountId);
 
     if (!client) {
       return null;
-    }
-
-    // For enterprise with access keys disabled, use Entra ID
-    if (
-      database.type === AzureRedisType.Enterprise &&
-      database.accessKeysAuthentication === AzureAccessKeysStatus.Disabled
-    ) {
-      return this.getEntraIdConnectionDetails(accountId, database);
     }
 
     return this.getAccessKeyConnectionDetails(client, database);

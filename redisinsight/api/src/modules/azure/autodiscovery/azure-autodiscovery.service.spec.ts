@@ -323,85 +323,20 @@ describe('AzureAutodiscoveryService', () => {
       expect(result).toBeNull();
     });
 
-    it('should return access key connection details for standard Redis', async () => {
+    it('should return Entra ID connection details when Redis token available', async () => {
       const database = createMockDatabase(AzureRedisType.Standard);
-      const primaryKey = faker.string.alphanumeric(44);
-      const apiResponse = createStandardRedisApiResponse(database);
-
-      mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
-        token: 'mock-token',
-        expiresOn: new Date(),
-        account: createMockAccount(),
-      });
-      // Mock get calls for listDatabasesInSubscription (standard + enterprise)
-      mockAxiosInstance.get
-        .mockResolvedValueOnce({ data: { value: [apiResponse] } })
-        .mockResolvedValueOnce({ data: { value: [] } });
-      mockAxiosInstance.post.mockResolvedValue({
-        data: { primaryKey },
-      });
-
-      const result = await service.getConnectionDetails(
-        'account-id',
-        database.id,
-      );
-
-      expect(result).not.toBeNull();
-      expect(result!.authType).toBe(AzureAuthType.AccessKey);
-      expect(result!.password).toBe(primaryKey);
-      expect(result!.port).toBe(database.sslPort);
-    });
-
-    it('should return access key connection details for enterprise Redis with keys enabled', async () => {
-      const database = createMockDatabase(AzureRedisType.Enterprise);
-      database.name = 'cluster-name/default';
-      database.accessKeysAuthentication = AzureAccessKeysStatus.Enabled;
-      const primaryKey = faker.string.alphanumeric(44);
-      const clusterResponse = createEnterpriseClusterApiResponse(database);
-      const dbResponse = createEnterpriseDatabaseApiResponse(database);
-
-      mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
-        token: 'mock-token',
-        expiresOn: new Date(),
-        account: createMockAccount(),
-      });
-      // Mock get calls: standard (empty), enterprise clusters, enterprise databases
-      mockAxiosInstance.get
-        .mockResolvedValueOnce({ data: { value: [] } })
-        .mockResolvedValueOnce({ data: { value: [clusterResponse] } })
-        .mockResolvedValueOnce({ data: { value: [dbResponse] } });
-      mockAxiosInstance.post.mockResolvedValue({
-        data: { keys: [{ value: primaryKey }] },
-      });
-
-      const result = await service.getConnectionDetails(
-        'account-id',
-        database.id,
-      );
-
-      expect(result).not.toBeNull();
-      expect(result!.authType).toBe(AzureAuthType.AccessKey);
-      expect(result!.password).toBe(primaryKey);
-    });
-
-    it('should return Entra ID connection details for enterprise Redis with keys disabled', async () => {
-      const database = createMockDatabase(AzureRedisType.Enterprise);
-      database.name = 'cluster-name/default';
-      database.accessKeysAuthentication = AzureAccessKeysStatus.Disabled;
       const mockAccount = createMockAccount();
-      const clusterResponse = createEnterpriseClusterApiResponse(database);
-      const dbResponse = createEnterpriseDatabaseApiResponse(database);
+      const apiResponse = createStandardRedisApiResponse(database);
 
       mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
         token: 'mock-token',
         expiresOn: new Date(),
         account: mockAccount,
       });
-      // Mock get calls: standard (empty), enterprise clusters, enterprise databases
+      // Mock get calls for listDatabasesInSubscription (standard + enterprise)
       mockAxiosInstance.get
-        .mockResolvedValueOnce({ data: { value: [] } })
-        .mockResolvedValueOnce({ data: { value: [clusterResponse] } })
-        .mockResolvedValueOnce({ data: { value: [dbResponse] } });
+        .mockResolvedValueOnce({ data: { value: [apiResponse] } })
+        .mockResolvedValueOnce({ data: { value: [] } });
       mockAuthService.getRedisTokenByAccountId.mockResolvedValue({
         token: 'redis-token',
         expiresOn: new Date(),
@@ -419,10 +354,42 @@ describe('AzureAutodiscoveryService', () => {
       expect(result!.azureAccountId).toBe('account-id');
     });
 
-    it('should return null when Redis token not available for Entra ID auth', async () => {
+    it('should fall back to access key when Entra ID fails', async () => {
+      const database = createMockDatabase(AzureRedisType.Standard);
+      const primaryKey = faker.string.alphanumeric(44);
+      const apiResponse = createStandardRedisApiResponse(database);
+
+      mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
+        token: 'mock-token',
+        expiresOn: new Date(),
+        account: createMockAccount(),
+      });
+      // Mock get calls for listDatabasesInSubscription (standard + enterprise)
+      mockAxiosInstance.get
+        .mockResolvedValueOnce({ data: { value: [apiResponse] } })
+        .mockResolvedValueOnce({ data: { value: [] } });
+      // Entra ID fails
+      mockAuthService.getRedisTokenByAccountId.mockResolvedValue(null);
+      // Access key succeeds
+      mockAxiosInstance.post.mockResolvedValue({
+        data: { primaryKey },
+      });
+
+      const result = await service.getConnectionDetails(
+        'account-id',
+        database.id,
+      );
+
+      expect(result).not.toBeNull();
+      expect(result!.authType).toBe(AzureAuthType.AccessKey);
+      expect(result!.password).toBe(primaryKey);
+      expect(result!.port).toBe(database.sslPort);
+    });
+
+    it('should fall back to access key for enterprise Redis when Entra ID fails', async () => {
       const database = createMockDatabase(AzureRedisType.Enterprise);
       database.name = 'cluster-name/default';
-      database.accessKeysAuthentication = AzureAccessKeysStatus.Disabled;
+      const primaryKey = faker.string.alphanumeric(44);
       const clusterResponse = createEnterpriseClusterApiResponse(database);
       const dbResponse = createEnterpriseDatabaseApiResponse(database);
 
@@ -436,17 +403,24 @@ describe('AzureAutodiscoveryService', () => {
         .mockResolvedValueOnce({ data: { value: [] } })
         .mockResolvedValueOnce({ data: { value: [clusterResponse] } })
         .mockResolvedValueOnce({ data: { value: [dbResponse] } });
+      // Entra ID fails
       mockAuthService.getRedisTokenByAccountId.mockResolvedValue(null);
+      // Access key succeeds
+      mockAxiosInstance.post.mockResolvedValue({
+        data: { keys: [{ value: primaryKey }] },
+      });
 
       const result = await service.getConnectionDetails(
         'account-id',
         database.id,
       );
 
-      expect(result).toBeNull();
+      expect(result).not.toBeNull();
+      expect(result!.authType).toBe(AzureAuthType.AccessKey);
+      expect(result!.password).toBe(primaryKey);
     });
 
-    it('should return null when access key fetch fails', async () => {
+    it('should return null when both Entra ID and access key fail', async () => {
       const database = createMockDatabase(AzureRedisType.Standard);
       const apiResponse = createStandardRedisApiResponse(database);
 
@@ -459,6 +433,9 @@ describe('AzureAutodiscoveryService', () => {
       mockAxiosInstance.get
         .mockResolvedValueOnce({ data: { value: [apiResponse] } })
         .mockResolvedValueOnce({ data: { value: [] } });
+      // Entra ID fails
+      mockAuthService.getRedisTokenByAccountId.mockResolvedValue(null);
+      // Access key also fails
       mockAxiosInstance.post.mockRejectedValue(new Error('API error'));
 
       const result = await service.getConnectionDetails(
