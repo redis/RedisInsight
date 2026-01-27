@@ -1,6 +1,6 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/no-this-in-sfc */
-import React, { Ref, useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { IconType, EqualIcon, FoldersIcon } from 'uiSrc/components/base/icons'
@@ -48,11 +48,11 @@ import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { setConnectivityError } from 'uiSrc/slices/app/connectivity'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from './styles.module.scss'
 import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
-import styled from 'styled-components'
 import { ToggleButton } from 'uiSrc/components/base/forms/buttons'
-import { Text } from 'uiSrc/components/base/text'
+import { ColorText } from 'uiSrc/components/base/text'
+
+import * as S from './KeysHeader.styles'
 
 const HIDE_REFRESH_LABEL_WIDTH = 640
 
@@ -76,11 +76,6 @@ export interface Props {
   handleScanMoreClick: (config: any) => void
 }
 
-const ViewSwitchButton = styled(ButtonGroup.Button)`
-  width: 24px !important;
-  min-width: 24px !important;
-`
-
 const KeysHeader = (props: Props) => {
   const {
     loading,
@@ -100,9 +95,29 @@ const KeysHeader = (props: Props) => {
 
   const [columnsConfigShown, setColumnsConfigShown] = useState(false)
 
-  const rootDivRef: Ref<HTMLDivElement> = useRef(null)
-
   const dispatch = useDispatch()
+  const handleSwitchView = (type: KeyViewType) => {
+    void sendEventTelemetry({
+      event:
+        type === KeyViewType.Tree
+          ? TelemetryEvent.TREE_VIEW_OPENED
+          : TelemetryEvent.LIST_VIEW_OPENED,
+      eventData: {
+        databaseId: instanceId,
+      },
+    })
+
+    dispatch(resetBrowserTree())
+    dispatch(resetKeysData(searchMode))
+
+    if (!(searchMode === SearchMode.Redisearch && !selectedIndex)) {
+      loadKeys(type)
+    }
+
+    setTimeout(() => {
+      dispatch(changeKeyViewType(type))
+    }, 0)
+  }
 
   // TODO: Check if encoding can be reused from BE and FE
   const format = keyNameFormat as unknown as KeyValueFormat
@@ -231,29 +246,6 @@ const KeysHeader = (props: Props) => {
     })
   }
 
-  const handleSwitchView = (type: KeyViewType) => {
-    sendEventTelemetry({
-      event:
-        type === KeyViewType.Tree
-          ? TelemetryEvent.TREE_VIEW_OPENED
-          : TelemetryEvent.LIST_VIEW_OPENED,
-      eventData: {
-        databaseId: instanceId,
-      },
-    })
-
-    dispatch(resetBrowserTree())
-    dispatch(resetKeysData(searchMode))
-
-    if (!(searchMode === SearchMode.Redisearch && !selectedIndex)) {
-      loadKeys(type)
-    }
-
-    setTimeout(() => {
-      dispatch(changeKeyViewType(type))
-    }, 0)
-  }
-
   const changeColumnsShown = (status: boolean, columnType: BrowserColumns) => {
     const shown = []
     const hidden = []
@@ -289,7 +281,7 @@ const KeysHeader = (props: Props) => {
             position="top"
             key={view.tooltipText}
           >
-            <ViewSwitchButton
+            <S.ViewSwitchButton
               aria-label={view.ariaLabel}
               onClick={() => view.onClick()}
               isSelected={view.isActiveView()}
@@ -297,7 +289,7 @@ const KeysHeader = (props: Props) => {
               disabled={view.disabled || false}
             >
               <ButtonGroup.Icon icon={view.getIconType()} />
-            </ViewSwitchButton>
+            </S.ViewSwitchButton>
           </RiTooltip>
         ))}
       </ButtonGroup>
@@ -305,7 +297,7 @@ const KeysHeader = (props: Props) => {
   )
 
   return (
-    <div className={styles.content} ref={rootDivRef}>
+    <S.Content>
       <AutoSizer disableHeight>
         {({ width }) => (
           <Row justify="between" style={{ width }}>
@@ -357,20 +349,19 @@ const KeysHeader = (props: Props) => {
                     ownFocus={false}
                     anchorPosition="downLeft"
                     isOpen={columnsConfigShown}
-                    anchorClassName={styles.anchorWrapper}
-                    panelClassName={styles.popoverWrapper}
                     closePopover={() => setColumnsConfigShown(false)}
                     button={
-                      <ToggleButton
-                        onPressedChange={toggleColumnsConfigVisibility}
-                        className={styles.columnsButton}
-                        data-testid="btn-columns-actions"
-                        aria-label="columns"
-                        pressed={columnsConfigShown}
-                      >
-                        <RiIcon size="m" type="ColumnsIcon" />
-                        <Text size="s">Columns</Text>
-                      </ToggleButton>
+                      <S.ColumnsButton>
+                        <ToggleButton
+                          onPressedChange={toggleColumnsConfigVisibility}
+                          data-testid="btn-columns-actions"
+                          aria-label="columns"
+                          pressed={columnsConfigShown}
+                        >
+                          <RiIcon size="m" type="ColumnsIcon" />
+                          <ColorText size="s">Columns</ColorText>
+                        </ToggleButton>
+                      </S.ColumnsButton>
                     }
                   >
                     <Col gap="m">
@@ -391,7 +382,6 @@ const KeysHeader = (props: Props) => {
                                 )
                               }
                               data-testid="show-key-size"
-                              className={styles.checkbox}
                             />
                           </FlexItem>
                           <FlexItem>
@@ -401,7 +391,6 @@ const KeysHeader = (props: Props) => {
                               anchorClassName="flex-row"
                             >
                               <RiIcon
-                                className={styles.infoIcon}
                                 type="InfoIcon"
                                 size="m"
                                 style={{ cursor: 'pointer' }}
@@ -435,7 +424,7 @@ const KeysHeader = (props: Props) => {
           </Row>
         )}
       </AutoSizer>
-    </div>
+    </S.Content>
   )
 }
 
