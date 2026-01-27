@@ -523,5 +523,62 @@ describe('AzureAutodiscoveryService', () => {
 
       expect(result).toBeNull();
     });
+
+    it('should find database with case-insensitive resource ID comparison', async () => {
+      const database = createMockDatabase(AzureRedisType.Standard);
+      const mockAccount = createMockAccount();
+      const apiResponse = createStandardRedisApiResponse(database);
+      // Use different casing for the resource ID
+      const differentCaseId = database.id.toUpperCase();
+
+      mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
+        token: 'mock-token',
+        expiresOn: new Date(),
+        account: mockAccount,
+      });
+      mockAxiosInstance.get
+        .mockResolvedValueOnce({ data: { value: [apiResponse] } })
+        .mockResolvedValueOnce({ data: { value: [] } });
+      mockAuthService.getRedisTokenByAccountId.mockResolvedValue({
+        token: 'redis-token',
+        expiresOn: new Date(),
+        account: mockAccount,
+      });
+
+      const result = await service.getConnectionDetails(
+        'account-id',
+        differentCaseId,
+      );
+
+      expect(result).not.toBeNull();
+      expect(result!.authType).toBe(AzureAuthType.EntraId);
+    });
+
+    it('should return null when access key response has no key', async () => {
+      const database = createMockDatabase(AzureRedisType.Standard);
+      const apiResponse = createStandardRedisApiResponse(database);
+
+      mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
+        token: 'mock-token',
+        expiresOn: new Date(),
+        account: createMockAccount(),
+      });
+      mockAxiosInstance.get
+        .mockResolvedValueOnce({ data: { value: [apiResponse] } })
+        .mockResolvedValueOnce({ data: { value: [] } });
+      // Entra ID fails
+      mockAuthService.getRedisTokenByAccountId.mockResolvedValue(null);
+      // Access key response has no key (malformed response)
+      mockAxiosInstance.post.mockResolvedValue({
+        data: {},
+      });
+
+      const result = await service.getConnectionDetails(
+        'account-id',
+        database.id,
+      );
+
+      expect(result).toBeNull();
+    });
   });
 });

@@ -146,7 +146,11 @@ export class AzureAutodiscoveryService {
       subscriptionId,
     );
 
-    return databases.find((db) => db.id === resourceId) || null;
+    // Azure resource IDs are case-insensitive
+    const resourceIdLower = resourceId.toLowerCase();
+    return (
+      databases.find((db) => db.id.toLowerCase() === resourceIdLower) || null
+    );
   }
 
   private async fetchStandardRedis(
@@ -317,6 +321,13 @@ export class AzureAutodiscoveryService {
       const response = await client.post(keysUrl);
       const primaryKey =
         response.data.primaryKey || response.data.keys?.[0]?.value;
+
+      if (!primaryKey) {
+        this.logger.warn(
+          `No access key found in response for ${database.name}`,
+        );
+        return null;
+      }
 
       return {
         host: database.host,
