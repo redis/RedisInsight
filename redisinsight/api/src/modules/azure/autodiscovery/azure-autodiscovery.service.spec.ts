@@ -352,6 +352,7 @@ describe('AzureAutodiscoveryService', () => {
       expect(result!.authType).toBe(AzureAuthType.EntraId);
       expect(result!.username).toBe(mockAccount.localAccountId);
       expect(result!.azureAccountId).toBe('account-id');
+      expect(result!.port).toBe(database.sslPort);
     });
 
     it('should fall back to access key when Entra ID fails', async () => {
@@ -418,6 +419,45 @@ describe('AzureAutodiscoveryService', () => {
       expect(result).not.toBeNull();
       expect(result!.authType).toBe(AzureAuthType.AccessKey);
       expect(result!.password).toBe(primaryKey);
+    });
+
+    it('should use correct database name for enterprise Redis with non-default database', async () => {
+      const database = createMockDatabase(AzureRedisType.Enterprise);
+      const clusterName = 'my-cluster';
+      const databaseName = 'my-custom-db';
+      database.name = `${clusterName}/${databaseName}`;
+      const primaryKey = faker.string.alphanumeric(44);
+      const clusterResponse = createEnterpriseClusterApiResponse(database);
+      const dbResponse = createEnterpriseDatabaseApiResponse(database);
+
+      mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
+        token: 'mock-token',
+        expiresOn: new Date(),
+        account: createMockAccount(),
+      });
+      // Mock get calls: standard (empty), enterprise clusters, enterprise databases
+      mockAxiosInstance.get
+        .mockResolvedValueOnce({ data: { value: [] } })
+        .mockResolvedValueOnce({ data: { value: [clusterResponse] } })
+        .mockResolvedValueOnce({ data: { value: [dbResponse] } });
+      // Entra ID fails
+      mockAuthService.getRedisTokenByAccountId.mockResolvedValue(null);
+      // Access key succeeds
+      mockAxiosInstance.post.mockResolvedValue({
+        data: { keys: [{ value: primaryKey }] },
+      });
+
+      const result = await service.getConnectionDetails(
+        'account-id',
+        database.id,
+      );
+
+      expect(result).not.toBeNull();
+      expect(result!.authType).toBe(AzureAuthType.AccessKey);
+      // Verify the correct URL was called with the custom database name
+      expect(mockAxiosInstance.post).toHaveBeenCalledWith(
+        expect.stringContaining(`/databases/${databaseName}/listKeys`),
+      );
     });
 
     it('should return null when both Entra ID and access key fail', async () => {

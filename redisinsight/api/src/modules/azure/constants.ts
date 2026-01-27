@@ -110,6 +110,7 @@ export const AzureApiUrls = {
     subscriptionId: string,
     resourceGroup: string,
     clusterName: string,
+    databaseName: string = 'default',
   ) =>
-    `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.Cache/redisEnterprise/${clusterName}/databases/default/listKeys?api-version=${API_VERSION_REDIS_ENTERPRISE}`,
+    `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.Cache/redisEnterprise/${clusterName}/databases/${databaseName}/listKeys?api-version=${API_VERSION_REDIS_ENTERPRISE}`,
 };

@@ -301,11 +301,16 @@ export class AzureAutodiscoveryService {
           database.name,
         );
       } else {
-        const [clusterName] = database.name.split('/');
+        const [clusterName, databaseName = 'default'] =
+          database.name.split('/');
+        this.logger.debug(
+          `Fetching enterprise keys for cluster=${clusterName}, database=${databaseName}`,
+        );
         keysUrl = AzureApiUrls.enterpriseRedisKeys(
           database.subscriptionId,
           database.resourceGroup,
           clusterName,
+          databaseName,
         );
       }
 
@@ -315,10 +320,7 @@ export class AzureAutodiscoveryService {
 
       return {
         host: database.host,
-        port:
-          database.type === AzureRedisType.Standard
-            ? database.sslPort || 6380
-            : database.port,
+        port: this.getTlsPort(database),
         password: primaryKey,
         tls: true,
         authType: AzureAuthType.AccessKey,
@@ -343,13 +345,20 @@ export class AzureAutodiscoveryService {
       await this.authService.getRedisTokenByAccountId(accountId);
 
     if (!tokenResult) {
-      this.logger.warn('No valid Redis token for Entra ID auth');
+      this.logger.debug(
+        `No Redis token available for Entra ID auth on ${database.name}`,
+      );
       return null;
     }
 
+    const port = this.getTlsPort(database);
+    this.logger.debug(
+      `Using Entra ID auth for ${database.name} (type=${database.type}, port=${port})`,
+    );
+
     return {
       host: database.host,
-      port: database.port,
+      port,
       username: tokenResult.account.localAccountId,
       tls: true,
       authType: AzureAuthType.EntraId,
@@ -358,5 +367,13 @@ export class AzureAutodiscoveryService {
       resourceGroup: database.resourceGroup,
       resourceId: database.id,
     };
+  }
+
+  private getTlsPort(database: AzureRedisDatabase): number {
+    // Standard Redis uses sslPort (6380) for TLS, Enterprise uses port (10000)
+    if (database.type === AzureRedisType.Standard) {
+      return database.sslPort || 6380;
+    }
+    return database.port;
   }
 }
