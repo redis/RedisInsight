@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import {
   generateMockRedisClient,
   mockDatabase,
@@ -12,14 +13,20 @@ import {
   SessionMetadata,
 } from 'src/common/models';
 import { RedisClientStorage } from 'src/modules/redis/redis.client.storage';
+import { RedisClientEvents } from 'src/constants';
 import apiConfig from 'src/utils/config';
 import { BadRequestException } from '@nestjs/common';
 import { RedisClient } from 'src/modules/redis/client';
 
 const REDIS_CLIENTS_CONFIG = apiConfig.get('redis_clients');
 
+const mockEventEmitter = {
+  emit: jest.fn(),
+};
+
 describe('RedisClientStorage', () => {
   let service: RedisClientStorage;
+  let eventEmitter: EventEmitter2;
   const mockClientMetadata1 = {
     sessionMetadata: {
       userId: 'u1',
@@ -62,10 +69,17 @@ describe('RedisClientStorage', () => {
     jest.clearAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [RedisClientStorage],
+      providers: [
+        RedisClientStorage,
+        {
+          provide: EventEmitter2,
+          useValue: mockEventEmitter,
+        },
+      ],
     }).compile();
 
     service = await module.get(RedisClientStorage);
+    eventEmitter = await module.get(EventEmitter2);
 
     service['clients'].set(mockRedisClient1.id, mockRedisClient1);
     service['clients'].set(mockRedisClient2.id, mockRedisClient2);
@@ -112,6 +126,22 @@ describe('RedisClientStorage', () => {
 
       expect(service['clients'].size).toEqual(5);
       expect(service['clients'].get(mockRedisClient1.id)).toEqual(undefined);
+    });
+
+    it('should emit ClientRemoved event when removing idle client', async () => {
+      const toDelete = service['clients'].get(mockRedisClient1.id);
+      toDelete['lastTimeUsed'] =
+        Date.now() - REDIS_CLIENTS_CONFIG.maxIdleThreshold - 1;
+
+      service['syncClients']();
+
+      expect(eventEmitter.emit).toHaveBeenCalledWith(
+        RedisClientEvents.ClientRemoved,
+        {
+          clientId: mockRedisClient1.id,
+          databaseId: mockRedisClient1.clientMetadata.databaseId,
+        },
+      );
     });
   });
 
@@ -214,6 +244,18 @@ describe('RedisClientStorage', () => {
       expect(await service.get(mockRedisClient1.id)).toEqual(mockRedisClient1);
     });
 
+    it('should emit ClientStored event when adding new client', async () => {
+      await service.set(mockRedisClient1);
+
+      expect(eventEmitter.emit).toHaveBeenCalledWith(
+        RedisClientEvents.ClientStored,
+        {
+          clientId: mockRedisClient1.id,
+          databaseId: mockRedisClient1.clientMetadata.databaseId,
+        },
+      );
+    });
+
     it('should use existing client instead of replacing with new one', async () => {
       const existingClient = generateMockRedisClient(mockClientMetadata1);
 
@@ -257,6 +299,32 @@ describe('RedisClientStorage', () => {
       expect(newClient.disconnect).not.toHaveBeenCalled();
 
       expect(newClient.id).toEqual(existingClient.id);
+    });
+
+    it('should emit ClientRemoved and ClientStored events when replacing disconnected client', async () => {
+      const existingClient = generateMockRedisClient(mockClientMetadata1);
+      existingClient.isConnected.mockReturnValue(false);
+
+      await service.set(existingClient);
+      jest.clearAllMocks();
+
+      const newClient = generateMockRedisClient(mockClientMetadata1);
+      await service.set(newClient);
+
+      expect(eventEmitter.emit).toHaveBeenCalledWith(
+        RedisClientEvents.ClientRemoved,
+        {
+          clientId: existingClient.id,
+          databaseId: existingClient.clientMetadata.databaseId,
+        },
+      );
+      expect(eventEmitter.emit).toHaveBeenCalledWith(
+        RedisClientEvents.ClientStored,
+        {
+          clientId: newClient.id,
+          databaseId: newClient.clientMetadata.databaseId,
+        },
+      );
     });
 
     it('should throw and error if clientMetadata has not required fields', async () => {
@@ -339,6 +407,27 @@ describe('RedisClientStorage', () => {
 
       expect(result).toEqual(1);
       expect(service['clients'].size).toEqual(5);
+    });
+
+    it('should emit ClientRemoved event when removing client', async () => {
+      await service.remove(mockRedisClient1.id);
+
+      expect(eventEmitter.emit).toHaveBeenCalledWith(
+        RedisClientEvents.ClientRemoved,
+        {
+          clientId: mockRedisClient1.id,
+          databaseId: mockRedisClient1.clientMetadata.databaseId,
+        },
+      );
+    });
+
+    it('should not emit ClientRemoved event when client not found', async () => {
+      await service.remove('not-existing');
+
+      expect(eventEmitter.emit).not.toHaveBeenCalledWith(
+        RedisClientEvents.ClientRemoved,
+        expect.anything(),
+      );
     });
   });
 
