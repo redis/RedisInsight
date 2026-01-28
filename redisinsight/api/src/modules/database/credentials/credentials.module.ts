@@ -1,8 +1,9 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { CredentialResolver } from './credential-resolver.service';
 import { CREDENTIAL_STRATEGY } from './constants';
 import { DefaultCredentialStrategy } from './strategies/default.credential-strategy';
 
+@Global()
 @Module({
   providers: [
     DefaultCredentialStrategy,
