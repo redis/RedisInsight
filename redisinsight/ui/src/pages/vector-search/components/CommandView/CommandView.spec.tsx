@@ -17,6 +17,7 @@ jest.mock('react-monaco-editor', () => {
           'data-language': props.language,
           'data-theme': props.theme,
           'data-readonly': props.options?.readOnly,
+          'data-linenumbers': props.options?.lineNumbers,
         },
         props.value,
       ),
@@ -115,5 +116,21 @@ describe('CommandView', () => {
 
     const copyButton = screen.getByTestId(`${customTestId}--copy-button-btn`)
     expect(copyButton).toBeInTheDocument()
+  })
+
+  describe('showLineNumbers prop', () => {
+    it('should hide line numbers by default', () => {
+      renderComponent()
+
+      const editor = screen.getByTestId('command-view--editor')
+      expect(editor).toHaveAttribute('data-linenumbers', 'off')
+    })
+
+    it('should show line numbers when set to true', () => {
+      renderComponent({ showLineNumbers: true })
+
+      const editor = screen.getByTestId('command-view--editor')
+      expect(editor).toHaveAttribute('data-linenumbers', 'on')
+    })
   })
 })
