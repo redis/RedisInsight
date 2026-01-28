@@ -16,7 +16,8 @@ export const NoResultsPanel = styled(Card)`
   position: relative;
   border-radius: ${({ theme }) => theme.core.space.space100};
   border-color: ${({ theme }) => theme.semantic.color.border.neutral400};
-  background-color: ${({ theme }) => theme.semantic.color.background.neutral200};
+  background-color: ${({ theme }) =>
+    theme.semantic.color.background.neutral200};
 `
 
 export const ArrowToGuides = styled.svg`

@@ -19,7 +19,8 @@ export const Container = styled(Col)<{ $disabled?: boolean }>`
   word-break: break-word;
   text-align: left;
   letter-spacing: 0;
-  background-color: ${({ theme }) => theme.semantic.color.background.neutral200};
+  background-color: ${({ theme }) =>
+    theme.semantic.color.background.neutral200};
   border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral400};
   border-radius: ${({ theme }) => theme.core.space.space100};
 
@@ -41,11 +42,13 @@ export const ContainerPlaceholder = styled.div`
     `${theme.core.space.space100} ${theme.core.space.space200}`};
   width: 100%;
   height: 100%;
-  background-color: ${({ theme }) => theme.semantic.color.background.neutral200};
+  background-color: ${({ theme }) =>
+    theme.semantic.color.background.neutral200};
 
   > div {
     border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral400};
-    background-color: ${({ theme }) => theme.semantic.color.background.neutral100};
+    background-color: ${({ theme }) =>
+      theme.semantic.color.background.neutral100};
     padding: ${({ theme }) =>
       `${theme.core.space.space100} ${theme.core.space.space250}`};
     width: 100%;
@@ -57,7 +60,8 @@ export const Input = styled.div`
   flex-grow: 1;
   width: 100%;
   border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral400};
-  background-color: ${({ theme }) => theme.semantic.color.background.neutral100};
+  background-color: ${({ theme }) =>
+    theme.semantic.color.background.neutral100};
 `
 
 export const QueryFooter = styled.div`
