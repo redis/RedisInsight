@@ -5,11 +5,11 @@ import { render, screen, fireEvent, waitFor } from 'uiSrc/utils/test-utils'
 
 import { CommandViewProps } from './CommandView.types'
 
-jest.mock('react-monaco-editor', () => {
+jest.mock('uiSrc/components/code-editor-wrapper', () => {
   const React = require('react')
   return {
     __esModule: true,
-    default: (props: any) =>
+    CodeEditorWrapper: (props: any) =>
       React.createElement(
         'div',
         {
@@ -21,10 +21,6 @@ jest.mock('react-monaco-editor', () => {
         },
         props.value,
       ),
-    monaco: {
-      editor: {},
-      languages: {},
-    },
   }
 })
 
