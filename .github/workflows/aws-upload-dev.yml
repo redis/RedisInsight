@@ -69,3 +69,6 @@ jobs:
       - name: Generate job summary
         run: |
           node ./.github/generate-build-summary.js
+
+      - name: Generate checksums summary
+        run: node ./.github/generate-checksums-summary.js
