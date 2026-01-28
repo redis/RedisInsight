@@ -66,15 +66,15 @@ describe('CredentialResolver', () => {
       expect(strategy2.resolve).toHaveBeenCalledWith(database);
     });
 
-    it('should return database as-is when no strategy can handle', async () => {
+    it('should throw error when no strategy can handle', async () => {
       const database = mockDatabase;
 
       (strategy1.canHandle as jest.Mock).mockReturnValue(false);
       (strategy2.canHandle as jest.Mock).mockReturnValue(false);
 
-      const result = await resolver.resolve(database);
-
-      expect(result).toBe(database);
+      await expect(resolver.resolve(database)).rejects.toThrow(
+        `No credential strategy available to handle database ${database.id}`,
+      );
       expect(strategy1.resolve).not.toHaveBeenCalled();
       expect(strategy2.resolve).not.toHaveBeenCalled();
     });
@@ -89,12 +89,12 @@ describe('CredentialResolver', () => {
       resolver = module.get(CredentialResolver);
     });
 
-    it('should return database as-is when no strategies registered', async () => {
+    it('should throw error when no strategies registered', async () => {
       const database = mockDatabase;
 
-      const result = await resolver.resolve(database);
-
-      expect(result).toBe(database);
+      await expect(resolver.resolve(database)).rejects.toThrow(
+        `No credential strategy available to handle database ${database.id}`,
+      );
     });
   });
 

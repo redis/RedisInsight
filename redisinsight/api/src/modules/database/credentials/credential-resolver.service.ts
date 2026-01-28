@@ -32,6 +32,12 @@ export class CredentialResolver {
       }
     }
 
-    return database;
+    this.logger.error(
+      `No credential strategy found for database ${database.id}`,
+    );
+
+    throw new Error(
+      `No credential strategy available to handle database ${database.id}`,
+    );
   }
 }
