@@ -1,16 +1,12 @@
 import React, { useLayoutEffect, useState } from 'react'
 import { ThemeProvider as StyledThemeProvider } from 'styled-components'
-import { CommonStyles, themesRebrand as themes } from '@redis-ui/styles'
-import 'modern-normalize/modern-normalize.css'
-import '@redis-ui/styles/normalized-styles.css'
-import '@redis-ui/styles/fonts.css'
+
+import { CommonStyles, themeLight, themeDark } from 'uiSrc/styles/theme'
 import { GlobalStyles } from 'uiSrc/styles/globalStyles'
 
 interface Props {
   children: React.ReactNode
 }
-
-const { light: themeLight, dark: themeDark } = themes
 export const defaultState = {
   theme: themeLight,
 }
