@@ -88,6 +88,22 @@ export const WithLineNumbers: Story = {
   },
 }
 
+export const WithCopyCallback: Story = {
+  name: 'With onCopy callback',
+  parameters: {
+    docs: {
+      story: {
+        inline: false,
+        iframeHeight: 350,
+      },
+    },
+  },
+  args: {
+    command: 'FT.CREATE idx:test ON HASH SCHEMA field TEXT',
+    onCopy: () => alert('Command copied to clipboard!'),
+  },
+}
+
 export const FixedHeightWithScrolling: Story = {
   name: 'Fixed height with inline scrolling (composition with an accordion)',
   render: (args) => (
