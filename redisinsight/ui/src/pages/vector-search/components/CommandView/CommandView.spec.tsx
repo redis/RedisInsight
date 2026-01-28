@@ -5,11 +5,11 @@ import { render, screen, fireEvent, waitFor } from 'uiSrc/utils/test-utils'
 
 import { CommandViewProps } from './CommandView.types'
 
-jest.mock('uiSrc/components/code-editor-wrapper', () => {
+jest.mock('uiSrc/components/base/code-editor', () => {
   const React = require('react')
   return {
     __esModule: true,
-    CodeEditorWrapper: (props: any) =>
+    CodeEditor: (props: any) =>
       React.createElement(
         'div',
         {
