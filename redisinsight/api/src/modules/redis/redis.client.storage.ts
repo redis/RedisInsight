@@ -1,7 +1,9 @@
 import { isMatch, sum } from 'lodash';
 import { Injectable, Logger } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { RedisClient } from 'src/modules/redis/client';
 import { ClientMetadata } from 'src/common/models';
+import { RedisClientEvents } from 'src/constants';
 import apiConfig from 'src/utils/config';
 
 const REDIS_CLIENTS_CONFIG = apiConfig.get('redis_clients');
@@ -14,7 +16,7 @@ export class RedisClientStorage {
 
   private readonly syncInterval: NodeJS.Timeout;
 
-  constructor() {
+  constructor(private readonly eventEmitter: EventEmitter2) {
     this.syncInterval = setInterval(
       this.syncClients.bind(this),
       REDIS_CLIENTS_CONFIG.syncInterval,
@@ -37,12 +39,20 @@ export class RedisClientStorage {
     try {
       this.clients.forEach((client) => {
         if (client.isIdle()) {
+          const { id } = client;
+          const { databaseId } = client.clientMetadata;
+
           client
             .disconnect()
             .catch((e) =>
               this.logger.warn('Unable to disconnect client after idle', e),
             );
-          this.clients.delete(client.id);
+          this.clients.delete(id);
+
+          this.eventEmitter.emit(RedisClientEvents.ClientRemoved, {
+            clientId: id,
+            databaseId,
+          });
         }
       });
     } catch (e) {
@@ -122,10 +132,21 @@ export class RedisClientStorage {
         return this.get(id);
       }
 
+      const { databaseId } = existingClient.clientMetadata;
       await existingClient.disconnect().catch();
+
+      this.eventEmitter.emit(RedisClientEvents.ClientRemoved, {
+        clientId: existingClient.id,
+        databaseId,
+      });
     }
 
     this.clients.set(id, client);
+
+    this.eventEmitter.emit(RedisClientEvents.ClientStored, {
+      clientId: id,
+      databaseId: client.clientMetadata.databaseId,
+    });
 
     return client;
   }
@@ -139,11 +160,18 @@ export class RedisClientStorage {
     const client = this.clients.get(id);
 
     if (client) {
+      const { databaseId } = client.clientMetadata;
+
       await client
         .disconnect()
         .catch((e) => this.logger.warn('Unable to disconnect client', e));
 
       this.clients.delete(id);
+
+      this.eventEmitter.emit(RedisClientEvents.ClientRemoved, {
+        clientId: id,
+        databaseId,
+      });
 
       return 1;
     }
