@@ -126,22 +126,26 @@ export class RedisClientStorage {
 
     const existingClient = this.clients.get(id);
 
+    let removedClientDatabaseId: string | null = null;
+
     if (existingClient) {
       if (existingClient.isConnected()) {
         await client.disconnect().catch();
         return this.get(id);
       }
 
-      const { databaseId } = existingClient.clientMetadata;
+      removedClientDatabaseId = existingClient.clientMetadata.databaseId;
       await existingClient.disconnect().catch();
-
-      this.eventEmitter.emit(RedisClientEvents.ClientRemoved, {
-        clientId: existingClient.id,
-        databaseId,
-      });
     }
 
     this.clients.set(id, client);
+
+    if (removedClientDatabaseId) {
+      this.eventEmitter.emit(RedisClientEvents.ClientRemoved, {
+        clientId: id,
+        databaseId: removedClientDatabaseId,
+      });
+    }
 
     this.eventEmitter.emit(RedisClientEvents.ClientStored, {
       clientId: id,
