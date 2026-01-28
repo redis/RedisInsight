@@ -2,6 +2,20 @@ import styled from 'styled-components'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { Theme } from 'uiSrc/components/base/theme/types'
 
+export const AnchorTooltip = styled.div`
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+`
+
+export const AnchorTooltipFullScreen = styled.div`
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+`
+
 export const BulkActionsPage = styled(Col)`
   height: 100%;
   overflow: hidden;

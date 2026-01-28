@@ -24,14 +24,7 @@ import { Title } from 'uiSrc/components/base/text/Title'
 import BulkUpload from './BulkUpload'
 import BulkDelete from './BulkDelete'
 import BulkActionsTabs from './BulkActionsTabs'
-import styles from './styles.module.scss'
-import {
-  BulkActionsContainer,
-  BulkActionsContentActions,
-  BulkActionsHeader,
-  BulkActionsPage,
-  BulkActionsScrollPanel,
-} from './BulkActions.styles'
+import * as S from './BulkActions.styles'
 
 export interface Props {
   isFullScreen: boolean
@@ -104,36 +97,35 @@ const BulkActions = (props: Props) => {
   }
 
   return (
-    <BulkActionsPage>
-      <BulkActionsContainer justify="center" gap="l">
-        <BulkActionsHeader align="center" justify="between">
+    <S.BulkActionsPage>
+      <S.BulkActionsContainer justify="center" gap="l">
+        <S.BulkActionsHeader align="center" justify="between">
           <Title size="M">Bulk Actions</Title>
           <Row align="center" gap="s" grow={false}>
             {!arePanelsCollapsed && (
-              <FullScreen
-                isFullScreen={isFullScreen}
-                onToggleFullScreen={onToggleFullScreen}
-                anchorClassName={styles.anchorTooltipFullScreen}
-              />
+              <S.AnchorTooltipFullScreen>
+                <FullScreen
+                  isFullScreen={isFullScreen}
+                  onToggleFullScreen={onToggleFullScreen}
+                />
+              </S.AnchorTooltipFullScreen>
             )}
             {(!arePanelsCollapsed || isFullScreen) && (
-              <RiTooltip
-                content="Close"
-                position="left"
-                anchorClassName={styles.anchorTooltip}
-              >
-                <IconButton
-                  icon={CancelSlimIcon}
-                  aria-label="Close panel"
-                  data-testid="bulk-close-panel"
-                  onClick={closePanel}
-                />
-              </RiTooltip>
+              <S.AnchorTooltip>
+                <RiTooltip content="Close" position="left">
+                  <IconButton
+                    icon={CancelSlimIcon}
+                    aria-label="Close panel"
+                    data-testid="bulk-close-panel"
+                    onClick={closePanel}
+                  />
+                </RiTooltip>
+              </S.AnchorTooltip>
             )}
           </Row>
-        </BulkActionsHeader>
-        <BulkActionsScrollPanel>
-          <BulkActionsContentActions data-testid="bulk-actions-content">
+        </S.BulkActionsHeader>
+        <S.BulkActionsScrollPanel>
+          <S.BulkActionsContentActions data-testid="bulk-actions-content">
             <BulkActionsTabs onChangeType={handleChangeType} />
             {type === BulkActionsType.Upload && (
               <BulkUpload onCancel={closePanel} />
@@ -141,10 +133,10 @@ const BulkActions = (props: Props) => {
             {type === BulkActionsType.Delete && (
               <BulkDelete onCancel={closePanel} />
             )}
-          </BulkActionsContentActions>
-        </BulkActionsScrollPanel>
-      </BulkActionsContainer>
-    </BulkActionsPage>
+          </S.BulkActionsContentActions>
+        </S.BulkActionsScrollPanel>
+      </S.BulkActionsContainer>
+    </S.BulkActionsPage>
   )
 }
 

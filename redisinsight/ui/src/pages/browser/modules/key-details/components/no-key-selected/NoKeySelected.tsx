@@ -6,10 +6,10 @@ import { Nullable } from 'uiSrc/utils'
 import { toggleBrowserFullScreen } from 'uiSrc/slices/browser/keys'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
-import styles from './styles.module.scss'
+
+import * as S from './NoKeySelected.styles'
 
 export interface Props {
   keyProp: Nullable<RedisResponseBuffer>
@@ -46,21 +46,18 @@ export const NoKeySelected = (props: Props) => {
 
   return (
     <>
-      <RiTooltip
-        content="Close"
-        position="left"
-        anchorClassName={styles.closeRightPanel}
-      >
-        <IconButton
-          icon={CancelSlimIcon}
-          aria-label="Close panel"
-          className={styles.closeBtn}
-          onClick={handleClosePanel}
-          data-testid="close-right-panel-btn"
-        />
-      </RiTooltip>
+      <S.CloseRightPanel>
+        <RiTooltip content="Close" position="left">
+          <S.CloseBtn
+            icon={CancelSlimIcon}
+            aria-label="Close panel"
+            onClick={handleClosePanel}
+            data-testid="close-right-panel-btn"
+          />
+        </RiTooltip>
+      </S.CloseRightPanel>
 
-      <div className={styles.placeholder}>
+      <S.Placeholder>
         {error ? (
           <Text textAlign="center">
             <span data-testid="no-keys-selected-text">{error}</span>
@@ -68,7 +65,7 @@ export const NoKeySelected = (props: Props) => {
         ) : (
           !!keysLastRefreshTime && <NoKeysSelectedMessage />
         )}
-      </div>
+      </S.Placeholder>
     </>
   )
 }

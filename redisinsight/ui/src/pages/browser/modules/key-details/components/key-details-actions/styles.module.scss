@@ -1,11 +1,9 @@
 .actionBtn {
   position: relative;
   z-index: 2;
+  margin-right: 12px;
+}
 
-  &.withText {
-    color: var(--euiTextSubduedColor) !important;
-    :global(.euiButton__text) {
-      font: normal normal normal 12px/18px Graphik !important;
-    }
-  }
+.withText {
+  margin-right: 8px;
 }

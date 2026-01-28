@@ -5,7 +5,6 @@ import React, {
   useState,
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 import { escapeRegExp } from 'lodash'
 
@@ -30,8 +29,8 @@ import {
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import { GetKeyInfoResponse } from 'apiSrc/modules/browser/keys/dto'
 
+import * as S from './KeyTree.styles'
 import NoKeysMessage from '../no-keys-message'
-import styles from './styles.module.scss'
 
 export interface Props {
   keysState: KeysStoreData
@@ -213,17 +212,17 @@ const KeyTree = forwardRef((props: Props, ref) => {
     )
 
     return (
-      <div className={cx(styles.content)}>
-        <div className={cx(styles.noKeys)}>
+      <S.Content>
+        <S.NoKeys>
           <NoItemsMessage />
-        </div>
-      </div>
+        </S.NoKeys>
+      </S.Content>
     )
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.content}>
+    <S.Container>
+      <S.Content>
         <VirtualTree
           items={items}
           loadingIcon={TreeViewSVG}
@@ -242,8 +241,8 @@ const KeyTree = forwardRef((props: Props, ref) => {
           onDeleteClicked={handleDeleteClicked}
           onDeleteLeaf={handleDeleteLeaf}
         />
-      </div>
-    </div>
+      </S.Content>
+    </S.Container>
   )
 })
 

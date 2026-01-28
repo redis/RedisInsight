@@ -14,11 +14,12 @@ import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { appContextDbConfig } from 'uiSrc/slices/app/context'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiTooltip } from 'uiSrc/components'
-import { DeleteKeyPopover } from '../../../delete-key-popover/DeleteKeyPopover'
-import { TreeData } from '../../interfaces'
-import styles from './styles.module.scss'
 import { Flex, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
+import * as S from './Node.styles'
+import styles from './styles.module.scss'
+import { TreeData } from '../../interfaces'
+import { DeleteKeyPopover } from '../../../delete-key-popover/DeleteKeyPopover'
 
 const MAX_NESTING_LEVEL = 20
 
@@ -112,6 +113,21 @@ const Node = ({
     }
     setDeletePopoverId(index !== deletePopoverId ? index : undefined)
   }
+  const tooltipContent = (
+    <>
+      <S.FolderTooltipHeader>
+        <S.FolderPattern>{`${fullName + delimiterView}*`}</S.FolderPattern>
+        {delimiters.length > 1 && (
+          <S.Delimiters>
+            {delimiters.map((delimiter) => (
+              <S.Delimiter key={delimiter}>{delimiter}</S.Delimiter>
+            ))}
+          </S.Delimiters>
+        )}
+      </S.FolderTooltipHeader>
+      <span>{`${keyCount} key(s) (${Math.round(keyApproximate * 100) / 100}%)`}</span>
+    </>
+  )
 
   const Folder = () => (
     <RiTooltip
@@ -121,34 +137,33 @@ const Node = ({
     >
       <Row align="center">
         <Flex align="center">
-          <RiIcon
-            size="xs"
-            type={isOpen ? 'ChevronDownIcon' : 'ChevronRightIcon'}
-            className={cx(styles.nodeIcon, styles.nodeIconArrow)}
-            data-test-subj={`node-arrow-icon_${fullName}`}
-          />
-          <RiIcon
-            size="m"
-            type="FolderIcon"
-            className={styles.nodeIcon}
-            data-test-subj={`node-folder-icon_${fullName}`}
-          />
+          <S.NodeIconArrow>
+            <RiIcon
+              size="xs"
+              type={isOpen ? 'ChevronDownIcon' : 'ChevronRightIcon'}
+              data-test-subj={`node-arrow-icon_${fullName}`}
+            />
+          </S.NodeIconArrow>
+          <S.NodeIcon>
+            <RiIcon
+              size="m"
+              type="FolderIcon"
+              data-test-subj={`node-folder-icon_${fullName}`}
+            />
+          </S.NodeIcon>
           <Text className="truncateText" data-testid={`folder-${nameString}`}>
             {nameString}
           </Text>
         </Flex>
         <Flex justify="end">
-          <div
-            className={styles.approximate}
-            data-testid={`percentage_${fullName}`}
-          >
+          <S.Approximate data-testid={`percentage_${fullName}`}>
             {keyApproximate
               ? `${keyApproximate < 1 ? '<1' : Math.round(keyApproximate)}%`
               : ''}
-          </div>
-          <div className={styles.keyCount} data-testid={`count_${fullName}`}>
+          </S.Approximate>
+          <S.KeyCount data-testid={`count_${fullName}`}>
             {keyCount ?? ''}
-          </div>
+          </S.KeyCount>
         </Flex>
       </Row>
     </RiTooltip>
@@ -187,11 +202,12 @@ const Node = ({
     </>
   )
 
-  const Node = (
-    <div
-      className={cx(styles.nodeContent, 'rowKey', {
+  const NodeElement = (
+    <S.NodeContent
+      className={cx('rowKey', {
         [styles.nodeContentOpen]: isOpen && !isLeaf,
       })}
+      $isOpen={isOpen && !isLeaf}
       role="treeitem"
       onClick={handleClick}
       onKeyDown={handleKeyDown}
@@ -201,29 +217,11 @@ const Node = ({
     >
       {!isLeaf && <Folder />}
       {isLeaf && <Leaf />}
-    </div>
-  )
-
-  const tooltipContent = (
-    <>
-      <div className={styles.folderTooltipHeader}>
-        <span
-          className={styles.folderPattern}
-        >{`${fullName + delimiterView}*`}</span>
-        {delimiters.length > 1 && (
-          <span className={styles.delimiters}>
-            {delimiters.map((delimiter) => (
-              <span className={styles.delimiter}>{delimiter}</span>
-            ))}
-          </span>
-        )}
-      </div>
-      <span>{`${keyCount} key(s) (${Math.round(keyApproximate * 100) / 100}%)`}</span>
-    </>
+    </S.NodeContent>
   )
 
   return (
-    <div
+    <S.NodeContainer
       style={{
         ...style,
         paddingLeft:
@@ -231,13 +229,11 @@ const Node = ({
             ? MAX_NESTING_LEVEL
             : nestingLevel) * 8,
       }}
-      className={cx(styles.nodeContainer, {
-        [styles.nodeSelected]: isSelected && isLeaf,
-        [styles.nodeRowEven]: index % 2 === 0,
-      })}
+      $isSelected={isSelected && isLeaf}
+      $isEven={index % 2 === 0}
     >
-      {Node}
-    </div>
+      {NodeElement}
+    </S.NodeContainer>
   )
 }
 

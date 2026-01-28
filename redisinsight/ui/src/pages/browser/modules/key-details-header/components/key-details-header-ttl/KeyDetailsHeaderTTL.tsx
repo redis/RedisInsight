@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
@@ -11,11 +10,9 @@ import {
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { MAX_TTL_NUMBER, validateTTLNumber } from 'uiSrc/utils'
 
-import { FlexItem, Grid } from 'uiSrc/components/base/layout/flex'
-import { Text } from 'uiSrc/components/base/text'
+import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { TextInput } from 'uiSrc/components/base/inputs'
-import styles from './styles.module.scss'
+import * as S from './KeyDetailsHeaderTTL.styles'
 
 export interface Props {
   onEditTTL: (key: RedisResponseBuffer, ttl: number) => void
@@ -73,40 +70,25 @@ const KeyDetailsHeaderTTL = ({ onEditTTL }: Props) => {
   }
 
   const appendTTLEditing = () =>
-    !ttlIsEditing ? (
-      <RiIcon
-        className={styles.iconPencil}
-        type="EditIcon"
-        color="informative400"
-      />
-    ) : (
-      ''
-    )
+    !ttlIsEditing ? <RiIcon type="EditIcon" color="informative400" /> : ''
 
   return (
-    <FlexItem
+    <S.FlexItemTTL
       onMouseEnter={onMouseEnterTTL}
       onMouseLeave={onMouseLeaveTTL}
       onClick={onClickTTL}
-      className={styles.flexItemTTL}
       data-testid="edit-ttl-btn"
     >
       <>
         {(ttlIsEditing || ttlIsHovering) && (
-          <Grid
+          <S.TTLGridComponent
             columns={2}
             responsive={false}
             gap="s"
-            className={styles.ttlGridComponent}
             data-testid="edit-ttl-grid"
           >
             <FlexItem>
-              <Text
-                size="s"
-                className={cx(styles.subtitleText, styles.subtitleTextTTL)}
-              >
-                TTL:
-              </Text>
+              <S.SubtitleText size="s">TTL:</S.SubtitleText>
             </FlexItem>
             <FlexItem grow>
               <InlineItemEditor
@@ -116,13 +98,10 @@ const KeyDetailsHeaderTTL = ({ onEditTTL }: Props) => {
                 isLoading={loading}
                 declineOnUnmount={false}
               >
-                <TextInput
+                <S.TTLInput
                   name="ttl"
                   id="ttl"
-                  className={cx(
-                    styles.ttlInput,
-                    ttlIsEditing && styles.editing,
-                  )}
+                  $isEditing={ttlIsEditing}
                   maxLength={200}
                   placeholder="No limit"
                   value={ttl === '-1' ? '' : ttl}
@@ -138,22 +117,18 @@ const KeyDetailsHeaderTTL = ({ onEditTTL }: Props) => {
                 />
               </InlineItemEditor>
             </FlexItem>
-          </Grid>
+          </S.TTLGridComponent>
         )}
-        <Text
+        <S.SubtitleTextTTL
           size="s"
-          className={cx(styles.subtitleTextTTL, {
-            [styles.hidden]: ttlIsEditing || ttlIsHovering,
-          })}
+          $hidden={ttlIsEditing || ttlIsHovering}
           data-testid="key-ttl-text"
         >
           TTL:
-          <span className={styles.ttlTextValue}>
-            {ttl === '-1' ? 'No limit' : ttl}
-          </span>
-        </Text>
+          <S.TTLTextValue>{ttl === '-1' ? 'No limit' : ttl}</S.TTLTextValue>
+        </S.SubtitleTextTTL>
       </>
-    </FlexItem>
+    </S.FlexItemTTL>
   )
 }
 

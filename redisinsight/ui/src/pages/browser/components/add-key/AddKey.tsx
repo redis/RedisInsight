@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import cx from 'classnames'
 import Divider from 'uiSrc/components/divider/Divider'
 import { KeyTypes } from 'uiSrc/constants'
 import HelpTexts from 'uiSrc/constants/help-texts'
@@ -19,9 +18,8 @@ import {
 import { isContainJSONModule, Maybe, stringToBuffer } from 'uiSrc/utils'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
-import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { FlexItem } from 'uiSrc/components/base/layout/flex'
 
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import { HealthText } from 'uiSrc/components/base/text/HealthText'
 import { Title } from 'uiSrc/components/base/text/Title'
@@ -35,9 +33,8 @@ import AddKeySet from './AddKeySet'
 import AddKeyList from './AddKeyList'
 import AddKeyReJSON from './AddKeyReJSON'
 import AddKeyStream from './AddKeyStream'
-import { ContentFields } from './AddKey.styles'
 
-import styles from './styles.module.scss'
+import * as S from './AddKey.styles'
 
 export interface Props {
   onAddKeyPanel: (value: boolean, keyName?: RedisResponseBuffer) => void
@@ -124,32 +121,25 @@ const AddKey = (props: Props) => {
   }
 
   return (
-    <div className={styles.page}>
-      <Row
-        justify="center"
-        className={cx(styles.contentWrapper, 'relative')}
-        gap="none"
-      >
-        <Col justify="center" className={styles.content}>
+    <S.Page>
+      <S.ContentWrapper justify="center" className="relative" gap="none">
+        <S.Content justify="center">
           <FlexItem grow style={{ marginBottom: '36px' }}>
             <Title size="M">New Key</Title>
             {!arePanelsCollapsed && (
-              <RiTooltip
-                content="Close"
-                position="left"
-                anchorClassName={styles.closeKeyTooltip}
-              >
-                <IconButton
-                  icon={CancelSlimIcon}
-                  aria-label="Close key"
-                  className={styles.closeBtn}
-                  onClick={() => closeKey()}
-                />
-              </RiTooltip>
+              <S.CloseKeyTooltip>
+                <RiTooltip content="Close" position="left">
+                  <S.CloseBtn
+                    icon={CancelSlimIcon}
+                    aria-label="Close key"
+                    onClick={() => closeKey()}
+                  />
+                </RiTooltip>
+              </S.CloseKeyTooltip>
             )}
           </FlexItem>
-          <div className={cx('eui-yScroll', styles.scrollContainer)}>
-            <ContentFields>
+          <S.ScrollContainer>
+            <S.ContentFields>
               <AddKeyCommonFields
                 typeSelected={typeSelected}
                 onChangeType={onChangeType}
@@ -185,12 +175,9 @@ const AddKey = (props: Props) => {
               {typeSelected === KeyTypes.ReJSON && (
                 <>
                   {!isContainJSONModule(modules) && (
-                    <span
-                      className={styles.helpText}
-                      data-testid="json-not-loaded-text"
-                    >
+                    <S.HelpText data-testid="json-not-loaded-text">
                       {HelpTexts.REJSON_SHOULD_BE_LOADED}
-                    </span>
+                    </S.HelpText>
                   )}
                   <AddKeyReJSON
                     onCancel={closeAddKeyPanel}
@@ -201,12 +188,12 @@ const AddKey = (props: Props) => {
               {typeSelected === KeyTypes.Stream && (
                 <AddKeyStream onCancel={closeAddKeyPanel} {...defaultFields} />
               )}
-            </ContentFields>
-          </div>
-        </Col>
+            </S.ContentFields>
+          </S.ScrollContainer>
+        </S.Content>
         <div id="formFooterBar" className="formFooterBar" />
-      </Row>
-    </div>
+      </S.ContentWrapper>
+    </S.Page>
   )
 }
 
