@@ -81,19 +81,21 @@ describe('CommandView', () => {
     })
   })
 
-  it('should use default Redis language when language prop is not provided', () => {
-    renderComponent()
+  describe('language prop', () => {
+    it('should use default Redis language when not provided', () => {
+      renderComponent()
 
-    const editor = screen.getByTestId('command-view--editor')
-    expect(editor).toHaveAttribute('data-language', 'redisLanguage')
-  })
+      const editor = screen.getByTestId('command-view--editor')
+      expect(editor).toHaveAttribute('data-language', 'redisLanguage')
+    })
 
-  it('should use custom language when provided', () => {
-    const customLanguage = 'plaintext'
-    renderComponent({ language: customLanguage })
+    it('should use custom language when provided', () => {
+      const customLanguage = 'plaintext'
+      renderComponent({ language: customLanguage })
 
-    const editor = screen.getByTestId('command-view--editor')
-    expect(editor).toHaveAttribute('data-language', customLanguage)
+      const editor = screen.getByTestId('command-view--editor')
+      expect(editor).toHaveAttribute('data-language', customLanguage)
+    })
   })
 
   it('should apply custom className', () => {
