@@ -5,6 +5,9 @@ import { MonacoEditorProps } from 'react-monaco-editor'
  * This is the abstraction point: add custom props here if needed.
  */
 export interface CodeEditorWrapperProps extends MonacoEditorProps {
-  // Currently passes through all Monaco props unchanged.
-  // Add custom props or overrides here when needed.
+  /**
+   * Monaco editor theme. If not provided, automatically derived from ThemeContext.
+   * Pass explicitly to override the context-based theme.
+   */
+  theme?: string | null
 }

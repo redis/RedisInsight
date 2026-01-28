@@ -1,9 +1,8 @@
-import React, { useContext, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { merge } from 'lodash'
 
-import { Theme, MonacoLanguage } from 'uiSrc/constants'
+import { MonacoLanguage } from 'uiSrc/constants'
 import { defaultMonacoOptions } from 'uiSrc/constants/monaco/monaco'
-import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import { CopyButton } from 'uiSrc/components/copy-button'
 import { CodeEditorWrapper } from 'uiSrc/components/code-editor-wrapper'
 
@@ -19,8 +18,6 @@ export const CommandView = ({
   onCopy,
   showLineNumbers = false,
 }: CommandViewProps) => {
-  const { theme } = useContext(ThemeContext)
-
   const editorOptions = useMemo(
     () =>
       merge({}, defaultMonacoOptions, COMMAND_VIEW_EDITOR_OPTIONS, {
@@ -29,13 +26,10 @@ export const CommandView = ({
     [showLineNumbers],
   )
 
-  const monacoTheme = theme === Theme.Dark ? 'dark' : 'light'
-
   return (
     <S.EditorWrapper className={className} data-testid={dataTestId}>
       <CodeEditorWrapper
         language={language}
-        theme={monacoTheme}
         value={command}
         options={editorOptions}
         data-testid={`${dataTestId ?? 'command-view'}--editor`}
