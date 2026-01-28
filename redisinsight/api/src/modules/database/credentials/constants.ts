@@ -1,0 +1,1 @@
+export const CREDENTIAL_STRATEGY = Symbol('CREDENTIAL_STRATEGY');

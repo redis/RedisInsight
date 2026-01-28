@@ -4,3 +4,7 @@ export const mockDatabaseClientFactory = jest.fn(() => ({
   getOrCreateClient: jest.fn().mockResolvedValue(mockStandaloneRedisClient),
   createClient: jest.fn().mockResolvedValue(mockStandaloneRedisClient),
 }));
+
+export const mockCredentialResolver = jest.fn(() => ({
+  resolve: jest.fn().mockImplementation((database) => Promise.resolve(database)),
+}));

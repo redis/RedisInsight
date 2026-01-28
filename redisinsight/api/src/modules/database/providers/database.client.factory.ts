@@ -13,6 +13,7 @@ import { RedisClientStorage } from 'src/modules/redis/redis.client.storage';
 import { RedisConnectionFailedException } from 'src/modules/redis/exceptions/connection';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { DatabaseConnectionEvent } from 'src/modules/database/constants/events';
+import { CredentialResolver } from 'src/modules/database/credentials';
 
 type IsClientConnectingMap = {
   [key: string]: boolean;
@@ -40,6 +41,7 @@ export class DatabaseClientFactory {
     private readonly redisClientStorage: RedisClientStorage,
     private readonly redisClientFactory: RedisClientFactory,
     private readonly eventEmitter: EventEmitter2,
+    private readonly credentialResolver: CredentialResolver,
   ) {}
 
   private async processGetClient(
@@ -132,10 +134,12 @@ export class DatabaseClientFactory {
     options?: IRedisConnectionOptions,
   ): Promise<RedisClient> {
     this.logger.debug('Creating new redis client.', clientMetadata);
-    const database = await this.databaseService.get(
+    let database = await this.databaseService.get(
       clientMetadata.sessionMetadata,
       clientMetadata.databaseId,
     );
+
+    database = await this.credentialResolver.resolve(database);
 
     try {
       const client = await this.redisClientFactory.createClient(
