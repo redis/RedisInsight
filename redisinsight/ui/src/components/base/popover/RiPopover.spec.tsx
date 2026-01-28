@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, waitForRiPopoverVisible, screen } from 'uiSrc/utils/test-utils'
 import { RiPopover } from './RiPopover'
-import { RiPopoverProps } from './types'
+import { RiPopoverProps } from './RiPopover.types'
 
 const TestButton = () => (
   <button type="button" data-testid="popover-trigger">

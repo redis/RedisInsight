@@ -2,9 +2,12 @@ import React from 'react'
 import { Popover } from '@redis-ui/components'
 
 import * as keys from 'uiSrc/constants/keys'
-import { RiPopoverProps } from './types'
-import { anchorPositionMap, panelPaddingSizeMap } from './config'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
+import { type RiPopoverProps } from './RiPopover.types'
+import {
+  ANCHOR_POSITION_MAP,
+  PANEL_PADDING_SIZE_MAP,
+} from './RiPopover.constants'
 
 export const RiPopover = ({
   isOpen,
@@ -65,10 +68,10 @@ export const RiPopover = ({
   }
 
   const placement =
-    anchorPosition && anchorPositionMap[anchorPosition]?.placement
-  const align = anchorPosition && anchorPositionMap[anchorPosition]?.align
+    anchorPosition && ANCHOR_POSITION_MAP[anchorPosition]?.placement
+  const align = anchorPosition && ANCHOR_POSITION_MAP[anchorPosition]?.align
   // TODO: maybe use wrapped popover instead of inline style?!
-  const padding = panelPaddingSize && panelPaddingSizeMap[panelPaddingSize]
+  const padding = panelPaddingSize && PANEL_PADDING_SIZE_MAP[panelPaddingSize]
   return (
     <Popover
       {...props}
@@ -80,18 +83,18 @@ export const RiPopover = ({
           closePopover?.(event as any)
         }
       }}
-    persistent={persistent}
+      persistent={persistent}
       content={
-      children && customOutsideDetector ? (
-        <OutsideClickDetector
-          onOutsideClick={(event) => closePopover?.(event as any)}
-        >
-          {children as JSX.Element}
-        </OutsideClickDetector>
-      ) : (
-        children
-      )
-    }
+        children && customOutsideDetector ? (
+          <OutsideClickDetector
+            onOutsideClick={(event) => closePopover?.(event as any)}
+          >
+            {children as JSX.Element}
+          </OutsideClickDetector>
+        ) : (
+          children
+        )
+      }
       // Props passed to the children wrapper:
       className={activeClassName}
       maxWidth={maxWidth}

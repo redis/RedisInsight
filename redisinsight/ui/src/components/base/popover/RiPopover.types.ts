@@ -1,11 +1,14 @@
 import { type PopoverProps } from '@redis-ui/components'
 
-import { anchorPositionMap, panelPaddingSizeMap } from './config'
 import { ReactNode } from 'react'
+import {
+  ANCHOR_POSITION_MAP,
+  PANEL_PADDING_SIZE_MAP,
+} from './RiPopover.constants'
 
-type AnchorPosition = keyof typeof anchorPositionMap
+type AnchorPosition = keyof typeof ANCHOR_POSITION_MAP
 
-type PanelPaddingSize = keyof typeof panelPaddingSizeMap
+type PanelPaddingSize = keyof typeof PANEL_PADDING_SIZE_MAP
 
 export type RiPopoverProps = Omit<
   PopoverProps,
