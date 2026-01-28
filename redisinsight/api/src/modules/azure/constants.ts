@@ -45,10 +45,72 @@ export const AZURE_OAUTH_SCOPES = [
   'profile', // Required for user info (name, etc.)
 ];
 
-/**
- * Azure auth status values
- */
 export enum AzureAuthStatus {
   Succeed = 'succeed',
   Failed = 'failed',
 }
+
+export enum AzureRedisType {
+  Standard = 'standard',
+  Enterprise = 'enterprise',
+}
+
+export enum AzureAuthType {
+  AccessKey = 'accessKey',
+  EntraId = 'entraId',
+}
+
+export enum AzureAccessKeysStatus {
+  Enabled = 'Enabled',
+  Disabled = 'Disabled',
+}
+
+export const AZURE_API_BASE = 'https://management.azure.com';
+
+// API versions - latest stable as of January 2025
+
+// https://learn.microsoft.com/en-us/rest/api/resources/subscriptions/list
+export const API_VERSION_SUBSCRIPTIONS = '2022-12-01';
+// https://learn.microsoft.com/en-us/rest/api/redis/redis
+export const API_VERSION_REDIS = '2024-11-01';
+// https://learn.microsoft.com/en-us/rest/api/redis/redisenterprisecache/redis-enterprise
+export const API_VERSION_REDIS_ENTERPRISE = '2025-07-01';
+
+export const AUTODISCOVERY_MAX_CONCURRENT_REQUESTS = 20;
+
+// Azure subscription IDs are standard UUIDs (8-4-4-4-12 hex pattern)
+export const AZURE_SUBSCRIPTION_ID_REGEX =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+export const AzureApiUrls = {
+  getSubscriptions: () =>
+    `/subscriptions?api-version=${API_VERSION_SUBSCRIPTIONS}`,
+
+  getStandardRedisInSubscription: (subscriptionId: string) =>
+    `/subscriptions/${subscriptionId}/providers/Microsoft.Cache/redis?api-version=${API_VERSION_REDIS}`,
+
+  getEnterpriseRedisInSubscription: (subscriptionId: string) =>
+    `/subscriptions/${subscriptionId}/providers/Microsoft.Cache/redisEnterprise?api-version=${API_VERSION_REDIS_ENTERPRISE}`,
+
+  getEnterpriseDatabases: (
+    subscriptionId: string,
+    resourceGroup: string,
+    clusterName: string,
+  ) =>
+    `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.Cache/redisEnterprise/${clusterName}/databases?api-version=${API_VERSION_REDIS_ENTERPRISE}`,
+
+  postStandardRedisKeys: (
+    subscriptionId: string,
+    resourceGroup: string,
+    name: string,
+  ) =>
+    `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.Cache/redis/${name}/listKeys?api-version=${API_VERSION_REDIS}`,
+
+  postEnterpriseRedisKeys: (
+    subscriptionId: string,
+    resourceGroup: string,
+    clusterName: string,
+    databaseName: string = 'default',
+  ) =>
+    `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.Cache/redisEnterprise/${clusterName}/databases/${databaseName}/listKeys?api-version=${API_VERSION_REDIS_ENTERPRISE}`,
+};
