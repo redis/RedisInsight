@@ -15,7 +15,7 @@ export const CommandView = ({
   command,
   language = MonacoLanguage.Redis,
   className,
-  dataTestId = 'command-view',
+  dataTestId,
   onCopy,
   showLineNumbers = false,
 }: CommandViewProps) => {
@@ -48,14 +48,14 @@ export const CommandView = ({
         value={command}
         options={editorOptions}
         editorDidMount={editorDidMount}
-        data-testid={`${dataTestId}-editor`}
+        data-testid={`${dataTestId ?? 'command-view'}--editor`}
       />
       <S.CopyButtonWrapper>
         <CopyButton
           copy={command}
           successLabel="Copied"
           onCopy={onCopy}
-          data-testid={`${dataTestId}-copy-button`}
+          data-testid={`${dataTestId ?? 'command-view'}--copy-button`}
           aria-label="Copy command"
         />
       </S.CopyButtonWrapper>

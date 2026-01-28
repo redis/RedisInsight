@@ -56,12 +56,12 @@ describe('CommandView', () => {
     const command = faker.lorem.sentence()
     renderComponent({ command })
 
-    const editor = screen.getByTestId('command-view-editor')
+    const editor = screen.getByTestId('command-view--editor')
     expect(editor).toBeInTheDocument()
     expect(editor).toHaveTextContent(command)
     expect(editor).toHaveAttribute('data-readonly', 'true')
 
-    const copyButton = screen.getByTestId('command-view-copy-button-btn')
+    const copyButton = screen.getByTestId('command-view--copy-button-btn')
     expect(copyButton).toBeInTheDocument()
   })
 
@@ -71,7 +71,7 @@ describe('CommandView', () => {
 
     renderComponent({ command, onCopy: onCopyMock })
 
-    const copyButton = screen.getByTestId('command-view-copy-button-btn')
+    const copyButton = screen.getByTestId('command-view--copy-button-btn')
     fireEvent.click(copyButton)
 
     expect(mockedHandleCopy).toHaveBeenCalledWith(command)
@@ -83,7 +83,7 @@ describe('CommandView', () => {
   it('should use default Redis language when language prop is not provided', () => {
     renderComponent()
 
-    const editor = screen.getByTestId('command-view-editor')
+    const editor = screen.getByTestId('command-view--editor')
     expect(editor).toHaveAttribute('data-language', 'redisLanguage')
   })
 
@@ -91,15 +91,15 @@ describe('CommandView', () => {
     const customLanguage = 'plaintext'
     renderComponent({ language: customLanguage })
 
-    const editor = screen.getByTestId('command-view-editor')
+    const editor = screen.getByTestId('command-view--editor')
     expect(editor).toHaveAttribute('data-language', customLanguage)
   })
 
   it('should apply custom className', () => {
     const customClassName = `test-${faker.string.alphanumeric(10)}`
-    renderComponent({ className: customClassName })
+    const { container } = renderComponent({ className: customClassName })
 
-    const commandView = screen.getByTestId('command-view')
+    const commandView = container.firstChild
     expect(commandView).toHaveClass(customClassName)
   })
 
@@ -110,10 +110,10 @@ describe('CommandView', () => {
     const commandView = screen.getByTestId(customTestId)
     expect(commandView).toBeInTheDocument()
 
-    const editor = screen.getByTestId(`${customTestId}-editor`)
+    const editor = screen.getByTestId(`${customTestId}--editor`)
     expect(editor).toBeInTheDocument()
 
-    const copyButton = screen.getByTestId(`${customTestId}-copy-button-btn`)
+    const copyButton = screen.getByTestId(`${customTestId}--copy-button-btn`)
     expect(copyButton).toBeInTheDocument()
   })
 })
