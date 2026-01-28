@@ -8,22 +8,18 @@ import { EXTERNAL_LINKS, UTM_CAMPAINGS } from 'uiSrc/constants/links'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { Text } from 'uiSrc/components/base/text'
 import { Link } from 'uiSrc/components/base/link/Link'
-import { RiImage } from 'uiSrc/components/base/display'
-import styles from './styles.module.scss'
+
+import * as S from './EmptyMessage.styles'
 
 export interface Props {
   onAddInstanceClick: () => void
 }
 
 const EmptyMessage = ({ onAddInstanceClick }: Props) => (
-  <div
-    className={styles.noResultsContainer}
-    data-testid="empty-database-instance-list"
-  >
-    <RiImage src={CakeIcon} className={styles.icon} alt="empty" />
-    <Text className={styles.text}>No databases yet, let&apos;s add one!</Text>
+  <S.Container data-testid="empty-database-instance-list">
+    <S.Icon src={CakeIcon} alt="empty" />
+    <S.MessageText>No databases yet, let&apos;s add one!</S.MessageText>
     <PrimaryButton
       size="m"
       onClick={() => {
@@ -44,7 +40,6 @@ const EmptyMessage = ({ onAddInstanceClick }: Props) => (
         <Link
           data-testid="empty-database-cloud-button"
           target="_blank"
-          className={styles.link}
           href={getUtmExternalLink(EXTERNAL_LINKS.tryFree, {
             campaign: UTM_CAMPAINGS[OAuthSocialSource.EmptyDatabasesList],
             medium: 'main',
@@ -60,7 +55,7 @@ const EmptyMessage = ({ onAddInstanceClick }: Props) => (
         </Link>
       )}
     </OAuthSsoHandlerDialog>
-  </div>
+  </S.Container>
 )
 
 export default EmptyMessage

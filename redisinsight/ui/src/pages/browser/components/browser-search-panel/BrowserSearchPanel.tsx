@@ -2,7 +2,6 @@
 /* eslint-disable react/destructuring-assignment */
 import React, { useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import styled from 'styled-components'
 
 import {
   FilterTableIcon,
@@ -25,9 +24,9 @@ import { BrowserStorageItem } from 'uiSrc/constants'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
 import { Modal } from 'uiSrc/components/base/display'
-import { Row } from 'uiSrc/components/base/layout/flex'
 import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
 
+import * as S from './BrowserSearchPanel.styles'
 import styles from './styles.module.scss'
 
 interface ISwitchType<T> {
@@ -44,16 +43,6 @@ interface ISwitchType<T> {
 export interface Props {
   handleCreateIndexPanel: (value: boolean) => void
 }
-
-const SwitchSearchModeButtonGroup = styled(ButtonGroup)`
-  button {
-    height: 32px;
-    svg {
-      height: 20px;
-      width: 20px;
-    }
-  }
-`
 
 const BrowserSearchPanel = (props: Props) => {
   const { handleCreateIndexPanel } = props
@@ -151,7 +140,7 @@ const BrowserSearchPanel = (props: Props) => {
   )
 
   const SearchModeSwitch = () => (
-    <SwitchSearchModeButtonGroup data-testid="search-mode-switcher">
+    <S.SwitchSearchModeButtonGroup data-testid="search-mode-switcher">
       {searchModes.map((mode) => (
         <RiTooltip
           content={mode.tooltipText}
@@ -161,11 +150,11 @@ const BrowserSearchPanel = (props: Props) => {
           {SwitchModeBtn(mode)}
         </RiTooltip>
       ))}
-    </SwitchSearchModeButtonGroup>
+    </S.SwitchSearchModeButtonGroup>
   )
 
   return (
-    <div className={styles.content}>
+    <S.Content>
       <Modal
         open={isPopoverOpen}
         onCancel={hidePopover}
@@ -180,7 +169,7 @@ const BrowserSearchPanel = (props: Props) => {
         }
         title={null}
       />
-      <Row className={styles.searchWrapper} gap="m" align="center">
+      <S.SearchWrapper gap="m" align="center">
         <OnboardingTour
           options={ONBOARDING_FEATURES.BROWSER_FILTER_SEARCH}
           anchorPosition="downLeft"
@@ -194,8 +183,8 @@ const BrowserSearchPanel = (props: Props) => {
           <RediSearchIndexesList onCreateIndex={handleCreateIndexPanel} />
         )}
         <SearchKeyList />
-      </Row>
-    </div>
+      </S.SearchWrapper>
+    </S.Content>
   )
 }
 

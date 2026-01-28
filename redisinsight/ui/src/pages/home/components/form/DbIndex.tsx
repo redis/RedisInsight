@@ -7,7 +7,8 @@ import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { NumericInput } from 'uiSrc/components/base/inputs'
 import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
-import styles from '../styles.module.scss'
+
+import * as S from './Form.styles'
 
 export interface Props {
   formik: FormikProps<DbConnectionInfo>
@@ -49,7 +50,7 @@ const DbIndex = (props: Props) => {
 
       {formik.values.showDb && (
         <Row gap="m" responsive>
-          <FlexItem grow className={styles.dbInput}>
+          <S.DbInput grow>
             <FormField label="Database Index">
               <NumericInput
                 autoValidate
@@ -62,7 +63,7 @@ const DbIndex = (props: Props) => {
                 onChange={(value) => formik.setFieldValue('db', value)}
               />
             </FormField>
-          </FlexItem>
+          </S.DbInput>
           <FlexItem grow />
         </Row>
       )}

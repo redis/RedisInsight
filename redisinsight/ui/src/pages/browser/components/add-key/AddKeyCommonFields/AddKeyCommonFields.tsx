@@ -10,8 +10,6 @@ import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { AddCommonFieldsFormConfig as config } from '../constants/fields-config'
 
-import styles from './styles.module.scss'
-
 export interface Props {
   typeSelected: string
   onChangeType: (type: string) => void
@@ -45,8 +43,8 @@ const AddKeyCommonFields = (props: Props) => {
   }
 
   return (
-    <div className={styles.wrapper}>
-      <Row className={styles.container} gap="m">
+    <div>
+      <Row gap="m">
         <FlexItem grow>
           <FormFieldset
             legend={{ children: 'Select key type', display: 'hidden' }}

@@ -1,22 +1,13 @@
-.container {
-  display: flex;
-  flex: 1;
-  width: 100%;
-  padding-top: 3px;
-  background-color: var(--euiColorEmptyShade);
+.cell {
+  overflow: hidden;
 }
 
-.actions,
-.actionsHeader {
-  width: 54px;
+.deliveredHeaderCell {
+  min-width: 200px;
 }
 
 .actionCell {
   width: 100%;
   display: flex;
   justify-content: flex-end;
-}
-
-.deliveredHeaderCell {
-  min-width: 200px !important;
 }

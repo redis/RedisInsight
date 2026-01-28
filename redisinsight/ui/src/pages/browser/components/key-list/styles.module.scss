@@ -1,29 +1,6 @@
-.page {
-  height: 100%;
-  overflow: hidden;
-}
-
-.tooltip {
-  max-width: 372px !important;
-}
-
-.content {
-  width: 100%;
-  height: 100%;
-  background-color: var(--euiColorEmptyShade);
-}
-
-.deletePopover {
-  max-width: 400px !important;
-}
-
+// Hover effects for ReactVirtualized table rows
+// Used by: KeyRowSize, KeyRowTTL (moveOnHoverKey), DeleteKeyPopover (showOnHoverKey)
 .table {
-  height: 100%;
-
-  .deleteAnchor {
-    margin-right: -10px;
-  }
-
   :global {
     .ReactVirtualized__Table__row {
       .ReactVirtualized__Table__rowColumn {
@@ -31,7 +8,7 @@
           transition: transform ease 0.3s;
 
           &.hide {
-            transform: translateX(-8px)
+            transform: translateX(-8px);
           }
         }
 
@@ -39,7 +16,7 @@
           display: none;
 
           &.show {
-            display: block !important;
+            display: block;
           }
         }
       }
@@ -47,49 +24,14 @@
       &:hover {
         .ReactVirtualized__Table__rowColumn {
           .moveOnHoverKey {
-            transform: translateX(-8px)
+            transform: translateX(-8px);
           }
 
           .showOnHoverKey {
-            display: block !important;
+            display: block;
           }
         }
       }
     }
   }
-}
-
-:global(.show-cli) .table {
-  border-bottom: 1px solid var(--euiColorLightShade);
-}
-
-.filter {
-  display: inline-block;
-  width: 100px;
-  height: 38px;
-  margin-left: 8px;
-  background-color: var(--tableLightestBorderColor);
-}
-
-.action {
-  opacity: 0;
-  transition: opacity 250ms ease-in-out;
-}
-
-.keyInfoLoading {
-  width: 44px;
-
-  :global(.euiLoadingContent__singleLine) {
-    margin-bottom: 0;
-  }
-}
-
-.keyNameLoading {
-  width: 50%;
-  min-width: 100px;
-  max-width: 300px;
-}
-
-:global(.table-row-selected) .action {
-  opacity: 1;
 }

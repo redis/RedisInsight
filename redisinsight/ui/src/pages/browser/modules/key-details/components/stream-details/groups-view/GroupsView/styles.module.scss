@@ -1,38 +1,39 @@
-.container {
-  display: flex;
-  flex: 1;
-  width: 100%;
-  padding-top: 3px;
-  background-color: var(--euiColorEmptyShade);
+.tooltipName {
+  max-width: 200px;
 }
 
-.actions,
-.actionsHeader {
-  width: 54px;
+.cell {
+  overflow: hidden;
 }
 
 .tooltip {
-  min-width: 330px;
+  max-width: 200px;
 }
 
 .editableCell {
-  padding: 12px 40px 12px 12px;
+  display: flex;
+  align-items: center;
+  width: 100%;
 }
 
-.idText, .error {
-  display: inline-block;
+.editLastId {
+  width: 100%;
+}
+
+.editBtn {
+  margin-left: 8px;
+}
+
+.idText {
   color: var(--euiColorMediumShade);
-  font: normal normal normal 12px/18px Graphik, sans-serif;
-  margin-top: 6px;
-  padding-right: 6px;
+  font-size: 12px;
 }
 
 .error {
-  color: var(--euiColorDangerText);
+  color: var(--euiColorDanger);
+  font-size: 12px;
 }
 
-.container {
-  :global(.ReactVirtualized__Table__rowColumn) {
-    display: flex;
-  }
+.actionsHeader {
+  width: 54px;
 }
