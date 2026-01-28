@@ -54,7 +54,7 @@ export class AzureAutodiscoveryService {
     }
 
     try {
-      const response = await client.get(AzureApiUrls.subscriptions());
+      const response = await client.get(AzureApiUrls.getSubscriptions());
 
       return (response.data.value || []).map((sub: any) => ({
         subscriptionId: sub.subscriptionId,
@@ -159,7 +159,7 @@ export class AzureAutodiscoveryService {
   ): Promise<AzureRedisDatabase[]> {
     try {
       const response = await client.get(
-        AzureApiUrls.standardRedisInSubscription(subscriptionId),
+        AzureApiUrls.getStandardRedisInSubscription(subscriptionId),
       );
 
       return (response.data.value || []).map((redis: any) =>
@@ -180,7 +180,7 @@ export class AzureAutodiscoveryService {
   ): Promise<AzureRedisDatabase[]> {
     try {
       const response = await client.get(
-        AzureApiUrls.enterpriseRedisInSubscription(subscriptionId),
+        AzureApiUrls.getEnterpriseRedisInSubscription(subscriptionId),
       );
 
       const clusters = response.data.value || [];
@@ -243,7 +243,7 @@ export class AzureAutodiscoveryService {
 
     try {
       const dbResponse = await client.get(
-        AzureApiUrls.enterpriseDatabases(
+        AzureApiUrls.getEnterpriseDatabases(
           subscriptionId,
           resourceGroup,
           cluster.name,
@@ -299,7 +299,7 @@ export class AzureAutodiscoveryService {
       let keysUrl: string;
 
       if (database.type === AzureRedisType.Standard) {
-        keysUrl = AzureApiUrls.standardRedisKeys(
+        keysUrl = AzureApiUrls.postStandardRedisKeys(
           database.subscriptionId,
           database.resourceGroup,
           database.name,
@@ -310,7 +310,7 @@ export class AzureAutodiscoveryService {
         this.logger.debug(
           `Fetching enterprise keys for cluster=${clusterName}, database=${databaseName}`,
         );
-        keysUrl = AzureApiUrls.enterpriseRedisKeys(
+        keysUrl = AzureApiUrls.postEnterpriseRedisKeys(
           database.subscriptionId,
           database.resourceGroup,
           clusterName,

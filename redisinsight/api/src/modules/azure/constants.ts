@@ -83,30 +83,30 @@ export const AZURE_SUBSCRIPTION_ID_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export const AzureApiUrls = {
-  subscriptions: () =>
+  getSubscriptions: () =>
     `/subscriptions?api-version=${API_VERSION_SUBSCRIPTIONS}`,
 
-  standardRedisInSubscription: (subscriptionId: string) =>
+  getStandardRedisInSubscription: (subscriptionId: string) =>
     `/subscriptions/${subscriptionId}/providers/Microsoft.Cache/redis?api-version=${API_VERSION_REDIS}`,
 
-  enterpriseRedisInSubscription: (subscriptionId: string) =>
+  getEnterpriseRedisInSubscription: (subscriptionId: string) =>
     `/subscriptions/${subscriptionId}/providers/Microsoft.Cache/redisEnterprise?api-version=${API_VERSION_REDIS_ENTERPRISE}`,
 
-  enterpriseDatabases: (
+  getEnterpriseDatabases: (
     subscriptionId: string,
     resourceGroup: string,
     clusterName: string,
   ) =>
     `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.Cache/redisEnterprise/${clusterName}/databases?api-version=${API_VERSION_REDIS_ENTERPRISE}`,
 
-  standardRedisKeys: (
+  postStandardRedisKeys: (
     subscriptionId: string,
     resourceGroup: string,
     name: string,
   ) =>
     `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.Cache/redis/${name}/listKeys?api-version=${API_VERSION_REDIS}`,
 
-  enterpriseRedisKeys: (
+  postEnterpriseRedisKeys: (
     subscriptionId: string,
     resourceGroup: string,
     clusterName: string,
