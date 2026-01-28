@@ -20,29 +20,16 @@ const withMonacoSetup = (Story: React.ComponentType) => {
     }, [dispatch])
 
     return (
-      <>
+      <div style={{ width: '100%', height: '100%', display: 'flex' }}>
         <MonacoEnvironmentInitializer />
         <MonacoLanguages />
         <Story />
-      </>
+      </div>
     )
   }
 
   return <MonacoSetup />
 }
-
-// Decorator to fill available space
-const withFlexContainer = (Story: React.ComponentType) => (
-  <div
-    style={{
-      width: '100%',
-      height: '100%',
-      display: 'flex',
-    }}
-  >
-    <Story />
-  </div>
-)
 
 const meta: Meta<typeof CommandView> = {
   component: CommandView,
@@ -55,7 +42,6 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  decorators: [withMonacoSetup, withFlexContainer],
   parameters: {
     docs: {
       story: {
@@ -73,7 +59,6 @@ export const Default: Story = {
 
 export const WithLineNumbers: Story = {
   name: 'With line numbers enabled',
-  decorators: [withMonacoSetup, withFlexContainer],
   parameters: {
     docs: {
       story: {
@@ -105,7 +90,6 @@ export const WithLineNumbers: Story = {
 
 export const FixedHeightWithScrolling: Story = {
   name: 'Fixed height with inline scrolling (composition with an accordion)',
-  decorators: [withMonacoSetup],
   render: (args) => (
     <div style={{ padding: '16px', width: '100%' }}>
       <style>
