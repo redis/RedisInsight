@@ -5,10 +5,12 @@ import { CommandView } from './index'
 import { MOCK_COMMANDS_SPEC } from 'uiSrc/constants'
 import { getRedisCommandsSuccess } from 'uiSrc/slices/app/redis-commands'
 import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
+import MonacoEnvironmentInitializer from 'uiSrc/components/MonacoEnvironmentInitializer/MonacoEnvironmentInitializer'
+import MonacoLanguages from 'uiSrc/components/monaco-laguages'
 
-// Decorator to initialize Redis commands for Monaco syntax highlighting
-const withRedisCommands = (Story: React.ComponentType) => {
-  const RedisCommandsInitializer = () => {
+// Decorator to initialize Monaco environment and Redis commands for syntax highlighting
+const withMonacoSetup = (Story: React.ComponentType) => {
+  const MonacoSetup = () => {
     const dispatch = useDispatch()
 
     React.useEffect(() => {
@@ -17,10 +19,16 @@ const withRedisCommands = (Story: React.ComponentType) => {
       dispatch(getRedisCommandsSuccess(MOCK_COMMANDS_SPEC))
     }, [dispatch])
 
-    return <Story />
+    return (
+      <>
+        <MonacoEnvironmentInitializer />
+        <MonacoLanguages />
+        <Story />
+      </>
+    )
   }
 
-  return <RedisCommandsInitializer />
+  return <MonacoSetup />
 }
 
 // Decorator to fill available space
@@ -40,14 +48,14 @@ const meta: Meta<typeof CommandView> = {
   component: CommandView,
   parameters: {},
   tags: ['autodocs'],
-  decorators: [withRedisCommands],
+  decorators: [withMonacoSetup],
 }
 
 export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  decorators: [withRedisCommands, withFlexContainer],
+  decorators: [withMonacoSetup, withFlexContainer],
   parameters: {
     docs: {
       story: {
@@ -65,7 +73,7 @@ export const Default: Story = {
 
 export const WithLineNumbers: Story = {
   name: 'With line numbers enabled',
-  decorators: [withRedisCommands, withFlexContainer],
+  decorators: [withMonacoSetup, withFlexContainer],
   parameters: {
     docs: {
       story: {
@@ -97,7 +105,7 @@ export const WithLineNumbers: Story = {
 
 export const FixedHeightWithScrolling: Story = {
   name: 'Fixed height with inline scrolling (composition with an accordion)',
-  decorators: [withRedisCommands],
+  decorators: [withMonacoSetup],
   render: (args) => (
     <div style={{ padding: '16px', width: '100%' }}>
       <style>
