@@ -1,12 +1,7 @@
-.container {
-  display: flex;
-  flex: 1;
-  width: 100%;
-  padding-top: 3px;
-  background-color: var(--euiColorEmptyShade);
+.tooltipName {
+  max-width: 200px;
 }
 
-.actions,
-.actionsHeader {
-  width: 54px;
+.cell {
+  overflow: hidden;
 }

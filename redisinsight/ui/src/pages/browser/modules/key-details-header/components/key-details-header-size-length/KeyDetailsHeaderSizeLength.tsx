@@ -12,10 +12,9 @@ import {
 import { formatBytes } from 'uiSrc/utils'
 
 import { FlexItem } from 'uiSrc/components/base/layout/flex'
-import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from './styles.module.scss'
+import * as S from './KeyDetailsHeaderSizeLength.styles'
 
 export interface Props {
   width: number
@@ -31,11 +30,7 @@ const KeyDetailsHeaderSizeLength = ({ width }: Props) => {
     <>
       {size && (
         <FlexItem>
-          <Text
-            size="s"
-            className={styles.subtitleText}
-            data-testid="key-size-text"
-          >
+          <S.SubtitleText size="s" data-testid="key-size-text">
             <RiTooltip
               title="Key Size"
               position="left"
@@ -54,7 +49,6 @@ const KeyDetailsHeaderSizeLength = ({ width }: Props) => {
                   <>
                     {' '}
                     <RiIcon
-                      className={styles.infoIcon}
                       type="InfoIcon"
                       size="m"
                       style={{ cursor: 'pointer' }}
@@ -64,19 +58,15 @@ const KeyDetailsHeaderSizeLength = ({ width }: Props) => {
                 )}
               </>
             </RiTooltip>
-          </Text>
+          </S.SubtitleText>
         </FlexItem>
       )}
       <FlexItem>
-        <Text
-          size="s"
-          className={styles.subtitleText}
-          data-testid="key-length-text"
-        >
+        <S.SubtitleText size="s" data-testid="key-length-text">
           {LENGTH_NAMING_BY_TYPE[type] ?? 'Length'}
           {': '}
           {length ?? '-'}
-        </Text>
+        </S.SubtitleText>
       </FlexItem>
     </>
   )

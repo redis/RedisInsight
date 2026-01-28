@@ -1,7 +1,6 @@
 import React, { Ref, useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toNumber, isNumber } from 'lodash'
-import cx from 'classnames'
 import { CellMeasurerCache } from 'react-virtualized'
 import {
   appContextBrowserKeyDetails,
@@ -77,7 +76,7 @@ import {
   SearchZSetMembersResponse,
 } from 'apiSrc/modules/browser/z-set/dto'
 
-import styles from './styles.module.scss'
+import * as S from './ZSetDetailsTable.styles'
 
 const suffix = '_zset'
 const headerHeight = 60
@@ -401,7 +400,6 @@ const ZSetDetailsTable = (props: Props) => {
               {!expanded && (
                 <RiTooltip
                   title="Score"
-                  className={styles.tooltip}
                   anchorClassName="truncateText"
                   position="bottom"
                   content={tooltipContent}
@@ -484,46 +482,40 @@ const ZSetDetailsTable = (props: Props) => {
   }
 
   return (
-    <>
-      <div
-        data-testid="zset-details"
-        className={cx(
-          'key-details-table',
-          'hash-fields-container',
-          styles.container,
-        )}
-      >
-        <VirtualTable
-          autoHeight
-          tableRef={tableRef}
-          expandable
-          keyName={key}
-          headerHeight={headerHeight}
-          rowHeight={rowHeight}
-          onChangeWidth={setWidth}
-          columns={columns.map((column, i, arr) => ({
-            ...column,
-            width: getColumnWidth(i, width, arr),
-          }))}
-          footerHeight={0}
-          loadMoreItems={loadMoreItems}
-          loading={loading}
-          searching={searching}
-          items={members}
-          sortedColumn={sortedColumn}
-          onChangeSorting={onChangeSorting}
-          totalItemsCount={total}
-          noItemsMessage={NoResultsFoundText}
-          onWheel={closePopover}
-          onSearch={handleSearch}
-          cellCache={cellCache}
-          onRowToggleViewClick={handleRowToggleViewClick}
-          expandedRows={expandedRows}
-          setExpandedRows={setExpandedRows}
-          onColResizeEnd={onColResizeEnd}
-        />
-      </div>
-    </>
+    <S.Container
+      data-testid="zset-details"
+      className="key-details-table hash-fields-container"
+    >
+      <VirtualTable
+        autoHeight
+        tableRef={tableRef}
+        expandable
+        keyName={key}
+        headerHeight={headerHeight}
+        rowHeight={rowHeight}
+        onChangeWidth={setWidth}
+        columns={columns.map((column, i, arr) => ({
+          ...column,
+          width: getColumnWidth(i, width, arr),
+        }))}
+        footerHeight={0}
+        loadMoreItems={loadMoreItems}
+        loading={loading}
+        searching={searching}
+        items={members}
+        sortedColumn={sortedColumn}
+        onChangeSorting={onChangeSorting}
+        totalItemsCount={total}
+        noItemsMessage={NoResultsFoundText}
+        onWheel={closePopover}
+        onSearch={handleSearch}
+        cellCache={cellCache}
+        onRowToggleViewClick={handleRowToggleViewClick}
+        expandedRows={expandedRows}
+        setExpandedRows={setExpandedRows}
+        onColResizeEnd={onColResizeEnd}
+      />
+    </S.Container>
   )
 }
 

@@ -1,9 +1,9 @@
 import React from 'react'
-import cx from 'classnames'
 
 import { KeyTypes, ModulesKeyTypes } from 'uiSrc/constants'
 import { GroupBadge, LoadingContent } from 'uiSrc/components'
-import styles from './styles.module.scss'
+
+import * as S from './KeyRowType.styles'
 
 export interface Props {
   nameString: string
@@ -16,16 +16,17 @@ const KeyRowType = (props: Props) => {
   return (
     <>
       {!type && (
-        <LoadingContent
-          lines={1}
-          className={cx(styles.keyInfoLoading, styles.keyType)}
-          data-testid={`type-loading_${nameString}`}
-        />
+        <S.KeyInfoLoading>
+          <LoadingContent
+            lines={1}
+            data-testid={`type-loading_${nameString}`}
+          />
+        </S.KeyInfoLoading>
       )}
       {!!type && (
-        <div className={styles.keyType}>
+        <S.KeyType>
           <GroupBadge type={type} name={nameString} />
-        </div>
+        </S.KeyType>
       )}
     </>
   )

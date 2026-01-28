@@ -4,14 +4,14 @@ import { isUndefined } from 'lodash'
 
 import { RiTooltip } from 'uiSrc/components'
 import { LoadingContent } from 'uiSrc/components/base/layout'
-import { ColorText, Text } from 'uiSrc/components/base/text'
 import {
   Maybe,
   truncateNumberToDuration,
   truncateNumberToFirstUnit,
   truncateTTLToSeconds,
 } from 'uiSrc/utils'
-import styles from './styles.module.scss'
+
+import * as S from './KeyRowTTL.styles'
 
 export interface Props {
   ttl: Maybe<number>
@@ -25,30 +25,28 @@ const KeyRowTTL = (props: Props) => {
 
   if (isUndefined(ttl)) {
     return (
-      <LoadingContent
-        lines={1}
-        className={cx(styles.keyInfoLoading, styles.keyTTL)}
-        data-testid={`ttl-loading_${nameString}`}
-      />
+      <S.KeyInfoLoading>
+        <LoadingContent lines={1} data-testid={`ttl-loading_${nameString}`} />
+      </S.KeyInfoLoading>
     )
   }
   if (ttl === -1) {
     return (
-      <ColorText
-        className={cx(styles.keyTTL, 'moveOnHoverKey', {
+      <S.KeyTTLColorText
+        className={cx('moveOnHoverKey', {
           hide: deletePopoverId === rowId,
         })}
         color="secondary"
         data-testid={`ttl-${nameString}`}
       >
         No limit
-      </ColorText>
+      </S.KeyTTLColorText>
     )
   }
   return (
-    <Text
+    <S.KeyTTLText
       component="div"
-      className={cx(styles.keyTTL, 'moveOnHoverKey', {
+      className={cx('moveOnHoverKey', {
         hide: deletePopoverId === rowId,
       })}
       color="secondary"
@@ -61,7 +59,6 @@ const KeyRowTTL = (props: Props) => {
       >
         <RiTooltip
           title="Time to Live"
-          className={styles.tooltip}
           anchorClassName="truncateText"
           position="right"
           content={
@@ -75,7 +72,7 @@ const KeyRowTTL = (props: Props) => {
           <>{truncateNumberToFirstUnit(ttl)}</>
         </RiTooltip>
       </div>
-    </Text>
+    </S.KeyTTLText>
   )
 }
 

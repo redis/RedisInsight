@@ -1,23 +1,7 @@
-.contentWrapper {
-  display: flex;
-  align-items: center;
-  position: relative;
-  flex-grow: 1;
-  width: 100%;
-  height: 100%;
-
-  min-height: 42px;
-  padding-right: 32px;
-
-  .editBtnAnchor {
-    position: absolute;
-    right: 4px;
-  }
-}
-
-.inputWrapper {
-  max-width: calc(100% - 48px);
-  padding: 0 4px;
+// Styles that must remain in SCSS for className-based props
+.editBtnAnchor {
+  position: absolute;
+  right: 4px;
 }
 
 .controls {

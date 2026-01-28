@@ -1,6 +1,5 @@
 import React, { ChangeEvent, Ref, useEffect, useRef, useState } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
-import cx from 'classnames'
 
 import { StopPropagation } from 'uiSrc/components/virtual-table'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
@@ -9,6 +8,7 @@ import { Text } from 'uiSrc/components/base/text'
 import { EditIcon } from 'uiSrc/components/base/icons'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { TextArea } from 'uiSrc/components/base/inputs'
+import * as S from './EditableTextArea.styles'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -64,13 +64,6 @@ const EditableTextArea = (props: Props) => {
     setValue(initialValue)
   }, [initialValue])
 
-  useEffect(() => {
-    if (isEditing) {
-      updateTextAreaHeight()
-      setTimeout(() => textAreaRef?.current?.focus(), 0)
-    }
-  }, [isEditing])
-
   const updateTextAreaHeight = () => {
     if (textAreaRef.current) {
       textAreaRef.current.style.height = '0px'
@@ -78,6 +71,13 @@ const EditableTextArea = (props: Props) => {
       onUpdateTextAreaHeight?.()
     }
   }
+
+  useEffect(() => {
+    if (isEditing) {
+      updateTextAreaHeight()
+      setTimeout(() => textAreaRef?.current?.focus(), 0)
+    }
+  }, [isEditing])
 
   const handleOnChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setValue(e.target.value)
@@ -87,8 +87,7 @@ const EditableTextArea = (props: Props) => {
 
   if (!isEditing) {
     return (
-      <div
-        className={styles.contentWrapper}
+      <S.ContentWrapper
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
         data-testid={`${testIdPrefix}_content-value-${field}`}
@@ -109,7 +108,7 @@ const EditableTextArea = (props: Props) => {
             <IconButton
               icon={EditIcon}
               aria-label="Edit field"
-              className={cx('editFieldBtn', styles.editBtn)}
+              className="editFieldBtn"
               disabled={isEditDisabled}
               onClick={(e: React.MouseEvent) => {
                 e.stopPropagation()
@@ -120,7 +119,7 @@ const EditableTextArea = (props: Props) => {
             />
           </RiTooltip>
         )}
-      </div>
+      </S.ContentWrapper>
     )
   }
 

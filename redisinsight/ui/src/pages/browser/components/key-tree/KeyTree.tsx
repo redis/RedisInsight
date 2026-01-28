@@ -5,7 +5,6 @@ import React, {
   useState,
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 import { escapeRegExp } from 'lodash'
 
@@ -238,11 +237,11 @@ const KeyTree = forwardRef((props: KeyTreeProps, ref) => {
     )
 
     return (
-      <div className={cx(styles.content)}>
-        <div className={cx(styles.noKeys)}>
+      <S.Content>
+        <S.NoKeys>
           <NoItemsMessage />
-        </div>
-      </div>
+        </S.NoKeys>
+      </S.Content>
     )
   }
 

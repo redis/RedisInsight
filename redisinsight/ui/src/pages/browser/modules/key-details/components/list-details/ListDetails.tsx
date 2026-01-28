@@ -13,9 +13,9 @@ import { ListDetailsTable } from './list-details-table'
 import { RemoveListElements } from './remove-list-elements'
 
 import AddListElements from './add-list-elements/AddListElements'
+import * as S from './ListDetails.styles'
 import { AddItemsAction, RemoveItemsAction } from '../key-details-actions'
 import { KeyDetailsSubheader } from '../key-details-subheader/KeyDetailsSubheader'
-import styles from './styles.module.scss'
 import { AddKeysContainer } from '../common/AddKeysContainer.styled'
 
 export interface Props extends KeyDetailsHeaderProps {
@@ -62,12 +62,12 @@ const ListDetails = (props: Props) => {
         width={width}
         openAddItemPanel={openAddItemPanel}
       />
-      <div className={styles.removeBtnContainer}>
+      <S.RemoveBtnContainer>
         <RemoveItemsAction
           title="Remove Elements"
           openRemoveItemPanel={openRemoveItemPanel}
         />
-      </div>
+      </S.RemoveBtnContainer>
     </>
   )
 

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import cx from 'classnames'
 
 import * as keys from 'uiSrc/constants/keys'
 import MultiSearch from 'uiSrc/components/multi-search/MultiSearch'
@@ -43,9 +42,8 @@ import { SidePanels } from 'uiSrc/slices/interfaces/insights'
 
 import { FeatureFlags } from 'uiSrc/constants'
 import { FeatureFlagComponent } from 'uiSrc/components'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from './styles.module.scss'
+
+import * as S from './SearchKeyList.styles'
 
 const placeholders = {
   [SearchMode.Pattern]: 'Filter by Key Name or Pattern',
@@ -178,11 +176,7 @@ const SearchKeyList = () => {
   }
 
   return (
-    <div
-      className={cx(styles.container, {
-        [styles.redisearchMode]: searchMode === SearchMode.Redisearch,
-      })}
-    >
+    <S.Container>
       <MultiSearch
         value={value}
         onSubmit={handleApply}
@@ -207,24 +201,22 @@ const SearchKeyList = () => {
         appendRight={
           searchMode === SearchMode.Redisearch ? (
             <FeatureFlagComponent name={FeatureFlags.databaseChat}>
-              <EmptyButton
-                className={styles.askCopilotBtn}
+              <S.AskCopilotBtn
                 size="small"
                 onClick={handleClickAskCopilot}
                 data-testid="ask-redis-copilot-btn"
               >
-                <RiIcon className={styles.cloudIcon} type="StarsIcon" />
-              </EmptyButton>
+                <S.CloudIcon type="StarsIcon" />
+              </S.AskCopilotBtn>
             </FeatureFlagComponent>
           ) : undefined
         }
         disableSubmit={disableSubmit}
         placeholder={placeholders[searchMode]}
-        className={styles.input}
         data-testid="search-key"
       />
-      <p className={styles.hiddenText}>{replaceSpaces(value)}</p>
-    </div>
+      <S.HiddenText>{replaceSpaces(value)}</S.HiddenText>
+    </S.Container>
   )
 }
 

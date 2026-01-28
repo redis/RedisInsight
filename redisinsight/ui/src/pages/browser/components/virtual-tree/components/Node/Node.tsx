@@ -124,6 +124,21 @@ const Node = ({
     }
     setDeletePopoverId(index !== deletePopoverId ? index : undefined)
   }
+  const tooltipContent = (
+    <>
+      <S.FolderTooltipHeader>
+        <S.FolderPattern>{`${fullName + delimiterView}*`}</S.FolderPattern>
+        {delimiters.length > 1 && (
+          <S.Delimiters>
+            {delimiters.map((delimiter) => (
+              <S.Delimiter key={delimiter}>{delimiter}</S.Delimiter>
+            ))}
+          </S.Delimiters>
+        )}
+      </S.FolderTooltipHeader>
+      <span>{`${keyCount} key(s) (${Math.round(keyApproximate * 100) / 100}%)`}</span>
+    </>
+  )
 
   const deletePattern = `${fullName}${delimiterView}*`
 
@@ -264,24 +279,6 @@ const Node = ({
       {!isLeaf && <Folder />}
       {isLeaf && <Leaf />}
     </S.NodeContent>
-  )
-
-  const tooltipContent = (
-    <>
-      <S.FolderTooltipHeader>
-        <S.FolderPattern>{`${fullName + delimiterView}*`}</S.FolderPattern>
-        {delimiters.length > 1 && (
-          <S.Delimiters>
-            {delimiters.map((delimiter) => (
-              <S.Delimiter key={delimiter}>{delimiter}</S.Delimiter>
-            ))}
-          </S.Delimiters>
-        )}
-      </S.FolderTooltipHeader>
-      <ColorText color="secondary">
-        {`${keyCount} key(s) (${Math.round(keyApproximate * 100) / 100}%)`}
-      </ColorText>
-    </>
   )
 
   return (

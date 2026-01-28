@@ -1,9 +1,9 @@
 import React, { ReactNode } from 'react'
 
 import { RiTooltip } from 'uiSrc/components'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
+import * as S from './TextDetailsWrapper.styles'
 import styles from './styles.module.scss'
 
 const TextDetailsWrapper = ({
@@ -19,26 +19,25 @@ const TextDetailsWrapper = ({
     testid ? `${testid}-${suffix}` : suffix
 
   return (
-    <div className={styles.container} data-testid={getDataTestid('details')}>
+    <S.Container data-testid={getDataTestid('details')}>
       <RiTooltip
         content="Close"
         position="left"
         anchorClassName={styles.closeRightPanel}
       >
-        <IconButton
+        <S.CloseBtn
           icon={CancelSlimIcon}
           aria-label="Close key"
-          className={styles.closeBtn}
           onClick={() => onClose()}
           data-testid={getDataTestid('close-key-btn')}
         />
       </RiTooltip>
       <Row centered>
-        <FlexItem className={styles.textWrapper}>
+        <S.TextWrapper>
           <div>{children}</div>
-        </FlexItem>
+        </S.TextWrapper>
       </Row>
-    </div>
+    </S.Container>
   )
 }
 

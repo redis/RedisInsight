@@ -4,9 +4,9 @@ import AutoSizer from 'react-virtualized-auto-sizer'
 import { useSelector } from 'react-redux'
 
 import { MAX_BULK_ACTION_ERRORS_LENGTH } from 'uiSrc/constants'
-import { Text } from 'uiSrc/components/base/text'
 import { bulkActionsDeleteSummarySelector } from 'uiSrc/slices/browser/bulkActions'
-import styles from './styles.module.scss'
+
+import * as S from './BulkDeleteContent.styles'
 
 const MIN_ROW_HEIGHT = 30
 const PROTRUDING_OFFSET = 2
@@ -40,12 +40,12 @@ const BulkDeleteContent = () => {
     const { key, error } = errors[index]
 
     return (
-      <div style={style} className={styles.item} data-testid={`row-${index}`}>
+      <S.Item style={style} data-testid={`row-${index}`}>
         <span ref={rowRef}>
-          <span className={styles.key}>{key}</span>
-          <span className={styles.error}>{error}</span>
+          <S.Key>{key}</S.Key>
+          <S.Error>{error}</S.Error>
         </span>
-      </div>
+      </S.Item>
     )
   }
 
@@ -54,16 +54,16 @@ const BulkDeleteContent = () => {
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <Text className={styles.headerTitle}>Error list</Text>
+    <S.Container>
+      <S.Header>
+        <S.HeaderTitle>Error list</S.HeaderTitle>
         {errors.length >= MAX_BULK_ACTION_ERRORS_LENGTH && (
-          <Text className={styles.headerSummary}>
+          <S.HeaderSummary>
             last {MAX_BULK_ACTION_ERRORS_LENGTH} errors are shown
-          </Text>
+          </S.HeaderSummary>
         )}
-      </div>
-      <div className={styles.list}>
+      </S.Header>
+      <S.List>
         <AutoSizer>
           {({ width, height }) => (
             <List
@@ -73,7 +73,6 @@ const BulkDeleteContent = () => {
               itemCount={errors.length}
               itemSize={getRowHeight}
               width={width - PROTRUDING_OFFSET}
-              className={styles.listContent}
               overscanCount={30}
               itemData={width}
             >
@@ -81,8 +80,8 @@ const BulkDeleteContent = () => {
             </List>
           )}
         </AutoSizer>
-      </div>
-    </div>
+      </S.List>
+    </S.Container>
   )
 }
 

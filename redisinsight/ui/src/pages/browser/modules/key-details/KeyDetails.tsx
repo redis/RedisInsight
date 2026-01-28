@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import { isNull } from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import cx from 'classnames'
 
 import {
   defaultSelectedKeyAction,
@@ -24,7 +23,8 @@ import { isTruncatedString, Nullable } from 'uiSrc/utils'
 import { NoKeySelected } from './components/no-key-selected'
 import { DynamicTypeDetails } from './components/dynamic-type-details'
 
-import styles from './styles.module.scss'
+import * as S from './KeyDetails.styles'
+import './styles.module.scss'
 
 export interface Props {
   isFullScreen: boolean
@@ -116,12 +116,8 @@ const KeyDetails = (props: Props) => {
   }
 
   return (
-    <div className={styles.container}>
-      <div
-        className={cx(styles.content, {
-          [styles.contentActive]: data || error || loading,
-        })}
-      >
+    <S.Container>
+      <S.Content $isActive={!!(data || error || loading)}>
         {!isKeySelected && !loading ? (
           <NoKeySelected
             keyProp={keyProp}
@@ -138,8 +134,8 @@ const KeyDetails = (props: Props) => {
             onCloseAddItemPanel={onCloseAddItemPanel}
           />
         )}
-      </div>
-    </div>
+      </S.Content>
+    </S.Container>
   )
 }
 

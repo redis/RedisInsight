@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
@@ -25,25 +24,17 @@ import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { AdditionalRedisModule } from 'uiSrc/slices/interfaces'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 import { HealthText } from 'uiSrc/components/base/text/HealthText'
-import {
-  defaultValueRender,
-  RiSelect,
-} from 'uiSrc/components/base/forms/select/RiSelect'
+import { defaultValueRender } from 'uiSrc/components/base/forms/select/RiSelect'
 import { Modal } from 'uiSrc/components/base/display'
 import { FILTER_KEY_TYPE_OPTIONS } from './constants'
 
-import styles from './styles.module.scss'
-import styled from 'styled-components'
+import * as S from './FilterKeyType.styles'
 
 const ALL_KEY_TYPES_VALUE = 'all'
 
 export interface Props {
   modules?: AdditionalRedisModule[]
 }
-
-const FilterKeyTypeSelect = styled(RiSelect)`
-  height: 100%;
-`
 
 const FilterKeyType = ({ modules }: Props) => {
   const [isSelectOpen, setIsSelectOpen] = useState<boolean>(false)
@@ -110,9 +101,9 @@ const FilterKeyType = ({ modules }: Props) => {
   options.unshift({
     value: ALL_KEY_TYPES_VALUE,
     inputDisplay: (
-      <div className={styles.dropdownOption} data-testid="all-key-types-option">
+      <S.DropdownOption data-testid="all-key-types-option">
         All Key Types
-      </div>
+      </S.DropdownOption>
     ),
     dropdownDisplay: <span>All Key Types</span>,
   })
@@ -159,16 +150,10 @@ const FilterKeyType = ({ modules }: Props) => {
     <OutsideClickDetector
       onOutsideClick={() => isVersionSupported && setIsSelectOpen(false)}
     >
-      <div
-        className={cx(
-          styles.container,
-          !isVersionSupported && styles.unsupported,
-        )}
-      >
+      <S.Container $unsupported={!isVersionSupported}>
         <Modal
           open={!isVersionSupported && isInfoPopoverOpen}
           onCancel={() => setIsInfoPopoverOpen(false)}
-          className={styles.unsupportedInfoModal}
           data-testid="filter-not-available-modal"
           content={
             <FilterNotAvailable onClose={() => setIsInfoPopoverOpen(false)} />
@@ -176,14 +161,13 @@ const FilterKeyType = ({ modules }: Props) => {
           title={null}
         />
         {!isVersionSupported && (
-          <div
+          <S.UnsupportedInfo
             role="presentation"
             onClick={handleClickSelect}
-            className={styles.unsupportedInfo}
             data-testid="unsupported-btn-anchor"
           />
         )}
-        <FilterKeyTypeSelect
+        <S.FilterKeyTypeSelect
           disabled={!isVersionSupported}
           options={options}
           valueRender={defaultValueRender}
@@ -192,7 +176,7 @@ const FilterKeyType = ({ modules }: Props) => {
           onChange={(value: string) => onChangeType(value)}
           data-testid="select-filter-key-type"
         />
-      </div>
+      </S.Container>
     </OutsideClickDetector>
   )
 }

@@ -5,7 +5,8 @@ import { LoadingContent } from 'uiSrc/components/base/layout'
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { Maybe, formatLongName, replaceSpaces } from 'uiSrc/utils'
-import styles from './styles.module.scss'
+
+import * as S from './KeyRowName.styles'
 
 export interface Props {
   nameString: Maybe<string>
@@ -17,11 +18,9 @@ const KeyRowName = (props: Props) => {
 
   if (isUndefined(shortName)) {
     return (
-      <LoadingContent
-        lines={1}
-        className={styles.keyInfoLoading}
-        data-testid="name-loading"
-      />
+      <S.KeyInfoLoading>
+        <LoadingContent lines={1} data-testid="name-loading" />
+      </S.KeyInfoLoading>
     )
   }
 
@@ -30,7 +29,7 @@ const KeyRowName = (props: Props) => {
   const nameTooltipContent = formatLongName(nameString)
 
   return (
-    <div className={styles.keyName}>
+    <S.KeyName>
       <Text
         component="div"
         color="secondary"
@@ -43,7 +42,6 @@ const KeyRowName = (props: Props) => {
         >
           <RiTooltip
             title="Key Name"
-            className={styles.tooltip}
             position="bottom"
             content={nameTooltipContent}
           >
@@ -51,7 +49,7 @@ const KeyRowName = (props: Props) => {
           </RiTooltip>
         </div>
       </Text>
-    </div>
+    </S.KeyName>
   )
 }
 

@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { flatMap, isNull } from 'lodash'
-import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 
 import {
@@ -24,7 +23,7 @@ import {
 } from 'uiSrc/telemetry'
 import { StreamEntryDto } from 'apiSrc/modules/browser/stream/dto'
 
-import styles from './styles.module.scss'
+import * as S from './StreamDataView.styles'
 
 const headerHeight = 60
 const rowHeight = 60
@@ -91,12 +90,8 @@ const StreamDataView = (props: Props) => {
 
   return (
     <>
-      <div
-        className={cx(
-          'key-details-table',
-          'stream-details-table',
-          styles.container,
-        )}
+      <S.Container
+        className="key-details-table stream-details-table"
         data-testid="stream-entries-container"
       >
         <VirtualGrid
@@ -133,7 +128,7 @@ const StreamDataView = (props: Props) => {
               : undefined
           }
         />
-      </div>
+      </S.Container>
     </>
   )
 }

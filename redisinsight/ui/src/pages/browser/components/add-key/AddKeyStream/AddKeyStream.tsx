@@ -12,8 +12,6 @@ import { StreamEntryFields } from 'uiSrc/pages/browser/modules/key-details/compo
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import { CreateStreamDto } from 'apiSrc/modules/browser/stream/dto'
 
-import styles from './styles.module.scss'
-
 export interface Props {
   keyName: string
   keyTTL: Maybe<number>
@@ -43,10 +41,6 @@ const AddKeyStream = (props: Props) => {
     setIsFormValid(isValid)
   }, [keyName, fields, entryIdError])
 
-  useEffect(() => {
-    validateEntryID()
-  }, [entryID])
-
   const validateEntryID = () => {
     setEntryIdError(
       entryIdRegex.test(entryID)
@@ -55,12 +49,9 @@ const AddKeyStream = (props: Props) => {
     )
   }
 
-  const onFormSubmit = (event: FormEvent<HTMLFormElement>): void => {
-    event.preventDefault()
-    if (isFormValid) {
-      submitData()
-    }
-  }
+  useEffect(() => {
+    validateEntryID()
+  }, [entryID])
 
   const submitData = (): void => {
     const data: CreateStreamDto = {
@@ -83,8 +74,15 @@ const AddKeyStream = (props: Props) => {
     dispatch(addStreamKey(data, onCancel))
   }
 
+  const onFormSubmit = (event: FormEvent<HTMLFormElement>): void => {
+    event.preventDefault()
+    if (isFormValid) {
+      submitData()
+    }
+  }
+
   return (
-    <form className={styles.container} onSubmit={onFormSubmit}>
+    <form onSubmit={onFormSubmit}>
       <StreamEntryFields
         entryID={entryID}
         entryIdError={entryIdError}

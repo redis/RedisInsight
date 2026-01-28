@@ -106,6 +106,53 @@ const KeyList = forwardRef((props: Props, ref) => {
 
   const prevIncludeSize = useRef(shownColumns?.includes(BrowserColumns.Size))
   const prevIncludeTTL = useRef(shownColumns?.includes(BrowserColumns.TTL))
+  const cancelAllMetadataRequests = () => {
+    controller.current?.abort()
+  }
+
+  const getMetadata = useCallback(
+    (
+      initialStartIndex: number,
+      itemsInit: IKeyPropTypes[] = [],
+      forceRefresh?: boolean,
+    ): void => {
+      const isSomeNotUndefined = ({ type, size, length }: IKeyPropTypes) =>
+        (!commonFilterType && !isUndefined(type)) ||
+        !isUndefined(size) ||
+        !isUndefined(length)
+
+      let startIndex = initialStartIndex
+      let itemsToProcess = itemsInit
+
+      if (!forceRefresh) {
+        const firstEmptyItemIndex = findIndex(
+          itemsInit,
+          (item) => !isSomeNotUndefined(item),
+        )
+        if (firstEmptyItemIndex === -1) return
+
+        startIndex = initialStartIndex + firstEmptyItemIndex
+        itemsToProcess = itemsInit.slice(firstEmptyItemIndex)
+      }
+
+      const itemsToFetch = forceRefresh
+        ? itemsToProcess
+        : reject(itemsToProcess, isSomeNotUndefined)
+
+      dispatch(
+        fetchKeysMetadata(
+          itemsToFetch.map(({ name }) => name),
+          commonFilterType,
+          controller.current?.signal,
+          (loadedItems) => onSuccessFetchedMetadata(startIndex, loadedItems),
+          () => {
+            rerender({})
+          },
+        ),
+      )
+    },
+    [commonFilterType],
+  )
 
   useImperativeHandle(ref, () => ({
     handleLoadMoreItems(config: { startIndex: number; stopIndex: number }) {
@@ -170,10 +217,6 @@ const KeyList = forwardRef((props: Props, ref) => {
     prevIncludeSize.current = shownColumns.includes(BrowserColumns.Size)
     prevIncludeTTL.current = shownColumns.includes(BrowserColumns.TTL)
   }, [shownColumns])
-
-  const cancelAllMetadataRequests = () => {
-    controller.current?.abort()
-  }
 
   const NoItemsMessage = () => (
     <NoKeysMessage
@@ -259,6 +302,20 @@ const KeyList = forwardRef((props: Props, ref) => {
     }),
     [],
   )
+  const bufferFormatRows = (
+    startIndex: number,
+    lastIndex: number,
+  ): IKeyPropTypes[] => {
+    const newItems = bufferFormatRangeItems(
+      itemsRef.current,
+      startIndex,
+      lastIndex,
+      formatItem,
+    )
+    itemsRef.current.splice(startIndex, newItems.length, ...newItems)
+
+    return newItems
+  }
 
   const onRowsRendered = (startIndex: number, lastIndex: number) => {
     renderedRowsIndexesRef.current = { lastIndex, startIndex }
@@ -277,65 +334,6 @@ const KeyList = forwardRef((props: Props, ref) => {
     onRowsRendered(startIndex, lastIndex)
   }
   const onRowsRenderedDebounced = debounce(onRowsRenderedOverscan, 100)
-
-  const bufferFormatRows = (
-    startIndex: number,
-    lastIndex: number,
-  ): IKeyPropTypes[] => {
-    const newItems = bufferFormatRangeItems(
-      itemsRef.current,
-      startIndex,
-      lastIndex,
-      formatItem,
-    )
-    itemsRef.current.splice(startIndex, newItems.length, ...newItems)
-
-    return newItems
-  }
-
-  const getMetadata = useCallback(
-    (
-      initialStartIndex: number,
-      itemsInit: IKeyPropTypes[] = [],
-      forceRefresh?: boolean,
-    ): void => {
-      const isSomeNotUndefined = ({ type, size, length }: IKeyPropTypes) =>
-        (!commonFilterType && !isUndefined(type)) ||
-        !isUndefined(size) ||
-        !isUndefined(length)
-
-      let startIndex = initialStartIndex
-      let itemsToProcess = itemsInit
-
-      if (!forceRefresh) {
-        const firstEmptyItemIndex = findIndex(
-          itemsInit,
-          (item) => !isSomeNotUndefined(item),
-        )
-        if (firstEmptyItemIndex === -1) return
-
-        startIndex = initialStartIndex + firstEmptyItemIndex
-        itemsToProcess = itemsInit.slice(firstEmptyItemIndex)
-      }
-
-      const itemsToFetch = forceRefresh
-        ? itemsToProcess
-        : reject(itemsToProcess, isSomeNotUndefined)
-
-      dispatch(
-        fetchKeysMetadata(
-          itemsToFetch.map(({ name }) => name),
-          commonFilterType,
-          controller.current?.signal,
-          (loadedItems) => onSuccessFetchedMetadata(startIndex, loadedItems),
-          () => {
-            rerender({})
-          },
-        ),
-      )
-    },
-    [commonFilterType],
-  )
 
   const onSuccessFetchedMetadata = (
     startIndex: number,

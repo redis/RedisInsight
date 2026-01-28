@@ -31,13 +31,12 @@ import {
 
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { KeyDetailsHeaderName } from './components/key-details-header-name'
 import { KeyDetailsHeaderTTL } from './components/key-details-header-ttl'
 import { KeyDetailsHeaderDelete } from './components/key-details-header-delete'
 import { KeyDetailsHeaderSizeLength } from './components/key-details-header-size-length'
 
-import styles from './styles.module.scss'
+import * as S from './KeyDetailsHeader.styles'
 
 export interface KeyDetailsHeaderProps {
   onCloseKey: () => void
@@ -126,8 +125,8 @@ const KeyDetailsHeader = ({
   }
 
   return (
-    <FlexItem
-      className={`key-details-header ${styles.container}`}
+    <S.Container
+      className="key-details-header"
       data-testid="key-details-header"
     >
       {loading ? (
@@ -138,7 +137,7 @@ const KeyDetailsHeader = ({
         <AutoSizer disableHeight>
           {({ width = 0 }) => (
             <div style={{ width }}>
-              <Row gap="s" align="center" className={styles.keyFlexGroup}>
+              <Row gap="s" align="center">
                 <FlexItem>
                   <GroupBadge type={type} />
                 </FlexItem>
@@ -155,10 +154,9 @@ const KeyDetailsHeader = ({
                 <FlexItem>
                   {(!arePanelsCollapsed || isFullScreen) && (
                     <RiTooltip content="Close" position="left">
-                      <IconButton
+                      <S.CloseBtn
                         icon={CancelSlimIcon}
                         aria-label="Close key"
-                        className={styles.closeBtn}
                         onClick={() => onCloseKey()}
                         data-testid="close-key-btn"
                       />
@@ -166,25 +164,20 @@ const KeyDetailsHeader = ({
                   )}
                 </FlexItem>
               </Row>
-              <Row
-                className={styles.groupSecondLine}
-                gap="m"
-                align="start"
-                justify="between"
-              >
+              <S.GroupSecondLine gap="m" align="start" justify="between">
                 <Row gap="l">
                   <KeyDetailsHeaderSizeLength width={width} />
                   <KeyDetailsHeaderTTL onEditTTL={handleEditTTL} />
                 </Row>
                 <FlexItem>
-                  <div className={styles.subtitleActionBtns}>
+                  <S.SubtitleActionBtns>
                     <AutoRefresh
                       postfix={type}
                       disabled={isRefreshDisabled}
                       loading={loading || refreshing}
                       lastRefreshTime={lastRefreshTime}
                       displayText={width > HIDE_LAST_REFRESH}
-                      containerClassName={styles.actionBtn}
+                      containerClassName="actionBtn"
                       onRefresh={handleRefreshKey}
                       onEnableAutoRefresh={handleEnableAutoRefresh}
                       onChangeAutoRefreshRate={handleChangeAutoRefreshRate}
@@ -192,14 +185,14 @@ const KeyDetailsHeader = ({
                     />
                     {!isUndefined(Actions) && <Actions width={width} />}
                     <KeyDetailsHeaderDelete onDelete={handleDeleteKey} />
-                  </div>
+                  </S.SubtitleActionBtns>
                 </FlexItem>
-              </Row>
+              </S.GroupSecondLine>
             </div>
           )}
         </AutoSizer>
       )}
-    </FlexItem>
+    </S.Container>
   )
 }
 

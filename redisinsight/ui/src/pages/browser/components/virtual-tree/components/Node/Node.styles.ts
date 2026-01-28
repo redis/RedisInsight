@@ -8,6 +8,7 @@ export const NodeContainer = styled.div<
   }
 >`
   border-left: 3px solid transparent;
+  cursor: pointer;
 
   &:hover {
     background-color: ${({ theme }) =>
@@ -42,6 +43,8 @@ export const NodeContent = styled(Row).attrs({
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  height: 100%;
+  flex-grow: 1;
 
   .${FOLDER_ANCHOR_CLASS} {
     flex: 1;
