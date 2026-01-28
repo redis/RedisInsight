@@ -58,7 +58,12 @@ export class AzureAutodiscoveryController {
     name: 'accountId',
     description: 'Azure account ID (homeAccountId)',
   })
-  @ApiResponse({ status: 200, description: 'Returns list of subscriptions' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns list of subscriptions',
+    type: AzureSubscription,
+    isArray: true,
+  })
   @ApiResponse({ status: 401, description: 'Not authenticated' })
   async listSubscriptions(
     @Query('accountId') accountId: string,
@@ -76,6 +81,8 @@ export class AzureAutodiscoveryController {
   @ApiResponse({
     status: 200,
     description: 'Returns list of databases in subscription',
+    type: AzureRedisDatabase,
+    isArray: true,
   })
   @ApiResponse({ status: 400, description: 'Invalid subscription ID format' })
   @ApiResponse({ status: 401, description: 'Not authenticated' })
@@ -101,7 +108,11 @@ export class AzureAutodiscoveryController {
     name: 'databaseId',
     description: 'Azure resource ID of the database',
   })
-  @ApiResponse({ status: 200, description: 'Returns connection details' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns connection details',
+    type: AzureConnectionDetails,
+  })
   @ApiResponse({ status: 401, description: 'Not authenticated' })
   @ApiResponse({ status: 404, description: 'Failed to get connection details' })
   async getConnectionDetails(
