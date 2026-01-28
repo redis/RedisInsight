@@ -213,6 +213,31 @@ describe('AzureAutodiscoveryService', () => {
 
       expect(result).toEqual([]);
     });
+
+    it('should handle paginated responses', async () => {
+      const mockSubsPage1 = [
+        createMockSubscription(),
+        createMockSubscription(),
+      ];
+      const mockSubsPage2 = [createMockSubscription()];
+      const nextLink =
+        'https://management.azure.com/subscriptions?$skiptoken=abc123';
+
+      mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
+        token: 'mock-token',
+        expiresOn: new Date(),
+        account: createMockAccount(),
+      });
+      mockAxiosInstance.get
+        .mockResolvedValueOnce({ data: { value: mockSubsPage1, nextLink } })
+        .mockResolvedValueOnce({ data: { value: mockSubsPage2 } });
+
+      const result = await service.listSubscriptions('account-id');
+
+      expect(result).toHaveLength(3);
+      expect(mockAxiosInstance.get).toHaveBeenCalledTimes(2);
+      expect(mockAxiosInstance.get).toHaveBeenNthCalledWith(2, nextLink);
+    });
   });
 
   describe('listDatabasesInSubscription', () => {

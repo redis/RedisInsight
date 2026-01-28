@@ -46,6 +46,28 @@ export class AzureAutodiscoveryService {
     });
   }
 
+  /**
+   * Fetches all pages from a paginated Azure API endpoint.
+   * Azure REST APIs return paginated results with a `nextLink` property when
+   * there are more items than fit in a single response (typically 1000+ items).
+   * @see https://learn.microsoft.com/en-us/rest/api/azure/#async-operations-throttling-and-paging
+   */
+  private async fetchAllPages<T>(
+    client: AxiosInstance,
+    initialUrl: string,
+  ): Promise<T[]> {
+    const allItems: T[] = [];
+    let url: string | null = initialUrl;
+
+    while (url) {
+      const response = await client.get(url);
+      allItems.push(...(response.data.value || []));
+      url = response.data.nextLink || null;
+    }
+
+    return allItems;
+  }
+
   async listSubscriptions(accountId: string): Promise<AzureSubscription[]> {
     const client = await this.getAuthenticatedClient(accountId);
 
@@ -54,9 +76,12 @@ export class AzureAutodiscoveryService {
     }
 
     try {
-      const response = await client.get(AzureApiUrls.getSubscriptions());
+      const subscriptions = await this.fetchAllPages<any>(
+        client,
+        AzureApiUrls.getSubscriptions(),
+      );
 
-      return (response.data.value || []).map((sub: any) => ({
+      return subscriptions.map((sub: any) => ({
         subscriptionId: sub.subscriptionId,
         displayName: sub.displayName,
         state: sub.state,
@@ -158,11 +183,12 @@ export class AzureAutodiscoveryService {
     subscriptionId: string,
   ): Promise<AzureRedisDatabase[]> {
     try {
-      const response = await client.get(
+      const redisInstances = await this.fetchAllPages<any>(
+        client,
         AzureApiUrls.getStandardRedisInSubscription(subscriptionId),
       );
 
-      return (response.data.value || []).map((redis: any) =>
+      return redisInstances.map((redis: any) =>
         this.mapStandardRedis(redis, subscriptionId),
       );
     } catch (error: any) {
@@ -179,11 +205,10 @@ export class AzureAutodiscoveryService {
     subscriptionId: string,
   ): Promise<AzureRedisDatabase[]> {
     try {
-      const response = await client.get(
+      const clusters = await this.fetchAllPages<any>(
+        client,
         AzureApiUrls.getEnterpriseRedisInSubscription(subscriptionId),
       );
-
-      const clusters = response.data.value || [];
 
       if (clusters.length === 0) {
         return [];
@@ -239,10 +264,10 @@ export class AzureAutodiscoveryService {
     subscriptionId: string,
   ): Promise<AzureRedisDatabase[]> {
     const resourceGroup = this.extractResourceGroup(cluster.id);
-    const databases: AzureRedisDatabase[] = [];
 
     try {
-      const dbResponse = await client.get(
+      const dbs = await this.fetchAllPages<any>(
+        client,
         AzureApiUrls.getEnterpriseDatabases(
           subscriptionId,
           resourceGroup,
@@ -250,7 +275,7 @@ export class AzureAutodiscoveryService {
         ),
       );
 
-      for (const db of dbResponse.data.value || []) {
+      return dbs.map((db: any) => {
         const normalizedLocation = cluster.location
           .toLowerCase()
           .replace(/\s+/g, '');
@@ -262,7 +287,7 @@ export class AzureAutodiscoveryService {
             ? `${cluster.name}.${normalizedLocation}.redisenterprise.cache.azure.net`
             : `${cluster.name}-${db.name}.${normalizedLocation}.redisenterprise.cache.azure.net`);
 
-        databases.push({
+        return {
           id: db.id,
           name: `${cluster.name}/${db.name}`,
           subscriptionId,
@@ -274,16 +299,15 @@ export class AzureAutodiscoveryService {
           provisioningState: db.properties?.provisioningState,
           sku: cluster.sku,
           accessKeysAuthentication: db.properties?.accessKeysAuthentication,
-        });
-      }
+        };
+      });
     } catch (error: any) {
       this.logger.warn(
         `Failed to list databases in cluster ${cluster.name}`,
         error?.message,
       );
+      return [];
     }
-
-    return databases;
   }
 
   private extractResourceGroup(resourceId: string): string {
