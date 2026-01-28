@@ -4,7 +4,7 @@ import { merge } from 'lodash'
 import { MonacoLanguage } from 'uiSrc/constants'
 import { defaultMonacoOptions } from 'uiSrc/constants/monaco/monaco'
 import { CopyButton } from 'uiSrc/components/copy-button'
-import { CodeEditorWrapper } from 'uiSrc/components/code-editor-wrapper'
+import { CodeEditor } from 'uiSrc/components/base/code-editor'
 
 import { CommandViewProps } from './CommandView.types'
 import { COMMAND_VIEW_EDITOR_OPTIONS } from './CommandView.constants'
@@ -28,7 +28,7 @@ export const CommandView = ({
 
   return (
     <S.EditorWrapper className={className} data-testid={dataTestId}>
-      <CodeEditorWrapper
+      <CodeEditor
         language={language}
         value={command}
         options={editorOptions}
