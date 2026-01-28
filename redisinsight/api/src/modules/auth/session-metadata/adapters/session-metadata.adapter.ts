@@ -4,7 +4,11 @@ import { IoAdapter } from '@nestjs/platform-socket.io';
 import { MessageMappingProperties } from '@nestjs/websockets';
 import { Observable } from 'rxjs';
 import { Socket } from 'socket.io';
-import { DEFAULT_SESSION_ID, DEFAULT_USER_ID } from 'src/common/constants';
+import {
+  DEFAULT_ACCOUNT_ID,
+  DEFAULT_SESSION_ID,
+  DEFAULT_USER_ID,
+} from 'src/common/constants';
 import { SessionMetadata } from 'src/common/models';
 import { getUserRoom } from 'src/constants/websocket-rooms';
 
@@ -17,6 +21,7 @@ export class SessionMetadataAdapter extends IoAdapter {
   ) {
     const sessionMetadata: SessionMetadata = {
       userId: DEFAULT_USER_ID,
+      accountId: DEFAULT_ACCOUNT_ID,
       sessionId: DEFAULT_SESSION_ID,
     };
 

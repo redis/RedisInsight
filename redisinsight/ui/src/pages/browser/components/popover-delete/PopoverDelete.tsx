@@ -28,6 +28,8 @@ export interface Props {
   appendInfo?: JSX.Element | string | null
   testid?: string
   buttonLabel?: string
+  persistent?: boolean
+  customOutsideDetector?: boolean
 }
 
 const PopoverDelete = (props: Props) => {
@@ -46,6 +48,8 @@ const PopoverDelete = (props: Props) => {
     appendInfo,
     testid = '',
     buttonLabel,
+    persistent,
+    customOutsideDetector,
   } = props
 
   const isDisabled = isTruncatedString(item)
@@ -106,6 +110,7 @@ const PopoverDelete = (props: Props) => {
       onClick={(e) => e.stopPropagation()}
       title={header}
       message={text}
+      persistent={persistent}
       appendInfo={appendInfo}
       confirmButton={
         <DestructiveButton
@@ -117,6 +122,7 @@ const PopoverDelete = (props: Props) => {
           Remove
         </DestructiveButton>
       }
+      customOutsideDetector={customOutsideDetector}
     />
   )
 }

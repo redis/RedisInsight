@@ -6,33 +6,27 @@ import { Text } from 'uiSrc/components/base/text'
 import {
   bulkActionsDeleteOverviewSelector,
   bulkActionsDeleteSelector,
-  bulkActionsDeleteSummarySelector,
 } from 'uiSrc/slices/browser/bulkActions'
 import { keysSelector } from 'uiSrc/slices/browser/keys'
-import { getGroupTypeDisplay, NO_TYPE_NAME } from 'uiSrc/utils'
-import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import { Col } from 'uiSrc/components/base/layout/flex'
 
 import BulkDeleteFooter from './BulkDeleteFooter'
 import BulkDeleteSummary from './BulkDeleteSummary'
-import BulkDeleteSummaryButton from './BulkDeleteSummaryButton'
 import BulkActionsInfo from '../BulkActionsInfo'
 
 export interface Props {
   onCancel: () => void
 }
 
-const REPORTED_NO_TYPE_NAME = 'Any'
-
 const BulkDelete = (props: Props) => {
   const { onCancel } = props
   const { filter, search, isSearched, isFiltered } = useSelector(keysSelector)
   const { loading } = useSelector(bulkActionsDeleteSelector)
-  const { keys: deletedKeys } =
-    useSelector(bulkActionsDeleteSummarySelector) || {}
   const {
     status,
     filter: { match, type: filterType },
     progress,
+    error,
   } = useSelector(bulkActionsDeleteOverviewSelector) ?? { filter: {} }
 
   const [showPlaceholder, setShowPlaceholder] = useState<boolean>(
@@ -43,9 +37,7 @@ const BulkDelete = (props: Props) => {
     setShowPlaceholder(!status && !isSearched && !isFiltered)
   }, [status, isSearched, isFiltered])
 
-  const isCompleted = !isUndefined(status)
   const searchPattern = match || search || '*'
-  const keysType = getGroupTypeDisplay(filter)
 
   return (
     <>
@@ -57,25 +49,10 @@ const BulkDelete = (props: Props) => {
             filter={isUndefined(filterType) ? filter : filterType}
             status={status}
             progress={progress}
+            error={error}
           >
             <Col gap="l">
               <BulkDeleteSummary />
-
-              {isCompleted && (
-                <Row justify="end">
-                  <BulkDeleteSummaryButton
-                    deletedKeys={deletedKeys}
-                    pattern={searchPattern}
-                    keysType={
-                      keysType === NO_TYPE_NAME
-                        ? REPORTED_NO_TYPE_NAME
-                        : keysType
-                    }
-                  >
-                    Keys deleted
-                  </BulkDeleteSummaryButton>
-                </Row>
-              )}
             </Col>
           </BulkActionsInfo>
           <BulkDeleteFooter onCancel={onCancel} />

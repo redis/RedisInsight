@@ -1,7 +1,13 @@
 import React from 'react'
 import reactRouterDom from 'react-router-dom'
 import { cloneDeep } from 'lodash'
-import { render, screen, cleanup, mockedStore, fireEvent } from 'uiSrc/utils/test-utils'
+import {
+  render,
+  screen,
+  cleanup,
+  mockedStore,
+  fireEvent,
+} from 'uiSrc/utils/test-utils'
 
 import { Pages } from 'uiSrc/constants'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
@@ -110,8 +116,6 @@ describe('HomeTabs', () => {
 
     render(<HomeTabs />)
 
-    expect(
-      screen.queryByText('Redis Data Integration'),
-    ).not.toBeInTheDocument()
+    expect(screen.queryByText('Redis Data Integration')).not.toBeInTheDocument()
   })
 })

@@ -33,7 +33,10 @@ import CloneConnection from './components/CloneConnection'
 import FooterActions from './components/FooterActions'
 import { AddConnection, EditConnection, EditSentinelConnection } from './forms'
 
-import { ScrollableWrapper, ContentWrapper } from '../../styles.module'
+import {
+  ScrollableWrapper,
+  ContentWrapper,
+} from '../../ManualConnection.styles'
 
 export interface Props {
   formFields: DbConnectionInfo

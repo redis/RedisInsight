@@ -8,7 +8,7 @@ import {
 } from '../deps';
 import { Joi } from '../../helpers/test';
 import { BrowserHistoryMode } from 'src/common/constants';
-const { localDb, request, server, constants, rte } = deps;
+const { localDb, request, server, constants } = deps;
 
 // endpoint to test
 const endpoint = (instanceId = constants.TEST_INSTANCE_ID) =>

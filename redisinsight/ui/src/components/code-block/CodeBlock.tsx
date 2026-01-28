@@ -1,8 +1,7 @@
 import React, { HTMLAttributes, useMemo } from 'react'
 import cx from 'classnames'
 
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CopyIcon } from 'uiSrc/components/base/icons'
+import { CopyButton } from 'uiSrc/components/copy-button'
 import { useInnerText } from 'uiSrc/components/base/utils/hooks/inner-text'
 import styles from './styles.module.scss'
 
@@ -21,23 +20,20 @@ const CodeBlock = (props: Props) => {
     [innerTextString],
   )
 
-  const handleCopyClick = () => {
-    navigator?.clipboard?.writeText(innerText)
-  }
-
   return (
     <div className={cx(styles.wrapper, { [styles.isCopyable]: isCopyable })}>
       <pre className={cx(styles.pre, className)} ref={innerTextRef} {...rest}>
         {children}
       </pre>
       {isCopyable && (
-        <IconButton
-          onClick={handleCopyClick}
-          className={styles.copyBtn}
-          icon={CopyIcon}
-          data-testid="copy-code-btn"
-          aria-label="copy code"
-        />
+        <span className={styles.copyBtn}>
+          <CopyButton
+            copy={innerText}
+            withTooltip={false}
+            data-testid="copy-code"
+            aria-label="copy code"
+          />
+        </span>
       )}
     </div>
   )

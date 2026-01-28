@@ -353,14 +353,12 @@ describe('Config', () => {
       },
     })
     userSettingsSelector.mockImplementation(userSettingsSelectorMock)
-    
+
     render(<Config />)
-    
+
     // Check that setSettingsPopupState is called with false
     expect(store.getActions()).toEqual(
-      expect.arrayContaining([
-        setSettingsPopupState(false),
-      ])
+      expect.arrayContaining([setSettingsPopupState(false)]),
     )
   })
 })

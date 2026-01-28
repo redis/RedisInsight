@@ -47,13 +47,13 @@ export const RedisClusterInstanceFactory = Factory.define<InstanceRedisCluster>(
   },
 )
 
-export const RedisClusterInstanceAddedFactory = RedisClusterInstanceFactory.afterBuild(
-  (instance) => {
+export const RedisClusterInstanceAddedFactory =
+  RedisClusterInstanceFactory.afterBuild((instance) => {
     const statusAdded = faker.helpers.arrayElement([
       AddRedisDatabaseStatus.Success,
       AddRedisDatabaseStatus.Fail,
     ])
-    
+
     return {
       ...instance,
       uidAdded: faker.number.int({ min: 1, max: 999999 }),
@@ -63,5 +63,4 @@ export const RedisClusterInstanceAddedFactory = RedisClusterInstanceFactory.afte
           ? 'Successfully added'
           : faker.lorem.sentence(),
     }
-  },
-)
+  })

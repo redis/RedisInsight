@@ -2,6 +2,7 @@ import React, { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
+import styled from 'styled-components'
 import {
   getPipelineStatusAction,
   rdiPipelineActionSelector,
@@ -23,13 +24,12 @@ import {
 } from 'uiSrc/slices/interfaces'
 
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Theme } from 'uiSrc/components/base/theme/types'
 import DeployPipelineButton from '../buttons/deploy-pipeline-button'
 import ResetPipelineButton from '../buttons/reset-pipeline-button'
 import RdiConfigFileActionMenu from '../rdi-config-file-action-menu'
 import StopPipelineButton from '../buttons/stop-pipeline-button'
 import StartPipelineButton from '../buttons/start-pipeline-button/StartPipelineButton'
-import styled from 'styled-components'
-import { Theme } from 'uiSrc/components/base/theme/types'
 
 const VerticalDelimiter = styled(FlexItem)`
   border: ${({ theme }: { theme: Theme }) => theme.components.appBar.separator};
@@ -183,11 +183,7 @@ const PipelineActions = ({ collectorStatus, pipelineStatus }: Props) => {
         ) : null}
       </FlexItem>
       <FlexItem>
-        <DeployPipelineButton
-          loading={deployLoading}
-          disabled={disabled}
-          onReset={resetPipeline}
-        />
+        <DeployPipelineButton disabled={disabled} onReset={resetPipeline} />
       </FlexItem>
       <FlexItem>
         <RdiConfigFileActionMenu />

@@ -101,6 +101,7 @@ import RedisBloomDark from 'uiSrc/assets/img/modules/RedisBloomDark.svg?react'
 import RedisBloomLight from 'uiSrc/assets/img/modules/RedisBloomLight.svg?react'
 import RedisGears2Dark from 'uiSrc/assets/img/modules/RedisGears2Dark.svg?react'
 import RedisGears2Light from 'uiSrc/assets/img/modules/RedisGears2Light.svg?react'
+import RedisGears2Svg from 'uiSrc/assets/img/modules/RedisGears2.svg?react'
 import RedisGearsDark from 'uiSrc/assets/img/modules/RedisGearsDark.svg?react'
 import RedisGearsLight from 'uiSrc/assets/img/modules/RedisGearsLight.svg?react'
 import RedisGraphDark from 'uiSrc/assets/img/modules/RedisGraphDark.svg?react'
@@ -113,7 +114,9 @@ import RedisTimeSeriesDark from 'uiSrc/assets/img/modules/RedisTimeSeriesDark.sv
 import RedisTimeSeriesLight from 'uiSrc/assets/img/modules/RedisTimeSeriesLight.svg?react'
 import UnknownDark from 'uiSrc/assets/img/modules/UnknownDark.svg?react'
 import UnknownLight from 'uiSrc/assets/img/modules/UnknownLight.svg?react'
+import UnknownSvg from 'uiSrc/assets/img/modules/Unknown.svg?react'
 import FormatterSvg from 'uiSrc/assets/img/icons/formatter.svg?react'
+import VectorSetSvg from 'uiSrc/assets/img/icons/vector_sets.svg?react'
 
 // Import options icons
 import ActiveActiveDark from 'uiSrc/assets/img/options/Active-ActiveDark.svg?react'
@@ -266,6 +269,7 @@ export const RedisBloomDarkIcon = createIconComponent(RedisBloomDark)
 export const RedisBloomLightIcon = createIconComponent(RedisBloomLight)
 export const RedisGears2DarkIcon = createIconComponent(RedisGears2Dark)
 export const RedisGears2LightIcon = createIconComponent(RedisGears2Light)
+export const RedisGears2Icon = createIconComponent(RedisGears2Svg)
 export const RedisGearsDarkIcon = createIconComponent(RedisGearsDark)
 export const RedisGearsLightIcon = createIconComponent(RedisGearsLight)
 export const RedisGraphDarkIcon = createIconComponent(RedisGraphDark)
@@ -285,6 +289,8 @@ export const RedisTimeSeriesLightIcon =
   createIconComponent(RedisTimeSeriesLight)
 export const UnknownDarkIcon = createIconComponent(UnknownDark)
 export const UnknownLightIcon = createIconComponent(UnknownLight)
+export const UnknownModuleIcon = createIconComponent(UnknownSvg)
+export const VectorSetIcon = createIconComponent(VectorSetSvg)
 
 // Options icons
 export const ActiveActiveDarkIcon = createIconComponent(ActiveActiveDark)

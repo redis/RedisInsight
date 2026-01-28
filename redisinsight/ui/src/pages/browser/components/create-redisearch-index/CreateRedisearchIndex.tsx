@@ -1,5 +1,4 @@
 import { EuiComboBoxOptionOption } from '@elastic/eui/src/components/combo_box/types'
-import cx from 'classnames'
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
@@ -28,11 +27,11 @@ import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { HealthText, Text } from 'uiSrc/components/base/text'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
-import { RiPopover } from 'uiSrc/components/base'
+import { RiTooltip } from 'uiSrc/components/base'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { CreateRedisearchIndexDto } from 'apiSrc/modules/browser/redisearch/dto'
 import { Panel } from 'uiSrc/components/panel'
-import { HorizontalRule, Spacer } from 'uiSrc/components/base/layout'
+import { HorizontalRule } from 'uiSrc/components/base/layout'
 
 import { KEY_TYPE_OPTIONS, RedisearchIndexKeyType } from './constants'
 
@@ -71,6 +70,7 @@ const StyledContent = styled(Col)`
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
+  scrollbar-width: thin;
   overscroll-behavior: contain;
 `
 
@@ -88,8 +88,6 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
   const [fields, setFields] = useState<any[]>([
     initialFieldValue(fieldTypeOptions),
   ])
-
-  const [isInfoPopoverOpen, setIsInfoPopoverOpen] = useState<boolean>(false)
 
   const lastAddedIdentifier = useRef<HTMLInputElement>(null)
   const prevCountFields = useRef<number>(0)
@@ -177,49 +175,43 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
     fields.length === 1 && !item.identifier.length
 
   const IdentifierInfo = () => (
-    <RiPopover
-      anchorPosition="upCenter"
-      isOpen={isInfoPopoverOpen}
-      panelClassName={cx('popoverLikeTooltip')}
-      closePopover={() => setIsInfoPopoverOpen(false)}
-      button={
-        <IconButton
-          icon={InfoIcon}
-          id="identifier-info-icon"
-          aria-label="identifier info icon"
-          data-testid="identifier-info-icon"
-          onClick={() =>
-            setIsInfoPopoverOpen((isPopoverOpen) => !isPopoverOpen)
-          }
-        />
+    <RiTooltip
+      interactive
+      position="top"
+      content={
+        <Text>
+          <Link
+            variant="inline"
+            size="M"
+            href={getUtmExternalLink(
+              'https://redis.io/commands/ft.create/#SCHEMA',
+              {
+                campaign: 'browser_search',
+              },
+            )}
+            target="_blank"
+          >
+            Declares
+          </Link>
+          {' fields to index. '}
+          {keyTypeSelected === RedisearchIndexKeyType.HASH
+            ? 'Enter a hash field name.'
+            : 'Enter a JSON path expression.'}
+        </Text>
       }
     >
-      <>
-        <Link
-          variant="inline"
-          size="S"
-          href={getUtmExternalLink(
-            'https://redis.io/commands/ft.create/#SCHEMA',
-            {
-              campaign: 'browser_search',
-            },
-          )}
-          target="_blank"
-        >
-          Declares
-        </Link>
-        {' fields to index. '}
-        {keyTypeSelected === RedisearchIndexKeyType.HASH
-          ? 'Enter a hash field name.'
-          : 'Enter a JSON path expression.'}
-      </>
-    </RiPopover>
+      <IconButton
+        icon={InfoIcon}
+        id="identifier-info-icon"
+        aria-label="identifier info icon"
+        data-testid="identifier-info-icon"
+      />
+    </RiTooltip>
   )
 
   return (
     <>
-      <StyledContent gap="xl">
-        <Spacer size="xs" />
+      <StyledContent gap="l">
         <Row gap="m" grow={false}>
           <FlexItem grow>
             <FormField label="Index Name">
@@ -268,53 +260,57 @@ const CreateRedisearchIndex = ({ onClosePanel, onCreateIndex }: Props) => {
             />
           </FlexItem>
         </Row>
-        <HorizontalRule margin="s" colorVariable="separatorColor" />
-        <Col grow={false} gap="s">
+        <HorizontalRule margin="m" colorVariable="separatorColor" />
+        <Col grow={false} gap="m">
           <Row align="center" gap="xs">
             <Text>Identifier</Text>
             {IdentifierInfo()}
           </Row>
-          <AddMultipleFields
-            items={fields}
-            isClearDisabled={isClearDisabled}
-            onClickRemove={onClickRemove}
-            onClickAdd={addField}
-          >
-            {(item, index) => (
-              <Row align="center" gap="m">
-                <FlexItem grow>
-                  <FormField>
-                    <TextInput
-                      name={`identifier-${item.id}`}
-                      id={`identifier-${item.id}`}
-                      placeholder="Enter Identifier"
-                      value={item.identifier}
-                      onChange={(value) =>
-                        handleFieldChange('identifier', item.id, value)
-                      }
-                      ref={
-                        index === fields.length - 1 ? lastAddedIdentifier : null
-                      }
-                      autoComplete="off"
-                      data-testid={`identifier-${item.id}`}
-                    />
-                  </FormField>
-                </FlexItem>
-                <FlexItem grow>
-                  <FormField>
-                    <RiSelect
-                      options={fieldTypeOptions}
-                      value={item.fieldType}
-                      onChange={(value: string) =>
-                        handleFieldChange('fieldType', item.id, value)
-                      }
-                      data-testid={`field-type-${item.id}`}
-                    />
-                  </FormField>
-                </FlexItem>
-              </Row>
-            )}
-          </AddMultipleFields>
+          <div>
+            <AddMultipleFields
+              items={fields}
+              isClearDisabled={isClearDisabled}
+              onClickRemove={onClickRemove}
+              onClickAdd={addField}
+            >
+              {(item, index) => (
+                <Row align="center" gap="m">
+                  <FlexItem grow>
+                    <FormField>
+                      <TextInput
+                        name={`identifier-${item.id}`}
+                        id={`identifier-${item.id}`}
+                        placeholder="Enter Identifier"
+                        value={item.identifier}
+                        onChange={(value) =>
+                          handleFieldChange('identifier', item.id, value)
+                        }
+                        ref={
+                          index === fields.length - 1
+                            ? lastAddedIdentifier
+                            : null
+                        }
+                        autoComplete="off"
+                        data-testid={`identifier-${item.id}`}
+                      />
+                    </FormField>
+                  </FlexItem>
+                  <FlexItem grow>
+                    <FormField>
+                      <RiSelect
+                        options={fieldTypeOptions}
+                        value={item.fieldType}
+                        onChange={(value: string) =>
+                          handleFieldChange('fieldType', item.id, value)
+                        }
+                        data-testid={`field-type-${item.id}`}
+                      />
+                    </FormField>
+                  </FlexItem>
+                </Row>
+              )}
+            </AddMultipleFields>
+          </div>
         </Col>
       </StyledContent>
       <HorizontalRule margin="xs" colorVariable="separatorColor" />

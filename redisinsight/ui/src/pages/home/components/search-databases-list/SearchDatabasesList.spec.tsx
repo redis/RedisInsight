@@ -52,7 +52,7 @@ const connectedInstancesMock: Instance[] = [
     lastConnection: new Date(),
     tags: [],
     version: '',
-  }
+  },
 ]
 
 const otherInstancesMock: Instance[] = [
@@ -94,10 +94,14 @@ const otherInstancesMock: Instance[] = [
     connectionType: undefined,
     tags: [],
     version: '',
-  }
+  },
 ]
 
-const mockInitialState = (state: RootState, instances: Instance[], options?: { selectedTags?: Set<string> }) => {
+const mockInitialState = (
+  state: RootState,
+  instances: Instance[],
+  options?: { selectedTags?: Set<string> },
+) => {
   ;(useSelector as jest.Mock).mockImplementation(
     (callback: (arg0: RootState) => RootState) =>
       callback({
@@ -110,7 +114,8 @@ const mockInitialState = (state: RootState, instances: Instance[], options?: { s
           },
           tags: {
             ...state.connections.tags,
-            selectedTags: options?.selectedTags ?? state.connections.tags?.selectedTags,
+            selectedTags:
+              options?.selectedTags ?? state.connections.tags?.selectedTags,
           },
         },
       }),
@@ -133,10 +138,7 @@ beforeEach(() => {
 
 describe('SearchDatabasesList', () => {
   it('should render', () => {
-    mockInitialState(
-      store.getState(),
-      connectedInstancesMock
-    )
+    mockInitialState(store.getState(), connectedInstancesMock)
     expect(render(<SearchDatabasesList />)).toBeTruthy()
   })
 
@@ -146,8 +148,8 @@ describe('SearchDatabasesList', () => {
       instancesMock: connectedInstancesMock,
       expectedInstances: [
         { ...connectedInstancesMock[0], visible: false },
-        { ...connectedInstancesMock[1], visible: false }
-      ]
+        { ...connectedInstancesMock[1], visible: false },
+      ],
     },
     {
       description: 'with other than connected connectionType',
@@ -155,38 +157,38 @@ describe('SearchDatabasesList', () => {
       expectedInstances: [
         { ...otherInstancesMock[0], visible: false },
         { ...otherInstancesMock[1], visible: false },
-        { ...otherInstancesMock[2], visible: false }
-      ]
-    }
-  ])('should call loadInstancesSuccess with all instances hidden after typing value not matching anything ($description)', async ({ instancesMock, expectedInstances }) => {
-    mockInitialState(
-      store.getState(),
-      instancesMock
-    )
+        { ...otherInstancesMock[2], visible: false },
+      ],
+    },
+  ])(
+    'should call loadInstancesSuccess with all instances hidden after typing value not matching anything ($description)',
+    async ({ instancesMock, expectedInstances }) => {
+      mockInitialState(store.getState(), instancesMock)
 
-    render(<SearchDatabasesList />)
+      render(<SearchDatabasesList />)
 
-    await simulateUserTypedInSearchBox('value_which_matches_nothing')
+      await simulateUserTypedInSearchBox('value_which_matches_nothing')
 
-    const expectedActions = [loadInstancesSuccess(expectedInstances)]
-    expect(storeMock.getActions()).toEqual(expectedActions)
-  })
+      const expectedActions = [loadInstancesSuccess(expectedInstances)]
+      expect(storeMock.getActions()).toEqual(expectedActions)
+    },
+  )
 
   it('should call loadInstancesSuccess with not matching instances hidden when selected tags in state are provided', async () => {
-    mockInitialState(
-      store.getState(),
-      connectedInstancesMock,
-      { selectedTags: new Set(['env:prod']) }
-    )
+    mockInitialState(store.getState(), connectedInstancesMock, {
+      selectedTags: new Set(['env:prod']),
+    })
 
     const expectedInstancesAfterRendering = [
       { ...connectedInstancesMock[0], visible: true },
-      { ...connectedInstancesMock[1], visible: false }
+      { ...connectedInstancesMock[1], visible: false },
     ]
 
     render(<SearchDatabasesList />)
 
-    const expectedActions = [loadInstancesSuccess(expectedInstancesAfterRendering)]
+    const expectedActions = [
+      loadInstancesSuccess(expectedInstancesAfterRendering),
+    ]
     expect(storeMock.getActions()).toEqual(expectedActions)
   })
 })

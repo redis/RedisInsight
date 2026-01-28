@@ -179,6 +179,7 @@ export enum RedisDefaultModules {
   FTL = 'ftl',
   RedisGears = 'redisgears',
   RedisGears2 = 'redisgears_2',
+  VectorSet = 'vectorset',
 }
 
 export enum RedisCustomModulesName {
@@ -216,6 +217,7 @@ export const DATABASE_LIST_MODULES_TEXT = Object.freeze({
   [RedisDefaultModules.SearchLight]: 'Redis Query Engine',
   [RedisDefaultModules.FT]: 'Redis Query Engine',
   [RedisDefaultModules.FTL]: 'Redis Query Engine',
+  [RedisDefaultModules.VectorSet]: 'Vector Set',
 })
 
 export enum AddRedisClusterDatabaseOptions {
@@ -319,6 +321,7 @@ export interface DatabaseConfigInfo {
   networkInKbps?: Nullable<number>
   networkOutKbps?: Nullable<number>
   cpuUsagePercentage?: Nullable<number>
+  maxCpuUsagePercentage?: Nullable<number>
   serverName?: Nullable<string>
   cloudDetails?: {
     cloudId: number

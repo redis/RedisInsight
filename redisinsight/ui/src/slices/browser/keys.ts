@@ -875,6 +875,7 @@ export function refreshKeyInfoAction(key: RedisResponseBuffer) {
       if (status && isStatusNotFoundError(status)) {
         dispatch(resetKeyInfo())
         dispatch(deleteKeyFromList(key))
+        dispatch(setBrowserSelectedKey(null))
       }
     }
   }

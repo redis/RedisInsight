@@ -15,18 +15,19 @@ const REGIONS = [
   'ap-southeast-1',
 ] as const
 
-export const RedisCloudSubscriptionFactory = Factory.define<RedisCloudSubscription>(() => {
-  const region = faker.helpers.arrayElement([...REGIONS])
-  const provider = faker.helpers.arrayElement([...PROVIDERS])
+export const RedisCloudSubscriptionFactory =
+  Factory.define<RedisCloudSubscription>(() => {
+    const region = faker.helpers.arrayElement([...REGIONS])
+    const provider = faker.helpers.arrayElement([...PROVIDERS])
 
-  return {
-    id: faker.number.int({ min: 100000, max: 99999999 }),
-    name: `${faker.word.noun()}-${faker.number.int({ min: 1000, max: 99999 })}.${region}.cloud`,
-    type: faker.helpers.enumValue(RedisCloudSubscriptionType),
-    numberOfDatabases: faker.number.int({ min: 0, max: 20 }),
-    provider,
-    region,
-    status: faker.helpers.enumValue(RedisCloudSubscriptionStatus),
-    free: faker.datatype.boolean(),
-  }
-})
+    return {
+      id: faker.number.int({ min: 100000, max: 99999999 }),
+      name: `${faker.word.noun()}-${faker.number.int({ min: 1000, max: 99999 })}.${region}.cloud`,
+      type: faker.helpers.enumValue(RedisCloudSubscriptionType),
+      numberOfDatabases: faker.number.int({ min: 0, max: 20 }),
+      provider,
+      region,
+      status: faker.helpers.enumValue(RedisCloudSubscriptionStatus),
+      free: faker.datatype.boolean(),
+    }
+  })

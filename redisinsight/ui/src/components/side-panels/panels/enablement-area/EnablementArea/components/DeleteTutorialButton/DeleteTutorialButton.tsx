@@ -7,6 +7,8 @@ import { DeleteIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiPopover } from 'uiSrc/components/base'
+
+import * as S from './DeleteTutorialButton.styles'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -20,7 +22,10 @@ const DeleteTutorialButton = (props: Props) => {
   const { id, label, onDelete, isLoading } = props
   const [isPopoverDeleteOpen, setIsPopoverDeleteOpen] = useState<boolean>(false)
 
-  const handleClickDelete = () => {
+  const handleClickDelete = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    e.stopPropagation()
     setIsPopoverDeleteOpen((v) => !v)
   }
 
@@ -32,14 +37,13 @@ const DeleteTutorialButton = (props: Props) => {
       closePopover={() => setIsPopoverDeleteOpen(false)}
       panelPaddingSize="l"
       button={
-        <div
-          className="group-header__btn group-header__delete-btn"
+        <S.GroupHeaderButton
           role="presentation"
           onClick={handleClickDelete}
           data-testid={`delete-tutorial-icon-${id}`}
         >
           <RiIcon size="m" type="DeleteIcon" />
-        </div>
+        </S.GroupHeaderButton>
       }
       onClick={(e) => e.stopPropagation()}
       data-testid={`delete-tutorial-popover-${id}`}

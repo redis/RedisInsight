@@ -67,5 +67,5 @@ export const openNewWindowDatabase = (location: string) => {
 }
 
 export const handleCopy = (text = '') => {
-  navigator.clipboard.writeText(text)
+  navigator?.clipboard?.writeText(text)
 }

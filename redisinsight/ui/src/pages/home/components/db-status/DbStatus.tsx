@@ -12,9 +12,8 @@ import {
   TelemetryEvent,
 } from 'uiSrc/telemetry'
 import { RiTooltip } from 'uiSrc/components'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Indicator } from 'uiSrc/components/base/text/text.styles'
-import { Row } from 'uiSrc/components/base/layout/flex'
+import { Col } from 'uiSrc/components/base/layout/flex'
 import {
   CHECK_CLOUD_DATABASE,
   WARNING_WITH_CAPABILITY,
@@ -127,12 +126,7 @@ const WarningTooltipContent = (props: WarningTooltipProps) => {
     },
   })
 
-  return (
-    <Row gap="l">
-      <RiIcon type="AlarmIcon" customSize="50px" />
-      <div>{content}</div>
-    </Row>
-  )
+  return <Col>{content}</Col>
 }
 
 export default DbStatus

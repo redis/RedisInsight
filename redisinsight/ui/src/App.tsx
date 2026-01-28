@@ -8,6 +8,7 @@ import { removePagePlaceholder } from 'uiSrc/utils'
 import MonacoLanguages from 'uiSrc/components/monaco-laguages'
 import AppInit from 'uiSrc/components/init/AppInit'
 import { Page, PageBody } from 'uiSrc/components/base/layout/page'
+import { useSystemThemeListener } from 'uiSrc/services/hooks/useSystemThemeListener'
 import { Pages, Theme } from './constants'
 import { themeService } from './services'
 import {
@@ -19,7 +20,6 @@ import {
 } from './components'
 import { ThemeProvider } from './contexts/themeContext'
 import MainComponent from './components/main/MainComponent'
-import ThemeComponent from './components/theme/ThemeComponent'
 import MonacoEnvironmentInitializer from './components/MonacoEnvironmentInitializer/MonacoEnvironmentInitializer'
 import GlobalDialogs from './components/global-dialogs'
 import NotFoundErrorPage from './pages/not-found-error/NotFoundErrorPage'
@@ -49,9 +49,9 @@ const App = ({ children }: { children?: ReactElement[] }) => {
       removePagePlaceholder()
     }
   }, [serverLoading])
+  useSystemThemeListener()
   return (
     <div className="main-container">
-      <ThemeComponent />
       <MonacoEnvironmentInitializer />
       <Switch>
         <Route exact path={Pages.notFound} component={NotFoundErrorPage} />

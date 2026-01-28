@@ -37,7 +37,7 @@ import { ChevronLeftIcon } from 'uiSrc/components/base/icons'
 import { FooterDatabaseForm } from 'uiSrc/components/form-dialog/FooterDatabaseForm'
 import { Title } from 'uiSrc/components/base/text'
 
-import { FixedWrapper } from '../styles.module'
+import { FixedWrapper } from '../ManualConnection.styles'
 
 export interface Props {
   editMode: boolean

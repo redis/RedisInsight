@@ -25,37 +25,6 @@
       white-space: nowrap;
       text-overflow: ellipsis;
 
-      &__btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        width: 24px;
-        height: 24px;
-        border-radius: 4px;
-        cursor: pointer;
-
-        &:hover {
-          color: var(--euiColorPrimaryText);
-          background-color: var(--euiColorSecondary);
-        }
-      }
-
-      &__delete-btn {
-        svg {
-          width: 14px;
-          height: 14px;
-        }
-
-        &:hover {
-          color: var(--euiColorPrimaryText);
-          background-color: var(--euiColorSecondary);
-        }
-      }
-
-      .euiIcon {
-        margin-right: 4px;
-      }
     }
 
     .divider {

@@ -6,8 +6,7 @@ import { AllIconsType } from 'uiSrc/components/base/icons/RiIcon'
 
 // Define the type for each module info entry
 export interface ModuleInfo {
-  iconDark: AllIconsType
-  iconLight: AllIconsType
+  icon: AllIconsType
   text: string
 }
 
@@ -16,48 +15,37 @@ export type ModulesInfoType = {
   [Key in RedisDefaultModules]: ModuleInfo
 }
 
-const rediSearchIcons: {
-  iconDark: AllIconsType
-  iconLight: AllIconsType
-} = {
-  iconDark: 'QuerySearchIcon',
-  iconLight: 'QuerySearchIcon',
+const rediSearchIcons: Omit<ModuleInfo, 'text'> = {
+  icon: 'QuerySearchIcon',
 }
 
 export const DEFAULT_MODULES_INFO: ModulesInfoType = {
   [RedisDefaultModules.AI]: {
-    iconDark: 'RedisAiIcon',
-    iconLight: 'RedisAiIcon',
+    icon: 'RedisAiIcon',
     text: DATABASE_LIST_MODULES_TEXT[RedisDefaultModules.AI],
   },
   [RedisDefaultModules.Bloom]: {
-    iconDark: 'ProbabilisticIcon',
-    iconLight: 'ProbabilisticIcon',
+    icon: 'ProbabilisticIcon',
     text: DATABASE_LIST_MODULES_TEXT[RedisDefaultModules.Bloom],
   },
   [RedisDefaultModules.Gears]: {
-    iconDark: 'RedisGearsIcon',
-    iconLight: 'RedisGearsIcon',
+    icon: 'RedisGearsIcon',
     text: DATABASE_LIST_MODULES_TEXT[RedisDefaultModules.Gears],
   },
   [RedisDefaultModules.Graph]: {
-    iconDark: 'RedisGraphIcon',
-    iconLight: 'RedisGraphIcon',
+    icon: 'RedisGraphIcon',
     text: DATABASE_LIST_MODULES_TEXT[RedisDefaultModules.Graph],
   },
   [RedisDefaultModules.RedisGears]: {
-    iconDark: 'RedisGearsIcon',
-    iconLight: 'RedisGearsIcon',
+    icon: 'RedisGearsIcon',
     text: DATABASE_LIST_MODULES_TEXT[RedisDefaultModules.RedisGears],
   },
   [RedisDefaultModules.RedisGears2]: {
-    iconDark: 'RedisGears2DarkIcon',
-    iconLight: 'RedisGears2LightIcon',
+    icon: 'RedisGears2Icon',
     text: DATABASE_LIST_MODULES_TEXT[RedisDefaultModules.RedisGears2],
   },
   [RedisDefaultModules.ReJSON]: {
-    iconDark: 'JsonIcon',
-    iconLight: 'JsonIcon',
+    icon: 'JsonIcon',
     text: DATABASE_LIST_MODULES_TEXT[RedisDefaultModules.ReJSON],
   },
   [RedisDefaultModules.Search]: {
@@ -77,8 +65,11 @@ export const DEFAULT_MODULES_INFO: ModulesInfoType = {
     text: DATABASE_LIST_MODULES_TEXT[RedisDefaultModules.FTL],
   },
   [RedisDefaultModules.TimeSeries]: {
-    iconDark: 'TimeSeriesIcon',
-    iconLight: 'TimeSeriesIcon',
+    icon: 'TimeSeriesIcon',
     text: DATABASE_LIST_MODULES_TEXT[RedisDefaultModules.TimeSeries],
+  },
+  [RedisDefaultModules.VectorSet]: {
+    icon: 'VectorSetIcon',
+    text: DATABASE_LIST_MODULES_TEXT[RedisDefaultModules.VectorSet],
   },
 }

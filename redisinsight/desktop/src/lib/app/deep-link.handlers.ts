@@ -1,6 +1,7 @@
 import log from 'electron-log'
 import { parse } from 'url'
 import {
+  azureDeepLinkHandler,
   cloudDeepLinkHandler,
   focusWindow,
   getWindows,
@@ -23,6 +24,9 @@ export const deepLinkHandler = async (
     try {
       const url = parse(from, true)
       switch (url?.hostname) {
+        case 'azure':
+          await azureDeepLinkHandler(url)
+          break
         case 'cloud':
           await cloudDeepLinkHandler(url)
           break

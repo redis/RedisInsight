@@ -10,16 +10,16 @@ import {
 } from 'uiSrc/telemetry'
 import { workbenchCustomTutorialsSelector } from 'uiSrc/slices/workbench/wb-custom-tutorials'
 import { EAItemActions } from 'uiSrc/constants'
-import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 
 import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
-import { RiTooltip, OnboardingTour } from 'uiSrc/components'
+import { RiTooltip } from 'uiSrc/components'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 
 import DeleteTutorialButton from '../DeleteTutorialButton'
 
+import * as S from './Group.styles'
 import './styles.scss'
 
 export interface Props {
@@ -33,9 +33,9 @@ export interface Props {
   initialIsOpen?: boolean
   forceState?: 'open' | 'closed'
   onToggle?: (isOpen: boolean) => void
-  isPageOpened?: boolean
   isShowActions?: boolean
   isShowFolder?: boolean
+  hasChildren?: boolean
 }
 
 const Group = (props: Props) => {
@@ -51,8 +51,8 @@ const Group = (props: Props) => {
     onToggle,
     onCreate,
     onDelete,
-    isPageOpened,
     isShowFolder,
+    hasChildren = true,
   } = props
   const { deleting: deletingCustomTutorials } = useSelector(
     workbenchCustomTutorialsSelector,
@@ -87,25 +87,17 @@ const Group = (props: Props) => {
   const actionsContent = (
     <>
       {actions?.includes(EAItemActions.Create) &&
+        hasChildren &&
         (isGroupOpen || forceState === 'open') && (
-          <OnboardingTour
-            options={ONBOARDING_FEATURES.EXPLORE_CUSTOM_TUTORIALS}
-            anchorPosition="downLeft"
-            anchorWrapperClassName="onboardingPopoverAnchor"
-            panelClassName={cx({ hide: isPageOpened })}
-            preventPropagation
-          >
-            <RiTooltip content="Upload Tutorial">
-              <div
-                className="group-header__btn group-header__create-btn"
-                role="presentation"
-                onClick={handleCreate}
-                data-testid="open-upload-tutorial-btn"
-              >
-                <RiIcon type="PlusSlimIcon" />
-              </div>
-            </RiTooltip>
-          </OnboardingTour>
+          <RiTooltip content="Upload tutorial">
+            <S.GroupHeaderButton
+              role="presentation"
+              onClick={handleCreate}
+              data-testid="open-upload-tutorial-btn"
+            >
+              <RiIcon type="PlusSlimIcon" size="m" />
+            </S.GroupHeaderButton>
+          </RiTooltip>
         )}
       {actions?.includes(EAItemActions.Delete) && (
         <DeleteTutorialButton
@@ -127,7 +119,7 @@ const Group = (props: Props) => {
       label={
         <Row align="end" justify="start" gap="s">
           {isShowFolder && (
-            <RiIcon type={isGroupOpen ? 'KnowledgeBaseIcon' : 'FolderIcon'} />
+            <RiIcon type={isGroupOpen ? 'FolderOpenIcon' : 'FolderIcon'} />
           )}
 
           <Text className="group-header" size="m">
@@ -136,10 +128,6 @@ const Group = (props: Props) => {
         </Row>
       }
       onOpenChange={handleOpen}
-      style={{
-        whiteSpace: 'nowrap',
-        width: 'auto',
-      }}
       className={cx({ withBorder })}
       actions={isShowActions ? actionsContent : null}
     >

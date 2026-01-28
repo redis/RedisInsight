@@ -39,10 +39,11 @@ describe('DatabaseCell', () => {
   it('should apply custom className', () => {
     const name = 'test-db'
     const customClass = 'custom-class'
-    const { container } = render(<DatabaseCell name={name} className={customClass} />)
+    const { container } = render(
+      <DatabaseCell name={name} className={customClass} />,
+    )
 
     const element = container.querySelector(`.${customClass}`)
     expect(element).toBeInTheDocument()
   })
 })
-

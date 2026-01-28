@@ -215,10 +215,11 @@ export class BrowserPage extends InstancePage {
     keysSummary = Selector('[data-testid=keys-summary]');
     multiSearchArea = Selector(this.cssFilteringLabel);
     keyDetailsHeader = Selector('[data-testid=key-details-header]');
+    keysContainer = Selector('[id=keys]');
     keyListTable = Selector('[data-testid=keyList-table]');
     keyListMessage = Selector('[data-testid=no-result-found-msg]');
     keyDetailsTable = Selector('[data-testid=key-details]');
-    keyNameFormDetails = Selector('[data-testid=key-name-text]');
+    keyNameFormDetails = Selector('p[data-testid=edit-key-input]');
     keyDetailsTTL = Selector('[data-testid=key-ttl-text]');
     progressLine = Selector('div.euiProgress');
     progressKeyList = Selector('[data-testid=progress-key-list]');
@@ -244,7 +245,7 @@ export class BrowserPage extends InstancePage {
     jsonValue = Selector('[data-testid=value-as-json]');
     stringValueAsJson = Selector(this.cssJsonValue);
     // POPUPS
-    changeValueWarning = Selector('[data-testid=approve-popover]');
+    changeValueWarning = Selector('[data-testid=confirm-popover]');
     // TABLE
     keyListItem = Selector('[role=rowgroup] [role=row]');
     // Dialog

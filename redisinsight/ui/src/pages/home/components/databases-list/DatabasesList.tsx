@@ -3,7 +3,9 @@ import React, { memo } from 'react'
 import { Table } from 'uiSrc/components/base/layout/table'
 import {
   handleCheckConnectToInstance,
+  handlePaginationChange,
   handleSortingChange,
+  getDefaultPagination,
 } from './methods/handlers'
 import BulkItemsActions from './components/BulkItemsActions/BulkItemsActions'
 import { DEFAULT_SORTING } from './DatabasesList.config'
@@ -34,6 +36,8 @@ const DatabasesList = () => {
         onRowSelectionChange={setRowSelection}
         rowSelection={rowSelection}
         onSortingChange={handleSortingChange}
+        defaultPagination={getDefaultPagination()}
+        onPaginationChange={handlePaginationChange}
         defaultSorting={DEFAULT_SORTING}
         maxHeight="60rem" // this enables vertical scroll
       />

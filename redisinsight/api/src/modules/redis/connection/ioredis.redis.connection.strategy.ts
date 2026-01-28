@@ -52,6 +52,7 @@ export class IoredisRedisConnectionStrategy extends RedisConnectionStrategy {
       port,
       username,
       password,
+      family: 0, // Enable dual-stack IPv4/IPv6 (auto-detect)
       connectTimeout: timeout,
       db: isNumber(clientMetadata.db) ? clientMetadata.db : db,
       connectionName:

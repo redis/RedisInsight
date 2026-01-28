@@ -1,13 +1,4 @@
-import {
-  describe,
-  expect,
-  it,
-  deps,
-  validateApiCall,
-  before,
-  _,
-  getMainCheckFn,
-} from '../deps';
+import { describe, expect, deps, before, _, getMainCheckFn } from '../deps';
 import { Joi } from '../../helpers/test';
 const { localDb, request, server, constants, rte } = deps;
 

@@ -29,7 +29,7 @@ import {
 import { RiTooltip } from 'uiSrc/components'
 import { HostInfoTooltipContent } from '../../host-info-tooltip-content/HostInfoTooltipContent'
 
-import { ScrollableWrapper } from '../../styles.module'
+import { ScrollableWrapper } from '../../ManualConnection.styles'
 
 export interface Props {
   host: string

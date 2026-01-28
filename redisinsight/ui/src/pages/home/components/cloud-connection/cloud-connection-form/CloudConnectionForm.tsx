@@ -28,7 +28,7 @@ import { RiRadioGroup } from 'uiSrc/components/base/forms/radio-group/RadioGroup
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { ICloudConnectionSubmit } from '../CloudConnectionFormWrapper'
 
-import { ScrollableWrapper } from '../../styles.module'
+import { ScrollableWrapper } from '../../ManualConnection.styles'
 
 export interface Props {
   accessKey: string

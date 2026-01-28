@@ -182,11 +182,7 @@ const Config = () => {
           <FlexItem grow>
             {pipelineLoading ? (
               <Col grow data-testid="rdi-config-loading">
-                <Loader
-                  color="secondary"
-                  size="l"
-                  loaderText="Loading..."
-                />
+                <Loader color="secondary" size="l" loaderText="Loading..." />
               </Col>
             ) : (
               <MonacoYaml
@@ -202,7 +198,8 @@ const Config = () => {
           <Row grow={false} justify="end">
             <PrimaryButton
               onClick={testConnections}
-              loading={testingConnections || pipelineLoading}
+              loading={testingConnections}
+              disabled={pipelineLoading}
               aria-labelledby="test target connections"
               data-testid="rdi-test-connection-btn"
             >

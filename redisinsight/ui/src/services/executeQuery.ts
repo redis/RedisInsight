@@ -1,5 +1,5 @@
 import { RunQueryMode, ResultsMode } from 'uiSrc/slices/interfaces'
-import { executeApiCall } from 'uiSrc/pages/vector-search/query/utils'
+import { executeApiCall } from 'uiSrc/pages/vector-search-deprecated/query/utils'
 
 export interface ExecuteQueryOptions {
   afterAll?: () => void

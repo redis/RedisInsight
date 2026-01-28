@@ -1,6 +1,6 @@
 import React from 'react'
 import reactRouterDom from 'react-router-dom'
-import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
+import { fireEvent, render, screen, userEvent } from 'uiSrc/utils/test-utils'
 import { dbAnalysisSelector } from 'uiSrc/slices/analytics/dbAnalysis'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/analytics/clusterDetailsHandlers'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
@@ -372,7 +372,7 @@ describe('Recommendations', () => {
     ).not.toBeInTheDocument()
   })
 
-  it('should collapse/expand and sent proper telemetry event', () => {
+  it('should collapse/expand and sent proper telemetry event', async () => {
     ;(dbAnalysisSelector as jest.Mock).mockImplementation(() => ({
       ...mockdbAnalysisSelector,
       data: {
@@ -386,18 +386,16 @@ describe('Recommendations', () => {
       () => sendEventTelemetryMock,
     )
 
-    const { container } = render(<Recommendations />)
-    let [element] = screen.queryAllByTestId('luaScript-accordion')
+    render(<Recommendations />)
+    let element = screen.queryByTestId('luaScript-accordion')
     expect(element).toBeInTheDocument()
-    expect(element?.querySelector('[data-state="open"]')).toBeTruthy()
+    const toggle = screen.getByLabelText('Collapse Section')
+    const body = screen.getByTestId('ri-accordion-body-luaScript')
+    expect(body).toBeVisible()
+    await userEvent.click(toggle)
 
-    fireEvent.click(
-      container.querySelector(
-        '[data-test-subj="luaScript-button"]',
-      ) as HTMLInputElement,
-    )
-    ;[element] = screen.queryAllByTestId('luaScript-accordion')
-    expect(element?.querySelector('[data-state="open"]')).not.toBeTruthy()
+    expect(body).not.toBeVisible()
+    // expect(element?.querySelector('[data-state="open"]')).not.toBeTruthy()
     expect(sendEventTelemetry).toHaveBeenCalledWith({
       event: TelemetryEvent.DATABASE_ANALYSIS_TIPS_COLLAPSED,
       eventData: {
@@ -408,13 +406,8 @@ describe('Recommendations', () => {
     })
     ;(sendEventTelemetry as jest.Mock).mockRestore()
 
-    fireEvent.click(
-      container.querySelector(
-        '[data-test-subj="luaScript-button"]',
-      ) as HTMLInputElement,
-    )
-    ;[element] = screen.queryAllByTestId('luaScript-accordion')
-    expect(element?.querySelector('[data-state="open"]')).toBeTruthy()
+    await userEvent.click(toggle)
+    expect(body).toBeVisible()
     expect(sendEventTelemetry).toHaveBeenCalledWith({
       event: TelemetryEvent.DATABASE_ANALYSIS_TIPS_EXPANDED,
       eventData: {

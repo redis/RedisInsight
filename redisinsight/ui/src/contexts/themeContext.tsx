@@ -1,16 +1,12 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { ThemeProvider as StyledThemeProvider } from 'styled-components'
-import {
-  theme as redisUiOldTheme,
-  CommonStyles,
-  themeLight,
-  themeDark,
-} from '@redis-ui/styles'
+import { CommonStyles, themesDefault } from '@redis-ui/styles'
 import 'modern-normalize/modern-normalize.css'
 import '@redis-ui/styles/normalized-styles.css'
 import '@redis-ui/styles/fonts.css'
 
 import { ipcThemeChange } from 'uiSrc/electron/utils/ipcThemeChange'
+import { GlobalStyles } from 'uiSrc/styles/globalStyles'
 import {
   BrowserStorageItem,
   Theme,
@@ -19,12 +15,12 @@ import {
   DEFAULT_THEME,
 } from '../constants'
 import { localStorageService, themeService } from '../services'
-import { GlobalStyles } from 'uiSrc/styles/globalStyles'
 
 interface Props {
   children: React.ReactNode
 }
 
+const { light: themeLight, dark: themeDark } = themesDefault
 const THEME_NAMES = THEMES.map(({ value }) => value)
 
 const getQueryTheme = () => {
@@ -44,6 +40,10 @@ export const defaultState = {
   },
 }
 
+export const isValidTheme = (theme: unknown): theme is Theme => {
+  return typeof theme === 'string' && THEME_NAMES.includes(theme as Theme)
+}
+
 export const ThemeContext = React.createContext(defaultState)
 
 export class ThemeProvider extends React.Component<Props> {
@@ -57,7 +57,7 @@ export class ThemeProvider extends React.Component<Props> {
 
     if (queryTheme) {
       theme = queryTheme
-    } else if (storedThemeValue && THEME_NAMES.includes(storedThemeValue)) {
+    } else if (storedThemeValue && isValidTheme(storedThemeValue)) {
       theme = storedThemeValue
     }
 
@@ -97,12 +97,7 @@ export class ThemeProvider extends React.Component<Props> {
   render() {
     const { children } = this.props
     const { theme, usingSystemTheme }: any = this.state
-    const uiTheme =
-      theme === Theme.Dark
-        ? themeDark
-        : theme === Theme.Light
-          ? themeLight
-          : redisUiOldTheme
+    const uiTheme = theme === Theme.Dark ? themeDark : themeLight
     return (
       <ThemeContext.Provider
         value={{
@@ -119,6 +114,10 @@ export class ThemeProvider extends React.Component<Props> {
       </ThemeContext.Provider>
     )
   }
+}
+
+export const useThemeContext = () => {
+  return useContext(ThemeContext)
 }
 
 export default ThemeProvider

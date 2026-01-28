@@ -2,12 +2,12 @@ import React from 'react'
 
 import {
   CellText,
-  CopyBtn,
   CopyPublicEndpointText,
   CopyTextContainer,
+  CopyBtnWrapper,
 } from 'uiSrc/components/auto-discover'
 import { RiTooltip } from 'uiSrc/components'
-import { formatLongName, handleCopy } from 'uiSrc/utils'
+import { formatLongName } from 'uiSrc/utils'
 
 import { EndpointCellProps } from './EndpointCell.types'
 
@@ -26,16 +26,11 @@ export const EndpointCell = ({ publicEndpoint }: EndpointCellProps) => {
         <CopyPublicEndpointText>{publicEndpoint}</CopyPublicEndpointText>
       </RiTooltip>
 
-      <RiTooltip
-        position="right"
-        content="Copy"
-        anchorClassName="copyPublicEndpointTooltip"
-      >
-        <CopyBtn
-          aria-label="Copy public endpoint"
-          onClick={() => handleCopy(publicEndpoint)}
-        />
-      </RiTooltip>
+      <CopyBtnWrapper
+        copy={publicEndpoint}
+        aria-label="Copy public endpoint"
+        successLabel=""
+      />
     </CopyTextContainer>
   )
 }

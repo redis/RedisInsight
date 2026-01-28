@@ -1,0 +1,41 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schema/mcp.json",
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "description": "GitHub integration for managing issues, pull requests, and repository operations for RedisInsight/RedisInsight"
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"],
+      "description": "Persistent memory for storing context about the RedisInsight project across sessions"
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "description": "Enhanced reasoning capabilities for complex architectural and debugging tasks"
+    },
+    "context-7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"],
+      "description": "Context 7 MCP server for enhanced context management and analysis"
+    },
+    "atlassian": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "--env-file",
+        ".env.mcp",
+        "ghcr.io/sooperset/mcp-atlassian:latest"
+      ],
+      "description": "Atlassian MCP server for managing JIRA projects (RI-XXX tickets) and Confluence content"
+    },
+    "figma": {
+      "url": "https://mcp.figma.com/mcp",
+      "description": "Figma MCP server for accessing design files, frames, and layers. Copy a Figma frame/layer link to provide design context in prompts."
+    }
+  }
+}

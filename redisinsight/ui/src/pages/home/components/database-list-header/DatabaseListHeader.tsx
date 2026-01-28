@@ -26,10 +26,7 @@ import {
 } from 'uiSrc/constants'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
+import { EmptyButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { PlusIcon } from 'uiSrc/components/base/icons'
 import ColumnsConfigPopover from 'uiSrc/components/columns-config/ColumnsConfigPopover'
 import handleClickFreeCloudDb from '../database-list-component/methods/handleClickFreeCloudDb'
@@ -111,22 +108,22 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
       <PrimaryButton
         onClick={handleClickFreeCloudDb}
         data-testid={`${CREATE_CLOUD_DB_ID}-button`}
-        icon={PlusIcon}
       >
-        Create Free Cloud database
+        Create free Cloud database
       </PrimaryButton>
     </FeatureFlagComponent>
   )
 
   const AddLocalInstanceButton = () => (
     <FeatureFlagComponent name={FeatureFlags.databaseManagement}>
-      <SecondaryButton
+      <EmptyButton
+        variant="primary"
         onClick={handleOnAddDatabase}
         data-testid="add-redis-database-short"
         icon={PlusIcon}
       >
         Connect existing database
-      </SecondaryButton>
+      </EmptyButton>
     </FeatureFlagComponent>
   )
 

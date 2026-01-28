@@ -3,7 +3,7 @@ import { InstancePage } from './instance-page';
 
 export class PubSubPage extends InstancePage {
     //CSS Selectors
-    cssSelectorMessage = '[data-testid^=row]';
+    cssSelectorMessage = '[data-testid="messages-list"] tr';
     //-------------------------------------------------------------------------------------------
     //DECLARATION OF SELECTORS
     //*Declare all elements/components of the relevant page.
@@ -11,11 +11,16 @@ export class PubSubPage extends InstancePage {
     //*The following categories are ordered alphabetically (Alerts, Buttons, Checkboxes, etc.).
     //-------------------------------------------------------------------------------------------
     //COMPONENTS
-    subscribeStatus = Selector('[data-testid=subscribe-status-text]');
-    messages = Selector('[data-testid^=row]');
-    totalMessagesCount = Selector('[data-testid=messages-count]');
+    initialPage = Selector('[data-testid=pub-sub-page] [data-testid="empty-messages-list"]')
+    subscribeStatus = Selector('[data-testid=pub-sub-status]');
+    messages = Selector('[data-testid="messages-list"] tr');
+    messagesTable = Selector('[data-testid="messages-list"] table')
+    messagesTableBottomNav = Selector('[data-testid="messages-list"] nav[data-role=pagination]')
+    messagesTableFirstPageBtn = Selector('[data-testid="messages-list"] nav[data-role=pagination] button[title="First page"]')
+    messagesTableLastPageBtn = Selector('[data-testid="messages-list"] nav[data-role=pagination] button[title="Last page"]')
+    totalMessagesCount = Selector('[data-testid=pub-sub-messages-count]');
     pubSubPageContainer = Selector('[data-testid=pub-sub-page]');
-    clientBadge = Selector('[data-testid=affected-clients-badge]');
+    publishResult = Selector('[data-testid=publish-result]');
     clearButtonTooltip = Selector('[data-radix-popper-content-wrapper]');
     ossClusterEmptyMessage = Selector('[data-testid=empty-messages-list-cluster]');
     //BUTTONS
@@ -30,7 +35,7 @@ export class PubSubPage extends InstancePage {
     channelsSubscribeInput = Selector('[data-testid=channels-input]');
 
     patternsCount = Selector('[data-testid=patterns-count]');
-    messageCount = Selector('[data-testid=messages-count]');
+    messageCount = Selector('[data-testid=pub-sub-messages-count]');
 
     /**
      * Publish message in pubsub
@@ -55,6 +60,6 @@ export class PubSubPage extends InstancePage {
         // Wait for pubsub loading
         await t.wait(1000);
         await this.publishMessage(channel, message);
-        await t.expect((this.pubSubPageContainer.find('[data-testid^=row]').withText('message')).exists).ok('Message is not displayed');
+        await t.expect((this.messages.withText('message')).exists).ok('Message is not displayed');
     }
 }

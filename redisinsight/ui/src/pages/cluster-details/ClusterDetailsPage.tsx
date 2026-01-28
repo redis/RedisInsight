@@ -1,5 +1,5 @@
 import { orderBy } from 'lodash'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { ClusterNodeDetails } from 'src/modules/cluster-monitor/models'
@@ -21,7 +21,6 @@ import {
   formatLongName,
   getDbIndex,
   getLetterByIndex,
-  Nullable,
   setTitle,
 } from 'uiSrc/utils'
 import { ColorScheme, getRGBColorByScheme, RGBColor } from 'uiSrc/utils/colors'
@@ -33,7 +32,7 @@ import {
   ClusterNodesTable,
 } from './components'
 
-import styles from './styles.module.scss'
+import * as S from './ClusterDetailsPage.styles'
 
 export interface ModifiedClusterNodes extends ClusterNodeDetails {
   letter: string
@@ -55,7 +54,6 @@ const ClusterDetailsPage = () => {
   const { loading, data } = useSelector(clusterDetailsSelector)
 
   const [isPageViewSent, setIsPageViewSent] = useState(false)
-  const [nodes, setNodes] = useState<Nullable<ModifiedClusterNodes[]>>(null)
 
   const dispatch = useDispatch()
   const { theme } = useContext(ThemeContext)
@@ -103,18 +101,20 @@ const ClusterDetailsPage = () => {
     return () => clearInterval(interval)
   }, [instanceId, loading])
 
-  useEffect(() => {
+  const nodes = useMemo(() => {
     if (data) {
       const nodes = orderBy(data.nodes, ['asc', 'host'])
       const shift = colorScheme.cHueRange / nodes.length
-      const modifiedNodes = nodes.map((d, index) => ({
+
+      return nodes.map((d, index) => ({
         ...d,
         letter: getLetterByIndex(index),
         index,
         color: getRGBColorByScheme(index, shift, colorScheme),
-      }))
-      setNodes(modifiedNodes)
+      })) as ModifiedClusterNodes[]
     }
+
+    return [] as ModifiedClusterNodes[]
   }, [data])
 
   useEffect(() => {
@@ -134,13 +134,11 @@ const ClusterDetailsPage = () => {
   }
 
   return (
-    <div className={styles.main} data-testid="cluster-details-page">
+    <S.ClusterDetailsPageWrapper as="div" data-testid="cluster-details-page">
       <ClusterDetailsHeader />
-      <div className={styles.wrapper}>
-        <ClusterDetailsGraphics nodes={nodes} loading={loading} />
-        <ClusterNodesTable nodes={nodes} loading={loading} />
-      </div>
-    </div>
+      <ClusterDetailsGraphics nodes={nodes} loading={loading} />
+      <ClusterNodesTable nodes={nodes} />
+    </S.ClusterDetailsPageWrapper>
   )
 }
 

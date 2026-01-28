@@ -16,7 +16,10 @@ import { CloudCapiKeyService } from 'src/modules/cloud/capi-key/cloud-capi-key.s
 import { SessionMetadata } from 'src/common/models';
 import { KnownFeatures } from 'src/modules/feature/constants';
 import { FeatureService } from 'src/modules/feature/feature.service';
-import { CloudDatabaseImportForbiddenException } from 'src/modules/cloud/job/exceptions';
+import {
+  CloudDatabaseEndpointInvalidException,
+  CloudDatabaseImportForbiddenException,
+} from 'src/modules/cloud/job/exceptions';
 
 const cloudConfig = config.get('cloud');
 
@@ -81,6 +84,10 @@ export class ImportFreeDatabaseCloudJob extends CloudJob {
     }
 
     const { publicEndpoint, name, password } = cloudDatabase;
+
+    if (!publicEndpoint) {
+      throw new CloudDatabaseEndpointInvalidException();
+    }
 
     const [host, port] = publicEndpoint.split(':');
 

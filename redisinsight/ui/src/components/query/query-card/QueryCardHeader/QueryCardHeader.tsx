@@ -8,10 +8,10 @@ import { ColorText } from 'uiSrc/components/base/text'
 import {
   ChevronDownIcon,
   ChevronUpIcon,
-  CopyIcon,
   DeleteIcon,
   PlayIcon,
 } from 'uiSrc/components/base/icons'
+import { CopyButton } from 'uiSrc/components/copy-button'
 import { Theme } from 'uiSrc/constants'
 import {
   getCommandNameFromQuery,
@@ -156,15 +156,13 @@ const QueryCardHeader = (props: Props) => {
     })
   }
 
-  const handleCopy = (event: React.MouseEvent, query: string) => {
+  const handleCopy = () => {
     const telemetryEvent =
       viewMode === ViewMode.Workbench
         ? TelemetryEvent.WORKBENCH_COMMAND_COPIED
         : TelemetryEvent.SEARCH_COMMAND_COPIED
 
     sendEvent(telemetryEvent, query)
-    eventStop(event)
-    navigator.clipboard?.writeText?.(query)
   }
 
   const onDropDownViewClick = (event: React.MouseEvent) => {
@@ -347,14 +345,13 @@ const QueryCardHeader = (props: Props) => {
                 resultsMode={resultsMode}
               />
             </ColorText>
-            <IconButton
-              icon={CopyIcon}
+            <CopyButton
+              copy={query || ''}
+              onCopy={handleCopy}
               aria-label="Copy query"
-              className={cx('copy-btn', styles.copyBtn)}
               disabled={emptyCommand}
-              onClick={(event: React.MouseEvent) =>
-                handleCopy(event, query || '')
-              }
+              withTooltip={false}
+              className={cx('copy-btn', styles.copyBtn)}
               data-testid="copy-command"
             />
           </div>

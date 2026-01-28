@@ -51,6 +51,7 @@ export const defaultMonacoOptions: monacoEditor.editor.IStandaloneEditorConstruc
     automaticLayout: true,
     formatOnPaste: false,
     glyphMargin: true,
+    fixedOverflowWidgets: true,
     bracketPairColorization: {
       enabled: true,
       independentColorPoolPerBracketType: true,

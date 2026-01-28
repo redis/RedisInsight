@@ -15,4 +15,6 @@ export interface IBulkActionOverview {
   filter: IBulkActionFilterOverview; // Note: This can be null, according to the API response
   progress: IBulkActionProgressOverview;
   summary: IBulkActionSummaryOverview;
+  downloadUrl?: string;
+  error?: string;
 }

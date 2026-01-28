@@ -7,11 +7,11 @@ export interface Props {
 const ValidationErrorsList = (props: Props) => {
   const { validationErrors } = props
 
-  if(!validationErrors?.length) {
+  if (!validationErrors?.length) {
     return null
   }
 
-  return  (
+  return (
     <ul>
       {validationErrors.map((err, index) => (
         // eslint-disable-next-line react/no-array-index-key

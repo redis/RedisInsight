@@ -1,6 +1,5 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { ExternalLink } from 'uiSrc/components'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 
 import {
@@ -8,7 +7,7 @@ import {
   TELEMETRY_EMPTY_VALUE,
   TelemetryEvent,
 } from 'uiSrc/telemetry'
-import styles from './styles.module.scss'
+import { Link } from 'uiSrc/components/base/link/Link'
 
 const CreateTutorialLink = () => {
   const { instanceId = '' } = useParams<{ instanceId: string }>()
@@ -22,15 +21,18 @@ const CreateTutorialLink = () => {
   }
 
   return (
-    <ExternalLink
-      color="text"
-      className={styles.readMoreLink}
+    <Link
+      external
+      underline
+      size="S"
+      variant="inline"
+      color="subdued"
       onClick={onClickReadMore}
       href={EXTERNAL_LINKS.guidesRepo}
       data-testid="read-more-link"
     >
       Create your tutorial
-    </ExternalLink>
+    </Link>
   )
 }
 

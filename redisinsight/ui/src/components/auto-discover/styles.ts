@@ -4,8 +4,7 @@ import { Text, Title } from 'uiSrc/components/base/text'
 import { Theme } from 'uiSrc/components/base/theme/types'
 import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CopyIcon } from 'uiSrc/components/base/icons'
+import { CopyButton } from 'uiSrc/components/copy-button'
 
 export const PageTitle = styled(Title).attrs({
   size: 'L',
@@ -80,14 +79,15 @@ export const CopyPublicEndpointText = styled(CellText)`
 export const StatusColumnText = styled(CellText)`
   text-transform: capitalize;
 `
-export const CopyBtn = styled(IconButton).attrs({
-  icon: CopyIcon,
-  size: 'L',
-})`
+
+export const CopyBtnWrapper = styled(CopyButton)`
   margin-left: 15px;
+  position: absolute;
+  right: 0;
+  top: 0;
   opacity: 0;
-  height: 0;
   transition: opacity 0.25s ease-in-out;
+  height: 100%;
 `
 
 export const CopyTextContainer = styled.div`
@@ -97,11 +97,8 @@ export const CopyTextContainer = styled.div`
   max-width: 100%;
   padding-right: 34px;
   position: relative;
-  * {
-  }
 
-  &:hover ${CopyBtn} {
+  &:hover ${CopyBtnWrapper} {
     opacity: 1;
-    height: auto;
   }
 `

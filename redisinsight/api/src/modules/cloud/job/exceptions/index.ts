@@ -1,4 +1,5 @@
 export * from './cloud-database-already-exists-free.exception';
+export * from './cloud-database-endpoint-invalid.exception';
 export * from './cloud-database-import-forbidden.exception';
 export * from './cloud-database-in-failed-state.exception';
 export * from './cloud-database-in-unexpected-state.exception';

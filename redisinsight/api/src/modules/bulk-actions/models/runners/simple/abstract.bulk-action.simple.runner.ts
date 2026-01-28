@@ -82,22 +82,21 @@ export abstract class AbstractBulkActionSimpleRunner extends AbstractBulkActionR
    * @param res
    */
   processIterationResults(
-    keys,
+    keys: Buffer[],
     res: [Error | null, RedisClientCommandReply][],
   ) {
     this.summary.addProcessed(res.length);
-    this.summary.addKeys(keys);
-
-    const errors = [];
 
     res.forEach(([err], i) => {
+      const keyName = keys[i];
+
       if (err) {
-        errors.push({ key: keys[i], error: err.message });
+        this.summary.addFailed(1);
+        this.bulkAction.writeToReport(keyName, false, err.message);
       } else {
         this.summary.addSuccess(1);
+        this.bulkAction.writeToReport(keyName, true);
       }
     });
-
-    this.summary.addErrors(errors);
   }
 }

@@ -8,7 +8,7 @@ import { lastConnectionFormat } from 'uiSrc/utils'
 const mockHandleCopyUrl = jest.fn()
 jest.mock('../../methods/handlers', () => ({
   ...jest.requireActual('../../methods/handlers'),
-  handleCopyUrl: (...args: any[]) => mockHandleCopyUrl(...args),
+  sendCopyUrlTelemetry: (...args: any[]) => mockHandleCopyUrl(...args),
 }))
 
 // Stabilize lastConnection formatting to avoid time-dependence
@@ -81,10 +81,27 @@ describe('RdiInstancesListCell', () => {
     await userEvent.click(btn, { pointerEventsCheck: 0 })
 
     expect(mockHandleCopyUrl).toHaveBeenCalledTimes(1)
-    const [evt, text, id] = mockHandleCopyUrl.mock.calls[0]
-    expect(evt).toBeTruthy()
-    expect(text).toBe(instance.url)
+    const [id] = mockHandleCopyUrl.mock.calls[0]
     expect(id).toBe(instance.id)
+  })
+
+  it('should copy url to clipboard when copy button is clicked', async () => {
+    const writeTextMock = jest.fn()
+    Object.assign(navigator, {
+      clipboard: { writeText: writeTextMock },
+    })
+
+    const { row, column, instance } = makeProps('url', {
+      id: 'clipboard-1',
+      url: 'https://clipboard.example',
+    })
+
+    render(<RdiInstancesListCell {...({ row, column } as any)} />)
+
+    const btn = screen.getByRole('button')
+    await userEvent.click(btn, { pointerEventsCheck: 0 })
+
+    expect(writeTextMock).toHaveBeenCalledWith(instance.url)
   })
 
   it('should format lastConnection via lastConnectionFormat and render formatted text (no copy icon)', async () => {

@@ -48,9 +48,16 @@ export const useDatabaseOverview = () => {
     } = {},
   } = overview
 
-  const loadData = (forceDataReload = false) => {
-    if (connectedInstanceId && (!connectivityError || forceDataReload)) {
-      dispatch(getDatabaseConfigInfoAction(connectedInstanceId))
+  const loadData = () => {
+    if (connectedInstanceId) {
+      dispatch(
+        getDatabaseConfigInfoAction(connectedInstanceId, () => {
+          // Clear connectivity error on successful API call.
+          // Always dispatch to avoid stale closure issues - dispatching null
+          // when there's no error is a safe no-op.
+          dispatch(setConnectivityError(null))
+        }),
+      )
       setLastRefreshTime(Date.now())
     }
   }
@@ -75,12 +82,8 @@ export const useDatabaseOverview = () => {
       },
     })
 
-  const handleRefresh = (forceRefresh?: boolean) => {
-    loadData(forceRefresh)
-  }
-  const handleRefreshClick = () => {
-    // clear error, if connectivity is broken, the interceptor will set it again
-    dispatch(setConnectivityError(null))
+  const handleRefresh = () => {
+    loadData()
   }
   const usedMemoryPercent = getUsedMemoryPercent(
     planMemoryLimit,
@@ -109,6 +112,5 @@ export const useDatabaseOverview = () => {
     usedMemoryPercent,
     handleEnableAutoRefresh,
     handleRefresh,
-    handleRefreshClick,
   }
 }

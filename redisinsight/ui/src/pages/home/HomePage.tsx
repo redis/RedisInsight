@@ -21,6 +21,7 @@ import {
 import { Instance } from 'uiSrc/slices/interfaces'
 import {
   cloudSelector,
+  resetDataRedisCloud,
   resetSubscriptionsRedisCloud,
 } from 'uiSrc/slices/instances/cloud'
 import {
@@ -210,6 +211,7 @@ const HomePage = () => {
     dispatch(resetDataRedisCluster())
     dispatch(resetDataSentinel())
     dispatch(resetImportInstances())
+    dispatch(resetDataRedisCloud())
 
     setOpenDialog(null)
     dispatch(setEditedInstance(null))

@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
-import CodeBlock from './CodeBlock'
+import CodeBlock from './index'
 
-const codeBlockMeta = {
+const codeBlockMeta: Meta<typeof CodeBlock> = {
   component: CodeBlock,
-} satisfies Meta<typeof CodeBlock>
+}
 
 export default codeBlockMeta
 
@@ -14,11 +14,11 @@ export const Default: Story = {
   args: {
     children: 'console.log("Hello, World!");',
   },
-};
+}
 
 export const WithCopyButton: Story = {
   args: {
     children: 'redis-cli --cluster create 127.0.0.1:7000 127.0.0.1:7001',
     isCopyable: true,
   },
-};
+}

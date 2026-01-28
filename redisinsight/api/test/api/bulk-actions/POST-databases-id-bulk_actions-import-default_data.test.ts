@@ -7,7 +7,7 @@ import {
   validateApiCall,
   fsExtra,
 } from '../deps';
-import { AdmZip, path } from '../../helpers/test';
+import { path } from '../../helpers/test';
 const { rte, request, server, constants } = deps;
 
 const endpoint = (id = constants.TEST_INSTANCE_ID) =>
@@ -17,18 +17,6 @@ const endpoint = (id = constants.TEST_INSTANCE_ID) =>
 
 const connectEndpoint = (id = constants.TEST_INSTANCE_ID) =>
   request(server).get(`/${constants.API.DATABASES}/${id}/connect`);
-
-const getZipArchive = () => {
-  const zipArchive = new AdmZip();
-
-  zipArchive.addFile('info.md', Buffer.from('# info.md', 'utf8'));
-  zipArchive.addFile(
-    '_data/data.txt',
-    Buffer.from(`set ${constants.TEST_STRING_KEY_1} bulkimport`, 'utf8'),
-  );
-
-  return zipArchive;
-};
 
 describe('POST /databases/:id/bulk-actions/import/default-data', () => {
   requirements(
@@ -99,7 +87,7 @@ describe('POST /databases/:id/bulk-actions/import/default-data', () => {
           filter: null,
           status: 'completed',
         },
-        checkFn: async ({ body }) => {
+        checkFn: async ({}) => {
           expect(await rte.client.get('string')).to.eq('string');
           expect(await rte.client.get('json')).to.eq('json');
           expect(await rte.client.get('should_not_exists')).to.eq(null);

@@ -35,39 +35,36 @@ describe('DateTimeFormatter', () => {
   })
 
   it('should display invalid format when wrong format is typed in a custom input', async () => {
-    render(<DateTimeFormatter />)
+    const { getByDisplayValue } = render(<DateTimeFormatter />)
 
     await act(() => fireEvent.click(screen.getByText('Custom')))
     const customInput: Nullable<HTMLElement> = screen.getByTestId(
       'custom-datetime-input',
     )
 
-    await act(() =>
+    await act(async () =>
       fireEvent.change(customInput, { target: { value: 'fffffinvalid' } }),
     )
 
-    expect(screen.getByText('Invalid Format')).toBeInTheDocument()
+    expect(getByDisplayValue('Invalid Format')).toBeInTheDocument()
   })
 
   it('should call proper telemetry events', async () => {
-    const sendEventTelemetryMock = jest.fn()
-    sendEventTelemetry.mockImplementation(() => sendEventTelemetryMock)
-
     render(<DateTimeFormatter />)
 
-    await act(() => fireEvent.click(screen.getByText('Custom')))
+    await act(async () => fireEvent.click(screen.getByText('Custom')))
     const customInput: Nullable<HTMLElement> = screen.getByTestId(
       'custom-datetime-input',
     )
 
-    await act(() =>
+    await act(async () =>
       fireEvent.change(customInput, {
         target: { value: dateTimeOptions[1].value },
       }),
     )
     await act(() => fireEvent.click(screen.getByTestId('datetime-custom-btn')))
 
-    expect(sendEventTelemetry).toBeCalledWith({
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
       event: TelemetryEvent.SETTINGS_DATE_TIME_FORMAT_CHANGED,
       eventData: {
         currentFormat: dateTimeOptions[1].value,

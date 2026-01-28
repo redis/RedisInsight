@@ -1,7 +1,10 @@
 import axios, { AxiosInstance } from 'axios'
 import https from 'https'
 
-export function generateApiClient(apiUrl: string, windowId?: string): AxiosInstance {
+export function generateApiClient(
+    apiUrl: string,
+    windowId?: string,
+): AxiosInstance {
     const apiClient = axios.create({
         baseURL: apiUrl,
         headers: {

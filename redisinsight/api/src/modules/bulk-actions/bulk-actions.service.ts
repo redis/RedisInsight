@@ -1,5 +1,10 @@
 import { Socket } from 'socket.io';
-import { Injectable } from '@nestjs/common';
+import { Response } from 'express';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { BulkActionsProvider } from 'src/modules/bulk-actions/providers/bulk-actions.provider';
 import { CreateBulkActionDto } from 'src/modules/bulk-actions/dto/create-bulk-action.dto';
 import { BulkActionIdDto } from 'src/modules/bulk-actions/dto/bulk-action-id.dto';
@@ -43,5 +48,38 @@ export class BulkActionsService {
 
   disconnect(socketId: string) {
     this.bulkActionsProvider.abortUsersBulkActions(socketId);
+  }
+
+  /**
+   * Stream bulk action report as downloadable file
+   * @param id Bulk action id
+   * @param res Express response object
+   */
+  async streamReport(id: string, res: Response): Promise<void> {
+    const bulkAction = this.bulkActionsProvider.get(id);
+
+    if (!bulkAction) {
+      throw new NotFoundException('Bulk action not found');
+    }
+
+    if (!bulkAction.isReportEnabled()) {
+      throw new BadRequestException(
+        'Report generation was not enabled for this bulk action',
+      );
+    }
+
+    // Set headers for file download
+    const timestamp = new Date(Number(id)).toISOString().replace(/[:.]/g, '-');
+    res.setHeader('Content-Type', 'text/plain');
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="bulk-delete-report-${timestamp}.txt"`,
+    );
+    res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
+    res.setHeader('Transfer-Encoding', 'chunked');
+
+    // Attach the response stream to the bulk action
+    // This will trigger the bulk action to start processing
+    bulkAction.setStreamingResponse(res);
   }
 }

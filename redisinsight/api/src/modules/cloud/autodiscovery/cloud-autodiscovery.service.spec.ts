@@ -29,6 +29,8 @@ import { CloudApiUnauthorizedException } from 'src/modules/cloud/common/exceptio
 import { CloudUserCapiService } from 'src/modules/cloud/user/cloud-user.capi.service';
 import { CloudSubscriptionCapiService } from 'src/modules/cloud/subscription/cloud-subscription.capi.service';
 import { CloudDatabaseCapiService } from 'src/modules/cloud/database/cloud-database.capi.service';
+import ERROR_MESSAGES from 'src/constants/error-messages';
+import { CustomErrorCodes } from 'src/constants';
 
 describe('CloudAutodiscoveryService', () => {
   let service: CloudAutodiscoveryService;
@@ -364,5 +366,50 @@ describe('CloudAutodiscoveryService', () => {
         mockImportCloudDatabaseResponseFixed,
       ]);
     });
+    it.each([
+      {
+        description: 'null',
+        publicEndpoint: null,
+      },
+      {
+        description: 'undefined',
+        publicEndpoint: undefined,
+      },
+    ])(
+      'should return error when publicEndpoint is $description',
+      async ({ publicEndpoint }) => {
+        cloudDatabaseCapiService.getDatabase.mockResolvedValueOnce({
+          ...mockCloudDatabase,
+          publicEndpoint,
+          status: CloudDatabaseStatus.Active,
+        });
+
+        const result = await service.addRedisCloudDatabases(
+          mockSessionMetadata,
+          mockCloudCapiAuthDto,
+          [mockImportCloudDatabaseDto],
+        );
+
+        expect(result).toEqual([
+          {
+            ...mockImportCloudDatabaseResponse,
+            status: ActionStatus.Fail,
+            message: ERROR_MESSAGES.CLOUD_DATABASE_ENDPOINT_INVALID,
+            error: {
+              message: ERROR_MESSAGES.CLOUD_DATABASE_ENDPOINT_INVALID,
+              statusCode: 400,
+              error: 'CloudDatabaseEndpointInvalid',
+              errorCode: CustomErrorCodes.CloudDatabaseEndpointInvalid,
+            },
+            databaseDetails: {
+              ...mockCloudDatabase,
+              publicEndpoint,
+              status: CloudDatabaseStatus.Active,
+            },
+          },
+        ]);
+        expect(databaseService.create).not.toHaveBeenCalled();
+      },
+    );
   });
 });

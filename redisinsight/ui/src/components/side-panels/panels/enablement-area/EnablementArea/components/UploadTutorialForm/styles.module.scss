@@ -1,93 +1,83 @@
-.outerWrapper {
-  padding: 12px 10px;
-
-  .wrapper {
-    padding: 18px;
-    background: var(--euiColorLightestShade);
-    border-radius: 4px;
-
-    .input {
-      height: 34px !important;
-      background: var(--euiColorEmptyShade) !important;
-    }
-
-    .uploadFileWrapper {
-      text-align: right;
-      margin-top: -8px;
-    }
-
-    .uploadFileName {
-      display: flex;
-      align-items: center;
-      padding-left: 4px;
-    }
-
-    .uploadFileNameTitle {
-      max-width: calc(100% - 30px);
-    }
+.wrapper {
+  .input {
+    height: 34px !important;
+    background: var(--euiColorEmptyShade) !important;
   }
 
-  .btnSubmit {
-    margin-left: 6px;
-
-    svg {
-      width: 16px !important;
-      height: 16px !important;
-      margin-top: 0;
-    }
+  .uploadFileWrapper {
+    text-align: right;
+    margin-top: -8px;
   }
 
-  .fileDrop {
-    width: 100%;
-    margin-top: 14px;
-
-    :global {
-      .RI-File-Picker__clearButton, .RI-File-Picker__clearButton .euiButtonEmpty__text {
-        color: var(--externalLinkColor) !important;
-        text-transform: lowercase;
-      }
-
-      .RI-File-Picker__showDrop .RI-File-Picker__prompt, .RI-File-Picker__input:focus + .RI-File-Picker__prompt {
-        background-color: var(--euiColorEmptyShade);
-      }
-
-      .RI-File-Picker__prompt {
-        background-color: var(--euiColorEmptyShade);
-        height: 120px;
-        border-radius: 4px;
-        box-shadow: none;
-        border: 1px dashed var(--controlsBorderColor);
-      }
-
-      .RI-File-Picker__clearButton {
-        margin-top: 4px;
-      }
-    }
+  .uploadFileName {
+    display: flex;
+    align-items: center;
+    padding-left: 4px;
   }
 
-  .hr {
-    margin: 12px 0;
-    width: 100%;
-    text-align: center;
-    position: relative;
+  .uploadFileNameTitle {
+    max-width: calc(100% - 30px);
+  }
+}
 
-    &:before, &:after {
-      content: '';
-      display: block;
-      width: 40%;
-      height: 1px;
-      background: var(--tableDarkestBorderColor);
-      position: absolute;
-      top: 50%;
+.btnSubmit {
+  svg {
+    width: 16px !important;
+    height: 16px !important;
+    margin-top: 0;
+  }
+}
+
+.fileDrop {
+  width: 100%;
+  margin-top: 14px;
+
+  :global {
+    .RI-File-Picker__clearButton, .RI-File-Picker__clearButton .euiButtonEmpty__text {
+      color: var(--externalLinkColor) !important;
+      text-transform: lowercase;
     }
 
-    &:before {
-      left: 0;
+    .RI-File-Picker__showDrop .RI-File-Picker__prompt, .RI-File-Picker__input:focus + .RI-File-Picker__prompt {
+      background-color: var(--euiColorEmptyShade);
     }
 
-    &:after {
-      right: 0;
+    .RI-File-Picker__prompt {
+      background-color: var(--euiColorEmptyShade);
+      height: 120px;
+      border-radius: 4px;
+      box-shadow: none;
+      border: 1px dashed var(--controlsBorderColor);
     }
+
+    .RI-File-Picker__clearButton {
+      margin-top: 4px;
+    }
+  }
+}
+
+.hr {
+  margin: 12px 0;
+  width: 100%;
+  text-align: center;
+  position: relative;
+
+  &:before, &:after {
+    content: '';
+    display: block;
+    width: 40%;
+    height: 1px;
+    background: var(--tableDarkestBorderColor);
+    position: absolute;
+    top: 50%;
+  }
+
+  &:before {
+    left: 0;
+  }
+
+  &:after {
+    right: 0;
   }
 }
 
@@ -96,9 +86,4 @@
   align-items: center;
   justify-content: space-between;
 
-  .footerButtons {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-  }
 }

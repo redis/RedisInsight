@@ -5,9 +5,7 @@ import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 
 export const Container = styled(Row).attrs({
   align: 'center',
-})`
-  padding: 12px 0;
-`
+})``
 export const InfoIcon = styled(RiIcon).attrs({
   type: 'InfoIcon',
   size: 'l',

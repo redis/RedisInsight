@@ -17,7 +17,12 @@ import {
 import { setAppContextInitialState } from 'uiSrc/slices/app/context'
 import { resetKeys } from 'uiSrc/slices/browser/keys'
 import successMessages from 'uiSrc/components/notifications/success-messages'
-import { checkRediStack, getApiErrorMessage, Nullable } from 'uiSrc/utils'
+import {
+  checkRediStack,
+  ensureSemanticVersion,
+  getApiErrorMessage,
+  Nullable,
+} from 'uiSrc/utils'
 import {
   INFINITE_MESSAGES,
   InfiniteMessagesIds,
@@ -95,7 +100,8 @@ const instancesSlice = createSlice({
       state,
       { payload }: { payload: DatabaseInstanceResponse[] },
     ) => {
-      state.data = checkRediStack(payload)
+      const data = checkRediStack(payload)
+      state.data = data.map(ensureSemanticVersion)
       state.loading = false
       state.freeInstances =
         (filter(
@@ -212,7 +218,7 @@ const instancesSlice = createSlice({
       const isRediStack = state.data?.find(
         (db) => db.id === state.connectedInstance.id,
       )?.isRediStack
-      state.connectedInstance = payload
+      state.connectedInstance = ensureSemanticVersion(payload)
       state.connectedInstance.loading = false
       state.connectedInstance.isRediStack = isRediStack || false
       state.connectedInstance.isFreeDb = payload.cloudDetails?.free || false

@@ -4,7 +4,7 @@ import {
   type ShortDatabaseAnalysis,
 } from 'apiSrc/modules/database-analysis/models'
 import { Nullable } from 'uiSrc/utils'
-import { MainContainer } from './components/styles'
+import { AnalysisPageContainer } from './components/analysis-page-container'
 import { Header } from './components'
 import DatabaseAnalysisTabs from './components/data-nav-tabs'
 
@@ -23,7 +23,7 @@ export const DatabaseAnalysisPageView = ({
   handleSelectAnalysis,
 }: Props) => {
   return (
-    <MainContainer data-testid="database-analysis-page">
+    <AnalysisPageContainer data-testid="database-analysis-page">
       <Header
         items={reports}
         selectedValue={selectedAnalysis}
@@ -36,6 +36,6 @@ export const DatabaseAnalysisPageView = ({
         reports={reports}
         data={data}
       />
-    </MainContainer>
+    </AnalysisPageContainer>
   )
 }

@@ -29,7 +29,7 @@ import {
   BulbHighlighting,
   BulbIconButton,
   BulbWrapper,
-} from './insights-trigger.styles'
+} from './InsightsTrigger.styles'
 
 export interface Props {
   source?: string

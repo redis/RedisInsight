@@ -34,6 +34,7 @@ const Notification = (props: Props) => {
       </Title>
       <Spacer size="s" />
       <Text
+        component="div"
         size="s"
         className={cx('notificationHTMLBody', styles.notificationBody)}
         data-testid="notification-body"

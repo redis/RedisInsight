@@ -6,7 +6,6 @@ import {
   ApiEndpoints,
   BrowserStorageItem,
   CodeButtonParams,
-  EMPTY_COMMAND,
 } from 'uiSrc/constants'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { CliOutputFormatterType } from 'uiSrc/constants/cliOutput'

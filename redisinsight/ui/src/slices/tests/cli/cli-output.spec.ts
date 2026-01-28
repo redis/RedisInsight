@@ -1,4 +1,4 @@
-import { cloneDeep, first } from 'lodash'
+import { cloneDeep } from 'lodash'
 
 import { AxiosError } from 'axios'
 import { SendCommandResponse } from 'src/modules/cli/dto/cli.dto'

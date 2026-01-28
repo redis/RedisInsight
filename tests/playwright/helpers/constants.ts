@@ -12,15 +12,28 @@ export enum KeyTypesTexts {
 export const keyLength = 50
 
 export const COMMANDS_TO_CREATE_KEY = Object.freeze({
-    [KeyTypesTexts.Hash]: (key: string, value: string | number = 'value', field: string | number = 'field') => `HSET ${key} '${field}' '${value}'`,
-    [KeyTypesTexts.List]: (key: string, element: string | number = 'element') => `LPUSH ${key} '${element}'`,
-    [KeyTypesTexts.Set]: (key: string, member = 'member') => `SADD ${key} '${member}'`,
-    [KeyTypesTexts.ZSet]: (key: string, member = 'member', score = 1) => `ZADD ${key} ${score} '${member}'`,
-    [KeyTypesTexts.String]: (key: string, value = 'val') => `SET ${key} '${value}'`,
-    [KeyTypesTexts.ReJSON]: (key: string, json = '"val"') => `JSON.SET ${key} . '${json}'`,
-    [KeyTypesTexts.Stream]: (key: string, value: string | number = 'value', field: string | number = 'field') => `XADD ${key} * '${field}' '${value}'`,
+    [KeyTypesTexts.Hash]: (
+        key: string,
+        value: string | number = 'value',
+        field: string | number = 'field',
+    ) => `HSET ${key} '${field}' '${value}'`,
+    [KeyTypesTexts.List]: (key: string, element: string | number = 'element') =>
+        `LPUSH ${key} '${element}'`,
+    [KeyTypesTexts.Set]: (key: string, member = 'member') =>
+        `SADD ${key} '${member}'`,
+    [KeyTypesTexts.ZSet]: (key: string, member = 'member', score = 1) =>
+        `ZADD ${key} ${score} '${member}'`,
+    [KeyTypesTexts.String]: (key: string, value = 'val') =>
+        `SET ${key} '${value}'`,
+    [KeyTypesTexts.ReJSON]: (key: string, json = '"val"') =>
+        `JSON.SET ${key} . '${json}'`,
+    [KeyTypesTexts.Stream]: (
+        key: string,
+        value: string | number = 'value',
+        field: string | number = 'field',
+    ) => `XADD ${key} * '${field}' '${value}'`,
     [KeyTypesTexts.Graph]: (key: string) => `GRAPH.QUERY ${key} "CREATE ()"`,
-    [KeyTypesTexts.TimeSeries]: (key: string) => `TS.CREATE ${key}`
+    [KeyTypesTexts.TimeSeries]: (key: string) => `TS.CREATE ${key}`,
 })
 
 export enum RTE {
@@ -29,12 +42,12 @@ export enum RTE {
     sentinel = 'sentinel',
     ossCluster = 'oss-cluster',
     reCluster = 're-cluster',
-    reCloud = 're-cloud'
+    reCloud = 're-cloud',
 }
 
 export enum ENV {
     web = 'web',
-    desktop = 'desktop'
+    desktop = 'desktop',
 }
 
 export enum RecommendationIds {
@@ -46,14 +59,14 @@ export enum RecommendationIds {
     useSmallerKeys = 'useSmallerKeys',
     avoidLogicalDatabases = 'avoidLogicalDatabases',
     searchJson = 'searchJSON',
-    rdi = 'tryRDI'
+    rdi = 'tryRDI',
 }
 
 export enum LibrariesSections {
     Functions = 'Functions',
     KeyspaceTriggers = 'Keyspace',
     ClusterFunctions = 'Cluster',
-    StreamFunctions= 'Stream',
+    StreamFunctions = 'Stream',
 }
 
 export enum FunctionsSections {
@@ -75,59 +88,58 @@ export enum ResourcePath {
     RedisSentinel = '/redis-sentinel',
     ClusterDetails = '/cluster-details',
     SyncFeatures = '/features/sync',
-    Rdi = '/rdi'
+    Rdi = '/rdi',
 }
 
 export enum ExploreTabs {
-    Tutorials  = 'Tutorials',
+    Tutorials = 'Tutorials',
     Tips = 'Tips',
 }
 
 export enum Compatibility {
-    SearchAndQuery  = 'search',
+    SearchAndQuery = 'search',
     Json = 'json',
-    TimeSeries = 'time-series'
+    TimeSeries = 'time-series',
 }
 
 export enum ChatBotTabs {
-    General  = 'General',
+    General = 'General',
     Database = 'Database',
 }
 
 export enum RedisOverviewPage {
-    DataBase  = 'Redis Databases',
+    DataBase = 'Redis Databases',
     Rdi = 'My RDI instances',
 }
 
 export enum TextConnectionSection {
-    Success  = 'success',
+    Success = 'success',
     Failed = 'failed',
 }
 
 export enum RdiTemplatePipelineType {
-    Ingest  = 'ingest',
+    Ingest = 'ingest',
     WriteBehind = 'write-behind',
 }
 
-export enum RdiTemplateDatabaseType  {
-    SqlServer  = 'sql',
+export enum RdiTemplateDatabaseType {
+    SqlServer = 'sql',
     Oracle = 'oracle',
     MySql = 'mysql',
 }
 
-export enum RdiPopoverOptions  {
-    Server  = 'server',
+export enum RdiPopoverOptions {
+    Server = 'server',
     File = 'file',
     Pipeline = 'empty',
 }
 
-export enum TlsCertificates  {
-    CA  = 'ca',
+export enum TlsCertificates {
+    CA = 'ca',
     Client = 'client',
 }
 
-export enum AddElementInList  {
-    Head ,
+export enum AddElementInList {
+    Head,
     Tail,
 }
-

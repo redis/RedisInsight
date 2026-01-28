@@ -33,7 +33,7 @@ describe('FormDialog', () => {
         <div data-testid="body" />
       </FormDialog>,
     )
- 
+
     // comment out until the modal header issue is fixed
     // expect(screen.getByTestId('header')).toBeInTheDocument()
     expect(screen.getByTestId('footer')).toBeInTheDocument()

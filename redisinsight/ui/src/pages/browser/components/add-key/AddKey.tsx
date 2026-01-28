@@ -26,6 +26,7 @@ import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import { HealthText } from 'uiSrc/components/base/text/HealthText'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { RiTooltip } from 'uiSrc/components'
+import { Spacer } from 'uiSrc/components/base/layout'
 import { ADD_KEY_TYPE_OPTIONS } from './constants/key-type-options'
 import AddKeyHash from './AddKeyHash'
 import AddKeyZset from './AddKeyZset'
@@ -160,10 +161,11 @@ const AddKey = (props: Props) => {
                 setKeyTTL={setKeyTTL}
               />
 
-              <Divider
-                colorVariable="separatorColor"
-                className={styles.divider}
-              />
+              <Spacer size="xl" />
+
+              <Divider />
+
+              <Spacer size="xl" />
 
               {typeSelected === KeyTypes.Hash && (
                 <AddKeyHash onCancel={closeAddKeyPanel} {...defaultFields} />

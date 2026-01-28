@@ -23,6 +23,7 @@ describe('RedisClientStorage', () => {
   const mockClientMetadata1 = {
     sessionMetadata: {
       userId: 'u1',
+      accountId: 'a1',
       sessionId: 's1',
     },
     databaseId: mockDatabase.id,
@@ -37,19 +38,24 @@ describe('RedisClientStorage', () => {
   });
   const mockRedisClient3 = generateMockRedisClient({
     ...mockClientMetadata1,
-    sessionMetadata: { userId: 'u2', sessionId: 's2' },
+    sessionMetadata: { userId: 'u2', sessionId: 's2', accountId: 'a2' },
     context: ClientContext.Workbench,
     db: 1,
   });
   const mockRedisClient4 = generateMockRedisClient({
     ...mockClientMetadata1,
-    sessionMetadata: { userId: 'u2', sessionId: 's3' },
+    sessionMetadata: { userId: 'u2', sessionId: 's3', accountId: 'a2' },
     db: 2,
   });
   const mockRedisClient5 = generateMockRedisClient({
     ...mockClientMetadata1,
     databaseId: 'd2',
-    sessionMetadata: { userId: 'u2', sessionId: 's4' },
+    sessionMetadata: { userId: 'u2', sessionId: 's4', accountId: 'a2' },
+  });
+  const mockRedisClient6 = generateMockRedisClient({
+    ...mockClientMetadata1,
+    databaseId: 'd2',
+    sessionMetadata: { userId: 'u2', sessionId: 's4', accountId: 'a3' },
   });
 
   beforeEach(async () => {
@@ -66,6 +72,7 @@ describe('RedisClientStorage', () => {
     service['clients'].set(mockRedisClient3.id, mockRedisClient3);
     service['clients'].set(mockRedisClient4.id, mockRedisClient4);
     service['clients'].set(mockRedisClient5.id, mockRedisClient5);
+    service['clients'].set(mockRedisClient6.id, mockRedisClient6);
   });
 
   afterEach(() => {
@@ -74,26 +81,26 @@ describe('RedisClientStorage', () => {
 
   describe('syncClients', () => {
     it('should not remove any client since no idle time passed', async () => {
-      expect(service['clients'].size).toEqual(5);
+      expect(service['clients'].size).toEqual(6);
 
       service['syncClients']();
 
-      expect(service['clients'].size).toEqual(5);
+      expect(service['clients'].size).toEqual(6);
     });
 
     it('should remove client with exceeded time in idle', async () => {
-      expect(service['clients'].size).toEqual(5);
+      expect(service['clients'].size).toEqual(6);
       const toDelete = service['clients'].get(mockRedisClient1.id);
       toDelete['lastTimeUsed'] =
         Date.now() - REDIS_CLIENTS_CONFIG.maxIdleThreshold - 1;
 
       service['syncClients']();
 
-      expect(service['clients'].size).toEqual(4);
+      expect(service['clients'].size).toEqual(5);
       expect(service['clients'].get(mockRedisClient1.id)).toEqual(undefined);
     });
     it('should remove client with exceeded time in idle and not fail in case of error', async () => {
-      expect(service['clients'].size).toEqual(5);
+      expect(service['clients'].size).toEqual(6);
       const toDelete = service['clients'].get(mockRedisClient1.id);
       toDelete['lastTimeUsed'] =
         Date.now() - REDIS_CLIENTS_CONFIG.maxIdleThreshold - 1;
@@ -103,7 +110,7 @@ describe('RedisClientStorage', () => {
 
       service['syncClients']();
 
-      expect(service['clients'].size).toEqual(4);
+      expect(service['clients'].size).toEqual(5);
       expect(service['clients'].get(mockRedisClient1.id)).toEqual(undefined);
     });
   });
@@ -180,6 +187,7 @@ describe('RedisClientStorage', () => {
       const result = await service.getByMetadata({
         sessionMetadata: {
           userId: 'uid',
+          accountId: 'acc',
           sessionId: 'uid',
         },
         databaseId: 'invalid-instance-id',
@@ -292,6 +300,19 @@ describe('RedisClientStorage', () => {
             } as SessionMetadata,
           }),
         ),
+      ).rejects.toThrow(BadRequestException);
+      await expect(
+        service.set(
+          generateMockRedisClient({
+            databaseId: '1',
+            context: ClientContext.Common,
+            sessionMetadata: {
+              userId: '1',
+              accountId: '1',
+              sessionId: '1',
+            } as SessionMetadata,
+          }),
+        ),
       ).resolves.toBeInstanceOf(RedisClient);
     });
   });
@@ -301,14 +322,14 @@ describe('RedisClientStorage', () => {
       const result = await service.remove(mockRedisClient1.id);
 
       expect(result).toEqual(1);
-      expect(service['clients'].size).toEqual(4);
+      expect(service['clients'].size).toEqual(5);
       expect(service['clients'].get(mockRedisClient1.id)).toEqual(undefined);
     });
     it('should not fail in case when no client found', async () => {
       const result = await service.remove('not-existing');
 
       expect(result).toEqual(0);
-      expect(service['clients'].size).toEqual(5);
+      expect(service['clients'].size).toEqual(6);
     });
     it('should not fail in case when client.disconnect() failed and remove client from the pool', async () => {
       mockRedisClient1.disconnect.mockRejectedValueOnce(
@@ -317,7 +338,7 @@ describe('RedisClientStorage', () => {
       const result = await service.remove(mockRedisClient1.id);
 
       expect(result).toEqual(1);
-      expect(service['clients'].size).toEqual(4);
+      expect(service['clients'].size).toEqual(5);
     });
   });
 
@@ -328,7 +349,7 @@ describe('RedisClientStorage', () => {
       );
 
       expect(result).toEqual(1);
-      expect(service['clients'].size).toEqual(4);
+      expect(service['clients'].size).toEqual(5);
       expect(service['clients'].get(mockRedisClient1.id)).toEqual(undefined);
     });
     it('should not fail in case when no client found', async () => {
@@ -338,7 +359,7 @@ describe('RedisClientStorage', () => {
       });
 
       expect(result).toEqual(0);
-      expect(service['clients'].size).toEqual(5);
+      expect(service['clients'].size).toEqual(6);
     });
     // todo: add prepareMetadata check test
   });
@@ -359,7 +380,7 @@ describe('RedisClientStorage', () => {
       });
 
       expect(await service.removeManyByMetadata(query)).toEqual(4);
-      expect(service['clients'].size).toEqual(1);
+      expect(service['clients'].size).toEqual(2);
     });
     it('should correctly find clients for particular database and context', async () => {
       const query = {
@@ -380,7 +401,7 @@ describe('RedisClientStorage', () => {
       });
 
       expect(await service.removeManyByMetadata(query)).toEqual(1);
-      expect(service['clients'].size).toEqual(4);
+      expect(service['clients'].size).toEqual(5);
     });
     it('should correctly find clients for particular database and user', async () => {
       const query = {
@@ -401,7 +422,7 @@ describe('RedisClientStorage', () => {
       });
 
       expect(await service.removeManyByMetadata(query)).toEqual(2);
-      expect(service['clients'].size).toEqual(3);
+      expect(service['clients'].size).toEqual(4);
     });
     it('should correctly find clients for particular user', async () => {
       const query = {
@@ -410,7 +431,7 @@ describe('RedisClientStorage', () => {
 
       const result = service['findClients'](query);
 
-      expect(result.length).toEqual(3);
+      expect(result.length).toEqual(4);
       result.forEach((id) => {
         expect(
           service['clients'].get(id)['clientMetadata'].sessionMetadata.userId,
@@ -423,7 +444,7 @@ describe('RedisClientStorage', () => {
         service['clients'].get(result[2])['clientMetadata'].databaseId,
       ).toEqual('d2');
 
-      expect(await service.removeManyByMetadata(query)).toEqual(3);
+      expect(await service.removeManyByMetadata(query)).toEqual(4);
       expect(service['clients'].size).toEqual(2);
     });
     it('should correctly find clients for particular database and db index', async () => {
@@ -445,7 +466,7 @@ describe('RedisClientStorage', () => {
       });
 
       expect(await service.removeManyByMetadata(query)).toEqual(1);
-      expect(service['clients'].size).toEqual(4);
+      expect(service['clients'].size).toEqual(5);
     });
     it('should not find any instances', async () => {
       const query = {
@@ -457,7 +478,7 @@ describe('RedisClientStorage', () => {
       expect(result).toEqual([]);
 
       expect(await service.removeManyByMetadata(query)).toEqual(0);
-      expect(service['clients'].size).toEqual(5);
+      expect(service['clients'].size).toEqual(6);
     });
   });
 
@@ -482,6 +503,7 @@ describe('RedisClientStorage', () => {
           db: getGenericValue(options['db'], 0),
           sessionMetadata: {
             userId: getGenericValue(options['userId'], `user_${i}`),
+            accountId: getGenericValue(options['accountId'], `account_${i}`),
             sessionId: getGenericValue(options['sessionId'], `session_${i}`),
             uniqueId: getGenericValue(
               options['sessionUId'],
@@ -504,11 +526,12 @@ describe('RedisClientStorage', () => {
           db: 0,
           sessionMetadata: {
             userId: 'uid',
+            accountId: 'aid',
             sessionId: 'sid',
             uniqueId: 'unsid',
           },
         },
-        id: 'dbid_Common_unid_0_uid_sid_unsid',
+        id: 'dbid_Common_unid_0_uid_aid_sid_unsid',
       },
       {
         clientMetadata: {
@@ -517,11 +540,12 @@ describe('RedisClientStorage', () => {
           uniqueId: 'unid',
           sessionMetadata: {
             userId: 'uid',
+            accountId: 'aid',
             sessionId: 'sid',
             uniqueId: 'unsid',
           },
         },
-        id: 'dbid_Common_unid_(nil)_uid_sid_unsid',
+        id: 'dbid_Common_unid_(nil)_uid_aid_sid_unsid',
       },
       {
         clientMetadata: {
@@ -529,11 +553,12 @@ describe('RedisClientStorage', () => {
           context: 'Common',
           sessionMetadata: {
             userId: 'uid',
+            accountId: 'aid',
             sessionId: 'sid',
             uniqueId: 'unsid',
           },
         },
-        id: 'dbid_Common_(nil)_(nil)_uid_sid_unsid',
+        id: 'dbid_Common_(nil)_(nil)_uid_aid_sid_unsid',
       },
       {
         clientMetadata: {
@@ -541,16 +566,18 @@ describe('RedisClientStorage', () => {
           context: 'Common',
           sessionMetadata: {
             userId: 'uid',
+            accountId: 'aid',
             sessionId: 'sid',
           },
         },
-        id: 'dbid_Common_(nil)_(nil)_uid_sid_(nil)',
+        id: 'dbid_Common_(nil)_(nil)_uid_aid_sid_(nil)',
       },
       {
         clientMetadata: {
           databaseId: 'dbid',
           sessionMetadata: {
             userId: 'uid',
+            accountId: 'aid',
             sessionId: 'sid',
           },
         },
@@ -561,6 +588,7 @@ describe('RedisClientStorage', () => {
           context: 'Common',
           sessionMetadata: {
             userId: 'uid',
+            accountId: 'aid',
             sessionId: 'sid',
           },
         },
@@ -572,6 +600,7 @@ describe('RedisClientStorage', () => {
           context: 'Common',
           sessionMetadata: {
             userId: 'uid',
+            accountId: 'aid',
           },
         },
         error: mockInvalidSessionMetadataError,
@@ -581,6 +610,18 @@ describe('RedisClientStorage', () => {
           databaseId: 'dbid',
           context: 'Common',
           sessionMetadata: {
+            accountId: 'aid',
+            sessionId: 'sid',
+          },
+        },
+        error: mockInvalidSessionMetadataError,
+      },
+      {
+        clientMetadata: {
+          databaseId: 'dbid',
+          context: 'Common',
+          sessionMetadata: {
+            userId: 'uid',
             sessionId: 'sid',
           },
         },
@@ -591,7 +632,7 @@ describe('RedisClientStorage', () => {
         error: mockInvalidSessionMetadataError,
       },
     ] as any)(
-      '%# validation and id generation',
+      '%# set: validation and id generation',
       async ({ clientMetadata, id, error }) => {
         const mapSetSpy = jest.spyOn(service['clients'], 'set');
 
@@ -618,10 +659,11 @@ describe('RedisClientStorage', () => {
           sessionMetadata: {
             userId: 'uid',
             sessionId: 'sid',
+            accountId: 'aid',
             uniqueId: 'unsid',
           },
         },
-        id: 'dbid_Common_unid_0_uid_sid_unsid',
+        id: 'dbid_Common_unid_0_uid_aid_sid_unsid',
       },
       {
         clientMetadata: {
@@ -630,11 +672,12 @@ describe('RedisClientStorage', () => {
           uniqueId: 'unid',
           sessionMetadata: {
             userId: 'uid',
+            accountId: 'aid',
             sessionId: 'sid',
             uniqueId: 'unsid',
           },
         },
-        id: 'dbid_Common_unid_(nil)_uid_sid_unsid',
+        id: 'dbid_Common_unid_(nil)_uid_aid_sid_unsid',
       },
       {
         clientMetadata: {
@@ -642,11 +685,12 @@ describe('RedisClientStorage', () => {
           context: 'Common',
           sessionMetadata: {
             userId: 'uid',
+            accountId: 'aid',
             sessionId: 'sid',
             uniqueId: 'unsid',
           },
         },
-        id: 'dbid_Common_(nil)_(nil)_uid_sid_unsid',
+        id: 'dbid_Common_(nil)_(nil)_uid_aid_sid_unsid',
       },
       {
         clientMetadata: {
@@ -654,16 +698,18 @@ describe('RedisClientStorage', () => {
           context: 'Common',
           sessionMetadata: {
             userId: 'uid',
+            accountId: 'aid',
             sessionId: 'sid',
           },
         },
-        id: 'dbid_Common_(nil)_(nil)_uid_sid_(nil)',
+        id: 'dbid_Common_(nil)_(nil)_uid_aid_sid_(nil)',
       },
       {
         clientMetadata: {
           databaseId: 'dbid',
           sessionMetadata: {
             userId: 'uid',
+            accountId: 'aid',
             sessionId: 'sid',
           },
         },
@@ -674,6 +720,7 @@ describe('RedisClientStorage', () => {
           context: 'Common',
           sessionMetadata: {
             userId: 'uid',
+            accountId: 'aid',
             sessionId: 'sid',
           },
         },
@@ -685,6 +732,7 @@ describe('RedisClientStorage', () => {
           context: 'Common',
           sessionMetadata: {
             userId: 'uid',
+            accountId: 'aid',
           },
         },
         error: mockInvalidSessionMetadataError,
@@ -694,6 +742,18 @@ describe('RedisClientStorage', () => {
           databaseId: 'dbid',
           context: 'Common',
           sessionMetadata: {
+            accountId: 'aid',
+            sessionId: 'sid',
+          },
+        },
+        error: mockInvalidSessionMetadataError,
+      },
+      {
+        clientMetadata: {
+          databaseId: 'dbid',
+          context: 'Common',
+          sessionMetadata: {
+            userId: 'uid',
             sessionId: 'sid',
           },
         },
@@ -704,7 +764,7 @@ describe('RedisClientStorage', () => {
         error: mockInvalidSessionMetadataError,
       },
     ] as any)(
-      '%# validation and id generation',
+      '%# getByMetadata: validation and id generation',
       async ({ clientMetadata, id, error }) => {
         const mapGetSpy = jest.spyOn(service['clients'], 'get');
 
@@ -732,11 +792,12 @@ describe('RedisClientStorage', () => {
           db: 0,
           sessionMetadata: {
             userId: 'uid',
+            accountId: 'aid',
             sessionId: 'sid',
             uniqueId: 'unsid',
           },
         },
-        id: 'dbid_Common_unid_0_uid_sid_unsid',
+        id: 'dbid_Common_unid_0_uid_aid_sid_unsid',
       },
       {
         clientMetadata: {
@@ -745,11 +806,12 @@ describe('RedisClientStorage', () => {
           uniqueId: 'unid',
           sessionMetadata: {
             userId: 'uid',
+            accountId: 'aid',
             sessionId: 'sid',
             uniqueId: 'unsid',
           },
         },
-        id: 'dbid_Common_unid_(nil)_uid_sid_unsid',
+        id: 'dbid_Common_unid_(nil)_uid_aid_sid_unsid',
       },
       {
         clientMetadata: {
@@ -757,11 +819,12 @@ describe('RedisClientStorage', () => {
           context: 'Common',
           sessionMetadata: {
             userId: 'uid',
+            accountId: 'aid',
             sessionId: 'sid',
             uniqueId: 'unsid',
           },
         },
-        id: 'dbid_Common_(nil)_(nil)_uid_sid_unsid',
+        id: 'dbid_Common_(nil)_(nil)_uid_aid_sid_unsid',
       },
       {
         clientMetadata: {
@@ -769,16 +832,18 @@ describe('RedisClientStorage', () => {
           context: 'Common',
           sessionMetadata: {
             userId: 'uid',
+            accountId: 'aid',
             sessionId: 'sid',
           },
         },
-        id: 'dbid_Common_(nil)_(nil)_uid_sid_(nil)',
+        id: 'dbid_Common_(nil)_(nil)_uid_aid_sid_(nil)',
       },
       {
         clientMetadata: {
           databaseId: 'dbid',
           sessionMetadata: {
             userId: 'uid',
+            accountId: 'aid',
             sessionId: 'sid',
           },
         },
@@ -789,6 +854,7 @@ describe('RedisClientStorage', () => {
           context: 'Common',
           sessionMetadata: {
             userId: 'uid',
+            accountId: 'aid',
             sessionId: 'sid',
           },
         },
@@ -800,6 +866,7 @@ describe('RedisClientStorage', () => {
           context: 'Common',
           sessionMetadata: {
             userId: 'uid',
+            accountId: 'aid',
           },
         },
         error: mockInvalidSessionMetadataError,
@@ -809,6 +876,18 @@ describe('RedisClientStorage', () => {
           databaseId: 'dbid',
           context: 'Common',
           sessionMetadata: {
+            accountId: 'aid',
+            sessionId: 'sid',
+          },
+        },
+        error: mockInvalidSessionMetadataError,
+      },
+      {
+        clientMetadata: {
+          databaseId: 'dbid',
+          context: 'Common',
+          sessionMetadata: {
+            userId: 'uid',
             sessionId: 'sid',
           },
         },
@@ -819,7 +898,7 @@ describe('RedisClientStorage', () => {
         error: mockInvalidSessionMetadataError,
       },
     ] as any)(
-      '%# validation and id generation',
+      '%# removeByMetadata: validation and id generation',
       async ({ clientMetadata, id, error }) => {
         jest
           .spyOn(service['clients'], 'get')

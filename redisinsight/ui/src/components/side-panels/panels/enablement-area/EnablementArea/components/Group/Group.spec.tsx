@@ -1,6 +1,6 @@
 import React from 'react'
 import { instance, mock } from 'ts-mockito'
-import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
+import { render, toggleAccordion } from 'uiSrc/utils/test-utils'
 import Group, { Props } from './Group'
 
 const mockedProps = mock<Props>()
@@ -27,7 +27,7 @@ describe('Group', () => {
 
     expect(accordionButton).toHaveTextContent(label)
   })
-  it('should emit onToggle', () => {
+  it('should emit onToggle', async () => {
     const callback = jest.fn()
     const label = 'Quick Guides'
 
@@ -39,9 +39,8 @@ describe('Group', () => {
         onToggle={callback}
       />,
     )
-    const accordion = screen.getByTestId(`accordion-${testId}`)
-    const btn = accordion.querySelector('button')
-    fireEvent.click(btn!)
+
+    await toggleAccordion(`accordion-${testId}`)
 
     expect(callback).toHaveBeenCalled()
   })

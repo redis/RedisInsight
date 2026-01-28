@@ -1,9 +1,12 @@
 name: ❗ Release (prod)
 
 on:
-  push:
-    branches:
-      - 'latest'
+  workflow_call:
+    inputs:
+      release_ref:
+        description: 'Branch to release from'
+        required: true
+        type: string
 
 jobs:
   tests-prod:
@@ -11,7 +14,6 @@ jobs:
     uses: ./.github/workflows/tests.yml
     secrets: inherit
     with:
-      group_tests: 'without_e2e'
       short_rte_list: false
       pre_release: true
 
@@ -21,20 +23,8 @@ jobs:
     needs: tests-prod
     secrets: inherit
     with:
-      environment: 'production'
-      target: 'all'
-
-  e2e-docker-tests:
-    name: E2E Docker tests
-    needs: builds-prod
-    uses: ./.github/workflows/tests-e2e-docker.yml
-    secrets: inherit
-
-  e2e-appimage-tests:
-    name: E2E AppImage tests
-    needs: builds-prod
-    uses: ./.github/workflows/tests-e2e-appimage.yml
-    secrets: inherit
+      environment: "production"
+      target: "all"
 
   virustotal-prod:
     name: Virustotal
@@ -50,17 +40,16 @@ jobs:
     needs: virustotal-prod
     secrets: inherit
 
-  # Temporal disable publish to docker and snapcraft
-  # publish-stores:
-  #   name: Publish to stores
-  #   uses: ./.github/workflows/publish-stores.yml
-  #   needs: aws-upload-prod
-  #   secrets: inherit
+  publish-stores:
+    name: Publish to stores
+    uses: ./.github/workflows/publish-stores.yml
+    needs: aws-upload-prod
+    secrets: inherit
 
   # Remove artifacts from github actions
   remove-artifacts:
     name: Remove artifacts
-    needs: [aws-upload-prod, e2e-docker-tests, e2e-appimage-tests]
+    needs: [aws-upload-prod]
     if: always()
     runs-on: ubuntu-latest
 

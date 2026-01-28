@@ -1,13 +1,11 @@
 import React from 'react'
 
-import { RiTooltip } from 'uiSrc/components'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CopyIcon } from 'uiSrc/components/base/icons'
+import { CopyButton } from 'uiSrc/components/copy-button'
 import { Text } from 'uiSrc/components/base/text'
 import { lastConnectionFormat } from 'uiSrc/utils'
 import { RdiListColumn } from 'uiSrc/constants'
 
-import { handleCopyUrl } from '../../methods/handlers'
+import { sendCopyUrlTelemetry } from '../../methods/handlers'
 import { IRdiListCell } from '../../RdiInstancesList.types'
 import { CellContainer } from './RdiInstancesListCell.styles'
 
@@ -40,13 +38,11 @@ const RdiInstancesListCell: IRdiListCell = ({ row, column }) => {
     >
       <Text>{text}</Text>
       {withCopyIcon && (
-        <RiTooltip position="right" content="Copy">
-          <IconButton
-            size="L"
-            icon={CopyIcon}
-            onClick={(e) => handleCopyUrl(e, text, id)}
-          />
-        </RiTooltip>
+        <CopyButton
+          copy={text}
+          onCopy={() => sendCopyUrlTelemetry(id)}
+          aria-label="Copy URL"
+        />
       )}
     </CellContainer>
   )

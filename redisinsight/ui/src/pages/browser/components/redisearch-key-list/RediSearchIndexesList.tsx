@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import React, { useEffect, useState } from 'react'
 import { isString } from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
@@ -32,14 +31,15 @@ import { localStorageService } from 'uiSrc/services'
 import { BrowserStorageItem } from 'uiSrc/constants'
 
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { ResetIcon } from 'uiSrc/components/base/icons'
+import { PlusIcon, ResetIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
 import {
   RiSelect,
   SelectValueRenderParams,
 } from 'uiSrc/components/base/forms/select/RiSelect'
 import { Text } from 'uiSrc/components/base/text'
-import styles from './styles.module.scss'
+import { Row } from 'uiSrc/components/base/layout/flex'
+import * as S from './RediSearchIndexesList.styles'
 
 export const CREATE = 'create'
 
@@ -98,29 +98,31 @@ const RediSearchIndexesList = (props: Props) => {
     return {
       value: JSON.stringify(index),
       inputDisplay: (
-        <Text component="span" data-test-subj={`mode-option-type-${value}`}>
-          {value}
-        </Text>
+        <Text data-test-subj={`mode-option-type-${value}`}>{value}</Text>
       ),
       dropdownDisplay: (
-        <Text component="span" data-test-subj={`mode-option-type-${value}`}>
+        <Text color="primary" data-test-subj={`mode-option-type-${value}`}>
           {value}
         </Text>
       ),
     }
   })
 
-  options.unshift({
+  options.push({
     value: JSON.stringify(CREATE),
     inputDisplay: <span>CREATE</span>,
     dropdownDisplay: (
-      <Text
-        size="M"
-        className={cx(styles.createIndexBtn)}
-        data-testid="create-index-btn"
-      >
-        Create Index
-      </Text>
+      <Row align="center" justify="start" gap="xs">
+        <PlusIcon size="M" />
+        <Text
+          size="M"
+          variant="semiBold"
+          color="primary"
+          data-testid="create-index-btn"
+        >
+          Create Index
+        </Text>
+      </Row>
     ),
   })
 
@@ -181,7 +183,7 @@ const RediSearchIndexesList = (props: Props) => {
   }
 
   return (
-    <div className={cx(styles.container)}>
+    <S.Container>
       <RiSelect.Compose
         disabled={loading}
         options={options}
@@ -212,7 +214,7 @@ const RediSearchIndexesList = (props: Props) => {
         </RiSelect.Trigger.Compose>
         <RiSelect.Content optionValueRender={selectValueRender} />
       </RiSelect.Compose>
-    </div>
+    </S.Container>
   )
 }
 

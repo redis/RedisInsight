@@ -556,7 +556,13 @@ describe('instances slice', () => {
       const instance = { ...instances[1] }
       const state: InitialStateInstances = {
         ...initialState,
-        connectedInstance: instance,
+        connectedInstance: {
+          ...instance,
+          loading: false,
+          isRediStack: false,
+          isFreeDb: false,
+          db: undefined,
+        },
       }
 
       // Act

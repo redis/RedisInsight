@@ -123,7 +123,7 @@ test('Verify that when user clicks on “clear” control with no filter per key
     }, ossStandaloneConfig);
     // Search for not existed key name
     await browserPage.searchByKeyName(keyName2);
-    await t.expect(browserPage.keyListTable.textContent).contains('No results found.', 'Key is not found message not displayed');
+    await t.expect(browserPage.keysContainer.textContent).contains('No results found.', 'Key is not found message not displayed');
     // Verify that when user clicks on “clear” control and filter per key name is applied filter is reset and rescan initiated
     await t.click(browserPage.clearFilterButton);
     await t.expect(browserPage.filterByPatterSearchInput.getAttribute('value')).eql('', 'The filtering is not reset');

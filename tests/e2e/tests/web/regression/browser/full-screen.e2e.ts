@@ -17,10 +17,12 @@ const keyValue = Common.generateWord(20);
 fixture `Full Screen`
     .meta({ type: 'regression', rte: rte.standalone })
     .page(commonUrl)
-    .beforeEach(async() => {
+    .beforeEach(async(t) => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
         await browserPage.Cli.sendCommandInCli('flushdb');
         await browserPage.reloadPage();
+        // Force switch to list view
+        await t.click(browserPage.browserViewButton);
     })
     .afterEach(async() => {
         await browserPage.Cli.sendCommandInCli('flushdb');

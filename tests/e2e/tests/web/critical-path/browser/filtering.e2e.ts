@@ -90,8 +90,10 @@ test
         }
     });
 test
-    .before(async() => {
+    .before(async(t) => {
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneBigConfig);
+        // Force switch to list view
+        await t.click(browserPage.browserViewButton);
     })('Verify that user see the key type label when filtering per key types and when removes label the filter is removed on Browser page', async t => { //Check filtering labels
         for (const { textType } of keyTypes) {
             await browserPage.selectFilterGroupType(textType);

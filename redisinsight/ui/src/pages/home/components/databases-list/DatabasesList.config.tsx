@@ -48,9 +48,9 @@ export const BASE_COLUMNS: ColumnDef<Instance>[] = [
     isHeaderCustom: true,
     enableSorting: false,
     header: Table.HeaderMultiRowSelectionButton,
-    cell: (props) => (
+    cell: ({ row }) => (
       <Table.RowSelectionButton
-        {...props}
+        row={row}
         onClick={(e: any) => e.stopPropagation()}
       />
     ),
@@ -98,6 +98,20 @@ export const BASE_COLUMNS: ColumnDef<Instance>[] = [
     accessorKey: DatabaseListColumn.LastConnection,
     header: COLUMN_FIELD_NAME_MAP.get(DatabaseListColumn.LastConnection),
     enableSorting: true,
+    sortingFn: (rowA, rowB) => {
+      const conn1 = rowA.original.lastConnection
+      const conn2 = rowB.original.lastConnection
+      if (conn1 && conn2) {
+        return new Date(conn2).getTime() - new Date(conn1).getTime()
+      }
+      if (conn1 && !conn2) {
+        return -1
+      }
+      if (!conn1 && conn2) {
+        return 1
+      }
+      return 0
+    },
     cell: DatabasesListCellLastConnection,
   },
   {

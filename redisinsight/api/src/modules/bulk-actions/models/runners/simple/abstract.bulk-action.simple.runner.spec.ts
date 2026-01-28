@@ -145,7 +145,6 @@ describe('AbstractBulkActionSimpleRunner', () => {
       expect(deleteRunner['summary']['processed']).toEqual(0);
       expect(deleteRunner['summary']['succeed']).toEqual(0);
       expect(deleteRunner['summary']['failed']).toEqual(0);
-      expect(deleteRunner['summary']['errors']).toEqual([]);
 
       await deleteRunner.runIteration();
 
@@ -156,12 +155,6 @@ describe('AbstractBulkActionSimpleRunner', () => {
       expect(deleteRunner['summary']['processed']).toEqual(2);
       expect(deleteRunner['summary']['succeed']).toEqual(1);
       expect(deleteRunner['summary']['failed']).toEqual(1);
-      expect(deleteRunner['summary']['errors']).toEqual([
-        {
-          key: mockKeyBuffer,
-          error: mockRESPError,
-        },
-      ]);
 
       await deleteRunner.runIteration();
 
@@ -172,16 +165,6 @@ describe('AbstractBulkActionSimpleRunner', () => {
       expect(deleteRunner['summary']['processed']).toEqual(4);
       expect(deleteRunner['summary']['succeed']).toEqual(2);
       expect(deleteRunner['summary']['failed']).toEqual(2);
-      expect(deleteRunner['summary']['errors']).toEqual([
-        {
-          key: mockKeyBuffer,
-          error: mockRESPError,
-        },
-        {
-          key: mockKeyBuffer,
-          error: mockRESPError,
-        },
-      ]);
 
       await deleteRunner.runIteration();
 
@@ -192,20 +175,6 @@ describe('AbstractBulkActionSimpleRunner', () => {
       expect(deleteRunner['summary']['processed']).toEqual(6);
       expect(deleteRunner['summary']['succeed']).toEqual(3);
       expect(deleteRunner['summary']['failed']).toEqual(3);
-      expect(deleteRunner['summary']['errors']).toEqual([
-        {
-          key: mockKeyBuffer,
-          error: mockRESPError,
-        },
-        {
-          key: mockKeyBuffer,
-          error: mockRESPError,
-        },
-        {
-          key: mockKeyBuffer,
-          error: mockRESPError,
-        },
-      ]);
     });
   });
 
@@ -251,18 +220,18 @@ describe('AbstractBulkActionSimpleRunner', () => {
 
   describe('processIterationResults', () => {
     let addProcessedSpy;
-    let addKeysSpy;
     let addSuccessSpy;
-    let addErrorsSpy;
+    let addFailedSpy;
+    let writeToReportSpy;
 
     beforeEach(() => {
       addProcessedSpy = jest.spyOn(deleteRunner['summary'], 'addProcessed');
-      addKeysSpy = jest.spyOn(deleteRunner['summary'], 'addKeys');
       addSuccessSpy = jest.spyOn(deleteRunner['summary'], 'addSuccess');
-      addErrorsSpy = jest.spyOn(deleteRunner['summary'], 'addErrors');
+      addFailedSpy = jest.spyOn(deleteRunner['summary'], 'addFailed');
+      writeToReportSpy = jest.spyOn(bulkAction, 'writeToReport');
     });
 
-    it('should add keys to the summary and correctly process results', () => {
+    it('should correctly process results and update summary counters', () => {
       const keys = [
         Buffer.from('key1'),
         Buffer.from('key2'),
@@ -277,16 +246,35 @@ describe('AbstractBulkActionSimpleRunner', () => {
       deleteRunner.processIterationResults(keys, results);
 
       expect(addProcessedSpy).toHaveBeenCalledWith(3);
-      expect(addKeysSpy).toHaveBeenCalledWith(keys);
 
       expect(addSuccessSpy).toHaveBeenNthCalledWith(1, 1); // first call
       expect(addSuccessSpy).toHaveBeenNthCalledWith(2, 1); // second call
-      expect(addErrorsSpy).toHaveBeenCalledWith([
-        {
-          key: Buffer.from('key2'),
-          error: mockRESPError,
-        },
-      ]);
+      expect(addFailedSpy).toHaveBeenCalledWith(1);
+    });
+
+    it('should call writeToReport for each key result', () => {
+      const keys = [
+        Buffer.from('key1'),
+        Buffer.from('key2'),
+        Buffer.from('key3'),
+      ];
+      const results: [Error | null, number | null][] = [
+        [null, 1], // Success
+        [mockReplyError, null], // Error
+        [null, 1], // Success
+      ];
+
+      deleteRunner.processIterationResults(keys, results);
+
+      expect(writeToReportSpy).toHaveBeenCalledTimes(3);
+      expect(writeToReportSpy).toHaveBeenNthCalledWith(1, keys[0], true);
+      expect(writeToReportSpy).toHaveBeenNthCalledWith(
+        2,
+        keys[1],
+        false,
+        mockRESPError,
+      );
+      expect(writeToReportSpy).toHaveBeenNthCalledWith(3, keys[2], true);
     });
   });
 });

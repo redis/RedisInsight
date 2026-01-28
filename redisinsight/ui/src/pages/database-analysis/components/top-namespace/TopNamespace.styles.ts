@@ -30,17 +30,19 @@ export const NoNamespaceBtn = styled(EmptyButton)`
     text-decoration: none;
   }
 `
+
 export const ExpandedRowItem = styled.div<React.HTMLAttributes<HTMLDivElement>>`
   display: flex;
   height: 42px;
+  padding-left: ${({ theme }) => theme.core.space.space300};
+
   & > div {
     display: flex;
     align-items: center;
     flex: 1;
   }
 `
-export const TruncatedContent = styled(Row).attrs({
-  align: 'center',
-})`
+
+export const TruncatedContent = styled(Row)`
   ${truncateText}
 `

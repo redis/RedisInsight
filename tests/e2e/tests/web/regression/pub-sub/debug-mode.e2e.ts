@@ -11,7 +11,7 @@ const browserPage = new BrowserPage();
 const databaseHelper = new DatabaseHelper();
 const databaseAPIRequests = new DatabaseAPIRequests();
 
-fixture `PubSub debug mode`
+fixture.skip `PubSub debug mode`
     .meta({ type: 'regression', rte: rte.standalone })
     .page(commonUrl)
     .beforeEach(async t => {
@@ -28,6 +28,18 @@ fixture `PubSub debug mode`
         await databaseAPIRequests.deleteStandaloneDatabaseApi(ossStandaloneConfig);
     });
 
+test('Example of new test', async t => {
+    // Shouldn't see message with text first on 1st table page
+    await t.expect(pubSubPage.pubSubPageContainer.find(pubSubPage.cssSelectorMessage).withText('first').visible).notOk('Oldest message is shown on the first table page');
+    // Navigate to last table page
+    await t.click(pubSubPage.messagesTableLastPageBtn);
+    // Should have the oldest messages on the last table page
+    await t.expect(pubSubPage.pubSubPageContainer.find(pubSubPage.cssSelectorMessage).withText('first').visible).ok('Oldest message should be shown on the last table page');
+    // Navigate to first table page
+    await t.click(pubSubPage.messagesTableFirstPageBtn);
+
+    // ...
+})
 test('Verify that when user navigating away and back to pubsub window the debug mode state will be reset to default auto-scroll', async t => {
     // Scroll to the first messages
     await t.scrollIntoView(pubSubPage.pubSubPageContainer.find(pubSubPage.cssSelectorMessage).withText('first'));

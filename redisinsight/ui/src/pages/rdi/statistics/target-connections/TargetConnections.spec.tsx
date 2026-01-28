@@ -1,13 +1,13 @@
 import React from 'react'
 
 import { render, screen } from 'uiSrc/utils/test-utils'
-import TargetConnections from './TargetConnections'
+import { StatisticsConnectionStatus } from 'uiSrc/slices/interfaces'
+import TargetConnections, { Props } from './TargetConnections'
 
-const mockedProps = {
+const mockedProps: Props = {
   data: {
     connection1: {
-      status: 'good',
-      name: 'Connection 1',
+      status: StatisticsConnectionStatus.connected,
       type: 'Type 1',
       host: 'localhost',
       port: 6379,
@@ -15,8 +15,7 @@ const mockedProps = {
       user: 'User 1',
     },
     connection2: {
-      status: 'bad',
-      name: 'Connection 2',
+      status: StatisticsConnectionStatus.notYetUsed,
       type: 'Type 2',
       host: '127.0.0.1',
       port: 6380,

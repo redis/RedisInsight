@@ -34,10 +34,7 @@ export class CommandsHistoryIndexedDB implements CommandsHistoryDatabase {
         : wbHistoryStorage
   }
 
-  async getCommandsHistory(
-    instanceId: string,
-    _commandExecutionType: CommandExecutionType,
-  ): Promise<CommandsHistoryResult> {
+  async getCommandsHistory(instanceId: string): Promise<CommandsHistoryResult> {
     const data = await getLocalWbHistory(this.dbStorage, instanceId)
     const results: CommandExecutionUI[] = data.map(mapCommandExecutionToUI)
 

@@ -34,4 +34,5 @@ export type RiPopoverProps = Omit<
   'data-testid'?: string
   /** if true, the trigger will be standalone and will not be wrapped in a span */
   standalone?: boolean
+  customOutsideDetector?: boolean
 }

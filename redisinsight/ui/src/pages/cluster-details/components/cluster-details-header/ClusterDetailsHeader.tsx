@@ -1,7 +1,5 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
-import { capitalize } from 'lodash'
 
 import { LoadingContent } from 'uiSrc/components/base/layout'
 import {
@@ -15,12 +13,17 @@ import {
   ConnectionType,
   CONNECTION_TYPE_DISPLAY,
 } from 'uiSrc/slices/interfaces'
-import AnalyticsTabs from 'uiSrc/components/analytics-tabs'
 import { clusterDetailsSelector } from 'uiSrc/slices/analytics/clusterDetails'
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
+import { AnalyticsPageHeader } from 'uiSrc/pages/database-analysis/components/analytics-page-header'
 
-import styles from './styles.module.scss'
+import {
+  Container,
+  Content,
+  Item,
+  Loading,
+} from './ClusterDetailsHeader.styles'
 
 interface IMetrics {
   label: string
@@ -55,7 +58,6 @@ const ClusterDetailsHeader = () => {
           username || DEFAULT_USERNAME
         ) : (
           <RiTooltip
-            className={styles.tooltip}
             anchorClassName="truncateText"
             position="bottom"
             content={<>{formatLongName(username || DEFAULT_USERNAME)}</>}
@@ -71,7 +73,6 @@ const ClusterDetailsHeader = () => {
       border: 'left',
       value: (
         <RiTooltip
-          className={styles.tooltip}
           position="top"
           content={
             <>
@@ -90,34 +91,28 @@ const ClusterDetailsHeader = () => {
   ]
 
   return (
-    <div className={styles.container} data-testid="cluster-details-header">
-      <AnalyticsTabs />
-
+    <Container data-testid="cluster-details-header">
+      <AnalyticsPageHeader />
       {loading && !data && (
-        <div className={styles.loading} data-testid="cluster-details-loading">
+        <Loading as="div" data-testid="cluster-details-loading">
           <LoadingContent lines={2} />
-        </div>
+        </Loading>
       )}
       {data && (
-        <div
-          className={cx(styles.content)}
-          data-testid="cluster-details-content"
-        >
+        <Content data-testid="cluster-details-content">
           {metrics.map(({ value, label, border }) => (
-            <div
-              className={cx(styles.item, styles[`border${capitalize(border)}`])}
+            <Item
               key={label}
+              $borderLeft={border === 'left'}
               data-testid={`cluster-details-item-${label}`}
             >
-              <Text color="subdued" className={styles.value}>
-                {value}
-              </Text>
-              <Text className={styles.label}>{label}</Text>
-            </div>
+              <Text color="subdued">{value}</Text>
+              <Text>{label}</Text>
+            </Item>
           ))}
-        </div>
+        </Content>
       )}
-    </div>
+    </Container>
   )
 }
 

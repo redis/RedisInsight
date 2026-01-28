@@ -1,26 +1,34 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
 import {
+  DeleteIcon,
+  UserIcon,
+  IndicatorExcludedIcon,
+} from 'uiSrc/components/base/icons'
+import {
+  clearPubSubMessages,
   pubSubSelector,
   toggleSubscribeTriggerPubSub,
 } from 'uiSrc/slices/pubsub/pubsub'
 
-import { Button } from 'uiSrc/components/base/forms/buttons'
+import { Button, IconButton } from 'uiSrc/components/base/forms/buttons'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
 
-import { UserIcon, IndicatorExcludedIcon } from 'uiSrc/components/base/icons'
-import { FlexProps } from 'uiSrc/components/base/layout/flex/flex.styles'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { RiTooltip } from 'uiSrc/components'
+import type { SubscribeFormProps } from './SubscribeForm.types'
+import * as S from './SubscribeForm.styles'
 import SubscribeInformation from '../subscribe-information'
-import { TopicNameField } from './SubscribeForm.styles'
-
-export interface SubscribeFormProps extends Omit<FlexProps, 'direction'> {}
 
 const SubscribeForm = (props: SubscribeFormProps) => {
   const dispatch = useDispatch()
 
-  const { isSubscribed, subscriptions, loading } = useSelector(pubSubSelector)
+  const { isSubscribed, subscriptions, loading, count } =
+    useSelector(pubSubSelector)
+  const { instanceId = '' } = useParams<{ instanceId: string }>()
 
   const [channels, setChannels] = useState(() =>
     subscriptions?.length
@@ -38,10 +46,21 @@ const SubscribeForm = (props: SubscribeFormProps) => {
     dispatch(toggleSubscribeTriggerPubSub(channels))
   }
 
+  const onClickClear = () => {
+    dispatch(clearPubSubMessages())
+    return sendEventTelemetry({
+      event: TelemetryEvent.PUBSUB_MESSAGES_CLEARED,
+      eventData: {
+        databaseId: instanceId,
+        messages: count,
+      },
+    })
+  }
+
   return (
     <Row align="center" gap="m" {...props}>
       <FormField>
-        <TopicNameField
+        <S.TopicNameField
           value={channels}
           disabled={isSubscribed}
           onChange={(value) => setChannels(value)}
@@ -64,6 +83,15 @@ const SubscribeForm = (props: SubscribeFormProps) => {
       >
         {isSubscribed ? 'Unsubscribe' : 'Subscribe'}
       </Button>
+      <RiTooltip content={!!count ? 'Clear Messages' : ''}>
+        <IconButton
+          disabled={!count}
+          icon={DeleteIcon}
+          onClick={onClickClear}
+          aria-label="clear pub sub"
+          data-testid="clear-pubsub-btn"
+        />
+      </RiTooltip>
     </Row>
   )
 }

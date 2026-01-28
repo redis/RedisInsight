@@ -11,4 +11,6 @@ export const StyledContainer = styled(PageBody)`
     theme.semantic.color.background.neutral100};
   border: 2px solid
     ${({ theme }: { theme: Theme }) => theme.semantic.color.border.neutral500};
+  align-items: center;
+  justify-content: center;
 `

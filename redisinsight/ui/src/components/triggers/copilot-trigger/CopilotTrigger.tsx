@@ -1,6 +1,4 @@
 import React from 'react'
-import cx from 'classnames'
-
 import { useDispatch, useSelector } from 'react-redux'
 import {
   sidePanelsSelector,
@@ -10,34 +8,32 @@ import {
 import { RiTooltip } from 'uiSrc/components'
 import { CopilotIcon } from 'uiSrc/components/base/icons'
 import { SidePanels } from 'uiSrc/slices/interfaces/insights'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
-import styles from './styles.module.scss'
+import { CopilotWrapper, CopilotIconButton } from './CopilotTrigger.styles'
 
 const CopilotTrigger = () => {
   const { openedPanel } = useSelector(sidePanelsSelector)
-
   const dispatch = useDispatch()
 
   const handleClickTrigger = () => {
     dispatch(toggleSidePanel(SidePanels.AiAssistant))
   }
 
+  const isCopilotOpen = openedPanel === SidePanels.AiAssistant
+
   return (
-    <div
-      className={cx(styles.container, {
-        [styles.isOpen]: openedPanel === SidePanels.AiAssistant,
-      })}
-    >
+    <CopilotWrapper align="center" justify="end">
       <RiTooltip content="Redis Copilot">
-        <EmptyButton
-          className={styles.btn}
+        <CopilotIconButton
+          size="S"
           role="button"
           icon={CopilotIcon}
           onClick={handleClickTrigger}
           data-testid="copilot-trigger"
+          isOpen={isCopilotOpen}
+          aria-label="Copilot-trigger"
         />
       </RiTooltip>
-    </div>
+    </CopilotWrapper>
   )
 }
 

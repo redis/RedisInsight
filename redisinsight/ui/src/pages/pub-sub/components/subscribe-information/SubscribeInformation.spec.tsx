@@ -1,5 +1,11 @@
 import React from 'react'
-import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitForRiTooltipVisible,
+} from 'uiSrc/utils/test-utils'
 import SubscribeInformation from './SubscribeInformation'
 
 describe('SubscribeInformation', () => {
@@ -7,10 +13,16 @@ describe('SubscribeInformation', () => {
     expect(render(<SubscribeInformation />)).toBeTruthy()
   })
 
-  it('should open popover on click', async () => {
+  it('should show tooltip on hover', async () => {
     render(<SubscribeInformation />)
 
-    fireEvent.click(screen.getByTestId('append-info-icon'))
-    expect(screen.getByTestId('pub-sub-examples')).toBeInTheDocument()
+    await act(async () => {
+      fireEvent.focus(screen.getByTestId('append-info-icon'))
+    })
+    await waitForRiTooltipVisible()
+
+    expect(
+      screen.getAllByText(/Subscribe to one or more channels/)[0],
+    ).toBeInTheDocument()
   })
 })

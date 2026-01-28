@@ -42,6 +42,225 @@ const convertToPixels = (value: string) => {
   return { original: value, pixels: null }
 }
 
+// Styled components
+const FontFacesContainer = styled(Col).attrs({
+  gap: 'l',
+  align: 'stretch',
+})`
+  padding: 10px;
+  opacity: 0.8;
+  min-width: 200px;
+  flex-grow: 1;
+  background-color: ${({ theme }: { theme: ThemeType }) =>
+    theme.semantic.color.background.neutral100};
+`
+
+const StyledFontItem = styled.div`
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid
+    ${({ theme }: { theme: ThemeType }) =>
+      theme.semantic.color.border.neutral500};
+  background-color: ${({ theme }: { theme: ThemeType }) =>
+    theme.semantic.color.background.neutral100};
+`
+
+const ThemeContainer = styled(Grid).attrs({
+  columns: 4,
+  gap: 'm',
+  centered: true,
+  responsive: true,
+})`
+  padding: 10px;
+  flex-grow: 1;
+  background-color: ${({ theme }: { theme: ThemeType }) =>
+    theme.semantic.color.background.neutral100};
+`
+
+const StyledItemContainer = styled(Col).attrs({
+  gap: 'l',
+  align: 'start',
+})`
+  opacity: 0.8;
+  padding: 30px;
+  min-width: 200px;
+  border: 1px solid
+    ${({ theme }: { theme: ThemeType }) =>
+      theme.semantic.color.border.neutral500};
+  background-color: ${({ theme }: { theme: ThemeType }) =>
+    theme.semantic.color.background.neutral100};
+`
+
+const StyledShadowItem = styled.div<{
+  $value: string
+  children?: React.ReactNode
+}>`
+  width: 100%;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  border: 1px solid
+    ${({ theme }: { theme: ThemeType }) =>
+      theme.semantic.color.border.neutral500};
+  box-shadow: ${({ $value }) => css`
+    ${$value}
+  `};
+`
+
+const StyledSpaceItem = styled.div`
+  width: 50px;
+  height: 15px;
+  background-color: transparent;
+  border: 1px solid
+    ${({ theme }: { theme: ThemeType }) =>
+      theme.semantic.color.border.neutral800};
+`
+
+// Helper components (defined before Theme component that uses them)
+const FontItem = ({
+  name,
+  value,
+  fontFaces,
+}: {
+  name: string
+  value: string
+  fontFaces: Record<string, string>
+}) => {
+  const { pixels } = convertToPixels(value)
+
+  return (
+    <StyledFontItem>
+      <dl>
+        <dt style={{ marginBottom: 5 }}>
+          <ColorText variant="semiBold" color="accent">
+            {name}
+          </ColorText>
+        </dt>
+        <dd>
+          <Text variant="semiBold" color="primary">
+            {value} {pixels && `(${pixels})`}
+          </Text>
+          {Object.values(fontFaces).map((fontFace) => (
+            <Text
+              color="secondary"
+              key={`${name}-${fontFace}`}
+              style={{
+                fontFamily: fontFace,
+                fontSize: value,
+              }}
+            >
+              Sample text 0124 ,.;:
+            </Text>
+          ))}
+        </dd>
+      </dl>
+    </StyledFontItem>
+  )
+}
+
+const Fonts = ({
+  fonts,
+}: {
+  fonts: {
+    fontFamily: Record<string, string>
+    fontSize: Record<string, string>
+  }
+}) => (
+  <FontFacesContainer>
+    <Title size="S" variant="semiBold" color="primary">
+      Font faces
+    </Title>
+    {Object.entries(fonts.fontFamily).map(([name, value]) => (
+      <StyledFontItem key={name}>
+        <dl>
+          <dt style={{ marginBottom: 5 }}>
+            <ColorText variant="semiBold" color="accent">
+              {name}
+            </ColorText>
+          </dt>
+          <dd>
+            <Text
+              size="L"
+              variant="semiBold"
+              style={{
+                fontFamily: `${value}`,
+              }}
+            >
+              {value}
+            </Text>
+          </dd>
+        </dl>
+      </StyledFontItem>
+    ))}
+    <Title size="S" variant="semiBold" color="primary">
+      Font sizes
+    </Title>
+
+    {Object.entries(fonts.fontSize).map(([name, value]) => (
+      <FontItem
+        key={name}
+        name={name}
+        value={value}
+        fontFaces={fonts.fontFamily}
+      />
+    ))}
+  </FontFacesContainer>
+)
+
+const ShadowItem = ({ name, value }: { name: string; value: string }) => (
+  <StyledItemContainer>
+    <StyledShadowItem $value={value}>
+      <RiTooltip title={value}>
+        <Text color="accent">{name}</Text>
+      </RiTooltip>
+    </StyledShadowItem>
+  </StyledItemContainer>
+)
+
+const Shadows = ({ shadows }: { shadows: Record<string, string> }) => (
+  <ThemeContainer>
+    {Object.entries(shadows).map(([name, value]) => (
+      <ShadowItem key={`shadow-${name}`} name={name} value={value} />
+    ))}
+  </ThemeContainer>
+)
+
+const SpaceItem = ({ name, value }: { name: string; value: string }) => {
+  const { pixels } = convertToPixels(value)
+
+  return (
+    <StyledItemContainer>
+      <dl>
+        <dt style={{ marginBottom: 5 }}>
+          <ColorText variant="semiBold" color="accent">
+            {name}
+          </ColorText>
+        </dt>
+        <dd>
+          <Text variant="semiBold" color="primary">
+            {value} {pixels && `(${pixels})`}
+          </Text>
+        </dd>
+      </dl>
+
+      <Row style={{ gap: value }}>
+        <StyledSpaceItem />
+        <StyledSpaceItem />
+      </Row>
+    </StyledItemContainer>
+  )
+}
+
+const Spaces = ({ spaces }: { spaces: Record<string, string> }) => (
+  <ThemeContainer>
+    {Object.entries(spaces).map(([name, value]) => (
+      <SpaceItem key={name} name={name} value={value} />
+    ))}
+  </ThemeContainer>
+)
+
 export const Theme = () => {
   const theme = useTheme()
   const monacoOptions = {
@@ -113,221 +332,5 @@ export const Theme = () => {
       <MonacoEnvironmentInitializer />
       <Tabs tabs={tabs} value={viewTab} onChange={handleTabChange} />
     </Col>
-  )
-}
-
-const FontFacesContainer = styled(Col).attrs({
-  gap: 'l',
-  align: 'stretch',
-})`
-  padding: 10px;
-  opacity: 0.8;
-  min-width: 200px;
-  flex-grow: 1;
-  background-color: ${({ theme }: { theme: ThemeType }) =>
-    theme.semantic.color.background.neutral100};
-`
-
-const StyledFontItem = styled.div`
-  flex-grow: 1;
-  padding: 10px;
-  border: 1px solid
-    ${({ theme }: { theme: ThemeType }) =>
-      theme.semantic.color.border.neutral500};
-  background-color: ${({ theme }: { theme: ThemeType }) =>
-    theme.semantic.color.background.neutral100};
-`
-
-const Fonts = ({
-  fonts,
-}: {
-  fonts: {
-    fontFamily: Record<string, string>
-    fontSize: Record<string, string>
-  }
-}) => (
-  <FontFacesContainer>
-    <Title size="S" variant="semiBold" color="primary">
-      Font faces
-    </Title>
-    {Object.entries(fonts.fontFamily).map(([name, value]) => (
-      <StyledFontItem>
-        <dl>
-          <dt style={{ marginBottom: 5 }}>
-            <ColorText variant="semiBold" color="accent">
-              {name}
-            </ColorText>
-          </dt>
-          <dd>
-            <Text
-              size="L"
-              variant="semiBold"
-              style={{
-                fontFamily: `${value}`,
-              }}
-            >
-              {value}
-            </Text>
-          </dd>
-        </dl>
-      </StyledFontItem>
-    ))}
-    <Title size="S" variant="semiBold" color="primary">
-      Font sizes
-    </Title>
-
-    {Object.entries(fonts.fontSize).map(([name, value]) => (
-      <FontItem
-        key={name}
-        name={name}
-        value={value}
-        fontFaces={fonts.fontFamily}
-      />
-    ))}
-  </FontFacesContainer>
-)
-
-const FontItem = ({
-  name,
-  value,
-  fontFaces,
-}: {
-  name: string
-  value: string
-  fontFaces: Record<string, string>
-}) => {
-  const { pixels } = convertToPixels(value)
-
-  return (
-    <StyledFontItem>
-      <dl>
-        <dt style={{ marginBottom: 5 }}>
-          <ColorText variant="semiBold" color="accent">
-            {name}
-          </ColorText>
-        </dt>
-        <dd>
-          <Text variant="semiBold" color="primary">
-            {value} {pixels && `(${pixels})`}
-          </Text>
-          {Object.values(fontFaces).map((fontFace) => (
-            <Text
-              color="secondary"
-              key={`${name}-${value}`}
-              style={{
-                fontFamily: fontFace,
-                fontSize: value,
-              }}
-            >
-              Sample text 0124 ,.;:
-            </Text>
-          ))}
-        </dd>
-      </dl>
-    </StyledFontItem>
-  )
-}
-
-const ThemeContainer = styled(Grid).attrs({
-  columns: 4,
-  gap: 'm',
-  centered: true,
-  responsive: true,
-})`
-  padding: 10px;
-  flex-grow: 1;
-  background-color: ${({ theme }: { theme: ThemeType }) =>
-    theme.semantic.color.background.neutral100};
-`
-
-const Shadows = ({ shadows }: { shadows: Record<string, string> }) => (
-  <ThemeContainer>
-    {Object.entries(shadows).map(([name, value]) => (
-      <ShadowItem key={`shadow-${name}`} name={name} value={value} />
-    ))}
-  </ThemeContainer>
-)
-
-const StyledItemContainer = styled(Col).attrs({
-  gap: 'l',
-  align: 'start',
-})`
-  opacity: 0.8;
-  padding: 30px;
-  min-width: 200px;
-  border: 1px solid
-    ${({ theme }: { theme: ThemeType }) =>
-      theme.semantic.color.border.neutral500};
-  background-color: ${({ theme }: { theme: ThemeType }) =>
-    theme.semantic.color.background.neutral100};
-`
-const StyledShadowItem = styled.div<{
-  $value: string
-  children?: React.ReactNode
-}>`
-  width: 100%;
-  height: 35px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: transparent;
-  border: 1px solid
-    ${({ theme }: { theme: ThemeType }) =>
-      theme.semantic.color.border.neutral500};
-  box-shadow: ${({ $value }) => css`
-    ${$value}
-  `};
-`
-
-const ShadowItem = ({ name, value }: { name: string; value: string }) => {
-  return (
-    <StyledItemContainer>
-      <StyledShadowItem $value={value}>
-        <RiTooltip title={value}>
-          <Text color="accent">{name}</Text>
-        </RiTooltip>
-      </StyledShadowItem>
-    </StyledItemContainer>
-  )
-}
-
-const Spaces = ({ spaces }: { spaces: Record<string, string> }) => (
-  <ThemeContainer>
-    {Object.entries(spaces).map(([name, value]) => (
-      <SpaceItem key={name} name={name} value={value} />
-    ))}
-  </ThemeContainer>
-)
-const StyledSpaceItem = styled.div`
-  width: 50px;
-  height: 15px;
-  background-color: transparent;
-  border: 1px solid
-    ${({ theme }: { theme: ThemeType }) =>
-      theme.semantic.color.border.neutral800};
-`
-const SpaceItem = ({ name, value }: { name: string; value: string }) => {
-  const { pixels } = convertToPixels(value)
-
-  return (
-    <StyledItemContainer>
-      <dl>
-        <dt style={{ marginBottom: 5 }}>
-          <ColorText variant="semiBold" color="accent">
-            {name}
-          </ColorText>
-        </dt>
-        <dd>
-          <Text variant="semiBold" color="primary">
-            {value} {pixels && `(${pixels})`}
-          </Text>
-        </dd>
-      </dl>
-
-      <Row style={{ gap: value }}>
-        <StyledSpaceItem />
-        <StyledSpaceItem />
-      </Row>
-    </StyledItemContainer>
   )
 }

@@ -44,7 +44,7 @@ test('Verify that user without dbsize permissions can connect to DB', async t =>
     // Check that user can see total number of key is overview
     await t.expect(browserPage.OverviewPanel.overviewTotalKeys.find('div').withExactText('18 M').exists).ok('Total keys are not displayed');
     // Check that user can see total number of keys in browser
-    await t.expect(browserPage.keysSummary.find('b').withText('18 00').exists).ok('Total number is not displayed');
+    await t.expect(browserPage.keysSummary.withText('18 00').exists).ok('Total number is not displayed');
     // Check that user can search per key
     await browserPage.Cli.sendCommandInCli(createKeyCommand);
     await browserPage.searchByKeyName(keyName);

@@ -2,7 +2,7 @@ import React from 'react'
 
 import { IClients } from 'uiSrc/slices/interfaces'
 import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
-import { Section } from '@redis-ui/components'
+import { Section } from 'uiSrc/components/base/display'
 import {
   StyledRdiAnalyticsTable,
   StyledRdiStatisticsSectionBody,
@@ -71,19 +71,20 @@ const Clients = ({ data }: Props) => {
 
   return (
     <Section.Compose collapsible defaultOpen id="clients">
-      <Section.Header label="Clients" />
-      <StyledRdiStatisticsSectionBody
-        content={
-          <StyledRdiAnalyticsTable
-            columns={columns}
-            data={clients}
-            defaultSorting={[{ id: 'id', desc: false }]}
-          >
-            <Table.Header />
-            <Table.Body />
-          </StyledRdiAnalyticsTable>
-        }
-      />
+      <Section.Header.Compose>
+        <Section.Header.Label label="Clients" />
+        <Section.Header.CollapseButton />
+      </Section.Header.Compose>
+      <StyledRdiStatisticsSectionBody>
+        <StyledRdiAnalyticsTable
+          columns={columns}
+          data={clients}
+          defaultSorting={[{ id: 'id', desc: false }]}
+        >
+          <Table.Header />
+          <Table.Body />
+        </StyledRdiAnalyticsTable>
+      </StyledRdiStatisticsSectionBody>
     </Section.Compose>
   )
 }

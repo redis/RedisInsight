@@ -1,6 +1,6 @@
 {
   "name": "redisinsight-api",
-  "version": "2.72.0",
+  "version": "3.0.2",
   "description": "Redis Insight API",
   "private": true,
   "author": {
@@ -56,6 +56,7 @@
     "**/multer": "^2.0.2"
   },
   "dependencies": {
+    "@azure/msal-node": "^5.0.2",
     "@nestjs/common": "^11.0.20",
     "@nestjs/core": "^11.0.20",
     "@nestjs/event-emitter": "^3.0.1",
@@ -79,14 +80,14 @@
     "date-fns": "^2.29.3",
     "detect-port": "^1.5.1",
     "dotenv": "^16.0.0",
-    "express": "5.0.1",
+    "express": "5.2.0",
     "fs-extra": "^10.0.0",
     "ioredis": "^5.2.2",
     "is-glob": "^4.0.1",
     "json-bigint": "^1.0.0",
     "jsonwebtoken": "^9.0.2",
     "keytar": "^7.9.0",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.23",
     "nest-winston": "^1.10.2",
     "nestjs-form-data": "~1.9.93",
     "node-version-compare": "^1.0.3",

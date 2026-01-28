@@ -508,11 +508,7 @@ const HashDetailsTable = (props: Props) => {
       absoluteWidth: 40,
       minWidth: 40,
       maxWidth: 40,
-      render: function Actions(
-        _act: any,
-        { field: fieldItem, value: valueItem }: HashFieldDto,
-        _,
-      ) {
+      render: function Actions(_act: any, { field: fieldItem }: HashFieldDto) {
         const field = bufferToString(fieldItem, viewFormat)
         return (
           <StopPropagation>

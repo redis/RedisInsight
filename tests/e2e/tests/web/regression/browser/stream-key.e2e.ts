@@ -25,7 +25,7 @@ fixture `Stream key`
         await databaseHelper.acceptLicenseTermsAndAddDatabaseApi(ossStandaloneConfig);
     })
     .afterEach(async() => {
-        // await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
+        await apiKeyRequests.deleteKeyByNameApi(keyName, ossStandaloneConfig.databaseName);
     });
 test('Verify that user can see a Stream in a table format', async t => {
     const streamFields = [
@@ -41,7 +41,7 @@ test('Verify that user can see a Stream in a table format', async t => {
     }
     // Open key details and check Steam format
     await browserPage.openKeyDetails(keyName);
-    await t.expect(browserPage.virtualTableContainer.visible).ok('The Stream is not displayed in a table format');
+    await t.expect(browserPage.streamEntriesContainer.visible).ok('The Stream is not displayed in a table format');
     for(const field of streamFields){
         await t.expect(browserPage.streamEntriesContainer.textContent).contains(field, 'The Stream fields are not displayed in the table');
     }

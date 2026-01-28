@@ -11,7 +11,14 @@ import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { CopilotTrigger, InsightsTrigger } from 'uiSrc/components/triggers'
 
 import { FlexGroup, FlexItem } from 'uiSrc/components/base/layout/flex'
-import styles from './styles.module.scss'
+import { ProgressBarLoader } from 'uiSrc/components/base/display'
+import {
+  ExplorePanelWrapper,
+  PageDefaultHeader,
+  PageWrapper,
+} from './HomePageTemplate.styles'
+import { instancesSelector as databaseInstancesSelector } from 'uiSrc/slices/instances/instances'
+import { instancesSelector as rdiInstancesSelector } from 'uiSrc/slices/rdi/instances'
 
 export interface Props {
   children: React.ReactNode
@@ -29,11 +36,23 @@ const HomePageTemplate = (props: Props) => {
     documentationChatFeature,
   ])
 
+  const { loading: instancesLoading } = useSelector(databaseInstancesSelector)
+  const { loading: rdiLoading } = useSelector(rdiInstancesSelector)
+
+  const loading = instancesLoading || rdiLoading
+
   return (
     <>
-      <div className={styles.pageDefaultHeader}>
+      {loading && (
+        <ProgressBarLoader
+          color="primary"
+          data-testid="progress-key-stream"
+          absolute
+        />
+      )}
+      <PageDefaultHeader align="center" justify="between" gap="l">
         <HomeTabs />
-        <FlexGroup gap="l">
+        <FlexGroup align="center" justify="end" gap="l">
           {isAnyChatAvailable && (
             <FlexItem>
               <CopilotTrigger />
@@ -50,12 +69,12 @@ const HomePageTemplate = (props: Props) => {
             </FlexItem>
           </FeatureFlagComponent>
         </FlexGroup>
-      </div>
-      <div className={styles.pageWrapper}>
-        <ExplorePanelTemplate panelClassName={styles.explorePanel}>
-          {children}
-        </ExplorePanelTemplate>
-      </div>
+      </PageDefaultHeader>
+      <PageWrapper>
+        <ExplorePanelWrapper>
+          <ExplorePanelTemplate>{children}</ExplorePanelTemplate>
+        </ExplorePanelWrapper>
+      </PageWrapper>
     </>
   )
 }

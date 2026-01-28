@@ -47,6 +47,7 @@ export enum CustomErrorCodes {
   CloudJobNotFound = 11_113,
   CloudSubscriptionAlreadyExistsFree = 11_114,
   CloudDatabaseImportForbidden = 11_115,
+  CloudDatabaseEndpointInvalid = 11_116,
 
   // General database errors [11200, 11299]
   DatabaseAlreadyExists = 11_200,

@@ -38,7 +38,11 @@ beforeEach(() => {
   store.clearActions()
 })
 
-const sideBarWithCreateCloud = <SideBar isExpanded={false}><CreateCloud /></SideBar>
+const sideBarWithCreateCloud = (
+  <SideBar isExpanded={false}>
+    <CreateCloud />
+  </SideBar>
+)
 
 describe('CreateCloud', () => {
   it('should render', () => {

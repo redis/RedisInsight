@@ -32,14 +32,13 @@ import {
   appFeatureOnboardingSelector,
 } from 'uiSrc/slices/app/features'
 import { OnboardingSteps } from 'uiSrc/constants/onboarding'
-import { Spacer } from 'uiSrc/components/base/layout'
 import { FormValues } from '../UploadTutorialForm/UploadTutorialForm'
 
 import Group from '../Group'
 import InternalLink from '../InternalLink'
 import PlainText from '../PlainText'
+import { Col } from 'uiSrc/components/base/layout/flex'
 import UploadTutorialForm from '../UploadTutorialForm'
-import WelcomeMyTutorials from '../WelcomeMyTutorials'
 
 import styles from './styles.module.scss'
 
@@ -89,6 +88,17 @@ const Navigation = (props: Props) => {
     },
     [],
   )
+
+  // Open form when onboarding is triggered and form is not visible
+  useEffect(() => {
+    if (
+      isCustomTutorialsOnboarding &&
+      customTutorials?.length > 0 &&
+      !isCreateOpen
+    ) {
+      setIsCreateOpen(true)
+    }
+  }, [isCustomTutorialsOnboarding, customTutorials?.length, isCreateOpen])
 
   const submitCreate = ({ file, link }: FormValues) => {
     const formData = new FormData()
@@ -157,6 +167,7 @@ const Navigation = (props: Props) => {
     const currentManifestPath = `${manifestPath}/${key}`
 
     const isCustomTutorials = id === CUSTOM_TUTORIALS_ID && level === 0
+    const hasChildren = (children?.length ?? 0) > 0
 
     switch (type) {
       case EnablementAreaComponent.Group:
@@ -171,7 +182,7 @@ const Navigation = (props: Props) => {
             )}
             onCreate={() => setIsCreateOpen((v) => !v)}
             onDelete={onDeleteCustomTutorial}
-            isPageOpened={isInternalPageVisible}
+            hasChildren={hasChildren}
             forceState={
               isCustomTutorials && isCustomTutorialsOnboarding
                 ? 'open'
@@ -179,27 +190,25 @@ const Navigation = (props: Props) => {
             }
             {...args}
           >
-            {isCustomTutorials && actions?.includes(EAItemActions.Create) && (
-              <div className={styles.customTuturoialsForm}>
-                {!isCreateOpen && children?.length === 0 && (
-                  <div>
-                    <WelcomeMyTutorials
-                      handleOpenUpload={() => setIsCreateOpen(true)}
-                    />
-                    <Spacer />
-                    <div className={styles.uploadWarningContainer}>
-                      <UploadWarning />
-                    </div>
-                  </div>
-                )}
-                {isCreateOpen && (
+            {isCustomTutorials &&
+              actions?.includes(EAItemActions.Create) &&
+              (children?.length === 0 ? (
+                <Col gap="l">
+                  <UploadTutorialForm
+                    onSubmit={submitCreate}
+                    isPageOpened={isInternalPageVisible}
+                  />
+                  <UploadWarning />
+                </Col>
+              ) : (
+                isCreateOpen && (
                   <UploadTutorialForm
                     onSubmit={submitCreate}
                     onCancel={() => setIsCreateOpen(false)}
+                    isPageOpened={isInternalPageVisible}
                   />
-                )}
-              </div>
-            )}
+                )
+              ))}
             {renderTreeView(
               children ? getManifestItems(children) : [],
               {

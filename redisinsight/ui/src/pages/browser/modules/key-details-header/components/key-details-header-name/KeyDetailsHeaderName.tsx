@@ -1,14 +1,10 @@
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 import { isNull } from 'lodash'
-import React, { useEffect, useRef, useState } from 'react'
+import styled from 'styled-components'
 import { useSelector } from 'react-redux'
 
-import {
-  handleCopy as handleCopyUtil,
-  formatLongName,
-  isEqualBuffers,
-  stringToBuffer,
-} from 'uiSrc/utils'
+import { formatLongName, isEqualBuffers, stringToBuffer } from 'uiSrc/utils'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor/InlineItemEditor'
 import { TEXT_UNPRINTABLE_CHARACTERS } from 'uiSrc/constants'
 import { AddCommonFieldsFormConfig } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
@@ -20,20 +16,18 @@ import {
 } from 'uiSrc/slices/browser/keys'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
+
 import {
   getBasedOnViewTypeEvent,
   sendEventTelemetry,
   TelemetryEvent,
 } from 'uiSrc/telemetry'
-
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { CopyIcon } from 'uiSrc/components/base/icons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiTooltip } from 'uiSrc/components'
+import { CopyButton } from 'uiSrc/components/copy-button'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import styles from './styles.module.scss'
-import styled from 'styled-components'
 
 const StyledInputWrapper = styled(Row)`
   min-width: 150px;
@@ -122,19 +116,10 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
     event?.stopPropagation()
   }
 
-  const handleCopy = (
-    event: any,
-    text = '',
-    keyInputIsEditing: boolean,
-    keyNameInputRef: React.RefObject<HTMLInputElement>,
-  ) => {
-    handleCopyUtil(text)
-
-    if (keyInputIsEditing) {
-      keyNameInputRef?.current?.focus()
+  const handleCopy = useCallback(() => {
+    if (keyIsEditing) {
+      keyNameRef?.current?.focus()
     }
-
-    event.stopPropagation()
 
     sendEventTelemetry({
       event: getBasedOnViewTypeEvent(
@@ -147,7 +132,7 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
         keyType: type,
       },
     })
-  }
+  }, [keyIsEditing, viewType, instanceId, type])
 
   return (
     <StyledFlexWrapper
@@ -198,21 +183,14 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
       {!keyIsEditing && keyIsHovering && (
         <Row align="center">
           <RiIcon size="M" type="EditIcon" />
-          <RiTooltip
-            position="right"
-            content="Copy"
-            anchorClassName={styles.copyKey}
-          >
-            <IconButton
-              icon={CopyIcon}
-              id={COPY_KEY_NAME_ICON}
-              aria-label="Copy key name"
-              onClick={(event: any) =>
-                handleCopy(event, key!, keyIsEditing, keyNameRef)
-              }
-              data-testid="copy-key-name-btn"
-            />
-          </RiTooltip>
+          <CopyButton
+            copy={key!}
+            onCopy={handleCopy}
+            id={COPY_KEY_NAME_ICON}
+            tooltipConfig={{ anchorClassName: styles.copyKey }}
+            data-testid="copy-key-name"
+            aria-label="Copy Key Name"
+          />
         </Row>
       )}
     </StyledFlexWrapper>

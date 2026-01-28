@@ -6,8 +6,6 @@ import {
   deps,
   Joi,
   requirements,
-  generateInvalidDataTestCases,
-  validateInvalidDataTestCase,
   validateApiCall,
   JoiRedisString,
 } from '../deps';

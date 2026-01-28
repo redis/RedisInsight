@@ -21,8 +21,4 @@
 .panelPopover {
   width: 432px;
   padding: 16px 30px !important;
-  border: 1px solid var(--euiColorPrimary) !important;
-  :global(.euiPopover__panelArrow:before) {
-    border-top-color: var(--euiColorPrimary) !important;
-  }
 }

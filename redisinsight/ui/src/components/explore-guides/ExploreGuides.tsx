@@ -43,11 +43,11 @@ const ExploreGuides = () => {
 
   return (
     <div data-testid="explore-guides">
-      <Title color="primary" size="S">
+      <Title color="primary" size="S" textAlign="center">
         <span>Here&apos;s a good starting point</span>
       </Title>
       <Spacer size="s" />
-      <Text color="primary">
+      <Text color="primary" textAlign="center">
         Explore the amazing world of Redis with our interactive guides
       </Text>
       <Spacer size="xl" />
@@ -55,6 +55,7 @@ const ExploreGuides = () => {
         <FlexGroup gap="l" wrap justify="center" className={styles.guides}>
           {data.map(({ title, tutorialId, icon }) => (
             <SecondaryButton
+              key={tutorialId}
               inverted
               tabIndex={0}
               onClick={() => handleLinkClick(tutorialId)}

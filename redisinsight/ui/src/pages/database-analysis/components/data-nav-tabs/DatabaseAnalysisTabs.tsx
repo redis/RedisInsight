@@ -13,7 +13,7 @@ import { Nullable } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { renderOnboardingTourWithChild } from 'uiSrc/utils/onboarding'
 import { recommendationsSelector } from 'uiSrc/slices/recommendations/recommendations'
-import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
+import { TabInfo } from 'uiSrc/components/base/layout/tabs'
 import { Text } from 'uiSrc/components/base/text'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import {
@@ -23,7 +23,10 @@ import {
 import Recommendations from '../recommendations-view'
 import AnalysisDataView from '../analysis-data-view'
 
-import { EmptyMessageContainer } from './DatabaseAnalysisTabs.styles'
+import {
+  EmptyMessageContainer,
+  StyledTabs,
+} from './DatabaseAnalysisTabs.styles'
 
 export interface Props {
   loading: boolean
@@ -117,7 +120,7 @@ const DatabaseAnalysisTabs = (props: Props) => {
   }
 
   return (
-    <Tabs
+    <StyledTabs
       tabs={tabs}
       value={viewTab}
       onChange={handleTabChange}

@@ -26,37 +26,35 @@ export const TagSuggestions = ({
 }: TagSuggestionsProps) => {
   const { data: allTags } = useSelector(tagsSelector)
   const tagsSuggestions: SelectOption[] = useMemo(() => {
-      const options = uniqBy(presetTagSuggestions.concat(allTags), (tag) =>
-        targetKey ? tag.value : tag.key,
-      )
-        .filter(({ key, value }) => {
-          if (targetKey !== undefined) {
-            return (
-              key === targetKey && value !== '' && value.includes(searchTerm)
-            )
-          }
+    const options = uniqBy(presetTagSuggestions.concat(allTags), (tag) =>
+      targetKey ? tag.value : tag.key,
+    )
+      .filter(({ key, value }) => {
+        if (targetKey !== undefined) {
+          return key === targetKey && value !== '' && value.includes(searchTerm)
+        }
 
-          return (
-            key.includes(searchTerm) &&
-            (!currentTagKeys.has(key) || key === searchTerm)
-          )
-        })
-        .map(({ key, value }) => ({
-          label: targetKey ? value : key,
-          value: targetKey ? value : key,
-        }))
+        return (
+          key.includes(searchTerm) &&
+          (!currentTagKeys.has(key) || key === searchTerm)
+        )
+      })
+      .map(({ key, value }) => ({
+        label: targetKey ? value : key,
+        value: targetKey ? value : key,
+      }))
 
-      const isNewTag = options.length === 0 && searchTerm
+    const isNewTag = options.length === 0 && searchTerm
 
-      if (isNewTag) {
-        options.push({
-          label: `${searchTerm} (new ${targetKey ? 'value' : 'tag'})`,
-          value: searchTerm,
-        })
-      }
+    if (isNewTag) {
+      options.push({
+        label: `${searchTerm} (new ${targetKey ? 'value' : 'tag'})`,
+        value: searchTerm,
+      })
+    }
 
-      return options
-    }, [allTags, targetKey, searchTerm, currentTagKeys])
+    return options
+  }, [allTags, targetKey, searchTerm, currentTagKeys])
 
   if (tagsSuggestions.length === 0) {
     return null

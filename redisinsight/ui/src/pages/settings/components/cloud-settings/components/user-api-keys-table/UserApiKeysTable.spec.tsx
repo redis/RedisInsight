@@ -127,7 +127,7 @@ describe('UserApiKeysTable', () => {
     sendEventTelemetry.mockRestore()
 
     fireEvent.click(
-      screen.getByTestId(`copy-api-key-${mockedCapiKeys[0].name}`),
+      screen.getByTestId(`copy-api-key-${mockedCapiKeys[0].name}-btn`),
     )
 
     expect(sendEventTelemetry).toBeCalledWith({

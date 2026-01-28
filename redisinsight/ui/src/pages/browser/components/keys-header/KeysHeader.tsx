@@ -394,7 +394,7 @@ const KeysHeader = (props: Props) => {
                               className={styles.checkbox}
                             />
                           </FlexItem>
-                          <FlexItem grow>
+                          <FlexItem>
                             <RiTooltip
                               content="Hide the key size to avoid performance issues when working with large keys."
                               position="top"

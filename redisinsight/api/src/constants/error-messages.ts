@@ -144,6 +144,8 @@ export default {
   CLOUD_DATABASE_ALREADY_EXISTS_FREE: 'Free database already exists',
   CLOUD_DATABASE_IMPORT_FORBIDDEN:
     'Adding your Redis Cloud database to Redis Insight is disabled due to a setting restricting database connection management.',
+  CLOUD_DATABASE_ENDPOINT_INVALID:
+    'Database endpoint is unavailable. It may still be provisioning or has been disabled.',
   CLOUD_PLAN_NOT_FOUND_FREE: 'Unable to find free cloud plan',
   CLOUD_SUBSCRIPTION_ALREADY_EXISTS_FREE: 'Free subscription already exists',
   COMMON_DEFAULT_IMPORT_ERROR: 'Unable to import default data',

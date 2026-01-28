@@ -7,13 +7,11 @@ import {
   bulkActionsSelector,
   disconnectBulkDeleteAction,
   setBulkActionConnected,
-  setBulkActionsInitialState,
   setBulkDeleteLoading,
   setDeleteOverview,
   setDeleteOverviewStatus,
-  setLoading,
 } from 'uiSrc/slices/browser/bulkActions'
-import { getSocketApiUrl, Nullable } from 'uiSrc/utils'
+import { getSocketApiUrl, Nullable, triggerDownloadFromUrl } from 'uiSrc/utils'
 import { sessionStorageService } from 'uiSrc/services'
 import { keysSelector } from 'uiSrc/slices/browser/keys'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
@@ -28,11 +26,12 @@ import {
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { appCsrfSelector } from 'uiSrc/slices/app/csrf'
 import { useIoConnection } from 'uiSrc/services/hooks/useIoConnection'
+import { getBaseUrl } from 'uiSrc/services/apiService'
 
 const BulkActionsConfig = () => {
   const { id: instanceId = '', db } = useSelector(connectedInstanceSelector)
   const { isConnected } = useSelector(bulkActionsSelector)
-  const { isActionTriggered: isDeleteTriggered } = useSelector(
+  const { isActionTriggered: isDeleteTriggered, generateReport } = useSelector(
     bulkActionsDeleteSelector,
   )
   const { filter, search } = useSelector(keysSelector)
@@ -101,17 +100,9 @@ const BulkActionsConfig = () => {
           type: filter,
           match: search || '*',
         },
+        generateReport,
       },
       onBulkDeleting,
-    )
-  }
-
-  const getBulkAction = (id: string) => {
-    dispatch(setLoading(true))
-    socketRef.current?.emit(
-      BulkActionsServerEvent.Get,
-      { id: `${id}` },
-      fetchBulkAction,
     )
   }
 
@@ -124,17 +115,15 @@ const BulkActionsConfig = () => {
     )
   }
 
-  const fetchBulkAction = (data: any) => {
-    if (data.status === BulkActionsServerEvent.Error) {
-      sessionStorageService.set(BrowserStorageItem.bulkActionDeleteId, '')
-      dispatch(setBulkActionsInitialState())
-    }
-  }
-
   const onBulkDeleting = (data: any) => {
     if (data.status === BulkActionsServerEvent.Error) {
       dispatch(disconnectBulkDeleteAction())
       dispatch(addErrorNotification({ response: { data: data.error } }))
+    }
+
+    // Trigger download if report URL is provided
+    if ('downloadUrl' in data && data.downloadUrl) {
+      triggerDownloadFromUrl(`${getBaseUrl()}${data.downloadUrl}`)
     }
 
     socketRef.current?.on(BulkActionsServerEvent.Overview, (payload: any) => {

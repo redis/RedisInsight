@@ -12,9 +12,17 @@ import {
 import { appContextSelector, resetRdiContext } from 'uiSrc/slices/app/context'
 import { BrowserStorageItem, Pages } from 'uiSrc/constants'
 import { store, dispatch } from 'uiSrc/slices/store'
-import { SortingState } from 'uiSrc/components/base/layout/table'
+import {
+  SortingState,
+  PaginationState,
+} from 'uiSrc/components/base/layout/table'
 import { navigate } from 'uiSrc/Router'
-import { localStorageService } from 'uiSrc/services'
+import { TableStorageKey } from 'uiSrc/constants/storage'
+import {
+  getObjectStorageField,
+  localStorageService,
+  setObjectStorageField,
+} from 'uiSrc/services'
 
 const connectToInstance = (id: string) => {
   dispatch(resetRdiContext())
@@ -26,6 +34,15 @@ const connectToInstance = (id: string) => {
 export const handleCheckConnectToInstance = async (instance: Instance) => {
   const { id, provider, modules } = instance
   const { contextInstanceId } = appContextSelector(store.getState())
+
+  dispatch(
+    checkConnectToInstanceAction(
+      id,
+      connectToInstance,
+      undefined,
+      contextInstanceId !== id,
+    ),
+  )
 
   const modulesSummary = getRedisModulesSummary(modules)
   const infoData = await getRedisInfoSummary(id)
@@ -40,15 +57,6 @@ export const handleCheckConnectToInstance = async (instance: Instance) => {
       ...infoData,
     },
   })
-
-  dispatch(
-    checkConnectToInstanceAction(
-      id,
-      connectToInstance,
-      undefined,
-      contextInstanceId !== id,
-    ),
-  )
 }
 
 export const handleSortingChange = (sorting: SortingState) => {
@@ -66,3 +74,16 @@ export const handleSortingChange = (sorting: SortingState) => {
     eventData: sort,
   })
 }
+
+export const handlePaginationChange = (paginationState: PaginationState) =>
+  setObjectStorageField(
+    BrowserStorageItem.tablePaginationState,
+    TableStorageKey.dbList,
+    paginationState,
+  )
+
+export const getDefaultPagination = () =>
+  getObjectStorageField(
+    BrowserStorageItem.tablePaginationState,
+    TableStorageKey.dbList,
+  )
