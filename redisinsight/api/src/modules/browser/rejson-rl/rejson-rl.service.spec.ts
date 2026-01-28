@@ -367,6 +367,69 @@ describe('JsonService', () => {
           data: JSON.stringify(testData),
         });
       });
+      it('should return data with "constructor" property (prototype pollution safe)', async () => {
+        const testData = {
+          constructor: 'hello',
+          name: 'test',
+        };
+        when(client.sendCommand)
+          .calledWith(
+            [BrowserToolRejsonRlCommands.JsonGet, testKey, testPath],
+            { replyEncoding: 'utf8' },
+          )
+          .mockReturnValue(JSON.stringify([testData]));
+
+        const result = await service.getJson(mockBrowserClientMetadata, {
+          keyName: testKey,
+          path: testPath,
+        });
+
+        expect(result).toEqual({
+          downloaded: true,
+          path: testPath,
+          data: JSON.stringify(testData),
+        });
+      });
+      it('should return data with "__proto__" property (prototype pollution safe)', async () => {
+        const testDataString = '{"__proto__":"polluted","name":"test"}';
+        when(client.sendCommand)
+          .calledWith(
+            [BrowserToolRejsonRlCommands.JsonGet, testKey, testPath],
+            { replyEncoding: 'utf8' },
+          )
+          .mockReturnValue(`[${testDataString}]`);
+
+        const result = await service.getJson(mockBrowserClientMetadata, {
+          keyName: testKey,
+          path: testPath,
+        });
+
+        expect(result).toEqual({
+          downloaded: true,
+          path: testPath,
+          data: testDataString,
+        });
+      });
+      it('should return array with "constructor" property in nested object', async () => {
+        const testData = [{ constructor: 'hello' }];
+        when(client.sendCommand)
+          .calledWith(
+            [BrowserToolRejsonRlCommands.JsonGet, testKey, testPath],
+            { replyEncoding: 'utf8' },
+          )
+          .mockReturnValue(JSON.stringify([testData]));
+
+        const result = await service.getJson(mockBrowserClientMetadata, {
+          keyName: testKey,
+          path: testPath,
+        });
+
+        expect(result).toEqual({
+          downloaded: true,
+          path: testPath,
+          data: JSON.stringify(testData),
+        });
+      });
       it('should return full json data when forceRetrieve is true', async () => {
         const testData = {
           someStr: 'field',

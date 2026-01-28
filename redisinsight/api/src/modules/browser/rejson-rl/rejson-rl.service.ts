@@ -35,7 +35,12 @@ import { RedisClient } from 'src/modules/redis/client';
 import { DatabaseService } from 'src/modules/database/database.service';
 
 const MODULES_CONFIG = config.get('modules') as Config['modules'];
-const JSONbig = JSONBigInt();
+
+// Allow JSON keys named 'constructor' and '__proto__' to be preserved since RedisInsight displays arbitrary user data from Redis
+const JSONbig = JSONBigInt({
+  protoAction: 'preserve',
+  constructorAction: 'preserve',
+});
 
 @Injectable()
 export class RejsonRlService {
