@@ -43,6 +43,7 @@ import {
   redisConnectionControllers,
 } from './middleware/redis-connection';
 import { DatabaseSettingsModule } from './modules/database-settings/database-settings.module';
+import { CredentialsModule } from './modules/database/credentials';
 
 const SERVER_CONFIG = config.get('server') as Config['server'];
 const PATH_CONFIG = config.get('dir_path') as Config['dir_path'];
@@ -81,6 +82,7 @@ const STATICS_CONFIG = config.get('statics') as Config['statics'];
     }),
     InitModule.register([AnalyticsModule]),
     DatabaseSettingsModule.register(),
+    CredentialsModule.register(),
   ],
   controllers: [],
   providers: [],

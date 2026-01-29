@@ -1,8 +1,9 @@
 import { mockDatabase } from 'src/__mocks__';
+import { ICredentialStrategy } from '../credential-strategy.provider';
 import { DefaultCredentialStrategy } from './default.credential-strategy';
 
 describe('DefaultCredentialStrategy', () => {
-  let strategy: DefaultCredentialStrategy;
+  let strategy: ICredentialStrategy;
 
   beforeEach(() => {
     strategy = new DefaultCredentialStrategy();
