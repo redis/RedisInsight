@@ -1,5 +1,12 @@
 import React from 'react'
-import { cleanup, fireEvent, render, screen } from 'uiSrc/utils/test-utils'
+import { act } from '@testing-library/react'
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitForRiTooltipVisible,
+} from 'uiSrc/utils/test-utils'
 import { indexFieldFactory } from 'uiSrc/mocks/factories/redisearch/IndexField.factory'
 import { IndexDetails } from './IndexDetails'
 import { IndexDetailsMode, IndexDetailsProps } from './IndexDetails.types'
@@ -59,6 +66,44 @@ describe('IndexDetails', () => {
         expect(typeCell).toBeInTheDocument()
         expect(editBtn).not.toBeInTheDocument()
       })
+    })
+
+    it('should show column header tooltips on hover', async () => {
+      renderComponent({ mode: IndexDetailsMode.Readonly })
+
+      const verifyTooltip = async (
+        headerText: string,
+        tooltipPattern: RegExp,
+      ) => {
+        const header = screen.getByText(headerText)
+        const infoIcon = header.parentElement?.querySelector('svg') as Element
+
+        await act(async () => {
+          fireEvent.focus(infoIcon)
+        })
+        await waitForRiTooltipVisible()
+
+        const tooltipContent = screen.getAllByText(tooltipPattern)[0]
+        expect(tooltipContent).toBeInTheDocument()
+      }
+
+      // Field name tooltip
+      await verifyTooltip(
+        'Field name',
+        /Represents a searchable attribute in your data/,
+      )
+
+      // Field sample value tooltip
+      await verifyTooltip(
+        'Field sample value',
+        /A sample value from the data to be indexed/,
+      )
+
+      // Indexing type tooltip
+      await verifyTooltip(
+        'Indexing type',
+        /Defines how Redis searches this field/,
+      )
     })
   })
 
