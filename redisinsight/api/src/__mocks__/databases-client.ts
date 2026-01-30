@@ -6,7 +6,5 @@ export const mockDatabaseClientFactory = jest.fn(() => ({
 }));
 
 export const mockCredentialProvider = jest.fn(() => ({
-  setStrategies: jest.fn(),
-  getStrategy: jest.fn(),
   resolve: jest.fn().mockImplementation((database) => Promise.resolve(database)),
 }));
