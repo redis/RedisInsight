@@ -6,7 +6,7 @@ import {
   IndexFieldValue,
 } from 'uiSrc/pages/vector-search/components/index-details'
 
-const generateValueForType = (type: FieldTypes): IndexFieldValue => {
+export const generateValueForType = (type: FieldTypes): IndexFieldValue => {
   switch (type) {
     case FieldTypes.TEXT:
       return faker.lorem.words({ min: 1, max: 5 })
@@ -25,8 +25,8 @@ const generateValueForType = (type: FieldTypes): IndexFieldValue => {
   }
 }
 
-export const indexFieldFactory = Factory.define<IndexField>(() => {
-  const type = faker.helpers.enumValue(FieldTypes)
+export const indexFieldFactory = Factory.define<IndexField>(({ params }) => {
+  const type = params.type ?? faker.helpers.enumValue(FieldTypes)
 
   return {
     id: faker.string.uuid(),

@@ -14,36 +14,11 @@ import {
 } from './IndexDetails.types'
 
 const SAMPLE_FIELDS: IndexField[] = [
-  indexFieldFactory.build({
-    id: '1',
-    name: 'title',
-    value: 'Introduction to Redis',
-    type: FieldTypes.TEXT,
-  }),
-  indexFieldFactory.build({
-    id: '2',
-    name: 'price',
-    value: '29.99',
-    type: FieldTypes.NUMERIC,
-  }),
-  indexFieldFactory.build({
-    id: '3',
-    name: 'category',
-    value: 'books',
-    type: FieldTypes.TAG,
-  }),
-  indexFieldFactory.build({
-    id: '4',
-    name: 'location',
-    value: '-122.4194,37.7749',
-    type: FieldTypes.GEO,
-  }),
-  indexFieldFactory.build({
-    id: '5',
-    name: 'embedding',
-    value: '[0.1, 0.2, 0.3, ...]',
-    type: FieldTypes.VECTOR,
-  }),
+  indexFieldFactory.build({ id: '1', type: FieldTypes.TEXT }),
+  indexFieldFactory.build({ id: '2', type: FieldTypes.NUMERIC }),
+  indexFieldFactory.build({ id: '3', type: FieldTypes.TAG }),
+  indexFieldFactory.build({ id: '4', type: FieldTypes.GEO }),
+  indexFieldFactory.build({ id: '5', type: FieldTypes.VECTOR }),
 ]
 
 // Stateful wrapper for interactive stories (controlled component)
