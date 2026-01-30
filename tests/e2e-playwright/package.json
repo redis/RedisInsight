@@ -1,0 +1,43 @@
+{
+  "name": "e2e-playwright",
+  "version": "1.0.0",
+  "description": "Standalone Playwright E2E tests for RedisInsight",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "playwright test",
+    "test:chromium": "playwright test --project=chromium",
+    "test:chromium:headed": "playwright test --project=chromium --headed",
+    "test:chromium:debug": "playwright test --project=chromium --debug",
+    "test:chromium:ui": "playwright test --project=chromium --ui",
+    "test:electron": "playwright test --project=electron",
+    "test:electron:headed": "playwright test --project=electron --headed",
+    "test:electron:debug": "playwright test --project=electron --debug",
+    "test:report": "playwright show-report",
+    "test:codegen": "playwright codegen http://localhost:8080",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "type-check": "tsc --noEmit",
+    "prepare": "cd ../.. && husky tests/e2e-playwright/.husky"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --cache --fix"
+    ]
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^9.3.0",
+    "@playwright/test": "^1.49.1",
+    "@types/node": "^22.10.2",
+    "@typescript-eslint/eslint-plugin": "^8.18.1",
+    "@typescript-eslint/parser": "^8.18.1",
+    "eslint": "^8.57.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.10",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7"
+  }
+}
+

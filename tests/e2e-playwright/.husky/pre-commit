@@ -1,0 +1,36 @@
+#!/usr/bin/env sh
+
+# Get the directory where this hook is located
+HOOK_DIR="$(dirname "$0")"
+E2E_DIR="$(dirname "$HOOK_DIR")"
+
+# Check if staged files are in tests/e2e-playwright directory
+STAGED_E2E_FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep "^tests/e2e-playwright/" | grep "\.ts$" || true)
+
+if [ -n "$STAGED_E2E_FILES" ]; then
+  echo "🔍 Running E2E tests pre-commit checks..."
+
+  # Change to e2e-playwright directory
+  cd "$E2E_DIR"
+
+  # Run TypeScript check
+  echo "📝 Running TypeScript check..."
+  npm run type-check
+  if [ $? -ne 0 ]; then
+    echo "❌ TypeScript check failed. Please fix the errors before committing."
+    exit 1
+  fi
+  echo "✅ TypeScript check passed"
+
+  # Run lint-staged for linting
+  echo "🧹 Running ESLint on staged files..."
+  npx lint-staged
+  if [ $? -ne 0 ]; then
+    echo "❌ ESLint check failed. Please fix the errors before committing."
+    exit 1
+  fi
+  echo "✅ ESLint check passed"
+
+  echo "✅ All E2E pre-commit checks passed!"
+fi
+

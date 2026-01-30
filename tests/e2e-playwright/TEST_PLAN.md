@@ -239,16 +239,16 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 2.3 Add Keys
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Add String key |
-| 🔲 | main | Add Hash key |
-| 🔲 | main | Add List key |
-| 🔲 | main | Add Set key |
-| 🔲 | main | Add Sorted Set (ZSet) key |
-| 🔲 | main | Add Stream key |
-| 🔲 | main | Add JSON key |
-| 🔲 | main | Add key with TTL |
-| 🔲 | main | Validate key name (required) |
-| 🔲 | main | Cancel add key dialog |
+| ✅ | main | Add String key |
+| ✅ | main | Add Hash key |
+| ✅ | main | Add List key |
+| ✅ | main | Add Set key |
+| ✅ | main | Add Sorted Set (ZSet) key |
+| ✅ | main | Add Stream key |
+| ✅ | main | Add JSON key |
+| ✅ | main | Add key with TTL |
+| ✅ | main | Validate key name (required) |
+| ✅ | main | Cancel add key dialog |
 
 ### 2.4 Key Details - String
 | Status | Group | Test Case |
@@ -400,13 +400,13 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 2.14 Key Filtering Patterns
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Filter keys with asterisk (*) wildcard |
-| 🔲 | main | Filter keys with question mark (?) single character wildcard |
-| 🔲 | main | Filter keys with [xy] character class (matches x or y) |
-| 🔲 | main | Filter keys with [^x] negated character class |
-| 🔲 | main | Filter keys with [a-z] character range |
-| 🔲 | main | Escape special characters in filter pattern |
-| 🔲 | main | Clear filter and search again |
+| ✅ | main | Filter keys with asterisk (*) wildcard |
+| ✅ | main | Filter keys with question mark (?) single character wildcard |
+| ✅ | main | Filter keys with [xy] character class (matches x or y) |
+| ✅ | main | Filter keys with [^x] negated character class |
+| ✅ | main | Filter keys with [a-z] character range |
+| ✅ | main | Escape special characters in filter pattern |
+| ✅ | main | Clear filter and search again |
 | 🔲 | main | Filter exact key name in large database (10M+ keys) |
 | 🔲 | main | Filter by pattern in large database (10M+ keys) |
 | 🔲 | main | Filter by key type in large database |
