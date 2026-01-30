@@ -1,12 +1,9 @@
 name: ❗ Release (prod)
 
 on:
-  workflow_call:
-    inputs:
-      release_ref:
-        description: 'Branch to release from'
-        required: true
-        type: string
+  push:
+    branches:
+      - 'release/**'
 
 jobs:
   tests-prod:
@@ -23,8 +20,8 @@ jobs:
     needs: tests-prod
     secrets: inherit
     with:
-      environment: "production"
-      target: "all"
+      environment: 'production'
+      target: 'all'
 
   virustotal-prod:
     name: Virustotal
