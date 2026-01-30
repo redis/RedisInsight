@@ -21,6 +21,13 @@
       "args": ["-y", "@upstash/context7-mcp"],
       "description": "Context 7 MCP server for enhanced context management and analysis"
     },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp@latest"
+      ]
+    },
     "atlassian": {
       "command": "docker",
       "args": [
