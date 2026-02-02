@@ -57,7 +57,7 @@ export class BrowserPage extends BasePage {
     this.pubSubTab = page.getByRole('tab', { name: 'Pub/Sub' });
 
     // Action buttons
-    this.addKeyButton = page.getByTestId('btn-add-key');
+    this.addKeyButton = page.getByText('Add key');
     this.bulkActionsButton = page.getByRole('button', { name: /bulk actions/i });
 
     // Database info
