@@ -6,6 +6,7 @@ import {
   SCAN_COUNT_DEFAULT,
   SCAN_TREE_COUNT_DEFAULT,
 } from 'uiSrc/constants/api'
+import { KeyTypes } from 'uiSrc/constants'
 import { CommandsVersions } from 'uiSrc/constants/commandsVersions'
 import { connectedInstanceOverviewSelector } from 'uiSrc/slices/instances/instances'
 import {
@@ -14,6 +15,7 @@ import {
   keysSelector,
   setFilter,
 } from 'uiSrc/slices/browser/keys'
+import { setBulkDeleteFilter } from 'uiSrc/slices/browser/bulkActions'
 import { isVersionHigherOrEquals } from 'uiSrc/utils'
 import { KeyViewType } from 'uiSrc/slices/interfaces/keys'
 import { FilterNotAvailable } from 'uiSrc/components'
@@ -117,9 +119,12 @@ const FilterKeyType = ({ modules }: Props) => {
 
   const onChangeType = (initValue: string) => {
     const value = initValue || ALL_KEY_TYPES_VALUE
+    const filterValue = value === ALL_KEY_TYPES_VALUE ? null : value
     setTypeSelected(value)
     setIsSelectOpen(false)
-    dispatch(setFilter(value === ALL_KEY_TYPES_VALUE ? null : value))
+    dispatch(setFilter(filterValue))
+    // Sync filter to bulk delete state (for when bulk actions panel is open)
+    dispatch(setBulkDeleteFilter(filterValue as KeyTypes))
     if (viewType === KeyViewType.Tree) {
       dispatch(resetBrowserTree())
     }

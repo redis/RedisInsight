@@ -9,7 +9,12 @@ import {
   EmptyButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { setBulkActionType } from 'uiSrc/slices/browser/bulkActions'
+import {
+  setBulkActionType,
+  setBulkDeleteFilter,
+  setBulkDeleteKeyCount,
+  setBulkDeleteSearch,
+} from 'uiSrc/slices/browser/bulkActions'
 import { BulkActionsType, FeatureFlags } from 'uiSrc/constants'
 import { SubscriptionsIcon } from 'uiSrc/components/base/icons'
 import { FeatureFlagComponent } from 'uiSrc/components'
@@ -24,7 +29,7 @@ export interface Props {
 const Actions = ({ handleAddKeyPanel, handleBulkActionsPanel }: Props) => {
   const dispatch = useDispatch()
   const { id: instanceId } = useSelector(connectedInstanceSelector)
-  const { viewType } = useSelector(keysSelector)
+  const { viewType, search, filter } = useSelector(keysSelector)
   const openAddKeyPanel = () => {
     handleAddKeyPanel(true)
     sendEventTelemetry({
@@ -51,6 +56,11 @@ const Actions = ({ handleAddKeyPanel, handleBulkActionsPanel }: Props) => {
     </SecondaryButton>
   )
   const openBulkActions = () => {
+    // Sync current search/filter to bulk delete state
+    dispatch(setBulkDeleteSearch(search))
+    dispatch(setBulkDeleteFilter(filter))
+    dispatch(setBulkDeleteKeyCount(null))
+
     dispatch(setBulkActionType(BulkActionsType.Delete))
     handleBulkActionsPanel(true)
   }

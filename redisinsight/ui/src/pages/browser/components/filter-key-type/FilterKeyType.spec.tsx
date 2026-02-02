@@ -12,6 +12,7 @@ import {
   userEvent,
 } from 'uiSrc/utils/test-utils'
 import { loadKeys, setFilter } from 'uiSrc/slices/browser/keys'
+import { setBulkDeleteFilter } from 'uiSrc/slices/browser/bulkActions'
 import { connectedInstanceOverviewSelector } from 'uiSrc/slices/instances/instances'
 import { FeatureFlags, KeyTypes } from 'uiSrc/constants'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
@@ -62,7 +63,7 @@ describe('FilterKeyType', () => {
     expect(queryByTestId(unsupportedAnchorId)).not.toBeInTheDocument()
   })
 
-  it('"setFilter" and "loadKeys" should be called after select "Hash" type', async () => {
+  it('"setFilter", "setBulkDeleteFilter" and "loadKeys" should be called after select "Hash" type', async () => {
     const { findByText } = render(<FilterKeyType />)
 
     await userEvent.click(screen.getByTestId(filterSelectId))
@@ -70,11 +71,32 @@ describe('FilterKeyType', () => {
 
     const expectedActions = [
       setFilter(KeyTypes.Hash),
+      setBulkDeleteFilter(KeyTypes.Hash),
       resetBrowserTree(),
       loadKeys(),
     ]
 
     expectActionsToContain(store.getActions(), expectedActions)
+  })
+
+  it('"setBulkDeleteFilter" should be called with null when selecting "All Key Types"', async () => {
+    const initialStoreState = set(
+      cloneDeep(initialStateDefault),
+      'browser.keys.filter',
+      KeyTypes.Hash,
+    )
+
+    const testStore = mockStore(initialStoreState)
+    const { findByText } = render(<FilterKeyType />, {
+      store: testStore,
+    })
+
+    await userEvent.click(screen.getByTestId(filterSelectId))
+    await userEvent.click(await findByText('All Key Types'))
+
+    const expectedActions = [setFilter(null), setBulkDeleteFilter(null)]
+
+    expectActionsToContain(testStore.getActions(), expectedActions)
   })
 
   it('should be disabled filter with database redis version < 6.0', () => {

@@ -17,9 +17,15 @@ import {
   setFilter,
   setPatternSearchMatch,
 } from 'uiSrc/slices/browser/keys'
+import {
+  setBulkDeleteFilter,
+  setBulkDeleteKeyCount,
+  setBulkDeleteSearch,
+} from 'uiSrc/slices/browser/bulkActions'
 
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { KeyViewType, SearchMode } from 'uiSrc/slices/interfaces/keys'
+import { KeyTypes } from 'uiSrc/constants'
 import { changeSidePanel } from 'uiSrc/slices/panels/sidePanels'
 import { SidePanels } from 'uiSrc/slices/interfaces/insights'
 import { setSelectedTab } from 'uiSrc/slices/panels/aiAssistant'
@@ -105,7 +111,13 @@ describe('SearchKeyList', () => {
 
     fireEvent.keyDown(screen.getByTestId('search-key'), { key: keys.ENTER })
 
-    const expectedActions = [setPatternSearchMatch(searchTerm), loadKeys()]
+    const expectedActions = [
+      setPatternSearchMatch(searchTerm),
+      setBulkDeleteSearch(searchTerm),
+      setBulkDeleteFilter(null),
+      setBulkDeleteKeyCount(null),
+      loadKeys(),
+    ]
 
     expect(clearStoreActions(store.getActions())).toEqual(
       clearStoreActions(expectedActions),
@@ -125,6 +137,9 @@ describe('SearchKeyList', () => {
     const expectedActions = [
       setFilter('list'),
       setPatternSearchMatch('*'),
+      setBulkDeleteSearch('*'),
+      setBulkDeleteFilter(KeyTypes.List),
+      setBulkDeleteKeyCount(null),
       loadKeys(),
     ]
 

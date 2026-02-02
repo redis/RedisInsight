@@ -181,6 +181,112 @@ describe('Node', () => {
     expect(mockSetOpen).toBeCalledWith(!mockIsOpen)
   })
 
+  describe('Folder delete', () => {
+    it('should render folder delete button for non-leaf nodes', () => {
+      const mockData: TreeData = {
+        ...mockedData,
+        isLeaf: false,
+        fullName: 'folder',
+        keyCount: 100,
+        delimiters: [':'],
+        onDeleteFolder: jest.fn(),
+      }
+
+      render(<Node {...instance(mockedProps)} data={mockData} />)
+
+      expect(screen.getByTestId('delete-folder-btn-folder')).toBeInTheDocument()
+    })
+
+    it('should call onDeleteFolder with correct params when folder delete button is clicked', () => {
+      const mockOnDeleteFolder = jest.fn()
+      const mockData: TreeData = {
+        ...mockedData,
+        isLeaf: false,
+        fullName: 'user:session',
+        keyCount: 42,
+        delimiters: [':'],
+        onDeleteFolder: mockOnDeleteFolder,
+      }
+
+      render(<Node {...instance(mockedProps)} data={mockData} />)
+
+      screen.getByTestId('delete-folder-btn-user:session').click()
+
+      expect(mockOnDeleteFolder).toHaveBeenCalledWith(
+        'user:session:*',
+        'user:session',
+        42,
+      )
+    })
+
+    it('should disable folder delete when folder has unprintable characters', () => {
+      const mockOnDeleteFolder = jest.fn()
+      const mockData: TreeData = {
+        ...mockedData,
+        isLeaf: false,
+        fullName: 'folder\uFFFD',
+        nameString: 'folder\uFFFD',
+        keyCount: 100,
+        delimiters: [':'],
+        onDeleteFolder: mockOnDeleteFolder,
+      }
+
+      render(<Node {...instance(mockedProps)} data={mockData} />)
+
+      const deleteBtn = screen.getByTestId('delete-folder-btn-folder\uFFFD')
+      expect(deleteBtn).toBeDisabled()
+    })
+
+    it('should disable folder delete when multiple delimiters are configured', () => {
+      const mockOnDeleteFolder = jest.fn()
+      const mockData: TreeData = {
+        ...mockedData,
+        isLeaf: false,
+        fullName: 'folder',
+        keyCount: 100,
+        delimiters: [':', '-'],
+        onDeleteFolder: mockOnDeleteFolder,
+      }
+
+      render(<Node {...instance(mockedProps)} data={mockData} />)
+
+      const deleteBtn = screen.getByTestId('delete-folder-btn-folder')
+      expect(deleteBtn).toBeDisabled()
+    })
+
+    it('should stop propagation when folder delete button is clicked', () => {
+      const mockOnDeleteFolder = jest.fn()
+      const mockUpdateStatusOpen = jest.fn()
+      const mockSetOpen = jest.fn()
+      const mockData: TreeData = {
+        ...mockedData,
+        isLeaf: false,
+        fullName: 'folder',
+        keyCount: 100,
+        delimiters: [':'],
+        onDeleteFolder: mockOnDeleteFolder,
+        updateStatusOpen: mockUpdateStatusOpen,
+      }
+
+      render(
+        <Node
+          {...instance(mockedProps)}
+          setOpen={mockSetOpen}
+          isOpen={false}
+          data={mockData}
+        />,
+      )
+
+      // Click on delete button
+      screen.getByTestId('delete-folder-btn-folder').click()
+
+      // onDeleteFolder should be called
+      expect(mockOnDeleteFolder).toHaveBeenCalled()
+      // setOpen should NOT be called (event propagation stopped)
+      expect(mockSetOpen).not.toHaveBeenCalled()
+    })
+  })
+
   describe('Node metadata and column visibility', () => {
     it('should call getMetadata when node is clicked and TTL column is visible', () => {
       const mockGetMetadata = jest.fn()

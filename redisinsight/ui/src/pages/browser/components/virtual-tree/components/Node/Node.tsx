@@ -5,7 +5,14 @@ import { useSelector } from 'react-redux'
 
 import * as keys from 'uiSrc/constants/keys'
 import { Maybe } from 'uiSrc/utils'
-import { KeyTypes, ModulesKeyTypes, BrowserColumns } from 'uiSrc/constants'
+import {
+  KeyTypes,
+  ModulesKeyTypes,
+  BrowserColumns,
+  TEXT_BULK_DELETE_TOOLTIP,
+  TEXT_BULK_DELETE_DISABLED_UNPRINTABLE,
+  TEXT_BULK_DELETE_DISABLED_MULTIPLE_DELIMITERS,
+} from 'uiSrc/constants'
 import KeyRowTTL from 'uiSrc/pages/browser/components/key-row-ttl'
 import KeyRowSize from 'uiSrc/pages/browser/components/key-row-size'
 import KeyRowName from 'uiSrc/pages/browser/components/key-row-name'
@@ -14,11 +21,14 @@ import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { appContextDbConfig } from 'uiSrc/slices/app/context'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiTooltip } from 'uiSrc/components'
+import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { DeleteIcon } from 'uiSrc/components/base/icons'
 import { DeleteKeyPopover } from '../../../delete-key-popover/DeleteKeyPopover'
 import { TreeData } from '../../interfaces'
 import styles from './styles.module.scss'
 import { Flex, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
+import * as S from './Node.styles'
 
 const MAX_NESTING_LEVEL = 20
 
@@ -52,6 +62,7 @@ const Node = ({
     getMetadata,
     onDelete,
     onDeleteClicked,
+    onDeleteFolder,
     updateStatusOpen,
     updateStatusSelected,
   } = data
@@ -113,6 +124,32 @@ const Node = ({
     setDeletePopoverId(index !== deletePopoverId ? index : undefined)
   }
 
+  const deletePattern = `${fullName}${delimiterView}*`
+
+  const handleDeleteFolder = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    onDeleteFolder?.(deletePattern, fullName, keyCount)
+  }
+
+  // Check if folder name contains unprintable characters (Unicode replacement character)
+  // These folders may group keys incorrectly, so bulk delete should be disabled
+  const hasUnprintableChars =
+    fullName?.includes('\uFFFD') || nameString?.includes('\uFFFD')
+
+  // Check if delete should be disabled (multiple delimiters or unprintable chars)
+  const isDeleteDisabled = delimiters.length > 1 || hasUnprintableChars
+
+  const getDeleteTooltip = () => {
+    if (hasUnprintableChars) {
+      return TEXT_BULK_DELETE_DISABLED_UNPRINTABLE
+    }
+    if (delimiters.length > 1) {
+      return TEXT_BULK_DELETE_DISABLED_MULTIPLE_DELIMITERS
+    }
+    return TEXT_BULK_DELETE_TOOLTIP(deletePattern)
+  }
+  const deleteTooltip = getDeleteTooltip()
+
   const Folder = () => (
     <RiTooltip
       content={tooltipContent}
@@ -137,19 +174,26 @@ const Node = ({
             {nameString}
           </Text>
         </Flex>
-        <Flex justify="end">
-          <div
-            className={styles.approximate}
-            data-testid={`percentage_${fullName}`}
-          >
+        <S.FolderActions align="center" justify="end">
+          <S.FolderApproximate data-testid={`percentage_${fullName}`}>
             {keyApproximate
               ? `${keyApproximate < 1 ? '<1' : Math.round(keyApproximate)}%`
               : ''}
-          </div>
-          <div className={styles.keyCount} data-testid={`count_${fullName}`}>
+          </S.FolderApproximate>
+          <S.FolderKeyCount data-testid={`count_${fullName}`}>
             {keyCount ?? ''}
-          </div>
-        </Flex>
+          </S.FolderKeyCount>
+          <RiTooltip content={deleteTooltip} position="left">
+            <IconButton
+              icon={DeleteIcon}
+              onClick={handleDeleteFolder}
+              disabled={isDeleteDisabled}
+              className="showOnHoverKey"
+              aria-label="Delete Folder Keys"
+              data-testid={`delete-folder-btn-${fullName}`}
+            />
+          </RiTooltip>
+        </S.FolderActions>
       </Row>
     </RiTooltip>
   )

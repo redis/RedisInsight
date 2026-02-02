@@ -9,7 +9,7 @@ import {
   setBulkDeleteGenerateReport,
   bulkActionsDeleteSelector,
 } from 'uiSrc/slices/browser/bulkActions'
-import { keysDataSelector, keysSelector } from 'uiSrc/slices/browser/keys'
+import { keysDataSelector } from 'uiSrc/slices/browser/keys'
 import {
   getMatchType,
   sendEventTelemetry,
@@ -40,9 +40,10 @@ export interface Props {
 const BulkDeleteFooter = (props: Props) => {
   const { onCancel } = props
   const { instanceId = '' } = useParams<{ instanceId: string }>()
-  const { filter, search } = useSelector(keysSelector)
   const { scanned, total } = useSelector(keysDataSelector)
-  const { loading, generateReport } = useSelector(bulkActionsDeleteSelector)
+  const { loading, generateReport, filter, search } = useSelector(
+    bulkActionsDeleteSelector,
+  )
   const { status } = useSelector(bulkActionsDeleteOverviewSelector) ?? {}
 
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false)

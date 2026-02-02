@@ -55,4 +55,5 @@ export interface TreeData extends FixedSizeNodeData {
   getMetadata: (key: RedisString, path: string) => void
   onDelete: (key: RedisResponseBuffer) => void
   onDeleteClicked: (type: KeyTypes | ModulesKeyTypes) => void
+  onDeleteFolder?: (pattern: string, fullName: string, keyCount: number) => void
 }

@@ -19,6 +19,11 @@ import {
   setSearchMatch,
 } from 'uiSrc/slices/browser/keys'
 import {
+  setBulkDeleteFilter,
+  setBulkDeleteKeyCount,
+  setBulkDeleteSearch,
+} from 'uiSrc/slices/browser/bulkActions'
+import {
   KeyViewType,
   SearchHistoryItem,
   SearchMode,
@@ -49,7 +54,7 @@ const placeholders = {
 
 const SearchKeyList = () => {
   const { id } = useSelector(connectedInstanceSelector)
-  const { search, viewType, searchMode } = useSelector(keysSelector)
+  const { search, filter, viewType, searchMode } = useSelector(keysSelector)
   const { search: redisearchQuery, selectedIndex } =
     useSelector(redisearchSelector)
   const { data: rediSearchHistory, loading: rediSearchHistoryLoading } =
@@ -84,10 +89,22 @@ const SearchKeyList = () => {
       value: item.filter?.match,
     })) || []
 
-  const handleApply = (match = value, telemetryProperties: {} = {}) => {
+  const handleApply = (
+    match = value,
+    telemetryProperties: {} = {},
+    filterOverride?: typeof filter,
+  ) => {
     if (disableSubmit) return
 
+    const effectiveFilter =
+      filterOverride !== undefined ? filterOverride : filter
+
     dispatch(setSearchMatch(match, searchMode))
+
+    // Sync to bulk delete state
+    dispatch(setBulkDeleteSearch(match))
+    dispatch(setBulkDeleteFilter(effectiveFilter))
+    dispatch(setBulkDeleteKeyCount(null))
 
     if (viewType === KeyViewType.Tree) {
       dispatch(resetBrowserTree())
@@ -118,7 +135,7 @@ const SearchKeyList = () => {
   const handleChangeOptions = () => {
     // now only one filter, so we delete option
     dispatch(setFilter(null))
-    handleApply()
+    handleApply(value, {}, null)
   }
 
   const handleApplySuggestion = (suggestion?: {
@@ -132,7 +149,11 @@ const SearchKeyList = () => {
 
     dispatch(setFilter(suggestion.option))
     setValue(suggestion.value)
-    handleApply(suggestion.value, { source: 'history' })
+    handleApply(
+      suggestion.value,
+      { source: 'history' },
+      suggestion.option as typeof filter,
+    )
   }
 
   const handleDeleteSuggestions = (ids: string[]) => {
@@ -148,7 +169,7 @@ const SearchKeyList = () => {
   const onClear = () => {
     handleChangeValue('')
     dispatch(setFilter(null))
-    handleApply('')
+    handleApply('', {}, null)
   }
 
   const handleClickAskCopilot = () => {

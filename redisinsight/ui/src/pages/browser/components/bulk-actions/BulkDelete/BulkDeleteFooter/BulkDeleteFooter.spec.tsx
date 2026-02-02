@@ -41,6 +41,7 @@ describe('BulkDeleteFooter', () => {
 
     fireEvent.click(screen.getByTestId('download-report-checkbox'))
 
-    expect(setBulkDeleteGenerateReport).toHaveBeenCalledWith(false)
+    // Checkbox default is false, clicking toggles to true
+    expect(setBulkDeleteGenerateReport).toHaveBeenCalledWith(true)
   })
 })

@@ -79,4 +79,109 @@ describe('BulkDeleteSummary', () => {
 
     expect(summaryEl).toHaveTextContent(expectedText)
   })
+
+  it('should show folder key count when keyCount is set (folder delete)', () => {
+    const state: any = store.getState()
+
+    ;(useSelector as jest.Mock).mockImplementation(
+      (callback: (arg0: RootState) => RootState) =>
+        callback({
+          ...state,
+          browser: {
+            ...state.browser,
+            keys: {
+              ...state.browser.keys,
+              data: {
+                ...state.browser.keys.data,
+                scanned: 50,
+                total: 100,
+                keys: [1, 2, 3],
+              },
+            },
+            bulkActions: {
+              ...state.browser.bulkActions,
+              bulkDelete: {
+                ...state.browser.bulkActions.bulkDelete,
+                keyCount: 25,
+              },
+            },
+          },
+        }),
+    )
+
+    render(<BulkDeleteSummary />)
+    const summaryEl = screen.queryByTestId('bulk-delete-summary')
+    // For folder delete, should show the folder's keyCount (25) instead of keys.length (3)
+    const expectedText = 'Scanned 50% (50/100) and found 25 keys'
+
+    expect(summaryEl).toHaveTextContent(expectedText)
+  })
+
+  it('should show approximate title for folder delete when scan not complete', () => {
+    const state: any = store.getState()
+
+    ;(useSelector as jest.Mock).mockImplementation(
+      (callback: (arg0: RootState) => RootState) =>
+        callback({
+          ...state,
+          browser: {
+            ...state.browser,
+            keys: {
+              ...state.browser.keys,
+              data: {
+                ...state.browser.keys.data,
+                scanned: 50,
+                total: 100,
+                keys: [],
+              },
+            },
+            bulkActions: {
+              ...state.browser.bulkActions,
+              bulkDelete: {
+                ...state.browser.bulkActions.bulkDelete,
+                keyCount: 25,
+              },
+            },
+          },
+        }),
+    )
+
+    render(<BulkDeleteSummary />)
+    // Expected amount should be ~50 (keyCount * total / scanned = 25 * 100 / 50)
+    expect(screen.getByText('Expected amount: ~50 keys')).toBeInTheDocument()
+  })
+
+  it('should show N/A when scanned is 0 (avoid division by zero)', () => {
+    const state: any = store.getState()
+
+    ;(useSelector as jest.Mock).mockImplementation(
+      (callback: (arg0: RootState) => RootState) =>
+        callback({
+          ...state,
+          browser: {
+            ...state.browser,
+            keys: {
+              ...state.browser.keys,
+              data: {
+                ...state.browser.keys.data,
+                scanned: 0,
+                total: 100,
+                keys: [],
+              },
+            },
+            bulkActions: {
+              ...state.browser.bulkActions,
+              bulkDelete: {
+                ...state.browser.bulkActions.bulkDelete,
+                keyCount: 25,
+              },
+            },
+          },
+        }),
+    )
+
+    render(<BulkDeleteSummary />)
+    // When scanned is 0, should show N/A instead of Infinity
+    expect(screen.getByText('Expected amount: N/A')).toBeInTheDocument()
+  })
 })

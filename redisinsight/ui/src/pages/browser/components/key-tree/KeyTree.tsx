@@ -21,12 +21,19 @@ import TreeViewSVG from 'uiSrc/assets/img/icons/treeview.svg'
 import { KeysStoreData } from 'uiSrc/slices/interfaces/keys'
 import { Nullable, bufferToString, comboBoxToArray } from 'uiSrc/utils'
 import { IKeyPropTypes } from 'uiSrc/constants/prop-types/keys'
-import { KeyTypes, ModulesKeyTypes } from 'uiSrc/constants'
+import { BulkActionsType, KeyTypes, ModulesKeyTypes } from 'uiSrc/constants'
 import { RedisResponseBuffer, RedisString } from 'uiSrc/slices/interfaces'
 import {
   deleteKeyAction,
   selectedKeyDataSelector,
 } from 'uiSrc/slices/browser/keys'
+import {
+  setBulkActionType,
+  setBulkDeleteFilter,
+  setBulkDeleteKeyCount,
+  setBulkDeleteSearch,
+  setBulkDeleteStartAgain,
+} from 'uiSrc/slices/browser/bulkActions'
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import { GetKeyInfoResponse } from 'apiSrc/modules/browser/keys/dto'
 
@@ -45,6 +52,7 @@ export interface Props {
   ) => void
   onDelete: (key: RedisResponseBuffer) => void
   onAddKeyPanel: (value: boolean) => void
+  onBulkActionsPanel: (value: boolean) => void
 }
 
 export const firstPanelId = 'tree'
@@ -66,6 +74,7 @@ const KeyTree = forwardRef((props: Props, ref) => {
     commonFilterType,
     deleting,
     onAddKeyPanel,
+    onBulkActionsPanel,
   } = props
 
   const { instanceId } = useParams<{ instanceId: string }>()
@@ -202,6 +211,33 @@ const KeyTree = forwardRef((props: Props, ref) => {
     })
   }
 
+  const handleDeleteFolder = (
+    pattern: string,
+    fullName: string,
+    keyCount: number,
+  ) => {
+    // Reset previous bulk delete state first
+    dispatch(setBulkDeleteStartAgain())
+
+    // Set bulk delete state - preserve current key type filter
+    dispatch(setBulkDeleteSearch(pattern))
+    dispatch(setBulkDeleteFilter(commonFilterType))
+    dispatch(setBulkDeleteKeyCount(keyCount))
+    dispatch(setBulkActionType(BulkActionsType.Delete))
+
+    // Open panel
+    onBulkActionsPanel(true)
+
+    // Telemetry
+    sendEventTelemetry({
+      event: TelemetryEvent.TREE_VIEW_FOLDER_DELETE_CLICKED,
+      eventData: {
+        databaseId: instanceId,
+        keyCount,
+      },
+    })
+  }
+
   if (keysState.keys.length === 0) {
     const NoItemsMessage = () => (
       <NoKeysMessage
@@ -241,6 +277,7 @@ const KeyTree = forwardRef((props: Props, ref) => {
           onStatusOpen={handleStatusOpen}
           onDeleteClicked={handleDeleteClicked}
           onDeleteLeaf={handleDeleteLeaf}
+          onDeleteFolder={handleDeleteFolder}
         />
       </div>
     </div>

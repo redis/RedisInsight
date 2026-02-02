@@ -299,6 +299,57 @@ const keysSlice = createSlice({
         scanned: state.data.scanned - 1,
       }
     },
+    deleteKeysByPattern: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        pattern: string
+        deletedCount: number
+        filterType?: Nullable<KeyTypes>
+      }>,
+    ) => {
+      const { pattern, deletedCount, filterType } = payload
+
+      // Only handle simple prefix patterns (e.g., "folder:*")
+      const isSimplePrefix =
+        pattern.endsWith('*') &&
+        !pattern.slice(0, -1).includes('*') &&
+        !pattern.includes('?')
+
+      if (!isSimplePrefix) return
+
+      const prefix = pattern.slice(0, -1)
+
+      // Skip local key removal for '*' pattern (all keys) - let user refresh instead
+      if (!prefix) {
+        state.data.total = Math.max(state.data.total - deletedCount, 0)
+        return
+      }
+      const encoder = new TextEncoder()
+      const prefixBytes = encoder.encode(prefix)
+
+      const bufferStartsWith = (
+        bufferData: number[],
+        prefixBytes: Uint8Array,
+      ): boolean => {
+        if (bufferData.length < prefixBytes.length) return false
+        for (let i = 0; i < prefixBytes.length; i++) {
+          if (bufferData[i] !== prefixBytes[i]) return false
+        }
+        return true
+      }
+
+      state.data.keys = state.data.keys.filter((key: any) => {
+        const bufferData = key.name?.data
+        if (!bufferData) return true
+        if (!bufferStartsWith(bufferData, prefixBytes)) return true
+        if (filterType && key.type !== filterType) return true
+        return false
+      })
+
+      state.data.total = Math.max(state.data.total - deletedCount, 0)
+    },
 
     // edit TTL or Key actions
     defaultSelectedKeyAction: (state) => {
@@ -521,6 +572,7 @@ export const {
   deleteSelectedKeySuccess,
   deleteSelectedKeyFailure,
   deletePatternKeyFromList,
+  deleteKeysByPattern,
   deleteKey,
   deleteKeySuccess,
   deleteKeyFailure,

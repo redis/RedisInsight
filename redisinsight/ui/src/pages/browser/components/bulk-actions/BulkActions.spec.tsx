@@ -86,6 +86,13 @@ describe('BulkActions', () => {
               search: '1',
               isSearched: true,
             },
+            bulkActions: {
+              ...state.browser.bulkActions,
+              bulkDelete: {
+                ...state.browser.bulkActions.bulkDelete,
+                search: '1',
+              },
+            },
           },
         }),
     )
@@ -111,6 +118,13 @@ describe('BulkActions', () => {
               ...state.browser.keys,
               filter: KeyTypes.Hash,
               isFiltered: true,
+            },
+            bulkActions: {
+              ...state.browser.bulkActions,
+              bulkDelete: {
+                ...state.browser.bulkActions.bulkDelete,
+                filter: KeyTypes.Hash,
+              },
             },
           },
         }),
@@ -146,6 +160,13 @@ describe('BulkActions', () => {
                 ...state.browser.keys,
                 filter: KeyTypes.Hash,
                 isFiltered: true,
+              },
+              bulkActions: {
+                ...state.browser.bulkActions,
+                bulkDelete: {
+                  ...state.browser.bulkActions.bulkDelete,
+                  filter: KeyTypes.Hash,
+                },
               },
             },
           }),

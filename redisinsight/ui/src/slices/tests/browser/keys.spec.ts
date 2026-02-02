@@ -67,6 +67,7 @@ import reducer, {
   deleteKeyAction,
   deletePatternHistoryAction,
   deletePatternKeyFromList,
+  deleteKeysByPattern,
   deleteSearchHistory,
   deleteSearchHistoryAction,
   deleteSearchHistoryFailure,
@@ -771,6 +772,88 @@ describe('keys slice', () => {
         browser: { keys: nextState },
       })
       expect(keysSelector(rootState)).toEqual(state)
+    })
+  })
+
+  describe('deleteKeysByPattern', () => {
+    it('should remove keys matching pattern using buffer comparison', () => {
+      // Arrange
+      const currentState = {
+        ...initialState,
+        data: {
+          ...initialState.data,
+          total: 100,
+          scanned: 50,
+          keys: [
+            { name: stringToBuffer('user:session:1'), type: KeyTypes.String },
+            { name: stringToBuffer('user:session:2'), type: KeyTypes.String },
+            { name: stringToBuffer('user:profile:1'), type: KeyTypes.Hash },
+            { name: stringToBuffer('other:key'), type: KeyTypes.String },
+          ],
+        },
+      }
+
+      // Act
+      const nextState = reducer(
+        currentState,
+        deleteKeysByPattern({ pattern: 'user:session:*', deletedCount: 10 }),
+      )
+
+      // Assert - matching keys are removed
+      expect(nextState.data.keys).toHaveLength(2)
+      // Total is updated based on deletedCount from server
+      expect(nextState.data.total).toEqual(90) // 100 - 10 (deletedCount)
+    })
+
+    it('should not go below zero for total count', () => {
+      // Arrange
+      const currentState = {
+        ...initialState,
+        data: {
+          ...initialState.data,
+          total: 5,
+          scanned: 2,
+          keys: [{ name: stringToBuffer('key:1'), type: KeyTypes.String }],
+        },
+      }
+
+      // Act
+      const nextState = reducer(
+        currentState,
+        deleteKeysByPattern({ pattern: 'key:*', deletedCount: 100 }),
+      )
+
+      // Assert
+      expect(nextState.data.keys).toHaveLength(0) // Key removed
+      expect(nextState.data.total).toEqual(0) // Clamped to 0
+    })
+
+    it('should skip local key removal for "*" pattern (all keys) but update total', () => {
+      // Arrange
+      const currentState = {
+        ...initialState,
+        data: {
+          ...initialState.data,
+          total: 100,
+          scanned: 50,
+          keys: [
+            { name: stringToBuffer('user:1'), type: KeyTypes.String },
+            { name: stringToBuffer('session:1'), type: KeyTypes.Hash },
+            { name: stringToBuffer('other:key'), type: KeyTypes.String },
+          ],
+        },
+      }
+
+      // Act
+      const nextState = reducer(
+        currentState,
+        deleteKeysByPattern({ pattern: '*', deletedCount: 50 }),
+      )
+
+      // Assert - keys should NOT be removed for '*' pattern
+      expect(nextState.data.keys).toHaveLength(3)
+      // Total should still be updated
+      expect(nextState.data.total).toEqual(50)
     })
   })
 

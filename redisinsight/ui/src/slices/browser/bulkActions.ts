@@ -4,6 +4,7 @@ import axios, { AxiosError } from 'axios'
 import {
   ApiEndpoints,
   BulkActionsType,
+  KeyTypes,
   MAX_BULK_ACTION_ERRORS_LENGTH,
 } from 'uiSrc/constants'
 import { apiService } from 'uiSrc/services'
@@ -33,7 +34,10 @@ export const initialState: StateBulkActions = {
     loading: false,
     error: '',
     overview: null,
-    generateReport: true,
+    generateReport: false,
+    filter: null,
+    search: '',
+    keyCount: null,
   },
   bulkUpload: {
     loading: false,
@@ -84,6 +88,21 @@ const bulkActionsSlice = createSlice({
       { payload }: PayloadAction<boolean>,
     ) => {
       state.bulkDelete.generateReport = payload
+    },
+    setBulkDeleteFilter: (
+      state,
+      { payload }: PayloadAction<Nullable<KeyTypes>>,
+    ) => {
+      state.bulkDelete.filter = payload
+    },
+    setBulkDeleteSearch: (state, { payload }: PayloadAction<string>) => {
+      state.bulkDelete.search = payload
+    },
+    setBulkDeleteKeyCount: (
+      state,
+      { payload }: PayloadAction<Nullable<number>>,
+    ) => {
+      state.bulkDelete.keyCount = payload
     },
     setDeleteOverview: (
       state,
@@ -161,6 +180,9 @@ export const {
   disconnectBulkDeleteAction,
   toggleBulkDeleteActionTriggered,
   setBulkDeleteGenerateReport,
+  setBulkDeleteFilter,
+  setBulkDeleteSearch,
+  setBulkDeleteKeyCount,
   setDeleteOverview,
   setDeleteOverviewStatus,
   setBulkActionsInitialState,

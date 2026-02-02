@@ -1,4 +1,4 @@
-import { BulkActionsStatus, BulkActionsType } from 'uiSrc/constants'
+import { BulkActionsStatus, BulkActionsType, KeyTypes } from 'uiSrc/constants'
 import { Nullable } from 'uiSrc/utils'
 import { IBulkActionOverview as IBulkActionOverviewBE } from 'apiSrc/modules/bulk-actions/interfaces/bulk-action-overview.interface'
 
@@ -19,6 +19,9 @@ export interface StateBulkActions {
     error: string
     overview: Nullable<IBulkActionOverview>
     generateReport: boolean
+    filter: Nullable<KeyTypes>
+    search: string
+    keyCount: Nullable<number>
   }
   bulkUpload: {
     loading: boolean

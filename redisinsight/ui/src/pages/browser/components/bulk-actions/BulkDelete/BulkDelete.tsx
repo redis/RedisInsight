@@ -7,7 +7,6 @@ import {
   bulkActionsDeleteOverviewSelector,
   bulkActionsDeleteSelector,
 } from 'uiSrc/slices/browser/bulkActions'
-import { keysSelector } from 'uiSrc/slices/browser/keys'
 import { Col } from 'uiSrc/components/base/layout/flex'
 
 import BulkDeleteFooter from './BulkDeleteFooter'
@@ -20,8 +19,7 @@ export interface Props {
 
 const BulkDelete = (props: Props) => {
   const { onCancel } = props
-  const { filter, search, isSearched, isFiltered } = useSelector(keysSelector)
-  const { loading } = useSelector(bulkActionsDeleteSelector)
+  const { filter, search, loading } = useSelector(bulkActionsDeleteSelector)
   const {
     status,
     filter: { match, type: filterType },
@@ -29,13 +27,14 @@ const BulkDelete = (props: Props) => {
     error,
   } = useSelector(bulkActionsDeleteOverviewSelector) ?? { filter: {} }
 
-  const [showPlaceholder, setShowPlaceholder] = useState<boolean>(
-    !isSearched && !isFiltered,
-  )
+  const hasSearchOrFilter = !!search || filter !== null
+
+  const [showPlaceholder, setShowPlaceholder] =
+    useState<boolean>(!hasSearchOrFilter)
 
   useEffect(() => {
-    setShowPlaceholder(!status && !isSearched && !isFiltered)
-  }, [status, isSearched, isFiltered])
+    setShowPlaceholder(!status && !hasSearchOrFilter)
+  }, [status, hasSearchOrFilter])
 
   const searchPattern = match || search || '*'
 

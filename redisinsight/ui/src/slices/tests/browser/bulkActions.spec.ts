@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash'
 import { AxiosError } from 'axios'
-import { BulkActionsStatus, BulkActionsType } from 'uiSrc/constants'
+import { BulkActionsStatus, BulkActionsType, KeyTypes } from 'uiSrc/constants'
 import reducer, {
   bulkActionsSelector,
   initialState,
@@ -11,11 +11,15 @@ import reducer, {
   setBulkActionType,
   setDeleteOverview,
   bulkActionsDeleteOverviewSelector,
+  bulkActionsDeleteSelector,
   disconnectBulkDeleteAction,
   bulkDeleteSuccess,
   setBulkDeleteStartAgain,
   setBulkUploadStartAgain,
   setBulkDeleteLoading,
+  setBulkDeleteFilter,
+  setBulkDeleteSearch,
+  setBulkDeleteKeyCount,
   bulkUpload,
   bulkUploadSuccess,
   bulkUploadFailed,
@@ -261,6 +265,105 @@ describe('bulkActions slice', () => {
           browser: { bulkActions: nextState },
         })
         expect(bulkActionsSelector(rootState)).toEqual(state)
+      })
+    })
+
+    describe('setBulkDeleteFilter', () => {
+      it('should properly set filter', () => {
+        // Arrange
+        const state = {
+          ...initialState.bulkDelete,
+          filter: KeyTypes.Hash,
+        }
+
+        // Act
+        const nextState = reducer(
+          initialState,
+          setBulkDeleteFilter(KeyTypes.Hash),
+        )
+
+        // Assert
+        const rootState = Object.assign(initialStateDefault, {
+          browser: { bulkActions: nextState },
+        })
+        expect(bulkActionsDeleteSelector(rootState)).toEqual(state)
+      })
+
+      it('should properly set filter to null', () => {
+        // Arrange
+        const currentState = {
+          ...initialState,
+          bulkDelete: {
+            ...initialState.bulkDelete,
+            filter: KeyTypes.Hash,
+          },
+        }
+
+        // Act
+        const nextState = reducer(currentState, setBulkDeleteFilter(null))
+
+        // Assert
+        const rootState = Object.assign(initialStateDefault, {
+          browser: { bulkActions: nextState },
+        })
+        expect(bulkActionsDeleteSelector(rootState).filter).toBeNull()
+      })
+    })
+
+    describe('setBulkDeleteSearch', () => {
+      it('should properly set search pattern', () => {
+        // Arrange
+        const searchPattern = 'user:session:*'
+
+        // Act
+        const nextState = reducer(
+          initialState,
+          setBulkDeleteSearch(searchPattern),
+        )
+
+        // Assert
+        const rootState = Object.assign(initialStateDefault, {
+          browser: { bulkActions: nextState },
+        })
+        expect(bulkActionsDeleteSelector(rootState).search).toEqual(
+          searchPattern,
+        )
+      })
+    })
+
+    describe('setBulkDeleteKeyCount', () => {
+      it('should properly set key count', () => {
+        // Arrange
+        const keyCount = 42
+
+        // Act
+        const nextState = reducer(initialState, setBulkDeleteKeyCount(keyCount))
+
+        // Assert
+        const rootState = Object.assign(initialStateDefault, {
+          browser: { bulkActions: nextState },
+        })
+        expect(bulkActionsDeleteSelector(rootState).keyCount).toEqual(keyCount)
+      })
+
+      it('should properly set key count to null', () => {
+        // Arrange
+        const currentState = {
+          ...initialState,
+          bulkDelete: {
+            ...initialState.bulkDelete,
+            keyCount: 100,
+          },
+        }
+
+        // Act
+        const nextState = reducer(currentState, setBulkDeleteKeyCount(null))
+
+        // Assert
+        const rootState = Object.assign(initialStateDefault, {
+          browser: { bulkActions: nextState },
+        })
+        expect(bulkActionsDeleteSelector(rootState).keyCount).toBeNull()
       })
     })
 

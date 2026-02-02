@@ -40,10 +40,17 @@ export interface Props {
   selectKey: ({ rowData }: { rowData: any }) => void
   removeSelectedKey: () => void
   handleAddKeyPanel: (value: boolean) => void
+  handleBulkActionsPanel: (value: boolean) => void
 }
 
 const BrowserLeftPanel = (props: Props) => {
-  const { selectedKey, selectKey, removeSelectedKey, handleAddKeyPanel } = props
+  const {
+    selectedKey,
+    selectKey,
+    removeSelectedKey,
+    handleAddKeyPanel,
+    handleBulkActionsPanel,
+  } = props
 
   const { instanceId } = useParams<{ instanceId: string }>()
   const patternKeysState = useSelector(keysDataSelector)
@@ -195,6 +202,7 @@ const BrowserLeftPanel = (props: Props) => {
           onDelete={onDeleteKey}
           deleting={deleting}
           onAddKeyPanel={handleAddKeyPanel}
+          onBulkActionsPanel={handleBulkActionsPanel}
         />
       )}
     </div>

@@ -45,6 +45,7 @@ export interface Props {
   setConstructingTree: (status: boolean) => void
   onDeleteLeaf: (key: RedisResponseBuffer) => void
   onDeleteClicked: (type: KeyTypes | ModulesKeyTypes) => void
+  onDeleteFolder?: (pattern: string, fullName: string, keyCount: number) => void
 }
 
 interface OpenedNodes {
@@ -71,6 +72,7 @@ const VirtualTree = (props: Props) => {
     webworkerFn = () => {},
     onDeleteClicked,
     onDeleteLeaf,
+    onDeleteFolder,
   } = props
 
   const [rerenderState, rerender] = useState({})
@@ -221,6 +223,7 @@ const VirtualTree = (props: Props) => {
       updateStatusSelected: handleUpdateSelected,
       updateStatusOpen: handleUpdateOpen,
       onDelete: onDeleteLeaf,
+      onDeleteFolder,
       keyApproximate: node.keyApproximate,
       isSelected: !!node.isLeaf && statusSelected === node?.nameString,
       isOpenByDefault: statusOpen[node.fullName],

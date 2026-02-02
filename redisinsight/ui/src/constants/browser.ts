@@ -42,6 +42,13 @@ export const TEXT_DISABLED_COMPRESSED_VALUE: string =
 export const TEXT_FAILED_CONVENT_FORMATTER = (format: KeyValueFormat) =>
   `Failed to convert to ${format}`
 
+export const TEXT_BULK_DELETE_TOOLTIP = (pattern: string) =>
+  `Delete all keys matching: ${pattern}`
+export const TEXT_BULK_DELETE_DISABLED_UNPRINTABLE =
+  'Non-printable characters detected. Bulk delete disabled due to unreliable key grouping.'
+export const TEXT_BULK_DELETE_DISABLED_MULTIPLE_DELIMITERS =
+  'To use bulk delete, configure tree view with one delimiter.'
+
 export const DATABASE_OVERVIEW_REFRESH_INTERVAL =
   riConfig.browser.databaseOverviewRefreshInterval
 export const DATABASE_OVERVIEW_MINIMUM_REFRESH_INTERVAL =
