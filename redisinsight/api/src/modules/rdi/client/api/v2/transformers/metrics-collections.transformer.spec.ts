@@ -6,10 +6,12 @@ import {
 } from 'src/modules/rdi/models';
 import {
   GetMetricsCollectionResponse,
+  GetStatusResponse,
   ProcessorMetricsResponse,
 } from 'src/modules/rdi/client/api/v2/responses';
 import {
   transformProcessingPerformance,
+  transformComponentStatus,
   transformMetricsCollectionResponse,
 } from './metrics-collections.transformer';
 
@@ -93,6 +95,104 @@ describe('metrics-collections.transformer', () => {
       const result = transformProcessingPerformance(data);
 
       expect(result.data).toHaveLength(9);
+    });
+  });
+
+  describe('transformComponentStatus', () => {
+    it('should return RdiStatisticsTableSection with correct columns and data', () => {
+      const components: GetStatusResponse['components'] = [
+        {
+          name: 'processor',
+          type: 'stream-processor',
+          version: '1.0.0',
+          status: 'started',
+          errors: [],
+          metric_collections: [],
+        },
+        {
+          name: 'collector',
+          type: 'source-collector',
+          version: '1.0.1',
+          status: 'started',
+          errors: ['Connection timeout', 'Retry failed'],
+          metric_collections: [],
+        },
+      ];
+
+      const result = transformComponentStatus(components);
+
+      expect(result).toBeInstanceOf(RdiStatisticsTableSection);
+      expect(result!.name).toBe('Component Status');
+      expect(result!.view).toBe(RdiStatisticsViewType.Table);
+      expect(result!.data).toHaveLength(2);
+      expect(result!.data[0]).toEqual({
+        status: 'started',
+        name: 'processor',
+        type: 'stream-processor',
+        version: '1.0.0',
+        errors: '',
+      });
+      expect(result!.data[1]).toEqual({
+        status: 'started',
+        name: 'collector',
+        type: 'source-collector',
+        version: '1.0.1',
+        errors: 'Connection timeout, Retry failed',
+      });
+    });
+
+    it('should return correct column definitions', () => {
+      const components: GetStatusResponse['components'] = [
+        {
+          name: 'processor',
+          type: 'stream-processor',
+          version: '1.0.0',
+          status: 'started',
+          errors: [],
+          metric_collections: [],
+        },
+      ];
+
+      const result = transformComponentStatus(components);
+
+      expect(result!.columns).toHaveLength(5);
+      // All headers are auto-generated from field names (first letter capitalized)
+      expect(result!.columns.map((c) => c.header)).toEqual([
+        'Status',
+        'Name',
+        'Type',
+        'Version',
+        'Errors',
+      ]);
+    });
+
+    it('should return null when components is empty', () => {
+      const result = transformComponentStatus([]);
+
+      expect(result).toBeNull();
+    });
+
+    it('should return null when components is undefined', () => {
+      const result = transformComponentStatus(undefined as any);
+
+      expect(result).toBeNull();
+    });
+
+    it('should handle components with undefined errors', () => {
+      const components: GetStatusResponse['components'] = [
+        {
+          name: 'processor',
+          type: 'stream-processor',
+          version: '1.0.0',
+          status: 'started',
+          errors: undefined as any,
+          metric_collections: [],
+        },
+      ];
+
+      const result = transformComponentStatus(components);
+
+      expect(result!.data[0].errors).toBe('');
     });
   });
 
@@ -237,6 +337,92 @@ describe('metrics-collections.transformer', () => {
       const result = transformMetricsCollectionResponse(response);
 
       expect(result).toEqual([]);
+    });
+
+    it('should include Component Status section when status data is provided', () => {
+      const response: GetMetricsCollectionResponse = [mockProcessorMetrics];
+      const statusData: GetStatusResponse = {
+        status: 'started',
+        errors: [],
+        components: [
+          {
+            name: 'processor',
+            type: 'stream-processor',
+            version: '1.0.0',
+            status: 'started',
+            errors: [],
+            metric_collections: [],
+          },
+        ],
+        current: true,
+      };
+
+      const result = transformMetricsCollectionResponse(response, statusData);
+
+      expect(result).toHaveLength(6);
+      expect(result[3].name).toBe('Component Status');
+      expect(result[3].view).toBe(RdiStatisticsViewType.Table);
+    });
+
+    it('should place Component Status after Target Connections', () => {
+      const response: GetMetricsCollectionResponse = [mockProcessorMetrics];
+      const statusData: GetStatusResponse = {
+        status: 'started',
+        errors: [],
+        components: [
+          {
+            name: 'processor',
+            type: 'stream-processor',
+            version: '1.0.0',
+            status: 'started',
+            errors: [],
+            metric_collections: [],
+          },
+        ],
+        current: true,
+      };
+
+      const result = transformMetricsCollectionResponse(response, statusData);
+
+      expect(result[0].name).toBe('General info');
+      expect(result[1].name).toBe('Processing performance information');
+      expect(result[2].name).toBe('Target Connections');
+      expect(result[3].name).toBe('Component Status');
+      expect(result[4].name).toBe('Data Streams');
+      expect(result[5].name).toBe('Clients');
+    });
+
+    it('should work without status data (backward compatible)', () => {
+      const response: GetMetricsCollectionResponse = [mockProcessorMetrics];
+
+      const result = transformMetricsCollectionResponse(response);
+
+      expect(result).toHaveLength(5);
+      expect(result.map((s) => s.name)).not.toContain('Component Status');
+    });
+
+    it('should not include Component Status when status data is null', () => {
+      const response: GetMetricsCollectionResponse = [mockProcessorMetrics];
+
+      const result = transformMetricsCollectionResponse(response, null);
+
+      expect(result).toHaveLength(5);
+      expect(result.map((s) => s.name)).not.toContain('Component Status');
+    });
+
+    it('should not include Component Status when components array is empty', () => {
+      const response: GetMetricsCollectionResponse = [mockProcessorMetrics];
+      const statusData: GetStatusResponse = {
+        status: 'started',
+        errors: [],
+        components: [],
+        current: true,
+      };
+
+      const result = transformMetricsCollectionResponse(response, statusData);
+
+      expect(result).toHaveLength(5);
+      expect(result.map((s) => s.name)).not.toContain('Component Status');
     });
   });
 });

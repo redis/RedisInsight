@@ -90,7 +90,7 @@ export class ApiV2RdiClient extends ApiRdiClient {
    *
    * This method fetches statistics for the currently selected pipeline. The statistics
    * include detailed information about the pipeline's performance, data processing,
-   * and other relevant metrics.
+   * and other relevant metrics. Also fetches component status data to include in statistics.
    *
    * @returns {Promise<RdiStatisticsResult>} A promise that resolves to an RdiStatisticsResult
    *                                        object containing the pipeline statistics
@@ -100,14 +100,24 @@ export class ApiV2RdiClient extends ApiRdiClient {
    */
   async getStatistics(): Promise<RdiStatisticsResult> {
     try {
-      const { data } = await this.client.get<GetMetricsCollectionResponse>(
-        RdiUrlV2.GetMetricsCollections(this.selectedPipeline),
-      );
+      const [metricsResponse, statusResponse] = await Promise.all([
+        this.client.get<GetMetricsCollectionResponse>(
+          RdiUrlV2.GetMetricsCollections(this.selectedPipeline),
+        ),
+        this.client
+          .get<GetStatusResponse>(
+            RdiUrlV2.GetPipelineStatus(this.selectedPipeline),
+          )
+          .catch(() => ({ data: null })), // Graceful fallback if status fails
+      ]);
 
       return plainToInstance(RdiStatisticsResult, {
         status: RdiStatisticsStatus.Success,
         data: {
-          sections: transformMetricsCollectionResponse(data),
+          sections: transformMetricsCollectionResponse(
+            metricsResponse.data,
+            statusResponse.data,
+          ),
         },
       });
     } catch (e) {
