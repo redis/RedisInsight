@@ -35,3 +35,8 @@ export interface IndexDetailsProps {
 export interface IndexDetailsContainerProps {
   $showBorder?: boolean
 }
+
+export interface GetColumnsOptions {
+  mode: IndexDetailsMode
+  onFieldEdit?: (field: IndexField) => void
+}

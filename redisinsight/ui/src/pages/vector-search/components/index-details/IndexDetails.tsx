@@ -1,6 +1,6 @@
 import React from 'react'
 import { Table } from 'uiSrc/components/base/layout/table'
-import { useIndexDetailsColumns } from './IndexDetails.config'
+import { getIndexDetailsColumns } from './IndexDetails.config'
 import * as S from './IndexDetails.styles'
 import {
   IndexDetailsMode,
@@ -17,7 +17,7 @@ export const IndexDetails = ({
   onFieldEdit,
 }: IndexDetailsProps) => {
   const isEditable = mode === IndexDetailsMode.Editable
-  const columns = useIndexDetailsColumns({ mode, onFieldEdit })
+  const columns = getIndexDetailsColumns({ mode, onFieldEdit })
 
   return (
     <S.IndexDetailsContainer

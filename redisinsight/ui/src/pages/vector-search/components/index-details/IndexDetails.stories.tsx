@@ -21,21 +21,21 @@ const SAMPLE_FIELDS: IndexField[] = [
   indexFieldFactory.build({ id: '5', type: FieldTypes.VECTOR }),
 ]
 
+const handleFieldEdit = (field: IndexField) => {
+  // eslint-disable-next-line no-alert
+  alert(
+    `Edit field: "${field.name}"\n\n` +
+      `Current type: ${field.type.toUpperCase()}\n` +
+      `Sample value: ${field.value}\n\n` +
+      `In the real flow, a modal will appear here to edit the field type and settings.`,
+  )
+}
+
 // Stateful wrapper for interactive stories (controlled component)
 const IndexDetailsWrapper = (props: IndexDetailsProps) => {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>(
     props.rowSelection || {},
   )
-
-  const handleFieldEdit = (field: IndexField) => {
-    // eslint-disable-next-line no-alert
-    alert(
-      `Edit field: "${field.name}"\n\n` +
-        `Current type: ${field.type.toUpperCase()}\n` +
-        `Sample value: ${field.value}\n\n` +
-        `In the real flow, a modal will appear here to edit the field type and settings.`,
-    )
-  }
 
   const selectedFields = props.fields.filter((field) => rowSelection[field.id])
   const isEditable = props.mode === IndexDetailsMode.Editable

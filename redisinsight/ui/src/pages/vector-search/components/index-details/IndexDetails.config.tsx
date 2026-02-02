@@ -1,100 +1,38 @@
-import React, { useMemo } from 'react'
-import { ColumnDef, Row, Table } from 'uiSrc/components/base/layout/table'
+import { ColumnDef } from 'uiSrc/components/base/layout/table'
 import {
-  IndexDetailsColumn,
+  GetColumnsOptions,
   IndexDetailsMode,
   IndexField,
 } from './IndexDetails.types'
+import {
+  SELECTION_COLUMN,
+  NAME_COLUMN,
+  VALUE_COLUMN,
+  TYPE_COLUMN_READONLY,
+  TYPE_COLUMN_EDITABLE,
+  createActionsColumn,
+} from './IndexDetails.columns'
 
-import { FieldNameCell } from './components/FieldNameCell/FieldNameCell'
-import { FieldValueCell } from './components/FieldValueCell/FieldValueCell'
-import { FieldTypeCell } from './components/FieldTypeCell/FieldTypeCell'
-import { FieldActionsCell } from './components/FieldActionsCell/FieldActionsCell'
-import { ColumnHeader } from './components/ColumnHeader/ColumnHeader'
-import { FieldNameTooltip } from './components/FieldNameCell/FieldNameTooltip'
-import { FieldValueTooltip } from './components/FieldValueCell/FieldValueTooltip'
-import { FieldTypeTooltip } from './components/FieldTypeCell/FieldTypeTooltip'
+const READONLY_COLUMNS: ColumnDef<IndexField>[] = [
+  NAME_COLUMN,
+  VALUE_COLUMN,
+  TYPE_COLUMN_READONLY,
+]
 
-type ColumnConfig = ColumnDef<IndexField> & {
-  modes: IndexDetailsMode[]
-}
+const EDITABLE_BASE_COLUMNS: ColumnDef<IndexField>[] = [
+  SELECTION_COLUMN,
+  NAME_COLUMN,
+  VALUE_COLUMN,
+  TYPE_COLUMN_EDITABLE,
+]
 
-interface UseColumnsOptions {
-  mode: IndexDetailsMode
-  onFieldEdit?: (field: IndexField) => void
-}
-
-export const useIndexDetailsColumns = ({
+export const getIndexDetailsColumns = ({
   mode,
   onFieldEdit,
-}: UseColumnsOptions): ColumnDef<IndexField>[] => {
-  const isEditable = mode === IndexDetailsMode.Editable
+}: GetColumnsOptions): ColumnDef<IndexField>[] => {
+  if (mode === IndexDetailsMode.Readonly) {
+    return READONLY_COLUMNS
+  }
 
-  const rowSelectionColumn = Table.useRowSelectionColumn<IndexField>()
-
-  return useMemo(() => {
-    const columns: ColumnConfig[] = [
-      {
-        ...rowSelectionColumn,
-        id: IndexDetailsColumn.Selection,
-        modes: [IndexDetailsMode.Editable],
-      },
-      {
-        id: IndexDetailsColumn.Name,
-        modes: [IndexDetailsMode.Editable, IndexDetailsMode.Readonly],
-        accessorKey: IndexDetailsColumn.Name,
-        enableSorting: false,
-        header: () => (
-          <ColumnHeader label="Field name" tooltip={<FieldNameTooltip />} />
-        ),
-        cell: ({ row }: { row: Row<IndexField> }) => (
-          <FieldNameCell field={row.original} />
-        ),
-      },
-      {
-        id: IndexDetailsColumn.Value,
-        modes: [IndexDetailsMode.Editable, IndexDetailsMode.Readonly],
-        accessorKey: IndexDetailsColumn.Value,
-        enableSorting: false,
-        header: () => (
-          <ColumnHeader
-            label="Field sample value"
-            tooltip={<FieldValueTooltip />}
-          />
-        ),
-        cell: ({ row }: { row: Row<IndexField> }) => (
-          <FieldValueCell field={row.original} />
-        ),
-      },
-      {
-        id: IndexDetailsColumn.Type,
-        modes: [IndexDetailsMode.Editable, IndexDetailsMode.Readonly],
-        accessorKey: IndexDetailsColumn.Type,
-        enableSorting: false,
-        header: () => (
-          <ColumnHeader
-            label={isEditable ? 'Suggested indexing type' : 'Indexing type'}
-            tooltip={<FieldTypeTooltip />}
-          />
-        ),
-        cell: ({ row }: { row: Row<IndexField> }) => (
-          <FieldTypeCell field={row.original} />
-        ),
-      },
-      {
-        id: IndexDetailsColumn.Actions,
-        modes: [IndexDetailsMode.Editable],
-        enableSorting: false,
-        size: 40,
-        header: '',
-        cell: ({ row }: { row: Row<IndexField> }) => (
-          <FieldActionsCell field={row.original} onEdit={onFieldEdit} />
-        ),
-      },
-    ]
-
-    return columns
-      .filter((col) => col.modes.includes(mode))
-      .map(({ modes: _, ...columnDef }) => columnDef)
-  }, [mode, isEditable, onFieldEdit, rowSelectionColumn])
+  return [...EDITABLE_BASE_COLUMNS, createActionsColumn(onFieldEdit)]
 }
