@@ -61,6 +61,7 @@ import { initialState as initialStatePubSub } from 'uiSrc/slices/pubsub/pubsub'
 import { initialState as initialStateRedisearch } from 'uiSrc/slices/browser/redisearch'
 import { initialState as initialStateRecommendations } from 'uiSrc/slices/recommendations/recommendations'
 import { initialState as initialStateOAuth } from 'uiSrc/slices/oauth/cloud'
+import { initialState as initialStateAzureAuth } from 'uiSrc/slices/oauth/azure'
 import { initialState as initialStateSidePanels } from 'uiSrc/slices/panels/sidePanels'
 import { initialState as initialStateRdiPipeline } from 'uiSrc/slices/rdi/pipeline'
 import { initialState as initialStateRdi } from 'uiSrc/slices/rdi/instances'
@@ -151,6 +152,7 @@ const initialStateDefault: RootState = {
   pubsub: cloneDeep(initialStatePubSub),
   oauth: {
     cloud: cloneDeep(initialStateOAuth),
+    azure: cloneDeep(initialStateAzureAuth),
   },
   panels: {
     sidePanels: cloneDeep(initialStateSidePanels),
