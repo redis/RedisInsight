@@ -8,6 +8,8 @@ const ChatExternalLink = (props: ExternalLinkProps) => {
   const { href } = props
   return (
     <ExternalLink
+      display="inline"
+      allowWrap={true}
       {...props}
       data-testid="chat-external-link"
       href={getUtmExternalLink(href || EXTERNAL_LINKS.redisIo, {
