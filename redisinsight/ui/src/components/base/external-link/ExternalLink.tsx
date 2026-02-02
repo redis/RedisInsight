@@ -11,6 +11,7 @@ export type Props = RiLinkProps & {
   variant?: RiLinkProps['variant']
   size?: RiLinkProps['size']
   color?: RiLinkProps['color']
+  display?: string
 }
 
 const ExternalLink = (props: Props) => {
@@ -18,6 +19,7 @@ const ExternalLink = (props: Props) => {
     iconPosition = 'right',
     iconSize = 'S',
     size = 'S',
+    display = 'inline-flex',
     children,
     ...rest
   } = props
@@ -31,7 +33,12 @@ const ExternalLink = (props: Props) => {
   )
 
   return (
-    <StyledExternalLink {...rest} target="_blank" rel="noopener noreferrer">
+    <StyledExternalLink
+      {...rest}
+      target="_blank"
+      rel="noopener noreferrer"
+      display={display}
+    >
       {iconPosition === 'left' && <ArrowIcon />}
       {children}
       {iconPosition === 'right' && <ArrowIcon />}
