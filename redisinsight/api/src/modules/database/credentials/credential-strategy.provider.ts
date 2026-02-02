@@ -7,24 +7,6 @@ export interface ICredentialStrategy {
 }
 
 @Injectable()
-export class CredentialStrategyProvider {
-  private strategies: ICredentialStrategy[] = [];
-
-  setStrategies(strategies: ICredentialStrategy[]): void {
-    this.strategies = strategies;
-  }
-
-  getStrategy(database: Database): ICredentialStrategy | undefined {
-    return this.strategies.find((strategy) => strategy.canHandle(database));
-  }
-
-  async resolve(database: Database): Promise<Database> {
-    const strategy = this.getStrategy(database);
-    if (!strategy) {
-      throw new Error(
-        `No credential strategy available to handle database ${database.id}`,
-      );
-    }
-    return strategy.resolve(database);
-  }
+export abstract class CredentialStrategyProvider {
+  abstract resolve(database: Database): Promise<Database>;
 }

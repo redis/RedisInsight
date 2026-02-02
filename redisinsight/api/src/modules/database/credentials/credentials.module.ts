@@ -1,32 +1,20 @@
-import { DynamicModule, Global } from '@nestjs/common';
-import {
-  CredentialStrategyProvider,
-  ICredentialStrategy,
-} from './credential-strategy.provider';
+import { DynamicModule, Global, Type } from '@nestjs/common';
+import { CredentialStrategyProvider } from './credential-strategy.provider';
+import { LocalCredentialStrategyProvider } from './local.credential-strategy.provider';
 import { DefaultCredentialStrategy } from './strategies/default.credential-strategy';
-
-/**
- * All credential strategies in order of priority.
- * First strategy that returns true from canHandle() will be used.
- * DefaultCredentialStrategy is always last as the fallback.
- */
-const CREDENTIAL_STRATEGIES = [DefaultCredentialStrategy];
 
 @Global()
 export class CredentialsModule {
-  static register(): DynamicModule {
+  static register(
+    provider: Type<CredentialStrategyProvider> = LocalCredentialStrategyProvider,
+  ): DynamicModule {
     return {
       module: CredentialsModule,
       providers: [
-        ...CREDENTIAL_STRATEGIES,
+        DefaultCredentialStrategy,
         {
           provide: CredentialStrategyProvider,
-          useFactory: (...strategyInstances: ICredentialStrategy[]) => {
-            const provider = new CredentialStrategyProvider();
-            provider.setStrategies(strategyInstances);
-            return provider;
-          },
-          inject: CREDENTIAL_STRATEGIES,
+          useClass: provider,
         },
       ],
       exports: [CredentialStrategyProvider],
