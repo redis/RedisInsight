@@ -26,13 +26,22 @@ Example:
 
 ## Prerequisites
 
-1. Start Redis instances using Docker Compose:
-   ```bash
-   cd tests/e2e
-   docker-compose -f rte.docker-compose.yml up -d
-   ```
+### Common Setup (All Projects)
 
-2. Start RedisInsight application on `http://localhost:8080`
+Start Redis Test Environment (RTE) using Docker Compose:
+```bash
+cd tests/e2e
+docker-compose -f rte.docker-compose.yml up -d
+```
+
+### Project-Specific Setup
+
+| Project | Setup Command | Run Tests |
+|---------|---------------|-----------|
+| **Chromium** | `yarn dev:api` + `yarn dev:ui` (two terminals) | `npm run test:chromium` |
+| **Electron** | `yarn package:prod` | `npm run test:electron` |
+
+> **Note:** Setup commands run from the repository root. Test commands run from `tests/e2e-playwright/`.
 
 ## Installation
 
@@ -84,19 +93,6 @@ npm run test:chromium:ui      # Interactive test runner
 ```
 
 ### Electron Desktop Tests
-
-Run the same tests against the Electron desktop build.
-
-#### Prerequisites
-
-Build the Electron app from the root directory:
-```bash
-yarn package:prod
-```
-
-#### Running Electron Tests
-
-The Electron executable path is **automatically detected** based on your platform:
 
 ```bash
 npm run test:electron         # Run all Electron tests
