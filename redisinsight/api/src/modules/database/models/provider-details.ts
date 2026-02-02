@@ -4,13 +4,17 @@
  * cloud provider autodiscovery.
  */
 
+export enum CloudProvider {
+  Azure = 'azure',
+}
+
 export enum AzureAuthType {
   EntraId = 'entra-id',
   AccessKey = 'access-key',
 }
 
 export interface AzureProviderDetails {
-  provider: 'azure';
+  provider: CloudProvider.Azure;
   authType: AzureAuthType;
   /** MSAL account ID for token refresh (homeAccountId) */
   azureAccountId?: string;
