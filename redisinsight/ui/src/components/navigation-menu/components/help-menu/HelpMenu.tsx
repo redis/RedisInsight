@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -17,9 +16,7 @@ import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { FeatureFlags } from 'uiSrc/constants'
 import { FeatureFlagComponent } from 'uiSrc/components'
 import { RiPopover } from 'uiSrc/components/base'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { Title } from 'uiSrc/components/base/text/Title'
 import { SupportIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { Link } from 'uiSrc/components/base/link/Link'
@@ -28,8 +25,7 @@ import {
   SideBarItemIcon,
 } from 'uiSrc/components/base/layout/sidebar'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import navStyles from '../../styles.module.scss'
-import styles from './styles.module.scss'
+import * as S from './HelpMenu.styles'
 
 const HelpMenu = () => {
   const { id: connectedInstanceId = '' } = useSelector(
@@ -71,9 +67,6 @@ const HelpMenu = () => {
 
   const HelpMenuButton = (
     <SideBarItem
-      className={cx({
-        [navStyles.navigationButtonNotified]: true,
-      })}
       onClick={() => setIsHelpMenuActive((value) => !value)}
       tooltipProps={{ text: 'Help', placement: 'right' }}
       isActive={isHelpMenuActive}
@@ -90,94 +83,78 @@ const HelpMenu = () => {
     <RiPopover
       anchorPosition="rightUp"
       isOpen={isHelpMenuActive}
-      anchorClassName={styles.unsupportedInfo}
-      panelClassName={cx('popoverLikeTooltip', styles.popoverWrapper)}
+      panelClassName="popoverLikeTooltip"
+      minWidth={S.POPOVER_MIN_WIDTH}
       closePopover={() => setIsHelpMenuActive(false)}
       button={HelpMenuButton}
     >
-      <div className={styles.popover} data-testid="help-center">
-        <Title size="XS" className={styles.helpMenuTitle}>
-          Help Center
-        </Title>
+      <S.Popover data-testid="help-center">
+        <S.HelpMenuTitle size="XS">Help Center</S.HelpMenuTitle>
         <Spacer size="l" />
-        <Row
-          className={styles.helpMenuItems}
-          align="center"
-          justify="between"
-          gap="l"
-        >
+        <S.HelpMenuItems align="center" justify="between" gap="l">
           <FeatureFlagComponent name={FeatureFlags.envDependent}>
-            <FlexItem grow={2} className={styles.helpMenuItem}>
+            <S.HelpMenuItem grow={2}>
               <Link
-                className={styles.helpMenuItemLink}
                 href={EXTERNAL_LINKS.githubIssues}
                 target="_blank"
                 data-testid="submit-bug-btn"
               >
-                <RiIcon type="GithubIcon" size="original" />
-                <Spacer size="xs" />
-                <Text
-                  size="xs"
-                  textAlign="center"
-                  className={styles.helpMenuText}
-                >
-                  Provide <br /> Feedback
-                </Text>
+                <S.HelpMenuItemLink>
+                  <RiIcon type="GithubIcon" size="original" />
+                  <Spacer size="xs" />
+                  <Text size="xs" textAlign="center">
+                    <S.HelpMenuText>
+                      Provide <br /> Feedback
+                    </S.HelpMenuText>
+                  </Text>
+                </S.HelpMenuItemLink>
               </Link>
-            </FlexItem>
+            </S.HelpMenuItem>
           </FeatureFlagComponent>
 
-          <FlexItem className={styles.helpMenuItemRow} grow={4}>
-            <Row className={styles.helpMenuItemLink} align="center" gap="xs">
+          <S.HelpMenuItemRow grow={4}>
+            <S.HelpMenuItemRowLink align="center" gap="xs">
               <RiIcon type="KeyboardShortcutsIcon" size="l" />
-              <Text
-                size="xs"
-                className={styles.helpMenuTextLink}
+              <S.HelpMenuTextLink
                 onClick={onKeyboardShortcutClick}
                 data-testid="shortcuts-btn"
               >
                 Keyboard Shortcuts
-              </Text>
-            </Row>
+              </S.HelpMenuTextLink>
+            </S.HelpMenuItemRowLink>
 
-            <Row className={styles.helpMenuItemLink} align="center" gap="xs">
-              <div
-                className={cx({
-                  [styles.helpMenuItemNotified]: isReleaseNotesViewed === false,
-                })}
-                style={{ display: 'flex' }}
-              >
+            <S.HelpMenuItemRowLink align="center" gap="xs">
+              {isReleaseNotesViewed === false ? (
+                <S.HelpMenuItemNotified>
+                  <RiIcon type="DocumentationIcon" size="l" />
+                </S.HelpMenuItemNotified>
+              ) : (
                 <RiIcon type="DocumentationIcon" size="l" />
-              </div>
+              )}
               <Link
                 onClick={onClickReleaseNotes}
-                className={styles.helpMenuTextLink}
                 href={EXTERNAL_LINKS.releaseNotes}
                 target="_blank"
                 data-testid="release-notes-btn"
               >
-                <Text size="xs" className={styles.helpMenuTextLink}>
-                  Release Notes
-                </Text>
+                <S.HelpMenuTextLink>Release Notes</S.HelpMenuTextLink>
               </Link>
-            </Row>
+            </S.HelpMenuItemRowLink>
 
             <FeatureFlagComponent name={FeatureFlags.envDependent}>
-              <Row className={styles.helpMenuItemLink} align="center" gap="xs">
+              <S.HelpMenuItemRowLink align="center" gap="xs">
                 <RiIcon type="LightBulbIcon" size="l" />
-                <Text
-                  size="xs"
-                  className={styles.helpMenuTextLink}
+                <S.HelpMenuTextLink
                   onClick={onResetOnboardingClick}
                   data-testid="reset-onboarding-btn"
                 >
                   Reset Onboarding
-                </Text>
-              </Row>
+                </S.HelpMenuTextLink>
+              </S.HelpMenuItemRowLink>
             </FeatureFlagComponent>
-          </FlexItem>
-        </Row>
-      </div>
+          </S.HelpMenuItemRow>
+        </S.HelpMenuItems>
+      </S.Popover>
     </RiPopover>
   )
 }

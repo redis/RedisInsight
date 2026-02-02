@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FormikErrors, useFormik } from 'formik'
 import { isEmpty, forEach } from 'lodash'
-import cx from 'classnames'
 
 import { HorizontalRule, RiTooltip } from 'uiSrc/components'
 import { compareConsents } from 'uiSrc/utils'
@@ -21,7 +20,7 @@ import { SwitchInput } from 'uiSrc/components/base/inputs'
 import { Link } from 'uiSrc/components/base/link/Link'
 import ConsentOption from './ConsentOption'
 
-import styles from './styles.module.scss'
+import * as S from './ConsentsSettings.styles'
 import { StyledContainer } from './styles'
 
 interface Values {
@@ -211,7 +210,7 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
 
   return (
     <form onSubmit={formik.handleSubmit} data-testid="consents-settings-form">
-      <div className={styles.consentsWrapper}>
+      <S.ConsentsWrapper>
         <Spacer size="m" />
         {consents.length > 1 && (
           <>
@@ -234,11 +233,10 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
                 </FlexItem>
               </Row>
             </FlexItem>
-            <HorizontalRule
+            <S.PluginWarningHR
+              as={HorizontalRule}
               margin="m"
-              className={cx({
-                [styles.pluginWarningHR]: !!requiredConsents.length,
-              })}
+              $hasRequiredConsents={!!requiredConsents.length}
             />
           </>
         )}
@@ -288,7 +286,7 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
             />
           ))}
         </StyledContainer>
-      </div>
+      </S.ConsentsWrapper>
       {requiredConsents.length ? (
         <>
           <Spacer size="l" />

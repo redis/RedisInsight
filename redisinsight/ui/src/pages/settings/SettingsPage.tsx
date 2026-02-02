@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import cx from 'classnames'
 
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -21,15 +20,11 @@ import {
 import Divider from 'uiSrc/components/divider/Divider'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import {
-  Page,
   PageBody,
   PageContentBody,
   PageHeader,
 } from 'uiSrc/components/base/layout/page'
-import { CallOut } from 'uiSrc/components/base/display/call-out/CallOut'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
-import { Loader, RICollapsibleNavGroup } from 'uiSrc/components/base/display'
+import { Loader } from 'uiSrc/components/base/display'
 import { Col } from 'uiSrc/components/base/layout/flex'
 import {
   AdvancedSettings,
@@ -38,7 +33,7 @@ import {
   WorkbenchSettings,
 } from './components'
 import { DateTimeFormatter } from './components/general-settings'
-import styles from './styles.module.scss'
+import * as S from './SettingsPage.styles'
 
 const SettingsPage = () => {
   const [loading, setLoading] = useState(false)
@@ -76,9 +71,9 @@ const SettingsPage = () => {
   const PrivacySettings = () => (
     <div>
       {loading && (
-        <div className={styles.cover}>
+        <S.Cover>
           <Loader size="xl" />
-        </div>
+        </S.Cover>
       )}
       <ConsentsPrivacy />
     </div>
@@ -87,9 +82,9 @@ const SettingsPage = () => {
   const WorkbenchSettingsGroup = () => (
     <div>
       {loading && (
-        <div className={styles.cover}>
+        <S.Cover>
           <Loader size="xl" />
-        </div>
+        </S.Cover>
       )}
       <WorkbenchSettings />
     </div>
@@ -98,9 +93,9 @@ const SettingsPage = () => {
   const CloudSettingsGroup = () => (
     <div>
       {loading && (
-        <div className={styles.cover}>
+        <S.Cover>
           <Loader size="xl" />
-        </div>
+        </S.Cover>
       )}
       <CloudSettings />
     </div>
@@ -109,52 +104,47 @@ const SettingsPage = () => {
   const AdvancedSettingsGroup = () => (
     <div>
       {loading && (
-        <div className={styles.cover}>
+        <S.Cover>
           <Loader size="xl" />
-        </div>
+        </S.Cover>
       )}
-      <CallOut className={styles.warning}>
-        <Text size="s" className={styles.smallText}>
+      <S.Warning>
+        <S.SmallText>
           Advanced settings should only be changed if you understand their
           impact.
-        </Text>
-      </CallOut>
+        </S.SmallText>
+      </S.Warning>
       <AdvancedSettings />
     </div>
   )
 
   return (
-    <Page className={styles.container}>
+    <S.Container>
       <PageBody component="div">
         <PageHeader>
-          <Title size="XXL" className={styles.title}>
-            Settings
-          </Title>
+          <S.PageTitle size="XXL">Settings</S.PageTitle>
         </PageHeader>
 
         <PageContentBody style={{ maxWidth: 792 }}>
           <Col gap="s">
-            <RICollapsibleNavGroup
+            <S.Accordion
               isCollapsible
-              className={styles.accordion}
               title="General"
               initialIsOpen={initialOpenSection === '#general'}
               data-test-subj="accordion-appearance"
             >
               {Appearance()}
-            </RICollapsibleNavGroup>{' '}
-            <RICollapsibleNavGroup
+            </S.Accordion>{' '}
+            <S.Accordion
               isCollapsible
-              className={styles.accordion}
               title="Privacy"
               initialIsOpen={initialOpenSection === '#privacy'}
               data-test-subj="accordion-privacy-settings"
             >
               {PrivacySettings()}
-            </RICollapsibleNavGroup>
-            <RICollapsibleNavGroup
+            </S.Accordion>
+            <S.Accordion
               isCollapsible
-              className={styles.accordion}
               title="Workbench"
               initialIsOpen={initialOpenSection === '#workbench'}
               data-test-subj="accordion-workbench-settings"
@@ -162,31 +152,29 @@ const SettingsPage = () => {
               id="accordion-workbench-settings"
             >
               {WorkbenchSettingsGroup()}
-            </RICollapsibleNavGroup>
+            </S.Accordion>
             <FeatureFlagComponent name={FeatureFlags.cloudSso}>
-              <RICollapsibleNavGroup
+              <S.AccordionWithSubTitle
                 isCollapsible
-                className={cx(styles.accordion, styles.accordionWithSubTitle)}
                 title="Redis Cloud"
                 initialIsOpen={initialOpenSection === '#cloud'}
                 data-test-subj="accordion-cloud-settings"
               >
                 {CloudSettingsGroup()}
-              </RICollapsibleNavGroup>
+              </S.AccordionWithSubTitle>
             </FeatureFlagComponent>
-            <RICollapsibleNavGroup
+            <S.AccordionWithSubTitle
               isCollapsible
-              className={cx(styles.accordion, styles.accordionWithSubTitle)}
               title="Advanced"
               initialIsOpen={initialOpenSection === '#advanced'}
               data-test-subj="accordion-advanced-settings"
             >
               {AdvancedSettingsGroup()}
-            </RICollapsibleNavGroup>
+            </S.AccordionWithSubTitle>
           </Col>
         </PageContentBody>
       </PageBody>
-    </Page>
+    </S.Container>
   )
 }
 

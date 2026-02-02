@@ -20,7 +20,7 @@ import {
 import { RefreshIcon, DownloadIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from './styles.module.scss'
+import * as S from './MonitorLog.styles'
 
 const PADDINGS_OUTSIDE = 12
 const MIDDLE_SCREEN_RESOLUTION = 460 - PADDINGS_OUTSIDE
@@ -62,7 +62,7 @@ const MonitorLog = () => {
   }
 
   return (
-    <div className={styles.monitorLogWrapper}>
+    <S.MonitorLogWrapper>
       <iframe
         title="downloadIframeTarget"
         name={DOWNLOAD_IFRAME_NAME}
@@ -70,8 +70,7 @@ const MonitorLog = () => {
       />
       <AutoSizer disableHeight>
         {({ width = 0 }) => (
-          <div
-            className={styles.container}
+          <S.Container
             style={{
               width,
               paddingLeft: getPaddingByWidth(width),
@@ -79,10 +78,10 @@ const MonitorLog = () => {
             }}
             data-testid="download-log-panel"
           >
-            <Text
+            <S.Time
+              as={Text}
               size="xs"
               color="subdued"
-              className={styles.time}
               data-testid="profiler-running-time"
             >
               <RiIcon size="s" color="informative400" type="TimeIconIcon" />
@@ -92,40 +91,40 @@ const MonitorLog = () => {
               &nbsp;(
               {duration}
               {width > SMALL_SCREEN_RESOLUTION && ' Running time'})
-            </Text>
-            <Row className={styles.actions} justify="between" align="center">
+            </S.Time>
+            <S.Actions as={Row} justify="between" align="center">
               <FlexItem>
                 {isSaveToFile && (
-                  <SecondaryButton
+                  <S.Btn
+                    as={SecondaryButton}
                     size="small"
                     icon={DownloadIcon}
-                    className={styles.btn}
                     data-testid="download-log-btn"
                     onClick={handleDownloadLog}
                     {...downloadBtnProps}
                   >
                     {width > SMALL_SCREEN_RESOLUTION && ' Download '}
                     Log
-                  </SecondaryButton>
+                  </S.Btn>
                 )}
               </FlexItem>
               <FlexItem>
-                <PrimaryButton
+                <S.Btn
+                  as={PrimaryButton}
                   size="small"
                   onClick={onResetProfiler}
                   icon={RefreshIcon}
-                  className={styles.btn}
                   data-testid="reset-profiler-btn"
                 >
                   Reset
                   {width > SMALL_SCREEN_RESOLUTION && ' Profiler'}
-                </PrimaryButton>
+                </S.Btn>
               </FlexItem>
-            </Row>
-          </div>
+            </S.Actions>
+          </S.Container>
         )}
       </AutoSizer>
-    </div>
+    </S.MonitorLogWrapper>
   )
 }
 

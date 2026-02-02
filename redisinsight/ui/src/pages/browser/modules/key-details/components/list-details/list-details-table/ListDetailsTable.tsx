@@ -1,6 +1,5 @@
 import React, { Ref, useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import cx from 'classnames'
 import { isNull, isNumber } from 'lodash'
 import { CellMeasurerCache } from 'react-virtualized'
 import {
@@ -77,7 +76,7 @@ import {
   SetListElementResponse,
 } from 'apiSrc/modules/browser/list/dto'
 
-import styles from './styles.module.scss'
+import * as S from './ListDetailsTable.styles'
 
 const headerHeight = 60
 const rowHeight = 43
@@ -270,7 +269,6 @@ const ListDetailsTable = () => {
             >
               <RiTooltip
                 title="Index"
-                className={styles.tooltip}
                 anchorClassName="truncateText"
                 position="bottom"
                 content={tooltipContent}
@@ -375,13 +373,9 @@ const ListDetailsTable = () => {
   }
 
   return (
-    <div
+    <S.Container
       data-testid="list-details"
-      className={cx(
-        'key-details-table',
-        'list-elements-container',
-        styles.container,
-      )}
+      className="key-details-table list-elements-container"
     >
       <VirtualTable
         autoHeight
@@ -409,7 +403,7 @@ const ListDetailsTable = () => {
         setExpandedRows={setExpandedRows}
         onColResizeEnd={onColResizeEnd}
       />
-    </div>
+    </S.Container>
   )
 }
 

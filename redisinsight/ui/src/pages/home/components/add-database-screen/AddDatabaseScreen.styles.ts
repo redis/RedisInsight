@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { type Theme } from 'uiSrc/components/base/theme/types'
 
 export const CustomHorizontalRule = styled.div`
   margin: 12px 0;

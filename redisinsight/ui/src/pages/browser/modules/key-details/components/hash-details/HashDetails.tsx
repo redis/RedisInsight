@@ -14,13 +14,12 @@ import { CommandsVersions } from 'uiSrc/constants/commandsVersions'
 import { connectedInstanceOverviewSelector } from 'uiSrc/slices/instances/instances'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
-import Divider from 'uiSrc/components/divider/Divider'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import AddHashFields from './add-hash-fields/AddHashFields'
 import { HashDetailsTable } from './hash-details-table'
+import * as S from './HashDetails.styles'
 import { KeyDetailsSubheader } from '../key-details-subheader/KeyDetailsSubheader'
 import { AddItemsAction } from '../key-details-actions'
-import styles from './styles.module.scss'
 import { AddKeysContainer } from '../common/AddKeysContainer.styled'
 
 export interface Props extends KeyDetailsHeaderProps {
@@ -81,7 +80,7 @@ const HashDetails = (props: Props) => {
             onChange={(e) => handleSelectShow(e.target.checked)}
             data-testid="test-check-ttl"
           />
-          <Divider className={styles.divider} orientation="vertical" />
+          <S.StyledDivider orientation="vertical" />
         </>
       )}
       <AddItemsAction

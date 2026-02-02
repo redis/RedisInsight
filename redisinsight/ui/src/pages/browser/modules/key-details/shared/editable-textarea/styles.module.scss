@@ -1,16 +1,9 @@
-.contentWrapper {
-  display: flex;
-  align-items: center;
-  position: relative;
-  flex-grow: 1;
-  width: 100%;
-  height: 100%;
+// Styles that must remain in SCSS for className-based props
+.editBtnAnchor {
+  position: absolute;
+  right: 4px;
+}
 
-  min-height: 42px;
-  padding-right: 32px;
-
-  .editBtnAnchor {
-    position: absolute;
-    right: 4px;
-  }
+.textAreaControls {
+  // Styles for InlineItemEditor controlsClassName
 }

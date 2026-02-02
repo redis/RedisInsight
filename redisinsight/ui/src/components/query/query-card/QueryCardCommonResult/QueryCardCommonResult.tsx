@@ -1,8 +1,7 @@
 import React from 'react'
-import cx from 'classnames'
 
 import { LoadingContent } from 'uiSrc/components/base/layout'
-import styles from './styles.module.scss'
+import * as S from './QueryCardCommonResult.styles'
 
 export interface Props {
   result: React.ReactElement | string
@@ -13,19 +12,19 @@ const QueryCardCommonResult = (props: Props) => {
   const { result, loading } = props
 
   return (
-    <div
+    <S.Container
       data-testid="query-common-result-wrapper"
-      className={cx('queryResultsContainer', styles.container)}
+      className="queryResultsContainer"
     >
       {!loading && (
         <div data-testid="query-common-result">{result || '(nil)'}</div>
       )}
       {loading && (
-        <div className={styles.loading}>
+        <S.Loading>
           <LoadingContent lines={1} />
-        </div>
+        </S.Loading>
       )}
-    </div>
+    </S.Container>
   )
 }
 

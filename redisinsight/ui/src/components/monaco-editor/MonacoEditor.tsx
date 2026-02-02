@@ -15,7 +15,7 @@ import InlineItemEditor from 'uiSrc/components/inline-item-editor'
 import { EditIcon } from 'uiSrc/components/base/icons'
 import { ActionIconButton } from 'uiSrc/components/base/forms/buttons'
 import DedicatedEditor from './components/dedicated-editor'
-import styles from './styles.module.scss'
+import * as S from './MonacoEditor.styles'
 
 export interface CommonProps {
   value: string
@@ -253,13 +253,12 @@ const MonacoEditor = (props: Props) => {
   }
 
   return (
-    <div
-      className={cx(styles.wrapper, wrapperClassName, {
-        disabled,
-        [styles.isEditing]: isEditing && readOnly,
-      })}
+    <S.Wrapper
+      className={cx(wrapperClassName, { disabled })}
+      $disabled={disabled}
       style={fullHeight ? { flex: '1 1 auto' } : undefined}
     >
+      {isEditing && readOnly && <S.IsEditing />}
       <InlineItemEditor
         onApply={handleApply}
         onDecline={handleDecline}
@@ -279,7 +278,7 @@ const MonacoEditor = (props: Props) => {
             value={value ?? ''}
             onChange={onChange}
             options={monacoOptions}
-            className={cx(styles.editor, className, {
+            className={cx(className, {
               readMode: !isEditing && readOnly,
             })}
             editorDidMount={editorDidMount}
@@ -301,15 +300,16 @@ const MonacoEditor = (props: Props) => {
         />
       )}
       {isEditable && readOnly && !isEditing && (
-        <ActionIconButton
-          variant="secondary"
-          onClick={() => setIsEditing(true)}
-          className={styles.editBtn}
-          data-testid="edit-monaco-value"
-          icon={EditIcon}
-        />
+        <S.EditBtn>
+          <ActionIconButton
+            variant="secondary"
+            onClick={() => setIsEditing(true)}
+            data-testid="edit-monaco-value"
+            icon={EditIcon}
+          />
+        </S.EditBtn>
       )}
-    </div>
+    </S.Wrapper>
   )
 }
 

@@ -21,7 +21,7 @@ import { Pages } from 'uiSrc/constants'
 import { setCapability } from 'uiSrc/slices/app/context'
 
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import styles from './styles.module.scss'
+import * as S from '../OAuth.styles'
 
 interface Props {
   id?: string
@@ -84,16 +84,17 @@ const OAuthConnectFreeDb = ({
   }
 
   return (
-    <PrimaryButton
+    <S.ConnectBtn
+      as={PrimaryButton}
       size="m"
       disabled={loading}
       loading={loading}
       onClick={handleCheckConnectToInstance}
-      className={cx(styles.btn, className)}
+      className={cx(className)}
       data-testid="connect-free-db-btn"
     >
       Launch database
-    </PrimaryButton>
+    </S.ConnectBtn>
   )
 }
 

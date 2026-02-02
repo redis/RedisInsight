@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import React, { Ref, useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { CellMeasurerCache } from 'react-virtualized'
@@ -88,7 +87,7 @@ import {
   UpdateHashFieldsTtlDto,
 } from 'apiSrc/modules/browser/hash/dto'
 
-import styles from './styles.module.scss'
+import * as S from './HashDetailsTable.styles'
 
 const suffix = '_hash'
 const matchAllValue = '*'
@@ -576,7 +575,6 @@ const HashDetailsTable = (props: Props) => {
               ) : (
                 <RiTooltip
                   title="Time to Live"
-                  className={styles.tooltip}
                   anchorClassName="truncateText"
                   position="right"
                   content={truncateNumberToDuration(expire || 0)}
@@ -592,44 +590,38 @@ const HashDetailsTable = (props: Props) => {
   }
 
   return (
-    <>
-      <div
-        data-testid="hash-details"
-        className={cx(
-          'key-details-table',
-          'hash-fields-container',
-          styles.container,
-        )}
-      >
-        <VirtualTable
-          expandable
-          autoHeight
-          tableRef={tableRef}
-          keyName={key as RedisResponseBuffer}
-          headerHeight={headerHeight}
-          rowHeight={rowHeight}
-          onChangeWidth={setWidth}
-          columns={columns.map((column, i, arr) => ({
-            ...column,
-            width: getColumnWidth(i, width, arr),
-          }))}
-          footerHeight={0}
-          overscanRowCount={10}
-          loadMoreItems={loadMoreItems}
-          loading={loading}
-          items={fields}
-          totalItemsCount={total}
-          noItemsMessage={NoResultsFoundText}
-          onWheel={closePopover}
-          onSearch={handleSearch}
-          cellCache={cellCache}
-          onRowToggleViewClick={handleRowToggleViewClick}
-          expandedRows={expandedRows}
-          setExpandedRows={setExpandedRows}
-          onColResizeEnd={onColResizeEnd}
-        />
-      </div>
-    </>
+    <S.Container
+      data-testid="hash-details"
+      className="key-details-table hash-fields-container"
+    >
+      <VirtualTable
+        expandable
+        autoHeight
+        tableRef={tableRef}
+        keyName={key as RedisResponseBuffer}
+        headerHeight={headerHeight}
+        rowHeight={rowHeight}
+        onChangeWidth={setWidth}
+        columns={columns.map((column, i, arr) => ({
+          ...column,
+          width: getColumnWidth(i, width, arr),
+        }))}
+        footerHeight={0}
+        overscanRowCount={10}
+        loadMoreItems={loadMoreItems}
+        loading={loading}
+        items={fields}
+        totalItemsCount={total}
+        noItemsMessage={NoResultsFoundText}
+        onWheel={closePopover}
+        onSearch={handleSearch}
+        cellCache={cellCache}
+        onRowToggleViewClick={handleRowToggleViewClick}
+        expandedRows={expandedRows}
+        setExpandedRows={setExpandedRows}
+        onColResizeEnd={onColResizeEnd}
+      />
+    </S.Container>
   )
 }
 

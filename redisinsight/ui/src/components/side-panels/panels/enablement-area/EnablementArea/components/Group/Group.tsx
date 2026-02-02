@@ -20,7 +20,6 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import DeleteTutorialButton from '../DeleteTutorialButton'
 
 import * as S from './Group.styles'
-import './styles.scss'
 
 export interface Props {
   id: string

@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -8,12 +7,11 @@ import {
   unreadNotificationsAction,
 } from 'uiSrc/slices/app/notifications'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import Notification from './Notification'
 
-import styles from './styles.module.scss'
+import * as S from './NotificationsCenter.styles'
 
 const NotificationCenter = () => {
   const { isCenterOpen, notifications } = useSelector(
@@ -46,44 +44,34 @@ const NotificationCenter = () => {
     <RiPopover
       anchorPosition="rightUp"
       isOpen={isCenterOpen}
-      panelClassName={cx('popoverLikeTooltip', styles.popoverCenterWrapper)}
-      anchorClassName={styles.popoverAnchor}
+      panelClassName="popoverLikeTooltip"
+      minWidth={S.POPOVER_MIN_WIDTH}
       closePopover={() => dispatch(setIsCenterOpen(false))}
-      button={<div className={styles.popoverAnchor} />}
+      button={<S.PopoverAnchor />}
     >
-      <div
-        className={styles.popoverNotificationCenter}
-        data-testid="notification-center"
-      >
-        <Title size="S" className={styles.title}>
-          Notification Center
-        </Title>
+      <S.PopoverNotificationCenter data-testid="notification-center">
+        <S.CenterTitle size="S">Notification Center</S.CenterTitle>
         {!hasNotifications && (
-          <div className={styles.noItemsText}>
+          <S.NoItemsText>
             <Text color="subdued" data-testid="no-notifications-text">
               No notifications to display.
             </Text>
-          </div>
+          </S.NoItemsText>
         )}
         {hasNotifications && (
-          <div
-            className={styles.notificationsList}
-            data-testid="notifications-list"
-          >
+          <S.NotificationsList data-testid="notifications-list">
             {notifications.map((notification) => (
-              <div
+              <S.NotificationItem
                 key={notification.timestamp}
-                className={cx(styles.notificationItem, {
-                  [styles.unread]: !notification.read,
-                })}
+                $unread={!notification.read}
                 data-testid={`notification-item-${notification.read ? 'read' : 'unread'}_${notification.timestamp}`}
               >
                 <Notification notification={notification} titleSize="XS" />
-              </div>
+              </S.NotificationItem>
             ))}
-          </div>
+          </S.NotificationsList>
         )}
-      </div>
+      </S.PopoverNotificationCenter>
     </RiPopover>
   )
 }

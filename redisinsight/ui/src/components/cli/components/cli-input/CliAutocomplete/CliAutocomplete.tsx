@@ -9,7 +9,7 @@ import {
   clearSearchingCommand,
 } from 'uiSrc/slices/cli/cli-settings'
 
-import styles from './styles.module.scss'
+import * as S from '../../../Cli.styles'
 
 export interface Props {
   provider: string
@@ -70,12 +70,9 @@ const CliAutocomplete = (props: Props) => {
   return (
     <>
       {!!args.length && argsList && untypedArgs && (
-        <span
-          className={styles.container}
-          data-testid="cli-command-autocomplete"
-        >
-          <span className={styles.params}>{untypedArgs}</span>
-        </span>
+        <S.AutocompleteContainer data-testid="cli-command-autocomplete">
+          <S.Params>{untypedArgs}</S.Params>
+        </S.AutocompleteContainer>
       )}
     </>
   )

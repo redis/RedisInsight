@@ -10,7 +10,6 @@ import {
   EmptyButton,
   IconButton,
 } from 'uiSrc/components/base/forms/buttons'
-import styles from './styles.module.scss'
 import ConfirmationPopover from 'uiSrc/components/confirmation-popover'
 
 export interface Props {
@@ -90,7 +89,6 @@ const PopoverDelete = (props: Props) => {
   const deleteButtonWithTooltip = (
     <RiTooltip
       content={TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA}
-      anchorClassName={styles.editBtnAnchor}
       data-testid={testid ? `${testid}-tooltip` : 'remove-tooltip'}
     >
       {deleteButton}

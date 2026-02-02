@@ -1,9 +1,9 @@
 import { Button } from '@redis-ui/components'
 import React from 'react'
+import styled from 'styled-components'
 import { LoaderLargeIcon } from 'uiSrc/components/base/icons'
 import { BaseButtonProps } from 'uiSrc/components/base/forms/buttons/button.styles'
 import { Spacer } from 'uiSrc/components/base/layout'
-import styled from 'styled-components'
 
 type ButtonSize = 'small' | 'medium' | 'large'
 type SizeKey = 'small' | 's' | 'medium' | 'm' | 'large' | 'l'

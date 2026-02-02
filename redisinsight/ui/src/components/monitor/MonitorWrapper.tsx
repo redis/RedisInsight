@@ -14,7 +14,7 @@ import { FeatureFlags } from 'uiSrc/constants'
 import Monitor from './Monitor'
 import MonitorHeader from './MonitorHeader'
 
-import styles from './Monitor/styles.module.scss'
+import * as S from './Monitor/Monitor.styles'
 
 const MonitorWrapper = () => {
   const { instanceId = '' } = useParams<{ instanceId: string }>()
@@ -46,7 +46,7 @@ const MonitorWrapper = () => {
   }
 
   return (
-    <section className={styles.monitorWrapper} data-testid="monitor-container">
+    <S.MonitorWrapper data-testid="monitor-container">
       <FeatureFlagComponent
         name={FeatureFlags.envDependent}
         otherwise={
@@ -73,7 +73,7 @@ const MonitorWrapper = () => {
           handleRunMonitor={onRunMonitor}
         />
       </FeatureFlagComponent>
-    </section>
+    </S.MonitorWrapper>
   )
 }
 

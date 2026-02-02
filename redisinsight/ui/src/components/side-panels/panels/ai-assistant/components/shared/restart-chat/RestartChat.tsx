@@ -7,7 +7,7 @@ import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import { Row } from 'uiSrc/components/base/layout/flex'
-import styles from './styles.module.scss'
+import * as S from '../../../../../SidePanels.styles'
 
 export interface Props {
   button: NonNullable<React.ReactElement>
@@ -33,15 +33,16 @@ const RestartChat = (props: Props) => {
   return (
     <RiPopover
       ownFocus
-      panelClassName={cx('popoverLikeTooltip', styles.popover)}
-      anchorClassName={cx(styles.popoverAnchor, anchorClassName)}
+      panelClassName="popoverLikeTooltip"
+      anchorClassName={cx(anchorClassName)}
       anchorPosition="downLeft"
       isOpen={isPopoverOpen}
       panelPaddingSize="m"
       closePopover={() => setIsPopoverOpen(false)}
       button={extendedButton}
+      minWidth={300}
     >
-      <>
+      <S.RestartPopover>
         <Title size="S" color="primary">
           Restart session
         </Title>
@@ -52,16 +53,16 @@ const RestartChat = (props: Props) => {
         </Text>
         <Spacer size="l" />
         <Row justify="end">
-          <PrimaryButton
+          <S.ConfirmBtn
+            as={PrimaryButton}
             size="s"
             onClick={handleConfirm}
-            className={styles.confirmBtn}
             data-testid="ai-chat-restart-confirm"
           >
             Restart
-          </PrimaryButton>
+          </S.ConfirmBtn>
         </Row>
-      </>
+      </S.RestartPopover>
     </RiPopover>
   )
 }

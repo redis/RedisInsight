@@ -6,11 +6,11 @@ import {
   PrimaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { DeleteIcon } from 'uiSrc/components/base/icons'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from '../styles.module.scss'
+import * as S from '../ItemListAction.styles'
 
 export interface Props<T> {
   selection: T[]
@@ -33,15 +33,15 @@ const DeleteAction = <T extends { id: string; name?: string }>(
   }
 
   const deleteBtn = (
-    <PrimaryButton
+    <S.ActionBtn
+      as={PrimaryButton}
       size="small"
       onClick={onButtonClick}
       icon={DeleteIcon}
-      className={styles.actionBtn}
       data-testid="delete-btn"
     >
       Delete
-    </PrimaryButton>
+    </S.ActionBtn>
   )
 
   return (
@@ -54,35 +54,35 @@ const DeleteAction = <T extends { id: string; name?: string }>(
       panelPaddingSize="l"
       data-testid="delete-popover"
     >
-      <Text size="m" className={styles.popoverSubTitle}>
+      <S.PopoverSubTitle as={Text} size="m">
         {subTitle}
-      </Text>
-      <div className={styles.boxSection}>
+      </S.PopoverSubTitle>
+      <S.BoxSection>
         {selection.map((select) => (
-          <Row key={select.id} gap="s" className={styles.nameList}>
+          <S.NameList key={select.id} gap="s">
             <FlexItem>
               <RiIcon type="CheckThinIcon" />
             </FlexItem>
-            <FlexItem grow className={styles.nameListText}>
+            <S.NameListText as={FlexItem} grow>
               <span>{formatLongName(select.name)}</span>
-            </FlexItem>
-          </Row>
+            </S.NameListText>
+          </S.NameList>
         ))}
-      </div>
-      <div className={styles.popoverFooter}>
-        <DestructiveButton
+      </S.BoxSection>
+      <S.PopoverFooter>
+        <S.PopoverDeleteBtn
+          as={DestructiveButton}
           size="small"
           icon={DeleteIcon}
           onClick={() => {
             closePopover()
             onDelete()
           }}
-          className={styles.popoverDeleteBtn}
           data-testid="delete-selected-dbs"
         >
           Delete
-        </DestructiveButton>
-      </div>
+        </S.PopoverDeleteBtn>
+      </S.PopoverFooter>
     </RiPopover>
   )
 }

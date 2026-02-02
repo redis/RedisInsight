@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import { sumBy } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import { DonutChart } from 'uiSrc/components/charts'
@@ -9,7 +8,7 @@ import { getPercentage, numberWithSpaces } from 'uiSrc/utils/numbers'
 import { Title } from 'uiSrc/components/base/text/Title'
 
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from './styles.module.scss'
+import * as S from './ClusterDetailsGraphics.styles'
 
 const ClusterDetailsGraphics = ({
   nodes,
@@ -24,47 +23,41 @@ const ClusterDetailsGraphics = ({
   const [keysSum, setKeysSum] = useState(0)
 
   const renderMemoryTooltip = (data: ChartData) => (
-    <div className={styles.labelTooltip}>
-      <div className={styles.tooltipTitle}>
+    <S.LabelTooltip>
+      <S.TooltipTitle>
         <span data-testid="tooltip-node-name">{data.name}: </span>
         <span data-testid="tooltip-host-port">
           {data.meta?.host}:{data.meta?.port}
         </span>
-      </div>
+      </S.TooltipTitle>
       <b>
-        <span
-          className={styles.tooltipPercentage}
-          data-testid="tooltip-node-percent"
-        >
+        <S.TooltipPercentage data-testid="tooltip-node-percent">
           {getPercentage(data.value, memorySum)}%
-        </span>
+        </S.TooltipPercentage>
         <span data-testid="tooltip-total-memory">
           (&thinsp;{formatBytes(data.value, 3, false)}&thinsp;)
         </span>
       </b>
-    </div>
+    </S.LabelTooltip>
   )
 
   const renderKeysTooltip = (data: ChartData) => (
-    <div className={styles.labelTooltip}>
-      <div className={styles.tooltipTitle}>
+    <S.LabelTooltip>
+      <S.TooltipTitle>
         <span data-testid="tooltip-node-name">{data.name}: </span>
         <span data-testid="tooltip-host-port">
           {data.meta?.host}:{data.meta?.port}
         </span>
-      </div>
+      </S.TooltipTitle>
       <b>
-        <span
-          className={styles.tooltipPercentage}
-          data-testid="tooltip-node-percent"
-        >
+        <S.TooltipPercentage data-testid="tooltip-node-percent">
           {getPercentage(data.value, keysSum)}%
-        </span>
+        </S.TooltipPercentage>
         <span data-testid="tooltip-total-keys">
           (&thinsp;{numberWithSpaces(data.value)}&thinsp;)
         </span>
       </b>
-    </div>
+    </S.LabelTooltip>
   )
 
   useEffect(() => {
@@ -92,13 +85,10 @@ const ClusterDetailsGraphics = ({
 
   if (loading && !nodes?.length) {
     return (
-      <div
-        className={cx(styles.wrapper, styles.loadingWrapper)}
-        data-testid="cluster-details-graphics-loading"
-      >
-        <div className={styles.preloaderCircle} />
-        <div className={styles.preloaderCircle} />
-      </div>
+      <S.LoadingWrapper data-testid="cluster-details-graphics-loading">
+        <S.PreloaderCircle />
+        <S.PreloaderCircle />
+      </S.LoadingWrapper>
     )
   }
 
@@ -107,23 +97,23 @@ const ClusterDetailsGraphics = ({
   }
 
   return (
-    <div className={styles.wrapper} data-testid="cluster-details-charts">
+    <S.Wrapper data-testid="cluster-details-charts">
       <DonutChart
         name="memory"
         data={memoryData}
         renderTooltip={renderMemoryTooltip}
         labelAs="percentage"
         title={
-          <div className={styles.chartCenter}>
-            <div className={styles.chartTitle} data-testid="donut-title-memory">
-              <RiIcon type="MemoryIconIcon" className={styles.icon} size="m" />
+          <S.ChartCenter>
+            <S.ChartTitle data-testid="donut-title-memory">
+              <S.Icon>
+                <RiIcon type="MemoryIconIcon" size="m" />
+              </S.Icon>
               <Title size="XS">Memory</Title>
-            </div>
-            <hr className={styles.titleSeparator} />
-            <div className={styles.centerCount}>
-              {formatBytes(memorySum, 3)}
-            </div>
-          </div>
+            </S.ChartTitle>
+            <S.TitleSeparator />
+            <S.CenterCount>{formatBytes(memorySum, 3)}</S.CenterCount>
+          </S.ChartCenter>
         }
       />
       <DonutChart
@@ -132,19 +122,19 @@ const ClusterDetailsGraphics = ({
         renderTooltip={renderKeysTooltip}
         labelAs="percentage"
         title={
-          <div className={styles.chartCenter}>
-            <div className={styles.chartTitle} data-testid="donut-title-keys">
-              <RiIcon type="KeyIconIcon" className={styles.icon} size="m" />
+          <S.ChartCenter>
+            <S.ChartTitle data-testid="donut-title-keys">
+              <S.Icon>
+                <RiIcon type="KeyIconIcon" size="m" />
+              </S.Icon>
               <Title size="XS">Keys</Title>
-            </div>
-            <hr className={styles.titleSeparator} />
-            <div className={styles.centerCount}>
-              {numberWithSpaces(keysSum)}
-            </div>
-          </div>
+            </S.ChartTitle>
+            <S.TitleSeparator />
+            <S.CenterCount>{numberWithSpaces(keysSum)}</S.CenterCount>
+          </S.ChartCenter>
         }
       />
-    </div>
+    </S.Wrapper>
   )
 }
 

@@ -1,13 +1,13 @@
 import React from 'react'
 
-import styles from './styles.module.scss'
+import * as S from './Panel.styles'
 
 interface Props {
   children: string | JSX.Element
 }
 
 const Panel = ({ children }: Props) => (
-  <div className={styles.panel}>{children}</div>
+  <S.PanelWrapper>{children}</S.PanelWrapper>
 )
 
 export default Panel

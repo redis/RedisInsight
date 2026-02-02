@@ -14,7 +14,7 @@ import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { AllIconsType } from 'uiSrc/components/base/icons/RiIcon'
 import { Loader } from 'uiSrc/components/base/display'
 
-import styles from './styles.module.scss'
+import * as S from 'uiSrc/components/database-overview/DatabaseOverview.styles'
 
 interface Props {
   theme: string
@@ -116,7 +116,6 @@ function getCpuUsage(
           </>
         ),
     },
-    className: styles.cpuWrapper,
     icon:
       cpuUsagePercentage !== null
         ? theme === Theme.Dark
@@ -125,12 +124,10 @@ function getCpuUsage(
         : null,
     content:
       cpuUsagePercentage === null ? (
-        <>
-          <div className={styles.calculationWrapper}>
-            <Loader className={styles.spinner} size="m" />
-            <span className={styles.calculation}>Calculating...</span>
-          </div>
-        </>
+        <S.CalculationWrapper>
+          <Loader size="m" />
+          <S.Calculation>Calculating...</S.Calculation>
+        </S.CalculationWrapper>
       ) : (
         displayValue
       ),
@@ -155,7 +152,6 @@ function getOpsPerSecondItem(
       icon: theme === Theme.Dark ? 'MeasureDarkIcon' : 'MeasureLightIcon',
       content: opsPerSecond,
     },
-    className: styles.opsPerSecItem,
   }
 
   // let [networkIn, networkInUnit] = formatBytes(

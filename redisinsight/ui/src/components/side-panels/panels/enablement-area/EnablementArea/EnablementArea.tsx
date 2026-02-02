@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import cx from 'classnames'
 import { IEnablementAreaItem } from 'uiSrc/slices/interfaces'
 import {
   EnablementAreaProvider,
@@ -23,8 +22,8 @@ import {
 
 import { getMarkdownPathByManifest, getWBSourcePath } from './utils/getFileInfo'
 import { LazyInternalPage, Navigation } from './components'
-
-import styles from './styles.module.scss'
+import { EnablementAreaWrapper } from './components/Group/Group.styles'
+import * as S from '../../../SidePanels.styles'
 
 export interface Props {
   tutorials: IEnablementAreaItem[]
@@ -189,17 +188,15 @@ const EnablementArea = (props: Props) => {
         isCodeBtnDisabled,
       }}
     >
-      <div
+      <S.EnablementContainer
+        as={EnablementAreaWrapper}
         data-testid="enablementArea"
-        className={cx(styles.container, 'relative', 'enablement-area')}
+        className="relative"
       >
         {loading || (isInternalPageVisible && !internalPage?.path) ? (
-          <div
-            data-testid="enablementArea-loader"
-            className={cx(styles.innerContainer, styles.innerContainerLoader)}
-          >
+          <S.InnerContainerLoader data-testid="enablementArea-loader">
             <LoadingContent lines={3} />
-          </div>
+          </S.InnerContainerLoader>
         ) : (
           <Navigation
             tutorials={tutorials}
@@ -207,12 +204,7 @@ const EnablementArea = (props: Props) => {
             isInternalPageVisible={isInternalPageVisible}
           />
         )}
-        <div
-          className={cx({
-            [styles.internalPage]: true,
-            [styles.internalPageVisible]: isInternalPageVisible,
-          })}
-        >
+        <S.InternalPage $isVisible={isInternalPageVisible}>
           {internalPage?.path && (
             <LazyInternalPage
               onClose={handleCloseInternalPage}
@@ -224,8 +216,8 @@ const EnablementArea = (props: Props) => {
               search={searchRef.current}
             />
           )}
-        </div>
-      </div>
+        </S.InternalPage>
+      </S.EnablementContainer>
     </EnablementAreaProvider>
   )
 }

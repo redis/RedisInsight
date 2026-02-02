@@ -19,7 +19,6 @@ import {
   RowSelectionState,
   Table,
 } from 'uiSrc/components/base/layout/table'
-import styles from '../styles.module.scss'
 import { Spacer } from 'uiSrc/components/base/layout'
 import {
   DatabaseContainer,
@@ -117,8 +116,8 @@ const RedisCloudDatabasesPage = ({
       anchorPosition="upCenter"
       isOpen={popoverIsOpen}
       closePopover={closePopover}
-      panelClassName={styles.panelCancelBtn}
       panelPaddingSize="l"
+      maxWidth="350px"
       button={
         <SecondaryButton
           onClick={showPopover}

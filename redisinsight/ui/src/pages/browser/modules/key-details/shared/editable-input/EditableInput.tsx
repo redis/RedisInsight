@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import cx from 'classnames'
 
 import { RiTooltip } from 'uiSrc/components'
 import { StopPropagation } from 'uiSrc/components/virtual-table'
@@ -9,6 +8,7 @@ import { Props as InlineItemEditorProps } from 'uiSrc/components/inline-item-edi
 import { Text } from 'uiSrc/components/base/text'
 import { EditIcon } from 'uiSrc/components/base/icons'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import * as S from './EditableInput.styles'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -48,8 +48,7 @@ const EditableInput = (props: Props) => {
 
   if (!isEditing) {
     return (
-      <div
-        className={styles.contentWrapper}
+      <S.ContentWrapper
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
         data-testid={`${testIdPrefix}_content-value-${field}`}
@@ -70,7 +69,7 @@ const EditableInput = (props: Props) => {
             <IconButton
               icon={EditIcon}
               aria-label="Edit field"
-              className={cx('editFieldBtn', styles.editBtn)}
+              className="editFieldBtn"
               disabled={isEditDisabled}
               onClick={(e: React.MouseEvent) => {
                 e.stopPropagation()
@@ -81,13 +80,13 @@ const EditableInput = (props: Props) => {
             />
           </RiTooltip>
         )}
-      </div>
+      </S.ContentWrapper>
     )
   }
 
   return (
     <StopPropagation>
-      <div className={styles.inputWrapper}>
+      <S.InputWrapper>
         <InlineItemEditor
           initialValue={initialValue}
           controlsPosition="right"
@@ -107,7 +106,7 @@ const EditableInput = (props: Props) => {
           validation={validation}
           variant={variant}
         />
-      </div>
+      </S.InputWrapper>
     </StopPropagation>
   )
 }

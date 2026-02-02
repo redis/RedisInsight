@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import cx from 'classnames'
 import { CellMeasurerCache } from 'react-virtualized'
 
 import { Text } from 'uiSrc/components/base/text'
@@ -50,7 +49,7 @@ import {
 import { decompressingBuffer } from 'uiSrc/utils/decompressors'
 import { FormattedValue } from 'uiSrc/pages/browser/modules/key-details/shared'
 import { GetSetMembersResponse } from 'apiSrc/modules/browser/set/dto'
-import styles from './styles.module.scss'
+import * as S from './SetDetailsTable.styles'
 
 const suffix = '_set'
 const headerHeight = 60
@@ -312,13 +311,9 @@ const SetDetailsTable = (props: Props) => {
   }
 
   return (
-    <div
+    <S.Container
       data-testid="set-details"
-      className={cx(
-        'key-details-table',
-        'set-members-container',
-        styles.container,
-      )}
+      className="key-details-table set-members-container"
     >
       <VirtualTable
         autoHeight
@@ -345,7 +340,7 @@ const SetDetailsTable = (props: Props) => {
         expandedRows={expandedRows}
         setExpandedRows={setExpandedRows}
       />
-    </div>
+    </S.Container>
   )
 }
 

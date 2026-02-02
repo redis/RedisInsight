@@ -29,11 +29,10 @@ import { isEqualBuffers, Nullable } from 'uiSrc/utils'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { KeyTypes } from 'uiSrc/constants'
 
+import * as S from './BrowserLeftPanel.styles'
 import KeyList from '../key-list'
 import KeyTree from '../key-tree'
 import KeysHeader from '../keys-header'
-
-import styles from './styles.module.scss'
 
 export interface Props {
   selectedKey: Nullable<RedisResponseBuffer>
@@ -156,7 +155,7 @@ const BrowserLeftPanel = (props: Props) => {
     [selectedKey],
   )
   return (
-    <div className={styles.container}>
+    <S.Container>
       <KeysHeader
         keysState={keysState}
         loading={headerLoading}
@@ -166,9 +165,9 @@ const BrowserLeftPanel = (props: Props) => {
         nextCursor={keysState.nextCursor}
       />
       {keysError && (
-        <div className={styles.error}>
+        <S.Error>
           <div>{keysError}</div>
-        </div>
+        </S.Error>
       )}
       {viewType === KeyViewType.Browser && !keysError && (
         <KeyList
@@ -197,7 +196,7 @@ const BrowserLeftPanel = (props: Props) => {
           onAddKeyPanel={handleAddKeyPanel}
         />
       )}
-    </div>
+    </S.Container>
   )
 }
 

@@ -1,5 +1,4 @@
 import React from 'react'
-import cx from 'classnames'
 import { isNull } from 'lodash'
 import { useSelector } from 'react-redux'
 
@@ -11,8 +10,8 @@ import { keysSelector } from 'uiSrc/slices/browser/keys'
 import { KeyTreeSettings } from 'uiSrc/pages/browser/components/key-tree'
 
 import ScanMore from '../scan-more'
-import styles from './styles.module.scss'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import * as S from './KeysSummary.styles'
 
 export interface Props {
   loading: boolean
@@ -75,12 +74,7 @@ const KeysSummary = (props: Props) => {
                   <span data-testid="keys-total">
                     {nullableNumberWithSpaces(totalItemsCount)}
                   </span>
-                  <span
-                    className={cx([
-                      styles.loading,
-                      { [styles.loadingShow]: loading },
-                    ])}
-                  />
+                  <S.Loading $show={loading} />
                 </ColorText>
               </Row>
             </FlexItem>

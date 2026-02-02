@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
 import { userSettingsConfigSelector } from 'uiSrc/slices/user/user-settings'
 import { Vote } from 'uiSrc/constants/recommendations'
 import { Nullable } from 'uiSrc/utils'
 
-import { Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import VoteOption from './components/vote-option'
-import styles from './styles.module.scss'
+import * as S from './RecommendationVoting.styles'
 
 export interface Props {
   vote?: Nullable<Vote>
@@ -31,12 +30,12 @@ const RecommendationVoting = ({
   return (
     <Row
       align="center"
-      className={cx(styles.votingContainer, containerClass)}
+      className={containerClass}
       gap={live ? 'none' : 'l'}
       data-testid="recommendation-voting"
     >
       <Text size="m">Is this useful?</Text>
-      <div className="voteContent">
+      <S.VoteContent>
         {Object.values(Vote).map((option) => (
           <VoteOption
             key={option}
@@ -50,7 +49,7 @@ const RecommendationVoting = ({
             live={live}
           />
         ))}
-      </div>
+      </S.VoteContent>
     </Row>
   )
 }

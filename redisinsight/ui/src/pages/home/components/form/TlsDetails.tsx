@@ -1,5 +1,4 @@
 import React, { ChangeEvent, useState } from 'react'
-import cx from 'classnames'
 import { FormikProps } from 'formik'
 
 import { useDispatch } from 'react-redux'
@@ -21,8 +20,9 @@ import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { TextArea, TextInput } from 'uiSrc/components/base/inputs'
 import { RiSelectOption } from 'uiSrc/components/base/forms/select/RiSelect'
 import { useGenerateId } from 'uiSrc/components/base/utils/hooks/generate-id'
-import styles from '../styles.module.scss'
 import { RISelectWithActions } from 'uiSrc/components/base/forms/select/RISelectWithActions'
+
+import * as S from './Form.styles'
 
 const suffix = '_tls_details'
 
@@ -211,20 +211,31 @@ const TlsDetails = (props: Props) => {
             </Row>
           )}
           <Row gap="m" responsive>
-            <FlexItem
-              grow
-              className={cx({ [styles.fullWidth]: formik.values.sni })}
-            >
-              <Checkbox
-                id={verifyTlsId}
-                name="verifyServerTlsCert"
-                label="Verify TLS Certificate"
-                labelSize="M"
-                checked={!!formik.values.verifyServerTlsCert}
-                onChange={formik.handleChange}
-                data-testid="verify-tls-cert"
-              />
-            </FlexItem>
+            {formik.values.sni ? (
+              <S.FullWidth grow>
+                <Checkbox
+                  id={verifyTlsId}
+                  name="verifyServerTlsCert"
+                  label="Verify TLS Certificate"
+                  labelSize="M"
+                  checked={!!formik.values.verifyServerTlsCert}
+                  onChange={formik.handleChange}
+                  data-testid="verify-tls-cert"
+                />
+              </S.FullWidth>
+            ) : (
+              <FlexItem grow>
+                <Checkbox
+                  id={verifyTlsId}
+                  name="verifyServerTlsCert"
+                  label="Verify TLS Certificate"
+                  labelSize="M"
+                  checked={!!formik.values.verifyServerTlsCert}
+                  onChange={formik.handleChange}
+                  data-testid="verify-tls-cert"
+                />
+              </FlexItem>
+            )}
           </Row>
         </Col>
       )}

@@ -29,11 +29,11 @@ import {
   ProfilerIcon,
 } from 'uiSrc/components/base/icons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from '../../styles.module.scss'
 import {
   ComponentBadge,
   ContainerMinimized,
 } from './ButtonGroupMinimized.styles'
+import * as S from '../../BottomGroupComponents.styles'
 
 const BottomGroupMinimized = () => {
   const { instanceId = '' } = useParams<{ instanceId: string }>()
@@ -139,22 +139,23 @@ const BottomGroupMinimized = () => {
         </FeatureFlagComponent>
       </Row>
       <FeatureFlagComponent name={FeatureFlags.envDependent}>
-        <a
-          className={styles.surveyLink}
+        <S.SurveyLink
           target="_blank"
           rel="noreferrer"
           href={EXTERNAL_LINKS.userSurvey}
           onClick={onClickSurvey}
           data-testid="user-survey-link"
         >
-          <RiIcon type="SurveyIcon" className={styles.surveyIcon} />
+          <S.SurveyIcon>
+            <RiIcon type="SurveyIcon" />
+          </S.SurveyIcon>
           <HideFor sizes={['xs', 's']}>
             <span>Let us know what you think</span>
           </HideFor>
           <ShowFor sizes={['xs', 's']}>
             <span>Survey</span>
           </ShowFor>
-        </a>
+        </S.SurveyLink>
       </FeatureFlagComponent>
     </ContainerMinimized>
   )

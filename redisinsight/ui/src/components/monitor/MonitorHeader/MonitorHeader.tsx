@@ -25,7 +25,7 @@ import {
 } from 'uiSrc/components/base/icons'
 import { WindowControlGroup } from 'uiSrc/components/base/shared/WindowControlGroup'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from './styles.module.scss'
+import * as S from './MonitorHeader.styles'
 
 export interface Props {
   handleRunMonitor: () => void
@@ -79,20 +79,19 @@ const MonitorHeader = ({ handleRunMonitor }: Props) => {
   }
 
   return (
-    <div className={styles.container} data-testid="monitor-header">
+    <S.Container data-testid="monitor-header">
       <Row justify="between" align="center" style={{ height: '100%' }}>
-        <FlexItem className={styles.title}>
+        <S.Title as={FlexItem}>
           <RiIcon type="ProfilerIcon" size="m" />
           <OnboardingTour
             options={ONBOARDING_FEATURES.BROWSER_PROFILER}
             anchorPosition="upLeft"
-            panelClassName={styles.profilerOnboardPanel}
           >
             <Text>Profiler</Text>
           </OnboardingTour>
-        </FlexItem>
+        </S.Title>
         {isStarted && (
-          <FlexItem direction="row" className={styles.actions}>
+          <S.Actions as={FlexItem} direction="row">
             <RiTooltip
               content={
                 isErrorShown || isResumeLocked
@@ -132,7 +131,7 @@ const MonitorHeader = ({ handleRunMonitor }: Props) => {
                 data-testid="clear-monitor"
               />
             </RiTooltip>
-          </FlexItem>
+          </S.Actions>
         )}
         <FlexItem grow />
         <WindowControlGroup
@@ -141,7 +140,7 @@ const MonitorHeader = ({ handleRunMonitor }: Props) => {
           id="monitor"
         />
       </Row>
-    </div>
+    </S.Container>
   )
 }
 

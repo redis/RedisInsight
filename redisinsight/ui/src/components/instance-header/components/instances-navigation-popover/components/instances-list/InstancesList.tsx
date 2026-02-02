@@ -22,7 +22,7 @@ import {
 import { Text } from 'uiSrc/components/base/text'
 import { Loader } from 'uiSrc/components/base/display'
 import { InstancesTabs } from '../../InstancesNavigationPopover'
-import styles from '../../styles.module.scss'
+import * as S from '../../../../InstanceHeader.styles'
 
 export interface InstancesListProps {
   selectedTab: InstancesTabs
@@ -125,39 +125,41 @@ const InstancesList = ({
       selectedTab === InstancesTabs.Databases
         ? 'No databases'
         : 'No RDI endpoints'
-    return <div className={styles.emptyMsg}>{emptyMsg}</div>
+    return <S.EmptyMsg>{emptyMsg}</S.EmptyMsg>
   }
 
   return (
-    <div className={styles.listContainer}>
+    <S.ListContainer>
       <ListGroup flush maxWidth="none" gap="none">
         {instances?.map((instance) => (
-          <ListGroupItem
-            color="subdued"
-            className={styles.item}
-            isActive={isInstanceActive(instance.id)}
-            isDisabled={loading}
-            key={instance.id}
-            label={
-              <Text
-                style={{ display: 'flex', alignItems: 'center' }}
-                component="div"
-              >
-                {loading && instance?.id === selected && (
-                  <Loader size="s" className={styles.loading} />
-                )}
-                {instance.name} {getDbIndex(instance.db)}
-              </Text>
-            }
-            onClick={() => {
-              setSelected(instance.id)
-              goToPage(instance)
-            }}
-            data-testid={`instance-item-${instance.id}`}
-          />
+          <S.Item key={instance.id}>
+            <ListGroupItem
+              color="subdued"
+              isActive={isInstanceActive(instance.id)}
+              isDisabled={loading}
+              label={
+                <Text
+                  style={{ display: 'flex', alignItems: 'center' }}
+                  component="div"
+                >
+                  {loading && instance?.id === selected && (
+                    <S.Loading>
+                      <Loader size="s" />
+                    </S.Loading>
+                  )}
+                  {instance.name} {getDbIndex(instance.db)}
+                </Text>
+              }
+              onClick={() => {
+                setSelected(instance.id)
+                goToPage(instance)
+              }}
+              data-testid={`instance-item-${instance.id}`}
+            />
+          </S.Item>
         ))}
       </ListGroup>
-    </div>
+    </S.ListContainer>
   )
 }
 

@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
 import { orderBy } from 'lodash'
 
 import { streamGroupsSelector } from 'uiSrc/slices/browser/stream'
@@ -10,7 +9,7 @@ import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 import { SortOrder } from 'uiSrc/constants'
 import { ConsumerGroupDto } from 'apiSrc/modules/browser/stream/dto'
 
-import styles from './styles.module.scss'
+import * as S from './GroupsView.styles'
 
 const headerHeight = 60
 const rowHeight = 54
@@ -61,12 +60,8 @@ const ConsumerGroups = (props: Props) => {
 
   return (
     <>
-      <div
-        className={cx(
-          'key-details-table',
-          'stream-details-table',
-          styles.container,
-        )}
+      <S.Container
+        className="key-details-table stream-details-table"
         data-testid="stream-groups-container"
       >
         <VirtualTable
@@ -95,7 +90,7 @@ const ConsumerGroups = (props: Props) => {
               : undefined
           }
         />
-      </div>
+      </S.Container>
     </>
   )
 }

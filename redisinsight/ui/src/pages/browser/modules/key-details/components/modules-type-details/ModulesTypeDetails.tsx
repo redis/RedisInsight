@@ -7,8 +7,8 @@ import { Pages } from 'uiSrc/constants'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { Title } from 'uiSrc/components/base/text/Title'
 
+import * as S from './ModulesTypeDetails.styles'
 import TextDetailsWrapper from '../text-details-wrapper/TextDetailsWrapper'
-import styles from './styles.module.scss'
 
 type ModulesTypeDetailsProps = {
   moduleName: string
@@ -33,17 +33,16 @@ const ModulesTypeDetails = ({
       <Title size="M">{`This is a ${moduleName} key.`}</Title>
       <Text size="S">
         {'Use Redis commands in the '}
-        <a
+        <S.Link
           tabIndex={0}
           onClick={handleGoWorkbenchPage}
-          className={styles.link}
           data-testid="internal-workbench-link"
           onKeyDown={() => ({})}
           role="link"
           rel="noreferrer"
         >
           Workbench
-        </a>
+        </S.Link>
         {' tool to view the value.'}
       </Text>
     </TextDetailsWrapper>

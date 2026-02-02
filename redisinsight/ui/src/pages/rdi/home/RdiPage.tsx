@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
-import cx from 'classnames'
 import { RdiInstance } from 'uiSrc/slices/interfaces'
 import {
   createInstanceAction,
@@ -17,7 +16,7 @@ import {
 } from 'uiSrc/telemetry'
 import HomePageTemplate from 'uiSrc/templates/home-page-template'
 import { setTitle } from 'uiSrc/utils'
-import { Page, PageBody } from 'uiSrc/components/base/layout/page'
+import { PageBody } from 'uiSrc/components/base/layout/page'
 import { Rdi as RdiInstanceResponse } from 'apiSrc/modules/rdi/models/rdi'
 import { dispatch } from 'uiSrc/slices/store'
 import EmptyMessage from './empty-message/EmptyMessage'
@@ -29,7 +28,7 @@ import {
   useRdiPageDataProvider,
 } from './contexts/RdiPageDataProvider'
 
-import styles from './styles.module.scss'
+import * as S from './RdiPage.styles'
 
 const handleOpenPage = (data: RdiInstance[]) => {
   sendPageViewTelemetry({
@@ -113,7 +112,7 @@ const RdiPage = () => {
 
   return (
     <HomePageTemplate>
-      <Page className={cx(styles.page, 'homePage')}>
+      <S.RdiHomePage className="homePage">
         <PageBody component="div">
           <RdiHeader onRdiInstanceClick={handleOpenConnectionForm} />
           {hideInstancesList ? (
@@ -129,7 +128,7 @@ const RdiPage = () => {
             isLoading={loading || loadingChanging}
           />
         </PageBody>
-      </Page>
+      </S.RdiHomePage>
     </HomePageTemplate>
   )
 }
