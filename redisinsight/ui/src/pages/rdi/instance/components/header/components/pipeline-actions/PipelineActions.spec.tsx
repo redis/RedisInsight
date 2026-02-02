@@ -11,7 +11,7 @@ import {
   render,
   screen,
 } from 'uiSrc/utils/test-utils'
-import { CollectorStatus, PipelineStatus } from 'uiSrc/slices/interfaces'
+import { PipelineStatus } from 'uiSrc/slices/interfaces'
 import { validatePipeline } from 'uiSrc/components/yaml-validator'
 import {
   rdiPipelineSelector,
@@ -22,7 +22,6 @@ import {
 import PipelineActions, { Props } from './PipelineActions'
 
 const mockedProps: Props = {
-  collectorStatus: CollectorStatus.Ready,
   pipelineStatus: PipelineStatus.Ready,
 }
 
@@ -64,34 +63,108 @@ describe('PipelineActions', () => {
     expect(render(<PipelineActions {...mockedProps} />)).toBeTruthy()
   })
 
-  it('should display stopBtn if collectorStatus is ready', () => {
+  it('should display stopBtn if pipelineStatus is Ready', () => {
     render(
       <PipelineActions
         {...mockedProps}
-        collectorStatus={CollectorStatus.Ready}
+        pipelineStatus={PipelineStatus.Ready}
       />,
     )
     expect(screen.getByText('Stop')).toBeInTheDocument()
   })
 
-  it('should display startBtn if collectorStatus is not ready', () => {
+  it('should display startBtn if pipelineStatus is Stopped', () => {
     render(
       <PipelineActions
         {...mockedProps}
-        collectorStatus={CollectorStatus.NotReady}
+        pipelineStatus={PipelineStatus.Stopped}
       />,
     )
     expect(screen.getByText('Start')).toBeInTheDocument()
   })
 
-  it('should display startBtn if collectorStatus is not ready', () => {
+  it('should display startBtn if pipelineStatus is NotReady', () => {
     render(
       <PipelineActions
         {...mockedProps}
-        collectorStatus={CollectorStatus.NotReady}
+        pipelineStatus={PipelineStatus.NotReady}
       />,
     )
     expect(screen.getByText('Start')).toBeInTheDocument()
+  })
+
+  // V2 status tests
+  it('should display stopBtn if pipelineStatus is Started (V2)', () => {
+    render(
+      <PipelineActions
+        {...mockedProps}
+        pipelineStatus={PipelineStatus.Started}
+      />,
+    )
+    expect(screen.getByText('Stop')).toBeInTheDocument()
+    expect(screen.queryByText('Start')).not.toBeInTheDocument()
+  })
+
+  it('should display stopBtn if pipelineStatus is Error (V2)', () => {
+    render(
+      <PipelineActions
+        {...mockedProps}
+        pipelineStatus={PipelineStatus.Error}
+      />,
+    )
+    expect(screen.getByText('Stop')).toBeInTheDocument()
+    expect(screen.queryByText('Start')).not.toBeInTheDocument()
+  })
+
+  it('should display stopBtn if pipelineStatus is Unknown (V2)', () => {
+    render(
+      <PipelineActions
+        {...mockedProps}
+        pipelineStatus={PipelineStatus.Unknown}
+      />,
+    )
+    expect(screen.getByText('Stop')).toBeInTheDocument()
+    expect(screen.queryByText('Start')).not.toBeInTheDocument()
+  })
+
+  // Transitional state tests
+  it('should display disabled stopBtn if pipelineStatus is Starting', () => {
+    render(
+      <PipelineActions
+        {...mockedProps}
+        pipelineStatus={PipelineStatus.Starting}
+      />,
+    )
+    expect(screen.getByText('Stop')).toBeInTheDocument()
+    expect(screen.getByTestId('stop-pipeline-btn')).toBeDisabled()
+  })
+
+  it('should display disabled stopBtn if pipelineStatus is Stopping', () => {
+    render(
+      <PipelineActions
+        {...mockedProps}
+        pipelineStatus={PipelineStatus.Stopping}
+      />,
+    )
+    expect(screen.getByText('Stop')).toBeInTheDocument()
+    expect(screen.getByTestId('stop-pipeline-btn')).toBeDisabled()
+  })
+
+  it('should display disabled stopBtn if pipelineStatus is Pending', () => {
+    render(
+      <PipelineActions
+        {...mockedProps}
+        pipelineStatus={PipelineStatus.Pending}
+      />,
+    )
+    expect(screen.getByText('Stop')).toBeInTheDocument()
+    expect(screen.getByTestId('stop-pipeline-btn')).toBeDisabled()
+  })
+
+  it('should display no button if pipelineStatus is undefined', () => {
+    render(<PipelineActions {...mockedProps} pipelineStatus={undefined} />)
+    expect(screen.queryByText('Stop')).not.toBeInTheDocument()
+    expect(screen.queryByText('Start')).not.toBeInTheDocument()
   })
 
   it('should validate pipeline when schema, config, or jobs change', () => {
@@ -334,7 +407,7 @@ describe('PipelineActions', () => {
       render(
         <PipelineActions
           {...mockedProps}
-          collectorStatus={CollectorStatus.Stopped}
+          pipelineStatus={PipelineStatus.Stopped}
         />,
       )
       fireEvent.click(screen.getByTestId('start-pipeline-btn'))

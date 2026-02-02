@@ -17,7 +17,6 @@ import {
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { validatePipeline } from 'uiSrc/components/yaml-validator'
 import {
-  CollectorStatus,
   IActionPipelineResultProps,
   PipelineAction,
   PipelineStatus,
@@ -37,11 +36,10 @@ const VerticalDelimiter = styled(FlexItem)`
 `
 
 export interface Props {
-  collectorStatus?: CollectorStatus
   pipelineStatus?: PipelineStatus
 }
 
-const PipelineActions = ({ collectorStatus, pipelineStatus }: Props) => {
+const PipelineActions = ({ pipelineStatus }: Props) => {
   const {
     loading: deployLoading,
     schema,
@@ -155,6 +153,60 @@ const PipelineActions = ({ collectorStatus, pipelineStatus }: Props) => {
     action === actionBtn && actionLoading
   const disabled = deployLoading || actionLoading
 
+  const getActionButtonState = (): {
+    button: 'start' | 'stop' | null
+    disabled: boolean
+  } => {
+    if (action === PipelineAction.Stop) {
+      return {
+        disabled: true,
+        button: 'stop',
+      }
+    }
+
+    if (action === PipelineAction.Start) {
+      return {
+        disabled: true,
+        button: 'start',
+      }
+    }
+
+    switch (pipelineStatus) {
+      case PipelineStatus.NotReady: // v1 status
+      case PipelineStatus.Stopped:
+        return {
+          disabled: false,
+          button: 'start',
+        }
+      case PipelineStatus.Ready: // v1 status
+      case PipelineStatus.Unknown:
+      case PipelineStatus.Error:
+      case PipelineStatus.Started:
+        return {
+          disabled: false,
+          button: 'stop',
+        }
+      case PipelineStatus.Stopping:
+      case PipelineStatus.Starting:
+      case PipelineStatus.Creating:
+      case PipelineStatus.Updating:
+      case PipelineStatus.Deleting:
+      case PipelineStatus.Resetting:
+      case PipelineStatus.Pending:
+        return {
+          disabled: true,
+          button: 'stop',
+        }
+      default:
+        return {
+          disabled: true,
+          button: null,
+        }
+    }
+  }
+
+  const actionButtonState = getActionButtonState()
+
   return (
     <Row gap="l" justify="end" align="center">
       <FlexItem>
@@ -166,18 +218,16 @@ const PipelineActions = ({ collectorStatus, pipelineStatus }: Props) => {
       </FlexItem>
       <VerticalDelimiter />
       <FlexItem>
-        {collectorStatus === CollectorStatus.Ready &&
-        action !== PipelineAction.Start ? (
+        {actionButtonState.button === 'stop' ? (
           <StopPipelineButton
             onClick={onStopPipeline}
-            disabled={disabled}
+            disabled={actionButtonState.disabled}
             loading={isLoadingBtn(PipelineAction.Stop)}
           />
-        ) : collectorStatus !== CollectorStatus.Ready &&
-          action !== PipelineAction.Stop ? (
+        ) : actionButtonState.button === 'start' ? (
           <StartPipelineButton
             onClick={onStartPipeline}
-            disabled={disabled}
+            disabled={actionButtonState.disabled}
             loading={isLoadingBtn(PipelineAction.Start)}
           />
         ) : null}

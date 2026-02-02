@@ -1,6 +1,6 @@
 import { plainToInstance } from 'class-transformer';
 import { Logger } from '@nestjs/common';
-import { RdiUrlV2 } from 'src/modules/rdi/constants';
+import { DEFAULT_RDI_VERSION, RdiUrlV2 } from 'src/modules/rdi/constants';
 import {
   parseErrorMessage,
   RdiPipelineInternalServerErrorException,
@@ -8,6 +8,7 @@ import {
 } from 'src/modules/rdi/exceptions';
 import {
   RdiInfo,
+  RdiPipelineStatus,
   RdiStatisticsResult,
   RdiStatisticsStatus,
 } from 'src/modules/rdi/models';
@@ -17,6 +18,7 @@ import {
   GetInfoResponse,
   GetMetricsCollectionResponse,
   GetPipelinesResponse,
+  GetStatusResponse,
 } from 'src/modules/rdi/client/api/v2/responses';
 import { transformMetricsCollectionResponse } from 'src/modules/rdi/client/api/v2/transformers';
 
@@ -111,6 +113,28 @@ export class ApiV2RdiClient extends ApiRdiClient {
     } catch (e) {
       const message: string = parseErrorMessage(e);
       return { status: RdiStatisticsStatus.Fail, error: message };
+    }
+  }
+
+  async getPipelineStatus(): Promise<RdiPipelineStatus> {
+    try {
+      await super.getPipelineStatus();
+      const { data } = await this.client.get<GetStatusResponse>(
+        RdiUrlV2.GetPipelineStatus(this.selectedPipeline),
+      );
+
+      return plainToInstance(RdiPipelineStatus, data);
+    } catch (e) {
+      throw wrapRdiPipelineError(e);
+    }
+  }
+
+  async getVersion(): Promise<string> {
+    try {
+      const { data } = await this.client.get<GetInfoResponse>(RdiUrlV2.GetInfo);
+      return data?.version || DEFAULT_RDI_VERSION;
+    } catch (e) {
+      throw wrapRdiPipelineError(e);
     }
   }
 }

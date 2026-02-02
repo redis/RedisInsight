@@ -12,6 +12,7 @@ import {
   MAX_POLLING_TIME,
   WAIT_BEFORE_POLLING,
   PipelineActions,
+  DEFAULT_RDI_VERSION,
 } from 'src/modules/rdi/constants';
 import {
   RdiDryRunJobDto,
@@ -36,6 +37,7 @@ import {
   RdiStatisticsStatus,
   RdiClientMetadata,
   Rdi,
+  RdiPipelineStatus,
 } from 'src/modules/rdi/models';
 import { RdiPipelineTimeoutException } from 'src/modules/rdi/exceptions/rdi-pipeline.timeout-error.exception';
 import * as https from 'https';
@@ -43,8 +45,14 @@ import {
   convertApiDataToRdiPipeline,
   convertRdiPipelineToApiPayload,
 } from 'src/modules/rdi/utils/pipeline.util';
-import { GetStatisticsResponse } from 'src/modules/rdi/client/api/v1/responses';
-import { transformStatisticsResponse } from 'src/modules/rdi/client/api/v1/transformers';
+import {
+  GetStatisticsResponse,
+  GetStatusResponse,
+} from 'src/modules/rdi/client/api/v1/responses';
+import {
+  transformStatisticsResponse,
+  transformStatus,
+} from 'src/modules/rdi/client/api/v1/transformers';
 
 interface ConnectionsConfig {
   sources: Record<string, Record<string, unknown>>;
@@ -263,11 +271,25 @@ export class ApiRdiClient extends RdiClient {
     return { targets, sources };
   }
 
-  async getPipelineStatus(): Promise<any> {
+  async getPipelineStatus(): Promise<RdiPipelineStatus> {
     try {
-      const { data } = await this.client.get(RdiUrl.GetPipelineStatus);
+      const { data } = await this.client.get<GetStatusResponse>(
+        RdiUrl.GetPipelineStatus,
+      );
 
-      return data;
+      return transformStatus(data);
+    } catch (e) {
+      throw wrapRdiPipelineError(e);
+    }
+  }
+
+  async getVersion(): Promise<string> {
+    try {
+      const { data } = await this.client.get<GetStatusResponse>(
+        RdiUrl.GetPipelineStatus,
+      );
+
+      return data?.components?.processor?.version || DEFAULT_RDI_VERSION;
     } catch (e) {
       throw wrapRdiPipelineError(e);
     }

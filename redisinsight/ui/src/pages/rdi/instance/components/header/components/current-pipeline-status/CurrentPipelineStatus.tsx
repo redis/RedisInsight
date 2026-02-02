@@ -1,5 +1,6 @@
 import React from 'react'
-import { PipelineState } from 'uiSrc/slices/interfaces'
+import { capitalize } from 'lodash'
+import { PipelineState, PipelineStatus } from 'uiSrc/slices/interfaces'
 import { formatLongName, Maybe } from 'uiSrc/utils'
 import { Icon, IconProps } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
@@ -15,24 +16,28 @@ import {
 } from '@redis-ui/icons'
 import { IconType } from 'uiSrc/components/base/forms/buttons'
 
+interface StatusInfo {
+  label: string
+  icon: IconType
+  iconColor: IconProps['color']
+}
+
 export interface Props {
   pipelineState?: PipelineState
+  pipelineStatus?: PipelineStatus
   statusError?: string
   headerLoading: boolean
 }
 
 const CurrentPipelineStatus = ({
   pipelineState,
+  pipelineStatus,
   statusError,
   headerLoading,
 }: Props) => {
-  const getPipelineStateIconAndLabel = (
+  const getStatusToShowFromState = (
     pipelineState: Maybe<PipelineState>,
-  ): {
-    label: string
-    icon: IconType
-    iconColor: IconProps['color']
-  } => {
+  ): StatusInfo => {
     switch (pipelineState) {
       case PipelineState.InitialSync:
         return {
@@ -60,14 +65,53 @@ const CurrentPipelineStatus = ({
         }
     }
   }
-  const stateInfo = getPipelineStateIconAndLabel(pipelineState)
+
+  const getStatusToShowFromStatus = (
+    status: Maybe<PipelineStatus>,
+  ): StatusInfo => {
+    const label = capitalize(status || 'Error')
+
+    switch (status) {
+      case PipelineStatus.Creating:
+      case PipelineStatus.Deleting:
+      case PipelineStatus.Pending:
+      case PipelineStatus.Resetting:
+      case PipelineStatus.Starting:
+      case PipelineStatus.Stopping:
+      case PipelineStatus.Updating:
+      case PipelineStatus.Stopped:
+      case PipelineStatus.NotReady:
+        return {
+          label,
+          icon: IndicatorSyncingIcon,
+          iconColor: 'attention500',
+        }
+      case PipelineStatus.Started:
+      case PipelineStatus.Ready:
+        return {
+          label,
+          icon: IndicatorSyncedIcon,
+          iconColor: 'success500',
+        }
+      default:
+        return {
+          label,
+          icon: IndicatorSyncerrorIcon,
+          iconColor: 'danger500',
+        }
+    }
+  }
+
+  const stateInfo = pipelineState
+    ? getStatusToShowFromState(pipelineState)
+    : getStatusToShowFromStatus(pipelineStatus)
   const errorTooltipContent = statusError && formatLongName(statusError)
 
   return (
     <Row align="center" gap="m">
       <FlexItem>
         <Title size="XS" color="primary">
-          Pipeline state
+          Pipeline status
         </Title>
       </FlexItem>
       <FlexItem>
@@ -78,7 +122,7 @@ const CurrentPipelineStatus = ({
             content={errorTooltipContent}
             anchorClassName={statusError}
           >
-            <Row data-testid="pipeline-state-badge" gap="s" align="center">
+            <Row data-testid="pipeline-status-badge" gap="s" align="center">
               <Icon icon={stateInfo.icon} color={stateInfo.iconColor} />
               <Text>{stateInfo.label}</Text>
             </Row>

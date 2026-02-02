@@ -611,12 +611,28 @@ describe('ApiRdiClient', () => {
 
   describe('getPipelineStatus', () => {
     it('should return pipeline status when API call is successful', async () => {
-      const mockResponse = { data: { status: 'running' } };
-      mockedAxios.get.mockResolvedValueOnce(mockResponse);
+      const mockApiResponse = {
+        data: {
+          pipelines: {
+            default: {
+              status: 'ready',
+              state: 'cdc',
+            },
+          },
+          components: {
+            processor: { status: 'ready', version: '1.0.0' },
+          },
+        },
+      };
+      mockedAxios.get.mockResolvedValueOnce(mockApiResponse);
 
       const result = await client.getPipelineStatus();
 
-      expect(result).toEqual(mockResponse.data);
+      // Expect transformed response format
+      expect(result).toEqual({
+        status: 'ready',
+        state: 'cdc',
+      });
       expect(mockedAxios.get).toHaveBeenCalledWith(RdiUrl.GetPipelineStatus);
     });
 
