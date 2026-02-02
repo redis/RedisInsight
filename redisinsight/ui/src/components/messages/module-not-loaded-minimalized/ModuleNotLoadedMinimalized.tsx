@@ -92,6 +92,7 @@ const ModuleNotLoadedMinimalized = (props: Props) => {
                 {(ssoCloudHandlerClick) => (
                   <Link
                     external
+                    target="_blank"
                     href={getUtmExternalLink(EXTERNAL_LINKS.tryFree, {
                       campaign: UTM_CAMPAINGS[source] ?? source,
                     })}

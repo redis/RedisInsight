@@ -165,7 +165,12 @@ export const INFINITE_MESSAGES: InfiniteMessagesType = {
           <Spacer size="m" />
           <Row justify="between" align="center">
             <FlexItem>
-              <Link external href={MANAGE_DB_LINK} variant="inline">
+              <Link
+                external
+                target="_blank"
+                href={MANAGE_DB_LINK}
+                variant="inline"
+              >
                 Manage DB
               </Link>
             </FlexItem>

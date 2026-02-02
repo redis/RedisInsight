@@ -10,7 +10,7 @@ export const remarkLink = (): ((tree: Node) => void) => (tree: any) => {
       // External link
       const [text] = node.children || []
       node.type = 'html'
-      node.value = `<Link external href="${node.url}" rel="nofollow noopener noreferrer" variant="inline" size="S">${text?.value || EXTERNAL_LINKS.redisIo}</Link>`
+      node.value = `<Link external target="_blank" href="${node.url}" rel="nofollow noopener noreferrer" variant="inline" size="S">${text?.value || EXTERNAL_LINKS.redisIo}</Link>`
     }
 
     if (node.title === 'Redis Cloud') {
