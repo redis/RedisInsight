@@ -47,7 +47,8 @@ describe('Pagination', () => {
     expect(menu?.querySelectorAll('[data-testid^="menu-item"]').length).toEqual(
       paginationItems.length,
     )
-    expect(menu?.querySelector('.activeMenuItem')).toHaveTextContent(
+    // Verify the first menu item (which corresponds to activePageKey="0") has correct content
+    expect(screen.getByTestId('menu-item-0')).toHaveTextContent(
       paginationItems[0].label,
     )
   })

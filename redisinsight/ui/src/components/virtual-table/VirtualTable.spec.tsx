@@ -120,7 +120,7 @@ describe('VirtualTable', () => {
       />,
     )
 
-    fireEvent.click(container.querySelector('.headerButtonSorted') as Element)
+    fireEvent.click(screen.getByTestId('score-button'))
 
     expect(onChangeSorting).toBeCalled()
   })
