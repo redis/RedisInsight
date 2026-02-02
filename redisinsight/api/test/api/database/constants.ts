@@ -90,7 +90,7 @@ export const databaseSchema = Joi.object().keys({
   providerDetails: Joi.object()
     .keys({
       provider: Joi.string().required(),
-      authType: Joi.string(),
+      authType: Joi.string().required(),
       azureAccountId: Joi.string(),
     })
     .allow(null),
