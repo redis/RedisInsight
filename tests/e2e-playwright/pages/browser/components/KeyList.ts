@@ -71,12 +71,15 @@ export class KeyList {
 
   /**
    * Wait for keys to load
-   * Handles both List view (Total:) and Tree view (Results:)
+   * Handles List view (Total:), Tree view (Results:), and empty database
    */
   async waitForKeysLoaded(timeout = 30000): Promise<void> {
-    // Wait for either "Total:" (List view) or "Results:" (Tree view)
+    // Wait for either:
+    // - "Total:" (List view with keys)
+    // - "Results:" (Tree view or filtered results)
+    // - "Let's start working" (empty database)
     await expect(
-      this.page.getByText(/Total:|Results:/).first(),
+      this.page.getByText(/Total:|Results:|Let's start working/).first(),
     ).toBeVisible({ timeout });
   }
 
