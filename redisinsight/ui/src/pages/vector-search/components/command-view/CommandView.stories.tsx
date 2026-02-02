@@ -33,7 +33,6 @@ const withMonacoSetup = (Story: React.ComponentType) => {
 
 const meta: Meta<typeof CommandView> = {
   component: CommandView,
-  title: 'Pages/VectorSearch/CommandView',
   parameters: {},
   tags: ['autodocs'],
   decorators: [withMonacoSetup],

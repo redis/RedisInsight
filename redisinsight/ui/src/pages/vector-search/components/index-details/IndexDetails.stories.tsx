@@ -85,7 +85,6 @@ const IndexDetailsWrapper = (props: IndexDetailsProps) => {
 
 const meta: Meta<typeof IndexDetails> = {
   component: IndexDetails,
-  title: 'Pages/VectorSearch/IndexDetails',
   tags: ['autodocs'],
   decorators: [
     (Story) => (
