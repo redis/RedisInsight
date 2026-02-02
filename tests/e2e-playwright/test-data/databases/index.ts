@@ -1,3 +1,4 @@
+import { Factory } from 'fishery';
 import { faker } from '@faker-js/faker';
 import { redisConfig } from 'e2eSrc/config';
 import { AddDatabaseConfig, ConnectionType } from 'e2eSrc/types';
@@ -9,95 +10,57 @@ import { AddDatabaseConfig, ConnectionType } from 'e2eSrc/types';
 export const TEST_DB_PREFIX = 'test-';
 
 /**
- * Generate a unique database name for tests
- * Always prefixed with 'test-' to ensure cleanup works
+ * Standalone database configuration factory
  */
-export function generateDatabaseName(suffix?: string): string {
-  const uniqueId = faker.string.alphanumeric(8);
-  return suffix ? `${TEST_DB_PREFIX}${suffix}-${uniqueId}` : `${TEST_DB_PREFIX}${uniqueId}`;
-}
+export const StandaloneConfigFactory = Factory.define<AddDatabaseConfig>(() => ({
+  host: redisConfig.standalone.host,
+  port: redisConfig.standalone.port,
+  name: `${TEST_DB_PREFIX}standalone-${faker.string.alphanumeric(8)}`,
+}));
 
 /**
- * Get standalone database configuration
+ * Standalone V7 database configuration factory
  */
-export function getStandaloneConfig(overrides?: Partial<AddDatabaseConfig>): AddDatabaseConfig {
-  return {
-    host: redisConfig.standalone.host,
-    port: redisConfig.standalone.port,
-    name: generateDatabaseName('standalone'),
-    ...overrides,
-  };
-}
+export const StandaloneV7ConfigFactory = Factory.define<AddDatabaseConfig>(() => ({
+  host: redisConfig.standaloneV7.host,
+  port: redisConfig.standaloneV7.port,
+  name: `${TEST_DB_PREFIX}standalone-v7-${faker.string.alphanumeric(8)}`,
+}));
 
 /**
- * Get standalone V7 database configuration
+ * Standalone V8 database configuration factory
  */
-export function getStandaloneV7Config(overrides?: Partial<AddDatabaseConfig>): AddDatabaseConfig {
-  return {
-    host: redisConfig.standaloneV7.host,
-    port: redisConfig.standaloneV7.port,
-    name: generateDatabaseName('standalone-v7'),
-    ...overrides,
-  };
-}
+export const StandaloneV8ConfigFactory = Factory.define<AddDatabaseConfig>(() => ({
+  host: redisConfig.standaloneV8.host,
+  port: redisConfig.standaloneV8.port,
+  name: `${TEST_DB_PREFIX}standalone-v8-${faker.string.alphanumeric(8)}`,
+}));
 
 /**
- * Get standalone V8 database configuration
+ * Cluster database configuration factory
  */
-export function getStandaloneV8Config(overrides?: Partial<AddDatabaseConfig>): AddDatabaseConfig {
-  return {
-    host: redisConfig.standaloneV8.host,
-    port: redisConfig.standaloneV8.port,
-    name: generateDatabaseName('standalone-v8'),
-    ...overrides,
-  };
-}
+export const ClusterConfigFactory = Factory.define<AddDatabaseConfig>(() => ({
+  host: redisConfig.cluster.host,
+  port: redisConfig.cluster.port,
+  name: `${TEST_DB_PREFIX}cluster-${faker.string.alphanumeric(8)}`,
+}));
 
 /**
- * Get cluster database configuration
+ * Sentinel database configuration factory
  */
-export function getClusterConfig(overrides?: Partial<AddDatabaseConfig>): AddDatabaseConfig {
-  return {
-    host: redisConfig.cluster.host,
-    port: redisConfig.cluster.port,
-    name: generateDatabaseName('cluster'),
-    ...overrides,
-  };
-}
+export const SentinelConfigFactory = Factory.define<AddDatabaseConfig & { masterName: string }>(() => ({
+  host: redisConfig.sentinel.host,
+  port: redisConfig.sentinel.port,
+  password: redisConfig.sentinel.password,
+  name: `${TEST_DB_PREFIX}sentinel-${faker.string.alphanumeric(8)}`,
+  masterName: redisConfig.sentinel.masterName,
+}));
 
 /**
- * Get sentinel database configuration
+ * Database factories by connection type
  */
-export function getSentinelConfig(overrides?: Partial<AddDatabaseConfig>): AddDatabaseConfig & { masterName: string } {
-  return {
-    host: redisConfig.sentinel.host,
-    port: redisConfig.sentinel.port,
-    password: redisConfig.sentinel.password,
-    name: generateDatabaseName('sentinel'),
-    masterName: redisConfig.sentinel.masterName,
-    ...overrides,
-  };
-}
-
-/**
- * Database configurations by connection type
- */
-export const databaseConfigs = {
-  [ConnectionType.Standalone]: getStandaloneConfig,
-  [ConnectionType.Cluster]: getClusterConfig,
-  [ConnectionType.Sentinel]: getSentinelConfig,
+export const databaseFactories = {
+  [ConnectionType.Standalone]: StandaloneConfigFactory,
+  [ConnectionType.Cluster]: ClusterConfigFactory,
+  [ConnectionType.Sentinel]: SentinelConfigFactory,
 };
-
-/**
- * Get database configuration by connection type
- */
-export function getDatabaseConfig(
-  connectionType: ConnectionType,
-  overrides?: Partial<AddDatabaseConfig>,
-): AddDatabaseConfig {
-  const configFn = databaseConfigs[connectionType];
-  if (!configFn) {
-    throw new Error(`No configuration found for connection type: ${connectionType}`);
-  }
-  return configFn(overrides);
-}

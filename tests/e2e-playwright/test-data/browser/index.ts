@@ -1,3 +1,4 @@
+import { Factory } from 'fishery';
 import { faker } from '@faker-js/faker';
 import {
   StringKeyData,
@@ -16,115 +17,82 @@ import {
 export const TEST_KEY_PREFIX = 'test-';
 
 /**
- * Generate a unique key name for tests
- * Always prefixed with 'test-' to ensure cleanup works
+ * String key data factory
  */
-export function generateKeyName(suffix?: string): string {
-  const uniqueId = faker.string.alphanumeric(8);
-  return suffix ? `${TEST_KEY_PREFIX}${suffix}-${uniqueId}` : `${TEST_KEY_PREFIX}${uniqueId}`;
-}
+export const StringKeyFactory = Factory.define<StringKeyData>(() => ({
+  keyName: `${TEST_KEY_PREFIX}string-${faker.string.alphanumeric(8)}`,
+  value: faker.lorem.sentence(),
+}));
 
 /**
- * Generate String key data
+ * Hash key data factory
  */
-export function getStringKeyData(overrides?: Partial<StringKeyData>): StringKeyData {
-  return {
-    keyName: generateKeyName('string'),
-    value: faker.lorem.sentence(),
-    ...overrides,
-  };
-}
+export const HashKeyFactory = Factory.define<HashKeyData>(() => ({
+  keyName: `${TEST_KEY_PREFIX}hash-${faker.string.alphanumeric(8)}`,
+  fields: [
+    { field: faker.word.noun(), value: faker.lorem.word() },
+    { field: faker.word.noun(), value: faker.lorem.word() },
+  ],
+}));
 
 /**
- * Generate Hash key data
+ * List key data factory
  */
-export function getHashKeyData(overrides?: Partial<HashKeyData>): HashKeyData {
-  return {
-    keyName: generateKeyName('hash'),
-    fields: [
-      { field: faker.word.noun(), value: faker.lorem.word() },
-      { field: faker.word.noun(), value: faker.lorem.word() },
-    ],
-    ...overrides,
-  };
-}
+export const ListKeyFactory = Factory.define<ListKeyData>(() => ({
+  keyName: `${TEST_KEY_PREFIX}list-${faker.string.alphanumeric(8)}`,
+  elements: [faker.lorem.word(), faker.lorem.word(), faker.lorem.word()],
+}));
 
 /**
- * Generate List key data
+ * Set key data factory
  */
-export function getListKeyData(overrides?: Partial<ListKeyData>): ListKeyData {
-  return {
-    keyName: generateKeyName('list'),
-    elements: [faker.lorem.word(), faker.lorem.word(), faker.lorem.word()],
-    ...overrides,
-  };
-}
+export const SetKeyFactory = Factory.define<SetKeyData>(() => ({
+  keyName: `${TEST_KEY_PREFIX}set-${faker.string.alphanumeric(8)}`,
+  members: [faker.lorem.word(), faker.lorem.word(), faker.lorem.word()],
+}));
 
 /**
- * Generate Set key data
+ * Sorted Set (ZSet) key data factory
  */
-export function getSetKeyData(overrides?: Partial<SetKeyData>): SetKeyData {
-  return {
-    keyName: generateKeyName('set'),
-    members: [faker.lorem.word(), faker.lorem.word(), faker.lorem.word()],
-    ...overrides,
-  };
-}
+export const ZSetKeyFactory = Factory.define<ZSetKeyData>(() => ({
+  keyName: `${TEST_KEY_PREFIX}zset-${faker.string.alphanumeric(8)}`,
+  members: [
+    { member: faker.lorem.word(), score: '1' },
+    { member: faker.lorem.word(), score: '2' },
+    { member: faker.lorem.word(), score: '3' },
+  ],
+}));
 
 /**
- * Generate Sorted Set (ZSet) key data
+ * Stream key data factory
  */
-export function getZSetKeyData(overrides?: Partial<ZSetKeyData>): ZSetKeyData {
-  return {
-    keyName: generateKeyName('zset'),
-    members: [
-      { member: faker.lorem.word(), score: '1' },
-      { member: faker.lorem.word(), score: '2' },
-      { member: faker.lorem.word(), score: '3' },
-    ],
-    ...overrides,
-  };
-}
+export const StreamKeyFactory = Factory.define<StreamKeyData>(() => ({
+  keyName: `${TEST_KEY_PREFIX}stream-${faker.string.alphanumeric(8)}`,
+  entryId: '*',
+  fields: [{ field: faker.word.noun(), value: faker.lorem.word() }],
+}));
 
 /**
- * Generate Stream key data
+ * JSON key data factory
  */
-export function getStreamKeyData(overrides?: Partial<StreamKeyData>): StreamKeyData {
-  return {
-    keyName: generateKeyName('stream'),
-    entryId: '*',
-    fields: [
-      { field: faker.word.noun(), value: faker.lorem.word() },
-    ],
-    ...overrides,
-  };
-}
+export const JsonKeyFactory = Factory.define<JsonKeyData>(() => ({
+  keyName: `${TEST_KEY_PREFIX}json-${faker.string.alphanumeric(8)}`,
+  value: JSON.stringify({
+    name: faker.person.fullName(),
+    email: faker.internet.email(),
+    age: faker.number.int({ min: 18, max: 80 }),
+  }),
+}));
 
 /**
- * Generate JSON key data
+ * Key factories by type
  */
-export function getJsonKeyData(overrides?: Partial<JsonKeyData>): JsonKeyData {
-  return {
-    keyName: generateKeyName('json'),
-    value: JSON.stringify({
-      name: faker.person.fullName(),
-      email: faker.internet.email(),
-      age: faker.number.int({ min: 18, max: 80 }),
-    }),
-    ...overrides,
-  };
-}
-
-/**
- * Key data generators by type
- */
-export const keyDataGenerators = {
-  String: getStringKeyData,
-  Hash: getHashKeyData,
-  List: getListKeyData,
-  Set: getSetKeyData,
-  'Sorted Set': getZSetKeyData,
-  Stream: getStreamKeyData,
-  JSON: getJsonKeyData,
+export const keyFactories = {
+  String: StringKeyFactory,
+  Hash: HashKeyFactory,
+  List: ListKeyFactory,
+  Set: SetKeyFactory,
+  'Sorted Set': ZSetKeyFactory,
+  Stream: StreamKeyFactory,
+  JSON: JsonKeyFactory,
 };
-

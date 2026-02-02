@@ -8,7 +8,6 @@ All E2E tests are in `tests/e2e-playwright/`. This is a **standalone package** -
 
 **Always refer to `tests/e2e-playwright/TEST_PLAN.md`** for:
 - Test coverage status (✅ implemented, 🔲 not implemented)
-- Test priorities (🔴 critical, 🟠 smoke, 🟢 regression)
 - Feature implementation order
 - Test data requirements
 
@@ -228,21 +227,25 @@ test.describe.serial('Feature', () => { // Use regular describe unless tests tru
 
 ## Test Data
 
-### Use Factories with Faker
+### Use Fishery Factories with Faker
+
+Use the [fishery](https://github.com/thoughtbot/fishery) library for test data factories:
 
 ```typescript
+import { Factory } from 'fishery';
 import { faker } from '@faker-js/faker';
 
 export const TEST_PREFIX = 'test-';
 
-export function generateConfig(overrides?: Partial<Config>): Config {
-  return {
-    name: `${TEST_PREFIX}${faker.string.alphanumeric(8)}`,
-    host: '127.0.0.1',
-    port: 6379,
-    ...overrides,
-  };
-}
+export const ConfigFactory = Factory.define<Config>(() => ({
+  name: `${TEST_PREFIX}${faker.string.alphanumeric(8)}`,
+  host: '127.0.0.1',
+  port: 6379,
+}));
+
+// Usage in tests
+const config = ConfigFactory.build();
+const config = ConfigFactory.build({ name: 'custom-name' });
 ```
 
 ### Cleanup Pattern

@@ -1,5 +1,5 @@
 import { test, expect } from 'e2eSrc/fixtures/base';
-import { getStandaloneConfig } from 'e2eSrc/test-data/databases';
+import { StandaloneConfigFactory } from 'e2eSrc/test-data/databases';
 import { TEST_KEY_PREFIX } from 'e2eSrc/test-data/browser';
 import { DatabaseInstance } from 'e2eSrc/types';
 
@@ -27,7 +27,7 @@ test.describe('Browser > Key Filtering Patterns', () => {
   test.beforeAll(async ({ apiHelper }) => {
     // Create a test database with unique name for this test run
     const dbName = `test-key-filtering-${Date.now().toString(36)}`;
-    const config = getStandaloneConfig({ name: dbName });
+    const config = StandaloneConfigFactory.build({ name: dbName });
     database = await apiHelper.createDatabase(config);
 
     // Create test keys via API
@@ -63,9 +63,7 @@ test.describe('Browser > Key Filtering Patterns', () => {
       await expect(browserPage.keyList.getKeyRow(testKeys.numbered1)).not.toBeVisible();
     });
 
-    test(`should filter keys with question mark (?) single character wildcard`, async ({
-      browserPage,
-    }) => {
+    test(`should filter keys with question mark (?) single character wildcard`, async ({ browserPage }) => {
       // Search for keys matching the pattern with ? wildcard (matches single char)
       await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}item?-${uniqueSuffix}`);
 

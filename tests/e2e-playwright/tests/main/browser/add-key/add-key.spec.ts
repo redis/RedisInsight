@@ -1,13 +1,13 @@
 import { test, expect } from 'e2eSrc/fixtures/base';
-import { getStandaloneConfig } from 'e2eSrc/test-data/databases';
+import { StandaloneConfigFactory } from 'e2eSrc/test-data/databases';
 import {
-  getStringKeyData,
-  getHashKeyData,
-  getListKeyData,
-  getSetKeyData,
-  getZSetKeyData,
-  getStreamKeyData,
-  getJsonKeyData,
+  StringKeyFactory,
+  HashKeyFactory,
+  ListKeyFactory,
+  SetKeyFactory,
+  ZSetKeyFactory,
+  StreamKeyFactory,
+  JsonKeyFactory,
   TEST_KEY_PREFIX,
 } from 'e2eSrc/test-data/browser';
 import { DatabaseInstance } from 'e2eSrc/types';
@@ -22,7 +22,7 @@ test.describe('Browser > Add Key', () => {
 
   test.beforeAll(async ({ apiHelper }) => {
     // Create a test database for all tests in this file
-    const config = getStandaloneConfig({ name: 'test-add-key-db' });
+    const config = StandaloneConfigFactory.build({ name: 'test-add-key-db' });
     database = await apiHelper.createDatabase(config);
   });
 
@@ -43,7 +43,7 @@ test.describe('Browser > Add Key', () => {
   });
 
   test(`should add a String key`, async ({ browserPage }) => {
-    const keyData = getStringKeyData();
+    const keyData = StringKeyFactory.build();
 
     // Open Add Key dialog
     await browserPage.openAddKeyDialog();
@@ -64,7 +64,7 @@ test.describe('Browser > Add Key', () => {
   });
 
   test(`should add a Hash key`, async ({ browserPage }) => {
-    const keyData = getHashKeyData();
+    const keyData = HashKeyFactory.build();
 
     await browserPage.openAddKeyDialog();
     await browserPage.addKeyDialog.selectKeyType('Hash');
@@ -77,7 +77,7 @@ test.describe('Browser > Add Key', () => {
   });
 
   test(`should add a List key`, async ({ browserPage }) => {
-    const keyData = getListKeyData();
+    const keyData = ListKeyFactory.build();
 
     await browserPage.openAddKeyDialog();
     await browserPage.addKeyDialog.selectKeyType('List');
@@ -90,7 +90,7 @@ test.describe('Browser > Add Key', () => {
   });
 
   test(`should add a Set key`, async ({ browserPage }) => {
-    const keyData = getSetKeyData();
+    const keyData = SetKeyFactory.build();
 
     await browserPage.openAddKeyDialog();
     await browserPage.addKeyDialog.selectKeyType('Set');
@@ -103,7 +103,7 @@ test.describe('Browser > Add Key', () => {
   });
 
   test(`should add a Sorted Set key`, async ({ browserPage }) => {
-    const keyData = getZSetKeyData();
+    const keyData = ZSetKeyFactory.build();
 
     await browserPage.openAddKeyDialog();
     await browserPage.addKeyDialog.selectKeyType('Sorted Set');
@@ -116,7 +116,7 @@ test.describe('Browser > Add Key', () => {
   });
 
   test(`should add a Stream key`, async ({ browserPage }) => {
-    const keyData = getStreamKeyData();
+    const keyData = StreamKeyFactory.build();
 
     await browserPage.openAddKeyDialog();
     await browserPage.addKeyDialog.selectKeyType('Stream');
@@ -129,7 +129,7 @@ test.describe('Browser > Add Key', () => {
   });
 
   test(`should add a JSON key`, async ({ browserPage }) => {
-    const keyData = getJsonKeyData();
+    const keyData = JsonKeyFactory.build();
 
     await browserPage.openAddKeyDialog();
     await browserPage.addKeyDialog.selectKeyType('JSON');
@@ -151,7 +151,7 @@ test.describe('Browser > Add Key', () => {
   });
 
   test(`should cancel adding a key`, async ({ browserPage }) => {
-    const keyData = getStringKeyData();
+    const keyData = StringKeyFactory.build();
 
     await browserPage.openAddKeyDialog();
     await browserPage.addKeyDialog.fillKeyName(keyData.keyName);
@@ -163,7 +163,7 @@ test.describe('Browser > Add Key', () => {
   });
 
   test(`should add a key with TTL`, async ({ browserPage }) => {
-    const keyData = getStringKeyData();
+    const keyData = StringKeyFactory.build();
     const ttlSeconds = '60';
 
     // Open Add Key dialog
