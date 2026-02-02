@@ -6,6 +6,7 @@ import { FieldActionsCellProps } from './FieldActionsCell.types'
 
 export const FieldActionsCell = ({ field, onEdit }: FieldActionsCellProps) => {
   const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault()
     e.stopPropagation()
     onEdit?.(field)
   }

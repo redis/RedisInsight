@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react'
-import { Row } from '@tanstack/react-table'
-import { ColumnDef, Table } from 'uiSrc/components/base/layout/table'
+import { ColumnDef, Row, Table } from 'uiSrc/components/base/layout/table'
 import {
   IndexDetailsColumn,
   IndexDetailsMode,
