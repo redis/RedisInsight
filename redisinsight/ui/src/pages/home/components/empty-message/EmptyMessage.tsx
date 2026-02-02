@@ -38,6 +38,7 @@ const EmptyMessage = ({ onAddInstanceClick }: Props) => (
     <OAuthSsoHandlerDialog>
       {(ssoCloudHandlerClick) => (
         <Link
+          underline
           data-testid="empty-database-cloud-button"
           target="_blank"
           href={getUtmExternalLink(EXTERNAL_LINKS.tryFree, {
