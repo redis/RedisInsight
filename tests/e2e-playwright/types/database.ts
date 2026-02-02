@@ -28,10 +28,10 @@ export interface AddDatabaseConfig extends RedisConnectionConfig {
 /**
  * SSH tunnel configuration
  */
-export interface SshConfig {
-  host: string;
-  port: number;
-  username: string;
+export interface SshTunnelConfig {
+  host?: string;
+  port?: number;
+  username?: string;
   password?: string;
   privateKey?: string;
   passphrase?: string;

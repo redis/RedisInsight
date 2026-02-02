@@ -16,7 +16,7 @@ import { clusterConfig } from './cluster';
 
 import { sentinelConfig } from './sentinel';
 
-import { sshConfig } from './ssh';
+import { sshRedisConfig, sshTunnelConfig } from './ssh';
 
 export const redisConfig = {
   standalone: standaloneConfig,
@@ -27,5 +27,6 @@ export const redisConfig = {
   standaloneBig: standaloneBigConfig,
   cluster: clusterConfig,
   sentinel: sentinelConfig,
-  ssh: sshConfig,
+  sshRedis: sshRedisConfig,
+  sshTunnel: sshTunnelConfig,
 };
