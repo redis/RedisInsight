@@ -23,6 +23,7 @@ import { CreateBasicSshOptionsDto } from 'src/modules/ssh/dto/create.basic-ssh-o
 import { CreateCertSshOptionsDto } from 'src/modules/ssh/dto/create.cert-ssh-options.dto';
 import { sshOptionsTransformer } from 'src/modules/ssh/transformers/ssh-options.transformer';
 import { CloudDatabaseDetails } from 'src/modules/cloud/database/models/cloud-database-details';
+import { AzureProviderDetails } from 'src/modules/database/models/provider-details';
 import { CreateTagDto } from 'src/modules/tag/dto';
 
 @ApiExtraModels(
@@ -106,6 +107,17 @@ export class CreateDatabaseDto extends PickType(Database, [
   @Type(() => CloudDatabaseDetails)
   @ValidateNested()
   cloudDetails?: CloudDatabaseDetails;
+
+  @ApiPropertyOptional({
+    description: 'Provider-specific metadata',
+    type: AzureProviderDetails,
+  })
+  @Expose()
+  @IsOptional()
+  @IsNotEmptyObject()
+  @Type(() => AzureProviderDetails)
+  @ValidateNested()
+  providerDetails?: AzureProviderDetails;
 
   @ApiPropertyOptional({
     description: 'Tags associated with the database.',
