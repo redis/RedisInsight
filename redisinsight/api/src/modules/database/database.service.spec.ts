@@ -22,6 +22,7 @@ import {
   mockDatabaseWithSshPrivateKey,
   mockSentinelDatabaseWithTlsAuth,
   mockDatabaseWithCloudDetails,
+  mockDatabaseWithProviderDetails,
   mockRedisClientFactory,
   mockRedisClientStorage,
   mockSessionMetadata,
@@ -183,6 +184,17 @@ describe('DatabaseService', () => {
         mockRedisGeneralInfo,
       );
       expect(analytics.sendInstanceAddFailedEvent).not.toHaveBeenCalled();
+    });
+    it('should create new database with provider details', async () => {
+      databaseRepository.create.mockResolvedValueOnce(
+        mockDatabaseWithProviderDetails,
+      );
+      expect(
+        await service.create(
+          mockSessionMetadata,
+          mockDatabaseWithProviderDetails,
+        ),
+      ).toEqual(mockDatabaseWithProviderDetails);
     });
     it('should not fail when collecting data for analytics event', async () => {
       redisClientFactory.createClient.mockRejectedValueOnce(new Error());

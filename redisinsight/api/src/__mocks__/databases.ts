@@ -110,6 +110,15 @@ export const mockDatabaseWithCloudDetails = Object.assign(new Database(), {
   cloudDetails: mockCloudDatabaseDetails,
 });
 
+export const mockDatabaseWithProviderDetails = Object.assign(new Database(), {
+  ...mockDatabase,
+  providerDetails: {
+    provider: 'azure',
+    authType: 'entra-id',
+    azureAccountId: 'mock-azure-account-id',
+  },
+});
+
 export const mockDatabaseEntity = Object.assign(new DatabaseEntity(), {
   ...mockDatabase,
   encryption: null,
