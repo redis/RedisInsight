@@ -22,7 +22,7 @@ import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from './styles.module.scss'
+import * as S from './FilterNotAvailable.styles'
 
 const utm = {
   medium: 'main',
@@ -35,15 +35,11 @@ const FilterNotAvailable = ({ onClose }: { onClose?: () => void }) => {
     onClose?.()
   }
   return (
-    <div className={styles.container}>
+    <S.Container>
       <RiIcon type="RedisDbBlueIcon" size="original" />
-      <Title
-        size="M"
-        className={styles.title}
-        data-testid="filter-not-available-title"
-      >
+      <S.Title as={Title} size="M" data-testid="filter-not-available-title">
         Upgrade your Redis database to version 6 or above
-      </Title>
+      </S.Title>
       <Text>Filtering by data type is supported in Redis 6 and above.</Text>
       <Spacer size="m" />
       {!!freeInstances.length && (
@@ -67,7 +63,7 @@ const FilterNotAvailable = ({ onClose }: { onClose?: () => void }) => {
             extends the core capabilities of your Redis.
           </Text>
           <Spacer size="l" />
-          <div className={styles.linksWrapper}>
+          <S.LinksWrapper>
             <OAuthSsoHandlerDialog>
               {(ssoCloudHandlerClick) => (
                 <PrimaryButton
@@ -86,19 +82,19 @@ const FilterNotAvailable = ({ onClose }: { onClose?: () => void }) => {
               )}
             </OAuthSsoHandlerDialog>
             <Spacer size="m" />
-            <Link
-              className={styles.link}
+            <S.Link
+              as={Link}
               target="_blank"
               color="text"
               href={getUtmExternalLink(EXTERNAL_LINKS.redisStack, utm)}
               data-testid="learn-more-link"
             >
               Learn More
-            </Link>
-          </div>
+            </S.Link>
+          </S.LinksWrapper>
         </FeatureFlagComponent>
       )}
-    </div>
+    </S.Container>
   )
 }
 

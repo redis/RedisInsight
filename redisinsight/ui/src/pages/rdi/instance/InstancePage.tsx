@@ -21,12 +21,12 @@ import {
 
 import { RdiInstancePageTemplate } from 'uiSrc/templates'
 import { AppNavigation, RdiInstanceHeader } from 'uiSrc/components'
-import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
+import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import InstancePageRouter from './InstancePageRouter'
 import { RdiPipelineHeader } from './components'
-import styles from './styles.module.scss'
 import { Nullable } from 'uiSrc/utils'
 import { useNavigation } from 'uiSrc/components/navigation-menu/hooks/useNavigation'
+import * as S from './InstancePage.styles'
 
 export interface Props {
   routes: IRoute[]
@@ -81,7 +81,7 @@ const RdiInstancePage = ({ routes = [] }: Props) => {
   }, [])
 
   return (
-    <Col className={styles.page} gap="none" responsive={false}>
+    <S.Page gap="none" responsive={false}>
       <FlexItem>
         <RdiInstanceHeader />
       </FlexItem>
@@ -98,7 +98,7 @@ const RdiInstancePage = ({ routes = [] }: Props) => {
       <RdiInstancePageTemplate>
         <InstancePageRouter routes={routes} />
       </RdiInstancePageTemplate>
-    </Col>
+    </S.Page>
   )
 }
 

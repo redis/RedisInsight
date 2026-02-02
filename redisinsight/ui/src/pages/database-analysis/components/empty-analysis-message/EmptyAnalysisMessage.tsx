@@ -1,13 +1,11 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { Text } from 'uiSrc/components/base/text'
 
 import { Pages } from 'uiSrc/constants'
 import { EmptyMessage, Content } from 'uiSrc/pages/database-analysis/constants'
 import { getRouterLinkProps } from 'uiSrc/services'
 
-import { Link } from 'uiSrc/components/base/link/Link'
-import styles from './styles.module.scss'
+import * as S from './EmptyAnalysisMessage.styles'
 
 interface Props {
   name: EmptyMessage
@@ -22,13 +20,12 @@ const emptyMessageContent: { [key in EmptyMessage]: Content } = {
     title: 'No keys to display',
     text: (path) => (
       <>
-        <Link
+        <S.SummaryLink
           {...getRouterLinkProps(path)}
-          className={styles.summary}
           data-test-subj="workbench-page-btn"
         >
           Use Workbench Guides and Tutorials
-        </Link>
+        </S.SummaryLink>
         {' to quickly load the data.'}
       </>
     ),
@@ -48,14 +45,12 @@ const EmptyAnalysisMessage = (props: Props) => {
   const { text, title } = emptyMessageContent[name]
 
   return (
-    <div className={styles.container} data-testid={`empty-analysis-no-${name}`}>
-      <div className={styles.content}>
-        <Text className={styles.title}>{title}</Text>
-        <Text className={styles.summary}>
-          {text(Pages.workbench(instanceId))}
-        </Text>
-      </div>
-    </div>
+    <S.Container data-testid={`empty-analysis-no-${name}`}>
+      <S.Content>
+        <S.Title>{title}</S.Title>
+        <S.Summary>{text(Pages.workbench(instanceId))}</S.Summary>
+      </S.Content>
+    </S.Container>
   )
 }
 

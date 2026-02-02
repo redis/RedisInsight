@@ -2,15 +2,15 @@ import React from 'react'
 
 import CliHeader from 'uiSrc/components/cli/components/cli-header'
 import CliBodyWrapper from 'uiSrc/components/cli/components/cli-body'
-import styles from './styles.module.scss'
+import * as S from '../Cli.styles'
 
 const CLI = () => (
-  <div className={styles.container} data-testid="cli">
-    <div className={styles.main}>
+  <S.CliContainer data-testid="cli">
+    <S.CliMain>
       <CliHeader />
       <CliBodyWrapper />
-    </div>
-  </div>
+    </S.CliMain>
+  </S.CliContainer>
 )
 
 export default CLI

@@ -2,7 +2,7 @@ import React from 'react'
 import { ColorText } from 'uiSrc/components/base/text'
 
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from './styles.module.scss'
+import * as S from './PromoLink.styles'
 
 export interface Props {
   title: string
@@ -17,8 +17,8 @@ const PromoLink = (props: Props) => {
   const { title, description, url, onClick, testId, styles: linkStyles } = props
 
   return (
-    <a
-      className={styles.link}
+    <S.Link
+      as="a"
       href={url}
       target="_blank"
       rel="noreferrer"
@@ -26,14 +26,16 @@ const PromoLink = (props: Props) => {
       data-testid={testId}
       style={{ ...linkStyles }}
     >
-      <RiIcon type="CloudIcon" size="m" className={styles.cloudIcon} />
-      <ColorText color={linkStyles?.color} className={styles.title}>
-        {title}
-      </ColorText>
-      <ColorText color={linkStyles?.color} className={styles.description}>
-        {description}
-      </ColorText>
-    </a>
+      <S.CloudIcon>
+        <RiIcon type="CloudIcon" size="m" />
+      </S.CloudIcon>
+      <S.Title>
+        <ColorText color={linkStyles?.color}>{title}</ColorText>
+      </S.Title>
+      <S.Description>
+        <ColorText color={linkStyles?.color}>{description}</ColorText>
+      </S.Description>
+    </S.Link>
   )
 }
 

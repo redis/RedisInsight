@@ -1,8 +1,0 @@
-.innerContainer {
-  @include eui.scrollBar;
-  overflow: auto;
-  height: 100%;
-  text-align: left;
-  letter-spacing: 0;
-  color: var(--euiTextSubduedColor) !important;
-}

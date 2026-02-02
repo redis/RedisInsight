@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useRef } from 'react'
-import cx from 'classnames'
 import {
   ListChildComponentProps,
   ListOnScrollProps,
@@ -9,7 +8,7 @@ import {
 import { ColorText } from 'uiSrc/components/base/text'
 import { DEFAULT_ERROR_MESSAGE, getFormatTime } from 'uiSrc/utils'
 
-import styles from 'uiSrc/components/monitor/Monitor/styles.module.scss'
+import * as S from '../Monitor/Monitor.styles'
 
 export interface Props {
   compressed: boolean
@@ -88,20 +87,14 @@ const MonitorOutputList = (props: Props) => {
   }, [])
 
   const getArgs = (args: string[]): JSX.Element => (
-    <span
-      className={cx(styles.itemArgs, {
-        [styles.itemArgs__compressed]: compressed,
-      })}
-    >
+    <S.ItemArgs $compressed={compressed}>
       {args?.map((arg, i) => (
         <span key={`${arg + i}`}>
-          {i === 0 && (
-            <span className={cx(styles.itemCommandFirst)}>{`"${arg}"`}</span>
-          )}
+          {i === 0 && <S.ItemCommandFirst>{`"${arg}"`}</S.ItemCommandFirst>}
           {i !== 0 && ` "${arg}"`}
         </span>
       ))}
-    </span>
+    </S.ItemArgs>
   )
 
   const Row = ({ index, style }: ListChildComponentProps) => {
@@ -121,13 +114,11 @@ const MonitorOutputList = (props: Props) => {
     }, [rowRef])
 
     return (
-      <div style={style} className={styles.item} data-testid={`row-${index}`}>
+      <S.Item style={style} data-testid={`row-${index}`}>
         {!isError && (
           <div ref={rowRef}>
             {width > MIDDLE_SCREEN_RESOLUTION && (
-              <span className={cx(styles.time)}>
-                {getFormatTime(time)}&nbsp;
-              </span>
+              <S.Time>{getFormatTime(time)}&nbsp;</S.Time>
             )}
             {width > SMALL_SCREEN_RESOLUTION && (
               <span>{`[${database} ${source}] `}</span>
@@ -140,24 +131,24 @@ const MonitorOutputList = (props: Props) => {
             {message ?? DEFAULT_ERROR_MESSAGE}
           </ColorText>
         )}
-      </div>
+      </S.Item>
     )
   }
 
   return (
-    <List
+    <S.ListWrapper
+      as={List}
       height={height}
       itemCount={items.length}
       itemSize={getRowHeight}
       ref={listRef}
       width={width - PROTRUDING_OFFSET}
-      className={styles.listWrapper}
       outerRef={outerRef}
       onScroll={handleScroll}
       overscanCount={30}
     >
       {Row}
-    </List>
+    </S.ListWrapper>
   )
 }
 

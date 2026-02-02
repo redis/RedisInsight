@@ -14,7 +14,7 @@ import { Text } from 'uiSrc/components/base/text'
 import ConsentOption from '../ConsentOption'
 import { ConsentCategories, IConsent } from '../ConsentsSettings'
 
-import styles from '../styles.module.scss'
+import * as S from '../ConsentsSettings.styles'
 
 const ConsentsPrivacy = () => {
   const [consents, setConsents] = useState<IConsent[]>([])
@@ -79,7 +79,7 @@ const ConsentsPrivacy = () => {
 
   return (
     <form onSubmit={formik.handleSubmit} data-testid="consents-settings-form">
-      <div className={styles.consentsWrapper}>
+      <S.ConsentsWrapper>
         <Text size="M" color="primary">
           To optimize your experience, Redis Insight uses third-party tools.
         </Text>
@@ -95,7 +95,7 @@ const ConsentsPrivacy = () => {
             key={consent.agreementName}
           />
         ))}
-      </div>
+      </S.ConsentsWrapper>
     </form>
   )
 }

@@ -1,11 +1,9 @@
 import React from 'react'
 
-import Divider from 'uiSrc/components/divider/Divider'
-
-import styles from './styles.module.scss'
+import * as S from './VerticalDivider.styles'
 
 const VerticalDivider = (props: any) => (
-  <Divider className={styles.divider} orientation="vertical" {...props} />
+  <S.StyledDivider orientation="vertical" {...props} />
 )
 
 export default VerticalDivider

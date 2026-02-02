@@ -1,7 +1,6 @@
 import React, { ReactElement, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import cn from 'classnames'
 
 import { CommandGroup, ICommand, ICommandArgGenerated } from 'uiSrc/constants'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
@@ -14,13 +13,13 @@ import {
   removeDeprecatedModuleCommands,
   checkDeprecatedModuleCommand,
 } from 'uiSrc/utils'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 
 import CommandHelper from './CommandHelper'
 import CommandHelperHeader from './CommandHelperHeader'
 
-import styles from './CommandHelper/styles.module.scss'
+import * as S from './CommandHelper.styles'
 
 const CommandHelperWrapper = () => {
   const {
@@ -98,21 +97,22 @@ const CommandHelperWrapper = () => {
         ? 'Optional'
         : 'Required'
     return (
-      <Row justify="between" align="center" className={styles.arg} key={i}>
+      <S.Arg justify="between" align="center" $odd={i % 2 === 1} key={i}>
         <FlexItem>
-          <RiBadge
+          <S.Badge
+            as={RiBadge}
             variant="light"
-            className={cn(styles.badge, 'text-capitalize')}
+            className="text-capitalize"
             label={type}
           />
         </FlexItem>
         <FlexItem grow>{arg.generatedName}</FlexItem>
-      </Row>
+      </S.Arg>
     )
   }
 
   return (
-    <div className={styles.commandHelperWrapper} data-testid="command-helper">
+    <S.CommandHelperWrapper data-testid="command-helper">
       <CommandHelperHeader />
       <CommandHelper
         commandLine={lastMatchedCommand}
@@ -126,7 +126,7 @@ const CommandHelperWrapper = () => {
         complexityShort={complexityShort}
         argList={generatedArgs.map((obj, i) => generateArgData(obj, i))}
       />
-    </div>
+    </S.CommandHelperWrapper>
   )
 }
 

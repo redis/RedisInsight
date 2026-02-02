@@ -6,7 +6,7 @@ import { FeaturesHighlightingType } from 'uiSrc/constants/featuresHighlighting'
 import { RiTooltip } from 'uiSrc/components'
 
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
-import styles from './styles.module.scss'
+import * as S from './HighlightedFeature.styles'
 
 export interface Props {
   isHighlight?: boolean
@@ -44,19 +44,15 @@ const HighlightedFeature = (props: Props) => {
   const BadgeHighlighting = () => (
     <>
       {innerContent}
-      <RiBadge
-        label="New!"
-        className={styles.badge}
-        data-testid="badge-highlighting"
-      />
+      <S.Badge as={RiBadge} label="New!" data-testid="badge-highlighting" />
     </>
   )
 
   const DotHighlighting = () => (
     <>
       {innerContent}
-      <span
-        className={cx(styles.dot, dotClassName)}
+      <S.Dot
+        className={cx('dot', dotClassName)}
         data-testid="dot-highlighting"
       />
     </>
@@ -82,12 +78,9 @@ const HighlightedFeature = (props: Props) => {
       position={tooltipPosition}
       data-testid="tooltip-badge-highlighting"
     >
-      <div
-        className={styles.badgeContainer}
-        data-testid="tooltip-badge-highlighting-inner"
-      >
+      <S.BadgeContainer data-testid="tooltip-badge-highlighting-inner">
         <BadgeHighlighting />
-      </div>
+      </S.BadgeContainer>
     </RiTooltip>
   )
 
@@ -98,10 +91,9 @@ const HighlightedFeature = (props: Props) => {
   if (!isHighlight) return <>{children}</>
 
   return (
-    <div
-      className={cx(styles.wrapper, wrapperClassName, {
-        'transform-on-hover': transformOnHover,
-      })}
+    <S.Wrapper
+      className={wrapperClassName}
+      $transformOnHover={transformOnHover}
       onClick={() => onClick?.()}
       role="presentation"
       data-testid={`feature-highlighted-${dataTestPostfix}`}
@@ -110,7 +102,7 @@ const HighlightedFeature = (props: Props) => {
       {type === 'tooltip' && <TooltipHighlighting />}
       {type === 'popover' && <DotHighlighting />}
       {type === 'tooltip-badge' && <TooltipBadgeHighlighting />}
-    </div>
+    </S.Wrapper>
   )
 }
 

@@ -1,9 +1,8 @@
 import React from 'react'
-import { RiTooltip } from 'uiSrc/components'
 import { formatLongName } from 'uiSrc/utils'
 import { CellText } from 'uiSrc/components/auto-discover'
 
-import styles from '../../styles.module.scss'
+import * as S from '../../RedisCluster.styles'
 
 export interface DatabaseCellProps {
   name: string
@@ -16,15 +15,14 @@ export const DatabaseCell = ({ name }: DatabaseCellProps) => {
 
   return (
     <div role="presentation" data-testid={`db_name_${name}`}>
-      <RiTooltip
+      <S.ColumnNameTooltip
         position="bottom"
         title="Database"
-        className={styles.tooltipColumnName}
         anchorClassName="truncateText"
         content={formatLongName(name || '')}
       >
         <CellText>{cellContent}</CellText>
-      </RiTooltip>
+      </S.ColumnNameTooltip>
     </div>
   )
 }

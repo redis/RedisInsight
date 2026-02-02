@@ -4,7 +4,7 @@ import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
-import styles from './styles.module.scss'
+import * as S from '../../../../SidePanels.styles'
 
 export interface Props {
   popoverContent: string
@@ -30,30 +30,27 @@ const PopoverRunAnalyze = (props: Props) => {
       isOpen={isShowPopover}
       closePopover={() => setIsShowPopover(false)}
       panelPaddingSize="m"
-      panelClassName={styles.panelPopover}
       button={children}
       onClick={(e) => e.stopPropagation()}
+      minWidth={432}
     >
-      <div
-        className={styles.popover}
-        data-testid="insights-db-analysis-popover"
-      >
-        <Text className={styles.popoverTitle} size="m">
+      <S.PanelPopover data-testid="insights-db-analysis-popover">
+        <S.PopoverTitle as={Text} size="m">
           Run database analysis
-        </Text>
+        </S.PopoverTitle>
         <Spacer size="s" />
-        <Text className={styles.popoverContent}>{popoverContent}</Text>
+        <S.PopoverContent as={Text}>{popoverContent}</S.PopoverContent>
         <Spacer size="m" />
-        <PrimaryButton
+        <S.PopoverApproveBtn
+          as={PrimaryButton}
           aria-label="Analyze"
           data-testid="approve-insights-db-analysis-btn"
           onClick={onApproveClick}
           size="s"
-          className={styles.popoverApproveBtn}
         >
           Analyze
-        </PrimaryButton>
-      </div>
+        </S.PopoverApproveBtn>
+      </S.PanelPopover>
     </RiPopover>
   )
 }

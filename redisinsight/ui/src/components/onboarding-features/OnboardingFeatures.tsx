@@ -44,7 +44,7 @@ import { FeatureFlags } from 'uiSrc/constants'
 import { isAnyFeatureEnabled } from 'uiSrc/utils/features'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import styles from './styles.module.scss'
+import * as S from './OnboardingFeatures.styles'
 
 const sendTelemetry = (databaseId: string, step: string, action: string) =>
   sendEventTelemetry({
@@ -368,26 +368,26 @@ const ONBOARDING_FEATURES = {
                     Run this command to see information and statistics on your
                     index:
                     <Spacer size="xs" />
-                    <CodeBlock
+                    <S.Pre
+                      as={CodeBlock}
                       isCopyable
-                      className={styles.pre}
                       data-testid="wb-onboarding-command"
                     >
                       FT.INFO {firstIndex}
-                    </CodeBlock>
+                    </S.Pre>
                   </>
                 ) : (
                   <>
                     Run this command to see information and statistics about
                     client connections:
                     <Spacer size="xs" />
-                    <CodeBlock
+                    <S.Pre
+                      as={CodeBlock}
                       isCopyable
-                      className={styles.pre}
                       data-testid="wb-onboarding-command"
                     >
                       CLIENT LIST
-                    </CodeBlock>
+                    </S.Pre>
                   </>
                 )}
               </>

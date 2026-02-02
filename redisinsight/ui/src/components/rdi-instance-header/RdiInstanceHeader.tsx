@@ -17,7 +17,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { Link } from 'uiSrc/components/base/link/Link'
 import InstancesNavigationPopover from '../instance-header/components/instances-navigation-popover'
-import styles from './styles.module.scss'
+import * as S from './RdiInstanceHeader.styles'
 
 const RdiInstanceHeader = () => {
   const { name = '' } = useSelector(connectedInstanceSelector)
@@ -36,12 +36,9 @@ const RdiInstanceHeader = () => {
   }
 
   return (
-    <Row className={styles.container} align="center">
+    <S.Container align="center">
       <FlexItem style={{ overflow: 'hidden' }} grow>
-        <div
-          className={styles.breadcrumbsContainer}
-          data-testid="breadcrumbs-container"
-        >
+        <S.BreadcrumbsContainer data-testid="breadcrumbs-container">
           <div>
             <RiTooltip position="bottom" content="My RDI instances">
               <Link
@@ -60,7 +57,7 @@ const RdiInstanceHeader = () => {
             <div style={{ maxWidth: '100%' }}>
               <Row align="center">
                 <FlexItem>
-                  <Text className={styles.divider}>/</Text>
+                  <S.Divider as={Text}>/</S.Divider>
                 </FlexItem>
                 <FlexItem grow style={{ overflow: 'hidden' }}>
                   <InstancesNavigationPopover name={name} />
@@ -68,7 +65,7 @@ const RdiInstanceHeader = () => {
               </Row>
             </div>
           </div>
-        </div>
+        </S.BreadcrumbsContainer>
       </FlexItem>
 
       {isAnyChatAvailable && (
@@ -90,7 +87,7 @@ const RdiInstanceHeader = () => {
           <OAuthUserProfile source={OAuthSocialSource.UserProfile} />
         </FlexItem>
       </FeatureFlagComponent>
-    </Row>
+    </S.Container>
   )
 }
 

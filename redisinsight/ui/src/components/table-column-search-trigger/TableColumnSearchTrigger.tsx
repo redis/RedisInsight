@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import cx from 'classnames'
 
 import * as keys from 'uiSrc/constants/keys'
 import { SearchInput } from 'uiSrc/components/base/inputs'
 import { Maybe, Nullable } from 'uiSrc/utils'
 import { SearchIcon } from 'uiSrc/components/base/icons'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import styles from './styles.module.scss'
+import * as S from './TableColumnSearchTrigger.styles'
 
 export interface Props {
   isOpen: boolean
@@ -76,10 +75,7 @@ const TableColumnSearchTrigger = (props: Props) => {
         onClick={handleOpen}
         data-testid="search-button"
       />
-      <div
-        className={cx(styles.search)}
-        style={{ display: isOpen ? 'flex' : 'none' }}
-      >
+      <S.Search style={{ display: isOpen ? 'flex' : 'none' }}>
         <SearchInput
           onKeyDown={onKeyDown}
           onBlur={handleOnBlur}
@@ -91,7 +87,7 @@ const TableColumnSearchTrigger = (props: Props) => {
           data-testid="search"
           style={{ width: '100%' }}
         />
-      </div>
+      </S.Search>
     </div>
   )
 }

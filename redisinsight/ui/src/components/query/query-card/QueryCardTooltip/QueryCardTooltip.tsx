@@ -1,12 +1,11 @@
 import React from 'react'
 import { take } from 'lodash'
-import cx from 'classnames'
 
 import { Nullable, getDbIndex, isGroupResults, truncateText } from 'uiSrc/utils'
 import { RiTooltip } from 'uiSrc/components'
 import { EMPTY_COMMAND } from 'uiSrc/constants'
 import { ResultsMode } from 'uiSrc/slices/interfaces'
-import styles from './styles.module.scss'
+import * as S from './QueryCardTooltip.styles'
 
 export interface Props {
   query: Nullable<string>
@@ -57,31 +56,24 @@ const QueryCardTooltip = (props: Props) => {
     return !isMultilineCommand ? (
       <span key={index}>{command}</span>
     ) : (
-      <pre
-        key={index}
-        className={cx(styles.queryLine, styles.queryMultiLine, {
-          [styles.queryLineFolding]: isFolding,
-        })}
-      >
-        <div className={styles.queryLineNumber}>{`${index + 1}`}</div>
+      <S.QueryLine as="pre" key={index} $multiLine $folding={isFolding}>
+        <S.QueryLineNumber
+          $folding={isFolding}
+        >{`${index + 1}`}</S.QueryLineNumber>
         <span>{command}</span>
-      </pre>
+      </S.QueryLine>
     )
   })
 
   return (
     <RiTooltip
-      className={styles.tooltip}
-      anchorClassName={styles.tooltipAnchor}
+      maxWidth={S.TOOLTIP_MAX_WIDTH}
       content={contentItems}
       position="bottom"
     >
-      <span
-        data-testid="query-card-tooltip-anchor"
-        className={styles.tooltipAnchor}
-      >
+      <S.TooltipAnchor data-testid="query-card-tooltip-anchor">
         {`${!isGroupResults(resultsMode) ? getDbIndex(db) : ''} ${command}`.trim()}
-      </span>
+      </S.TooltipAnchor>
     </RiTooltip>
   )
 }

@@ -10,7 +10,7 @@ import OAuthForm from 'uiSrc/components/oauth/shared/oauth-form'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
-import styles from './styles.module.scss'
+import * as S from '../../../../SidePanels.styles'
 
 const WelcomeAiAssistant = () => {
   const dispatch = useDispatch()
@@ -30,8 +30,8 @@ const WelcomeAiAssistant = () => {
   }
 
   return (
-    <div className={styles.wrapper} data-testid="copilot-welcome">
-      <div className={styles.container}>
+    <S.WelcomeWrapper data-testid="copilot-welcome">
+      <S.WelcomeContainer>
         <OAuthForm action={OAuthSocialAction.SignIn} onClick={handleSsoClick}>
           {(form: React.ReactNode) => (
             <>
@@ -56,14 +56,14 @@ const WelcomeAiAssistant = () => {
               {form}
               <Spacer />
 
-              <div className={styles.agreement}>
+              <S.Agreement>
                 <OAuthAgreement />
-              </div>
+              </S.Agreement>
             </>
           )}
         </OAuthForm>
-      </div>
-    </div>
+      </S.WelcomeContainer>
+    </S.WelcomeWrapper>
   )
 }
 

@@ -15,45 +15,11 @@ import { Nullable } from 'uiSrc/utils'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { Link } from 'uiSrc/components/base/link/Link'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 
 import { getVotedText, iconType, voteTooltip } from './utils'
-import styles from './styles.module.scss'
-import styled from 'styled-components'
-import { Theme } from 'uiSrc/components/base/theme/types'
-
-const GitHubLink = styled(Link)`
-  padding: 4px 8px 4px 4px;
-
-  margin-top: 10px;
-  height: 22px !important;
-  background-color: ${({ theme }: { theme: Theme }) =>
-    theme.components.button.variants.primary.normal?.bgColor};
-  color: ${({ theme }: { theme: Theme }) =>
-    theme.components.button.variants.primary.normal?.textColor};
-  &:hover {
-    text-decoration: none !important;
-    background-color: ${({ theme }: { theme: Theme }) =>
-      theme.components.button.variants.primary.hover?.bgColor};
-    color: ${({ theme }: { theme: Theme }) =>
-      theme.components.button.variants.primary.normal?.textColor};
-  }
-
-  & > span {
-    display: flex;
-    gap: 4px;
-    align-items: center;
-  }
-`
-
-const VotingIconButton = styled(IconButton)`
-  width: 28px !important;
-  height: 28px !important;
-  border-radius: 50%;
-`
+import * as S from './VoteOption.styles'
 
 export interface Props {
   voteOption: Vote
@@ -128,15 +94,14 @@ const VoteOption = (props: Props) => {
       anchorPosition="rightCenter"
       isOpen={popover === voteOption}
       closePopover={() => setPopover('')}
-      anchorClassName={styles.popoverAnchor}
-      panelClassName={cx('popoverLikeTooltip', styles.popover)}
+      panelClassName="popoverLikeTooltip"
       button={
         <RiTooltip
           content={getTooltipContent(voteOption)}
           position="bottom"
           data-testid={`${voteOption}-vote-tooltip`}
         >
-          <VotingIconButton
+          <S.VotingIconButton
             disabled={!isAnalyticsEnable}
             icon={iconType[voteOption] ?? 'LikeIcon'}
             className={cx('vote__btn', { selected: vote === voteOption })}
@@ -147,58 +112,56 @@ const VoteOption = (props: Props) => {
         </RiTooltip>
       }
     >
-      <div
-        className={styles.popoverWrapper}
-        data-testid={`${name}-${voteOption}-popover`}
-      >
+      <S.PopoverWrapper data-testid={`${name}-${voteOption}-popover`}>
         <Col align="end">
           <FlexItem>
             <Row>
               <FlexItem>
-                <RiIcon type="PetardIcon" className={styles.petardIcon} />
+                <S.PetardIcon>
+                  <RiIcon type="PetardIcon" />
+                </S.PetardIcon>
               </FlexItem>
               <FlexItem grow>
                 <div>
-                  <Text className={styles.text} data-testid="common-text">
+                  <S.VotingText as={Text} data-testid="common-text">
                     Thank you for the feedback.
-                  </Text>
-                  <Text className={styles.text} data-testid="custom-text">
+                  </S.VotingText>
+                  <S.VotingText as={Text} data-testid="custom-text">
                     {getVotedText(voteOption)}
-                  </Text>
+                  </S.VotingText>
                 </div>
               </FlexItem>
               <FlexItem>
-                <IconButton
+                <S.CloseBtn
                   icon={CancelSlimIcon}
                   id="close-voting-popover"
                   aria-label="close popover"
                   data-testid="close-popover"
-                  className={styles.closeBtn}
                   onClick={() => setPopover('')}
                 />
               </FlexItem>
             </Row>
           </FlexItem>
           <FlexItem grow>
-            <GitHubLink
+            <S.GitHubLink
               data-testid="recommendation-feedback-btn"
-              className={styles.link}
               href={EXTERNAL_LINKS.recommendationFeedback}
               target="_blank"
               data-test-subj="github-repo-link"
             >
-              <RiIcon
-                className={styles.githubIcon}
-                aria-label="redis insight github issues"
-                type="GithubIcon"
-                color="informative100"
-                data-testid="github-repo-icon"
-              />
+              <S.GithubIcon>
+                <RiIcon
+                  aria-label="redis insight github issues"
+                  type="GithubIcon"
+                  color="informative100"
+                  data-testid="github-repo-icon"
+                />
+              </S.GithubIcon>
               To Github
-            </GitHubLink>
+            </S.GitHubLink>
           </FlexItem>
         </Col>
-      </div>
+      </S.PopoverWrapper>
     </RiPopover>
   )
 }

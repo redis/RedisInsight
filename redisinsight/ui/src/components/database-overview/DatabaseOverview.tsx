@@ -1,5 +1,4 @@
 import React from 'react'
-import cx from 'classnames'
 import { getConfig } from 'uiSrc/config'
 
 import {
@@ -7,16 +6,14 @@ import {
   DATABASE_OVERVIEW_REFRESH_INTERVAL,
 } from 'uiSrc/constants/browser'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import MetricItem, {
-  OverviewItem,
-} from 'uiSrc/components/database-overview/components/OverviewMetrics/MetricItem'
+import MetricItem from 'uiSrc/components/database-overview/components/OverviewMetrics/MetricItem'
 import { useDatabaseOverview } from 'uiSrc/components/database-overview/hooks/useDatabaseOverview'
 
 import { IMetric } from 'uiSrc/components/database-overview/components/OverviewMetrics'
 import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import AutoRefresh from '../auto-refresh'
-import styles from './styles.module.scss'
+import * as S from './DatabaseOverview.styles'
 
 const riConfig = getConfig()
 
@@ -34,12 +31,9 @@ const DatabaseOverview = () => {
   } = useDatabaseOverview()
 
   return (
-    <Row className={styles.container}>
+    <S.Container>
       <FlexItem grow key="overview">
-        <Row
-          className={cx('flex-row', styles.itemContainer, styles.overview)}
-          align="center"
-        >
+        <S.ItemContainer className="flex-row overview">
           {connectivityError && (
             <MetricItem
               id="connectivityError"
@@ -52,26 +46,23 @@ const DatabaseOverview = () => {
           {metrics?.length! > 0 && (
             <>
               {subscriptionId && subscriptionType === 'fixed' && (
-                <OverviewItem
-                  id="upgrade-ri-db-button"
-                  className={styles.upgradeBtnItem}
-                  style={{ borderRight: 'none' }}
-                >
-                  <SecondaryButton
-                    filled={!!usedMemoryPercent && usedMemoryPercent >= 75}
-                    className={cx(styles.upgradeBtn)}
-                    style={{ fontWeight: '400' }}
-                    onClick={() => {
-                      const upgradeUrl = isBdbPackages
-                        ? `${riConfig.app.returnUrlBase}/databases/upgrade/${subscriptionId}`
-                        : `${riConfig.app.returnUrlBase}/subscription/${subscriptionId}/change-plan`
-                      window.open(upgradeUrl, '_blank')
-                    }}
-                    data-testid="upgrade-ri-db-button"
-                  >
-                    Upgrade plan
-                  </SecondaryButton>
-                </OverviewItem>
+                <S.UpgradeBtnItem id="upgrade-ri-db-button">
+                  <S.UpgradeBtn>
+                    <SecondaryButton
+                      filled={!!usedMemoryPercent && usedMemoryPercent >= 75}
+                      style={{ fontWeight: '400' }}
+                      onClick={() => {
+                        const upgradeUrl = isBdbPackages
+                          ? `${riConfig.app.returnUrlBase}/databases/upgrade/${subscriptionId}`
+                          : `${riConfig.app.returnUrlBase}/subscription/${subscriptionId}/change-plan`
+                        window.open(upgradeUrl, '_blank')
+                      }}
+                      data-testid="upgrade-ri-db-button"
+                    >
+                      Upgrade plan
+                    </SecondaryButton>
+                  </S.UpgradeBtn>
+                </S.UpgradeBtnItem>
               )}
               {metrics?.map((overviewItem) => (
                 <MetricItem
@@ -80,12 +71,11 @@ const DatabaseOverview = () => {
                   tooltipContent={getTooltipContent(overviewItem)}
                 />
               ))}
-              <OverviewItem
-                className={styles.autoRefresh}
+              <S.AutoRefresh
                 data-testid="overview-auto-refresh"
                 id="overview-auto-refresh"
               >
-                <FlexItem className={styles.overviewItemContent}>
+                <S.OverviewItemContent>
                   <AutoRefresh
                     displayText={false}
                     displayLastRefresh={false}
@@ -103,13 +93,13 @@ const DatabaseOverview = () => {
                     onRefresh={handleRefresh}
                     onEnableAutoRefresh={handleEnableAutoRefresh}
                   />
-                </FlexItem>
-              </OverviewItem>
+                </S.OverviewItemContent>
+              </S.AutoRefresh>
             </>
           )}
-        </Row>
+        </S.ItemContainer>
       </FlexItem>
-    </Row>
+    </S.Container>
   )
 }
 
@@ -126,27 +116,21 @@ const getTooltipContent = (metric: IMetric) => {
   return metric.children
     .filter((item) => item.value !== undefined)
     .map((tooltipItem) => (
-      <Row
-        className={styles.commandsPerSecTip}
-        key={tooltipItem.id}
-        align="center"
-      >
-        {tooltipItem.icon && (
-          <FlexItem>
-            <RiIcon
-              className={styles.moreInfoOverviewIcon}
-              size="m"
-              type={tooltipItem.icon}
-            />
-          </FlexItem>
-        )}
-        <FlexItem className={styles.moreInfoOverviewContent} direction="row">
-          {tooltipItem.content}
-        </FlexItem>
-        <FlexItem className={styles.moreInfoOverviewTitle}>
-          {tooltipItem.title}
-        </FlexItem>
-      </Row>
+      <S.CommandsPerSecTip key={tooltipItem.id}>
+        <Row align="center">
+          {tooltipItem.icon && (
+            <FlexItem>
+              <S.MoreInfoOverviewIcon>
+                <RiIcon size="m" type={tooltipItem.icon} />
+              </S.MoreInfoOverviewIcon>
+            </FlexItem>
+          )}
+          <S.MoreInfoOverviewContent direction="row">
+            {tooltipItem.content}
+          </S.MoreInfoOverviewContent>
+          <S.MoreInfoOverviewTitle>{tooltipItem.title}</S.MoreInfoOverviewTitle>
+        </Row>
+      </S.CommandsPerSecTip>
     ))
 }
 

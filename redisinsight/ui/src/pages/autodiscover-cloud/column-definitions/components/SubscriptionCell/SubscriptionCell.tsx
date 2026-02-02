@@ -1,9 +1,8 @@
 import React from 'react'
 
 import { formatLongName, replaceSpaces } from 'uiSrc/utils'
-import { RiTooltip } from 'uiSrc/components'
 import { CellText } from 'uiSrc/components/auto-discover'
-import styles from 'uiSrc/pages/autodiscover-cloud/redis-cloud-databases/styles.module.scss'
+import { ColumnNameTooltip } from 'uiSrc/pages/autodiscover-cloud/column-definitions/ColumnDefinitions.styles'
 
 import { SubscriptionCellProps } from './SubscriptionCell.types'
 
@@ -15,15 +14,14 @@ export const SubscriptionCell = ({
 
   return (
     <div role="presentation" className={className}>
-      <RiTooltip
+      <ColumnNameTooltip
         position="bottom"
         title="Subscription"
-        className={styles.tooltipColumnName}
         anchorClassName="truncateText"
         content={formatLongName(name)}
       >
         <CellText>{cellContent}</CellText>
-      </RiTooltip>
+      </ColumnNameTooltip>
     </div>
   )
 }

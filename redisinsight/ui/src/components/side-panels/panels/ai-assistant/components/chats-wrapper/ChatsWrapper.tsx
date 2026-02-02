@@ -13,9 +13,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
 import AssistanceChat from '../assistance-chat'
 import ExpertChat from '../expert-chat'
-
-import styles from './styles.module.scss'
-import sidePanelStyles from 'uiSrc/components/side-panels/styles.module.scss'
+import * as S from '../../../../SidePanels.styles'
 
 interface ChatWithTabs {
   feature: Maybe<FeatureFlagComponent>
@@ -86,26 +84,26 @@ const ChatsWrapper = () => {
   }
 
   return (
-    <div className={styles.wrapper} data-testid="chat-wrapper">
+    <S.ChatsWrapperContainer data-testid="chat-wrapper">
       {chats.length > 1 && (
-        <Tabs
+        <S.Tabs
+          as={Tabs}
           tabs={tabs}
-          className={sidePanelStyles.tabs}
           value={activeTab}
           onChange={selectTab}
           data-testid="ai-tabs"
         />
       )}
       {chats.length > 0 && (
-        <div className={styles.chat}>
+        <S.Chat>
           {activeTab === AiChatType.Assistance &&
             documentationChatFeature?.flag && <AssistanceChat />}
           {activeTab === AiChatType.Query && databaseChatFeature?.flag && (
             <ExpertChat />
           )}
-        </div>
+        </S.Chat>
       )}
-    </div>
+    </S.ChatsWrapperContainer>
   )
 }
 

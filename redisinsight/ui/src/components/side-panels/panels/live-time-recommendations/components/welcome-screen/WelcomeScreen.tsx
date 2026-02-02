@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
-import cx from 'classnames'
 
 import { DEFAULT_DELIMITER, FeatureFlags, Pages } from 'uiSrc/constants'
 import { recommendationsSelector } from 'uiSrc/slices/recommendations/recommendations'
@@ -20,8 +19,7 @@ import { FeatureFlagComponent } from 'uiSrc/components'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
 import PopoverRunAnalyze from '../popover-run-analyze'
-
-import styles from './styles.module.scss'
+import * as S from '../../../../SidePanels.styles'
 
 const NoRecommendationsScreen = () => {
   const { provider, connectionType } = useSelector(connectedInstanceSelector)
@@ -52,25 +50,29 @@ const NoRecommendationsScreen = () => {
   }
 
   return (
-    <div className={styles.container} data-testid="no-recommendations-screen">
-      <Text className={styles.bigText}>Welcome to</Text>
-      <Text className={styles.hugeText}>Tips!</Text>
-      <Text className={styles.mediumText}>
+    <S.TipsWelcomeContainer data-testid="no-recommendations-screen">
+      <S.BigText as={Text}>Welcome to</S.BigText>
+      <S.HugeText as={Text}>Tips!</S.HugeText>
+      <S.MediumText as={Text}>
         Where we help improve your database.
-      </Text>
-      <Text className={cx(styles.text, styles.bigMargin)}>
-        New tips appear while you work with your database, including how to
-        improve performance and optimize memory usage.
-      </Text>
-      <WelcomeIcon className={styles.icon} />
+      </S.MediumText>
+      <S.BigMargin>
+        <S.WelcomeText as={Text}>
+          New tips appear while you work with your database, including how to
+          improve performance and optimize memory usage.
+        </S.WelcomeText>
+      </S.BigMargin>
+      <S.WelcomeIcon>
+        <WelcomeIcon />
+      </S.WelcomeIcon>
       {instanceId ? (
         <FeatureFlagComponent name={FeatureFlags.envDependent}>
-          <Text
-            className={styles.text}
+          <S.WelcomeText
+            as={Text}
             data-testid="no-recommendations-analyse-text"
           >
             Eager for more tips? Run Database Analysis to get started.
-          </Text>
+          </S.WelcomeText>
 
           <PopoverRunAnalyze
             isShowPopover={isShowInfo}
@@ -92,14 +94,11 @@ const NoRecommendationsScreen = () => {
           </PopoverRunAnalyze>
         </FeatureFlagComponent>
       ) : (
-        <Text
-          className={styles.text}
-          data-testid="no-recommendations-analyse-text"
-        >
+        <S.WelcomeText as={Text} data-testid="no-recommendations-analyse-text">
           Eager for tips? Connect to a database to get started.
-        </Text>
+        </S.WelcomeText>
       )}
-    </div>
+    </S.TipsWelcomeContainer>
   )
 }
 

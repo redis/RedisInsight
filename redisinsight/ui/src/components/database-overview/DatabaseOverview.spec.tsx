@@ -4,7 +4,6 @@ import { render, screen, fireEvent } from 'uiSrc/utils/test-utils'
 import DatabaseOverview from './DatabaseOverview'
 import { useDatabaseOverview } from './hooks/useDatabaseOverview'
 import { IMetric } from './components/OverviewMetrics'
-import styles from './styles.module.scss'
 
 // Mock the useDatabaseOverview hook
 jest.mock('./hooks/useDatabaseOverview')
@@ -211,7 +210,6 @@ const mockMetrics: IMetric[] = [
     loading: 5 === null,
     unavailableText: 'CPU is not available',
     icon: 'TimeLightIcon',
-    className: styles.cpuWrapper,
     content: '5 %',
     tooltip: {
       title: 'CPU',
@@ -309,7 +307,6 @@ const mockMetrics: IMetric[] = [
       icon: 'MeasureLightIcon',
       content: 5,
     },
-    className: styles.opsPerSecItem,
     children: [
       {
         id: 'commands-per-sec-tip',

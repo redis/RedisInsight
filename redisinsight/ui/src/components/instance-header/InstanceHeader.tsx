@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import cx from 'classnames'
 import { useTheme } from '@redis-ui/styles'
 
 import { FeatureFlags, Pages } from 'uiSrc/constants'
@@ -41,12 +40,11 @@ import UserProfile from 'uiSrc/components/instance-header/components/user-profil
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { EditIcon } from 'uiSrc/components/base/icons'
-import { Text } from 'uiSrc/components/base/text'
 import { NumericInput } from 'uiSrc/components/base/inputs'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Link } from 'uiSrc/components/base/link/Link'
 import InstancesNavigationPopover from './components/instances-navigation-popover'
-import styles from './styles.module.scss'
+import * as S from './InstanceHeader.styles'
 
 const riConfig = getConfig()
 const { returnUrlBase, returnUrlLabel, returnUrlTooltip } = riConfig.app
@@ -133,8 +131,7 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
   }
 
   return (
-    <div
-      className={cx(styles.container)}
+    <S.Container
       style={{
         borderBottom: theme.components.sideBar.collapsed.borderRight,
       }}
@@ -146,10 +143,7 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
         style={{ height: '100%' }}
       >
         <FlexItem style={{ overflow: 'hidden' }} grow={false}>
-          <div
-            className={styles.breadcrumbsContainer}
-            data-testid="breadcrumbs-container"
-          >
+          <S.BreadcrumbsContainer data-testid="breadcrumbs-container">
             <div>
               <FeatureFlagComponent name={FeatureFlags.envDependent}>
                 <RiTooltip
@@ -182,7 +176,7 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                 <Row align="center">
                   <FeatureFlagComponent name={FeatureFlags.envDependent}>
                     <FlexItem>
-                      <Text className={styles.divider}>/</Text>
+                      <S.Divider>/</S.Divider>
                     </FlexItem>
                   </FeatureFlagComponent>
                   {returnUrlBase && returnUrl && (
@@ -197,14 +191,13 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                             position="bottom"
                             content={returnUrlTooltip || returnUrlLabel}
                           >
-                            <Text
-                              className={styles.breadCrumbLink}
+                            <S.BreadCrumbLink
                               aria-label={returnUrlTooltip || returnUrlLabel}
                               onClick={goToReturnUrl}
                               onKeyDown={goToReturnUrl}
                             >
                               &#60; {returnUrlLabel}
-                            </Text>
+                            </S.BreadCrumbLink>
                           </RiTooltip>
                         </FlexItem>
                       }
@@ -212,7 +205,7 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                   )}
                   <FlexItem grow style={{ overflow: 'hidden' }}>
                     {isRedisStack || !envDependentFeature?.flag ? (
-                      <b className={styles.dbName}>{name}</b>
+                      <S.DbName>{name}</S.DbName>
                     ) : (
                       <InstancesNavigationPopover name={name} />
                     )}
@@ -232,41 +225,42 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                               onApply={handleChangeDbIndex}
                               onDecline={() => setIsDbIndexEditing(false)}
                               viewChildrenMode={false}
-                              controlsClassName={styles.controls}
                             >
-                              <NumericInput
-                                autoSize
-                                autoValidate
-                                min={0}
-                                onFocus={selectOnFocus}
-                                onChange={(value) =>
-                                  setDbIndex(value ? value.toString() : '')
-                                }
-                                value={Number(dbIndex)}
-                                placeholder="Database Index"
-                                className={styles.dbIndexInput}
-                                data-testid="change-index-input"
-                              />
+                              <S.DbIndexInput>
+                                <NumericInput
+                                  autoSize
+                                  autoValidate
+                                  min={0}
+                                  onFocus={selectOnFocus}
+                                  onChange={(value) =>
+                                    setDbIndex(value ? value.toString() : '')
+                                  }
+                                  value={Number(dbIndex)}
+                                  placeholder="Database Index"
+                                  data-testid="change-index-input"
+                                />
+                              </S.DbIndexInput>
                             </InlineItemEditor>
                           </div>
                         ) : (
-                          <EmptyButton
-                            icon={EditIcon}
-                            iconSide="right"
-                            onClick={() => setIsDbIndexEditing(true)}
-                            className={styles.buttonDbIndex}
-                            disabled={isDbIndexDisabled || instanceLoading}
-                            data-testid="change-index-btn"
-                          >
-                            <span
-                              style={{
-                                fontSize: 14,
-                                marginBottom: '-2px',
-                              }}
+                          <S.ButtonDbIndex>
+                            <EmptyButton
+                              icon={EditIcon}
+                              iconSide="right"
+                              onClick={() => setIsDbIndexEditing(true)}
+                              disabled={isDbIndexDisabled || instanceLoading}
+                              data-testid="change-index-btn"
                             >
-                              db{db || 0}
-                            </span>
-                          </EmptyButton>
+                              <span
+                                style={{
+                                  fontSize: 14,
+                                  marginBottom: '-2px',
+                                }}
+                              >
+                                db{db || 0}
+                              </span>
+                            </EmptyButton>
+                          </S.ButtonDbIndex>
                         )}
                       </div>
                     </FlexItem>
@@ -274,8 +268,7 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                   <FlexItem style={{ paddingLeft: 6 }}>
                     <RiTooltip
                       position="right"
-                      anchorClassName={styles.tooltipAnchor}
-                      className={styles.tooltip}
+                      maxWidth={S.TOOLTIP_MAX_WIDTH}
                       content={
                         <ShortInstanceInfo
                           info={{
@@ -292,19 +285,22 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                         />
                       }
                     >
-                      <RiIcon
-                        className={styles.infoIcon}
-                        type="InfoIcon"
-                        size="l"
-                        style={{ cursor: 'pointer' }}
-                        data-testid="db-info-icon"
-                      />
+                      <S.TooltipAnchor>
+                        <S.InfoIcon className="infoIcon">
+                          <RiIcon
+                            type="InfoIcon"
+                            size="l"
+                            style={{ cursor: 'pointer' }}
+                            data-testid="db-info-icon"
+                          />
+                        </S.InfoIcon>
+                      </S.TooltipAnchor>
                     </RiTooltip>
                   </FlexItem>
                 </Row>
               </div>
             </div>
-          </div>
+          </S.BreadcrumbsContainer>
         </FlexItem>
 
         <FlexItem style={{ textAlign: 'center' }}>
@@ -327,7 +323,7 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
           </Row>
         </FlexItem>
       </Row>
-    </div>
+    </S.Container>
   )
 }
 

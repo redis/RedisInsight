@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import cx from 'classnames'
 import { useSelector } from 'react-redux'
 
 import { GROUP_TYPES_DISPLAY } from 'uiSrc/constants'
@@ -9,7 +8,7 @@ import { Text } from 'uiSrc/components/base/text'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from './styles.module.scss'
+import * as S from '../../../CommandHelper.styles'
 
 export interface Props {
   submitFilter: (type: string) => void
@@ -46,13 +45,14 @@ const CHSearchFilter = ({ submitFilter, isLoading }: Props) => {
       label: text,
       value,
       inputDisplay: (
-        <Text
+        <S.SelectedType
+          as={Text}
           data-test-subj={`filter-option-group-type-${value}`}
-          className={cx(styles.selectedType, 'text-capitalize')}
+          className="text-capitalize"
           size="s"
         >
           {text}
-        </Text>
+        </S.SelectedType>
       ),
       dropdownDisplay: (
         <Text
@@ -72,7 +72,7 @@ const CHSearchFilter = ({ submitFilter, isLoading }: Props) => {
   }
 
   return (
-    <div className={styles.container}>
+    <S.FilterContainer>
       <RiSelect
         loading={isLoading}
         disabled={isLoading}
@@ -80,11 +80,12 @@ const CHSearchFilter = ({ submitFilter, isLoading }: Props) => {
         allowReset
         placeholder={
           <Row role="presentation">
-            <RiIcon
-              type="FilterIcon"
-              data-testid="filter-option--group-type-default"
-              className={styles.controlsIcon}
-            />
+            <S.ControlsIcon>
+              <RiIcon
+                type="FilterIcon"
+                data-testid="filter-option--group-type-default"
+              />
+            </S.ControlsIcon>
           </Row>
         }
         value={typeSelected}
@@ -97,7 +98,7 @@ const CHSearchFilter = ({ submitFilter, isLoading }: Props) => {
           return option.dropdownDisplay
         }}
       />
-    </div>
+    </S.FilterContainer>
   )
 }
 

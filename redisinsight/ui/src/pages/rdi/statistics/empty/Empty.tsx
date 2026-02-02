@@ -9,7 +9,7 @@ import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { RiImage } from 'uiSrc/components/base/display'
 import Panel from '../components/panel'
 
-import styles from './styles.module.scss'
+import * as S from './Empty.styles'
 
 interface Props {
   rdiInstanceId: string
@@ -20,16 +20,11 @@ const Empty = ({ rdiInstanceId }: Props) => {
 
   return (
     <Panel>
-      <div
-        className={styles.emptyPipelineContainer}
-        data-testid="empty-pipeline"
-      >
+      <S.EmptyPipelineContainer data-testid="empty-pipeline">
         <RiImage src={EmptyPipelineIcon} alt="empty" $size="s" />
         <Spacer size="xl" />
         <Text>No pipeline deployed yet</Text>
-        <Text className={styles.subTitle}>
-          Create your first pipeline to get started!
-        </Text>
+        <S.SubTitle>Create your first pipeline to get started!</S.SubTitle>
         <Spacer size="l" />
         <PrimaryButton
           data-testid="add-pipeline-btn"
@@ -40,7 +35,7 @@ const Empty = ({ rdiInstanceId }: Props) => {
         >
           Add Pipeline
         </PrimaryButton>
-      </div>
+      </S.EmptyPipelineContainer>
     </Panel>
   )
 }

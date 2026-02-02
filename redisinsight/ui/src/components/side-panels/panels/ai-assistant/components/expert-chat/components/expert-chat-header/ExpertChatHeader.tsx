@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import cx from 'classnames'
 
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
@@ -23,7 +22,7 @@ import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { EmptyButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { EraserIcon, LightBulbIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
-import styles from './styles.module.scss'
+import * as S from './ExpertChatHeader.styles'
 
 export interface Props {
   connectedInstanceName?: string
@@ -60,79 +59,84 @@ const ExpertChatHeader = (props: Props) => {
   }
 
   return (
-    <div className={styles.header}>
+    <S.Header>
       {connectedInstanceName ? (
-        <RiTooltip
-          content={connectedInstanceName}
-          anchorClassName={styles.dbName}
-        >
-          <Text size="xs" className="truncateText">
-            {connectedInstanceName}
-          </Text>
+        <RiTooltip content={connectedInstanceName}>
+          <S.DbName>
+            <Text size="xs" className="truncateText">
+              {connectedInstanceName}
+            </Text>
+          </S.DbName>
         </RiTooltip>
       ) : (
         <span />
       )}
-      <div className={styles.headerActions}>
+      <S.HeaderActions>
         <RiTooltip
           content={
             isTutorialsPopoverOpen
               ? undefined
               : 'Open relevant tutorials to learn more'
           }
-          anchorClassName={styles.headerBtnAnchor}
           position="bottom"
         >
-          <RiPopover
-            ownFocus
-            panelClassName={cx('popoverLikeTooltip', styles.popover)}
-            anchorClassName={styles.popoverAnchor}
-            anchorPosition="downLeft"
-            isOpen={isTutorialsPopoverOpen}
-            panelPaddingSize="m"
-            closePopover={() => setIsTutorialsPopoverOpen(false)}
-            button={
-              <EmptyButton
-                icon={LightBulbIcon}
-                size="small"
-                onClick={() => setIsTutorialsPopoverOpen(true)}
-                className={cx(styles.headerBtn)}
-                data-testid="ai-expert-tutorial-btn"
-              />
-            }
-          >
-            <>
-              <Text size="m" color="primary">
-                Open relevant tutorials to learn more about search and query.
-              </Text>
-              <Spacer size="l" />
-              <Row justify="end">
-                <PrimaryButton
-                  size="s"
-                  onClick={handleOpenTutorials}
-                  className={styles.openTutorialsBtn}
-                  data-testid="ai-expert-open-tutorials"
-                >
-                  Open tutorials
-                </PrimaryButton>
-              </Row>
-            </>
-          </RiPopover>
+          <S.HeaderBtnAnchor>
+            <RiPopover
+              ownFocus
+              panelClassName="popoverLikeTooltip"
+              minWidth={S.POPOVER_MIN_WIDTH}
+              anchorPosition="downLeft"
+              isOpen={isTutorialsPopoverOpen}
+              panelPaddingSize="m"
+              closePopover={() => setIsTutorialsPopoverOpen(false)}
+              button={
+                <S.PopoverAnchor>
+                  <S.HeaderBtn>
+                    <EmptyButton
+                      icon={LightBulbIcon}
+                      size="small"
+                      onClick={() => setIsTutorialsPopoverOpen(true)}
+                      data-testid="ai-expert-tutorial-btn"
+                    />
+                  </S.HeaderBtn>
+                </S.PopoverAnchor>
+              }
+            >
+              <>
+                <Text size="m" color="primary">
+                  Open relevant tutorials to learn more about search and query.
+                </Text>
+                <Spacer size="l" />
+                <Row justify="end">
+                  <S.OpenTutorialsBtn>
+                    <PrimaryButton
+                      size="s"
+                      onClick={handleOpenTutorials}
+                      data-testid="ai-expert-open-tutorials"
+                    >
+                      Open tutorials
+                    </PrimaryButton>
+                  </S.OpenTutorialsBtn>
+                </Row>
+              </>
+            </RiPopover>
+          </S.HeaderBtnAnchor>
         </RiTooltip>
         <RestartChat
           button={
-            <EmptyButton
-              disabled={isClearDisabled}
-              icon={EraserIcon}
-              size="small"
-              className={styles.headerBtn}
-              data-testid="ai-expert-restart-session-btn"
-            />
+            <S.HeaderBtn>
+              <EmptyButton
+                disabled={isClearDisabled}
+                icon={EraserIcon}
+                size="small"
+                data-testid="ai-expert-restart-session-btn"
+              />
+            </S.HeaderBtn>
           }
           onConfirm={onRestart}
         />
-      </div>
-    </div>
+      </S.HeaderActions>
+    </S.Header>
   )
 }
 

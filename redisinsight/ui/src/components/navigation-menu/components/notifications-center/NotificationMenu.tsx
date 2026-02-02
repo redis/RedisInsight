@@ -13,7 +13,7 @@ import {
 import NotificationCenter from './NotificationCenter'
 import PopoverNotification from './PopoverNotification'
 
-import styles from './styles.module.scss'
+import * as S from './NotificationsCenter.styles'
 
 const NavButton = () => {
   const { isCenterOpen, totalUnread } = useSelector(notificationCenterSelector)
@@ -42,23 +42,20 @@ const NavButton = () => {
     <>
       {Btn}
       {totalUnread > 0 && !isCenterOpen && (
-        <div
-          className={styles.badgeUnreadCount}
-          data-testid="total-unread-badge"
-        >
+        <S.BadgeUnreadCount data-testid="total-unread-badge">
           {totalUnread > 9 ? '9+' : totalUnread}
-        </div>
+        </S.BadgeUnreadCount>
       )}
     </>
   )
 }
 
 const NotificationMenu = () => (
-  <div className={styles.wrapper} data-testid="notification-menu">
+  <S.Wrapper data-testid="notification-menu">
     <NavButton />
     <NotificationCenter />
     <PopoverNotification />
-  </div>
+  </S.Wrapper>
 )
 
 export default NotificationMenu

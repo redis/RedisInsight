@@ -1,11 +1,10 @@
 import React from 'react'
 
-import { RiTooltip } from 'uiSrc/components'
 import { RedisCloudSubscriptionStatus } from 'uiSrc/slices/interfaces'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { CellText } from 'uiSrc/components/auto-discover'
 import { AlertStatusContent } from 'uiSrc/pages/autodiscover-cloud/components/AlertStatusContent'
-import styles from 'uiSrc/pages/autodiscover-cloud/redis-cloud-subscriptions/styles.module.scss'
+import { StatusTooltip } from 'uiSrc/pages/autodiscover-cloud/column-definitions/ColumnDefinitions.styles'
 
 import { AlertCellProps } from './AlertCell.types'
 
@@ -15,7 +14,7 @@ export const AlertCell = ({ status, numberOfDatabases }: AlertCellProps) => {
 
   if (isUnavailable) {
     return (
-      <RiTooltip
+      <StatusTooltip
         title={
           <CellText variant="semiBold">
             This subscription is not available for one of the following reasons:
@@ -23,7 +22,6 @@ export const AlertCell = ({ status, numberOfDatabases }: AlertCellProps) => {
         }
         content={<AlertStatusContent />}
         position="right"
-        className={styles.tooltipStatus}
       >
         <RiIcon
           type="ToastDangerIcon"
@@ -31,7 +29,7 @@ export const AlertCell = ({ status, numberOfDatabases }: AlertCellProps) => {
           size="m"
           aria-label="subscription alert"
         />
-      </RiTooltip>
+      </StatusTooltip>
     )
   }
 

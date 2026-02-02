@@ -1,6 +1,5 @@
 import React from 'react'
 import { isArray, isString } from 'lodash'
-import cx from 'classnames'
 import { OAuthSsoHandlerDialog, OAuthConnectFreeDb } from 'uiSrc/components'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { replaceVariables } from 'uiSrc/utils/recommendation'
@@ -13,7 +12,7 @@ import { Link } from 'uiSrc/components/base/link/Link'
 import InternalLink from '../internal-link'
 import RecommendationBody from '../recommendation-body'
 
-import styles from '../styles.module.scss'
+import * as S from '../Recommendation.styles'
 
 export interface Props {
   content: IRecommendationContent
@@ -40,42 +39,45 @@ const ContentElement = (props: Props) => {
   switch (type) {
     case 'paragraph':
       return (
-        <ColorText
+        <S.Text
+          as={ColorText}
           size="M"
           data-testid={`paragraph-${telemetryName}-${idx}`}
           key={`${telemetryName}-${idx}`}
           component="div"
-          className={cx(styles.text, { [styles.insights]: insights })}
+          $insights={insights}
           color="primary"
         >
           {value}
-        </ColorText>
+        </S.Text>
       )
     case 'code':
       return (
-        <ColorText
+        <S.Code
+          as={ColorText}
           size="M"
           data-testid={`code-${telemetryName}-${idx}`}
-          className={cx(styles.code, { [styles.insights]: insights })}
+          $insights={insights}
           key={`${telemetryName}-${idx}`}
           color="primary"
         >
-          <code className={cx(styles.span, styles.text)}>{value}</code>
-        </ColorText>
+          <S.Text as="code" $insights={insights}>
+            {value}
+          </S.Text>
+        </S.Code>
       )
     case 'span':
       return (
-        <ColorText
+        <S.Text
+          as={ColorText}
           size="M"
           data-testid={`span-${telemetryName}-${idx}`}
           key={`${telemetryName}-${idx}`}
           color="primary"
-          className={cx(styles.span, styles.text, {
-            [styles.insights]: insights,
-          })}
+          $insights={insights}
         >
           {value}
-        </ColorText>
+        </S.Text>
       )
     case 'link':
       return (
@@ -136,12 +138,11 @@ const ContentElement = (props: Props) => {
             campaign: telemetryName,
           })}
         >
-          <ColorText
-            className={cx(styles.code, { [styles.insights]: insights })}
-            color="subdued"
-          >
-            <code className={cx(styles.span, styles.text)}>{value.name}</code>
-          </ColorText>
+          <S.Code as={ColorText} $insights={insights} color="subdued">
+            <S.Text as="code" $insights={insights}>
+              {value.name}
+            </S.Text>
+          </S.Code>
         </Link>
       )
     case 'spacer':
@@ -154,15 +155,14 @@ const ContentElement = (props: Props) => {
       )
     case 'list':
       return (
-        <ul
-          className={styles.list}
+        <S.List
           data-testid={`list-${telemetryName}-${idx}`}
           key={`${telemetryName}-${idx}`}
         >
           {isArray(value) &&
             value.map((listElement: IRecommendationContent[], idx: number) => (
-              <li
-                className={cx(styles.listItem, { [styles.insights]: insights })}
+              <S.ListItem
+                $insights={insights}
                 // eslint-disable-next-line react/no-array-index-key
                 key={`list-item-${idx}`}
               >
@@ -173,9 +173,9 @@ const ContentElement = (props: Props) => {
                   onLinkClick={onLinkClick}
                   insights={insights}
                 />
-              </li>
+              </S.ListItem>
             ))}
-        </ul>
+        </S.List>
       )
     case 'internal-link':
       return (

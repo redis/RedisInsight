@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react'
 import { Header } from 'uiSrc/components/side-panels/components'
-import styles from 'uiSrc/components/side-panels/styles.module.scss'
 import AiAssistant from 'uiSrc/components/side-panels/panels/ai-assistant'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { OnboardingTour } from 'uiSrc/components'
 import { Text } from 'uiSrc/components/base/text'
 import { Row } from 'uiSrc/components/base/layout/flex'
+import * as S from 'uiSrc/components/side-panels/SidePanels.styles'
 
 export interface Props {
   isFullScreen: boolean
@@ -18,11 +18,10 @@ const CopilotPanel = (props: Props) => {
 
   const CopilotHeader = useCallback(
     () => (
-      <div className={styles.assistantHeader}>
+      <S.AssistantHeader>
         <OnboardingTour
           options={ONBOARDING_FEATURES.BROWSER_COPILOT}
           anchorPosition={isFullScreen ? 'rightUp' : 'leftUp'}
-          anchorWrapperClassName={styles.onboardingAnchorWrapper}
           fullSize
         >
           <Row>
@@ -31,7 +30,7 @@ const CopilotPanel = (props: Props) => {
             </Text>
           </Row>
         </OnboardingTour>
-      </div>
+      </S.AssistantHeader>
     ),
     [isFullScreen],
   )
@@ -46,9 +45,9 @@ const CopilotPanel = (props: Props) => {
       >
         <CopilotHeader />
       </Header>
-      <div className={styles.body}>
+      <S.Body>
         <AiAssistant />
-      </div>
+      </S.Body>
     </>
   )
 }

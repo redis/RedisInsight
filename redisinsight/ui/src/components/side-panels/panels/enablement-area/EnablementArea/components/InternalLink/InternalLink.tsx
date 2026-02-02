@@ -1,12 +1,10 @@
 import React, { useContext } from 'react'
-import cx from 'classnames'
 import { truncateText } from 'uiSrc/utils'
 import EnablementAreaContext from 'uiSrc/pages/workbench/contexts/enablementAreaContext'
 import { Item as ListItem } from 'uiSrc/components/base/layout/list'
 import { RiTooltip } from 'uiSrc/components'
 
-import styles from './styles.module.scss'
-import './styles.scss'
+import * as S from './InternalLink.styles'
 
 export interface Props {
   testId: string
@@ -45,30 +43,26 @@ const InternalLink = (props: Props) => {
   }
 
   const content = (
-    <RiTooltip content={toolTip} anchorClassName={styles.content}>
-      <span className={styles.content}>
-        <div className={styles.title}>{children || label}</div>
-        {!!summary && (
-          <div className={styles.summary}>{truncateText(summary, 140)}</div>
-        )}
-      </span>
+    <RiTooltip content={toolTip}>
+      <S.Content>
+        <S.Title>{children || label}</S.Title>
+        {!!summary && <S.Summary>{truncateText(summary, 140)}</S.Summary>}
+      </S.Content>
     </RiTooltip>
   )
   return (
-    <ListItem
-      data-testid={`internal-link-${testId}`}
-      className={cx(
-        styles.link,
-        iconPosition === 'right' && styles.linkIconRight,
-      )}
-      iconType={iconType}
-      size={size}
-      wrapText
-      color="subdued"
-      onClick={handleOpenPage}
-      label={content}
-      {...rest}
-    />
+    <S.Link $iconRight={iconPosition === 'right'}>
+      <ListItem
+        data-testid={`internal-link-${testId}`}
+        iconType={iconType}
+        size={size}
+        wrapText
+        color="subdued"
+        onClick={handleOpenPage}
+        label={content}
+        {...rest}
+      />
+    </S.Link>
   )
 }
 

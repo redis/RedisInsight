@@ -3,7 +3,7 @@ import React from 'react'
 import { Text } from 'uiSrc/components/base/text'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from './styles.module.scss'
+import * as S from './UploadFile.styles'
 
 export interface Props {
   onFileChange: (string: string) => void
@@ -26,16 +26,14 @@ const UploadFile = (props: Props) => {
   }
 
   return (
-    <EmptyButton className={styles.emptyBtn}>
-      <label
-        htmlFor={id}
-        className={styles.uploadBtn}
-        data-testid="upload-file-btn"
-      >
+    <S.EmptyBtn as={EmptyButton}>
+      <S.UploadBtn htmlFor={id} data-testid="upload-file-btn">
         {/* todo: 'folderOpen', replace with redis-ui once available */}
-        <RiIcon className={styles.icon} type="KnowledgeBaseIcon" />
-        <Text className={styles.label}>Upload</Text>
-        <input
+        <S.Icon>
+          <RiIcon type="KnowledgeBaseIcon" />
+        </S.Icon>
+        <S.Label as={Text}>Upload</S.Label>
+        <S.FileDrop
           type="file"
           id={id}
           data-testid={id}
@@ -45,11 +43,10 @@ const UploadFile = (props: Props) => {
             event.stopPropagation()
             onClick?.()
           }}
-          className={styles.fileDrop}
           aria-label="Select file"
         />
-      </label>
-    </EmptyButton>
+      </S.UploadBtn>
+    </S.EmptyBtn>
   )
 }
 

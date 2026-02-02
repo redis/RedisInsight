@@ -1,9 +1,8 @@
 import React from 'react'
-import { EuiAccordion } from '@elastic/eui'
 
 import { AutoRefresh } from 'uiSrc/components'
 
-import styles from './styles.module.scss'
+import * as S from './Accordion.styles'
 
 interface Props {
   id: string
@@ -34,9 +33,8 @@ const Accordion = ({
   const [lastRefreshTime, setLastRefreshTime] = React.useState(Date.now())
 
   return (
-    <EuiAccordion
+    <S.AccordionWrapper
       id={id}
-      className={styles.wrapper}
       buttonContent={title}
       paddingSize="m"
       initialIsOpen
@@ -60,7 +58,7 @@ const Accordion = ({
       }
     >
       {children}
-    </EuiAccordion>
+    </S.AccordionWrapper>
   )
 }
 

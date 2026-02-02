@@ -11,7 +11,7 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import styles from './styles.module.scss'
+import * as S from './ImportFileModal.styles'
 
 export interface Props<T> {
   onClose: () => void
@@ -74,41 +74,39 @@ const ImportFileModal = <T,>({
               <FlexItem>
                 {isShowForm && (
                   <>
-                    <RiFilePicker
-                      id="import-file-modal-filepicker"
-                      initialPromptText="Select or drag and drop a file"
-                      className={styles.fileDrop}
-                      isInvalid={isInvalid}
-                      onChange={onFileChange}
-                      display="large"
-                      accept={acceptedFileExtension}
-                      data-testid="import-file-modal-filepicker"
-                      aria-label="Select or drag and drop file"
-                    />
+                    <S.FileDrop>
+                      <RiFilePicker
+                        id="import-file-modal-filepicker"
+                        initialPromptText="Select or drag and drop a file"
+                        isInvalid={isInvalid}
+                        onChange={onFileChange}
+                        display="large"
+                        accept={acceptedFileExtension}
+                        data-testid="import-file-modal-filepicker"
+                        aria-label="Select or drag and drop file"
+                      />
+                    </S.FileDrop>
                     {isInvalid && (
-                      <ColorText
+                      <S.ErrorFileMsg
+                        as={ColorText}
                         color="danger"
-                        className={styles.errorFileMsg}
                         data-testid="input-file-error-msg"
                       >
                         {invalidMessage}
-                      </ColorText>
+                      </S.ErrorFileMsg>
                     )}
                   </>
                 )}
                 {loading && (
-                  <div
-                    className={styles.loading}
-                    data-testid="file-loading-indicator"
-                  >
+                  <S.Loading data-testid="file-loading-indicator">
                     <Loader size="xl" />
                     <Text color="subdued" style={{ marginTop: 12 }}>
                       Uploading...
                     </Text>
-                  </div>
+                  </S.Loading>
                 )}
                 {error && (
-                  <div className={styles.result} data-testid="result-failed">
+                  <S.Result data-testid="result-failed">
                     <RiIcon
                       type="ToastCancelIcon"
                       size="xxl"
@@ -116,7 +114,7 @@ const ImportFileModal = <T,>({
                     />
                     <Text style={{ marginTop: 16 }}>{errorMessage}</Text>
                     <Text>{error}</Text>
-                  </div>
+                  </S.Result>
                 )}
               </FlexItem>
               {isShowForm && (

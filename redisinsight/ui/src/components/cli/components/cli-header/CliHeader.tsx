@@ -18,7 +18,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { WindowControlGroup } from 'uiSrc/components/base/shared/WindowControlGroup'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from './styles.module.scss'
+import * as S from './CliHeader.styles'
 
 const CliHeader = () => {
   const dispatch = useDispatch()
@@ -62,18 +62,19 @@ const CliHeader = () => {
   }
 
   return (
-    <div className={styles.container} id="cli-header">
+    <S.Container id="cli-header">
       <Row justify="between" align="center" style={{ height: '100%' }}>
-        <FlexItem className={styles.title} direction="row">
+        <S.Title as={FlexItem} direction="row">
           <RiIcon type="CliIcon" size="M" />
-          <OnboardingTour
-            options={ONBOARDING_FEATURES.BROWSER_CLI}
-            anchorPosition="upLeft"
-            panelClassName={styles.cliOnboardPanel}
-          >
-            <Text>CLI</Text>
-          </OnboardingTour>
-        </FlexItem>
+          <S.CliOnboardPanel>
+            <OnboardingTour
+              options={ONBOARDING_FEATURES.BROWSER_CLI}
+              anchorPosition="upLeft"
+            >
+              <Text>CLI</Text>
+            </OnboardingTour>
+          </S.CliOnboardPanel>
+        </S.Title>
         <FlexItem grow />
         <WindowControlGroup
           onClose={handleCloseCli}
@@ -81,7 +82,7 @@ const CliHeader = () => {
           id="cli"
         />
       </Row>
-    </div>
+    </S.Container>
   )
 }
 

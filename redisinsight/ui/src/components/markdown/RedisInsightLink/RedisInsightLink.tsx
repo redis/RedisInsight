@@ -1,13 +1,12 @@
 import React, { useState } from 'react'
 import { useHistory, useLocation, useParams } from 'react-router-dom'
-import cx from 'classnames'
 import { isNull } from 'lodash'
 import { getRedirectionPage } from 'uiSrc/utils/routing'
 import DatabaseNotOpened from 'uiSrc/components/messages/database-not-opened'
 
 import { Link, RiLinkProps } from 'uiSrc/components/base/link'
 import { RiPopover } from 'uiSrc/components/base'
-import styles from './styles.module.scss'
+import * as S from './RedisInsightLink.styles'
 
 export interface Props {
   url: string
@@ -40,22 +39,24 @@ const RedisInsightLink = (props: Props) => {
   return (
     <RiPopover
       ownFocus
-      panelClassName={cx('popoverLikeTooltip', styles.popover)}
-      anchorClassName={styles.popoverAnchor}
+      panelClassName="popoverLikeTooltip"
+      minWidth={S.POPOVER_MIN_WIDTH}
       anchorPosition="upLeft"
       isOpen={isPopoverOpen}
       panelPaddingSize="m"
       closePopover={() => setIsPopoverOpen(false)}
       button={
-        <Link
-          variant="inline"
-          size={size}
-          href="/"
-          onClick={handleLinkClick}
-          data-testid="redisinsight-link"
-        >
-          {text}
-        </Link>
+        <S.PopoverAnchor>
+          <Link
+            variant="inline"
+            size={size}
+            href="/"
+            onClick={handleLinkClick}
+            data-testid="redisinsight-link"
+          >
+            {text}
+          </Link>
+        </S.PopoverAnchor>
       }
     >
       <DatabaseNotOpened />

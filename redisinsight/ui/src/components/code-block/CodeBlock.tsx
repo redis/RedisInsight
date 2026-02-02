@@ -3,7 +3,7 @@ import cx from 'classnames'
 
 import { CopyButton } from 'uiSrc/components/copy-button'
 import { useInnerText } from 'uiSrc/components/base/utils/hooks/inner-text'
-import styles from './styles.module.scss'
+import * as S from './CodeBlock.styles'
 
 export interface Props extends HTMLAttributes<HTMLPreElement> {
   children: React.ReactNode
@@ -21,21 +21,21 @@ const CodeBlock = (props: Props) => {
   )
 
   return (
-    <div className={cx(styles.wrapper, { [styles.isCopyable]: isCopyable })}>
-      <pre className={cx(styles.pre, className)} ref={innerTextRef} {...rest}>
+    <S.Wrapper $isCopyable={isCopyable}>
+      <S.Pre className={cx(className)} ref={innerTextRef} {...rest}>
         {children}
-      </pre>
+      </S.Pre>
       {isCopyable && (
-        <span className={styles.copyBtn}>
+        <S.CopyBtn>
           <CopyButton
             copy={innerText}
             withTooltip={false}
             data-testid="copy-code"
             aria-label="copy code"
           />
-        </span>
+        </S.CopyBtn>
       )}
-    </div>
+    </S.Wrapper>
   )
 }
 

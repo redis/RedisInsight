@@ -9,11 +9,12 @@ import { RiTooltip } from 'uiSrc/components'
 
 import { DatabaseModulesList, DatabaseModuleContent } from './components'
 import { DatabaseListModulesProps } from './DatabaseListModules.types'
-import { StyledContainer } from './DatabaseListModules.styles'
+import {
+  AnchorModuleTooltip,
+  StyledContainer,
+} from './DatabaseListModules.styles'
 
 export type { DatabaseListModulesProps }
-
-import styles from './styles.module.scss'
 
 export const DatabaseListModules = React.memo(
   (props: DatabaseListModulesProps) => {
@@ -68,12 +69,13 @@ export const DatabaseListModules = React.memo(
         $inCircle={inCircle}
       >
         {inCircle ? (
-          <DatabaseModulesList
-            modules={newModules}
-            contentItems={contentItems}
-            inCircle={inCircle}
-            anchorClassName={styles.anchorModuleTooltip}
-          />
+          <AnchorModuleTooltip>
+            <DatabaseModulesList
+              modules={newModules}
+              contentItems={contentItems}
+              inCircle={inCircle}
+            />
+          </AnchorModuleTooltip>
         ) : (
           <RiTooltip
             position="bottom"

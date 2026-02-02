@@ -44,7 +44,7 @@ import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion
 import { Link } from 'uiSrc/components/base/link/Link'
 import { Title } from 'uiSrc/pages/vector-search-deprecated/manage-indexes/styles'
 
-import styles from './styles.module.scss'
+import * as S from './Recommendation.styles'
 
 const TITLE_TRUNCATE_LENGTH = 30 // Note: Temporary dirty fix for RI-7474, before the full redesign of this component
 
@@ -88,23 +88,23 @@ const RecommendationTitle = ({
     >
       {redisStack && (
         <FlexItem>
-          <Link
-            target="_blank"
-            href={EXTERNAL_LINKS.redisStack}
-            className={styles.redisStackLink}
-            data-testid={`${id}-redis-stack-link`}
-          >
-            <RiTooltip
-              content="Redis Stack"
-              position="top"
-              anchorClassName="flex-row"
+          <S.RedisStackLink>
+            <Link
+              target="_blank"
+              href={EXTERNAL_LINKS.redisStack}
+              data-testid={`${id}-redis-stack-link`}
             >
-              <RediStackMinIcon
-                className={styles.redisStackIcon}
-                data-testid={`${id}-redis-stack-icon`}
-              />
-            </RiTooltip>
-          </Link>
+              <RiTooltip
+                content="Redis Stack"
+                position="top"
+                anchorClassName="flex-row"
+              >
+                <S.RedisStackIcon>
+                  <RediStackMinIcon data-testid={`${id}-redis-stack-icon`} />
+                </S.RedisStackIcon>
+              </RiTooltip>
+            </Link>
+          </S.RedisStackLink>
         </FlexItem>
       )}
       <div className="truncateText">
@@ -210,7 +210,6 @@ const Recommendation = ({
             filled
             icon={StarsIcon}
             iconSide="right"
-            className={styles.btn}
             onClick={handleRedirect}
             data-testid={`${name}-to-tutorial-btn`}
           >
@@ -236,21 +235,17 @@ const Recommendation = ({
         />
       )}
       <FeatureFlagComponent name={FeatureFlags.envDependent}>
-        <div className={styles.actions}>
-          <RecommendationVoting
-            live
-            id={id}
-            vote={vote}
-            name={name}
-            containerClass={styles.votingContainer}
-          />
-        </div>
+        <S.Actions>
+          <S.VotingContainer>
+            <RecommendationVoting live id={id} vote={vote} name={name} />
+          </S.VotingContainer>
+        </S.Actions>
       </FeatureFlagComponent>
     </Col>
   )
 
   const renderButtonContent = (
-    <Row className={styles.fullWidth} align="center" gap="s" justify="between">
+    <S.FullWidthRow align="center" gap="s" justify="between">
       <FlexItem>
         <RiTooltip
           title="Snooze tip"
@@ -258,13 +253,14 @@ const Recommendation = ({
           position="top"
           anchorClassName="flex-row"
         >
-          <IconButton
-            icon={SnoozeIcon}
-            className={styles.snoozeBtn}
-            onClick={handleDelete}
-            aria-label="snooze tip"
-            data-testid={`${name}-delete-btn`}
-          />
+          <S.SnoozeBtn>
+            <IconButton
+              icon={SnoozeIcon}
+              onClick={handleDelete}
+              aria-label="snooze tip"
+              data-testid={`${name}-delete-btn`}
+            />
+          </S.SnoozeBtn>
         </RiTooltip>
       </FlexItem>
       <FlexItem>
@@ -278,16 +274,17 @@ const Recommendation = ({
           position="top"
           anchorClassName="flex-row"
         >
-          <IconButton
-            icon={hide ? HideIcon : ShowIcon}
-            className={styles.hideBtn}
-            onClick={toggleHide}
-            aria-label="hide/unhide tip"
-            data-testid={`toggle-hide-${name}-btn`}
-          />
+          <S.HideBtn>
+            <IconButton
+              icon={hide ? HideIcon : ShowIcon}
+              onClick={toggleHide}
+              aria-label="hide/unhide tip"
+              data-testid={`toggle-hide-${name}-btn`}
+            />
+          </S.HideBtn>
         </RiTooltip>
       </FlexItem>
-    </Row>
+    </S.FullWidthRow>
   )
 
   if (!(name in recommendationsContent)) {
@@ -316,12 +313,11 @@ const Recommendation = ({
         <Col>
           {/* Note: Temporary dirty fix for RI-7474, before the full redesign of this component */}
           {title?.length > TITLE_TRUNCATE_LENGTH && <Title>{title}</Title>}
-          <RecommendationContent
-            className={styles.accordionContent}
-            color="subdued"
-          >
-            {recommendationContent()}
-          </RecommendationContent>
+          <S.AccordionContent>
+            <RecommendationContent color="subdued">
+              {recommendationContent()}
+            </RecommendationContent>
+          </S.AccordionContent>
         </Col>
       </RiAccordion>
     </div>

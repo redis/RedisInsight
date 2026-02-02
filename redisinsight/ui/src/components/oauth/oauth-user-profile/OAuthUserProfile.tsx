@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import cx from 'classnames'
 import OAuthSignInButton from 'uiSrc/components/oauth/oauth-sign-in-button'
 import {
   activateAccount,
@@ -15,7 +14,7 @@ import { PackageType } from 'uiSrc/constants/env'
 import UserProfileBadge from 'uiSrc/components/instance-header/components/user-profile/UserProfileBadge'
 import { Loader } from 'uiSrc/components/base/display'
 
-import styles from './styles.module.scss'
+import * as S from '../OAuth.styles'
 
 export interface Props {
   source: OAuthSocialSource
@@ -40,20 +39,20 @@ const OAuthUserProfile = (props: Props) => {
 
     if (initialLoading) {
       return (
-        <div className={styles.loadingContainer}>
-          <Loader
-            className={cx('infiniteMessage__icon', styles.loading)}
+        <S.LoadingContainer>
+          <S.Loading
+            as={Loader}
             size="l"
             data-testid="oath-user-profile-spinner"
           />
-        </div>
+        </S.LoadingContainer>
       )
     }
 
     return (
-      <div className={styles.wrapper}>
+      <S.ProfileWrapper>
         <OAuthSignInButton source={source} />
-      </div>
+      </S.ProfileWrapper>
     )
   }
 

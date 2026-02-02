@@ -21,7 +21,7 @@ import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Link } from 'uiSrc/components/base/link/Link'
 
-import styles from './styles.module.scss'
+import * as S from './InfiniteMessages.styles'
 
 export enum InfiniteMessagesIds {
   oAuthProgress = 'oAuthProgress',
@@ -127,39 +127,35 @@ export const INFINITE_MESSAGES: InfiniteMessagesType = {
               <Spacer size="m" />
               <Divider />
               <Spacer size="m" />
-              <Row className={styles.detailsRow} justify="between">
+              <S.DetailsRow justify="between">
                 <FlexItem>
                   <Text size="xs">Plan</Text>
                 </FlexItem>
                 <FlexItem data-testid="notification-details-plan">
                   <Text size="xs">Free</Text>
                 </FlexItem>
-              </Row>
-              <Row
-                className={styles.detailsRow}
-                justify="between"
-                align="center"
-              >
+              </S.DetailsRow>
+              <S.DetailsRow justify="between" align="center">
                 <FlexItem>
                   <Text size="xs">Cloud Vendor</Text>
                 </FlexItem>
-                <FlexItem
-                  className={styles.vendorLabel}
+                <S.VendorLabel
+                  as={FlexItem}
                   data-testid="notification-details-vendor"
                   $gap="s"
                 >
                   {!!vendor?.icon && <RiIcon type={vendor?.icon} />}
                   <Text size="xs">{vendor?.label}</Text>
-                </FlexItem>
-              </Row>
-              <Row className={styles.detailsRow} justify="between">
+                </S.VendorLabel>
+              </S.DetailsRow>
+              <S.DetailsRow justify="between">
                 <FlexItem>
                   <Text size="xs">Region</Text>
                 </FlexItem>
                 <FlexItem data-testid="notification-details-region">
                   <Text size="xs">{details.region}</Text>
                 </FlexItem>
-              </Row>
+              </S.DetailsRow>
             </>
           )}
           <Spacer size="m" />

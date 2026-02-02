@@ -10,7 +10,7 @@ import CHCommandInfo from '../components/command-helper-info'
 import CHSearchWrapper from '../components/command-helper-search'
 import CHSearchOutput from '../components/command-helper-search-output'
 
-import styles from './styles.module.scss'
+import * as S from './CommandHelper.styles'
 
 export interface Props {
   commandLine: string
@@ -59,17 +59,17 @@ const CommandHelper = (props: Props) => {
   }
 
   return (
-    <div className={styles.container} data-testid="cli-helper">
-      <div className={styles.searchWrapper}>
+    <S.Container data-testid="cli-helper">
+      <S.SearchWrapper>
         <CHSearchWrapper />
-      </div>
+      </S.SearchWrapper>
       {isSearching && (
-        <div className={styles.outputWrapper}>
+        <S.OutputWrapper>
           <CHSearchOutput searchedCommands={searchedCommands} />
-        </div>
+        </S.OutputWrapper>
       )}
       {!isSearching && (
-        <div className={styles.outputWrapper}>
+        <S.OutputWrapper>
           {commandLine && (
             <div style={{ width: '100%' }}>
               <CHCommandInfo
@@ -79,59 +79,50 @@ const CommandHelper = (props: Props) => {
                 onBackClick={handleBackClick}
               />
               {summary && (
-                <Text
-                  className={styles.summary}
-                  data-testid="cli-helper-summary"
-                >
-                  <span style={{ paddingRight: 5 }}>{summary}</span>{' '}
-                  {readMore(commandLine)}
+                <Text data-testid="cli-helper-summary">
+                  <S.Summary>
+                    <span style={{ paddingRight: 5 }}>{summary}</span>{' '}
+                    {readMore(commandLine)}
+                  </S.Summary>
                 </Text>
               )}
               {!!argList.length && (
-                <div
-                  className={styles.field}
-                  data-testid="cli-helper-arguments"
-                >
-                  <Text color="primary" className={styles.fieldTitle}>
-                    Arguments:
+                <S.Field data-testid="cli-helper-arguments">
+                  <Text color="primary">
+                    <S.FieldTitle>Arguments:</S.FieldTitle>
                   </Text>
                   {argList}
-                </div>
+                </S.Field>
               )}
               {since && (
-                <div className={styles.field} data-testid="cli-helper-since">
-                  <Text color="primary" className={styles.fieldTitle}>
-                    Since:
+                <S.Field data-testid="cli-helper-since">
+                  <Text color="primary">
+                    <S.FieldTitle>Since:</S.FieldTitle>
                   </Text>
                   {since}
-                </div>
+                </S.Field>
               )}
               {!complexityShort && complexity && (
-                <div
-                  className={styles.field}
-                  data-testid="cli-helper-complexity"
-                >
-                  <Text color="primary" className={styles.fieldTitle}>
-                    Complexity:
+                <S.Field data-testid="cli-helper-complexity">
+                  <Text color="primary">
+                    <S.FieldTitle>Complexity:</S.FieldTitle>
                   </Text>
                   {complexity}
-                </div>
+                </S.Field>
               )}
             </div>
           )}
           {!commandLine && (
-            <Text
-              color="primary"
-              className={styles.defaultScreen}
-              data-testid="cli-helper-default"
-            >
-              Enter any command in CLI or use search to see detailed
-              information.
-            </Text>
+            <S.DefaultScreen>
+              <Text color="primary" data-testid="cli-helper-default">
+                Enter any command in CLI or use search to see detailed
+                information.
+              </Text>
+            </S.DefaultScreen>
           )}
-        </div>
+        </S.OutputWrapper>
       )}
-    </div>
+    </S.Container>
   )
 }
 

@@ -13,17 +13,15 @@ import {
   OAuthSocialSource,
 } from 'uiSrc/slices/interfaces'
 import { removeCapiKeyAction } from 'uiSrc/slices/oauth/cloud'
-import { Text } from 'uiSrc/components/base/text'
 
-import { EmptyButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { CopyButton } from 'uiSrc/components/copy-button'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Table, ColumnDef } from 'uiSrc/components/base/layout/table'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { Row } from 'uiSrc/components/base/layout/flex'
-import styles from './styles.module.scss'
+import * as S from './UserApiKeysTable.styles'
 
 export interface Props {
   items: Nullable<CloudCapiKey[]>
@@ -80,23 +78,18 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
       }) => {
         const tooltipContent = formatLongName(name)
         return (
-          <div className={styles.nameField}>
+          <S.NameField>
             {!valid && (
-              <RiTooltip
-                content="This API key is invalid. Remove it from Redis Cloud and create a new one instead."
-                anchorClassName={styles.invalidIconAnchor}
-              >
-                <RiIcon
-                  type="ToastDangerIcon"
-                  color="danger600"
-                  className={styles.invalidIcon}
-                />
+              <RiTooltip content="This API key is invalid. Remove it from Redis Cloud and create a new one instead.">
+                <S.InvalidIconAnchor>
+                  <S.InvalidIcon type="ToastDangerIcon" color="danger600" />
+                </S.InvalidIconAnchor>
               </RiTooltip>
             )}
             <RiTooltip title="API Key Name" content={tooltipContent}>
               <>{name}</>
             </RiTooltip>
-          </div>
+          </S.NameField>
         )
       },
     },
@@ -200,29 +193,24 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
   if (!items?.length) {
     return (
       <>
-        <div className={styles.noKeysMessage} data-testid="no-api-keys-message">
+        <S.NoKeysMessage data-testid="no-api-keys-message">
           <Row align="center">
-            <RiIcon
-              className={styles.starsIcon}
-              type="StarsIcon"
-              color="attention300"
-            />
+            <S.StarsIcon type="StarsIcon" color="attention300" />
             <Title size="XS">The ultimate Redis starting point</Title>
           </Row>
           <Spacer size="s" />
-          <Text size="s" className={styles.smallText} color="primary">
+          <S.SmallText>
             Cloud API keys will be created and stored when you connect to Redis
             Cloud to create a free Redis Cloud database or autodiscover your
             Cloud database.
-          </Text>
+          </S.SmallText>
           <Spacer />
-          <div className={styles.actions}>
+          <S.Actions>
             <OAuthSsoHandlerDialog>
               {(socialCloudHandlerClick) => (
-                <EmptyButton
+                <S.AutodiscoverBtn
                   size="small"
                   color="ghost"
-                  className={styles.autodiscoverBtn}
                   onClick={(e: React.MouseEvent) =>
                     socialCloudHandlerClick(e, {
                       source: OAuthSocialSource.SettingsPage,
@@ -232,7 +220,7 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
                   data-testid="autodiscover-btn"
                 >
                   Autodiscover
-                </EmptyButton>
+                </S.AutodiscoverBtn>
               )}
             </OAuthSsoHandlerDialog>
             <OAuthSsoHandlerDialog>
@@ -251,8 +239,8 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
                 </PrimaryButton>
               )}
             </OAuthSsoHandlerDialog>
-          </div>
-        </div>
+          </S.Actions>
+        </S.NoKeysMessage>
         <Spacer />
       </>
     )

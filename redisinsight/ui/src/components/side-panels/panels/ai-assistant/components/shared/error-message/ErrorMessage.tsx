@@ -8,8 +8,7 @@ import ApiStatusCode from 'uiSrc/constants/apiStatusCode'
 import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
 import { DeleteIcon } from 'uiSrc/components/base/icons'
 import RestartChat from '../restart-chat'
-
-import styles from './styles.module.scss'
+import * as S from '../../../../../SidePanels.styles'
 
 export interface Props {
   error?: {
@@ -70,7 +69,7 @@ const ErrorMessage = (props: Props) => {
 
   return (
     <>
-      <div className={styles.errorMessage} data-testid="ai-chat-error-message">
+      <S.ErrorMessage data-testid="ai-chat-error-message">
         {getErrorMessage(error)}
         {isShowReportIssue && (
           <>
@@ -86,22 +85,23 @@ const ErrorMessage = (props: Props) => {
             </a>
           </>
         )}
-      </div>
+      </S.ErrorMessage>
       {isShowRestart && (
-        <RestartChat
-          anchorClassName={styles.restartSessionWrapper}
-          button={
-            <SecondaryButton
-              size="s"
-              icon={DeleteIcon}
-              className={styles.restartSessionBtn}
-              data-testid="ai-chat-error-restart-session-btn"
-            >
-              Restart session
-            </SecondaryButton>
-          }
-          onConfirm={onRestart}
-        />
+        <S.RestartSessionWrapper>
+          <RestartChat
+            button={
+              <S.RestartSessionBtn
+                as={SecondaryButton}
+                size="s"
+                icon={DeleteIcon}
+                data-testid="ai-chat-error-restart-session-btn"
+              >
+                Restart session
+              </S.RestartSessionBtn>
+            }
+            onConfirm={onRestart}
+          />
+        </S.RestartSessionWrapper>
       )}
     </>
   )

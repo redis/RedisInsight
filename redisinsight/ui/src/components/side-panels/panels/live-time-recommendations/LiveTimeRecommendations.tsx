@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 import { remove } from 'lodash'
-import styled from 'styled-components'
 
 import { FeatureFlags, DEFAULT_DELIMITER, Pages } from 'uiSrc/constants'
 import {
@@ -43,23 +42,7 @@ import { Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout'
 import { Link } from 'uiSrc/components/base/link/Link'
 
-import styles from './styles.module.scss'
-
-const FooterLink = styled.button<{
-  onClick?: () => void
-  'data-testid'?: string
-  children?: React.ReactNode
-}>`
-  font:
-    normal normal 400 12px/14px Graphik,
-    sans-serif !important;
-  padding: 2px 0 0;
-  margin: 0;
-  text-decoration: underline !important;
-  :hover {
-    text-decoration: none !important;
-  }
-`
+import * as S from './LiveTimeRecommendations.styles'
 
 const LiveTimeRecommendations = () => {
   const { provider, connectionType } = useSelector(connectedInstanceSelector)
@@ -156,13 +139,12 @@ const LiveTimeRecommendations = () => {
   }
 
   const renderHeader = () => (
-    <Row align="center" justify="between" className={styles.actions}>
+    <S.Actions align="center" justify="between">
       <Row align="center" gap="m">
         <ColorText variant="semiBold">Our Tips</ColorText>
         <RiTooltip
           position="bottom"
-          className={styles.tooltip}
-          anchorClassName={styles.tooltipAnchor}
+          maxWidth={S.TOOLTIP_MAX_WIDTH}
           content={
             <Text size="s">
               Tips will help you improve your database.
@@ -178,12 +160,15 @@ const LiveTimeRecommendations = () => {
             </Text>
           }
         >
-          <RiIcon
-            className={styles.infoIcon}
-            type="InfoIcon"
-            size="m"
-            data-testid="recommendations-info-icon"
-          />
+          <S.TooltipAnchor>
+            <S.InfoIcon>
+              <RiIcon
+                type="InfoIcon"
+                size="m"
+                data-testid="recommendations-info-icon"
+              />
+            </S.InfoIcon>
+          </S.TooltipAnchor>
         </RiTooltip>
         <FeatureFlagComponent name={FeatureFlags.envDependent}>
           <Link
@@ -193,53 +178,55 @@ const LiveTimeRecommendations = () => {
             target="_blank"
             data-testid="github-repo-btn"
           >
-            <RiIcon
-              className={styles.githubIcon}
-              aria-label="redis insight github repository"
-              type="GithubIcon"
-              size="m"
-              data-testid="github-repo-icon"
-            />
+            <S.GithubIcon>
+              <RiIcon
+                aria-label="redis insight github repository"
+                type="GithubIcon"
+                size="m"
+                data-testid="github-repo-icon"
+              />
+            </S.GithubIcon>
           </Link>
         </FeatureFlagComponent>
       </Row>
 
       {isShowHiddenDisplayed && (
-        <Checkbox
-          id="showHidden"
-          name="showHidden"
-          label="Show hidden"
-          checked={isShowHidden}
-          className={styles.hideCheckbox}
-          onChange={(e) => onChangeShowHidden(e.target.checked)}
-          data-testid="checkbox-show-hidden"
-          aria-label="checkbox show hidden"
-        />
+        <S.HideCheckbox>
+          <Checkbox
+            id="showHidden"
+            name="showHidden"
+            label="Show hidden"
+            checked={isShowHidden}
+            onChange={(e) => onChangeShowHidden(e.target.checked)}
+            data-testid="checkbox-show-hidden"
+            aria-label="checkbox show hidden"
+          />
+        </S.HideCheckbox>
       )}
-    </Row>
+    </S.Actions>
   )
 
   return (
-    <div className={styles.content}>
-      <div className={styles.header}>
+    <S.Content>
+      <S.Header>
         {instanceId && recommendations.length ? renderHeader() : null}
-      </div>
-      <div className={styles.body}>
+      </S.Header>
+      <S.Body>
         {loading ? (
-          <LoadingContent className={styles.loading} lines={4} />
+          <S.Loading>
+            <LoadingContent lines={4} />
+          </S.Loading>
         ) : (
           renderBody()
         )}
-      </div>
+      </S.Body>
       {instanceId && (
         <FeatureFlagComponent name={FeatureFlags.envDependent}>
-          <div className={styles.footer}>
-            <RiIcon
-              className={styles.footerIcon}
-              size="m"
-              type="MessageInfoIcon"
-            />
-            <Text className={styles.text}>
+          <S.Footer>
+            <S.FooterIcon>
+              <RiIcon size="m" type="MessageInfoIcon" />
+            </S.FooterIcon>
+            <S.FooterText>
               {'Run '}
               <PopoverRunAnalyze
                 isShowPopover={isShowApproveRun}
@@ -251,19 +238,19 @@ const LiveTimeRecommendations = () => {
                     : ANALYZE_TOOLTIP_MESSAGE
                 }
               >
-                <FooterLink
+                <S.FooterLink
                   onClick={() => setIsShowApproveRun(true)}
                   data-testid="footer-db-analysis-link"
                 >
                   Database Analysis
-                </FooterLink>
+                </S.FooterLink>
               </PopoverRunAnalyze>
               {' to get more tips'}
-            </Text>
-          </div>
+            </S.FooterText>
+          </S.Footer>
         </FeatureFlagComponent>
       )}
-    </div>
+    </S.Content>
   )
 }
 

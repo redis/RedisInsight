@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import cx from 'classnames'
 import AutoSizer, { Size } from 'react-virtualized-auto-sizer'
 import { isObject, xor } from 'lodash'
 import InfiniteLoader from 'react-window-infinite-loader'
@@ -15,7 +14,7 @@ import { Row } from 'uiSrc/components/base/layout/flex'
 import { IProps } from './interfaces'
 import { getColumnWidth, useInnerElementType } from './utils'
 
-import styles from './styles.module.scss'
+import * as S from './VirtualGrid.styles'
 
 const loadingMsg = 'loading...'
 let selectTimer: number = 0
@@ -186,21 +185,15 @@ const VirtualGrid = (props: IProps) => {
     }, [setRowHeight, rowIndex, expanded])
 
     if (rowIndex === 0) {
-      const isLastColumn = columns.length - 1 === columnIndex
       return (
-        <hgroup className={styles.gridHeaderCell} ref={cellRef} style={style}>
-          <div
-            className={cx(styles.gridHeaderItem, 'truncateText', {
-              [styles.lastHeaderItem]: isLastColumn,
-            })}
-          >
+        <S.GridHeaderCell ref={cellRef} style={style}>
+          <S.GridHeaderItem className="truncateText">
             {isObject(content) && (
               <>
                 {!!content?.sortable && (
-                  <button
+                  <S.GridHeaderItemSortable
                     type="button"
                     data-testid="header-sorting-button"
-                    className={styles.gridHeaderItemSortable}
                     onClick={() => changeSorting(column.id)}
                   >
                     <Row align="center">
@@ -219,7 +212,7 @@ const VirtualGrid = (props: IProps) => {
                         />
                       </span>
                     </Row>
-                  </button>
+                  </S.GridHeaderItemSortable>
                 )}
                 {!content?.sortable &&
                   (content.render
@@ -228,8 +221,8 @@ const VirtualGrid = (props: IProps) => {
               </>
             )}
             {!isObject(content) && renderNotEmptyContent(content)}
-          </div>
-        </hgroup>
+          </S.GridHeaderItem>
+        </S.GridHeaderCell>
       )
     }
 
@@ -246,25 +239,14 @@ const VirtualGrid = (props: IProps) => {
       const hasHorizontalScrollOffset = height < allRowsHeight
 
       return (
-        <div
-          style={style}
-          ref={cellRef}
-          className={cx(
-            styles.gridItem,
-            rowIndex % 2 ? styles.gridItemOdd : styles.gridItemEven,
-          )}
-        >
+        <S.GridItem style={style} ref={cellRef} $odd={!!(rowIndex % 2)}>
           {column?.render &&
             isObject(rowData) &&
             column?.render(rowData, expanded)}
           {!column?.render && content}
 
-          <div
-            className={cx(
-              styles.gridItem,
-              styles.gridItemLast,
-              rowIndex % 2 ? styles.gridItemOdd : styles.gridItemEven,
-            )}
+          <S.GridItemLast
+            $odd={!!(rowIndex % 2)}
             style={{
               width: lastColumn?.minWidth,
               height: getRowHeight(rowIndex),
@@ -277,26 +259,23 @@ const VirtualGrid = (props: IProps) => {
             {lastColumn?.render &&
               isObject(rowData) &&
               lastColumn?.render(rowData, expanded)}
-          </div>
-        </div>
+          </S.GridItemLast>
+        </S.GridItem>
       )
     }
 
     return (
-      <div
+      <S.GridItem
         ref={cellRef}
         style={style}
-        className={cx(
-          styles.gridItem,
-          rowIndex % 2 ? styles.gridItemOdd : styles.gridItemEven,
-          columnIndex === columns.length - 2 ? 'penult' : '',
-        )}
+        $odd={!!(rowIndex % 2)}
+        className={columnIndex === columns.length - 2 ? 'penult' : ''}
       >
         {column?.render &&
           isObject(rowData) &&
           column?.render(rowData, expanded)}
         {!column?.render && content}
-      </div>
+      </S.GridItem>
     )
   }
 
@@ -311,17 +290,14 @@ const VirtualGrid = (props: IProps) => {
   )
 
   return (
-    <div
-      className={styles.container}
-      onWheel={onWheel}
-      data-testid="virtual-grid-container"
-    >
+    <S.Container onWheel={onWheel} data-testid="virtual-grid-container">
       {loading && !hideProgress && (
-        <ProgressBarLoader
-          color="primary"
-          className={styles.progress}
-          data-testid="progress-entry-list"
-        />
+        <S.Progress>
+          <ProgressBarLoader
+            color="primary"
+            data-testid="progress-entry-list"
+          />
+        </S.Progress>
       )}
       {items.length > 1 && (
         <AutoSizer onResize={onResize}>
@@ -334,12 +310,13 @@ const VirtualGrid = (props: IProps) => {
               itemCount={totalItemsCount}
             >
               {({ onItemsRendered, ref }) => (
-                <Grid
-                  ref={(list) => {
+                <S.Grid
+                  as={Grid}
+                  ref={(list: any) => {
                     ref(list)
                     gridRef.current = list
                   }}
-                  onItemsRendered={(props) =>
+                  onItemsRendered={(props: any) =>
                     onItemsRendered({
                       visibleStartIndex: props.visibleRowStartIndex || 0,
                       visibleStopIndex: props.visibleRowStopIndex || 0,
@@ -347,9 +324,8 @@ const VirtualGrid = (props: IProps) => {
                       overscanStopIndex: props.overscanRowStopIndex || 0,
                     })
                   }
-                  className={styles.grid}
                   columnCount={columns.length}
-                  columnWidth={(i) => getColumnWidth(i, width, columns)}
+                  columnWidth={(i: number) => getColumnWidth(i, width, columns)}
                   height={height}
                   rowCount={items.length}
                   rowHeight={getRowHeight}
@@ -359,7 +335,7 @@ const VirtualGrid = (props: IProps) => {
                   initialScrollTop={forceScrollTop}
                   itemData={items}
                 >
-                  {({ data, rowIndex, columnIndex, style }) => (
+                  {({ data, rowIndex, columnIndex, style }: any) => (
                     <div
                       onClick={(e) => onCellClick(e, rowIndex)}
                       role="presentation"
@@ -372,18 +348,18 @@ const VirtualGrid = (props: IProps) => {
                       />
                     </div>
                   )}
-                </Grid>
+                </S.Grid>
               )}
             </InfiniteLoader>
           )}
         </AutoSizer>
       )}
       {items.length === 1 && (
-        <Text className={styles.noItems}>
-          {loading ? loadingMsg : noItemsMessage}
-        </Text>
+        <S.NoItems>
+          <Text>{loading ? loadingMsg : noItemsMessage}</Text>
+        </S.NoItems>
       )}
-    </div>
+    </S.Container>
   )
 }
 

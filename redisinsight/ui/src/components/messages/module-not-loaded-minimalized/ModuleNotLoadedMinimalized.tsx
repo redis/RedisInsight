@@ -33,7 +33,7 @@ import {
   MODULE_CAPABILITY_TEXT_NOT_AVAILABLE,
   MODULE_CAPABILITY_TEXT_NOT_AVAILABLE_ENTERPRISE,
 } from './constants'
-import styles from './styles.module.scss'
+import * as S from './ModuleNotLoadedMinimalized.styles'
 
 export interface Props {
   moduleName: RedisDefaultModules
@@ -58,11 +58,11 @@ const ModuleNotLoadedMinimalized = (props: Props) => {
   useCapability(sourceTutorial)
 
   return (
-    <div className={styles.wrapper} data-testid="module-not-loaded-popover">
+    <S.Wrapper data-testid="module-not-loaded-popover">
       <div>
-        <Title size="S" className={styles.title}>
+        <S.Title as={Title} size="S">
           {moduleText?.title}
-        </Title>
+        </S.Title>
         <Spacer size="s" />
         <FeatureFlagComponent
           name={FeatureFlags.cloudAds}
@@ -72,15 +72,15 @@ const ModuleNotLoadedMinimalized = (props: Props) => {
                 {moduleText?.text}
               </Text>
               <Spacer size="s" />
-              <PrimaryButton
+              <S.BtnLink
+                as={PrimaryButton}
                 size="s"
-                className={styles.btnLink}
                 onClick={() => {
                   history.push(Pages.home)
                 }}
               >
                 Redis Databases page
-              </PrimaryButton>
+              </S.BtnLink>
             </>
           }
         >
@@ -129,13 +129,8 @@ const ModuleNotLoadedMinimalized = (props: Props) => {
           )}
         </FeatureFlagComponent>
       </div>
-      <img
-        src={TelescopeImg}
-        className={styles.img}
-        alt="telescope"
-        loading="lazy"
-      />
-    </div>
+      <S.Img src={TelescopeImg} alt="telescope" loading="lazy" />
+    </S.Wrapper>
   )
 }
 

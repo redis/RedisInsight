@@ -3,22 +3,34 @@ import CodeIcon from 'uiSrc/assets/img/code-changes.svg?react'
 import ConfigurationIcon from 'uiSrc/assets/img/configuration-changes.svg?react'
 import UpgradeIcon from 'uiSrc/assets/img/upgrade.svg?react'
 
-import styles from './styles.module.scss'
+import * as S from './Recommendation.styles'
 
 export const badgesContent = [
   {
     id: 'code_changes',
-    icon: <CodeIcon className={styles.badgeIcon} />,
+    icon: (
+      <S.BadgeIcon>
+        <CodeIcon />
+      </S.BadgeIcon>
+    ),
     name: 'Code Changes',
   },
   {
     id: 'configuration_changes',
-    icon: <ConfigurationIcon className={styles.badgeIcon} />,
+    icon: (
+      <S.BadgeIcon>
+        <ConfigurationIcon />
+      </S.BadgeIcon>
+    ),
     name: 'Configuration Changes',
   },
   {
     id: 'upgrade',
-    icon: <UpgradeIcon className={styles.badgeIcon} />,
+    icon: (
+      <S.BadgeIcon>
+        <UpgradeIcon />
+      </S.BadgeIcon>
+    ),
     name: 'Upgrade',
   },
 ]

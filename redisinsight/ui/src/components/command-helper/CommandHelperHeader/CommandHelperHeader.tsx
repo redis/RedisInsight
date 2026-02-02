@@ -15,7 +15,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { WindowControlGroup } from 'uiSrc/components/base/shared/WindowControlGroup'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from './styles.module.scss'
+import * as S from '../CommandHelper.styles'
 
 const CommandHelperHeader = () => {
   const { instanceId = '' } = useParams<{ instanceId: string }>()
@@ -43,18 +43,17 @@ const CommandHelperHeader = () => {
   }
 
   return (
-    <div className={styles.container} id="command-helper-header">
+    <S.HeaderContainer id="command-helper-header">
       <Row justify="between" align="center" style={{ height: '100%' }}>
-        <FlexItem className={styles.title}>
+        <S.HeaderTitle as={FlexItem}>
           <RiIcon type="DocumentationIcon" size="L" />
           <OnboardingTour
             options={ONBOARDING_FEATURES.BROWSER_COMMAND_HELPER}
             anchorPosition="upLeft"
-            panelClassName={styles.helperOnboardPanel}
           >
             <Text>Command Helper</Text>
           </OnboardingTour>
-        </FlexItem>
+        </S.HeaderTitle>
         <FlexItem grow />
         <WindowControlGroup
           onClose={handleCloseHelper}
@@ -63,7 +62,7 @@ const CommandHelperHeader = () => {
           label="Command Helper"
         />
       </Row>
-    </div>
+    </S.HeaderContainer>
   )
 }
 

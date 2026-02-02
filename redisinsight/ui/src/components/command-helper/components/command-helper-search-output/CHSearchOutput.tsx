@@ -1,6 +1,5 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -12,7 +11,7 @@ import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { Link } from 'uiSrc/components/base/link/Link'
-import styles from './styles.module.scss'
+import * as S from '../../CommandHelper.styles'
 
 export interface Props {
   searchedCommands: string[]
@@ -54,24 +53,24 @@ const CHSearchOutput = ({ searchedCommands }: Props) => {
         args,
       ).join(' ')
       return (
-        <Text
+        <S.Description
+          as={Text}
           size="s"
-          className={styles.description}
           data-testid={`cli-helper-output-args-${command}`}
         >
           {argString}
-        </Text>
+        </S.Description>
       )
     }
     return (
-      <Text
+      <S.Summary
+        as={Text}
         size="s"
         color="primary"
-        className={cx(styles.description, styles.summary)}
         data-testid={`cli-helper-output-summary-${command}`}
       >
         {ALL_REDIS_COMMANDS[command].summary}
-      </Text>
+      </S.Summary>
     )
   }
 
@@ -105,9 +104,9 @@ const CHSearchOutput = ({ searchedCommands }: Props) => {
         </div>
       )}
       {searchedCommands.length === 0 && (
-        <div className={styles.defaultScreen}>
+        <S.DefaultScreen>
           <Text data-testid="search-cmds-no-results">No results found.</Text>
-        </div>
+        </S.DefaultScreen>
       )}
     </>
   )

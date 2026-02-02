@@ -12,16 +12,7 @@ import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 import { DestructiveButton } from 'uiSrc/components/base/forms/buttons'
 import ConfirmationPopover from 'uiSrc/components/confirmation-popover'
 
-import {
-  ActionsContainer,
-  ActionsWrapper,
-  ApplyButton,
-  DeclineButton,
-  IIEContainer,
-  StyledTextInput,
-} from './InlineItemEditor.styles'
-
-import styles from './styles.module.scss'
+import * as S from './InlineItemEditor.styles'
 
 type Positions = 'top' | 'bottom' | 'left' | 'right' | 'inside'
 type Design = 'default' | 'separate'
@@ -189,7 +180,7 @@ const InlineItemEditor = (props: Props) => {
 
   const ApplyBtn = (
     <RiTooltip
-      anchorClassName={cx(styles.tooltip, 'tooltip')}
+      anchorClassName="tooltip"
       position="bottom"
       title={
         (isDisabled && disabledTooltipText?.title) ||
@@ -201,7 +192,7 @@ const InlineItemEditor = (props: Props) => {
       }
       data-testid="apply-tooltip"
     >
-      <ApplyButton
+      <S.ApplyButton
         size={iconSize ?? 'M'}
         disabled={isDisabledApply()}
         onClick={handleApplyClick}
@@ -219,7 +210,7 @@ const InlineItemEditor = (props: Props) => {
           onOutsideClick={handleClickOutside}
           isDisabled={isShowApprovePopover}
         >
-          <IIEContainer ref={containerEl}>
+          <S.IIEContainer ref={containerEl}>
             <WindowEvent event="keydown" handler={handleOnEsc} />
             <FocusTrap disabled={disableFocusTrap}>
               <form
@@ -234,12 +225,12 @@ const InlineItemEditor = (props: Props) => {
                 <FlexItem grow>
                   {children || (
                     <>
-                      <StyledTextInput
+                      <S.StyledTextInput
                         $width={customStyles?.input?.width}
                         $height={customStyles?.input?.height}
                         name={fieldName}
                         id={fieldName}
-                        className={cx(styles.field, textFiledClassName)}
+                        className={textFiledClassName}
                         maxLength={maxLength || undefined}
                         placeholder={placeholder}
                         value={value}
@@ -250,13 +241,11 @@ const InlineItemEditor = (props: Props) => {
                         variant={variant}
                         ref={inputRef}
                       />
-                      {expandable && (
-                        <p className={styles.keyHiddenText}>{value}</p>
-                      )}
+                      {expandable && <S.KeyHiddenText>{value}</S.KeyHiddenText>}
                     </>
                   )}
                 </FlexItem>
-                <ActionsContainer
+                <S.ActionsContainer
                   justify="around"
                   gap="m"
                   $position={controlsPosition}
@@ -266,31 +255,27 @@ const InlineItemEditor = (props: Props) => {
                   grow={false}
                   className={cx(
                     'inlineItemEditor__controls',
-                    styles.controls,
                     controlsClassName,
                   )}
                 >
-                  <ActionsWrapper $size={size}>
-                    <DeclineButton
+                  <S.ActionsWrapper $size={size}>
+                    <S.DeclineButton
                       onClick={onDecline}
                       disabled={isLoading}
                       data-testid="cancel-btn"
                     />
-                  </ActionsWrapper>
+                  </S.ActionsWrapper>
                   {!approveByValidation && (
-                    <ActionsWrapper $size={size}>{ApplyBtn}</ActionsWrapper>
+                    <S.ActionsWrapper $size={size}>{ApplyBtn}</S.ActionsWrapper>
                   )}
                   {approveByValidation && (
-                    <ActionsWrapper $size={size}>
+                    <S.ActionsWrapper $size={size}>
                       <ConfirmationPopover
                         anchorPosition="leftCenter"
                         isOpen={isShowApprovePopover}
                         closePopover={() => setIsShowApprovePopover(false)}
-                        anchorClassName={cx(
-                          styles.popoverAnchor,
-                          'popoverAnchor',
-                        )}
-                        panelClassName={cx(styles.popoverPanel)}
+                        anchorClassName="popoverAnchor"
+                        maxWidth={S.POPOVER_PANEL_WIDTH}
                         button={ApplyBtn}
                         title={approveText?.title}
                         message={approveText?.text}
@@ -298,7 +283,6 @@ const InlineItemEditor = (props: Props) => {
                           <DestructiveButton
                             aria-label="Save"
                             size="small"
-                            className={cx(styles.btn, styles.saveBtn)}
                             disabled={isDisabledApply()}
                             onClick={handleFormSubmit}
                             data-testid="save-btn"
@@ -307,12 +291,12 @@ const InlineItemEditor = (props: Props) => {
                           </DestructiveButton>
                         }
                       />
-                    </ActionsWrapper>
+                    </S.ActionsWrapper>
                   )}
-                </ActionsContainer>
+                </S.ActionsContainer>
               </form>
             </FocusTrap>
-          </IIEContainer>
+          </S.IIEContainer>
         </OutsideClickDetector>
       )}
     </>

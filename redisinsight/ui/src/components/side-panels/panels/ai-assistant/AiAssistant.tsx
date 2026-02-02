@@ -6,7 +6,7 @@ import { FeatureFlags } from 'uiSrc/constants'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { clearExpertChatHistory } from 'uiSrc/slices/panels/aiAssistant'
 import { WelcomeAiAssistant, ChatsWrapper } from './components'
-import styles from './styles.module.scss'
+import * as S from '../../SidePanels.styles'
 
 const AiAssistant = () => {
   const { data: userOAuthProfile } = useSelector(oauthCloudUserSelector)
@@ -29,9 +29,9 @@ const AiAssistant = () => {
   }, [userOAuthProfile])
 
   return (
-    <div className={styles.wrapper} data-testid="redis-copilot">
+    <S.AiWrapper data-testid="redis-copilot">
       {isShowAuth ? <WelcomeAiAssistant /> : <ChatsWrapper />}
-    </div>
+    </S.AiWrapper>
   )
 }
 

@@ -21,7 +21,6 @@ import { Text } from 'uiSrc/components/base/text'
 import CreateTutorialLink from '../CreateTutorialLink'
 
 import * as S from './UploadTutorialForm.styles'
-import styles from './styles.module.scss'
 
 export interface FormValues {
   file: Nullable<File>
@@ -81,7 +80,7 @@ const UploadTutorialForm = (props: Props) => {
   }
 
   return (
-    <S.Wrapper className={styles.wrapper} data-testid="upload-tutorial-form">
+    <S.Wrapper data-testid="upload-tutorial-form">
       <OnboardingTour
         options={ONBOARDING_FEATURES.EXPLORE_CUSTOM_TUTORIALS}
         anchorPosition="downLeft"
@@ -93,28 +92,30 @@ const UploadTutorialForm = (props: Props) => {
       </OnboardingTour>
       <Spacer size="m" />
       <div>
-        <div className={styles.uploadFileWrapper}>
-          <RiFilePicker
-            id="import-tutorial"
-            initialPromptText="Select or drop a file"
-            className={styles.fileDrop}
-            onChange={handleFileChange}
-            display="large"
-            accept=".zip"
-            data-testid="import-tutorial"
-            aria-label="Select or drop file"
+        <S.UploadFileWrapper>
+          <S.FileDrop>
+            <RiFilePicker
+              id="import-tutorial"
+              initialPromptText="Select or drop a file"
+              onChange={handleFileChange}
+              display="large"
+              accept=".zip"
+              data-testid="import-tutorial"
+              aria-label="Select or drop file"
+            />
+          </S.FileDrop>
+        </S.UploadFileWrapper>
+        <S.Hr>OR</S.Hr>
+        <S.Input>
+          <TextInput
+            placeholder="GitHub link to tutorials"
+            value={formik.values.link}
+            onChange={(value) => formik.setFieldValue('link', value)}
+            data-testid="tutorial-link-field"
           />
-        </div>
-        <div className={styles.hr}>OR</div>
-        <TextInput
-          placeholder="GitHub link to tutorials"
-          value={formik.values.link}
-          onChange={(value) => formik.setFieldValue('link', value)}
-          className={styles.input}
-          data-testid="tutorial-link-field"
-        />
+        </S.Input>
         <Spacer size="l" />
-        <div className={styles.footer}>
+        <S.Footer>
           <CreateTutorialLink />
           <Row align="center" justify="end" gap="s">
             {onCancel && (
@@ -147,7 +148,7 @@ const UploadTutorialForm = (props: Props) => {
               </PrimaryButton>
             </RiTooltip>
           </Row>
-        </div>
+        </S.Footer>
       </div>
     </S.Wrapper>
   )

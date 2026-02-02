@@ -2,23 +2,19 @@ import React from 'react'
 
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { badgesContent } from '../constants'
-import styles from '../styles.module.scss'
+import * as S from '../Recommendation.styles'
 
 const RecommendationBadgesLegend = () => (
-  <Row
-    data-testid="badges-legend"
-    className={styles.badgesLegend}
-    justify="end"
-  >
+  <S.BadgesLegend as={Row} data-testid="badges-legend" justify="end">
     {badgesContent.map(({ id, icon, name }) => (
-      <FlexItem key={id} className={styles.badge}>
-        <div className={styles.badgeWrapper}>
+      <S.Badge as={FlexItem} key={id}>
+        <S.BadgeWrapper>
           {icon}
           {name}
-        </div>
-      </FlexItem>
+        </S.BadgeWrapper>
+      </S.Badge>
     ))}
-  </Row>
+  </S.BadgesLegend>
 )
 
 export default RecommendationBadgesLegend

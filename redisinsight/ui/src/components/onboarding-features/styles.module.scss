@@ -1,8 +1,0 @@
-.pre {
-  background-color: var(--commandGroupBadgeColor) !important;
-  word-wrap: break-word;
-
-  max-height: 240px;
-  overflow-y: auto;
-  @include eui.scrollBar;
-}

@@ -9,8 +9,7 @@ import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from './styles.module.scss'
+import * as S from './NotFoundErrorPage.styles'
 
 const NotFoundErrorPage = () => {
   const history = useHistory()
@@ -28,16 +27,12 @@ const NotFoundErrorPage = () => {
   }, [envDependentFeature, config])
 
   return (
-    <div className={styles.notfoundpage}>
-      <Col align="start" className={styles.notfoundgroup}>
+    <S.PageContainer>
+      <S.ContentGroup>
         <FlexItem grow>
           <Col align="start" gap="xl">
             <FlexItem grow>
-              <RiIcon
-                className={styles.logoIcon}
-                size="original"
-                type="RedisLogoFullIcon"
-              />
+              <S.LogoIcon />
             </FlexItem>
             <FlexItem grow>
               <Title size="XXL">
@@ -46,13 +41,10 @@ const NotFoundErrorPage = () => {
                 This Page Is an Empty Set
               </Title>
               <Text component="div">
-                <p
-                  className={styles.errorSubtext}
-                  style={{ marginBottom: '.8rem' }}
-                >
+                <S.ErrorSubtext style={{ marginBottom: '.8rem' }}>
                   We searched every shard, <br />
                   But couldn&apos;t find the page you&apos;re after.
-                </p>
+                </S.ErrorSubtext>
                 <PrimaryButton
                   size="s"
                   onClick={onDbButtonClick}
@@ -64,11 +56,11 @@ const NotFoundErrorPage = () => {
             </FlexItem>
           </Col>
         </FlexItem>
-      </Col>
-      <div className={styles.robotHolder}>
-        <Robot className={styles.robot} />
-      </div>
-    </div>
+      </S.ContentGroup>
+      <S.RobotHolder>
+        <Robot />
+      </S.RobotHolder>
+    </S.PageContainer>
   )
 }
 

@@ -1,6 +1,5 @@
 import React, { useMemo, useRef, useEffect, useState } from 'react'
 import JsxParser from 'react-jsx-parser'
-import cx from 'classnames'
 import { debounce } from 'lodash'
 import { useLocation, useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -34,7 +33,7 @@ import { Text } from 'uiSrc/components/base/text'
 import { getTutorialSection } from '../../utils'
 import { EmptyPrompt, Pagination, Code } from '..'
 
-import styles from './styles.module.scss'
+import * as S from './InternalPage.styles'
 
 export interface Props {
   onClose: () => void
@@ -164,36 +163,44 @@ const InternalPage = (props: Props) => {
   )
 
   return (
-    <div className={styles.container} data-test-subj="internal-page">
-      <div className={styles.header}>
+    <S.Container data-test-subj="internal-page">
+      <S.Header>
         <div style={{ padding: 0 }}>
           <RiPopover
-            panelClassName={cx('popoverLikeTooltip', styles.popover)}
-            anchorClassName={styles.popoverAnchor}
+            panelClassName="popoverLikeTooltip"
+            minWidth={S.POPOVER_MIN_WIDTH}
             anchorPosition="leftCenter"
             isOpen={showCapabilityPopover}
             panelPaddingSize="m"
             closePopover={() => setShowCapabilityPopover(false)}
             button={
-              <div className={styles.backButton}>
-                <EmptyButton
-                  data-testid="enablement-area__page-close"
-                  icon={ChevronLeftIcon}
-                  onClick={onClose}
-                  aria-label="Back"
-                >
-                  {backTitle}
-                </EmptyButton>
-              </div>
+              <S.PopoverAnchor>
+                <S.BackButton>
+                  <EmptyButton
+                    data-testid="enablement-area__page-close"
+                    icon={ChevronLeftIcon}
+                    onClick={onClose}
+                    aria-label="Back"
+                  >
+                    {backTitle}
+                  </EmptyButton>
+                </S.BackButton>
+              </S.PopoverAnchor>
             }
           >
             <div data-testid="explore-capability-popover">
-              <RocketIcon className={styles.rocketIcon} />
-              <Text className={styles.popoverTitle}>Explore Redis</Text>
-              <Text className={styles.popoverText}>
-                {'You expressed interest in learning about the '}
-                <b>{tutorialCapability?.name}</b>. Try this tutorial to get
-                started.
+              <S.RocketIcon>
+                <RocketIcon />
+              </S.RocketIcon>
+              <Text>
+                <S.PopoverTitle>Explore Redis</S.PopoverTitle>
+              </Text>
+              <Text>
+                <S.PopoverText>
+                  {'You expressed interest in learning about the '}
+                  <b>{tutorialCapability?.name}</b>. Try this tutorial to get
+                  started.
+                </S.PopoverText>
               </Text>
             </div>
           </RiPopover>
@@ -202,14 +209,14 @@ const InternalPage = (props: Props) => {
           <HorizontalRule margin="xs" />
         </div>
         <div>
-          <Text className={styles.pageTitle} color="default">
-            {title?.toUpperCase()}
+          <Text color="default">
+            <S.PageTitle>{title?.toUpperCase()}</S.PageTitle>
           </Text>
         </div>
-      </div>
-      <div
+      </S.Header>
+      <S.Content
         ref={containerRef}
-        className={cx(styles.content, 'jsx-markdown')}
+        className="jsx-markdown"
         onScroll={handleScroll}
         onClick={handleClick}
         role="none"
@@ -223,20 +230,20 @@ const InternalPage = (props: Props) => {
         )}
         {!isLoading && error && <EmptyPrompt />}
         {!isLoading && !error && contentComponent}
-      </div>
+      </S.Content>
       {!!pagination?.length && (
         <>
-          <div className={styles.footer}>
+          <S.Footer>
             <Pagination
               sourcePath={sourcePath}
               items={pagination}
               activePageKey={activeKey}
               compressed
             />
-          </div>
+          </S.Footer>
         </>
       )}
-    </div>
+    </S.Container>
   )
 }
 

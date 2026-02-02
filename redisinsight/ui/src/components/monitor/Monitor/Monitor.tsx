@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import cx from 'classnames'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
 import { IMonitorDataPayload } from 'uiSrc/slices/interfaces'
@@ -15,8 +14,7 @@ import MonitorOutputList from '../MonitorOutputList'
 
 import ProfilerImage from 'uiSrc/assets/img/profiler/magnifier.svg'
 
-import styles from './styles.module.scss'
-import { StyledImagePanel } from './Monitor.styles'
+import * as S from './Monitor.styles'
 import { Spacer } from 'uiSrc/components/base/layout'
 import { Banner } from 'uiSrc/components/base/display/banner'
 import { RiImage } from 'uiSrc/components/base/display'
@@ -54,7 +52,7 @@ const Monitor = (props: Props) => {
       gap="xxl"
       data-testid="monitor-not-started"
     >
-      <StyledImagePanel align="center">
+      <S.StyledImagePanel align="center">
         <RiImage
           src={ProfilerImage}
           alt="Profiler"
@@ -65,7 +63,7 @@ const Monitor = (props: Props) => {
           Get a deeper understanding of your database with real-time command,
           key, and client statistics.
         </Text>
-      </StyledImagePanel>
+      </S.StyledImagePanel>
 
       <Col gap="xl">
         <Title size="M">Profiler</Title>
@@ -112,8 +110,8 @@ const Monitor = (props: Props) => {
   )
 
   const MonitorError = () => (
-    <div className={styles.startContainer} data-testid="monitor-error">
-      <div className={cx(styles.startContent, styles.startContentError)}>
+    <S.StartContainer data-testid="monitor-error">
+      <S.StartContentError>
         <Row>
           <FlexItem>
             <RiIcon
@@ -133,18 +131,13 @@ const Monitor = (props: Props) => {
             </ColorText>
           </FlexItem>
         </Row>
-      </div>
-    </div>
+      </S.StartContentError>
+    </S.StartContainer>
   )
 
   return (
     <>
-      <div
-        className={cx(styles.container, {
-          [styles.isRunning]: isRunning && !isPaused,
-        })}
-        data-testid="monitor"
-      >
+      <S.Container $isRunning={isRunning && !isPaused} data-testid="monitor">
         {error && !isRunning ? (
           <MonitorError />
         ) : (
@@ -161,7 +154,7 @@ const Monitor = (props: Props) => {
           </>
         )}
         {isStarted && (
-          <div className={styles.content}>
+          <S.Content>
             {!!items?.length && (
               <AutoSizer>
                 {({ width, height }) => (
@@ -174,10 +167,10 @@ const Monitor = (props: Props) => {
                 )}
               </AutoSizer>
             )}
-          </div>
+          </S.Content>
         )}
         {isStarted && isPaused && <MonitorLog />}
-      </div>
+      </S.Container>
     </>
   )
 }

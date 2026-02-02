@@ -13,7 +13,7 @@ import { Title } from 'uiSrc/components/base/text/Title'
 import ConsentOption from '../ConsentOption'
 import { IConsent, ConsentCategories } from '../ConsentsSettings'
 
-import styles from '../styles.module.scss'
+import * as S from '../ConsentsSettings.styles'
 
 export interface Props {
   onSubmitted?: () => void
@@ -89,7 +89,7 @@ const ConsentsNotifications = () => {
 
   return (
     <form onSubmit={formik.handleSubmit} data-testid="consents-settings-form">
-      <div className={styles.consentsWrapper}>
+      <S.ConsentsWrapper>
         <Title size="XS">Notifications</Title>
         {notificationConsents.map((consent: IConsent) => (
           <ConsentOption
@@ -100,7 +100,7 @@ const ConsentsNotifications = () => {
             key={consent.agreementName}
           />
         ))}
-      </div>
+      </S.ConsentsWrapper>
     </form>
   )
 }

@@ -2,7 +2,6 @@ import React from 'react'
 
 import { useDispatch } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
-import styled from 'styled-components'
 import { findTutorialPath } from 'uiSrc/utils'
 import { openTutorialByPath } from 'uiSrc/slices/panels/sidePanels'
 import { Text } from 'uiSrc/components/base/text'
@@ -13,7 +12,7 @@ import {
   TelemetryEvent,
 } from 'uiSrc/telemetry'
 
-import styles from './styles.module.scss'
+import * as S from './QueryTutorials.styles'
 
 export interface Props {
   tutorials: Array<{
@@ -22,29 +21,6 @@ export interface Props {
   }>
   source: string
 }
-
-const QueryTutorialsButton = styled(EmptyButton)`
-  padding: 4px 8px;
-  background-color: var(--browserTableRowEven);
-
-  border-radius: 4px;
-  border: 1px solid var(--separatorColor);
-
-  color: var(--htmlColor) !important;
-  font-size: 12px;
-
-  &:not(:first-of-type) {
-    margin-left: 8px;
-  }
-
-  &:hover,
-  &:focus {
-    color: var(--htmlColor);
-    text-decoration: underline !important;
-    outline: none !important;
-    animation: none !important;
-  }
-`
 
 const QueryTutorials = ({ tutorials, source }: Props) => {
   const dispatch = useDispatch()
@@ -66,20 +42,20 @@ const QueryTutorials = ({ tutorials, source }: Props) => {
   }
 
   return (
-    <div className={styles.container}>
-      <Text className={styles.title}>Tutorials:</Text>
+    <S.Container>
+      <S.Title as={Text}>Tutorials:</S.Title>
       {tutorials.map(({ id, title }) => (
-        <QueryTutorialsButton
+        <S.TutorialLink
+          as={EmptyButton}
           role="button"
           key={id}
-          className={styles.tutorialLink}
           onClick={() => handleClickTutorial(id)}
           data-testid={`query-tutorials-link_${id}`}
         >
           {title}
-        </QueryTutorialsButton>
+        </S.TutorialLink>
       ))}
-    </div>
+    </S.Container>
   )
 }
 

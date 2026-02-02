@@ -5,7 +5,7 @@ import { ContentEditable } from 'uiSrc/components'
 import { parseContentEditableChangeHtml } from 'uiSrc/components/ContentEditable'
 import { getDbIndex } from 'uiSrc/utils'
 
-import styles from './styles.module.scss'
+import * as S from '../../../Cli.styles'
 
 export interface Props {
   command: string
@@ -34,10 +34,10 @@ const CliInput = (props: Props) => {
         )}
         &gt;&nbsp;
       </span>
-      <ContentEditable
+      <S.Command
+        as={ContentEditable}
         tagName="span"
         html={command}
-        id={styles.command}
         spellCheck={false}
         data-testid="cli-command"
         innerRef={setInputEl}

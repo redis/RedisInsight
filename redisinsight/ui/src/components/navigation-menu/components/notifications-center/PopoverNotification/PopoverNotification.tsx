@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -14,7 +13,7 @@ import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import { RiPopover } from 'uiSrc/components/base'
 import Notification from '../Notification'
 
-import styles from '../styles.module.scss'
+import * as S from '../NotificationsCenter.styles'
 
 const CLOSE_NOTIFICATION_TIME = 6000
 
@@ -92,30 +91,27 @@ const PopoverNotification = () => {
           anchorPosition="rightUp"
           isOpen={isShowNotification}
           closePopover={() => {}}
-          anchorClassName={styles.popoverAnchor}
-          panelClassName={cx(
-            'popoverLikeTooltip',
-            styles.popoverNotificationTooltip,
-          )}
-          button={<div className={styles.popoverAnchor} />}
+          panelClassName="popoverLikeTooltip"
+          minWidth={S.POPOVER_MIN_WIDTH}
+          button={<S.PopoverAnchor />}
           onMouseUp={onMouseUpPopover}
         >
-          <div
+          <S.PopoverNotification
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
-            className={styles.popoverNotification}
             data-testid="notification-popover"
           >
-            <IconButton
-              icon={CancelSlimIcon}
-              aria-label="Close notification"
-              className={styles.closeBtn}
-              onMouseUp={(e: React.MouseEvent) => e.stopPropagation()}
-              onClick={() => handleClickClose(lastReceivedNotification)}
-              data-testid="close-notification-btn"
-            />
+            <S.CloseBtn>
+              <IconButton
+                icon={CancelSlimIcon}
+                aria-label="Close notification"
+                onMouseUp={(e: React.MouseEvent) => e.stopPropagation()}
+                onClick={() => handleClickClose(lastReceivedNotification)}
+                data-testid="close-notification-btn"
+              />
+            </S.CloseBtn>
             <Notification notification={lastReceivedNotification} />
-          </div>
+          </S.PopoverNotification>
         </RiPopover>
       )}
     </>

@@ -1,41 +1,7 @@
 import React, { useCallback, useState, useEffect, useRef } from 'react'
-import cx from 'classnames'
-import styled from 'styled-components'
 
 import { FormatedDate } from '../formated-date'
-import styles from './styles.module.scss'
-import { Theme } from 'uiSrc/components/base/theme/types'
-
-const SliderRange = styled.div<
-  React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
->`
-  background-color: ${({ theme }: { theme: Theme }) =>
-    theme.semantic.color.background.primary400};
-  height: 1px;
-  z-index: 2;
-  transform: translateY(2px);
-
-  &:before {
-    content: '';
-    width: 1px;
-    height: 6px;
-    position: absolute;
-    top: -5px;
-    left: -1px;
-    background-color: ${({ theme }: { theme: Theme }) =>
-      theme.semantic.color.background.primary400};
-  }
-
-  &:after {
-    content: '';
-    width: 1px;
-    height: 6px;
-    position: absolute;
-    right: -1px;
-    background-color: ${({ theme }: { theme: Theme }) =>
-      theme.semantic.color.background.primary400};
-  }
-`
+import * as S from './RangeFilter.styles'
 
 const buttonString = 'Reset Filter'
 
@@ -154,37 +120,34 @@ const RangeFilter = (props: Props) => {
 
   if (start === 0 && max !== 0 && end === 0 && min !== 0) {
     return (
-      <div data-testid="mock-blank-range" className={styles.rangeWrapper}>
-        <div className={cx(styles.sliderTrack, styles.mockRange)} />
-      </div>
+      <S.RangeWrapper data-testid="mock-blank-range">
+        <S.SliderTrack $mock />
+      </S.RangeWrapper>
     )
   }
 
   if (start === end) {
     return (
-      <div data-testid="mock-fill-range" className={styles.rangeWrapper}>
-        <SliderRange className={cx(styles.sliderRange, styles.mockRange)}>
-          <div
-            className={styles.sliderLeftValue}
-            data-testid="range-left-timestamp"
-          >
+      <S.RangeWrapper data-testid="mock-fill-range">
+        <S.SliderRange $mock className="slider-range">
+          <S.SliderLeftValue data-testid="range-left-timestamp">
             <FormatedDate date={start?.toString()} />
-          </div>
-          <div
-            className={styles.sliderRightValue}
-            data-testid="range-right-timestamp"
-          >
+          </S.SliderLeftValue>
+          <S.SliderRightValue data-testid="range-right-timestamp">
             <FormatedDate date={end?.toString()} />
-          </div>
-        </SliderRange>
-      </div>
+          </S.SliderRightValue>
+        </S.SliderRange>
+      </S.RangeWrapper>
     )
   }
 
+  const isLeftPosition = max - startVal < (max - min) / 2
+  const isRightPosition = max - endVal > (max - min) / 2
+
   return (
     <>
-      <div className={styles.rangeWrapper} data-testid="range-bar">
-        <input
+      <S.RangeWrapper data-testid="range-bar">
+        <S.Thumb
           type="range"
           min={min}
           max={max}
@@ -193,10 +156,10 @@ const RangeFilter = (props: Props) => {
           disabled={disabled}
           onChange={onChangeStart}
           onMouseUp={onMouseUpStart}
-          className={cx(styles.thumb, styles.thumbZindex3)}
+          $zIndex3
           data-testid="range-start-input"
         />
-        <input
+        <S.Thumb
           type="range"
           min={min}
           max={max}
@@ -205,46 +168,40 @@ const RangeFilter = (props: Props) => {
           disabled={disabled}
           onChange={onChangeEnd}
           onMouseUp={onMouseUpEnd}
-          className={cx(styles.thumb, styles.thumbZindex4)}
+          $zIndex4
           data-testid="range-end-input"
         />
-        <div className={styles.slider}>
-          <div className={styles.sliderTrack} />
-          <SliderRange
+        <S.Slider>
+          <S.SliderTrack />
+          <S.SliderRange
             ref={range}
-            className={cx(styles.sliderRange, {
-              [styles.leftPosition]: max - startVal < (max - min) / 2,
-              [styles.disabled]: disabled,
-            })}
+            className={`slider-range ${disabled ? 'disabled' : ''}`}
+            $leftPosition={isLeftPosition}
+            $disabled={disabled}
           >
-            <div
-              className={cx(styles.sliderLeftValue, {
-                [styles.leftPosition]: max - startVal < (max - min) / 2,
-                [styles.disabled]: disabled,
-              })}
+            <S.SliderLeftValue
+              $leftPosition={isLeftPosition}
+              $disabled={disabled}
             >
               <FormatedDate date={startVal?.toString()} />
-            </div>
-            <div
-              className={cx(styles.sliderRightValue, {
-                [styles.rightPosition]: max - endVal > (max - min) / 2,
-                [styles.disabled]: disabled,
-              })}
+            </S.SliderLeftValue>
+            <S.SliderRightValue
+              $rightPosition={isRightPosition}
+              $disabled={disabled}
             >
               <FormatedDate date={endVal?.toString()} />
-            </div>
-          </SliderRange>
-        </div>
-      </div>
+            </S.SliderRightValue>
+          </S.SliderRange>
+        </S.Slider>
+      </S.RangeWrapper>
       {(start !== min || end !== max) && (
-        <button
+        <S.ResetButton
           data-testid="range-filter-btn"
-          className={styles.resetButton}
           type="button"
           onClick={handleResetFilter}
         >
           {buttonString}
-        </button>
+        </S.ResetButton>
       )}
     </>
   )

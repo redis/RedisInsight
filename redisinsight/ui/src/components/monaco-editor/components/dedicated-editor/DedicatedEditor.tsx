@@ -4,7 +4,6 @@ import { compact, findIndex, first, merge } from 'lodash'
 import AutoSizer, { Size } from 'react-virtualized-auto-sizer'
 import ReactMonacoEditor, { monaco as monacoEditor } from 'react-monaco-editor'
 import { Rnd } from 'react-rnd'
-import cx from 'classnames'
 
 import {
   decoration,
@@ -288,7 +287,6 @@ const DedicatedEditor = (props: Props) => {
             dragAxis="y"
             bounds=".editorBounder"
             dragHandleClassName="draggable-area"
-            className={styles.rnd}
             data-testid="draggable-area"
           >
             <div

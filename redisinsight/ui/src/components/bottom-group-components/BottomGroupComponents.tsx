@@ -1,6 +1,5 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
 import styled from 'styled-components'
 
 import { cliSettingsSelector } from 'uiSrc/slices/cli/cli-settings'
@@ -10,7 +9,7 @@ import { MonitorWrapper } from 'uiSrc/components'
 import { monitorSelector } from 'uiSrc/slices/cli/monitor'
 import BottomGroupMinimized from './components/bottom-group-minimized/BottomGroupMinimized'
 
-import styles from './styles.module.scss'
+import * as S from './BottomGroupComponents.styles'
 
 const GroupComponentsWrapper = styled.div`
   height: 100%;
@@ -34,22 +33,14 @@ const BottomGroupComponents = () => {
       <GroupComponents>
         {isShowCli && <CliWrapper />}
         {isShowHelper && (
-          <div
-            className={cx(styles.helperWrapper, {
-              [styles.fullWidth]: !isShowCli,
-            })}
-          >
+          <S.HelperWrapper $fullWidth={!isShowCli}>
             <CommandHelperWrapper />
-          </div>
+          </S.HelperWrapper>
         )}
         {isShowMonitor && (
-          <div
-            className={cx(styles.monitorWrapper, {
-              [styles.fullWidth]: !isShowCli,
-            })}
-          >
+          <S.MonitorWrapper $fullWidth={!isShowCli}>
             <MonitorWrapper />
-          </div>
+          </S.MonitorWrapper>
         )}
       </GroupComponents>
       <BottomGroupMinimized />

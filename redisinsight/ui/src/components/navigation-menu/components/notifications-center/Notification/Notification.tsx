@@ -1,5 +1,4 @@
 import React from 'react'
-import cx from 'classnames'
 import { format } from 'date-fns'
 import parse from 'html-react-parser'
 
@@ -7,13 +6,12 @@ import { NOTIFICATION_DATE_FORMAT } from 'uiSrc/constants/notifications'
 import { IGlobalNotification } from 'uiSrc/slices/interfaces'
 import { truncateText } from 'uiSrc/utils'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import { TitleSize, Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { Spacer } from 'uiSrc/components/base/layout'
-import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 
-import styles from '../styles.module.scss'
+import * as S from '../NotificationsCenter.styles'
 
 export interface Props {
   notification: IGlobalNotification
@@ -25,24 +23,24 @@ const Notification = (props: Props) => {
 
   return (
     <>
-      <Title
-        size={titleSize}
-        className={styles.notificationTitle}
-        data-testid="notification-title"
-      >
-        {notification.title}
-      </Title>
+      <S.NotificationTitle>
+        <Title size={titleSize} data-testid="notification-title">
+          {notification.title}
+        </Title>
+      </S.NotificationTitle>
       <Spacer size="s" />
-      <Text
-        component="div"
-        size="s"
-        className={cx('notificationHTMLBody', styles.notificationBody)}
-        data-testid="notification-body"
-      >
-        {parse(notification.body)}
-      </Text>
+      <S.NotificationBody>
+        <Text
+          component="div"
+          size="s"
+          className="notificationHTMLBody"
+          data-testid="notification-body"
+        >
+          {parse(notification.body)}
+        </Text>
+      </S.NotificationBody>
 
-      <Row className={styles.notificationFooter} align="center" justify="start">
+      <S.NotificationFooter align="center" justify="start">
         <FlexItem>
           <Text size="xs" data-testid="notification-date">
             {format(notification.timestamp * 1000, NOTIFICATION_DATE_FORMAT)}
@@ -50,16 +48,15 @@ const Notification = (props: Props) => {
         </FlexItem>
         {notification.category && (
           <FlexItem>
-            <RiBadge
-              variant="light"
-              className={styles.category}
+            <S.Category
               style={{ backgroundColor: notification.categoryColor ?? '#666' }}
               data-testid="notification-category"
-              label={truncateText(notification.category, 32)}
-            />
+            >
+              {truncateText(notification.category, 32)}
+            </S.Category>
           </FlexItem>
         )}
-      </Row>
+      </S.NotificationFooter>
     </>
   )
 }

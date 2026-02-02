@@ -4,7 +4,7 @@ import cx from 'classnames'
 
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 
-import styles from './styles.module.scss'
+import * as S from './KeyboardShortcut.styles'
 
 export interface Props {
   items: (string | JSX.Element)[]
@@ -21,19 +21,19 @@ const KeyboardShortcut = (props: Props) => {
     badgeTextClassName = '',
   } = props
   return (
-    <div className={styles.container}>
+    <S.Container>
       {items.map((item: string | JSX.Element, index: number) => (
         <div key={isString(item) ? item : item?.props?.children}>
-          {index !== 0 && <div className={styles.separator}>{separator}</div>}
-          <RiBadge
-            className={cx(styles.badge, badgeTextClassName, {
-              [styles.transparent]: transparent,
-            })}
+          {index !== 0 && <S.Separator>{separator}</S.Separator>}
+          <S.Badge
+            as={RiBadge}
+            className={cx(badgeTextClassName)}
+            $transparent={transparent}
             label={item}
           />
         </div>
       ))}
-    </div>
+    </S.Container>
   )
 }
 export default KeyboardShortcut

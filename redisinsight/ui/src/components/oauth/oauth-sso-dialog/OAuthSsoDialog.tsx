@@ -2,7 +2,6 @@ import React, { useCallback } from 'react'
 
 import { useDispatch, useSelector } from 'react-redux'
 
-import cx from 'classnames'
 import {
   oauthCloudSelector,
   setSocialDialogState,
@@ -13,7 +12,7 @@ import { OAuthCreateDb, OAuthSignIn } from 'uiSrc/components/oauth/oauth-sso'
 
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { Modal } from 'uiSrc/components/base/display'
-import styles from './styles.module.scss'
+import * as S from '../OAuth.styles'
 
 const OAuthSsoDialog = () => {
   const { ssoFlow } = useSelector(cloudSelector)
@@ -36,14 +35,13 @@ const OAuthSsoDialog = () => {
   }
 
   return (
-    <Modal
+    <S.SsoModal
+      as={Modal}
       open
       onCancel={handleClose}
-      className={cx(styles.modal, {
-        [styles.createDb]: ssoFlow === OAuthSocialAction.Create,
-        [styles.signIn]: ssoFlow === OAuthSocialAction.SignIn,
-        [styles.import]: ssoFlow === OAuthSocialAction.Import,
-      })}
+      $isCreateDb={ssoFlow === OAuthSocialAction.Create}
+      $isSignIn={ssoFlow === OAuthSocialAction.SignIn}
+      $isImport={ssoFlow === OAuthSocialAction.Import}
       data-testid="social-oauth-dialog"
       title={null}
       content={

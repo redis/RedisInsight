@@ -1,10 +1,9 @@
 import React, { Ref, useEffect, useRef } from 'react'
-import cx from 'classnames'
 
 import { ColorText } from 'uiSrc/components/base/text'
 import { scrollIntoView } from 'uiSrc/utils'
 import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from './styles.module.scss'
+import * as S from './FieldMessage.styles'
 
 type Colors =
   | 'default'
@@ -43,22 +42,16 @@ const FieldMessage = ({
   }, [])
 
   return (
-    <div ref={divRef} className={cx(styles.container)}>
+    <S.Container ref={divRef}>
       {icon && (
-        <RiIcon
-          className={cx(styles.icon)}
-          type={icon}
-          color={color || 'danger'}
-        />
+        <S.Icon>
+          <RiIcon type={icon} color={color || 'danger'} />
+        </S.Icon>
       )}
-      <ColorText
-        className={cx(styles.message)}
-        data-testid={testID}
-        color={color || 'danger'}
-      >
+      <S.Message as={ColorText} data-testid={testID} color={color || 'danger'}>
         {children}
-      </ColorText>
-    </div>
+      </S.Message>
+    </S.Container>
   )
 }
 

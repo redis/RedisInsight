@@ -8,26 +8,24 @@ import { Spacer } from 'uiSrc/components/base/layout'
 import { OAUTH_ADVANTAGES_ITEMS } from './constants'
 import { Col } from 'uiSrc/components/base/layout/flex'
 
-import styles from './styles.module.scss'
+import * as S from '../../OAuth.styles'
 
 const OAuthAdvantages = () => (
-  <div className={styles.container} data-testid="oauth-advantages">
+  <S.AdvantagesContainer data-testid="oauth-advantages">
     <RiImage src={RedisLogo} alt="Redis logo" $size="s" />
     <Title size="M">Cloud</Title>
     <Spacer size="space600" />
     <Col justify="between" align="stretch" grow={false} gap="m">
       {OAUTH_ADVANTAGES_ITEMS.map(({ title }) => (
-        <Text
-          component="div"
-          className={styles.advantage}
-          key={title?.toString()}
-        >
-          <RiIcon type="CheckThinIcon" className={styles.advantageIcon} />
+        <S.Advantage as={Text} component="div" key={title?.toString()}>
+          <S.AdvantageIcon>
+            <RiIcon type="CheckThinIcon" />
+          </S.AdvantageIcon>
           <Text size="S">{title}</Text>
-        </Text>
+        </S.Advantage>
       ))}
     </Col>
-  </div>
+  </S.AdvantagesContainer>
 )
 
 export default OAuthAdvantages
