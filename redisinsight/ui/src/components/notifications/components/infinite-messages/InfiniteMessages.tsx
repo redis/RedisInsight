@@ -19,9 +19,9 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { Link } from 'uiSrc/components/base/link/Link'
 
 import styles from './styles.module.scss'
-import { Link } from 'uiSrc/components/base/link/Link'
 
 export enum InfiniteMessagesIds {
   oAuthProgress = 'oAuthProgress',

@@ -86,9 +86,7 @@ const ModuleNotLoadedMinimalized = (props: Props) => {
         >
           {!freeDbWithModule ? (
             <>
-              <Text color="subdued" size="s">
-                {moduleText?.text}
-              </Text>
+              <Text size="s">{moduleText?.text}</Text>
               <Spacer size="s" />
               <OAuthSsoHandlerDialog>
                 {(ssoCloudHandlerClick) => (
@@ -117,7 +115,7 @@ const ModuleNotLoadedMinimalized = (props: Props) => {
             </>
           ) : (
             <>
-              <Text color="subdued" size="s">
+              <Text size="s">
                 Use your free all-in-one Redis Cloud database to start exploring
                 these capabilities.
               </Text>
