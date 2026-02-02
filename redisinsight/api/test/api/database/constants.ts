@@ -87,6 +87,13 @@ export const databaseSchema = Joi.object().keys({
       memoryLimitMeasurementUnit: Joi.string(),
     })
     .allow(null),
+  providerDetails: Joi.object()
+    .keys({
+      provider: Joi.string().required(),
+      authType: Joi.string(),
+      azureAccountId: Joi.string(),
+    })
+    .allow(null),
   tags: Joi.array()
     .items(
       Joi.object().keys({
