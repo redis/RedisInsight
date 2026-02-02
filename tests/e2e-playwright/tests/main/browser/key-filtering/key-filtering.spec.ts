@@ -53,9 +53,6 @@ test.describe('Browser > Key Filtering Patterns', () => {
       // Search for keys matching the pattern with asterisk and unique suffix
       await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}filter-*-${uniqueSuffix}`);
 
-      // Wait for results
-      await browserPage.page.waitForTimeout(500);
-
       // Verify that filter keys matching the pattern are shown
       await expect(browserPage.keyList.getKeyRow(testKeys.prefix1)).toBeVisible();
 
@@ -67,9 +64,6 @@ test.describe('Browser > Key Filtering Patterns', () => {
       // Search for keys matching the pattern with ? wildcard (matches single char)
       await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}item?-${uniqueSuffix}`);
 
-      // Wait for results
-      await browserPage.page.waitForTimeout(500);
-
       // Verify that keys with single character match are shown
       await expect(browserPage.keyList.getKeyRow(testKeys.numbered1)).toBeVisible();
       await expect(browserPage.keyList.getKeyRow(testKeys.numbered2)).toBeVisible();
@@ -79,9 +73,6 @@ test.describe('Browser > Key Filtering Patterns', () => {
     test(`should filter keys with [xy] character class`, async ({ browserPage }) => {
       // Search for keys with character class [ab] (matches a or b)
       await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}filter-[ab]-${uniqueSuffix}`);
-
-      // Wait for results
-      await browserPage.page.waitForTimeout(500);
 
       // Verify that keys matching a or b are shown
       await expect(browserPage.keyList.getKeyRow(testKeys.prefix1)).toBeVisible();
@@ -95,9 +86,6 @@ test.describe('Browser > Key Filtering Patterns', () => {
       // Search for keys with character range [a-c]
       await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}filter-[a-c]-${uniqueSuffix}`);
 
-      // Wait for results
-      await browserPage.page.waitForTimeout(500);
-
       // Verify that all filter keys are shown (a, b, c are all in range)
       await expect(browserPage.keyList.getKeyRow(testKeys.prefix1)).toBeVisible();
       await expect(browserPage.keyList.getKeyRow(testKeys.prefix2)).toBeVisible();
@@ -107,9 +95,6 @@ test.describe('Browser > Key Filtering Patterns', () => {
     test(`should filter keys with [^x] negated character class`, async ({ browserPage }) => {
       // Search for keys with negated character class [^a] (matches anything except 'a')
       await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}filter-[^a]-${uniqueSuffix}`);
-
-      // Wait for results
-      await browserPage.page.waitForTimeout(500);
 
       // Verify that keys NOT matching 'a' are shown (b and c)
       await expect(browserPage.keyList.getKeyRow(testKeys.prefix2)).toBeVisible();
@@ -134,7 +119,6 @@ test.describe('Browser > Key Filtering Patterns', () => {
       // Search for the key with escaped asterisk (using backslash)
       // In Redis KEYS pattern, \* matches a literal asterisk
       await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}special\\*key-${uniqueSuffix}`);
-      await browserPage.page.waitForTimeout(500);
 
       // Verify the key with literal asterisk is found
       await expect(browserPage.keyList.getKeyRow(specialKeyName)).toBeVisible();
@@ -149,18 +133,15 @@ test.describe('Browser > Key Filtering Patterns', () => {
     test(`should clear filter and search again`, async ({ browserPage }) => {
       // First apply a filter for filter-* keys with unique suffix
       await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}filter-*-${uniqueSuffix}`);
-      await browserPage.page.waitForTimeout(500);
 
       // Verify filter is applied - filter keys should be visible
       await expect(browserPage.keyList.getKeyRow(testKeys.prefix1)).toBeVisible();
 
       // Clear the search
       await browserPage.keyList.clearSearch();
-      await browserPage.page.waitForTimeout(500);
 
       // Now search for item keys only
       await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}item*-${uniqueSuffix}`);
-      await browserPage.page.waitForTimeout(500);
 
       // Verify numbered keys are visible after new search
       await expect(browserPage.keyList.getKeyRow(testKeys.numbered1)).toBeVisible();

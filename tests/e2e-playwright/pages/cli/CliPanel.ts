@@ -69,8 +69,6 @@ export class CliPanel {
     await this.commandInput.focus();
     await this.page.keyboard.type(command);
     await this.page.keyboard.press('Enter');
-    // Wait a bit for the command to execute
-    await this.page.waitForTimeout(500);
   }
 
   /**

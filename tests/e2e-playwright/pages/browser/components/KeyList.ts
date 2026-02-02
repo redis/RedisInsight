@@ -13,6 +13,7 @@ export class KeyList {
   readonly keyTypeFilter: Locator;
   readonly searchInput: Locator;
   readonly searchButton: Locator;
+  readonly resetFilterButton: Locator;
 
   // View controls
   readonly listViewButton: Locator;
@@ -46,6 +47,7 @@ export class KeyList {
     this.keyTypeFilterDropdown = page.locator('[role="listbox"]');
     this.searchInput = page.getByPlaceholder('Filter by Key Name or Pattern');
     this.searchButton = page.getByTestId('search-btn');
+    this.resetFilterButton = page.getByTestId('reset-filter-btn');
 
     // View controls
     this.listViewButton = page.getByTestId('view-type-browser-btn');
@@ -84,14 +86,17 @@ export class KeyList {
   async searchKeys(pattern: string): Promise<void> {
     await this.searchInput.fill(pattern);
     await this.searchButton.click();
+    // Wait for "Results:" to appear (indicates filter is applied)
+    await this.resultsCount.waitFor({ state: 'visible', timeout: 10000 });
   }
 
   /**
-   * Clear search
+   * Clear search by clicking the reset filter button
    */
   async clearSearch(): Promise<void> {
-    await this.searchInput.clear();
-    await this.searchButton.click();
+    await this.resetFilterButton.click();
+    // Wait for reset button to disappear (indicates filter is cleared)
+    await this.resetFilterButton.waitFor({ state: 'hidden', timeout: 10000 });
   }
 
   /**
