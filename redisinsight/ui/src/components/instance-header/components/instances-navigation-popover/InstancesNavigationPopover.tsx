@@ -18,7 +18,7 @@ import { RiPopover } from 'uiSrc/components/base'
 import InstancesList from './components/instances-list'
 import { ChevronDownIcon } from 'uiSrc/components/base/icons'
 import { ButtonWrapper } from './InstancesNavigationPopover.styles'
-import styles from './styles.module.scss'
+import * as S from '../../InstanceHeader.styles'
 
 export interface Props {
   name: string
@@ -129,27 +129,25 @@ const InstancesNavigationPopover = ({ name }: Props) => {
         </ButtonWrapper>
       }
     >
-      <div className={styles.wrapper}>
-        <div className={styles.searchInputContainer}>
+      <S.Wrapper>
+        <S.SearchInputContainer>
           <TextInput
-            className={styles.searchInput}
             icon={Search}
             value={searchFilter}
             onChange={handleSearch}
             data-testid="instances-nav-popover-search"
           />
-        </div>
+        </S.SearchInputContainer>
         <div>
-          <div className={styles.tabsContainer}>
+          <S.TabsContainer>
             <Tabs
               tabs={tabs}
               value={selectedTab}
               // @ts-expect-error type mismatch
               onChange={setSelectedTab}
-              className={styles.tabs}
               data-testid="instances-tabs-testId"
             />
-          </div>
+          </S.TabsContainer>
           <Spacer size="m" />
           <InstancesList
             selectedTab={selectedTab}
@@ -160,14 +158,12 @@ const InstancesNavigationPopover = ({ name }: Props) => {
           <div>
             <Spacer size="m" />
             <Divider />
-            <div className={styles.footerContainer}>
-              <Text className={styles.homePageLink} onClick={goHome}>
-                {btnLabel}
-              </Text>
-            </div>
+            <S.FooterContainer>
+              <S.HomePageLink onClick={goHome}>{btnLabel}</S.HomePageLink>
+            </S.FooterContainer>
           </div>
         </div>
-      </div>
+      </S.Wrapper>
     </RiPopover>
   )
 }

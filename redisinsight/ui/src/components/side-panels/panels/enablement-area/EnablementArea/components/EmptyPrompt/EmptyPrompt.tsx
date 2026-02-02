@@ -4,16 +4,16 @@ import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { RiEmptyPrompt } from 'uiSrc/components/base/layout'
-import styles from './styles.module.scss'
+import * as S from '../../../../../SidePanels.styles'
 
 const EmptyPrompt = () => (
-  <div className={styles.container}>
+  <S.EmptyPromptContainer>
     <RiEmptyPrompt
       data-testid="enablement-area__empty-prompt"
       icon={<RiIcon type="ToastDangerIcon" color="danger600" size="l" />}
       title={<h2>No information to display</h2>}
       body={
-        <p className={styles.body}>
+        <S.EmptyPromptBody>
           <span>Restart the application.</span>
           <br />
           <span>
@@ -29,10 +29,10 @@ const EmptyPrompt = () => (
             </Link>
             .
           </span>
-        </p>
+        </S.EmptyPromptBody>
       }
     />
-  </div>
+  </S.EmptyPromptContainer>
 )
 
 export default EmptyPrompt

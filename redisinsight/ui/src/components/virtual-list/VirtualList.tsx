@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { ListChildComponentProps, VariableSizeList as List } from 'react-window'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
-import styles from './styles.module.scss'
+import * as S from './VirtualList.styles'
 
 export interface Props {
   items: (string | JSX.Element)[]
@@ -75,29 +75,27 @@ const VirtualList = (props: Props) => {
     const rowContent = items[index]
 
     return (
-      <div style={style} className={styles.item} data-testid={`row-${index}`}>
-        <div className={styles.message} ref={rowRef}>
-          {rowContent}
-        </div>
-      </div>
+      <S.Item style={style} data-testid={`row-${index}`}>
+        <S.Message ref={rowRef}>{rowContent}</S.Message>
+      </S.Item>
     )
   }
 
   return (
     <AutoSizer disableHeight={!!dynamicHeight} onResize={() => forceRender({})}>
       {({ width, height = 0 }) => (
-        <List
+        <S.ListContent
+          as={List}
           itemCount={items.length}
           itemSize={getRowHeight}
           ref={listRef}
-          className={styles.listContent}
           outerRef={outerRef}
           overscanCount={overscanCount}
           height={height || listHeight}
           width={width - PROTRUDING_OFFSET}
         >
           {Row}
-        </List>
+        </S.ListContent>
       )}
     </AutoSizer>
   )

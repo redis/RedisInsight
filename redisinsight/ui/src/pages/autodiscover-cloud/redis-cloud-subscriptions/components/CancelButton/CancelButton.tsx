@@ -6,7 +6,6 @@ import {
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 
-import styles from '../../styles.module.scss'
 import { type CancelButtonProps } from './CancelButton.types'
 
 export const CancelButton = ({
@@ -19,8 +18,8 @@ export const CancelButton = ({
     anchorPosition="upCenter"
     isOpen={isPopoverOpen}
     closePopover={onClosePopover}
-    panelClassName={styles.panelCancelBtn}
     panelPaddingSize="l"
+    maxWidth="350px"
     button={
       <SecondaryButton
         onClick={onShowPopover}

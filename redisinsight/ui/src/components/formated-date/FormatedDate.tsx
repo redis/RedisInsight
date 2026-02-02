@@ -4,7 +4,7 @@ import { DATETIME_FORMATTER_DEFAULT, TimezoneOption } from 'uiSrc/constants'
 import { userSettingsConfigSelector } from 'uiSrc/slices/user/user-settings'
 import { formatTimestamp } from 'uiSrc/utils'
 import { RiTooltip } from 'uiSrc/components'
-import styles from './styles.module.scss'
+import * as S from './FormatedDate.styles'
 
 export interface Props {
   date: Date | string | number
@@ -20,8 +20,8 @@ const FormatedDate = ({ date }: Props) => {
   const formatedDate = formatTimestamp(date, dateFormat, timezone)
 
   return (
-    <RiTooltip anchorClassName={styles.text} content={formatedDate}>
-      <span>{formatedDate}</span>
+    <RiTooltip content={formatedDate}>
+      <S.Text>{formatedDate}</S.Text>
     </RiTooltip>
   )
 }

@@ -176,3 +176,20 @@ export const StyledTextInput = styled(TextInput)<{
     padding: 0 5px;
   }
 `
+
+export const KeyHiddenText = styled.p`
+  display: inline-block;
+  visibility: hidden;
+  height: 1px;
+  overflow: hidden;
+  max-width: 100%;
+  margin-right: 80px;
+  word-break: break-all;
+`
+
+export const PopoverAnchor = styled.div`
+  width: 100%;
+  height: 100%;
+`
+
+export const POPOVER_PANEL_WIDTH = '296px'

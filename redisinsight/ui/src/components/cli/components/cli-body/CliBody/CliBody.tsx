@@ -12,7 +12,7 @@ import { clearOutput, updateCliHistoryStorage } from 'uiSrc/utils/cliHelper'
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import styles from './styles.module.scss'
+import * as S from '../../../Cli.styles'
 
 export interface Props {
   data: (string | JSX.Element)[]
@@ -250,7 +250,7 @@ const CliBody = (props: Props) => {
     >
       <Row justify="between" style={{ height: '100%' }}>
         <FlexItem grow>
-          <div className={styles.output}>{data}</div>
+          <S.Output>{data}</S.Output>
           {!error && !(loading || settingsLoading) ? (
             <span
               style={{

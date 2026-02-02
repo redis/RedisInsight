@@ -10,7 +10,7 @@ import { Col } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
-import styles from './styles.module.scss'
+import * as S from './DatabaseNotOpened.styles'
 
 export interface Props {
   source?: OAuthSocialSource
@@ -21,11 +21,11 @@ const DatabaseNotOpened = (props: Props) => {
   const { source = OAuthSocialSource.Tutorials, onClose } = props
 
   return (
-    <div className={styles.wrapper} data-testid="database-not-opened-popover">
+    <S.Wrapper data-testid="database-not-opened-popover">
       <div>
-        <Title size="S" className={styles.title}>
+        <S.Title as={Title} size="S">
           Open a database
-        </Title>
+        </S.Title>
         <Spacer size="s" />
         <Col>
           <Text color="subdued" size="s">
@@ -64,13 +64,8 @@ const DatabaseNotOpened = (props: Props) => {
           </ExternalLink>
         </Col>
       </div>
-      <img
-        src={TelescopeImg}
-        className={styles.img}
-        alt="telescope"
-        loading="lazy"
-      />
-    </div>
+      <S.Img src={TelescopeImg} alt="telescope" loading="lazy" />
+    </S.Wrapper>
   )
 }
 

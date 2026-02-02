@@ -37,7 +37,7 @@ import ExpertChatHeader from './components/expert-chat-header'
 import { EXPERT_CHAT_AGREEMENTS, EXPERT_CHAT_INITIAL_MESSAGE } from '../texts'
 import { ChatForm, ChatHistory } from '../shared'
 
-import styles from './styles.module.scss'
+import * as S from './ExpertChat.styles'
 
 const ExpertChat = () => {
   const { messages, agreements, loading } = useSelector(aiExpertChatSelector)
@@ -208,7 +208,11 @@ const ExpertChat = () => {
         content: freeInstances?.length
           ? 'Use your free all-in-one Redis Cloud database to start exploring these capabilities.'
           : 'Create a free Redis Cloud database with Redis Query Engine capability that extends the core capabilities of open-source Redis.',
-        icon: <TelescopeImg className={styles.iconTelescope} />,
+        icon: (
+          <S.IconTelescope>
+            <TelescopeImg />
+          </S.IconTelescope>
+        ),
       }
     }
 
@@ -216,14 +220,14 @@ const ExpertChat = () => {
   }
 
   return (
-    <div className={styles.wrapper} data-testid="ai-document-chat">
+    <S.Wrapper data-testid="ai-document-chat">
       <ExpertChatHeader
         connectedInstanceName={connectedInstanceName}
         databaseId={instanceId}
         isClearDisabled={!messages?.length || !instanceId}
         onRestart={onClearSession}
       />
-      <div className={styles.chatHistory}>
+      <S.ChatHistory>
         <ChatHistory
           autoScroll
           isLoading={loading || isLoading}
@@ -243,8 +247,8 @@ const ExpertChat = () => {
           onRunCommand={onRunCommand}
           onRestart={onClearSession}
         />
-      </div>
-      <div className={styles.chatForm}>
+      </S.ChatHistory>
+      <S.ChatForm>
         <ChatForm
           onAgreementsDisplayed={handleAgreementsDisplay}
           agreements={
@@ -255,8 +259,8 @@ const ExpertChat = () => {
           placeholder="Ask me to query your data (e.g. How many road bikes?)"
           onSubmit={handleSubmit}
         />
-      </div>
-    </div>
+      </S.ChatForm>
+    </S.Wrapper>
   )
 }
 

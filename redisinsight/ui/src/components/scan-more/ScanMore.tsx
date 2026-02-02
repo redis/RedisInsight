@@ -8,7 +8,7 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { TextButton } from '@redis-ui/components'
 import { Text } from 'uiSrc/components/base/text'
 import { Theme } from 'uiSrc/components/base/theme/types'
-import styles from './styles.module.scss'
+import * as S from './ScanMore.styles'
 
 export interface Props {
   withAlert?: boolean
@@ -54,12 +54,10 @@ const ScanMore = ({
       >
         <Text size="s">Scan more</Text>
         {withAlert && (
-          <RiTooltip
-            content={WARNING_MESSAGE}
-            position="top"
-            anchorClassName={styles.anchor}
-          >
-            <RiIcon color="primary400" size="m" type="InfoIcon" />
+          <RiTooltip content={WARNING_MESSAGE} position="top">
+            <S.Anchor>
+              <RiIcon color="primary400" size="m" type="InfoIcon" />
+            </S.Anchor>
           </RiTooltip>
         )}
       </ScanMoreButton>

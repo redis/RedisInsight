@@ -34,3 +34,7 @@ export const StyledContainer = styled.div<StyledContainerProps>`
       ${$inCircle && inCircleStyles}
     `}
 `
+
+export const AnchorModuleTooltip = styled.span`
+  margin-right: 18px;
+`

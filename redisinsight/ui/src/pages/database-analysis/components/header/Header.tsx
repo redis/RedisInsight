@@ -24,8 +24,7 @@ import { Text } from 'uiSrc/components/base/text'
 import { ShortDatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
 import { AnalysisProgress } from 'apiSrc/modules/database-analysis/models/analysis-progress'
 
-import styles from './styles.module.scss'
-import { Container, HeaderSelect, InfoIcon } from './Header.styles'
+import * as S from './Header.styles'
 
 export interface Props {
   items: ShortDatabaseAnalysis[]
@@ -82,7 +81,7 @@ const Header = (props: Props) => {
     <div data-testid="db-analysis-header">
       <AnalyticsPageHeader
         actions={
-          <Container justify={items.length ? 'between' : 'end'} gap="l">
+          <S.Container justify={items.length ? 'between' : 'end'} gap="l">
             {!!items.length && (
               <FlexItem>
                 <Row align="center" wrap>
@@ -92,7 +91,7 @@ const Header = (props: Props) => {
                     </FlexItem>
                   </HideFor>
                   <FlexItem grow>
-                    <HeaderSelect
+                    <S.HeaderSelect
                       options={analysisOptions}
                       valueRender={({ option }) =>
                         option.inputDisplay as JSX.Element
@@ -106,31 +105,25 @@ const Header = (props: Props) => {
                   </FlexItem>
                   {!!progress && (
                     <FlexItem>
-                      <Text
-                        className={styles.progress}
-                        size="s"
-                        data-testid="bulk-delete-summary"
-                      >
-                        <Text
+                      <S.Progress data-testid="bulk-delete-summary">
+                        <S.Progress
                           component="span"
                           color={
                             progress.total === progress.processed
                               ? undefined
                               : 'warning'
                           }
-                          className={styles.progress}
-                          size="s"
                           data-testid="analysis-progress"
                         >
                           {`Scanned ${getApproximatePercentage(
                             progress.total,
                             progress.processed,
                           )}`}
-                        </Text>
+                        </S.Progress>
                         {` (${numberWithSpaces(progress.processed)}`}/
                         {numberWithSpaces(progress.total)}
                         {' keys) '}
-                      </Text>
+                      </S.Progress>
                     </FlexItem>
                   )}
                 </Row>
@@ -149,22 +142,23 @@ const Header = (props: Props) => {
                 >
                   New Report
                 </PrimaryButton>
-                <RiTooltip
-                  position="bottom"
-                  anchorClassName={styles.tooltipAnchor}
-                  title="Database Analysis"
-                  data-testid="db-new-reports-tooltip"
-                  content={
-                    connectionType === ConnectionType.Cluster
-                      ? ANALYZE_CLUSTER_TOOLTIP_MESSAGE
-                      : ANALYZE_TOOLTIP_MESSAGE
-                  }
-                >
-                  <InfoIcon data-testid="db-new-reports-icon" />
-                </RiTooltip>
+                <S.TooltipAnchor>
+                  <RiTooltip
+                    position="bottom"
+                    title="Database Analysis"
+                    data-testid="db-new-reports-tooltip"
+                    content={
+                      connectionType === ConnectionType.Cluster
+                        ? ANALYZE_CLUSTER_TOOLTIP_MESSAGE
+                        : ANALYZE_TOOLTIP_MESSAGE
+                    }
+                  >
+                    <S.InfoIcon data-testid="db-new-reports-icon" />
+                  </RiTooltip>
+                </S.TooltipAnchor>
               </Row>
             </FlexItem>
-          </Container>
+          </S.Container>
         }
       />
     </div>

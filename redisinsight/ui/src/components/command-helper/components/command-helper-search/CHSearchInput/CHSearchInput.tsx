@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { cliSettingsSelector } from 'uiSrc/slices/cli/cli-settings'
 
 import { SearchInput } from 'uiSrc/components/base/inputs'
-import styles from './styles.module.scss'
+import * as S from '../../../CommandHelper.styles'
 
 export interface Props {
   submitSearch: (searchValue: string) => void
@@ -37,7 +37,7 @@ const CHSearchInput = ({ submitSearch, isLoading = false }: Props) => {
   }
 
   return (
-    <div className={styles.container}>
+    <S.SearchInputContainer>
       <SearchInput
         loading={isLoading}
         disabled={isLoading}
@@ -48,7 +48,7 @@ const CHSearchInput = ({ submitSearch, isLoading = false }: Props) => {
         onChange={onChangeSearch}
         data-testid="cli-helper-search"
       />
-    </div>
+    </S.SearchInputContainer>
   )
 }
 

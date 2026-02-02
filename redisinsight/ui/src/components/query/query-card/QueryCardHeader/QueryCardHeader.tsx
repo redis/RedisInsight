@@ -1,5 +1,4 @@
 import React, { useContext } from 'react'
-import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { findIndex, isNumber } from 'lodash'
@@ -45,14 +44,13 @@ import {
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 import { FormatedDate, FullScreen, RiTooltip } from 'uiSrc/components'
 
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import QueryCardTooltip from '../QueryCardTooltip'
 
-import styles from './styles.module.scss'
 import { useViewModeContext, ViewMode } from '../../context/view-mode.context'
-import { ProfileSelect } from './QueryCardHeader.styles'
+import * as S from './QueryCardHeader.styles'
 
 export interface Props {
   query: string
@@ -248,22 +246,20 @@ const QueryCardHeader = (props: Props) => {
       label: id ?? value,
       disabled: false,
       inputDisplay: (
-        <RiTooltip
-          content={truncateText(text, 500)}
-          position="left"
-          anchorClassName={styles.changeViewWrapper}
-        >
-          <RiIcon
-            type={theme === Theme.Dark ? iconDark : iconLight}
-            data-testid={`view-type-selected-${value}-${id}`}
-          />
+        <RiTooltip content={truncateText(text, 500)} position="left">
+          <S.ChangeViewWrapper>
+            <RiIcon
+              type={theme === Theme.Dark ? iconDark : iconLight}
+              data-testid={`view-type-selected-${value}-${id}`}
+            />
+          </S.ChangeViewWrapper>
         </RiTooltip>
       ),
       dropdownDisplay: (
-        <div className={cx(styles.dropdownOption)}>
+        <S.DropdownOption>
           <RiIcon type={theme === Theme.Dark ? iconDark : iconLight} />
           <span>{truncateText(text, 20)}</span>
-        </div>
+        </S.DropdownOption>
       ),
       'data-test-subj': `view-type-option-${value}-${id}`,
     }
@@ -275,23 +271,17 @@ const QueryCardHeader = (props: Props) => {
       value: id ?? value,
       label: id ?? value,
       inputDisplay: (
-        <div
-          data-test-subj={`profile-type-option-${value}-${id}`}
-          className={cx(styles.dropdownOption, styles.dropdownProfileOption)}
-        >
+        <S.DropdownOption data-test-subj={`profile-type-option-${value}-${id}`}>
           <RiIcon
             type="VisTagCloudIcon"
             data-testid={`view-type-selected-${value}-${id}`}
           />
-        </div>
+        </S.DropdownOption>
       ),
       dropdownDisplay: (
-        <div
-          data-test-subj={`profile-type-option-${value}-${id}`}
-          className={cx(styles.dropdownOption, styles.dropdownProfileOption)}
-        >
+        <S.DropdownOption data-test-subj={`profile-type-option-${value}-${id}`}>
           <span>{truncateText(text, 20)}</span>
-        </div>
+        </S.DropdownOption>
       ),
       'data-test-subj': `profile-type-option-${value}-${id}`,
     }
@@ -307,7 +297,7 @@ const QueryCardHeader = (props: Props) => {
     modifiedOptions.splice(indexForSeparator + 1, 0, {
       value: '',
       disabled: true,
-      inputDisplay: <span className={styles.separator} />,
+      inputDisplay: <S.Separator />,
       label: '',
       dropdownDisplay: <span />,
       'data-test-subj': '',
@@ -315,35 +305,31 @@ const QueryCardHeader = (props: Props) => {
   }
 
   return (
-    <Row
+    <S.Container
       onClick={handleToggleOpen}
       tabIndex={0}
       onKeyDown={() => {}}
-      className={cx(styles.container, 'query-card-header', {
-        [styles.isOpen]: isOpen,
-        [styles.notExpanded]: isSilentModeWithoutError(
-          resultsMode,
-          summary?.fail,
-        ),
-      })}
+      className="query-card-header"
+      $notExpanded={isSilentModeWithoutError(resultsMode, summary?.fail)}
       data-testid="query-card-open"
       role="button"
     >
       <Row align="center" gap="l" full>
-        <FlexItem className={styles.titleWrapper} grow>
+        <S.TitleWrapper grow>
           <div className="copy-btn-wrapper">
             <ColorText
               color="primary"
-              className={styles.title}
               component="div"
               data-testid="query-card-command"
             >
-              <QueryCardTooltip
-                query={query}
-                summary={summaryText}
-                db={db}
-                resultsMode={resultsMode}
-              />
+              <S.Title>
+                <QueryCardTooltip
+                  query={query}
+                  summary={summaryText}
+                  db={db}
+                  resultsMode={resultsMode}
+                />
+              </S.Title>
             </ColorText>
             <CopyButton
               copy={query || ''}
@@ -351,40 +337,33 @@ const QueryCardHeader = (props: Props) => {
               aria-label="Copy query"
               disabled={emptyCommand}
               withTooltip={false}
-              className={cx('copy-btn', styles.copyBtn)}
+              className="copy-btn"
               data-testid="copy-command"
             />
           </div>
-        </FlexItem>
-        <FlexItem className={styles.controls}>
+        </S.TitleWrapper>
+        <S.Controls>
           <Row align="center" justify="end" gap="l">
-            <FlexItem
-              className={styles.time}
-              data-testid="command-execution-date-time"
-            >
+            <S.Time data-testid="command-execution-date-time">
               {!!createdAt && (
                 <ColorText component="div" size="S">
                   <FormatedDate date={createdAt} />
                 </ColorText>
               )}
-            </FlexItem>
-            <FlexItem className={styles.summaryTextWrapper}>
+            </S.Time>
+            <S.SummaryTextWrapper>
               {!!message && !isOpen && (
                 <ColorText component="div" size="S">
                   {truncateText(message, 13)}
                 </ColorText>
               )}
-            </FlexItem>
-            <FlexItem
-              data-testid="command-execution-time"
-              className={styles.executionTime}
-            >
+            </S.SummaryTextWrapper>
+            <S.ExecutionTime data-testid="command-execution-time">
               {isNumber(executionTime) && (
                 <RiTooltip
                   title="Processing Time"
                   content={getExecutionTimeString(executionTime)}
                   position="left"
-                  anchorClassName={styles.executionTime}
                   data-testid="execution-time-tooltip"
                 >
                   <Row align="center" gap="s" grow={false}>
@@ -397,23 +376,21 @@ const QueryCardHeader = (props: Props) => {
                     <ColorText
                       size="S"
                       color="default"
-                      className={cx(styles.executionTimeValue)}
                       data-testid="command-execution-time-value"
                     >
-                      {getTruncatedExecutionTimeString(executionTime)}
+                      <S.ExecutionTimeValue>
+                        {getTruncatedExecutionTimeString(executionTime)}
+                      </S.ExecutionTimeValue>
                     </ColorText>
                   </Row>
                 </RiTooltip>
               )}
-            </FlexItem>
+            </S.ExecutionTime>
             <Row align="center" justify="end" gap="s" grow={false}>
               {!hideFields?.includes(HIDE_FIELDS.profiler) && (
-                <FlexItem
-                  className={cx(styles.buttonIcon, styles.viewTypeIcon)}
-                  onClick={onDropDownViewClick}
-                >
+                <S.ViewTypeIcon onClick={onDropDownViewClick}>
                   {isOpen && canCommandProfile && !summaryText && (
-                    <ProfileSelect
+                    <S.ProfileSelect
                       placeholder={profileOptions[0].inputDisplay}
                       onChange={(value: ProfileQueryType | string) =>
                         onQueryProfile(value as ProfileQueryType)
@@ -429,15 +406,12 @@ const QueryCardHeader = (props: Props) => {
                       }}
                     />
                   )}
-                </FlexItem>
+                </S.ViewTypeIcon>
               )}
               {!hideFields?.includes(HIDE_FIELDS.viewType) && (
-                <FlexItem
-                  className={cx(styles.buttonIcon, styles.viewTypeIcon)}
-                  onClick={onDropDownViewClick}
-                >
+                <S.ViewTypeIcon onClick={onDropDownViewClick}>
                   {isOpen && options.length > 1 && !summaryText && (
-                    <ProfileSelect
+                    <S.ProfileSelect
                       options={modifiedOptions}
                       valueRender={({ option, isOptionValue }) => {
                         if (isOptionValue) {
@@ -451,20 +425,17 @@ const QueryCardHeader = (props: Props) => {
                       data-testid="select-view-type"
                     />
                   )}
-                </FlexItem>
+                </S.ViewTypeIcon>
               )}
-              <FlexItem
-                className={styles.buttonIcon}
-                onClick={onDropDownViewClick}
-              >
+              <S.ButtonIcon onClick={onDropDownViewClick}>
                 {(isOpen || isFullScreen) && (
                   <FullScreen
                     isFullScreen={isFullScreen}
                     onToggleFullScreen={toggleFullScreen}
                   />
                 )}
-              </FlexItem>
-              <FlexItem className={styles.buttonIcon}>
+              </S.ButtonIcon>
+              <S.ButtonIcon>
                 <RiTooltip content="Clear result" position="left">
                   <IconButton
                     disabled={loading || clearing}
@@ -474,14 +445,10 @@ const QueryCardHeader = (props: Props) => {
                     onClick={handleQueryDelete}
                   />
                 </RiTooltip>
-              </FlexItem>
+              </S.ButtonIcon>
               {!isFullScreen && (
-                <FlexItem className={cx(styles.buttonIcon, styles.playIcon)}>
-                  <RiTooltip
-                    content="Run again"
-                    position="left"
-                    anchorClassName={cx(styles.buttonIcon, styles.playIcon)}
-                  >
+                <S.PlayIcon>
+                  <RiTooltip content="Run again" position="left">
                     <IconButton
                       disabled={emptyCommand}
                       icon={PlayIcon}
@@ -490,10 +457,10 @@ const QueryCardHeader = (props: Props) => {
                       onClick={handleQueryReRun}
                     />
                   </RiTooltip>
-                </FlexItem>
+                </S.PlayIcon>
               )}
               {!isFullScreen && (
-                <FlexItem className={styles.buttonIcon}>
+                <S.ButtonIcon>
                   {!isSilentModeWithoutError(resultsMode, summary?.fail) && (
                     <IconButton
                       icon={isOpen ? ChevronUpIcon : ChevronDownIcon}
@@ -501,37 +468,30 @@ const QueryCardHeader = (props: Props) => {
                       data-testid="toggle-collapse"
                     />
                   )}
-                </FlexItem>
+                </S.ButtonIcon>
               )}
-              <FlexItem className={styles.buttonIcon}>
+              <S.ButtonIcon>
                 {(isRawMode(mode) || isGroupResults(resultsMode)) && (
                   <RiTooltip
-                    className={styles.tooltip}
-                    anchorClassName={styles.buttonIcon}
                     content={
                       <>
                         {isGroupMode(resultsMode) && (
-                          <ColorText
-                            className={cx(styles.mode)}
-                            data-testid="group-mode-tooltip"
-                          >
-                            <RiIcon type="GroupModeIcon" />
+                          <ColorText data-testid="group-mode-tooltip">
+                            <S.Mode>
+                              <RiIcon type="GroupModeIcon" />
+                            </S.Mode>
                           </ColorText>
                         )}
                         {isSilentMode(resultsMode) && (
-                          <ColorText
-                            className={cx(styles.mode)}
-                            data-testid="silent-mode-tooltip"
-                          >
-                            <RiIcon type="SilentModeIcon" />
+                          <ColorText data-testid="silent-mode-tooltip">
+                            <S.Mode>
+                              <RiIcon type="SilentModeIcon" />
+                            </S.Mode>
                           </ColorText>
                         )}
                         {isRawMode(mode) && (
-                          <ColorText
-                            className={cx(styles.mode)}
-                            data-testid="raw-mode-tooltip"
-                          >
-                            -r
+                          <ColorText data-testid="raw-mode-tooltip">
+                            <S.Mode>-r</S.Mode>
                           </ColorText>
                         )}
                       </>
@@ -546,12 +506,12 @@ const QueryCardHeader = (props: Props) => {
                     />
                   </RiTooltip>
                 )}
-              </FlexItem>
+              </S.ButtonIcon>
             </Row>
           </Row>
-        </FlexItem>
+        </S.Controls>
       </Row>
-    </Row>
+    </S.Container>
   )
 }
 

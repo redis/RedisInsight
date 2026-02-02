@@ -8,9 +8,9 @@ import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 import { Row } from 'uiSrc/components/base/layout/flex'
-
-import styles from './styles.module.scss'
 import { HorizontalSpacer } from 'uiSrc/components/base/layout'
+
+import * as S from '../../CommandHelper.styles'
 
 export interface Props {
   args: string
@@ -28,11 +28,7 @@ const CHCommandInfo = (props: Props) => {
   } = props
 
   return (
-    <Row
-      align="center"
-      className={styles.container}
-      data-testid="cli-helper-title"
-    >
+    <S.InfoContainer as={Row} align="center" data-testid="cli-helper-title">
       <IconButton
         icon={ArrowLeftIcon}
         onClick={onBackClick}
@@ -49,14 +45,14 @@ const CHCommandInfo = (props: Props) => {
         {args}
       </Text>
       {complexity && (
-        <RiBadge
+        <S.InfoBadge
+          as={RiBadge}
           label={complexity}
           variant="light"
-          className={styles.badge}
           data-testid="cli-helper-complexity-short"
         />
       )}
-    </Row>
+    </S.InfoContainer>
   )
 }
 

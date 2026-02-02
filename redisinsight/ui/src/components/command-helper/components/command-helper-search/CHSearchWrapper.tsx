@@ -14,7 +14,7 @@ import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 import CHSearchInput from './CHSearchInput'
 import CHSearchFilter from './CHSearchFilter'
 
-import styles from './styles.module.scss'
+import * as S from '../../CommandHelper.styles'
 
 const CHSearchWrapper = () => {
   const { instanceId = '' } = useParams<{ instanceId: string }>()
@@ -56,10 +56,10 @@ const CHSearchWrapper = () => {
   }
 
   return (
-    <div className={styles.searchWrapper}>
+    <S.SearchWrapper>
       <CHSearchFilter isLoading={loading} submitFilter={onChangeFilter} />
       <CHSearchInput isLoading={loading} submitSearch={onChangeSearch} />
-    </div>
+    </S.SearchWrapper>
   )
 }
 

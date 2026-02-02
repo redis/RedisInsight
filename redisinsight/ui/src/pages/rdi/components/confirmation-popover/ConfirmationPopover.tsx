@@ -7,8 +7,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from './styles.module.scss'
+import * as S from './ConfirmationPopover.styles'
 
 interface Props {
   title: string
@@ -60,12 +59,12 @@ const ConfirmationPopover = (props: Props) => {
         isOpen={isPopoverOpen}
         closePopover={handleClosePopover}
         panelPaddingSize="m"
-        panelClassName={styles.panelPopover}
+        maxWidth={S.POPOVER_WIDTH}
         button={popoverButton}
       >
         <Row align="center">
           <FlexItem>
-            <RiIcon type="ToastDangerIcon" className={styles.alertIcon} />
+            <S.AlertIcon />
           </FlexItem>
           <FlexItem className="eui-textNoWrap">
             <Text>{formatLongName(title, 58, 0, '...')}</Text>

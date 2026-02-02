@@ -6,7 +6,7 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
-import styles from './CancelButton.style'
+import { CANCEL_POPOVER_WIDTH } from '../../RedisCluster.styles'
 
 import type { CancelButtonProps } from './CancelButton.types'
 
@@ -20,7 +20,7 @@ export const CancelButton = ({
     anchorPosition="upCenter"
     isOpen={isPopoverOpen}
     closePopover={onClosePopover}
-    panelClassName={styles.panelCancelBtn}
+    maxWidth={CANCEL_POPOVER_WIDTH}
     panelPaddingSize="l"
     button={
       <SecondaryButton

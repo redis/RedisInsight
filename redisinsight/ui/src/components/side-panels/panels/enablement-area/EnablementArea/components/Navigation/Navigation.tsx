@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import cx from 'classnames'
 import { isArray } from 'lodash'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
@@ -39,8 +38,7 @@ import InternalLink from '../InternalLink'
 import PlainText from '../PlainText'
 import { Col } from 'uiSrc/components/base/layout/flex'
 import UploadTutorialForm from '../UploadTutorialForm'
-
-import styles from './styles.module.scss'
+import * as S from '../../../../../SidePanels.styles'
 
 const padding = 16
 
@@ -250,13 +248,13 @@ const Navigation = (props: Props) => {
     ))
 
   return (
-    <ListGroup
+    <S.InnerContainer
+      as={ListGroup}
       style={{ padding: 5 }}
       gap="m"
       maxWidth="false"
       data-testid="enablementArea-treeView"
       flush
-      className={cx(styles.innerContainer)}
     >
       {tutorials &&
         renderTreeView(getManifestItems(tutorials), PATHS.tutorials)}
@@ -266,7 +264,7 @@ const Navigation = (props: Props) => {
           getManifestItems(customTutorials),
           PATHS.customTutorials,
         )}
-    </ListGroup>
+    </S.InnerContainer>
   )
 }
 

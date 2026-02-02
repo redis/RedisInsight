@@ -10,7 +10,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import OAuthForm from '../../shared/oauth-form/OAuthForm'
-import styles from './styles.module.scss'
+import * as S from '../../OAuth.styles'
 import { StyledAdvantagesContainerAbsolute } from '../../shared/styles'
 
 export interface Props {
@@ -36,33 +36,29 @@ const OAuthSignIn = (props: Props) => {
   }
 
   return (
-    <div className={styles.container} data-testid="oauth-container-signIn">
+    <S.SsoContainer data-testid="oauth-container-signIn">
       <Row>
-        <FlexItem grow className={styles.advantagesContainer}>
+        <S.SsoAdvantagesContainer as={FlexItem} grow>
           <StyledAdvantagesContainerAbsolute>
             <OAuthAdvantages />
           </StyledAdvantagesContainerAbsolute>
-        </FlexItem>
-        <FlexItem grow className={styles.socialContainer}>
-          <OAuthForm
-            onClick={handleSocialButtonClick}
-            action={action}
-            className={styles.socialButtons}
-          >
+        </S.SsoAdvantagesContainer>
+        <S.SsoSocialContainer as={FlexItem} grow>
+          <OAuthForm onClick={handleSocialButtonClick} action={action}>
             {(form: React.ReactNode) => (
               <>
-                <Text className={styles.subTitle}>Get started with</Text>
-                <Title size="XL" className={styles.title}>
+                <S.SsoSubTitle as={Text}>Get started with</S.SsoSubTitle>
+                <S.SsoTitle as={Title} size="XL">
                   Redis Cloud account
-                </Title>
-                {form}
+                </S.SsoTitle>
+                <S.SsoSocialButtons>{form}</S.SsoSocialButtons>
                 <OAuthAgreement />
               </>
             )}
           </OAuthForm>
-        </FlexItem>
+        </S.SsoSocialContainer>
       </Row>
-    </div>
+    </S.SsoContainer>
   )
 }
 
