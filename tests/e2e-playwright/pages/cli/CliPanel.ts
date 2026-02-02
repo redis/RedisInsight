@@ -66,11 +66,8 @@ export class CliPanel {
    * Execute a command in the CLI
    */
   async executeCommand(command: string): Promise<void> {
-    // Focus on the command input
     await this.commandInput.focus();
-    // Type the command
     await this.page.keyboard.type(command);
-    // Press Enter to execute
     await this.page.keyboard.press('Enter');
     // Wait a bit for the command to execute
     await this.page.waitForTimeout(500);
@@ -81,7 +78,6 @@ export class CliPanel {
    * This triggers the Command Helper integration
    */
   async typeCommand(command: string): Promise<void> {
-    // Focus on the command input
     await this.commandInput.focus();
     // Type the command character by character to trigger updates
     await this.page.keyboard.type(command, { delay: 50 });

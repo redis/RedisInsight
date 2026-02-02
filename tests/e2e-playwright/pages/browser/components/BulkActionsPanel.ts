@@ -114,11 +114,8 @@ export class BulkActionsPanel {
   }
 
   async performBulkDelete(): Promise<void> {
-    // Click delete button
     await this.clickDelete();
-    // Confirm in the dialog
     await this.confirmDelete();
-    // Wait for completion
     await this.waitForDeleteComplete();
   }
 
@@ -156,11 +153,8 @@ export class BulkActionsPanel {
   async performBulkUpload(filePath: string): Promise<void> {
     // Select upload tab and upload file
     await this.uploadFile(filePath);
-    // Click upload button
     await this.clickUpload();
-    // Confirm in the dialog
     await this.confirmUpload();
-    // Wait for completion
     await this.waitForUploadComplete();
   }
 }
