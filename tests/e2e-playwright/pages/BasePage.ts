@@ -202,13 +202,6 @@ export abstract class BasePage {
   }
 
   /**
-   * Get text content of an element
-   */
-  async getText(locator: Locator): Promise<string | null> {
-    return locator.textContent();
-  }
-
-  /**
    * Fill input with clear first
    */
   async fillInput(locator: Locator, value: string): Promise<void> {
