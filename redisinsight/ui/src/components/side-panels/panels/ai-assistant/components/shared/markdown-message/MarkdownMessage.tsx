@@ -32,7 +32,7 @@ const MarkdownMessage = (props: Props) => {
   const components: any = {
     Code: ChatCodeBlock,
     CloudLink,
-    ExternalLink: ChatExternalLink,
+    Link: ChatExternalLink,
   }
 
   useEffect(() => {
