@@ -95,4 +95,18 @@ describe('ConfigAzureAuth', () => {
 
     expect(store.getActions()).toEqual([])
   })
+
+  it('should call failure actions when success status but account is missing', () => {
+    window.app?.azureOauthCallback?.mockImplementation((cb: any) =>
+      cb(undefined, { status: AzureAuthStatus.Succeed, account: undefined }),
+    )
+    renderConfigAzureAuth()
+
+    const actions = store.getActions()
+
+    expect(actions[0]).toEqual(
+      azureOAuthCallbackFailure('Azure authentication failed'),
+    )
+    expect(actions[1].type).toEqual(addErrorNotification({} as any).type)
+  })
 })

@@ -40,9 +40,14 @@ const ConfigAzureAuth = () => {
           successMessages.AZURE_AUTH_SUCCESS(account.username),
         ),
       )
+      return
     }
 
-    if (status === AzureAuthStatus.Failed) {
+    // Handle failure or success without account (edge case)
+    if (
+      status === AzureAuthStatus.Failed ||
+      status === AzureAuthStatus.Succeed
+    ) {
       const errorMessage = error || 'Azure authentication failed'
       dispatch(azureOAuthCallbackFailure(errorMessage))
       dispatch(
